@@ -1,0 +1,58 @@
+**************************************************************************************
+* PHPLinq
+*
+* Copyright (c) 2008 - 2009 PHPLinq, Maarten Balliauw
+*
+* This library is free software; you can redistribute it and/or
+* modify it under the terms of the GNU Lesser General Public
+* License as published by the Free Software Foundation; either
+* version 2.1 of the License, or (at your option) any later version.
+*
+* This library is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+* Lesser General Public License for more details.
+*
+* You should have received a copy of the GNU Lesser General Public
+* License along with this library; if not, write to the Free Software
+* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+*
+* @copyright  Copyright (c) 2008 - 2009 PHPLinq (http://www.codeplex.com/PHPLinq)
+* @license    http://www.gnu.org/licenses/lgpl.txt	LGPL
+* @version    0.4.0, 2009-01-27
+**************************************************************************************
+
+
+To be released:
+
+
+2009/01827 (v0.4.0):
+- Feature:   Work item 3535 - Implement ILinqProvider for Zend_Db_Table
+- Feature:   Work item 3615 - LinqToZendDB - Last query should be returned usign callback function
+- Bugfix:    Work item 2711 - "Apache HTTP Server has stopped working" when trying to run 11-join.php
+
+
+2008/06/23 (v0.3.0):
+- Feature:   Work item 1595 - Implement join operator
+- Feature:   Work item 2425 - Implement sum, min, max, average
+- Feature:   Work item 2426 - Implement single, singleOrDefault
+
+
+2008/02/29 (v0.2.0):
+- Feature:   Work item  757 - Implement distinct
+- Feature:   Work item  758 - Implement ofType
+- Feature:   Work item  762 - Compile expressions on execute
+- Feature:   Work item  787 - Implement any / all / contains
+- Feature:   Work item  759 - Implement reverse
+- Feature:   Work item  788 - Implement elementAt / count
+- Feature:   Work item  789 - Implement concat
+- Feature:   Work item  827 - Implement parameterless select()
+- Feature:   Work item  760 - Implement First / FirstOrDefault / Last / LastOrDefault
+- Feature:   Work item  756 - Implement takeWhile / skipWhile
+- Feature:   Work item 1109 - Implement from()->in() initiator
+- General:   Work item  761 - LinqToObjects initiator fallback should be "linqfrom"
+- General:   Work item  790 - Create PEAR package in release process
+
+
+2008/01/21 (v0.1.0):
+- Initial version

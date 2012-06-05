@@ -1,0 +1,593 @@
+3.1.1 (Brainy Betty)
+bf62a7a32a121bd7a7c5b7c20e4604db9ee39dd7
+o:Sass::Tree::RootNode
+:
+@linei:@template"π$// Toolbar icons used with permission from Drew Wilson
+// http://pictos.drewwilson.com/
+// Pictos icons are (c) 2010 Drew Wilson
+
+@import '../global';
+
+/**
+ * @class Ext.Button
+ */
+
+/**
+ * @var {measurement} $button-height Default height for buttons.
+ */
+$button-height: 1.8em;
+
+/**
+ * @var {measurement} $button-radius Default border-radius for buttons.
+ */
+$button-radius: .4em !default;
+
+/**
+ * @var {measurement} $button-stroke-weight Default border width for buttons.
+ */
+$button-stroke-weight: .1em !default;
+
+/**
+ * @var {string} $button-gradient Default gradient for buttons.
+ */
+$button-gradient: $base-gradient !default;
+
+/**
+ * @var {string} $toolbar-icon-size Default size (width and height) for toolbar icons.
+ */
+$toolbar-icon-size: 1.4em !default;
+
+/**
+ * @var {boolean} $include-button-uis Optionally disable separate button UIs, including action, confirm, and decline.
+ */
+$include-button-uis: $include-default-uis !default;
+
+/**
+ * @var {boolean} $include-button-highlights Optionally disable special CSS3 effects on buttons including gradients, text-shadows, and box-shadows.
+ */
+$include-button-highlights: $include-highlights !default;
+
+
+/**
+ * Includes default button styles.
+ */
+@mixin sencha-buttons {
+  // Basic button style
+  .x-button {
+    @include background-clip(padding-box);
+    @if $include-border-radius { @include border-radius($button-radius); }
+    @include display-box;
+    @include box-align(center);
+    @include toolbar-button(#ccc, $button-gradient);
+    min-height: $button-height; // Why was this !important? Breaks small uis - DK
+    padding: .3em .6em;
+    position: relative;
+    overflow: hidden;
+    -webkit-user-select: none;
+
+    // Default icon style
+    .x-button-icon {
+      width: 2.1em;
+      height: 2.1em;
+      background-repeat: no-repeat;
+      background-position: center;
+      display: block;
+
+      &.x-icon-mask {
+        width: 1.3em;
+        height: 1.3em;
+        -webkit-mask-size: 1.3em;
+      }
+    }
+
+    &.x-item-disabled .x-button-label, &.x-item-disabled .x-button-icon {
+      opacity: .5;
+    }
+  }
+
+  .x-button-round {
+    @if $include-border-radius { @include border-radius($button-height/2); }
+    padding: .1em $button-height/2;
+  }
+
+  // Button icon alignment
+  .x-iconalign-left, .x-icon-align-right {
+    @include box-orient(horizontal);
+  }
+  .x-iconalign-top, .x-iconalign-bottom {
+    @include box-orient(vertical);
+  }
+  .x-iconalign-bottom, .x-iconalign-right {
+    @include box-direction(reverse);
+  }
+  .x-iconalign-center {
+    @include box-pack(center);
+  }
+  .x-iconalign-left .x-button-label {
+    margin-left: $toolbar-spacing * 1.5;
+  }
+  .x-iconalign-right .x-button-label {
+    margin-right: $toolbar-spacing * 1.5;
+  }
+  .x-iconalign-top .x-button-label {
+    margin-top: $toolbar-spacing * 1.5;
+  }
+  .x-iconalign-bottom .x-button-label {
+    margin-bottom: $toolbar-spacing * 1.5;
+  }
+
+  // Button labels
+  .x-button-label {
+    @include box-flex(1);
+    @include box-align(center);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    text-align: center;
+    font-weight: bold;
+    line-height: 1.2em;
+    display: block;
+    overflow: hidden;
+  }
+
+  // Toolbar button styling
+  .x-toolbar .x-button {
+    margin: 0 .2em;
+    padding: .3em .6em;
+
+    .x-button-label {
+      font-size: .7em;
+    }
+  }
+
+  .x-button-small, .x-toolbar .x-button-small {
+    @if $include-border-radius { @include border-radius(.3em); }
+    padding: .2em .4em;
+    min-height: 0;
+
+    .x-button-label {
+      font-size: .6em;
+    }
+
+    .x-button-icon {
+      width: .75em;
+      height: .75em;
+    }
+  }
+
+  // Back/Forward buttons
+  $shadow-width: .065em; // Space between tip and its shadow
+  $overlap-width: .2em; // how far the mask is clipped
+
+  // $mask-height: $button-height + $button-stroke-weight * 2; // Ugh, this is non-specific... borders?
+  $mask-height: $button-height;
+  $mask-width: $mask-height/2.33;
+
+  $mask-offset: $button-radius - $overlap-width - $button-stroke-weight + $shadow-width - .02em;
+
+  $tip-width: $mask-width - $mask-offset + $shadow-width;
+
+  .x-button-forward, .x-button-back {
+    position: relative;
+    overflow: visible;
+    height: $button-height;
+    z-index: 1;
+    &:before, &:after {
+      @include insertion($mask-width, $mask-height, -$button-stroke-weight, auto);
+      z-index: 2;
+      -webkit-mask: $mask-offset 0 theme_image($theme-name, "tip.png") no-repeat;
+      -webkit-mask-size: $mask-width $mask-height;
+      overflow: hidden;
+    }
+  }
+
+  .x-button-back,
+  .x-toolbar .x-button-back {
+    margin-left: $tip-width - $shadow-width + $toolbar-spacing;
+    padding-left: .4em;
+    &:before {
+      left: - $tip-width;
+    }
+    &:after {
+      left: - $tip-width + $shadow-width;
+    }
+  }
+
+  .x-button-forward,
+  .x-toolbar .x-button-forward {
+    margin-right: $tip-width - $shadow-width + $toolbar-spacing;
+    padding-right: .4em;
+    &:before, &:after {
+      -webkit-mask: -$mask-offset 0 theme_image($theme-name, "tip_right.png") no-repeat;
+    }
+    &:before {
+      right: - $tip-width;
+    }
+    &:after {
+      right: - $tip-width + $shadow-width;
+    }
+  }
+
+  // Plain buttons automatically use a margin trick to have a
+  // wide gradial glow for pressed state.
+  .x-button.x-button-plain,
+  .x-toolbar .x-button.x-button-plain {
+    background: none;
+    border: 0 none;
+    @if $include-border-radius { @include border-radius(none); }
+    min-height: 0;
+    text-shadow: none;
+    line-height: auto;
+    height: 1.9em;
+    padding: 0em 0.5em;
+
+    & > * {
+      overflow: visible;
+    }
+
+    .x-button-icon {
+      -webkit-mask-size: $toolbar-icon-size;
+      width: $toolbar-icon-size;
+      height: $toolbar-icon-size;
+    }
+
+    &.x-button-pressing, &.x-button-pressed {
+      background: none;
+
+      $mask-radial-glow: lighten($active-color, 50%);
+      @include background-image(radial-gradient(fade-out($mask-radial-glow, .3), fade-out($mask-radial-glow, 1) 24px));
+      .x-button-icon.x-button-mask {
+        @include background-gradient(#fff, 'recessed');
+      }
+    }
+  }
+
+  // SegmentedButtons
+  .x-segmentedbutton .x-button {
+    margin: 0;
+
+    @if $include-border-radius {
+      @include border-radius(0);
+
+      &.x-first {
+        @include border-left-radius($button-radius);
+      }
+      &.x-last {
+        @include border-right-radius($button-radius);
+      }
+    }
+
+    &:not(:first-child) {
+      border-left: 0;
+    }
+  }
+
+  // Badges
+  $badge-size: 2em !default;
+  $badge-radius: .2em !default;
+  $badge-bg-color: darken($alert-color, 10%) !default;
+  $badge-bg-gradient: $base-gradient !default;
+
+  .x-hasbadge {
+    overflow: visible;
+    .x-badge {
+      @extend .x-button-label;
+      @include background-clip(padding-box);
+      @if $include-border-radius { @include border-radius($badge-radius); }
+      padding: .1em .3em;
+      z-index: 2;
+      @if $include-button-highlights {
+        @include bevel-by-background($badge-bg-color);
+        @include box-shadow(rgba(#000, .5) 0 .1em .1em);
+      }
+      overflow: hidden;
+      @include color-by-background($badge-bg-color, $contrast: 50%);
+      border: 1px solid darken($badge-bg-color, 10%);
+      position: absolute;
+      width: auto;
+      min-width: $badge-size;
+      line-height: 1.2em;
+      font-size: .6em;
+      right: 0px;
+      top: -.2em;
+      max-width: 95%;
+      @include background-gradient($badge-bg-color, $badge-bg-gradient);
+      display: inline-block;
+    }
+  }
+
+  @if $include-default-icons {
+    @include pictos-iconmask('action');
+    @include pictos-iconmask('add');
+    @include pictos-iconmask('arrow_down');
+    @include pictos-iconmask('arrow_left');
+    @include pictos-iconmask('arrow_right');
+    @include pictos-iconmask('arrow_up');
+    @include pictos-iconmask('compose');
+    @include pictos-iconmask('delete');
+    @include pictos-iconmask('organize');
+    @include pictos-iconmask('refresh');
+    @include pictos-iconmask('reply');
+    @include pictos-iconmask('search');
+    @include pictos-iconmask('settings');
+    @include pictos-iconmask('star');
+    @include pictos-iconmask('trash');
+    @include pictos-iconmask('maps');
+    @include pictos-iconmask('locate');
+    @include pictos-iconmask('home');
+  }
+
+  @if $include-button-uis {
+    @include sencha-button-ui('action', $active-color);
+    @include sencha-button-ui('confirm', desaturate(darken($confirm-color, 10%), 5%));
+    @include sencha-button-ui('decline', desaturate(darken($alert-color, 10%), 5%));
+  }
+}
+
+
+/**
+ * Creates a theme UI for buttons.
+ * Also automatically generates UIs for {ui-label}-round and {ui-label}-small.
+ *
+ *     // SCSS
+ *     @include sencha-button-ui('secondary', #99A4AE, 'glossy');
+ *
+ *     // JS
+ *     var cancelBtn = new Ext.Button({text: 'Cancel', ui: 'secondary'});
+ *
+ * @param {string} $ui-label The name of the UI being created.
+ *   Can not included spaces or special punctuation (used in class names)
+ * @param {color} $color Base color for the UI.
+ * @param {string} $gradient Default gradient for the UI.
+ */
+@mixin sencha-button-ui($ui-label, $color, $gradient: $button-gradient) {
+  .x-button.x-button-#{$ui-label}, .x-button.x-button-#{$ui-label}-round, .x-button.x-button-#{$ui-label}-small {
+    @include toolbar-button($color, $gradient);
+  }
+
+  .x-button.x-button-#{$ui-label}-round {
+    @extend .x-button-round;
+  }
+
+  .x-button.x-button-#{$ui-label}-small {
+    @extend .x-button-small;
+  }
+}
+:@has_childrenT:@children[o:Sass::Tree::CommentNode:
+@loud0:@value"É/* Toolbar icons used with permission from Drew Wilson
+ * http://pictos.drewwilson.com/
+ * Pictos icons are (c) 2010 Drew Wilson */;i:@silenti ;	[ :@options{:importero: Sass::Importers::Filesystem:
+@root"u/Users/nickpoulden/Projects/sencha/jsduck/template/resources/touch-sass/../../touch/resources/themes/stylesheets:@lines[ o:Sass::Tree::ImportNode
+;i
+;0;	[ :@imported_filename"../global;@o;
+;0;"!/**
+ * @class Ext.Button
+ */;i;0;	[ ;@;[ o;
+;0;"M/**
+ * @var {measurement} $button-height Default height for buttons.
+ */;i;0;	[ ;@;[ o:Sass::Tree::VariableNode:
+@name"button-height:@guarded0;i:
+@expro:Sass::Script::Number:@original"
+1.8em;f1.8 ÃÕ;i:@denominator_units[ ;{ :@numerator_units["em;	[ ;@o;
+;0;"T/**
+ * @var {measurement} $button-radius Default border-radius for buttons.
+ */;i;0;	[ ;@;[ o;;"button-radius;"!default;i;o;;"
+0.4em;f0.40000000000000002 ôö;i;[ ;{ ;["em;	[ ;@o;
+;0;"Z/**
+ * @var {measurement} $button-stroke-weight Default border width for buttons.
+ */;i;0;	[ ;@;[ o;;"button-stroke-weight;"!default;i;o;;"
+0.1em;f0.10000000000000001 ôö;i;[ ;{ ;["em;	[ ;@o;
+;0;"L/**
+ * @var {string} $button-gradient Default gradient for buttons.
+ */;i;0;	[ ;@;[ o;;"button-gradient;"!default;i";o:Sass::Script::Variable	;"base-gradient:@underscored_name"base_gradient;i";{ ;	[ ;@o;
+;0;"c/**
+ * @var {string} $toolbar-icon-size Default size (width and height) for toolbar icons.
+ */;i$;0;	[ ;@;[ o;;"toolbar-icon-size;"!default;i';o;;"
+1.4em;f1.3999999999999999 ff;i';[ ;{ ;["em;	[ ;@o;
+;0;"}/**
+ * @var {boolean} $include-button-uis Optionally disable separate button UIs, including action, confirm, and decline.
+ */;i);0;	[ ;@;[ o;;"include-button-uis;"!default;i,;o;	;"include-default-uis;"include_default_uis;i,;{ ;	[ ;@o;
+;0;"õ/**
+ * @var {boolean} $include-button-highlights Optionally disable special CSS3 effects on buttons including gradients, text-shadows, and box-shadows.
+ */;i.;0;	[ ;@;[ o;;"include-button-highlights;"!default;i1;o;	;"include-highlights;"include_highlights;i1;{ ;	[ ;@o;
+;0;"//**
+ * Includes default button styles.
+ */;i4;0;	[ ;@;[ o:Sass::Tree::MixinDefNode:
+@args[ ;"sencha-buttons;i7;T;	[/o;
+;0;"/* Basic button style */;i8;i ;	[ ;@;[ o:Sass::Tree::RuleNode:
+@rule[".x-button:@parsed_ruleso:"Sass::Selector::CommaSequence:@filename" :@members[o:Sass::Selector::Sequence;&[o:#Sass::Selector::SimpleSequence;%@Ä;&[o:Sass::Selector::Class;["x-button;%@Ä;i9;i9;i9;i9;T;	[o:Sass::Tree::MixinNode; [o:Sass::Script::String	;"padding-box;i::
+@type:identifier;{ ;"background-clip;i:;	[ ;@:@keywords{ u:Sass::Tree::IfNode£[o:Sass::Script::Variable	:
+@name"include-border-radius:@underscored_name"include_border_radius:
+@linei;:@options{ 0[o:Sass::Tree::MixinNode:
+@args[o; 	;"button-radius;"button_radius;i;;	{ ;"border-radius;i;:@children[ ;	{:importero: Sass::Importers::Filesystem:
+@root"u/Users/nickpoulden/Projects/sencha/jsduck/template/resources/touch-sass/../../touch/resources/themes/stylesheets:@keywords{ o;*; [ ;"display-box;i<;	[ ;@;.{ o;*; [o;+	;"center;i=;,;-;{ ;"box-align;i=;	[ ;@;.{ o;*; [o:Sass::Script::Color	:@attrs{	:rediÃ:
+alphai:
+greeniÃ:	blueiÃ;0;i>;{ o;	;"button-gradient;"button_gradient;i>;@§;"toolbar-button;i>;	[ ;@;.{ o:Sass::Tree::PropNode;["min-height:@prop_syntax:new;o;	;"button-height;"button_height;i?;{ ;i?;	[ :
+@tabsi ;@o;
+;0;"9/* Why was this !important? Breaks small uis - DK */;i?;i ;	[ ;@;[ o;6;["padding;7;8;o;+;".3em .6em;,;-;i@;	[ ;9i ;@o;6;["position;7;8;o;+;"relative;,;-;iA;	[ ;9i ;@o;6;["overflow;7;8;o;+;"hidden;,;-;iB;	[ ;9i ;@o;6;["-webkit-user-select;7;8;o;+;"	none;,;-;iC;	[ ;9i ;@o;
+;0;"/* Default icon style */;iE;i ;	[ ;@;[ o;!;"[".x-button-icon;#o;$;%" ;&[o;';&[o;(;%@◊;&[o;);["x-button-icon;%@◊;iF;iF;iF;iF;T;	[o;6;["
+width;7;8;o;+;"
+2.1em;,;-;iG;	[ ;9i ;@o;6;["height;7;8;o;+;"
+2.1em;,;-;iH;	[ ;9i ;@o;6;["background-repeat;7;8;o;+;"no-repeat;,;-;iI;	[ ;9i ;@o;6;["background-position;7;8;o;+;"center;,;-;iJ;	[ ;9i ;@o;6;["display;7;8;o;+;"
+block;,;-;iK;	[ ;9i ;@o;!;"["&.x-icon-mask;#o;$;%" ;&[o;';&[o;(;%@;&[o:Sass::Selector::Parent;%@;iMo;);["x-icon-mask;%@;iM;iM;iM;iM;T;	[o;6;["
+width;7;8;o;+;"
+1.3em;,;-;iN;	[ ;9i ;@o;6;["height;7;8;o;+;"
+1.3em;,;-;iO;	[ ;9i ;@o;6;["-webkit-mask-size;7;8;o;+;"
+1.3em;,;-;iP;	[ ;9i ;@;9i ;@;9i ;@o;!;"["H&.x-item-disabled .x-button-label, &.x-item-disabled .x-button-icon;#o;$;%" ;&[o;';&[o;(;%@$;&[o;:;%@$;iTo;);["x-item-disabled;%@$;iT;iTo;(;%@$;&[o;);["x-button-label;%@$;iT;iTo;';&[o;(;%@$;&[o;:;%@$;iTo;);["x-item-disabled;%@$;iT;iTo;(;%@$;&[o;);["x-button-icon;%@$;iT;iT;iT;iT;T;	[o;6;["opacity;7;8;o;+;".5;,;-;iU;	[ ;9i ;@;9i ;@;9i ;@o;!;"[".x-button-round;#o;$;%" ;&[o;';&[o;(;%@K;&[o;);["x-button-round;%@K;iY;iY;iY;iY;T;	[u;/N[o:Sass::Script::Variable	:
+@name"include-border-radius:@underscored_name"include_border_radius:
+@lineiZ:@options{ 0[o:Sass::Tree::MixinNode:
+@args[o:Sass::Script::Operation
+:@operator:div:@operand2o:Sass::Script::Number:@original"2:@valuei;iZ:@denominator_units[ ;	{ :@numerator_units[ ;iZ:@operand1o; 	;"button-height;"button_height;iZ;	@;	@;"border-radius;iZ:@children[ ;	{:importero: Sass::Importers::Filesystem:
+@root"u/Users/nickpoulden/Projects/sencha/jsduck/template/resources/touch-sass/../../touch/resources/themes/stylesheets:@keywords{ o;6;["padding;7;8;o:Sass::Script::List	;[o;;"
+0.1em;f0.10000000000000001 ôö;i[;[ ;{ ;["emo:Sass::Script::Operation
+:@operator:div:@operand2o;;"2;i;i[;[ ;@_;[ ;i[:@operand1o;	;"button-height;"button_height;i[;@_;@_;i[;@_:@separator:
+space;i[;	[ ;9i ;@;9i ;@o;
+;0;" /* Button icon alignment */;i^;i ;	[ ;@;[ o;!;"["+.x-iconalign-left, .x-icon-align-right;#o;$;%" ;&[o;';&[o;(;%@s;&[o;);["x-iconalign-left;%@s;i_;i_o;';&[o;(;%@s;&[o;);["x-icon-align-right;%@s;i_;i_;i_;i_;T;	[o;*; [o;+	;"horizontal;i`;,;-;{ ;"box-orient;i`;	[ ;@;.{ ;9i ;@o;!;"["*.x-iconalign-top, .x-iconalign-bottom;#o;$;%" ;&[o;';&[o;(;%@ê;&[o;);["x-iconalign-top;%@ê;ib;ibo;';&[o;(;%@ê;&[o;);["x-iconalign-bottom;%@ê;ib;ib;ib;ib;T;	[o;*; [o;+	;"vertical;ic;,;-;{ ;"box-orient;ic;	[ ;@;.{ ;9i ;@o;!;"[",.x-iconalign-bottom, .x-iconalign-right;#o;$;%" ;&[o;';&[o;(;%@≠;&[o;);["x-iconalign-bottom;%@≠;ie;ieo;';&[o;(;%@≠;&[o;);["x-iconalign-right;%@≠;ie;ie;ie;ie;T;	[o;*; [o;+	;"reverse;if;,;-;{ ;"box-direction;if;	[ ;@;.{ ;9i ;@o;!;"[".x-iconalign-center;#o;$;%" ;&[o;';&[o;(;%@ ;&[o;);["x-iconalign-center;%@ ;ih;ih;ih;ih;T;	[o;*; [o;+	;"center;ii;,;-;{ ;"box-pack;ii;	[ ;@;.{ ;9i ;@o;!;"["&.x-iconalign-left .x-button-label;#o;$;%" ;&[o;';&[o;(;%@‡;&[o;);["x-iconalign-left;%@‡;ik;iko;(;%@‡;&[o;);["x-button-label;%@‡;ik;ik;ik;ik;T;	[o;6;["margin-left;7;8;o;<
+;=:
+times;?o;;"1.5;f1.5;il;@e;{ ;[ ;il;@o;	;"toolbar-spacing;"toolbar_spacing;il;@ˆ;@ˆ;il;	[ ;9i ;@;9i ;@o;!;"["'.x-iconalign-right .x-button-label;#o;$;%" ;&[o;';&[o;(;%@ ;&[o;);["x-iconalign-right;%@ ;in;ino;(;%@ ;&[o;);["x-button-label;%@ ;in;in;in;in;T;	[o;6;["margin-right;7;8;o;<
+;=;C;?o;;"1.5;f1.5;io;@e;{ ;[ ;io;@o;	;"toolbar-spacing;"toolbar_spacing;io;@;@;io;	[ ;9i ;@;9i ;@o;!;"["%.x-iconalign-top .x-button-label;#o;$;%" ;&[o;';&[o;(;%@ ;&[o;);["x-iconalign-top;%@ ;iq;iqo;(;%@ ;&[o;);["x-button-label;%@ ;iq;iq;iq;iq;T;	[o;6;["margin-top;7;8;o;<
+;=;C;?o;;"1.5;f1.5;ir;@e;{ ;[ ;ir;@o;	;"toolbar-spacing;"toolbar_spacing;ir;@6;@6;ir;	[ ;9i ;@;9i ;@o;!;"["(.x-iconalign-bottom .x-button-label;#o;$;%" ;&[o;';&[o;(;%@@;&[o;);["x-iconalign-bottom;%@@;it;ito;(;%@@;&[o;);["x-button-label;%@@;it;it;it;it;T;	[o;6;["margin-bottom;7;8;o;<
+;=;C;?o;;"1.5;f1.5;iu;@e;{ ;[ ;iu;@o;	;"toolbar-spacing;"toolbar_spacing;iu;@V;@V;iu;	[ ;9i ;@;9i ;@o;
+;0;"/* Button labels */;ix;i ;	[ ;@;[ o;!;"[".x-button-label;#o;$;%" ;&[o;';&[o;(;%@d;&[o;);["x-button-label;%@d;iy;iy;iy;iy;T;	[o;*; [o;;"1;i;iz;@e;{ ;[ ;"box-flex;iz;	[ ;@;.{ o;*; [o;+	;"center;i{;,;-;{ ;"box-align;i{;	[ ;@;.{ o;6;["white-space;7;8;o;+;"nowrap;,;-;i|;	[ ;9i ;@o;6;["text-overflow;7;8;o;+;"ellipsis;,;-;i};	[ ;9i ;@o;6;["text-align;7;8;o;+;"center;,;-;i~;	[ ;9i ;@o;6;["font-weight;7;8;o;+;"	bold;,;-;i;	[ ;9i ;@o;6;["line-height;7;8;o;+;"
+1.2em;,;-;i{;	[ ;9i ;@o;6;["display;7;8;o;+;"
+block;,;-;i|;	[ ;9i ;@o;6;["overflow;7;8;o;+;"hidden;,;-;i};	[ ;9i ;@;9i ;@o;
+;0;"!/* Toolbar button styling */;iÄ;i ;	[ ;@;[ o;!;"[".x-toolbar .x-button;#o;$;%" ;&[o;';&[o;(;%@±;&[o;);["x-toolbar;%@±;iÅ;iÅo;(;%@±;&[o;);["x-button;%@±;iÅ;iÅ;iÅ;iÅ;T;	[o;6;["margin;7;8;o;+;"0 .2em;,;-;iÇ;	[ ;9i ;@o;6;["padding;7;8;o;+;".3em .6em;,;-;iÉ;	[ ;9i ;@o;!;"[".x-button-label;#o;$;%" ;&[o;';&[o;(;%@–;&[o;);["x-button-label;%@–;iÖ;iÖ;iÖ;iÖ;T;	[o;6;["font-size;7;8;o;+;"	.7em;,;-;iÜ;	[ ;9i ;@;9i ;@;9i ;@o;!;"["0.x-button-small, .x-toolbar .x-button-small;#o;$;%" ;&[o;';&[o;(;%@‰;&[o;);["x-button-small;%@‰;iä;iäo;';&[o;(;%@‰;&[o;);["x-toolbar;%@‰;iä;iäo;(;%@‰;&[o;);["x-button-small;%@‰;iä;iä;iä;iä;T;	[
+u;/¯[o:Sass::Script::Variable	:
+@name"include-border-radius:@underscored_name"include_border_radius:
+@lineiã:@options{ 0[o:Sass::Tree::MixinNode:
+@args[o:Sass::Script::Number:@original"
+0.3em:@valuef0.29999999999999999 33;iã:@denominator_units[ ;	{ :@numerator_units["em;"border-radius;iã:@children[ ;	{:importero: Sass::Importers::Filesystem:
+@root"u/Users/nickpoulden/Projects/sencha/jsduck/template/resources/touch-sass/../../touch/resources/themes/stylesheets:@keywords{ o;6;["padding;7;8;o;+;".2em .4em;,;-;iå;	[ ;9i ;@o;6;["min-height;7;8;o;+;"0;,;-;iç;	[ ;9i ;@o;!;"[".x-button-label;#o;$;%" ;&[o;';&[o;(;%@;&[o;);["x-button-label;%@;iè;iè;iè;iè;T;	[o;6;["font-size;7;8;o;+;"	.6em;,;-;iê;	[ ;9i ;@;9i ;@o;!;"[".x-button-icon;#o;$;%" ;&[o;';&[o;(;%@;&[o;);["x-button-icon;%@;iì;iì;iì;iì;T;	[o;6;["
+width;7;8;o;+;"
+.75em;,;-;iî;	[ ;9i ;@o;6;["height;7;8;o;+;"
+.75em;,;-;iï;	[ ;9i ;@;9i ;@;9i ;@o;
+;0;"/* Back/Forward buttons */;iô;i ;	[ ;@;[ o;;"shadow-width;0;iö;o;;"0.065em;f0.065000000000000002 p§;iö;[ ;{ ;["em;	[ ;@o;
+;0;"+/* Space between tip and its shadow */;iö;i ;	[ ;@;[ o;;"overlap-width;0;iõ;o;;"
+0.2em;f0.20000000000000001 ôö;iõ;[ ;{ ;["em;	[ ;@o;
+;0;"&/* how far the mask is clipped */;iõ;i ;	[ ;@;[ o;
+;0;"m/* $mask-height: $button-height + $button-stroke-weight * 2; // Ugh, this is non-specific... borders? */;iù;i ;	[ ;@;[ o;;"mask-height;0;iû;o;	;"button-height;"button_height;iû;{ ;	[ ;@o;;"mask-width;0;iü;o;<
+;=;>;?o;;"	2.33;f2.3300000000000001 p§;iü;@e;{ ;[ ;iü;@o;	;"mask-height;"mask_height;iü;@f;@f;	[ ;@o;;"mask-offset;0;i°;o;<
+;=:
+minus;?o;;"0.02em;f0.02 {;i°;[ ;{ ;["em;i°;@o;<
+;=:	plus;?o;	;"shadow-width;"shadow_width;i°;@s;i°;@o;<
+;=;D;?o;	;"button-stroke-weight;"button_stroke_weight;i°;@s;i°;@o;<
+;=;D;?o;	;"overlap-width;"overlap_width;i°;@s;i°;@o;	;"button-radius;"button_radius;i°;@s;@s;@s;@s;@s;	[ ;@o;;"tip-width;0;i£;o;<
+;=;E;?o;	;"shadow-width;"shadow_width;i£;{ ;i£;@o;<
+;=;D;?o;	;"mask-offset;"mask_offset;i£;@å;i£;@o;	;"mask-width;"mask_width;i£;@å;@å;@å;	[ ;@o;!;"["&.x-button-forward, .x-button-back;#o;$;%" ;&[o;';&[o;(;%@ô;&[o;);["x-button-forward;%@ô;i•;i•o;';&[o;(;%@ô;&[o;);["x-button-back;%@ô;i•;i•;i•;i•;T;	[
+o;6;["position;7;8;o;+;"relative;,;-;i¶;	[ ;9i ;@o;6;["overflow;7;8;o;+;"visible;,;-;iß;	[ ;9i ;@o;6;["height;7;8;o;	;"button-height;"button_height;i®;{ ;i®;	[ ;9i ;@o;6;["z-index;7;8;o;+;"1;,;-;i©;	[ ;9i ;@o;!;"["&:before, &:after;#o;$;%" ;&[o;';&[o;(;%@»;&[o;:;%@»;i™o:Sass::Selector::Pseudo
+;["before;%@»;i™;,:
+class:	@arg0;i™o;';&[o;(;%@»;&[o;:;%@»;i™o;F
+;["
+after;%@»;i™;,;G;H0;i™;i™;i™;T;	[
+o;*; [	o;	;"mask-width;"mask_width;i´;{ o;	;"mask-height;"mask_height;i´;@‡o:!Sass::Script::UnaryOperation	;=;D:@operando;	;"button-stroke-weight;"button_stroke_weight;i´;@‡;i´;@‡o;+	;"	auto;i´;,;-;@‡;"insertion;i´;	[ ;@;.{ o;6;["z-index;7;8;o;+;"2;,;-;i¨;	[ ;9i ;@o;6;["-webkit-mask;7;8;o;;	;[	o;	;"mask-offset;"mask_offset;i≠;{ o;;"0;i ;i≠;@e;@˚;[ o:Sass::Script::Funcall
+; [o;	;"theme-name;"theme_name;i≠;@˚o;+	;"tip.png;i≠;,:string;@˚;"theme_image;i≠;@˚;.{ o;+	;"no-repeat;i≠;,;-;@˚;i≠;@˚;A;B;i≠;	[ ;9i ;@o;6;["-webkit-mask-size;7;8;o;;	;[o;	;"mask-width;"mask_width;iÆ;{ o;	;"mask-height;"mask_height;iÆ;@;iÆ;@;A;B;iÆ;	[ ;9i ;@o;6;["overflow;7;8;o;+;"hidden;,;-;iØ;	[ ;9i ;@;9i ;@;9i ;@o;!;"["0.x-button-back,
+  .x-toolbar .x-button-back;#o;$;%" ;&[o;';&[o;(;%@";&[o;);["x-button-back;%@";i¥;i¥o;';&["
+o;(;%@";&[o;);["x-toolbar;%@";i¥;i¥o;(;%@";&[o;);["x-button-back;%@";i¥;i¥;i¥;i¥;T;	[	o;6;["margin-left;7;8;o;<
+;=;E;?o;	;"toolbar-spacing;"toolbar_spacing;iµ;{ ;iµ;@o;<
+;=;D;?o;	;"shadow-width;"shadow_width;iµ;@@;iµ;@o;	;"tip-width;"tip_width;iµ;@@;@@;@@;iµ;	[ ;9i ;@o;6;["padding-left;7;8;o;+;"	.4em;,;-;i∂;	[ ;9i ;@o;!;"["&:before;#o;$;%" ;&[o;';&[o;(;%@S;&[o;:;%@S;i∑o;F
+;["before;%@S;i∑;,;G;H0;i∑;i∑;i∑;T;	[o;6;["	left;7;8;o;I	;=;D;Jo;	;"tip-width;"tip_width;i∏;{ ;i∏;@e;i∏;	[ ;9i ;@;9i ;@o;!;"["&:after;#o;$;%" ;&[o;';&[o;(;%@k;&[o;:;%@k;i∫o;F
+;["
+after;%@k;i∫;,;G;H0;i∫;i∫;i∫;T;	[o;6;["	left;7;8;o;<
+;=;E;?o;	;"shadow-width;"shadow_width;iª;{ ;iª;@o;I	;=;D;Jo;	;"tip-width;"tip_width;iª;@};iª;@};@};iª;	[ ;9i ;@;9i ;@;9i ;@o;!;"["6.x-button-forward,
+  .x-toolbar .x-button-forward;#o;$;%" ;&[o;';&[o;(;%@á;&[o;);["x-button-forward;%@á;i¿;i¿o;';&["
+o;(;%@á;&[o;);["x-toolbar;%@á;i¿;i¿o;(;%@á;&[o;);["x-button-forward;%@á;i¿;i¿;i¿;i¿;T;	[
+o;6;["margin-right;7;8;o;<
+;=;E;?o;	;"toolbar-spacing;"toolbar_spacing;i¡;{ ;i¡;@o;<
+;=;D;?o;	;"shadow-width;"shadow_width;i¡;@•;i¡;@o;	;"tip-width;"tip_width;i¡;@•;@•;@•;i¡;	[ ;9i ;@o;6;["padding-right;7;8;o;+;"	.4em;,;-;i¬;	[ ;9i ;@o;!;"["&:before, &:after;#o;$;%" ;&[o;';&[o;(;%@∏;&[o;:;%@∏;i√o;F
+;["before;%@∏;i√;,;G;H0;i√o;';&[o;(;%@∏;&[o;:;%@∏;i√o;F
+;["
+after;%@∏;i√;,;G;H0;i√;i√;i√;T;	[o;6;["-webkit-mask;7;8;o;;	;[	o;I	;=;D;Jo;	;"mask-offset;"mask_offset;iƒ;{ ;iƒ;@‘o;;"0;i ;iƒ;@e;@‘;[ o;K
+; [o;	;"theme-name;"theme_name;iƒ;@‘o;+	;"tip_right.png;iƒ;,;L;@‘;"theme_image;iƒ;@‘;.{ o;+	;"no-repeat;iƒ;,;-;@‘;iƒ;@‘;A;B;iƒ;	[ ;9i ;@;9i ;@o;!;"["&:before;#o;$;%" ;&[o;';&[o;(;%@Ë;&[o;:;%@Ë;i∆o;F
+;["before;%@Ë;i∆;,;G;H0;i∆;i∆;i∆;T;	[o;6;["
+right;7;8;o;I	;=;D;Jo;	;"tip-width;"tip_width;i«;{ ;i«;@˙;i«;	[ ;9i ;@;9i ;@o;!;"["&:after;#o;$;%" ;&[o;';&[o;(;%@ ;&[o;:;%@ ;i…o;F
+;["
+after;%@ ;i…;,;G;H0;i…;i…;i…;T;	[o;6;["
+right;7;8;o;<
+;=;E;?o;	;"shadow-width;"shadow_width;i ;{ ;i ;@o;I	;=;D;Jo;	;"tip-width;"tip_width;i ;@;i ;@;@;i ;	[ ;9i ;@;9i ;@;9i ;@o;
+;0;"k/* Plain buttons automatically use a margin trick to have a
+ * wide gradial glow for pressed state. */;iŒ;i ;	[ ;@;[ o;!;"["D.x-button.x-button-plain,
+  .x-toolbar .x-button.x-button-plain;#o;$;%" ;&[o;';&[o;(;%@ ;&[o;);["x-button;%@ ;i—o;);["x-button-plain;%@ ;i—;i—o;';&["
+o;(;%@ ;&[o;);["x-toolbar;%@ ;i—;i—o;(;%@ ;&[o;);["x-button;%@ ;i—o;);["x-button-plain;%@ ;i—;i—;i—;i—;T;	[o;6;["background;7;8;o;+;"	none;,;-;i“;	[ ;9i ;@o;6;["border;7;8;o;+;"0 none;,;-;i”;	[ ;9i ;@u;/π[o:Sass::Script::Variable	:
+@name"include-border-radius:@underscored_name"include_border_radius:
+@linei‘:@options{ 0[o:Sass::Tree::MixinNode:
+@args[o:Sass::Script::String	:@value"	none;i‘:
+@type:identifier;	{ ;"border-radius;i‘:@children[ ;	{:importero: Sass::Importers::Filesystem:
+@root"u/Users/nickpoulden/Projects/sencha/jsduck/template/resources/touch-sass/../../touch/resources/themes/stylesheets:@keywords{ o;6;["min-height;7;8;o;+;"0;,;-;i’;	[ ;9i ;@o;6;["text-shadow;7;8;o;+;"	none;,;-;i÷;	[ ;9i ;@o;6;["line-height;7;8;o;+;"	auto;,;-;i◊;	[ ;9i ;@o;6;["height;7;8;o;+;"
+1.9em;,;-;iÿ;	[ ;9i ;@o;6;["padding;7;8;o;+;"0em 0.5em;,;-;iŸ;	[ ;9i ;@o;!;"["
+& > *;#o;$;%" ;&[o;';&[o;(;%@l;&[o;:;%@l;i€;i€">o;(;%@l;&[o:Sass::Selector::Universal:@namespace0;%@l;i€;i€;i€;i€;T;	[o;6;["overflow;7;8;o;+;"visible;,;-;i‹;	[ ;9i ;@;9i ;@o;!;"[".x-button-icon;#o;$;%" ;&[o;';&[o;(;%@Ç;&[o;);["x-button-icon;%@Ç;iﬂ;iﬂ;iﬂ;iﬂ;T;	[o;6;["-webkit-mask-size;7;8;o;	;"toolbar-icon-size;"toolbar_icon_size;i‡;{ ;i‡;	[ ;9i ;@o;6;["
+width;7;8;o;	;"toolbar-icon-size;"toolbar_icon_size;i·;{ ;i·;	[ ;9i ;@o;6;["height;7;8;o;	;"toolbar-icon-size;"toolbar_icon_size;i‚;{ ;i‚;	[ ;9i ;@;9i ;@o;!;"[",&.x-button-pressing, &.x-button-pressed;#o;$;%" ;&[o;';&[o;(;%@®;&[o;:;%@®;iÂo;);["x-button-pressing;%@®;iÂ;iÂo;';&[o;(;%@®;&[o;:;%@®;iÂo;);["x-button-pressed;%@®;iÂ;iÂ;iÂ;iÂ;T;	[	o;6;["background;7;8;o;+;"	none;,;-;iÊ;	[ ;9i ;@o;;"mask-radial-glow;0;iË;o;K
+; [o;	;"active-color;"active_color;iË;{ o;;"50%;i7;iË;[ ;@»;["%;"lighten;iË;@»;.{ ;	[ ;@o;*; [o;K
+; [o;K
+; [o;	;"mask-radial-glow;"mask_radial_glow;iÈ;{ o;;"0.3;f0.29999999999999999 33;iÈ;@e;@⁄;[ ;"fade-out;iÈ;@⁄;.{ o;;	;[o;K
+; [o;	;"mask-radial-glow;"mask_radial_glow;iÈ;@⁄o;;"1;i;iÈ;@e;@⁄;[ ;"fade-out;iÈ;@⁄;.{ o;;"	24px;i;iÈ;[ ;@⁄;["px;iÈ;@⁄;A;B;"radial-gradient;iÈ;@⁄;.{ ;"background-image;iÈ;	[ ;@;.{ o;!;"["!.x-button-icon.x-button-mask;#o;$;%" ;&[o;';&[o;(;%@˚;&[o;);["x-button-icon;%@˚;iÍo;);["x-button-mask;%@˚;iÍ;iÍ;iÍ;iÍ;T;	[o;*; [o;0	;1{	;2iˇ;3i;4iˇ;5iˇ;0;iÎ;{ o;+	;"recessed;iÎ;,;L;@;"background-gradient;iÎ;	[ ;@;.{ ;9i ;@;9i ;@;9i ;@o;
+;0;"/* SegmentedButtons */;i;i ;	[ ;@;[ o;!;"["!.x-segmentedbutton .x-button;#o;$;%" ;&[o;';&[o;(;%@;&[o;);["x-segmentedbutton;%@;iÒ;iÒo;(;%@;&[o;);["x-button;%@;iÒ;iÒ;iÒ;iÒ;T;	[o;6;["margin;7;8;o;+;"0;,;-;iÚ;	[ ;9i ;@u;/P[o:Sass::Script::Variable	:
+@name"include-border-radius:@underscored_name"include_border_radius:
+@lineiÙ:@options{ 0[o:Sass::Tree::MixinNode:
+@args[o:Sass::Script::Number:@original"0:@valuei ;iı:@denominator_units[ ;	{ :@numerator_units[ ;"border-radius;iı:@children[ ;	{:importero: Sass::Importers::Filesystem:
+@root"u/Users/nickpoulden/Projects/sencha/jsduck/template/resources/touch-sass/../../touch/resources/themes/stylesheets:@keywords{ o:Sass::Tree::RuleNode:
+@rule["&.x-first:@parsed_ruleso:"Sass::Selector::CommaSequence:@filename" :@members[o:Sass::Selector::Sequence;[o:#Sass::Selector::SimpleSequence;@;[o:Sass::Selector::Parent;@;i˜o:Sass::Selector::Class;["x-first;@;i˜;i˜;i˜;i˜:@has_childrenT;[o;
+;[o; 	;"button-radius;"button_radius;i¯;	{ ;"border-left-radius;i¯;[ ;	@;{ :
+@tabsi ;	@o;;["&.x-last;o;;" ;[o;;[o;;@4;[o;;@4;i˙o;;["x-last;@4;i˙;i˙;i˙;i˙; T;[o;
+;[o; 	;"button-radius;"button_radius;i˚;	{ ;"border-right-radius;i˚;[ ;	@;{ ;!i ;	@o;!;"["&:not(:first-child);#o;$;%" ;&[o;';&[o;(;%@4;&[o;:;%@4;iˇo:(Sass::Selector::SelectorPseudoClass	:@selectoro;$;&[o;';&[o;(;&[o;F;["first-child;,;G;H0;"not;%@4;iˇ;iˇ;iˇ;iˇ;T;	[o;6;["border-left;7;8;o;+;"0;,;-;i ;	[ ;9i ;@;9i ;@;9i ;@o;
+;0;"/* Badges */;i;i ;	[ ;@;[ o;;"badge-size;"!default;i;o;;"2em;i;i;[ ;{ ;["em;	[ ;@o;;"badge-radius;"!default;i;o;;"
+0.2em;f0.20000000000000001 ôö;i;[ ;{ ;["em;	[ ;@o;;"badge-bg-color;"!default;i;o;K
+; [o;	;"alert-color;"alert_color;i;{ o;;"10%;i;i;[ ;@n;["%;"darken;i;@n;.{ ;	[ ;@o;;"badge-bg-gradient;"!default;i;o;	;"base-gradient;"base_gradient;i;{ ;	[ ;@o;!;"[".x-hasbadge;#o;$;%" ;&[o;';&[o;(;%@É;&[o;);["x-hasbadge;%@É;i
+;i
+;i
+;i
+;T;	[o;6;["overflow;7;8;o;+;"visible;,;-;i;	[ ;9i ;@o;!;"[".x-badge;#o;$;%" ;&[o;';&[o;(;%@ó;&[o;);["x-badge;%@ó;i;i;i;i;T;	[o:Sass::Tree::ExtendNode	;P["."x-button-label;i;	[ ;@o;*; [o;+	;"padding-box;i;,;-;{ ;"background-clip;i;	[ ;@;.{ u;/ß[o:Sass::Script::Variable	:
+@name"include-border-radius:@underscored_name"include_border_radius:
+@linei:@options{ 0[o:Sass::Tree::MixinNode:
+@args[o; 	;"badge-radius;"badge_radius;i;	{ ;"border-radius;i:@children[ ;	{:importero: Sass::Importers::Filesystem:
+@root"u/Users/nickpoulden/Projects/sencha/jsduck/template/resources/touch-sass/../../touch/resources/themes/stylesheets:@keywords{ o;6;["padding;7;8;o;+;".1em .3em;,;-;i;	[ ;9i ;@o;6;["z-index;7;8;o;+;"2;,;-;i;	[ ;9i ;@u;/ú[o:Sass::Script::Variable	:
+@name"include-button-highlights:@underscored_name"include_button_highlights:
+@linei:@options{ 0[o:Sass::Tree::MixinNode:
+@args[o; 	;"badge-bg-color;"badge_bg_color;i;	{ ;"bevel-by-background;i:@children[ ;	{:importero: Sass::Importers::Filesystem:
+@root"u/Users/nickpoulden/Projects/sencha/jsduck/template/resources/touch-sass/../../touch/resources/themes/stylesheets:@keywords{ o;
+;[o:Sass::Script::List	:@value[	o:Sass::Script::Funcall
+;[o:Sass::Script::Color	:@attrs{	:redi :
+alphai:
+greeni :	bluei ;0;i;	{ o:Sass::Script::Number:@original"0.5;f0.5;i:@denominator_units[ ;	@:@numerator_units[ ;"	rgba;i;	@;{ o;;"0;i ;i;@#;	@;[ o;;"
+0.1em;f0.10000000000000001 ôö;i;[ ;	@;["emo;;"
+0.1em;f0.10000000000000001 ôö;i;[ ;	@;["em;i;	@:@separator:
+space;"box-shadow;i;[ ;	@;{ o;6;["overflow;7;8;o;+;"hidden;,;-;i;	[ ;9i ;@o;*; [o;	;"badge-bg-color;"badge_bg_color;i;{ ;"color-by-background;i;	[ ;@;.{"contrasto;;"50%;i7;i;[ ;@«;["%o;6;["border;7;8;o;;	;[o;;"1px;i;i;[ ;{ ;["pxo;+	;"
+solid;i;,;-;@Ÿo;K
+; [o;	;"badge-bg-color;"badge_bg_color;i;@Ÿo;;"10%;i;i;[ ;@Ÿ;["%;"darken;i;@Ÿ;.{ ;i;@Ÿ;A;B;i;	[ ;9i ;@o;6;["position;7;8;o;+;"absolute;,;-;i;	[ ;9i ;@o;6;["
+width;7;8;o;+;"	auto;,;-;i;	[ ;9i ;@o;6;["min-width;7;8;o;	;"badge-size;"badge_size;i;{ ;i;	[ ;9i ;@o;6;["line-height;7;8;o;+;"
+1.2em;,;-;i;	[ ;9i ;@o;6;["font-size;7;8;o;+;"	.6em;,;-;i;	[ ;9i ;@o;6;["
+right;7;8;o;+;"0px;,;-;i;	[ ;9i ;@o;6;["top;7;8;o;;"-0.2em;f-0.20000000000000001 ôö;i;[ ;{ ;["em;i;	[ ;9i ;@o;6;["max-width;7;8;o;+;"95%;,;-;i ;	[ ;9i ;@o;*; [o;	;"badge-bg-color;"badge_bg_color;i!;{ o;	;"badge-bg-gradient;"badge_bg_gradient;i!;@';"background-gradient;i!;	[ ;@;.{ o;6;["display;7;8;o;+;"inline-block;,;-;i";	[ ;9i ;@;9i ;@;9i ;@u;/ü[o:Sass::Script::Variable	:
+@name"include-default-icons:@underscored_name"include_default_icons:
+@linei&:@options{ 0[o:Sass::Tree::MixinNode:
+@args[o:Sass::Script::String	:@value"action;i':
+@type:string;	{ ;"pictos-iconmask;i':@children[ ;	{:importero: Sass::Importers::Filesystem:
+@root"u/Users/nickpoulden/Projects/sencha/jsduck/template/resources/touch-sass/../../touch/resources/themes/stylesheets:@keywords{ o;
+;[o;	;"add;i(;;;	{ ;"pictos-iconmask;i(;[ ;	@;{ o;
+;[o;	;"arrow_down;i);;;	{ ;"pictos-iconmask;i);[ ;	@;{ o;
+;[o;	;"arrow_left;i*;;;	{ ;"pictos-iconmask;i*;[ ;	@;{ o;
+;[o;	;"arrow_right;i+;;;	{ ;"pictos-iconmask;i+;[ ;	@;{ o;
+;[o;	;"arrow_up;i,;;;	{ ;"pictos-iconmask;i,;[ ;	@;{ o;
+;[o;	;"compose;i-;;;	{ ;"pictos-iconmask;i-;[ ;	@;{ o;
+;[o;	;"delete;i.;;;	{ ;"pictos-iconmask;i.;[ ;	@;{ o;
+;[o;	;"organize;i/;;;	{ ;"pictos-iconmask;i/;[ ;	@;{ o;
+;[o;	;"refresh;i0;;;	{ ;"pictos-iconmask;i0;[ ;	@;{ o;
+;[o;	;"
+reply;i1;;;	{ ;"pictos-iconmask;i1;[ ;	@;{ o;
+;[o;	;"search;i2;;;	{ ;"pictos-iconmask;i2;[ ;	@;{ o;
+;[o;	;"settings;i3;;;	{ ;"pictos-iconmask;i3;[ ;	@;{ o;
+;[o;	;"	star;i4;;;	{ ;"pictos-iconmask;i4;[ ;	@;{ o;
+;[o;	;"
+trash;i5;;;	{ ;"pictos-iconmask;i5;[ ;	@;{ o;
+;[o;	;"	maps;i6;;;	{ ;"pictos-iconmask;i6;[ ;	@;{ o;
+;[o;	;"locate;i7;;;	{ ;"pictos-iconmask;i7;[ ;	@;{ o;
+;[o;	;"	home;i8;;;	{ ;"pictos-iconmask;i8;[ ;	@;{ u;/A[o:Sass::Script::Variable	:
+@name"include-button-uis:@underscored_name"include_button_uis:
+@linei;:@options{ 0[o:Sass::Tree::MixinNode:
+@args[o:Sass::Script::String	:@value"action;i<:
+@type:string;	{ o; 	;"active-color;"active_color;i<;	@;"sencha-button-ui;i<:@children[ ;	{:importero: Sass::Importers::Filesystem:
+@root"u/Users/nickpoulden/Projects/sencha/jsduck/template/resources/touch-sass/../../touch/resources/themes/stylesheets:@keywords{ o;
+;[o;	;"confirm;i=;;;	{ o:Sass::Script::Funcall
+;[o;
+;[o; 	;"confirm-color;"confirm_color;i=;	@o:Sass::Script::Number:@original"10%;i;i=:@denominator_units[ ;	@:@numerator_units["%;"darken;i=;	@;{ o;;"5%;i
+;i=;[ ;	@;["%;"desaturate;i=;	@;{ ;"sencha-button-ui;i=;[ ;	@;{ o;
+;[o;	;"decline;i>;;;	{ o;
+;[o;
+;[o; 	;"alert-color;"alert_color;i>;	@:o;;"10%;i;i>;[ ;	@:;["%;"darken;i>;	@:;{ o;;"5%;i
+;i>;[ ;	@:;["%;"desaturate;i>;	@:;{ ;"sencha-button-ui;i>;[ ;	@;{ ;@o;
+;0;"/**
+ * Creates a theme UI for buttons.
+ * Also automatically generates UIs for {ui-label}-round and {ui-label}-small.
+ *
+ *     // SCSS
+ *     @include sencha-button-ui('secondary', #99A4AE, 'glossy');
+ *
+ *     // JS
+ *     var cancelBtn = new Ext.Button({text: 'Cancel', ui: 'secondary'});
+ *
+ * @param {string} $ui-label The name of the UI being created.
+ *   Can not included spaces or special punctuation (used in class names)
+ * @param {color} $color Base color for the UI.
+ * @param {string} $gradient Default gradient for the UI.
+ */;iC;0;	[ ;@;[ o;; [[o;;"ui-label;"ui_label;{ 0[o;;"
+color;"
+color;@@0[o;;"gradient;"gradient;@@o;	;"button-gradient;"button_gradient;iR;@@;"sencha-button-ui;iR;T;	[o;!;"[".x-button.x-button-o;	;"ui-label;"ui_label;iS;{ ", .x-button.x-button-o;	;"ui-label;"ui_label;iS;{ " -round, .x-button.x-button-o;	;"ui-label;"ui_label;iS;{ "-small;iS;T;	[o;*; [o;	;"
+color;"
+color;iT;{ o;	;"gradient;"gradient;iT;@f;"toolbar-button;iT;	[ ;@;.{ ;9i ;@o;!;"[".x-button.x-button-o;	;"ui-label;"ui_label;iW;{ "-round;iW;T;	[o;Q	;P["."x-button-round;iX;	[ ;@;9i ;@o;!;"[".x-button.x-button-o;	;"ui-label;"ui_label;i[;{ "-small;i[;T;	[o;Q	;P["."x-button-small;i\;	[ ;@;9i ;@;@;@

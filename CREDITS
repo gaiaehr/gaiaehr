@@ -1,0 +1,21 @@
+GaiaEHR Creators:
+- Gino Rivera Falú (Lead Developer, GaiaEHR.org Maintainer)
+- Ernesto Rodriguez (Lead Developer, GaiaEHR.com Maintainer)
+- Sencha ExtJS (GUI Framework)
+
+At first this was a Fork from OpenEMR:
+Thanks very much to Matt Stack for creating the 
+OpenEMR project and continuing to contribute to it over all these years.
+
+Thanks to Synitech Corporation for taking OpenEMR this far.
+
+Great thanks to Fred Trotter and the FreeB team, 
+medical billing is never fun and Fred deserves a lot of credit for making our live easier!
+
+Many thanks to Greg MacLelan for the number to text converter, 
+sure glad we didn't have to code that from scratch!
+
+This project has been greatly improved by incorporating 
+elements of the following other projects:
+
+R&OS PDF		http://www.ros.co.nz/pdf

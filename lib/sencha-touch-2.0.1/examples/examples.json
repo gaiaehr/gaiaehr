@@ -1,0 +1,250 @@
+[
+    {
+        "title": "Application Examples",
+        "items": [
+            {
+                "text": "Kitchen Sink",
+                "url": "kitchensink/index.html",
+                "icon": "kitchensink/resources/icons/icon.png",
+                "icon2x": "kitchensink/resources/icons/icon@2x.png",
+                "device": "tablet",
+                "desc": "Compact overview of many Sencha Touch components with both a phone and tablet view.",
+                "status": "updated"
+            },
+            {
+                "text": "The Watch List",
+                "url": "http://www.watchlistapp.com",
+                "icon": "watchlist/icon_57.png",
+                "icon2x": "watchlist/icon_114.png",
+                "device": "tablet",
+                "desc": "An Facebook example with Phone and Tablet views backed by Node.js and MongoDB.",
+                "status": "new"
+            },
+            {
+                "text": "Jog With Friends",
+                "url": "http://ju.mp/senchajwf",
+                "icon": "jog-with-friends/resources/images/icon.png",
+                "icon2x": "jog-with-friends/resources/images/icon-114.png",
+                "device": "phone",
+                "desc": "A Facebook example which allows you to share when you jog.",
+                "status": "new"
+            },
+            {
+                "text": "Touch Tweets",
+                "url": "touchtweets/index.html",
+                "icon": "touchtweets/resources/icons/icon.png",
+                "icon2x": "touchtweets/resources/icons/icon-114.png",
+                "device": "tablet",
+                "desc": "A Sencha Touch client which allows you to search Twitter.",
+                "status": "updated"
+            },
+            {
+                "text": "Kiva",
+                "url": "kiva/index.html",
+                "icon": "kiva/resources/icons/icon.png",
+                "device": "tablet",
+                "desc": "A mobile interface for Kiva.org.",
+                "status": "updated"
+            },
+            {
+                "text": "GeoCongress",
+                "url": "geocongress/index.html",
+                "icon": "geocongress/resources/icons/icon.png",
+                "device": "phone",
+                "desc": "Find information on your local Legislators",
+                "status": "updated"
+            },
+            {
+                "text": "O'Reilly",
+                "url": "oreilly/index.html",
+                "icon": "oreilly/resources/icons/icon.png",
+                "icon2x": "oreilly/resources/icons/icon@2x.png",
+                "device": "phone",
+                "desc": "Sample conference application with a connection to remote backend data.",
+                "status": "updated"
+            },
+            {
+                "text": "TouchStyle",
+                "url": "touchstyle/index.html",
+                "icon": "touchstyle/resources/icons/icon-72.png",
+                "icon2x": "touchstyle/resources/icons/icon-114.png",
+                "device": "phone",
+                "desc": "Example of dynamic carousel and device profiles",
+                "status": "new"
+            }
+        ]
+    },
+    {
+        "title": "Component Examples",
+        "items": [
+            {
+                "text": "Audio",
+                "url": "audio/index.html",
+                "icon": "audio/resources/icons/icon.png",
+                "icon2x": "audio/resources/icons/icon@2x.png",
+                "device": "phone",
+                "desc": "Audio playback on mobile devices."
+            },
+            {
+                "text": "Carousel",
+                "url": "carousel/index.html",
+                "icon": "carousel/resources/icons/icon.png",
+                "icon2x": "carousel/resources/icons/icon@2x.png",
+                "device": "tablet",
+                "desc": "A component which allows you to swipe through pages."
+            },
+            {
+                "text": "Forms",
+                "url": "forms/index.html",
+                "icon": "forms/resources/icons/icon.png",
+                "icon2x": "forms/resources/icons/icon@2x.png",
+                "device": "phone",
+                "desc": "A demo of some of the available form fields."
+            },
+            {
+                "text": "Forms (Toolbars)",
+                "url": "forms_toolbar/index.html",
+                "icon": "forms_toolbar/resources/icons/icon.png",
+                "icon2x": "forms_toolbar/resources/icons/icon@2x.png",
+                "device": "phone",
+                "desc": "A demo of fields within toolbars."
+            },
+            {
+                "text": "Icons",
+                "url": "icons/index.html",
+                "icon": "icons/resources/icons/icon.png",
+                "icon2x": "icons/resources/icons/icon@2x.png",
+                "device": "tablet",
+                "desc": "Built-in icons for toolbars and tabbars."
+            },
+            {
+                "text": "List",
+                "url": "list/index.html",
+                "icon": "list/resources/icons/icon.png",
+                "icon2x": "list/resources/icons/icon@2x.png",
+                "device": "phone",
+                "desc": "Demo of the list component."
+            },
+            {
+                "text": "Horizontal List",
+                "url": "list-horizontal/index.html",
+                "icon": "list-horizontal/resources/icons/icon.png",
+                "icon2x": "list-horizontal/resources/icons/icon@2x.png",
+                "device": "phone",
+                "desc": "Demo of a horizontal list component."
+            },
+            {
+                "text": "Search List",
+                "url": "list-search/index.html",
+                "icon": "list-search/resources/icons/icon.png",
+                "icon2x": "list-search/resources/icons/icon@2x.png",
+                "device": "phone",
+                "desc": "Demo of a searchable list component."
+            },
+            {
+                "text": "Maps",
+                "url": "map/index.html",
+                "icon": "map/resources/icons/icon.png",
+                "icon2x": "map/resources/icons/icon@2x.png",
+                "device": "phone",
+                "desc": "A simple demo of the Google Maps component."
+            },
+            {
+                "text": "Nested List",
+                "url": "nestedlist/index.html",
+                "icon": "nestedlist/resources/icons/icon.png",
+                "icon2x": "nestedlist/resources/icons/icon@2x.png",
+                "device": "phone",
+                "desc": "A miller column interface allowing you to display tree-based data."
+            },
+            {
+                "text": "Navigation View",
+                "url": "navigationview/index.html",
+                "icon": "navigationview/resources/icons/icon.png",
+                "icon2x": "navigationview/resources/icons/icon@2x.png",
+                "device": "phone",
+                "desc": "A stack based component which allows you to navigate through views."
+            },
+            {
+                "text": "Overlays",
+                "url": "overlays/index.html",
+                "icon": "overlays/resources/icons/icon.png",
+                "icon2x": "overlays/resources/icons/icon@2x.png",
+                "device": "tablet",
+                "desc": "Examples of overlay windows."
+            },
+            {
+                "text": "Pickers",
+                "url": "picker/index.html",
+                "icon": "picker/resources/icons/icon.png",
+                "icon2x": "picker/resources/icons/icon@2x.png",
+                "device": "phone",
+                "desc": "An example of the Date Picker component"
+            },
+            {
+                "text": "Tabs",
+                "url": "tabs/index.html",
+                "icon": "tabs/resources/icons/icon.png",
+                "icon2x": "tabs/resources/icons/icon@2x.png",
+                "device": "phone",
+                "desc": "The simplest tabbar."
+            },
+            {
+                "text": "Tabs (Bottom)",
+                "url": "tabs2/index.html",
+                "icon": "tabs2/resources/icons/icon.png",
+                "icon2x": "tabs2/resources/icons/icon@2x.png",
+                "device": "tablet",
+                "desc": "A demo of a bottom tabbar."
+            },
+            {
+                "text": "Toolbars",
+                "url": "toolbars/index.html",
+                "icon": "toolbars/resources/icons/icon.png",
+                "icon2x": "toolbars/resources/icons/icon@2x.png",
+                "device": "tablet",
+                "desc": "Overview of all kinds of different buttons."
+            },
+            {
+                "text": "Video",
+                "url": "video/index.html",
+                "icon": "video/resources/icons/icon.png",
+                "icon2x": "video/resources/icons/icon@2x.png",
+                "device": "phone",
+                "desc": "Video playback on mobile devices."
+            }
+        ]
+    },
+    {
+        "title": "Utility Examples",
+        "items": [
+            {
+                "text": "AJAX",
+                "url": "ajax/index.html",
+                "icon": "ajax/resources/icons/icon.png",
+                "device": "phone",
+                "desc": "Loading data through JSONP and XMLHttpRequest."
+            },
+            {
+                "text": "YQL",
+                "url": "yql/index.html",
+                "icon": "yql/resources/icons/icon.png",
+                "device": "phone",
+                "desc": "Yahoo! Query Language example."
+            }
+        ]
+    },
+    {
+        "title": "Plugins",
+        "items": [
+            {
+                "text": "Pull to Refresh & Load More",
+                "url": "pullrefresh/index.html",
+                "icon": "pullrefresh/resources/icons/icon.png",
+                "icon2x": "pullrefresh/resources/icons/icon@2x.png",
+                "device": "phone",
+                "desc": "A demo of the Pull to Refresh and Load More plugins."
+            }
+        ]
+    }
+]

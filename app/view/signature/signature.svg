@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="500" height="250" viewBox="0 0 500 250">
+	<rect id="r" width="500" height="250" fill="#ffa"/>
+	<line x1="0" y1="150" x2="500" y2="150" stroke="#666" stroke-width="1" stroke-dasharray="3"
+	      shape-rendering="crispEdges" pointer-events="none"/>
+	<path id="p" stroke="navy" stroke-width="2" fill="none" pointer-events="none"/>
+	<script>
+		var r = document.getElementById('r'), p = document.getElementById('p'), signaturePath = '', isDown = false;
+
+		function isTouchEvent(e) {
+			return e.type.match(/^touch/);
+		}
+
+		function getCoords(e) {
+			if(isTouchEvent(e)) {
+				return e.targetTouches[0].clientX + ',' + e.targetTouches[0].clientY;
+			}
+			return e.clientX + ',' + e.clientY;
+		}
+
+		function down(e) {
+			signaturePath += 'M' + getCoords(e) + ' ';
+			p.setAttribute('d', signaturePath);
+			isDown = true;
+
+			if(isTouchEvent(e)) e.preventDefault();
+		}
+
+		function move(e) {
+			if(isDown) {
+				signaturePath += 'L' + getCoords(e) + ' ';
+				p.setAttribute('d', signaturePath);
+			}
+
+			if(isTouchEvent(e)) e.preventDefault();
+		}
+
+		function up(e) {
+			isDown = false;
+
+			if(isTouchEvent(e)) e.preventDefault();
+		}
+
+		r.addEventListener('mousedown', down, false);
+		r.addEventListener('mousemove', move, false);
+		r.addEventListener('mouseup', up, false);
+		r.addEventListener('touchstart', down, false);
+		r.addEventListener('touchmove', move, false);
+		r.addEventListener('touchend', up, false);
+		r.addEventListener('mouseout', up, false);
+
+		function clearSignature() {
+			signaturePath = '';
+			p.setAttribute('d', '');
+		}
+
+		function getSignature() {
+			return signaturePath;
+		}
+	</script>
+</svg>

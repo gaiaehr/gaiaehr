@@ -1,0 +1,2614 @@
+<html>
+<head>
+<title>Docs For Class PHPLinq_LinqToZendDb</title>
+<link rel="stylesheet" type="text/css" href="../media/style.css">
+</head>
+<body>
+
+<table border="0" cellspacing="0" cellpadding="0" height="48" width="100%">
+  <tr>
+    <td class="header_top">PHPLinq</td>
+  </tr>
+  <tr><td class="header_line"><img src="../media/empty.png" width="1" height="1" border="0" alt=""  /></td></tr>
+  <tr>
+    <td class="header_menu">
+        
+                                    
+                                                  		  [ <a href="../classtrees_PHPLinq.html" class="menu">class tree: PHPLinq</a> ]
+		  [ <a href="../elementindex_PHPLinq.html" class="menu">index: PHPLinq</a> ]
+		  	    [ <a href="../elementindex.html" class="menu">all elements</a> ]
+    </td>
+  </tr>
+  <tr><td class="header_line"><img src="../media/empty.png" width="1" height="1" border="0" alt=""  /></td></tr>
+</table>
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="200" class="menu">
+      <b>Packages:</b><br />
+              <a href="../li_PHPLinq.html">PHPLinq</a><br />
+              <a href="../li_PHPLinq_Adapter.html">PHPLinq_Adapter</a><br />
+            <br /><br />
+                        <b>Files:</b><br />
+      	  <div class="package">
+			<a href="../PHPLinq/_PHPLinq---Exception.php.html">		Exception.php
+		</a><br>
+			<a href="../PHPLinq/_PHPLinq---Expression.php.html">		Expression.php
+		</a><br>
+			<a href="../PHPLinq/_PHPLinq---Function.php.html">		Function.php
+		</a><br>
+			<a href="../PHPLinq/_PHPLinq---ILinqProvider.php.html">		ILinqProvider.php
+		</a><br>
+			<a href="../PHPLinq/_PHPLinq---Initiator.php.html">		Initiator.php
+		</a><br>
+			<a href="../PHPLinq/_PHPLinq---LinqToObjects.php.html">		LinqToObjects.php
+		</a><br>
+			<a href="../PHPLinq/_PHPLinq---LinqToZendDb.php.html">		LinqToZendDb.php
+		</a><br>
+			<a href="../PHPLinq/_PHPLinq---OrderByExpression.php.html">		OrderByExpression.php
+		</a><br>
+			<a href="../PHPLinq/_PHPLinq.php.html">		PHPLinq.php
+		</a><br>
+	  </div><br />
+      
+            <b>Interfaces:</b><br />
+        <div class="package">
+		    		<a href="../PHPLinq/PHPLinq_ILinqProvider.html">PHPLinq_ILinqProvider</a><br />
+	  </div>
+      
+            <b>Classes:</b><br />
+        <div class="package">
+		    		<a href="../PHPLinq/PHPLinq_Exception.html">PHPLinq_Exception</a><br />
+	    		<a href="../PHPLinq/PHPLinq_Expression.html">PHPLinq_Expression</a><br />
+	    		<a href="../PHPLinq/PHPLinq_Function.html">PHPLinq_Function</a><br />
+	    		<a href="../PHPLinq/PHPLinq_Initiator.html">PHPLinq_Initiator</a><br />
+	    		<a href="../PHPLinq/PHPLinq_LinqToObjects.html">PHPLinq_LinqToObjects</a><br />
+	    		<a href="../PHPLinq/PHPLinq_LinqToZendDb.html">PHPLinq_LinqToZendDb</a><br />
+	    		<a href="../PHPLinq/PHPLinq_OrderByExpression.html">PHPLinq_OrderByExpression</a><br />
+	  </div>
+                </td>
+    <td>
+      <table cellpadding="10" cellspacing="0" width="100%" border="0"><tr><td valign="top">
+
+<h1>Class: PHPLinq_LinqToZendDb</h1>
+Source Location: /PHPLinq/LinqToZendDb.php<br /><br />
+
+
+<table width="100%" border="0">
+<tr><td valign="top">
+
+<h3><a href="#class_details">Class Overview</a></h3>
+<pre></pre><br />
+<div class="description">PHPLinq_LinqToZendDb</div><br /><br />
+<h4>Author(s):</h4>
+<ul>
+        </ul>
+
+
+
+
+      
+  
+
+<h4>Copyright:</h4>
+<ul>
+  <li>Copyright (c) 2008 - 2009 PHPLinq (http://www.codeplex.com/PHPLinq)</li>
+</ul>
+                <p class="implements">
+            Implements interfaces:
+            <ul>
+                <li><a href="../PHPLinq/PHPLinq_ILinqProvider.html">PHPLinq_ILinqProvider</a></li>            </ul>
+        </p>
+        
+</td>
+
+<td valign="top">
+<h3><a href="#class_vars">Variables</a></h3>
+<ul>
+    <li><a href="../PHPLinq/PHPLinq_LinqToZendDb.html#var$_adapter">$_adapter</a></li>
+    <li><a href="../PHPLinq/PHPLinq_LinqToZendDb.html#var$_childProviders">$_childProviders</a></li>
+    <li><a href="../PHPLinq/PHPLinq_LinqToZendDb.html#var$_columns">$_columns</a></li>
+    <li><a href="../PHPLinq/PHPLinq_LinqToZendDb.html#var$_data">$_data</a></li>
+    <li><a href="../PHPLinq/PHPLinq_LinqToZendDb.html#var$_distinct">$_distinct</a></li>
+    <li><a href="../PHPLinq/PHPLinq_LinqToZendDb.html#var$_from">$_from</a></li>
+    <li><a href="../PHPLinq/PHPLinq_LinqToZendDb.html#var$_internalFunctions">$_internalFunctions</a></li>
+    <li><a href="../PHPLinq/PHPLinq_LinqToZendDb.html#var$_isDestructing">$_isDestructing</a></li>
+    <li><a href="../PHPLinq/PHPLinq_LinqToZendDb.html#var$_joinCondition">$_joinCondition</a></li>
+    <li><a href="../PHPLinq/PHPLinq_LinqToZendDb.html#var$_ofType">$_ofType</a></li>
+    <li><a href="../PHPLinq/PHPLinq_LinqToZendDb.html#var$_orderBy">$_orderBy</a></li>
+    <li><a href="../PHPLinq/PHPLinq_LinqToZendDb.html#var$_parentProvider">$_parentProvider</a></li>
+    <li><a href="../PHPLinq/PHPLinq_LinqToZendDb.html#var$_queryCallback">$_queryCallback</a></li>
+    <li><a href="../PHPLinq/PHPLinq_LinqToZendDb.html#var$_skip">$_skip</a></li>
+    <li><a href="../PHPLinq/PHPLinq_LinqToZendDb.html#var$_skipWhile">$_skipWhile</a></li>
+    <li><a href="../PHPLinq/PHPLinq_LinqToZendDb.html#var$_take">$_take</a></li>
+    <li><a href="../PHPLinq/PHPLinq_LinqToZendDb.html#var$_takeWhile">$_takeWhile</a></li>
+    <li><a href="../PHPLinq/PHPLinq_LinqToZendDb.html#var$_where">$_where</a></li>
+  </ul>
+</td>
+
+<td valign="top">
+<h3><a href="#class_consts">Constants</a></h3>
+<ul>
+    <li><a href="../PHPLinq/PHPLinq_LinqToZendDb.html#constT_ARGUMENT">T_ARGUMENT</a></li>
+    <li><a href="../PHPLinq/PHPLinq_LinqToZendDb.html#constT_ARITHMETIC">T_ARITHMETIC</a></li>
+    <li><a href="../PHPLinq/PHPLinq_LinqToZendDb.html#constT_CONSTANT">T_CONSTANT</a></li>
+    <li><a href="../PHPLinq/PHPLinq_LinqToZendDb.html#constT_DEFAULT">T_DEFAULT</a></li>
+    <li><a href="../PHPLinq/PHPLinq_LinqToZendDb.html#constT_FUNCTION">T_FUNCTION</a></li>
+    <li><a href="../PHPLinq/PHPLinq_LinqToZendDb.html#constT_OBJECT_OPERATOR">T_OBJECT_OPERATOR</a></li>
+    <li><a href="../PHPLinq/PHPLinq_LinqToZendDb.html#constT_OPERAND">T_OPERAND</a></li>
+    <li><a href="../PHPLinq/PHPLinq_LinqToZendDb.html#constT_OPERATOR">T_OPERATOR</a></li>
+    <li><a href="../PHPLinq/PHPLinq_LinqToZendDb.html#constT_PROPERTY">T_PROPERTY</a></li>
+    <li><a href="../PHPLinq/PHPLinq_LinqToZendDb.html#constT_SIMPLE">T_SIMPLE</a></li>
+    <li><a href="../PHPLinq/PHPLinq_LinqToZendDb.html#constT_START_STOP">T_START_STOP</a></li>
+    <li><a href="../PHPLinq/PHPLinq_LinqToZendDb.html#constT_VARIABLE">T_VARIABLE</a></li>
+  </ul>
+</td>
+
+<td valign="top">
+<h3><a href="#class_methods">Methods</a></h3>
+<ul>
+    <li><a href="../PHPLinq/PHPLinq_LinqToZendDb.html#method__construct">__construct</a></li>
+    <li><a href="../PHPLinq/PHPLinq_LinqToZendDb.html#method__destruct">__destruct</a></li>
+    <li><a href="../PHPLinq/PHPLinq_LinqToZendDb.html#methodaddChildProvider">addChildProvider</a></li>
+    <li><a href="../PHPLinq/PHPLinq_LinqToZendDb.html#methodaggregate">aggregate</a></li>
+    <li><a href="../PHPLinq/PHPLinq_LinqToZendDb.html#methodall">all</a></li>
+    <li><a href="../PHPLinq/PHPLinq_LinqToZendDb.html#methodany">any</a></li>
+    <li><a href="../PHPLinq/PHPLinq_LinqToZendDb.html#methodaverage">average</a></li>
+    <li><a href="../PHPLinq/PHPLinq_LinqToZendDb.html#methodconcat">concat</a></li>
+    <li><a href="../PHPLinq/PHPLinq_LinqToZendDb.html#methodcontains">contains</a></li>
+    <li><a href="../PHPLinq/PHPLinq_LinqToZendDb.html#methodcount">count</a></li>
+    <li><a href="../PHPLinq/PHPLinq_LinqToZendDb.html#methoddistinct">distinct</a></li>
+    <li><a href="../PHPLinq/PHPLinq_LinqToZendDb.html#methodelementAt">elementAt</a></li>
+    <li><a href="../PHPLinq/PHPLinq_LinqToZendDb.html#methodelementAtOrDefault">elementAtOrDefault</a></li>
+    <li><a href="../PHPLinq/PHPLinq_LinqToZendDb.html#methodfirst">first</a></li>
+    <li><a href="../PHPLinq/PHPLinq_LinqToZendDb.html#methodfirstOrDefault">firstOrDefault</a></li>
+    <li><a href="../PHPLinq/PHPLinq_LinqToZendDb.html#methodgetFromName">getFromName</a></li>
+    <li><a href="../PHPLinq/PHPLinq_LinqToZendDb.html#methodgetJoinCondition">getJoinCondition</a></li>
+    <li><a href="../PHPLinq/PHPLinq_LinqToZendDb.html#methodgetQueryCallback">getQueryCallback</a></li>
+    <li><a href="../PHPLinq/PHPLinq_LinqToZendDb.html#methodgetSource">getSource</a></li>
+    <li><a href="../PHPLinq/PHPLinq_LinqToZendDb.html#methodhandles">handles</a></li>
+    <li><a href="../PHPLinq/PHPLinq_LinqToZendDb.html#methodin">in</a></li>
+    <li><a href="../PHPLinq/PHPLinq_LinqToZendDb.html#methodjoin">join</a></li>
+    <li><a href="../PHPLinq/PHPLinq_LinqToZendDb.html#methodlast">last</a></li>
+    <li><a href="../PHPLinq/PHPLinq_LinqToZendDb.html#methodlastOrDefault">lastOrDefault</a></li>
+    <li><a href="../PHPLinq/PHPLinq_LinqToZendDb.html#methodmax">max</a></li>
+    <li><a href="../PHPLinq/PHPLinq_LinqToZendDb.html#methodmin">min</a></li>
+    <li><a href="../PHPLinq/PHPLinq_LinqToZendDb.html#methodofType">ofType</a></li>
+    <li><a href="../PHPLinq/PHPLinq_LinqToZendDb.html#methodon">on</a></li>
+    <li><a href="../PHPLinq/PHPLinq_LinqToZendDb.html#methodorderBy">orderBy</a></li>
+    <li><a href="../PHPLinq/PHPLinq_LinqToZendDb.html#methodorderByDescending">orderByDescending</a></li>
+    <li><a href="../PHPLinq/PHPLinq_LinqToZendDb.html#methodreverse">reverse</a></li>
+    <li><a href="../PHPLinq/PHPLinq_LinqToZendDb.html#methodselect">select</a></li>
+    <li><a href="../PHPLinq/PHPLinq_LinqToZendDb.html#methodsetQueryCallback">setQueryCallback</a></li>
+    <li><a href="../PHPLinq/PHPLinq_LinqToZendDb.html#methodsingle">single</a></li>
+    <li><a href="../PHPLinq/PHPLinq_LinqToZendDb.html#methodsingleOrDefault">singleOrDefault</a></li>
+    <li><a href="../PHPLinq/PHPLinq_LinqToZendDb.html#methodskip">skip</a></li>
+    <li><a href="../PHPLinq/PHPLinq_LinqToZendDb.html#methodskipWhile">skipWhile</a></li>
+    <li><a href="../PHPLinq/PHPLinq_LinqToZendDb.html#methodsum">sum</a></li>
+    <li><a href="../PHPLinq/PHPLinq_LinqToZendDb.html#methodtake">take</a></li>
+    <li><a href="../PHPLinq/PHPLinq_LinqToZendDb.html#methodtakeWhile">takeWhile</a></li>
+    <li><a href="../PHPLinq/PHPLinq_LinqToZendDb.html#methodthenBy">thenBy</a></li>
+    <li><a href="../PHPLinq/PHPLinq_LinqToZendDb.html#methodthenByDescending">thenByDescending</a></li>
+    <li><a href="../PHPLinq/PHPLinq_LinqToZendDb.html#methodwhere">where</a></li>
+    <li><a href="../PHPLinq/PHPLinq_LinqToZendDb.html#method_convertToSql">_convertToSql</a></li>
+    <li><a href="../PHPLinq/PHPLinq_LinqToZendDb.html#method__isDestructing">__isDestructing</a></li>
+  </ul>
+</td>
+
+</tr></table>
+<hr />
+
+<table width="100%" border="0"><tr>
+
+
+
+
+
+
+</tr></table>
+<hr />
+
+<a name="class_details"></a>
+<h3>Class Details</h3>
+<div class="tags">
+[line <a href="../__filesource/fsource_PHPLinq__PHPLinqLinqToZendDb.php.html#a64">64</a>]<br />
+PHPLinq_LinqToZendDb<br /><br /><p>PHPLinq_LinqToZendDb</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>copyright:</b>&nbsp;&nbsp;</td><td>Copyright (c) 2008 - 2009 PHPLinq (http://www.codeplex.com/PHPLinq)</td>
+  </tr>
+</table>
+</div>
+</div><br /><br />
+<div class="top">[ <a href="#top">Top</a> ]</div><br />
+
+<hr />
+<a name="class_vars"></a>
+<h3>Class Variables</h3>
+<div class="tags">
+	<a name="var$_internalFunctions"></a>
+	<p></p>
+	<h4>static $_internalFunctions = <span class="value">&nbsp;null</span></h4>
+	<p>[line <a href="../__filesource/fsource_PHPLinq__PHPLinqLinqToZendDb.php.html#a205">205</a>]</p>
+  Static list of PHP internal functions used for generating queries<br /><br /><p>Static list of PHP internal functions used for generating queries</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>private</td>
+  </tr>
+</table>
+</div>
+
+  <br />
+	<div class="tags">
+  <table border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td><b>Type:</b>&nbsp;&nbsp;</td>
+      <td>array</td>
+    </tr>
+      </table>
+	</div><br /><br />
+	<div class="top">[ <a href="#top">Top</a> ]</div><br />
+	<a name="var$_queryCallback"></a>
+	<p></p>
+	<h4>static $_queryCallback = <span class="value">&nbsp;null</span></h4>
+	<p>[line <a href="../__filesource/fsource_PHPLinq__PHPLinqLinqToZendDb.php.html#a198">198</a>]</p>
+  Query callback (static for all PHPLinq_LinqToZendDb !)
+ Function accepting a string to which query strings can be logged.<br /><br /><p>Query callback (static for all PHPLinq_LinqToZendDb !)
+ Function accepting a string to which query strings can be logged.</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>private</td>
+  </tr>
+</table>
+</div>
+
+  <br />
+	<div class="tags">
+  <table border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td><b>Type:</b>&nbsp;&nbsp;</td>
+      <td>mixed</td>
+    </tr>
+      </table>
+	</div><br /><br />
+	<div class="top">[ <a href="#top">Top</a> ]</div><br />
+	<a name="var$_adapter"></a>
+	<p></p>
+	<h4>$_adapter = <span class="value">&nbsp;null</span></h4>
+	<p>[line <a href="../__filesource/fsource_PHPLinq__PHPLinqLinqToZendDb.php.html#a182">182</a>]</p>
+  PHPLinq_Adapter_Abstract instance<br /><br /><p>PHPLinq_Adapter_Abstract instance</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>private</td>
+  </tr>
+</table>
+</div>
+
+  <br />
+	<div class="tags">
+  <table border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td><b>Type:</b>&nbsp;&nbsp;</td>
+      <td><a href="../PHPLinq_Adapter/PHPLinq_Adapter_Abstract.html">PHPLinq_Adapter_Abstract</a></td>
+    </tr>
+      </table>
+	</div><br /><br />
+	<div class="top">[ <a href="#top">Top</a> ]</div><br />
+	<a name="var$_childProviders"></a>
+	<p></p>
+	<h4>$_childProviders = <span class="value">array()</span></h4>
+	<p>[line <a href="../__filesource/fsource_PHPLinq__PHPLinqLinqToZendDb.php.html#a161">161</a>]</p>
+  Child PHPLinq_ILinqProvider instances, used with join conditions<br /><br /><p>Child PHPLinq_ILinqProvider instances, used with join conditions</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>private</td>
+  </tr>
+</table>
+</div>
+
+  <br />
+	<div class="tags">
+  <table border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td><b>Type:</b>&nbsp;&nbsp;</td>
+      <td>PHPLinq_ILinqProvider[]</td>
+    </tr>
+      </table>
+	</div><br /><br />
+	<div class="top">[ <a href="#top">Top</a> ]</div><br />
+	<a name="var$_columns"></a>
+	<p></p>
+	<h4>$_columns = <span class="value">&nbsp;'*'</span></h4>
+	<p>[line <a href="../__filesource/fsource_PHPLinq__PHPLinqLinqToZendDb.php.html#a189">189</a>]</p>
+  Columns to select<br /><br /><p>Columns to select</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>private</td>
+  </tr>
+</table>
+</div>
+
+  <br />
+	<div class="tags">
+  <table border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td><b>Type:</b>&nbsp;&nbsp;</td>
+      <td>string</td>
+    </tr>
+      </table>
+	</div><br /><br />
+	<div class="top">[ <a href="#top">Top</a> ]</div><br />
+	<a name="var$_data"></a>
+	<p></p>
+	<h4>$_data = <span class="value">&nbsp;null</span></h4>
+	<p>[line <a href="../__filesource/fsource_PHPLinq__PHPLinqLinqToZendDb.php.html#a91">91</a>]</p>
+  Data source<br /><br /><p>Data source</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>private</td>
+  </tr>
+</table>
+</div>
+
+  <br />
+	<div class="tags">
+  <table border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td><b>Type:</b>&nbsp;&nbsp;</td>
+      <td>mixed</td>
+    </tr>
+      </table>
+	</div><br /><br />
+	<div class="top">[ <a href="#top">Top</a> ]</div><br />
+	<a name="var$_distinct"></a>
+	<p></p>
+	<h4>$_distinct = <span class="value">&nbsp;null</span></h4>
+	<p>[line <a href="../__filesource/fsource_PHPLinq__PHPLinqLinqToZendDb.php.html#a140">140</a>]</p>
+  Distinct expression<br /><br /><p>Distinct expression</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>private</td>
+  </tr>
+</table>
+</div>
+
+  <br />
+	<div class="tags">
+  <table border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td><b>Type:</b>&nbsp;&nbsp;</td>
+      <td><a href="../PHPLinq/PHPLinq_Expression.html">PHPLinq_Expression</a></td>
+    </tr>
+      </table>
+	</div><br /><br />
+	<div class="top">[ <a href="#top">Top</a> ]</div><br />
+	<a name="var$_from"></a>
+	<p></p>
+	<h4>$_from = <span class="value">&nbsp;''</span></h4>
+	<p>[line <a href="../__filesource/fsource_PHPLinq__PHPLinqLinqToZendDb.php.html#a84">84</a>]</p>
+  Default variable name<br /><br /><p>Default variable name</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>private</td>
+  </tr>
+</table>
+</div>
+
+  <br />
+	<div class="tags">
+  <table border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td><b>Type:</b>&nbsp;&nbsp;</td>
+      <td>string</td>
+    </tr>
+      </table>
+	</div><br /><br />
+	<div class="top">[ <a href="#top">Top</a> ]</div><br />
+	<a name="var$_isDestructing"></a>
+	<p></p>
+	<h4>$_isDestructing = <span class="value"></span></h4>
+	<p>[line <a href="../__filesource/fsource_PHPLinq__PHPLinqLinqToZendDb.php.html#a175">175</a>]</p>
+  Is object destructing?<br /><br /><p>Is object destructing?</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>private</td>
+  </tr>
+</table>
+</div>
+
+  <br />
+	<div class="tags">
+  <table border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td><b>Type:</b>&nbsp;&nbsp;</td>
+      <td>bool</td>
+    </tr>
+      </table>
+	</div><br /><br />
+	<div class="top">[ <a href="#top">Top</a> ]</div><br />
+	<a name="var$_joinCondition"></a>
+	<p></p>
+	<h4>$_joinCondition = <span class="value">&nbsp;null</span></h4>
+	<p>[line <a href="../__filesource/fsource_PHPLinq__PHPLinqLinqToZendDb.php.html#a168">168</a>]</p>
+  Join condition<br /><br /><p>Join condition</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>private</td>
+  </tr>
+</table>
+</div>
+
+  <br />
+	<div class="tags">
+  <table border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td><b>Type:</b>&nbsp;&nbsp;</td>
+      <td><a href="../PHPLinq/PHPLinq_Expression.html">PHPLinq_Expression</a></td>
+    </tr>
+      </table>
+	</div><br /><br />
+	<div class="top">[ <a href="#top">Top</a> ]</div><br />
+	<a name="var$_ofType"></a>
+	<p></p>
+	<h4>$_ofType = <span class="value">&nbsp;null</span></h4>
+	<p>[line <a href="../__filesource/fsource_PHPLinq__PHPLinqLinqToZendDb.php.html#a147">147</a>]</p>
+  OfType expression<br /><br /><p>OfType expression</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>private</td>
+  </tr>
+</table>
+</div>
+
+  <br />
+	<div class="tags">
+  <table border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td><b>Type:</b>&nbsp;&nbsp;</td>
+      <td><a href="../PHPLinq/PHPLinq_Expression.html">PHPLinq_Expression</a></td>
+    </tr>
+      </table>
+	</div><br /><br />
+	<div class="top">[ <a href="#top">Top</a> ]</div><br />
+	<a name="var$_orderBy"></a>
+	<p></p>
+	<h4>$_orderBy = <span class="value">array()</span></h4>
+	<p>[line <a href="../__filesource/fsource_PHPLinq__PHPLinqLinqToZendDb.php.html#a133">133</a>]</p>
+  OrderBy expressions<br /><br /><p>OrderBy expressions</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>private</td>
+  </tr>
+</table>
+</div>
+
+  <br />
+	<div class="tags">
+  <table border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td><b>Type:</b>&nbsp;&nbsp;</td>
+      <td>PHPLinq_Expression[]</td>
+    </tr>
+      </table>
+	</div><br /><br />
+	<div class="top">[ <a href="#top">Top</a> ]</div><br />
+	<a name="var$_parentProvider"></a>
+	<p></p>
+	<h4>$_parentProvider = <span class="value">&nbsp;null</span></h4>
+	<p>[line <a href="../__filesource/fsource_PHPLinq__PHPLinqLinqToZendDb.php.html#a154">154</a>]</p>
+  Parent PHPLinq_ILinqProvider instance, used with join conditions<br /><br /><p>Parent PHPLinq_ILinqProvider instance, used with join conditions</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>private</td>
+  </tr>
+</table>
+</div>
+
+  <br />
+	<div class="tags">
+  <table border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td><b>Type:</b>&nbsp;&nbsp;</td>
+      <td><a href="../PHPLinq/PHPLinq_ILinqProvider.html">PHPLinq_ILinqProvider</a></td>
+    </tr>
+      </table>
+	</div><br /><br />
+	<div class="top">[ <a href="#top">Top</a> ]</div><br />
+	<a name="var$_skip"></a>
+	<p></p>
+	<h4>$_skip = <span class="value">&nbsp;null</span></h4>
+	<p>[line <a href="../__filesource/fsource_PHPLinq__PHPLinqLinqToZendDb.php.html#a112">112</a>]</p>
+  Skip n elements<br /><br /><p>Skip n elements</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>private</td>
+  </tr>
+</table>
+</div>
+
+  <br />
+	<div class="tags">
+  <table border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td><b>Type:</b>&nbsp;&nbsp;</td>
+      <td>int?</td>
+    </tr>
+      </table>
+	</div><br /><br />
+	<div class="top">[ <a href="#top">Top</a> ]</div><br />
+	<a name="var$_skipWhile"></a>
+	<p></p>
+	<h4>$_skipWhile = <span class="value">&nbsp;null</span></h4>
+	<p>[line <a href="../__filesource/fsource_PHPLinq__PHPLinqLinqToZendDb.php.html#a126">126</a>]</p>
+  Skip while expression is true<br /><br /><p>Skip while expression is true</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>private</td>
+  </tr>
+</table>
+</div>
+
+  <br />
+	<div class="tags">
+  <table border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td><b>Type:</b>&nbsp;&nbsp;</td>
+      <td><a href="../PHPLinq/PHPLinq_Expression.html">PHPLinq_Expression</a></td>
+    </tr>
+      </table>
+	</div><br /><br />
+	<div class="top">[ <a href="#top">Top</a> ]</div><br />
+	<a name="var$_take"></a>
+	<p></p>
+	<h4>$_take = <span class="value">&nbsp;null</span></h4>
+	<p>[line <a href="../__filesource/fsource_PHPLinq__PHPLinqLinqToZendDb.php.html#a105">105</a>]</p>
+  Take n elements<br /><br /><p>Take n elements</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>private</td>
+  </tr>
+</table>
+</div>
+
+  <br />
+	<div class="tags">
+  <table border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td><b>Type:</b>&nbsp;&nbsp;</td>
+      <td>int?</td>
+    </tr>
+      </table>
+	</div><br /><br />
+	<div class="top">[ <a href="#top">Top</a> ]</div><br />
+	<a name="var$_takeWhile"></a>
+	<p></p>
+	<h4>$_takeWhile = <span class="value">&nbsp;null</span></h4>
+	<p>[line <a href="../__filesource/fsource_PHPLinq__PHPLinqLinqToZendDb.php.html#a119">119</a>]</p>
+  Take while expression is true<br /><br /><p>Take while expression is true</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>private</td>
+  </tr>
+</table>
+</div>
+
+  <br />
+	<div class="tags">
+  <table border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td><b>Type:</b>&nbsp;&nbsp;</td>
+      <td><a href="../PHPLinq/PHPLinq_Expression.html">PHPLinq_Expression</a></td>
+    </tr>
+      </table>
+	</div><br /><br />
+	<div class="top">[ <a href="#top">Top</a> ]</div><br />
+	<a name="var$_where"></a>
+	<p></p>
+	<h4>$_where = <span class="value">&nbsp;null</span></h4>
+	<p>[line <a href="../__filesource/fsource_PHPLinq__PHPLinqLinqToZendDb.php.html#a98">98</a>]</p>
+  Where expression<br /><br /><p>Where expression</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>private</td>
+  </tr>
+</table>
+</div>
+
+  <br />
+	<div class="tags">
+  <table border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td><b>Type:</b>&nbsp;&nbsp;</td>
+      <td><a href="../PHPLinq/PHPLinq_Expression.html">PHPLinq_Expression</a></td>
+    </tr>
+      </table>
+	</div><br /><br />
+	<div class="top">[ <a href="#top">Top</a> ]</div><br />
+</div><br />
+
+<hr />
+<a name="class_methods"></a>
+<h3>Class Methods</h3>
+<div class="tags">
+  <hr />
+	<a name="methodgetQueryCallback"></a>
+	<h3>static method getQueryCallback <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPLinq__PHPLinqLinqToZendDb.php.html#a1187">1187</a>]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>static mixed getQueryCallback(
+)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Get query callback (static for all PHPLinq_LinqToZendDb !)
+ Function accepting a string to which query strings can be logged.<br /><br /><p>Get query callback (static for all PHPLinq_LinqToZendDb !)
+ Function accepting a string to which query strings can be logged.</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+	
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="methodhandles"></a>
+	<h3>static method handles <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPLinq__PHPLinqLinqToZendDb.php.html#a213">213</a>]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>static bool handles(
+mixed
+$source)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Can this provider type handle data in $source?<br /><br /><p>Can this provider type handle data in $source?</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+			<hr class="separator" />
+		<div class="notes">Implementation of:</div>
+			<dl>
+			<dt><a href="../PHPLinq/PHPLinq_ILinqProvider.html#methodhandles">PHPLinq_ILinqProvider::handles()</a></dt>
+						<dd>Can this provider type handle data in $source?</dd>
+					</dl>
+		
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type">mixed&nbsp;&nbsp;</td>
+        <td><b>$source</b>&nbsp;&nbsp;</td>
+        <td></td>
+      </tr>
+        </table>
+    </div><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="methodsetQueryCallback"></a>
+	<h3>static method setQueryCallback <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPLinq__PHPLinqLinqToZendDb.php.html#a1198">1198</a>]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>static void setQueryCallback(
+[mixed
+$value = null])</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Set query callback (static for all PHPLinq_LinqToZendDb !)
+ Function accepting a string to which query strings can be logged.<br /><br /><p>Set query callback (static for all PHPLinq_LinqToZendDb !)
+ Function accepting a string to which query strings can be logged.</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+	
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type">mixed&nbsp;&nbsp;</td>
+        <td><b>$value</b>&nbsp;&nbsp;</td>
+        <td></td>
+      </tr>
+        </table>
+    </div><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+
+  <hr />
+	<a name="method__construct"></a>
+	<h3>constructor __construct <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPLinq__PHPLinqLinqToZendDb.php.html#a224">224</a>]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code><a href="../PHPLinq/PHPLinq_ILinqProvider.html">PHPLinq_ILinqProvider</a> __construct(
+string
+$name, [<a href="../PHPLinq/PHPLinq_ILinqProvider.html">PHPLinq_ILinqProvider</a>
+$parentProvider = null])</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Create a new class instance<br /><br /><p>Create a new class instance</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+			<hr class="separator" />
+		<div class="notes">Implementation of:</div>
+			<dl>
+			<dt><a href="../PHPLinq/PHPLinq_ILinqProvider.html#method__construct">PHPLinq_ILinqProvider::__construct()</a></dt>
+						<dd>Create a new class instance</dd>
+					</dl>
+		
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type">string&nbsp;&nbsp;</td>
+        <td><b>$name</b>&nbsp;&nbsp;</td>
+        <td></td>
+      </tr>
+          <tr>
+        <td class="type"><a href="../PHPLinq/PHPLinq_ILinqProvider.html">PHPLinq_ILinqProvider</a>&nbsp;&nbsp;</td>
+        <td><b>$parentProvider</b>&nbsp;&nbsp;</td>
+        <td>Optional parent PHPLinq_ILinqProvider instance, used with join conditions</td>
+      </tr>
+        </table>
+    </div><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="method__destruct"></a>
+	<h3>destructor __destruct <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPLinq__PHPLinqLinqToZendDb.php.html#a244">244</a>]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>void __destruct(
+)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Class destructor<br /><br /><p>Class destructor</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+			<hr class="separator" />
+		<div class="notes">Implementation of:</div>
+			<dl>
+			<dt><a href="../PHPLinq/PHPLinq_ILinqProvider.html#method__destruct">PHPLinq_ILinqProvider::__destruct()</a></dt>
+						<dd>Class destructor</dd>
+					</dl>
+		
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="methodaddChildProvider"></a>
+	<h3>method addChildProvider <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPLinq__PHPLinqLinqToZendDb.php.html#a287">287</a>]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>void addChildProvider(
+<a href="../PHPLinq/PHPLinq_ILinqProvider.html">PHPLinq_ILinqProvider</a>
+$provider)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Add child provider, used with joins<br /><br /><p>Add child provider, used with joins</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+			<hr class="separator" />
+		<div class="notes">Implementation of:</div>
+			<dl>
+			<dt><a href="../PHPLinq/PHPLinq_ILinqProvider.html#methodaddChildProvider">PHPLinq_ILinqProvider::addChildProvider()</a></dt>
+						<dd>Add child provider, used with joins</dd>
+					</dl>
+		
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type"><a href="../PHPLinq/PHPLinq_ILinqProvider.html">PHPLinq_ILinqProvider</a>&nbsp;&nbsp;</td>
+        <td><b>$provider</b>&nbsp;&nbsp;</td>
+        <td></td>
+      </tr>
+        </table>
+    </div><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="methodaggregate"></a>
+	<h3>method aggregate <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPLinq__PHPLinqLinqToZendDb.php.html#a1169">1169</a>]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>mixed aggregate(
+[int
+$seed = 0], string
+$expression)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Aggregate<br /><br /><p>Aggregate
+ Example: Equivalent of count(): $this-&gt;aggregate(0, '$s, $t =&gt; $s + 1');</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>aggregate</td>
+  </tr>
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+			<hr class="separator" />
+		<div class="notes">Implementation of:</div>
+			<dl>
+			<dt><a href="../PHPLinq/PHPLinq_ILinqProvider.html#methodaggregate">PHPLinq_ILinqProvider::aggregate()</a></dt>
+						<dd>Aggregate</dd>
+					</dl>
+		
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type">int&nbsp;&nbsp;</td>
+        <td><b>$seed</b>&nbsp;&nbsp;</td>
+        <td>Seed</td>
+      </tr>
+          <tr>
+        <td class="type">string&nbsp;&nbsp;</td>
+        <td><b>$expression</b>&nbsp;&nbsp;</td>
+        <td>Expression defining the aggregate</td>
+      </tr>
+        </table>
+    </div><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="methodall"></a>
+	<h3>method all <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPLinq__PHPLinqLinqToZendDb.php.html#a928">928</a>]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>boolean all(
+string
+$expression)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		All<br /><br /><p>All</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+			<hr class="separator" />
+		<div class="notes">Implementation of:</div>
+			<dl>
+			<dt><a href="../PHPLinq/PHPLinq_ILinqProvider.html#methodall">PHPLinq_ILinqProvider::all()</a></dt>
+						<dd>All</dd>
+					</dl>
+		
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type">string&nbsp;&nbsp;</td>
+        <td><b>$expression</b>&nbsp;&nbsp;</td>
+        <td>Expression checking if an all elements are contained</td>
+      </tr>
+        </table>
+    </div><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="methodany"></a>
+	<h3>method any <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPLinq__PHPLinqLinqToZendDb.php.html#a907">907</a>]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>boolean any(
+string
+$expression)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Any<br /><br /><p>Any</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+			<hr class="separator" />
+		<div class="notes">Implementation of:</div>
+			<dl>
+			<dt><a href="../PHPLinq/PHPLinq_ILinqProvider.html#methodany">PHPLinq_ILinqProvider::any()</a></dt>
+						<dd>Any</dd>
+					</dl>
+		
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type">string&nbsp;&nbsp;</td>
+        <td><b>$expression</b>&nbsp;&nbsp;</td>
+        <td>Expression checking if an element is contained</td>
+      </tr>
+        </table>
+    </div><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="methodaverage"></a>
+	<h3>method average <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPLinq__PHPLinqLinqToZendDb.php.html#a1156">1156</a>]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>mixed average(
+)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Average of elements<br /><br /><p>Average of elements</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>Average of elements</td>
+  </tr>
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+			<hr class="separator" />
+		<div class="notes">Implementation of:</div>
+			<dl>
+			<dt><a href="../PHPLinq/PHPLinq_ILinqProvider.html#methodaverage">PHPLinq_ILinqProvider::average()</a></dt>
+						<dd>Average of elements</dd>
+					</dl>
+		
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="methodconcat"></a>
+	<h3>method concat <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPLinq__PHPLinqLinqToZendDb.php.html#a1006">1006</a>]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code><a href="../PHPLinq/PHPLinq_ILinqProvider.html">PHPLinq_ILinqProvider</a> concat(
+mixed
+$source)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Concatenate data<br /><br /><p>Concatenate data</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+			<hr class="separator" />
+		<div class="notes">Implementation of:</div>
+			<dl>
+			<dt><a href="../PHPLinq/PHPLinq_ILinqProvider.html#methodconcat">PHPLinq_ILinqProvider::concat()</a></dt>
+						<dd>Concatenate data</dd>
+					</dl>
+		
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type">mixed&nbsp;&nbsp;</td>
+        <td><b>$source</b>&nbsp;&nbsp;</td>
+        <td></td>
+      </tr>
+        </table>
+    </div><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="methodcontains"></a>
+	<h3>method contains <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPLinq__PHPLinqLinqToZendDb.php.html#a950">950</a>]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>boolean contains(
+mixed
+$element)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Contains - Not performed as query! (heavy)<br /><br /><p>Contains - Not performed as query! (heavy)</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+			<hr class="separator" />
+		<div class="notes">Implementation of:</div>
+			<dl>
+			<dt><a href="../PHPLinq/PHPLinq_ILinqProvider.html#methodcontains">PHPLinq_ILinqProvider::contains()</a></dt>
+						<dd>Contains</dd>
+					</dl>
+		
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type">mixed&nbsp;&nbsp;</td>
+        <td><b>$element</b>&nbsp;&nbsp;</td>
+        <td>Is the $element contained?</td>
+      </tr>
+        </table>
+    </div><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="methodcount"></a>
+	<h3>method count <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPLinq__PHPLinqLinqToZendDb.php.html#a1120">1120</a>]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>int count(
+)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Count elements<br /><br /><p>Count elements</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>Element count</td>
+  </tr>
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+			<hr class="separator" />
+		<div class="notes">Implementation of:</div>
+			<dl>
+			<dt><a href="../PHPLinq/PHPLinq_ILinqProvider.html#methodcount">PHPLinq_ILinqProvider::count()</a></dt>
+						<dd>Count elements</dd>
+					</dl>
+		
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="methoddistinct"></a>
+	<h3>method distinct <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPLinq__PHPLinqLinqToZendDb.php.html#a860">860</a>]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code><a href="../PHPLinq/PHPLinq_ILinqProvider.html">PHPLinq_ILinqProvider</a> distinct(
+string
+$expression)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Distinct<br /><br /><p>Distinct</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+			<hr class="separator" />
+		<div class="notes">Implementation of:</div>
+			<dl>
+			<dt><a href="../PHPLinq/PHPLinq_ILinqProvider.html#methoddistinct">PHPLinq_ILinqProvider::distinct()</a></dt>
+						<dd>Distinct</dd>
+					</dl>
+		
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type">string&nbsp;&nbsp;</td>
+        <td><b>$expression</b>&nbsp;&nbsp;</td>
+        <td>Ignored.</td>
+      </tr>
+        </table>
+    </div><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="methodelementAt"></a>
+	<h3>method elementAt <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPLinq__PHPLinqLinqToZendDb.php.html#a971">971</a>]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>mixed elementAt(
+[mixed
+$index = null])</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Element at index<br /><br /><p>Element at index</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>Element at $index</td>
+  </tr>
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+			<hr class="separator" />
+		<div class="notes">Implementation of:</div>
+			<dl>
+			<dt><a href="../PHPLinq/PHPLinq_ILinqProvider.html#methodelementAt">PHPLinq_ILinqProvider::elementAt()</a></dt>
+						<dd>Element at index</dd>
+					</dl>
+		
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type">mixed&nbsp;&nbsp;</td>
+        <td><b>$index</b>&nbsp;&nbsp;</td>
+        <td>Index</td>
+      </tr>
+        </table>
+    </div><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="methodelementAtOrDefault"></a>
+	<h3>method elementAtOrDefault <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPLinq__PHPLinqLinqToZendDb.php.html#a991">991</a>]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>mixed elementAtOrDefault(
+[mixed
+$index = null], [mixed
+$defaultValue = null])</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Element at index or default<br /><br /><p>Element at index or default</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>Element at $index</td>
+  </tr>
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+			<hr class="separator" />
+		<div class="notes">Implementation of:</div>
+			<dl>
+			<dt><a href="../PHPLinq/PHPLinq_ILinqProvider.html#methodelementAtOrDefault">PHPLinq_ILinqProvider::elementAtOrDefault()</a></dt>
+						<dd>Element at index or default</dd>
+					</dl>
+		
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type">mixed&nbsp;&nbsp;</td>
+        <td><b>$index</b>&nbsp;&nbsp;</td>
+        <td>Index</td>
+      </tr>
+          <tr>
+        <td class="type">mixed&nbsp;&nbsp;</td>
+        <td><b>$defaultValue</b>&nbsp;&nbsp;</td>
+        <td>Default value to return if nothing is found</td>
+      </tr>
+        </table>
+    </div><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="methodfirst"></a>
+	<h3>method first <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPLinq__PHPLinqLinqToZendDb.php.html#a1017">1017</a>]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>mixed first(
+[string
+$expression = null])</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		First<br /><br /><p>First</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+			<hr class="separator" />
+		<div class="notes">Implementation of:</div>
+			<dl>
+			<dt><a href="../PHPLinq/PHPLinq_ILinqProvider.html#methodfirst">PHPLinq_ILinqProvider::first()</a></dt>
+						<dd>First</dd>
+					</dl>
+		
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type">string&nbsp;&nbsp;</td>
+        <td><b>$expression</b>&nbsp;&nbsp;</td>
+        <td>Expression which creates a resulting element</td>
+      </tr>
+        </table>
+    </div><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="methodfirstOrDefault"></a>
+	<h3>method firstOrDefault <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPLinq__PHPLinqLinqToZendDb.php.html#a1033">1033</a>]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>mixed firstOrDefault(
+[string
+$expression = null], [mixed
+$defaultValue = null])</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		FirstOrDefault<br /><br /><p>FirstOrDefault</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+			<hr class="separator" />
+		<div class="notes">Implementation of:</div>
+			<dl>
+			<dt><a href="../PHPLinq/PHPLinq_ILinqProvider.html#methodfirstOrDefault">PHPLinq_ILinqProvider::firstOrDefault()</a></dt>
+						<dd>FirstOrDefault</dd>
+					</dl>
+		
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type">string&nbsp;&nbsp;</td>
+        <td><b>$expression</b>&nbsp;&nbsp;</td>
+        <td>Expression which creates a resulting element</td>
+      </tr>
+          <tr>
+        <td class="type">mixed&nbsp;&nbsp;</td>
+        <td><b>$defaultValue</b>&nbsp;&nbsp;</td>
+        <td>Default value to return if nothing is found</td>
+      </tr>
+        </table>
+    </div><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="methodgetFromName"></a>
+	<h3>method getFromName <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPLinq__PHPLinqLinqToZendDb.php.html#a296">296</a>]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>string getFromName(
+)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Retrieve &quot;from&quot; name<br /><br /><p>Retrieve &quot;from&quot; name</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+			<hr class="separator" />
+		<div class="notes">Implementation of:</div>
+			<dl>
+			<dt><a href="../PHPLinq/PHPLinq_ILinqProvider.html#methodgetFromName">PHPLinq_ILinqProvider::getFromName()</a></dt>
+						<dd>Retrieve &quot;from&quot; name</dd>
+					</dl>
+		
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="methodgetJoinCondition"></a>
+	<h3>method getJoinCondition <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPLinq__PHPLinqLinqToZendDb.php.html#a278">278</a>]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code><a href="../PHPLinq/PHPLinq_Expression.html">PHPLinq_Expression</a> getJoinCondition(
+)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Get join condition<br /><br /><p>Get join condition</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+			<hr class="separator" />
+		<div class="notes">Implementation of:</div>
+			<dl>
+			<dt><a href="../PHPLinq/PHPLinq_ILinqProvider.html#methodgetJoinCondition">PHPLinq_ILinqProvider::getJoinCondition()</a></dt>
+						<dd>Get join condition</dd>
+					</dl>
+		
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="methodgetSource"></a>
+	<h3>method getSource <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPLinq__PHPLinqLinqToZendDb.php.html#a305">305</a>]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>mixed getSource(
+)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Retrieve data in data source<br /><br /><p>Retrieve data in data source</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+			<hr class="separator" />
+		<div class="notes">Implementation of:</div>
+			<dl>
+			<dt><a href="../PHPLinq/PHPLinq_ILinqProvider.html#methodgetSource">PHPLinq_ILinqProvider::getSource()</a></dt>
+						<dd>Retrieve data in data source</dd>
+					</dl>
+		
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="methodin"></a>
+	<h3>method in <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPLinq__PHPLinqLinqToZendDb.php.html#a315">315</a>]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code><a href="../PHPLinq/PHPLinq_ILinqProvider.html">PHPLinq_ILinqProvider</a> in(
+mixed
+$source)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Set source of data<br /><br /><p>Set source of data</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+			<hr class="separator" />
+		<div class="notes">Implementation of:</div>
+			<dl>
+			<dt><a href="../PHPLinq/PHPLinq_ILinqProvider.html#methodin">PHPLinq_ILinqProvider::in()</a></dt>
+						<dd>Set source of data</dd>
+					</dl>
+		
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type">mixed&nbsp;&nbsp;</td>
+        <td><b>$source</b>&nbsp;&nbsp;</td>
+        <td></td>
+      </tr>
+        </table>
+    </div><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="methodjoin"></a>
+	<h3>method join <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPLinq__PHPLinqLinqToZendDb.php.html#a1100">1100</a>]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code><a href="../PHPLinq/PHPLinq_Initiator.html">PHPLinq_Initiator</a> join(
+string
+$name)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Join<br /><br /><p>Join</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+			<hr class="separator" />
+		<div class="notes">Implementation of:</div>
+			<dl>
+			<dt><a href="../PHPLinq/PHPLinq_ILinqProvider.html#methodjoin">PHPLinq_ILinqProvider::join()</a></dt>
+						<dd>Join</dd>
+					</dl>
+		
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type">string&nbsp;&nbsp;</td>
+        <td><b>$name</b>&nbsp;&nbsp;</td>
+        <td></td>
+      </tr>
+        </table>
+    </div><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="methodlast"></a>
+	<h3>method last <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPLinq__PHPLinqLinqToZendDb.php.html#a1048">1048</a>]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>mixed last(
+[string
+$expression = null])</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Last<br /><br /><p>Last</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+			<hr class="separator" />
+		<div class="notes">Implementation of:</div>
+			<dl>
+			<dt><a href="../PHPLinq/PHPLinq_ILinqProvider.html#methodlast">PHPLinq_ILinqProvider::last()</a></dt>
+						<dd>Last</dd>
+					</dl>
+		
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type">string&nbsp;&nbsp;</td>
+        <td><b>$expression</b>&nbsp;&nbsp;</td>
+        <td>Expression which creates a resulting element</td>
+      </tr>
+        </table>
+    </div><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="methodlastOrDefault"></a>
+	<h3>method lastOrDefault <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPLinq__PHPLinqLinqToZendDb.php.html#a1064">1064</a>]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>mixed lastOrDefault(
+[string
+$expression = null], [mixed
+$defaultValue = null])</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		LastOrDefault<br /><br /><p>LastOrDefault</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+			<hr class="separator" />
+		<div class="notes">Implementation of:</div>
+			<dl>
+			<dt><a href="../PHPLinq/PHPLinq_ILinqProvider.html#methodlastOrDefault">PHPLinq_ILinqProvider::lastOrDefault()</a></dt>
+						<dd>LastOrDefault</dd>
+					</dl>
+		
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type">string&nbsp;&nbsp;</td>
+        <td><b>$expression</b>&nbsp;&nbsp;</td>
+        <td>Expression which creates a resulting element</td>
+      </tr>
+          <tr>
+        <td class="type">mixed&nbsp;&nbsp;</td>
+        <td><b>$defaultValue</b>&nbsp;&nbsp;</td>
+        <td>Default value to return if nothing is found</td>
+      </tr>
+        </table>
+    </div><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="methodmax"></a>
+	<h3>method max <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPLinq__PHPLinqLinqToZendDb.php.html#a1147">1147</a>]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>mixed max(
+)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Maximum of elements<br /><br /><p>Maximum of elements</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>Maximum of elements</td>
+  </tr>
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+			<hr class="separator" />
+		<div class="notes">Implementation of:</div>
+			<dl>
+			<dt><a href="../PHPLinq/PHPLinq_ILinqProvider.html#methodmax">PHPLinq_ILinqProvider::max()</a></dt>
+						<dd>Maximum of elements</dd>
+					</dl>
+		
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="methodmin"></a>
+	<h3>method min <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPLinq__PHPLinqLinqToZendDb.php.html#a1138">1138</a>]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>mixed min(
+)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Minimum of elements<br /><br /><p>Minimum of elements</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>Minimum of elements</td>
+  </tr>
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+			<hr class="separator" />
+		<div class="notes">Implementation of:</div>
+			<dl>
+			<dt><a href="../PHPLinq/PHPLinq_ILinqProvider.html#methodmin">PHPLinq_ILinqProvider::min()</a></dt>
+						<dd>Minimum of elements</dd>
+					</dl>
+		
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="methodofType"></a>
+	<h3>method ofType <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPLinq__PHPLinqLinqToZendDb.php.html#a870">870</a>]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>void ofType(
+string
+$type)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Select the elements of a certain type<br /><br /><p>Select the elements of a certain type</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+			<hr class="separator" />
+		<div class="notes">Implementation of:</div>
+			<dl>
+			<dt><a href="../PHPLinq/PHPLinq_ILinqProvider.html#methodofType">PHPLinq_ILinqProvider::ofType()</a></dt>
+						<dd>Select the elements of a certain type</dd>
+					</dl>
+		
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type">string&nbsp;&nbsp;</td>
+        <td><b>$type</b>&nbsp;&nbsp;</td>
+        <td>Type name</td>
+      </tr>
+        </table>
+    </div><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="methodon"></a>
+	<h3>method on <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPLinq__PHPLinqLinqToZendDb.php.html#a1110">1110</a>]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code><a href="../PHPLinq/PHPLinq_ILinqProvider.html">PHPLinq_ILinqProvider</a> on(
+string
+$expression)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		On<br /><br /><p>On</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+			<hr class="separator" />
+		<div class="notes">Implementation of:</div>
+			<dl>
+			<dt><a href="../PHPLinq/PHPLinq_ILinqProvider.html#methodon">PHPLinq_ILinqProvider::on()</a></dt>
+						<dd>On</dd>
+					</dl>
+		
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type">string&nbsp;&nbsp;</td>
+        <td><b>$expression</b>&nbsp;&nbsp;</td>
+        <td>Expression representing join condition</td>
+      </tr>
+        </table>
+    </div><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="methodorderBy"></a>
+	<h3>method orderBy <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPLinq__PHPLinqLinqToZendDb.php.html#a813">813</a>]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code><a href="../PHPLinq/PHPLinq_ILinqProvider.html">PHPLinq_ILinqProvider</a> orderBy(
+string
+$expression, [string
+$comparer = null])</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		OrderBy<br /><br /><p>OrderBy</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+			<hr class="separator" />
+		<div class="notes">Implementation of:</div>
+			<dl>
+			<dt><a href="../PHPLinq/PHPLinq_ILinqProvider.html#methodorderBy">PHPLinq_ILinqProvider::orderBy()</a></dt>
+						<dd>OrderBy</dd>
+					</dl>
+		
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type">string&nbsp;&nbsp;</td>
+        <td><b>$expression</b>&nbsp;&nbsp;</td>
+        <td>Expression to order elements by</td>
+      </tr>
+          <tr>
+        <td class="type">string&nbsp;&nbsp;</td>
+        <td><b>$comparer</b>&nbsp;&nbsp;</td>
+        <td>Comparer function (taking 2 arguments, returning -1, 0, 1)</td>
+      </tr>
+        </table>
+    </div><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="methodorderByDescending"></a>
+	<h3>method orderByDescending <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPLinq__PHPLinqLinqToZendDb.php.html#a825">825</a>]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code><a href="../PHPLinq/PHPLinq_ILinqProvider.html">PHPLinq_ILinqProvider</a> orderByDescending(
+string
+$expression, [string
+$comparer = null])</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		OrderByDescending<br /><br /><p>OrderByDescending</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+			<hr class="separator" />
+		<div class="notes">Implementation of:</div>
+			<dl>
+			<dt><a href="../PHPLinq/PHPLinq_ILinqProvider.html#methodorderByDescending">PHPLinq_ILinqProvider::orderByDescending()</a></dt>
+						<dd>OrderByDescending</dd>
+					</dl>
+		
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type">string&nbsp;&nbsp;</td>
+        <td><b>$expression</b>&nbsp;&nbsp;</td>
+        <td>Expression to order elements by</td>
+      </tr>
+          <tr>
+        <td class="type">string&nbsp;&nbsp;</td>
+        <td><b>$comparer</b>&nbsp;&nbsp;</td>
+        <td>Comparer function (taking 2 arguments, returning -1, 0, 1)</td>
+      </tr>
+        </table>
+    </div><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="methodreverse"></a>
+	<h3>method reverse <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPLinq__PHPLinqLinqToZendDb.php.html#a960">960</a>]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code><a href="../PHPLinq/PHPLinq_ILinqProvider.html">PHPLinq_ILinqProvider</a> reverse(
+[bool
+$preserveKeys = null])</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Reverse elements - Not performed as query! (heavy)<br /><br /><p>Reverse elements - Not performed as query! (heavy)</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+			<hr class="separator" />
+		<div class="notes">Implementation of:</div>
+			<dl>
+			<dt><a href="../PHPLinq/PHPLinq_ILinqProvider.html#methodreverse">PHPLinq_ILinqProvider::reverse()</a></dt>
+						<dd>Reverse elements</dd>
+					</dl>
+		
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type">bool&nbsp;&nbsp;</td>
+        <td><b>$preserveKeys</b>&nbsp;&nbsp;</td>
+        <td>Preserve keys?</td>
+      </tr>
+        </table>
+    </div><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="methodselect"></a>
+	<h3>method select <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPLinq__PHPLinqLinqToZendDb.php.html#a333">333</a>]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>mixed select(
+[string
+$expression = null])</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Select<br /><br /><p>Select</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+			<hr class="separator" />
+		<div class="notes">Implementation of:</div>
+			<dl>
+			<dt><a href="../PHPLinq/PHPLinq_ILinqProvider.html#methodselect">PHPLinq_ILinqProvider::select()</a></dt>
+						<dd>Select</dd>
+					</dl>
+		
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type">string&nbsp;&nbsp;</td>
+        <td><b>$expression</b>&nbsp;&nbsp;</td>
+        <td>Expression which creates a resulting element</td>
+      </tr>
+        </table>
+    </div><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="methodsingle"></a>
+	<h3>method single <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPLinq__PHPLinqLinqToZendDb.php.html#a1079">1079</a>]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>mixed single(
+[string
+$expression = null])</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Single<br /><br /><p>Single</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+			<hr class="separator" />
+		<div class="notes">Implementation of:</div>
+			<dl>
+			<dt><a href="../PHPLinq/PHPLinq_ILinqProvider.html#methodsingle">PHPLinq_ILinqProvider::single()</a></dt>
+						<dd>Single</dd>
+					</dl>
+		
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type">string&nbsp;&nbsp;</td>
+        <td><b>$expression</b>&nbsp;&nbsp;</td>
+        <td>Expression which creates a resulting element</td>
+      </tr>
+        </table>
+    </div><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="methodsingleOrDefault"></a>
+	<h3>method singleOrDefault <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPLinq__PHPLinqLinqToZendDb.php.html#a1090">1090</a>]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>mixed singleOrDefault(
+[string
+$expression = null], [mixed
+$defaultValue = null])</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		SingleOrDefault<br /><br /><p>SingleOrDefault</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+			<hr class="separator" />
+		<div class="notes">Implementation of:</div>
+			<dl>
+			<dt><a href="../PHPLinq/PHPLinq_ILinqProvider.html#methodsingleOrDefault">PHPLinq_ILinqProvider::singleOrDefault()</a></dt>
+						<dd>SingleOrDefault</dd>
+					</dl>
+		
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type">string&nbsp;&nbsp;</td>
+        <td><b>$expression</b>&nbsp;&nbsp;</td>
+        <td>Expression which creates a resulting element</td>
+      </tr>
+          <tr>
+        <td class="type">mixed&nbsp;&nbsp;</td>
+        <td><b>$defaultValue</b>&nbsp;&nbsp;</td>
+        <td>Default value to return if nothing is found</td>
+      </tr>
+        </table>
+    </div><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="methodskip"></a>
+	<h3>method skip <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPLinq__PHPLinqLinqToZendDb.php.html#a779">779</a>]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code><a href="../PHPLinq/PHPLinq_ILinqProvider.html">PHPLinq_ILinqProvider</a> skip(
+int
+$n)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Skip $n elements<br /><br /><p>Skip $n elements</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+			<hr class="separator" />
+		<div class="notes">Implementation of:</div>
+			<dl>
+			<dt><a href="../PHPLinq/PHPLinq_ILinqProvider.html#methodskip">PHPLinq_ILinqProvider::skip()</a></dt>
+						<dd>Skip $n elements</dd>
+					</dl>
+		
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type">int&nbsp;&nbsp;</td>
+        <td><b>$n</b>&nbsp;&nbsp;</td>
+        <td></td>
+      </tr>
+        </table>
+    </div><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="methodskipWhile"></a>
+	<h3>method skipWhile <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPLinq__PHPLinqLinqToZendDb.php.html#a801">801</a>]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code><a href="../PHPLinq/PHPLinq_ILinqProvider.html">PHPLinq_ILinqProvider</a> skipWhile(
+string
+$expression)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Skip elements while $expression evaluates to true<br /><br /><p>Skip elements while $expression evaluates to true</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+			<hr class="separator" />
+		<div class="notes">Implementation of:</div>
+			<dl>
+			<dt><a href="../PHPLinq/PHPLinq_ILinqProvider.html#methodskipWhile">PHPLinq_ILinqProvider::skipWhile()</a></dt>
+						<dd>Skip elements while $expression evaluates to true</dd>
+					</dl>
+		
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type">string&nbsp;&nbsp;</td>
+        <td><b>$expression</b>&nbsp;&nbsp;</td>
+        <td>Expression to evaluate</td>
+      </tr>
+        </table>
+    </div><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="methodsum"></a>
+	<h3>method sum <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPLinq__PHPLinqLinqToZendDb.php.html#a1129">1129</a>]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>mixed sum(
+)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Sum elements<br /><br /><p>Sum elements</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>Sum of elements</td>
+  </tr>
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+			<hr class="separator" />
+		<div class="notes">Implementation of:</div>
+			<dl>
+			<dt><a href="../PHPLinq/PHPLinq_ILinqProvider.html#methodsum">PHPLinq_ILinqProvider::sum()</a></dt>
+						<dd>Sum elements</dd>
+					</dl>
+		
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="methodtake"></a>
+	<h3>method take <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPLinq__PHPLinqLinqToZendDb.php.html#a768">768</a>]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code><a href="../PHPLinq/PHPLinq_ILinqProvider.html">PHPLinq_ILinqProvider</a> take(
+int
+$n)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Take $n elements<br /><br /><p>Take $n elements</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+			<hr class="separator" />
+		<div class="notes">Implementation of:</div>
+			<dl>
+			<dt><a href="../PHPLinq/PHPLinq_ILinqProvider.html#methodtake">PHPLinq_ILinqProvider::take()</a></dt>
+						<dd>Take $n elements</dd>
+					</dl>
+		
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type">int&nbsp;&nbsp;</td>
+        <td><b>$n</b>&nbsp;&nbsp;</td>
+        <td></td>
+      </tr>
+        </table>
+    </div><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="methodtakeWhile"></a>
+	<h3>method takeWhile <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPLinq__PHPLinqLinqToZendDb.php.html#a790">790</a>]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code><a href="../PHPLinq/PHPLinq_ILinqProvider.html">PHPLinq_ILinqProvider</a> takeWhile(
+string
+$expression)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Take elements while $expression evaluates to true<br /><br /><p>Take elements while $expression evaluates to true</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+			<hr class="separator" />
+		<div class="notes">Implementation of:</div>
+			<dl>
+			<dt><a href="../PHPLinq/PHPLinq_ILinqProvider.html#methodtakeWhile">PHPLinq_ILinqProvider::takeWhile()</a></dt>
+						<dd>Take elements while $expression evaluates to true</dd>
+					</dl>
+		
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type">string&nbsp;&nbsp;</td>
+        <td><b>$expression</b>&nbsp;&nbsp;</td>
+        <td>Expression to evaluate</td>
+      </tr>
+        </table>
+    </div><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="methodthenBy"></a>
+	<h3>method thenBy <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPLinq__PHPLinqLinqToZendDb.php.html#a837">837</a>]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code><a href="../PHPLinq/PHPLinq_ILinqProvider.html">PHPLinq_ILinqProvider</a> thenBy(
+string
+$expression, [string
+$comparer = null])</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		ThenBy<br /><br /><p>ThenBy</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+			<hr class="separator" />
+		<div class="notes">Implementation of:</div>
+			<dl>
+			<dt><a href="../PHPLinq/PHPLinq_ILinqProvider.html#methodthenBy">PHPLinq_ILinqProvider::thenBy()</a></dt>
+						<dd>ThenBy</dd>
+					</dl>
+		
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type">string&nbsp;&nbsp;</td>
+        <td><b>$expression</b>&nbsp;&nbsp;</td>
+        <td>Expression to order elements by</td>
+      </tr>
+          <tr>
+        <td class="type">string&nbsp;&nbsp;</td>
+        <td><b>$comparer</b>&nbsp;&nbsp;</td>
+        <td>Comparer function (taking 2 arguments, returning -1, 0, 1)</td>
+      </tr>
+        </table>
+    </div><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="methodthenByDescending"></a>
+	<h3>method thenByDescending <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPLinq__PHPLinqLinqToZendDb.php.html#a849">849</a>]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code><a href="../PHPLinq/PHPLinq_ILinqProvider.html">PHPLinq_ILinqProvider</a> thenByDescending(
+string
+$expression, [string
+$comparer = null])</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		ThenByDescending<br /><br /><p>ThenByDescending</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+			<hr class="separator" />
+		<div class="notes">Implementation of:</div>
+			<dl>
+			<dt><a href="../PHPLinq/PHPLinq_ILinqProvider.html#methodthenByDescending">PHPLinq_ILinqProvider::thenByDescending()</a></dt>
+						<dd>ThenByDescending</dd>
+					</dl>
+		
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type">string&nbsp;&nbsp;</td>
+        <td><b>$expression</b>&nbsp;&nbsp;</td>
+        <td>Expression to order elements by</td>
+      </tr>
+          <tr>
+        <td class="type">string&nbsp;&nbsp;</td>
+        <td><b>$comparer</b>&nbsp;&nbsp;</td>
+        <td>Comparer function (taking 2 arguments, returning -1, 0, 1)</td>
+      </tr>
+        </table>
+    </div><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="methodwhere"></a>
+	<h3>method where <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPLinq__PHPLinqLinqToZendDb.php.html#a757">757</a>]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code><a href="../PHPLinq/PHPLinq_ILinqProvider.html">PHPLinq_ILinqProvider</a> where(
+string
+$expression)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Where<br /><br /><p>Where</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+			<hr class="separator" />
+		<div class="notes">Implementation of:</div>
+			<dl>
+			<dt><a href="../PHPLinq/PHPLinq_ILinqProvider.html#methodwhere">PHPLinq_ILinqProvider::where()</a></dt>
+						<dd>Where</dd>
+					</dl>
+		
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type">string&nbsp;&nbsp;</td>
+        <td><b>$expression</b>&nbsp;&nbsp;</td>
+        <td>Expression checking if an element should be contained</td>
+      </tr>
+        </table>
+    </div><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="method_convertToSql"></a>
+	<h3>method _convertToSql <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPLinq__PHPLinqLinqToZendDb.php.html#a529">529</a>]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>string _convertToSql(
+string
+$phpCode)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Converts PHP code into SQL code<br /><br /><p>Converts PHP code into SQL code</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>private</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+	
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type">string&nbsp;&nbsp;</td>
+        <td><b>$phpCode</b>&nbsp;&nbsp;</td>
+        <td>Code to convert</td>
+      </tr>
+        </table>
+    </div><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="method__isDestructing"></a>
+	<h3>method __isDestructing <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPLinq__PHPLinqLinqToZendDb.php.html#a269">269</a>]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>bool __isDestructing(
+)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Is object destructing?<br /><br /><p>Is object destructing?</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+			<hr class="separator" />
+		<div class="notes">Implementation of:</div>
+			<dl>
+			<dt><a href="../PHPLinq/PHPLinq_ILinqProvider.html#method__isDestructing">PHPLinq_ILinqProvider::__isDestructing()</a></dt>
+						<dd>Is object destructing?</dd>
+					</dl>
+		
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+</div><br />
+
+<hr />
+<a name="class_constss"></a>
+<h3>Class Constants</h3>
+<div class="tags">
+	<a name="constT_ARGUMENT"></a>
+	<p></p>
+	<h4>T_ARGUMENT = <span class="value">&nbsp;1001011</span></h4>
+	<p>[line <a href="../__filesource/fsource_PHPLinq__PHPLinqLinqToZendDb.php.html#a76">76</a>]</p>
+  
+  <br />
+	<div class="top">[ <a href="#top">Top</a> ]</div><br />
+	<a name="constT_ARITHMETIC"></a>
+	<p></p>
+	<h4>T_ARITHMETIC = <span class="value">&nbsp;1001012</span></h4>
+	<p>[line <a href="../__filesource/fsource_PHPLinq__PHPLinqLinqToZendDb.php.html#a77">77</a>]</p>
+  
+  <br />
+	<div class="top">[ <a href="#top">Top</a> ]</div><br />
+	<a name="constT_CONSTANT"></a>
+	<p></p>
+	<h4>T_CONSTANT = <span class="value">&nbsp;1001003</span></h4>
+	<p>[line <a href="../__filesource/fsource_PHPLinq__PHPLinqLinqToZendDb.php.html#a68">68</a>]</p>
+  
+  <br />
+	<div class="top">[ <a href="#top">Top</a> ]</div><br />
+	<a name="constT_DEFAULT"></a>
+	<p></p>
+	<h4>T_DEFAULT = <span class="value">&nbsp;1001008</span></h4>
+	<p>[line <a href="../__filesource/fsource_PHPLinq__PHPLinqLinqToZendDb.php.html#a73">73</a>]</p>
+  
+  <br />
+	<div class="top">[ <a href="#top">Top</a> ]</div><br />
+	<a name="constT_FUNCTION"></a>
+	<p></p>
+	<h4>T_FUNCTION = <span class="value">&nbsp;1001001</span></h4>
+	<p>[line <a href="../__filesource/fsource_PHPLinq__PHPLinqLinqToZendDb.php.html#a66">66</a>]</p>
+  Constants<br /><br /><p>Constants</p><br />
+  <br />
+	<div class="top">[ <a href="#top">Top</a> ]</div><br />
+	<a name="constT_OBJECT_OPERATOR"></a>
+	<p></p>
+	<h4>T_OBJECT_OPERATOR = <span class="value">&nbsp;1001005</span></h4>
+	<p>[line <a href="../__filesource/fsource_PHPLinq__PHPLinqLinqToZendDb.php.html#a70">70</a>]</p>
+  
+  <br />
+	<div class="top">[ <a href="#top">Top</a> ]</div><br />
+	<a name="constT_OPERAND"></a>
+	<p></p>
+	<h4>T_OPERAND = <span class="value">&nbsp;1001007</span></h4>
+	<p>[line <a href="../__filesource/fsource_PHPLinq__PHPLinqLinqToZendDb.php.html#a72">72</a>]</p>
+  
+  <br />
+	<div class="top">[ <a href="#top">Top</a> ]</div><br />
+	<a name="constT_OPERATOR"></a>
+	<p></p>
+	<h4>T_OPERATOR = <span class="value">&nbsp;1001006</span></h4>
+	<p>[line <a href="../__filesource/fsource_PHPLinq__PHPLinqLinqToZendDb.php.html#a71">71</a>]</p>
+  
+  <br />
+	<div class="top">[ <a href="#top">Top</a> ]</div><br />
+	<a name="constT_PROPERTY"></a>
+	<p></p>
+	<h4>T_PROPERTY = <span class="value">&nbsp;1001002</span></h4>
+	<p>[line <a href="../__filesource/fsource_PHPLinq__PHPLinqLinqToZendDb.php.html#a67">67</a>]</p>
+  
+  <br />
+	<div class="top">[ <a href="#top">Top</a> ]</div><br />
+	<a name="constT_SIMPLE"></a>
+	<p></p>
+	<h4>T_SIMPLE = <span class="value">&nbsp;1001010</span></h4>
+	<p>[line <a href="../__filesource/fsource_PHPLinq__PHPLinqLinqToZendDb.php.html#a75">75</a>]</p>
+  
+  <br />
+	<div class="top">[ <a href="#top">Top</a> ]</div><br />
+	<a name="constT_START_STOP"></a>
+	<p></p>
+	<h4>T_START_STOP = <span class="value">&nbsp;1001009</span></h4>
+	<p>[line <a href="../__filesource/fsource_PHPLinq__PHPLinqLinqToZendDb.php.html#a74">74</a>]</p>
+  
+  <br />
+	<div class="top">[ <a href="#top">Top</a> ]</div><br />
+	<a name="constT_VARIABLE"></a>
+	<p></p>
+	<h4>T_VARIABLE = <span class="value">&nbsp;1001004</span></h4>
+	<p>[line <a href="../__filesource/fsource_PHPLinq__PHPLinqLinqToZendDb.php.html#a69">69</a>]</p>
+  
+  <br />
+	<div class="top">[ <a href="#top">Top</a> ]</div><br />
+</div><br />
+
+        <div class="credit">
+		    <hr />
+		    Documentation generated on Tue, 27 Jan 2009 08:29:31 +0100 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.1</a>
+	      </div>
+      </td></tr></table>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>

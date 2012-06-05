@@ -1,0 +1,136 @@
+<html>
+<head>
+    <title>QRCODE</title>
+    <style type="text/css">
+    </style>
+    <script type="text/javascript" src="grid.js"></script>
+    <script type="text/javascript" src="version.js"></script>
+    <script type="text/javascript" src="detector.js"></script>
+    <script type="text/javascript" src="formatinf.js"></script>
+    <script type="text/javascript" src="errorlevel.js"></script>
+    <script type="text/javascript" src="bitmat.js"></script>
+    <script type="text/javascript" src="datablock.js"></script>
+    <script type="text/javascript" src="bmparser.js"></script>
+    <script type="text/javascript" src="datamask.js"></script>
+    <script type="text/javascript" src="rsdecoder.js"></script>
+    <script type="text/javascript" src="gf256poly.js"></script>
+    <script type="text/javascript" src="gf256.js"></script>
+    <script type="text/javascript" src="decoder.js"></script>
+    <script type="text/javascript" src="QRCode.js"></script>
+    <script type="text/javascript" src="findpat.js"></script>
+    <script type="text/javascript" src="alignpat.js"></script>
+    <script type="text/javascript" src="databr.js"></script>
+    <script type="text/javascript">
+        var gCtx, gCanvas, imageData, c = 0, done = 0;
+
+        function handleFiles(f) {
+            var o = [];
+            for (var i = 0; i < f.length; i++) {
+                var reader = new FileReader();
+
+                reader.onload = (function (theFile) {
+                    return function (e) {
+                        qrcode.decode(e.target.result);
+                    };
+                })(f[i]);
+
+                // Read in the image file as a data URL.
+                reader.readAsDataURL(f[i]);
+            }
+        }
+
+        function read(a) {
+            done = 1;
+            alert(a);
+        }
+
+        function load() {
+            initCanvas(640, 480);
+            qrcode.callback = read;
+            qrcode.decode("meqrthumb.png");
+            scanning();
+        }
+
+        function initCanvas(ww, hh) {
+            gCanvas = document.getElementById("qr-canvas");
+            var w = ww;
+            var h = hh;
+            gCanvas.style.width = w + "px";
+            gCanvas.style.height = h + "px";
+            gCanvas.width = w;
+            gCanvas.height = h;
+            gCtx = gCanvas.getContext("2d");
+            gCtx.clearRect(0, 0, w, h);
+            imageData = gCtx.getImageData(0, 0, 320, 240);
+        }
+
+        function passLine(stringPixels) {
+            //a = (intVal >> 24) & 0xff;
+
+            var coll = stringPixels.split("-");
+
+            for (var i = 0; i < 320; i++) {
+                var intVal = parseInt(coll[i]);
+                r = (intVal >> 16) & 0xff;
+                g = (intVal >> 8) & 0xff;
+                b = (intVal ) & 0xff;
+                imageData.data[c + 0] = r;
+                imageData.data[c + 1] = g;
+                imageData.data[c + 2] = b;
+                imageData.data[c + 3] = 255;
+                c += 4;
+            }
+
+            if (c >= 320 * 240 * 4) {
+                c = 0;
+                gCtx.putImageData(imageData, 0, 0);
+                try {
+                    qrcode.decode();
+                    done = 1;
+                }
+                catch (e) {
+                    console.log(e);
+                    setTimeout(captureToCanvas, 500);
+                }
+            }
+        }
+
+        function captureToCanvas() {
+            flash = document.getElementById("embedflash");
+            if(!flash) return;
+            flash.ccCapture();
+
+        }
+
+        function scanning() {
+            setTimeout(function () {
+                if (done == 0) {
+                    captureToCanvas();
+                    //scanning()
+                }
+            }, 1000);
+        }
+    </script>
+
+</head>
+
+<body onload="load()">
+<div class="container">
+
+    <object id="iembedflash" classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000"
+            codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=7,0,0,0" width="320"
+            height="240">
+        <param name="movie" value="camcanvas.swf"/>
+        <param name="quality" value="high"/>
+        <param name="allowScriptAccess" value="always"/>
+        <embed allowScriptAccess="always" id="embedflash" src="camcanvas.swf" quality="high" width="320" height="240"
+               type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer"
+               mayscript="true"/>
+    </object>
+
+
+</div>
+<canvas id="qr-canvas" style="display:none;" width="640" height="480"></canvas>
+</body>
+
+</html>

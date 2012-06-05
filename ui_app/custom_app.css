@@ -1,0 +1,434 @@
+@charset "utf-8";
+/* CSS Document */
+/* = disabled nodes
+
+----------------------------------------------- */
+
+.check-bg {
+    background: url(check_bg.png) no-repeat white 5px 5px !important;
+}
+
+.tree-node-disabled .x-grid-cell {
+    -moz-opacity: 0.5;
+    opacity:.5;
+    filter: alpha(opacity=50);
+}
+.roleHeader{
+    font-size: 14px!important;
+}
+.roleHeader .perm{
+    float       : left!important;
+    margin      : 5px 90px 10px 10px!important;
+
+}
+.roleHeader .role{
+    text-align  : center;
+    width       : 110px;
+    margin      : 5px 2px 10px 2px;
+    float       : left;
+}
+@font-face{
+	font-family: 'Cuprum';
+	src: url('../ui_fonts/Cuprum.ttf');
+}
+.x-livesearch-match {
+    background-color: yellow;
+}
+.x-grid-icon-padding {
+	padding: 0 5px;
+}
+
+.vitals-column-over tr td {
+	background-color: #ededed !important;
+}
+.vitals-column-selected tr td {
+	background-color: #DFE8F6 !important;
+}
+.vitals-column-caution tr td {
+	background-color: #fffccc !important;
+}
+.x-grid-table-vitals tr first {
+	padding: 0 0!important;
+}
+.x-grid-table-vitals tr td {
+    border-left: 1px solid #cccccc!important;
+	border-bottom: 1px solid #f3f3f3 !important;
+    padding: 1px 0 0 0;
+	height:20px;
+    text-align: center !important;
+}
+.x-grid-table-vitals .x-grid-table-vitals-date {
+	padding: 6px 0 7px 0 !important;
+	font-weight:bold!important;
+	border-bottom: 1px solid #cccccc!important;
+}
+.x-grid-table-vitals tr td .x-grid-cell-inner {
+    margin: 0;
+	padding: 2px 6px 3px;
+}
+
+.vitals-data .header, .general-data .header {
+    text-align      : left;
+    white-space: nowrap;
+}
+/* Mitos Loading Mask */
+.mitos-mask {
+    z-index:  300000;
+}
+.mitos-mask-msg {
+    z-index:300001;
+    background: url(GaiaEHR_loading.jpg) no-repeat white center top;
+    left:   45%;
+    top:    40%;
+}
+.mitos-mask-msg div {
+    background-color: transparent;
+    background-position: 5px 120px;
+    padding: 120px 10px 10px 26px;
+    margin: 0;
+}
+
+.grid-row-form-editor .x-panel-body {
+    background-color: #E0E0E0;
+    border-top: none!important;
+}
+.grid-row-form-editor .x-docked-noborder-bottom{
+    border-bottom: none!important;
+}
+.grid-row-form-editor .x-grid-body {
+    background-color: #ffffff!important;
+}
+
+::-webkit-scrollbar {
+    width: 5px;
+    height: 7px;
+    margin: 0;
+}
+::-webkit-scrollbar-track-piece  {
+    background-color: #fff;
+    -webkit-border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:vertical {
+    height: 50px;
+    background-color: #ccc;
+    -webkit-border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:horizontal {
+    height: 50px;
+    background-color: #ccc;
+    -webkit-border-radius: 3px;
+}
+.timer {
+    float: right;
+    margin-right: -10px;
+    width: 160px;
+}
+.day{
+    float:left;
+}
+.time {
+    float:right;
+    min-width: 70px;
+}
+.RenderPanel {
+    background-color: #DFE8F6!important;
+    padding: 5px !important;
+    border: solid 1px #CCC;
+}
+.RenderPanel .x-panel-body .x-box-inner x-panel{
+	background-color: #fff !important;
+    
+}
+.RenderPanel-header {
+	background-color: #DFE8F6;
+    color: #596F8F;
+    font-size: 22px;
+    font-weight: 200;
+    padding: 0 15px;
+    text-shadow: 0 1px 0 #fff;
+}
+.RenderPanel-body-container {
+	background-color: #fff;
+	/*border-color: #D4CDCC;
+	border-style: solid;
+	border-width:1px;*/
+}
+.RenderPanel .x-panel-body .x-box-inner {
+    
+}
+.headerLargeBtn .x-btn-center {
+    height: 40px !important;
+    width: 50px !important;
+}
+.headerLargeBtn .x-btn-icon {
+    width: 50px !important;
+    height: 40px !important;
+    margin: 0!important;
+    padding: 0!important;
+    background-position: center center;
+}
+.headerLargeBtn .x-btn-inner {
+    width: 50px !important;
+    height: 40px !important;
+    margin: 0!important;
+    padding: 0!important;
+}
+.emerBtn .x-btn-icon {
+    background-position: center top!important;
+}
+.emerBtnOver .x-btn-icon {
+    background-position: center bottom!important;
+}
+
+.msgForm .x-panel-body {
+    border-top: none !important;
+}
+.message-form-header {
+    background-color: #F1F1F1;
+    border-bottom: solid 1px #ccc;
+    border-top-style: none !important;
+}
+
+.form-white-bg .x-panel-body {
+	background-color: #fff !important;
+	background-color: #fff !important;
+    border: 1px solid #D4CDCC;
+}
+.x-grid-table .x-grid-row{
+cursor: pointer !important;
+}
+.x-border-layout-ct{
+    background-color: #f7f7f7;
+}
+.dashboard_title{
+	font-family: "Cuprum";
+	font-size: 24px;
+	width: 100%;
+    border-bottom: 1px dotted #ccc;
+}
+
+.search_title{
+    color: #0066CC !important;
+    font-size: 14px !important;
+    border-bottom: 1px dotted #0066CC !important;
+}
+.search_source{
+    font-size: 10px !important;
+
+}
+.search_snippet{
+    font-size: 12px !important;
+
+}
+.search_data{
+    background-color: #DFE8F6;
+    padding:10px;
+    border-bottom: 1px dotted #0066CC !important;
+}
+.search_data .search_title{
+    color: #596F8F !important;
+    border: none !important;
+}
+.search_body{
+    padding: 10px;
+    font-size: 14px !important;
+}
+.search_body p{
+    padding: 5px 0 5px 0 !important;
+}
+.search_body ul, .search_body ol{
+    margin-left: 25px !important;
+}
+.search_body li{
+    list-style: circle !important;
+}
+
+.patient_btn_img {
+    float: left;
+    height: 32px;
+    width: 32px;
+}
+.patient_btn_img img{
+    border: 1px solid #999999;
+}
+.patient_btn_info {
+    color: #666666;
+    float: left;
+    font-size: 13px;
+    text-align: center;
+    padding: 0 10px;
+
+}
+.patient_btn_name {
+    font-weight: bold;
+}
+.drButton .x-btn-inner{
+    font-size: 24px !important;
+    color: #666666;
+}
+.patient-pool-btn{
+    margin-bottom: 3px;
+    float:none;
+    min-width: 188px;
+    border-width:1px 1px 1px 1px;
+}
+.patient-pool-btn-small{
+
+}
+.patient-pool-btn .patient_btn_info{
+    float: none;
+    width: 100%;
+}
+.patient-pool-btn .patient_btn_info div{
+    padding-left: 32px;
+}
+.progressNote .secession{
+    padding:15px;
+    margin:10px 0;
+    border: 1px solid #ccc;
+    position:relative;
+    width:100%;
+    float:left
+
+}
+.progressNote .secession .title{
+    background-color:white;
+    position:absolute;
+    padding: 0 5px;
+    font-weight:bold;
+    top: -8px;
+    left: 5px
+}
+.progressNote .secession span {
+    text-decoration:underline;
+
+}
+.progressNote .secession p {
+    margin:5px 0;
+}
+.progressNote .secession .pblock {
+    float:left;
+    width:210px;
+}
+.cpt_summary {
+    margin: 5px;
+    background-color:#fff;
+    border: solid 1px #ccc;
+}
+.cpt_summary table {
+    font-size: 12px;
+}
+.cpt_summary table td {
+    padding:5px;
+}
+body#login{
+	background-image:url(login_bg.png) !important;
+	background-position: bottom;
+	background-attachment:fixed;
+	background-repeat:repeat-x !important;
+	background-color: #FFF;
+	margin: 0;
+}
+#bg_logo{
+	position: absolute;
+    background: url(GaiaEHR_big_logo.png) no-repeat fixed top center;
+    top: 0;
+	left: 0;
+	width: 100%;
+	height: 196px;
+}
+#copyright{
+	font-family:"Lucida Sans Unicode", "Lucida Grande", sans-serif;
+	font-size: 10px;
+	color: #333;
+	position: absolute;
+	bottom: 5px;
+	right: 10px;
+}
+
+#copyright a{
+	color: #333;;
+}
+
+#dashboard_title{
+	font-size: 24px;
+	color: #333;
+	width: 100%;
+}
+/*Top Alert Message Styles*/
+.msg .x-box-mc {
+    font-size:14px;
+}
+#msg-div {
+    position:absolute;
+    left:35%;
+    top:10px;
+    width:300px;
+    z-index:20000;
+}
+#msg-div .msg {
+    border-radius: 8px;
+    -moz-border-radius: 8px;
+    background: #F6F6F6;
+    border: 2px solid #ccc;
+    margin-top: 2px;
+    padding: 10px 15px;
+    color: #555;
+}
+#msg-div .msg h3 {
+    margin: 0 0 8px;
+    font-weight: bold;
+    font-size: 15px;
+}
+#msg-div .msg p {
+    margin: 0;
+}
+.toolDelete {
+    background-color: #ff0033 ! important;
+    border: 1px solid #999999;
+}
+.toolDelete:hover {
+    background-color: #ff0033 ! important;
+    background-image: none;
+    border: 1px solid #999999;
+}
+.toolDelete span{
+    color: #fff!important;
+}
+.toolGreen {
+     background-color: #00ff00! important;
+     border: 1px solid #999999;
+}
+
+.toolGreen:hover {
+     background-color: #00cc00! important;
+     background-image: none;
+     border: 1px solid #999999;
+}
+.winDelete{
+    background:none;
+    background-color:#ff0033!important
+}
+.winDelete:hover{
+    background:none;
+    background-image: none;
+    background-color: #ff0033 !important
+}
+.winSave{
+    background:none;
+    background-color: #00ff00 !important
+}
+.winSave:hover{
+    background:none;
+    background-image: none;
+    background-color:#00ff00!important
+}
+.winDelete span{
+    color:#fff!important;
+}
+#panelLayout .x-layout-split-bottom{
+  background: none!important;
+}
+#app-calendar{
+    border-left: solid 1px #cccccc;
+}

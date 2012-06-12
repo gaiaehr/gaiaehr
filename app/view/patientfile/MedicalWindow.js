@@ -14,7 +14,7 @@ Ext.define('App.view.patientfile.MedicalWindow', {
     title        : 'Medical Window',
     layout       : 'card',
     closeAction  : 'hide',
-    height       : 700,
+    height       : 750,
     width        : 1200,
     bodyStyle    : 'background-color:#fff',
     modal        : true,
@@ -1058,7 +1058,7 @@ Ext.define('App.view.patientfile.MedicalWindow', {
                         layout:'border',
                         bodyBorder:false,
                         border:false,
-                        height:400,
+                        height:350,
                         split:true,
                         items:[
                             {

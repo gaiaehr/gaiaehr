@@ -12,7 +12,7 @@
  *
  * @namespace App.data.REMOTING_API
  */
-if(!defined('_MitosEXEC')) die('No direct access allowed.');
+if(!defined('_GaiaEXEC')) die('No direct access allowed.');
 /**
  * Reset session flop count
  */
@@ -78,6 +78,8 @@ Globals::setGlobals();
         <script type="text/javascript" src="registry.js.php"></script>
         <!-- form validation vtypes -->
         <script type="text/javascript" src="repo/formValidation/formValidation.js"></script>
+        <!-- webcam -->
+        <script type="text/javascript" src="lib/jpegcam/htdocs/webcam.js"></script>
 
 
         <script type="text/javascript" src="lib/<?php echo $_SESSION['dir']['ext']; ?>/examples/ux/LiveSearchGridPanel.js"></script>
@@ -108,7 +110,7 @@ Globals::setGlobals();
 <!--    <script type="text/javascript" src="app/model/patientfile/VisitPayment.js"></script>-->
         <script type="text/javascript" src="app/model/patientfile/CptCodes.js"></script>
         <script type="text/javascript" src="app/model/patientfile/PatientsPrescription.js"></script>
-        <script type="text/javascript" src="app/model/patientfile/PatientsDoctorsNote.js"></script>
+        <script type="text/javascript" src="app/model/patientfile/PatientsLabsOrders.js"></script>
         <script type="text/javascript" src="app/model/fees/Billing.js"></script>
         <script type="text/javascript" src="app/model/fees/EncountersPayments.js"></script>
         <script type="text/javascript" src="app/model/administration/Services.js"></script>
@@ -138,7 +140,7 @@ Globals::setGlobals();
         <script type="text/javascript" src="app/store/patientfile/EncounterEventHistory.js"></script>
         <script type="text/javascript" src="app/store/patientfile/QRCptCodes.js"></script>
         <script type="text/javascript" src="app/store/patientfile/PatientsPrescription.js"></script>
-        <script type="text/javascript" src="app/store/patientfile/PatientsDoctorsNote.js"></script>
+        <script type="text/javascript" src="app/store/patientfile/PatientsLabsOrders.js"></script>
         <script type="text/javascript" src="app/store/fees/Billing.js"></script>
         <script type="text/javascript" src="app/store/fees/EncountersPayments.js"></script>
         <script type="text/javascript" src="app/store/administration/Services.js"></script>
@@ -208,6 +210,7 @@ Globals::setGlobals();
         <script type="text/javascript" src="app/classes/combo/PrescrptionHowTo.js"></script>
         <script type="text/javascript" src="app/classes/combo/LabsTypes.js"></script>
         <script type="text/javascript" src="app/classes/combo/LabObservations.js"></script>
+        <script type="text/javascript" src="app/classes/combo/Templates.js"></script>
         <script type="text/javascript" src="app/classes/form/fields/Checkbox.js"></script>
         <script type="text/javascript" src="app/classes/form/fields/DateTime.js"></script>
         <script type="text/javascript" src="app/classes/form/fields/Currency.js"></script>
@@ -233,6 +236,7 @@ Globals::setGlobals();
         <script type="text/javascript" src="app/view/patientfile/MedicalWindow.js"></script>
         <script type="text/javascript" src="app/view/patientfile/PreventiveCareWindow.js"></script>
         <script type="text/javascript" src="app/view/patientfile/NewDocumentsWindow.js"></script>
+        <script type="text/javascript" src="app/view/patientfile/DocumentViewerWindow.js"></script>
         <script type="text/javascript" src="app/view/fees/PaymentEntryWindow.js"></script>
         <script type="text/javascript" src="app/view/administration/Facilities.js"></script>
         <script type="text/javascript" src="app/view/administration/Globals.js"></script>
@@ -254,8 +258,6 @@ Globals::setGlobals();
         <script type="text/javascript" src="app/view/miscellaneous/OfficeNotes.js"></script>
         <script type="text/javascript" src="app/view/miscellaneous/Websearch.js"></script>
 
-
-
         <!-- Application Viewport -->
         <script type="text/javascript" src="app/view/Viewport.js"></script>
         <script type="text/javascript">
@@ -275,6 +277,16 @@ Globals::setGlobals();
 	                return (token);
                 }
             }
+	        function onWebCamComplete(msg){
+		        app.onWebCamComplete(msg);
+	        }
+            function printQRCode(pid){
+	            var src = settings.site_url + '/patients/' + app.currPatient.pid + '/patientDataQrCode.png?';
+	            app.QRCodePrintWin = window.open(src,'QRCodePrintWin','left=20,top=20,width=150,height=150,toolbar=0,resizable=0,location=1,scrollbars=0,menubar=0,directories=0');
+				Ext.defer(function(){
+					app.QRCodePrintWin.print();
+	            }, 1000);
+  	        }
         </script>
     </body>
 </html>

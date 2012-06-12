@@ -26,7 +26,7 @@ Ext.define('App.classes.LiveICDXSearch', {
 			extend: 'Ext.data.Model',
 			fields: [
 				{name: 'id', type: 'int'},
-				{name: 'code', type: 'float'},
+				{name: 'code'},
 				{name: 'code_text', type: 'string'},
 				{name: 'code_type', type: 'string'}
 			],

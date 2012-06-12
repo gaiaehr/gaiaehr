@@ -30,8 +30,8 @@ Ext.define('App.view.administration.Users', {
 				{name: 'id', type: 'int'},
 				{name: 'username', type: 'string'},
 				{name: 'password', type: 'auto'},
-				{name: 'authorized', type: 'string'},
-				{name: 'active', type: 'string'},
+				{name: 'authorized', type: 'bool'},
+				{name: 'active', type: 'bool'},
 				{name: 'info', type: 'string'},
 				{name: 'source', type: 'int'},
 				{name: 'fname', type: 'string'},
@@ -42,14 +42,14 @@ Ext.define('App.view.administration.Users', {
 				{name: 'federaldrugid', type: 'string'},
 				{name: 'upin', type: 'string'},
 				{name: 'facility_id', type: 'int'},
-				{name: 'see_auth', type: 'auto'},
-				{name: 'active', type: 'auto'},
+				{name: 'see_auth', type: 'bool'},
+				{name: 'active', type: 'bool'},
 				{name: 'npi', type: 'string'},
 				{name: 'title', type: 'string'},
 				{name: 'specialty', type: 'string'},
 				{name: 'cal_ui', type: 'string'},
 				{name: 'taxonomy', type: 'string'},
-				{name: 'calendar', type: 'auto'},
+				{name: 'calendar', type: 'bool'},
 				{name: 'abook_type', type: 'string'},
 				{name: 'default_warehouse', type: 'string'},
 				{name: 'role_id', type: 'int'}
@@ -143,7 +143,7 @@ Ext.define('App.view.administration.Users', {
 							msgTarget: 'under',
 							items    : [
 								{ width: 100, xtype: 'displayfield', value: 'Username: '},
-								{ width: 100, xtype: 'textfield', name: 'username' },
+								{ width: 100, xtype: 'textfield', name: 'username', allowBlank:false },
 								{ width: 100, xtype: 'displayfield', value: 'Password: '},
 								{ width: 105, xtype: 'textfield', name: 'password', inputType: 'password' }
 							]
@@ -155,7 +155,7 @@ Ext.define('App.view.administration.Users', {
 							items    : [
 								{ width: 100, xtype: 'displayfield', value: 'First, Middle, Last: '},
 								{ width: 50, xtype: 'mitos.titlescombo', name: 'title' },
-								{ width: 80, xtype: 'textfield', name: 'fname' },
+								{ width: 80, xtype: 'textfield', name: 'fname', allowBlank:false },
 								{ width: 65, xtype: 'textfield', name: 'mname' },
 								{ width: 105, xtype: 'textfield', name: 'lname' }
 							]
@@ -185,7 +185,7 @@ Ext.define('App.view.administration.Users', {
 							defaults: { hideLabel: true },
 							items   : [
 								{ width: 100, xtype: 'displayfield', value: 'Access Control: '},
-								{ width: 100, xtype: 'mitos.rolescombo', name: 'role_id' },
+								{ width: 100, xtype: 'mitos.rolescombo', name: 'role_id', allowBlank:false },
 								// not implemented yet
 								{ width: 100, xtype: 'displayfield', value: 'Taxonomy: '},
 								{ width: 105, xtype: 'textfield', name: 'taxonomy' }
@@ -280,16 +280,16 @@ Ext.define('App.view.administration.Users', {
 				if(response.result.error) {
 					Ext.Msg.alert('Opps!', 'This password is currently in used, or has been used before.<br>Please use a different password.');
 				} else {
-					me.save(form, store);
+					me.saveUser(form, store);
 				}
 			});
 		} else {
-			me.save(form, store);
+			me.saveUser(form, store);
 		}
 
 	},
 
-	save: function(form, store) {
+	saveUser: function(form, store) {
 		var record = form.getRecord(),
 			values = form.getValues(),
 			storeIndex = store.indexOf(record);
@@ -299,7 +299,6 @@ Ext.define('App.view.administration.Users', {
 			record.set(values);
 		}
 		store.sync();
-		store.load();
 		this.win.close();
 	},
 

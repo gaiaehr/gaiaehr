@@ -101,7 +101,7 @@ Ext.define('App.view.Viewport', {
 				me.checkSession();
 				me.getPatientesInPoolArea();
 			},
-			interval: 100000
+			interval: 1000000
 		});
 
 		me.storeTree = Ext.create('App.store.navigation.Navigation', {
@@ -175,19 +175,19 @@ Ext.define('App.view.Viewport', {
 			bodyStyle  : 'background: transparent',
 			margins    : '0 0 0 0',
 			items      : [
-				{
-					xtype : 'container',
-                    itemId: 'appLogo',
-                    width : window.innerWidth < this.minWidthToFullMode ? 35 : 200,
-					html  : '<img src="ui_app/app_logo.png" height="40" width="200" style="float:left">',
-					style : 'float:left',
-					border: false
-				},
+//				{
+//					xtype : 'container',
+//                    itemId: 'appLogo',
+//                    width : window.innerWidth < this.minWidthToFullMode ? 35 : 200,
+//					html  : '<img src="ui_app/app_logo.png" height="40" width="200" style="float:left">',
+//					style : 'float:left',
+//					border: false
+//				},
 				{
 					xtype    : 'button',
 					scale    : 'large',
 					style    : 'float:left',
-					margin   : '0 0 0 5',
+					margin   : 0,
 					itemId   : 'patientButton',
 					scope    : me,
 					handler  : me.openPatientSummary,
@@ -221,7 +221,7 @@ Ext.define('App.view.Viewport', {
 					iconCls: 'icoClock',
 					scope  : me,
 					handler: me.createNewEncounter,
-					tooltip: 'Crate New Encounter'
+					tooltip: 'Create New Encounter'
 				},
 				{
 					xtype  : 'button',
@@ -660,7 +660,8 @@ Ext.define('App.view.Viewport', {
 		me.ChartsWindow = Ext.create('App.view.patientfile.ChartsWindow');
         me.PaymentEntryWindow = Ext.create('App.view.patientfile.PaymentEntryWindow');
 		me.PreventiveCareWindow= Ext.create('App.view.patientfile.PreventiveCareWindow');
-		me.NewDocumentsWindow = Ext.create('App.view.patientfile.NewDocumentsWindow')
+		me.NewDocumentsWindow = Ext.create('App.view.patientfile.NewDocumentsWindow');
+		me.DocumentViewerWindow = Ext.create('App.view.patientfile.DocumentViewerWindow')
 		me.layout = { type: 'border', padding: 3 };
 		me.defaults = { split: true };
 		me.items = [ me.Header, me.navColumn, me.MainPanel, me.Footer ];
@@ -688,6 +689,15 @@ Ext.define('App.view.Viewport', {
 		this.NewDocumentsWindow.show();
 		this.NewDocumentsWindow.cardSwitch(action);
 	},
+
+	onWebCamComplete:function(msg){
+		var panel = this.getActivePanel();
+		if(panel.id == 'panelSummary'){
+			panel.completePhotoId();
+		}
+		this.msg('Sweet!', 'Patient image saved');
+	},
+
     onPatientLog:function(){
         if(this.patientArrivalLog){
             this.patientArrivalLog.show();
@@ -828,11 +838,11 @@ Ext.define('App.view.Viewport', {
 
 	navCollapsed: function() {
 		var navView = this.navColumn.getComponent('patientPoolArea'),
-            appLogo = this.Header.getComponent('appLogo'),
+            //appLogo = this.Header.getComponent('appLogo'),
 			foot = this.Footer,
 			footView = foot.down('dataview');
 
-        appLogo.hide();
+        //appLogo.hide();
 		navView.hide();
 		foot.setHeight(60);
 		footView.show();
@@ -840,14 +850,18 @@ Ext.define('App.view.Viewport', {
 
 	navExpanded: function() {
 		var navView = this.navColumn.getComponent('patientPoolArea'),
-            appLogo = this.Header.getComponent('appLogo'),
+            //appLogo = this.Header.getComponent('appLogo'),
 			foot = this.Footer,
 			footView = foot.down('dataview');
 
-        appLogo.show();
+        //appLogo.show();
 		navView.show();
 		foot.setHeight(30);
 		footView.hide();
+	},
+
+	getActivePanel:function(){
+		return this.MainPanel.getLayout().getActiveItem();
 	},
 
 	liveSearchSelect: function(combo, selection) {
@@ -1071,7 +1085,12 @@ Ext.define('App.view.Viewport', {
 			}
 		});
 	},
-
+	onDocumentView: function(src) {
+		var me = this;
+		if(me.documentViewWindow) me.DocumentViewerWindow.remove(me.documentViewWindow);
+		me.DocumentViewerWindow.add(me.documentViewWindow = Ext.create('App.classes.ManagedIframe', {src: src}));
+		me.DocumentViewerWindow.show();
+	},
 	/**
 	 *
 	 * @param panel

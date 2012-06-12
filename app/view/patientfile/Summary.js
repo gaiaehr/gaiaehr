@@ -215,10 +215,7 @@ Ext.define('App.view.patientfile.Summary', {
                                     {
                                         icon: 'ui_icons/preview.png',
                                         tooltip: 'View Document',
-                                        handler: function(grid, rowIndex, colIndex) {
-                                            var rec = grid.getStore().getAt(rowIndex);
-                                            alert("Edit " + rec.get('firstname'));
-                                        },
+	                                    handler: me.onDocumentView,
                                         getClass:function(){
                                             return 'x-grid-icon-padding';
                                         }
@@ -242,36 +239,36 @@ Ext.define('App.view.patientfile.Summary', {
                                 header:'User',
                                 dataIndex:'user_name'
                             }
-                        ],
-	                    tbar:[
-		                    {
-			                    text:'New Lab Order',
-			                    action:'lab',
-			                    scope:me,
-			                    handler:me.newDoc
-		                    },
-		                    '-',
-		                    {
-			                    text:'New X-Ray Order',
-			                    action:'xRay',
-			                    scope:me,
-			                    handler:me.newDoc
-		                    },
-		                    '-',
-		                    {
-			                    text:'New Prescription',
-			                    action:'prescription',
-			                    scope:me,
-			                    handler:me.newDoc
-		                    },
-		                    '-',
-		                    {
-			                    text:'New Doctors Note',
-			                    action:'notes',
-			                    scope:me,
-			                    handler:me.newDoc
-		                    }
-	                    ]
+                        ]
+//	                    tbar:[
+//		                    {
+//			                    text:'New Lab Order',
+//			                    action:'lab',
+//			                    scope:me,
+//			                    handler:me.newDoc
+//		                    },
+//		                    '-',
+//		                    {
+//			                    text:'New X-Ray Order',
+//			                    action:'xRay',
+//			                    scope:me,
+//			                    handler:me.newDoc
+//		                    },
+//		                    '-',
+//		                    {
+//			                    text:'New Prescription',
+//			                    action:'prescription',
+//			                    scope:me,
+//			                    handler:me.newDoc
+//		                    },
+//		                    '-',
+//		                    {
+//			                    text:'New Doctors Note',
+//			                    action:'notes',
+//			                    scope:me,
+//			                    handler:me.newDoc
+//		                    }
+//	                    ]
                     }
                 ]
             },
@@ -468,6 +465,11 @@ Ext.define('App.view.patientfile.Summary', {
         me.callParent(arguments);
     },
 
+	onDocumentView:function(grid, rowIndex){
+		var rec = grid.getStore().getAt(rowIndex),
+			src = rec.data.url;
+		app.onDocumentView(src);
+	},
 
 	formSave:function(btn){
 		var me = this,
@@ -513,7 +515,12 @@ Ext.define('App.view.patientfile.Summary', {
         var formFields = formpanel.getForm().getFields(), modelFields = [{name:'pid',type:'int'}];
 
         Ext.each(formFields.items, function(field) {
-            modelFields.push({name: field.name, type: 'auto'});
+	        if(field.xtype == 'datefield'){
+		        say(field);
+		        modelFields.push({name: field.name, type: 'date', dateFormat:'Y-m-d H:i:s'});
+	        }else{
+		        modelFields.push({name: field.name});
+	        }
         });
 
         var model = Ext.define(formpanel.itemId + 'Model', {
@@ -561,17 +568,13 @@ Ext.define('App.view.patientfile.Summary', {
                     height:100,
                     width:220,
                     items:[
-                        me.patientImg = Ext.create('Ext.Img', {
-                            src: 'ui_icons/user_100.png',
-                            height:100,
-                            width:100,
+                        me.patientImg = Ext.create('Ext.container.Container', {
+                            html: '<img src="ui_icons/patientPhotoId.jpg" height="100" width="100" />',
                             margin:'0 5 0 0'
                         }),
-                        me.patientQRcode = Ext.create('Ext.Img', {
-                            src: 'ui_icons/patientDataQrCode.png',
-                            height:100,
-                            width:100,
-                            margin:0
+                        me.patientQRcode = Ext.create('Ext.container.Container', {
+                            html: '<img src="ui_icons/patientDataQrCode.png" height="100" width="100" />',
+                            margin: 0
                         })
                     ]
                 });
@@ -643,36 +646,22 @@ Ext.define('App.view.patientfile.Summary', {
     getPatientImgs: function() {
         var me = this,
 	        number = Ext.Number.randomInt(1,1000);
-
-        me.patientImg.setSrc('ui_icons/user_100.png?'+number);
-        me.patientQRcode.setSrc(settings.site_url + '/patients/' + app.currPatient.pid + '/patientDataQrCode.png?'+number);
+        me.patientImg.update('<img src="' + settings.site_url + '/patients/' + app.currPatient.pid + '/patientPhotoId.jpg?' + number + '" height="100" width="100" />');
+        me.patientQRcode.update('<a ondblclick="printQRCode(app.currPatient.pid)"><img src="' + settings.site_url + '/patients/' + app.currPatient.pid + '/patientDataQrCode.png?' + number + '" height="100" width="100" title="Print QRCode" /></a>');
     },
-
 
 	getPhotoIdWindow: function() {
 		var me = this;
-
-		Ext.create('App.classes.PhotoIdWindow', {
+		me.PhotoIdWindow = Ext.create('App.classes.PhotoIdWindow', {
 			title      : 'Patient Photo Id',
 			loadMask   : true,
-			modal      : true,
-			dockedItems: {
-				xtype: 'toolbar',
-				dock : 'bottom',
-				items: [
-					{
-						text   : 'Capture Image',
-						iconCls: 'save',
-						scope:me,
-						handler: me.captureToCanvas
-					}
-				]
-			}
+			modal      : true
 		}).show();
 	},
 
-	captureToCanvas:function(){
-
+	completePhotoId:function(){
+		this.PhotoIdWindow.close();
+		this.getPatientImgs();
 	},
 
     /**
@@ -710,9 +699,7 @@ Ext.define('App.view.patientfile.Summary', {
         }
 	    PreventiveCare.activePreventiveCareAlert({pid:app.currPatient.pid},function(provider,response){
 	       if(response.result.success){
-
 		       app.PreventiveCareWindow.show();
-
 	       }
         });
     }

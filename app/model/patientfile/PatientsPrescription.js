@@ -14,11 +14,13 @@ Ext.define('App.model.patientfile.PatientsPrescription', {
 		{name: 'dose_mg', type: 'string'},
 		{name: 'take_pills', type: 'int'},
 		{name: 'type', type: 'string'},
-		{name: 'by', type: 'string'},
+		{name: 'route', type: 'string'},
 		{name: 'prescription_often', type: 'string'},
 		{name: 'prescription_when', type: 'string'},
 		{name: 'dispense', type: 'string'},
-		{name: 'refill', type: 'string'}
+		{name: 'refill', type: 'string'},
+		{name: 'begin_date'},
+		{name: 'end_date'}
 
 	],
 	proxy : {

@@ -174,7 +174,7 @@ class FormLayoutEngine
 			array_push($cleanItems, str_replace('"', '', $item));
 		}
 		$itemsJsArray = str_replace('"', '\'', str_replace($rawItems[0], $cleanItems, $rawStr));
-		return $itemsJsArray;
+		return preg_replace("/(\w)(')(\w)/i", "$1\'$3", $itemsJsArray);
 		//return $items;
 	}
 

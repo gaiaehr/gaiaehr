@@ -93,7 +93,8 @@ Ext.define('App.view.patientfile.Encounter', {
                 }
             ]
         });
-
+	    me.EncounterOrdersStore = Ext.create('App.store.patientfile.EncounterCPTsICDs');
+	    me.patientDocumentsStore = Ext.create('App.store.patientfile.PatientDocuments');
         me.checkoutWindow = Ext.create('Ext.window.Window', {
             title:'Checkout and Signing',
             closeAction:'hide',
@@ -101,47 +102,58 @@ Ext.define('App.view.patientfile.Encounter', {
             closable:false,
             layout:'border',
             width:1000,
-            height:700,
+            height:660,
             bodyPadding:5,
             items:[
                 {
                     xtype:'grid',
                     title:'Services / Diagnostics',
                     region:'center',
+	                store: me.EncounterOrdersStore,
                     columns:[
                         {
                             header:'Code',
-                            width:40,
+                            width:60,
                             dataIndex:'code'
                         },
                         {
                             header:'Description',
                             flex:1,
                             dataIndex:'code_text'
+                        },
+                        {
+                            header:'Type',
+                            flex:1,
+                            dataIndex:'type'
                         }
                     ]
                 },
                 {
                     xtype:'grid',
-                    title:'Orders / Rx',
+                    title:'Documents',
                     region:'east',
+	                store: me.patientDocumentsStore,
                     split:true,
                     width:485,
                     columns:[
+	                    {
+		                    xtype: 'actioncolumn',
+		                    width:26,
+		                    items: [
+			                    {
+				                    icon: 'ui_icons/preview.png',
+				                    tooltip: 'View Document',
+				                    handler: me.onDocumentView,
+				                    getClass:function(){
+					                    return 'x-grid-icon-padding';
+				                    }
+			                    }
+		                    ]
+	                    },
                         {
-                            header:'Order Type',
-                            width:40,
-                            dataIndex:'code'
-                        },
-                        {
-                            header:'Description',
+                            header:'Type',
                             flex:1,
-                            dataIndex:'code_text'
-                        }
-                    ],
-                    bbar:[
-                        {
-                            text:'Add Order'
+                            dataIndex:'docType'
                         }
                     ]
                 },
@@ -150,92 +162,115 @@ Ext.define('App.view.patientfile.Encounter', {
                     title:'Additional Info',
                     region:'south',
                     split:true,
-                    height:300,
-                    frame:true,
+                    height:227,
+	                layout:'column',
+	                defaults:{
+                        xtype:'fieldset',
+                        padding:8
+                    },
                     items:[
                         {
-                            xtype:'fieldcontainer',
-                            layout:'column',
-                            defaults:{
+	                        xtype:'fieldcontainer',
+	                        columnWidth:.5,
+	                        defaults:{
                                 xtype:'fieldset',
                                 padding:8
                             },
-                            items:[
-                                {
-                                    title:'Meaningful Use Measures',
-                                    columnWidth:.5,
-                                    margin:'5 1 5 5',
-                                    items:[
-                                        {
-                                            xtype:'checkboxgroup',
-                                            defaults:{
-                                                xtype:'checkboxfield'
-                                            },
-                                            items:[
-                                                {
-                                                    boxLabel:'Clinical Summary Provided'
-                                                },
-                                                {
-                                                    boxLabel:'Elegibility Confirmed'
-                                                }
-                                            ]
-                                        },
-                                        {
-                                            xtype:'checkboxgroup',
-                                            defaults:{
-                                                xtype:'checkboxfield'
-                                            },
-                                            items:[
-                                                {
-                                                    boxLabel:'Medical Reconciliation'
-                                                },
-                                                {
-                                                    boxLabel:'Push to Exchange'
-                                                }
-                                            ]
-                                        }
-                                    ]
-                                },
-                                {
-                                    title:'Follow Up',
-                                    columnWidth:.5,
-                                    margin:'5 5 1 5',
-                                    //height:90,
-                                    defaults:{
-                                        anchor:'100%'
-                                    },
-                                    items:[
-                                        {
-                                            xtype:'textfield',
-                                            fieldLabel:'Time'
-                                        },
-                                        {
-                                            fieldLabel:'Facility',
-                                            xtype:'mitos.facilitiescombo'
-                                        }
-                                    ]
-                                }
-                            ]
+	                        items:[
+		                        {
+		                            title:'Meaningful Use Measures',
+		                            margin:'5 1 5 5',
+		                            items:[
+		                                {
+		                                    xtype:'checkboxgroup',
+		                                    defaults:{
+		                                        xtype:'checkboxfield'
+		                                    },
+		                                    items:[
+		                                        {
+		                                            boxLabel:'Clinical Summary Provided'
+		                                        },
+		                                        {
+		                                            boxLabel:'Elegibility Confirmed'
+		                                        }
+		                                    ]
+		                                },
+		                                {
+		                                    xtype:'checkboxgroup',
+		                                    defaults:{
+		                                        xtype:'checkboxfield'
+		                                    },
+		                                    items:[
+		                                        {
+		                                            boxLabel:'Medical Reconciliation'
+		                                        },
+		                                        {
+		                                            boxLabel:'Push to Exchange'
+		                                        }
+		                                    ]
+		                                }
+		                            ]
+		                        },
+		                        {
+		                            title:'Follow Up',
+			                        margin:'5 1 5 5',
+		                            //height:90,
+		                            defaults:{
+		                                anchor:'100%'
+		                            },
+		                            items:[
+		                                {
+		                                    xtype:'textfield',
+		                                    fieldLabel:'Time'
+		                                },
+		                                {
+		                                    fieldLabel:'Facility',
+		                                    xtype:'mitos.facilitiescombo'
+		                                }
+		                            ]
+		                        }
+	                        ]
                         },
                         {
-                            xtype:'fieldset',
-                            margin:5,
-                            padding:8,
-                            title:'Patient Notes and Reminders',
-                            items:[
-                                {
-                                    xtype:'textfield',
-                                    name:'note',
-                                    fieldLabel:'Note',
-                                    anchor:'100%'
-                                },
-                                {
-                                    xtype:'textareafield',
-                                    grow:true,
-                                    name:'reminder',
-                                    fieldLabel:'Reminder',
-                                    anchor:'100%'
-                                }
+	                        xtype:'fieldcontainer',
+	                        columnWidth:.5,
+	                        defaults:{
+                                xtype:'fieldset',
+                                padding:8
+                            },
+	                        items:[
+		                        {
+		                            xtype:'fieldset',
+		                            margin:5,
+		                            padding:8,
+			                        columnWidth:.5,
+			                        height:96,
+		                            title:'Patient Notes and Reminders',
+		                            items:[
+		                                {
+		                                    xtype:'textfield',
+		                                    name:'reminder',
+		                                    fieldLabel:'Reminder',
+		                                    anchor:'100%'
+		                                },
+		                                {
+		                                    xtype:'textfield',
+		                                    grow:true,
+		                                    name:'note',
+		                                    fieldLabel:'Note',
+		                                    anchor:'100%'
+		                                }
+		                            ]
+		                        },
+		                        {
+			                        xtype:'fieldset',
+                                    margin:5,
+                                    padding:8,
+                                    columnWidth:.5,
+			                        height:88,
+                                    title:'Alert Area',
+			                        html:'<span style="color:green">Sweet! No Alerts Found</span>'
+		                        }
                             ]
                         }
                     ]
@@ -259,7 +294,16 @@ Ext.define('App.view.patientfile.Encounter', {
                     handler:me.cancelCheckout
 
                 }
-            ]
+            ],
+	        listeners:{
+		        scope:me,
+		        show:function(){
+			        me.EncounterOrdersStore.load({params: {eid: app.currEncounterId}});
+			        me.patientDocumentsStore.load({params: {eid: app.currEncounterId}});
+		        }
+
+	        }
+	          
         });
 
 
@@ -569,7 +613,34 @@ Ext.define('App.view.patientfile.Encounter', {
                 {
                     text:'Laboratories ',
                     action:'laboratories'
-                },
+                },'-',
+	            {
+		            text:'New Lab Order',
+		            action:'lab',
+		            scope:me,
+		            handler:me.newDoc
+	            },
+	            '-',
+	            {
+		            text:'New X-Ray Order',
+		            action:'xRay',
+		            scope:me,
+		            handler:me.newDoc
+	            },
+	            '-',
+	            {
+		            text:'New Prescription',
+		            action:'prescription',
+		            scope:me,
+		            handler:me.newDoc
+	            },
+	            '-',
+	            {
+		            text:'New Doctors Note',
+		            action:'notes',
+		            scope:me,
+		            handler:me.newDoc
+	            },
                 '->',
                 {
                     text:'Checkout',
@@ -579,7 +650,9 @@ Ext.define('App.view.patientfile.Encounter', {
         });
 
     },
-
+	newDoc:function(btn){
+		app.onNewDocumentsWin(btn.action)
+	},
     /**
      * opens the Medical window
      * @param btn
@@ -649,6 +722,9 @@ Ext.define('App.view.patientfile.Encounter', {
 
     signEncounter:function () {
 
+
+	    this.closeEncounter();
+	    this.checkoutWindow.close();
     },
 
     cancelCheckout:function (btn) {
@@ -1254,6 +1330,12 @@ Ext.define('App.view.patientfile.Encounter', {
 
 
     },
+
+	onDocumentView:function(grid, rowIndex){
+		var rec = grid.getStore().getAt(rowIndex),
+			src = rec.data.url;
+		app.onDocumentView(src);
+	},
     /**
      * This function is called from MitosAPP.js when
      * this panel is selected in the navigation panel.

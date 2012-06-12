@@ -83,6 +83,7 @@ class Patient
 		}
 		;
 		$this->createPatientQrCode($pid, $patient['fullname']);
+		$this->createDefaultPhotoId($pid);
 		return array('success' => true, 'patient'=> array('pid'=> $pid, 'fullname' => $patient['fullname']));
 	}
 
@@ -266,6 +267,14 @@ class Patient
 		QRcode::png($data, $filename, 'Q', 2, 2);
 	}
 
+	public function createDefaultPhotoId($pid){
+		$root = $_SESSION['site']['root'];
+		$site = $_SESSION['site']['site'];
+		$newImg = $root . '/sites/' . $site . '/patients/' . $pid .'/patientPhotoId.jpg';
+		copy($root.'/ui_icons/patientPhotoId.jpg', $newImg);
+		return;
+	}
+
 	public function getPatientAddressById($pid)
 	{
 		$this->db->setSQL("SELECT * FROM form_data_demographics WHERE pid = '$pid'");
@@ -391,14 +400,24 @@ class Patient
 
 	public function getPatientDocuments(stdClass $params)
 	{
-		$reminders = array();
-		$this->db->setSQL("SELECT * FROM patient_documents WHERE pid = '$params->pid'");
-		foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row) {
-			$row['user_name'] = $this->user->getUserNameById($row['uid']);
-			$reminders[]      = $row;
-		}
-		return $reminders;
+        $records = array();
+        if(isset($params->eid)){
+            $this->db->setSQL("SELECT * FROM patient_documents WHERE eid = '$params->eid'");
+            foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row) {
+                $row['user_name'] = $this->user->getUserNameById($row['uid']);
+                $records[]      = $row;
+            }
+        }elseif(isset($params->pid)){
+            $this->db->setSQL("SELECT * FROM patient_documents WHERE pid = '$params->pid'");
+            foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row) {
+                $row['user_name'] = $this->user->getUserNameById($row['uid']);
+                $records[]      = $row;
+            }
+        }
+
+        return $records;
 	}
+
 
 	/**
 	 * @param $date

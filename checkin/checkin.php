@@ -1,5 +1,5 @@
 <?php
-if(!defined('_MitosEXEC')) die('No direct access allowed.');
+if(!defined('_GaiaEXEC')) die('No direct access allowed.');
 /* Logon Screen Window
  * Description: Obviously the Logon Window. I think every WebApp has one.
  *

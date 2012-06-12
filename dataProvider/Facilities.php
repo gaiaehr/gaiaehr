@@ -120,6 +120,17 @@ class Facilities {
 
 
         return $facilityInfo;
+    }
+
+    public function getActiveFacilities (){
+        $this->db->setSQL("SELECT * FROM facility WHERE active = '1'");
+	    return $this->db->fetchRecord(PDO::FETCH_ASSOC);
+    }
+
+
+    public function getBillingFacilities (){
+        $this->db->setSQL("SELECT * FROM facility WHERE active = '1' AND billing_location = '1'");
+	    return $this->db->fetchRecord(PDO::FETCH_ASSOC);
 
     }
 

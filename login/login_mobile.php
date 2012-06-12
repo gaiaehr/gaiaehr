@@ -1,5 +1,5 @@
 <?php
-if(!defined('_MitosEXEC')) die('No direct access allowed.');
+if(!defined('_GaiaEXEC')) die('No direct access allowed.');
 
 /**
  * Logon Screen Window for mobiles

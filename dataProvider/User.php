@@ -81,6 +81,14 @@ class User {
         return $userName;
     }
 
+    public function getUserFullNameById($id)
+    {
+        $this->db->setSQL("SELECT title, fname, mname, lname FROM users WHERE id = '$id'");
+        $user = $this->db->fetchRecord();
+        $userName = Person::fullname($user['fname'],$user['mname'],$user['lname']);
+        return $userName;
+    }
+
     public function getCurrentUserData()
     {
         $id = $this->getCurrentUserId();
@@ -98,18 +106,32 @@ class User {
     public function addUser(stdClass $params)
     {
         $data = get_object_vars($params);
+
+	    unset($data['password']);
         $role['role_id'] = $data['role_id'];
-        unset($data['id'], $data['role_id'], $data['fullname'], $data['password']);
-//        $data['authorized'] = ($data['authorized'] == 'on' ? 1 : 0);
-//        $data['active']   	= ($data['active']     == 'on' ? 1 : 0);
-//        $data['calendar']   = ($data['calendar']   == 'on' ? 1 : 0);
-        if($data['taxonomy'] == ""){ unset($data['taxonomy']); }
-        $sql = $this->db->sqlBind($data, "users", "I");
+        unset($data['id'], $data['role_id'], $data['fullname']);
+        if($data['taxonomy'] == ''){ unset($data['taxonomy']); }
+
+	    foreach($data as $key => $val){
+            if($val == null || $val == ''){
+                unset($data[$key]);
+            }
+        }
+
+        $sql = $this->db->sqlBind($data, 'users', 'I');
         $this->db->setSQL($sql);
         $this->db->execLog();
-        $params->id = $this->db->lastInsertId;
+        $params->id = $this->user_id = $this->db->lastInsertId;
+
+	    $params->fullname = Person::fullname($params->fname,$params->mname,$params->lname);
+
+	    if($params->password != ''){
+            $this->changePassword($params->password);
+        }
+	    $params->password = '';
+
         $role['user_id'] = $params->id;
-        $sql = $this->db->sqlBind($role, "acl_user_roles", "I");
+        $sql = $this->db->sqlBind($role, 'acl_user_roles', 'I');
         $this->db->setSQL($sql);
         $this->db->execLog();
         return $params;
@@ -131,13 +153,10 @@ class User {
             $this->changePassword($data['password']);
         }
         unset($data['password']);
-        $sql = $this->db->sqlBind($role, "acl_user_roles", "U", "user_id='$this->user_id'");
+        $sql = $this->db->sqlBind($role, 'acl_user_roles', 'U', array('user_id'=>$this->user_id));
         $this->db->setSQL($sql);
         $this->db->execLog();
-//        $data['authorized'] = ($data['authorized'] == 'on' ? 1 : 0);
-//        $data['active']   	= ($data['active']     == 'on' ? 1 : 0);
-//        $data['calendar']   = ($data['calendar']   == 'on' ? 1 : 0);
-        $sql = $this->db->sqlBind($data, "users", "U", "id='$this->user_id'");
+        $sql = $this->db->sqlBind($data, 'users', 'U', array('id'=>$this->user_id));
         $this->db->setSQL($sql);
         $this->db->execLog();
         return $params;
@@ -172,12 +191,12 @@ class User {
     {
         $aes = $this->getAES();
         $aesPwd = $aes->encrypt($newpassword);
-        $this->db->setSQL("SELECT password, pwd_history1 FROM users WHERE id='".$this->user_id."'");
+        $this->db->setSQL("SELECT password, pwd_history1 FROM users WHERE id='$this->user_id'");
         $pwds = $this->db->fetchRecord();
         $row['password']     = $aesPwd;
         $row['pwd_history1'] = $pwds['password'];
         $row['pwd_history2'] = $pwds['pwd_history1'];
-        $sql = $this->db->sqlBind($row, "users", "U", "id='".$this->user_id."'");
+        $sql = $this->db->sqlBind($row, 'users', 'U', array('id'=>$this->user_id));
         $this->db->setSQL($sql);
         $this->db->execLog();
         return;
@@ -196,7 +215,7 @@ class User {
     {
         $data = get_object_vars($params);
         unset($data['id']);
-        $sql = $this->db->sqlBind($data, "users", "U", "id='" .$params->id . "'");
+        $sql = $this->db->sqlBind($data, 'users', 'U', array('id'=>$params->id));
         $this->db->setSQL($sql);
         $this->db->execLog();
         return array('success'=>true);

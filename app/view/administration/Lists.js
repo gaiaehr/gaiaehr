@@ -150,7 +150,7 @@ Ext.define('App.view.administration.Lists', {
 			],
 			listeners  : {
 				scope    : me,
-				itemclick: me.onListsGridClick
+				selectionchange: me.onListsGridClick
 			},
 			dockedItems: [
 				{
@@ -274,12 +274,12 @@ Ext.define('App.view.administration.Lists', {
 	 * @param grid
 	 * @param record
 	 */
-	onListsGridClick: function(grid, record) {
+	onListsGridClick: function(grid, selected) {
 		var me = this,
 			deleteBtn = me.listsGrid.down('toolbar').getComponent('listDeleteBtn'),
-		inUse = !!record.data.in_use == '1';
+		inUse = !!selected[0].data.in_use == '1';
 
-		me.currList = record.data.id;
+		me.currList = selected[0].data.id;
 		me.optionsStore.load({params: {list_id: me.currList}});
 
 		inUse ? deleteBtn.disable() : deleteBtn.enable();

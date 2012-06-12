@@ -363,6 +363,21 @@ class Services
 	}
 
 	/**
+	 * @param $eid
+	 * @return array
+	 */
+	public function getHCPCByEid($eid)
+	{
+		$this->db->setSQL("SELECT DISTINCT ech.*, hc.code, hc.code_text, hc.code_text_short
+                             FROM encounter_codes_hcpcs AS ech
+                        left JOIN hcpcs_codes AS hc ON ech.code = hc.code
+                            WHERE ech.eid = '$eid' ORDER BY ech.id ASC");
+		$records = $this->db->fetchRecords(PDO::FETCH_ASSOC);
+		return array('totals'=> count($records),
+		             'rows'  => $records);
+	}
+
+	/**
 	 * @param $pid
 	 * @return array
 	 */

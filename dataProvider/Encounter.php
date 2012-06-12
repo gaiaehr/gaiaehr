@@ -387,6 +387,30 @@ class Encounter {
         }
         return $record;
     }
+
+
+    public function getEncounterCodes($params)
+    {
+        $records = array();
+        foreach($this->services->getIcdxByEid($params->eid) as $fo){
+            $fo['type'] = 'ICD';
+            $records[] = $fo;
+        }
+        $foo = $this->services->getCptByEid($params->eid);
+        foreach($foo['rows'] as $fo){
+            $fo['type'] = 'CPT';
+            $records[] = $fo;
+        }
+        $foo = $this->services->getHCPCByEid($params->eid);
+        foreach($foo['rows'] as $fo){
+            $fo['type'] = 'HCPC';
+            $records[] = $fo;
+        }
+
+        return $records;
+    }
+
+
     /**
      * @param $eid
      * @return array

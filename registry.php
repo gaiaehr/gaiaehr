@@ -1,5 +1,5 @@
 <?php
-if(!defined('_MitosEXEC')) die('No direct access allowed.');
+if(!defined('_GaiaEXEC')) die('No direct access allowed.');
 /* The GaiaEHR Registry File, this will containt all the global variables
  * used by GaiaEHR, putting here variable is a security risk please consider
  * first putting here variables that are not sesible to the database.

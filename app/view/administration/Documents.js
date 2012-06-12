@@ -657,6 +657,7 @@ Ext.define('App.view.administration.Documents', {
         me.rowEditor.cancelEdit();
         store.insert(0,{
             title:'New Document',
+            title:'New Document',
             date: new Date(),
 	        type: 1
         });

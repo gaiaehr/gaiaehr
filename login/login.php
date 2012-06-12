@@ -1,5 +1,5 @@
 <?php
-if(!defined('_MitosEXEC')) die('No direct access allowed.');
+if(!defined('_GaiaEXEC')) die('No direct access allowed.');
 /* Logon Screen Window
  * Description: Obviously the Logon Window. I think every WebApp has one.
  * 
@@ -15,7 +15,7 @@ if(!defined('_MitosEXEC')) die('No direct access allowed.');
         <script type="text/javascript" src="lib/<?php echo $_SESSION['dir']['ext']; ?>/ext-all.js"></script>
             <link rel="stylesheet" type="text/css" href="lib/<?php echo $_SESSION['dir']['ext']; ?>/resources/css/ext-all-gray.css">
         <link rel="stylesheet" type="text/css" href="ui_app/style_newui.css" >
-        <link rel="stylesheet" type="text/css" href="ui_app/GaiaEHR_app.css" >
+        <link rel="stylesheet" type="text/css" href="ui_app/custom_app.css" >
 
         <link rel="shortcut icon" href="favicon.ico" >
 

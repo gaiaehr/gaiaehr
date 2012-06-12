@@ -18,6 +18,9 @@ include_once($_SESSION['site']['root'] . '/dataProvider/Encounter.php');
 include_once($_SESSION['site']['root'] . '/dataProvider/Services.php');
 include_once($_SESSION['site']['root'] . '/dataProvider/Facilities.php');
 include_once($_SESSION['site']['root'] . '/dataProvider/Documents.php');
+include_once($_SESSION['site']['root'] . '/dataProvider/Prescriptions.php');
+include_once($_SESSION['site']['root'] . '/dataProvider/Orders.php');
+include_once($_SESSION['site']['root'] . '/dataProvider/DoctorsNotes.php');
 class DocumentHandler
 {
 
@@ -41,6 +44,9 @@ class DocumentHandler
 		$this->services = new Services();
 		$this->facility = new Facilities();
 		$this->documents = new Documents();
+		$this->prescriptions = new Prescriptions();
+		$this->orders = new Orders();
+		$this->doctorsnotes = new DoctorsNotes();
 		return;
 	}
 
@@ -50,10 +56,9 @@ class DocumentHandler
 		$path =  $this->setWorkingDir($params) . $this->nameFile();
 		$this->saveDocument($this->documents->PDFDocumentBuilder($params),$path);
 
-
-
 		if(file_exists($path)) {
 			$doc['pid']     = $this->pid;
+			$doc['eid']     = $params->eid;
 			$doc['uid']     = $_SESSION['user']['id'];
 			$doc['docType'] = $this->docType;
 			$doc['name']    = $this->fileName;
@@ -61,7 +66,44 @@ class DocumentHandler
 			$doc['date']    = date('Y-m-d H:i:s');
 			$this->db->setSQL($this->db->sqlBind($doc, 'patient_documents', 'I'));
 			$this->db->execLog();
-			$doc_id = $this->db->lastInsertId;
+			$params->document_id = $doc_id = $this->db->lastInsertId;
+            if(isset($params->medications)) {
+                $this->prescriptions->addDocumentsPatientInfo($params);
+            }
+            elseif(isset($params->labs)) {
+                $this->orders->addOrdersLabs($params);
+            }
+
+			return array('success'=> true,
+			             'doc'    => array('id'   => $doc_id,
+			                               'name' => $this->fileName,
+			                               'url'  => $this->getDocumentUrl()));
+		}else{
+			return array('success'=> false,
+			             'error'  => 'Document could not be created');
+		}
+	}
+    public function createDocumentDoctorsNote($params){
+
+		$path =  $this->setWorkingDir($params) . $this->nameFile();
+
+
+            $this->saveDocument($this->documents->PDFDocumentBuilderDoctors($params),$path);
+
+		if(file_exists($path)) {
+			$doc['pid']     = $this->pid;
+            $doc['eid']     = $params->eid;
+			$doc['uid']     = $_SESSION['user']['id'];
+			$doc['docType'] = $this->docType;
+			$doc['name']    = $this->fileName;
+			$doc['url']     = $this->getDocumentUrl();
+			$doc['date']    = date('Y-m-d H:i:s');
+			$this->db->setSQL($this->db->sqlBind($doc, 'patient_documents', 'I'));
+			$this->db->execLog();
+			$params->document_id = $doc_id = $this->db->lastInsertId;
+
+            $this->doctorsnotes->addDoctorsNotes($params);
+
 			return array('success'=> true,
 			             'doc'    => array('id'   => $doc_id,
 			                               'name' => $this->fileName,
@@ -141,7 +183,7 @@ class DocumentHandler
 
 
 	public function getDocumentsTemplates(){
-		$this->db->setSQL("SELECT * FROM documents_templates WHERE type = 1");
+		$this->db->setSQL("SELECT * FROM documents_templates WHERE template_type = 1");
 		return $this->db->fetchRecords(PDO::FETCH_ASSOC);
 	}
 
@@ -165,7 +207,7 @@ class DocumentHandler
 
 	}
 	public function getHeadersAndFootersTemplates(){
-		$this->db->setSQL("SELECT * FROM documents_templates WHERE type = 2");
+		$this->db->setSQL("SELECT * FROM documents_templates WHERE template_type = 2");
 		return $this->db->fetchRecords(PDO::FETCH_ASSOC);
 	}
 
@@ -194,6 +236,8 @@ class DocumentHandler
 		fwrite($handle, $pdf);
 		fclose($handle);
 	}
+
+
 
 }
 

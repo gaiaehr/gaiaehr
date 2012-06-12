@@ -55,6 +55,9 @@ $API = array(
             ),
             'getEncounterEventHistory'=>array(
                'len'=>1
+            ),
+            'getEncounterCodes'=>array(
+               'len'=>1
             )
         )
     ),
@@ -174,6 +177,9 @@ $API = array(
 	            'len'=>1
             ),
             'createDocument'=>array(
+	            'len'=>1
+            ),
+            'createDocumentDoctorsNote'=>array(
 	            'len'=>1
             )
 
@@ -657,6 +663,9 @@ $API = array(
             ),
             'getPatientDocuments'=>array(
             	'len'=>1
+            ),
+            'getPatientDocumentsByEid'=>array(
+            	'len'=>1
             )
 
         )
@@ -770,6 +779,9 @@ $API = array(
                 'len'=>0
             ),
             'getAllergiesByType'=>array(
+                'len'=>1
+            ),
+            'getTemplatesTypes'=>array(
                 'len'=>1
             )
         )

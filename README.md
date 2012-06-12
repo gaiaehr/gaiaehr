@@ -1,4 +1,0 @@
-GaiaEHR
-=======
-
-(Electronic Health Record)

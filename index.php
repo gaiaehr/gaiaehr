@@ -20,7 +20,7 @@
 session_name ( "GaiaEHR" );
 session_start();
 session_cache_limiter('private');
-define('_MitosEXEC', 1);
+define('_GaiaEXEC', 1);
 /*
  * Startup the registry
  * This contains SESSION Variables to use in the application

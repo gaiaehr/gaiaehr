@@ -77,7 +77,7 @@
 }
 .mitos-mask-msg {
     z-index:300001;
-    background: url(GaiaEHR_loading.jpg) no-repeat white center top;
+    background: url(loading.jpg) no-repeat white center top;
     left:   45%;
     top:    40%;
 }

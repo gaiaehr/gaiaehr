@@ -12,12 +12,12 @@ Ext.define('App.model.patientfile.PatientDocuments', {
 
         {name: 'id', type: 'int'},
         {name: 'pid', type: 'int'},
+        {name: 'eid', type: 'int'},
         {name: 'uid', type: 'int'},
-        {name: 'docType	', type: 'string'},
+        {name: 'docType', type: 'string'},
         {name: 'name', type: 'string'},
         {name: 'date', type: 'date'},
         {name: 'url', type: 'string'},
-        {name: 'date', type: 'string'},
         {name: 'note', type: 'string'},
         {name: 'user_name', type: 'string'}
 	],

@@ -74,7 +74,8 @@ Ext.define('App.view.patientfile.ArrivalLogWindow', {
                     },
                     {
                         header:'Time',
-                        dataIndex:'time'
+                        dataIndex:'time',
+	                    width:130
                     },
                     {
                         header:'Record #',

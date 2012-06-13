@@ -5,8 +5,8 @@
  * @namespace authProcedures.unAuth
  */
 Ext.define('App.view.Viewport', {
-	extend       : 'Ext.Viewport',
-	requires         : [
+	extend  : 'Ext.Viewport',
+	requires: [
 
 		'App.classes.RenderPanel',
 
@@ -35,7 +35,6 @@ Ext.define('App.view.Viewport', {
 		'App.classes.combo.TransmitMethod',
 		'App.classes.combo.InsurancePayerType',
 
-
 		'App.classes.form.FormPanel',
 		'App.classes.form.fields.Checkbox',
 		'App.classes.window.Window',
@@ -52,7 +51,6 @@ Ext.define('App.view.Viewport', {
 		'App.view.patientfile.Encounter',
 		'App.view.patientfile.MedicalWindow',
 		'App.view.patientfile.PatientCheckout',
-
 
 		'App.view.fees.Billing',
 		'App.view.fees.Payments',
@@ -78,8 +76,8 @@ Ext.define('App.view.Viewport', {
 
 	],
 
-    minWidthToFullMode: 1680,
-	currency: '$',
+	minWidthToFullMode: 1680,
+	currency          : '$',
 
 	initComponent: function() {
 
@@ -105,7 +103,7 @@ Ext.define('App.view.Viewport', {
 		});
 
 		me.storeTree = Ext.create('App.store.navigation.Navigation', {
-            autoLoad:true,
+			autoLoad : true,
 			listeners: {
 				scope: me,
 				load : me.afterNavigationLoad
@@ -117,14 +115,13 @@ Ext.define('App.view.Viewport', {
 		 */
 		me.patientPoolStore = Ext.create('App.store.poolarea.PoolArea');
 
-
-		if(me.currency == '$'){
+		if(me.currency == '$') {
 			me.icoMoney = 'icoDollar';
-		}else if(me.currency == '€'){
+		} else if(me.currency == '€') {
 			me.icoMoney = 'icoEuro';
-		}else if(me.currency == '£'){
+		} else if(me.currency == '£') {
 			me.icoMoney = 'icoLibra';
-		}else if(me.currency == '¥'){
+		} else if(me.currency == '¥') {
 			me.icoMoney = 'icoYen';
 		}
 
@@ -160,7 +157,6 @@ Ext.define('App.view.Viewport', {
 			}
 		});
 
-
 		/**
 		 * header Panel
 		 */
@@ -175,14 +171,14 @@ Ext.define('App.view.Viewport', {
 			bodyStyle  : 'background: transparent',
 			margins    : '0 0 0 0',
 			items      : [
-//				{
-//					xtype : 'container',
-//                    itemId: 'appLogo',
-//                    width : window.innerWidth < this.minWidthToFullMode ? 35 : 200,
-//					html  : '<img src="ui_app/app_logo.png" height="40" width="200" style="float:left">',
-//					style : 'float:left',
-//					border: false
-//				},
+				//				{
+				//					xtype : 'container',
+				//                    itemId: 'appLogo',
+				//                    width : window.innerWidth < this.minWidthToFullMode ? 35 : 200,
+				//					html  : '<img src="ui_app/app_logo.png" height="40" width="200" style="float:left">',
+				//					style : 'float:left',
+				//					border: false
+				//				},
 				{
 					xtype    : 'button',
 					scale    : 'large',
@@ -249,7 +245,7 @@ Ext.define('App.view.Viewport', {
 					handler: me.chargePatient,
 					tooltip: 'Check Out Patient'
 				},
-                {
+				{
 					xtype  : 'button',
 					scale  : 'large',
 					style  : 'float:left',
@@ -270,10 +266,10 @@ Ext.define('App.view.Viewport', {
 					style      : 'float:left',
 					items      : [
 						{
-							xtype    : 'patienlivetsearch',
-							emptyText: 'Patient Live Search...',
-                            fieldStyle:'width:230',
-							listeners: {
+							xtype     : 'patienlivetsearch',
+							emptyText : 'Patient Live Search...',
+							fieldStyle: 'width:230',
+							listeners : {
 								scope : me,
 								select: me.liveSearchSelect,
 								blur  : function(combo) {
@@ -341,7 +337,7 @@ Ext.define('App.view.Viewport', {
 						}
 					]
 				},
-                {
+				{
 					xtype  : 'button',
 					scale  : 'large',
 					style  : 'float:right',
@@ -354,7 +350,7 @@ Ext.define('App.view.Viewport', {
 					handler: me.onPatientLog,
 					tooltip: 'Arrival Log'
 				},
-                {
+				{
 					xtype  : 'button',
 					scale  : 'large',
 					style  : 'float:right',
@@ -370,7 +366,6 @@ Ext.define('App.view.Viewport', {
 			]
 		});
 
-
 		/**
 		 * The panel definition for the the TreeMenu & the support button
 		 */
@@ -381,8 +376,8 @@ Ext.define('App.view.Viewport', {
 			region     : 'west',
 			width      : 200,
 			split      : true,
- 			collapsible: true,
- 			collapsed  : false,
+			collapsible: true,
+			collapsed  : false,
 			items      : [
 				{
 					xtype      : 'treepanel',
@@ -396,10 +391,10 @@ Ext.define('App.view.Viewport', {
 					plugins    : [
 						{ptype: 'nodedisabled'}
 					],
-//					root       : {
-//						nodeType : 'async',
-//						draggable: false
-//					},
+					//					root       : {
+					//						nodeType : 'async',
+					//						draggable: false
+					//					},
 					listeners  : {
 						scope          : me,
 						selectionchange: me.onNavigationNodeSelected
@@ -413,8 +408,8 @@ Ext.define('App.view.Viewport', {
 					itemId     : 'patientPoolArea',
 					bodyPadding: 5,
 					height     : 25,
-					cls         :'patient-pool',
-					split:true,
+					cls        : 'patient-pool',
+					split      : true,
 					collapsible: true,
 					border     : false,
 					items      : [
@@ -475,7 +470,6 @@ Ext.define('App.view.Viewport', {
 			}
 		});
 
-
 		/**
 		 * MainPanel is where all the pages are display
 		 */
@@ -504,13 +498,11 @@ Ext.define('App.view.Viewport', {
 				Ext.create('App.view.patientfile.Encounter'),
 				Ext.create('App.view.patientfile.PatientCheckout'),
 
-
 			/**
 			 * Fees Area
 			 */
 				Ext.create('App.view.fees.Billing'),
 				Ext.create('App.view.fees.Payments'),
-
 
 			/**
 			 * Miscellaneous
@@ -521,16 +513,14 @@ Ext.define('App.view.Viewport', {
 				Ext.create('App.view.miscellaneous.OfficeNotes'),
 				Ext.create('App.view.miscellaneous.Websearch'),
 
-
 				me.ppdz = Ext.create('App.view.PatientPoolDropZone')
 
-            ],
-            listeners:{
-                scope:me,
-                afterrender:me.initializeOpenEncounterDropZone
-            }
+			],
+			listeners: {
+				scope      : me,
+				afterrender: me.initializeOpenEncounterDropZone
+			}
 		});
-
 
 		/**
 		 * Add Administration Area Panels
@@ -572,7 +562,6 @@ Ext.define('App.view.Viewport', {
 			me.MainPanel.add(Ext.create('App.view.administration.Documents'));
 		}
 
-
 		/**
 		 * Footer Panel
 		 */
@@ -586,7 +575,7 @@ Ext.define('App.view.Viewport', {
 					xtype            : 'dataview',
 					margin           : '0 0 3 0',
 					hidden           : true,
-                    hideMode         : 'offsets',
+					hideMode         : 'offsets',
 					cls              : 'patient-pool-view-footer x-toolbar x-toolbar-default x-box-layout-ct',
 					tpl              : '<div class="x-toolbar-separator x-toolbar-item x-toolbar-separator-horizontal" style="float:left; margin-top:5px;" role="presentation" tabindex="-1"></div>' +
 						'<tpl for=".">' +
@@ -653,13 +642,10 @@ Ext.define('App.view.Viewport', {
 			]
 		});
 
-
-
-
 		me.MedicalWindow = Ext.create('App.view.patientfile.MedicalWindow');
 		me.ChartsWindow = Ext.create('App.view.patientfile.ChartsWindow');
-        me.PaymentEntryWindow = Ext.create('App.view.patientfile.PaymentEntryWindow');
-		me.PreventiveCareWindow= Ext.create('App.view.patientfile.PreventiveCareWindow');
+		me.PaymentEntryWindow = Ext.create('App.view.patientfile.PaymentEntryWindow');
+		me.PreventiveCareWindow = Ext.create('App.view.patientfile.PreventiveCareWindow');
 		me.NewDocumentsWindow = Ext.create('App.view.patientfile.NewDocumentsWindow');
 		me.DocumentViewerWindow = Ext.create('App.view.patientfile.DocumentViewerWindow')
 		me.layout = { type: 'border', padding: 3 };
@@ -682,31 +668,31 @@ Ext.define('App.view.Viewport', {
 		this.MedicalWindow.cardSwitch(btn);
 	},
 
-	onChartsWin: function() {
+	onChartsWin      : function() {
 		this.ChartsWindow.show();
 	},
-	onNewDocumentsWin:function(action){
+	onNewDocumentsWin: function(action) {
 		this.NewDocumentsWindow.show();
 		this.NewDocumentsWindow.cardSwitch(action);
 	},
 
-	onWebCamComplete:function(msg){
+	onWebCamComplete: function(msg) {
 		var panel = this.getActivePanel();
-		if(panel.id == 'panelSummary'){
+		if(panel.id == 'panelSummary') {
 			panel.completePhotoId();
 		}
 		this.msg('Sweet!', 'Patient image saved');
 	},
 
-    onPatientLog:function(){
-        if(this.patientArrivalLog){
-            this.patientArrivalLog.show();
-        }else{
-            this.patientArrivalLog = Ext.create('App.view.patientfile.ArrivalLogWindow');
-        }
-    },
+	onPatientLog: function() {
+		if(this.patientArrivalLog) {
+			this.patientArrivalLog.show();
+		} else {
+			this.patientArrivalLog = Ext.create('App.view.patientfile.ArrivalLogWindow');
+		}
+	},
 
-    onPaymentEntryWindow: function() {
+	onPaymentEntryWindow: function() {
 		this.PaymentEntryWindow.show();
 	},
 
@@ -734,7 +720,6 @@ Ext.define('App.view.Viewport', {
 		alert('TODO: Patient will be sent to ' + area);
 	},
 
-
 	openPatientSummary: function() {
 		var me = this;
 
@@ -757,7 +742,7 @@ Ext.define('App.view.Viewport', {
 	openCurrEncounter: function() {
 		var me = this;
 
-		this.navigateTo('panelEncounter', function(success){
+		this.navigateTo('panelEncounter', function(success) {
 			if(success) {
 				//me.currCardCmp.openEncounter(eid);
 			}
@@ -778,18 +763,17 @@ Ext.define('App.view.Viewport', {
 
 	},
 
-    chargePatient: function() {
-        this.navigateTo('panelVisitPayment');
+	chargePatient: function() {
+		this.navigateTo('panelVisitPayment');
 	},
 
 	openPatientVisits: function() {
 		this.navigateTo('panelVisits');
 	},
 
-
-    goToPoolAreas:function(){
-        this.navigateTo('panelPoolArea');
-    },
+	goToPoolAreas: function() {
+		this.navigateTo('panelPoolArea');
+	},
 
 	navigateTo: function(id, callback) {
 		var tree = this.navColumn.down('treepanel'),
@@ -807,27 +791,27 @@ Ext.define('App.view.Viewport', {
 		//this.navigateTo('panelDashboard');
 	},
 
-    afterNavigationLoad:function(){
-        window.innerWidth < this.minWidthToFullMode ? this.navColumn.collapse() : this.navColumn.expand();
-    },
+	afterNavigationLoad: function() {
+		window.innerWidth < this.minWidthToFullMode ? this.navColumn.collapse() : this.navColumn.expand();
+	},
 
 	onNavigationNodeSelected: function(model, selected) {
 		var me = this;
-        if(0 < selected.length){
-            if(selected[0].data.leaf) {
-                var tree = me.navColumn.down('treepanel'),
-                    sm = tree.getSelectionModel(),
-                    card = selected[0].data.id,
-                    layout = me.MainPanel.getLayout(),
-                    cardCmp = Ext.getCmp(card);
+		if(0 < selected.length) {
+			if(selected[0].data.leaf) {
+				var tree = me.navColumn.down('treepanel'),
+					sm = tree.getSelectionModel(),
+					card = selected[0].data.id,
+					layout = me.MainPanel.getLayout(),
+					cardCmp = Ext.getCmp(card);
 
-                me.currCardCmp = cardCmp;
-                layout.setActiveItem(card);
-                cardCmp.onActive(function(success) {
-                    (success) ? me.lastCardNode = sm.getLastSelected() : me.goBack();
-                });
-            }
-        }
+				me.currCardCmp = cardCmp;
+				layout.setActiveItem(card);
+				cardCmp.onActive(function(success) {
+					(success) ? me.lastCardNode = sm.getLastSelected() : me.goBack();
+				});
+			}
+		}
 	},
 
 	goBack: function() {
@@ -838,11 +822,11 @@ Ext.define('App.view.Viewport', {
 
 	navCollapsed: function() {
 		var navView = this.navColumn.getComponent('patientPoolArea'),
-            //appLogo = this.Header.getComponent('appLogo'),
+		//appLogo = this.Header.getComponent('appLogo'),
 			foot = this.Footer,
 			footView = foot.down('dataview');
 
-        //appLogo.hide();
+		//appLogo.hide();
 		navView.hide();
 		foot.setHeight(60);
 		footView.show();
@@ -850,17 +834,17 @@ Ext.define('App.view.Viewport', {
 
 	navExpanded: function() {
 		var navView = this.navColumn.getComponent('patientPoolArea'),
-            //appLogo = this.Header.getComponent('appLogo'),
+		//appLogo = this.Header.getComponent('appLogo'),
 			foot = this.Footer,
 			footView = foot.down('dataview');
 
-        //appLogo.show();
+		//appLogo.show();
 		navView.show();
 		foot.setHeight(30);
 		footView.hide();
 	},
 
-	getActivePanel:function(){
+	getActivePanel: function() {
 		return this.MainPanel.getLayout().getActiveItem();
 	},
 
@@ -875,9 +859,9 @@ Ext.define('App.view.Viewport', {
 			 * @param pid int
 			 */
 			Patient.currPatientSet({pid: post.get('pid')}, function() {
-                me.setCurrPatient(post.get('pid'),post.get('fullname'),function(){
-                    me.openPatientSummary();
-                });
+				me.setCurrPatient(post.get('pid'), post.get('fullname'), function() {
+					me.openPatientSummary();
+				});
 			});
 		}
 	},
@@ -885,34 +869,34 @@ Ext.define('App.view.Viewport', {
 	setCurrPatient: function(pid, fullname, callback) {
 
 		var me = this,
-            patientBtn = me.Header.getComponent('patientButton'),
+			patientBtn = me.Header.getComponent('patientButton'),
 			patientOpenVisitsBtn = me.Header.getComponent('patientOpenVisits'),
 			patientCreateEncounterBtn = me.Header.getComponent('patientCreateEncounter'),
 			patientCloseCurrEncounterBtn = me.Header.getComponent('patientCloseCurrEncounter'),
 			patientChargeBtn = me.Header.getComponent('patientCharge'),
 			patientCheckOutBtn = me.Header.getComponent('patientCheckOut');
 
-        Patient.currPatientSet({ pid:pid }, function(){
-            me.currPatient = {
-                pid : pid,
-                name: fullname
-            };
-            patientBtn.update({ pid:pid, name:fullname });
-            patientBtn.enable();
-            patientOpenVisitsBtn.enable();
-            patientCreateEncounterBtn.enable();
-            patientCloseCurrEncounterBtn.enable();
-	        patientChargeBtn.enable();
-            patientCheckOutBtn.enable();
-            if(typeof callback == 'function') {
-                callback(true);
-            }
-        });
+		Patient.currPatientSet({ pid: pid }, function() {
+			me.currPatient = {
+				pid : pid,
+				name: fullname
+			};
+			patientBtn.update({ pid: pid, name: fullname });
+			patientBtn.enable();
+			patientOpenVisitsBtn.enable();
+			patientCreateEncounterBtn.enable();
+			patientCloseCurrEncounterBtn.enable();
+			patientChargeBtn.enable();
+			patientCheckOutBtn.enable();
+			if(typeof callback == 'function') {
+				callback(true);
+			}
+		});
 	},
 
 	patientUnset: function() {
 		var me = this,
-            patientBtn = me.Header.getComponent('patientButton'),
+			patientBtn = me.Header.getComponent('patientButton'),
 			patientOpenVisitsBtn = me.Header.getComponent('patientOpenVisits'),
 			patientCreateEncounterBtn = me.Header.getComponent('patientCreateEncounter'),
 			patientCloseCurrEncounterBtn = me.Header.getComponent('patientCloseCurrEncounter'),
@@ -922,18 +906,17 @@ Ext.define('App.view.Viewport', {
 		 * Ext.direct function
 		 */
 		Patient.currPatientUnset(function() {
-            me.currEncounterId = null;
-            me.currPatient = null;
+			me.currEncounterId = null;
+			me.currPatient = null;
 			patientCreateEncounterBtn.disable();
 			patientOpenVisitsBtn.disable();
 			patientCloseCurrEncounterBtn.disable();
 			patientChargeBtn.disable();
 			patientCheckOutBtn.disable();
-            patientBtn.disable();
-			patientBtn.update({ pid:'record number', name:'No Patient Selected'});
+			patientBtn.disable();
+			patientBtn.update({ pid: 'record number', name: 'No Patient Selected'});
 		});
 	},
-
 
 	showMiframe: function(btn) {
 		var src = btn.action;
@@ -948,7 +931,7 @@ Ext.define('App.view.Viewport', {
 		}
 		this.msgCt.alignTo(document, 't-t');
 		var s = Ext.String.format.apply(String, Array.prototype.slice.call(arguments, 1)),
-		    m = Ext.core.DomHelper.append(this.msgCt, {html: '<div class="msg"><h3>' + title + '</h3><p>' + s + '</p></div>'}, true);
+			m = Ext.core.DomHelper.append(this.msgCt, {html: '<div class="msg"><h3>' + title + '</h3><p>' + s + '</p></div>'}, true);
 		m.slideIn('t').pause(3000).ghost('t', {remove: true});
 	},
 
@@ -976,24 +959,24 @@ Ext.define('App.view.Viewport', {
 			'</div>');
 	},
 
-    patientBtnRender:function(btn){
-        this.patientUnset();
-        this.initializePatientPoolDragZone(btn)
-    },
+	patientBtnRender: function(btn) {
+		this.patientUnset();
+		this.initializePatientPoolDragZone(btn)
+	},
 
-	getPatientesInPoolArea:function(){
+	getPatientesInPoolArea: function() {
 		var poolArea = this.navColumn.getComponent('patientPoolArea'),
 			height = 35;
 		this.patientPoolStore.load({
-			callback:function(records){
-				if(records.length >= 1){
-					Ext.each(records, function(record){
+			callback: function(records) {
+				if(records.length >= 1) {
+					Ext.each(records, function(record) {
 						height = height + 45;
 					});
-				}else{
+				} else {
 					height = 25;
 				}
-				height = (height >= 303)? 303 : height;
+				height = (height >= 303) ? 303 : height;
 				poolArea.down('dataview').refresh();
 				poolArea.setHeight(height);
 				poolArea.doLayout();
@@ -1017,40 +1000,40 @@ Ext.define('App.view.Viewport', {
 		});
 	},
 
-    initializePatientPoolDragZone: function(panel) {
-        panel.dragZone = Ext.create('Ext.dd.DragZone', panel.getEl(), {
-            ddGroup    : 'patientPoolAreas',
-            // On receipt of a mousedown event, see if it is within a draggable element.
-            // Return a drag data object if so. The data object can contain arbitrary application
-            // data, but it should also contain a DOM element in the ddel property to provide
-            // a proxy to drag.
-            getDragData: function() {
+	initializePatientPoolDragZone: function(panel) {
+		panel.dragZone = Ext.create('Ext.dd.DragZone', panel.getEl(), {
+			ddGroup    : 'patientPoolAreas',
+			// On receipt of a mousedown event, see if it is within a draggable element.
+			// Return a drag data object if so. The data object can contain arbitrary application
+			// data, but it should also contain a DOM element in the ddel property to provide
+			// a proxy to drag.
+			getDragData: function() {
 
-                var sourceEl = app.Header.getComponent('patientButton').el.dom, d;
-                app.MainPanel.getLayout().setActiveItem(app.ppdz);
-                app.navColumn.down('treepanel').getSelectionModel().deselectAll();
+				var sourceEl = app.Header.getComponent('patientButton').el.dom, d;
+				app.MainPanel.getLayout().setActiveItem(app.ppdz);
+				app.navColumn.down('treepanel').getSelectionModel().deselectAll();
 
-                if(sourceEl) {
-                    d = sourceEl.cloneNode(true);
-                    d.id = Ext.id();
-                    return panel.dragData = {
-                        copy       : true,
-                        sourceEl   : sourceEl,
-                        repairXY   : Ext.fly(sourceEl).getXY(),
-                        ddel       : d,
-                        records    : [ panel.data ],
-                        patient    : true
-                    };
-                }
-            },
-            // Provide coordinates for the proxy to slide back to on failed drag.
-            // This is the original XY coordinates of the draggable element.
-            getRepairXY: function() {
-                app.goBack();
-                return this.dragData.repairXY;
-            }
-        });
-    },
+				if(sourceEl) {
+					d = sourceEl.cloneNode(true);
+					d.id = Ext.id();
+					return panel.dragData = {
+						copy    : true,
+						sourceEl: sourceEl,
+						repairXY: Ext.fly(sourceEl).getXY(),
+						ddel    : d,
+						records : [ panel.data ],
+						patient : true
+					};
+				}
+			},
+			// Provide coordinates for the proxy to slide back to on failed drag.
+			// This is the original XY coordinates of the draggable element.
+			getRepairXY: function() {
+				app.goBack();
+				return this.dragData.repairXY;
+			}
+		});
+	},
 
 	/**
 	 *
@@ -1085,7 +1068,7 @@ Ext.define('App.view.Viewport', {
 			}
 		});
 	},
-	onDocumentView: function(src) {
+	onDocumentView                 : function(src) {
 		var me = this;
 		if(me.documentViewWindow) me.DocumentViewerWindow.remove(me.documentViewWindow);
 		me.DocumentViewerWindow.add(me.documentViewWindow = Ext.create('App.classes.ManagedIframe', {src: src}));
@@ -1105,9 +1088,9 @@ Ext.define('App.view.Viewport', {
 			notifyDrop: function(dd, e, data) {
 				app.MainPanel.el.unmask();
 
-				me.setCurrPatient(data.patientData.pid, data.patientData.name, function(){
-                    me.openEncounter(data.patientData.eid);
-                });
+				me.setCurrPatient(data.patientData.pid, data.patientData.name, function() {
+					me.openEncounter(data.patientData.eid);
+				});
 
 			}
 		});
@@ -1126,13 +1109,13 @@ Ext.define('App.view.Viewport', {
 		return this;
 	},
 
-    accessDenied: function(){
-        Ext.Msg.show({
-            title  : 'Oops!',
-            msg    : 'Access Denied',
-            buttons: Ext.Msg.OK,
-            icon   : Ext.Msg.ERROR
-        });
-    }
+	accessDenied: function() {
+		Ext.Msg.show({
+			title  : 'Oops!',
+			msg    : 'Access Denied',
+			buttons: Ext.Msg.OK,
+			icon   : Ext.Msg.ERROR
+		});
+	}
 
 });

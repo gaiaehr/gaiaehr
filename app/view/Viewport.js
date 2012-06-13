@@ -454,9 +454,9 @@ Ext.define('App.view.Viewport', {
 					items  : ['-', {
 						xtype  : 'button',
 						frame  : true,
-						text   : 'MithosEHR ' + lang.support,
+						text   : 'GaiaEHR ' + lang.support,
 						iconCls: 'icoHelp',
-						action : 'http://GaiaEHR.org/projects/GaiaEHR001/wiki',
+						action : 'http://gaiaehr.org/',
 						scope  : me,
 						handler: me.showMiframe
 					}, '-']
@@ -619,21 +619,21 @@ Ext.define('App.view.Viewport', {
 						'-',
 						{
 							text   : 'wiki',
-							action : 'http://GaiaEHR.org/projects/GaiaEHR001/wiki',
+							action : 'http://gaiaehr.org/',
 							scope  : me,
 							handler: me.showMiframe
 						},
 						'-',
 						{
 							text   : 'issues',
-							action : 'http://GaiaEHR.org/projects/GaiaEHR001/issues',
+							action : 'http://gaiaehr.org/',
 							scope  : me,
 							handler: me.showMiframe
 						},
 						'-',
 						{
 							text   : 'forums',
-							action : 'http://GaiaEHR.org/projects/GaiaEHR001/boards',
+							action : 'http://gaiaehr.org/',
 							scope  : me,
 							handler: me.showMiframe
 						}

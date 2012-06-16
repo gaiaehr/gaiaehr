@@ -33,8 +33,6 @@ Ext.define('App.view.patientfile.Summary', {
         me.patientDentalStore = Ext.create('App.store.patientfile.Dental');
         me.patientMedicationsStore = Ext.create('App.store.patientfile.Medications');
         me.patientDocumentsStore = Ext.create('App.store.patientfile.PatientDocuments');
-
-
         me.patientNotesStore = Ext.create('App.store.patientfile.Notes');
         me.patientRemindersStore = Ext.create('App.store.patientfile.Reminders');
 
@@ -240,6 +238,7 @@ Ext.define('App.view.patientfile.Summary', {
                                 dataIndex:'user_name'
                             }
                         ],
+
 	                    tbar:[
 		                    {
 			                    xtype     : 'mitos.templatescombo',
@@ -252,10 +251,59 @@ Ext.define('App.view.patientfile.Summary', {
     	                    '-',
 		                    {
 			                    text:'Create',
-			                    action:'lab',
 			                    scope:me,
 			                    handler:me.newDoc
-		                    }
+		                    },
+		                    '->',
+		                    {
+			                    text:'Upload Document',
+			                    scope:me,
+			                    handler:me.uploadADocument
+		                    },
+		                    {
+			                    xtype:'panel',
+							    action:'upload',
+							    region:'center',
+							    items:[
+							    me.uploadWin = Ext.create('Ext.window.Window',{
+								    draggable :false,
+								    closable:false,
+								    closeAction:'hide',
+								    items:[
+									    {
+										    xtype:'form',
+										    bodyPadding:10,
+										    width:400,
+										    items:[
+											    {
+												    xtype: 'filefield',
+												    name: 'filePath',
+												    buttonText: 'Select a file...',
+												    anchor:'100%'
+											    }
+										    ],
+										    //   url: 'dataProvider/DocumentHandler.php'
+										    api: {
+											    submit: DocumentHandler.uploadDocument
+										    }
+									    }
+								    ],
+								    buttons:[
+									    {
+										    text:'Cancel',
+										    handler:function(){
+											    me.uploadWin.close();
+										    }
+									    },
+									    {
+										    text:'Upload',
+										    scope:me,
+										    handler:me.onDocUpload
+									    }
+								    ]
+							    })
+						    ]
+					        }
 //		                    {
 //			                    text:'New Lab Order',
 //			                    action:'lab',
@@ -484,6 +532,36 @@ Ext.define('App.view.patientfile.Summary', {
 		var rec = grid.getStore().getAt(rowIndex),
 			src = rec.data.url;
 		app.onDocumentView(src);
+	},
+
+	uploadADocument:function(grid, rowIndex){
+		var me = this,
+			previewPanel = me.query('[action="upload"]')[0], win;
+		me.uploadWin.show();
+		me.uploadWin.alignTo(previewPanel.el.dom,'tr-tr',[-5,30])
+	},
+	onDocUpload:function(btn){
+		var me = this,
+			form = me.uploadWin.down('form').getForm(),
+			win = btn.up('window');
+
+		if(form.isValid()){
+			form.submit({
+				waitMsg: 'Uploading Document...',
+				params:{
+					pid:app.currPatient.pid,
+					docType:'UploadDoc'
+				},
+				success: function(fp, o) {
+					win.close();
+					me.patientDocumentsStore.load({params: {pid: app.currPatient.pid}});
+				},
+				failure:function(fp, o){
+					say(o.result.error);
+
+				}
+			});
+		}
 	},
 
 	formSave:function(btn){

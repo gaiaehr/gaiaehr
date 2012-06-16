@@ -7,13 +7,13 @@
  */
 
 
-Ext.define('App.store.administration.HeadersAndFooters', {
-	model: 'App.model.administration.HeadersAndFooters',
+Ext.define('App.store.administration.DefaultDocuments', {
+	model: 'App.model.administration.DefaultDocuments',
 	extend: 'Ext.data.Store',
 	proxy: {
 		type       : 'direct',
 		api        : {
-			read  : DocumentHandler.getHeadersAndFootersTemplates,
+			read  : DocumentHandler.getDefaultDocumentsTemplates,
 			create: DocumentHandler.addDocumentsTemplates,
 			update: DocumentHandler.updateDocumentsTemplates
 		}

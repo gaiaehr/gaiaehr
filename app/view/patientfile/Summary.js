@@ -239,8 +239,23 @@ Ext.define('App.view.patientfile.Summary', {
                                 header:'User',
                                 dataIndex:'user_name'
                             }
-                        ]
-//	                    tbar:[
+                        ],
+	                    tbar:[
+		                    {
+			                    xtype     : 'mitos.templatescombo',
+			                    fieldLabel: 'Available Documents',
+			                    width     : 320,
+			                    labelWidth: 145,
+			                    margin    : '10 0 0 10'
+
+		                    },
+    	                    '-',
+		                    {
+			                    text:'Create',
+			                    action:'lab',
+			                    scope:me,
+			                    handler:me.newDoc
+		                    }
 //		                    {
 //			                    text:'New Lab Order',
 //			                    action:'lab',
@@ -268,7 +283,7 @@ Ext.define('App.view.patientfile.Summary', {
 //			                    scope:me,
 //			                    handler:me.newDoc
 //		                    }
-//	                    ]
+	                    ]
                     }
                 ]
             },

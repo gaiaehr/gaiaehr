@@ -183,9 +183,19 @@ class DocumentHandler
 
 
 	public function getDocumentsTemplates(){
-		$this->db->setSQL("SELECT * FROM documents_templates WHERE template_type = 1");
+		$this->db->setSQL("SELECT * FROM documents_templates WHERE template_type = 'documenttemplate'");
 		return $this->db->fetchRecords(PDO::FETCH_ASSOC);
 	}
+
+    public function getDefaultDocumentsTemplates(){
+		$this->db->setSQL("SELECT * FROM documents_templates WHERE template_type = 'defaulttemplate'");
+		return $this->db->fetchRecords(PDO::FETCH_ASSOC);
+	}
+
+   public function getHeadersAndFootersTemplates(){
+    $this->db->setSQL("SELECT * FROM documents_templates WHERE template_type = 'headerorfootertemplate'");
+    return $this->db->fetchRecords(PDO::FETCH_ASSOC);
+    }
 
 	public function addDocumentsTemplates(stdClass $params){
 		$data = get_object_vars($params);
@@ -206,30 +216,10 @@ class DocumentHandler
 		return $params;
 
 	}
-	public function getHeadersAndFootersTemplates(){
-		$this->db->setSQL("SELECT * FROM documents_templates WHERE template_type = 2");
-		return $this->db->fetchRecords(PDO::FETCH_ASSOC);
-	}
 
-	public function addHeadersOrFootersTemplates(stdClass $params){
-		$data = get_object_vars($params);
-		$data['created_by_uid'] = $_SESSION['user']['id'];
-		$this->db->setSQL($this->db->sqlBind($data, 'documents_templates', 'I'));
-		$this->db->execLog();
-		$params->id = $this->db->lastInsertId;
-		return $params;
-	}
 
-	public function updateHeadersOrFootersTemplates(stdClass $params){
-		$data = get_object_vars($params);
-		$data['update_by_uid'] = $_SESSION['user']['id'];
-		$id = $data['id'];
-		unset($data['id']);
-		$this->db->setSQL($this->db->sqlBind($data, "documents_templates", "U", "id='$id'"));
-		$this->db->execLog();
-		return $params;
 
-	}
+
 
 	private function saveDocument($pdf,$path){
 		$handle  = fopen($path, 'w');

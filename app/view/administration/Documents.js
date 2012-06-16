@@ -22,6 +22,7 @@ Ext.define('App.view.administration.Documents', {
 
         me.templatesDocumentsStore = Ext.create('App.store.administration.DocumentsTemplates');
 		me.headersAndFooterStore   = Ext.create('App.store.administration.HeadersAndFooters');
+		me.defaultsDocumentsStore   = Ext.create('App.store.administration.DefaultDocuments');
 
         Ext.define('tokenModel', {
             extend: 'Ext.data.Model',
@@ -448,7 +449,7 @@ Ext.define('App.view.administration.Documents', {
 
 		me.HeaderFootergrid = Ext.create('Ext.grid.Panel', {
 			title      : 'Header / Footer Templates',
-			region     : 'north',
+			region     : 'south',
 			height     : 250,
 			split      : true,
 			hideHeaders: true,
@@ -484,6 +485,51 @@ Ext.define('App.view.administration.Documents', {
             ],
             plugins:[
                 me.rowEditor2 = Ext.create('Ext.grid.plugin.RowEditing', {
+                    clicksToEdit: 2
+                })
+
+            ]
+		});
+
+		me.DocumentsDefaultsGrid = Ext.create('Ext.grid.Panel', {
+			title      : 'Documents Defaults',
+			region     : 'north',
+			width      : 250,
+			border     : true,
+			split      : true,
+            store      : me.defaultsDocumentsStore,
+			hideHeaders: true,
+			columns    : [
+				{
+					flex     : 1,
+					sortable : true,
+					dataIndex: 'title',
+                    editor:{
+                        xtype:'textfield',
+                        allowBlank:false
+                    }
+				},
+				{
+					icon: 'ui_icons/delete.png',
+					tooltip: 'Remove',
+					scope:me,
+					handler: me.onRemoveDocument
+				}
+			],
+			listeners  : {
+				scope    : me,
+				itemclick: me.onDocumentsGridItemClick
+			},
+            tbar       :[
+                '->',
+                {
+                    text : 'New',
+                    scope: me,
+                    handler: me.newDefaultTemplates
+                }
+            ],
+            plugins:[
+                me.rowEditor3 = Ext.create('Ext.grid.plugin.RowEditing', {
                     clicksToEdit: 2
                 })
 
@@ -541,7 +587,7 @@ Ext.define('App.view.administration.Documents', {
             width      : 250,
             border     : false,
             split      : true,
-            items:[ me.HeaderFootergrid, me.DocumentsGrid ]
+            items:[  me.DocumentsDefaultsGrid, me.DocumentsGrid, me.HeaderFootergrid ]
         });
 
 		me.TeamplateEditor = Ext.create('Ext.form.Panel', {
@@ -657,11 +703,26 @@ Ext.define('App.view.administration.Documents', {
         me.rowEditor.cancelEdit();
         store.insert(0,{
             title:'New Document',
-            title:'New Document',
+	        template_type:'documenttemplate',
             date: new Date(),
 	        type: 1
         });
         me.rowEditor.startEdit(0, 0);
+
+    },
+
+
+	newDefaultTemplates:function(){
+        var me = this,
+            store = me.defaultsDocumentsStore;
+        me.rowEditor3.cancelEdit();
+        store.insert(0,{
+            title:'New Defaults',
+	        template_type:'defaulttemplate',
+            date: new Date(),
+	        type: 1
+        });
+        me.rowEditor3.startEdit(0, 0);
 
     },
 
@@ -671,6 +732,7 @@ Ext.define('App.view.administration.Documents', {
         me.rowEditor2.cancelEdit();
         store.insert(0,{
             title:'New Header Or Footer',
+	        template_type:'headerorfootertemplate',
             date: new Date(),
 	        type: 2
         });
@@ -698,6 +760,7 @@ Ext.define('App.view.administration.Documents', {
         var me = this;
         me.templatesDocumentsStore.load();
         me.headersAndFooterStore.load();
+        me.defaultsDocumentsStore.load();
 		callback(true);
 	}
 });

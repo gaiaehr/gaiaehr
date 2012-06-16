@@ -36,6 +36,8 @@ Ext.define('App.view.patientfile.Summary', {
         me.patientNotesStore = Ext.create('App.store.patientfile.Notes');
         me.patientRemindersStore = Ext.create('App.store.patientfile.Reminders');
 
+	    me.encounterEventHistoryStore = Ext.create('App.store.patientfile.Encounters');
+
         me.pageBody = [
             {
                 xtype      : 'tabpanel',
@@ -185,19 +187,20 @@ Ext.define('App.view.patientfile.Summary', {
                     {
                         title     : 'History',
                         xtype     :'grid',
+	                    store     : me.encounterEventHistoryStore,
                         columns:[
                             {
                                 header:'Date',
-                                dataIndex:'date'
+                                dataIndex:'start_date'
                             },
                             {
                                 header:'Event',
-                                dataIndex:'title',
+                                dataIndex:'brief_description',
                                 flex:true
                             },
                             {
-                                header:'User',
-                                dataIndex:'user'
+                                header:'Visit Category',
+                                dataIndex:'visit_category'
                             }
                         ]
                     },
@@ -779,6 +782,8 @@ Ext.define('App.view.patientfile.Summary', {
 	    me.patientDentalStore.load({params: {pid: app.currPatient.pid}});
 	    me.patientMedicationsStore.load({params: {pid: app.currPatient.pid}});
 	    me.patientDocumentsStore.load({params: {pid: app.currPatient.pid}});
+
+	    me.encounterEventHistoryStore.load({params: {pid: app.currPatient.pid}});
 
         if(me.checkIfCurrPatient()) {
             var patient = me.getCurrPatient();

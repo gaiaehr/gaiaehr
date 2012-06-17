@@ -418,6 +418,76 @@ class Patient
         return $records;
 	}
 
+    private function getPatientSurgeryByPatientID($pid)
+    {
+        $this->db->setSQL("SELECT * FROM patient_surgery WHERE pid='$pid'");
+        $records = array();
+        foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) as $rec){
+            $rec['alert'] = ($rec['end_date']== null || $rec['end_date'] == '0000-00-00 00:00:00') ? 1 : 0 ;
+            $records[]= $rec;
+        }
+
+        return $records;
+    }
+
+    public function getMeaningfulUserAlertByPid(stdClass $params)
+	{
+        $record = array();
+        $this->db->setSQL("SELECT lenguage,
+                                  race,
+                                  ethnicity,
+                                  fname,
+                                  lname,
+                                  sex,
+                                  DOB
+                           FROM form_data_demographics
+                           WHERE pid = '$params->pid'");
+        $patientdata = $this->db->fetchRecord(PDO::FETCH_ASSOC);
+        if($patientdata['lenguage'] == null || $patientdata['lenguage'] == ''){
+            $record['lenguage']=false;
+        }
+        elseif($patientdata['lenguage'] != null || $patientdata['lenguage'] != ''){
+            $record['lenguage']=true;
+        }
+        if($patientdata['race'] == null || $patientdata['race'] == ''){
+            $record['race']=false;
+        }
+        elseif($patientdata['race'] != null || $patientdata['race'] != ''){
+            $record['race']=true;
+        }
+        if($patientdata['ethnicity'] == null || $patientdata['ethnicity'] == ''){
+            $record['ethnicity']=0;
+        }
+        elseif($patientdata['ethnicity'] != null || $patientdata['ethnicity'] != ''){
+            $record['ethnicity']=1;
+        }
+        if($patientdata['fname'] == null || $patientdata['fname'] == ''){
+            $record['fname']=0;
+        }
+        elseif($patientdata['fname'] != null || $patientdata['fname'] != ''){
+            $record['fname']=1;
+        }
+        if($patientdata['lname'] == null || $patientdata['lname'] == ''){
+            $record['lname']=0;
+        }
+        elseif($patientdata['lname'] != null || $patientdata['lname'] != ''){
+            $record['lname']=1;
+        }
+        if($patientdata['DOB'] == null || $patientdata['DOB'] == ''){
+            $record['DOB']=0;
+        }
+        elseif($patientdata['DOB'] != null || $patientdata['DOB'] != ''){
+            $record['DOB']=1;
+        }
+        if($patientdata['sex'] == null || $patientdata['sex'] == ''){
+            $record['sex']=0;
+        }
+        elseif($patientdata['sex'] != null || $patientdata['sex'] != ''){
+            $record['sex']=1;
+        }
+        return $record;
+	}
+
 
 	/**
 	 * @param $date
@@ -429,6 +499,7 @@ class Patient
 	}
 
 }
+
 //$p = new Patient();
 //echo '<pre>';
 //print_r($p->createNewPatientWithName('Ernesto J Rodriguez'));

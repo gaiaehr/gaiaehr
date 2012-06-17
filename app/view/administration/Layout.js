@@ -949,6 +949,7 @@ Ext.define('App.view.administration.Layout', {
 				'hideLabel',
 				'labelWidth',
 				'margin',
+				'allowBlank',
 				'list_id'
 			];
 		} else if(value == 'mitos.checkbox') {
@@ -1036,6 +1037,7 @@ Ext.define('App.view.administration.Layout', {
 				'fieldLabel',
 				'labelWidth',
 				'hideLabel',
+				'allowBlank',
 				'margin'
 			];
 		} else {

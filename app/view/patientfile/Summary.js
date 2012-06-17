@@ -37,6 +37,8 @@ Ext.define('App.view.patientfile.Summary', {
         me.patientRemindersStore = Ext.create('App.store.patientfile.Reminders');
 
 	    me.encounterEventHistoryStore = Ext.create('App.store.patientfile.Encounters');
+	    me.patientAlertsStore = Ext.create('App.store.patientfile.MeaningfulUseAlert');
+
 
         me.pageBody = [
             {
@@ -170,8 +172,49 @@ Ext.define('App.view.patientfile.Summary', {
 
                             },
                             {
-                                title: 'Disclosure',
-                                html : 'Panel content!'
+	                            title      : 'Meaninful Use Patient Requirements',
+	                            itemId     : 'alertsPanel',
+	                            xtype      : 'grid',
+	                            bodyPadding: 0,
+	                            store      : me.patientAlertsStore,
+	                            columns    : [
+		                            {
+			                            header   : 'Lenguage',
+			                            dataIndex: 'lenguage',
+			                            renderer : me.boolRenderer
+		                            },
+		                            {
+			                            header   : 'Race',
+			                            dataIndex: 'race',
+			                            renderer : me.boolRenderer
+		                            },
+		                            {
+			                            header   : 'Ethnicity',
+			                            dataIndex: 'ethnicity',
+			                            renderer : me.boolRenderer
+		                            },
+		                            {
+			                            header   : 'First Name',
+			                            dataIndex: 'fname',
+			                            renderer : me.boolRenderer
+		                            },
+		                            {
+			                            header   : 'Last Name',
+			                            dataIndex: 'lname',
+			                            renderer : me.boolRenderer
+		                            },
+		                            {
+			                            header   : 'Sex',
+			                            dataIndex: 'sex',
+			                            renderer : me.boolRenderer
+		                            },
+		                            {
+			                            header   : 'Day of Birth',
+			                            dataIndex: 'DOB',
+			                            flex:1,
+			                            renderer : me.boolRenderer
+		                            }
+	                            ]
                             }
                         ]
                     },
@@ -784,6 +827,7 @@ Ext.define('App.view.patientfile.Summary', {
 	    me.patientDocumentsStore.load({params: {pid: app.currPatient.pid}});
 
 	    me.encounterEventHistoryStore.load({params: {pid: app.currPatient.pid}});
+	    me.patientAlertsStore.load({params: {pid: app.currPatient.pid}});
 
         if(me.checkIfCurrPatient()) {
             var patient = me.getCurrPatient();

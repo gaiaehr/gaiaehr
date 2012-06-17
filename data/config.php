@@ -663,6 +663,9 @@ $API = array(
             ),
             'getPatientDocumentsByEid'=>array(
             	'len'=>1
+            ),
+            'getMeaningfulUserAlertByPid'=>array(
+            	'len'=>1
             )
 
         )

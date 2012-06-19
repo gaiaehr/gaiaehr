@@ -6,47 +6,48 @@
  * Created: September 2010
  * Description: Determines the next date of recursion given an iCalendar "rrule" like pattern.
  * Requirements: PHP 5.3+ - makes extensive use of the Date and Time library (http://us2.php.net/manual/en/book.datetime.php)
+ * Last update: April 12, 2011
  */
 class When
 {
-    protected $frequency;
+    public $frequency;
     
-    protected $start_date;
-    protected $try_date;
+    public $start_date;
+    public $try_date;
     
-    protected $end_date;
+    public $end_date;
     
-    protected $gobymonth;
-    protected $bymonth;
+    public $gobymonth;
+    public $bymonth;
     
-    protected $gobyweekno;
-    protected $byweekno;
+    public $gobyweekno;
+    public $byweekno;
     
-    protected $gobyyearday;
-    protected $byyearday;
+    public $gobyyearday;
+    public $byyearday;
     
-    protected $gobymonthday;
-    protected $bymonthday;
+    public $gobymonthday;
+    public $bymonthday;
     
-    protected $gobyday;
-    protected $byday;
+    public $gobyday;
+    public $byday;
     
-    protected $gobysetpos;
-    protected $bysetpos;
+    public $gobysetpos;
+    public $bysetpos;
         
-    protected $suggestions;
+    public $suggestions;
     
-    protected $count;
-    protected $counter;
+    public $count;
+    public $counter;
     
-    protected $goenddate;
+    public $goenddate;
     
-    protected $interval;
+    public $interval;
     
-    protected $wkst;
+    public $wkst;
     
-    protected $valid_week_days;
-    protected $valid_frequency;
+    public $valid_week_days;
+    public $valid_frequency;
         
     /**
      * __construct
@@ -144,6 +145,9 @@ class When
     // accepts an rrule directly
     public function rrule($rrule)
     {
+        // strip off a trailing semi-colon
+        $rrule = trim($rrule, ";");
+        
         $parts = explode(";", $rrule);
 
         foreach($parts as $part)
@@ -488,7 +492,9 @@ class When
                 if($_day >= 0)
                 {
                     $_day--;
-                    $this->suggestions[] = DateTime::createFromFormat('Y-z H:i:s', $year . '-' . $_day . ' ' . $timestamp); 
+                    
+                    $_time = strtotime('+' . $_day . ' days', mktime(0, 0, 0, 1, 1, $year));
+                    $this->suggestions[] = new Datetime(date('Y-m-d', $_time) . ' ' . $timestamp);
                 }
                 else
                 {
@@ -498,7 +504,9 @@ class When
                     {
                         $year_day_neg = 366 + $_day;
                     }
-                    $this->suggestions[] = DateTime::createFromFormat('Y-z H:i:s', $year . '-' . $year_day_neg . ' ' . $timestamp); 
+                    
+                    $_time = strtotime('+' . $year_day_neg . ' days', mktime(0, 0, 0, 1, 1, $year));
+                    $this->suggestions[] = new Datetime(date('Y-m-d', $_time) . ' ' . $timestamp);
                 }                   
             }
         }
@@ -550,8 +558,9 @@ class When
                     }
                     else
                     {
-                        $tmp_month = $month+1;
-                        $tmp_date = new DateTime($year . '-' . $tmp_month . '-' . $overflow_count . ' ' . $timestamp);
+                        //$tmp_month = $month+1;
+                        $tmp_date = new DateTime($year . '-' . $month . '-' . $overflow_count . ' ' . $timestamp);
+                        $tmp_date->modify('+1 month');
                         $overflow_count++;
                     }
                     
@@ -681,7 +690,7 @@ class When
         }
         
         // create initial set of suggested dates
-        if(count($this->suggestions) == 0)
+        if(count($this->suggestions) === 0)
         {
             $this->create_suggestions();
         }
@@ -707,7 +716,7 @@ class When
             else
             {
                 // we might be out of suggested days, so load some more
-                if(count($this->suggestions) == 0)
+                if(count($this->suggestions) === 0)
                 {
                     $this->create_suggestions();
                 }

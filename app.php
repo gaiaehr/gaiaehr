@@ -32,7 +32,9 @@ Globals::setGlobals();
         <!--end test stuff-->
         <link rel="stylesheet" type="text/css" href="lib/<?php echo $_SESSION['dir']['ext']; ?>/resources/css/<?php echo $_SESSION['global_settings']['css_header'] ?>">
         <!--calendar css-->
-        <link rel="stylesheet" type="text/css" href="lib/<?php echo $_SESSION['dir']['ext_cal'] ?>/resources/css/extensible-all.css" />
+        <link rel="stylesheet" type="text/css" href="lib/<?php echo $_SESSION['dir']['ext_cal'] ?>/resources/css/calendar.css" />
+        <link rel="stylesheet" type="text/css" href="lib/<?php echo $_SESSION['dir']['ext_cal'] ?>/resources/css/calendar-colors.css" />
+        <link rel="stylesheet" type="text/css" href="lib/<?php echo $_SESSION['dir']['ext_cal'] ?>/resources/css/recurrence.css" />
         <!--ens calendar css-->
         <link rel="stylesheet" type="text/css" href="ui_app/style_newui.css" >
         <link rel="stylesheet" type="text/css" href="ui_app/custom_app.css" >

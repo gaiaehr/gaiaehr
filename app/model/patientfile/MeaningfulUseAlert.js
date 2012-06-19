@@ -10,14 +10,8 @@ Ext.define('App.model.patientfile.MeaningfulUseAlert', {
 	extend: 'Ext.data.Model',
 	fields: [
 
-		{name: 'lenguage', type: 'bool'},
-		{name: 'race', type: 'bool'},
-		{name: 'ethnicity', type: 'bool'},
-		{name: 'fname', type: 'bool'},
-		{name: 'lname', type: 'bool'},
-		{name: 'sex', type: 'bool'},
-		{name: 'DOB', type: 'bool'},
-		{name: 'pid', type: 'int'}
+		{name: 'name', type: 'string'},
+		{name: 'val', type: 'bool'}
 	],
 	proxy : {
 		type: 'direct',

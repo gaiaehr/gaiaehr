@@ -31,6 +31,12 @@
 	font-family: 'Cuprum';
 	src: url('../ui_fonts/Cuprum.ttf');
 }
+
+.x-field-yellow input {
+    background-image: none !important;
+    background-color: yellow;
+}
+
 .x-livesearch-match {
     background-color: yellow;
 }

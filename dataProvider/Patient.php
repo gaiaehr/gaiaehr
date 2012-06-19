@@ -443,48 +443,16 @@ class Patient
                            FROM form_data_demographics
                            WHERE pid = '$params->pid'");
         $patientdata = $this->db->fetchRecord(PDO::FETCH_ASSOC);
-        if($patientdata['lenguage'] == null || $patientdata['lenguage'] == ''){
-            $record['lenguage']=false;
+
+        foreach($patientdata as $key => $val){
+
+            $val = ($val == null || $val == '') ? false : true;
+
+            $record[] = array('name' => $key, 'val' => $val);
+
+
         }
-        elseif($patientdata['lenguage'] != null || $patientdata['lenguage'] != ''){
-            $record['lenguage']=true;
-        }
-        if($patientdata['race'] == null || $patientdata['race'] == ''){
-            $record['race']=false;
-        }
-        elseif($patientdata['race'] != null || $patientdata['race'] != ''){
-            $record['race']=true;
-        }
-        if($patientdata['ethnicity'] == null || $patientdata['ethnicity'] == ''){
-            $record['ethnicity']=0;
-        }
-        elseif($patientdata['ethnicity'] != null || $patientdata['ethnicity'] != ''){
-            $record['ethnicity']=1;
-        }
-        if($patientdata['fname'] == null || $patientdata['fname'] == ''){
-            $record['fname']=0;
-        }
-        elseif($patientdata['fname'] != null || $patientdata['fname'] != ''){
-            $record['fname']=1;
-        }
-        if($patientdata['lname'] == null || $patientdata['lname'] == ''){
-            $record['lname']=0;
-        }
-        elseif($patientdata['lname'] != null || $patientdata['lname'] != ''){
-            $record['lname']=1;
-        }
-        if($patientdata['DOB'] == null || $patientdata['DOB'] == ''){
-            $record['DOB']=0;
-        }
-        elseif($patientdata['DOB'] != null || $patientdata['DOB'] != ''){
-            $record['DOB']=1;
-        }
-        if($patientdata['sex'] == null || $patientdata['sex'] == ''){
-            $record['sex']=0;
-        }
-        elseif($patientdata['sex'] != null || $patientdata['sex'] != ''){
-            $record['sex']=1;
-        }
+
         return $record;
 	}
 

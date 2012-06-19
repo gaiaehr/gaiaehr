@@ -170,51 +170,6 @@ Ext.define('App.view.patientfile.Summary', {
                                     }
                                 ]
 
-                            },
-                            {
-	                            title      : 'Meaninful Use Patient Requirements',
-	                            itemId     : 'alertsPanel',
-	                            xtype      : 'grid',
-	                            bodyPadding: 0,
-	                            store      : me.patientAlertsStore,
-	                            columns    : [
-		                            {
-			                            header   : 'Lenguage',
-			                            dataIndex: 'lenguage',
-			                            renderer : me.boolRenderer
-		                            },
-		                            {
-			                            header   : 'Race',
-			                            dataIndex: 'race',
-			                            renderer : me.boolRenderer
-		                            },
-		                            {
-			                            header   : 'Ethnicity',
-			                            dataIndex: 'ethnicity',
-			                            renderer : me.boolRenderer
-		                            },
-		                            {
-			                            header   : 'First Name',
-			                            dataIndex: 'fname',
-			                            renderer : me.boolRenderer
-		                            },
-		                            {
-			                            header   : 'Last Name',
-			                            dataIndex: 'lname',
-			                            renderer : me.boolRenderer
-		                            },
-		                            {
-			                            header   : 'Sex',
-			                            dataIndex: 'sex',
-			                            renderer : me.boolRenderer
-		                            },
-		                            {
-			                            header   : 'Day of Birth',
-			                            dataIndex: 'DOB',
-			                            flex:1,
-			                            renderer : me.boolRenderer
-		                            }
-	                            ]
                             }
                         ]
                     },
@@ -328,7 +283,6 @@ Ext.define('App.view.patientfile.Summary', {
 												    anchor:'100%'
 											    }
 										    ],
-										    //   url: 'dataProvider/DocumentHandler.php'
 										    api: {
 											    submit: DocumentHandler.uploadDocument
 										    }
@@ -350,33 +304,6 @@ Ext.define('App.view.patientfile.Summary', {
 							    })
 						    ]
 					        }
-//		                    {
-//			                    text:'New Lab Order',
-//			                    action:'lab',
-//			                    scope:me,
-//			                    handler:me.newDoc
-//		                    },
-//		                    '-',
-//		                    {
-//			                    text:'New X-Ray Order',
-//			                    action:'xRay',
-//			                    scope:me,
-//			                    handler:me.newDoc
-//		                    },
-//		                    '-',
-//		                    {
-//			                    text:'New Prescription',
-//			                    action:'prescription',
-//			                    scope:me,
-//			                    handler:me.newDoc
-//		                    },
-//		                    '-',
-//		                    {
-//			                    text:'New Doctors Note',
-//			                    action:'notes',
-//			                    scope:me,
-//			                    handler:me.newDoc
-//		                    }
 	                    ]
                     }
                 ]
@@ -603,7 +530,7 @@ Ext.define('App.view.patientfile.Summary', {
 					me.patientDocumentsStore.load({params: {pid: app.currPatient.pid}});
 				},
 				failure:function(fp, o){
-					say(o.result.error);
+					//say(o.result.error);
 
 				}
 			});
@@ -655,7 +582,7 @@ Ext.define('App.view.patientfile.Summary', {
 
         Ext.each(formFields.items, function(field) {
 	        if(field.xtype == 'datefield'){
-		        say(field);
+		        //say(field);
 		        modelFields.push({name: field.name, type: 'date', dateFormat:'Y-m-d H:i:s'});
 	        }else{
 		        modelFields.push({name: field.name});
@@ -827,7 +754,27 @@ Ext.define('App.view.patientfile.Summary', {
 	    me.patientDocumentsStore.load({params: {pid: app.currPatient.pid}});
 
 	    me.encounterEventHistoryStore.load({params: {pid: app.currPatient.pid}});
-	    me.patientAlertsStore.load({params: {pid: app.currPatient.pid}});
+	    me.patientAlertsStore.load({
+		    scope:me,
+		    params: {
+			    pid: app.currPatient.pid
+		    },
+	        callback:function(records, operation, success){
+		        Ext.each(records, function(fields){
+			        var formPanel = me.query('[action="demoFormPanel"]')[0],
+						field = formPanel.getForm().findField(fields.data.name);
+
+			        if(fields.data.val){
+				        field.removeCls('x-field-yellow');
+			        }else{
+				        field.addCls('x-field-yellow');
+			        }
+		        });
+
+
+	        }
+
+	    });
 
         if(me.checkIfCurrPatient()) {
             var patient = me.getCurrPatient();

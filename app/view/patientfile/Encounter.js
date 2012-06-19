@@ -779,19 +779,33 @@ Ext.define('App.view.patientfile.Encounter', {
                     }
                 });
             } else if (SaveBtn.action == 'vitals') {
-                ACL.hasPermission('add_vitals', function (provider, response) {
-                    if (response.result) {
-                        //noinspection JSUnresolvedFunction
-                        store = me.encounterStore.getAt(0).vitals();
-                        record = form.getRecord();
-                        values = me.addDefaultData(values);
-                        storeIndex = store.indexOf(record);
+	            var VFields = form.getFields().items,
+		            VFieldsCount = VFields.length,
+		            emptyCount = 0;
 
-                        if(storeIndex == -1) {
-                            store.insert(0,values);
-                        } else {
-                            record.set(values);
-                        }
+	            Ext.each(VFields, function(v){
+		            if(v.xtype != 'mitos.datetime'){
+						if(v.value == ''){
+							emptyCount++;
+						}
+
+		            }
+	            });
+
+	            if((VFieldsCount - 3) > emptyCount){
+		            ACL.hasPermission('add_vitals', function (provider, response) {
+			            if (response.result) {
+				            //noinspection JSUnresolvedFunction
+				            store = me.encounterStore.getAt(0).vitals();
+				            record = form.getRecord();
+				            values = me.addDefaultData(values);
+				            storeIndex = store.indexOf(record);
+
+				            if(storeIndex == -1) {
+					            store.insert(0,values);
+				            } else {
+					            record.set(values);
+				            }
                         store.sync({
 	                        scope:me,
 	                        success:function(){
@@ -801,10 +815,19 @@ Ext.define('App.view.patientfile.Encounter', {
 		                        me.resetVitalsForm();
 	                        }
                         });
-                    } else {
-                        app.accessDenied();
-                    }
-                });
+			            } else {
+				            app.accessDenied();
+			            }
+		            });
+	            }else{
+		            me.msg('Oops!', 'Vitals form is epmty')
+	            }
+
+
+
+
+
+
             } else {
                 ACL.hasPermission('edit_encounters', function (provider, response) {
                     if (response.result) {

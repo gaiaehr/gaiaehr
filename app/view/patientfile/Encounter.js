@@ -432,6 +432,8 @@ Ext.define('App.view.patientfile.Encounter', {
                         {
                             text:'Sign',
                             width:40,
+	                        disabled:true,
+	                        action:'signBtn',
                             scope:me,
                             handler:me.onVitalsSign
                         },
@@ -1056,6 +1058,7 @@ Ext.define('App.view.patientfile.Encounter', {
 			form = me.vitalsPanel.down('form').getForm();
             form.reset();
         if(!record.data.auth_uid){
+	        me.vitalsPanel.query('button[action="signBtn"]')[0].setDisabled(false);
             form.loadRecord(record);
         }else{
             Ext.Msg.show({
@@ -1072,6 +1075,8 @@ Ext.define('App.view.patientfile.Encounter', {
 		var form = this.vitalsPanel.down('form').getForm(),
             model = Ext.ModelManager.getModel('App.model.patientfile.Vitals'),
             newModel = Ext.ModelManager.create({}, model);
+
+		this.vitalsPanel.query('button[action="signBtn"]')[0].setDisabled(true);
         form.loadRecord(newModel);
 	},
 

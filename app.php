@@ -175,6 +175,7 @@ Globals::setGlobals();
         <script type="text/javascript" src="app/classes/combo/CodesTypes.js"></script>
         <script type="text/javascript" src="app/classes/combo/PreventiveCareTypes.js"></script>
         <script type="text/javascript" src="app/classes/combo/Facilities.js"></script>
+        <script type="text/javascript" src="app/classes/combo/ActiveFacilities.js"></script>
         <script type="text/javascript" src="app/classes/combo/BillingFacilities.js"></script>
         <script type="text/javascript" src="app/classes/combo/InsurancePayerType.js"></script>
         <script type="text/javascript" src="app/classes/combo/Languages.js"></script>

@@ -69,12 +69,12 @@ class CombosData {
 	}
 
 	public function getActiveFacilities(){
-		$this->db->setSQL("SELECT id AS option_value, name AS option_name FROM facility WHERE active = '1'");
+		$this->db->setSQL("SELECT id AS option_value, `name` AS option_name FROM facility WHERE active = '1'");
 		return $this->db->fetchRecords(PDO::FETCH_ASSOC);
 	}
 
 	public function getBillingFacilities(){
-		$this->db->setSQL("SELECT id AS option_value, name AS option_name FROM facility WHERE active = '1' AND billing_location = '1'");
+		$this->db->setSQL("SELECT id AS option_value, `name` AS option_name FROM facility WHERE active = '1' AND billing_location = '1'");
 	    return $this->db->fetchRecords(PDO::FETCH_ASSOC);
 	}
 

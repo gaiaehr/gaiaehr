@@ -63,10 +63,10 @@ class Calendar {
         $rows = array();
         foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row){
             $row['id']                  = intval($row['id']);
-            $row['user_id']             = intval($row['user_id']);
+            $row['calendarId']          = intval($row['user_id']);
             $row['category']            = intval($row['category']);
             $row['facility']            = intval($row['facility']);
-            $row['billing_facillity']   = intval($row['billing_facillity']);
+            $row['billing_facility']   = intval($row['billing_facillity']);
             $row['patient_id']          = intval($row['patient_id']);
 
             $sql = ("SELECT * FROM form_data_demographics WHERE pid= '".$row['patient_id']."'");
@@ -91,10 +91,10 @@ class Calendar {
         $rec = $this->db->fetchRecord();
         $fullName = Person::fullname($rec['fname'],$rec['mname'],$rec['lname']);
 
-        $row['user_id']             = $params->user_id;
+        $row['user_id']             = $params->calendarId;
         $row['category']            = $params->category;
         $row['facility']            = $params->facility;
-        $row['billing_facillity']   = $params->billing_facillity;
+        $row['billing_facillity']   = $params->billing_facility;
         $row['patient_id']          = $params->patient_id;
         $row['title']               = $fullName;
         $row['status']              = $params->status;
@@ -131,10 +131,10 @@ class Calendar {
      */
     public function updateEvent(stdClass $params){
 
-        $row['user_id']             = $params->user_id;
+        $row['user_id']             = $params->calendarId;
         $row['category']            = $params->category;
         $row['facility']            = $params->facility;
-        $row['billing_facillity']   = $params->billing_facillity;
+        $row['billing_facillity']   = $params->billing_facility;
         $row['patient_id']          = $params->patient_id;
         $row['title']               = $params->title;
         $row['status']              = $params->status;

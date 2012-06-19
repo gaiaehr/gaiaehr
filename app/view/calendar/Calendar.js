@@ -78,6 +78,9 @@ Ext.define('App.view.calendar.Calendar', {
 			listeners: {
 				scope  : this,
 				'write': function(store, operation) {
+					say(store);
+					say(operation);
+
 					var title = Ext.value(operation.records[0].data[Extensible.calendar.data.EventMappings.Title.name], '(No title)');
 					if(operation.action == 'create') {
 						this.msg('Add', 'Added "' + title + '"');
@@ -271,11 +274,15 @@ Ext.define('App.view.calendar.Calendar', {
 	 */
 
 	onActive   : function(callback) {
-		this.calendarStore.load();
-		//Ext.getCmp('app-calendar').onActiveCard();
-		Ext.Function.defer(function() {
-			Ext.getCmp('app-calendarlist').doLayout();
-		}, 500, this);
+		var me = this,
+			calPanel = Ext.getCmp('app-calendar'),
+			calListPanel = Ext.getCmp('app-calendarlist');
+		calPanel.getActiveView().refresh(true);
+		me.calendarStore.load({
+			callback:function(){
+				calListPanel.doLayout();
+			}
+		});
 		callback(true);
 	},
 

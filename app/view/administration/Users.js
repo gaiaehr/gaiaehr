@@ -246,7 +246,7 @@ Ext.define('App.view.administration.Users', {
 					text   : 'Cancel',
 					scope  : me,
 					handler: function(btn) {
-						btn.up('wiindow').close();
+						btn.up('window').close();
 					}
 				}
 			],

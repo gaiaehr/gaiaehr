@@ -9,8 +9,8 @@ Ext.define('App.classes.CalStatusComboBox', {
 		Ext.define('CalendarStatusModel', {
 			extend: 'Ext.data.Model',
 			fields: [
-				{name: 'option_id', type: 'string'},
-				{name: 'title', type: 'string'}
+				{name: 'option_name', type: 'string' },
+				{name: 'option_value', type: 'string' }
 			],
 			proxy : {
 				type       : 'direct',

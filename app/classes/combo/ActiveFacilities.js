@@ -1,10 +1,10 @@
-Ext.define('App.classes.combo.BillingFacilities', {
+Ext.define('App.classes.combo.ActiveFacilities', {
 	extend       : 'Ext.form.ComboBox',
-	alias        : 'widget.mitos.billingfacilitiescombo',
+	alias        : 'widget.mitos.activefacilitiescombo',
 	initComponent: function() {
 		var me = this;
 
-		Ext.define('BillingFacilitiesComboModel', {
+		Ext.define('ActiveFacilitiesComboModel', {
 			extend: 'Ext.data.Model',
 			fields: [
 				{name: 'option_name', type: 'string' },
@@ -13,13 +13,13 @@ Ext.define('App.classes.combo.BillingFacilities', {
 			proxy : {
 				type: 'direct',
 				api : {
-					read: CombosData.getBillingFacilities
+					read: CombosData.getActiveFacilities
 				}
 			}
 		});
 
 		me.store = Ext.create('Ext.data.Store', {
-			model   : 'BillingFacilitiesComboModel',
+			model   : 'ActiveFacilitiesComboModel',
 			autoLoad: true
 		});
 

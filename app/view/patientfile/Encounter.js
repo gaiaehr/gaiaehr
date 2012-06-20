@@ -432,6 +432,8 @@ Ext.define('App.view.patientfile.Encounter', {
                         {
                             text:'Sign',
                             width:40,
+	                        disabled:true,
+	                        action:'signBtn',
                             scope:me,
                             handler:me.onVitalsSign
                         },
@@ -1056,6 +1058,7 @@ Ext.define('App.view.patientfile.Encounter', {
 			form = me.vitalsPanel.down('form').getForm();
             form.reset();
         if(!record.data.auth_uid){
+	        me.vitalsPanel.query('button[action="signBtn"]')[0].setDisabled(false);
             form.loadRecord(record);
         }else{
             Ext.Msg.show({
@@ -1072,6 +1075,8 @@ Ext.define('App.view.patientfile.Encounter', {
 		var form = this.vitalsPanel.down('form').getForm(),
             model = Ext.ModelManager.getModel('App.model.patientfile.Vitals'),
             newModel = Ext.ModelManager.create({}, model);
+
+		this.vitalsPanel.query('button[action="signBtn"]')[0].setDisabled(true);
         form.loadRecord(newModel);
 	},
 
@@ -1226,6 +1231,42 @@ Ext.define('App.view.patientfile.Encounter', {
         }
     },
 
+	bmi:function(field) {
+
+		var form = field.up('form').getForm(),
+			weight = form.findField('weight_kg').getValue(),
+			height = form.findField('height_cm').getValue(),
+			bmi, status;
+
+		if(weight > 0 && height > 0){
+			bmi = weight/(height/100*height/100);
+
+			if(bmi < 15){
+				status = 'Very severely underweight'
+			}else if(bmi >= 15 && bmi < 16){
+				status = 'Severely underweight'
+			}else if(bmi >= 16 && bmi < 18.5){
+				status = 'Underweight'
+			}else if(bmi >= 18.5 && bmi < 25){
+				status = 'Normal'
+			}else if(bmi >= 25 && bmi < 30){
+				status = 'Overweight'
+			}else if(bmi >= 30 && bmi < 35){
+				status = 'Obese Class I'
+			}else if(bmi >= 35 && bmi < 40){
+				status = 'Obese Class II'
+			}else if(bmi >= 40){
+				status = 'Obese Class III'
+			}
+
+			field.up('form').getForm().findField('bmi').setValue(Ext.util.Format.number(bmi, '0.00'));
+			field.up('form').getForm().findField('bmi_status').setValue(status);
+
+		}
+
+
+	},
+
     /**
      * After this panel is render add the forms and listeners for conventions
      */
@@ -1250,6 +1291,10 @@ Ext.define('App.view.patientfile.Encounter', {
             form.findField('weight_kg').addListener('keyup', me.kglbs, me);
             form.findField('height_cm').addListener('keyup', me.cmin, me);
             form.findField('height_in').addListener('keyup', me.incm, me);
+            form.findField('weight_lbs').addListener('blur', me.bmi, me);
+            form.findField('weight_kg').addListener('blur', me.bmi, me);
+            form.findField('height_cm').addListener('blur', me.bmi, me);
+            form.findField('height_in').addListener('blur', me.bmi, me);
             form.findField('head_circumference_cm').addListener('keyup', me.cmin, me);
             form.findField('head_circumference_in').addListener('keyup', me.incm, me);
             form.findField('waist_circumference_cm').addListener('keyup', me.cmin, me);

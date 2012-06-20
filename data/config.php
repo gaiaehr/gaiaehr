@@ -748,6 +748,12 @@ $API = array(
             'getFacilities'=>array(
                 'len'=>0
             ),
+            'getActiveFacilities'=>array(
+                'len'=>0
+            ),
+            'getBillingFacilities'=>array(
+                'len'=>0
+            ),
             'getRoles'=>array(
                 'len'=>0
             ),

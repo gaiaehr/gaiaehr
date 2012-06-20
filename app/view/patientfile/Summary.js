@@ -740,57 +740,61 @@ Ext.define('App.view.patientfile.Summary', {
         var me = this,
 	        billingPanel = me.query('[action="balance"]')[0];
 
-        Fees.getPatientBalance({pid:app.currPatient.pid},function(balance){
-            billingPanel.body.update('Account Balance: $' + balance);
-        });
-	    me.patientNotesStore.load({params: {pid: app.currPatient.pid}});
-	    me.patientRemindersStore.load({params: {pid: app.currPatient.pid}});
-	    me.immuCheckListStore.load({params: {pid: app.currPatient.pid}});
-	    me.patientAllergiesListStore.load({params: {pid: app.currPatient.pid}});
-	    me.patientMedicalIssuesStore.load({params: {pid: app.currPatient.pid}});
-	    me.patientSurgeryStore.load({params: {pid: app.currPatient.pid}});
-	    me.patientDentalStore.load({params: {pid: app.currPatient.pid}});
-	    me.patientMedicationsStore.load({params: {pid: app.currPatient.pid}});
-	    me.patientDocumentsStore.load({params: {pid: app.currPatient.pid}});
-
-	    me.encounterEventHistoryStore.load({params: {pid: app.currPatient.pid}});
-	    me.patientAlertsStore.load({
-		    scope:me,
-		    params: {
-			    pid: app.currPatient.pid
-		    },
-	        callback:function(records, operation, success){
-		        Ext.each(records, function(fields){
-			        var formPanel = me.query('[action="demoFormPanel"]')[0],
-						field = formPanel.getForm().findField(fields.data.name);
-
-			        if(fields.data.val){
-				        field.removeCls('x-field-yellow');
-			        }else{
-				        field.addCls('x-field-yellow');
-			        }
-		        });
-
-
-	        }
-
-	    });
-
         if(me.checkIfCurrPatient()) {
             var patient = me.getCurrPatient();
 	        me.updateTitle(patient.name + ' - #' + patient.pid + ' (Patient Summary)');
             var demoFormPanel = me.query('[action="demoFormPanel"]')[0];
             me.getFormData(demoFormPanel);
             me.getPatientImgs();
+
+
+	        Fees.getPatientBalance({pid:app.currPatient.pid},function(balance){
+		        billingPanel.body.update('Account Balance: $' + balance);
+	        });
+	        me.patientNotesStore.load({params: {pid: app.currPatient.pid}});
+	        me.patientRemindersStore.load({params: {pid: app.currPatient.pid}});
+	        me.immuCheckListStore.load({params: {pid: app.currPatient.pid}});
+	        me.patientAllergiesListStore.load({params: {pid: app.currPatient.pid}});
+	        me.patientMedicalIssuesStore.load({params: {pid: app.currPatient.pid}});
+	        me.patientSurgeryStore.load({params: {pid: app.currPatient.pid}});
+	        me.patientDentalStore.load({params: {pid: app.currPatient.pid}});
+	        me.patientMedicationsStore.load({params: {pid: app.currPatient.pid}});
+	        me.patientDocumentsStore.load({params: {pid: app.currPatient.pid}});
+
+	        me.encounterEventHistoryStore.load({params: {pid: app.currPatient.pid}});
+	        me.patientAlertsStore.load({
+		        scope:me,
+		        params: {
+			        pid: app.currPatient.pid
+		        },
+		        callback:function(records, operation, success){
+			        Ext.each(records, function(fields){
+				        var formPanel = me.query('[action="demoFormPanel"]')[0],
+					        field = formPanel.getForm().findField(fields.data.name);
+
+				        if(fields.data.val){
+					        field.removeCls('x-field-yellow');
+				        }else{
+					        field.addCls('x-field-yellow');
+				        }
+			        });
+
+
+		        }
+
+	        });
+
+
+	        PreventiveCare.activePreventiveCareAlert({pid:app.currPatient.pid},function(provider,response){
+		        if(response.result.success){
+			        app.PreventiveCareWindow.show();
+		        }
+	        });
+
         } else {
             callback(false);
             me.currPatientError();
         }
-	    PreventiveCare.activePreventiveCareAlert({pid:app.currPatient.pid},function(provider,response){
-	       if(response.result.success){
-		       app.PreventiveCareWindow.show();
-	       }
-        });
     }
 
 });

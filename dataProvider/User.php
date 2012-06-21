@@ -92,12 +92,20 @@ class User {
     public function getCurrentUserData()
     {
         $id = $this->getCurrentUserId();
-        $this->db->setSQL("SELECT *
-                         FROM users
-                        WHERE id = '$id'");
+        $this->db->setSQL("SELECT * FROM users WHERE id = '$id'");
         $user = $this->db->fetchRecord();
         return $user;
     }
+
+    public function getCurrentUserBasicData()
+    {
+        $id = $this->getCurrentUserId();
+        $this->db->setSQL("SELECT id, title, fname, mname, lname FROM users WHERE id = '$id'");
+        $user = $this->db->fetchRecord();
+        return $user;
+    }
+
+
 
     /**
      * @param stdClass $params

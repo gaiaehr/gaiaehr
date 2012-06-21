@@ -69,6 +69,6 @@ class Globals extends dbHelper {
 
 	    $_SESSION['global_settings']['timezone_offset']  = -14400;
 
-        return;
+        return $_SESSION;
     }
 }

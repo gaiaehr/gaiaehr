@@ -42,6 +42,8 @@ if(isset($_SESSION['user']['auth'])){
         }elseif($mobile->isMobile()) {
 		    include_once("app_mobile.php");
         }else{
+	        include_once($_SESSION['site']['root'].'/dataProvider/Globals.php');
+	        Globals::setGlobals();
             include_once("app.php");
         }
 	}

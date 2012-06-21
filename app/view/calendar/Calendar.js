@@ -277,6 +277,7 @@ Ext.define('App.view.calendar.Calendar', {
 		var me = this,
 			calPanel = Ext.getCmp('app-calendar'),
 			calListPanel = Ext.getCmp('app-calendarlist');
+
 		calPanel.getActiveView().refresh(true);
 		me.calendarStore.load({
 			callback:function(){

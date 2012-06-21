@@ -10,7 +10,7 @@ Ext.apply(Ext.form.VTypes, {
     // Less than 3 characters will be no good
     // ---------------------------------------
     empty_3chr : function(val, field) {
-        if(val.length <= 2){ return false; } else { return true; }
+        return val.length > 2;
     }, empty_3chrText: 'This field must have more than 3 characters and must be not empty.',
 
     // ---------------------------------------
@@ -18,14 +18,14 @@ Ext.apply(Ext.form.VTypes, {
     // Less than 7 characters will be no good
     // ---------------------------------------
     empty_7chr : function(val, field) {
-        if(val.length <= 6){ return false; } else { return true; }
+        return val.length > 6;
     }, empty_7chrText: 'This field must have more than 7 characters and must be not empty.',
 
     // ---------------------------------------
     // Validate Empty fields, empty field not allowed
     // ---------------------------------------
     empty : function(val, field) {
-        if(val.length <= 0){ return false; } else { return true; }
+        return val.length > 0;
     }, emptyText: 'This field must not be empty.',
 
     // ---------------------------------------
@@ -37,11 +37,7 @@ Ext.apply(Ext.form.VTypes, {
         var numDashes = val.split('-').length - 1;
         if (matchArr == null || numDashes == 1) {
             return false;
-        } else if (parseInt(matchArr[1],10)==0) {
-            return false;
-        } else {
-            return true;
-        }
+        } else return parseInt(matchArr[1], 10) != 0;
     }, SSNText: 'Social Security Numbers, must no be empty or in the wrong format. (555-55-5555).',
 
     // ---------------------------------------
@@ -51,7 +47,7 @@ Ext.apply(Ext.form.VTypes, {
     dateVal : function(val, field) {
         // String format yyyy-mm-dd
         var rgx = /^[0-9]{4}\-(0[1-9]|1[012])\-(0[1-9]|[12][0-9]|3[01])/;
-        if(!val.match(rgx)){ return false; } else { return true; }
+        return val.match(rgx);
     }, dateValText: 'Incorrect date format (YYYY-MM-DD).',
 
     // ---------------------------------------
@@ -60,7 +56,7 @@ Ext.apply(Ext.form.VTypes, {
     // ---------------------------------------
     checkEmail : function(val, field){
         var rgx = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/
-        if(!val.match(rgx)){ return false; } else { return true; }
+        return val.match(rgx);
     }, checkEmailText: 'This field should be an email address in the format user@domain.com',
 
     // ---------------------------------------
@@ -68,7 +64,7 @@ Ext.apply(Ext.form.VTypes, {
     // ---------------------------------------
     ipaddress : function( val, field){
         var rgx = /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/i;
-        if(!val.match(rgx)){ return false; } else { return true; }
+        return val.match(rgx);
     }, ipaddressText: 'This field should be an IP address in the format 192.168.0.1',
 
     // ---------------------------------------
@@ -76,7 +72,7 @@ Ext.apply(Ext.form.VTypes, {
     // ---------------------------------------
     phoneNumber : function( val, field){
         var rgx = /^\(?(\d{3})\)?[- ]?(\d{3})[- ]?(\d{4})$/;
-        if(!val.match(rgx)){ return false; } else { return true; }
+        return val.match(rgx);
     }, phoneNumberText: 'This field should be an valid PHONE number, in the format (000)-000-0000',
 
     // ---------------------------------------
@@ -87,18 +83,14 @@ Ext.apply(Ext.form.VTypes, {
         var regexObj = {
             canada 		: /^[ABCEGHJKLMNPRSTVXY]\d[ABCEGHJKLMNPRSTVWXYZ]( )?\d[ABCEGHJKLMNPRSTVWXYZ]\d$/i , //i for case-insensitive
             usa    		: /^\d{5}(-\d{4})?$/
-        }
+        };
         // check for canada at first
         if( val.match(regexObj.canada) ) {
             return true;
         } else {
             // now check for USA
             regexp = null;
-            if(val.match(regexObj.usa)) {
-                return true;
-            } else {
-                return false;
-            }
+            return val.match(regexObj.usa);
         }
     }, postalCodeText: 'This field should be an valid Postal Code number, it can by Canadian or US',
 
@@ -121,7 +113,7 @@ Ext.apply(Ext.form.VTypes, {
     // --------------------------------------- 
     mysqlField: function(val, field){
     	var regexObj = /[A-Za-z][A-Za-z0-9_]*/;
-    	if(!val.match(regexObj)){ return false; } else { return true; } 
+    	return val.match(regexObj);
     }, mysqlFieldText: 'The field entered has invalid characters'
     
 });

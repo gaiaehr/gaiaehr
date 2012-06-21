@@ -8,9 +8,112 @@ Ext.define('App.view.Viewport', {
 	extend  : 'Ext.Viewport',
 	requires: [
 
+		'App.model.administration.ActiveProblems',
+		'App.model.administration.DefaultDocuments',
+		'App.model.administration.DocumentsTemplates',
+		'App.model.administration.HeadersAndFooters',
+		'App.model.administration.ImmunizationRelations',
+		'App.model.administration.LabObservations',
+		'App.model.administration.Medications',
+		'App.model.administration.PreventiveCare',
+		'App.model.administration.PreventiveCareActiveProblems',
+		'App.model.administration.PreventiveCareMedications',
+		'App.model.administration.Services',
+		'App.model.fees.Billing',
+		'App.model.fees.Checkout',
+		'App.model.fees.EncountersPayments',
+		'App.model.fees.PaymentTransactions',
+		'App.model.navigation.Navigation',
+		'App.model.patientfile.Allergies',
+		'App.model.patientfile.CptCodes',
+		'App.model.patientfile.Dental',
+		'App.model.patientfile.Encounter',
+		'App.model.patientfile.EncounterCPTsICDs',
+		'App.model.patientfile.Encounters',
+		'App.model.patientfile.EventHistory',
+		'App.model.patientfile.Immunization',
+		'App.model.patientfile.ImmunizationCheck',
+		'App.model.patientfile.LaboratoryTypes',
+		'App.model.patientfile.MeaningfulUseAlert',
+		'App.model.patientfile.MedicalIssues',
+		'App.model.patientfile.Medications',
+		'App.model.patientfile.Notes',
+		'App.model.patientfile.PatientArrivalLog',
+		'App.model.patientfile.PatientDocuments',
+		'App.model.patientfile.PatientImmunization',
+		'App.model.patientfile.PatientLabsResults',
+		'App.model.patientfile.PatientsLabsOrders',
+		'App.model.patientfile.PatientsPrescription',
+		'App.model.patientfile.PreventiveCare',
+		'App.model.patientfile.QRCptCodes',
+		'App.model.patientfile.Reminders',
+		'App.model.patientfile.Surgery',
+		'App.model.patientfile.VectorGraph',
+		'App.model.patientfile.VisitPayment',
+		'App.model.patientfile.Vitals',
+		'App.model.poolarea.PoolArea',
+		'App.model.poolarea.PoolDropAreas',
+
+
+
+		'App.store.administration.ActiveProblems',
+		'App.store.administration.DefaultDocuments',
+		'App.store.administration.DocumentsTemplates',
+		'App.store.administration.HeadersAndFooters',
+		'App.store.administration.ImmunizationRelations',
+		'App.store.administration.LabObservations',
+		'App.store.administration.Medications',
+		'App.store.administration.PreventiveCare',
+		'App.store.administration.PreventiveCareActiveProblems',
+		'App.store.administration.PreventiveCareMedications',
+		'App.store.administration.Services',
+		'App.store.administration.ActiveProblems',
+		'App.store.fees.Billing',
+		'App.store.fees.Checkout',
+		'App.store.fees.EncountersPayments',
+		'App.store.fees.PaymentTransactions',
+		'App.store.navigation.Navigation',
+		'App.store.patientfile.Allergies',
+		'App.store.patientfile.Dental',
+		'App.store.patientfile.Encounter',
+		'App.store.patientfile.EncounterCPTsICDs',
+		'App.store.patientfile.EncounterEventHistory',
+		'App.store.patientfile.Encounters',
+		'App.store.patientfile.Immunization',
+		'App.store.patientfile.ImmunizationCheck',
+		'App.store.patientfile.LaboratoryTypes',
+		'App.store.patientfile.MeaningfulUseAlert',
+		'App.store.patientfile.MedicalIssues',
+		'App.store.patientfile.Medications',
+		'App.store.patientfile.Notes',
+		'App.store.patientfile.PatientArrivalLog',
+		'App.store.patientfile.PatientDocuments',
+		'App.store.patientfile.PatientImmunization',
+		'App.store.patientfile.PatientLabsResults',
+		'App.store.patientfile.PatientsLabsOrders',
+		'App.store.patientfile.PatientsPrescription',
+		'App.store.patientfile.PreventiveCare',
+		'App.store.patientfile.QRCptCodes',
+		'App.store.patientfile.Reminders',
+		'App.store.patientfile.Surgery',
+		'App.store.patientfile.VectorGraph',
+		'App.store.patientfile.VisitPayment',
+		'App.store.patientfile.Vitals',
+		'App.store.poolarea.PoolArea',
+
+		'App.classes.LiveCPTSearch',
+		'App.classes.LiveImmunizationSearch',
+		'App.classes.LiveMedicationSearch',
+		'App.classes.LivePatientSearch',
+		'App.classes.ManagedIframe',
+		'App.classes.NodeDisabled',
+		'App.classes.PhotoIdWindow',
+
+
 		'App.classes.RenderPanel',
 
 		'Ext.chart.*',
+		'Ext.form.*',
 		'Ext.fx.target.Sprite',
 
 		'Ext.dd.DropZone',
@@ -21,22 +124,63 @@ Ext.define('App.view.Viewport', {
 		'Extensible.calendar.data.MemoryCalendarStore',
 		'Extensible.calendar.data.MemoryEventStore',
 
-		'App.classes.combo.*',
-		'App.classes.combo.Users',
-		'App.classes.combo.Roles',
-		'App.classes.combo.TaxId',
-		'App.classes.combo.Lists',
-		'App.classes.combo.posCodes',
-		'App.classes.combo.Titles',
-		'App.classes.combo.CodesTypes',
-		'App.classes.combo.Languages',
+
+		
+		
+		'App.classes.combo.ActiveFacilities',
+		'App.classes.combo.Allergies',
+		'App.classes.combo.AllergiesAbdominal',
+		'App.classes.combo.AllergiesLocal',
+		'App.classes.combo.AllergiesLocation',
+		'App.classes.combo.AllergiesSeverity',
+		'App.classes.combo.AllergiesSkin',
+		'App.classes.combo.AllergiesSystemic',
+		'App.classes.combo.AllergiesTypes',
 		'App.classes.combo.Authorizations',
+		'App.classes.combo.BillingFacilities',
+		'App.classes.combo.CodesTypes',
 		'App.classes.combo.Facilities',
-		'App.classes.combo.TransmitMethod',
 		'App.classes.combo.InsurancePayerType',
+		'App.classes.combo.LabObservations',
+		'App.classes.combo.LabsTypes',
+		'App.classes.combo.Languages',
+		'App.classes.combo.Lists',
+		'App.classes.combo.MedicalIssues',
+		'App.classes.combo.Medications',
+		'App.classes.combo.MsgNoteType',
+		'App.classes.combo.MsgStatus',
+		'App.classes.combo.Occurrence',
+		'App.classes.combo.Outcome',
+		'App.classes.combo.Outcome2',
+		'App.classes.combo.PayingEntity',
+		'App.classes.combo.PaymentCategory',
+		'App.classes.combo.PaymentMethod',
+		'App.classes.combo.Pharmacies',
+		'App.classes.combo.posCodes',
+		'App.classes.combo.PrescrptionHowTo',
+		'App.classes.combo.PrescrptionOften',
+		'App.classes.combo.PrescrptionTypes',
+		'App.classes.combo.PrescrptionWhen',
+		'App.classes.combo.PreventiveCareTypes',
+		'App.classes.combo.ProceduresBodySites',
+		'App.classes.combo.Providers',
+		'App.classes.combo.Roles',
+		'App.classes.combo.Sex',
+		'App.classes.combo.Surgery',
+		'App.classes.combo.TaxId',
+		'App.classes.combo.Templates',
+		'App.classes.combo.Time',
+		'App.classes.combo.Titles',
+		'App.classes.combo.TransmitMethod',
+		'App.classes.combo.Types',
+		'App.classes.combo.Units',
+		'App.classes.combo.Users',
 
 		'App.classes.form.FormPanel',
 		'App.classes.form.fields.Checkbox',
+		'App.classes.form.fields.Currency',
+		'App.classes.form.fields.DateTime',
+
 		'App.classes.window.Window',
 		'App.classes.NodeDisabled',
 
@@ -44,6 +188,7 @@ Ext.define('App.view.Viewport', {
 		'App.view.calendar.Calendar',
 		'App.view.messages.Messages',
 
+		'App.view.patientfile.encounter.ICDs',
 		'App.view.patientfile.Vitals',
 		'App.view.patientfile.NewPatient',
 		'App.view.patientfile.Summary',
@@ -53,20 +198,21 @@ Ext.define('App.view.Viewport', {
 		'App.view.patientfile.PatientCheckout',
 
 		'App.view.fees.Billing',
+		'App.view.fees.PaymentEntryWindow',
 		'App.view.fees.Payments',
 
+		'App.view.administration.DataManager',
+		'App.view.administration.Documents',
 		'App.view.administration.Facilities',
 		'App.view.administration.Globals',
 		'App.view.administration.Layout',
 		'App.view.administration.Lists',
 		'App.view.administration.Log',
-		'App.view.administration.Practice',
-		'App.view.administration.Roles',
-		'App.view.administration.DataManager',
-		'App.view.administration.PreventiveCare',
 		'App.view.administration.Medications',
+		'App.view.administration.Practice',
+		'App.view.administration.PreventiveCare',
+		'App.view.administration.Roles',
 		'App.view.administration.Users',
-		'App.view.administration.Documents',
 
 		'App.view.miscellaneous.Addressbook',
 		'App.view.miscellaneous.MyAccount',
@@ -653,7 +799,8 @@ Ext.define('App.view.Viewport', {
 		me.items = [ me.Header, me.navColumn, me.MainPanel, me.Footer ];
 
 		me.listeners = {
-			afterrender: me.afterAppRender
+			afterrender: me.afterAppRender,
+			beforerender: me.beforeAppRender
 		};
 
 		me.callParent(arguments);
@@ -823,25 +970,32 @@ Ext.define('App.view.Viewport', {
 	navCollapsed: function() {
 		var navView = this.navColumn.getComponent('patientPoolArea'),
 		//appLogo = this.Header.getComponent('appLogo'),
-			foot = this.Footer,
+			foot = this.Footer, footView;
+
+		if(foot){
 			footView = foot.down('dataview');
+			foot.setHeight(60);
+			footView.show();
+		}
 
 		//appLogo.hide();
 		navView.hide();
-		foot.setHeight(60);
-		footView.show();
+
 	},
 
 	navExpanded: function() {
 		var navView = this.navColumn.getComponent('patientPoolArea'),
 		//appLogo = this.Header.getComponent('appLogo'),
-			foot = this.Footer,
-			footView = foot.down('dataview');
+			foot = this.Footer, footView;
 
+		if(foot){
+			footView = foot.down('dataview');
+			foot.setHeight(30);
+			footView.hide();
+		}
 		//appLogo.show();
 		navView.show();
-		foot.setHeight(30);
-		footView.hide();
+
 	},
 
 	getActivePanel: function() {
@@ -1101,6 +1255,10 @@ Ext.define('App.view.Viewport', {
 	afterAppRender: function() {
 		Ext.get('mainapp-loading').remove();
 		Ext.get('mainapp-loading-mask').fadeOut({remove: true});
+	},
+
+	beforeAppRender:function(){
+
 	},
 
 	getCurrPatient: function() {

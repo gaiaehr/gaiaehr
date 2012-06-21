@@ -329,6 +329,9 @@ $API = array(
     */
     'Globals'=>array(
         'methods'=>array(
+            'setGlobals'=>array(
+               'len'=>0
+            ),
             'getGlobals'=>array(
                'len'=>0
             ),
@@ -708,6 +711,9 @@ $API = array(
             ),
             'getProviders'=>array(
             	'len'=>1
+            ),
+            'getCurrentUserBasicData'=>array(
+            	'len'=>0
             )
 
         )
@@ -831,6 +837,9 @@ $API = array(
      */
     'ACL'=>array(
         'methods'=>array(
+            'getAllUserPermsAccess'=>array(
+                'len'=>0
+            ),
             'hasPermission'=>array(
                 'len'=>1
             ),
@@ -860,7 +869,7 @@ $API = array(
                 'len'=>1
             ),
         )
-    ),
+    )
 
 
 );

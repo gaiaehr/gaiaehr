@@ -22,7 +22,7 @@ Ext.define('App.view.patientfile.MedicalWindow', {
         margin: 5
     },
     mixins: ['App.classes.RenderPanel'],
-
+	requires: [ 'App.view.patientfile.LaboratoryResults' ],
     initComponent: function() {
 
         var me = this;

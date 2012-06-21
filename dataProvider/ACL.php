@@ -8,7 +8,7 @@ include_once($_SESSION['site']['root']."/classes/dbHelper.php");
 /**
  * Access Control List (ACL).
  *
- * This class will handle all the permisions
+ * This class will handle all the permissions
  * @author Ernesto J. Rodriguez (certun) <erodriguez@certun.com>
  * @version 1.0
  *
@@ -40,14 +40,13 @@ class ACL {
 	public function __construct($user_id = null){
         $this->conn = new dbHelper();
         $this->user_id = ($user_id == null)? $_SESSION['user']['id'] : $user_id;
-        $this->user_roles = $this->getuser_roles();
+        $this->user_roles = $this->getUserRoles();
         $this->buildACL();
 	}
 
     /**
      * @internal param string $format
      * @return array
-     * NOTES: I think we should use the SQLBind made by Gino RIvera on this, this code can be reduced.
      */
     public function getAllRoles(){
         $roles = array();
@@ -62,7 +61,6 @@ class ACL {
     /**
      * @param string $format
      * @return array
-     * NOTES: The foreach can be replaced by LINQ for PHP.
      */
     public function getAllPermissions($format='ids'){
         $format = strtolower($format);
@@ -83,7 +81,7 @@ class ACL {
     /**
      * @return array
      */
-	private function getuser_roles(){
+	private function getUserRoles(){
 
         $this->conn->setSQL("SELECT * FROM acl_user_roles WHERE user_id = '$this->user_id' ORDER BY add_date ASC");
 		$resp = array();
@@ -94,7 +92,6 @@ class ACL {
 
 	}
 
-    // NOTES: I suggest naming of the function more complete. For those developer that can easilly lose focus
     // This function can be named buildAccessControlList();
 	private function buildACL(){
 		//first, get the rules for the user's role
@@ -102,57 +99,49 @@ class ACL {
 			$this->perms = array_merge($this->perms,$this->getRolePerms($this->user_roles));
 		}
 		//then, get the individual user permissions
-		$this->perms = array_merge($this->perms,$this->getUserPerms($this->user_id));
+		$this->perms = array_merge($this->perms,$this->getUserPerms());
 	}
 
     /**
      * @param $perm_id
      * @return mixed
-     * NOTES: naming of the function "getPermissionKeyFromID"
-     * Let's use cammel, use only underscore with private properties or variables.
      */
 	private function getPermissionsKeyFromID($perm_id){
-		$strSQL = "SELECT perm_key FROM acl_permissions WHERE id = " . floatval($perm_id) . " LIMIT 1";
-        $this->conn->setSQL($strSQL);
-		$row = $this->conn->fetchRecords(PDO::FETCH_ASSOC);
-		return $row[0]['perm_key'];
+        $this->conn->setSQL("SELECT perm_key FROM acl_permissions WHERE id = '$perm_id' LIMIT 1");
+		$row = $this->conn->fetchRecord(PDO::FETCH_ASSOC);
+		return $row['perm_key'];
 	}
 
     /**
      * @param $perm_id
      * @return mixed
-     * NOTES: "getPermissionNameFromID"
-     * Let's use cammel, use only underscore with private properties or variables.
      */
-	private function getperm_nameFromid($perm_id){
-		$strSQL = "SELECT perm_name FROM acl_permissions WHERE id = " . floatval($perm_id) . " LIMIT 1";
+	private function getPermNameById($perm_id){
+		$strSQL = "SELECT perm_name FROM acl_permissions WHERE id = '$perm_id' LIMIT 1";
         $this->conn->setSQL($strSQL);
-		$row = $this->conn->fetchRecords(PDO::FETCH_ASSOC);
-		return $row[0]['perm_name'];
+		$row = $this->conn->fetchRecord(PDO::FETCH_ASSOC);
+		return $row['perm_name'];
 	}
 
     /**
      * @param $role_id
      * @return mixed
      */
-	private function getRoleNameFromid($role_id){
-		$strSQL = "SELECT role_name FROM acl_roles WHERE id = " . floatval($role_id) . " LIMIT 1";
-        $this->conn->setSQL($strSQL);
-		$row = $this->conn->fetchRecords(PDO::FETCH_ASSOC);
-		return $row[0]['role_name'];
+	private function getRoleNameById($role_id){
+        $this->conn->setSQL("SELECT role_name FROM acl_roles WHERE id = '$role_id' LIMIT 1");
+		$row = $this->conn->fetchRecord(PDO::FETCH_ASSOC);
+		return $row['role_name'];
 	}
 
-    /**
-     * @param $role
-     * @return array
-     * Naming: "getRolePermissions"
-     * Let's use cammel, use only underscore with private properties or variables.
-     */
-	private function getRolePerms($role){
-		if (is_array($role)){
-			$roleSQL = "SELECT * FROM acl_role_perms WHERE role_id IN (" . implode(",",$role) . ") ORDER BY id ASC";
+	/**
+	 * @internal param $role
+	 * @return array
+	 */
+	private function getRolePerms(){
+		if (is_array($this->user_roles)){
+			$roleSQL = "SELECT * FROM acl_role_perms WHERE role_id IN (" . implode(",",$this->user_roles) . ") ORDER BY id ASC";
 		} else {
-			$roleSQL = "SELECT * FROM acl_role_perms WHERE role_id = " . floatval($role) . " ORDER BY id ASC";
+			$roleSQL = "SELECT * FROM acl_role_perms WHERE role_id = " . floatval($this->user_roles) . " ORDER BY id ASC";
 		}
         $this->conn->setSQL($roleSQL);
 		$perms = array();
@@ -164,20 +153,17 @@ class ACL {
             } else {
                 $hP = false;
             }
-			$perms[$pK] = array('perm' => $pK,'inheritted' => true,'value' => $hP,'Name' => $this->getperm_nameFromid($row['perm_id']),'id' => $row['perm_id']);
+			$perms[$pK] = array('perm' => $pK,'inheritted' => true,'value' => $hP,'Name' => $this->getPermNameById($row['perm_id']),'id' => $row['perm_id']);
 		}
 		return $perms;
 	}
 
-    /**
-     * @param $user_id
-     * @return array
-     * NOTES: getUserPermissionsByID
-     * Let's use cammel, use only underscore with private properties or variables.
-     */
-	private function getUserPerms($user_id){
-		$strSQL = "SELECT * FROM acl_user_perms WHERE user_id = " . floatval($user_id) . " ORDER BY add_date ASC";
-        $this->conn->setSQL($strSQL);
+	/**
+	 * @internal param $user_id
+	 * @return array
+	 */
+	public function getUserPerms(){
+        $this->conn->setSQL("SELECT * FROM acl_user_perms WHERE user_id = '$this->user_id' ORDER BY add_date ASC");
 		$perms = array();
         foreach($this->conn->fetchRecords(PDO::FETCH_ASSOC) as $row){
 			$pK = strtolower($this->getPermissionsKeyFromID($row['perm_id']));
@@ -187,7 +173,7 @@ class ACL {
             } else {
                 $hP = false;
             }
-			$perms[$pK] = array('perm' => $pK,'inheritted' => false,'value' => $hP,'Name' => $this->getperm_nameFromid($row['perm_id']),'id' => $row['perm_id']);
+			$perms[$pK] = array('perm' => $pK,'inheritted' => false,'value' => $hP,'Name' => $this->getPermNameById($row['perm_id']),'id' => $row['perm_id']);
 		}
 	return $perms;
 	}
@@ -201,6 +187,10 @@ class ACL {
 			if (floatval($v) === floatval($role_id)){ return true; }
 		}
 		return false;
+	}
+
+	public function getAllUserPermsAccess(){
+		return array_values($this->perms);
 	}
 
     /**
@@ -229,3 +219,7 @@ class ACL {
 		}
 	}
 }
+//
+//$acl = new ACL();
+//print '<pre>';
+//print_r($acl->getAllUserPermsAccess());

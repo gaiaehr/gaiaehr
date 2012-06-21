@@ -95,6 +95,8 @@ Ext.define('App.view.patientfile.Encounter', {
         });
 	    me.EncounterOrdersStore = Ext.create('App.store.patientfile.EncounterCPTsICDs');
 	    me.patientDocumentsStore = Ext.create('App.store.patientfile.PatientDocuments');
+	    me.checkoutAlertArea = Ext.create('App.store.patientfile.CheckoutAlertArea');
+
         me.checkoutWindow = Ext.create('Ext.window.Window', {
             title:'Checkout and Signing',
             closeAction:'hide',
@@ -263,13 +265,35 @@ Ext.define('App.view.patientfile.Encounter', {
 		                            ]
 		                        },
 		                        {
-			                        xtype:'fieldset',
-                                    margin:5,
-                                    padding:8,
-                                    columnWidth:.5,
-			                        height:88,
+			                        xtype:'grid',
+                                    margin:0,
+                                    padding:5,
+                                    columnWidth:0,
+			                        height:89,
+			                        hideHeaders: true,
                                     title:'Alert Area',
-			                        html:'<span style="color:green">Sweet! No Alerts Found</span>'
+			                        store      : me.checkoutAlertArea,
+			                        columns    : [
+				                        {
+					                        header     : 'Alert',
+					                        dataIndex: 'alert',
+					                        flex: 1
+				                        },
+				                        {
+					                        xtype: 'actioncolumn',
+					                        width:26,
+					                        items: [
+						                        {
+							                        icon: 'ui_icons/search-data.png',
+							                        tooltip: 'Go to Area',
+							                        handler: me.testseasd,
+							                        getClass:function(){
+								                        return 'x-grid-icon-padding';
+							                        }
+						                        }
+					                        ]
+				                        }
+			                        ]
 		                        }
                             ]
                         }
@@ -300,6 +324,7 @@ Ext.define('App.view.patientfile.Encounter', {
 		        show:function(){
 			        me.EncounterOrdersStore.load({params: {eid: app.currEncounterId}});
 			        me.patientDocumentsStore.load({params: {eid: app.currEncounterId}});
+			        me.checkoutAlertArea.load({params: {eid: app.currEncounterId}});
 		        }
 
 	        }

@@ -58,6 +58,9 @@ $API = array(
             ),
             'getEncounterCodes'=>array(
                'len'=>1
+            ),
+            'checkoutAlerts'=>array(
+               'len'=>1
             )
         )
     ),

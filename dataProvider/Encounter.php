@@ -588,6 +588,31 @@ class Encounter {
         return $this->db->fetchRecords(PDO::FETCH_ASSOC);
     }
 
+    public function checkoutAlerts(stdClass $params){
+        $alerts = array();
+        $this->db->setSQL("SELECT review_immunizations,
+                                  review_allergies,
+                                  review_active_problems,
+                                  review_surgery,
+                                  review_dental,
+                                  review_medications
+                             FROM form_data_encounter
+                            WHERE eid = '$params->eid'");
+        $records = $this->db->fetchRecord(PDO::FETCH_ASSOC);
+        foreach($records as $key =>$rec){
+            if($rec == 1){
+                unset($records[$key]);
+            }
+        }
+        $count=0;
+        foreach($records as $key =>$rec){
+            $alerts[$count]['alert'] = 'Need to review '.$key.' Area' ;
+
+            $count = $count+1;
+        }
+        return $alerts;
+    }
+
     /**
      * @param $date
      * @return mixed
@@ -598,8 +623,7 @@ class Encounter {
     }
 
 }
-//$json = ""
-//json_decode($json);
+
 //$e = new Encounter();
 //echo '<pre>';
-//print_r($e->getSoapByEid(7));
+//print_r($e->checkoutAlerts(7));

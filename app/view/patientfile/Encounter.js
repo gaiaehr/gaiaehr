@@ -850,9 +850,6 @@ Ext.define('App.view.patientfile.Encounter', {
                         }
                         values = me.addDefaultData(values);
 
-                        say(form);
-                        say(values);
-                        say(record);
 
 
                         record.set(values);

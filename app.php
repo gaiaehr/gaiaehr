@@ -114,10 +114,10 @@ $_SESSION['site']['flops'] = 0;
 
 			        });
 
-			        //app = Ext.create('App.view.Viewport');
+			        app = Ext.create('App.view.Viewport');
 		        });
 
-	            app = Ext.create('App.view.Viewport');
+	            //app = Ext.create('App.view.Viewport');
 
             });
 

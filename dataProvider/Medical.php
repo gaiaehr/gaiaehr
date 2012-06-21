@@ -555,7 +555,16 @@ class Medical
 	}
 
 	//******************************************************************************************************************
-
+    public function reviewMedicalWindowEncounter(stdClass $params)
+    {   $data = get_object_vars($params);
+        $eid  = $data['eid'];
+        $area = $data['area'];
+        unset($data['area'],$data['eid']);
+        $data[$area] = 1;
+        $this->db->setSQL($this->db->sqlBind($data, "form_data_encounter", "U", "eid='$eid'"));
+        $this->db->execLog();
+        return  array('success' => true);
+    }
 
 
 	/**

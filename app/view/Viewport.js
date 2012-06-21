@@ -849,6 +849,8 @@ Ext.define('App.view.Viewport', {
 	},
 
 	liveSearchSelect: function(combo, selection) {
+		this.currEncounterId = null;
+
 		var me = this,
 			post = selection[0],
 			btn = me.Header.getComponent('patientButton');

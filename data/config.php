@@ -264,6 +264,9 @@ $API = array(
             ),
             'signPatientLabsResultById'=>array(
                'len'=>1
+            ),
+            'reviewMedicalWindowEncounter'=>array(
+               'len'=>1
             )
         ),
 

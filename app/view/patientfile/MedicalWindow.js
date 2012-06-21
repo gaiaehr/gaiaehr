@@ -244,7 +244,16 @@ Ext.define('App.view.patientfile.MedicalWindow', {
                         }
 
                     ]
-                })
+                }),
+	            bbar : [
+		            '->', {
+			            text   : 'Reviewed',
+			            action : 'review',
+			            itemId : 'review_immunizations',
+			            scope  : me,
+			            handler: me.onReviewed
+		            }
+	            ]
             },
 
             {
@@ -480,20 +489,17 @@ Ext.define('App.view.patientfile.MedicalWindow', {
                 }),
 	            bbar : [
 		            '->', {
-			            text   : 'Reviewed and Close',
+			            text   : 'Reviewed',
+			            action : 'review',
+			            itemId : 'review_allergies',
 			            scope  : me,
-			            handler: me.onReviewedAllergies
-		            },
-		            {
-			            text   : 'Cancel',
-			            scope  : me,
-			            handler: me.onCancelAllergies
+			            handler: me.onReviewed
 		            }
 	            ]
             },
             {
                 /**
-                 * Medical Issues Card panel
+                 * Active Problem Card panel
                  */
 
                 xtype  : 'grid',
@@ -636,7 +642,16 @@ Ext.define('App.view.patientfile.MedicalWindow', {
                         }
 
                     ]
-                })
+                }),
+	            bbar : [
+		            '->', {
+			            text   : 'Reviewed',
+			            action : 'review',
+			            itemId : 'review_active_problems',
+			            scope  : me,
+			            handler: me.onReviewed
+		            }
+	            ]
             },
             {
                 /**
@@ -781,7 +796,16 @@ Ext.define('App.view.patientfile.MedicalWindow', {
                         }
 
                     ]
-                })
+                }),
+	            bbar : [
+		            '->', {
+			            text   : 'Reviewed',
+			            action : 'review',
+			            itemId : 'review_surgery',
+			            scope  : me,
+			            handler: me.onReviewed
+		            }
+	            ]
             },
             {
                 /**
@@ -904,7 +928,16 @@ Ext.define('App.view.patientfile.MedicalWindow', {
                         }
 
                     ]
-                })
+                }),
+	            bbar : [
+		            '->', {
+			            text   : 'Reviewed',
+			            action : 'review',
+			            itemId : 'review_dental',
+			            scope  : me,
+			            handler: me.onReviewed
+		            }
+	            ]
             },
             {
                 /**
@@ -1042,7 +1075,16 @@ Ext.define('App.view.patientfile.MedicalWindow', {
                             ]
                         }
                     ]
-                })
+                }),
+	            bbar : [
+		            '->', {
+			            text   : 'Reviewed',
+			            action : 'review',
+			            itemId : 'review_medications',
+			            scope  : me,
+			            handler: me.onReviewed
+		            }
+	            ]
             },
             {
                 /**
@@ -1456,6 +1498,7 @@ Ext.define('App.view.patientfile.MedicalWindow', {
         }
     },
 
+
     addNewLabResults:function(docId){
         var me = this,
             dataView = me.query('[action="lalboratoryresultsdataview"]')[0],
@@ -1467,6 +1510,19 @@ Ext.define('App.view.patientfile.MedicalWindow', {
         Medical.addPatientLabsResult(params, function(provider, response){
             store.load({params:{parent_id:me.currLabPanelId}});
 
+        });
+    },
+
+	onReviewed:function(btn){
+        var me = this,
+	        BtnId =btn.itemId,
+            params = {
+                eid:app.currEncounterId,
+	            area:BtnId
+	        };
+
+        Medical.reviewMedicalWindowEncounter(params, function(provider, response){
+	        me.msg('Great!', 'Succefully reviewed');
         });
     },
 
@@ -1487,9 +1543,6 @@ Ext.define('App.view.patientfile.MedicalWindow', {
     },
 
     //*********************************************************
-
-
-
 
     onLiveSearchSelect: function(combo, model) {
 
@@ -1524,7 +1577,8 @@ Ext.define('App.view.patientfile.MedicalWindow', {
 
     onAddItem: function() {
 
-        var grid = this.getLayout().getActiveItem(), store = grid.store;
+        var me = this, grid = this.getLayout().getActiveItem(), store = grid.store,
+	        params;
 
         grid.editingPlugin.cancelEdit();
         store.insert(0, {
@@ -1536,6 +1590,42 @@ Ext.define('App.view.patientfile.MedicalWindow', {
 
         });
         grid.editingPlugin.startEdit(0, 0);
+		say(grid.action);
+	    if(app.currEncounterId != null){
+		    if(grid.action == 'patientImmuListGrid'){
+			    params = {
+				    eid:app.currEncounterId,
+				    area:'review_immunizations'
+			    };
+		    }else if(grid.action == 'patientAllergiesListGrid'){
+			    params = {
+				    eid:app.currEncounterId,
+				    area:'review_allergies'
+			    };
+		    }else if(grid.action == 'patientMedicalListGrid'){
+			    params = {
+			        eid:app.currEncounterId,
+			        area:'review_active_problems'
+		        };
+		    }else if(grid.action == 'patientSurgeryListGrid'){
+			    params = {
+			        eid:app.currEncounterId,
+			        area:'review_surgery'
+			    };
+		    }else if(grid.action == 'patientDentalListGrid'){
+			    params = {
+				    eid:app.currEncounterId,
+				    area:'review_dental'
+			    };
+		    }else if(grid.action == 'patientMedicationsListGrid'){
+			    params = {
+				    eid:app.currEncounterId,
+				    area:'review_medications'
+			    };
+		    }
+		    Medical.reviewMedicalWindowEncounter(params, function(provider, response){
+		    });
+	    }
 
 
 
@@ -1672,13 +1762,21 @@ Ext.define('App.view.patientfile.MedicalWindow', {
     },
 
     onMedicalWinShow: function() {
-        this.labPanelsStore.load();
-        this.patientImmuListStore.load({params: {pid: app.currPatient.pid}});
-        this.patientAllergiesListStore.load({params: {pid: app.currPatient.pid}});
-        this.patientMedicalIssuesStore.load({params: {pid: app.currPatient.pid}});
-        this.patientSurgeryStore.load({params: {pid: app.currPatient.pid}});
-        this.patientDentalStore.load({params: {pid: app.currPatient.pid}});
-        this.patientMedicationsStore.load({params: {pid: app.currPatient.pid}});
+	    var me = this,
+		    reviewBts = me.query('button[action="review"]');
+	    Ext.each(reviewBts, function(bts){
+		    bts.setVisible((app.currEncounterId != null));
+
+	    });
+
+
+	    me.labPanelsStore.load();
+	    me.patientImmuListStore.load({params: {pid: app.currPatient.pid}});
+	    me.patientAllergiesListStore.load({params: {pid: app.currPatient.pid}});
+	    me.patientMedicalIssuesStore.load({params: {pid: app.currPatient.pid}});
+	    me.patientSurgeryStore.load({params: {pid: app.currPatient.pid}});
+	    me.patientDentalStore.load({params: {pid: app.currPatient.pid}});
+	    me.patientMedicationsStore.load({params: {pid: app.currPatient.pid}});
 
     }
 

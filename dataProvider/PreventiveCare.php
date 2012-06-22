@@ -255,7 +255,7 @@ class PreventiveCare
         $iSex = $this->getPreventiveCareSexById($immu_id);
         if($iSex == $pSex){
             return true;
-        }else if($iSex=='Both'){
+        }else if($iSex=='Both' || $iSex==0 ){
             return true;
         }
         else{

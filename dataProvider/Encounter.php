@@ -604,12 +604,15 @@ class Encounter {
                 unset($records[$key]);
             }
         }
-        $count=0;
         foreach($records as $key =>$rec){
-            $alerts[$count]['alert'] = 'Need to review '.$key.' Area' ;
-
-            $count = $count+1;
+	        $foo = array();
+	        $foo['alert'] = 'Need to '.str_replace('_', ' ', $key).' Area' ;
+	        $foo['alertType'] = 1 ;
+	        $alerts[] = $foo;
         }
+
+	    //TODO: vitals check
+
         return $alerts;
     }
 

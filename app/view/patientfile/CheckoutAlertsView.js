@@ -23,15 +23,20 @@ Ext.define('App.view.patientfile.CheckoutAlertsView', {
     itemSelector     : 'div.alert-div',
     loadMask         : true,
     singleSelect     : true,
-	emptyText        : '<span style="color: #cbcbcb; font-size: 70px;">Sweet! No Alerts Found.</span>',
+	emptyText        : '<span style="color: #616161; font-size: 12px;">Sweet! No Alerts Found.</span>',
 	initComponent: function() {
 		var me = this;
 
-        me.tpl = '  <tpl for=".">' +
-	        '           <div class="alert-div">' +
-	        '               {alert}' +
-	        '           </div>' +
-            '       </tpl>';
+        me.tpl = '  <table>' +
+	        '           <tpl for=".">' +
+	        '               <tr class="alert-div>' +
+	        '               <div class="alert-div">' +
+	        '                   <img class="alert-img" src="{icon}" />' +
+	        '                   <div class="alert-msg">{alert}</div>' +
+	        '               </div>' +
+	        '               </tr>' +
+            '           </tpl>' +
+	        '       </table>';
 
 		me.callParent(arguments);
 	}

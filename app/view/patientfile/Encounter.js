@@ -101,7 +101,6 @@ Ext.define('App.view.patientfile.Encounter', {
             title:'Checkout and Signing',
             closeAction:'hide',
             modal:true,
-            closable:false,
             layout:'border',
             width:1000,
             height:660,
@@ -269,49 +268,43 @@ Ext.define('App.view.patientfile.Encounter', {
                                     margin:5,
                                     padding:8,
                                     columnWidth:.5,
+			                        layout:'fit',
                                     height:89,
                                     title:'Encounter Warnings / Alerts',
                                     items:[
 	                                    {
-					                        xtype:'checkoutalertsview',
-					                        flex:1,
-					                        autoScroll:true,
-					                        store:me.checkoutAlertArea
-	                                    }
-                                    ]
+//					                        xtype:'checkoutalertsview',
+//					                        flex:1,
+//					                        store:me.checkoutAlertArea
+//	                                    }
+//                                    ]
 //			    	                listeners:{
 //			    		                scope:me,
 //			    		                itemdblclick:me.onVitalsClick
 //			    	                }
-//			                        xtype:'grid',
-//                                    margin:0,
-//                                    padding:5,
-//                                    columnWidth:0,
-//			                        height:89,
-//			                        hideHeaders: true,
-//                                    title:'Alert Area',
-//			                        store      : me.checkoutAlertArea,
-//			                        columns    : [
-//				                        {
-//					                        header     : 'Alert',
-//					                        dataIndex: 'alert',
-//					                        flex: 1
-//				                        },
-//				                        {
-//					                        xtype: 'actioncolumn',
-//					                        width:26,
-//					                        items: [
-//						                        {
-//							                        icon: 'ui_icons/search-data.png',
-//							                        tooltip: 'Go to Area',
-//							                        handler: me.testseasd,
-//							                        getClass:function(){
-//								                        return 'x-grid-icon-padding';
-//							                        }
-//						                        }
-//					                        ]
-//				                        }
-//			                        ]
+					                        xtype:'grid',
+					                        hideHeaders: true,
+					                        store      : me.checkoutAlertArea,
+		                                    border:false,
+		                                    rowLines:false,
+		                                    header:false,
+		                                    viewConfig:{
+			                                    stripeRows:false,
+			                                    disableSelection:true
+		                                    },
+					                        columns    : [
+						                        {
+							                        dataIndex: 'alertType',
+							                        width:30,
+							                        renderer:me.alertIconRenderer
+						                        },
+						                        {
+							                        dataIndex: 'alert',
+							                        flex: 1
+						                        }
+					                        ]
+	                                    }
+                                    ]
 		                        }
                             ]
                         }
@@ -1133,6 +1126,16 @@ Ext.define('App.view.patientfile.Encounter', {
     //***************************************************************************************************//
     //***************************************************************************************************//
 
+
+	alertIconRenderer:function(v){
+
+		if(v == 1){
+			return '<img src="ui_icons/icoLessImportant.png" />'
+		} else if(v == 2){
+			return '<img src="ui_icons/icoImportant.png" />'
+		}
+		return v;
+	},
 
     /**
      * Start the timerTask

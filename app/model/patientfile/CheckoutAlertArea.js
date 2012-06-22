@@ -8,7 +8,8 @@
 Ext.define('App.model.patientfile.CheckoutAlertArea', {
 	extend: 'Ext.data.Model',
 	fields: [
-        {name: 'alert', type: 'string'}
+        {name: 'alert', type: 'string'},
+        {name: 'alertType', type: 'int'}
 
 	],
 	proxy : {

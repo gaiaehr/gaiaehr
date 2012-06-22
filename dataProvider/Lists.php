@@ -38,11 +38,11 @@ class Lists extends dbHelper {
     public function addOption(stdClass $params)
     {
         $data = get_object_vars($params);
-        unset($data['id']);
+        unset($data['id'], $data['seq']);
 
-        $data['active'] = $data['active'] == 'true'? 1 : 0;
+        $data['active'] = $data['active'] == true ? 1 : 0;
 
-        $sql = $this->sqlBind($data, "combo_lists_options", "I");
+        $sql = $this->sqlBind($data, 'combo_lists_options', 'I');
         $this->setSQL($sql);
         $this->execLog();
 

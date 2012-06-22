@@ -265,35 +265,53 @@ Ext.define('App.view.patientfile.Encounter', {
 		                            ]
 		                        },
 		                        {
-			                        xtype:'grid',
-                                    margin:0,
-                                    padding:5,
-                                    columnWidth:0,
-			                        height:89,
-			                        hideHeaders: true,
-                                    title:'Alert Area',
-			                        store      : me.checkoutAlertArea,
-			                        columns    : [
-				                        {
-					                        header     : 'Alert',
-					                        dataIndex: 'alert',
-					                        flex: 1
-				                        },
-				                        {
-					                        xtype: 'actioncolumn',
-					                        width:26,
-					                        items: [
-						                        {
-							                        icon: 'ui_icons/search-data.png',
-							                        tooltip: 'Go to Area',
-							                        handler: me.testseasd,
-							                        getClass:function(){
-								                        return 'x-grid-icon-padding';
-							                        }
-						                        }
-					                        ]
-				                        }
-			                        ]
+			                        xtype:'fieldset',
+                                    margin:5,
+                                    padding:8,
+                                    columnWidth:.5,
+                                    height:89,
+                                    title:'Encounter Warnings / Alerts',
+                                    items:[
+	                                    {
+					                        xtype:'checkoutalertsview',
+					                        flex:1,
+					                        autoScroll:true,
+					                        store:me.checkoutAlertArea
+	                                    }
+                                    ]
+//			    	                listeners:{
+//			    		                scope:me,
+//			    		                itemdblclick:me.onVitalsClick
+//			    	                }
+//			                        xtype:'grid',
+//                                    margin:0,
+//                                    padding:5,
+//                                    columnWidth:0,
+//			                        height:89,
+//			                        hideHeaders: true,
+//                                    title:'Alert Area',
+//			                        store      : me.checkoutAlertArea,
+//			                        columns    : [
+//				                        {
+//					                        header     : 'Alert',
+//					                        dataIndex: 'alert',
+//					                        flex: 1
+//				                        },
+//				                        {
+//					                        xtype: 'actioncolumn',
+//					                        width:26,
+//					                        items: [
+//						                        {
+//							                        icon: 'ui_icons/search-data.png',
+//							                        tooltip: 'Go to Area',
+//							                        handler: me.testseasd,
+//							                        getClass:function(){
+//								                        return 'x-grid-icon-padding';
+//							                        }
+//						                        }
+//					                        ]
+//				                        }
+//			                        ]
 		                        }
                             ]
                         }

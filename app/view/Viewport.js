@@ -189,6 +189,7 @@ Ext.define('App.view.Viewport', {
 		'App.view.messages.Messages',
 
 		'App.view.patientfile.encounter.ICDs',
+		'App.view.patientfile.CheckoutAlertsView',
 		'App.view.patientfile.Vitals',
 		'App.view.patientfile.NewPatient',
 		'App.view.patientfile.Summary',

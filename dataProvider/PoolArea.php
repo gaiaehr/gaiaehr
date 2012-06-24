@@ -100,6 +100,10 @@ class PoolArea
 
 	public function removePatientArrivalLog(stdClass $params){
 
+        $this->db->setSQL("DELETE FROM patient_pools WHERE id = '$params->id'");
+        $this->db->execLog();
+
+        return array('success' => true);
 	}
 
 

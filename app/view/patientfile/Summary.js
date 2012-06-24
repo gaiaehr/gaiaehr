@@ -549,6 +549,9 @@ Ext.define('App.view.patientfile.Summary', {
 				me.getPatientImgs();
 			}
 		});
+		app.navigateTo('panelSummary', function() {
+				app.currCardCmp.onActive();
+		});
 	},
 
 	formCancel:function(btn){

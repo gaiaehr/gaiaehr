@@ -606,7 +606,7 @@ class Encounter {
         }
         foreach($records as $key =>$rec){
 	        $foo = array();
-	        $foo['alert'] = 'Need to '.str_replace('_', ' ', $key).' Area' ;
+	        $foo['alert'] = 'Need to '.str_replace('_', ' ', $key).' area' ;
 	        $foo['alertType'] = 1 ;
 	        $alerts[] = $foo;
         }

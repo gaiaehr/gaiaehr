@@ -14,7 +14,7 @@ Ext.define('App.view.patientfile.DocumentViewerWindow', {
 	title      : 'Documents Viewer Window',
 	layout     : 'fit',
 	height     : 650,
-	width      : 500,
+	width      : 700,
 	closeAction: 'hide',
 	bodyStyle  : 'background-color:#fff',
 	modal      : true,

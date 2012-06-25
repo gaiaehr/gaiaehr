@@ -459,19 +459,9 @@ Ext.define('App.view.patientfile.Summary', {
                         ]
                     },
                     {
-                        title: 'Clinical Reminders',
-                        html : 'Panel content!'
-
-                    },
-                    {
                         title: 'Appointments',
                         html : 'Panel content!'
 
-                    },
-                    {
-                        title: 'Prescriptions',
-                        margin: 5,
-                        html : 'Panel content!'
                     }
                 ],
                 dockedItems:[
@@ -787,12 +777,13 @@ Ext.define('App.view.patientfile.Summary', {
 
 	        });
 
-
-	        PreventiveCare.activePreventiveCareAlert({pid:app.currPatient.pid},function(provider,response){
-		        if(response.result.success){
-			        app.PreventiveCareWindow.show();
-		        }
-	        });
+            app.PreventiveCareWindow.loadPatientPreventiveCare();
+//
+//	        PreventiveCare.activePreventiveCareAlert({pid:app.currPatient.pid},function(provider,response){
+//		        if(response.result.success){
+//			        app.PreventiveCareWindow.show();
+//		        }
+//	        });
 
         } else {
             callback(false);

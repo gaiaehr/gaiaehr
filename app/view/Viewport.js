@@ -184,6 +184,15 @@ Ext.define('App.view.Viewport', {
 		'App.classes.window.Window',
 		'App.classes.NodeDisabled',
 
+        'App.view.patientfile.MedicalWindow',
+      	'App.view.patientfile.ChartsWindow',
+      	//'App.view.patientfile.PaymentEntryWindow',
+      	'App.view.patientfile.PreventiveCareWindow',
+      	'App.view.patientfile.NewDocumentsWindow',
+      	'App.view.patientfile.DocumentViewerWindow',
+        'App.view.patientfile.ArrivalLogWindow',
+
+
 		'App.view.dashboard.Dashboard',
 		'App.view.calendar.Calendar',
 		'App.view.messages.Messages',
@@ -791,10 +800,10 @@ Ext.define('App.view.Viewport', {
 
 		me.MedicalWindow = Ext.create('App.view.patientfile.MedicalWindow');
 		me.ChartsWindow = Ext.create('App.view.patientfile.ChartsWindow');
-		me.PaymentEntryWindow = Ext.create('App.view.patientfile.PaymentEntryWindow');
+		//me.PaymentEntryWindow = Ext.create('App.view.patientfile.PaymentEntryWindow');
 		me.PreventiveCareWindow = Ext.create('App.view.patientfile.PreventiveCareWindow');
 		me.NewDocumentsWindow = Ext.create('App.view.patientfile.NewDocumentsWindow');
-		me.DocumentViewerWindow = Ext.create('App.view.patientfile.DocumentViewerWindow')
+		me.DocumentViewerWindow = Ext.create('App.view.patientfile.DocumentViewerWindow');
 		me.layout = { type: 'border', padding: 3 };
 		me.defaults = { split: true };
 		me.items = [ me.Header, me.navColumn, me.MainPanel, me.Footer ];
@@ -840,9 +849,9 @@ Ext.define('App.view.Viewport', {
 		}
 	},
 
-	onPaymentEntryWindow: function() {
-		this.PaymentEntryWindow.show();
-	},
+//	onPaymentEntryWindow: function() {
+//		this.PaymentEntryWindow.show();
+//	},
 
 	newPatient: function() {
 		var me = this;

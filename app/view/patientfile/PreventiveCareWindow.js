@@ -90,10 +90,10 @@ Ext.define('App.view.patientfile.PreventiveCareWindow', {
 
 		me.items = [ me.grid ];
 
-		me.listeners = {
-			scope: me,
-			show: me.onPreventiveCareWindowShow
-		};
+//		me.listeners = {
+//			scope: me,
+//			show: me.onPreventiveCareWindowShow
+//		};
 
 
 		this.callParent(arguments);
@@ -113,9 +113,29 @@ Ext.define('App.view.patientfile.PreventiveCareWindow', {
 		}
 
 	},
-	onPreventiveCareWindowShow: function() {
-	    this.patientPreventiveCare.load({params: {pid: app.currPatient.pid }});
 
-    }
+    loadPatientPreventiveCare:function(){
+        var me = this;
+        this.patientPreventiveCare.load({
+            scope:me,
+            params: {
+                pid: app.currPatient.pid
+            },
+            callback:function(records, operation, success){
+                if(records.length > 0){
+                    me.show();
+                    say(records.length + ' Preventive Cares');
+                    return true;
+                }else{
+                    return false;
+                }
+            }
+        });
+    },
+
+//	onPreventiveCareWindowShow: function() {
+//	    this.patientPreventiveCare.load({params: {pid: app.currPatient.pid }});
+//
+//    }
 
 });

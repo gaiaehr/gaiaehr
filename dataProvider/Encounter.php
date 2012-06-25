@@ -625,8 +625,24 @@ class Encounter {
         return str_replace('T', ' ', $date);
     }
 
+    public function checkForAnOpenedEncounterByPid($pid)
+    {
+        $this->db->setSQL("SELECT * FROM form_data_encounter
+                           WHERE (pid='$pid'
+                           AND   close_date is NULL) ");
+        $data = $this->db->fetchRecord(PDO::FETCH_ASSOC);
+        if(isset($data['eid'])){
+            return false;
+        }else{
+            return true;
+        }
+
+    }
+
+
+//
 }
 
 //$e = new Encounter();
 //echo '<pre>';
-//print_r($e->checkoutAlerts(7));
+//print_r($e->checkForAnOpenedEncounterByPid(12));

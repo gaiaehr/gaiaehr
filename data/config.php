@@ -61,6 +61,9 @@ $API = array(
             ),
             'checkoutAlerts'=>array(
                'len'=>1
+            ),
+            'checkForAnOpenedEncounterByPid'=>array(
+               'len'=>1
             )
         )
     ),

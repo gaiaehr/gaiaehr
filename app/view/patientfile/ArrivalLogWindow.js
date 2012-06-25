@@ -150,8 +150,21 @@ Ext.define('App.view.patientfile.ArrivalLogWindow', {
 
     onPatientRemove:function(grid, rowIndex){
         var store = grid.getStore(),
+	        me = this,
             record = store.getAt(rowIndex);
-        store.remove(record);
+	    Encounter.checkForAnOpenedEncounterByPid(record.raw.pid, function(provider, response){
+		    if(provider == true){
+			    me.msg('Oops!', 'Patient have a opened encounter');
+
+		    }else{
+			    me.msg('Sweet!', 'Patient have been removed');
+			    store.remove(record);
+		    }
+	    });
+
+
+
+
     },
 
     onPatientDlbClick:function(grid, record){

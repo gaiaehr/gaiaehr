@@ -1522,7 +1522,7 @@ Ext.define('App.view.patientfile.MedicalWindow', {
 	        };
 
         Medical.reviewMedicalWindowEncounter(params, function(provider, response){
-	        me.msg('Great!', 'Succefully reviewed');
+	        me.msg('Sweet!', 'Succefully reviewed');
         });
     },
 

@@ -9,6 +9,7 @@ Ext.define('App.model.patientfile.PatientArrivalLog', {
 	extend: 'Ext.data.Model',
 	fields: [
         {name: 'id', type: 'int'},
+        {name: 'area_id', type: 'int'},
         {name: 'pid', type: 'int'},
 		{name: 'time', type: 'string'},
 		{name: 'name', type: 'string'},

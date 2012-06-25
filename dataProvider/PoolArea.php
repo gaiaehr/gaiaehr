@@ -50,13 +50,14 @@ class PoolArea
 		$visits = array();
 		foreach($this->getPatientParentPools() AS $visit){
 			$id = $visit['id'];
-			$this->db->setSQL("SELECT pa.title AS area, pp.time_out
+			$this->db->setSQL("SELECT pp.id, pa.title AS area, pp.time_out
 								 FROM patient_pools AS pp
 						    LEFT JOIN pool_areas AS pa ON pp.area_id = pa.id
 							    WHERE pp.parent_id = $id
 							 ORDER BY pp.id DESC");
 			$foo = $this->db->fetchRecord(PDO::FETCH_ASSOC);
 			$visit['area'] = $foo['area'];
+			$visit['area_id'] = $foo['id'];
 			$visit['name'] = $this->patient->getPatientFullNameByPid($visit['pid']);
 
 			if($foo['time_out'] == null){
@@ -100,9 +101,8 @@ class PoolArea
 
 	public function removePatientArrivalLog(stdClass $params){
 
-        $this->db->setSQL("DELETE FROM patient_pools WHERE id = '$params->id'");
+        $this->db->setSQL($this->db->sqlBind(array('time_out' => Time::getLocalTime()),'patient_pools', 'U', array('id' => $params->area_id)));
         $this->db->execLog();
-
         return array('success' => true);
 	}
 

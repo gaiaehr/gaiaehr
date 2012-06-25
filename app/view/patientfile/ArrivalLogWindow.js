@@ -152,11 +152,10 @@ Ext.define('App.view.patientfile.ArrivalLogWindow', {
         var store = grid.getStore(),
 	        me = this,
             record = store.getAt(rowIndex);
-	    Encounter.checkForAnOpenedEncounterByPid(record.raw.pid, function(provider, response){
-		    if(provider == true){
+	    Encounter.checkForAnOpenedEncounterByPid({pid:record.data.pid,date:Ext.Date.format(new Date(), 'Y-m-d H:i:s')}, function(provider, response){
+		    if(response.result) {
 			    me.msg('Oops!', 'Patient have a opened encounter');
-
-		    }else{
+		    } else {
 			    me.msg('Sweet!', 'Patient have been removed');
 			    store.remove(record);
 		    }

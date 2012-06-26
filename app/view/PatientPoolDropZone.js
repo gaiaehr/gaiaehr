@@ -102,13 +102,24 @@ Ext.define('App.view.PatientPoolDropZone', {
                             //scope:me,
                             drop:me.onPatientDrop
                         }
-                    }
+                    },
+	                listeners:{
+		                scope:me,
+		                itemdblclick:me.onPatientDblClick
+	                }
                 })
 
             });
 
         });
     },
+
+	onPatientDblClick:function(store, record){
+		var data = record.data;
+		app.setCurrPatient(data.pid, data.name, function(){
+			app.openPatientSummary();
+		});
+	},
 
     reloadStores:function(){
         Ext.each(this.stores, function(store){

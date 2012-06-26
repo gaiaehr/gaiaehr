@@ -28,6 +28,7 @@ Ext.define('App.classes.PhotoIdWindow', {
 				},
 				{
 					text   : 'Cancel',
+					scope:me,
 					handler: function(){
 						this.close();
 					}

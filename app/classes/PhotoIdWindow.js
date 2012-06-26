@@ -4,7 +4,7 @@
 Ext.define('App.classes.PhotoIdWindow', {
 	extend       : 'Ext.window.Window',
 	alias        : 'widget.photoidwindow',
-	height       : 292,
+	height       : 320,
 	width        : 320,
 	layout       : 'fit',
 	renderTo     : document.body,
@@ -19,18 +19,18 @@ Ext.define('App.classes.PhotoIdWindow', {
 	    window.webcam.set_hook( 'onComplete', 'onWebCamComplete' );
 
 		Ext.apply(this, {
-			html:window.webcam.get_html(320, 240),
+			html:window.webcam.get_html(320, 320),
 			buttons: [
+				{
+					text   : 'Capture',
+					iconCls: 'save',
+					handler: me.captureToCanvas
+				},
 				{
 					text   : 'Cancel',
 					handler: function(){
 						this.close();
 					}
-				},
-				{
-					text   : 'Capture Image',
-					iconCls: 'save',
-					handler: me.captureToCanvas
 				}
 			]
 		},null);

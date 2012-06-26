@@ -566,6 +566,23 @@ class Medical
         return  array('success' => true);
     }
 
+	/*************************************************************************************************************/
+	public function getLabsLiveSearch(stdClass $params)
+	{
+		$this->db->setSQL("SELECT id,
+								  parent_loinc,
+								  loinc_number,
+								  loinc_name
+							FROM  labs_panels
+							WHERE parent_loinc <> loinc_number
+							  AND loinc_name      LIKE'$params->query%'");
+        $records =$this->db->fetchRecords(PDO::FETCH_ASSOC);
+		$total = count($records);
+		$records  = array_slice($records, $params->start, $params->limit);
+		return array('totals'=> $total,
+		             'rows'  => $records);
+	}
+
 
 	/**
 	 * @param $date

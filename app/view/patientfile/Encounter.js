@@ -1010,13 +1010,7 @@ Ext.define('App.view.patientfile.Encounter', {
                 });
 
                 app.PreventiveCareWindow.loadPatientPreventiveCare();
-//	            PreventiveCare.activePreventiveCareAlert({pid:record[0].data.pid},function(provider,response){
-//		            if(response.result.success){
-//
-//			            app.PreventiveCareWindow.show();
-//
-//		            }
-//	            });
+
             }
         });
     },
@@ -1069,6 +1063,7 @@ Ext.define('App.view.patientfile.Encounter', {
         var me = this;
         Encounter.getProgressNoteByEid(app.currEncounterId, function(provider, response) {
             var data = response.result;
+            say(data);
             me.progressNote.tpl.overwrite(me.progressNote.body, data);
         });
     },

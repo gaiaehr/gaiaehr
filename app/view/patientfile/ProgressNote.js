@@ -26,21 +26,21 @@ Ext.define('App.view.patientfile.ProgressNote', {
             '<div class="progressNote">' +
             '   <div class="secession general-data">' +
             '       <div class="title"> General </div>' +
-            '       <table width="100%" ">' +
+            '       <table width="100%">' +
             '           <tr>' +
             '               <td>' +
             '                   <div class="header row">Name: {patient_name} </div>' +
             '                   <div class="header row">Record: #{pid} </div>' +
             '                   <div class="header row">Provider date: {open_by} </div>' +
-            '                   <div class="header row">Onset Date: {onset_date} </div>' +
-            '                   <div class="header row">Signed by: {signed_by} </div>' +
+            '                   <div class="header row">Onset Date: {[values.onset_date || "-"]} </div>' +
+            '                   <div class="header row">Signed by: {[values.signed_by || "-"]} </div>' +
             '               </td>' +
             '               <td>' +
             '                   <div class="header row">Service date: {start_date} </div>' +
             '                   <div class="header row">Visit Category: {visit_category} </div>' +
             '                   <div class="header row">Facility: {facility} </div>' +
             '                   <div class="header row">Sensitivity: {sensitivity} </div>' +
-            '                   <div class="header row">Close On: {close_date} </div>' +
+            '                   <div class="header row">Close On: {[values.close_date || "-"]} </div>' +
             '               </td>' +
             '           </tr>' +
             '           <tr>' +
@@ -83,10 +83,10 @@ Ext.define('App.view.patientfile.ProgressNote', {
             '   <tpl for="soap">' +
             '       <div class="secession">' +
             '           <div class="title"> SOAP </div>' +
-            '           <p><span>Subjective:</span> {subjective} </p>' +
-            '           <p><span>Objective:</span> {objective}</p>' +
-            '           <p><span>Assessment:</span> {assessment}</p>' +
-            '           <p><span>Plan:</span> {plan}</p>' +
+            '           <p><span>Subjective:</span> {[values.subjective || "-"]} </p>' +
+            '           <p><span>Objective:</span> {[values.objective || "-"]}</p>' +
+            '           <p><span>Assessment:</span> {[values.assessment || "-"]}</p>' +
+            '           <p><span>Plan:</span> {[values.plan || "-"]}</p>' +
             '       </div>' +
             '   </tpl>' +
             /**
@@ -109,55 +109,237 @@ Ext.define('App.view.patientfile.ProgressNote', {
             '               <table>' +
             '                   <tr>' +
             '                       <td>' +
-            '                           <div class="column">' +
-            '                               <div class="header row">Date & Time</div>' +
-            '                               <div class="header row">Weight Lbs</div>' +
-            '                               <div class="header row">Weight Kg</div>' +
-            '                               <div class="header row">Height in</div>' +
-            '                               <div class="header row">Height cm</div>' +
-            '                               <div class="header row">BP systolic</div>' +
-            '                               <div class="header row">BP diastolic</div>' +
-            '                               <div class="header row">Pulse</div>' +
-            '                               <div class="header row">Respiration</div>' +
-            '                               <div class="header row">Temp F</div>' +
-            '                               <div class="header row">Temp C</div>' +
-            '                               <div class="header row">Temp Location</div>' +
-            '                               <div class="header row">Oxygen Saturation</div>' +
-            '                               <div class="header row">Head Circumference in</div>' +
-            '                               <div class="header row">Head Circumference cm</div>' +
-            '                               <div class="header row">Waist Circumference in</div>' +
-            '                               <div class="header row">Waist Circumference cm</div>' +
-            '                               <div class="header row">BMI</div>' +
-            '                               <div class="header row">BMI Status</div>' +
-            '                               <div class="header row">Other Notes</div>' +
-            '                               <div class="header row">Administer</div>' +
-            '                           </div>' +
+            '                          <table class="x-grid-table x-grid-table-vitals vitals-column">' +
+            '                              <tbody>' +
+            '                                  <tr class="x-grid-row">' +
+            '                                       <td class="x-grid-cell x-grid-table-vitals-date">' +
+            '                                           <div class="x-grid-cell-inner ">Date & Time</div>' +
+            '                                       </td>' +
+            '                                   </tr>' +
+            '                                   <tr class="x-grid-row">' +
+            '                                       <td class="x-grid-cell">' +
+            '                                           <div class="x-grid-cell-inner ">Weight Lbs</div>' +
+            '                                       </td>' +
+            '                                   </tr>' +
+            '                                   <tr class="x-grid-row">' +
+            '                                       <td class="x-grid-cell">' +
+            '                                           <div class="x-grid-cell-inner ">Weight Kg</div>' +
+            '                                       </td>' +
+            '                                   </tr>' +
+            '                                   <tr class="x-grid-row">' +
+            '                                       <td class="x-grid-cell">' +
+            '                                           <div class="x-grid-cell-inner ">Height in</div>' +
+            '                                       </td>' +
+            '                                   </tr>' +
+            '                                   <tr class="x-grid-row">' +
+            '                                       <td class="x-grid-cell">' +
+            '                                           <div class="x-grid-cell-inner ">Height cm</div>' +
+            '                                       </td>' +
+            '                                   </tr>' +
+            '                                   <tr class="x-grid-row">' +
+            '                                       <td class="x-grid-cell">' +
+            '                                           <div class="x-grid-cell-inner ">BP systolic</div>' +
+            '                                       </td>' +
+            '                                   </tr>' +
+            '                                   <tr class="x-grid-row">' +
+            '                                       <td class="x-grid-cell">' +
+            '                                           <div class="x-grid-cell-inner ">BP diastolic</div>' +
+            '                                       </td>' +
+            '                                   </tr>' +
+            '                                   <tr class="x-grid-row">' +
+            '                                       <td class="x-grid-cell">' +
+            '                                           <div class="x-grid-cell-inner ">Pulse</div>' +
+            '                                       </td>' +
+            '                                   </tr>' +
+            '                                   <tr class="x-grid-row">' +
+            '                                       <td class="x-grid-cell">' +
+            '                                           <div class="x-grid-cell-inner ">Respiration</div>' +
+            '                                       </td>' +
+            '                                   </tr>' +
+            '                                   <tr class="x-grid-row">' +
+            '                                       <td class="x-grid-cell">' +
+            '                                           <div class="x-grid-cell-inner ">Temp F</div>' +
+            '                                       </td>' +
+            '                                   </tr>' +
+            '                                   <tr class="x-grid-row">' +
+            '                                       <td class="x-grid-cell">' +
+            '                                           <div class="x-grid-cell-inner ">Temp C</div>' +
+            '                                       </td>' +
+            '                                   </tr>' +
+            '                                   <tr class="x-grid-row">' +
+            '                                       <td class="x-grid-cell">' +
+            '                                           <div class="x-grid-cell-inner ">Temp Location</div>' +
+            '                                       </td>' +
+            '                                   </tr>' +
+            '                                   <tr class="x-grid-row">' +
+            '                                       <td class="x-grid-cell">' +
+            '                                           <div class="x-grid-cell-inner ">Oxygen Saturation</div>' +
+            '                                       </td>' +
+            '                                   </tr>' +
+            '                                   <tr class="x-grid-row">' +
+            '                                       <td class="x-grid-cell">' +
+            '                                           <div class="x-grid-cell-inner ">Head Circumference in</div>' +
+            '                                       </td>' +
+            '                                   </tr>' +
+            '                                   <tr class="x-grid-row">' +
+            '                                       <td class="x-grid-cell">' +
+            '                                           <div class="x-grid-cell-inner ">Head Circumference cm</div>' +
+            '                                       </td>' +
+            '                                   </tr>' +
+            '                                   <tr class="x-grid-row">' +
+            '                                       <td class="x-grid-cell">' +
+            '                                           <div class="x-grid-cell-inner ">Waist Circumference in</div>' +
+            '                                       </td>' +
+            '                                   </tr>' +
+            '                                   <tr class="x-grid-row">' +
+            '                                       <td class="x-grid-cell">' +
+            '                                           <div class="x-grid-cell-inner ">Waist Circumference cm</div>' +
+            '                                       </td>' +
+            '                                   </tr>' +
+            '                                   <tr class="x-grid-row">' +
+            '                                       <td class="x-grid-cell">' +
+            '                                           <div class="x-grid-cell-inner ">BMI</div>' +
+            '                                       </td>' +
+            '                                   </tr>' +
+            '                                   <tr class="x-grid-row">' +
+            '                                       <td class="x-grid-cell">' +
+            '                                           <div class="x-grid-cell-inner ">BMI Status</div>' +
+            '                                       </td>' +
+            '                                   </tr>' +
+            '                                   <tr class="x-grid-row">' +
+            '                                       <td class="x-grid-cell">' +
+            '                                           <div class="x-grid-cell-inner ">Other Notes</div>' +
+            '                                       </td>' +
+            '                                   </tr>' +
+            '                                   <tr class="x-grid-row">' +
+            '                                       <td class="x-grid-cell">' +
+            '                                           <div class="x-grid-cell-inner ">Administer<div>' +
+            '                                       </td>' +
+            '                                   </tr>' +
+            '                                   <tr class="x-grid-row">' +
+            '                                       <td class="x-grid-cell">' +
+            '                                           <div class="x-grid-cell-inner ">Sign by<div>' +
+            '                                       </td>' +
+            '                                   </tr>' +
+            '                               </tbody>' +
+            '                           </table>' +
             '                       </td>' +
             '                       <tpl for="vitals">' +
             '                           <td>' +
-            '                               <div class="column">' +
-            '                                   <div class="row" style="white-space: nowrap">{date}</div>' +
-            '                                   <div class="row">{weight_lbs}</div>' +
-            '                                   <div class="row">{weight_kg}</div>' +
-            '                                   <div class="row">{height_in}</div>' +
-            '                                   <div class="row">{height_cm}</div>' +
-            '                                   <div class="row">{bp_systolic}</div>' +
-            '                                   <div class="row">{bp_diastolic}</div>' +
-            '                                   <div class="row">{pulse}</div>' +
-            '                                   <div class="row">{respiration}</div>' +
-            '                                   <div class="row">{temp_f}</div>' +
-            '                                   <div class="row">{temp_c}</div>' +
-            '                                   <div class="row">{temp_location}</div>' +
-            '                                   <div class="row">{oxygen_saturation}</div>' +
-            '                                   <div class="row">{head_circumference_in}</div>' +
-            '                                   <div class="row">{head_circumference_cm}</div>' +
-            '                                   <div class="row">{waist_circumference_in}</div>' +
-            '                                   <div class="row">{waist_circumference_cm}</div>' +
-            '                                   <div class="row">{bmi}</div>' +
-            '                                   <div class="row">{bmi_status}</div>' +
-            '                                   <div class="row">{other_notes}</div>' +
-            '                                   <div class="row">{administer}</div>' +
-            '                               </div>' +
+            '                           <table class="x-grid-table x-grid-table-vitals vitals-column">' +
+            '                               <tbody>' +
+            '                                   <tr class="x-grid-row">' +
+            '                                       <td class="x-grid-cell x-grid-table-vitals-date">' +
+            '                                           <div class="x-grid-cell-inner ">{date}</div>' +
+            '                                       </td>' +
+            '                                   </tr>' +
+            '                                   <tr class="x-grid-row first">' +
+            '                                       <td class="x-grid-cell">' +
+            '                                           <div class="x-grid-cell-inner ">{[values.weight_lbs || "-"]}</div>' +
+            '                                       </td>' +
+            '                                   </tr>' +
+            '                                   <tr class="x-grid-row x-grid-row-alt">' +
+            '                                       <td class="x-grid-cell">' +
+            '                                           <div class="x-grid-cell-inner ">{[values.weight_kg || "-"]}<div>' +
+            '                                       </td>' +
+            '                                   </tr>' +
+            '                                   <tr class="x-grid-row ">' +
+            '                                       <td class="x-grid-cell">' +
+            '                                           <div class="x-grid-cell-inner ">{[values.height_in || "-"]}<div>' +
+            '                                       </td>' +
+            '                                   </tr>' +
+            '                                   <tr class="x-grid-row ">' +
+            '                                       <td class="x-grid-cell">' +
+            '                                           <div class="x-grid-cell-inner ">{[values.height_cm || "-"]}<div>' +
+            '                                       </td>' +
+            '                                   </tr>' +
+            '                                   <tr class="x-grid-row x-grid-row-alt">' +
+            '                                       <td class="x-grid-cell">' +
+            '                                           <div class="x-grid-cell-inner ">{[values.bp_systolic || "-"]}<div>' +
+            '                                       </td>' +
+            '                                   </tr>' +
+            '                                   <tr class="x-grid-row ">' +
+            '                                       <td class="x-grid-cell">' +
+            '                                           <div class="x-grid-cell-inner ">{[values.bp_diastolic || "-"]}<div>' +
+            '                                       </td>' +
+            '                                   </tr>' +
+            '                                   <tr class="x-grid-row x-grid-row-alt">' +
+            '                                       <td class="x-grid-cell">' +
+            '                                           <div class="x-grid-cell-inner ">{[values.pulse || "-"]}<div>' +
+            '                                       </td>' +
+            '                                   </tr>' +
+            '                                   <tr class="x-grid-row ">' +
+            '                                       <td class="x-grid-cell">' +
+            '                                           <div class="x-grid-cell-inner ">{[values.respiration || "-"]}<div>' +
+            '                                       </td>' +
+            '                                   </tr>' +
+            '                                   <tr class="x-grid-row x-grid-row-alt">' +
+            '                                       <td class="x-grid-cell">' +
+            '                                           <div class="x-grid-cell-inner ">{[values.temp_f || "-"]}<div>' +
+            '                                       </td>' +
+            '                                   </tr>' +
+            '                                   <tr class="x-grid-row ">' +
+            '                                       <td class="x-grid-cell">' +
+            '                                           <div class="x-grid-cell-inner ">{[values.temp_c || "-"]}<div>' +
+            '                                       </td>' +
+            '                                   </tr>' +
+            '                                   <tr class="x-grid-row x-grid-row-alt">' +
+            '                                       <td class="x-grid-cell">' +
+            '                                           <div class="x-grid-cell-inner ">{[values.temp_location ? values.temp_location.toUpperCase() : "-"]}<div>' +
+            '                                       </td>' +
+            '                                   </tr>' +
+            '                                   <tr class="x-grid-row ">' +
+            '                                       <td class="x-grid-cell">' +
+            '                                           <div class="x-grid-cell-inner ">{[values.oxygen_saturation || "-"]}<div>' +
+            '                                       </td>' +
+            '                                   </tr>' +
+            '                                   <tr class="x-grid-row x-grid-row-alt">' +
+            '                                       <td class="x-grid-cell">' +
+            '                                           <div class="x-grid-cell-inner ">{[values.head_circumference_in || "-"]}<div>' +
+            '                                       </td>' +
+            '                                   </tr>' +
+            '                                   <tr class="x-grid-row ">' +
+            '                                       <td class="x-grid-cell">' +
+            '                                           <div class="x-grid-cell-inner ">{[values.head_circumference_cm || "-"]}<div>' +
+            '                                       </td>' +
+            '                                   </tr>' +
+            '                                   <tr class="x-grid-row x-grid-row-alt">' +
+            '                                       <td class="x-grid-cell">' +
+            '                                           <div class="x-grid-cell-inner ">{[values.waist_circumference_in || "-"]}<div>' +
+            '                                       </td>' +
+            '                                   </tr>' +
+            '                                   <tr class="x-grid-row ">' +
+            '                                       <td class="x-grid-cell">' +
+            '                                           <div class="x-grid-cell-inner ">{[values.waist_circumference_cm || "-"]}<div>' +
+            '                                       </td>' +
+            '                                   </tr>' +
+            '                                   <tr class="x-grid-row x-grid-row-alt">' +
+            '                                       <td class="x-grid-cell">' +
+            '                                           <div class="x-grid-cell-inner ">{[values.bmi || "-"]}<div>' +
+            '                                       </td>' +
+            '                                   </tr>' +
+            '                                   <tr class="x-grid-row ">' +
+            '                                       <td class="x-grid-cell">' +
+            '                                           <div class="x-grid-cell-inner ">{[values.bmi_status || "-"]}<div>' +
+            '                                       </td>' +
+            '                                   </tr>' +
+            '                                   <tr class="x-grid-row x-grid-row-alt">' +
+            '                                       <td class="x-grid-cell">' +
+            '                                           <div class="x-grid-cell-inner ">{[values.other_notes || "-"]}<div>' +
+            '                                       </td>' +
+            '                                   </tr>' +
+            '                                   <tr class="x-grid-row ">' +
+            '                                       <td class="x-grid-cell">' +
+            '                                           <div class="x-grid-cell-inner ">{[(values.administer_by == null || values.administer_by == " ") ? "-" : values.administer_by]}<div>' +
+            '                                       </td>' +
+            '                                   </tr>' +
+            '                                   <tr class="x-grid-row ">' +
+            '                                       <td class="x-grid-cell">' +
+            '                                           <div class="x-grid-cell-inner ">{[(values.authorized_by == null || values.authorized_by == " ") ? "-" : values.authorized_by]}<div>' +
+            '                                       </td>' +
+            '                                   </tr>' +
+            '                               </tbody>' +
+            '                           </table>' +
             '                           </td>' +
             '                       </tpl>' +
             '                   </tr>' +

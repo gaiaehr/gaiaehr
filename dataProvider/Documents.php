@@ -121,6 +121,17 @@ class Documents
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	public function updateDocumentsTitle(stdClass $params)
+	{
+        $data = get_object_vars($params);
+        $id = $data['id'];
+        unset($data['id'],$data['date']);
+        $this->db->setSQL($this->db->sqlBind($data, "patient_documents", "U", "id='$id'"));
+        $this->db->execLog();
+        return $params;
+	}
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	public function setArraySizeOfTokenArray($tokens)
 	{
 		$givingValuesToTokens = array();

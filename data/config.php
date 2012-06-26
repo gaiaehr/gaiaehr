@@ -860,6 +860,14 @@ $API = array(
         )
     ),
 
+    'Documents'=>array(
+        'methods'=>array(
+            'updateDocumentsTitle'=>array(
+                'len'=>1
+            ),
+        )
+    ),
+
     'Test'=>array(
         'methods'=>array(
             'getRec'=>array(

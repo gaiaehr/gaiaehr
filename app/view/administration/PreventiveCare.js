@@ -30,7 +30,7 @@ Ext.define('App.view.administration.PreventiveCare', {
 
 		me.store = Ext.create('App.store.administration.PreventiveCare');
         me.activeProblemsStore = Ext.create('App.store.administration.PreventiveCareActiveProblems');
-		me.immunizationsStore = Ext.create('App.store.administration.PreventiveCareMedications');
+		me.medicationsStore = Ext.create('App.store.administration.PreventiveCareMedications');
 
 		function code_type(val) {
 			if(val == '1') {
@@ -294,7 +294,7 @@ Ext.define('App.view.administration.PreventiveCare', {
 								action :'medications',
 								xtype  : 'grid',
 								width  : 300,
-								store: me.immunizationsStore,
+								store: me.medicationsStore,
 								columns: [
 									{
 										xtype:'actioncolumn',
@@ -463,16 +463,14 @@ Ext.define('App.view.administration.PreventiveCare', {
 			code_text:model[0].data.code_text,
             guideline_id: this.getSelectId()
 		});
-		say(this.activeProblemsStore);
 		field.reset();
 	},
 	addMedications:function(field, model){
-		this.immunizationsStore.add({
+		this.medicationsStore.add({
 			code:model[0].data.PRODUCTNDC,
 			code_text:model[0].data.PROPRIETARYNAME,
             guideline_id: this.getSelectId()
 		});
-		say(this.immunizationsStore);
 		field.reset();
 
 	},

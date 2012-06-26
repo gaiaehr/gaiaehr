@@ -4,6 +4,9 @@
 
 ----------------------------------------------- */
 
+
+
+
 .check-bg {
     background: url(check_bg.png) no-repeat white 5px 5px !important;
 }
@@ -288,6 +291,10 @@ cursor: pointer !important;
 .patient-pool-btn .patient_btn_info div{
     padding-left: 32px;
 }
+
+
+
+
 .progressNote .secession{
     padding:15px;
     margin:10px 0;
@@ -316,6 +323,12 @@ cursor: pointer !important;
     float:left;
     width:210px;
 }
+.progressNote table tr td {
+    font-size:12px!important
+}
+
+
+
 .cpt_summary {
     margin: 5px;
     background-color:#fff;

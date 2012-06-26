@@ -227,18 +227,31 @@ Ext.define('App.view.patientfile.Summary', {
                             },
                             {
                                 header:'Date',
-                                dataIndex:'date'
+                                dataIndex:'date',
+                                format : 'Y-m-d'
+
                             },
                             {
                                 header:'Title',
                                 dataIndex:'title',
-                                flex:true
+                                flex:true,
+                                editor:{
+                                            xtype:'textfield',
+                                            action:'title'
+                                        }
                             },
                             {
                                 header:'User',
                                 dataIndex:'user_name'
                             }
                         ],
+
+                        plugins: Ext.create('Ext.grid.plugin.RowEditing', {
+                        				autoCancel  : true,
+                        				errorSummary: false,
+                        				clicksToEdit: 1
+
+                        			}),
 
 	                    tbar:[
 		                    {
@@ -537,10 +550,8 @@ Ext.define('App.view.patientfile.Summary', {
 			scope:me,
 			callback:function(){
 				me.getPatientImgs();
+                me.verifyPatientRequiredInfo();
 			}
-		});
-		app.navigateTo('panelSummary', function() {
-				app.currCardCmp.onActive();
 		});
 	},
 
@@ -723,6 +734,33 @@ Ext.define('App.view.patientfile.Summary', {
 		this.getPatientImgs();
 	},
 
+    verifyPatientRequiredInfo:function(){
+        var me = this,
+            formPanel = me.query('[action="demoFormPanel"]')[0],
+            field;
+
+        me.patientAlertsStore.load({
+	        scope:me,
+	        params: {
+		        pid: app.currPatient.pid
+	        },
+	        callback:function(records, operation, success){
+		        Ext.each(records, function(fields){
+			        field = formPanel.getForm().findField(fields.data.name);
+
+			        if(fields.data.val){
+				        field.removeCls('x-field-yellow');
+			        }else{
+				        field.addCls('x-field-yellow');
+			        }
+		        });
+
+
+	        }
+
+        });
+    },
+
     /**
      * This function is called from MitosAPP.js when
      * this panel is selected in the navigation panel.
@@ -755,35 +793,11 @@ Ext.define('App.view.patientfile.Summary', {
 	        me.patientDocumentsStore.load({params: {pid: app.currPatient.pid}});
 
 	        me.encounterEventHistoryStore.load({params: {pid: app.currPatient.pid}});
-	        me.patientAlertsStore.load({
-		        scope:me,
-		        params: {
-			        pid: app.currPatient.pid
-		        },
-		        callback:function(records, operation, success){
-			        Ext.each(records, function(fields){
-				        var formPanel = me.query('[action="demoFormPanel"]')[0],
-					        field = formPanel.getForm().findField(fields.data.name);
 
-				        if(fields.data.val){
-					        field.removeCls('x-field-yellow');
-				        }else{
-					        field.addCls('x-field-yellow');
-				        }
-			        });
-
-
-		        }
-
-	        });
+            me.verifyPatientRequiredInfo();
 
             app.PreventiveCareWindow.loadPatientPreventiveCare();
-//
-//	        PreventiveCare.activePreventiveCareAlert({pid:app.currPatient.pid},function(provider,response){
-//		        if(response.result.success){
-//			        app.PreventiveCareWindow.show();
-//		        }
-//	        });
+
 
         } else {
             callback(false);

@@ -140,6 +140,7 @@ Ext.define('App.view.Viewport', {
 		'App.classes.combo.BillingFacilities',
 		'App.classes.combo.CodesTypes',
 		'App.classes.combo.Facilities',
+		'App.classes.combo.FollowUp',
 		'App.classes.combo.InsurancePayerType',
 		'App.classes.combo.LabObservations',
 		'App.classes.combo.LabsTypes',

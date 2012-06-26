@@ -189,10 +189,12 @@ Ext.define('App.view.patientfile.Encounter', {
 		                                    },
 		                                    items:[
 		                                        {
-		                                            boxLabel:'Clinical Summary Provided'
+		                                            boxLabel:'Clinical Summary Provided',
+			                                        name:'clinical_summary_provided'
 		                                        },
 		                                        {
-		                                            boxLabel:'Elegibility Confirmed'
+		                                            boxLabel:'Elegibility Confirmed',
+				                                        name:'elegibility_confirmed'
 		                                        }
 		                                    ]
 		                                },
@@ -203,10 +205,12 @@ Ext.define('App.view.patientfile.Encounter', {
 		                                    },
 		                                    items:[
 		                                        {
-		                                            boxLabel:'Medical Reconciliation'
+		                                            boxLabel:'Medical Reconciliation',
+			                                        name:'medical_reconcilation'
 		                                        },
 		                                        {
-		                                            boxLabel:'Push to Exchange'
+		                                            boxLabel:'Push to Exchange',
+			                                        name:'push_to_exchange'
 		                                        }
 		                                    ]
 		                                }
@@ -221,12 +225,14 @@ Ext.define('App.view.patientfile.Encounter', {
 		                            },
 		                            items:[
 		                                {
-		                                    xtype:'textfield',
-		                                    fieldLabel:'Time'
+		                                    xtype:'mitos.followupcombo',
+		                                    fieldLabel:'Time Interval',
+			                                name:'followup_time'
 		                                },
 		                                {
 		                                    fieldLabel:'Facility',
-		                                    xtype:'mitos.facilitiescombo'
+		                                    xtype:'mitos.activefacilitiescombo',
+			                                name:'followup_facility'
 		                                }
 		                            ]
 		                        }
@@ -760,7 +766,6 @@ Ext.define('App.view.patientfile.Encounter', {
 
     signEncounter:function () {
 
-
 	    this.closeEncounter();
 	    this.checkoutWindow.close();
     },
@@ -1019,34 +1024,50 @@ Ext.define('App.view.patientfile.Encounter', {
      * Function to close the encounter..
      */
     closeEncounter:function () {
-        var me = this;
+        var me = this, form, values;
         me.passwordVerificationWin(function (btn, password) {
             if (btn == 'ok') {
-                var params = {
-                    eid       : app.currEncounterId,
-                    close_date: Ext.Date.format(new Date(), 'Y-m-d H:i:s'),
-                    signature : password
-                };
-                Encounter.closeEncounter(params, function (provider, response) {
-                    if (response.result.success) {
-                        if (me.stopTimer()) {
-                            app.openPatientVisits();
-                            me.msg('Sweet!', 'Encounter Closed');
-                        }
-                    } else {
-                        Ext.Msg.show({
-                            title:'Oops!',
-                            msg:'Incorrect password',
-                            buttons:Ext.Msg.OKCANCEL,
-                            icon:Ext.Msg.ERROR,
-                            fn:function (btn) {
-                                if (btn == 'ok') {
-                                    me.closeEncounter();
-                                }
-                            }
-                        });
-                    }
-                });
+
+	            form              = me.checkoutWindow.down('form').getForm();
+	            values            = form.getValues();
+                values.eid        = app.currEncounterId;
+	            values.close_date = Ext.Date.format(new Date(), 'Y-m-d H:i:s');
+	            values.signature  = password;
+
+
+
+
+//                Encounter.closeEncounter(params, function (provider, response) {
+//                    if (response.result.success) {
+//                        if (me.stopTimer()) {
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//                            app.openPatientVisits();
+//                            me.msg('Sweet!', 'Encounter Closed');
+//                        }
+//                    } else {
+//                        Ext.Msg.show({
+//                            title:'Oops!',
+//                            msg:'Incorrect password',
+//                            buttons:Ext.Msg.OKCANCEL,
+//                            icon:Ext.Msg.ERROR,
+//                            fn:function (btn) {
+//                                if (btn == 'ok') {
+//                                    me.closeEncounter();
+//                                }
+//                            }
+//                        });
+//                    }
+//                });
             }
         });
 

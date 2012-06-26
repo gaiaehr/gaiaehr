@@ -465,9 +465,10 @@ Ext.define('App.view.administration.PreventiveCare', {
 		});
 		field.reset();
 	},
-	addMedications:function(field, model){
+	addMedications:function(field, model){say(model[0].data);
 		this.medicationsStore.add({
-			code:model[0].data.PRODUCTNDC,
+
+			code:model[0].data.id,
 			code_text:model[0].data.PROPRIETARYNAME,
             guideline_id: this.getSelectId()
 		});

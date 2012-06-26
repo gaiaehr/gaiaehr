@@ -45,6 +45,7 @@ class Prescriptions
         foreach($params->medications as $med){
             $foo = array();
             $foo['pid']             = $_SESSION['patient']['pid'];
+            $foo['eid']             = $params->eid;
             $foo['prescription_id'] = $prescription_id;
             $foo['medication'] = $med->medication;
             $foo['medication_id'] = $med->medication_id;

@@ -138,12 +138,12 @@ class PreventiveCare
 		$foo = explode(';',$this->getCodes($params->id,'medications'));
 		if($foo[0]){
 			foreach($foo AS $fo){
-				$this->db->setSQL("SELECT PRODUCTNDC AS code,
+				$this->db->setSQL("SELECT id AS code,
 										  CONCAT(PROPRIETARYNAME,
 										  ' (',ACTIVE_NUMERATOR_STRENGTH,') ',
 										  ACTIVE_INGRED_UNIT) AS code_text
 								     FROM medications
-								    WHERE id = '$fo' AND code IS NOT NULL");
+								    WHERE id = '$fo'");
 				$medication = $this->db->fetchRecord(PDO::FETCH_CLASS);
 				$medication['guideline_id'] = $params->id;
 				$medications[] = $medication;
@@ -461,13 +461,12 @@ class PreventiveCare
         }
     }
 }
-////
+//
 //$params = new stdClass();
 //$params->start = 0;
 //$params->limit = 25;
-//$params->id = 74;
-//$params->reason = 'sorry';
+//$params->id = 6;
 //$t = new PreventiveCare();
 //print '<pre>';
-//print_r($t->addPreventivePatientDismiss($params));
+//print_r($t->getGuideLineMedications($params));
 

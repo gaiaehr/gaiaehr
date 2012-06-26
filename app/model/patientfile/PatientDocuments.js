@@ -16,17 +16,16 @@ Ext.define('App.model.patientfile.PatientDocuments', {
         {name: 'uid', type: 'int'},
         {name: 'docType', type: 'string'},
         {name: 'name', type: 'string'},
-        {name: 'date', type: 'date', dateFormat: 'Y-m-d H:i:s'},
+        {name: 'date', type: 'date', dateFormat: 'c'},
         {name: 'url', type: 'string'},
         {name: 'note', type: 'string'},
-        {name: 'user_name', type: 'string'},
         {name: 'title', type: 'string'}
 	],
 	proxy : {
 		type: 'direct',
 		api : {
 			read  : Patient.getPatientDocuments,
-            update: Patient.updateDocumentsTitle
+            update: Documents.updateDocumentsTitle
 		}
 	}
 });

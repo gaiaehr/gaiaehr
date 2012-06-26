@@ -9,5 +9,6 @@ Ext.define('App.store.patientfile.PatientDocuments', {
 	extend: 'Ext.data.Store',
 	model     : 'App.model.patientfile.PatientDocuments',
 	remoteSort: false,
-	autoLoad  : false
+	autoLoad  : false,
+	autoSync:true
 });

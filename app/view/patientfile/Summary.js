@@ -226,6 +226,7 @@ Ext.define('App.view.patientfile.Summary', {
                                 dataIndex:'docType'
                             },
                             {
+	                            xtype:'datecolumn',
                                 header:'Date',
                                 dataIndex:'date',
                                 format : 'Y-m-d'

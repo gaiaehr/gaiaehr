@@ -273,6 +273,9 @@ $API = array(
             ),
             'reviewMedicalWindowEncounter'=>array(
                'len'=>1
+            ),
+            'getLabsLiveSearch'=>array(
+               'len'=>1
             )
         ),
 
@@ -561,6 +564,15 @@ $API = array(
                 'len'=>1
             ),
             'removeGuideLineMedications'=>array(
+                'len'=>1
+            ),
+            'getGuideLineLabs'=>array(
+                'len'=>1
+            ),
+            'addGuideLineLabs'=>array(
+                'len'=>1
+            ),
+            'removeGuideLineLabs'=>array(
                 'len'=>1
             )
         )

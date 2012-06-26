@@ -31,6 +31,7 @@ Ext.define('App.view.administration.PreventiveCare', {
 		me.store = Ext.create('App.store.administration.PreventiveCare');
         me.activeProblemsStore = Ext.create('App.store.administration.PreventiveCareActiveProblems');
 		me.medicationsStore = Ext.create('App.store.administration.PreventiveCareMedications');
+		me.labsStore = Ext.create('App.store.administration.PreventiveCareLabs');
 
 		function code_type(val) {
 			if(val == '1') {
@@ -335,7 +336,7 @@ Ext.define('App.view.administration.PreventiveCare', {
 								title  : 'Labs',
 								action:'labs',
 								xtype  : 'grid',
-								//store: me.ImmuRelationStore,
+								store: me.labsStore,
 								width  : 300,
 								columns: [
 									{
@@ -372,7 +373,17 @@ Ext.define('App.view.administration.PreventiveCare', {
 									}
 
 
-								]
+								],
+                                    bbar:{
+                                        xtype:'labslivetsearch',
+                                        margin:5,
+                                        fieldLabel:'Add Labs',
+                                        hideLabel:false,
+                                        listeners:{
+                                            scope:me,
+                                            select:me.addLabs
+                                        }
+                                    }
 							}
 
 						]
@@ -460,17 +471,31 @@ Ext.define('App.view.administration.PreventiveCare', {
 
 		this.activeProblemsStore.add({
 			code:model[0].data.code,
-			code_text:model[0].data.code_text,
+			value_name:model[0].data.code_text,
             guideline_id: this.getSelectId()
 		});
 		field.reset();
 	},
-	addMedications:function(field, model){say(model[0].data);
+	addMedications:function(field, model){
 		this.medicationsStore.add({
 
 			code:model[0].data.id,
 			code_text:model[0].data.PROPRIETARYNAME,
             guideline_id: this.getSelectId()
+		});
+		field.reset();
+
+	},
+    addLabs:function(field, model){
+
+        say(model[0].data);
+		this.labsStore.add({
+
+			id:model[0].data.id,
+			value_name:model[0].data.loinc_name,
+			less_than:'0',
+			greater_than:'0',
+			equal_to:'0'
 		});
 		field.reset();
 

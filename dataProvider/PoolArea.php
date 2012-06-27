@@ -191,7 +191,7 @@ class PoolArea
 		$patients = array();
 		if($this->acl->hasPermission('use_pool_areas')){
 
-			if($this->acl->hasPermission('access_checkin')){
+			if($this->acl->hasPermission('access_poolcheckin')){
 				foreach($this->getPatientsByPoolAreaId(1,1) as $p){
 					$p['shortName'] = Person::ellipsis($p['name'], 20);
 					$p['poolArea'] = 'Check In';
@@ -199,7 +199,7 @@ class PoolArea
 					$patients[] = $p;
 				}
 			}
-			if($this->acl->hasPermission('access_triage')){
+			if($this->acl->hasPermission('access_pooltriage')){
 				foreach($this->getPatientsByPoolAreaId(2,1) as $p){
 					$p['shortName'] = Person::ellipsis($p['name'], 20);
 					$p['poolArea'] = 'Triage';
@@ -207,7 +207,7 @@ class PoolArea
 					$patients[] = $p;
 				}
 			}
-			if($this->acl->hasPermission('access_physician')){
+			if($this->acl->hasPermission('access_poolphysician')){
 				foreach($this->getPatientsByPoolAreaId(3,1) as $p){
 					$p['shortName'] = Person::ellipsis($p['name'], 20);
 					$p['poolArea'] = 'Physician';
@@ -215,7 +215,7 @@ class PoolArea
 					$patients[] = $p;
 				}
 			}
-			if($this->acl->hasPermission('access_checkout')){
+			if($this->acl->hasPermission('access_poolcheckout')){
 				foreach($this->getPatientsByPoolAreaId(4,1) as $p){
 					$p['shortName'] = Person::ellipsis($p['name'], 20);
 					$p['poolArea'] = 'Check Out';

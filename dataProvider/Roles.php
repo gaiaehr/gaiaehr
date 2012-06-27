@@ -136,7 +136,7 @@ class Roles extends ACL {
         $role_perms['perm_id'] = $perms['id'];
         $role_perms['value'] = $val;
 
-        $this->conn->setSQL("SELECT id FROM acl_role_perms WHERE 	role_id = '".$role_perms['role_id']."' AND perm_id = '".$role_perms['perm_id']."' ");
+        $this->conn->setSQL("SELECT id FROM acl_role_perms WHERE role_id = '".$role_perms['role_id']."' AND perm_id = '".$role_perms['perm_id']."' ");
         $role_perm = $this->conn->fetchRecord();
 
         if($role_perm['id'] != null){

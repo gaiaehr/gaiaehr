@@ -22,7 +22,7 @@ class Roles extends ACL {
         $items = array();
         $perms = array();
         $roles = $this->getAllRoles();
-        $cattegories = array('General','Calendar','Patients','Encounters','Demographics','Documents','ePrescription','Administrators','Miscellaneous');
+        $cattegories = array('General','Calendar','Patients','Encounters','Demographics','Documents','ePrescription','Administrators','Pool Areas','Miscellaneous');
         foreach($this->getAllPermissions('full') as $perm){
             array_push($perms,$perm);
         }
@@ -37,7 +37,7 @@ class Roles extends ACL {
                 'defaultType'   => 'mitos.checkbox',
                 'layout'        => 'hbox',
                 'defaults'      => array(
-                    'margin'    =>'0 50 0 0'
+                    'padding'    =>'0 100 0 0'
                 ),
                 'labelWidth'    => 200
              );

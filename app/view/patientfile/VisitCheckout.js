@@ -8,9 +8,9 @@
 // 
 // GaiaEHR (Electronic Health Records) 2011
 //******************************************************************************
-Ext.define('App.view.patientfile.PatientCheckout', {
+Ext.define('App.view.patientfile.VisitCheckout', {
 	extend       : 'App.classes.RenderPanel',
-	id           : 'panelPatientCheckout',
+	id           : 'panelVisitCheckout',
 	pageTitle    : 'Visit Checkout',
 	uses         : ['App.classes.GridPanel'],
 

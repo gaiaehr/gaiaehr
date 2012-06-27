@@ -13,13 +13,14 @@ Ext.define('App.model.poolarea.PoolArea', {
 		{name: 'shortName', type: 'string'},
 		{name: 'pid', type: 'int'},
 		{name: 'eid', type: 'int'},
-		{name: 'pic', type: 'string'}
+		{name: 'photoSrc', type: 'string'},
+		{name: 'poolArea', type: 'string'}
 
 	],
 	proxy    : {
 		type       : 'direct',
 		api        : {
-			read: Patient.getPatientsByPoolArea
+			read: PoolArea.getPatientsByPoolAreaAccess
 		}
 	}
 });

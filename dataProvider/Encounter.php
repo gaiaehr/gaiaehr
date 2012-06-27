@@ -185,10 +185,8 @@ class Encounter {
         $encounter['reviewofsystemschecks'] = $this->getReviewOfSystemsChecksByEid($params->eid);
         $encounter['soap']                  = $this->getSoapByEid($params->eid);
         $encounter['speechdictation']       = $this->getDictationByEid($params->eid);
-        //$encounter['cptcodes']              = $this->services->getCptByEid($params->eid);
 
-
-        //$this->addEncounterHistoryEvent('Encounter viewed');
+        $this->addEncounterHistoryEvent('Encounter viewed');
 
         if($encounter != null){
             return array('success' => true, 'encounter' => $encounter);
@@ -208,23 +206,26 @@ class Encounter {
     /**
      * @param stdClass $params
      * @return array
-     *  Naming: "getPatientVitals"
      */
     public function closeEncounter(stdClass $params)
     {
         $this->setEid($params->eid);
-
-        $data['close_date'] = $params->close_date;
+	    $data = get_object_vars($params);
+		unset($data['eid'], $data['pid'], $data['signature'], $data['note'], $data['reminder']);
         $data['close_uid'] = $_SESSION['user']['id'];
 
         if($this->user->verifyUserPass($params->signature)){
-            $sql = $this->db->sqlBind($data, 'form_data_encounter', 'U', "eid='".$params->eid."'");
-            $this->db->setSQL($sql);
+	        if($params->note != ''){
+                $this->patient->addPatientNoteByPid($params->pid, $params->note, $params->eid);
+            }
+            if($params->reminder != ''){
+                $this->patient->addPatientReminderByPid($params->pid, $params->reminder, $params->eid);
+            }
+
+            $this->db->setSQL($this->db->sqlBind($data, 'form_data_encounter', 'U', array('eid' => $params->eid)));
             $this->db->execLog();
-
             $this->addEncounterHistoryEvent('Encounter Closed');
-
-            return array('success'=> true);
+            return array('success'=> true, 'data' => $data);
         }else{
             return array('success'=> false);
         }

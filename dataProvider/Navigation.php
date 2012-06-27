@@ -48,7 +48,7 @@ class Navigation {
                 array( 'text' => $this->t['patient_summary'][$this->lang],  'disabled'=> ($this->ACL->hasPermission('access_patient_summary')   ? false:true), 'leaf' => true, 'cls' => 'file', 'id' => 'panelSummary' ),
                 array( 'text' => $this->t['visist_history'][$this->lang],   'disabled'=> ($this->ACL->hasPermission('access_patient_visits')    ? false:true), 'leaf' => true, 'cls' => 'file', 'id' => 'panelVisits' ),
                 array( 'text' => $this->t['encounter'][$this->lang],        'disabled'=> ($this->ACL->hasPermission('access_encounters')        ? false:true), 'leaf' => true, 'cls' => 'file', 'id' => 'panelEncounter' ),
-                array( 'text' => $this->t['patient_checkout'][$this->lang],    'disabled'=> ($this->ACL->hasPermission('access_patient_checkout')  ? false:true), 'leaf' => true, 'cls' => 'file', 'id' => 'panelPatientCheckout' )
+                array( 'text' => $this->t['visit_checkout'][$this->lang],   'disabled'=> ($this->ACL->hasPermission('access_visit_checkout')    ? false:true), 'leaf' => true, 'cls' => 'file', 'id' => 'panelVisitCheckout' )
             )
         ));
         // *************************************************************************************
@@ -141,8 +141,8 @@ class Navigation {
                 'en_US' => 'Encounter',
                 'es'    => 'Encuentro',
             ),
-            'patient_checkout' => array(
-                'en_US' => 'Patient Checkout',
+            'visit_checkout' => array(
+                'en_US' => 'Visit Checkout',
                 'es'    => 'Salida de Paciente',
             ),
             'billing_manager' => array(

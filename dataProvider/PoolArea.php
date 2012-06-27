@@ -13,6 +13,7 @@ if(!isset($_SESSION)) {
 }
 include_once($_SESSION['site']['root'] . '/dataProvider/Patient.php');
 include_once($_SESSION['site']['root'] . '/dataProvider/User.php');
+include_once($_SESSION['site']['root'] . '/dataProvider/ACL.php');
 include_once($_SESSION['site']['root'] . '/dataProvider/Services.php');
 include_once($_SESSION['site']['root'] . '/classes/dbHelper.php');
 include_once($_SESSION['site']['root'] . '/classes/Time.php');
@@ -37,9 +38,10 @@ class PoolArea
 
 	function __construct()
 	{
-		$this->db      = new dbHelper();
-		$this->user    = new User();
-		$this->patient = new Patient();
+		$this->db       = new dbHelper();
+		$this->user     = new User();
+		$this->acl      = new ACL();
+		$this->patient  = new Patient();
 		$this->services = new Services();
 		return;
 	}
@@ -165,7 +167,7 @@ class PoolArea
 	private function getPatientsByPoolAreaId($area_id, $in_queue){
 		$this->db->setSQL("SELECT *
 							 FROM patient_pools
-							WHERE area_id = $area_id
+							WHERE area_id = '$area_id'
 							  AND time_out IS NULL
 							  AND in_queue = '$in_queue'");
 		$records = array();
@@ -177,8 +179,75 @@ class PoolArea
 		return $records;
 	}
 
+	/**
+	 * Form now this is just getting the latest open encounter for all the patients.
+	 * TODO: create the table to handle tha pool area and fix this function
+	 *
+	 * @return array
+	 */
+	//public function getPatientsByPoolArea()
+	//{
+	public function getPatientsByPoolAreaAccess(){
+		$patients = array();
+		if($this->acl->hasPermission('use_pool_areas')){
+
+			if($this->acl->hasPermission('access_checkin')){
+				foreach($this->getPatientsByPoolAreaId(1,1) as $p){
+					$p['shortName'] = Person::ellipsis($p['name'], 20);
+					$p['poolArea'] = 'Check In';
+					$p['photoSrc'] = $this->patient->getPatientPhotoSrcIdByPid($p['pid']);
+					$patients[] = $p;
+				}
+			}
+			if($this->acl->hasPermission('access_triage')){
+				foreach($this->getPatientsByPoolAreaId(2,1) as $p){
+					$p['shortName'] = Person::ellipsis($p['name'], 20);
+					$p['poolArea'] = 'Triage';
+					$p['photoSrc'] = $this->patient->getPatientPhotoSrcIdByPid($p['pid']);
+					$patients[] = $p;
+				}
+			}
+			if($this->acl->hasPermission('access_physician')){
+				foreach($this->getPatientsByPoolAreaId(3,1) as $p){
+					$p['shortName'] = Person::ellipsis($p['name'], 20);
+					$p['poolArea'] = 'Physician';
+					$p['photoSrc'] = $this->patient->getPatientPhotoSrcIdByPid($p['pid']);
+					$patients[] = $p;
+				}
+			}
+			if($this->acl->hasPermission('access_checkout')){
+				foreach($this->getPatientsByPoolAreaId(4,1) as $p){
+					$p['shortName'] = Person::ellipsis($p['name'], 20);
+					$p['poolArea'] = 'Check Out';
+					$p['photoSrc'] = $this->patient->getPatientPhotoSrcIdByPid($p['pid']);
+					$patients[] = $p;
+				}
+			}
+		}
+
+		return $patients;
+
+		$rows = array();
+		$this->db->setSQL("SELECT DISTINCT p.pid, p.title, p.fname, p.mname, p.lname, MAX(e.eid)
+                         FROM form_data_demographics AS p
+                   RIGHT JOIN form_data_encounter AS e
+                           ON p.pid = e.pid
+                        WHERE e.close_date IS NULL
+                     GROUP BY p.pid LIMIT 6");
+		foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row) {
+			$foo['name']      = Person::fullname($row['fname'], $row['mname'], $row['lname']);
+			$foo['shortName'] = Person::ellipsis($foo['name'], 20);
+			$foo['pid']       = $row['pid'];
+			$foo['eid']       = $row['MAX(e.eid)'];
+			$foo['img']       = 'ui_icons/user_32.png';
+			array_push($rows, $foo);
+		}
+		return $rows;
+	}
 }
 //$e = new PoolArea();
 //echo '<pre>';
-//print_r($e->getCurrentPatientPoolAreaByPid(1));
+//print_r($e->getPatientsByPoolAreaAccess());
+//print '<br><br>Session ----->>> <br><br>';
+//print_r($_SESSION);
 

@@ -255,4 +255,11 @@ class User {
         return $records;
     }
 
+	public function getUserRolesByCurrentUserOrUserId($uid = null)
+	{
+		$uid = ($uid == null) ? $_SESSION['user']['id'] : $uid;
+		$this->db->setSQL("SELECT * FROM acl_user_roles WHERE user_id = '$uid'");
+		return $this->db->fetchRecords(PDO::FETCH_ASSOC);
+	}
+
 }

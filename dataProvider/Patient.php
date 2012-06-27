@@ -13,6 +13,7 @@ if(!isset($_SESSION)) {
 }
 include_once($_SESSION['site']['root'] . '/dataProvider/Person.php');
 include_once($_SESSION['site']['root'] . '/classes/dbHelper.php');
+include_once($_SESSION['site']['root'] . '/classes/Time.php');
 include_once($_SESSION['site']['root'] . '/dataProvider/User.php');
 class Patient
 {
@@ -208,33 +209,6 @@ class Patient
 		$this->db->setSQL("SELECT * FROM form_data_demographics WHERE pid = '$pid'");
 		return $this->db->fetchRecords(PDO::FETCH_ASSOC);
 
-	}
-
-	/**
-	 * Form now this is just getting the latest open encounter for all the patients.
-	 * TODO: create the table to handle tha pool area and fix this function
-	 *
-	 * @return array
-	 */
-	public function getPatientsByPoolArea()
-	{
-		//public function getPatientsByPoolArea(stdClass $params){
-		$rows = array();
-		$this->db->setSQL("SELECT DISTINCT p.pid, p.title, p.fname, p.mname, p.lname, MAX(e.eid)
-                         FROM form_data_demographics AS p
-                   RIGHT JOIN form_data_encounter AS e
-                           ON p.pid = e.pid
-                        WHERE e.close_date IS NULL
-                     GROUP BY p.pid LIMIT 6");
-		foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row) {
-			$foo['name']      = Person::fullname($row['fname'], $row['mname'], $row['lname']);
-			$foo['shortName'] = Person::ellipsis($foo['name'], 20);
-			$foo['pid']       = $row['pid'];
-			$foo['eid']       = $row['MAX(e.eid)'];
-			$foo['img']       = 'ui_icons/user_32.png';
-			array_push($rows, $foo);
-		}
-		return $rows;
 	}
 
 	private function createPatientDir($pid)
@@ -445,16 +419,43 @@ class Patient
         $patientdata = $this->db->fetchRecord(PDO::FETCH_ASSOC);
 
         foreach($patientdata as $key => $val){
-
             $val = ($val == null || $val == '') ? false : true;
-
             $record[] = array('name' => $key, 'val' => $val);
-
-
         }
 
         return $record;
 	}
+
+	public function addPatientNoteByPid($pid, $body, $eid = null){
+		$data['pid'] = $pid;
+		$data['uid'] = $_SESSION['user']['id'];
+		$data['date'] = Time::getLocalTime();
+		$data['body'] = $body;
+		$data['eid'] = $eid;
+
+		$this->db->setSQL($this->db->sqlBind($data, 'patient_notes', 'I'));
+		$this->db->execLog();
+		return;
+	}
+
+	public function addPatientReminderByPid($pid, $body, $eid = null){
+		$data['pid'] = $pid;
+		$data['uid'] = $_SESSION['user']['id'];
+		$data['date'] = Time::getLocalTime();
+		$data['body'] = $body;
+		$data['eid'] = $eid;
+
+		$this->db->setSQL($this->db->sqlBind($data, 'patient_reminders', 'I'));
+		$this->db->execLog();
+		return;
+	}
+
+	public function getPatientPhotoSrcIdByPid($pid = null){
+		$pid = ($pid == null) ? $_SESSION['patient']['pid'] : $pid;
+		$site = $_SESSION['site']['site'];
+		return  'sites/' . $site . '/patients/' . $pid .'/patientPhotoId.jpg';
+	}
+
 
 
 	/**

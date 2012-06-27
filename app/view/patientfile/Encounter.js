@@ -1031,43 +1031,33 @@ Ext.define('App.view.patientfile.Encounter', {
 	            form              = me.checkoutWindow.down('form').getForm();
 	            values            = form.getValues();
                 values.eid        = app.currEncounterId;
+                values.pid        = app.currPatient.pid;
 	            values.close_date = Ext.Date.format(new Date(), 'Y-m-d H:i:s');
 	            values.signature  = password;
 
+                Encounter.closeEncounter(values, function (provider, response) {
+					say(response.result);
+                    if (response.result.success) {
+                        if (me.stopTimer()) {
 
 
-
-//                Encounter.closeEncounter(params, function (provider, response) {
-//                    if (response.result.success) {
-//                        if (me.stopTimer()) {
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//                            app.openPatientVisits();
-//                            me.msg('Sweet!', 'Encounter Closed');
-//                        }
-//                    } else {
-//                        Ext.Msg.show({
-//                            title:'Oops!',
-//                            msg:'Incorrect password',
-//                            buttons:Ext.Msg.OKCANCEL,
-//                            icon:Ext.Msg.ERROR,
-//                            fn:function (btn) {
-//                                if (btn == 'ok') {
-//                                    me.closeEncounter();
-//                                }
-//                            }
-//                        });
-//                    }
-//                });
+                            app.openPatientVisits();
+                            me.msg('Sweet!', 'Encounter Closed');
+                        }
+                    } else {
+                        Ext.Msg.show({
+                            title:'Oops!',
+                            msg:'Incorrect password',
+                            buttons:Ext.Msg.OKCANCEL,
+                            icon:Ext.Msg.ERROR,
+                            fn:function (btn) {
+                                if (btn == 'ok') {
+                                    me.closeEncounter();
+                                }
+                            }
+                        });
+                    }
+                });
             }
         });
 

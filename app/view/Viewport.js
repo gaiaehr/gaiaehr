@@ -207,7 +207,7 @@ Ext.define('App.view.Viewport', {
 		'App.view.patientfile.Visits',
 		'App.view.patientfile.Encounter',
 		'App.view.patientfile.MedicalWindow',
-		'App.view.patientfile.PatientCheckout',
+		'App.view.patientfile.VisitCheckout',
 
 		'App.view.fees.Billing',
 		'App.view.fees.PaymentEntryWindow',
@@ -254,10 +254,10 @@ Ext.define('App.view.Viewport', {
 		 */
 		Ext.TaskManager.start({
 			run     : function() {
-				me.checkSession();
+				//me.checkSession();
 				me.getPatientesInPoolArea();
 			},
-			interval: 1000000
+			interval: 10000
 		});
 
 		me.storeTree = Ext.create('App.store.navigation.Navigation', {
@@ -578,10 +578,10 @@ Ext.define('App.view.Viewport', {
 							tpl              : '<tpl for=".">' +
 
 								'<div class="patient-pool-btn x-btn x-btn-default-large">' +
-								'<div class="patient_btn_img"><img src="ui_icons/user_32.png"></div>' +
+								'<div class="patient_btn_img"><img src="{photoSrc}" width="35" height="35"></div>' +
 								'<div class="patient_btn_info">' +
 								'<div class="patient-name">{shortName}</div>' +
-								'<div class="patient-name">({pid})</div>' +
+								'<div class="patient-name">#{pid} ({poolArea})</div>' +
 								'</div>' +
 								'</div>' +
 								'</tpl>',
@@ -654,7 +654,7 @@ Ext.define('App.view.Viewport', {
 				Ext.create('App.view.patientfile.Summary'),
 				Ext.create('App.view.patientfile.Visits'),
 				Ext.create('App.view.patientfile.Encounter'),
-				Ext.create('App.view.patientfile.PatientCheckout'),
+				Ext.create('App.view.patientfile.VisitCheckout'),
 
 			/**
 			 * Fees Area
@@ -1257,7 +1257,19 @@ Ext.define('App.view.Viewport', {
 				app.MainPanel.el.unmask();
 
 				me.setCurrPatient(data.patientData.pid, data.patientData.name, function() {
-					me.openEncounter(data.patientData.eid);
+
+					if(data.patientData.eid){
+						say(data.patientData.eid);
+						me.openEncounter(data.patientData.eid);
+					}else{
+						say('no eid');
+						me.openPatientSummary();
+					}
+
+
+
+
+
 				});
 
 			}

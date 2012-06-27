@@ -612,6 +612,9 @@ $API = array(
             ),
             'getActivePoolAreas'=>array(
                 'len'=>0
+            ),
+			'getPatientsByPoolAreaAccess'=>array(
+ 	            'len'=>1
             )
         )
     ),
@@ -668,9 +671,6 @@ $API = array(
             	'len'=>1
             ),
             'updatePatientDemographicData'=>array(
-            	'len'=>1
-            ),
-            'getPatientsByPoolArea'=>array(
             	'len'=>1
             ),
             'addNote'=>array(

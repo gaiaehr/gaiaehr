@@ -113,18 +113,32 @@ class PoolArea
 	public function sendPatientToPoolArea(stdClass $params){
 
 		$fo = $this->getCurrentPatientPoolAreaByPid($params->pid);
-		$data['time_out'] = Time::getLocalTime();
-		$this->db->setSQL($this->db->sqlBind($data, 'patient_pools', 'U', array('id'=> $fo['id'])));
-		$this->db->execLog();
+		if(!empty($fo)){
+			$data['time_out'] = Time::getLocalTime();
+			$this->db->setSQL($this->db->sqlBind($data, 'patient_pools', 'U', array('id'=> $fo['id'])));
+			$this->db->execLog();
+			$parent_id = $fo['id'];
+		}
 
 		$data = array();
 		$data['pid'] = $params->pid;
 		$data['uid'] = $_SESSION['user']['id'];
 		$data['time_in'] = Time::getLocalTime();
 		$data['area_id'] = $params->sendTo;
-		$data['parent_id'] = $this->getParentPoolId($fo['id']);
+
+		if(!empty($fo)){
+			$data['parent_id'] = $this->getParentPoolId($fo['id']);
+		}
+
 		$this->db->setSQL($this->db->sqlBind($data, 'patient_pools', 'I'));
 		$this->db->execLog();
+
+		if(empty($fo)){
+			$data['parent_id'] = $this->db->lastInsertId;
+			$this->db->setSQL($this->db->sqlBind($data, 'patient_pools', 'U', array('id' => $this->db->lastInsertId)));
+			$this->db->execLog();
+		}
+
 	}
 
 	public function getPoolAreaPatients(stdClass $params){
@@ -162,6 +176,7 @@ class PoolArea
 							  AND time_out IS NULL
 						 ORDER BY id DESC");
 		return $this->db->fetchRecord(PDO::FETCH_ASSOC);
+
 	}
 
 	private function getPatientsByPoolAreaId($area_id, $in_queue){
@@ -224,25 +239,7 @@ class PoolArea
 				}
 			}
 		}
-
 		return $patients;
-
-		$rows = array();
-		$this->db->setSQL("SELECT DISTINCT p.pid, p.title, p.fname, p.mname, p.lname, MAX(e.eid)
-                         FROM form_data_demographics AS p
-                   RIGHT JOIN form_data_encounter AS e
-                           ON p.pid = e.pid
-                        WHERE e.close_date IS NULL
-                     GROUP BY p.pid LIMIT 6");
-		foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row) {
-			$foo['name']      = Person::fullname($row['fname'], $row['mname'], $row['lname']);
-			$foo['shortName'] = Person::ellipsis($foo['name'], 20);
-			$foo['pid']       = $row['pid'];
-			$foo['eid']       = $row['MAX(e.eid)'];
-			$foo['img']       = 'ui_icons/user_32.png';
-			array_push($rows, $foo);
-		}
-		return $rows;
 	}
 }
 //$e = new PoolArea();

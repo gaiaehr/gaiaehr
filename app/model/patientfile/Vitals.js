@@ -31,7 +31,7 @@ Ext.define('App.model.patientfile.Vitals', {
 		{name: 'waist_circumference_in', type: 'float', useNull:true},
 		{name: 'waist_circumference_cm', type: 'float', useNull:true},
 		{name: 'bmi', type: 'int', useNull:true},
-		{name: 'bmi_status', type: 'int', useNull:true},
+		{name: 'bmi_status', type: 'string', useNull:true},
 		{name: 'other_notes', type: 'string'},
 		{name: 'administer_by', type: 'string'},
 		{name: 'authorized_by', type: 'string'},

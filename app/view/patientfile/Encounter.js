@@ -798,7 +798,7 @@ Ext.define('App.view.patientfile.Encounter', {
             var values = form.getValues(), store, record, storeIndex;
 
             if (SaveBtn.action == 'encounter') {
-                ACL.hasPermission('add_encounters', function (provider, response) {
+                ACL.hasPermission('add_encounters', function(provider, response) {
                     if (response.result) {
                         store = me.encounterStore;
                         record = form.getRecord();

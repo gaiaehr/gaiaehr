@@ -16,6 +16,7 @@ include_once($_SESSION['site']['root'].'/classes/dbHelper.php');
 include_once($_SESSION['site']['root'].'/dataProvider/Patient.php');
 include_once($_SESSION['site']['root'].'/dataProvider/User.php');
 include_once($_SESSION['site']['root'].'/dataProvider/Services.php');
+include_once($_SESSION['site']['root'].'/dataProvider/PoolArea.php');
 
 
 class Encounter {
@@ -39,6 +40,10 @@ class Encounter {
      * @var
      */
     private $eid;
+	/**
+	 * @var PoolArea
+	 */
+	private $poolArea;
 
     function __construct()
     {
@@ -46,6 +51,7 @@ class Encounter {
         $this->user = new User();
         $this->patient = new Patient();
         $this->services = new Services();
+        $this->poolArea = new PoolArea();
 
         return;
     }
@@ -159,6 +165,8 @@ class Encounter {
         $this->db->execOnly();
 
         $params->eid = intval($eid);
+
+		$this->poolArea->updateCurrentPatientPoolAreaByPid(array('eid'=>$params->eid), $params->pid);
 
         $this->setEid($params->eid);
         $this->addEncounterHistoryEvent('New Encounter Created');

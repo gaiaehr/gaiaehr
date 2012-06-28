@@ -52,7 +52,7 @@ class PoolArea
 		$visits = array();
 		foreach($this->getPatientParentPools() AS $visit){
 			$id = $visit['id'];
-			$this->db->setSQL("SELECT pp.id, pa.title AS area, pp.time_out
+			$this->db->setSQL("SELECT pp.id, pa.title AS area, pp.time_out, pp.eid
 								 FROM patient_pools AS pp
 						    LEFT JOIN pool_areas AS pa ON pp.area_id = pa.id
 							    WHERE pp.parent_id = $id
@@ -60,7 +60,7 @@ class PoolArea
 			$foo = $this->db->fetchRecord(PDO::FETCH_ASSOC);
 			$visit['area'] = $foo['area'];
 			$visit['area_id'] = $foo['id'];
-			$visit['name'] = $this->patient->getPatientFullNameByPid($visit['pid']);
+			$visit['name'] = ($foo['eid'] != null ? '*' : '') . $this->patient->getPatientFullNameByPid($visit['pid']);
 
 			if($foo['time_out'] == null){
 				$visits[] = $visit;
@@ -113,11 +113,11 @@ class PoolArea
 	public function sendPatientToPoolArea(stdClass $params){
 
 		$fo = $this->getCurrentPatientPoolAreaByPid($params->pid);
+
 		if(!empty($fo)){
 			$data['time_out'] = Time::getLocalTime();
 			$this->db->setSQL($this->db->sqlBind($data, 'patient_pools', 'U', array('id'=> $fo['id'])));
 			$this->db->execLog();
-			$parent_id = $fo['id'];
 		}
 
 		$data = array();
@@ -128,6 +128,7 @@ class PoolArea
 
 		if(!empty($fo)){
 			$data['parent_id'] = $this->getParentPoolId($fo['id']);
+			$data['eid'] = $fo['eid'];
 		}
 
 		$this->db->setSQL($this->db->sqlBind($data, 'patient_pools', 'I'));
@@ -176,7 +177,14 @@ class PoolArea
 							  AND time_out IS NULL
 						 ORDER BY id DESC");
 		return $this->db->fetchRecord(PDO::FETCH_ASSOC);
+	}
 
+
+	public function updateCurrentPatientPoolAreaByPid(array $data ,$pid){
+		$area = $this->getCurrentPatientPoolAreaByPid($pid);
+		$this->db->setSQL($this->db->sqlBind($data, 'patient_pools', 'U', array('id' => $area['id'])));
+		$this->db->execLog();
+		return;
 	}
 
 	private function getPatientsByPoolAreaId($area_id, $in_queue){
@@ -187,7 +195,7 @@ class PoolArea
 							  AND in_queue = '$in_queue'");
 		$records = array();
 		foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) as $patient){
-			$patient['name'] = $this->patient->getPatientFullNameByPid($patient['pid']);
+			$patient['name'] = ($patient['eid'] != null ? '*' : '') . $this->patient->getPatientFullNameByPid($patient['pid']);
 			$records[] = $patient;
 		}
 
@@ -196,8 +204,6 @@ class PoolArea
 
 	/**
 	 * Form now this is just getting the latest open encounter for all the patients.
-	 * TODO: create the table to handle tha pool area and fix this function
-	 *
 	 * @return array
 	 */
 	//public function getPatientsByPoolArea()

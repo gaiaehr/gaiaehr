@@ -770,14 +770,26 @@ Ext.define('App.view.patientfile.Summary', {
      */
     onActive: function(callback) {
         var me = this,
-	        billingPanel = me.query('[action="balance"]')[0];
+	        billingPanel = me.query('[action="balance"]')[0],
+	        demographicsPanel = me.query('[action="demoFormPanel"]')[0];
 
         if(me.checkIfCurrPatient()) {
             var patient = me.getCurrPatient();
 	        me.updateTitle(patient.name + ' - #' + patient.pid + ' (Patient Summary)');
-            var demoFormPanel = me.query('[action="demoFormPanel"]')[0];
-            me.getFormData(demoFormPanel);
-            me.getPatientImgs();
+
+	        ACL.hasPermission('access_demographics',function(provider, response){
+		        if (response.result){
+			        demographicsPanel.show();
+	                me.getFormData(demographicsPanel);
+		        }else{
+			        demographicsPanel.hide();
+		        }
+
+	        });
+
+
+
+	        me.getPatientImgs();
 
 
 	        Fees.getPatientBalance({pid:app.currPatient.pid},function(balance){

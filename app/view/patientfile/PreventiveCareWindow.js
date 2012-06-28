@@ -47,42 +47,105 @@ Ext.define('App.view.patientfile.PreventiveCareWindow', {
                 {
 	                header     : 'Description',
                     dataIndex: 'description',
-	                flex:1
+	                width: 200
                 },
                 {
 	                header     : 'Reason',
 	                dataIndex: 'reason',
-	                flex:1,
-	                editor:{
-		                xtype:'textfield',
-		                disabled:true,
-		                action:'reason'
-	                }
+	                flex:1
 
-                },
-                {
-
-	                header     : 'Dismiss',
-	                dataIndex: 'dismiss',
-	                editor:{
-		                xtype:'checkboxfield',
-		                enableKeyEvents: true,
-		                listeners:{
-			                scope:me,
-			                change:me.onChangeOption
-
-		                }
-
-	                }
                 }
 
 
             ],
-			plugins: Ext.create('Ext.grid.plugin.RowEditing', {
-				autoCancel  : true,
+			plugins: Ext.create('App.classes.grid.RowFormEditing', {
+				autoCancel  : false,
 				errorSummary: false,
-				clicksToEdit: 1
+				clicksToEdit: 1,
 
+				formItems: [
+					{
+						title  : 'general',
+						xtype  : 'container',
+						padding: 10,
+						layout : 'vbox',
+						items  : [
+							{
+								/**
+								 * Line one
+								 */
+								xtype   : 'fieldcontainer',
+								layout  : 'hbox',
+								defaults: { margin: '0 10 5 0' },
+								items   : [
+									{
+										xtype:'textfield',
+										name:'reason',
+										fieldLabel:'Reason',
+										width:585,
+										labelWidth: 70,
+										disabled:true,
+										allowBlank:false,
+										action:'reason'
+									}
+
+								]
+
+							},
+							{
+								/**
+								 * Line two
+								 */
+								xtype   : 'fieldcontainer',
+								layout  : 'hbox',
+								defaults: { margin: '0 10 5 0' },
+								items   : [
+
+									{
+										xtype:'textfield',
+										fieldLabel: 'Observation',
+										name      : 'observation',
+										width     : 250,
+										labelWidth: 70,
+										disabled:true,
+										action:'observation'
+									},
+									{
+										fieldLabel: 'Date',
+										xtype:'datefield',
+										disabled:true,
+										action:'date',
+										width     : 200,
+										labelWidth: 40,
+										format    : 'Y-m-d',
+										name      : 'date'
+
+									},
+									{
+										xtype:'checkboxfield',
+										name : 'dismiss',
+										fieldLabel : 'Dismiss Alert?',
+										enableKeyEvents: true,
+										listeners:{
+											scope:me,
+											change:me.onChangeOption
+
+										}
+									},
+									{
+                                        xtype:'textfield',
+                                        hidden:true,
+                                        name:'eid',
+                                        action:'eid'
+                                    }
+
+								]
+
+							}
+						]
+					}
+
+				]
 			})
 
 
@@ -101,16 +164,27 @@ Ext.define('App.view.patientfile.PreventiveCareWindow', {
 	},
 	onChangeOption: function(field,newValue){
 		var me=this,
-			fieldLabel=field.up('form').query('[action="reason"]')[0];
-
+			reason=field.up('form').query('[action="reason"]')[0],
+			date=field.up('form').query('[action="date"]')[0],
+			eid=field.up('form').query('[action="eid"]')[0],
+			observation=field.up('form').query('[action="observation"]')[0];
+		eid.setValue(app.currEncounterId);
 		if(newValue){
-			fieldLabel.setDisabled(false);
+			reason.setDisabled(false);
+			date.setDisabled(false);
+			observation.setDisabled(false);
 		}else if(!newValue){
-			fieldLabel.setDisabled(true);
+			reason.setDisabled(true);
+			date.setDisabled(true);
+			observation.setDisabled(true);
 
 		}else{
-			fieldLabel.setDisabled(true);
+			reason.setDisabled(true);
+			date.setDisabled(true);
+			observation.setDisabled(true);
 		}
+
+
 
 	},
 
@@ -131,7 +205,7 @@ Ext.define('App.view.patientfile.PreventiveCareWindow', {
                 }
             }
         });
-    },
+    }
 
 //	onPreventiveCareWindowShow: function() {
 //	    this.patientPreventiveCare.load({params: {pid: app.currPatient.pid }});

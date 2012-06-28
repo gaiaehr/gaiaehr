@@ -8,7 +8,7 @@
 //
 // GaiaEHR (Electronic Health Records) 2011
 //******************************************************************************
-Ext.define('App.view.patientfile.PaymentEntryWindow', {
+Ext.define('App.view.fees.PaymentEntryWindow', {
     extend:'Ext.window.Window',
     title:'Add New Payment',
     closeAction:'hide',

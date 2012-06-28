@@ -257,7 +257,7 @@ Ext.define('App.view.Viewport', {
 				//me.checkSession();
 				me.getPatientesInPoolArea();
 			},
-			interval: 10000
+			interval: 20000
 		});
 
 		me.storeTree = Ext.create('App.store.navigation.Navigation', {
@@ -802,7 +802,7 @@ Ext.define('App.view.Viewport', {
 
 		me.MedicalWindow = Ext.create('App.view.patientfile.MedicalWindow');
 		me.ChartsWindow = Ext.create('App.view.patientfile.ChartsWindow');
-		//me.PaymentEntryWindow = Ext.create('App.view.patientfile.PaymentEntryWindow');
+		me.PaymentEntryWindow = Ext.create('App.view.fees.PaymentEntryWindow');
 		me.PreventiveCareWindow = Ext.create('App.view.patientfile.PreventiveCareWindow');
 		me.NewDocumentsWindow = Ext.create('App.view.patientfile.NewDocumentsWindow');
 		me.DocumentViewerWindow = Ext.create('App.view.patientfile.DocumentViewerWindow');
@@ -851,9 +851,9 @@ Ext.define('App.view.Viewport', {
 		}
 	},
 
-//	onPaymentEntryWindow: function() {
-//		this.PaymentEntryWindow.show();
-//	},
+	onPaymentEntryWindow: function() {
+		this.PaymentEntryWindow.show();
+	},
 
 	newPatient: function() {
 		var me = this;
@@ -1150,6 +1150,9 @@ Ext.define('App.view.Viewport', {
 				poolArea.doLayout();
 			}
 		});
+
+        this.ppdz.reloadStores();
+
 	},
 
 	appLogout: function() {
@@ -1262,13 +1265,10 @@ Ext.define('App.view.Viewport', {
 						say(data.patientData.eid);
 						me.openEncounter(data.patientData.eid);
 					}else{
-						say('no eid');
+
 						me.openPatientSummary();
+
 					}
-
-
-
-
 
 				});
 

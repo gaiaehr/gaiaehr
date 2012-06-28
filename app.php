@@ -89,7 +89,9 @@ $_SESSION['site']['flops'] = 0;
         <script type="text/javascript" src="app/classes/VTypes.js"></script>
 
         <script type="text/javascript">
-            var say = console.log;
+            function say(a){
+	            console.log(a);
+            }
 
 
             Ext.onReady(function(){

@@ -178,44 +178,67 @@ Ext.define('App.view.patientfile.Encounter', {
                                 padding:8
                             },
 	                        items:[
-		                        {
-		                            title:'Meaningful Use Measures',
-		                            margin:'5 1 5 5',
-		                            items:[
-		                                {
-		                                    xtype:'checkboxgroup',
-		                                    defaults:{
-		                                        xtype:'checkboxfield'
-		                                    },
-		                                    items:[
-		                                        {
-		                                            boxLabel:'Clinical Summary Provided',
-			                                        name:'clinical_summary_provided'
-		                                        },
-		                                        {
-		                                            boxLabel:'Elegibility Confirmed',
-				                                        name:'elegibility_confirmed'
-		                                        }
-		                                    ]
-		                                },
-		                                {
-		                                    xtype:'checkboxgroup',
-		                                    defaults:{
-		                                        xtype:'checkboxfield'
-		                                    },
-		                                    items:[
-		                                        {
-		                                            boxLabel:'Medical Reconciliation',
-			                                        name:'medical_reconcilation'
-		                                        },
-		                                        {
-		                                            boxLabel:'Push to Exchange',
-			                                        name:'push_to_exchange'
-		                                        }
-		                                    ]
-		                                }
-		                            ]
-		                        },
+                                {
+                                    xtype:'fieldset',
+                                    margin:'5 1 5 5',
+                                    padding:8,
+                                    columnWidth:.5,
+                                    height:96,
+                                    title:'Patient Notes and Reminders',
+                                    items:[
+                                        {
+                                            xtype:'textfield',
+                                            name:'reminder',
+                                            fieldLabel:'Reminder',
+                                            anchor:'100%'
+                                        },
+                                        {
+                                            xtype:'textfield',
+                                            grow:true,
+                                            name:'note',
+                                            fieldLabel:'Note',
+                                            anchor:'100%'
+                                        }
+                                    ]
+                                },
+//		                        {
+//		                            title:'Meaningful Use Measures',
+//		                            margin:'5 1 5 5',
+//		                            items:[
+//		                                {
+//		                                    xtype:'checkboxgroup',
+//		                                    defaults:{
+//		                                        xtype:'checkboxfield'
+//		                                    },
+//		                                    items:[
+//		                                        {
+//		                                            boxLabel:'Clinical Summary Provided',
+//			                                        name:'clinical_summary_provided'
+//		                                        },
+//		                                        {
+//		                                            boxLabel:'Elegibility Confirmed',
+//				                                        name:'elegibility_confirmed'
+//		                                        }
+//		                                    ]
+//		                                },
+//		                                {
+//		                                    xtype:'checkboxgroup',
+//		                                    defaults:{
+//		                                        xtype:'checkboxfield'
+//		                                    },
+//		                                    items:[
+//		                                        {
+//		                                            boxLabel:'Medical Reconciliation',
+//			                                        name:'medical_reconcilation'
+//		                                        },
+//		                                        {
+//		                                            boxLabel:'Push to Exchange',
+//			                                        name:'push_to_exchange'
+//		                                        }
+//		                                    ]
+//		                                }
+//		                            ]
+//		                        },
 		                        {
 		                            title:'Follow Up',
 			                        margin:'5 1 5 5',
@@ -239,43 +262,20 @@ Ext.define('App.view.patientfile.Encounter', {
 	                        ]
                         },
                         {
-	                        xtype:'fieldcontainer',
-	                        columnWidth:.5,
-	                        defaults:{
-                                xtype:'fieldset',
-                                padding:8
-                            },
-	                        items:[
-		                        {
-		                            xtype:'fieldset',
-		                            margin:5,
-		                            padding:8,
-			                        columnWidth:.5,
-			                        height:96,
-		                            title:'Patient Notes and Reminders',
-		                            items:[
-		                                {
-		                                    xtype:'textfield',
-		                                    name:'reminder',
-		                                    fieldLabel:'Reminder',
-		                                    anchor:'100%'
-		                                },
-		                                {
-		                                    xtype:'textfield',
-		                                    grow:true,
-		                                    name:'note',
-		                                    fieldLabel:'Note',
-		                                    anchor:'100%'
-		                                }
-		                            ]
-		                        },
-		                        {
+//	                        xtype:'fieldcontainer',
+//	                        columnWidth:.5,
+//	                        defaults:{
+//                                xtype:'fieldset',
+//                                padding:8
+//                            },
+//	                        items:[
+//		                        {
 			                        xtype:'fieldset',
                                     margin:5,
                                     padding:8,
                                     columnWidth:.5,
 			                        layout:'fit',
-                                    height:89,
+                                    height:189,
                                     title:'Encounter Warnings / Alerts',
                                     items:[
 	                                    {
@@ -314,8 +314,8 @@ Ext.define('App.view.patientfile.Encounter', {
 		                        }
                             ]
                         }
-                    ]
-                }
+//                    ]
+//                }
             ],
             buttons:[
                 {

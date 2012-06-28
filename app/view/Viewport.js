@@ -1265,13 +1265,10 @@ Ext.define('App.view.Viewport', {
 						say(data.patientData.eid);
 						me.openEncounter(data.patientData.eid);
 					}else{
-						say('no eid');
+
 						me.openPatientSummary();
+
 					}
-
-
-
-
 
 				});
 

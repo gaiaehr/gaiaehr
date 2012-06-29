@@ -582,33 +582,50 @@ Ext.define('App.view.patientfile.Encounter', {
                 collapse:me.progressNoteCollapseExpand,
                 expand:me.progressNoteCollapseExpand
             },
-            tbar:[
-                {
-                    text:'View (CCD)',
-                    tooltip:'View (Continuity of Care Document)',
-                    handler:function () {
-                        // refresh logic
-                    }
-                },
-                '-',
-                {
-                    text:'Print (CCD)',
-                    tooltip:'Print (Continuity of Care Document)',
-                    handler:function () {
-                        // refresh log
+	        tools: [
+		        {
+	                type: 'print',
+			        tooltip:'Print Progress Note',
+			        scope:me,
+	                handler: function(){
+		                var win = window.open('print.html','win','left=20,top=20,width=700,height=700,toolbar=0,resizable=1,location=1,scrollbars=1,menubar=0,directories=0');
+		                var dom = me.progressNote.body.dom;
+		                var wrap = document.createElement('div');
+						var html = wrap.appendChild(dom.cloneNode(true));
+		                win.document.write(html.innerHTML);
 
-                    }
-                },
-                '->',
-                {
-                    text:'Export (CCD)',
-                    tooltip:'Export (Continuity of Care Document)',
-                    handler:function () {
-                        // refresh log
 
-                    }
-                }
-            ]
+	                }
+		        }
+
+	        ]
+//            tbar:[
+//                {
+//                    text:'View (CCD)',
+//                    tooltip:'View (Continuity of Care Document)',
+//                    handler:function () {
+//                        // refresh logic
+//                    }
+//                },
+//                '-',
+//                {
+//                    text:'Print (CCD)',
+//                    tooltip:'Print (Continuity of Care Document)',
+//                    handler:function () {
+//                        // refresh log
+//
+//                    }
+//                },
+//                '->',
+//                {
+//                    text:'Export (CCD)',
+//                    tooltip:'Export (Continuity of Care Document)',
+//                    handler:function () {
+//                        // refresh log
+//
+//                    }
+//                }
+//            ]
         });
 
         me.pageBody = [ me.centerPanel, me.progressNote ];

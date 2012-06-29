@@ -8,7 +8,7 @@
  *
  * @namespace Patient.patientLiveSearch
  */
-Ext.define('App.classes.LiveMedicationSearch', {
+Ext.define('App.classes.LiveLabsSearch', {
 	extend       : 'Ext.form.ComboBox',
 	alias        : 'widget.labslivetsearch',
 	hideLabel    : true,

@@ -250,9 +250,9 @@ Ext.define('App.view.patientfile.Summary', {
                         plugins: Ext.create('Ext.grid.plugin.RowEditing', {
                         				autoCancel  : true,
                         				errorSummary: false,
-                        				clicksToEdit: 1
+                        				clicksToEdit: 2
 
-                        			}),
+                        }),
 
 	                    tbar:[
 		                    {

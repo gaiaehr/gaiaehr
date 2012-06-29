@@ -234,6 +234,7 @@ Ext.define('App.view.patientfile.NewDocumentsWindow', {
 															xtype     : 'medicationlivetsearch',
 															fieldLabel: 'Medication',
 															hideLabel : false,
+															action      : 'medication',
 															name      : 'medication',
 															width     : 350,
 															labelWidth: 80,
@@ -415,6 +416,7 @@ Ext.define('App.view.patientfile.NewDocumentsWindow', {
 
 								xtype: 'htmleditor',
 								name:'body',
+								action:'body',
 								itemId:'body',
 								height : 285,
 								width  : 700,
@@ -562,6 +564,8 @@ Ext.define('App.view.patientfile.NewDocumentsWindow', {
 
 		this.patientPrescriptionStore.removeAll();
 		this.patientsLabsOrdersStore.removeAll();
+		var doctorsNoteBody = this.query('[action="body"]')[0];
+		doctorsNoteBody.reset();
 
 
 	}

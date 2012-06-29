@@ -1044,7 +1044,9 @@ Ext.define('App.view.Viewport', {
 			patientChargeBtn = me.Header.getComponent('patientCharge'),
 			patientCheckOutBtn = me.Header.getComponent('patientCheckOut');
 
+
 		Patient.currPatientSet({ pid: pid }, function() {
+			me.currEncounterId = null;
 			me.currPatient = {
 				pid : pid,
 				name: fullname

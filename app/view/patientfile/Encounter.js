@@ -593,7 +593,9 @@ Ext.define('App.view.patientfile.Encounter', {
 		                var wrap = document.createElement('div');
 						var html = wrap.appendChild(dom.cloneNode(true));
 		                win.document.write(html.innerHTML);
-
+		                Ext.defer(function(){
+			                win.print();
+                        }, 1000);
 
 	                }
 		        }

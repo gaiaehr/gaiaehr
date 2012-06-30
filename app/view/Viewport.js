@@ -1264,10 +1264,8 @@ Ext.define('App.view.Viewport', {
 				me.setCurrPatient(data.patientData.pid, data.patientData.name, function() {
 
 					if(data.patientData.eid){
-						say(data.patientData.eid);
 						me.openEncounter(data.patientData.eid);
 					}else{
-
 						me.openPatientSummary();
 
 					}

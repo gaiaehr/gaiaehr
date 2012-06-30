@@ -384,22 +384,27 @@ Ext.define('App.view.administration.PreventiveCare', {
 
 								],
 
-								plugins: Ext.create('Ext.grid.plugin.RowEditing', {
-								autoCancel  : true,
-								errorSummary: false,
-								clicksToEdit: 2
+								plugins: Ext.create('Ext.grid.plugin.CellEditing', {
+                                    autoCancel  : true,
+                                    errorSummary: false,
+                                    clicksToEdit: 2,
+                                    listeners:{
+                                        scope:me,
+                                        edit:me.afterLabTimeEdit
 
-							}),
-                                    bbar:{
-                                        xtype:'labslivetsearch',
-                                        margin:5,
-                                        fieldLabel:'Add Labs',
-                                        hideLabel:false,
-                                        listeners:{
-                                            scope:me,
-                                            select:me.addLabs
-                                        }
                                     }
+
+                                }),
+                                bbar:{
+                                    xtype:'labslivetsearch',
+                                    margin:5,
+                                    fieldLabel:'Add Labs',
+                                    hideLabel:false,
+                                    listeners:{
+                                        scope:me,
+                                        select:me.addLabs
+                                    }
+                                }
 							}
 
 						]
@@ -441,6 +446,12 @@ Ext.define('App.view.administration.PreventiveCare', {
 
     onServiceCancelEdit:function(context, e){
 
+    },
+
+    afterLabTimeEdit:function(editor, e){
+        say(editor);
+        say(e);
+        //e.record.commit();
     },
 
     beforeServiceEdit:function(context, e){
@@ -506,8 +517,6 @@ Ext.define('App.view.administration.PreventiveCare', {
 
         say(model[0].data);
 		this.labsStore.add({
-
-			id:model[0].data.id,
 			value_name:model[0].data.loinc_name,
 			less_than:'0',
 			greater_than:'0',

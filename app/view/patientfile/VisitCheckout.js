@@ -152,7 +152,7 @@ Ext.define('App.view.patientfile.VisitCheckout', {
 		                        {
 			                        text:'Add Co-Pay',
                                     scope:me,
-			                        handler:me.resetReceiptForm
+			                        handler:me.onAddCoPay
 		                        },
                                 '->',
                                 {
@@ -227,8 +227,7 @@ Ext.define('App.view.patientfile.VisitCheckout', {
                                     text:'Reset',
                                     scope:me,
                                     handler:me.resetNotes
-                                },
-                                '->'
+                                }
                             ]
                         },
                         {
@@ -353,7 +352,7 @@ Ext.define('App.view.patientfile.VisitCheckout', {
 
     },
 
-    onAddCoPay:function(){
+    onAddCoPay:function(btn){
         var me = this,
             grid = btn.up('panel').down('grid'),
             store = grid.store;
@@ -421,16 +420,14 @@ Ext.define('App.view.patientfile.VisitCheckout', {
         values.uid= app.user.id;
         values.type='administrative';
 
-                if(form.isValid()) {
+        if(form.isValid()) {
 
-        Patient.addNote(values, function(provider, response){
+            Patient.addNote(values, function(provider, response){
                 if(response.result.success){
                     form.reset();
-
                 }else{
                     app.msg('Oops!','Notes entry error')
                 }
-
             });
         }
     },
@@ -441,8 +438,18 @@ Ext.define('App.view.patientfile.VisitCheckout', {
      * place inside this function all the functions you want
      * to call every this panel becomes active
      */
-    onActive:function (callback) {
-        callback(true);
+    onActive: function(callback) {
+        var me = this;
+
+        if(me.checkIfCurrPatient()) {
+            var patient = me.getCurrPatient();
+	        me.updateTitle(patient.name + ' - #' + patient.pid + ' (Visit Checkout)');
+            callback(true);
+
+        } else {
+            callback(false);
+            me.currPatientError();
+        }
     }
 
 

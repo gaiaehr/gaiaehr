@@ -574,6 +574,9 @@ $API = array(
             ),
             'removeGuideLineLabs'=>array(
                 'len'=>1
+            ),
+            'getPreventiveCareDismissPatientByEncounterID'=>array(
+                'len'=>1
             )
         )
     ),

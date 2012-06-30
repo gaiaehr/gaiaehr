@@ -165,6 +165,11 @@ class PreventiveCare
 		}
 		return $params;
 	}
+
+    public function addGuideLineLabs($params){
+
+        return $params;
+    }
 	/**
 	 * @param stdClass $params
 	 * @return stdClass
@@ -459,6 +464,16 @@ class PreventiveCare
             $this->db->execLog();
             return array('totals'=> 1, 'rows'  => $params);
         }
+
+    }
+
+
+    public function getPreventiveCareDismissPatientByEncounterID($eid){
+        $this->db->setSQL("SELECT *
+                           FROM preventive_care_inactive_patient
+                           WHERE eid='$eid'");
+        return $this->db->fetchRecords(PDO::FETCH_ASSOC);
+
     }
 }
 //

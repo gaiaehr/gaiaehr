@@ -359,21 +359,37 @@ Ext.define('App.view.administration.PreventiveCare', {
 									{
 										header   : 'Less Than',
 										flex     : 1,
-										dataIndex: 'less_than'
+										dataIndex: 'less_than',
+										editor:{
+											xtype:'numberfield'
+										}
 									},
 									{
 										header   : 'Greater Than',
 										flex     : 1,
-										dataIndex: 'greater_than'
+										dataIndex: 'greater_than',
+										editor:{
+											xtype:'numberfield'
+										}
 									},
 									{
 										header   : 'Equal To',
 										flex     : 1,
-										dataIndex: 'equal_to'
+										dataIndex: 'equal_to',
+										editor:{
+											xtype:'numberfield'
+										}
 									}
 
 
 								],
+
+								plugins: Ext.create('Ext.grid.plugin.RowEditing', {
+								autoCancel  : true,
+								errorSummary: false,
+								clicksToEdit: 2
+
+							}),
                                     bbar:{
                                         xtype:'labslivetsearch',
                                         margin:5,

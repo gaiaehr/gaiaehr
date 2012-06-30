@@ -471,7 +471,7 @@ Ext.define('App.view.administration.PreventiveCare', {
 
 		this.activeProblemsStore.add({
 			code:model[0].data.code,
-			value_name:model[0].data.code_text,
+			code_text:model[0].data.code_text,
             guideline_id: this.getSelectId()
 		});
 		field.reset();

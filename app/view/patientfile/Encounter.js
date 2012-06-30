@@ -940,12 +940,16 @@ Ext.define('App.view.patientfile.Encounter', {
                     User.verifyUserPass(password, function (provider, response) {
                         if (response.result) {
                             record.set({auth_uid: user.id});
-                            store.sync();
-                            form.reset();
-                            me.msg('Sweet!', 'Vitals Signed');
-                            me.vitalsPanel.down('vitalsdataview').refresh();
-                            me.updateProgressNote();
-                            me.resetVitalsForm();
+                            store.sync({
+	                            callback:function(){
+		                            form.reset();
+		                            me.msg('Sweet!', 'Vitals Signed');
+		                            me.updateProgressNote();
+		                            me.resetVitalsForm();
+			                        me.vitalsPanel.down('vitalsdataview').refresh();
+	                            }
+                            });
+
                         } else {
                             Ext.Msg.show({
                                 title:'Oops!',

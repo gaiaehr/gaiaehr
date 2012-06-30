@@ -307,6 +307,7 @@ class Encounter {
         $sql = $this->db->sqlBind($data, 'form_data_vitals', 'I');
         $this->db->setSQL($sql);
         $this->db->execLog();
+	    $params->id = $this->db->lastInsertId;
 	    $params->administer_by = $this->user->getUserNameById($params->uid);
         $this->addEncounterHistoryEvent('Vitals added');
         return $params;
@@ -323,7 +324,7 @@ class Encounter {
 		$data = get_object_vars($params);
         unset($data['date'],$data['administer_by'],$data['authorized_by'],$data['id'],$data['bp_diastolic_normal'],$data['bp_systolic_normal']);
 
-		$sql = $this->db->sqlBind($data, 'form_data_vitals', 'U', "id='$params->id'");
+		$sql = $this->db->sqlBind($data, 'form_data_vitals', 'U', array('id'=>$params->id));
         $this->db->setSQL($sql);
         $this->db->execLog();
 

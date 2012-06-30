@@ -165,6 +165,11 @@ class PreventiveCare
 		}
 		return $params;
 	}
+
+    public function addGuideLineLabs($params){
+
+        return $params;
+    }
 	/**
 	 * @param stdClass $params
 	 * @return stdClass

@@ -901,7 +901,7 @@ Ext.define('App.view.Viewport', {
 	openCurrEncounter: function() {
 		var me = this;
 
-		this.navigateTo('panelEncounter', function(success) {
+		me.navigateTo('panelEncounter', function(success) {
 			if(success) {
 				//me.currCardCmp.openEncounter(eid);
 			}
@@ -918,8 +918,15 @@ Ext.define('App.view.Viewport', {
 		});
 	},
 
-	checkOutPatient: function() {
 
+	checkOutPatient: function(eid) {
+		var me = this;
+
+		me.navigateTo('panelVisitCheckout', function(success) {
+			if(success) {
+				me.currCardCmp.setEid(eid);
+			}
+		});
 	},
 
 	chargePatient: function() {
@@ -1262,14 +1269,13 @@ Ext.define('App.view.Viewport', {
 				app.MainPanel.el.unmask();
 
 				me.setCurrPatient(data.patientData.pid, data.patientData.name, function() {
-
-					if(data.patientData.eid){
+					if(data.patientData.eid && data.patientData.poolArea == 'Check Out'){
+						me.checkOutPatient(data.patientData.eid);
+					}else if(data.patientData.eid){
 						me.openEncounter(data.patientData.eid);
 					}else{
 						me.openPatientSummary();
-
 					}
-
 				});
 
 			}

@@ -1705,7 +1705,9 @@ Ext.define('App.view.patientfile.MedicalWindow', {
     },
 
 	disableFieldLogic: function(field,newValue){
-		field.setDisabled(newValue == ''|| newValue == null);
+		field.setDisabled((newValue == ''|| newValue == null));
+
+
 
 
 	},

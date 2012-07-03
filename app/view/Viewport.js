@@ -201,6 +201,7 @@ Ext.define('App.view.Viewport', {
 		'App.view.calendar.Calendar',
 		'App.view.messages.Messages',
 
+		'App.view.patientfile.EncounterDocumentsGrid',
 		'App.view.patientfile.encounter.ICDs',
 		'App.view.patientfile.CheckoutAlertsView',
 		'App.view.patientfile.Vitals',
@@ -926,7 +927,8 @@ Ext.define('App.view.Viewport', {
 
 		me.navigateTo('panelVisitCheckout', function(success) {
 			if(success) {
-				me.currCardCmp.setEid(eid);
+				me.currCardCmp.setPanel(eid);
+
 			}
 		});
 	},

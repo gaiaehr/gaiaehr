@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS `preventive_care_inactive_patient` (
   `date` date DEFAULT NULL,
   `observation` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 --
 -- Dumping data for table `preventive_care_inactive_patient`

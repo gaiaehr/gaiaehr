@@ -38,6 +38,7 @@ Ext.define('App.view.patientfile.Encounter', {
     requires:[
         'App.store.patientfile.Encounter', 'App.store.patientfile.Vitals'
     ],
+	eid: null,
     initComponent:function () {
         var me = this;
 
@@ -94,7 +95,6 @@ Ext.define('App.view.patientfile.Encounter', {
             ]
         });
 	    me.EncounterOrdersStore = Ext.create('App.store.patientfile.EncounterCPTsICDs');
-	    me.patientDocumentsStore = Ext.create('App.store.patientfile.PatientDocuments');
 	    me.checkoutAlertArea = Ext.create('App.store.patientfile.CheckoutAlertArea');
 
         me.checkoutWindow = Ext.create('Ext.window.Window', {
@@ -130,40 +130,17 @@ Ext.define('App.view.patientfile.Encounter', {
                     ]
                 },
                 {
-                    xtype:'grid',
+                    xtype:'documentsimplegrid',
                     title:'Documents',
                     region:'east',
-	                store: me.patientDocumentsStore,
-                    split:true,
-                    width:485,
-                    columns:[
-	                    {
-		                    xtype: 'actioncolumn',
-		                    width:26,
-		                    items: [
-			                    {
-				                    icon: 'ui_icons/preview.png',
-				                    tooltip: 'View Document',
-				                    handler: me.onDocumentView,
-				                    getClass:function(){
-					                    return 'x-grid-icon-padding';
-				                    }
-			                    }
-		                    ]
-	                    },
-                        {
-                            header:'Type',
-                            flex:1,
-                            dataIndex:'docType'
-                        }
-                    ]
+                    width:485
                 },
                 {
                     xtype:'form',
                     title:'Additional Info',
                     region:'south',
                     split:true,
-                    height:227,
+                    height:245,
 	                layout:'column',
 	                defaults:{
                         xtype:'fieldset',
@@ -183,9 +160,15 @@ Ext.define('App.view.patientfile.Encounter', {
                                     margin:'5 1 5 5',
                                     padding:8,
                                     columnWidth:.5,
-                                    height:96,
-                                    title:'Patient Notes and Reminders',
+                                    height:115,
+                                    title:'Messages, Notes and Reminders',
                                     items:[
+                                        {
+                                            xtype:'textfield',
+                                            name:'message',
+                                            fieldLabel:'Message',
+                                            anchor:'100%'
+                                        },
                                         {
                                             xtype:'textfield',
                                             name:'reminder',
@@ -201,48 +184,9 @@ Ext.define('App.view.patientfile.Encounter', {
                                         }
                                     ]
                                 },
-//		                        {
-//		                            title:'Meaningful Use Measures',
-//		                            margin:'5 1 5 5',
-//		                            items:[
-//		                                {
-//		                                    xtype:'checkboxgroup',
-//		                                    defaults:{
-//		                                        xtype:'checkboxfield'
-//		                                    },
-//		                                    items:[
-//		                                        {
-//		                                            boxLabel:'Clinical Summary Provided',
-//			                                        name:'clinical_summary_provided'
-//		                                        },
-//		                                        {
-//		                                            boxLabel:'Elegibility Confirmed',
-//				                                        name:'elegibility_confirmed'
-//		                                        }
-//		                                    ]
-//		                                },
-//		                                {
-//		                                    xtype:'checkboxgroup',
-//		                                    defaults:{
-//		                                        xtype:'checkboxfield'
-//		                                    },
-//		                                    items:[
-//		                                        {
-//		                                            boxLabel:'Medical Reconciliation',
-//			                                        name:'medical_reconcilation'
-//		                                        },
-//		                                        {
-//		                                            boxLabel:'Push to Exchange',
-//			                                        name:'push_to_exchange'
-//		                                        }
-//		                                    ]
-//		                                }
-//		                            ]
-//		                        },
 		                        {
 		                            title:'Follow Up',
 			                        margin:'5 1 5 5',
-		                            //height:90,
 		                            defaults:{
 		                                anchor:'100%'
 		                            },
@@ -262,60 +206,41 @@ Ext.define('App.view.patientfile.Encounter', {
 	                        ]
                         },
                         {
-//	                        xtype:'fieldcontainer',
-//	                        columnWidth:.5,
-//	                        defaults:{
-//                                xtype:'fieldset',
-//                                padding:8
-//                            },
-//	                        items:[
-//		                        {
-			                        xtype:'fieldset',
-                                    margin:5,
-                                    padding:8,
-                                    columnWidth:.5,
-			                        layout:'fit',
-                                    height:189,
-                                    title:'Encounter Warnings / Alerts',
-                                    items:[
-	                                    {
-//					                        xtype:'checkoutalertsview',
-//					                        flex:1,
-//					                        store:me.checkoutAlertArea
-//	                                    }
-//                                    ]
-//			    	                listeners:{
-//			    		                scope:me,
-//			    		                itemdblclick:me.onVitalsClick
-//			    	                }
-					                        xtype:'grid',
-					                        hideHeaders: true,
-					                        store      : me.checkoutAlertArea,
-		                                    border:false,
-		                                    rowLines:false,
-		                                    header:false,
-		                                    viewConfig:{
-			                                    stripeRows:false,
-			                                    disableSelection:true
-		                                    },
-					                        columns    : [
-						                        {
-							                        dataIndex: 'alertType',
-							                        width:30,
-							                        renderer:me.alertIconRenderer
-						                        },
-						                        {
-							                        dataIndex: 'alert',
-							                        flex: 1
-						                        }
-					                        ]
-	                                    }
-                                    ]
-		                        }
+	                        xtype:'fieldset',
+                            margin:5,
+                            padding:8,
+                            columnWidth:.5,
+	                        layout:'fit',
+                            height:208,
+                            title:'Warnings / Alerts',
+                            items:[
+                                {
+			                        xtype:'grid',
+			                        hideHeaders: true,
+			                        store      : me.checkoutAlertArea,
+                                    border:false,
+                                    rowLines:false,
+                                    header:false,
+                                    viewConfig:{
+	                                    stripeRows:false,
+	                                    disableSelection:true
+                                    },
+			                        columns    : [
+				                        {
+					                        dataIndex: 'alertType',
+					                        width:30,
+					                        renderer:me.alertIconRenderer
+				                        },
+				                        {
+					                        dataIndex: 'alert',
+					                        flex: 1
+				                        }
+			                        ]
+                                }
                             ]
                         }
-//                    ]
-//                }
+                    ]
+                }
             ],
             buttons:[
                 {
@@ -340,8 +265,10 @@ Ext.define('App.view.patientfile.Encounter', {
 		        scope:me,
 		        show:function(){
 			        me.EncounterOrdersStore.load({params: {eid: app.currEncounterId}});
-			        me.patientDocumentsStore.load({params: {eid: app.currEncounterId}});
 			        me.checkoutAlertArea.load({params: {eid: app.currEncounterId}});
+
+
+			        me.checkoutWindow.query('documentsimplegrid')[0].loadDocs(me.eid);
 		        }
 
 	        }
@@ -1002,7 +929,8 @@ Ext.define('App.view.patientfile.Encounter', {
     openEncounter:function (eid) {
         var me = this, vitals = me.vitalsPanel.down('vitalsdataview');
 
-        app.currEncounterId = eid;
+        me.eid = app.currEncounterId = eid;
+
         me.encounterStore.getProxy().extraParams.eid = eid;
         me.encounterStore.load({
             scope:me,

@@ -584,6 +584,21 @@ class Encounter {
 		    $soap[0]['objective'] .= '<ul class="ProgressNote-ul">'.$lis.'</ul>' ;
 	    }
 
+	    $medications = $this->medical->getImmunizationsByEncounterID($eid);
+	    if(!empty($medications)){
+		    $lis = '';
+		    foreach($medications as $med){
+			    $lis .= '<li>Immunization name: '.$med['immunization_name'].'<br>';
+			    $lis .= 'Immunization ID: ' .$med['immunization_id'].'<br>';
+			    $lis .= 'Manufacturer: ' . $med['manufacturer'].'<br>';
+			    $lis .= 'Lot Number: ' .$med['lot_number'].'<br>';
+			    $lis .= 'Dosis: '.$med['dosis'] .'<br>';
+			    $lis .= 'Administered By: '.$med['administered_by'].' </li>';
+			}
+		    $soap[0]['objective'] .= '<p>Immunizations:</p>';
+		    $soap[0]['objective'] .= '<ul class="ProgressNote-ul">'.$lis.'</ul>' ;
+	    }
+
 
 //
 //

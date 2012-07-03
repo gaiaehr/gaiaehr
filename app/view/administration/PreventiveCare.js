@@ -515,12 +515,13 @@ Ext.define('App.view.administration.PreventiveCare', {
 	},
     addLabs:function(field, model){
 
-        say(model[0].data);
 		this.labsStore.add({
+            code:model[0].data.loinc_number,
 			value_name:model[0].data.loinc_name,
 			less_than:'0',
 			greater_than:'0',
-			equal_to:'0'
+			equal_to:'0',
+            preventive_care_id:this.getSelectId()
 		});
 		field.reset();
 

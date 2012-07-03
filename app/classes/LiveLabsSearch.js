@@ -20,7 +20,8 @@ Ext.define('App.classes.LiveLabsSearch', {
 			extend: 'Ext.data.Model',
 			fields: [
 				{name: 'id'},
-				{name: 'loinc_name'}
+				{name: 'loinc_name'},
+				{name: 'loinc_number'}
 			],
 			proxy : {
 				type  : 'direct',

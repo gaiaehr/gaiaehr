@@ -15,7 +15,8 @@ Ext.define('App.store.administration.PreventiveCareLabs', {
 		api        : {
 			read  : PreventiveCare.getGuideLineLabs,
 			create: PreventiveCare.addGuideLineLabs,
-			destroy: PreventiveCare.removeGuideLineLabs
+			destroy: PreventiveCare.removeGuideLineLabs,
+			update: PreventiveCare.updateGuideLineLabs
 		}
 	},
 	remoteSort: false,

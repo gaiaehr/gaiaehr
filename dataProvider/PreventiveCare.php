@@ -168,8 +168,64 @@ class PreventiveCare
 
     public function addGuideLineLabs($params){
 
-        return $params;
+        if(is_array($params)){
+               foreach($params as $p){
+                  $data = get_object_vars($p);
+                  unset($data['id']);
+                  $this->db->setSQL($this->db->sqlBind($data, 'labs_guidelines', 'I'));
+                  $this->db->execLog();
+               }
+           }else{
+               $data = get_object_vars($params);
+               unset($data['id']);
+               $this->db->setSQL($this->db->sqlBind($data, 'labs_guidelines', 'I'));
+               $this->db->execLog();
+           }
+           return $params;
     }
+    public function getGuideLineLabs(stdClass $params){
+        $this->db->setSQL("SELECT * FROM labs_guidelines WHERE preventive_care_id='$params->id'");
+        return $this->db->fetchRecords(PDO::FETCH_ASSOC);
+    }
+    public function removeGuideLineLabs($params){
+
+        if(is_array($params)){
+            foreach($params as $p){
+                $data = get_object_vars($p);
+                $id = $data['id'];
+                $this->db->setSQL("DELETE FROM labs_guidelines WHERE id = '$id'");
+                $this->db->execLog();
+            }
+        }else{
+            $data = get_object_vars($params);
+            $id = $data['id'];
+            $this->db->setSQL("DELETE FROM labs_guidelines WHERE id = '$id'");
+            $this->db->execLog();
+        }
+        return $params;
+
+    }
+    public function updateGuideLineLabs($params)
+   	{
+
+       if(is_array($params)){
+           foreach($params as $p){
+               $data = get_object_vars($p);
+               $id = $data['id'];
+               unset($data['id']);
+               $this->db->setSQL($this->db->sqlBind($data, "labs_guidelines", "U", "id='$id'"));
+               $this->db->execLog();
+           }
+       }else{
+           $data = get_object_vars($params);
+           $id = $data['id'];
+           unset($data['id']);
+           $this->db->setSQL($this->db->sqlBind($data, "labs_guidelines", "U", "id='$id'"));
+           $this->db->execLog();
+
+       }
+           return $params;
+   	}
 	/**
 	 * @param stdClass $params
 	 * @return stdClass

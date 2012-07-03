@@ -1357,12 +1357,12 @@ Ext.define('App.view.patientfile.MedicalWindow', {
                 layout:'hbox',
                 margin:0,
                 anchor:'100%',
+                fieldLabel:field.code_text_short || field.loinc_name,
+                labelWidth:130,
                 items:[
                     {
                         xtype:'textfield',
-                        fieldLabel:field.code_text_short || field.loinc_name,
                         name:field.loinc_number,
-                        labelWidth:130,
                         flex:1,
                         allowBlank: field.required_in_panel != 'R'
                     },

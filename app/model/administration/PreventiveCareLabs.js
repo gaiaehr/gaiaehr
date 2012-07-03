@@ -14,7 +14,9 @@ Ext.define('App.model.administration.PreventiveCareLabs', {
 		{name: 'value_name', type: 'string'},
 		{name: 'greater_than', type: 'string'},
 		{name: 'less_than', type: 'string'},
-		{name: 'equal_to', type: 'string'}
+		{name: 'equal_to', type: 'string'},
+		{name: 'code', type: 'string'},
+		{name: 'preventive_care_id', type: 'string'}
 	]
 
 });

@@ -4,7 +4,14 @@
 
 ----------------------------------------------- */
 
-
+.ProgressNote-ul {
+	margin-left:3em;
+	padding-left:0;
+	margin-bottom:1em;
+}
+.ProgressNote-ul li {
+	list-style-type: circle!important;
+}
 
 
 .check-bg {

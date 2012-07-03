@@ -17,6 +17,8 @@ include_once($_SESSION['site']['root'].'/dataProvider/Patient.php');
 include_once($_SESSION['site']['root'].'/dataProvider/User.php');
 include_once($_SESSION['site']['root'].'/dataProvider/Services.php');
 include_once($_SESSION['site']['root'].'/dataProvider/PoolArea.php');
+include_once($_SESSION['site']['root'].'/dataProvider/Medical.php');
+include_once($_SESSION['site']['root'].'/dataProvider/PreventiveCare.php');
 
 
 class Encounter {
@@ -52,6 +54,8 @@ class Encounter {
         $this->patient = new Patient();
         $this->services = new Services();
         $this->poolArea = new PoolArea();
+        $this->medical = new Medical();
+        $this->preventivecare = new PreventiveCare();
 
         return;
     }
@@ -566,6 +570,35 @@ class Encounter {
 
         $icdxs = substr($icdxs, 0, -2);
         $soap = $this->getSoapByEid($eid);
+
+
+	    $medications = $this->medical->getPatientMedicationsByEncounterID($eid);
+	    if(!empty($medications)){
+		    $lis = '';
+		    foreach($medications as $med){
+			    $lis .= '<li>'.$med['medication'].' '. $med['dose'] .' '. $med['dose_mg'] .'<br>';
+			    $lis .= 'Instruction: '.$med['take_pills'] .' '. $med['type'] .' '. $med['by'] .' '. $med['prescription_often'] .' '. $med['prescription_when'].'<br>';
+			    $lis .= 'Dispense: '.$med['dispense'] .'  Refill: '.$med['refill'].' </li>';
+			}
+		    $soap[0]['objective'] .= '<p>Medications:</p>';
+		    $soap[0]['objective'] .= '<ul class="ProgressNote-ul">'.$lis.'</ul>' ;
+	    }
+
+
+//
+//
+//
+//		$objs = $this->medical->getAllergiesByEncounterID($eid);
+//	    $objs = array_merge($objs, $this->medical->getImmunizationsByEncounterID($eid));
+//	    $this->medical->getMedicalIssuesByEncounterID($eid);
+//	    $objs = array_merge($objs, $this->medical->getPatientSurgeryByEncounterID($eid));
+//	    $objs = array_merge($objs, $this->medical->getPatientDentalByEncounterID($eid));
+//	    $objs = array_merge($objs, $this->preventivecare->getPreventiveCareDismissPatientByEncounterID($eid));
+
+
+
+
+
         $soap[0]['assessment'] = $soap[0]['assessment'].' <span style="font-weight:bold; text-decoration:none">[ '.$icdxs.' ]</span> ';
         $encounter['soap'] = $soap;
 

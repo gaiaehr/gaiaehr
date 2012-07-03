@@ -126,8 +126,8 @@ Ext.define('App.view.Viewport', {
 		'Extensible.calendar.data.MemoryEventStore',
 
 
-		
-		
+
+
 		'App.classes.combo.ActiveFacilities',
 		'App.classes.combo.Allergies',
 		'App.classes.combo.AllergiesAbdominal',
@@ -139,6 +139,8 @@ Ext.define('App.view.Viewport', {
 		'App.classes.combo.AllergiesTypes',
 		'App.classes.combo.Authorizations',
 		'App.classes.combo.BillingFacilities',
+		'App.classes.combo.CalendarCategories',
+		'App.classes.combo.CalendarStatus',
 		'App.classes.combo.CodesTypes',
 		'App.classes.combo.Facilities',
 		'App.classes.combo.FollowUp',

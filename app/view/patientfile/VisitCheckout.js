@@ -414,11 +414,11 @@ Ext.define('App.view.patientfile.VisitCheckout', {
         form = container[0].getForm();
 
         values = form.getFieldValues();
-        values.date= Ext.Date.format(new Date(), 'Y-m-d H:i:s');
-        values.pid= app.currPatient.pid;
-        values.eid= app.currEncounterId;
-        values.uid= app.user.id;
-        values.type='administrative';
+        values.date = Ext.Date.format(new Date(), 'Y-m-d H:i:s');
+        values.pid = app.currPatient.pid;
+        values.eid = app.currEncounterId;
+        values.uid = app.user.id;
+        values.type ='administrative';
 
         if(form.isValid()) {
 
@@ -432,6 +432,11 @@ Ext.define('App.view.patientfile.VisitCheckout', {
         }
     },
 
+	setEid:function(eid){
+		this.eid = eid || null;
+		say(this.eid);
+	},
+
     /**
      * This function is called from MitosAPP.js when
      * this panel is selected in the navigation panel.
@@ -444,8 +449,7 @@ Ext.define('App.view.patientfile.VisitCheckout', {
         if(me.checkIfCurrPatient()) {
             var patient = me.getCurrPatient();
 	        me.updateTitle(patient.name + ' - #' + patient.pid + ' (Visit Checkout)');
-            callback(true);
-
+	        callback(true);
         } else {
             callback(false);
             me.currPatientError();

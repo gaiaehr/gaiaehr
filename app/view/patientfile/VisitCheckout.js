@@ -274,38 +274,19 @@ Ext.define('App.view.patientfile.VisitCheckout', {
 
 
     onNewService:function(btn){
-        var me = this,
-            grid = btn.up('panel').down('grid'),
+        var grid = btn.up('panel').down('grid'),
             store = grid.store;
 
         say(grid);
         say(store);
 
-            store.add({code_text:' ',charge:'20.00'});
+        store.add({code_text:' ',charge:'20.00'});
 
-
-
-//        var me = this,
-//            container = me.down('form').getComponent('serviceContainer'),
-//            serviceField;
-//
-//        serviceField = Ext.create('Ext.form.FieldContainer',{
-//            layout:'hbox',
-//            items: [{
-//                xtype: 'textfield',
-//                flex: 1
-//            }, {
-//                xtype: 'textfield'
-//            }]
-//        });
-
-        //container.add(serviceField)
 
     },
 
     onAddCoPay:function(btn){
-        var me = this,
-            grid = btn.up('panel').down('grid'),
+        var grid = btn.up('panel').down('grid'),
             store = grid.store;
 
         store.add({code_text:'Co-Pay',charge:'00.00'});
@@ -316,7 +297,7 @@ Ext.define('App.view.patientfile.VisitCheckout', {
 
     },
 
-    onRemoveService:function(grid, rowIndex, colIndex){
+    onRemoveService:function(grid, rowIndex){
         var me = this,
             totalField = me.query('[action="totalField"]')[0],
             totalVal = totalField.getValue(),
@@ -358,23 +339,23 @@ Ext.define('App.view.patientfile.VisitCheckout', {
     },
 
     onSaveNotes: function() {
-        var me = this, form, values, container = this.query('form[action="formnotes"]');
+        var me = this, form, values, container = me.query('form[action="formnotes"]');
         form = container[0].getForm();
 
         values = form.getFieldValues();
         values.date = Ext.Date.format(new Date(), 'Y-m-d H:i:s');
         values.pid = app.currPatient.pid;
-        values.eid = app.currEncounterId;
+        values.eid = me.eid;
         values.uid = app.user.id;
         values.type ='administrative';
 
         if(form.isValid()) {
 
-            Patient.addNote(values, function(provider, response){
+            Patient.addPatientNoteAndReminder(values, function(provider, response){
                 if(response.result.success){
-                    form.reset();
+	                app.msg('Sweet!','Note and Reminder');
                 }else{
-                    app.msg('Oops!','Notes entry error')
+                    app.msg('Oops!','Note entry error');
                 }
             });
         }

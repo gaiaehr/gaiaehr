@@ -34,26 +34,7 @@ class VisitCheckout {
      * @var Patient
      */
     private $patient;
-    /**
-     * @var Services
-     */
-    private $services;
-    /**
-     * @var
-     */
-    private $eid;
-	/**
-	 * @var PoolArea
-	 */
-	private $poolArea;
-	/**
-	 * @var Medical
-	 */
-	private $medical;
-	/**
-	 * @var PreventiveCare
-	 */
-	private $preventiveCare;
+
 
     function __construct()
     {

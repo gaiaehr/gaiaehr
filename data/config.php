@@ -685,7 +685,7 @@ $API = array(
             'updatePatientDemographicData'=>array(
             	'len'=>1
             ),
-            'addNote'=>array(
+            'addPatientNoteAndReminder'=>array(
             	'len'=>1
             ),
             'getPatientReminders'=>array(

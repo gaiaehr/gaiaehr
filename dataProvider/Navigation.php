@@ -69,6 +69,8 @@ class Navigation {
 //                array( 'text' => $this->t['visit_checkout'][$this->lang],   'disabled'=> ($this->ACL->hasPermission('access_visit_checkout')    ? false:true), 'leaf' => true, 'cls' => 'file', 'id' => 'panelVisitCheckout' )
 //            )
 //        ));
+
+	    array_push($nav, $patient);
         // *************************************************************************************
         // Fees Folder
         // *************************************************************************************

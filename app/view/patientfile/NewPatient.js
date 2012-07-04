@@ -120,10 +120,10 @@ Ext.define('App.view.patientfile.NewPatient', {
     copyData:function(combo, records){
         var form = combo.up('form').getForm();
         say(form);
-        say(combo);
-        say(records[0].data);
-
-
+        if(combo.value == 'self'){
+            say(combo);
+            say(records[0].data);
+        }
     },
 
 	/**

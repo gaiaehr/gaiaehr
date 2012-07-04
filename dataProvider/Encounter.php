@@ -763,6 +763,17 @@ class Encounter {
 
     }
 
+	public function getEncounterFollowUpInfoByEid($eid){
+		$this->db->setSQL("SELECT followup_time, followup_facility FROM form_data_encounter WHERE eid = '$eid'");
+		$rec =  $this->db->fetchRecord(PDO::FETCH_ASSOC);
+		$rec['followup_facility'] = intval($rec['followup_facility']);
+		return $rec;
+	}
+
+	public function getEncounterMessageByEid($eid){
+		$this->db->setSQL("SELECT message FROM form_data_encounter WHERE eid = '$eid'");
+		return  $this->db->fetchRecord(PDO::FETCH_ASSOC);
+	}
 
 //
 }

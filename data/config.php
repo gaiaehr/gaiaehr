@@ -64,7 +64,13 @@ $API = array(
             ),
             'checkForAnOpenedEncounterByPid'=>array(
                'len'=>1
-            )
+            ),
+	        'getEncounterFollowUpInfoByEid'=>array(
+		        'len'=>1
+	        ),
+	        'getEncounterMessageByEid'=>array(
+		        'len'=>1
+	        )
         )
     ),
 	'VectorGraph'=>array(
@@ -679,7 +685,7 @@ $API = array(
             'updatePatientDemographicData'=>array(
             	'len'=>1
             ),
-            'addNote'=>array(
+            'addPatientNoteAndReminder'=>array(
             	'len'=>1
             ),
             'getPatientReminders'=>array(

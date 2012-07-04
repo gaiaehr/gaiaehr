@@ -257,26 +257,19 @@ class Patient
 		return $address;
 	}
 
-	public function addNote(stdClass $params)
+	public function addPatientNoteAndReminder(stdClass $params)
 	{
 		$data = get_object_vars($params);
-		unset($data['id']);
-		foreach($data as $key => $val) {
-			if($key == 'note_body') {
-				$note_body = $val;
-				unset($data[$key]);
-			}
-			if($key == 'reminder_body') {
-				$reminder_body = $val;
-				unset($data[$key]);
-			}
-		}
+		unset($data['id'],$data['message']);
 		$data2 = $data;
-		$data['body']  = $note_body;
-		$data2['body'] = $reminder_body;
-		$this->db->setSQL($this->db->sqlBind($data2, "patient_reminders", "I"));
+		$data['body'] = $data['new_reminder'];
+		$data2['body'] = $data['new_note'];
+
+		unset($data['new_note'],$data['new_reminder'],$data2['new_note'],$data2['new_reminder']);
+
+		$this->db->setSQL($this->db->sqlBind($data2, 'patient_reminders', 'I'));
 		$this->db->execLog();
-		$this->db->setSQL($this->db->sqlBind($data, "patient_notes", "I"));
+		$this->db->setSQL($this->db->sqlBind($data, 'patient_notes', 'I'));
 		$this->db->execLog();
 		if($this->db->lastInsertId == 0) {
 			return array('success' => false);

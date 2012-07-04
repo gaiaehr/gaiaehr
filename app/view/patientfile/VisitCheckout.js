@@ -36,10 +36,10 @@ Ext.define('App.view.patientfile.VisitCheckout', {
                         type : 'hbox',
                         align: 'stretch'
                     },
-                    height: 410,
+                    height: 400,
                     items:[
                         {
-                            xtype : 'form',
+                            xtype : 'panel',
 	                        title:'Co-Pay / Payment',
 	                        border:true,
 	                        frame:true,
@@ -168,27 +168,19 @@ Ext.define('App.view.patientfile.VisitCheckout', {
 	                        ]
                         },
                         {
-                            xtype  : 'grid',
-                            title  : 'Orders',
+
+	                        xtype:'documentsimplegrid',
+	                        title:'Documents',
 	                        frame:true,
                             margin : '5 5 5 0',
-                            flex   : 1,
-                            columns:[
-                                {
-                                    header:'Code'
-                                },
-                                {
-                                    header: 'Description',
-                                    flex  : 1
-                                }
-                            ]
+                            flex   : 1
                         }
                     ]
                 },
                 {
                     xtype:'container',
                     layout:'hbox',
-                    defaults: { height:185 },
+                    defaults: { height:195 },
                     items:[
                         {
                             xtype: 'form',
@@ -203,16 +195,21 @@ Ext.define('App.view.patientfile.VisitCheckout', {
                             defaults: { anchor:'100%'},
                             items:[
                                 {
+                                    xtype     : 'displayfield',
+                                    fieldLabel: 'Message',
+                                    name: 'message'
+                                },
+                                {
                                     xtype     : 'textfield',
                                     fieldLabel: 'Note',
-                                    name: 'note_body',
+                                    name: 'new_note',
                                     action: 'notes'
                                 },
                                 {
-                                    xtype     : 'textareafield',
+                                    xtype     : 'textfield',
                                     grow      : true,
                                     fieldLabel: 'Reminders',
-                                    name: 'reminder_body',
+                                    name: 'new_reminder',
                                     action: 'notes'
                                 }
                             ],
@@ -246,71 +243,25 @@ Ext.define('App.view.patientfile.VisitCheckout', {
                             items:[
                                 {
                                     fieldLabel: 'Time',
-                                    xtype     : 'textfield'
+                                    xtype     : 'textfield',
+                                    name     : 'followup_time'
                                 },
                                 {
                                     fieldLabel: 'Facility',
-                                    xtype     : 'mitos.facilitiescombo'
+                                    xtype     : 'mitos.activefacilitiescombo',
+	                                name:'followup_facility'
                                 }
                             ],
 	                        buttons:[
                                 {
                                     text:'Schedule Appointment',
-                                    handler:function(){
-                                        //app.onExtCalWin();
-                                    }
+	                                scope:me,
+                                    handler:me.scheduleAppointment
                                 }
                             ]
                         }
                     ]
                 }
-            ]
-        });
-
-        me.printWindow = Ext.create('Ext.window.Window', {
-            title      : 'Printing Options',
-            closeAction: 'hide',
-            closable   : false,
-            modal      : true,
-            items:[
-                {
-                    xtype   :'form',
-                    height  : 200,
-                    width   : 300,
-                    defaults: { margin:5 },
-                    columnWidth:.5,
-                    border  : false,
-                    items:[
- 	                    {
-                            xtype   :'checkboxgroup',
-                            width   : 200,
-                            height  : 40,
-                            defaults:{
-                                xtype:'checkboxfield'
-                            },
-                            items:[
-                                {
-                                    boxLabel: 'Receipt'
-                                },
-                                {
-                                    boxLabel: 'Orders'
-                                }
-                            ]
- 	                    }
- 	                ],
- 	                buttons:[
-                        '->',
- 	                    {
- 	                        text:'Print'
-                        },
- 	                    '-',
- 	                    {
- 	                        text:'Cancel',
-                            scope:me,
-                            handler:me.cancelPrint
- 	                    }
- 	                ]
- 	            }
             ]
         });
 
@@ -323,38 +274,19 @@ Ext.define('App.view.patientfile.VisitCheckout', {
 
 
     onNewService:function(btn){
-        var me = this,
-            grid = btn.up('panel').down('grid'),
+        var grid = btn.up('panel').down('grid'),
             store = grid.store;
 
         say(grid);
         say(store);
 
-            store.add({code_text:' ',charge:'20.00'});
+        store.add({code_text:' ',charge:'20.00'});
 
-
-
-//        var me = this,
-//            container = me.down('form').getComponent('serviceContainer'),
-//            serviceField;
-//
-//        serviceField = Ext.create('Ext.form.FieldContainer',{
-//            layout:'hbox',
-//            items: [{
-//                xtype: 'textfield',
-//                flex: 1
-//            }, {
-//                xtype: 'textfield'
-//            }]
-//        });
-
-        //container.add(serviceField)
 
     },
 
     onAddCoPay:function(btn){
-        var me = this,
-            grid = btn.up('panel').down('grid'),
+        var grid = btn.up('panel').down('grid'),
             store = grid.store;
 
         store.add({code_text:'Co-Pay',charge:'00.00'});
@@ -365,7 +297,7 @@ Ext.define('App.view.patientfile.VisitCheckout', {
 
     },
 
-    onRemoveService:function(grid, rowIndex, colIndex){
+    onRemoveService:function(grid, rowIndex){
         var me = this,
             totalField = me.query('[action="totalField"]')[0],
             totalVal = totalField.getValue(),
@@ -378,9 +310,6 @@ Ext.define('App.view.patientfile.VisitCheckout', {
 
     },
 
-    onPrintClick:function () {
-        this.printWindow.show();
-    },
 
     cancelPrint:function (btn) {
         var win = btn.up('window');
@@ -410,31 +339,111 @@ Ext.define('App.view.patientfile.VisitCheckout', {
     },
 
     onSaveNotes: function() {
-        var me = this, form, values, container = this.query('form[action="formnotes"]');
+        var me = this, form, values, container = me.query('form[action="formnotes"]');
         form = container[0].getForm();
 
         values = form.getFieldValues();
         values.date = Ext.Date.format(new Date(), 'Y-m-d H:i:s');
         values.pid = app.currPatient.pid;
-        values.eid = app.currEncounterId;
+        values.eid = me.eid;
         values.uid = app.user.id;
         values.type ='administrative';
 
         if(form.isValid()) {
 
-            Patient.addNote(values, function(provider, response){
+            Patient.addPatientNoteAndReminder(values, function(provider, response){
                 if(response.result.success){
-                    form.reset();
+	                app.msg('Sweet!','Note and Reminder');
                 }else{
-                    app.msg('Oops!','Notes entry error')
+                    app.msg('Oops!','Note entry error');
                 }
             });
         }
     },
 
-	setEid:function(eid){
+	scheduleAppointment:function(btn){
+		var form = btn.up('form').getForm(),
+			time = form.findField('followup_time').getValue(),
+			facility = form.findField('followup_facility').getValue(),
+			calendar = Ext.getCmp('app-calendar'),
+			date;
+
+
+		switch(time){
+			case '1 Day':
+				date = Ext.Date.add(new Date(), Ext.Date.DAY, 1);
+				break;
+			case '2 Days':
+				date = Ext.Date.add(new Date(), Ext.Date.DAY, 2);
+				break;
+			case '3 Days':
+				date = Ext.Date.add(new Date(), Ext.Date.DAY, 3);
+				break;
+			case '1 Week':
+				date = Ext.Date.add(new Date(), Ext.Date.DAY, 7);
+				break;
+			case '2 Weeks':
+				date = Ext.Date.add(new Date(), Ext.Date.DAY, 14);
+				break;
+			case '3 Weeks':
+				date = Ext.Date.add(new Date(), Ext.Date.DAY, 21);
+				break;
+			case '1 Month':
+				date = Ext.Date.add(new Date(), Ext.Date.MONTH, 1);
+				break;
+			case '2 Months':
+				date = Ext.Date.add(new Date(), Ext.Date.MONTH, 2);
+				break;
+			case '3 Months':
+				date = Ext.Date.add(new Date(), Ext.Date.MONTH, 3);
+				break;
+			case '4 Months':
+				date = Ext.Date.add(new Date(), Ext.Date.MONTH, 4);
+				break;
+			case '5 Months':
+				date = Ext.Date.add(new Date(), Ext.Date.MONTH, 5);
+				break;
+			case '6 Months':
+				date = Ext.Date.add(new Date(), Ext.Date.MONTH, 6);
+				break;
+			case '1 Year':
+				date = Ext.Date.add(new Date(), Ext.Date.YEAR, 1);
+				break;
+			case '2 Year':
+				date = Ext.Date.add(new Date(), Ext.Date.YEAR, 2);
+				break;
+			default:
+				date = new Date();
+				break;
+		}
+
+		app.navigateTo('panelCalendar');
+		calendar.facility = facility;
+		calendar.setStartDate(date);
+	},
+
+	getVisitOtherInfo:function(){
+		var me = this, forms, fields = [];
+		forms = me.query('form');
+
+		Encounter.getEncounterFollowUpInfoByEid(me.eid, function(provider, response){
+			forms[1].getForm().setValues(response.result);
+		});
+
+		Encounter.getEncounterMessageByEid(me.eid, function(provider, response){
+			forms[0].getForm().setValues(response.result);
+		});
+
+		Ext.each(forms, function(form){
+			fields.push(form.getForm().getFields().items);
+		});
+	},
+
+	setPanel:function(eid){
 		this.eid = eid || null;
-		say(this.eid);
+		this.query('documentsimplegrid')[0].loadDocs(eid);
+
+		this.getVisitOtherInfo();
 	},
 
     /**

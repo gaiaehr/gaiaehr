@@ -143,7 +143,7 @@ Ext.define('App.view.calendar.Calendar', {
 							enableFx: false,
 							//ddIncrement           : 10, //only applies to DayView and subclasses, but convenient to put it here
 							viewStartHour         : 8,
-							viewEndHour           : 16,
+							viewEndHour           : 21,
 							minEventDisplayMinutes: 15,
 							showTime: false
 						},

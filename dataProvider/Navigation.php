@@ -60,15 +60,15 @@ class Navigation {
 		    $patient['children'][] = array( 'text' => $this->t['visit_checkout'][$this->lang], 'leaf' => true, 'cls' => 'file', 'id' => 'panelVisitCheckout' );
 	    }
 
-        array_push( $nav, array( 'text' => 'Patient', 'cls' => 'folder', 'expanded' => true, 'children' =>
-            array(
-                array( 'text' => $this->t['new_patient'][$this->lang],      'disabled'=> ($this->ACL->hasPermission('add_patient')              ? false:true), 'leaf' => true, 'cls' => 'file', 'id' => 'panelNewPatient' ),
-                array( 'text' => $this->t['patient_summary'][$this->lang],  'disabled'=> ($this->ACL->hasPermission('access_patient_summary')   ? false:true), 'leaf' => true, 'cls' => 'file', 'id' => 'panelSummary' ),
-                array( 'text' => $this->t['visist_history'][$this->lang],   'disabled'=> ($this->ACL->hasPermission('access_patient_visits')    ? false:true), 'leaf' => true, 'cls' => 'file', 'id' => 'panelVisits' ),
-                array( 'text' => $this->t['encounter'][$this->lang],        'disabled'=> ($this->ACL->hasPermission('access_encounters')        ? false:true), 'leaf' => true, 'cls' => 'file', 'id' => 'panelEncounter' ),
-                array( 'text' => $this->t['visit_checkout'][$this->lang],   'disabled'=> ($this->ACL->hasPermission('access_visit_checkout')    ? false:true), 'leaf' => true, 'cls' => 'file', 'id' => 'panelVisitCheckout' )
-            )
-        ));
+//        array_push( $nav, array( 'text' => 'Patient', 'cls' => 'folder', 'expanded' => true, 'children' =>
+//            array(
+//                array( 'text' => $this->t['new_patient'][$this->lang],      'disabled'=> ($this->ACL->hasPermission('add_patient')              ? false:true), 'leaf' => true, 'cls' => 'file', 'id' => 'panelNewPatient' ),
+//                array( 'text' => $this->t['patient_summary'][$this->lang],  'disabled'=> ($this->ACL->hasPermission('access_patient_summary')   ? false:true), 'leaf' => true, 'cls' => 'file', 'id' => 'panelSummary' ),
+//                array( 'text' => $this->t['visist_history'][$this->lang],   'disabled'=> ($this->ACL->hasPermission('access_patient_visits')    ? false:true), 'leaf' => true, 'cls' => 'file', 'id' => 'panelVisits' ),
+//                array( 'text' => $this->t['encounter'][$this->lang],        'disabled'=> ($this->ACL->hasPermission('access_encounters')        ? false:true), 'leaf' => true, 'cls' => 'file', 'id' => 'panelEncounter' ),
+//                array( 'text' => $this->t['visit_checkout'][$this->lang],   'disabled'=> ($this->ACL->hasPermission('access_visit_checkout')    ? false:true), 'leaf' => true, 'cls' => 'file', 'id' => 'panelVisitCheckout' )
+//            )
+//        ));
         // *************************************************************************************
         // Fees Folder
         // *************************************************************************************

@@ -399,20 +399,21 @@ Ext.define('App.view.patientfile.Encounter', {
                             handler:me.resetVitalsForm
                         },
                         {
+                            text:'Save',
+                            action:'vitals',
+                            width:40,
+                            scope:me,
+                            handler:me.onSave
+                        },
+                        {
                             text:'Sign',
                             width:40,
 	                        disabled:true,
 	                        action:'signBtn',
                             scope:me,
                             handler:me.onVitalsSign
-                        },
-                        {
-                            text:'Save',
-                            action:'vitals',
-                            width:40,
-                            scope:me,
-                            handler:me.onSave
                         }
+
                     ]
                 },
                 {

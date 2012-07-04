@@ -652,7 +652,9 @@ class Encounter {
 	    if(!empty($activeProblems)){
 		    $lis = '';
 		    foreach($activeProblems as $foo){
-//			    $lis .= '<li>Immunization name: '.$foo['immunization_name'].'<br>';
+
+
+			    $lis .= '<li>Immunization name: '.$foo['immunization_name'].'<br>';
 //			    $lis .= 'Immunization ID: ' .$foo['immunization_id'].'<br>';
 //			    $lis .= 'Administered By: '.$foo['administered_by'].' </li>';
 			}
@@ -664,9 +666,9 @@ class Encounter {
 	    if(!empty($preventiveCare)){
 		    $lis = '';
 		    foreach($preventiveCare as $foo){
-//			    $lis .= '<li>Immunization name: '.$foo['immunization_name'].'<br>';
-//			    $lis .= 'Immunization ID: ' .$foo['immunization_id'].'<br>';
-//			    $lis .= 'Administered By: '.$foo['administered_by'].' </li>';
+			    $lis .= '<li>Description: '.$foo['description'].'<br>';
+			    $lis .= 'Reason: ' .$foo['reason'].'<br>';
+			    $lis .= 'Observation: '.$foo['observation'].' </li>';
 			}
 		    $soap[0]['objective'] .= '<p>Preventive Care:</p>';
 		    $soap[0]['objective'] .= '<ul class="ProgressNote-ul">'.$lis.'</ul>' ;

@@ -809,7 +809,6 @@ Ext.define('App.view.patientfile.Summary', {
 
             me.verifyPatientRequiredInfo();
 
-            app.PreventiveCareWindow.loadPatientPreventiveCare();
 
 
         } else {

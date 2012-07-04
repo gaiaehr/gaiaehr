@@ -199,7 +199,7 @@ class Documents
 			'[PATIENT_REFERRAL_DATE]'             => $patientData['referral_date'], ////////////////////////////////
             '[PATIENT_TABACCO]'                   => 'tabaco', //////////////////////////////////////////////////////
             '[PATIENT_ALCOHOL]'                   => 'alcohol', ////////////////////////////////////////////////////
-			'[PATIENT_BALANCE]'                   => '$'.$this->fees->getPatientBalance($pid),
+			'[PATIENT_BALANCE]'                   => '$'.$this->fees->getPatientBalanceByPid($pid),
 			'[PATIENT_PICTURE]'                   => $img,
 			'[PATIENT_PRIMARY_PLAN]'              => $patientData['primary_plan_name'],
             '[PATIENT_PRIMARY_EFFECTIVE_DATE]'    => $patientData['primary_effective_date'],
@@ -266,50 +266,50 @@ class Documents
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	private function get_EncounterTokensData( $eid, $allNeededInfo, $tokens)
+	private function get_EncounterTokensData(  /*$eid,*/  $allNeededInfo, $tokens)
 	{
 		$encounterInformation = array
 		(
-			'[ENCOUNTER_DATE]',
-			'[ENCOUNTER_SUBJECTIVE]',
-			'[ENCOUNTER_OBJECTIVE]',
-			'[ENCOUNTER_ASSESMENT]',
-			'[ENCOUNTER_ASSESMENT_LIST]',
-			'[ENCOUNTER_ASSESMENT_CODE_LIST]',
-			'[ENCOUNTER_ASSESMENT_FULL_LIST]',
-			'[ENCOUNTER_PLAN]',
-			'[ENCOUNTER_MEDICATIONS]',
-			'[ENCOUNTER_IMMUNIZATIONS]',
-			'[ENCOUNTER_ALLERGIES]',
-			'[ENCOUNTER_ACTIVE_PROBLEMS]',
-			'[ENCOUNTER_SURGERIES]',
-			'[ENCOUNTER_DENTAL]',
-			'[ENCOUNTER_LABORATORIES]',
-			'[ENCOUNTER_PROCEDURES_TERMS]',
-			'[ENCOUNTER_CPT_CODES]',
-			'[ENCOUNTER_SIGNATURE]',
-            '[PATIENT_REFERRAL_REASON]'           => $patientData[''],
-            '[PATIENT_HEAD_CIRCUMFERENCE]'        => $patientData[''],
-            '[PATIENT_HEIGHT]'                    => $patientData[''],
-            '[PATIENT_PULSE]'                     => $patientData[''],
-            '[PATIENT_RESPIRATORY_RATE]'          => $patientData[''],
-            '[PATIENT_TEMPERATURE]'               => $patientData[''],
-            '[PATIENT_WEIGHT]'                    => $patientData[''],
-            '[PATIENT_PULSE_OXIMETER]'            => $patientData[''],
-            '[PATIENT_BLOOD_PREASURE]'            => $patientData[''],
-            '[PATIENT_BMI]'                       => $patientData[''],
-            '[PATIENT_ACTIVE_ALLERGIES_LIST]'     => $patientData[''],
-            '[PATIENT_INACTIVE_ALLERGIES_LIST]'   => $patientData[''],
-            '[PATIENT_ACTIVE_MEDICATIONS_LIST]'   => $patientData[''],
-            '[PATIENT_INACTIVE_MEDICATIONS_LIST]' => $patientData[''],
-            '[PATIENT_ACTIVE_PROBLEMS_LIST]'      => $patientData[''],
-            '[PATIENT_INACTIVE_PROBLEMS_LIST]'    => $patientData[''],
-            '[PATIENT_ACTIVE_IMMUNIZATIONS_LIST]' => $patientData[''],
-            '[PATIENT_INACTIVE_IMMUNIZATIONS_LIST]' => $patientData[''],
-            '[PATIENT_ACTIVE_DENTAL_LIST]'        => $patientData[''],
-            '[PATIENT_INACTIVE_DENTAL_LIST]'      => $patientData[''],
-            '[PATIENT_ACTIVE_SURGERY_LIST]'       => $patientData[''],
-            '[PATIENT_INACTIVE_SURGERY_LIST]'     => $patientData['']
+			'[ENCOUNTER_DATE]'               =>'         ',
+			'[ENCOUNTER_SUBJECTIVE]'         =>'         ',
+			'[ENCOUNTER_OBJECTIVE]'          =>'         ',
+			'[ENCOUNTER_ASSESMENT]'          =>'         ',
+			'[ENCOUNTER_ASSESMENT_LIST]'     =>'         ',
+			'[ENCOUNTER_ASSESMENT_CODE_LIST]'=>'         ',
+			'[ENCOUNTER_ASSESMENT_FULL_LIST]'=>'         ',
+			'[ENCOUNTER_PLAN]'               =>'         ',
+			'[ENCOUNTER_MEDICATIONS]'        =>'         ',
+			'[ENCOUNTER_IMMUNIZATIONS]'      =>'         ',
+			'[ENCOUNTER_ALLERGIES]'          =>'         ',
+			'[ENCOUNTER_ACTIVE_PROBLEMS]'    =>'         ',
+			'[ENCOUNTER_SURGERIES]'          =>'         ',
+			'[ENCOUNTER_DENTAL]'             =>'         ',
+			'[ENCOUNTER_LABORATORIES]'       =>'         ',
+			'[ENCOUNTER_PROCEDURES_TERMS]'   =>'         ',
+			'[ENCOUNTER_CPT_CODES]'          =>'         ',
+			'[ENCOUNTER_SIGNATURE]'          =>'         ',
+            '[PATIENT_REFERRAL_REASON]'      =>'         ',
+            '[PATIENT_HEAD_CIRCUMFERENCE]'        => '',
+            '[PATIENT_HEIGHT]'                    => '',
+            '[PATIENT_PULSE]'                     => '',
+            '[PATIENT_RESPIRATORY_RATE]'          => '',
+            '[PATIENT_TEMPERATURE]'               => '',
+            '[PATIENT_WEIGHT]'                    => '',
+            '[PATIENT_PULSE_OXIMETER]'            => '',
+            '[PATIENT_BLOOD_PREASURE]'            => '',
+            '[PATIENT_BMI]'                       => '',
+            '[PATIENT_ACTIVE_ALLERGIES_LIST]'     => '',
+            '[PATIENT_INACTIVE_ALLERGIES_LIST]'   => '',
+            '[PATIENT_ACTIVE_MEDICATIONS_LIST]'   => '',
+            '[PATIENT_INACTIVE_MEDICATIONS_LIST]' => '',
+            '[PATIENT_ACTIVE_PROBLEMS_LIST]'      => '',
+            '[PATIENT_INACTIVE_PROBLEMS_LIST]'    => '',
+            '[PATIENT_ACTIVE_IMMUNIZATIONS_LIST]' => '',
+            '[PATIENT_INACTIVE_IMMUNIZATIONS_LIST]' => '',
+            '[PATIENT_ACTIVE_DENTAL_LIST]'        => '',
+            '[PATIENT_INACTIVE_DENTAL_LIST]'      => '',
+            '[PATIENT_ACTIVE_SURGERY_LIST]'       => '',
+            '[PATIENT_INACTIVE_SURGERY_LIST]'     => ''
 		);
 		$pos                  = 0;
 		foreach($tokens[0] as $tok) {
@@ -432,7 +432,7 @@ class Documents
 		$body          = $this->getTemplateBodyById($documentId);
 		$allNeededInfo = $this->setArraySizeOfTokenArray($tokens);
 		$allNeededInfo = $this->get_PatientTokensData($pid, $allNeededInfo, $tokens);
-		$allNeededInfo = $this->get_EncounterTokensData(/*$eid*/1,$allNeededInfo, $tokens);
+		$allNeededInfo = $this->get_EncounterTokensData( /*$eid,*/ $allNeededInfo, $tokens);
 		$allNeededInfo = $this->get_currentTokensData($allNeededInfo, $tokens);
 		$allNeededInfo = $this->get_ClinicTokensData($allNeededInfo, $tokens);
 
@@ -460,7 +460,7 @@ class Documents
     public function PDFDocumentBuilderDoctors($params)
 	{
 		$pid           = $params->pid;
-		$eid           = $params->eid;
+		//$eid           = $params->eid;
         $regex = '(\[\w*?\])';
         $body  = $params->DoctorsNote;
         preg_match_all($regex, $body, $tokensfound);
@@ -468,7 +468,7 @@ class Documents
 
 		$allNeededInfo = $this->setArraySizeOfTokenArray($tokens);
 		$allNeededInfo = $this->get_PatientTokensData($pid, $allNeededInfo, $tokens);
-		$allNeededInfo = $this->get_EncounterTokensData( $eid, $allNeededInfo, $tokens);
+		$allNeededInfo = $this->get_EncounterTokensData( /*$eid,*/ $allNeededInfo, $tokens);
 		$allNeededInfo = $this->get_currentTokensData($allNeededInfo, $tokens);
 		$allNeededInfo = $this->get_ClinicTokensData($allNeededInfo, $tokens);
 		$rawHTML = str_replace($tokens[0], $allNeededInfo, $body);

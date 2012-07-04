@@ -42,8 +42,8 @@ class Navigation {
         // *************************************************************************************
         // Patient Folder
         // *************************************************************************************
-
 	    $patient = array( 'text' => 'Patient', 'cls' => 'folder', 'expanded' => true );
+
 	    if($this->ACL->hasPermission('add_patient')){
 		    $patient['children'][] = array( 'text' => $this->t['new_patient'][$this->lang], 'leaf' => true, 'cls' => 'file', 'id' => 'panelNewPatient' );
 	    }
@@ -60,16 +60,6 @@ class Navigation {
 		    $patient['children'][] = array( 'text' => $this->t['visit_checkout'][$this->lang], 'leaf' => true, 'cls' => 'file', 'id' => 'panelVisitCheckout' );
 	    }
 
-//        array_push( $nav, array( 'text' => 'Patient', 'cls' => 'folder', 'expanded' => true, 'children' =>
-//            array(
-//                array( 'text' => $this->t['new_patient'][$this->lang],      'disabled'=> ($this->ACL->hasPermission('add_patient')              ? false:true), 'leaf' => true, 'cls' => 'file', 'id' => 'panelNewPatient' ),
-//                array( 'text' => $this->t['patient_summary'][$this->lang],  'disabled'=> ($this->ACL->hasPermission('access_patient_summary')   ? false:true), 'leaf' => true, 'cls' => 'file', 'id' => 'panelSummary' ),
-//                array( 'text' => $this->t['visist_history'][$this->lang],   'disabled'=> ($this->ACL->hasPermission('access_patient_visits')    ? false:true), 'leaf' => true, 'cls' => 'file', 'id' => 'panelVisits' ),
-//                array( 'text' => $this->t['encounter'][$this->lang],        'disabled'=> ($this->ACL->hasPermission('access_encounters')        ? false:true), 'leaf' => true, 'cls' => 'file', 'id' => 'panelEncounter' ),
-//                array( 'text' => $this->t['visit_checkout'][$this->lang],   'disabled'=> ($this->ACL->hasPermission('access_visit_checkout')    ? false:true), 'leaf' => true, 'cls' => 'file', 'id' => 'panelVisitCheckout' )
-//            )
-//        ));
-
 	    array_push($nav, $patient);
         // *************************************************************************************
         // Fees Folder
@@ -80,36 +70,62 @@ class Navigation {
                 array( 'text' => $this->t['billing'][$this->lang],      'leaf' => true, 'cls' => 'file', 'id' => 'panelBilling' )
             )
         ));
+
         // *************************************************************************************
         // Administration Folder
         // *************************************************************************************
-        if(
-            $this->ACL->hasPermission('access_gloabal_settings') ||
-            $this->ACL->hasPermission('access_facilities') ||
-            $this->ACL->hasPermission('access_users') ||
-            $this->ACL->hasPermission('access_practice') ||
-            $this->ACL->hasPermission('access_services') ||
-            $this->ACL->hasPermission('access_medications') ||
-            $this->ACL->hasPermission('access_roles') ||
-            $this->ACL->hasPermission('access_layouts') ||
-            $this->ACL->hasPermission('access_lists') ||
-            $this->ACL->hasPermission('access_event_log')
-        ) array_push( $nav, array( 'text' => 'Administration', 'cls' => 'folder', 'expanded' => true, 'children' =>
-            array(
-                array( 'text' => 'Global Settings', 'disabled'=> ($this->ACL->hasPermission('access_gloabal_settings')? false:true), 'leaf' => true, 'cls' => 'file', 'id' => 'panelGlobals' ),
-                array( 'text' => 'Facilities',      'disabled'=> ($this->ACL->hasPermission('access_facilities')      ? false:true), 'leaf' => true, 'cls' => 'file', 'id' => 'panelFacilities' ),
-                array( 'text' => 'Users',           'disabled'=> ($this->ACL->hasPermission('access_users')           ? false:true), 'leaf' => true, 'cls' => 'file', 'id' => 'panelUsers' ),
-                array( 'text' => 'Practice',        'disabled'=> ($this->ACL->hasPermission('access_practice')        ? false:true), 'leaf' => true, 'cls' => 'file', 'id' => 'panelPractice' ),
-                array( 'text' => 'Data Manager',     'disabled'=> ($this->ACL->hasPermission('access_data_manager')    ? false:true), 'leaf' => true, 'cls' => 'file', 'id' => 'panelDataManager' ),
-                array( 'text' => 'Preventive Care', 'disabled'=> ($this->ACL->hasPermission('access_preventive_care') ? false:true), 'leaf' => true, 'cls' => 'file', 'id' => 'panelPreventiveCare' ),
-                array( 'text' => 'Medications',     'disabled'=> ($this->ACL->hasPermission('access_medications')     ? false:true), 'leaf' => true, 'cls' => 'file', 'id' => 'panelMedications' ),
-                array( 'text' => 'Roles',           'disabled'=> ($this->ACL->hasPermission('access_roles')           ? false:true), 'leaf' => true, 'cls' => 'file', 'id' => 'panelRoles' ),
-                array( 'text' => 'Layouts',         'disabled'=> ($this->ACL->hasPermission('access_layouts')         ? false:true), 'leaf' => true, 'cls' => 'file', 'id' => 'panelLayout' ),
-                array( 'text' => 'Lists',           'disabled'=> ($this->ACL->hasPermission('access_lists')           ? false:true), 'leaf' => true, 'cls' => 'file', 'id' => 'panelLists' ),
-                array( 'text' => 'Event Log',       'disabled'=> ($this->ACL->hasPermission('access_event_log')       ? false:true), 'leaf' => true, 'cls' => 'file', 'id' => 'panelLog' ),
-                array( 'text' => 'Documents',       'disabled'=> ($this->ACL->hasPermission('access_documents')       ? false:true), 'leaf' => true, 'cls' => 'file', 'id' => 'panelDocuments' )
-            )
-        ));
+	    $admin = array( 'text' => 'Administration', 'cls' => 'folder', 'expanded' => true);
+
+	    if($this->ACL->hasPermission('access_gloabal_settings')){
+		    $admin['children'][] = array( 'text' => 'Global Settings', 'leaf' => true, 'cls' => 'file', 'id' => 'panelGlobals' );
+	    }
+	    if($this->ACL->hasPermission('access_facilities')){
+		    $admin['children'][] = array( 'text' => 'Facilities', 'leaf' => true, 'cls' => 'file', 'id' => 'panelFacilities' );
+	    }
+	    if($this->ACL->hasPermission('access_users')){
+		    $admin['children'][] = array( 'text' => 'Users', 'leaf' => true, 'cls' => 'file', 'id' => 'panelUsers' );
+	    }
+	    if($this->ACL->hasPermission('access_practice')){
+		    $admin['children'][] = array( 'text' => 'Practice', 'leaf' => true, 'cls' => 'file', 'id' => 'panelPractice' );
+	    }
+	    if($this->ACL->hasPermission('access_data_manager')){
+		    $admin['children'][] = array( 'text' => 'Data Manager', 'leaf' => true, 'cls' => 'file', 'id' => 'panelDataManager' );
+	    }
+	    if($this->ACL->hasPermission('access_preventive_care')){
+		    $admin['children'][] = array( 'text' => 'Preventive Care', 'leaf' => true, 'cls' => 'file', 'id' => 'panelPreventiveCare' );
+	    }
+	    if($this->ACL->hasPermission('access_medications')){
+		    $admin['children'][] = array( 'text' => 'Medications', 'leaf' => true, 'cls' => 'file', 'id' => 'panelMedications' );
+	    }
+	    if($this->ACL->hasPermission('access_roles')){
+		    $admin['children'][] = array( 'text' => 'Roles', 'leaf' => true, 'cls' => 'file', 'id' => 'panelRoles' );
+	    }
+	    if($this->ACL->hasPermission('access_layouts')){
+		    $admin['children'][] = array( 'text' => 'Layouts', 'leaf' => true, 'cls' => 'file', 'id' => 'panelLayout' );
+	    }
+	    if($this->ACL->hasPermission('access_lists')){
+		    $admin['children'][] = array( 'text' => 'Lists', 'leaf' => true, 'cls' => 'file', 'id' => 'panelLists' );
+	    }
+	    if($this->ACL->hasPermission('access_event_log')){
+		    $admin['children'][] = array( 'text' => 'Event Log', 'leaf' => true, 'cls' => 'file', 'id' => 'panelLog' );
+	    }
+	    if($this->ACL->hasPermission('access_documents')){
+		    $admin['children'][] = array( 'text' => 'Documents', 'leaf' => true, 'cls' => 'file', 'id' => 'panelDocuments' );
+	    }
+
+	    if(
+	        $this->ACL->hasPermission('access_gloabal_settings') ||
+	        $this->ACL->hasPermission('access_facilities') ||
+	        $this->ACL->hasPermission('access_users') ||
+	        $this->ACL->hasPermission('access_practice') ||
+	        $this->ACL->hasPermission('access_services') ||
+	        $this->ACL->hasPermission('access_medications') ||
+	        $this->ACL->hasPermission('access_roles') ||
+	        $this->ACL->hasPermission('access_layouts') ||
+	        $this->ACL->hasPermission('access_lists') ||
+	        $this->ACL->hasPermission('access_event_log')
+        ) array_push($nav, $admin) ;
+
         // *************************************************************************************
         // Miscellaneous Folder
         // *************************************************************************************

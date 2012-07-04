@@ -119,10 +119,28 @@ Ext.define('App.view.patientfile.NewPatient', {
 
     copyData:function(combo, records){
         var form = combo.up('form').getForm();
-        say(form);
         if(combo.value == 'self'){
-            say(combo);
-            say(records[0].data);
+
+            var values = form.getValues(),
+                patientData = {
+                    primary_subscriber_title:values.title,
+                    primary_subscriber_fname:values.fname,
+                    primary_subscriber_mname:values.mname,
+                    primary_subscriber_lname:values.lname,
+                    primary_subscriber_street:values.address,
+                    primary_subscriber_city:values.city,
+                    primary_subscriber_state:values.state,
+                    primary_subscriber_country:values.country,
+                    primary_subscriber_zip_code:values.zipcode,
+                    primary_subscriber_phone:values.home_phone,
+                    primary_subscriber_employer:values.employer_name,
+                    primary_subscriber_employer_street:values.employer_address,
+                    primary_subscriber_employer_city:values.employer_city,
+                    primary_subscriber_employer_state:values.employer_state,
+                    primary_subscriber_employer_country:values.employer_country,
+                    primary_subscriber_employer_zip_code:values.employer_postal_code
+                };
+            form.setValues(patientData);
         }
     },
 

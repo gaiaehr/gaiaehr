@@ -16,7 +16,28 @@ include_once($_SESSION['site']['root'].'/classes/dbHelper.php');
 
 $db = new dbHelper();
 $tables = array(
-	'calendar_events'
+	'calendar_events',
+	'encounter_codes_cpt',
+	'encounter_codes_hcpcs',
+	'encounter_codes_icdx',
+	'encounter_history',
+	'form_data_demographics',
+	'form_data_dictation',
+	'form_data_encounter',
+	'form_data_review_of_systems',
+	'form_data_review_of_systems_check',
+	'form_data_soap',
+	'form_data_vitals',
+	'messages',
+	'patient_allergies',
+	'patient_dental',
+	'patient_doctors_notes',
+	'patient_orders',
+	'patient_pools',
+	'patient_prescriptions',
+	'patient_reminders',
+	'patient_surgery',
+	'preventive_care_inactive_patient'
 );
 
 function getDirectoryList ($directory)

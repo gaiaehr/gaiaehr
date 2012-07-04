@@ -106,17 +106,33 @@ Ext.define('App.view.patientfile.NewPatient', {
 	},
 
     beforePanelRender:function(){
-        this.getFormItems(this.form, this.formToRender);
+        var me = this;
+        me.getFormItems(this.form, this.formToRender, function(formPanel, items){
+            var primary = formPanel.getForm().findField('primary_subscriber_relationship');
+            primary.on('select', me.copyData, me);
+            var secondary = formPanel.getForm().findField('secondary_subscriber_relationship');
+            secondary.on('select', me.copyData, me);
+            var tertiary = formPanel.getForm().findField('tertiary_subscriber_relationship');
+            tertiary.on('select', me.copyData, me);
+        });
     },
+
+    copyData:function(combo, records){
+        var form = combo.up('form').getForm();
+        say(form);
+        say(combo);
+        say(records[0].data);
+
+
+    },
+
 	/**
 	 * This function is called from MitosAPP.js when
 	 * this panel is selected in the navigation panel.
 	 * place inside this function all the functions you want
 	 * to call every this panel becomes active
 	 */
-	onActive       : function(callback) {
-		//this.getFormItems(this.form, this.formToRender);
-
+	onActive: function(callback) {
 		this.confirmationWin(function(btn) {
 			if(btn == 'yes') {
 				app.patientUnset();

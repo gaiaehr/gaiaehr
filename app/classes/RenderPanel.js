@@ -85,17 +85,13 @@ Ext.define('App.classes.RenderPanel', {
 
 	getFormItems: function(formPanel, formToRender, callback) {
 		formPanel.removeAll();
-		/**
-		 * Ext.direct function
-		 */
+
 		FormLayoutEngine.getFields({formToRender: formToRender}, function(provider, response) {
-			formPanel.add(eval(response.result));
-			//formPanel.doLayout();
-
+			var items = eval(response.result);
+            formPanel.add(items);
 			if(typeof callback == 'function') {
-				callback(true);
+				callback(formPanel, items, true);
 			}
-
 		});
 	},
 

@@ -525,11 +525,17 @@ class PreventiveCare
 
 
     public function getPreventiveCareDismissPatientByEncounterID($eid){
-        $this->db->setSQL("SELECT *
-                           FROM preventive_care_inactive_patient
-                           WHERE eid='$eid'");
+        $this->db->setSQL("SELECT pcip.*, pcg.description
+                           FROM preventive_care_inactive_patient AS pcip
+                           LEFT JOIN preventive_care_guidelines AS pcg ON pcg.id = pcip.preventive_care_id
+                           WHERE pcip.eid='$eid'");
         return $this->db->fetchRecords(PDO::FETCH_ASSOC);
 
+    }
+
+    public function getpreventiveCareById($id){
+        $this->db->setSQL("SELECT * FROM preventive_care_guidelines WHERE id = '$id'");
+        return $this->db->fetchRecord();
     }
 }
 //

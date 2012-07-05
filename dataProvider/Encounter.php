@@ -573,10 +573,10 @@ class Encounter {
          */
         $icdxs = '';
         foreach($this->services->getIcdxByEid($eid) as $code){
-            $icdxs .= $code['code'].', ';
+            $icdxs .= '<li><span style="font-weight:bold; text-decoration:none">'.$code['code'].'</span> - '.$code['code_text'].'</li>';
         }
 
-        $icdxs = substr($icdxs, 0, -2);
+        //$icdxs = substr($icdxs, 0, -2);
         $soap = $this->getSoapByEid($eid);
 
 
@@ -679,7 +679,8 @@ class Encounter {
 
 
 
-        $soap['assessment'] = $soap['assessment'].' <span style="font-weight:bold; text-decoration:none">[ '.$icdxs.' ]</span> ';
+        $soap['assessment'] = $soap['assessment'].'<ul  class="ProgressNote-ul">'.$icdxs.'</ul>';
+
         $encounter['soap'] = $soap;
 
         /**

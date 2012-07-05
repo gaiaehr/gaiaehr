@@ -16,6 +16,8 @@ include_once($_SESSION['site']['root'] . '/dataProvider/Patient.php');
 include_once($_SESSION['site']['root'] . '/dataProvider/User.php');
 include_once($_SESSION['site']['root'] . '/dataProvider/Encounter.php');
 include_once($_SESSION['site']['root'] . '/dataProvider/Fees.php');
+include_once($_SESSION['site']['root'] . '/dataProvider/PreventiveCare.php');
+include_once($_SESSION['site']['root'] . '/dataProvider/Medical.php');
 include_once($_SESSION['site']['root'] . '/dataProvider/Services.php');
 include_once($_SESSION['site']['root'] . '/dataProvider/Facilities.php');
 include_once($_SESSION['site']['root'] . '/lib/dompdf_0-6-0_beta3/dompdf_config.inc.php');
@@ -44,6 +46,12 @@ class Documents
 
 	private $fees;
 
+	private $preventiveCare;
+
+	private $medical;
+
+	private $encounter;
+
 	private $dompdf;
 
 	function __construct()
@@ -53,6 +61,9 @@ class Documents
 		$this->patient  = new Patient();
 		$this->services = new Services();
 		$this->facility = new Facilities();
+		$this->encounter = new Encounter();
+		$this->medical = new Medical();
+		$this->preventiveCare = new PreventiveCare();
 		$this->fees = new Fees();
 		$this->dompdf   = new DOMPDF();
 		return;
@@ -266,8 +277,51 @@ class Documents
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	private function get_EncounterTokensData(  $eid,  $allNeededInfo, $tokens)
+	public function get_EncounterTokensData(  $eid,  $allNeededInfo, $tokens)
 	{
+        $vitals = end($this->encounter->getVitalsByEid($eid));
+        $soap = $this->encounter->getSoapByEid($eid);
+        $reviewofsystemschecks = $this->encounter->getReviewOfSystemsChecksByEid($eid);
+        $reviewofsystems = $this->encounter->getReviewOfSystemsByEid($eid);
+        $icdx = $this->services->getIcdxByEid($eid);
+        $cpt = $this->services->getCptByEid($eid);
+        $hcpc = $this->services->getHCPCByEid($eid);
+        $medications = $this->medical->getPatientMedicationsByEncounterID($eid);
+        $immunizations = $this->medical->getImmunizationsByEncounterID($eid);
+        $allergies = $this->medical->getAllergiesByEncounterID($eid);
+        $surgery = $this->medical->getPatientSurgeryByEncounterID($eid);
+        $dental = $this->medical->getPatientDentalByEncounterID($eid);
+        $activeProblems = $this->medical->getMedicalIssuesByEncounterID($eid);
+        $preventivecaredismiss = $this->preventiveCare->getPreventiveCareDismissPatientByEncounterID($eid);
+        print_r('$vitals');
+        print_r($vitals);
+        print_r('$soap');
+        print_r($soap);
+        print_r('$reviewofsystemschecks');
+        print_r($reviewofsystemschecks);
+        print_r('$reviewofsystems');
+        print_r($reviewofsystems);
+        print_r('$icdx');
+        print_r($icdx);
+        print_r('$cpt');
+        print_r($cpt);
+        print_r('$hcpc');
+        print_r($hcpc);
+        print_r('$medications');
+        print_r($medications);
+        print_r('$immunizations');
+        print_r($immunizations);
+        print_r('$allergies');
+        print_r($allergies);
+        print_r('$surgery');
+        print_r($surgery);
+        print_r('$dental');
+        print_r($dental);
+        print_r('$activeProblems');
+        print_r($activeProblems);
+        print_r('$preventivecaredismiss');
+        print_r($preventivecaredismiss);
+
 		$encounterInformation = array
 		(
 			'[ENCOUNTER_DATE]'               =>'         ',
@@ -484,4 +538,4 @@ class Documents
 
 //$e = new Documents();
 //echo '<pre>';
-//$e->findAndReplaceTokens(1,3);
+//$e->get_EncounterTokensData(1,3,3);

@@ -354,7 +354,7 @@ class Encounter {
     public function getSoapByEid($eid)
     {
         $this->db->setSQL("SELECT * FROM form_data_soap WHERE eid = '$eid' ORDER BY date DESC");
-        $soap = $this->db->fetchRecords(PDO::FETCH_ASSOC);
+        $soap = $this->db->fetchRecord(PDO::FETCH_ASSOC);
 
         $icdxs = array();
         foreach($this->services->getIcdxByEid($eid) as $code){
@@ -573,10 +573,10 @@ class Encounter {
          */
         $icdxs = '';
         foreach($this->services->getIcdxByEid($eid) as $code){
-            $icdxs .= $code['code'].', ';
+            $icdxs .= '<li><span style="font-weight:bold; text-decoration:none">'.$code['code'].'</span> - '.$code['code_text'].'</li>';
         }
 
-        $icdxs = substr($icdxs, 0, -2);
+        //$icdxs = substr($icdxs, 0, -2);
         $soap = $this->getSoapByEid($eid);
 
 
@@ -588,8 +588,8 @@ class Encounter {
 			    $lis .= 'Instruction: '.$foo['take_pills'] .' '. $foo['type'] .' '. $foo['by'] .' '. $foo['prescription_often'] .' '. $foo['prescription_when'].'<br>';
 			    $lis .= 'Dispense: '.$foo['dispense'] .'  Refill: '.$foo['refill'].' </li>';
 			}
-		    $soap[0]['objective'] .= '<p>Medications:</p>';
-		    $soap[0]['objective'] .= '<ul class="ProgressNote-ul">'.$lis.'</ul>' ;
+		    $soap['objective'] .= '<p>Medications:</p>';
+		    $soap['objective'] .= '<ul class="ProgressNote-ul">'.$lis.'</ul>' ;
 	    }
 
 
@@ -604,8 +604,8 @@ class Encounter {
 			    $lis .= 'Dosis: '.$foo['dosis'] .'<br>';
 			    $lis .= 'Administered By: '.$foo['administered_by'].' </li>';
 			}
-		    $soap[0]['objective'] .= '<p>Immunizations:</p>';
-		    $soap[0]['objective'] .= '<ul class="ProgressNote-ul">'.$lis.'</ul>' ;
+		    $soap['objective'] .= '<p>Immunizations:</p>';
+		    $soap['objective'] .= '<ul class="ProgressNote-ul">'.$lis.'</ul>' ;
 	    }
 
 
@@ -619,8 +619,8 @@ class Encounter {
 			    $lis .= 'Location: ' .$foo['location'].'<br>';
 			    $lis .= 'Active?: ' .($foo['end_date'] != null ? 'Yes' : 'No').'</li>';
 			}
-		    $soap[0]['objective'] .= '<p>Allergies:</p>';
-		    $soap[0]['objective'] .= '<ul class="ProgressNote-ul">'.$lis.'</ul>' ;
+		    $soap['objective'] .= '<p>Allergies:</p>';
+		    $soap['objective'] .= '<ul class="ProgressNote-ul">'.$lis.'</ul>' ;
 	    }
 
 
@@ -632,8 +632,8 @@ class Encounter {
 //			    $lis .= 'Immunization ID: ' .$foo['immunization_id'].'<br>';
 //			    $lis .= 'Administered By: '.$foo['administered_by'].' </li>';
 			}
-		    $soap[0]['objective'] .= '<p>Surgeries:</p>';
-		    $soap[0]['objective'] .= '<ul class="ProgressNote-ul">'.$lis.'</ul>' ;
+		    $soap['objective'] .= '<p>Surgeries:</p>';
+		    $soap['objective'] .= '<ul class="ProgressNote-ul">'.$lis.'</ul>' ;
 	    }
 
 	    $dental = $this->medical->getPatientDentalByEncounterID($eid);
@@ -644,8 +644,8 @@ class Encounter {
 //			    $lis .= 'Immunization ID: ' .$foo['immunization_id'].'<br>';
 //			    $lis .= 'Administered By: '.$foo['administered_by'].' </li>';
 			}
-		    $soap[0]['objective'] .= '<p>Dental:</p>';
-		    $soap[0]['objective'] .= '<ul class="ProgressNote-ul">'.$lis.'</ul>' ;
+		    $soap['objective'] .= '<p>Dental:</p>';
+		    $soap['objective'] .= '<ul class="ProgressNote-ul">'.$lis.'</ul>' ;
 	    }
 
 	    $activeProblems = $this->medical->getMedicalIssuesByEncounterID($eid);
@@ -658,8 +658,8 @@ class Encounter {
 //			    $lis .= 'Immunization ID: ' .$foo['immunization_id'].'<br>';
 //			    $lis .= 'Administered By: '.$foo['administered_by'].' </li>';
 			}
-		    $soap[0]['objective'] .= '<p>Active Problems:</p>';
-		    $soap[0]['objective'] .= '<ul class="ProgressNote-ul">'.$lis.'</ul>' ;
+		    $soap['objective'] .= '<p>Active Problems:</p>';
+		    $soap['objective'] .= '<ul class="ProgressNote-ul">'.$lis.'</ul>' ;
 	    }
 
 	    $preventiveCare = $this->preventiveCare->getPreventiveCareDismissPatientByEncounterID($eid);
@@ -670,8 +670,8 @@ class Encounter {
 			    $lis .= 'Reason: ' .$foo['reason'].'<br>';
 			    $lis .= 'Observation: '.$foo['observation'].' </li>';
 			}
-		    $soap[0]['objective'] .= '<p>Preventive Care:</p>';
-		    $soap[0]['objective'] .= '<ul class="ProgressNote-ul">'.$lis.'</ul>' ;
+		    $soap['objective'] .= '<p>Preventive Care:</p>';
+		    $soap['objective'] .= '<ul class="ProgressNote-ul">'.$lis.'</ul>' ;
 	    }
 
 
@@ -679,7 +679,8 @@ class Encounter {
 
 
 
-        $soap[0]['assessment'] = $soap[0]['assessment'].' <span style="font-weight:bold; text-decoration:none">[ '.$icdxs.' ]</span> ';
+        $soap['assessment'] = $soap['assessment'].'<ul  class="ProgressNote-ul">'.$icdxs.'</ul>';
+
         $encounter['soap'] = $soap;
 
         /**

@@ -172,7 +172,7 @@ class Documents
 			'[PATIENT_BIRTHDATE]'                 => $patientData['DOB'],
 			'[PATIENT_MARITAL_STATUS]'            => $patientData['marital_status'],
             '[PATIENT_SOCIAL_SECURITY]'           => $patientData['SS'],
-            '[PATIENT_EXTERNAL_ID    ]'           => $patientData['pubpid'],
+            '[PATIENT_EXTERNAL_ID]'               => $patientData['pubpid'],
             '[PATIENT_DRIVERS_LICENSE]'           => $patientData['drivers_license'],
             '[PATIENT_ADDRESS]'                   => $patientData['address'],
             '[PATIENT_CITY]'                      => $patientData['city'],
@@ -187,7 +187,7 @@ class Documents
 			'[PATIENT_GUARDIANS_NAME]'            => $patientData['guardians_name'],
 			'[PATIENT_EMERGENCY_CONTACT]'         => $patientData['emer_contact'],
 			'[PATIENT_EMERGENCY_PHONE]'           => $patientData['emer_phone'],
-			'[PATIENT_PROVIDER]'                  => $patientData['provider'],
+			'[PATIENT_PROVIDER]'                  => $this->user->getUserFullNameById($patientData['provider']),
 			'[PATIENT_PHARMACY]'                  => $patientData['pharmacy'],
 			'[PATIENT_AGE]'                       => $age['years'],
 			'[PATIENT_OCCUPATION]'                => $patientData['occupation'],
@@ -266,7 +266,7 @@ class Documents
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	private function get_EncounterTokensData(  /*$eid,*/  $allNeededInfo, $tokens)
+	private function get_EncounterTokensData(  $eid,  $allNeededInfo, $tokens)
 	{
 		$encounterInformation = array
 		(
@@ -427,12 +427,13 @@ class Documents
 	public function PDFDocumentBuilder($params)
 	{
 		$pid           = $params->pid;
+        $eid           = $params->eid;
 		$documentId    = $params->documentId;
 		$tokens        = $this->getArrayWithTokensNeededByDocumentID($documentId); //getting the template
 		$body          = $this->getTemplateBodyById($documentId);
 		$allNeededInfo = $this->setArraySizeOfTokenArray($tokens);
 		$allNeededInfo = $this->get_PatientTokensData($pid, $allNeededInfo, $tokens);
-		$allNeededInfo = $this->get_EncounterTokensData( /*$eid,*/ $allNeededInfo, $tokens);
+		$allNeededInfo = $this->get_EncounterTokensData( $eid,$allNeededInfo, $tokens);
 		$allNeededInfo = $this->get_currentTokensData($allNeededInfo, $tokens);
 		$allNeededInfo = $this->get_ClinicTokensData($allNeededInfo, $tokens);
 
@@ -460,7 +461,7 @@ class Documents
     public function PDFDocumentBuilderDoctors($params)
 	{
 		$pid           = $params->pid;
-		//$eid           = $params->eid;
+		$eid           = $params->eid;
         $regex = '(\[\w*?\])';
         $body  = $params->DoctorsNote;
         preg_match_all($regex, $body, $tokensfound);
@@ -468,7 +469,7 @@ class Documents
 
 		$allNeededInfo = $this->setArraySizeOfTokenArray($tokens);
 		$allNeededInfo = $this->get_PatientTokensData($pid, $allNeededInfo, $tokens);
-		$allNeededInfo = $this->get_EncounterTokensData( /*$eid,*/ $allNeededInfo, $tokens);
+		$allNeededInfo = $this->get_EncounterTokensData( $eid, $allNeededInfo, $tokens);
 		$allNeededInfo = $this->get_currentTokensData($allNeededInfo, $tokens);
 		$allNeededInfo = $this->get_ClinicTokensData($allNeededInfo, $tokens);
 		$rawHTML = str_replace($tokens[0], $allNeededInfo, $body);

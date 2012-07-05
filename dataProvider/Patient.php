@@ -81,8 +81,7 @@ class Patient
 		$patient['fullname'] = Person::fullname($patient['fname'], $patient['mname'], $patient['lname']);
 		if(!$this->createPatientDir($pid)) {
 			return array("success" => false, "error"=> 'Patient directory failed');
-		}
-		;
+		};
 		$this->createPatientQrCode($pid, $patient['fullname']);
 		$this->createDefaultPhotoId($pid);
 		return array('success' => true, 'patient'=> array('pid'=> $pid, 'fullname' => $patient['fullname']));
@@ -90,14 +89,15 @@ class Patient
 
 	public function createNewPatientOnlyName($name)
 	{
-		$patient       = new stdClass();
+
+		$data = array();
 		$foo           = explode(' ', $name);
-		$data['fname'] = $foo[0];
-		$data['mname'] = (isset($foo[1])) ? $foo[1] : '';
+		$data['fname'] = trim($foo[0]);
+		$data['mname'] = (isset($foo[1])) ? trim($foo[1]) : '';
 		unset($foo[0], $foo[1]);
 		$data['lname'] = '';
 		foreach($foo as $fo) {
-			$patient->lname .= $fo;
+			$data['lname'] .= $data['lname']. ' ' . $fo . ' ';
 		}
 		$this->db->setSQL($this->db->sqlBind($data, 'form_data_demographics', 'I'));
 		$this->db->execLog();
@@ -105,10 +105,9 @@ class Patient
 		if(!$this->createPatientDir($pid)) {
 			return array('success' => false, 'error'=> 'Patient directory failed');
 		}
-		;
-		$this->createPatientQrCode($pid, $patient['fullname']);
-		return $pid;
-
+		$this->createPatientQrCode($pid, $name);
+		$this->createDefaultPhotoId($pid);
+		return array('success' => true, 'patient'=> array('pid'=> $pid, 'fullname' => $name));
 	}
 
 	/**
@@ -461,7 +460,7 @@ class Patient
 	}
 
 }
-
+//
 //$p = new Patient();
 //echo '<pre>';
-//print_r($p->createNewPatientWithName('Ernesto J Rodriguez'));
+//print_r($p->createNewPatientOnlyName('Ernesto J Rodriguez'));

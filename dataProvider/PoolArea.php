@@ -89,12 +89,18 @@ class PoolArea
 	public function addPatientArrivalLog(stdClass $params){
 
 		if($params->isNew){
-			$params->pid = $this->patient->createNewPatientOnlyName($params->name);
+			$patient = $this->patient->createNewPatientOnlyName($params->name);
+			$params->pid = $patient['patient']['pid'];
+			$params->name = $patient['patient']['fullname'];
+			$params->area = 'Check In';
+			$params->area_id = 1;
+			$params->new = true;
+			$params->warning = true;
 			$this->checkInPatient($params);
 		}else{
 			$this->checkInPatient($params);
 		}
-		return;
+		return $params;
 	}
 
 	public function updatePatientArrivalLog(stdClass $params){

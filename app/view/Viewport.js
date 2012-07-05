@@ -262,7 +262,7 @@ Ext.define('App.view.Viewport', {
 				//me.checkSession();
 				me.getPatientesInPoolArea();
 			},
-			interval: 3000
+			interval: 10000
 		});
 
 		me.storeTree = Ext.create('App.store.navigation.Navigation', {

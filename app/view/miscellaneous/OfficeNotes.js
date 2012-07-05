@@ -13,36 +13,11 @@ Ext.define('App.view.miscellaneous.OfficeNotes', {
 	id           : 'panelOfficeNotes',
 	pageTitle    : 'Office Notes',
 	pageLayout   : 'border',
-	uses         : [
-		'App.classes.GridPanel',
-		'App.classes.RenderPanel'
-	],
 	initComponent: function() {
 		var me = this;
 
-		Ext.define('OfficeNotesModel', {
-			extend: 'Ext.data.Model',
-			fields: [
-				{name: 'id', type: 'int'},
-				{name: 'date', type: 'date', dateFormat: 'c'},
-				{name: 'body', type: 'string'},
-				{name: 'user', type: 'string'},
-				{name: 'facility_id', type: 'string'},
-				{name: 'activity', type: 'string'}
-			],
-			proxy : {
-				type: 'direct',
-				api : {
-					read  : OfficeNotes.getOfficeNotes,
-					create: OfficeNotes.addOfficeNotes,
-					update: OfficeNotes.updateOfficeNotes
-				}
-			}
-		});
-		me.store = Ext.create('Ext.data.Store', {
-			model   : 'OfficeNotesModel',
-			autoLoad: true
-		});
+		me.store = Ext.create('App.store.miscellaneous.OfficeNotes');
+
 		me.form = Ext.create('Ext.form.FormPanel', {
 			region     : 'north',
 			frame      : true,
@@ -75,7 +50,7 @@ Ext.define('App.view.miscellaneous.OfficeNotes', {
 							itemId  : 'cmdSave',
 							disabled: true,
 							scope   : me,
-							handler : me.onSave
+							handler : me.onNoteSave
 						},
 						'-',
 						{
@@ -85,7 +60,7 @@ Ext.define('App.view.miscellaneous.OfficeNotes', {
 							tooltip : 'Hide Selected Office Note',
 							disabled: true,
 							scope   : me,
-							handler : me.onHide
+							handler : me.onNoteHide
 
 						},
 						'-',
@@ -95,13 +70,13 @@ Ext.define('App.view.miscellaneous.OfficeNotes', {
 							itemId  : 'cmdReset',
 							disabled: true,
 							scope   : me,
-							handler : me.onReset
+							handler : me.onFormReset
 						}
 					]
 				}
 			]
 		});
-		me.grid = Ext.create('App.classes.GridPanel', {
+		me.grid = Ext.create('Ext.grid.Panel', {
 			region   : 'center',
 			store    : me.store,
 			listeners: {
@@ -126,7 +101,7 @@ Ext.define('App.view.miscellaneous.OfficeNotes', {
 						enableToggle: true,
 						pressed     : true,
 						handler     : function() {
-							me.cmdShowAll.toggle(false);
+							//me.cmdShowAll.toggle(false);
 							me.store.load({params: {show: 'active' }});
 						}
 					},
@@ -136,7 +111,7 @@ Ext.define('App.view.miscellaneous.OfficeNotes', {
 						iconCls     : 'save',
 						enableToggle: true,
 						handler     : function() {
-							me.cmdShow.toggle(false);
+							//me.cmdShow.toggle(false);
 							me.store.load({params: {show: 'all' }});
 						}
 					}
@@ -148,7 +123,7 @@ Ext.define('App.view.miscellaneous.OfficeNotes', {
 	},
 
 
-	onSave: function(btn) {
+    onNoteSave: function(btn) {
 		var form = btn.up('form').getForm(),
 			store = this.store,
 			record = form.getRecord(),
@@ -163,11 +138,11 @@ Ext.define('App.view.miscellaneous.OfficeNotes', {
 		//store.load();
 	},
 
-	onhide: function() {
+	onNoteHide: function() {
 
 	},
 
-	onReset: function(btn) {
+    onFormReset: function(btn) {
 		var panel = this.form,
 			form = panel.getForm(),
 			toolbar = panel.down('toolbar'),

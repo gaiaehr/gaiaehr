@@ -382,15 +382,13 @@ class Documents
 			'[ENCOUNTER_OBJECTIVE]'                  =>$soap['objective'],
 			'[ENCOUNTER_ASSESMENT]'                  =>$soap['assessment'],
             '[ENCOUNTER_PLAN]'                       =>$soap['plan'],
-
-
-
-
-
-
 			'[ENCOUNTER_CPT_CODES]'                  =>$this->tokensForEncountersList($cpt,1),
 			'[ENCOUNTER_ICD_CODES]'                  =>$this->tokensForEncountersList($icd,2),
 			'[ENCOUNTER_HCPC_CODES]'                 =>$this->tokensForEncountersList($hcpc,3),
+
+
+
+
             '[ENCOUNTER_ACTIVE_ALLERGIES_LIST]'      =>$this->tokensForEncountersList($hcpc,4),
             '[ENCOUNTER_INACTIVE_ALLERGIES_LIST]'    =>$this->tokensForEncountersList($hcpc,5),
             '[ENCOUNTER_ACTIVE_MEDICATIONS_LIST]'    =>$this->tokensForEncountersList($hcpc,6),

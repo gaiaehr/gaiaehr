@@ -400,7 +400,8 @@ class Documents
             '[ENCOUNTER_ACTIVE_DENTAL_LIST]'         =>$this->tokensForEncountersList($hcpc,12),
             '[ENCOUNTER_INACTIVE_DENTAL_LIST]'       =>$this->tokensForEncountersList($hcpc,13),
             '[ENCOUNTER_ACTIVE_SURGERY_LIST]'        =>$this->tokensForEncountersList($hcpc,14),
-            '[ENCOUNTER_INACTIVE_SURGERY_LIST]'      =>$this->tokensForEncountersList($hcpc,15)
+            '[ENCOUNTER_INACTIVE_SURGERY_LIST]'      =>$this->tokensForEncountersList($hcpc,15),
+            '[ENCOUNTER_PREVENTIVECARE_DISMISS]'      =>$this->tokensForEncountersList($preventivecaredismiss,16),
 		);
 		$pos                  = 0;
 		foreach($tokens[0] as $tok) {
@@ -441,6 +442,7 @@ class Documents
         }
         elseif($typeoflist == 4){
             $html .= '<table>';
+            $html .= "<tr><th>"." ICD "."</th><th>"."Code text"."</th></tr>";
             foreach($Array as $row) {
                 $html .= "<tr><td>".$row['code']."</td><td>".$row['code_text']."</td></tr>";
             }
@@ -520,6 +522,14 @@ class Documents
             $html .= '<table>';
             foreach($Array as $row) {
                 $html .= "<tr><td>".$row['code']."</td>".$row['code_text_short']."<td></td></tr>";
+            }
+            $html .= '</table>';
+        }
+        elseif($typeoflist == 16){
+            $html .= '<table>';
+            $html .= "<tr><th>"." Preventive Care "."</th><th>"."Code text"."</th></tr>";
+            foreach($Array as $row) {
+                $html .= "<tr><td>".$row['code']."</td><td>".$row['code_text']."</td></tr>";
             }
             $html .= '</table>';
         }
@@ -690,6 +700,6 @@ class Documents
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
 
-//$e = new Documents();
-//echo '<pre>';
-//$e->get_EncounterTokensData(1,3,3);
+$e = new Documents();
+echo '<pre>';
+$e->get_EncounterTokensData(1,3,3);

@@ -403,6 +403,7 @@ Ext.define('App.view.patientfile.NewDocumentsWindow', {
 							{
 								xtype     : 'mitos.templatescombo',
 								fieldLabel: 'Template',
+								action: 'template',
 								width     : 250,
 								labelWidth: 75,
 								margin    : '10 0 0 10',
@@ -561,11 +562,13 @@ Ext.define('App.view.patientfile.NewDocumentsWindow', {
 		field.reset();
 	},
 	onDocumentsWinShow  : function() {
-
+        var doctorsNoteBody = this.query('[action="body"]')[0],
+            template = this.query('[action="template"]')[0];
 		this.patientPrescriptionStore.removeAll();
 		this.patientsLabsOrdersStore.removeAll();
-		var doctorsNoteBody = this.query('[action="body"]')[0];
+
 		doctorsNoteBody.reset();
+		template.reset();
 
 
 	}

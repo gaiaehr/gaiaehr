@@ -852,7 +852,7 @@ Ext.define('App.view.Viewport', {
 		if(this.patientArrivalLog) {
 			this.patientArrivalLog.show();
 		} else {
-			this.patientArrivalLog = Ext.create('App.view.patientfile.ArrivalLogWindow').show();;
+			this.patientArrivalLog = Ext.create('App.view.patientfile.ArrivalLogWindow').show();
 		}
 	},
 

@@ -203,6 +203,7 @@ Ext.define('App.view.Viewport', {
 		'App.view.calendar.Calendar',
 		'App.view.messages.Messages',
 
+        'App.view.patientfile.ItemsToReview',
 		'App.view.patientfile.EncounterDocumentsGrid',
 		'App.view.patientfile.encounter.ICDs',
 		'App.view.patientfile.CheckoutAlertsView',

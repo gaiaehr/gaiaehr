@@ -442,6 +442,11 @@ Ext.define('App.view.patientfile.Encounter', {
 
         });
 
+        me.itemsToReview = Ext.create('App.view.patientfile.ItemsToReview',{
+            title:'Items to Review',
+            bodyPadding:'7 5 2 5'
+        });
+
 
         /**
          * Encounter panel
@@ -463,7 +468,7 @@ Ext.define('App.view.patientfile.Encounter', {
                         layout:'fit'
                     },
                     items:[
-                        me.vitalsPanel, me.reviewSysPanel, me.reviewSysCkPanel, me.soapPanel, me.speechDicPanel
+                        me.vitalsPanel, me.reviewSysPanel, me.reviewSysCkPanel, me.soapPanel, me.itemsToReview
                     ]
                 },
                 {

@@ -279,13 +279,48 @@ class Documents
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	public function get_EncounterTokensData(  $eid,  $allNeededInfo, $tokens)
 	{
-        $vitals = end($this->encounter->getVitalsByEid($eid));
-        $soap = $this->encounter->getSoapByEid($eid);
-        $reviewofsystemschecks = $this->encounter->getReviewOfSystemsChecksByEid($eid);
-        $reviewofsystems = $this->encounter->getReviewOfSystemsByEid($eid);
-        $icdx = $this->services->getIcdxByEid($eid);
-        $cpt = $this->services->getCptByEid($eid);
-        $hcpc = $this->services->getHCPCByEid($eid);
+
+
+        $encounterid = new stdClass();
+        $encounterid->eid=$eid;
+        $encounterdata=$this->encounter->getEncounter($encounterid);
+        $encountercodes=$this->encounter->getEncounterCodes($encounterid);
+
+
+
+        $vitals = end($encounterdata['encounter']['vitals']);
+        $soap = $encounterdata['encounter']['soap'];
+        $reviewofsystemschecks = $encounterdata['encounter']['reviewofsystemschecks'][0];
+        unset($reviewofsystemschecks['pid'],$reviewofsystemschecks['eid'],$reviewofsystemschecks['uid'],$reviewofsystemschecks['id'],$reviewofsystemschecks['date']);
+        foreach($reviewofsystemschecks as $rosc=>$num){
+            if($num == '' || $num ==null || $num==0){
+
+                unset($reviewofsystemschecks[$rosc]);
+            }
+
+        }
+        $reviewofsystems = $encounterdata['encounter']['reviewofsystems'];
+        unset($reviewofsystems['pid'],$reviewofsystems['eid'],$reviewofsystems['uid'],$reviewofsystems['id'],$reviewofsystems['date']);
+        foreach($reviewofsystems as $ros=>$num){
+            if($num == '' || $num ==null|| $num =='null'){
+
+                unset($reviewofsystems[$ros]);
+            }
+
+        }
+        $cpt = array();
+        $icd = array();
+        $hcpc = array();
+        foreach($encountercodes as $code){
+            if($code['type']=='CPT'){
+                $cpt[]=$code;
+            }elseif($code['type']=="ICD"){
+                $icd[]=$code;
+            }elseif($code['type']=="HCPC"){
+                $hcpc[]=$code;
+            }
+        }
+
         $medications = $this->medical->getPatientMedicationsByEncounterID($eid);
         $immunizations = $this->medical->getImmunizationsByEncounterID($eid);
         $allergies = $this->medical->getAllergiesByEncounterID($eid);
@@ -293,19 +328,16 @@ class Documents
         $dental = $this->medical->getPatientDentalByEncounterID($eid);
         $activeProblems = $this->medical->getMedicalIssuesByEncounterID($eid);
         $preventivecaredismiss = $this->preventiveCare->getPreventiveCareDismissPatientByEncounterID($eid);
-        print_r('$vitals');
+        $encounterdata=$encounterdata['encounter'];
+
+
+        print_r($encounterdata);
         print_r($vitals);
-        print_r('$soap');
         print_r($soap);
-        print_r('$reviewofsystemschecks');
         print_r($reviewofsystemschecks);
-        print_r('$reviewofsystems');
         print_r($reviewofsystems);
-        print_r('$icdx');
-        print_r($icdx);
-        print_r('$cpt');
         print_r($cpt);
-        print_r('$hcpc');
+        print_r($icd);
         print_r($hcpc);
         print_r('$medications');
         print_r($medications);
@@ -324,46 +356,53 @@ class Documents
 
 		$encounterInformation = array
 		(
-			'[ENCOUNTER_DATE]'               =>'         ',
-			'[ENCOUNTER_SUBJECTIVE]'         =>'         ',
-			'[ENCOUNTER_OBJECTIVE]'          =>'         ',
-			'[ENCOUNTER_ASSESMENT]'          =>'         ',
-			'[ENCOUNTER_ASSESMENT_LIST]'     =>'         ',
-			'[ENCOUNTER_ASSESMENT_CODE_LIST]'=>'         ',
-			'[ENCOUNTER_ASSESMENT_FULL_LIST]'=>'         ',
-			'[ENCOUNTER_PLAN]'               =>'         ',
-			'[ENCOUNTER_MEDICATIONS]'        =>'         ',
-			'[ENCOUNTER_IMMUNIZATIONS]'      =>'         ',
-			'[ENCOUNTER_ALLERGIES]'          =>'         ',
-			'[ENCOUNTER_ACTIVE_PROBLEMS]'    =>'         ',
-			'[ENCOUNTER_SURGERIES]'          =>'         ',
-			'[ENCOUNTER_DENTAL]'             =>'         ',
-			'[ENCOUNTER_LABORATORIES]'       =>'         ',
-			'[ENCOUNTER_PROCEDURES_TERMS]'   =>'         ',
-			'[ENCOUNTER_CPT_CODES]'          =>'         ',
-			'[ENCOUNTER_SIGNATURE]'          =>'         ',
-            '[PATIENT_REFERRAL_REASON]'      =>'         ',
-            '[PATIENT_HEAD_CIRCUMFERENCE]'        => '',
-            '[PATIENT_HEIGHT]'                    => '',
-            '[PATIENT_PULSE]'                     => '',
-            '[PATIENT_RESPIRATORY_RATE]'          => '',
-            '[PATIENT_TEMPERATURE]'               => '',
-            '[PATIENT_WEIGHT]'                    => '',
-            '[PATIENT_PULSE_OXIMETER]'            => '',
-            '[PATIENT_BLOOD_PREASURE]'            => '',
-            '[PATIENT_BMI]'                       => '',
-            '[PATIENT_ACTIVE_ALLERGIES_LIST]'     => '',
-            '[PATIENT_INACTIVE_ALLERGIES_LIST]'   => '',
-            '[PATIENT_ACTIVE_MEDICATIONS_LIST]'   => '',
-            '[PATIENT_INACTIVE_MEDICATIONS_LIST]' => '',
-            '[PATIENT_ACTIVE_PROBLEMS_LIST]'      => '',
-            '[PATIENT_INACTIVE_PROBLEMS_LIST]'    => '',
-            '[PATIENT_ACTIVE_IMMUNIZATIONS_LIST]' => '',
-            '[PATIENT_INACTIVE_IMMUNIZATIONS_LIST]' => '',
-            '[PATIENT_ACTIVE_DENTAL_LIST]'        => '',
-            '[PATIENT_INACTIVE_DENTAL_LIST]'      => '',
-            '[PATIENT_ACTIVE_SURGERY_LIST]'       => '',
-            '[PATIENT_INACTIVE_SURGERY_LIST]'     => ''
+			'[ENCOUNTER_START_DATE]'                 =>$encounterdata['start_date'],
+			'[ENCOUNTER_END_DATE]'                   =>$encounterdata['end_date'],
+			'[ENCOUNTER_BRIEF_DESCRIPTION]'          =>$encounterdata['brief_description'],
+			'[ENCOUNTER_SENSITIVITY]'                =>$encounterdata['sensitivity'],
+			'[ENCOUNTER_WEIGHT_LBS]'                 =>$vitals['weight_lbs'],
+			'[ENCOUNTER_WEIGHT_KG]'                  =>$vitals['weight_kg'],
+			'[ENCOUNTER_HEIGHT_IN]'                  =>$vitals['height_in'],
+			'[ENCOUNTER_HEIGHT_CM]'                  =>$vitals['height_cm'],
+			'[ENCOUNTER_BP_SYSTOLIC]'                =>$vitals['bp_systolic'],
+			'[ENCOUNTER_BP_DIASTOLIC]'               =>$vitals['bp_diastolic'],
+			'[ENCOUNTER_PULSE]'                      =>$vitals['pulse'],
+			'[ENCOUNTER_RESPIRATION]'                =>$vitals['respiration'],
+			'[ENCOUNTER_TEMP_FAHRENHEIT]'            =>$vitals['temp_f'],
+			'[ENCOUNTER_TEMP_CELSIUS]'               =>$vitals['temp_c'],
+			'[ENCOUNTER_TEMP_LOCATION]'              =>$vitals['temp_location'],
+			'[ENCOUNTER_OXYGEN_SATURATION]'          =>$vitals['oxygen_saturation'],
+			'[ENCOUNTER_HEAD_CIRCUMFERENCE_IN]'      =>$vitals['head_circumference_in'],
+			'[ENCOUNTER_HEAD_CIRCUMFERENCE_CM]'      =>$vitals['head_circumference_cm'],
+            '[ENCOUNTER_WAIST_CIRCUMFERENCE_IN]'     =>$vitals['waist_circumference_in'],
+            '[ENCOUNTER_WAIST_CIRCUMFERENCE_CM]'     =>$vitals['waist_circumference_cm'],
+            '[ENCOUNTER_BMI]'                        =>$vitals['bmi'],
+			'[ENCOUNTER_BMI_STATUS]'                 =>$vitals['bmi_status'],
+			'[ENCOUNTER_SUBJECTIVE]'                 =>$soap['subjective'],
+			'[ENCOUNTER_OBJECTIVE]'                  =>$soap['objective'],
+			'[ENCOUNTER_ASSESMENT]'                  =>$soap['assessment'],
+            '[ENCOUNTER_PLAN]'                       =>$soap['plan'],
+
+
+
+
+
+
+			'[ENCOUNTER_CPT_CODES]'                  =>$this->tokensForEncountersList($cpt,1),
+			'[ENCOUNTER_ICD_CODES]'                  =>$this->tokensForEncountersList($icd,2),
+			'[ENCOUNTER_HCPC_CODES]'                 =>$this->tokensForEncountersList($hcpc,3),
+            '[ENCOUNTER_ACTIVE_ALLERGIES_LIST]'      =>$this->tokensForEncountersList($hcpc,4),
+            '[ENCOUNTER_INACTIVE_ALLERGIES_LIST]'    =>$this->tokensForEncountersList($hcpc,5),
+            '[ENCOUNTER_ACTIVE_MEDICATIONS_LIST]'    =>$this->tokensForEncountersList($hcpc,6),
+            '[ENCOUNTER_INACTIVE_MEDICATIONS_LIST]'  =>$this->tokensForEncountersList($hcpc,7),
+            '[ENCOUNTER_ACTIVE_PROBLEMS_LIST]'       =>$this->tokensForEncountersList($hcpc,8),
+            '[ENCOUNTER_INACTIVE_PROBLEMS_LIST]'     =>$this->tokensForEncountersList($hcpc,9),
+            '[ENCOUNTER_ACTIVE_IMMUNIZATIONS_LIST]'  =>$this->tokensForEncountersList($hcpc,10),
+            '[ENCOUNTER_INACTIVE_IMMUNIZATIONS_LIST]'=>$this->tokensForEncountersList($hcpc,11),
+            '[ENCOUNTER_ACTIVE_DENTAL_LIST]'         =>$this->tokensForEncountersList($hcpc,12),
+            '[ENCOUNTER_INACTIVE_DENTAL_LIST]'       =>$this->tokensForEncountersList($hcpc,13),
+            '[ENCOUNTER_ACTIVE_SURGERY_LIST]'        =>$this->tokensForEncountersList($hcpc,14),
+            '[ENCOUNTER_INACTIVE_SURGERY_LIST]'      =>$this->tokensForEncountersList($hcpc,15)
 		);
 		$pos                  = 0;
 		foreach($tokens[0] as $tok) {
@@ -375,8 +414,125 @@ class Documents
 		}
 		return $allNeededInfo;
 	}
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    private function tokensForEncountersList($Array,$typeoflist){
+        $html = '';
+        if($typeoflist == 1){
+            $html .= '<table>';
+            $html .= "<tr><th>"." CPT "."</th><th>"."Code text"."</th></tr>";
+            foreach($Array as $row) {
+                $html .= "<tr><td>".$row['code']."</td><td>".$row['code_text_short']."</td></tr>";
+            }
+            $html .= '</table>';
+        }
+        elseif($typeoflist == 2){
+            $html .= '<table>';
+            $html .= "<tr><th>"." ICD "."</th><th>"."Code text"."</th></tr>";
+            foreach($Array as $row) {
+                $html .= "<tr><td>".$row['code']."</td><td>".$row['code_text']."</td></tr>";
+            }
+            $html .= '</table>';
+        }
+        elseif($typeoflist == 3){
+            $html .= '<table>';
+            $html .= "<tr><th>"." HCPC "."</th><th>"."Code text"."</th></tr>";
+            foreach($Array as $row) {
+                $html .= "<tr><td>".$row['code']."</td><td>".$row['code_text']."</td></tr>";
+            }
+            $html .= '</table>';
+        }
+        elseif($typeoflist == 4){
+            $html .= '<table>';
+            foreach($Array as $row) {
+                $html .= "<tr><td>".$row['code']."</td><td>".$row['code_text']."</td></tr>";
+            }
+            $html .= '</table>';
+        }
+        elseif($typeoflist == 5){
+            $html .= '<table>';
+            foreach($Array as $row) {
+                $html .= "<tr><td>".$row['code']."</td><td>".$row['code_text']."</td></tr>";
+            }
+            $html .= '</table>';
+        }
+        elseif($typeoflist == 6){
+            $html .= '<table>';
+            foreach($Array as $row) {
+                $html .= "<tr><td>".$row['code']."</td><td>".$row['code_text']."</td></tr>";
+            }
+            $html .= '</table>';
+        }
+        elseif($typeoflist == 7){
+            $html .= '<table>';
+            foreach($Array as $row) {
+                $html .= "<tr><td>".$row['code']."</td>".$row['code_text_short']."<td></td></tr>";
+            }
+            $html .= '</table>';
+        }
+        elseif($typeoflist == 8){
+            $html .= '<table>';
+            foreach($Array as $row) {
+                $html .= "<tr><td>".$row['code']."</td>".$row['code_text_short']."<td></td></tr>";
+            }
+            $html .= '</table>';
+        }
+        elseif($typeoflist == 9){
+            $html .= '<table>';
+            foreach($Array as $row) {
+                $html .= "<tr><td>".$row['code']."</td>".$row['code_text_short']."<td></td></tr>";
+            }
+            $html .= '</table>';
+        }
+        elseif($typeoflist == 10){
+            $html .= '<table>';
+            foreach($Array as $row) {
+                $html .= "<tr><td>".$row['code']."</td>".$row['code_text_short']."<td></td></tr>";
+            }
+            $html .= '</table>';
+        }
+        elseif($typeoflist == 11){
+            $html .= '<table>';
+            foreach($Array as $row) {
+                $html .= "<tr><td>".$row['code']."</td>".$row['code_text_short']."<td></td></tr>";
+            }
+            $html .= '</table>';
+        }
+        elseif($typeoflist == 12){
+            $html .= '<table>';
+            foreach($Array as $row) {
+                $html .= "<tr><td>".$row['code']."</td>".$row['code_text_short']."<td></td></tr>";
+            }
+            $html .= '</table>';
+        }
+        elseif($typeoflist == 13){
+            $html .= '<table>';
+            foreach($Array as $row) {
+                $html .= "<tr><td>".$row['code']."</td>".$row['code_text_short']."<td></td></tr>";
+            }
+            $html .= '</table>';
+        }
+        elseif($typeoflist == 14){
+            $html .= '<table>';
+            foreach($Array as $row) {
+                $html .= "<tr><td>".$row['code']."</td>".$row['code_text_short']."<td></td></tr>";
+            }
+            $html .= '</table>';
+        }
+        elseif($typeoflist == 15){
+            $html .= '<table>';
+            foreach($Array as $row) {
+                $html .= "<tr><td>".$row['code']."</td>".$row['code_text_short']."<td></td></tr>";
+            }
+            $html .= '</table>';
+        }
 
+
+
+
+        return ($Array == null || $Array == ''|| $Array[0] == '' ) ? '' : $html;
+    }
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	private function get_currentTokensData($allNeededInfo, $tokens)
 	{
 		$currentInformation = array(
@@ -487,7 +643,7 @@ class Documents
 		$body          = $this->getTemplateBodyById($documentId);
 		$allNeededInfo = $this->setArraySizeOfTokenArray($tokens);
 		$allNeededInfo = $this->get_PatientTokensData($pid, $allNeededInfo, $tokens);
-		$allNeededInfo = $this->get_EncounterTokensData( $eid,$allNeededInfo, $tokens);
+		$allNeededInfo = $this->get_EncounterTokensData( 1,$allNeededInfo, $tokens);
 		$allNeededInfo = $this->get_currentTokensData($allNeededInfo, $tokens);
 		$allNeededInfo = $this->get_ClinicTokensData($allNeededInfo, $tokens);
 

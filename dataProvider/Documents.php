@@ -279,13 +279,40 @@ class Documents
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	public function get_EncounterTokensData(  $eid,  $allNeededInfo, $tokens)
 	{
-        $vitals = end($this->encounter->getVitalsByEid($eid));
-        $soap = $this->encounter->getSoapByEid($eid);
-        $reviewofsystemschecks = $this->encounter->getReviewOfSystemsChecksByEid($eid);
-        $reviewofsystems = $this->encounter->getReviewOfSystemsByEid($eid);
-        $icdx = $this->services->getIcdxByEid($eid);
-        $cpt = $this->services->getCptByEid($eid);
-        $hcpc = $this->services->getHCPCByEid($eid);
+
+
+        $encounterid = new stdClass();
+        $encounterid->eid=$eid;
+        $encounterdata=$this->encounter->getEncounter($encounterid);
+        $encountercodes=$this->encounter->getEncounterCodes($encounterid);
+
+        $vitals = end($encounterdata['encounter']['vitals']);
+        $soap = $encounterdata['encounter']['soap'];
+
+        $reviewofsystemschecks = $encounterdata['encounter']['reviewofsystemschecks'][0];
+        print_r($reviewofsystemschecks);
+        foreach($reviewofsystemschecks as $rosc=>$num){
+            if($num == '' || $num ==null){
+
+                unset($reviewofsystemschecks[$rosc]);
+            }
+
+        }  print_r($reviewofsystemschecks);
+
+        $reviewofsystems = $encounterdata['encounter']['reviewofsystems'];
+        $cpt = array();
+        $icd = array();
+        $hcpc = array();
+        foreach($encountercodes as $code){
+            if($code['type']=='CPT'){
+                $cpt[]=$code;
+            }elseif($code['type']=="ICD"){
+                $icd[]=$code;
+            }elseif($code['type']=="HCPC"){
+                $hcpc[]=$code;
+            }
+        }
+
         $medications = $this->medical->getPatientMedicationsByEncounterID($eid);
         $immunizations = $this->medical->getImmunizationsByEncounterID($eid);
         $allergies = $this->medical->getAllergiesByEncounterID($eid);
@@ -293,34 +320,31 @@ class Documents
         $dental = $this->medical->getPatientDentalByEncounterID($eid);
         $activeProblems = $this->medical->getMedicalIssuesByEncounterID($eid);
         $preventivecaredismiss = $this->preventiveCare->getPreventiveCareDismissPatientByEncounterID($eid);
-        print_r('$vitals');
-        print_r($vitals);
-        print_r('$soap');
-        print_r($soap);
-        print_r('$reviewofsystemschecks');
-        print_r($reviewofsystemschecks);
-        print_r('$reviewofsystems');
-        print_r($reviewofsystems);
-        print_r('$icdx');
-        print_r($icdx);
-        print_r('$cpt');
-        print_r($cpt);
-        print_r('$hcpc');
-        print_r($hcpc);
-        print_r('$medications');
-        print_r($medications);
-        print_r('$immunizations');
-        print_r($immunizations);
-        print_r('$allergies');
-        print_r($allergies);
-        print_r('$surgery');
-        print_r($surgery);
-        print_r('$dental');
-        print_r($dental);
-        print_r('$activeProblems');
-        print_r($activeProblems);
-        print_r('$preventivecaredismiss');
-        print_r($preventivecaredismiss);
+
+
+//        print_r('$vitals');
+//        print_r($vitals);
+//        print_r('$soap');
+//        print_r($soap);
+//        print_r('$reviewofsystemschecks');
+//        print_r($reviewofsystemschecks);
+//        print_r('$reviewofsystems');
+//        print_r($reviewofsystems);
+//
+//        print_r('$medications');
+//        print_r($medications);
+//        print_r('$immunizations');
+//        print_r($immunizations);
+//        print_r('$allergies');
+//        print_r($allergies);
+//        print_r('$surgery');
+//        print_r($surgery);
+//        print_r('$dental');
+//        print_r($dental);
+//        print_r('$activeProblems');
+//        print_r($activeProblems);
+//        print_r('$preventivecaredismiss');
+//        print_r($preventivecaredismiss);
 
 		$encounterInformation = array
 		(
@@ -536,6 +560,6 @@ class Documents
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
 
-//$e = new Documents();
-//echo '<pre>';
-//$e->get_EncounterTokensData(1,3,3);
+$e = new Documents();
+echo '<pre>';
+$e->get_EncounterTokensData(1,3,3);

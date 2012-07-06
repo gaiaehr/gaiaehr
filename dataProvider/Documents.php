@@ -286,20 +286,28 @@ class Documents
         $encounterdata=$this->encounter->getEncounter($encounterid);
         $encountercodes=$this->encounter->getEncounterCodes($encounterid);
 
+
+
         $vitals = end($encounterdata['encounter']['vitals']);
         $soap = $encounterdata['encounter']['soap'];
-
         $reviewofsystemschecks = $encounterdata['encounter']['reviewofsystemschecks'][0];
-        print_r($reviewofsystemschecks);
+        unset($reviewofsystemschecks['pid'],$reviewofsystemschecks['eid'],$reviewofsystemschecks['uid'],$reviewofsystemschecks['id'],$reviewofsystemschecks['date']);
         foreach($reviewofsystemschecks as $rosc=>$num){
-            if($num == '' || $num ==null){
+            if($num == '' || $num ==null || $num==0){
 
                 unset($reviewofsystemschecks[$rosc]);
             }
 
-        }  print_r($reviewofsystemschecks);
-
+        }
         $reviewofsystems = $encounterdata['encounter']['reviewofsystems'];
+        unset($reviewofsystems['pid'],$reviewofsystems['eid'],$reviewofsystems['uid'],$reviewofsystems['id'],$reviewofsystems['date']);
+        foreach($reviewofsystems as $ros=>$num){
+            if($num == '' || $num ==null|| $num =='null'){
+
+                unset($reviewofsystems[$ros]);
+            }
+
+        }
         $cpt = array();
         $icd = array();
         $hcpc = array();
@@ -320,35 +328,60 @@ class Documents
         $dental = $this->medical->getPatientDentalByEncounterID($eid);
         $activeProblems = $this->medical->getMedicalIssuesByEncounterID($eid);
         $preventivecaredismiss = $this->preventiveCare->getPreventiveCareDismissPatientByEncounterID($eid);
+        $encounterdata=$encounterdata['encounter'];
+        unset($encounterdata['reviewofsystems'],$encounterdata['vitals'],$encounterdata['soap'],$encounterdata['reviewofsystemschecks'],$encounterdata['speechdictation']);
 
 
-//        print_r('$vitals');
-//        print_r($vitals);
-//        print_r('$soap');
-//        print_r($soap);
-//        print_r('$reviewofsystemschecks');
-//        print_r($reviewofsystemschecks);
-//        print_r('$reviewofsystems');
-//        print_r($reviewofsystems);
-//
-//        print_r('$medications');
-//        print_r($medications);
-//        print_r('$immunizations');
-//        print_r($immunizations);
-//        print_r('$allergies');
-//        print_r($allergies);
-//        print_r('$surgery');
-//        print_r($surgery);
-//        print_r('$dental');
-//        print_r($dental);
-//        print_r('$activeProblems');
-//        print_r($activeProblems);
-//        print_r('$preventivecaredismiss');
-//        print_r($preventivecaredismiss);
+        print_r($encounterdata);
+        print_r($vitals);
+        print_r($soap);
+        print_r($reviewofsystemschecks);
+        print_r($reviewofsystems);
+        print_r($cpt);
+        print_r($icd);
+        print_r($hcpc);
+        print_r('$medications');
+        print_r($medications);
+        print_r('$immunizations');
+        print_r($immunizations);
+        print_r('$allergies');
+        print_r($allergies);
+        print_r('$surgery');
+        print_r($surgery);
+        print_r('$dental');
+        print_r($dental);
+        print_r('$activeProblems');
+        print_r($activeProblems);
+        print_r('$preventivecaredismiss');
+        print_r($preventivecaredismiss);
 
 		$encounterInformation = array
 		(
-			'[ENCOUNTER_DATE]'               =>'         ',
+			'[ENCOUNTER_START_DATE]'                 =>$encounterdata['start_date'],
+			'[ENCOUNTER_END_DATE]'                   =>$encounterdata['end_date'],
+			'[ENCOUNTER_BRIEF_DESCRIPTION]'          =>$encounterdata['brief_description'],
+			'[ENCOUNTER_SENSITIVITY]'                =>$encounterdata['sensitivity'],
+			'[ENCOUNTER_WEIGHT_LBS]'                 =>$vitals['weight_lbs'],
+			'[ENCOUNTER_WEIGHT_KG]'                  =>$vitals['weight_kg'],
+			'[ENCOUNTER_HEIGHT_IN]'                  =>$vitals['height_in'],
+			'[ENCOUNTER_HEIGHT_CM]'                  =>$vitals['height_cm'],
+			'[ENCOUNTER_BP_SYSTOLIC]'                =>$vitals['bp_systolic'],
+			'[ENCOUNTER_BP_DIASTOLIC]'               =>$vitals['bp_diastolic'],
+			'[ENCOUNTER_PULSE]'                      =>$vitals['pulse'],
+			'[ENCOUNTER_RESPIRATION]'                =>$vitals['respiration'],
+			'[ENCOUNTER_TEMP_FAHRENHEIT]'            =>$vitals['temp_f'],
+			'[ENCOUNTER_TEMP_CELSIUS]'               =>$vitals['temp_c'],
+			'[ENCOUNTER_TEMP_LOCATION]'              =>$vitals['temp_location'],
+			'[ENCOUNTER_OXYGEN_SATURATION]'          =>$vitals['oxygen_saturation'],
+			'[ENCOUNTER_HEAD_CIRCUMFERENCE_IN]'      =>$vitals['head_circumference_in'],
+			'[ENCOUNTER_HEAD_CIRCUMFERENCE_CM]'      =>$vitals['head_circumference_cm'],
+            '[ENCOUNTER_WAIST_CIRCUMFERENCE_IN]'     =>$vitals['waist_circumference_in'],
+            '[ENCOUNTER_WAIST_CIRCUMFERENCE_CM]'     => $vitals['waist_circumference_cm'],
+            '[PATIENT_HEIGHT]'                      => '',
+            '[PATIENT_PULSE]'                     => '',
+            '[PATIENT_RESPIRATORY_RATE]'          => '',
+
+            '[ENCOUNTER_DATE]'               =>'         ',
 			'[ENCOUNTER_SUBJECTIVE]'         =>'         ',
 			'[ENCOUNTER_OBJECTIVE]'          =>'         ',
 			'[ENCOUNTER_ASSESMENT]'          =>'         ',

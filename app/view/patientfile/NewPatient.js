@@ -83,7 +83,7 @@ Ext.define('App.view.patientfile.NewPatient', {
                         }
                     });
                 }else{
-                    Ext.Msg.alert('Opps!', 'Someting went wrong saving the patient');
+                    Ext.Msg.alert('Opps!', 'Something went wrong saving the patient');
                 }
 
             });

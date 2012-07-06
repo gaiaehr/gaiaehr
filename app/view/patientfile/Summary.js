@@ -18,6 +18,7 @@ Ext.define('App.view.patientfile.Summary', {
         type : 'hbox',
         align: 'stretch'
     },
+    pid : null,
     initComponent: function() {
         var me = this;
 
@@ -526,12 +527,12 @@ Ext.define('App.view.patientfile.Summary', {
 			form.submit({
 				waitMsg: 'Uploading Document...',
 				params:{
-					pid:app.currPatient.pid,
+					pid:me.pid,
 					docType:'UploadDoc'
 				},
 				success: function(fp, o) {
 					win.close();
-					me.patientDocumentsStore.load({params: {pid: app.currPatient.pid}});
+					me.patientDocumentsStore.load({params: {pid: me.pid}});
 				},
 				failure:function(fp, o){
 					//say(o.result.error);
@@ -546,12 +547,17 @@ Ext.define('App.view.patientfile.Summary', {
 			form = btn.up('form').getForm(),
 			record = form.getRecord(),
 			values = form.getValues();
+
+        values.pid = me.pid;
+
+        say(values);
 		record.set(values);
 		record.store.save({
 			scope:me,
 			callback:function(){
 				me.getPatientImgs();
                 me.verifyPatientRequiredInfo();
+                me.readOnlyFields(form.getFields());
 			}
 		});
 	},
@@ -566,15 +572,8 @@ Ext.define('App.view.patientfile.Summary', {
 		app.onNewDocumentsWin(btn.action)
 	},
 
-    disableFields: function(fields) {
-        Ext.each(fields, function(field) {
-	        if(field.name == 'SS' || field.name == 'DOB' || field.name == 'sex'){
-		        field.setReadOnly(true);
-	        }
-        }, this);
-    },
 
-    getFormData: function(formpanel) {
+    getFormData: function(formpanel, callback) {
 
         var me = this, rFn, uFn;
 
@@ -587,8 +586,8 @@ Ext.define('App.view.patientfile.Summary', {
 
         Ext.each(formFields.items, function(field) {
 	        if(field.xtype == 'datefield'){
-		        //say(field);
-		        modelFields.push({name: field.name, type: 'date', dateFormat:'Y-m-d H:i:s'});
+		        say(field);
+		        modelFields.push({name: field.name, type: 'date', dateFormat:'Y-m-d'});
 	        }else{
 		        modelFields.push({name: field.name});
 	        }
@@ -613,7 +612,7 @@ Ext.define('App.view.patientfile.Summary', {
         store.load({
             scope   : me,
             callback: function(records, operation, success) {
-                formpanel.getForm().loadRecord(records[0]);
+                callback(formpanel.getForm().loadRecord(records[0]));
             }
         });
 
@@ -629,7 +628,7 @@ Ext.define('App.view.patientfile.Summary', {
 
         this.getFormItems(demoFormPanel, 'Demographics', function(success) {
             if(success) {
-                me.disableFields(demoFormPanel.getForm().getFields().items);
+
                 who = demoFormPanel.query('fieldset[title="Who"]')[0];
 
                 imgCt = Ext.create('Ext.container.Container',{
@@ -717,8 +716,8 @@ Ext.define('App.view.patientfile.Summary', {
     getPatientImgs: function() {
         var me = this,
 	        number = Ext.Number.randomInt(1,1000);
-        me.patientImg.update('<img src="' + settings.site_url + '/patients/' + app.currPatient.pid + '/patientPhotoId.jpg?' + number + '" height="100" width="100" />');
-        me.patientQRcode.update('<a ondblclick="printQRCode(app.currPatient.pid)"><img src="' + settings.site_url + '/patients/' + app.currPatient.pid + '/patientDataQrCode.png?' + number + '" height="100" width="100" title="Print QRCode" /></a>');
+        me.patientImg.update('<img src="' + settings.site_url + '/patients/' + me.pid + '/patientPhotoId.jpg?' + number + '" height="100" width="100" />');
+        me.patientQRcode.update('<a ondblclick="printQRCode(me.pid)"><img src="' + settings.site_url + '/patients/' + me.pid + '/patientDataQrCode.png?' + number + '" height="100" width="100" title="Print QRCode" /></a>');
     },
 
 	getPhotoIdWindow: function() {
@@ -743,23 +742,56 @@ Ext.define('App.view.patientfile.Summary', {
         me.patientAlertsStore.load({
 	        scope:me,
 	        params: {
-		        pid: app.currPatient.pid
+		        pid: me.pid
 	        },
 	        callback:function(records, operation, success){
-		        Ext.each(records, function(fields){
-			        field = formPanel.getForm().findField(fields.data.name);
 
-			        if(fields.data.val){
-				        field.removeCls('x-field-yellow');
-			        }else{
-				        field.addCls('x-field-yellow');
-			        }
-		        });
-
-
+                for(var i = 0; i < records.length; i++){
+                    field = formPanel.getForm().findField(records[i].data.name);
+                    if(records[i].data.val){
+                        field.removeCls('x-field-yellow');
+                    }else{
+                        field.addCls('x-field-yellow');
+                    }
+                }
+//		        Ext.each(records, function(fields){
+//			        field = formPanel.getForm().findField(fields.data.name);
+//
+//			        if(fields.data.val){
+//				        field.removeCls('x-field-yellow');
+//			        }else{
+//				        field.addCls('x-field-yellow');
+//			        }
+//		        });
 	        }
 
         });
+    },
+
+
+    readOnlyFields: function(fields) {
+        for(var i = 0; i < fields.items.length; i++){
+            var f = fields.items[i],
+                v = f.getValue(),
+                n = f.name;
+            if(n == 'SS' || n == 'DOB' || n == 'sex'){
+                if(v == null || v == ''){
+                    f.setReadOnly(false);
+                }else{
+                    f.setReadOnly(true);
+                }
+            }
+        }
+
+
+
+//        Ext.each(fields, function(field) {
+//	        if(field.name == 'SS' || field.name == 'DOB' || field.name == 'sex'){
+//		        field.setReadOnly(true);
+//	        }
+//        }, this);
+
+
     },
 
     /**
@@ -773,6 +805,9 @@ Ext.define('App.view.patientfile.Summary', {
 	        billingPanel = me.query('[action="balance"]')[0],
 	        demographicsPanel = me.query('[action="demoFormPanel"]')[0];
 
+        me.pid = app.currPatient.pid;
+        demographicsPanel.getForm().reset();
+
         if(me.checkIfCurrPatient()) {
             var patient = me.getCurrPatient();
 	        me.updateTitle(patient.name + ' - #' + patient.pid + ' (Patient Summary)');
@@ -780,11 +815,23 @@ Ext.define('App.view.patientfile.Summary', {
 	        ACL.hasPermission('access_demographics',function(provider, response){
 		        if (response.result){
 			        demographicsPanel.show();
-	                me.getFormData(demographicsPanel);
+	                me.getFormData(demographicsPanel, function(form){
+
+                        me.readOnlyFields(form.getFields());
+//
+//                        var fo = form.findField('DOB'),
+//                            foo = form.findField('DOB'),
+//                            fooo = form.findField('DOB');
+//                        fo.setReadOnly(fo.getValue() == null || fo.getValue() == '');
+//                        foo.setReadOnly(foo.getValue() == null || foo.getValue() == '');
+//                        fooo.setReadOnly(fooo.getValue() == null || fooo.getValue() == '');
+//                        say(fo);
+//                        say(foo);
+//                        say(fooo);
+                    });
 		        }else{
 			        demographicsPanel.hide();
 		        }
-
 	        });
 
 
@@ -792,20 +839,20 @@ Ext.define('App.view.patientfile.Summary', {
 	        me.getPatientImgs();
 
 
-	        Fees.getPatientBalance({pid:app.currPatient.pid},function(balance){
+	        Fees.getPatientBalance({pid:me.pid},function(balance){
 		        billingPanel.body.update('Account Balance: $' + balance);
 	        });
-	        me.patientNotesStore.load({params: {pid: app.currPatient.pid}});
-	        me.patientRemindersStore.load({params: {pid: app.currPatient.pid}});
-	        me.immuCheckListStore.load({params: {pid: app.currPatient.pid}});
-	        me.patientAllergiesListStore.load({params: {pid: app.currPatient.pid}});
-	        me.patientMedicalIssuesStore.load({params: {pid: app.currPatient.pid}});
-	        me.patientSurgeryStore.load({params: {pid: app.currPatient.pid}});
-	        me.patientDentalStore.load({params: {pid: app.currPatient.pid}});
-	        me.patientMedicationsStore.load({params: {pid: app.currPatient.pid}});
-	        me.patientDocumentsStore.load({params: {pid: app.currPatient.pid}});
+	        me.patientNotesStore.load({params: {pid: me.pid}});
+	        me.patientRemindersStore.load({params: {pid: me.pid}});
+	        me.immuCheckListStore.load({params: {pid: me.pid}});
+	        me.patientAllergiesListStore.load({params: {pid: me.pid}});
+	        me.patientMedicalIssuesStore.load({params: {pid: me.pid}});
+	        me.patientSurgeryStore.load({params: {pid: me.pid}});
+	        me.patientDentalStore.load({params: {pid: me.pid}});
+	        me.patientMedicationsStore.load({params: {pid: me.pid}});
+	        me.patientDocumentsStore.load({params: {pid: me.pid}});
 
-	        me.encounterEventHistoryStore.load({params: {pid: app.currPatient.pid}});
+	        me.encounterEventHistoryStore.load({params: {pid: me.pid}});
 
             me.verifyPatientRequiredInfo();
 

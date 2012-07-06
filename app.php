@@ -45,7 +45,6 @@ $_SESSION['site']['flops'] = 0;
         <link rel="stylesheet" type="text/css" href="ui_app/style_newui.css" >
         <link rel="stylesheet" type="text/css" href="ui_app/custom_app.css" >
         <link rel="shortcut icon" href="favicon.ico" >
-        <!--<script type="text/javascript" src="app/view/App.js"></script>-->
     </head>
     <body>
 

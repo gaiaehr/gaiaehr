@@ -549,8 +549,6 @@ Ext.define('App.view.patientfile.Summary', {
 			values = form.getValues();
 
         values.pid = me.pid;
-
-        say(values);
 		record.set(values);
 		record.store.save({
 			scope:me,
@@ -582,16 +580,25 @@ Ext.define('App.view.patientfile.Summary', {
 	        uFn = Patient.updatePatientDemographicData;
         }
 
-        var formFields = formpanel.getForm().getFields(), modelFields = [{name:'pid',type:'int'}];
+        var formFields = formpanel.getForm().getFields().items, modelFields = [{name:'pid',type:'int'}];
 
-        Ext.each(formFields.items, function(field) {
-	        if(field.xtype == 'datefield'){
-		        say(field);
-		        modelFields.push({name: field.name, type: 'date', dateFormat:'Y-m-d'});
-	        }else{
-		        modelFields.push({name: field.name});
-	        }
-        });
+        for(var i = 0; i < formFields.length; i++ ){
+            if(formFields[i].xtype == 'datefield'){
+                say(formFields[i]);
+                modelFields.push({name: formFields[i].name, type: 'date', dateFormat:'Y-m-d'});
+            }else{
+                modelFields.push({name: formFields[i].name});
+            }
+        }
+
+//        Ext.each(formFields.items, function(field) {
+//	        if(field.xtype == 'datefield'){
+//		        say(field);
+//		        modelFields.push({name: field.name, type: 'date', dateFormat:'Y-m-d'});
+//	        }else{
+//		        modelFields.push({name: field.name});
+//	        }
+//        });
 
         var model = Ext.define(formpanel.itemId + 'Model', {
             extend: 'Ext.data.Model',
@@ -754,15 +761,6 @@ Ext.define('App.view.patientfile.Summary', {
                         field.addCls('x-field-yellow');
                     }
                 }
-//		        Ext.each(records, function(fields){
-//			        field = formPanel.getForm().findField(fields.data.name);
-//
-//			        if(fields.data.val){
-//				        field.removeCls('x-field-yellow');
-//			        }else{
-//				        field.addCls('x-field-yellow');
-//			        }
-//		        });
 	        }
 
         });
@@ -782,16 +780,6 @@ Ext.define('App.view.patientfile.Summary', {
                 }
             }
         }
-
-
-
-//        Ext.each(fields, function(field) {
-//	        if(field.name == 'SS' || field.name == 'DOB' || field.name == 'sex'){
-//		        field.setReadOnly(true);
-//	        }
-//        }, this);
-
-
     },
 
     /**
@@ -805,10 +793,14 @@ Ext.define('App.view.patientfile.Summary', {
 	        billingPanel = me.query('[action="balance"]')[0],
 	        demographicsPanel = me.query('[action="demoFormPanel"]')[0];
 
-        me.pid = app.currPatient.pid;
+
+
         demographicsPanel.getForm().reset();
 
         if(me.checkIfCurrPatient()) {
+
+            me.pid = app.currPatient.pid;
+
             var patient = me.getCurrPatient();
 	        me.updateTitle(patient.name + ' - #' + patient.pid + ' (Patient Summary)');
 
@@ -816,18 +808,7 @@ Ext.define('App.view.patientfile.Summary', {
 		        if (response.result){
 			        demographicsPanel.show();
 	                me.getFormData(demographicsPanel, function(form){
-
                         me.readOnlyFields(form.getFields());
-//
-//                        var fo = form.findField('DOB'),
-//                            foo = form.findField('DOB'),
-//                            fooo = form.findField('DOB');
-//                        fo.setReadOnly(fo.getValue() == null || fo.getValue() == '');
-//                        foo.setReadOnly(foo.getValue() == null || foo.getValue() == '');
-//                        fooo.setReadOnly(fooo.getValue() == null || fooo.getValue() == '');
-//                        say(fo);
-//                        say(foo);
-//                        say(fooo);
                     });
 		        }else{
 			        demographicsPanel.hide();
@@ -860,6 +841,7 @@ Ext.define('App.view.patientfile.Summary', {
 
         } else {
             callback(false);
+            me.pid = null;
             me.currPatientError();
         }
     }

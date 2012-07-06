@@ -960,11 +960,12 @@ Ext.define('App.view.Viewport', {
 	},
 
 	navigateToDefault: function() {
-		//this.navigateTo('panelDashboard');
+		this.navigateTo('panelDashboard');
 	},
 
 	afterNavigationLoad: function() {
 		window.innerWidth < this.minWidthToFullMode ? this.navColumn.collapse() : this.navColumn.expand();
+        this.navigateToDefault();
 	},
 
 	onNavigationNodeSelected: function(model, selected) {

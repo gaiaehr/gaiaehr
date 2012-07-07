@@ -180,7 +180,12 @@ Ext.define('App.classes.form.fields.DateTime', {
 			data[me.getName()] = '' + me.getSubmitValue();
 		}
 		return data;
-	}
+	},
+
+    setReadOnly:function(value){
+        this.dateField.setReadOnly(value);
+        this.timeField.setReadOnly(value);
+    }
 });
 
 //eo file

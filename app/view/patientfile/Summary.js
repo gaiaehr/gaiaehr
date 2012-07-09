@@ -583,9 +583,9 @@ Ext.define('App.view.patientfile.Summary', {
         var formFields = formpanel.getForm().getFields().items, modelFields = [{name:'pid',type:'int'}];
 
         for(var i = 0; i < formFields.length; i++ ){
-            if(formFields[i].xtype == 'datefield'){
+            if(formFields[i].xtype == 'mitos.datetime'){
                 say(formFields[i]);
-                modelFields.push({name: formFields[i].name, type: 'date', dateFormat:'Y-m-d'});
+                modelFields.push({name: formFields[i].name, type: 'date', dateFormat:'Y-m-d H:i:s'});
             }else{
                 modelFields.push({name: formFields[i].name});
             }
@@ -724,7 +724,7 @@ Ext.define('App.view.patientfile.Summary', {
         var me = this,
 	        number = Ext.Number.randomInt(1,1000);
         me.patientImg.update('<img src="' + settings.site_url + '/patients/' + me.pid + '/patientPhotoId.jpg?' + number + '" height="100" width="100" />');
-        me.patientQRcode.update('<a ondblclick="printQRCode(me.pid)"><img src="' + settings.site_url + '/patients/' + me.pid + '/patientDataQrCode.png?' + number + '" height="100" width="100" title="Print QRCode" /></a>');
+        me.patientQRcode.update('<a ondblclick="printQRCode(app.currPatient.pid)"><img src="' + settings.site_url + '/patients/' + me.pid + '/patientDataQrCode.png?' + number + '" height="100" width="100" title="Print QRCode" /></a>');
     },
 
 	getPhotoIdWindow: function() {
@@ -768,6 +768,7 @@ Ext.define('App.view.patientfile.Summary', {
 
 
     readOnlyFields: function(fields) {
+        say(fields);
         for(var i = 0; i < fields.items.length; i++){
             var f = fields.items[i],
                 v = f.getValue(),

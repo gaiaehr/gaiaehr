@@ -532,12 +532,14 @@ class Medical
 	 * @param $pid
 	 * @return array
 	 */
-	private function getPatientMedicationsByPatientID($pid)
+	public function getPatientMedicationsByPatientID($pid)
 	{
 		$this->db->setSQL("SELECT * FROM patient_medications WHERE pid='$pid'");
 		$records = array();
 		foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) as $rec){
-			$rec['alert'] = ($rec['end_date']== null || $rec['end_date'] == '0000-00-00 00:00:00') ? 1 : 0 ;
+            $date1 = strtotime(date('Y-m-d'));
+            $date2 = strtotime($rec['end_date']);
+			$rec['alert'] = (($date2 > $date1)||$rec['end_date']== null ||$rec['end_date']== '') ? 1 : 0 ;
 			$records[]= $rec;
 		}
 
@@ -597,8 +599,8 @@ class Medical
 
 
 
-
+//
 //$e = new Medical();
 //echo '<pre>';
-//print_r($e->CheckImmunizations());
+//print_r($e->getPatientMedicationsByPatientID(1));
 

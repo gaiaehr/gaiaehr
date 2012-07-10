@@ -36,7 +36,7 @@ $_SESSION['site']['flops'] = 0;
         <!--test stuff-->
         <link rel="stylesheet" type="text/css" href="ui_app/dashboard.css" >
         <!--end test stuff-->
-        <link rel="stylesheet" type="text/css" href="lib/extjs-4.1.0/resources/css/ext-all-gray.css">
+        <link rel="stylesheet" type="text/css" href="lib/extjs-4.1.1/resources/css/ext-all-gray.css">
         <!--calendar css-->
         <link rel="stylesheet" type="text/css" href="lib/extensible-1.5.1/resources/css/calendar.css" />
         <link rel="stylesheet" type="text/css" href="lib/extensible-1.5.1/resources/css/calendar-colors.css" />
@@ -59,13 +59,13 @@ $_SESSION['site']['flops'] = 0;
         <span id="app-msg" style="display:none;"></span>
 
         <!-- Ext library -->
-        <script type="text/javascript" src="lib/extjs-4.1.0/ext-all.js"></script>
+        <script type="text/javascript" src="lib/extjs-4.1.1/ext-all-debug.js"></script>
         <script type="text/javascript">
 	        Ext.Loader.setConfig({
 	             enabled			: true,
 	             disableCaching	: false,
 	             paths			: {
-	                 'Ext'         : 'lib/extjs-4.1.0/src',
+	                 'Ext'         : 'lib/extjs-4.1.1/src',
 	                 'Ext.ux'      : 'app/classes/ux',
 	                 'App'         : 'app',
 	                 'Extensible'  : 'lib/extensible-1.5.1/src'
@@ -81,8 +81,8 @@ $_SESSION['site']['flops'] = 0;
         <script type="text/javascript" src="lib/jpegcam/htdocs/webcam.js"></script>
 
 
-        <script type="text/javascript" src="lib/extjs-4.1.0/examples/ux/LiveSearchGridPanel.js"></script>
-        <script type="text/javascript" src="lib/extjs-4.1.0/src/grid/plugin/RowEditing.js"></script>
+        <script type="text/javascript" src="lib/extjs-4.1.1/examples/ux/LiveSearchGridPanel.js"></script>
+        <script type="text/javascript" src="lib/extjs-4.1.1/src/grid/plugin/RowEditing.js"></script>
 
         <script type="text/javascript" src="app/classes/Overrides.js"></script>
         <script type="text/javascript" src="app/classes/VTypes.js"></script>

@@ -710,6 +710,6 @@ class Documents
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
 
-$e = new Documents();
-echo '<pre>';
-$e->get_EncounterTokensData(1,3,3);
+//$e = new Documents();
+//echo '<pre>';
+//$e->get_EncounterTokensData(1,3,3);

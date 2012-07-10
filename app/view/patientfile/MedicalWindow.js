@@ -146,7 +146,7 @@ Ext.define('App.view.patientfile.MedicalWindow', {
                                             width          : 570,
                                             listeners      : {
                                                 scope   : me,
-                                                'select': me.onLiveSearchSelect
+                                                select: me.onLiveSearchSelect
                                             }
                                         },
 	                                    {
@@ -1385,7 +1385,7 @@ Ext.define('App.view.patientfile.MedicalWindow', {
 
     onLabUploadWind:function(){
         var me = this,
-            previewPanel = me.query('[action="labPreviewPanel"]')[0], win;
+            previewPanel = me.query('[action="labPreviewPanel"]')[0];
         me.uploadWin.show();
         me.uploadWin.alignTo(previewPanel.el.dom,'tr-tr',[-5,30])
     },

@@ -260,7 +260,7 @@ Ext.define('App.view.Viewport', {
 		 */
 		Ext.TaskManager.start({
 			run     : function() {
-				//me.checkSession();
+				me.checkSession();
 				me.getPatientesInPoolArea();
 			},
 			interval: 10000

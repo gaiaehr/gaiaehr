@@ -121,6 +121,7 @@ class authProcedures {
 
             $_SESSION['site']['checkInMode']  = $params->checkInMode;
 
+	        $_SESSION['timeout'] = time();
             return array('success'=>true);
         }
     }
@@ -149,6 +150,7 @@ class authProcedures {
         // return an exit code
         //****************************************************************
         if($_SESSION['site']['flops'] < 180) {
+	        $_SESSION['timeout'] = time();
             return array('authorized' => true);
         }else{
             return array('authorized' => false);

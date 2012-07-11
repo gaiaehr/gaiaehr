@@ -330,29 +330,29 @@ class Documents
         $preventivecaredismiss = $this->preventiveCare->getPreventiveCareDismissPatientByEncounterID($eid);
         $encounterdata=$encounterdata['encounter'];
 
-
+//
 //        print_r($encounterdata);
 //        print_r($vitals);
 //        print_r($soap);
-        print_r($reviewofsystemschecks);
-        print_r($reviewofsystems);
+//        print_r($reviewofsystemschecks);
+//        print_r($reviewofsystems);
 //        print_r($cpt);
 //        print_r($icd);
 //        print_r($hcpc);
-        print_r('$medications');
-        print_r($medications);
-        print_r('$immunizations');
-        print_r($immunizations);
-        print_r('$allergies');
-        print_r($allergies);
-        print_r('$surgery');
-        print_r($surgery);
-        print_r('$dental');
-        print_r($dental);
-        print_r('$activeProblems');
-        print_r($activeProblems);
-        print_r('$preventivecaredismiss');
-        print_r($preventivecaredismiss);
+//        print_r('$medications');
+//        print_r($medications);
+//        print_r('$immunizations');
+//        print_r($immunizations);
+//        print_r('$allergies');
+//        print_r($allergies);
+//        print_r('$surgery');
+//        print_r($surgery);
+//        print_r('$dental');
+//        print_r($dental);
+//        print_r('$activeProblems');
+//        print_r($activeProblems);
+//        print_r('$preventivecaredismiss');
+//        print_r($preventivecaredismiss);
 
 		$encounterInformation = array
 		(
@@ -402,6 +402,7 @@ class Documents
 //            '[]'     =>$this->tokensForEncountersList($preventivecaredismiss,16),
 //            '[]'     =>$this->tokensForEncountersList($preventivecaredismiss,16)
 		);
+
 		$pos                  = 0;
 		foreach($tokens[0] as $tok) {
 			if($allNeededInfo[$pos] == '' || $allNeededInfo[$pos] == null) {
@@ -417,7 +418,7 @@ class Documents
         $html = '';
         if($typeoflist == 1){
             $html .= '<table>';
-            $html .= "<tr><th>"." CPT "."</th><th>"."Code text"."</th></tr>";
+            $html .= "<tr><th>"."CPT"."</th><th>"."Code text"."</th></tr>";
             foreach($Array as $row) {
                 $html .= "<tr><td>".$row['code']."</td><td>".$row['code_text_short']."</td></tr>";
             }
@@ -425,7 +426,7 @@ class Documents
         }
         elseif($typeoflist == 2){
             $html .= '<table>';
-            $html .= "<tr><th>"." ICD "."</th><th>"."Code text"."</th></tr>";
+            $html .= "<tr><th>"."ICD"."</th><th>"."Code text"."</th></tr>";
             foreach($Array as $row) {
                 $html .= "<tr><td>".$row['code']."</td><td>".$row['code_text']."</td></tr>";
             }
@@ -433,7 +434,7 @@ class Documents
         }
         elseif($typeoflist == 3){
             $html .= '<table>';
-            $html .= "<tr><th>"." HCPC "."</th><th>"."Code text"."</th></tr>";
+            $html .= "<tr><th>"."HCPC"."</th><th>"."Code text"."</th></tr>";
             foreach($Array as $row) {
                 $html .= "<tr><td>".$row['code']."</td><td>".$row['code_text']."</td></tr>";
             }
@@ -441,7 +442,7 @@ class Documents
         }
         elseif($typeoflist == 4){
             $html .= '<table>';
-            $html .= "<tr><th>"." Allergies "."</th><th>"."Type"."</th><th>"."Severity"."</th></tr>";
+            $html .= "<tr><th>"."Allergies"."</th><th>"."Type"."</th><th>"."Severity"."</th></tr>";
             foreach($Array as $row) {
                 $html .= "<tr><td>".$row['allergy']."</td><td>".$row['allergy_type']."</td><td>".$row['severity']."</td></tr>";
             }
@@ -449,7 +450,7 @@ class Documents
         }
         elseif($typeoflist == 5){
             $html .= '<table>';
-            $html .= "<tr><th>"." Medications "."</th></tr>";
+            $html .= "<tr><th>"."Medications"."</th></tr>";
             foreach($Array as $row) {
                 $html .= "<tr><td>".$row['medication']."</td></tr>";
             }
@@ -457,7 +458,7 @@ class Documents
         }
         elseif($typeoflist == 6){
             $html .= '<table>';
-            $html .= "<tr><th>"." Active Problems "."</th></tr>";
+            $html .= "<tr><th>"."Active Problems"."</th></tr>";
             foreach($Array as $row) {
                 $html .= "<tr><td>".$row['code_text']."</td></tr>";
             }
@@ -465,7 +466,7 @@ class Documents
         }
         elseif($typeoflist == 7){
             $html .= '<table>';
-            $html .= "<tr><th>"." Immunizations "."</th></tr>";
+            $html .= "<tr><th>"."Immunizations"."</th></tr>";
             foreach($Array as $row) {
                 $html .= "<tr><td>".$row['immunization_name']."</td></tr>";
             }
@@ -489,27 +490,31 @@ class Documents
         }
         elseif($typeoflist == 10){
             $html .= '<table>';
-            $html .= "<tr><th>"." Preventive Care "."</th><th>"."Reason"."</th></tr>";
+            $html .= "<tr><th>"."Preventive Care"."</th><th>"."Reason"."</th></tr>";
             foreach($Array as $row) {
                 $html .= "<tr><td>".$row['description']."</td><td>".$row['reason']."</td></tr>";
             }
             $html .= '</table>';
         }
         elseif($typeoflist == 11){
-            $html .= '<table>';
+            $html .= '<table width="300">';
             $html .= "<tr><th>"."Review of systems checks"."</th><th>"."Active?"."</th></tr>";
-            foreach($Array as $row) {
-                $html .= "<tr><td>".$row['']."</td><td>".$row['allergy_type']."</td><td>".$row['severity']."</td></tr>";
+            foreach($Array as $key=>$val) {
+                $html .= "<tr><td>".str_replace('_',' ',$key)."</td><td>".(($val===1 || $val ==='1')?'Yes':'No')."</td></tr>";
             }
             $html .= '</table>';
+
+
         }
         elseif($typeoflist == 12){
-            $html .= '<table>';
-                        $html .= "<tr><th>"." Allergies "."</th><th>"."Type"."</th><th>"."Severity"."</th></tr>";
-                        foreach($Array as $row) {
-                            $html .= "<tr><td>".$row['allergy']."</td><td>".$row['allergy_type']."</td><td>".$row['severity']."</td></tr>";
-                        }
-                        $html .= '</table>';
+            $html .= '<table width="300">';
+            $html .= "<tr><th>"."Review of systems"."</th><th>"."Active?"."</th></tr>";
+            foreach($Array as $key=>$val) {
+                $html .= "<tr><td>".str_replace('_',' ',$key)."</td><td>".(($val==1 || $val =='1')?'Yes':'No')."</td></tr>";
+            }
+            $html .= '</table>';
+
+
         }
 //        elseif($typeoflist == 13){
 //            $html .= '<table>';
@@ -547,7 +552,7 @@ class Documents
 
 
 
-        return ($Array == null || $Array == ''|| $Array[0] == '' ) ? '' : $html;
+        return ($Array == null || $Array == '') ? '' : $html;
     }
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -709,7 +714,7 @@ class Documents
 	}
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
-
+//
 //$e = new Documents();
 //echo '<pre>';
 //$e->get_EncounterTokensData(1,3,3);

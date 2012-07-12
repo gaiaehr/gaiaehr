@@ -17,27 +17,22 @@
  * This will change in the future.
  * Maybe implement a SESSION Manager against the database.
  */
-session_name ( "GaiaEHR" );
+session_name ( 'GaiaEHR' );
 session_start();
 session_cache_limiter('private');
 define('_GaiaEXEC', 1);
-
-$inactive = 60;
-$session_life = (time() - (isset($_SESSION['timeout'])? $_SESSION['timeout'] : time()));
-//echo $session_life;
-
 /*
  * Startup the registry
  * This contains SESSION Variables to use in the application
  * and mobile_detect class is used to detect mobile browsers.
  */
-include_once("registry.php");
-include_once("classes/Mobile_Detect.php");
+include_once('registry.php');
+include_once('classes/Mobile_Detect.php');
 $mobile = new Mobile_Detect();
 /**
  * Make the auth process
  */
-if(isset($_SESSION['user']['auth']) && $_SESSION['user']['auth'] == true && $session_life < $inactive){
+if(isset($_SESSION['user']['auth']) && $_SESSION['user']['auth'] == true && $_SESSION['inactive']['life'] < $_SESSION['inactive']['time']){
     /**
      * if mobile go to mobile app, else go to app
      */
@@ -48,7 +43,7 @@ if(isset($_SESSION['user']['auth']) && $_SESSION['user']['auth'] == true && $ses
     }else{
         include_once($_SESSION['site']['root'].'/dataProvider/Globals.php');
         Globals::setGlobals();
-        include_once("app.php");
+        include_once('app.php');
     }
 /**
  * Make the logon process or Setup process
@@ -64,16 +59,16 @@ if(isset($_SESSION['user']['auth']) && $_SESSION['user']['auth'] == true && $ses
      * if a directory is found inside sites dir run the logon screen
      */
 	if( $count <= 0){
-		include_once("install/install.ejs.php");
+		include_once('install/install.ejs.php');
 	} else {
         /**
          * if mobile go to mobile app, else go to app
          */
         if ($mobile->isMobile()) {
-            include_once("login/login_mobile.php");
+            include_once('login/login_mobile.php');
         }else{
-            include_once("login/login.php");
+            include_once('login/login.php');
         }
 	}
 }
-$_SESSION['timeout'] = time();
+$_SESSION['inactive']['timeout'] = time();

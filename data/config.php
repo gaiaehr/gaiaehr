@@ -904,6 +904,14 @@ $API = array(
                 'len'=>1
             ),
         )
+    ),
+
+    'CronJob'=>array(
+        'methods'=>array(
+            'run'=>array(
+                'len'=>0
+            )
+        )
     )
 
 

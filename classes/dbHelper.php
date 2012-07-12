@@ -298,23 +298,24 @@ class dbHelper {
         return $sqlReturn;
     }
 
-    /**
-     * @brief       Execute Statement "WITHOUT" returning records
-     * @details     Simple exec SQL Statement, with no Event LOG injection.
-     *              For example to execute an ALTER a table.
-     *
-     * @author      Gino Rivera (Certun) <grivera@certun.com>
-     * @version     Vega 1.0
-     *
-     * @return      array Connection error info if any
-     */
-    public function execOnly()
+	/**
+	 * @brief       Execute Statement "WITHOUT" returning records
+	 * @details     Simple exec SQL Statement, with no Event LOG injection.
+	 *              For example to execute an ALTER a table.
+	 *
+	 * @author      Gino Rivera (Certun) <grivera@certun.com>
+	 * @version     Vega 1.0
+	 *
+	 * @param       bool $setLastInsertId
+	 * @return      array Connection error info if any
+	 */
+    public function execOnly($setLastInsertId = true)
     {
-        $this->conn->query($this->sql_statement);
-		if (stristr($this->sql_statement, 'SELECT')){
+	    $this->conn->query( $this->sql_statement );
+		if ($setLastInsertId){
 			$this->lastInsertId = $this->conn->lastInsertId();
 		}
-		return $this->conn->errorInfo();
+	    return $this->conn->errorInfo();
 	}
 
     /**
@@ -364,7 +365,7 @@ class dbHelper {
 
             $sqlStatement = $this->sqlBind($data, 'log', 'I');
             $this->setSQL($sqlStatement);
-            $this->fetchRecords();
+            $this->execOnly(false);
 
 		}
 		return $this->conn->errorInfo();

@@ -7,14 +7,20 @@
  * Time: 8:41 AM
  */
 if(!isset($_SESSION)){
-    session_name ("GaiaEHR" );
+    session_name ('GaiaEHR');
     session_start();
     session_cache_limiter('private');
 }
 include_once($_SESSION['site']['root'].'/classes/dbHelper.php');
 include_once($_SESSION['site']['root'].'/classes/AES.php');
-
+include_once($_SESSION['site']['root'].'/classes/Sessions.php');
 class authProcedures {
+
+	private $session;
+
+	function __construct(){
+		$this->session = new Sessions();
+	}
 
     /**
      * @param stdClass $params
@@ -62,7 +68,7 @@ class authProcedures {
         // variables to connect to the database.
         //-------------------------------------------
         $_SESSION['site']['site'] = $params->choiseSite;
-        $fileConf = "../sites/" . $_SESSION['site']['site'] . "/conf.php";
+        $fileConf = '../sites/' . $_SESSION['site']['site'] . '/conf.php';
         if (file_exists($fileConf)){
             /** @noinspection PhpIncludeInspection */
             include_once($fileConf);
@@ -116,12 +122,11 @@ class authProcedures {
         	$_SESSION['ver']['rev']         = $version['v_patch'];
         	$_SESSION['ver']['minor']       = $version['v_minor'];
         	$_SESSION['ver']['database']    = $version['v_database'];
-
             $_SESSION['lang']['code']       = $params->lang;
-
             $_SESSION['site']['checkInMode']  = $params->checkInMode;
-
 	        $_SESSION['timeout'] = time();
+	        $session = new Sessions();
+	        $session->loginSession();
             return array('success'=>true);
         }
     }
@@ -130,7 +135,9 @@ class authProcedures {
      * @static
      * @return mixed
      */
-    public static function unAuth(){
+    public function unAuth(){
+	    $session = new Sessions();
+	    $session->logoutSession();
         session_unset();
         session_destroy();
         return;
@@ -141,7 +148,7 @@ class authProcedures {
      * @return int
      */
     public static function ckAuth(){
-
+	    $session = new Sessions();
         $_SESSION['site']['flops']++;
         //****************************************************************
         // If the session has passed 60 flops, with out any activity exit
@@ -150,9 +157,10 @@ class authProcedures {
         // return an exit code
         //****************************************************************
         if($_SESSION['site']['flops'] < 180) {
-	        $_SESSION['timeout'] = time();
+	   	    $session->updateSession();
             return array('authorized' => true);
         }else{
+	        $session->logoutSession();
             return array('authorized' => false);
         }
     }

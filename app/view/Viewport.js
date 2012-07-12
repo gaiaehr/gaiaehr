@@ -262,6 +262,7 @@ Ext.define('App.view.Viewport', {
 			run     : function() {
 				me.checkSession();
 				me.getPatientesInPoolArea();
+				CronJob.run();
 			},
 			interval: 10000
 		});

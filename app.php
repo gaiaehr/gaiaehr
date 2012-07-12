@@ -91,8 +91,6 @@ $_SESSION['site']['flops'] = 0;
             function say(a){
 	            console.log(a);
             }
-
-
             Ext.onReady(function(){
 	            Ext.direct.Manager.addProvider(App.data.REMOTING_API);
 
@@ -141,9 +139,5 @@ $_SESSION['site']['flops'] = 0;
 	            }, 1000);
   	        }
         </script>
-
-        <!-- Override classes -->
-
-
     </body>
 </html>

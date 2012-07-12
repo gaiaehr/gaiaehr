@@ -42,7 +42,7 @@ $_SESSION['site']['url']        = 'http://' . $_SERVER['HTTP_HOST'] . str_replac
 $_SESSION['site']['facility']   = 'default'; // THIS IS A TEMP VARIABLE
 
 $_SESSION['inactive']['time']   = 60;
-$_SESSION['inactive']['life']   = (time() - (isset($_SESSION['timeout'])? $_SESSION['timeout'] : time()));
+$_SESSION['inactive']['life']   = (time() - (isset($_SESSION['inactive']['timeout'])? $_SESSION['inactive']['timeout'] : time()));
 $_SESSION['inactive']['timeout']= time();
 
 

@@ -55,7 +55,7 @@ class Sessions
 
 	public function logoutInactiveUsers(){
 		$now = time();
-		$foo = $now - $_SESSION['inactive']['inactive'];
+		$foo = $now - $_SESSION['inactive']['time'];
 		$this->db->setSQL("UPDATE users_sessions SET logout = '$now' WHERE last_request < $foo AND logout IS NULL");
 		$this->db->execOnly();
 		return true;

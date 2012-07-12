@@ -969,6 +969,8 @@ Ext.define('App.view.Viewport', {
 	afterNavigationLoad: function() {
 		window.innerWidth < this.minWidthToFullMode ? this.navColumn.collapse() : this.navColumn.expand();
         this.navigateToDefault();
+		this.removeAppMask();
+		Ext.TaskManager.start(this.Task);
 	},
 
 	onNavigationNodeSelected: function(model, selected) {
@@ -1293,9 +1295,12 @@ Ext.define('App.view.Viewport', {
 	},
 
 	afterAppRender: function() {
+
+	},
+
+	removeAppMask:function(){
 		Ext.get('mainapp-loading').remove();
 		Ext.get('mainapp-loading-mask').fadeOut({remove: true});
-		Ext.TaskManager.start(this.Task);
 	},
 
 	beforeAppRender:function(){

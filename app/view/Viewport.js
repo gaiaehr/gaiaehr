@@ -258,14 +258,15 @@ Ext.define('App.view.Viewport', {
 		 * TaskScheduler
 		 * This will run all the procedures inside the checkSession
 		 */
-		Ext.TaskManager.start({
-			run     : function() {
-				me.checkSession();
-				me.getPatientesInPoolArea();
-				CronJob.run();
-			},
-			interval: 10000
-		});
+		me.Task = {
+	        scope:me,
+	        run:function () {
+		        me.checkSession();
+                me.getPatientesInPoolArea();
+                CronJob.run();
+	        },
+	        interval:10000 // 10 second
+	    };
 
 		me.storeTree = Ext.create('App.store.navigation.Navigation', {
 			autoLoad : true,
@@ -1294,6 +1295,7 @@ Ext.define('App.view.Viewport', {
 	afterAppRender: function() {
 		Ext.get('mainapp-loading').remove();
 		Ext.get('mainapp-loading-mask').fadeOut({remove: true});
+		Ext.TaskManager.start(this.Task);
 	},
 
 	beforeAppRender:function(){

@@ -1,5 +1,5 @@
 <?php
-session_name ( "GaiaEHR" );
+session_name ( 'GaiaEHR' );
 session_start();
 session_cache_limiter('private');
 echo '[';

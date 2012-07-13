@@ -1,5 +1,5 @@
 <?php 
-session_name ( "GaiaEHR" );
+session_name ( 'GaiaEHR' );
 session_start();
 session_cache_limiter('private');
 require_once('../lib/site_setup/class.inc.php');

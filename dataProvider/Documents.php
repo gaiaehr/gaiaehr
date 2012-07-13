@@ -213,7 +213,7 @@ class Documents
 			'[PATIENT_EMERGENCY_PHONE]'           => $patientData['emer_phone'],
 			'[PATIENT_PROVIDER]'                  => $this->user->getUserFullNameById($patientData['provider']),
 			'[PATIENT_PHARMACY]'                  => $patientData['pharmacy'],
-			'[PATIENT_AGE]'                       => $age['years'],
+			'[PATIENT_AGE]'                       => $age['age'],
 			'[PATIENT_OCCUPATION]'                => $patientData['occupation'],
 			'[PATIENT_EMPLOYEER]'                 => $patientData['employer_name'],
 			'[PATIENT_RACE]'                      => $patientData['race'],
@@ -737,7 +737,7 @@ class Documents
 
 
 
-//
+
 //$e = new Documents();
 //$params = new stdClass();
 //$params->pid = 1;

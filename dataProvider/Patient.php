@@ -352,7 +352,8 @@ class Patient
 		$age['days']       = $days_until_appt;
 		$age['months']     = $months_until_appt;
 		$age['years']      = $years_until_appt;
-		return $age;
+		return array('age'=>(($age['years'] != 0 || $age['months'] !=0 )?(($age['years'] != 0)?(($age['years']==1)?$age['years'].' year':$age['years'.' year']): (($age['months']==1)?$age['months'].' month':$age['months'].' months')):(($age['days']==1)?$age['days'].' day':$age['days'].' days')),
+                     'DMY'=>$age);
 	}
 
 	/**

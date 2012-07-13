@@ -600,6 +600,7 @@ Ext.define('App.view.administration.Documents', {
 			hideHeaders: true,
             items: {
                 xtype: 'htmleditor',
+	            enableFontSize: false,
                 name:'body',
                 margin:5
             },

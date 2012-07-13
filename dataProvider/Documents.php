@@ -7,7 +7,7 @@
  * To change this template use File | Settings | File Templates.
  */
 if(!isset($_SESSION)) {
-	session_name("GaiaEHR");
+	session_name('GaiaEHR');
 	session_start();
 	session_cache_limiter('private');
 }
@@ -20,7 +20,28 @@ include_once($_SESSION['site']['root'] . '/dataProvider/PreventiveCare.php');
 include_once($_SESSION['site']['root'] . '/dataProvider/Medical.php');
 include_once($_SESSION['site']['root'] . '/dataProvider/Services.php');
 include_once($_SESSION['site']['root'] . '/dataProvider/Facilities.php');
-include_once($_SESSION['site']['root'] . '/lib/dompdf_0-6-0_beta3/dompdf_config.inc.php');
+//include_once($_SESSION['site']['root'] . '/lib/dompdf_0-6-0_beta3/dompdf_config.inc.php');
+include_once($_SESSION['site']['root'] . '/lib/tcpdf/config/lang/eng.php');
+include_once($_SESSION['site']['root'] . '/lib/tcpdf/tcpdf.php');
+
+class MYPDF extends TCPDF {
+
+    //Page header
+
+
+    // Page footer
+    public function Footer() {
+        // Position at 15 mm from bottom
+        $this->SetY(-15);
+        // Set font
+        $this->SetFont('helvetica', 'I', 8);
+        // Page number
+        $this->Cell(0, 10, 'Page '.$this->getAliasNumPage().'/'.$this->getAliasNbPages(), 0, false, 'C', 0, '', 0, false, 'T', 'M');
+    }
+}
+
+
+
 class Documents
 {
 	/**
@@ -52,7 +73,8 @@ class Documents
 
 	private $encounter;
 
-	private $dompdf;
+//	private $dompdf;
+    public $pdf;
 
 	function __construct()
 	{
@@ -65,7 +87,10 @@ class Documents
 		$this->medical = new Medical();
 		$this->preventiveCare = new PreventiveCare();
 		$this->fees = new Fees();
-		$this->dompdf   = new DOMPDF();
+
+
+        $this->pdf = new MYPDF('P', 'mm', 'A4', true, 'UTF-8', false);
+        //$this->dompdf = new DOMPDF();
 		return;
 	}
 
@@ -161,18 +186,6 @@ class Documents
 	{
 		$patientData       = $this->getAllPatientData($pid);
 		$age               = $this->patient->getPatientAgeByDOB($patientData['DOB']);
-		$root              = $_SESSION['site']['root'];
-		$site              = $_SESSION['site']['site'];
-		$path              = $root . '/sites/' . $site . '/patients/' . $pid . '/' . 'patientPhotoId.jpg';
-		$img               = $img = '
-        <style type="text/css">
-        div.leftpane {
-                position: fixed;
-        }
-        </style>
-        <div class="leftpane">
-		        <img src="' . $path . '"width="120"style="margin: 1cm;";/>
-        </div>';
 		$patienInformation = array
 		(
 			'[PATIENT_NAME]'                      => $patientData['fname'],
@@ -211,7 +224,6 @@ class Documents
             '[PATIENT_TABACCO]'                   => 'tabaco', //////////////////////////////////////////////////////
             '[PATIENT_ALCOHOL]'                   => 'alcohol', ////////////////////////////////////////////////////
 			'[PATIENT_BALANCE]'                   => '$'.$this->fees->getPatientBalanceByPid($pid),
-			'[PATIENT_PICTURE]'                   => $img,
 			'[PATIENT_PRIMARY_PLAN]'              => $patientData['primary_plan_name'],
             '[PATIENT_PRIMARY_EFFECTIVE_DATE]'    => $patientData['primary_effective_date'],
 			'[PATIENT_PRIMARY_SUBSCRIBER]'        => $patientData['primary_subscriber_title'].$patientData['primary_subscriber_fname'] . ' ' . $patientData['primary_subscriber_mname']. ' ' . $patientData['primary_subscriber_lname'],
@@ -558,6 +570,7 @@ class Documents
 
 	private function get_currentTokensData($allNeededInfo, $tokens)
 	{
+
 		$currentInformation = array(
 			'[CURRENT_DATE]'     => date('d-m-Y'),
 			'[CURRENT_USER_NAME]'=> $_SESSION['user']['name'],
@@ -566,7 +579,7 @@ class Documents
 			'[CURRENT_USER_DEA_LICENSE_NUMBER]',
 			'[CURRENT_USER_DM_LICENSE_NUMBER]',
 			'[CURRENT_USER_NPI_LICENSE_NUMBER]',
-			'[LINE]'             => '<hr>',
+			'[LINE]'             => '<hr>'
 		);
 		$pos                = 0;
 		foreach($tokens[0] as $tok) {
@@ -650,26 +663,55 @@ class Documents
         foreach($tokens[0] as $index=>$tok) {
             if($allNeededInfo[$index] == '' || $allNeededInfo[$index] == null) {
                 if($tok == '[XRAYS_LIST]') {
-                    $allNeededInfo[$index] = $html;
+                    $allNeededInf [$index] = $html;
                 }
             }
         }
         return $allNeededInfo;
     }
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	public function PDFDocumentBuilder($params)
+	public function PDFDocumentBuilder($params,$path)
 	{
 		$pid           = $params->pid;
         $eid           = $params->eid;
 		$documentId    = $params->documentId;
-		$tokens        = $this->getArrayWithTokensNeededByDocumentID($documentId); //getting the template
-		$body          = $this->getTemplateBodyById($documentId);
-		$allNeededInfo = $this->setArraySizeOfTokenArray($tokens);
+        $regex = '(\[\w*?\])';
+        $this->pdf->SetCreator('TCPDF');
+        $this->pdf->SetAuthor($_SESSION['user']['name']);
+
+        $this->pdf->SetHeaderData('../sites/default/logo.jpg', '20', 'OMARRRR', "test tes test test\nasdfasdfadsfsa");
+        $this->pdf->setHeaderFont(Array('helvetica', '', 10));
+        $this->pdf->setFooterFont(Array('helvetica', '', 8));
+        $this->pdf->SetDefaultMonospacedFont('courier');
+        $this->pdf->SetMargins(15, 27, 15);
+        $this->pdf->SetHeaderMargin(5);
+        $this->pdf->SetFooterMargin(10);
+        $this->pdf->SetFontSize(10);
+        $this->pdf->SetAutoPageBreak(true, 25);
+        $this->pdf->setFontSubsetting(true);
+        $this->pdf->AddPage();
+
+        if(isset($params->DoctorsNote)){
+            $body  = $params->DoctorsNote;
+            preg_match_all($regex, $body, $tokensfound);
+            $tokens= $tokensfound;
+        }else{
+            $tokens        = $this->getArrayWithTokensNeededByDocumentID($documentId); //getting the template
+            $body          = $this->getTemplateBodyById($documentId);
+        }
+	$allNeededInfo = $this->setArraySizeOfTokenArray($tokens);
 		$allNeededInfo = $this->get_PatientTokensData($pid, $allNeededInfo, $tokens);
 		$allNeededInfo = $this->get_EncounterTokensData( 1,$allNeededInfo, $tokens);
 		$allNeededInfo = $this->get_currentTokensData($allNeededInfo, $tokens);
 		$allNeededInfo = $this->get_ClinicTokensData($allNeededInfo, $tokens);
 
+        foreach($tokens[0] as $index=>$tok) {
+
+            if($tok == '[PATIENT_PICTURE]') {
+                $this->pdf->Image( "../". '/sites/' . $_SESSION['site']['site']. '/patients/' . $pid . '/' . 'patientPhotoId.jpg', 150, 55, 35, 35, 'jpg', 'www.gaiaehr.org', '', true, 150, '', false, false, 1, false, false, false);
+            }
+
+        }
 		///////////////////////RX PART /////////////////////////////////////
 		if(isset($params->medications)) {
              $allNeededInfo =  $this->tokensForPrescriptions($params,$tokens,$allNeededInfo);
@@ -682,39 +724,22 @@ class Documents
         elseif(isset($params->xrays)) {
              $allNeededInfo =  $this->tokensForXrays($params,$tokens,$allNeededInfo);
         }
+		$html = str_replace($tokens[0], $allNeededInfo, $body);
 
-		$rawHTML = str_replace($tokens[0], $allNeededInfo, $body);
-		$this->dompdf->load_html($rawHTML['body']);
-		$this->dompdf->set_paper('letter', 'portrait');
-		$this->dompdf->render();
-		$pdf = $this->dompdf->output();
-		return $pdf;
-	}
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public function PDFDocumentBuilderDoctors($params)
-	{
-		$pid           = $params->pid;
-		$eid           = $params->eid;
-        $regex = '(\[\w*?\])';
-        $body  = $params->DoctorsNote;
-        preg_match_all($regex, $body, $tokensfound);
-        $tokens= $tokensfound;
 
-		$allNeededInfo = $this->setArraySizeOfTokenArray($tokens);
-		$allNeededInfo = $this->get_PatientTokensData($pid, $allNeededInfo, $tokens);
-		$allNeededInfo = $this->get_EncounterTokensData( $eid, $allNeededInfo, $tokens);
-		$allNeededInfo = $this->get_currentTokensData($allNeededInfo, $tokens);
-		$allNeededInfo = $this->get_ClinicTokensData($allNeededInfo, $tokens);
-		$rawHTML = str_replace($tokens[0], $allNeededInfo, $body);
-		$this->dompdf->load_html($rawHTML);
-		$this->dompdf->set_paper('letter', 'portrait');
-		$this->dompdf->render();
-		$pdf = $this->dompdf->output();
-		return $pdf;
-	}
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        $this->pdf->writeHTML((isset($params->DoctorsNote))?$html:$html['body']);
+        $this->pdf->Output($path, 'F');
+        $this->pdf->Close();
+		return true;
+    }
+
 }
+
+
+
 //
 //$e = new Documents();
-//echo '<pre>';
-//$e->get_EncounterTokensData(1,3,3);
+//$params = new stdClass();
+//$params->pid = 1;
+//$params->documentId = 7;
+//$e->PDFDocumentBuilder($params,'C:/wamp/www/gaiaehr/sites/default/patients/1/DoctorsNotes/1342132079.pdf');

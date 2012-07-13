@@ -419,6 +419,7 @@ Ext.define('App.view.patientfile.NewDocumentsWindow', {
 								name:'body',
 								action:'body',
 								itemId:'body',
+								enableFontSize: false,
 								height : 285,
 								width  : 700,
 								margin:5
@@ -541,7 +542,7 @@ Ext.define('App.view.patientfile.NewDocumentsWindow', {
 		var me = this,
 			htmlEditor  = bbar.up('toolbar').up('panel').getComponent('body'),
 			value = htmlEditor.getValue();
-		DocumentHandler.createDocumentDoctorsNote({DoctorsNote:value, pid:app.currPatient.pid, docType:'DoctorsNotes', eid: app.currEncounterId}, function(provider, response){
+		DocumentHandler.createDocument({DoctorsNote:value, pid:app.currPatient.pid, docType:'DoctorsNotes', eid: app.currEncounterId}, function(provider, response){
 			say(response.result);
 		});
 		this.close();

@@ -81,9 +81,7 @@ class Patient
 	 */
 	public function currPatientUnset()
 	{
-		if(!$_SESSION['patient']['readMode']){
-			$this->patientChartInByPid($_SESSION['patient']['pid']);
-		}
+		$this->patientChartInByPid($_SESSION['patient']['pid']);
 		$_SESSION['patient']['pid']  = null;
 		$_SESSION['patient']['name'] = null;
 		return;
@@ -492,9 +490,11 @@ class Patient
 	}
 
 	public function patientChartInByPid($pid){
+		if(!$_SESSION['patient']['readMode']){
 		$chart_in_time = Time::getLocalTime();
 		$this->db->setSQL("UPDATE patient_out_chart SET chart_in_time = '$chart_in_time' WHERE pid = $pid AND chart_in_time IS NULL");
 		$this->db->execLog();
+		}
 	}
 
 	public function patientChartInByUserId($uid){

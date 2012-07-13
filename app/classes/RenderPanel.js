@@ -24,7 +24,7 @@ Ext.define('App.classes.RenderPanel', {
 					region: 'north',
 					layout: 'fit',
 					height: 33,
-					html  : '<div class="dashboard_title">' + me.pageTitle + '</div>'
+					html  : '<div class="panel_title">' + me.pageTitle + '</div>'
 
 				},
 				{
@@ -52,8 +52,10 @@ Ext.define('App.classes.RenderPanel', {
 		me.callParent(arguments);
 	},
 
-	updateTitle: function(pageTitle) {
-		this.getComponent('RenderPanel-header').update('<div class="dashboard_title">' + pageTitle + '</div>');
+	updateTitle: function(pageTitle, readMode, timer) {
+		var readModeDiv = '<div class="readMode">Read Mode</div>',
+			timerDiv = '<span class="timer">' + timer + '</span>';
+		this.getComponent('RenderPanel-header').update('<div class="panel_title">' + pageTitle + '</div>' + (readMode ? readModeDiv : '') + (timer ?  timerDiv : ''));
 	},
 
 	goBack: function() {

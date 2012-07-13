@@ -948,7 +948,7 @@ Ext.define('App.view.patientfile.Encounter', {
                 } else {
                     if (me.stopTimer()) {
                         var timer = me.timer(data.start_date, data.close_date), patient = me.getCurrPatient();
-                        me.updateTitle(patient.name + ' - ' + Ext.Date.format(me.currEncounterStartDate, 'F j, Y, g:i:s a') + ' (Closed Encounter) <span class="timer">' + timer + '</span>');
+                        me.updateTitle(patient.name + ' - ' + Ext.Date.format(me.currEncounterStartDate, 'F j, Y, g:i:s a') + ' (Closed Encounter)', app.currPatient.readMode, timer);
                     }
                 }
 	            me.resetVitalsForm();
@@ -993,7 +993,6 @@ Ext.define('App.view.patientfile.Encounter', {
 	            values.signature  = password;
 
                 Encounter.closeEncounter(values, function (provider, response) {
-					say(response.result);
                     if (response.result.success) {
                         if (me.stopTimer()) {
 
@@ -1031,7 +1030,6 @@ Ext.define('App.view.patientfile.Encounter', {
         var me = this;
         Encounter.getProgressNoteByEid(app.currEncounterId, function(provider, response) {
             var data = response.result;
-            say(data);
             me.progressNote.tpl.overwrite(me.progressNote.body, data);
         });
     },
@@ -1123,7 +1121,7 @@ Ext.define('App.view.patientfile.Encounter', {
     encounterTimer:function () {
         var me = this;
         var timer = me.timer(me.currEncounterStartDate, new Date()), patient = me.getCurrPatient();
-        me.updateTitle(patient.name + ' - ' + Ext.Date.format(me.currEncounterStartDate, 'F j, Y, g:i:s a') + ' (Opened Encounter) <span class="timer">' + timer + '</span>');
+        me.updateTitle(patient.name + ' - ' + Ext.Date.format(me.currEncounterStartDate, 'F j, Y, g:i:s a') + ' (Opened Encounter)', app.currPatient.readMode, timer);
     },
 
     /**
@@ -1421,8 +1419,7 @@ Ext.define('App.view.patientfile.Encounter', {
     onActive:function (callback) {
         var me = this;
         if (me.checkIfCurrPatient()) {
-            var patient = me.getCurrPatient();
-            me.updateTitle(patient.name + ' (Visits)');
+            me.updateTitle(app.currPatient.name + ' (Visits)', app.currPatient.readMode);
             callback(true);
         } else {
             callback(false);

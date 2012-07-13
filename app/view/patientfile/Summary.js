@@ -584,7 +584,6 @@ Ext.define('App.view.patientfile.Summary', {
 
         for(var i = 0; i < formFields.length; i++ ){
             if(formFields[i].xtype == 'mitos.datetime'){
-                say(formFields[i]);
                 modelFields.push({name: formFields[i].name, type: 'date', dateFormat:'Y-m-d H:i:s'});
             }else{
                 modelFields.push({name: formFields[i].name});
@@ -593,7 +592,6 @@ Ext.define('App.view.patientfile.Summary', {
 
 //        Ext.each(formFields.items, function(field) {
 //	        if(field.xtype == 'datefield'){
-//		        say(field);
 //		        modelFields.push({name: field.name, type: 'date', dateFormat:'Y-m-d'});
 //	        }else{
 //		        modelFields.push({name: field.name});
@@ -768,7 +766,6 @@ Ext.define('App.view.patientfile.Summary', {
 
 
     readOnlyFields: function(fields) {
-        say(fields);
         for(var i = 0; i < fields.items.length; i++){
             var f = fields.items[i],
                 v = f.getValue(),
@@ -803,7 +800,7 @@ Ext.define('App.view.patientfile.Summary', {
             me.pid = app.currPatient.pid;
 
             var patient = me.getCurrPatient();
-	        me.updateTitle(patient.name + ' - #' + patient.pid + ' (Patient Summary)');
+	        me.updateTitle(patient.name + ' - #' + patient.pid + ' (Patient Summary)', app.currPatient.readMode);
 
 	        ACL.hasPermission('access_demographics',function(provider, response){
 		        if (response.result){

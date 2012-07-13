@@ -874,12 +874,15 @@ Ext.define('App.view.Viewport', {
 
 	createNewEncounter: function() {
 		var me = this;
-
-		me.navigateTo('panelEncounter', function(success) {
-			if(success) {
-				me.currCardCmp.newEncounter();
-			}
-		});
+		if(perm.access_encounters && perm.add_encounters){
+			me.navigateTo('panelEncounter', function(success) {
+				if(success) {
+					me.currCardCmp.newEncounter();
+				}
+			});
+		}else{
+			me.accessDenied();
+		}
 	},
 
 	sendPatientTo: function(btn) {
@@ -918,12 +921,15 @@ Ext.define('App.view.Viewport', {
 
 	openEncounter: function(eid) {
 		var me = this;
-
-		me.navigateTo('panelEncounter', function(success) {
-			if(success) {
-				me.currCardCmp.openEncounter(eid);
-			}
-		});
+		if(perm.access_encounters){
+			me.navigateTo('panelEncounter', function(success) {
+				if(success) {
+					me.currCardCmp.openEncounter(eid);
+				}
+			});
+		}else{
+			me.accessDenied();
+		}
 	},
 
 
@@ -1053,6 +1059,15 @@ Ext.define('App.view.Viewport', {
 		}
 	},
 
+	setFormsReadOnMode:function(readMode){
+		if(readMode){
+			say('Setting Forms on "Read Mode"');
+		}else{
+			say('Unsetting Forms from "Read Mode"');
+		}
+
+	},
+
 	setCurrPatient: function(pid, fullname, callback) {
 
 		var me = this,
@@ -1066,38 +1081,47 @@ Ext.define('App.view.Viewport', {
 		me.patientUnset();
 
 		Patient.currPatientSet({ pid: pid }, function(provider, response) {
-			var data = response.result;
+			var data = response.result, msg1, msg2;
 			if(data.readMode){
+				msg1 = data.user+' is currently working with "'+fullname+ '" in "'+data.area+'" area.<br>' +
+					'Override "Read Mode" will remove the patient from previous user.<br>' +
+					'Do you would like to override "Read Mode"?';
+				msg2 = data.user+' is currently working with "'+fullname+ '" in "'+data.area+'" area.<br>';
+
 				Ext.Msg.show({
 					title:'Wait!!!',
-				    msg: data.user+' is currently working with ('+fullname+ ') In Area ('+data.area+').<br>Do you would like to continue in "Read Mode"?',
-				    buttons: Ext.Msg.YESNO,
+				    msg: data.overrideReadMode ? msg1 : msg2,
+				    buttons: data.overrideReadMode ? Ext.Msg.YESNO : Ext.Msg.OK,
 				    icon: Ext.MessageBox.WARNING,
 					fn: function(btn){
-						say(btn);
-
+						continueSettingPatient(btn != 'yes');
 					}
 				});
 
-
+			}else{
+				continueSettingPatient(false);
 			}
 
-			me.currEncounterId = null;
-			me.currPatient = {
-				pid : pid,
-				name: fullname,
-				readMode: true
-			};
-			patientBtn.update({ pid: pid, name: fullname });
-			patientBtn.enable();
-			patientOpenVisitsBtn.enable();
-			patientCreateEncounterBtn.enable();
-			patientCloseCurrEncounterBtn.enable();
-			patientChargeBtn.enable();
-			patientCheckOutBtn.enable();
-			if(typeof callback == 'function') {
-				callback(true);
+			function continueSettingPatient(readMode){
+				me.currEncounterId = null;
+				me.currPatient = {
+					pid : pid,
+					name: fullname,
+					readMode: readMode
+				};
+				patientBtn.update({ pid: pid, name: fullname });
+				patientBtn.enable();
+				patientOpenVisitsBtn.enable();
+				patientCreateEncounterBtn.enable();
+				patientCloseCurrEncounterBtn.enable();
+				patientChargeBtn.enable();
+				patientCheckOutBtn.enable();
+				me.setFormsReadOnMode(readMode);
+				if(typeof callback == 'function') {
+					callback(true);
+				}
 			}
+
 		});
 	},
 
@@ -1301,7 +1325,7 @@ Ext.define('App.view.Viewport', {
 				me.setCurrPatient(data.patientData.pid, data.patientData.name, function() {
 					if(data.patientData.eid && data.patientData.poolArea == 'Check Out'){
 						me.checkOutPatient(data.patientData.eid);
-					}else if(data.patientData.eid){
+					}else if(data.patientData.eid && perm.access_encounters){
 						me.openEncounter(data.patientData.eid);
 					}else{
 						me.openPatientSummary();

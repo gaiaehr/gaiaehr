@@ -216,11 +216,26 @@ cursor: pointer !important;
 .x-border-layout-ct{
     background-color: #f7f7f7;
 }
-.dashboard_title{
-	font-family: "Cuprum";
+.panel_title {
+	font-family: "Cuprum",serif;
 	font-size: 24px;
-	width: 100%;
+	/*width: 100%;*/
+	float: left;
     border-bottom: 1px dotted #ccc;
+}
+
+.readMode {
+	float: left;
+	background-color: red;
+	color: white;
+    font-size:13px;
+    margin:1px 3px 3px 10px;
+    padding:2px 10px 4px 10px;
+    font-family: fantasy;
+    border: solid 2px white;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
 }
 
 .search_title{
@@ -376,11 +391,11 @@ body#login{
 	color: #333;;
 }
 
-#dashboard_title{
-	font-size: 24px;
-	color: #333;
-	width: 100%;
-}
+/*#dashboard_title{*/
+	/*font-size: 24px;*/
+	/*color: #333;*/
+	/*width: 100%;*/
+/*}*/
 /*Top Alert Message Styles*/
 .msg .x-box-mc {
     font-size:14px;

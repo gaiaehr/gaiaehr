@@ -14,6 +14,8 @@ if(!isset($_SESSION)){
 include_once($_SESSION['site']['root'].'/classes/dbHelper.php');
 include_once($_SESSION['site']['root'].'/classes/AES.php');
 include_once($_SESSION['site']['root'].'/classes/Sessions.php');
+include_once($_SESSION['site']['root'] .'/dataProvider/Patient.php');
+
 class authProcedures {
 
 	private $session;
@@ -137,8 +139,10 @@ class authProcedures {
      * @return mixed
      */
     public function unAuth(){
-	    $session = new Sessions();
-	    $session->logoutSession();
+	    $s = new Sessions();
+	    $p = new Patient();
+	    $s->logoutSession();
+        $p->patientChartInByPid($_SESSION['patient']['pid']);
         session_unset();
         session_destroy();
         return;
@@ -161,6 +165,8 @@ class authProcedures {
 	   	    $session->updateSession();
             return array('authorized' => true);
         }else{
+	        $p = new Patient();
+	        $p->patientChartInByPid($_SESSION['patient']['pid']);
 	        $session->logoutSession();
             return array('authorized' => false);
         }

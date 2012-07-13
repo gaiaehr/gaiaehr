@@ -56,9 +56,15 @@ class Sessions
 	public function logoutInactiveUsers(){
 		$now = time();
 		$foo = $now - $_SESSION['inactive']['time'];
-		$this->db->setSQL("UPDATE users_sessions SET logout = '$now' WHERE last_request < $foo AND logout IS NULL");
-		$this->db->execOnly();
-		return true;
+		$users = array();
+		$this->db->setSQL("SELECT id, uid FROM users_sessions WHERE last_request < $foo AND logout IS NULL");
+		foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) as $user){
+			$id = $user['id'];
+			$users[] = array('uid' => $user['uid']);
+			$this->db->setSQL("UPDATE users_sessions SET logout = '$now' WHERE id = '$id'");
+			$this->db->execOnly();
+		}
+		return $users;
 	}
 }
 //

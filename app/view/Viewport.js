@@ -263,7 +263,7 @@ Ext.define('App.view.Viewport', {
 	        run:function () {
 		        me.checkSession();
                 me.getPatientesInPoolArea();
-                CronJob.runCron();
+                CronJob.run();
 	        },
 	        interval:10000 // 10 second
 	    };
@@ -1063,12 +1063,30 @@ Ext.define('App.view.Viewport', {
 			patientChargeBtn = me.Header.getComponent('patientCharge'),
 			patientCheckOutBtn = me.Header.getComponent('patientCheckOut');
 
+		me.patientUnset();
 
-		Patient.currPatientSet({ pid: pid }, function() {
+		Patient.currPatientSet({ pid: pid }, function(provider, response) {
+			var data = response.result;
+			if(data.readMode){
+				Ext.Msg.show({
+					title:'Wait!!!',
+				    msg: data.user+' is currently working with ('+fullname+ ') In Area ('+data.area+').<br>Do you would like to continue in "Read Mode"?',
+				    buttons: Ext.Msg.YESNO,
+				    icon: Ext.MessageBox.WARNING,
+					fn: function(btn){
+						say(btn);
+
+					}
+				});
+
+
+			}
+
 			me.currEncounterId = null;
 			me.currPatient = {
 				pid : pid,
-				name: fullname
+				name: fullname,
+				readMode: true
 			};
 			patientBtn.update({ pid: pid, name: fullname });
 			patientBtn.enable();

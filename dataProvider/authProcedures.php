@@ -127,6 +127,7 @@ class authProcedures {
 	        $_SESSION['timeout'] = time();
 	        $session = new Sessions();
 	        $session->loginSession();
+	        $_SESSION['inactive']['timeout'] = time();
             return array('success'=>true);
         }
     }

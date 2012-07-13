@@ -12,6 +12,7 @@ if(!isset($_SESSION)){
     session_cache_limiter('private');
 }
 include_once($_SESSION['site']['root'].'/classes/Sessions.php');
+include_once($_SESSION['site']['root'].'/dataProvider/Patient.php');
 class CronJob {
 
 	function run(){
@@ -22,17 +23,23 @@ class CronJob {
 			/**
 			 * stuff to run
 			 */
-			$sessions = new Sessions();
-			$sessions->logoutInactiveUsers();
+			$s = new Sessions();
+			$p = new Patient();
+
+			foreach($s->logoutInactiveUsers() as $user){
+				$p->patientChartInByUserId($user['uid']);
+			}
+
 			/**
 			 * reset cron time
 			 */
 			$_SESSION['cron']['time'] = time();
 			return array('success'=>true, 'ran'=>true);
-
 		}
-
 		return array('success'=>true, 'ran'=>false);
 	}
 
 }
+//$foo = new CronJob();
+//print '<pre>';
+//$foo->run();

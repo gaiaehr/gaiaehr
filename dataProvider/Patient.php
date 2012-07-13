@@ -7,7 +7,7 @@
  * Time: 7:10 AM
  */
 if(!isset($_SESSION)) {
-	session_name("GaiaEHR");
+	session_name('GaiaEHR');
 	session_start();
 	session_cache_limiter('private');
 }
@@ -15,6 +15,8 @@ include_once($_SESSION['site']['root'] . '/dataProvider/Person.php');
 include_once($_SESSION['site']['root'] . '/classes/dbHelper.php');
 include_once($_SESSION['site']['root'] . '/classes/Time.php');
 include_once($_SESSION['site']['root'] . '/dataProvider/User.php');
+include_once($_SESSION['site']['root'] . '/dataProvider/ACL.php');
+//include_once($_SESSION['site']['root'] . '/dataProvider/PoolArea.php');
 class Patient
 {
 	/**
@@ -25,11 +27,17 @@ class Patient
 	 * @var User
 	 */
 	private $user;
+	/**
+	 * @var PoolArea
+	 */
+	//private $poolArea;
 
 	function __construct()
 	{
 		$this->db   = new dbHelper();
 		$this->user = new User();
+		$this->acl = new ACL();
+		//$this->poolArea = new PoolArea();
 		return;
 	}
 
@@ -48,9 +56,24 @@ class Patient
 	 */
 	public function currPatientSet(stdClass $params)
 	{
+		include_once($_SESSION['site']['root'] . '/dataProvider/PoolArea.php');
+		$poolArea = new PoolArea();
 		$_SESSION['patient']['pid']  = $params->pid;
 		$_SESSION['patient']['name'] = $this->getPatientFullNameByPid($params->pid);
-		return;
+		$p = $this->isPatientChartOutByPid($params->pid);
+		if($p === false){
+			$area = $poolArea->getCurrentPatientPoolAreaByPid($params->pid);
+			$this->patientChartOutByPid($params->pid, $area['area_id']);
+			$_SESSION['patient']['readMode'] = false;
+			return array('readMode' => false);
+		}else{
+			$_SESSION['patient']['readMode'] = true;
+			return array('readMode' => true,
+			             'overrideReadMode' => $this->acl->hasPermission('override_readmode'),
+			             'user' => $this->user->getUserFullNameById($p['uid']),
+			             'area' => $poolArea->getAreaTitleById($p['pool_area_id']),
+			             'array'=>$p);
+		}
 	}
 
 	/**
@@ -58,9 +81,16 @@ class Patient
 	 */
 	public function currPatientUnset()
 	{
+		if(!$_SESSION['patient']['readMode']){
+			$this->patientChartInByPid($_SESSION['patient']['pid']);
+		}
 		$_SESSION['patient']['pid']  = null;
 		$_SESSION['patient']['name'] = null;
 		return;
+	}
+
+	public function isCurrPatientOnReadMode(){
+		return $_SESSION['patient']['readMode'];
 	}
 
 	public function createNewPatient(stdClass $params)
@@ -449,6 +479,46 @@ class Patient
 	}
 
 
+	//******************************************************************************************************************
+	//******************************************************************************************************************
+
+	public function patientChartOutByPid($pid, $pool_area_id){
+		$data['pid'] = $pid;
+		$data['uid'] = $_SESSION['user']['id'];
+		$data['chart_out_time'] = Time::getLocalTime();
+		$data['pool_area_id'] = $pool_area_id;
+		$this->db->setSQL($this->db->sqlBind($data, 'patient_out_chart', 'I'));
+		$this->db->execLog();
+	}
+
+	public function patientChartInByPid($pid){
+		$chart_in_time = Time::getLocalTime();
+		$this->db->setSQL("UPDATE patient_out_chart SET chart_in_time = '$chart_in_time' WHERE pid = $pid AND chart_in_time IS NULL");
+		$this->db->execLog();
+	}
+
+	public function patientChartInByUserId($uid){
+		$chart_in_time = Time::getLocalTime();
+		$this->db->setSQL("UPDATE patient_out_chart SET chart_in_time = '$chart_in_time' WHERE uid = $uid AND chart_in_time IS NULL");
+		$this->db->execLog();
+	}
+
+	public function isPatientChartOutByPid($pid){
+		$this->db->setSQL("SELECT id, uid, pool_area_id FROM patient_out_chart WHERE pid = '$pid' AND chart_in_time IS NULL");
+		$chart = $this->db->fetchRecord();
+		if(empty($chart)){
+			return false;
+		}else{
+			return $chart;
+		}
+	}
+
+
+
+
+
+	//******************************************************************************************************************
+	//******************************************************************************************************************
 
 	/**
 	 * @param $date

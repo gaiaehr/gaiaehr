@@ -7,7 +7,7 @@
  * Time: 3:26 PM
  */
 if(!isset($_SESSION)) {
-	session_name("GaiaEHR");
+	session_name('GaiaEHR');
 	session_start();
 	session_cache_limiter('private');
 }
@@ -252,6 +252,12 @@ class PoolArea
 			}
 		}
 		return $patients;
+	}
+
+	public function getAreaTitleById($id){
+		$this->db->setSQL("SELECT title FROM pool_areas WHERE id = $id");
+		$area = $this->db->fetchRecord(PDO::FETCH_ASSOC);
+		return $area['title'];
 	}
 }
 //$e = new PoolArea();

@@ -7,12 +7,12 @@
  * Time: 12:56 PM
  */
 if(!isset($_SESSION)){
-    session_name ( "GaiaEHR" );
+    session_name ( 'GaiaEHR' );
     session_start();
     session_cache_limiter('private');
 }
-include_once($_SESSION['site']['root']."/classes/dbHelper.php");
-include_once($_SESSION['site']['root']."/dataProvider/Person.php");
+include_once($_SESSION['site']['root'].'/classes/dbHelper.php');
+include_once($_SESSION['site']['root'].'/dataProvider/Person.php');
 class Messages extends dbHelper {
 
     /**
@@ -23,13 +23,13 @@ class Messages extends dbHelper {
         $currUser = $_SESSION['user']['id'];
 
         if($params->get == 'inbox'){
-            $wherex = "messages.to_deleted = '0' AND users.id = '".$currUser."'";
+            $wherex = "messages.to_deleted = '0' AND users.id = '$currUser'";
         }elseif($params->get == 'sent'){
-            $wherex = "messages.from_deleted = '0' AND messages.from_id = '".$currUser."'";
+            $wherex = "messages.from_deleted = '0' AND messages.from_id = '$currUser'";
         }elseif($params->get == 'trash'){
-            $wherex = "messages.to_deleted = '1' OR messages.from_deleted = '1' AND users.id = '".$currUser."'";
+            $wherex = "messages.to_deleted = '1' OR messages.from_deleted = '1' AND users.id = '$currUser'";
         }else{
-            $wherex = "messages.to_deleted = '0' AND users.id = '".$currUser."'";
+            $wherex = "messages.to_deleted = '0' AND users.id = '$currUser'";
         }
 
         $this->setSQL("SELECT messages.* ,
@@ -78,7 +78,7 @@ class Messages extends dbHelper {
         $row['message_status']  = $params->message_status;
         $row['subject']         = $params->subject;
         $row['note_type']       = $params->note_type;
-        $sql = $this->sqlBind($row, "messages", "I");
+        $sql = $this->sqlBind($row, 'messages', 'I');
         $this->setSQL($sql);
         $ret = $this->execLog();
         if($ret[2]){
@@ -96,25 +96,25 @@ class Messages extends dbHelper {
      */
     public function replyMessage(stdClass $params){
 
-            $t                      = date('l jS \of F Y h:i:s A');
-            $row['body']            = 'On '.$t.' - <spam style="font-weight:bold">'.$_SESSION['user']['name'].'</spam> - Wrote:<br><br>'.$params->curr_msg.'<br><br>';
-            $row['from_id']         = $_SESSION['user']['id'];
-            $row['to_id']           = $params->to_id;
-            $row['message_status']  = $params->message_status;
-            $row['subject']         = $params->subject;
-            $row['note_type']       = $params->note_type;
-            $row['to_deleted']      = 0;
-            $row['from_deleted']    = 0;
+        $t                      = date('l jS \of F Y h:i:s A');
+        $row['body']            = 'On '.$t.' - <spam style="font-weight:bold">'.$_SESSION['user']['name'].'</spam> - Wrote:<br><br>'.$params->curr_msg.'<br><br>';
+        $row['from_id']         = $_SESSION['user']['id'];
+        $row['to_id']           = $params->to_id;
+        $row['message_status']  = $params->message_status;
+        $row['subject']         = $params->subject;
+        $row['note_type']       = $params->note_type;
+        $row['to_deleted']      = 0;
+        $row['from_deleted']    = 0;
 
-            $sql = $this->sqlBind($row, "messages", "U", "id='" . $params->id . "'");
-            $this->setSQL($sql);
-            $ret = $this->execLog();
+        $sql = $this->sqlBind($row, 'messages', 'U', array('id' => $params->id));
+        $this->setSQL($sql);
+        $ret = $this->execLog();
 
-            if($ret[2]){
-                return array('success' => false);
-            }else{
-                return array('success' => true);
-            }
+        if($ret[2]){
+            return array('success' => false);
+        }else{
+            return array('success' => true);
+        }
 
 
         return $params;
@@ -155,7 +155,7 @@ class Messages extends dbHelper {
 
         $row[$params->col] = $params->val;
 
-        $sql = $this->sqlBind($row, "messages", "U", "id='" . $params->id . "'");
+        $sql = $this->sqlBind($row, 'messages', 'U', array('id' => $params->id));
         $this->setSQL($sql);
         $ret = $this->execLog();
         if ( $ret[2] ){

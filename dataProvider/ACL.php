@@ -1,10 +1,10 @@
 <?php
 if(!isset($_SESSION)){
-    session_name ("GaiaEHR" );
+    session_name ( 'GaiaEHR' );
     session_start();
     session_cache_limiter('private');
 }
-include_once($_SESSION['site']['root']."/classes/dbHelper.php");
+include_once($_SESSION['site']['root'].'/classes/dbHelper.php');
 /**
  * Access Control List (ACL).
  *

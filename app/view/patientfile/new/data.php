@@ -13,8 +13,8 @@ session_name("GaiaEHR");
 session_start();
 session_cache_limiter('private');
 
-include_once($_SESSION['site']['root'] . "/classes/dbHelper.php");
-include_once($_SESSION['site']['root'] . "/repo/global_functions/global_functions.php");
+include_once($_SESSION['site']['root'] . '/classes/dbHelper.php');
+include_once($_SESSION['site']['root'] . '/repo/global_functions/global_functions.php');
 
 $_SESSION['site']['flops'] = 0;
 

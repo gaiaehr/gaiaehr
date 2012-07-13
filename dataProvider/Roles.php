@@ -7,7 +7,7 @@
  * Time: 8:57 PM
  */
 if(!isset($_SESSION)){
-    session_name ( "GaiaEHR" );
+    session_name ( 'GaiaEHR' );
     session_start();
     session_cache_limiter('private');
 }

@@ -265,7 +265,7 @@ Ext.define('App.view.Viewport', {
                 me.getPatientesInPoolArea();
                 CronJob.run();
 	        },
-	        interval:10000 // 10 second
+	        interval:5000 // 10 second
 	    };
 
 		me.storeTree = Ext.create('App.store.navigation.Navigation', {
@@ -1060,12 +1060,17 @@ Ext.define('App.view.Viewport', {
 	},
 
 	setFormsReadOnMode:function(readMode){
-		if(readMode){
-			say('Setting Forms on "Read Mode"');
-		}else{
-			say('Unsetting Forms from "Read Mode"');
-		}
+		var panels = ['panelEncounter','panelSummary'];
 
+		for(var i=0; i < panels.length; i++){
+			var forms = Ext.getCmp(panels[i]).query('form');
+			for(var j=0; j < forms.length; j++){
+				var items = forms[j].getForm().getFields().items;
+				for(var k=0; k < items.length; k++){
+					items[k].setReadOnly(readMode);
+				}
+			}
+		}
 	},
 
 	setCurrPatient: function(pid, fullname, callback) {

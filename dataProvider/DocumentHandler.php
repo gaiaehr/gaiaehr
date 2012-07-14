@@ -40,6 +40,7 @@ class DocumentHandler
 	{
 		$this->db       = new dbHelper();
 		$this->user     = new User();
+
 		$this->patient  = new Patient();
 		$this->services = new Services();
 		$this->facility = new Facilities();
@@ -54,7 +55,11 @@ class DocumentHandler
 	public function createDocument($params){
 
 		$path =  $this->setWorkingDir($params) . $this->nameFile();
-		$this->saveDocument($this->documents->PDFDocumentBuilder($params),$path);
+        $path = str_replace('/','\\',$path);
+
+
+		    $this->documents->PDFDocumentBuilder($params, $path);
+
 
 		if(file_exists($path)) {
 			$doc['pid']     = $this->pid;
@@ -72,42 +77,17 @@ class DocumentHandler
             }
             elseif(isset($params->labs)) {
                 $this->orders->addOrdersLabs($params);
+        }
+            elseif(isset($params->DoctorsNote)) {
+                $this->doctorsnotes->addDoctorsNotes($params);
+
             }
 
 			return array('success'=> true,
 			             'doc'    => array('id'   => $doc_id,
 			                               'name' => $this->fileName,
-			                               'url'  => $this->getDocumentUrl()));
-		}else{
-			return array('success'=> false,
-			             'error'  => 'Document could not be created');
-		}
-	}
-    public function createDocumentDoctorsNote($params){
-
-		$path =  $this->setWorkingDir($params) . $this->nameFile();
-
-
-            $this->saveDocument($this->documents->PDFDocumentBuilderDoctors($params),$path);
-
-		if(file_exists($path)) {
-			$doc['pid']     = $this->pid;
-            $doc['eid']     = $params->eid;
-			$doc['uid']     = $_SESSION['user']['id'];
-			$doc['docType'] = $this->docType;
-			$doc['name']    = $this->fileName;
-			$doc['url']     = $this->getDocumentUrl();
-			$doc['date']    = date('Y-m-d H:i:s');
-			$this->db->setSQL($this->db->sqlBind($doc, 'patient_documents', 'I'));
-			$this->db->execLog();
-			$params->document_id = $doc_id = $this->db->lastInsertId;
-
-            $this->doctorsnotes->addDoctorsNotes($params);
-
-			return array('success'=> true,
-			             'doc'    => array('id'   => $doc_id,
-			                               'name' => $this->fileName,
-			                               'url'  => $this->getDocumentUrl()));
+			                               'url'  => $this->getDocumentUrl(),
+                                           'path' => $path));
 		}else{
 			return array('success'=> false,
 			             'error'  => 'Document could not be created');
@@ -216,18 +196,6 @@ class DocumentHandler
 		return $params;
 
 	}
-
-
-
-
-
-	private function saveDocument($pdf,$path){
-		$handle  = fopen($path, 'w');
-		fwrite($handle, $pdf);
-		fclose($handle);
-	}
-
-
 
 }
 

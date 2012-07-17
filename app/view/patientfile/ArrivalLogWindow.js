@@ -6,7 +6,7 @@
  * Time: 10:46 PM
  */
 Ext.define('App.view.patientfile.ArrivalLogWindow', {
-	extend: 'Ext.window.Window',
+	extend: 'App.classes.window.Window',
 	title      : 'Patient Arrival Log',
 	closeAction: 'hide',
     layout     : 'fit',
@@ -14,7 +14,6 @@ Ext.define('App.view.patientfile.ArrivalLogWindow', {
 	width      : 900,
 	height     : 600,
 	maximizable: true,
-    mixins: ['App.classes.RenderPanel'],
 	initComponent: function() {
 		var me = this;
 

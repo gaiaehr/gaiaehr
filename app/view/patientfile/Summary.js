@@ -78,6 +78,7 @@ Ext.define('App.view.patientfile.Summary', {
 			                                '->',
 			                                {
 				                                xtype: 'button',
+				                                action:'readOnly',
 		                                        text:'Save',
 				                                minWidth: 75,
 		                                        scope:me,
@@ -87,6 +88,7 @@ Ext.define('App.view.patientfile.Summary', {
 		                                    {
 		                                        xtype: 'button',
 		                                        text:'Cancel',
+			                                    action:'readOnly',
 		                                        minWidth: 75,
 		                                        scope:me,
 		                                        handler:me.formCancel
@@ -101,6 +103,7 @@ Ext.define('App.view.patientfile.Summary', {
 			                                {
 				                                xtype: 'button',
 		                                        text:'Save',
+				                                action:'readOnly',
 				                                minWidth: 75,
 		                                        scope:me,
 		                                        handler:me.formSave
@@ -109,6 +112,7 @@ Ext.define('App.view.patientfile.Summary', {
 		                                    {
 		                                        xtype: 'button',
 		                                        text:'Cancel',
+			                                    action:'readOnly',
 		                                        minWidth: 75,
 		                                        scope:me,
 		                                        handler:me.formCancel
@@ -802,6 +806,7 @@ Ext.define('App.view.patientfile.Summary', {
             var patient = me.getCurrPatient();
 	        me.updateTitle(patient.name + ' - #' + patient.pid + ' (Patient Summary)', app.currPatient.readOnly);
 	        me.setReadOnly();
+	        me.setButtonsDisabled(me.query('button[action="readOnly"]'));
 	        ACL.hasPermission('access_demographics',function(provider, response){
 		        if (response.result){
 			        demographicsPanel.show();

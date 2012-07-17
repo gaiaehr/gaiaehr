@@ -1141,7 +1141,7 @@ Ext.define('App.view.Viewport', {
 		});
 	},
 
-	showMiframe: function(btn) {
+		showMiframe: function(btn) {
 		var src = btn.action;
 		this.winSupport.remove(this.miframe);
 		this.winSupport.add(this.miframe = Ext.create('App.classes.ManagedIframe', {src: src}));
@@ -1345,7 +1345,7 @@ Ext.define('App.view.Viewport', {
 		return this.currPatient;
 	},
 
-	getMitosApp: function() {
+	getApp: function() {
 		return this;
 	},
 

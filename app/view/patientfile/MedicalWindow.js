@@ -10,7 +10,7 @@
  * @namespace Immunization.addPatientImmunization
  */
 Ext.define('App.view.patientfile.MedicalWindow', {
-    extend       : 'Ext.window.Window',
+    extend       : 'App.classes.window.Window',
     title        : 'Medical Window',
 	id           : 'MedicalWindow',
     layout       : 'card',
@@ -22,7 +22,6 @@ Ext.define('App.view.patientfile.MedicalWindow', {
     defaults     : {
         margin: 5
     },
-    mixins: ['App.classes.RenderPanel'],
 	requires: [ 'App.view.patientfile.LaboratoryResults' ],
 	pid:null,
     initComponent: function() {

@@ -71,7 +71,6 @@ Ext.define('App.view.patientfile.Encounter', {
             title      : 'New Encounter Form',
             closeAction: 'hide',
             modal      : true,
-            closable   : false,
             width:660,
             items  : [
                 {
@@ -89,10 +88,15 @@ Ext.define('App.view.patientfile.Encounter', {
                 },
                 {
                     text:'Cancel',
+	                scope:me,
                     handler:me.cancelNewEnc
 
                 }
-            ]
+            ],
+	        listeners:{
+		        scope:me,
+		        hide:me.cancelNewEnc
+	        }
         });
 	    me.EncounterOrdersStore = Ext.create('App.store.patientfile.EncounterCPTsICDs');
 	    me.checkoutAlertArea = Ext.create('App.store.patientfile.CheckoutAlertArea');
@@ -923,8 +927,8 @@ Ext.define('App.view.patientfile.Encounter', {
      * and send the user to the Patient Summary panel
      * @param btn
      */
-    cancelNewEnc:function (btn) {
-        btn.up('window').close();
+    cancelNewEnc:function () {
+        this.newEncounterWindow.close();
         app.openPatientSummary();
     },
 
@@ -945,10 +949,12 @@ Ext.define('App.view.patientfile.Encounter', {
                 me.currEncounterStartDate = data.start_date;
                 if (!data.close_date) {
                     me.startTimer();
+	                me.setButtonsDisabled(me.getButtonsToDisable());
                 } else {
                     if (me.stopTimer()) {
                         var timer = me.timer(data.start_date, data.close_date), patient = me.getCurrPatient();
-                        me.updateTitle(patient.name + ' - ' + Ext.Date.format(me.currEncounterStartDate, 'F j, Y, g:i:s a') + ' (Closed Encounter)', app.currPatient.readMode, timer);
+                        me.updateTitle(patient.name + ' - ' + Ext.Date.format(me.currEncounterStartDate, 'F j, Y, g:i:s a') + ' (Closed Encounter)', app.currPatient.readOnly, timer);
+	                    me.setButtonsDisabled(me.getButtonsToDisable(), true);
                     }
                 }
 	            me.resetVitalsForm();
@@ -1121,7 +1127,7 @@ Ext.define('App.view.patientfile.Encounter', {
     encounterTimer:function () {
         var me = this;
         var timer = me.timer(me.currEncounterStartDate, new Date()), patient = me.getCurrPatient();
-        me.updateTitle(patient.name + ' - ' + Ext.Date.format(me.currEncounterStartDate, 'F j, Y, g:i:s a') + ' (Opened Encounter)', app.currPatient.readMode, timer);
+        me.updateTitle(patient.name + ' - ' + Ext.Date.format(me.currEncounterStartDate, 'F j, Y, g:i:s a') + ' (Opened Encounter)', app.currPatient.readOnly, timer);
     },
 
     /**
@@ -1404,6 +1410,21 @@ Ext.define('App.view.patientfile.Encounter', {
 
 
     },
+
+	getButtonsToDisable:function(){
+		var me = this, buttons = [];
+		return buttons.concat(
+			me.vitalsPanel.query('button'),
+			me.reviewSysPanel.query('button'),
+			me.reviewSysCkPanel.query('button'),
+			me.soapPanel.query('button'),
+			me.MiscBillingOptionsPanel.query('button'),
+			me.CurrentProceduralTerminology.query('button'),
+			me.EncounterEventHistory.query('button'),
+			me.newEncounterWindow.query('button'),
+			me.checkoutWindow.query('button')
+		);
+	},
 
 	onDocumentView:function(grid, rowIndex){
 		var rec = grid.getStore().getAt(rowIndex),

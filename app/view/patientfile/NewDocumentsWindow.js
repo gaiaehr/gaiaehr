@@ -10,7 +10,7 @@
  * @namespace Immunization.addPatientImmunization
  */
 Ext.define('App.view.patientfile.NewDocumentsWindow', {
-	extend     : 'Ext.window.Window',
+	extend     : 'App.classes.window.Window',
 	title      : 'Order Window',
 	id         : 'OrderWindow',
 	layout     : 'fit',
@@ -22,7 +22,6 @@ Ext.define('App.view.patientfile.NewDocumentsWindow', {
 	defaults   : {
 		margin: 5
 	},
-	mixins     : ['App.classes.RenderPanel'],
 	pid:null,
 	initComponent: function() {
 		var me = this;
@@ -568,16 +567,12 @@ Ext.define('App.view.patientfile.NewDocumentsWindow', {
 	        doctorsNoteBody = me.query('[action="body"]')[0],
             template = me.query('[action="template"]')[0],
 	        p = app.currPatient;
-
 		me.pid = p.pid;
         me.setTitle(p.name + (p.readOnly ? ' - <span style="color:red">[Read Mode]</span>' : ''));
 		me.setReadOnly();
 		me.patientPrescriptionStore.removeAll();
 		me.patientsLabsOrdersStore.removeAll();
-
 		doctorsNoteBody.reset();
 		template.reset();
-
-
 	}
 });

@@ -1419,7 +1419,8 @@ Ext.define('App.view.patientfile.Encounter', {
     onActive:function (callback) {
         var me = this;
         if (me.checkIfCurrPatient()) {
-            me.updateTitle(app.currPatient.name + ' (Visits)', app.currPatient.readMode);
+            me.updateTitle(app.currPatient.name + ' (Visits)', app.currPatient.readOnly);
+	        me.setReadOnly();
             callback(true);
         } else {
             callback(false);

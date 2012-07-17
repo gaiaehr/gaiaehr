@@ -41,7 +41,9 @@ $_SESSION['site']['root']       = str_replace('\\','/',dirname(__FILE__));
 $_SESSION['site']['url']        = 'http://' . $_SERVER['HTTP_HOST'] . str_replace('/index.php', '', $_SERVER['PHP_SELF']);
 $_SESSION['site']['facility']   = 'default'; // THIS IS A TEMP VARIABLE
 
+
 $_SESSION['inactive']['time']   = 60;
+$_SESSION['inactive']['start']  = true;
 $_SESSION['inactive']['life']   = (time() - (isset($_SESSION['inactive']['timeout'])? $_SESSION['inactive']['timeout'] : time()));
 $_SESSION['inactive']['timeout']= time();
 

@@ -52,10 +52,24 @@ Ext.define('App.classes.RenderPanel', {
 		me.callParent(arguments);
 	},
 
-	updateTitle: function(pageTitle, readMode, timer) {
-		var readModeDiv = '<div class="readMode">Read Mode</div>',
+	updateTitle: function(pageTitle, readOnly, timer) {
+		
+		var readOnlyDiv = '<div class="readOnly">Read Only</div>',
 			timerDiv = '<span class="timer">' + timer + '</span>';
-		this.getComponent('RenderPanel-header').update('<div class="panel_title">' + pageTitle + '</div>' + (readMode ? readModeDiv : '') + (timer ?  timerDiv : ''));
+		this.getComponent('RenderPanel-header').update('<div class="panel_title">' + pageTitle + '</div>' + (readOnly ? readOnlyDiv : '') + (timer ?  timerDiv : ''));
+	},
+
+	setReadOnly:function(){
+		var forms = this.query('form'),
+			readOnly = app.currPatient.readOnly;
+		for(var j=0; j < forms.length; j++){
+			var items = forms[j].getForm().getFields().items;
+			for(var k=0; k < items.length; k++){
+				items[k].setReadOnly(readOnly);
+			}
+		}
+		say(forms);
+		return readOnly;
 	},
 
 	goBack: function() {

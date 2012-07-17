@@ -94,6 +94,8 @@ $_SESSION['site']['flops'] = 0;
             Ext.onReady(function(){
 	            Ext.direct.Manager.addProvider(App.data.REMOTING_API);
 
+	            CronJob.run();
+
 	            Globals.setGlobals(function(provider, response){
 		            settings.site_url = response.result.site.url + '/sites/' + response.result.site.site;
 	            });

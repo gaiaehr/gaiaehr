@@ -64,12 +64,12 @@ class Patient
 		if($p === false){
 			$area = $poolArea->getCurrentPatientPoolAreaByPid($params->pid);
 			$this->patientChartOutByPid($params->pid, $area['area_id']);
-			$_SESSION['patient']['readMode'] = false;
-			return array('readMode' => false);
+			$_SESSION['patient']['readOnly'] = false;
+			return array('readOnly' => false);
 		}else{
-			$_SESSION['patient']['readMode'] = true;
-			return array('readMode' => true,
-			             'overrideReadMode' => $this->acl->hasPermission('override_readmode'),
+			$_SESSION['patient']['readOnly'] = true;
+			return array('readOnly' => true,
+			             'overrideReadOnly' => $this->acl->hasPermission('override_readonly'),
 			             'user' => $this->user->getUserFullNameById($p['uid']),
 			             'area' => $poolArea->getAreaTitleById($p['pool_area_id']),
 			             'array'=>$p);
@@ -88,7 +88,7 @@ class Patient
 	}
 
 	public function isCurrPatientOnReadMode(){
-		return $_SESSION['patient']['readMode'];
+		return $_SESSION['patient']['readOnly'];
 	}
 
 	public function createNewPatient(stdClass $params)
@@ -491,7 +491,7 @@ class Patient
 	}
 
 	public function patientChartInByPid($pid){
-		if(!$_SESSION['patient']['readMode']){
+		if(!$_SESSION['patient']['readOnly']){
 		$chart_in_time = Time::getLocalTime();
 		$this->db->setSQL("UPDATE patient_out_chart SET chart_in_time = '$chart_in_time' WHERE pid = $pid AND chart_in_time IS NULL");
 		$this->db->execLog();
@@ -531,7 +531,6 @@ class Patient
 	}
 
 }
-//
 //$p = new Patient();
 //echo '<pre>';
-//print_r($p->createNewPatientOnlyName('Ernesto J Rodriguez'));
+//print_r($p->patientChartInByAllInactiveUsers());

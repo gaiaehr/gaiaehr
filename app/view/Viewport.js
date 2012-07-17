@@ -1059,20 +1059,6 @@ Ext.define('App.view.Viewport', {
 		}
 	},
 
-	setFormsReadOnMode:function(readMode){
-		var panels = ['panelEncounter','panelSummary'];
-
-		for(var i=0; i < panels.length; i++){
-			var forms = Ext.getCmp(panels[i]).query('form');
-			for(var j=0; j < forms.length; j++){
-				var items = forms[j].getForm().getFields().items;
-				for(var k=0; k < items.length; k++){
-					items[k].setReadOnly(readMode);
-				}
-			}
-		}
-	},
-
 	setCurrPatient: function(pid, fullname, callback) {
 
 		var me = this,
@@ -1087,7 +1073,8 @@ Ext.define('App.view.Viewport', {
 
 		Patient.currPatientSet({ pid: pid }, function(provider, response) {
 			var data = response.result, msg1, msg2;
-			if(data.readMode){
+			//say(data);
+			if(data.readOnly){
 				msg1 = data.user+' is currently working with "'+fullname+ '" in "'+data.area+'" area.<br>' +
 					'Override "Read Mode" will remove the patient from previous user.<br>' +
 					'Do you would like to override "Read Mode"?';
@@ -1095,8 +1082,8 @@ Ext.define('App.view.Viewport', {
 
 				Ext.Msg.show({
 					title:'Wait!!!',
-				    msg: data.overrideReadMode ? msg1 : msg2,
-				    buttons: data.overrideReadMode ? Ext.Msg.YESNO : Ext.Msg.OK,
+				    msg: data.overrideReadOnly ? msg1 : msg2,
+				    buttons: data.overrideReadOnly ? Ext.Msg.YESNO : Ext.Msg.OK,
 				    icon: Ext.MessageBox.WARNING,
 					fn: function(btn){
 						continueSettingPatient(btn != 'yes');
@@ -1107,12 +1094,12 @@ Ext.define('App.view.Viewport', {
 				continueSettingPatient(false);
 			}
 
-			function continueSettingPatient(readMode){
+			function continueSettingPatient(readOnly){
 				me.currEncounterId = null;
 				me.currPatient = {
 					pid : pid,
 					name: fullname,
-					readMode: readMode
+					readOnly: readOnly
 				};
 				patientBtn.update({ pid: pid, name: fullname });
 				patientBtn.enable();
@@ -1121,7 +1108,7 @@ Ext.define('App.view.Viewport', {
 				patientCloseCurrEncounterBtn.enable();
 				patientChargeBtn.enable();
 				patientCheckOutBtn.enable();
-				me.setFormsReadOnMode(readMode);
+				//me.setFormsReadOnMode(readOnly);
 				if(typeof callback == 'function') {
 					callback(true);
 				}

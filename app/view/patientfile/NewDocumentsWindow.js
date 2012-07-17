@@ -11,7 +11,8 @@
  */
 Ext.define('App.view.patientfile.NewDocumentsWindow', {
 	extend     : 'Ext.window.Window',
-	title      : 'Document Window',
+	title      : 'Order Window',
+	id         : 'OrderWindow',
 	layout     : 'fit',
 	closeAction: 'hide',
 	height     : 430,
@@ -22,7 +23,7 @@ Ext.define('App.view.patientfile.NewDocumentsWindow', {
 		margin: 5
 	},
 	mixins     : ['App.classes.RenderPanel'],
-
+	pid:null,
 	initComponent: function() {
 		var me = this;
 		me.patientPrescriptionStore = Ext.create('App.store.patientfile.PatientsPrescription');
@@ -563,10 +564,16 @@ Ext.define('App.view.patientfile.NewDocumentsWindow', {
 		field.reset();
 	},
 	onDocumentsWinShow  : function() {
-        var doctorsNoteBody = this.query('[action="body"]')[0],
-            template = this.query('[action="template"]')[0];
-		this.patientPrescriptionStore.removeAll();
-		this.patientsLabsOrdersStore.removeAll();
+        var me = this,
+	        doctorsNoteBody = me.query('[action="body"]')[0],
+            template = me.query('[action="template"]')[0],
+	        p = app.currPatient;
+
+		me.pid = p.pid;
+        me.setTitle(p.name + (p.readOnly ? ' - <span style="color:red">[Read Mode]</span>' : ''));
+		me.setReadOnly();
+		me.patientPrescriptionStore.removeAll();
+		me.patientsLabsOrdersStore.removeAll();
 
 		doctorsNoteBody.reset();
 		template.reset();

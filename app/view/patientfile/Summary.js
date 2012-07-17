@@ -800,8 +800,8 @@ Ext.define('App.view.patientfile.Summary', {
             me.pid = app.currPatient.pid;
 
             var patient = me.getCurrPatient();
-	        me.updateTitle(patient.name + ' - #' + patient.pid + ' (Patient Summary)', app.currPatient.readMode);
-
+	        me.updateTitle(patient.name + ' - #' + patient.pid + ' (Patient Summary)', app.currPatient.readOnly);
+	        me.setReadOnly();
 	        ACL.hasPermission('access_demographics',function(provider, response){
 		        if (response.result){
 			        demographicsPanel.show();
@@ -812,12 +812,7 @@ Ext.define('App.view.patientfile.Summary', {
 			        demographicsPanel.hide();
 		        }
 	        });
-
-
-
 	        me.getPatientImgs();
-
-
 	        Fees.getPatientBalance({pid:me.pid},function(balance){
 		        billingPanel.body.update('Account Balance: $' + balance);
 	        });

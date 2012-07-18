@@ -19,7 +19,7 @@ Ext.define('App.view.Viewport', {
 		'App.model.administration.PreventiveCareActiveProblems',
 		'App.model.administration.PreventiveCareMedications',
 		'App.model.administration.Services',
-        'App.model.miscellaneous.OfficeNotes',
+		'App.model.miscellaneous.OfficeNotes',
 		'App.model.fees.Billing',
 		'App.model.fees.Checkout',
 		'App.model.fees.EncountersPayments',
@@ -55,8 +55,6 @@ Ext.define('App.view.Viewport', {
 		'App.model.poolarea.PoolArea',
 		'App.model.poolarea.PoolDropAreas',
 
-
-
 		'App.store.administration.ActiveProblems',
 		'App.store.administration.DefaultDocuments',
 		'App.store.administration.DocumentsTemplates',
@@ -69,7 +67,7 @@ Ext.define('App.view.Viewport', {
 		'App.store.administration.PreventiveCareMedications',
 		'App.store.administration.Services',
 		'App.store.administration.ActiveProblems',
-        'App.store.miscellaneous.OfficeNotes',
+		'App.store.miscellaneous.OfficeNotes',
 		'App.store.fees.Billing',
 		'App.store.fees.Checkout',
 		'App.store.fees.EncountersPayments',
@@ -112,7 +110,6 @@ Ext.define('App.view.Viewport', {
 		'App.classes.NodeDisabled',
 		'App.classes.PhotoIdWindow',
 
-
 		'App.classes.RenderPanel',
 
 		'Ext.chart.*',
@@ -126,9 +123,6 @@ Ext.define('App.view.Viewport', {
 		'Extensible.calendar.gadget.CalendarListPanel',
 		'Extensible.calendar.data.MemoryCalendarStore',
 		'Extensible.calendar.data.MemoryEventStore',
-
-
-
 
 		'App.classes.combo.ActiveFacilities',
 		'App.classes.combo.Allergies',
@@ -190,20 +184,19 @@ Ext.define('App.view.Viewport', {
 		'App.classes.window.Window',
 		'App.classes.NodeDisabled',
 
-        'App.view.patientfile.MedicalWindow',
-      	'App.view.patientfile.ChartsWindow',
-      	//'App.view.patientfile.PaymentEntryWindow',
-      	'App.view.patientfile.PreventiveCareWindow',
-      	'App.view.patientfile.NewDocumentsWindow',
-      	'App.view.patientfile.DocumentViewerWindow',
-        'App.view.patientfile.ArrivalLogWindow',
-
+		'App.view.patientfile.MedicalWindow',
+		'App.view.patientfile.ChartsWindow',
+		//'App.view.patientfile.PaymentEntryWindow',
+		'App.view.patientfile.PreventiveCareWindow',
+		'App.view.patientfile.NewDocumentsWindow',
+		'App.view.patientfile.DocumentViewerWindow',
+		'App.view.patientfile.ArrivalLogWindow',
 
 		'App.view.dashboard.Dashboard',
 		'App.view.calendar.Calendar',
 		'App.view.messages.Messages',
 
-        'App.view.patientfile.ItemsToReview',
+		'App.view.patientfile.ItemsToReview',
 		'App.view.patientfile.EncounterDocumentsGrid',
 		'App.view.patientfile.encounter.ICDs',
 		'App.view.patientfile.CheckoutAlertsView',
@@ -259,14 +252,14 @@ Ext.define('App.view.Viewport', {
 		 * This will run all the procedures inside the checkSession
 		 */
 		me.Task = {
-	        scope:me,
-	        run:function () {
-		        me.checkSession();
-                me.getPatientesInPoolArea();
-                CronJob.run();
-	        },
-	        interval:5000 // 10 second
-	    };
+			scope   : me,
+			run     : function() {
+				me.checkSession();
+				me.getPatientesInPoolArea();
+				CronJob.run();
+			},
+			interval: 5000 // 10 second
+		};
 
 		me.storeTree = Ext.create('App.store.navigation.Navigation', {
 			autoLoad : true,
@@ -819,7 +812,7 @@ Ext.define('App.view.Viewport', {
 		me.items = [ me.Header, me.navColumn, me.MainPanel, me.Footer ];
 
 		me.listeners = {
-			afterrender: me.afterAppRender,
+			afterrender : me.afterAppRender,
 			beforerender: me.beforeAppRender
 		};
 
@@ -874,13 +867,13 @@ Ext.define('App.view.Viewport', {
 
 	createNewEncounter: function() {
 		var me = this;
-		if(perm.access_encounters && perm.add_encounters){
+		if(perm.access_encounters && perm.add_encounters) {
 			me.navigateTo('panelEncounter', function(success) {
 				if(success) {
 					me.currCardCmp.newEncounter();
 				}
 			});
-		}else{
+		} else {
 			me.accessDenied();
 		}
 	},
@@ -921,17 +914,16 @@ Ext.define('App.view.Viewport', {
 
 	openEncounter: function(eid) {
 		var me = this;
-		if(perm.access_encounters){
+		if(perm.access_encounters) {
 			me.navigateTo('panelEncounter', function(success) {
 				if(success) {
 					me.currCardCmp.openEncounter(eid);
 				}
 			});
-		}else{
+		} else {
 			me.accessDenied();
 		}
 	},
-
 
 	checkOutPatient: function(eid) {
 		var me = this;
@@ -974,7 +966,7 @@ Ext.define('App.view.Viewport', {
 
 	afterNavigationLoad: function() {
 		window.innerWidth < this.minWidthToFullMode ? this.navColumn.collapse() : this.navColumn.expand();
-        this.navigateToDefault();
+		this.navigateToDefault();
 		this.removeAppMask();
 		Ext.TaskManager.start(this.Task);
 	},
@@ -1009,7 +1001,7 @@ Ext.define('App.view.Viewport', {
 		//appLogo = this.Header.getComponent('appLogo'),
 			foot = this.Footer, footView;
 
-		if(foot){
+		if(foot) {
 			footView = foot.down('dataview');
 			foot.setHeight(60);
 			footView.show();
@@ -1025,7 +1017,7 @@ Ext.define('App.view.Viewport', {
 		//appLogo = this.Header.getComponent('appLogo'),
 			foot = this.Footer, footView;
 
-		if(foot){
+		if(foot) {
 			footView = foot.down('dataview');
 			foot.setHeight(30);
 			footView.hide();
@@ -1041,16 +1033,9 @@ Ext.define('App.view.Viewport', {
 
 	liveSearchSelect: function(combo, selection) {
 		this.currEncounterId = null;
-
 		var me = this,
-			post = selection[0],
-			btn = me.Header.getComponent('patientButton');
-
+			post = selection[0];
 		if(post) {
-			/**
-			 * Ext.direct function
-			 * @param pid int
-			 */
 			Patient.currPatientSet({pid: post.get('pid')}, function() {
 				me.setCurrPatient(post.get('pid'), post.get('fullname'), function() {
 					me.openPatientSummary();
@@ -1060,7 +1045,6 @@ Ext.define('App.view.Viewport', {
 	},
 
 	setCurrPatient: function(pid, fullname, callback) {
-
 		var me = this,
 			patientBtn = me.Header.getComponent('patientButton'),
 			patientOpenVisitsBtn = me.Header.getComponent('patientOpenVisits'),
@@ -1068,56 +1052,49 @@ Ext.define('App.view.Viewport', {
 			patientCloseCurrEncounterBtn = me.Header.getComponent('patientCloseCurrEncounter'),
 			patientChargeBtn = me.Header.getComponent('patientCharge'),
 			patientCheckOutBtn = me.Header.getComponent('patientCheckOut');
-
-		me.patientUnset();
-
-		Patient.currPatientSet({ pid: pid }, function(provider, response) {
-			var data = response.result, msg1, msg2;
-			//say(data);
-			if(data.readOnly){
-				msg1 = data.user+' is currently working with "'+fullname+ '" in "'+data.area+'" area.<br>' +
-					'Override "Read Mode" will remove the patient from previous user.<br>' +
-					'Do you would like to override "Read Mode"?';
-				msg2 = data.user+' is currently working with "'+fullname+ '" in "'+data.area+'" area.<br>';
-
-				Ext.Msg.show({
-					title:'Wait!!!',
-				    msg: data.overrideReadOnly ? msg1 : msg2,
-				    buttons: data.overrideReadOnly ? Ext.Msg.YESNO : Ext.Msg.OK,
-				    icon: Ext.MessageBox.WARNING,
-					fn: function(btn){
-						continueSettingPatient(btn != 'yes');
-					}
-				});
-
-			}else{
-				continueSettingPatient(false);
-			}
-
-			function continueSettingPatient(readOnly){
-				me.currEncounterId = null;
-				me.currPatient = {
-					pid : pid,
-					name: fullname,
-					readOnly: readOnly
-				};
-				patientBtn.update({ pid: pid, name: fullname });
-				patientBtn.enable();
-				patientOpenVisitsBtn.enable();
-				patientCreateEncounterBtn.enable();
-				patientCloseCurrEncounterBtn.enable();
-				patientChargeBtn.enable();
-				patientCheckOutBtn.enable();
-				//me.setFormsReadOnMode(readOnly);
-				if(typeof callback == 'function') {
-					callback(true);
+		me.patientUnset(function() {
+			Patient.currPatientSet({ pid: pid }, function(provider, response) {
+				var data = response.result, msg1, msg2;
+				if(data.readOnly) {
+					msg1 = data.user + ' is currently working with "' + fullname + '" in "' + data.area + '" area.<br>' +
+						'Override "Read Mode" will remove the patient from previous user.<br>' +
+						'Do you would like to override "Read Mode"?';
+					msg2 = data.user + ' is currently working with "' + fullname + '" in "' + data.area + '" area.<br>';
+					Ext.Msg.show({
+						title  : 'Wait!!!',
+						msg    : data.overrideReadOnly ? msg1 : msg2,
+						buttons: data.overrideReadOnly ? Ext.Msg.YESNO : Ext.Msg.OK,
+						icon   : Ext.MessageBox.WARNING,
+						fn     : function(btn) {
+							continueSettingPatient(btn != 'yes');
+						}
+					});
+				} else {
+					continueSettingPatient(false);
 				}
-			}
-
+				function continueSettingPatient(readOnly) {
+					me.currEncounterId = null;
+					me.currPatient = {
+						pid     : pid,
+						name    : fullname,
+						readOnly: readOnly
+					};
+					patientBtn.update({ pid: pid, name: fullname });
+					patientBtn.enable();
+					patientOpenVisitsBtn.enable();
+					patientCreateEncounterBtn.enable();
+					patientCloseCurrEncounterBtn.enable();
+					patientChargeBtn.enable();
+					patientCheckOutBtn.enable();
+					if(typeof callback == 'function') {
+						callback(true);
+					}
+				}
+			});
 		});
 	},
 
-	patientUnset: function() {
+	patientUnset: function(callback) {
 		var me = this,
 			patientBtn = me.Header.getComponent('patientButton'),
 			patientOpenVisitsBtn = me.Header.getComponent('patientOpenVisits'),
@@ -1125,23 +1102,24 @@ Ext.define('App.view.Viewport', {
 			patientCloseCurrEncounterBtn = me.Header.getComponent('patientCloseCurrEncounter'),
 			patientChargeBtn = me.Header.getComponent('patientCharge'),
 			patientCheckOutBtn = me.Header.getComponent('patientCheckOut');
-		/**
-		 * Ext.direct function
-		 */
 		Patient.currPatientUnset(function() {
 			me.currEncounterId = null;
 			me.currPatient = null;
-			patientCreateEncounterBtn.disable();
-			patientOpenVisitsBtn.disable();
-			patientCloseCurrEncounterBtn.disable();
-			patientChargeBtn.disable();
-			patientCheckOutBtn.disable();
-			patientBtn.disable();
-			patientBtn.update({ pid: 'record number', name: 'No Patient Selected'});
+			if(typeof callback == 'function') {
+				callback(true);
+			} else {
+				patientCreateEncounterBtn.disable();
+				patientOpenVisitsBtn.disable();
+				patientCloseCurrEncounterBtn.disable();
+				patientChargeBtn.disable();
+				patientCheckOutBtn.disable();
+				patientBtn.disable();
+				patientBtn.update({ pid: 'record number', name: 'No Patient Selected'});
+			}
 		});
 	},
 
-		showMiframe: function(btn) {
+	showMiframe: function(btn) {
 		var src = btn.action;
 		this.winSupport.remove(this.miframe);
 		this.winSupport.add(this.miframe = Ext.create('App.classes.ManagedIframe', {src: src}));
@@ -1159,9 +1137,6 @@ Ext.define('App.view.Viewport', {
 	},
 
 	checkSession: function() {
-		/**
-		 * Ext.direct functions
-		 */
 		authProcedures.ckAuth(function(provider, response) {
 			if(!response.result.authorized) {
 				authProcedures.unAuth(function() {
@@ -1206,7 +1181,7 @@ Ext.define('App.view.Viewport', {
 			}
 		});
 
-        this.ppdz.reloadStores();
+		this.ppdz.reloadStores();
 
 	},
 
@@ -1315,11 +1290,11 @@ Ext.define('App.view.Viewport', {
 				app.MainPanel.el.unmask();
 
 				me.setCurrPatient(data.patientData.pid, data.patientData.name, function() {
-					if(data.patientData.eid && data.patientData.poolArea == 'Check Out'){
+					if(data.patientData.eid && data.patientData.poolArea == 'Check Out') {
 						me.checkOutPatient(data.patientData.eid);
-					}else if(data.patientData.eid && perm.access_encounters){
+					} else if(data.patientData.eid && perm.access_encounters) {
 						me.openEncounter(data.patientData.eid);
-					}else{
+					} else {
 						me.openPatientSummary();
 					}
 				});
@@ -1332,12 +1307,12 @@ Ext.define('App.view.Viewport', {
 
 	},
 
-	removeAppMask:function(){
+	removeAppMask: function() {
 		Ext.get('mainapp-loading').remove();
 		Ext.get('mainapp-loading-mask').fadeOut({remove: true});
 	},
 
-	beforeAppRender:function(){
+	beforeAppRender: function() {
 
 	},
 

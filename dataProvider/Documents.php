@@ -31,12 +31,13 @@ class MYPDF extends TCPDF {
 
     // Page footer
     public function Footer() {
-        // Position at 15 mm from bottom
-        $this->SetY(-15);
-        // Set font
-        $this->SetFont('helvetica', 'I', 8);
-        // Page number
-        $this->Cell(0, 10, 'Page '.$this->getAliasNumPage().'/'.$this->getAliasNbPages(), 0, false, 'C', 0, '', 0, false, 'T', 'M');
+
+        $this->SetLineStyle( array( 'width' => 0.2,'color' => array(0, 0, 0) ) );
+            $this->Line( 15, $this->getPageHeight() - 0.5 * 15 - 2,
+        $this->getPageWidth() - 15, $this->getPageHeight() - 0.5 * 15 - 2 );
+            $this->SetFont('times', '', 8 );
+            $this->SetY( -0.5 * 15, true );
+            $this->Cell( 15, 0, 'Created by GaiaEHR (Electronic Health Record) ');
     }
 }
 
@@ -342,29 +343,6 @@ class Documents
         $preventivecaredismiss = $this->preventiveCare->getPreventiveCareDismissPatientByEncounterID($eid);
         $encounterdata=$encounterdata['encounter'];
 
-//
-//        print_r($encounterdata);
-//        print_r($vitals);
-//        print_r($soap);
-//        print_r($reviewofsystemschecks);
-//        print_r($reviewofsystems);
-//        print_r($cpt);
-//        print_r($icd);
-//        print_r($hcpc);
-//        print_r('$medications');
-//        print_r($medications);
-//        print_r('$immunizations');
-//        print_r($immunizations);
-//        print_r('$allergies');
-//        print_r($allergies);
-//        print_r('$surgery');
-//        print_r($surgery);
-//        print_r('$dental');
-//        print_r($dental);
-//        print_r('$activeProblems');
-//        print_r($activeProblems);
-//        print_r('$preventivecaredismiss');
-//        print_r($preventivecaredismiss);
 
 		$encounterInformation = array
 		(
@@ -595,7 +573,21 @@ class Documents
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	private function get_ClinicTokensData($allNeededInfo, $tokens)
 	{
+        $facilityInfo =$this->facility->getActiveFacilitiesById($_SESSION['facilities']['id']);
 		$clinicInformation = array(
+            '[FACILITY_NAME]'=>$facilityInfo['name'],
+            '[FACILITY_PHONE]'=>$facilityInfo['phone'],
+            '[FACILITY_FAX]'=>$facilityInfo['fax'],
+            '[FACILITY_STREET]'=>$facilityInfo['street'],
+            '[FACILITY_CITY]'=>$facilityInfo['city'],
+            '[FACILITY_STATE]'=>$facilityInfo['state'],
+            '[FACILITY_POSTALCODE]'=>$facilityInfo['postal_code'],
+            '[FACILITY_COUNTRYCODE]'=>$facilityInfo['country_code'],
+            '[FACILITY_FEDERAL_EIN]'=>$facilityInfo['federal_ein'],
+            '[FACILITY_SERVICE_LOCATION]'=>$facilityInfo['service_location'],
+            '[FACILITY_BILLING_LOCATION]'=>$facilityInfo['billing_location'],
+            '[FACILITY_FACILITY_NPI]'=>$facilityInfo['facility_npi']
+
 		);
 		$pos               = 0;
 		foreach($tokens[0] as $tok) {
@@ -679,8 +671,12 @@ class Documents
         $this->pdf->SetCreator('TCPDF');
         $this->pdf->SetAuthor($_SESSION['user']['name']);
 
-        $this->pdf->SetHeaderData('../sites/default/logo.jpg', '20', 'OMARRRR', "test tes test test\nasdfasdfadsfsa");
-        $this->pdf->setHeaderFont(Array('helvetica', '', 10));
+        $this->pdf->SetHeaderData(
+            '../sites/default/logo.jpg',
+            '20',
+            'Ernesto\'s Clinic',
+            "Cond. Capital Center\nPDO Suite 205\nAve. Arterial Hostos 239                                                                                                                                   Tel: 787-787-7878\nCarolina PR. 00987                                                                                                                                         Fax: 787-787-7878");//need to be change
+        $this->pdf->setHeaderFont(Array('helvetica', '', 14));
         $this->pdf->setFooterFont(Array('helvetica', '', 8));
         $this->pdf->SetDefaultMonospacedFont('courier');
         $this->pdf->SetMargins(15, 27, 15);

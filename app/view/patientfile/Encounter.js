@@ -970,7 +970,6 @@ Ext.define('App.view.patientfile.Encounter', {
                 me.CurrentProceduralTerminology.encounterCptStoreLoad(record[0].data.pid, eid, function(){
                     me.CurrentProceduralTerminology.setDefaultQRCptCodes();
                 });
-
                 app.PreventiveCareWindow.loadPatientPreventiveCare();
 
             }

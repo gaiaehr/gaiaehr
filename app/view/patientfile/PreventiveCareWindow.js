@@ -198,7 +198,6 @@ Ext.define('App.view.patientfile.PreventiveCareWindow', {
             callback:function(records, operation, success){
                 if(records.length > 0){
                     me.show();
-                    say(records.length + ' Preventive Cares');
                     return true;
                 }else{
                     return false;

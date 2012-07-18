@@ -302,7 +302,8 @@ class PreventiveCare
         $DOB= $this->patient->getPatientDOBByPid($pid);
         $age = $this ->patient->getPatientAgeByDOB($DOB);
         $range = $this->getPreventiveCareAgeRangeById($immu_id);
-        if( $age['years'] >= $range['age_start'] && $age['years'] <= $range['age_end']){
+
+        if( $age['DMY']['years'] >= $range['age_start'] && $age['DMY']['years'] <= $range['age_end']){
            return true;
         }
         else{
@@ -314,6 +315,8 @@ class PreventiveCare
         $pSex = $this->patient->getPatientSexByPid($pid);
 
         $iSex = $this->getPreventiveCareSexById($immu_id);
+
+
         if($iSex == $pSex){
             return true;
         }else if($iSex=='Both' || $iSex==0 ){
@@ -442,13 +445,17 @@ class PreventiveCare
     }
 
     public function getPreventiveCareCheck(stdClass $params){
+
         $this->db->setSQL("SELECT * FROM preventive_care_guidelines");
         $patientAlerts = array();
+
         foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) as $rec){
+
             $rec['alert'] = ($this->checkAge($params->pid, $rec['id'])
                           && $this->checkSex($params->pid, $rec['id'])
                           && $this->checkProblem($params->pid, $rec['id'])
                           && $this->checkMedications($params->pid, $rec['id'])) ? true : false ;
+
             if($rec['category_id']==3){
                 $rec['type']='Immunizations';
             }else if($rec['category_id']==4){
@@ -463,13 +470,13 @@ class PreventiveCare
                 $rec['type']='Uncategorized';
             }
 
-
 //            && $this->checkPregnant($params->pid, $rec['id'])
             if($rec['alert'] && $rec['active'] ){
                 $patientAlerts[]= $rec;
 
             }
         }
+
 
         $patientDismissedAlerts = $this->checkForDismiss($params->pid);
 
@@ -538,12 +545,12 @@ class PreventiveCare
         return $this->db->fetchRecord();
     }
 }
-//
+
 //$params = new stdClass();
 //$params->start = 0;
 //$params->limit = 25;
-//$params->id = 6;
+//$params->pid = 1;
 //$t = new PreventiveCare();
 //print '<pre>';
-//print_r($t->getGuideLineMedications($params));
+//print_r($t->getPreventiveCareCheck($params));
 

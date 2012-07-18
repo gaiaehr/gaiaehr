@@ -52,10 +52,38 @@ Ext.define('App.classes.RenderPanel', {
 		me.callParent(arguments);
 	},
 
-	updateTitle: function(pageTitle, readMode, timer) {
-		var readModeDiv = '<div class="readMode">Read Mode</div>',
+	updateTitle: function(pageTitle, readOnly, timer) {
+		
+		var readOnlyDiv = '<div class="readOnly">Read Only</div>',
 			timerDiv = '<span class="timer">' + timer + '</span>';
-		this.getComponent('RenderPanel-header').update('<div class="panel_title">' + pageTitle + '</div>' + (readMode ? readModeDiv : '') + (timer ?  timerDiv : ''));
+		this.getComponent('RenderPanel-header').update('<div class="panel_title">' + pageTitle + '</div>' + (readOnly ? readOnlyDiv : '') + (timer ?  timerDiv : ''));
+	},
+
+	setReadOnly:function(){
+		var forms = this.query('form'),
+			readOnly = app.currPatient.readOnly;
+		for(var j = 0; j < forms.length; j++) {
+			var form = forms[j], items;
+			if(form.readOnly != readOnly){
+				form.readOnly = readOnly;
+				items = form.getForm().getFields().items;
+				for(var k = 0; k < items.length; k++){
+					items[k].setReadOnly(readOnly);
+				}
+			}
+		}
+		return readOnly;
+	},
+
+	setButtonsDisabled:function(buttons, disabled){
+		var disable = disabled || app.currPatient.readOnly;
+		for(var i = 0; i < buttons.length; i++) {
+			var btn = buttons[i];
+			if(btn.disabled != disable){
+				btn.disabled = disable;
+				btn.setDisabled(disable)
+			}
+		}
 	},
 
 	goBack: function() {
@@ -133,8 +161,8 @@ Ext.define('App.classes.RenderPanel', {
 		return app.getCurrPatient();
 	},
 
-	getMitosApp: function() {
-		return app.getMitosApp();
+	getApp: function() {
+		return app.getApp();
 	},
 
 	msg: function(title, format) {

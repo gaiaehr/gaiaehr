@@ -10,7 +10,7 @@
  * @namespace Immunization.addPatientImmunization
  */
 Ext.define('App.view.patientfile.DocumentViewerWindow', {
-	extend     : 'Ext.window.Window',
+	extend     : 'App.classes.window.Window',
 	title      : 'Documents Viewer Window',
 	layout     : 'fit',
 	height     : 650,
@@ -21,8 +21,6 @@ Ext.define('App.view.patientfile.DocumentViewerWindow', {
 	defaults   : {
 		margin: 5
 	},
-	mixins     : ['App.classes.RenderPanel'],
-
 	initComponent: function() {
 		var me = this;
 

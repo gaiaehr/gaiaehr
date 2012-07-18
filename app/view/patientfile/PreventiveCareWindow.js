@@ -10,7 +10,7 @@
  * @namespace Immunization.addPatientImmunization
  */
 Ext.define('App.view.patientfile.PreventiveCareWindow', {
-	extend       : 'Ext.window.Window',
+	extend       : 'App.classes.window.Window',
 	title        : 'Preventive Care Window',
 	closeAction  : 'hide',
 	height       : 350,

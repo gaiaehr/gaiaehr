@@ -224,7 +224,7 @@ cursor: pointer !important;
     border-bottom: 1px dotted #ccc;
 }
 
-.readMode {
+.readOnly {
 	float: left;
 	background-color: red;
 	color: white;
@@ -236,6 +236,7 @@ cursor: pointer !important;
     -webkit-border-radius: 10px;
     -moz-border-radius: 10px;
     border-radius: 10px;
+	font-weight: normal;
 }
 
 .search_title{

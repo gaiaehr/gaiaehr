@@ -10,8 +10,9 @@
  * @namespace Immunization.addPatientImmunization
  */
 Ext.define('App.view.patientfile.MedicalWindow', {
-    extend       : 'Ext.window.Window',
+    extend       : 'App.classes.window.Window',
     title        : 'Medical Window',
+	id           : 'MedicalWindow',
     layout       : 'card',
     closeAction  : 'hide',
     height       : 750,
@@ -21,8 +22,8 @@ Ext.define('App.view.patientfile.MedicalWindow', {
     defaults     : {
         margin: 5
     },
-    mixins: ['App.classes.RenderPanel'],
 	requires: [ 'App.view.patientfile.LaboratoryResults' ],
+	pid:null,
     initComponent: function() {
 
         var me = this;
@@ -1724,11 +1725,15 @@ Ext.define('App.view.patientfile.MedicalWindow', {
     },
 
     cardSwitch: function(btn) {
-        var layout = this.getLayout(),
-            addBtn = this.down('toolbar').query('[action="AddRecord"]')[0],
+        var me = this,
+	        layout = me.getLayout(),
+            addBtn = me.down('toolbar').query('[action="AddRecord"]')[0],
+	        p = app.currPatient,
             title;
 
+		me.pid = p.pid;
         addBtn.show();
+
         if(btn.action == 'immunization') {
             layout.setActiveItem(0);
             title = 'Immunizations';
@@ -1759,19 +1764,21 @@ Ext.define('App.view.patientfile.MedicalWindow', {
             addBtn.hide();
         }
 
-        this.setTitle(app.currPatient.name + ' - Medical Window ( ' + title + ' )');
+	    me.setTitle(p.name + ' (' + title + ') ' + (p.readOnly ? '-  <span style="color:red">[Read Mode]</span>' : ''));
 
     },
 
     onMedicalWinShow: function() {
 	    var me = this,
-		    reviewBts = me.query('button[action="review"]');
+		    reviewBts = me.query('button[action="review"]'),
+		    p = app.currPatient;
+
+	    me.pid = p.pid;
+	    me.setTitle(p.name + (p.readOnly ? ' <span style="color:red">[Read Mode]</span>' : ''));
+	    me.setReadOnly();
 	    Ext.each(reviewBts, function(bts){
 		    bts.setVisible((app.currEncounterId != null));
-
 	    });
-
-
 	    me.labPanelsStore.load();
 	    me.patientImmuListStore.load({params: {pid: app.currPatient.pid}});
 	    me.patientAllergiesListStore.load({params: {pid: app.currPatient.pid}});

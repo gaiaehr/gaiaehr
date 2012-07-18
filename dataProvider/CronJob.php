@@ -19,7 +19,7 @@ class CronJob {
 		/**
 		 * only run cron if delay time has expired
 		 */
-		if((time() - $_SESSION['cron']['time']) > $_SESSION['cron']['delay']){
+		if((time() - $_SESSION['cron']['time']) > $_SESSION['cron']['delay'] || $_SESSION['inactive']['start'] ){
 			/**
 			 * stuff to run
 			 */
@@ -31,8 +31,9 @@ class CronJob {
 			}
 
 			/**
-			 * reset cron time
+			 * set cron start to false reset cron time to current time
 			 */
+			$_SESSION['inactive']['start'] = false;
 			$_SESSION['cron']['time'] = time();
 			return array('success'=>true, 'ran'=>true);
 		}

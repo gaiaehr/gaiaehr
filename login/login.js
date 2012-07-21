@@ -204,6 +204,8 @@ Ext.define('App.panel.login.Login',{
             authProcedures.login(params, function(provider, response){
                 if(response.result.success){
                     window.location = './';
+	                //window.close();
+	                //window.appWindow = window.open('./','app','fullscreen=yes,directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no');
                 }else{
                     me.msg('Login Failed!', response.result.error);
                     me.onFormReset();

@@ -78,6 +78,10 @@
 .icoCheckOut{
     background-image: url(../ui_icons/icoCheckOut.png) !important;
 }
+.icoStretcher{
+    background-image: url(../ui_icons/icoStretcher.png) !important;
+	background-position: top left;
+}
 .icoLog{
     background-image: url(../ui_icons/icoLog.png) !important;
 }

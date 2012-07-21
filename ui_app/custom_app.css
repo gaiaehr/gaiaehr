@@ -103,7 +103,9 @@
     padding: 120px 10px 10px 26px;
     margin: 0;
 }
-
+.floorPlan {
+	background: url(floorPlanBg.png) no-repeat white left top;
+}
 .grid-row-form-editor .x-panel-body {
     background-color: #E0E0E0;
     border-top: none!important;

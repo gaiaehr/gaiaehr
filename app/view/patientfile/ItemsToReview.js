@@ -11,6 +11,14 @@ Ext.define('App.view.patientfile.ItemsToReview',{
 	eid: null,
     initComponent:function () {
         var me = this;
+       me.patientImmuListStore = Ext.create('App.store.patientfile.PatientImmunization');
+       me.patientAllergiesListStore = Ext.create('App.store.patientfile.Allergies');
+       me.patientMedicalIssuesStore = Ext.create('App.store.patientfile.MedicalIssues');
+       me.patientSurgeryStore = Ext.create('App.store.patientfile.Surgery');
+       me.patientDentalStore = Ext.create('App.store.patientfile.Dental');
+       me.patientMedicationsStore = Ext.create('App.store.patientfile.Medications');
+
+
 
         me.column1 = Ext.create('Ext.container.Container',{
             columnWidth: 0.3333,
@@ -20,28 +28,50 @@ Ext.define('App.view.patientfile.ItemsToReview',{
             },
             items:[
                 {
-                    title:'Col 1 Item 1',
+                    title:'Immunizations',
                     frame:true,
+                    height:300,
+                    store   : me.patientImmuListStore,
                     columns:[
-                        {
-                            header:'Date'
-                        },
-                        {
-                            header:'Item',
-                            flex:1
-                        }
+                         {
+                             header   : 'Immunization',
+                             width    : 100,
+                             dataIndex: 'immunization_name'
+                         },
+                         {
+                             header   : 'Date',
+                             width    : 100,
+                             xtype:'datecolumn',
+                             format : 'Y-m-d',
+                             dataIndex: 'administered_date'
+                         },
+                         {
+                             header   : 'Notes',
+                             flex     : 1,
+                             dataIndex: 'note'
+                         }
                     ]
                 },
                 {
-                    title:'Col 1 Item 2',
+                    title:'Allergies',
                     frame:true,
+                    height:300,
+                    store   : me.patientAllergiesListStore,
                     columns:[
                         {
-                            header:'Date'
+                            header   : 'Type',
+                            width    : 100,
+                            dataIndex: 'allergy_type'
                         },
                         {
-                            header:'Item',
-                            flex:1
+                            header   : 'Name',
+                            width    : 100,
+                            dataIndex: 'allergy'
+                        },
+                        {
+                            header   : 'Severity',
+                            flex     : 1,
+                            dataIndex: 'severity'
                         }
                     ]
                 }
@@ -56,28 +86,56 @@ Ext.define('App.view.patientfile.ItemsToReview',{
             },
             items:[
                 {
-                    title:'Col 2 Item 1',
+                    title:'Active Problems',
                     frame:true,
+                    height:300,
+                    store   : me.patientMedicalIssuesStore,
                     columns:[
                         {
-                            header:'Date'
+                            header   : 'Problem',
+                            width    : 100,
+                            dataIndex: 'code'
                         },
                         {
-                            header:'Item',
-                            flex:1
+                            xtype:'datecolumn',
+                            header   : 'Begin Date',
+                            width    : 100,
+                            format : 'Y-m-d',
+                            dataIndex: 'begin_date'
+                        },
+                        {
+                            xtype:'datecolumn',
+                            header   : 'End Date',
+                            flex     : 1,
+                            format : 'Y-m-d',
+                            dataIndex: 'end_date'
                         }
                     ]
                 },
                 {
-                    title:'Col 2 Item 2',
+                    title:'Surgery',
                     frame:true,
+                    height:300,
+                    store   : me.patientSurgeryStore,
                     columns:[
                         {
-                            header:'Date'
+                            header   : 'Type',
+                            width    : 100,
+                            dataIndex: 'type'
                         },
                         {
-                            header:'Item',
-                            flex:1
+                            xtype:'datecolumn',
+                            header   : 'Begin Date',
+                            width    : 100,
+                            format : 'Y-m-d',
+                            dataIndex: 'begin_date'
+                        },
+                        {
+                            xtype:'datecolumn',
+                            header   : 'End Date',
+                            flex     : 1,
+                            format : 'Y-m-d',
+                            dataIndex: 'end_date'
                         }
                     ]
                 }
@@ -92,28 +150,56 @@ Ext.define('App.view.patientfile.ItemsToReview',{
             },
             items:[
                 {
-                    title:'Col 3Item 1',
+                    title:'Dental',
                     frame:true,
+                    height:300,
+                    store   : me.patientDentalStore,
                     columns:[
                         {
-                            header:'Date'
+                            header   : 'Title',
+                            width    : 100,
+                            dataIndex: 'title'
                         },
                         {
-                            header:'Item',
-                            flex:1
+                            xtype:'datecolumn',
+                            header   : 'Begin Date',
+                            width    : 100,
+                            format : 'Y-m-d',
+                            dataIndex: 'begin_date'
+                        },
+                        {
+                            xtype:'datecolumn',
+                            header   : 'End Date',
+                            flex     : 1,
+                            format : 'Y-m-d',
+                            dataIndex: 'end_date'
                         }
                     ]
                 },
                 {
-                    title:'Col 3Item 2',
+                    title:'Medications',
                     frame:true,
+                    height:300,
+                    store   : me.patientMedicationsStore,
                     columns:[
                         {
-                            header:'Date'
+                            header   : 'Medication',
+                            width    : 100,
+                            dataIndex: 'medication'
                         },
                         {
-                            header:'Item',
-                            flex:1
+                            xtype:'datecolumn',
+                            header   : 'Begin Date',
+                            width    : 100,
+                            format : 'Y-m-d',
+                            dataIndex: 'begin_date'
+                        },
+                        {
+                            xtype:'datecolumn',
+                            header   : 'End Date',
+                            flex     : 1,
+                            format : 'Y-m-d',
+                            dataIndex: 'end_date'
                         }
                     ]
                 }
@@ -122,7 +208,26 @@ Ext.define('App.view.patientfile.ItemsToReview',{
 
         me.items = [ me.column1, me.column2, me.column3 ];
 
+
+        me.listeners = {
+
+            show:me.storesLoad
+        };
+
+
         me.callParent(arguments);
+
+    },
+
+    storesLoad: function(){
+        var me = this;
+        me.patientImmuListStore.load({params: {pid: app.currPatient.pid}});
+        me.patientAllergiesListStore.load({params: {pid: app.currPatient.pid}});
+        me.patientMedicalIssuesStore.load({params: {pid: app.currPatient.pid}});
+        me.patientSurgeryStore.load({params: {pid: app.currPatient.pid}});
+        me.patientDentalStore.load({params: {pid: app.currPatient.pid}});
+        me.patientMedicationsStore.load({params: {pid: app.currPatient.pid}});
+
 
     }
 });

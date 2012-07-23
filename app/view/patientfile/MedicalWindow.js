@@ -99,7 +99,9 @@ Ext.define('App.view.patientfile.MedicalWindow', {
                         dataIndex: 'immunization_name'
                     },
                     {
+                        xtype:'datecolumn',
                         header   : 'Date',
+                        format : 'Y-m-d',
                         width    : 100,
                         dataIndex: 'administered_date'
                     },
@@ -514,13 +516,17 @@ Ext.define('App.view.patientfile.MedicalWindow', {
                         dataIndex: 'code'
                     },
                     {
+                        xtype:'datecolumn',
                         header   : 'Begin Date',
                         width    : 100,
+                        format : 'Y-m-d',
                         dataIndex: 'begin_date'
                     },
                     {
+                        xtype:'datecolumn',
                         header   : 'End Date',
                         flex     : 1,
+                        format : 'Y-m-d',
                         dataIndex: 'end_date'
                     }
 
@@ -669,13 +675,17 @@ Ext.define('App.view.patientfile.MedicalWindow', {
                         dataIndex: 'type'
                     },
                     {
+                        xtype:'datecolumn',
                         header   : 'Begin Date',
                         width    : 100,
+                        format : 'Y-m-d',
                         dataIndex: 'begin_date'
                     },
                     {
+                        xtype:'datecolumn',
                         header   : 'End Date',
                         flex     : 1,
+                        format : 'Y-m-d',
                         dataIndex: 'end_date'
                     }
                 ],
@@ -823,13 +833,17 @@ Ext.define('App.view.patientfile.MedicalWindow', {
                         dataIndex: 'title'
                     },
                     {
+                        xtype:'datecolumn',
                         header   : 'Begin Date',
                         width    : 100,
+                        format : 'Y-m-d',
                         dataIndex: 'begin_date'
                     },
                     {
+                        xtype:'datecolumn',
                         header   : 'End Date',
                         flex     : 1,
+                        format : 'Y-m-d',
                         dataIndex: 'end_date'
                     }
                 ],
@@ -955,13 +969,17 @@ Ext.define('App.view.patientfile.MedicalWindow', {
                         dataIndex: 'medication'
                     },
                     {
+                        xtype:'datecolumn',
                         header   : 'Begin Date',
                         width    : 100,
+                        format : 'Y-m-d',
                         dataIndex: 'begin_date'
                     },
                     {
+                        xtype:'datecolumn',
                         header   : 'End Date',
                         flex     : 1,
+                        format : 'Y-m-d',
                         dataIndex: 'end_date'
                     }
                 ],

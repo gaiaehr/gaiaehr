@@ -30,17 +30,17 @@ Ext.define('App.view.patientfile.ItemsToReview',{
                 {
                     title:'Immunizations',
                     frame:true,
-                    height:300,
+                    height:200,
                     store   : me.patientImmuListStore,
                     columns:[
                          {
                              header   : 'Immunization',
-                             width    : 100,
+                             width    : 300,
                              dataIndex: 'immunization_name'
                          },
                          {
                              header   : 'Date',
-                             width    : 100,
+                             width    : 90,
                              xtype:'datecolumn',
                              format : 'Y-m-d',
                              dataIndex: 'administered_date'
@@ -55,7 +55,7 @@ Ext.define('App.view.patientfile.ItemsToReview',{
                 {
                     title:'Allergies',
                     frame:true,
-                    height:300,
+                    height:200,
                     store   : me.patientAllergiesListStore,
                     columns:[
                         {
@@ -88,18 +88,18 @@ Ext.define('App.view.patientfile.ItemsToReview',{
                 {
                     title:'Active Problems',
                     frame:true,
-                    height:300,
+                    height:200,
                     store   : me.patientMedicalIssuesStore,
                     columns:[
                         {
                             header   : 'Problem',
-                            width    : 100,
+                            width    : 300,
                             dataIndex: 'code'
                         },
                         {
                             xtype:'datecolumn',
                             header   : 'Begin Date',
-                            width    : 100,
+                            width    : 90,
                             format : 'Y-m-d',
                             dataIndex: 'begin_date'
                         },
@@ -115,18 +115,18 @@ Ext.define('App.view.patientfile.ItemsToReview',{
                 {
                     title:'Surgery',
                     frame:true,
-                    height:300,
+                    height:200,
                     store   : me.patientSurgeryStore,
                     columns:[
                         {
                             header   : 'Type',
-                            width    : 100,
+                            width    : 300,
                             dataIndex: 'type'
                         },
                         {
                             xtype:'datecolumn',
                             header   : 'Begin Date',
-                            width    : 100,
+                            width    : 90,
                             format : 'Y-m-d',
                             dataIndex: 'begin_date'
                         },
@@ -152,18 +152,18 @@ Ext.define('App.view.patientfile.ItemsToReview',{
                 {
                     title:'Dental',
                     frame:true,
-                    height:300,
+                    height:200,
                     store   : me.patientDentalStore,
                     columns:[
                         {
                             header   : 'Title',
-                            width    : 100,
+                            width    : 300,
                             dataIndex: 'title'
                         },
                         {
                             xtype:'datecolumn',
                             header   : 'Begin Date',
-                            width    : 100,
+                            width    : 90,
                             format : 'Y-m-d',
                             dataIndex: 'begin_date'
                         },
@@ -179,18 +179,18 @@ Ext.define('App.view.patientfile.ItemsToReview',{
                 {
                     title:'Medications',
                     frame:true,
-                    height:300,
+                    height:200,
                     store   : me.patientMedicationsStore,
                     columns:[
                         {
                             header   : 'Medication',
-                            width    : 100,
+                            width    : 300,
                             dataIndex: 'medication'
                         },
                         {
                             xtype:'datecolumn',
                             header   : 'Begin Date',
-                            width    : 100,
+                            width    : 90,
                             format : 'Y-m-d',
                             dataIndex: 'begin_date'
                         },
@@ -205,8 +205,47 @@ Ext.define('App.view.patientfile.ItemsToReview',{
                 }
             ]
         });
+        me.column4 = Ext.create('Ext.container.Container',{
+            columnWidth: 0.3333,
+//            layout: 'column',
+            items:[
 
-        me.items = [ me.column1, me.column2, me.column3 ];
+                {
+                    fieldLabel: 'Smoke?',
+                    xtype   : 'checkboxfield',
+                    labelWidth:100,
+                    name    : 'smoke'
+
+
+                },
+                {
+                    fieldLabel: 'Alcohol?',
+                    xtype   : 'checkboxfield',
+                    labelWidth:100,
+                    name    : 'alcohol'
+
+
+                },
+                {
+                    fieldLabel: 'Pregnant?',
+                    xtype   : 'checkboxfield',
+                    labelWidth:100,
+                    name    : 'pregnant'
+
+
+                }
+
+            ]
+        });
+
+        me.items = [ me.column1, me.column2, me.column3 , me.column4 ];
+        me.bbar = [
+                '->', {
+                    text: 'Reviewed All',
+                    name    : 'review',
+                    scope  : me
+                }
+            ];
 
 
         me.listeners = {

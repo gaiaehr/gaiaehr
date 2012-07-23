@@ -143,6 +143,7 @@ Ext.define('App.view.Viewport', {
 		'App.classes.combo.CalendarStatus',
 		'App.classes.combo.CodesTypes',
 		'App.classes.combo.Facilities',
+		'App.classes.combo.FloorPlanAreas',
 		'App.classes.combo.FollowUp',
 		'App.classes.combo.InsurancePayerType',
 		'App.classes.combo.LabObservations',
@@ -199,6 +200,7 @@ Ext.define('App.view.Viewport', {
 		'App.view.dashboard.Dashboard',
 		'App.view.calendar.Calendar',
 		'App.view.messages.Messages',
+		'App.view.areas.FloorPlan',
 
 		'App.view.patientfile.ItemsToReview',
 		'App.view.patientfile.EncounterDocumentsGrid',
@@ -652,6 +654,7 @@ Ext.define('App.view.Viewport', {
 				Ext.create('App.view.calendar.Calendar'), // done
 				Ext.create('App.view.messages.Messages'), // done
 				Ext.create('App.view.search.PatientSearch'), //
+				Ext.create('App.view.areas.FloorPlan'), //
 
 			/**
 			 * Patient Area

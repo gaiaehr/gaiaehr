@@ -827,6 +827,9 @@ $API = array(
             'getLanguages'=>array(
                 'len'=>0
             ),
+            'getFloorPlanAreas'=>array(
+                'len'=>0
+            ),
             'getAuthorizations'=>array(
                 'len'=>0
             ),

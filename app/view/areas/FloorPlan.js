@@ -101,8 +101,8 @@ Ext.define('App.view.areas.FloorPlan', {
 		if(me.floorPlanId == null){
 			me.floorPlanId = 1;
 			me.floorPlan.query('floorplanareascombo')[0].setValue(me.floorPlanId);
+			me.loadZones();
 		}
-		me.loadZones();
 		callback(true);
 	}
 

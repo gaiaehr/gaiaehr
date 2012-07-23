@@ -220,6 +220,7 @@ Ext.define('App.view.Viewport', {
 		'App.view.administration.Lists',
 		'App.view.administration.Log',
 		'App.view.administration.Medications',
+		'App.view.administration.PoolAreas',
 		'App.view.administration.Practice',
 		'App.view.administration.PreventiveCare',
 		'App.view.administration.Roles',
@@ -704,6 +705,9 @@ Ext.define('App.view.Viewport', {
 		}
 		if(perm.access_medications) {
 			me.MainPanel.add(Ext.create('App.view.administration.Medications'));
+		}
+		if(perm.access_admin_pool_areas) {
+			me.MainPanel.add(Ext.create('App.view.administration.PoolAreas'));
 		}
 		if(perm.access_roles) {
 			me.MainPanel.add(Ext.create('App.view.administration.Roles'));

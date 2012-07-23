@@ -129,7 +129,7 @@ Ext.define('App.view.messages.Messages', {
 					iconCls: 'newMessage',
 					itemId : 'newMsg',
 					handler: function() {
-						me.onNew();
+						me.onNewMessage();
 					}
 				},
 				'-',
@@ -304,14 +304,14 @@ Ext.define('App.view.messages.Messages', {
 
 	onFormRender: function() {
 		this.msgForm.getComponent('bodyMsg').getToolbar().hide();
-		this.onNew();
+		this.onNewMessage();
 	},
 	/**
-	 * onNew will reset the form and load a new model
+	 * onNewMessage will reset the form and load a new model
 	 * with message_status value set to New, and
 	 * note_type value set to Unassigned
 	 */
-	onNew       : function() {
+	onNewMessage       : function() {
 		var form = this.msgForm;
 		form.getForm().reset();
 		var model = Ext.ModelManager.getModel('MessagesModel'),
@@ -342,7 +342,7 @@ Ext.define('App.view.messages.Messages', {
 			}
 			store.sync();
 			store.load();
-			this.onNew();
+			this.onNewMessage();
 			this.msg('Sweet!', 'Message Sent');
 		} else {
 			this.msg('Oops!', 'Please, complete all required fields.');
@@ -367,7 +367,7 @@ Ext.define('App.view.messages.Messages', {
 					var currentRec = form.getRecord();
 					store.remove(currentRec);
 					store.destroy();
-					this.onNew();
+					this.onNewMessage();
 					this.msg('Sweet!', 'Sent to Trash');
 				}
 			}

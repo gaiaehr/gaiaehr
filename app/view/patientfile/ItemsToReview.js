@@ -211,25 +211,28 @@ Ext.define('App.view.patientfile.ItemsToReview',{
             items:[
 
                 {
-                    fieldLabel: 'Smoke?',
-                    xtype   : 'checkboxfield',
+                    fieldLabel: 'Smoking Status',
+                    xtype   : 'mitos.smokingstatuscombo',
                     labelWidth:100,
+                    width    : 325,
                     name    : 'smoke'
 
 
                 },
                 {
                     fieldLabel: 'Alcohol?',
-                    xtype   : 'checkboxfield',
+                    xtype   : 'mitos.smokingstatuscombo',
                     labelWidth:100,
+                    width    : 325,
                     name    : 'alcohol'
 
 
                 },
                 {
                     fieldLabel: 'Pregnant?',
-                    xtype   : 'checkboxfield',
+                    xtype   : 'mitos.smokingstatuscombo',
                     labelWidth:100,
+                    width    : 325,
                     name    : 'pregnant'
 
 

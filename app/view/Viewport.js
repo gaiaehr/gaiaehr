@@ -143,6 +143,7 @@ Ext.define('App.view.Viewport', {
 		'App.classes.combo.CalendarStatus',
 		'App.classes.combo.CodesTypes',
 		'App.classes.combo.Facilities',
+		'App.classes.combo.SmokingStatus',
 		'App.classes.combo.FloorPlanAreas',
 		'App.classes.combo.FollowUp',
 		'App.classes.combo.InsurancePayerType',

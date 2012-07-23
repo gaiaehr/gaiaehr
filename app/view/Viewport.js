@@ -11,6 +11,8 @@ Ext.define('App.view.Viewport', {
 		'App.model.administration.ActiveProblems',
 		'App.model.administration.DefaultDocuments',
 		'App.model.administration.DocumentsTemplates',
+		'App.model.administration.FloorPlans',
+		'App.model.administration.FloorPlanZones',
 		'App.model.administration.HeadersAndFooters',
 		'App.model.administration.ImmunizationRelations',
 		'App.model.administration.LabObservations',
@@ -58,6 +60,8 @@ Ext.define('App.view.Viewport', {
 		'App.store.administration.ActiveProblems',
 		'App.store.administration.DefaultDocuments',
 		'App.store.administration.DocumentsTemplates',
+		'App.store.administration.FloorPlans',
+		'App.store.administration.FloorPlanZones',
 		'App.store.administration.HeadersAndFooters',
 		'App.store.administration.ImmunizationRelations',
 		'App.store.administration.LabObservations',
@@ -220,7 +224,7 @@ Ext.define('App.view.Viewport', {
 		'App.view.administration.Lists',
 		'App.view.administration.Log',
 		'App.view.administration.Medications',
-		'App.view.administration.PoolAreas',
+		'App.view.administration.FloorPlans',
 		'App.view.administration.Practice',
 		'App.view.administration.PreventiveCare',
 		'App.view.administration.Roles',
@@ -706,8 +710,8 @@ Ext.define('App.view.Viewport', {
 		if(perm.access_medications) {
 			me.MainPanel.add(Ext.create('App.view.administration.Medications'));
 		}
-		if(perm.access_admin_pool_areas) {
-			me.MainPanel.add(Ext.create('App.view.administration.PoolAreas'));
+		if(perm.access_floor_plans) {
+			me.MainPanel.add(Ext.create('App.view.administration.FloorPlans'));
 		}
 		if(perm.access_roles) {
 			me.MainPanel.add(Ext.create('App.view.administration.Roles'));

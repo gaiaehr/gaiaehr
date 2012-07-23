@@ -73,6 +73,28 @@ $API = array(
 	        )
         )
     ),
+    'FloorPlans'=>array(
+  		'methods'=>array(
+  			'getFloorPlans'=>array(
+  				'len'=>0
+  			),
+  			'createFloorPlan'=>array(
+  				'len'=>1
+  			),
+  			'updateFloorPlan'=>array(
+  				'len'=>1
+  			),
+  			'getFloorPlanZones'=>array(
+  				'len'=>1
+  			),
+  			'createFloorPlanZone'=>array(
+  				'len'=>1
+  			),
+  			'updateFloorPlanZone'=>array(
+  				'len'=>1
+  			)
+  		)
+  	),
 	'VectorGraph'=>array(
 		'methods'=>array(
 			'getGraphData'=>array(

@@ -97,8 +97,8 @@ class Navigation {
 	    if($this->ACL->hasPermission('access_medications')){
 		    $admin['children'][] = array( 'text' => 'Medications', 'leaf' => true, 'cls' => 'file', 'id' => 'panelMedications' );
 	    }
-	    if($this->ACL->hasPermission('access_admin_pool_areas')){
-		    $admin['children'][] = array( 'text' => 'Pool Areas', 'leaf' => true, 'cls' => 'file', 'id' => 'panelAdminPoolAreas' );
+	    if($this->ACL->hasPermission('access_floor_plans')){
+		    $admin['children'][] = array( 'text' => 'Floor Areas', 'leaf' => true, 'cls' => 'file', 'id' => 'panelFloorPlans' );
 	    }
 	    if($this->ACL->hasPermission('access_roles')){
 		    $admin['children'][] = array( 'text' => 'Roles', 'leaf' => true, 'cls' => 'file', 'id' => 'panelRoles' );
@@ -123,7 +123,7 @@ class Navigation {
 	        $this->ACL->hasPermission('access_practice') ||
 	        $this->ACL->hasPermission('access_services') ||
 	        $this->ACL->hasPermission('access_medications') ||
-	        $this->ACL->hasPermission('access_admin_pool_areas') ||
+	        $this->ACL->hasPermission('access_floor_plans') ||
 	        $this->ACL->hasPermission('access_roles') ||
 	        $this->ACL->hasPermission('access_layouts') ||
 	        $this->ACL->hasPermission('access_lists') ||

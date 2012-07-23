@@ -126,8 +126,15 @@ Ext.define('App.view.administration.FloorPlans', {
 			x:record ? record.data.x : 0,
 			y:record ? record.data.y : 0,
 			enableToggle:true,
-			toggleHandler:function(){
-				me.activeZone = zone;
+			toggleHandler:function(btn, pressed){
+				if(pressed){
+					me.activeZone = zone;
+					me.floorPlan.focus();
+				}else{
+					me.activeZone = null;
+					var rec = btn.menu.items.items[0].getForm().getRecord();
+					rec.set({x:btn.x,y:btn.y});
+				}
 			},
 			menu:[
 				form = Ext.create('Ext.form.Panel',{
@@ -170,12 +177,24 @@ Ext.define('App.view.administration.FloorPlans', {
 		}
 	},
 
-	afterMenuShow:function(){
-
+	afterMenuShow:function(btn){
+		btn.toggle(true);
 	},
 
-	afterMenuHide:function(){
+	afterMenuHide:function(btn){
+		var form = btn.menu.items.items[0].getForm(),
+			values = form.getValues(),
+			rec = form.getRecord();
+		btn.setText(values.title);
+		rec.set(values);
+	},
 
+	zoneBlur:function(btn){
+		say(btn);
+		var rec = btn.menu.items.items[0].getForm().getRecord();
+		rec.set({x:btn.x,y:btn.y});
+		btn.toggle(false);
+		this.activeZone = null;
 	},
 
 	moveZone:function(direction){
@@ -191,7 +210,6 @@ Ext.define('App.view.administration.FloorPlans', {
 				y = y+1;
 			}
 			this.activeZone.setPosition(x,y);
-
 		}
 	},
 
@@ -218,6 +236,7 @@ Ext.define('App.view.administration.FloorPlans', {
 			params:{ floor_plan_id:this.floorPlanId },
 			scope:me,
 			callback:function(records, operation, success){
+				this.activeZone = null;
 				for(var i=0; i < records.length; i++){
 					me.createZone(records[i]);
 				}

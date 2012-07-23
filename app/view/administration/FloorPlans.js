@@ -16,7 +16,7 @@
 Ext.define('App.view.administration.FloorPlans', {
 	extend       : 'App.classes.RenderPanel',
 	id           : 'panelFloorPlans',
-	pageTitle    : 'Floor Plans Editor',
+	pageTitle    : 'Floor Plan Editor',
 	pageLayout   : 'border',
 	floorPlanId  : null,
 	activeZone   : null,
@@ -187,14 +187,6 @@ Ext.define('App.view.administration.FloorPlans', {
 			rec = form.getRecord();
 		btn.setText(values.title);
 		rec.set(values);
-	},
-
-	zoneBlur:function(btn){
-		say(btn);
-		var rec = btn.menu.items.items[0].getForm().getRecord();
-		rec.set({x:btn.x,y:btn.y});
-		btn.toggle(false);
-		this.activeZone = null;
 	},
 
 	moveZone:function(direction){

@@ -51,6 +51,9 @@
 .edit{
 	background-image: url(../ui_icons/edit.png) !important;
 }
+.icoFloorPlans {
+    background-image: url(../ui_icons/dollar.png) !important;
+}
 .icoDollar {
     background-image: url(../ui_icons/dollar.png) !important;
 }

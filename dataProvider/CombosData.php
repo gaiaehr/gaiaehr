@@ -132,6 +132,11 @@ class CombosData {
         return $this->db->fetchRecords(PDO::FETCH_ASSOC);
     }
 
+	public function getFloorPlanAreas(){
+		$this->db->setSQL("SELECT id, title FROM floor_plans WHERE active = '1' ORDER BY title");
+        return $this->db->fetchRecords(PDO::FETCH_ASSOC);
+	}
+
     public function getAuthorizations(){
 
         return array(

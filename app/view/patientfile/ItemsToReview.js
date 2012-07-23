@@ -30,12 +30,12 @@ Ext.define('App.view.patientfile.ItemsToReview',{
                 {
                     title:'Immunizations',
                     frame:true,
-                    height:200,
+                    height:180,
                     store   : me.patientImmuListStore,
                     columns:[
                          {
                              header   : 'Immunization',
-                             width    : 300,
+                             width    : 250,
                              dataIndex: 'immunization_name'
                          },
                          {
@@ -55,7 +55,7 @@ Ext.define('App.view.patientfile.ItemsToReview',{
                 {
                     title:'Allergies',
                     frame:true,
-                    height:200,
+                    height:180,
                     store   : me.patientAllergiesListStore,
                     columns:[
                         {
@@ -88,12 +88,12 @@ Ext.define('App.view.patientfile.ItemsToReview',{
                 {
                     title:'Active Problems',
                     frame:true,
-                    height:200,
+                    height:180,
                     store   : me.patientMedicalIssuesStore,
                     columns:[
                         {
                             header   : 'Problem',
-                            width    : 300,
+                            width    : 250,
                             dataIndex: 'code'
                         },
                         {
@@ -115,12 +115,12 @@ Ext.define('App.view.patientfile.ItemsToReview',{
                 {
                     title:'Surgery',
                     frame:true,
-                    height:200,
+                    height:180,
                     store   : me.patientSurgeryStore,
                     columns:[
                         {
                             header   : 'Type',
-                            width    : 300,
+                            width    : 250,
                             dataIndex: 'type'
                         },
                         {
@@ -152,12 +152,12 @@ Ext.define('App.view.patientfile.ItemsToReview',{
                 {
                     title:'Dental',
                     frame:true,
-                    height:200,
+                    height:180,
                     store   : me.patientDentalStore,
                     columns:[
                         {
                             header   : 'Title',
-                            width    : 300,
+                            width    : 250,
                             dataIndex: 'title'
                         },
                         {
@@ -179,12 +179,12 @@ Ext.define('App.view.patientfile.ItemsToReview',{
                 {
                     title:'Medications',
                     frame:true,
-                    height:200,
+                    height:180,
                     store   : me.patientMedicationsStore,
                     columns:[
                         {
                             header   : 'Medication',
-                            width    : 300,
+                            width    : 250,
                             dataIndex: 'medication'
                         },
                         {

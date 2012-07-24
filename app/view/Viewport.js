@@ -1151,9 +1151,7 @@ Ext.define('App.view.Viewport', {
 	checkSession: function() {
 		authProcedures.ckAuth(function(provider, response) {
 			if(!response.result.authorized) {
-				authProcedures.unAuth(function() {
-					window.location = "./"
-				});
+					window.location = './';
 			}
 		});
 	},

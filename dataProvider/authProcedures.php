@@ -160,7 +160,7 @@ class authProcedures {
         //
         // return an exit code
         //****************************************************************
-        if($_SESSION['site']['flops'] < 8) {
+        if($_SESSION['site']['flops'] < 300) {
 	        $session = new Sessions();
 	   	    $session->updateSession();
             return array('authorized' => true);

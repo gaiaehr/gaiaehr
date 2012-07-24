@@ -37,38 +37,34 @@ Ext.define('App.classes.combo.EncounterPriority', {
 				getInnerTpl: function() {
 					return '<span class="{option_name}">{option_name}</span></div>';
 				}
-			},
-			listeners:{
-				select:function(cmb, record){
-
-
-					var val = record[0].data.option_value, bgColor, color;
-
-					if(val == 'Minimal'){
-						bgColor = '#008000';
-						color = '#ffffff';
-					}else if(val == 'Delayed'){
-						bgColor = '#ffff00';
-						color = '#000000';
-					}else if(val == 'Immediate'){
-						bgColor = '#ff0000';
-						color = '#ffffff';
-					}else if(val == 'Expectant'){
-						bgColor = '#808080';
-						color = '#ffffff';
-					}else if(val == 'Deceased'){
-						bgColor = '#000000';
-						color = '#ffffff';
-					}
-
-					this.inputEl.setStyle({
-						'background-color':bgColor,
-						'background-image':'none',
-						'color':color
-					})
-				}
 			}
 		}, null);
+
+		me.on('change', function(cmb ,newValue){
+			var bgColor, color;
+			if(newValue == 'Minimal'){
+				bgColor = '#008000';
+				color = '#ffffff';
+			}else if(newValue == 'Delayed'){
+				bgColor = '#ffff00';
+				color = '#000000';
+			}else if(newValue == 'Immediate'){
+				bgColor = '#ff0000';
+				color = '#ffffff';
+			}else if(newValue == 'Expectant'){
+				bgColor = '#808080';
+				color = '#ffffff';
+			}else if(newValue == 'Deceased'){
+				bgColor = '#000000';
+				color = '#ffffff';
+			}
+
+			this.inputEl.setStyle({
+				'background-color':bgColor,
+				'background-image':'none',
+				'color':color
+			})
+		}, me);
 		me.callParent(arguments);
 	}
 });

@@ -612,7 +612,11 @@ Ext.define('App.view.patientfile.Encounter', {
 				},
 				'->',
 				{
-					xtype: 'encounterprioritycombo'
+					xtype: 'encounterprioritycombo',
+					listeners:{
+						scope:me,
+						select:me.prioritySelect
+					}
 				},
 				'-',
 				{
@@ -622,6 +626,10 @@ Ext.define('App.view.patientfile.Encounter', {
 
 			]
 		});
+
+		me.priorityCombo = me.query('encounterprioritycombo')[0];
+
+
 
 	},
 	newDoc           : function(btn) {
@@ -639,6 +647,10 @@ Ext.define('App.view.patientfile.Encounter', {
 	 */
 	onChartWindowShow: function() {
 		app.onChartsWin();
+	},
+
+	prioritySelect:function(cmb, records){
+		alert('TODO: Priority Changed to ' + records[0].data.option_value)
 	},
 	/**
 	 * Checks for opened encounters, if open encounters are
@@ -911,6 +923,8 @@ Ext.define('App.view.patientfile.Encounter', {
 			scope   : me,
 			callback: function(record) {
 				var data = record[0].data;
+
+				say(data);
 				me.currEncounterStartDate = data.start_date;
 				if(!data.close_date) {
 					me.startTimer();
@@ -941,6 +955,8 @@ Ext.define('App.view.patientfile.Encounter', {
 				me.CurrentProceduralTerminology.encounterCptStoreLoad(record[0].data.pid, eid, function() {
 					me.CurrentProceduralTerminology.setDefaultQRCptCodes();
 				});
+
+				me.priorityCombo.setValue(data.priority);
 
 				app.PreventiveCareWindow.loadPatientPreventiveCare();
 

@@ -16,7 +16,7 @@ Ext.define('App.model.patientfile.Encounter', {
 		{name: 'visit_category', type: 'string'},
 		{name: 'facility', type: 'string'},
 		{name: 'billing_facility', type: 'string'},
-		{name: 'sensitivity', type: 'string'},
+		{name: 'priority', type: 'string'},
 		{name: 'start_date', type: 'date', dateFormat:'Y-m-d H:i:s'},
 		{name: 'close_date', type: 'date', dateFormat:'Y-m-d H:i:s'},
 		{name: 'onset_date', type: 'date', dateFormat:'Y-m-d H:i:s'}

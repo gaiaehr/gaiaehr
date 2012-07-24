@@ -39,7 +39,7 @@ Ext.define('App.view.patientfile.ProgressNote', {
             '                   <div class="header row">Service date: {start_date} </div>' +
             '                   <div class="header row">Visit Category: {visit_category} </div>' +
             '                   <div class="header row">Facility: {facility} </div>' +
-            '                   <div class="header row">Sensitivity: {sensitivity} </div>' +
+            '                   <div class="header row">Priority: {priority} </div>' +
             '                   <div class="header row">Close On: {[values.close_date || "-"]} </div>' +
             '               </td>' +
             '           </tr>' +

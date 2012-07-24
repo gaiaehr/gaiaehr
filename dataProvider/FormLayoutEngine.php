@@ -90,8 +90,7 @@ class FormLayoutEngine
 			foreach($opts as $opt => $val) {
 				if($opt != 'pos') {
 					$item[$opt] = $val;
-				}
-				;
+				};
 			}
 			if($item['xtype'] == 'combobox') {
 				$item = $this->getComboDefaults($item);

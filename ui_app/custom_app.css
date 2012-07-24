@@ -179,6 +179,48 @@ li .Deceased{
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#000000', endColorstr='#000000',GradientType=0 ); 
 	color: #ffffff!important;
 }
+.patient_btn_img {
+    float: left;
+    height: 32px;
+    width: 32px;
+	background-color: #ffffff;
+}
+.patient_btn_img img{
+    border: 1px solid #999999;
+}
+.patient_btn_info {
+    /*color: #666666;*/
+    float: left;
+    font-size: 13px;
+    text-align: center;
+    padding: 0 5px;
+
+}
+.patient_btn_name {
+    font-weight: bold;
+}
+.drButton .x-btn-inner{
+    font-size: 24px !important;
+    color: #666666;
+}
+.patient-pool-btn{
+    margin-bottom: 3px;
+    float:none;
+    min-width: 188px;
+    border-width:1px 1px 1px 1px;
+}
+.patient-pool-btn-small{
+
+}
+.patient-pool-btn .patient_btn_info{
+    float: none;
+    width: 100%;
+}
+.patient-pool-btn .patient_btn_info div{
+    padding-left: 32px;
+}
+
+
 ::-webkit-scrollbar {
     width: 5px;
     height: 7px;
@@ -339,45 +381,7 @@ cursor: pointer !important;
     list-style: circle !important;
 }
 
-.patient_btn_img {
-    float: left;
-    height: 32px;
-    width: 32px;
-}
-.patient_btn_img img{
-    border: 1px solid #999999;
-}
-.patient_btn_info {
-    color: #666666;
-    float: left;
-    font-size: 13px;
-    text-align: center;
-    padding: 0 5px;
 
-}
-.patient_btn_name {
-    font-weight: bold;
-}
-.drButton .x-btn-inner{
-    font-size: 24px !important;
-    color: #666666;
-}
-.patient-pool-btn{
-    margin-bottom: 3px;
-    float:none;
-    min-width: 188px;
-    border-width:1px 1px 1px 1px;
-}
-.patient-pool-btn-small{
-
-}
-.patient-pool-btn .patient_btn_info{
-    float: none;
-    width: 100%;
-}
-.patient-pool-btn .patient_btn_info div{
-    padding-left: 32px;
-}
 
 
 

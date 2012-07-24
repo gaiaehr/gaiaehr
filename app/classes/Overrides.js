@@ -144,3 +144,33 @@ Ext.override(Ext.data.Field, {
 	useNull: true
 
 });
+Ext.override(Ext.view.DropZone, {
+	onContainerOver : function(dd, e, data) {
+     var me = this,
+         view = me.view,
+         count = view.store.getCount();
+
+     // There are records, so position after the last one
+     if (count) {
+         me.positionIndicator(view.getNode(count - 1), data, e);
+     }
+
+     // No records, position the indicator at the top
+     else {
+         delete me.overRecord;
+         delete me.currentPosition;
+         me.getIndicator().setWidth(Ext.fly(view.el).getWidth()).showAt(0, 0);
+         me.valid = true;
+     }
+
+		var task = new Ext.util.DelayedTask(function(){
+		    app.navigateTo('panelAreaFloorPlan');
+		    if (me.indicator) {
+		        me.indicator.hide();
+		    }
+		}).delay(3000);
+
+     return me.dropAllowed;
+ }
+
+});

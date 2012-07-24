@@ -531,33 +531,6 @@ Ext.define('App.view.patientfile.Encounter', {
 				}
 
 			]
-			//            tbar:[
-			//                {
-			//                    text:'View (CCD)',
-			//                    tooltip:'View (Continuity of Care Document)',
-			//                    handler:function () {
-			//                        // refresh logic
-			//                    }
-			//                },
-			//                '-',
-			//                {
-			//                    text:'Print (CCD)',
-			//                    tooltip:'Print (Continuity of Care Document)',
-			//                    handler:function () {
-			//                        // refresh log
-			//
-			//                    }
-			//                },
-			//                '->',
-			//                {
-			//                    text:'Export (CCD)',
-			//                    tooltip:'Export (Continuity of Care Document)',
-			//                    handler:function () {
-			//                        // refresh log
-			//
-			//                    }
-			//                }
-			//            ]
 		});
 
 		me.pageBody = [ me.centerPanel, me.progressNote ];
@@ -639,10 +612,9 @@ Ext.define('App.view.patientfile.Encounter', {
 				},
 				'->',
 				{
-					xtype       : 'encounterprioritycombo',
-					fieldLabel  : 'Priority',
-					labelWidth  : 55
+					xtype: 'encounterprioritycombo'
 				},
+				'-',
 				{
 					text   : 'Checkout',
 					handler: me.onCheckout

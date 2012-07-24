@@ -31,7 +31,7 @@ Ext.define('App.classes.combo.EncounterPriority', {
 			queryMode   : 'local',
 			displayField: 'option_name',
 			valueField  : 'option_value',
-			emptyText   : 'Select',
+			emptyText   : 'Priority',
 			store       : me.store,
 			listConfig  : {
 				getInnerTpl: function() {

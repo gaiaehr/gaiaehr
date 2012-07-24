@@ -639,9 +639,15 @@ Ext.define('App.view.patientfile.Encounter', {
 				},
 				'->',
 				{
+					xtype       : 'encounterprioritycombo',
+					fieldLabel  : 'Priority',
+					labelWidth  : 55
+				},
+				{
 					text   : 'Checkout',
 					handler: me.onCheckout
 				}
+
 			]
 		});
 

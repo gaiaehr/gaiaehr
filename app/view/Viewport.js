@@ -142,6 +142,7 @@ Ext.define('App.view.Viewport', {
 		'App.classes.combo.CalendarCategories',
 		'App.classes.combo.CalendarStatus',
 		'App.classes.combo.CodesTypes',
+		'App.classes.combo.EncounterPriority',
 		'App.classes.combo.Facilities',
 		'App.classes.combo.FloorPlanAreas',
 		'App.classes.combo.FollowUp',

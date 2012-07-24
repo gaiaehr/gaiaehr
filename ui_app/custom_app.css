@@ -116,7 +116,35 @@
 .grid-row-form-editor .x-grid-body {
     background-color: #ffffff!important;
 }
-
+.Minimal{
+	background-color: #008000!important;
+	color: #ffffff!important;
+	display:block!important;
+    padding:5px;
+}
+.Delayed{
+	background-color: #ffff00!important;
+	display:block!important;
+    padding:5px;
+}
+.Immediate{
+	background-color: #ff0000 !important;
+	color: #ffffff!important;
+	display:block!important;
+    padding:5px;
+}
+.Expectant{
+	background-color: #808080!important;
+	color: #ffffff!important;
+	display:block!important;
+    padding:5px;
+}
+.Deceased{
+	background-color: #000000!important;
+	color: #ffffff!important;
+	display:block!important;
+    padding:5px;
+}
 ::-webkit-scrollbar {
     width: 5px;
     height: 7px;

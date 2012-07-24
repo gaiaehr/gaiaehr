@@ -548,6 +548,7 @@ Ext.define('App.view.patientfile.Encounter', {
 				handler: me.onMedicalWin
 			},
 			items   : [
+				'-',
 				{
 					text  : 'Immunizations ',
 					action: 'immunization'
@@ -610,7 +611,9 @@ Ext.define('App.view.patientfile.Encounter', {
 					scope  : me,
 					handler: me.newDoc
 				},
+				'-',
 				'->',
+				'-',
 				{
 					xtype: 'encounterprioritycombo',
 					listeners:{
@@ -622,7 +625,8 @@ Ext.define('App.view.patientfile.Encounter', {
 				{
 					text   : 'Checkout',
 					handler: me.onCheckout
-				}
+				},
+				'-'
 
 			]
 		});

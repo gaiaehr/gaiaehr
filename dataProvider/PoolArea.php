@@ -119,7 +119,9 @@ class PoolArea
 	public function sendPatientToPoolArea(stdClass $params){
 
 		$fo = $this->getCurrentPatientPoolAreaByPid($params->pid);
-
+		/**
+		 * If patient comes from another area check him/her out
+		 */
 		if(!empty($fo)){
 			$data['time_out'] = Time::getLocalTime();
 			$this->db->setSQL($this->db->sqlBind($data, 'patient_pools', 'U', array('id'=> $fo['id'])));
@@ -135,6 +137,7 @@ class PoolArea
 		if(!empty($fo)){
 			$data['parent_id'] = $this->getParentPoolId($fo['id']);
 			$data['eid'] = $fo['eid'];
+			$data['priority'] = $fo['priority'];
 		}
 
 		$this->db->setSQL($this->db->sqlBind($data, 'patient_pools', 'I'));
@@ -223,6 +226,8 @@ class PoolArea
 					$p['shortName'] = Person::ellipsis($p['name'], 20);
 					$p['poolArea'] = 'Check In';
 					$p['photoSrc'] = $this->patient->getPatientPhotoSrcIdByPid($p['pid']);
+					$p['floorPlanId'] = $this->getFloorPlanIdByPoolAreaId(1);
+					$p['zoneId'] = $this->getPatientZoneByPid($p['pid']);
 					$patients[] = $p;
 				}
 			}
@@ -231,6 +236,8 @@ class PoolArea
 					$p['shortName'] = Person::ellipsis($p['name'], 20);
 					$p['poolArea'] = 'Triage';
 					$p['photoSrc'] = $this->patient->getPatientPhotoSrcIdByPid($p['pid']);
+					$p['floorPlanId'] = $this->getFloorPlanIdByPoolAreaId(2);
+					$p['zoneId'] = $this->getPatientZoneByPid($p['pid']);
 					$patients[] = $p;
 				}
 			}
@@ -239,6 +246,8 @@ class PoolArea
 					$p['shortName'] = Person::ellipsis($p['name'], 20);
 					$p['poolArea'] = 'Physician';
 					$p['photoSrc'] = $this->patient->getPatientPhotoSrcIdByPid($p['pid']);
+					$p['floorPlanId'] = $this->getFloorPlanIdByPoolAreaId(3);
+					$p['zoneId'] = $this->getPatientZoneByPid($p['pid']);
 					$patients[] = $p;
 				}
 			}
@@ -247,6 +256,8 @@ class PoolArea
 					$p['shortName'] = Person::ellipsis($p['name'], 20);
 					$p['poolArea'] = 'Check Out';
 					$p['photoSrc'] = $this->patient->getPatientPhotoSrcIdByPid($p['pid']);
+					$p['floorPlanId'] = $this->getFloorPlanIdByPoolAreaId(4);
+					$p['zoneId'] = $this->getPatientZoneByPid($p['pid']);
 					$patients[] = $p;
 				}
 			}
@@ -259,6 +270,21 @@ class PoolArea
 		$area = $this->db->fetchRecord(PDO::FETCH_ASSOC);
 		return $area['title'];
 	}
+
+	public function getFloorPlanIdByPoolAreaId($poolAreaId){
+		$this->db->setSQL("SELECT floor_plan_id FROM pool_areas WHERE id = $poolAreaId");
+		$area = $this->db->fetchRecord(PDO::FETCH_ASSOC);
+		return $area['floor_plan_id'];
+	}
+
+	public function getPatientZoneByPid($pid){
+		$this->db->setSQL("SELECT zone_id FROM pool_areas WHERE pid = $pid AND time_out IS NULL");
+		$area = $this->db->fetchRecord(PDO::FETCH_ASSOC);
+		return $area['zone_id'];
+	}
+
+
+
 }
 //$e = new PoolArea();
 //echo '<pre>';

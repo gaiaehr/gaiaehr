@@ -9,14 +9,16 @@
 Ext.define('App.model.poolarea.PoolArea', {
 	extend   : 'Ext.data.Model',
 	fields   : [
-		{name: 'name', type: 'string'},
-		{name: 'shortName', type: 'string'},
 		{name: 'pid', type: 'int'},
 		{name: 'eid', type: 'int'},
+		{name: 'name', type: 'string'},
+		{name: 'shortName', type: 'string'},
 		{name: 'photoSrc', type: 'string'},
 		{name: 'poolArea', type: 'string'},
+		{name: 'floorPlanId', type: 'int'},
+		{name: 'floorPlanRequireZone', type: 'bool'},
+		{name: 'zoneId', type: 'int'},
 		{name: 'priority', type: 'string'}
-
 	],
 	proxy    : {
 		type       : 'direct',

@@ -1271,11 +1271,12 @@ Ext.define('App.view.Viewport', {
 					this.removeFromGroup(this.ddGroup);
 					if(patientData.floorPlanId != null){
 						app.navigateTo('panelAreaFloorPlan');
-						this.addToGroup('floorPlanZone');
+						this.ddGroup = 'floorPlanZone';
 					}else{
-						this.addToGroup('patient');
+						this.ddGroup = 'patient';
 						app.MainPanel.el.mask('Drop Here To Open <strong>"' + panel.getRecord(sourceEl).data.name + '"</strong> Current Encounter');
 					}
+					this.addToGroup(this.ddGroup);
 					this.newGroupReset = false;
 				}
 				this.autoOffset(e.getPageX(), e.getPageY());

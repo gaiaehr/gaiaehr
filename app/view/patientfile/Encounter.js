@@ -93,7 +93,7 @@ Ext.define('App.view.patientfile.Encounter', {
 			],
 			listeners  : {
 				scope: me,
-				hide : me.cancelNewEnc
+				close : me.cancelNewEnc
 			}
 		});
 		me.EncounterOrdersStore = Ext.create('App.store.patientfile.EncounterCPTsICDs');
@@ -758,7 +758,7 @@ Ext.define('App.view.patientfile.Encounter', {
 						record.save({
 							callback: function(store) {
 								me.openEncounter(store.data.eid);
-								SaveBtn.up('window').close();
+								SaveBtn.up('window').hide();
 							}
 						});
 					} else {

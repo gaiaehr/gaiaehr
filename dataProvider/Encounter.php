@@ -719,12 +719,15 @@ class Encounter {
                                   review_active_problems,
                                   review_surgery,
                                   review_dental,
-                                  review_medications
+                                  review_medications,
+                                  review_alcohol,
+                                  review_smoke,
+                                  review_pregnant
                              FROM form_data_encounter
                             WHERE eid = '$params->eid'");
         $records = $this->db->fetchRecord(PDO::FETCH_ASSOC);
         foreach($records as $key =>$rec){
-            if($rec == 1){
+            if($rec != 0 && $rec != null  ){
                 unset($records[$key]);
             }
         }
@@ -778,7 +781,16 @@ class Encounter {
 		return  $this->db->fetchRecord(PDO::FETCH_ASSOC);
 	}
 
-//
+    public function onSaveItemsToReview (stdClass $params){
+        $data = get_object_vars($params);
+        $eid= $data['eid'];
+        unset($data['eid']);
+        $this->db->setSQL($this->db->sqlBind($data, "form_data_encounter","U", "eid='$eid'"));
+        $this->db->execLog();
+            return array('success' => true);
+
+    }
+
 }
 //
 //$params = new stdClass();

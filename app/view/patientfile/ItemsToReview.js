@@ -205,9 +205,9 @@ Ext.define('App.view.patientfile.ItemsToReview',{
                 }
             ]
         });
-        me.column4 = Ext.create('Ext.container.Container',{
+        me.column4 = Ext.create('Ext.form.Panel',{
             columnWidth: 0.3333,
-//            layout: 'column',
+            border:false,
             items:[
 
                 {
@@ -215,25 +215,25 @@ Ext.define('App.view.patientfile.ItemsToReview',{
                     xtype   : 'mitos.smokingstatuscombo',
                     labelWidth:100,
                     width    : 325,
-                    name    : 'smoke'
+                    name    : 'review_smoke'
 
 
                 },
                 {
                     fieldLabel: 'Alcohol?',
-                    xtype   : 'mitos.smokingstatuscombo',
+                    xtype   : 'mitos.yesnocombo',
                     labelWidth:100,
                     width    : 325,
-                    name    : 'alcohol'
+                    name    : 'review_alcohol'
 
 
                 },
                 {
                     fieldLabel: 'Pregnant?',
-                    xtype   : 'mitos.smokingstatuscombo',
+                    xtype   : 'mitos.yesnonacombo',
                     labelWidth:100,
                     width    : 325,
-                    name    : 'pregnant'
+                    name    : 'review_pregnant'
 
 
                 }
@@ -244,9 +244,10 @@ Ext.define('App.view.patientfile.ItemsToReview',{
         me.items = [ me.column1, me.column2, me.column3 , me.column4 ];
         me.bbar = [
                 '->', {
-                    text: 'Reviewed All',
+                    text: 'Review and Save All',
                     name    : 'review',
-                    scope  : me
+                    scope:me,
+                    handler: me.onSave
                 }
             ];
 
@@ -270,6 +271,29 @@ Ext.define('App.view.patientfile.ItemsToReview',{
         me.patientDentalStore.load({params: {pid: app.currPatient.pid}});
         me.patientMedicationsStore.load({params: {pid: app.currPatient.pid}});
 
+    },
 
+    onSave: function(){
+        var me = this,
+            panel= me.down('form'),
+            form= panel.getForm(),
+            values= form.getFieldValues(),
+            params = {
+                    eid:app.currEncounterId
+            };
+        values.eid = app.currEncounterId;
+
+        Medical.reviewAllMedicalWindowEncounter(params, function(provider, response){});
+            if(form.isValid()) {
+
+                Encounter.onSaveItemsToReview(values, function(provider, response){
+                    if(response.result.success){
+                        app.msg('Sweet!','Items To Review Save and Review')
+                    }else{
+                        app.msg('Oops!','Items To Review entry error')
+                    }
+
+                });
+            }
     }
 });

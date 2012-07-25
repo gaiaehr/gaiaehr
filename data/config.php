@@ -70,6 +70,9 @@ $API = array(
 	        ),
 	        'getEncounterMessageByEid'=>array(
 		        'len'=>1
+	        ),
+	        'onSaveItemsToReview'=>array(
+		        'len'=>1
 	        )
         )
     ),
@@ -303,6 +306,9 @@ $API = array(
                'len'=>1
             ),
             'getLabsLiveSearch'=>array(
+               'len'=>1
+            ),
+            'reviewAllMedicalWindowEncounter'=>array(
                'len'=>1
             )
         ),

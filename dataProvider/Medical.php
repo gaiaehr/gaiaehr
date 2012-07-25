@@ -567,6 +567,20 @@ class Medical
         $this->db->execLog();
         return  array('success' => true);
     }
+    public function reviewAllMedicalWindowEncounter(stdClass $params)
+    {    $data = get_object_vars($params);
+        $eid  = $data['eid'];
+        unset($data['eid']);
+        $data['review_immunizations'] = 1;
+        $data['review_allergies'] = 1;
+        $data['review_active_problems'] = 1;
+        $data['review_surgery'] = 1;
+        $data['review_medications'] = 1;
+        $data['review_dental'] = 1;
+        $this->db->setSQL($this->db->sqlBind($data, "form_data_encounter", "U", "eid='$eid'"));
+        $this->db->execLog();
+        return  array('success' => true);
+    }
 
 	/*************************************************************************************************************/
 	public function getLabsLiveSearch(stdClass $params)

@@ -147,6 +147,8 @@ Ext.define('App.view.Viewport', {
 		'App.classes.combo.SmokingStatus',
 		'App.classes.combo.FloorPlanAreas',
 		'App.classes.combo.FollowUp',
+		'App.classes.combo.YesOrNo',
+		'App.classes.combo.YesNoNa',
 		'App.classes.combo.InsurancePayerType',
 		'App.classes.combo.LabObservations',
 		'App.classes.combo.LabsTypes',

@@ -245,10 +245,6 @@ Ext.define('App.view.patientfile.Summary', {
                                             xtype:'textfield',
                                             action:'title'
                                         }
-                            },
-                            {
-                                header:'User',
-                                dataIndex:'user_name'
                             }
                         ],
 

@@ -179,7 +179,12 @@ Ext.define('App.view.patientfile.ArrivalLogWindow', {
     },
 
 	onWinShow:function(){
-        this.onGridReload();
+        var me = this;
+        me.onGridReload();
+        new Ext.util.DelayedTask(function(){
+            me.query('patienlivetsearch')[0].focus();
+        }).delay(1000);
+
 	}
 
 });

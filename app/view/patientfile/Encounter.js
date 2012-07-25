@@ -531,33 +531,6 @@ Ext.define('App.view.patientfile.Encounter', {
 				}
 
 			]
-			//            tbar:[
-			//                {
-			//                    text:'View (CCD)',
-			//                    tooltip:'View (Continuity of Care Document)',
-			//                    handler:function () {
-			//                        // refresh logic
-			//                    }
-			//                },
-			//                '-',
-			//                {
-			//                    text:'Print (CCD)',
-			//                    tooltip:'Print (Continuity of Care Document)',
-			//                    handler:function () {
-			//                        // refresh log
-			//
-			//                    }
-			//                },
-			//                '->',
-			//                {
-			//                    text:'Export (CCD)',
-			//                    tooltip:'Export (Continuity of Care Document)',
-			//                    handler:function () {
-			//                        // refresh log
-			//
-			//                    }
-			//                }
-			//            ]
 		});
 
 		me.pageBody = [ me.centerPanel, me.progressNote ];
@@ -575,6 +548,7 @@ Ext.define('App.view.patientfile.Encounter', {
 				handler: me.onMedicalWin
 			},
 			items   : [
+				'-',
 				{
 					text  : 'Immunizations ',
 					action: 'immunization'
@@ -637,13 +611,29 @@ Ext.define('App.view.patientfile.Encounter', {
 					scope  : me,
 					handler: me.newDoc
 				},
+				'-',
 				'->',
+				'-',
+				{
+					xtype: 'encounterprioritycombo',
+					listeners:{
+						scope:me,
+						select:me.prioritySelect
+					}
+				},
+				'-',
 				{
 					text   : 'Checkout',
 					handler: me.onCheckout
-				}
+				},
+				'-'
+
 			]
 		});
+
+		me.priorityCombo = me.query('encounterprioritycombo')[0];
+
+
 
 	},
 	newDoc           : function(btn) {
@@ -661,6 +651,10 @@ Ext.define('App.view.patientfile.Encounter', {
 	 */
 	onChartWindowShow: function() {
 		app.onChartsWin();
+	},
+
+	prioritySelect:function(cmb, records){
+		alert('TODO: Priority Changed to ' + records[0].data.option_value)
 	},
 	/**
 	 * Checks for opened encounters, if open encounters are
@@ -933,6 +927,8 @@ Ext.define('App.view.patientfile.Encounter', {
 			scope   : me,
 			callback: function(record) {
 				var data = record[0].data;
+
+				say(data);
 				me.currEncounterStartDate = data.start_date;
 				if(!data.close_date) {
 					me.startTimer();
@@ -963,6 +959,8 @@ Ext.define('App.view.patientfile.Encounter', {
 				me.CurrentProceduralTerminology.encounterCptStoreLoad(record[0].data.pid, eid, function() {
 					me.CurrentProceduralTerminology.setDefaultQRCptCodes();
 				});
+
+				me.priorityCombo.setValue(data.priority);
 
 				app.PreventiveCareWindow.loadPatientPreventiveCare();
 

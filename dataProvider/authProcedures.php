@@ -152,8 +152,7 @@ class authProcedures {
      * @static
      * @return int
      */
-    public static function ckAuth(){
-	    $session = new Sessions();
+    public function ckAuth(){
         $_SESSION['site']['flops']++;
         //****************************************************************
         // If the session has passed 60 flops, with out any activity exit
@@ -161,13 +160,12 @@ class authProcedures {
         //
         // return an exit code
         //****************************************************************
-        if($_SESSION['site']['flops'] < 180) {
+        if($_SESSION['site']['flops'] < 300) {
+	        $session = new Sessions();
 	   	    $session->updateSession();
             return array('authorized' => true);
         }else{
-	        $p = new Patient();
-	        $p->patientChartInByPid($_SESSION['patient']['pid']);
-	        $session->logoutSession();
+	        $this->unAuth();
             return array('authorized' => false);
         }
     }

@@ -178,7 +178,7 @@ class Encounter {
 
         $params->eid = intval($eid);
 
-		$this->poolArea->updateCurrentPatientPoolAreaByPid(array('eid'=>$params->eid), $params->pid);
+		$this->poolArea->updateCurrentPatientPoolAreaByPid(array('eid'=>$params->eid,'priority'=>$params->priority), $params->pid);
 
         $this->setEid($params->eid);
         $this->addEncounterHistoryEvent('New Encounter Created');

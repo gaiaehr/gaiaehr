@@ -142,6 +142,7 @@ Ext.define('App.view.Viewport', {
 		'App.classes.combo.CalendarCategories',
 		'App.classes.combo.CalendarStatus',
 		'App.classes.combo.CodesTypes',
+		'App.classes.combo.EncounterPriority',
 		'App.classes.combo.Facilities',
 		'App.classes.combo.SmokingStatus',
 		'App.classes.combo.FloorPlanAreas',
@@ -586,7 +587,7 @@ Ext.define('App.view.Viewport', {
 							cls              : 'patient-pool-view',
 							tpl              : '<tpl for=".">' +
 
-								'<div class="patient-pool-btn x-btn x-btn-default-large">' +
+								'<div class="patient-pool-btn x-btn x-btn-default-large {priority}">' +
 								'<div class="patient_btn_img"><img src="{photoSrc}" width="35" height="35"></div>' +
 								'<div class="patient_btn_info">' +
 								'<div class="patient-name">{shortName}</div>' +
@@ -1049,14 +1050,14 @@ Ext.define('App.view.Viewport', {
 			post = selection[0];
 		if(post) {
 			Patient.currPatientSet({pid: post.get('pid')}, function() {
-				me.setCurrPatient(post.get('pid'), post.get('fullname'), function() {
+				me.setCurrPatient(post.get('pid'), post.get('fullname') , '', function() {
 					me.openPatientSummary();
 				});
 			});
 		}
 	},
 
-	setCurrPatient: function(pid, fullname, callback) {
+	setCurrPatient: function(pid, fullname, priority, callback) {
 		var me = this,
 			patientBtn = me.Header.getComponent('patientButton'),
 			patientOpenVisitsBtn = me.Header.getComponent('patientOpenVisits'),
@@ -1092,6 +1093,7 @@ Ext.define('App.view.Viewport', {
 						readOnly: readOnly
 					};
 					patientBtn.update({ pid: pid, name: fullname });
+					patientBtn.addCls(priority);
 					patientBtn.enable();
 					patientOpenVisitsBtn.enable();
 					patientCreateEncounterBtn.enable();
@@ -1117,6 +1119,11 @@ Ext.define('App.view.Viewport', {
 		Patient.currPatientUnset(function() {
 			me.currEncounterId = null;
 			me.currPatient = null;
+			patientBtn.removeCls('Minimal');
+			patientBtn.removeCls('Delayed');
+			patientBtn.removeCls('Immediate');
+			patientBtn.removeCls('Expectant');
+			patientBtn.removeCls('Deceased');
 			if(typeof callback == 'function') {
 				callback(true);
 			} else {
@@ -1127,6 +1134,7 @@ Ext.define('App.view.Viewport', {
 				patientCheckOutBtn.disable();
 				patientBtn.disable();
 				patientBtn.update({ pid: 'record number', name: 'No Patient Selected'});
+
 			}
 		});
 	},
@@ -1151,16 +1159,14 @@ Ext.define('App.view.Viewport', {
 	checkSession: function() {
 		authProcedures.ckAuth(function(provider, response) {
 			if(!response.result.authorized) {
-				authProcedures.unAuth(function() {
-					window.location = "./"
-				});
+					window.location = './';
 			}
 		});
 	},
 
 	patientBtn: function() {
 		return Ext.create('Ext.XTemplate',
-			'<div class="patient_btn">',
+			'<div class="patient_btn  {priority}">',
 			'<div class="patient_btn_img"><img src="ui_icons/user_32.png"></div>',
 			'<div class="patient_btn_info">',
 			'<div class="patient_btn_name">{name}</div>',
@@ -1300,8 +1306,8 @@ Ext.define('App.view.Viewport', {
 			},
 			notifyDrop: function(dd, e, data) {
 				app.MainPanel.el.unmask();
-
-				me.setCurrPatient(data.patientData.pid, data.patientData.name, function() {
+				say(data.patientData);
+				me.setCurrPatient(data.patientData.pid, data.patientData.name, data.patientData.priority, function() {
 					if(data.patientData.eid && data.patientData.poolArea == 'Check Out') {
 						me.checkOutPatient(data.patientData.eid);
 					} else if(data.patientData.eid && perm.access_encounters) {

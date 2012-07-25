@@ -14,7 +14,8 @@ Ext.define('App.model.poolarea.PoolArea', {
 		{name: 'pid', type: 'int'},
 		{name: 'eid', type: 'int'},
 		{name: 'photoSrc', type: 'string'},
-		{name: 'poolArea', type: 'string'}
+		{name: 'poolArea', type: 'string'},
+		{name: 'priority', type: 'string'}
 
 	],
 	proxy    : {

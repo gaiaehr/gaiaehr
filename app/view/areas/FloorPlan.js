@@ -46,6 +46,7 @@ Ext.define('App.view.areas.FloorPlan', {
 			y:record.data.y,
 			scope:me,
 			handler:me.onZoneClicked,
+			pid:null,
 			menu:[
 				form = Ext.create('Ext.form.Panel',{
 					bodyPadding:'5 5 0 5',
@@ -55,16 +56,24 @@ Ext.define('App.view.areas.FloorPlan', {
 							fieldLabel:'Patient Name',
 							labelWidth:80,
 							name:'patient_name'
+						},
+						{
+							xtype:'button',
+							text:'Remove Patient',
+							handler:function(){
+								me.unSetZone(zone);
+							}
 						}
 					]
 				})
 			],
-			tooltip:'Patient Name: [empty]'
-//			listeners:{
-//				scope:me,
+			tooltip:'Patient Name: [empty]',
+			listeners:{
+				scope:me,
+				render:me.initializeDropZone
 //				menushow:me.afterMenuShow,
 //				menuhide:me.afterMenuHide
-//			}
+			}
 		});
 		me.floorPlan.add(zone);
 		form.getForm().loadRecord(record);
@@ -94,6 +103,44 @@ Ext.define('App.view.areas.FloorPlan', {
 				}
 			}
 		});
+	},
+
+	initializeDropZone: function(panel) {
+		var me = this;
+		panel.dropZone = Ext.create('Ext.dd.DropZone', panel.getEl(), {
+			ddGroup   : 'floorPlanZone',
+			notifyOver: function(dd, e, data) {
+//				say(panel);
+//				say(dd);
+//				say(data);
+
+				if(panel.pid == null) {
+					return Ext.dd.DropZone.prototype.dropAllowed;
+				}else{
+					return Ext.dd.DropZone.prototype.dropNotAllowed;
+				}
+			},
+			notifyDrop: function(dd, e, data) {
+				me.setZone(panel, data.patientData)
+			}
+		});
+	},
+
+	setZone:function(zone, data){
+		zone.pid = data.pid;
+		zone.priority = data.priority;
+		zone.setTooltip('Patient Name:' + data.name);
+		zone.addCls(data.priority);
+	},
+
+	unSetZone:function(zone){
+		zone.pid = null;
+		zone.setTooltip('Patient Name: [empty]');
+		zone.removeCls(zone.priority);
+	},
+
+	setZones:function(){
+
 	},
 
 	onActive: function(callback) {

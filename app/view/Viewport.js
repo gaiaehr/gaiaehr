@@ -266,7 +266,7 @@ Ext.define('App.view.Viewport', {
 			scope   : me,
 			run     : function() {
 				me.checkSession();
-				me.getPatientesInPoolArea();
+				me.getPatientsInPoolArea();
 				CronJob.run();
 			},
 			interval: 5000 // 10 second
@@ -341,16 +341,7 @@ Ext.define('App.view.Viewport', {
 			bodyStyle  : 'background: transparent',
 			margins    : '0 0 0 0',
 			items      : [
-				//				{
-				//					xtype : 'container',
-				//                    itemId: 'appLogo',
-				//                    width : window.innerWidth < this.minWidthToFullMode ? 35 : 200,
-				//					html  : '<img src="ui_app/app_logo.png" height="40" width="200" style="float:left">',
-				//					style : 'float:left',
-				//					border: false
-				//				},
-				{
-					xtype    : 'button',
+				me.patientButton = Ext.create('Ext.button.Button',{
 					scale    : 'large',
 					style    : 'float:left',
 					margin   : 0,
@@ -362,7 +353,7 @@ Ext.define('App.view.Viewport', {
 						afterrender: me.patientBtnRender
 					},
 					tpl      : me.patientBtn()
-				},
+				}),
 				{
 					xtype  : 'button',
 					scale  : 'large',
@@ -767,7 +758,6 @@ Ext.define('App.view.Viewport', {
 					loadMask         : false,
 					store            : me.patientPoolStore,
 					listeners        : {
-						scope : me,
 						render: me.initializeOpenEncounterDragZone
 					}
 				},
@@ -1112,7 +1102,7 @@ Ext.define('App.view.Viewport', {
 
 	patientUnset: function(callback) {
 		var me = this,
-			patientBtn = me.Header.getComponent('patientButton'),
+			patientBtn = me.patientButton,
 			patientOpenVisitsBtn = me.Header.getComponent('patientOpenVisits'),
 			patientCreateEncounterBtn = me.Header.getComponent('patientCreateEncounter'),
 			patientCloseCurrEncounterBtn = me.Header.getComponent('patientCloseCurrEncounter'),
@@ -1121,11 +1111,7 @@ Ext.define('App.view.Viewport', {
 		Patient.currPatientUnset(function() {
 			me.currEncounterId = null;
 			me.currPatient = null;
-			patientBtn.removeCls('Minimal');
-			patientBtn.removeCls('Delayed');
-			patientBtn.removeCls('Immediate');
-			patientBtn.removeCls('Expectant');
-			patientBtn.removeCls('Deceased');
+			me.patientButtonRemoveCls();
 			if(typeof callback == 'function') {
 				callback(true);
 			} else {
@@ -1139,6 +1125,14 @@ Ext.define('App.view.Viewport', {
 
 			}
 		});
+	},
+
+	patientButtonRemoveCls:function(){
+		this.patientButton.removeCls('Minimal');
+		this.patientButton.removeCls('Delayed');
+		this.patientButton.removeCls('Immediate');
+		this.patientButton.removeCls('Expectant');
+		this.patientButton.removeCls('Deceased');
 	},
 
 	showMiframe: function(btn) {
@@ -1182,7 +1176,7 @@ Ext.define('App.view.Viewport', {
 		this.initializePatientPoolDragZone(btn)
 	},
 
-	getPatientesInPoolArea: function() {
+	getPatientsInPoolArea: function() {
 		var poolArea = this.navColumn.getComponent('patientPoolArea'),
 			height = 35;
 		this.patientPoolStore.load({
@@ -1262,14 +1256,38 @@ Ext.define('App.view.Viewport', {
 	 */
 	initializeOpenEncounterDragZone: function(panel) {
 		panel.dragZone = Ext.create('Ext.dd.DragZone', panel.getEl(), {
-			ddGroup    : 'patient',
+
+			ddGroup:'patient',
+			newGroupReset:true,
+			b4MouseDown:function(e){
+				if(this.newGroupReset){
+					var sourceEl = e.getTarget(panel.itemSelector, 10),
+						patientData = panel.getRecord(sourceEl).data;
+					this.removeFromGroup(this.ddGroup);
+					if(patientData.floorPlanId != null){
+						app.navigateTo('panelAreaFloorPlan');
+						this.ddGroup = 'floorPlanZone';
+					}else{
+						this.ddGroup = 'patient';
+						app.MainPanel.el.mask('Drop Here To Open <strong>"' + panel.getRecord(sourceEl).data.name + '"</strong> Current Encounter');
+					}
+					this.addToGroup(this.ddGroup);
+					this.newGroupReset = false;
+				}
+				this.autoOffset(e.getPageX(), e.getPageY());
+			},
+
+			endDrag: function(e) {
+				this.newGroupReset = true;
+			},
+
 			// On receipt of a mousedown event, see if it is within a draggable element.
 			// Return a drag data object if so. The data object can contain arbitrary application
 			// data, but it should also contain a DOM element in the ddel property to provide
 			// a proxy to drag.
 			getDragData: function(e) {
-				var sourceEl = e.getTarget(panel.itemSelector, 10), d;
-				app.MainPanel.el.mask('Drop Here To Open <strong>"' + panel.getRecord(sourceEl).data.name + '"</strong> Current Encounter');
+				var sourceEl = e.getTarget(panel.itemSelector, 10), d,
+					patientData = panel.getRecord(sourceEl).data;
 				if(sourceEl) {
 					d = sourceEl.cloneNode(true);
 					d.id = Ext.id();
@@ -1277,7 +1295,7 @@ Ext.define('App.view.Viewport', {
 						sourceEl   : sourceEl,
 						repairXY   : Ext.fly(sourceEl).getXY(),
 						ddel       : d,
-						patientData: panel.getRecord(sourceEl).data
+						patientData: patientData
 					};
 				}
 			},
@@ -1285,6 +1303,7 @@ Ext.define('App.view.Viewport', {
 			// This is the original XY coordinates of the draggable element.
 			getRepairXY: function() {
 				app.MainPanel.el.unmask();
+				this.newGroupReset = true;
 				return this.dragData.repairXY;
 			}
 		});
@@ -1303,18 +1322,30 @@ Ext.define('App.view.Viewport', {
 		var me = this;
 		panel.dropZone = Ext.create('Ext.dd.DropZone', panel.getEl(), {
 			ddGroup   : 'patient',
-			notifyOver: function() {
+			notifyOver: function(dd, e, data) {
 				return Ext.dd.DropZone.prototype.dropAllowed;
 			},
 			notifyDrop: function(dd, e, data) {
 				app.MainPanel.el.unmask();
-				say(data.patientData);
 				me.setCurrPatient(data.patientData.pid, data.patientData.name, data.patientData.priority, function() {
+
+					/**
+					 * if encounter id is set and pool area is check out....  go to Patient Checkout panel
+					 */
 					if(data.patientData.eid && data.patientData.poolArea == 'Check Out') {
 						me.checkOutPatient(data.patientData.eid);
+
+					/**
+					 * if encounter id is set and and user has access to encounter area... go to Encounter panel
+					 * and open the encounter
+					 */
 					} else if(data.patientData.eid && perm.access_encounters) {
 						me.openEncounter(data.patientData.eid);
-					} else {
+
+					/**
+					 * else go to patient summary
+					 */
+					} else if(data.patientData.floorPlanId == null){
 						me.openPatientSummary();
 					}
 				});

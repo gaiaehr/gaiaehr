@@ -16,7 +16,7 @@ Ext.define('App.classes.combo.EncounterPriority', {
 					read: CombosData.getOptionsByListId
 				},
 				extraParams: {
-					list_id: 92
+					list_id: 94
 				}
 			}
 		});

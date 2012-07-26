@@ -37,10 +37,13 @@ Ext.define('App.view.PatientPoolDropZone', {
 			pid   : pid,
 			sendTo: this.panel.action
 		};
-		app.patientUnset();
+
 		PoolArea.sendPatientToPoolArea(params, function() {
+			app.patientUnset();
 			Ext.getCmp('panelPoolArea').reloadStores();
 		});
+
+
 	},
 
 	getPoolAreas: function() {
@@ -63,11 +66,12 @@ Ext.define('App.view.PatientPoolDropZone', {
 				});
 				me.stores.push(store);
 				panel.add({
-					xtype     : 'grid',
-					title     : area.title,
-					action    : area.id,
-					store     : store,
-					columns   : [
+					xtype      : 'grid',
+					title      : area.title,
+					action     : area.id,
+					store      : store,
+					floorPlanId: area.floor_plan_id,
+					columns    : [
 						{
 							header   : 'Record #',
 							width    : 100,

@@ -867,7 +867,28 @@ Ext.define('App.view.Viewport', {
 	},
 
 	createEmergency: function() {
-		alert('Emergency Button Clicked');
+		var me = this, emergency;
+
+		Ext.Msg.show({
+		     title:'Wait!!!',
+		     msg: 'Are you sure you want to create a new <span style="color: red">"Emergency"</span>?',
+		     buttons: Ext.Msg.YESNO,
+		     icon: Ext.Msg.WARNING,
+			fn:function(btn){
+				if(btn == 'yes'){
+					Emergency.createNewEmergency(function(provider, response){
+						emergency = response.result.emergency;
+						if(response.result.success){
+							me.setCurrPatient(emergency.pid,emergency.name, emergency.priority, function(){
+								me.openEncounter(emergency.eid);
+							});
+							me.msg('Sweet!',emergency.name + ' created')
+						}
+					});
+				}
+			}
+		});
+
 	},
 
 	createNewEncounter: function() {
@@ -1218,14 +1239,12 @@ Ext.define('App.view.Viewport', {
 	initializePatientPoolDragZone: function(panel) {
 		panel.dragZone = Ext.create('Ext.dd.DragZone', panel.getEl(), {
 			ddGroup    : 'patientPoolAreas',
-			// On receipt of a mousedown event, see if it is within a draggable element.
-			// Return a drag data object if so. The data object can contain arbitrary application
-			// data, but it should also contain a DOM element in the ddel property to provide
-			// a proxy to drag.
 			getDragData: function() {
 
 				var sourceEl = app.Header.getComponent('patientButton').el.dom, d;
-				app.MainPanel.getLayout().setActiveItem(app.ppdz);
+				if(app.currCardCmp != app.ppdz){
+					app.MainPanel.getLayout().setActiveItem(app.ppdz);
+				}
 				app.navColumn.down('treepanel').getSelectionModel().deselectAll();
 
 				if(sourceEl) {
@@ -1241,8 +1260,6 @@ Ext.define('App.view.Viewport', {
 					};
 				}
 			},
-			// Provide coordinates for the proxy to slide back to on failed drag.
-			// This is the original XY coordinates of the draggable element.
 			getRepairXY: function() {
 				app.goBack();
 				return this.dragData.repairXY;
@@ -1256,7 +1273,6 @@ Ext.define('App.view.Viewport', {
 	 */
 	initializeOpenEncounterDragZone: function(panel) {
 		panel.dragZone = Ext.create('Ext.dd.DragZone', panel.getEl(), {
-
 			ddGroup:'patient',
 			newGroupReset:true,
 			b4MouseDown:function(e){
@@ -1266,7 +1282,7 @@ Ext.define('App.view.Viewport', {
 					this.removeFromGroup(this.ddGroup);
 					if(patientData.floorPlanId != null){
 						app.navigateTo('panelAreaFloorPlan');
-						this.ddGroup = 'floorPlanZone';
+						this.ddGroup = 'patientPoolAreas';
 					}else{
 						this.ddGroup = 'patient';
 						app.MainPanel.el.mask('Drop Here To Open <strong>"' + panel.getRecord(sourceEl).data.name + '"</strong> Current Encounter');
@@ -1281,10 +1297,6 @@ Ext.define('App.view.Viewport', {
 				this.newGroupReset = true;
 			},
 
-			// On receipt of a mousedown event, see if it is within a draggable element.
-			// Return a drag data object if so. The data object can contain arbitrary application
-			// data, but it should also contain a DOM element in the ddel property to provide
-			// a proxy to drag.
 			getDragData: function(e) {
 				var sourceEl = e.getTarget(panel.itemSelector, 10), d,
 					patientData = panel.getRecord(sourceEl).data;
@@ -1299,8 +1311,7 @@ Ext.define('App.view.Viewport', {
 					};
 				}
 			},
-			// Provide coordinates for the proxy to slide back to on failed drag.
-			// This is the original XY coordinates of the draggable element.
+
 			getRepairXY: function() {
 				app.MainPanel.el.unmask();
 				this.newGroupReset = true;

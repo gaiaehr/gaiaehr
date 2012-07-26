@@ -133,6 +133,7 @@ class PoolArea
 		$data['uid'] = $_SESSION['user']['id'];
 		$data['time_in'] = Time::getLocalTime();
 		$data['area_id'] = $params->sendTo;
+		$data['priority'] = $params->priority;
 
 		if(!empty($fo)){
 			$data['parent_id'] = $this->getParentPoolId($fo['id']);

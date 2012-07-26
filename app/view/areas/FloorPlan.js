@@ -108,12 +108,8 @@ Ext.define('App.view.areas.FloorPlan', {
 	initializeDropZone: function(panel) {
 		var me = this;
 		panel.dropZone = Ext.create('Ext.dd.DropZone', panel.getEl(), {
-			ddGroup   : 'floorPlanZone',
+			ddGroup   : 'patientPoolAreas',
 			notifyOver: function(dd, e, data) {
-//				say(panel);
-//				say(dd);
-//				say(data);
-
 				if(panel.pid == null) {
 					return Ext.dd.DropZone.prototype.dropAllowed;
 				}else{
@@ -140,6 +136,10 @@ Ext.define('App.view.areas.FloorPlan', {
 	},
 
 	setZones:function(){
+
+	},
+
+	setFloorPlan:function(floorPlanId){
 
 	},
 

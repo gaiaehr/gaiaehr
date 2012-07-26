@@ -1,5 +1,12 @@
 <?php
 $API = array(
+	'Emergency'=>array(
+		'methods'=>array(
+			'createNewEmergency'=>array(
+				'len'=>0
+			)
+		)
+	),
     /**
     * Encounter Functions
     */

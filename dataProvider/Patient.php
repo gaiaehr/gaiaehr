@@ -144,7 +144,6 @@ class Patient
 	 */
 	public function updatePatientDemographicData(stdClass $params)
 	{
-		$this->createPatientQrCode($params->pid, Person::fullname($params->fname, $params->mname, $params->lname));
 
 		$data = get_object_vars($params);
 		unset($data['pid']);
@@ -155,6 +154,12 @@ class Patient
 		}
 		$this->db->setSQL($this->db->sqlBind($data, 'form_data_demographics', 'U', array('pid' => $params->pid)));
 		$this->db->execLog();
+
+		$faullname = $params->fname . ' ' . $params->mname . ' ' . $params->lname;
+
+		$this->createPatientQrCode($params->pid, Person::fullname($params->fname, $params->mname, $params->lname));
+
+
 		return $params;
 	}
 

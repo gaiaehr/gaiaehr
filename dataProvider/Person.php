@@ -7,7 +7,7 @@
  * Time: 3:18 PM
  */
 if(!isset($_SESSION)){
-    session_name ("GaiaEHR" );
+    session_name ('GaiaEHR');
     session_start();
     session_cache_limiter('private');
 }
@@ -26,10 +26,13 @@ class Person {
             switch($_SESSION['global_settings']['fullname']){
                 case '0':
                     $fullname = $lname.', '.$fname.' '.$mname;
-                break;
+                    break;
                 case '1':
                    $fullname = $fname.' '.$mname.' '.$lname;
-                break;
+                    break;
+	            default:
+		            $fullname = $fname.' '.$mname.' '.$lname;
+		            break;
             }
         }else{
             $fullname =  $lname.', '.$fname.' '.$mname;

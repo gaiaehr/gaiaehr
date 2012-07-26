@@ -46,7 +46,8 @@ $tables = array(
 	'patient_surgery',
 	'patient_out_chart',
 	'preventive_care_inactive_patient',
-	'users_sessions'
+	'users_sessions',
+	'emergencies'
 );
 
 function getDirectoryList ($directory)

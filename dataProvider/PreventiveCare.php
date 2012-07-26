@@ -552,11 +552,11 @@ class PreventiveCare
     }
 }
 
-$params = new stdClass();
-$params->start = 0;
-$params->limit = 25;
-$params->pid = 5;
-$t = new PreventiveCare();
-print '<pre>';
-print_r($t->getPreventiveCareCheck($params));
+//$params = new stdClass();
+//$params->start = 0;
+//$params->limit = 25;
+//$params->pid = 5;
+//$t = new PreventiveCare();
+//print '<pre>';
+//print_r($t->getPreventiveCareCheck($params));
 

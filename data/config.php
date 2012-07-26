@@ -310,6 +310,9 @@ $API = array(
             ),
             'reviewAllMedicalWindowEncounter'=>array(
                'len'=>1
+            ),
+            'getReviewMedical'=>array(
+               'len'=>1
             )
         ),
 

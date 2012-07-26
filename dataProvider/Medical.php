@@ -600,6 +600,20 @@ class Medical
 	}
 
 
+    public function getReviewMedical(stdClass $params){
+        $data = get_object_vars($params);
+        $eid  = $data['eid'];
+        $this->db->setSQL("
+                            SELECT review_alcohol,
+                                   review_smoke,
+                                   review_pregnant
+                            FROM form_data_encounter
+                            WHERE eid = '$eid'
+                          ");
+        return $this->db->fetchRecord();
+    }
+
+
 	/**
 	 * @param $date
 	 * @return mixed

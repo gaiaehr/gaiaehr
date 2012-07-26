@@ -271,6 +271,13 @@ Ext.define('App.view.patientfile.ItemsToReview',{
         me.patientDentalStore.load({params: {pid: app.currPatient.pid}});
         me.patientMedicationsStore.load({params: {pid: app.currPatient.pid}});
 
+
+        Medical.getReviewMedical({params:{eid:app.currEncounterId}},function(provider, response){
+
+            say(provider);
+            say(response);
+        });
+
     },
 
     onSave: function(){

@@ -330,8 +330,7 @@ class PreventiveCare
 
         $ppreg =  $this->patient->getPatientPregnantStatusByPid($pid);
         $ipreg =  $this->getPreventiveCarePregnantById($immu_id);
-        print $ppreg;
-        print $ipreg;
+
         if($ppreg == 1 && $ipreg ==1){
             return true;
         }
@@ -550,6 +549,8 @@ class PreventiveCare
         $this->db->setSQL("SELECT * FROM preventive_care_guidelines WHERE id = '$id'");
         return $this->db->fetchRecord();
     }
+
+
 }
 
 //$params = new stdClass();

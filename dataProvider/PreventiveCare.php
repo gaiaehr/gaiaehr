@@ -330,8 +330,13 @@ class PreventiveCare
 
         $ppreg =  $this->patient->getPatientPregnantStatusByPid($pid);
         $ipreg =  $this->getPreventiveCarePregnantById($immu_id);
+        print $ppreg;
+        print $ipreg;
+        if($ppreg == 1 && $ipreg ==1){
+            return true;
+        }
+        elseif($ppreg == 1 && $ipreg ==0){
 
-        if($ppreg == $ipreg){
             return true;
         }
         else{
@@ -451,10 +456,11 @@ class PreventiveCare
 
         foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) as $rec){
 
-            $rec['alert'] = ($this->checkAge($params->pid, $rec['id'])
+            $rec['alert'] = (($this->checkAge($params->pid, $rec['id'])
                           && $this->checkSex($params->pid, $rec['id'])
                           && $this->checkProblem($params->pid, $rec['id'])
-                          && $this->checkMedications($params->pid, $rec['id'])) ? true : false ;
+                          && $this->checkMedications($params->pid, $rec['id']))
+                          || $this->checkPregnant($params->pid, $rec['id'])) ? true : false ;
 
             if($rec['category_id']==3){
                 $rec['type']='Immunizations';
@@ -546,11 +552,11 @@ class PreventiveCare
     }
 }
 
-//$params = new stdClass();
-//$params->start = 0;
-//$params->limit = 25;
-//$params->pid = 1;
-//$t = new PreventiveCare();
-//print '<pre>';
-//print_r($t->getPreventiveCareCheck($params));
+$params = new stdClass();
+$params->start = 0;
+$params->limit = 25;
+$params->pid = 5;
+$t = new PreventiveCare();
+print '<pre>';
+print_r($t->getPreventiveCareCheck($params));
 

@@ -371,11 +371,12 @@ class Patient
 
 	public function getPatientPregnantStatusByPid($pid)
 	{
-		$this->db->setSQL("SELECT pregnant
-                           FROM form_data_demographics
-                           WHERE pid ='$pid'");
+		$this->db->setSQL("SELECT *
+                           FROM form_data_encounter
+                           WHERE pid ='$pid'
+                           ORDER BY eid desc ");
 		$p = $this->db->fetchRecord(PDO::FETCH_ASSOC);
-		return $p['pregnant'];
+		return $p['review_pregnant'];
 
 	}
 

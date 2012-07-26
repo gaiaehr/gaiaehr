@@ -104,7 +104,8 @@ Ext.define('App.view.PatientPoolDropZone', {
 
 	onPatientDblClick: function(store, record) {
 		var data = record.data;
-		app.setCurrPatient(data.pid, data.name, function() {
+		// TODO: set priority
+		app.setCurrPatient(data.pid, data.name, '', function() {
 			app.openPatientSummary();
 		});
 	},

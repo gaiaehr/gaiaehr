@@ -77,7 +77,7 @@ Ext.define('App.view.patientfile.NewPatient', {
 
                 if(response.result.success){
                     me.msg('Sweet!', 'Patient "' + fullname + '" Created... ');
-                    app.setCurrPatient(pid, fullname, function(success) {
+                    app.setCurrPatient(pid, fullname, '', function(success) {
                         if(success) {
                             app.openPatientSummary();
                         }

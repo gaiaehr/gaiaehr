@@ -757,6 +757,8 @@ Ext.define('App.view.patientfile.Encounter', {
 						}
 						record.save({
 							callback: function(store) {
+								app.patientButtonRemoveCls();
+								app.patientButton.addCls(store.data.priority);
 								me.openEncounter(store.data.eid);
 								SaveBtn.up('window').hide();
 							}

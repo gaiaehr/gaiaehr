@@ -168,7 +168,8 @@ Ext.define('App.view.patientfile.ArrivalLogWindow', {
     onPatientDlbClick:function(grid, record){
         var me = this,
             data = record.data;
-        app.setCurrPatient(data.pid, data.name, function(){
+	    // TODO: pass priority!
+        app.setCurrPatient(data.pid, data.name, '', function(){
             app.openPatientSummary();
         });
         me.close();

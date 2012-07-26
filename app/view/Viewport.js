@@ -341,16 +341,7 @@ Ext.define('App.view.Viewport', {
 			bodyStyle  : 'background: transparent',
 			margins    : '0 0 0 0',
 			items      : [
-				//				{
-				//					xtype : 'container',
-				//                    itemId: 'appLogo',
-				//                    width : window.innerWidth < this.minWidthToFullMode ? 35 : 200,
-				//					html  : '<img src="ui_app/app_logo.png" height="40" width="200" style="float:left">',
-				//					style : 'float:left',
-				//					border: false
-				//				},
-				{
-					xtype    : 'button',
+				me.patientButton = Ext.create('Ext.button.Button',{
 					scale    : 'large',
 					style    : 'float:left',
 					margin   : 0,
@@ -362,7 +353,7 @@ Ext.define('App.view.Viewport', {
 						afterrender: me.patientBtnRender
 					},
 					tpl      : me.patientBtn()
-				},
+				}),
 				{
 					xtype  : 'button',
 					scale  : 'large',
@@ -1111,7 +1102,7 @@ Ext.define('App.view.Viewport', {
 
 	patientUnset: function(callback) {
 		var me = this,
-			patientBtn = me.Header.getComponent('patientButton'),
+			patientBtn = me.patientButton,
 			patientOpenVisitsBtn = me.Header.getComponent('patientOpenVisits'),
 			patientCreateEncounterBtn = me.Header.getComponent('patientCreateEncounter'),
 			patientCloseCurrEncounterBtn = me.Header.getComponent('patientCloseCurrEncounter'),
@@ -1120,11 +1111,7 @@ Ext.define('App.view.Viewport', {
 		Patient.currPatientUnset(function() {
 			me.currEncounterId = null;
 			me.currPatient = null;
-			patientBtn.removeCls('Minimal');
-			patientBtn.removeCls('Delayed');
-			patientBtn.removeCls('Immediate');
-			patientBtn.removeCls('Expectant');
-			patientBtn.removeCls('Deceased');
+			me.patientButtonRemoveCls();
 			if(typeof callback == 'function') {
 				callback(true);
 			} else {
@@ -1138,6 +1125,14 @@ Ext.define('App.view.Viewport', {
 
 			}
 		});
+	},
+
+	patientButtonRemoveCls:function(){
+		this.patientButton.removeCls('Minimal');
+		this.patientButton.removeCls('Delayed');
+		this.patientButton.removeCls('Immediate');
+		this.patientButton.removeCls('Expectant');
+		this.patientButton.removeCls('Deceased');
 	},
 
 	showMiframe: function(btn) {

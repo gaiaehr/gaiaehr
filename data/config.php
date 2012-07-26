@@ -311,7 +311,7 @@ $API = array(
             'reviewAllMedicalWindowEncounter'=>array(
                'len'=>1
             ),
-            'getReviewMedical'=>array(
+            'getEncounterReviewByEid'=>array(
                'len'=>1
             )
         ),

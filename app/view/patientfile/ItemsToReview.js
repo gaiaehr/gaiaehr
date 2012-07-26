@@ -272,10 +272,12 @@ Ext.define('App.view.patientfile.ItemsToReview',{
         me.patientMedicationsStore.load({params: {pid: app.currPatient.pid}});
 
 
-        Medical.getReviewMedical({params:{eid:app.currEncounterId}},function(provider, response){
+        Medical.getEncounterReviewByEid(app.currEncounterId,function(provider, response){
 
-            say(provider);
-            say(response);
+            me.column4.getForm().setValues(response.result);
+            say(response.result.review_alcohol);
+            say(response.result.review_smoke);
+            say(response.result.review_pregnant);
         });
 
     },

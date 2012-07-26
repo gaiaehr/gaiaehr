@@ -600,9 +600,8 @@ class Medical
 	}
 
 
-    public function getReviewMedical(stdClass $params){
-        $data = get_object_vars($params);
-        $eid  = $data['eid'];
+    public function getEncounterReviewByEid($eid){
+
         $this->db->setSQL("
                             SELECT review_alcohol,
                                    review_smoke,

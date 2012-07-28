@@ -132,7 +132,8 @@ Ext.define('App.view.areas.FloorPlan', {
 								sourceEl: sourceEl,
 								repairXY: Ext.fly(sourceEl).getXY(),
 								ddel    : d,
-								patientData : panel.data.patientData
+								patientData : panel.data.patientData,
+								zone: panel
 					};
 				}
 			},
@@ -160,6 +161,9 @@ Ext.define('App.view.areas.FloorPlan', {
 				say(data);
 				panel.data = data;
 				panel.dragZone.unlock();
+				if(data.zone){
+					me.unSetZone(data.zone);
+				}
 				me.dropPatient(panel, data.patientData);
 			}
 		});
@@ -174,6 +178,7 @@ Ext.define('App.view.areas.FloorPlan', {
 
 		FloorPlans.setZonePatient(params,function(provider, response){
 			data.patientZoneId = response.result.data.patientZoneId;
+			me.msg('Sweet!', data.name + ' successfully moved.');
 			me.setZone(zone, data);
 		});
 	},
@@ -187,6 +192,7 @@ Ext.define('App.view.areas.FloorPlan', {
 	},
 
 	unSetZone:function(zone){
+		zone.dragZone.lock();
 		zone.pid = null;
 		zone.setTooltip('Patient Name: [empty]');
 		zone.removeCls(zone.priority);

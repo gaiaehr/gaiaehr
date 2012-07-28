@@ -7,7 +7,6 @@
 Ext.define('App.view.Viewport', {
 	extend  : 'Ext.Viewport',
 	requires: [
-
 		'App.model.administration.ActiveProblems',
 		'App.model.administration.DefaultDocuments',
 		'App.model.administration.DocumentsTemplates',
@@ -904,11 +903,6 @@ Ext.define('App.view.Viewport', {
 		}
 	},
 
-	sendPatientTo: function(btn) {
-		var area = btn.action;
-		alert('TODO: Patient will be sent to ' + area);
-	},
-
 	openPatientSummary: function() {
 		var me = this;
 
@@ -926,16 +920,6 @@ Ext.define('App.view.Viewport', {
 	stowPatientRecord: function() {
 		this.patientUnset();
 		this.navigateTo('panelDashboard');
-	},
-
-	openCurrEncounter: function() {
-		var me = this;
-
-		me.navigateTo('panelEncounter', function(success) {
-			if(success) {
-				//me.currCardCmp.openEncounter(eid);
-			}
-		});
 	},
 
 	openEncounter: function(eid) {
@@ -1240,7 +1224,6 @@ Ext.define('App.view.Viewport', {
 		panel.dragZone = Ext.create('Ext.dd.DragZone', panel.getEl(), {
 			ddGroup    : 'patientPoolAreas',
 			getDragData: function() {
-
 				var sourceEl = app.Header.getComponent('patientButton').el.dom, d;
 				if(app.currCardCmp != app.ppdz){
 					app.MainPanel.getLayout().setActiveItem(app.ppdz);

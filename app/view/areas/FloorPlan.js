@@ -25,7 +25,7 @@ Ext.define('App.view.areas.FloorPlan', {
 					labelWidth:40,
 					listeners:{
 						scope:me,
-						select:me.onZoneSelect
+						select:me.onFloorPlanSelect
 					}
 				}
 			]
@@ -46,7 +46,20 @@ Ext.define('App.view.areas.FloorPlan', {
 			y:record.data.y,
 			scope:me,
 			handler:me.onZoneClicked,
+
+			// --->
+			// Zone specific reference data
 			pid:null,
+			zoneId:record.data.id,
+			priority:null,
+			patientZoneId:null,
+//			tpl: Ext.create('Ext.XTemplate',
+//			'<div class="patient_btn  {priority}">',
+//			'<div class="patient_btn_info">',
+//			'<div class="patient_btn_name">{title}</div>',
+//			'</div>',
+//			'</div>'),
+			// <---
 			menu:[
 				form = Ext.create('Ext.form.Panel',{
 					bodyPadding:'5 5 0 5',
@@ -70,23 +83,24 @@ Ext.define('App.view.areas.FloorPlan', {
 			tooltip:'Patient Name: [empty]',
 			listeners:{
 				scope:me,
-				render:me.initializeDropZone
+				render:me.initializeZone
 //				menushow:me.afterMenuShow,
 //				menuhide:me.afterMenuHide
 			}
 		});
+		//zone.update({title:record.data.title});
 		me.floorPlan.add(zone);
 		form.getForm().loadRecord(record);
 	},
 
 	onZoneClicked:function(btn){
-		var form = btn.menu.items.items[0].getForm(),
-			values = form.getValues(),
-			rec = form.getRecord();
-		say(rec);
+//		var form = btn.menu.items.items[0].getForm(),
+//			values = form.getValues(),
+//			rec = form.getRecord();
+		say(btn);
 	},
 
-	onZoneSelect:function(field, record){
+	onFloorPlanSelect:function(field, record){
 		this.floorPlanId = record[0].data.id;
 		this.loadZones();
 	},
@@ -105,8 +119,33 @@ Ext.define('App.view.areas.FloorPlan', {
 		});
 	},
 
-	initializeDropZone: function(panel) {
+	initializeZone: function(panel) {
 		var me = this;
+		panel.dragZone = Ext.create('Ext.dd.DragZone', panel.getEl(), {
+			ddGroup    : 'patientPoolAreas',
+			getDragData: function(e) {
+				var sourceEl = panel.btnEl.dom, d;
+				if(sourceEl) {
+					d = sourceEl.cloneNode(true);
+					d.id = Ext.id();
+					return panel.dragData = {
+								sourceEl: sourceEl,
+								repairXY: Ext.fly(sourceEl).getXY(),
+								ddel    : d,
+								patientData : panel.data.patientData
+					};
+				}
+			},
+			getRepairXY: function(e) {
+				return this.dragData.repairXY;
+			},
+			b4MouseDown: function(e) {
+		        this.autoOffset(e.getPageX(), e.getPageY());
+		    }
+		});
+
+		panel.dragZone.lock();
+
 		panel.dropZone = Ext.create('Ext.dd.DropZone', panel.getEl(), {
 			ddGroup   : 'patientPoolAreas',
 			notifyOver: function(dd, e, data) {
@@ -117,14 +156,32 @@ Ext.define('App.view.areas.FloorPlan', {
 				}
 			},
 			notifyDrop: function(dd, e, data) {
-				me.setZone(panel, data.patientData)
+				say('notifyDrop');
+				say(data);
+				panel.data = data;
+				panel.dragZone.unlock();
+				me.dropPatient(panel, data.patientData);
 			}
+		});
+	},
+
+	dropPatient:function(zone, data){
+		var me = this,
+			params = {
+				zone_id:zone.zoneId,
+				pid:data.pid
+			};
+
+		FloorPlans.setZonePatient(params,function(provider, response){
+			data.patientZoneId = response.result.data.patientZoneId;
+			me.setZone(zone, data);
 		});
 	},
 
 	setZone:function(zone, data){
 		zone.pid = data.pid;
 		zone.priority = data.priority;
+		zone.patientZoneId = data.patientZoneId;
 		zone.setTooltip('Patient Name:' + data.name);
 		zone.addCls(data.priority);
 	},

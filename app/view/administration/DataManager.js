@@ -797,7 +797,6 @@ Ext.define('App.view.administration.DataManager', {
             me.store.add({code_type:me.code_type});
             me.dataManagerGrid.plugins[0].startEdit(0,0);
         }
-
     },
 
     beforeServiceEdit: function(context, e) {

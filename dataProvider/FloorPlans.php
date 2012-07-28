@@ -91,6 +91,26 @@ class FloorPlans
 	}
 
 
+
+	//******************************************************************************************************************
+	//******************************************************************************************************************
+
+	public function setZonePatient($params){
+		$params->uid = $_SESSION['user']['id'];
+		$params->time_in = Time::getLocalTime();
+		$data = get_object_vars($params);
+		unset($data['id']);
+		$this->db->setSQL($this->db->sqlBind($data, 'patient_zone', 'I'));
+		$this->db->execLog();
+		$params->patientZoneId = $this->db->lastInsertId;
+		return array('success' => true, 'data' => $params);
+	}
+
+	public function getZonePatientDataByZoneId($zoneId){
+
+	}
+
+
 	//******************************************************************************************************************
 	// private functions
 	//******************************************************************************************************************

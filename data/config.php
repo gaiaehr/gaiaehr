@@ -102,6 +102,9 @@ $API = array(
   			),
   			'updateFloorPlanZone'=>array(
   				'len'=>1
+  			),
+  			'setZonePatient'=>array(
+  				'len'=>1
   			)
   		)
   	),

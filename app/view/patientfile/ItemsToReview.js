@@ -275,9 +275,6 @@ Ext.define('App.view.patientfile.ItemsToReview',{
         Medical.getEncounterReviewByEid(app.currEncounterId,function(provider, response){
 
             me.column4.getForm().setValues(response.result);
-            say(response.result.review_alcohol);
-            say(response.result.review_smoke);
-            say(response.result.review_pregnant);
         });
 
     },

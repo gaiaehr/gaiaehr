@@ -176,7 +176,7 @@ Ext.define('App.view.areas.FloorPlan', {
 				pid:data.pid
 			};
 
-		FloorPlans.setZonePatient(params,function(provider, response){
+		FloorPlans.setPatientToZone(params,function(provider, response){
 			data.patientZoneId = response.result.data.patientZoneId;
 			me.msg('Sweet!', data.name + ' successfully moved.');
 			me.setZone(zone, data);

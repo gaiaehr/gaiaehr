@@ -46,7 +46,7 @@ Ext.define('App.view.administration.PreventiveCare', {
 			return val;
 		}
 
-		me.servicesGrid = Ext.create('App.classes.GridPanel', {
+		me.guidelineGrid = Ext.create('App.classes.GridPanel', {
 			region : 'center',
 			store  : me.store,
 			columns: [
@@ -59,8 +59,6 @@ Ext.define('App.view.administration.PreventiveCare', {
                             tooltip: 'Remove',
                             handler: function(grid, rowIndex, colIndex) {
                                 var rec = grid.getStore().getAt(rowIndex);
-                                //alert("Edit " + rec.get('firstname'));
-                                say(rec);
                             },
                             getClass:function(){
                                 return 'x-grid-icon-padding';
@@ -415,7 +413,7 @@ Ext.define('App.view.administration.PreventiveCare', {
 			}),
 
 
-			tbar: Ext.create('Ext.PagingToolbar', {
+			tbar: me.PagingToolbar = Ext.create('Ext.PagingToolbar', {
 				store      : me.store,
 				displayInfo: true,
 				emptyMsg   : "No Office Notes to display",
@@ -435,7 +433,7 @@ Ext.define('App.view.administration.PreventiveCare', {
 		}); // END GRID
 
 
-		me.pageBody = [ me.servicesGrid ];
+		me.pageBody = [ me.guidelineGrid ];
 		me.callParent(arguments);
 	}, // end of initComponent
 
@@ -449,9 +447,7 @@ Ext.define('App.view.administration.PreventiveCare', {
     },
 
     afterLabTimeEdit:function(editor, e){
-        say(editor);
-        say(e);
-        //e.record.commit();
+
     },
 
     beforeServiceEdit:function(context, e){
@@ -469,14 +465,14 @@ Ext.define('App.view.administration.PreventiveCare', {
 		//this.ImmuRelationStore.load();
 	},
 
-	onSearch: function(field) {
-		var me = this,
-			store = me.store;
-		me.dataQuery = field.getValue();
-
-		store.proxy.extraParams = {active: me.active, code_type: me.code_type, query: me.dataQuery};
-		me.store.load();
-	},
+//	onSearch: function(field) {
+//		var me = this,
+//			store = me.store;
+//		me.dataQuery = field.getValue();
+//
+//		store.proxy.extraParams = {active: me.active, code_type: me.code_type, query: me.dataQuery};
+//		me.store.load();
+//	},
 
 	onCodeTypeSelect: function(combo, record) {
 		var me = this;
@@ -484,15 +480,19 @@ Ext.define('App.view.administration.PreventiveCare', {
 		if(me.category_id=='dismiss'){
 
 		}else{
-		me.store.load({params:{category_id: me.category_id}});
+            me.PagingToolbar.moveFirst();
+//            me.store.proxy.pageParam = 1;
+//            me.store.proxy.startParam = 0;
+            me.store.proxy.extraParams = {category_id: me.category_id};
+		    me.store.load();
 		}
 	},
 
-	onNew: function(form, model) {
+//	onNew: function(form, model) {
 //		form.getForm().reset();
 //		var newModel = Ext.ModelManager.create({}, model);
 //		form.getForm().loadRecord(newModel);
-	},
+//	},
 
 	addActiveProblem:function(field, model){
 
@@ -536,7 +536,7 @@ Ext.define('App.view.administration.PreventiveCare', {
 
 
 	getSelectId:function(){
-		var row = this.servicesGrid.getSelectionModel().getLastSelected();
+		var row = this.guidelineGrid.getSelectionModel().getLastSelected();
 		return row.data.id;
 	},
 
@@ -547,8 +547,9 @@ Ext.define('App.view.administration.PreventiveCare', {
 	 * to call every this panel becomes active
 	 */
 	onActive: function(callback) {
-		this.servicesGrid.query('combobox')[0].setValue(this.category_id);
-		this.store.load({params:{category_id: this.category_id}});
+		this.guidelineGrid.query('combobox')[0].setValue(this.category_id);
+        this.store.proxy.extraParams = {category_id: this.category_id};
+		this.store.load();
 		callback(true);
 	}
 }); //ens servicesPage class

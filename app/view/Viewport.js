@@ -1266,7 +1266,8 @@ Ext.define('App.view.Viewport', {
 					var sourceEl = e.getTarget(panel.itemSelector, 10),
 						patientData = panel.getRecord(sourceEl).data;
 					this.removeFromGroup(this.ddGroup);
-					if(patientData.floorPlanId != null){
+					say(patientData);
+					if(patientData.floorPlanId != null && patientData.patientZoneId == null){
 						app.navigateTo('panelAreaFloorPlan');
 						this.ddGroup = 'patientPoolAreas';
 					}else{

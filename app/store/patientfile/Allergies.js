@@ -9,6 +9,6 @@
 Ext.define('App.store.patientfile.Allergies', {
 	extend: 'Ext.data.Store',
 	model     : 'App.model.patientfile.Allergies',
-	remoteSort: true,
+    remoteSort: false,
 	autoLoad  : false
 });

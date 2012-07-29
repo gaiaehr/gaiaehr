@@ -37,6 +37,8 @@ Ext.define('App.view.patientfile.Summary', {
         me.patientNotesStore = Ext.create('App.store.patientfile.Notes');
         me.patientRemindersStore = Ext.create('App.store.patientfile.Reminders');
 
+        me.patientsDismissedAlerts = Ext.create('App.store.patientfile.DismissedAlerts');
+
 	    me.encounterEventHistoryStore = Ext.create('App.store.patientfile.Encounters');
 	    me.patientAlertsStore = Ext.create('App.store.patientfile.MeaningfulUseAlert');
 
@@ -320,6 +322,111 @@ Ext.define('App.view.patientfile.Summary', {
 						    ]
 					        }
 	                    ]
+                    },
+                    {
+                        title     : 'Dismissed Preventive Care Alerts',
+                        xtype     :'grid',
+                        store: me.patientsDismissedAlerts,
+                        columns:[
+
+                            {
+                                header:'Description',
+                                dataIndex:'description'
+                            },
+                            {
+	                            xtype:'datecolumn',
+                                header:'Date',
+                                dataIndex:'date',
+                                format : 'Y-m-d'
+
+                            },
+                            {
+                                header:'Reason',
+                                dataIndex:'reason',
+                                flex:true
+
+                            },
+                            {
+                                header:'Observation',
+                                dataIndex:'observation',
+                                flex:true
+
+                            }
+                        ],
+
+                        plugins: Ext.create('App.classes.grid.RowFormEditing', {
+                            autoCancel  : false,
+                            errorSummary: false,
+                            clicksToEdit: 1,
+                            formItems: [
+                                {
+                                    title  : 'general',
+                                    xtype  : 'container',
+                                    padding: 10,
+                                    layout : 'vbox',
+                                    items  : [
+                                        {
+                                            /**
+                                             * Line one
+                                             */
+                                            xtype   : 'fieldcontainer',
+                                            layout  : 'hbox',
+                                            defaults: { margin: '0 10 5 0' },
+                                            items   : [
+                                                {
+                                                    xtype:'textfield',
+                                                    name:'reason',
+                                                    fieldLabel:'Reason',
+                                                    width:585,
+                                                    labelWidth: 70,
+                                                    action:'reason'
+                                                }
+
+                                            ]
+
+                                        },
+                                        {
+                                            /**
+                                             * Line two
+                                             */
+                                            xtype   : 'fieldcontainer',
+                                            layout  : 'hbox',
+                                            defaults: { margin: '0 10 5 0' },
+                                            items   : [
+
+                                                {
+                                                    xtype:'textfield',
+                                                    fieldLabel: 'Observation',
+                                                    name      : 'observation',
+                                                    width     : 250,
+                                                    labelWidth: 70,
+                                                    action:'observation'
+                                                },
+                                                {
+                                                    fieldLabel: 'Date',
+                                                    xtype:'datefield',
+                                                    action:'date',
+                                                    width     : 200,
+                                                    labelWidth: 40,
+                                                    format    : 'Y-m-d',
+                                                    name      : 'date'
+
+                                                },
+                                                {
+                                                    xtype:'checkboxfield',
+                                                    name : 'dismiss',
+                                                    fieldLabel : 'Dismiss Alert?'
+
+                                                }
+
+                                            ]
+
+                                        }
+                                    ]
+                                }
+
+                            ]
+                        })
                     }
                 ]
             },
@@ -415,7 +522,7 @@ Ext.define('App.view.patientfile.Summary', {
                             {
 
                                 header   : 'Name',
-                                dataIndex: 'code_text',
+                                dataIndex: 'code',
                                 flex     : 1
                             },
                             {
@@ -442,12 +549,6 @@ Ext.define('App.view.patientfile.Summary', {
                                 dataIndex: 'title',
                                 flex     : 1
 
-                            },
-                            {
-                                text     : 'Alert',
-                                width    : 55,
-                                dataIndex: 'alert',
-                                renderer : me.boolRenderer
                             }
 
                         ]
@@ -462,14 +563,8 @@ Ext.define('App.view.patientfile.Summary', {
 
                         columns: [
                             {
-                                dataIndex: 'title',
+                                dataIndex: 'surgery',
                                 flex     : 1
-                            },
-                            {
-                                text     : 'Alert',
-                                width    : 55,
-                                dataIndex: 'alert',
-                                renderer : me.boolRenderer
                             }
                         ]
                     },
@@ -764,6 +859,13 @@ Ext.define('App.view.patientfile.Summary', {
         });
     },
 
+    onRemoveAlerts:function(grid, rowIndex, colIndex){
+		var me = this,
+            store = grid.getStore(),
+			record = store.getAt(rowIndex);
+        store.remove(record);
+	},
+
 
     readOnlyFields: function(fields) {
         for(var i = 0; i < fields.items.length; i++){
@@ -828,6 +930,7 @@ Ext.define('App.view.patientfile.Summary', {
 	        me.patientDocumentsStore.load({params: {pid: me.pid}});
 
 	        me.encounterEventHistoryStore.load({params: {pid: me.pid}});
+	        me.patientsDismissedAlerts.load({params: {pid: me.pid}});
 
             me.verifyPatientRequiredInfo();
 

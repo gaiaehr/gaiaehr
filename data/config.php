@@ -630,6 +630,12 @@ $API = array(
             ),
             'getPreventiveCareDismissPatientByEncounterID'=>array(
                 'len'=>1
+            ),
+            'getPreventiveCareDismissedAlertsByPid'=>array(
+                'len'=>1
+            ),
+            'updatePreventiveCareDismissedAlertsByPid'=>array(
+                'len'=>1
             )
         )
     ),

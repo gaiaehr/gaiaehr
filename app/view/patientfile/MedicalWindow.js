@@ -512,7 +512,7 @@ Ext.define('App.view.patientfile.MedicalWindow', {
 
                     {
                         header   : 'Problem',
-                        width    : 100,
+                        flex     : 1,
                         dataIndex: 'code'
                     },
                     {
@@ -525,7 +525,7 @@ Ext.define('App.view.patientfile.MedicalWindow', {
                     {
                         xtype:'datecolumn',
                         header   : 'End Date',
-                        flex     : 1,
+                        width    : 100,
                         format : 'Y-m-d',
                         dataIndex: 'end_date'
                     }
@@ -672,6 +672,7 @@ Ext.define('App.view.patientfile.MedicalWindow', {
                     {
                         header   : 'Surgery',
                         width    : 100,
+                        flex: 1,
                         dataIndex: 'surgery'
                     },
                     {
@@ -705,7 +706,8 @@ Ext.define('App.view.patientfile.MedicalWindow', {
                                         {
                                             fieldLabel     : 'Surgery',
                                             name           : 'surgery',
-                                            width          : 225,
+                                            hideLabel      : false,
+                                            width          : 510,
                                             labelWidth     : 70,
                                             xtype          : 'surgerieslivetsearch',
                                             itemId         : 'surgery',
@@ -730,12 +732,6 @@ Ext.define('App.view.patientfile.MedicalWindow', {
 	                                        format    : 'Y-m-d',
                                             name      : 'date'
 
-                                        },
-                                        {
-                                            fieldLabel: 'Outcome',
-                                            xtype     : 'mitos.outcome2combo',
-                                            name      : 'outcome'
-
                                         }
 
                                     ]
@@ -752,19 +748,42 @@ Ext.define('App.view.patientfile.MedicalWindow', {
                                         {
                                             fieldLabel: 'Notes',
                                             xtype     : 'textfield',
-                                            width     : 500,
+                                            width     : 510,
+                                            labelWidth     : 70,
                                             name      : 'notes'
 
                                         },
                                         {
-                                            xtype     : 'textfield',
-                                            width     : 260,
-                                            fieldLabel: 'Referred by',
-                                            name      : 'referred_by'
+                                            fieldLabel: 'Outcome',
+                                            xtype     : 'mitos.outcome2combo',
+                                            width     : 200,
+                                            labelWidth: 80,
+                                            name      : 'outcome'
+
                                         }
+
 
                                     ]
 
+                                },
+                                {
+                                    /**
+                                     * Line three
+                                     */
+                                    xtype   : 'fieldcontainer',
+                                    layout  : 'hbox',
+                                    defaults: { margin: '0 10 5 0' },
+                                    items   : [
+                                        {
+                                           xtype     : 'textfield',
+                                           width     : 260,
+                                            labelWidth     : 70,
+
+                                           fieldLabel: 'Referred by',
+                                           name      : 'referred_by'
+                                       }
+
+                                    ]
                                 }
                             ]
                         }
@@ -928,7 +947,7 @@ Ext.define('App.view.patientfile.MedicalWindow', {
                 columns: [
                     {
                         header   : 'Medication',
-                        width    : 100,
+                        flex     : 1,
                         dataIndex: 'medication'
                     },
                     {
@@ -941,7 +960,7 @@ Ext.define('App.view.patientfile.MedicalWindow', {
                     {
                         xtype:'datecolumn',
                         header   : 'End Date',
-                        flex     : 1,
+                        width    : 100,
                         format : 'Y-m-d',
                         dataIndex: 'end_date'
                     }

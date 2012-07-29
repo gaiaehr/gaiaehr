@@ -66,7 +66,7 @@ Ext.define('App.view.administration.PreventiveCare', {
                         }
                     ]
                 },
-				{ width: 100, header: 'Type', sortable: true, dataIndex: 'code_type', renderer: code_type },
+
 				{ flex: 1, header: 'Description', sortable: true, dataIndex: 'description' },
 				{ width: 100, header: 'Age start', sortable: true, dataIndex: 'age_start' },
 				{ width: 100, header: 'Age End', sortable: true, dataIndex: 'age_end' },

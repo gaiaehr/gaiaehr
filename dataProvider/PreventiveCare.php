@@ -47,14 +47,10 @@ class PreventiveCare
 	 */
 	public function getGuideLinesByCategory(stdClass $params){
         $records = array();
-        if($params->category_id == 'dismiss'){
-            $this->db->setSQL("SELECT *
-                           FROM preventive_care_inactive_patient");
-            $records =$this->db->fetchRecords(PDO::FETCH_CLASS);
-        }else{
-                $this->db->setSQL("SELECT * FROM preventive_care_guidelines WHERE category_id = '$params->category_id'");
-              $records =$this->db->fetchRecords(PDO::FETCH_CLASS);
-        }
+
+        $this->db->setSQL("SELECT * FROM preventive_care_guidelines WHERE category_id = '$params->category_id'");
+        $records =$this->db->fetchRecords(PDO::FETCH_CLASS);
+
         $total   = count($records);
         $records = array_slice($records,$params->start,$params->limit);
         return array('totals'=> $total,
@@ -552,6 +548,33 @@ class PreventiveCare
         $this->db->setSQL("SELECT * FROM preventive_care_guidelines WHERE id = '$id'");
         return $this->db->fetchRecord();
     }
+
+
+    public function getPreventiveCareDismissedAlertsByPid(stdClass $params){
+        $this->db->setSQL("SELECT pcig.id,
+                                  pcig.preventive_care_id,
+                                  pcig.reason,
+                                  pcig.dismiss,
+                                  pcig.date,
+                                  pcig.observation,
+                                  pcg.description
+                           FROM preventive_care_inactive_patient as pcig
+                           LEFT JOIN preventive_care_guidelines  as pcg on pcig.preventive_care_id = pcg.id
+                           WHERE pcig.pid = '$params->pid'
+                           AND  pcig.dismiss = 1");
+        return $this->db->fetchRecords();
+    }
+
+
+    public function updatePreventiveCareDismissedAlertsByPid(stdClass $params){
+        $data = get_object_vars($params);
+        unset($data['id'],$data['description']);
+        $this->db->setSQL($this->db->sqlBind($data, 'preventive_care_inactive_patient', 'U', array('id'=>$params->id)));
+        $this->db->execLog();
+        return $params;
+    }
+
+
 
 
 }

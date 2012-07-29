@@ -95,7 +95,7 @@ class FloorPlans
 	//******************************************************************************************************************
 	//******************************************************************************************************************
 
-	public function setZonePatient($params){
+	public function setPatientToZone($params){
 		$params->uid = $_SESSION['user']['id'];
 		$params->time_in = Time::getLocalTime();
 		$data = get_object_vars($params);
@@ -104,6 +104,12 @@ class FloorPlans
 		$this->db->execLog();
 		$params->patientZoneId = $this->db->lastInsertId;
 		return array('success' => true, 'data' => $params);
+	}
+
+	public function unSetPatientZoneByZoneId($zone_id){
+		$data['time_out'] = Time::getLocalTime();
+		$this->db->setSQL($this->db->sqlBind($data, 'patient_zone', 'u', array('id' => $zone_id)));
+		$this->db->execLog();
 	}
 
 	public function getZonePatientDataByZoneId($zoneId){

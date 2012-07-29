@@ -62,9 +62,10 @@ class FormLayoutEngine
 	function getFields(stdClass $params)
 	{
 		/**
-		 * define $itmes as an array to pushh all the $item into.
+		 * define $items as an array to push all the $item into.
 		 */
 		$items = array();
+		$items2 = array();
 		/**
 		 * get the form parent fields
 		 */
@@ -96,6 +97,10 @@ class FormLayoutEngine
 				$item = $this->getComboDefaults($item);
 				$item['store'] = $this->getStore($item['list_id']);
 			}
+
+
+
+
 			/**
 			 * now lets get the the child items using the parent item ID parameter
 			 */
@@ -113,13 +118,34 @@ class FormLayoutEngine
 			 */
 			if($item['items'] == null) unset($item['items']);
 			/**
+			 * push this item into the $items Array
+			 */
+
+			/**
+			 * demographics Tab Panel
+ 			 */
+			if($item['xtype'] == 'fieldset' && ($params->formToRender == 'Demographics' || $params->formToRender == 1)) {
+				$item['xtype'] = 'panel';
+				$item['bodyPadding'] = 10;
+				if($item['title'] == 'Primary Insurance' || $item['title'] == 'Secondary Insurance' || $item['title'] == 'Tertiary Insurance' ){
+					array_push($items2, $item);
+				}else{
+					array_push($items, $item);
+				}
+			}
+			/**
 			 * unset the stuff that are not properties
 			 */
 			unset($item['id'], $item['form_id'], $item['item_of'], $item['pos']);
-			/**
-			 * push this item into the $items Array
-			 */
-			array_push($items, $item);
+
+//			if($item['xtype'] == 'fieldset' && ($params->formToRender == 'Demographics' || $params->formToRender == 1) && ($item['title'] == 'Primary Insurance' || $item['title'] == 'Secondary Insurance' )){
+//				array_push($items2, $item);
+//			}else{
+//				array_push($items, $item);
+//			}
+
+
+
 		}
 		/**
 		 * <p>In this next block of code we are going to clean the json output using a reg expression
@@ -166,6 +192,14 @@ class FormLayoutEngine
 		 * we do it because GaiaEHR user single quotes to define strings.</p>
 		 */
 		$rawStr     = json_encode($items);
+		$rawStr2     = json_encode($items2);
+
+		if($params->formToRender == 'Demographics' || $params->formToRender == 1){
+			$rawStr = "Ext.create('Ext.container.Container',{layout:{type:'vbox',align:'stretch'},items:[Ext.create('Ext.tab.Panel',{height:240,defaults:{autoScroll:true},items:$rawStr}),";
+			$rawStr .= "Ext.create('Ext.tab.Panel',{flex:1,defaults:{autoScroll:true},items:$rawStr2})]})";
+		}
+
+
 		$regex      = '("\w*?":|"Ext\.create|\)"\})';
 		$cleanItems = array();
 		preg_match_all($regex, $rawStr, $rawItems);

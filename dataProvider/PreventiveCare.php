@@ -55,7 +55,10 @@ class PreventiveCare
                 $this->db->setSQL("SELECT * FROM preventive_care_guidelines WHERE category_id = '$params->category_id'");
               $records =$this->db->fetchRecords(PDO::FETCH_CLASS);
         }
-      return $records ;
+        $total   = count($records);
+        $records = array_slice($records,$params->start,$params->limit);
+        return array('totals'=> $total,
+      		             'rows'  => $records); ;
 	}
 	/**
 	 * update preventive care guideline by category id

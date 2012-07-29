@@ -167,8 +167,7 @@ class Medical
 	{
 		$data = get_object_vars($params);
 		unset($data['id'],$data['alert']);
-		$data['begin_date']  = $this->parseDate($data['begin_date']);
-		$data['end_date']    = $this->parseDate($data['end_date']);
+		$data['date']  = $this->parseDate($data['date']);
 		$data['create_date'] = $this->parseDate($data['create_date']);
 		$this->db->setSQL($this->db->sqlBind($data, 'patient_surgery', 'I'));
 		$this->db->execLog();
@@ -181,8 +180,7 @@ class Medical
 		$data = get_object_vars($params);
 		$id = $data['id'];
 		unset($data['id'],$data['alert']);
-		$data['begin_date']  = $this->parseDate($data['begin_date']);
-		$data['end_date']    = $this->parseDate($data['end_date']);
+		$data['date']  = $this->parseDate($data['date']);
 		$data['create_date'] = $this->parseDate($data['create_date']);
 		$this->db->setSQL($this->db->sqlBind($data, "patient_surgery", "U", "id='$id'"));
 		$this->db->execLog();
@@ -598,6 +596,19 @@ class Medical
 		return array('totals'=> $total,
 		             'rows'  => $records);
 	}
+
+    public function getSurgeriesLiveSearch(stdClass $params)
+   	{
+   		$this->db->setSQL("SELECT *
+   							FROM  surgeries
+   							WHERE surgery      LIKE'$params->query%'
+   							  OR type         LIKE'$params->query%'");
+           $records =$this->db->fetchRecords(PDO::FETCH_ASSOC);
+   		$total = count($records);
+   		$records  = array_slice($records, $params->start, $params->limit);
+   		return array('totals'=> $total,
+   		             'rows'  => $records);
+   	}
 
 
     public function getEncounterReviewByEid($eid){

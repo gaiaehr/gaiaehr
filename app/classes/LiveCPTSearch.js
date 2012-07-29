@@ -61,7 +61,7 @@ Ext.define('App.classes.LiveCPTSearch', {
             displayField: 'code_text',
             valueField  : 'code',
             emptyText   : 'Search...',
-            typeAhead   : false,
+            typeAhead   : true,
             minChars    : 1,
             anchor      : '100%',
             listConfig  : {

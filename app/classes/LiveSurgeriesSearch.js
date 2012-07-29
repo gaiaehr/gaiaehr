@@ -8,27 +8,26 @@
  *
  * @namespace Patient.patientLiveSearch
  */
-Ext.define('App.classes.LiveImmunizationSearch', {
+Ext.define('App.classes.LiveSurgeriesSearch', {
 	extend       : 'Ext.form.ComboBox',
-	alias        : 'widget.immunizationlivesearch',
+	alias        : 'widget.surgerieslivetsearch',
 	hideLabel    : true,
 
 	initComponent: function() {
 		var me = this;
 
-		Ext.define('liveImmunizationSearchModel', {
+		Ext.define('liveSurgeriesSearchModel', {
 			extend: 'Ext.data.Model',
 			fields: [
 				{name: 'id'},
-				{name: 'code'},
-				{name: 'code_text'},
-				{name: 'code_text_short'}
-
+				{name: 'type'},
+				{name: 'type_num'},
+				{name: 'surgery'}
 			],
 			proxy : {
 				type  : 'direct',
 				api   : {
-					read: Medical.getImmunizationLiveSearch
+					read: Medical.getSurgeriesLiveSearch
 				},
 				reader: {
 					totalProperty: 'totals',
@@ -38,16 +37,16 @@ Ext.define('App.classes.LiveImmunizationSearch', {
 		});
 
 		me.store = Ext.create('Ext.data.Store', {
-			model   : 'liveImmunizationSearchModel',
+			model   : 'liveSurgeriesSearchModel',
 			pageSize: 10,
 			autoLoad: false
 		});
 
 		Ext.apply(this, {
 			store       : me.store,
-			displayField: 'code_text_short',
-			valueField  : 'code_text_short',
-			emptyText   : 'Search for a Immunizations...',
+			displayField: 'surgery',
+			valueField  : 'surgery',
+			emptyText   : 'Search for a Surgery...',
 			typeAhead   : true,
 			minChars    : 1,
 			listConfig  : {
@@ -57,7 +56,7 @@ Ext.define('App.classes.LiveImmunizationSearch', {
 				// Custom rendering template for each item
 				//---------------------------------------------------------------------
 				getInnerTpl: function() {
-					return '<div class="search-item"><h3>{code}<span style="font-weight: normal"> ({code_text}) </span></div>';
+					return '<div class="search-item"><h3>{surgery}<span style="font-weight: normal"> ({type}) </span></h3></div>';
 				}
 			},
 			pageSize    : 10

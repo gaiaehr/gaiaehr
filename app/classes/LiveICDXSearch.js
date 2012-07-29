@@ -54,7 +54,7 @@ Ext.define('App.classes.LiveICDXSearch', {
 			displayField: 'code_text',
 			valueField  : 'code',
 			emptyText   : me.emptyText,
-			typeAhead   : false,
+			typeAhead   : true,
 			minChars    : 1,
             anchor      : '100%',
 			listConfig  : {

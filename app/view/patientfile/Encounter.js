@@ -565,7 +565,7 @@ Ext.define('App.view.patientfile.Encounter', {
 				},
 				'-',
 				{
-					text  : 'Surgery ',
+					text  : 'Surgeries ',
 					action: 'surgery'
 				},
 				'-',

@@ -12,6 +12,6 @@ Ext.define('App.store.administration.ImmunizationRelations', {
 	extend: 'Ext.data.Store',
     autoLoad  : false,
 	autoSync  : true,
-	remoteSort: true
+	remoteSort: false
 
 });

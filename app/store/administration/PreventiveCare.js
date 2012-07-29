@@ -28,6 +28,6 @@ Ext.define('App.store.administration.PreventiveCare', {
 		}
 	},
     autoSync  : true,
-	remoteSort: true,
+	remoteSort: false,
 	autoLoad  : false
 });

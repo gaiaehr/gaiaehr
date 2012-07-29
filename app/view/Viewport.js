@@ -109,6 +109,7 @@ Ext.define('App.view.Viewport', {
 		'App.classes.LiveMedicationSearch',
 		'App.classes.LiveLabsSearch',
 		'App.classes.LivePatientSearch',
+		'App.classes.LiveSurgeriesSearch',
 		'App.classes.ManagedIframe',
 		'App.classes.NodeDisabled',
 		'App.classes.PhotoIdWindow',

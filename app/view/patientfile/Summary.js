@@ -454,7 +454,7 @@ Ext.define('App.view.patientfile.Summary', {
 
                     },
                     {
-                        title      : 'Surgery',
+                        title      : 'Surgeries',
                         itemId     : 'SurgeryPanel',
                         hideHeaders: true,
                         xtype      : 'grid',

@@ -323,6 +323,9 @@ $API = array(
             ),
             'getEncounterReviewByEid'=>array(
                'len'=>1
+            ),
+            'getSurgeriesLiveSearch'=>array(
+               'len'=>1
             )
         ),
 

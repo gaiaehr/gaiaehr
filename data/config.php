@@ -105,6 +105,9 @@ $API = array(
   			),
   			'setPatientToZone'=>array(
   				'len'=>1
+  			),
+  			'unSetPatientZoneByZoneId'=>array(
+  				'len'=>1
   			)
   		)
   	),

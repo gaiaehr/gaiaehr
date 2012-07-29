@@ -18,6 +18,7 @@ Ext.define('App.model.poolarea.PoolArea', {
 		{name: 'floorPlanId', type: 'int'},
 		{name: 'floorPlanRequireZone', type: 'bool'},
 		{name: 'zoneId', type: 'int'},
+		{name: 'patientZoneId', type: 'int'},
 		{name: 'priority', type: 'string'}
 	],
 	proxy    : {

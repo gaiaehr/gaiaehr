@@ -157,13 +157,14 @@ Ext.define('App.view.areas.FloorPlan', {
 				}
 			},
 			notifyDrop: function(dd, e, data) {
-				say('notifyDrop');
-				say(data);
+//				say('notifyDrop');
+//				say(data);
 				panel.data = data;
 				panel.dragZone.unlock();
 				if(data.zone){
-                    say(data);
-					me.unSetZone(data.zone);
+					FloorPlans.unSetPatientZoneByZoneId(data.patientData.patientZoneId, function(){
+						me.unSetZone(data.zone);
+					});
 				}
 				me.dropPatient(panel, data.patientData);
 			}
@@ -176,7 +177,6 @@ Ext.define('App.view.areas.FloorPlan', {
 				zone_id:zone.zoneId,
 				pid:data.pid
 			};
-
 		FloorPlans.setPatientToZone(params,function(provider, response){
 			data.patientZoneId = response.result.data.patientZoneId;
 			me.msg('Sweet!', data.name + ' successfully moved.');

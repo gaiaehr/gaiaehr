@@ -117,13 +117,16 @@ class FormLayoutEngine
 			 * this way we make sure the we done return a items property
 			 */
 			if($item['items'] == null) unset($item['items']);
+
+
+			/**
+			 * unset the stuff that are not properties
+			 */
+			unset($item['id'], $item['form_id'], $item['item_of'], $item['pos']);
+
 			/**
 			 * push this item into the $items Array
 			 */
-
-			/**
-			 * demographics Tab Panel
- 			 */
 			if($item['xtype'] == 'fieldset' && ($params->formToRender == 'Demographics' || $params->formToRender == 1)) {
 				$item['xtype'] = 'panel';
 				$item['bodyPadding'] = 10;
@@ -132,19 +135,9 @@ class FormLayoutEngine
 				}else{
 					array_push($items, $item);
 				}
+			}else{
+				array_push($items, $item);
 			}
-			/**
-			 * unset the stuff that are not properties
-			 */
-			unset($item['id'], $item['form_id'], $item['item_of'], $item['pos']);
-
-//			if($item['xtype'] == 'fieldset' && ($params->formToRender == 'Demographics' || $params->formToRender == 1) && ($item['title'] == 'Primary Insurance' || $item['title'] == 'Secondary Insurance' )){
-//				array_push($items2, $item);
-//			}else{
-//				array_push($items, $item);
-//			}
-
-
 
 		}
 		/**
@@ -192,9 +185,9 @@ class FormLayoutEngine
 		 * we do it because GaiaEHR user single quotes to define strings.</p>
 		 */
 		$rawStr     = json_encode($items);
-		$rawStr2     = json_encode($items2);
 
 		if($params->formToRender == 'Demographics' || $params->formToRender == 1){
+			$rawStr2     = json_encode($items2);
 			$rawStr = "Ext.create('Ext.container.Container',{layout:{type:'vbox',align:'stretch'},items:[Ext.create('Ext.tab.Panel',{height:240,defaults:{autoScroll:true},items:$rawStr}),";
 			$rawStr .= "Ext.create('Ext.tab.Panel',{flex:1,defaults:{autoScroll:true},items:$rawStr2})]})";
 		}

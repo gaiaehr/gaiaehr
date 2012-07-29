@@ -729,7 +729,7 @@ Ext.define('App.view.patientfile.Summary', {
         this.getFormItems(demoFormPanel, 'Demographics', function(success) {
             if(success) {
 
-                who = demoFormPanel.query('fieldset[title="Who"]')[0];
+                who = demoFormPanel.query('panel[title="Who"]')[0];
 
                 imgCt = Ext.create('Ext.container.Container',{
                     action :'patientImgs',

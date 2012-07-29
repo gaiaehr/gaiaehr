@@ -54,8 +54,8 @@ Ext.define('App.view.Viewport', {
 		'App.model.patientfile.VectorGraph',
 		'App.model.patientfile.VisitPayment',
 		'App.model.patientfile.Vitals',
-		'App.model.poolarea.PoolArea',
-		'App.model.poolarea.PoolDropAreas',
+		'App.model.areas.PoolArea',
+		'App.model.areas.PoolDropAreas',
 
 		'App.store.administration.ActiveProblems',
 		'App.store.administration.DefaultDocuments',
@@ -104,7 +104,7 @@ Ext.define('App.view.Viewport', {
 		'App.store.patientfile.VectorGraph',
 		'App.store.patientfile.VisitPayment',
 		'App.store.patientfile.Vitals',
-		'App.store.poolarea.PoolArea',
+		'App.store.areas.PoolArea',
 
 		'App.classes.LiveCPTSearch',
 		'App.classes.LiveImmunizationSearch',
@@ -206,7 +206,9 @@ Ext.define('App.view.Viewport', {
 		'App.view.dashboard.Dashboard',
 		'App.view.calendar.Calendar',
 		'App.view.messages.Messages',
+
 		'App.view.areas.FloorPlan',
+		'App.view.areas.PatientPoolDropZone',
 
 		'App.view.patientfile.ItemsToReview',
 		'App.view.patientfile.EncounterDocumentsGrid',
@@ -285,7 +287,7 @@ Ext.define('App.view.Viewport', {
 		/**
 		 * This store will handle the patient pool area
 		 */
-		me.patientPoolStore = Ext.create('App.store.poolarea.PoolArea');
+		me.patientPoolStore = Ext.create('App.store.areas.PoolArea');
 
 		if(me.currency == '$') {
 			me.icoMoney = 'icoDollar';
@@ -677,7 +679,7 @@ Ext.define('App.view.Viewport', {
 				Ext.create('App.view.miscellaneous.OfficeNotes'),
 				Ext.create('App.view.miscellaneous.Websearch'),
 
-				me.ppdz = Ext.create('App.view.PatientPoolDropZone')
+				me.ppdz = Ext.create('App.view.areas.PatientPoolDropZone')
 
 			],
 			listeners: {

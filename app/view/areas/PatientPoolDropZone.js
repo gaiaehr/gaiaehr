@@ -5,7 +5,7 @@
  * Time: 9:09 PM
  * To change this template use File | Settings | File Templates.
  */
-Ext.define('App.view.PatientPoolDropZone', {
+Ext.define('App.view.areas.PatientPoolDropZone', {
 	id       : 'panelPoolArea',
 	extend   : 'App.classes.RenderPanel',
 	pageTitle: 'Patient Pool Areas',
@@ -53,7 +53,7 @@ Ext.define('App.view.PatientPoolDropZone', {
 		PoolArea.getActivePoolAreas(function(provider, response) {
 			Ext.each(response.result, function(area) {
 				var store = Ext.create('Ext.data.Store', {
-					model: 'App.model.poolarea.PoolDropAreas',
+					model: 'App.model.areas.PoolDropAreas',
 					proxy: {
 						type       : 'direct',
 						api        : {

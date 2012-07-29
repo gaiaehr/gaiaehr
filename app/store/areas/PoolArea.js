@@ -5,9 +5,9 @@
  * Date: 2/18/12
  * Time: 11:11 PM
  */
-Ext.define('App.store.poolarea.PoolArea', {
+Ext.define('App.store.areas.PoolArea', {
 	extend: 'Ext.data.Store',
-	requires: ['App.model.poolarea.PoolArea'],
+	requires: ['App.model.areas.PoolArea'],
 	pageSize: 10,
-	model   : 'App.model.poolarea.PoolArea'
+	model   : 'App.model.areas.PoolArea'
 });

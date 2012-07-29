@@ -6,7 +6,7 @@
  * Time: 11:09 PM
  * @namespace Patient.getPatientsByPoolArea
  */
-Ext.define('App.model.poolarea.PoolDropAreas', {
+Ext.define('App.model.areas.PoolDropAreas', {
 	extend   : 'Ext.data.Model',
 	fields   : [
 		{name: 'name', type: 'string'},

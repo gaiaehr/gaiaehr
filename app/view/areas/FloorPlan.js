@@ -162,6 +162,7 @@ Ext.define('App.view.areas.FloorPlan', {
 				panel.data = data;
 				panel.dragZone.unlock();
 				if(data.zone){
+                    say(data);
 					me.unSetZone(data.zone);
 				}
 				me.dropPatient(panel, data.patientData);

@@ -573,21 +573,6 @@ Ext.define('App.view.patientfile.Summary', {
                         html : 'Panel content!'
 
                     }
-                ],
-                dockedItems:[
-                    {
-                        xtype:'toolbar',
-                        style:'background:none',
-                        items:[
-                            '->',
-                            {
-                                text:'Patient Picture',
-	                            handler: function() {
-                                    me.getPhotoIdWindow();
-                                }
-                            }
-                        ]
-                    }
                 ]
             }
         ];
@@ -736,22 +721,42 @@ Ext.define('App.view.patientfile.Summary', {
 	            secondaryInsurancePanel = insurancePanel.items.items[1];
 	            tertiaryInsurancePanel = insurancePanel.items.items[2];
 
-	            whoPanel.insert(0,Ext.create('Ext.container.Container',{
+	            whoPanel.insert(0,Ext.create('Ext.panel.Panel',{
                     action :'patientImgs',
                     layout:'hbox',
                     style:'float:right',
-                    height:100,
-                    width:220,
+		            bodyPadding: 5,
+                    height:160,
+                    width:255,
                     items:[
                         me.patientImg = Ext.create('Ext.container.Container', {
-                            html: '<img src="ui_icons/patientPhotoId.jpg" height="100" width="100" />',
+                            html: '<img src="ui_icons/patientPhotoId.jpg" height="119" width="119" />',
                             margin:'0 5 0 0'
                         }),
                         me.patientQRcode = Ext.create('Ext.container.Container', {
-                            html: '<img src="ui_icons/patientDataQrCode.png" height="100" width="100" />',
+                            html: '<img src="ui_icons/patientDataQrCode.png" height="119" width="119" />',
                             margin: 0
                         })
-                    ]
+                    ],
+		            bbar:[
+			            '-',
+			            {
+				            text:'Take Picture',
+				            scope:me,
+				            handler: me.getPhotoIdWindow
+			            },
+			            '-',
+			            '->',
+			            '-',
+			            {
+				            text:'Print QRCode',
+				            scope:me,
+				            handler: function(){
+					            window.printQRCode(app.currPatient.pid);
+				            }
+			            },
+			            '-'
+		            ]
                 }));
 
 	            primaryInsurancePanel.insert(0,Ext.create('Ext.panel.Panel',{
@@ -765,12 +770,14 @@ Ext.define('App.view.patientfile.Summary', {
                     ],
 		            bbar:[
 			            '->',
+			            '-',
 			            {
 				            text:'Upload',
 				            action :'primaryInsurance',
 				            scope:me,
                             handler:me.uploadInsurance
-			            }
+			            },
+			            '-'
 		            ]
                 }));
 
@@ -785,18 +792,20 @@ Ext.define('App.view.patientfile.Summary', {
                     ],
 		            bbar:[
 			            '->',
+			            '-',
 			            {
 				            text:'Upload',
 				            action :'secondaryInsurance',
 				            scope:me,
                             handler:me.uploadInsurance
-			            }
+			            },
+			            '-'
 		            ]
                 }));
 
 	            tertiaryInsurancePanel.insert(0,Ext.create('Ext.panel.Panel',{
                     style:'float:right',
-                    height:182,
+                    height:160,
                     width:255,
                     items:[
                         me.tertiaryInsuranceImg = Ext.create('Ext.container.Container', {
@@ -805,12 +814,14 @@ Ext.define('App.view.patientfile.Summary', {
                     ],
 		            bbar:[
 			            '->',
+			            '-',
 			            {
 				            text:'Upload',
 				            action :'tertiaryInsurance',
 				            scope:me,
 				            handler:me.uploadInsurance
-			            }
+			            },
+			            '-'
 		            ]
                 }));
 
@@ -836,7 +847,7 @@ Ext.define('App.view.patientfile.Summary', {
         var me = this;
         panel.getComponent('ImmuPanel').header.add({
             xtype  : 'button',
-            text   : 'update',
+            text   : 'Details',
             action : 'immunization',
             scope  : me,
             handler: me.medicalWin
@@ -845,7 +856,7 @@ Ext.define('App.view.patientfile.Summary', {
         });
         panel.getComponent('MedicationsPanel').header.add({
             xtype  : 'button',
-            text   : 'update',
+            text   : 'Details',
             action : 'medications',
             scope  : me,
             handler: me.medicalWin
@@ -854,28 +865,28 @@ Ext.define('App.view.patientfile.Summary', {
         });
         panel.getComponent('AllergiesPanel').header.add({
             xtype  : 'button',
-            text   : 'update',
+            text   : 'Detail',
             action : 'allergies',
             scope  : me,
             handler: me.medicalWin
         });
         panel.getComponent('IssuesPanel').header.add({
             xtype  : 'button',
-            text   : 'update',
+            text   : 'Details',
             action : 'issues',
             scope  : me,
             handler: me.medicalWin
         });
         panel.getComponent('DentalPanel').header.add({
             xtype  : 'button',
-            text   : 'update',
+            text   : 'Detail',
             action : 'dental',
             scope  : me,
             handler: me.medicalWin
         });
         panel.getComponent('SurgeryPanel').header.add({
             xtype  : 'button',
-            text   : 'update',
+            text   : 'Details',
             action : 'surgery',
             scope  : me,
             handler: me.medicalWin
@@ -889,8 +900,8 @@ Ext.define('App.view.patientfile.Summary', {
     getPatientImgs: function() {
         var me = this,
 	        number = Ext.Number.randomInt(1,1000);
-        me.patientImg.update('<img src="' + settings.site_url + '/patients/' + me.pid + '/patientPhotoId.jpg?' + number + '" height="100" width="100" />');
-        me.patientQRcode.update('<a ondblclick="printQRCode(app.currPatient.pid)"><img src="' + settings.site_url + '/patients/' + me.pid + '/patientDataQrCode.png?' + number + '" height="100" width="100" title="Print QRCode" /></a>');
+        me.patientImg.update('<img src="' + settings.site_url + '/patients/' + me.pid + '/patientPhotoId.jpg?' + number + '" height="119" width="119" />');
+        me.patientQRcode.update('<a ondblclick="printQRCode(app.currPatient.pid)"><img src="' + settings.site_url + '/patients/' + me.pid + '/patientDataQrCode.png?' + number + '" height="119" width="119" title="Print QRCode" /></a>');
     },
 
 	getPhotoIdWindow: function() {

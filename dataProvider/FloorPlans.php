@@ -108,7 +108,7 @@ class FloorPlans
 
 	public function unSetPatientZoneByZoneId($zone_id){
 		$data['time_out'] = Time::getLocalTime();
-		$this->db->setSQL($this->db->sqlBind($data, 'patient_zone', 'u', array('id' => $zone_id)));
+		$this->db->setSQL($this->db->sqlBind($data, 'patient_zone', 'U', array('id' => $zone_id)));
 		$this->db->execLog();
 	}
 

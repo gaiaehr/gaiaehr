@@ -444,7 +444,7 @@ Ext.define('App.view.patientfile.Summary', {
                 },
                 listeners  : {
                     scope      : me,
-                    afterrender: me.afterRightCol
+                    render: me.rightColRender
                 },
                 items      : [
                     {
@@ -594,8 +594,7 @@ Ext.define('App.view.patientfile.Summary', {
 
         me.listeners = {
             scope       : me,
-            beforerender: me.beforePanelRender
-
+            render: me.beforePanelRender
         };
 
         me.callParent(arguments);
@@ -722,16 +721,22 @@ Ext.define('App.view.patientfile.Summary', {
         me.vitalsStore.load();
 
     },
-
     beforePanelRender: function() {
-        var me = this, demoFormPanel = me.query('[action="demoFormPanel"]')[0], who, imgCt;
-
+        var me = this, demoFormPanel = me.query('[action="demoFormPanel"]')[0],
+	        whoPanel,
+	        insurancePanel,
+	        primaryInsurancePanel,
+	        secondaryInsurancePanel,
+	        tertiaryInsurancePanel;
         this.getFormItems(demoFormPanel, 'Demographics', function(success) {
             if(success) {
+                whoPanel = demoFormPanel.query('panel[title="Who"]')[0];
+	            insurancePanel = demoFormPanel.query('panel[action="insurances"]')[0];
+	            primaryInsurancePanel = insurancePanel.items.items[0];
+	            secondaryInsurancePanel = insurancePanel.items.items[1];
+	            tertiaryInsurancePanel = insurancePanel.items.items[2];
 
-                who = demoFormPanel.query('panel[title="Who"]')[0];
-
-                imgCt = Ext.create('Ext.container.Container',{
+	            whoPanel.insert(0,Ext.create('Ext.container.Container',{
                     action :'patientImgs',
                     layout:'hbox',
                     style:'float:right',
@@ -747,14 +752,87 @@ Ext.define('App.view.patientfile.Summary', {
                             margin: 0
                         })
                     ]
-                });
-                who.insert(0,imgCt);
+                }));
+
+	            primaryInsurancePanel.insert(0,Ext.create('Ext.panel.Panel',{
+                    style:'float:right',
+                    height:182,
+                    width:255,
+                    items:[
+                        me.primaryInsuranceImg = Ext.create('Ext.container.Container', {
+                            html: '<img src="ui_icons/no_card.jpg" height="154" width="254" />'
+                        })
+                    ],
+		            bbar:[
+			            '->',
+			            {
+				            text:'Upload',
+				            action :'primaryInsurance',
+				            scope:me,
+                            handler:me.uploadInsurance
+			            }
+		            ]
+                }));
+
+	            secondaryInsurancePanel.insert(0,Ext.create('Ext.panel.Panel',{
+                    style:'float:right',
+                    height:182,
+                    width:255,
+                    items:[
+                        me.secondaryInsuranceImg = Ext.create('Ext.container.Container', {
+                            html: '<img src="ui_icons/no_card.jpg" height="154" width="254" />'
+                        })
+                    ],
+		            bbar:[
+			            '->',
+			            {
+				            text:'Upload',
+				            action :'secondaryInsurance',
+				            scope:me,
+                            handler:me.uploadInsurance
+			            }
+		            ]
+                }));
+
+	            tertiaryInsurancePanel.insert(0,Ext.create('Ext.panel.Panel',{
+                    style:'float:right',
+                    height:182,
+                    width:255,
+                    items:[
+                        me.tertiaryInsuranceImg = Ext.create('Ext.container.Container', {
+                            html: '<img src="ui_icons/no_card.jpg" height="154" width="254" />'
+                        })
+                    ],
+		            bbar:[
+			            '->',
+			            {
+				            text:'Upload',
+				            action :'tertiaryInsurance',
+				            scope:me,
+				            handler:me.uploadInsurance
+			            }
+		            ]
+                }));
+
+
             }
         });
     },
 
+	uploadInsurance:function(btn){
 
-    afterRightCol : function(panel) {
+		var me = this,
+			ImgContainer = btn.up('panel').down('container'),
+			action = btn.action;
+
+		say(ImgContainer);
+		say(action);
+
+//		ImgContainer.update('<img src="' + settings.site_url + '/patients/' + me.pid + '/patientPhotoId.jpg?' + number + '" height="100" width="100" />');
+
+    },
+
+    rightColRender : function(panel) {
         var me = this;
         panel.getComponent('ImmuPanel').header.add({
             xtype  : 'button',
@@ -774,15 +852,12 @@ Ext.define('App.view.patientfile.Summary', {
 
 
         });
-
         panel.getComponent('AllergiesPanel').header.add({
             xtype  : 'button',
             text   : 'update',
             action : 'allergies',
             scope  : me,
             handler: me.medicalWin
-
-
         });
         panel.getComponent('IssuesPanel').header.add({
             xtype  : 'button',
@@ -790,8 +865,6 @@ Ext.define('App.view.patientfile.Summary', {
             action : 'issues',
             scope  : me,
             handler: me.medicalWin
-
-
         });
         panel.getComponent('DentalPanel').header.add({
             xtype  : 'button',
@@ -892,9 +965,6 @@ Ext.define('App.view.patientfile.Summary', {
         var me = this,
 	        billingPanel = me.query('[action="balance"]')[0],
 	        demographicsPanel = me.query('[action="demoFormPanel"]')[0];
-
-
-
         demographicsPanel.getForm().reset();
 
         if(me.checkIfCurrPatient()) {

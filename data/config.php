@@ -108,6 +108,9 @@ $API = array(
   			),
   			'unSetPatientZoneByZoneId'=>array(
   				'len'=>1
+  			),
+  			'getPatientsZonesByFloorPlanId'=>array(
+  				'len'=>1
   			)
   		)
   	),

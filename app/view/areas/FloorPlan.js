@@ -28,6 +28,13 @@ Ext.define('App.view.areas.FloorPlan', {
 						select:me.onFloorPlanSelect
 					}
 				}
+			],
+			tools:[
+				{
+			        type: 'refresh',
+					scope:me,
+			        handler: me.setZones
+				}
 			]
 		});
 
@@ -44,6 +51,7 @@ Ext.define('App.view.areas.FloorPlan', {
 			scale:'medium',
 			x:record.data.x,
 			y:record.data.y,
+			itemId:record.data.id,
 			scope:me,
 			handler:me.onZoneClicked,
 
@@ -101,11 +109,14 @@ Ext.define('App.view.areas.FloorPlan', {
 	},
 
 	onFloorPlanSelect:function(field, record){
-		this.floorPlanId = record[0].data.id;
-		this.loadZones();
+		var me = this;
+		me.floorPlanId = record[0].data.id;
+		me.loadZones(function(){
+			me.setZones();
+		});
 	},
 
-	loadZones:function(){
+	loadZones:function(callback){
 		var me = this;
 		me.floorPlan.removeAll();
 		me.floorPlanZonesStore.load({
@@ -115,6 +126,7 @@ Ext.define('App.view.areas.FloorPlan', {
 				for(var i=0; i < records.length; i++){
 					me.loadZone(records[i]);
 				}
+				callback();
 			}
 		});
 	},
@@ -132,7 +144,7 @@ Ext.define('App.view.areas.FloorPlan', {
 								sourceEl: sourceEl,
 								repairXY: Ext.fly(sourceEl).getXY(),
 								ddel    : d,
-								patientData : panel.data.patientData,
+								patientData : panel.data,
 								zone: panel
 					};
 				}
@@ -157,16 +169,13 @@ Ext.define('App.view.areas.FloorPlan', {
 				}
 			},
 			notifyDrop: function(dd, e, data) {
-//				say('notifyDrop');
-//				say(data);
-				panel.data = data;
-				panel.dragZone.unlock();
+				panel.data = data.patientData;
 				if(data.zone){
-					FloorPlans.unSetPatientZoneByZoneId(data.patientData.patientZoneId, function(){
+					FloorPlans.unSetPatientZoneByZoneId(panel.data.patientZoneId, function(){
 						me.unSetZone(data.zone);
 					});
 				}
-				me.dropPatient(panel, data.patientData);
+				me.dropPatient(panel, panel.data);
 			}
 		});
 	},
@@ -188,19 +197,37 @@ Ext.define('App.view.areas.FloorPlan', {
 		zone.pid = data.pid;
 		zone.priority = data.priority;
 		zone.patientZoneId = data.patientZoneId;
+		zone.dropZone.lock();
+		zone.dragZone.unlock();
 		zone.setTooltip('Patient Name:' + data.name);
 		zone.addCls(data.priority);
 	},
 
 	unSetZone:function(zone){
-		zone.dragZone.lock();
 		zone.pid = null;
+		zone.data = null;
+		zone.dropZone.unlock();
+		zone.dragZone.lock();
 		zone.setTooltip('Patient Name: [empty]');
 		zone.removeCls(zone.priority);
 	},
 
 	setZones:function(){
+		var me = this, zone, zones, data;
+		FloorPlans.getPatientsZonesByFloorPlanId(me.floorPlanId, function(provider, response){
+			zones = me.floorPlan.items.items;
+			data = response.result;
 
+			for(var j=0; j < zones.length; j++){
+				me.unSetZone(zones[j]);
+			}
+
+			for(var i=0; i < data.length; i++){
+				zone = me.floorPlan.getComponent(data[i].zoneId);
+				zone.data = data[i];
+				me.setZone(zone, data[i]);
+			}
+		})
 	},
 
 	setFloorPlan:function(floorPlanId){
@@ -212,7 +239,11 @@ Ext.define('App.view.areas.FloorPlan', {
 		if(me.floorPlanId == null){
 			me.floorPlanId = 1;
 			me.floorPlan.query('floorplanareascombo')[0].setValue(me.floorPlanId);
-			me.loadZones();
+			me.loadZones(function(){
+				me.setZones();
+			});
+		}else{
+			me.setZones();
 		}
 		callback(true);
 	}

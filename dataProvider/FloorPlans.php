@@ -14,6 +14,7 @@ if(!isset($_SESSION)) {
 include_once($_SESSION['site']['root'] . '/dataProvider/Patient.php');
 include_once($_SESSION['site']['root'] . '/dataProvider/User.php');
 include_once($_SESSION['site']['root'] . '/dataProvider/ACL.php');
+include_once($_SESSION['site']['root'] . '/dataProvider/PoolArea.php');
 include_once($_SESSION['site']['root'] . '/dataProvider/Services.php');
 include_once($_SESSION['site']['root'] . '/classes/dbHelper.php');
 include_once($_SESSION['site']['root'] . '/classes/Time.php');
@@ -36,6 +37,8 @@ class FloorPlans
 	 */
 	private $services;
 
+	private $pool;
+
 	function __construct()
 	{
 		$this->db       = new dbHelper();
@@ -43,6 +46,7 @@ class FloorPlans
 		$this->acl      = new ACL();
 		$this->patient  = new Patient();
 		$this->services = new Services();
+		$this->pool     = new PoolArea();
 		return;
 	}
 
@@ -112,8 +116,28 @@ class FloorPlans
 		$this->db->execLog();
 	}
 
-	public function getZonePatientDataByZoneId($zoneId){
+	public function getPatientsZonesByFloorPlanId($FloorPlanId){
+		$zones = array();
+		$this->db->setSQL("SELECT pz.id AS patientZoneId,
+								  pz.pid,
+								  pz.uid,
+								  pz.zone_id AS zoneId,
+								  time_in AS zoneTimerIn,
+								  fpz.floor_plan_id AS floorPlanId
+							 FROM patient_zone AS pz
+						LEFT JOIN floor_plans_zones AS fpz ON pz.zone_id = fpz.id
+							WHERE fpz.floor_plan_id = $FloorPlanId AND pz.time_out IS NULL");
+		foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) as $zone){
+			$zone['name'] = $this->patient->getPatientFullNameByPid($zone['pid']);
+			$zone['photoSrc'] = $this->patient->getPatientPhotoSrcIdByPid($zone['pid']);
 
+			$pool = $this->pool->getCurrentPatientPoolAreaByPid($zone['pid']);
+			$zone['poolArea'] = $pool['poolArea'];
+			$zone['priority'] = $pool['priority'];
+			$zones[] = $zone;
+		}
+
+		return $zones;
 	}
 
 
@@ -129,7 +153,7 @@ class FloorPlans
 }
 //$e = new FloorPlans();
 //echo '<pre>';
-//print_r($e->getPatientsByPoolAreaAccess());
+//print_r($e->getPatientsZonesByFloorPlanId(1));
 //print '<br><br>Session ----->>> <br><br>';
 //print_r($_SESSION);
 

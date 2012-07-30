@@ -181,11 +181,13 @@ class PoolArea
 
 
 	public function getCurrentPatientPoolAreaByPid($pid){
-		$this->db->setSQL("SELECT *
-							 FROM patient_pools
-							WHERE pid = $pid
-							  AND time_out IS NULL
-						 ORDER BY id DESC");
+		$this->db->setSQL("SELECT pp.*,
+								  pa.title AS poolArea
+							 FROM patient_pools AS pp
+							 LEFT JOIN pool_areas AS pa ON pa.id = pp.area_id
+							WHERE pp.pid = $pid
+							  AND pp.time_out IS NULL
+						 ORDER BY pp.id DESC");
 		return $this->db->fetchRecord(PDO::FETCH_ASSOC);
 	}
 

@@ -527,6 +527,19 @@ Ext.define('App.view.Viewport', {
 					scope  : me,
 					handler: me.goToPoolAreas,
 					tooltip: 'Pool Areas'
+				},
+				{
+					xtype  : 'button',
+					scale  : 'large',
+					style  : 'float:right',
+					margin : '0 0 0 3',
+					cls    : 'headerLargeBtn',
+					padding: 0,
+					itemId : 'floorPlans',
+					iconCls: 'icoZoneAreasBig',
+					scope  : me,
+					handler: me.goToFloorPlans,
+					tooltip: 'Floor Plans'
 				}
 			]
 		});
@@ -748,7 +761,7 @@ Ext.define('App.view.Viewport', {
 					cls              : 'patient-pool-view-footer x-toolbar x-toolbar-default x-box-layout-ct',
 					tpl              : '<div class="x-toolbar-separator x-toolbar-item x-toolbar-separator-horizontal" style="float:left; margin-top:5px;" role="presentation" tabindex="-1"></div>' +
 						'<tpl for=".">' +
-						'<div class="patient-pool-btn-small x-btn x-btn-default-small" style="float:left">' +
+						'<div class="patient-pool-btn-small x-btn x-btn-default-small {priority}" style="float:left">' +
 						'<div class="patient_btn_info">' +
 						'<div class="patient-name">{name} ({pid})</div>' +
 						'</div>' +
@@ -961,6 +974,10 @@ Ext.define('App.view.Viewport', {
 
 	goToPoolAreas: function() {
 		this.navigateTo('panelPoolArea');
+	},
+
+	goToFloorPlans: function() {
+		this.navigateTo('panelAreaFloorPlan');
 	},
 
 	navigateTo: function(id, callback) {

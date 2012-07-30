@@ -54,6 +54,9 @@
 .icoZoneAreas {
     background-image: url(../ui_icons/icoZoneAreas.png) !important;
 }
+.icoZoneAreasBig {
+    background-image: url(../ui_icons/icoZoneAreasBig.png) !important;
+}
 .icoDollar {
     background-image: url(../ui_icons/dollar.png) !important;
 }

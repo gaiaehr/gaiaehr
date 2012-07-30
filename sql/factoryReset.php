@@ -45,6 +45,7 @@ $tables = array(
 	'patient_reminders',
 	'patient_surgery',
 	'patient_out_chart',
+	'patient_zone',
 	'preventive_care_inactive_patient',
 	'users_sessions',
 	'emergencies'

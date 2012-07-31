@@ -513,7 +513,7 @@ Ext.define('App.view.patientfile.MedicalWindow', {
                     {
                         header   : 'Problem',
                         flex     : 1,
-                        dataIndex: 'code'
+                        dataIndex: 'code_text'
                     },
                     {
                         xtype:'datecolumn',
@@ -554,7 +554,7 @@ Ext.define('App.view.patientfile.MedicalWindow', {
                                         {
                                             xtype          : 'liveicdxsearch',
                                             fieldLabel     : 'Problem',
-                                            name           : 'code',
+                                            name           : 'code_text',
                                             hideLabel      : false,
                                             itemId         : 'medicalissues',
                                             action         : 'medicalissues',
@@ -569,7 +569,7 @@ Ext.define('App.view.patientfile.MedicalWindow', {
                                         {
    		                                    xtype:'textfield',
    		                                    hidden:true,
-   		                                    name:'code_text',
+   		                                    name:'code',
    		                                    action:'idField'
    	                                    },
 
@@ -1548,7 +1548,7 @@ Ext.define('App.view.patientfile.MedicalWindow', {
     onLiveSearchSelect: function(combo, model) {
 
 	    var me = this,
-		    field, id;
+		    field,field2, id;
 		if(combo.action == 'immunizations'){
 		    id = model[0].data.id;
 		    field =  combo.up('container').query('[action="idField"]')[0];
@@ -1561,12 +1561,14 @@ Ext.define('App.view.patientfile.MedicalWindow', {
 
 	    }
 		else if(combo.action == 'medicalissues'  ){
-			id = model[0].data.code_text;
+			id = model[0].data.code;
 			field =  combo.up('fieldcontainer').query('[action="idField"]')[0];
+			field2 =  combo.up('fieldcontainer').query('[action="medicalissues"]')[0];
 			field.setValue(id);
+			field2.setValue(model[0].data.code_text);
 	    }
 		else if(combo.action == 'surgery'){
-            id = model[0].data.code_text;
+            id = model[0].data.id;
             field =  combo.up('fieldcontainer').query('[action="idField"]')[0];
             field.setValue(id);
 
@@ -1594,7 +1596,6 @@ Ext.define('App.view.patientfile.MedicalWindow', {
 
         });
         grid.editingPlugin.startEdit(0, 0);
-		say(grid.action);
 	    if(app.currEncounterId != null){
 		    if(grid.action == 'patientImmuListGrid'){
 			    params = {

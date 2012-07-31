@@ -865,7 +865,7 @@ Ext.define('App.view.patientfile.Summary', {
         });
         panel.getComponent('AllergiesPanel').header.add({
             xtype  : 'button',
-            text   : 'Detail',
+            text   : 'Details',
             action : 'allergies',
             scope  : me,
             handler: me.medicalWin
@@ -879,7 +879,7 @@ Ext.define('App.view.patientfile.Summary', {
         });
         panel.getComponent('DentalPanel').header.add({
             xtype  : 'button',
-            text   : 'Detail',
+            text   : 'Details',
             action : 'dental',
             scope  : me,
             handler: me.medicalWin

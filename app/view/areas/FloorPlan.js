@@ -54,19 +54,12 @@ Ext.define('App.view.areas.FloorPlan', {
 			itemId:record.data.id,
 			scope:me,
 			handler:me.onZoneClicked,
-
 			// --->
 			// Zone specific reference data
 			pid:null,
 			zoneId:record.data.id,
 			priority:null,
 			patientZoneId:null,
-//			tpl: Ext.create('Ext.XTemplate',
-//			'<div class="patient_btn  {priority}">',
-//			'<div class="patient_btn_info">',
-//			'<div class="patient_btn_name">{title}</div>',
-//			'</div>',
-//			'</div>'),
 			// <---
 			menu:[
 				form = Ext.create('Ext.form.Panel',{
@@ -171,16 +164,14 @@ Ext.define('App.view.areas.FloorPlan', {
 			notifyDrop: function(dd, e, data) {
 				panel.data = data.patientData;
 				if(data.zone){
-					FloorPlans.unSetPatientZoneByZoneId(panel.data.patientZoneId, function(){
-						me.unSetZone(data.zone);
-					});
+					me.unAssignPatient(data.zone, panel.data);
 				}
-				me.dropPatient(panel, panel.data);
+				me.assignPatient(panel, panel.data);
 			}
 		});
 	},
 
-	dropPatient:function(zone, data){
+	assignPatient:function(zone, data){
 		var me = this,
 			params = {
 				zone_id:zone.zoneId,
@@ -190,6 +181,13 @@ Ext.define('App.view.areas.FloorPlan', {
 			data.patientZoneId = response.result.data.patientZoneId;
 			me.msg('Sweet!', data.name + ' successfully moved.');
 			me.setZone(zone, data);
+		});
+	},
+
+	unAssignPatient:function(zone, data){
+		var me = this;
+		FloorPlans.unSetPatientZoneByPatientZoneId(data.patientZoneId,function(){
+			me.unSetZone(zone)
 		});
 	},
 

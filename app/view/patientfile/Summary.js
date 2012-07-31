@@ -766,7 +766,44 @@ Ext.define('App.view.patientfile.Summary', {
                     items:[
                         me.primaryInsuranceImg = Ext.create('Ext.container.Container', {
                             html: '<img src="ui_icons/no_card.jpg" height="154" width="254" />'
-                        })
+                        }),
+	                    me.primaryInsuranceImgUpload = Ext.create('Ext.window.Window',{
+                           draggable :false,
+                           closable:false,
+                           closeAction:'hide',
+                           items:[
+                               {
+                                   xtype:'form',
+                                   bodyPadding:10,
+                                   width:310,
+                                   items:[
+                                       {
+                                           xtype: 'filefield',
+                                           name: 'filePath',
+                                           buttonText: 'Select a file...',
+                                           anchor:'100%'
+                                       }
+                                   ],
+                                //   url: 'dataProvider/DocumentHandler.php'
+                                   api: {
+                                       submit: DocumentHandler.uploadDocument
+                                   }
+                               }
+                           ],
+                           buttons:[
+                               {
+                                   text:'Cancel',
+                                   handler:function(btn){
+	                                   btn.up('window').close();
+                                   }
+                               },
+                               {
+                                   text:'Upload',
+                                   scope:me,
+                                   handler:me.onLabUpload
+                               }
+                           ]
+                       })
                     ],
 		            bbar:[
 			            '->',
@@ -835,6 +872,9 @@ Ext.define('App.view.patientfile.Summary', {
 		var me = this,
 			ImgContainer = btn.up('panel').down('container'),
 			action = btn.action;
+
+		me.primaryInsuranceImgUpload.show();
+		me.primaryInsuranceImgUpload.alignTo(me.primaryInsuranceImg.el.dom,'br-br',[0,0]);
 
 		say(ImgContainer);
 		say(action);

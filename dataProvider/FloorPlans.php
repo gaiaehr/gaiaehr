@@ -110,10 +110,16 @@ class FloorPlans
 		return array('success' => true, 'data' => $params);
 	}
 
-	public function unSetPatientZoneByZoneId($zone_id){
+	public function unSetPatientZoneByPatientZoneId($PatientZoneId){
 		$data['time_out'] = Time::getLocalTime();
-		$this->db->setSQL($this->db->sqlBind($data, 'patient_zone', 'U', array('id' => $zone_id)));
+		$this->db->setSQL($this->db->sqlBind($data, 'patient_zone', 'U', array('id' => $PatientZoneId)));
 		$this->db->execLog();
+	}
+
+	public function unSetPatientFromZoneByPid($pid){
+
+		return $params;
+
 	}
 
 	public function getPatientsZonesByFloorPlanId($FloorPlanId){

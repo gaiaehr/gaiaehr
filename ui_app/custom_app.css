@@ -179,6 +179,10 @@ li .Deceased{
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#000000', endColorstr='#000000',GradientType=0 ); 
 	color: #ffffff!important;
 }
+.Minimal .x-btn-inner, .Immediate .x-btn-inner, .Expectant .x-btn-inner, .Deceased .x-btn-inner{
+	color: #ffffff!important;
+}
+
 .patient_btn_img {
     float: left;
     height: 32px;

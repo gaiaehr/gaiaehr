@@ -140,6 +140,7 @@ class FloorPlans
 			$pool = $this->pool->getCurrentPatientPoolAreaByPid($zone['pid']);
 			$zone['poolArea'] = $pool['poolArea'];
 			$zone['priority'] = $pool['priority'];
+			$zone['eid'] = $pool['eid'];
 			$zones[] = $zone;
 		}
 

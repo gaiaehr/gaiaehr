@@ -923,11 +923,9 @@ Ext.define('App.view.Viewport', {
 
 	openPatientSummary: function() {
 		var me = this;
-
 		if(me.currCardCmp == Ext.getCmp('panelSummary')) {
 			var same = true;
 		}
-
 		me.navigateTo('panelSummary', function() {
 			if(same) {
 				me.currCardCmp.onActive();

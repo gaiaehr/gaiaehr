@@ -95,10 +95,10 @@ Ext.define('App.view.areas.FloorPlan', {
 	},
 
 	onZoneClicked:function(btn){
-//		var form = btn.menu.items.items[0].getForm(),
-//			values = form.getValues(),
-//			rec = form.getRecord();
 		say(btn);
+		app.setCurrPatient(btn.data.pid, btn.data.name, btn.data.priority, function(){
+			btn.data.eid ? app.openEncounter(btn.data.eid) : app.openPatientSummary();
+		});
 	},
 
 	onFloorPlanSelect:function(field, record){

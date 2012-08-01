@@ -761,6 +761,9 @@ $API = array(
             ),
             'getMeaningfulUserAlertByPid'=>array(
             	'len'=>1
+            ),
+            'getPatientInsurancesCardsUrlByPid'=>array(
+            	'len'=>1
             )
 
         )

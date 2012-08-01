@@ -800,7 +800,8 @@ Ext.define('App.view.patientfile.Summary', {
                                {
                                    text:'Upload',
                                    scope:me,
-                                   handler:me.onLabUpload
+                                   action :'Primary Insurance',
+                                   handler:me.onInsuranceUpload
                                }
                            ]
                        })
@@ -810,7 +811,7 @@ Ext.define('App.view.patientfile.Summary', {
 			            '-',
 			            {
 				            text:'Upload',
-				            action :'primaryInsurance',
+                            action :'primaryInsurance',
 				            scope:me,
                             handler:me.uploadInsurance
 			            },
@@ -825,14 +826,53 @@ Ext.define('App.view.patientfile.Summary', {
                     items:[
                         me.secondaryInsuranceImg = Ext.create('Ext.container.Container', {
                             html: '<img src="ui_icons/no_card.jpg" height="154" width="254" />'
-                        })
+                        }),
+                        me.secondaryInsuranceImgUpload = Ext.create('Ext.window.Window',{
+                           draggable :false,
+                           closable:false,
+                           closeAction:'hide',
+                           items:[
+                               {
+                                   xtype:'form',
+                                   bodyPadding:10,
+                                   width:310,
+                                   items:[
+                                       {
+                                           xtype: 'filefield',
+                                           name: 'filePath',
+                                           buttonText: 'Select a file...',
+                                           anchor:'100%'
+                                       }
+                                   ],
+                                //   url: 'dataProvider/DocumentHandler.php'
+                                   api: {
+                                       submit: DocumentHandler.uploadDocument
+                                   }
+                               }
+                           ],
+                           buttons:[
+                               {
+                                   text:'Cancel',
+                                   handler:function(btn){
+                                       btn.up('window').close();
+                                   }
+                               },
+                               {
+                                   text:'Upload',
+                                   scope:me,
+                                   action :'Secondary Insurance',
+                                   handler:me.onInsuranceUpload
+                               }
+                           ]
+                       })
                     ],
+
 		            bbar:[
 			            '->',
 			            '-',
 			            {
 				            text:'Upload',
-				            action :'secondaryInsurance',
+                            action :'secondaryInsurance',
 				            scope:me,
                             handler:me.uploadInsurance
 			            },
@@ -842,20 +882,59 @@ Ext.define('App.view.patientfile.Summary', {
 
 	            tertiaryInsurancePanel.insert(0,Ext.create('Ext.panel.Panel',{
                     style:'float:right',
-                    height:160,
+                    height:182,
                     width:255,
                     items:[
                         me.tertiaryInsuranceImg = Ext.create('Ext.container.Container', {
                             html: '<img src="ui_icons/no_card.jpg" height="154" width="254" />'
-                        })
+                        }),
+                        me.tertiaryInsuranceImgUpload = Ext.create('Ext.window.Window',{
+                              draggable :false,
+                              closable:false,
+                              closeAction:'hide',
+                              items:[
+                                  {
+                                      xtype:'form',
+                                      bodyPadding:10,
+                                      width:310,
+                                      items:[
+                                          {
+                                              xtype: 'filefield',
+                                              name: 'filePath',
+                                              buttonText: 'Select a file...',
+                                              anchor:'100%'
+                                          }
+                                      ],
+                                   //   url: 'dataProvider/DocumentHandler.php'
+                                      api: {
+                                          submit: DocumentHandler.uploadDocument
+                                      }
+                                  }
+                              ],
+                              buttons:[
+                                  {
+                                      text:'Cancel',
+                                      handler:function(btn){
+   	                                   btn.up('window').close();
+                                      }
+                                  },
+                                  {
+                                      text:'Upload',
+                                      scope:me,
+                                      action :'Tertiary Insurance',
+                                      handler:me.onInsuranceUpload
+                                  }
+                              ]
+                          })
                     ],
 		            bbar:[
 			            '->',
 			            '-',
 			            {
 				            text:'Upload',
-				            action :'tertiaryInsurance',
+
 				            scope:me,
+                            action :'tertiaryInsurance',
 				            handler:me.uploadInsurance
 			            },
 			            '-'
@@ -872,16 +951,23 @@ Ext.define('App.view.patientfile.Summary', {
 		var me = this,
 			ImgContainer = btn.up('panel').down('container'),
 			action = btn.action;
+        if(action == 'primaryInsurance'){
+            me.primaryInsuranceImgUpload.show();
+            me.primaryInsuranceImgUpload.alignTo(me.primaryInsuranceImg.el.dom,'br-br',[0,0]);
+        }
+        else if(action == 'secondaryInsurance'){
+            me.secondaryInsuranceImgUpload.show();
+            me.secondaryInsuranceImgUpload.alignTo(me.secondaryInsuranceImg.el.dom,'br-br',[0,0]);
+        }
+        if(action == 'tertiaryInsurance'){
+            me.tertiaryInsuranceImgUpload.show();
+            me.tertiaryInsuranceImgUpload.alignTo(me.tertiaryInsuranceImg.el.dom,'br-br',[0,0]);
+        }
 
-		me.primaryInsuranceImgUpload.show();
-		me.primaryInsuranceImgUpload.alignTo(me.primaryInsuranceImg.el.dom,'br-br',[0,0]);
 
-		say(ImgContainer);
-		say(action);
-
-//		ImgContainer.update('<img src="' + settings.site_url + '/patients/' + me.pid + '/patientPhotoId.jpg?' + number + '" height="100" width="100" />');
 
     },
+
 
     rightColRender : function(panel) {
         var me = this;
@@ -935,6 +1021,7 @@ Ext.define('App.view.patientfile.Summary', {
     },
     medicalWin    : function(btn) {
         app.onMedicalWin(btn);
+
     },
 
     getPatientImgs: function() {
@@ -957,6 +1044,47 @@ Ext.define('App.view.patientfile.Summary', {
 		this.PhotoIdWindow.close();
 		this.getPatientImgs();
 	},
+
+    onInsuranceUpload:function(btn){
+        var me = this,
+            action = btn.action,
+            win = btn.up('window'),
+            form,
+            imgCt;
+
+        if(action == 'Primary Insurance'){
+            form  = me.primaryInsuranceImgUpload.down('form').getForm();
+            imgCt = me.primaryInsuranceImg;
+        }
+        else if(action == 'Secondary Insurance'){
+            form = me.secondaryInsuranceImgUpload.down('form').getForm();
+            imgCt = me.secondaryInsuranceImg;
+        }
+        if(action == 'Tertiary Insurance'){
+            form = me.tertiaryInsuranceImgUpload.down('form').getForm();
+            imgCt = me.tertiaryInsuranceImg;
+        }
+        if(form.isValid()){
+            form.submit({
+                waitMsg: 'Uploading Insurance...',
+                params:{
+                    pid:app.currPatient.pid,
+                    docType:action
+                },
+                success: function(fp, o) {
+                    say(o.result.doc);
+                    win.close();
+                    imgCt.update('<img src="' + o.result.doc.url + '" height="154" width="254" />');
+
+                },
+                failure:function(fp, o){
+                    say(o.result.error);
+                    win.close();
+                }
+            });
+        }
+
+    },
 
     verifyPatientRequiredInfo:function(){
         var me = this,
@@ -1056,6 +1184,11 @@ Ext.define('App.view.patientfile.Summary', {
             me.verifyPatientRequiredInfo();
 
 
+            Patient.getPatientInsurancesCardsUrlByPid(me.pid,function(url){
+            me.primaryInsuranceImg.update('<img src="' + (url.Primary.url ? url.Primary.url : 'ui_icons/no_card.jpg') + '" height="154" width="254" />');
+            me.secondaryInsuranceImg.update('<img src="' + (url.Secondary.url ? url.Secondary.url :'ui_icons/no_card.jpg') + '" height="154" width="254" />');
+            me.tertiaryInsuranceImg.update('<img src="' +  (url.Tertiary.url ? url.Tertiary.url :'ui_icons/no_card.jpg') + '" height="154" width="254" />');
+            });
 
         } else {
             callback(false);

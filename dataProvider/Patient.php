@@ -430,6 +430,33 @@ class Patient
 
         return $records;
     }
+    public function getPatientInsurancesCardsUrlByPid($pid)
+    {
+		$records =array();
+        $this->db->setSQL("SELECT url
+                           FROM patient_documents
+                           WHERE pid='$pid'
+                           AND  docType='Primary Insurance'
+                           ORDER BY id DESC");
+	    $records['Primary']= $this->db->fetchRecord(PDO::FETCH_ASSOC);
+
+        $this->db->setSQL("SELECT url
+                           FROM patient_documents
+                           WHERE pid='$pid'
+                           AND  docType='Secondary Insurance'
+                           ORDER BY id DESC");
+	    $records['Secondary']= $this->db->fetchRecord(PDO::FETCH_ASSOC);
+
+        $this->db->setSQL("SELECT url
+                           FROM patient_documents
+                           WHERE pid='$pid'
+                           AND  docType='Tertiary Insurance'
+                           ORDER BY id DESC");
+	    $records['Tertiary']= $this->db->fetchRecord(PDO::FETCH_ASSOC);
+
+
+        return $records;
+    }
 
     public function getMeaningfulUserAlertByPid(stdClass $params)
 	{
@@ -539,4 +566,4 @@ class Patient
 }
 //$p = new Patient();
 //echo '<pre>';
-//print_r($p->patientChartInByAllInactiveUsers());
+//print_r($p->getPatientInsurancesCardsUrlByPid(2));

@@ -1410,6 +1410,7 @@ Ext.define('App.view.patientfile.MedicalWindow', {
                 },
                 failure:function(fp, o){
                     say(o.result.error);
+                    win.close();
 
                 }
             });

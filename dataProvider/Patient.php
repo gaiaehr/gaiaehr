@@ -124,7 +124,7 @@ class Patient
 		$data['fname'] = trim($foo[0]);
 		if(count($foo) == 2){
 			$data['lname'] = trim($foo[1]);
-		}elseif(count($foo) == 3){
+		}elseif(count($foo) >= 3){
 			$data['mname'] = (isset($foo[1])) ? trim($foo[1]) : '';
 			unset($foo[0], $foo[1]);
 			$data['lname'] = '';

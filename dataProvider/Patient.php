@@ -120,13 +120,19 @@ class Patient
 
 		$data = array();
 		$foo           = explode(' ', $name);
+
 		$data['fname'] = trim($foo[0]);
-		$data['mname'] = (isset($foo[1])) ? trim($foo[1]) : '';
-		unset($foo[0], $foo[1]);
-		$data['lname'] = '';
-		foreach($foo as $fo) {
-			$data['lname'] .= $data['lname']. ' ' . $fo . ' ';
+		if(count($foo) == 2){
+			$data['lname'] = trim($foo[1]);
+		}elseif(count($foo) == 3){
+			$data['mname'] = (isset($foo[1])) ? trim($foo[1]) : '';
+			unset($foo[0], $foo[1]);
+			$data['lname'] = '';
+			foreach($foo as $fo) {
+				$data['lname'] .= $data['lname']. ' ' . $fo . ' ';
+			}
 		}
+
 		$this->db->setSQL($this->db->sqlBind($data, 'form_data_demographics', 'I'));
 		$this->db->execLog();
 		$pid = $this->db->lastInsertId;

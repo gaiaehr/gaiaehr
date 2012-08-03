@@ -295,6 +295,19 @@ class Patient
 		return $address;
 	}
 
+	public function getPatientArrivalLogWarningByPid($pid)
+	{
+		$this->db->setSQL("SELECT pid
+							 FROM form_data_demographics
+							WHERE pid = '$pid'
+							  AND (sex IS NULL
+							  OR DOB IS NULL)");
+		$alert = $this->db->fetchRecord(PDO::FETCH_ASSOC);
+		return !empty($alert);
+	}
+
+
+
 	public function addPatientNoteAndReminder(stdClass $params)
 	{
 		$data = get_object_vars($params);
@@ -572,4 +585,5 @@ class Patient
 }
 //$p = new Patient();
 //echo '<pre>';
-//print_r($p->getPatientInsurancesCardsUrlByPid(2));
+////print_r($p->getPatientArrivalLogWarningByPid(2));
+//print $p->getPatientArrivalLogWarningByPid(1);

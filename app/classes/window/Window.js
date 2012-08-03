@@ -101,11 +101,12 @@ Ext.define('App.classes.window.Window', {
 		return val;
 	},
 
-	warnRenderer: function(val) {
-		if(val == '1' || val == true || val == 'true') {
-			return '<img src="ui_icons/icoImportant.png" />';
-		}
-	},
+	warnRenderer:function(val, metaData, record){
+        var toolTip = record.data.warningMsg ? ' data-qtip="'+record.data.warningMsg+'" ' : '';
+        if(val == '1' || val == true || val == 'true') {
+            return '<img src="ui_icons/icoImportant.png" ' + toolTip + ' />';
+        }
+    },
 
 	onExpandRemoveMask: function(cmb) {
 		cmb.picker.loadMask.destroy()

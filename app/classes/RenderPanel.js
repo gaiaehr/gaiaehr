@@ -143,11 +143,14 @@ Ext.define('App.classes.RenderPanel', {
 		return val;
 	},
 
-    warnRenderer:function(val){
+    warnRenderer:function(val, metaData, record){
+	    say(record);
+	    var toolTip = record.data.warningMsg ? record.data.warningMsg : '';
+
         if(val == '1' || val == true || val == 'true') {
-            return '<img src="ui_icons/icoImportant.png" />';
+            return '<img src="ui_icons/icoImportant.png" ' + toolTip + ' />';
         }
-     },
+    },
 
 	onExpandRemoveMask: function(cmb) {
 		cmb.picker.loadMask.destroy()

@@ -136,6 +136,7 @@ class FloorPlans
 		foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) as $zone){
 			$zone['name'] = $this->patient->getPatientFullNameByPid($zone['pid']);
 			$zone['photoSrc'] = $this->patient->getPatientPhotoSrcIdByPid($zone['pid']);
+			$zone['warning'] = $this->patient->getPatientArrivalLogWarningByPid($zone['pid']);
 
 			$pool = $this->pool->getCurrentPatientPoolAreaByPid($zone['pid']);
 			$zone['poolArea'] = $pool['poolArea'];

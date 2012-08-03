@@ -61,7 +61,8 @@ class PoolArea
 			$visit['area'] = $foo['area'];
 			$visit['area_id'] = $foo['id'];
 			$visit['name'] = ($foo['eid'] != null ? '*' : '') . $this->patient->getPatientFullNameByPid($visit['pid']);
-
+			$visit['warning'] = $this->patient->getPatientArrivalLogWarningByPid($visit['pid']);
+			$visit['warningMsg'] = ($visit['warning'] ? 'Patient \'Sex\' or \'Date Of Birth\' not set' : '');
 			if($foo['time_out'] == null){
 				$visits[] = $visit;
 			}

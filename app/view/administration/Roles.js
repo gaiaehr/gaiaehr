@@ -74,27 +74,17 @@ Ext.define('App.view.administration.Roles', {
 			record = form.getRecord(),
 			changedValues;
 
-			if(record.set(values) !== null){
-				me.form.el.mask('Saving Roles, Please wait...');
-				changedValues = record.getChanges();
-				Roles.saveRolesData(changedValues, function(provider, response){
-					if(response.result){
-						me.form.el.unmask();
-						me.msg('Sweet!', 'Roles have been updated');
-						record.commit();
-					}
-				});
-
-//				say(record.getChanges());
-//				me.form.el.mask('Saving Roles, Please wait...');
-//				me.store.sync({
-//					scope:me,
-//					callback:function(){
-//						me.form.el.unmask();
-//						me.msg('Sweet!', 'Roles have been updated');
-//					}
-//				});
-			}
+		if(record.set(values) !== null){
+			me.form.el.mask('Saving Roles, Please wait...');
+			changedValues = record.getChanges();
+			Roles.saveRolesData(changedValues, function(provider, response){
+				if(response.result){
+					me.form.el.unmask();
+					me.msg('Sweet!', 'Roles have been updated');
+					record.commit();
+				}
+			});
+		}
 	},
 
 
@@ -103,13 +93,14 @@ Ext.define('App.view.administration.Roles', {
 		var me = this,
 			form = me.form,
 			formFields = form.getForm().getFields(),
-			modelFields = [];
+			modelFields = [],
+			model;
 
-		Ext.each(formFields.items, function(field) {
-			modelFields.push({name: field.name, type: 'auto'});
-		});
+		for(var i=0; i < formFields.items.length; i++){
+			modelFields.push({name: formFields.items[i].name, type: 'bool'});
+		}
 
-		var model = Ext.define(form.itemId + 'Model', {
+		model = Ext.define(form.itemId + 'Model', {
 			extend: 'Ext.data.Model',
 			fields: modelFields,
 			proxy : {
@@ -127,7 +118,6 @@ Ext.define('App.view.administration.Roles', {
 		me.store.load({
 			scope   : this,
 			callback: function(records, operation, success) {
-
 				if(success) {
 					form.getForm().loadRecord(records[0]);
 					form.el.unmask();

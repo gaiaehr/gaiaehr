@@ -74,28 +74,41 @@ Ext.define('App.view.administration.Roles', {
 	onSave: function() {
 		var me = this,
 			form = me.form.getForm(),
-			data = form.getValues();
+			values = form.getValues(),
+			record = form.getRecord(),
+			changedValues;
 
 
-		if(form.isValid()) {
-			Roles.saveRolesData(data, function(provider, response) {
-				if(response.result.success) {
-					me.msg('Sweet!', 'Roles have been updated');
 
-				} else {
-					me.msg('Oops!', 'Something went wrong');
-				}
+			if(record.set(values) !== null){
+				me.form.el.mask('Saving Roles, Please wait...');
+				changedValues = record.getChanges();
+				Roles.saveRolesData(changedValues, function(provider, response){
+					if(response.result){
+						me.form.el.unmask();
+						me.msg('Sweet!', 'Roles have been updated');
+						record.commit();
+					}
+				});
 
-			});
-		}
+//				say(record.getChanges());
+//				me.form.el.mask('Saving Roles, Please wait...');
+//				me.store.sync({
+//					scope:me,
+//					callback:function(){
+//						me.form.el.unmask();
+//						me.msg('Sweet!', 'Roles have been updated');
+//					}
+//				});
+			}
 	},
 
 
 	getFormData: function() {
 
-		var form = this.form;
-
-		var formFields = form.getForm().getFields(),
+		var me = this,
+			form = me.form,
+			formFields = form.getForm().getFields(),
 			modelFields = [];
 
 		Ext.each(formFields.items, function(field) {
@@ -113,11 +126,11 @@ Ext.define('App.view.administration.Roles', {
 			}
 		});
 
-		var store = Ext.create('Ext.data.Store', {
+		me.store = Ext.create('Ext.data.Store', {
 			model: model
 		});
 
-		store.load({
+		me.store.load({
 			scope   : this,
 			callback: function(records, operation, success) {
 
@@ -146,7 +159,7 @@ Ext.define('App.view.administration.Roles', {
 		Roles.getRoleForm(null, function(provider, response) {
 			form.add(me.getHeader());
 			form.add(eval(response.result));
-			form.doLayout();
+			//form.doLayout();
 			me.getFormData();
 		});
 

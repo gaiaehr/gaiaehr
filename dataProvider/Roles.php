@@ -22,11 +22,11 @@ class Roles extends ACL {
         $items = array();
         $perms = array();
         $roles = $this->getAllRoles();
-        $cattegories = array('General','Calendar','Patients','Encounters','Demographics','Documents','ePrescription','Administrators','Pool Areas','Miscellaneous');
+        $categories = array('General','Calendar','Patients','Encounters','Demographics','Documents','ePrescription','Administrators','Pool Areas','Miscellaneous');
         foreach($this->getAllPermissions('full') as $perm){
             array_push($perms,$perm);
         }
-        foreach($cattegories as $cat){
+        foreach($categories as $cat){
             $item = array();
             $item['xtype']      = 'fieldset';
             $item['title']      = $cat;
@@ -76,10 +76,7 @@ class Roles extends ACL {
      * @return array
      */
     public function getRolesData(){
-        $this->conn->setSQL("SELECT acl_roles.role_key, acl_permissions.perm_key, acl_role_perms.value
-                         FROM (acl_role_perms
-                    LEFT JOIN acl_roles ON acl_role_perms.role_id = acl_roles.id)
-                   RIGHT JOIN acl_permissions ON acl_role_perms.perm_id = acl_permissions.id");
+        $this->conn->setSQL("SELECT role_key, perm_key, value FROM acl_role_perms");
         $rows = array();
 
         foreach($this->conn->fetchRecords(PDO::FETCH_ASSOC) as $row){
@@ -116,37 +113,37 @@ class Roles extends ACL {
             }
         }
 
+	    $this->conn->execEvent('User Roles Updated values are: ' . json_encode($data));
+
         return array('success'=>true);
     }
 
+	/**
+	 * @param $roleKey
+	 * @param $permKey
+	 * @param $val
+	 * @return void
+	 */
+    private function saveRolePerm($roleKey, $permKey, $val){
 
-    /**
-     * @param $role
-     * @param $perm
-     * @param $val
-     */
-    private function saveRolePerm($role, $perm, $val){
+	    $this->conn->setSQL("SELECT id
+	                           FROM acl_role_perms
+	                          WHERE role_key = '$roleKey'
+	                            AND perm_key = '$permKey'");
+	    $fo = $this->conn->fetchRecord();
 
-        $this->conn->setSQL("SELECT id FROM acl_roles WHERE role_key = '$role'");
-        $role = $this->conn->fetchRecord();
-        $role_perms['role_id'] = $role['id'];
-
-        $this->conn->setSQL("SELECT id FROM acl_permissions WHERE perm_key = '$perm'");
-        $perms = $this->conn->fetchRecord();
-        $role_perms['perm_id'] = $perms['id'];
-        $role_perms['value'] = $val;
-
-        $this->conn->setSQL("SELECT id FROM acl_role_perms WHERE role_id = '".$role_perms['role_id']."' AND perm_id = '".$role_perms['perm_id']."' ");
-        $role_perm = $this->conn->fetchRecord();
-
-        if($role_perm['id'] != null){
-            $sql = $this->conn->sqlBind($role_perms, "acl_role_perms", "U", "id = '".$role_perm['id']."'");
-            $this->conn->setSQL($sql);
-            $this->conn->execLog();
+		$data = array();
+        if($fo['id'] != null){
+			$data['value'] = $val;
+	        $this->conn->setSQL($this->conn->sqlBind($data, 'acl_role_perms', 'U', array('role_key' => $roleKey, 'perm_key' => $permKey)));
+            $this->conn->execOnly();
         }else{
-            $sql = $this->conn->sqlBind($role_perms, "acl_role_perms", "I");
-            $this->conn->setSQL($sql);
-            $this->conn->execLog();
+	        $data['role_key'] = $roleKey;
+	        $data['perm_key'] = $permKey;
+	        $data['value'] = $val;
+	        $sql = $this->conn->sqlBind($data, 'acl_role_perms', 'I');
+	        $this->conn->setSQL($sql);
+	        $this->conn->execOnly();
         }
     }
 

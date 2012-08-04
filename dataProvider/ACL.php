@@ -42,6 +42,7 @@ class ACL {
         $this->user_id = ($user_id == null)? $_SESSION['user']['id'] : $user_id;
         $this->user_roles = $this->getUserRoles();
         $this->buildACL();
+
 	}
 
     /**
@@ -82,14 +83,15 @@ class ACL {
      * @return array
      */
 	private function getUserRoles(){
-
-        $this->conn->setSQL("SELECT * FROM acl_user_roles WHERE user_id = '$this->user_id' ORDER BY add_date ASC");
-		$resp = array();
-        foreach($this->conn->fetchRecords(PDO::FETCH_ASSOC) as $row){
-			$resp[] = $row['role_id'];
+		$roles = array();
+        $this->conn->setSQL("SELECT ar.role_key
+                               FROM acl_user_roles AS aur
+                          LEFT JOIN acl_roles AS ar ON aur.role_id = ar.id
+                              WHERE aur.user_id = '$this->user_id'");
+		foreach($this->conn->fetchRecords(PDO::FETCH_ASSOC) AS $role){
+			$roles[] = $role['role_key'];
 		}
-		return $resp;
-
+		return $roles;
 	}
 
     // This function can be named buildAccessControlList();
@@ -106,18 +108,8 @@ class ACL {
      * @param $perm_id
      * @return mixed
      */
-	private function getPermissionsKeyFromID($perm_id){
-        $this->conn->setSQL("SELECT perm_key FROM acl_permissions WHERE id = '$perm_id' LIMIT 1");
-		$row = $this->conn->fetchRecord(PDO::FETCH_ASSOC);
-		return $row['perm_key'];
-	}
-
-    /**
-     * @param $perm_id
-     * @return mixed
-     */
-	private function getPermNameById($perm_id){
-		$strSQL = "SELECT perm_name FROM acl_permissions WHERE id = '$perm_id' LIMIT 1";
+	private function getPermNameByPermKey($perm_Key){
+		$strSQL = "SELECT perm_name FROM acl_permissions WHERE perm_key = '$perm_Key' LIMIT 1";
         $this->conn->setSQL($strSQL);
 		$row = $this->conn->fetchRecord(PDO::FETCH_ASSOC);
 		return $row['perm_name'];
@@ -127,8 +119,8 @@ class ACL {
      * @param $role_id
      * @return mixed
      */
-	private function getRoleNameById($role_id){
-        $this->conn->setSQL("SELECT role_name FROM acl_roles WHERE id = '$role_id' LIMIT 1");
+	private function getRoleNameByRoleKey($role_key){
+        $this->conn->setSQL("SELECT role_name FROM acl_roles WHERE role_key = '$role_key' LIMIT 1");
 		$row = $this->conn->fetchRecord(PDO::FETCH_ASSOC);
 		return $row['role_name'];
 	}
@@ -138,22 +130,26 @@ class ACL {
 	 * @return array
 	 */
 	private function getRolePerms(){
+
 		if (is_array($this->user_roles)){
-			$roleSQL = "SELECT * FROM acl_role_perms WHERE role_id IN (" . implode(",",$this->user_roles) . ") ORDER BY id ASC";
+
+			$fo = implode("','",$this->user_roles);
+			$roleSQL = "SELECT * FROM acl_role_perms WHERE role_key IN ('$fo') ORDER BY id ASC";
 		} else {
-			$roleSQL = "SELECT * FROM acl_role_perms WHERE role_id = " . floatval($this->user_roles) . " ORDER BY id ASC";
+			$fo = $this->user_roles;
+			$roleSQL = "SELECT * FROM acl_role_perms WHERE role_key = '$fo' ORDER BY id ASC";
 		}
         $this->conn->setSQL($roleSQL);
 		$perms = array();
 		foreach($this->conn->fetchRecords(PDO::FETCH_ASSOC) as $row){
-			$pK = strtolower($this->getPermissionsKeyFromID($row['perm_id']));
+			$pK = $pK = strtolower($row['perm_key']);
 			if ($pK == '') { continue; }
             if ($row['value'] == '1') {
                 $hP = true;
             } else {
                 $hP = false;
             }
-			$perms[$pK] = array('perm' => $pK,'inheritted' => true,'value' => $hP,'Name' => $this->getPermNameById($row['perm_id']),'id' => $row['perm_id']);
+			$perms[$pK] = array('perm' => $pK,'inheritted' => true,'value' => $hP,'Name' => $this->getPermNameByPermKey($row['perm_key']), 'id' => $row['id']);
 		}
 		return $perms;
 	}
@@ -166,14 +162,14 @@ class ACL {
         $this->conn->setSQL("SELECT * FROM acl_user_perms WHERE user_id = '$this->user_id' ORDER BY add_date ASC");
 		$perms = array();
         foreach($this->conn->fetchRecords(PDO::FETCH_ASSOC) as $row){
-			$pK = strtolower($this->getPermissionsKeyFromID($row['perm_id']));
+			$pK = strtolower($row['perm_key']);
 			if ($pK == '') { continue; }
             if ($row['value'] == '1') {
                 $hP = true;
             } else {
                 $hP = false;
             }
-			$perms[$pK] = array('perm' => $pK,'inheritted' => false,'value' => $hP,'Name' => $this->getPermNameById($row['perm_id']),'id' => $row['perm_id']);
+			$perms[$pK] = array('perm' => $pK,'inheritted' => false,'value' => $hP,'Name' => $this->getPermNameByPermKey($row['perm_key']), 'id' => $row['id']);
 		}
 	return $perms;
 	}
@@ -219,7 +215,6 @@ class ACL {
 		}
 	}
 }
-//
-//$acl = new ACL();
 //print '<pre>';
+//$acl = new ACL();
 //print_r($acl->getAllUserPermsAccess());

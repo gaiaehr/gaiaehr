@@ -273,7 +273,7 @@ Ext.define('App.view.Viewport', {
 				me.getPatientsInPoolArea();
 				CronJob.run();
 			},
-			interval: 5000 // 10 second
+			interval: 10000 // 10 second
 		};
 
 		me.storeTree = Ext.create('App.store.navigation.Navigation', {

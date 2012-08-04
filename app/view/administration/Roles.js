@@ -16,6 +16,10 @@ Ext.define('App.view.administration.Roles', {
 	extend       : 'App.classes.RenderPanel',
 	id           : 'panelRoles',
 	pageTitle    : 'Roles and Permissions',
+	pageLayout   : {
+		type:'vbox',
+		align:'stretch'
+	},
 	initComponent: function() {
 
 		var me = this;
@@ -24,7 +28,22 @@ Ext.define('App.view.administration.Roles', {
 		// Roles Store
 		//******************************************************************************
 
+		me.header = Ext.create('Ext.container.Container',{
+			height:30,
+			html : '<div class="roleHeader">' +
+					'<span class="perm">Permission</span>' +
+					'<span class="role">Front Office</span>' +
+					'<span class="role">Auditors</span>' +
+					'<span class="role">Clinician</span>' +
+					'<span class="role">Physician</span>' +
+					'<span class="role">Administrator</span>' +
+					'</div>'
+		});
+
 		me.form = Ext.create('Ext.form.Panel', {
+			flex:1,
+			frame:true,
+			bodyStyle:'background-color:white',
 			bodyPadding: 10,
 			items      : [
 				{
@@ -33,42 +52,19 @@ Ext.define('App.view.administration.Roles', {
 					layout     : 'hbox'
 				}
 			],
-			tbar       : [
+			buttons       : [
 				{
 					text   : 'Save',
 					iconCls: 'save',
-					scope  : me,
-					handler: me.onSave
-				}
-			],
-			bbar       : [
-				{
-					text   : 'Save',
-					iconCls: 'save',
+					margin : '0 20 0 0',
 					scope  : me,
 					handler: me.onSave
 				}
 			]
 		});
 
-		me.pageBody = [ me.form ];
+		me.pageBody = [ me.header, me.form ];
 		me.callParent(arguments);
-	},
-
-	getHeader: function() {
-		return [
-			{
-				xtype: 'container',
-				html : '<div class="roleHeader">' +
-					'<span class="perm">Permission</span>' +
-					'<span class="role">Front Office</span>' +
-					'<span class="role">Auditors</span>' +
-					'<span class="role">Clinician</span>' +
-					'<span class="role">Physician</span>' +
-					'<span class="role">Adminstrators</span>' +
-					'</div>'
-			}
-		]
 	},
 
 	onSave: function() {
@@ -77,8 +73,6 @@ Ext.define('App.view.administration.Roles', {
 			values = form.getValues(),
 			record = form.getRecord(),
 			changedValues;
-
-
 
 			if(record.set(values) !== null){
 				me.form.el.mask('Saving Roles, Please wait...');
@@ -151,15 +145,10 @@ Ext.define('App.view.administration.Roles', {
 	onActive: function(callback) {
 		var me = this,
 			form = me.form;
-
 		form.el.mask('Loading...');
-
 		form.removeAll();
-
 		Roles.getRoleForm(null, function(provider, response) {
-			form.add(me.getHeader());
 			form.add(eval(response.result));
-			//form.doLayout();
 			me.getFormData();
 		});
 

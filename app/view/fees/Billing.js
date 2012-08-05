@@ -310,13 +310,13 @@ Ext.define('App.view.fees.Billing', {
 									margin: '5 5 0 5'
 								}
 							]
-						}), me.cptPanel = Ext.create('App.view.patientfile.encounter.CurrentProceduralTerminology', {
+						}), me.cptPanel = Ext.create('App.view.patient.encounter.CurrentProceduralTerminology', {
 							region: 'center'
 						})
 					]
 				}),
 
-				me.progressNote = Ext.create('App.view.patientfile.ProgressNote', {
+				me.progressNote = Ext.create('App.view.patient.ProgressNote', {
 					title       : 'Encounter Progress Note',
 					region      : 'east',
 					margin      : 5,

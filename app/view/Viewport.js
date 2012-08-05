@@ -26,34 +26,34 @@ Ext.define('App.view.Viewport', {
 		'App.model.fees.EncountersPayments',
 		'App.model.fees.PaymentTransactions',
 		'App.model.navigation.Navigation',
-		'App.model.patientfile.Allergies',
-		'App.model.patientfile.CptCodes',
-		'App.model.patientfile.Dental',
-		'App.model.patientfile.Encounter',
-		'App.model.patientfile.EncounterCPTsICDs',
-		'App.model.patientfile.Encounters',
-		'App.model.patientfile.EventHistory',
-		'App.model.patientfile.Immunization',
-		'App.model.patientfile.ImmunizationCheck',
-		'App.model.patientfile.LaboratoryTypes',
-		'App.model.patientfile.MeaningfulUseAlert',
-		'App.model.patientfile.MedicalIssues',
-		'App.model.patientfile.Medications',
-		'App.model.patientfile.Notes',
-		'App.model.patientfile.PatientArrivalLog',
-		'App.model.patientfile.PatientDocuments',
-		'App.model.patientfile.PatientImmunization',
-		'App.model.patientfile.PatientLabsResults',
-		'App.model.patientfile.PatientsLabsOrders',
-		'App.model.patientfile.PatientsPrescription',
-		'App.model.patientfile.PreventiveCare',
-		'App.model.patientfile.QRCptCodes',
-		'App.model.patientfile.DismissedAlerts',
-		'App.model.patientfile.Reminders',
-		'App.model.patientfile.Surgery',
-		'App.model.patientfile.VectorGraph',
-		'App.model.patientfile.VisitPayment',
-		'App.model.patientfile.Vitals',
+		'App.model.patient.Allergies',
+		'App.model.patient.CptCodes',
+		'App.model.patient.Dental',
+		'App.model.patient.Encounter',
+		'App.model.patient.EncounterCPTsICDs',
+		'App.model.patient.Encounters',
+		'App.model.patient.EventHistory',
+		'App.model.patient.Immunization',
+		'App.model.patient.ImmunizationCheck',
+		'App.model.patient.LaboratoryTypes',
+		'App.model.patient.MeaningfulUseAlert',
+		'App.model.patient.MedicalIssues',
+		'App.model.patient.Medications',
+		'App.model.patient.Notes',
+		'App.model.patient.PatientArrivalLog',
+		'App.model.patient.PatientDocuments',
+		'App.model.patient.PatientImmunization',
+		'App.model.patient.PatientLabsResults',
+		'App.model.patient.PatientsLabsOrders',
+		'App.model.patient.PatientsPrescription',
+		'App.model.patient.PreventiveCare',
+		'App.model.patient.QRCptCodes',
+		'App.model.patient.DismissedAlerts',
+		'App.model.patient.Reminders',
+		'App.model.patient.Surgery',
+		'App.model.patient.VectorGraph',
+		'App.model.patient.VisitPayment',
+		'App.model.patient.Vitals',
 		'App.model.areas.PoolArea',
 		'App.model.areas.PoolDropAreas',
 
@@ -77,33 +77,33 @@ Ext.define('App.view.Viewport', {
 		'App.store.fees.EncountersPayments',
 		'App.store.fees.PaymentTransactions',
 		'App.store.navigation.Navigation',
-		'App.store.patientfile.Allergies',
-		'App.store.patientfile.Dental',
-		'App.store.patientfile.Encounter',
-		'App.store.patientfile.EncounterCPTsICDs',
-		'App.store.patientfile.EncounterEventHistory',
-		'App.store.patientfile.Encounters',
-		'App.store.patientfile.Immunization',
-		'App.store.patientfile.ImmunizationCheck',
-		'App.store.patientfile.LaboratoryTypes',
-		'App.store.patientfile.MeaningfulUseAlert',
-		'App.store.patientfile.MedicalIssues',
-		'App.store.patientfile.Medications',
-		'App.store.patientfile.Notes',
-		'App.store.patientfile.PatientArrivalLog',
-		'App.store.patientfile.PatientDocuments',
-		'App.store.patientfile.DismissedAlerts',
-		'App.store.patientfile.PatientImmunization',
-		'App.store.patientfile.PatientLabsResults',
-		'App.store.patientfile.PatientsLabsOrders',
-		'App.store.patientfile.PatientsPrescription',
-		'App.store.patientfile.PreventiveCare',
-		'App.store.patientfile.QRCptCodes',
-		'App.store.patientfile.Reminders',
-		'App.store.patientfile.Surgery',
-		'App.store.patientfile.VectorGraph',
-		'App.store.patientfile.VisitPayment',
-		'App.store.patientfile.Vitals',
+		'App.store.patient.Allergies',
+		'App.store.patient.Dental',
+		'App.store.patient.Encounter',
+		'App.store.patient.EncounterCPTsICDs',
+		'App.store.patient.EncounterEventHistory',
+		'App.store.patient.Encounters',
+		'App.store.patient.Immunization',
+		'App.store.patient.ImmunizationCheck',
+		'App.store.patient.LaboratoryTypes',
+		'App.store.patient.MeaningfulUseAlert',
+		'App.store.patient.MedicalIssues',
+		'App.store.patient.Medications',
+		'App.store.patient.Notes',
+		'App.store.patient.PatientArrivalLog',
+		'App.store.patient.PatientDocuments',
+		'App.store.patient.DismissedAlerts',
+		'App.store.patient.PatientImmunization',
+		'App.store.patient.PatientLabsResults',
+		'App.store.patient.PatientsLabsOrders',
+		'App.store.patient.PatientsPrescription',
+		'App.store.patient.PreventiveCare',
+		'App.store.patient.QRCptCodes',
+		'App.store.patient.Reminders',
+		'App.store.patient.Surgery',
+		'App.store.patient.VectorGraph',
+		'App.store.patient.VisitPayment',
+		'App.store.patient.Vitals',
 		'App.store.areas.PoolArea',
 
 		'App.classes.LiveCPTSearch',
@@ -195,13 +195,12 @@ Ext.define('App.view.Viewport', {
 		'App.classes.window.Window',
 		'App.classes.NodeDisabled',
 
-		'App.view.patientfile.MedicalWindow',
-		'App.view.patientfile.ChartsWindow',
-		//'App.view.patientfile.PaymentEntryWindow',
-		'App.view.patientfile.PreventiveCareWindow',
-		'App.view.patientfile.NewDocumentsWindow',
-		'App.view.patientfile.DocumentViewerWindow',
-		'App.view.patientfile.ArrivalLogWindow',
+		'App.view.patient.windows.Medical',
+		'App.view.patient.windows.Charts',
+		'App.view.patient.windows.PreventiveCare',
+		'App.view.patient.windows.NewDocuments',
+		'App.view.patient.windows.DocumentViewer',
+		'App.view.patient.windows.ArrivalLog',
 
 		'App.view.dashboard.Dashboard',
 		'App.view.calendar.Calendar',
@@ -210,17 +209,17 @@ Ext.define('App.view.Viewport', {
 		'App.view.areas.FloorPlan',
 		'App.view.areas.PatientPoolDropZone',
 
-		'App.view.patientfile.ItemsToReview',
-		'App.view.patientfile.EncounterDocumentsGrid',
-		'App.view.patientfile.encounter.ICDs',
-		'App.view.patientfile.CheckoutAlertsView',
-		'App.view.patientfile.Vitals',
-		'App.view.patientfile.NewPatient',
-		'App.view.patientfile.Summary',
-		'App.view.patientfile.Visits',
-		'App.view.patientfile.Encounter',
-		'App.view.patientfile.MedicalWindow',
-		'App.view.patientfile.VisitCheckout',
+		'App.view.patient.ItemsToReview',
+		'App.view.patient.EncounterDocumentsGrid',
+		'App.view.patient.encounter.ICDs',
+		'App.view.patient.CheckoutAlertsView',
+		'App.view.patient.Vitals',
+		'App.view.patient.NewPatient',
+		'App.view.patient.Summary',
+		'App.view.patient.Visits',
+		'App.view.patient.Encounter',
+		'App.view.patient.windows.Medical',
+		'App.view.patient.VisitCheckout',
 
 		'App.view.fees.Billing',
 		'App.view.fees.PaymentEntryWindow',
@@ -671,11 +670,11 @@ Ext.define('App.view.Viewport', {
 			/**
 			 * Patient Area
 			 */
-				Ext.create('App.view.patientfile.NewPatient'),
-				Ext.create('App.view.patientfile.Summary'),
-				Ext.create('App.view.patientfile.Visits'),
-				Ext.create('App.view.patientfile.Encounter'),
-				Ext.create('App.view.patientfile.VisitCheckout'),
+				Ext.create('App.view.patient.NewPatient'),
+				Ext.create('App.view.patient.Summary'),
+				Ext.create('App.view.patient.Visits'),
+				Ext.create('App.view.patient.Encounter'),
+				Ext.create('App.view.patient.VisitCheckout'),
 
 			/**
 			 * Fees Area
@@ -823,12 +822,12 @@ Ext.define('App.view.Viewport', {
 			]
 		});
 
-		me.MedicalWindow = Ext.create('App.view.patientfile.MedicalWindow');
-		me.ChartsWindow = Ext.create('App.view.patientfile.ChartsWindow');
+		me.MedicalWindow = Ext.create('App.view.patient.windows.Medical');
+		me.ChartsWindow = Ext.create('App.view.patient.windows.Charts');
 		me.PaymentEntryWindow = Ext.create('App.view.fees.PaymentEntryWindow');
-		me.PreventiveCareWindow = Ext.create('App.view.patientfile.PreventiveCareWindow');
-		me.NewDocumentsWindow = Ext.create('App.view.patientfile.NewDocumentsWindow');
-		me.DocumentViewerWindow = Ext.create('App.view.patientfile.DocumentViewerWindow');
+		me.PreventiveCareWindow = Ext.create('App.view.patient.windows.PreventiveCare');
+		me.NewDocumentsWindow = Ext.create('App.view.patient.windows.NewDocuments');
+		me.DocumentViewerWindow = Ext.create('App.view.patient.windows.DocumentViewer');
 		me.layout = { type: 'border', padding: 3 };
 		me.defaults = { split: true };
 		me.items = [ me.Header, me.navColumn, me.MainPanel, me.Footer ];
@@ -870,7 +869,7 @@ Ext.define('App.view.Viewport', {
 		if(this.patientArrivalLog) {
 			this.patientArrivalLog.show();
 		} else {
-			this.patientArrivalLog = Ext.create('App.view.patientfile.ArrivalLogWindow').show();
+			this.patientArrivalLog = Ext.create('App.view.patient.windows.ArrivalLog').show();
 		}
 	},
 

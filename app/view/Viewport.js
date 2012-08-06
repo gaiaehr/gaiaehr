@@ -7,6 +7,10 @@
 Ext.define('App.view.Viewport', {
 	extend  : 'Ext.Viewport',
 	requires: [
+		'Ext.*',
+
+		'Ext.ux.LiveSearchGridPanel',
+
 		'App.model.administration.ActiveProblems',
 		'App.model.administration.DefaultDocuments',
 		'App.model.administration.DocumentsTemplates',
@@ -19,6 +23,7 @@ Ext.define('App.view.Viewport', {
 		'App.model.administration.PreventiveCare',
 		'App.model.administration.PreventiveCareActiveProblems',
 		'App.model.administration.PreventiveCareMedications',
+		'App.model.administration.PreventiveCareLabs',
 		'App.model.administration.Services',
 		'App.model.miscellaneous.OfficeNotes',
 		'App.model.fees.Billing',
@@ -69,6 +74,7 @@ Ext.define('App.view.Viewport', {
 		'App.store.administration.PreventiveCare',
 		'App.store.administration.PreventiveCareActiveProblems',
 		'App.store.administration.PreventiveCareMedications',
+		'App.store.administration.PreventiveCareLabs',
 		'App.store.administration.Services',
 		'App.store.administration.ActiveProblems',
 		'App.store.miscellaneous.OfficeNotes',

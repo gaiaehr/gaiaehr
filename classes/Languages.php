@@ -19,7 +19,7 @@ require_once 'HTTP/Request2.php';
 
 class Languages {
     public function getLanguageFromTransifex($lang){
-        $request = new HTTP_Request2('http://vela1606:pass@www.transifex.net/api/2/project/GaiaEHR/resource/All/translation/'.$lang.'/?file',
+        $request = new HTTP_Request2('http://vela1606:pass@www.transifex.net/api/2/project/gaiaehr/resource/All/translation/'.$lang.'/?file',
             HTTP_Request2::METHOD_GET);
         $r = $request->send()->getBody();
         $r = str_replace('<?php
@@ -34,7 +34,7 @@ $LANG = ','',$r);
     }
 
     public function getLanguagesFromTransifex(){
-        $request = new HTTP_Request2('http://vela1606:pass@www.transifex.net/api/2/project/GaiaEHR/resource/All/?details',
+        $request = new HTTP_Request2('http://vela1606:pass@www.transifex.net/api/2/project/gaiaehr/resource/All/?details',
             HTTP_Request2::METHOD_GET);
         $r = $request->send()->getBody();
         $r = json_decode($r, true);

@@ -1,0 +1,1481 @@
+{
+    "projectName": "Project Name",
+    "licenseText": "Copyright(c) 2012 Company Name",
+    "builds": [
+        {
+            "name": "All Classes",
+            "target": "all-classes.js",
+            "options": {
+                "debug": true
+            },
+            "files": [
+                {
+                    "clsName": "Ext.ux.statusbar.StatusBar",
+                    "name": "StatusBar.js",
+                    "path": "app/classes/ux/statusbar/"
+                },
+                {
+                    "clsName": "App.model.administration.ActiveProblems",
+                    "name": "ActiveProblems.js",
+                    "path": "app/model/administration/"
+                },
+                {
+                    "clsName": "App.model.administration.DefaultDocuments",
+                    "name": "DefaultDocuments.js",
+                    "path": "app/model/administration/"
+                },
+                {
+                    "clsName": "App.model.administration.DocumentsTemplates",
+                    "name": "DocumentsTemplates.js",
+                    "path": "app/model/administration/"
+                },
+                {
+                    "clsName": "App.model.administration.FloorPlans",
+                    "name": "FloorPlans.js",
+                    "path": "app/model/administration/"
+                },
+                {
+                    "clsName": "App.model.administration.FloorPlanZones",
+                    "name": "FloorPlanZones.js",
+                    "path": "app/model/administration/"
+                },
+                {
+                    "clsName": "App.model.administration.HeadersAndFooters",
+                    "name": "HeadersAndFooters.js",
+                    "path": "app/model/administration/"
+                },
+                {
+                    "clsName": "App.model.administration.ImmunizationRelations",
+                    "name": "ImmunizationRelations.js",
+                    "path": "app/model/administration/"
+                },
+                {
+                    "clsName": "App.model.administration.LabObservations",
+                    "name": "LabObservations.js",
+                    "path": "app/model/administration/"
+                },
+                {
+                    "clsName": "App.model.administration.Medications",
+                    "name": "Medications.js",
+                    "path": "app/model/administration/"
+                },
+                {
+                    "clsName": "App.model.administration.PreventiveCare",
+                    "name": "PreventiveCare.js",
+                    "path": "app/model/administration/"
+                },
+                {
+                    "clsName": "App.model.administration.PreventiveCareActiveProblems",
+                    "name": "PreventiveCareActiveProblems.js",
+                    "path": "app/model/administration/"
+                },
+                {
+                    "clsName": "App.model.administration.PreventiveCareMedications",
+                    "name": "PreventiveCareMedications.js",
+                    "path": "app/model/administration/"
+                },
+                {
+                    "clsName": "App.model.administration.PreventiveCareLabs",
+                    "name": "PreventiveCareLabs.js",
+                    "path": "app/model/administration/"
+                },
+                {
+                    "clsName": "App.model.administration.Services",
+                    "name": "Services.js",
+                    "path": "app/model/administration/"
+                },
+                {
+                    "clsName": "App.model.miscellaneous.OfficeNotes",
+                    "name": "OfficeNotes.js",
+                    "path": "app/model/miscellaneous/"
+                },
+                {
+                    "clsName": "App.model.fees.Billing",
+                    "name": "Billing.js",
+                    "path": "app/model/fees/"
+                },
+                {
+                    "clsName": "App.model.fees.Checkout",
+                    "name": "Checkout.js",
+                    "path": "app/model/fees/"
+                },
+                {
+                    "clsName": "App.model.fees.EncountersPayments",
+                    "name": "EncountersPayments.js",
+                    "path": "app/model/fees/"
+                },
+                {
+                    "clsName": "App.model.navigation.Navigation",
+                    "name": "Navigation.js",
+                    "path": "app/model/navigation/"
+                },
+                {
+                    "clsName": "App.model.patient.Allergies",
+                    "name": "Allergies.js",
+                    "path": "app/model/patient/"
+                },
+                {
+                    "clsName": "App.model.patient.CptCodes",
+                    "name": "CptCodes.js",
+                    "path": "app/model/patient/"
+                },
+                {
+                    "clsName": "App.model.patient.Dental",
+                    "name": "Dental.js",
+                    "path": "app/model/patient/"
+                },
+                {
+                    "clsName": "App.model.patient.Encounter",
+                    "name": "Encounter.js",
+                    "path": "app/model/patient/"
+                },
+                {
+                    "clsName": "App.model.patient.EncounterCPTsICDs",
+                    "name": "EncounterCPTsICDs.js",
+                    "path": "app/model/patient/"
+                },
+                {
+                    "clsName": "App.model.patient.Encounters",
+                    "name": "Encounters.js",
+                    "path": "app/model/patient/"
+                },
+                {
+                    "clsName": "App.model.patient.EventHistory",
+                    "name": "EventHistory.js",
+                    "path": "app/model/patient/"
+                },
+                {
+                    "clsName": "App.model.patient.Immunization",
+                    "name": "Immunization.js",
+                    "path": "app/model/patient/"
+                },
+                {
+                    "clsName": "App.model.patient.ImmunizationCheck",
+                    "name": "ImmunizationCheck.js",
+                    "path": "app/model/patient/"
+                },
+                {
+                    "clsName": "App.model.patient.LaboratoryTypes",
+                    "name": "LaboratoryTypes.js",
+                    "path": "app/model/patient/"
+                },
+                {
+                    "clsName": "App.model.patient.MeaningfulUseAlert",
+                    "name": "MeaningfulUseAlert.js",
+                    "path": "app/model/patient/"
+                },
+                {
+                    "clsName": "App.model.patient.MedicalIssues",
+                    "name": "MedicalIssues.js",
+                    "path": "app/model/patient/"
+                },
+                {
+                    "clsName": "App.model.patient.Medications",
+                    "name": "Medications.js",
+                    "path": "app/model/patient/"
+                },
+                {
+                    "clsName": "App.model.patient.Notes",
+                    "name": "Notes.js",
+                    "path": "app/model/patient/"
+                },
+                {
+                    "clsName": "App.model.patient.PatientArrivalLog",
+                    "name": "PatientArrivalLog.js",
+                    "path": "app/model/patient/"
+                },
+                {
+                    "clsName": "App.model.patient.PatientDocuments",
+                    "name": "PatientDocuments.js",
+                    "path": "app/model/patient/"
+                },
+                {
+                    "clsName": "App.model.patient.PatientImmunization",
+                    "name": "PatientImmunization.js",
+                    "path": "app/model/patient/"
+                },
+                {
+                    "clsName": "App.model.patient.PatientLabsResults",
+                    "name": "PatientLabsResults.js",
+                    "path": "app/model/patient/"
+                },
+                {
+                    "clsName": "App.model.patient.PatientsLabsOrders",
+                    "name": "PatientsLabsOrders.js",
+                    "path": "app/model/patient/"
+                },
+                {
+                    "clsName": "App.model.patient.PatientsPrescription",
+                    "name": "PatientsPrescription.js",
+                    "path": "app/model/patient/"
+                },
+                {
+                    "clsName": "App.model.patient.PreventiveCare",
+                    "name": "PreventiveCare.js",
+                    "path": "app/model/patient/"
+                },
+                {
+                    "clsName": "App.model.patient.QRCptCodes",
+                    "name": "QRCptCodes.js",
+                    "path": "app/model/patient/"
+                },
+                {
+                    "clsName": "App.model.patient.DismissedAlerts",
+                    "name": "DismissedAlerts.js",
+                    "path": "app/model/patient/"
+                },
+                {
+                    "clsName": "App.model.patient.Reminders",
+                    "name": "Reminders.js",
+                    "path": "app/model/patient/"
+                },
+                {
+                    "clsName": "App.model.patient.Surgery",
+                    "name": "Surgery.js",
+                    "path": "app/model/patient/"
+                },
+                {
+                    "clsName": "App.model.patient.VectorGraph",
+                    "name": "VectorGraph.js",
+                    "path": "app/model/patient/"
+                },
+                {
+                    "clsName": "App.model.patient.Vitals",
+                    "name": "Vitals.js",
+                    "path": "app/model/patient/"
+                },
+                {
+                    "clsName": "App.model.areas.PoolArea",
+                    "name": "PoolArea.js",
+                    "path": "app/model/areas/"
+                },
+                {
+                    "clsName": "App.model.areas.PoolDropAreas",
+                    "name": "PoolDropAreas.js",
+                    "path": "app/model/areas/"
+                },
+                {
+                    "clsName": "App.store.administration.ActiveProblems",
+                    "name": "ActiveProblems.js",
+                    "path": "app/store/administration/"
+                },
+                {
+                    "clsName": "App.store.administration.DefaultDocuments",
+                    "name": "DefaultDocuments.js",
+                    "path": "app/store/administration/"
+                },
+                {
+                    "clsName": "App.store.administration.DocumentsTemplates",
+                    "name": "DocumentsTemplates.js",
+                    "path": "app/store/administration/"
+                },
+                {
+                    "clsName": "App.store.administration.FloorPlans",
+                    "name": "FloorPlans.js",
+                    "path": "app/store/administration/"
+                },
+                {
+                    "clsName": "App.store.administration.FloorPlanZones",
+                    "name": "FloorPlanZones.js",
+                    "path": "app/store/administration/"
+                },
+                {
+                    "clsName": "App.store.administration.HeadersAndFooters",
+                    "name": "HeadersAndFooters.js",
+                    "path": "app/store/administration/"
+                },
+                {
+                    "clsName": "App.store.administration.ImmunizationRelations",
+                    "name": "ImmunizationRelations.js",
+                    "path": "app/store/administration/"
+                },
+                {
+                    "clsName": "App.store.administration.LabObservations",
+                    "name": "LabObservations.js",
+                    "path": "app/store/administration/"
+                },
+                {
+                    "clsName": "App.store.administration.Medications",
+                    "name": "Medications.js",
+                    "path": "app/store/administration/"
+                },
+                {
+                    "clsName": "App.store.administration.PreventiveCare",
+                    "name": "PreventiveCare.js",
+                    "path": "app/store/administration/"
+                },
+                {
+                    "clsName": "App.store.administration.PreventiveCareActiveProblems",
+                    "name": "PreventiveCareActiveProblems.js",
+                    "path": "app/store/administration/"
+                },
+                {
+                    "clsName": "App.store.administration.PreventiveCareMedications",
+                    "name": "PreventiveCareMedications.js",
+                    "path": "app/store/administration/"
+                },
+                {
+                    "clsName": "App.store.administration.PreventiveCareLabs",
+                    "name": "PreventiveCareLabs.js",
+                    "path": "app/store/administration/"
+                },
+                {
+                    "clsName": "App.store.administration.Services",
+                    "name": "Services.js",
+                    "path": "app/store/administration/"
+                },
+                {
+                    "clsName": "App.store.miscellaneous.OfficeNotes",
+                    "name": "OfficeNotes.js",
+                    "path": "app/store/miscellaneous/"
+                },
+                {
+                    "clsName": "App.store.fees.Billing",
+                    "name": "Billing.js",
+                    "path": "app/store/fees/"
+                },
+                {
+                    "clsName": "App.store.fees.EncountersPayments",
+                    "name": "EncountersPayments.js",
+                    "path": "app/store/fees/"
+                },
+                {
+                    "clsName": "App.store.navigation.Navigation",
+                    "name": "Navigation.js",
+                    "path": "app/store/navigation/"
+                },
+                {
+                    "clsName": "App.store.patient.Allergies",
+                    "name": "Allergies.js",
+                    "path": "app/store/patient/"
+                },
+                {
+                    "clsName": "App.store.patient.Dental",
+                    "name": "Dental.js",
+                    "path": "app/store/patient/"
+                },
+                {
+                    "clsName": "App.store.patient.Encounter",
+                    "name": "Encounter.js",
+                    "path": "app/store/patient/"
+                },
+                {
+                    "clsName": "App.store.patient.EncounterCPTsICDs",
+                    "name": "EncounterCPTsICDs.js",
+                    "path": "app/store/patient/"
+                },
+                {
+                    "clsName": "App.store.patient.EncounterEventHistory",
+                    "name": "EncounterEventHistory.js",
+                    "path": "app/store/patient/"
+                },
+                {
+                    "clsName": "App.store.patient.Encounters",
+                    "name": "Encounters.js",
+                    "path": "app/store/patient/"
+                },
+                {
+                    "clsName": "App.store.patient.Immunization",
+                    "name": "Immunization.js",
+                    "path": "app/store/patient/"
+                },
+                {
+                    "clsName": "App.store.patient.ImmunizationCheck",
+                    "name": "ImmunizationCheck.js",
+                    "path": "app/store/patient/"
+                },
+                {
+                    "clsName": "App.store.patient.LaboratoryTypes",
+                    "name": "LaboratoryTypes.js",
+                    "path": "app/store/patient/"
+                },
+                {
+                    "clsName": "App.store.patient.MeaningfulUseAlert",
+                    "name": "MeaningfulUseAlert.js",
+                    "path": "app/store/patient/"
+                },
+                {
+                    "clsName": "App.store.patient.MedicalIssues",
+                    "name": "MedicalIssues.js",
+                    "path": "app/store/patient/"
+                },
+                {
+                    "clsName": "App.store.patient.Medications",
+                    "name": "Medications.js",
+                    "path": "app/store/patient/"
+                },
+                {
+                    "clsName": "App.store.patient.Notes",
+                    "name": "Notes.js",
+                    "path": "app/store/patient/"
+                },
+                {
+                    "clsName": "App.store.patient.PatientArrivalLog",
+                    "name": "PatientArrivalLog.js",
+                    "path": "app/store/patient/"
+                },
+                {
+                    "clsName": "App.store.patient.PatientDocuments",
+                    "name": "PatientDocuments.js",
+                    "path": "app/store/patient/"
+                },
+                {
+                    "clsName": "App.store.patient.DismissedAlerts",
+                    "name": "DismissedAlerts.js",
+                    "path": "app/store/patient/"
+                },
+                {
+                    "clsName": "App.store.patient.PatientImmunization",
+                    "name": "PatientImmunization.js",
+                    "path": "app/store/patient/"
+                },
+                {
+                    "clsName": "App.store.patient.PatientLabsResults",
+                    "name": "PatientLabsResults.js",
+                    "path": "app/store/patient/"
+                },
+                {
+                    "clsName": "App.store.patient.PatientsLabsOrders",
+                    "name": "PatientsLabsOrders.js",
+                    "path": "app/store/patient/"
+                },
+                {
+                    "clsName": "App.store.patient.PatientsPrescription",
+                    "name": "PatientsPrescription.js",
+                    "path": "app/store/patient/"
+                },
+                {
+                    "clsName": "App.store.patient.PreventiveCare",
+                    "name": "PreventiveCare.js",
+                    "path": "app/store/patient/"
+                },
+                {
+                    "clsName": "App.store.patient.QRCptCodes",
+                    "name": "QRCptCodes.js",
+                    "path": "app/store/patient/"
+                },
+                {
+                    "clsName": "App.store.patient.Reminders",
+                    "name": "Reminders.js",
+                    "path": "app/store/patient/"
+                },
+                {
+                    "clsName": "App.store.patient.Surgery",
+                    "name": "Surgery.js",
+                    "path": "app/store/patient/"
+                },
+                {
+                    "clsName": "App.store.patient.VectorGraph",
+                    "name": "VectorGraph.js",
+                    "path": "app/store/patient/"
+                },
+                {
+                    "clsName": "App.store.patient.VisitPayment",
+                    "name": "VisitPayment.js",
+                    "path": "app/store/patient/"
+                },
+                {
+                    "clsName": "App.store.patient.Vitals",
+                    "name": "Vitals.js",
+                    "path": "app/store/patient/"
+                },
+                {
+                    "clsName": "App.store.areas.PoolArea",
+                    "name": "PoolArea.js",
+                    "path": "app/store/areas/"
+                },
+                {
+                    "clsName": "App.classes.LiveCPTSearch",
+                    "name": "LiveCPTSearch.js",
+                    "path": "app/classes/"
+                },
+                {
+                    "clsName": "App.classes.LiveImmunizationSearch",
+                    "name": "LiveImmunizationSearch.js",
+                    "path": "app/classes/"
+                },
+                {
+                    "clsName": "App.classes.LiveMedicationSearch",
+                    "name": "LiveMedicationSearch.js",
+                    "path": "app/classes/"
+                },
+                {
+                    "clsName": "App.classes.LiveLabsSearch",
+                    "name": "LiveLabsSearch.js",
+                    "path": "app/classes/"
+                },
+                {
+                    "clsName": "App.classes.LivePatientSearch",
+                    "name": "LivePatientSearch.js",
+                    "path": "app/classes/"
+                },
+                {
+                    "clsName": "App.classes.LiveSurgeriesSearch",
+                    "name": "LiveSurgeriesSearch.js",
+                    "path": "app/classes/"
+                },
+                {
+                    "clsName": "App.classes.ManagedIframe",
+                    "name": "ManagedIframe.js",
+                    "path": "app/classes/"
+                },
+                {
+                    "clsName": "App.classes.NodeDisabled",
+                    "name": "NodeDisabled.js",
+                    "path": "app/classes/"
+                },
+                {
+                    "clsName": "App.classes.PhotoIdWindow",
+                    "name": "PhotoIdWindow.js",
+                    "path": "app/classes/"
+                },
+                {
+                    "clsName": "App.classes.RenderPanel",
+                    "name": "RenderPanel.js",
+                    "path": "app/classes/"
+                },
+                {
+                    "clsName": "Extensible.form.field.DateRange",
+                    "name": "DateRange.js",
+                    "path": "lib/extensible-1.5.1/src/form/field/"
+                },
+                {
+                    "clsName": "Extensible.calendar.form.field.ReminderCombo",
+                    "name": "ReminderCombo.js",
+                    "path": "lib/extensible-1.5.1/src/calendar/form/field/"
+                },
+                {
+                    "clsName": "Extensible.calendar.form.field.CalendarCombo",
+                    "name": "CalendarCombo.js",
+                    "path": "lib/extensible-1.5.1/src/calendar/form/field/"
+                },
+                {
+                    "clsName": "Extensible.form.recurrence.FrequencyCombo",
+                    "name": "FrequencyCombo.js",
+                    "path": "lib/extensible-1.5.1/src/form/recurrence/"
+                },
+                {
+                    "clsName": "Extensible.form.recurrence.AbstractOption",
+                    "name": "AbstractOption.js",
+                    "path": "lib/extensible-1.5.1/src/form/recurrence/"
+                },
+                {
+                    "clsName": "Extensible.form.recurrence.option.Interval",
+                    "name": "Interval.js",
+                    "path": "lib/extensible-1.5.1/src/form/recurrence/option/"
+                },
+                {
+                    "clsName": "Extensible.form.recurrence.option.Weekly",
+                    "name": "Weekly.js",
+                    "path": "lib/extensible-1.5.1/src/form/recurrence/option/"
+                },
+                {
+                    "clsName": "Extensible.lang.Number",
+                    "name": "Number.js",
+                    "path": "lib/extensible-1.5.1/src/lang/"
+                },
+                {
+                    "clsName": "Extensible.form.recurrence.option.Monthly",
+                    "name": "Monthly.js",
+                    "path": "lib/extensible-1.5.1/src/form/recurrence/option/"
+                },
+                {
+                    "clsName": "Extensible.form.recurrence.option.Yearly",
+                    "name": "Yearly.js",
+                    "path": "lib/extensible-1.5.1/src/form/recurrence/option/"
+                },
+                {
+                    "clsName": "Extensible.form.recurrence.option.Duration",
+                    "name": "Duration.js",
+                    "path": "lib/extensible-1.5.1/src/form/recurrence/option/"
+                },
+                {
+                    "clsName": "Extensible.form.recurrence.Fieldset",
+                    "name": "Fieldset.js",
+                    "path": "lib/extensible-1.5.1/src/form/recurrence/"
+                },
+                {
+                    "clsName": "Extensible.form.recurrence.RangeEditPanel",
+                    "name": "RangeEditPanel.js",
+                    "path": "lib/extensible-1.5.1/src/form/recurrence/"
+                },
+                {
+                    "clsName": "Extensible.form.recurrence.RangeEditWindow",
+                    "name": "RangeEditWindow.js",
+                    "path": "lib/extensible-1.5.1/src/form/recurrence/"
+                },
+                {
+                    "clsName": "Extensible.calendar.form.EventDetails",
+                    "name": "EventDetails.js",
+                    "path": "lib/extensible-1.5.1/src/calendar/form/"
+                },
+                {
+                    "clsName": "Extensible.calendar.data.EventMappings",
+                    "name": "EventMappings.js",
+                    "path": "lib/extensible-1.5.1/src/calendar/data/"
+                },
+                {
+                    "clsName": "Extensible.data.Model",
+                    "name": "Model.js",
+                    "path": "lib/extensible-1.5.1/src/data/"
+                },
+                {
+                    "clsName": "Extensible.calendar.data.EventModel",
+                    "name": "EventModel.js",
+                    "path": "lib/extensible-1.5.1/src/calendar/data/"
+                },
+                {
+                    "clsName": "Extensible.calendar.form.EventWindow",
+                    "name": "EventWindow.js",
+                    "path": "lib/extensible-1.5.1/src/calendar/form/"
+                },
+                {
+                    "clsName": "Extensible.calendar.menu.Event",
+                    "name": "Event.js",
+                    "path": "lib/extensible-1.5.1/src/calendar/menu/"
+                },
+                {
+                    "clsName": "Extensible.calendar.dd.StatusProxy",
+                    "name": "StatusProxy.js",
+                    "path": "lib/extensible-1.5.1/src/calendar/dd/"
+                },
+                {
+                    "clsName": "Extensible.calendar.dd.DragZone",
+                    "name": "DragZone.js",
+                    "path": "lib/extensible-1.5.1/src/calendar/dd/"
+                },
+                {
+                    "clsName": "Extensible.calendar.dd.DropZone",
+                    "name": "DropZone.js",
+                    "path": "lib/extensible-1.5.1/src/calendar/dd/"
+                },
+                {
+                    "clsName": "Extensible.calendar.view.AbstractCalendar",
+                    "name": "AbstractCalendar.js",
+                    "path": "lib/extensible-1.5.1/src/calendar/view/"
+                },
+                {
+                    "clsName": "Extensible.calendar.template.BoxLayout",
+                    "name": "BoxLayout.js",
+                    "path": "lib/extensible-1.5.1/src/calendar/template/"
+                },
+                {
+                    "clsName": "Extensible.calendar.template.Month",
+                    "name": "Month.js",
+                    "path": "lib/extensible-1.5.1/src/calendar/template/"
+                },
+                {
+                    "clsName": "Extensible.calendar.util.WeekEventRenderer",
+                    "name": "WeekEventRenderer.js",
+                    "path": "lib/extensible-1.5.1/src/calendar/util/"
+                },
+                {
+                    "clsName": "Extensible.calendar.view.MonthDayDetail",
+                    "name": "MonthDayDetail.js",
+                    "path": "lib/extensible-1.5.1/src/calendar/view/"
+                },
+                {
+                    "clsName": "Extensible.calendar.view.Month",
+                    "name": "Month.js",
+                    "path": "lib/extensible-1.5.1/src/calendar/view/"
+                },
+                {
+                    "clsName": "Extensible.calendar.template.DayHeader",
+                    "name": "DayHeader.js",
+                    "path": "lib/extensible-1.5.1/src/calendar/template/"
+                },
+                {
+                    "clsName": "Extensible.calendar.view.DayHeader",
+                    "name": "DayHeader.js",
+                    "path": "lib/extensible-1.5.1/src/calendar/view/"
+                },
+                {
+                    "clsName": "Extensible.calendar.template.DayBody",
+                    "name": "DayBody.js",
+                    "path": "lib/extensible-1.5.1/src/calendar/template/"
+                },
+                {
+                    "clsName": "Extensible.calendar.dd.DayDragZone",
+                    "name": "DayDragZone.js",
+                    "path": "lib/extensible-1.5.1/src/calendar/dd/"
+                },
+                {
+                    "clsName": "Extensible.calendar.dd.DayDropZone",
+                    "name": "DayDropZone.js",
+                    "path": "lib/extensible-1.5.1/src/calendar/dd/"
+                },
+                {
+                    "clsName": "Extensible.calendar.view.DayBody",
+                    "name": "DayBody.js",
+                    "path": "lib/extensible-1.5.1/src/calendar/view/"
+                },
+                {
+                    "clsName": "Extensible.calendar.view.Day",
+                    "name": "Day.js",
+                    "path": "lib/extensible-1.5.1/src/calendar/view/"
+                },
+                {
+                    "clsName": "Extensible.calendar.view.MultiDay",
+                    "name": "MultiDay.js",
+                    "path": "lib/extensible-1.5.1/src/calendar/view/"
+                },
+                {
+                    "clsName": "Extensible.calendar.view.Week",
+                    "name": "Week.js",
+                    "path": "lib/extensible-1.5.1/src/calendar/view/"
+                },
+                {
+                    "clsName": "Extensible.calendar.view.MultiWeek",
+                    "name": "MultiWeek.js",
+                    "path": "lib/extensible-1.5.1/src/calendar/view/"
+                },
+                {
+                    "clsName": "Extensible.calendar.CalendarPanel",
+                    "name": "CalendarPanel.js",
+                    "path": "lib/extensible-1.5.1/src/calendar/"
+                },
+                {
+                    "clsName": "Extensible.calendar.util.ColorPicker",
+                    "name": "ColorPicker.js",
+                    "path": "lib/extensible-1.5.1/src/calendar/util/"
+                },
+                {
+                    "clsName": "Extensible.calendar.gadget.CalendarListMenu",
+                    "name": "CalendarListMenu.js",
+                    "path": "lib/extensible-1.5.1/src/calendar/gadget/"
+                },
+                {
+                    "clsName": "Extensible.calendar.gadget.CalendarListPanel",
+                    "name": "CalendarListPanel.js",
+                    "path": "lib/extensible-1.5.1/src/calendar/gadget/"
+                },
+                {
+                    "clsName": "Extensible.calendar.data.CalendarMappings",
+                    "name": "CalendarMappings.js",
+                    "path": "lib/extensible-1.5.1/src/calendar/data/"
+                },
+                {
+                    "clsName": "Extensible.calendar.data.CalendarModel",
+                    "name": "CalendarModel.js",
+                    "path": "lib/extensible-1.5.1/src/calendar/data/"
+                },
+                {
+                    "clsName": "Extensible.calendar.data.MemoryCalendarStore",
+                    "name": "MemoryCalendarStore.js",
+                    "path": "lib/extensible-1.5.1/src/calendar/data/"
+                },
+                {
+                    "clsName": "Extensible.calendar.data.MemoryEventStore",
+                    "name": "MemoryEventStore.js",
+                    "path": "lib/extensible-1.5.1/src/calendar/data/"
+                },
+                {
+                    "clsName": "App.classes.combo.ActiveFacilities",
+                    "name": "ActiveFacilities.js",
+                    "path": "app/classes/combo/"
+                },
+                {
+                    "clsName": "App.classes.combo.Allergies",
+                    "name": "Allergies.js",
+                    "path": "app/classes/combo/"
+                },
+                {
+                    "clsName": "App.classes.combo.AllergiesAbdominal",
+                    "name": "AllergiesAbdominal.js",
+                    "path": "app/classes/combo/"
+                },
+                {
+                    "clsName": "App.classes.combo.AllergiesLocal",
+                    "name": "AllergiesLocal.js",
+                    "path": "app/classes/combo/"
+                },
+                {
+                    "clsName": "App.classes.combo.AllergiesLocation",
+                    "name": "AllergiesLocation.js",
+                    "path": "app/classes/combo/"
+                },
+                {
+                    "clsName": "App.classes.combo.AllergiesSeverity",
+                    "name": "AllergiesSeverity.js",
+                    "path": "app/classes/combo/"
+                },
+                {
+                    "clsName": "App.classes.combo.AllergiesSkin",
+                    "name": "AllergiesSkin.js",
+                    "path": "app/classes/combo/"
+                },
+                {
+                    "clsName": "App.classes.combo.AllergiesSystemic",
+                    "name": "AllergiesSystemic.js",
+                    "path": "app/classes/combo/"
+                },
+                {
+                    "clsName": "App.classes.combo.AllergiesTypes",
+                    "name": "AllergiesTypes.js",
+                    "path": "app/classes/combo/"
+                },
+                {
+                    "clsName": "App.classes.combo.Authorizations",
+                    "name": "Authorizations.js",
+                    "path": "app/classes/combo/"
+                },
+                {
+                    "clsName": "App.classes.combo.BillingFacilities",
+                    "name": "BillingFacilities.js",
+                    "path": "app/classes/combo/"
+                },
+                {
+                    "clsName": "App.classes.combo.CalendarCategories",
+                    "name": "CalendarCategories.js",
+                    "path": "app/classes/combo/"
+                },
+                {
+                    "clsName": "App.classes.combo.CodesTypes",
+                    "name": "CodesTypes.js",
+                    "path": "app/classes/combo/"
+                },
+                {
+                    "clsName": "App.classes.combo.EncounterPriority",
+                    "name": "EncounterPriority.js",
+                    "path": "app/classes/combo/"
+                },
+                {
+                    "clsName": "App.classes.combo.Facilities",
+                    "name": "Facilities.js",
+                    "path": "app/classes/combo/"
+                },
+                {
+                    "clsName": "App.classes.combo.SmokingStatus",
+                    "name": "SmokingStatus.js",
+                    "path": "app/classes/combo/"
+                },
+                {
+                    "clsName": "App.classes.combo.FloorPlanAreas",
+                    "name": "FloorPlanAreas.js",
+                    "path": "app/classes/combo/"
+                },
+                {
+                    "clsName": "App.classes.combo.FollowUp",
+                    "name": "FollowUp.js",
+                    "path": "app/classes/combo/"
+                },
+                {
+                    "clsName": "App.classes.combo.YesNoNa",
+                    "name": "YesNoNa.js",
+                    "path": "app/classes/combo/"
+                },
+                {
+                    "clsName": "App.classes.combo.InsurancePayerType",
+                    "name": "InsurancePayerType.js",
+                    "path": "app/classes/combo/"
+                },
+                {
+                    "clsName": "App.classes.combo.LabObservations",
+                    "name": "LabObservations.js",
+                    "path": "app/classes/combo/"
+                },
+                {
+                    "clsName": "App.classes.combo.LabsTypes",
+                    "name": "LabsTypes.js",
+                    "path": "app/classes/combo/"
+                },
+                {
+                    "clsName": "App.classes.combo.Languages",
+                    "name": "Languages.js",
+                    "path": "app/classes/combo/"
+                },
+                {
+                    "clsName": "App.classes.combo.Lists",
+                    "name": "Lists.js",
+                    "path": "app/classes/combo/"
+                },
+                {
+                    "clsName": "App.classes.combo.MedicalIssues",
+                    "name": "MedicalIssues.js",
+                    "path": "app/classes/combo/"
+                },
+                {
+                    "clsName": "App.classes.combo.MsgNoteType",
+                    "name": "MsgNoteType.js",
+                    "path": "app/classes/combo/"
+                },
+                {
+                    "clsName": "App.classes.combo.MsgStatus",
+                    "name": "MsgStatus.js",
+                    "path": "app/classes/combo/"
+                },
+                {
+                    "clsName": "App.classes.combo.Occurrence",
+                    "name": "Occurrence.js",
+                    "path": "app/classes/combo/"
+                },
+                {
+                    "clsName": "App.classes.combo.Outcome",
+                    "name": "Outcome.js",
+                    "path": "app/classes/combo/"
+                },
+                {
+                    "clsName": "App.classes.combo.Outcome2",
+                    "name": "Outcome2.js",
+                    "path": "app/classes/combo/"
+                },
+                {
+                    "clsName": "App.classes.combo.PayingEntity",
+                    "name": "PayingEntity.js",
+                    "path": "app/classes/combo/"
+                },
+                {
+                    "clsName": "App.classes.combo.PaymentCategory",
+                    "name": "PaymentCategory.js",
+                    "path": "app/classes/combo/"
+                },
+                {
+                    "clsName": "App.classes.combo.PaymentMethod",
+                    "name": "PaymentMethod.js",
+                    "path": "app/classes/combo/"
+                },
+                {
+                    "clsName": "App.classes.combo.Pharmacies",
+                    "name": "Pharmacies.js",
+                    "path": "app/classes/combo/"
+                },
+                {
+                    "clsName": "App.classes.combo.posCodes",
+                    "name": "posCodes.js",
+                    "path": "app/classes/combo/"
+                },
+                {
+                    "clsName": "App.classes.combo.PreventiveCareTypes",
+                    "name": "PreventiveCareTypes.js",
+                    "path": "app/classes/combo/"
+                },
+                {
+                    "clsName": "App.classes.combo.ProceduresBodySites",
+                    "name": "ProceduresBodySites.js",
+                    "path": "app/classes/combo/"
+                },
+                {
+                    "clsName": "App.classes.combo.Providers",
+                    "name": "Providers.js",
+                    "path": "app/classes/combo/"
+                },
+                {
+                    "clsName": "App.classes.combo.Roles",
+                    "name": "Roles.js",
+                    "path": "app/classes/combo/"
+                },
+                {
+                    "clsName": "App.classes.combo.Sex",
+                    "name": "Sex.js",
+                    "path": "app/classes/combo/"
+                },
+                {
+                    "clsName": "App.classes.combo.Surgery",
+                    "name": "Surgery.js",
+                    "path": "app/classes/combo/"
+                },
+                {
+                    "clsName": "App.classes.combo.TaxId",
+                    "name": "TaxId.js",
+                    "path": "app/classes/combo/"
+                },
+                {
+                    "clsName": "App.classes.combo.Templates",
+                    "name": "Templates.js",
+                    "path": "app/classes/combo/"
+                },
+                {
+                    "clsName": "App.classes.combo.Time",
+                    "name": "Time.js",
+                    "path": "app/classes/combo/"
+                },
+                {
+                    "clsName": "App.classes.combo.Titles",
+                    "name": "Titles.js",
+                    "path": "app/classes/combo/"
+                },
+                {
+                    "clsName": "App.classes.combo.TransmitMethod",
+                    "name": "TransmitMethod.js",
+                    "path": "app/classes/combo/"
+                },
+                {
+                    "clsName": "App.classes.combo.Types",
+                    "name": "Types.js",
+                    "path": "app/classes/combo/"
+                },
+                {
+                    "clsName": "App.classes.combo.Units",
+                    "name": "Units.js",
+                    "path": "app/classes/combo/"
+                },
+                {
+                    "clsName": "App.classes.combo.Users",
+                    "name": "Users.js",
+                    "path": "app/classes/combo/"
+                },
+                {
+                    "clsName": "App.classes.form.FormPanel",
+                    "name": "FormPanel.js",
+                    "path": "app/classes/form/"
+                },
+                {
+                    "clsName": "App.classes.form.fields.Checkbox",
+                    "name": "Checkbox.js",
+                    "path": "app/classes/form/fields/"
+                },
+                {
+                    "clsName": "App.classes.form.fields.Currency",
+                    "name": "Currency.js",
+                    "path": "app/classes/form/fields/"
+                },
+                {
+                    "clsName": "App.classes.form.fields.DateTime",
+                    "name": "DateTime.js",
+                    "path": "app/classes/form/fields/"
+                },
+                {
+                    "clsName": "App.classes.window.Window",
+                    "name": "Window.js",
+                    "path": "app/classes/window/"
+                },
+                {
+                    "clsName": "App.view.patient.LaboratoryResults",
+                    "name": "LaboratoryResults.js",
+                    "path": "app/view/patient/"
+                },
+                {
+                    "clsName": "App.view.patient.windows.Medical",
+                    "name": "Medical.js",
+                    "path": "app/view/patient/windows/"
+                },
+                {
+                    "clsName": "App.view.patient.windows.Charts",
+                    "name": "Charts.js",
+                    "path": "app/view/patient/windows/"
+                },
+                {
+                    "clsName": "App.view.patient.windows.PreventiveCare",
+                    "name": "PreventiveCare.js",
+                    "path": "app/view/patient/windows/"
+                },
+                {
+                    "clsName": "App.view.patient.windows.NewDocuments",
+                    "name": "NewDocuments.js",
+                    "path": "app/view/patient/windows/"
+                },
+                {
+                    "clsName": "App.view.patient.windows.DocumentViewer",
+                    "name": "DocumentViewer.js",
+                    "path": "app/view/patient/windows/"
+                },
+                {
+                    "clsName": "App.view.patient.windows.ArrivalLog",
+                    "name": "ArrivalLog.js",
+                    "path": "app/view/patient/windows/"
+                },
+                {
+                    "clsName": "App.classes.dashboard.Portlet",
+                    "name": "Portlet.js",
+                    "path": "app/classes/dashboard/"
+                },
+                {
+                    "clsName": "App.classes.dashboard.PortalColumn",
+                    "name": "PortalColumn.js",
+                    "path": "app/classes/dashboard/"
+                },
+                {
+                    "clsName": "App.classes.dashboard.PortalPanel",
+                    "name": "PortalPanel.js",
+                    "path": "app/classes/dashboard/"
+                },
+                {
+                    "clsName": "App.classes.dashboard.PortalDropZone",
+                    "name": "PortalDropZone.js",
+                    "path": "app/classes/dashboard/"
+                },
+                {
+                    "clsName": "App.classes.dashboard.GridPortlet",
+                    "name": "GridPortlet.js",
+                    "path": "app/classes/dashboard/"
+                },
+                {
+                    "clsName": "App.classes.dashboard.ChartPortlet",
+                    "name": "ChartPortlet.js",
+                    "path": "app/classes/dashboard/"
+                },
+                {
+                    "clsName": "App.classes.dashboard.OnotesPortlet",
+                    "name": "OnotesPortlet.js",
+                    "path": "app/classes/dashboard/"
+                },
+                {
+                    "clsName": "App.view.dashboard.Dashboard",
+                    "name": "Dashboard.js",
+                    "path": "app/view/dashboard/"
+                },
+                {
+                    "clsName": "App.view.calendar.Calendar",
+                    "name": "Calendar.js",
+                    "path": "app/view/calendar/"
+                },
+                {
+                    "clsName": "App.view.messages.Messages",
+                    "name": "Messages.js",
+                    "path": "app/view/messages/"
+                },
+                {
+                    "clsName": "App.view.areas.FloorPlan",
+                    "name": "FloorPlan.js",
+                    "path": "app/view/areas/"
+                },
+                {
+                    "clsName": "App.view.areas.PatientPoolDropZone",
+                    "name": "PatientPoolDropZone.js",
+                    "path": "app/view/areas/"
+                },
+                {
+                    "clsName": "App.view.patient.ItemsToReview",
+                    "name": "ItemsToReview.js",
+                    "path": "app/view/patient/"
+                },
+                {
+                    "clsName": "App.view.patient.EncounterDocumentsGrid",
+                    "name": "EncounterDocumentsGrid.js",
+                    "path": "app/view/patient/"
+                },
+                {
+                    "clsName": "App.classes.LiveICDXSearch",
+                    "name": "LiveICDXSearch.js",
+                    "path": "app/classes/"
+                },
+                {
+                    "clsName": "App.view.patient.encounter.ICDs",
+                    "name": "ICDs.js",
+                    "path": "app/view/patient/encounter/"
+                },
+                {
+                    "clsName": "App.view.patient.CheckoutAlertsView",
+                    "name": "CheckoutAlertsView.js",
+                    "path": "app/view/patient/"
+                },
+                {
+                    "clsName": "App.view.patient.Vitals",
+                    "name": "Vitals.js",
+                    "path": "app/view/patient/"
+                },
+                {
+                    "clsName": "App.view.patient.NewPatient",
+                    "name": "NewPatient.js",
+                    "path": "app/view/patient/"
+                },
+                {
+                    "clsName": "App.view.patient.Summary",
+                    "name": "Summary.js",
+                    "path": "app/view/patient/"
+                },
+                {
+                    "clsName": "App.view.patient.Visits",
+                    "name": "Visits.js",
+                    "path": "app/view/patient/"
+                },
+                {
+                    "clsName": "App.view.patient.Encounter",
+                    "name": "Encounter.js",
+                    "path": "app/view/patient/"
+                },
+                {
+                    "clsName": "App.view.patient.VisitCheckout",
+                    "name": "VisitCheckout.js",
+                    "path": "app/view/patient/"
+                },
+                {
+                    "clsName": "App.view.fees.Billing",
+                    "name": "Billing.js",
+                    "path": "app/view/fees/"
+                },
+                {
+                    "clsName": "App.view.fees.PaymentEntryWindow",
+                    "name": "PaymentEntryWindow.js",
+                    "path": "app/view/fees/"
+                },
+                {
+                    "clsName": "App.view.fees.Payments",
+                    "name": "Payments.js",
+                    "path": "app/view/fees/"
+                },
+                {
+                    "clsName": "App.view.administration.DataManager",
+                    "name": "DataManager.js",
+                    "path": "app/view/administration/"
+                },
+                {
+                    "clsName": "App.view.administration.Documents",
+                    "name": "Documents.js",
+                    "path": "app/view/administration/"
+                },
+                {
+                    "clsName": "App.view.administration.Facilities",
+                    "name": "Facilities.js",
+                    "path": "app/view/administration/"
+                },
+                {
+                    "clsName": "App.view.administration.Globals",
+                    "name": "Globals.js",
+                    "path": "app/view/administration/"
+                },
+                {
+                    "clsName": "App.view.administration.Layout",
+                    "name": "Layout.js",
+                    "path": "app/view/administration/"
+                },
+                {
+                    "clsName": "App.view.administration.Lists",
+                    "name": "Lists.js",
+                    "path": "app/view/administration/"
+                },
+                {
+                    "clsName": "App.view.administration.Log",
+                    "name": "Log.js",
+                    "path": "app/view/administration/"
+                },
+                {
+                    "clsName": "App.view.administration.Medications",
+                    "name": "Medications.js",
+                    "path": "app/view/administration/"
+                },
+                {
+                    "clsName": "App.view.administration.FloorPlans",
+                    "name": "FloorPlans.js",
+                    "path": "app/view/administration/"
+                },
+                {
+                    "clsName": "App.view.administration.Practice",
+                    "name": "Practice.js",
+                    "path": "app/view/administration/"
+                },
+                {
+                    "clsName": "App.view.administration.PreventiveCare",
+                    "name": "PreventiveCare.js",
+                    "path": "app/view/administration/"
+                },
+                {
+                    "clsName": "App.view.administration.Roles",
+                    "name": "Roles.js",
+                    "path": "app/view/administration/"
+                },
+                {
+                    "clsName": "App.view.administration.Users",
+                    "name": "Users.js",
+                    "path": "app/view/administration/"
+                },
+                {
+                    "clsName": "App.view.miscellaneous.Addressbook",
+                    "name": "Addressbook.js",
+                    "path": "app/view/miscellaneous/"
+                },
+                {
+                    "clsName": "App.view.miscellaneous.MyAccount",
+                    "name": "MyAccount.js",
+                    "path": "app/view/miscellaneous/"
+                },
+                {
+                    "clsName": "App.view.miscellaneous.MySettings",
+                    "name": "MySettings.js",
+                    "path": "app/view/miscellaneous/"
+                },
+                {
+                    "clsName": "App.view.miscellaneous.OfficeNotes",
+                    "name": "OfficeNotes.js",
+                    "path": "app/view/miscellaneous/"
+                },
+                {
+                    "clsName": "App.view.miscellaneous.Websearch",
+                    "name": "Websearch.js",
+                    "path": "app/view/miscellaneous/"
+                },
+                {
+                    "clsName": "App.view.Viewport",
+                    "name": "Viewport.js",
+                    "path": "app/view/"
+                },
+                {
+                    "clsName": "App.classes.GridPanel",
+                    "name": "GridPanel.js",
+                    "path": "app/classes/"
+                },
+                {
+                    "clsName": "Ext.ux.PreviewPlugin",
+                    "name": "PreviewPlugin.js",
+                    "path": "app/classes/ux/"
+                },
+                {
+                    "clsName": "Extensible.calendar.data.EventStore",
+                    "name": "EventStore.js",
+                    "path": "lib/extensible-1.5.1/src/calendar/data/"
+                },
+                {
+                    "clsName": "Ext.ux.SlidingPager",
+                    "name": "SlidingPager.js",
+                    "path": "app/classes/ux/"
+                },
+                {
+                    "clsName": "App.view.search.PatientSearch",
+                    "name": "PatientSearch.js",
+                    "path": "app/view/search/"
+                },
+                {
+                    "clsName": "App.classes.grid.RowFormEditor",
+                    "name": "RowFormEditor.js",
+                    "path": "app/classes/grid/"
+                },
+                {
+                    "clsName": "App.classes.grid.RowFormEditing",
+                    "name": "RowFormEditing.js",
+                    "path": "app/classes/grid/"
+                },
+                {
+                    "clsName": "App.model.patient.CheckoutAlertArea",
+                    "name": "CheckoutAlertArea.js",
+                    "path": "app/model/patient/"
+                },
+                {
+                    "clsName": "App.store.patient.CheckoutAlertArea",
+                    "name": "CheckoutAlertArea.js",
+                    "path": "app/store/patient/"
+                },
+                {
+                    "clsName": "App.view.patient.encounter.CurrentProceduralTerminology",
+                    "name": "CurrentProceduralTerminology.js",
+                    "path": "app/view/patient/encounter/"
+                },
+                {
+                    "clsName": "App.classes.grid.EventHistory",
+                    "name": "EventHistory.js",
+                    "path": "app/classes/grid/"
+                },
+                {
+                    "clsName": "App.view.patient.ProgressNote",
+                    "name": "ProgressNote.js",
+                    "path": "app/view/patient/"
+                },
+                {
+                    "clsName": "App.model.patient.charts.WeightForAgeInf",
+                    "name": "WeightForAgeInf.js",
+                    "path": "app/model/patient/charts/"
+                },
+                {
+                    "clsName": "App.store.patient.charts.WeightForAgeInf",
+                    "name": "WeightForAgeInf.js",
+                    "path": "app/store/patient/charts/"
+                },
+                {
+                    "clsName": "App.model.patient.charts.LengthForAgeInf",
+                    "name": "LengthForAgeInf.js",
+                    "path": "app/model/patient/charts/"
+                },
+                {
+                    "clsName": "App.store.patient.charts.LengthForAgeInf",
+                    "name": "LengthForAgeInf.js",
+                    "path": "app/store/patient/charts/"
+                },
+                {
+                    "clsName": "App.model.patient.charts.WeightForRecumbentInf",
+                    "name": "WeightForRecumbentInf.js",
+                    "path": "app/model/patient/charts/"
+                },
+                {
+                    "clsName": "App.store.patient.charts.WeightForRecumbentInf",
+                    "name": "WeightForRecumbentInf.js",
+                    "path": "app/store/patient/charts/"
+                },
+                {
+                    "clsName": "App.model.patient.charts.HeadCircumferenceInf",
+                    "name": "HeadCircumferenceInf.js",
+                    "path": "app/model/patient/charts/"
+                },
+                {
+                    "clsName": "App.store.patient.charts.HeadCircumferenceInf",
+                    "name": "HeadCircumferenceInf.js",
+                    "path": "app/store/patient/charts/"
+                },
+                {
+                    "clsName": "App.model.patient.charts.WeightForStature",
+                    "name": "WeightForStature.js",
+                    "path": "app/model/patient/charts/"
+                },
+                {
+                    "clsName": "App.store.patient.charts.WeightForStature",
+                    "name": "WeightForStature.js",
+                    "path": "app/store/patient/charts/"
+                },
+                {
+                    "clsName": "App.model.patient.charts.WeightForAge",
+                    "name": "WeightForAge.js",
+                    "path": "app/model/patient/charts/"
+                },
+                {
+                    "clsName": "App.store.patient.charts.WeightForAge",
+                    "name": "WeightForAge.js",
+                    "path": "app/store/patient/charts/"
+                },
+                {
+                    "clsName": "App.model.patient.charts.StatureForAge",
+                    "name": "StatureForAge.js",
+                    "path": "app/model/patient/charts/"
+                },
+                {
+                    "clsName": "App.store.patient.charts.StatureForAge",
+                    "name": "StatureForAge.js",
+                    "path": "app/store/patient/charts/"
+                },
+                {
+                    "clsName": "App.model.patient.charts.BMIForAge",
+                    "name": "BMIForAge.js",
+                    "path": "app/model/patient/charts/"
+                },
+                {
+                    "clsName": "App.store.patient.charts.BMIForAge",
+                    "name": "BMIForAge.js",
+                    "path": "app/store/patient/charts/"
+                },
+                {
+                    "clsName": "App.view.patient.charts.BPPulseTemp",
+                    "name": "BPPulseTemp.js",
+                    "path": "app/view/patient/charts/"
+                },
+                {
+                    "clsName": "App.view.patient.charts.HeadCircumference",
+                    "name": "HeadCircumference.js",
+                    "path": "app/view/patient/charts/"
+                },
+                {
+                    "clsName": "App.view.patient.charts.HeightForStature",
+                    "name": "HeightForStature.js",
+                    "path": "app/view/patient/charts/"
+                },
+                {
+                    "clsName": "App.view.signature.SignatureWindow",
+                    "name": "SignatureWindow.js",
+                    "path": "app/view/signature/"
+                }
+            ]
+        },
+        {
+            "name": "Application - Production",
+            "target": "app-all.js",
+            "compress": true,
+            "files": [
+                {
+                    "path": "app/",
+                    "name": "all-classes.js"
+                },
+                {
+                    "path": "app/",
+                    "name": "app.js"
+                }
+            ]
+        }
+    ],
+    "resources": []
+}

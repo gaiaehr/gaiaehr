@@ -362,6 +362,7 @@ class dbHelper {
             $data['checksum']   = crc32($this->sql_statement);
             $data['facility']   = $_SESSION['site']['facility'];
             $data['patient_id'] = $_SESSION['patient']['id'];
+            $data['ip'] = $_SESSION['server']['REMOTE_ADDR'];
 
             $sqlStatement = $this->sqlBind($data, 'log', 'I');
             $this->setSQL($sqlStatement);

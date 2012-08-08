@@ -7,6 +7,17 @@ $API = array(
 			)
 		)
 	),
+	'Codes'=>array(
+		'methods'=>array(
+			'updateCodesWithUploadFile'=>array(
+				'formHandler'=>true,
+				'len'=>0
+			),
+			'getCodeFiles'=>array(
+				'len'=>1
+			)
+		)
+	),
     /**
     * Encounter Functions
     */

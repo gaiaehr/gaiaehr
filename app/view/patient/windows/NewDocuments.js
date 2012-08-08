@@ -569,7 +569,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 	        p = app.currPatient;
 		me.pid = p.pid;
         me.setTitle(p.name + (p.readOnly ? ' - <span style="color:red">[Read Mode]</span>' : ''));
-		me.setReadOnly();
+		me.setReadOnly(app.currPatient.readOnly);
 		me.patientPrescriptionStore.removeAll();
 		me.patientsLabsOrdersStore.removeAll();
 		doctorsNoteBody.reset();

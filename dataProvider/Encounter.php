@@ -302,7 +302,7 @@ class Encounter {
         if(count($vitals) >= 1){
             return $vitals;
         }else{
-            return array("success" => true);
+            return array();
         }
     }
     /**

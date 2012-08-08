@@ -53,7 +53,12 @@
 .x-grid-icon-padding {
 	padding: 0 5px;
 }
-
+.view_empty_text{
+	text-align: center!important;
+	font-size: 40px;
+	padding-top: 100px;
+	color: #999999;
+}
 .vitals-column-over tr td {
 	background-color: #ededed !important;
 }

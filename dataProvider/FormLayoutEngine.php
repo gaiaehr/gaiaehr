@@ -129,6 +129,8 @@ class FormLayoutEngine
 			 */
 			if($item['xtype'] == 'fieldset' && ($params->formToRender == 'Demographics' || $params->formToRender == 1)) {
 				$item['xtype'] = 'panel';
+				$item['border'] = false;
+				$item['bodyBorder'] = false;
 				$item['bodyPadding'] = 10;
 				if($item['title'] == 'Primary Insurance' || $item['title'] == 'Secondary Insurance' || $item['title'] == 'Tertiary Insurance' ){
 					array_push($items2, $item);
@@ -188,8 +190,8 @@ class FormLayoutEngine
 
 		if($params->formToRender == 'Demographics' || $params->formToRender == 1){
 			$rawStr2     = json_encode($items2);
-			$rawStr = "Ext.create('Ext.container.Container',{layout:{type:'vbox',align:'stretch'},items:[Ext.create('Ext.tab.Panel',{height:240,defaults:{autoScroll:true},items:$rawStr}),";
-			$rawStr .= "Ext.create('Ext.tab.Panel',{flex:1,defaults:{autoScroll:true},action:'insurances',items:$rawStr2})]})";
+			$rawStr = "Ext.create('Ext.container.Container',{layout:{type:'vbox',align:'stretch'},items:[Ext.create('Ext.tab.Panel',{border:false,height:240,defaults:{autoScroll:true},items:$rawStr}),";
+			$rawStr .= "Ext.create('Ext.tab.Panel',{border:false,flex:1,defaults:{autoScroll:true},action:'insurances',items:$rawStr2})]})";
 		}
 
 

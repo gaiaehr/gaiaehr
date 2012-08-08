@@ -243,6 +243,7 @@ Ext.define('App.view.Viewport', {
 		'App.view.administration.Practice',
 		'App.view.administration.PreventiveCare',
 		'App.view.administration.Roles',
+		'App.view.administration.ExternalDataLoads',
 		'App.view.administration.Users',
 
 		'App.view.miscellaneous.Addressbook',
@@ -748,6 +749,9 @@ Ext.define('App.view.Viewport', {
 		if(perm.access_documents) {
 			me.MainPanel.add(Ext.create('App.view.administration.Documents'));
 		}
+		//if(perm.access_documents) {
+			me.MainPanel.add(Ext.create('App.view.administration.ExternalDataLoads'));
+		//}
 
 		/**
 		 * Footer Panel
@@ -834,6 +838,7 @@ Ext.define('App.view.Viewport', {
 		me.PreventiveCareWindow = Ext.create('App.view.patient.windows.PreventiveCare');
 		me.NewDocumentsWindow = Ext.create('App.view.patient.windows.NewDocuments');
 		me.DocumentViewerWindow = Ext.create('App.view.patient.windows.DocumentViewer');
+
 		me.layout = { type: 'border', padding: 3 };
 		me.defaults = { split: true };
 		me.items = [ me.Header, me.navColumn, me.MainPanel, me.Footer ];

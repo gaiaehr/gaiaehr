@@ -116,6 +116,9 @@ class Navigation {
 	    if($this->ACL->hasPermission('access_documents')){
 		    $admin['children'][] = array( 'text' => 'Documents', 'leaf' => true, 'cls' => 'file', 'id' => 'panelDocuments' );
 	    }
+	    //if($this->ACL->hasPermission('access_documents')){
+		    $admin['children'][] = array( 'text' => 'Codes Update', 'leaf' => true, 'cls' => 'file', 'id' => 'panelUpdateCodes' );
+	    //}
 
 	    if(
 	        $this->ACL->hasPermission('access_gloabal_settings') ||

@@ -59,9 +59,9 @@ Ext.define('App.classes.RenderPanel', {
 		this.getComponent('RenderPanel-header').update('<div class="panel_title">' + pageTitle + '</div>' + (readOnly ? readOnlyDiv : '') + (timer ?  timerDiv : ''));
 	},
 
-	setReadOnly:function(){
-		var forms = this.query('form'),
-			readOnly = app.currPatient.readOnly;
+	setReadOnly:function(readOnly){
+		var forms = this.query('form');
+
 		for(var j = 0; j < forms.length; j++) {
 			var form = forms[j], items;
 			if(form.readOnly != readOnly){

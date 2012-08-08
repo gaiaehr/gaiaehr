@@ -1780,7 +1780,7 @@ Ext.define('App.view.patient.windows.Medical', {
 
 	    me.pid = p.pid;
 	    me.setTitle(p.name + (p.readOnly ? ' <span style="color:red">[Read Mode]</span>' : ''));
-	    me.setReadOnly();
+	    me.setReadOnly(app.currPatient.readOnly);
 	    Ext.each(reviewBts, function(bts){
 		    bts.setVisible((app.currEncounterId != null));
 	    });

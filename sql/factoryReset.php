@@ -57,17 +57,27 @@ $tables = array(
 	// codes table
 	'icd9_dx_code',
 	'icd9_dx_long_code',
-	'icd9_sg_code ',
-	'icd9_sg_long_code ',
-	'icd10_dx_order_code ',
-	'icd10_gem_dx_9_10 ',
-	'icd10_gem_dx_10_9 ',
-	'icd10_gem_pcs_9_10 ',
-	'icd10_gem_pcs_10_9 ',
-	'icd10_pcs_order_code ',
-	'icd10_reimbr_dx_9_10 ',
-	'icd10_reimbr_dx_9_10  '
-
+	'icd9_sg_code',
+	'icd9_sg_long_code',
+	'icd10_dx_order_code',
+	'icd10_gem_dx_9_10',
+	'icd10_gem_dx_10_9',
+	'icd10_gem_pcs_9_10',
+	'icd10_gem_pcs_10_9',
+	'icd10_pcs_order_code',
+	'icd10_reimbr_dx_9_10',
+	'rxnatomarchive',
+	'rxnconso',
+	'rxncui',
+	'rxncuichanges',
+	'rxndoc',
+	'rxnrel',
+	'rxnsab',
+	'rxnsat',
+	'rxnsty',
+	'sct_concepts',
+	'sct_descriptions',
+	'sct_relationships'
 );
 
 function getDirectoryList ($directory)

@@ -7,7 +7,7 @@ if(!isset($_SESSION)){
 set_include_path($_SESSION['site']['root'].'/lib/LINQ_040/Classes/');
 require_once'PHPLinq/LinqToObjects.php';
 
-ini_set('memory_limit', '256M');
+
 ini_set('max_input_time', '7600');
 ini_set('max_execution_time', '7600');
 

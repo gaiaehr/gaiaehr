@@ -242,6 +242,7 @@ Ext.define('App.view.administration.ExternalDataLoads', {
 	},
 
 	onCodeDblClick:function(grid, record){
+		say(app);
 		app.setTask(false);
 		Codes.updateCodes(record.data, function(provider, response){
 			say(response);

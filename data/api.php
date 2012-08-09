@@ -29,7 +29,8 @@ foreach($API as $aname=>&$a){
 $cfg = array(
 	'url'=>'data/router.php',
     'type'=>'remoting',
-	'actions'=>$actions
+	'actions'=>$actions,
+	'timeout'=>7200000
 );
 
 echo 'Ext.ns("App.data"); App.data.REMOTING_API = ';

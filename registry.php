@@ -71,10 +71,11 @@ $_SESSION['patient']['readMode']= null;
  /**
  * Server related variables
  */
-$_SESSION['server']             = $_SERVER;
-$_SESSION['server']['OS']       = (strstr( strtolower($_SERVER['SERVER_SIGNATURE']), 'win') ? 'Windows' : 'Linux');
-$_SESSION['server']['token']    = null;
-$_SESSION['server']['last_tid'] = null;
+$_SESSION['server']              = $_SERVER;
+$_SESSION['server']['OS']        = (stripos(strtolower(php_uname('s')), 'win') !== true ? 'Windows' : 'Linux');
+$_SESSION['server']['IS_WINDOWS']= (stripos(strtolower(php_uname('s')), 'win') !== true ? true : false);
+$_SESSION['server']['token']     = null;
+$_SESSION['server']['last_tid']  = null;
 /**
  * Client related variables
  */

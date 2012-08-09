@@ -7,9 +7,9 @@ if(!isset($_SESSION)){
 set_include_path($_SESSION['site']['root'].'/lib/LINQ_040/Classes/');
 require_once'PHPLinq/LinqToObjects.php';
 
-ini_set('memory_limit', '1024M');
-ini_set('max_input_time', '760000');
-ini_set('max_execution_time', '760000');
+ini_set('memory_limit', '256M');
+ini_set('max_input_time', '7600');
+ini_set('max_execution_time', '7600');
 
 /**
  * @brief       Database Helper Class.
@@ -52,7 +52,7 @@ class dbHelper {
     /**
      * @var PDO
      */
-    protected $conn;
+    public $conn;
    	/**
      * @var string
      */
@@ -77,7 +77,8 @@ class dbHelper {
         $dbPass = (string)$_SESSION['site']['db']['password'];
 		try {
     		$this->conn = new PDO( 'mysql:host='.$host.';port='.$port.';dbname='.$dbName,$dbUser,$dbPass,
-                array(PDO::ATTR_PERSISTENT => true)
+                array(PDO::ATTR_PERSISTENT => true,
+	                  PDO::MYSQL_ATTR_LOCAL_INFILE => 1)
             );
 		} catch (PDOException $e) {
     		$this->err = $e->getMessage();
@@ -174,7 +175,7 @@ class dbHelper {
 	 * @param              $Where
 	 * @return      string constructed SQL string
 	 */
-    public function sqlBind($BindFieldsArray, $Table, $InsertOrUpdate='I', $Where)
+    public function sqlBind($BindFieldsArray, $Table, $InsertOrUpdate = 'I', $Where = null)
     {
         if(isset($BindFieldsArray['__utma']))   unset($BindFieldsArray['__utma']);
         if(isset($BindFieldsArray['__utmz']))   unset($BindFieldsArray['__utmz']);
@@ -231,7 +232,7 @@ class dbHelper {
 		/**
          * Step 3 - Create the WHERE clause, if applicable
          */
-		if ($InsertOrUpdate == 'u'){
+		if ($InsertOrUpdate == 'u' && $Where != null){
 			$sql .= ' WHERE ';
 			if(is_array($Where)){
 				$count = 0;
@@ -342,6 +343,7 @@ class dbHelper {
 		if (stristr($this->sql_statement, 'INSERT') ||
 			stristr($this->sql_statement, 'DELETE') ||
 			stristr($this->sql_statement, 'UPDATE') ||
+			stristr($this->sql_statement, 'LOAD')  ||
 			stristr($this->sql_statement, 'ALTER')){
 
             $this->lastInsertId = $this->conn->lastInsertId();
@@ -351,6 +353,7 @@ class dbHelper {
 			if (stristr($this->sql_statement, 'DELETE')) $eventLog = 'Record deletion';
 			if (stristr($this->sql_statement, 'UPDATE')) $eventLog = 'Record update';
 			if (stristr($this->sql_statement, 'ALTER')) $eventLog = 'Table alteration';
+			if (stristr($this->sql_statement, 'LOAD')) $eventLog = 'Record load';
 
 			/**
              * Using the same, internal functions.

@@ -98,22 +98,31 @@ Ext.define('App.view.administration.ExternalDataLoads', {
 			items      : [
 				{
 					xtype: 'fieldset',
+					styleHtmlContent:true,
 					title: 'Current Version Installed',
 					html : 'None'
 				},
 				{
 					xtype: 'fieldset',
-					title: 'Installation Details',
+					title: 'Installation',
+					styleHtmlContent:true,
 					html : me.getInstallationDetails(action)
-				},
+				},,
 				{
-					xtype     : 'filefield',
-					name      : 'filePath',
-					buttonText: 'Select file...',
-					emptyText : 'Data File',
-					width     : 350,
-					labelWidth: 50,
-					allowBlank: false
+					xtype: 'fieldset',
+					title: 'Upload',
+					items:[
+						{
+
+							xtype     : 'filefield',
+							name      : 'filePath',
+							buttonText: 'Select file...',
+							emptyText : 'Data File',
+							width     : 350,
+							labelWidth: 50,
+							allowBlank: false
+						}
+					]
 				}
 			],
 			api        : {
@@ -140,7 +149,11 @@ Ext.define('App.view.administration.ExternalDataLoads', {
 			margin : '5 0 5 0',
 			padding: 0,
 			split  : true,
-			columns: me.getDefaultColumns()
+			columns: me.getDefaultColumns(),
+			listeners:{
+				scope:me,
+				itemdblclick:me.onCodeDblClick
+			}
 		});
 	},
 
@@ -166,30 +179,39 @@ Ext.define('App.view.administration.ExternalDataLoads', {
 
 	getInstallationDetails: function(action) {
 		if(action == 'ICD9') {
-			return 'Lorem ipsum dolor sit amet, porta nam suscipit sed id, ' +
-				'vestibulum velit tortor velit viverra, non enim justo, ' +
-				'purus nisl risus nibh, cras magnis sed erat magna ' +
-				'tristique commodo. Dapibus ut nulla amet massa congue leo. ' +
-				'Integer phasellus congue urna pellentesque. Vestibulum quis, ' +
-				'placerat suscipit quis porta malesuada, ut elementum venenatis ' +
-				'suscipit nunc. Mauris fringilla suspendisse lectus faucibus, ' +
-				'purus nec, libero sociis lobortis, eu et leo mauris velit. ' +
-				'Magnis tellus blandit fringilla, morbi mauris commodo, nec morbi ac non'
+			return '<p>Steps to install the ICD 9 database:</p>' +
+				'<ol>' +
+				'<li>The raw data feed release can be obtained from <a href="https://www.cms.gov/Medicare/Coding/ICD9ProviderDiagnosticCodes/codes.html">this location</a></li>' +
+				'<li>Upload the downloaded .zip file, or place the downloaded ICD 9 database zip file into the following directory: contrib/icd9</li>' +
+				'<li>Double Click the zip file from the "Available ICD9 Data" grid to install</li>' +
+				'</ol>' +
+				'<p style="color:red">NOTE: Importing external data can take more than an hour depending on your hardware configuration. For example, one of the RxNorm data tables contain in excess of 6 million rows.</p>'
 		} else if(action == 'ICD10') {
-			return 'Lorem ipsum dolor sit amet, porta nam suscipit sed id, ' +
-				'vestibulum velit tortor velit viverra, non enim justo, ' +
-				'purus nisl risus nibh, cras magnis sed erat magna ' +
-				'tristique commodo. Dapibus ut nulla amet massa congue leo. ' +
-				'Integer phasellus congue urna pellentesque. Vestibulum quis, ' +
-				'placerat suscipit quis porta malesuada, ut elementum venenatis ' +
-				'suscipit nunc. Mauris fringilla suspendisse lectus faucibus, '
-		} else if(action == 'RXNORM') {
-			return 'Lorem ipsum dolor sit amet, porta nam suscipit sed id, ' +
-				'placerat suscipit quis porta malesuada, ut elementum venenatis ' +
-				'suscipit nunc. Mauris fringilla suspendisse lectus faucibus, ' +
-				'purus nec, libero sociis lobortis, eu et leo mauris velit. ' +
-				'Magnis tellus blandit fringilla, morbi mauris commodo, nec morbi ac non'
-		} else if(action == 'SNOMED') {
+			return '<p>Steps to install the ICD 10 database:</p>' +
+				'<ol>' +
+				'<li>The raw data feed release can be obtained from <a href="https://www.cms.gov/Medicare/Coding/ICD10">this location</a></li>' +
+				'<li>Upload the downloaded .zip file, or place the downloaded ICD 10 database zip files into the following directory: contrib/icd10</li>' +
+				'<li>Double Click the zip file from the "Available ICD10 Data" grid to install</li>' +
+				'</ol>' +
+				'<p>These are the ICD10 2012 links:</p>' +
+				'<ol>' +
+				'<li><a href="https://www.cms.gov/Medicare/Coding/ICD10/Downloads/DiagnosisGEMs_2012.zip">DiagnosisGEMs_2012</a></li>' +
+				'<li><a href="https://www.cms.gov/Medicare/Coding/ICD10/Downloads/ProcedureGEMs_2012.zip">ProcedureGEMs_2012</a></li>' +
+				'<li><a href="https://www.cms.gov/Medicare/Coding/ICD10/Downloads/ReimbursementMapping_2012.zip">ReimbursementMapping_2012</a></li>' +
+				'<li><a href="https://www.cms.gov/Medicare/Coding/ICD10/Downloads/2012_PCS_long_and_abbreviated_titles.zip">2012_PCS_long_and_abbreviated_titles</a></li>' +
+				'<li><a href="https://www.cms.gov/Medicare/Coding/ICD10/Downloads/ICD10OrderFiles_2012.zip">ICD10OrderFiles_2012</a></li>' +
+				'</ol>' +
+				'<p style="color:red">NOTE: Importing external data can take more than an hour depending on your hardware configuration. For example, one of the RxNorm data tables contain in excess of 6 million rows.</p>'
+			} else if(action == 'RXNORM') {
+			return '<p>Steps to install the RxNorm database:</p>' +
+				'<ol>' +
+				'<li>The first step is to open an account with the Unified Medical Language System web site <a href="https://utslogin.nlm.nih.gov/cas/login">here</a></li>' +
+				'<li>Then the raw data feed release can be obtained from <a href="http://www.nlm.nih.gov/research/umls/rxnorm/docs/rxnormfiles.html">this location</a></li>' +
+				'<li>Upload the downloaded .zip file, or place the downloaded RxNorm database zip file into the following directory: contrib/rxnorm.</li>' +
+				'<li>Double Click the zip file from the "Available RxNorm Data" grid to install</li>' +
+				'</ol>' +
+				'<p style="color:red">NOTE: Only the full monthly RxNorm release is currently supported</p>'
+			} else if(action == 'SNOMED') {
 			return 'Lorem ipsum dolor sit amet, porta nam suscipit sed id, ' +
 				'vestibulum velit tortor velit viverra, non enim justo, ' +
 				'purus nec, libero sociis lobortis, eu et leo mauris velit. ' +
@@ -198,7 +220,7 @@ Ext.define('App.view.administration.ExternalDataLoads', {
 
 	},
 
-	uploadFile: function(btn, e) {
+	uploadFile: function(btn) {
 		var me = this,
 			form = btn.up('form').getForm();
 
@@ -217,6 +239,14 @@ Ext.define('App.view.administration.ExternalDataLoads', {
 				}
 			});
 		}
+	},
+
+	onCodeDblClick:function(grid, record){
+		app.setTask(false);
+		Codes.updateCodes(record.data, function(provider, response){
+			say(response);
+			app.setTask(true);
+		});
 	},
 
 	loadStores: function() {

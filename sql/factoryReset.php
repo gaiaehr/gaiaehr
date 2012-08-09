@@ -29,6 +29,11 @@ $tables = array(
 	'form_data_soap',
 	'form_data_vitals',
 	'messages',
+	'users_sessions',
+	'emergencies',
+
+
+	// patient tables
 	'patient_allergies',
 	'patient_immunizations',
 	'patient_medications',
@@ -47,8 +52,22 @@ $tables = array(
 	'patient_out_chart',
 	'patient_zone',
 	'preventive_care_inactive_patient',
-	'users_sessions',
-	'emergencies'
+
+
+	// codes table
+	'icd9_dx_code',
+	'icd9_dx_long_code',
+	'icd9_sg_code ',
+	'icd9_sg_long_code ',
+	'icd10_dx_order_code ',
+	'icd10_gem_dx_9_10 ',
+	'icd10_gem_dx_10_9 ',
+	'icd10_gem_pcs_9_10 ',
+	'icd10_gem_pcs_10_9 ',
+	'icd10_pcs_order_code ',
+	'icd10_reimbr_dx_9_10 ',
+	'icd10_reimbr_dx_9_10  '
+
 );
 
 function getDirectoryList ($directory)

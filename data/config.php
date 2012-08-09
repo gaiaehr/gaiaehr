@@ -15,6 +15,9 @@ $API = array(
 			),
 			'getCodeFiles'=>array(
 				'len'=>1
+			),
+			'updateCodes'=>array(
+				'len'=>1
 			)
 		)
 	),

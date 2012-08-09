@@ -1008,7 +1008,8 @@ Ext.define('App.view.Viewport', {
 		window.innerWidth < this.minWidthToFullMode ? this.navColumn.collapse() : this.navColumn.expand();
 		this.navigateToDefault();
 		this.removeAppMask();
-		Ext.TaskManager.start(this.Task);
+		this.setTask(true);
+
 	},
 
 	onNavigationNodeSelected: function(model, selected) {
@@ -1398,6 +1399,10 @@ Ext.define('App.view.Viewport', {
 
 	getApp: function() {
 		return this;
+	},
+
+	setTask:function(start){
+		start ? Ext.TaskManager.start(this.Task) : Ext.TaskManager.stop(this.Task)
 	},
 
 	accessDenied: function() {

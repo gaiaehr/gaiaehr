@@ -13,6 +13,7 @@ Ext.define('App.model.administration.ExternalDataLoads', {
 		{name: 'date' },
         {name: 'version' },
 		{name: 'path' },
-		{name: 'basename' }
+		{name: 'basename' },
+		{name: 'codeType' }
 	]
 });

@@ -19,7 +19,7 @@ class FileManager
 	public $tempDir;
 	public $fileName;
 	public $fileExtension;
-	public $fileError = '';
+	public $error = '';
 	public  $src;
 
 	function __construct()
@@ -70,44 +70,33 @@ class FileManager
 		}
 	}
 
-	public function extractFileToTempDir($fileSrc)
+	public function extractFileToTempDir($file, $deleteSrcFile = false)
 	{
-		$zip = new ZipArchive();
 		if($this->setWorkingDir()){
-			if ($zip->open($fileSrc) === TRUE) {
-				if (!($zip->extractTo($this->workingDir))) {
-			        return false;
-			    }
-				$zip->close();
-				return $this->workingDir;
-			}else{
-				return false;
-			}
+			return $this->extractFileToDir($file, $this->workingDir, $deleteSrcFile);
 		}else{
-			$this->fileError = 'Could not create working directory';
+			$this->error = 'Could not create working directory';
 			return false;
 		}
-
 	}
 
-	public function extractFileToDir($fileSrc, $dir, $deleteSrcFile = false)
+	public function extractFileToDir($file, $toDir, $deleteSrcFile = false)
 	{
 		$zip = new ZipArchive();
-		if ($zip->open($fileSrc) === TRUE) {
-			$zip->extractTo($dir);
+		if ($zip->open($file) === TRUE) {
+			$zip->extractTo($toDir);
 			$zip->close();
 			if($deleteSrcFile){
-				$this->deleteFileBySrc($fileSrc);
+				$this->deleteFileBySrc($file);
 			}
-			return true;
+			return $this->workingDir;
 		}else{
 			return false;
 		}
 	}
 
 
-
-	private function setWorkingDir()
+	public function setWorkingDir()
 	{
 		$workingDir = $_SESSION['site']['root'] . '/temp/'. $this->getTempDirAvailableName();
 		if(is_dir($workingDir) || mkdir($workingDir, 0777, true)) {
@@ -154,6 +143,13 @@ class FileManager
 	public function deleteFileBySrc($src)
 	{
 		return $this->rmdir_recursive($src);
+	}
+
+	public function scanDir($dir){
+		$files = scandir($dir);
+		array_shift($files); // get rid of '.'
+		array_shift($files); // get rid of '..'
+		return $files;
 	}
 
 	public function rmdir_recursive($dir) {

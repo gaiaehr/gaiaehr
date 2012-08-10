@@ -172,6 +172,10 @@ Ext.define('App.classes.RenderPanel', {
 		app.msg(title, format)
 	},
 
+	alert:function(msg, icon) {
+		app.alert(msg,icon)
+	},
+
     passwordVerificationWin:function(callback){
         var msg = Ext.Msg.prompt('Password Verification', 'Please enter your password:', function(btn, password) {
             callback(btn, password);

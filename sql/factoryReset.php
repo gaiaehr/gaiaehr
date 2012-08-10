@@ -66,6 +66,7 @@ $tables = array(
 	'icd10_gem_pcs_10_9',
 	'icd10_pcs_order_code',
 	'icd10_reimbr_dx_9_10',
+	'icd10_reimbr_pcs_9_10',
 	'rxnatomarchive',
 	'rxnconso',
 	'rxncui',
@@ -77,7 +78,8 @@ $tables = array(
 	'rxnsty',
 	'sct_concepts',
 	'sct_descriptions',
-	'sct_relationships'
+	'sct_relationships',
+	'standardized_tables_track'
 );
 
 function getDirectoryList ($directory)

@@ -1412,6 +1412,24 @@ Ext.define('App.view.Viewport', {
 			buttons: Ext.Msg.OK,
 			icon   : Ext.Msg.ERROR
 		});
+	},
+
+	alert: function(msg,icon) {
+		if(icon == 'error'){
+			icon = Ext.Msg.ERROR
+		}else if(icon == 'warning'){
+			icon = Ext.Msg.WARNING
+		}else if(icon == 'question'){
+			icon = Ext.Msg.QUESTION
+		}else{
+			icon = Ext.Msg.INFO
+		}
+		Ext.Msg.show({
+			title  : 'Oops!',
+			msg    : msg,
+			buttons: Ext.Msg.OK,
+			icon   : icon
+		});
 	}
 
 });

@@ -21,8 +21,9 @@ class Codes
 {
 	private $db;
 	private $codeType;
+	private $installedRevision;
 	private $zippedCodes;
-	private $error = '';
+	private $error = false;
 
 	function __construct()
 	{
@@ -62,9 +63,7 @@ class Codes
 		$mainDir        = $this->getCodeDir();
 		$revisions      = array();
 		if(is_dir($mainDir)) {
-			$files_array = scandir($mainDir);
-			array_shift($files_array); // get rid of '.'
-			array_shift($files_array); // get rid of '..'
+			$files_array = $this->file->scanDir($mainDir);
 			/**
 			 * this foreach loop only encounters 1 file for SNOMED, RXNORM and ICD9 but will cycle through all the
 			 * the release files for ICD10
@@ -161,21 +160,65 @@ class Codes
 
 	public function updateCodes(stdClass $params)
 	{
-		$dir = $this->file->extractFileToTempDir($params->path);
-		if($dir != false) {
-			$success = false;
-			if($params->codeType == 'ICD9' || $params->codeType == 'ICD10') {
-				$success = $this->icd_import($dir, $params->codeType);
-			} elseif($params->codeType == 'RXNORM') {
-				$success = $this->rxnorm_import($dir);
-			} elseif($params->codeType == 'SNOMED') {
-				$success = $this->snomed_import($dir);
-			}
-			return array('success'=> $success);
-		} else {
-			return array('success'=> false, 'error' => $this->file->fileError);
-		}
+		$this->codeType = $params->codeType;
+		$dir            = false;
+		if($this->isCodeVersionNewer($params->version)) {
+			// handle ICD10 request to loop for avery file
+			if($params->codeType == 'ICD10') {
+				$idc10Dir = $this->getCodeDir();
+				if(is_dir($idc10Dir)) {
+					if($this->file->setWorkingDir()) {
+						$files      = $this->file->scanDir($idc10Dir);
+						$filesFound = 0;
+						foreach($files as $file) {
+							if(
+								$file == $params->version . '_PCS_long_and_abbreviated_titles.zip' ||
+								$file == 'DiagnosisGEMs_' . $params->version . '.zip' ||
+								$file == 'ICD10OrderFiles_' . $params->version . '.zip' ||
+								$file == 'ProcedureGEMs_' . $params->version . '.zip' ||
+								$file == 'ReimbursementMapping_' . $params->version . '.zip'
+							) {
+								$filesFound++;
+								$dir = $this->file->extractFileToDir($idc10Dir . '/' . $file, $this->file->workingDir);
+							}
+						}
+						if($filesFound == 0) {
+							$this->error = 'Could not find version ' . $params->version . ' files';
+						}
+					} else {
+						$this->error = 'Could note create ICD10 temporary directory';
+					}
+				} else {
+					$this->error = 'Could not find ICD10 directory';
+				}
 
+				// handle the ICD9 RXNORM, and SNAMED requests
+			} else {
+				$dir = $this->file->extractFileToTempDir($params->path);
+			}
+			if($this->error === false) {
+				if($dir != false) {
+					$success = false;
+					$name    = $params->codeType;
+					if($params->codeType == 'ICD9' || $params->codeType == 'ICD10') {
+						$name    = 'CMS';
+						$success = $this->icd_import($dir, $params->codeType);
+					} elseif($params->codeType == 'RXNORM') {
+						$success = $this->rxnorm_import($dir);
+					} elseif($params->codeType == 'SNOMED') {
+						$success = $this->snomed_import($dir);
+					}
+					$this->updateTrackerTable($name, $params->codeType, $this->installedRevision, $params->version, $params->date);
+					return array('success'=> $success, 'params' => $params);
+				} else {
+					return array('success'=> false, 'error' => $this->file->error);
+				}
+			} else {
+				return array('success'=> false, 'error' => $this->error);
+			}
+		} else {
+			return array('success'=> false, 'error' => $this->error);
+		}
 	}
 
 	/**
@@ -183,7 +226,7 @@ class Codes
 	 * @param $type
 	 * @return bool
 	 */
-	private function icd_import($dir, $type)
+	public function icd_import($dir, $type)
 	{
 		$dir = str_replace('\\', '/', $dir . '/');
 		// the incoming array is a metadata array containing keys that substr match to the incoming filename
@@ -199,60 +242,71 @@ class Codes
 				'#FLD2#'      => 'short_desc',
 				'#POS2#'      => 7,
 				'#LEN2#'      => 60);
-			$incoming['SHORT_SG'] = array('#TABLENAME#' => 'icd9_sg_code',
-			                              '#FLD1#'      => 'sg_code', '#POS1#' => 1, '#LEN1#' => 4,
-			                              '#FLD2#'      => 'short_desc', '#POS2#' => 6, '#LEN2#' => 60);
-			$incoming['LONG_SG']  = array('#TABLENAME#' => 'icd9_sg_long_code',
-			                              '#FLD1#'      => 'sg_code', '#POS1#' => 1, '#LEN1#' => 4,
-			                              '#FLD2#'      => 'long_desc', '#POS2#' => 6, '#LEN2#' => 300);
-			$incoming['LONG_DX']  = array('#TABLENAME#' => 'icd9_dx_long_code',
-			                              '#FLD1#'      => 'dx_code', '#POS1#' => 1, '#LEN1#' => 5,
-			                              '#FLD2#'      => 'long_desc', '#POS2#' => 7, '#LEN2#' => 300);
+			$incoming['SHORT_SG'] = array(
+				'#TABLENAME#' => 'icd9_sg_code',
+				'#FLD1#'      => 'sg_code', '#POS1#' => 1, '#LEN1#' => 4,
+				'#FLD2#'      => 'short_desc', '#POS2#' => 6, '#LEN2#' => 60);
+			$incoming['LONG_SG']  = array(
+				'#TABLENAME#' => 'icd9_sg_long_code',
+				'#FLD1#'      => 'sg_code', '#POS1#' => 1, '#LEN1#' => 4,
+				'#FLD2#'      => 'long_desc', '#POS2#' => 6, '#LEN2#' => 300);
+			$incoming['LONG_DX']  = array(
+				'#TABLENAME#' => 'icd9_dx_long_code',
+				'#FLD1#'      => 'dx_code', '#POS1#' => 1, '#LEN1#' => 5,
+				'#FLD2#'      => 'long_desc', '#POS2#' => 7, '#LEN2#' => 300);
 		} else {
-			$incoming['icd10pcs_order_'] = array('#TABLENAME#' => 'icd10_pcs_order_code',
-			                                     '#FLD1#'      => 'pcs_code', '#POS1#' => 7, '#LEN1#' => 7,
-			                                     '#FLD2#'      => 'valid_for_coding', '#POS2#' => 15, '#LEN2#' => 1,
-			                                     '#FLD3#'      => 'short_desc', '#POS3#' => 17, '#LEN3#' => 60,
-			                                     '#FLD4#'      => 'long_desc', '#POS4#' => 78, '#LEN4#' => 300);
-			$incoming['icd10cm_order_']  = array('#TABLENAME#' => 'icd10_dx_order_code',
-			                                     '#FLD1#'      => 'dx_code', '#POS1#' => 7, '#LEN1#' => 7,
-			                                     '#FLD2#'      => 'valid_for_coding', '#POS2#' => 15, '#LEN2#' => 1,
-			                                     '#FLD3#'      => 'short_desc', '#POS3#' => 17, '#LEN3#' => 60,
-			                                     '#FLD4#'      => 'long_desc', '#POS4#' => 78, '#LEN4#' => 300);
-			$incoming['reimb_map_pr_']   = array('#TABLENAME#' => 'icd10_reimbr_pcs_9_10',
-			                                     '#FLD1#'      => 'code', '#POS1#' => 1, '#LEN1#' => 7,
-			                                     '#FLD2#'      => 'code_cnt', '#POS2#' => 9, '#LEN2#' => 1,
-			                                     '#FLD3#'      => 'ICD9_01', '#POS3#' => 11, '#LEN3#' => 5,
-			                                     '#FLD4#'      => 'ICD9_02', '#POS4#' => 17, '#LEN4#' => 5,
-			                                     '#FLD5#'      => 'ICD9_03', '#POS5#' => 23, '#LEN5#' => 5,
-			                                     '#FLD6#'      => 'ICD9_04', '#POS6#' => 29, '#LEN6#' => 5,
-			                                     '#FLD7#'      => 'ICD9_05', '#POS7#' => 35, '#LEN7#' => 5,
-			                                     '#FLD8#'      => 'ICD9_06', '#POS8#' => 41, '#LEN8#' => 5);
-			$incoming['reimb_map_dx_']   = array('#TABLENAME#' => 'icd10_reimbr_dx_9_10',
-			                                     '#FLD1#'      => 'code', '#POS1#' => 1, '#LEN1#' => 7,
-			                                     '#FLD2#'      => 'code_cnt', '#POS2#' => 9, '#LEN2#' => 1,
-			                                     '#FLD3#'      => 'ICD9_01', '#POS3#' => 11, '#LEN3#' => 5,
-			                                     '#FLD4#'      => 'ICD9_02', '#POS4#' => 17, '#LEN4#' => 5,
-			                                     '#FLD5#'      => 'ICD9_03', '#POS5#' => 23, '#LEN5#' => 5,
-			                                     '#FLD6#'      => 'ICD9_04', '#POS6#' => 29, '#LEN6#' => 5,
-			                                     '#FLD7#'      => 'ICD9_05', '#POS7#' => 35, '#LEN7#' => 5,
-			                                     '#FLD8#'      => 'ICD9_06', '#POS8#' => 41, '#LEN8#' => 5);
-			$incoming['2012_I10gem']     = array('#TABLENAME#' => 'icd10_gem_dx_10_9',
-			                                     '#FLD1#'      => 'dx_icd10_source', '#POS1#' => 1, '#LEN1#' => 7,
-			                                     '#FLD2#'      => 'dx_icd9_target', '#POS2#' => 9, '#LEN2#' => 5,
-			                                     '#FLD3#'      => 'flags', '#POS3#' => 15, '#LEN3#' => 5);
-			$incoming['2012_I9gem']      = array('#TABLENAME#' => 'icd10_gem_dx_9_10',
-			                                     '#FLD1#'      => 'dx_icd9_source', '#POS1#' => 1, '#LEN1#' => 5,
-			                                     '#FLD2#'      => 'dx_icd10_target', '#POS2#' => 7, '#LEN2#' => 7,
-			                                     '#FLD3#'      => 'flags', '#POS3#' => 15, '#LEN3#' => 5);
-			$incoming['gem_pcsi9']       = array('#TABLENAME#' => 'icd10_gem_pcs_10_9',
-			                                     '#FLD1#'      => 'pcs_icd10_source', '#POS1#' => 1, '#LEN1#' => 7,
-			                                     '#FLD2#'      => 'pcs_icd9_target', '#POS2#' => 9, '#LEN2#' => 5,
-			                                     '#FLD3#'      => 'flags', '#POS3#' => 15, '#LEN3#' => 5);
-			$incoming['gem_i9pcs']       = array('#TABLENAME#' => 'icd10_gem_pcs_9_10',
-			                                     '#FLD1#'      => 'pcs_icd9_source', '#POS1#' => 1, '#LEN1#' => 5,
-			                                     '#FLD2#'      => 'pcs_icd10_target', '#POS2#' => 7, '#LEN2#' => 7,
-			                                     '#FLD3#'      => 'flags', '#POS3#' => 15, '#LEN3#' => 5);
+			$incoming['icd10pcs_order_'] = array(
+				'#TABLENAME#' => 'icd10_pcs_order_code',
+				'#FLD1#'      => 'pcs_code', '#POS1#' => 7, '#LEN1#' => 7,
+				'#FLD2#'      => 'valid_for_coding', '#POS2#' => 15, '#LEN2#' => 1,
+				'#FLD3#'      => 'short_desc', '#POS3#' => 17, '#LEN3#' => 60,
+				'#FLD4#'      => 'long_desc', '#POS4#' => 78, '#LEN4#' => 300);
+			$incoming['icd10cm_order_']  = array(
+				'#TABLENAME#' => 'icd10_dx_order_code',
+				'#FLD1#'      => 'dx_code', '#POS1#' => 7, '#LEN1#' => 7,
+				'#FLD2#'      => 'valid_for_coding', '#POS2#' => 15, '#LEN2#' => 1,
+				'#FLD3#'      => 'short_desc', '#POS3#' => 17, '#LEN3#' => 60,
+				'#FLD4#'      => 'long_desc', '#POS4#' => 78, '#LEN4#' => 300);
+			$incoming['reimb_map_pr_']   = array(
+				'#TABLENAME#' => 'icd10_reimbr_pcs_9_10',
+				'#FLD1#'      => 'code', '#POS1#' => 1, '#LEN1#' => 7,
+				'#FLD2#'      => 'code_cnt', '#POS2#' => 9, '#LEN2#' => 1,
+				'#FLD3#'      => 'ICD9_01', '#POS3#' => 11, '#LEN3#' => 5,
+				'#FLD4#'      => 'ICD9_02', '#POS4#' => 17, '#LEN4#' => 5,
+				'#FLD5#'      => 'ICD9_03', '#POS5#' => 23, '#LEN5#' => 5,
+				'#FLD6#'      => 'ICD9_04', '#POS6#' => 29, '#LEN6#' => 5,
+				'#FLD7#'      => 'ICD9_05', '#POS7#' => 35, '#LEN7#' => 5,
+				'#FLD8#'      => 'ICD9_06', '#POS8#' => 41, '#LEN8#' => 5);
+			$incoming['reimb_map_dx_']   = array(
+				'#TABLENAME#' => 'icd10_reimbr_dx_9_10',
+				'#FLD1#'      => 'code', '#POS1#' => 1, '#LEN1#' => 7,
+				'#FLD2#'      => 'code_cnt', '#POS2#' => 9, '#LEN2#' => 1,
+				'#FLD3#'      => 'ICD9_01', '#POS3#' => 11, '#LEN3#' => 5,
+				'#FLD4#'      => 'ICD9_02', '#POS4#' => 17, '#LEN4#' => 5,
+				'#FLD5#'      => 'ICD9_03', '#POS5#' => 23, '#LEN5#' => 5,
+				'#FLD6#'      => 'ICD9_04', '#POS6#' => 29, '#LEN6#' => 5,
+				'#FLD7#'      => 'ICD9_05', '#POS7#' => 35, '#LEN7#' => 5,
+				'#FLD8#'      => 'ICD9_06', '#POS8#' => 41, '#LEN8#' => 5);
+			$incoming['2012_I10gem']     = array(
+				'#TABLENAME#' => 'icd10_gem_dx_10_9',
+				'#FLD1#'      => 'dx_icd10_source', '#POS1#' => 1, '#LEN1#' => 7,
+				'#FLD2#'      => 'dx_icd9_target', '#POS2#' => 9, '#LEN2#' => 5,
+				'#FLD3#'      => 'flags', '#POS3#' => 15, '#LEN3#' => 5);
+			$incoming['2012_I9gem']      = array(
+				'#TABLENAME#' => 'icd10_gem_dx_9_10',
+				'#FLD1#'      => 'dx_icd9_source', '#POS1#' => 1, '#LEN1#' => 5,
+				'#FLD2#'      => 'dx_icd10_target', '#POS2#' => 7, '#LEN2#' => 7,
+				'#FLD3#'      => 'flags', '#POS3#' => 15, '#LEN3#' => 5);
+			$incoming['gem_pcsi9']       = array(
+				'#TABLENAME#' => 'icd10_gem_pcs_10_9',
+				'#FLD1#'      => 'pcs_icd10_source', '#POS1#' => 1, '#LEN1#' => 7,
+				'#FLD2#'      => 'pcs_icd9_target', '#POS2#' => 9, '#LEN2#' => 5,
+				'#FLD3#'      => 'flags', '#POS3#' => 15, '#LEN3#' => 5);
+			$incoming['gem_i9pcs']       = array(
+				'#TABLENAME#' => 'icd10_gem_pcs_9_10',
+				'#FLD1#'      => 'pcs_icd9_source', '#POS1#' => 1, '#LEN1#' => 5,
+				'#FLD2#'      => 'pcs_icd10_target', '#POS2#' => 7, '#LEN2#' => 7,
+				'#FLD3#'      => 'flags', '#POS3#' => 15, '#LEN3#' => 5);
 		}
 		// set up the start of the load script to be appended from the incoming array defined above where incoming
 		// file matches
@@ -305,8 +359,9 @@ class Codes
 						$run_sql = str_replace('#REVISION#', $next_rev, $run_sql);
 						$stmt    = $this->db->conn->prepare($run_sql);
 						$stmt->execute();
+						$this->installedRevision = $next_rev;
 						// time to get out :-)
-						break;
+						//break;
 					}
 				}
 			}
@@ -341,19 +396,19 @@ class Codes
 
 	private function rxnorm_import($dir)
 	{
-		$dirScripts = $dir . '/scripts/mysql';
-		$dir        = $dir . '/rrf';
+		$dirScripts                = $dir . '/scripts/mysql';
+		$dir                       = $dir . '/rrf';
 		$dir                       = str_replace('\\', '/', $dir);
 		$rx_info                   = array();
-		$rx_info['rxnatomarchive'] = array('title' => 'Archive Data',                           'dir' => $dir, 'origin' => 'RXNATOMARCHIVE.RRF',    'filename' => 'RXNATOMARCHIVE.RRF',     'table' => 'rxnatomarchive','required' => 0);
-		$rx_info['rxnconso']       = array('title' => 'Concept Names and Sources',              'dir' => $dir, 'origin' => 'RXNCONSO.RRF',          'filename' => 'RXNCONSO.RRF',           'table' => 'rxnconso',      'required' => 1);
-		$rx_info['rxncui']         = array('title' => 'Retired RXCUI Data',                     'dir' => $dir, 'origin' => 'RXNCUI.RRF',            'filename' => 'RXNCUI.RRF',             'table' => 'rxncui',        'required' => 1);
-		$rx_info['rxncuichanges']  = array('title' => 'Concept Changes',                        'dir' => $dir, 'origin' => 'RXNCUICHANGES.RRF',     'filename' => 'RXNCUICHANGES.RRF',      'table' => 'rxncuichanges', 'required' => 1);
-		$rx_info['rxndoc']         = array('title' => 'Documentation for Abbreviated Values',   'dir' => $dir, 'origin' => 'RXNDOC.RRF',            'filename' => 'RXNDOC.RRF',             'table' => 'rxndoc',        'required' => 1);
-		$rx_info['rxnrel']         = array('title' => 'Relationships',                          'dir' => $dir, 'origin' => 'RXNREL.RRF',            'filename' => 'RXNREL.RRF',             'table' => 'rxnrel',        'required' => 1);
-		$rx_info['rxnsab']         = array('title' => 'Source Information',                     'dir' => $dir, 'origin' => 'RXNSAB.RRF',            'filename' => 'RXNSAB.RRF',             'table' => 'rxnsab',        'required' => 0);
-		$rx_info['rxnsat']         = array('title' => 'Simple Concept and Atom Attributes',     'dir' => $dir, 'origin' => 'RXNSAT.RRF',            'filename' => 'RXNSAT.RRF',             'table' => 'rxnsat',        'required' => 0);
-		$rx_info['rxnsty']         = array('title' => 'Semantic Types ',                        'dir' => $dir, 'origin' => 'RXNSTY.RRF',            'filename' => 'RXNSTY.RRF',             'table' => 'rxnsty',        'required' => 1);
+		$rx_info['rxnatomarchive'] = array('title' => 'Archive Data', 'dir' => $dir, 'origin' => 'RXNATOMARCHIVE.RRF', 'filename' => 'RXNATOMARCHIVE.RRF', 'table' => 'rxnatomarchive', 'required' => 0);
+		$rx_info['rxnconso']       = array('title' => 'Concept Names and Sources', 'dir' => $dir, 'origin' => 'RXNCONSO.RRF', 'filename' => 'RXNCONSO.RRF', 'table' => 'rxnconso', 'required' => 1);
+		$rx_info['rxncui']         = array('title' => 'Retired RXCUI Data', 'dir' => $dir, 'origin' => 'RXNCUI.RRF', 'filename' => 'RXNCUI.RRF', 'table' => 'rxncui', 'required' => 1);
+		$rx_info['rxncuichanges']  = array('title' => 'Concept Changes', 'dir' => $dir, 'origin' => 'RXNCUICHANGES.RRF', 'filename' => 'RXNCUICHANGES.RRF', 'table' => 'rxncuichanges', 'required' => 1);
+		$rx_info['rxndoc']         = array('title' => 'Documentation for Abbreviated Values', 'dir' => $dir, 'origin' => 'RXNDOC.RRF', 'filename' => 'RXNDOC.RRF', 'table' => 'rxndoc', 'required' => 1);
+		$rx_info['rxnrel']         = array('title' => 'Relationships', 'dir' => $dir, 'origin' => 'RXNREL.RRF', 'filename' => 'RXNREL.RRF', 'table' => 'rxnrel', 'required' => 1);
+		$rx_info['rxnsab']         = array('title' => 'Source Information', 'dir' => $dir, 'origin' => 'RXNSAB.RRF', 'filename' => 'RXNSAB.RRF', 'table' => 'rxnsab', 'required' => 0);
+		$rx_info['rxnsat']         = array('title' => 'Simple Concept and Atom Attributes', 'dir' => $dir, 'origin' => 'RXNSAT.RRF', 'filename' => 'RXNSAT.RRF', 'table' => 'rxnsat', 'required' => 0);
+		$rx_info['rxnsty']         = array('title' => 'Semantic Types ', 'dir' => $dir, 'origin' => 'RXNSTY.RRF', 'filename' => 'RXNSTY.RRF', 'table' => 'rxnsty', 'required' => 1);
 		// load scripts
 		$file_load = file_get_contents($dirScripts . '/Table_scripts_mysql_rxn.sql', true);
 		if($_SESSION['server']['IS_WINDOWS']) {
@@ -366,14 +421,14 @@ class Codes
 		$file_array = explode(';', $file_load);
 		foreach($file_array as $val) {
 			if(trim($val) != '') {
-				$stmt    = $this->db->conn->prepare($val);
+				$stmt = $this->db->conn->prepare($val);
 				$stmt->execute();
 			}
 		}
 		$indexes_array = explode(';', $indexes_load);
 		foreach($indexes_array as $val1) {
 			if(trim($val1) != '') {
-				$stmt    = $this->db->conn->prepare($val1);
+				$stmt = $this->db->conn->prepare($val1);
 				$stmt->execute();
 			}
 		}
@@ -385,7 +440,7 @@ class Codes
 				if(strpos($val, $file_name) !== false) {
 					$val1 = str_replace($file_name, $replacement, $val);
 					if(trim($val1) != '') {
-						$stmt    = $this->db->conn->prepare($val1);
+						$stmt = $this->db->conn->prepare($val1);
 						$stmt->execute();
 					}
 				}
@@ -396,10 +451,10 @@ class Codes
 
 	private function snomed_import($dir)
 	{
-	    // set up array
-	    $table_array_for_snomed=array(
-	        'sct_concepts_drop'=>'DROP TABLE IF EXISTS sct_concepts',
-	        'sct_concepts_structure'=>'CREATE TABLE IF NOT EXISTS sct_concepts (
+		// set up array
+		$table_array_for_snomed = array(
+			'sct_concepts_drop'          => 'DROP TABLE IF EXISTS sct_concepts',
+			'sct_concepts_structure'     => 'CREATE TABLE IF NOT EXISTS sct_concepts (
 	            ConceptId bigint(20) NOT NULL,
 	            ConceptStatus int(11) NOT NULL,
 	            FullySpecifiedName varchar(255) NOT NULL,
@@ -408,8 +463,8 @@ class Codes
 	            IsPrimitive tinyint(1) NOT NULL,
 	            PRIMARY KEY (ConceptId)
 	            ) ENGINE=MyISAM',
-	        'sct_descriptions_drop'=>'DROP TABLE IF EXISTS sct_descriptions',
-	        'sct_descriptions_structure'=>'CREATE TABLE IF NOT EXISTS sct_descriptions (
+			'sct_descriptions_drop'      => 'DROP TABLE IF EXISTS sct_descriptions',
+			'sct_descriptions_structure' => 'CREATE TABLE IF NOT EXISTS sct_descriptions (
 	            DescriptionId bigint(20) NOT NULL,
 	            DescriptionStatus int(11) NOT NULL,
 	            ConceptId bigint(20) NOT NULL,
@@ -419,8 +474,8 @@ class Codes
 	            LanguageCode varchar(8) NOT NULL,
 	            PRIMARY KEY (DescriptionId)
 	            ) ENGINE=MyISAM',
-	        'sct_relationships_drop'=>'DROP TABLE IF EXISTS sct_relationships',
-	        'sct_relationships_structure'=>'CREATE TABLE IF NOT EXISTS sct_relationships (
+			'sct_relationships_drop'     => 'DROP TABLE IF EXISTS sct_relationships',
+			'sct_relationships_structure'=> 'CREATE TABLE IF NOT EXISTS sct_relationships (
 	            RelationshipId bigint(20) NOT NULL,
 	            ConceptId1 bigint(20) NOT NULL,
 	            RelationshipType bigint(20) NOT NULL,
@@ -430,69 +485,70 @@ class Codes
 	            RelationshipGroup int(11) NOT NULL,
 	            PRIMARY KEY (RelationshipId)
 	            ) ENGINE=MyISAM'
-	);
-
-	    // set up paths
-	    $dir_snomed = $dir.'/';
-	    $sub_path='Terminology/Content/';
-	    $dir=$dir_snomed;
-	    $dir=str_replace('\\','/',$dir);
-	    // executing the create statement for tables, these are defined in snomed_capture.inc file
-	    foreach($table_array_for_snomed as $val){
-	        if(trim($val)!=''){
-		        $stmt    = $this->db->conn->prepare($val);
-                $stmt->execute();
-	        }
-	    }
-
-	    // reading the SNOMED directory and identifying the files to import and replacing the variables by originals values.
-	    if( is_dir($dir) && $handle = opendir($dir)) {
-	        while (false !== ($filename = readdir($handle))) {
-	            if ($filename != '.' && $filename != '..' && !strpos($filename,'zip')) {
-	                $path=$dir.''.$filename.'/'.$sub_path;
-	                if (!(is_dir($path))) {
-	                    $path=$dir.''.$filename.'/RF1Release/'.$sub_path;
-	                }
-	                if( is_dir($path) && $handle1 = opendir($path)) {
-	                    while (false !== ($filename1 = readdir($handle1))) {
-	                        $load_script="Load data local infile '#FILENAME#' into table #TABLE# fields terminated by '\\t' ESCAPED BY '' lines terminated by '\\n' ignore 1 lines ";
-	                        $array_replace = array('#FILENAME#','#TABLE#');
-	                        if ($filename1 != '.' && $filename1 != '..') {
-	                            $file_replace=$path.$filename1;
-	                            if(strpos($filename1,'Concepts') !== false){
-	                                $new_str = str_replace($array_replace,array($file_replace,'sct_concepts'),$load_script);
-	                            }
-	                            if(strpos($filename1,'Descriptions') !== false){
-	                                $new_str = str_replace($array_replace,array($file_replace,'sct_descriptions'),$load_script);
-	                            }
-	                            if(strpos($filename1,'Relationships') !== false){
-	                                $new_str = str_replace($array_replace,array($file_replace,'sct_relationships'),$load_script);
-	                            }
-	                            if(isset($new_str)){
-		                            $stmt    = $this->db->conn->prepare($new_str);
-                                    $stmt->execute();
-	                            }
-	                        }
-	                    }
-		                closedir($handle1);
-	                }
-	            }
-	        }
-	        closedir($handle);
-	    }
-	    return true;
+		);
+		// set up paths
+		$dir_snomed = $dir . '/';
+		$sub_path   = 'Terminology/Content/';
+		$dir        = $dir_snomed;
+		$dir        = str_replace('\\', '/', $dir);
+		// executing the create statement for tables, these are defined in snomed_capture.inc file
+		foreach($table_array_for_snomed as $val) {
+			if(trim($val) != '') {
+				$stmt = $this->db->conn->prepare($val);
+				$stmt->execute();
+			}
+		}
+		// reading the SNOMED directory and identifying the files to import and replacing the variables by originals values.
+		if(is_dir($dir) && $handle = opendir($dir)) {
+			while(false !== ($filename = readdir($handle))) {
+				if($filename != '.' && $filename != '..' && !strpos($filename, 'zip')) {
+					$path = $dir . '' . $filename . '/' . $sub_path;
+					if(!(is_dir($path))) {
+						$path = $dir . '' . $filename . '/RF1Release/' . $sub_path;
+					}
+					if(is_dir($path) && $handle1 = opendir($path)) {
+						while(false !== ($filename1 = readdir($handle1))) {
+							$load_script   = "Load data local infile '#FILENAME#' into table #TABLE# fields terminated by '\\t' ESCAPED BY '' lines terminated by '\\n' ignore 1 lines ";
+							$array_replace = array('#FILENAME#', '#TABLE#');
+							if($filename1 != '.' && $filename1 != '..') {
+								$file_replace = $path . $filename1;
+								if(strpos($filename1, 'Concepts') !== false) {
+									$new_str = str_replace($array_replace, array($file_replace, 'sct_concepts'), $load_script);
+								}
+								if(strpos($filename1, 'Descriptions') !== false) {
+									$new_str = str_replace($array_replace, array($file_replace, 'sct_descriptions'), $load_script);
+								}
+								if(strpos($filename1, 'Relationships') !== false) {
+									$new_str = str_replace($array_replace, array($file_replace, 'sct_relationships'), $load_script);
+								}
+								if(isset($new_str)) {
+									$stmt = $this->db->conn->prepare($new_str);
+									$stmt->execute();
+								}
+							}
+						}
+						closedir($handle1);
+					}
+				}
+			}
+			closedir($handle);
+		}
+		return true;
 	}
 
-	private function update_tracker_table($codType,$revision,$version,$file_checksum) {
-		$data = array();
-		$data['imported_date'] = Time::getLocalTime();
-		$data['revision_date'] = $revision;
+	private function updateTrackerTable($name, $codeType, $revision, $version, $date, $file_checksum = null)
+	{
+		$data                     = array();
+		$data['code_type']        = $codeType;
+		$data['imported_date']    = Time::getLocalTime();
+		$data['revision_name']    = $name;
+		$data['revision_date']    = $date;
+		$data['revision_number '] = $revision;
 		$data['revision_version'] = $version;
-		$data['file_checksum'] = $file_checksum;
-		$data['name'] = $codType;
-	    $this->db->setSQL($this->db->sqlBind($data, 'standardized_tables_track', 'I'));
-	    $this->db->execLog();
-        return true;
+		$data['file_checksum']    = $file_checksum;
+		$this->db->setSQL($this->db->sqlBind($data, 'standardized_tables_track', 'I'));
+		$this->db->execLog();
+		return true;
 	}
 
 	private function getCodeDir()
@@ -502,7 +558,7 @@ class Codes
 
 	public function getCurrentCodesInfo()
 	{
-		$codes = array();
+		$codes   = array();
 		$codes[] = array('data' => $this->getCurrentCodeInfoByCodeType('ICD9'));
 		$codes[] = array('data' => $this->getCurrentCodeInfoByCodeType('ICD10'));
 		$codes[] = array('data' => $this->getCurrentCodeInfoByCodeType('RXNORM'));
@@ -517,32 +573,45 @@ class Codes
 								  revision_name,
 								  revision_number,
 							      revision_version,
-							      revision_date,
-							      revision_file
+							      revision_date
 							 FROM standardized_tables_track
 							WHERE code_type = '$codeType'
 						 ORDER BY imported_date DESC");
 		return $this->db->fetchRecord();
 	}
 
-
-
-
-
-	private function getNewCodeVersion()
+	private function getCurrentCodeVersion()
 	{
-		$this->codeType;
-		return;
+		$code = $this->getCurrentCodeInfoByCodeType($this->codeType);
+		if(!empty($code)) {
+			return $code['revision_version'];
+		} else {
+			return 0;
+		}
+	}
+
+	private function isCodeVersionNewer($versionToInstall)
+	{
+		$versionInstalled = $this->getCurrentCodeVersion();
+		if($versionInstalled > $versionToInstall) {
+			$this->error = "You currently have a newer database version installed (version $versionInstalled)";
+			return false;
+		} elseif($versionInstalled == $versionToInstall) {
+			$this->error = "Database version $versionInstalled is currently installed";
+			return false;
+		} else {
+			return true;
+		}
 	}
 
 }
 
 //$f = new Codes();
 //print '<pre>';
-//$params = new stdClass();
-//$params->codeType = 'ICD9';
-//$params->path = 'C:/wamp/www/gaiaehr/contrib/icd9/cmsv30_master_descriptions.zip';
-//$f->updateCodes($params);
+////$params = new stdClass();
+////$params->codeType = 'ICD9';
+////$params->path = 'C:/wamp/www/gaiaehr/contrib/icd9/cmsv30_master_descriptions.zip';
+//$f->icd_import('C:/wamp/www/gaiaehr/temp/1344637068/', 'ICD10');
 
 
 

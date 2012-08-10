@@ -111,12 +111,14 @@ Ext.define('App.view.administration.ExternalDataLoads', {
 				{
 					xtype: 'fieldset',
 					title: 'Installation',
+					action: 'installation',
 					styleHtmlContent:true,
 					html : me.getInstallationDetails(action)
 				},
 				{
 					xtype: 'fieldset',
 					title: 'Upload',
+					action: 'upload',
 					items:[
 						{
 
@@ -251,10 +253,17 @@ Ext.define('App.view.administration.ExternalDataLoads', {
 	},
 
 	onCodeDblClick:function(grid, record){
-		say(app);
+		var me = this;
 		app.setTask(false);
+		grid.el.mask('Installing Database, Please wait...');
 		Codes.updateCodes(record.data, function(provider, response){
-			say(response);
+			grid.el.unmask();
+			if(response.result.success){
+				me.setCurrentCodesInfo();
+				me.alert('New database installed', 'info');
+			}else{
+				me.alert(response.result.error, 'error');
+			}
 			app.setTask(true);
 		});
 	},
@@ -265,15 +274,12 @@ Ext.define('App.view.administration.ExternalDataLoads', {
 			fieldset;
 		Codes.getCurrentCodesInfo(function(provider, response){
 			codes = response.result;
-			say(codes);
 			for(var i=0; i < codes.length; i++){
 				if(codes[i].data !== false){
-					say(codes[i].data);
 					fieldset = me.query('fieldset[action="'+codes[i].data.codeType+'"]')[0];
 					fieldset.update(codes[i].data);
 				}
 			}
-
 		});
 	},
 

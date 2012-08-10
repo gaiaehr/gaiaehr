@@ -18,6 +18,9 @@ $API = array(
 			),
 			'updateCodes'=>array(
 				'len'=>1
+			),
+			'getCurrentCodesInfo'=>array(
+				'len'=>0
 			)
 		)
 	),

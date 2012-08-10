@@ -16,7 +16,7 @@ include_once($_SESSION['site']['root'] . '/classes/dbHelper.php');
 include_once($_SESSION['site']['root'] . '/classes/Time.php');
 include_once($_SESSION['site']['root'] . '/dataProvider/User.php');
 include_once($_SESSION['site']['root'] . '/dataProvider/ACL.php');
-//include_once($_SESSION['site']['root'] . '/dataProvider/PoolArea.php');
+include_once($_SESSION['site']['root'] . '/lib/phpqrcode/qrlib.php');
 class Patient
 {
 	/**

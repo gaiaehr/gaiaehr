@@ -396,7 +396,6 @@ class Codes
 
 	private function snomed_import($dir)
 	{
-
 	    // set up array
 	    $table_array_for_snomed=array(
 	        'sct_concepts_drop'=>'DROP TABLE IF EXISTS sct_concepts',
@@ -501,11 +500,34 @@ class Codes
 		return $_SESSION['site']['root'] . '/contrib/' . strtolower($this->codeType);
 	}
 
-	private function getCurrentCodeVersion()
+	public function getCurrentCodesInfo()
 	{
-		$this->codeType;
-		return;
+		$codes = array();
+		$codes[] = array('data' => $this->getCurrentCodeInfoByCodeType('ICD9'));
+		$codes[] = array('data' => $this->getCurrentCodeInfoByCodeType('ICD10'));
+		$codes[] = array('data' => $this->getCurrentCodeInfoByCodeType('RXNORM'));
+		$codes[] = array('data' => $this->getCurrentCodeInfoByCodeType('SNOMED'));
+		return $codes;
 	}
+
+	public function getCurrentCodeInfoByCodeType($codeType)
+	{
+		$this->db->setSQL("SELECT code_type AS codeType,
+								  imported_date,
+								  revision_name,
+								  revision_number,
+							      revision_version,
+							      revision_date,
+							      revision_file
+							 FROM standardized_tables_track
+							WHERE code_type = '$codeType'
+						 ORDER BY imported_date DESC");
+		return $this->db->fetchRecord();
+	}
+
+
+
+
 
 	private function getNewCodeVersion()
 	{

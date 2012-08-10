@@ -21,7 +21,7 @@ Ext.define('App.store.administration.ExternalDataLoads', {
 				codeType: config.codeType
 			}
 		};
-		me.callParent();
+		me.callParent(arguments);
 	},
 	remoteSort: false,
 	autoLoad  : false

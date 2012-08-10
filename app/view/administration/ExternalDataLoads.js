@@ -33,18 +33,18 @@ Ext.define('App.view.administration.ExternalDataLoads', {
 		 */
 		me.stores = [];
 
-		me.stores.push(me.icd9Store = Ext.create('App.store.administration.ExternalDataLoads', {codeType: 'ICD9'}));
-		me.stores.push(me.icd10Store = Ext.create('App.store.administration.ExternalDataLoads', {codeType: 'ICD10'}));
-		me.stores.push(me.rxnormStore = Ext.create('App.store.administration.ExternalDataLoads', {codeType: 'RXNORM'}));
-		me.stores.push(me.snomedStore = Ext.create('App.store.administration.ExternalDataLoads', {codeType: 'SNOMED'}));
+		me.stores.push(me.icd9Store = Ext.create('App.store.administration.ExternalDataLoads', {codeType:'ICD9'}));
+		me.stores.push(me.icd10Store = Ext.create('App.store.administration.ExternalDataLoads', {codeType:'ICD10', groupField:'version'}));
+		me.stores.push(me.rxnormStore = Ext.create('App.store.administration.ExternalDataLoads', {codeType:'RXNORM'}));
+		me.stores.push(me.snomedStore = Ext.create('App.store.administration.ExternalDataLoads', {codeType:'SNOMED'}));
 
 		/**
 		 * Since all the grid are very similar I created a function that return a grid
 		 */
-		me.icd9Grid = me.getCodeGrid('Available ICD9 Data', me.icd9Store);
-		me.icd10Grid = me.getCodeGrid('Available ICD10 Data', me.icd10Store);
-		me.rxnormGrid = me.getCodeGrid('Available RxNorm Data', me.rxnormStore);
-		me.snomedGrid = me.getCodeGrid('Available SNOMED Data', me.snomedStore);
+		me.icd9Grid = me.getCodeGrid('Available ICD9 Data', me.icd9Store, false);
+		me.icd10Grid = me.getCodeGrid('Available ICD10 Data', me.icd10Store, true);
+		me.rxnormGrid = me.getCodeGrid('Available RxNorm Data', me.rxnormStore, false);
+		me.snomedGrid = me.getCodeGrid('Available SNOMED Data', me.snomedStore, false);
 
 		/**
 		 * Same thing with the forms
@@ -99,15 +99,21 @@ Ext.define('App.view.administration.ExternalDataLoads', {
 				{
 					xtype: 'fieldset',
 					styleHtmlContent:true,
+					action: action,
 					title: 'Current Version Installed',
-					html : 'None'
+					html: 'No Data Installed',
+					tpl : 'Revivion Name:  {revision_name}<br>' +
+						'Revision Number:  {revision_number}<br>' +
+						'Revision Version: {revision_version}<br>' +
+						'Revision Date:    {revision_date}<br>' +
+						'Imported On:      {imported_date}'
 				},
 				{
 					xtype: 'fieldset',
 					title: 'Installation',
 					styleHtmlContent:true,
 					html : me.getInstallationDetails(action)
-				},,
+				},
 				{
 					xtype: 'fieldset',
 					title: 'Upload',
@@ -139,7 +145,7 @@ Ext.define('App.view.administration.ExternalDataLoads', {
 		});
 	},
 
-	getCodeGrid: function(title, store) {
+	getCodeGrid: function(title, store, grouping) {
 		var me = this;
 		return Ext.create('Ext.grid.Panel', {
 			title  : title,
@@ -153,8 +159,11 @@ Ext.define('App.view.administration.ExternalDataLoads', {
 			listeners:{
 				scope:me,
 				itemdblclick:me.onCodeDblClick
-			}
+			},
+			features: grouping ? [{ftype:'grouping'}] : []
 		});
+
+
 	},
 
 	getDefaultColumns: function() {
@@ -250,6 +259,24 @@ Ext.define('App.view.administration.ExternalDataLoads', {
 		});
 	},
 
+	setCurrentCodesInfo:function(){
+		var me = this,
+			codes,
+			fieldset;
+		Codes.getCurrentCodesInfo(function(provider, response){
+			codes = response.result;
+			say(codes);
+			for(var i=0; i < codes.length; i++){
+				if(codes[i].data !== false){
+					say(codes[i].data);
+					fieldset = me.query('fieldset[action="'+codes[i].data.codeType+'"]')[0];
+					fieldset.update(codes[i].data);
+				}
+			}
+
+		});
+	},
+
 	loadStores: function() {
 		var me = this;
 		for(var i = 0; i < me.stores.length; i++) {
@@ -265,6 +292,7 @@ Ext.define('App.view.administration.ExternalDataLoads', {
 	 */
 	onActive: function(callback) {
 		this.loadStores();
+		this.setCurrentCodesInfo();
 		callback(true);
 	}
 }); //ens servicesPage class

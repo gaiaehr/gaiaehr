@@ -81,23 +81,50 @@ class FileManager
 
 	public function extractFileToDir($file, $toDir, $deleteSrcFile = false)
 	{
-		if(class_exists('ZipArchive')){
-			$zip = new ZipArchive();
-			if ($zip->open($file) === TRUE) {
-				$zip->extractTo($toDir);
-				$zip->close();
-				if($deleteSrcFile){
-					$this->deleteFileBySrc($file);
+		if(class_exists('Zlib')){
+			$this->unCompress($file,$toDir);
+			return true;
+		}else{
+			if(class_exists('ZipArchive')){
+				$zip = new ZipArchive();
+				if ($zip->open($file) === true) {
+					$zip->extractTo($toDir);
+					$zip->close();
+					if($deleteSrcFile){
+						$this->deleteFileBySrc($file);
+					}
+					return $this->workingDir;
+				}else{
+					$this->error = 'Unable to open zipped file';
+					return false;
 				}
-				return $this->workingDir;
 			}else{
-				$this->error = 'Unable to open zipped file';
+				$this->error = 'Zlib or ZipArchive classes required';
 				return false;
 			}
-		}else{
-			$this->error = 'Php class ZipArchive required';
-			return false;
+//			$this->error = 'Php class ZipArchive required';
+//			return false;
 		}
+	}
+
+	public function compress( $srcFile, $dstFile )
+	{
+	    // getting file content
+	    $fp = fopen($srcFile, 'r');
+	    $data = fread($fp, filesize($srcFile));
+	    fclose($fp);
+
+	    // writing compressed file
+	    $zp = gzopen($dstFile, 'w9');
+	    gzwrite($zp, $data);
+	    gzclose($zp);
+	}
+
+	public function unCompress($file, $toDir) {
+	  $string = implode('', gzfile($file));
+	  $fp = fopen($toDir, 'w');
+	  fwrite($fp, $string, strlen($string));
+	  fclose($fp);
 	}
 
 	public function setWorkingDir()

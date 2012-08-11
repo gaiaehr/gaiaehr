@@ -94,33 +94,10 @@ class FileManager
 				$this->error = 'Unable to open zipped file';
 				return false;
 			}
-
 		}else{
-			$this->unCompress($file,$toDir);
-			return true;
-//			$this->error = 'Php class ZipArchive required';
-//			return false;
+			$this->error = 'Php class ZipArchive required';
+			return false;
 		}
-	}
-
-	public function compress( $srcFile, $dstFile )
-	{
-	    // getting file content
-	    $fp = fopen($srcFile, 'r');
-	    $data = fread($fp, filesize($srcFile));
-	    fclose($fp);
-
-	    // writing compressed file
-	    $zp = gzopen($dstFile, 'w9');
-	    gzwrite($zp, $data);
-	    gzclose($zp);
-	}
-
-	public function unCompress($file, $toDir) {
-	  $string = implode('', gzfile($file));
-	  $fp = fopen($toDir, 'w');
-	  fwrite($fp, $string, strlen($string));
-	  fclose($fp);
 	}
 
 	public function setWorkingDir()

@@ -225,7 +225,6 @@ class Codes
 					}else{
 						return array('success'=> $success, 'error' => $this->error);
 					}
-
 				} else {
 					return array('success'=> false, 'error' => $this->file->error);
 				}

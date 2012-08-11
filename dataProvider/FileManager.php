@@ -26,15 +26,12 @@ class FileManager
 	{
 		$this->db = new dbHelper();
 		$this->tempDir = $_SESSION['site']['root'] . '/temp/';
-
-		//$this->setTempDir();
-		//$this->setTempDirAvailableName();
+		chmod($this->tempDir, 0777);
 		return;
 	}
 
 	public function cleanUp()
 	{
-
 		if(is_dir($this->workingDir)){
 			$this->deleteWorkingDir();
 		}
@@ -98,16 +95,20 @@ class FileManager
 		}
 	}
 
-
 	public function setWorkingDir()
 	{
 		$workingDir = $_SESSION['site']['root'] . '/temp/'. $this->getTempDirAvailableName();
-		if(is_dir($workingDir) || mkdir($workingDir, 0777, true)) {
-			chmod($workingDir, 0777);
-			$this->workingDir = $workingDir;
-			return true;
-		} else {
-			$this->error = 'Unable to write on /temp directory';
+		if(!is_dir($workingDir)){
+			if(mkdir($workingDir, 0777, true)){
+				chmod($workingDir, 0777);
+				$this->workingDir = $workingDir;
+				return true;
+			}else{
+				$this->error = 'Unable to write on /temp directory';
+				return false;
+			}
+		}else{
+			$this->error = $workingDir .' exist';
 			return false;
 		}
 	}

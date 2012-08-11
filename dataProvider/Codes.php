@@ -183,13 +183,16 @@ class Codes
 							) {
 								$filesFound++;
 								$dir = $this->file->extractFileToDir($idc10Dir . '/' . $file, $this->file->workingDir);
+								if($dir === false){
+									$this->error = $this->file->error;
+								}
 							}
 						}
 						if($filesFound == 0) {
 							$this->error = 'Could not find version ' . $params->version . ' files';
 						}
 					} else {
-						$this->error = 'Could note create ICD10 temporary directory';
+						$this->error = $this->file->error;
 					}
 				} else {
 					$this->error = 'Could not find ICD10 directory';
@@ -198,12 +201,10 @@ class Codes
 				// handle the ICD9 RXNORM, and SNAMED requests
 			} else {
 				$dir = $this->file->extractFileToTempDir($params->path);
+				if($dir === false){
+					$this->error = $this->file->error;
+				}
 			}
-
-
-
-
-
 
 
 			if($this->error === false) {

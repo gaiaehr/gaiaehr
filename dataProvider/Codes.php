@@ -221,6 +221,7 @@ class Codes
 					}
 					if($success !== false){
 						$this->updateTrackerTable($name, $params->codeType, $this->installedRevision, $params->version, $params->date);
+						$this->file->cleanUp();
 						return array('success'=> $success, 'params' => $params);
 					}else{
 						return array('success'=> $success, 'error' => $this->error);
@@ -380,8 +381,6 @@ class Codes
 					}
 				}
 			}
-			closedir($handle);
-			$this->file->cleanUp();
 		} else {
 			$this->error = 'No ICD import directory';
 			return false;

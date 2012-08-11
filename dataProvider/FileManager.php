@@ -81,27 +81,23 @@ class FileManager
 
 	public function extractFileToDir($file, $toDir, $deleteSrcFile = false)
 	{
-		if(class_exists('Zlib')){
-			$this->unCompress($file,$toDir);
-			return true;
-		}else{
-			if(class_exists('ZipArchive')){
-				$zip = new ZipArchive();
-				if ($zip->open($file) === true) {
-					$zip->extractTo($toDir);
-					$zip->close();
-					if($deleteSrcFile){
-						$this->deleteFileBySrc($file);
-					}
-					return $this->workingDir;
-				}else{
-					$this->error = 'Unable to open zipped file';
-					return false;
+		if(class_exists('ZipArchive')){
+			$zip = new ZipArchive();
+			if ($zip->open($file) === true) {
+				$zip->extractTo($toDir);
+				$zip->close();
+				if($deleteSrcFile){
+					$this->deleteFileBySrc($file);
 				}
+				return $this->workingDir;
 			}else{
-				$this->error = 'Zlib or ZipArchive classes required';
+				$this->error = 'Unable to open zipped file';
 				return false;
 			}
+
+		}else{
+			$this->unCompress($file,$toDir);
+			return true;
 //			$this->error = 'Php class ZipArchive required';
 //			return false;
 		}

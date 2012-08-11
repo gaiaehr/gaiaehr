@@ -219,8 +219,13 @@ class Codes
 					} elseif($params->codeType == 'SNOMED') {
 						$success = $this->snomed_import($dir);
 					}
-					$this->updateTrackerTable($name, $params->codeType, $this->installedRevision, $params->version, $params->date);
-					return array('success'=> $success, 'params' => $params);
+					if($success !== false){
+						$this->updateTrackerTable($name, $params->codeType, $this->installedRevision, $params->version, $params->date);
+						return array('success'=> $success, 'params' => $params);
+					}else{
+						return array('success'=> $success, 'error' => $this->error);
+					}
+
 				} else {
 					return array('success'=> false, 'error' => $this->file->error);
 				}

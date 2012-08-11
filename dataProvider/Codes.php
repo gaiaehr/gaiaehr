@@ -162,7 +162,10 @@ class Codes
 	{
 		$this->codeType = $params->codeType;
 		$dir            = false;
-		if($this->isCodeVersionNewer($params->version)) {
+		if(
+			(($params->codeType == 'ICD9' || $params->codeType == 'ICD10') && $this->isCodeVersionNewer($params->version))  ||
+			($params->codeType != 'ICD9' && $params->codeType != 'ICD10')
+		){
 			// handle ICD10 request to loop for avery file
 			if($params->codeType == 'ICD10') {
 				$idc10Dir = $this->getCodeDir();
@@ -196,6 +199,13 @@ class Codes
 			} else {
 				$dir = $this->file->extractFileToTempDir($params->path);
 			}
+
+
+
+
+
+
+
 			if($this->error === false) {
 				if($dir != false) {
 					$success = false;

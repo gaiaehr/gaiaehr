@@ -47,6 +47,7 @@ class FileManager
 		if(move_uploaded_file($file['filePath']['tmp_name'], $this->src)) {
 			return true;
 		} else {
+			$this->error = 'Unable to move uploaded file to /temp directory';
 			return false;
 		}
 	}
@@ -66,6 +67,7 @@ class FileManager
 		if($this->extractFileToTempDir($file['filePath']['tmp_name'])) {
 			return true;
 		} else {
+			$this->error = 'Unable to extract zipped file to /temp directory';
 			return false;
 		}
 	}
@@ -75,7 +77,7 @@ class FileManager
 		if($this->setWorkingDir()){
 			return $this->extractFileToDir($file, $this->workingDir, $deleteSrcFile);
 		}else{
-			$this->error = 'Could not create working directory';
+			$this->error = 'Unable to create working directory';
 			return false;
 		}
 	}
@@ -91,6 +93,7 @@ class FileManager
 			}
 			return $this->workingDir;
 		}else{
+			$this->error = 'Unable to open zipped file';
 			return false;
 		}
 	}
@@ -104,6 +107,7 @@ class FileManager
 			$this->workingDir = $workingDir;
 			return true;
 		} else {
+			$this->error = 'Unable to write on /temp directory';
 			return false;
 		}
 	}

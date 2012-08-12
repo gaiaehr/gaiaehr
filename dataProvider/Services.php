@@ -75,9 +75,9 @@ class Services
     private function getICD10($params){
 
 
-        $this->db->setSQL("SELECT * FROM icd9_dx_code WHERE dx_code IS NOT NULL AND short_desc LIKE '%$params->query%' OR dx_code LIKE '$params->query%'");
+        $this->db->setSQL("SELECT * FROM icd10_dx_order_code WHERE dx_code IS NOT NULL AND short_desc LIKE '%$params->query%' OR dx_code LIKE '$params->query%'");
         $records = $this->db->fetchRecords(PDO::FETCH_CLASS);
-        $this->db->setSQL("SELECT * FROM icd9_sg_code WHERE sg_code IS NOT NULL AND short_desc LIKE '%$params->query%' OR sg_code LIKE '$params->query%'");
+        $this->db->setSQL("SELECT * FROM icd10_pcs_order_code WHERE pcs_code IS NOT NULL AND short_desc LIKE '%$params->query%' OR pcs_code LIKE '$params->query%'");
         $records = array_merge($records, $this->db->fetchRecords(PDO::FETCH_CLASS));
         $total   = count($records);
         $recs = array_slice($records,$params->start,$params->limit);
@@ -86,7 +86,7 @@ class Services
             $rec->code_type = $params->code_type;
             $rec->code_text_short = $rec->short_desc;
             $rec->code_text = $rec->long_desc;
-            $rec->code = $rec->dx_code ? $rec->dx_code : $rec->sg_code ;
+            $rec->code = $rec->dx_code ? $rec->dx_code : $rec->pcs_code ;
             $records[]      = $rec;
         }
         return array('totals'=> $total,

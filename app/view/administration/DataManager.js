@@ -40,6 +40,8 @@ Ext.define('App.view.administration.DataManager', {
                 return 'ICD9';
             } else if(val == '3') {
                 return 'HCPCS';
+            }else if(val == '4') {
+                return 'ICD10';
             } else if(val == '100') {
                 return 'CVX';
             }
@@ -793,6 +795,8 @@ Ext.define('App.view.administration.DataManager', {
         if(code_type == 'CPT4'){
             thisForm = me.cptContainer;
         }else if(code_type == 'ICD9'){
+            thisForm = me.icd9Container;
+        }else if(code_type == 'ICD10'){
             thisForm = me.icd9Container;
         }else if(code_type == 'HCPCS'){
             thisForm = me.hpccsContainer;

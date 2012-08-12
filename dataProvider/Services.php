@@ -33,9 +33,18 @@ class Services
     private function getICD9($params){
 
 
-        $this->db->setSQL("SELECT * FROM icd9_dx_code WHERE dx_code IS NOT NULL AND short_desc LIKE '%$params->query%' OR dx_code LIKE '$params->query%'");
+        $this->db->setSQL("SELECT * FROM icd9_dx_code
+                                    WHERE dx_code IS NOT NULL
+                                    AND (short_desc LIKE '%$params->query%'
+                                    OR dx_code LIKE '$params->query%')
+                                    AND revision = '2'");
         $records = $this->db->fetchRecords(PDO::FETCH_CLASS);
-        $this->db->setSQL("SELECT * FROM icd9_sg_code WHERE sg_code IS NOT NULL AND short_desc LIKE '%$params->query%' OR sg_code LIKE '$params->query%'");
+        $this->db->setSQL("SELECT *
+                           FROM icd9_sg_code
+                           WHERE sg_code IS NOT NULL
+                           AND (short_desc LIKE '%$params->query%'
+                           OR sg_code LIKE '$params->query%')
+                           AND revision = '2'");
         $records = array_merge($records, $this->db->fetchRecords(PDO::FETCH_CLASS));
         $total   = count($records);
         $recs = array_slice($records,$params->start,$params->limit);
@@ -49,6 +58,14 @@ class Services
         }
         return array('totals'=> $total,
                      'rows'  => $records);
+
+    }
+    private function getLastRevisionByCode($code){
+        $this->db->setSQL("SELECT *
+                           FROM standardized_tables_track
+                           WHERE code_type = '$code'
+                           ORDER BY id DESC");
+        $records = $this->db->fetchRecord(PDO::FETCH_CLASS);
 
     }
 

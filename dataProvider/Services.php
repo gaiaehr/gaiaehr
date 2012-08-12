@@ -30,15 +30,64 @@ class Services
 	 * @param stdClass $params
 	 * @return array
 	 */
+    private function getICD9($params){
+
+
+        $this->db->setSQL("SELECT * FROM icd9_dx_code WHERE dx_code IS NOT NULL AND short_desc LIKE '%$params->query%' OR dx_code LIKE '$params->query%'");
+        $records = $this->db->fetchRecords(PDO::FETCH_CLASS);
+        $this->db->setSQL("SELECT * FROM icd9_sg_code WHERE sg_code IS NOT NULL AND short_desc LIKE '%$params->query%' OR sg_code LIKE '$params->query%'");
+        $records = array_merge($records, $this->db->fetchRecords(PDO::FETCH_CLASS));
+        $total   = count($records);
+        $recs = array_slice($records,$params->start,$params->limit);
+        $records = array();
+        foreach($recs as $rec) {
+            $rec->code_type = $params->code_type;
+            $rec->code_text_short = $rec->short_desc;
+            $rec->code_text = $rec->long_desc;
+            $rec->code = $rec->dx_code ? $rec->dx_code : $rec->sg_code ;
+            $records[]      = $rec;
+        }
+        return array('totals'=> $total,
+                     'rows'  => $records);
+
+    }
+
+    private function getICD10($params){
+
+
+        $this->db->setSQL("SELECT * FROM icd9_dx_code WHERE dx_code IS NOT NULL AND short_desc LIKE '%$params->query%' OR dx_code LIKE '$params->query%'");
+        $records = $this->db->fetchRecords(PDO::FETCH_CLASS);
+        $this->db->setSQL("SELECT * FROM icd9_sg_code WHERE sg_code IS NOT NULL AND short_desc LIKE '%$params->query%' OR sg_code LIKE '$params->query%'");
+        $records = array_merge($records, $this->db->fetchRecords(PDO::FETCH_CLASS));
+        $total   = count($records);
+        $recs = array_slice($records,$params->start,$params->limit);
+        $records = array();
+        foreach($recs as $rec) {
+            $rec->code_type = $params->code_type;
+            $rec->code_text_short = $rec->short_desc;
+            $rec->code_text = $rec->long_desc;
+            $rec->code = $rec->dx_code ? $rec->dx_code : $rec->sg_code ;
+            $records[]      = $rec;
+        }
+        return array('totals'=> $total,
+                     'rows'  => $records);
+
+    }
+
 	public function getServices(stdClass $params)
 	{
 		/*
          * define $code_table
          */
+
 		if($params->code_type == 'CPT4') {
 			$tableX = 'cpt_codes';
 		} elseif($params->code_type == 'ICD9') {
-			$tableX = 'codes_icds';
+			$icd9=$this->getICD9($params);
+            return $icd9;
+		}  elseif($params->code_type == 'ICD10') {
+			$icd10=$this->getICD10($params);
+            return $icd10;
 		} elseif($params->code_type == 'HCPCS'){
 			$tableX = 'hcpcs_codes';
 		}elseif($params->code_type == 'Immunizations') {
@@ -46,6 +95,7 @@ class Services
 		} else {
 			return $this->getAllLabs($params);
 		}
+
 
 		$sortX = $params->sort ? $params->sort[0]->property . ' ' . $params->sort[0]->direction : 'code ASC';
 		if($params->query == ''){
@@ -114,7 +164,14 @@ class Services
 		if($params->code_type == 'CPT4') {
 			$tableX = 'cpt_codes';
 		} elseif($params->code_type == 'ICD9') {
-			$tableX = 'codes_icds';
+
+            unset($data['id']);
+
+            $sql = $this->db->sqlBind($data, $tableX, 'U', "id='$params->id'");
+            $this->db->setSQL($sql);
+            $this->db->execLog();
+            return $params;
+
 		} elseif($params->code_type == 'HCPCS'){
 			$tableX = 'hcpcs_codes';
 		}elseif($params->code_type == 'Immunizations') {

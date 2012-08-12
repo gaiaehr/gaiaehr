@@ -12,6 +12,8 @@ Ext.define('App.model.administration.Services', {
 	fields: [
 		{name: 'id', type: 'int'},
 		{name: 'code_text', type: 'string'},
+		{name: 'sg_code', type: 'string'},
+		{name: 'long_desc', type: 'string'},
 		{name: 'code_text_short', type: 'string'},
 		{name: 'code', type: 'string'},
 		{name: 'code_type', type: 'string'},

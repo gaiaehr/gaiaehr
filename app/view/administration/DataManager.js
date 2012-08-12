@@ -140,18 +140,15 @@ Ext.define('App.view.administration.DataManager', {
 
                             fieldLabel: 'Type',
                             xtype     : 'mitos.codestypescombo',
-                            name      : 'code_type'
+                            name      : 'code_type',
+	                        readOnly: true
                         },
                         {
 
                             fieldLabel: 'Code',
                             xtype     : 'textfield',
-                            name      : 'code'
-                        },
-                        {
-                            fieldLabel: 'Modifier',
-                            xtype     : 'textfield',
-                            name      : 'mod'
+                            name      : 'code',
+	                        readOnly: true
                         }
 
                     ]
@@ -164,13 +161,9 @@ Ext.define('App.view.administration.DataManager', {
                         {
 
                             fieldLabel: 'Description',
+	                        width          : 570,
                             xtype     : 'textfield',
                             name      : 'code_text'
-                        },
-                        {
-                            fieldLabel: 'Category',
-                            xtype     : 'mitos.titlescombo',
-                            name      : 'title'
                         }
                     ]
                 },
@@ -180,14 +173,6 @@ Ext.define('App.view.administration.DataManager', {
                     defaults: { action: 'field'  },
                     items   : [
 
-                        {
-
-                            boxLabel: 'Reportable?',
-                            xtype   : 'checkboxfield',
-                            name    : 'reportable'
-
-                        }
-                        ,
                         {
 
                             boxLabel  : 'Active?',

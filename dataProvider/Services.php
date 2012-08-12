@@ -167,7 +167,7 @@ class Services
 
             unset($data['id']);
 
-            $sql = $this->db->sqlBind($data, $tableX, 'U', "id='$params->id'");
+            $sql = $this->db->sqlBind($data, 'tabla de icd', 'U', "id='$params->id'");
             $this->db->setSQL($sql);
             $this->db->execLog();
             return $params;

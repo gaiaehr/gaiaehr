@@ -12,6 +12,7 @@ if(!isset($_SESSION)){
     session_cache_limiter('private');
 }
 include_once($_SESSION['site']['root'].'/classes/dbHelper.php');
+include_once($_SESSION['site']['root'].'/classes/Time.php');
 include_once($_SESSION['site']['root'].'/dataProvider/Person.php');
 class Messages extends dbHelper {
 
@@ -68,8 +69,8 @@ class Messages extends dbHelper {
      */
     public function sendNewMessage(stdClass $params){
 
-        $t                      = date('l jS \of F Y h:i:s A');
-        $row['body']            = 'On '.$t.' - <spam style="font-weight:bold">'.$_SESSION['user']['name'].'</spam> - Wrote:<br><br>'.$params->curr_msg;
+        $t                      = Time::getLocalTime('l jS \of F Y h:i:s A');
+        $row['body']            = 'On '.$t.' - <spam style="font-weight:bold">'.$_SESSION['user']['name'].'</spam> - Wrote:<br><br>'.$params->body;
         $row['pid']             = $params->pid;
         $row['from_id']         = $_SESSION['user']['id'];
         $row['to_id']           = $params->to_id;
@@ -87,7 +88,6 @@ class Messages extends dbHelper {
             return array('success' => true);
         }
 
-        return $params;
     }
 
     /**
@@ -96,8 +96,8 @@ class Messages extends dbHelper {
      */
     public function replyMessage(stdClass $params){
 
-        $t                      = date('l jS \of F Y h:i:s A');
-        $row['body']            = 'On '.$t.' - <spam style="font-weight:bold">'.$_SESSION['user']['name'].'</spam> - Wrote:<br><br>'.$params->curr_msg.'<br><br>';
+        $t                      = Time::getLocalTime('l jS \of F Y h:i:s A');
+        $row['body']            = 'On '.$t.' - <spam style="font-weight:bold">'.$_SESSION['user']['name'].'</spam> - Wrote:<br><br>'.$params->body.'<br><br>';
         $row['from_id']         = $_SESSION['user']['id'];
         $row['to_id']           = $params->to_id;
         $row['message_status']  = $params->message_status;
@@ -115,9 +115,6 @@ class Messages extends dbHelper {
         }else{
             return array('success' => true);
         }
-
-
-        return $params;
     }
 
     /**

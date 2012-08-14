@@ -14,8 +14,8 @@ if(!isset($_SESSION)) {
 
 class Time
 {
-	public static function getLocalTime(){
-		return  date('Y-m-d H:i:s',time() + $_SESSION['global_settings']['timezone_offset']);
+	public static function getLocalTime($format = 'Y-m-d H:i:s'){
+		return  date($format,time() + $_SESSION['global_settings']['timezone_offset']);
 	}
 
 }

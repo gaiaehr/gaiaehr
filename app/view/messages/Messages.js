@@ -31,7 +31,6 @@ Ext.define('App.view.messages.Messages', {
 				{name: 'id', type: 'int'},
 				{name: 'date', type: 'string'},
 				{name: 'body', type: 'string'},
-				{name: 'curr_msg', type: 'string'},
 				{name: 'pid', type: 'string'},
 				{name: 'patient_name', type: 'string'},
 				{name: 'from_user', type: 'string'},
@@ -152,10 +151,15 @@ Ext.define('App.view.messages.Messages', {
 			region       : 'south',
 			height       : 340,
 			cls          : 'msgForm',
+			layout:{
+				type:'vbox',
+				align:'stretch'
+			},
 			fieldDefaults: { labelWidth: 60, margin: 5, anchor: '100%' },
 			items        : [
 				{
 					xtype  : 'container',
+					height:95,
 					cls    : 'message-form-header',
 					padding: '5 0',
 					layout : 'anchor',
@@ -233,19 +237,19 @@ Ext.define('App.view.messages.Messages', {
 					xtype   : 'htmleditor',
 					name    : 'body',
 					itemId  : 'bodyMsg',
-					height  : 204,
-					readOnly: true
-
+					flex:1,
+					readOnly:true,
+					allowBlank: false
 				},
-				{
-					xtype           : 'htmleditor',
-					name            : 'curr_msg',
-					itemId          : 'currMsg',
-					height          : 204,
-					allowBlank      : false,
-					validateOnChange: false,
-					hidden          : true
-				},
+//				{
+//					xtype           : 'htmleditor',
+//					name            : 'curr_msg',
+//					itemId          : 'currMsg',
+//					height          : 204,
+//					allowBlank      : false,
+//					validateOnChange: false,
+//					hidden          : true
+//				},
 				{
 					xtype : 'textfield',
 					hidden: true,
@@ -303,7 +307,7 @@ Ext.define('App.view.messages.Messages', {
 	},
 
 	onFormRender: function() {
-		this.msgForm.getComponent('bodyMsg').getToolbar().hide();
+		this.msgForm.getComponent('bodyMsg').setReadOnly(true);
 		this.onNewMessage();
 	},
 	/**
@@ -431,8 +435,7 @@ Ext.define('App.view.messages.Messages', {
 			replybtn = this.query('button[itemId="replyMsg"]')[0],
 			sendbtn = this.query('button[itemId="sendMsg"]')[0];
 		if(action == 'new') {
-			bodyMsg.hide();
-			currMsg.show();
+			bodyMsg.setReadOnly(false);
 			patientCombo.show();
 			patientField.hide();
 			deletebtn1.disable();
@@ -441,20 +444,17 @@ Ext.define('App.view.messages.Messages', {
 			sendbtn.enable();
 			sm.deselectAll();
 		} else if(action == 'old') {
-			bodyMsg.show();
-			currMsg.hide();
+			bodyMsg.setReadOnly(true);
 			patientCombo.hide();
 			patientField.show();
 			deletebtn1.enable();
 			deletebtn2.enable();
 			replybtn.enable();
 			sendbtn.disable();
-			bodyMsg.getToolbar().hide();
 		} else if(action == 'reply') {
 			var msg = bodyMsg.getValue();
-			currMsg.setValue('<br><br><br><qoute style="margin-left: 10px; padding-left: 10px; border-left: solid 3px #cccccc; display: block;">' + msg + '</quote>');
-			bodyMsg.hide();
-			currMsg.show();
+			bodyMsg.setValue('<br><br><br><qoute style="margin-left: 10px; padding-left: 10px; border-left: solid 3px #cccccc; display: block;">' + msg + '</quote>');
+			bodyMsg.setReadOnly(false);
 			sendbtn.enable();
 			patientCombo.hide();
 			patientField.show();

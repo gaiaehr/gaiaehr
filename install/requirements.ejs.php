@@ -56,6 +56,13 @@ if (!ini_get('safe_mode')){
 }else{
 	$safe_mode = "Fail";
 }
-echo '{"msg":"PHP safe mode off","status":"'.$safe_mode.'"}';
+echo '{"msg":"PHP safe mode off","status":"'.$safe_mode.'"},';
+
+if (class_exists('ZipArchive')){
+	$safe_mode = "Ok";
+}else{
+	$safe_mode = "Fail";
+}
+echo '{"msg":"PHP class ZipArchive","status":"'.$safe_mode.'"}';
 
 echo ']';

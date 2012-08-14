@@ -12,10 +12,10 @@ if(!defined('_GaiaEXEC')) die('No direct access allowed.');
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <title>GaiaEHR :: Installation</title>
-<script type="text/javascript" src="lib/<?php echo $_SESSION['dir']['ext']; ?>/bootstrap.js"></script>
-<link rel="stylesheet" type="text/css" href="lib/<?php echo $_SESSION['dir']['ext']; ?>/resources/css/ext-all.css">
+<script type="text/javascript" src="lib/extjs-4.1.1/bootstrap.js"></script>
+<link rel="stylesheet" type="text/css" href="lib/extjs-4.1.1/resources/css/ext-all.css">
 <link rel="stylesheet" type="text/css" href="ui_app/style_newui.css" >
-<link rel="stylesheet" type="text/css" href="ui_app/GaiaEHR_app.css" >
+<link rel="stylesheet" type="text/css" href="ui_app/custom_app.css" >
 <script type="text/javascript">
 Ext.require(['*']);
 Ext.onReady(function() {
@@ -38,9 +38,8 @@ Ext.onReady(function() {
 	    } else {
 	        return '<span style="color:red;">' + val + '</span>';
 	    }
-	    return val;
 	}
-	var storeSites = new Ext.data.Store({
+	var storeSites = Ext.create('Ext.data.Store',{
 		model	: 'Requirements',
 		proxy	: {
 			type	: 'ajax',
@@ -55,7 +54,7 @@ Ext.onReady(function() {
 	// *************************************************************************************
 	// grid to show all the requirements status
 	// *************************************************************************************
-	var reqGrid = new Ext.grid.GridPanel({
+	var reqGrid = Ext.create('Ext.grid.Panel',{
 		id 			: 'reqGrid',
 	    store		: storeSites,
 	    frame		: false,
@@ -98,7 +97,6 @@ Ext.onReady(function() {
 			border	: false,
 			buttons	: [{
 		        text	: 'I Agree',
-		        id		: 'btn_agree',
 		        margin	: '0 5',
 				name	: 'btn_reset',
 				handler	: function() {

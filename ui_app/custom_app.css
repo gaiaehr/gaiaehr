@@ -203,6 +203,7 @@ li .Deceased{
     font-size: 13px;
     text-align: center;
     padding: 0 5px;
+	min-width:161px;
 
 }
 .patient_btn_name {

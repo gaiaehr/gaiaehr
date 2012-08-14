@@ -558,7 +558,7 @@ class Services
 								  lp.parent_loinc,
 								  lp.sequence,
 								  lp.default_unit,
-								  lp.code_text_short,
+								  loinc.SHORTNAME AS code_text_short,
 								  lp.parent_name AS code_text,
 								  lp.loinc_number AS code,
 								  lp.active

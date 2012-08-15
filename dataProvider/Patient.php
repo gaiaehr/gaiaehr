@@ -107,7 +107,7 @@ class Patient
 		$patient             = $this->db->fetchRecord(PDO::FETCH_ASSOC);
 		$patient['fullname'] = Person::fullname($patient['fname'], $patient['mname'], $patient['lname']);
 		if(!$this->createPatientDir($pid)) {
-			return array("success" => false, "error"=> 'Patient directory failed');
+			return array('success' => false, 'error'=> 'Patient directory failed');
 		};
 		$this->createPatientQrCode($pid, $patient['fullname']);
 		$this->createDefaultPhotoId($pid);
@@ -119,7 +119,6 @@ class Patient
 
 		$data = array();
 		$foo           = explode(' ', $name);
-
 		$data['fname'] = trim($foo[0]);
 		if(count($foo) == 2){
 			$data['lname'] = trim($foo[1]);

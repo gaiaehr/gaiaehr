@@ -7,7 +7,7 @@
  * Time: 3:26 PM
  */
 if(!isset($_SESSION)){
-    session_name ("GaiaEHR");
+    session_name ('GaiaEHR');
     session_start();
     session_cache_limiter('private');
 }
@@ -148,7 +148,7 @@ class Encounter {
      */
     public function createEncounter(stdClass $params)
     {
-        $params->pid        = $_SESSION['patient']['pid'];
+        $params->pid        = (isset($params->pid) && is_numeric($params->pid) ? $params->pid : $_SESSION['patient']['pid']);
         $params->open_uid   = $_SESSION['user']['id'];
 
         $data = get_object_vars($params);
@@ -194,10 +194,8 @@ class Encounter {
     public function getEncounter(stdClass $params)
     {
         $this->setEid($params->eid);
-        $fields[] = '*';
-        $where[]  = "eid = '$params->eid'";
 
-        $this->db->setSQL( $this->db->sqlSelectBuilder('form_data_encounter', $fields, $where) );
+        $this->db->setSQL("SELECT * FROM form_data_encounter WHERE eid = '$params->eid'");
         $encounter = $this->db->fetchRecord(PDO::FETCH_ASSOC);
 
         $encounter['vitals']                = $this->getVitalsByPid($encounter['pid']);
@@ -208,10 +206,10 @@ class Encounter {
 
         $this->addEncounterHistoryEvent('Encounter viewed');
 
-        if($encounter != null){
+        if(!empty($encounter)){
             return array('success' => true, 'encounter' => $encounter);
         }else{
-            return array('success' => false);
+            return array('success' => false , 'error' => "Encounter ID $params->eid not found");
         }
     }
     /**
@@ -794,9 +792,10 @@ class Encounter {
 }
 //
 //$params = new stdClass();
-//$params->pid = 2;
-//$params->date = '2012-06-25 10:48:00';
+//$params->eid = 1;
+////$params->date = '2012-06-25 10:48:00';
 //
 //$e = new Encounter();
 //echo '<pre>';
-//print_r($e->checkForAnOpenedEncounterByPid($params));
+////print_r($e->getEncounter($params));
+//print_r($e->getSoapByEid(1));

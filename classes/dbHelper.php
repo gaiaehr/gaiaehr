@@ -69,7 +69,7 @@ class dbHelper {
      */
 	function __construct()
     {
-		error_reporting(0);
+		//error_reporting(0);
         $host   = (string)$_SESSION['site']['db']['host'];
         $port   = (int)$_SESSION['site']['db']['port'];
         $dbName = (string)$_SESSION['site']['db']['database'];
@@ -77,8 +77,7 @@ class dbHelper {
         $dbPass = (string)$_SESSION['site']['db']['password'];
 		try {
     		$this->conn = new PDO( 'mysql:host='.$host.';port='.$port.';dbname='.$dbName,$dbUser,$dbPass,
-                array(PDO::ATTR_PERSISTENT => true,
-	                  PDO::MYSQL_ATTR_LOCAL_INFILE => 1)
+                array(PDO::MYSQL_ATTR_LOCAL_INFILE => 1, PDO::ATTR_PERSISTENT => true)
             );
 		} catch (PDOException $e) {
     		$this->err = $e->getMessage();

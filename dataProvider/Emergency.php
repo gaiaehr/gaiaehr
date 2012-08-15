@@ -113,8 +113,9 @@ class Emergency {
 			    'eid' => $this->eid,
 			    'name' => 'EMERGENCY-'.$this->emergencyId,
 			    'priority' => $params->priority));
+	    }else{
+		    return array('success'=>false, 'error' => $patient['error']);
 	    }
-	    return array('success'=>false, 'error' => 'Unable to create emergency');
     }
 
 	public function logEmergency(){

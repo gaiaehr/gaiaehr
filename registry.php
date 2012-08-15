@@ -74,6 +74,8 @@ $_SESSION['patient']['readMode']= null;
 $_SESSION['server']              = $_SERVER;
 $_SESSION['server']['OS']        = (php_uname('s') == 'Linux' ? 'Linux' : 'Windows' );
 $_SESSION['server']['IS_WINDOWS']= (php_uname('s') == 'Linux' ? false : true);
+$_SESSION['server']['PHP_VERSION']= phpversion();
+$_SESSION['server']['MYSQL_VERSION']= mysql_get_server_info();
 $_SESSION['server']['token']     = null;
 $_SESSION['server']['last_tid']  = null;
 /**

@@ -75,11 +75,6 @@ $_SESSION['server']              = $_SERVER;
 $_SESSION['server']['OS']        = (php_uname('s') == 'Linux' ? 'Linux' : 'Windows' );
 $_SESSION['server']['IS_WINDOWS']= (php_uname('s') == 'Linux' ? false : true);
 $_SESSION['server']['PHP_VERSION']= phpversion();
-try{
-$_SESSION['server']['MYSQL_VERSION']= mysql_get_server_info();
-}catch (Exception $e){
-
-};
 $_SESSION['server']['token']     = null;
 $_SESSION['server']['last_tid']  = null;
 /**

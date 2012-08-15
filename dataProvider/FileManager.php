@@ -118,6 +118,34 @@ class FileManager
 		}
 	}
 
+	public function chmodReclusive($dir, $mode)
+	{
+		if(!is_dir($dir)) {
+			return chmod($dir, $mode);
+		}
+		$dh = opendir($dir);
+		while($file = readdir($dh)) {
+			if($file != '.' && $file != '..') {
+				$fullPath = $dir . '/' . $file;
+				if(!is_dir($fullPath)) {
+					if(!chmod($fullPath, $mode)) {
+						return true;
+					}
+				} else {
+					if(!$this->chmodReclusive($fullPath, $mode)) {
+						return false;
+					}
+				}
+			}
+		}
+		closedir($dh);
+		if(chmod($dir, $mode)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	private function getTempDirAvailableName()
 	{
 		$name = time();

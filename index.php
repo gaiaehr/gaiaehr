@@ -30,9 +30,25 @@ include_once('registry.php');
 include_once('classes/Mobile_Detect.php');
 $mobile = new Mobile_Detect();
 /**
+ * set the site using the url parameter site, or default if not given
+ */
+$site = (isset($_GET['site']) ? $_GET['site'] : 'default');
+/**
  * Make the auth process
  */
-if(isset($_SESSION['user']['auth']) && $_SESSION['user']['auth'] == true && $_SESSION['inactive']['life'] < $_SESSION['inactive']['time']){
+if(
+	/**
+	 * lets check for 4 things to allow the user in
+	 * 1. $_SESSION['user'] is set (this helps to app clean of PHP NOTICES)
+	 * 2. $_SESSION['user']['auth'] is true (check if the user is authorized)
+	 * 3. $_SESSION['user']['site'] is $site ($site == $_GET['site] or 'default')
+	 * 4. $_SESSION['inactive']['life'] is less than $_SESSION['inactive']['time'] (to make sure ths user hasn't been out for a long time)
+	 */
+	isset($_SESSION['user']) &&
+	$_SESSION['user']['auth'] == true &&
+	$_SESSION['user']['site'] == $site &&
+	$_SESSION['inactive']['life'] < $_SESSION['inactive']['time']
+){
     /**
      * if mobile go to mobile app, else go to app
      */
@@ -50,15 +66,10 @@ if(isset($_SESSION['user']['auth']) && $_SESSION['user']['auth'] == true && $_SE
  */
 } else {
 	/**
-     * Browse the site dir first
-     */
-	$count = 0;
-	foreach ($_SESSION['site']['sites'] as $site){ $count++; }
-	/**
      * If no directory is found inside sites dir run the setup wizard,
      * if a directory is found inside sites dir run the logon screen
      */
-	if( $count <= 0){
+	if(empty($_SESSION['site']['sites'])){
 		include_once('install/install.ejs.php');
 	} else {
         /**

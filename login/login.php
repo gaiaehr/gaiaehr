@@ -22,9 +22,10 @@ if(!defined('_GaiaEXEC')) die('No direct access allowed.');
         <script src="data/logon_api.php"></script>
         <script type="text/javascript" src="login/login.js"></script>
         <script type="text/javascript">
+	        var app, site = '<?php print $site ?>';
         Ext.onReady(function(){
             Ext.direct.Manager.addProvider(App.data.REMOTING_API);
-            Ext.create('App.panel.login.Login');
+            app = Ext.create('App.panel.login.Login');
         }); // End App
         </script>
     </head>

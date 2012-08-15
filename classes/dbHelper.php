@@ -364,7 +364,7 @@ class dbHelper {
             $data['user']       = $_SESSION['user']['name'];
             $data['checksum']   = crc32($this->sql_statement);
             $data['facility']   = $_SESSION['site']['facility'];
-            $data['patient_id'] = $_SESSION['patient']['id'];
+            $data['patient_id'] = $_SESSION['patient']['pid'];
             $data['ip'] = $_SESSION['server']['REMOTE_ADDR'];
 
             $sqlStatement = $this->sqlBind($data, 'log', 'I');

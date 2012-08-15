@@ -67,7 +67,7 @@ $_SESSION['dir']['jasper'] 		= 'jasperreports-4.5.1';
  */
 $_SESSION['patient']['pid']     = null;
 $_SESSION['patient']['name']    = null;
-$_SESSION['patient']['readMode']= null;
+$_SESSION['patient']['readOnly']= null;
  /**
  * Server related variables
  */

@@ -12,6 +12,9 @@ Ext.define('App.panel.login.Login',{
         me.currSite = null;
         me.currLang = null;
 
+        // setting to show site field
+        me.showSite = false;
+
         Ext.define('SitesModel', {
             extend: 'Ext.data.Model',
             fields: [
@@ -25,12 +28,6 @@ Ext.define('App.panel.login.Login',{
                 }
             }
         });
-
-        me.storeSites = Ext.create('Ext.data.Store', {
-            model: 'SitesModel',
-            autoLoad: false
-        });
-
 
         me.langStore = Ext.create('Ext.data.Store', {
             fields:['name','value'],
@@ -119,23 +116,6 @@ Ext.define('App.panel.login.Login',{
                     specialkey  : me.onEnter,
                     select      : me.onLangSelect
                 }
-            },{
-                xtype           : 'combobox',
-                name            : 'choiseSite',
-                itemId          : 'choiseSite',
-                displayField    : 'site',
-                valueField      : 'site',
-                queryMode       : 'local',
-                fieldLabel      : 'Site',
-                store           : me.storeSites,
-                allowBlank      : false,
-                editable        : false,
-                listeners:{
-                    scope       : me,
-                    specialkey  : me.onEnter,
-                    select      : me.onSiteSelect
-                }
-
             }],
             buttons: [{
                 xtype:'checkbox',
@@ -152,6 +132,43 @@ Ext.define('App.panel.login.Login',{
                 handler : me.onFormReset
             }]
         });
+
+        if(me.showSite){
+
+            me.storeSites = Ext.create('Ext.data.Store', {
+                model: 'SitesModel',
+                autoLoad: false
+            });
+            me.formLogin.insert(3, {
+                xtype           : 'combobox',
+                name            : 'site',
+                itemId          : 'site',
+                displayField    : 'site',
+                valueField      : 'site',
+                queryMode       : 'local',
+                fieldLabel      : 'Site',
+                store           : me.storeSites,
+                allowBlank      : false,
+                editable        : false,
+                msgTarget: 'side',
+                labelWidth: 300,
+                anchor: '100%',
+                listeners:{
+                    scope       : me,
+                    specialkey  : me.onEnter,
+                    select      : me.onSiteSelect
+                }
+            });
+        }else{
+            me.formLogin.insert(3, {
+                xtype           : 'textfield',
+                name            : 'site',
+                itemId          : 'site',
+                hidden:true,
+                value:window.site
+            });
+        }
+
         /**
          * The Logon Window
          */
@@ -207,7 +224,12 @@ Ext.define('App.panel.login.Login',{
 	                //window.close();
 	                //window.appWindow = window.open('./','app','fullscreen=yes,directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no');
                 }else{
-                    me.msg('Login Failed!', response.result.error);
+                    Ext.Msg.show({
+                         title:'Oops!',
+                         msg: response.result.error,
+                         buttons: Ext.Msg.OK,
+                         icon: Ext.Msg.ERROR
+                    });
                     me.onFormReset();
                     formPanel.el.unmask();
                 }
@@ -232,41 +254,45 @@ Ext.define('App.panel.login.Login',{
      * form rest function
      */
     onFormReset:function(){
-        var form = this.formLogin.getForm();
+        var me = this,
+            form = me.formLogin.getForm();
         form.reset();
-        var model = Ext.ModelManager.getModel('SitesModel'),
-        newModel  = Ext.ModelManager.create({
-            choiseSite  : this.currSite,
-            lang        : this.currLang
-        }, model );
-        form.loadRecord(newModel);
-        this.formLogin.getComponent('authUser').focus();
+        form.setValues({
+            site  : window.site,
+            lang  : me.currLang
+        });
+        me.formLogin.getComponent('authUser').focus();
     },
     /**
      * After form is render load store
      */
     onAfterrender:function(){
-        this.storeSites.load({
-            scope   :this,
-            callback:function(records,operation,success){
-                if(success === true){
-                    /**
-                     * Lets add a delay to make sure the page is fully render.
-                     * This is to compensate for slow browser.
-                     */
-                    Ext.Function.defer(function(){
-                        this.currSite = records[0].data.site;
-                        this.currLang = 'en_US';
-                        this.formLogin.getComponent('choiseSite').setValue(this.currSite);
-                        this.formLogin.getComponent('lang').setValue(this.currLang);
-                        this.formLogin.getComponent('authUser').focus();
-                    },100,this);
+        var me = this;
+        if(me.showSite){
+            me.storeSites.load({
+                scope   :me,
+                callback:function(records,operation,success){
+                    if(success === true){
+                        /**
+                         * Lets add a delay to make sure the page is fully render.
+                         * This is to compensate for slow browser.
+                         */
+                        Ext.Function.defer(function(){
+                            me.currSite = records[0].data.site;
+                            if(me.showSite){
+                                me.formLogin.getComponent('choiseSite').setValue(this.currSite);
+                            }
+                        },100,this);
 
-                }else{
-                    this.msg('Opps! Something went wrong...',  'No site found.');
+                    }else{
+                        this.msg('Opps! Something went wrong...',  'No site found.');
+                    }
                 }
-            }
-        });
+            });
+        }
+        me.currLang = 'en_US';
+        me.formLogin.getComponent('lang').setValue(me.currLang);
+        me.formLogin.getComponent('authUser').focus();
 
     },
     /**

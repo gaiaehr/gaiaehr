@@ -69,8 +69,8 @@ class authProcedures {
         // And include the rest of the remaining
         // variables to connect to the database.
         //-------------------------------------------
-        $_SESSION['site']['site'] = $params->choiseSite;
-        $fileConf = '../sites/' . $_SESSION['site']['site'] . '/conf.php';
+
+        $fileConf = '../sites/' . $params->site . '/conf.php';
         if (file_exists($fileConf)){
             /** @noinspection PhpIncludeInspection */
             include_once($fileConf);
@@ -81,7 +81,7 @@ class authProcedures {
         	}
         	// Do not stop here!, continue with the rest of the code.
         } else {
-            return array('success'=>false, 'error'=>'No configuration file found on the selected site.<br>Please contact support.');
+            return array('success'=>false, 'error'=>'No configuration file found for site <span style="font-weight:bold">'.$params->site.'</span>.<br>Please double check URL or contact support desk.');
         }
         //-------------------------------------------
 		// remove empty space from username and password
@@ -95,7 +95,7 @@ class authProcedures {
         //-------------------------------------------
         // Username & password match
         //-------------------------------------------
-        $db->setSQL("SELECT id, username, fname, mname, lname, email, password
+        $db->setSQL("SELECT id, username, title, fname, mname, lname, email, password
                          FROM users
         		        WHERE username   = '$params->authUser'
         		          AND authorized = '1'
@@ -105,12 +105,17 @@ class authProcedures {
         if ($params->authPass != $aes->decrypt($user['password'])){
             return array('success'=>false, 'error'=>'The username or password you provided is invalid.');
         } else {
+			//------------------------------------------
+	        // set site where user is authorized to access;
+			//------------------------------------------
+	        $_SESSION['site']['site'] = $params->site;
         	//-------------------------------------------
         	// Change some User related variables and go
         	//-------------------------------------------
         	$_SESSION['user']['name']   = $user['title'] . " " . $user['lname'] . ", " . $user['fname'] . " " . $user['mname'];
         	$_SESSION['user']['id']     = $user['id'];
         	$_SESSION['user']['email']  = $user['email'];
+        	$_SESSION['user']['site']   = $params->site;
         	$_SESSION['user']['auth']   = true;
         	//-------------------------------------------
         	// Also fetch the current version of the

@@ -13,7 +13,7 @@ Ext.define('App.panel.login.Login',{
         me.currLang = null;
 
         // setting to show site field
-        me.showSite = false;
+        me.showSite = true;
 
         Ext.define('SitesModel', {
             extend: 'Ext.data.Model',
@@ -280,7 +280,7 @@ Ext.define('App.panel.login.Login',{
                         Ext.Function.defer(function(){
                             me.currSite = records[0].data.site;
                             if(me.showSite){
-                                me.formLogin.getComponent('choiseSite').setValue(this.currSite);
+                                me.formLogin.getComponent('site').setValue(this.currSite);
                             }
                         },100,this);
 

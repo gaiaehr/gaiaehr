@@ -13,7 +13,7 @@ Ext.define('App.panel.login.Login',{
         me.currLang = null;
 
         // setting to show site field
-        me.showSite = true;
+        me.showSite = false;
 
         Ext.define('SitesModel', {
             extend: 'Ext.data.Model',

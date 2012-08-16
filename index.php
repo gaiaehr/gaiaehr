@@ -53,9 +53,9 @@ if(
      * if mobile go to mobile app, else go to app
      */
     if($_SESSION['site']['checkInMode']){
-        include_once("checkin/checkin.php");
+        include_once('checkin/checkin.php');
     }elseif($mobile->isMobile()) {
-	    include_once("app_mobile.php");
+	    include_once('app_mobile.php');
     }else{
         include_once($_SESSION['site']['root'].'/dataProvider/Globals.php');
         Globals::setGlobals();

@@ -13,8 +13,12 @@ Ext.define('App.model.fees.Pa', {
 	],
 	proxy : {
 		type: 'direct',
-		api : {
-
-		}
+        api : {
+            read  : Fees.getPaymentsBySearch
+        },
+        reader: {
+            root         : 'rows',
+            totalProperty: 'totals'
+        }
 	}
 });

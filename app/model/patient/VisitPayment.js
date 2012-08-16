@@ -6,7 +6,7 @@
  * Time: 10:37 PM
  */
 
-Ext.define('App.model.fees.EncountersPayments', {
+Ext.define('App.model.patient.VisitPayment', {
 	extend: 'Ext.data.Model',
 	fields: [
         {name: 'id', type: 'int'},

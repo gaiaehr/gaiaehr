@@ -26,8 +26,12 @@ Ext.define('App.model.fees.Checkout', {
 	],
 	proxy : {
 		type: 'direct',
-		api : {
-
-		}
+        api : {
+            read  : Fees.getPaymentsBySearch
+        },
+        reader: {
+            root         : 'rows',
+            totalProperty: 'totals'
+        }
 	}
 });

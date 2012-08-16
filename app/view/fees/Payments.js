@@ -12,13 +12,10 @@ Ext.define('App.view.fees.Payments', {
     extend:'App.classes.RenderPanel',
     id:'panelPayments',
     pageTitle:'Payments',
-    uses:['App.classes.GridPanel'],
-
     initComponent:function () {
         var me = this;
 
-        me.encountersStore = Ext.create('App.store.fees.EncountersPayments');
-
+        me.encountersPaymentsStore = Ext.create('App.store.fees.EncountersPayments');
 
 	    me.searchPanel = Ext.create('Ext.panel.Panel',{
 		    title:'Search',
@@ -134,7 +131,7 @@ Ext.define('App.view.fees.Payments', {
 			    {
 				    xtype:'grid',
 				    region:'center',
-	                store:me.encountersStore,
+	                store:me.encountersPaymentsStore,
 	                columns:[
 	                    {
 	                        header:'Service Date'
@@ -275,7 +272,7 @@ Ext.define('App.view.fees.Payments', {
 			    {
 				    xtype:'grid',
 				    region:'center',
-	                store:me.encountersStore,
+	                //store:me.encountersPaymentsStore,
 	                plugins: Ext.create('App.classes.grid.RowFormEditing', {
                         autoCancel:false,
                         errorSummary:false,
@@ -450,7 +447,7 @@ Ext.define('App.view.fees.Payments', {
      * to call every this panel becomes active
      */
     onActive:function (callback) {
-        this.encountersStore.load();
+        this.encountersPaymentsStore.load();
         callback(true);
     }
 

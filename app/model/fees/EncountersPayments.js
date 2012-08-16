@@ -26,10 +26,11 @@ Ext.define('App.model.fees.EncountersPayments', {
     proxy : {
         type: 'direct',
         api : {
-            read  : Fees.getEncountersByPayment
+            read :Fees.getPaymentsBySearch
         },
-        reader     : {
-            type: 'json'
+        reader: {
+            root         : 'rows',
+            totalProperty: 'totals'
         }
     }
 });

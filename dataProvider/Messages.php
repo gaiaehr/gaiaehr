@@ -23,12 +23,14 @@ class Messages extends dbHelper {
     public function getMessages(stdClass $params){
         $currUser = $_SESSION['user']['id'];
 
-        if($params->get == 'inbox'){
-            $wherex = "messages.to_deleted = '0' AND users.id = '$currUser'";
-        }elseif($params->get == 'sent'){
-            $wherex = "messages.from_deleted = '0' AND messages.from_id = '$currUser'";
-        }elseif($params->get == 'trash'){
-            $wherex = "messages.to_deleted = '1' OR messages.from_deleted = '1' AND users.id = '$currUser'";
+	    if(isset($params->get)){
+	        if($params->get == 'inbox'){
+	            $wherex = "messages.to_deleted = '0' AND users.id = '$currUser'";
+	        }elseif($params->get == 'sent'){
+	            $wherex = "messages.from_deleted = '0' AND messages.from_id = '$currUser'";
+	        }elseif($params->get == 'trash'){
+	            $wherex = "messages.to_deleted = '1' OR messages.from_deleted = '1' AND users.id = '$currUser'";
+	        }
         }else{
             $wherex = "messages.to_deleted = '0' AND users.id = '$currUser'";
         }

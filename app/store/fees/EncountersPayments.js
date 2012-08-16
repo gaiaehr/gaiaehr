@@ -8,6 +8,5 @@
 Ext.define('App.store.fees.EncountersPayments', {
 	extend    : 'Ext.data.Store',
 	model     : 'App.model.fees.EncountersPayments',
-    pageSize: 10,
 	autoLoad  : false
 });

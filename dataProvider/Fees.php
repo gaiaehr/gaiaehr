@@ -17,7 +17,7 @@ include_once($_SESSION['site']['root'].'/dataProvider/User.php');
 include_once($_SESSION['site']['root'].'/dataProvider/Encounter.php');
 
 
-class Fees extends Encounter {
+class Fees {
     /**
      * @var dbHelper
      */
@@ -31,11 +31,14 @@ class Fees extends Encounter {
      */
     private $patient;
 
+	private $enc;
+
     function __construct()
     {
         $this->db = new dbHelper();
         $this->user = new User();
         $this->patient = new Patient();
+	    $this->enc = new Encounter();
         return;
     }
 
@@ -101,6 +104,14 @@ class Fees extends Encounter {
         return array('totals' => $total, 'encounters' => $encounters);
 
     }
+
+
+	public function getPaymentsBySearch(stdClass $params){
+		//TODO: Payment search function
+
+
+		return array('totals'=>0 , 'rows' => array());
+	}
 
 	public function addPayment(stdClass $params){
 		$data = get_object_vars($params);

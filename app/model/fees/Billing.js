@@ -28,7 +28,6 @@ Ext.define('App.model.fees.Billing', {
             read  : Fees.getFilterEncountersBillingData
         },
         reader     : {
-            type: 'json',
             root: 'encounters',
             totalProperty: 'totals'
         }

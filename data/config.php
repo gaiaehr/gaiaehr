@@ -201,6 +201,9 @@ $API = array(
             ),
             'getPatientBalance'=>array(
                'len'=>1
+            ),
+            'getPaymentsBySearch'=>array(
+               'len'=>1
             )
         ),
 

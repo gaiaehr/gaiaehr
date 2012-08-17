@@ -279,10 +279,9 @@ Ext.define('App.view.patient.Encounter', {
 		/**
 		 * Tap Panel panels and forms
 		 */
-		me.MiscBillingOptionsPanel = Ext.create('Ext.form.Panel', {
+		me.MiscBillingOptionsPanel = Ext.create('App.view.patient.encounter.HealthCareFinancingAdministrationOptions', {
 			autoScroll: true,
-			title     : 'Misc. Billing Options HCFA',
-			html      : '<h1>Misc. Billing Options HCFA form placeholder!</h1>'
+			title     : 'Misc. Billing Options HCFA-1500'
 		});
 
 		me.CurrentProceduralTerminology = Ext.create('App.view.patient.encounter.CurrentProceduralTerminology', {

@@ -46,14 +46,15 @@ Ext.define('App.panel.checkin.Checkin',{
         }).show();
 
         me.logo = Ext.create('Ext.container.Container', {
-            html: '<img src="ui_app/GaiaEHR_big_logo.png" />',
+            html: '<img src="ui_app/gaiaehr_small_white.png" />',
             floating:true,
             shadow:false,
             renderTo: Ext.getBody()
         });
 
         me.listeners = {
-            resize:me.onResized
+            resize:me.onResized,
+            afterrender:me.onAfterrender
         };
 
         me.callParent(arguments);
@@ -77,7 +78,7 @@ Ext.define('App.panel.checkin.Checkin',{
      * After form is render load store
      */
     onAfterrender:function(){
-
+        this.onResized();
     },
 
     onResized:function(){

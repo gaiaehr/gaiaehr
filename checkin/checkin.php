@@ -11,11 +11,11 @@ if(!defined('_GaiaEXEC')) die('No direct access allowed.');
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-        <title>GaiaEHR Logon Screen</title>
-        <script type="text/javascript" src="lib/<?php echo $_SESSION['dir']['ext']; ?>/ext-all.js"></script>
-            <link rel="stylesheet" type="text/css" href="lib/<?php echo $_SESSION['dir']['ext']; ?>/resources/css/ext-neptune.css">
+        <title>GaiaEHR :: Check In</title>
+        <script type="text/javascript" src="lib/extjs-4.1.1/ext-all.js"></script>
+            <link rel="stylesheet" type="text/css" href="lib/extjs-4.1.1/resources/css/ext-neptune.css">
         <link rel="stylesheet" type="text/css" href="ui_app/style_newui.css" >
-        <link rel="stylesheet" type="text/css" href="ui_app/GaiaEHR_app.css" >
+        <link rel="stylesheet" type="text/css" href="ui_app/custom_app.css" >
 
         <script type="text/javascript" src="lib/jsqrcode/src/grid.js"></script>
         <script type="text/javascript" src="lib/jsqrcode/src/version.js"></script>

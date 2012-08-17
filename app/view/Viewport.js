@@ -112,6 +112,7 @@ Ext.define('App.view.Viewport', {
 		'App.store.patient.Vitals',
 		'App.store.areas.PoolArea',
 
+        'App.classes.AbstractPanel',
 		'App.classes.LiveCPTSearch',
 		'App.classes.LiveImmunizationSearch',
 		'App.classes.LiveMedicationSearch',

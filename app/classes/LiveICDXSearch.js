@@ -26,14 +26,14 @@ Ext.define('App.classes.LiveICDXSearch', {
 			extend: 'Ext.data.Model',
 			fields: [
 				{name: 'id', type: 'int'},
-				{name: 'code'},
+				{name: 'code', type: 'string'},
 				{name: 'code_text', type: 'string'},
 				{name: 'code_type', type: 'string'}
 			],
 			proxy : {
 				type  : 'direct',
 				api   : {
-					read: Services.liveICDcodesearch
+					read: Codes.ICDCodeSearch
 				},
 				reader: {
 					totalProperty: 'totals',
@@ -63,7 +63,7 @@ Ext.define('App.classes.LiveICDXSearch', {
 				// Custom rendering template for each item
 				//---------------------------------------------------------------------
 				getInnerTpl: function() {
-					return '<div class="search-item">{code}: {code_text}</div>';
+					return '<div class="search-item">{code_type} <span style="font-weight: bold;">{code}</span>: {code_text}</div>';
 				}
 			},
 			pageSize    : 10

@@ -7,6 +7,13 @@ $API = array(
 			)
 		)
 	),
+	'Codes'=>array(
+		'methods'=>array(
+			'ICDCodeSearch'=>array(
+				'len'=>1
+			)
+		)
+	),
 	'ExternalDataUpdate'=>array(
 		'methods'=>array(
 			'updateCodesWithUploadFile'=>array(

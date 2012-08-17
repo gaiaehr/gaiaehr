@@ -9,7 +9,7 @@
  */
 Ext.define('App.view.administration.ExternalDataLoads', {
 	extend       : 'App.classes.RenderPanel',
-	id           : 'panelUpdateCodes',
+	id           : 'panelExternalDataLoads',
 	pageTitle    : 'External Data Loads',
 	/**
 	 * define the layout 'accordion'
@@ -134,7 +134,7 @@ Ext.define('App.view.administration.ExternalDataLoads', {
 				}
 			],
 			api        : {
-				submit: Codes.updateCodesWithUploadFile
+				submit: ExternalDataUpdate.updateCodesWithUploadFile
 			},
 			buttons    : [
 				{
@@ -256,7 +256,7 @@ Ext.define('App.view.administration.ExternalDataLoads', {
 		var me = this;
 		app.setTask(false);
 		grid.el.mask('Installing Database, Please wait...');
-		Codes.updateCodes(record.data, function(provider, response){
+        ExternalDataUpdate.updateCodes(record.data, function(provider, response){
 			grid.el.unmask();
 			if(response.result.success){
 				me.setCurrentCodesInfo();
@@ -272,7 +272,7 @@ Ext.define('App.view.administration.ExternalDataLoads', {
 		var me = this,
 			codes,
 			fieldset;
-		Codes.getCurrentCodesInfo(function(provider, response){
+        ExternalDataUpdate.getCurrentCodesInfo(function(provider, response){
 			codes = response.result;
 			for(var i=0; i < codes.length; i++){
 				if(codes[i].data !== false){

@@ -15,7 +15,7 @@ Ext.define('App.store.administration.ExternalDataLoads', {
 		me.proxy = {
 			type       : 'direct',
 			api        : {
-				read  : Codes.getCodeFiles
+				read  : ExternalDataUpdate.getCodeFiles
 			},
 			extraParams: {
 				codeType: config.codeType

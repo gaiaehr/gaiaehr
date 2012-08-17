@@ -7,7 +7,7 @@ $API = array(
 			)
 		)
 	),
-	'Codes'=>array(
+	'ExternalDataUpdate'=>array(
 		'methods'=>array(
 			'updateCodesWithUploadFile'=>array(
 				'formHandler'=>true,

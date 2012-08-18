@@ -33,7 +33,7 @@ Ext.define('App.classes.LiveICDXSearch', {
 			proxy : {
 				type  : 'direct',
 				api   : {
-					read: Codes.ICDCodeSearch
+					read: DiagnosisCodes.liveCodeSearch
 				},
 				reader: {
 					totalProperty: 'totals',

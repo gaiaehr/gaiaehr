@@ -7,9 +7,12 @@ $API = array(
 			)
 		)
 	),
-	'Codes'=>array(
+	'DiagnosisCodes'=>array(
 		'methods'=>array(
 			'ICDCodeSearch'=>array(
+				'len'=>1
+			),
+			'liveCodeSearch'=>array(
 				'len'=>1
 			)
 		)

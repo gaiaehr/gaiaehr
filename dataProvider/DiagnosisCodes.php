@@ -13,7 +13,9 @@ if(!isset($_SESSION)) {
 }
 $_SESSION['site']['flops'] = 0;
 include_once($_SESSION['site']['root'] . '/classes/dbHelper.php');
-class Codes
+include_once($_SESSION['site']['root'] . '/classes/Arrays.php');
+ini_set('memory_limit', '1024M');
+class DiagnosisCodes
 {
 	private $db;
 
@@ -23,8 +25,11 @@ class Codes
 		return;
 	}
 
-	public function ICDCodeSearch(stdClass $params)
+	public function ICDCodeSearch($query)
 	{
+		if(!is_string($query)) {
+			$query = $query->query;
+		}
 		/**
 		 * get last code revision
 		 */
@@ -34,73 +39,98 @@ class Codes
 		 * ICD9
 		 */
 		$this->db->setSQL("SELECT dx_id 			AS id,
+								  formatted_dx_code,
 								  formatted_dx_code AS code,
+								  dx_code,
+								  dx_code 			AS xcode,
+								  long_desc,
 								  long_desc 		AS code_text,
+								  short_desc,
 								  'ICD9-DX'			AS code_type
 						     FROM icd9_dx_code
                         	WHERE active = '1'
                         	  AND revision = '$revision'
-                        	  AND (short_desc 		LIKE '%$params->query%'
-                        	   OR long_desc 		LIKE '$params->query%'
-                        	   OR dx_code			LIKE '$params->query%'
-                        	   OR formatted_dx_code	LIKE '$params->query%')
-                         ORDER BY code ASC");
-		$records = array_merge($records, $this->db->fetchRecords(PDO::FETCH_CLASS));
+                        	  AND (short_desc 		LIKE '%$query%'
+                        	   OR long_desc 		LIKE '$query%'
+                        	   OR dx_code			LIKE '$query%'
+                        	   OR formatted_dx_code	LIKE '$query%')
+                         ORDER BY formatted_dx_code ASC");
+		$records = array_merge($records, $this->db->fetchRecords(PDO::FETCH_ASSOC));
 		/**
 		 * ICD9 Surgery
 		 */
 		$this->db->setSQL("SELECT sg_id 			AS id,
+								  formatted_sg_code,
 								  formatted_sg_code	AS code,
+								  sg_code,
+								  sg_code			AS xcode,
+								  long_desc,
 								  long_desc 		AS code_text,
+								  short_desc,
                                   'ICD9-SG'			AS code_type
 							 FROM icd9_sg_code
                         	WHERE active = '1'
                         	  AND revision = '$revision'
-                        	  AND (short_desc 		LIKE '%$params->query%'
-                        	   OR long_desc 		LIKE '$params->query%'
-                        	   OR sg_code			LIKE '$params->query%'
-                        	   OR formatted_sg_code	LIKE '$params->query%')
-                         ORDER BY code ASC");
-		$records = array_merge($records, $this->db->fetchRecords(PDO::FETCH_CLASS));
+                        	  AND (short_desc 		LIKE '%$query%'
+                        	   OR long_desc 		LIKE '$query%'
+                        	   OR sg_code			LIKE '$query%'
+                        	   OR formatted_sg_code	LIKE '$query%')
+                         ORDER BY formatted_sg_code ASC");
+		$records = array_merge($records, $this->db->fetchRecords(PDO::FETCH_ASSOC));
 		/**
 		 * ICD10 DX
 		 */
 		$this->db->setSQL("SELECT dx_id 			AS id,
+								  formatted_dx_code,
 								  formatted_dx_code AS code,
+								  dx_code,
+								  dx_code 			AS xcode,
+								  long_desc,
 								  long_desc 		AS code_text,
+								  short_desc,
 								  'ICD10-DX'		AS code_type
 							 FROM icd10_dx_order_code
                         	WHERE active = '1'
                         	  AND revision = '$revision'
-                        	  AND (short_desc 		LIKE '%$params->query%'
-                        	   OR long_desc 		LIKE '$params->query%'
-                        	   OR dx_code 			LIKE '$params->query%'
-                        	   OR formatted_dx_code	LIKE '$params->query%')
-                         ORDER BY code ASC");
-		$records = array_merge($records, $this->db->fetchRecords(PDO::FETCH_CLASS));
+                        	  AND (short_desc 		LIKE '%$query%'
+                        	   OR long_desc 		LIKE '$query%'
+                        	   OR dx_code 			LIKE '$query%'
+                        	   OR formatted_dx_code	LIKE '$query%')
+                         ORDER BY formatted_dx_code ASC");
+		$records = array_merge($records, $this->db->fetchRecords(PDO::FETCH_ASSOC));
 		/**
 		 * ICD10 PCS
 		 */
 		$this->db->setSQL("SELECT pcs_id 			AS id,
+								  pcs_code,
 								  pcs_code			AS code,
+								  pcs_code			AS xcode,
+								  long_desc,
 								  long_desc 		AS code_text,
+								  short_desc,
 								  'ICD10-PCS'		AS code_type
 							 FROM icd10_pcs_order_code
                         	WHERE active = '1'
                         	  AND revision = '$revision'
-                        	  AND (short_desc 		LIKE '%$params->query%'
-                        	   OR long_desc 		LIKE '$params->query%'
-                        	   OR pcs_code 			LIKE '$params->query%')
-                         ORDER BY code ASC");
-		$records = array_merge($records, $this->db->fetchRecords(PDO::FETCH_CLASS));
-		$total   = count($records);
-		$records = array_slice($records, $params->start, $params->limit);
-		return array('totals' => $total, 'rows' => $records);
+                        	  AND (short_desc 		LIKE '%$query%'
+                        	   OR long_desc 		LIKE '$query%'
+                        	   OR pcs_code 			LIKE '$query%')
+                         ORDER BY pcs_code ASC");
+		$records = array_merge($records, $this->db->fetchRecords(PDO::FETCH_ASSOC));
+
+		if(is_object($query)) {
+			$total   = count($records);
+			$records = array_slice($records, $query->start, $query->limit, true);
+			return array('totals' => $total, 'rows' => $records);
+		}else{
+			return $records;
+		}
+
 	}
 
 	public function getICDDataByCode($code)
 	{
-		$data = array();
+		$data     = array();
 		$revision = $this->getLastRevisionByCodeType('ICD9');
 		$this->db->setSQL("SELECT *, formatted_dx_code AS code, 'ICD9-DX' AS code_type
 						  	 FROM icd9_dx_code
@@ -111,7 +141,7 @@ class Codes
 						  	 FROM icd9_sg_code
 						 	WHERE (sg_code  = '$code' OR formatted_sg_code  = '$code')
 						      AND revision = '$revision'");
-		$data[] = $this->db->fetchRecord(PDO::FETCH_ASSOC);
+		$data[]   = $this->db->fetchRecord(PDO::FETCH_ASSOC);
 		$revision = $this->getLastRevisionByCodeType('ICD10');
 		$this->db->setSQL("SELECT *, formatted_dx_code AS code, 'ICD10-DX' AS code_type
 						  	 FROM icd10_dx_order_code
@@ -123,18 +153,18 @@ class Codes
 						 	WHERE pcs_code = '$code'
 						      AND revision = '$revision'");
 		$data[] = $this->db->fetchRecord(PDO::FETCH_ASSOC);
-
-		foreach($data as $foo){
-			if(is_array($foo)){
+		foreach($data as $foo) {
+			if(is_array($foo)) {
 				return $foo;
-			};
+			}
+			;
 		}
 		return array();
 	}
 
 	public function getICD9CodesByICD10Code($ICD10)
 	{
-		$ICD9s = array();
+		$ICD9s    = array();
 		$revision = $this->getLastRevisionByCodeType('ICD10');
 		$this->db->setSQL("SELECT b.formatted_dx_code AS code,
 								  'ICD9-DX' AS code_type, b.*
@@ -157,7 +187,7 @@ class Codes
 
 	public function getICD10CodesByICD9Code($ICD9)
 	{
-		$ICD10s = array();
+		$ICD10s   = array();
 		$revision = $this->getLastRevisionByCodeType('ICD9');
 		$this->db->setSQL("SELECT b.formatted_dx_code AS code,
 								  'ICD10-DX' AS code_type, b.*
@@ -187,13 +217,67 @@ class Codes
 		return $record['last_revision'];
 	}
 
+	public function getICDByEid($eid)
+	{
+		$records = array();
+		$this->db->setSQL("SELECT code
+							 FROM encounter_codes_icdx
+							WHERE eid = '$eid'
+                            ORDER BY id ASC");
+		foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) AS $foo) {
+			$records[] = $this->getICDDataByCode($foo['code']);
+		}
+		return $records;
+	}
+
+	public function getICDByPid($pid)
+	{
+		$records = array();
+		$this->db->setSQL("SELECT code
+							 FROM encounter_codes_icdx
+							WHERE pid = '$pid'
+                            ORDER BY id ASC");
+		foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) AS $foo) {
+			$records[] = $this->getICDDataByCode($foo['code']);
+		}
+		return $records;
+	}
+
+	public function liveCodeSearch(stdClass $params)
+	{
+		$records    = array();
+		$haystack    = array();
+		$queries    = explode(' ', $params->query);
+		foreach($queries as $query) {
+
+			foreach($this->ICDCodeSearch(trim($query)) as $row) {
+				if(array_key_exists($row['code'], $haystack)) {
+					$foo = $records[$row['code']];
+					unset($records[$row['code']]);
+					$foo['weight']++;
+					$records[$row['code']] = $foo;
+					//array_unshift($records, $foo);
+				} else {
+					$row['weight']           = 1;
+					$haystack[$row['code']]  = 1;
+					$records[$row['code']]   = $row;
+				}
+			}
+		}
+		$records = array_slice($records, 0, 300, false);
+		Arrays::sksort($records, 'weight', false);
+		$total   = count($records);
+		$records = array_slice($records, $params->start, $params->limit, false);
+		return array('totals'=> $total, 'rows'  => array_values($records));
+	}
+
 }
 
-//$f = new Codes();
+//$f = new DiagnosisCodes();
 //print '<pre>';
 //$params = new stdClass();
 //$params->codeType = 'ICD9';
-//$params->version = 30;
-//$params->basename = 'cmsv30_master_descriptions.zip';
-//$params->path = '/var/www/gaiaehr/contrib/icd9/cmsv30_master_descriptions.zip';
-//print_r($f->getICD9CodesByICD10Code('HZ95ZZZ'));
+//$params->query = 'of';
+//$params->start = 0;
+//$params->limit = 25;
+//print_r($f->liveCodeSearch($params));

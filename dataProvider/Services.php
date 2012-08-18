@@ -26,75 +26,6 @@ class Services
 		return $this->db = new dbHelper();
 	}
 
-	// TODO: delete this method... MOVED to Codes.getICDDataByCode()
-    private function getICD9($params){
-        $revision = $this->getLastRevisionByCode($params->code_type);
-
-
-        $this->db->setSQL("SELECT * FROM icd9_dx_code
-                                    WHERE dx_code IS NOT NULL
-                                    AND (short_desc LIKE '%$params->query%'
-                                    OR dx_code LIKE '$params->query%')
-                                    AND revision = '$revision'");
-        $records = $this->db->fetchRecords(PDO::FETCH_CLASS);
-        $this->db->setSQL("SELECT *
-                           FROM icd9_sg_code
-                           WHERE sg_code IS NOT NULL
-                           AND (short_desc LIKE '%$params->query%'
-                           OR sg_code LIKE '$params->query%')
-                           AND revision = '$revision'");
-        $records = array_merge($records, $this->db->fetchRecords(PDO::FETCH_CLASS));
-        $total   = count($records);
-        $recs = array_slice($records,$params->start,$params->limit);
-        $records = array();
-        foreach($recs as $rec) {
-            $rec->code_type = $params->code_type;
-            $rec->code_text_short = $rec->short_desc;
-            $rec->code_text = $rec->long_desc;
-            $rec->code = $rec->dx_code ? $rec->dx_code : $rec->sg_code ;
-            $records[]      = $rec;
-        }
-        return array('totals'=> $total,
-                     'rows'  => $records);
-
-    }
-	// TODO: delete this method... MOVED to Codes.getLastRevisionByCodeType()
-    public function getLastRevisionByCode($code){
-        $this->db->setSQL("SELECT *
-                           FROM standardized_tables_track
-                           WHERE code_type = '$code'
-                           ORDER BY id DESC");
-        $record = $this->db->fetchRecord(PDO::FETCH_CLASS);
-
-        return $record['revision_number'];
-
-    }
-	// TODO: delete this method... MOVED to Codes.getICDDataByCode()
-    private function getICD10($params){
-
-
-        $this->db->setSQL("SELECT * FROM icd10_dx_order_code WHERE dx_code IS NOT NULL AND short_desc LIKE '%$params->query%' OR dx_code LIKE '$params->query%'");
-        $records = $this->db->fetchRecords(PDO::FETCH_CLASS);
-        $this->db->setSQL("SELECT * FROM icd10_pcs_order_code WHERE pcs_code IS NOT NULL AND short_desc LIKE '%$params->query%' OR pcs_code LIKE '$params->query%'");
-        $records = array_merge($records, $this->db->fetchRecords(PDO::FETCH_CLASS));
-        $total   = count($records);
-        $recs = array_slice($records,$params->start,$params->limit);
-        $records = array();
-        foreach($recs as $rec) {
-            $rec->code_type = $params->code_type;
-            $rec->code_text_short = $rec->short_desc;
-            $rec->code_text = $rec->long_desc;
-            $rec->code = $rec->dx_code ? $rec->dx_code : $rec->pcs_code ;
-            $records[]      = $rec;
-        }
-        return array('totals'=> $total,
-                     'rows'  => $records);
-
-    }
-
-
-
-
 
 	public function getServices(stdClass $params)
 	{
@@ -104,12 +35,6 @@ class Services
 
 		if($params->code_type == 'CPT4') {
 			$tableX = 'cpt_codes';
-		} elseif($params->code_type == 'ICD9') {
-			$icd9=$this->getICD9($params);
-            return $icd9;
-		}  elseif($params->code_type == 'ICD10') {
-			$icd10=$this->getICD10($params);
-            return $icd10;
 		} elseif($params->code_type == 'HCPCS'){
 			$tableX = 'hcpcs_codes';
 		}elseif($params->code_type == 'Immunizations') {
@@ -146,8 +71,6 @@ class Services
 	{
 		if($params->code_type == 'CPT4') {
 			$tableX = 'cpt_codes';
-		} elseif($params->code_type == 'ICD9') {
-			$tableX = 'codes_icds';
 		} elseif($params->code_type == 'HCPCS'){
 			$tableX = 'hcpcs_codes';
 		}elseif($params->code_type == 'Immunizations') {
@@ -185,15 +108,6 @@ class Services
 
 		if($params->code_type == 'CPT4') {
 			$tableX = 'cpt_codes';
-		} elseif($params->code_type == 'ICD9') {
-
-            unset($data['id']);
-
-            $sql = $this->db->sqlBind($data, 'tabla de icd', 'U', "id='$params->id'");
-            $this->db->setSQL($sql);
-            $this->db->execLog();
-            return $params;
-
 		} elseif($params->code_type == 'HCPCS'){
 			$tableX = 'hcpcs_codes';
 		}elseif($params->code_type == 'Immunizations') {
@@ -220,8 +134,6 @@ class Services
 				 */
 		if($params->code_type == 'cpt') {
 			$code_table = 'cpt_codes';
-		} elseif($params->code_type == 'icd') {
-			$code_table = 'codes_icds';
 		} else {
 			$code_table = 'hcpcs_codes';
 		}
@@ -316,36 +228,6 @@ class Services
 		$records = array_slice($records, $params->start, $params->limit);
 		return array('totals'=> $total,
 		             'rows'  => $records);
-	}
-
-	/**
-	 * @param stdClass $params
-	 * @return array
-	 */
-	public function liveIDCXSearch(stdClass $params)
-	{
-		$params->code_type = 2;
-		return $this->liveCodeSearch($params);
-	}
-
-	public function getIcdxByEid($eid)
-	{
-		$this->db->setSQL("SELECT eci.code, ic.code_text
-                             FROM encounter_codes_icdx as eci
-                             LEFT JOIN codes_icds as ic ON ic.code = eci.code
-                            WHERE eci.eid = '$eid' ORDER BY eci.id ASC");
-		return $this->db->fetchRecords(PDO::FETCH_ASSOC);
-	}
-
-	public function getIcdxUsedBPid($pid)
-	{
-		$this->db->setSQL("SELECT DISTINCT eci.code, codes.code_text
-                             FROM encounter_codes_icdx AS eci
-                        left JOIN codes ON eci.code = codes.code
-                        LEFT JOIN form_data_encounter AS e ON eci.eid = e.eid
-                            WHERE e.pid = '$pid'
-                         ORDER BY e.start_date DESC");
-		return $this->db->fetchRecords(PDO::FETCH_ASSOC);
 	}
 
 	/**

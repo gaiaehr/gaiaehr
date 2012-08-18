@@ -35,7 +35,7 @@ class Logs extends dbHelper {
         $this->setSQL("SELECT * FROM log ORDER BY id DESC");
         $records    = $this->fetchRecords(PDO::FETCH_CLASS);
         $total      = count($records);
-        $rows       = $this->filterByStartLimit($records, $params);
+        $rows       = array_splice($records, $params->start, $params->limit);
         return array('totals'=>$total ,'rows'=>$rows);
     }
 }

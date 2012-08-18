@@ -216,7 +216,7 @@ class Patient
 			array_push($rows, $row);
 		}
 		$total = count($rows);
-		$rows  = $this->db->filterByStartLimit($rows, $params);
+		$rows  = array_splice($records, $params->start, $params->limit);
 		return array('totals'=> $total, 'rows'=> $rows);
 	}
 

@@ -4,10 +4,6 @@ if(!isset($_SESSION)){
     session_start();
     session_cache_limiter('private');
 }
-set_include_path($_SESSION['site']['root'].'/lib/LINQ_040/Classes/');
-require_once'PHPLinq/LinqToObjects.php';
-
-
 ini_set('max_input_time', '7600');
 ini_set('max_execution_time', '7600');
 
@@ -84,60 +80,6 @@ class dbHelper {
 			}
 	    }
 	}
-
-    /**
-     * @brief       Filter Records By Start and Limit.
-     * @details     This Function will filter the $records by a start and Limit using LinQ.
-     *              The main reason to use LinQ is to avoid multiples SQl queries to get
-     *              the record totals and filter results.
-     *
-     * @author      Ernesto J. Rodriguez (Certun) <erodriguez@certun.com>
-     * @version     Vega 1.0
-     *
-     * @warning     This method requires stdClass arguments. Use PDO::FETCH_CLASS to execute the SQL queries.
-     *
-     * @see         Logs::getLogs() for basic example and Patient::patientLiveSearch() for advance example.
-     *
-     * @param       array $records SQL records to filter
-     * @param       stdClass $params Params used to filter the results, $params->start and $params->limit are required
-     * @return      mixed Records filtered
-     */
-    public function filterByStartLimit($records, stdClass $params)
-    {
-        if(isset($params->start) && isset($params->limit)){
-            $records = from('$record')->in($records)
-                       ->skip($params->start)
-                       ->take($params->limit)
-                       ->select('$record');
-            return $records;
-        }else{
-            return $records;
-        }
-    }
-
-    /**
-     * @brief       Filter Records By Query
-     * @details     This function will filter the record by a column value
-     *
-     * @author      Ernesto J. Rodriguez (Certun) <erodriguez@certun.com>
-     * @version     Vega 1.0
-     *
-     * @warning     This method requires stdClass $records. Use PDO::FETCH_CLASS to sexecute the SQL queries.
-     *
-     * @see         Services::getServices() for example.
-     *
-     * @param       array $records SQL records to filter
-     * @param       string $column database column to filter
-     * @param       string $query value you are looking for
-     * @return      mixed Records filtered
-     */
-    public function filterByQuery($records, $column, $query)
-    {
-            $records = from('$record')->in($records)
-                       ->where('$record => $record->'.$column.' == '.$query.'' )
-                       ->select('$record');
-            return $records;
-    }
 
     /**
      * @brief       Set the SQL Statement.

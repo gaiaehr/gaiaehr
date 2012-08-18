@@ -256,7 +256,6 @@ class DiagnosisCodes
 					unset($records[$row['code']]);
 					$foo['weight']++;
 					$records[$row['code']] = $foo;
-					//array_unshift($records, $foo);
 				} else {
 					$row['weight']           = 1;
 					$haystack[$row['code']]  = 1;

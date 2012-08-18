@@ -46,12 +46,11 @@ class Services
 
 		$sortX = $params->sort ? $params->sort[0]->property . ' ' . $params->sort[0]->direction : 'code ASC';
 		if($params->query == ''){
-			$this->db->setSQL("SELECT DISTINCT * FROM $tableX WHERE code IS NOT NULL ORDER BY $sortX");
+			$this->db->setSQL("SELECT DISTINCT * FROM $tableX WHERE code IS NOT NULL AND active = '$params->active' ORDER BY $sortX");
 		}else{
-			$this->db->setSQL("SELECT DISTINCT * FROM $tableX WHERE code IS NOT NULL AND code_text LIKE '%$params->query%' OR code LIKE '$params->query%' ORDER BY $sortX");
+			$this->db->setSQL("SELECT DISTINCT * FROM $tableX WHERE code IS NOT NULL AND active = '$params->active' AND (code_text LIKE '%$params->query%' OR code LIKE '$params->query%') ORDER BY $sortX");
 		}
 		$records = $this->db->fetchRecords(PDO::FETCH_CLASS);
-		$records = $this->db->filterByQuery($records, 'active', $params->active);
 		$total   = count($records);
 		$recs = array_slice($records,$params->start,$params->limit);
 		$records = array();

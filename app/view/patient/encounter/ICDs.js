@@ -97,7 +97,7 @@ Ext.define('App.view.patient.encounter.ICDs', {
         this.getIcdContainer().add({
             xtype:'customtrigger',
             value:code,
-            width:70,
+            width:100,
             style:'float:left',
             name:'icdxCodes',
             listeners:{

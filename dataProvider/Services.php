@@ -26,59 +26,7 @@ class Services
 		return $this->db = new dbHelper();
 	}
 
-	/**
-	 * @param stdClass $params
-	 * @return array
-	 */
-    public function liveICDcodesearch(stdClass $params){
-        $revision = $this->getLastRevisionByCode($params->code_type);
-
-
-        $this->db->setSQL("SELECT * FROM icd9_dx_code
-                                    WHERE dx_code IS NOT NULL
-                                    AND (short_desc LIKE '%$params->query%'
-                                    OR dx_code LIKE '$params->query%')
-                                    AND revision = '$revision'");
-        $records = $this->db->fetchRecords(PDO::FETCH_CLASS);
-        $this->db->setSQL("SELECT *
-                           FROM icd9_sg_code
-                           WHERE sg_code IS NOT NULL
-                           AND (short_desc LIKE '%$params->query%'
-                           OR sg_code LIKE '$params->query%')
-                           AND revision = '$revision'");
-        $records = array_merge($records, $this->db->fetchRecords(PDO::FETCH_CLASS));
-        $this->db->setSQL("SELECT * FROM icd10_dx_order_code
-                           WHERE dx_code IS NOT NULL
-                           AND short_desc LIKE '%$params->query%'
-                           OR dx_code LIKE '$params->query%'");
-        $records = array_merge($records, $this->db->fetchRecords(PDO::FETCH_CLASS));
-        $this->db->setSQL("SELECT * FROM icd10_pcs_order_code
-                           WHERE pcs_code IS NOT NULL
-                           AND short_desc LIKE '%$params->query%'
-                           OR pcs_code LIKE '$params->query%'");
-
-        $records = array_merge($records, $this->db->fetchRecords(PDO::FETCH_CLASS));
-
-        $total = count($records);
-        $recs = array_slice($records,$params->start,$params->limit);
-        $records = array();
-        foreach($recs as $rec) {
-            $rec->code_type = $params->code_type;
-            $rec->code_text_short = $rec->short_desc;
-            $rec->code_text = $rec->long_desc;
-            if($rec->dx_code){
-                $rec->code =$rec->dx_code;
-            }elseif($rec->sg_code){
-                $rec->code =$rec->sg_code;
-            }elseif($rec->pcs_code){
-                $rec->code =$rec->pcs_code;
-            }
-            $records[]      = $rec;
-        }
-        return array('totals'=> $total,
-            'rows'  => $records);
-
-    }
+	// TODO: delete this method... MOVED to Codes.getICDDataByCode()
     private function getICD9($params){
         $revision = $this->getLastRevisionByCode($params->code_type);
 
@@ -110,6 +58,7 @@ class Services
                      'rows'  => $records);
 
     }
+	// TODO: delete this method... MOVED to Codes.getLastRevisionByCodeType()
     public function getLastRevisionByCode($code){
         $this->db->setSQL("SELECT *
                            FROM standardized_tables_track
@@ -120,7 +69,7 @@ class Services
         return $record['revision_number'];
 
     }
-
+	// TODO: delete this method... MOVED to Codes.getICDDataByCode()
     private function getICD10($params){
 
 
@@ -142,6 +91,10 @@ class Services
                      'rows'  => $records);
 
     }
+
+
+
+
 
 	public function getServices(stdClass $params)
 	{

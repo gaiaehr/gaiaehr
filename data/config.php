@@ -387,6 +387,22 @@ $API = array(
         ),
 
     ),
+
+    'ServiceCodes'=>array(
+        'methods'=>array(
+        ),
+
+    ),
+    'Immunizations'=>array(
+        'methods'=>array(
+        ),
+
+    ),
+    'Laboratories'=>array(
+        'methods'=>array(
+        ),
+
+    ),
     /**
     * Practice Functions
     */

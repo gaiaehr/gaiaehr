@@ -13,23 +13,23 @@ Ext.require([
 	'Ext.resizer.Splitter',
 	'Ext.fx.target.Element',
 	'Ext.fx.target.Component',
-	'App.classes.dashboard.Portlet',
-	'App.classes.dashboard.PortalColumn',
-	'App.classes.dashboard.PortalPanel',
-	'App.classes.dashboard.PortalDropZone',
-	'App.classes.dashboard.GridPortlet',
-	'App.classes.dashboard.ChartPortlet',
-	'App.classes.dashboard.OnotesPortlet'
+	'App.view.dashboard.panel.Portlet',
+	'App.view.dashboard.panel.PortalColumn',
+	'App.view.dashboard.panel.PortalPanel',
+	'App.view.dashboard.panel.PortalDropZone',
+	'App.view.dashboard.panel.GridPortlet',
+	'App.view.dashboard.panel.ChartPortlet',
+	'App.view.dashboard.panel.OnotesPortlet'
 ]);
 Ext.define('App.view.dashboard.Dashboard', {
 	extend        : 'App.classes.RenderPanel',
 	id            : 'panelDashboard',
 	pageTitle     : 'Dashboard',
 	uses          : [
-		'App.classes.dashboard.PortalPanel',
-		'App.classes.dashboard.PortalColumn',
-		'App.classes.dashboard.GridPortlet',
-		'App.classes.dashboard.ChartPortlet'
+		'App.view.dashboard.panel.PortalPanel',
+		'App.view.dashboard.panel.PortalColumn',
+		'App.view.dashboard.panel.GridPortlet',
+		'App.view.dashboard.panel.ChartPortlet'
 	],
 	getTools      : function() {
 		return [
@@ -63,7 +63,7 @@ Ext.define('App.view.dashboard.Dashboard', {
 									id       : 'portlet-onotes',
 									title    : 'Office Notes',
 									tools    : this.getTools(),
-									items    : Ext.create('App.classes.dashboard.OnotesPortlet'),
+									items    : Ext.create('App.view.dashboard.panel.OnotesPortlet'),
 									listeners: {
 										'close': Ext.bind(this.onPortletClose, this)
 									}
@@ -86,7 +86,7 @@ Ext.define('App.view.dashboard.Dashboard', {
 									id       : 'portlet-1',
 									title    : 'Grid Portlet',
 									tools    : this.getTools(),
-									items    : Ext.create('App.classes.dashboard.GridPortlet'),
+									items    : Ext.create('App.view.dashboard.panel.GridPortlet'),
 									listeners: {
 										'close': Ext.bind(this.onPortletClose, this)
 									}
@@ -100,7 +100,7 @@ Ext.define('App.view.dashboard.Dashboard', {
 									id       : 'portlet-4',
 									title    : 'Portlet 4',
 									tools    : this.getTools(),
-									items    : Ext.create('App.classes.dashboard.ChartPortlet'),
+									items    : Ext.create('App.view.dashboard.panel.ChartPortlet'),
 									listeners: {
 										'close': Ext.bind(this.onPortletClose, this)
 									}

@@ -6,7 +6,7 @@ if(!isset($_SESSION)){
 }
 ini_set('max_input_time', '7600');
 ini_set('max_execution_time', '7600');
-
+include_once($_SESSION['site']['root'] . '/classes/Time.php');
 /**
  * @brief       Database Helper Class.
  * @details     A PDO helper for GaiaEHR, contains custom function to manage the database
@@ -300,7 +300,7 @@ class dbHelper {
 			/**
              * Using the same, internal functions.
              */
-            $data['date']      = date('Y-m-d H:i:s');
+            $data['date']       = Time::getLocalTime('Y-m-d H:i:s');
             $data['event']      = $eventLog;
             $data['comments']   = $this->sql_statement;
             $data['user']       = $_SESSION['user']['name'];
@@ -329,7 +329,7 @@ class dbHelper {
      */
 	function execEvent($eventLog)
     {
-        $data['date'] = date('Y-m-d H:i:s');
+        $data['date'] = Time::getLocalTime('Y-m-d H:i:s');
         $data['event'] = $eventLog;
         $data['comments'] = $this->sql_statement;
         $data['user'] = $_SESSION['user']['name'];

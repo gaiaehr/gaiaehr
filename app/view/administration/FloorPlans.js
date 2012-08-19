@@ -84,8 +84,8 @@ Ext.define('App.view.administration.FloorPlans', {
 
 
 		me.listeners = {
-			afterrender:function(){
-				Ext.create('Ext.util.KeyNav', Ext.getDoc(), {
+			show:function(){
+				me.nav = Ext.create('Ext.util.KeyNav', Ext.getDoc(), {
 			        scope: me,
 			        left: function(){
 				        me.moveZone('left')
@@ -100,7 +100,12 @@ Ext.define('App.view.administration.FloorPlans', {
                         me.moveZone('down')
                     }
 			    });
-			}
+			},
+            hide:function(){
+                if(me.nav){
+                    Ext.destroy(me.nav);
+                }
+            }
 		};
 
 		me.pageBody = [ me.floorPlans, me.floorPlan ];

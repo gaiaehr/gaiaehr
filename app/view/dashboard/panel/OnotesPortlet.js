@@ -1,4 +1,4 @@
-Ext.define('App.classes.dashboard.OnotesPortlet', {
+Ext.define('App.view.dashboard.panel.OnotesPortlet', {
 
 	extend       : 'Ext.grid.Panel',
 	alias        : 'widget.onotesportlet',

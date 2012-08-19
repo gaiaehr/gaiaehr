@@ -14,7 +14,7 @@ if(!isset($_SESSION)) {
 $_SESSION['site']['flops'] = 0;
 include_once($_SESSION['site']['root'] . '/classes/dbHelper.php');
 include_once($_SESSION['site']['root'] . '/classes/Arrays.php');
-ini_set('memory_limit', '1024M');
+ini_set('memory_limit', '256M');
 class DiagnosisCodes
 {
 	private $db;
@@ -157,7 +157,6 @@ class DiagnosisCodes
 			if(is_array($foo)) {
 				return $foo;
 			}
-			;
 		}
 		return array();
 	}
@@ -279,4 +278,4 @@ class DiagnosisCodes
 //$params->query = 'of';
 //$params->start = 0;
 //$params->limit = 25;
-//print_r($f->liveCodeSearch($params));
+//print_r($f->ICDTabularIndex());

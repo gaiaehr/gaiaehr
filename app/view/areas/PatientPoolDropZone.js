@@ -48,10 +48,12 @@ Ext.define('App.view.areas.PatientPoolDropZone', {
 
 	getPoolAreas: function() {
 		var me = this,
-			panel = me.getPageBody().down('container');
+			panel = me.getPageBody().down('container'),
+            areas;
 		me.stores = [];
 		PoolArea.getActivePoolAreas(function(provider, response) {
-			Ext.each(response.result, function(area) {
+            areas = response.result;
+            for(var i=0; i < areas.length; i++ ){
 				var store = Ext.create('Ext.data.Store', {
 					model: 'App.model.areas.PoolDropAreas',
 					proxy: {
@@ -60,17 +62,17 @@ Ext.define('App.view.areas.PatientPoolDropZone', {
 							read: PoolArea.getPoolAreaPatients
 						},
 						extraParams: {
-							area_id: area.id
+							area_id: areas[i].id
 						}
 					}
 				});
 				me.stores.push(store);
 				panel.add({
 					xtype      : 'grid',
-					title      : area.title,
-					action     : area.id,
+					title      : areas[i].title,
+					action     : areas[i].id,
 					store      : store,
-					floorPlanId: area.floor_plan_id,
+					floorPlanId: areas[i].floor_plan_id,
 					columns    : [
 						{
 							header   : 'Record #',
@@ -101,8 +103,7 @@ Ext.define('App.view.areas.PatientPoolDropZone', {
 					}
 				})
 
-			});
-
+			}
 		});
 	},
 
@@ -115,9 +116,10 @@ Ext.define('App.view.areas.PatientPoolDropZone', {
 	},
 
 	reloadStores: function() {
-		Ext.each(this.stores, function(store) {
-			store.load();
-		});
+        var stores = this.stores;
+        for(var i=0; i < stores.length; i++ ){
+            stores[i].load();
+        }
 	},
 
 	onActive: function(callback) {

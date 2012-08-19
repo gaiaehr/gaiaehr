@@ -153,9 +153,9 @@ Ext.define('App.view.fees.PaymentEntryWindow', {
 
     resetNewPayment:function () {
         var fields = this.query('[action="new_payment"]');
-        Ext.each(fields, function(field){
-            field.reset();
-        });
+        for(var i=0; i < fields.length; i++ ){
+            fields[i].reset();
+        }
     }
 
 

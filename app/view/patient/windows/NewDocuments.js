@@ -515,10 +515,9 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 	onCreatePrescription: function (){
 		var records =this.patientPrescriptionStore.data.items,
 			data = [];
-		Ext.each(records, function(record){
-			data.push(record.data);
-		});
-
+        for(var i=0; i < records.length; i++ ){
+            data.push(records[i].data);
+        }
 		DocumentHandler.createDocument({medications:data, pid:app.currPatient.pid, docType:'Rx', documentId:5, eid: app.currEncounterId}, function(provider, response){
 			say(response.result);
 		});
@@ -528,10 +527,9 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 	onCreateLabs: function (){
 		var records =this.patientsLabsOrdersStore.data.items,
 			data = [];
-		Ext.each(records, function(record){
-			data.push(record.data);
-		});
-
+        for(var i=0; i < records.length; i++ ){
+            data.push(records[i].data);
+        }
 		DocumentHandler.createDocument({labs:data, pid:app.currPatient.pid, docType:'Orders', documentId:4, eid: app.currEncounterId}, function(provider, response){
 			say(response.result);
 		});

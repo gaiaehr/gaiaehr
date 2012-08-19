@@ -337,26 +337,26 @@ Ext.define('App.classes.grid.RowFormEditor', {
         var me = this,
             grids = me.query('grid'),
             stores = [];
-        Ext.each(grids, function(grid){
-            stores.push(grid.store);
-        });
+        for(var i=0; i < grids.length; i++){
+            stores.push(grids[i].store);
+        }
         return stores;
     },
 
     syncChildStoresChanges:function(){
         var me = this,
             stores = me.getGridStores();
-        Ext.each(stores, function(store){
-            store.sync();
-        });
+        for(var i=0; i < stores.length; i++){
+            stores[i].sync();
+        }
     },
 
     rejectChildStoresChanges:function(){
         var me = this,
             stores = me.getGridStores();
-        Ext.each(stores, function(store){
-            store.rejectChanges();
-        });
+        for(var i=0; i < stores.length; i++){
+            stores[i].rejectChanges();
+        }
     },
 
     getEditor: function(fieldInfo) {
@@ -370,6 +370,7 @@ Ext.define('App.classes.grid.RowFormEditor', {
         } else if (fieldInfo instanceof Ext.grid.column.Column) {
             return fieldInfo.getEditor();
         }
+        return false;
     },
 
     setFields: function(column) {
@@ -378,14 +379,12 @@ Ext.define('App.classes.grid.RowFormEditor', {
             fields = form.getFields().items,
             containers = this.query('container');
 
-
-        Ext.each(fields, function(field){
-            me.mon(field, 'change', me.onFieldValueChange, me);
-        });
-
-        Ext.each(containers, function(container){
-            me.mon(container, 'resize', me.resizeEditor, me);
-        });
+        for(var i=0; i < fields.length; i++){
+            me.mon(fields[i], 'change', me.onFieldValueChange, me);
+        }
+        for(var k=0; k < containers.length; k++){
+            me.mon(containers[i], 'resize', me.resizeEditor, me);
+        }
     },
 
     loadRecord: function(record) {

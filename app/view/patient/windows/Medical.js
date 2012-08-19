@@ -1341,7 +1341,7 @@ Ext.define('App.view.patient.windows.Medical', {
             formPanel = me.query('[action="patientLabs"]')[0].down('form'),
             dataView = me.query('[action="lalboratoryresultsdataview"]')[0],
             store = dataView.store,
-            fields = [];
+            fields = model.data.fields;
 
         me.currLabPanelId = model.data.id;
         me.removeLabDocument();
@@ -1352,30 +1352,30 @@ Ext.define('App.view.patient.windows.Medical', {
             name:'id',
             hidden:true
         });
-        Ext.each(model.data.fields, function(field){
+        for(var i=0; i < fields.length; i++ ){
             formPanel.add({
                 xtype:'fieldcontainer',
                 layout:'hbox',
                 margin:0,
                 anchor:'100%',
-                fieldLabel:field.code_text_short || field.loinc_name,
+                fieldLabel:fields[i].code_text_short || fields[i].loinc_name,
                 labelWidth:130,
                 items:[
                     {
                         xtype:'textfield',
-                        name:field.loinc_number,
+                        name:fields[i].loinc_number,
                         flex:1,
-                        allowBlank: field.required_in_panel != 'R'
+                        allowBlank: fields[i].required_in_panel != 'R'
                     },
                     {
                         xtype:'mitos.unitscombo',
-                        value: field.default_unit,
-                        name:field.loinc_number+'_unit',
+                        value: fields[i].default_unit,
+                        name:fields[i].loinc_number+'_unit',
                         width:90
                     }
                 ]
             });
-        });
+        }
 
         store.load({params:{parent_id:model.data.id}});
     },
@@ -1781,9 +1781,9 @@ Ext.define('App.view.patient.windows.Medical', {
 	    me.pid = p.pid;
 	    me.setTitle(p.name + (p.readOnly ? ' <span style="color:red">[Read Mode]</span>' : ''));
 	    me.setReadOnly(app.currPatient.readOnly);
-	    Ext.each(reviewBts, function(bts){
-		    bts.setVisible((app.currEncounterId != null));
-	    });
+        for(var i=0; i < reviewBts.length; i++ ){
+            reviewBts[i].setVisible((app.currEncounterId != null));
+        }
 	    me.labPanelsStore.load();
 	    me.patientImmuListStore.load({params: {pid: app.currPatient.pid}});
 	    me.patientAllergiesListStore.load({params: {pid: app.currPatient.pid}});

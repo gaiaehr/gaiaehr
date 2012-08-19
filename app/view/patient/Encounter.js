@@ -51,6 +51,7 @@ Ext.define('App.view.patient.Encounter', {
             },
             interval: 1000 //1 second
         };
+
         me.encounterStore = Ext.create('App.store.patient.Encounter', {
             listeners: {
                 scope      : me,
@@ -131,12 +132,11 @@ Ext.define('App.view.patient.Encounter', {
                         }
                     ]
                 },
-                {
-                    xtype : 'documentsimplegrid',
+                me.documentsimplegrid = Ext.create('App.view.patient.EncounterDocumentsGrid',{
                     title : 'Documents',
                     region: 'east',
                     width : 485
-                },
+                }),
                 {
                     xtype   : 'form',
                     title   : 'Additional Info',
@@ -268,8 +268,7 @@ Ext.define('App.view.patient.Encounter', {
                 show : function() {
                     me.EncounterOrdersStore.load({params: {eid: app.currEncounterId}});
                     me.checkoutAlertArea.load({params: {eid: app.currEncounterId}});
-
-                    me.checkoutWindow.query('documentsimplegrid')[0].loadDocs(me.eid);
+                    me.documentsimplegrid.loadDocs(me.eid);
                 }
 
             }
@@ -585,22 +584,19 @@ Ext.define('App.view.patient.Encounter', {
                     action : 'notes',
                     scope  : me,
                     handler: me.newDoc
-                }, '-', '->', '-', {
-                    xtype    : 'encounterprioritycombo',
+                }, '-', '->', '-',
+                me.priorityCombo = Ext.create('App.classes.combo.EncounterPriority',{
                     listeners: {
                         scope : me,
                         select: me.prioritySelect
                     }
-                }, '-', {
+                }), '-', {
                     text   : 'Checkout',
                     handler: me.onCheckout
                 }, '-'
 
             ]
         });
-
-        me.priorityCombo = me.query('encounterprioritycombo')[0];
-
     },
     newDoc           : function(btn) {
         app.onNewDocumentsWin(btn.action)
@@ -677,7 +673,6 @@ Ext.define('App.view.patient.Encounter', {
     },
 
     signEncounter: function() {
-
         this.closeEncounter();
         this.checkoutWindow.close();
     },
@@ -736,16 +731,13 @@ Ext.define('App.view.patient.Encounter', {
                 });
             } else if(SaveBtn.action == 'vitals') {
                 var VFields = form.getFields().items, VFieldsCount = VFields.length, emptyCount = 0;
-
-                Ext.each(VFields, function(v) {
-                    if(v.xtype != 'mitos.datetime') {
-                        if(v.value == '') {
-                            emptyCount++;
-                        }
-
-                    }
-                });
-
+                for(var i=0; i < VFields.length; i++ ){
+                    if(VFields[i].xtype != 'mitos.datetime') {
+                         if(VFields[i].value == '') {
+                             emptyCount++;
+                         }
+                     }
+                }
                 if((VFieldsCount - 3) > emptyCount) {
                     ACL.hasPermission('add_vitals', function(provider, response) {
                         if(response.result) {
@@ -1252,12 +1244,11 @@ Ext.define('App.view.patient.Encounter', {
          * Get 'Review of Systems' Form and define the Model using the form fields
          */
         this.getFormItems(me.reviewSysPanel, 'Review of Systems', function() {
-            var formFields = me.reviewSysPanel.getForm().getFields(), modelFields = new dafaultFields;
-
-            Ext.each(formFields.items, function(field) {
-                modelFields.push({name: field.name, type: 'auto'});
-            });
-
+            var formFields = me.reviewSysPanel.getForm().getFields(),
+                modelFields = new dafaultFields;
+            for(var i=0; i < formFields.items.length; i++ ){
+                modelFields.push({name: formFields.items[i].name, type: 'auto'});
+            }
             Ext.define('App.model.patient.ReviewOfSystems', {
                 extend   : 'Ext.data.Model',
                 fields   : modelFields,
@@ -1274,12 +1265,11 @@ Ext.define('App.view.patient.Encounter', {
          * Get 'SOAP' Form and define the Model using the form fields
          */
         this.getFormItems(me.soapPanel, 'SOAP', function() {
-            var formFields = me.soapPanel.getForm().getFields(), modelFields = new dafaultFields;
-
-            Ext.each(formFields.items, function(field) {
-                modelFields.push({name: field.name, type: 'auto'});
-            });
-
+            var formFields = me.soapPanel.getForm().getFields(),
+                modelFields = new dafaultFields;
+            for(var i=0; i < formFields.items.length; i++ ){
+                modelFields.push({name: formFields.items[i].name, type: 'auto'});
+            }
             Ext.define('App.model.patient.SOAP', {
                 extend   : 'Ext.data.Model',
                 fields   : modelFields,
@@ -1296,12 +1286,11 @@ Ext.define('App.view.patient.Encounter', {
          * Get 'Speech Dictation' Form and define the Model using the form fields
          */
         this.getFormItems(me.speechDicPanel, 'Speech Dictation', function() {
-            var formFields = me.speechDicPanel.getForm().getFields(), modelFields = new dafaultFields;
-
-            Ext.each(formFields.items, function(field) {
-                modelFields.push({name: field.name, type: 'auto'});
-            });
-
+            var formFields = me.speechDicPanel.getForm().getFields(),
+                modelFields = new dafaultFields;
+            for(var i=0; i < formFields.items.length; i++ ){
+                modelFields.push({name: formFields.items[i].name, type: 'auto'});
+            }
             Ext.define('App.model.patient.SpeechDictation', {
                 extend   : 'Ext.data.Model',
                 fields   : modelFields,
@@ -1318,12 +1307,11 @@ Ext.define('App.view.patient.Encounter', {
          * Get 'Review of Systems Check' Form and define the Model using the form fields
          */
         this.getFormItems(me.reviewSysCkPanel, 'Review of Systems Check', function() {
-            var formFields = me.reviewSysCkPanel.getForm().getFields(), modelFields = new dafaultFields;
-
-            Ext.each(formFields.items, function(field) {
-                modelFields.push({name: field.name, type: 'auto'});
-            });
-
+            var formFields = me.reviewSysCkPanel.getForm().getFields(),
+                modelFields = new dafaultFields;
+            for(var i=0; i < formFields.items.length; i++ ){
+                modelFields.push({name: formFields.items[i].name, type: 'auto'});
+            }
             Ext.define('App.model.patient.ReviewOfSystemsCheck', {
                 extend   : 'Ext.data.Model',
                 fields   : modelFields,
@@ -1336,14 +1324,21 @@ Ext.define('App.view.patient.Encounter', {
                 belongsTo: { model: 'App.model.patient.Encounter', foreignKey: 'eid' }
             });
         });
-
         this.getFormItems(me.newEncounterWindow.down('form'), 'New Encounter');
-
     },
 
     getButtonsToDisable: function() {
         var me = this, buttons = [];
-        return buttons.concat(me.vitalsPanel.query('button'), me.reviewSysPanel.query('button'), me.reviewSysCkPanel.query('button'), me.soapPanel.query('button'), me.MiscBillingOptionsPanel.query('button'), me.CurrentProceduralTerminology.query('button'), me.EncounterEventHistory.query('button'), me.newEncounterWindow.query('button'), me.checkoutWindow.query('button'));
+        return buttons.concat(
+            me.vitalsPanel.query('button'),
+            me.reviewSysPanel.query('button'),
+            me.reviewSysCkPanel.query('button'),
+            me.soapPanel.query('button'),
+            me.MiscBillingOptionsPanel.query('button'),
+            me.CurrentProceduralTerminology.query('button'),
+            me.EncounterEventHistory.query('button'),
+            me.newEncounterWindow.query('button'),
+            me.checkoutWindow.query('button'));
     },
 
     onDocumentView: function(grid, rowIndex) {
@@ -1359,7 +1354,7 @@ Ext.define('App.view.patient.Encounter', {
     onActive      : function(callback) {
         var me = this;
         if(me.checkIfCurrPatient()) {
-            me.updateTitle(app.currPatient.name + ' (Visits)', app.currPatient.readOnly);
+            me.updateTitle(app.currPatient.name + ' (Visits)', app.currPatient.readOnly, null);
             me.setReadOnly(app.currPatient.readOnly);
             callback(true);
         } else {

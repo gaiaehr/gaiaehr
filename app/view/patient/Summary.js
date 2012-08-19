@@ -653,7 +653,6 @@ Ext.define('App.view.patient.Summary', {
 		var formFields = formpanel.getForm().getFields().items, modelFields = [
 			{name: 'pid', type: 'int'}
 		];
-
 		for(var i = 0; i < formFields.length; i++) {
 			if(formFields[i].xtype == 'mitos.datetime') {
 				modelFields.push({name: formFields[i].name, type: 'date', dateFormat: 'Y-m-d H:i:s'});
@@ -661,15 +660,6 @@ Ext.define('App.view.patient.Summary', {
 				modelFields.push({name: formFields[i].name});
 			}
 		}
-
-		//        Ext.each(formFields.items, function(field) {
-		//	        if(field.xtype == 'datefield'){
-		//		        modelFields.push({name: field.name, type: 'date', dateFormat:'Y-m-d'});
-		//	        }else{
-		//		        modelFields.push({name: field.name});
-		//	        }
-		//        });
-
 		var model = Ext.define(formpanel.itemId + 'Model', {
 			extend: 'Ext.data.Model',
 			fields: modelFields,

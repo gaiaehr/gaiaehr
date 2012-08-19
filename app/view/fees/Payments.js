@@ -331,8 +331,7 @@ Ext.define('App.view.fees.Payments', {
         editor.removeAll();
 
         var testData = this.testData();
-
-        Ext.each(testData, function (cpt) {
+        for(var i=0; i < testData.length; i++ ){
             editor.add({
                 xtype:'fieldcontainer',
                 layout:'hbox',
@@ -402,7 +401,7 @@ Ext.define('App.view.fees.Payments', {
                     }
                 ]
             });
-        });
+        }
     },
 
     testData:function () {

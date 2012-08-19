@@ -1228,9 +1228,9 @@ Ext.define('App.view.Viewport', {
 		this.patientPoolStore.load({
 			callback: function(records) {
 				if(records.length >= 1) {
-					Ext.each(records, function(record) {
-						height = height + 45;
-					});
+                    for(var i=0; i < records.length; i++ ){
+                        height = height + 45;
+                    }
 				} else {
 					height = 25;
 				}

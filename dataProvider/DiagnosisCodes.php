@@ -278,4 +278,4 @@ class DiagnosisCodes
 //$params->query = 'of';
 //$params->start = 0;
 //$params->limit = 25;
-//print_r($f->liveCodeSearch($params));
+//print_r($f->ICDTabularIndex());

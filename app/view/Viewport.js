@@ -209,7 +209,16 @@ Ext.define('App.view.Viewport', {
 		'App.view.patient.windows.DocumentViewer',
 		'App.view.patient.windows.ArrivalLog',
 
-		'App.view.dashboard.Dashboard',
+        'App.view.dashboard.panel.Portlet',
+        'App.view.dashboard.panel.ChartPortlet',
+        'App.view.dashboard.panel.GridPortlet',
+        'App.view.dashboard.panel.OnotesPortlet',
+
+        'App.view.dashboard.panel.PortalColumn',
+        'App.view.dashboard.panel.PortalDropZone',
+        'App.view.dashboard.panel.PortalPanel',
+        'App.view.dashboard.Dashboard',
+
 		'App.view.calendar.Calendar',
 		'App.view.messages.Messages',
 

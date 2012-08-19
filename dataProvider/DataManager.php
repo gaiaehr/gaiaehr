@@ -5,6 +5,11 @@ if(!isset($_SESSION)) {
 	session_cache_limiter('private');
 }
 include_once($_SESSION['site']['root'] . '/classes/dbHelper.php');
+include_once($_SESSION['site']['root'] . '/dataProvider/Laboratories.php');
+//include_once($_SESSION['site']['root'] . '/dataProvider/Services.php');
+//include_once($_SESSION['site']['root'] . '/dataProvider/Services.php');
+//include_once($_SESSION['site']['root'] . '/dataProvider/Services.php');
+//include_once($_SESSION['site']['root'] . '/dataProvider/Services.php');
 /**
  * @brief       Services Class.
  * @details     This class will handle all services
@@ -21,9 +26,13 @@ class DataManager
 	 */
 	private $db;
 
+    private $labs;
+
 	function __construct()
 	{
-		return $this->db = new dbHelper();
+		$this->db = new dbHelper();
+        $this->labs = new Laboratories();
+        return;
 	}
 
 
@@ -40,11 +49,11 @@ class DataManager
         }elseif($params->code_type == 'Immunizations') {
             $tableX = 'immunizations';
         } else {
-            return $this->getAllLabs($params);
+            return $this->labs->getAllLabs($params);
         }
 
 
-        $sortX = $params->sort ? $params->sort[0]->property . ' ' . $params->sort[0]->direction : 'code ASC';
+        $sortX = isset($params->sort) ? $params->sort[0]->property . ' ' . $params->sort[0]->direction : 'code ASC';
         if($params->query == ''){
             $this->db->setSQL("SELECT DISTINCT * FROM $tableX WHERE code IS NOT NULL AND active = '$params->active' ORDER BY $sortX");
         }else{

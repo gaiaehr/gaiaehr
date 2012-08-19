@@ -15,7 +15,11 @@ if(!isset($_SESSION)) {
 class Time
 {
 	public static function getLocalTime($format = 'Y-m-d H:i:s'){
-		return  date($format,time() + $_SESSION['global_settings']['timezone_offset']);
+        if(isset($_SESSION['global_settings'])){
+            return  date($format,time() + $_SESSION['global_settings']['timezone_offset']);
+        }else{
+            return  date($format,time());
+        }
 	}
 
 }

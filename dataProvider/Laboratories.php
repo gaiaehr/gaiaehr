@@ -25,7 +25,8 @@ class Laboratories
 
     public function getAllLabs(stdClass $params)
     {
-        $sortX = $params->sort ? $params->sort[0]->property . ' ' . $params->sort[0]->direction : 'sequence ASC';
+
+        $sortX = isset($params->sort) ? $params->sort[0]->property . ' ' . $params->sort[0]->direction : 'sequence ASC';
         $records = array();
         $this->db->setSQL("SELECT lp.id,
 								  lp.parent_id,

@@ -13,9 +13,9 @@ Ext.define('App.store.administration.Services', {
 	proxy: {
 		type       : 'direct',
 		api        : {
-			read  : Services.getServices,
-			create: Services.addService,
-			update: Services.updateService
+			read  : DataManager.getServices,
+			create: DataManager.addService,
+			update: DataManager.updateService
 		},
 		reader     : {
 			totalProperty: 'totals',

@@ -40,7 +40,7 @@ Ext.define('App.classes.LiveCPTSearch', {
             proxy : {
                 type       : 'direct',
                 api        : {
-                    read: Services.liveCodeSearch
+                    read: ServiceCodes.liveCodeSearch
                 },
                 reader     : {
                     totalProperty: 'totals',

@@ -87,24 +87,25 @@ Ext.define('App.view.patient.encounter.ICDs', {
         var me = this,
             field = me.getIcdLiveSearch();
         me.removeIcds();
-        Ext.each(records, function(record){
-            me.addIcd(record.code, record.code_text);
-        });
+        for(var i=0; i < records.length; i++){
+            me.addIcd(records[i].code, records[i].long_desc);
+        }
         field.reset();
     },
 
-    addIcd:function(code, text){
+    addIcd:function(code, toolTip){
         this.getIcdContainer().add({
             xtype:'customtrigger',
             value:code,
             width:100,
             style:'float:left',
+            margin:'0 5 0 0',
             name:'icdxCodes',
             listeners:{
                 afterrender:function(btn){
                     Ext.create('Ext.tip.ToolTip', {
                         target: btn.id,
-                        html: text
+                        html: toolTip
                     });
                     btn.setEditable(false);
                 }

@@ -157,7 +157,6 @@ class DiagnosisCodes
 			if(is_array($foo)) {
 				return $foo;
 			}
-			;
 		}
 		return array();
 	}

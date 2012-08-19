@@ -14,7 +14,7 @@ if(!isset($_SESSION)) {
 $_SESSION['site']['flops'] = 0;
 include_once($_SESSION['site']['root'] . '/classes/dbHelper.php');
 include_once($_SESSION['site']['root'] . '/classes/Arrays.php');
-ini_set('memory_limit', '1024M');
+ini_set('memory_limit', '256M');
 class DiagnosisCodes
 {
 	private $db;

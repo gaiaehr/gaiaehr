@@ -163,4 +163,107 @@ class SeviceCodes
             'rows'  => $records);
     }
 
+    public function liveCodeSearch(stdClass $params)
+    {
+        /*
+                   * define $code_table
+                   */
+        if($params->code_type == 'cpt') {
+            $code_table = 'cpt_codes';
+        } else {
+            $code_table = 'hcpcs_codes';
+        }
+        /**
+         * brake the $params->query coming form sencha using into an array using "commas"
+         * example:
+         * $params->query = '123.24, 123.4, 142.0, head skin '
+         * $Str = array(
+         *      [0] => 123.34,
+         *      [1] => 123.4,
+         *      [2] => 142.0,
+         *      [3] => 'head skin '
+         * )
+         */
+        $Str = explode(',', $params->query);
+        /**
+         * get the las value and trim white spaces
+         * $queryStr = 'head skin'
+         */
+        $queryStr = trim(end(array_values($Str)));
+        /**
+         * break the $queryStr into an array usin white spaces
+         * $queries = array(
+         *      [0] => 'head',
+         *      [1] => 'skin'
+         * )
+         */
+        $queries = explode(' ', $queryStr);
+        //////////////////////////////////////////////////////////////////////////////////
+        ////////////   NO TOCAR  /////////   NO TOCAR  /////////   NO TOCAR  /////////////
+        //////////////////////////////////////////////////////////////////////////////////
+        //        $sql = "SELECT * FROM codes WHERE ";
+        //        foreach($queries as $query){
+        //            $sql .= "(code_text LIKE '%$query%' OR code_text_short LIKE '%$query%' OR code LIKE '$query%' OR related_code LIKE '$query%') AND ";
+        //        }
+        //        $sql .= "code_type = '2'";
+        //
+        //        //print $sql;
+        //
+        //        $this->db->setSQL($sql);
+        //        $records = $this->db->fetchRecords(PDO::FETCH_ASSOC);
+        ///////////////////////////////////////////////////////////////////////////////////
+        /**
+         * start empty array to store the records to return
+         */
+        $records = array();
+        /**
+         * start empty array to store the ids of the records already in $records
+         */
+        $idHaystack = array();
+        /**
+         * loop for every word in $queries
+         */
+        foreach($queries as $query) {
+            $this->db->setSQL("SELECT *
+                                 FROM $code_table
+                                WHERE (code_text      LIKE '%$query%'
+                                   OR code            LIKE '$query%')
+                             ORDER BY code ASC");
+            /**
+             * loop for each sql record as $row
+             */
+            foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row) {
+                /**
+                 * if the id of the IDC9 code is in $idHaystack increase its ['weight'] by 1
+                 */
+                if(array_key_exists($row['id'], $idHaystack)) {
+                    $records[$row['id']]['weight']++;
+                    /**
+                     * else add the code ID to $idHaystack
+                     * then add ['weight'] with a value of 1
+                     * finally add the $row to $records
+                     */
+                } else {
+                    $idHaystack[$row['id']] = true;
+                    $row['weight']          = 1;
+                    $records[$row['id']]    = $row;
+                }
+            }
+        }
+        function cmp($a, $b)
+        {
+            if($a['weight'] === $b['weight']) {
+                return 0;
+            } else {
+                return $a['weight'] < $b['weight'] ? 1 : -1; // reverse order
+            }
+        }
+
+        usort($records, 'cmp');
+        $total   = count($records);
+        $records = array_slice($records, $params->start, $params->limit);
+        return array('totals'=> $total,
+            'rows'  => $records);
+    }
+
 }

@@ -27,6 +27,104 @@ class DataManager
 	}
 
 
+    public function getServices(stdClass $params)
+    {
+        /*
+        * define $code_table
+        */
+
+        if($params->code_type == 'CPT4') {
+            $tableX = 'cpt_codes';
+        } elseif($params->code_type == 'HCPCS'){
+            $tableX = 'hcpcs_codes';
+        }elseif($params->code_type == 'Immunizations') {
+            $tableX = 'immunizations';
+        } else {
+            return $this->getAllLabs($params);
+        }
+
+
+        $sortX = $params->sort ? $params->sort[0]->property . ' ' . $params->sort[0]->direction : 'code ASC';
+        if($params->query == ''){
+            $this->db->setSQL("SELECT DISTINCT * FROM $tableX WHERE code IS NOT NULL AND active = '$params->active' ORDER BY $sortX");
+        }else{
+            $this->db->setSQL("SELECT DISTINCT * FROM $tableX WHERE code IS NOT NULL AND active = '$params->active' AND (code_text LIKE '%$params->query%' OR code LIKE '$params->query%') ORDER BY $sortX");
+        }
+        $records = $this->db->fetchRecords(PDO::FETCH_CLASS);
+        $total   = count($records);
+        $recs = array_slice($records,$params->start,$params->limit);
+        $records = array();
+        foreach($recs as $rec) {
+            $rec->code_type = $params->code_type;
+            $records[]      = $rec;
+        }
+        return array('totals'=> $total,
+            'rows'  => $records);
+    }
+
+    /**
+     * @param stdClass $params
+     * @return stdClass
+     */
+    public function addService(stdClass $params)
+    {
+        if($params->code_type == 'CPT4') {
+            $tableX = 'cpt_codes';
+        } elseif($params->code_type == 'HCPCS'){
+            $tableX = 'hcpcs_codes';
+        }elseif($params->code_type == 'Immunizations') {
+            $tableX = 'immunizations';
+        } else {
+            $tableX = 'labs';
+        }
+
+        $data = get_object_vars($params);
+
+        foreach($data as $key=>$val ){
+            if($val == null || $val == '')
+                unset($data[$key]);
+        }
+        unset($data['id']);
+        $sql = $this->db->sqlBind($data, $tableX, 'I');
+        $this->db->setSQL($sql);
+        $this->db->execLog();
+        $params->id = $this->db->lastInsertId;
+        return array('totals'=> 1, 'rows'  => $params);
+    }
+
+    /**
+     * @param stdClass $params
+     * @return stdClass
+     */
+    public function updateService(stdClass $params)
+    {
+        $data = get_object_vars($params);
+
+        foreach($data as $key=>$val ){
+            if($val == null || $val == '')
+                unset($data[$key]);
+        }
+
+        if($params->code_type == 'CPT4') {
+            $tableX = 'cpt_codes';
+        } elseif($params->code_type == 'HCPCS'){
+            $tableX = 'hcpcs_codes';
+        }elseif($params->code_type == 'Immunizations') {
+            $tableX = 'immunizations';
+        } else {
+            $tableX = 'labs_panels';
+            $data['code_text_short'] = $params->code_text_short;
+            unset($data['code_text'],$data['code_type'],$data['code']);
+        }
+
+
+        unset($data['id']);
+
+        $sql = $this->db->sqlBind($data, $tableX, 'U', "id='$params->id'");
+        $this->db->setSQL($sql);
+        $this->db->execLog();
+        return $params;
+    }
 
 
 

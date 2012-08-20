@@ -62,7 +62,10 @@ Ext.define('App.view.patient.Encounter', {
         });
         me.encounterEventHistoryStore = Ext.create('App.store.patient.EncounterEventHistory');
         me.EncounterOrdersStore = Ext.create('App.store.patient.EncounterCPTsICDs');
-        me.checkoutAlertArea = Ext.create('App.store.patient.CheckoutAlertArea');
+
+        if(perm.access_encounter_checkout){
+            me.checkoutAlertArea = Ext.create('App.store.patient.CheckoutAlertArea');
+        }
 
         /**
          * New Encounter Panel this panel is located hidden at
@@ -104,199 +107,203 @@ Ext.define('App.view.patient.Encounter', {
          * Encounter Checkout window
          * @type {*}
          */
-        me.checkoutWindow = Ext.create('Ext.window.Window', {
-            title      : 'Checkout and Signing',
-            closeAction: 'hide',
-            modal      : true,
-            layout     : 'border',
-            width      : 1000,
-            height     : 660,
-            bodyPadding: 5,
-            items      : [
-                {
-                    xtype  : 'grid',
-                    title  : 'Services / Diagnostics',
-                    region : 'center',
-                    store  : me.EncounterOrdersStore,
-                    columns: [
-                        {
-                            header   : 'Code',
-                            width    : 60,
-                            dataIndex: 'code'
-                        },
-                        {
-                            header   : 'Description',
-                            flex     : 1,
-                            dataIndex: 'code_text'
-                        },
-                        {
-                            header   : 'Type',
-                            flex     : 1,
-                            dataIndex: 'type'
-                        }
-                    ]
-                },
-                me.documentsimplegrid = Ext.create('App.view.patient.EncounterDocumentsGrid', {
-                    title : 'Documents',
-                    region: 'east',
-                    width : 485
-                }),
-                {
-                    xtype   : 'form',
-                    title   : 'Additional Info',
-                    region  : 'south',
-                    split   : true,
-                    height  : 245,
-                    layout  : 'column',
-                    defaults: {
-                        xtype  : 'fieldset',
-                        padding: 8
-                    },
-                    items   : [
-                        {
-                            xtype      : 'fieldcontainer',
-                            columnWidth: .5,
-                            defaults   : {
-                                xtype  : 'fieldset',
-                                padding: 8
+        if(perm.access_encounter_checkout){
+            me.checkoutWindow = Ext.create('Ext.window.Window', {
+                title      : 'Checkout and Signing',
+                closeAction: 'hide',
+                modal      : true,
+                layout     : 'border',
+                width      : 1000,
+                height     : 660,
+                bodyPadding: 5,
+                items      : [
+                    {
+                        xtype  : 'grid',
+                        title  : 'Services / Diagnostics',
+                        region : 'center',
+                        store  : me.EncounterOrdersStore,
+                        columns: [
+                            {
+                                header   : 'Code',
+                                width    : 60,
+                                dataIndex: 'code'
                             },
-                            items      : [
-                                {
-                                    xtype      : 'fieldset',
-                                    margin     : '5 1 5 5',
-                                    padding    : 8,
-                                    columnWidth: .5,
-                                    height     : 115,
-                                    title      : 'Messages, Notes and Reminders',
-                                    items      : [
-                                        {
-                                            xtype     : 'textfield',
-                                            name      : 'message',
-                                            fieldLabel: 'Message',
-                                            anchor    : '100%'
-                                        },
-                                        {
-                                            xtype     : 'textfield',
-                                            name      : 'reminder',
-                                            fieldLabel: 'Reminder',
-                                            anchor    : '100%'
-                                        },
-                                        {
-                                            xtype     : 'textfield',
-                                            grow      : true,
-                                            name      : 'note',
-                                            fieldLabel: 'Note',
-                                            anchor    : '100%'
-                                        }
-                                    ]
-                                },
-                                {
-                                    title   : 'Follow Up',
-                                    margin  : '5 1 5 5',
-                                    defaults: {
-                                        anchor: '100%'
-                                    },
-                                    items   : [
-                                        {
-                                            xtype     : 'mitos.followupcombo',
-                                            fieldLabel: 'Time Interval',
-                                            name      : 'followup_time'
-                                        },
-                                        {
-                                            fieldLabel: 'Facility',
-                                            xtype     : 'mitos.activefacilitiescombo',
-                                            name      : 'followup_facility'
-                                        }
-                                    ]
-                                }
-                            ]
+                            {
+                                header   : 'Description',
+                                flex     : 1,
+                                dataIndex: 'code_text'
+                            },
+                            {
+                                header   : 'Type',
+                                flex     : 1,
+                                dataIndex: 'type'
+                            }
+                        ]
+                    },
+                    me.documentsimplegrid = Ext.create('App.view.patient.EncounterDocumentsGrid', {
+                        title : 'Documents',
+                        region: 'east',
+                        width : 485
+                    }),
+                    {
+                        xtype   : 'form',
+                        title   : 'Additional Info',
+                        region  : 'south',
+                        split   : true,
+                        height  : 245,
+                        layout  : 'column',
+                        defaults: {
+                            xtype  : 'fieldset',
+                            padding: 8
                         },
-                        {
-                            xtype      : 'fieldset',
-                            margin     : 5,
-                            padding    : 8,
-                            columnWidth: .5,
-                            layout     : 'fit',
-                            height     : 208,
-                            title      : 'Warnings / Alerts',
-                            items      : [
-                                {
-                                    xtype      : 'grid',
-                                    hideHeaders: true,
-                                    store      : me.checkoutAlertArea,
-                                    border     : false,
-                                    rowLines   : false,
-                                    header     : false,
-                                    viewConfig : {
-                                        stripeRows      : false,
-                                        disableSelection: true
+                        items   : [
+                            {
+                                xtype      : 'fieldcontainer',
+                                columnWidth: .5,
+                                defaults   : {
+                                    xtype  : 'fieldset',
+                                    padding: 8
+                                },
+                                items      : [
+                                    {
+                                        xtype      : 'fieldset',
+                                        margin     : '5 1 5 5',
+                                        padding    : 8,
+                                        columnWidth: .5,
+                                        height     : 115,
+                                        title      : 'Messages, Notes and Reminders',
+                                        items      : [
+                                            {
+                                                xtype     : 'textfield',
+                                                name      : 'message',
+                                                fieldLabel: 'Message',
+                                                anchor    : '100%'
+                                            },
+                                            {
+                                                xtype     : 'textfield',
+                                                name      : 'reminder',
+                                                fieldLabel: 'Reminder',
+                                                anchor    : '100%'
+                                            },
+                                            {
+                                                xtype     : 'textfield',
+                                                grow      : true,
+                                                name      : 'note',
+                                                fieldLabel: 'Note',
+                                                anchor    : '100%'
+                                            }
+                                        ]
                                     },
-                                    columns    : [
-                                        {
-                                            dataIndex: 'alertType',
-                                            width    : 30,
-                                            renderer : me.alertIconRenderer
+                                    {
+                                        title   : 'Follow Up',
+                                        margin  : '5 1 5 5',
+                                        defaults: {
+                                            anchor: '100%'
                                         },
-                                        {
-                                            dataIndex: 'alert',
-                                            flex     : 1
-                                        }
-                                    ]
-                                }
-                            ]
+                                        items   : [
+                                            {
+                                                xtype     : 'mitos.followupcombo',
+                                                fieldLabel: 'Time Interval',
+                                                name      : 'followup_time'
+                                            },
+                                            {
+                                                fieldLabel: 'Facility',
+                                                xtype     : 'mitos.activefacilitiescombo',
+                                                name      : 'followup_facility'
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                xtype      : 'fieldset',
+                                margin     : 5,
+                                padding    : 8,
+                                columnWidth: .5,
+                                layout     : 'fit',
+                                height     : 208,
+                                title      : 'Warnings / Alerts',
+                                items      : [
+                                    {
+                                        xtype      : 'grid',
+                                        hideHeaders: true,
+                                        store      : me.checkoutAlertArea,
+                                        border     : false,
+                                        rowLines   : false,
+                                        header     : false,
+                                        viewConfig : {
+                                            stripeRows      : false,
+                                            disableSelection: true
+                                        },
+                                        columns    : [
+                                            {
+                                                dataIndex: 'alertType',
+                                                width    : 30,
+                                                renderer : me.alertIconRenderer
+                                            },
+                                            {
+                                                dataIndex: 'alert',
+                                                flex     : 1
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ],
+                buttons    : [
+                    {
+                        text   : 'Co-Sign',
+                        action : 'encounter',
+                        scope  : me,
+                        handler: me.coSignEncounter
+                    },
+                    {
+                        text   : 'Sign',
+                        action : 'encounter',
+                        scope  : me,
+                        handler: me.signEncounter
+                    },
+                    {
+                        text   : 'Cancel',
+                        handler: me.cancelCheckout
+
+                    }
+                ],
+                listeners  : {
+                    scope: me,
+                    show : function() {
+                        me.EncounterOrdersStore.load({params: {eid: app.currEncounterId}});
+                        if(perm.access_encounter_checkout){
+                            me.checkoutAlertArea.load({params: {eid: app.currEncounterId}});
                         }
-                    ]
-                }
-            ],
-            buttons    : [
-                {
-                    text   : 'Co-Sign',
-                    action : 'encounter',
-                    scope  : me,
-                    handler: me.coSignEncounter
-                },
-                {
-                    text   : 'Sign',
-                    action : 'encounter',
-                    scope  : me,
-                    handler: me.signEncounter
-                },
-                {
-                    text   : 'Cancel',
-                    handler: me.cancelCheckout
+                        me.documentsimplegrid.loadDocs(me.eid);
+                    }
 
                 }
-            ],
-            listeners  : {
-                scope: me,
-                show : function() {
-                    me.EncounterOrdersStore.load({params: {eid: app.currEncounterId}});
-                    me.checkoutAlertArea.load({params: {eid: app.currEncounterId}});
-                    me.documentsimplegrid.loadDocs(me.eid);
-                }
 
-            }
+            });
+        }
 
-        });
-
-        //        me.speechDicPanel = Ext.create('Ext.form.Panel', {
-        //            autoScroll   : true,
-        //            title        : 'Speech Dictation',
-        //            action       : 'encounter',
-        //            frame        : true,
-        //            bodyPadding  : 5,
-        //            bodyStyle    : 'background-color:white',
-        //            fieldDefaults: { msgTarget: 'side' },
-        //            buttons      : [
-        //                {
-        //                    text   : 'Save',
-        //                    iconCls: 'save',
-        //                    action : 'speechDictation',
-        //                    scope  : me,
-        //                    handler: me.onSave
-        //                }
-        //            ]
-        //        });
+//        me.speechDicPanel = Ext.create('Ext.form.Panel', {
+//            autoScroll   : true,
+//            title        : 'Speech Dictation',
+//            action       : 'encounter',
+//            frame        : true,
+//            bodyPadding  : 5,
+//            bodyStyle    : 'background-color:white',
+//            fieldDefaults: { msgTarget: 'side' },
+//            buttons      : [
+//                {
+//                    text   : 'Save',
+//                    iconCls: 'save',
+//                    action : 'speechDictation',
+//                    scope  : me,
+//                    handler: me.onSave
+//                }
+//            ]
+//        });
 
         me.centerPanel = Ext.create('Ext.tab.Panel', {
             region     : 'center',
@@ -540,15 +547,7 @@ Ext.define('App.view.patient.Encounter', {
             ]
         });
 
-        me.pageBody = [ me.centerPanel, me.progressNote ];
-
-        me.listeners = {
-            beforerender: me.beforePanelRender
-        };
-        me.callParent(arguments);
-
-        me.down('panel').addDocked({
-            xtype   : 'toolbar',
+        me.panelToolBar =  Ext.create('Ext.toolbar.Toolbar', {
             dock    : 'top',
             defaults: {
                 scope  : me,
@@ -596,18 +595,29 @@ Ext.define('App.view.patient.Encounter', {
                     action : 'notes',
                     scope  : me,
                     handler: me.newDoc
-                }, '-', '->', '-', me.priorityCombo = Ext.create('App.classes.combo.EncounterPriority', {
+                }, '-', '->', '-',
+                me.priorityCombo = Ext.create('App.classes.combo.EncounterPriority', {
                     listeners: {
                         scope : me,
                         select: me.prioritySelect
                     }
-                }), '-', {
-                    text   : 'Checkout',
-                    handler: me.onCheckout
-                }, '-'
-
+                }), '-'
             ]
         });
+
+        if(perm.access_encounter_checkout){
+            me.panelToolBar.add({
+                text   : 'Checkout',
+                handler: me.onCheckout
+            },'-');
+        }
+
+        me.pageBody = [ me.centerPanel, me.progressNote ];
+        me.listeners = {
+            beforerender: me.beforePanelRender
+        };
+        me.callParent(arguments);
+        me.down('panel').addDocked(me.panelToolBar);
     },
     newDoc                : function(btn) {
         app.onNewDocumentsWin(btn.action)
@@ -673,26 +683,30 @@ Ext.define('App.view.patient.Encounter', {
         });
     },
 
+
+
+    /**
+     * CheckOut Functions
+     */
     onCheckout: function() {
         var me = this, win = me.checkoutWindow, patient = me.getCurrPatient();
         win.setTitle(patient.name + ' - ' + Ext.Date.format(me.currEncounterStartDate, 'F j, Y, g:i:s a') + ' (Checkout)');
         win.show();
     },
-
     coSignEncounter: function() {
 
     },
-
     signEncounter: function() {
         this.closeEncounter();
         this.checkoutWindow.close();
     },
-
     cancelCheckout: function(btn) {
         var win = btn.up('window'), form = win.down('form').getForm();
         win.close();
         form.reset();
     },
+
+
 
     /**
      * Sends the data to the server to be saved.
@@ -1300,7 +1314,21 @@ Ext.define('App.view.patient.Encounter', {
 
     getButtonsToDisable: function() {
         var me = this, buttons = [];
-        return buttons.concat(me.vitalsPanel.query('button'), me.reviewSysPanel.query('button'), me.reviewSysCkPanel.query('button'), me.soapPanel.query('button'), me.MiscBillingOptionsPanel.query('button'), me.CurrentProceduralTerminology.query('button'), me.EncounterEventHistory.query('button'), me.newEncounterWindow.query('button'), me.checkoutWindow.query('button'));
+        buttons.concat(
+            me.vitalsPanel.query('button'),
+            me.reviewSysPanel.query('button'),
+            me.reviewSysCkPanel.query('button'),
+            me.soapPanel.query('button'),
+            me.MiscBillingOptionsPanel.query('button'),
+            me.CurrentProceduralTerminology.query('button'),
+            me.EncounterEventHistory.query('button'),
+            me.newEncounterWindow.query('button')
+        );
+        if(perm.access_encounter_checkout){
+            buttons.push(me.checkoutWindow.query('button'));
+        }
+
+        return buttons;
     },
 
     onDocumentView: function(grid, rowIndex) {

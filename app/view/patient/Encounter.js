@@ -317,171 +317,191 @@ Ext.define('App.view.patient.Encounter', {
          * Encounter Tab Panel and its Panels...
          * @type {*}
          */
-        me.encounterTabPanel = me.centerPanel.add(Ext.create('Ext.tab.Panel', {
-            title     : 'Encounter',
-            itemId    : 'encounter',
-            plain     : true,
-            activeItem: 0,
-            defaults  : {
-                bodyStyle : 'padding:15px',
-                bodyBorder: true,
-                layout    : 'fit'
-            }
-        }));
-        me.vitalsPanel = me.encounterTabPanel.add(Ext.create('Ext.panel.Panel', {
-            title      : 'Vitals',
-            action     : 'encounter',
-            cls        : 'vitals-panel',
-            bodyPadding: '5 10',
-            overflowY  : 'auto',
-            frame      : true,
-            bodyStyle  : 'background-color:white',
-            layout     : {
-                type   : 'hbox',
-                stretch: true
-            },
-            items      : [
-                {
-                    xtype        : 'form',
-                    width        : 313,
-                    margin       : 0,
-                    border       : false,
-                    layout       : 'anchor',
-                    fieldDefaults: { msgTarget: 'side', labelAlign: 'right' },
-                    buttons      : [
-                        {
-                            text   : 'Reset',
-                            width  : 40,
-                            scope  : me,
-                            handler: me.resetVitalsForm
-                        },
-                        {
-                            text   : 'Save',
-                            action : 'vitals',
-                            width  : 40,
-                            scope  : me,
-                            handler: me.onSave
-                        },
-                        {
-                            text    : 'Sign',
-                            width   : 40,
-                            disabled: true,
-                            action  : 'signBtn',
-                            scope   : me,
-                            handler : me.onVitalsSign
-                        }
-
-                    ]
-                },
-                {
-                    xtype     : 'vitalsdataview',
-                    flex      : 1,
-                    autoScroll: true,
-                    listeners : {
-                        scope       : me,
-                        itemdblclick: me.onVitalsClick
-                    }
+        me.encounterTabPanel = me.centerPanel.add(
+            Ext.create('Ext.tab.Panel', {
+                title     : 'Encounter',
+                itemId    : 'encounter',
+                plain     : true,
+                activeItem: 0,
+                defaults  : {
+                    bodyStyle : 'padding:15px',
+                    bodyBorder: true,
+                    layout    : 'fit'
                 }
-            ],
-            dockedItems: {
-                xtype: 'toolbar',
-                dock : 'top',
-                items: [
-                    '->', {
-                        text   : 'Vector Charts',
-                        iconCls: 'icoChart',
+            })
+        );
+        me.vitalsPanel = me.encounterTabPanel.add(
+            Ext.create('Ext.panel.Panel', {
+                title      : 'Vitals',
+                action     : 'encounter',
+                cls        : 'vitals-panel',
+                bodyPadding: '5 10',
+                overflowY  : 'auto',
+                frame      : true,
+                bodyStyle  : 'background-color:white',
+                layout     : {
+                    type   : 'hbox',
+                    stretch: true
+                },
+                items      : [
+                    {
+                        xtype        : 'form',
+                        width        : 313,
+                        margin       : 0,
+                        border       : false,
+                        layout       : 'anchor',
+                        fieldDefaults: { msgTarget: 'side', labelAlign: 'right' },
+                        buttons      : [
+                            {
+                                text   : 'Reset',
+                                width  : 40,
+                                scope  : me,
+                                handler: me.resetVitalsForm
+                            },
+                            {
+                                text   : 'Save',
+                                action : 'vitals',
+                                width  : 40,
+                                scope  : me,
+                                handler: me.onSave
+                            },
+                            {
+                                text    : 'Sign',
+                                width   : 40,
+                                disabled: true,
+                                action  : 'signBtn',
+                                scope   : me,
+                                handler : me.onVitalsSign
+                            }
+
+                        ]
+                    },
+                    {
+                        xtype     : 'vitalsdataview',
+                        flex      : 1,
+                        autoScroll: true,
+                        listeners : {
+                            scope       : me,
+                            itemdblclick: me.onVitalsClick
+                        }
+                    }
+                ],
+                dockedItems: {
+                    xtype: 'toolbar',
+                    dock : 'top',
+                    items: [
+                        '->', {
+                            text   : 'Vector Charts',
+                            iconCls: 'icoChart',
+                            scope  : me,
+                            handler: me.onChartWindowShow
+                        }
+                    ]
+                }
+            })
+        );
+        me.reviewSysPanel = me.encounterTabPanel.add(
+            Ext.create('Ext.form.Panel', {
+                autoScroll   : true,
+                action       : 'encounter',
+                title        : 'Review of Systems',
+                frame        : true,
+                bodyPadding  : 5,
+                bodyStyle    : 'background-color:white',
+                fieldDefaults: { msgTarget: 'side' },
+                buttons      : [
+                    {
+                        text   : 'Save',
+                        iconCls: 'save',
+                        action : 'reviewOfSystems',
                         scope  : me,
-                        handler: me.onChartWindowShow
+                        handler: me.onSave
                     }
                 ]
-            }
-        }));
-        me.reviewSysPanel = me.encounterTabPanel.add(Ext.create('Ext.form.Panel', {
-            autoScroll   : true,
-            action       : 'encounter',
-            title        : 'Review of Systems',
-            frame        : true,
-            bodyPadding  : 5,
-            bodyStyle    : 'background-color:white',
-            fieldDefaults: { msgTarget: 'side' },
-            buttons      : [
-                {
-                    text   : 'Save',
-                    iconCls: 'save',
-                    action : 'reviewOfSystems',
-                    scope  : me,
-                    handler: me.onSave
-                }
-            ]
-        }));
-        me.reviewSysCkPanel = me.encounterTabPanel.add(Ext.create('Ext.form.Panel', {
-            autoScroll   : true,
-            action       : 'encounter',
-            title        : 'Review of Systems Checks',
-            frame        : true,
-            bodyPadding  : 5,
-            bodyStyle    : 'background-color:white',
-            fieldDefaults: { msgTarget: 'side' },
-            buttons      : [
-                {
-                    text   : 'Save',
-                    iconCls: 'save',
-                    action : 'reviewOfSystemsChecks',
-                    scope  : me,
-                    handler: me.onSave
-                }
-            ]
-        }));
-        me.soapPanel = me.encounterTabPanel.add(Ext.create('Ext.form.Panel', {
-            autoScroll   : true,
-            title        : 'SOAP',
-            action       : 'encounter',
-            frame        : true,
-            bodyPadding  : 5,
-            bodyStyle    : 'background-color:white',
-            fieldDefaults: { msgTarget: 'side' },
-            buttons      : [
-                {
-                    text   : 'Save',
-                    iconCls: 'save',
-                    action : 'soap',
-                    scope  : me,
-                    handler: me.onSave
-                }
-            ]
-        }));
-        me.itemsToReview = me.encounterTabPanel.add(Ext.create('App.view.patient.ItemsToReview', {
-            title      : 'Items to Review',
-            bodyPadding: '7 5 2 5'
-        }));
+            })
+        );
+        me.reviewSysCkPanel = me.encounterTabPanel.add(
+            Ext.create('Ext.form.Panel', {
+                autoScroll   : true,
+                action       : 'encounter',
+                title        : 'Review of Systems Checks',
+                frame        : true,
+                bodyPadding  : 5,
+                bodyStyle    : 'background-color:white',
+                fieldDefaults: { msgTarget: 'side' },
+                buttons      : [
+                    {
+                        text   : 'Save',
+                        iconCls: 'save',
+                        action : 'reviewOfSystemsChecks',
+                        scope  : me,
+                        handler: me.onSave
+                    }
+                ]
+            })
+        );
+        me.soapPanel = me.encounterTabPanel.add(
+            Ext.create('Ext.form.Panel', {
+                autoScroll   : true,
+                title        : 'SOAP',
+                action       : 'encounter',
+                frame        : true,
+                bodyPadding  : 5,
+                bodyStyle    : 'background-color:white',
+                fieldDefaults: { msgTarget: 'side' },
+                buttons      : [
+                    {
+                        text   : 'Save',
+                        iconCls: 'save',
+                        action : 'soap',
+                        scope  : me,
+                        handler: me.onSave
+                    }
+                ]
+            })
+        );
+        me.itemsToReview = me.encounterTabPanel.add(
+            Ext.create('App.view.patient.ItemsToReview', {
+                title      : 'Items to Review',
+                bodyPadding: '7 5 2 5'
+            })
+        );
 
         /**
          * Administravive Tab Panel and its Panels
          * @type {*}
          */
-        me.administrativeTabPanel = me.centerPanel.add(Ext.create('Ext.tab.Panel', {
-            title     : 'Administrative',
-            itemId    : 'administrative',
-            plain     : true,
-            activeItem: 0,
-            defaults  : {
-                bodyStyle : 'padding:15px',
-                bodyBorder: true,
-                layout    : 'fit'
-            }
-        }));
-        me.MiscBillingOptionsPanel = me.administrativeTabPanel.add(Ext.create('App.view.patient.encounter.HealthCareFinancingAdministrationOptions', {
-            autoScroll: true,
-            title     : 'Misc. Billing Options HCFA-1500'
-        }));
-        me.CurrentProceduralTerminology = me.administrativeTabPanel.add(Ext.create('App.view.patient.encounter.CurrentProceduralTerminology', {
-            title: 'Current Procedural Terminology'
-        }));
-        me.EncounterEventHistory = me.administrativeTabPanel.add(Ext.create('App.classes.grid.EventHistory', {
-            bodyStyle: 0,
-            title    : 'Encounter History',
-            store    : me.encounterEventHistoryStore
-        }));
+        me.administrativeTabPanel = me.centerPanel.add(
+            Ext.create('Ext.tab.Panel', {
+                title     : 'Administrative',
+                itemId    : 'administrative',
+                plain     : true,
+                activeItem: 0,
+                defaults  : {
+                    bodyStyle : 'padding:15px',
+                    bodyBorder: true,
+                    layout    : 'fit'
+                }
+            })
+        );
+        me.MiscBillingOptionsPanel = me.administrativeTabPanel.add(
+            Ext.create('App.view.patient.encounter.HealthCareFinancingAdministrationOptions', {
+                autoScroll: true,
+                title     : 'Misc. Billing Options HCFA-1500'
+            })
+        );
+        me.CurrentProceduralTerminology = me.administrativeTabPanel.add(
+            Ext.create('App.view.patient.encounter.CurrentProceduralTerminology', {
+                title: 'Current Procedural Terminology'
+            })
+        );
+        me.EncounterEventHistory = me.administrativeTabPanel.add(
+            Ext.create('App.classes.grid.EventHistory', {
+                bodyStyle: 0,
+                title    : 'Encounter History',
+                store    : me.encounterEventHistoryStore
+            })
+        );
 
         /**
          * Progress Note
@@ -787,7 +807,10 @@ Ext.define('App.view.patient.Encounter', {
     },
 
     onVitalsSign: function() {
-        var me = this, form = me.vitalsPanel.down('form').getForm(), store = me.encounterStore.getAt(0).vitals(), record = form.getRecord();
+        var me = this,
+            form = me.vitalsPanel.down('form').getForm(),
+            store = me.encounterStore.getAt(0).vitals(),
+            record = form.getRecord();
         if(form.isValid()) {
             me.passwordVerificationWin(function(btn, password) {
                 if(btn == 'ok') {
@@ -1175,7 +1198,7 @@ Ext.define('App.view.patient.Encounter', {
         /**
          * Get 'Vitals' Form Fields and add listeners to convert values
          */
-        this.getFormItems(me.vitalsPanel.down('form'), 'Vitals', function() {
+        me.getFormItems(me.vitalsPanel.down('form'), 'Vitals', function() {
             form = me.vitalsPanel.down('form').getForm();
             form.findField('temp_c').addListener('keyup', me.cf, me);
             form.findField('temp_f').addListener('keyup', me.fc, me);
@@ -1215,7 +1238,7 @@ Ext.define('App.view.patient.Encounter', {
         /**
          * Get 'SOAP' Form and define the Model using the form fields
          */
-        this.getFormItems(me.soapPanel, 'SOAP', function() {
+        me.getFormItems(me.soapPanel, 'SOAP', function() {
             var formFields = me.soapPanel.getForm().getFields(), modelFields = new defaultFields;
             for(var i = 0; i < formFields.items.length; i++) {
                 modelFields.push({name: formFields.items[i].name, type: 'auto'});
@@ -1235,27 +1258,27 @@ Ext.define('App.view.patient.Encounter', {
         /**
          * Get 'Speech Dictation' Form and define the Model using the form fields
          */
-        this.getFormItems(me.speechDicPanel, 'Speech Dictation', function() {
-            var formFields = me.speechDicPanel.getForm().getFields(), modelFields = new defaultFields;
-            for(var i = 0; i < formFields.items.length; i++) {
-                modelFields.push({name: formFields.items[i].name, type: 'auto'});
-            }
-            Ext.define('App.model.patient.SpeechDictation', {
-                extend   : 'Ext.data.Model',
-                fields   : modelFields,
-                proxy    : {
-                    type: 'direct',
-                    api : {
-                        update: Encounter.updateDictationById
-                    }
-                },
-                belongsTo: { model: 'App.model.patient.Encounter', foreignKey: 'eid' }
-            });
-        });
+//        this.getFormItems(me.speechDicPanel, 'Speech Dictation', function() {
+//            var formFields = me.speechDicPanel.getForm().getFields(), modelFields = new defaultFields;
+//            for(var i = 0; i < formFields.items.length; i++) {
+//                modelFields.push({name: formFields.items[i].name, type: 'auto'});
+//            }
+//            Ext.define('App.model.patient.SpeechDictation', {
+//                extend   : 'Ext.data.Model',
+//                fields   : modelFields,
+//                proxy    : {
+//                    type: 'direct',
+//                    api : {
+//                        update: Encounter.updateDictationById
+//                    }
+//                },
+//                belongsTo: { model: 'App.model.patient.Encounter', foreignKey: 'eid' }
+//            });
+//        });
         /**
          * Get 'Review of Systems Check' Form and define the Model using the form fields
          */
-        this.getFormItems(me.reviewSysCkPanel, 'Review of Systems Check', function() {
+        me.getFormItems(me.reviewSysCkPanel, 'Review of Systems Check', function() {
             var formFields = me.reviewSysCkPanel.getForm().getFields(), modelFields = new defaultFields;
             for(var i = 0; i < formFields.items.length; i++) {
                 modelFields.push({name: formFields.items[i].name, type: 'auto'});
@@ -1272,7 +1295,7 @@ Ext.define('App.view.patient.Encounter', {
                 belongsTo: { model: 'App.model.patient.Encounter', foreignKey: 'eid' }
             });
         });
-        this.getFormItems(me.newEncounterWindow.down('form'), 'New Encounter');
+        me.getFormItems(me.newEncounterWindow.down('form'), 'New Encounter');
     },
 
     getButtonsToDisable: function() {

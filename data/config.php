@@ -396,6 +396,23 @@ $API = array(
         ),
 
     ),
+    'Medications'=>array(
+        'methods'=>array(
+            'getMedications'=>array(
+                'len'=>1
+            ),
+            'addMedications'=>array(
+                'len'=>1
+            ),
+            'removeMedications'=>array(
+                'len'=>1
+            ),
+            'updateMedications'=>array(
+                'len'=>1
+            ),
+        ),
+
+    ),
     'Immunizations'=>array(
         'methods'=>array(
         ),

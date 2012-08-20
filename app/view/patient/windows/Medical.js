@@ -1623,8 +1623,7 @@ Ext.define('App.view.patient.windows.Medical', {
 				    area:'review_medications'
 			    };
 		    }
-		    Medical.reviewMedicalWindowEncounter(params, function(provider, response){
-		    });
+		    Medical.reviewMedicalWindowEncounter(params);
 	    }
 
 

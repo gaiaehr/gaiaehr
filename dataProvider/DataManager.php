@@ -121,6 +121,7 @@ class DataManager
             $tableX = 'hcpcs_codes';
         } elseif($params->code_type == 'Immunizations') {
             $tableX = 'immunizations';
+
         } else {
             $tableX = 'labs_panels';
             $data['code_text_short'] = $params->code_text_short;

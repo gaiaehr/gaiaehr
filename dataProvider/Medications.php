@@ -13,7 +13,7 @@ include_once($_SESSION['site']['root'] . '/classes/dbHelper.php');
  * To change this template use File | Settings | File Templates.
  */
 
-class SeviceCodes
+class Medications
 {
     private $db;
 
@@ -68,6 +68,7 @@ class SeviceCodes
         $this->db->execLog();
         return array('totals'=> 1, 'rows'  => $params);
     }
+
 
 
 }

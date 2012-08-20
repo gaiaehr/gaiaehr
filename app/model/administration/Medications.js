@@ -22,10 +22,10 @@ Ext.define('App.model.administration.Medications', {
     proxy: {
     		type       : 'direct',
     		api        : {
-    			read  : Services.getMedications,
-    			create: Services.addMedications,
-    			destroy: Services.removeMedications,
-			    update: Services.updateMedications
+    			read  : Medications.getMedications,
+    			create: Medications.addMedications,
+    			destroy: Medications.removeMedications,
+			    update: Medications.updateMedications
     		},
     		reader     : {
     			totalProperty: 'totals',

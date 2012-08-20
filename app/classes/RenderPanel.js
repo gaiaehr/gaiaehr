@@ -81,7 +81,6 @@ Ext.define('App.classes.RenderPanel', {
 			var btn = buttons[i];
 			if(btn.disabled != disable){
 				btn.disabled = disable;
-                say(btn);
 				btn.setDisabled(disable)
 			}
 		}
@@ -146,12 +145,11 @@ Ext.define('App.classes.RenderPanel', {
 	},
 
     warnRenderer:function(val, metaData, record){
-	    say(record);
 	    var toolTip = record.data.warningMsg ? record.data.warningMsg : '';
-
         if(val == '1' || val == true || val == 'true') {
             return '<img src="ui_icons/icoImportant.png" ' + toolTip + ' />';
         }
+        return '';
     },
 
 	onExpandRemoveMask: function(cmb) {

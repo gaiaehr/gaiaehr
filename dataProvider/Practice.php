@@ -313,11 +313,11 @@ class Practice extends dbHelper {
      * @return mixed
      */
     private function getNextPharmacyInsuranceId(){
-        $this->setSQL("SELECT id FROM pharmacies ORDER BY id DESC");
+        $this->setSQL("SELECT MAX(id) as maxid FROM pharmacies");
         $prec = $this->fetchRecord();
-        $this->setSQL("SELECT id FROM insurance_companies ORDER BY id DESC");
+        $this->setSQL("SELECT MAX(id) as maxid FROM insurance_companies");
         $irec = $this->fetchRecord();
-        return max($prec['id'], $irec['id']) +1;
+        return max($prec['maxid'], $irec['maxid']) +1;
     }
     
     

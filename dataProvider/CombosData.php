@@ -49,6 +49,8 @@ class CombosData {
 				return $this->getActiveFacilities();
 			}elseif($params->list_id == 'billingFacilities'){
 				return $this->getBillingFacilities();
+			}elseif($params->list_id == 'activeInsurances'){
+				return $this->getActiveInsurances();
 			}else{
 				return false;
 			}
@@ -56,12 +58,17 @@ class CombosData {
     }
 
 	public function getActivePharmacies(){
-		$this->db->setSQL("SELECT pharmacies.id as option_value, pharmacies.name as option_name FROM pharmacies WHERE active = '1' ORDER BY pharmacies.name DESC");
+		$this->db->setSQL("SELECT p.id AS option_value, p.name AS option_name FROM pharmacies AS p WHERE active = '1' ORDER BY p.name DESC");
+		return $this->db->fetchRecords(PDO::FETCH_ASSOC);
+	}
+
+	public function getActiveInsurances(){
+		$this->db->setSQL("SELECT ic.id AS option_value, ic.name AS option_name FROM insurance_companies AS ic WHERE active = '1' ORDER BY ic.name DESC");
 		return $this->db->fetchRecords(PDO::FETCH_ASSOC);
 	}
 
 	public function getActiveProviders(){
-		$this->db->setSQL("SELECT users.id as option_value, CONCAT_WS(' ', users.title, users.lname) as option_name
+		$this->db->setSQL("SELECT users.id AS option_value, CONCAT_WS(' ', users.title, users.lname) as option_name
 							 FROM users
 							WHERE active = '1' AND authorized = '1' AND (npi IS NOT NULL AND npi != '')
 					     ORDER BY option_name ASC");
@@ -100,10 +107,11 @@ class CombosData {
 	    /**
 	     * manually add all system combos that are not stored combo_lists table
 	     */
-		$records[] = array('id'=>'activePharmacies','title'=>'Pharmacies');
-		$records[] = array('id'=>'activeProviders','title'=>'Providers');
-		$records[] = array('id'=>'activeFacilities','title'=>'Active Facilities');
-		$records[] = array('id'=>'billingFacilities','title'=>'Billing Facilities');
+		$records[] = array('id'=>'activePharmacies',    'title'=>'Active Pharmacies');
+		$records[] = array('id'=>'activeProviders',     'title'=>'Active Providers');
+	    $records[] = array('id'=>'activeInsurances',    'title'=>'Active Insurances');
+		$records[] = array('id'=>'activeFacilities',    'title'=>'Active Facilities');
+		$records[] = array('id'=>'billingFacilities',   'title'=>'Billing Facilities');
         return $records;
     }
 

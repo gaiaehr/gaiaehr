@@ -1038,6 +1038,9 @@ $API = array(
             ),
             'getTemplatesTypes'=>array(
                 'len'=>1
+            ),
+            'getActiveInsurances'=>array(
+                'len'=>0
             )
         )
     ),

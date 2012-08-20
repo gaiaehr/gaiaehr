@@ -13,10 +13,10 @@ Ext.define('App.store.administration.LabObservations', {
 	proxy: {
 		type       : 'direct',
 		api        : {
-			read  : Services.getLabObservations,
-			create: Services.addLabObservation,
-			update: Services.updateLabObservation,
-			destroy: Services.removeLabObservation
+			read  : Laboratories.getLabObservations,
+			create: Laboratories.addLabObservation,
+			update: Laboratories.updateLabObservation,
+			destroy: Laboratories.removeLabObservation
 		}
 	},
     autoSync: true,

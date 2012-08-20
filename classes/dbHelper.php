@@ -65,6 +65,7 @@ class dbHelper {
      */
 	function __construct()
     {
+        error_reporting(0);
 	    if(isset($_SESSION['site']['db'])){
 		    $host   = (string)$_SESSION['site']['db']['host'];
 		    $port   = (int)$_SESSION['site']['db']['port'];

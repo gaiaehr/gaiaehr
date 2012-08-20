@@ -403,6 +403,19 @@ $API = array(
     ),
     'Laboratories'=>array(
         'methods'=>array(
+
+            'getLabObservations'=>array(
+                'len'=>1
+            ),
+            'addLabObservation'=>array(
+                'len'=>1
+            ),
+            'updateLabObservation'=>array(
+                'len'=>1
+            ),
+            'removeLabObservation'=>array(
+                'len'=>1
+            )
         ),
 
     ),

@@ -36,12 +36,8 @@ Ext.define('App.view.administration.DataManager', {
         function code_type(val) {
             if(val == '1') {
                 return 'CPT4';
-            } else if(val == '2') {
-                return 'ICD9';
-            } else if(val == '3') {
+            }  else if(val == '3') {
                 return 'HCPCS';
-            }else if(val == '4') {
-                return 'ICD10';
             } else if(val == '100') {
                 return 'CVX';
             }
@@ -73,12 +69,6 @@ Ext.define('App.view.administration.DataManager', {
                             fieldLabel: 'Code',
                             xtype     : 'textfield',
                             name      : 'code'
-                        },
-                        {
-
-                            fieldLabel: 'Modifier',
-                            xtype     : 'textfield',
-                            name      : 'mod'
                         }
 
                     ]
@@ -92,12 +82,8 @@ Ext.define('App.view.administration.DataManager', {
 
                             fieldLabel: 'Description',
                             xtype     : 'textfield',
-                            name      : 'code_text'
-                        },
-                        {
-                            fieldLabel: 'Category',
-                            xtype     : 'mitos.titlescombo',
-                            name      : 'title'
+                            name      : 'code_text',
+	                        width:500
                         }
                     ]
                 },
@@ -124,72 +110,6 @@ Ext.define('App.view.administration.DataManager', {
             ]
         });
 
-        /**
-         * ICD9 Container
-         */
-        me.icd9Container = Ext.create('Ext.container.Container', {
-            layout: 'column',
-            action: 'ICD9',
-            //hidden: true,
-            items : [
-
-                {
-                    xtype    : 'fieldcontainer',
-                    msgTarget: 'under',
-                    defaults : { action: 'field' },
-                    items    : [
-                        {
-
-                            fieldLabel: 'Type',
-                            xtype     : 'mitos.codestypescombo',
-                            name      : 'code_type',
-	                        readOnly: true
-                        },
-                        {
-
-                            fieldLabel: 'Code',
-                            xtype     : 'textfield',
-                            name      : 'code',
-	                        readOnly: true
-                        }
-
-                    ]
-                },
-                {
-                    xtype   : 'fieldcontainer',
-                    margin  : '0 0 0 10',
-                    defaults: { action: 'field'  },
-                    items   : [
-                        {
-
-                            fieldLabel: 'Description',
-	                        width          : 570,
-                            xtype     : 'textfield',
-                            name      : 'code_text'
-                        }
-                    ]
-                },
-                {
-                    xtype   : 'fieldcontainer',
-                    margin  : '0 0 0 20',
-                    defaults: { action: 'field'  },
-                    items   : [
-
-                        {
-
-                            boxLabel  : 'Active?',
-                            labelWidth: 75,
-                            xtype     : 'checkboxfield',
-                            name      : 'active'
-
-
-                        }
-                    ]
-                }
-
-            ]
-
-        });
 
         /**
          * HCPSC Container
@@ -794,10 +714,6 @@ Ext.define('App.view.administration.DataManager', {
 
         if(code_type == 'CPT4'){
             thisForm = me.cptContainer;
-        }else if(code_type == 'ICD9'){
-            thisForm = me.icd9Container;
-        }else if(code_type == 'ICD10'){
-            thisForm = me.icd9Container;
         }else if(code_type == 'HCPCS'){
             thisForm = me.hpccsContainer;
         }else if(code_type == 'Immunizations'){

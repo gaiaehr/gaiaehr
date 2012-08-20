@@ -318,9 +318,9 @@ Ext.define('App.view.administration.Lists', {
 		var me = this,
 			items = overModel.stores[0].data.items,
 			gridItmes = [];
-		Ext.each(items, function(iteme) {
-			gridItmes.push(iteme.data.id);
-		});
+        for(var i=0; i < items.length; i++ ){
+            gridItmes.push(items[i].data.id);
+		}
 		var params = {
 			list_id: data.records[0].data.list_id,
 			fields : gridItmes

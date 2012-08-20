@@ -736,10 +736,9 @@ Ext.define('App.view.administration.DataManager', {
          * @type {*}
          */
         grids = thisForm.query('grid');
-        Ext.each(grids, function(grid){
-            grid.getStore().load({params:{selectedId:me.getSelectId()}});
-        });
-
+        for(var i=0; i < grids.length; i++ ){
+            grids[i].getStore().load({params:{selectedId:me.getSelectId()}});
+        }
         this.currForm = thisForm;
 
     },

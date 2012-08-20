@@ -7,6 +7,7 @@
  */
 Ext.define('App.view.patient.ItemsToReview', {
     extend       : 'Ext.panel.Panel',
+    alias        : 'widget.itemstoreview',
     layout       : 'column',
     frame        : true,
     bodyPadding  : 5,

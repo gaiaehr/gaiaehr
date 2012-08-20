@@ -453,10 +453,9 @@ Ext.define('App.view.administration.PreventiveCare', {
     beforeServiceEdit:function(context, e){
 		var editor = context.editor,
 			grids = editor.query('grid');
-
-        Ext.each(grids,function(grid){
-            grid.store.load({params:{id: e.record.data.id}});
-        });
+        for(var i=0; i < grids.length; i++ ){
+            grids[i].store.load({params:{id: e.record.data.id}});
+		}
     },
 
 	onFormTapChange:function(panel, newCard, oldCard){

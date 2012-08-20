@@ -318,16 +318,16 @@ Ext.define('App.view.patient.VisitCheckout', {
 
 	resetReceiptForm:function () {
         var fields = this.query('[action="receipt"]');
-        Ext.each(fields, function(field){
-            field.reset();
-        });
+        for(var i=0; i < fields.length; i++ ){
+            fields[i].reset();
+        }
     },
 
     resetNotes:function () {
         var fields = this.query('[action="notes"]');
-   	    Ext.each(fields, function(field){
-   			field.reset();
-   	    });
+        for(var i=0; i < fields.length; i++ ){
+            fields[i].reset();
+        }
     },
 
     onAddPaymentClick:function() {
@@ -433,10 +433,9 @@ Ext.define('App.view.patient.VisitCheckout', {
 		Encounter.getEncounterMessageByEid(me.eid, function(provider, response){
 			forms[0].getForm().setValues(response.result);
 		});
-
-		Ext.each(forms, function(form){
-			fields.push(form.getForm().getFields().items);
-		});
+        for(var i=0; i < forms.length; i++ ){
+            fields.push(forms[i].getForm().getFields().items);
+        }
 	},
 
 	setPanel:function(eid){

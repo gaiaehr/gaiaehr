@@ -743,10 +743,9 @@ Ext.define('App.view.administration.Layout', {
 	onDragDrop          : function(node, data, overModel) {
 		var me = this,
 			childItems = [];
-		Ext.each(overModel.parentNode.childNodes, function(childItem) {
-			childItems.push(childItem.data.id);
-		});
-
+        for(var i=0; i < overModel.parentNode.childNodes.length; i++ ){
+			childItems.push(overModel.parentNode.childNodes[i].data.id);
+		}
 		var params = {
 			id              : data.records[0].data.id,
 			parentNode      : overModel.parentNode.data.id,

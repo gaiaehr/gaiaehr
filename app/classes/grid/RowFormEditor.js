@@ -377,13 +377,12 @@ Ext.define('App.classes.grid.RowFormEditor', {
         var me = this,
             form = me.getForm(),
             fields = form.getFields().items,
-            containers = this.query('container');
-
+            containers = me.query('container');
         for(var i=0; i < fields.length; i++){
             me.mon(fields[i], 'change', me.onFieldValueChange, me);
         }
         for(var k=0; k < containers.length; k++){
-            me.mon(containers[i], 'resize', me.resizeEditor, me);
+            me.mon(containers[k], 'resize', me.resizeEditor, me);
         }
     },
 

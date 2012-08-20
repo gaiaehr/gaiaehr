@@ -359,208 +359,204 @@ Ext.define('App.view.Viewport', {
 			frame      : false,
 			border     : false,
 			bodyStyle  : 'background: transparent',
-			margins    : '0 0 0 0',
-			items      : [
-				me.patientButton = Ext.create('Ext.button.Button',{
-					scale    : 'large',
-					style    : 'float:left',
-					margin   : 0,
-					itemId   : 'patientButton',
-					scope    : me,
-					handler  : me.openPatientSummary,
-					listeners: {
-						scope      : me,
-						afterrender: me.patientBtnRender
-					},
-					tpl      : me.patientBtn()
-				}),
-				{
-					xtype  : 'button',
-					scale  : 'large',
-					style  : 'float:left',
-					margin : '0 0 0 3',
-					cls    : 'headerLargeBtn',
-					padding: 0,
-					itemId : 'patientOpenVisits',
-					iconCls: 'icoBackClock',
-					scope  : me,
-					handler: me.openPatientVisits,
-					tooltip: 'Open Patient Visits History'
-				},
-				{
-					xtype  : 'button',
-					scale  : 'large',
-					style  : 'float:left',
-					margin : '0 0 0 3',
-					cls    : 'headerLargeBtn',
-					padding: 0,
-					itemId : 'patientCreateEncounter',
-					iconCls: 'icoClock',
-					scope  : me,
-					handler: me.createNewEncounter,
-					tooltip: 'Create New Encounter'
-				},
-				{
-					xtype  : 'button',
-					scale  : 'large',
-					style  : 'float:left',
-					margin : '0 0 0 3',
-					cls    : 'headerLargeBtn',
-					padding: 0,
-					itemId : 'patientCloseCurrEncounter',
-					iconCls: 'icoArrowDown',
-					scope  : me,
-					handler: me.stowPatientRecord,
-					tooltip: 'Stow Patient Record'
-				},
-				{
-					xtype  : 'button',
-					scale  : 'large',
-					style  : 'float:left',
-					margin : '0 0 0 3',
-					cls    : 'headerLargeBtn',
-					padding: 0,
-					itemId : 'patientCheckOut',
-					iconCls: 'icoCheckOut',
-					scope  : me,
-					handler: me.chargePatient,
-					tooltip: 'Check Out Patient'
-				},
-				{
-					xtype  : 'button',
-					scale  : 'large',
-					style  : 'float:left',
-					margin : '0 0 0 3',
-					cls    : 'headerLargeBtn',
-					padding: 0,
-					itemId : 'patientCharge',
-					iconCls: me.icoMoney,
-					scope  : me,
-					handler: me.onPaymentEntryWindow,
-					tooltip: 'Payment Entry'
-				},
-				{
-					xtype      : 'panel',
-					width      : 260,
-					bodyPadding: '8 11 5 11',
-					margin     : '0 0 0 3',
-					style      : 'float:left',
-					items      : [
-						{
-							xtype     : 'patienlivetsearch',
-							emptyText : 'Patient Live Search...',
-							fieldStyle: 'width:230',
-							listeners : {
-								scope : me,
-								select: me.liveSearchSelect,
-								blur  : function(combo) {
-									combo.reset();
-								}
-							}
-						}
-					]
-				},
-				{
-					xtype  : 'button',
-					scale  : 'large',
-					style  : 'float:left',
-					margin : '0 0 0 3',
-					padding: 4,
-					itemId : 'patientNewReset',
-					iconCls: 'icoAddPatient',
-					scope  : me,
-					handler: me.newPatient,
-					tooltip: 'Create a new patient'
-				},
-				{
-					xtype  : 'button',
-					scale  : 'large',
-					style  : 'float:left',
-					margin : '0 0 0 3',
-					cls    : 'headerLargeBtn emerBtn',
-					overCls: 'emerBtnOver',
-					padding: 0,
-					itemId : 'createEmergency',
-					iconCls: 'icoEmer',
-					scope  : me,
-					handler: me.createEmergency,
-					tooltip: 'Create New Emergency'
-				},
-				{
-					xtype    : 'button',
-					text     : user.name,
-					scale    : 'large',
-					iconCls  : 'icoDoctor',
-					iconAlign: 'left',
-					cls      : 'drButton',
-					style    : 'float:right',
-					margin   : '0 0 0 3',
-					menu     : [
-						{
-							text   : 'My account',
-							iconCls: 'icoArrowRight',
-							handler: function() {
-								me.navigateTo('panelMyAccount');
-							}
-						},
-						{
-							text   : 'My settings',
-							iconCls: 'icoArrowRight',
-							handler: function() {
-								me.navigateTo('panelMySettings');
-							}
-						},
-						{
-							text   : 'Logout',
-							iconCls: 'icoArrowRight',
-							scope  : me,
-							handler: me.appLogout
-						}
-					]
-				},
-				{
-					xtype  : 'button',
-					scale  : 'large',
-					style  : 'float:right',
-					margin : '0 0 0 3',
-					cls    : 'headerLargeBtn',
-					padding: 0,
-					itemId : 'patientCheckIn',
-					iconCls: 'icoLog',
-					scope  : me,
-					handler: me.onPatientLog,
-					tooltip: 'Arrival Log'
-				},
-				{
-					xtype  : 'button',
-					scale  : 'large',
-					style  : 'float:right',
-					margin : '0 0 0 3',
-					cls    : 'headerLargeBtn',
-					padding: 0,
-					itemId : 'patientPoolArea',
-					iconCls: 'icoPoolArea',
-					scope  : me,
-					handler: me.goToPoolAreas,
-					tooltip: 'Pool Areas'
-				},
-				{
-					xtype  : 'button',
-					scale  : 'large',
-					style  : 'float:right',
-					margin : '0 0 0 3',
-					cls    : 'headerLargeBtn',
-					padding: 0,
-					itemId : 'floorPlans',
-					iconCls: 'icoZoneAreasBig',
-					scope  : me,
-					handler: me.goToFloorPlans,
-					tooltip: 'Floor Plans'
-				}
-			]
+			margins    : '0 0 0 0'
 		});
 
-		/**
+        me.patientBtn = me.Header.add({
+            xtype    : 'button',
+            scale    : 'large',
+            style    : 'float:left',
+            margin   : 0,
+            scope    : me,
+            handler  : me.openPatientSummary,
+            listeners: {
+                scope      : me,
+                afterrender: me.patientBtnRender
+            },
+            tpl      : me.patientBtnTpl()
+        });
+        me.patientOpenVisitsBtn = me.Header.add({
+            xtype  : 'button',
+            scale  : 'large',
+            style  : 'float:left',
+            margin : '0 0 0 3',
+            cls    : 'headerLargeBtn',
+            padding: 0,
+            iconCls: 'icoBackClock',
+            scope  : me,
+            handler: me.openPatientVisits,
+            tooltip: 'Open Patient Visits History'
+        });
+        if(perm.add_encounters){
+            me.patientCreateEncounterBtn = me.Header.add({
+                xtype  : 'button',
+                scale  : 'large',
+                style  : 'float:left',
+                margin : '0 0 0 3',
+                cls    : 'headerLargeBtn',
+                padding: 0,
+                iconCls: 'icoClock',
+                scope  : me,
+                handler: me.createNewEncounter,
+                tooltip: 'Create New Encounter'
+            });
+        }
+        me.patientCloseCurrEncounterBtn = me.Header.add({
+            xtype  : 'button',
+            scale  : 'large',
+            style  : 'float:left',
+            margin : '0 0 0 3',
+            cls    : 'headerLargeBtn',
+            padding: 0,
+            iconCls: 'icoArrowDown',
+            scope  : me,
+            handler: me.stowPatientRecord,
+            tooltip: 'Stow Patient Record'
+        });
+        me.patientCheckOutBtn = me.Header.add({
+            xtype  : 'button',
+            scale  : 'large',
+            style  : 'float:left',
+            margin : '0 0 0 3',
+            cls    : 'headerLargeBtn',
+            padding: 0,
+            iconCls: 'icoCheckOut',
+            scope  : me,
+            handler: me.chargePatient,
+            tooltip: 'Check Out Patient'
+        });
+        me.patientChargeBtn = me.Header.add({
+            xtype  : 'button',
+            scale  : 'large',
+            style  : 'float:left',
+            margin : '0 0 0 3',
+            cls    : 'headerLargeBtn',
+            padding: 0,
+            iconCls: me.icoMoney,
+            scope  : me,
+            handler: me.onPaymentEntryWindow,
+            tooltip: 'Payment Entry'
+        });
+        me.Header.add({
+            xtype      : 'panel',
+            width      : 260,
+            bodyPadding: '8 11 5 11',
+            margin     : '0 0 0 3',
+            style      : 'float:left',
+            items      : [
+                {
+                    xtype     : 'patienlivetsearch',
+                    emptyText : 'Patient Live Search...',
+                    fieldStyle: 'width:230',
+                    listeners : {
+                        scope : me,
+                        select: me.liveSearchSelect,
+                        blur  : function(combo) {
+                            combo.reset();
+                        }
+                    }
+                }
+            ]
+        });
+        me.Header.add({
+            xtype  : 'button',
+            scale  : 'large',
+            style  : 'float:left',
+            margin : '0 0 0 3',
+            padding: 4,
+            itemId : 'patientNewReset',
+            iconCls: 'icoAddPatient',
+            scope  : me,
+            handler: me.newPatient,
+            tooltip: 'Create a new patient'
+        });
+        me.Header.add({
+            xtype  : 'button',
+            scale  : 'large',
+            style  : 'float:left',
+            margin : '0 0 0 3',
+            cls    : 'headerLargeBtn emerBtn',
+            overCls: 'emerBtnOver',
+            padding: 0,
+            itemId : 'createEmergency',
+            iconCls: 'icoEmer',
+            scope  : me,
+            handler: me.createEmergency,
+            tooltip: 'Create New Emergency'
+        });
+        me.Header.add({
+            xtype    : 'button',
+            text     : user.name,
+            scale    : 'large',
+            iconCls  : 'icoDoctor',
+            iconAlign: 'left',
+            cls      : 'drButton',
+            style    : 'float:right',
+            margin   : '0 0 0 3',
+            menu     : [
+                {
+                    text   : 'My account',
+                    iconCls: 'icoArrowRight',
+                    handler: function() {
+                        me.navigateTo('panelMyAccount');
+                    }
+                },
+                {
+                    text   : 'My settings',
+                    iconCls: 'icoArrowRight',
+                    handler: function() {
+                        me.navigateTo('panelMySettings');
+                    }
+                },
+                {
+                    text   : 'Logout',
+                    iconCls: 'icoArrowRight',
+                    scope  : me,
+                    handler: me.appLogout
+                }
+            ]
+        });
+        me.Header.add({
+            xtype  : 'button',
+            scale  : 'large',
+            style  : 'float:right',
+            margin : '0 0 0 3',
+            cls    : 'headerLargeBtn',
+            padding: 0,
+            itemId : 'patientCheckIn',
+            iconCls: 'icoLog',
+            scope  : me,
+            handler: me.onPatientLog,
+            tooltip: 'Arrival Log'
+        });
+        me.Header.add({
+            xtype  : 'button',
+            scale  : 'large',
+            style  : 'float:right',
+            margin : '0 0 0 3',
+            cls    : 'headerLargeBtn',
+            padding: 0,
+            itemId : 'patientPoolArea',
+            iconCls: 'icoPoolArea',
+            scope  : me,
+            handler: me.goToPoolAreas,
+            tooltip: 'Pool Areas'
+        });
+        me.Header.add({
+            xtype  : 'button',
+            scale  : 'large',
+            style  : 'float:right',
+            margin : '0 0 0 3',
+            cls    : 'headerLargeBtn',
+            padding: 0,
+            itemId : 'floorPlans',
+            iconCls: 'icoZoneAreasBig',
+            scope  : me,
+            handler: me.goToFloorPlans,
+            tooltip: 'Floor Plans'
+        });
+
+        /**
 		 * The panel definition for the the TreeMenu & the support button
 		 */
 		me.navColumn = Ext.create('Ext.panel.Panel', {
@@ -1096,13 +1092,7 @@ Ext.define('App.view.Viewport', {
 	},
 
 	setCurrPatient: function(pid, fullname, priority, callback) {
-		var me = this,
-			patientBtn = me.Header.getComponent('patientButton'),
-			patientOpenVisitsBtn = me.Header.getComponent('patientOpenVisits'),
-			patientCreateEncounterBtn = me.Header.getComponent('patientCreateEncounter'),
-			patientCloseCurrEncounterBtn = me.Header.getComponent('patientCloseCurrEncounter'),
-			patientChargeBtn = me.Header.getComponent('patientCharge'),
-			patientCheckOutBtn = me.Header.getComponent('patientCheckOut');
+		var me = this;
 		me.patientUnset(function() {
 			Patient.currPatientSet({ pid: pid }, function(provider, response) {
 				var data = response.result, msg1, msg2;
@@ -1130,14 +1120,14 @@ Ext.define('App.view.Viewport', {
 						name    : fullname,
 						readOnly: readOnly
 					};
-					patientBtn.update({ pid: pid, name: fullname });
-					patientBtn.addCls(priority);
-					patientBtn.enable();
-					patientOpenVisitsBtn.enable();
-					patientCreateEncounterBtn.enable();
-					patientCloseCurrEncounterBtn.enable();
-					patientChargeBtn.enable();
-					patientCheckOutBtn.enable();
+					me.patientBtn.update({ pid: pid, name: fullname });
+					me.patientBtn.addCls(priority);
+					me.patientBtn.enable();
+					if(me.patientOpenVisitsBtn) me.patientOpenVisitsBtn.enable();
+					if(me.patientCreateEncounterBtn) me.patientCreateEncounterBtn.enable();
+					if(me.patientCloseCurrEncounterBtn) me.patientCloseCurrEncounterBtn.enable();
+					if(me.patientChargeBtn) me.patientChargeBtn.enable();
+					if(me.patientCheckOutBtn) me.patientCheckOutBtn.enable();
 					if(typeof callback == 'function') {
 						callback(true);
 					}
@@ -1147,13 +1137,7 @@ Ext.define('App.view.Viewport', {
 	},
 
 	patientUnset: function(callback) {
-		var me = this,
-			patientBtn = me.patientButton,
-			patientOpenVisitsBtn = me.Header.getComponent('patientOpenVisits'),
-			patientCreateEncounterBtn = me.Header.getComponent('patientCreateEncounter'),
-			patientCloseCurrEncounterBtn = me.Header.getComponent('patientCloseCurrEncounter'),
-			patientChargeBtn = me.Header.getComponent('patientCharge'),
-			patientCheckOutBtn = me.Header.getComponent('patientCheckOut');
+		var me = this;
 		Patient.currPatientUnset(function() {
 			me.currEncounterId = null;
 			me.currPatient = null;
@@ -1161,31 +1145,32 @@ Ext.define('App.view.Viewport', {
 			if(typeof callback == 'function') {
 				callback(true);
 			} else {
-				patientCreateEncounterBtn.disable();
-				patientOpenVisitsBtn.disable();
-				patientCloseCurrEncounterBtn.disable();
-				patientChargeBtn.disable();
-				patientCheckOutBtn.disable();
-				patientBtn.disable();
-				patientBtn.update({ pid: 'record number', name: 'No Patient Selected'});
+				if(me.patientCreateEncounterBtn) me.patientCreateEncounterBtn.disable();
+				if(me.patientOpenVisitsBtn) me.patientOpenVisitsBtn.disable();
+				if(me.patientCloseCurrEncounterBtn) me.patientCloseCurrEncounterBtn.disable();
+				if(me.patientChargeBtn) me.patientChargeBtn.disable();
+				if(me.patientCheckOutBtn) me.patientCheckOutBtn.disable();
+				me.patientBtn.disable();
+				me.patientBtn.update({ pid: 'record number', name: 'No Patient Selected'});
 
 			}
 		});
 	},
 
 	patientButtonRemoveCls:function(){
-		this.patientButton.removeCls('Minimal');
-		this.patientButton.removeCls('Delayed');
-		this.patientButton.removeCls('Immediate');
-		this.patientButton.removeCls('Expectant');
-		this.patientButton.removeCls('Deceased');
+        var me = this;
+        me.patientBtn.removeCls('Minimal');
+        me.patientBtn.removeCls('Delayed');
+        me.patientBtn.removeCls('Immediate');
+        me.patientBtn.removeCls('Expectant');
+        me.patientBtn.removeCls('Deceased');
 	},
 
 	showMiframe: function(btn) {
-		var src = btn.action;
-		this.winSupport.remove(this.miframe);
-		this.winSupport.add(this.miframe = Ext.create('App.classes.ManagedIframe', {src: src}));
-		this.winSupport.show();
+		var me = this, src = btn.action;
+        me.winSupport.remove(me.miframe);
+        me.winSupport.add(me.miframe = Ext.create('App.classes.ManagedIframe', {src: src}));
+        me.winSupport.show();
 	},
 
 	msg: function(title, format) {
@@ -1206,7 +1191,7 @@ Ext.define('App.view.Viewport', {
 		});
 	},
 
-	patientBtn: function() {
+	patientBtnTpl: function() {
 		return Ext.create('Ext.XTemplate',
 			'<div class="patient_btn  {priority}">',
 			'<div class="patient_btn_img"><img src="ui_icons/user_32.png"></div>',
@@ -1265,7 +1250,7 @@ Ext.define('App.view.Viewport', {
 		panel.dragZone = Ext.create('Ext.dd.DragZone', panel.getEl(), {
 			ddGroup    : 'patientPoolAreas',
 			getDragData: function() {
-				var sourceEl = app.Header.getComponent('patientButton').el.dom, d;
+				var sourceEl = app.Header.getComponent('patientBtn').el.dom, d;
 				if(app.currCardCmp != app.ppdz){
 					app.MainPanel.getLayout().setActiveItem(app.ppdz);
 				}
@@ -1335,6 +1320,7 @@ Ext.define('App.view.Viewport', {
 						patientData: patientData
 					};
 				}
+                return false;
 			},
 
 			getRepairXY: function() {

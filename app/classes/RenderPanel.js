@@ -81,6 +81,7 @@ Ext.define('App.classes.RenderPanel', {
 			var btn = buttons[i];
 			if(btn.disabled != disable){
 				btn.disabled = disable;
+                say(btn);
 				btn.setDisabled(disable)
 			}
 		}

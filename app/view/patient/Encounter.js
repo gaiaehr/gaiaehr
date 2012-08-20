@@ -72,37 +72,39 @@ Ext.define('App.view.patient.Encounter', {
          * the top of the Visit panel and will slide down if
          * the "New Encounter" button is pressed.
          */
-        me.newEncounterWindow = Ext.create('Ext.window.Window', {
-            title      : 'New Encounter Form',
-            closeAction: 'hide',
-            modal      : true,
-            width      : 660,
-            items      : [
-                {
-                    xtype      : 'form',
-                    border     : false,
-                    bodyPadding: '10 10 0 10'
-                }
-            ],
-            buttons    : [
-                {
-                    text   : 'Create Encounter',
-                    action : 'encounter',
-                    scope  : me,
-                    handler: me.onSave
-                },
-                {
-                    text   : 'Cancel',
-                    scope  : me,
-                    handler: me.cancelNewEnc
+        if(perm.add_encounters){
+            me.newEncounterWindow = Ext.create('Ext.window.Window', {
+                title      : 'New Encounter Form',
+                closeAction: 'hide',
+                modal      : true,
+                width      : 660,
+                items      : [
+                    {
+                        xtype      : 'form',
+                        border     : false,
+                        bodyPadding: '10 10 0 10'
+                    }
+                ],
+                buttons    : [
+                    {
+                        text   : 'Create Encounter',
+                        action : 'encounter',
+                        scope  : me,
+                        handler: me.onSave
+                    },
+                    {
+                        text   : 'Cancel',
+                        scope  : me,
+                        handler: me.cancelNewEnc
 
+                    }
+                ],
+                listeners  : {
+                    scope: me,
+                    close: me.cancelNewEnc
                 }
-            ],
-            listeners  : {
-                scope: me,
-                close: me.cancelNewEnc
-            }
-        });
+            });
+        }
         /**
          * Encounter Checkout window
          * @type {*}
@@ -646,41 +648,44 @@ Ext.define('App.view.patient.Encounter', {
      */
     newEncounter  : function() {
         var me = this, form, model;
-        Encounter.checkOpenEncounters(function(provider, response) {
-            /** @namespace response.result.encounter */
-            if(response.result.encounter) {
-                Ext.Msg.show({
-                    title  : 'Oops! Open Encounters Found...',
-                    msg    : 'Do you want to <strong>continue creating the New Encounters?</strong><br>"Click No to review Encounter History"',
-                    buttons: Ext.Msg.YESNO,
-                    icon   : Ext.Msg.QUESTION,
-                    fn     : function(btn) {
-                        if(btn == 'yes') {
-                            form = me.newEncounterWindow.down('form');
-                            form.getForm().reset();
-                            model = Ext.ModelManager.getModel('App.model.patient.Encounter');
-                            model = Ext.ModelManager.create({
-                                start_date: new Date()
-                            }, model);
-                            form.getForm().loadRecord(model);
-                            me.newEncounterWindow.show();
-                        } else {
-                            app.openPatientVisits();
+        if(perm.add_encounters){
+            Encounter.checkOpenEncounters(function(provider, response) {
+                /** @namespace response.result.encounter */
+                if(response.result.encounter) {
+                    Ext.Msg.show({
+                        title  : 'Oops! Open Encounters Found...',
+                        msg    : 'Do you want to <strong>continue creating the New Encounters?</strong><br>"Click No to review Encounter History"',
+                        buttons: Ext.Msg.YESNO,
+                        icon   : Ext.Msg.QUESTION,
+                        fn     : function(btn) {
+                            if(btn == 'yes') {
+                                form = me.newEncounterWindow.down('form');
+                                form.getForm().reset();
+                                model = Ext.ModelManager.getModel('App.model.patient.Encounter');
+                                model = Ext.ModelManager.create({
+                                    start_date: new Date()
+                                }, model);
+                                form.getForm().loadRecord(model);
+                                me.newEncounterWindow.show();
+                            } else {
+                                app.openPatientVisits();
+                            }
                         }
-                    }
-                });
-            } else {
-                form = me.newEncounterWindow.down('form');
-                form.getForm().reset();
-                model = Ext.ModelManager.getModel('App.model.patient.Encounter');
-                model = Ext.ModelManager.create({
-                    start_date: new Date()
-                }, model);
-                form.getForm().loadRecord(model);
-                me.newEncounterWindow.show();
-            }
-
-        });
+                    });
+                } else {
+                    form = me.newEncounterWindow.down('form');
+                    form.getForm().reset();
+                    model = Ext.ModelManager.getModel('App.model.patient.Encounter');
+                    model = Ext.ModelManager.create({
+                        start_date: new Date()
+                    }, model);
+                    form.getForm().loadRecord(model);
+                    me.newEncounterWindow.show();
+                }
+            });
+        }else{
+            app.accessDenied();
+        }
     },
 
 
@@ -1309,30 +1314,30 @@ Ext.define('App.view.patient.Encounter', {
                 belongsTo: { model: 'App.model.patient.Encounter', foreignKey: 'eid' }
             });
         });
-        me.getFormItems(me.newEncounterWindow.down('form'), 'New Encounter');
+
+        if(me.newEncounterWindow) me.getFormItems(me.newEncounterWindow.down('form'), 'New Encounter');
     },
 
     getButtonsToDisable: function() {
         var me = this, buttons = [];
-        buttons.concat(
-            me.vitalsPanel.query('button'),
-            me.reviewSysPanel.query('button'),
-            me.reviewSysCkPanel.query('button'),
-            me.soapPanel.query('button'),
-            me.MiscBillingOptionsPanel.query('button'),
-            me.CurrentProceduralTerminology.query('button'),
-            me.EncounterEventHistory.query('button'),
-            me.newEncounterWindow.query('button')
-        );
-        if(perm.access_encounter_checkout){
-            buttons.push(me.checkoutWindow.query('button'));
+        if(me.ButtonsToDisable == null){
+            if(me.vitalsPanel) buttons.concat(buttons, me.vitalsPanel.query('button'));
+            if(me.reviewSysPanel) buttons.concat(buttons, me.reviewSysPanel.query('button'));
+            if(me.reviewSysCkPanel) buttons.concat(buttons, me.reviewSysCkPanel.query('button'));
+            if(me.soapPanel) buttons.concat(buttons, me.soapPanel.query('button'));
+            if(me.MiscBillingOptionsPanel) buttons.concat(buttons, me.MiscBillingOptionsPanel.query('button'));
+            if(me.CurrentProceduralTerminology) buttons.concat(buttons, me.CurrentProceduralTerminology.query('button'));
+            if(me.EncounterEventHistory) buttons.concat(buttons, me.EncounterEventHistory.query('button'));
+            if(me.newEncounterWindow) buttons.concat(buttons, me.newEncounterWindow.query('button'));
+            if(me.checkoutWindow) buttons.concat(buttons, me.checkoutWindow.query('button'));
+            me.ButtonsToDisable = buttons;
         }
-
-        return buttons;
+        return me.ButtonsToDisable;
     },
 
     onDocumentView: function(grid, rowIndex) {
-        var rec = grid.getStore().getAt(rowIndex), src = rec.data.url;
+        var rec = grid.getStore().getAt(rowIndex),
+            src = rec.data.url;
         app.onDocumentView(src);
     },
     /**

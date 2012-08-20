@@ -26,6 +26,7 @@ class Services
 		return $this->db = new dbHelper();
 	}
 
+
 	/**
 	 * CPT CODES SECTION!!!
 	 */
@@ -223,7 +224,6 @@ class Services
 		$this->db->execLog();
 		return array('totals'=> 1, 'rows'  => $params);
 	}
-
 
 
 

@@ -119,9 +119,8 @@ class DataManager
             unset($data['code_type']);
         } elseif($params->code_type == 'HCPCS'){
             $tableX = 'hcpcs_codes';
-        }elseif($params->code_type == 'Immunizations') {
+        } elseif($params->code_type == 'Immunizations') {
             $tableX = 'immunizations';
-            unset($data['code_type']);
         } else {
             $tableX = 'labs_panels';
             $data['code_text_short'] = $params->code_text_short;

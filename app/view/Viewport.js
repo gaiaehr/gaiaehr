@@ -670,95 +670,60 @@ Ext.define('App.view.Viewport', {
 			border   : true,
 			itemId   : 'MainPanel',
 			defaults : { layout: 'fit', xtype: 'container' },
-			items    : [
-
-			/**
-			 * General Area
-			 */
-				Ext.create('App.view.dashboard.Dashboard'), // done  TODO: panels
-				Ext.create('App.view.calendar.Calendar'), // done
-				Ext.create('App.view.messages.Messages'), // done
-				Ext.create('App.view.search.PatientSearch'), //
-				Ext.create('App.view.areas.FloorPlan'), //
-
-			/**
-			 * Patient Area
-			 */
-				Ext.create('App.view.patient.NewPatient'),
-				Ext.create('App.view.patient.Summary'),
-				Ext.create('App.view.patient.Visits'),
-				Ext.create('App.view.patient.Encounter'),
-				Ext.create('App.view.patient.VisitCheckout'),
-
-			/**
-			 * Fees Area
-			 */
-				Ext.create('App.view.fees.Billing'),
-				Ext.create('App.view.fees.Payments'),
-
-			/**
-			 * Miscellaneous
-			 */
-				Ext.create('App.view.miscellaneous.Addressbook'),
-				Ext.create('App.view.miscellaneous.MyAccount'),
-				Ext.create('App.view.miscellaneous.MySettings'),
-				Ext.create('App.view.miscellaneous.OfficeNotes'),
-				Ext.create('App.view.miscellaneous.Websearch'),
-
-				me.ppdz = Ext.create('App.view.areas.PatientPoolDropZone')
-
-			],
 			listeners: {
 				scope      : me,
 				afterrender: me.initializeOpenEncounterDropZone
 			}
 		});
 
-		/**
-		 * Add Administration Area Panels
-		 */
-		if(perm.access_gloabal_settings) {
-			me.MainPanel.add(Ext.create('App.view.administration.Globals'));
-		}
-		if(perm.access_facilities) {
-			me.MainPanel.add(Ext.create('App.view.administration.Facilities'));
-		}
-		if(perm.access_users) {
-			me.MainPanel.add(Ext.create('App.view.administration.Users'));
-		}
-		if(perm.access_practice) {
-			me.MainPanel.add(Ext.create('App.view.administration.Practice'));
-		}
-		if(perm.access_data_manager) {
-			me.MainPanel.add(Ext.create('App.view.administration.DataManager'));
-		}
-		if(perm.access_preventive_care) {
-			me.MainPanel.add(Ext.create('App.view.administration.PreventiveCare'));
-		}
-		if(perm.access_medications) {
-			me.MainPanel.add(Ext.create('App.view.administration.Medications'));
-		}
-		if(perm.access_floor_plans) {
-			me.MainPanel.add(Ext.create('App.view.administration.FloorPlans'));
-		}
-		if(perm.access_roles) {
-			me.MainPanel.add(Ext.create('App.view.administration.Roles'));
-		}
-		if(perm.access_layouts) {
-			me.MainPanel.add(Ext.create('App.view.administration.Layout'));
-		}
-		if(perm.access_lists) {
-			me.MainPanel.add(Ext.create('App.view.administration.Lists'));
-		}
-		if(perm.access_event_log) {
-			me.MainPanel.add(Ext.create('App.view.administration.Log'));
-		}
-		if(perm.access_documents) {
-			me.MainPanel.add(Ext.create('App.view.administration.Documents'));
-		}
-		//if(perm.access_documents) {
-			me.MainPanel.add(Ext.create('App.view.administration.ExternalDataLoads'));
-		//}
+        /**
+         * General Area
+         */
+        me.MainPanel.add(Ext.create('App.view.dashboard.Dashboard')); // TODO: panels
+        me.MainPanel.add(Ext.create('App.view.calendar.Calendar'));
+        me.MainPanel.add(Ext.create('App.view.messages.Messages'));
+        me.MainPanel.add(Ext.create('App.view.search.PatientSearch'));
+        me.MainPanel.add(Ext.create('App.view.areas.FloorPlan'));
+        /**
+         * Patient Area
+         */
+        me.MainPanel.add(Ext.create('App.view.patient.NewPatient'));
+        me.MainPanel.add(Ext.create('App.view.patient.Summary'));
+        me.MainPanel.add(Ext.create('App.view.patient.Visits'));
+        me.MainPanel.add(Ext.create('App.view.patient.Encounter'));
+        me.MainPanel.add(Ext.create('App.view.patient.VisitCheckout'));
+        /**
+         * Fees Area
+         */
+        me.MainPanel.add(Ext.create('App.view.fees.Billing'));
+        me.MainPanel.add(Ext.create('App.view.fees.Payments'));
+        /**
+         * Miscellaneous
+         */
+        me.MainPanel.add(Ext.create('App.view.miscellaneous.Addressbook'));
+        me.MainPanel.add(Ext.create('App.view.miscellaneous.MyAccount'));
+        me.MainPanel.add(Ext.create('App.view.miscellaneous.MySettings'));
+        me.MainPanel.add(Ext.create('App.view.miscellaneous.OfficeNotes'));
+        me.MainPanel.add(Ext.create('App.view.miscellaneous.Websearch'));
+
+        me.ppdz = me.MainPanel.add(Ext.create('App.view.areas.PatientPoolDropZone'));
+
+		if(perm.access_gloabal_settings) me.MainPanel.add(Ext.create('App.view.administration.Globals'));
+		if(perm.access_facilities) me.MainPanel.add(Ext.create('App.view.administration.Facilities'));
+		if(perm.access_users) me.MainPanel.add(Ext.create('App.view.administration.Users'));
+		if(perm.access_practice) me.MainPanel.add(Ext.create('App.view.administration.Practice'));
+		if(perm.access_data_manager) me.MainPanel.add(Ext.create('App.view.administration.DataManager'));
+		if(perm.access_preventive_care) me.MainPanel.add(Ext.create('App.view.administration.PreventiveCare'));
+		if(perm.access_medications) me.MainPanel.add(Ext.create('App.view.administration.Medications'));
+		if(perm.access_floor_plans) me.MainPanel.add(Ext.create('App.view.administration.FloorPlans'));
+		if(perm.access_roles) me.MainPanel.add(Ext.create('App.view.administration.Roles'));
+		if(perm.access_layouts)me.MainPanel.add(Ext.create('App.view.administration.Layout'));
+		if(perm.access_lists) me.MainPanel.add(Ext.create('App.view.administration.Lists'));
+		if(perm.access_event_log) me.MainPanel.add(Ext.create('App.view.administration.Log'));
+		if(perm.access_documents) me.MainPanel.add(Ext.create('App.view.administration.Documents'));
+
+        me.MainPanel.add(Ext.create('App.view.administration.ExternalDataLoads'));
+
 
 		/**
 		 * Footer Panel

@@ -1,0 +1,355 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<script type="text/javascript" src="../../Extensible-config.js"></script>
+
+<script type="text/javascript">
+Ext.Loader.setConfig({
+    enabled: true,
+    disableCaching: false,
+    paths: {
+        "Extensible": "../../src",
+        "Extensible.example": ".."
+    }
+});
+Ext.define('Extensible.example.calendar.TestApp.App', {  
+    requires: [
+        'Ext.Viewport',
+        'Ext.layout.container.Border',
+        'Extensible.calendar.CalendarPanel',
+        'Extensible.calendar.gadget.CalendarListPanel',
+        'Extensible.calendar.data.MemoryCalendarStore',
+        'Extensible.calendar.data.MemoryEventStore',
+        'Extensible.example.calendar.data.Events',
+        'Extensible.example.calendar.data.Calendars'
+    ],
+    
+    constructor : function() {
+
+/*
+* Copied from custom-mappings.js   
+* var calendarStore has been changed to this.calendarStore
+* var eventStore has been changed to this.eventStore
+*/
+
+Extensible.calendar.data.EventMappings = {
+        // These are the same fields as defined in the standard EventRecord object but the
+        // names and mappings have all been customized. Note that the name of each field
+        // definition object (e.g., 'EventId') should NOT be changed for the default fields
+        // as it is the key used to access the field data programmatically.
+        EventId:     {name: 'ID', mapping:'evt_id', type:'string'}, // int by default
+        CalendarId:  {name: 'CalID', mapping: 'cal_id', type: 'string'}, // int by default
+        Title:       {name: 'EvtTitle', mapping: 'evt_title'},
+        StartDate:   {name: 'StartDt', mapping: 'start_dt', type: 'date', dateFormat: 'c'},
+        EndDate:     {name: 'EndDt', mapping: 'end_dt', type: 'date', dateFormat: 'c'},
+        RRule:       {name: 'RecurRule', mapping: 'recur_rule'},
+        Location:    {name: 'Location', mapping: 'location'},
+        Notes:       {name: 'Desc', mapping: 'full_desc'},
+        Url:         {name: 'LinkUrl', mapping: 'link_url'},
+        IsAllDay:    {name: 'AllDay', mapping: 'all_day', type: 'boolean'},
+        Reminder:    {name: 'Reminder', mapping: 'reminder'},
+        
+        // We can also add some new fields that do not exist in the standard EventRecord:
+        CreatedBy:   {name: 'CreatedBy', mapping: 'created_by'},
+        IsPrivate:   {name: 'Private', mapping:'private', type:'boolean'}
+    };
+    // Don't forget to reconfigure!
+    Extensible.calendar.data.EventModel.reconfigure();
+    
+    // One key thing to remember is that any record reconfiguration you want to perform
+    // must be done PRIOR to initializing your data store, otherwise the changes will
+    // not be reflected in the store's records.
+     
+    this.eventStore = Ext.create('Extensible.calendar.data.MemoryEventStore', {
+        // defined in ../data/EventsCustom.js
+        data: Ext.create('Extensible.example.calendar.data.EventsCustom')
+    });
+    
+    Extensible.calendar.data.CalendarMappings = {
+        // Same basic concept for the CalendarMappings as above
+        CalendarId:   {name:'ID', mapping: 'cal_id', type: 'string'}, // int by default
+        Title:        {name:'CalTitle', mapping: 'cal_title', type: 'string'},
+        Description:  {name:'Desc', mapping: 'cal_desc', type: 'string'},
+        ColorId:      {name:'Color', mapping: 'cal_color', type: 'int'},
+        IsHidden:     {name:'Hidden', mapping: 'hidden', type: 'boolean'}
+    };
+    // Don't forget to reconfigure!
+    Extensible.calendar.data.CalendarModel.reconfigure();
+    
+    // Enable event color-coding:
+    this.calendarStore = Ext.create('Extensible.calendar.data.MemoryCalendarStore', {
+        // defined in ../data/CalendarsCustom.js
+        data: Ext.create('Extensible.example.calendar.data.CalendarsCustom')
+    });
+      
+/*
+* Copied from custom-mappings.js   
+* var calendarStore has been changed to this.calendarStore
+* var eventStore has been changed to this.eventStore
+*/
+   
+   
+      
+      
+      
+        // This is an example calendar store that enables event color-coding
+//        this.calendarStore = Ext.create('Extensible.calendar.data.MemoryCalendarStore', {
+//            // defined in ../data/Calendars.js
+//            data: Ext.create('Extensible.example.calendar.data.Calendars')
+//        });
+
+        // A sample event store that loads static JSON from a local file. Obviously a real
+        // implementation would likely be loading remote data via an HttpProxy, but the
+        // underlying store functionality is the same.
+//        this.eventStore = Ext.create('Extensible.calendar.data.MemoryEventStore', {
+//            // defined in ../data/Events.js
+//            data: Ext.create('Extensible.example.calendar.data.Events'),
+//            // This disables the automatic CRUD messaging built into the sample data store.
+//            // This test application will provide its own custom messaging. See the source
+//            // of MemoryEventStore to see how automatic store messaging is implemented.
+//            autoMsg: false
+//        });
+        
+        // This is the app UI layout code.  All of the calendar views are subcomponents of
+        // CalendarPanel, but the app title bar and sidebar/navigation calendar are separate
+        // pieces that are composed in app-specific layout code since they could be omitted
+        // or placed elsewhere within the application.
+        Ext.create('Ext.Viewport', {
+            layout: 'border',
+            items: [{
+                id: 'app-header',
+                region: 'north',
+                height: 35,
+                border: false
+            },{
+                id: 'app-center',
+                title: '...', // will be updated to the current view's date range
+                region: 'center',
+                layout: 'border',
+                listeners: {
+                    'afterrender': function(){
+                        Ext.getCmp('app-center').header.addCls('app-center-header');
+                    }
+                },
+                items: [{
+                    id:'app-west',
+                    region: 'west',
+                    width: 179,
+                    border: false,
+                    items: [{
+                        xtype: 'datepicker',
+                        id: 'app-nav-picker',
+                        cls: 'ext-cal-nav-picker',
+                        listeners: {
+                            'select': {
+                                fn: function(dp, dt){
+                                    Ext.getCmp('app-calendar').setStartDate(dt);
+                                },
+                                scope: this
+                            }
+                        }
+                    },{
+                        xtype: 'extensible.calendarlist',
+                        store: this.calendarStore,
+                        border: false,
+                        width: 178
+                    }]
+                },{
+                    xtype: 'extensible.calendarpanel',
+                    eventStore: this.eventStore,
+                    calendarStore: this.calendarStore,
+                    border: false,
+                    id:'app-calendar',
+                    region: 'center',
+                    activeItem: 3, // month view
+                    
+                    // Any generic view options that should be applied to all sub views:
+                    viewConfig: {
+                        //enableFx: false,
+                        //ddIncrement: 10, //only applies to DayView and subclasses, but convenient to put it here
+                        //viewStartHour: 6,
+                        //viewEndHour: 18,
+                        //minEventDisplayMinutes: 15
+                        showTime: false
+                    },
+                    
+                    // View options specific to a certain view (if the same options exist in viewConfig
+                    // they will be overridden by the view-specific config):
+                    monthViewCfg: {
+                        showHeader: true,
+                        showWeekLinks: true,
+                        showWeekNumbers: true
+                    },
+                    
+                    multiWeekViewCfg: {
+                        //weekCount: 3
+                    },
+                    
+                    // Some optional CalendarPanel configs to experiment with:
+                    //readOnly: true,
+                    //showDayView: false,
+                    //showMultiDayView: true,
+                    //showWeekView: false,
+                    //showMultiWeekView: false,
+                    //showMonthView: false,
+                    //showNavBar: false,
+                    //showTodayText: false,
+                    //showTime: false,
+                    //editModal: true,
+                    //enableEditDetails: false,
+                    //title: 'My Calendar', // the header of the calendar, could be a subtitle for the app
+                    
+                    listeners: {
+                        'eventclick': {
+                            fn: function(vw, rec, el){
+                                this.clearMsg();
+                            },
+                            scope: this
+                        },
+                        'eventover': function(vw, rec, el){
+                            //console.log('Entered evt rec='+rec.data[Extensible.calendar.data.EventMappings.Title.name]', view='+ vw.id +', el='+el.id);
+                        },
+                        'eventout': function(vw, rec, el){
+                            //console.log('Leaving evt rec='+rec.data[Extensible.calendar.data.EventMappings.Title.name]+', view='+ vw.id +', el='+el.id);
+                        },
+                        'eventadd': {
+                            fn: function(cp, rec){
+                                this.showMsg('Event '+ rec.data[Extensible.calendar.data.EventMappings.Title.name] +' was added');
+                            },
+                            scope: this
+                        },
+                        'eventupdate': {
+                            fn: function(cp, rec){
+                                this.showMsg('Event '+ rec.data[Extensible.calendar.data.EventMappings.Title.name] +' was updated');
+                            },
+                            scope: this
+                        },
+                        'eventdelete': {
+                            fn: function(cp, rec){
+                                //this.eventStore.remove(rec);
+                                this.showMsg('Event '+ rec.data[Extensible.calendar.data.EventMappings.Title.name] +' was deleted');
+                            },
+                            scope: this
+                        },
+                        'eventcancel': {
+                            fn: function(cp, rec){
+                                // edit canceled
+                            },
+                            scope: this
+                        },
+                        'viewchange': {
+                            fn: function(p, vw, dateInfo){
+                                if(this.editWin){
+                                    this.editWin.hide();
+                                };
+                                if(dateInfo){
+                                    this.updateTitle(dateInfo.viewStart, dateInfo.viewEnd);
+                                }
+                            },
+                            scope: this
+                        },
+                        'dayclick': {
+                            fn: function(vw, dt, ad, el){
+                                this.clearMsg();
+                            },
+                            scope: this
+                        },
+                        'rangeselect': {
+                            fn: function(vw, dates, onComplete){
+                                this.clearMsg();
+                            },
+                            scope: this
+                        },
+                        'eventmove': {
+                            fn: function(vw, rec){
+                                rec.commit();
+                                var time = rec.data[Extensible.calendar.data.EventMappings.IsAllDay.name] ? '' : ' \\a\\t g:i a';
+                                this.showMsg('Event '+ rec.data[Extensible.calendar.data.EventMappings.Title.name] +' was moved to '+
+                                    Ext.Date.format(rec.data[Extensible.calendar.data.EventMappings.StartDate.name], ('F jS'+time)));
+                            },
+                            scope: this
+                        },
+                        'eventresize': {
+                            fn: function(vw, rec){
+                                rec.commit();
+                                this.showMsg('Event '+ rec.data[Extensible.calendar.data.EventMappings.Title.name] +' was updated');
+                            },
+                            scope: this
+                        },
+                        'eventdelete': {
+                            fn: function(win, rec){
+                                this.eventStore.remove(rec);
+                                this.showMsg('Event '+ rec.data[Extensible.calendar.data.EventMappings.Title.name] +' was deleted');
+                            },
+                            scope: this
+                        },
+                        'initdrag': {
+                            fn: function(vw){
+                                if(this.editWin && this.editWin.isVisible()){
+                                    this.editWin.hide();
+                                }
+                            },
+                            scope: this
+                        }
+                    }
+                }]
+            }]
+        });
+    },
+    
+    // The CalendarPanel itself supports the standard Panel title config, but that title
+    // only spans the calendar views.  For a title that spans the entire width of the app
+    // we added a title to the layout's outer center region that is app-specific. This code
+    // updates that outer title based on the currently-selected view range anytime the view changes.
+    updateTitle: function(startDt, endDt){
+        var p = Ext.getCmp('app-center'),
+            fmt = Ext.Date.format;
+        
+        if(Ext.Date.clearTime(startDt).getTime() == Ext.Date.clearTime(endDt).getTime()){
+            p.setTitle(fmt(startDt, 'F j, Y'));
+        }
+        else if(startDt.getFullYear() == endDt.getFullYear()){
+            if(startDt.getMonth() == endDt.getMonth()){
+                p.setTitle(fmt(startDt, 'F j') + ' - ' + fmt(endDt, 'j, Y'));
+            }
+            else{
+                p.setTitle(fmt(startDt, 'F j') + ' - ' + fmt(endDt, 'F j, Y'));
+            }
+        }
+        else{
+            p.setTitle(fmt(startDt, 'F j, Y') + ' - ' + fmt(endDt, 'F j, Y'));
+        }
+    },
+    
+    // This is an application-specific way to communicate CalendarPanel event messages back to the user.
+    // This could be replaced with a function to do "toast" style messages, growl messages, etc. This will
+    // vary based on application requirements, which is why it's not baked into the CalendarPanel.
+    showMsg: function(msg){
+        //Ext.fly('app-msg').update(msg).removeCls('x-hidden');
+    },
+    
+    clearMsg: function(){
+        //Ext.fly('app-msg').update('').addCls('x-hidden');
+    }
+});
+
+
+Ext.onReady(function() {
+    Extensible.calendar.view.AbstractCalendar.prototype.onClick = Ext.Function.createInterceptor(
+        Extensible.calendar.view.AbstractCalendar.prototype.onClick, function(e, t) {
+            if (e.getTarget('.ext-cal-ic-rem')) {
+                alert('You clicked the bell');
+                return false;
+            }
+        }
+    )
+    Ext.create('Extensible.example.calendar.TestApp.App');
+});
+</script>
+
+</head>
+<body>
+    <div id="calendar-ct"></div>
+</body>
+</html>

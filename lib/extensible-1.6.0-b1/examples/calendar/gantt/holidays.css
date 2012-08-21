@@ -1,0 +1,55 @@
+/*!
+ * Extensible 1.6.0-b1
+ * Copyright(c) 2010-2012 Extensible, LLC
+ * licensing@ext.ensible.com
+ * http://ext.ensible.com
+ */
+.taskTip strong
+{
+    font-weight:bold;
+    margin-right:5px;
+}
+
+.taskTip li
+{
+	padding-bottom:3px;
+}
+
+.icon-add
+{
+    background:url(images/add.png) no-repeat left center !important;
+}
+
+.Johnny
+{
+    background-color:LightGreen;
+}
+
+.Johnny .sch-gantt-progress-bar
+{
+    background-color       : #555;
+}
+
+.gnt-national-holiday {
+	background-color       : #ffabab;
+	background-image       : url(images/se.png);
+	background-position    : center center !important;
+	background-repeat      : no-repeat;
+}
+
+.gnt-company-holiday {
+    background-color       : #c4e3e7;
+    background-image       : url(images/bryntum.jpg); 
+    background-position    : center center !important;
+    background-repeat      : no-repeat;
+}
+
+
+.gnt-date {
+	background-image       : url(images/date.png) !important;
+}
+
+.extcal
+{
+    margin-top:30px;
+}

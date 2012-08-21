@@ -1,0 +1,35 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+    <!-- Sets up all Ext and Extensible includes: -->
+    <script type="text/javascript" src="../../../Extensible-config.js"></script>
+
+	<!-- Gantt dependencies -->
+    <link href="sch-gantt-all.css" rel="stylesheet" type="text/css" />
+    <script src="gnt-all-debug.js" type="text/javascript"></script>
+    
+    <!--Application files-->
+    <link href="holidays.css" rel="stylesheet" type="text/css" />
+    <script src="holidays.js" type="text/javascript"></script>
+
+    <title>Holidays Demo</title>
+</head>
+<body>
+    <p>
+        NOTE: For this example to work you have to run it in a web server context. 
+    </p>
+    <p>
+        This is a simple example which demonstrates the capabilities of built-in calendar system. the 
+        calendar allows the Gantt to skip non-working days during calculation of task durations.
+        By default the only non-working time in calendar are weekends. Its possible to add the additional 
+        holidays or exceptions (working day which is on weekend). 
+        
+        Holidays/exceptions should be represented as the `Gnt.model.CalendarDay` records in the calendar 
+        store. Its also possible to apply custom styling for each holiday period.
+    </p>
+    <br />
+    <p>Note that the js for the example code is not minified so it is readable. 
+        See <a href="holidays.js">holidays.js</a>.</p>
+    <br />
+</body>
+</html>

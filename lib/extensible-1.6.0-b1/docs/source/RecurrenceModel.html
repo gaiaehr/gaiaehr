@@ -1,0 +1,24 @@
+<html>
+<head>
+  <title>The source code</title>
+    <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+    <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+</head>
+<body  onload="prettyPrint();">
+    <pre class="prettyprint lang-js">Ext.define('Extensible.calendar.data.RecurrenceModel', {
+    extend: 'Extensible.data.Model',
+
+    requires: [
+        'Extensible.calendar.data.RecurrenceMappings'
+    ],
+    
+    mappingClass: 'Extensible.calendar.data.RecurrenceMappings',
+    
+    mappingIdProperty: 'RecurrenceId'
+    
+},
+function() {
+    this.reconfigure();
+});</pre>    
+</body>
+</html>

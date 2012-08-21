@@ -27,13 +27,14 @@ Ext.define('App.classes.LiveICDXSearch', {
 			fields: [
 				{name: 'id', type: 'int'},
 				{name: 'code', type: 'string'},
+				{name: 'xcode', type: 'string'},
 				{name: 'code_text', type: 'string'},
 				{name: 'code_type', type: 'string'}
 			],
 			proxy : {
 				type  : 'direct',
 				api   : {
-					read: DiagnosisCodes.liveCodeSearch
+					read: DiagnosisCodes.ICDCodeSearch
 				},
 				reader: {
 					totalProperty: 'totals',

@@ -20,7 +20,6 @@ include_once($_SESSION['site']['root'] . '/dataProvider/PreventiveCare.php');
 include_once($_SESSION['site']['root'] . '/dataProvider/Medical.php');
 include_once($_SESSION['site']['root'] . '/dataProvider/Services.php');
 include_once($_SESSION['site']['root'] . '/dataProvider/Facilities.php');
-//include_once($_SESSION['site']['root'] . '/lib/dompdf_0-6-0_beta3/dompdf_config.inc.php');
 include_once($_SESSION['site']['root'] . '/lib/tcpdf/config/lang/eng.php');
 include_once($_SESSION['site']['root'] . '/lib/tcpdf/tcpdf.php');
 
@@ -670,7 +669,6 @@ class Documents
         $regex = '(\[\w*?\])';
         $this->pdf->SetCreator('TCPDF');
         $this->pdf->SetAuthor($_SESSION['user']['name']);
-
 		$siteLogo = '../sites/'.$_SESSION['site']['site'].'/logo.jpg';
 		$logo = (file_exists($siteLogo) ? $siteLogo : '../ui_app/logo.jpg');
         $this->pdf->SetHeaderData(

@@ -227,10 +227,6 @@ Ext.define('App.view.patient.encounter.CurrentProceduralTerminology', {
                         store:me.encounterCptStore,
                         columns:[
                             {
-                                header:'id',
-                                dataIndex:'id'
-                            },
-                            {
                                 text:"Code",
                                 width:70,
                                 sortable:true,
@@ -243,7 +239,7 @@ Ext.define('App.view.patient.encounter.CurrentProceduralTerminology', {
                                 dataIndex:'code_text'
                             },
                             {
-                                text:'Sattus',
+                                text:'Status',
                                 width:50,
                                 sortable:true,
                                 dataIndex:'status',

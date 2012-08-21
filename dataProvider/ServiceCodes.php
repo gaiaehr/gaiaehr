@@ -13,7 +13,7 @@ include_once($_SESSION['site']['root'] . '/classes/dbHelper.php');
  * To change this template use File | Settings | File Templates.
  */
 
-class SeviceCodes
+class ServiceCodes
 {
     private $db;
 

@@ -171,21 +171,16 @@ Ext.define('App.view.administration.DataManager', {
                     items   : [
 
                         {
-
                             boxLabel: 'Reportable?',
                             xtype   : 'checkboxfield',
                             name    : 'reportable'
-
                         }
                         ,
                         {
-
                             boxLabel  : 'Active?',
                             labelWidth: 75,
                             xtype     : 'checkboxfield',
                             name      : 'active'
-
-
                         }
                     ]
                 }

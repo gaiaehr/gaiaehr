@@ -541,6 +541,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 			htmlEditor  = bbar.up('toolbar').up('panel').getComponent('body'),
 			value = htmlEditor.getValue();
 		DocumentHandler.createDocument({DoctorsNote:value, pid:app.currPatient.pid, docType:'DoctorsNotes', eid: app.currEncounterId}, function(provider, response){
+
 			say(response.result);
 		});
 		this.close();

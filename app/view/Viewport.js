@@ -1251,7 +1251,8 @@ Ext.define('App.view.Viewport', {
 		panel.dragZone = Ext.create('Ext.dd.DragZone', panel.getEl(), {
 			ddGroup    : 'patientPoolAreas',
 			getDragData: function() {
-				var sourceEl = app.Header.getComponent('patientBtn').el.dom, d;
+                say(this);
+				var sourceEl = app.patientBtn.el.dom, d;
 				if(app.currCardCmp != app.ppdz){
 					app.MainPanel.getLayout().setActiveItem(app.ppdz);
 				}

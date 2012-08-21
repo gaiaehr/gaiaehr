@@ -968,7 +968,7 @@ Ext.define('App.view.patient.Encounter', {
                 }
                 me.priorityCombo.setValue(data.priority);
                 app.PreventiveCareWindow.loadPatientPreventiveCare();
-
+                me.resetTabs();
             }
         });
     },
@@ -1381,6 +1381,13 @@ Ext.define('App.view.patient.Encounter', {
             me.ButtonsToDisable = buttons;
         }
         return me.ButtonsToDisable;
+    },
+
+    resetTabs:function(){
+        var me = this;
+        if(me.renderAdministrative) me.centerPanel.setActiveTab(0);
+        if(me.encounterTabPanel) me.encounterTabPanel.setActiveTab(0);
+        if(me.administrativeTabPanel) me.administrativeTabPanel.setActiveTab(0);
     },
 
     onDocumentView: function(grid, rowIndex) {

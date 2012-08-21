@@ -607,7 +607,69 @@ $API = array(
         )
     ), 'Services'=>array(
         'methods'=>array(
-
+           'getServices'=>array(
+               'len'=>1
+           ),
+            'addService'=>array(
+               'len'=>1
+           ),
+            'updateService'=>array(
+               'len'=>1
+           ),
+            'liveCodeSearch'=>array(
+               'len'=>1
+           ),
+            'getCptCodes'=>array(
+               'len'=>1
+            ),
+            'addCptCode'=>array(
+               'len'=>1
+            ),
+            'updateCptCode'=>array(
+               'len'=>1
+            ),
+            'deleteCptCode'=>array(
+               'len'=>1
+            ),
+            'getActiveProblems'=>array(
+               'len'=>1
+            ),
+            'addActiveProblems'=>array(
+               'len'=>1
+            ),
+            'removeActiveProblems'=>array(
+               'len'=>1
+            ),
+            'getMedications'=>array(
+               'len'=>1
+            ),
+            'addMedications'=>array(
+               'len'=>1
+            ),
+            'removeMedications'=>array(
+               'len'=>1
+            ),
+            'updateMedications'=>array(
+               'len'=>1
+            ),
+            'getAllLabObservations'=>array(
+               'len'=>1
+            ),
+            'getLabObservations'=>array(
+               'len'=>1
+            ),
+            'addLabObservation'=>array(
+               'len'=>1
+            ),
+            'updateLabObservation'=>array(
+               'len'=>1
+            ),
+            'removeLabObservation'=>array(
+               'len'=>1
+            ),
+            'getActiveLaboratoryTypes'=>array(
+               'len'=>0
+            )
         )
     ),
     /**

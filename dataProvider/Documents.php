@@ -671,8 +671,10 @@ class Documents
         $this->pdf->SetCreator('TCPDF');
         $this->pdf->SetAuthor($_SESSION['user']['name']);
 
+		$siteLogo = '../sites/'.$_SESSION['site']['site'].'/logo.jpg';
+		$logo = (file_exists($siteLogo) ? $siteLogo : '../ui_app/logo.jpg');
         $this->pdf->SetHeaderData(
-            '../sites/default/logo.jpg',
+	        $logo,
             '20',
             'Ernesto\'s Clinic',
             "Cond. Capital Center\nPDO Suite 205\nAve. Arterial Hostos 239                                                                                                                                   Tel: 787-787-7878\nCarolina PR. 00987                                                                                                                                         Fax: 787-787-7878");//need to be change

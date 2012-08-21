@@ -1680,6 +1680,35 @@ Ext.define('App.view.patient.windows.Medical', {
 		field.setDisabled((newValue == '' || newValue == null));
 	},
 
+	onAllergyTypeSelect: function(combo, record) {
+		var me = this,
+			allergyCombo = combo.up('form').getForm().findField('allergie_name'),
+			drugLiveSearch = combo.up('form').getForm().findField('drug_name');
+
+		if(record[0].data.allergy_type == 'Drug'){
+			allergyCombo.hide(true);
+			allergyCombo.setDisabled(true);
+			allergyCombo.reset();
+			drugLiveSearch.show(true);
+			drugLiveSearch.setDisabled(false);
+		}
+		else if(record[0].data.allergy_type == '' || record[0].data.allergy_type == null) {
+			allergyCombo.setDisabled(true);
+			drugLiveSearch.hide(true);
+			drugLiveSearch.setDisabled(true);
+			allergyCombo.show(true);
+		}
+		else {
+			drugLiveSearch.hide(true);
+			drugLiveSearch.setDisabled(true);
+			allergyCombo.show(true);
+			allergyCombo.setDisabled(false);
+			allergyCombo.reset();
+			allergyCombo.store.load({params: {allergy_type: record[0].data.allergy_type}})
+		}
+
+
+	},
 	setDefaults: function(options) {
 		var data;
 

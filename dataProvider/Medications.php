@@ -40,6 +40,17 @@ class Medications
 
     }
 
+    public function addMedications(stdClass $params)
+    {
+        $data = get_object_vars($params);
+        unset($data['id']);
+        $sql = $this->db->sqlBind($data, "medications", "I");
+        $this->db->setSQL($sql);
+        $this->db->execLog();
+        $params->id = $this->db->lastInsertId;
+        return array('totals'=> 1, 'rows'  => $params);
+    }
+
     public function updateMedications(stdClass $params)
     {
         $data = get_object_vars($params);
@@ -51,16 +62,6 @@ class Medications
 
     }
 
-    public function addMedications(stdClass $params)
-    {
-        $data = get_object_vars($params);
-        unset($data['id']);
-        $sql = $this->db->sqlBind($data, "medications", "I");
-        $this->db->setSQL($sql);
-        $this->db->execLog();
-        $params->id = $this->db->lastInsertId;
-        return array('totals'=> 1, 'rows'  => $params);
-    }
 
     public function removeMedications(stdClass $params)
     {

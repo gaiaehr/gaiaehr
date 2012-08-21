@@ -513,7 +513,45 @@ class Medical
 
 		return $records;
 	}
+    public function getSurgeriesLiveSearch(stdClass $params)
+    {
+        $this->db->setSQL("SELECT *
+   							FROM  surgeries
+   							WHERE surgery      LIKE'$params->query%'
+   							  OR type         LIKE'$params->query%'");
+        $records =$this->db->fetchRecords(PDO::FETCH_ASSOC);
+        $total = count($records);
+        $records  = array_slice($records, $params->start, $params->limit);
+        return array('totals'=> $total,
+            'rows'  => $records);
+    }
 
+    public function reviewAllMedicalWindowEncounter(stdClass $params)
+    {    $data = get_object_vars($params);
+        $eid  = $data['eid'];
+        unset($data['eid']);
+        $data['review_immunizations'] = 1;
+        $data['review_allergies'] = 1;
+        $data['review_active_problems'] = 1;
+        $data['review_surgery'] = 1;
+        $data['review_medications'] = 1;
+        $data['review_dental'] = 1;
+        $this->db->setSQL($this->db->sqlBind($data, "form_data_encounter", "U", "eid='$eid'"));
+        $this->db->execLog();
+        return  array('success' => true);
+    }
+
+    public function getEncounterReviewByEid($eid){
+
+        $this->db->setSQL("
+                            SELECT review_alcohol,
+                                   review_smoke,
+                                   review_pregnant
+                            FROM form_data_encounter
+                            WHERE eid = '$eid'
+                          ");
+        return $this->db->fetchRecord();
+    }
 	/**
 	 * @param $eid
 	 * @return array
@@ -563,20 +601,7 @@ class Medical
         $this->db->execLog();
         return  array('success' => true);
     }
-    public function reviewAllMedicalWindowEncounter(stdClass $params)
-    {    $data = get_object_vars($params);
-        $eid  = $data['eid'];
-        unset($data['eid']);
-        $data['review_immunizations'] = 1;
-        $data['review_allergies'] = 1;
-        $data['review_active_problems'] = 1;
-        $data['review_surgery'] = 1;
-        $data['review_medications'] = 1;
-        $data['review_dental'] = 1;
-        $this->db->setSQL($this->db->sqlBind($data, "form_data_encounter", "U", "eid='$eid'"));
-        $this->db->execLog();
-        return  array('success' => true);
-    }
+
 
 	/*************************************************************************************************************/
 	public function getLabsLiveSearch(stdClass $params)
@@ -595,31 +620,7 @@ class Medical
 		             'rows'  => $records);
 	}
 
-    public function getSurgeriesLiveSearch(stdClass $params)
-   	{
-   		$this->db->setSQL("SELECT *
-   							FROM  surgeries
-   							WHERE surgery      LIKE'$params->query%'
-   							  OR type         LIKE'$params->query%'");
-           $records =$this->db->fetchRecords(PDO::FETCH_ASSOC);
-   		$total = count($records);
-   		$records  = array_slice($records, $params->start, $params->limit);
-   		return array('totals'=> $total,
-   		             'rows'  => $records);
-   	}
 
-
-    public function getEncounterReviewByEid($eid){
-
-        $this->db->setSQL("
-                            SELECT review_alcohol,
-                                   review_smoke,
-                                   review_pregnant
-                            FROM form_data_encounter
-                            WHERE eid = '$eid'
-                          ");
-        return $this->db->fetchRecord();
-    }
 
 
 	/**

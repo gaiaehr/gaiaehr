@@ -644,7 +644,6 @@ Ext.define('App.view.sitesetup.SiteSetup', {
 
 
         if(currCard.action == 1){
-            console.log(currCard);
             me.requirementsStore.load({
                 callback:function(records){
                     var errorCount = 0;

@@ -1,19 +1,19 @@
 Ext.define('App.view.sitesetup.SiteSetup', {
-    extend: 'Ext.window.Window',
-    title:'GaiaEHR Site Setup',
-    bodyPadding: 5,
-    y          : 90,
-    width      : 900,
-    height     : 500,
-    plain      : true,
-    modal      : false,
-    resizable  : false,
-    draggable  : false,
-    closable   : false,
-    bodyStyle  : 'background-color: #ffffff; padding: 5px;',
-    layout:{
-        type:'vbox',
-        align:'stretch'
+    extend       : 'Ext.window.Window',
+    title        : 'GaiaEHR Site Setup',
+    bodyPadding  : 5,
+    y            : 90,
+    width        : 900,
+    height       : 500,
+    plain        : true,
+    modal        : false,
+    resizable    : false,
+    draggable    : false,
+    closable     : false,
+    bodyStyle    : 'background-color: #ffffff; padding: 5px;',
+    layout       : {
+        type : 'vbox',
+        align: 'stretch'
     },
     initComponent: function() {
         var me = this;
@@ -25,58 +25,50 @@ Ext.define('App.view.sitesetup.SiteSetup', {
         // Structure, data for storeReq
         // AJAX -> requirements.ejs.php
         // *************************************************************************************
-//        Ext.define("Requirements", {extend: "Ext.data.Model",
-//            fields                        : [
-//                {name: 'msg', type: 'string'},
-//                {name: 'status', type: 'string'}
-//            ]
-//        });
-//        function status(val) {
-//            if(val == 'Ok') {
-//                return '<span style="color:green;">' + val + '</span>';
-//            } else {
-//                return '<span style="color:red;">' + val + '</span>';
-//            }
-//        }
-//
-//        var storeSites = Ext.create('Ext.data.Store', {
-//            model   : 'Requirements',
-//            proxy   : {
-//                type  : 'ajax',
-//                url   : 'install/requirements.ejs.php',
-//                reader: {
-//                    type: 'json'
-//                }
-//            },
-//            autoLoad: true
-//        });
-//
-//        // *************************************************************************************
-//        // grid to show all the requirements status
-//        // *************************************************************************************
-//        var reqGrid = Ext.create('Ext.grid.Panel', {
-//            id        : 'reqGrid',
-//            store     : storeSites,
-//            frame     : false,
-//            border    : false,
-//            viewConfig: {stripeRows: true},
-//            columns   : [
-//                {
-//                    text     : 'Requirements',
-//                    flex     : 1,
-//                    sortable : false,
-//                    dataIndex: 'msg'
-//                },
-//                {
-//                    text     : 'Status',
-//                    width    : 150,
-//                    sortable : true,
-//                    renderer : status,
-//                    dataIndex: 'status'
-//                }
-//            ]
-//        });
-//
+        Ext.define('Requirements', {extend: 'Ext.data.Model',
+            fields                        : [
+                {name: 'msg', type: 'string'},
+                {name: 'status', type: 'string'}
+            ]
+        });
+        me.requirementsStore = Ext.create('Ext.data.Store', {
+            model   : 'Requirements',
+            proxy   : {
+                type  : 'ajax',
+                url   : 'install/requirements.ejs.php',
+                reader: {
+                    type: 'json'
+                }
+            },
+            autoLoad: true
+        });
+
+        //        // *************************************************************************************
+        //        // grid to show all the requirements status
+        //        // *************************************************************************************
+        //        var reqGrid = Ext.create('Ext.grid.Panel', {
+        //            id        : 'reqGrid',
+        //            store     : storeSites,
+        //            frame     : false,
+        //            border    : false,
+        //            viewConfig: {stripeRows: true},
+        //            columns   : [
+        //                {
+        //                    text     : 'Requirements',
+        //                    flex     : 1,
+        //                    sortable : false,
+        //                    dataIndex: 'msg'
+        //                },
+        //                {
+        //                    text     : 'Status',
+        //                    width    : 150,
+        //                    sortable : true,
+        //                    renderer : status,
+        //                    dataIndex: 'status'
+        //                }
+        //            ]
+        //        });
+        //
         // *************************************************************************************
         // The Copyright Notice Window
         // *************************************************************************************
@@ -112,8 +104,8 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                 }
             ]
         });
-//        winCopyright.show();
-//
+        //        winCopyright.show();
+        //
         // *************************************************************************************
         // Install proccess form
         // *************************************************************************************
@@ -223,172 +215,7 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                                 }
                             ]
                         },
-                        {
-                            title      : 'Database Information',
-                            defaults   : {width: 530},
-                            id         : 'databaseInfo',
-                            defaultType: 'textfield',
-                            disabled   : true,
-                            items      : [
-                                {
-                                    xtype  : 'displayfield',
-                                    padding: '10px',
-                                    value  : 'Choose if you want to <a href="javascript:void(0);" onClick="Ext.getCmp(\'rootFieldset\').enable();">create a new database</a> or use an <a href="javascript:void(0);" onClick="Ext.getCmp(\'dbuserFieldset\').enable();">existing database</a><br>'
-                                },
-                                {
-                                    xtype         : 'fieldset',
-                                    id            : 'rootFieldset',
-                                    checkboxToggle: true,
-                                    title         : 'Create a New Database (Root Access Needed)',
-                                    defaultType   : 'textfield',
-                                    collapsed     : true,
-                                    disabled      : true,
-                                    layout        : 'anchor',
-                                    defaults      : {anchor: '100%'},
-                                    items         : [
-                                        {
-                                            fieldLabel: 'Root User',
-                                            name      : 'rootUser',
-                                            allowBlank: false
-                                        },
-                                        {
-                                            fieldLabel: 'Root Password',
-                                            name      : 'rootPass',
-                                            id        : 'rootPass',
-                                            inputType : 'password',
-                                            allowBlank: true
-                                        },
-                                        {
-                                            fieldLabel: 'SQL Server Host',
-                                            name      : 'dbHost',
-                                            allowBlank: false
-                                        },
-                                        {
-                                            fieldLabel: 'SQL Server Port',
-                                            name      : 'dbPort',
-                                            allowBlank: false
-                                        },
-                                        {
-                                            fieldLabel: 'Database Name',
-                                            name      : 'dbName',
-                                            allowBlank: false
-                                        },
-                                        {
-                                            fieldLabel: 'New Database User',
-                                            name      : 'dbUser',
-                                            allowBlank: false
-                                        },
-                                        {
-                                            fieldLabel: 'New Database Pass',
-                                            name      : 'dbPass',
-                                            inputType : 'password',
-                                            allowBlank: false
-                                        }
-                                    ],
-                                    listeners     : {
-                                        enable: function() {
-                                            conn = 'root';
-                                            Ext.getCmp('dbuserFieldset').collapse();
-                                            Ext.getCmp('dbuserFieldset').disable();
-                                            Ext.getCmp('rootFieldset').expand();
 
-                                        }
-                                    }
-                                },
-                                {
-                                    xtype         : 'fieldset',
-                                    id            : 'dbuserFieldset',
-                                    checkboxToggle: true,
-                                    title         : 'Install on a existing database',
-                                    defaultType   : 'textfield',
-                                    collapsed     : true,
-                                    disabled      : true,
-                                    layout        : 'anchor',
-                                    defaults      : {anchor: '100%'},
-                                    items         : [
-                                        {
-                                            fieldLabel: 'Database Name',
-                                            name      : 'dbName',
-                                            allowBlank: false
-                                        },
-                                        {
-                                            fieldLabel: 'Database User',
-                                            name      : 'dbUser',
-                                            allowBlank: false
-                                        },
-                                        {
-                                            fieldLabel: 'Database Pass',
-                                            name      : 'dbPass',
-                                            id        : 'dbPass',
-                                            inputType : 'password',
-                                            allowBlank: false
-                                        },
-                                        {
-                                            fieldLabel: 'Database Host',
-                                            name      : 'dbHost',
-                                            allowBlank: false
-                                        },
-                                        {
-                                            fieldLabel: 'Database Port',
-                                            name      : 'dbPort',
-                                            allowBlank: false
-                                        }
-                                    ],
-                                    listeners     : {
-                                        enable: function() {
-                                            conn = 'user';
-                                            Ext.getCmp('rootFieldset').collapse();
-                                            Ext.getCmp('rootFieldset').disable();
-                                            Ext.getCmp('dbuserFieldset').expand();
-
-                                        }
-                                    }
-                                }
-                            ],
-                            buttons    : [
-                                {
-                                    text   : 'Back',
-                                    handler: function() {
-                                        Ext.getCmp('tabsInstall').setActiveTab(1);
-                                    }
-                                },
-                                {
-                                    text   : 'Test Database Credentials',
-                                    id     : 'dataTester',
-                                    handler: function() {
-                                        var form = this.up('form').getForm();
-                                        if(form.isValid()) {
-                                            form.submit({
-                                                method : 'POST',
-                                                params : {
-                                                    task: 'connType',
-                                                    conn: conn
-                                                },
-                                                success: function(form, action) {
-                                                    var obj = Ext.JSON.decode(action.response.responseText);
-                                                    Ext.Msg.alert('Sweet!', obj.msg);
-                                                    Ext.getCmp('dataInfoNext').enable();
-                                                },
-                                                failure: function(form, action) {
-                                                    var obj = Ext.JSON.decode(action.response.responseText);
-                                                    Ext.Msg.alert('Oops!', obj.msg);
-                                                    Ext.getCmp('dataInfoNext').disable();
-                                                }
-                                            });
-                                        }
-                                    }
-                                },
-                                {
-                                    text    : 'Next',
-                                    id      : 'dataInfoNext',
-                                    disabled: true,
-                                    handler : function() {
-                                        Ext.getCmp('adminInfo').enable(3);
-                                        Ext.getCmp('tabsInstall').setActiveTab(3);
-                                    }
-                                }
-                            ]
-                        },
                         {
                             title      : 'Administrator Information',
                             defaults   : {width: 530},
@@ -458,106 +285,293 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                 }
             ]
         });
-//
-
-
+        //
 
         me.items = [
-            me.headerPanel = Ext.create('Ext.Container',{
-                cls:'siteSetupHeader',
-                height:40,
-                items:[
-                    me.welcomeBtn = Ext.create('Ext.Button',{
-                        scale   : 'large',
-                        iconCls : 'icoGrayFace',
-                        componentCls:'setupBts',
-                        margin:'0 38 0 0',
-                        iconAlign: 'right',
-                        enableToggle :true,
-                        toggleGroup:'siteSetup',
-                        text:'1.Welcome!'
-                    }),
-                    me.compatibiltyBtn = Ext.create('Ext.Button',{
-                        scale   : 'large',
-                        iconCls : 'icoGrayFace',
-                        componentCls:'setupBts',
-                        margin:'0 38 0 0',
-                        iconAlign: 'right',
-                        enableToggle :true,
-                        toggleGroup:'siteSetup',
-                        text:'2.System Compatibility'
-                    }),
-                    me.databaseBtn = Ext.create('Ext.Button',{
-                        scale   : 'large',
-                        iconCls : 'icoGrayFace',
-                        componentCls:'setupBts',
-                        margin:'0 38 0 0',
-                        iconAlign: 'right',
-                        enableToggle :true,
-                        toggleGroup:'siteSetup',
-                        text:'3.Database Configuration'
-                    }),
-                    me.siteConfigurationBtn = Ext.create('Ext.Button',{
-                        scale   : 'large',
-                        iconCls : 'icoGrayFace',
-                        componentCls:'setupBts',
-                        margin:'0 38 0 0',
-                        iconAlign: 'right',
-                        enableToggle :true,
-                        toggleGroup:'siteSetup',
-                        text:'Site Configuration'
-                    }),
-                    me.completeBtn = Ext.create('Ext.Button',{
-                        scale   : 'large',
-                        iconCls : 'icoGrayFace',
-                        componentCls:'setupBts',
-                        iconAlign: 'right',
-                        enableToggle :true,
-                        toggleGroup:'siteSetup',
-                        text:'4.Installation Complete!'
+            me.headerPanel = Ext.create('Ext.Container', {
+                cls   : 'siteSetupHeader',
+                height: 50,
+                items : [
+                    me.welcomeBtn = Ext.create('Ext.Button', {
+                        scale        : 'large',
+                        iconCls      : 'icoGrayFace',
+                        componentCls : 'setupBts',
+                        margin       : '0 38 0 0',
+                        iconAlign    : 'right',
+                        enableToggle : true,
+                        toggleGroup  : 'siteSetup',
+                        text         : '1.Welcome!',
+                        scope        : me,
+                        action:0,
+                        pressed:true,
+                        toggleHandler: me.onHeaderBtnPress
+                    }), me.compatibiltyBtn = Ext.create('Ext.Button', {
+                        scale        : 'large',
+                        iconCls      : 'icoGrayFace',
+                        componentCls : 'setupBts',
+                        margin       : '0 38 0 0',
+                        iconAlign    : 'right',
+                        enableToggle : true,
+                        toggleGroup  : 'siteSetup',
+                        text         : '2.System Compatibility',
+                        scope        : me,
+                        action:1,
+                        toggleHandler: me.onHeaderBtnPress
+                    }), me.databaseBtn = Ext.create('Ext.Button', {
+                        scale        : 'large',
+                        iconCls      : 'icoGrayFace',
+                        componentCls : 'setupBts',
+                        margin       : '0 38 0 0',
+                        iconAlign    : 'right',
+                        enableToggle : true,
+                        toggleGroup  : 'siteSetup',
+                        text         : '3.Database Configuration',
+                        scope        : me,
+                        toggleHandler: me.onHeaderBtnPress
+                    }), me.siteConfigurationBtn = Ext.create('Ext.Button', {
+                        scale        : 'large',
+                        iconCls      : 'icoGrayFace',
+                        componentCls : 'setupBts',
+                        margin       : '0 38 0 0',
+                        iconAlign    : 'right',
+                        enableToggle : true,
+                        toggleGroup  : 'siteSetup',
+                        text         : 'Site Configuration',
+                        scope        : me,
+                        action:2,
+                        toggleHandler: me.onHeaderBtnPress
+                    }), me.completeBtn = Ext.create('Ext.Button', {
+                        scale        : 'large',
+                        iconCls      : 'icoGrayFace',
+                        componentCls : 'setupBts',
+                        iconAlign    : 'right',
+                        enableToggle : true,
+                        toggleGroup  : 'siteSetup',
+                        text         : '4.Installation Complete!',
+                        scope        : me,
+                        action:3,
+                        toggleHandler: me.onHeaderBtnPress
                     })
                 ]
-            }),
-            me.mainPanel = Ext.create('Ext.Container',{
-                flex:1,
-                layout:'card',
-                items: [
+            }), me.mainPanel = Ext.create('Ext.Container', {
+                flex  : 1,
+                layout: 'card',
+                items : [
                     me.welcome = Ext.create('Ext.Container', {
-                        items:[
+                        items: [
                             {
-                                xtypr:'container',
-                                styleHtmlContent:true,
-                                border:false,
-                                padding:10,
-                                autoLoad:'welcome.html'
+                                xtypr           : 'container',
+                                styleHtmlContent: true,
+                                border          : false,
+                                padding         : 10,
+                                autoLoad        : 'welcome.html'
                             },
                             {
-                                xtype:'fieldset',
-                                title: 'License Agreement',
+                                xtype      : 'fieldset',
+                                title      : 'License Agreement',
                                 defaultType: 'textfield',
-                                layout: 'anchor',
-                                items :[
+                                layout     : 'anchor',
+                                items      : [
                                     me.licAgreement = Ext.create('Ext.form.field.Checkbox', {
                                         boxLabel  : 'I agree to the GaiaEHR terms and conditions',
                                         name      : 'topping',
                                         inputValue: '1'
-                                    }),
-                                    {
-                                        xtype:'button',
-                                        componentCls:'setupBts',
-                                        text:'Read GPLv3 Licence',
-                                        //width:300,
-                                        handler:function(){
+                                    }), {
+                                        xtype       : 'button',
+                                        componentCls: 'setupBts',
+                                        text        : 'Read GPLv3 Licence',
+                                        handler     : function() {
                                             me.winCopyright.show();
                                         }
                                     }
                                 ]
                             }
                         ]
+                    }), me.requirementsGrid = Ext.create('Ext.grid.Panel', {
+                        store     : me.requirementsStore,
+                        frame     : false,
+                        border    : false,
+                        viewConfig: {stripeRows: true},
+                        columns   : [
+                            {
+                                text     : 'Requirements',
+                                flex     : 1,
+                                sortable : false,
+                                dataIndex: 'msg'
+                            },
+                            {
+                                text     : 'Status',
+                                width    : 150,
+                                sortable : true,
+                                renderer : me.statusRenderer,
+                                dataIndex: 'status'
+                            }
+                        ]
+                    }), me.databaseConfiguration = Ext.create('Ext.form.Panel', {
+                        border: false,
+                        defaultType: 'textfield',
+                        items      : [
+                            {
+                                xtype  : 'displayfield',
+                                padding: '10px',
+                                value  : 'Choose if you want to <a href="javascript:void(0);" onClick="Ext.getCmp(\'rootFieldset\').enable();">create a new database</a> or use an <a href="javascript:void(0);" onClick="Ext.getCmp(\'dbuserFieldset\').enable();">existing database</a><br>'
+                            },
+                            {
+                                xtype         : 'fieldset',
+                                id            : 'rootFieldset',
+                                checkboxToggle: true,
+                                title         : 'Create a New Database (Root Access Needed)',
+                                defaultType   : 'textfield',
+                                collapsed     : true,
+                                disabled      : true,
+                                layout        : 'anchor',
+                                defaults      : {anchor: '100%'},
+                                items         : [
+                                    {
+                                        fieldLabel: 'Root User',
+                                        name      : 'rootUser',
+                                        allowBlank: false
+                                    },
+                                    {
+                                        fieldLabel: 'Root Password',
+                                        name      : 'rootPass',
+                                        id        : 'rootPass',
+                                        inputType : 'password',
+                                        allowBlank: true
+                                    },
+                                    {
+                                        fieldLabel: 'SQL Server Host',
+                                        name      : 'dbHost',
+                                        allowBlank: false
+                                    },
+                                    {
+                                        fieldLabel: 'SQL Server Port',
+                                        name      : 'dbPort',
+                                        allowBlank: false
+                                    },
+                                    {
+                                        fieldLabel: 'Database Name',
+                                        name      : 'dbName',
+                                        allowBlank: false
+                                    },
+                                    {
+                                        fieldLabel: 'New Database User',
+                                        name      : 'dbUser',
+                                        allowBlank: false
+                                    },
+                                    {
+                                        fieldLabel: 'New Database Pass',
+                                        name      : 'dbPass',
+                                        inputType : 'password',
+                                        allowBlank: false
+                                    }
+                                ],
+                                listeners     : {
+                                    enable: function() {
+                                        conn = 'root';
+                                        Ext.getCmp('dbuserFieldset').collapse();
+                                        Ext.getCmp('dbuserFieldset').disable();
+                                        Ext.getCmp('rootFieldset').expand();
+
+                                    }
+                                }
+                            },
+                            {
+                                xtype         : 'fieldset',
+                                id            : 'dbuserFieldset',
+                                checkboxToggle: true,
+                                title         : 'Install on a existing database',
+                                defaultType   : 'textfield',
+                                collapsed     : true,
+                                disabled      : true,
+                                layout        : 'anchor',
+                                defaults      : {anchor: '100%'},
+                                items         : [
+                                    {
+                                        fieldLabel: 'Database Name',
+                                        name      : 'dbName',
+                                        allowBlank: false
+                                    },
+                                    {
+                                        fieldLabel: 'Database User',
+                                        name      : 'dbUser',
+                                        allowBlank: false
+                                    },
+                                    {
+                                        fieldLabel: 'Database Pass',
+                                        name      : 'dbPass',
+                                        id        : 'dbPass',
+                                        inputType : 'password',
+                                        allowBlank: false
+                                    },
+                                    {
+                                        fieldLabel: 'Database Host',
+                                        name      : 'dbHost',
+                                        allowBlank: false
+                                    },
+                                    {
+                                        fieldLabel: 'Database Port',
+                                        name      : 'dbPort',
+                                        allowBlank: false
+                                    }
+                                ],
+                                listeners     : {
+                                    enable: function() {
+                                        conn = 'user';
+                                        Ext.getCmp('rootFieldset').collapse();
+                                        Ext.getCmp('rootFieldset').disable();
+                                        Ext.getCmp('dbuserFieldset').expand();
+
+                                    }
+                                }
+                            }
+                        ],
+                        buttons    : [
+                            {
+                                text   : 'Back',
+                                handler: function() {
+                                    Ext.getCmp('tabsInstall').setActiveTab(1);
+                                }
+                            },
+                            {
+                                text   : 'Test Database Credentials',
+                                id     : 'dataTester',
+                                handler: function() {
+                                    var form = this.up('form').getForm();
+                                    if(form.isValid()) {
+                                        form.submit({
+                                            method : 'POST',
+                                            params : {
+                                                task: 'connType',
+                                                conn: conn
+                                            },
+                                            success: function(form, action) {
+                                                var obj = Ext.JSON.decode(action.response.responseText);
+                                                Ext.Msg.alert('Sweet!', obj.msg);
+                                                Ext.getCmp('dataInfoNext').enable();
+                                            },
+                                            failure: function(form, action) {
+                                                var obj = Ext.JSON.decode(action.response.responseText);
+                                                Ext.Msg.alert('Oops!', obj.msg);
+                                                Ext.getCmp('dataInfoNext').disable();
+                                            }
+                                        });
+                                    }
+                                }
+                            },
+                            {
+                                text    : 'Next',
+                                id      : 'dataInfoNext',
+                                disabled: true,
+                                handler : function() {
+                                    Ext.getCmp('adminInfo').enable(3);
+                                    Ext.getCmp('tabsInstall').setActiveTab(3);
+                                }
+                            }
+                        ]
                     }),
                     {
-
-
+                        html:'placeholder'
                     }
                 ]
             })
@@ -565,37 +579,56 @@ Ext.define('App.view.sitesetup.SiteSetup', {
 
         me.buttons = [
             {
-                text:'Back',
-                scope:me,
-                id:'move-prev',
-                handler:me.onStepBack
+                text   : 'Back',
+                scope  : me,
+                hidden:true,
+                id     : 'move-prev',
+                handler: me.onStepBack
             },
             '->',
             {
-                text:'Next',
-                scope:me,
-                id:'move-next',
-                handler:me.onNexStep
+                text   : 'Next',
+                scope  : me,
+                id     : 'move-next',
+                handler: me.onNexStep
             }
         ];
         me.callParent();
     },
 
-    onNexStep:function(){
+    onNexStep: function() {
         this.navigate(this.mainPanel, 'next');
     },
 
-    onStepBack:function(){
+    onStepBack: function() {
         this.navigate(this.mainPanel, 'prev');
     },
 
-    navigate:function(panel, direction){
-        var layout = panel.getLayout();
-        layout[direction]();
+    navigate: function(panel, to) {
+        var me = this, layout = panel.getLayout();
+        if(typeof to == 'string') {
+            layout[to]();
+        } else {
+            layout.setActiveItem(to);
+        }
         Ext.getCmp('move-prev').setVisible(layout.getPrev());
         Ext.getCmp('move-next').setVisible(layout.getNext());
-    }
 
+        me.welcomeBtn.setIconCls((me.licAgreement.getValue() ? 'icoGreenFace' : 'icoRedFace'));
+
+    },
+
+    onHeaderBtnPress: function(btn) {
+        this.navigate(this.mainPanel, btn.action);
+    },
+
+    statusRenderer: function(val) {
+        if(val == 'Ok') {
+            return '<span style="color:green;">' + val + '</span>';
+        } else {
+            return '<span style="color:red;">' + val + '</span>';
+        }
+    }
 
 });
 

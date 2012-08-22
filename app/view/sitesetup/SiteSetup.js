@@ -40,7 +40,7 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                     type: 'json'
                 }
             },
-            autoLoad: true
+            autoLoad: false
         });
 
         //        // *************************************************************************************
@@ -359,6 +359,7 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                 layout: 'card',
                 items : [
                     me.welcome = Ext.create('Ext.Container', {
+                        action    : 0,
                         items: [
                             {
                                 xtypr           : 'container',
@@ -401,6 +402,7 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                         store     : me.requirementsStore,
                         frame     : false,
                         border    : false,
+                        action    : 1,
                         viewConfig: {stripeRows: true},
                         columns   : [
                             {
@@ -420,6 +422,7 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                     }), me.databaseConfiguration = Ext.create('Ext.form.Panel', {
                         border: false,
                         defaultType: 'textfield',
+                        action    : 2,
                         items      : [
                             {
                                 xtype  : 'displayfield',
@@ -581,9 +584,11 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                         ]
                     }),
                     {
+                        action    : 3,
                         html:'Site configuration placeholder'
                     },
                     {
+                        action    : 4,
                         html:'Installation placeholder'
                     }
                 ]
@@ -619,22 +624,50 @@ Ext.define('App.view.sitesetup.SiteSetup', {
     },
 
     navigate: function(panel, to) {
-        console.log(this.licence);
-        var me = this, layout = panel.getLayout();
+        var me = this,
+            layout = panel.getLayout(),
+            currCard;
         if(typeof to == 'string') {
             layout[to]();
         } else {
             layout.setActiveItem(to);
         }
+
+        currCard = layout.getActiveItem();
+        me.headerPanel.getComponent(currCard.action).toggle(true);
+
         Ext.getCmp('move-prev').setVisible(layout.getPrev());
         Ext.getCmp('move-next').setVisible(layout.getNext());
 
-        me.welcomeBtn.setIconCls((me.licAgreement.getValue() ? 'icoGreenFace' : 'icoRedFace'));
+        me.stepOne = { success:me.licAgreement.getValue() };
+        me.welcomeBtn.setIconCls(me.stepOne.success ? 'icoGreenFace' : 'icoRedFace');
+
+
+        if(currCard.action == 1){
+            console.log(currCard);
+            me.requirementsStore.load({
+                callback:function(records){
+                    var errorCount = 0;
+                    for(var i=0; i < records.length; i++){
+                        if(records[i].data.status != 'Ok') errorCount++
+                    }
+                    me.stepTwo = { success:errorCount === 0 };
+                    me.compatibiltyBtn.setIconCls(me.stepTwo.success ? 'icoGreenFace' : 'icoRedFace');
+                }
+            });
+        }
+
+
+
+
+
 
     },
 
-    onHeaderBtnPress: function(btn) {
-        this.navigate(this.mainPanel, btn.action);
+    onHeaderBtnPress: function(btn, pressed) {
+        if(pressed){
+            this.navigate(this.mainPanel, btn.action);
+        }
     },
 
     statusRenderer: function(val) {

@@ -18,7 +18,7 @@ Ext.define('App.model.patient.LaboratoryTypes', {
 	proxy : {
 		type: 'direct',
 		api : {
-			read  : Services.getActiveLaboratoryTypes
+			read  : Laboratories.getActiveLaboratoryTypes
 		}
 	}
 });

@@ -1401,7 +1401,8 @@ Ext.define('App.view.patient.windows.Medical', {
 				waitMsg: 'Uploading Laboratory...',
 				params : {
 					pid    : app.currPatient.pid,
-					docType: 'laboratory'
+					docType: 'laboratory',
+					eid : app.currEncounterId
 				},
 				success: function(fp, o) {
 					win.close();
@@ -1409,7 +1410,6 @@ Ext.define('App.view.patient.windows.Medical', {
 					me.addNewLabResults(o.result.doc.id);
 				},
 				failure: function(fp, o) {
-					say(o.result.error);
 					win.close();
 
 				}

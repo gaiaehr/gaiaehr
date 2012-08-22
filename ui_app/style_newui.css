@@ -259,3 +259,7 @@
 .fieldMark{
 	background-color: #ffed27;
 }
+
+.welcome h1, .welcome h2, .welcome h3, .welcome h4 {
+	margin-top: 0!important;
+}

@@ -327,6 +327,7 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                         toggleGroup  : 'siteSetup',
                         text         : '3.Database Configuration',
                         scope        : me,
+                        action:2,
                         toggleHandler: me.onHeaderBtnPress
                     }), me.siteConfigurationBtn = Ext.create('Ext.Button', {
                         scale        : 'large',
@@ -338,7 +339,7 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                         toggleGroup  : 'siteSetup',
                         text         : 'Site Configuration',
                         scope        : me,
-                        action:2,
+                        action:3,
                         toggleHandler: me.onHeaderBtnPress
                     }), me.completeBtn = Ext.create('Ext.Button', {
                         scale        : 'large',
@@ -349,7 +350,7 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                         toggleGroup  : 'siteSetup',
                         text         : '4.Installation Complete!',
                         scope        : me,
-                        action:3,
+                        action:4,
                         toggleHandler: me.onHeaderBtnPress
                     })
                 ]
@@ -363,7 +364,8 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                                 xtypr           : 'container',
                                 styleHtmlContent: true,
                                 border          : false,
-                                padding         : 10,
+                                padding         : '0 10',
+                                cls:'welcome',
                                 autoLoad        : 'welcome.html'
                             },
                             {
@@ -372,18 +374,26 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                                 defaultType: 'textfield',
                                 layout     : 'anchor',
                                 items      : [
+                                    me.licence = Ext.create('Ext.Container', {
+                                        height: 135,
+                                        styleHtmlContent: true,
+                                        autoScroll:true,
+                                        autoLoad        : 'gpl-licence-en.html'
+                                    }),
                                     me.licAgreement = Ext.create('Ext.form.field.Checkbox', {
                                         boxLabel  : 'I agree to the GaiaEHR terms and conditions',
                                         name      : 'topping',
+                                        margin:'5 0 0 0',
                                         inputValue: '1'
-                                    }), {
-                                        xtype       : 'button',
-                                        componentCls: 'setupBts',
-                                        text        : 'Read GPLv3 Licence',
-                                        handler     : function() {
-                                            me.winCopyright.show();
-                                        }
-                                    }
+                                    })
+//                                    {
+//                                        xtype       : 'button',
+//                                        componentCls: 'setupBts',
+//                                        text        : 'Read GPLv3 Licence',
+//                                        handler     : function() {
+//                                            me.winCopyright.show();
+//                                        }
+//                                    }
                                 ]
                             }
                         ]
@@ -571,7 +581,10 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                         ]
                     }),
                     {
-                        html:'placeholder'
+                        html:'Site configuration placeholder'
+                    },
+                    {
+                        html:'Installation placeholder'
                     }
                 ]
             })
@@ -593,6 +606,7 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                 handler: me.onNexStep
             }
         ];
+
         me.callParent();
     },
 
@@ -605,6 +619,7 @@ Ext.define('App.view.sitesetup.SiteSetup', {
     },
 
     navigate: function(panel, to) {
+        console.log(this.licence);
         var me = this, layout = panel.getLayout();
         if(typeof to == 'string') {
             layout[to]();

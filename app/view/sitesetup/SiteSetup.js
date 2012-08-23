@@ -472,6 +472,7 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                                 xtype         : 'fieldset',
                                 id            : 'rootFieldset',
                                 checkboxToggle: true,
+                                checkboxName  : 'root',
                                 title         : 'Create a New Database (Root Access Needed)',
                                 defaultType   : 'textfield',
                                 collapsed     : true,
@@ -540,6 +541,7 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                                 disabled      : true,
                                 layout        : 'anchor',
                                 defaults      : {anchor: '100%'},
+                                checkboxName  :'user',
                                 items         : [
                                     {
                                         fieldLabel: 'Database Name',
@@ -582,19 +584,25 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                                 }
                             }
                         ],
-                        bbar    : [ '->',
+                        bbar    : [
+                            '**Database Connection Test is Required to Continue -->>','->','-',
                             {
-                                text   : 'Test Database Credentials',
+                                text   : 'Database Connection Test',
                                 action     : 'dataTester',
                                 handler: function() {
                                     var form = this.up('form').getForm();
                                     if(form.isValid()) {
 
                                         say(form.getValues());
+                                        me.stepThree = { success:true };
+                                    }else{
+                                        me.stepThree = { success:false };
 
                                     }
+                                    me.databaseBtn.setIconCls(me.stepThree.success ? 'icoGreenFace' : 'icoRedFace');
                                 }
-                            }
+                            },
+                            '-'
                         ]
                     }),
                     me.siteConfiguration = Ext.create('Ext.form.Panel', {

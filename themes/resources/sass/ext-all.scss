@@ -1,0 +1,20 @@
+$panel-header-background-gradient: color-stops(#CED9E7, #CED9E7);
+$supports-border-radius: false;
+$panel-frame-border-radius: 0px;
+$ui-border-radius:0px;
+$ui-padding: 4px;
+
+@import 'compass';
+@import 'ext4/default/all';
+
+.x-btn{
+	background-image:none ;
+}
+.x-btn,
+.x-tab-default-top,
+.x-window-default,
+.x-window-header-default-top,
+.x-panel-default-framed,
+.x-panel-header-default-framed-top {
+	border-radius:0;
+}

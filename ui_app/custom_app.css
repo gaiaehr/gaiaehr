@@ -553,7 +553,9 @@ body#login{
 .siteSetupHeader{
 	background: url(siteSetupHeaderBg.png) no-repeat;
 }
-.setupBts {
-	background-image:none !important;
-	border-radius: 0 !important;
+.welcome h1, .welcome h2, .welcome h3, .welcome h4 {
+	margin-top: 0!important;
+}
+.welcome p {
+	margin: 5px 0!important;
 }

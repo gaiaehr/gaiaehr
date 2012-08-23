@@ -590,7 +590,7 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                                     var form = this.up('form').getForm();
                                     if(form.isValid()) {
 
-
+                                        say(form.getValues());
 
                                     }
                                 }

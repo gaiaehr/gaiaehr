@@ -3,7 +3,7 @@
 /* = disabled nodes
 
 ----------------------------------------------- */
-.x-btn {
+.x-btn, .x-panel-header-default {
 	background-image:none ;
 }
 .x-btn,
@@ -14,6 +14,7 @@
 .x-panel-header-default-framed-top {
 	border-radius:0;
 }
+
 .ProgressNote-ul {
 	margin-left:3em;
 	padding-left:0;
@@ -562,4 +563,10 @@ body#login{
 }
 .siteSetupHeader{
 	background: url(siteSetupHeaderBg.png) no-repeat;
+}
+.welcome h1, .welcome h2, .welcome h3, .welcome h4 {
+	margin-top: 0!important;
+}
+.welcome p {
+	margin: 5px 0!important;
 }

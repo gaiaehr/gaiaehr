@@ -290,7 +290,7 @@ Ext.define('App.view.sitesetup.SiteSetup', {
         me.items = [
             me.headerPanel = Ext.create('Ext.Container', {
                 cls   : 'siteSetupHeader',
-                height: 50,
+                height: 45,
                 items : [
                     me.welcomeBtn = Ext.create('Ext.Button', {
                         scale        : 'large',
@@ -362,46 +362,61 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                         action    : 0,
                         items: [
                             {
-                                xtypr           : 'container',
+                                xtype           : 'panel',
+                                title:'Welcome to GaiaEHR Site Setup',
                                 styleHtmlContent: true,
-                                border          : false,
-                                padding         : '0 10',
                                 cls:'welcome',
-                                autoLoad        : 'welcome.html'
-                            },
-                            {
-                                xtype      : 'fieldset',
-                                title      : 'License Agreement',
-                                defaultType: 'textfield',
-                                layout     : 'anchor',
-                                items      : [
-                                    me.licence = Ext.create('Ext.Container', {
-                                        height: 135,
-                                        styleHtmlContent: true,
-                                        autoScroll:true,
-                                        autoLoad        : 'gpl-licence-en.html'
-                                    }),
-                                    me.licAgreement = Ext.create('Ext.form.field.Checkbox', {
-                                        boxLabel  : 'I agree to the GaiaEHR terms and conditions',
-                                        name      : 'topping',
-                                        margin:'5 0 0 0',
-                                        inputValue: '1'
-                                    })
-//                                    {
-//                                        xtype       : 'button',
-//                                        componentCls: 'setupBts',
-//                                        text        : 'Read GPLv3 Licence',
-//                                        handler     : function() {
-//                                            me.winCopyright.show();
-//                                        }
-//                                    }
+                                layout:'auto',
+                                items:[
+                                    {
+                                        xtype:'container',
+                                        height:120,
+                                        padding:'5 10 0 10',
+                                        html:' <p>Please allow 10-15 minutes to complete the installation process.</p>' +
+                                            '<p>The GaiaEHR Site Setup will do most of the work for you in just a few clicks.</p>' +
+                                            '<p>However, you must know how to do the following:</p>' +
+                                            '<ul>' +
+                                            '<li>Set permissions on folders & subfolders using an FTP client</li>' +
+                                            '<li>Create a MySQL database using phpMyAdmin (or by asking your hosting provider)</li>' +
+                                            '</ul>'
+                                    },
+                                    {
+                                        xtype      : 'fieldset',
+                                        title      : 'License Agreement',
+                                        defaultType: 'textfield',
+                                        layout     : 'anchor',
+                                        margin:'0 5 5 5',
+                                        items      : [
+                                            me.licence = Ext.create('Ext.Container', {
+                                                height: 170,
+                                                styleHtmlContent: true,
+                                                autoScroll:true,
+                                                autoLoad        : 'gpl-licence-en.html'
+                                            }),
+                                            me.licAgreement = Ext.create('Ext.form.field.Checkbox', {
+                                                boxLabel  : 'I agree to the GaiaEHR terms and conditions',
+                                                name      : 'topping',
+                                                margin:'5 0 0 0',
+                                                inputValue: '1'
+                                            })
+        //                                    {
+        //                                        xtype       : 'button',
+        //                                        componentCls: 'setupBts',
+        //                                        text        : 'Read GPLv3 Licence',
+        //                                        handler     : function() {
+        //                                            me.winCopyright.show();
+        //                                        }
+        //                                    }
+                                        ]
+                                    }
                                 ]
                             }
                         ]
                     }), me.requirementsGrid = Ext.create('Ext.grid.Panel', {
                         store     : me.requirementsStore,
                         frame     : false,
-                        border    : false,
+                        title:'Requirements',
+                        //border    : false,
                         action    : 1,
                         viewConfig: {stripeRows: true},
                         columns   : [
@@ -418,10 +433,23 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                                 renderer : me.statusRenderer,
                                 dataIndex: 'status'
                             }
+                        ],
+                        tools:[
+                            {
+                                type:'refresh',
+                                tooltip: 'ReCheck Requirements',
+                                handler: function(){
+                                    me.requirementsStore.load({
+                                        scope:me,
+                                        callback:me.onRequirementsStoreLoad
+                                    });
+                                }
+                            }
                         ]
                     }), me.databaseConfiguration = Ext.create('Ext.form.Panel', {
-                        border: false,
+                        title:'Database Configuration',
                         defaultType: 'textfield',
+                        bodyPadding:'0 10',
                         action    : 2,
                         items      : [
                             {
@@ -543,16 +571,10 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                                 }
                             }
                         ],
-                        buttons    : [
-                            {
-                                text   : 'Back',
-                                handler: function() {
-                                    Ext.getCmp('tabsInstall').setActiveTab(1);
-                                }
-                            },
+                        bbar    : [ '->',
                             {
                                 text   : 'Test Database Credentials',
-                                id     : 'dataTester',
+                                action     : 'dataTester',
                                 handler: function() {
                                     var form = this.up('form').getForm();
                                     if(form.isValid()) {
@@ -626,22 +648,22 @@ Ext.define('App.view.sitesetup.SiteSetup', {
 
         if(currCard.action == 1){
             me.requirementsStore.load({
-                callback:function(records){
-                    var errorCount = 0;
-                    for(var i=0; i < records.length; i++){
-                        if(records[i].data.status != 'Ok') errorCount++
-                    }
-                    me.stepTwo = { success:errorCount === 0 };
-                    me.compatibiltyBtn.setIconCls(me.stepTwo.success ? 'icoGreenFace' : 'icoRedFace');
-                }
+                scope:me,
+                callback:me.onRequirementsStoreLoad
             });
         }
 
 
+    },
 
-
-
-
+    onRequirementsStoreLoad:function(records){
+        var me = this,
+            errorCount = 0;
+       for(var i=0; i < records.length; i++){
+           if(records[i].data.status != 'Ok') errorCount++
+       }
+       me.stepTwo = { success:errorCount === 0 };
+       me.compatibiltyBtn.setIconCls(me.stepTwo.success ? 'icoGreenFace' : 'icoRedFace');
     },
 
     onHeaderBtnPress: function(btn, pressed) {

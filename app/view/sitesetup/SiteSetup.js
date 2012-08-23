@@ -445,6 +445,17 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                                     });
                                 }
                             }
+                        ],
+                        bbar:['->', '-',
+                            {
+                                text:'Re-Check Requirements',
+                                handler: function(){
+                                    me.requirementsStore.load({
+                                        scope:me,
+                                        callback:me.onRequirementsStoreLoad
+                                    });
+                                }
+                            }, '-'
                         ]
                     }), me.databaseConfiguration = Ext.create('Ext.form.Panel', {
                         title:'Database Configuration',
@@ -586,14 +597,19 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                             }
                         ]
                     }),
-                    {
+                    me.siteConfiguration = Ext.create('Ext.form.Panel', {
+                        title:'Site configuration',
+                        defaultType: 'textfield',
+                        bodyPadding:'10',
                         action    : 3,
                         html:'Site configuration placeholder'
-                    },
-                    {
+                    }),
+                    me.installationComplete = Ext.create('Ext.panel.Panel', {
+                        title:'Installation Complete',
+                        bodyPadding:'10',
                         action    : 4,
                         html:'Installation placeholder'
-                    }
+                    })
                 ]
             })
         ];

@@ -1,5 +1,6 @@
 <?php
-$LANG = array(
+$LANG = array
+(
     'dashboard'         => 'Dashboard',
     'calendar'          => 'Calendar',
     'messages'          => 'Messages',

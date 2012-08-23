@@ -33,7 +33,4 @@ $cfg = array(
 	'timeout'=>7200000
 );
 
-echo 'Ext.ns("App.data"); App.data.REMOTING_API = ';
-
-echo json_encode($cfg);
-echo ';';
+echo 'Ext.ns("App.data"); App.data.REMOTING_API = ' . json_encode($cfg) . ';';

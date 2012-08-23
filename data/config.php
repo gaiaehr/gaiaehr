@@ -1128,7 +1128,19 @@ $API = array(
                 'len'=>0
             )
         )
-    )
-
+    ),
+    
+	'i18n'=>array
+	(
+		'methods'=>array
+		(
+			'getTranslation'=>array
+			(
+				'len'=>0
+			)
+		)
+	)
 
 );
+
+?>

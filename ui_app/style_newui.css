@@ -7,6 +7,18 @@
  *============================================================*/
 
 
+.icoGrayFace {
+	background-image: url(../ui_icons/bg_li_stepList.png) !important;
+	background-position: left top !important;
+}
+.icoGreenFace {
+	background-image: url(../ui_icons/bg_li_stepList.png) !important;
+	background-position: left -50px !important;
+}
+.icoRedFace {
+	background-image: url(../ui_icons/bg_li_stepList.png) !important;
+	background-position: left -100px !important;
+}
 
 .x-tree-icon-leaf {
     background-image: url(../ui_icons/list.png) !important;
@@ -246,4 +258,8 @@
 
 .fieldMark{
 	background-color: #ffed27;
+}
+
+.welcome h1, .welcome h2, .welcome h3, .welcome h4 {
+	margin-top: 0!important;
 }

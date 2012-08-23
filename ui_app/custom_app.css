@@ -451,7 +451,7 @@ body#login{
 }
 #bg_logo{
     background: url(gaiaehr_small_white.png) no-repeat;
-	margin: 50px auto 0 auto;
+	margin: 20px auto 0 auto;
 	width: 158px;
 	height: 50px;
 }
@@ -549,4 +549,11 @@ body#login{
 }
 #app-calendar{
     border-left: solid 1px #cccccc;
+}
+.siteSetupHeader{
+	background: url(siteSetupHeaderBg.png) no-repeat;
+}
+.setupBts {
+	background-image:none !important;
+	border-radius: 0 !important;
 }

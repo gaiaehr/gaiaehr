@@ -70,7 +70,7 @@ if(
      * if a directory is found inside sites dir run the logon screen
      */
 	if(empty($_SESSION['site']['sites'])){
-		include_once('install/install.ejs.php');
+		include_once('install.php');
 	} else {
         /**
          * if mobile go to mobile app, else go to app

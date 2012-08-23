@@ -455,11 +455,13 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                                     {
                                         fieldLabel: 'SQL Server Host',
                                         name      : 'dbHost',
+                                        value     : 'localhost',
                                         allowBlank: false
                                     },
                                     {
                                         fieldLabel: 'SQL Server Port',
                                         name      : 'dbPort',
+                                        value     : '3306',
                                         allowBlank: false
                                     },
                                     {
@@ -520,11 +522,13 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                                     {
                                         fieldLabel: 'Database Host',
                                         name      : 'dbHost',
+                                        value     : 'localhost',
                                         allowBlank: false
                                     },
                                     {
                                         fieldLabel: 'Database Port',
                                         name      : 'dbPort',
+                                        value     : '3306',
                                         allowBlank: false
                                     }
                                 ],
@@ -552,33 +556,10 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                                 handler: function() {
                                     var form = this.up('form').getForm();
                                     if(form.isValid()) {
-                                        form.submit({
-                                            method : 'POST',
-                                            params : {
-                                                task: 'connType',
-                                                conn: conn
-                                            },
-                                            success: function(form, action) {
-                                                var obj = Ext.JSON.decode(action.response.responseText);
-                                                Ext.Msg.alert('Sweet!', obj.msg);
-                                                Ext.getCmp('dataInfoNext').enable();
-                                            },
-                                            failure: function(form, action) {
-                                                var obj = Ext.JSON.decode(action.response.responseText);
-                                                Ext.Msg.alert('Oops!', obj.msg);
-                                                Ext.getCmp('dataInfoNext').disable();
-                                            }
-                                        });
+
+
+
                                     }
-                                }
-                            },
-                            {
-                                text    : 'Next',
-                                id      : 'dataInfoNext',
-                                disabled: true,
-                                handler : function() {
-                                    Ext.getCmp('adminInfo').enable(3);
-                                    Ext.getCmp('tabsInstall').setActiveTab(3);
                                 }
                             }
                         ]

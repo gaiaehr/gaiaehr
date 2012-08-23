@@ -5,7 +5,14 @@
 ----------------------------------------------- */
 .x-btn {
 	background-image:none ;
-	border-radius: 0 !important;
+}
+.x-btn,
+.x-tab-default-top,
+.x-window-default,
+.x-window-header-default-top,
+.x-panel-default-framed,
+.x-panel-header-default-framed-top {
+	border-radius:0;
 }
 .ProgressNote-ul {
 	margin-left:3em;

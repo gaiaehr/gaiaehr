@@ -333,13 +333,13 @@ Ext.define('App.view.Viewport', {
 				xtype: 'toolbar',
 				dock : 'top',
 				items: ['-', {
-					text   : lang.issuesBugs,
+					text   : "List issues",
 					iconCls: 'list',
 					action : 'http://GaiaEHR.org/projects/GaiaEHR001/issues',
 					scope  : me,
 					handler: me.showMiframe
 				}, '-', {
-					text   : lang.newIssueBug,
+					text   : "Create an issue",
 					iconCls: 'icoAddRecord',
 					action : 'http://GaiaEHR.org/projects/GaiaEHR001/issues/new',
 					scope  : me,
@@ -561,7 +561,7 @@ Ext.define('App.view.Viewport', {
 		 * The panel definition for the the TreeMenu & the support button
 		 */
 		me.navColumn = Ext.create('Ext.panel.Panel', {
-			title      : lang.navigation,
+			title      : "Navigation",
 			stateId    : 'navColumn',
 			layout     : 'border',
 			region     : 'west',
@@ -593,7 +593,7 @@ Ext.define('App.view.Viewport', {
 				},
 				{
 					xtype      : 'panel',
-					title      : lang.patientPoolArea,
+					title      : "Patient Pool Area",
 					layout     : 'fit',
 					region     : 'south',
 					itemId     : 'patientPoolArea',
@@ -645,7 +645,7 @@ Ext.define('App.view.Viewport', {
 					items  : ['-', {
 						xtype  : 'button',
 						frame  : true,
-						text   : 'GaiaEHR ' + lang.support,
+						text   : 'GaiaEHR Support',
 						iconCls: 'icoHelp',
 						action : 'http://gaiaehr.org/',
 						scope  : me,

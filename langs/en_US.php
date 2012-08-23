@@ -13,3 +13,4 @@ $LANG = array(
     'fees_sheet'        => 'Fees Sheet',
     'payment'           => 'Payment'
 );
+?>

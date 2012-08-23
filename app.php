@@ -62,7 +62,7 @@ $_SESSION['site']['flops'] = 0;
 		</script>
 		<script type="text/javascript" src="lib/webcam_control/swfobject.js"></script>
 		<script type="text/javascript" src="lib/extensible-1.5.1/src/Extensible.js"></script>
-		<script type="text/javascript" src="langs/es_PR.js"></script>
+		<!-- <script type="text/javascript" src="langs/es_PR.js"></script> -->
 		<script type="text/javascript" src="lib/jpegcam/htdocs/webcam.js"></script>
 		<script type="text/javascript" src="app/classes/Overrides.js"></script>
 		<script type="text/javascript" src="app/classes/VTypes.js"></script>

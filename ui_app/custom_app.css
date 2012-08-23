@@ -3,7 +3,10 @@
 /* = disabled nodes
 
 ----------------------------------------------- */
-
+.x-btn {
+	background-image:none ;
+	border-radius: 0 !important;
+}
 .ProgressNote-ul {
 	margin-left:3em;
 	padding-left:0;
@@ -552,8 +555,4 @@ body#login{
 }
 .siteSetupHeader{
 	background: url(siteSetupHeaderBg.png) no-repeat;
-}
-.setupBts {
-	background-image:none !important;
-	border-radius: 0 !important;
 }

@@ -27,7 +27,7 @@ $_SESSION['site']['flops'] = 0;
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 		<title>GaiaEHR :: (Electronic Health Records)</title>
 		<link rel="stylesheet" type="text/css" href="ui_app/dashboard.css">
-		<link rel="stylesheet" type="text/css" href="lib/extjs-4.1.1/resources/css/ext-all-gray.css">
+		<link rel="stylesheet" type="text/css" href="themes/resources/css/ext-all.css">
 		<link rel="stylesheet" type="text/css" href="lib/extensible-1.5.1/resources/css/calendar.css"/>
 		<link rel="stylesheet" type="text/css" href="lib/extensible-1.5.1/resources/css/calendar-colors.css"/>
 		<link rel="stylesheet" type="text/css" href="lib/extensible-1.5.1/resources/css/recurrence.css"/>

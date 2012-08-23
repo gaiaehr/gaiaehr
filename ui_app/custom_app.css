@@ -3,7 +3,7 @@
 /* = disabled nodes
 
 ----------------------------------------------- */
-.x-btn, .x-panel-header-default {
+.x-btn{
 	background-image:none ;
 }
 .x-btn,

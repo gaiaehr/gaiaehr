@@ -25,8 +25,6 @@ class Navigation {
     	include_once($_SESSION['site']['root'] . '/langs/' . $_SESSION['site']['localization'] . '.php');
         $this->ACL = new ACL();
 		$this->i18n = $LANG;
-        //$this->lang = $_SESSION['lang']['code'];
-        //$this->t = $this->getTexts();
     }
 
     public function getNavigation(){
@@ -35,13 +33,9 @@ class Navigation {
         // Default Nav Data
         // *************************************************************************************
         $nav = array(
-            //array( 'text' => $this->t['dashboard'][$this->lang],     'disabled'=> ($this->ACL->hasPermission('access_dashboard')       ? false:true), 'leaf' => true, 'cls' => 'file', 'iconCls' => 'icoDash',      'id' => 'panelDashboard' ),
             array( 'text' => $this->i18n['dashboard'], 'disabled'=> ($this->ACL->hasPermission('access_dashboard')       ? false:true), 'leaf' => true, 'cls' => 'file', 'iconCls' => 'icoDash',      'id' => 'panelDashboard' ),
-            //array( 'text' => $this->t['calendar'][$this->lang],      'disabled'=> ($this->ACL->hasPermission('access_calendar')        ? false:true), 'leaf' => true, 'cls' => 'file', 'iconCls' => 'icoCalendar',  'id' => 'panelCalendar' ),
             array( 'text' => $this->i18n['calendar'], 'disabled'=> ($this->ACL->hasPermission('access_calendar')        ? false:true), 'leaf' => true, 'cls' => 'file', 'iconCls' => 'icoCalendar',  'id' => 'panelCalendar' ),
-            //array( 'text' => $this->t['messages'][$this->lang],      'disabled'=> ($this->ACL->hasPermission('access_messages')        ? false:true), 'leaf' => true, 'cls' => 'file', 'iconCls' => 'mail',         'id' => 'panelMessages' ),
             array( 'text' => $this->i18n['messages'],      'disabled'=> ($this->ACL->hasPermission('access_messages')        ? false:true), 'leaf' => true, 'cls' => 'file', 'iconCls' => 'mail',         'id' => 'panelMessages' ),
-            //array( 'text' => $this->t['patient_Search'][$this->lang],'disabled'=> ($this->ACL->hasPermission('access_patient_search')  ? false:true), 'leaf' => true, 'cls' => 'file', 'iconCls' => 'searchUsers',  'id' => 'panelPatientSearch' ),
             array( 'text' => $this->i18n['patient_Search'], 'disabled'=> ($this->ACL->hasPermission('access_patient_search')  ? false:true), 'leaf' => true, 'cls' => 'file', 'iconCls' => 'searchUsers',  'id' => 'panelPatientSearch' ),
             array( 'text' => $this->i18n['area_floor_plan'], 'disabled'=> false, 'leaf' => true, 'cls' => 'file', 'iconCls' => 'icoZoneAreas', 'id' => 'panelAreaFloorPlan' ),
             array( 'text' => $this->i18n['patient_pool_areas'],  'disabled'=> false, 'leaf' => true, 'cls' => 'file', 'iconCls' => 'icoPoolArea16',  'id' => 'panelPoolArea' )
@@ -52,23 +46,18 @@ class Navigation {
 	    $patient = array( 'text' => $this->i18n['patient'], 'cls' => 'folder', 'expanded' => true );
 
 	    if($this->ACL->hasPermission('add_patient')){
-		    //$patient['children'][] = array( 'text' => $this->t['new_patient'][$this->lang], 'leaf' => true, 'cls' => 'file', 'id' => 'panelNewPatient' );
 			$patient['children'][] = array( 'text' => $this->i18n['new_patient'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelNewPatient' );
 	    }
 	    if($this->ACL->hasPermission('access_patient_summary')){
-		    //$patient['children'][] = array( 'text' => $this->t['patient_summary'][$this->lang], 'leaf' => true, 'cls' => 'file', 'id' => 'panelSummary' );
 			$patient['children'][] = array( 'text' => $this->i18n['patient_summary'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelSummary' );
 	    }
 	    if($this->ACL->hasPermission('access_patient_visits')){
-		    //$patient['children'][] = array( 'text' => $this->t['visist_history'][$this->lang], 'leaf' => true, 'cls' => 'file', 'id' => 'panelVisits' );
 		    $patient['children'][] = array( 'text' => $this->i18n['visits_history'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelVisits' );
 	    }
 	    if($this->ACL->hasPermission('access_encounters')){
-		    //$patient['children'][] = array( 'text' => $this->t['encounter'][$this->lang], 'leaf' => true, 'cls' => 'file', 'id' => 'panelEncounter' );
 			$patient['children'][] = array( 'text' => $this->i18n['encounter'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelEncounter' );
 	    }
 	    if($this->ACL->hasPermission('access_visit_checkout')){
-		    //$patient['children'][] = array( 'text' => $this->t['visit_checkout'][$this->lang], 'leaf' => true, 'cls' => 'file', 'id' => 'panelVisitCheckout' );
 			$patient['children'][] = array( 'text' => $this->i18n['visit_checkout'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelVisitCheckout' );
 	    }
 
@@ -78,9 +67,7 @@ class Navigation {
         // *************************************************************************************
         array_push( $nav, array( 'text' => $this->i18n['billing_manager'], 'cls' => 'folder', 'expanded' => true, 'children' =>
             array(
-                //array( 'text' => $this->t['payment'][$this->lang],      'leaf' => true, 'cls' => 'file', 'id' => 'panelPayments' ),
                 array( 'text' => $this->i18n['payment'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelPayments' ),
-                //array( 'text' => $this->t['billing'][$this->lang],      'leaf' => true, 'cls' => 'file', 'id' => 'panelBilling' )
 				array( 'text' => $this->i18n['billing'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelBilling' )
             )
         ));
@@ -164,60 +151,4 @@ class Navigation {
 
     }
 
-    private function getTexts(){
-        return array(
-            'dashboard' => array(
-                'en_US' => 'Dashboard',
-                'es'    => 'Tablero',
-            ),
-            'calendar' => array(
-                'en_US' => 'Calendar',
-                'es'    => 'Calendario',
-            ),
-            'messages' => array(
-                'en_US' => 'Messages',
-                'es'    => 'Mensajes',
-            ),
-            'patient_Search' => array(
-                'en_US' => 'Patient Search',
-                'es'    => 'Busqueda de Paciente',
-            ),
-            'new_patient' => array(
-                'en_US' => 'New Patient',
-                'es'    => 'Nuevo Paciente',
-            ),
-            'patient_summary' => array(
-                'en_US' => 'Patient Summary',
-                'es'    => 'Resumen de Paciente',
-            ),
-            'visist_history' => array(
-                'en_US' => 'Visits History',
-                'es'    => 'Historial de Visitas',
-            ),
-            'encounter' => array(
-                'en_US' => 'Encounter',
-                'es'    => 'Encuentro',
-            ),
-            'visit_checkout' => array(
-                'en_US' => 'Visit Checkout',
-                'es'    => 'Salida de Paciente',
-            ),
-            'billing_manager' => array(
-                'en_US' => 'Billing Area',
-                'es'    => 'Area de Facturacion',
-            ),
-            'billing' => array(
-                'en_US' => 'Encounter Billing',
-                'es'    => 'Facturacion de Encouentro',
-            ),
-            'checkout' => array(
-                'en_US' => 'Checkout',
-                'es'    => 'Salida',
-            ),
-            'payment' => array(
-                'en_US' => 'Payment Entry',
-                'es'    => 'Entrada de Pagos',
-            )
-        );
-    }
 }

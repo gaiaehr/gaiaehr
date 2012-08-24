@@ -34,17 +34,17 @@ Ext.define('App.view.fees.Billing', {
 			},
 			columns   : [
 				{
-					header   : 'Service Date',
+					header   : i18n.service_date,
 					dataIndex: 'start_date',
 					width    : 200
 				},
 				{
-					header   : 'Patient',
+					header   : i18n.patient,
 					dataIndex: 'patientName',
 					width    : 200
 				},
 				{
-					header   : 'Primary Provider',
+					header   : i18n.primary_provider,
 					dataIndex: 'primaryProvider',
 					width    : 200
 				},

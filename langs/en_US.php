@@ -50,6 +50,9 @@ $LANG = array(
     'was_updated'			=> 'was updated',
     'was_updated'			=> 'was updated',
     'was_deleted'			=> 'was deleted',
-    'was_moved_to'			=> 'was moved to'
+    'was_moved_to'			=> 'was moved to',
+    'service_date'			=> 'Service Date',
+    'patient'				=> 'Patient',
+    'primary_provider'		=> 'Primary Provider'
 );
 ?>

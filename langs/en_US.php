@@ -41,6 +41,10 @@ $LANG = array(
     'support'				=> 'Support',
     'office_notes'			=> 'Office Notes',
     'message'				=> 'Message',
-    'was_removed'			=> 'was removed'
+    'was_removed'			=> 'was removed',
+    'calendar_events'		=> 'Calendar Events',
+    'add'					=> 'Add',
+    'update'				=> 'Update',
+    'delete'				=> 'Delete'
 );
 ?>

@@ -18,7 +18,7 @@
 Ext.define('App.view.calendar.Calendar', {
 	extend     : 'App.classes.RenderPanel',
 	id         : 'panelCalendar',
-	pageTitle  : 'Calendar Events',
+	pageTitle  : i18n.calendar_events,
 	constructor: function() {
 
 		this.callParent(arguments);
@@ -83,11 +83,11 @@ Ext.define('App.view.calendar.Calendar', {
 
 					var title = Ext.value(operation.records[0].data[Extensible.calendar.data.EventMappings.Title.name], '(No title)');
 					if(operation.action == 'create') {
-						this.msg('Add', 'Added "' + title + '"');
+						this.msg(i18n.add, 'Added' "' + title + '"');
 					} else if(operation.action == 'update') {
-						this.msg('Update', 'Updated "' + title + '"');
+						this.msg(i18n.update, 'Updated "' + title + '"');
 					} else if(operation.action == 'destroy') {
-						this.msg('Delete', 'Deleted "' + title + '"');
+						this.msg(i18n.delete, 'Deleted "' + title + '"');
 					}
 				}
 			}

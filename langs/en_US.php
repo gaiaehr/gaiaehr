@@ -81,7 +81,15 @@ $LANG = array(
     'encounter_billing_data_updated'		=> 'Encounter Billing Data Updated',
     'encounters'							=> 'Encounters',
     'paying_entity'							=> 'Paying Entity',
-    'add_new_payment'						=> 'Add New Payment'
+    'add_new_payment'						=> 'Add New Payment',
+    'no'									=> 'No',
+    'payment_method'						=> 'Payment Method',
+    'pay_to'								=> 'Pay To',
+    'amount'								=> 'Amount',
+    'post_to_date'							=> 'Post To Date',
+    'note'									=> 'Note',
+    'reset'									=> 'Reset',
+    'payment_entry_error'					=> 'Payment entry error'
     
 );
 ?>

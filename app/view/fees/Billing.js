@@ -9,7 +9,7 @@
 Ext.define('App.view.fees.Billing', {
 	extend       : 'App.classes.RenderPanel',
 	id           : 'panelBilling',
-	pageTitle    : 'Billing',
+	pageTitle    : i18n.billing,
 	uses         : [ 'App.classes.GridPanel' ],
 	pageLayout   : 'card',
 	initComponent: function() {

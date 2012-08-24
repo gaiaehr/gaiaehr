@@ -89,7 +89,14 @@ $LANG = array(
     'post_to_date'							=> 'Post To Date',
     'note'									=> 'Note',
     'reset'									=> 'Reset',
-    'payment_entry_error'					=> 'Payment entry error'
+    'payment_entry_error'					=> 'Payment entry error',
+    'search'								=> 'Search',
+    'paying_entity'							=> 'Paying Entity',
+    'add_payment'							=> 'Add Payment',
+    'patient_name'							=> 'Patient Name',
+    'billing_notes'							=> 'Billing Notes',
+    'balance_due'							=> 'Balance Due',
+    'detail'								=> 'Detail'
     
 );
 ?>

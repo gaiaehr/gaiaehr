@@ -39,7 +39,6 @@ $LANG = array(
     'my_settings'			=> 'My Settings',
     'my_account'			=> 'My Account',
     'support'				=> 'Support',
-    'office_notes'			=> 'Office Notes',
     'message'				=> 'Message',
     'was_removed'			=> 'was removed',
     'calendar_events'		=> 'Calendar Events',
@@ -48,11 +47,9 @@ $LANG = array(
     'dellete'				=> 'Delete',
     'event'					=> 'Event',
     'was_updated'			=> 'was updated',
-    'was_updated'			=> 'was updated',
     'was_deleted'			=> 'was deleted',
     'was_moved_to'			=> 'was moved to',
     'service_date'			=> 'Service Date',
-    'patient'				=> 'Patient',
     'primary_provider'		=> 'Primary Provider'
 );
 ?>

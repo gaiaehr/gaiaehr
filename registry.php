@@ -54,8 +54,7 @@ $_SESSION['cron']['time']       = time(); // store the last cron time stamp
 /**
  * Directory related variables
  */
-//$_SESSION['dir']['ext']         = 'extjs-4.1.1';
-$_SESSION['dir']['ext']         = 'extjs-4.1.0';
+$_SESSION['dir']['ext']         = 'extjs-4.1.1';
 $_SESSION['dir']['touch']       = 'sencha-touch-2.0.1';
 $_SESSION['dir']['ext_cal']     = 'extensible-1.5.1';
 $_SESSION['dir']['AES']         = 'phpAES';

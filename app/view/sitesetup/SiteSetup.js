@@ -33,13 +33,12 @@ Ext.define('App.view.sitesetup.SiteSetup', {
         });
         me.requirementsStore = Ext.create('Ext.data.Store', {
             model   : 'Requirements',
-            proxy   : {
-                type  : 'ajax',
-                url   : 'install/requirements.ejs.php',
-                reader: {
-                    type: 'json'
-                }
-            },
+            proxy: {
+           		type       : 'direct',
+           		api        : {
+           			read  : SiteSetup.checkRequirements
+           		}
+           	},
             autoLoad: false
         });
 
@@ -110,182 +109,182 @@ Ext.define('App.view.sitesetup.SiteSetup', {
         // Install proccess form
         // *************************************************************************************
 
-        var formInstall = Ext.create('Ext.form.Panel', {
-            id           : 'formInstall',
-            bodyStyle    : 'padding:5px',
-            border       : false,
-            url          : 'install/logic.ejs.php',
-            layout       : 'fit',
-            fieldDefaults: {
-                msgTarget : 'side',
-                labelWidth: 130
-            },
-            defaults     : {
-                anchor: '100%'
-            },
-            items        : [
-                {
-                    xtype    : 'tabpanel',
-                    id       : 'tabsInstall',
-                    plain    : true,
-                    border   : false,
-                    activeTab: 0,
-                    defaults : {bodyStyle: 'padding:10px'},
-                    items    : [
-                        {
-                            title     : 'Instructions',
-                            layout    : 'fit',
-                            autoLoad  : 'install/instructions.html',
-                            autoScroll: true,
-                            buttons   : [
-                                {
-                                    text   : 'Next',
-                                    handler: function() {
-                                        Ext.getCmp('clinicInfo').enable();
-                                        Ext.getCmp('tabsInstall').setActiveTab(1);
-                                    }
-                                }
-                            ]
-                        },
-                        {
-                            title      : 'Site Information',
-                            defaults   : {width: 530},
-                            id         : 'clinicInfo',
-                            defaultType: 'textfield',
-                            disabled   : true,
-                            items      : [
-                                {
-                                    xtype     : 'textfield',
-                                    name      : 'siteName',
-                                    id        : 'siteNameField',
-                                    labelAlign: 'top',
-                                    fieldLabel: 'Site Name (Your Main Clinic\'s Name)',
-                                    allowBlank: false,
-                                    listeners : {
-                                        validitychange: function() {
-                                            field = Ext.getCmp('siteNameField');
-                                            if(field.isValid()) {
-                                                Ext.getCmp('clinicInfoNext').enable();
-                                            } else {
-                                                Ext.getCmp('clinicInfoNext').disable();
-                                            }
-                                        }
-                                    }
-                                },
-                                {
-                                    xtype: 'displayfield',
-                                    value: 'Tips...'
-                                },
-                                {
-                                    xtype: 'displayfield',
-                                    value: '<span style="color:red;">* A Site will have their own database and will no be able to communicate with other sites.</span>'
-                                },
-                                {
-                                    xtype: 'displayfield',
-                                    value: '<span style="color:green;">* If not sure what name to choose for your site, just type "default".</span>'
-                                },
-                                {
-                                    xtype: 'displayfield',
-                                    value: '<span style="color:green;">* A Site can have multiple clinics.</span>'
-                                },
-                                {
-                                    xtype: 'displayfield',
-                                    value: '<span style="color:green;">* Why "Site Name" and no "Clinic\' Name"?</span> Basically because you can have more than one installation using the same webserver. ei. Two physician that share the same office but no their patients.'
-                                },
-                                {
-                                    xtype: 'displayfield',
-                                    value: '<span style="color:green;">* more tips to come...</span>'
-                                }
-                            ],
-                            buttons    : [
-                                {
-                                    text   : 'Back',
-                                    handler: function() {
-                                        Ext.getCmp('tabsInstall').setActiveTab(0);
-                                    }
-                                },
-                                {
-                                    text    : 'Next',
-                                    id      : 'clinicInfoNext',
-                                    disabled: true,
-                                    handler : function() {
-                                        Ext.getCmp('databaseInfo').enable();
-                                        Ext.getCmp('tabsInstall').setActiveTab(2);
-                                    }
-                                }
-                            ]
-                        },
+//        var formInstall = Ext.create('Ext.form.Panel', {
+//            id           : 'formInstall',
+//            bodyStyle    : 'padding:5px',
+//            border       : false,
+//            url          : 'install/logic.ejs.php',
+//            layout       : 'fit',
+//            fieldDefaults: {
+//                msgTarget : 'side',
+//                labelWidth: 130
+//            },
+//            defaults     : {
+//                anchor: '100%'
+//            },
+//            items        : [
+//                {
+//                    xtype    : 'tabpanel',
+//                    id       : 'tabsInstall',
+//                    plain    : true,
+//                    border   : false,
+//                    activeTab: 0,
+//                    defaults : {bodyStyle: 'padding:10px'},
+//                    items    : [
+//                        {
+//                            title     : 'Instructions',
+//                            layout    : 'fit',
+//                            autoLoad  : 'install/instructions.html',
+//                            autoScroll: true,
+//                            buttons   : [
+//                                {
+//                                    text   : 'Next',
+//                                    handler: function() {
+//                                        Ext.getCmp('clinicInfo').enable();
+//                                        Ext.getCmp('tabsInstall').setActiveTab(1);
+//                                    }
+//                                }
+//                            ]
+//                        },
+//                        {
+//                            title      : 'Site Information',
+//                            defaults   : {width: 530},
+//                            id         : 'clinicInfo',
+//                            defaultType: 'textfield',
+//                            disabled   : true,
+//                            items      : [
+//                                {
+//                                    xtype     : 'textfield',
+//                                    name      : 'siteName',
+//                                    id        : 'siteNameField',
+//                                    labelAlign: 'top',
+//                                    fieldLabel: 'Site Name (Your Main Clinic\'s Name)',
+//                                    allowBlank: false,
+//                                    listeners : {
+//                                        validitychange: function() {
+//                                            field = Ext.getCmp('siteNameField');
+//                                            if(field.isValid()) {
+//                                                Ext.getCmp('clinicInfoNext').enable();
+//                                            } else {
+//                                                Ext.getCmp('clinicInfoNext').disable();
+//                                            }
+//                                        }
+//                                    }
+//                                },
+//                                {
+//                                    xtype: 'displayfield',
+//                                    value: 'Tips...'
+//                                },
+//                                {
+//                                    xtype: 'displayfield',
+//                                    value: '<span style="color:red;">* A Site will have their own database and will no be able to communicate with other sites.</span>'
+//                                },
+//                                {
+//                                    xtype: 'displayfield',
+//                                    value: '<span style="color:green;">* If not sure what name to choose for your site, just type "default".</span>'
+//                                },
+//                                {
+//                                    xtype: 'displayfield',
+//                                    value: '<span style="color:green;">* A Site can have multiple clinics.</span>'
+//                                },
+//                                {
+//                                    xtype: 'displayfield',
+//                                    value: '<span style="color:green;">* Why "Site Name" and no "Clinic\' Name"?</span> Basically because you can have more than one installation using the same webserver. ei. Two physician that share the same office but no their patients.'
+//                                },
+//                                {
+//                                    xtype: 'displayfield',
+//                                    value: '<span style="color:green;">* more tips to come...</span>'
+//                                }
+//                            ],
+//                            buttons    : [
+//                                {
+//                                    text   : 'Back',
+//                                    handler: function() {
+//                                        Ext.getCmp('tabsInstall').setActiveTab(0);
+//                                    }
+//                                },
+//                                {
+//                                    text    : 'Next',
+//                                    id      : 'clinicInfoNext',
+//                                    disabled: true,
+//                                    handler : function() {
+//                                        Ext.getCmp('databaseInfo').enable();
+//                                        Ext.getCmp('tabsInstall').setActiveTab(2);
+//                                    }
+//                                }
+//                            ]
+//                        },
+//
+//                        {
+//                            title      : 'Administrator Information',
+//                            defaults   : {width: 530},
+//                            id         : 'adminInfo',
+//                            defaultType: 'textfield',
+//                            disabled   : true,
+//                            items      : [
+//                                {
+//                                    xtype: 'displayfield',
+//                                    value: 'Choose Administrator Username and Password'
+//                                },
+//                                {
+//                                    xtype  : 'displayfield',
+//                                    padding: '0 0 10px 0',
+//                                    value  : '(This account will be the Super User/Global Admin with access to all areas)'
+//                                },
+//                                {
+//                                    fieldLabel: 'Administrator Username',
+//                                    name      : 'adminUser',
+//                                    padding   : '0 0 10px 0'
+//                                },
+//                                {
+//                                    fieldLabel: 'Administrator Password',
+//                                    type      : 'password',
+//                                    name      : 'adminPass',
+//                                    inputType : 'password'
+//                                }
+//                            ],
+//                            buttons    : [
+//                                {
+//                                    text   : 'Back',
+//                                    handler: function() {
+//                                        Ext.getCmp('tabsInstall').setActiveTab(2);
+//                                    }
+//                                },
+//                                {
+//                                    text   : 'Finish',
+//                                    handler: function() {
+//                                        var form = this.up('form').getForm();
+//                                        if(form.isValid()) {
+//                                            form.submit({
+//                                                method : 'POST',
+//                                                params : {
+//                                                    task: 'install'
+//                                                },
+//                                                success: function(form, action) {
+//                                                    obj = Ext.JSON.decode(action.response.responseText);
+//                                                    Ext.Msg.alert('Sweet!', obj.msg, function(btn, text) {
+//                                                        if(btn == 'ok') {
+//                                                            window.location = "index.php"
+//                                                        }
+//                                                    });
+//
+//                                                },
+//                                                failure: function(form, action) {
+//                                                    obj = Ext.JSON.decode(action.response.responseText);
+//                                                    Ext.Msg.alert('Oops!', obj.msg);
+//                                                    Ext.getCmp('dataInfoNext').disable();
+//                                                }
+//                                            });
+//                                        }
+//                                    }
+//                                }
+//                            ]
+//                        }
+//                    ]
+//                }
+//            ]
+//        });
 
-                        {
-                            title      : 'Administrator Information',
-                            defaults   : {width: 530},
-                            id         : 'adminInfo',
-                            defaultType: 'textfield',
-                            disabled   : true,
-                            items      : [
-                                {
-                                    xtype: 'displayfield',
-                                    value: 'Choose Administrator Username and Password'
-                                },
-                                {
-                                    xtype  : 'displayfield',
-                                    padding: '0 0 10px 0',
-                                    value  : '(This account will be the Super User/Global Admin with access to all areas)'
-                                },
-                                {
-                                    fieldLabel: 'Administrator Username',
-                                    name      : 'adminUser',
-                                    padding   : '0 0 10px 0'
-                                },
-                                {
-                                    fieldLabel: 'Administrator Password',
-                                    type      : 'password',
-                                    name      : 'adminPass',
-                                    inputType : 'password'
-                                }
-                            ],
-                            buttons    : [
-                                {
-                                    text   : 'Back',
-                                    handler: function() {
-                                        Ext.getCmp('tabsInstall').setActiveTab(2);
-                                    }
-                                },
-                                {
-                                    text   : 'Finish',
-                                    handler: function() {
-                                        var form = this.up('form').getForm();
-                                        if(form.isValid()) {
-                                            form.submit({
-                                                method : 'POST',
-                                                params : {
-                                                    task: 'install'
-                                                },
-                                                success: function(form, action) {
-                                                    obj = Ext.JSON.decode(action.response.responseText);
-                                                    Ext.Msg.alert('Sweet!', obj.msg, function(btn, text) {
-                                                        if(btn == 'ok') {
-                                                            window.location = "index.php"
-                                                        }
-                                                    });
-
-                                                },
-                                                failure: function(form, action) {
-                                                    obj = Ext.JSON.decode(action.response.responseText);
-                                                    Ext.Msg.alert('Oops!', obj.msg);
-                                                    Ext.getCmp('dataInfoNext').disable();
-                                                }
-                                            });
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
-        });
-        //
 
         me.items = [
             me.headerPanel = Ext.create('Ext.Container', {

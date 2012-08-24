@@ -1134,6 +1134,9 @@ $API = array(
         'methods'=>array(
             'checkDatabaseCredentials'=>array(
                 'len'=>1
+            ),
+            'checkRequirements'=>array(
+                'len'=>0
             )
         )
     )

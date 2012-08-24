@@ -24,7 +24,6 @@ class i18n
 	// GaiaEHR Project
 	public function getTranslation()
 	{
-		error_log($_SESSION['site']['localization']);
 		include_once($_SESSION['site']['root'] . '/langs/' . $_SESSION['site']['localization'] . '.php');
 		return $LANG;
 	}

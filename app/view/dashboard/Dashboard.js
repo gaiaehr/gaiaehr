@@ -24,7 +24,7 @@ Ext.require([
 Ext.define('App.view.dashboard.Dashboard', {
 	extend        : 'App.classes.RenderPanel',
 	id            : 'panelDashboard',
-	pageTitle     : 'Dashboard',
+	pageTitle     : i18n.dashboard,
 	uses          : [
 		'App.view.dashboard.panel.PortalPanel',
 		'App.view.dashboard.panel.PortalColumn',

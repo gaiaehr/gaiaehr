@@ -44,7 +44,7 @@ $LANG = array(
     'calendar_events'						=> 'Calendar Events',
     'add'									=> 'Add',
     'update'								=> 'Update',
-    'dellete'								=> 'Delete',
+    'delete'								=> 'Delete',
     'event'									=> 'Event',
     'was_updated'							=> 'was updated',
     'was_deleted'							=> 'was deleted',
@@ -96,7 +96,25 @@ $LANG = array(
     'patient_name'							=> 'Patient Name',
     'billing_notes'							=> 'Billing Notes',
     'balance_due'							=> 'Balance Due',
-    'detail'								=> 'Detail'
+    'detail'								=> 'Detail',
+    'inbox'									=> 'Inbox',
+    'status'								=> 'Status',
+    'subject'								=> 'Subject',
+    'type'									=> 'Type',
+    'no_office_notes_to_display'			=> 'No Office Notes to display',
+    'sent'									=> 'Sent',
+    'trash'									=> 'Trash',
+    'new_message'							=> 'New message',
+    'reply'									=> 'Reply',
+    'no_patient_selected'					=> 'No patient selected',
+    'new'									=> 'New',
+    'unassigned'							=> 'Unassigned',
+    'message_sent'							=> 'Message Sent',
+    'please_complete_all_required_fields'	=> 'Please, complete all required fields',
+    'please_confirm'						=> 'Please confirm',
+    'are_you_sure_to_delete_this_message'	=> 'Are you sure to delete this message?',
+    'sent_to_trash'							=> 'Sent to Trash'
+    
     
 );
 ?>

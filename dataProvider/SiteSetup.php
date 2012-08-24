@@ -30,9 +30,45 @@ class SiteSetup {
 	}
 
 
+	function checkDatabaseCredentials(stdClass $params) {
+		if(isset($params->rootUser)){
+			$success = $this->rootDatabaseConn($params->dbHost,$params->dbPort,$params->rootUser,$params->rootPass);
+		}else{
+			$success = $this->databaseConn($params->dbHost,$params->dbPort,$params->dbName,$params->dbUser,$params->dbPass);
+		}
 
+		//TODO: check if database exist
+		//$params->dbName;
 
+		return array('success' =>$success, 'dbInfo' => $params);
 
+	}
+
+	//*****************************************************************************************
+	// This is the Root Database Connection
+	//*****************************************************************************************
+	function rootDatabaseConn($host,$port,$rootUser,$rootPass) {
+		try {
+			$this->conn = new PDO("mysql:host=$host;port=$port", $rootUser, $rootPass);
+			return true;
+		} catch (PDOException $e) {
+    		$this->err = $e->getMessage();
+			return false;
+		}
+	}
+
+	//*****************************************************************************************
+	// This is the Database User Connection
+	//*****************************************************************************************
+	function databaseConn($host,$port,$dbName,$dbUser,$dbPass) {
+		try {
+			$this->conn = new PDO("mysql:host=$host;port=$port;dbname=$dbName",$dbUser,$dbPass);
+			return true;
+		} catch (PDOException $e) {
+    		$this->err = $e->getMessage();
+			return false;
+		}
+	}
 
 
 	//*****************************************************************************************
@@ -98,35 +134,7 @@ class SiteSetup {
 		}
 	}
 
-	//*****************************************************************************************
-	// This is the Root Database Connection
-	//*****************************************************************************************
-	function rootDatabaseConn() {
-		try {
-		$this->conn = new PDO("mysql:host=".$this->dbHost.";port=".$this->dbPort,$this->rootUser,$this->rootPass);
-		} catch (PDOException $e) {
-    		$this->err = $e->getMessage();
-    		if($e != null){
-				$this->displayError();
-			}
-		}
-	}
 
-	//*****************************************************************************************
-	// This is the Database User Connection
-	//*****************************************************************************************
-	function DatabaseConn() {
-		try {
-			$this->conn = new PDO("mysql:host=".$this->dbHost.";
-								   		 port=".$this->dbPort.";
-								 	   dbname=".$this->dbName,$this->dbUser,$this->dbPass);
-		} catch (PDOException $e) {
-    		$this->err = $e->getMessage();
-			if($e != null){
-				$this->displayError();
-			}
-		}
-	}
 
 	//*****************************************************************************************
 	// Create new database and dump data

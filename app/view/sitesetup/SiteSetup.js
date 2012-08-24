@@ -471,8 +471,6 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                             {
                                 xtype         : 'fieldset',
                                 id            : 'rootFieldset',
-                                checkboxToggle: true,
-                                checkboxName  : 'root',
                                 title         : 'Create a New Database (Root Access Needed)',
                                 defaultType   : 'textfield',
                                 collapsed     : true,
@@ -534,14 +532,12 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                             {
                                 xtype         : 'fieldset',
                                 id            : 'dbuserFieldset',
-                                checkboxToggle: true,
                                 title         : 'Install on a existing database',
                                 defaultType   : 'textfield',
                                 collapsed     : true,
                                 disabled      : true,
                                 layout        : 'anchor',
                                 defaults      : {anchor: '100%'},
-                                checkboxName  :'user',
                                 items         : [
                                     {
                                         fieldLabel: 'Database Name',
@@ -589,18 +585,8 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                             {
                                 text   : 'Database Connection Test',
                                 action     : 'dataTester',
-                                handler: function() {
-                                    var form = this.up('form').getForm();
-                                    if(form.isValid()) {
-
-                                        say(form.getValues());
-                                        me.stepThree = { success:true };
-                                    }else{
-                                        me.stepThree = { success:false };
-
-                                    }
-                                    me.databaseBtn.setIconCls(me.stepThree.success ? 'icoGreenFace' : 'icoRedFace');
-                                }
+                                scope:me,
+                                handler: me.onDbTestCredentials
                             },
                             '-'
                         ]
@@ -640,6 +626,27 @@ Ext.define('App.view.sitesetup.SiteSetup', {
         ];
 
         me.callParent();
+    },
+
+    onDbTestCredentials:function(){
+        var me = this,
+            form = me.databaseConfiguration.getForm();
+
+        if(form.isValid()) {
+            SiteSetup.checkDatabaseCredentials(form.getValues(), function(provider, response){
+                say(response.result);
+                if(response.result.success){
+                    me.stepThree = { success:response.result.success };
+                    me.dbInfo = response.result.dbInfo;
+                    me.databaseBtn.setIconCls('icoGreenFace');
+                }else{
+                    me.stepThree = { success:false };
+                    me.databaseBtn.setIconCls('icoRedFace');
+                }
+
+            });
+        }
+
     },
 
     onNexStep: function() {

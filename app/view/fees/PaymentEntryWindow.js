@@ -10,7 +10,7 @@
 //******************************************************************************
 Ext.define('App.view.fees.PaymentEntryWindow', {
     extend:'Ext.window.Window',
-    title:'Add New Payment',
+    title: i18n.add_new_payment,
     closeAction:'hide',
     modal:true,
 
@@ -31,7 +31,7 @@ Ext.define('App.view.fees.PaymentEntryWindow', {
                         layout:'hbox',
                         items:[
                             {
-                                fieldLabel:'Paying Entity',
+                                fieldLabel: i18n.paying_entity,
                                 xtype:'mitos.payingentitycombo',
                                 name:'paying_entity',
                                 action: 'new_payment',

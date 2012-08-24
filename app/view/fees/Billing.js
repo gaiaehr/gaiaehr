@@ -54,12 +54,12 @@ Ext.define('App.view.fees.Billing', {
 					flex     : 1
 				},
 				{
-					header   : 'Insurance',
+					header   : i18n.insurance,
 					dataIndex: 'insurance',
 					width    : 200
 				},
 				{
-					header   : 'Billing Stage',
+					header   : i18n.billing_stage,
 					dataIndex: 'billing_stage',
 					renderer : me.stage,
 					width    : 135
@@ -71,7 +71,7 @@ Ext.define('App.view.fees.Billing', {
 					items: [
 						{
 							xtype     : 'displayfield',
-							fieldLabel: 'Patient Search'
+							fieldLabel: i18n.patient_search
 						},
 						{
 							xtype: 'patienlivetsearch',
@@ -87,14 +87,14 @@ Ext.define('App.view.fees.Billing', {
 					items: [
 						{
 							xtype     : 'datefield',
-							fieldLabel: 'From',
+							fieldLabel: i18n.from,
 							labelWidth: 35,
 							action    : 'datefrom',
 							width     : 150
 						},
 						{
 							xtype     : 'datefield',
-							fieldLabel: 'To',
+							fieldLabel: i18n.to,
 							labelWidth: 35,
 							action    : 'dateto',
 							padding   : '0 5 0 0',
@@ -111,7 +111,7 @@ Ext.define('App.view.fees.Billing', {
 							typeAhead : true,
 							padding   : '0 5 0 5',
 
-							fieldLabel  : 'Provider',
+							fieldLabel  : i18n.provider,
 							defaultValue: 'All'
 
 						},
@@ -119,7 +119,7 @@ Ext.define('App.view.fees.Billing', {
 							xtype       : 'mitos.insurancepayertypecombo',
 							labelWidth  : 60,
 							padding     : '0 5 0 5',
-							fieldLabel  : 'Insurance',
+							fieldLabel  : i18n.insurance,
 							defaultValue: 'All'
 
 
@@ -129,7 +129,7 @@ Ext.define('App.view.fees.Billing', {
 				'->',
 				{
 					xtype: 'tbtext',
-					text : 'Past due:'
+					text : i18n.past_due + ':'
 				},
 				{
 					text           : '30+',
@@ -184,8 +184,8 @@ Ext.define('App.view.fees.Billing', {
 		});
 
 		me.encounterBillingDetails = Ext.create('Ext.panel.Panel', {
-			defaultTitle: 'Encounter Billing Details',
-			title       : 'Encounter Billing Details',
+			defaultTitle: i18n.encounter_billing_details,
+			title       : i18n.encounter_billing_details,
 			layout      : 'border',
 			bodyStyle   : 'background-color:#fff',
 			items       : [
@@ -200,7 +200,7 @@ Ext.define('App.view.fees.Billing', {
 							items : [
 								{
 									xtype : 'fieldset',
-									title : 'Encounter General Info',
+									title : i18n.encounter_general_info,
 									margin: '5 5 0 5',
 									items : [
 										{
@@ -216,20 +216,20 @@ Ext.define('App.view.fees.Billing', {
 												{
 													xtype     : 'textfield',
 													name      : 'service_date',
-													fieldLabel: 'Service Date',
+													fieldLabel: i18n.service_date,
 													labelAlign: 'right',
 													labelWidth: 80
 												},
 												{
 													xtype     : 'textfield',
 													name      : 'insurance',
-													fieldLabel: 'Insurance',
+													fieldLabel: i18n.insurance,
 													labelAlign: 'right'
 												},
 												{
 													xtype     : 'textfield',
 													name      : 'facility',
-													fieldLabel: 'Facillity',
+													fieldLabel: i18n.facillity,
 													labelAlign: 'right',
 													labelWidth: 60,
 													flex      : 1
@@ -249,20 +249,20 @@ Ext.define('App.view.fees.Billing', {
 												{
 													xtype     : 'textfield',
 													name      : 'hosp_date',
-													fieldLabel: 'Hosp Date',
+													fieldLabel: i18n.hosp_date,
 													labelAlign: 'right',
 													labelWidth: 80
 												},
 												{
 													xtype     : 'textfield',
 													name      : 'sec_insurance',
-													fieldLabel: 'Sec. Insurance',
+													fieldLabel: i18n.sec_insurance,
 													labelAlign: 'right'
 												},
 												{
 													xtype     : 'textfield',
 													name      : 'provider',
-													fieldLabel: 'Provider',
+													fieldLabel: i18n.provider,
 													labelAlign: 'right',
 													labelWidth: 60,
 													flex      : 1
@@ -282,20 +282,20 @@ Ext.define('App.view.fees.Billing', {
 												{
 													xtype     : 'textfield',
 													name      : 'authorization',
-													fieldLabel: 'Autthorization',
+													fieldLabel: i18n.autthorization,
 													labelAlign: 'right',
 													labelWidth: 80
 												},
 												{
 													xtype     : 'textfield',
 													name      : 'sec_authorization',
-													fieldLabel: 'SecAuthorization',
+													fieldLabel: i18n.sec_authorization,
 													labelAlign: 'right'
 												},
 												{
 													xtype     : 'textfield',
 													name      : 'referal_by',
-													fieldLabel: 'Referal By',
+													fieldLabel: i18n.referal_by,
 													labelAlign: 'right',
 													labelWidth: 60,
 													flex      : 1
@@ -306,7 +306,7 @@ Ext.define('App.view.fees.Billing', {
 								},
 								{
 									xtype : 'icdsfieldset',
-									title : 'Encounter ICD9s',
+									title : i18n.encounter _icd9,
 									margin: '5 5 0 5'
 								}
 							]
@@ -317,7 +317,7 @@ Ext.define('App.view.fees.Billing', {
 				}),
 
 				me.progressNote = Ext.create('App.view.patient.ProgressNote', {
-					title       : 'Encounter Progress Note',
+					title       : i18n.encounter_progress_note,
 					region      : 'east',
 					margin      : 5,
 					bodyStyle   : 'padding:15px',
@@ -330,10 +330,10 @@ Ext.define('App.view.fees.Billing', {
 			],
 			buttons     : [
 				{
-					text   : 'Encounters',
+					text   : i18n.encounters,
 					scope  : me,
 					action : 'encounters',
-					tooltip: 'Back to Encounter List',
+					tooltip: i18n.back_to_encounter_list,
 					handler: me.onBtnCancel
 				},
 				'->',
@@ -343,32 +343,32 @@ Ext.define('App.view.fees.Billing', {
 					text  : '( 1 of 1 )'
 				},
 				{
-					text   : '<<<  Back',
+					text   : '<<<  ' + i18n.back,
 					scope  : me,
 					action : 'back',
-					tooltip: 'Previous Encounter Details',
+					tooltip: i18n.previous_encounter_details,
 					handler: me.onBtnBack
 				},
 				{
-					text   : 'Save',
+					text   : i18n.save,
 					scope  : me,
 					action : 'save',
-					tooltip: 'Save Billing Details',
+					tooltip: i18n.save_billing_details,
 					handler: me.onBtnSave
 				},
 
 				{
-					text   : 'Cancel',
+					text   : i18n.cancel,
 					scope  : me,
 					action : 'cancel',
-					tooltip: 'Cancel and Go Back to Encounter List',
+					tooltip: i18n.cancel_and_go_back_to_encounter_list,
 					handler: me.onBtnCancel
 				},
 				{
-					text   : 'Next  >>>',
+					text   : i18n.next + '  >>>',
 					scope  : me,
 					action : 'next',
-					tooltip: 'Next Encounter Details',
+					tooltip: i18n.next_encounter_details,
 					handler: me.onBtnNext
 				}
 			]
@@ -433,7 +433,7 @@ Ext.define('App.view.fees.Billing', {
 				me.cptPanel.setDefaultQRCptCodes();
 			});
 
-			pageInfo[0].setText('( Page ' + (rowIndex + 1) + ' of ' + sm.store.data.length + ' ) ');
+			pageInfo[0].setText('( ' + i18n.page + ' + (rowIndex + 1) + ' of ' + sm.store.data.length + ' ) ');
 			nextBtn[0].setDisabled(rowIndex == sm.store.data.length - 1);
 			backbtn[0].setDisabled(rowIndex == 0);
 		}
@@ -457,7 +457,7 @@ Ext.define('App.view.fees.Billing', {
 		var me = this, form = me.icdForm.getForm(), values = form.getValues();
 
 		me.updateEncounterIcds(values);
-		me.msg('Sweet!', 'Encounter Billing Data Updated');
+		me.msg('Sweet!', i18n.encounter_billing_data_updated);
 	},
 
 	getEncounterIcds: function() {

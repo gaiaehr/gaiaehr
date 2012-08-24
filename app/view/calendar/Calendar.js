@@ -83,7 +83,7 @@ Ext.define('App.view.calendar.Calendar', {
 
 					var title = Ext.value(operation.records[0].data[Extensible.calendar.data.EventMappings.Title.name], '(No title)');
 					if(operation.action == 'create') {
-						this.msg(i18n.add, 'Added' "' + title + '"');
+						this.msg(i18n.add, 'Added "' + title + '"');
 					} else if(operation.action == 'update') {
 						this.msg(i18n.update, 'Updated "' + title + '"');
 					} else if(operation.action == 'destroy') {
@@ -189,13 +189,13 @@ Ext.define('App.view.calendar.Calendar', {
 							},
 							'eventadd'   : {
 								fn   : function(cp, rec) {
-									this.showMsg('Event ' + rec.data[Extensible.calendar.data.EventMappings.Title.name] + ' was added');
+									this.showMsg(i18n.event + ' ' + rec.data[Extensible.calendar.data.EventMappings.Title.name] + ' ' + i18n.was_updated);
 								},
 								scope: this
 							},
 							'eventupdate': {
 								fn   : function(cp, rec) {
-									this.showMsg('Event ' + rec.data[Extensible.calendar.data.EventMappings.Title.name] + ' was updated');
+									this.showMsg(i18n.event + ' ' + rec.data[Extensible.calendar.data.EventMappings.Title.name] + ' ' + i18n.was_updated);
 								},
 								scope: this
 							},
@@ -232,7 +232,7 @@ Ext.define('App.view.calendar.Calendar', {
 
 									rec.commit();
 
-									this.showMsg('Event ' + rec.data[mappings.Title.name] + ' was moved to ' +
+									this.showMsg(i18n.event + ' ' + rec.data[mappings.Title.name] + ' ' + i18n.was_moved_to + ' ' +
 										Ext.Date.format(rec.data[mappings.StartDate.name], ('F jS' + time)));
 								},
 								scope: this
@@ -240,14 +240,14 @@ Ext.define('App.view.calendar.Calendar', {
 							'eventresize': {
 								fn   : function(vw, rec) {
 									rec.commit();
-									this.showMsg('Event ' + rec.data[Extensible.calendar.data.EventMappings.Title.name] + ' was updated');
+									this.showMsg(i18n.event + ' ' + rec.data[Extensible.calendar.data.EventMappings.Title.name] + ' ' + i18n.was_updated);
 								},
 								scope: this
 							},
 							'eventdelete': {
 								fn   : function(win, rec) {
 									this.eventStore.remove(rec);
-									this.showMsg('Event ' + rec.data[Extensible.calendar.data.EventMappings.Title.name] + ' was deleted');
+									this.showMsg(i18n.event + ' ' + rec.data[Extensible.calendar.data.EventMappings.Title.name] + ' ' + i18n.was_deleted);
 								},
 								scope: this
 							},

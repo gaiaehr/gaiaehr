@@ -45,6 +45,11 @@ $LANG = array(
     'calendar_events'		=> 'Calendar Events',
     'add'					=> 'Add',
     'update'				=> 'Update',
-    'delete'				=> 'Delete'
+    'dellete'				=> 'Delete',
+    'event'					=> 'Event',
+    'was_updated'			=> 'was updated',
+    'was_updated'			=> 'was updated',
+    'was_deleted'			=> 'was deleted',
+    'was_moved_to'			=> 'was moved to'
 );
 ?>

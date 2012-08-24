@@ -19,6 +19,9 @@ if(!defined('_GaiaEXEC')) die('No direct access allowed.');
 	<script src="data/api.php"></script>
 	<script type="text/javascript">
 		var app;
+		function say(a){
+			console.log(a);
+		}
         Ext.Loader.setConfig({
             enabled       : true,
             disableCaching: false,

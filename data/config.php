@@ -1139,7 +1139,15 @@ $API = array(
 				'len'=>0
 			)
 		)
-	)
+	),
+
+    'SiteSetup'=>array(
+        'methods'=>array(
+            'run'=>array(
+                'len'=>0
+            )
+        )
+    )
 
 );
 

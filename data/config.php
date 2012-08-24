@@ -1143,8 +1143,8 @@ $API = array(
 
     'SiteSetup'=>array(
         'methods'=>array(
-            'run'=>array(
-                'len'=>0
+            'checkDatabaseCredentials'=>array(
+                'len'=>1
             )
         )
     )

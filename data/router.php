@@ -40,13 +40,13 @@ function doRpc($cdata){
 		/**
 		 * Check if user is authorized/Logged in
 		 */
-		if(isset($_SESSION['user']['auth'])){
-			if ($_SESSION['user']['auth'] != true){
-		          throw new Exception('Authorization Required.');
-		    }
-		}else{
-		      throw new Exception('Authorization Required.');
-		}
+//		if(isset($_SESSION['user']['auth'])){
+//			if ($_SESSION['user']['auth'] != true){
+//		          throw new Exception('Authorization Required.');
+//		    }
+//		}else{
+//		      throw new Exception('Authorization Required.');
+//		}
 
 
 //        /**

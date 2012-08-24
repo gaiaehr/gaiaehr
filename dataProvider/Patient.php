@@ -60,7 +60,7 @@ class Patient
 		$_SESSION['patient']['pid']  = $params->pid;
 		$_SESSION['patient']['name'] = $this->getPatientFullNameByPid($params->pid);
 		$p = $this->isPatientChartOutByPid($params->pid);
-		if($p === false){
+		if($p === false || (is_array($p) && $p['uid'] == $_SESSION['user']['id'])){
 			$area = $poolArea->getCurrentPatientPoolAreaByPid($params->pid);
 			$this->patientChartOutByPid($params->pid, $area['area_id']);
 			$_SESSION['patient']['readOnly'] = false;

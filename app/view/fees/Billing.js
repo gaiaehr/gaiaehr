@@ -49,7 +49,7 @@ Ext.define('App.view.fees.Billing', {
 					width    : 200
 				},
 				{
-					header   : 'Encounter Provider',
+					header   : i18n.encounter_provider,
 					dataIndex: 'encounterProvider',
 					flex     : 1
 				},

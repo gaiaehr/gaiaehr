@@ -61,7 +61,7 @@ Ext.define('App.view.dashboard.Dashboard', {
 							items: [
 								{
 									id       : 'portlet-onotes',
-									title    : 'Office Notes',
+									title    : i18n.office_notes,
 									tools    : this.getTools(),
 									items    : Ext.create('App.view.dashboard.panel.OnotesPortlet'),
 									listeners: {

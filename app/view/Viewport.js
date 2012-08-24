@@ -320,7 +320,7 @@ Ext.define('App.view.Viewport', {
 		 * GaiaEHR Support Page
 		 */
 		me.winSupport = Ext.create('Ext.window.Window', {
-			title        : 'Support',
+			title        : i18n.support,
 			closeAction  : 'hide',
 			bodyStyle    : 'background-color: #ffffff; padding: 5px;',
 			animateTarget: me.Footer,

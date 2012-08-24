@@ -37,6 +37,8 @@ $LANG = array(
     'address_book'			=> 'Address Book',
     'office_notes'			=> 'Office Notes',
     'my_settings'			=> 'My Settings',
-    'my_account'			=> 'My Account'
+    'my_account'			=> 'My Account',
+    'support'				=> 'Support',
+    'office_notes'			=> 'Office Notes'
 );
 ?>

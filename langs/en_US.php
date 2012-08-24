@@ -39,6 +39,8 @@ $LANG = array(
     'my_settings'			=> 'My Settings',
     'my_account'			=> 'My Account',
     'support'				=> 'Support',
-    'office_notes'			=> 'Office Notes'
+    'office_notes'			=> 'Office Notes',
+    'message'				=> 'Message',
+    'was_removed'			=> 'was removed'
 );
 ?>

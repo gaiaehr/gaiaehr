@@ -279,7 +279,7 @@ Ext.define('App.view.miscellaneous.Addressbook', {
 						},
 						{
 							xtype      : 'fieldset',
-							title      : i18m.online_info,
+							title      : i18n.online_info,
 							collapsible: true,
 							collapsed  : true,
 							defaultType: 'textfield',

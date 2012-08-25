@@ -11,7 +11,7 @@
 Ext.define('App.view.fees.Payments', {
     extend:'App.classes.RenderPanel',
     id:'panelPayments',
-    pageTitle:'Payments',
+    pageTitle: i18n.payments,
     initComponent:function () {
         var me = this;
 
@@ -75,7 +75,7 @@ Ext.define('App.view.fees.Payments', {
                                 },
                                 {
                                     xtype:'mitos.billingfacilitiescombo',
-                                    fieldLabel:'Pay To',
+                                    fieldLabel: i18n.pay_to,
                                     labelWidth:42,
                                     width:470,
                                     margin:'0 0 0 25'
@@ -137,7 +137,7 @@ Ext.define('App.view.fees.Payments', {
 	                        header: i18n.service_date
 	                    },
 	                    {
-	                        header: i8n.patient_name
+	                        header: i18n.patient_name
 	                    },
 	                    {
 	                        header: i18n.insurance
@@ -288,7 +288,7 @@ Ext.define('App.view.fees.Payments', {
 	                        header: i18n.service_date
 	                    },
 	                    {
-	                        header: i18n.patient_name'
+	                        header: i18n.patient_name
 	                    },
 	                    {
 	                        header: i18n.insurance

@@ -1,4 +1,7 @@
 <?php
+// Words that are reserved in javascript.
+// - delete
+// - new
 $LANG = array(
     'dashboard'         					=> 'Dashboard',
     'calendar'          					=> 'Calendar',
@@ -64,7 +67,7 @@ $LANG = array(
     'hosp_date'								=> 'Hosp Date',
     'sec_insurance'							=> 'Sec. Insurance',
     'provider'								=> 'Provider',
-    'autthorization'						=> 'Autthorization',
+    'authorization'							=> 'Authorization',
     'sec_authorization'						=> 'SecAuthorization',
     'referal_by'							=> 'Referal By',
     'encounter _icd9'						=> 'Encounter ICD9s',
@@ -203,6 +206,7 @@ $LANG = array(
     'hcfa_1500_options'						=> 'HCFA 1500 Options',
     'icds_live_search'						=> 'ICDs Live Sarch',
     'click_to_clear_selection'				=> 'Click to clear selection.',
-    'clearable_combo_box'					=> 'Clearable Combo Box'
+    'clearable_combo_box'					=> 'Clearable Combo Box',
+    'payments'								=> 'Payments'
 );
 ?>

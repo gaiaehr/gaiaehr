@@ -101,7 +101,7 @@ Ext.define('App.view.patient.charts.BPPulseTemp', {
                                 tips        : {
                                     trackMouse: true,
                                     renderer  : function(storeItem, item) {
-                                        this.update(i18n.date + ': ' + Ext.Date.format(storeItem.get('date'), 'Y-m-d h:i:s a') + '<br>' + i18n.diastolic: ' + storeItem.get('bp_diastolic'));
+                                        this.update(i18n.date + ': ' + Ext.Date.format(storeItem.get('date'), 'Y-m-d h:i:s a') + '<br>' + i18n.diastolic + ': ' + storeItem.get('bp_diastolic'));
                                     }
                                 }
 

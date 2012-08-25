@@ -9,7 +9,7 @@
 Ext.define('App.view.messages.Messages', {
 	extend       : 'App.classes.RenderPanel',
 	id           : 'panelMessages',
-	pageTitle    : i18n.messages +' ('+ i18n.inbox +')',
+	pageTitle    : i18n.messages + ' (' + i18n.inbox + ')',
 	pageLayout   : 'border',
 	defaults     : {split: true},
 	uses         : [
@@ -91,7 +91,7 @@ Ext.define('App.view.messages.Messages', {
 				emptyMsg   : i18n.no_office_notes_to_display,
 				plugins    : Ext.create('Ext.ux.SlidingPager', {}),
 				items      : ['-', {
-					text    : i18n.delete,
+					text    : i18n['delete'],
 					cls     : 'winDelete',
 					iconCls : 'delete',
 					itemId  : 'deleteMsg',
@@ -268,7 +268,7 @@ Ext.define('App.view.messages.Messages', {
 			],
 			bbar         : [
 				{
-					text   : i18n.send,
+					text   : i18n['send'],
 					iconCls: 'save',
 					cls    : 'winSave',
 					itemId : 'sendMsg',
@@ -277,7 +277,7 @@ Ext.define('App.view.messages.Messages', {
 				},
 				'-',
 				{
-					text    : i18n.delete,
+					text    : i18n['delete'],
 					cls     : 'winDelete',
 					iconCls : 'delete',
 					itemId  : 'deleteMsg',
@@ -295,7 +295,6 @@ Ext.define('App.view.messages.Messages', {
 		});
 		me.pageBody = [ me.msgGrid, me.msgForm ];
 		me.callParent(arguments);
-
 
 	}, // End initComponent
 
@@ -320,7 +319,7 @@ Ext.define('App.view.messages.Messages', {
 		form.getForm().reset();
 		var model = Ext.ModelManager.getModel('MessagesModel'),
 			newModel = Ext.ModelManager.create({
-				message_status: .i18n.new,
+				message_status: i18n['new'],
 				note_type     : i18n.unassigned
 			}, model);
 		form.getForm().loadRecord(newModel);

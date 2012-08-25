@@ -282,7 +282,7 @@ Ext.define('App.view.fees.Billing', {
 												{
 													xtype     : 'textfield',
 													name      : 'authorization',
-													fieldLabel: i18n.autthorization,
+													fieldLabel: i18n.authorization,
 													labelAlign: 'right',
 													labelWidth: 80
 												},
@@ -306,7 +306,7 @@ Ext.define('App.view.fees.Billing', {
 								},
 								{
 									xtype : 'icdsfieldset',
-									title : i18n.encounter _icd9,
+									title : i18n.encounter_icd9,
 									margin: '5 5 0 5'
 								}
 							]
@@ -433,7 +433,7 @@ Ext.define('App.view.fees.Billing', {
 				me.cptPanel.setDefaultQRCptCodes();
 			});
 
-			pageInfo[0].setText('( ' + i18n.page + ' + (rowIndex + 1) + ' of ' + sm.store.data.length + ' ) ');
+			pageInfo[0].setText( '( ' + i18n.page + ' (rowIndex + 1) of ' + sm.store.data.length + ' )' );
 			nextBtn[0].setDisabled(rowIndex == sm.store.data.length - 1);
 			backbtn[0].setDisabled(rowIndex == 0);
 		}

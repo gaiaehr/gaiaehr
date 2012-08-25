@@ -29,7 +29,7 @@ Ext.define('App.view.areas.PatientPoolDropZone', {
 	},
 
 	onPatientDrop: function(node, data, overModel, dropPosition, eOpts) {
-		var name = (data.records[0].data) ? data.records[0].data.name : data.records[0].name,
+		var name = (data.records[0].data) ? data.records[0].data.name : data.records[0].name,reload
 			pid = (data.records[0].data) ? data.records[0].data.pid : data.records[0].pid,
 			params;
 		app.msg('Sweet!', name + ' sent to ' + this.panel.title);
@@ -116,9 +116,10 @@ Ext.define('App.view.areas.PatientPoolDropZone', {
 	},
 
 	reloadStores: function() {
-        var stores = this.stores;
-        for(var i=0; i < stores.length; i++ ){
-            stores[i].load();
+        if(this.stores){
+	        for(var i=0; i < this.stores.length; i++ ){
+	            this.stores[i].load();
+	        }
         }
 	},
 

@@ -27,7 +27,7 @@ Ext.define('App.view.administration.Lists', {
 	pageLayout   : 'border',
 	uses         : [
 		'App.classes.GridPanel',
-		'App.classes.form.FormPanel',
+		'App.classes.form.Panel',
 		'Ext.grid.plugin.RowEditing'
 	],
 	initComponent: function() {

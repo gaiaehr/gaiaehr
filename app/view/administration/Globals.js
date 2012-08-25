@@ -290,7 +290,7 @@ Ext.define('App.view.administration.Globals', {
 		//**************************************************************************
 		// Global Form Panel
 		//**************************************************************************
-		me.globalFormPanel = Ext.create('App.classes.form.FormPanel', {
+		me.globalFormPanel = Ext.create('App.classes.form.Panel', {
 			layout       : 'fit',
 			autoScroll   : true,
 			bodyStyle    : 'padding: 0;',

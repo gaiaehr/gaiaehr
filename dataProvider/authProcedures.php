@@ -11,8 +11,6 @@ if(!isset($_SESSION)){
     session_start();
     session_cache_limiter('private');
 }
-include_once($_SESSION['site']['root'].'/classes/dbHelper.php');
-include_once($_SESSION['site']['root'].'/classes/AES.php');
 include_once($_SESSION['site']['root'].'/classes/Sessions.php');
 include_once($_SESSION['site']['root'] .'/dataProvider/Patient.php');
 
@@ -69,7 +67,10 @@ class authProcedures {
         // And include the rest of the remaining
         // variables to connect to the database.
         //-------------------------------------------
-
+	    define('_GaiaEXEC', 1);
+	    include_once('../registry.php');
+	    include_once('../classes/AES.php');
+	    include_once('../classes/dbHelper.php');
         $fileConf = '../sites/' . $params->site . '/conf.php';
         if (file_exists($fileConf)){
             /** @noinspection PhpIncludeInspection */

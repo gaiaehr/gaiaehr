@@ -270,7 +270,6 @@ Ext.define('App.view.messages.Messages', {
 				{
 					text   : i18n['send'],
 					iconCls: 'save',
-					cls    : 'winSave',
 					itemId : 'sendMsg',
 					scope  : me,
 					handler: me.onSend

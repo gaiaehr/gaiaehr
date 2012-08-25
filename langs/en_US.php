@@ -164,6 +164,20 @@ $LANG = array(
     'pulse'									=> 'Pulse',
     'temperature'							=> 'Temperature',
     'temp_fahrenheits'						=> 'Temp Fahrenheits',
-    'circumference_cm'						=> 'Circumference (cm)'
+    'circumference_cm'						=> 'Circumference (cm)',
+    'height_for_age'						=> 'Height For Age',
+    'height_inches'							=> 'Height (inches)',
+    'height_centimeters'					=> 'Height (centimeters)',
+    'age_years'								=> 'Age (Years)',
+    'actual_growth'							=> 'Actual Growth',
+    'normal_growth'							=> 'Normal Growth',
+    'weight_for_age'						=> 'Weight For Age',
+    'weight_kg'								=> 'Weight (kg)',
+    'length_cm'								=> 'Length (cm)',
+    'weight_kg'								=> 'Weight (kg)',
+    'weight'								=> 'Weight',
+    'length_for_age_0_36_mos'				=> 'Length For Age ( 0 - 36 mos )Length For Age ( 0 - 36 mos )',
+    'age_mos'								=> 'Age (Mos)',
+    'weight_for_age_0_36_mos'				=> 'Weight For Age ( 0 - 36 mos )',
 );
 ?>

@@ -9,7 +9,7 @@ Ext.define('App.view.patient.charts.LengthForAgeInf',{
     extend:'Ext.panel.Panel',
    	layout:'fit',
    	margin:5,
-    title:'Length For Age ( 0 - 36 mos )',
+    title: i18n.length_for_age_0_36_mos,
 
 	initComponent:function(){
 		var me = this;
@@ -23,7 +23,7 @@ Ext.define('App.view.patient.charts.LengthForAgeInf',{
                 theme:'Sky',
                 axes   : [
                     {
-                        title         : 'Length (cm)',
+                        title         : i18n.length_cm,
                         type          : 'Numeric',
                         position      : 'left',
                         fields        : ['PP','P3','P5','P10','P25','P50','P75','P90','P95','P97'],
@@ -38,7 +38,7 @@ Ext.define('App.view.patient.charts.LengthForAgeInf',{
                         }
                     },
                     {
-                        title         : 'Age (Mos)',
+                        title         : i18n.age_mos,
                         type          : 'Numeric',
                         position      : 'bottom',
                         fields        : ['age_mos']
@@ -46,7 +46,7 @@ Ext.define('App.view.patient.charts.LengthForAgeInf',{
                 ],
                 series : [
                     {
-                        title       : 'Length (cm)',
+                        title       : i18n.length_cm,
                         type        : 'scatter',
                         axis        : 'left',
                         xField      : 'age_mos',
@@ -65,7 +65,7 @@ Ext.define('App.view.patient.charts.LengthForAgeInf',{
                         tips: {
                             trackMouse: true,
                             renderer: function(storeItem, item) {
-                                this.update('Age (Mos): ' + storeItem.get('age_mos') + '<br>Length (cm): ' + storeItem.get('PP'));
+                                this.update(i18n.i18n.age_mos ': ' + storeItem.get('age_mos') + '<br>' + i18n.length_cm + ': ' + storeItem.get('PP'));
                             }
                         }
                     },

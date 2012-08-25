@@ -156,6 +156,13 @@ $LANG = array(
     'searching'								=> 'Searching',
     'please_wait'							=> 'Please Wait',
     'search_results'						=> 'Search Results',
-    'nothing_to_display'					=> 'Nothing to display'
+    'nothing_to_display'					=> 'Nothing to display',
+    'blood_pressure'						=> 'Blood Pressure',
+    'systolic'								=> 'Systolic',
+    'diastolic'								=> 'Diastolic',
+    'pulse_per_min'							=> 'Pulse (per min)',
+    'pulse'									=> 'Pulse',
+    'temperature'							=> 'Temperature',
+    'temp_fahrenheits'						=> 'Temp Fahrenheits'
 );
 ?>

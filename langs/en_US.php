@@ -163,6 +163,7 @@ $LANG = array(
     'pulse_per_min'							=> 'Pulse (per min)',
     'pulse'									=> 'Pulse',
     'temperature'							=> 'Temperature',
-    'temp_fahrenheits'						=> 'Temp Fahrenheits'
+    'temp_fahrenheits'						=> 'Temp Fahrenheits',
+    'circumference_cm'						=> 'Circumference (cm)'
 );
 ?>

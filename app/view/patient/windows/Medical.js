@@ -11,7 +11,7 @@
  */
 Ext.define('App.view.patient.windows.Medical', {
 	extend       : 'App.classes.window.Window',
-	title        : 'Medical Window',
+	title        : i18n['medical_window'],
 	id           : 'MedicalWindow',
 	layout       : 'card',
 	closeAction  : 'hide',
@@ -89,12 +89,12 @@ Ext.define('App.view.patient.windows.Medical', {
 				itemId  : 'patientImmuListGrid',
 				store   : me.patientImmuListStore,
 				features: Ext.create('Ext.grid.feature.Grouping', {
-					groupHeaderTpl   : 'Immunization: {name} ({rows.length} Item{[values.rows.length > 1 ? "s" : ""]})',
+					groupHeaderTpl   : i18n['immunization'] + ': {name} ({rows.length} Item{[values.rows.length > 1 ? "s" : ""]})',
 					hideGroupedHeader: true
 				}),
 				columns : [
 					{
-						header   : 'Immunization Name',
+						header   : i18n['immunization_name'],
 						width    : 100,
 						dataIndex: 'immunization_name'
 					},
@@ -106,7 +106,7 @@ Ext.define('App.view.patient.windows.Medical', {
 						dataIndex: 'administered_date'
 					},
 					{
-						header   : 'Lot Number',
+						header   : i18n['lot_number'],
 						width    : 100,
 						dataIndex: 'lot_number'
 					},
@@ -179,7 +179,7 @@ Ext.define('App.view.patient.windows.Medical', {
 									defaults: { margin: '0 10 3 0', xtype: 'textfield' },
 									items   : [
 										{
-											fieldLabel: 'Lot Number',
+											fieldLabel: i18n['lot_number'],
 											xtype     : 'textfield',
 											width     : 300,
 											name      : 'lot_number'
@@ -188,13 +188,13 @@ Ext.define('App.view.patient.windows.Medical', {
 										{
 
 											xtype     : 'numberfield',
-											fieldLabel: 'Dosis Number',
+											fieldLabel: i18n['dosis_number'],
 											width     : 260,
 											name      : 'dosis'
 										},
 
 										{
-											fieldLabel: 'Info. Statement Given',
+											fieldLabel: i18n['info_statement_given'],
 											width     : 295,
 											labelWidth: 160,
 											xtype     : 'datefield',
@@ -215,14 +215,14 @@ Ext.define('App.view.patient.windows.Medical', {
 									items   : [
 
 										{
-											fieldLabel: 'Notes',
+											fieldLabel: i18n['notes'],
 											xtype     : 'textfield',
 											width     : 300,
 											name      : 'note'
 
 										},
 										{
-											fieldLabel: 'Manufacturer',
+											fieldLabel: i18n['manufacturer'],
 											xtype     : 'textfield',
 											width     : 260,
 
@@ -231,7 +231,7 @@ Ext.define('App.view.patient.windows.Medical', {
 										},
 
 										{
-											fieldLabel: 'Date Administered',
+											fieldLabel: i18n['date_administered'],
 											xtype     : 'datefield',
 											width     : 295,
 											labelWidth: 160,
@@ -251,7 +251,7 @@ Ext.define('App.view.patient.windows.Medical', {
 				}),
 				bbar   : [
 					'->', {
-						text   : 'Reviewed',
+						text   : i18n['reviewed'],
 						action : 'review',
 						itemId : 'review_immunizations',
 						scope  : me,
@@ -269,27 +269,27 @@ Ext.define('App.view.patient.windows.Medical', {
 				store  : me.patientAllergiesListStore,
 				columns: [
 					{
-						header   : 'Type',
+						header   : i18n['type'],
 						width    : 100,
 						dataIndex: 'allergy_type'
 					},
 					{
-						header   : 'Name',
+						header   : i18n['name'],
 						width    : 100,
 						dataIndex: 'allergy'
 					},
 					{
-						header   : 'Location',
+						header   : i18n['location'],
 						width    : 100,
 						dataIndex: 'location'
 					},
 					{
-						header   : 'Severity',
+						header   : i18n['severity'],
 						flex     : 1,
 						dataIndex: 'severity'
 					},
 					{
-						text     : 'Active?',
+						text     : i18n['active'],
 						width    : 55,
 						dataIndex: 'alert',
 						renderer : me.boolRenderer
@@ -317,7 +317,7 @@ Ext.define('App.view.patient.windows.Medical', {
 									items   : [
 										{
 											xtype          : 'mitos.allergiestypescombo',
-											fieldLabel     : 'Type',
+											fieldLabel     : i18n['type'],
 											name           : 'allergy_type',
 											action         : 'allergy_type',
 											allowBlank     : false,
@@ -331,7 +331,7 @@ Ext.define('App.view.patient.windows.Medical', {
 										},
 										{
 											xtype     : 'mitos.allergieslocationcombo',
-											fieldLabel: 'Location',
+											fieldLabel: i18n['location'],
 											name      : 'location',
 											action    : 'location',
 											width     : 225,
@@ -343,7 +343,7 @@ Ext.define('App.view.patient.windows.Medical', {
 
 										},
 										{
-											fieldLabel: 'Begin Date',
+											fieldLabel: i18n['begin_date'],
 											xtype     : 'datefield',
 											format    : 'Y-m-d',
 											name      : 'begin_date'
@@ -363,7 +363,7 @@ Ext.define('App.view.patient.windows.Medical', {
 									items   : [
 										{
 											xtype          : 'mitos.allergiescombo',
-											fieldLabel     : 'Allergy',
+											fieldLabel     : i18n['allergy'],
 											action         : 'allergie_name',
 											name           : 'allergy',
 											enableKeyEvents: true,
@@ -378,7 +378,7 @@ Ext.define('App.view.patient.windows.Medical', {
 										},
 										{
 											xtype          : 'medicationlivetsearch',
-											fieldLabel     : 'Allergy',
+											fieldLabel     : i18n['allergy'],
 											hideLabel      : false,
 											action         : 'drug_name',
 											name           : 'allergy',
@@ -401,7 +401,7 @@ Ext.define('App.view.patient.windows.Medical', {
 										},
 										{
 											xtype     : 'mitos.allergiesabdominalcombo',
-											fieldLabel: 'Reaction',
+											fieldLabel: i18n['reaction'],
 											name      : 'reaction',
 											disabled  : true,
 											width     : 225,
@@ -414,7 +414,7 @@ Ext.define('App.view.patient.windows.Medical', {
 										},
 										{
 											xtype     : 'mitos.allergieslocalcombo',
-											fieldLabel: 'Reaction',
+											fieldLabel: i18n['reaction'],
 											name      : 'reaction',
 											hidden    : true,
 											disabled  : true,
@@ -428,7 +428,7 @@ Ext.define('App.view.patient.windows.Medical', {
 										},
 										{
 											xtype     : 'mitos.allergiesskincombo',
-											fieldLabel: 'Reaction',
+											fieldLabel: i18n['reaction'],
 											name      : 'reaction',
 											hidden    : true,
 											disabled  : true,
@@ -442,7 +442,7 @@ Ext.define('App.view.patient.windows.Medical', {
 										},
 										{
 											xtype     : 'mitos.allergiessystemiccombo',
-											fieldLabel: 'Reaction',
+											fieldLabel: i18n['reaction'],
 											name      : 'reaction',
 											hidden    : true,
 											disabled  : true,
@@ -455,7 +455,7 @@ Ext.define('App.view.patient.windows.Medical', {
 
 										},
 										{
-											fieldLabel: 'End Date',
+											fieldLabel: i18n['end_date'],
 											xtype     : 'datefield',
 											format    : 'Y-m-d',
 											name      : 'end_date'
@@ -474,7 +474,7 @@ Ext.define('App.view.patient.windows.Medical', {
 									items   : [
 										{
 											xtype     : 'mitos.allergiesseveritycombo',
-											fieldLabel: 'Severity',
+											fieldLabel: i18n['severity'],
 											name      : 'severity',
 											width     : 225,
 											labelWidth: 70
@@ -490,7 +490,7 @@ Ext.define('App.view.patient.windows.Medical', {
 				}),
 				bbar   : [
 					'->', {
-						text   : 'Reviewed',
+						text   : i18n['reviewed'],
 						action : 'review',
 						itemId : 'review_allergies',
 						scope  : me,
@@ -509,20 +509,20 @@ Ext.define('App.view.patient.windows.Medical', {
 				columns: [
 
 					{
-						header   : 'Problem',
+						header   : i18n['problem'],
 						flex     : 1,
 						dataIndex: 'code_text'
 					},
 					{
 						xtype    : 'datecolumn',
-						header   : 'Begin Date',
+						header   : i18n['begin_date'],
 						width    : 100,
 						format   : 'Y-m-d',
 						dataIndex: 'begin_date'
 					},
 					{
 						xtype    : 'datecolumn',
-						header   : 'End Date',
+						header   : i18n['end_date'],
 						width    : 100,
 						format   : 'Y-m-d',
 						dataIndex: 'end_date'
@@ -536,7 +536,7 @@ Ext.define('App.view.patient.windows.Medical', {
 
 					formItems: [
 						{
-							title  : 'general',
+							title  : i18n['general'],
 							xtype  : 'container',
 							padding: 10,
 							layout : 'vbox',
@@ -551,7 +551,7 @@ Ext.define('App.view.patient.windows.Medical', {
 									items   : [
 										{
 											xtype          : 'liveicdxsearch',
-											fieldLabel     : 'Problem',
+											fieldLabel     : i18n['problem'],
 											name           : 'code_text',
 											allowBlank     : false,
 											hideLabel      : false,
@@ -574,7 +574,7 @@ Ext.define('App.view.patient.windows.Medical', {
 
 
 										{
-											fieldLabel: 'Begin Date',
+											fieldLabel: i18n['begin_date'],
 											xtype     : 'datefield',
 											width     : 200,
 											labelWidth: 80,
@@ -596,7 +596,7 @@ Ext.define('App.view.patient.windows.Medical', {
 									items   : [
 
 										{
-											fieldLabel: 'Ocurrence',
+											fieldLabel: i18n['ocurrence'],
 											width     : 250,
 											labelWidth: 70,
 											xtype     : 'mitos.occurrencecombo',
@@ -605,7 +605,7 @@ Ext.define('App.view.patient.windows.Medical', {
 										},
 
 										{
-											fieldLabel: 'Outcome',
+											fieldLabel: i18n['outcome'],
 											xtype     : 'mitos.outcome2combo',
 											width     : 250,
 											labelWidth: 70,
@@ -613,7 +613,7 @@ Ext.define('App.view.patient.windows.Medical', {
 
 										},
 										{
-											fieldLabel: 'End Date',
+											fieldLabel: i18n['end_date'],
 											xtype     : 'datefield',
 											width     : 200,
 											labelWidth: 80,
@@ -638,7 +638,7 @@ Ext.define('App.view.patient.windows.Medical', {
 											xtype     : 'textfield',
 											width     : 250,
 											labelWidth: 70,
-											fieldLabel: 'Referred by',
+											fieldLabel: i18n['referred_by'],
 											name      : 'referred_by'
 										}
 
@@ -651,7 +651,7 @@ Ext.define('App.view.patient.windows.Medical', {
 				}),
 				bbar   : [
 					'->', {
-						text   : 'Reviewed',
+						text   : i18n['reviewed'],
 						action : 'review',
 						itemId : 'review_active_problems',
 						scope  : me,
@@ -669,14 +669,14 @@ Ext.define('App.view.patient.windows.Medical', {
 				store  : me.patientSurgeryStore,
 				columns: [
 					{
-						header   : 'Surgery',
+						header   : i18n['surgery'],
 						width    : 100,
 						flex     : 1,
 						dataIndex: 'surgery'
 					},
 					{
 						xtype    : 'datecolumn',
-						header   : 'Date',
+						header   : i18n['date'],
 						width    : 100,
 						format   : 'Y-m-d',
 						dataIndex: 'date'
@@ -703,7 +703,7 @@ Ext.define('App.view.patient.windows.Medical', {
 									defaults: { margin: '0 10 5 0' },
 									items   : [
 										{
-											fieldLabel     : 'Surgery',
+											fieldLabel     : i18n['surgery'],
 											name           : 'surgery',
 											hideLabel      : false,
 											allowBlank     : false,
@@ -725,7 +725,7 @@ Ext.define('App.view.patient.windows.Medical', {
 											action: 'idField'
 										},
 										{
-											fieldLabel: 'Date',
+											fieldLabel: i18n['date'],
 											xtype     : 'datefield',
 											width     : 200,
 											labelWidth: 80,
@@ -746,7 +746,7 @@ Ext.define('App.view.patient.windows.Medical', {
 									defaults: { margin: '0 10 5 0' },
 									items   : [
 										{
-											fieldLabel: 'Notes',
+											fieldLabel: i18n['notes'],
 											xtype     : 'textfield',
 											width     : 510,
 											labelWidth: 70,
@@ -754,7 +754,7 @@ Ext.define('App.view.patient.windows.Medical', {
 
 										},
 										{
-											fieldLabel: 'Outcome',
+											fieldLabel: i18n['outcome'],
 											xtype     : 'mitos.outcome2combo',
 											width     : 200,
 											labelWidth: 80,
@@ -779,7 +779,7 @@ Ext.define('App.view.patient.windows.Medical', {
 											width     : 260,
 											labelWidth: 70,
 
-											fieldLabel: 'Referred by',
+											fieldLabel: i18n['referred_by'],
 											name      : 'referred_by'
 										}
 
@@ -792,7 +792,7 @@ Ext.define('App.view.patient.windows.Medical', {
 				}),
 				bbar   : [
 					'->', {
-						text   : 'Reviewed',
+						text   : i18n['reviewed'],
 						action : 'review',
 						itemId : 'review_surgery',
 						scope  : me,
@@ -810,20 +810,20 @@ Ext.define('App.view.patient.windows.Medical', {
 				store  : me.patientDentalStore,
 				columns: [
 					{
-						header   : 'Title',
+						header   : i18n['title'],
 						width    : 100,
 						dataIndex: 'title'
 					},
 					{
 						xtype    : 'datecolumn',
-						header   : 'Begin Date',
+						header   : i18n['begin_date'],
 						width    : 100,
 						format   : 'Y-m-d',
 						dataIndex: 'begin_date'
 					},
 					{
 						xtype    : 'datecolumn',
-						header   : 'End Date',
+						header   : i18n['end_date'],
 						flex     : 1,
 						format   : 'Y-m-d',
 						dataIndex: 'end_date'
@@ -852,7 +852,7 @@ Ext.define('App.view.patient.windows.Medical', {
 										{   xtype     : 'textfield',
 											width     : 225,
 											labelWidth: 70,
-											fieldLabel: 'Title',
+											fieldLabel: i18n['title'],
 											action    : 'dental',
 											name      : 'title'
 										},
@@ -863,7 +863,7 @@ Ext.define('App.view.patient.windows.Medical', {
 //   		                                    action:'idField'
 //   	                                    },
 										{
-											fieldLabel: 'Begin Date',
+											fieldLabel: i18n['begin_date'],
 											xtype     : 'datefield',
 											width     : 200,
 											labelWidth: 80,
@@ -872,7 +872,7 @@ Ext.define('App.view.patient.windows.Medical', {
 
 										},
 										{
-											fieldLabel: 'Outcome',
+											fieldLabel: i18n['outcome'],
 											xtype     : 'mitos.outcome2combo',
 											width     : 250,
 											labelWidth: 70,
@@ -896,12 +896,12 @@ Ext.define('App.view.patient.windows.Medical', {
 											xtype     : 'textfield',
 											width     : 225,
 											labelWidth: 70,
-											fieldLabel: 'Referred by',
+											fieldLabel: i18n['referred_by'],
 											name      : 'referred_by'
 										},
 
 										{
-											fieldLabel: 'End Date',
+											fieldLabel: i18n['end_date'],
 											xtype     : 'datefield',
 											width     : 200,
 											labelWidth: 80,
@@ -910,7 +910,7 @@ Ext.define('App.view.patient.windows.Medical', {
 
 										},
 										{
-											fieldLabel: 'Ocurrence',
+											fieldLabel: i18n['ocurrence'],
 											xtype     : 'mitos.occurrencecombo',
 											width     : 250,
 											labelWidth: 70,
@@ -928,7 +928,7 @@ Ext.define('App.view.patient.windows.Medical', {
 				}),
 				bbar   : [
 					'->', {
-						text   : 'Reviewed',
+						text   : i18n['reviewed'],
 						action : 'review',
 						itemId : 'review_dental',
 						scope  : me,
@@ -946,20 +946,20 @@ Ext.define('App.view.patient.windows.Medical', {
 				store  : me.patientMedicationsStore,
 				columns: [
 					{
-						header   : 'Medication',
+						header   : i18n['medication'],
 						flex     : 1,
 						dataIndex: 'medication'
 					},
 					{
 						xtype    : 'datecolumn',
-						header   : 'Begin Date',
+						header   : i18n['begin_date'],
 						width    : 100,
 						format   : 'Y-m-d',
 						dataIndex: 'begin_date'
 					},
 					{
 						xtype    : 'datecolumn',
-						header   : 'End Date',
+						header   : i18n['end_date'],
 						width    : 100,
 						format   : 'Y-m-d',
 						dataIndex: 'end_date'
@@ -987,7 +987,7 @@ Ext.define('App.view.patient.windows.Medical', {
 									items   : [
 										{
 											xtype          : 'medicationlivetsearch',
-											fieldLabel     : 'Medication',
+											fieldLabel     : i18n['medication'],
 											hideLabel      : false,
 											itemId         : 'medication',
 											name           : 'medication',
@@ -1008,7 +1008,7 @@ Ext.define('App.view.patient.windows.Medical', {
 										},
 
 										{
-											fieldLabel: 'Begin Date',
+											fieldLabel: i18n['begin_date'],
 											xtype     : 'datefield',
 											width     : 200,
 											labelWidth: 80,
@@ -1029,7 +1029,7 @@ Ext.define('App.view.patient.windows.Medical', {
 									defaults: { margin: '0 10 5 0' },
 									items   : [
 										{
-											fieldLabel: 'Outcome',
+											fieldLabel: i18n['outcome'],
 											xtype     : 'mitos.outcome2combo',
 											width     : 250,
 											labelWidth: 70,
@@ -1038,11 +1038,11 @@ Ext.define('App.view.patient.windows.Medical', {
 										{
 											xtype     : 'textfield',
 											width     : 260,
-											fieldLabel: 'Referred by',
+											fieldLabel: i18n['referred_by'],
 											name      : 'referred_by'
 										},
 										{
-											fieldLabel: 'End Date',
+											fieldLabel: i18n['end_date'],
 											xtype     : 'datefield',
 											width     : 200,
 											labelWidth: 80,
@@ -1063,7 +1063,7 @@ Ext.define('App.view.patient.windows.Medical', {
 									items   : [
 
 										{
-											fieldLabel: 'Ocurrence',
+											fieldLabel: i18n['ocurrence'],
 											width     : 250,
 											labelWidth: 70,
 											xtype     : 'mitos.occurrencecombo',
@@ -1079,7 +1079,7 @@ Ext.define('App.view.patient.windows.Medical', {
 				}),
 				bbar   : [
 					'->', {
-						text   : 'Reviewed',
+						text   : i18n['reviewed'],
 						action : 'review',
 						itemId : 'review_medications',
 						scope  : me,
@@ -1112,7 +1112,7 @@ Ext.define('App.view.patient.windows.Medical', {
 								store    : me.labPanelsStore,
 								columns  : [
 									{
-										header   : 'Laboratories',
+										header   : i18n['laboratories'],
 										dataIndex: 'label',
 										flex     : 1
 									}
@@ -1126,7 +1126,7 @@ Ext.define('App.view.patient.windows.Medical', {
 							{
 								xtype : 'panel',
 								action: 'labPreviewPanel',
-								title : 'Laboratory Preview',
+								title : i18n['laboratory_preview'],
 								region: 'center',
 								items : [
 									me.uploadWin = Ext.create('Ext.window.Window', {
@@ -1154,13 +1154,13 @@ Ext.define('App.view.patient.windows.Medical', {
 										],
 										buttons    : [
 											{
-												text   : 'Cancel',
+												text   : i18n['cancel'],
 												handler: function() {
 													me.uploadWin.close();
 												}
 											},
 											{
-												text   : 'Upload',
+												text   : i18n['upload'],
 												scope  : me,
 												handler: me.onLabUpload
 											}
@@ -1172,11 +1172,11 @@ Ext.define('App.view.patient.windows.Medical', {
 						tbar      : [
 							'->',
 							{
-								text: 'Scan'
+								text: i18n['scan']
 							},
 							'-',
 							{
-								text    : 'Upload',
+								text    : i18n['upload'],
 								disabled: true,
 								action  : 'uploadBtn',
 								scope   : me,
@@ -1192,7 +1192,7 @@ Ext.define('App.view.patient.windows.Medical', {
 						items : [
 							{
 								xtype      : 'form',
-								title      : 'Laboratory Entry Form',
+								title      : i18n['laboratory_entry_form'],
 								region     : 'west',
 								width      : 290,
 								split      : true,
@@ -1201,19 +1201,19 @@ Ext.define('App.view.patient.windows.Medical', {
 								bbar       : [
 									'->',
 									{
-										text   : 'Reset',
+										text   : i18n['reset'],
 										scope  : me,
 										handler: me.onLabResultsReset
 									},
 									'-',
 									{
-										text   : 'Sign',
+										text   : i18n['sign'],
 										scope  : me,
 										handler: me.onLabResultsSign
 									},
 									'-',
 									{
-										text   : 'Save',
+										text   : i18n['save'],
 										scope  : me,
 										handler: me.onLabResultsSave
 									}
@@ -1248,7 +1248,7 @@ Ext.define('App.view.patient.windows.Medical', {
 				items: [
 					{
 
-						text        : 'Immunization',
+						text        : i18n['immunization'],
 						enableToggle: true,
 						toggleGroup : 'medicalWin',
 						pressed     : true,
@@ -1259,7 +1259,7 @@ Ext.define('App.view.patient.windows.Medical', {
 					},
 					'-',
 					{
-						text        : 'Allergies',
+						text        : i18n['allergies'],
 						enableToggle: true,
 						toggleGroup : 'medicalWin',
 						itemId      : 'allergies',
@@ -1269,7 +1269,7 @@ Ext.define('App.view.patient.windows.Medical', {
 					},
 					'-',
 					{
-						text        : 'Active Problems',
+						text        : i18n['active_problems'],
 						enableToggle: true,
 						toggleGroup : 'medicalWin',
 						itemId      : 'issues',
@@ -1279,7 +1279,7 @@ Ext.define('App.view.patient.windows.Medical', {
 					},
 					'-',
 					{
-						text        : 'Surgeries',
+						text        : i18n['surgeries'],
 						enableToggle: true,
 						toggleGroup : 'medicalWin',
 						itemId      : 'surgery',
@@ -1289,7 +1289,7 @@ Ext.define('App.view.patient.windows.Medical', {
 					},
 					'-',
 					{
-						text        : 'Dental',
+						text        : i18n['dental'],
 						enableToggle: true,
 						toggleGroup : 'medicalWin',
 						itemId      : 'dental',
@@ -1299,7 +1299,7 @@ Ext.define('App.view.patient.windows.Medical', {
 					},
 					'-',
 					{
-						text        : 'Medications',
+						text        : i18n['medications'],
 						enableToggle: true,
 						toggleGroup : 'medicalWin',
 						itemId      : 'medications',
@@ -1309,7 +1309,7 @@ Ext.define('App.view.patient.windows.Medical', {
 					},
 					'-',
 					{
-						text        : 'Laboratories',
+						text        : i18n['laboratories'],
 						enableToggle: true,
 						toggleGroup : 'medicalWin',
 						itemId      : 'laboratories',
@@ -1319,7 +1319,7 @@ Ext.define('App.view.patient.windows.Medical', {
 					},
 					'->',
 					{
-						text   : 'Add New',
+						text   : i18n['add_new'],
 						action : 'AddRecord',
 						scope  : me,
 						handler: me.onAddItem
@@ -1398,7 +1398,7 @@ Ext.define('App.view.patient.windows.Medical', {
 
 		if(form.isValid()) {
 			form.submit({
-				waitMsg: 'Uploading Laboratory...',
+				waitMsg: i18n['uploading_laboratory'] + '...',
 				params : {
 					pid    : app.currPatient.pid,
 					docType: 'laboratory',
@@ -1452,7 +1452,7 @@ Ext.define('App.view.patient.windows.Medical', {
 							} else {
 								Ext.Msg.show({
 									title  : 'Oops!',
-									msg    : 'Incorrect password',
+									msg    : i18n['incorrect_password'],
 									//buttons:Ext.Msg.OKCANCEL,
 									buttons: Ext.Msg.OK,
 									icon   : Ext.Msg.ERROR,
@@ -1469,7 +1469,7 @@ Ext.define('App.view.patient.windows.Medical', {
 			} else {
 				Ext.Msg.show({
 					title  : 'Oops!',
-					msg    : 'Nothing to sign.',
+					msg    : i18n['nothing_to_sign'],
 					//buttons:Ext.Msg.OKCANCEL,
 					buttons: Ext.Msg.OK,
 					icon   : Ext.Msg.ERROR,
@@ -1524,7 +1524,7 @@ Ext.define('App.view.patient.windows.Medical', {
 			};
 
 		Medical.reviewMedicalWindowEncounter(params, function(provider, response) {
-			me.msg('Sweet!', 'Succefully reviewed');
+			me.msg('Sweet!', i18n['succefully_reviewed']);
 		});
 	},
 

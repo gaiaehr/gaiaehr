@@ -347,7 +347,15 @@ $LANG = array(
 	'obese_class_1'							=> 'Obese Class I',
 	'obese_class_2'							=> 'Obese Class II',
 	'obese_class_3'							=> 'Obese Class III',
-	'visits'								=> 'Visits'
+	'visits'								=> 'Visits',
+	'documents'								=> 'Documents',
+	'view_document'							=> 'View Document',
+	'smoking_status'						=> 'Smoking Status',
+	'alcohol'								=> 'Alcohol?',
+	'pregnant'								=> 'Pregnant?',
+	'review_all'							=> 'Review All',
+	'items_to_review_save_and_review'		=> 'Items To Review Save and Review',
+	'items_to_review_entry_error'			=> 'Items To Review entry error'
 
 );
 ?>

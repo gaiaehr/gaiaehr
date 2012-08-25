@@ -12,7 +12,7 @@
 Ext.define('App.view.patient.EncounterDocumentsGrid', {
 	extend     : 'Ext.grid.Panel',
 	alias:'widget.documentsimplegrid',
-	title:'Documents',
+	title: i18n['documents'],
     split:true,
 	initComponent: function() {
 		var me = this;
@@ -25,7 +25,7 @@ Ext.define('App.view.patient.EncounterDocumentsGrid', {
                 items: [
                     {
 	                    icon: 'ui_icons/preview.png',
-	                    tooltip: 'View Document',
+	                    tooltip: i18n['view_document'],
 	                    handler: me.onDocumentView,
 	                    getClass:function(){
 		                    return 'x-grid-icon-padding';
@@ -34,7 +34,7 @@ Ext.define('App.view.patient.EncounterDocumentsGrid', {
                 ]
             },
             {
-                header:'Type',
+                header: i18n['type'],
                 flex:1,
                 dataIndex:'docType'
             }

@@ -57,7 +57,7 @@ Ext.define('App.view.miscellaneous.MyAccount', {
 		// User Settings Form
 		// Add or Edit purpose
 		// *************************************************************************************
-		me.myAccountForm = Ext.create('App.classes.form.FormPanel', {
+		me.myAccountForm = Ext.create('App.classes.form.Panel', {
 			cls        : 'form-white-bg',
 			frame      : true,
 			hideLabels : true,

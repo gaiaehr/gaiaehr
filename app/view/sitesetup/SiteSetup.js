@@ -17,18 +17,27 @@ Ext.define('App.view.sitesetup.SiteSetup', {
     },
     requires:[
         'App.classes.form.fields.Help',
-        'App.classes.form.fields.plugin.HelpIcon'
+        'App.classes.form.fields.plugin.HelpIcon',
+        'App.classes.window.CopyRights'
     ],
     initComponent: function() {
         var me = this;
+        /**
+         * array to store each step success and data
+         *
+         * me.step[0] = Welcome!
+         * me.step[1] = System Compatibility
+         * me.step[2] = Database Configuration
+         * me.step[3] = Site Configuration
+         * me.step[4] = Installation Complete!
+         *
+         * @type {Array}
+         */
+        me.step = [];
 
-        var obj;
-        var conn;
-        var field;
-        // *************************************************************************************
-        // Structure, data for storeReq
-        // AJAX -> requirements.ejs.php
-        // *************************************************************************************
+        /**
+         * Store used to load system requirements
+         */
         Ext.define('Requirements', {extend: 'Ext.data.Model',
             fields                        : [
                 {name: 'msg', type: 'string'},
@@ -45,68 +54,15 @@ Ext.define('App.view.sitesetup.SiteSetup', {
            	},
             autoLoad: false
         });
-
-        //        // *************************************************************************************
-        //        // grid to show all the requirements status
-        //        // *************************************************************************************
-        //        var reqGrid = Ext.create('Ext.grid.Panel', {
-        //            id        : 'reqGrid',
-        //            store     : storeSites,
-        //            frame     : false,
-        //            border    : false,
-        //            viewConfig: {stripeRows: true},
-        //            columns   : [
-        //                {
-        //                    text     : 'Requirements',
-        //                    flex     : 1,
-        //                    sortable : false,
-        //                    dataIndex: 'msg'
-        //                },
-        //                {
-        //                    text     : 'Status',
-        //                    width    : 150,
-        //                    sortable : true,
-        //                    renderer : status,
-        //                    dataIndex: 'status'
-        //                }
-        //            ]
-        //        });
-        //
-        // *************************************************************************************
-        // The Copyright Notice Window
-        // *************************************************************************************
-        me.winCopyright = Ext.create('widget.window', {
-            id         : 'winCopyright',
-            title      : 'GaiaEHR Copyright Notice',
-            bodyStyle  : 'background-color: #ffffff; padding: 5px;',
-            autoLoad   : 'gpl-licence-en.html',
-            closeAction: 'hide',
-            width      : 900,
-            height     : 500,
-            y          : 90,
-            modal      : false,
-            draggable  : true,
-            resizable  : true,
-            autoScroll : true,
-            dockedItems: [
-                {
-                    dock   : 'bottom',
-                    frame  : false,
-                    border : false,
-                    buttons: [
-                        {
-                            text   : 'Close',
-                            margin : '0 10 0 5',
-                            name   : 'btn_reset',
-                            handler: function(btn) {
-                                btn.up('window').close();
-                            }
-                        }
-                    ]
-                }
-            ]
-        });
-
+        /**
+         * Copy Rights window
+         * @type {*}
+         */
+        me.winCopyright = Ext.create('App.classes.window.CopyRights');
+        /**
+         * Site Setup window
+         * @type {Array}
+         */
         me.items = [
             me.headerPanel = Ext.create('Ext.Container', {
                 cls   : 'siteSetupHeader',
@@ -124,7 +80,7 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                         scope        : me,
                         action:0,
                         pressed:true,
-                        toggleHandler: me.onHeaderBtnPress
+                        handler: me.onHeaderBtnPress
                     }), me.compatibiltyBtn = Ext.create('Ext.Button', {
                         scale        : 'large',
                         iconCls      : 'icoGrayFace',
@@ -133,10 +89,11 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                         iconAlign    : 'right',
                         enableToggle : true,
                         toggleGroup  : 'siteSetup',
+                        disabled:true,
                         text         : '2.System Compatibility',
                         scope        : me,
                         action:1,
-                        toggleHandler: me.onHeaderBtnPress
+                        handler: me.onHeaderBtnPress
                     }), me.databaseBtn = Ext.create('Ext.Button', {
                         scale        : 'large',
                         iconCls      : 'icoGrayFace',
@@ -145,10 +102,11 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                         iconAlign    : 'right',
                         enableToggle : true,
                         toggleGroup  : 'siteSetup',
+                        disabled:true,
                         text         : '3.Database Configuration',
                         scope        : me,
                         action:2,
-                        toggleHandler: me.onHeaderBtnPress
+                        handler: me.onHeaderBtnPress
                     }), me.siteConfigurationBtn = Ext.create('Ext.Button', {
                         scale        : 'large',
                         iconCls      : 'icoGrayFace',
@@ -157,10 +115,11 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                         iconAlign    : 'right',
                         enableToggle : true,
                         toggleGroup  : 'siteSetup',
+                        disabled:true,
                         text         : 'Site Configuration',
                         scope        : me,
                         action:3,
-                        toggleHandler: me.onHeaderBtnPress
+                        handler: me.onHeaderBtnPress
                     }), me.completeBtn = Ext.create('Ext.Button', {
                         scale        : 'large',
                         iconCls      : 'icoGrayFace',
@@ -168,10 +127,11 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                         iconAlign    : 'right',
                         enableToggle : true,
                         toggleGroup  : 'siteSetup',
+                        disabled:true,
                         text         : '4.Installation Complete!',
                         scope        : me,
                         action:4,
-                        toggleHandler: me.onHeaderBtnPress
+                        handler: me.onHeaderBtnPress
                     })
                 ]
             }), me.mainPanel = Ext.create('Ext.Container', {
@@ -217,16 +177,10 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                                                 boxLabel  : 'I agree to the GaiaEHR terms and conditions',
                                                 name      : 'topping',
                                                 margin:'5 0 0 0',
-                                                inputValue: '1'
+                                                inputValue: '1',
+                                                scope:me,
+                                                handler:me.licenceChecked
                                             })
-        //                                    {
-        //                                        xtype       : 'button',
-        //                                        componentCls: 'setupBts',
-        //                                        text        : 'Read GPLv3 Licence',
-        //                                        handler     : function() {
-        //                                            me.winCopyright.show();
-        //                                        }
-        //                                    }
                                         ]
                                     }
                                 ]
@@ -236,7 +190,6 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                         store     : me.requirementsStore,
                         frame     : false,
                         title:'Requirements',
-                        //border    : false,
                         action    : 1,
                         viewConfig: {stripeRows: true},
                         columns   : [
@@ -527,7 +480,7 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                                         plugins:[
                                             {
                                                 ptype:'helpicon',
-                                                helpMsg:'Load SNOMED Codes will add a <span style="font-weight: bold;">5 minutes</span> to the installation process.'
+                                                helpMsg:'Load SNOMED Codes will add a <span style="font-weight: bold;">5 to 10 minutes</span> to the installation process.'
                                             }
                                         ]
                                     },
@@ -568,6 +521,7 @@ Ext.define('App.view.sitesetup.SiteSetup', {
             {
                 text   : 'Next',
                 scope  : me,
+                disabled:true,
                 id     : 'move-next',
                 handler: me.onNexStep
             }
@@ -578,23 +532,34 @@ Ext.define('App.view.sitesetup.SiteSetup', {
 
     onDbTestCredentials:function(){
         var me = this,
-            form = me.databaseConfiguration.getForm();
-
-        if(form.isValid()) {
-            SiteSetup.checkDatabaseCredentials(form.getValues(), function(provider, response){
-                say(response.result);
-                if(response.result.success){
-                    me.stepThree = { success:response.result.success };
-                    me.dbInfo = response.result.dbInfo;
-                    me.databaseBtn.setIconCls('icoGreenFace');
-                }else{
-                    me.stepThree = { success:false };
-                    me.databaseBtn.setIconCls('icoRedFace');
-                }
-
+            form = me.databaseConfiguration.getForm(),
+            success,
+            dbInfo;
+        if(typeof form.getValues().dbName !== 'undefined'){
+            if(form.isValid()) {
+                me.databaseConfiguration.el.mask('Validating Database Info');
+                SiteSetup.checkDatabaseCredentials(form.getValues(), function(provider, response){
+                    success = response.result.success;
+                    dbInfo = response.result.dbInfo;
+                    me.step[2] = { success:success , dbInfo:dbInfo };
+                    me.okToGoNext(success);
+                    me.databaseConfiguration.el.unmask();
+                    if(!success) Ext.Msg.show({
+                         title:'Oops!',
+                         msg: 'Unable to validate database credentials.',
+                         buttons: Ext.Msg.Ok,
+                         icon: Ext.Msg.ERROR
+                    });
+                });
+            }
+        }else{
+            Ext.Msg.show({
+                title:'Oops!',
+                msg: 'Please select one of the two options.',
+                buttons: Ext.Msg.Ok,
+                icon: Ext.Msg.ERROR
             });
         }
-
     },
 
     onNexStep: function() {
@@ -608,47 +573,57 @@ Ext.define('App.view.sitesetup.SiteSetup', {
     navigate: function(panel, to) {
         var me = this,
             layout = panel.getLayout(),
-            currCard;
+            currCard, next;
         if(typeof to == 'string') {
             layout[to]();
         } else {
             layout.setActiveItem(to);
         }
-
         currCard = layout.getActiveItem();
         me.headerPanel.getComponent(currCard.action).toggle(true);
-
-        Ext.getCmp('move-prev').setVisible(layout.getPrev());
-        Ext.getCmp('move-next').setVisible(layout.getNext());
-
-        me.stepOne = { success:me.licAgreement.getValue() };
-        me.welcomeBtn.setIconCls(me.stepOne.success ? 'icoGreenFace' : 'icoRedFace');
-
-
         if(currCard.action == 1){
             me.requirementsStore.load({
                 scope:me,
                 callback:me.onRequirementsStoreLoad
             });
         }
+        Ext.getCmp('move-prev').setVisible(layout.getPrev());
+        next = layout.getNext();
+        if(next) {
+            Ext.getCmp('move-next').setDisabled(true);
+        }else{
+            Ext.getCmp('move-next').setVisible(next);
+        }
+    },
 
-
+    licenceChecked:function(checkbox, checked){
+        var me = this;
+        me.step[0] = { success:checked };
+        me.okToGoNext(checked);
     },
 
     onRequirementsStoreLoad:function(records){
         var me = this,
             errorCount = 0;
-       for(var i=0; i < records.length; i++){
-           if(records[i].data.status != 'Ok') errorCount++
-       }
-       me.stepTwo = { success:errorCount === 0 };
-       me.compatibiltyBtn.setIconCls(me.stepTwo.success ? 'icoGreenFace' : 'icoRedFace');
+        for(var i=0; i < records.length; i++){
+            if(records[i].data.status != 'Ok') errorCount++;
+        }
+        me.step[1] = { success:errorCount === 0 };
+        me.okToGoNext(me.step[1].success);
     },
 
     onHeaderBtnPress: function(btn, pressed) {
         if(pressed){
             this.navigate(this.mainPanel, btn.action);
         }
+    },
+
+    okToGoNext:function(ok){
+        var me = this,
+            layout = me.mainPanel.getLayout();
+        me.headerPanel.getComponent(layout.getActiveItem().action).setIconCls(ok ? 'icoGreenFace' : 'icoRedFace');
+        if(layout.getNext()) me.headerPanel.getComponent(layout.getNext().action).setDisabled(!ok);
+        Ext.getCmp('move-next').setDisabled(!ok);
     },
 
     statusRenderer: function(val) {

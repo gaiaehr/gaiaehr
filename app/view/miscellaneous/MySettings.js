@@ -21,7 +21,7 @@ Ext.define('App.view.miscellaneous.MySettings', {
 		// User Settings Form
 		// Add or Edit purpose
 		// *************************************************************************************
-		panel.uSettingsForm = Ext.create('App.classes.form.FormPanel', {
+		panel.uSettingsForm = Ext.create('App.classes.form.Panel', {
 			id         : 'uSettingsForm',
 			bodyStyle  : 'padding: 10px;',
 			cls        : 'form-white-bg',

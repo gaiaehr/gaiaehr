@@ -1015,7 +1015,7 @@
                     "path": "app/classes/combo/"
                 },
                 {
-                    "clsName": "App.classes.form.FormPanel",
+                    "clsName": "App.classes.form.Panel",
                     "name": "FormPanel.js",
                     "path": "app/classes/form/"
                 },

@@ -209,7 +209,7 @@ Ext.define('App.view.administration.Layout', {
 		/**
 		 * form to create and modified the fields
 		 */
-		me.fieldForm = Ext.create('App.classes.form.FormPanel', {
+		me.fieldForm = Ext.create('App.classes.form.Panel', {
 			region       : 'center',
 			//url	            : 'app/administration/layout/data.php?task=formRequest',
 			border       : false,

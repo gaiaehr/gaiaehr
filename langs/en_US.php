@@ -281,6 +281,20 @@ $LANG = array(
     'uploading_laboratory'					=> 'Uploading Laboratory',
     'incorrect_password'					=> 'Incorrect password',
     'nothing_to_sign'						=> 'Nothing to sign.',
-    'succefully_reviewed'					=> 'Succefully reviewed'
+    'succefully_reviewed'					=> 'Succefully reviewed',
+    'order_window'							=> 'Order Window',
+    'new_lab_order'							=> 'New Lab Order',
+    'lab'									=> 'Lab',
+    'create'								=> 'Create',
+    'new_xray_order'						=> 'New X-Ray Order',
+	'dispense'								=> 'Dispense',
+	'refill'								=> 'Refill',
+	'pharmacies'							=> 'Pharmacies',
+	'dose'									=> 'Dose',
+	'dose_mg'								=> 'Dose mg',
+	'take'									=> 'Take',
+	'route'									=> 'route',
+	'new_medication'						=> 'New Medication',
+	'new_doctors_note'						=> 'New Doctors Note'
 );
 ?>

@@ -153,6 +153,7 @@ class dbHelper {
 	                );
 				}
 			}else{
+				// TODO: remove this... after new version (above) is implemented throughout the application
 				if( $Where <> ($key . "='$value'") &&
 	                $Where <> ($key . '='.$value) &&
 	                $Where <> ($key . '="'.$value.'"')){

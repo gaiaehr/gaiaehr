@@ -34,13 +34,17 @@ class SiteSetup
 	{
 		if(isset($params->rootUser)) {
 			$success = $this->rootDatabaseConn($params->dbHost, $params->dbPort, $params->rootUser, $params->rootPass);
+			if($success && $this->conn->query("USE $params->dbName") !== false){
+				return array('success' => false, 'error' => 'Database name in used. Please, use a different Database name');
+			}
 		} else {
 			$success = $this->databaseConn($params->dbHost, $params->dbPort, $params->dbName, $params->dbUser, $params->dbPass);
 		}
-		//TODO: check if database exist
-		//$params->dbName;
-		return array('success' => $success, 'dbInfo' => $params);
-
+		if($success){
+			return array('success' => true, 'dbInfo' => $params);
+		}else{
+			return array('success' => false, 'error' => 'Could not connect to sql server!<br>Please, check database information and try again');
+		}
 	}
 
 	function databaseConn($host, $port, $dbName, $dbUser, $dbPass)

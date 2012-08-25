@@ -218,6 +218,7 @@ $LANG = array(
     'record'								=> 'Record',
     'area'									=> 'Area',
     'patient_have_a_opened_encounter'		=> 'Patient have a opened encounter',
-    'patient_have_been_removed'				=> 'Patient have been removed'
+    'patient_have_been_removed'				=> 'Patient have been removed',
+    'vector_charts'							=> 'Vector Charts'
 );
 ?>

@@ -10,7 +10,7 @@ Ext.define('App.view.patient.windows.Charts', {
 	requires:[
 		'App.store.patient.Vitals'
 	],
-	title      : 'Vector Charts',
+	title      : i18n['vector_charts'],
 	layout     : 'card',
 	closeAction: 'hide',
 	modal      : true,

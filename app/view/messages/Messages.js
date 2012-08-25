@@ -92,7 +92,6 @@ Ext.define('App.view.messages.Messages', {
 				plugins    : Ext.create('Ext.ux.SlidingPager', {}),
 				items      : ['-', {
 					text    : 'Delete',
-					cls     : 'winDelete',
 					iconCls : 'delete',
 					itemId  : 'deleteMsg',
 					disabled: true,
@@ -270,7 +269,6 @@ Ext.define('App.view.messages.Messages', {
 				{
 					text   : 'Send',
 					iconCls: 'save',
-					cls    : 'winSave',
 					itemId : 'sendMsg',
 					scope  : me,
 					handler: me.onSend
@@ -278,7 +276,6 @@ Ext.define('App.view.messages.Messages', {
 				'-',
 				{
 					text    : 'Delete',
-					cls     : 'winDelete',
 					iconCls : 'delete',
 					itemId  : 'deleteMsg',
 					margin  : '0 3 0 0',

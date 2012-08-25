@@ -69,7 +69,7 @@ if(
      * If no directory is found inside sites dir run the setup wizard,
      * if a directory is found inside sites dir run the logon screen
      */
-	if(!empty($_SESSION['site']['sites'])){
+	if(empty($_SESSION['site']['sites'])){
 		include_once('install.php');
 	} else {
         /**

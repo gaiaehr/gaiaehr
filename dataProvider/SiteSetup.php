@@ -74,7 +74,7 @@ class SiteSetup
 		$row = array();
 		// check if ...
 		$status = (empty($_SESSION['site']['sites']) ? 'Ok' : 'Fail');
-		//$row[] = array('msg'=> 'GaiaEHR is not installed', 'status'=> $status);
+		$row[] = array('msg'=> 'GaiaEHR is not installed', 'status'=> $status);
 
 		// verified that php 5.2.0 or later is installed
 		$status = (version_compare(phpversion(), "5.3.2", ">=") ? 'Ok' : 'Fail');

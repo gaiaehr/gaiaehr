@@ -113,8 +113,24 @@ $LANG = array(
     'please_complete_all_required_fields'	=> 'Please, complete all required fields',
     'please_confirm'						=> 'Please confirm',
     'are_you_sure_to_delete_this_message'	=> 'Are you sure to delete this message?',
-    'sent_to_trash'							=> 'Sent to Trash'
-    
-    
+    'sent_to_trash'							=> 'Sent to Trash',
+    'add_or_edit_contact'					=> 'Add or Edit Contact',
+    'primary_info'							=> 'Primary Info',
+    'primary_address'						=> 'Primary Address',
+    'secondary_address'						=> 'Secondary Address',
+    'phone_numbers'							=> 'Phone Numbers',
+    'online_info'							=> 'Online Info',
+    'other_info'							=> 'Other Info',
+    'notes'									=> 'Notes',
+    'name'									=> 'Name',
+    'local'									=> 'Local',
+    'specialty'								=> 'Specialty',
+    'work_phone'							=> 'Work Phone',
+    'mobile'								=> 'Mobile',
+    'fax'									=> 'Fax',
+    'email'									=> 'Email',
+    'primary_address'						=> 'Primary Address',
+    'add_contact'							=> 'Add Contact',
+    'following_data_copied_to_clipboard'	=> 'Following data copied to clipboard',
 );
 ?>

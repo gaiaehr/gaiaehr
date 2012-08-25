@@ -15,10 +15,8 @@ Ext.define('App.view.sitesetup.SiteSetup', {
         type : 'vbox',
         align: 'stretch'
     },
-    requires:[
-        'App.classes.form.fields.Help',
-        'App.classes.form.fields.plugin.HelpIcon',
-        'App.classes.window.CopyRights'
+    requires     : [
+        'App.classes.form.fields.Help', 'App.classes.form.fields.plugin.HelpIcon', 'App.classes.window.CopyRights'
     ],
     initComponent: function() {
         var me = this;
@@ -46,12 +44,12 @@ Ext.define('App.view.sitesetup.SiteSetup', {
         });
         me.requirementsStore = Ext.create('Ext.data.Store', {
             model   : 'Requirements',
-            proxy: {
-           		type       : 'direct',
-           		api        : {
-           			read  : SiteSetup.checkRequirements
-           		}
-           	},
+            proxy   : {
+                type: 'direct',
+                api : {
+                    read: SiteSetup.checkRequirements
+                }
+            },
             autoLoad: false
         });
         /**
@@ -69,69 +67,69 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                 height: 45,
                 items : [
                     me.welcomeBtn = Ext.create('Ext.Button', {
-                        scale        : 'large',
-                        iconCls      : 'icoGrayFace',
-                        componentCls : 'setupBts',
-                        margin       : '0 38 0 0',
-                        iconAlign    : 'right',
-                        enableToggle : true,
-                        toggleGroup  : 'siteSetup',
-                        text         : '1.Welcome!',
-                        scope        : me,
-                        action:0,
-                        pressed:true,
-                        handler: me.onHeaderBtnPress
+                        scale       : 'large',
+                        iconCls     : 'icoGrayFace',
+                        componentCls: 'setupBts',
+                        margin      : '0 38 0 0',
+                        iconAlign   : 'right',
+                        enableToggle: true,
+                        toggleGroup : 'siteSetup',
+                        text        : '1.Welcome!',
+                        scope       : me,
+                        action      : 0,
+                        pressed     : true,
+                        handler     : me.onHeaderBtnPress
                     }), me.compatibiltyBtn = Ext.create('Ext.Button', {
-                        scale        : 'large',
-                        iconCls      : 'icoGrayFace',
-                        componentCls : 'setupBts',
-                        margin       : '0 38 0 0',
-                        iconAlign    : 'right',
-                        enableToggle : true,
-                        toggleGroup  : 'siteSetup',
-                        disabled:true,
-                        text         : '2.System Compatibility',
-                        scope        : me,
-                        action:1,
-                        handler: me.onHeaderBtnPress
+                        scale       : 'large',
+                        iconCls     : 'icoGrayFace',
+                        componentCls: 'setupBts',
+                        margin      : '0 38 0 0',
+                        iconAlign   : 'right',
+                        enableToggle: true,
+                        toggleGroup : 'siteSetup',
+                        disabled    : true,
+                        text        : '2.System Compatibility',
+                        scope       : me,
+                        action      : 1,
+                        handler     : me.onHeaderBtnPress
                     }), me.databaseBtn = Ext.create('Ext.Button', {
-                        scale        : 'large',
-                        iconCls      : 'icoGrayFace',
-                        componentCls : 'setupBts',
-                        margin       : '0 38 0 0',
-                        iconAlign    : 'right',
-                        enableToggle : true,
-                        toggleGroup  : 'siteSetup',
-                        disabled:true,
-                        text         : '3.Database Configuration',
-                        scope        : me,
-                        action:2,
-                        handler: me.onHeaderBtnPress
+                        scale       : 'large',
+                        iconCls     : 'icoGrayFace',
+                        componentCls: 'setupBts',
+                        margin      : '0 38 0 0',
+                        iconAlign   : 'right',
+                        enableToggle: true,
+                        toggleGroup : 'siteSetup',
+                        disabled    : true,
+                        text        : '3.Database Configuration',
+                        scope       : me,
+                        action      : 2,
+                        handler     : me.onHeaderBtnPress
                     }), me.siteConfigurationBtn = Ext.create('Ext.Button', {
-                        scale        : 'large',
-                        iconCls      : 'icoGrayFace',
-                        componentCls : 'setupBts',
-                        margin       : '0 38 0 0',
-                        iconAlign    : 'right',
-                        enableToggle : true,
-                        toggleGroup  : 'siteSetup',
-                        disabled:true,
-                        text         : 'Site Configuration',
-                        scope        : me,
-                        action:3,
-                        handler: me.onHeaderBtnPress
+                        scale       : 'large',
+                        iconCls     : 'icoGrayFace',
+                        componentCls: 'setupBts',
+                        margin      : '0 38 0 0',
+                        iconAlign   : 'right',
+                        enableToggle: true,
+                        toggleGroup : 'siteSetup',
+                        disabled    : true,
+                        text        : 'Site Configuration',
+                        scope       : me,
+                        action      : 3,
+                        handler     : me.onHeaderBtnPress
                     }), me.completeBtn = Ext.create('Ext.Button', {
-                        scale        : 'large',
-                        iconCls      : 'icoGrayFace',
-                        componentCls : 'setupBts',
-                        iconAlign    : 'right',
-                        enableToggle : true,
-                        toggleGroup  : 'siteSetup',
-                        disabled:true,
-                        text         : '4.Installation Complete!',
-                        scope        : me,
-                        action:4,
-                        handler: me.onHeaderBtnPress
+                        scale       : 'large',
+                        iconCls     : 'icoGrayFace',
+                        componentCls: 'setupBts',
+                        iconAlign   : 'right',
+                        enableToggle: true,
+                        toggleGroup : 'siteSetup',
+                        disabled    : true,
+                        text        : '4.Installation Complete!',
+                        scope       : me,
+                        action      : 4,
+                        handler     : me.onHeaderBtnPress
                     })
                 ]
             }), me.mainPanel = Ext.create('Ext.Container', {
@@ -139,47 +137,40 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                 layout: 'card',
                 items : [
                     me.welcome = Ext.create('Ext.Container', {
-                        action    : 0,
-                        items: [
+                        action: 0,
+                        items : [
                             {
                                 xtype           : 'panel',
-                                title:'Welcome to GaiaEHR Site Setup',
+                                title           : 'Welcome to GaiaEHR Site Setup',
                                 styleHtmlContent: true,
-                                cls:'welcome',
-                                layout:'auto',
-                                items:[
+                                cls             : 'welcome',
+                                layout          : 'auto',
+                                items           : [
                                     {
-                                        xtype:'container',
-                                        height:120,
-                                        padding:'5 10 0 10',
-                                        html:' <p>Please allow 10-15 minutes to complete the installation process.</p>' +
-                                            '<p>The GaiaEHR Site Setup will do most of the work for you in just a few clicks.</p>' +
-                                            '<p>However, you must know how to do the following:</p>' +
-                                            '<ul>' +
-                                            '<li>Set permissions on folders & subfolders using an FTP client</li>' +
-                                            '<li>Create a MySQL database using phpMyAdmin (or by asking your hosting provider)</li>' +
-                                            '</ul>'
+                                        xtype  : 'container',
+                                        height : 120,
+                                        padding: '5 10 0 10',
+                                        html   : ' <p>Please allow 10-15 minutes to complete the installation process.</p>' + '<p>The GaiaEHR Site Setup will do most of the work for you in just a few clicks.</p>' + '<p>However, you must know how to do the following:</p>' + '<ul>' + '<li>Set permissions on folders & subfolders using an FTP client</li>' + '<li>Create a MySQL database using phpMyAdmin (or by asking your hosting provider)</li>' + '</ul>'
                                     },
                                     {
                                         xtype      : 'fieldset',
                                         title      : 'License Agreement',
                                         defaultType: 'textfield',
                                         layout     : 'anchor',
-                                        margin:'0 5 5 5',
+                                        margin     : '0 5 5 5',
                                         items      : [
                                             me.licence = Ext.create('Ext.Container', {
-                                                height: 170,
+                                                height          : 170,
                                                 styleHtmlContent: true,
-                                                autoScroll:true,
+                                                autoScroll      : true,
                                                 autoLoad        : 'gpl-licence-en.html'
-                                            }),
-                                            me.licAgreement = Ext.create('Ext.form.field.Checkbox', {
+                                            }), me.licAgreement = Ext.create('Ext.form.field.Checkbox', {
                                                 boxLabel  : 'I agree to the GaiaEHR terms and conditions',
                                                 name      : 'topping',
-                                                margin:'5 0 0 0',
+                                                margin    : '5 0 0 0',
                                                 inputValue: '1',
-                                                scope:me,
-                                                handler:me.licenceChecked
+                                                scope     : me,
+                                                handler   : me.licenceChecked
                                             })
                                         ]
                                     }
@@ -189,7 +180,7 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                     }), me.requirementsGrid = Ext.create('Ext.grid.Panel', {
                         store     : me.requirementsStore,
                         frame     : false,
-                        title:'Requirements',
+                        title     : 'Requirements',
                         action    : 1,
                         viewConfig: {stripeRows: true},
                         columns   : [
@@ -207,34 +198,33 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                                 dataIndex: 'status'
                             }
                         ],
-                        tools:[
+                        tools     : [
                             {
-                                type:'refresh',
+                                type   : 'refresh',
                                 tooltip: 'ReCheck Requirements',
-                                handler: function(){
+                                handler: function() {
                                     me.requirementsStore.load({
-                                        scope:me,
-                                        callback:me.onRequirementsStoreLoad
+                                        scope   : me,
+                                        callback: me.onRequirementsStoreLoad
                                     });
                                 }
                             }
                         ],
-                        bbar:['->', '-',
-                            {
-                                text:'Re-Check Requirements',
-                                handler: function(){
-                                    me.requirementsStore.load({
-                                        scope:me,
-                                        callback:me.onRequirementsStoreLoad
-                                    });
-                                }
-                            }, '-'
+                        bbar      : ['->', '-', {
+                            text   : 'Re-Check Requirements',
+                            handler: function() {
+                                me.requirementsStore.load({
+                                    scope   : me,
+                                    callback: me.onRequirementsStoreLoad
+                                });
+                            }
+                        }, '-'
                         ]
                     }), me.databaseConfiguration = Ext.create('Ext.form.Panel', {
-                        title:'Database Configuration',
+                        title      : 'Database Configuration',
                         defaultType: 'textfield',
-                        bodyPadding:'0 10',
-                        action    : 2,
+                        bodyPadding: '0 10',
+                        action     : 2,
                         items      : [
                             {
                                 xtype  : 'displayfield',
@@ -242,15 +232,15 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                                 value  : 'Choose if you want to <a href="javascript:void(0);" onClick="Ext.getCmp(\'rootFieldset\').enable();">create a new database</a> or use an <a href="javascript:void(0);" onClick="Ext.getCmp(\'dbuserFieldset\').enable();">existing database</a><br>'
                             },
                             {
-                                xtype         : 'fieldset',
-                                id            : 'rootFieldset',
-                                title         : 'Create a New Database (Root Access Needed)',
-                                defaultType   : 'textfield',
-                                collapsed     : true,
-                                disabled      : true,
-                                layout        : 'anchor',
-                                defaults      : {anchor: '100%'},
-                                items         : [
+                                xtype      : 'fieldset',
+                                id         : 'rootFieldset',
+                                title      : 'Create a New Database (Root Access Needed)',
+                                defaultType: 'textfield',
+                                collapsed  : true,
+                                disabled   : true,
+                                layout     : 'anchor',
+                                defaults   : {anchor: '100%'},
+                                items      : [
                                     {
                                         fieldLabel: 'Root User',
                                         name      : 'rootUser',
@@ -292,7 +282,7 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                                         allowBlank: false
                                     }
                                 ],
-                                listeners     : {
+                                listeners  : {
                                     enable: function() {
                                         conn = 'root';
                                         Ext.getCmp('dbuserFieldset').collapse();
@@ -303,15 +293,15 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                                 }
                             },
                             {
-                                xtype         : 'fieldset',
-                                id            : 'dbuserFieldset',
-                                title         : 'Install on a existing database',
-                                defaultType   : 'textfield',
-                                collapsed     : true,
-                                disabled      : true,
-                                layout        : 'anchor',
-                                defaults      : {anchor: '100%'},
-                                items         : [
+                                xtype      : 'fieldset',
+                                id         : 'dbuserFieldset',
+                                title      : 'Install on a existing database',
+                                defaultType: 'textfield',
+                                collapsed  : true,
+                                disabled   : true,
+                                layout     : 'anchor',
+                                defaults   : {anchor: '100%'},
+                                items      : [
                                     {
                                         fieldLabel: 'Database Name',
                                         name      : 'dbName',
@@ -345,7 +335,7 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                                         allowBlank: false
                                     }
                                 ],
-                                listeners     : {
+                                listeners  : {
                                     enable: function() {
                                         conn = 'user';
                                         Ext.getCmp('rootFieldset').collapse();
@@ -356,157 +346,165 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                                 }
                             }
                         ],
-                        bbar    : [
-                            '**Database Connection Test is Required to Continue -->>','->','-',
-                            {
+                        bbar       : [
+                            '**Database Connection Test is Required to Continue -->>', '->', '-', {
                                 text   : 'Database Connection Test',
-                                action     : 'dataTester',
-                                scope:me,
+                                action : 'dataTester',
+                                scope  : me,
                                 handler: me.onDbTestCredentials
-                            },
-                            '-'
+                            }, '-'
                         ]
-                    }),
-                    me.siteConfiguration = Ext.create('Ext.form.Panel', {
-                        title:'Site configuration',
+                    }), me.siteConfiguration = Ext.create('Ext.form.Panel', {
+                        title      : 'Site configuration',
                         defaultType: 'textfield',
-                        bodyPadding:'10',
-                        action    : 3,
-                        items:[
+                        bodyPadding: '10',
+                        action     : 3,
+                        items      : [
                             {
-                                xtype         : 'fieldset',
-                                title         : 'Site / Admin Info',
-                                layout        : 'anchor',
-                                defaults      : { margin: '4 0'},
-                                items         : [
+                                xtype   : 'fieldset',
+                                title   : 'Site / Admin Info (required)',
+                                layout  : 'anchor',
+                                defaults: { margin: '4 0'},
+                                items   : [
                                     {
-                                        xtype:'textfield',
-                                        fieldLabel: 'Site ID',
-                                        name      : 'siteId',
-                                        value:'default',
-                                        plugins:[
+                                        xtype          : 'textfield',
+                                        fieldLabel     : 'Site ID',
+                                        name           : 'siteId',
+                                        value          : 'default',
+                                        enableKeyEvents: true,
+                                        allowBlank     : false,
+                                        plugins        : [
                                             {
-                                                ptype:'helpicon',
-                                                helpMsg:'Most GaiaEHR installations will support only one site.<br>' +
-                                                    'If that is the case for you, leave Site ID on <span style="font-weight: bold;">"default"</span>.<br>' +
-                                                    'Otherwise, use a Site ID short identifier with no spaces<br>' +
-                                                    'or special characters other dashes. It is case-sensitive,<br>' +
-                                                    'we suggest sticking to lower case letters for ease of use'
+                                                ptype  : 'helpicon',
+                                                helpMsg: 'Most GaiaEHR installations will support only one site.<br>' + 'If that is the case for you, leave Site ID on <span style="font-weight: bold;">"default"</span>.<br>' + 'Otherwise, use a Site ID short identifier with no spaces<br>' + 'or special characters other dashes. It is case-sensitive,<br>' + 'we suggest sticking to lower case letters for ease of use'
                                             }
-                                        ]
+                                        ],
+                                        listeners      : {
+                                            scope: me,
+                                            keyup: me.isReadyForInstall
+                                        }
                                     },
                                     {
-                                        xtype:'textfield',
-                                        fieldLabel: 'Admin username',
-                                        name      : 'adminUsername',
-                                        value:'admin',
-                                        plugins:[
+                                        xtype          : 'textfield',
+                                        fieldLabel     : 'Admin username',
+                                        name           : 'adminUsername',
+                                        value          : 'admin',
+                                        enableKeyEvents: true,
+                                        allowBlank     : false,
+                                        plugins        : [
                                             {
-                                                ptype:'helpicon',
-                                                helpMsg:'**Username must be between <span style="font-weight: bold;">4 to 10</span> characters long<br>' +
-                                                        '**Do not use special characters. ei. <span style="font-weight: bold;">"!@#$%^&*()</span>'
+                                                ptype  : 'helpicon',
+                                                helpMsg: '**Username must be between <span style="font-weight: bold;">4 to 10</span> characters long<br>' + '**Do not use special characters. ei. <span style="font-weight: bold;">"!@#$%^&*()</span>'
                                             }
-                                        ]
+                                        ],
+                                        listeners      : {
+                                            scope: me,
+                                            keyup: me.isReadyForInstall
+                                        }
                                     },
                                     {
 
-                                        xtype:'textfield',
-                                        fieldLabel: 'Admin password',
-                                        inputType: 'password',
-                                        name      : 'adminPassword',
-                                        plugins:[
+                                        xtype          : 'textfield',
+                                        fieldLabel     : 'Admin password',
+                                        inputType      : 'password',
+                                        name           : 'adminPassword',
+                                        enableKeyEvents: true,
+                                        allowBlank     : false,
+                                        plugins        : [
                                             {
-                                                ptype:'helpicon',
-                                                helpMsg:'**Password must be between <span style="font-weight: bold;">6 to 8</span> characters long<br>' +
-                                                    '**Do not use special characters. ei. <span style="font-weight: bold;">"!@#$%^&*()</span>'
+                                                ptype  : 'helpicon',
+                                                helpMsg: '**Password must be between <span style="font-weight: bold;">6 to 8</span> characters long<br>' + '**Do not use special characters. ei. <span style="font-weight: bold;">"!@#$%^&*()</span>'
                                             }
-                                        ]
+                                        ],
+                                        listeners      : {
+                                            scope: me,
+                                            keyup: me.isReadyForInstall
+                                        }
                                     }
                                 ]
                             },
                             {
-                                xtype         : 'fieldset',
-                                title         : 'Site Options',
-                                layout        : 'anchor',
-                                defaults      : { margin: '4 0'},
-                                items         : [
+                                xtype   : 'fieldset',
+                                title   : 'Site Options (optional)',
+                                layout  : 'anchor',
+                                defaults: { margin: '4 0'},
+                                items   : [
                                     {
-                                        xtype:'combobox',
+                                        xtype     : 'combobox',
                                         fieldLabel: 'Site Theme',
                                         name      : 'lang',
-                                        plugins:[
+                                        emptytext : 'Select',
+                                        plugins   : [
                                             {
-                                                ptype:'helpicon',
-                                                helpMsg:'**The themes will change the visual aspect.<br>' +
-                                                    '**This can be change later in the Administrator -> Global Setting'
+                                                ptype  : 'helpicon',
+                                                helpMsg: '**The themes will change the visual aspect.<br>' + '**This can be change later in the Administrator -> Global Setting'
                                             }
                                         ]
                                     },
                                     {
-                                        xtype:'combobox',
+                                        xtype     : 'combobox',
                                         fieldLabel: 'Default Language',
                                         name      : 'lang',
-                                        plugins:[
+                                        emptytext : 'Select',
+                                        plugins   : [
                                             {
-                                                ptype:'helpicon',
-                                                helpMsg:'**This default language will be the default language during the Logon window.<br>' +
-                                                    '**This can be change later in the Administrator -> Global Setting'
+                                                ptype  : 'helpicon',
+                                                helpMsg: '**This default language will be the default language during the Logon window.<br>' + '**This can be change later in the Administrator -> Global Setting'
                                             }
                                         ]
                                     },
                                     {
-                                        xtype:'checkboxfield',
+                                        xtype     : 'checkboxfield',
                                         fieldLabel: 'Load ICD9',
                                         name      : 'ICD9',
-                                        plugins:[
+                                        plugins   : [
                                             {
-                                                ptype:'helpicon',
-                                                helpMsg:'Load ICD9 Codes will add a <span style="font-weight: bold;">few minutes</span> to the installation process.'
+                                                ptype  : 'helpicon',
+                                                helpMsg: 'Load ICD9 Codes will add a <span style="font-weight: bold;">few minutes</span> to the installation process.'
                                             }
                                         ]
                                     },
                                     {
-                                        xtype:'checkboxfield',
+                                        xtype     : 'checkboxfield',
                                         fieldLabel: 'Load ICD10',
                                         name      : 'ICD10',
-                                        plugins:[
+                                        plugins   : [
                                             {
-                                                ptype:'helpicon',
-                                                helpMsg:'Load ICD10 Codes will add a <span style="font-weight: bold;">few minutes</span> to the installation process.'
+                                                ptype  : 'helpicon',
+                                                helpMsg: 'Load ICD10 Codes will add a <span style="font-weight: bold;">few minutes</span> to the installation process.'
                                             }
                                         ]
                                     },
                                     {
-                                        xtype:'checkboxfield',
+                                        xtype     : 'checkboxfield',
                                         fieldLabel: 'Load SNOMED',
                                         name      : 'SNOMED',
-                                        plugins:[
+                                        plugins   : [
                                             {
-                                                ptype:'helpicon',
-                                                helpMsg:'Load SNOMED Codes will add a <span style="font-weight: bold;">5 to 10 minutes</span> to the installation process.'
+                                                ptype  : 'helpicon',
+                                                helpMsg: 'Load SNOMED Codes will add a <span style="font-weight: bold;">5 to 10 minutes</span> to the installation process.'
                                             }
                                         ]
                                     },
                                     {
-                                        xtype:'checkboxfield',
+                                        xtype     : 'checkboxfield',
                                         fieldLabel: 'Load RxNorm',
                                         name      : 'RxNorm',
-                                        plugins:[
+                                        plugins   : [
                                             {
-                                                ptype:'helpicon',
-                                                helpMsg:'Load RxNorm Codes will add <span style="font-weight: bold;">30 to 60 minutes</span> to the installation process.'
+                                                ptype  : 'helpicon',
+                                                helpMsg: 'Load RxNorm Codes will add <span style="font-weight: bold;">30 to 60 minutes</span> to the installation process.'
                                             }
                                         ]
                                     }
                                 ]
                             }
                         ]
-                    }),
-                    me.installationComplete = Ext.create('Ext.panel.Panel', {
-                        title:'Installation Complete',
-                        bodyPadding:'10',
-                        action    : 4,
-                        html:'Installation placeholder'
+                    }), me.installationComplete = Ext.create('Ext.panel.Panel', {
+                        title      : 'Installation Complete',
+                        bodyPadding: '10',
+                        action     : 4,
+                        html       : 'Installation placeholder'
                     })
                 ]
             })
@@ -516,51 +514,49 @@ Ext.define('App.view.sitesetup.SiteSetup', {
             {
                 text   : 'Back',
                 scope  : me,
-                hidden:true,
+                hidden : true,
                 id     : 'move-prev',
                 handler: me.onStepBack
             },
             '->',
             {
-                text   : 'Next',
-                scope  : me,
-                disabled:true,
-                id     : 'move-next',
-                handler: me.onNexStep
+                text    : 'Next',
+                scope   : me,
+                disabled: true,
+                id      : 'move-next',
+                handler : me.onNexStep
             }
         ];
 
         me.callParent();
     },
 
-    onDbTestCredentials:function(){
-        var me = this,
-            form = me.databaseConfiguration.getForm(),
-            success,
-            dbInfo;
-        if(typeof form.getValues().dbName !== 'undefined'){
+    onDbTestCredentials: function() {
+        var me = this, form = me.databaseConfiguration.getForm(), success, dbInfo;
+        if(typeof form.getValues().dbName !== 'undefined') {
             if(form.isValid()) {
                 me.databaseConfiguration.el.mask('Validating Database Info');
-                SiteSetup.checkDatabaseCredentials(form.getValues(), function(provider, response){
+                SiteSetup.checkDatabaseCredentials(form.getValues(), function(provider, response) {
                     success = response.result.success;
                     dbInfo = response.result.dbInfo;
-                    me.step[2] = { success:success , dbInfo:dbInfo };
+                    me.step[2] = { success: success, dbInfo: dbInfo };
                     me.okToGoNext(success);
                     me.databaseConfiguration.el.unmask();
+                    me.isReadyForInstall();
                     if(!success) Ext.Msg.show({
-                         title:'Oops!',
-                         msg: response.result.error,
-                         buttons: Ext.Msg.Ok,
-                         icon: Ext.Msg.ERROR
+                        title  : 'Oops!',
+                        msg    : response.result.error,
+                        buttons: Ext.Msg.Ok,
+                        icon   : Ext.Msg.ERROR
                     });
                 });
             }
-        }else{
+        } else {
             Ext.Msg.show({
-                title:'Oops!',
-                msg: 'Please select one of the two options.',
+                title  : 'Oops!',
+                msg    : 'Please select one of the two options.',
                 buttons: Ext.Msg.Ok,
-                icon: Ext.Msg.ERROR
+                icon   : Ext.Msg.ERROR
             });
         }
     },
@@ -574,9 +570,7 @@ Ext.define('App.view.sitesetup.SiteSetup', {
     },
 
     navigate: function(panel, to) {
-        var me = this,
-            layout = panel.getLayout(),
-            currCard, next;
+        var me = this, layout = panel.getLayout(), currCard, next;
         if(typeof to == 'string') {
             layout[to]();
         } else {
@@ -584,49 +578,73 @@ Ext.define('App.view.sitesetup.SiteSetup', {
         }
         currCard = layout.getActiveItem();
         me.headerPanel.getComponent(currCard.action).toggle(true);
-        if(currCard.action == 1){
+        if(currCard.action == 1) {
             me.requirementsStore.load({
-                scope:me,
-                callback:me.onRequirementsStoreLoad
+                scope   : me,
+                callback: me.onRequirementsStoreLoad
             });
         }
         Ext.getCmp('move-prev').setVisible(layout.getPrev());
-        next = layout.getNext();
-        if(next) {
-            Ext.getCmp('move-next').setDisabled(true);
-        }else{
-            Ext.getCmp('move-next').setVisible(next);
-        }
+        me.isReadyForInstall();
     },
 
-    licenceChecked:function(checkbox, checked){
+    licenceChecked: function(checkbox, checked) {
         var me = this;
-        me.step[0] = { success:checked };
+        me.step[0] = { success: checked };
         me.okToGoNext(checked);
+        me.isReadyForInstall();
     },
 
-    onRequirementsStoreLoad:function(records){
-        var me = this,
-            errorCount = 0;
-        for(var i=0; i < records.length; i++){
+    onRequirementsStoreLoad: function(records) {
+        var me = this, errorCount = 0;
+        for(var i = 0; i < records.length; i++) {
             if(records[i].data.status != 'Ok') errorCount++;
         }
-        me.step[1] = { success:errorCount === 0 };
+        me.step[1] = { success: errorCount === 0 };
         me.okToGoNext(me.step[1].success);
+        me.isReadyForInstall();
     },
 
     onHeaderBtnPress: function(btn, pressed) {
-        if(pressed){
+        if(pressed) {
             this.navigate(this.mainPanel, btn.action);
         }
     },
 
-    okToGoNext:function(ok){
-        var me = this,
-            layout = me.mainPanel.getLayout();
+    isReadyForInstall: function() {
+        var me = this, btn = Ext.getCmp('move-next');
+        if(me.checkForError()) {
+            btn.setText('Next');
+            if(me.mainPanel.getLayout().getActiveItem().action == 3) btn.setDisabled(true);
+        } else {
+            btn.setText('Install');
+            btn.setDisabled(false);
+        }
+    },
+
+    checkForError: function() {
+        var me = this, form = me.siteConfiguration.getForm(), error = 0;
+        for(var i = 0; i < me.step.length; i++) {
+            if(!me.step[i].success) error++;
+        }
+        if(error == 0 && i == 3) {
+            if(form.isValid()) {
+                me.headerPanel.getComponent(3).setIconCls('icoGreenFace');
+                return false;
+            } else {
+                me.headerPanel.getComponent(3).setIconCls('icoRedFace');
+                return true;
+            }
+        } else {
+            return true
+        }
+    },
+
+    okToGoNext: function(ok) {
+        var me = this, layout = me.mainPanel.getLayout();
         me.headerPanel.getComponent(layout.getActiveItem().action).setIconCls(ok ? 'icoGreenFace' : 'icoRedFace');
         if(layout.getNext()) me.headerPanel.getComponent(layout.getNext().action).setDisabled(!ok);
-        Ext.getCmp('move-next').setDisabled(!ok);
+        if(me.mainPanel.getLayout().getActiveItem().action != 3) Ext.getCmp('move-next').setDisabled(!ok);
     },
 
     statusRenderer: function(val) {

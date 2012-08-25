@@ -15,6 +15,10 @@ Ext.define('App.view.sitesetup.SiteSetup', {
         type : 'vbox',
         align: 'stretch'
     },
+    requires:[
+        'App.classes.form.fields.Help',
+        'App.classes.form.fields.plugin.HelpIcon'
+    ],
     initComponent: function() {
         var me = this;
 
@@ -73,17 +77,16 @@ Ext.define('App.view.sitesetup.SiteSetup', {
         // *************************************************************************************
         me.winCopyright = Ext.create('widget.window', {
             id         : 'winCopyright',
+            title      : 'GaiaEHR Copyright Notice',
+            bodyStyle  : 'background-color: #ffffff; padding: 5px;',
+            autoLoad   : 'gpl-licence-en.html',
+            closeAction: 'hide',
             width      : 900,
             height     : 500,
             y          : 90,
-            closeAction: 'hide',
-            bodyStyle  : 'background-color: #ffffff; padding: 5px;',
             modal      : false,
-            resizable  : true,
-            title      : 'GaiaEHR Copyright Notice',
             draggable  : true,
-            //closable   : false,
-            autoLoad   : 'gpl-licence-en.html',
+            resizable  : true,
             autoScroll : true,
             dockedItems: [
                 {
@@ -103,188 +106,6 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                 }
             ]
         });
-        //        winCopyright.show();
-        //
-        // *************************************************************************************
-        // Install proccess form
-        // *************************************************************************************
-
-//        var formInstall = Ext.create('Ext.form.Panel', {
-//            id           : 'formInstall',
-//            bodyStyle    : 'padding:5px',
-//            border       : false,
-//            url          : 'install/logic.ejs.php',
-//            layout       : 'fit',
-//            fieldDefaults: {
-//                msgTarget : 'side',
-//                labelWidth: 130
-//            },
-//            defaults     : {
-//                anchor: '100%'
-//            },
-//            items        : [
-//                {
-//                    xtype    : 'tabpanel',
-//                    id       : 'tabsInstall',
-//                    plain    : true,
-//                    border   : false,
-//                    activeTab: 0,
-//                    defaults : {bodyStyle: 'padding:10px'},
-//                    items    : [
-//                        {
-//                            title     : 'Instructions',
-//                            layout    : 'fit',
-//                            autoLoad  : 'install/instructions.html',
-//                            autoScroll: true,
-//                            buttons   : [
-//                                {
-//                                    text   : 'Next',
-//                                    handler: function() {
-//                                        Ext.getCmp('clinicInfo').enable();
-//                                        Ext.getCmp('tabsInstall').setActiveTab(1);
-//                                    }
-//                                }
-//                            ]
-//                        },
-//                        {
-//                            title      : 'Site Information',
-//                            defaults   : {width: 530},
-//                            id         : 'clinicInfo',
-//                            defaultType: 'textfield',
-//                            disabled   : true,
-//                            items      : [
-//                                {
-//                                    xtype     : 'textfield',
-//                                    name      : 'siteName',
-//                                    id        : 'siteNameField',
-//                                    labelAlign: 'top',
-//                                    fieldLabel: 'Site Name (Your Main Clinic\'s Name)',
-//                                    allowBlank: false,
-//                                    listeners : {
-//                                        validitychange: function() {
-//                                            field = Ext.getCmp('siteNameField');
-//                                            if(field.isValid()) {
-//                                                Ext.getCmp('clinicInfoNext').enable();
-//                                            } else {
-//                                                Ext.getCmp('clinicInfoNext').disable();
-//                                            }
-//                                        }
-//                                    }
-//                                },
-//                                {
-//                                    xtype: 'displayfield',
-//                                    value: 'Tips...'
-//                                },
-//                                {
-//                                    xtype: 'displayfield',
-//                                    value: '<span style="color:red;">* A Site will have their own database and will no be able to communicate with other sites.</span>'
-//                                },
-//                                {
-//                                    xtype: 'displayfield',
-//                                    value: '<span style="color:green;">* If not sure what name to choose for your site, just type "default".</span>'
-//                                },
-//                                {
-//                                    xtype: 'displayfield',
-//                                    value: '<span style="color:green;">* A Site can have multiple clinics.</span>'
-//                                },
-//                                {
-//                                    xtype: 'displayfield',
-//                                    value: '<span style="color:green;">* Why "Site Name" and no "Clinic\' Name"?</span> Basically because you can have more than one installation using the same webserver. ei. Two physician that share the same office but no their patients.'
-//                                },
-//                                {
-//                                    xtype: 'displayfield',
-//                                    value: '<span style="color:green;">* more tips to come...</span>'
-//                                }
-//                            ],
-//                            buttons    : [
-//                                {
-//                                    text   : 'Back',
-//                                    handler: function() {
-//                                        Ext.getCmp('tabsInstall').setActiveTab(0);
-//                                    }
-//                                },
-//                                {
-//                                    text    : 'Next',
-//                                    id      : 'clinicInfoNext',
-//                                    disabled: true,
-//                                    handler : function() {
-//                                        Ext.getCmp('databaseInfo').enable();
-//                                        Ext.getCmp('tabsInstall').setActiveTab(2);
-//                                    }
-//                                }
-//                            ]
-//                        },
-//
-//                        {
-//                            title      : 'Administrator Information',
-//                            defaults   : {width: 530},
-//                            id         : 'adminInfo',
-//                            defaultType: 'textfield',
-//                            disabled   : true,
-//                            items      : [
-//                                {
-//                                    xtype: 'displayfield',
-//                                    value: 'Choose Administrator Username and Password'
-//                                },
-//                                {
-//                                    xtype  : 'displayfield',
-//                                    padding: '0 0 10px 0',
-//                                    value  : '(This account will be the Super User/Global Admin with access to all areas)'
-//                                },
-//                                {
-//                                    fieldLabel: 'Administrator Username',
-//                                    name      : 'adminUser',
-//                                    padding   : '0 0 10px 0'
-//                                },
-//                                {
-//                                    fieldLabel: 'Administrator Password',
-//                                    type      : 'password',
-//                                    name      : 'adminPass',
-//                                    inputType : 'password'
-//                                }
-//                            ],
-//                            buttons    : [
-//                                {
-//                                    text   : 'Back',
-//                                    handler: function() {
-//                                        Ext.getCmp('tabsInstall').setActiveTab(2);
-//                                    }
-//                                },
-//                                {
-//                                    text   : 'Finish',
-//                                    handler: function() {
-//                                        var form = this.up('form').getForm();
-//                                        if(form.isValid()) {
-//                                            form.submit({
-//                                                method : 'POST',
-//                                                params : {
-//                                                    task: 'install'
-//                                                },
-//                                                success: function(form, action) {
-//                                                    obj = Ext.JSON.decode(action.response.responseText);
-//                                                    Ext.Msg.alert('Sweet!', obj.msg, function(btn, text) {
-//                                                        if(btn == 'ok') {
-//                                                            window.location = "index.php"
-//                                                        }
-//                                                    });
-//
-//                                                },
-//                                                failure: function(form, action) {
-//                                                    obj = Ext.JSON.decode(action.response.responseText);
-//                                                    Ext.Msg.alert('Oops!', obj.msg);
-//                                                    Ext.getCmp('dataInfoNext').disable();
-//                                                }
-//                                            });
-//                                        }
-//                                    }
-//                                }
-//                            ]
-//                        }
-//                    ]
-//                }
-//            ]
-//        });
-
 
         me.items = [
             me.headerPanel = Ext.create('Ext.Container', {
@@ -595,7 +416,135 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                         defaultType: 'textfield',
                         bodyPadding:'10',
                         action    : 3,
-                        html:'Site configuration placeholder'
+                        items:[
+                            {
+                                xtype         : 'fieldset',
+                                title         : 'Site / Admin Info',
+                                layout        : 'anchor',
+                                defaults      : { margin: '4 0'},
+                                items         : [
+                                    {
+                                        xtype:'textfield',
+                                        fieldLabel: 'Site ID',
+                                        name      : 'siteId',
+                                        value:'default',
+                                        plugins:[
+                                            {
+                                                ptype:'helpicon',
+                                                helpMsg:'Most GaiaEHR installations will support only one site.<br>' +
+                                                    'If that is the case for you, leave Site ID on <span style="font-weight: bold;">"default"</span>.<br>' +
+                                                    'Otherwise, use a Site ID short identifier with no spaces<br>' +
+                                                    'or special characters other dashes. It is case-sensitive,<br>' +
+                                                    'we suggest sticking to lower case letters for ease of use'
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        xtype:'textfield',
+                                        fieldLabel: 'Admin username',
+                                        name      : 'adminUsername',
+                                        value:'admin',
+                                        plugins:[
+                                            {
+                                                ptype:'helpicon',
+                                                helpMsg:'**Username must be between <span style="font-weight: bold;">4 to 10</span> characters long<br>' +
+                                                        '**Do not use special characters. ei. <span style="font-weight: bold;">"!@#$%^&*()</span>'
+                                            }
+                                        ]
+                                    },
+                                    {
+
+                                        xtype:'textfield',
+                                        fieldLabel: 'Admin password',
+                                        inputType: 'password',
+                                        name      : 'adminPassword',
+                                        plugins:[
+                                            {
+                                                ptype:'helpicon',
+                                                helpMsg:'**Password must be between <span style="font-weight: bold;">6 to 8</span> characters long<br>' +
+                                                    '**Do not use special characters. ei. <span style="font-weight: bold;">"!@#$%^&*()</span>'
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                xtype         : 'fieldset',
+                                title         : 'Site Options',
+                                layout        : 'anchor',
+                                defaults      : { margin: '4 0'},
+                                items         : [
+                                    {
+                                        xtype:'combobox',
+                                        fieldLabel: 'Site Theme',
+                                        name      : 'lang',
+                                        plugins:[
+                                            {
+                                                ptype:'helpicon',
+                                                helpMsg:'**The themes will change the visual aspect.<br>' +
+                                                    '**This can be change later in the Administrator -> Global Setting'
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        xtype:'combobox',
+                                        fieldLabel: 'Default Language',
+                                        name      : 'lang',
+                                        plugins:[
+                                            {
+                                                ptype:'helpicon',
+                                                helpMsg:'**This default language will be the default language during the Logon window.<br>' +
+                                                    '**This can be change later in the Administrator -> Global Setting'
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        xtype:'checkboxfield',
+                                        fieldLabel: 'Load ICD9',
+                                        name      : 'ICD9',
+                                        plugins:[
+                                            {
+                                                ptype:'helpicon',
+                                                helpMsg:'Load ICD9 Codes will add a <span style="font-weight: bold;">few minutes</span> to the installation process.'
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        xtype:'checkboxfield',
+                                        fieldLabel: 'Load ICD10',
+                                        name      : 'ICD10',
+                                        plugins:[
+                                            {
+                                                ptype:'helpicon',
+                                                helpMsg:'Load ICD10 Codes will add a <span style="font-weight: bold;">few minutes</span> to the installation process.'
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        xtype:'checkboxfield',
+                                        fieldLabel: 'Load SNOMED',
+                                        name      : 'SNOMED',
+                                        plugins:[
+                                            {
+                                                ptype:'helpicon',
+                                                helpMsg:'Load SNOMED Codes will add a <span style="font-weight: bold;">5 minutes</span> to the installation process.'
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        xtype:'checkboxfield',
+                                        fieldLabel: 'Load RxNorm',
+                                        name      : 'RxNorm',
+                                        plugins:[
+                                            {
+                                                ptype:'helpicon',
+                                                helpMsg:'Load RxNorm Codes will add <span style="font-weight: bold;">30 to 60 minutes</span> to the installation process.'
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
                     }),
                     me.installationComplete = Ext.create('Ext.panel.Panel', {
                         title:'Installation Complete',

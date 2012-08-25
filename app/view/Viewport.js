@@ -137,6 +137,12 @@ Ext.define('App.view.Viewport', {
 		'Extensible.calendar.data.MemoryCalendarStore',
 		'Extensible.calendar.data.MemoryEventStore',
 
+        'App.classes.form.fields.Help',
+        'App.classes.form.fields.Checkbox',
+        'App.classes.form.fields.Currency',
+        'App.classes.form.fields.DateTime',
+        'App.classes.form.Panel',
+
 		'App.classes.combo.ActiveFacilities',
         'App.classes.combo.ActiveInsurances',
 		'App.classes.combo.Allergies',
@@ -194,11 +200,6 @@ Ext.define('App.view.Viewport', {
 		'App.classes.combo.Types',
 		'App.classes.combo.Units',
 		'App.classes.combo.Users',
-
-		'App.classes.form.FormPanel',
-		'App.classes.form.fields.Checkbox',
-		'App.classes.form.fields.Currency',
-		'App.classes.form.fields.DateTime',
 
 		'App.classes.window.Window',
 		'App.classes.NodeDisabled',

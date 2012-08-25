@@ -2,6 +2,8 @@
 // Words that are reserved in javascript.
 // - delete
 // - new
+// Please, use the following format i18n['save'] not i18n.save 
+// JavaScript has reserved variables after the dot.
 $LANG = array(
     'dashboard'         					=> 'Dashboard',
     'calendar'          					=> 'Calendar',
@@ -207,6 +209,15 @@ $LANG = array(
     'icds_live_search'						=> 'ICDs Live Sarch',
     'click_to_clear_selection'				=> 'Click to clear selection.',
     'clearable_combo_box'					=> 'Clearable Combo Box',
-    'payments'								=> 'Payments'
+    'payments'								=> 'Payments',
+    'patient_arrival_log'					=> 'Patient Arrival Log',
+    'look_for_patient'						=> 'Look for Patient',
+    'add_new_patient'						=> 'Add New Patient',
+    'remove'								=> 'Remove',
+    'time'									=> 'Time',
+    'record'								=> 'Record',
+    'area'									=> 'Area',
+    'patient_have_a_opened_encounter'		=> 'Patient have a opened encounter',
+    'patient_have_been_removed'				=> 'Patient have been removed'
 );
 ?>

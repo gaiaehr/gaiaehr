@@ -7,7 +7,7 @@
  */
 Ext.define('App.view.patient.windows.ArrivalLog', {
 	extend: 'App.classes.window.Window',
-	title      : 'Patient Arrival Log',
+	title      : i18n['patient_arrival_log'],
 	closeAction: 'hide',
     layout     : 'fit',
 	modal      : true,
@@ -25,7 +25,7 @@ Ext.define('App.view.patient.windows.ArrivalLog', {
 		me.tbar = [
             {
                 xtype       : 'patienlivetsearch',
-                fieldLabel  : 'Look for Patient',
+                fieldLabel  : i18n['look_for_patient'],
                 width       : 400,
                 hideLabel:false,
                 enableKeyEvents:true,
@@ -38,7 +38,7 @@ Ext.define('App.view.patient.windows.ArrivalLog', {
 		    },
             '-',
             {
-                text:'Add New Patient',
+                text: i18n['add_new_patient'],
                 iconCls:'icoAddRecord',
                 action:'newPatientBtn',
                 disabled:true,
@@ -65,32 +65,32 @@ Ext.define('App.view.patient.windows.ArrivalLog', {
                         items: [
                             {
                                 icon: 'ui_icons/delete.png',  // Use a URL in the icon config
-                                tooltip: 'Remove',
+                                tooltip: i18n['remove'],
                                 scope:me,
                                 handler: me.onPatientRemove
                             }
                         ]
                     },
                     {
-                        header:'Time',
+                        header: i18n['time'],
                         dataIndex:'time',
 	                    width:130
                     },
                     {
-                        header:'Record #',
+                        header: i18n['record'] + ' #',
                         dataIndex:'pid'
                     },
                     {
-                        header:'Patient Name',
+                        header: i18n['patient_name'],
                         dataIndex:'name',
                         flex:1
                     },
                     {
-                        header:'Insurance',
+                        header: i18n['insurance'],
                         dataIndex:'insurance'
                     },
                     {
-                        header:'Area',
+                        header: i18n['area'],
                         dataIndex:'area'
                     },
                     {
@@ -153,9 +153,9 @@ Ext.define('App.view.patient.windows.ArrivalLog', {
             record = store.getAt(rowIndex);
 	    Encounter.checkForAnOpenedEncounterByPid({pid:record.data.pid,date:Ext.Date.format(new Date(), 'Y-m-d H:i:s')}, function(provider, response){
 		    if(response.result) {
-			    me.msg('Oops!', 'Patient have a opened encounter');
+			    me.msg('Oops!', i18n['patient_have_a_opened_encounter']);
 		    } else {
-			    me.msg('Sweet!', 'Patient have been removed');
+			    me.msg('Sweet!', i18n['patient_have_been_removed']);
 			    store.remove(record);
 		    }
 	    });

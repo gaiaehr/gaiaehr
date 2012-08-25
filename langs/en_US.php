@@ -149,6 +149,13 @@ $LANG = array(
     'date'									=> 'Date',
     'no_office_notes_to_display'			=> 'No Office Notes to display',
     'show_only_active_notes'				=> 'Show Only Active Notes',
-    'show_all_notes'						=> 'Show All Notes'
+    'show_all_notes'						=> 'Show All Notes',
+    'search_by'								=> 'Search By',
+    'heath_topics'							=> 'Heath Topics',
+    'ICD-9-CM'								=> 'ICD-9-CM',
+    'searching'								=> 'Searching',
+    'please_wait'							=> 'Please Wait',
+    'search_results'						=> 'Search Results',
+    'nothing_to_display'					=> 'Nothing to display'
 );
 ?>

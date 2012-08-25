@@ -24,8 +24,14 @@ class i18n
 	// GaiaEHR Project
 	public function getTranslation()
 	{
+		// This language file is need by default.
+		include_once($_SESSION['site']['root'] . '/langs/en_US.php');
+		$en_US = $LANG;
+		
+		// This file will be called when the user or the administrator select 
+		// a diferent language.
 		include_once($_SESSION['site']['root'] . '/langs/' . $_SESSION['site']['localization'] . '.php');
-		return $LANG;
+		return array_merge($en_US, $LANG);
 	}
 }
 

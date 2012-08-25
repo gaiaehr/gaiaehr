@@ -11,7 +11,7 @@
  */
 Ext.define('App.view.patient.windows.PreventiveCare', {
 	extend       : 'App.classes.window.Window',
-	title        : 'Preventive Care Window',
+	title        : i18n['preventive_care_window'],
 	closeAction  : 'hide',
 	height       : 350,
 	width        : 700,
@@ -31,26 +31,26 @@ Ext.define('App.view.patient.windows.PreventiveCare', {
 		});
 
 		me.grid  = Ext.create('App.classes.GridPanel', {
-			title      : 'Suggestions',
+			title      : i18n['suggestions'],
             store      : me.patientPreventiveCare,
 			features: Ext.create('Ext.grid.feature.Grouping', {
-					groupHeaderTpl   : 'Type: {name} ({rows.length} Item{[values.rows.length > 1 ? "s" : ""]})',
+					groupHeaderTpl   : i18n['type'] + ': {name} ({rows.length} ' + i18n['item'] + '{[values.rows.length > 1 ? "s" : ""]})',
 					hideGroupedHeader: true,
 				    startCollapsed: true
 			}),
             columns    : [
 	            {
-		            header     : 'type',
+		            header     : i18n['type'],
 		            dataIndex: 'type',
 		            width:200
 	            },
                 {
-	                header     : 'Description',
+	                header     : i18n['description'],
                     dataIndex: 'description',
 	                width: 200
                 },
                 {
-	                header     : 'Reason',
+	                header     : i18n['reason'],
 	                dataIndex: 'reason',
 	                flex:1
 
@@ -81,7 +81,7 @@ Ext.define('App.view.patient.windows.PreventiveCare', {
 									{
 										xtype:'textfield',
 										name:'reason',
-										fieldLabel:'Reason',
+										fieldLabel: i18n['reason'],
 										width:585,
 										labelWidth: 70,
 										disabled:true,
@@ -103,7 +103,7 @@ Ext.define('App.view.patient.windows.PreventiveCare', {
 
 									{
 										xtype:'textfield',
-										fieldLabel: 'Observation',
+										fieldLabel: i18n['observation'],
 										name      : 'observation',
 										width     : 250,
 										labelWidth: 70,
@@ -111,7 +111,7 @@ Ext.define('App.view.patient.windows.PreventiveCare', {
 										action:'observation'
 									},
 									{
-										fieldLabel: 'Date',
+										fieldLabel: i18n['date'],
 										xtype:'datefield',
 										disabled:true,
 										action:'date',
@@ -124,7 +124,7 @@ Ext.define('App.view.patient.windows.PreventiveCare', {
 									{
 										xtype:'checkboxfield',
 										name : 'dismiss',
-										fieldLabel : 'Dismiss Alert?',
+										fieldLabel : i18n['dismiss_alert'],
 										enableKeyEvents: true,
 										listeners:{
 											scope:me,

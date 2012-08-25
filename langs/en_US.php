@@ -295,6 +295,12 @@ $LANG = array(
 	'take'									=> 'Take',
 	'route'									=> 'route',
 	'new_medication'						=> 'New Medication',
-	'new_doctors_note'						=> 'New Doctors Note'
+	'new_doctors_note'						=> 'New Doctors Note',
+	'preventive_care_window'				=> 'Preventive Care Window',
+	'suggestions'							=> 'Suggestions',
+	'item'									=> 'Item',
+	'reason'								=> 'Reason',
+	'observation'							=> 'Observation',
+	'dismiss_alert'							=> 'Dismiss Alert?'
 );
 ?>

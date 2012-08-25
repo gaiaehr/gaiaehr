@@ -24,7 +24,7 @@ Ext.define('App.view.patient.encounter.HealthCareFinancingAdministrationOptions'
     },
 
     afterPanelRender:function(){
-        this.mixins.functions.getFormItems(this, 'HCFA 1500 Options');
+        this.mixins.functions.getFormItems(this, i18n.hcfa_1500_options);
     }
 
 });

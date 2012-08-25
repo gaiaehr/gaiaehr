@@ -199,6 +199,10 @@ $LANG = array(
     'quick_reference'						=> 'Quick Reference',
     'reload'								=> 'Reload',
     'cpt_removed_from_this_encounter'		=> 'CPT removed from this Encounter',
-    'cpt_added_to_this_encounter'			=> 'CPT added to this Encounter'
+    'cpt_added_to_this_encounter'			=> 'CPT added to this Encounter',
+    'hcfa_1500_options'						=> 'HCFA 1500 Options',
+    'icds_live_search'						=> 'ICDs Live Sarch',
+    'click_to_clear_selection'				=> 'Click to clear selection.',
+    'clearable_combo_box'					=> 'Clearable Combo Box'
 );
 ?>

@@ -142,6 +142,13 @@ $LANG = array(
     'my_settings'							=> 'My Settings',
     'appearance_settings'					=> 'Appearance Settings',
     'locale_settings'						=> 'Locale Settings',
-    'calendar_settings'						=> 'Calendar Settings'
+    'calendar_settings'						=> 'Calendar Settings',
+    'type_new_note_here'					=> 'Type new note here',
+    'hide_this_note'						=> 'Hide This Note',
+    'hide_selected_office_note'				=> 'Hide Selected Office Note',
+    'date'									=> 'Date',
+    'no_office_notes_to_display'			=> 'No Office Notes to display',
+    'show_only_active_notes'				=> 'Show Only Active Notes',
+    'show_all_notes'						=> 'Show All Notes'
 );
 ?>

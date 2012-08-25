@@ -36,7 +36,7 @@ Ext.define('App.view.patient.windows.Charts', {
 
 
 		me.tbar = ['->', {
-			text        : 'BP/Pulse/Temp',
+			text        : i18n['bp_pulse_temp'],
 			action      : 'bpPulseTemp',
 			pressed     : true,
 			enableToggle: true,
@@ -44,56 +44,56 @@ Ext.define('App.view.patient.windows.Charts', {
 			scope       : me,
 			handler     : me.onChartSwitch
         }, '-', {
-            text        : 'Weight for Age',
+            text        : i18n['weight_for_age'],
             action      : 'WeightForAgeInf',
             enableToggle: true,
             toggleGroup : 'charts',
             scope       : me,
             handler     : me.onChartSwitch
         }, '-', {
-			text        : 'Length for Age',
+			text        : i18n['length_for_age'],
 			action      : 'LengthForAgeInf',
 			enableToggle: true,
 			toggleGroup : 'charts',
 			scope       : me,
 			handler     : me.onChartSwitch
         }, '-', {
-			text        : 'Weight for Recumbent',
+			text        : i18n['weight_for_recumbent'],
 			action      : 'WeightForRecumbentInf',
 			enableToggle: true,
 			toggleGroup : 'charts',
 			scope       : me,
 			handler     : me.onChartSwitch
         }, '-', {
-			text        : 'Head Circumference',
+			text        : i18n['head_circumference'],
 			action      : 'HeadCircumferenceInf',
 			enableToggle: true,
 			toggleGroup : 'charts',
 			scope       : me,
 			handler     : me.onChartSwitch
 		}, '-', {
-			text        : 'Weight for Stature',
+			text        : i18n['weight_for_stature'],
 			action      : 'WeightForStature',
 			enableToggle: true,
 			toggleGroup : 'charts',
 			scope       : me,
 			handler     : me.onChartSwitch
 		}, '-', {
-			text        : 'Weight for Age',
+			text        : i18n['weight_for_age'],
 			action      : 'WeightForAge',
 			enableToggle: true,
 			toggleGroup : 'charts',
 			scope       : me,
 			handler     : me.onChartSwitch
 		}, '-', {
-			text        : 'Stature for Age',
+			text        : i18n['stature_for_age'],
 			action      : 'StatureForAge',
 			enableToggle: true,
 			toggleGroup : 'charts',
 			scope       : me,
 			handler     : me.onChartSwitch
 		}, '-', {
-			text        : 'BMI for Age',
+			text        : i18n['bmi_for_age'],
 			action      : 'BMIForAge',
 			enableToggle: true,
 			toggleGroup : 'charts',
@@ -104,7 +104,7 @@ Ext.define('App.view.patient.windows.Charts', {
 		me.tools = [
 			{
 				type   : 'print',
-				tooltip: 'Print Chart',
+				tooltip: i18n['print_chart'],
 				handler: function() {
 					console.log(this.up('window').down('chart'));
 				}
@@ -118,9 +118,9 @@ Ext.define('App.view.patient.windows.Charts', {
 			}),
 
             me.WeightForAgeInf = Ext.create('App.view.patient.charts.HeadCircumference',{
-                title:'Weight For Age ( 0 - 3 mos )',
-                xTitle:'Weight (kg)',
-                yTitle:'Age (months)',
+                title: i18n['weight_for_age_0_3_mos'],
+                xTitle: i18n['weight_kg'],
+                yTitle: i18n['age_months'],
                 xMinimum:1,
                 xMaximum:19,
                 yMinimum:0,
@@ -129,9 +129,9 @@ Ext.define('App.view.patient.windows.Charts', {
             }),
 
             me.LengthForAgeInf = Ext.create('App.view.patient.charts.HeadCircumference',{
-                title:'Length For Age ( 0 - 3 mos )',
-                xTitle:'Length (cm)',
-                yTitle:'Age (months)',
+                title: i18n['length_for_age_0_3_mos'],
+                xTitle: i18n['length_cm'],
+                yTitle: i18n['age_months'],
                 xMinimum : 40,
                 xMaximum : 110,
                 yMinimum : 0,
@@ -140,9 +140,9 @@ Ext.define('App.view.patient.windows.Charts', {
             }),
 
             me.WeightForRecumbentInf = Ext.create('App.view.patient.charts.HeadCircumference',{
-                title:'Weight For Recumbent ( 0 - 3 mos )',
-                xTitle:'Weight (kg)',
-                yTitle:'Age (months)',
+                title: i18n['weight_for_recumbent_0_3_mos'],
+                xTitle: i18n['weight_kg'],
+                yTitle: i18n['age_months'],
                 xMinimum : 1,
                 xMaximum : 20,
                 yMinimum : 45,
@@ -151,9 +151,9 @@ Ext.define('App.view.patient.windows.Charts', {
             }),
 
             me.HeadCircumferenceInf = Ext.create('App.view.patient.charts.HeadCircumference',{
-                title:'Head Circumference ( 0 - 3 mos )',
-                xTitle:'Circumference (cm)',
-                yTitle:'Age (months)',
+                title: i18n['head_circumference_0_3_mos'],
+                xTitle: i18n['circumference_cm'],
+                yTitle: i18n['age_months'],
                 xMinimum : 30,
                 xMaximum : 55,
                 yMinimum : 0,
@@ -166,9 +166,9 @@ Ext.define('App.view.patient.windows.Charts', {
             }),
 
             me.WeightForAge = Ext.create('App.view.patient.charts.HeadCircumference',{
-                title:'Weight For Age ( 2 - 20 years )',
-                xTitle:'Weight (kg)',
-                yTitle:'Age (years)',
+                title: i18n['weight_for_age_2_20_years'],
+                xTitle: i18n['weight_kg'],
+                yTitle: i18n['age_years'],
                 xMinimum : 10,
                 xMaximum : 110,
                 yMinimum : 2,
@@ -177,9 +177,9 @@ Ext.define('App.view.patient.windows.Charts', {
             }),
 
             me.StatureForAge = Ext.create('App.view.patient.charts.HeadCircumference',{
-                title:'Stature For Age ( 2 - 20 years )',
-                xTitle:'Stature (cm)',
-                yTitle:'Age (years)',
+                title: i18n['stature_for_age_2_20_years'],
+                xTitle: i18n['stature_cm'],
+                yTitle: i18n['age_years'],
                 xMinimum : 60,
                 xMaximum : 200,
                 yMinimum : 2,
@@ -188,9 +188,9 @@ Ext.define('App.view.patient.windows.Charts', {
             }),
 
             me.BMIForAge = Ext.create('App.view.patient.charts.HeadCircumference',{
-                title:'BMI For Age ( 2 - 20 years )',
-                xTitle:'BMI (kg)',
-                yTitle:'Age (years)',
+                title: i18n['bmi_for_age_2_20_years'],
+                xTitle: i18n['bmi_kg'],
+                yTitle: i18n['age_years'],
                 xMinimum : 10,
                 xMaximum : 35,
                 yMinimum : 2,

@@ -219,6 +219,26 @@ $LANG = array(
     'area'									=> 'Area',
     'patient_have_a_opened_encounter'		=> 'Patient have a opened encounter',
     'patient_have_been_removed'				=> 'Patient have been removed',
-    'vector_charts'							=> 'Vector Charts'
+    'vector_charts'							=> 'Vector Charts',
+    'bp_pulse_temp'							=> 'BP/Pulse/Temp',
+    'weight_for_age'						=> 'Weight for Age',
+    'length_for_age'						=> 'Length for Age',
+    'weight_for_recumbent'					=> 'Weight for Recumbent',
+    'head_circumference'					=> 'Head Circumference',
+    'weight_for_stature'					=> 'Weight for Stature',
+    'stature_for_age'						=> 'Stature for Age',
+    'bmi_for_age'							=> 'BMI for Age',
+    'print_chart'							=> 'Print Chart',
+    'weight_for_age_0_3_mos'				=> 'Weight For Age ( 0 - 3 mos )',
+    'age_months'							=> 'Age (months)',
+    'length_for_age_0_3_mos'				=> 'Length For Age ( 0 - 3 mos )',
+    'weight_for_recumbent_0_3_mos'			=> 'Weight For Recumbent ( 0 - 3 mos )',
+    'head_circumference_0_3_mos'			=> 'Head Circumference ( 0 - 3 mos )',
+    'weight_for_age_2_20_years'				=> 'Weight For Age ( 2 - 20 years )',
+    'age_years'								=> 'Age (years)',
+    'stature_for_age_2_20_years'			=> 'Stature For Age ( 2 - 20 years )',
+    'stature_cm'							=> 'Stature (cm)',
+    'bmi_for_age_2_20_years'				=> 'BMI For Age ( 2 - 20 years )',
+    'bmi_kg'								=> 'BMI (kg)'
 );
 ?>

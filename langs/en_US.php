@@ -138,6 +138,10 @@ $LANG = array(
     'change_you_password'					=> 'Change you password',
     'old_password'							=> 'Old Password',
     'new_password'							=> 'New Password',
-    're_type_password'						=> 'Re Type Password'
+    're_type_password'						=> 'Re Type Password',
+    'my_settings'							=> 'My Settings',
+    'appearance_settings'					=> 'Appearance Settings',
+    'locale_settings'						=> 'Locale Settings',
+    'calendar_settings'						=> 'Calendar Settings'
 );
 ?>

@@ -315,11 +315,13 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                                     {
                                         fieldLabel: 'Database Name',
                                         name      : 'dbName',
+                                        value     : 'gaiadb',
                                         allowBlank: false
                                     },
                                     {
                                         fieldLabel: 'Database User',
                                         name      : 'dbUser',
+                                        value     : 'gaiadb',
                                         allowBlank: false
                                     },
                                     {
@@ -327,6 +329,7 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                                         name      : 'dbPass',
                                         id        : 'dbPass',
                                         inputType : 'password',
+                                        value     : 'pass',
                                         allowBlank: false
                                     },
                                     {
@@ -546,7 +549,7 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                     me.databaseConfiguration.el.unmask();
                     if(!success) Ext.Msg.show({
                          title:'Oops!',
-                         msg: 'Unable to validate database credentials.',
+                         msg: response.result.error,
                          buttons: Ext.Msg.Ok,
                          icon: Ext.Msg.ERROR
                     });

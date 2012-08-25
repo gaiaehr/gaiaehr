@@ -132,5 +132,12 @@ $LANG = array(
     'primary_address'						=> 'Primary Address',
     'add_contact'							=> 'Add Contact',
     'following_data_copied_to_clipboard'	=> 'Following data copied to clipboard',
+    'personal_info'							=> 'Personal Info',
+    'login_info'							=> 'Login Info',
+    'change_password'						=> 'Change Password',
+    'change_you_password'					=> 'Change you password',
+    'old_password'							=> 'Old Password',
+    'new_password'							=> 'New Password',
+    're_type_password'						=> 'Re Type Password'
 );
 ?>

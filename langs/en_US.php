@@ -421,7 +421,21 @@ $LANG = array(
 	'tertiary_insurance'					=> 'Tertiary Insurance',
 	'details'								=> 'Details',
 	'patient_photo_id'						=> 'Patient Photo Id',
-	'uploading_insurance'					=> 'Uploading Insurance'
+	'uploading_insurance'					=> 'Uploading Insurance',
+	'copay_payment'							=> 'Co-Pay / Payment',
+	'paid'									=> 'Paid',
+	'charge'								=> 'Charge',
+	'total'									=> 'Total',
+	'amount_due'							=> 'Amount Due',
+	'payment_amount'						=> 'Payment Amount',
+	'balance'								=> 'Balance',
+	'add_service'							=> 'Add Service',
+	'add_copay'								=> 'Add Co-Pay',
+	'notes_and_reminders'					=> 'Notes and Reminders',
+	'note_and_reminder'						=> 'Note and Reminder',
+	'followup_information'					=> 'Follow-Up Information',
+	'schedule_appointment'					=> 'Schedule Appointment',
+	'note_entry_error'						=> 'Note entry error'
 
 );
 ?>

@@ -399,7 +399,29 @@ $LANG = array(
 	'bmi'									=> 'BMI',
 	'bmi_status'							=> 'BMI Status',
 	'other_notes'							=> 'Other Notes',
-	'administer'							=> 'Administer'
+	'administer'							=> 'Administer',
+	'active_medications'					=> 'Active Medications',
+	'alert'									=> 'Alert',
+	'appointments'							=> 'Appointments',
+	'add_note'								=> 'Add Note',
+	'immunizations'							=> 'Immunizations',
+	'reminders'								=> 'Reminders',
+	'add_reminder'							=> 'Add Reminder',
+	'history'								=> 'History',
+	'available_documents'					=> 'Available Documents',
+	'upload_document'						=> 'Upload Document',
+	'select_a_file'							=> 'Select a file',
+	'dismissed_preventive_care_alerts'		=> 'Dismissed Preventive Care Alerts',
+	'account_balance'						=> 'Account Balance',
+	'uploading_document'					=> 'Uploading Document',
+	'take_picture'							=> 'Take Picture',
+	'print_qrcode'							=> 'Print QRCode',
+	'primary_insurance'						=> 'Primary Insurance',
+	'secondary_insurance'					=> 'Secondary Insurance',
+	'tertiary_insurance'					=> 'Tertiary Insurance',
+	'details'								=> 'Details',
+	'patient_photo_id'						=> 'Patient Photo Id',
+	'uploading_insurance'					=> 'Uploading Insurance'
 
 );
 ?>

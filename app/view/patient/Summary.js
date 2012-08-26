@@ -13,7 +13,7 @@
 Ext.define('App.view.patient.Summary', {
 	extend       : 'App.classes.RenderPanel',
 	id           : 'panelSummary',
-	pageTitle    : 'Patient Summary',
+	pageTitle    : i18n['patient_summary'],
 	pageLayout   : {
 		type : 'hbox',
 		align: 'stretch'
@@ -61,19 +61,19 @@ Ext.define('App.view.patient.Summary', {
 				},
 				items      : [
 					{
-						title      : 'Active Medications',
+						title      : i18n['active_medications'],
 						itemId     : 'MedicationsPanel',
 						hideHeaders: true,
 						xtype      : 'grid',
 						store      : me.patientMedicationsStore,
 						columns    : [
 							{
-								header   : 'Name',
+								header   : i18n['name'],
 								dataIndex: 'medication',
 								flex     : 1
 							},
 							{
-								text     : 'Alert',
+								text     : i18n['alert'],
 								width    : 55,
 								dataIndex: 'alert',
 								renderer : me.boolRenderer
@@ -82,7 +82,7 @@ Ext.define('App.view.patient.Summary', {
 						]
 					},
 					{
-						title      : 'Immunizations',
+						title      : i18n['immunizations'],
 						itemId     : 'ImmuPanel',
 						hideHeaders: true,
 						xtype      : 'grid',
@@ -91,12 +91,12 @@ Ext.define('App.view.patient.Summary', {
 						columns    : [
 							{
 
-								header   : 'Name',
+								header   : i18n['name'],
 								dataIndex: 'immunization_name',
 								flex     : 1
 							},
 							{
-								text     : 'Alert',
+								text     : i18n['alert'],
 								width    : 55,
 								dataIndex: 'alert',
 								renderer : me.alertRenderer
@@ -105,7 +105,7 @@ Ext.define('App.view.patient.Summary', {
 						]
 					},
 					{
-						title      : 'Allergies',
+						title      : i18n['allergies'],
 						itemId     : 'AllergiesPanel',
 						hideHeaders: true,
 						xtype      : 'grid',
@@ -113,12 +113,12 @@ Ext.define('App.view.patient.Summary', {
 						region     : 'center',
 						columns    : [
 							{
-								header   : 'Name',
+								header   : i18n['name'],
 								dataIndex: 'allergy',
 								flex     : 1
 							},
 							{
-								text     : 'Alert',
+								text     : i18n['alert'],
 								width    : 55,
 								dataIndex: 'alert',
 								renderer : me.boolRenderer
@@ -126,7 +126,7 @@ Ext.define('App.view.patient.Summary', {
 						]
 					},
 					{
-						title      : 'Active Problems',
+						title      : i18n['active_problems'],
 						itemId     : 'IssuesPanel',
 						hideHeaders: true,
 						xtype      : 'grid',
@@ -134,12 +134,12 @@ Ext.define('App.view.patient.Summary', {
 						columns    : [
 							{
 
-								header   : 'Name',
+								header   : i18n['name'],
 								dataIndex: 'code',
 								flex     : 1
 							},
 							{
-								text     : 'Alert',
+								text     : i18n['alert'],
 								width    : 55,
 								dataIndex: 'alert',
 								renderer : me.boolRenderer
@@ -149,7 +149,7 @@ Ext.define('App.view.patient.Summary', {
 
 					},
 					{
-						title      : 'Dental',
+						title      : i18n['dental'],
 						itemId     : 'DentalPanel',
 						hideHeaders: true,
 						xtype      : 'grid',
@@ -158,7 +158,7 @@ Ext.define('App.view.patient.Summary', {
 						columns: [
 							{
 
-								header   : 'Name',
+								header   : i18n['name'],
 								dataIndex: 'title',
 								flex     : 1
 
@@ -168,7 +168,7 @@ Ext.define('App.view.patient.Summary', {
 
 					},
 					{
-						title      : 'Surgeries',
+						title      : i18n['surgeries'],
 						itemId     : 'SurgeryPanel',
 						hideHeaders: true,
 						xtype      : 'grid',
@@ -182,7 +182,7 @@ Ext.define('App.view.patient.Summary', {
 						]
 					},
 					{
-						title: 'Appointments',
+						title: i18n['appointments'],
 						html : 'Panel content!'
 
 					}
@@ -194,7 +194,7 @@ Ext.define('App.view.patient.Summary', {
 			me.stores.push(me.patientAlertsStore = Ext.create('App.store.patient.MeaningfulUseAlert'));
 			me.tabPanel.add({
 				xtype      : 'form',
-				title      : 'Demographics',
+				title      : i18n['demographics'],
 				action     : 'demoFormPanel',
 				itemId     : 'demoFormPanel',
 				border     : false,
@@ -207,7 +207,7 @@ Ext.define('App.view.patient.Summary', {
 							{
 								xtype   : 'button',
 								action  : 'readOnly',
-								text    : 'Save',
+								text    : i18n['save'],
 								minWidth: 75,
 								scope   : me,
 								handler : me.formSave
@@ -215,7 +215,7 @@ Ext.define('App.view.patient.Summary', {
 							'-',
 							{
 								xtype   : 'button',
-								text    : 'Cancel',
+								text    : i18n['cancel'],
 								action  : 'readOnly',
 								minWidth: 75,
 								scope   : me,
@@ -229,33 +229,33 @@ Ext.define('App.view.patient.Summary', {
 		if(perm.access_patient_notes) {
 			me.stores.push(me.patientNotesStore = Ext.create('App.store.patient.Notes'));
 			me.tabPanel.add({
-				title      : 'Notes',
+				title      : i18n['notes'],
 				itemId     : 'notesPanel',
 				xtype      : 'grid',
 				bodyPadding: 0,
 				store      : me.patientNotesStore,
 				columns    : [
 					{
-						text     : 'Date',
+						text     : i18n['date'],
 						dataIndex: 'date'
 					},
 					{
-						header   : 'Type',
+						header   : i18n['type'],
 						dataIndex: 'type'
 					},
 					{
-						text     : 'Note',
+						text     : i18n['note'],
 						dataIndex: 'body',
 						flex     : 1
 					},
 					{
-						text     : 'User',
+						text     : i18n['user'],
 						dataIndex: 'user_name'
 					}
 				],
 				tbar       : [
 					{
-						text   : 'Add Note',
+						text   : i18n['add_note'],
 						iconCls: 'icoAdd'
 					}
 				]
@@ -264,34 +264,34 @@ Ext.define('App.view.patient.Summary', {
 		if(perm.access_patient_reminders) {
 			me.stores.push(me.patientRemindersStore = Ext.create('App.store.patient.Reminders'));
 			me.tabPanel.add({
-				title      : 'Reminders',
+				title      : i18n['reminders'],
 				itemId     : 'remindersPanel',
 				xtype      : 'grid',
 				bodyPadding: 0,
 				store      : me.patientRemindersStore,
 				columns    : [
 					{
-						text     : 'Date',
+						text     : i18n['date'],
 						dataIndex: 'date'
 					},
 					{
 
-						header   : 'Type',
+						header   : i18n['type'],
 						dataIndex: 'type'
 					},
 					{
-						text     : 'Note',
+						text     : i18n['note'],
 						dataIndex: 'body',
 						flex     : 1
 					},
 					{
-						text     : 'User',
+						text     : i18n['user'],
 						dataIndex: 'user_name'
 					}
 				],
 				tbar       : [
 					{
-						text   : 'Add Reminder',
+						text   : i18n['add_reminder'],
 						iconCls: 'icoAdd'
 					}
 				]
@@ -300,7 +300,7 @@ Ext.define('App.view.patient.Summary', {
 		if(perm.access_patient_vitals) {
 			me.stores.push(me.vitalsStore = Ext.create('App.store.patient.Vitals'));
 			me.tabPanel.add({
-				title      : 'Vitals',
+				title      : i18n['vitals'],
 				autoScroll : true,
 				bodyPadding: 0,
 				items      : {
@@ -312,21 +312,21 @@ Ext.define('App.view.patient.Summary', {
 		if(perm.access_patient_history) {
 			me.stores.push(me.encounterEventHistoryStore = Ext.create('App.store.patient.Encounters'));
 			me.tabPanel.add({
-				title  : 'History',
+				title  : i18n['history'],
 				xtype  : 'grid',
 				store  : me.encounterEventHistoryStore,
 				columns: [
 					{
-						header   : 'Date',
+						header   : i18n['date'],
 						dataIndex: 'start_date'
 					},
 					{
-						header   : 'Event',
+						header   : i18n['event'],
 						dataIndex: 'brief_description',
 						flex     : true
 					},
 					{
-						header   : 'Visit Category',
+						header   : i18n['visit_category'],
 						dataIndex: 'visit_category'
 					}
 				]
@@ -335,7 +335,7 @@ Ext.define('App.view.patient.Summary', {
 		if(perm.access_patient_documents) {
 			me.stores.push(me.patientDocumentsStore = Ext.create('App.store.patient.PatientDocuments'));
 			me.tabPanel.add({
-				title  : 'Documents',
+				title  : i18n['documents'],
 				xtype  : 'grid',
 				store  : me.patientDocumentsStore,
 				columns: [
@@ -345,7 +345,7 @@ Ext.define('App.view.patient.Summary', {
 						items: [
 							{
 								icon    : 'ui_icons/preview.png',
-								tooltip : 'View Document',
+								tooltip : i18n['view_document'],
 								handler : me.onDocumentView,
 								getClass: function() {
 									return 'x-grid-icon-padding';
@@ -354,18 +354,18 @@ Ext.define('App.view.patient.Summary', {
 						]
 					},
 					{
-						header   : 'Type',
+						header   : i18n['type'],
 						dataIndex: 'docType'
 					},
 					{
 						xtype    : 'datecolumn',
-						header   : 'Date',
+						header   : i18n['date'],
 						dataIndex: 'date',
 						format   : 'Y-m-d'
 
 					},
 					{
-						header   : 'Title',
+						header   : i18n['title'],
 						dataIndex: 'title',
 						flex     : true,
 						editor   : {
@@ -385,7 +385,7 @@ Ext.define('App.view.patient.Summary', {
 				tbar: [
 					{
 						xtype     : 'mitos.templatescombo',
-						fieldLabel: 'Available Documents',
+						fieldLabel: i18n['available_documents'],
 						width     : 320,
 						labelWidth: 145,
 						margin    : '10 0 0 10'
@@ -393,14 +393,14 @@ Ext.define('App.view.patient.Summary', {
 					},
 					'-',
 					{
-						text   : 'Add Document',
+						text   : i18n['add_document'],
 						iconCls: 'icoAdd',
 						scope  : me,
 						handler: me.newDoc
 					},
 					'->',
 					{
-						text   : 'Upload Document',
+						text   : i18n['upload_document'],
 						scope  : me,
 						handler: me.uploadADocument
 					},
@@ -422,7 +422,7 @@ Ext.define('App.view.patient.Summary', {
 											{
 												xtype     : 'filefield',
 												name      : 'filePath',
-												buttonText: 'Select a file...',
+												buttonText: i18n['select_a_file'] + '...',
 												anchor    : '100%'
 											}
 										],
@@ -433,13 +433,13 @@ Ext.define('App.view.patient.Summary', {
 								],
 								buttons    : [
 									{
-										text   : 'Cancel',
+										text   : i18n['cancel'],
 										handler: function() {
 											me.uploadWin.close();
 										}
 									},
 									{
-										text   : 'Upload',
+										text   : i18n['upload'],
 										scope  : me,
 										handler: me.onDocUpload
 									}
@@ -453,30 +453,30 @@ Ext.define('App.view.patient.Summary', {
 		if(perm.access_patient_preventive_care_alerts) {
 			me.stores.push(me.patientsDismissedAlerts = Ext.create('App.store.patient.DismissedAlerts'));
 			me.tabPanel.add({
-				title  : 'Dismissed Preventive Care Alerts',
+				title  : i18n['dismissed_preventive_care_alerts'],
 				xtype  : 'grid',
 				store  : me.patientsDismissedAlerts,
 				columns: [
 
 					{
-						header   : 'Description',
+						header   : i18n['description'],
 						dataIndex: 'description'
 					},
 					{
 						xtype    : 'datecolumn',
-						header   : 'Date',
+						header   : i18n['date'],
 						dataIndex: 'date',
 						format   : 'Y-m-d'
 
 					},
 					{
-						header   : 'Reason',
+						header   : i18n['reason'],
 						dataIndex: 'reason',
 						flex     : true
 
 					},
 					{
-						header   : 'Observation',
+						header   : i18n['observation'],
 						dataIndex: 'observation',
 						flex     : true
 
@@ -505,7 +505,7 @@ Ext.define('App.view.patient.Summary', {
 										{
 											xtype     : 'textfield',
 											name      : 'reason',
-											fieldLabel: 'Reason',
+											fieldLabel: i18n['reason'],
 											width     : 585,
 											labelWidth: 70,
 											action    : 'reason'
@@ -525,14 +525,14 @@ Ext.define('App.view.patient.Summary', {
 
 										{
 											xtype     : 'textfield',
-											fieldLabel: 'Observation',
+											fieldLabel: i18n['observation'],
 											name      : 'observation',
 											width     : 250,
 											labelWidth: 70,
 											action    : 'observation'
 										},
 										{
-											fieldLabel: 'Date',
+											fieldLabel: i18n['date'],
 											xtype     : 'datefield',
 											action    : 'date',
 											width     : 200,
@@ -544,7 +544,7 @@ Ext.define('App.view.patient.Summary', {
 										{
 											xtype     : 'checkboxfield',
 											name      : 'dismiss',
-											fieldLabel: 'Dismiss Alert?'
+											fieldLabel: i18n['dismiss_alert']
 
 										}
 
@@ -563,8 +563,8 @@ Ext.define('App.view.patient.Summary', {
 				xtype : 'panel',
 				action: 'balancePanel',
 				itemId: 'balancePanel',
-				title : 'Billing',
-				html  : 'Account Balance: '
+				title : i18n['billing'],
+				html  : i18n['account_balance'] + ': '
 
 			})
 		}
@@ -596,7 +596,7 @@ Ext.define('App.view.patient.Summary', {
 
 		if(form.isValid()) {
 			form.submit({
-				waitMsg: 'Uploading Document...',
+				waitMsg: i18n['uploading_document'] + '...',
 				params : {
 					pid    : me.pid,
 					docType: 'UploadDoc'
@@ -720,7 +720,7 @@ Ext.define('App.view.patient.Summary', {
 						bbar       : [
 							'-',
 							{
-								text   : 'Take Picture',
+								text   : i18n['take_picture'],
 								scope  : me,
 								handler: me.getPhotoIdWindow
 							},
@@ -728,7 +728,7 @@ Ext.define('App.view.patient.Summary', {
 							'->',
 							'-',
 							{
-								text   : 'Print QRCode',
+								text   : i18n['print_qrcode'],
 								scope  : me,
 								handler: function() {
 									window.printQRCode(app.currPatient.pid);
@@ -759,7 +759,7 @@ Ext.define('App.view.patient.Summary', {
 											{
 												xtype     : 'filefield',
 												name      : 'filePath',
-												buttonText: 'Select a file...',
+												buttonText: i18n['select_a_file'] + '...',
 												anchor    : '100%'
 											}
 										],
@@ -771,13 +771,13 @@ Ext.define('App.view.patient.Summary', {
 								],
 								buttons    : [
 									{
-										text   : 'Cancel',
+										text   : i18n['cancel'],
 										handler: function(btn) {
 											btn.up('window').close();
 										}
 									},
 									{
-										text   : 'Upload',
+										text   : i18n['upload'],
 										scope  : me,
 										action : 'Primary Insurance',
 										handler: me.onInsuranceUpload
@@ -789,7 +789,7 @@ Ext.define('App.view.patient.Summary', {
 							'->',
 							'-',
 							{
-								text   : 'Upload',
+								text   : i18n['upload'],
 								action : 'primaryInsurance',
 								scope  : me,
 								handler: me.uploadInsurance
@@ -819,7 +819,7 @@ Ext.define('App.view.patient.Summary', {
 											{
 												xtype     : 'filefield',
 												name      : 'filePath',
-												buttonText: 'Select a file...',
+												buttonText: i18n['select_a_file'] + '...',
 												anchor    : '100%'
 											}
 										],
@@ -831,13 +831,13 @@ Ext.define('App.view.patient.Summary', {
 								],
 								buttons    : [
 									{
-										text   : 'Cancel',
+										text   : i18n['cancel'],
 										handler: function(btn) {
 											btn.up('window').close();
 										}
 									},
 									{
-										text   : 'Upload',
+										text   : i18n['upload'],
 										scope  : me,
 										action : 'Secondary Insurance',
 										handler: me.onInsuranceUpload
@@ -850,7 +850,7 @@ Ext.define('App.view.patient.Summary', {
 							'->',
 							'-',
 							{
-								text   : 'Upload',
+								text   : i18n['upload'],
 								action : 'secondaryInsurance',
 								scope  : me,
 								handler: me.uploadInsurance
@@ -880,7 +880,7 @@ Ext.define('App.view.patient.Summary', {
 											{
 												xtype     : 'filefield',
 												name      : 'filePath',
-												buttonText: 'Select a file...',
+												buttonText: i18n['select_a_file'] + '...',
 												anchor    : '100%'
 											}
 										],
@@ -892,13 +892,13 @@ Ext.define('App.view.patient.Summary', {
 								],
 								buttons    : [
 									{
-										text   : 'Cancel',
+										text   : i18n['cancel'],
 										handler: function(btn) {
 											btn.up('window').close();
 										}
 									},
 									{
-										text   : 'Upload',
+										text   : i18n['upload'],
 										scope  : me,
 										action : 'Tertiary Insurance',
 										handler: me.onInsuranceUpload
@@ -949,7 +949,7 @@ Ext.define('App.view.patient.Summary', {
 		var me = this;
 		panel.getComponent('ImmuPanel').header.add({
 			xtype  : 'button',
-			text   : 'Details',
+			text   : i18n['details'],
 			action : 'immunization',
 			scope  : me,
 			handler: me.medicalWin
@@ -958,7 +958,7 @@ Ext.define('App.view.patient.Summary', {
 		});
 		panel.getComponent('MedicationsPanel').header.add({
 			xtype  : 'button',
-			text   : 'Details',
+			text   : i18n['details'],
 			action : 'medications',
 			scope  : me,
 			handler: me.medicalWin
@@ -967,28 +967,28 @@ Ext.define('App.view.patient.Summary', {
 		});
 		panel.getComponent('AllergiesPanel').header.add({
 			xtype  : 'button',
-			text   : 'Details',
+			text   : i18n['details'],
 			action : 'allergies',
 			scope  : me,
 			handler: me.medicalWin
 		});
 		panel.getComponent('IssuesPanel').header.add({
 			xtype  : 'button',
-			text   : 'Details',
+			text   : i18n['details'],
 			action : 'issues',
 			scope  : me,
 			handler: me.medicalWin
 		});
 		panel.getComponent('DentalPanel').header.add({
 			xtype  : 'button',
-			text   : 'Details',
+			text   : i18n['details'],
 			action : 'dental',
 			scope  : me,
 			handler: me.medicalWin
 		});
 		panel.getComponent('SurgeryPanel').header.add({
 			xtype  : 'button',
-			text   : 'Details',
+			text   : i18n['details'],
 			action : 'surgery',
 			scope  : me,
 			handler: me.medicalWin
@@ -1010,7 +1010,7 @@ Ext.define('App.view.patient.Summary', {
 	getPhotoIdWindow: function() {
 		var me = this;
 		me.PhotoIdWindow = Ext.create('App.classes.PhotoIdWindow', {
-			title   : 'Patient Photo Id',
+			title   : i18n['patient_photo_id'],
 			loadMask: true,
 			modal   : true
 		}).show();
@@ -1042,7 +1042,7 @@ Ext.define('App.view.patient.Summary', {
 		}
 		if(form.isValid()) {
 			form.submit({
-				waitMsg: 'Uploading Insurance...',
+				waitMsg: i18n['uploading_insurance'] + '...',
 				params : {
 					pid    : app.currPatient.pid,
 					docType: action
@@ -1142,7 +1142,7 @@ Ext.define('App.view.patient.Summary', {
 			/**
 			 * update panel main title to reflect the patient name and if the patient is read only
 			 */
-			me.updateTitle(patient.name + ' - #' + patient.pid + ' (Patient Summary)', app.currPatient.readOnly);
+			me.updateTitle(patient.name + ' - #' + patient.pid + ' (' + i18n['patient_summary'] + ')', app.currPatient.readOnly);
 			/**
 			 * verify if the patient is on read only mode
 			 */
@@ -1174,7 +1174,7 @@ Ext.define('App.view.patient.Summary', {
 			if(perm.access_patient_billing) {
 				billingPanel = me.tabPanel.getComponent('balancePanel');
 				Fees.getPatientBalance({pid: me.pid}, function(balance) {
-					billingPanel.update('Account Balance: $' + balance);
+					billingPanel.update(i18n['account_balance'] + ': $' + balance);
 				});
 			}
 			/**

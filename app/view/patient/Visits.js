@@ -12,7 +12,7 @@
 Ext.define('App.view.patient.Visits', {
 	extend   : 'App.classes.RenderPanel',
 	id       : 'panelVisits',
-	pageTitle: 'Visits History',
+	pageTitle: i18n['visits_history'],
 	uses     : [
 		'App.classes.GridPanel',
 		'Ext.ux.PreviewPlugin'
@@ -35,16 +35,16 @@ Ext.define('App.view.patient.Visits', {
 		// Visit History Grid
 		//******************************************************************
 		me.historyGrid = Ext.create('App.classes.GridPanel', {
-			title     : 'Encounter History',
+			title     : i18n['encounter_history'],
 			store     : me.store,
 			columns   : [
 				{ header: 'eid', sortable: false, dataIndex: 'eid', hidden: true},
-				{ width: 150, header: 'Date', sortable: true, dataIndex: 'start_date', renderer: Ext.util.Format.dateRenderer('Y-m-d H:i:s') },
-				{ flex: 1, header: 'Reason', sortable: true, dataIndex: 'brief_description' },
-				{ width: 180, header: 'Provider', sortable: false, dataIndex: 'provider' },
-				{ width: 120, header: 'facility', sortable: false, dataIndex: 'facility' },
-				{ width: 120, header: 'Billing Facility', sortable: true, dataIndex: 'billing_facility' },
-				{ width: 45, header: 'Close?', sortable: true, dataIndex: 'close_date', renderer: me.openBool }
+				{ width: 150, header: i18n['date'], sortable: true, dataIndex: 'start_date', renderer: Ext.util.Format.dateRenderer('Y-m-d H:i:s') },
+				{ flex: 1, header: i18n['reason'], sortable: true, dataIndex: 'brief_description' },
+				{ width: 180, header: i18n['provider'], sortable: false, dataIndex: 'provider' },
+				{ width: 120, header: i18n['facility'], sortable: false, dataIndex: 'facility' },
+				{ width: 120, header: i18n['billing_facility'], sortable: true, dataIndex: 'billing_facility' },
+				{ width: 45, header: i18n['close'] + '?', sortable: true, dataIndex: 'close_date', renderer: me.openBool }
 			],
 			viewConfig: {
 				itemId   : 'view',
@@ -70,14 +70,14 @@ Ext.define('App.view.patient.Visits', {
 				items      : [
 					{
 						iconCls      : '',
-						text         : 'Show Details',
+						text         : i18n['show_details'],
 						enableToggle : true,
 						scope        : me,
 						toggleHandler: me.onDetailToggle
 					},
 					'-',
 					{
-						text   : 'New Encounter',
+						text   : i18n['new_encounter'],
 						scope  : me,
 						handler: me.createNewEncounter
 					}
@@ -123,7 +123,7 @@ Ext.define('App.view.patient.Visits', {
 		if(this.checkIfCurrPatient()) {
 
 			var patient = this.getCurrPatient();
-			this.updateTitle(patient.name + ' (Encounters)');
+			this.updateTitle(patient.name + ' (' + i18n['encounters'] + ')');
 			this.store.load();
 			callback(true);
 		} else {

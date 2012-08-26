@@ -435,7 +435,11 @@ $LANG = array(
 	'note_and_reminder'						=> 'Note and Reminder',
 	'followup_information'					=> 'Follow-Up Information',
 	'schedule_appointment'					=> 'Schedule Appointment',
-	'note_entry_error'						=> 'Note entry error'
+	'note_entry_error'						=> 'Note entry error',
+	'billing_facility'						=> 'Billing Facility',
+	'close'									=> 'Close',
+	'show_details'							=> 'Show Details',
+	'new_encounter'							=> 'New Encounter'
 
 );
 ?>

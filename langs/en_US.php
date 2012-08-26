@@ -439,7 +439,8 @@ $LANG = array(
 	'billing_facility'						=> 'Billing Facility',
 	'close'									=> 'Close',
 	'show_details'							=> 'Show Details',
-	'new_encounter'							=> 'New Encounter'
+	'new_encounter'							=> 'New Encounter',
+	'no_vitals_to_display'					=> 'No Vitals to Display'
 
 );
 ?>

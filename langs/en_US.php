@@ -355,7 +355,14 @@ $LANG = array(
 	'pregnant'								=> 'Pregnant?',
 	'review_all'							=> 'Review All',
 	'items_to_review_save_and_review'		=> 'Items To Review Save and Review',
-	'items_to_review_entry_error'			=> 'Items To Review entry error'
+	'items_to_review_entry_error'			=> 'Items To Review entry error',
+	'no_laboratory_results_to_display'		=> 'No Laboratory results to Display',
+	'patient_entry_form'					=> 'Patient Entry Form',
+	'demographics'							=> 'Demographics',
+	'create_new_patient'					=> 'Create New Patient',
+	'created'								=> 'Created',
+	'something_went_wrong_saving_the_patient' => 'Something went wrong saving the patient',
+	'do_you_want_to_create_a_new_patient'	=> 'Do you want to create a <strong>new patient</strong>?'
 
 );
 ?>

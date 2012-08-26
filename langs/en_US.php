@@ -440,7 +440,11 @@ $LANG = array(
 	'close'									=> 'Close',
 	'show_details'							=> 'Show Details',
 	'new_encounter'							=> 'New Encounter',
-	'no_vitals_to_display'					=> 'No Vitals to Display'
+	'no_vitals_to_display'					=> 'No Vitals to Display',
+	'advance_patient_search'				=> 'Advance Patient Search',
+	'first_name'							=> 'First Name',
+	'middle_name'							=> 'Middle Name',
+	'last_name'								=> 'Last Name'
 
 );
 ?>

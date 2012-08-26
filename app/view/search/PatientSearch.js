@@ -11,7 +11,7 @@
 Ext.define('App.view.search.PatientSearch', {
 	extend       : 'App.classes.RenderPanel',
 	id           : 'panelPatientSearch',
-	pageTitle    : 'Advance Patient Search',
+	pageTitle    : i18n['advance_patient_search'],
 	pageLayout   : 'border',
 	uses         : [
 		'App.classes.GridPanel'
@@ -29,23 +29,23 @@ Ext.define('App.view.search.PatientSearch', {
 			items      : [
 				{
 					xtype     : 'fieldcontainer',
-					fieldLabel: 'Name',
+					fieldLabel: i18n['name'],
 					layout    : 'hbox',
 					defaults  : { margin: '0 5 0 0' },
 					items     : [
 						{
 							xtype    : 'textfield',
-							emptyText: 'First Name',
+							emptyText: i18n['first_name'],
 							name     : 'fname'
 						},
 						{
 							xtype    : 'textfield',
-							emptyText: 'Middle Name',
+							emptyText: i18n['middle_name'],
 							name     : 'mname'
 						},
 						{
 							xtype    : 'textfield',
-							emptyText: 'Last Name',
+							emptyText: i18n['last_name'],
 							name     : 'lname'
 						}
 					]
@@ -54,7 +54,7 @@ Ext.define('App.view.search.PatientSearch', {
 
 			buttons: [
 				{
-					text   : 'Search',
+					text   : i18n['search'],
 					iconCls: 'save',
 					handler: function() {
 
@@ -62,9 +62,9 @@ Ext.define('App.view.search.PatientSearch', {
 				},
 				'-',
 				{
-					text   : 'Reset',
+					text   : i18n['reset'],
 					iconCls: 'save',
-					tooltip: 'Hide Selected Office Note',
+					tooltip: i18n['hide_selected_office_note'],
 					handler: function() {
 
 					}
@@ -76,15 +76,15 @@ Ext.define('App.view.search.PatientSearch', {
 			//store    : me.store,
 			columns  : [
 				{ header: 'id', sortable: false, dataIndex: 'id', hidden: true},
-				{ width: 150, header: 'Date', sortable: true, dataIndex: 'date', renderer: Ext.util.Format.dateRenderer('Y-m-d H:i:s') },
-				{ width: 150, header: 'User', sortable: true, dataIndex: 'user' },
-				{ flex: 1, header: 'Note', sortable: true, dataIndex: 'body' }
+				{ width: 150, header: i18n['date'], sortable: true, dataIndex: 'date', renderer: Ext.util.Format.dateRenderer('Y-m-d H:i:s') },
+				{ width: 150, header: i18n['user'], sortable: true, dataIndex: 'user' },
+				{ flex: 1, header: i18n['note'], sortable: true, dataIndex: 'body' }
 
 			],
 			tbar     : Ext.create('Ext.PagingToolbar', {
 				store      : me.store,
 				displayInfo: true,
-				emptyMsg   : "No Office Notes to display",
+				emptyMsg   : i18n['no_office_notes_to_display'],
 				plugins    : Ext.create('Ext.ux.SlidingPager', {})
 			})
 		}); // END GRID

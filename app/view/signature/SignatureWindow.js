@@ -11,7 +11,7 @@
  */
 Ext.define('App.view.signature.SignatureWindow', {
 	extend       : 'Ext.window.Window',
-	title        : 'Please Sign',
+	title        : i18n['please_sign'],
 	closeAction  : 'hide',
 	height       : 250,
 	width        : 500,

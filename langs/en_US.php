@@ -444,7 +444,8 @@ $LANG = array(
 	'advance_patient_search'				=> 'Advance Patient Search',
 	'first_name'							=> 'First Name',
 	'middle_name'							=> 'Middle Name',
-	'last_name'								=> 'Last Name'
+	'last_name'								=> 'Last Name',
+	'please_sign'							=> 'Please Sign'
 
 );
 ?>

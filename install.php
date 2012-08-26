@@ -11,7 +11,7 @@ if(!defined('_GaiaEXEC')) die('No direct access allowed.');
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-	<title>GaiaEHR :: Installation</title>
+	<title>GaiaEHR :: New Site Setup</title>
 	<script type="text/javascript" src="lib/extjs-4.1.1/bootstrap.js"></script>
 	<link rel="stylesheet" type="text/css" href="themes/resources/css/ext-all.css">
 	<link rel="stylesheet" type="text/css" href="ui_app/style_newui.css">

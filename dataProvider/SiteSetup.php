@@ -101,7 +101,82 @@ class SiteSetup
 	}
 
 
+	public function setSiteDirBySiteId($siteId){
 
+		sleep(2);
+		return array('success' => true);
+		$siteDir = "sites/$siteId";
+		if(!file_exists($siteDir)){
+			if(mkdir($siteDir, 0777, true)){
+				if(chmod($siteDir, 0777)){
+					if(
+						(mkdir("$siteDir/patients", 0777, true) && chmod("$siteDir/patients", 0777)) &&
+						(mkdir("$siteDir/documents", 0777, true) && chmod("$siteDir/documents", 0777)) &&
+						(mkdir("$siteDir/temp", 0777, true) && chmod("$siteDir/temp", 0777)) &&
+						(mkdir("$siteDir/trash", 0777, true) && chmod("$siteDir/trash", 0777))
+					){
+						return array('success' => true);
+					}else{
+						return array('success' => false, 'error' => 'Something went wrong creating site sub directories');
+					}
+				}else{
+					return array('success' => false, 'error' => 'Unable to set "/sites/'.$siteId.'" write permissions,<br>Please, check "/sites/'.$siteId.'" directory write permissions');
+				}
+			}else{
+				return array('success' => false, 'error' => 'Unable to create Site directory,<br>Please, check "/sites" directory write permissions');
+			}
+		}else{
+			return array('success' => false, 'error' => 'Site ID already in use.<br>Please, choose another Site ID');
+		}
+	}
+
+
+
+	public function createSConfigurationFile($params){
+		sleep(2);
+		return array('success' => true);
+	}
+
+	public function createDatabaseStructure($params){
+		sleep(2);
+		return array('success' => true);
+	}
+
+
+	public function dumpDatabaseData($params){
+		sleep(3);
+		return array('success' => true);
+	}
+
+
+	public function createSiteAdmin($params){
+		sleep(3);
+		return array('success' => true);
+	}
+
+
+	public function loadICD9Codes(){
+		sleep(4);
+		return array('success' => true);
+	}
+
+
+	public function loadICD10Codes(){
+		sleep(7);
+		return array('success' => true);
+	}
+
+
+	public function loadSNOMEDCodes(){
+		sleep(20);
+		return array('success' => true);
+	}
+
+
+	public function loadRxNormCodes(){
+		sleep(10);
+		return array('success' => true);
+	}
 
 
 

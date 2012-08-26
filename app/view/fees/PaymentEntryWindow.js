@@ -10,7 +10,7 @@
 //******************************************************************************
 Ext.define('App.view.fees.PaymentEntryWindow', {
     extend:'Ext.window.Window',
-    title:'Add New Payment',
+    title: i18n.add_new_payment,
     closeAction:'hide',
     modal:true,
 
@@ -31,7 +31,7 @@ Ext.define('App.view.fees.PaymentEntryWindow', {
                         layout:'hbox',
                         items:[
                             {
-                                fieldLabel:'Paying Entity',
+                                fieldLabel: i18n.paying_entity,
                                 xtype:'mitos.payingentitycombo',
                                 name:'paying_entity',
                                 action: 'new_payment',
@@ -40,7 +40,7 @@ Ext.define('App.view.fees.PaymentEntryWindow', {
                             },
                             {
                                 xtype:'patienlivetsearch',
-                                fieldLabel:'From',
+                                fieldLabel: i18n.from,
                                 hideLabel:false,
                                 name:'payer_id',
                                 action: 'new_payment',
@@ -51,7 +51,7 @@ Ext.define('App.view.fees.PaymentEntryWindow', {
                             },
                             {
                                 xtype:'textfield',
-                                fieldLabel:'No',
+                                fieldLabel: i18n.no,
                                 action: 'new_payment',
                                 name:'check_number',
                                 labelWidth:47,
@@ -65,7 +65,7 @@ Ext.define('App.view.fees.PaymentEntryWindow', {
                         layout:'hbox',
                         items:[
                             {
-                                fieldLabel:'Payment Method',
+                                fieldLabel: i18n.payment_method,
                                 xtype:'mitos.paymentmethodcombo',
                                 action: 'new_payment',
                                 labelWidth:98,
@@ -74,7 +74,7 @@ Ext.define('App.view.fees.PaymentEntryWindow', {
                             },
                             {
                                 xtype:'mitos.billingfacilitiescombo',
-                                fieldLabel:'Pay To',
+                                fieldLabel: i18n.pay_to,
                                 action: 'new_payment',
                                 labelWidth:42,
                                 name:'pay_to',
@@ -83,7 +83,7 @@ Ext.define('App.view.fees.PaymentEntryWindow', {
                             },
                             {
                                 xtype:'mitos.currency',
-                                fieldLabel:'Amount',
+                                fieldLabel: i18n.amount,
                                 action: 'new_payment',
                                 name:'amount',
                                 labelWidth:47,
@@ -94,7 +94,7 @@ Ext.define('App.view.fees.PaymentEntryWindow', {
                         ]
                     },
                     {
-                        fieldLabel:'Post To Date',
+                        fieldLabel: i18n.post_to_date,
                         xtype:'datefield',
                         name:'post_to_date',
                         action:'new_payment',
@@ -103,13 +103,13 @@ Ext.define('App.view.fees.PaymentEntryWindow', {
                         width:220
                     },
                     {
-                        fieldLabel:'Note',
-                        xtype     : 'textareafield',
-                        grow      : true,
-                        action: 'new_payment',
-                        name:'note',
-                        labelWidth:98,
-                        anchor:'100%'
+                        fieldLabel	: i18n.note,
+                        xtype		: 'textareafield',
+                        grow		: true,
+                        action		: 'new_payment',
+                        name		:'note',
+                        labelWidth	:98,
+                        anchor		:'100%'
                     }
                 ]
             }
@@ -117,13 +117,13 @@ Ext.define('App.view.fees.PaymentEntryWindow', {
 
         me.buttons = [
             {
-                text:'Save',
+                text: i18n.save,
                 scope:me,
                 handler: me.onSave
             },
             '-',
             {
-                text:'Reset',
+                text: i18n.reset,
                 scope:me,
                 handler:me.resetNewPayment
             }
@@ -144,7 +144,7 @@ Ext.define('App.view.fees.PaymentEntryWindow', {
                     form.reset();
                     me.hide();
                 }else{
-                    app.msg('Oops!','Payment entry error')
+                    app.msg('Oops!', i18n.payment_entry_error)
                 }
 
             });

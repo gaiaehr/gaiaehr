@@ -9,7 +9,7 @@
 Ext.define('App.view.messages.Messages', {
 	extend       : 'App.classes.RenderPanel',
 	id           : 'panelMessages',
-	pageTitle    : 'Messages (Inbox)',
+	pageTitle    : i18n.messages + ' (' + i18n.inbox + ')',
 	pageLayout   : 'border',
 	defaults     : {split: true},
 	uses         : [
@@ -78,27 +78,28 @@ Ext.define('App.view.messages.Messages', {
 				itemclick: this.onItemClick
 			},
 			columns   : [
-				{ header: 'Status', sortable: true, dataIndex: 'message_status', width: 70   },
-				{ header: 'From', sortable: true, dataIndex: 'from_user', width: 200  },
-				{ header: 'To', sortable: true, dataIndex: 'to_user', width: 200  },
-				{ header: 'Patient', sortable: true, dataIndex: 'patient_name', width: 200  },
-				{ header: 'Subject', sortable: true, dataIndex: 'subject', flex: 1    },
-				{ header: 'Type', sortable: true, dataIndex: 'note_type', width: 100  }
+				{ header: i18n.status, sortable: true, dataIndex: 'message_status', width: 70   },
+				{ header: i18n.from, sortable: true, dataIndex: 'from_user', width: 200  },
+				{ header: i18n.to, sortable: true, dataIndex: 'to_user', width: 200  },
+				{ header: i18n.patient, sortable: true, dataIndex: 'patient_name', width: 200  },
+				{ header: i18n.subject, sortable: true, dataIndex: 'subject', flex: 1    },
+				{ header: i18n.type, sortable: true, dataIndex: 'note_type', width: 100  }
 			],
 			tbar      : Ext.create('Ext.PagingToolbar', {
 				store      : me.storeMsgs,
 				displayInfo: true,
-				emptyMsg   : "No Office Notes to display",
+				emptyMsg   : i18n.no_office_notes_to_display,
 				plugins    : Ext.create('Ext.ux.SlidingPager', {}),
 				items      : ['-', {
-					text    : 'Delete',
+					text    : i18n['delete'],
+					cls     : 'winDelete',
 					iconCls : 'delete',
 					itemId  : 'deleteMsg',
 					disabled: true,
 					scope   : me,
 					handler : me.onDelete
 				}, '-', {
-					text        : 'Inbox',
+					text        : i18n.inbox,
 					action      : 'inbox',
 					enableToggle: true,
 					toggleGroup : 'message',
@@ -106,14 +107,14 @@ Ext.define('App.view.messages.Messages', {
 					scope       : me,
 					handler     : me.messagesType
 				}, '-', {
-					text        : 'Sent',
+					text        : i18n.sent,
 					action      : 'sent',
 					enableToggle: true,
 					toggleGroup : 'message',
 					scope       : me,
 					handler     : me.messagesType
 				}, '-', {
-					text        : 'Trash',
+					text        : i18n.trash,
 					action      : 'trash',
 					enableToggle: true,
 					toggleGroup : 'message',
@@ -123,7 +124,7 @@ Ext.define('App.view.messages.Messages', {
 			}),
 			bbar      : [
 				{
-					text   : 'New message',
+					text   : i18n.new_message,
 					iconCls: 'newMessage',
 					itemId : 'newMsg',
 					handler: function() {
@@ -132,7 +133,7 @@ Ext.define('App.view.messages.Messages', {
 				},
 				'-',
 				{
-					text    : 'Reply',
+					text    : i18n.reply,
 					iconCls : 'edit',
 					itemId  : 'replyMsg',
 					disabled: true,
@@ -174,15 +175,15 @@ Ext.define('App.view.messages.Messages', {
 									items      : [
 										{
 											xtype     : 'patienlivetsearch',
-											fieldLabel: 'Patient',
-											emptyText : 'No patient selected',
+											fieldLabel: i18n.patient,
+											emptyText : i18n.no_patient_selected,
 											itemId    : 'patientCombo',
 											name      : 'pid',
 											hideLabel : false
 										},
 										{
 											xtype     : 'textfield',
-											fieldLabel: 'Patient',
+											fieldLabel: i18n.patient,
 											itemId    : 'patientField',
 											name      : 'patient_name',
 											readOnly  : true,
@@ -205,7 +206,7 @@ Ext.define('App.view.messages.Messages', {
 										{
 											xtype     : 'msgnotetypecombo',
 											name      : 'note_type',
-											fieldLabel: 'Type',
+											fieldLabel: i18n.type,
 											listeners : {
 												scope : me,
 												select: me.onChange
@@ -214,7 +215,7 @@ Ext.define('App.view.messages.Messages', {
 										{
 											xtype     : 'msgstatuscombo',
 											name      : 'message_status',
-											fieldLabel: 'Status',
+											fieldLabel: i18n.status,
 											listeners : {
 												scope : me,
 												select: me.onChange
@@ -226,7 +227,7 @@ Ext.define('App.view.messages.Messages', {
 						},
 						{
 							xtype     : 'textfield',
-							fieldLabel: 'Subject',
+							fieldLabel: i18n.subject,
 							name      : 'subject',
 							margin    : '0 5 5 5'
 						}
@@ -267,7 +268,7 @@ Ext.define('App.view.messages.Messages', {
 			],
 			bbar         : [
 				{
-					text   : 'Send',
+					text   : i18n['send'],
 					iconCls: 'save',
 					itemId : 'sendMsg',
 					scope  : me,
@@ -275,7 +276,8 @@ Ext.define('App.view.messages.Messages', {
 				},
 				'-',
 				{
-					text    : 'Delete',
+					text    : i18n['delete'],
+					cls     : 'winDelete',
 					iconCls : 'delete',
 					itemId  : 'deleteMsg',
 					margin  : '0 3 0 0',
@@ -292,7 +294,6 @@ Ext.define('App.view.messages.Messages', {
 		});
 		me.pageBody = [ me.msgGrid, me.msgForm ];
 		me.callParent(arguments);
-
 
 	}, // End initComponent
 
@@ -317,8 +318,8 @@ Ext.define('App.view.messages.Messages', {
 		form.getForm().reset();
 		var model = Ext.ModelManager.getModel('MessagesModel'),
 			newModel = Ext.ModelManager.create({
-				message_status: 'New',
-				note_type     : 'Unassigned'
+				message_status: i18n['new'],
+				note_type     : i18n.unassigned
 			}, model);
 		form.getForm().loadRecord(newModel);
 		this.action('new');
@@ -344,9 +345,9 @@ Ext.define('App.view.messages.Messages', {
 			store.sync();
 			store.load();
 			this.onNewMessage();
-			this.msg('Sweet!', 'Message Sent');
+			this.msg('Sweet!', i18n.message_sent);
 		} else {
-			this.msg('Oops!', 'Please, complete all required fields.');
+			this.msg('Oops!', i18n.please_complete_all_required_fields + '.');
 		}
 	},
 	/**
@@ -358,9 +359,9 @@ Ext.define('App.view.messages.Messages', {
 		var form = this.msgForm.getForm(),
 			store = this.storeMsgs;
 		Ext.Msg.show({
-			title  : 'Please confirm...',
+			title  : i18n.please_confirm + '...',
 			icon   : Ext.MessageBox.QUESTION,
-			msg    : 'Are you sure to delete this message?',
+			msg    : i18n.are_you_sure_to_delete_this_message,
 			buttons: Ext.Msg.YESNO,
 			scope  : this,
 			fn     : function(btn) {
@@ -369,7 +370,7 @@ Ext.define('App.view.messages.Messages', {
 					store.remove(currentRec);
 					store.destroy();
 					this.onNewMessage();
-					this.msg('Sweet!', 'Sent to Trash');
+					this.msg('Sweet!', i18n.sent_to_trash);
 				}
 			}
 		});

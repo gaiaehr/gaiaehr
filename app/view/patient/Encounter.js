@@ -33,7 +33,7 @@
 Ext.define('App.view.patient.Encounter', {
     extend                : 'App.classes.RenderPanel',
     id                    : 'panelEncounter',
-    pageTitle             : 'Encounter',
+    pageTitle             : i18n['encounter'],
     pageLayout            : 'border',
     requires              : [
         'App.store.patient.Encounter', 'App.store.patient.Vitals'
@@ -76,7 +76,7 @@ Ext.define('App.view.patient.Encounter', {
          */
         if(perm.add_encounters){
             me.newEncounterWindow = Ext.create('Ext.window.Window', {
-                title      : 'New Encounter Form',
+                title      : i18n['new_encounter_form'],
                 closeAction: 'hide',
                 modal      : true,
                 width      : 660,
@@ -89,7 +89,7 @@ Ext.define('App.view.patient.Encounter', {
                 ],
                 buttons    : [
                     {
-                        text   : 'Create Encounter',
+                        text   : i18n['create_encounter'],
                         action : 'encounter',
                         scope  : me,
                         handler: me.onSave
@@ -113,7 +113,7 @@ Ext.define('App.view.patient.Encounter', {
          */
         if(perm.access_encounter_checkout){
             me.checkoutWindow = Ext.create('Ext.window.Window', {
-                title      : 'Checkout and Signing',
+                title      : i18n['checkout_and_signing'],
                 closeAction: 'hide',
                 modal      : true,
                 layout     : 'border',
@@ -123,17 +123,17 @@ Ext.define('App.view.patient.Encounter', {
                 items      : [
                     {
                         xtype  : 'grid',
-                        title  : 'Services / Diagnostics',
+                        title  : i18n['services_diagnostics'],
                         region : 'center',
                         store  : me.EncounterOrdersStore,
                         columns: [
                             {
-                                header   : 'Code',
+                                header   : i18n['code'],
                                 width    : 60,
                                 dataIndex: 'code'
                             },
                             {
-                                header   : 'Description',
+                                header   : i18n['description'],
                                 flex     : 1,
                                 dataIndex: 'code_text'
                             },
@@ -145,13 +145,13 @@ Ext.define('App.view.patient.Encounter', {
                         ]
                     },
                     me.documentsimplegrid = Ext.create('App.view.patient.EncounterDocumentsGrid', {
-                        title : 'Documents',
+                        title : i18n['documents'],
                         region: 'east',
                         width : 485
                     }),
                     {
                         xtype   : 'form',
-                        title   : 'Additional Info',
+                        title   : i18n['additional_info'],
                         region  : 'south',
                         split   : true,
                         height  : 245,
@@ -175,25 +175,25 @@ Ext.define('App.view.patient.Encounter', {
                                         padding    : 8,
                                         columnWidth: .5,
                                         height     : 115,
-                                        title      : 'Messages, Notes and Reminders',
+                                        title      : i18n['messages_notes_and_reminders'],
                                         items      : [
                                             {
                                                 xtype     : 'textfield',
                                                 name      : 'message',
-                                                fieldLabel: 'Message',
+                                                fieldLabel: i18n['message'],
                                                 anchor    : '100%'
                                             },
                                             {
                                                 xtype     : 'textfield',
                                                 name      : 'reminder',
-                                                fieldLabel: 'Reminder',
+                                                fieldLabel: i18n['reminder'],
                                                 anchor    : '100%'
                                             },
                                             {
                                                 xtype     : 'textfield',
                                                 grow      : true,
                                                 name      : 'note',
-                                                fieldLabel: 'Note',
+                                                fieldLabel: i18n['note'],
                                                 anchor    : '100%'
                                             }
                                         ]
@@ -207,11 +207,11 @@ Ext.define('App.view.patient.Encounter', {
                                         items   : [
                                             {
                                                 xtype     : 'mitos.followupcombo',
-                                                fieldLabel: 'Time Interval',
+                                                fieldLabel: i18n['time_interval'],
                                                 name      : 'followup_time'
                                             },
                                             {
-                                                fieldLabel: 'Facility',
+                                                fieldLabel: i18n['facility'],
                                                 xtype     : 'mitos.activefacilitiescombo',
                                                 name      : 'followup_facility'
                                             }
@@ -226,7 +226,7 @@ Ext.define('App.view.patient.Encounter', {
                                 columnWidth: .5,
                                 layout     : 'fit',
                                 height     : 208,
-                                title      : 'Warnings / Alerts',
+                                title      : i18n['warnings_alerts'],
                                 items      : [
                                     {
                                         xtype      : 'grid',
@@ -258,19 +258,19 @@ Ext.define('App.view.patient.Encounter', {
                 ],
                 buttons    : [
                     {
-                        text   : 'Co-Sign',
+                        text   : i18n['co_sign'],
                         action : 'encounter',
                         scope  : me,
                         handler: me.coSignEncounter
                     },
                     {
-                        text   : 'Sign',
+                        text   : i18n['sign'],
                         action : 'encounter',
                         scope  : me,
                         handler: me.signEncounter
                     },
                     {
-                        text   : 'Cancel',
+                        text   : i18n['cancel'],
                         handler: me.cancelCheckout
 
                     }
@@ -339,7 +339,7 @@ Ext.define('App.view.patient.Encounter', {
          */
         me.encounterTabPanel = me.centerPanel.add(
             Ext.create('Ext.tab.Panel', {
-                title     : me.renderAdministrative ? 'Encounter' : false,
+                title     : me.renderAdministrative ? i18n['encounter'] : false,
                 itemId    : 'encounter',
                 plain     : true,
                 activeItem: 0,
@@ -354,7 +354,7 @@ Ext.define('App.view.patient.Encounter', {
         if(perm.access_patient_vitals){
             me.vitalsPanel = me.encounterTabPanel.add(
                 Ext.create('Ext.panel.Panel', {
-                    title      : 'Vitals',
+                    title      : i18n['vitals'],
                     action     : 'encounter',
                     cls        : 'vitals-panel',
                     bodyPadding: '5 10',
@@ -375,20 +375,20 @@ Ext.define('App.view.patient.Encounter', {
                             fieldDefaults: { msgTarget: 'side', labelAlign: 'right' },
                             buttons      : [
                                 {
-                                    text   : 'Reset',
+                                    text   : i18n['reset'],
                                     width  : 40,
                                     scope  : me,
                                     handler: me.resetVitalsForm
                                 },
                                 {
-                                    text   : 'Save',
+                                    text   : i18n['save'],
                                     action : 'vitals',
                                     width  : 40,
                                     scope  : me,
                                     handler: me.onSave
                                 },
                                 {
-                                    text    : 'Sign',
+                                    text    : i18n['sign'],
                                     width   : 40,
                                     disabled: true,
                                     action  : 'signBtn',
@@ -413,7 +413,7 @@ Ext.define('App.view.patient.Encounter', {
                         dock : 'top',
                         items: [
                             '->', {
-                                text   : 'Vector Charts',
+                                text   : i18n['vector_charts'],
                                 iconCls: 'icoChart',
                                 scope  : me,
                                 handler: me.onChartWindowShow
@@ -428,14 +428,14 @@ Ext.define('App.view.patient.Encounter', {
                 Ext.create('Ext.form.Panel', {
                     autoScroll   : true,
                     action       : 'encounter',
-                    title        : 'Review of Systems',
+                    title        : i18n['review_of_systems'],
                     frame        : true,
                     bodyPadding  : 5,
                     bodyStyle    : 'background-color:white',
                     fieldDefaults: { msgTarget: 'side' },
                     buttons      : [
                         {
-                            text   : 'Save',
+                            text   : i18n['save'],
                             iconCls: 'save',
                             action : 'reviewOfSystems',
                             scope  : me,
@@ -450,14 +450,14 @@ Ext.define('App.view.patient.Encounter', {
                 Ext.create('Ext.form.Panel', {
                     autoScroll   : true,
                     action       : 'encounter',
-                    title        : 'Review of Systems Checks',
+                    title        : i18n['review_of_systems_checks'],
                     frame        : true,
                     bodyPadding  : 5,
                     bodyStyle    : 'background-color:white',
                     fieldDefaults: { msgTarget: 'side' },
                     buttons      : [
                         {
-                            text   : 'Save',
+                            text   : i18n['save'],
                             iconCls: 'save',
                             action : 'reviewOfSystemsChecks',
                             scope  : me,
@@ -471,7 +471,7 @@ Ext.define('App.view.patient.Encounter', {
             me.soapPanel = me.encounterTabPanel.add(
                 Ext.create('Ext.form.Panel', {
                     autoScroll   : true,
-                    title        : 'SOAP',
+                    title        : i18n['soap'],
                     action       : 'encounter',
                     frame        : true,
                     bodyPadding  : 5,
@@ -479,7 +479,7 @@ Ext.define('App.view.patient.Encounter', {
                     fieldDefaults: { msgTarget: 'side' },
                     buttons      : [
                         {
-                            text   : 'Save',
+                            text   : i18n['save'],
                             iconCls: 'save',
                             action : 'soap',
                             scope  : me,
@@ -492,7 +492,7 @@ Ext.define('App.view.patient.Encounter', {
         if(perm.access_itmes_to_review){
             me.itemsToReview = me.encounterTabPanel.add(
                 Ext.create('App.view.patient.ItemsToReview', {
-                    title      : 'Items to Review',
+                    title      : i18n['items_to_review'],
                     bodyPadding: '7 5 2 5'
                 })
             );
@@ -505,7 +505,7 @@ Ext.define('App.view.patient.Encounter', {
         if(perm.access_enc_hcfa || perm.access_enc_cpt || perm.access_enc_history){
             me.administrativeTabPanel = me.centerPanel.add(
                 Ext.create('Ext.tab.Panel', {
-                    title     : 'Administrative',
+                    title     : i18n['administrative'],
                     itemId    : 'administrative',
                     plain     : true,
                     activeItem: 0,
@@ -521,14 +521,14 @@ Ext.define('App.view.patient.Encounter', {
             me.MiscBillingOptionsPanel = me.administrativeTabPanel.add(
                 Ext.create('App.view.patient.encounter.HealthCareFinancingAdministrationOptions', {
                     autoScroll: true,
-                    title     : 'Misc. Billing Options HCFA-1500'
+                    title     : i18n['misc_billing_options_HCFA_1500']
                 })
             );
         }
         if(perm.access_enc_cpt){
             me.CurrentProceduralTerminology = me.administrativeTabPanel.add(
                 Ext.create('App.view.patient.encounter.CurrentProceduralTerminology', {
-                    title: 'Current Procedural Terminology'
+                    title: i18n['current_procedural_terminology']
                 })
             );
         }
@@ -536,7 +536,7 @@ Ext.define('App.view.patient.Encounter', {
             me.EncounterEventHistory = me.administrativeTabPanel.add(
                 Ext.create('App.classes.grid.EventHistory', {
                     bodyStyle: 0,
-                    title    : 'Encounter History',
+                    title    : i18n['encounter_history'],
                     store    : me.encounterEventHistoryStore
                 })
             );
@@ -546,7 +546,7 @@ Ext.define('App.view.patient.Encounter', {
          * Progress Note
          */
         me.progressNote = Ext.create('App.view.patient.ProgressNote', {
-            title       : 'Encounter Progress Note',
+            title       : i18n['encounter_progress_note'],
             region      : 'east',
             margin      : '0 0 0 2',
             bodyStyle   : 'padding:15px',
@@ -562,7 +562,7 @@ Ext.define('App.view.patient.Encounter', {
             tools       : [
                 {
                     type   : 'print',
-                    tooltip: 'Print Progress Note',
+                    tooltip: i18n['print_progress_note'],
                     scope  : me,
                     handler: function() {
                         var win = window.open('print.html', 'win', 'left=20,top=20,width=700,height=700,toolbar=0,resizable=1,location=1,scrollbars=1,menubar=0,directories=0');
@@ -587,43 +587,43 @@ Ext.define('App.view.patient.Encounter', {
             },
             items   : [
                 '-', {
-                    text  : 'Immunizations ',
+                    text  : i18n['immunizations'] + ' ',
                     action: 'immunization'
                 }, '-', {
-                    text  : 'Allergies ',
+                    text  : i18n['allergies'] + ' ',
                     action: 'allergies'
                 }, '-', {
-                    text  : 'Active Problems ',
+                    text  : i18n['active_problems'] + ' ',
                     action: 'issues'
                 }, '-', {
-                    text  : 'Surgeries ',
+                    text  : i18n['surgeries'] + ' ',
                     action: 'surgery'
                 }, '-', {
-                    text  : 'Dental ',
+                    text  : i18n['dental'] + ' ',
                     action: 'dental'
                 }, '-', {
-                    text  : 'Medications ',
+                    text  : i18n['medications'] + ' ',
                     action: 'medications'
                 }, '-', {
-                    text  : 'Laboratories ',
+                    text  : i18n['laboratories'] + ' ',
                     action: 'laboratories'
                 }, '-', {
-                    text   : 'New Lab Order',
+                    text   : i18n['new_lab_order'],
                     action : 'lab',
                     scope  : me,
                     handler: me.newDoc
                 }, '-', {
-                    text   : 'New X-Ray Order',
+                    text   : i18n['new_xray_order'],
                     action : 'xRay',
                     scope  : me,
                     handler: me.newDoc
                 }, '-', {
-                    text   : 'New Prescription',
+                    text   : i18n['new_prescription'],
                     action : 'prescription',
                     scope  : me,
                     handler: me.newDoc
                 }, '-', {
-                    text   : 'New Doctors Note',
+                    text   : i18n['new_doctors_note'],
                     action : 'notes',
                     scope  : me,
                     handler: me.newDoc
@@ -639,7 +639,7 @@ Ext.define('App.view.patient.Encounter', {
 
         if(perm.access_encounter_checkout){
             me.panelToolBar.add({
-                text   : 'Checkout',
+                text   : i18n['checkout'],
                 handler: me.onCheckout
             },'-');
         }
@@ -683,8 +683,8 @@ Ext.define('App.view.patient.Encounter', {
                 /** @namespace response.result.encounter */
                 if(response.result.encounter) {
                     Ext.Msg.show({
-                        title  : 'Oops! Open Encounters Found...',
-                        msg    : 'Do you want to <strong>continue creating the New Encounters?</strong><br>"Click No to review Encounter History"',
+                        title  : 'Oops! ' + i18n['open_encounters_found'] + '...',
+                        msg    : i18n['do_you_want_to'] + ' <strong>' + i18n['continue_creating_the_new_encounters'] + '</strong><br>"' + i18n['click_no_to_review_encounter_history'] + '"',
                         buttons: Ext.Msg.YESNO,
                         icon   : Ext.Msg.QUESTION,
                         fn     : function(btn) {
@@ -725,7 +725,7 @@ Ext.define('App.view.patient.Encounter', {
      */
     onCheckout: function() {
         var me = this, win = me.checkoutWindow, patient = me.getCurrPatient();
-        win.setTitle(patient.name + ' - ' + Ext.Date.format(me.currEncounterStartDate, 'F j, Y, g:i:s a') + ' (Checkout)');
+        win.setTitle(patient.name + ' - ' + Ext.Date.format(me.currEncounterStartDate, 'F j, Y, g:i:s a') + ' (' + i18n['checkout'] + ')');
         win.show();
     },
     coSignEncounter: function() {
@@ -811,7 +811,7 @@ Ext.define('App.view.patient.Encounter', {
                             store.sync({
                                 scope  : me,
                                 success: function() {
-                                    me.msg('Sweet!', 'Vitals Saved');
+                                    me.msg('Sweet!', i18n['vitals_saved']);
                                     me.updateProgressNote();
                                     me.vitalsPanel.down('vitalsdataview').refresh();
                                     me.resetVitalsForm();
@@ -822,7 +822,7 @@ Ext.define('App.view.patient.Encounter', {
                         }
                     });
                 } else {
-                    me.msg('Oops!', 'Vitals form is epmty')
+                    me.msg('Oops!', i18n['vitals_form_is_epmty'])
                 }
 
             } else {
@@ -845,7 +845,7 @@ Ext.define('App.view.patient.Encounter', {
                                 me.updateProgressNote();
                             }
                         });
-                        me.msg('Sweet!', 'Encounter Updated');
+                        me.msg('Sweet!', i18n['encounter_updated']);
                         me.encounterEventHistoryStore.load({params: {eid: app.currEncounterId}});
                     } else {
                         app.accessDenied();
@@ -869,7 +869,7 @@ Ext.define('App.view.patient.Encounter', {
                             store.sync({
                                 callback: function() {
                                     form.reset();
-                                    me.msg('Sweet!', 'Vitals Signed');
+                                    me.msg('Sweet!', i18n['vitals_signed']);
                                     me.updateProgressNote();
                                     me.resetVitalsForm();
                                     me.vitalsPanel.down('vitalsdataview').refresh();
@@ -879,7 +879,7 @@ Ext.define('App.view.patient.Encounter', {
                         } else {
                             Ext.Msg.show({
                                 title  : 'Oops!',
-                                msg    : 'Incorrect password',
+                                msg    : i18n['incorrect_password'],
                                 buttons: Ext.Msg.OKCANCEL,
                                 icon   : Ext.Msg.ERROR,
                                 fn     : function(btn) {
@@ -938,7 +938,7 @@ Ext.define('App.view.patient.Encounter', {
                 } else {
                     if(me.stopTimer()) {
                         var timer = me.timer(data.start_date, data.close_date), patient = me.getCurrPatient();
-                        me.updateTitle(patient.name + ' - ' + Ext.Date.format(me.currEncounterStartDate, 'F j, Y, g:i:s a') + ' (Closed Encounter)', app.currPatient.readOnly, timer);
+                        me.updateTitle(patient.name + ' - ' + Ext.Date.format(me.currEncounterStartDate, 'F j, Y, g:i:s a') + ' (' + i18n['closed_encounter'] + ')', app.currPatient.readOnly, timer);
                         me.setButtonsDisabled(me.getButtonsToDisable(), true);
                     }
                 }
@@ -991,12 +991,12 @@ Ext.define('App.view.patient.Encounter', {
                         if(me.stopTimer()) {
 
                             app.openPatientVisits();
-                            me.msg('Sweet!', 'Encounter Closed');
+                            me.msg('Sweet!', i18n['encounter_closed']);
                         }
                     } else {
                         Ext.Msg.show({
                             title  : 'Oops!',
-                            msg    : 'Incorrect password',
+                            msg    : i18n['incorrect_password'],
                             buttons: Ext.Msg.OKCANCEL,
                             icon   : Ext.Msg.ERROR,
                             fn     : function(btn) {
@@ -1048,7 +1048,7 @@ Ext.define('App.view.patient.Encounter', {
         } else {
             Ext.Msg.show({
                 title        : 'Oops!',
-                msg          : 'This column can not be modified because it has been signed by ' + record.data.auth_uid,
+                msg          : i18n['this_column_can_not_be_modified_because_it_has_been_signed_by'] + ' ' + record.data.auth_uid,
                 buttons      : Ext.Msg.OK,
                 icon         : Ext.Msg.WARNING,
                 animateTarget: e
@@ -1102,7 +1102,7 @@ Ext.define('App.view.patient.Encounter', {
     encounterTimer: function() {
         var me = this;
         var timer = me.timer(me.currEncounterStartDate, new Date()), patient = me.getCurrPatient();
-        me.updateTitle(patient.name + ' - ' + Ext.Date.format(me.currEncounterStartDate, 'F j, Y, g:i:s a') + ' (Opened Encounter)', app.currPatient.readOnly, timer);
+        me.updateTitle(patient.name + ' - ' + Ext.Date.format(me.currEncounterStartDate, 'F j, Y, g:i:s a') + ' (' + i18n['opened_encounter'] + ')', app.currPatient.readOnly, timer);
     },
 
     /**
@@ -1219,21 +1219,21 @@ Ext.define('App.view.patient.Encounter', {
         if(weight > 0 && height > 0) {
             bmi = weight / (height / 100 * height / 100);
             if(bmi < 15) {
-                status = 'Very severely underweight'
+                status = i18n['very_severely_underweight']
             } else if(bmi >= 15 && bmi < 16) {
-                status = 'Severely underweight'
+                status = i18n['severely_underweight']
             } else if(bmi >= 16 && bmi < 18.5) {
-                status = 'Underweight'
+                status = i18n['underweight']
             } else if(bmi >= 18.5 && bmi < 25) {
-                status = 'Normal'
+                status = i18n['normal']
             } else if(bmi >= 25 && bmi < 30) {
-                status = 'Overweight'
+                status = i18n['overweight']
             } else if(bmi >= 30 && bmi < 35) {
-                status = 'Obese Class I'
+                status = i18n['obese_class_1']
             } else if(bmi >= 35 && bmi < 40) {
-                status = 'Obese Class II'
+                status = i18n['obese_class_2']
             } else if(bmi >= 40) {
-                status = 'Obese Class III'
+                status = i18n['obese_class_3']
             }
             field.up('form').getForm().findField('bmi').setValue(Ext.util.Format.number(bmi, '0.00'));
             field.up('form').getForm().findField('bmi_status').setValue(status);
@@ -1280,7 +1280,7 @@ Ext.define('App.view.patient.Encounter', {
          * Get 'Review of Systems' Form and define the Model using the form fields
          */
         if(me.reviewSysPanel){
-            me.getFormItems(me.reviewSysPanel, 'Review of Systems', function() {
+            me.getFormItems(me.reviewSysPanel, i18n['review_of_systems'], function() {
                 var formFields = me.reviewSysPanel.getForm().getFields(), modelFields = new defaultFields;
                 for(var i = 0; i < formFields.items.length; i++) {
                     modelFields.push({name: formFields.items[i].name, type: 'auto'});
@@ -1302,7 +1302,7 @@ Ext.define('App.view.patient.Encounter', {
          * Get 'SOAP' Form and define the Model using the form fields
          */
         if(me.soapPanel){
-            me.getFormItems(me.soapPanel, 'SOAP', function() {
+            me.getFormItems(me.soapPanel, i18n['soap'], function() {
                 var formFields = me.soapPanel.getForm().getFields(), modelFields = new defaultFields;
                 for(var i = 0; i < formFields.items.length; i++) {
                     modelFields.push({name: formFields.items[i].name, type: 'auto'});
@@ -1344,7 +1344,7 @@ Ext.define('App.view.patient.Encounter', {
          * Get 'Review of Systems Check' Form and define the Model using the form fields
          */
         if(me.reviewSysCkPanel){
-            me.getFormItems(me.reviewSysCkPanel, 'Review of Systems Check', function() {
+            me.getFormItems(me.reviewSysCkPanel, i18n['review_of_systems_checks'], function() {
                 var formFields = me.reviewSysCkPanel.getForm().getFields(), modelFields = new defaultFields;
                 for(var i = 0; i < formFields.items.length; i++) {
                     modelFields.push({name: formFields.items[i].name, type: 'auto'});
@@ -1363,7 +1363,7 @@ Ext.define('App.view.patient.Encounter', {
             });
         }
 
-        if(me.newEncounterWindow) me.getFormItems(me.newEncounterWindow.down('form'), 'New Encounter');
+        if(me.newEncounterWindow) me.getFormItems(me.newEncounterWindow.down('form'), i18n['new_encounter']);
     },
 
     getButtonsToDisable: function() {
@@ -1404,7 +1404,7 @@ Ext.define('App.view.patient.Encounter', {
     onActive      : function(callback) {
         var me = this, patient = app.currPatient;
         if(me.checkIfCurrPatient()) {
-            me.updateTitle(patient.name + ' (Visits)', patient.readOnly, null);
+            me.updateTitle(patient.name + ' (' + i18n['visits'] + ')', patient.readOnly, null);
             me.setReadOnly(patient.readOnly);
             callback(true);
         } else {

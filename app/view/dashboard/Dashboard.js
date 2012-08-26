@@ -24,7 +24,7 @@ Ext.require([
 Ext.define('App.view.dashboard.Dashboard', {
 	extend        : 'App.classes.RenderPanel',
 	id            : 'panelDashboard',
-	pageTitle     : 'Dashboard',
+	pageTitle     : i18n.dashboard,
 	uses          : [
 		'App.view.dashboard.panel.PortalPanel',
 		'App.view.dashboard.panel.PortalColumn',
@@ -61,7 +61,7 @@ Ext.define('App.view.dashboard.Dashboard', {
 							items: [
 								{
 									id       : 'portlet-onotes',
-									title    : 'Office Notes',
+									title    : i18n.office_notes,
 									tools    : this.getTools(),
 									items    : Ext.create('App.view.dashboard.panel.OnotesPortlet'),
 									listeners: {
@@ -114,7 +114,7 @@ Ext.define('App.view.dashboard.Dashboard', {
 		this.callParent(arguments);
 	},
 	onPortletClose: function(portlet) {
-		this.msg('Message!', portlet.title + ' was removed');
+		this.msg(i18n.message + '!', portlet.title + ' ' + i18n.was_removed);
 	},
 	/**
 	 * This function is called from MitosAPP.js when

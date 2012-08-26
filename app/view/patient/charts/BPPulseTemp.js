@@ -22,7 +22,7 @@ Ext.define('App.view.patient.charts.BPPulseTemp', {
 
         me.items = [
             {
-                title : 'Blood Pressure',
+                title : i18n.blood_pressure,
                 margin: 5,
                 items : [
                     {
@@ -36,7 +36,7 @@ Ext.define('App.view.patient.charts.BPPulseTemp', {
                         },
                         axes   : [
                             {
-                                title   : 'Blood Pressure',
+                                title   : i18n.blood_pressure,
                                 type    : 'Numeric',
                                 position: 'left',
                                 fields  : ['bp_systolic', 'bp_diastolic', 'bp_systolic_normal', 'bp_diastolic_normal'],
@@ -49,7 +49,7 @@ Ext.define('App.view.patient.charts.BPPulseTemp', {
                                 }
                             },
                             {
-                                title     : 'Date',
+                                title     : i18n.date,
                                 type      : 'Time',
                                 dateFormat: 'Y-m-d h:i:s a',
                                 position  : 'bottom',
@@ -58,7 +58,7 @@ Ext.define('App.view.patient.charts.BPPulseTemp', {
                         ],
                         series : [
                             {
-                                title       : 'Systolic',
+                                title       : i18n.systolic,
                                 type        : 'line',
                                 axis        : 'left',
                                 xField      : 'date',
@@ -82,7 +82,7 @@ Ext.define('App.view.patient.charts.BPPulseTemp', {
                                 }
                             },
                             {
-                                title       : 'Diastolic',
+                                title       : i18n.diastolic,
                                 type        : 'line',
                                 axis        : 'left',
                                 xField      : 'date',
@@ -101,7 +101,7 @@ Ext.define('App.view.patient.charts.BPPulseTemp', {
                                 tips        : {
                                     trackMouse: true,
                                     renderer  : function(storeItem, item) {
-                                        this.update('Date: ' + Ext.Date.format(storeItem.get('date'), 'Y-m-d h:i:s a') + '<br>Diastolic: ' + storeItem.get('bp_diastolic'));
+                                        this.update(i18n.date + ': ' + Ext.Date.format(storeItem.get('date'), 'Y-m-d h:i:s a') + '<br>' + i18n.diastolic + ': ' + storeItem.get('bp_diastolic'));
                                     }
                                 }
 
@@ -157,7 +157,7 @@ Ext.define('App.view.patient.charts.BPPulseTemp', {
                         },
                         axes   : [
                             {
-                                title   : 'Pulse (per min)',
+                                title   : i18n.pulse_per_min,
                                 type    : 'Numeric',
                                 position: 'left',
                                 fields  : ['pulse'],
@@ -170,7 +170,7 @@ Ext.define('App.view.patient.charts.BPPulseTemp', {
                                 }
                             },
                             {
-                                title     : 'Date',
+                                title     : i18n.date,
                                 type      : 'Time',
                                 dateFormat: 'Y-m-d h:i:s a',
                                 position  : 'bottom',
@@ -180,7 +180,7 @@ Ext.define('App.view.patient.charts.BPPulseTemp', {
                         ],
                         series : [
                             {
-                                title       : 'Pulse',
+                                title       : i18n.pulse,
                                 type        : 'line',
                                 axis        : 'left',
                                 xField      : 'date',
@@ -199,7 +199,7 @@ Ext.define('App.view.patient.charts.BPPulseTemp', {
                                 tips        : {
                                     trackMouse: true,
                                     renderer  : function(storeItem, item) {
-                                        this.update('Date: ' + Ext.Date.format(storeItem.get('date'), 'Y-m-d h:i:s a') + '<br>Pulse (per min): ' + storeItem.get('pulse'));
+                                        this.update(i18n.date + ': ' + Ext.Date.format(storeItem.get('date'), 'Y-m-d h:i:s a') + '<br>' + i18n.pulse_per_min + ': ' + storeItem.get('pulse'));
                                     }
                                 }
                             }
@@ -208,7 +208,7 @@ Ext.define('App.view.patient.charts.BPPulseTemp', {
                 ]
             },
             {
-                title : 'Temperature',
+                title : i18n.temperature,
                 margin: '0 5 5 5',
                 items : [
                     {
@@ -222,7 +222,7 @@ Ext.define('App.view.patient.charts.BPPulseTemp', {
                         },
                         axes   : [
                             {
-                                title   : 'Temp Fahrenheits',
+                                title   : i18n.temp_fahrenheits,
                                 type    : 'Numeric',
                                 position: 'left',
                                 fields  : ['temp_f'],
@@ -235,7 +235,7 @@ Ext.define('App.view.patient.charts.BPPulseTemp', {
                                 }
                             },
                             {
-                                title     : 'Date',
+                                title     : i18n.date,
                                 type      : 'Time',
                                 dateFormat: 'Y-m-d h:i:s a',
                                 position  : 'bottom',
@@ -245,7 +245,7 @@ Ext.define('App.view.patient.charts.BPPulseTemp', {
                         ],
                         series : [
                             {
-                                title       : 'Temp (Fahrenheits)',
+                                title       : i18n.temp_fahrenheits,
                                 type        : 'line',
                                 axis        : 'left',
                                 xField      : 'date',
@@ -264,7 +264,7 @@ Ext.define('App.view.patient.charts.BPPulseTemp', {
                                 tips        : {
                                     trackMouse: true,
                                     renderer  : function(storeItem, item) {
-                                        this.update('Date: ' + Ext.Date.format(storeItem.get('date'), 'Y-m-d h:i:s a') + '<br>Temp (Fahrenheits): ' + storeItem.get('temp_f'));
+                                        this.update(i18n.date + ': ' + Ext.Date.format(storeItem.get('date'), 'Y-m-d h:i:s a') + '<br>' + i18n.temp_fahrenheits + ': ' + storeItem.get('temp_f'));
                                     }
                                 }
                             }

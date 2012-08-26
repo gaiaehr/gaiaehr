@@ -14,7 +14,7 @@
 Ext.define('App.view.miscellaneous.Addressbook', {
 	extend       : 'App.classes.RenderPanel',
 	id           : 'panelAddressbook',
-	pageTitle    : 'Address Book',
+	pageTitle    : i18n.address_book,
 	uses         : [
 		'App.classes.GridPanel',
 		'App.classes.combo.Titles',
@@ -109,14 +109,14 @@ Ext.define('App.view.miscellaneous.Addressbook', {
 		 */
 		me.win = Ext.create('App.classes.window.Window', {
 			width    : 755,
-			title    : 'Add or Edit Contact',
+			title    : i18n.add_or_edit_contact,
 			items    : [
 				{
 					xtype: 'mitos.form',
 					items: [
 						{
 							xtype      : 'fieldset',
-							title      : 'Primary Info',
+							title      : i18n.primary_info,
 							collapsible: true,
 							defaultType: 'textfield',
 							layout     : 'anchor',
@@ -166,7 +166,7 @@ Ext.define('App.view.miscellaneous.Addressbook', {
 						},
 						{
 							xtype      : 'fieldset',
-							title      : 'Primary Address',
+							title      : i18n.primary_address,
 							collapsible: true,
 							defaultType: 'textfield',
 							layout     : 'anchor',
@@ -203,7 +203,7 @@ Ext.define('App.view.miscellaneous.Addressbook', {
 						},
 						{
 							xtype      : 'fieldset',
-							title      : 'Secondary Address',
+							title      : i18n.secondary_address,
 							collapsible: true,
 							collapsed  : true,
 							defaultType: 'textfield',
@@ -241,7 +241,7 @@ Ext.define('App.view.miscellaneous.Addressbook', {
 						},
 						{
 							xtype      : 'fieldset',
-							title      : 'Phone Numbers',
+							title      : i18n.phone_numbers,
 							collapsible: true,
 							collapsed  : true,
 							defaultType: 'textfield',
@@ -279,7 +279,7 @@ Ext.define('App.view.miscellaneous.Addressbook', {
 						},
 						{
 							xtype      : 'fieldset',
-							title      : 'Online Info',
+							title      : i18n.online_info,
 							collapsible: true,
 							collapsed  : true,
 							defaultType: 'textfield',
@@ -308,7 +308,7 @@ Ext.define('App.view.miscellaneous.Addressbook', {
 						},
 						{
 							xtype      : 'fieldset',
-							title      : 'Other Info',
+							title      : i18n.other_info,
 							collapsible: true,
 							collapsed  : true,
 							defaultType: 'textfield',
@@ -341,19 +341,19 @@ Ext.define('App.view.miscellaneous.Addressbook', {
 							width    : 720,
 							xtype    : 'htmleditor',
 							name     : 'notes',
-							emptyText: 'Notes'
+							emptyText: i18n.notes
 						}
 					]
 				}
 			],
 			buttons  : [
 				{
-					text   : 'Save',
+					text   : i18n.save,
 					scope  : me,
 					handler: me.onSave
 				},
 				{
-					text   : 'Cancel',
+					text   : i18n.cancel,
 					scope  : me,
 					handler: me.onCancel
 				}
@@ -380,15 +380,15 @@ Ext.define('App.view.miscellaneous.Addressbook', {
 
 			},
 			columns    : [
-				{ header: 'Name', width: 150, sortable: true, dataIndex: 'fullname' },
-				{ header: 'Local', width: 50, sortable: true, dataIndex: 'username', renderer: me.local },
-				{ header: 'Type', sortable: true, dataIndex: 'ab_title' },
-				{ header: 'Specialty', sortable: true, dataIndex: 'specialty' },
-				{ header: 'Work Phone', sortable: true, dataIndex: 'phonew1' },
-				{ header: 'Mobile', sortable: true, dataIndex: 'phonecell' },
-				{ header: 'Fax', sortable: true, dataIndex: 'fax' },
-				{ header: 'Email', flex: 1, sortable: true, dataIndex: 'email' },
-				{ header: 'Primary Address', flex: 1, sortable: true, dataIndex: 'fulladdress' }
+				{ header: i18n.name, width: 150, sortable: true, dataIndex: 'fullname' },
+				{ header: i18n.local, width: 50, sortable: true, dataIndex: 'username', renderer: me.local },
+				{ header: i18n.type, sortable: true, dataIndex: 'ab_title' },
+				{ header: i18n.specialty, sortable: true, dataIndex: 'specialty' },
+				{ header: i18n.work_phone, sortable: true, dataIndex: 'phonew1' },
+				{ header: i18n.mobile, sortable: true, dataIndex: 'phonecell' },
+				{ header: i18n.fax, sortable: true, dataIndex: 'fax' },
+				{ header: i18n.email, flex: 1, sortable: true, dataIndex: 'email' },
+				{ header: i18n.primary_address, flex: 1, sortable: true, dataIndex: 'fulladdress' }
 			],
 			dockedItems: [
 				{
@@ -396,7 +396,7 @@ Ext.define('App.view.miscellaneous.Addressbook', {
 					dock : 'top',
 					items: [
 						{
-							text   : 'Add Contact',
+							text   : i18n.add_contact,
 							iconCls: 'icoAddressBook',
 							scope  : me,
 							handler: me.onAddContact
@@ -434,7 +434,7 @@ Ext.define('App.view.miscellaneous.Addressbook', {
 			store.sync();
 			store.load();
 			win.close();
-			me.msg('Sweet!', 'Message Sent');
+			me.msg('Sweet!', i18n.message_sent);
 		}
 	},
 
@@ -466,7 +466,7 @@ Ext.define('App.view.miscellaneous.Addressbook', {
 			s += key + ': ' + record.data[key] + '\n';
 		}
 
-		alert('Following data copied to clipboard:\n\n' + s);
+		alert(i18n.following_data_copied_to_clipboard + ':\n\n' + s);
 
 		if(window.clipboardData) {
 			window.clipboardData.setData('text', s);

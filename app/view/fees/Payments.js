@@ -11,14 +11,14 @@
 Ext.define('App.view.fees.Payments', {
     extend:'App.classes.RenderPanel',
     id:'panelPayments',
-    pageTitle:'Payments',
+    pageTitle: i18n.payments,
     initComponent:function () {
         var me = this;
 
         me.encountersPaymentsStore = Ext.create('App.store.fees.EncountersPayments');
 
 	    me.searchPanel = Ext.create('Ext.panel.Panel',{
-		    title:'Search',
+		    title: i18n.search,
 		    layout:'border',
 		    items:[
 			    {
@@ -34,14 +34,14 @@ Ext.define('App.view.fees.Payments', {
                             layout:'hbox',
                             items:[
                                 {
-                                    fieldLabel:'Paying Entity',
+                                    fieldLabel: i18n.paying_entity,
                                     xtype:'mitos.payingentitycombo',
                                     labelWidth:95,
                                     width:230
                                 },
                                 {
                                     xtype:'patienlivetsearch',
-                                    fieldLabel:'From',
+                                    fieldLabel: i18n.from,
                                     hideLabel:false,
                                     itemId:'patientFrom',
                                     name:'from',
@@ -52,7 +52,7 @@ Ext.define('App.view.fees.Payments', {
                                 },
                                 {
                                     xtype:'textfield',
-                                    fieldLabel:'No',
+                                    fieldLabel: i18n.no,
                                     name:'transaction_number',
                                     labelWidth:45,
                                     width:230,
@@ -68,21 +68,21 @@ Ext.define('App.view.fees.Payments', {
                             layout:'hbox',
                             items:[
                                 {
-                                    fieldLabel:'Payment Method',
+                                    fieldLabel: i18n.payment_method,
                                     xtype:'mitos.paymentmethodcombo',
                                     labelWidth:95,
                                     width:230
                                 },
                                 {
                                     xtype:'mitos.billingfacilitiescombo',
-                                    fieldLabel:'Pay To',
+                                    fieldLabel: i18n.pay_to,
                                     labelWidth:42,
                                     width:470,
                                     margin:'0 0 0 25'
                                 },
                                 {
                                     xtype:'mitos.currency',
-                                    fieldLabel:'Amount',
+                                    fieldLabel: i18n.amount,
                                     name:'amount',
                                     labelWidth:45,
                                     width:230,
@@ -97,13 +97,13 @@ Ext.define('App.view.fees.Payments', {
                             layout:'hbox',
                             items:[
                                 {
-                                    fieldLabel:'From',
+                                    fieldLabel: i18n.from,
                                     xtype:'datefield',
                                     labelWidth:95,
                                     width:230
                                 },
                                 {
-                                    fieldLabel:'To',
+                                    fieldLabel: i18n.to,
                                     xtype:'datefield',
                                     margin:'0 0 0 25',
                                     labelWidth:42,
@@ -114,15 +114,15 @@ Ext.define('App.view.fees.Payments', {
                     ],
                     buttons:[
                         {
-                            text:'Search'
+                            text: i18n.search
                         },
                         '-',
                         {
-                            text:'Reset'
+                            text: i18n.reset
                         },
                         '->',
                         {
-                            text:'Add Payment',
+                            text: i18n.add_payment,
                             scope: me,
                             handler:me.onAddPaymentClick
                         }
@@ -134,20 +134,20 @@ Ext.define('App.view.fees.Payments', {
 	                store:me.encountersPaymentsStore,
 	                columns:[
 	                    {
-	                        header:'Service Date'
+	                        header: i18n.service_date
 	                    },
 	                    {
-	                        header:'Patient Name'
+	                        header: i18n.patient_name
 	                    },
 	                    {
-	                        header:'Insurance'
+	                        header: i18n.insurance
 	                    },
 	                    {
-	                        header:'Billing Notes',
+	                        header: i18n.billing_notes,
 	                        flex:1
 	                    },
 	                    {
-	                        header:'Balance Due'
+	                        header: i18n.balance_due
 	                    }
 	                ]
 			    }
@@ -158,7 +158,7 @@ Ext.define('App.view.fees.Payments', {
 
 
 	    me.detailPanel = Ext.create('Ext.panel.Panel',{
-		    title:'Detail',
+		    title: i18n.detail,
 		    layout:'border',
 		    items:[
 			    {
@@ -174,14 +174,14 @@ Ext.define('App.view.fees.Payments', {
                             layout:'hbox',
                             items:[
                                 {
-                                    fieldLabel:'Paying Entity',
+                                    fieldLabel: i18n.paying_entity,
                                     xtype:'mitos.payingentitycombo',
                                     labelWidth:95,
                                     width:230
                                 },
                                 {
                                     xtype:'patienlivetsearch',
-                                    fieldLabel:'From',
+                                    fieldLabel: i18n.from,
                                     hideLabel:false,
                                     itemId:'patientFrom',
                                     name:'from',
@@ -192,7 +192,7 @@ Ext.define('App.view.fees.Payments', {
                                 },
                                 {
                                     xtype:'textfield',
-                                    fieldLabel:'No',
+                                    fieldLabel: i18n.no,
                                     name:'transaction_number',
                                     labelWidth:45,
                                     width:230,
@@ -208,21 +208,21 @@ Ext.define('App.view.fees.Payments', {
                             layout:'hbox',
                             items:[
                                 {
-                                    fieldLabel:'Payment Method',
+                                    fieldLabel: i18n.payment_method,
                                     xtype:'mitos.paymentmethodcombo',
                                     labelWidth:95,
                                     width:230
                                 },
                                 {
                                     xtype:'mitos.billingfacilitiescombo',
-                                    fieldLabel:'Pay To',
+                                    fieldLabel: i18n.pay_to,
                                     labelWidth:42,
                                     width:470,
                                     margin:'0 0 0 25'
                                 },
                                 {
                                     xtype:'mitos.currency',
-                                    fieldLabel:'Amount',
+                                    fieldLabel: i18n.amount,
                                     name:'amount',
                                     labelWidth:45,
                                     width:230,
@@ -237,13 +237,13 @@ Ext.define('App.view.fees.Payments', {
                             layout:'hbox',
                             items:[
                                 {
-                                    fieldLabel:'From',
+                                    fieldLabel: i18n.from,
                                     xtype:'datefield',
                                     labelWidth:95,
                                     width:230
                                 },
                                 {
-                                    fieldLabel:'To',
+                                    fieldLabel: i18n.to,
                                     xtype:'datefield',
                                     margin:'0 0 0 25',
                                     labelWidth:42,
@@ -254,15 +254,15 @@ Ext.define('App.view.fees.Payments', {
                     ],
 				    buttons:[
 			            {
-			                text:'Save'
+			                text: i18n.save
 			            },
 			            '-',
 			            {
-			                text:'Reset'
+			                text: i18n.reset
 			            },
 			            '->',
 			            {
-			                text:'Add Payment',
+			                text: i18n.add_payment,
                             scope: me,
                             handler:me.onAddPaymentClick
 
@@ -285,20 +285,20 @@ Ext.define('App.view.fees.Payments', {
                     }),
 	                columns:[
 	                    {
-	                        header:'Service Date'
+	                        header: i18n.service_date
 	                    },
 	                    {
-	                        header:'Patient Name'
+	                        header: i18n.patient_name
 	                    },
 	                    {
-	                        header:'Insurance'
+	                        header: i18n.insurance
 	                    },
 	                    {
-	                        header:'Billing Notes',
+	                        header: i18n.billing_notes,
 	                        flex:1
 	                    },
 	                    {
-	                        header:'Balance Due'
+	                        header: i18n.balance_due
 	                    }
 	                ]
 			    }

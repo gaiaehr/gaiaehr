@@ -33,7 +33,7 @@ Ext.define('App.panel.login.Login',{
             fields:['name','value'],
             data : [
                 {name: 'English (US)',  value: 'en_US'},
-                {name: 'Spanish',       value: 'es'}
+                {name: 'Spanish (Puerto Rico)', value: 'es_PR'}
             ]
         });
 

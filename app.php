@@ -22,7 +22,8 @@ $_SESSION['site']['flops'] = 0;
 			var app,
 				perm = {},
 				user = {},
-				settings = {};
+				settings = {},
+				i18n;
 		</script>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 		<title>GaiaEHR :: (Electronic Health Records)</title>
@@ -62,7 +63,7 @@ $_SESSION['site']['flops'] = 0;
 		</script>
 		<script type="text/javascript" src="lib/webcam_control/swfobject.js"></script>
 		<script type="text/javascript" src="lib/extensible-1.5.1/src/Extensible.js"></script>
-		<script type="text/javascript" src="langs/en_US.js"></script>
+		<!-- <script type="text/javascript" src="langs/es_PR.js"></script> -->
 		<script type="text/javascript" src="lib/jpegcam/htdocs/webcam.js"></script>
 		<script type="text/javascript" src="app/classes/Overrides.js"></script>
 		<script type="text/javascript" src="app/classes/VTypes.js"></script>
@@ -100,6 +101,13 @@ $_SESSION['site']['flops'] = 0;
 					for(var i = 0; i < permissions.length; i++) {
 						perm[permissions[i].perm] = permissions[i].value;
 					}
+				});
+				// localization remoting procedures.
+				// ie: i18n.dashboard = Dashboard (en_US)
+				// ie: i18n.dashboard = Tablero (es_PR)
+				i18n.getTranslation(function(provider, response)
+				{
+					i18n = response.result;
 				});
 				User.getCurrentUserBasicData(function(provider, response) {
 					var userData = response.result;

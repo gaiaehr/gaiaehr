@@ -25,27 +25,27 @@ Ext.define('App.view.patient.ProgressNote', {
         me.tpl = new Ext.XTemplate(
             '<div class="progressNote">' +
             '   <div class="secession general-data">' +
-            '       <div class="title"> General </div>' +
+            '       <div class="title"> ' + i18n['general'] + ' </div>' +
             '       <table width="100%">' +
             '           <tr>' +
             '               <td>' +
-            '                   <div class="header row">Name: {patient_name} </div>' +
-            '                   <div class="header row">Record: #{pid} </div>' +
-            '                   <div class="header row">Provider date: {open_by} </div>' +
-            '                   <div class="header row">Onset Date: {[values.onset_date || "-"]} </div>' +
-            '                   <div class="header row">Signed by: {[values.signed_by || "-"]} </div>' +
+            '                   <div class="header row">' + i18n['name'] + ': {patient_name} </div>' +
+            '                   <div class="header row">' + i18n['record'] + ': #{pid} </div>' +
+            '                   <div class="header row">' + i18n['provider_date'] + ': {open_by} </div>' +
+            '                   <div class="header row">' + i18n['onset_date'] + ': {[values.onset_date || "-"]} </div>' +
+            '                   <div class="header row">' + i18n['signed_by'] + ': {[values.signed_by || "-"]} </div>' +
             '               </td>' +
             '               <td>' +
-            '                   <div class="header row">Service date: {start_date} </div>' +
-            '                   <div class="header row">Visit Category: {visit_category} </div>' +
-            '                   <div class="header row">Facility: {facility} </div>' +
-            '                   <div class="header row">Priority: {priority} </div>' +
-            '                   <div class="header row">Close On: {[values.close_date || "-"]} </div>' +
+            '                   <div class="header row">' + i18n['service_date'] + ': {start_date} </div>' +
+            '                   <div class="header row">' + i18n['visit_category'] + ': {visit_category} </div>' +
+            '                   <div class="header row">' + i18n['facility'] + ': {facility} </div>' +
+            '                   <div class="header row">' + i18n['priority'] + ': {priority} </div>' +
+            '                   <div class="header row">' + i18n['close_on'] + ': {[values.close_date || "-"]} </div>' +
             '               </td>' +
             '           </tr>' +
             '           <tr>' +
             '               <td colspan="2">' +
-            '                   <div class="header row" style="white-space: normal;">Brief Description: {brief_description} </div>' +
+            '                   <div class="header row" style="white-space: normal;">' + i18n['brief_description'] + ': {brief_description} </div>' +
             '               </td>' +
             '           </tr>' +
             '       </table>' +
@@ -55,7 +55,7 @@ Ext.define('App.view.patient.ProgressNote', {
              */
             '   <tpl if="reviewofsystems">' +
             '       <div class="secession">' +
-            '           <div class="title"> Review of System </div>' +
+            '           <div class="title"> ' + i18n['review_of_systems'] + ' </div>' +
             '           <tpl for="reviewofsystems">' +
             '               <tpl if="this.isNotNull(value)">' +
             '                   <div class="pblock"> {name}: {value} </div>' +
@@ -68,7 +68,7 @@ Ext.define('App.view.patient.ProgressNote', {
              */
             '   <tpl if="reviewofsystemschecks">' +
             '       <div class="secession">' +
-            '           <div class="title"> Review of System Checks </div>' +
+            '           <div class="title"> ' + i18n['review_of_system_checks'] + ' </div>' +
             '           <tpl for="reviewofsystemschecks">' +
             '               <tpl if="this.isNotNull(value)">' +
             '                   <div class="pblock"> {name}: {value} </div>' +
@@ -82,11 +82,11 @@ Ext.define('App.view.patient.ProgressNote', {
              */
             '   <tpl for="soap">' +
             '       <div class="secession">' +
-            '           <div class="title"> SOAP </div>' +
-            '           <p><span>Subjective:</span> {[values.subjective || "-"]} </p>' +
-            '           <p><span>Objective:</span> {[values.objective || "-"]}</p>' +
-            '           <p><span>Assessment:</span> {[values.assessment || "-"]}</p>' +
-            '           <p><span>Plan:</span> {[values.plan || "-"]}</p>' +
+            '           <div class="title"> ' + i18n['soap'] + ' </div>' +
+            '           <p><span>' + i18n['subjective'] + ':</span> {[values.subjective || "-"]} </p>' +
+            '           <p><span>' + i18n['objective'] + ':</span> {[values.objective || "-"]}</p>' +
+            '           <p><span>' + i18n['assessment'] + ':</span> {[values.assessment || "-"]}</p>' +
+            '           <p><span>' + i18n['plan'] + ':</span> {[values.plan || "-"]}</p>' +
             '       </div>' +
             '   </tpl>' +
             /**
@@ -94,9 +94,9 @@ Ext.define('App.view.patient.ProgressNote', {
              */
             '   <tpl for="speechdictation">' +
             '       <div class="secession">' +
-            '           <div class="title"> Speech Dictation </div>' +
-            '           <p><span>Dictation:</span> {dictation}</p>' +
-            '           <p><span>Additional Notes:</span> {additional_notes}</p>' +
+            '           <div class="title"> ' + i18n['speech_dictation'] + ' </div>' +
+            '           <p><span>' + i18n['dictation'] + ':</span> {dictation}</p>' +
+            '           <p><span>' + i18n['additional_notes'] + ':</span> {additional_notes}</p>' +
             '       </div>' +
             '   </tpl>' +
             /**
@@ -104,7 +104,7 @@ Ext.define('App.view.patient.ProgressNote', {
              */
             '   <tpl if="vitals">' +
             '       <div class="secession vitals-data">' +
-            '           <div class="title"> Vitals </div>' +
+            '           <div class="title"> ' + i18n['vitals'] + ' </div>' +
             '           <div style="overflow-x: auto">' +
             '               <table>' +
             '                   <tr>' +
@@ -113,112 +113,112 @@ Ext.define('App.view.patient.ProgressNote', {
             '                              <tbody>' +
             '                                  <tr class="x-grid-row">' +
             '                                       <td class="x-grid-cell x-grid-table-vitals-date">' +
-            '                                           <div class="x-grid-cell-inner ">Date & Time</div>' +
+            '                                           <div class="x-grid-cell-inner ">' + i18n['date_&_time'] + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
             '                                   <tr class="x-grid-row">' +
             '                                       <td class="x-grid-cell">' +
-            '                                           <div class="x-grid-cell-inner ">Weight Lbs</div>' +
+            '                                           <div class="x-grid-cell-inner ">' + i18n['weight_lbs'] + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
             '                                   <tr class="x-grid-row">' +
             '                                       <td class="x-grid-cell">' +
-            '                                           <div class="x-grid-cell-inner ">Weight Kg</div>' +
+            '                                           <div class="x-grid-cell-inner ">' + i18n['weight_kg'] + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
             '                                   <tr class="x-grid-row">' +
             '                                       <td class="x-grid-cell">' +
-            '                                           <div class="x-grid-cell-inner ">Height in</div>' +
+            '                                           <div class="x-grid-cell-inner ">' + i18n['height_in'] + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
             '                                   <tr class="x-grid-row">' +
             '                                       <td class="x-grid-cell">' +
-            '                                           <div class="x-grid-cell-inner ">Height cm</div>' +
+            '                                           <div class="x-grid-cell-inner ">' + i18n['height_cm'] + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
             '                                   <tr class="x-grid-row">' +
             '                                       <td class="x-grid-cell">' +
-            '                                           <div class="x-grid-cell-inner ">BP systolic</div>' +
+            '                                           <div class="x-grid-cell-inner ">' + i18n['bp_systolic'] + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
             '                                   <tr class="x-grid-row">' +
             '                                       <td class="x-grid-cell">' +
-            '                                           <div class="x-grid-cell-inner ">BP diastolic</div>' +
+            '                                           <div class="x-grid-cell-inner ">' + i18n['bp_diastolic'] + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
             '                                   <tr class="x-grid-row">' +
             '                                       <td class="x-grid-cell">' +
-            '                                           <div class="x-grid-cell-inner ">Pulse</div>' +
+            '                                           <div class="x-grid-cell-inner ">' + i18n['pulse'] + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
             '                                   <tr class="x-grid-row">' +
             '                                       <td class="x-grid-cell">' +
-            '                                           <div class="x-grid-cell-inner ">Respiration</div>' +
+            '                                           <div class="x-grid-cell-inner ">' + i18n['respiration'] + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
             '                                   <tr class="x-grid-row">' +
             '                                       <td class="x-grid-cell">' +
-            '                                           <div class="x-grid-cell-inner ">Temp F</div>' +
+            '                                           <div class="x-grid-cell-inner ">' + i18n['temp_f'] + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
             '                                   <tr class="x-grid-row">' +
             '                                       <td class="x-grid-cell">' +
-            '                                           <div class="x-grid-cell-inner ">Temp C</div>' +
+            '                                           <div class="x-grid-cell-inner ">' + i18n['temp_c'] + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
             '                                   <tr class="x-grid-row">' +
             '                                       <td class="x-grid-cell">' +
-            '                                           <div class="x-grid-cell-inner ">Temp Location</div>' +
+            '                                           <div class="x-grid-cell-inner ">' + i18n['temp_location'] + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
             '                                   <tr class="x-grid-row">' +
             '                                       <td class="x-grid-cell">' +
-            '                                           <div class="x-grid-cell-inner ">Oxygen Saturation</div>' +
+            '                                           <div class="x-grid-cell-inner ">' + i18n['oxygen_saturation'] + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
             '                                   <tr class="x-grid-row">' +
             '                                       <td class="x-grid-cell">' +
-            '                                           <div class="x-grid-cell-inner ">Head Circumference in</div>' +
+            '                                           <div class="x-grid-cell-inner ">' + i18n['head_circumference_in'] + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
             '                                   <tr class="x-grid-row">' +
             '                                       <td class="x-grid-cell">' +
-            '                                           <div class="x-grid-cell-inner ">Head Circumference cm</div>' +
+            '                                           <div class="x-grid-cell-inner ">' + i18n['head_circumference_cm'] + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
             '                                   <tr class="x-grid-row">' +
             '                                       <td class="x-grid-cell">' +
-            '                                           <div class="x-grid-cell-inner ">Waist Circumference in</div>' +
+            '                                           <div class="x-grid-cell-inner ">' + i18n['waist_circumference_in'] + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
             '                                   <tr class="x-grid-row">' +
             '                                       <td class="x-grid-cell">' +
-            '                                           <div class="x-grid-cell-inner ">Waist Circumference cm</div>' +
+            '                                           <div class="x-grid-cell-inner ">' + i18n['waist_circumference_cm'] + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
             '                                   <tr class="x-grid-row">' +
             '                                       <td class="x-grid-cell">' +
-            '                                           <div class="x-grid-cell-inner ">BMI</div>' +
+            '                                           <div class="x-grid-cell-inner ">' + i18n['bmi'] + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
             '                                   <tr class="x-grid-row">' +
             '                                       <td class="x-grid-cell">' +
-            '                                           <div class="x-grid-cell-inner ">BMI Status</div>' +
+            '                                           <div class="x-grid-cell-inner ">' + i18n['bmi_status'] + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
             '                                   <tr class="x-grid-row">' +
             '                                       <td class="x-grid-cell">' +
-            '                                           <div class="x-grid-cell-inner ">Other Notes</div>' +
+            '                                           <div class="x-grid-cell-inner ">' + i18n['other_notes'] + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
             '                                   <tr class="x-grid-row">' +
             '                                       <td class="x-grid-cell">' +
-            '                                           <div class="x-grid-cell-inner ">Administer<div>' +
+            '                                           <div class="x-grid-cell-inner ">' + i18n['administer'] + '<div>' +
             '                                       </td>' +
             '                                   </tr>' +
             '                                   <tr class="x-grid-row">' +
             '                                       <td class="x-grid-cell">' +
-            '                                           <div class="x-grid-cell-inner ">Sign by<div>' +
+            '                                           <div class="x-grid-cell-inner ">' + i18n['Sign by'] + '<div>' +
             '                                       </td>' +
             '                                   </tr>' +
             '                               </tbody>' +

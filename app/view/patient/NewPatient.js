@@ -16,13 +16,13 @@
 Ext.define('App.view.patient.NewPatient', {
 	extend       : 'App.classes.RenderPanel',
 	id           : 'panelNewPatient',
-	pageTitle    : 'Patient Entry Form',
+	pageTitle    : i18n['patient_entry_form'],
 	uses         : [ 'App.classes.PhotoIdWindow' ],
 	initComponent: function() {
 
 		var me = this;
 
-		me.formTitle = 'Demographics';
+		me.formTitle = i18n['demographics'];
 		me.formToRender = 'Demographics';
 
 		me.form = Ext.create('Ext.form.Panel', {
@@ -35,7 +35,7 @@ Ext.define('App.view.patient.NewPatient', {
 				dock : 'top',
 				items: [
 					{
-						text   : 'Create New Patient',
+						text   : i18n['create_new_patient'],
 						iconCls: 'save',
 						scope  : me,
 						handler: me.onSave
@@ -76,14 +76,14 @@ Ext.define('App.view.patient.NewPatient', {
                     fullname = response.result.patient.fullname;
 
                 if(response.result.success){
-                    me.msg('Sweet!', 'Patient "' + fullname + '" Created... ');
+                    me.msg('Sweet!', i18n['patient'] + ' "' + fullname + '" ' + i18n['created'] + '... ');
                     app.setCurrPatient(pid, fullname, '', function(success) {
                         if(success) {
                             app.openPatientSummary();
                         }
                     });
                 }else{
-                    Ext.Msg.alert('Opps!', 'Something went wrong saving the patient');
+                    Ext.Msg.alert('Opps!', i18n['something_went_wrong_saving_the_patient']);
                 }
 
             });
@@ -95,7 +95,7 @@ Ext.define('App.view.patient.NewPatient', {
 	confirmationWin: function(callback) {
 		Ext.Msg.show({
 			title  : 'Please confirm...',
-			msg    : 'Do you want to create a <strong>new patient</strong>?',
+			msg    : i18n['do_you_want_to_create_a_new_patient'],
 			icon   : Ext.MessageBox.QUESTION,
 			buttons: Ext.Msg.YESNO,
 			scope  : this,

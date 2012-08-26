@@ -1129,6 +1129,17 @@ $API = array(
             )
         )
     ),
+    
+	'i18n'=>array
+	(
+		'methods'=>array
+		(
+			'getTranslation'=>array
+			(
+				'len'=>0
+			)
+		)
+	),
 
     'SiteSetup'=>array(
         'methods'=>array(
@@ -1168,5 +1179,6 @@ $API = array(
         )
     )
 
-
 );
+
+?>

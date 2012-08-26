@@ -25,7 +25,7 @@ Ext.define('App.view.patient.Vitals', {
     selectedItemCls  : 'vitals-column-selected',
     loadMask         : true,
     singleSelect     : true,
-	emptyText        : '<div class="view_empty_text"><span>No Vitals to Display</span></div>',
+	emptyText        : '<div class="view_empty_text"><span>' + i18n['no_vitals_to_display'] + '</span></div>',
 	initComponent: function() {
 		var me = this;
 

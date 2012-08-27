@@ -10,7 +10,7 @@
 Ext.define('App.view.administration.ExternalDataLoads', {
 	extend       : 'App.classes.RenderPanel',
 	id           : 'panelExternalDataLoads',
-	pageTitle    : 'External Data Loads',
+	pageTitle    : i18n['external_data_loads'],
 	/**
 	 * define the layout 'accordion'
 	 * and few more configs
@@ -58,25 +58,25 @@ Ext.define('App.view.administration.ExternalDataLoads', {
 		 * Here are the panels used inside the accordion layout
 		 */
 		me.icd9 = Ext.create('Ext.form.Panel', {
-			title : 'Update ICD9',
+			title : i18n['update_icd9'],
 			layout: 'border',
 			items : [ me.icd9Grid, me.icd9Form ]
 		});
 
 		me.icd10 = Ext.create('Ext.panel.Panel', {
-			title : 'Update ICD10',
+			title : i18n['update_icd10'],
 			layout: 'border',
 			items : [ me.icd10Grid, me.icd10Form ]
 		});
 
 		me.rxnorm = Ext.create('Ext.panel.Panel', {
-			title : 'Update RxNorm',
+			title : i18n['update_rxnorm'],
 			layout: 'border',
 			items : [ me.rxnormGrid, me.rxnormForm ]
 		});
 
 		me.snomed = Ext.create('Ext.panel.Panel', {
-			title : 'Update SNOMED',
+			title : i18n['update_snomed'],
 			layout: 'border',
 			items : [ me.snomedGrid, me.snomedForm ]
 		});
@@ -100,32 +100,32 @@ Ext.define('App.view.administration.ExternalDataLoads', {
 					xtype: 'fieldset',
 					styleHtmlContent:true,
 					action: action,
-					title: 'Current Version Installed',
-					html: 'No Data Installed',
-					tpl : 'Revivion Name:  {revision_name}<br>' +
-						'Revision Number:  {revision_number}<br>' +
-						'Revision Version: {revision_version}<br>' +
-						'Revision Date:    {revision_date}<br>' +
-						'Imported On:      {imported_date}'
+					title: i18n['current_version_installed'],
+					html: i18n['no_data_installed'],
+					tpl : i18n['revivion_name'] + ':  {revision_name}<br>' +
+						i18n['revision_number'] + ':  {revision_number}<br>' +
+						i18n['revision_version'] + ': {revision_version}<br>' +
+						i18n['revision_date'] + ':    {revision_date}<br>' +
+						i18n['imported_on'] + ':      {imported_date}'
 				},
 				{
 					xtype: 'fieldset',
-					title: 'Installation',
+					title: i18n['installation'],
 					action: 'installation',
 					styleHtmlContent:true,
 					html : me.getInstallationDetails(action)
 				},
 				{
 					xtype: 'fieldset',
-					title: 'Upload',
+					title: i18n['upload'],
 					action: 'upload',
 					items:[
 						{
 
 							xtype     : 'filefield',
 							name      : 'filePath',
-							buttonText: 'Select file...',
-							emptyText : 'Data File',
+							buttonText: i18n['Select file'] + '...',
+							emptyText : i18n['data_file'],
 							width     : 350,
 							labelWidth: 50,
 							allowBlank: false
@@ -138,7 +138,7 @@ Ext.define('App.view.administration.ExternalDataLoads', {
 			},
 			buttons    : [
 				{
-					text   : 'Update',
+					text   : i18n['update'],
 					action : action,
 					scope  : me,
 					handler: me.uploadFile
@@ -171,17 +171,17 @@ Ext.define('App.view.administration.ExternalDataLoads', {
 	getDefaultColumns: function() {
 		return [
 			{
-				header   : 'Date',
+				header   : i18n['date'],
 				dataIndex: 'date',
 				width    : 98
 			},
 			{
-				header   : 'Version',
+				header   : i18n['version'],
 				dataIndex: 'version',
 				width    : 98
 			},
 			{
-				header   : 'File',
+				header   : i18n['file'],
 				dataIndex: 'basename',
 				width    : 300
 			}
@@ -237,7 +237,7 @@ Ext.define('App.view.administration.ExternalDataLoads', {
 
 		if(form.isValid()) {
 			form.submit({
-				waitMsg: 'Uploading And Updating Code Database...',
+				waitMsg: i18n['uploading_and_updating_code_database'] + '...',
 				scope  : me,
 				params : {
 					codeType: btn.action
@@ -255,12 +255,12 @@ Ext.define('App.view.administration.ExternalDataLoads', {
 	onCodeDblClick:function(grid, record){
 		var me = this;
 		app.setTask(false);
-		grid.el.mask('Installing Database, Please wait...');
+		grid.el.mask( i18n['installing_database_please_wait'] + '...');
         ExternalDataUpdate.updateCodes(record.data, function(provider, response){
 			grid.el.unmask();
 			if(response.result.success){
 				me.setCurrentCodesInfo();
-				me.alert('New database installed', 'info');
+				me.alert(i18n['new_database_installed'], 'info');
 			}else{
 				me.alert(response.result.error, 'error');
 			}

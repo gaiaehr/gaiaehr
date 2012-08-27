@@ -603,7 +603,27 @@ $LANG = array(
 	'available_tokens'						=> 'Available Tokens',
 	'new_document'							=> 'New Document',
 	'new_defaults'							=> 'New Defaults',
-	'new_header_or_footer'					=> 'New Header Or Footer'
+	'new_header_or_footer'					=> 'New Header Or Footer',
+	'external_data_loads'					=> 'External Data Loads',
+	'update_icd9'							=> 'Update ICD9',
+	'update_icd10'							=> 'Update ICD10',
+	'update_rxnorm'							=> 'Update RxNorm',
+	'update_snomed'							=> 'Update SNOMED',
+	'current_version_installed'				=> 'Current Version Installed',
+	'no_data_installed'						=> 'No Data Installed',
+	'revivion_name'							=> 'Revivion Name',
+	'document_template_editor'				=> 'Document Template Editor',
+	'revision_number'						=> 'Revision Number',
+	'revision_version'						=> 'Revision Version',
+	'revision_date'							=> 'Revision Date',
+	'imported_on'							=> 'Imported On',
+	'installation'							=> 'Installation',
+	'data_file'								=> 'Data File',
+	'version'								=> 'Version',
+	'file'									=> 'File',
+	'uploading_and_updating_code_database'	=> 'Uploading And Updating Code Database',
+	'installing_database_please_wait'		=> 'Installing Database, Please wait',
+	'new_database_installed'				=> 'New database installed'
 
 );
 ?>

@@ -620,7 +620,7 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                                             if(response.result.success){
                                                 me.installationPregress.updateProgress(1,'Done!', true);
 
-                                                alert('Site Installed! Refresh the page... TODO: theme, language, and load codes');
+                                                alert('Site Installed! Refresh the page... TODO: theme, language, and codes');
 
                                                 //Optional Stuff..........
 //                                                SiteSetup.setTheme(function(provider, response){

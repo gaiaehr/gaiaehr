@@ -150,7 +150,12 @@ class SiteSetup
 				return array('success' => false, 'error' => $this->err);
 			}
 		}elseif($this->databaseConn($params->dbHost, $params->dbPort, $params->dbName, $params->dbUser, $params->dbPass)){
-			return array('success' => true);
+			if($this->loadDatabaseStructure()){
+				return array('success' => true);
+			}else{
+				FileManager::rmdir_recursive("sites/$params->siteId");
+				return array('success' => false, 'error' => $this->conn->errorInfo());
+			}
 		}else{
 			FileManager::rmdir_recursive("sites/$params->siteId");
 			return array('success' => false, 'error' => $this->err);
@@ -202,8 +207,8 @@ class SiteSetup
 		if(file_exists($conf = 'sites/conf.example.php')) {
 			if(($AESkey = ACL::createRandomKey()) !== false){
 				$buffer     = file_get_contents($conf);
-				$search     = array('%host%', '%user%', '%pass%', '%db%', '%port%', '%key%');
-				$replace    = array($params->dbHost, $params->dbUser, $params->dbPass, $params->dbName, $params->dbPort, $AESkey);
+				$search     = array('%host%', '%user%', '%pass%', '%db%', '%port%', '%key%', '%lang%');
+				$replace    = array($params->dbHost, $params->dbUser, $params->dbPass, $params->dbName, $params->dbPort, $AESkey, 'en_US');
 				$newConf    = str_replace($search, $replace, $buffer);
 				$siteDir = "sites/$params->siteId";
 				$conf_file = ("$siteDir/conf.php");

@@ -16,7 +16,7 @@
 Ext.define('App.view.administration.Facilities', {
 	extend       : 'App.classes.RenderPanel',
 	id           : 'panelFacilities',
-	pageTitle    : 'Facilities (Active)',
+	pageTitle    : i18n['facilities_active'],
 	uses         : [
 		'App.classes.GridPanel',
 		'App.classes.window.Window'
@@ -72,25 +72,25 @@ Ext.define('App.view.administration.Facilities', {
 			store    : me.FacilityStore,
 			columns  : [
 				{
-					text     : 'Name',
+					text     : i18n['name'],
 					flex     : 1,
 					sortable : true,
 					dataIndex: 'name'
 				},
 				{
-					text     : 'Phone',
+					text     : i18n['phone'],
 					width    : 100,
 					sortable : true,
 					dataIndex: 'phone'
 				},
 				{
-					text     : 'Fax',
+					text     : i18n['fax'],
 					width    : 100,
 					sortable : true,
 					dataIndex: 'fax'
 				},
 				{
-					text     : 'City',
+					text     : i18n['city'],
 					width    : 100,
 					sortable : true,
 					dataIndex: 'city'
@@ -102,19 +102,19 @@ Ext.define('App.view.administration.Facilities', {
 				displayInfo: true,
 				plugins    : Ext.create('Ext.ux.SlidingPager', {}),
 				items      : ['-', {
-					text   : 'Add New Facility',
+					text   : i18n['add_new_facility'],
 					iconCls: 'save',
 					handler: function() {
 						var form = me.win.down('form');
-						me.onNew(form, 'facilityModel', 'Add New Facility');
+						me.onNew(form, 'facilityModel', i18n['add_new_facility']);
 					}
 				}, '-', {
-					text   : 'Show Active Facilities',
+					text   : i18n['show_active_facilities'],
 					action : 'active',
 					scope  : me,
 					handler: me.filterFacilitiesby
 				}, '-', {
-					text   : 'Show Inactive Facilities',
+					text   : i18n['show_inactive_facilities'],
 					action : 'inactive',
 					scope  : me,
 					handler: me.filterFacilitiesby
@@ -123,7 +123,7 @@ Ext.define('App.view.administration.Facilities', {
 			}),
 			listeners: {
 				itemdblclick: function(view, record) {
-					me.onItemdblclick(me.FacilityStore, record, 'Edit Facility');
+					me.onItemdblclick(me.FacilityStore, record, i18n['edit_facility']);
 				}
 			}
 		}); // END Facility Grid
@@ -141,44 +141,44 @@ Ext.define('App.view.administration.Facilities', {
 					defaults     : { anchor: '100%' },
 					items        : [
 						{
-							fieldLabel: 'Name',
+							fieldLabel: i18n['name'],
 							name      : 'name',
 							allowBlank: false
 						},
 						{
-							fieldLabel: 'Phone',
+							fieldLabel: i18n['phone'],
 							name      : 'phone',
 							vtype     : 'phoneNumber'
 						},
 						{
-							fieldLabel: 'Fax',
+							fieldLabel: i18n['fac'],
 							name      : 'fax',
 							vtype     : 'phoneNumber'
 						},
 						{
-							fieldLabel: 'Street',
+							fieldLabel: i18n['street'],
 							name      : 'street'
 						},
 						{
-							fieldLabel: 'City',
+							fieldLabel: i18n['city'],
 							name      : 'city'
 						},
 						{
-							fieldLabel: 'State',
+							fieldLabel: i18n['state'],
 							name      : 'state'
 						},
 						{
-							fieldLabel: 'Postal Code',
+							fieldLabel: i18n['postal_code'],
 							name      : 'postal_code',
 							vtype     : 'postalCode'
 						},
 						{
-							fieldLabel: 'Country Code',
+							fieldLabel: i18n['country_code'],
 							name      : 'country_code'
 						},
 						{
 							xtype     : 'fieldcontainer',
-							fieldLabel: 'Tax ID',
+							fieldLabel: i18n['tax_id'],
 							layout    : 'hbox',
 							items     : [
 								{
@@ -194,35 +194,35 @@ Ext.define('App.view.administration.Facilities', {
 						},
 						{
 							xtype     : 'mitos.checkbox',
-							fieldLabel: 'Active?',
+							fieldLabel: i18n['active'],
 							name      : 'active'
 						},
 						{
 							xtype     : 'mitos.checkbox',
-							fieldLabel: 'Service Location',
+							fieldLabel: i18n['service_location'],
 							name      : 'service_location'
 						},
 						{
 							xtype     : 'mitos.checkbox',
-							fieldLabel: 'Billing Location',
+							fieldLabel: i18n['billing_location'],
 							name      : 'billing_location'
 						},
 						{
 							xtype     : 'mitos.checkbox',
-							fieldLabel: 'Accepts assignment',
+							fieldLabel: i18n['accepts_assignment'],
 							name      : 'accepts_assignment'
 						},
 						{
 							xtype     : 'mitos.poscodescombo',
-							fieldLabel: 'POS Code',
+							fieldLabel: i18n['pos_code'],
 							name      : 'pos_code'
 						},
 						{
-							fieldLabel: 'Billing Attn',
+							fieldLabel: i18n['billing_attn'],
 							name      : 'attn'
 						},
 						{
-							fieldLabel: 'CLIA Number',
+							fieldLabel: i18n['clia_number'],
 							name      : 'domain_identifier'
 						},
 						{
@@ -238,7 +238,7 @@ Ext.define('App.view.administration.Facilities', {
 			],
 			buttons  : [
 				{
-					text   : 'Save',
+					text   : i18n['save'],
 					cls    : 'winSave',
 					handler: function() {
 						var form = me.win.down('form').getForm();
@@ -250,7 +250,7 @@ Ext.define('App.view.administration.Facilities', {
 				},
 				'-',
 				{
-					text   : 'Cancel',
+					text   : i18n['cancel'],
 					scope  : me,
 					handler: function(btn) {
 						btn.up('window').close();
@@ -270,7 +270,7 @@ Ext.define('App.view.administration.Facilities', {
 	},
 
 	filterFacilitiesby: function(btn) {
-		this.updateTitle('Facilities (' + Ext.String.capitalize(btn.action) + ')');
+		this.updateTitle(i18n['Facilities'] + ' (' + Ext.String.capitalize(btn.action) + ')');
 		this.FacilityStore.proxy.extraParams = { active: btn.action == 'active' ? 1 : 0 };
 		this.FacilityStore.load();
 	},

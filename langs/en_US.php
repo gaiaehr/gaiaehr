@@ -623,7 +623,26 @@ $LANG = array(
 	'file'									=> 'File',
 	'uploading_and_updating_code_database'	=> 'Uploading And Updating Code Database',
 	'installing_database_please_wait'		=> 'Installing Database, Please wait',
-	'new_database_installed'				=> 'New database installed'
+	'new_database_installed'				=> 'New database installed',
+	'facilities_active'						=> 'Facilities (Active)',
+	'phone'									=> 'Phone',
+	'city'									=> 'City',
+	'add_new_facility'						=> 'Add New Facility',
+	'show_active_facilities'				=> 'Show Active Facilities',
+	'show_inactive_facilities'				=> 'Show Inactive Facilities',
+	'edit_facility'							=> 'Edit Facility',
+	'street'								=> 'Street',
+	'state'									=> 'State',
+	'postal_code'							=> 'Postal Code',
+	'country_code'							=> 'Country Code',
+	'tax_id'								=> 'Tax ID',
+	'service_location'						=> 'Service Location',
+	'billing_location'						=> 'Billing Location',
+	'accepts_assignment'					=> 'Accepts assignment',
+	'pos_code'								=> 'POS Code',
+	'billing_attn'							=> 'Billing Attn',
+	'clia_number'							=> 'CLIA Number',
+	'facility_npi'							=> 'Facility NPI'
 
 );
 ?>

@@ -11,7 +11,7 @@
 Ext.define('App.view.administration.Documents', {
 	extend              : 'App.classes.RenderPanel',
 	id                  : 'panelDocuments',
-	pageTitle           : 'Document Template Editor',
+	pageTitle           : i18n['document_template_editor'],
 	pageLayout          : 'border',
 	uses                : [
 		'App.classes.GridPanel'
@@ -91,7 +91,7 @@ Ext.define('App.view.administration.Documents', {
                      token: '[PATIENT_CITY]'
                  },
 	             {
-                     title: in18['patient_state'],
+                     title: i18n['patient_state'],
                      token: '[PATIENT_STATE]'
                  },
 	             {

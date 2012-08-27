@@ -529,7 +529,7 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                         title      : 'Installation Complete',
                         bodyPadding: '10',
                         action     : 4,
-                        html       : 'Installation placeholder'
+                        html       : 'Site Installed! Refresh the page... TODO: theme, language, and codes'
                     })
                 ]
             })
@@ -553,11 +553,6 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                 handler : me.onNexStep
             }
         ];
-
-        me.processPanel = Ext.create('Ext.form.FieldSet',{
-            title:'Site Setup Process',
-            height:335
-        });
 
         me.callParent();
     },
@@ -599,6 +594,7 @@ Ext.define('App.view.sitesetup.SiteSetup', {
             values = Ext.Object.merge(form.getValues(), me.step[2].dbInfo);
 
         me.installationPregress.show();
+        me.siteConfigurationContainer.el.mask('Installing New Site');
         me.installationPregress.updateProgress(0,'Creating Directory and Sub Directories');
         SiteSetup.setSiteDirBySiteId(values.siteId, function(provider, response){
             if(response.result.success){
@@ -619,6 +615,11 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                                         SiteSetup.createSiteAdmin(values, function(provider, response){
                                             if(response.result.success){
                                                 me.installationPregress.updateProgress(1,'Done!', true);
+                                                me.siteConfigurationContainer.el.unmask();
+
+                                                me.step[3] = { success: true };
+                                                me.okToGoNext(true);
+                                                me.onComplete();
 
                                                 alert('Site Installed! Refresh the page... TODO: theme, language, and codes');
 
@@ -655,11 +656,13 @@ Ext.define('App.view.sitesetup.SiteSetup', {
         });
     },
 
-    getProgressBar:function(){
-        return Ext.create('Ext.ProgressBar', {
-                text:'Ready',
-                cls:'left-align'
-            });
+    onComplete:function(){
+        var me = this,
+            btn = Ext.getCmp('move-next');
+        btn.action = 'complete';
+        me.headerPanel.getComponent(4).setIconCls('icoGreenFace');
+        me.onNexStep(btn);
+
     },
 
     onNexStep: function(btn) {

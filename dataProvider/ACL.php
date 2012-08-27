@@ -214,7 +214,27 @@ class ACL {
             return false;
 		}
 	}
+
+	public static function createRandomKey()
+	{
+		$chars = "abcdefghijkmnopqrstuvwxyz023456789";
+		srand((double)microtime() * 1000000);
+		$i   = 0;
+		$AESkey = '';
+		while($i <= 31) {
+			$num = rand() % 33;
+			$tmp = substr($chars, $num, 1);
+			$AESkey = $AESkey . $tmp;
+			$i++;
+		}
+		if(strlen($AESkey) == 32){
+			return $AESkey;
+		}else{
+			return false;
+		}
+
+	}
 }
 //print '<pre>';
-//$acl = new ACL();
-//print_r($acl->getAllUserPermsAccess());
+////$acl = new ACL();
+//print ACL::createRandomKey();

@@ -183,6 +183,10 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                         title     : 'Requirements',
                         action    : 1,
                         viewConfig: {stripeRows: true},
+                        listeners:{
+                            scope:me,
+                            show:me.loadRequirements
+                        },
                         columns   : [
                             {
                                 text     : 'Requirements',
@@ -357,154 +361,175 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                     }), me.siteConfiguration = Ext.create('Ext.form.Panel', {
                         title      : 'Site configuration',
                         defaultType: 'textfield',
-                        bodyPadding: '10',
+                        bodyPadding: '7',
                         action     : 3,
+                        listeners:{
+                            scope:me,
+                            show:me.onSiteConfigurationShow
+                        },
                         items      : [
-                            {
-                                xtype   : 'fieldset',
-                                title   : 'Site / Admin Info (required)',
-                                layout  : 'anchor',
-                                defaults: { margin: '4 0'},
-                                items   : [
+                            me.siteConfigurationContainer = Ext.create('Ext.container.Container',{
+//                                floating:true,
+//                                x:0,
+//                                y:0,
+//                                shadow:false,
+//                                hidden:false,
+//                                width:855,
+//                                height:335,
+                                items:[
                                     {
-                                        xtype          : 'textfield',
-                                        fieldLabel     : 'Site ID',
-                                        name           : 'siteId',
-                                        value          : 'default',
-                                        enableKeyEvents: true,
-                                        allowBlank     : false,
-                                        plugins        : [
+                                        xtype   : 'fieldset',
+                                        title   : 'Site / Admin Info (required)',
+                                        layout  : 'anchor',
+                                        defaults: { margin: '4 0'},
+                                        items   : [
                                             {
-                                                ptype  : 'helpicon',
-                                                helpMsg: 'Most GaiaEHR installations will support only one site.<br>' + 'If that is the case for you, leave Site ID on <span style="font-weight: bold;">"default"</span>.<br>' + 'Otherwise, use a Site ID short identifier with no spaces<br>' + 'or special characters other dashes. It is case-sensitive,<br>' + 'we suggest sticking to lower case letters for ease of use'
-                                            }
-                                        ],
-                                        listeners      : {
-                                            scope: me,
-                                            keyup: me.isReadyForInstall
-                                        }
-                                    },
-                                    {
-                                        xtype          : 'textfield',
-                                        fieldLabel     : 'Admin username',
-                                        name           : 'adminUsername',
-                                        value          : 'admin',
-                                        enableKeyEvents: true,
-                                        allowBlank     : false,
-                                        plugins        : [
+                                                xtype          : 'textfield',
+                                                fieldLabel     : 'Site ID',
+                                                name           : 'siteId',
+                                                value          : 'default',
+                                                enableKeyEvents: true,
+                                                allowBlank     : false,
+                                                plugins        : [
+                                                    {
+                                                        ptype  : 'helpicon',
+                                                        helpMsg: 'Most GaiaEHR installations will support only one site.<br>' + 'If that is the case for you, leave Site ID on <span style="font-weight: bold;">"default"</span>.<br>' + 'Otherwise, use a Site ID short identifier with no spaces<br>' + 'or special characters other dashes. It is case-sensitive,<br>' + 'we suggest sticking to lower case letters for ease of use'
+                                                    }
+                                                ],
+                                                listeners      : {
+                                                    scope: me,
+                                                    keyup: me.isReadyForInstall
+                                                }
+                                            },
                                             {
-                                                ptype  : 'helpicon',
-                                                helpMsg: '**Username must be between <span style="font-weight: bold;">4 to 10</span> characters long<br>' + '**Do not use special characters. ei. <span style="font-weight: bold;">"!@#$%^&*()</span>'
-                                            }
-                                        ],
-                                        listeners      : {
-                                            scope: me,
-                                            keyup: me.isReadyForInstall
-                                        }
-                                    },
-                                    {
+                                                xtype          : 'textfield',
+                                                fieldLabel     : 'Admin username',
+                                                name           : 'adminUsername',
+                                                value          : 'admin',
+                                                enableKeyEvents: true,
+                                                allowBlank     : false,
+                                                plugins        : [
+                                                    {
+                                                        ptype  : 'helpicon',
+                                                        helpMsg: '**Username must be between <span style="font-weight: bold;">4 to 10</span> characters long<br>' + '**Do not use special characters. ei. <span style="font-weight: bold;">"!@#$%^&*()</span>'
+                                                    }
+                                                ],
+                                                listeners      : {
+                                                    scope: me,
+                                                    keyup: me.isReadyForInstall
+                                                }
+                                            },
+                                            {
 
-                                        xtype          : 'textfield',
-                                        fieldLabel     : 'Admin password',
-                                        inputType      : 'password',
-                                        name           : 'adminPassword',
-                                        enableKeyEvents: true,
-                                        allowBlank     : false,
-                                        plugins        : [
-                                            {
-                                                ptype  : 'helpicon',
-                                                helpMsg: '**Password must be between <span style="font-weight: bold;">6 to 8</span> characters long<br>' + '**Do not use special characters. ei. <span style="font-weight: bold;">"!@#$%^&*()</span>'
+                                                xtype          : 'textfield',
+                                                fieldLabel     : 'Admin password',
+                                                inputType      : 'password',
+                                                name           : 'adminPassword',
+                                                value          : 'pass',
+                                                enableKeyEvents: true,
+                                                allowBlank     : false,
+                                                plugins        : [
+                                                    {
+                                                        ptype  : 'helpicon',
+                                                        helpMsg: '**Password must be between <span style="font-weight: bold;">6 to 8</span> characters long<br>' + '**Do not use special characters. ei. <span style="font-weight: bold;">"!@#$%^&*()</span>'
+                                                    }
+                                                ],
+                                                listeners      : {
+                                                    scope: me,
+                                                    keyup: me.isReadyForInstall
+                                                }
                                             }
-                                        ],
-                                        listeners      : {
-                                            scope: me,
-                                            keyup: me.isReadyForInstall
-                                        }
+                                        ]
+                                    },
+                                    {
+                                        xtype   : 'fieldset',
+                                        title   : 'Site Options (optional)',
+                                        layout  : 'anchor',
+                                        margin: '0 0 7 0',
+                                        defaults: { margin: '4 0'},
+                                        items   : [
+                                            {
+                                                xtype     : 'combobox',
+                                                fieldLabel: 'Site Theme',
+                                                name      : 'lang',
+                                                emptytext : 'Select',
+                                                plugins   : [
+                                                    {
+                                                        ptype  : 'helpicon',
+                                                        helpMsg: '**The themes will change the visual aspect.<br>' + '**This can be change later in the Administrator -> Global Setting'
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                xtype     : 'combobox',
+                                                fieldLabel: 'Default Language',
+                                                name      : 'lang',
+                                                emptytext : 'Select',
+                                                plugins   : [
+                                                    {
+                                                        ptype  : 'helpicon',
+                                                        helpMsg: '**This default language will be the default language during the Logon window.<br>' + '**This can be change later in the Administrator -> Global Setting'
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                xtype     : 'checkboxfield',
+                                                fieldLabel: 'Load ICD9',
+                                                name      : 'ICD9',
+                                                plugins   : [
+                                                    {
+                                                        ptype  : 'helpicon',
+                                                        helpMsg: 'Load ICD9 Codes will add a <span style="font-weight: bold;">few minutes</span> to the installation process.'
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                xtype     : 'checkboxfield',
+                                                fieldLabel: 'Load ICD10',
+                                                name      : 'ICD10',
+                                                plugins   : [
+                                                    {
+                                                        ptype  : 'helpicon',
+                                                        helpMsg: 'Load ICD10 Codes will add a <span style="font-weight: bold;">few minutes</span> to the installation process.'
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                xtype     : 'checkboxfield',
+                                                fieldLabel: 'Load SNOMED',
+                                                name      : 'SNOMED',
+                                                plugins   : [
+                                                    {
+                                                        ptype  : 'helpicon',
+                                                        helpMsg: 'Load SNOMED Codes will add a <span style="font-weight: bold;">5 to 10 minutes</span> to the installation process.'
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                xtype     : 'checkboxfield',
+                                                fieldLabel: 'Load RxNorm',
+                                                name      : 'RxNorm',
+                                                plugins   : [
+                                                    {
+                                                        ptype  : 'helpicon',
+                                                        helpMsg: 'Load RxNorm Codes will add <span style="font-weight: bold;">30 to 60 minutes</span> to the installation process.'
+                                                    }
+                                                ]
+                                            }
+                                        ]
                                     }
                                 ]
-                            },
-                            {
-                                xtype   : 'fieldset',
-                                title   : 'Site Options (optional)',
-                                layout  : 'anchor',
-                                defaults: { margin: '4 0'},
-                                items   : [
-                                    {
-                                        xtype     : 'combobox',
-                                        fieldLabel: 'Site Theme',
-                                        name      : 'lang',
-                                        emptytext : 'Select',
-                                        plugins   : [
-                                            {
-                                                ptype  : 'helpicon',
-                                                helpMsg: '**The themes will change the visual aspect.<br>' + '**This can be change later in the Administrator -> Global Setting'
-                                            }
-                                        ]
-                                    },
-                                    {
-                                        xtype     : 'combobox',
-                                        fieldLabel: 'Default Language',
-                                        name      : 'lang',
-                                        emptytext : 'Select',
-                                        plugins   : [
-                                            {
-                                                ptype  : 'helpicon',
-                                                helpMsg: '**This default language will be the default language during the Logon window.<br>' + '**This can be change later in the Administrator -> Global Setting'
-                                            }
-                                        ]
-                                    },
-                                    {
-                                        xtype     : 'checkboxfield',
-                                        fieldLabel: 'Load ICD9',
-                                        name      : 'ICD9',
-                                        plugins   : [
-                                            {
-                                                ptype  : 'helpicon',
-                                                helpMsg: 'Load ICD9 Codes will add a <span style="font-weight: bold;">few minutes</span> to the installation process.'
-                                            }
-                                        ]
-                                    },
-                                    {
-                                        xtype     : 'checkboxfield',
-                                        fieldLabel: 'Load ICD10',
-                                        name      : 'ICD10',
-                                        plugins   : [
-                                            {
-                                                ptype  : 'helpicon',
-                                                helpMsg: 'Load ICD10 Codes will add a <span style="font-weight: bold;">few minutes</span> to the installation process.'
-                                            }
-                                        ]
-                                    },
-                                    {
-                                        xtype     : 'checkboxfield',
-                                        fieldLabel: 'Load SNOMED',
-                                        name      : 'SNOMED',
-                                        plugins   : [
-                                            {
-                                                ptype  : 'helpicon',
-                                                helpMsg: 'Load SNOMED Codes will add a <span style="font-weight: bold;">5 to 10 minutes</span> to the installation process.'
-                                            }
-                                        ]
-                                    },
-                                    {
-                                        xtype     : 'checkboxfield',
-                                        fieldLabel: 'Load RxNorm',
-                                        name      : 'RxNorm',
-                                        plugins   : [
-                                            {
-                                                ptype  : 'helpicon',
-                                                helpMsg: 'Load RxNorm Codes will add <span style="font-weight: bold;">30 to 60 minutes</span> to the installation process.'
-                                            }
-                                        ]
-                                    }
-                                ]
-                            }
+                            }),
+                            me.installationPregress = Ext.create('Ext.ProgressBar', {
+                                hidden:true,
+                                text:'progress'
+                            })
                         ]
                     }), me.installationComplete = Ext.create('Ext.panel.Panel', {
                         title      : 'Installation Complete',
                         bodyPadding: '10',
                         action     : 4,
-                        html       : 'Installation placeholder'
+                        html       : 'Site Installed! Refresh the page... TODO: theme, language, and codes'
                     })
                 ]
             })
@@ -523,6 +548,7 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                 text    : 'Next',
                 scope   : me,
                 disabled: true,
+                action:'next',
                 id      : 'move-next',
                 handler : me.onNexStep
             }
@@ -561,8 +587,90 @@ Ext.define('App.view.sitesetup.SiteSetup', {
         }
     },
 
-    onNexStep: function() {
-        this.navigate(this.mainPanel, 'next');
+    onInstall:function(){
+        var me = this,
+            panel = me.siteConfiguration,
+            form = panel.getForm(),
+            values = Ext.Object.merge(form.getValues(), me.step[2].dbInfo);
+
+        me.installationPregress.show();
+        me.siteConfigurationContainer.el.mask('Installing New Site');
+        me.installationPregress.updateProgress(0,'Creating Directory and Sub Directories');
+        SiteSetup.setSiteDirBySiteId(values.siteId, function(provider, response){
+            if(response.result.success){
+
+                me.installationPregress.updateProgress(.2,'Creating Database Structure and Tables', true);
+                SiteSetup.createDatabaseStructure(values, function(provider, response){
+                    if(response.result.success){
+
+                        me.installationPregress.updateProgress(.4,'Dumping Data Into Database', true);
+                        SiteSetup.loadDatabaseData(values, function(provider, response){
+                            if(response.result.success){
+
+                                me.installationPregress.updateProgress(.8,'Creating Configuration File', true);
+                                SiteSetup.createSConfigurationFile(values, function(provider, response){
+                                    if(response.result.success){
+                                        values['AESkey'] = response.result.AESkey;
+                                        me.installationPregress.updateProgress(.9,'Creating Administrator User', true);
+                                        SiteSetup.createSiteAdmin(values, function(provider, response){
+                                            if(response.result.success){
+                                                me.installationPregress.updateProgress(1,'Done!', true);
+                                                me.siteConfigurationContainer.el.unmask();
+
+                                                me.step[3] = { success: true };
+                                                me.okToGoNext(true);
+                                                me.onComplete();
+
+                                                alert('Site Installed! Refresh the page... TODO: theme, language, and codes');
+
+                                                //Optional Stuff..........
+//                                                SiteSetup.setTheme(function(provider, response){
+//
+//                                                });
+//                                                SiteSetup.setLang(function(provider, response){
+//
+//                                                });
+//                                                SiteSetup.loadICD9Codes(function(provider, response){
+//
+//                                                });
+//                                                SiteSetup.loadICD10Codes(function(provider, response){
+//
+//                                                });
+//                                                SiteSetup.loadSNOMEDCodes(function(provider, response){
+//
+//                                                });
+//                                                SiteSetup.loadRxNormCodes(function(provider, response){
+//
+//                                                });
+
+                                            }
+                                        });
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
+
+            }
+        });
+    },
+
+    onComplete:function(){
+        var me = this,
+            btn = Ext.getCmp('move-next');
+        btn.action = 'complete';
+        me.headerPanel.getComponent(4).setIconCls('icoGreenFace');
+        me.onNexStep(btn);
+
+    },
+
+    onNexStep: function(btn) {
+        if(btn.action == 'install'){
+            this.onInstall();
+        }else{
+            this.navigate(this.mainPanel, 'next');
+        }
     },
 
     onStepBack: function() {
@@ -570,7 +678,9 @@ Ext.define('App.view.sitesetup.SiteSetup', {
     },
 
     navigate: function(panel, to) {
-        var me = this, layout = panel.getLayout(), currCard, next;
+        var me = this,
+            layout = panel.getLayout(),
+            currCard;
         if(typeof to == 'string') {
             layout[to]();
         } else {
@@ -578,14 +688,24 @@ Ext.define('App.view.sitesetup.SiteSetup', {
         }
         currCard = layout.getActiveItem();
         me.headerPanel.getComponent(currCard.action).toggle(true);
-        if(currCard.action == 1) {
-            me.requirementsStore.load({
-                scope   : me,
-                callback: me.onRequirementsStoreLoad
-            });
+
+        if(me.step[currCard.action]){
+            Ext.getCmp('move-next').setDisabled(false);
+        }else{
+            Ext.getCmp('move-next').setDisabled(true);
         }
+
         Ext.getCmp('move-prev').setVisible(layout.getPrev());
+        Ext.getCmp('move-next').setVisible(layout.getNext());
         me.isReadyForInstall();
+    },
+
+    loadRequirements:function(){
+        var me = this;
+        me.requirementsStore.load({
+            scope   : me,
+            callback: me.onRequirementsStoreLoad
+        });
     },
 
     licenceChecked: function(checkbox, checked) {
@@ -612,12 +732,17 @@ Ext.define('App.view.sitesetup.SiteSetup', {
     },
 
     isReadyForInstall: function() {
-        var me = this, btn = Ext.getCmp('move-next');
-        if(me.checkForError()) {
+        var me = this,
+            btn = Ext.getCmp('move-next'),
+            onSiteCofPanel = me.mainPanel.getLayout().getActiveItem().action == 3;
+
+        if(me.checkForError() || !onSiteCofPanel) {
             btn.setText('Next');
+            btn.action = 'next';
             if(me.mainPanel.getLayout().getActiveItem().action == 3) btn.setDisabled(true);
         } else {
             btn.setText('Install');
+            btn.action = 'install';
             btn.setDisabled(false);
         }
     },
@@ -645,6 +770,10 @@ Ext.define('App.view.sitesetup.SiteSetup', {
         me.headerPanel.getComponent(layout.getActiveItem().action).setIconCls(ok ? 'icoGreenFace' : 'icoRedFace');
         if(layout.getNext()) me.headerPanel.getComponent(layout.getNext().action).setDisabled(!ok);
         if(me.mainPanel.getLayout().getActiveItem().action != 3) Ext.getCmp('move-next').setDisabled(!ok);
+    },
+
+    onSiteConfigurationShow:function(){
+        this.siteConfigurationContainer.setVisible(true);
     },
 
     statusRenderer: function(val) {

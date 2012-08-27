@@ -4,26 +4,14 @@ if(!isset($_SESSION)) {
 	session_start();
 	session_cache_limiter('private');
 }
-include_once($_SESSION['site']['root'] . '/classes/dbHelper.php');
+include_once($_SESSION['site']['root'] . '/classes/FileManager.php');
+include_once($_SESSION['site']['root'] . '/dataProvider/ACL.php');
+set_time_limit(0);
+ini_set('memory_limit', '512M');
 class SiteSetup
 {
 	private $conn;
 	private $err;
-	private $sitesDir = 'sites';
-	private $dbPrefix;
-	private $AESkey;
-	private $newConf;
-	var $siteName;
-	var $connType;
-	var $dbUser;
-	var $dbPass;
-	var $dbHost;
-	var $dbPort;
-	var $dbName;
-	var $rootUser;
-	var $rootPass;
-	var $adminUser;
-	var $adminPass;
 
 	function __construct()
 	{
@@ -50,7 +38,8 @@ class SiteSetup
 	function databaseConn($host, $port, $dbName, $dbUser, $dbPass)
 	{
 		try {
-			$this->conn = new PDO("mysql:host=$host;port=$port;dbname=$dbName", $dbUser, $dbPass);
+			$this->conn = new PDO("mysql:host=$host;port=$port;dbname=$dbName", $dbUser, $dbPass,
+				array(PDO::MYSQL_ATTR_LOCAL_INFILE => 1, PDO::ATTR_PERSISTENT => true));
 			return true;
 		} catch(PDOException $e) {
 			$this->err = $e->getMessage();
@@ -101,233 +90,169 @@ class SiteSetup
 	}
 
 
+	public function setSiteDirBySiteId($siteId){
+		$siteDir = "sites/$siteId";
+		if(!file_exists($siteDir)){
+			if(mkdir($siteDir, 0777, true)){
+				if(chmod($siteDir, 0777)){
+					if(
+						(mkdir("$siteDir/patients", 0777, true) && chmod("$siteDir/patients", 0777)) &&
+						(mkdir("$siteDir/documents", 0777, true) && chmod("$siteDir/documents", 0777)) &&
+						(mkdir("$siteDir/temp", 0777, true) && chmod("$siteDir/temp", 0777)) &&
+						(mkdir("$siteDir/trash", 0777, true) && chmod("$siteDir/trash", 0777))
+					){
+						return array('success' => true);
+					}else{
+						return array('success' => false, 'error' => 'Something went wrong creating site sub directories');
+					}
+				}else{
+					return array('success' => false, 'error' => 'Unable to set "/sites/'.$siteId.'" write permissions,<br>Please, check "/sites/'.$siteId.'" directory write permissions');
+				}
+			}else{
+				return array('success' => false, 'error' => 'Unable to create Site directory,<br>Please, check "/sites" directory write permissions');
+			}
+		}else{
+			return array('success' => false, 'error' => 'Site ID already in use.<br>Please, choose another Site ID');
+		}
+	}
 
 
+	public function createDatabaseStructure(stdClass $params){
+		if(isset($params->rootUser) && $this->rootDatabaseConn($params->dbHost, $params->dbPort, $params->rootUser, $params->rootPass)){
+		    $this->conn->exec("CREATE DATABASE $params->dbName;");
+		    $this->conn->exec("CREATE USER '$params->dbUser'@'$params->dbHost' IDENTIFIED BY '$params->dbPass'");
+		    $this->conn->exec("GRANT USAGE ON * . * TO  '$params->dbUser'@'$params->dbHost' IDENTIFIED BY  $params->dbPass' WITH MAX_QUERIES_PER_HOUR 0 MAX_CONNECTIONS_PER_HOUR 0 MAX_UPDATES_PER_HOUR 0 MAX_USER_CONNECTIONS 0");
+		    $this->conn->exec("GRANT ALL PRIVILEGES ON $params->dbName.* TO '$params->dbUser'@'$params->dbHost' WITH GRANT OPTION");
+			if($this->databaseConn($params->dbHost, $params->dbPort, $params->dbName, $params->dbUser, $params->dbPass)){
+				if($this->loadDatabaseStructure()){
+					return array('success' => true);
+				}else{
+					FileManager::rmdir_recursive("sites/$params->siteId");
+					return array('success' => false, 'error' => $this->conn->errorInfo());
+				}
+			}else{
+				FileManager::rmdir_recursive("sites/$params->siteId");
+				return array('success' => false, 'error' => $this->err);
+			}
+		}elseif($this->databaseConn($params->dbHost, $params->dbPort, $params->dbName, $params->dbUser, $params->dbPass)){
+			if($this->loadDatabaseStructure()){
+				return array('success' => true);
+			}else{
+				FileManager::rmdir_recursive("sites/$params->siteId");
+				return array('success' => false, 'error' => $this->conn->errorInfo());
+			}
+		}else{
+			FileManager::rmdir_recursive("sites/$params->siteId");
+			return array('success' => false, 'error' => $this->err);
+		}
+	}
 
-
-
-
-
-
-
-	//*****************************************************************************************
-	//*****************************************************************************************
-	//*****************************************************************************************
-	//*****************************************************************************************
-	//*****************************************************************************************
-	//*****************************************************************************************
-	//*****************************************************************************************
-	//*****************************************************************************************
-	//*****************************************************************************************
-
-
-
-	function check_perms()
-	{
-		chmod($this->sitesDir, 0777);
-		clearstatcache();
-		if(substr(sprintf('%o', fileperms($this->sitesDir)), -4) == '0777') {
-			return true;
-		} else {
+	public function loadDatabaseStructure(){
+		if(file_exists($sqlFile = 'sql/gaiadb_install_structure.sql')) {
+			$query = file_get_contents($sqlFile);
+			if($this->conn->query($query) !== false){
+				return true;
+			}else{
+				return false;
+			}
+		}else{
 			return false;
 		}
 	}
 
-
-
-	//*****************************************************************************************
-	// Create new database and dump data
-	//*****************************************************************************************
-	function createDatabase()
-	{
-		$this->conn->exec("CREATE DATABASE " . $this->dbName . "");
-		return $this->displayError();
-	}
-
-	//*****************************************************************************************
-	// Drop new database - this method is called if and error is found during the instalation
-	//*****************************************************************************************
-	function dropDatabase()
-	{
-		if($this->connType == 'root') {
-			$this->conn->exec("DROP DATABASE " . $this->dbName . "");
+	public function loadDatabaseData(stdClass $params){
+		if($this->databaseConn($params->dbHost, $params->dbPort, $params->dbName, $params->dbUser, $params->dbPass)){
+			if(file_exists($sqlFile = 'sql/gaiadb_install_data.sql')) {
+				$query = file_get_contents($sqlFile);
+				if($this->conn->query($query) !== false){
+					return array('success' => true);
+				}else{
+					FileManager::rmdir_recursive("sites/$params->siteId");
+					if(isset($params->rootUser)) $this->dropDatabase($params->dbName);
+					return array('success' => false, 'error' => $this->conn->errorInfo());
+				}
+			}else{
+				FileManager::rmdir_recursive("sites/$params->siteId");
+				if(isset($params->rootUser)) $this->dropDatabase($params->dbName);
+				return array('success' => false, 'error' => 'Unable find installation data file');
+			}
+		}else{
+			FileManager::rmdir_recursive("sites/$params->siteId");
+			return array('success' => false, 'error' => $this->err);
 		}
 	}
 
-	//*****************************************************************************************
-	// Create new database user and grat privileges to the new database
-	//*****************************************************************************************
-	function createDatabaseUser()
+	function dropDatabase($dbName)
 	{
-		$this->conn->exec("GRANT ALL PRIVILEGES ON " . $this->dbName . ".*
-					 					  		TO '" . $this->dbUser . "'@'localhost'
-   					 		   		 IDENTIFIED BY '" . $this->dbPass . "'
-   					 	   		  	 WITH GRANT OPTION;");
-		return $this->displayError();
+		$this->conn->exec("DROP DATABASE $dbName");
 	}
 
-	//*****************************************************************************************
-	// lets dump install.sql data inside the database
-	//*****************************************************************************************
-	function sqldump()
-	{
-		if(file_exists($sqlFile = "sql/install.sql")) {
-			$query = file_get_contents($sqlFile);
-			$this->conn->query($query);
-			$this->displayError();
-		} else {
-			$this->dropDatabase();
-			echo '{"success":false,"msg":"Error - Unable to find install.sql"}';
-			exit;
-		}
-	}
 
-	//*****************************************************************************************
-	// Set Default Language  //  TODO  //
-	//*****************************************************************************************
-	function defaultLanguage()
-	{
-		$this->conn->query("");
-	}
+	public function createSConfigurationFile($params){
+		if(file_exists($conf = 'sites/conf.example.php')) {
+			if(($AESkey = ACL::createRandomKey()) !== false){
+				$buffer     = file_get_contents($conf);
+				$search     = array('%host%', '%user%', '%pass%', '%db%', '%port%', '%key%', '%lang%');
+				$replace    = array($params->dbHost, $params->dbUser, $params->dbPass, $params->dbName, $params->dbPort, $AESkey, 'en_US');
+				$newConf    = str_replace($search, $replace, $buffer);
+				$siteDir = "sites/$params->siteId";
+				$conf_file = ("$siteDir/conf.php");
+				$handle    = fopen($conf_file, 'w');
+				fwrite($handle, $newConf);
+				fclose($handle);
+				chmod($conf_file, 0644);
 
-	//*****************************************************************************************
-	// lets check the sites folder and make sure we can the new site is not alredy created
-	// and make sure we can write on it before we star working with the database
-	//*****************************************************************************************
-	function siteCk()
-	{
-		if($this->check_perms()) {
-			if(file_exists($this->sitesDir . "/" . $this->siteName)) {
-				echo '{"success":false,"msg":"Error - The site <b>' . $this->siteName . '</b> already exist."}';
-				exit;
+				if(file_exists($conf_file)) {
+					return array('success' => true , 'AESkey' => $AESkey);
+				}else{
+					return array('success' => false, 'error' => "Unable to create $siteDir/conf.php file");
+				}
+			}else{
+				return array('success' => false, 'error' => 'Unable to Generate AES 32 bit key');
 			}
 		} else {
-			echo '{"success":false,"msg":"Error - Unable to write on sites folder."}';
-			exit;
+			return array('success' => false, 'error' => 'Unable to Find sites/conf.example.php');
 		}
 	}
 
-	//*****************************************************************************************
-	// Create new AES Key - this key is unique for every site
-	//*****************************************************************************************
-	function createRandomKey()
-	{
-		$chars = "abcdefghijkmnopqrstuvwxyz023456789";
-		srand((double)microtime() * 1000000);
-		$i   = 0;
-		$key = "";
-		while($i <= 31) {
-			$num = rand() % 33;
-			$tmp = substr($chars, $num, 1);
-			$key = $key . $tmp;
-			$i++;
-		}
-		if($key == "") {
-			$this->dropDatabase();
-			echo '{"success":false,"msg":"Error - There was an error generating AES Key foe site encrytion."}';
-			exit;
-		} else {
-			$this->AESkey = $key;
-		}
-
+	public function createSiteAdmin($params){
+		include_once('sites/'.$params->siteId.'/conf.php');
+		include_once('dataProvider/User.php');
+		$u = new User();
+		$userParams = new stdClass();
+		$userParams->title = 'Mr.';
+		$userParams->fname = 'Administrator';
+		$userParams->lname = 'Administrator';
+		$userParams->username = $params->adminUsername;
+		$userParams->password = $params->adminPassword;
+		$userParams->authorized = 1;
+		$userParams->active = 1;
+		$userParams->role_id = 1;
+		$u->addUser($userParams);
+		return array('success' => true);
 	}
 
-	//*****************************************************************************************
-	// Bild The New conf.php
-	//*****************************************************************************************
-	function buildConf()
-	{
-		if(file_exists($conf = "lib/site_setup/conf.php")) {
-			$buffer        = file_get_contents($conf);
-			$search        = array('%host%', '%user%', '%pass%', '%db%', '%port%', '%key%');
-			$replace       = array($this->dbHost, $this->dbUser, $this->dbPass, $this->dbName, $this->dbPort, $this->AESkey);
-			$this->newConf = str_replace($search, $replace, $buffer);
-			return;
-		} else {
-			$this->dropDatabase();
-			echo '{"success":false,"msg":"Error - Unable to find default conf.php"}';
-			exit;
-		}
+
+	public function loadICD9Codes(){
+		sleep(4);
+		return array('success' => true);
 	}
 
-	//*****************************************************************************************
-	// Create Site Conf File
-	//*****************************************************************************************
-	function createSiteConf()
-	{
-		$workingDir = $this->sitesDir . "/" . $this->siteName;
-		mkdir($workingDir, 0777, true);
-		chmod($workingDir, 0777);
-		$conf_file = ($workingDir . "/conf.php");
-		$handle    = fopen($conf_file, "w");
-		fwrite($handle, $this->newConf);
-		fclose($handle);
-		chmod($conf_file, 0644);
-		if(!file_exists($conf_file)) {
-			echo '{"success":false,"msg":"Error - The conf.php file for <b>' . $this->siteName . '</b> could not be created."}';
-			exit;
-		}
-		return;
+
+	public function loadICD10Codes(){
+		sleep(7);
+		return array('success' => true);
 	}
 
-	//*****************************************************************************************
-	// Create Admin User and AES Encrypted Password Using Site AESkey
-	//*****************************************************************************************
-	function adminUser()
-	{
-		require_once("classes/AES.php");
-		$admin = $this->adminUser;
-		$aes   = new AES($this->AESkey);
-		$ePass = $aes->encrypt($this->adminPass);
-		$this->conn->exec("INSERT INTO users
-							  	   SET username 	='" . $admin . "',
-							  	       fname		='Adminstrator',
-							  	  	   password 	='" . $ePass . "',
-							  	       authorized 	='1'");
-		return $this->displayError();
+
+	public function loadSNOMEDCodes(){
+		sleep(20);
+		return array('success' => true);
 	}
 
-	function installationCk()
-	{
-		if(!$this->displayError()) {
-			$error = array('success' => true, 'msg' => 'Congratulation! GaiaEHR is installed please click Ok to Login.');
-			echo json_encode($error, JSON_FORCE_OBJECT);
-			exit;
-		}
-	}
 
-	//*****************************************************************************************
-	// Method to Install a Site With Root Access and Creating Database
-	//*****************************************************************************************
-	function rootInstall()
-	{
-		$this->siteCk();
-		$this->rootDatabaseConn();
-		$this->createDatabase();
-		$this->createDatabaseUser();
-		$this->DatabaseConn();
-		$this->sqldump();
-		$this->createRandomKey();
-		$this->buildConf();
-		$this->createSiteConf();
-		$this->adminUser();
-		$this->installationCk();
+	public function loadRxNormCodes(){
+		sleep(10);
+		return array('success' => true);
 	}
-
-	//*****************************************************************************************
-	// Method to Install a Site With Databse User Access
-	//*****************************************************************************************
-	function dbInstall()
-	{
-		$this->siteCk();
-		$this->DatabaseConn();
-		$this->sqldump();
-		$this->createRandomKey();
-		$this->buildConf();
-		$this->createSiteConf();
-		$this->adminUser();
-		$this->installationCk();
-	}
-
-} // end class siteSetup
-?>
+}

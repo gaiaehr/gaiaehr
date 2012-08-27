@@ -1148,6 +1148,33 @@ $API = array(
             ),
             'checkRequirements'=>array(
                 'len'=>0
+            ),
+            'setSiteDirBySiteId'=>array(
+                'len'=>1
+            ),
+            'createDatabaseStructure'=>array(
+                'len'=>1
+            ),
+            'loadDatabaseData'=>array(
+                'len'=>1
+            ),
+            'createSiteAdmin'=>array(
+                'len'=>1
+            ),
+            'loadICD9Codes'=>array(
+                'len'=>0
+            ),
+            'loadICD10Codes'=>array(
+                'len'=>0
+            ),
+            'loadSNOMEDCodes'=>array(
+                'len'=>0
+            ),
+            'loadRxNormCodes'=>array(
+                'len'=>0
+            ),
+            'createSConfigurationFile'=>array(
+                'len'=>1
             )
         )
     )

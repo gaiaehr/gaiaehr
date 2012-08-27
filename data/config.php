@@ -1155,7 +1155,7 @@ $API = array(
             'createDatabaseStructure'=>array(
                 'len'=>1
             ),
-            'dumpDatabaseData'=>array(
+            'loadDatabaseData'=>array(
                 'len'=>1
             ),
             'createSiteAdmin'=>array(

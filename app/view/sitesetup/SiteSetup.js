@@ -596,8 +596,7 @@ Ext.define('App.view.sitesetup.SiteSetup', {
         var me = this,
             panel = me.siteConfiguration,
             form = panel.getForm(),
-            values = form.getValues(),
-            dbInfo = me.step[2].dbInfo;
+            values = Ext.Object.merge(form.getValues(), me.step[2].dbInfo);
 
         me.installationPregress.show();
         me.installationPregress.updateProgress(0,'Creating Directory and Sub Directories');
@@ -605,21 +604,23 @@ Ext.define('App.view.sitesetup.SiteSetup', {
             if(response.result.success){
 
                 me.installationPregress.updateProgress(.2,'Creating Database Structure and Tables', true);
-                SiteSetup.createDatabaseStructure(dbInfo, function(provider, response){
+                SiteSetup.createDatabaseStructure(values, function(provider, response){
                     if(response.result.success){
 
                         me.installationPregress.updateProgress(.4,'Dumping Data Into Database', true);
-                        SiteSetup.dumpDatabaseData(dbInfo, function(provider, response){
+                        SiteSetup.loadDatabaseData(values, function(provider, response){
                             if(response.result.success){
 
                                 me.installationPregress.updateProgress(.8,'Creating Configuration File', true);
-                                SiteSetup.createSConfigurationFile(Ext.Object.merge(values,dbInfo), function(provider, response){
+                                SiteSetup.createSConfigurationFile(values, function(provider, response){
                                     if(response.result.success){
-
+                                        values['AESkey'] = response.result.AESkey;
                                         me.installationPregress.updateProgress(.9,'Creating Administrator User', true);
-                                        SiteSetup.createSiteAdmin(Ext.Object.merge(values,dbInfo), function(provider, response){
+                                        SiteSetup.createSiteAdmin(values, function(provider, response){
                                             if(response.result.success){
                                                 me.installationPregress.updateProgress(1,'Done!', true);
+
+                                                alert('Site Installed! Refresh the page... TODO: theme, language, and load codes');
 
                                                 //Optional Stuff..........
 //                                                SiteSetup.setTheme(function(provider, response){

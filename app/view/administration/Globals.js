@@ -15,7 +15,7 @@
 Ext.define('App.view.administration.Globals', {
 	extend       : 'App.classes.RenderPanel',
 	id           : 'panelGlobals',
-	pageTitle    : 'GaiaEHR Global Settings',
+	pageTitle    : 'GaiaEHR ' + i18n['global_settings'],
 	uses         : [ 'App.classes.form.fields.Checkbox' ],
 	initComponent: function() {
 		var me = this;
@@ -166,95 +166,95 @@ Ext.define('App.view.administration.Globals', {
 		me.default_top_pane_store = Ext.create('Ext.data.Store', {
 			fields: ['title', 'option_id'],
 			data  : [
-				{"title": "Dashboard", "option_id": "app/dashboard/dashboard.ejs.php"},
-				{"title": "Calendar", "option_id": "app/calendar/calendar.ejs.php"},
-				{"title": "Messages", "option_id": "app/messages/messages.ejs.php"}
+				{"title": i18n['dashboard'], "option_id": "app/dashboard/dashboard.ejs.php"},
+				{"title": i18n['calendar'], "option_id": "app/calendar/calendar.ejs.php"},
+				{"title": i18n['messages'], "option_id": "app/messages/messages.ejs.php"}
 			]
 		});
 		me.fullname_store = Ext.create('Ext.data.Store', {
 			fields: ['format', 'option_id'],
 			data  : [
-				{"format": "Last, First Middle", "option_id": "0"},
-				{"format": "First Middle Last", "option_id": "1"}
+				{"format": i18n['last_first_middle'], "option_id": "0"},
+				{"format": i18n['first_middle_last'], "option_id": "1"}
 			]
 		});
 		me.concurrent_layout_store = Ext.create('Ext.data.Store', {
 			fields: ['title', 'option_id'],
 			data  : [
-				{"title": "Main Navigation Menu (left)", "option_id": "west"},
-				{"title": "Main Navigation Menu (right)", "option_id": "east"}
+				{"title": i18n['main_navigation_menu_left'], "option_id": "west"},
+				{"title": i18n['main_navigation_menu_right'], "option_id": "east"}
 			]
 		});
 		me.css_header_store = Ext.create('Ext.data.Store', {
 			fields: ['title', 'option_id'],
 			data  : [
-				{"title": "Grey (default)", "option_id": "ext-all-gray.css"},
-				{"title": "Blue", "option_id": "ext-all.css"},
-				{"title": "Access", "option_id": "ext-all-access.css"}
+				{"title": i18n['grey_default'], "option_id": "ext-all-gray.css"},
+				{"title": i18n['blue'], "option_id": "ext-all.css"},
+				{"title": i18n['access'], "option_id": "ext-all-access.css"}
 			]
 		});
 		me.full_new_patient_form_store = Ext.create('Ext.data.Store', {
 			fields: ['title', 'option_id'],
 			data  : [
-				{"title": "Old-style static form without search or duplication check", "option_id": "0"},
-				{"title": "All demographics fields, with search and duplication check", "option_id": "1"},
-				{"title": "Mandatory or specified fields only, search and dup check", "option_id": "2"},
-				{"title": "Mandatory or specified fields only, dup check, no search", "option_id": "3"}
+				{"title": i18n['oldstyle_static_form_without_search_or_duplication_check'], "option_id": "0"},
+				{"title": i18n['all_demographics_fields_with_search_and_duplication_check'], "option_id": "1"},
+				{"title": i18n['mandatory_or_specified_fields_only_search_and_dup_check'], "option_id": "2"},
+				{"title": i18n['mandatory_or_specified_fields_only_dup_check_no_search'], "option_id": "3"}
 			]
 		});
 		me.patient_search_results_style_store = Ext.create('Ext.data.Store', {
 			fields: ['title', 'option_id'],
 			data  : [
-				{"title": "Encounter statistics", "option_id": "0"},
-				{"title": "Mandatory and specified fields", "option_id": "1"}
+				{"title": i18n['encounter_statistics'], "option_id": "0"},
+				{"title": i18n['mandatory_and_specified_fields'], "option_id": "1"}
 			]
 		});
 		me.units_of_measurement_store = Ext.create('Ext.data.Store', {
 			fields: ['title', 'option_id'],
 			data  : [
-				{"title": "Show both US and metric (main unit is US)", "option_id": "1"},
-				{"title": "Show both US and metric (main unit is metric)", "option_id": "2"},
-				{"title": "Show US only", "option_id": "3"},
-				{"title": "Show metric only", "option_id": "4"}
+				{"title": i18n['show_both_us_and_metric_main_unit_is_us'], "option_id": "1"},
+				{"title": i18n['show_both_us_and_metric_main_unit_is_metric'], "option_id": "2"},
+				{"title": i18n['show_us_only'], "option_id": "3"},
+				{"title": i18n['show_metric_only'], "option_id": "4"}
 			]
 		});
 		me.date_display_format_store = Ext.create('Ext.data.Store', {
 			fields: ['title', 'option_id'],
 			data  : [
-				{"title": "YYYY-MM-DD", "option_id": "0"},
-				{"title": "MM/DD/YYYY", "option_id": "1"},
-				{"title": "DD/MM/YYYY", "option_id": "2"}
+				{"title": i18n['yyyy_mm_dd'], "option_id": "0"},
+				{"title": i18n['mm_dd_yyyy'], "option_id": "1"},
+				{"title": i18n['dd_mm_yyyy'], "option_id": "2"}
 			]
 		});
 		me.time_display_format_store = Ext.create('Ext.data.Store', {
 			fields: ['title', 'option_id'],
 			data  : [
-				{"title": "24 hr", "option_id": "0"},
-				{"title": "12 hr", "option_id": "1"}
+				{"title": i18n['24_hr'], "option_id": "0"},
+				{"title": i18n['12 hr'], "option_id": "1"}
 			]
 		});
 		me.currency_decimals_store = Ext.create('Ext.data.Store', {
 			fields: ['title', 'option_id'],
 			data  : [
-				{"title": "0", "option_id": "0"},
-				{"title": "1", "option_id": "1"},
-				{"title": "2", "option_id": "2"}
+				{"title": i18n['0'], "option_id": "0"},
+				{"title": i18n['1'], "option_id": "1"},
+				{"title": i18n['2'], "option_id": "2"}
 			]
 		});
 		me.currency_dec_point_store = Ext.create('Ext.data.Store', {
 			fields: ['title', 'option_id'],
 			data  : [
-				{"title": "Comma", "option_id": ","},
-				{"title": "Period", "option_id": "."}
+				{"title": i18n['comma'], "option_id": ","},
+				{"title": i18n['period'], "option_id": "."}
 			]
 		});
 		me.currency_thousands_sep_store = Ext.create('Ext.data.Store', {
 			fields: ['title', 'option_id'],
 			data  : [
-				{"title": "Comma", "option_id": ","},
-				{"title": "Period", "option_id": "."},
-				{"title": "Space", "option_id": " "},
-				{"title": "None", "option_id": ""}
+				{"title": i18n['comma'], "option_id": ","},
+				{"title": i18n['period'], "option_id": "."},
+				{"title": i18n['space'], "option_id": " "},
+				{"title": i18n['none'], "option_id": ""}
 			]
 		});
 		me.EMAIL_METHOD_store = Ext.create('Ext.data.Store', {
@@ -268,9 +268,9 @@ Ext.define('App.view.administration.Globals', {
 		me.state_country_data_type_store = Ext.create('Ext.data.Store', {
 			fields: ['title', 'option_id'],
 			data  : [
-				{"title": "Text field", "option_id": "2"},
-				{"title": "Single-selection list", "option_id": "1"},
-				{"title": "Single-selection list with ability to add to the list", "option_id": "26"}
+				{"title": i18n['text_field'], "option_id": "2"},
+				{"title": i18n['single_selection_list'], "option_id": "1"},
+				{"title": i18n['single_selection_list_with_ability_to_add_to_the_list'], "option_id": "26"}
 			]
 		});
 		//**************************************************************************
@@ -279,12 +279,12 @@ Ext.define('App.view.administration.Globals', {
 		me.dummyStore = new Ext.data.ArrayStore({
 			fields: ['title', 'option_id'],
 			data  : [
-				['Option 1', 'Option 1'],
-				['Option 2', 'Option 2'],
-				['Option 3', 'Option 3'],
-				['Option 5', 'Option 5'],
-				['Option 6', 'Option 6'],
-				['Option 7', 'Option 7']
+				[i18n['option_1'], 'Option 1'],
+				[i18n['option_2'], 'Option 2'],
+				[i18n['option_3'], 'Option 3'],
+				[i18n['option_5'], 'Option 5'],
+				[i18n['option_6'], 'Option 6'],
+				[i18n['option_7'], 'Option 7']
 			]
 		});
 		//**************************************************************************
@@ -303,12 +303,12 @@ Ext.define('App.view.administration.Globals', {
 					defaults   : {bodyStyle: 'padding:10px', autoScroll: true },
 					items      : [
 						{
-							title   : 'Appearance',
+							title   : i18n['appearance'],
 							defaults: {anchor: '100%'},
 							items   : [
 								{
 									xtype       : 'combo',
-									fieldLabel  : 'Main Top Pane Screen',
+									fieldLabel  : i18n['main_top_pane_screen'],
 									name        : 'default_top_pane',
 									displayField: 'title',
 									valueField  : 'option_id',
@@ -317,7 +317,7 @@ Ext.define('App.view.administration.Globals', {
 								},
 								{
 									xtype       : 'combo',
-									fieldLabel  : 'Layout Style',
+									fieldLabel  : i18n['layout_style'],
 									name        : 'concurrent_layout',
 									displayField: 'title',
 									valueField  : 'option_id',
@@ -326,7 +326,7 @@ Ext.define('App.view.administration.Globals', {
 								},
 								{
 									xtype       : 'combo',
-									fieldLabel  : 'Theme',
+									fieldLabel  : i18n['theme'],
 									name        : 'css_header',
 									displayField: 'title',
 									valueField  : 'option_id',
@@ -335,17 +335,17 @@ Ext.define('App.view.administration.Globals', {
 								},
 								{
 									xtype     : 'textfield',
-									fieldLabel: 'Navigation Area Width',
+									fieldLabel: i18n['navigation_area_width'],
 									name      : 'gbl_nav_area_width'
 								},
 								{
 									xtype     : 'textfield',
-									fieldLabel: 'Application Title',
+									fieldLabel: i18n['application_title'],
 									name      : 'GaiaEHR_name'
 								},
 								{
 									xtype       : 'combo',
-									fieldLabel  : 'New Patient Form',
+									fieldLabel  : i18n['new_patient_form'],
 									name        : 'full_new_patient_form',
 									displayField: 'title',
 									valueField  : 'option_id',
@@ -354,7 +354,7 @@ Ext.define('App.view.administration.Globals', {
 								},
 								{
 									xtype       : 'combo',
-									fieldLabel  : 'Patient Search Resuls Style',
+									fieldLabel  : i18n['patient_search_resuls_style'],
 									name        : 'patient_search_results_style',
 									displayField: 'title',
 									valueField  : 'option_id',
@@ -363,27 +363,27 @@ Ext.define('App.view.administration.Globals', {
 								},
 								{
 									xtype     : 'mitos.checkbox',
-									fieldLabel: 'Simplified Demographics',
+									fieldLabel: i18n['simplified_demographics'],
 									name      : 'simplified_demographics'
 								},
 								{
 									xtype     : 'mitos.checkbox',
-									fieldLabel: 'Simplified Prescriptions',
+									fieldLabel: i18n['simplified_prescriptions'],
 									name      : 'simplified_prescriptions'
 								},
 								{
 									xtype     : 'mitos.checkbox',
-									fieldLabel: 'Simplified Co-Pay',
+									fieldLabel: i18n['simplified_copay'],
 									name      : 'simplified_copay'
 								},
 								{
 									xtype     : 'mitos.checkbox',
-									fieldLabel: 'User Charges Panel',
+									fieldLabel: i18n['user_charges_panel'],
 									name      : 'use_charges_panel'
 								},
 								{
 									xtype     : 'textfield',
-									fieldLabel: 'Online Support Link',
+									fieldLabel: i18n['online_support_link'],
 									name      : 'online_support_link'
 								}
 							]
@@ -395,7 +395,7 @@ Ext.define('App.view.administration.Globals', {
 							items      : [
 								{
 									xtype       : 'combo',
-									fieldLabel  : 'Fullname Format',
+									fieldLabel  : i18n['fullname_format'],
 									name        : 'fullname',
 									displayField: 'format',
 									valueField  : 'option_id',
@@ -404,59 +404,59 @@ Ext.define('App.view.administration.Globals', {
 								},
 								{
 									xtype     : 'languagescombo',
-									fieldLabel: 'Default Language',
+									fieldLabel: i18n['default_language'],
 									name      : 'language_default'
 								},
 								{
 									xtype     : 'mitos.checkbox',
-									fieldLabel: 'All Language Allowed',
+									fieldLabel: i18n['all_language_allowed'],
 									name      : 'language_menu_showall'
 								},
 								{
 									xtype      : 'languagescombo',
-									fieldLabel : 'Allowed Languages -??-',
+									fieldLabel : i18n['allowed_languages'] + ' -??-',
 									name       : 'lang_description2', // ???????
 									multiSelect: true
 								},
 								{
 									xtype     : 'mitos.checkbox',
-									fieldLabel: 'Allow Debuging Language -??-',
+									fieldLabel: i18n['allow_debuging_language'] + ' -??-',
 									name      : 'Loc4'  // ???????
 								},
 								{
 									xtype     : 'mitos.checkbox',
-									fieldLabel: 'Translate Layouts',
+									fieldLabel: i18n['translate_layouts'],
 									name      : 'translate_layout'
 								},
 								{
 									xtype     : 'mitos.checkbox',
-									fieldLabel: 'Translate List',
+									fieldLabel: i18n['translate_list'],
 									name      : 'translate_lists'
 								},
 								{
 									xtype     : 'mitos.checkbox',
-									fieldLabel: 'Translate Access Control Roles',
+									fieldLabel: i18n['translate_access_control_roles'],
 									name      : 'translate_gacl_groups'
 								},
 								{
 									xtype     : 'mitos.checkbox',
-									fieldLabel: 'Translate Patient Note Titles',
+									fieldLabel: i18n['translate_patient_note_titles'],
 									name      : 'translate_form_titles'
 								},
 								{
 									xtype     : 'mitos.checkbox',
-									fieldLabel: 'Translate Documents Categoies',
+									fieldLabel: i18n['translate_documents_categoies'],
 									name      : 'translate_document_categories',
 									id        : 'translate_document_categories'
 								},
 								{
 									xtype     : 'mitos.checkbox',
-									fieldLabel: 'Translate Appointment Categories',
+									fieldLabel: i18n['translate_appointment_categories'],
 									name      : 'translate_appt_categories'
 								},
 								{
 									xtype       : 'combo',
-									fieldLabel  : 'Units for Visits Forms',
+									fieldLabel  : i18n['units_for_visits_forms'],
 									name        : 'units_of_measurement',
 									displayField: 'title',
 									valueField  : 'option_id',
@@ -465,17 +465,17 @@ Ext.define('App.view.administration.Globals', {
 								},
 								{
 									xtype     : 'mitos.checkbox',
-									fieldLabel: 'Disable Old Metric Vitals Form',
+									fieldLabel: i18n['disable_old_metric_vitals_form'],
 									name      : 'disable_deprecated_metrics_form'
 								},
 								{
 									xtype     : 'textfield',
-									fieldLabel: 'Telephone Country Code',
+									fieldLabel: i18n['telephone_country_code'],
 									name      : 'phone_country_code'
 								},
 								{
 									xtype       : 'combo',
-									fieldLabel  : 'Date Display Format',
+									fieldLabel  : i18n['date_display_format'],
 									name        : 'date_display_format',
 									displayField: 'title',
 									valueField  : 'option_id',
@@ -484,7 +484,7 @@ Ext.define('App.view.administration.Globals', {
 								},
 								{
 									xtype       : 'combo',
-									fieldLabel  : 'Time Display Format -??-',
+									fieldLabel  : i18n['time_display_format'] + ' -??-',
 									name        : 'date_display_format', // ??????
 									displayField: 'title',
 									valueField  : 'option_id',
@@ -493,7 +493,7 @@ Ext.define('App.view.administration.Globals', {
 								},
 								{
 									xtype       : 'combo',
-									fieldLabel  : 'Currency Decimal Places',
+									fieldLabel  : i18n['currency_decimal_places'],
 									name        : 'currency_decimals',
 									displayField: 'title',
 									valueField  : 'option_id',
@@ -502,7 +502,7 @@ Ext.define('App.view.administration.Globals', {
 								},
 								{
 									xtype       : 'combo',
-									fieldLabel  : 'Currency Decimal Point Symbol',
+									fieldLabel  : i18n['currency_decimal_point_symbol'],
 									name        : 'currency_dec_point',
 									displayField: 'title',
 									valueField  : 'option_id',
@@ -511,7 +511,7 @@ Ext.define('App.view.administration.Globals', {
 								},
 								{
 									xtype       : 'combo',
-									fieldLabel  : 'Currency Thousands Separator',
+									fieldLabel  : i18n['currency_thousands_separator'],
 									name        : 'currency_thousands_sep',
 									displayField: 'title',
 									valueField  : 'option_id',
@@ -520,7 +520,7 @@ Ext.define('App.view.administration.Globals', {
 								},
 								{
 									xtype     : 'textfield',
-									fieldLabel: 'Currency Designator',
+									fieldLabel: i18n['currency_designator'],
 									name      : 'gbl_currency_symbol'
 								}
 							]
@@ -531,7 +531,7 @@ Ext.define('App.view.administration.Globals', {
 							items      : [
 								{
 									xtype       : 'combo',
-									fieldLabel  : 'Specific Application',
+									fieldLabel  : i18n['specific_application'],
 									name        : 'date_display_format',
 									displayField: 'title',
 									valueField  : 'option_id',
@@ -540,7 +540,7 @@ Ext.define('App.view.administration.Globals', {
 								},
 								{
 									xtype       : 'combo',
-									fieldLabel  : 'Drugs and Prodructs',
+									fieldLabel  : i18n['drugs_and_prodructs'],
 									name        : 'date_display_format',
 									displayField: 'title',
 									valueField  : 'option_id',
@@ -548,101 +548,101 @@ Ext.define('App.view.administration.Globals', {
 									store       : me.dummyStore
 								},
 								{
-									fieldLabel: 'Disable Chart Tracker',
+									fieldLabel: i18n['disable_chart_tracker'],
 									name      : 'date_display_format'
 								},
 								{
-									fieldLabel: 'Disable Immunizations',
+									fieldLabel: i18n['disable_immunizations'],
 									name      : 'disable_immunizations'
 								},
 								{
-									fieldLabel: 'Disable Prescriptions',
+									fieldLabel: i18n['disable_prescriptions'],
 									name      : 'disable_prescriptions'
 								},
 								{
-									fieldLabel: 'Omit Employers',
+									fieldLabel: i18n['omit_employers'],
 									name      : 'omit_employers'
 								},
 								{
-									fieldLabel: 'Support Multi-Provider Events',
+									fieldLabel: i18n['support_multiprovider_events'],
 									name      : 'select_multi_providers'
 								},
 								{
-									fieldLabel: 'Disable User Groups',
+									fieldLabel: i18n['disable_user_groups'],
 									name      : 'disable_non_default_groups'
 								},
 								{
-									fieldLabel: 'Skip Authorization of Patient Notes',
+									fieldLabel: i18n['skip_authorization_of_patient_notes'],
 									name      : 'ignore_pnotes_authorization'
 								},
 								{
-									fieldLabel: 'Allow Encounters Claims',
+									fieldLabel: i18n['allow_encounters_claims'],
 									name      : 'support_encounter_claims'
 								},
 								{
-									fieldLabel: 'Advance Directives Warning',
+									fieldLabel: i18n['advance_directives_warning'],
 									name      : 'advance_directives_warning'
 								},
 								{
-									fieldLabel: 'Configuration Export/Import',
+									fieldLabel: i18n['configuration_export_import'],
 									name      : 'configuration_import_export'
 								},
 								{
-									fieldLabel: 'Restrict Users to Facilities',
+									fieldLabel: i18n['restrict_users_to_facilities'],
 									name      : 'restrict_user_facility'
 								},
 								{
-									fieldLabel: 'Remember Selected Facility',
+									fieldLabel: i18n['remember_selected_facility'],
 									name      : 'set_facility_cookie'
 								},
 								{
-									fieldLabel: 'Discounts as monetary Ammounts',
+									fieldLabel: i18n['discounts_as_monetary_ammounts'],
 									name      : 'discount_by_money'
 								},
 								{
-									fieldLabel: 'Referral Source for Encounters',
+									fieldLabel: i18n['referral_source_for_encounters'],
 									name      : 'gbl_visit_referral_source'
 								},
 								{
-									fieldLabel: 'Maks for Patients IDs',
+									fieldLabel: i18n['maks_for_patients_ids'],
 									xtype     : 'textfield',
 									name      : 'gbl_mask_patient_id'
 								},
 								{
-									fieldLabel: 'Mask of Invoice Numbers',
+									fieldLabel: i18n['mask_of_invoice_numbers'],
 									xtype     : 'textfield',
 									name      : 'gbl_mask_invoice_number'
 								},
 								{
-									fieldLabel: 'Mask for Product IDs',
+									fieldLabel: i18n['mask_for_product_ids'],
 									xtype     : 'textfield',
 									name      : 'gbl_mask_product_id'
 								},
 								{
-									fieldLabel: 'Force Billing Widget Open',
+									fieldLabel: i18n['force_billing_widget_open'],
 									name      : 'force_billing_widget_open'
 								},
 								{
-									fieldLabel: 'Actiate CCR/CCD Reporting',
+									fieldLabel: i18n['actiate_ccr_ccd_reporting'],
 									name      : 'activate_ccr_ccd_report'
 								},
 								{
-									fieldLabel: 'Hide Encryption/Decryption Options in Document Managment -??-',
+									fieldLabel: i18n['hide_encryption_decryption_options_in_document_managment'] + ' -??-',
 									name      : 'Feat22'   // ?????
 								}
 							]
 						},
 						{
-							title      : 'Calendar',
+							title      : i18n['calendar'],
 							defaultType: 'combo',
 							items      : [
 								{
 									xtype     : 'mitos.checkbox',
-									fieldLabel: 'Disable Calendar',
+									fieldLabel: i18n['disable_calendar'],
 									name      : 'Cal1'
 								},
 								{
-									fieldLabel  : 'Calendar Starting Hour',
+									fieldLabel  : i18n['calendar_starting_hour'],
 									name        : 'Cal2',
 									displayField: 'title',
 									valueField  : 'option_id',
@@ -650,7 +650,7 @@ Ext.define('App.view.administration.Globals', {
 									store       : me.dummyStore
 								},
 								{
-									fieldLabel  : 'Calendar Ending Hour',
+									fieldLabel  : i18n['calendar_ending_hour'],
 									name        : 'Cal3',
 									displayField: 'title',
 									valueField  : 'option_id',
@@ -658,7 +658,7 @@ Ext.define('App.view.administration.Globals', {
 									store       : me.dummyStore
 								},
 								{
-									fieldLabel  : 'Calendar Interval',
+									fieldLabel  : i18n['calendar_interval'],
 									name        : 'Cal4',
 									displayField: 'title',
 									valueField  : 'option_id',
@@ -666,7 +666,7 @@ Ext.define('App.view.administration.Globals', {
 									store       : me.dummyStore
 								},
 								{
-									fieldLabel  : 'Appointment Display Style',
+									fieldLabel  : i18n['appointment_display_style'],
 									name        : 'Cal5',
 									displayField: 'title',
 									valueField  : 'option_id',
@@ -675,16 +675,16 @@ Ext.define('App.view.administration.Globals', {
 								},
 								{
 									xtype     : 'mitos.checkbox',
-									fieldLabel: 'Provider See Entire Calendar',
+									fieldLabel: i18n['provider_see_entire_calendar'],
 									name      : 'Cal6'
 								},
 								{
 									xtype     : 'mitos.checkbox',
-									fieldLabel: 'Auto-Create New Encounters',
+									fieldLabel: i18n['auto_create_new_encounters'],
 									name      : 'Cal7'
 								},
 								{
-									fieldLabel  : 'Appointment/Event Color',
+									fieldLabel  : i18n['appointment_event_color'],
 									name        : 'Cal8',
 									displayField: 'title',
 									valueField  : 'option_id',
@@ -698,12 +698,12 @@ Ext.define('App.view.administration.Globals', {
 							defaultType: 'textfield',
 							items      : [
 								{
-									fieldLabel: 'Idle Session Timeout Seconds',
+									fieldLabel: i18n['idle_session_timeout_seconds'],
 									name      : 'timeout'
 								},
 								{
 									xtype       : 'mitos.checkbox',
-									fieldLabel  : 'Require Strong Passwords',
+									fieldLabel  : i18n['require_strong_passwords'],
 									name        : 'secure_password',
 									displayField: 'title',
 									valueField  : 'option_id',
@@ -712,20 +712,20 @@ Ext.define('App.view.administration.Globals', {
 								},
 								{
 									xtype     : 'mitos.checkbox',
-									fieldLabel: 'Require Unique Passwords',
+									fieldLabel: i18n['require_unique_passwords'],
 									name      : 'password_history'
 								},
 								{
-									fieldLabel: 'Defaults Password Expiration Days',
+									fieldLabel: i18n['defaults_password_expiration_days'],
 									name      : 'password_expiration_days'
 								},
 								{
-									fieldLabel: 'Password Expiration Grace Period',
+									fieldLabel: i18n['password_expiration_grace_period'],
 									name      : 'password_grace_time'
 								},
 								{
 									xtype     : 'mitos.checkbox',
-									fieldLabel: 'Enable Clients SSL',
+									fieldLabel: i18n['enable_clients_ssl'],
 									name      : 'is_client_ssl_enabled'
 								},
 								{
@@ -747,16 +747,16 @@ Ext.define('App.view.administration.Globals', {
 							]
 						},
 						{
-							title      : 'Notifications',
+							title      : i18n['notifications'],
 							defaultType: 'textfield',
 							items      : [
 								{
-									fieldLabel: 'Notification Email Address',
+									fieldLabel: i18n['notification_email_address'],
 									name      : 'practice_return_email_path'
 								},
 								{
 									xtype       : 'combo',
-									fieldLabel  : 'Email Transport Method',
+									fieldLabel  : i18n['email_transport_method'],
 									name        : 'EMAIL_METHOD',
 									displayField: 'title',
 									valueField  : 'option_id',
@@ -764,128 +764,128 @@ Ext.define('App.view.administration.Globals', {
 									store       : me.EMAIL_METHOD_store
 								},
 								{
-									fieldLabel: 'SMPT Server Hostname',
+									fieldLabel: i18n['smpt_server_hostname'],
 									name      : 'SMTP_HOST'
 								},
 								{
-									fieldLabel: 'SMPT Server Port Number',
+									fieldLabel: i18n['smpt_server_port_number'],
 									name      : 'SMTP_PORT'
 								},
 								{
-									fieldLabel: 'SMPT User for Authentication',
+									fieldLabel: i18n['smpt_user_for_authentication'],
 									name      : 'SMTP_USER'
 								},
 								{
-									fieldLabel: 'SMPT Password for Authentication',
+									fieldLabel: i18n['smpt_password_for_authentication'],
 									name      : 'SMTP_PASS'
 								},
 								{
-									fieldLabel: 'Email Notification Hours',
+									fieldLabel: i18n['email_notification_hours'],
 									name      : 'EMAIL_NOTIFICATION_HOUR'
 								},
 								{
-									fieldLabel: 'SMS Notification Hours',
+									fieldLabel: i18n['sms_notification_hours'],
 									name      : 'SMS_NOTIFICATION_HOUR'
 								},
 								{
-									fieldLabel: 'SMS Gateway Usarname',
+									fieldLabel: i18n['sms_gateway_usarname'],
 									name      : 'SMS_GATEWAY_USENAME'
 								},
 								{
-									fieldLabel: 'SMS Gateway Password',
+									fieldLabel: i18n['sms_gateway_password'],
 									name      : 'SMS_GATEWAY_PASSWORD'
 								},
 								{
-									fieldLabel: 'SMS Gateway API Key',
+									fieldLabel: i18n['sms_gateway_api_Key'],
 									name      : 'SMS_GATEWAY_APIKEY'
 								}
 							]
 						},
 						{
-							title      : 'Logging',
+							title      : i18n['logging'],
 							defaultType: 'mitos.checkbox',
 							items      : [
 								{
-									fieldLabel: 'Enable Audit Logging',
+									fieldLabel: i18n['enable_audit_logging'],
 									name      : 'enable_auditlog'
 								},
 								{
-									fieldLabel: 'Audid Logging Patient Record',
+									fieldLabel: i18n['audit_logging_patient_record'],
 									name      : 'audit_events_patient'
 								},
 								{
-									fieldLabel: 'Audid Logging Scheduling',
+									fieldLabel: i18n['audid_logging_scheduling'],
 									name      : 'audit_events_scheduling'
 								},
 								{
-									fieldLabel: 'Audid Logging Order',
+									fieldLabel: i18n['audid_logging_order'],
 									name      : 'audit_events_order'
 								},
 								{
-									fieldLabel: 'Audid Logging Security Administration',
+									fieldLabel: i18n['audid_logging_security_administration'],
 									name      : 'audit_events_security'
 								},
 								{
-									fieldLabel: 'Audid Logging Backups',
+									fieldLabel: i18n['audid_logging_backups'],
 									name      : 'audit_events_backup'
 								},
 								{
-									fieldLabel: 'Audid Loging Miscellaeous',
+									fieldLabel: i18n['audid_logging_miscellaeous'],
 									name      : 'audit_events_other'
 								},
 								{
-									fieldLabel: 'Audid Logging SELECT Query',
+									fieldLabel: i18n['audid_logging_select_query'],
 									name      : 'audit_events_query'
 								},
 								{
-									fieldLabel: 'Enable ATNA Auditing',
+									fieldLabel: i18n['enable_atna_auditing'],
 									name      : 'enable_atna_audit'
 								},
 								{
 									xtype     : 'textfield',
-									fieldLabel: 'ATNA audit host',
+									fieldLabel: i18n['atna_audit_host'],
 									name      : 'atna_audit_host'
 								},
 								{
 									xtype     : 'textfield',
-									fieldLabel: 'ATNA audit post',
+									fieldLabel: i18n['atna_audit_post'],
 									name      : 'atna_audit_port'
 								},
 								{
 									xtype     : 'textfield',
-									fieldLabel: 'ATNA audit local certificate',
+									fieldLabel: i18n['atna_audit_local_certificate'],
 									name      : 'atna_audit_localcert'
 								},
 								{
 									xtype     : 'textfield',
-									fieldLabel: 'ATNA audit CA certificate',
+									fieldLabel: i18n['atna_audit_ca_certificate'],
 									name      : 'atna_audit_cacert'
 								}
 							]
 						},
 						{
-							title      : 'Miscellaneous',
+							title      : i18n['miscellaneous'],
 							defaultType: 'textfield',
 							items      : [
 								{
-									fieldLabel: 'Path to MySQL Binaries',
+									fieldLabel: i18n['path_to_mysql_binaries'],
 									name      : 'mysql_bin_dir'
 								},
 								{
-									fieldLabel: 'Path to Perl Binaries',
+									fieldLabel: i18n['path_to_perl_binaries'],
 									name      : 'perl_bin_dir'
 								},
 								{
-									fieldLabel: 'Path to Temporary Files',
+									fieldLabel: i18n['path_to_temporary_files'],
 									name      : 'temporary_files_dir'
 								},
 								{
-									fieldLabel: 'Path for Event Log Backup',
+									fieldLabel: i18n['path_for_event_log_backup'],
 									name      : 'backup_log_dir'
 								},
 								{
 									xtype       : 'combo',
-									fieldLabel  : 'State Data Type',
+									fieldLabel  : i18n['state_data_type'],
 									name        : 'state_data_type',
 									displayField: 'title',
 									valueField  : 'option_id',
@@ -893,17 +893,17 @@ Ext.define('App.view.administration.Globals', {
 									store       : me.state_country_data_type_store
 								},
 								{
-									fieldLabel: 'State Lsit',
+									fieldLabel: i18n['state_list'],
 									name      : 'state_list'
 								},
 								{
 									xtype     : 'mitos.checkbox',
-									fieldLabel: 'State List Widget Custom Fields',
+									fieldLabel: i18n['state_list_widget_custom_fields'],
 									name      : 'state_custom_addlist_widget'
 								},
 								{
 									xtype       : 'combo',
-									fieldLabel  : 'Country Data Type',
+									fieldLabel  : i18n['country_data_type'],
 									name        : 'country_data_type',
 									displayField: 'title',
 									valueField  : 'option_id',
@@ -911,85 +911,85 @@ Ext.define('App.view.administration.Globals', {
 									store       : me.state_country_data_type_store
 								},
 								{
-									fieldLabel: 'Country list',
+									fieldLabel: i18n['country_list'],
 									name      : 'country_list'
 								},
 								{
-									fieldLabel: 'Print Command',
+									fieldLabel: i18n['print_command'],
 									name      : 'print_command'
 								},
 								{
-									fieldLabel: 'Default Reason for Visit',
+									fieldLabel: i18n['default_reason_for_visit'],
 									name      : 'default_chief_complaint'
 								},
 								{
-									fieldLabel: 'Default Encounter Form ID',
+									fieldLabel: i18n['default_encounter_form_id'],
 									name      : 'default_new_encounter_form'
 								},
 								{
-									fieldLabel: 'patient ID Category Name',
+									fieldLabel: i18n['patient_id_category_name'],
 									name      : 'patient_id_category_name'
 								},
 								{
-									fieldLabel: 'patient Photo Category name',
+									fieldLabel: i18n['patient_photo_category_name'],
 									name      : 'patient_photo_category_name'
 								},
 								{
 									xtype     : 'mitos.checkbox',
-									fieldLabel: 'Medicare Referrer is Renderer',
+									fieldLabel: i18n['medicare_referrer_is_renderer'],
 									name      : 'MedicareReferrerIsRenderer'
 								},
 								{
-									fieldLabel: 'Final Close Date (yyy-mm-dd)',
+									fieldLabel: i18n['final_close_date_yyy_mm_dd'],
 									name      : 'post_to_date_benchmark'
 								},
 								{
 									xtype     : 'mitos.checkbox',
-									fieldLabel: 'Enable Hylafax Support',
+									fieldLabel: i18n['enable_hylafax_support'],
 									name      : 'enable_hylafax'
 								},
 								{
-									fieldLabel: 'Halafax Server',
+									fieldLabel: i18n['hylafax_server'],
 									name      : 'hylafax_server'
 								},
 								{
-									fieldLabel: 'Halafax Directory',
+									fieldLabel: i18n['hylafax_directory'],
 									name      : 'hylafax_basedir'
 								},
 								{
-									fieldLabel: 'Halafax Enscript Command',
+									fieldLabel: i18n['hylafax_enscript_command'],
 									name      : 'hylafax_enscript'
 								},
 								{
 									xtype     : 'mitos.checkbox',
-									fieldLabel: 'Enable Scanner Support',
+									fieldLabel: i18n['enable_scanner_support'],
 									name      : 'enable_scanner'
 								},
 								{
-									fieldLabel: 'Scanner Directory',
+									fieldLabel: i18n['scanner_directory'],
 									name      : 'scanner_output_directory'
 								}
 							]
 						},
 						{
-							title      : 'Connectors',
+							title      : i18n['connectors'],
 							defaultType: 'textfield',
 							items      : [
 								{
 									xtype     : 'mitos.checkbox',
-									fieldLabel: 'Enable Lab Exchange',
+									fieldLabel: i18n['enable_lab_exchange'],
 									name      : 'Conn1'
 								},
 								{
-									fieldLabel: 'Lab Exchange Site ID',
+									fieldLabel: i18n['lab_exchange_site_id'],
 									name      : 'Conn2'
 								},
 								{
-									fieldLabel: 'Lab Exchange Token ID',
+									fieldLabel: i18n['lab_exchange_token_id'],
 									name      : 'Conn3'
 								},
 								{
-									fieldLabel: 'Lab Exchange Site Address',
+									fieldLabel: i18n['lab_exchange_site_address'],
 									name      : 'Conn4'
 								}
 							]
@@ -1001,7 +1001,7 @@ Ext.define('App.view.administration.Globals', {
 							dock : 'top',
 							items: [
 								{
-									text   : 'Save Configuration',
+									text   : i18n['save_configuration'],
 									iconCls: 'save',
 									handler: function() {
 										var form = me.globalFormPanel.getForm();
@@ -1024,7 +1024,7 @@ Ext.define('App.view.administration.Globals', {
 			store.load();
 		});
 
-		this.msg('New Global Configuration Saved', 'For some settings to take place you will have to refresh the application.');
+		this.msg(i18n['new_global_configuration_saved'], i18n['refresh_the_application']);
 	},
 	/**
 	 * This function is called from MitosAPP.js when

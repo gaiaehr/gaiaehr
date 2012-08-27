@@ -95,12 +95,12 @@ Ext.define('App.view.administration.DataManager', {
 
                         {
 
-                            boxLabel: 'Reportable?',
+                            boxLabel: i18n['reportable'],
                             xtype   : 'checkboxfield',
                             name    : 'reportable'
                         },
                         {
-                            boxLabel  : 'Active?',
+                            boxLabel  : i18n['active'],
                             labelWidth: 75,
                             xtype     : 'checkboxfield',
                             name      : 'active'
@@ -127,19 +127,19 @@ Ext.define('App.view.administration.DataManager', {
                     items    : [
                         {
 
-                            fieldLabel: 'Type',
+                            fieldLabel: i18n['type'],
                             xtype     : 'mitos.codestypescombo',
                             name      : 'code_type'
                         },
                         {
 
-                            fieldLabel: 'Code',
+                            fieldLabel: i18n['code'],
                             xtype     : 'textfield',
                             name      : 'code'
                         },
                         {
 
-                            fieldLabel: 'Modifier',
+                            fieldLabel: i18n['modifier'],
                             xtype     : 'textfield',
                             name      : 'mod'
                         }
@@ -153,12 +153,12 @@ Ext.define('App.view.administration.DataManager', {
                     items   : [
                         {
 
-                            fieldLabel: 'Description',
+                            fieldLabel: i18n['description'],
                             xtype     : 'textfield',
                             name      : 'code_text'
                         },
                         {
-                            fieldLabel: 'Category',
+                            fieldLabel: i18n['category'],
                             xtype     : 'mitos.titlescombo',
                             name      : 'title'
                         }
@@ -171,13 +171,13 @@ Ext.define('App.view.administration.DataManager', {
                     items   : [
 
                         {
-                            boxLabel: 'Reportable?',
+                            boxLabel: i18n['reportable'],
                             xtype   : 'checkboxfield',
                             name    : 'reportable'
                         }
                         ,
                         {
-                            boxLabel  : 'Active?',
+                            boxLabel  : i18n['active'],
                             labelWidth: 75,
                             xtype     : 'checkboxfield',
                             name      : 'active'
@@ -194,7 +194,7 @@ Ext.define('App.view.administration.DataManager', {
          */
         me.cvxCintainer = Ext.create('Ext.tab.Panel', {
             //hidden   : true,
-            action   : 'Immunizations',
+            action   : i18n['immunizations'],
             layout   : 'fit',
             plain    : true,
             listeners: {
@@ -219,14 +219,14 @@ Ext.define('App.view.administration.DataManager', {
                                 {
 
                                     xtype     : 'textfield',
-                                    fieldLabel: 'Immunization Name',
+                                    fieldLabel: i18n['immunization_name'],
                                     name      : 'code_text',
                                     labelWidth: 130,
                                     width     : 703
                                 },
                                 {
                                     xtype     : 'mitos.sexcombo',
-                                    fieldLabel: 'Sex',
+                                    fieldLabel: i18n['sex'],
                                     name      : 'sex',
                                     width     : 100,
                                     labelWidth: 30
@@ -245,7 +245,7 @@ Ext.define('App.view.administration.DataManager', {
                             items   : [
                                 {
                                     xtype     : 'mitos.codestypescombo',
-                                    fieldLabel: 'Coding System',
+                                    fieldLabel: i18n['coding_system'],
                                     labelWidth: 130,
                                     value     : 'CVX',
                                     name      : 'code_type',
@@ -254,7 +254,7 @@ Ext.define('App.view.administration.DataManager', {
                                 },
                                 {
                                     xtype     : 'numberfield',
-                                    fieldLabel: 'Frequency',
+                                    fieldLabel: i18n['frequency'],
                                     margin    : '0 0 5 0',
                                     value     : 0,
                                     minValue  : 0,
@@ -270,7 +270,7 @@ Ext.define('App.view.administration.DataManager', {
                                 },
                                 {
                                     xtype     : 'numberfield',
-                                    fieldLabel: 'Age Start',
+                                    fieldLabel: i18n['age_start'],
                                     name      : 'age_start',
                                     labelWidth: 75,
                                     width     : 140,
@@ -279,7 +279,7 @@ Ext.define('App.view.administration.DataManager', {
 
                                 },
                                 {
-                                    fieldLabel: 'Must be pregnant',
+                                    fieldLabel: i18n['must_be_pregnant'],
                                     xtype     : 'checkboxfield',
                                     labelWidth: 105,
                                     name      : 'pregnant'
@@ -299,14 +299,14 @@ Ext.define('App.view.administration.DataManager', {
                             items   : [
                                 {
                                     xtype     : 'textfield',
-                                    fieldLabel: 'Code',
+                                    fieldLabel: i18n['code'],
                                     name      : 'code',
                                     labelWidth: 130
 
                                 },
                                 {
                                     xtype     : 'numberfield',
-                                    fieldLabel: 'Times to Perform',
+                                    fieldLabel: i18n['times_to_perform'],
                                     name      : 'times_to_perform',
                                     width     : 250,
                                     value     : 0,
@@ -317,7 +317,7 @@ Ext.define('App.view.administration.DataManager', {
                                 {
 
                                     xtype     : 'numberfield',
-                                    fieldLabel: 'Age End',
+                                    fieldLabel: i18n['age_end'],
                                     name      : 'age_end',
                                     labelWidth: 75,
                                     width     : 140,
@@ -328,7 +328,7 @@ Ext.define('App.view.administration.DataManager', {
                                 },
 
                                 {
-                                    fieldLabel: 'perform only once',
+                                    fieldLabel: i18n['perform_only_once'],
                                     xtype     : 'checkboxfield',
                                     labelWidth: 105,
                                     //margin  : '5 0 0 10',
@@ -342,7 +342,7 @@ Ext.define('App.view.administration.DataManager', {
                     ]
                 },
                 {
-                    title  : 'Active Problems',
+                    title  : i18n['active_problems'],
                     action : 'problems',
                     xtype  : 'grid',
                     margin : 5,
@@ -355,19 +355,19 @@ Ext.define('App.view.administration.DataManager', {
                             items: [
                                 {
                                     icon   : 'ui_icons/delete.png',
-                                    tooltip: 'Remove',
+                                    tooltip: i18n['remove'],
                                     scope  : me,
                                     handler: me.onRemoveRelation
                                 }
                             ]
                         },
                         {
-                            header   : 'Code',
+                            header   : i18n['code'],
                             width    : 100,
                             dataIndex: 'code'
                         },
                         {
-                            header   : 'Description',
+                            header   : i18n['description'],
                             flex     : 1,
                             dataIndex: 'code_text'
                         }
@@ -376,7 +376,7 @@ Ext.define('App.view.administration.DataManager', {
                     bbar   : {
                         xtype     : 'liveicdxsearch',
                         margin    : 5,
-                        fieldLabel: 'Add Problem',
+                        fieldLabel: i18n['add_problem'],
                         hideLabel : false,
                         disable   : true,
                         listeners : {
@@ -386,7 +386,7 @@ Ext.define('App.view.administration.DataManager', {
                     }
                 },
                 {
-                    title  : 'Medications',
+                    title  : i18n['medications'],
                     action : 'medications',
                     xtype  : 'grid',
                     width  : 300,
@@ -398,19 +398,19 @@ Ext.define('App.view.administration.DataManager', {
                             items: [
                                 {
                                     icon   : 'ui_icons/delete.png',
-                                    tooltip: 'Remove',
+                                    tooltip: i18n['remove'],
                                     scope  : me,
                                     handler: me.onRemoveRelation
                                 }
                             ]
                         },
                         {
-                            header   : 'Code',
+                            header   : i18n['code'],
                             width    : 100,
                             dataIndex: 'code'
                         },
                         {
-                            header   : 'Description',
+                            header   : i18n['description'],
                             flex     : 1,
                             dataIndex: 'code_text'
                         }
@@ -419,7 +419,7 @@ Ext.define('App.view.administration.DataManager', {
                     bbar   : {
                         xtype     : 'medicationlivetsearch',
                         margin    : 5,
-                        fieldLabel: 'Add Problem',
+                        fieldLabel: i18n['add_problem'],
                         hideLabel : false,
                         disable   : true,
                         listeners : {
@@ -429,7 +429,7 @@ Ext.define('App.view.administration.DataManager', {
                     }
                 },
                 {
-                    title  : 'Labs',
+                    title  : i18n['labs'],
                     action : 'labs',
                     xtype  : 'grid',
                     store  : me.ImmuRelationStore,
@@ -441,29 +441,29 @@ Ext.define('App.view.administration.DataManager', {
                             items: [
                                 {
                                     icon   : 'ui_icons/delete.png',
-                                    tooltip: 'Remove',
+                                    tooltip: i18n['remove'],
                                     scope  : me,
                                     handler: me.onRemoveRelation
                                 }
                             ]
                         },
                         {
-                            header   : 'Value Name',
+                            header   : i18n['value_name'],
                             flex     : 1,
                             dataIndex: 'value_name'
                         },
                         {
-                            header   : 'Less Than',
+                            header   : i18n['less_than'],
                             flex     : 1,
                             dataIndex: 'less_than'
                         },
                         {
-                            header   : 'Greater Than',
+                            header   : i18n['greater_than'],
                             flex     : 1,
                             dataIndex: 'greater_than'
                         },
                         {
-                            header   : 'Equal To',
+                            header   : i18n['equal_to'],
                             flex     : 1,
                             dataIndex: 'equal_to'
                         }
@@ -479,7 +479,7 @@ Ext.define('App.view.administration.DataManager', {
          * Labs Container
          */
         me.labContainer = Ext.create('Ext.container.Container', {
-            action: 'Laboratories',
+            action: i18n['laboratories'],
             layout: {
                 type:'vbox',
                 align:'stretch'
@@ -495,14 +495,14 @@ Ext.define('App.view.administration.DataManager', {
                     items   : [
                         {
                             xtype     : 'textfield',
-                            fieldLabel: 'Short Name (alias)',
+                            fieldLabel: i18n['short_name_alias'],
                             name      : 'code_text_short',
                             labelWidth: 130,
                             width     : 500
                         },
                         {
                             xtype     : 'mitos.checkbox',
-                            fieldLabel: 'Active?',
+                            fieldLabel: i18n['active'],
                             name      : 'active',
                             anchor     : '100%',
                             labelWidth: 50
@@ -519,7 +519,7 @@ Ext.define('App.view.administration.DataManager', {
                     }),
                     columns: [
                         {
-                            header: 'Label (alias)',
+                            header: i18n['label_alias'],
                             dataIndex: 'code_text_short',
                             width:100,
                             editor:{
@@ -527,17 +527,17 @@ Ext.define('App.view.administration.DataManager', {
                             }
                         },
                         {
-                            header: 'Loinc Name',
+                            header: i18n['loinc_name'],
                             dataIndex: 'loinc_name',
                             width:200
                         },
                         {
-                            header: 'Loinc Number',
+                            header: i18n['loinc_number'],
                             dataIndex: 'loinc_number',
                             width:100
                         },
                         {
-                            header: 'Default Unit',
+                            header: i18n['default_unit'],
                             dataIndex: 'default_unit',
                             width:100,
                             editor:{
@@ -545,12 +545,12 @@ Ext.define('App.view.administration.DataManager', {
                             }
                         },
                         {
-                            header: 'Req / Opt',
+                            header: i18n['req_opt'],
                             dataIndex: 'required_in_panel',
                             width:75
                         },
                         {
-                            header: 'Range Start',
+                            header: i18n['range_start'],
                             dataIndex: 'range_start',
                             width:100,
                             editor:{
@@ -558,7 +558,7 @@ Ext.define('App.view.administration.DataManager', {
                             }
                         },
                         {
-                            header: 'Range End',
+                            header: i18n['range_end'],
                             dataIndex: 'range_end',
                             width:100,
                             editor:{
@@ -566,7 +566,7 @@ Ext.define('App.view.administration.DataManager', {
                             }
                         },
                         {
-                            header: 'Description',
+                            header: i18n['description'],
                             dataIndex: 'description',
                             flex:1,
                             editor:{
@@ -604,32 +604,32 @@ Ext.define('App.view.administration.DataManager', {
             columns: [
                 {
                     width: 100,
-                    header: 'Code Type',
+                    header: i18n['code_type'],
                     sortable: true,
                     dataIndex: 'code_type',
                     renderer: code_type
                 },
                 {
                     width: 100,
-                    header: 'Code',
+                    header: i18n['code'],
                     sortable: true,
                     dataIndex: 'code'
                 },
                 {
-                    header: 'Short Name',
+                    header: i18n['short_name'],
                     dataIndex: 'code_text_short',
                     width:100,
                     flex: 1
                 },
                 {
-                    header: 'Long Name',
+                    header: i18n['long_name'],
                     sortable: true,
                     dataIndex: 'code_text',
                     flex: 2
                 },
                 {
                     width: 60,
-                    header: 'Active?',
+                    header: i18n['active'],
                     sortable: true,
                     dataIndex: 'active',
                     renderer: me.boolRenderer
@@ -647,7 +647,7 @@ Ext.define('App.view.administration.DataManager', {
             tbar   : Ext.create('Ext.PagingToolbar', {
                 store      : me.store,
                 displayInfo: true,
-                emptyMsg   : "No Office Notes to display",
+                emptyMsg   : i18n['no_office_notes_to_display'],
                 plugins    : Ext.create('Ext.ux.SlidingPager', {}),
                 items      : ['-', {
                     xtype    : 'mitos.codestypescombo',
@@ -657,13 +657,13 @@ Ext.define('App.view.administration.DataManager', {
                         select: me.onCodeTypeSelect
                     }
                 }, '-', {
-                    text   : 'Add',
+                    text   : i18n['add'],
                     iconCls: 'icoAddRecord',
                     scope  : me,
                     handler: me.onAddData
                 }, '-', {
                     xtype          : 'textfield',
-                    emptyText      : 'Search',
+                    emptyText      : i18n['search'],
                     width          : 200,
                     enableKeyEvents: true,
                     listeners      : {
@@ -673,7 +673,7 @@ Ext.define('App.view.administration.DataManager', {
                     }
                 }, '-', {
                     xtype       : 'button',
-                    text        : 'Show Inactive Codes Only',
+                    text        : i18n['show_inactive_codes_only'],
                     enableToggle: true,
                     listeners   : {
                         scope : me,
@@ -690,10 +690,7 @@ Ext.define('App.view.administration.DataManager', {
     onAddData: function() {
         var me = this;
         if(me.code_type == 'Laboratories'){
-            Ext.Msg.alert('Opps!',
-                'Sorry, Unable to add laboratories. Laboratory data are pre-loaded using<br>' +
-                'Logical Observation Identifiers Names and Codes (LOINC)<br>' +
-                'visit <a href="http://loinc.org/" target="_blank">loinc.org</a> for more info.');
+            Ext.Msg.alert('Opps!', i18n['ops_laboratories']);
         }else{
             me.dataManagerGrid.plugins[0].cancelEdit();
             me.store.add({code_type:me.code_type});

@@ -642,7 +642,15 @@ $LANG = array(
 	'pos_code'								=> 'POS Code',
 	'billing_attn'							=> 'Billing Attn',
 	'clia_number'							=> 'CLIA Number',
-	'facility_npi'							=> 'Facility NPI'
+	'facility_npi'							=> 'Facility NPI',
+	'floor_plan_editor'						=> 'Floor Plan Editor',
+	'floor_plans'							=> 'Floor Plans',
+	'add_floor_plan'						=> 'Add Floor Plan',
+	'floor_plan'							=> 'Floor Plan',
+	'add_zone'								=> 'Add Zone',
+	'new_zone'								=> 'New Zone',
+	'zone_name'								=> 'Zone Name',
+	'new_floor_plan'						=> 'New Floor Plan'
 
 );
 ?>

@@ -503,7 +503,19 @@ $LANG = array(
 	'search'								=> 'Search',
 	'show_inactive_codes_only'				=> 'Show Inactive Codes Only',
 	'ops_laboratories'						=> 'Sorry, Unable to add laboratories. Laboratory data are pre-loaded using<br>Logical Observation Identifiers Names and Codes (LOINC)<br>visit <a href="http://loinc.org/" target="_blank">loinc.org</a> for more info.',
-	
+	'patient_full_name'						=> 'Patient Full Name',
+	'patient_mothers_maiden_name'			=> 'Patient Mothers Maiden Name',
+	'patient_last_name'						=> 'Patient Last Name',
+	'patient_birthdate'						=> 'Patient Birthdate',
+	'patient_marital_status'				=> 'Patient Marital Status',
+	'patient_home_phone'					=> 'Patient Home Phone',
+	'patient_mobile_phone'					=> 'Patient Mobile Phone',
+	'patient_work_phone'					=> 'Patient Work Phone',
+	'patient_email'							=> 'Patient Email',
+	'patient_social_security'				=> 'Patient Social Security',
+	'patient_sex'							=> 'Patient Sex',
+	'patient_age'							=> 'Patient Age',
+	'patient_city'							=> 'Patient City'
 
 );
 ?>

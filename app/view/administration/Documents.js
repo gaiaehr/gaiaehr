@@ -35,59 +35,59 @@ Ext.define('App.view.administration.Documents', {
              model: 'tokenModel',
              data : [
 	             {
-		             title: 'Patient Name',
+		             title: i18n['patient_name'],
 		             token: '[PATIENT_NAME]'
 	             },
 	             {
-		             title: 'Patient Full Name',
+		             title: i18n['patient_full_name'],
 		             token: '[PATIENT_FULL_NAME]'
 	             },
                  {
-                     title: 'Patient Mothers Maiden Name',
+                     title: i18n['patient_mothers_maiden_name'],
                      token: '[PATIENT_MAIDEN_NAME]'
                  },
 	             {
-                     title: 'Patient Last Name',
+                     title: i18n['patient_last_name'],
                      token: '[PATIENT_LAST_NAME]'
                  },
 	             {
-                     title: 'Patient Birthdate',
+                     title: i18n['patient_birthdate'],
                      token: '[PATIENT_BIRTHDATE]'
                  },
 	             {
-                     title: 'Patient Marital Status',
+                     title: i18n['patient_marital_status'],
                      token: '[PATIENT_MARITAL_STATUS]'
                  },
 	             {
-                     title: 'Patient Home Phone',
+                     title: i18n['patient_home_phone'],
                      token: '[PATIENT_HOME_PHONE]'
                  },
 	             {
-                     title: 'Patient Mobile Phone',
+                     title: i18n['patient_mobile_phone'],
                      token: '[PATIENT_MOBILE_PHONE]'
                  },
 	             {
-                     title: 'Patient Work Phone',
+                     title: i18n['patient_work_phone'],
                      token: '[PATIENT_WORK_PHONE]'
                  },
 	             {
-                     title: 'Patient Email',
+                     title: i18n['patient_email'],
                      token: '[PATIENT_EMAIL]'
                  },
 	             {
-                     title: 'Patient Social Security',
+                     title: i18n['patient_social_security'],
                      token: '[PATIENT_SOCIAL_SECURITY]'
                  },
                  {
-                     title: 'Patient Sex',
+                     title: i18n['patient_sex'],
                      token: '[PATIENT_SEX]'
                  },
 	             {
-                     title: 'Patient Age',
+                     title: i18n['patient_age'],
                      token: '[PATIENT_AGE]'
                  },
 	             {
-                     title: 'Patient City',
+                     title: i18n['patient_city'],
                      token: '[PATIENT_CITY]'
                  },
 	             {

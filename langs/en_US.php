@@ -919,6 +919,16 @@ $LANG = array(
 	'add_new_user'							=> 'Add New User',
 	'username'								=> 'Username',
 	'password'								=> 'Password',
-	'first_middle_last'						=> 'First, Middle, Last'
+	'first_middle_last'						=> 'First, Middle, Last',
+	'default_facility'						=> 'Default Facility',
+	'authorizations'						=> 'Authorizations',
+	'access_control'						=> 'Access Control',
+	'taxonomy'								=> 'Taxonomy',
+	'federal_tax_id'						=> 'Federal Tax ID',
+	'fed_drug_id'							=> 'Fed Drug ID',
+	'upin'									=> 'UPIN',
+	'npi'									=> 'NPI',
+	'job_description'						=> 'Job Description',
+	'password_currently_used' 				=> 'This password is currently in used, or has been used before.<br>Please use a different password.'
 );
 ?>

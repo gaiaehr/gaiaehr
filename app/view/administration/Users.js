@@ -174,9 +174,9 @@ Ext.define('App.view.administration.Users', {
 							defaults : { hideLabel: true },
 							msgTarget: 'under',
 							items    : [
-								{ width: 100, xtype: 'displayfield', value: 'Default Facility: '},
+								{ width: 100, xtype: 'displayfield', value: i8n['default_facility'] + ': '},
 								{ width: 100, xtype: 'mitos.facilitiescombo', name: 'facility_id' },
-								{ width: 100, xtype: 'displayfield', value: 'Authorizations: '},
+								{ width: 100, xtype: 'displayfield', value: i18n['authorizations'] + ': '},
 								{ width: 105, xtype: 'mitos.authorizationscombo', name: 'see_auth' }
 							]
 						},
@@ -184,10 +184,10 @@ Ext.define('App.view.administration.Users', {
 							xtype   : 'fieldcontainer',
 							defaults: { hideLabel: true },
 							items   : [
-								{ width: 100, xtype: 'displayfield', value: 'Access Control: '},
+								{ width: 100, xtype: 'displayfield', value: i18n['access_control'] + ': '},
 								{ width: 100, xtype: 'mitos.rolescombo', name: 'role_id', allowBlank:false },
 								// not implemented yet
-								{ width: 100, xtype: 'displayfield', value: 'Taxonomy: '},
+								{ width: 100, xtype: 'displayfield', value: i18n['taxonomy'] + ': '},
 								{ width: 105, xtype: 'textfield', name: 'taxonomy' }
 							]
 						},
@@ -195,9 +195,9 @@ Ext.define('App.view.administration.Users', {
 							xtype   : 'fieldcontainer',
 							defaults: { hideLabel: true },
 							items   : [
-								{ width: 100, xtype: 'displayfield', value: 'Federal Tax ID: '},
+								{ width: 100, xtype: 'displayfield', value: i18n['federal_tax_id'] + ': '},
 								{ width: 100, xtype: 'textfield', name: 'federaltaxid' },
-								{ width: 100, xtype: 'displayfield', value: 'Fed Drug ID: '},
+								{ width: 100, xtype: 'displayfield', value: i18n['fed_drug_id'] + ': '},
 								{ width: 105, xtype: 'textfield', name: 'federaldrugid' }
 							]
 						},
@@ -205,9 +205,9 @@ Ext.define('App.view.administration.Users', {
 							xtype   : 'fieldcontainer',
 							defaults: { hideLabel: true },
 							items   : [
-								{ width: 100, xtype: 'displayfield', value: 'UPIN: '},
+								{ width: 100, xtype: 'displayfield', value: i18n['upin'] + ': '},
 								{ width: 100, xtype: 'textfield', name: 'upin' },
-								{ width: 100, xtype: 'displayfield', value: 'NPI: '},
+								{ width: 100, xtype: 'displayfield', value: i18n['npi'] + ': '},
 								{ width: 105, xtype: 'textfield', name: 'npi' }
 							]
 						},
@@ -215,7 +215,7 @@ Ext.define('App.view.administration.Users', {
 							xtype   : 'fieldcontainer',
 							defaults: { hideLabel: true },
 							items   : [
-								{ width: 100, xtype: 'displayfield', value: 'Job Description: '},
+								{ width: 100, xtype: 'displayfield', value: i18n['job_description'] + ': '},
 								{ width: 315, xtype: 'textfield', name: 'specialty' }
 							]
 						},
@@ -224,14 +224,14 @@ Ext.define('App.view.administration.Users', {
 							height   : 50,
 							xtype    : 'textfield',
 							name     : 'info',
-							emptyText: 'Additional Info'
+							emptyText: i18n['additional_info']
 						}
 					]
 				}
 			],
 			buttons  : [
 				{
-					text   : 'Save',
+					text   : i18n['save'],
 					cls    : 'winSave',
 					handler: function() {
 						var form = me.win.down('form').getForm();
@@ -243,7 +243,7 @@ Ext.define('App.view.administration.Users', {
 				},
 				'-',
 				{
-					text   : 'Cancel',
+					text   : i18n['cancel'],
 					scope  : me,
 					handler: function(btn) {
 						btn.up('window').close();
@@ -278,7 +278,7 @@ Ext.define('App.view.administration.Users', {
 		if(password != '') {
 			User.chechPasswordHistory({password: password, id: id}, function(provider, response) {
 				if(response.result.error) {
-					Ext.Msg.alert('Opps!', 'This password is currently in used, or has been used before.<br>Please use a different password.');
+					Ext.Msg.alert('Opps!', i18n['password_currently_used']);
 				} else {
 					me.saveUser(form, store);
 				}

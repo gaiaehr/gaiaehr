@@ -878,6 +878,26 @@ $LANG = array(
 	'dosage'								=> 'Dosage',
 	'number'								=> 'Number',
 	'unit'									=> 'Unit',
-	'dosis'									=> 'Dosis'
+	'dosis'									=> 'Dosis',
+	'practice_settings'						=> 'Practice Settings',
+	'address'								=> 'Address',
+	'address_cont'							=> 'Address (Cont)',
+	'city_state_zip'						=> 'City, State Zip',
+	'default_method'						=> 'Default Method',
+	'cms_id'								=> 'CMS ID',
+	'payer_type'							=> 'Payer Type',
+	'pharmacy_name'							=> 'Pharmacy Name',
+	'add_new_pharmacy'						=> 'Add New Pharmacy',
+	'insurance_companies'					=> 'Insurance Companies',
+	'insurance_name'						=> 'Insurance Name',
+	'default_x12_partner'					=> 'Default X12 Partner',
+	'add_new_insurance'						=> 'Add New Insurance',
+	'x12_partners_clearing_houses'			=> 'X12 Partners (clearing houses)',
+	'sender_id'								=> 'Sender ID',
+	'receiver_id'							=> 'Receiver ID',
+	'version'								=> 'Version',
+	'hl7_viewer'							=> 'HL7 Viewer',
+	'clear_hl7_data'						=> 'Clear HL7 Data',
+	'parse_hl7'								=> 'Parse HL7'
 );
 ?>

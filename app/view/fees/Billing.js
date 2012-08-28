@@ -9,7 +9,7 @@
 Ext.define('App.view.fees.Billing', {
 	extend       : 'App.classes.RenderPanel',
 	id           : 'panelBilling',
-	pageTitle    : i18n.billing,
+	pageTitle    : i18n['billing'],
 	uses         : [ 'App.classes.GridPanel' ],
 	pageLayout   : 'card',
 	initComponent: function() {
@@ -34,32 +34,32 @@ Ext.define('App.view.fees.Billing', {
 			},
 			columns   : [
 				{
-					header   : i18n.service_date,
+					header   : i18n['service_date'],
 					dataIndex: 'start_date',
 					width    : 200
 				},
 				{
-					header   : i18n.patient,
+					header   : i18n['patient'],
 					dataIndex: 'patientName',
 					width    : 200
 				},
 				{
-					header   : i18n.primary_provider,
+					header   : i18n['primary_provider'],
 					dataIndex: 'primaryProvider',
 					width    : 200
 				},
 				{
-					header   : i18n.encounter_provider,
+					header   : i18n['encounter_provider'],
 					dataIndex: 'encounterProvider',
 					flex     : 1
 				},
 				{
-					header   : i18n.insurance,
+					header   : i18n['insurance'],
 					dataIndex: 'insurance',
 					width    : 200
 				},
 				{
-					header   : i18n.billing_stage,
+					header   : i18n['billing_stage'],
 					dataIndex: 'billing_stage',
 					renderer : me.stage,
 					width    : 135
@@ -71,7 +71,7 @@ Ext.define('App.view.fees.Billing', {
 					items: [
 						{
 							xtype     : 'displayfield',
-							fieldLabel: i18n.patient_search
+							fieldLabel: i18n['patient_search']
 						},
 						{
 							xtype: 'patienlivetsearch',
@@ -87,14 +87,14 @@ Ext.define('App.view.fees.Billing', {
 					items: [
 						{
 							xtype     : 'datefield',
-							fieldLabel: i18n.from,
+							fieldLabel: i18n['from'],
 							labelWidth: 35,
 							action    : 'datefrom',
 							width     : 150
 						},
 						{
 							xtype     : 'datefield',
-							fieldLabel: i18n.to,
+							fieldLabel: i18n['to'],
 							labelWidth: 35,
 							action    : 'dateto',
 							padding   : '0 5 0 0',
@@ -111,7 +111,7 @@ Ext.define('App.view.fees.Billing', {
 							typeAhead : true,
 							padding   : '0 5 0 5',
 
-							fieldLabel  : i18n.provider,
+							fieldLabel  : i18n['provider'],
 							defaultValue: 'All'
 
 						},
@@ -119,7 +119,7 @@ Ext.define('App.view.fees.Billing', {
 							xtype       : 'mitos.insurancepayertypecombo',
 							labelWidth  : 60,
 							padding     : '0 5 0 5',
-							fieldLabel  : i18n.insurance,
+							fieldLabel  : i18n['insurance'],
 							defaultValue: 'All'
 
 
@@ -129,7 +129,7 @@ Ext.define('App.view.fees.Billing', {
 				'->',
 				{
 					xtype: 'tbtext',
-					text : i18n.past_due + ':'
+					text : i18n['past_due'] + ':'
 				},
 				{
 					text           : '30+',
@@ -200,7 +200,7 @@ Ext.define('App.view.fees.Billing', {
 							items : [
 								{
 									xtype : 'fieldset',
-									title : i18n.encounter_general_info,
+									title : i18n['encounter_general_info'],
 									margin: '5 5 0 5',
 									items : [
 										{
@@ -216,20 +216,20 @@ Ext.define('App.view.fees.Billing', {
 												{
 													xtype     : 'textfield',
 													name      : 'service_date',
-													fieldLabel: i18n.service_date,
+													fieldLabel: i18n['service_date'],
 													labelAlign: 'right',
 													labelWidth: 80
 												},
 												{
 													xtype     : 'textfield',
 													name      : 'insurance',
-													fieldLabel: i18n.insurance,
+													fieldLabel: i18n['insurance'],
 													labelAlign: 'right'
 												},
 												{
 													xtype     : 'textfield',
 													name      : 'facility',
-													fieldLabel: i18n.facillity,
+													fieldLabel: i18n['facillity'],
 													labelAlign: 'right',
 													labelWidth: 60,
 													flex      : 1
@@ -249,20 +249,20 @@ Ext.define('App.view.fees.Billing', {
 												{
 													xtype     : 'textfield',
 													name      : 'hosp_date',
-													fieldLabel: i18n.hosp_date,
+													fieldLabel: i18n['hosp_date'],
 													labelAlign: 'right',
 													labelWidth: 80
 												},
 												{
 													xtype     : 'textfield',
 													name      : 'sec_insurance',
-													fieldLabel: i18n.sec_insurance,
+													fieldLabel: i18n['sec_insurance'],
 													labelAlign: 'right'
 												},
 												{
 													xtype     : 'textfield',
 													name      : 'provider',
-													fieldLabel: i18n.provider,
+													fieldLabel: i18n['provider'],
 													labelAlign: 'right',
 													labelWidth: 60,
 													flex      : 1

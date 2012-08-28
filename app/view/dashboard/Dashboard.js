@@ -24,7 +24,7 @@ Ext.require([
 Ext.define('App.view.dashboard.Dashboard', {
 	extend        : 'App.classes.RenderPanel',
 	id            : 'panelDashboard',
-	pageTitle     : i18n.dashboard,
+	pageTitle     : i18n['dashboard'],
 	uses          : [
 		'App.view.dashboard.panel.PortalPanel',
 		'App.view.dashboard.panel.PortalColumn',
@@ -38,7 +38,7 @@ Ext.define('App.view.dashboard.Dashboard', {
 				type   : 'gear',
 				handler: function(e, target, panelHeader) {
 					var portlet = panelHeader.ownerCt;
-					portlet.setLoading('Working...');
+					portlet.setLoading( i18n['working'] + '...');
 					Ext.defer(function() {
 						portlet.setLoading(false);
 					}, 2000);
@@ -61,7 +61,7 @@ Ext.define('App.view.dashboard.Dashboard', {
 							items: [
 								{
 									id       : 'portlet-onotes',
-									title    : i18n.office_notes,
+									title    : i18n['office_notes'],
 									tools    : this.getTools(),
 									items    : Ext.create('App.view.dashboard.panel.OnotesPortlet'),
 									listeners: {

@@ -135,6 +135,7 @@ Ext.define('App.view.sitesetup.SiteSetup', {
             }), me.mainPanel = Ext.create('Ext.Container', {
                 flex  : 1,
                 layout: 'card',
+//                activeItem:4,
                 items : [
                     me.welcome = Ext.create('Ext.Container', {
                         action: 0,
@@ -527,9 +528,54 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                         ]
                     }), me.installationComplete = Ext.create('Ext.panel.Panel', {
                         title      : 'Installation Complete',
-                        bodyPadding: '10',
+                        bodyPadding: '0 5',
                         action     : 4,
-                        html       : 'Site Installed! Refresh the page... TODO: theme, language, and codes'
+                        items:[
+                            me.installationDetails = Ext.create('Ext.container.Container', {
+                                height:180,
+                                padding:'0 5',
+                                styleHtmlContent:true,
+                                tpl: new Ext.XTemplate(
+                                    '<h2>Woot! Your New site is ready.</h2>' +
+                                    '<p>Installation Details:</p>' +
+                                    '<ul>' +
+                                    '   <li>Site Id: {siteId}</li>' +
+                                    '   <li>Admin Username: {adminUsername}</li>' +
+                                    '   <li>Admin Password: {adminPassword}</li>' +
+                                    '   <li>Site URL: <a href="{siteURL}" target="_self">{siteURL}</a></li>' +
+                                    '</ul>'
+                                )
+                            }),
+                            {
+                                xtype   : 'fieldset',
+                                title   : 'Survey (optional)',
+                                layout  : 'anchor',
+                                height:172,
+                                defaults: { margin: '4 0', labelWidth:150},
+                                items:[
+                                    {
+                                        xtype:'textfield',
+                                        fieldLabel:'Installation Environment'
+                                    },
+                                    {
+                                        xtype:'textfield',
+                                        fieldLabel:'First Time User?'
+                                    },
+                                    {
+                                        xtype:'textfield',
+                                        fieldLabel:'Clinic Size'
+                                    },
+                                    {
+                                        xtype:'textfield',
+                                        fieldLabel:'Current EMR if any'
+                                    },
+                                    {
+                                        xtype:'textfield',
+                                        fieldLabel:'Rate the installation'
+                                    }
+                                ]
+                            }
+                        ]
                     })
                 ]
             })
@@ -553,6 +599,8 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                 handler : me.onNexStep
             }
         ];
+
+        me.installationDetails.update({});
 
         me.callParent();
     },
@@ -619,7 +667,8 @@ Ext.define('App.view.sitesetup.SiteSetup', {
 
                                                 me.step[3] = { success: true };
                                                 me.okToGoNext(true);
-                                                me.onComplete();
+                                                values.siteURL = document.URL + '?site=' + values.siteId ;
+                                                me.onComplete(values);
 
                                                 alert('Site Installed! Refresh the page... TODO: theme, language, and codes');
 
@@ -656,18 +705,39 @@ Ext.define('App.view.sitesetup.SiteSetup', {
         });
     },
 
-    onComplete:function(){
+    onSurveySubmit:function(){
+        Ext.data.JsonP.request({
+            url:'http://gaiaehr.org/survey.php',
+            params:{
+                environment:'Production',
+                clinic_size:'2-3',
+                first_time:1,
+                current_emr:'ans4',
+                installation_rate:1
+            },
+            success:function(a){
+                say(a);
+            }
+        })
+    },
+
+    onComplete:function(data){
         var me = this,
             btn = Ext.getCmp('move-next');
         btn.action = 'complete';
+        btn.setText('Send');
+        btn.setVisible(true);
+        btn.setDisabled(false);
         me.headerPanel.getComponent(4).setIconCls('icoGreenFace');
         me.onNexStep(btn);
-
+        me.installationDetails.update(data);
     },
 
     onNexStep: function(btn) {
         if(btn.action == 'install'){
             this.onInstall();
+        }else if(btn.action == 'complete'){
+            this.onSurveySubmit();
         }else{
             this.navigate(this.mainPanel, 'next');
         }

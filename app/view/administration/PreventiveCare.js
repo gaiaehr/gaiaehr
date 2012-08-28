@@ -15,7 +15,7 @@
 Ext.define('App.view.administration.PreventiveCare', {
 	extend       : 'App.classes.RenderPanel',
 	id           : 'panelPreventiveCare',
-	pageTitle    : 'Preventive Care',
+	pageTitle    : i18n['preventive_care'],
 	uses         : [
 		'App.classes.GridPanel',
 		'App.classes.combo.CodesTypes',
@@ -56,7 +56,7 @@ Ext.define('App.view.administration.PreventiveCare', {
                     items: [
                         {
                             icon: 'ui_icons/delete.png',  // Use a URL in the icon config
-                            tooltip: 'Remove',
+                            tooltip: i18n['remove'],
                             handler: function(grid, rowIndex, colIndex) {
                                 var rec = grid.getStore().getAt(rowIndex);
                             },
@@ -67,11 +67,11 @@ Ext.define('App.view.administration.PreventiveCare', {
                     ]
                 },
 
-				{ flex: 1, header: 'Description', sortable: true, dataIndex: 'description' },
-				{ width: 100, header: 'Age start', sortable: true, dataIndex: 'age_start' },
-				{ width: 100, header: 'Age End', sortable: true, dataIndex: 'age_end' },
-				{ width: 100, header: 'Sex', sortable: true, dataIndex: 'sex' },
-				{ width: 100, header: 'Frequency', sortable: true, dataIndex: 'frequency' }
+				{ flex: 1, header: i18n['description'], sortable: true, dataIndex: 'description' },
+				{ width: 100, header: i18n['age_start'], sortable: true, dataIndex: 'age_start' },
+				{ width: 100, header: i18n['age_end'], sortable: true, dataIndex: 'age_end' },
+				{ width: 100, header: i18n['sex'], sortable: true, dataIndex: 'sex' },
+				{ width: 100, header: i18n['frequency'], sortable: true, dataIndex: 'frequency' }
 
 			],
 			plugins: Ext.create('App.classes.grid.RowFormEditing', {
@@ -91,7 +91,7 @@ Ext.define('App.view.administration.PreventiveCare', {
 						 * CVX Container
 						 */
 						xtype: 'tabpanel',
-						action:'Immunizations',
+						action: i18n['immunizations'],
 						layout:'fit',
 						plain:true,
 						listeners: {
@@ -100,7 +100,7 @@ Ext.define('App.view.administration.PreventiveCare', {
 						},
 						items: [
 							{
-								title : 'general',
+								title : i18n['general'],
 								xtype : 'container',
 								padding:10,
 								layout:'vbox',
@@ -116,21 +116,21 @@ Ext.define('App.view.administration.PreventiveCare', {
 											{
 
 												xtype     : 'textfield',
-												fieldLabel: 'Description',
+												fieldLabel: i18n['description'],
 												name      : 'description',
 												labelWidth:130,
 												width:703
 											},
 											{
 												xtype     : 'mitos.sexcombo',
-												fieldLabel: 'Sex',
+												fieldLabel: i18n['sex'],
 												name      : 'sex',
 												width     : 100,
 												labelWidth: 30
 
 											},
 											{
-												fieldLabel: 'Active',
+												fieldLabel: i18n['active'],
 												xtype   : 'checkboxfield',
 												labelWidth:75,
 												name    : 'active'
@@ -150,7 +150,7 @@ Ext.define('App.view.administration.PreventiveCare', {
 										items   : [
 											{
 												xtype     : 'mitos.codestypescombo',
-												fieldLabel: 'Coding System',
+												fieldLabel: i18n['coding_system'],
 												labelWidth:130,
 												value     : 'CVX',
 												name      : 'coding_system',
@@ -159,7 +159,7 @@ Ext.define('App.view.administration.PreventiveCare', {
 											},
 											{
 												xtype     : 'numberfield',
-												fieldLabel: 'Frequency',
+												fieldLabel: i18n['frequency'],
 												margin:'0 0 5 0',
 												value     : 0,
 												minValue  : 0,
@@ -175,7 +175,7 @@ Ext.define('App.view.administration.PreventiveCare', {
 											},
 											{
                                                 xtype     : 'numberfield',
-                                                fieldLabel: 'Age Start',
+                                                fieldLabel: i18n['age_start'],
                                                 name: 'age_start',
                                                 labelWidth: 75,
                                                 width:140,
@@ -184,7 +184,7 @@ Ext.define('App.view.administration.PreventiveCare', {
 
 											},
                                             {
-                                                fieldLabel: 'Must be pregnant',
+                                                fieldLabel: i18n['must_be_pregnant'],
                                                 xtype   : 'checkboxfield',
                                                 labelWidth:105,
                                                 name    : 'pregnant'
@@ -204,24 +204,24 @@ Ext.define('App.view.administration.PreventiveCare', {
 										items   : [
 											{
 												xtype     : 'textfield',
-												fieldLabel: 'Code',
+												fieldLabel: i18n['code'],
 												name      : 'code',
 												labelWidth:130
 											},
 											{
 												xtype     : 'numberfield',
-												fieldLabel: 'Times to Perform',
+												fieldLabel: i18n['times_to_perform'],
 												name      : 'times_to_perform',
 												width     : 250,
 												value     : 0,
 												minValue  : 0,
-												tooltip   : 'Please enter a number greater than 1 or just check "Perform once"'
+												tooltip   : i18n['greater_than_1_or_just_check_perform_once']
 
 											},
 											{
 
                                                 xtype     : 'numberfield',
-                                                fieldLabel: 'Age End',
+                                                fieldLabel: i18n['age_end'],
                                                 name: 'age_end',
                                                 labelWidth: 75,
                                                 width:140,
@@ -231,7 +231,7 @@ Ext.define('App.view.administration.PreventiveCare', {
 
 											},
                                             {
-                                                fieldLabel: 'perform only once',
+                                                fieldLabel: i18n['perform_only_once'],
                                                 xtype   : 'checkboxfield',
                                                 labelWidth:105,
                                                 name    : 'only_once'
@@ -246,7 +246,7 @@ Ext.define('App.view.administration.PreventiveCare', {
 								]
 							},
 							{
-								title  : 'Active Problems',
+								title  : i18n['active_problems'],
 								action:'problems',
 								xtype  : 'grid',
 								margin:5,
@@ -259,19 +259,19 @@ Ext.define('App.view.administration.PreventiveCare', {
 										items: [
 											{
 												icon: 'ui_icons/delete.png',
-												tooltip: 'Remove',
+												tooltip: i18n['remove'],
 												scope:me,
 												handler: me.onRemoveRelation
 											}
 										]
 									},
 									{
-										header   : 'Code',
+										header   : i18n['code'],
 										width     : 100,
 										dataIndex: 'code'
 									},
 									{
-										header   : 'Description',
+										header   : i18n['description'],
 										flex     : 1,
 										dataIndex: 'code_text'
 									}
@@ -280,7 +280,7 @@ Ext.define('App.view.administration.PreventiveCare', {
 								bbar:{
 									xtype:'liveicdxsearch',
 									margin:5,
-									fieldLabel:'Add Problem',
+									fieldLabel: i18n['add_problem'],
 									hideLabel:false,
 									listeners:{
 										scope:me,
@@ -289,7 +289,7 @@ Ext.define('App.view.administration.PreventiveCare', {
 								}
 							},
 							{
-								title  : 'Medications',
+								title  : i18n['medications'],
 								action :'medications',
 								xtype  : 'grid',
 								width  : 300,
@@ -301,19 +301,19 @@ Ext.define('App.view.administration.PreventiveCare', {
 										items: [
 											{
 												icon: 'ui_icons/delete.png',
-												tooltip: 'Remove',
+												tooltip: i18n['remove'],
 												scope:me,
 												handler: me.onRemoveRelation
 											}
 										]
 									},
 									{
-										header   : 'Code',
+										header   : i18n['code'],
 										width     : 100,
 										dataIndex: 'code'
 									},
 									{
-										header   : 'Description',
+										header   : i18n['description'],
 										flex     : 1,
 										dataIndex: 'code_text'
 									}
@@ -322,7 +322,7 @@ Ext.define('App.view.administration.PreventiveCare', {
 								bbar:{
 									xtype:'medicationlivetsearch',
 									margin:5,
-									fieldLabel:'Add Problem',
+									fieldLabel: i18n['add_problem'],
 									hideLabel:false,
 									listeners:{
 										scope:me,
@@ -331,7 +331,7 @@ Ext.define('App.view.administration.PreventiveCare', {
 								}
 							},
 							{
-								title  : 'Labs',
+								title  : i18n['labs'],
 								action:'labs',
 								xtype  : 'grid',
 								store: me.labsStore,
@@ -343,19 +343,19 @@ Ext.define('App.view.administration.PreventiveCare', {
 										items: [
 											{
 												icon: 'ui_icons/delete.png',
-												tooltip: 'Remove',
+												tooltip: i18n['remove'],
 												scope:me,
 												handler: me.onRemoveRelation
 											}
 										]
 									},
 									{
-										header   : 'Value Name',
+										header   : i18n['value_name'],
 										flex     : 1,
 										dataIndex: 'value_name'
 									},
 									{
-										header   : 'Less Than',
+										header   : i18n['less_than'],
 										flex     : 1,
 										dataIndex: 'less_than',
 										editor:{
@@ -363,7 +363,7 @@ Ext.define('App.view.administration.PreventiveCare', {
 										}
 									},
 									{
-										header   : 'Greater Than',
+										header   : i18n['greater_than'],
 										flex     : 1,
 										dataIndex: 'greater_than',
 										editor:{
@@ -371,7 +371,7 @@ Ext.define('App.view.administration.PreventiveCare', {
 										}
 									},
 									{
-										header   : 'Equal To',
+										header   : i18n['equal_to'],
 										flex     : 1,
 										dataIndex: 'equal_to',
 										editor:{
@@ -396,7 +396,7 @@ Ext.define('App.view.administration.PreventiveCare', {
                                 bbar:{
                                     xtype:'labslivetsearch',
                                     margin:5,
-                                    fieldLabel:'Add Labs',
+                                    fieldLabel: i18n['add_labs'],
                                     hideLabel:false,
                                     listeners:{
                                         scope:me,
@@ -416,7 +416,7 @@ Ext.define('App.view.administration.PreventiveCare', {
 			tbar: me.PagingToolbar = Ext.create('Ext.PagingToolbar', {
 				store      : me.store,
 				displayInfo: true,
-				emptyMsg   : "No Office Notes to display",
+				emptyMsg   : i18n['no_office_notes_to_display'],
 				plugins    : Ext.create('Ext.ux.SlidingPager', {}),
 				items      : [
                     '-',

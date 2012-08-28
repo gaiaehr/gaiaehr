@@ -898,6 +898,9 @@ $LANG = array(
 	'version'								=> 'Version',
 	'hl7_viewer'							=> 'HL7 Viewer',
 	'clear_hl7_data'						=> 'Clear HL7 Data',
-	'parse_hl7'								=> 'Parse HL7'
+	'parse_hl7'								=> 'Parse HL7',
+	'greater_than_1_or_just_check_perform_once'	=> 'Please enter a number greater than 1 or just check "Perform once"',
+	'perform_only_once'						=> 'perform only once',
+	'add_labs'								=> 'Add Labs'
 );
 ?>

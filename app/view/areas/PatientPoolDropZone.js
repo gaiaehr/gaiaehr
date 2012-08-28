@@ -32,7 +32,7 @@ Ext.define('App.view.areas.PatientPoolDropZone', {
 		var name = (data.records[0].data) ? data.records[0].data.name : data.records[0].name,reload
 			pid = (data.records[0].data) ? data.records[0].data.pid : data.records[0].pid,
 			params;
-		app.msg('Sweet!', name + ' i18n['sent_to'] ' + this.panel.title);
+		app.msg('Sweet!', name + ' ' + i18n['sent_to'] + ' ' + this.panel.title);
 		params = {
 			pid   : pid,
 			sendTo: this.panel.action

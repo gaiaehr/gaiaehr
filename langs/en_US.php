@@ -933,6 +933,7 @@ $LANG = array(
 	'remove_patient'						=> 'Remove Patient',
 	'successfully_moved'					=> 'successfully moved',
 	'sent_to'								=> 'sent to',
-	'working'								=> 'Working'
+	'working'								=> 'Working',
+	'reports'								=> 'Reports'
 );
 ?>

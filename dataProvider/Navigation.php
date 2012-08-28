@@ -132,8 +132,8 @@ class Navigation {
 	        $this->ACL->hasPermission('access_layouts') ||
 	        $this->ACL->hasPermission('access_lists') ||
 	        $this->ACL->hasPermission('access_event_log')
-        ) array_push($nav, $admin) ;
-
+        ) array_push($nav, $admin);
+		
         // *************************************************************************************
         // Miscellaneous Folder
         // *************************************************************************************
@@ -146,6 +146,12 @@ class Navigation {
                 array( 'text' => $this->i18n['my_account'],      'leaf' => true, 'cls' => 'file', 'id' => 'panelMyAccount' )
             )
         ));
+
+        // *************************************************************************************
+        // Reports Link
+        // *************************************************************************************
+	    $report = array( 'text' => $this->i18n['reports'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelReport' );
+		array_push($nav, $report);
 
         return $nav;
 

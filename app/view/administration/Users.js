@@ -174,7 +174,7 @@ Ext.define('App.view.administration.Users', {
 							defaults : { hideLabel: true },
 							msgTarget: 'under',
 							items    : [
-								{ width: 100, xtype: 'displayfield', value: i8n['default_facility'] + ': '},
+								{ width: 100, xtype: 'displayfield', value: i18n['default_facility'] + ': '},
 								{ width: 100, xtype: 'mitos.facilitiescombo', name: 'facility_id' },
 								{ width: 100, xtype: 'displayfield', value: i18n['authorizations'] + ': '},
 								{ width: 105, xtype: 'mitos.authorizationscombo', name: 'see_auth' }

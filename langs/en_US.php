@@ -911,6 +911,14 @@ $LANG = array(
 	'administrator'							=> 'Administrator',
 	'saving_roles'							=> 'Saving Roles, Please wait',
 	'roles_updated'							=> 'Roles have been updated',
-	'loading'								=> 'Loading'
+	'loading'								=> 'Loading',
+	'aditional_info'						=> 'Aditional info',
+	'authorized'							=> 'Authorized?',
+	'calendar_q'							=> 'Calendar?',
+	'edit_user'								=> 'Edit User',
+	'add_new_user'							=> 'Add New User',
+	'username'								=> 'Username',
+	'password'								=> 'Password',
+	'first_middle_last'						=> 'First, Middle, Last'
 );
 ?>

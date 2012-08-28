@@ -16,7 +16,7 @@
 Ext.define('App.view.administration.Users', {
 	extend       : 'App.classes.RenderPanel',
 	id           : 'panelUsers',
-	pageTitle    : 'Users',
+	pageTitle    : i18n['users'],
 	uses         : [
 		'App.classes.GridPanel'
 	],
@@ -86,17 +86,17 @@ Ext.define('App.view.administration.Users', {
 			store      : me.userStore,
 			columns    : [
 				{ text: 'id', sortable: false, dataIndex: 'id', hidden: true},
-				{ width: 100, text: 'Username', sortable: true, dataIndex: 'username' },
-				{ width: 200, text: 'Name', sortable: true, dataIndex: 'fullname' },
-				{ flex: 1, text: 'Aditional info', sortable: true, dataIndex: 'info' },
-				{ text: 'Active?', sortable: true, dataIndex: 'active', renderer: authCk },
-				{ text: 'Authorized?', sortable: true, dataIndex: 'authorized', renderer: authCk },
-				{ text: 'Calendar?', sortable: true, dataIndex: 'calendar', renderer: authCk }
+				{ width: 100, text: i18n['username'], sortable: true, dataIndex: 'username' },
+				{ width: 200, text: i18n['name'], sortable: true, dataIndex: 'fullname' },
+				{ flex: 1, text: i18n['aditional_info'], sortable: true, dataIndex: 'info' },
+				{ text: i18n['active'], sortable: true, dataIndex: 'active', renderer: authCk },
+				{ text: i18n['authorized'], sortable: true, dataIndex: 'authorized', renderer: authCk },
+				{ text: i18n['calendar_q'], sortable: true, dataIndex: 'calendar', renderer: authCk }
 			],
 			listeners  : {
 				scope       : me,
 				itemdblclick: function(view, record) {
-					me.onItemdblclick(me.userStore, record, 'Edit User');
+					me.onItemdblclick(me.userStore, record, i18n['edit_user']);
 				}
 			},
 			dockedItems: [
@@ -110,7 +110,7 @@ Ext.define('App.view.administration.Users', {
 							iconCls: 'save',
 							handler: function() {
 								var form = me.win.down('form');
-								me.onNew(form, 'UserModel', 'Add New User');
+								me.onNew(form, 'UserModel', i18n['add_new_user']);
 							}
 						}
 					]
@@ -142,9 +142,9 @@ Ext.define('App.view.administration.Users', {
 							defaults : { hideLabel: true },
 							msgTarget: 'under',
 							items    : [
-								{ width: 100, xtype: 'displayfield', value: 'Username: '},
+								{ width: 100, xtype: 'displayfield', value: i18n['username'] + ': '},
 								{ width: 100, xtype: 'textfield', name: 'username', allowBlank:false },
-								{ width: 100, xtype: 'displayfield', value: 'Password: '},
+								{ width: 100, xtype: 'displayfield', value: i18n['password'] + ': '},
 								{ width: 105, xtype: 'textfield', name: 'password', inputType: 'password' }
 							]
 						},
@@ -153,7 +153,7 @@ Ext.define('App.view.administration.Users', {
 							defaults : { hideLabel: true },
 							msgTarget: 'under',
 							items    : [
-								{ width: 100, xtype: 'displayfield', value: 'First, Middle, Last: '},
+								{ width: 100, xtype: 'displayfield', value: i18n['first_middle_last'] },
 								{ width: 50, xtype: 'mitos.titlescombo', name: 'title' },
 								{ width: 80, xtype: 'textfield', name: 'fname', allowBlank:false },
 								{ width: 65, xtype: 'textfield', name: 'mname' },
@@ -164,9 +164,9 @@ Ext.define('App.view.administration.Users', {
 							xtype    : 'fieldcontainer',
 							msgTarget: 'under',
 							items    : [
-								{ width: 150, xtype: 'mitos.checkbox', fieldLabel: 'Active?', name: 'active' },
-								{ width: 150, xtype: 'mitos.checkbox', fieldLabel: 'Authorized?', name: 'authorized' },
-								{ width: 150, xtype: 'mitos.checkbox', fieldLabel: 'Calendar?', name: 'calendar' }
+								{ width: 150, xtype: 'mitos.checkbox', fieldLabel: i18n['active'], name: 'active' },
+								{ width: 150, xtype: 'mitos.checkbox', fieldLabel: i18n['authorized'], name: 'authorized' },
+								{ width: 150, xtype: 'mitos.checkbox', fieldLabel: i18n['calendar_q'], name: 'calendar' }
 							]
 						},
 						{

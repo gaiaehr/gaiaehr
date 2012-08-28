@@ -14,7 +14,7 @@ Ext.define('App.view.administration.Log', {
 	extend       : 'App.classes.RenderPanel',
 	id           : 'panelLog',
 	uses         : [ 'App.classes.GridPanel' ],
-	pageTitle    : 'Event History Log',
+	pageTitle    : i18n['event_history_log'],
 	initComponent: function() {
 		var me = this;
 
@@ -76,7 +76,7 @@ Ext.define('App.view.administration.Log', {
 				items      : [
 					{
 						xtype   : 'button',
-						text    : 'View Log Event Details',
+						text    : i18n['view_log_event_details'],
 						iconCls : 'edit',
 						itemId  : 'detail',
 						disabled: true,
@@ -92,7 +92,7 @@ Ext.define('App.view.administration.Log', {
 		// Event Detail Window
 		// *************************************************************************************
 		me.winLog = Ext.create('Ext.window.Window', {
-			title      : 'Log Event Details',
+			title      : i18n['log_event_details'],
 			width      : 500,
 			closeAction: 'hide',
 			items      : [
@@ -122,7 +122,7 @@ Ext.define('App.view.administration.Log', {
 			],
 			buttons    : [
 				{
-					text   : 'Close',
+					text   : i18n['close'],
 					handler: function() {
 						this.up('window').hide();
 					}

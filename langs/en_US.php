@@ -869,6 +869,9 @@ $LANG = array(
 	'delete_this_record'					=> 'Are you sure to delete this record?',
 	'list'									=> 'List',
 	'unable_to_delete'						=> 'Unable to delete',
-	'list_currently_used_forms'				=> 'This List is currently been used by one or more forms'
+	'list_currently_used_forms'				=> 'This List is currently been used by one or more forms',
+	'event_history_log'						=> 'Event History Log',
+	'view_log_event_details'				=> 'View Log Event Details',
+	'log_event_details'						=> 'Log Event Details'
 );
 ?>

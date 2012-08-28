@@ -872,6 +872,12 @@ $LANG = array(
 	'list_currently_used_forms'				=> 'This List is currently been used by one or more forms',
 	'event_history_log'						=> 'Event History Log',
 	'view_log_event_details'				=> 'View Log Event Details',
-	'log_event_details'						=> 'Log Event Details'
+	'log_event_details'						=> 'Log Event Details',
+	'number'								=> 'Number',
+	'active_component'						=> 'Active Component',
+	'dosage'								=> 'Dosage',
+	'number'								=> 'Number',
+	'unit'									=> 'Unit',
+	'dosis'									=> 'Dosis'
 );
 ?>

@@ -901,6 +901,16 @@ $LANG = array(
 	'parse_hl7'								=> 'Parse HL7',
 	'greater_than_1_or_just_check_perform_once'	=> 'Please enter a number greater than 1 or just check "Perform once"',
 	'perform_only_once'						=> 'perform only once',
-	'add_labs'								=> 'Add Labs'
+	'add_labs'								=> 'Add Labs',
+	'roles_and_permissions'					=> 'Roles and Permissions',
+	'permission'							=> 'Permission',
+	'front_office'							=> 'Front Office',
+	'auditors'								=> 'Auditors',
+	'clinician'								=> 'Clinician',
+	'physician'								=> 'Physician',
+	'administrator'							=> 'Administrator',
+	'saving_roles'							=> 'Saving Roles, Please wait',
+	'roles_updated'							=> 'Roles have been updated',
+	'loading'								=> 'Loading'
 );
 ?>

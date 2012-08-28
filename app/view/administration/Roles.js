@@ -15,7 +15,7 @@
 Ext.define('App.view.administration.Roles', {
 	extend       : 'App.classes.RenderPanel',
 	id           : 'panelRoles',
-	pageTitle    : 'Roles and Permissions',
+	pageTitle    : i18n['roles_and_permissions'],
 	pageLayout   : {
 		type:'vbox',
 		align:'stretch'
@@ -31,12 +31,12 @@ Ext.define('App.view.administration.Roles', {
 		me.header = Ext.create('Ext.container.Container',{
 			height:30,
 			html : '<div class="roleHeader">' +
-					'<span class="perm">Permission</span>' +
-					'<span class="role">Front Office</span>' +
-					'<span class="role">Auditors</span>' +
-					'<span class="role">Clinician</span>' +
-					'<span class="role">Physician</span>' +
-					'<span class="role">Administrator</span>' +
+					'<span class="perm">' + i18n['permission'] + '</span>' +
+					'<span class="role">' + i18n['front_office'] + '</span>' +
+					'<span class="role">' + i18n['auditors'] + '</span>' +
+					'<span class="role">' + i18n['clinician'] + '</span>' +
+					'<span class="role">' + i18n['physician']+ '</span>' +
+					'<span class="role">' + i18n['administrator'] + '</span>' +
 					'</div>'
 		});
 
@@ -54,7 +54,7 @@ Ext.define('App.view.administration.Roles', {
 			],
 			buttons       : [
 				{
-					text   : 'Save',
+					text   : i18n['save'],
 					iconCls: 'save',
 					margin : '0 20 0 0',
 					scope  : me,
@@ -75,12 +75,12 @@ Ext.define('App.view.administration.Roles', {
 			changedValues;
 
 		if(record.set(values) !== null){
-			me.form.el.mask('Saving Roles, Please wait...');
+			me.form.el.mask( i18n['saving_roles'] + '...');
 			changedValues = record.getChanges();
 			Roles.saveRolesData(changedValues, function(provider, response){
 				if(response.result){
 					me.form.el.unmask();
-					me.msg('Sweet!', 'Roles have been updated');
+					me.msg('Sweet!', i18n['roles_updated']);
 					record.commit();
 				}
 			});
@@ -135,7 +135,7 @@ Ext.define('App.view.administration.Roles', {
 	onActive: function(callback) {
 		var me = this,
 			form = me.form;
-		form.el.mask('Loading...');
+		form.el.mask( i18n['loading'] + '...');
 		form.removeAll();
 		Roles.getRoleForm(null, function(provider, response) {
 			form.add(eval(response.result));

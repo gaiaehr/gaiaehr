@@ -23,7 +23,7 @@
 Ext.define('App.view.administration.Lists', {
 	extend       : 'App.classes.RenderPanel',
 	id           : 'panelLists',
-	pageTitle    : 'Select List Options',
+	pageTitle    : i18n['select_list_options'],
 	pageLayout   : 'border',
 	uses         : [
 		'App.classes.GridPanel',
@@ -121,7 +121,7 @@ Ext.define('App.view.administration.Lists', {
 			region     : 'west',
 			columns    : [
 				{
-					text     : 'Select Lists',
+					text     : i18n['select_lists'],
 					flex     : 1,
 					sortable : false,
 					dataIndex: 'title',
@@ -130,7 +130,7 @@ Ext.define('App.view.administration.Lists', {
 					}
 				},
 				{
-					text     : 'Active?',
+					text     : i18n['active'],
 					width    : 55,
 					sortable : false,
 					dataIndex: 'active',
@@ -141,7 +141,7 @@ Ext.define('App.view.administration.Lists', {
 					}
 				},
 				{
-					text     : 'In Use?',
+					text     : i18n['in_use'],
 					width    : 55,
 					sortable : false,
 					dataIndex: 'in_use',
@@ -158,20 +158,20 @@ Ext.define('App.view.administration.Lists', {
 					dock : 'top',
 					items: [
 						{
-							text   : 'New List',
+							text   : i18n['new_list'],
 							iconCls: 'icoAddRecord',
 							scope  : me,
 							handler: me.onNewList
 						},
 						'->',
 						{
-							text    : 'Delete List',
+							text    : i18n['delete_list'],
 							iconCls : 'icoDeleteBlack',
 							itemId  : 'listDeleteBtn',
 							disabled: true,
 							scope   : me,
 							handler : me.onDelete,
-							tooltip : 'Lists currently in used by forms can NOT be deleted, but they can be disable'
+							tooltip : i18n['can_be_disable']
 						}
 					]
 				}
@@ -188,7 +188,7 @@ Ext.define('App.view.administration.Lists', {
 			viewConfig : {
 				plugins  : {
 					ptype   : 'gridviewdragdrop',
-					dragText: 'Drag and drop to reorganize'
+					dragText: i18n['drag_and_drop_reorganize']
 				},
 				listeners: {
 					scope: me,
@@ -197,7 +197,7 @@ Ext.define('App.view.administration.Lists', {
 			},
 			columns    : [
 				{
-					text     : 'Option Title',
+					text     : i18n['option_title'],
 					width    : 200,
 					sortable : true,
 					dataIndex: 'option_name',
@@ -211,7 +211,7 @@ Ext.define('App.view.administration.Lists', {
 					}
 				},
 				{
-					text     : 'Option Value',
+					text     : i18n['option_value'],
 					width    : 200,
 					sortable : true,
 					dataIndex: 'option_value',
@@ -222,14 +222,14 @@ Ext.define('App.view.administration.Lists', {
 					}
 				},
 				{
-					text     : 'Notes',
+					text     : i18n['notes'],
 					sortable : true,
 					dataIndex: 'notes',
 					flex     : 1,
 					editor   : { allowBlank: true }
 				},
 				{
-					text     : 'Active?',
+					text     : i18n['active'],
 					width    : 55,
 					sortable : false,
 					dataIndex: 'active',
@@ -245,7 +245,7 @@ Ext.define('App.view.administration.Lists', {
 					xtype: 'toolbar',
 					dock : 'top',
 					items: ['->', {
-						text   : 'Add Option',
+						text   : i18n['add_option'],
 						iconCls: 'icoAddRecord',
 						scope  : me,
 						handler: me.onNewOption
@@ -353,20 +353,20 @@ Ext.define('App.view.administration.Lists', {
 			record = sm.getLastSelected();
 
 		Ext.Msg.show({
-			title  : 'Please confirm...',
+			title  : i18n['please_confirm'] + '...',
 			icon   : Ext.MessageBox.QUESTION,
-			msg    : 'Are you sure to delete this record?',
+			msg    : i18n['delete_this_record'],
 			buttons: Ext.Msg.YESNO,
 			scope  : me,
 			fn     : function(btn) {
 				if(btn == 'yes') {
 					Lists.deleteList(record.data, function(provider, response) {
 						if(response.result.success) {
-							me.msg('Sweet!', 'List "' + record.data.title + '" deleted.');
+							me.msg('Sweet!', i18n['list'] + ' "' + record.data.title + '" ' + i18n['deleted'] + '.');
 							store.load();
 							me.optionsStore.load();
 						} else {
-							Ext.Msg.alert('Oops!', 'Unable to delete "' + record.data.title + '"<br>This List is currently been used by one or more forms.');
+							Ext.Msg.alert('Oops!', i18n['unable_to_delete'] + ' "' + record.data.title + '"<br>' + i18n['list_currently_used_forms'] + '.');
 						}
 
 					});

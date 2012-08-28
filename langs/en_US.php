@@ -856,6 +856,19 @@ $LANG = array(
 	'form_fields_sorted'					=> 'Form Fields Sorted',
 	'field_editor'							=> 'Field editor',
 	'or_select_a_field_to_update' 			=> 'Click "New" or Select a field to update',
-	'select_list_options'					=> 'Select List Options'
+	'select_list_options'					=> 'Select List Options',
+	'select_lists'							=> 'Select Lists',
+	'in_use'								=> 'In Use?',
+	'new_list'								=> 'New List',
+	'delete_list'							=> 'Delete List',
+	'can_be_disable'						=> 'Lists currently in used by forms can NOT be deleted, but they can be disabled',
+	'drag_and_drop_reorganize'				=> 'Drag and drop to reorganize',
+	'option_title'							=> 'Option Title',
+	'option_value'							=> 'Option Value',
+	'add_option'							=> 'Add Option',
+	'delete_this_record'					=> 'Are you sure to delete this record?',
+	'list'									=> 'List',
+	'unable_to_delete'						=> 'Unable to delete',
+	'list_currently_used_forms'				=> 'This List is currently been used by one or more forms'
 );
 ?>

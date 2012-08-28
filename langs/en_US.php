@@ -929,6 +929,9 @@ $LANG = array(
 	'upin'									=> 'UPIN',
 	'npi'									=> 'NPI',
 	'job_description'						=> 'Job Description',
-	'password_currently_used' 				=> 'This password is currently in used, or has been used before.<br>Please use a different password.'
+	'password_currently_used' 				=> 'This password is currently in used, or has been used before.<br>Please use a different password.',
+	'remove_patient'						=> 'Remove Patient',
+	'successfully_moved'					=> 'successfully moved',
+	'sent_to'								=> 'sent to'
 );
 ?>

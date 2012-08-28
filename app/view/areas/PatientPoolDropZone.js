@@ -8,7 +8,7 @@
 Ext.define('App.view.areas.PatientPoolDropZone', {
 	id       : 'panelPoolArea',
 	extend   : 'App.classes.RenderPanel',
-	pageTitle: 'Patient Pool Areas',
+	pageTitle: i18n['patient_pool_areas'],
 	initComponent: function() {
 		var me = this;
 		me.pageBody = Ext.create('Ext.container.Container', {
@@ -32,7 +32,7 @@ Ext.define('App.view.areas.PatientPoolDropZone', {
 		var name = (data.records[0].data) ? data.records[0].data.name : data.records[0].name,reload
 			pid = (data.records[0].data) ? data.records[0].data.pid : data.records[0].pid,
 			params;
-		app.msg('Sweet!', name + ' sent to ' + this.panel.title);
+		app.msg('Sweet!', name + ' i18n['sent_to'] ' + this.panel.title);
 		params = {
 			pid   : pid,
 			sendTo: this.panel.action
@@ -75,12 +75,12 @@ Ext.define('App.view.areas.PatientPoolDropZone', {
 					floorPlanId: areas[i].floor_plan_id,
 					columns    : [
 						{
-							header   : 'Record #',
+							header   : i18n['record'] + ' #',
 							width    : 100,
 							dataIndex: 'pid'
 						},
 						{
-							header   : 'Patien Name',
+							header   : i18n['patien_name'],
 							flex     : 1,
 							dataIndex: 'name'
 						}

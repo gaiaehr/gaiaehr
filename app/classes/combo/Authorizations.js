@@ -28,7 +28,7 @@ Ext.define('App.classes.combo.Authorizations', {
 			queryMode   : 'local',
 			valueField  : 'id',
 			displayField: 'name',
-			emptyText   : 'Select',
+			emptyText   : i18n['select'],
 			store       : me.store
 		}, null);
 

@@ -35,7 +35,7 @@ Ext.define('App.classes.combo.TaxId', {
 			queryMode   : 'local',
 			displayField: 'title',
 			valueField  : 'option_id',
-			emptyText   : 'Select',
+			emptyText   : i18n['select'],
 			store       : me.store
 		}, null);
 		me.callParent();

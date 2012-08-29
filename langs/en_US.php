@@ -1000,6 +1000,10 @@ $LANG = array(
 	'close_all_tabs'						=> 'Close All Tabs',
 	'form_has_errors'						=> 'The form has errors (click for details...)',
 	'click_again_hide_the_error_list'		=> 'Click again to hide the error list',
-	'saving'								=> 'Saving'
+	'saving'								=> 'Saving',
+	'copyright_notice'						=> 'Copyright Notice',
+	'select_patient_patient_live_search'	=> 'Please select a patient using the <strong>"Patient Live Search"</strong> or <strong>"Patient Pool Area"</strong>',
+	'password_verification'					=> 'Password Verification',
+	'please_enter_your_password'			=> 'Please enter your password'
 );
 ?>

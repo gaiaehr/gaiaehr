@@ -6,7 +6,6 @@
 body{
 	margin: 0px;
 	padding: 0px;
-	background-image: url(../../../ui_app/bg.png) !important;
 }
 
 .headerReportCenter{
@@ -15,6 +14,7 @@ body{
 	padding-left: 15px;
 	position:relative;
 	top: 0px;
+	border-bottom: 3px solid #ee723f;
 }
 
 h2{

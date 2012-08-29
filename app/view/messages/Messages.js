@@ -9,7 +9,7 @@
 Ext.define('App.view.messages.Messages', {
 	extend       : 'App.classes.RenderPanel',
 	id           : 'panelMessages',
-	pageTitle    : i18n.messages + ' (' + i18n.inbox + ')',
+	pageTitle    : i18n['messages'] + ' (' + i18n['inbox'] + ')',
 	pageLayout   : 'border',
 	defaults     : {split: true},
 	uses         : [
@@ -78,12 +78,12 @@ Ext.define('App.view.messages.Messages', {
 				itemclick: this.onItemClick
 			},
 			columns   : [
-				{ header: i18n.status, sortable: true, dataIndex: 'message_status', width: 70   },
-				{ header: i18n.from, sortable: true, dataIndex: 'from_user', width: 200  },
-				{ header: i18n.to, sortable: true, dataIndex: 'to_user', width: 200  },
-				{ header: i18n.patient, sortable: true, dataIndex: 'patient_name', width: 200  },
-				{ header: i18n.subject, sortable: true, dataIndex: 'subject', flex: 1    },
-				{ header: i18n.type, sortable: true, dataIndex: 'note_type', width: 100  }
+				{ header: i18n['status'], sortable: true, dataIndex: 'message_status', width: 70   },
+				{ header: i18n['from'], sortable: true, dataIndex: 'from_user', width: 200  },
+				{ header: i18n['to'], sortable: true, dataIndex: 'to_user', width: 200  },
+				{ header: i18n['patient'], sortable: true, dataIndex: 'patient_name', width: 200  },
+				{ header: i18n['subject'], sortable: true, dataIndex: 'subject', flex: 1    },
+				{ header: i18n['type'], sortable: true, dataIndex: 'note_type', width: 100  }
 			],
 			tbar      : Ext.create('Ext.PagingToolbar', {
 				store      : me.storeMsgs,
@@ -99,7 +99,7 @@ Ext.define('App.view.messages.Messages', {
 					scope   : me,
 					handler : me.onDelete
 				}, '-', {
-					text        : i18n.inbox,
+					text        : i18n['inbox'],
 					action      : 'inbox',
 					enableToggle: true,
 					toggleGroup : 'message',
@@ -107,7 +107,7 @@ Ext.define('App.view.messages.Messages', {
 					scope       : me,
 					handler     : me.messagesType
 				}, '-', {
-					text        : i18n.sent,
+					text        : i18n['sent'],
 					action      : 'sent',
 					enableToggle: true,
 					toggleGroup : 'message',
@@ -124,7 +124,7 @@ Ext.define('App.view.messages.Messages', {
 			}),
 			bbar      : [
 				{
-					text   : i18n.new_message,
+					text   : i18n['new_message'],
 					iconCls: 'newMessage',
 					itemId : 'newMsg',
 					handler: function() {
@@ -133,7 +133,7 @@ Ext.define('App.view.messages.Messages', {
 				},
 				'-',
 				{
-					text    : i18n.reply,
+					text    : i18n['reply'],
 					iconCls : 'edit',
 					itemId  : 'replyMsg',
 					disabled: true,
@@ -175,15 +175,15 @@ Ext.define('App.view.messages.Messages', {
 									items      : [
 										{
 											xtype     : 'patienlivetsearch',
-											fieldLabel: i18n.patient,
-											emptyText : i18n.no_patient_selected,
+											fieldLabel: i18n['patient'],
+											emptyText : i18n['no_patient_selected'],
 											itemId    : 'patientCombo',
 											name      : 'pid',
 											hideLabel : false
 										},
 										{
 											xtype     : 'textfield',
-											fieldLabel: i18n.patient,
+											fieldLabel: i18n['patient'],
 											itemId    : 'patientField',
 											name      : 'patient_name',
 											readOnly  : true,
@@ -206,7 +206,7 @@ Ext.define('App.view.messages.Messages', {
 										{
 											xtype     : 'msgnotetypecombo',
 											name      : 'note_type',
-											fieldLabel: i18n.type,
+											fieldLabel: i18n['type'],
 											listeners : {
 												scope : me,
 												select: me.onChange
@@ -215,7 +215,7 @@ Ext.define('App.view.messages.Messages', {
 										{
 											xtype     : 'msgstatuscombo',
 											name      : 'message_status',
-											fieldLabel: i18n.status,
+											fieldLabel: i18n['status'],
 											listeners : {
 												scope : me,
 												select: me.onChange
@@ -227,7 +227,7 @@ Ext.define('App.view.messages.Messages', {
 						},
 						{
 							xtype     : 'textfield',
-							fieldLabel: i18n.subject,
+							fieldLabel: i18n['subject'],
 							name      : 'subject',
 							margin    : '0 5 5 5'
 						}
@@ -345,9 +345,9 @@ Ext.define('App.view.messages.Messages', {
 			store.sync();
 			store.load();
 			this.onNewMessage();
-			this.msg('Sweet!', i18n.message_sent);
+			this.msg('Sweet!', i18n['message_sent']);
 		} else {
-			this.msg('Oops!', i18n.please_complete_all_required_fields + '.');
+			this.msg('Oops!', i18n['please_complete_all_required_fields'] + '.');
 		}
 	},
 	/**
@@ -359,9 +359,9 @@ Ext.define('App.view.messages.Messages', {
 		var form = this.msgForm.getForm(),
 			store = this.storeMsgs;
 		Ext.Msg.show({
-			title  : i18n.please_confirm + '...',
+			title  : i18n['please_confirm'] + '...',
 			icon   : Ext.MessageBox.QUESTION,
-			msg    : i18n.are_you_sure_to_delete_this_message,
+			msg    : i18n['are_you_sure_to_delete_this_message'],
 			buttons: Ext.Msg.YESNO,
 			scope  : this,
 			fn     : function(btn) {
@@ -370,7 +370,7 @@ Ext.define('App.view.messages.Messages', {
 					store.remove(currentRec);
 					store.destroy();
 					this.onNewMessage();
-					this.msg('Sweet!', i18n.sent_to_trash);
+					this.msg('Sweet!', i18n['sent_to_trash']);
 				}
 			}
 		});

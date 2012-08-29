@@ -38,7 +38,9 @@ class Navigation {
             array( 'text' => $this->i18n['messages'],      'disabled'=> ($this->ACL->hasPermission('access_messages')        ? false:true), 'leaf' => true, 'cls' => 'file', 'iconCls' => 'mail',         'id' => 'panelMessages' ),
             array( 'text' => $this->i18n['patient_Search'], 'disabled'=> ($this->ACL->hasPermission('access_patient_search')  ? false:true), 'leaf' => true, 'cls' => 'file', 'iconCls' => 'searchUsers',  'id' => 'panelPatientSearch' ),
             array( 'text' => $this->i18n['area_floor_plan'], 'disabled'=> false, 'leaf' => true, 'cls' => 'file', 'iconCls' => 'icoZoneAreas', 'id' => 'panelAreaFloorPlan' ),
-            array( 'text' => $this->i18n['patient_pool_areas'],  'disabled'=> false, 'leaf' => true, 'cls' => 'file', 'iconCls' => 'icoPoolArea16',  'id' => 'panelPoolArea' )
+            array( 'text' => $this->i18n['patient_pool_areas'],  'disabled'=> false, 'leaf' => true, 'cls' => 'file', 'iconCls' => 'icoPoolArea16',  'id' => 'panelPoolArea' ),
+			array( 'text' => $this->i18n['reports'], 'leaf' => true, 'cls' => 'file', 'iconCls' => 'icoReport', 'id' => 'panelReport' )
+		
         );
         // *************************************************************************************
         // Patient Folder
@@ -146,12 +148,6 @@ class Navigation {
                 array( 'text' => $this->i18n['my_account'],      'leaf' => true, 'cls' => 'file', 'id' => 'panelMyAccount' )
             )
         ));
-
-        // *************************************************************************************
-        // Reports Link
-        // *************************************************************************************
-	    $report = array( 'text' => $this->i18n['reports'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelReport' );
-		array_push($nav, $report);
 
         return $nav;
 

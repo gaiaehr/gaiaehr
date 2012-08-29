@@ -6,6 +6,9 @@
  * by GI Technologies, 2011
  *============================================================*/
 
+.icoReport {
+	background-image: url(../ui_icons/ico_report.png) !important;
+}
 
 .icoGrayFace {
 	background-image: url(../ui_icons/bg_li_stepList.png) !important;

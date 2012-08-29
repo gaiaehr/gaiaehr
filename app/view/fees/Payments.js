@@ -17,6 +17,9 @@ Ext.define('App.view.fees.Payments', {
 
         me.encountersPaymentsStore = Ext.create('App.store.fees.EncountersPayments');
 
+		/*
+		 * Search Panel Object
+		 */
 	    me.searchPanel = Ext.create('Ext.panel.Panel',{
 		    title: i18n.search,
 		    layout:'border',
@@ -156,7 +159,9 @@ Ext.define('App.view.fees.Payments', {
 	    });
 
 
-
+		/*
+		 * Detail Panel Object
+		 */
 	    me.detailPanel = Ext.create('Ext.panel.Panel',{
 		    title: i18n.detail,
 		    layout:'border',

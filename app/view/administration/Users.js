@@ -106,7 +106,7 @@ Ext.define('App.view.administration.Users', {
 					items: [
 						{
 							xtype  : 'button',
-							text   : 'Add New User',
+							text   : i18n['add_new_user'],
 							iconCls: 'save',
 							handler: function() {
 								var form = me.win.down('form');

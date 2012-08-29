@@ -11,7 +11,7 @@
 Ext.define('App.view.miscellaneous.MySettings', {
 	extend       : 'App.classes.RenderPanel',
 	id           : 'panelMySettings',
-	pageTitle    : i18n.my_settings,
+	pageTitle    : i18n['my_settings'],
 	uses         : [
 		'App.classes.GridPanel'
 	],
@@ -33,7 +33,7 @@ Ext.define('App.view.miscellaneous.MySettings', {
 				},
 				{
 					xtype      : 'fieldset',
-					title      : i18n.appearance_settings,
+					title      : i18n['appearance_settings'],
 					collapsible: true,
 					defaultType: 'textfield',
 					layout     : 'anchor',
@@ -59,7 +59,7 @@ Ext.define('App.view.miscellaneous.MySettings', {
 				},
 				{
 					xtype      : 'fieldset',
-					title      : i18n.locale_settings,
+					title      : i18n['locale_settings'],
 					collapsible: true,
 					defaultType: 'textfield',
 					layout     : 'anchor',
@@ -85,7 +85,7 @@ Ext.define('App.view.miscellaneous.MySettings', {
 				},
 				{
 					xtype      : 'fieldset',
-					title      : i18n.calendar_settings,
+					title      : i18n['calendar_settings'],
 					collapsible: true,
 					defaultType: 'textfield',
 					layout     : 'anchor',
@@ -116,7 +116,7 @@ Ext.define('App.view.miscellaneous.MySettings', {
 					dock : 'top',
 					items: [
 						{
-							text    : i18n.save,
+							text    : i18n['save'],
 							iconCls : 'save',
 							id      : 'cmdSave',
 							disabled: true,

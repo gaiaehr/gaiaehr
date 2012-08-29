@@ -11,7 +11,7 @@
 Ext.define('App.view.miscellaneous.Websearch', {
 	extend       : 'App.classes.RenderPanel',
 	id           : 'panelWebsearch',
-	pageTitle    : 'National Library of Medicine Search',
+	pageTitle    : i18n['national_library'],
 	pageLayout   : 'border',
 	uses         : [
 		'App.classes.GridPanel'
@@ -59,9 +59,9 @@ Ext.define('App.view.miscellaneous.Websearch', {
 			items      : [
 				{
 					xtype     : 'radiogroup',
-					fieldLabel: i18n.search_by,
+					fieldLabel: i18n['search_by'],
 					items     : [
-						{boxLabel: i18n.heath_topics, name: 'type', inputValue: 'health_topics'},
+						{boxLabel: i18n['heath_topics'], name: 'type', inputValue: 'health_topics'},
 						{boxLabel: 'ICD-9-CM', name: 'type', inputValue: 'icd9cm'}
 						//{boxLabel: 'N/A', name: 'type', inputValue: 3},
 						//{boxLabel: 'N/A', name: 'type', inputValue: 4},
@@ -77,7 +77,7 @@ Ext.define('App.view.miscellaneous.Websearch', {
 					}
 				},
 				page.searchField = Ext.create('Ext.form.field.Text', {
-					emptyText      : i18n.web_search + '...',
+					emptyText      : i18n['web_search'] + '...',
 					enableKeyEvents: true,
 					hideLabel      : true,
 					anchor         : '100%',
@@ -107,17 +107,17 @@ Ext.define('App.view.miscellaneous.Websearch', {
 				deferEmptyText: false,
 				emptyText     : '<p class="search_nothing_found" style="padding: 10px 0 0 20px; font-size: 24px">Nothing Found!</p>',
 				stripeRows    : true,
-				loadingText   : i18n.searching + '... ' +  i18n.please_wait
+				loadingText   : i18n['searching'] + '... ' +  i18n['please_wait']
 			},
 			columns   : [
-				{ flex: 1, header: i18n.search_results, sortable: true, dataIndex: 'title', renderer: page.searchRow  },
+				{ flex: 1, header: i18n['search_results'], sortable: true, dataIndex: 'title', renderer: page.searchRow  },
 				{ hidden: true, sortable: true, dataIndex: 'source' },
 				{ hidden: true, sortable: true, dataIndex: 'snippet' }
 			],
 			tbar      : Ext.create('Ext.PagingToolbar', {
 				store      : page.store,
 				displayInfo: true,
-				emptyMsg   : i18n.nothing_to_display,
+				emptyMsg   : i18n['nothing_to_display'],
 				plugins    : Ext.create('Ext.ux.SlidingPager', {})
 			}),
 			listeners : {

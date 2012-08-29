@@ -8,7 +8,7 @@
 Ext.define('App.view.miscellaneous.MyAccount', {
 	extend       : 'App.classes.RenderPanel',
 	id           : 'panelMyAccount',
-	pageTitle    : i18n.my_account,
+	pageTitle    : i18n['my_account'],
 	uses         : [
 		'App.classes.combo.Titles',
 		'App.classes.window.Window',
@@ -74,7 +74,7 @@ Ext.define('App.view.miscellaneous.MyAccount', {
 				},
 				{
 					xtype      : 'fieldset',
-					title      : i18n.personal_info,
+					title      : i18n['personal_info'],
 					defaultType: 'textfield',
 					layout     : 'anchor',
 					defaults   : {
@@ -102,7 +102,7 @@ Ext.define('App.view.miscellaneous.MyAccount', {
 				},
 				{
 					xtype      : 'fieldset',
-					title      : i18n.login_info,
+					title      : i18n['login_info'],
 					defaultType: 'textfield',
 					layout     : 'anchor',
 					defaults   : {
@@ -129,7 +129,7 @@ Ext.define('App.view.miscellaneous.MyAccount', {
 				},
 				{
 					xtype      : 'fieldset',
-					title      : i18n.other_info,
+					title      : i18n['other_info'],
 					defaultType: 'textfield',
 					layout     : 'anchor',
 					defaults   : {
@@ -199,7 +199,7 @@ Ext.define('App.view.miscellaneous.MyAccount', {
 					dock : 'top',
 					items: [
 						{
-							text   : i18n.save,
+							text   : i18n['save'],
 							iconCls: 'save',
 							handler: function() {
 //                        var record =  me.store.getAt('0');
@@ -215,10 +215,10 @@ Ext.define('App.view.miscellaneous.MyAccount', {
 							}
 						},
 						{
-							text   : i18n.change_password,
+							text   : i18n['change_password'],
 							iconCls: 'save',
 							scope  : me,
-							handler: me.onPasswordChange
+							handler: me['onPasswordChange']
 						}
 					]
 				}
@@ -234,7 +234,7 @@ Ext.define('App.view.miscellaneous.MyAccount', {
 
 		me.win = Ext.create('App.classes.window.Window', {
 			width    : 420,
-			title    : i18n.change_you_password,
+			title    : i18n['change_you_password'],
 			items    : [
 				{
 					xtype      : 'form',
@@ -247,18 +247,18 @@ Ext.define('App.view.miscellaneous.MyAccount', {
 							hidden: true
 						},
 						{
-							fieldLabel: i18n.old_password,
+							fieldLabel: i18n['old_password'],
 							name      : 'oPassword',
 							allowBlank: false
 						},
 						{
-							fieldLabel: i18n.new_password,
+							fieldLabel: i18n['new_password'],
 							name      : 'nPassword',
 							allowBlank: false,
 							id        : 'myAccountPage_nPassword'
 						},
 						{
-							fieldLabel      : i18n.re_type_password,
+							fieldLabel      : i18n['re_type_password'],
 							name            : 'vPassword',
 							allowBlank      : false,
 							vtype           : 'password',
@@ -270,12 +270,12 @@ Ext.define('App.view.miscellaneous.MyAccount', {
 			],
 			buttons  : [
 				{
-					text   : i18n.save,
+					text   : i18n['save'],
 					scope  : me,
 					handler: me.onPasswordSave
 				},
 				{
-					text   : i18n.cancel,
+					text   : i18n['cancel'],
 					scope  : me,
 					handler: me.onCancel
 				}

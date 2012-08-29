@@ -262,7 +262,9 @@ Ext.define('App.view.Viewport', {
 		'App.view.miscellaneous.MyAccount',
 		'App.view.miscellaneous.MySettings',
 		'App.view.miscellaneous.OfficeNotes',
-		'App.view.miscellaneous.Websearch'
+		'App.view.miscellaneous.Websearch',
+		
+		'App.view.reports.reportCenter'
 
 	],
 
@@ -676,7 +678,7 @@ Ext.define('App.view.Viewport', {
 				afterrender: me.initializeOpenEncounterDropZone
 			}
 		});
-
+		
         /**
          * General Area
          */
@@ -724,7 +726,11 @@ Ext.define('App.view.Viewport', {
 		if(perm.access_documents) me.MainPanel.add(Ext.create('App.view.administration.Documents'));
 
         me.MainPanel.add(Ext.create('App.view.administration.ExternalDataLoads'));
-
+        
+        /*
+         * Report Center Panel
+         */
+        me.MainPanel.add(Ext.create('App.view.reports.reportCenter'));
 
 		/**
 		 * Footer Panel

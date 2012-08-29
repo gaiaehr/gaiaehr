@@ -1,0 +1,28 @@
+@font-face{
+	font-family: 'Cuprum';
+	src: url('../../../ui_fonts/Cuprum.ttf');
+}
+
+body{
+	margin: 0px;
+	padding: 0px;
+	background-image: url(../../../ui_app/bg.png) !important;
+}
+
+.headerReportCenter{
+	background-image: url(../../../ui_app/header-bg.png) !important;
+	height: 93px;
+	padding-left: 15px;
+	position:relative;
+	top: 0px;
+}
+
+h2{
+	font-family: 'Cuprum';
+	font-size: 36px;
+	color: #ffffff;
+	line-height: 93px;
+	height: 93px;
+	margin: 0px;
+	padding: 0px;
+}

@@ -934,6 +934,8 @@ $LANG = array(
 	'successfully_moved'					=> 'successfully moved',
 	'sent_to'								=> 'sent to',
 	'working'								=> 'Working',
-	'reports'								=> 'Reports'
+	'reports'								=> 'Reports',
+	'reportCenter'							=> 'Report Center',
+	'national_library'						=> 'National Library of Medicine Search'
 );
 ?>

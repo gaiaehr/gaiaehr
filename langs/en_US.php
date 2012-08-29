@@ -975,6 +975,9 @@ $LANG = array(
 	'workers_compensation_health_plan'		=> 'Workers Compensation Health Plan',
 	'mutually_defined'						=> 'Mutually Defined',
 	'select_existing_observation'			=> 'Select Existing Observation',
-	'threshold'								=> 'Threshold'
+	'threshold'								=> 'Threshold',
+	'help_message'							=> 'Help Message',
+	'errors'								=> 'Errors',
+	'commit_cancel_your_changes'			=> 'You need to commit or cancel your changes'
 );
 ?>

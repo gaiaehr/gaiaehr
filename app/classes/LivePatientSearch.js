@@ -52,7 +52,7 @@ Ext.define('App.classes.LivePatientSearch', {
 			hideTrigger : true,
 			minChars    : 1,
 			listConfig  : {
-				loadingText: 'Searching...',
+				loadingText: i18n['searching'] + '...',
 				//emptyText	: 'No matching posts found.',
 				//---------------------------------------------------------------------
 				// Custom rendering template for each item

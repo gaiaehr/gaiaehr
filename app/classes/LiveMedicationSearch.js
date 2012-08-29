@@ -48,12 +48,12 @@ Ext.define('App.classes.LiveMedicationSearch', {
 			store       : me.store,
 			displayField: 'PROPRIETARYNAME',
 			valueField  : 'PROPRIETARYNAME',
-			emptyText   : 'Search for a Medication...',
+			emptyText   : i18n['search_for_a_medication'] + '...',
 			typeAhead   : false,
 			hideTrigger : true,
 			minChars    : 1,
 			listConfig  : {
-				loadingText: 'Searching...',
+				loadingText: i18n['searching'] + '...',
 				//emptyText	: 'No matching posts found.',
 				//---------------------------------------------------------------------
 				// Custom rendering template for each item

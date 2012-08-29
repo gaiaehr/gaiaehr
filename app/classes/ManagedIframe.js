@@ -69,7 +69,7 @@ Ext.define('App.classes.ManagedIframe', {
 
 	ariaRole: 'presentation',
 
-	unsupportedText: 'Frames are disabled',
+	unsupportedText: i18n['frames_are_disabled'],
 
 	/*
 	 * Bubble frame events to upstream containers

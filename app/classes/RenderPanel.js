@@ -54,7 +54,7 @@ Ext.define('App.classes.RenderPanel', {
 
 	updateTitle: function(pageTitle, readOnly, timer) {
 		
-		var readOnlyDiv = '<div class="readOnly">Read Only</div>',
+		var readOnlyDiv = '<div class="readOnly">' + i18n['read_only'] + '</div>',
 			timerDiv = '<span class="timer">' + timer + '</span>';
 		this.getComponent('RenderPanel-header').update('<div class="panel_title">' + pageTitle + '</div>' + (readOnly ? readOnlyDiv : '') + (timer ?  timerDiv : ''));
 	},
@@ -97,13 +97,13 @@ Ext.define('App.classes.RenderPanel', {
 	patientInfoAlert: function() {
 		var patient = app.getCurrPatient();
 
-		Ext.Msg.alert('Status', 'Patient: ' + patient.name + ' (' + patient.pid + ')');
+		Ext.Msg.alert(i18n['status'], i18n['patient'] + ': ' + patient.name + ' (' + patient.pid + ')');
 	},
 
 	currPatientError: function() {
 		Ext.Msg.show({
-			title  : 'Oops! No Patient Selected',
-			msg    : 'Please select a patient using the <strong>"Patient Live Search"</strong> or <strong>"Patient Pool Area"</strong>',
+			title  : 'Oops! ' + i18n['no_patient_selected'],
+			msg    : i18n['select_patient_patient_live_search'],
 			scope  : this,
 			buttons: Ext.Msg.OK,
 			icon   : Ext.Msg.ERROR,
@@ -177,7 +177,7 @@ Ext.define('App.classes.RenderPanel', {
 	},
 
     passwordVerificationWin:function(callback){
-        var msg = Ext.Msg.prompt('Password Verification', 'Please enter your password:', function(btn, password) {
+        var msg = Ext.Msg.prompt(i18n['password_verification'], i18n['please_enter_your_password'] + ':', function(btn, password) {
             callback(btn, password);
         });
         var f = msg.textField.getInputId();

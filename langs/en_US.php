@@ -1004,6 +1004,23 @@ $LANG = array(
 	'copyright_notice'						=> 'Copyright Notice',
 	'select_patient_patient_live_search'	=> 'Please select a patient using the <strong>"Patient Live Search"</strong> or <strong>"Patient Pool Area"</strong>',
 	'password_verification'					=> 'Password Verification',
-	'please_enter_your_password'			=> 'Please enter your password'
+	'please_enter_your_password'			=> 'Please enter your password',
+	'search_for_a_immunizations'			=> 'Search for a Immunizations',
+	'search_for_a_medication'				=> 'Search for a Medication',
+	'search_for_a_surgery'					=> 'Search for a Surgery',
+	'frames_are_disabled'					=> 'Frames are disabled',
+	'capture'								=> 'Capture',
+	'read_only'								=> 'Read Only',
+	'vtype_empty_3chr'						=> 'This field must have more than 3 characters and must be not empty.',
+	'vtype_empty_7chr'						=> 'This field must have more than 7 characters and must be not empty.',
+	'vtype_empty'							=> 'This field must not be empty.',
+	'vtype_ssn'								=> 'Social Security Numbers, must no be empty or in the wrong format. (555-55-5555).',
+	'vtype_dateVal'							=> 'Incorrect date format (YYYY-MM-DD).',
+	'vtype_checkEmail'						=> 'This field should be an email address in the format user@domain.com',
+	'vtype_ipaddress'						=> 'This field should be an IP address in the format 192.168.0.1',
+	'vtype_phoneNumber'						=> 'This field should be an valid PHONE number, in the format (000)-000-0000',
+	'vtype_postalCode'						=> 'This field should be an valid Postal Code number, it can by Canadian or US',
+	'vtype_password'						=> 'Passwords do not match',
+	'vtype_mysqlField'						=> 'The field entered has invalid characters'
 );
 ?>

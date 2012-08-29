@@ -23,7 +23,7 @@ $_SESSION['site']['flops'] = 0;
 				perm = {},
 				user = {},
 				settings = {},
-				i18n;
+				i18n = {};
 		</script>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 		<title>GaiaEHR :: (Electronic Health Records)</title>
@@ -63,7 +63,6 @@ $_SESSION['site']['flops'] = 0;
 		</script>
 		<script type="text/javascript" src="lib/webcam_control/swfobject.js"></script>
 		<script type="text/javascript" src="lib/extensible-1.5.1/src/Extensible.js"></script>
-		<!-- <script type="text/javascript" src="langs/es_PR.js"></script> -->
 		<script type="text/javascript" src="lib/jpegcam/htdocs/webcam.js"></script>
 		<script type="text/javascript" src="app/classes/Overrides.js"></script>
 		<script type="text/javascript" src="app/classes/VTypes.js"></script>

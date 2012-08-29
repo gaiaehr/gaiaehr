@@ -936,6 +936,12 @@ $LANG = array(
 	'working'								=> 'Working',
 	'reports'								=> 'Reports',
 	'reportCenter'							=> 'Report Center',
-	'national_library'						=> 'National Library of Medicine Search'
+	'national_library'						=> 'National Library of Medicine Search',
+	'add_appointment'						=> 'Add Appointment',
+	'edit_appointment'						=> 'Edit Appointment',
+	'title'									=> 'Title',
+	'when'									=> 'When',
+	'web_link'								=> 'Web Link',
+	'repeats'								=> 'Repeats'
 );
 ?>

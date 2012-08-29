@@ -942,6 +942,9 @@ $LANG = array(
 	'title'									=> 'Title',
 	'when'									=> 'When',
 	'web_link'								=> 'Web Link',
-	'repeats'								=> 'Repeats'
+	'repeats'								=> 'Repeats',
+	'edit_details'							=> 'Edit Details',
+	'saving_changes'						=> 'Saving changes',
+	'deleting_appointment'					=> 'Deleting appointment'
 );
 ?>

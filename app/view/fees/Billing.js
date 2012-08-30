@@ -184,8 +184,8 @@ Ext.define('App.view.fees.Billing', {
 		});
 
 		me.encounterBillingDetails = Ext.create('Ext.panel.Panel', {
-			defaultTitle: i18n.encounter_billing_details,
-			title       : i18n.encounter_billing_details,
+			defaultTitle: i18n['encounter_billing_details'],
+			title       : i18n['encounter_billing_details'],
 			layout      : 'border',
 			bodyStyle   : 'background-color:#fff',
 			items       : [
@@ -282,20 +282,20 @@ Ext.define('App.view.fees.Billing', {
 												{
 													xtype     : 'textfield',
 													name      : 'authorization',
-													fieldLabel: i18n.authorization,
+													fieldLabel: i18n['authorization'],
 													labelAlign: 'right',
 													labelWidth: 80
 												},
 												{
 													xtype     : 'textfield',
 													name      : 'sec_authorization',
-													fieldLabel: i18n.sec_authorization,
+													fieldLabel: i18n['sec_authorization'],
 													labelAlign: 'right'
 												},
 												{
 													xtype     : 'textfield',
 													name      : 'referal_by',
-													fieldLabel: i18n.referal_by,
+													fieldLabel: i18n['referal_by'],
 													labelAlign: 'right',
 													labelWidth: 60,
 													flex      : 1
@@ -306,7 +306,7 @@ Ext.define('App.view.fees.Billing', {
 								},
 								{
 									xtype : 'icdsfieldset',
-									title : i18n.encounter_icd9,
+									title : i18n['encounter_icd9'],
 									margin: '5 5 0 5'
 								}
 							]
@@ -317,7 +317,7 @@ Ext.define('App.view.fees.Billing', {
 				}),
 
 				me.progressNote = Ext.create('App.view.patient.ProgressNote', {
-					title       : i18n.encounter_progress_note,
+					title       : i18n['encounter_progress_note'],
 					region      : 'east',
 					margin      : 5,
 					bodyStyle   : 'padding:15px',
@@ -330,10 +330,10 @@ Ext.define('App.view.fees.Billing', {
 			],
 			buttons     : [
 				{
-					text   : i18n.encounters,
+					text   : i18n['encounters'],
 					scope  : me,
 					action : 'encounters',
-					tooltip: i18n.back_to_encounter_list,
+					tooltip: i18n['back_to_encounter_list'],
 					handler: me.onBtnCancel
 				},
 				'->',
@@ -343,32 +343,32 @@ Ext.define('App.view.fees.Billing', {
 					text  : '( 1 of 1 )'
 				},
 				{
-					text   : '<<<  ' + i18n.back,
+					text   : '<<<  ' + i18n['back'],
 					scope  : me,
 					action : 'back',
-					tooltip: i18n.previous_encounter_details,
+					tooltip: i18n['previous_encounter_details'],
 					handler: me.onBtnBack
 				},
 				{
-					text   : i18n.save,
+					text   : i18n['save'],
 					scope  : me,
 					action : 'save',
-					tooltip: i18n.save_billing_details,
+					tooltip: i18n['save_billing_details'],
 					handler: me.onBtnSave
 				},
 
 				{
-					text   : i18n.cancel,
+					text   : i18n['cancel'],
 					scope  : me,
 					action : 'cancel',
-					tooltip: i18n.cancel_and_go_back_to_encounter_list,
+					tooltip: i18n['cancel_and_go_back_to_encounter_list'],
 					handler: me.onBtnCancel
 				},
 				{
-					text   : i18n.next + '  >>>',
+					text   : i18n['next'] + '  >>>',
 					scope  : me,
 					action : 'next',
-					tooltip: i18n.next_encounter_details,
+					tooltip: i18n['next_encounter_details'],
 					handler: me.onBtnNext
 				}
 			]
@@ -433,7 +433,7 @@ Ext.define('App.view.fees.Billing', {
 				me.cptPanel.setDefaultQRCptCodes();
 			});
 
-			pageInfo[0].setText( '( ' + i18n.page + ' (rowIndex + 1) of ' + sm.store.data.length + ' )' );
+			pageInfo[0].setText( '( ' + i18n['page'] + ' (rowIndex + 1) of ' + sm.store.data.length + ' )' );
 			nextBtn[0].setDisabled(rowIndex == sm.store.data.length - 1);
 			backbtn[0].setDisabled(rowIndex == 0);
 		}
@@ -457,7 +457,7 @@ Ext.define('App.view.fees.Billing', {
 		var me = this, form = me.icdForm.getForm(), values = form.getValues();
 
 		me.updateEncounterIcds(values);
-		me.msg('Sweet!', i18n.encounter_billing_data_updated);
+		me.msg('Sweet!', i18n['encounter_billing_data_updated']);
 	},
 
 	getEncounterIcds: function() {

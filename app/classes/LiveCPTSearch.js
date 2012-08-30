@@ -12,11 +12,11 @@ Ext.define('App.classes.LiveCPTSearch', {
     extend       : 'Ext.form.field.ComboBox',
     alias        : 'widget.livecptsearch',
     hideLabel    : true,
-    triggerTip   : 'Click to clear selection.',
+    triggerTip   : i18n['click_to_clear_selection'],
     spObj        : '',
     spForm       : '',
     spExtraParam : '',
-    qtip         : 'Clearable Combo Box',
+    qtip         : i18n['clearable_combo_box'],
     trigger1Class: 'x-form-select-trigger',
     trigger2Class: 'x-form-clear-trigger',
     initComponent: function() {
@@ -60,12 +60,12 @@ Ext.define('App.classes.LiveCPTSearch', {
             store       : me.store,
             displayField: 'code_text',
             valueField  : 'code',
-            emptyText   : 'Search...',
+            emptyText   : i18n['search'] + '...',
             typeAhead   : true,
             minChars    : 1,
             anchor      : '100%',
             listConfig  : {
-                loadingText: 'Searching...',
+                loadingText: i18n['searching'] + '...',
                 //emptyText	: 'No matching posts found.',
                 //---------------------------------------------------------------------
                 // Custom rendering template for each item

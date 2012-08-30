@@ -28,7 +28,7 @@ Ext.define('App.classes.combo.Providers', {
 			queryMode   : 'local',
 			displayField: 'name',
 			valueField  : 'id',
-			emptyText   : 'Select',
+			emptyText   : i18n['select'],
 			store       : me.store
 		}, null);
 		me.callParent(arguments);

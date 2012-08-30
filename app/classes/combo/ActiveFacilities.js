@@ -28,7 +28,7 @@ Ext.define('App.classes.combo.ActiveFacilities', {
 			queryMode   : 'local',
 			valueField  : 'option_value',
 			displayField: 'option_name',
-			emptyText   : 'Select',
+			emptyText   : i18n['select'],
 			store       : me.store
 		}, null);
 		me.callParent(arguments);

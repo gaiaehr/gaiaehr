@@ -33,7 +33,7 @@ Ext.define('App.classes.CalendarStatus', {
 			queryMode   : 'local',
 			displayField: 'option_name',
 			valueField  : 'option_value',
-			emptyText   : 'Select',
+			emptyText   : i18n['select'],
 			store       : me.store
 		}, null);
 		me.callParent();

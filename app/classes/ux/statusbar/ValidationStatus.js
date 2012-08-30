@@ -34,19 +34,19 @@ Ext.define('Ext.ux.statusbar.ValidationStatus', {
 	 * The {@link #text} value to be applied when there is a form validation error.
 	 * Defaults to <tt>'The form has errors (click for details...)'</tt>.
 	 */
-	showText         : 'The form has errors (click for details...)',
+	showText         : i18n['form_has_errors'],
 	/**
 	 * @cfg {String} showText
 	 * The {@link #text} value to display when the error list is displayed.
 	 * Defaults to <tt>'Click again to hide the error list'</tt>.
 	 */
-	hideText         : 'Click again to hide the error list',
+	hideText         : i18n['click_again_hide_the_error_list'],
 	/**
 	 * @cfg {String} submitText
 	 * The {@link #text} value to be applied when the form is being submitted.
 	 * Defaults to <tt>'Saving...'</tt>.
 	 */
-	submitText       : 'Saving...',
+	submitText       : i18n['saving'] + '...',
 
 	// private
 	init             : function(sb) {

@@ -4,7 +4,7 @@ Ext.define('App.classes.combo.CalendarCategories', {
 	editable    : false,
 	displayField: 'catname',
 	valueField  : 'catid',
-	emptyText   : 'Select',
+	emptyText   : i18n['select'],
 
 	initComponent: function() {
 		var me = this;

@@ -35,7 +35,7 @@ Ext.define('App.classes.combo.Languages', {
 			queryMode   : 'local',
 			valueField  : 'value',
 			displayField: 'name',
-			emptyText   : 'Select',
+			emptyText   : i18n['select'],
 			store       : me.store
 		}, null);
 		me.callParent();

@@ -28,7 +28,7 @@ Ext.define('App.classes.combo.Roles', {
 			queryMode   : 'local',
 			valueField  : 'id',
 			displayField: 'role_name',
-			emptyText   : 'Select',
+			emptyText   : i18n['select'],
 			store       : me.store
 		}, null);
 		me.callParent(arguments);

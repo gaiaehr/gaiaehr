@@ -47,11 +47,11 @@ Ext.define('App.classes.LiveImmunizationSearch', {
 			store       : me.store,
 			displayField: 'code_text_short',
 			valueField  : 'code_text_short',
-			emptyText   : 'Search for a Immunizations...',
+			emptyText   : i18n['search_for_a_immunizations'] + '...',
 			typeAhead   : true,
 			minChars    : 1,
 			listConfig  : {
-				loadingText: 'Searching...',
+				loadingText: i18n['searching'] + '...',
 				//emptyText	: 'No matching posts found.',
 				//---------------------------------------------------------------------
 				// Custom rendering template for each item

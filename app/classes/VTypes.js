@@ -11,7 +11,7 @@ Ext.apply(Ext.form.VTypes, {
     // ---------------------------------------
     empty_3chr : function(val, field) {
         return val.length > 2;
-    }, empty_3chrText: 'This field must have more than 3 characters and must be not empty.',
+    }, empty_3chrText: i18n['vtype_empty_3chr'],
 
     // ---------------------------------------
     // Validate Empty fields, empty field not allowed
@@ -19,7 +19,7 @@ Ext.apply(Ext.form.VTypes, {
     // ---------------------------------------
     empty_7chr : function(val, field) {
         return val.length > 6;
-    }, empty_7chrText: 'This field must have more than 7 characters and must be not empty.',
+    }, empty_7chrText: i18n['vtype_empty_7chr'],
 
     // ---------------------------------------
     // Validate Empty fields, empty field not allowed
@@ -38,7 +38,7 @@ Ext.apply(Ext.form.VTypes, {
         if (matchArr == null || numDashes == 1) {
             return false;
         } else return parseInt(matchArr[1], 10) != 0;
-    }, SSNText: 'Social Security Numbers, must no be empty or in the wrong format. (555-55-5555).',
+    }, SSNText: i18n['vtype_ssn'],
 
     // ---------------------------------------
     // Validate Day of Birth, empty field not allowed
@@ -48,7 +48,7 @@ Ext.apply(Ext.form.VTypes, {
         // String format yyyy-mm-dd
         var rgx = /^[0-9]{4}\-(0[1-9]|1[012])\-(0[1-9]|[12][0-9]|3[01])/;
         return val.match(rgx);
-    }, dateValText: 'Incorrect date format (YYYY-MM-DD).',
+    }, dateValText: i18n['vtype_dateVal'],
 
     // ---------------------------------------
     // Validate email, empty field not allowed
@@ -57,7 +57,7 @@ Ext.apply(Ext.form.VTypes, {
     checkEmail : function(val, field){
         var rgx = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/
         return val.match(rgx);
-    }, checkEmailText: 'This field should be an email address in the format user@domain.com',
+    }, checkEmailText: i18n['vtype_checkEmail'],
 
     // ---------------------------------------
     // Validate for an IP Address format
@@ -65,7 +65,7 @@ Ext.apply(Ext.form.VTypes, {
     ipaddress : function( val, field){
         var rgx = /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/i;
         return val.match(rgx);
-    }, ipaddressText: 'This field should be an IP address in the format 192.168.0.1',
+    }, ipaddressText: i18n['vtype_ipaddress'],
 
     // ---------------------------------------
     // Validate for an valid Phone Number
@@ -73,7 +73,7 @@ Ext.apply(Ext.form.VTypes, {
     phoneNumber : function( val, field){
         var rgx = /^\(?(\d{3})\)?[- ]?(\d{3})[- ]?(\d{4})$/;
         return val.match(rgx);
-    }, phoneNumberText: 'This field should be an valid PHONE number, in the format (000)-000-0000',
+    }, phoneNumberText: i18n['vtype_phoneNumber'],
 
     // ---------------------------------------
     // Validate for an valid Canadian & US
@@ -92,7 +92,7 @@ Ext.apply(Ext.form.VTypes, {
             regexp = null;
             return val.match(regexObj.usa);
         }
-    }, postalCodeText: 'This field should be an valid Postal Code number, it can by Canadian or US',
+    }, postalCodeText: i18n['vtype_postalCode'],
 
     // ---------------------------------------
     // Validate for a valid new password
@@ -104,7 +104,7 @@ Ext.apply(Ext.form.VTypes, {
             return (val == pwd.getValue());
         }
         return true;
-    }, passwordText: 'Passwords do not match',
+    }, passwordText: i18n['vtype_password'],
     
     // ---------------------------------------
     // Validate for a correct MySQL field
@@ -114,6 +114,6 @@ Ext.apply(Ext.form.VTypes, {
     mysqlField: function(val, field){
     	var regexObj = /[A-Za-z][A-Za-z0-9_]*/;
     	return val.match(regexObj);
-    }, mysqlFieldText: 'The field entered has invalid characters'
+    }, mysqlFieldText: i18n['vtype_mysqlField']
     
 });

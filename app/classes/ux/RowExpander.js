@@ -71,7 +71,7 @@ Ext.define('Ext.ux.RowExpander', {
 		this.recordsExpanded = {};
 		// <debug>
 		if(!this.rowBodyTpl) {
-			Ext.Error.raise("The 'rowBodyTpl' config is required and is not defined.");
+			Ext.Error.raise(i18n['the'] + " 'rowBodyTpl' " + i18n['config_required_not_defined']);
 		}
 		// </debug>
 		// TODO: if XTemplate/Template receives a template as an arg, should

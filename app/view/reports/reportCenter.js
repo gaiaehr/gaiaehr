@@ -23,11 +23,12 @@ Ext.define('App.view.reports.reportCenter',
         {
         	xtype	: 'panel',
         	layout	: 'fit',
-        	update	: {loadMask: 'Loading',url: 'app/app/view/reports/reportCenterLayout.html', scripts: true},
-			//html	: '<iframe src="app/view/reports/reportCenterLayout.html" height="100%" width="100%" scrolling="no" frameborder="0"></iframe>',       	
+			loader	: {
+				autoLoad:true,
+				url :'app/view/reports/reportCenterLayout.html'
+			}
         }
         ];
-        //me.pageBody.load({loadMask: 'Loading',url: 'app/app/view/reports/reportCenterLayout.html', scripts: true});
         me.callParent(arguments);
 
 	},

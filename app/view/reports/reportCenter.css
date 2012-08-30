@@ -31,7 +31,7 @@ h2{
 	float: left;
 	margin: 5px;
 	padding: 5px;
-	border-right: 1px solid #cccccc;
+	border-right: 1px solid #f3f3f3;
 }
 .CategoryContainer .title{
 	display: block;
@@ -48,4 +48,8 @@ h2{
 	color: #000000;
 	margin: 0px;
 	list-style-type: circle;
+}
+.CategoryContainer li a{
+	text-decoration: none;
+	color:#000000;
 }

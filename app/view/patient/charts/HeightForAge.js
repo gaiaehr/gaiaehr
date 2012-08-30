@@ -9,7 +9,7 @@ Ext.define('App.view.patient.charts.HeightForAge',{
 	extend:'Ext.panel.Panel',
 	layout:'fit',
 	margin:5,
-	title: i18n.height_for_age,
+	title: i18n['height_for_age'],
 
 	initComponent:function(){
 		var me = this;
@@ -23,7 +23,7 @@ Ext.define('App.view.patient.charts.HeightForAge',{
 				shadow : true,
 				axes   : [
 					{
-						title         : i18n.height_inches,
+						title         : i18n['height_inches'],
 						type          : 'Numeric',
 						minimum       : 0,
 						maximum       : 100,
@@ -40,7 +40,7 @@ Ext.define('App.view.patient.charts.HeightForAge',{
 						}
 					},
 					{
-						title         : i18n.height_centimeters,
+						title         : i18n['height_centimeters'],
 						type          : 'Numeric',
 						minimum       : 0,
 						maximum       : 250,
@@ -49,7 +49,7 @@ Ext.define('App.view.patient.charts.HeightForAge',{
 						minorTickSteps: 1
 					},
 					{
-						title         : i18n.age_years,
+						title         : i18n['age_years'],
 						type          : 'Numeric',
 						minimum       : 0,
 						maximum       : 20,
@@ -62,7 +62,7 @@ Ext.define('App.view.patient.charts.HeightForAge',{
 				],
 				series : [
 					{
-						title       : i18n.actual_growth,
+						title       : i18n['actual_growth'],
 						type        : 'line',
 						axis        : 'left',
 						xField      : 'date',
@@ -79,7 +79,7 @@ Ext.define('App.view.patient.charts.HeightForAge',{
 						}
 					},
 					{
-						title    : i18n.normal_growth,
+						title    : i18n['normal_growth'],
 						type     : 'line',
 						highlight: {
 							size  : 5,

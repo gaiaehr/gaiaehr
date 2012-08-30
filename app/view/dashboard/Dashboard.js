@@ -114,7 +114,7 @@ Ext.define('App.view.dashboard.Dashboard', {
 		this.callParent(arguments);
 	},
 	onPortletClose: function(portlet) {
-		this.msg(i18n.message + '!', portlet.title + ' ' + i18n.was_removed);
+		this.msg(i18n['message'] + '!', portlet.title + ' ' + i18n['was_removed']);
 	},
 	/**
 	 * This function is called from MitosAPP.js when

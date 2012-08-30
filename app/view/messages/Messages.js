@@ -88,7 +88,7 @@ Ext.define('App.view.messages.Messages', {
 			tbar      : Ext.create('Ext.PagingToolbar', {
 				store      : me.storeMsgs,
 				displayInfo: true,
-				emptyMsg   : i18n.no_office_notes_to_display,
+				emptyMsg   : i18n['no_office_notes_to_display'],
 				plugins    : Ext.create('Ext.ux.SlidingPager', {}),
 				items      : ['-', {
 					text    : i18n['delete'],
@@ -114,7 +114,7 @@ Ext.define('App.view.messages.Messages', {
 					scope       : me,
 					handler     : me.messagesType
 				}, '-', {
-					text        : i18n.trash,
+					text        : i18n['trash'],
 					action      : 'trash',
 					enableToggle: true,
 					toggleGroup : 'message',
@@ -319,7 +319,7 @@ Ext.define('App.view.messages.Messages', {
 		var model = Ext.ModelManager.getModel('MessagesModel'),
 			newModel = Ext.ModelManager.create({
 				message_status: i18n['new'],
-				note_type     : i18n.unassigned
+				note_type     : i18n['unassigned']
 			}, model);
 		form.getForm().loadRecord(newModel);
 		this.action('new');

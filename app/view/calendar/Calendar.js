@@ -189,13 +189,13 @@ Ext.define('App.view.calendar.Calendar', {
 							},
 							'eventadd'   : {
 								fn   : function(cp, rec) {
-									this.showMsg(i18n.event + ' ' + rec.data[Extensible.calendar.data.EventMappings.Title.name] + ' ' + i18n.was_updated);
+									this.showMsg(i18n['event'] + ' ' + rec.data[Extensible.calendar.data.EventMappings.Title.name] + ' ' + i18n['was_updated']);
 								},
 								scope: this
 							},
 							'eventupdate': {
 								fn   : function(cp, rec) {
-									this.showMsg(i18n.event + ' ' + rec.data[Extensible.calendar.data.EventMappings.Title.name] + ' ' + i18n.was_updated);
+									this.showMsg(i18n['event'] + ' ' + rec.data[Extensible.calendar.data.EventMappings.Title.name] + ' ' + i18n['was_updated']);
 								},
 								scope: this
 							},
@@ -232,7 +232,7 @@ Ext.define('App.view.calendar.Calendar', {
 
 									rec.commit();
 
-									this.showMsg(i18n.event + ' ' + rec.data[mappings.Title.name] + ' ' + i18n.was_moved_to + ' ' +
+									this.showMsg(i18n['event'] + ' ' + rec.data[mappings.Title.name] + ' ' + i18n['was_moved_to'] + ' ' +
 										Ext.Date.format(rec.data[mappings.StartDate.name], ('F jS' + time)));
 								},
 								scope: this

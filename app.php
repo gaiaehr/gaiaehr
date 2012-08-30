@@ -102,8 +102,8 @@ $_SESSION['site']['flops'] = 0;
 					}
 				});
 				// localization remoting procedures.
-				// ie: i18n.dashboard = Dashboard (en_US)
-				// ie: i18n.dashboard = Tablero (es_PR)
+				// ie: i18n['dashboard'] = Dashboard (en_US)
+				// ie: i18n['dashboard'] = Tablero (es_PR)
 				i18n.getTranslation(function(provider, response)
 				{
 					i18n = response.result;

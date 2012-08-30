@@ -27,7 +27,9 @@ Ext.define('App.view.reports.reportCenter',
 			{
 				autoLoad:true,
 				scripts:true,
-				url :'app/view/reports/reportCenterLayout.php'
+				url :'app/view/reports/reportCenterLayout.php',
+				contentType: 'html',
+				loadMask: true
 			}
         }
         ];
@@ -44,5 +46,4 @@ Ext.define('App.view.reports.reportCenter',
 	{
 		callback(true);
 	}
-
 });

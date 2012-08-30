@@ -390,7 +390,7 @@ Ext.define('App.view.Viewport', {
             iconCls: 'icoBackClock',
             scope  : me,
             handler: me.openPatientVisits,
-            tooltip: 'Open Patient Visits History'
+            tooltip: i18n['open_patient_visits_history']
         });
         if(perm.add_encounters){
             me.patientCreateEncounterBtn = me.Header.add({

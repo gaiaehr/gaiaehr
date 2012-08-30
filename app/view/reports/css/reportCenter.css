@@ -33,6 +33,7 @@ h2{
 	margin: 5px;
 	padding: 5px;
 	border-right: 1px solid #f3f3f3;
+	padding-right: 10px;
 }
 .CategoryContainer .title{
 	font-family: 'OpenSans-CondLight';

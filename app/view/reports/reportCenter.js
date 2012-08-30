@@ -23,7 +23,8 @@ Ext.define('App.view.reports.reportCenter',
         {
         	xtype	: 'panel',
         	layout	: 'fit',
-			loader	: {
+			loader	: 
+			{
 				autoLoad:true,
 				url :'app/view/reports/reportCenterLayout.html'
 			}

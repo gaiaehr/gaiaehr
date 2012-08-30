@@ -34,6 +34,9 @@ class i18n
 		return array_merge($en_US, $LANG);
 	}
 
+	// TODO: This procedure have to make a lookup in the directory of language, to
+	// look for available language files, and then precent the available languages
+	// on the dropdown list.
 	public static function getAvailableLanguages(){
 		$langTexts = array(
 			'en_US' => 'English (United States)',

@@ -31,17 +31,21 @@ h2{
 	float: left;
 	margin: 5px;
 	padding: 5px;
+	border-right: 1px solid #cccccc;
 }
 .CategoryContainer .title{
 	display: block;
-	border-bottom: 2px dotted #7f381b;
+	border-bottom: 1px dotted #7f381b;
 	font-size: 16px;
 }
 .CategoryContainer ul{
 	list-style-type: circle;
+	margin: 0px;
+	padding: 0px;
+	margin-left: 20px;
 }
 .CategoryContainer li{
 	color: #000000;
-	padding-left: 5px;
+	margin: 0px;
 	list-style-type: circle;
 }

@@ -1,15 +1,16 @@
 @font-face{
-	font-family: 'Cuprum';
-	src: url('../../../ui_fonts/Cuprum.ttf');
+	font-family: 'OpenSans-CondLight';
+	src: url('../fonts/OpenSans-CondLight.ttf');
 }
 
 body{
+	font-family: 'OpenSans-CondLight';
 	margin: 0px;
 	padding: 0px;
 }
 
 .headerReportCenter{
-	background-image: url(../../../ui_app/header-bg.png) !important;
+	background-image: url(../images/header-bg.png) !important;
 	height: 93px;
 	padding-left: 15px;
 	position:relative;
@@ -18,7 +19,7 @@ body{
 }
 
 h2{
-	font-family: 'Cuprum';
+	font-family: 'OpenSans-CondLight';
 	font-size: 36px;
 	color: #ffffff;
 	line-height: 93px;
@@ -34,9 +35,11 @@ h2{
 	border-right: 1px solid #f3f3f3;
 }
 .CategoryContainer .title{
+	font-family: 'OpenSans-CondLight';
 	display: block;
 	border-bottom: 1px dotted #7f381b;
-	font-size: 16px;
+	font-size: 24px;
+	color: #d86232;
 }
 .CategoryContainer ul{
 	list-style-type: circle;
@@ -45,11 +48,14 @@ h2{
 	margin-left: 20px;
 }
 .CategoryContainer li{
+	font-family: 'OpenSans-CondLight';
+	font-size: 16px;
 	color: #000000;
 	margin: 0px;
-	list-style-type: circle;
+	list-style-type: square;
 }
 .CategoryContainer li a{
+	font-family: 'OpenSans-CondLight';
 	text-decoration: none;
 	color:#000000;
 }

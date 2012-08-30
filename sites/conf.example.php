@@ -16,9 +16,10 @@ $_SESSION['site']['db']['database'] = '%db%';
  */
 $_SESSION['site']['AESkey'] = "%key%";
 /**
- * Default site language
+ * Default site language and theme
  */
 $_SESSION['site']['lang'] = '%lang%';
+$_SESSION['site']['theme'] = '%theme%';
 /**
  * Setup Command
  * If it's true, the application will

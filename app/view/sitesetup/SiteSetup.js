@@ -5,18 +5,21 @@ Ext.define('App.view.sitesetup.SiteSetup', {
     y            : 90,
     width        : 900,
     height       : 500,
-    plain        : true,
     modal        : false,
     resizable    : false,
     draggable    : false,
     closable     : false,
-    bodyStyle    : 'background-color: #ffffff; padding: 5px;',
+    bodyStyle    : 'background-color: #ffffff',
     layout       : {
         type : 'vbox',
         align: 'stretch'
     },
     requires     : [
-        'App.classes.form.fields.Help', 'App.classes.form.fields.plugin.HelpIcon', 'App.classes.window.CopyRights'
+        'App.classes.form.fields.Help',
+        'App.classes.form.fields.plugin.HelpIcon',
+        'App.classes.window.CopyRights',
+        'App.classes.combo.Languages',
+        'App.classes.combo.Themes'
     ],
     initComponent: function() {
         var me = this;
@@ -51,6 +54,37 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                 }
             },
             autoLoad: false
+        });
+
+
+        me.enviromentStore = Ext.create('Ext.data.Store', {
+            fields: ['value', 'name'],
+            data : [
+                {value:'Production', name:'Production/Clinic'},
+                {value:'Development', name:'Development'},
+                {value:'Testing', name:'Testing'}
+            ]
+        });
+
+
+        me.boolStore = Ext.create('Ext.data.Store', {
+            fields: ['value', 'name'],
+            data : [
+                {value:'Yes', name:'Yes'},
+                {value:'No', name:'No'}
+            ]
+        });
+
+
+        me.sizeStore = Ext.create('Ext.data.Store', {
+            fields: ['value', 'name'],
+            data : [
+                {value:'1', name:'1 User'},
+                {value:'2-5', name:'2-5 Users'},
+                {value:'6-10', name:'6-10 Users'},
+                {value:'11-20', name:'11-20 Users'},
+                {value:'20+', name:'20+ Users'}
+            ]
         });
         /**
          * Copy Rights window
@@ -132,10 +166,11 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                         handler     : me.onHeaderBtnPress
                     })
                 ]
-            }), me.mainPanel = Ext.create('Ext.Container', {
+            }),
+            me.mainPanel = Ext.create('Ext.Container', {
                 flex  : 1,
                 layout: 'card',
-//                activeItem:4,
+//                activeItem:3,
                 items : [
                     me.welcome = Ext.create('Ext.Container', {
                         action: 0,
@@ -249,6 +284,7 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                                     {
                                         fieldLabel: 'Root User',
                                         name      : 'rootUser',
+                                        value:'root',
                                         allowBlank: false
                                     },
                                     {
@@ -256,6 +292,7 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                                         name      : 'rootPass',
                                         id        : 'rootPass',
                                         inputType : 'password',
+//                                        value:'pass',
                                         allowBlank: true
                                     },
                                     {
@@ -273,17 +310,20 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                                     {
                                         fieldLabel: 'Database Name',
                                         name      : 'dbName',
+                                        value     : 'gaiadb',
                                         allowBlank: false
                                     },
                                     {
                                         fieldLabel: 'New Database User',
                                         name      : 'dbUser',
+//                                        value     : 'test',
                                         allowBlank: false
                                     },
                                     {
                                         fieldLabel: 'New Database Pass',
                                         name      : 'dbPass',
                                         inputType : 'password',
+//                                        value     : 'test',
                                         allowBlank: false
                                     }
                                 ],
@@ -310,13 +350,13 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                                     {
                                         fieldLabel: 'Database Name',
                                         name      : 'dbName',
-                                        value     : 'gaiadb',
+//                                        value     : 'gaiadb',
                                         allowBlank: false
                                     },
                                     {
                                         fieldLabel: 'Database User',
                                         name      : 'dbUser',
-                                        value     : 'gaiadb',
+//                                        value     : 'gaiadb',
                                         allowBlank: false
                                     },
                                     {
@@ -324,7 +364,7 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                                         name      : 'dbPass',
                                         id        : 'dbPass',
                                         inputType : 'password',
-                                        value     : 'pass',
+//                                        value     : 'pass',
                                         allowBlank: false
                                     },
                                     {
@@ -426,7 +466,7 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                                                 fieldLabel     : 'Admin password',
                                                 inputType      : 'password',
                                                 name           : 'adminPassword',
-                                                value          : 'pass',
+//                                                value          : 'pass',
                                                 enableKeyEvents: true,
                                                 allowBlank     : false,
                                                 plugins        : [
@@ -450,10 +490,12 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                                         defaults: { margin: '4 0'},
                                         items   : [
                                             {
-                                                xtype     : 'combobox',
+                                                xtype     : 'themescombo',
                                                 fieldLabel: 'Site Theme',
-                                                name      : 'lang',
+                                                name      : 'theme',
                                                 emptytext : 'Select',
+                                                value:'ext-all-gray',
+                                                width:300,
                                                 plugins   : [
                                                     {
                                                         ptype  : 'helpicon',
@@ -462,10 +504,12 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                                                 ]
                                             },
                                             {
-                                                xtype     : 'combobox',
+                                                xtype     : 'languagescombo',
                                                 fieldLabel: 'Default Language',
                                                 name      : 'lang',
                                                 emptytext : 'Select',
+                                                width:300,
+                                                value:'en_US',
                                                 plugins   : [
                                                     {
                                                         ptype  : 'helpicon',
@@ -477,6 +521,8 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                                                 xtype     : 'checkboxfield',
                                                 fieldLabel: 'Load ICD9',
                                                 name      : 'ICD9',
+                                                inputValue: '1',
+                                                action:'code',
                                                 plugins   : [
                                                     {
                                                         ptype  : 'helpicon',
@@ -488,6 +534,8 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                                                 xtype     : 'checkboxfield',
                                                 fieldLabel: 'Load ICD10',
                                                 name      : 'ICD10',
+                                                inputValue: '1',
+                                                action:'code',
                                                 plugins   : [
                                                     {
                                                         ptype  : 'helpicon',
@@ -499,6 +547,8 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                                                 xtype     : 'checkboxfield',
                                                 fieldLabel: 'Load SNOMED',
                                                 name      : 'SNOMED',
+                                                inputValue: '1',
+                                                action:'code',
                                                 plugins   : [
                                                     {
                                                         ptype  : 'helpicon',
@@ -509,7 +559,9 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                                             {
                                                 xtype     : 'checkboxfield',
                                                 fieldLabel: 'Load RxNorm',
-                                                name      : 'RxNorm',
+                                                name      : 'RXNORM',
+                                                inputValue: '1',
+                                                action:'code',
                                                 plugins   : [
                                                     {
                                                         ptype  : 'helpicon',
@@ -536,45 +588,115 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                                 padding:'0 5',
                                 styleHtmlContent:true,
                                 tpl: new Ext.XTemplate(
-                                    '<h2>Woot! Your New site is ready.</h2>' +
+                                    '<h2><span style="color: #008000;">Sweet!</span> Your New site is ready.</h2>' +
                                     '<p>Installation Details:</p>' +
                                     '<ul>' +
                                     '   <li>Site Id: {siteId}</li>' +
-                                    '   <li>Admin Username: {adminUsername}</li>' +
-                                    '   <li>Admin Password: {adminPassword}</li>' +
+                                    '   <li>User: {adminUsername}</li>' +
+                                    '   <li>Password: {adminPassword}</li>' +
                                     '   <li>Site URL: <a href="{siteURL}" target="_self">{siteURL}</a></li>' +
-                                    '</ul>'
+                                    '</ul>' +
+                                    '<p style="color: #008000;">Please take a few moment to answer the survey. We use this info to continue improve GaiaEHR user experience.</p>'
                                 )
                             }),
-                            {
-                                xtype   : 'fieldset',
-                                title   : 'Survey (optional)',
-                                layout  : 'anchor',
-                                height:172,
-                                defaults: { margin: '4 0', labelWidth:150},
+                            me.survey = Ext.create('Ext.form.Panel', {
+                                border:false,
+                                margin:0,
+                                padding:0,
+                                bodyPadding:0,
+                                layout  : 'absolute',
                                 items:[
-                                    {
-                                        xtype:'textfield',
-                                        fieldLabel:'Installation Environment'
-                                    },
-                                    {
-                                        xtype:'textfield',
-                                        fieldLabel:'First Time User?'
-                                    },
-                                    {
-                                        xtype:'textfield',
-                                        fieldLabel:'Clinic Size'
-                                    },
-                                    {
-                                        xtype:'textfield',
-                                        fieldLabel:'Current EMR if any'
-                                    },
-                                    {
-                                        xtype:'textfield',
-                                        fieldLabel:'Rate the installation'
-                                    }
+                                    me.surveyFields = Ext.create('Ext.form.FieldSet',{
+                                        title   : 'Survey (optional)',
+                                        layout  : 'anchor',
+                                        height:172,
+                                        defaults: { margin: '4 0', labelWidth:150, width:400},
+                                        items:[
+                                            {
+                                                xtype:'combobox',
+                                                fieldLabel:'Environment',
+                                                name:'environment',
+                                                store:me.enviromentStore,
+                                                displayField:'name',
+                                                valueField:'value',
+                                                emptyText:'Select',
+                                                queryMode: 'local',
+                                                editable:false
+                                            },
+                                            {
+                                                xtype:'combobox',
+                                                fieldLabel:'Clinic Size',
+                                                name:'clinic_size',
+                                                store:me.sizeStore,
+                                                displayField:'name',
+                                                valueField:'value',
+                                                emptyText:'Select',
+                                                queryMode: 'local',
+                                                editable:false
+                                            },
+                                            {
+                                                xtype:'textfield',
+                                                fieldLabel:'Current EMR if any',
+                                                name:'current_emr'
+                                            },
+                                            {
+                                                xtype:'checkbox',
+                                                fieldLabel:'First Time Using GaiaEHR?',
+                                                name      : 'first_time',
+                                                inputValue: '1'
+                                            },
+                                            {
+                                                xtype      : 'fieldcontainer',
+                                                fieldLabel : 'Rate the installation',
+                                                defaultType: 'radiofield',
+                                                width:null,
+                                                defaults: {
+                                                    flex: 1
+                                                },
+                                                layout: 'hbox',
+                                                items: [
+
+                                                    {
+                                                        boxLabel  : 'Very Easy',
+                                                        name      : 'installation_rate',
+                                                        inputValue: 'Easy'
+                                                    },
+                                                    {
+                                                        boxLabel  : 'Easy',
+                                                        name      : 'installation_rate',
+                                                        inputValue: 'Easy'
+                                                    },
+                                                    {
+                                                        boxLabel  : 'Ok',
+                                                        name      : 'installation_rate',
+                                                        inputValue: 'Ok'
+                                                    },
+                                                    {
+                                                        boxLabel  : 'Hard',
+                                                        name      : 'installation_rate',
+                                                        inputValue: 'Hard'
+                                                    },
+                                                    {
+                                                        boxLabel  : 'Very Hard',
+                                                        name      : 'installation_rate',
+                                                        inputValue: 'Very Hard'
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }),
+                                    me.thanks = Ext.create('Ext.container.Container',{
+                                        styleHtmlContent:true,
+                                        padding:'0 10',
+                                        height:0,
+                                        width:0,
+                                        y:32,
+                                        x:20,
+                                        cls:'thanks-box',
+                                        hidden:true
+                                    })
                                 ]
-                            }
+                            })
                         ]
                     })
                 ]
@@ -639,7 +761,9 @@ Ext.define('App.view.sitesetup.SiteSetup', {
         var me = this,
             panel = me.siteConfiguration,
             form = panel.getForm(),
-            values = Ext.Object.merge(form.getValues(), me.step[2].dbInfo);
+            values = Ext.Object.merge(form.getValues(), me.step[2].dbInfo),
+            codeFields = me.query('checkboxfield[action="code"]'),
+            codes = [];
 
         me.installationPregress.show();
         me.siteConfigurationContainer.el.mask('Installing New Site');
@@ -647,51 +771,36 @@ Ext.define('App.view.sitesetup.SiteSetup', {
         SiteSetup.setSiteDirBySiteId(values.siteId, function(provider, response){
             if(response.result.success){
 
-                me.installationPregress.updateProgress(.2,'Creating Database Structure and Tables', true);
+                me.installationPregress.updateProgress(.1,'Creating Database Structure and Tables', true);
                 SiteSetup.createDatabaseStructure(values, function(provider, response){
                     if(response.result.success){
 
-                        me.installationPregress.updateProgress(.4,'Dumping Data Into Database', true);
+                        me.installationPregress.updateProgress(.2,'Dumping Data Into Database', true);
                         SiteSetup.loadDatabaseData(values, function(provider, response){
                             if(response.result.success){
 
-                                me.installationPregress.updateProgress(.8,'Creating Configuration File', true);
+                                me.installationPregress.updateProgress(.4,'Creating Configuration File', true);
                                 SiteSetup.createSConfigurationFile(values, function(provider, response){
                                     if(response.result.success){
                                         values['AESkey'] = response.result.AESkey;
-                                        me.installationPregress.updateProgress(.9,'Creating Administrator User', true);
+                                        me.installationPregress.updateProgress(.6,'Creating Administrator User', true);
                                         SiteSetup.createSiteAdmin(values, function(provider, response){
                                             if(response.result.success){
-                                                me.installationPregress.updateProgress(1,'Done!', true);
-                                                me.siteConfigurationContainer.el.unmask();
 
-                                                me.step[3] = { success: true };
-                                                me.okToGoNext(true);
-                                                values.siteURL = document.URL + '?site=' + values.siteId ;
-                                                me.onComplete(values);
+                                                for(var i=0; i < codeFields.length; i++){
+                                                    if(codeFields[i].getValue()) codes.push(codeFields[i].name);
+                                                }
+                                                me.installProgress = .5;
+                                                me.loadCodes(codes, function(){
+                                                    me.installationPregress.updateProgress(1,'Done!', true);
+                                                    me.siteConfigurationContainer.el.unmask();
 
-                                                alert('Site Installed! Refresh the page... TODO: theme, language, and codes');
+                                                    me.step[3] = { success: true };
+                                                    me.okToGoNext(true);
+                                                    values.siteURL = values.siteId != 'default' ? document.URL + '?site=' + values.siteId : document.URL;
 
-                                                //Optional Stuff..........
-//                                                SiteSetup.setTheme(function(provider, response){
-//
-//                                                });
-//                                                SiteSetup.setLang(function(provider, response){
-//
-//                                                });
-//                                                SiteSetup.loadICD9Codes(function(provider, response){
-//
-//                                                });
-//                                                SiteSetup.loadICD10Codes(function(provider, response){
-//
-//                                                });
-//                                                SiteSetup.loadSNOMEDCodes(function(provider, response){
-//
-//                                                });
-//                                                SiteSetup.loadRxNormCodes(function(provider, response){
-//
-//                                                });
-
+                                                    me.onComplete(values)
+                                                });
                                             }
                                         });
                                     }
@@ -705,18 +814,56 @@ Ext.define('App.view.sitesetup.SiteSetup', {
         });
     },
 
+    loadCodes:function(codes, callback){
+        var me = this;
+        say(codes[0]);
+        if(codes[0]){
+            me.installationPregress.updateProgress(me.installProgress +.1,'Loading ' + codes[0] + ' Data', true);
+            SiteSetup.loadCode(codes[0],function(provider, response){
+                codes.shift();
+                me.loadCodes(codes, callback());
+            });
+        }else{
+            callback();
+        }
+    },
+
     onSurveySubmit:function(){
+        var me = this,
+            succesMsg,
+            failureMsg,
+            form = me.survey.getForm(),
+            values = form.getValues();
         Ext.data.JsonP.request({
             url:'http://gaiaehr.org/survey.php',
-            params:{
-                environment:'Production',
-                clinic_size:'2-3',
-                first_time:1,
-                current_emr:'ans4',
-                installation_rate:1
-            },
-            success:function(a){
-                say(a);
+            params:values,
+            callback:function(data, success){
+                succesMsg = '<h3>Sweet! Data successfully sent :-)</h3>' +
+                    '<p>Thanks for taking the time, to help us improve GaiaEHR<br>' +
+                    'Stay in touch through <a href="http://www.gaiaehr.org" target="_blank">www.gaiaehr.org</a><br>' +
+                    'We look foward to hear form you at our <a href="http://www.gaiaehr.org/forum" target="_blank">forums</a></p>';
+                failureMsg = '<h3>Oops! Unable to contact GaiaEHR server :-(</h3>' +
+                    '<p>No worries...<br>' +
+                    'If you want to help, go to <a href="http://www.gaiaehr.org" target="_blank">www.gaiaehr.org</a> and stay in touch with the community.<br>' +
+                    'If not, Enjoy GaiaEHR :-)</p>';
+
+                me.surveyFields.removeAll();
+                me.thanks.update(success ? succesMsg : failureMsg);
+                me.thanks.addCls(success ? 'green-box' : 'red-box');
+                me.thanks.show();
+                Ext.create('Ext.fx.Anim', {
+                    target: me.thanks,
+                    duration: 1000,
+                    from: {
+                        width: 0,
+                        height: 0
+                    },
+                    to: {
+                        width: 825,
+                        height: 120
+                    }
+                });
+                Ext.getCmp('move-next').setVisible(false);
             }
         })
     },
@@ -724,12 +871,14 @@ Ext.define('App.view.sitesetup.SiteSetup', {
     onComplete:function(data){
         var me = this,
             btn = Ext.getCmp('move-next');
+        btn.action = 'next';
+        me.onNexStep(btn);
         btn.action = 'complete';
         btn.setText('Send');
         btn.setVisible(true);
         btn.setDisabled(false);
+        Ext.getCmp('move-prev').setVisible(false);
         me.headerPanel.getComponent(4).setIconCls('icoGreenFace');
-        me.onNexStep(btn);
         me.installationDetails.update(data);
     },
 
@@ -766,7 +915,6 @@ Ext.define('App.view.sitesetup.SiteSetup', {
         }
 
         Ext.getCmp('move-prev').setVisible(layout.getPrev());
-        Ext.getCmp('move-next').setVisible(layout.getNext());
         me.isReadyForInstall();
     },
 

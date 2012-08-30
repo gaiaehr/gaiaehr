@@ -12,6 +12,7 @@ if(!isset($_SESSION)){
     session_cache_limiter('private');
 }
 include_once($_SESSION['site']['root'].'/classes/dbHelper.php');
+include_once($_SESSION['site']['root'].'/dataProvider/i18n.php');
 
 class CombosData {
 
@@ -135,14 +136,19 @@ class CombosData {
         return $this->db->fetchRecords(PDO::FETCH_ASSOC);
     }
 
-    public function getLanguages(){
-        $this->db->setSQL("SELECT lang_code, lang_description FROM lang_languages ORDER BY lang_description");
-        return $this->db->fetchRecords(PDO::FETCH_ASSOC);
-    }
-
 	public function getFloorPlanAreas(){
 		$this->db->setSQL("SELECT id, title FROM floor_plans WHERE active = '1' ORDER BY title");
         return $this->db->fetchRecords(PDO::FETCH_ASSOC);
+	}
+
+	public static function getAvailableLanguages(){
+		$rows = array();
+		foreach(i18n::getAvailableLanguages(false) AS $lang ){
+			$foo['name'] = $lang['text'];
+			$foo['value'] = $lang['code'];
+			$rows[] = $foo;
+		}
+        return $rows;
 	}
 
     public function getAuthorizations(){
@@ -343,7 +349,24 @@ class CombosData {
         $records[] = array('title' => 'Empty');
         return $records;
     }
+
+	public function getThemes(){
+		return array(
+			array(
+				'name' => 'Gray',
+				'value' => 'ext-all-gray'
+			),
+			array(
+				'name' => 'Blue',
+				'value' => 'ext-all'
+			),
+			array(
+				'name' => 'Dark / Access',
+				'value' => 'ext-all-access'
+			)
+		);
+	}
 }
 //$c = new CombosData();
 //print '<pre>';
-//print_r($c->getActiveFacilities());
+//print_r($c->getAvailableLanguages());

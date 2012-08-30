@@ -194,6 +194,7 @@ Ext.define('App.view.Viewport', {
 		'App.classes.combo.Surgery',
 		'App.classes.combo.TaxId',
 		'App.classes.combo.Templates',
+        'App.classes.combo.Themes',
 		'App.classes.combo.Time',
 		'App.classes.combo.Titles',
 		'App.classes.combo.TransmitMethod',

@@ -55,11 +55,11 @@ if(
     if($_SESSION['site']['checkInMode']){
         include_once('checkin/checkin.php');
     }elseif($mobile->isMobile()) {
-	    include_once('app_mobile.php');
+	    include_once('_app_m.php');
     }else{
-        include_once($_SESSION['site']['root'].'/dataProvider/Globals.php');
+        include_once('dataProvider/Globals.php');
         Globals::setGlobals();
-        include_once('app.php');
+        include_once('_app.php');
     }
 /**
  * Make the logon process or Setup process
@@ -70,15 +70,15 @@ if(
      * if a directory is found inside sites dir run the logon screen
      */
 	if(empty($_SESSION['site']['sites'])){
-		include_once('install.php');
+		include_once('_install.php');
 	} else {
         /**
          * if mobile go to mobile app, else go to app
          */
         if ($mobile->isMobile()) {
-            include_once('login/login_mobile.php');
+            include_once('_login_m.php');
         }else{
-            include_once('login/login.php');
+            include_once('_login.php');
         }
 	}
 }

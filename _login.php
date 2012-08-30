@@ -19,13 +19,19 @@ if(!defined('_GaiaEXEC')) die('No direct access allowed.');
 
         <link rel="shortcut icon" href="favicon.ico" >
 
-        <script src="data/logon_api.php"></script>
-        <script type="text/javascript" src="login/login.js"></script>
+        <script src="data/api.php"></script>
         <script type="text/javascript">
 	        var app, site = '<?php print $site ?>';
+	        Ext.Loader.setConfig({
+	            enabled       : true,
+	            disableCaching: false,
+	            paths         : {
+	                'App'       : 'app'
+	            }
+	        });
         Ext.onReady(function(){
             Ext.direct.Manager.addProvider(App.data.REMOTING_API);
-            app = Ext.create('App.panel.login.Login');
+            app = Ext.create('App.view.login.Login');
         }); // End App
         </script>
     </head>

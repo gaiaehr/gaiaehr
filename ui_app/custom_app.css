@@ -3,6 +3,16 @@
 /* = disabled nodes
 
 ----------------------------------------------- */
+.thanks-box{
+	border: dashed 1px #9c9c9c !important;
+	overflow: hidden !important;
+}
+.green-box{
+	background-color: #a8ff8f;
+}
+.red-box{
+	background-color: #ffb0a2;
+}
 
 .ProgressNote-ul {
 	margin-left:3em;

@@ -14,7 +14,7 @@ if(!isset($_SESSION)) {
 $_SESSION['site']['flops'] = 0;
 include_once($_SESSION['site']['root'] . '/classes/dbHelper.php');
 include_once($_SESSION['site']['root'] . '/classes/Time.php');
-include_once($_SESSION['site']['root'] . '/dataProvider/FileManager.php');
+include_once($_SESSION['site']['root'] . '/classes/FileManager.php');
 set_time_limit(0);
 ini_set('memory_limit', '512M');
 class ExternalDataUpdate
@@ -183,7 +183,7 @@ class ExternalDataUpdate
 					$this->error = 'Could not find ICD10 directory';
 				}
 
-				// handle the ICD9 RXNORM, and SNAMED requests
+				// handle the ICD9, RXNORM, and SNOMED requests
 			} else {
 				$dir = $this->file->extractFileToTempDir($params->path);
 				if($dir === false) {

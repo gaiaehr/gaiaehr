@@ -5,13 +5,13 @@
  * Date: 10/29/11
  * Time: 4:45 PM
  */
-Ext.define('App.classes.combo.Languages', {
+Ext.define('App.classes.combo.Themes', {
 	extend       : 'Ext.form.ComboBox',
-	alias        : 'widget.languagescombo',
+	alias        : 'widget.themescombo',
 	initComponent: function() {
 		var me = this;
 
-		Ext.define('LanguagesComboModel', {
+		Ext.define('ThemesComboModel', {
 			extend: 'Ext.data.Model',
 			fields: [
 				{ name: 'name', type: 'string' },
@@ -20,13 +20,13 @@ Ext.define('App.classes.combo.Languages', {
 			proxy : {
 				type: 'direct',
 				api : {
-					read: CombosData.getAvailableLanguages
+					read: CombosData.getThemes
 				}
 			}
 		});
 
 		me.store = Ext.create('Ext.data.Store', {
-			model   : 'LanguagesComboModel',
+			model   : 'ThemesComboModel',
 			autoLoad: true
 		});
 

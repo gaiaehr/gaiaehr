@@ -25,11 +25,11 @@ $_SESSION['site']['flops'] = 0;
     <title>GaiaEHR - Demo</title>
 
     <link   rel="stylesheet"        href="lib/sencha-touch-2.0.0-gpl/resources/css/android.css" type="text/css">
-    <link   rel="stylesheet"        href="app_mobile/resources/css/sink.css?2" type="text/css">
+    <link   rel="stylesheet"        href="app_m/resources/css/sink.css?2" type="text/css">
     <script type="text/javascript"  src="http://maps.google.com/maps/api/js?sensor=false"></script>
     <script type="text/javascript"  src="lib/sencha-touch-2.0.0-gpl/sencha-touch.js"></script>
-	<script type="text/javascript"  src="app_mobile/all-classes.js"></script>
-    <script type="text/javascript"  src="app_mobile/app.js"></script>
+	<script type="text/javascript"  src="app_m/all-classes.js"></script>
+    <script type="text/javascript"  src="app_m/app.js"></script>
 </head>
 <body></body>
 </html>

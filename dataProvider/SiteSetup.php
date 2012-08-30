@@ -190,10 +190,27 @@ class SiteSetup
 
 	public function createSConfigurationFile($params){
 		if(file_exists($conf = 'sites/conf.example.php')) {
-			if(($AESkey = ACL::createRandomKey()) !== false){
+			if(($params->AESkey = ACL::createRandomKey()) !== false){
 				$buffer     = file_get_contents($conf);
-				$search     = array('%host%', '%user%', '%pass%', '%db%', '%port%', '%key%', '%lang%');
-				$replace    = array($params->dbHost, $params->dbUser, $params->dbPass, $params->dbName, $params->dbPort, $AESkey, 'en_US');
+				$search     = array(
+					'%host%',
+					'%user%',
+					'%pass%',
+					'%db%',
+					'%port%',
+					'%key%',
+					'%lang%',
+					'%theme%');
+				$replace    = array(
+					$params->dbHost,
+					$params->dbUser,
+					$params->dbPass,
+					$params->dbName,
+					$params->dbPort,
+					$params->AESkey,
+					$params->lang,
+					$params->theme,
+				);
 				$newConf    = str_replace($search, $replace, $buffer);
 				$siteDir = "sites/$params->siteId";
 				$conf_file = ("$siteDir/conf.php");
@@ -203,7 +220,7 @@ class SiteSetup
 				chmod($conf_file, 0644);
 
 				if(file_exists($conf_file)) {
-					return array('success' => true , 'AESkey' => $AESkey);
+					return array('success' => true , 'AESkey' => $params->AESkey);
 				}else{
 					return array('success' => false, 'error' => "Unable to create $siteDir/conf.php file");
 				}
@@ -233,26 +250,24 @@ class SiteSetup
 	}
 
 
-	public function loadICD9Codes(){
-		sleep(4);
-		return array('success' => true);
-	}
-
-
-	public function loadICD10Codes(){
-		sleep(7);
-		return array('success' => true);
-	}
-
-
-	public function loadSNOMEDCodes(){
-		sleep(20);
-		return array('success' => true);
-	}
-
-
-	public function loadRxNormCodes(){
-		sleep(10);
-		return array('success' => true);
+	public function loadCode($code){
+		//print $code;
+		include_once('dataProvider/ExternalDataUpdate.php');
+		$codes = new ExternalDataUpdate();
+		$params = new stdClass();
+		$params->codeType = $code;
+		$foo = $codes->getCodeFiles($params);
+//		print_r($foo);
+		$params = new stdClass();
+		$params->codeType = $foo[0]['codeType'];
+		$params->version = $foo[0]['version'];
+		$params->path = $foo[0]['path'];
+		$params->date = $foo[0]['date'];
+		$params->basename = $foo[0]['basename'];
+//		print_r($params);
+		return $codes->updateCodes($params);
 	}
 }
+//$s = new SiteSetup();
+//print '<pre>';
+//print_r($s->loadCode('ICD9'));

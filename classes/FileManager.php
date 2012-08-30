@@ -91,7 +91,7 @@ class FileManager
 				}
 				return $this->workingDir;
 			}else{
-				$this->error = 'Unable to open zipped file';
+				$this->error = 'Unable to open zipped file '. $file;
 				return false;
 			}
 		}else{

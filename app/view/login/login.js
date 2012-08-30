@@ -5,8 +5,9 @@
  * @namespace authProcedures.getSites
  * @namespace authProcedures.login
  */
-Ext.define('App.panel.login.Login',{
+Ext.define('App.view.login.Login',{
     extend:'Ext.Viewport',
+    requires: ['App.classes.combo.Languages'],
     initComponent:function(){
         var me = this;
         me.currSite = null;
@@ -101,14 +102,10 @@ Ext.define('App.panel.login.Login',{
                     specialkey  : me.onEnter
                 }
             },{
-                xtype           : 'combobox',
+                xtype           : 'languagescombo',
                 name            : 'lang',
                 itemId          : 'lang',
-                displayField    : 'name',
-                valueField      : 'value',
-                queryMode       : 'local',
                 fieldLabel      : 'Language',
-                store           : me.langStore,
                 allowBlank      : false,
                 editable        : false,
                 listeners:{

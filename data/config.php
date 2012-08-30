@@ -1044,6 +1044,12 @@ $API = array(
             ),
             'getActiveInsurances'=>array(
                 'len'=>0
+            ),
+            'getAvailableLanguages'=>array(
+                'len'=>0
+            ),
+            'getThemes'=>array(
+                'len'=>0
             )
         )
     ),
@@ -1130,12 +1136,12 @@ $API = array(
         )
     ),
     
-	'i18n'=>array
-	(
-		'methods'=>array
-		(
-			'getTranslation'=>array
-			(
+	'i18n'=>array(
+		'methods'=>array(
+			'getTranslation'=>array(
+				'len'=>0
+			),
+			'getDefaultLanguage'=>array(
 				'len'=>0
 			)
 		)
@@ -1161,24 +1167,13 @@ $API = array(
             'createSiteAdmin'=>array(
                 'len'=>1
             ),
-            'loadICD9Codes'=>array(
-                'len'=>0
-            ),
-            'loadICD10Codes'=>array(
-                'len'=>0
-            ),
-            'loadSNOMEDCodes'=>array(
-                'len'=>0
-            ),
-            'loadRxNormCodes'=>array(
-                'len'=>0
-            ),
             'createSConfigurationFile'=>array(
+                'len'=>1
+            ),
+            'loadCode'=>array(
                 'len'=>1
             )
         )
     )
 
 );
-
-?>

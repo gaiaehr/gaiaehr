@@ -24,7 +24,7 @@ Ext.define('App.view.patient.EncounterDocumentsGrid', {
                 width:26,
                 items: [
                     {
-	                    icon: 'ui_icons/preview.png',
+	                    icon: 'resources/images/icons/preview.png',
 	                    tooltip: i18n['view_document'],
 	                    handler: me.onDocumentView,
 	                    getClass:function(){

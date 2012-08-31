@@ -1074,9 +1074,9 @@ Ext.define('App.view.patient.Encounter', {
     //***************************************************************************************************//
     alertIconRenderer: function(v) {
         if(v == 1) {
-            return '<img src="ui_icons/icoLessImportant.png" />'
+            return '<img src="resources/images/icons/icoLessImportant.png" />'
         } else if(v == 2) {
-            return '<img src="ui_icons/icoImportant.png" />'
+            return '<img src="resources/images/icons/icoImportant.png" />'
         }
         return v;
     },
@@ -1258,7 +1258,7 @@ Ext.define('App.view.patient.Encounter', {
          * Get 'Vitals' Form Fields and add listeners to convert values
          */
         if(me.vitalsPanel){
-            me.getFormItems(me.vitalsPanel.down('form'), 'Vitals', function() {
+            me.getFormItems(me.vitalsPanel.down('form'), 4, function() {
                 form = me.vitalsPanel.down('form').getForm();
                 form.findField('temp_c').addListener('keyup', me.cf, me);
                 form.findField('temp_f').addListener('keyup', me.fc, me);
@@ -1280,7 +1280,7 @@ Ext.define('App.view.patient.Encounter', {
          * Get 'Review of Systems' Form and define the Model using the form fields
          */
         if(me.reviewSysPanel){
-            me.getFormItems(me.reviewSysPanel, i18n['review_of_systems'], function() {
+            me.getFormItems(me.reviewSysPanel, 8, function() {
                 var formFields = me.reviewSysPanel.getForm().getFields(), modelFields = new defaultFields;
                 for(var i = 0; i < formFields.items.length; i++) {
                     modelFields.push({name: formFields.items[i].name, type: 'auto'});
@@ -1302,7 +1302,7 @@ Ext.define('App.view.patient.Encounter', {
          * Get 'SOAP' Form and define the Model using the form fields
          */
         if(me.soapPanel){
-            me.getFormItems(me.soapPanel, i18n['soap'], function() {
+            me.getFormItems(me.soapPanel, 6, function() {
                 var formFields = me.soapPanel.getForm().getFields(), modelFields = new defaultFields;
                 for(var i = 0; i < formFields.items.length; i++) {
                     modelFields.push({name: formFields.items[i].name, type: 'auto'});
@@ -1344,7 +1344,7 @@ Ext.define('App.view.patient.Encounter', {
          * Get 'Review of Systems Check' Form and define the Model using the form fields
          */
         if(me.reviewSysCkPanel){
-            me.getFormItems(me.reviewSysCkPanel, i18n['review_of_systems_checks'], function() {
+            me.getFormItems(me.reviewSysCkPanel, 9, function() {
                 var formFields = me.reviewSysCkPanel.getForm().getFields(), modelFields = new defaultFields;
                 for(var i = 0; i < formFields.items.length; i++) {
                     modelFields.push({name: formFields.items[i].name, type: 'auto'});
@@ -1363,7 +1363,7 @@ Ext.define('App.view.patient.Encounter', {
             });
         }
 
-        if(me.newEncounterWindow) me.getFormItems(me.newEncounterWindow.down('form'), i18n['new_encounter']);
+        if(me.newEncounterWindow) me.getFormItems(me.newEncounterWindow.down('form'), 5);
     },
 
     getButtonsToDisable: function() {

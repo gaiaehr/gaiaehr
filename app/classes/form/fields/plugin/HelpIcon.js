@@ -1,7 +1,7 @@
 Ext.define('App.classes.form.fields.plugin.HelpIcon', {
     extend: 'Ext.AbstractPlugin',
     alias      : 'plugin.helpicon',
-    iconSrc    : 'ui_icons/icohelp.png',
+    iconSrc    : 'resources/images/icons/icohelp.png',
     iconHeight : 16,
     iconWidth  : 16,
     iconMargin : '0 10',

@@ -290,11 +290,11 @@ Ext.define('App.view.patient.encounter.CurrentProceduralTerminology', {
 
     status:function(val){
         if(val == '0') {
-            return '<img style="padding-left: 10px" src="ui_icons/no.gif" />';
+            return '<img style="padding-left: 10px" src="resources/images/icons/no.gif" />';
         } else if(val == '1') {
-            return '<img style="padding-left: 10px" src="ui_icons/yes.gif" />';
+            return '<img style="padding-left: 10px" src="resources/images/icons/yes.gif" />';
         } else if(val == '2') {
-            return '<img style="padding-left: 10px" src="ui_icons/icohelp.png" />';
+            return '<img style="padding-left: 10px" src="resources/images/icons/icohelp.png" />';
         }
         return val;
     },

@@ -14,8 +14,8 @@ if(!defined('_GaiaEXEC')) die('No direct access allowed.');
         <title>GaiaEHR Logon Screen</title>
         <script type="text/javascript" src="lib/extjs-4.1.1/ext-all.js"></script>
             <link rel="stylesheet" type="text/css" href="resources/css/ext-all-gray.css">
-        <link rel="stylesheet" type="text/css" href="ui_app/style_newui.css" >
-        <link rel="stylesheet" type="text/css" href="ui_app/custom_app.css" >
+        <link rel="stylesheet" type="text/css" href="resources/css/style_newui.css" >
+        <link rel="stylesheet" type="text/css" href="resources/css/custom_app.css" >
 
         <link rel="shortcut icon" href="favicon.ico" >
 

@@ -67,7 +67,7 @@ Ext.define('App.view.patient.VisitCheckout', {
                                                     width:20,
                                                     items: [
                                                         {
-                                                            icon: 'ui_icons/delete.png',
+                                                            icon: 'resources/images/icons/delete.png',
                                                             tooltip: i18n['remove'],
                                                             scope:me,
                                                             handler: me.onRemoveService

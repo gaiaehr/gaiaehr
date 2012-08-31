@@ -23,7 +23,7 @@ Ext.define('App.view.patient.NewPatient', {
 		var me = this;
 
 		me.formTitle = i18n['demographics'];
-		me.formToRender = 'Demographics';
+		me.formToRender = 1;
 
 		me.form = Ext.create('Ext.form.Panel', {
 			title        : me.formTitle,

@@ -85,18 +85,18 @@ Ext.define('App.classes.window.Window', {
 
 	boolRenderer: function(val) {
 		if(val == '1' || val == true || val == 'true') {
-			return '<img style="padding-left: 13px" src="ui_icons/yes.gif" />';
+			return '<img style="padding-left: 13px" src="resources/images/icons/yes.gif" />';
 		} else if(val == '0' || val == false || val == 'false') {
-			return '<img style="padding-left: 13px" src="ui_icons/no.gif" />';
+			return '<img style="padding-left: 13px" src="resources/images/icons/no.gif" />';
 		}
 		return val;
 	},
 
 	alertRenderer: function(val) {
 		if(val == '1' || val == true || val == 'true') {
-			return '<img style="padding-left: 13px" src="ui_icons/no.gif" />';
+			return '<img style="padding-left: 13px" src="resources/images/icons/no.gif" />';
 		} else if(val == '0' || val == false || val == 'false') {
-			return '<img style="padding-left: 13px" src="ui_icons/yes.gif" />';
+			return '<img style="padding-left: 13px" src="resources/images/icons/yes.gif" />';
 		}
 		return val;
 	},
@@ -104,7 +104,7 @@ Ext.define('App.classes.window.Window', {
 	warnRenderer:function(val, metaData, record){
         var toolTip = record.data.warningMsg ? ' data-qtip="'+record.data.warningMsg+'" ' : '';
         if(val == '1' || val == true || val == 'true') {
-            return '<img src="ui_icons/icoImportant.png" ' + toolTip + ' />';
+            return '<img src="resources/images/icons/icoImportant.png" ' + toolTip + ' />';
         }
     },
 

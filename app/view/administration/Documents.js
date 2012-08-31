@@ -465,7 +465,7 @@ Ext.define('App.view.administration.Documents', {
                     }
 				},
 				{
-					icon: 'ui_icons/delete.png',
+					icon: 'resources/images/icons/delete.png',
 					tooltip: i18n['remove'],
 					scope:me,
 					handler: me.onRemoveDocument
@@ -510,7 +510,7 @@ Ext.define('App.view.administration.Documents', {
                     }
 				},
 				{
-					icon: 'ui_icons/delete.png',
+					icon: 'resources/images/icons/delete.png',
 					tooltip: i18n['remove'],
 					scope:me,
 					handler: me.onRemoveDocument
@@ -555,7 +555,7 @@ Ext.define('App.view.administration.Documents', {
                     }
 				},
 				{
-					icon: 'ui_icons/delete.png',
+					icon: 'resources/images/icons/delete.png',
 					tooltip: i18n['remove'],
 					scope:me,
 					handler: me.onRemoveDocument

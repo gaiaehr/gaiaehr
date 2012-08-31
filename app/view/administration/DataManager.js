@@ -354,7 +354,7 @@ Ext.define('App.view.administration.DataManager', {
                             width: 20,
                             items: [
                                 {
-                                    icon   : 'ui_icons/delete.png',
+                                    icon   : 'resources/images/icons/delete.png',
                                     tooltip: i18n['remove'],
                                     scope  : me,
                                     handler: me.onRemoveRelation
@@ -397,7 +397,7 @@ Ext.define('App.view.administration.DataManager', {
                             width: 20,
                             items: [
                                 {
-                                    icon   : 'ui_icons/delete.png',
+                                    icon   : 'resources/images/icons/delete.png',
                                     tooltip: i18n['remove'],
                                     scope  : me,
                                     handler: me.onRemoveRelation
@@ -440,7 +440,7 @@ Ext.define('App.view.administration.DataManager', {
                             width: 20,
                             items: [
                                 {
-                                    icon   : 'ui_icons/delete.png',
+                                    icon   : 'resources/images/icons/delete.png',
                                     tooltip: i18n['remove'],
                                     scope  : me,
                                     handler: me.onRemoveRelation

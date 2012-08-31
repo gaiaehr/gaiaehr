@@ -72,9 +72,9 @@ Ext.define('App.view.administration.Users', {
 
 		function authCk(val) {
 			if(val == '1') {
-				return '<img src="ui_icons/yes.gif" />';
+				return '<img src="resources/images/icons/yes.gif" />';
 			} else if(val == '0') {
-				return '<img src="ui_icons/no.gif" />';
+				return '<img src="resources/images/icons/no.gif" />';
 			}
 			return val;
 		}

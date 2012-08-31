@@ -51,12 +51,3 @@
     padding: 5px;
     font-size: 12px;
 }
-.settings {
-    background-image:url(../shared/icons/fam/folder_wrench.png);
-}
-.nav {
-    background-image:url(../shared/icons/fam/folder_go.png);
-}
-.info {
-    background-image:url(../shared/icons/fam/information.png);
-}

@@ -8,7 +8,7 @@
 Ext.define('App.classes.form.fields.Help', {
     extend       : 'Ext.Img',
     alias        : 'widget.helpbutton',
-    src          : 'ui_icons/icohelp.png',
+    src          : 'resources/images/icons/icohelp.png',
     height       : 16,
     width        : 16,
     margin       : '3 10',

@@ -49,7 +49,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 										width: 20,
 										items: [
 											{
-												icon   : 'ui_icons/delete.png',
+												icon   : 'resources/images/icons/delete.png',
 												tooltip: i18n['remove'],
 												scope  : me,
 												handler: me.onRemoveLabs
@@ -107,7 +107,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 										width: 20,
 										items: [
 											{
-												icon   : 'ui_icons/delete.png',
+												icon   : 'resources/images/icons/delete.png',
 												tooltip: i18n['remove'],
 												scope  : me,
 												handler: me.onRemove
@@ -181,7 +181,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 										width: 20,
 										items: [
 											{
-												icon   : 'ui_icons/delete.png',
+												icon   : 'resources/images/icons/delete.png',
 												tooltip: i18n['remove'],
 												scope  : me,
 												handler: me.onRemove

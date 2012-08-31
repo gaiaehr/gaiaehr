@@ -14,8 +14,8 @@ if(!defined('_GaiaEXEC')) die('No direct access allowed.');
 	<title>GaiaEHR :: New Site Setup</title>
 	<script type="text/javascript" src="lib/extjs-4.1.1/bootstrap.js"></script>
 	<link rel="stylesheet" type="text/css" href="resources/css/ext-all.css">
-	<link rel="stylesheet" type="text/css" href="ui_app/style_newui.css">
-	<link rel="stylesheet" type="text/css" href="ui_app/custom_app.css">
+	<link rel="stylesheet" type="text/css" href="resources/css/style_newui.css">
+	<link rel="stylesheet" type="text/css" href="resources/css/custom_app.css">
 	<script src="data/api.php"></script>
 	<script type="text/javascript">
 		var app;

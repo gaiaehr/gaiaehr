@@ -477,7 +477,7 @@ Ext.define('App.view.miscellaneous.Addressbook', {
 
 	local: function(val) {
 		if(val !== '') {
-			return '<img src="ui_icons/yes.gif" />';
+			return '<img src="resources/images/icons/yes.gif" />';
 		}
 		return val;
 	},

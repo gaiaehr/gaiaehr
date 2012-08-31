@@ -344,7 +344,7 @@ Ext.define('App.view.patient.Summary', {
 						width: 26,
 						items: [
 							{
-								icon    : 'ui_icons/preview.png',
+								icon    : 'resources/images/icons/preview.png',
 								tooltip : i18n['view_document'],
 								handler : me.onDocumentView,
 								getClass: function() {
@@ -692,7 +692,7 @@ Ext.define('App.view.patient.Summary', {
 				primaryInsurancePanel,
 				secondaryInsurancePanel,
 				tertiaryInsurancePanel;
-			this.getFormItems(demoFormPanel, 'Demographics', function(success) {
+			this.getFormItems(demoFormPanel, 1, function(success) {
 				if(success) {
 					whoPanel = demoFormPanel.query('panel[title="Who"]')[0];
 					insurancePanel = demoFormPanel.query('panel[action="insurances"]')[0];
@@ -709,11 +709,11 @@ Ext.define('App.view.patient.Summary', {
 						width      : 255,
 						items      : [
 							me.patientImg = Ext.create('Ext.container.Container', {
-								html  : '<img src="ui_icons/patientPhotoId.jpg" height="119" width="119" />',
+								html  : '<img src="resources/images/icons/patientPhotoId.jpg" height="119" width="119" />',
 								margin: '0 5 0 0'
 							}),
 							me.patientQRcode = Ext.create('Ext.container.Container', {
-								html  : '<img src="ui_icons/patientDataQrCode.png" height="119" width="119" />',
+								html  : '<img src="resources/images/icons/patientDataQrCode.png" height="119" width="119" />',
 								margin: 0
 							})
 						],
@@ -744,7 +744,7 @@ Ext.define('App.view.patient.Summary', {
 						width : 255,
 						items : [
 							me.primaryInsuranceImg = Ext.create('Ext.container.Container', {
-								html: '<img src="ui_icons/no_card.jpg" height="154" width="254" />'
+								html: '<img src="resources/images/icons/no_card.jpg" height="154" width="254" />'
 							}),
 							me.primaryInsuranceImgUpload = Ext.create('Ext.window.Window', {
 								draggable  : false,
@@ -804,7 +804,7 @@ Ext.define('App.view.patient.Summary', {
 						width : 255,
 						items : [
 							me.secondaryInsuranceImg = Ext.create('Ext.container.Container', {
-								html: '<img src="ui_icons/no_card.jpg" height="154" width="254" />'
+								html: '<img src="resources/images/icons/no_card.jpg" height="154" width="254" />'
 							}),
 							me.secondaryInsuranceImgUpload = Ext.create('Ext.window.Window', {
 								draggable  : false,
@@ -865,7 +865,7 @@ Ext.define('App.view.patient.Summary', {
 						width : 255,
 						items : [
 							me.tertiaryInsuranceImg = Ext.create('Ext.container.Container', {
-								html: '<img src="ui_icons/no_card.jpg" height="154" width="254" />'
+								html: '<img src="resources/images/icons/no_card.jpg" height="154" width="254" />'
 							}),
 							me.tertiaryInsuranceImgUpload = Ext.create('Ext.window.Window', {
 								draggable  : false,
@@ -1163,9 +1163,9 @@ Ext.define('App.view.patient.Summary', {
 				me.getPatientImgs();
 				me.verifyPatientRequiredInfo();
 				Patient.getPatientInsurancesCardsUrlByPid(me.pid, function(url) {
-					me.primaryInsuranceImg.update('<img src="' + (url.Primary.url ? url.Primary.url : 'ui_icons/no_card.jpg') + '" height="154" width="254" />');
-					me.secondaryInsuranceImg.update('<img src="' + (url.Secondary.url ? url.Secondary.url : 'ui_icons/no_card.jpg') + '" height="154" width="254" />');
-					me.tertiaryInsuranceImg.update('<img src="' + (url.Tertiary.url ? url.Tertiary.url : 'ui_icons/no_card.jpg') + '" height="154" width="254" />');
+					me.primaryInsuranceImg.update('<img src="' + (url.Primary.url ? url.Primary.url : 'resources/images/icons/no_card.jpg') + '" height="154" width="254" />');
+					me.secondaryInsuranceImg.update('<img src="' + (url.Secondary.url ? url.Secondary.url : 'resources/images/icons/no_card.jpg') + '" height="154" width="254" />');
+					me.tertiaryInsuranceImg.update('<img src="' + (url.Tertiary.url ? url.Tertiary.url : 'resources/images/icons/no_card.jpg') + '" height="154" width="254" />');
 				});
 			}
 			/**

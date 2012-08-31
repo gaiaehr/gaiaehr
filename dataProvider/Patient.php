@@ -281,7 +281,7 @@ class Patient
 		$root = $_SESSION['site']['root'];
 		$site = $_SESSION['site']['site'];
 		$newImg = $root . '/sites/' . $site . '/patients/' . $pid .'/patientPhotoId.jpg';
-		copy($root.'/ui_icons/patientPhotoId.jpg', $newImg);
+		copy($root.'/resources/images/icons/patientPhotoId.jpg', $newImg);
 		return;
 	}
 

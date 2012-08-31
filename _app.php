@@ -27,13 +27,13 @@ $_SESSION['site']['flops'] = 0;
 		</script>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 		<title>GaiaEHR :: (Electronic Health Records)</title>
-		<link rel="stylesheet" type="text/css" href="ui_app/dashboard.css">
+		<link rel="stylesheet" type="text/css" href="resources/css/dashboard.css">
 		<link rel="stylesheet" type="text/css" href="resources/css/ext-all-gray.css">
 		<link rel="stylesheet" type="text/css" href="lib/extensible-1.5.1/resources/css/calendar.css"/>
 		<link rel="stylesheet" type="text/css" href="lib/extensible-1.5.1/resources/css/calendar-colors.css"/>
 		<link rel="stylesheet" type="text/css" href="lib/extensible-1.5.1/resources/css/recurrence.css"/>
-		<link rel="stylesheet" type="text/css" href="ui_app/style_newui.css">
-		<link rel="stylesheet" type="text/css" href="ui_app/custom_app.css">
+		<link rel="stylesheet" type="text/css" href="resources/css/style_newui.css">
+		<link rel="stylesheet" type="text/css" href="resources/css/custom_app.css">
 		<link rel="shortcut icon" href="favicon.ico">
 	</head>
 	<body>

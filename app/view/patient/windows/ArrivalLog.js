@@ -64,7 +64,7 @@ Ext.define('App.view.patient.windows.ArrivalLog', {
                         width:25,
                         items: [
                             {
-                                icon: 'ui_icons/delete.png',  // Use a URL in the icon config
+                                icon: 'resources/images/icons/delete.png',  // Use a URL in the icon config
                                 tooltip: i18n['remove'],
                                 scope:me,
                                 handler: me.onPatientRemove

@@ -1168,7 +1168,7 @@ Ext.define('App.view.Viewport', {
 	patientBtnTpl: function() {
 		return Ext.create('Ext.XTemplate',
 			'<div class="patient_btn  {priority}">',
-			'<div class="patient_btn_img"><img src="ui_icons/user_32.png"></div>',
+			'<div class="patient_btn_img"><img src="resources/images/icons/user_32.png"></div>',
 			'<div class="patient_btn_info">',
 			'<div class="patient_btn_name">{name}</div>',
 			'<div class="patient_btn_record">( {pid} )</div>',

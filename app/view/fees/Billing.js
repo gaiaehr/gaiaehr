@@ -381,13 +381,13 @@ Ext.define('App.view.fees.Billing', {
 
 	stage: function(val) {
 		if(val == '1') {
-			return '<img src="ui_icons/stage1.png" />';
+			return '<img src="resources/images/icons/stage1.png" />';
 		} else if(val == '2') {
-			return '<img src="ui_icons/stage2.png" />';
+			return '<img src="resources/images/icons/stage2.png" />';
 		} else if(val == '3') {
-			return '<img src="ui_icons/stage3.png" />';
+			return '<img src="resources/images/icons/stage3.png" />';
 		} else if(val == '4') {
-			return '<img src="ui_icons/stage4.png" />';
+			return '<img src="resources/images/icons/stage4.png" />';
 		}
 		return val;
 	},

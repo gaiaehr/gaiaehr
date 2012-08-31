@@ -55,7 +55,7 @@ Ext.define('App.view.administration.PreventiveCare', {
                     width:30,
                     items: [
                         {
-                            icon: 'ui_icons/delete.png',  // Use a URL in the icon config
+                            icon: 'resources/images/icons/delete.png',  // Use a URL in the icon config
                             tooltip: i18n['remove'],
                             handler: function(grid, rowIndex, colIndex) {
                                 var rec = grid.getStore().getAt(rowIndex);
@@ -258,7 +258,7 @@ Ext.define('App.view.administration.PreventiveCare', {
 										width:20,
 										items: [
 											{
-												icon: 'ui_icons/delete.png',
+												icon: 'resources/images/icons/delete.png',
 												tooltip: i18n['remove'],
 												scope:me,
 												handler: me.onRemoveRelation
@@ -300,7 +300,7 @@ Ext.define('App.view.administration.PreventiveCare', {
 										width:20,
 										items: [
 											{
-												icon: 'ui_icons/delete.png',
+												icon: 'resources/images/icons/delete.png',
 												tooltip: i18n['remove'],
 												scope:me,
 												handler: me.onRemoveRelation
@@ -342,7 +342,7 @@ Ext.define('App.view.administration.PreventiveCare', {
 										width:20,
 										items: [
 											{
-												icon: 'ui_icons/delete.png',
+												icon: 'resources/images/icons/delete.png',
 												tooltip: i18n['remove'],
 												scope:me,
 												handler: me.onRemoveRelation

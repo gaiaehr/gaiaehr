@@ -26,7 +26,10 @@ Ext.define('App.view.reports.reportCenter',
 			loader	: 
 			{
 				autoLoad:true,
-				url :'app/view/reports/reportCenterLayout.html'
+				scripts:true,
+				url :'app/view/reports/reportCenterLayout.php',
+				contentType: 'html',
+				loadMask: true
 			}
         }
         ];
@@ -39,9 +42,8 @@ Ext.define('App.view.reports.reportCenter',
 	 * place inside this function all the functions you want
 	 * to call every this panel becomes active
 	 */
-	onActive      : function(callback) 
+	onActive: function(callback) 
 	{
 		callback(true);
 	}
-
 });

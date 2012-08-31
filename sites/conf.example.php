@@ -20,6 +20,7 @@ $_SESSION['site']['AESkey'] = "%key%";
  */
 $_SESSION['site']['localization'] = '%lang%';
 $_SESSION['site']['theme'] = '%theme%';
+$_SESSION['site']['directory']      = str_replace('\\', '/', dirname(__FILE__));
 /**
  * Setup Command
  * If it's true, the application will

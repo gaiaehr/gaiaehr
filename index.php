@@ -33,6 +33,14 @@ $mobile = new Mobile_Detect();
  * set the site using the url parameter site, or default if not given
  */
 $site = (isset($_GET['site']) ? $_GET['site'] : 'default');
+
+if(file_exists('sites/'.$site.'/conf.php')) {
+	include_once('sites/'.$site.'/conf.php');
+	$lang = $_SESSION['site']['localization'];
+}else{
+	$lang = 'en_US';
+}
+
 /**
  * Make the auth process
  */

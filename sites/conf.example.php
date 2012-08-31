@@ -18,7 +18,7 @@ $_SESSION['site']['AESkey'] = "%key%";
 /**
  * Default site language and theme
  */
-$_SESSION['site']['lang'] = '%lang%';
+$_SESSION['site']['localization'] = '%lang%';
 $_SESSION['site']['theme'] = '%theme%';
 /**
  * Setup Command

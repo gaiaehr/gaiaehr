@@ -13,7 +13,7 @@ if(!defined('_GaiaEXEC')) die('No direct access allowed.');
         <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
         <title>GaiaEHR Logon Screen</title>
         <script type="text/javascript" src="lib/extjs-4.1.1/ext-all.js"></script>
-            <link rel="stylesheet" type="text/css" href="themes/resources/css/ext-all-gray.css">
+            <link rel="stylesheet" type="text/css" href="resources/css/ext-all-gray.css">
         <link rel="stylesheet" type="text/css" href="ui_app/style_newui.css" >
         <link rel="stylesheet" type="text/css" href="ui_app/custom_app.css" >
 
@@ -21,7 +21,7 @@ if(!defined('_GaiaEXEC')) die('No direct access allowed.');
 
         <script src="data/api.php"></script>
         <script type="text/javascript">
-	        var app, site = '<?php print $site ?>';
+	        var app, site = '<?php print $site ?>', lang = '<?php print $lang ?>';
 	        Ext.Loader.setConfig({
 	            enabled       : true,
 	            disableCaching: false,

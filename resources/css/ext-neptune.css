@@ -611,7 +611,7 @@ input, textarea, select {
 .x-tool-base, .x-tool-maximize, .x-tool-minimize, .x-tool-restore, .x-tool-save, .x-tool-refresh, .x-tool-help, .x-tool-info, .x-tool-search, .x-tool-gear, .x-tool-close, .x-tool-minus, .x-tool-plus, .x-tool-print, .x-tool-up, .x-tool-toggle, .x-tool-collapse, .x-tool-collapse-top, .x-tool-left, .x-tool-prev, .x-tool-down, .x-tool-collapse-bottom, .x-tool-expand-bottom, .x-tool-expand, .x-tool-right, .x-tool-next, .x-tool-collapse-all, .x-tool-expand-all, .x-tool-pin, .x-tool-unpin, .x-collapsed .x-tool-toggle {
   width: 16px;
   height: 16px;
-  background-image: url('../../resources/themes/images/neptune/tools.png'); }
+  background-image: url('../themes/images/neptune/tools.png'); }
 
 /* line 199, ../themes/stylesheets/neptune/default/util/_tool.scss */
 .x-tool-base-over, .x-tool-over .x-tool-maximize, .x-tool-over .x-tool-minimize, .x-tool-over .x-tool-restore, .x-tool-over .x-tool-save, .x-tool-over .x-tool-refresh, .x-tool-over .x-tool-help, .x-tool-over .x-tool-info, .x-tool-over .x-tool-search, .x-tool-over .x-tool-gear, .x-tool-over .x-tool-close, .x-tool-over .x-tool-minus, .x-tool-over .x-tool-plus, .x-tool-over .x-tool-print, .x-tool-over .x-tool-up, .x-tool-over .x-tool-toggle, .x-tool-over .x-tool-collapse, .x-tool-over .x-tool-collapse-top, .x-tool-over .x-tool-left, .x-tool-over .x-tool-prev, .x-tool-over .x-tool-down, .x-tool-over .x-tool-collapse-bottom, .x-tool-over .x-tool-expand-bottom, .x-tool-over .x-tool-expand, .x-tool-over .x-tool-right, .x-tool-over .x-tool-next, .x-tool-over .x-tool-collapse-all, .x-tool-over .x-tool-expand-all, .x-tool-over .x-tool-pin, .x-tool-over .x-tool-unpin, .x-collapsed .x-tool-over .x-tool-toggle {
@@ -625,7 +625,7 @@ input, textarea, select {
 .x-accordion-tool-base, .x-accordion-hd .x-tool-collapse-top, .x-accordion-hd .x-tool-collapse-bottom, .x-accordion-hd .x-tool-expand-top, .x-accordion-hd .x-tool-expand-bottom {
   width: 12px;
   height: 12px;
-  background-image: url('../../resources/themes/images/neptune/tools-small.png'); }
+  background-image: url('../themes/images/neptune/tools-small.png'); }
 
 /* line 212, ../themes/stylesheets/neptune/default/util/_tool.scss */
 .x-accordion-tool-base-over, .x-accordion-hd .x-tool-over .x-tool-collapse-top, .x-accordion-hd .x-tool-over .x-tool-collapse-bottom, .x-accordion-hd .x-tool-over .x-tool-expand-top, .x-accordion-hd .x-tool-over .x-tool-expand-bottom {
@@ -3348,14 +3348,14 @@ input, textarea, select {
 
 /* line 271, ../themes/stylesheets/neptune/default/widgets/_button.scss */
 .x-btn-arrow {
-  background-image: url('../../resources/themes/images/neptune/button/arrow.png');
+  background-image: url('../themes/images/neptune/button/arrow.png');
   display: block; }
 
 /* line 278, ../themes/stylesheets/neptune/default/widgets/_button.scss */
 .x-btn-split-right,
 .x-btn-over .x-btn-split-right {
   background: transparent no-repeat right center;
-  background-image: url('../../resources/themes/images/neptune/button/s-arrow.png');
+  background-image: url('../themes/images/neptune/button/s-arrow.png');
   padding-right: 19px !important; }
 
 /* line 285, ../themes/stylesheets/neptune/default/widgets/_button.scss */
@@ -3367,7 +3367,7 @@ input, textarea, select {
 
 /* line 291, ../themes/stylesheets/neptune/default/widgets/_button.scss */
 .x-toolbar .x-btn-split-right {
-  background-image: url('../../resources/themes/images/neptune/button/s-arrow-noline.png');
+  background-image: url('../themes/images/neptune/button/s-arrow-noline.png');
   padding-right: 17px !important; }
 
 /* line 296, ../themes/stylesheets/neptune/default/widgets/_button.scss */
@@ -3389,7 +3389,7 @@ input, textarea, select {
 
 /* line 313, ../themes/stylesheets/neptune/default/widgets/_button.scss */
 .x-btn-over .x-btn-split-right {
-  background-image: url('../../resources/themes/images/neptune/button/s-arrow-o.png'); }
+  background-image: url('../themes/images/neptune/button/s-arrow-o.png'); }
 
 /* line 314, ../themes/stylesheets/neptune/default/widgets/_button.scss */
 .x-btn-over .x-btn-split-bottom {
@@ -3398,7 +3398,7 @@ input, textarea, select {
 /* line 317, ../themes/stylesheets/neptune/default/widgets/_button.scss */
 .x-btn-menu-active .x-btn-split-right,
 .x-btn-pressed .x-btn-split-right {
-  background-image: url('../../resources/themes/images/neptune/button/s-arrow-p.png'); }
+  background-image: url('../themes/images/neptune/button/s-arrow-p.png'); }
 
 /* line 319, ../themes/stylesheets/neptune/default/widgets/_button.scss */
 .x-btn-menu-active .x-btn-split-bottom,
@@ -7114,7 +7114,7 @@ input, textarea, select {
     font-weight: normal !important; }
   /* line 109, ../themes/stylesheets/neptune/default/widgets/_datepicker.scss */
   .x-datepicker-month .x-btn-split-right {
-    background-image: url('../../resources/themes/images/neptune/button/s-arrow-light.gif');
+    background-image: url('../themes/images/neptune/button/s-arrow-light.gif');
     padding-right: 12px; }
 
 /* line 115, ../themes/stylesheets/neptune/default/widgets/_datepicker.scss */
@@ -7606,7 +7606,7 @@ table.x-datepicker-inner {
   padding: 0;
   position: absolute;
   overflow: hidden;
-  -webkit-border-image: url('../../resources/themes/images/neptune/grid/header-border.png') 1 1 1 1 stretch stretch;
+  -webkit-border-image: url('../themes/images/neptune/grid/header-border.png') 1 1 1 1 stretch stretch;
   border-right: 1px solid #eaeaea;
   border-left: 0 none;
   border-top: 0 none;
@@ -7679,14 +7679,14 @@ table.x-datepicker-inner {
   padding-right: 16px;
   background: no-repeat top right;
   background-position-y: 1px;
-  background-image: url('../../resources/themes/images/neptune/grid/sort.png'); }
+  background-image: url('../themes/images/neptune/grid/sort.png'); }
 
 /* line 192, ../themes/stylesheets/neptune/default/widgets/_grid.scss */
 .x-column-header-sort-DESC .x-column-header-text {
   padding-right: 16px;
   background: no-repeat top right;
   background-position-y: -47px;
-  background-image: url('../../resources/themes/images/neptune/grid/sort.png'); }
+  background-image: url('../themes/images/neptune/grid/sort.png'); }
 
 /* line 200, ../themes/stylesheets/neptune/default/widgets/_grid.scss */
 .x-grid-row {
@@ -8308,7 +8308,7 @@ td.x-form-item-pad {
   font: normal 11px "Helvetica Neue", Arial, Verdana, sans-serif;
   line-height: 16px;
   background: no-repeat 0 2px;
-  background-image: url('../../resources/themes/images/neptune/invalid.gif'); }
+  background-image: url('../themes/images/neptune/invalid.gif'); }
 
 /* line 57, ../themes/stylesheets/neptune/default/widgets/form/_all.scss */
 .x-external-error-icon {
@@ -8584,7 +8584,7 @@ textarea.x-form-invalid-field {
   width: 17px;
   height: 17px;
   background: no-repeat;
-  background-image: url('../../resources/themes/images/neptune/checkbox.gif');
+  background-image: url('../themes/images/neptune/checkbox.gif');
   overflow: hidden;
   padding: 0;
   border: 0; }
@@ -8607,7 +8607,7 @@ textarea.x-form-invalid-field {
 /* Radios */
 /* line 44, ../themes/stylesheets/neptune/default/widgets/form/_checkbox.scss */
 .x-form-radio {
-  background-image: url('../../resources/themes/images/neptune/radio.gif');
+  background-image: url('../themes/images/neptune/radio.gif');
   width: 19px;
   height: 19px; }
 
@@ -8662,7 +8662,7 @@ textarea.x-form-invalid-field {
     width: 11px;
     height: 11px;
     content: "";
-    background: url('../../resources/themes/images/neptune/triggerfield.png') no-repeat; }
+    background: url('../themes/images/neptune/triggerfield.png') no-repeat; }
 
 /* line 26, ../themes/stylesheets/neptune/default/widgets/form/_triggerfield.scss */
 .x-trigger-cell {
@@ -8718,7 +8718,7 @@ textarea.x-form-invalid-field {
 
 /* line 66, ../themes/stylesheets/neptune/default/widgets/form/_htmleditor.scss */
 .x-html-editor-tb span.x-btn-icon {
-  background-image: url('../../resources/themes/images/neptune/WYSIWYG.png'); }
+  background-image: url('../themes/images/neptune/WYSIWYG.png'); }
 /* line 71, ../themes/stylesheets/neptune/default/widgets/form/_htmleditor.scss */
 .x-html-editor-tb .x-btn-over span.x-btn-icon {
   background-position-y: -16px; }
@@ -10299,35 +10299,35 @@ textarea.x-form-invalid-field {
 .x-tree-icon-end-plus,
 .x-tree-icon-leaf,
 .x-tree-icon-parent {
-  background-image: url('../../resources/themes/images/neptune/tree/elbows.png'); }
+  background-image: url('../themes/images/neptune/tree/elbows.png'); }
 
 /* line 73, ../themes/stylesheets/neptune/default/widgets/_tree.scss */
 .x-tree-elbow-plus,
 .x-tree-elbow-end-plus {
-  background-image: url('../../resources/themes/images/neptune/tree/icons-gray.png');
+  background-image: url('../themes/images/neptune/tree/icons-gray.png');
   background-position: 0px 0; }
 
 /* line 79, ../themes/stylesheets/neptune/default/widgets/_tree.scss */
 .x-grid-tree-node-expanded .x-tree-elbow-plus,
 .x-grid-tree-node-expanded .x-tree-elbow-end-plus {
-  background-image: url('../../resources/themes/images/neptune/tree/icons-gray.png');
+  background-image: url('../themes/images/neptune/tree/icons-gray.png');
   background-position: -20px 0; }
 
 /* line 86, ../themes/stylesheets/neptune/default/widgets/_tree.scss */
 .x-tree-lines .x-tree-elbow-plus {
-  background-image: url('../../resources/themes/images/neptune/tree/icons-gray.png');
+  background-image: url('../themes/images/neptune/tree/icons-gray.png');
   background-position: -80px 0; }
 /* line 91, ../themes/stylesheets/neptune/default/widgets/_tree.scss */
 .x-tree-lines .x-tree-elbow-end-plus {
-  background-image: url('../../resources/themes/images/neptune/tree/icons-gray.png');
+  background-image: url('../themes/images/neptune/tree/icons-gray.png');
   background-position: -100px 0; }
 /* line 96, ../themes/stylesheets/neptune/default/widgets/_tree.scss */
 .x-tree-lines .x-grid-tree-node-expanded .x-tree-elbow-plus {
-  background-image: url('../../resources/themes/images/neptune/tree/icons-gray.png');
+  background-image: url('../themes/images/neptune/tree/icons-gray.png');
   background-position: -120px 0; }
 /* line 101, ../themes/stylesheets/neptune/default/widgets/_tree.scss */
 .x-tree-lines .x-grid-tree-node-expanded .x-tree-elbow-end-plus {
-  background-image: url('../../resources/themes/images/neptune/tree/icons-gray.png');
+  background-image: url('../themes/images/neptune/tree/icons-gray.png');
   background-position: -140px 0; }
 
 /* line 110, ../themes/stylesheets/neptune/default/widgets/_tree.scss */
@@ -10355,7 +10355,7 @@ textarea.x-form-invalid-field {
 /* line 141, ../themes/stylesheets/neptune/default/widgets/_tree.scss */
 .x-tree-icon-parent {
   background-position: -240px 0 !important;
-  background-image: url('../../resources/themes/images/neptune/tree/icons-orange.png'); }
+  background-image: url('../themes/images/neptune/tree/icons-orange.png'); }
 
 /* line 146, ../themes/stylesheets/neptune/default/widgets/_tree.scss */
 .x-grid-tree-node-expanded .x-tree-icon-parent {
@@ -10377,7 +10377,7 @@ textarea.x-form-invalid-field {
 .x-tree-icon-leaf {
   width: 20px;
   background-position: -360px 0 !important;
-  background-image: url('../../resources/themes/images/neptune/tree/icons-orange.png'); }
+  background-image: url('../themes/images/neptune/tree/icons-orange.png'); }
 
 /* line 174, ../themes/stylesheets/neptune/default/widgets/_tree.scss */
 .x-tree-lines .x-tree-icon-leaf {
@@ -10392,19 +10392,19 @@ textarea.x-form-invalid-field {
 .x-grid-row-selected .x-tree-icon-end-plus,
 .x-grid-row-selected .x-tree-icon-leaf,
 .x-grid-row-selected .x-tree-icon-parent {
-  background-image: url('../../resources/themes/images/neptune/tree/icons-white.png') !important; }
+  background-image: url('../themes/images/neptune/tree/icons-white.png') !important; }
 
 /* line 195, ../themes/stylesheets/neptune/default/widgets/_tree.scss */
 .x-tree-lines .x-tree-elbow-line {
-  background-image: url('../../resources/themes/images/neptune/tree/elbows.png');
+  background-image: url('../themes/images/neptune/tree/elbows.png');
   background-position: 0 48px; }
 /* line 200, ../themes/stylesheets/neptune/default/widgets/_tree.scss */
 .x-tree-lines .x-tree-elbow {
-  background-image: url('../../resources/themes/images/neptune/tree/elbows.png');
+  background-image: url('../themes/images/neptune/tree/elbows.png');
   background-position: 0 0px; }
 /* line 205, ../themes/stylesheets/neptune/default/widgets/_tree.scss */
 .x-tree-lines .x-tree-elbow-end {
-  background-image: url('../../resources/themes/images/neptune/tree/elbows.png');
+  background-image: url('../themes/images/neptune/tree/elbows.png');
   background-position: 0 24px; }
 
 /* line 223, ../themes/stylesheets/neptune/default/widgets/_tree.scss */
@@ -10432,7 +10432,7 @@ textarea.x-form-invalid-field {
   width: 17px;
   height: 17px;
   background: no-repeat;
-  background-image: url('../../resources/themes/images/neptune/checkbox.gif');
+  background-image: url('../themes/images/neptune/checkbox.gif');
   overflow: hidden;
   padding: 0;
   border: 0; }

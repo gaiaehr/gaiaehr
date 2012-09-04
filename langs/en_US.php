@@ -1022,6 +1022,7 @@ $LANG = array(
 	'vtype_postalCode'						=> 'This field should be an valid Postal Code number, it can by Canadian or US',
 	'vtype_password'						=> 'Passwords do not match',
 	'vtype_mysqlField'						=> 'The field entered has invalid characters',
-	'open_patient_visits_history'			=> 'Open Patient Visits History'
+	'open_patient_visits_history'			=> 'Open Patient Visits History',
+	'client_list'							=> 'Client List'
 );
 ?>

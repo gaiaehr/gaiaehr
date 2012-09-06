@@ -5,6 +5,7 @@
 // Please, use the following format i18n['save'] not i18n.save 
 // JavaScript has reserved variables after the dot.
 $LANG = array(
+	'en_US'									=> 'English (USA)',
     'dashboard'         					=> 'Dashboard',
     'calendar'          					=> 'Calendar',
     'messages'          					=> 'Messages',

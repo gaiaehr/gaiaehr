@@ -2,18 +2,19 @@
 /* CSS Document */
 /* = disabled nodes
  */
-@font-face{
-	font-family: 'Cuprum';
-	src: url('../fonts/Cuprum.ttf');
-}
 
 body{
-	width: 595px;
-	height: 841px;
 	background: #FFFFFF;
+	font-family: 'Helvetica';
 }
 
 h2,h1,h3{
-	font-family: 'Helvetica';
 	color: #596F8F;
+	display: block;
+	border-bottom: 1px dotted #000099;
+}
+
+table{
+	width: 100%;
+	font-size: 12px;
 }

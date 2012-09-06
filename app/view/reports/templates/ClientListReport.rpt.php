@@ -12,7 +12,20 @@ if(!isset($_SESSION))
 	session_cache_limiter('private');
 }
 
+//------------------------------------------------------------------------------
+// Load one of the most used classes of this application.
+// The data base abstraction layer.
+//------------------------------------------------------------------------------
 include_once($_SESSION['site']['root'].'/classes/dbHelper.php');
+
+//------------------------------------------------------------------------------
+// Loads up the language file.
+//------------------------------------------------------------------------------
+include_once($_SESSION['site']['root'] . '/langs/' . $_SESSION['site']['localization'] . '.php');
+
+//------------------------------------------------------------------------------
+// Load the PDF class.
+//------------------------------------------------------------------------------
 include_once($_SESSION['site']['root']."/lib/dompdf_0-6-0_beta3/dompdf_config.inc.php");
 
 class ReportClass
@@ -52,6 +65,21 @@ ob_start();
 <link rel="stylesheet" type="text/css" href="<?=$_SESSION['site']['root'] ?>/resources/css/printReport.css">
 </head>
 <body>
+<h3>Client List Report (Patient List)</h3>
+<table>
+	<tr>
+		<td>Last Visit</td>
+		<td>Patient </td>
+		<td>ID</td>
+		<td>Street</td>
+		<td>City</td>
+		<td>State</td>
+		<td>Zip</td>
+		<td>Home Phone</td>
+		<td>Work Phone</td>
+	</tr>
+</table>
+<DIV style="page-break-after:always"></DIV>
 <h3>Client List Report (Patient List)</h3>
 <ul>
 	<li>PHP 5.0+ with the DOM extension enabled.   Note that the domxml PECL extension conflicts with the DOM extension and   must be disabled. </li>

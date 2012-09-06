@@ -265,7 +265,7 @@ Ext.define('App.view.Viewport', {
 		'App.view.miscellaneous.OfficeNotes',
 		'App.view.miscellaneous.Websearch',
 		
-		'App.view.reports.reportCenter'
+		'App.view.reports.ClientListReport'
 
 	],
 
@@ -709,6 +709,12 @@ Ext.define('App.view.Viewport', {
         me.MainPanel.add(Ext.create('App.view.miscellaneous.MySettings'));
         me.MainPanel.add(Ext.create('App.view.miscellaneous.OfficeNotes'));
         me.MainPanel.add(Ext.create('App.view.miscellaneous.Websearch'));
+        
+        /*
+         * Reports
+         * TODO: ACL for the reports
+         */
+        me.MainPanel.add(Ext.create('App.view.reports.ClientListReport'));
 
         me.ppdz = me.MainPanel.add(Ext.create('App.view.areas.PatientPoolDropZone'));
 
@@ -727,11 +733,6 @@ Ext.define('App.view.Viewport', {
 		if(perm.access_documents) me.MainPanel.add(Ext.create('App.view.administration.Documents'));
 
         me.MainPanel.add(Ext.create('App.view.administration.ExternalDataLoads'));
-        
-        /*
-         * Report Center Panel
-         */
-        me.MainPanel.add(Ext.create('App.view.reports.reportCenter'));
 
 		/**
 		 * Footer Panel

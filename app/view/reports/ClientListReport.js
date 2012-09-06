@@ -8,10 +8,10 @@
 // 
 // GaiaEHR (Electronic Health Records) 2011
 //******************************************************************************
-Ext.define('App.view.search.ClientListReport', {
+Ext.define('App.view.reports.ClientListReport', {
 	extend       : 'App.classes.RenderPanel',
 	id           : 'panelClientListReport',
-	pageTitle    : i18n['client_list'],
+	pageTitle    : i18n['client_list_report'],
 	pageLayout   : 'border',
 	uses         : [
 		'App.classes.GridPanel'
@@ -22,9 +22,9 @@ Ext.define('App.view.search.ClientListReport', {
 		//-----------------------------------------------------------------------
 		// Filter panel for the report
 		//-----------------------------------------------------------------------
-		me.form = Ext.create('Ext.form.FormPanel', {
+		me.FilterForm = Ext.create('Ext.form.FormPanel', {
 			region     : 'north',
-			height     : 200,
+			height     : 100,
 			bodyPadding: 10,
 			margin     : '0 0 3 0',
 			buttonAlign: 'left',
@@ -77,24 +77,11 @@ Ext.define('App.view.search.ClientListReport', {
 		//-----------------------------------------------------------------------
 		// PDF render panel
 		//-----------------------------------------------------------------------
-		me.grid = Ext.create('App.classes.GridPanel', {
+		me.PDFPanel = Ext.create('Ext.panel.Panel', {
 			region   : 'center',
-			//store    : me.store,
-			columns  : [
-				{ header: 'id', sortable: false, dataIndex: 'id', hidden: true},
-				{ width: 150, header: i18n['date'], sortable: true, dataIndex: 'date', renderer: Ext.util.Format.dateRenderer('Y-m-d H:i:s') },
-				{ width: 150, header: i18n['user'], sortable: true, dataIndex: 'user' },
-				{ flex: 1, header: i18n['note'], sortable: true, dataIndex: 'body' }
-
-			],
-			tbar     : Ext.create('Ext.PagingToolbar', {
-				store      : me.store,
-				displayInfo: true,
-				emptyMsg   : i18n['no_office_notes_to_display'],
-				plugins    : Ext.create('Ext.ux.SlidingPager', {})
-			})
-		}); // END GRID
-		me.pageBody = [ me.form, me.grid ];
+			html: ''
+		}); // END PDF Panel
+		me.pageBody = [ me.FilterForm, me.PDFPanel ];
 		me.callParent(arguments);
 	}, // end of initComponent
 	

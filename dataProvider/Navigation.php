@@ -46,7 +46,7 @@ class Navigation {
         // *************************************************************************************
         array_push( $nav, array( 'text' => $this->i18n['reports'], 'cls' => 'folder', 'expanded' => true, 'children' =>
             array(
-                array( 'text' => $this->i18n['client_list'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelClientList' )
+                array( 'text' => $this->i18n['client_list'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelClientListReport' )
             )
         ));
 		

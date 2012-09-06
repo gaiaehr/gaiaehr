@@ -31,24 +31,19 @@ Ext.define('App.view.reports.ClientListReport', {
 			items      : [
 				{
 					xtype     : 'fieldcontainer',
-					fieldLabel: i18n['name'],
+					fieldLabel: i18n['visits'],
 					layout    : 'hbox',
 					defaults  : { margin: '0 5 0 0' },
 					items     : [
 						{
-							xtype    : 'textfield',
-							emptyText: i18n['first_name'],
-							name     : 'fname'
+							xtype    : 'datefield',
+							emptyText: i18n['from'],
+							name     : 'from'
 						},
 						{
-							xtype    : 'textfield',
-							emptyText: i18n['middle_name'],
-							name     : 'mname'
-						},
-						{
-							xtype    : 'textfield',
-							emptyText: i18n['last_name'],
-							name     : 'lname'
+							xtype    : 'datefield',
+							emptyText: i18n['to'],
+							name     : 'to'
 						}
 					]
 				}
@@ -77,9 +72,16 @@ Ext.define('App.view.reports.ClientListReport', {
 		//-----------------------------------------------------------------------
 		// PDF render panel
 		//-----------------------------------------------------------------------
-		me.PDFPanel = Ext.create('Ext.panel.Panel', {
-			region   : 'center',
-			html: ''
+		me.PDFPanel = Ext.create('Ext.Component', 
+		{
+			region	: 'center',
+            xtype	: 'component',
+            autoEl: 
+            {
+                tag: 'iframe',
+                style: 'height: 100%; width: 100%; border: none',
+                src: 'app/view/reports/templates/ClientListReport.rpt.php'
+            }
 		}); // END PDF Panel
 		me.pageBody = [ me.FilterForm, me.PDFPanel ];
 		me.callParent(arguments);

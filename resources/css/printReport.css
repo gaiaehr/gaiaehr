@@ -1,0 +1,19 @@
+@charset "utf-8";
+/* CSS Document */
+/* = disabled nodes
+ */
+@font-face{
+	font-family: 'Cuprum';
+	src: url('../fonts/Cuprum.ttf');
+}
+
+body{
+	width: 595px;
+	height: 841px;
+	background: #FFFFFF;
+}
+
+h2,h1,h3{
+	font-family: 'Helvetica';
+	color: #596F8F;
+}

@@ -29,7 +29,7 @@ Ext.define('App.view.areas.PatientPoolDropZone', {
 	},
 
 	onPatientDrop: function(node, data, overModel, dropPosition, eOpts) {
-		var name = (data.records[0].data) ? data.records[0].data.name : data.records[0].name,reload
+		var name = (data.records[0].data) ? data.records[0].data.name : data.records[0].name,
 			pid = (data.records[0].data) ? data.records[0].data.pid : data.records[0].pid,
 			params;
 		app.msg('Sweet!', name + ' ' + i18n['sent_to'] + ' ' + this.panel.title);

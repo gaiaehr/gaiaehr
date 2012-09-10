@@ -4,7 +4,10 @@
  * Desc: This is the template for the final layout of the report
  * this also layout the PDF and the HTML.
  */
- 
+
+//------------------------------------------------------------------------------
+// Start up the session
+//------------------------------------------------------------------------------  
 if(!isset($_SESSION)) 
 {
 	session_name('GaiaEHR');
@@ -56,7 +59,6 @@ class ReportClass
 }
 
 $pdf = new ReportClass();
-
 ob_start();
 ?>
 
@@ -68,15 +70,15 @@ ob_start();
 <h3>Client List Report (Patient List)</h3>
 <table>
 	<tr>
-		<td>Last Visit</td>
-		<td>Patient </td>
-		<td>ID</td>
-		<td>Street</td>
-		<td>City</td>
-		<td>State</td>
-		<td>Zip</td>
-		<td>Home Phone</td>
-		<td>Work Phone</td>
+		<th>Last Visit</th>
+		<th>Patient </th>
+		<th>ID</th>
+		<th>Street</th>
+		<th>City</th>
+		<th>State</th>
+		<th>Zip</th>
+		<th>Home Phone</th>
+		<th>Work Phone</th>
 	</tr>
 </table>
 <DIV style="page-break-after:always"></DIV>
@@ -89,6 +91,9 @@ ob_start();
 </html>
 
 <?php
+//------------------------------------------------------------------------------
+// Get the HTML content and pass it to the DomPDF class.
+//------------------------------------------------------------------------------
 $pdf->html = ob_get_contents(); 
 ob_end_clean();
 $pdf->renderPDF();

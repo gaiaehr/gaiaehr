@@ -1,13 +1,14 @@
 //******************************************************************************
-// ofice_notes.ejs.php
-// office Notes Page
+// ClientListReport.js
+// Client List (Patient) Report
 // v0.0.1
 // 
-// Author: Ernest Rodriguez
+// Author: Gino Rivera Falu (GI Technologies)
 // Modified:
 // 
-// GaiaEHR (Electronic Health Records) 2011
+// GaiaEHR (Electronic Health Records) 2012
 //******************************************************************************
+
 Ext.define('App.view.reports.ClientListReport', {
 	extend       : 'App.classes.RenderPanel',
 	id           : 'panelClientListReport',
@@ -22,7 +23,8 @@ Ext.define('App.view.reports.ClientListReport', {
 		//-----------------------------------------------------------------------
 		// Filter panel for the report
 		//-----------------------------------------------------------------------
-		me.FilterForm = Ext.create('Ext.form.FormPanel', {
+		me.FilterForm = Ext.create('Ext.form.FormPanel', 
+		{
 			region     : 'north',
 			height     : 100,
 			bodyPadding: 10,
@@ -53,7 +55,8 @@ Ext.define('App.view.reports.ClientListReport', {
 				{
 					text   : i18n['search'],
 					iconCls: 'save',
-					handler: function() {
+					handler: function() 
+					{
 
 					}
 				},
@@ -62,7 +65,8 @@ Ext.define('App.view.reports.ClientListReport', {
 					text   : i18n['reset'],
 					iconCls: 'save',
 					tooltip: i18n['hide_selected_office_note'],
-					handler: function() {
+					handler: function() 
+					{
 
 					}
 				}
@@ -93,7 +97,8 @@ Ext.define('App.view.reports.ClientListReport', {
 	 * place inside this function all the functions you want
 	 * to call every this panel becomes active
 	 */
-	onActive     : function(callback) {
+	onActive: function(callback) 
+	{
 		callback(true);
 	}
 }); //ens oNotesPage class

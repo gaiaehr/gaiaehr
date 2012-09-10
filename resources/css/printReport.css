@@ -18,3 +18,7 @@ table{
 	width: 100%;
 	font-size: 12px;
 }
+
+th{
+	border-bottom: 1px solid #555555;
+}

@@ -219,7 +219,7 @@ class Patient
 			array_push($rows, $row);
 		}
 		$total = count($rows);
-		$rows  = array_splice($records, $params->start, $params->limit);
+		$rows  = array_slice($rows, $params->start, $params->limit);
 		return array('totals'=> $total, 'rows'=> $rows);
 	}
 

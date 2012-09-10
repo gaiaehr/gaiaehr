@@ -31,6 +31,9 @@ include_once($_SESSION['site']['root'] . '/langs/' . $_SESSION['site']['localiza
 //------------------------------------------------------------------------------
 include_once($_SESSION['site']['root']."/lib/dompdf_0-6-0_beta3/dompdf_config.inc.php");
 
+//------------------------------------------------------------------------------
+// This class is a generic, all the reports must contain this class.
+//------------------------------------------------------------------------------
 class ReportClass
 {
     /**
@@ -58,6 +61,10 @@ class ReportClass
 	
 }
 
+//------------------------------------------------------------------------------
+// Start buffering, this will record all the HTML code
+// to then, pass it to the DomPDF class.
+//------------------------------------------------------------------------------
 $pdf = new ReportClass();
 ob_start();
 ?>
@@ -93,6 +100,7 @@ ob_start();
 <?php
 //------------------------------------------------------------------------------
 // Get the HTML content and pass it to the DomPDF class.
+// Below this code, there should not be any more HTML code.
 //------------------------------------------------------------------------------
 $pdf->html = ob_get_contents(); 
 ob_end_clean();

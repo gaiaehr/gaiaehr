@@ -19,18 +19,35 @@ Ext.define('App.view.reports.ClientListReport', {
 	],
 	initComponent: function() {
 		var me = this;
-
+		
+		//-----------------------------------------------------------------------
+		// PDF render panel
+		//-----------------------------------------------------------------------
+		me.PDFPanel = Ext.create('Ext.Component', 
+		{
+			region		: 'center',
+            xtype		: 'component',
+            id			: 'pdfRender',
+            autoEl: 
+            {
+                tag: 'iframe',
+                style: 'height: 100%; width: 100%; border: none'
+            }
+		}); // END PDF Panel
+		
 		//-----------------------------------------------------------------------
 		// Filter panel for the report
 		//-----------------------------------------------------------------------
 		me.FilterForm = Ext.create('Ext.form.FormPanel', 
 		{
-			region     : 'north',
-			height     : 100,
-			bodyPadding: 10,
-			margin     : '0 0 3 0',
-			buttonAlign: 'left',
-			items      : [
+			region     	: 'north',
+			height     	: 120,
+			bodyPadding	: 10,
+			margin     	: '0 0 3 0',
+			collapsible	: true,
+			buttonAlign	: 'left',
+			title		: i18n['filter'],
+			items      	: [
 				{
 					xtype     : 'fieldcontainer',
 					fieldLabel: i18n['visits'],
@@ -50,45 +67,32 @@ Ext.define('App.view.reports.ClientListReport', {
 					]
 				}
 			],
-
+	
 			buttons: [
 				{
 					text   : i18n['search'],
 					iconCls: 'save',
 					handler: function() 
 					{
-
+						Ext.get('pdfRender').dom.src = 'app/view/reports/templates/ClientListReport.rpt.php';
 					}
 				},
 				'-',
 				{
 					text   : i18n['reset'],
-					iconCls: 'save',
+					iconCls: 'delete',
 					tooltip: i18n['hide_selected_office_note'],
 					handler: function() 
 					{
-
+						Ext.get('pdfRender').dom.src = '';
 					}
 				}
 			]
 		});
 		
-		//-----------------------------------------------------------------------
-		// PDF render panel
-		//-----------------------------------------------------------------------
-		me.PDFPanel = Ext.create('Ext.Component', 
-		{
-			region	: 'center',
-            xtype	: 'component',
-            autoEl: 
-            {
-                tag: 'iframe',
-                style: 'height: 100%; width: 100%; border: none',
-                src: 'app/view/reports/templates/ClientListReport.rpt.php'
-            }
-		}); // END PDF Panel
 		me.pageBody = [ me.FilterForm, me.PDFPanel ];
 		me.callParent(arguments);
+	
 	}, // end of initComponent
 	
 	/**
@@ -100,5 +104,6 @@ Ext.define('App.view.reports.ClientListReport', {
 	onActive: function(callback) 
 	{
 		callback(true);
-	}
+	},
+
 }); //ens oNotesPage class

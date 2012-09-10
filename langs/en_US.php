@@ -16,6 +16,7 @@ $LANG = array(
     'encounter'								=> 'Encounter',
     'billing'           					=> 'Billing',
     'checkout'      	    				=> 'Checkout',
+    'save'									=> 'Save',
     'fees_sheet'	        				=> 'Fees Sheet',
     'payment'           					=> 'Payment',
     'visit_checkout'						=> 'Visit Checkout',
@@ -1030,6 +1031,7 @@ $LANG = array(
 	// Report translations
 	// This should be a separate module
 	//******************************************************************
-	'client_list_report'					=> 'Client List Report'
+	'client_list_report'					=> 'Client List Report',
+	'filter'								=> 'Filter'
 );
 ?>

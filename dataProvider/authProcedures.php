@@ -5,6 +5,8 @@
  * File: authProcedures.php
  * Date: 1/13/12
  * Time: 8:41 AM
+ * 
+ * Desc: Data Provider (Data Abstraction Layer)
  */
 if(!isset($_SESSION)){
     session_name ('GaiaEHR');

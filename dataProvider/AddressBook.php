@@ -1,19 +1,25 @@
 <?php
-if (!isset($_SESSION)) {
-    session_name("GaiaEHR");
-    session_start();
-    session_cache_limiter('private');
-}
-include_once($_SESSION['site']['root'].'/classes/dbHelper.php');
-include_once($_SESSION['site']['root'].'/dataProvider/Person.php');
 /**
  * @brief       Brief Description
- * @details     Detail Description ...
+ * @details      
+ * Desc: Data Provider (Data Abstraction Layer)
+ * This will manage all the data requierements for Patients.
  *
  * @author      Ernesto J . Rodriguez(Certun) < erodriguez@certun.com >
  * @version     Vega 1.0
  * @copyright   Gnu Public License(GPLv3)
+ * 
  */
+ 
+ if (!isset($_SESSION)) {
+    session_name("GaiaEHR");
+    session_start();
+    session_cache_limiter('private');
+}
+
+include_once($_SESSION['site']['root'].'/classes/dbHelper.php');
+include_once($_SESSION['site']['root'].'/dataProvider/Person.php');
+
 class AddressBook {
 
     /**

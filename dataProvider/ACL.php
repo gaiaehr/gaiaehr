@@ -1,10 +1,4 @@
 <?php
-if(!isset($_SESSION)){
-    session_name ( 'GaiaEHR' );
-    session_start();
-    session_cache_limiter('private');
-}
-include_once($_SESSION['site']['root'].'/classes/dbHelper.php');
 /**
  * Access Control List (ACL).
  *
@@ -13,7 +7,19 @@ include_once($_SESSION['site']['root'].'/classes/dbHelper.php');
  * @version 1.0
  *
  * @package default
+ *  
+ * Desc: Data Provider (Data Abstraction Layer)
+ * This will manage all the data requierements for Access List.
+ * 
  */
+ 
+if(!isset($_SESSION)){
+    session_name ( 'GaiaEHR' );
+    session_start();
+    session_cache_limiter('private');
+}
+include_once($_SESSION['site']['root'].'/classes/dbHelper.php');
+
 class ACL {
 
     /**

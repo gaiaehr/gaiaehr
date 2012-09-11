@@ -17,6 +17,8 @@ $_SESSION['site']['db']['database'] = '%db%';
 $_SESSION['site']['AESkey'] = "%key%";
 /**
  * Default site language and theme
+ * Check if the localization variable already has a value, if not pass the 
+ * default language.
  */
 if(!$_SESSION['site']['localization']) $_SESSION['site']['localization'] = '%lang%';
 $_SESSION['site']['theme'] = '%theme%';

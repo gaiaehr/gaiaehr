@@ -5,39 +5,47 @@
  * Date: 10/29/11
  * Time: 4:45 PM
  */
-Ext.define('App.classes.combo.Languages', {
+Ext.define('App.classes.combo.Languages', 
+{
 	extend       : 'Ext.form.ComboBox',
 	alias        : 'widget.languagescombo',
-	initComponent: function() {
+	initComponent: function() 
+	{
 		var me = this;
 
-		Ext.define('LanguagesComboModel', {
+		Ext.define('LanguagesComboModel', 
+		{
 			extend: 'Ext.data.Model',
-			fields: [
-				{ name: 'name', type: 'string' },
-				{ name: 'value', type: 'string' }
+			fields: 
+			[
+				{ name: 'code', type: 'string' },
+				{ name: 'description', type: 'string' }
 			],
-			proxy : {
+			proxy : 
+			{
 				type: 'direct',
-				api : {
-					read: CombosData.getAvailableLanguages
+				api :  
+				{
+					read: i18nRouter.getAvailableLanguages
 				}
 			}
 		});
 
-		me.store = Ext.create('Ext.data.Store', {
+		me.store = Ext.create('Ext.data.Store', 
+		{
 			model   : 'LanguagesComboModel',
 			autoLoad: true
 		});
 
-		Ext.apply(this, {
+		Ext.apply(this, 
+		{
 			editable    : false,
 			queryMode   : 'local',
-			valueField  : 'value',
-			displayField: 'name',
-			emptyText   : i18n['select'],
+			valueField  : 'code',
+			displayField: 'description',
 			store       : me.store
 		}, null);
+		
 		me.callParent();
 	}
 });

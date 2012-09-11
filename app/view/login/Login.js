@@ -30,14 +30,6 @@ Ext.define('App.view.login.Login',{
             }
         });
 
-        me.langStore = Ext.create('Ext.data.Store', {
-            fields:['name','value'],
-            data : [
-                {name: 'English (US)',  value: 'en_US'},
-                {name: 'Spanish (Puerto Rico)', value: 'es_PR'}
-            ]
-        });
-
         /**
          * The Copyright Notice Window
          */

@@ -94,7 +94,7 @@ Ext.define('App.view.patient.NewPatient', {
 
 	confirmationWin: function(callback) {
 		Ext.Msg.show({
-			title  : 'Please confirm...',
+			title  : i18n['please_confirm'] + '...',
 			msg    : i18n['do_you_want_to_create_a_new_patient'],
 			icon   : Ext.MessageBox.QUESTION,
 			buttons: Ext.Msg.YESNO,

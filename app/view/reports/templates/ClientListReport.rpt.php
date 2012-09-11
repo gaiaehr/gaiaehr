@@ -63,7 +63,7 @@ class ReportClass
 
 //------------------------------------------------------------------------------
 // Start buffering, this will record all the HTML code
-// to then, pass it to the DomPDF class.
+// to then pass it to the DomPDF class.
 //------------------------------------------------------------------------------
 $pdf = new ReportClass();
 ob_start();

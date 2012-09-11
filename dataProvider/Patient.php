@@ -5,6 +5,10 @@
  * File: patient.class.php
  * Date: 1/13/12
  * Time: 7:10 AM
+ * 
+ * Desc: Data Provider (Data Abstraction Layer)
+ * This will manage all the data requierements for Patients.
+ * 
  */
 if(!isset($_SESSION)) {
 	session_name('GaiaEHR');
@@ -162,7 +166,6 @@ class Patient
 		$faullname = $params->fname . ' ' . $params->mname . ' ' . $params->lname;
 
 		$this->createPatientQrCode($params->pid, Person::fullname($params->fname, $params->mname, $params->lname));
-
 
 		return $params;
 	}

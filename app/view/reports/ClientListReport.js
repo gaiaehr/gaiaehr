@@ -74,6 +74,7 @@ Ext.define('App.view.reports.ClientListReport', {
 					iconCls: 'save',
 					handler: function() 
 					{
+						// TODO: Pass variables to the report.
 						Ext.get('pdfRender').dom.src = 'app/view/reports/templates/ClientListReport.rpt.php';
 					}
 				},

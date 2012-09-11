@@ -142,7 +142,7 @@ Ext.define('App.view.Viewport', {
         'App.classes.form.fields.Currency',
         'App.classes.form.fields.DateTime',
         'App.classes.form.Panel',
-
+        
 		'App.classes.combo.ActiveFacilities',
         'App.classes.combo.ActiveInsurances',
 		'App.classes.combo.Allergies',
@@ -168,7 +168,6 @@ Ext.define('App.view.Viewport', {
 		'App.classes.combo.InsurancePayerType',
 		'App.classes.combo.LabObservations',
 		'App.classes.combo.LabsTypes',
-		'App.classes.combo.Languages',
 		'App.classes.combo.Lists',
 		'App.classes.combo.MedicalIssues',
 		'App.classes.combo.Medications',
@@ -201,6 +200,7 @@ Ext.define('App.view.Viewport', {
 		'App.classes.combo.Types',
 		'App.classes.combo.Units',
 		'App.classes.combo.Users',
+		'App.classes.combo.Languages',
 
 		'App.classes.window.Window',
 		'App.classes.NodeDisabled',

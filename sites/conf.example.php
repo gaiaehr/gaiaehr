@@ -18,7 +18,7 @@ $_SESSION['site']['AESkey'] = "%key%";
 /**
  * Default site language and theme
  */
-$_SESSION['site']['localization'] = '%lang%';
+if(!$_SESSION['site']['localization']) $_SESSION['site']['localization'] = '%lang%';
 $_SESSION['site']['theme'] = '%theme%';
 $_SESSION['site']['directory']      = str_replace('\\', '/', dirname(__FILE__));
 /**

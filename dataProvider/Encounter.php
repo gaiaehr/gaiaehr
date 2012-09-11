@@ -201,6 +201,14 @@ class Encounter
 		}
 	}
 
+	public function updateEncounterPriority($params)
+	{
+		$data['priority'] = $params->priority;
+		$this->db->setSQL($this->db->sqlBind($data, 'form_data_encounter', 'U', array('eid'=> $params->eid)));
+		$this->db->execLog();
+		$this->poolArea->updateCurrentPatientPoolAreaByPid(array('eid'=> $params->eid, 'priority'=> $params->priority), $params->pid);
+	}
+
 	/**
 	 * @param stdClass $params
 	 * @return array|mixed

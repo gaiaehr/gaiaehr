@@ -670,8 +670,22 @@ Ext.define('App.view.patient.Encounter', {
     },
 
     prioritySelect: function(cmb, records) {
-        alert('TODO: Priority Changed to ' + records[0].data.option_value)
+        this.changeEncounterPriority(records[0].data.option_value);
     },
+
+    changeEncounterPriority:function(priority){
+        var me = this,
+            params = {
+                pid : me.pid,
+                eid : me.eid,
+                priority : priority
+            };
+        Encounter.updateEncounterPriority(params, function(){
+            app.patientButtonRemoveCls();
+            app.patientBtn.addCls(priority);
+        });
+    },
+
     /**
      * Checks for opened encounters, if open encounters are
      * found alert the user, if not then open the
@@ -928,12 +942,14 @@ Ext.define('App.view.patient.Encounter', {
     openEncounter: function(eid) {
         var me = this, vitals;
         me.resetTabs();
-        me.eid = app.currEncounterId = eid;
+
         me.encounterStore.getProxy().extraParams.eid = eid;
         me.encounterStore.load({
             scope   : me,
             callback: function(record) {
                 var data = record[0].data;
+                me.eid = data.eid;
+                me.pid = data.pid;
                 me.currEncounterStartDate = data.start_date;
                 if(!data.close_date) {
                     me.startTimer();
@@ -965,7 +981,7 @@ Ext.define('App.view.patient.Encounter', {
                 if(me.soapPanel) me.soapPanel.query('icdsfieldset')[0].loadIcds(record[0].soap().getAt(0).data.icdxCodes);
 
                 if(me.CurrentProceduralTerminology) {
-                    me.CurrentProceduralTerminology.encounterCptStoreLoad(record[0].data.pid, eid, function() {
+                    me.CurrentProceduralTerminology.encounterCptStoreLoad(me.pid, eid, function() {
                         me.CurrentProceduralTerminology.setDefaultQRCptCodes();
                     });
                 }

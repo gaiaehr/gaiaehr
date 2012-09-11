@@ -34,7 +34,7 @@ $mobile = new Mobile_Detect();
  */
 $site = (isset($_GET['site']) ? $_GET['site'] : 'default');
 
-if(file_exists('sites/'.$site.'/conf.php')) {
+if(file_exists('sites/'.$site.'/conf.php' && !isset($_SESSION['site']['localization']))) {
 	include_once('sites/'.$site.'/conf.php');
 	$lang = $_SESSION['site']['localization'];
 }else{

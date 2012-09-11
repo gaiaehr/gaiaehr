@@ -141,16 +141,6 @@ class CombosData {
         return $this->db->fetchRecords(PDO::FETCH_ASSOC);
 	}
 
-	public static function getAvailableLanguages(){
-		$rows = array();
-		foreach(i18n::getAvailableLanguages(false) AS $lang ){
-			$foo['name'] = $lang['text'];
-			$foo['value'] = $lang['code'];
-			$rows[] = $foo;
-		}
-        return $rows;
-	}
-
     public function getAuthorizations(){
 
         return array(

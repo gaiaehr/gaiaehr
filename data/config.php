@@ -1012,9 +1012,6 @@ $API = array(
             'getCalendarCategories'=>array(
                 'len'=>0
             ),
-            'getLanguages'=>array(
-                'len'=>0
-            ),
             'getFloorPlanAreas'=>array(
                 'len'=>0
             ),
@@ -1043,9 +1040,6 @@ $API = array(
                 'len'=>1
             ),
             'getActiveInsurances'=>array(
-                'len'=>0
-            ),
-            'getAvailableLanguages'=>array(
                 'len'=>0
             ),
             'getThemes'=>array(
@@ -1136,12 +1130,15 @@ $API = array(
         )
     ),
     
-	'i18n'=>array(
+	'i18nRouter'=>array(
 		'methods'=>array(
 			'getTranslation'=>array(
 				'len'=>0
 			),
 			'getDefaultLanguage'=>array(
+				'len'=>0
+			),
+			'getAvailableLanguages'=>array(
 				'len'=>0
 			)
 		)

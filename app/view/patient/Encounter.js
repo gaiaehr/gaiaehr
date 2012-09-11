@@ -313,6 +313,7 @@ Ext.define('App.view.patient.Encounter', {
             me.centerPanel = Ext.create('Ext.tab.Panel', {
                 region     : 'center',
                 margin     : '1 0 0 0',
+                activeTab  : 0,
                 bodyPadding: 5,
                 listeners  : {
                     render: function() {
@@ -678,6 +679,7 @@ Ext.define('App.view.patient.Encounter', {
      */
     newEncounter  : function() {
         var me = this, form, model;
+        me.resetTabs();
         if(perm.add_encounters){
             Encounter.checkOpenEncounters(function(provider, response) {
                 /** @namespace response.result.encounter */
@@ -751,7 +753,7 @@ Ext.define('App.view.patient.Encounter', {
      */
     onSave: function(SaveBtn) {
         var me = this, panel = me.centerPanel.getActiveTab().getActiveTab(), form;
-        if(SaveBtn.action == "encounter") {
+          if(SaveBtn.action == "encounter") {
             form = me.newEncounterWindow.down('form').getForm();
         } else if(SaveBtn.action == 'vitals') {
             form = panel.down('form').getForm();
@@ -777,7 +779,7 @@ Ext.define('App.view.patient.Encounter', {
                         record.save({
                             callback: function(store) {
                                 app.patientButtonRemoveCls();
-                                app.patientButton.addCls(store.data.priority);
+                                app.patientBtn.addCls(store.data.priority);
                                 me.openEncounter(store.data.eid);
                                 SaveBtn.up('window').hide();
                             }
@@ -925,6 +927,7 @@ Ext.define('App.view.patient.Encounter', {
      */
     openEncounter: function(eid) {
         var me = this, vitals;
+        me.resetTabs();
         me.eid = app.currEncounterId = eid;
         me.encounterStore.getProxy().extraParams.eid = eid;
         me.encounterStore.load({
@@ -968,7 +971,6 @@ Ext.define('App.view.patient.Encounter', {
                 }
                 me.priorityCombo.setValue(data.priority);
                 app.PreventiveCareWindow.loadPatientPreventiveCare();
-                me.resetTabs();
             }
         });
     },

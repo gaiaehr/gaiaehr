@@ -38,6 +38,7 @@ Ext.define('App.view.patient.Encounter', {
     requires              : [
         'App.store.patient.Encounter', 'App.store.patient.Vitals'
     ],
+    pid                   : null,
     eid                   : null,
     currEncounterStartDate: null,
     initComponent         : function() {
@@ -313,6 +314,7 @@ Ext.define('App.view.patient.Encounter', {
             me.centerPanel = Ext.create('Ext.tab.Panel', {
                 region     : 'center',
                 margin     : '1 0 0 0',
+                activeTab  : 0,
                 bodyPadding: 5,
                 listeners  : {
                     render: function() {
@@ -669,8 +671,22 @@ Ext.define('App.view.patient.Encounter', {
     },
 
     prioritySelect: function(cmb, records) {
-        alert('TODO: Priority Changed to ' + records[0].data.option_value)
+        this.changeEncounterPriority(records[0].data.option_value);
     },
+
+    changeEncounterPriority:function(priority){
+        var me = this,
+            params = {
+                pid : me.pid,
+                eid : me.eid,
+                priority : priority
+            };
+        Encounter.updateEncounterPriority(params, function(){
+            app.patientButtonRemoveCls();
+            app.patientBtn.addCls(priority);
+        });
+    },
+
     /**
      * Checks for opened encounters, if open encounters are
      * found alert the user, if not then open the
@@ -678,6 +694,7 @@ Ext.define('App.view.patient.Encounter', {
      */
     newEncounter  : function() {
         var me = this, form, model;
+        me.resetTabs();
         if(perm.add_encounters){
             Encounter.checkOpenEncounters(function(provider, response) {
                 /** @namespace response.result.encounter */
@@ -751,7 +768,7 @@ Ext.define('App.view.patient.Encounter', {
      */
     onSave: function(SaveBtn) {
         var me = this, panel = me.centerPanel.getActiveTab().getActiveTab(), form;
-        if(SaveBtn.action == "encounter") {
+          if(SaveBtn.action == "encounter") {
             form = me.newEncounterWindow.down('form').getForm();
         } else if(SaveBtn.action == 'vitals') {
             form = panel.down('form').getForm();
@@ -777,7 +794,7 @@ Ext.define('App.view.patient.Encounter', {
                         record.save({
                             callback: function(store) {
                                 app.patientButtonRemoveCls();
-                                app.patientButton.addCls(store.data.priority);
+                                app.patientBtn.addCls(store.data.priority);
                                 me.openEncounter(store.data.eid);
                                 SaveBtn.up('window').hide();
                             }
@@ -903,8 +920,8 @@ Ext.define('App.view.patient.Encounter', {
      * @param data
      */
     addDefaultData: function(data) {
-        data.pid = app.currPatient.pid;
-        data.eid = app.currEncounterId;
+        data.pid = this.pid;
+        data.eid = this.eid;
         data.uid = user.id;
         data.date = Ext.Date.format(new Date(), 'Y-m-d H:i:s');
         return data;
@@ -925,12 +942,15 @@ Ext.define('App.view.patient.Encounter', {
      */
     openEncounter: function(eid) {
         var me = this, vitals;
-        me.eid = app.currEncounterId = eid;
+        me.resetTabs();
+
         me.encounterStore.getProxy().extraParams.eid = eid;
         me.encounterStore.load({
             scope   : me,
             callback: function(record) {
                 var data = record[0].data;
+                me.eid = data.eid;
+                me.pid = data.pid;
                 me.currEncounterStartDate = data.start_date;
                 if(!data.close_date) {
                     me.startTimer();
@@ -962,13 +982,12 @@ Ext.define('App.view.patient.Encounter', {
                 if(me.soapPanel) me.soapPanel.query('icdsfieldset')[0].loadIcds(record[0].soap().getAt(0).data.icdxCodes);
 
                 if(me.CurrentProceduralTerminology) {
-                    me.CurrentProceduralTerminology.encounterCptStoreLoad(record[0].data.pid, eid, function() {
+                    me.CurrentProceduralTerminology.encounterCptStoreLoad(me.pid, eid, function() {
                         me.CurrentProceduralTerminology.setDefaultQRCptCodes();
                     });
                 }
                 me.priorityCombo.setValue(data.priority);
                 app.PreventiveCareWindow.loadPatientPreventiveCare();
-                me.resetTabs();
             }
         });
     },

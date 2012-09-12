@@ -213,7 +213,7 @@ Ext.define('App.view.patient.windows.Charts', {
             layout = me.getLayout();
         layout.setActiveItem(0);
 
-        me.vitalsStore.load();
+        me.vitalsStore.load({params:{pid:app.currPatient.pid}});
 
 //        me.WeightForAgeInfStore.load({params:{pid:app.currPatient.pid}});
 //        me.LengthForAgeInfStore.load({params:{pid:app.currPatient.pid}});

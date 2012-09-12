@@ -51,6 +51,9 @@ $API = array(
             'updateEncounter'=>array(
                'len'=>1
             ),
+            'updateEncounterPriority'=>array(
+               'len'=>1
+            ),
             'getVitals'=>array(
                'len'=>1
             ),

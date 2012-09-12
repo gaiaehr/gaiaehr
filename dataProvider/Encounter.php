@@ -201,6 +201,14 @@ class Encounter
 		}
 	}
 
+	public function updateEncounterPriority($params)
+	{
+		$data['priority'] = $params->priority;
+		$this->db->setSQL($this->db->sqlBind($data, 'form_data_encounter', 'U', array('eid'=> $params->eid)));
+		$this->db->execLog();
+		$this->poolArea->updateCurrentPatientPoolAreaByPid(array('eid'=> $params->eid, 'priority'=> $params->priority), $params->pid);
+	}
+
 	/**
 	 * @param stdClass $params
 	 * @return array|mixed
@@ -297,11 +305,12 @@ class Encounter
 	{
 		$this->setEid($params->eid);
 		$data = get_object_vars($params);
+
 		unset($data['administer_by'], $data['authorized_by'], $data['id'], $data['bp_diastolic_normal'], $data['bp_systolic_normal']);
-		$data['date'] = $this->parseDate($data['date']);
-		$sql          = $this->db->sqlBind($data, 'form_data_vitals', 'I');
-		$this->db->setSQL($sql);
+
+		$this->db->setSQL($this->db->sqlBind($data, 'form_data_vitals', 'I'));
 		$this->db->execLog();
+
 		$params->id            = $this->db->lastInsertId;
 		$params->administer_by = $this->user->getUserNameById($params->uid);
 		$this->addEncounterHistoryEvent('Vitals added');

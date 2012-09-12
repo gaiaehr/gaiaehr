@@ -82,7 +82,6 @@ Ext.define('App.view.reports.ClientListReport', {
 				{
 					text   : i18n['reset'],
 					iconCls: 'delete',
-					tooltip: i18n['hide_selected_office_note'],
 					handler: function() 
 					{
 						Ext.get('pdfRender').dom.src = '';

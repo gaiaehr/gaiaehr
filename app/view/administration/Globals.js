@@ -729,19 +729,19 @@ Ext.define('App.view.administration.Globals', {
 									name      : 'is_client_ssl_enabled'
 								},
 								{
-									fieldLabel: 'Path to CA Certificate File',
+									fieldLabel: i18n['path_to_ca_certificate_file'],
 									name      : 'certificate_authority_crt'
 								},
 								{
-									fieldLabel: 'Path to CA Key File',
+									fieldLabel: i18n['path_to_ca_key_file'],
 									name      : 'certificate_authority_key'
 								},
 								{
-									fieldLabel: 'Client Certificate Expiration Days',
+									fieldLabel: i18n['client_certificate_expiration_days'],
 									name      : 'client_certificate_valid_in_days'
 								},
 								{
-									fieldLabel: 'Emergency Login Email Address',
+									fieldLabel: i18n['emergency_login_email_address'],
 									name      : 'Emergency_Login_email_id'
 								}
 							]

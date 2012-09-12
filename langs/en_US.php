@@ -1026,6 +1026,19 @@ $LANG = array(
 	'vtype_password'						=> 'Passwords do not match',
 	'vtype_mysqlField'						=> 'The field entered has invalid characters',
 	'open_patient_visits_history'			=> 'Open Patient Visits History',
+	'source'								=> 'Source',
+	'path_to_ca_certificate_file'			=> 'Path to CA Certificate File',
+	'path_to_ca_key_file'					=> 'Path to CA Key File',
+	'client_certificate_expiration_days'	=> 'Client Certificate Expiration Days',
+	'emergency_login_email_address'			=> 'Emergency Login Email Address',
+	'layout_form_editor'					=> 'Layout Form Editor',
+	'facility'								=> 'Facility',
+	'comments'								=> 'Comments',
+	'user_notes'							=> 'user Notes',
+	'patient_id'							=> 'Patient ID',
+	'success'								=> 'Success',
+	'check_sum'								=> 'Check Sum',
+	'crt_user'								=> 'CRT USER',
 	
 	//******************************************************************
 	// Report translations

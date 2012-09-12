@@ -401,7 +401,7 @@ Ext.define('App.view.administration.Practice', {
 					frame     : false,
 		            viewConfig: { stripeRows: true },
 					columns   : [
-						{ text: i18n['Name'], flex: 1, sortable: true, dataIndex: 'name' },
+						{ text: i18n['name'], flex: 1, sortable: true, dataIndex: 'name' },
 						{ text: i18n['sender_id'], flex: 1, width: 100, sortable: true, dataIndex: 'phone' },
 						{ text: i18n['receiver_id'], flex: 1, width: 100, sortable: true, dataIndex: 'phone' },
 						{ text: i18n['version'], flex: 1, width: 100, sortable: true, dataIndex: 'phone' }

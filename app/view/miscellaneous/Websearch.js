@@ -105,7 +105,7 @@ Ext.define('App.view.miscellaneous.Websearch', {
 			store     : page.store,
 			viewConfig: {
 				deferEmptyText: false,
-				emptyText     : '<p class="search_nothing_found" style="padding: 10px 0 0 20px; font-size: 24px">Nothing Found!</p>',
+				emptyText     : '<p class="search_nothing_found" style="padding: 10px 0 0 20px; font-size: 24px">' + i18n['nothing_found'] + '!</p>',
 				stripeRows    : true,
 				loadingText   : i18n['searching'] + '... ' +  i18n['please_wait']
 			},
@@ -139,8 +139,8 @@ Ext.define('App.view.miscellaneous.Websearch', {
 			tpl        : Ext.create('Ext.XTemplate',
 				'<div class="search_container">',
 				'<div class="search_data">',
-				'<h3 class="search_title">Title: {title}</h3>',
-				'<h4 class="search_source">Source: {source}</h4>',
+				'<h3 class="search_title">' + i18n['title'] + ': {title}</h3>',
+				'<h4 class="search_source">' + i18n['source'] + ': {source}</h4>',
 				'</div>',
 				'<div class="search_body">{FullSummary}</div>',
 				'</div>')

@@ -31,6 +31,7 @@ Ext.define('App.view.reports.ClientListReport', {
             autoEl: 
             {
                 tag: 'iframe',
+                frame: false,
                 style: 'height: 100%; width: 100%; border: none'
             }
 		}); // END PDF Panel
@@ -75,7 +76,9 @@ Ext.define('App.view.reports.ClientListReport', {
 					handler: function() 
 					{
 						// TODO: Pass variables to the report.
-						Ext.get('pdfRender').dom.src = 'app/view/reports/templates/ClientListReport.rpt.php';
+						//Ext.get('pdfRender').dom.extraParams.to = 'Hello';
+						console.log(this.to.getValue());
+						//Ext.get('pdfRender').dom.src = 'app/view/reports/templates/ClientListReport.rpt.php';
 					}
 				},
 				'-',

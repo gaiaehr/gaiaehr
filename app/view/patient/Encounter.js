@@ -96,7 +96,7 @@ Ext.define('App.view.patient.Encounter', {
                         handler: me.onSave
                     },
                     {
-                        text   : 'Cancel',
+                        text   : i18n['cancel'],
                         scope  : me,
                         handler: me.cancelNewEnc
 
@@ -139,7 +139,7 @@ Ext.define('App.view.patient.Encounter', {
                                 dataIndex: 'code_text'
                             },
                             {
-                                header   : 'Type',
+                                header   : i18n['type'],
                                 flex     : 1,
                                 dataIndex: 'type'
                             }

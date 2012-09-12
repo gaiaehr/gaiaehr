@@ -21,7 +21,7 @@
 Ext.define('App.view.administration.Layout', {
 	extend              : 'App.classes.RenderPanel',
 	id                  : 'panelLayout',
-	pageTitle           : 'Layout Form Editor',
+	pageTitle           : i18n['layout_form_editor'],
 	pageLayout          : 'border',
 	uses                : [
 		'App.classes.GridPanel'

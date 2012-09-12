@@ -80,7 +80,7 @@ Ext.define('App.view.administration.DataManager', {
                     items   : [
                         {
 
-                            fieldLabel: 'Description',
+                            fieldLabel: i18n['description'],
                             xtype     : 'textfield',
                             name      : 'code_text',
 	                        width:500
@@ -203,7 +203,7 @@ Ext.define('App.view.administration.DataManager', {
             },
             items    : [
                 {
-                    title  : 'general',
+                    title  : i18n['general'],
                     xtype  : 'container',
                     padding: 10,
                     layout : 'vbox',
@@ -311,7 +311,7 @@ Ext.define('App.view.administration.DataManager', {
                                     width     : 250,
                                     value     : 0,
                                     minValue  : 0,
-                                    tooltip   : 'Please enter a number greater than 1 or just check "Perform once"'
+                                    tooltip   : i18n['greater_than_1_or_just_check_perform_once']
 
                                 },
                                 {

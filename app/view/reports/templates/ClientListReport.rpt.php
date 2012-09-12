@@ -23,17 +23,17 @@ include_once($_SESSION['site']['root'].'/classes/dbHelper.php');
 $db = new dbHelper();
 
 //------------------------------------------------------------------------------
-// Loads up the language file.
-//------------------------------------------------------------------------------
-include_once($_SESSION['site']['root'] . '/langs/' . $_SESSION['site']['localization'] . '.php');
-
-//------------------------------------------------------------------------------
 // Load the PDF class.
 //------------------------------------------------------------------------------
 include_once($_SESSION['site']['root']."/lib/dompdf_0-6-0_beta3/dompdf_config.inc.php");
 $pdfDocument = new DOMPDF();
 
-// Get Client List
+//------------------------------------------------------------------------------
+// Loads up the language file.
+//------------------------------------------------------------------------------
+include_once($_SESSION['site']['root'] . '/langs/' . $_SESSION['site']['localization'] . '.php');
+
+// Get Client List SQL Statement
 $sql = "SELECT
 			form_data_demographics.title,
 			CONCAT(form_data_demographics.fname,' ', form_data_demographics.mname,' ', form_data_demographics.lname) As PatientName,

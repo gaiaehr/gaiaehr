@@ -192,7 +192,7 @@ Ext.define('App.view.messages.Messages', {
 										{
 											xtype           : 'userscombo',
 											name            : 'to_id',
-											fieldLabel      : 'To',
+											fieldLabel      : i18n['to'],
 											validateOnChange: false,
 											allowBlank      : false
 										}

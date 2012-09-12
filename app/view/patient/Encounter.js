@@ -38,6 +38,7 @@ Ext.define('App.view.patient.Encounter', {
     requires              : [
         'App.store.patient.Encounter', 'App.store.patient.Vitals'
     ],
+    pid                   : null,
     eid                   : null,
     currEncounterStartDate: null,
     initComponent         : function() {
@@ -919,8 +920,8 @@ Ext.define('App.view.patient.Encounter', {
      * @param data
      */
     addDefaultData: function(data) {
-        data.pid = app.currPatient.pid;
-        data.eid = app.currEncounterId;
+        data.pid = this.pid;
+        data.eid = this.eid;
         data.uid = user.id;
         data.date = Ext.Date.format(new Date(), 'Y-m-d H:i:s');
         return data;

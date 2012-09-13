@@ -158,7 +158,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 						]
 					},
 					{
-						title: 'New Prescription',
+						title: i18n['new_prescription'],
 						items: [
 							{
 								xtype     : 'mitos.pharmaciescombo',
@@ -218,7 +218,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 									formItems   : [
 
 										{
-											title : 'general',
+											title : i18n['general'],
 											xtype : 'container',
 											layout: 'vbox',
 											items : [
@@ -234,7 +234,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 															xtype     : 'medicationlivetsearch',
 															fieldLabel: i18n['medication'],
 															hideLabel : false,
-															action      : 'medication',
+															action    : 'medication',
 															name      : 'medication',
 															width     : 350,
 															labelWidth: 80,
@@ -453,11 +453,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 		var me          = this,
 			htmlEditor  = combo.up('panel').getComponent('body'),
 			value       = record[0].data.body;
-
-
 		htmlEditor.setValue(value);
-
-
 	},
 
 	cardSwitch          : function(action) {
@@ -567,7 +563,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
             template = me.query('[action="template"]')[0],
 	        p = app.currPatient;
 		me.pid = p.pid;
-        me.setTitle(p.name + (p.readOnly ? ' - <span style="color:red">[Read Mode]</span>' : ''));
+        me.setTitle(p.name + (p.readOnly ? ' - <span style="color:red">[' + i18n['read_mode'] + ']</span>' : ''));
 		me.setReadOnly(app.currPatient.readOnly);
 		me.patientPrescriptionStore.removeAll();
 		me.patientsLabsOrdersStore.removeAll();

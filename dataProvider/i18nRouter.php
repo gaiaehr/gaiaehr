@@ -36,7 +36,7 @@ class i18nRouter
 	}
 
 	// -----------------------------------------------------------------------
-	// Will loop through the lang directory and get
+	// This will loop through the langs directory and get
 	// the available languages for GaiaEHR
 	// This function is consumed by the dropdown list.
 	// -----------------------------------------------------------------------

@@ -1,3 +1,10 @@
+/*
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 3/21/12
+ * Time: 11:24 PM
+ */
 Ext.define('App.classes.combo.ProceduresBodySites', {
 	extend       : 'Ext.form.ComboBox',
 	alias        : 'widget.mitos.proceduresbodysitescombo',
@@ -36,10 +43,4 @@ Ext.define('App.classes.combo.ProceduresBodySites', {
 		}, null);
 		me.callParent(arguments);
 	}
-});/*
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 3/21/12
- * Time: 11:24 PM
- */
+});

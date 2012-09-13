@@ -71,7 +71,7 @@ Ext.define('App.view.administration.Log', {
 			tbar     : Ext.create('Ext.PagingToolbar', {
 				store      : me.logStore,
 				displayInfo: true,
-				emptyMsg   : 'No Office Notes to display',
+				emptyMsg   : i18n['no_office_notes_to_display'],
 				plugins    : Ext.create('Ext.ux.SlidingPager', {}),
 				items      : [
 					{
@@ -107,16 +107,16 @@ Ext.define('App.view.administration.Log', {
 					},
 					items     : [
 						{ xtype: 'textfield', hidden: true, name: 'id'},
-						{ fieldLabel: 'Date', xtype: 'displayfield', name: 'date'},
-						{ fieldLabel: 'Event', xtype: 'displayfield', name: 'event'},
-						{ fieldLabel: 'User', xtype: 'displayfield', name: 'user'},
-						{ fieldLabel: 'Facility', xtype: 'displayfield', name: 'facility'},
-						{ fieldLabel: 'Comments', xtype: 'displayfield', name: 'comments'},
-						{ fieldLabel: 'user Notes', xtype: 'displayfield', name: 'user_notes'},
-						{ fieldLabel: 'Patient ID', xtype: 'displayfield', name: 'patient_id'},
-						{ fieldLabel: 'Success', xtype: 'displayfield', name: 'success'},
-						{ fieldLabel: 'Check Sum', xtype: 'displayfield', name: 'checksum'},
-						{ fieldLabel: 'CRT USER', xtype: 'displayfield', name: 'crt_user'}
+						{ fieldLabel: i18n['date'], xtype: 'displayfield', name: 'date'},
+						{ fieldLabel: i18n['event'], xtype: 'displayfield', name: 'event'},
+						{ fieldLabel: i18n['user'], xtype: 'displayfield', name: 'user'},
+						{ fieldLabel: i18n['facility'], xtype: 'displayfield', name: 'facility'},
+						{ fieldLabel: i18n['comments'], xtype: 'displayfield', name: 'comments'},
+						{ fieldLabel: i18n['user_notes'], xtype: 'displayfield', name: 'user_notes'},
+						{ fieldLabel: i18n['patient_id'], xtype: 'displayfield', name: 'patient_id'},
+						{ fieldLabel: i18n['success'], xtype: 'displayfield', name: 'success'},
+						{ fieldLabel: i18n['check_sum'], xtype: 'displayfield', name: 'checksum'},
+						{ fieldLabel: i18n['crt_user'], xtype: 'displayfield', name: 'crt_user'}
 					]
 				}
 			],

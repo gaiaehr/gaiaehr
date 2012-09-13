@@ -56,7 +56,7 @@ Ext.define('App.classes.calendar.MitosEventDetails', {
 	labelWidthRightCol: 65,
 	colWidthLeft      : .6,
 	colWidthRight     : .4,
-	title             : 'Event Form',
+	title             : i18n['event_form'],
 	titleTextAdd      : i18n['add_appointment'] + '...',
 	titleTextEdit     : i18n['edit_appointment'],
 	titleLabelText    : i18n['title'],

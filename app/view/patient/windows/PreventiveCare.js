@@ -65,7 +65,7 @@ Ext.define('App.view.patient.windows.PreventiveCare', {
 
 				formItems: [
 					{
-						title  : 'general',
+						title  : i18n['general'],
 						xtype  : 'container',
 						padding: 10,
 						layout : 'vbox',

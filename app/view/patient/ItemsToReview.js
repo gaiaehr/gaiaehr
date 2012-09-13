@@ -31,7 +31,7 @@ Ext.define('App.view.patient.ItemsToReview', {
             },
             items      : [
                 {
-                    title  : 'Immunizations',
+                    title  : i18n['immunizations'],
                     frame  : true,
                     height : 180,
                     store  : me.patientImmuListStore,
@@ -56,7 +56,7 @@ Ext.define('App.view.patient.ItemsToReview', {
                     ]
                 },
                 {
-                    title  : 'Allergies',
+                    title  : i18n['allergies'],
                     frame  : true,
                     height : 180,
                     store  : me.patientAllergiesListStore,
@@ -116,7 +116,7 @@ Ext.define('App.view.patient.ItemsToReview', {
                     ]
                 },
                 {
-                    title  : 'Surgery',
+                    title  : i18n['surgery'],
                     frame  : true,
                     height : 180,
                     store  : me.patientSurgeryStore,
@@ -153,7 +153,7 @@ Ext.define('App.view.patient.ItemsToReview', {
             },
             items      : [
                 {
-                    title  : 'Dental',
+                    title  : i18n['dental'],
                     frame  : true,
                     height : 180,
                     store  : me.patientDentalStore,
@@ -180,7 +180,7 @@ Ext.define('App.view.patient.ItemsToReview', {
                     ]
                 },
                 {
-                    title  : 'Medications',
+                    title  : i18n['medications'],
                     frame  : true,
                     height : 180,
                     store  : me.patientMedicationsStore,

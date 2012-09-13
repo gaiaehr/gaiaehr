@@ -22,6 +22,8 @@ Ext.define('App.view.reports.ClientListReport', {
 		
 		//-----------------------------------------------------------------------
 		// PDF render panel
+		// Just create the panel and do not display the PDF yet, until 
+		// the user click create report.
 		//-----------------------------------------------------------------------
 		me.PDFPanel = Ext.create('Ext.Component', 
 		{
@@ -31,6 +33,7 @@ Ext.define('App.view.reports.ClientListReport', {
             autoEl: 
             {
                 tag: 'iframe',
+                frame: false,
                 style: 'height: 100%; width: 100%; border: none'
             }
 		}); // END PDF Panel
@@ -67,24 +70,32 @@ Ext.define('App.view.reports.ClientListReport', {
 					]
 				}
 			],
-	
+			
+			// Draw the buttons to render and clear the report panel view.
 			buttons: [
 				{
-					text   : i18n['search'],
+					text   : i18n['create_report'],
 					iconCls: 'save',
 					handler: function() 
 					{
-						// TODO: Pass variables to the report.
-						Ext.get('pdfRender').dom.src = 'app/view/reports/templates/ClientListReport.rpt.php';
+						// create a veriable to then convert it to json string
+						// and pass it to the report, usin payload has the
+						// variable.
+						var jsonPayload = 
+						{
+							startDate: me.FilterForm.getForm().findField("from").getValue(),
+							endDate: me.FilterForm.getForm().findField("to").getValue()
+						};
+						Ext.get('pdfRender').dom.src = 'app/view/reports/templates/ClientListReport.rpt.php?payload=' + Ext.JSON.encode(jsonPayload);
 					}
 				},
 				'-',
 				{
 					text   : i18n['reset'],
 					iconCls: 'delete',
-					tooltip: i18n['hide_selected_office_note'],
 					handler: function() 
 					{
+						// Simply clear the src of the iframe to clear the report.
 						Ext.get('pdfRender').dom.src = '';
 					}
 				}
@@ -105,6 +116,6 @@ Ext.define('App.view.reports.ClientListReport', {
 	onActive: function(callback) 
 	{
 		callback(true);
-	},
+	}
 
 }); //ens oNotesPage class

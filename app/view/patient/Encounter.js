@@ -96,7 +96,7 @@ Ext.define('App.view.patient.Encounter', {
                         handler: me.onSave
                     },
                     {
-                        text   : 'Cancel',
+                        text   : i18n['cancel'],
                         scope  : me,
                         handler: me.cancelNewEnc
 
@@ -139,7 +139,7 @@ Ext.define('App.view.patient.Encounter', {
                                 dataIndex: 'code_text'
                             },
                             {
-                                header   : 'Type',
+                                header   : i18n['type'],
                                 flex     : 1,
                                 dataIndex: 'type'
                             }
@@ -1148,7 +1148,7 @@ Ext.define('App.view.patient.Encounter', {
         var day = Math.floor(hr / 24);
         hr = hr % 24;
         t = twoDigit(hr) + ":" + t;
-        t = (day == 0 ) ? '<span class="time">' + t + '</span>' : '<span class="day">' + day + ' day(s)</span><span class="time">' + t + '</span>';
+        t = (day == 0 ) ? '<span class="time">' + t + '</span>' : '<span class="day">' + day + ' ' + i18n['day_s'] + '</span><span class="time">' + t + '</span>';
         return t;
     },
 

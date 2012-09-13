@@ -20,7 +20,7 @@ Ext.define('Ext.tab.TabCloseMenu', {
 	 * @cfg {String} closeTabText
 	 * The text for closing the current tab. Defaults to <tt>'Close Tab'</tt>.
 	 */
-	closeTabText: 'Close Tab',
+	closeTabText: i18n['close_tab'],
 
 	/**
 	 * @cfg {Boolean} showCloseOthers

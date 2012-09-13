@@ -36,7 +36,8 @@ $site = (isset($_GET['site']) ? $_GET['site'] : 'default');
 
 if(file_exists('sites/'.$site.'/conf.php' && !isset($_SESSION['site']['localization']))) {
 	include_once('sites/'.$site.'/conf.php');
-	$lang = $_SESSION['site']['localization'];
+	$lang = (isset($_SESSION['site']['localization']) ? $_SESSION['site']['localization'] : 'en_US');
+
 }else{
 	$lang = 'en_US';
 }

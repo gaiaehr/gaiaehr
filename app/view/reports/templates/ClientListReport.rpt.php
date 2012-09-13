@@ -15,57 +15,51 @@ if(!isset($_SESSION))
 	session_cache_limiter('private');
 }
 
+$jsonPayload = get_object_vars( json_decode($_GET['payload']) );
+
 //------------------------------------------------------------------------------
 // Load one of the most used classes of this application.
 // The data base abstraction layer.
 //------------------------------------------------------------------------------
 include_once($_SESSION['site']['root'].'/classes/dbHelper.php');
+$db = new dbHelper();
+
+//------------------------------------------------------------------------------
+// Load the PDF class.
+//------------------------------------------------------------------------------
+include_once($_SESSION['site']['root']."/lib/dompdf_0-6-0_beta3/dompdf_config.inc.php");
+$pdfDocument = new DOMPDF();
 
 //------------------------------------------------------------------------------
 // Loads up the language file.
 //------------------------------------------------------------------------------
 include_once($_SESSION['site']['root'] . '/langs/' . $_SESSION['site']['localization'] . '.php');
 
-//------------------------------------------------------------------------------
-// Load the PDF class.
-//------------------------------------------------------------------------------
-include_once($_SESSION['site']['root']."/lib/dompdf_0-6-0_beta3/dompdf_config.inc.php");
-
-//------------------------------------------------------------------------------
-// This class is a generic, all the reports must contain this class.
-//------------------------------------------------------------------------------
-class ReportClass
-{
-    /**
-     * @var dbHelper
-     */
-    private $db;
-	private $dompdf;
-	public $html;
-    /**
-     * Creates the dbHelper instance
-     */
-    function __construct()
-    {
-        $this->db = new dbHelper();
-		$this->dompdf = new DOMPDF();
-        return;
-    }
-	
-	function renderPDF()
-	{
-		$this->dompdf->load_html($this->html);
-		$this->dompdf->render();
-		$this->dompdf->stream("my_pdf.pdf", array("Attachment" => 0));
-	}
-	
-}
+// Get Client List SQL Statement
+$sql = "SELECT
+			form_data_demographics.title,
+			CONCAT(form_data_demographics.fname,' ', form_data_demographics.mname,' ', form_data_demographics.lname) As PatientName,
+			form_data_demographics.pid,
+			form_data_demographics.city,
+			form_data_demographics.address,
+			form_data_demographics.state,
+			form_data_demographics.zipcode,
+			form_data_demographics.home_phone,
+			form_data_demographics.work_phone,
+			form_data_encounter.close_date
+		FROM
+			form_data_demographics 
+		LEFT JOIN
+			form_data_encounter 
+		ON
+			form_data_demographics.pid = form_data_encounter.pid";
+//if(is_array($dateParameters)) $sql .= " WHERE close_date BETWEEN " . $dateParameters['start_date'] . " AND " . $dateParameters['end_date'];
+$db->setSQL($sql);
 
 //------------------------------------------------------------------------------
 // Start buffering, this will record all the HTML code
 // to then pass it to the DomPDF class.
 //------------------------------------------------------------------------------
-$pdf = new ReportClass();
 ob_start();
 ?>
 
@@ -87,6 +81,19 @@ ob_start();
 		<th>Home Phone</th>
 		<th>Work Phone</th>
 	</tr>
+	<?php foreach($db->fetchRecords(PDO::FETCH_ASSOC) as $row) { ?>
+	<tr>
+		<td><?=$jsonPayload['startDate'] ?></td>
+		<td><?=$row['PatientName'] ?></td>
+		<td></td>
+		<td></td>
+		<td></td>
+		<td></td>
+		<td></td>
+		<td></td>
+		<td></td>
+	</tr>
+	<?php } ?>
 </table>
 <DIV style="page-break-after:always"></DIV>
 <h3>Client List Report (Patient List)</h3>
@@ -102,9 +109,11 @@ ob_start();
 // Get the HTML content and pass it to the DomPDF class.
 // Below this code, there should not be any more HTML code.
 //------------------------------------------------------------------------------
-$pdf->html = ob_get_contents(); 
+$html = ob_get_contents(); 
 ob_end_clean();
-$pdf->renderPDF();
+$pdfDocument->load_html($html);
+$pdfDocument->render();
+$pdfDocument->stream("ClientList.pdf", array("Attachment" => 0));
 ?>
 
 

@@ -130,7 +130,7 @@ Ext.define('App.view.administration.Users', {
 					defaultType  : 'textfield',
 					//hideLabels      : true,
 					defaults     : { labelWidth: 89, anchor: '100%',
-						layout                 : { type: 'hbox', defaultMargins: {top: 0, right: 5, bottom: 0, left: 0} }
+						layout: { type: 'hbox', defaultMargins: {top: 0, right: 5, bottom: 0, left: 0} }
 					},
 					items        : [
 						{

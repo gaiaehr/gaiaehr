@@ -1052,6 +1052,8 @@ $LANG = array(
 	//******************************************************************
 	'client_list_report'					=> 'Client List Report',
 	'filter'								=> 'Filter',
-	'create_report'							=> 'Create Report'
+	'create_report'							=> 'Create Report',
+	'create_pdf'							=> 'Create PDF',
+	'create_html'							=> 'Create HTML'
 );
 ?>

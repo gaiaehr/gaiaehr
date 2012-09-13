@@ -14,8 +14,7 @@ if(!isset($_SESSION))
 	session_start();
 	session_cache_limiter('private');
 }
-
-$jsonPayload = get_object_vars( json_decode($_GET['payload']) );
+$params = get_object_vars( json_decode($_GET['params']) );
 
 //------------------------------------------------------------------------------
 // Load one of the most used classes of this application.
@@ -61,11 +60,12 @@ $db->setSQL($sql);
 // to then pass it to the DomPDF class.
 //------------------------------------------------------------------------------
 ob_start();
+$pathCSS = ($params['pdf'] ? $_SESSION['site']['root'] : '../../../..');
 ?>
 
 <html>
 <head>
-<link rel="stylesheet" type="text/css" href="<?=$_SESSION['site']['root'] ?>/resources/css/printReport.css">
+<link rel="stylesheet" type="text/css" href="<?=$pathCSS ?>/resources/css/printReport.css">
 </head>
 <body>
 <h3>Client List Report (Patient List)</h3>
@@ -83,7 +83,7 @@ ob_start();
 	</tr>
 	<?php foreach($db->fetchRecords(PDO::FETCH_ASSOC) as $row) { ?>
 	<tr>
-		<td><?=$jsonPayload['startDate'] ?></td>
+		<td><?=$params['startDate'] ?></td>
 		<td><?=$row['PatientName'] ?></td>
 		<td></td>
 		<td></td>
@@ -96,11 +96,6 @@ ob_start();
 	<?php } ?>
 </table>
 <DIV style="page-break-after:always"></DIV>
-<h3>Client List Report (Patient List)</h3>
-<ul>
-	<li>PHP 5.0+ with the DOM extension enabled.   Note that the domxml PECL extension conflicts with the DOM extension and   must be disabled. </li>
-	<li>Some fonts. PDFs internally support   Helvetica, Times-Roman, Courier, Zapf-Dingbats, &amp; Symbol. DOMPDF adds the , but if you wish to   use other fonts or Unicode charsets you will need to install some fonts.   dompdf supports the same fonts as the underlying PDF backends: Type 1   (.pfb with the corresponding .afm) and TrueType (.ttf). At the minimum,   you should probably have the Microsoft core fonts (now available at: <a href="http://corefonts.sourceforge.net/" rel="nofollow">http://corefonts.sourceforge.net/</a>). See below for font installation instructions.</li>
-</ul>
 </body>
 </html>
 
@@ -111,9 +106,17 @@ ob_start();
 //------------------------------------------------------------------------------
 $html = ob_get_contents(); 
 ob_end_clean();
-$pdfDocument->load_html($html);
-$pdfDocument->render();
-$pdfDocument->stream("ClientList.pdf", array("Attachment" => 0));
+if($params['pdf'])
+{
+	$pdfDocument->load_html($html);
+	$pdfDocument->render();
+	$pdfDocument->stream("ClientList.pdf", array("Attachment" => 0));
+}
+else 
+{
+	echo $html;
+}
+
 ?>
 
 

@@ -74,19 +74,38 @@ Ext.define('App.view.reports.ClientListReport', {
 			// Draw the buttons to render and clear the report panel view.
 			buttons: [
 				{
-					text   : i18n['create_report'],
+					text   : i18n['create_pdf'],
 					iconCls: 'save',
 					handler: function() 
 					{
 						// create a veriable to then convert it to json string
 						// and pass it to the report, usin payload has the
-						// variable.
+						// variable. PDF format
 						var jsonPayload = 
 						{
 							startDate: me.FilterForm.getForm().findField("from").getValue(),
-							endDate: me.FilterForm.getForm().findField("to").getValue()
+							endDate: me.FilterForm.getForm().findField("to").getValue(),
+							pdf: true
 						};
-						Ext.get('pdfRender').dom.src = 'app/view/reports/templates/ClientListReport.rpt.php?payload=' + Ext.JSON.encode(jsonPayload);
+						Ext.get('pdfRender').dom.src = 'app/view/reports/templates/ClientListReport.rpt.php?params=' + Ext.JSON.encode(jsonPayload);
+					}
+				},
+				'-',
+				{
+					text   : i18n['create_html'],
+					iconCls: 'save',
+					handler: function() 
+					{
+						// create a veriable to then convert it to json string
+						// and pass it to the report, usin payload has the
+						// variable. PDF format
+						var jsonPayload = 
+						{
+							startDate: me.FilterForm.getForm().findField("from").getValue(),
+							endDate: me.FilterForm.getForm().findField("to").getValue(),
+							pdf: false
+						};
+						Ext.get('pdfRender').dom.src = 'app/view/reports/templates/ClientListReport.rpt.php?params=' + Ext.JSON.encode(jsonPayload);
 					}
 				},
 				'-',

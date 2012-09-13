@@ -81,7 +81,8 @@ Ext.define('App.view.reports.ClientListReport', {
 						// create a veriable to then convert it to json string
 						// and pass it to the report, usin payload has the
 						// variable.
-						var jsonPayload = {
+						var jsonPayload = 
+						{
 							startDate: me.FilterForm.getForm().findField("from").getValue(),
 							endDate: me.FilterForm.getForm().findField("to").getValue()
 						};
@@ -115,6 +116,6 @@ Ext.define('App.view.reports.ClientListReport', {
 	onActive: function(callback) 
 	{
 		callback(true);
-	},
+	}
 
 }); //ens oNotesPage class

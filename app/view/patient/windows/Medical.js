@@ -140,7 +140,7 @@ Ext.define('App.view.patient.windows.Medical', {
 
 										{
 											xtype          : 'immunizationlivesearch',
-											fieldLabel     : 'Name',
+											fieldLabel     : i18n['name'],
 											hideLabel      : false,
 											allowBlank     : false,
 											itemId         : 'immunization_name',
@@ -160,7 +160,7 @@ Ext.define('App.view.patient.windows.Medical', {
 											action: 'idField'
 										},
 										{
-											fieldLabel: 'Administrator',
+											fieldLabel: i18n['administrator'],
 											name      : 'administered_by',
 											width     : 295,
 											labelWidth: 160
@@ -302,7 +302,7 @@ Ext.define('App.view.patient.windows.Medical', {
 					formItems   : [
 
 						{
-							title  : 'general',
+							title  : i18n['general'],
 							xtype  : 'container',
 							padding: 10,
 							layout : 'vbox',
@@ -689,7 +689,7 @@ Ext.define('App.view.patient.windows.Medical', {
 					clicksToEdit: 1,
 					formItems   : [
 						{
-							title  : 'general',
+							title  : i18n['general'],
 							xtype  : 'container',
 							padding: 10,
 							layout : 'vbox',
@@ -835,7 +835,7 @@ Ext.define('App.view.patient.windows.Medical', {
 					clicksToEdit: 1,
 					formItems   : [
 						{
-							title  : 'general',
+							title  : i18n['general'],
 							xtype  : 'container',
 							padding: 10,
 							layout : 'vbox',
@@ -972,7 +972,7 @@ Ext.define('App.view.patient.windows.Medical', {
 
 					formItems: [
 						{
-							title  : 'general',
+							title  : i18n['general'],
 							xtype  : 'container',
 							padding: 10,
 							layout : 'vbox',
@@ -1142,7 +1142,7 @@ Ext.define('App.view.patient.windows.Medical', {
 													{
 														xtype     : 'filefield',
 														name      : 'filePath',
-														buttonText: 'Select a file...',
+														buttonText: i18n['select_a_file'] + '...',
 														anchor    : '100%'
 													}
 												],
@@ -1770,7 +1770,7 @@ Ext.define('App.view.patient.windows.Medical', {
 			p = app.currPatient;
 
 		me.pid = p.pid;
-		me.setTitle(p.name + (p.readOnly ? ' <span style="color:red">[Read Mode]</span>' : ''));
+		me.setTitle(p.name + (p.readOnly ? ' <span style="color:red">[' + i18n['read_mode'] + ']</span>' : ''));
 		me.setReadOnly(app.currPatient.readOnly);
 		for(var i = 0; i < reviewBts.length; i++) {
 			reviewBts[i].setVisible((app.currEncounterId != null));

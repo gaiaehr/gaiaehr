@@ -23,7 +23,7 @@ Ext.define('Ext.ux.TabScrollerMenu', {
 	/**
 	 * @cfg {String} menuPrefixText Text to prefix the submenus.
 	 */
-	menuPrefixText: 'Items',
+	menuPrefixText: i18n['items'],
 	constructor   : function(config) {
 		config = config || {};
 		Ext.apply(this, config);

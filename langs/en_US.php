@@ -1039,6 +1039,12 @@ $LANG = array(
 	'success'								=> 'Success',
 	'check_sum'								=> 'Check Sum',
 	'crt_user'								=> 'CRT USER',
+	'read_mode'								=> 'Read Mode',
+	'day_s'									=> 'day(s)',
+	'event_form'							=> 'Event Form',
+	'close_tab'								=> 'Close Tab',
+	'items'									=> 'Items',
+	'patient'								=> 'Patient',
 	
 	//******************************************************************
 	// Report translations

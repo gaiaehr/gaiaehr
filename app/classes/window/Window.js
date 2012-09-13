@@ -55,7 +55,7 @@ Ext.define('App.classes.window.Window', {
 	patientInfoAlert: function() {
 		var patient = app.getCurrPatient();
 
-		Ext.Msg.alert('Status', 'Patient: ' + patient.name + ' (' + patient.pid + ')');
+		Ext.Msg.alert(i18n['status'], i18n['patient'] + ': ' + patient.name + ' (' + patient.pid + ')');
 	},
 
 	currPatientError: function() {

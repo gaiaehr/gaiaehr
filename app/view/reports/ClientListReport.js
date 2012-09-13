@@ -75,7 +75,7 @@ Ext.define('App.view.reports.ClientListReport', {
 			buttons: [
 				{
 					text   : i18n['create_pdf'],
-					iconCls: 'save',
+					iconCls: 'icoReport',
 					handler: function() 
 					{
 						// create a veriable to then convert it to json string
@@ -93,7 +93,7 @@ Ext.define('App.view.reports.ClientListReport', {
 				'-',
 				{
 					text   : i18n['create_html'],
-					iconCls: 'save',
+					iconCls: 'icoReport',
 					handler: function() 
 					{
 						// create a veriable to then convert it to json string

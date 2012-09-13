@@ -1045,6 +1045,7 @@ $LANG = array(
 	// This should be a separate module
 	//******************************************************************
 	'client_list_report'					=> 'Client List Report',
-	'filter'								=> 'Filter'
+	'filter'								=> 'Filter',
+	'create_report'							=> 'Create Report'
 );
 ?>

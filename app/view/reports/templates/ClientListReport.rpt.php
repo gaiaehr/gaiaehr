@@ -15,6 +15,8 @@ if(!isset($_SESSION))
 	session_cache_limiter('private');
 }
 
+$jsonPayload = get_object_vars( json_decode($_GET['payload']) );
+
 //------------------------------------------------------------------------------
 // Load one of the most used classes of this application.
 // The data base abstraction layer.
@@ -81,7 +83,7 @@ ob_start();
 	</tr>
 	<?php foreach($db->fetchRecords(PDO::FETCH_ASSOC) as $row) { ?>
 	<tr>
-		<td></td>
+		<td><?=$jsonPayload['startDate'] ?></td>
 		<td><?=$row['PatientName'] ?></td>
 		<td></td>
 		<td></td>

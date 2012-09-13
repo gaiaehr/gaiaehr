@@ -70,7 +70,8 @@ Ext.define('App.view.reports.ClientListReport', {
 					]
 				}
 			],
-	
+			
+			// Draw the buttons to render and clear the report panel view.
 			buttons: [
 				{
 					text   : i18n['create_report'],

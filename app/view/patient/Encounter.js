@@ -943,13 +943,12 @@ Ext.define('App.view.patient.Encounter', {
     openEncounter: function(eid) {
         var me = this, vitals;
         me.resetTabs();
-
+        me.eid = eid;
         me.encounterStore.getProxy().extraParams.eid = eid;
         me.encounterStore.load({
             scope   : me,
             callback: function(record) {
                 var data = record[0].data;
-                me.eid = data.eid;
                 me.pid = data.pid;
                 me.currEncounterStartDate = data.start_date;
                 if(!data.close_date) {
@@ -1001,8 +1000,8 @@ Ext.define('App.view.patient.Encounter', {
             if(btn == 'ok') {
                 form = me.checkoutWindow.down('form').getForm();
                 values = form.getValues();
-                values.eid = app.currEncounterId;
-                values.pid = app.currPatient.pid;
+                values.eid = me.eid;
+                values.pid = me.pid;
                 values.close_date = Ext.Date.format(new Date(), 'Y-m-d H:i:s');
                 values.signature = password;
                 Encounter.closeEncounter(values, function(provider, response) {
@@ -1039,7 +1038,7 @@ Ext.define('App.view.patient.Encounter', {
 
     updateProgressNote: function() {
         var me = this;
-        Encounter.getProgressNoteByEid(app.currEncounterId, function(provider, response) {
+        Encounter.getProgressNoteByEid(me.eid, function(provider, response) {
             var data = response.result;
             me.progressNote.tpl.overwrite(me.progressNote.body, data);
         });

@@ -280,8 +280,19 @@ Ext.define('App.view.Viewport', {
 
 		me.lastCardNode = null;
 		me.currCardCmp = null;
-		me.currPatient = null;
-		me.currEncounterId = null;
+		me.currPatient = null;  // to be replace by me.patient
+		me.currEncounterId = null; // to be replace by me.patient
+
+        me.patient = {
+            name    : null,
+            pid     : null,
+            sex     : null,
+            dob     : null,
+            age     : null,
+            eid     : null,
+            readOnly: false
+        };
+
 		me.user = user;
 		/**
 		 * TaskScheduler
@@ -1095,7 +1106,13 @@ Ext.define('App.view.Viewport', {
 						name    : fullname,
 						readOnly: readOnly
 					};
-					me.patientBtn.update({ pid: pid, name: fullname });
+                    me.patient = {
+                        pid     : pid,
+                        name    : fullname,
+                        readOnly: readOnly,
+                        eid     : null
+                    };
+					me.patientBtn.update({pid:pid, name:fullname});
 					me.patientBtn.addCls(priority);
 					me.patientBtn.enable();
 					if(me.patientOpenVisitsBtn) me.patientOpenVisitsBtn.enable();
@@ -1103,9 +1120,7 @@ Ext.define('App.view.Viewport', {
 					if(me.patientCloseCurrEncounterBtn) me.patientCloseCurrEncounterBtn.enable();
 					if(me.patientChargeBtn) me.patientChargeBtn.enable();
 					if(me.patientCheckOutBtn) me.patientCheckOutBtn.enable();
-					if(typeof callback == 'function') {
-						callback(true);
-					}
+					if(typeof callback == 'function') callback(true);
 				}
 			});
 		});
@@ -1116,6 +1131,17 @@ Ext.define('App.view.Viewport', {
 		Patient.currPatientUnset(function() {
 			me.currEncounterId = null;
 			me.currPatient = null;
+
+            me.patient = {
+                name    : null,
+                pid     : null,
+                sex     : null,
+                dob     : null,
+                age     : null,
+                eid     : null,
+                readOnly: false
+            };
+
 			me.patientButtonRemoveCls();
 			if(typeof callback == 'function') {
 				callback(true);
@@ -1244,6 +1270,7 @@ Ext.define('App.view.Viewport', {
 						patient : true
 					};
 				}
+                return false;
 			},
 			getRepairXY: function() {
 				app.goBack();

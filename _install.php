@@ -34,7 +34,6 @@ if(!defined('_GaiaEXEC')) die('No direct access allowed.');
 		Ext.require('App.view.sitesetup.SiteSetup');
         Ext.onReady(function() {
         	Ext.direct.Manager.addProvider(App.data.REMOTING_API);
-        	console.log(App.data.REMOTING_API);
 			// localization remoting procedures.
 			// ie: i18n['dashboard'] = Dashboard (en_US)
 			// ie: i18n['dashboard'] = Tablero (es_PR)

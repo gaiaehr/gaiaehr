@@ -37,7 +37,6 @@ $site = (isset($_GET['site']) ? $_GET['site'] : 'default');
 if(file_exists('sites/'.$site.'/conf.php' && !isset($_SESSION['site']['localization']))) {
 	include_once('sites/'.$site.'/conf.php');
 	$lang = (isset($_SESSION['site']['localization']) ? $_SESSION['site']['localization'] : 'en_US');
-
 }else{
 	$lang = 'en_US';
 }
@@ -78,7 +77,8 @@ if(
      * If no directory is found inside sites dir run the setup wizard,
      * if a directory is found inside sites dir run the logon screen
      */
-	if(empty($_SESSION['site']['sites'])){
+	if($_SESSION['site']['sitesCount'] < 1){
+		
 		include_once('_install.php');
 	} else {
         /**

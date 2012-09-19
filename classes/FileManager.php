@@ -183,10 +183,19 @@ class FileManager
 		return $this->rmdir_recursive($src);
 	}
 
-	public function scanDir($dir){
+	public static function scanDir($dir, $readmeFiles = false){
 		$files = scandir($dir);
 		array_shift($files); // get rid of '.'
 		array_shift($files); // get rid of '..'
+		if(!$readmeFiles){
+			$count = 0;
+			foreach($files as $file){
+				if(strtolower($file) == 'readme.md' || strtolower($file) == 'readme'){
+					unset($files[$count]);
+				}
+				$count++;
+			}
+		}
 		return $files;
 	}
 

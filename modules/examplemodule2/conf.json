@@ -1,11 +1,11 @@
 {
-	"name":"Example Enabled Module",
+	"name":"Example Disabled Module",
 	"author":"Ernesto Rodriguez",
 	"description":"Module Description...",
-	"dir":"examplemodule",
+	"dir":"examplemodule2",
 	"version":"1.0.0",
 	"extjs_version":"4.1.1",
-	"enable":true,
+	"enable":false,
 	"debug":false,
 	"files":{
 		"extjs":[

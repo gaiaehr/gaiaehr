@@ -1054,6 +1054,9 @@ $LANG = array(
 	'filter'								=> 'Filter',
 	'create_report'							=> 'Create Report',
 	'create_pdf'							=> 'Create PDF',
-	'create_html'							=> 'Create HTML'
+	'create_html'							=> 'Create HTML',
+	'last_visit'							=> 'Last Visit',
+	'id'									=> 'ID',
+	'zipcode'								=> 'Zip Code'
 );
 ?>

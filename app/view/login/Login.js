@@ -51,7 +51,6 @@ Ext.define('App.view.login.Login',{
          * Form Layout [Login]
          */
         me.formLogin = Ext.create('Ext.form.FormPanel', {
-            id				: 'formLogin',
             bodyStyle		: 'background: #ffffff; padding:5px 5px 0',
             defaultType		: 'textfield',
             waitMsgTarget	: true,
@@ -270,18 +269,23 @@ Ext.define('App.view.login.Login',{
                             me.currSite = records[0].data.site;
                             if(me.showSite){
                                 me.formLogin.getComponent('site').setValue(this.currSite);
+
+
                             }
                         },100,this);
-
                     }else{
                         this.msg('Opps! Something went wrong...',  'No site found.');
                     }
                 }
             });
         }
+
         me.currLang = 'en_US';
         me.formLogin.getComponent('lang').setValue(me.currLang);
-        me.formLogin.getComponent('authUser').focus();
+
+        Ext.Function.defer(function(){
+            me.formLogin.getComponent('authUser').inputEl.focus();
+        },200);
 
     },
     /**

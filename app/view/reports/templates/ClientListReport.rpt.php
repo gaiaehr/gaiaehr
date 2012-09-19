@@ -51,8 +51,9 @@ $sql = "SELECT
 		LEFT JOIN
 			form_data_encounter 
 		ON
-			form_data_demographics.pid = form_data_encounter.pid";
-//if(is_array($dateParameters)) $sql .= " WHERE close_date BETWEEN " . $dateParameters['start_date'] . " AND " . $dateParameters['end_date'];
+			form_data_demographics.pid = form_data_encounter.pid
+		WHERE form_data_encounter.close_date IS NOT NULL ";
+if(is_array($dateParameters)) $sql .= "AND close_date BETWEEN " . $dateParameters['start_date'] . " AND " . $dateParameters['end_date'];
 $db->setSQL($sql);
 
 //------------------------------------------------------------------------------
@@ -71,27 +72,27 @@ $pathCSS = ($params['pdf'] ? $_SESSION['site']['root'] : '../../../..');
 <h3>Client List Report (Patient List)</h3>
 <table>
 	<tr>
-		<th>Last Visit</th>
-		<th>Patient </th>
-		<th>ID</th>
-		<th>Street</th>
-		<th>City</th>
-		<th>State</th>
-		<th>Zip</th>
-		<th>Home Phone</th>
-		<th>Work Phone</th>
+		<th><?=$LANG['last_visit'] ?></th>
+		<th><?=$LANG['patient'] ?></th>
+		<th><?=$LANG['id'] ?></th>
+		<th><?=$LANG['street'] ?></th>
+		<th><?=$LANG['city'] ?></th>
+		<th><?=$LANG['state'] ?></th>
+		<th><?=$LANG['zipcode'] ?></th>
+		<th><?=$LANG['patient_home_phone'] ?></th>
+		<th><?=$LANG['patient_work_phone'] ?></th>
 	</tr>
 	<?php foreach($db->fetchRecords(PDO::FETCH_ASSOC) as $row) { ?>
 	<tr>
-		<td><?=$params['startDate'] ?></td>
+		<td><?=date("m/d/Y", strtotime($params['close_date'])) ?></td>
 		<td><?=$row['PatientName'] ?></td>
-		<td></td>
-		<td></td>
-		<td></td>
-		<td></td>
-		<td></td>
-		<td></td>
-		<td></td>
+		<td><?=$row['pid'] ?></td>
+		<td><?=$row['address'] ?></td>
+		<td><?=$row['city'] ?></td>
+		<td><?=$row['state'] ?></td>
+		<td><?=$row['zipcode'] ?></td>
+		<td><?=$row['home_phone'] ?></td>
+		<td><?=$row['work_phone'] ?></td>
 	</tr>
 	<?php } ?>
 </table>

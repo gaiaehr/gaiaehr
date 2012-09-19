@@ -18,7 +18,7 @@ if(!defined('_GaiaEXEC')) die('No direct access allowed.');
 	<link rel="stylesheet" type="text/css" href="resources/css/custom_app.css">
 	<script src="data/api.php"></script>
 	<script type="text/javascript">
-		var app;
+		var app, i18n = {};
 		function say(a){
 			console.log(a);
 		}
@@ -33,7 +33,14 @@ if(!defined('_GaiaEXEC')) die('No direct access allowed.');
 	<script type="text/javascript">
 		Ext.require('App.view.sitesetup.SiteSetup');
         Ext.onReady(function() {
-            Ext.direct.Manager.addProvider(App.data.REMOTING_API);
+        	Ext.direct.Manager.addProvider(App.data.REMOTING_API);
+			// localization remoting procedures.
+			// ie: i18n['dashboard'] = Dashboard (en_US)
+			// ie: i18n['dashboard'] = Tablero (es_PR)
+			i18nRouter.getTranslation(function(provider, response)
+			{
+				i18n = response.result;
+			});
 			app = Ext.create('App.view.sitesetup.SiteSetup').show();
         });
 	</script>

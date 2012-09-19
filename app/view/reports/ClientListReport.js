@@ -105,7 +105,7 @@ Ext.define('App.view.reports.ClientListReport', {
 							endDate: me.FilterForm.getForm().findField("to").getValue(),
 							pdf: false
 						};
-						Ext.get('pdfRender').dom.src = 'app/view/reports/templates/ClientListReport.rpt.php?params=' + Ext.JSON.encode(jsonPayload);
+						Ext.get('pdfRender').dom.src = 'modules/reports/ClientListReport.rpt.php?params=' + Ext.JSON.encode(jsonPayload);
 					}
 				},
 				'-',

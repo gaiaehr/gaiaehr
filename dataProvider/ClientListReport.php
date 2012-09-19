@@ -39,7 +39,6 @@ class ClientListReport
 	//-------------------------------------------------------------------------
 	public function getClientList(stdClass $params)
 	{
-		$dateParameters = get_object_vars($params);
 		$sql = "SELECT
 					form_data_demographics.title,
 					form_data_demographics.fname + ' ' + form_data_demographics.mname + ' ' + form_data_demographics.lname As PatientName,
@@ -57,7 +56,7 @@ class ClientListReport
   					form_data_encounter 
   				ON
   					form_data_demographics.pid = form_data_encounter.pid";
-  		if(is_array($dateParameters)) $sql .= " WHERE close_date BETWEEN " . $dateParameters['start_date'] . " AND " . $dateParameters['end_date'];
+  		if(isset($params->start_date) && $params->end_date) $sql .= " WHERE close_date BETWEEN  $params->start_date AND $params->end_date";
 		$this->db->setSQL($sql);
 		return $this->db->fetchRecords();
 	}

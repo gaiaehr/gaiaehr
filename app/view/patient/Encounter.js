@@ -685,6 +685,7 @@ Ext.define('App.view.patient.Encounter', {
             app.patientButtonRemoveCls();
             app.patientBtn.addCls(priority);
         });
+        me.updateProgressNote();
     },
 
     /**

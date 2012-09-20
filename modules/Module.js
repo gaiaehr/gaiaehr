@@ -6,14 +6,24 @@ Ext.define('Modules.Module', {
         me.callParent();
     },
 
+    /**
+     * @param panel
+     */
     addPanel:function(panel){
         app.MainPanel.add(panel);
     },
 
+    /**
+     * @param item
+     */
     addHeaderItem:function(item){
         app.Header.add(item);
     },
 
+    /**
+     * @param parentId
+     * @param node
+     */
     addNavigationNodes:function(parentId, node){
         var parent;
         if(parentId == 'root' || parentId == null){

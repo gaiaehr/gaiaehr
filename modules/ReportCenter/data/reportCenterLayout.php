@@ -8,7 +8,7 @@ include_once('langs/en_US.php');
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <link rel="stylesheet" type="text/css" href="../css/reportCenter.css" >
 <body>
-	<script type="text/javascript" src="loadJS.js"></script>
+
 	<div class="CategoryContainer">
 		<span class="title"><?=$LANG['patient_reports']?></span>
 		<ul>

@@ -11,7 +11,7 @@
  * GaiaEHR (Electronic Health Records) 2012
  *
  */
-Ext.define('App.view.reports.reportCenter', 
+Ext.define('Modules.ReportCenter.view.reportCenter',
 {
     extend              : 'App.classes.RenderPanel',
     id                  : 'panelReport',
@@ -27,7 +27,7 @@ Ext.define('App.view.reports.reportCenter',
 			{
 				autoLoad	:true,
 				scripts		:true,
-				url			:'reportCenterLayout.php',
+				url			:'modules/ReportCenter/data/reportCenterLayout.php',
 				contentType	: 'html',
 				loadMask	: true
 			}

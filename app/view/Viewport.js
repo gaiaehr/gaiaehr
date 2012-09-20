@@ -725,7 +725,7 @@ Ext.define('App.view.Viewport', {
          * Reports
          * TODO: ACL for the reports
          */
-        me.MainPanel.add(Ext.create('App.view.reports.ClientListReport'));
+        //me.MainPanel.add(Ext.create('App.view.reports.ClientListReport'));
 
         me.ppdz = me.MainPanel.add(Ext.create('App.view.areas.PatientPoolDropZone'));
 
@@ -1006,6 +1006,9 @@ Ext.define('App.view.Viewport', {
 
 	onNavigationNodeSelected: function(model, selected) {
 		var me = this;
+        say(model);
+        say(selected);
+
 		if(0 < selected.length) {
 			if(selected[0].data.leaf) {
 				var tree = me.navColumn.down('treepanel'),

@@ -25,11 +25,11 @@ Ext.define('App.view.reports.reportCenter',
         	layout	: 'fit',
 			loader	: 
 			{
-				autoLoad:true,
-				scripts:true,
-				url :'app/view/reports/reportCenterLayout.php',
-				contentType: 'html',
-				loadMask: true
+				autoLoad	:true,
+				scripts		:true,
+				url			:'reportCenterLayout.php',
+				contentType	: 'html',
+				loadMask	: true
 			}
         }
         ];

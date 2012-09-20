@@ -1,11 +1,11 @@
 {
 	"module":{
-		"name":"Example Module",
+		"name":"Report Center Module",
 		"version":"1.0.0",
 		"extjs_version":"4.1.1",
-		"author":"Ernesto Rodriguez",
-		"description":"Module Description...",
-		"dir":"examplemodule",
+		"author":"Gino Rivera Falú",
+		"description":"A report center for GaiaEHR, has all the necessary report for start ups.",
+		"dir":"ReportCenter",
 		"files":{
 			"extjs":[
 				{
@@ -17,7 +17,7 @@
 					"path":"store/"
 				},
 				{
-					"file":"view/ModuleView.js",
+					"file":"view/reportCenter.js",
 					"path":"view/"
 				}
 			],
@@ -29,6 +29,17 @@
 				{
 					"file":"ModuleClass2.php",
 					"path":"data/"
+				}
+			],
+			"install":[
+				{
+					"file":"sql/install_schema.sql"
+				},
+				{
+					"table":"report_list"
+				},
+				{
+					"table":"report_acl"
 				}
 			]
 		}

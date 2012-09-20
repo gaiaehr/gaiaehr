@@ -6,9 +6,9 @@ include_once('langs/en_US.php');
 <head>
 </head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<link rel="stylesheet" type="text/css" href="app/view/reports/css/reportCenter.css" >
+<link rel="stylesheet" type="text/css" href="../css/reportCenter.css" >
 <body>
-	<script type="text/javascript" src="app/view/reports/loadJS.js"></script>
+	<script type="text/javascript" src="loadJS.js"></script>
 	<div class="CategoryContainer">
 		<span class="title"><?=$LANG['patient_reports']?></span>
 		<ul>

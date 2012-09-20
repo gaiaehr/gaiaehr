@@ -12,6 +12,7 @@ if(!isset($_SESSION)){
     session_cache_limiter('private');
 }
 include_once($_SESSION['site']['root'] . '/classes/FileManager.php');
+
 class Modules
 {
 	private $modulesDir = 'modules/';
@@ -19,14 +20,13 @@ class Modules
 	function __construct()
     {
 		chdir($_SESSION['site']['root']);
-
 	}
-
 
 	public function getAllModules()
 	{
 		$modules = array();
-		foreach(FileManager::scanDir($this->modulesDir) AS $module){
+		foreach(FileManager::scanDir($this->modulesDir) AS $module)
+		{
 			$modules[] = $this->getModuleConfig($module);
 		}
 		return $modules;
@@ -35,11 +35,10 @@ class Modules
 	public function getEnabledModules()
 	{
 		$modules = array();
-		foreach(FileManager::scanDir($this->modulesDir) AS $module){
+		foreach(FileManager::scanDir($this->modulesDir) AS $module)
+		{
 			$foo = $this->getModuleConfig($module);
-			if($foo['enable']){
-				$modules[] = $foo;
-			}
+			if($foo['enable']) $modules[] = $foo;
 		}
 		return $modules;
 	}
@@ -49,16 +48,15 @@ class Modules
 		$modules = array();
 		foreach(FileManager::scanDir($this->modulesDir) AS $module){
 			$foo = $this->getModuleConfig($module);
-			if(!$foo['enable']){
-				$modules[] = $foo;
-			}
+			if(!$foo['enable']) $modules[] = $foo;
 		}
 		return $modules;
 	}
 
 	private function getModuleConfig($module)
 	{
-		if(is_dir($this->modulesDir.$module)) {
+		if(is_dir($this->modulesDir.$module)) 
+		{
 			$text = file_get_contents($this->modulesDir.$module.'/conf.json');
 			return json_decode($text, true);
 		}

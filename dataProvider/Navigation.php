@@ -44,11 +44,11 @@ class Navigation {
         // *************************************************************************************
         // Report Folder
         // *************************************************************************************
-        array_push( $nav, array( 'text' => $this->i18n['reports'], 'cls' => 'folder', 'expanded' => true, 'children' =>
-            array(
-                array( 'text' => $this->i18n['client_list_report'], 'leaf' => true, 'cls' => 'file', 'iconCls' => 'icoReport', 'id' => 'panelClientListReport' )
-            )
-        ));
+        //array_push( $nav, array( 'text' => $this->i18n['reports'], 'cls' => 'folder', 'expanded' => true, 'children' =>
+        //    array(
+        //        array( 'text' => $this->i18n['client_list_report'], 'leaf' => true, 'cls' => 'file', 'iconCls' => 'icoReport', 'id' => 'panelClientListReport' )
+        //    )
+        //));
 		
         // *************************************************************************************
         // Patient Folder
@@ -160,7 +160,12 @@ class Navigation {
 		// *************************************************************************************
 		// Third-party module folder
 		// *************************************************************************************
-
+        array_push( $nav, array( 'text' => $this->i18n['modules'], 'cls' => 'folder', 'expanded' => true, 'children' =>
+            array(
+                array( 'text' => 'Report Center', 'leaf' => true, 'cls' => 'file', 'iconCls' => 'icoReport', 'id' => 'panelClientListReport' )
+            )
+        ));
+		
         return $nav;
 
     }

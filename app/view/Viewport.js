@@ -308,6 +308,9 @@ Ext.define('App.view.Viewport', {
 			interval: 10000 // 10 second
 		};
 
+		/*
+		 * The store for the Navigation Tree menu.
+		 */ 
 		me.storeTree = Ext.create('App.store.navigation.Navigation', {
 			autoLoad : true,
 			listeners: {

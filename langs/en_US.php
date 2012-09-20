@@ -1045,6 +1045,7 @@ $LANG = array(
 	'close_tab'								=> 'Close Tab',
 	'items'									=> 'Items',
 	'patient'								=> 'Patient',
+	'modules'								=> 'Modules',
 	
 	//******************************************************************
 	// Report translations

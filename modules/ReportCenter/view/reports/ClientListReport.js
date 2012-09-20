@@ -9,9 +9,9 @@
 // GaiaEHR (Electronic Health Records) 2012
 //******************************************************************************
 
-Ext.define('App.view.reports.ClientListReport', {
+Ext.define('Modules.ReportCenter.view.reports.ClientListReport', {
 	extend       : 'App.classes.RenderPanel',
-	id           : 'panelClientListReport',
+	id           : 'panelReportClientList',
 	pageTitle    : i18n['client_list_report'],
 	pageLayout   : 'border',
 	uses         : [

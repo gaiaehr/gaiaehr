@@ -57,6 +57,7 @@ $_SESSION['site']['flops'] = 0;
 					'Ext'       : 'lib/extjs-4.1.1/src',
 					'Ext.ux'    : 'app/classes/ux',
 					'App'       : 'app',
+					'Modules'   : 'modules',
 					'Extensible': 'lib/extensible-1.5.1/src'
 				}
 			});

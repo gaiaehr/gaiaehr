@@ -1006,9 +1006,6 @@ Ext.define('App.view.Viewport', {
 
 	onNavigationNodeSelected: function(model, selected) {
 		var me = this;
-        say(model);
-        say(selected);
-
 		if(0 < selected.length) {
 			if(selected[0].data.leaf) {
 				var tree = me.navColumn.down('treepanel'),

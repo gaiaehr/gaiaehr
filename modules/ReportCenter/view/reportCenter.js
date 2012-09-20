@@ -14,7 +14,7 @@
 Ext.define('Modules.ReportCenter.view.reportCenter',
 {
     extend              : 'App.classes.RenderPanel',
-    id                  : 'panelReport',
+    id                  : 'panelClientListReport',
     pageTitle           : i18n['reportCenter'],
     initComponent		: function() 
     {

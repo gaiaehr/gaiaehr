@@ -1,5 +1,18 @@
 <?php
 $API = array(
+	'Modules'=>array(
+		'methods'=>array(
+			'getAllModules'=>array(
+				'len'=>0
+			),
+			'getEnabledModules'=>array(
+				'len'=>0
+			),
+			'getDisabledModules'=>array(
+				'len'=>0
+			)
+		)
+	),
 	'Emergency'=>array(
 		'methods'=>array(
 			'createNewEmergency'=>array(

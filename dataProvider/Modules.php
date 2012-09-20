@@ -19,7 +19,7 @@ class Modules
 
 	function __construct()
     {
-		chdir($_SESSION['site']['root']);
+		$this->modulesDir = $_SESSION['site']['root'] . '/modules/';
 	}
 
 	public function getAllModules()
@@ -64,12 +64,12 @@ class Modules
 	}
 
 }
-print '<pre>';
-$m = new Modules();
-
-print '****All MODULES***** <br>';
-print_r($m->getAllModules());
-print '*****Enabled MODULES***** <br>';
-print_r($m->getEnabledModules());
-print '*****Disabled MODULES***** <br>';
-print_r($m->getDisabledModules());
+//print '<pre>';
+//$m = new Modules();
+//
+//print '****All MODULES***** <br>';
+//print_r($m->getAllModules());
+//print '*****Enabled MODULES***** <br>';
+//print_r($m->getEnabledModules());
+//print '*****Disabled MODULES***** <br>';
+//print_r($m->getDisabledModules());

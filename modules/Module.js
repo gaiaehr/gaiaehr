@@ -3,7 +3,15 @@ Ext.define('Modules.Module', {
     constructor:function(){
         var me = this;
 
-        say('Hi From Modules.Module');
         me.callParent();
+    },
+
+    addPanel:function(panel){
+        app.MainPanel.add(panel);
+    },
+
+    addHeaderItem:function(item){
+        app.Header.add(item);
     }
+
 });

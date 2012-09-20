@@ -836,7 +836,7 @@ Ext.define('App.view.Viewport', {
 		me.items = [ me.Header, me.navColumn, me.MainPanel, me.Footer ];
 
 		me.listeners = {
-			afterrender : me.afterAppRender,
+			render : me.appRender,
 			beforerender: me.beforeAppRender
 		};
 
@@ -1379,9 +1379,19 @@ Ext.define('App.view.Viewport', {
 		});
 	},
 
-	afterAppRender: function() {
-
+	appRender: function() {
+        this.loadModules();
 	},
+
+    loadModules:function(){
+        Modules.getEnabledModules(function(provider, response){
+            var modules = response.result;
+            for(var i=0; i < modules.length; i++){
+                say('Module ' + modules[i].dir + ' Loaded!');
+                Ext.create('Modules.'+modules[i].dir+'.Main');
+            }
+        });
+    },
 
 	removeAppMask: function() {
 		Ext.get('mainapp-loading').remove();

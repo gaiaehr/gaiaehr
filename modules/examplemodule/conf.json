@@ -5,7 +5,7 @@
 	"dir":"examplemodule",
 	"version":"1.0.0",
 	"extjs_version":"4.1.1",
-	"enable":true,
+	"enable":false,
 	"debug":false,
 	"files":{
 		"extjs":[

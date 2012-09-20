@@ -3,7 +3,7 @@ Ext.define('Modules.ReportCenter.Main', {
     constructor:function(){
         var me = this;
 
-        say(app.MainPanel.add(Ext.create('Modules.ReportCenter.view.reportCenter')));
+        me.addPanel(Ext.create('Modules.ReportCenter.view.reportCenter'));
 
         me.callParent();
     }

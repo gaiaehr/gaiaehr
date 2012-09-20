@@ -41,19 +41,19 @@ class Navigation {
             array( 'text' => $this->i18n['patient_pool_areas'],  'disabled'=> false, 'leaf' => true, 'cls' => 'file', 'iconCls' => 'icoPoolArea16',  'id' => 'panelPoolArea' ),
         );
 		
-        // *************************************************************************************
-        // Report Folder
-        // *************************************************************************************
-        //array_push( $nav, array( 'text' => $this->i18n['reports'], 'cls' => 'folder', 'expanded' => true, 'children' =>
-        //    array(
-        //        array( 'text' => $this->i18n['client_list_report'], 'leaf' => true, 'cls' => 'file', 'iconCls' => 'icoReport', 'id' => 'panelClientListReport' )
-        //    )
-        //));
+         // *************************************************************************************
+         // Report Folder
+         // *************************************************************************************
+        array_push( $nav, array( 'text' => $this->i18n['reports'], 'cls' => 'folder', 'expanded' => true, 'id' => 'navigationReportCenter', 'children' =>
+            array(
+                //array( 'text' => $this->i18n['client_list_report'], 'leaf' => true, 'cls' => 'file', 'iconCls' => 'icoReport', 'id' => 'panelClientListReport' )
+            )
+        ));
 		
         // *************************************************************************************
         // Patient Folder
         // *************************************************************************************
-	    $patient = array( 'text' => $this->i18n['patient'], 'cls' => 'folder', 'expanded' => true );
+	    $patient = array( 'text' => $this->i18n['patient'], 'cls' => 'folder', 'expanded' => true, 'id' => 'navigationPatient' );
 
 	    if($this->ACL->hasPermission('add_patient')){
 			$patient['children'][] = array( 'text' => $this->i18n['new_patient'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelNewPatient' );
@@ -75,7 +75,7 @@ class Navigation {
         // *************************************************************************************
         // Fees Folder
         // *************************************************************************************
-        array_push( $nav, array( 'text' => $this->i18n['billing_manager'], 'cls' => 'folder', 'expanded' => true, 'children' =>
+        array_push( $nav, array( 'text' => $this->i18n['billing_manager'], 'cls' => 'folder', 'expanded' => true, 'id' => 'navigationBilling', 'children' =>
             array(
                 array( 'text' => $this->i18n['payment'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelPayments' ),
 				array( 'text' => $this->i18n['billing'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelBilling' )
@@ -85,7 +85,7 @@ class Navigation {
         // *************************************************************************************
         // Administration Folder
         // *************************************************************************************
-	    $admin = array( 'text' => $this->i18n['administration'], 'cls' => 'folder', 'expanded' => true);
+	    $admin = array( 'text' => $this->i18n['administration'], 'cls' => 'folder', 'expanded' => true, 'id' => 'navigationAdministration');
 
 	    if($this->ACL->hasPermission('access_gloabal_settings')){
 		    $admin['children'][] = array( 'text' => $this->i18n['global_settings'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelGlobals' );
@@ -147,7 +147,7 @@ class Navigation {
         // *************************************************************************************
         // Miscellaneous Folder
         // *************************************************************************************
-        array_push( $nav, array( 'text' => $this->i18n['miscellaneous'], 'cls' => 'folder', 'expanded' => false, 'children' =>
+        array_push( $nav, array( 'text' => $this->i18n['miscellaneous'], 'cls' => 'folder', 'expanded' => false, 'id' => 'navigationMiscellaneous', 'children' =>
             array(
                 array( 'text' => $this->i18n['web_search'],      'leaf' => true, 'cls' => 'file', 'id' => 'panelWebsearch' ),
                 array( 'text' => $this->i18n['address_book'],    'leaf' => true, 'cls' => 'file', 'id' => 'panelAddressbook' ),
@@ -160,9 +160,9 @@ class Navigation {
 		// *************************************************************************************
 		// Third-party module folder
 		// *************************************************************************************
-        array_push( $nav, array( 'text' => $this->i18n['modules'], 'cls' => 'folder', 'expanded' => true, 'children' =>
+        array_push( $nav, array( 'text' => $this->i18n['modules'], 'cls' => 'folder', 'expanded' => true, 'id' => 'navigationModules',  'children' =>
             array(
-                array( 'text' => 'Report Center', 'leaf' => true, 'cls' => 'file', 'iconCls' => 'icoReport', 'id' => 'panelClientListReport' )
+                //array( 'text' => 'Report Center', 'leaf' => true, 'cls' => 'file', 'iconCls' => 'icoReport', 'id' => 'panelClientListReport' )
             )
         ));
 		

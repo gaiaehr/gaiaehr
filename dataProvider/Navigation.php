@@ -46,11 +46,11 @@ class Navigation {
          // *************************************************************************************
          // Report Folder
          // *************************************************************************************
-        array_push( $nav, array( 'text' => $this->i18n['reports'], 'cls' => 'folder', 'expanded' => true, 'id' => 'navigationReportCenter', 'children' =>
-            array(
-                //array( 'text' => $this->i18n['client_list_report'], 'leaf' => true, 'cls' => 'file', 'iconCls' => 'icoReport', 'id' => 'panelClientListReport' )
-            )
-        ));
+//        array_push( $nav, array( 'text' => $this->i18n['reports'], 'cls' => 'folder', 'expanded' => true, 'id' => 'navigationReportCenter', 'children' =>
+//            array(
+//                //array( 'text' => $this->i18n['client_list_report'], 'leaf' => true, 'cls' => 'file', 'iconCls' => 'icoReport', 'id' => 'panelClientListReport' )
+//            )
+//        ));
 		
         // *************************************************************************************
         // Patient Folder

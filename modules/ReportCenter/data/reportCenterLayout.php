@@ -1,5 +1,11 @@
 <?php
 // Loads the language file for the panel Report Center.
+if(!isset($_SESSION))
+{
+    session_name ( 'GaiaEHR' );
+    session_start();
+    session_cache_limiter('private');
+}
 include_once($_SESSION['site']['root'] . '/modules/ReportCenter/langs/en_US.php');
 ?>
 <html>

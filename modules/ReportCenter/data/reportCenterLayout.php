@@ -1,6 +1,6 @@
 <?php
 // Loads the language file for the panel Report Center.
-include_once('../langs/en_US.php');
+include_once('modules/ReportCenter/langs/en_US.php');
 ?>
 <html>
 <head>

@@ -9,31 +9,43 @@ Ext.define('Modules.Module', {
     /**
      * @param panel
      */
-    addPanel:function(panel){
+    addPanel:function(panel)
+    {
         app.MainPanel.add(panel);
     },
 
     /**
      * @param item
      */
-    addHeaderItem:function(item){
+    addHeaderItem:function(item)
+    {
         app.Header.add(item);
     },
 
     /**
      * @param parentId
      * @param node
+     * 
+     * Desc: Method to add items to the navigtion tree.
+     * 
      */
-    addNavigationNodes:function(parentId, node){
+    addNavigationNodes:function(parentId, node)
+    {
         var parent;
-        if(parentId == 'root' || parentId == null){
+        if(parentId == 'root' || parentId == null)
+        {
             parent = app.storeTree.tree.getRootNode();
-        }else{
+        }
+        else
+        {
             parent = app.storeTree.tree.getNodeById(parentId);
         }
-        if(Ext.isArray(node)) {
+        if(Ext.isArray(node)) 
+        {
             for(var i=0; i < node.length; i++) parent.appendChild(node[i]);
-        } else {
+        } 
+        else 
+        {
             parent.appendChild(node);
         }
 

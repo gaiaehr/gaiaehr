@@ -21,7 +21,7 @@ include_once('../langs/en_US.php');
 	</div>
 	
 	<div class="CategoryContainer">
-		<span class="title"><?=$LANG['clinic']?></span>
+		<span class="title"><?=$LANG['clinic_reports']?></span>
 		<ul>
 			<li><?=$LANG['standard_measures'] ?></li>
 			<li><?=$LANG['clinical_quality_measures_cqm']?></li>

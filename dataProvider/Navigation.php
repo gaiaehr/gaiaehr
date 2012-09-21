@@ -157,15 +157,6 @@ class Navigation {
             )
         ));
 		
-		// *************************************************************************************
-		// Third-party module folder
-		// *************************************************************************************
-        array_push( $nav, array( 'text' => $this->i18n['modules'], 'cls' => 'folder', 'expanded' => true, 'id' => 'navigationModules',  'children' =>
-            array(
-                //array( 'text' => 'Report Center', 'leaf' => true, 'cls' => 'file', 'iconCls' => 'icoReport', 'id' => 'panelClientListReport' )
-            )
-        ));
-		
         return $nav;
 
     }

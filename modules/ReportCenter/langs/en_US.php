@@ -1,4 +1,7 @@
 <?php
+/* 
+ * Language file for Report Center.
+ */
 $LANG = array(
 	'report_center'									=> 'Report Center Basic',
 	'patient_reports'								=> 'Patient Reports',

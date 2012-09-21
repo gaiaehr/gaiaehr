@@ -39,6 +39,8 @@ class Navigation {
             array( 'text' => $this->i18n['patient_search'], 'disabled'=> ($this->ACL->hasPermission('access_patient_search')  ? false:true), 'leaf' => true, 'cls' => 'file', 'iconCls' => 'searchUsers',  'id' => 'panelPatientSearch' ),
             array( 'text' => $this->i18n['area_floor_plan'], 'disabled'=> false, 'leaf' => true, 'cls' => 'file', 'iconCls' => 'icoZoneAreas', 'id' => 'panelAreaFloorPlan' ),
             array( 'text' => $this->i18n['patient_pool_areas'],  'disabled'=> false, 'leaf' => true, 'cls' => 'file', 'iconCls' => 'icoPoolArea16',  'id' => 'panelPoolArea' ),
+            // TODO: lang $this->i18n['report_center']
+	        array( 'text' => 'Report Center',  'disabled'=> false, 'leaf' => true, 'cls' => 'file', 'iconCls' => 'file',  'id' => 'panelReportCenter' ),
         );
 		
          // *************************************************************************************

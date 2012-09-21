@@ -265,7 +265,7 @@ Ext.define('App.view.Viewport', {
 		'App.view.miscellaneous.OfficeNotes',
 		'App.view.miscellaneous.Websearch',
 		
-		'App.view.reports.ClientListReport'
+        'App.view.reports.ReportCenter'
 
 	],
 
@@ -702,6 +702,11 @@ Ext.define('App.view.Viewport', {
         me.MainPanel.add(Ext.create('App.view.messages.Messages'));
         me.MainPanel.add(Ext.create('App.view.search.PatientSearch'));
         me.MainPanel.add(Ext.create('App.view.areas.FloorPlan'));
+        /**
+         * Reports
+         */
+        me.ReportCenter = me.MainPanel.add(Ext.create('App.view.reports.ReportCenter'));
+        me.ReportPanel = me.MainPanel.add(Ext.create('App.view.reports.ReportPanel'));
         /**
          * Patient Area
          */

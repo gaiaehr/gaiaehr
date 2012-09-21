@@ -6,13 +6,13 @@ if(!isset($_SESSION))
     session_start();
     session_cache_limiter('private');
 }
-include_once($_SESSION['site']['root'] . '/modules/ReportCenter/langs/en_US.php');
+include_once($_SESSION['site']['root'] . '/modules/ReportCenter/resources/langs/en_US.php');
 ?>
 <html>
 <head>
 </head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<link rel="stylesheet" type="text/css" href="modules/ReportCenter/css/reportCenter.css" >
+<link rel="stylesheet" type="text/css" href="modules/ReportCenter/resources/css/reportCenter.css" >
 <body>
 	<script>
 		function displayPanel(panel_id)

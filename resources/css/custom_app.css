@@ -3,6 +3,22 @@
 /* = disabled nodes
 
 ----------------------------------------------- */
+.CategoryContainer{
+	float: left;
+	margin: 5px;
+	padding: 5px;
+	border-right: 1px solid #f3f3f3;
+	padding-right: 10px;
+}
+.CategoryContainer .title{
+	font-family: 'OpenSans-CondLight';
+	display: block;
+	border-bottom: 1px dotted #7f381b;
+	font-size: 24px;
+	color: #d86232;
+}
+
+
 .thanks-box{
 	border: dashed 1px #9c9c9c !important;
 	overflow: hidden !important;

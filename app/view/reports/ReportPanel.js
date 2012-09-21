@@ -128,7 +128,7 @@ Ext.define('App.view.reports.ReportPanel', {
             dock:'top',
             items: [
                 {
-                    text:'<<< '+i18n['back'],
+                    text:i18n['back'],
                     handler: me.goToReportCenter
                 }
             ]

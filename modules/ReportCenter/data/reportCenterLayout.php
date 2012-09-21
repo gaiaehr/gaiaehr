@@ -8,11 +8,18 @@ include_once('../langs/en_US.php');
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <link rel="stylesheet" type="text/css" href="modules/ReportCenter/css/reportCenter.css" >
 <body>
+	<script>
+		function displayPanel(panel_id)
+		{
+			var layout = Ext.getCmp('MainPanel').getLayout();
+			layout.setActiveItem(panel_id);	
+		}
+	</script>
 
 	<div class="CategoryContainer">
 		<span class="title"><?=$LANG['patient_reports']?></span>
 		<ul>
-			<li><a onclick="javascript:layout.setActiveItem('panelReportClientList');" href="javascript:void(0);"><?=$LANG['patient_list'] ?></a></li>
+			<li><a onclick="javascript:displayPanel('panelReportClientList');" href="javascript:void(0);"><?=$LANG['patient_list'] ?></a></li>
 			<li><?=$LANG['prescriptions_and_dispensations']?></li>
 			<li><?=$LANG['clinical']?></li>
 			<li><?=$LANG['referrals']?></li>

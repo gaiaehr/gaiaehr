@@ -25,9 +25,9 @@ Ext.define('Modules.ReportCenter.view.reportCenter',
         	layout	: 'fit',
 			loader	: 
 			{
-				autoLoad	:true,
-				scripts		:true,
-				url			:'modules/ReportCenter/data/reportCenterLayout.php',
+				autoLoad	: true,
+				scripts		: true,
+				url			: 'modules/ReportCenter/data/reportCenterLayout.php',
 				contentType	: 'html',
 				loadMask	: true
 			}

@@ -727,6 +727,7 @@ Ext.define('App.view.Viewport', {
         /*
          * Reports
          * TODO: ACL for the reports
+         * The reports will be modulized and then give ACL to each of them.
          */
         //me.MainPanel.add(Ext.create('App.view.reports.ClientListReport'));
 
@@ -1382,15 +1383,23 @@ Ext.define('App.view.Viewport', {
 		});
 	},
 
+	/*
+	 * When the application finishes loading all the GaiaEHR core.
+	 * Then it will load all the modules.
+	 */
 	appRender: function() {
         this.loadModules();
 	},
 
+	/*
+	 * Load all the modules on the modules folder.
+	 * This folder will hold modules created by third-party. 
+	 */
     loadModules:function(){
         Modules.getEnabledModules(function(provider, response){
             var modules = response.result;
             for(var i=0; i < modules.length; i++){
-                say('Module ' + modules[i].dir + ' Loaded!');
+                say('Module ' + modules[i].dir + ' loaded!');
                 Ext.create('Modules.'+modules[i].dir+'.Main');
             }
         });
@@ -1417,6 +1426,9 @@ Ext.define('App.view.Viewport', {
 		start ? Ext.TaskManager.start(this.Task) : Ext.TaskManager.stop(this.Task)
 	},
 
+	/*
+	 * Access denied massage.
+	 */
 	accessDenied: function() {
 		Ext.Msg.show({
 			title  : 'Oops!',

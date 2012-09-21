@@ -13,12 +13,13 @@ Ext.define('Modules.ReportCenter.Main', {
          * @param parentId  (string)            navigation node parent ID,
          * @param node      (object || array)   navigation node configuration properties
          */
-        me.addNavigationNodes('navigationReportCenter',{
-            text:i18n['client_list_report'],
-            leaf:true,
-            cls:'file',
-            iconCls:'icoReport',
-            id: 'panelClientListReport'
+        me.addNavigationNodes('navigationReportCenter',
+        {
+            text	:i18n['client_list_report'],
+            leaf	:true,
+            cls		:'file',
+            iconCls	:'icoReport',
+            id		: 'panelClientListReport'
         });
 
         me.callParent();

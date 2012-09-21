@@ -9,7 +9,8 @@
 // GaiaEHR (Electronic Health Records) 2012
 //******************************************************************************
 
-Ext.define('Modules.ReportCenter.view.reports.ClientListReport', {
+Ext.define('Modules.ReportCenter.view.reports.ClientListReport', 
+{
 	extend       : 'App.classes.RenderPanel',
 	id           : 'panelReportClientList',
 	pageTitle    : i18n['client_list_report'],
@@ -17,7 +18,8 @@ Ext.define('Modules.ReportCenter.view.reports.ClientListReport', {
 	uses         : [
 		'App.classes.GridPanel'
 	],
-	initComponent: function() {
+	initComponent: function() 
+	{
 		var me = this;
 		
 		//-----------------------------------------------------------------------
@@ -98,7 +100,7 @@ Ext.define('Modules.ReportCenter.view.reports.ClientListReport', {
 					{
 						// create a veriable to then convert it to json string
 						// and pass it to the report, usin payload has the
-						// variable. PDF format
+						// variable. HTML format
 						var jsonPayload = 
 						{
 							startDate: me.FilterForm.getForm().findField("from").getValue(),

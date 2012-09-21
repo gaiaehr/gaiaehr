@@ -17,29 +17,29 @@ include_once($_SESSION['site']['root'] . '/modules/ReportCenter/langs/en_US.php'
 	<script>
 		function displayPanel(panel_id)
 		{
-			var layout = Ext.getCmp('MainPanel').getLayout();
+			var layout = app.MainPanel.getLayout();
 			layout.setActiveItem(panel_id);	
 		}
 	</script>
 
 	<div class="CategoryContainer">
-		<span class="title"><?=$LANG['patient_reports']?></span>
+		<span class="title"><?php print $LANG['patient_reports']?></span>
 		<ul>
-			<li><a onclick="javascript:displayPanel('panelReportClientList');" href="javascript:void(0);"><?=$LANG['patient_list'] ?></a></li>
-			<li><?=$LANG['prescriptions_and_dispensations']?></li>
-			<li><?=$LANG['clinical']?></li>
-			<li><?=$LANG['referrals']?></li>
-			<li><?=$LANG['immunization_registry']?></li>
+			<li><a onclick="javascript:displayPanel('panelReportClientList');" href="javascript:void(0);"><?php print $LANG['patient_list'] ?></a></li>
+			<li><?php print $LANG['prescriptions_and_dispensations'] ?></li>
+			<li><?php print $LANG['clinical']?></li>
+			<li><?php print $LANG['referrals']?></li>
+			<li><?php print $LANG['immunization_registry']?></li>
 		</ul>
 	</div>
 	
 	<div class="CategoryContainer">
 		<span class="title"><?=$LANG['clinic_reports']?></span>
 		<ul>
-			<li><?=$LANG['standard_measures'] ?></li>
-			<li><?=$LANG['clinical_quality_measures_cqm']?></li>
-			<li><?=$LANG['automated_measure_calculations_amc']?></li>
-			<li><?=$LANG['automated_measure_calculations_amc_tracking']?></li>
+			<li><?php print $LANG['standard_measures'] ?></li>
+			<li><?php print $LANG['clinical_quality_measures_cqm']?></li>
+			<li><?php print $LANG['automated_measure_calculations_amc']?></li>
+			<li><?php print $LANG['automated_measure_calculations_amc_tracking']?></li>
 		</ul>
 	</div>
 

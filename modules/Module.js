@@ -49,6 +49,10 @@ Ext.define('Modules.Module', {
             parent.appendChild(node);
         }
 
+    },
+
+    addLanguages:function(languages){
+
     }
 
 });

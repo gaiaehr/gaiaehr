@@ -9,14 +9,11 @@
 // GaiaEHR (Electronic Health Records) 2012
 //******************************************************************************
 
-Ext.define('App.view.reports.ClientListReport', {
+Ext.define('App.view.reports.ReportPanel', {
 	extend       : 'App.classes.RenderPanel',
-	id           : 'panelClientListReport',
-	pageTitle    : i18n['client_list_report'],
+	id           : 'panelReportPanel',
+	pageTitle    : 'report_center',
 	pageLayout   : 'border',
-	uses         : [
-		'App.classes.GridPanel'
-	],
 	initComponent: function() {
 		var me = this;
 		
@@ -41,7 +38,7 @@ Ext.define('App.view.reports.ClientListReport', {
 		//-----------------------------------------------------------------------
 		// Filter panel for the report
 		//-----------------------------------------------------------------------
-		me.FilterForm = Ext.create('Ext.form.FormPanel', 
+		me.FilterForm = Ext.create('Ext.form.Panel',
 		{
 			region     	: 'north',
 			height     	: 120,
@@ -122,10 +119,27 @@ Ext.define('App.view.reports.ClientListReport', {
 		});
 		
 		me.pageBody = [ me.FilterForm, me.PDFPanel ];
+
+
 		me.callParent(arguments);
+
+        me.getPageBody().addDocked({
+            xtype: 'toolbar',
+            dock:'top',
+            items: [
+                {
+                    text:i18n['back'],
+                    handler: me.goToReportCenter
+                }
+            ]
+        });
 	
 	}, // end of initComponent
-	
+
+    goToReportCenter:function(){
+        app.MainPanel.getLayout().setActiveItem('panelReportCenter');
+    },
+
 	/**
 	 * This function is called from MitosAPP.js when
 	 * this panel is selected in the navigation panel.

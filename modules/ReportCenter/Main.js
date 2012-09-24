@@ -59,7 +59,7 @@ Ext.define('Modules.ReportCenter.Main', {
          * @type {*}
          */
         me.link5 = app.ReportCenter.addReportByCategory(me.clinicCat, 'standard_measures', function(btn) {
-            app.ReportCenter.goToReportPanel('panelReportPanel');
+            app.ReportCenter.goToReportPanel('panelReportPanel') ;
         });
         me.link6 = app.ReportCenter.addReportByCategory(me.clinicCat, 'clinical_quality_measures_cqm', function(btn) {
             app.ReportCenter.goToReportPanel('panelReportPanel');

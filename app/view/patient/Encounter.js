@@ -957,8 +957,9 @@ Ext.define('App.view.patient.Encounter', {
                     me.setButtonsDisabled(me.getButtonsToDisable());
                 } else {
                     if(me.stopTimer()) {
-                        var timer = me.timer(data.start_date, data.close_date), patient = me.getCurrPatient();
-                        me.updateTitle(patient.name + ' - ' + Ext.Date.format(me.currEncounterStartDate, 'F j, Y, g:i:s a') + ' (' + i18n['closed_encounter'] + ')', app.currPatient.readOnly, timer);
+                        var timer = me.timer(data.start_date, data.close_date),
+                            patient = app.patient;
+                        me.updateTitle(patient.name + ' - ' + patient.age.str + ' - ' + Ext.Date.format(me.currEncounterStartDate, 'F j, Y, g:i:s a') + ' (' + i18n['closed_encounter'] + ')', app.currPatient.readOnly, timer);
                         me.setButtonsDisabled(me.getButtonsToDisable(), true);
                     }
                 }
@@ -1120,8 +1121,9 @@ Ext.define('App.view.patient.Encounter', {
      */
     encounterTimer: function() {
         var me = this;
-        var timer = me.timer(me.currEncounterStartDate, new Date()), patient = me.getCurrPatient();
-        me.updateTitle(patient.name + ' - ' + Ext.Date.format(me.currEncounterStartDate, 'F j, Y, g:i:s a') + ' (' + i18n['opened_encounter'] + ')', app.currPatient.readOnly, timer);
+        var timer = me.timer(me.currEncounterStartDate, new Date()),
+            patient = app.patient;
+        me.updateTitle(patient.name + ' - ' + patient.age.str + ' - ' + Ext.Date.format(me.currEncounterStartDate, 'F j, Y, g:i:s a') + ' (' + i18n['opened_encounter'] + ')', app.currPatient.readOnly, timer);
     },
 
     /**
@@ -1421,7 +1423,7 @@ Ext.define('App.view.patient.Encounter', {
      * to call every this panel becomes active
      */
     onActive      : function(callback) {
-        var me = this, patient = app.currPatient;
+        var me = this, patient = app.patient;
         if(me.checkIfCurrPatient()) {
             me.updateTitle(patient.name + ' (' + i18n['visits'] + ')', patient.readOnly, null);
             me.setReadOnly(patient.readOnly);

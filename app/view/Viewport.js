@@ -1092,10 +1092,10 @@ Ext.define('App.view.Viewport', {
 			Patient.currPatientSet({ pid: pid }, function(provider, response) {
 				var data = response.result, msg1, msg2;
 				if(data.readOnly) {
-					msg1 = data.user + ' ' + i18n['is_currently_working_with'] + ' "' + fullname + '" ' + i18n['in'] + ' "' + data.area + '" ' + i18n['area'] + '.<br>' +
+					msg1 = data.user + ' ' + i18n['is_currently_working_with'] + ' "' + data.patient.name + '" ' + i18n['in'] + ' "' + data.area + '" ' + i18n['area'] + '.<br>' +
 						i18n['override_read_mode_will_remove_the_patient_from_previous_user'] + '.<br>' +
 						i18n['do_you_would_like_to_override_read_mode'];
-					msg2 = data.user + ' ' + i18n['is_currently_working_with'] + ' "' + fullname + '" ' + i18n['in'] + ' "' + data.area + '" ' + i18n['area'] + '.<br>';
+					msg2 = data.user + ' ' + i18n['is_currently_working_with'] + ' "' + data.patient.name + '" ' + i18n['in'] + ' "' + data.area + '" ' + i18n['area'] + '.<br>';
 					Ext.Msg.show({
 						title  : i18n['wait'] + '!!!',
 						msg    : data.overrideReadOnly ? msg1 : msg2,
@@ -1110,18 +1110,24 @@ Ext.define('App.view.Viewport', {
 				}
 				function continueSettingPatient(readOnly) {
 					me.currEncounterId = null;
+                    // old way
 					me.currPatient = {
-						pid     : pid,
-						name    : fullname,
+						pid     : data.patient.pid,
+						name    : data.patient.name,
 						readOnly: readOnly
 					};
+                    // new way
                     me.patient = {
-                        pid     : pid,
-                        name    : fullname,
+                        pid     : data.patient.pid,
+                        name    : data.patient.name,
+                        sex     : data.patient.sex,
+                        dob     : data.patient.dob,
+                        age     : data.patient.age,
                         readOnly: readOnly,
                         eid     : null
                     };
-					me.patientBtn.update({pid:pid, name:fullname});
+                    say(data.patient);
+					me.patientBtn.update({pid:data.patient.pid, name:data.patient.name});
 					me.patientBtn.addCls(priority);
 					me.patientBtn.enable();
 					if(me.patientOpenVisitsBtn) me.patientOpenVisitsBtn.enable();
@@ -1142,8 +1148,8 @@ Ext.define('App.view.Viewport', {
 			me.currPatient = null;
 
             me.patient = {
-                name    : null,
                 pid     : null,
+                name    : null,
                 sex     : null,
                 dob     : null,
                 age     : null,

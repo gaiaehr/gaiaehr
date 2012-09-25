@@ -68,15 +68,23 @@ class Patient
 			$area = $poolArea->getCurrentPatientPoolAreaByPid($params->pid);
 			$this->patientChartOutByPid($params->pid, $area['area_id']);
 			$_SESSION['patient']['readOnly'] = false;
-			return array('readOnly' => false);
 		}else{
 			$_SESSION['patient']['readOnly'] = true;
-			return array('readOnly' => true,
-			             'overrideReadOnly' => $this->acl->hasPermission('override_readonly'),
-			             'user' => $this->user->getUserFullNameById($p['uid']),
-			             'area' => $poolArea->getAreaTitleById($p['pool_area_id']),
-			             'array'=>$p);
 		}
+		return array(
+			'patient' => array(
+				'pid' => $params->pid,
+				'name' => $_SESSION['patient']['name'],
+				'sex' => $this->getPatientSexByPid($params->pid),
+				'dob' => $dob = $this->getPatientDOBByPid($params->pid),
+				'age' => $this->getPatientAgeByDOB($dob),
+				'area' => $poolArea->getAreaTitleById($p['pool_area_id']),
+			),
+			'readOnly' => $_SESSION['patient']['readOnly'],
+			'overrideReadOnly' => $this->acl->hasPermission('override_readonly'),
+		    'user' => $this->user->getUserFullNameById($p['uid']),
+		    'area' => $poolArea->getAreaTitleById($p['pool_area_id'])
+		);
 	}
 
 	/**
@@ -179,21 +187,6 @@ class Patient
 		$this->db->setSQL("SELECT fname,mname,lname FROM form_data_demographics WHERE pid = '$pid'");
 		$p = $this->db->fetchRecord();
 		return Person::fullname($p['fname'], $p['mname'], $p['lname']);
-	}
-
-	public function getDOBByPid($pid)
-	{
-		$this->db->setSQL("SELECT DOB FROM form_data_demographics WHERE pid = '$pid'");
-		$p = $this->db->fetchRecord();
-		return $p['DOB'];
-	}
-
-	public function getPatientSexIntByPid($pid)
-	{
-		$this->db->setSQL("SELECT sex FROM form_data_demographics WHERE pid = '$pid'");
-		$p   = $this->db->fetchRecord();
-		$sex = (strtolower($p['sex']) == strtolower('FEMALE')) ? 1 : 2;
-		return $sex;
 	}
 
 	/**
@@ -353,6 +346,13 @@ class Patient
 	}
 
 	///////////////////////////////////////////////////////
+		public function getDOBByPid($pid)
+		{
+			$this->db->setSQL("SELECT DOB FROM form_data_demographics WHERE pid = '$pid'");
+			$p = $this->db->fetchRecord();
+			return $p['DOB'];
+		}
+
 	public function getPatientDOBByPid($pid)
 	{
 		$this->db->setSQL("SELECT DOB
@@ -377,8 +377,26 @@ class Patient
 		$age['days']       = $days_until_appt;
 		$age['months']     = $months_until_appt;
 		$age['years']      = $years_until_appt;
-		return array('age'=>(($age['years'] != 0 || $age['months'] !=0 )?(($age['years'] != 0)?(($age['years']==1)?$age['years'].' year':$age['years'.' year']): (($age['months']==1)?$age['months'].' month':$age['months'].' months')):(($age['days']==1)?$age['days'].' day':$age['days'].' days')),
-                     'DMY'=>$age);
+
+		if($age['years'] >= 2){
+			$ageStr = $age['years'] .' yrs.';
+		}elseif($age['months'] >= 1){
+			$ageStr = $age['months'] .' mos.';
+		}else{
+			$ageStr = $age['days'] .' days';
+		}
+
+		return array(
+			'DMY'=>$age,
+			'str' => $ageStr
+		);
+	}
+
+	public function getPatientAgeByPid($pid)
+	{
+		$this->db->setSQL("SELECT DOB FROM form_data_demographics WHERE pid ='$pid'");
+		$p = $this->db->fetchRecord(PDO::FETCH_ASSOC);
+		return $this->getPatientAgeByDOB($p['DOB']);
 	}
 
 	/**
@@ -392,6 +410,11 @@ class Patient
                            WHERE pid ='$pid'");
 		$p = $this->db->fetchRecord(PDO::FETCH_ASSOC);
 		return $p['sex'];
+	}
+
+	public function getPatientSexIntByPid($pid)
+	{
+		return (strtolower($this->getPatientSexByPid($pid)) == 'female' ? 1 : 2);
 	}
 
 	public function getPatientPregnantStatusByPid($pid)

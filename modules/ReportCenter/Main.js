@@ -26,12 +26,12 @@ Ext.define('Modules.ReportCenter.Main', {
          * add Patient Category
          * @type {*}
          */
-        me.patientCat = app.ReportCenter.addCategory('patient_reports');
+        me.patientCat = app.ReportCenter.addCategory(i18n['patient_reports']);
         /**
          * Patient Category Links...
          * @type {*}
          */
-        me.link1 = app.ReportCenter.addReportByCategory(me.patientCat, 'prescriptions_and_dispensations', function(btn) {
+        me.link1 = app.ReportCenter.addReportByCategory(me.patientCat, i18n['prescriptions_and_dispensations'], function(btn) {
             say(btn);
             say(app.ReportCenter);
             say(app.ReportPanel);

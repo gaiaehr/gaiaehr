@@ -1046,6 +1046,9 @@ $LANG = array(
 	'items'									=> 'Items',
 	'patient'								=> 'Patient',
 	'modules'								=> 'Modules',
+	'report_center'							=> 'Report Center',
+	'patient_reports'						=> 'Patient Reports',
+	'prescriptions_and_dispensations'		=> 'Prescriptions & Dispensations',
 	
 	//******************************************************************
 	// Report translations

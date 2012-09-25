@@ -12,7 +12,7 @@
 Ext.define('App.view.reports.ReportCenter', {
 	extend       : 'App.classes.RenderPanel',
 	id           : 'panelReportCenter',
-	pageTitle    : 'report_center',
+	pageTitle    : i18n['report_center'],
 	initComponent: function() {
 		var me = this;
 

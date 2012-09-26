@@ -736,14 +736,12 @@ Ext.define('App.view.patient.Encounter', {
         }
     },
 
-
-
     /**
      * CheckOut Functions
      */
     onCheckout: function() {
         var me = this, win = me.checkoutWindow, patient = me.getCurrPatient();
-        win.setTitle(patient.name + ' - ' + Ext.Date.format(me.currEncounterStartDate, 'F j, Y, g:i:s a') + ' (' + i18n['checkout'] + ')');
+        win.setTitle(patient.name +' #'+patient.pid+ ' - ' + Ext.Date.format(me.currEncounterStartDate, 'F j, Y, g:i:s a') + ' (' + i18n['checkout'] + ')');
         win.show();
     },
     coSignEncounter: function() {
@@ -959,7 +957,7 @@ Ext.define('App.view.patient.Encounter', {
                     if(me.stopTimer()) {
                         var timer = me.timer(data.start_date, data.close_date),
                             patient = app.patient;
-                        me.updateTitle(patient.name + ' - ' + patient.age.str + ' - ' + Ext.Date.format(me.currEncounterStartDate, 'F j, Y, g:i:s a') + ' (' + i18n['closed_encounter'] + ')', app.currPatient.readOnly, timer);
+                        me.updateTitle(patient.name +' #'+patient.pid+' - '+patient.age.str+' - ' + Ext.Date.format(me.currEncounterStartDate, 'F j, Y, g:i:s a') + ' (' + i18n['closed_encounter'] + ')', app.currPatient.readOnly, timer);
                         me.setButtonsDisabled(me.getButtonsToDisable(), true);
                     }
                 }
@@ -1123,7 +1121,7 @@ Ext.define('App.view.patient.Encounter', {
         var me = this;
         var timer = me.timer(me.currEncounterStartDate, new Date()),
             patient = app.patient;
-        me.updateTitle(patient.name + ' - ' + patient.age.str + ' - ' + Ext.Date.format(me.currEncounterStartDate, 'F j, Y, g:i:s a') + ' (' + i18n['opened_encounter'] + ')', app.currPatient.readOnly, timer);
+        me.updateTitle(patient.name +' #'+patient.pid+ ' - ' + patient.age.str + ' - ' + Ext.Date.format(me.currEncounterStartDate, 'F j, Y, g:i:s a') + ' (' + i18n['opened_encounter'] + ')', app.currPatient.readOnly, timer);
     },
 
     /**

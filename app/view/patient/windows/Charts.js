@@ -197,7 +197,6 @@ Ext.define('App.view.patient.windows.Charts', {
                 yMaximum : 20,
                 store:me.BMIForAgeStore
             })
-
 		];
 
 		me.listeners = {
@@ -210,20 +209,24 @@ Ext.define('App.view.patient.windows.Charts', {
 
 	onWinShow:function(){
         var me = this,
-            layout = me.getLayout();
+            layout = me.getLayout(),
+            btns = me.down('toolbar').items.items,
+            btn;
         layout.setActiveItem(0);
-
         me.vitalsStore.load({params:{pid:app.currPatient.pid}});
-
-//        me.WeightForAgeInfStore.load({params:{pid:app.currPatient.pid}});
-//        me.LengthForAgeInfStore.load({params:{pid:app.currPatient.pid}});
-//        me.WeightForRecumbentInfStore.load({params:{pid:app.currPatient.pid}});
-//        me.HeadCircumferenceInfStore.load({params:{pid:app.currPatient.pid}});
-//        me.WeightForStatureStore.load({params:{pid:app.currPatient.pid}});
-//        me.WeightForAgeStore.load({params:{pid:app.currPatient.pid}});
-//        me.StatureForAgeStore.load({params:{pid:app.currPatient.pid}});
-//        me.BMIForAgeStore.load({params:{pid:app.currPatient.pid}});
-
+        for(var i=0; i < btns.length; i++){
+            btn = btns[i];
+            if( btn.type == 'button' && (
+                btn.action == 'bpPulseTemp' ||
+                btn.action == 'WeightForAgeInf' ||
+                btn.action == 'LengthForAgeInf' ||
+                btn.action == 'WeightForRecumbentInf' ||
+                btn.action == 'HeadCircumferenceInf')){
+                btn.setVisible(app.patient.age.DMY.years < 2);
+            }else if(btn.type == 'button'){
+                btn.setVisible(app.patient.age.DMY.years >= 2);
+            }
+        }
 	},
 
 	onChartSwitch: function(btn) {

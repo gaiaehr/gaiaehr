@@ -369,22 +369,28 @@ class Patient
 	 */
 	public function getPatientAgeByDOB($dob)
 	{
-		$today             = new DateTime(date("Y-m-d"));
-		$appt              = new DateTime(date($dob));
-		$days_until_appt   = $appt->diff($today)->d;
-		$months_until_appt = $appt->diff($today)->m;
-		$years_until_appt  = $appt->diff($today)->y;
-		$age['days']       = $days_until_appt;
-		$age['months']     = $months_until_appt;
-		$age['years']      = $years_until_appt;
+		$today          = new DateTime(date("Y-m-d"));
+		$t              = new DateTime(date($dob));
+		$age['days']    = $t->diff($today)->d;
+		$age['months']  = $t->diff($today)->m;
+		$age['years']   = $t->diff($today)->y;
 
 		if($age['years'] >= 2){
 			$ageStr = $age['years'] .' yrs.';
-		}elseif($age['months'] >= 1){
-			$ageStr = $age['months'] .' mos.';
 		}else{
-			$ageStr = $age['days'] .' days';
+			if($age['years'] = 1){
+				$ageStr = 12 + $age['months'] .' mos.';
+			}else{
+				if($age['months'] > 1){
+					$ageStr = $age['months'] .' mos.';
+				}else{
+					$ageStr = $age['days'] .' days';
+				}
+			}
 		}
+
+		//TODO: ADD THIS TO DEBUG DATE IN THE FUTURE
+		$ageStr .= ' ('.$age['years']. 'y' .$age['months']. 'm' .$age['days'] . 'd)';
 
 		return array(
 			'DMY'=>$age,

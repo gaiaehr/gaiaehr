@@ -1133,20 +1133,20 @@ Ext.define('App.view.patient.Summary', {
 			 * convenient way to refer to current pid within this panel
 			 * @type {*}
 			 */
-			me.pid = app.currPatient.pid;
+			me.pid = app.patient.pid;
 			/**
 			 * get current set patient info
 			 * @type {*}
 			 */
-			var patient = me.getCurrPatient();
+			var patient = app.patient;
 			/**
 			 * update panel main title to reflect the patient name and if the patient is read only
 			 */
-			me.updateTitle(patient.name + ' - #' + patient.pid + ' (' + i18n['patient_summary'] + ')', app.currPatient.readOnly);
+			me.updateTitle(patient.name + ' #'+patient.pid+' - '+patient.age.str+' - (' + i18n['patient_summary'] + ')', app.patient.readOnly, null);
 			/**
 			 * verify if the patient is on read only mode
 			 */
-			me.setReadOnly(app.currPatient.readOnly);
+			me.setReadOnly(app.patient.readOnly);
 
 			me.setButtonsDisabled(me.query('button[action="readOnly"]'));
 

@@ -1,6 +1,8 @@
-Ext.define('Modules.ReportCenter.Main', {
+Ext.define('Modules.ReportCenter.Main', 
+{
     extend     : 'Modules.Module',
-    constructor: function() {
+    constructor: function() 
+    {
         var me = this;
         //
         //        /**
@@ -26,24 +28,28 @@ Ext.define('Modules.ReportCenter.Main', {
          * add Patient Category
          * @type {*}
          */
-        me.patientCat = app.ReportCenter.addCategory('patient_reports');
+        me.patientCat = app.ReportCenter.addCategory(i18n['patient_reports'], 250);
         /**
          * Patient Category Links...
          * @type {*}
          */
-        me.link1 = app.ReportCenter.addReportByCategory(me.patientCat, 'prescriptions_and_dispensations', function(btn) {
+        me.link1 = app.ReportCenter.addReportByCategory(me.patientCat, i18n['prescriptions_and_dispensations'], function(btn) 
+        {
             say(btn);
             say(app.ReportCenter);
             say(app.ReportPanel);
             app.ReportCenter.goToReportPanel('panelReportPanel');
         });
-        me.link2 = app.ReportCenter.addReportByCategory(me.patientCat, 'clinical', function(btn) {
+        me.link2 = app.ReportCenter.addReportByCategory(me.patientCat, i18n['clinical'], function(btn) 
+        {
             app.ReportCenter.goToReportPanel('panelReportPanel');
         });
-        me.link3 = app.ReportCenter.addReportByCategory(me.patientCat, 'referrals', function(btn) {
+        me.link3 = app.ReportCenter.addReportByCategory(me.patientCat, i18n['referrals'], function(btn) 
+        {
             app.ReportCenter.goToReportPanel('panelReportPanel');
         });
-        me.link4 = app.ReportCenter.addReportByCategory(me.patientCat, 'immunization_registry', function(btn) {
+        me.link4 = app.ReportCenter.addReportByCategory(me.patientCat, i18n['immunization_registry'], function(btn) 
+        {
             app.ReportCenter.goToReportPanel('panelReportPanel');
         });
 
@@ -53,21 +59,25 @@ Ext.define('Modules.ReportCenter.Main', {
          * add clicnic category
          * @type {*}
          */
-        me.clinicCat = app.ReportCenter.addCategory('clinic_reports');
+        me.clinicCat = app.ReportCenter.addCategory(i18n['clinic_reports'], 260);
         /**
          * Clicnic Category Links...
          * @type {*}
          */
-        me.link5 = app.ReportCenter.addReportByCategory(me.clinicCat, 'standard_measures', function(btn) {
-            app.ReportCenter.goToReportPanel('panelReportPanel') ;
-        });
-        me.link6 = app.ReportCenter.addReportByCategory(me.clinicCat, 'clinical_quality_measures_cqm', function(btn) {
+        me.link5 = app.ReportCenter.addReportByCategory(me.clinicCat, i18n['standard_measures'], function(btn) 
+        {
             app.ReportCenter.goToReportPanel('panelReportPanel');
         });
-        me.link7 = app.ReportCenter.addReportByCategory(me.clinicCat, 'automated_measure_calculations_amc', function(btn) {
+        me.link6 = app.ReportCenter.addReportByCategory(me.clinicCat, i18n['clinical_quality_measures_cqm'], function(btn) 
+        {
             app.ReportCenter.goToReportPanel('panelReportPanel');
         });
-        me.link8 = app.ReportCenter.addReportByCategory(me.clinicCat, 'automated_measure_calculations_amc_tracking', function(btn) {
+        me.link7 = app.ReportCenter.addReportByCategory(me.clinicCat, i18n['automated_measure_calculations_amc'], function(btn) 
+        {
+            app.ReportCenter.goToReportPanel('panelReportPanel');
+        });
+        me.link8 = app.ReportCenter.addReportByCategory(me.clinicCat, i18n['automated_measure_calculations_tracking'], function(btn) 
+        {
             app.ReportCenter.goToReportPanel('panelReportPanel');
         });
         me.callParent();

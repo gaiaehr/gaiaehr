@@ -270,7 +270,7 @@ Ext.define('App.view.Viewport', {
 	],
 
 	minWidthToFullMode: 1680,
-	currency          : '$',
+	currency          : i18n['currency'],
 
 	initComponent: function() {
 
@@ -845,7 +845,7 @@ Ext.define('App.view.Viewport', {
 		me.items = [ me.Header, me.navColumn, me.MainPanel, me.Footer ];
 
 		me.listeners = {
-			render : me.appRender,
+			//render : me.appRender,
 			beforerender: me.beforeAppRender
 		};
 
@@ -855,15 +855,25 @@ Ext.define('App.view.Viewport', {
 
 	},
 
+	/*
+	 * Show the medical window dialog.
+	 */ 
 	onMedicalWin: function(btn) {
 		this.MedicalWindow.show();
 		this.MedicalWindow.down('toolbar').getComponent(btn.action).toggle(true);
 		this.MedicalWindow.cardSwitch(btn);
 	},
 
+	/*
+	 * Show the Charts window dialog.
+	 */ 
 	onChartsWin      : function() {
 		this.ChartsWindow.show();
 	},
+	
+	/*
+	* Show the Document window dialog.
+	*/ 
 	onNewDocumentsWin: function(action) {
 		this.NewDocumentsWindow.show();
 		this.NewDocumentsWindow.cardSwitch(action);
@@ -885,10 +895,16 @@ Ext.define('App.view.Viewport', {
 		}
 	},
 
+	/*
+	 * Show the Payment Entry window dialog.
+	 */ 
 	onPaymentEntryWindow: function() {
 		this.PaymentEntryWindow.show();
 	},
 
+	/*
+	 * Show the new patient form panel.
+	 */ 
 	newPatient: function() {
 		var me = this;
 		me.navigateTo('panelNewPatient');
@@ -919,6 +935,9 @@ Ext.define('App.view.Viewport', {
 
 	},
 
+	/*
+	 * Show the Create New Encounter panel.
+	 */ 
 	createNewEncounter: function() {
 		var me = this;
 		if(perm.access_encounters && perm.add_encounters) {
@@ -1069,6 +1088,10 @@ Ext.define('App.view.Viewport', {
 
 	},
 
+	/*
+	 * Function to get the current active panel.
+	 * NOTE: This may be used on all the application.
+	 */
 	getActivePanel: function() {
 		return this.MainPanel.getLayout().getActiveItem();
 	},
@@ -1348,12 +1371,14 @@ Ext.define('App.view.Viewport', {
 			}
 		});
 	},
-	onDocumentView                 : function(src) {
+	
+	onDocumentView: function(src) {
 		var me = this;
 		if(me.documentViewWindow) me.DocumentViewerWindow.remove(me.documentViewWindow);
 		me.DocumentViewerWindow.add(me.documentViewWindow = Ext.create('App.classes.ManagedIframe', {src: src}));
 		me.DocumentViewerWindow.show();
 	},
+	
 	/**
 	 *
 	 * @param panel
@@ -1398,24 +1423,23 @@ Ext.define('App.view.Viewport', {
 	 * When the application finishes loading all the GaiaEHR core.
 	 * Then it will load all the modules.
 	 */
-	appRender: function() {
-        this.loadModules();
-	},
+	//appRender: function() {
+    //    this.loadModules();
+	//},
 
 	/*
 	 * Load all the modules on the modules folder.
 	 * This folder will hold modules created by third-party. 
 	 */
-    loadModules:function(){
-        Modules.getEnabledModules(function(provider, response){
-            var modules = response.result;
-            for(var i=0; i < modules.length; i++){
-                say('Module ' + modules[i].dir + ' loaded!');
-                Ext.create('Modules.'+modules[i].dir+'.Main');
-            }
-        });
-    },
-
+    // loadModules:function(){
+        // Modules.getEnabledModules(function(provider, response){
+            // var modules = response.result;
+            // for(var i=0; i < modules.length; i++){
+                // say('Module ' + modules[i].dir + ' loaded!');
+                // Ext.create('Modules.'+modules[i].dir+'.Main');
+            // }
+        // });
+    // },
 	removeAppMask: function() {
 		Ext.get('mainapp-loading').remove();
 		Ext.get('mainapp-loading-mask').fadeOut({remove: true});

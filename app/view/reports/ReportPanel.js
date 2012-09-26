@@ -84,7 +84,7 @@ Ext.define('App.view.reports.ReportPanel', {
 							endDate: me.FilterForm.getForm().findField("to").getValue(),
 							pdf: true
 						};
-						Ext.get('pdfRender').dom.src = 'modules/reports/ClientListReport.rpt.php?params=' + Ext.JSON.encode(jsonPayload);
+						Ext.get('pdfRender').dom.src = 'app/view/reports/layouts/ClientListReport.rpt.php?params=' + Ext.JSON.encode(jsonPayload);
 					}
 				},
 				'-',
@@ -102,7 +102,7 @@ Ext.define('App.view.reports.ReportPanel', {
 							endDate: me.FilterForm.getForm().findField("to").getValue(),
 							pdf: false
 						};
-						Ext.get('pdfRender').dom.src = 'modules/reports/ClientListReport.rpt.php?params=' + Ext.JSON.encode(jsonPayload);
+						Ext.get('pdfRender').dom.src = 'app/view/reports/layouts/ClientListReport.rpt.php?params=' + Ext.JSON.encode(jsonPayload);
 					}
 				},
 				'-',
@@ -136,7 +136,8 @@ Ext.define('App.view.reports.ReportPanel', {
 	
 	}, // end of initComponent
 
-    goToReportCenter:function(){
+    goToReportCenter:function()
+    {
         app.MainPanel.getLayout().setActiveItem('panelReportCenter');
     },
 

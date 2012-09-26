@@ -61,7 +61,7 @@ $db->setSQL($sql);
 // to then pass it to the DomPDF class.
 //------------------------------------------------------------------------------
 ob_start();
-$pathCSS = ($_SESSION['site']['root'] ? $_SESSION['site']['root'] : '../../../..');
+$pathCSS = ($params['pdf'] ? $_SESSION['site']['root'] : '../../../../');
 ?>
 
 <html>

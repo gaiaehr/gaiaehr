@@ -6,6 +6,7 @@
 // JavaScript has reserved variables after the dot.
 $LANG = array(
 	'en_US'									=> 'English (USA)',
+	'currency'								=> '$',
     'dashboard'         					=> 'Dashboard',
     'calendar'          					=> 'Calendar',
     'messages'          					=> 'Messages',

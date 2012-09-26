@@ -27,6 +27,10 @@ h2{
 	margin: 0px;
 	padding: 0px;
 }
+.CategoryContainerItem{
+	border: 0px;
+	background-color: #ffffff;
+}
 
 .CategoryContainer{
 	float: left;

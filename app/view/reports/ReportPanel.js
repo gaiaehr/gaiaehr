@@ -136,7 +136,8 @@ Ext.define('App.view.reports.ReportPanel', {
 	
 	}, // end of initComponent
 
-    goToReportCenter:function(){
+    goToReportCenter:function()
+    {
         app.MainPanel.getLayout().setActiveItem('panelReportCenter');
     },
 

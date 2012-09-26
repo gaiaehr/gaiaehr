@@ -25,12 +25,12 @@ Ext.define('App.view.reports.ReportCenter', {
 	
 	},
 
-    addCategory:function(category){
+    addCategory:function(category, width){
         var me = this;
         return me.reports.add(
             Ext.create('Ext.container.Container',{
                 cls:'CategoryContainer',
-                width:200,
+                width:width,
                 layout:'anchor',
                 items:[
                     {
@@ -47,6 +47,7 @@ Ext.define('App.view.reports.ReportCenter', {
     addReportByCategory:function(category, text, fn){
         return category.add(
             Ext.create('Ext.button.Button',{
+            	cls: 'CategoryContainerItem',
                 anchor:'100%',
                 margin:'0 0 5 0',
                 textAlign:'left',

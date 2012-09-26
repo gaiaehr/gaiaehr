@@ -12,7 +12,7 @@ if(!isset($_SESSION)){
     session_cache_limiter('private');
 }
 include_once($_SESSION['site']['root'].'/classes/dbHelper.php');
-include_once($_SESSION['site']['root'].'/dataProvider/i18n.php');
+include_once($_SESSION['site']['root'].'/dataProvider/i18nRouter.php');
 
 class CombosData {
 

@@ -33,6 +33,10 @@ Ext.define('App.view.reports.ReportCenter',
 		 * this indicator will also be the logic for field rendering.
 		 */
 		me.patientCategory = me.addCategory(i18n['patient_reports'], 250);
+		me.ClientListReport = me.addReportByCategory(me.patientCategory, i18n['client_list_report'], function(btn) 
+        {
+            me.goToReportPanel('panelReportPanel');
+        });
 		me.link1 = me.addReportByCategory(me.patientCategory, i18n['prescriptions_and_dispensations'], function(btn) 
         {
             me.goToReportPanel('panelReportPanel');
@@ -123,9 +127,9 @@ Ext.define('App.view.reports.ReportCenter',
 	 * Function to call the report panel.
 	 * Remember the report fields are dynamically rendered.
 	 */
-    goToReportPanel:function()
+    goToReportPanel:function(panelId)
     {
-        app.MainPanel.getLayout().setActiveItem('panelReportPanel');
+        app.MainPanel.getLayout().setActiveItem(panelId);
     },
 	
 	/**

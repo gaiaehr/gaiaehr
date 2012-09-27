@@ -9,12 +9,14 @@
 // GaiaEHR (Electronic Health Records) 2012
 //******************************************************************************
 
-Ext.define('App.view.reports.ReportPanel', {
+Ext.define('App.view.reports.ReportPanel', 
+{
 	extend       : 'App.classes.RenderPanel',
 	id           : 'panelReportPanel',
 	pageTitle    : i18n['report_center'],
 	pageLayout   : 'border',
-	initComponent: function() {
+	initComponent: function() 
+	{
 		var me = this;
 		
 		//-----------------------------------------------------------------------
@@ -123,13 +125,14 @@ Ext.define('App.view.reports.ReportPanel', {
 
 		me.callParent(arguments);
 
-        me.getPageBody().addDocked({
-            xtype: 'toolbar',
-            dock:'top',
-            items: [
+        me.getPageBody().addDocked(
+        {
+            xtype	: 'toolbar',
+            dock	:'top',
+            items	: [
                 {
-                    text:i18n['back'],
-                    handler: me.goToReportCenter
+                    text	: i18n['back'],
+                    handler	: me.goToReportCenter
                 }
             ]
         });

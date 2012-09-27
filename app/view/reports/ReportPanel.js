@@ -84,7 +84,7 @@ Ext.define('App.view.reports.ReportPanel', {
 							endDate: me.FilterForm.getForm().findField("to").getValue(),
 							pdf: true
 						};
-						Ext.get('pdfRender').dom.src = 'app/view/reports/layouts/ClientListReport.rpt.php?params=' + Ext.JSON.encode(jsonPayload);
+						Ext.get('pdfRender').dom.src = 'report_layouts/ClientListReport.rpt.php?params=' + Ext.JSON.encode(jsonPayload);
 					}
 				},
 				'-',
@@ -102,7 +102,7 @@ Ext.define('App.view.reports.ReportPanel', {
 							endDate: me.FilterForm.getForm().findField("to").getValue(),
 							pdf: false
 						};
-						Ext.get('pdfRender').dom.src = 'app/view/reports/layouts/ClientListReport.rpt.php?params=' + Ext.JSON.encode(jsonPayload);
+						Ext.get('pdfRender').dom.src = 'report_layouts/ClientListReport.rpt.php?params=' + Ext.JSON.encode(jsonPayload);
 					}
 				},
 				'-',

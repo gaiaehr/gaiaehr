@@ -542,32 +542,32 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                                                         helpMsg: 'Load ICD10 Codes will add a <span style="font-weight: bold;">few minutes</span> to the installation process.'
                                                     }
                                                 ]
-                                            },
-                                            {
-                                                xtype     : 'checkboxfield',
-                                                fieldLabel: 'Load SNOMED',
-                                                name      : 'SNOMED',
-                                                inputValue: '1',
-                                                action:'code',
-                                                plugins   : [
-                                                    {
-                                                        ptype  : 'helpicon',
-                                                        helpMsg: 'Load SNOMED Codes will add a <span style="font-weight: bold;">5 to 10 minutes</span> to the installation process.'
-                                                    }
-                                                ]
-                                            },
-                                            {
-                                                xtype     : 'checkboxfield',
-                                                fieldLabel: 'Load RxNorm',
-                                                name      : 'RXNORM',
-                                                inputValue: '1',
-                                                action:'code',
-                                                plugins   : [
-                                                    {
-                                                        ptype  : 'helpicon',
-                                                        helpMsg: 'Load RxNorm Codes will add <span style="font-weight: bold;">30 to 60 minutes</span> to the installation process.'
-                                                    }
-                                                ]
+//                                            },
+//                                            {
+//                                                xtype     : 'checkboxfield',
+//                                                fieldLabel: 'Load SNOMED',
+//                                                name      : 'SNOMED',
+//                                                inputValue: '1',
+//                                                action:'code',
+//                                                plugins   : [
+//                                                    {
+//                                                        ptype  : 'helpicon',
+//                                                        helpMsg: 'Load SNOMED Codes will add a <span style="font-weight: bold;">5 to 10 minutes</span> to the installation process.'
+//                                                    }
+//                                                ]
+//                                            },
+//                                            {
+//                                                xtype     : 'checkboxfield',
+//                                                fieldLabel: 'Load RxNorm',
+//                                                name      : 'RXNORM',
+//                                                inputValue: '1',
+//                                                action:'code',
+//                                                plugins   : [
+//                                                    {
+//                                                        ptype  : 'helpicon',
+//                                                        helpMsg: 'Load RxNorm Codes will add <span style="font-weight: bold;">30 to 60 minutes</span> to the installation process.'
+//                                                    }
+//                                                ]
                                             }
                                         ]
                                     }

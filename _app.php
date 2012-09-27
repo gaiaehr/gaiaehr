@@ -15,6 +15,14 @@
  */
 if(!defined('_GaiaEXEC')) die('No direct access allowed.');
 $_SESSION['site']['flops'] = 0;
+
+/*
+ * This is used for the correct loading of the language file 
+ * of Sencha ExtJS.
+ */
+include_once('dataProvider/i18nRouter.php');
+$lang = i18nRouter::getTranslation();
+
 ?>
 <html>
 	<head>
@@ -49,6 +57,9 @@ $_SESSION['site']['flops'] = 0;
 		<span id="app-msg" style="display:none;"></span>
 		<!-- Ext library -->
 		<script type="text/javascript" src="lib/extjs-4.1.1a/ext-all-debug.js"></script>
+		<!-- Ext Localization file -->
+		<script type="text/javascript" src="lib/extjs-4.1.1a/locale/<?php print $lang['i18nExtFile'] ?>"></script>
+
 		<script src="data/api.php"></script>
 		<script type="text/javascript">
 			Ext.Loader.setConfig({

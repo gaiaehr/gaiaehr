@@ -5,7 +5,13 @@
 // Please, use the following format i18n['save'] not i18n.save 
 // JavaScript has reserved variables after the dot.
 $LANG = array(
-	'es_PR'									=> 'Español (Puerto Rico)',
+
+	// This items are used internally by the GaiaEHR Application.
+	'en_PR'									=> 'Español (PR)',
+	'i18nExtFile'							=> 'ext-lang-es.js',
+	// End of the items
+	
+	'currency'								=> '$',
     'dashboard'         					=> 'Tablero',
     'calendar'          					=> 'Calendario',
     'messages'          					=> 'Mensajes',
@@ -1026,12 +1032,45 @@ $LANG = array(
 	'vtype_password'						=> 'Las contraseñas no coinciden',
 	'vtype_mysqlField'						=> 'El campo especificado tiene caracteres no válidos',
 	'open_patient_visits_history'			=> 'Historial de visitas del paciente abierto',
-	
-	//******************************************************************
-	// Report translations
-	// This should be a separate module
-	//******************************************************************
+	'source'								=> 'Fuente',
+	'path_to_ca_certificate_file'			=> 'Ruta de acceso al archivo CA',
+	'path_to_ca_key_file'					=> 'Ruta al archivo de clave CA',
+	'client_certificate_expiration_days'	=> 'Días de vencimiento de certificado de cliente',
+	'emergency_login_email_address'			=> 'Dirección de correo electrónico de inicio de sesión emergencia',
+	'layout_form_editor'					=> 'Editor de diseño de formularios',
+	'facility'								=> 'Instalaciones',
+	'comments'								=> 'Comentarios',
+	'user_notes'							=> 'Notas de usuario',
+	'patient_id'							=> 'Identificación del paciente',
+	'success'								=> 'Éxito',
+	'check_sum'								=> 'Suma de comprobación',
+	'crt_user'								=> 'USUARIO DE CRT',
+	'read_mode'								=> 'Leer mas',
+	'day_s'									=> 'día (s)',
+	'event_form'							=> 'Formulario evento',
+	'close_tab'								=> 'Cerrar tab',
+	'items'									=> 'Artículos',
+	'patient'								=> 'Paciente',
+	'modules'								=> 'Módulos',
+	'report_center'							=> 'Centro de informes basico',
+	'patient_reports'						=> 'Informes pacientes',
+    'patient_list'         					=> 'Lista de pacientes',
+    'prescriptions_and_dispensations'		=> 'Recetas y dispensas',
+    'clinical'								=> 'Clínica',
+    'referrals'								=> 'Referidos',
+    'immunization_registry'					=> 'Registro de inmunización',
+    'clinic_reports'						=> 'Informes de la clínica',
+    'standard_measures'						=> 'Medidas estándar',
+    'clinical_quality_measures_cqm'			=> 'Medidas de calidad clínica (GCC)',
+    'automated_measure_calculations_amc'	=> 'Cálculos de medida automatizada (AMC)',
+    'automated_measure_calculations_tracking'	=> 'Cálculos de medida automatizada (AMC) de seguimiento',
 	'client_list_report'					=> 'Informe de lista de cliente',
-	'filter'								=> 'Filtro'
+	'filter'								=> 'Filtro',
+	'create_report'							=> 'Crear informe',
+	'create_pdf'							=> 'Crear PDF',
+	'create_html'							=> 'Crear HTML',
+	'last_visit'							=> 'Última visita',
+	'id'									=> 'ID',
+	'zipcode'								=> 'Código postal'
 );
 ?>

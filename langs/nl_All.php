@@ -5,7 +5,12 @@
 // Please, use the following format i18n['save'] not i18n.save 
 // JavaScript has reserved variables after the dot.
 $LANG = array(
+
+	// This items are used internally by the GaiaEHR Application.
 	'nl_All'								=> 'Hollandsk',
+	'i18nExtFile'							=> 'ext-lang-nl.js',
+	// End of the items
+	
     'dashboard'         					=> 'Dashboard',
     'calendar'          					=> 'Kalender',
     'messages'          					=> 'Berichten',

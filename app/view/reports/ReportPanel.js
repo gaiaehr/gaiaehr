@@ -12,7 +12,7 @@
 Ext.define('App.view.reports.ReportPanel', {
 	extend       : 'App.classes.RenderPanel',
 	id           : 'panelReportPanel',
-	pageTitle    : 'report_center',
+	pageTitle    : i18n['report_center'],
 	pageLayout   : 'border',
 	initComponent: function() {
 		var me = this;
@@ -95,7 +95,7 @@ Ext.define('App.view.reports.ReportPanel', {
 					{
 						// create a veriable to then convert it to json string
 						// and pass it to the report, usin payload has the
-						// variable. PDF format
+						// variable. HTML format
 						var jsonPayload = 
 						{
 							startDate: me.FilterForm.getForm().findField("from").getValue(),

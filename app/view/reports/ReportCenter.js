@@ -29,6 +29,8 @@ Ext.define('App.view.reports.ReportCenter',
 		
 		/*
 		 * Patient Reports List
+		 * TODO: Pass the report indicator telling what report show be rendering
+		 * this indicator will also be the logic for field rendering.
 		 */
 		me.patientCategory = me.addCategory(i18n['patient_reports'], 250);
 		me.link1 = me.addReportByCategory(me.patientCategory, i18n['prescriptions_and_dispensations'], function(btn) 
@@ -50,6 +52,8 @@ Ext.define('App.view.reports.ReportCenter',
 
 		/*
 		 * Clinic Reports List
+		 * TODO: Pass the report indicator telling what report show be rendering
+		 * this indicator will also be the logic for field rendering.
 		 */        
         me.clinicCategory = me.addCategory(i18n['clinic_reports'], 260);
         me.link5 = me.addReportByCategory(me.clinicCategory, i18n['standard_measures'], function(btn) 
@@ -82,15 +86,15 @@ Ext.define('App.view.reports.ReportCenter',
         return me.reports.add(
             Ext.create('Ext.container.Container',
             {
-                cls:'CategoryContainer',
-                width:width,
-                layout:'anchor',
-                items:[
+                cls		: 'CategoryContainer',
+                width	: width,
+                layout	: 'anchor',
+                items	:[
                     {
-                        xtype:'container',
-                        cls:'title',
-                        margin:'0 0 5 0',
-                        html:category
+                        xtype	: 'container',
+                        cls		: 'title',
+                        margin	: '0 0 5 0',
+                        html	: category
                     }
                 ]
             })
@@ -103,13 +107,14 @@ Ext.define('App.view.reports.ReportCenter',
     addReportByCategory:function(category, text, fn)
     {
         return category.add(
-            Ext.create('Ext.button.Button',{
-            	cls: 'CategoryContainerItem',
-                anchor:'100%',
-                margin:'0 0 5 0',
-                textAlign:'left',
-                text:text,
-                handler:fn
+            Ext.create('Ext.button.Button',
+            {
+            	cls			: 'CategoryContainerItem',
+                anchor		: '100%',
+                margin		: '0 0 5 0',
+                textAlign	: 'left',
+                text		: text,
+                handler		: fn
             })
         );
     },

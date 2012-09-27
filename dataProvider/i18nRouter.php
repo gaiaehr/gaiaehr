@@ -23,7 +23,7 @@ class i18nRouter
 	// An array made by http://transifex.net/
 	// GaiaEHR Project
 	// -----------------------------------------------------------------------
-	public function getTranslation()
+	public static function getTranslation()
 	{
 		// This language file is need by default.
 		include_once($_SESSION['site']['root'] . '/langs/en_US.php');

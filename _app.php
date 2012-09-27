@@ -23,7 +23,8 @@ $_SESSION['site']['flops'] = 0;
 				perm = {},
 				user = {},
 				settings = {},
-				i18n = {};
+				i18n = {},
+				ext = 'extjs-4.1.1a';
 		</script>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 		<title>GaiaEHR :: (Electronic Health Records)</title>
@@ -47,14 +48,14 @@ $_SESSION['site']['flops'] = 0;
 		<!-- slide down message div -->
 		<span id="app-msg" style="display:none;"></span>
 		<!-- Ext library -->
-		<script type="text/javascript" src="lib/extjs-4.1.1/ext-all-debug.js"></script>
+		<script type="text/javascript" src="lib/extjs-4.1.1a/ext-all-debug.js"></script>
 		<script src="data/api.php"></script>
 		<script type="text/javascript">
 			Ext.Loader.setConfig({
 				enabled       : true,
 				disableCaching: false,
 				paths         : {
-					'Ext'       : 'lib/extjs-4.1.1/src',
+					'Ext'       : 'lib/extjs-4.1.1a/src',
 					'Ext.ux'    : 'app/classes/ux',
 					'App'       : 'app',
 					'Modules'   : 'modules',

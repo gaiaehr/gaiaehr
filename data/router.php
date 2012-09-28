@@ -4,7 +4,7 @@
 // This code was a copy nd paste by Ernesto.
 //----------------------------------------------------------------------------------------------------------------------
 if(!isset($_SESSION)){
-    session_name ("GaiaEHR" );
+    session_name('GaiaEHR');
     session_start();
     session_cache_limiter('private');
 }

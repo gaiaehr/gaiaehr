@@ -1185,6 +1185,7 @@ Ext.define('App.view.patient.Summary', {
 			 * load all the stores
 			 */
 			me.loadStores();
+            if((typeof callback) == 'function') callback(true);
 		} else {
 			callback(false);
 			me.pid = null;

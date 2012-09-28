@@ -4,8 +4,8 @@ if(!isset($_SESSION)){
     session_start();
     session_cache_limiter('private');
 }
-ini_set('max_input_time', '7600');
-ini_set('max_execution_time', '7600');
+ini_set('max_input_time', '1500');
+ini_set('max_execution_time', '1500');
 include_once($_SESSION['site']['root'] . '/classes/Time.php');
 /**
  * @brief       Database Helper Class.

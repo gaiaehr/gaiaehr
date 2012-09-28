@@ -98,7 +98,9 @@ class FormLayoutEngine
 				$item['store'] = $this->getStore($item['list_id']);
 			}
 
-
+			if($item['xtype'] == 'datefield') {
+				$item['format'] = 'Y-m-d';
+			}
 
 
 			/**
@@ -229,6 +231,9 @@ class FormLayoutEngine
 			if($item['xtype'] == 'combobox') {
 				$item = $this->getComboDefaults($item);
 				$item['store'] = $this->getStore($item['list_id']);
+			}
+			if($item['xtype'] == 'datefield') {
+				$item['format'] = 'Y-m-d';
 			}
 			/**
 			 * this if what makes this function reclusive this function will keep

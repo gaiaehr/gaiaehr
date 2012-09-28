@@ -953,14 +953,19 @@ Ext.define('App.view.Viewport', {
 
 	openPatientSummary: function() {
 		var me = this;
-		if(me.currCardCmp == Ext.getCmp('panelSummary')) {
-			var same = true;
-		}
-		me.navigateTo('panelSummary', function() {
-			if(same) {
-				me.currCardCmp.onActive();
-			}
-		});
+//		if(me.currCardCmp == Ext.getCmp('panelSummary')) {
+//			var same = true;
+//		}
+        if(me.currCardCmp == Ext.getCmp('panelSummary')) {
+            me.currCardCmp.onActive();
+        }else{
+            me.navigateTo('panelSummary');
+        }
+//		me.navigateTo('panelSummary', function() {
+//			if(same) {
+//				me.currCardCmp.onActive();
+//			}
+//		});
 	},
 
 	stowPatientRecord: function() {
@@ -1393,7 +1398,6 @@ Ext.define('App.view.Viewport', {
 			notifyDrop: function(dd, e, data) {
 				app.MainPanel.el.unmask();
 				me.setCurrPatient(data.patientData.pid, data.patientData.name, data.patientData.priority, function() {
-
 					/**
 					 * if encounter id is set and pool area is check out....  go to Patient Checkout panel
 					 */
@@ -1439,7 +1443,8 @@ Ext.define('App.view.Viewport', {
                 // Ext.create('Modules.'+modules[i].dir+'.Main');
             // }
         // });
-    // },
+    // },
+
 	removeAppMask: function() {
 		Ext.get('mainapp-loading').remove();
 		Ext.get('mainapp-loading-mask').fadeOut({remove: true});

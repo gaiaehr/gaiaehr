@@ -78,12 +78,12 @@ class Patient
 				'sex' => $this->getPatientSexByPid($params->pid),
 				'dob' => $dob = $this->getPatientDOBByPid($params->pid),
 				'age' => $this->getPatientAgeByDOB($dob),
-				'area' => $poolArea->getAreaTitleById($p['pool_area_id']),
+				'area' => ($p === false ? null : $poolArea->getAreaTitleById($p['pool_area_id'])),
 			),
 			'readOnly' => $_SESSION['patient']['readOnly'],
 			'overrideReadOnly' => $this->acl->hasPermission('override_readonly'),
-		    'user' => $this->user->getUserFullNameById($p['uid']),
-		    'area' => $poolArea->getAreaTitleById($p['pool_area_id'])
+		    'user' => ($p === false ? null : $this->user->getUserFullNameById($p['uid'])),
+		    'area' => ($p === false ? null : $poolArea->getAreaTitleById($p['pool_area_id']))
 		);
 	}
 

@@ -186,7 +186,10 @@ $API = array(
             ),
             'deleteEvent'=>array(
                'len'=>1
-            )
+            ),
+            'getPatientFutureEvents'=>array(
+               'len'=>1
+            ),
         )
     ),
     /**

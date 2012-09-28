@@ -31,6 +31,7 @@ Ext.define('App.view.patient.Summary', {
 		me.stores.push(me.patientSurgeryStore       = Ext.create('App.store.patient.Surgery'));
 		me.stores.push(me.patientDentalStore        = Ext.create('App.store.patient.Dental'));
 		me.stores.push(me.patientMedicationsStore   = Ext.create('App.store.patient.Medications'));
+		me.stores.push(me.patientCalendarEventsStore= Ext.create('App.store.patient.PatientCalendarEvents'));
 
 
 		me.pageBody = [
@@ -61,10 +62,10 @@ Ext.define('App.view.patient.Summary', {
 				},
 				items      : [
 					{
+                        xtype      : 'grid',
 						title      : i18n['active_medications'],
 						itemId     : 'MedicationsPanel',
 						hideHeaders: true,
-						xtype      : 'grid',
 						store      : me.patientMedicationsStore,
 						columns    : [
 							{
@@ -82,10 +83,10 @@ Ext.define('App.view.patient.Summary', {
 						]
 					},
 					{
+                        xtype      : 'grid',
 						title      : i18n['immunizations'],
 						itemId     : 'ImmuPanel',
 						hideHeaders: true,
-						xtype      : 'grid',
 						store      : me.immuCheckListStore,
 						region     : 'center',
 						columns    : [
@@ -105,10 +106,10 @@ Ext.define('App.view.patient.Summary', {
 						]
 					},
 					{
+                        xtype      : 'grid',
 						title      : i18n['allergies'],
 						itemId     : 'AllergiesPanel',
 						hideHeaders: true,
-						xtype      : 'grid',
 						store      : me.patientAllergiesListStore,
 						region     : 'center',
 						columns    : [
@@ -126,10 +127,10 @@ Ext.define('App.view.patient.Summary', {
 						]
 					},
 					{
+                        xtype      : 'grid',
 						title      : i18n['active_problems'],
 						itemId     : 'IssuesPanel',
 						hideHeaders: true,
-						xtype      : 'grid',
 						store      : me.patientMedicalIssuesStore,
 						columns    : [
 							{
@@ -149,10 +150,10 @@ Ext.define('App.view.patient.Summary', {
 
 					},
 					{
+                        xtype      : 'grid',
 						title      : i18n['dental'],
 						itemId     : 'DentalPanel',
 						hideHeaders: true,
-						xtype      : 'grid',
 						store      : me.patientDentalStore,
 
 						columns: [
@@ -168,10 +169,10 @@ Ext.define('App.view.patient.Summary', {
 
 					},
 					{
+                        xtype      : 'grid',
 						title      : i18n['surgeries'],
 						itemId     : 'SurgeryPanel',
 						hideHeaders: true,
-						xtype      : 'grid',
 						store      : me.patientSurgeryStore,
 
 						columns: [
@@ -182,15 +183,26 @@ Ext.define('App.view.patient.Summary', {
 						]
 					},
 					{
-						title: i18n['appointments'],
-						html : 'Panel content!'
-
+                        xtype      : 'grid',
+						title      : i18n['appointments'],
+						itemId     : 'AppointmentsPanel',
+						hideHeaders: true,
+                        disableSelection:true,
+						store      : me.patientCalendarEventsStore,
+						columns: [
+							{
+                                xtype: 'datecolumn',
+                                format:'F j, Y, g:i a',
+								dataIndex: 'start',
+								flex     : 1
+							}
+						]
 					}
 				]
 			}
 		];
 
-		if(perm.access_demographics) {
+		if(acl['access_demographics']) {
 			me.stores.push(me.patientAlertsStore = Ext.create('App.store.patient.MeaningfulUseAlert'));
 			me.tabPanel.add({
 				xtype      : 'form',
@@ -226,7 +238,7 @@ Ext.define('App.view.patient.Summary', {
 				]
 			});
 		}
-		if(perm.access_patient_notes) {
+		if(acl['access_patient_notes']) {
 			me.stores.push(me.patientNotesStore = Ext.create('App.store.patient.Notes'));
 			me.tabPanel.add({
 				title      : i18n['notes'],
@@ -261,7 +273,7 @@ Ext.define('App.view.patient.Summary', {
 				]
 			});
 		}
-		if(perm.access_patient_reminders) {
+		if(acl['access_patient_reminders']) {
 			me.stores.push(me.patientRemindersStore = Ext.create('App.store.patient.Reminders'));
 			me.tabPanel.add({
 				title      : i18n['reminders'],
@@ -297,7 +309,7 @@ Ext.define('App.view.patient.Summary', {
 				]
 			})
 		}
-		if(perm.access_patient_vitals) {
+		if(acl['access_patient_vitals']) {
 			me.stores.push(me.vitalsStore = Ext.create('App.store.patient.Vitals'));
 			me.tabPanel.add({
 				title      : i18n['vitals'],
@@ -309,7 +321,7 @@ Ext.define('App.view.patient.Summary', {
 				}
 			})
 		}
-		if(perm.access_patient_history) {
+		if(acl['access_patient_history']) {
 			me.stores.push(me.encounterEventHistoryStore = Ext.create('App.store.patient.Encounters'));
 			me.tabPanel.add({
 				title  : i18n['history'],
@@ -332,7 +344,7 @@ Ext.define('App.view.patient.Summary', {
 				]
 			})
 		}
-		if(perm.access_patient_documents) {
+		if(acl['access_patient_documents']) {
 			me.stores.push(me.patientDocumentsStore = Ext.create('App.store.patient.PatientDocuments'));
 			me.tabPanel.add({
 				title  : i18n['documents'],
@@ -450,7 +462,7 @@ Ext.define('App.view.patient.Summary', {
 				]
 			})
 		}
-		if(perm.access_patient_preventive_care_alerts) {
+		if(acl['access_patient_preventive_care_alerts']) {
 			me.stores.push(me.patientsDismissedAlerts = Ext.create('App.store.patient.DismissedAlerts'));
 			me.tabPanel.add({
 				title  : i18n['dismissed_preventive_care_alerts'],
@@ -558,7 +570,7 @@ Ext.define('App.view.patient.Summary', {
 				})
 			})
 		}
-		if(perm.access_patient_billing) {
+		if(acl['access_patient_billing']) {
 			me.tabPanel.add({
 				xtype : 'panel',
 				action: 'balancePanel',
@@ -624,6 +636,7 @@ Ext.define('App.view.patient.Summary', {
 		record.store.save({
 			scope   : me,
 			callback: function() {
+                app.setCurrPatient(me.pid, 'toberemove', priority);
 				me.getPatientImgs();
 				me.verifyPatientRequiredInfo();
 				me.readOnlyFields(form.getFields());
@@ -685,7 +698,7 @@ Ext.define('App.view.patient.Summary', {
 
 	},
 	beforePanelRender: function() {
-		if(perm.access_demographics) {
+		if(acl['access_demographics']) {
 			var me = this, demoFormPanel = me.query('[action="demoFormPanel"]')[0],
 				whoPanel,
 				insurancePanel,
@@ -731,7 +744,7 @@ Ext.define('App.view.patient.Summary', {
 								text   : i18n['print_qrcode'],
 								scope  : me,
 								handler: function() {
-									window.printQRCode(app.currPatient.pid);
+									window.printQRCode(app.patient.pid);
 								}
 							},
 							'-'
@@ -1004,7 +1017,7 @@ Ext.define('App.view.patient.Summary', {
 		var me = this,
 			number = Ext.Number.randomInt(1, 1000);
 		me.patientImg.update('<img src="' + settings.site_url + '/patients/' + me.pid + '/patientPhotoId.jpg?' + number + '" height="119" width="119" />');
-		me.patientQRcode.update('<a ondblclick="printQRCode(app.currPatient.pid)"><img src="' + settings.site_url + '/patients/' + me.pid + '/patientDataQrCode.png?' + number + '" height="119" width="119" title="Print QRCode" /></a>');
+		me.patientQRcode.update('<a ondblclick="printQRCode(app.patient.pid)"><img src="' + settings.site_url + '/patients/' + me.pid + '/patientDataQrCode.png?' + number + '" height="119" width="119" title="Print QRCode" /></a>');
 	},
 
 	getPhotoIdWindow: function() {
@@ -1044,7 +1057,7 @@ Ext.define('App.view.patient.Summary', {
 			form.submit({
 				waitMsg: i18n['uploading_insurance'] + '...',
 				params : {
-					pid    : app.currPatient.pid,
+					pid    : app.patient.pid,
 					docType: action
 				},
 				success: function(fp, o) {
@@ -1154,7 +1167,7 @@ Ext.define('App.view.patient.Summary', {
 			 * get all the demographic data if user has access.
 			 * including all the images (insurance cards, patient img, and QRcode)
 			 */
-			if(perm.access_demographics) {
+			if(acl['access_demographics']) {
 				demographicsPanel = me.tabPanel.getComponent('demoFormPanel');
 				demographicsPanel.getForm().reset();
 				me.getFormData(demographicsPanel, function(form) {
@@ -1171,7 +1184,7 @@ Ext.define('App.view.patient.Summary', {
 			/**
 			 * get billing info if user has access
 			 */
-			if(perm.access_patient_billing) {
+			if(acl['access_patient_billing']) {
 				billingPanel = me.tabPanel.getComponent('balancePanel');
 				Fees.getPatientBalance({pid: me.pid}, function(balance) {
 					billingPanel.update(i18n['account_balance'] + ': $' + balance);

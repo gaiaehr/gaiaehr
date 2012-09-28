@@ -13,6 +13,7 @@ if(!isset($_SESSION)){
 }
 include_once($_SESSION['site']['root'].'/classes/dbHelper.php');
 include_once($_SESSION['site']['root'].'/dataProvider/Person.php');
+include_once($_SESSION['site']['root'] . '/classes/Time.php');
 class Calendar {
     /**
      * @var dbHelper
@@ -115,7 +116,7 @@ class Calendar {
         if ($ret[2]){
             echo '{ success: false, errors: { reason: "'. $ret[2] .'" }}';
         } else {
-            $sql = ("SELECT * FROM calendar_events WHERE id = '".$this->lastInsertId."' ");
+            $sql = ("SELECT * FROM calendar_events WHERE id = '$this->db->lastInsertId'");
             $this->db->setSQL($sql);
             $rows = array();
             foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row){
@@ -146,8 +147,7 @@ class Calendar {
         $row['url']                 = $params->url;
         $row['ad']                  = $params->ad;
 
-        $sql = $this->db->sqlBind($row, "calendar_events", "U", "id='" . $params->id . "'");
-        $this->db->setSQL($sql);
+        $this->db->setSQL($this->db->sqlBind($row, 'calendar_events', 'U', array('id' => $params->id)));
         $this->db->execLog();
         return array('success'=> true);
     }
@@ -161,4 +161,16 @@ class Calendar {
         $this->db->execLog();
         return array('success'=> true);
     }
+
+	public function getPatientFutureEvents(stdClass $params){
+		$pid = isset($params->pid) ? $params->pid : $_SESSION['patient']['pid'];
+		return $this->getPatientFutureEventsByPid($pid);
+	}
+
+	public function getPatientFutureEventsByPid($pid){
+		$date = Time::getLocalTime();
+		$tomorrow = date('Y-m-d 0000:00:00', strtotime($date. ' + 1 days'));
+		$this->db->setSQL("SELECT * FROM calendar_events WHERE patient_id = '$pid' AND start >= '$tomorrow'");
+		return $this->db->fetchRecords(PDO::FETCH_ASSOC);
+	}
 }

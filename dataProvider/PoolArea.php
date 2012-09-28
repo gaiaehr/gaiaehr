@@ -180,7 +180,6 @@ class PoolArea
 		$this->db->execLog();
 	}
 
-
 	public function getCurrentPatientPoolAreaByPid($pid){
 		$this->db->setSQL("SELECT pp.*,
 								  pa.title AS poolArea
@@ -191,7 +190,6 @@ class PoolArea
 						 ORDER BY pp.id DESC");
 		return $this->db->fetchRecord(PDO::FETCH_ASSOC);
 	}
-
 
 	public function updateCurrentPatientPoolAreaByPid(array $data ,$pid){
 		$area = $this->getCurrentPatientPoolAreaByPid($pid);
@@ -211,7 +209,6 @@ class PoolArea
 			$patient['name'] = ($patient['eid'] != null ? '*' : '') . $this->patient->getPatientFullNameByPid($patient['pid']);
 			$records[] = $patient;
 		}
-
 		return $records;
 	}
 

@@ -1329,7 +1329,8 @@ Ext.define('App.view.patient.windows.Medical', {
 		];
 		me.listeners = {
 			scope: me,
-			show : me.onMedicalWinShow
+			show : me.onMedicalWinShow,
+			close : me.onMedicalWinClose
 		};
 		me.callParent(arguments);
 	},
@@ -1400,7 +1401,7 @@ Ext.define('App.view.patient.windows.Medical', {
 			form.submit({
 				waitMsg: i18n['uploading_laboratory'] + '...',
 				params : {
-					pid    : app.currPatient.pid,
+					pid    : app.patient.pid,
 					docType: 'laboratory',
 					eid : app.currEncounterId
 				},
@@ -1590,7 +1591,7 @@ Ext.define('App.view.patient.windows.Medical', {
 		grid.editingPlugin.cancelEdit();
 		store.insert(0, {
 			created_uid: app.user.id,
-			pid        : app.currPatient.pid,
+			pid        : app.patient.pid,
 			create_date: new Date(),
 			eid        : app.currEncounterId,
 			begin_date : new Date()
@@ -1724,7 +1725,7 @@ Ext.define('App.view.patient.windows.Medical', {
 		var me = this,
 			layout = me.getLayout(),
 			addBtn = me.down('toolbar').query('[action="AddRecord"]')[0],
-			p = app.currPatient,
+			p = app.patient,
 			title;
 
 		me.pid = p.pid;
@@ -1767,22 +1768,32 @@ Ext.define('App.view.patient.windows.Medical', {
 	onMedicalWinShow: function() {
 		var me = this,
 			reviewBts = me.query('button[action="review"]'),
-			p = app.currPatient;
+			p = app.patient;
 
 		me.pid = p.pid;
 		me.setTitle(p.name + (p.readOnly ? ' <span style="color:red">[' + i18n['read_mode'] + ']</span>' : ''));
-		me.setReadOnly(app.currPatient.readOnly);
+		me.setReadOnly(app.patient.readOnly);
 		for(var i = 0; i < reviewBts.length; i++) {
 			reviewBts[i].setVisible((app.currEncounterId != null));
 		}
 		me.labPanelsStore.load();
-		me.patientImmuListStore.load({params: {pid: app.currPatient.pid}});
-		me.patientAllergiesListStore.load({params: {pid: app.currPatient.pid}});
-		me.patientMedicalIssuesStore.load({params: {pid: app.currPatient.pid}});
-		me.patientSurgeryStore.load({params: {pid: app.currPatient.pid}});
-		me.patientDentalStore.load({params: {pid: app.currPatient.pid}});
-		me.patientMedicationsStore.load({params: {pid: app.currPatient.pid}});
+		me.patientImmuListStore.load({params: {pid: app.patient.pid}});
+		me.patientAllergiesListStore.load({params: {pid: app.patient.pid}});
+		me.patientMedicalIssuesStore.load({params: {pid: app.patient.pid}});
+		me.patientSurgeryStore.load({params: {pid: app.patient.pid}});
+		me.patientDentalStore.load({params: {pid: app.patient.pid}});
+		me.patientMedicationsStore.load({params: {pid: app.patient.pid}});
 
-	}
+    },
+
+    onMedicalWinClose:function(){
+        if(app.currCardCmp.id == 'panelSummary'){
+
+            app.currCardCmp.loadStores();
+
+        }
+
+    }
+
 
 });

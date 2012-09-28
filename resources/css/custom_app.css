@@ -7,7 +7,9 @@
 	font-family: 'OpenSans-CondLight';
 	src: url('../fonts/OpenSans-CondLight.ttf');
 }
-
+.x-grid-empty {
+	padding: 5px;
+}
 .CategoryContainer{
 	float: left;
 	margin: 5px;

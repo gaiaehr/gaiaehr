@@ -3,6 +3,8 @@
  * @namespace Patient.currPatientSet
  * @namespace Patient.currPatientUnset
  * @namespace authProcedures.unAuth
+ * @namespace user
+ * @namespace acl
  */
 Ext.define('App.view.Viewport', {
 	extend  : 'Ext.Viewport',
@@ -46,6 +48,7 @@ Ext.define('App.view.Viewport', {
 		'App.model.patient.Medications',
 		'App.model.patient.Notes',
 		'App.model.patient.PatientArrivalLog',
+        'App.model.patient.PatientCalendarEvents',
 		'App.model.patient.PatientDocuments',
 		'App.model.patient.PatientImmunization',
 		'App.model.patient.PatientLabsResults',
@@ -97,6 +100,7 @@ Ext.define('App.view.Viewport', {
 		'App.store.patient.Medications',
 		'App.store.patient.Notes',
 		'App.store.patient.PatientArrivalLog',
+        'App.store.patient.PatientCalendarEvents',
 		'App.store.patient.PatientDocuments',
 		'App.store.patient.DismissedAlerts',
 		'App.store.patient.PatientImmunization',
@@ -280,7 +284,6 @@ Ext.define('App.view.Viewport', {
 
 		me.lastCardNode = null;
 		me.currCardCmp = null;
-		me.currPatient = null;  // to be replace by me.patient
 		me.currEncounterId = null; // to be replace by me.patient
 
         me.patient = {
@@ -293,7 +296,7 @@ Ext.define('App.view.Viewport', {
             readOnly: false
         };
 
-		me.user = user;
+		me.user = window.user;
 		/**
 		 * TaskScheduler
 		 * This will run all the procedures inside the checkSession
@@ -406,7 +409,7 @@ Ext.define('App.view.Viewport', {
             handler: me.openPatientVisits,
             tooltip: i18n['open_patient_visits_history']
         });
-        if(perm.add_encounters){
+        if(acl['add_encounters']){
             me.patientCreateEncounterBtn = me.Header.add({
                 xtype  : 'button',
                 scale  : 'large',
@@ -598,7 +601,9 @@ Ext.define('App.view.Viewport', {
 					store      : me.storeTree,
 					width      : 200,
 					plugins    : [
-						{ptype: 'nodedisabled'}
+						{
+                            ptype: 'nodedisabled'
+                        }
 					],
 					//					root       : {
 					//						nodeType : 'async',
@@ -738,19 +743,19 @@ Ext.define('App.view.Viewport', {
 
         me.ppdz = me.MainPanel.add(Ext.create('App.view.areas.PatientPoolDropZone'));
 
-		if(perm.access_gloabal_settings) me.MainPanel.add(Ext.create('App.view.administration.Globals'));
-		if(perm.access_facilities) me.MainPanel.add(Ext.create('App.view.administration.Facilities'));
-		if(perm.access_users) me.MainPanel.add(Ext.create('App.view.administration.Users'));
-		if(perm.access_practice) me.MainPanel.add(Ext.create('App.view.administration.Practice'));
-		if(perm.access_data_manager) me.MainPanel.add(Ext.create('App.view.administration.DataManager'));
-		if(perm.access_preventive_care) me.MainPanel.add(Ext.create('App.view.administration.PreventiveCare'));
-		if(perm.access_medications) me.MainPanel.add(Ext.create('App.view.administration.Medications'));
-		if(perm.access_floor_plans) me.MainPanel.add(Ext.create('App.view.administration.FloorPlans'));
-		if(perm.access_roles) me.MainPanel.add(Ext.create('App.view.administration.Roles'));
-		if(perm.access_layouts)me.MainPanel.add(Ext.create('App.view.administration.Layout'));
-		if(perm.access_lists) me.MainPanel.add(Ext.create('App.view.administration.Lists'));
-		if(perm.access_event_log) me.MainPanel.add(Ext.create('App.view.administration.Log'));
-		if(perm.access_documents) me.MainPanel.add(Ext.create('App.view.administration.Documents'));
+		if(acl['access_gloabal_settings']) me.MainPanel.add(Ext.create('App.view.administration.Globals'));
+		if(acl['access_facilities']) me.MainPanel.add(Ext.create('App.view.administration.Facilities'));
+		if(acl['access_users']) me.MainPanel.add(Ext.create('App.view.administration.Users'));
+		if(acl['access_practice']) me.MainPanel.add(Ext.create('App.view.administration.Practice'));
+		if(acl['access_data_manager']) me.MainPanel.add(Ext.create('App.view.administration.DataManager'));
+		if(acl['access_preventive_care']) me.MainPanel.add(Ext.create('App.view.administration.PreventiveCare'));
+		if(acl['access_medications']) me.MainPanel.add(Ext.create('App.view.administration.Medications'));
+		if(acl['access_floor_plans']) me.MainPanel.add(Ext.create('App.view.administration.FloorPlans'));
+		if(acl['access_roles']) me.MainPanel.add(Ext.create('App.view.administration.Roles'));
+		if(acl['access_layouts']) me.MainPanel.add(Ext.create('App.view.administration.Layout'));
+		if(acl['access_lists']) me.MainPanel.add(Ext.create('App.view.administration.Lists'));
+		if(acl['access_event_log']) me.MainPanel.add(Ext.create('App.view.administration.Log'));
+		if(acl['access_documents']) me.MainPanel.add(Ext.create('App.view.administration.Documents'));
 
         me.MainPanel.add(Ext.create('App.view.administration.ExternalDataLoads'));
 
@@ -940,7 +945,7 @@ Ext.define('App.view.Viewport', {
 	 */ 
 	createNewEncounter: function() {
 		var me = this;
-		if(perm.access_encounters && perm.add_encounters) {
+		if(acl['access_encounters'] && acl['add_encounters']) {
 			me.navigateTo('panelEncounter', function(success) {
 				if(success) {
 					me.currCardCmp.newEncounter();
@@ -975,7 +980,7 @@ Ext.define('App.view.Viewport', {
 
 	openEncounter: function(eid) {
 		var me = this;
-		if(perm.access_encounters) {
+		if(acl['access_encounters']) {
 			me.navigateTo('panelEncounter', function(success) {
 				if(success) {
 					me.currCardCmp.openEncounter(eid);
@@ -1116,6 +1121,7 @@ Ext.define('App.view.Viewport', {
 
 	setCurrPatient: function(pid, fullname, priority, callback) {
 		var me = this;
+
 		me.patientUnset(function() {
 			Patient.currPatientSet({ pid: pid }, function(provider, response) {
 				var data = response.result, msg1, msg2;
@@ -1136,15 +1142,9 @@ Ext.define('App.view.Viewport', {
 				} else {
 					continueSettingPatient(false);
 				}
+
 				function continueSettingPatient(readOnly) {
 					me.currEncounterId = null;
-                    // old way
-					me.currPatient = {
-						pid     : data.patient.pid,
-						name    : data.patient.name,
-						readOnly: readOnly
-					};
-                    // new way
                     me.patient = {
                         pid     : data.patient.pid,
                         name    : data.patient.name,
@@ -1154,8 +1154,10 @@ Ext.define('App.view.Viewport', {
                         readOnly: readOnly,
                         eid     : null
                     };
+
                     say(data.patient);
-					me.patientBtn.update({pid:data.patient.pid, name:data.patient.name});
+
+                    me.patientBtn.update({pid:data.patient.pid, name:data.patient.name});
 					me.patientBtn.addCls(priority);
 					me.patientBtn.enable();
 					if(me.patientOpenVisitsBtn) me.patientOpenVisitsBtn.enable();
@@ -1173,8 +1175,6 @@ Ext.define('App.view.Viewport', {
 		var me = this;
 		Patient.currPatientUnset(function() {
 			me.currEncounterId = null;
-			me.currPatient = null;
-
             me.patient = {
                 pid     : null,
                 name    : null,
@@ -1294,7 +1294,6 @@ Ext.define('App.view.Viewport', {
 		panel.dragZone = Ext.create('Ext.dd.DragZone', panel.getEl(), {
 			ddGroup    : 'patientPoolAreas',
 			getDragData: function() {
-                say(this);
 				var sourceEl = app.patientBtn.el.dom, d;
 				if(app.currCardCmp != app.ppdz){
 					app.MainPanel.getLayout().setActiveItem(app.ppdz);
@@ -1408,7 +1407,7 @@ Ext.define('App.view.Viewport', {
 					 * if encounter id is set and and user has access to encounter area... go to Encounter panel
 					 * and open the encounter
 					 */
-					} else if(data.patientData.eid && perm.access_encounters) {
+					} else if(data.patientData.eid && acl['access_encounters']) {
 						me.openEncounter(data.patientData.eid);
 
 					/**
@@ -1455,7 +1454,7 @@ Ext.define('App.view.Viewport', {
 	},
 
 	getCurrPatient: function() {
-		return this.currPatient;
+		return this.patient;
 	},
 
 	getApp: function() {

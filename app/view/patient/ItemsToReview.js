@@ -262,37 +262,33 @@ Ext.define('App.view.patient.ItemsToReview', {
 
     storesLoad: function() {
         var me = this;
-        me.patientImmuListStore.load({params: {pid: app.currPatient.pid}});
-        me.patientAllergiesListStore.load({params: {pid: app.currPatient.pid}});
-        me.patientMedicalIssuesStore.load({params: {pid: app.currPatient.pid}});
-        me.patientSurgeryStore.load({params: {pid: app.currPatient.pid}});
-        me.patientDentalStore.load({params: {pid: app.currPatient.pid}});
-        me.patientMedicationsStore.load({params: {pid: app.currPatient.pid}});
-
+        me.patientImmuListStore.load({params: {pid: app.patient.pid}});
+        me.patientAllergiesListStore.load({params: {pid: app.patient.pid}});
+        me.patientMedicalIssuesStore.load({params: {pid: app.patient.pid}});
+        me.patientSurgeryStore.load({params: {pid: app.patient.pid}});
+        me.patientDentalStore.load({params: {pid: app.patient.pid}});
+        me.patientMedicationsStore.load({params: {pid: app.patient.pid}});
         Medical.getEncounterReviewByEid(app.currEncounterId, function(provider, response) {
-
             me.column4.getForm().setValues(response.result);
         });
-
     },
 
     onSave: function() {
-        var me = this, panel = me.down('form'), form = panel.getForm(), values = form.getFieldValues(), params = {
-                eid: app.currEncounterId
-            };
+        var me = this, panel = me.down('form'),
+            form = panel.getForm(),
+            values = form.getFieldValues(),
+            params = { eid:app.currEncounterId };
         values.eid = app.currEncounterId;
-
         Medical.reviewAllMedicalWindowEncounter(params, function(provider, response) {
+
         });
         if(form.isValid()) {
-
             Encounter.onSaveItemsToReview(values, function(provider, response) {
                 if(response.result.success) {
                     app.msg('Sweet!', i18n['items_to_review_save_and_review'])
                 } else {
                     app.msg('Oops!', i18n['items_to_review_entry_error'])
                 }
-
             });
         }
     }

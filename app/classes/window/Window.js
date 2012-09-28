@@ -23,7 +23,7 @@ Ext.define('App.classes.window.Window', {
 
 	setReadOnly: function() {
 		var forms = this.query('form'),
-			readOnly = app.currPatient.readOnly;
+			readOnly = app.patient.readOnly;
 		for(var j = 0; j < forms.length; j++) {
 			var form = forms[j], items;
 			if(form.readOnly != readOnly){
@@ -38,7 +38,7 @@ Ext.define('App.classes.window.Window', {
 	},
 
 	setButtonsDisabled:function(buttons){
-		var disable = app.currPatient.readOnly;
+		var disable = app.patient.readOnly;
 		for(var i = 0; i < buttons.length; i++) {
 			var btn = buttons[i];
 			if(btn.disabled != disable){

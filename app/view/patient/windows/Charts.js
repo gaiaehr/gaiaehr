@@ -207,7 +207,7 @@ Ext.define('App.view.patient.windows.Charts', {
     onWinShow: function() {
         var me = this, layout = me.getLayout(), btns = me.down('toolbar').items.items, btn;
         layout.setActiveItem(0);
-        me.vitalsStore.load({params: {pid: app.currPatient.pid}});
+        me.vitalsStore.load({params: {pid: app.patient.pid}});
         for(var i = 0; i < btns.length; i++) {
             btn = btns[i];
             if(btn.type == 'button' && (
@@ -225,28 +225,28 @@ Ext.define('App.view.patient.windows.Charts', {
             layout.setActiveItem(0);
         } else if(btn.action == 'WeightForAgeInf') {
             layout.setActiveItem(1);
-            me.WeightForAgeInfStore.load({params: {pid: app.currPatient.pid}});
+            me.WeightForAgeInfStore.load({params: {pid: app.patient.pid}});
         } else if(btn.action == 'LengthForAgeInf') {
             layout.setActiveItem(2);
-            me.LengthForAgeInfStore.load({params: {pid: app.currPatient.pid}});
+            me.LengthForAgeInfStore.load({params: {pid: app.patient.pid}});
         } else if(btn.action == 'WeightForRecumbentInf') {
             layout.setActiveItem(3);
-            me.WeightForRecumbentInfStore.load({params: {pid: app.currPatient.pid}});
+            me.WeightForRecumbentInfStore.load({params: {pid: app.patient.pid}});
         } else if(btn.action == 'HeadCircumferenceInf') {
             layout.setActiveItem(4);
-            me.HeadCircumferenceInfStore.load({params: {pid: app.currPatient.pid}});
+            me.HeadCircumferenceInfStore.load({params: {pid: app.patient.pid}});
         } else if(btn.action == 'WeightForStature') {
             layout.setActiveItem(5);
-            me.WeightForStatureStore.load({params: {pid: app.currPatient.pid}});
+            me.WeightForStatureStore.load({params: {pid: app.patient.pid}});
         } else if(btn.action == 'WeightForAge') {
             layout.setActiveItem(6);
-            me.WeightForAgeStore.load({params: {pid: app.currPatient.pid}});
+            me.WeightForAgeStore.load({params: {pid: app.patient.pid}});
         } else if(btn.action == 'StatureForAge') {
             layout.setActiveItem(7);
-            me.StatureForAgeStore.load({params: {pid: app.currPatient.pid}});
+            me.StatureForAgeStore.load({params: {pid: app.patient.pid}});
         } else if(btn.action == 'BMIForAge') {
             layout.setActiveItem(8);
-            me.BMIForAgeStore.load({params: {pid: app.currPatient.pid}});
+            me.BMIForAgeStore.load({params: {pid: app.patient.pid}});
         }
     }
 });

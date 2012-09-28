@@ -23,6 +23,10 @@ Ext.override(Ext.form.field.Date, {
 	format: 'Y-m-d'
 });
 
+Ext.override(Ext.grid.Panel, {
+    emptyText: 'Nothing to Display'
+});
+
 Ext.override(Ext.grid.ViewDropZone, {
 
 	handleNodeDrop: function(data, record, position) {

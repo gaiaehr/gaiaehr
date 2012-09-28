@@ -514,7 +514,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
         for(var i=0; i < records.length; i++ ){
             data.push(records[i].data);
         }
-		DocumentHandler.createDocument({medications:data, pid:app.currPatient.pid, docType:'Rx', documentId:5, eid: app.currEncounterId}, function(provider, response){
+		DocumentHandler.createDocument({medications:data, pid:app.patient.pid, docType:'Rx', documentId:5, eid: app.currEncounterId}, function(provider, response){
 			say(response.result);
 		});
 		this.close();
@@ -526,7 +526,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
         for(var i=0; i < records.length; i++ ){
             data.push(records[i].data);
         }
-		DocumentHandler.createDocument({labs:data, pid:app.currPatient.pid, docType:'Orders', documentId:4, eid: app.currEncounterId}, function(provider, response){
+		DocumentHandler.createDocument({labs:data, pid:app.patient.pid, docType:'Orders', documentId:4, eid: app.currEncounterId}, function(provider, response){
 			say(response.result);
 		});
 		this.close();
@@ -536,7 +536,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 		var me = this,
 			htmlEditor  = bbar.up('toolbar').up('panel').getComponent('body'),
 			value = htmlEditor.getValue();
-		DocumentHandler.createDocument({DoctorsNote:value, pid:app.currPatient.pid, docType:'DoctorsNotes', eid: app.currEncounterId}, function(provider, response){
+		DocumentHandler.createDocument({DoctorsNote:value, pid:app.patient.pid, docType:'DoctorsNotes', eid: app.currEncounterId}, function(provider, response){
 
 			say(response.result);
 		});
@@ -561,10 +561,10 @@ Ext.define('App.view.patient.windows.NewDocuments', {
         var me = this,
 	        doctorsNoteBody = me.query('[action="body"]')[0],
             template = me.query('[action="template"]')[0],
-	        p = app.currPatient;
+	        p = app.patient;
 		me.pid = p.pid;
         me.setTitle(p.name + (p.readOnly ? ' - <span style="color:red">[' + i18n['read_mode'] + ']</span>' : ''));
-		me.setReadOnly(app.currPatient.readOnly);
+		me.setReadOnly(app.patient.readOnly);
 		me.patientPrescriptionStore.removeAll();
 		me.patientsLabsOrdersStore.removeAll();
 		doctorsNoteBody.reset();

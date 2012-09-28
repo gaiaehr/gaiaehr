@@ -64,13 +64,15 @@ class Patient
 		$_SESSION['patient']['pid']  = $params->pid;
 		$_SESSION['patient']['name'] = $this->getPatientFullNameByPid($params->pid);
 		$p = $this->isPatientChartOutByPid($params->pid);
+		$area = $poolArea->getCurrentPatientPoolAreaByPid($params->pid);
+
 		if($p === false || (is_array($p) && $p['uid'] == $_SESSION['user']['id'])){
-			$area = $poolArea->getCurrentPatientPoolAreaByPid($params->pid);
 			$this->patientChartOutByPid($params->pid, $area['area_id']);
 			$_SESSION['patient']['readOnly'] = false;
 		}else{
 			$_SESSION['patient']['readOnly'] = true;
 		}
+
 		return array(
 			'patient' => array(
 				'pid' => $params->pid,
@@ -79,6 +81,7 @@ class Patient
 				'dob' => $dob = $this->getPatientDOBByPid($params->pid),
 				'age' => $this->getPatientAgeByDOB($dob),
 				'area' => ($p === false ? null : $poolArea->getAreaTitleById($p['pool_area_id'])),
+				'priority' => (empty($area) ? null : $area['priority']),
 			),
 			'readOnly' => $_SESSION['patient']['readOnly'],
 			'overrideReadOnly' => $this->acl->hasPermission('override_readonly'),
@@ -561,6 +564,7 @@ class Patient
 
 
 	//******************************************************************************************************************
+	// patient charts
 	//******************************************************************************************************************
 
 	public function patientChartOutByPid($pid, $pool_area_id){
@@ -596,24 +600,8 @@ class Patient
 		}
 	}
 
-
-
-
-
-	//******************************************************************************************************************
-	//******************************************************************************************************************
-
-	/**
-	 * @param $date
-	 * @return mixed
-	 */
-	private function parseDate($date)
-	{
-		return str_replace('T', ' ', $date);
-	}
-
 }
 //$p = new Patient();
 //echo '<pre>';
-////print_r($p->getPatientArrivalLogWarningByPid(2));
-//print $p->getPatientArrivalLogWarningByPid(1);
+//print_r($p->getPatientAppointmentsByPid(1));
+//print $p->getPatientAppointmentsByPid(1);

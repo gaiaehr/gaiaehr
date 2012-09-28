@@ -344,7 +344,7 @@ Ext.define('App.view.patient.VisitCheckout', {
 
         values = form.getFieldValues();
         values.date = Ext.Date.format(new Date(), 'Y-m-d H:i:s');
-        values.pid = app.currPatient.pid;
+        values.pid = app.patient.pid;
         values.eid = me.eid;
         values.uid = app.user.id;
         values.type ='administrative';

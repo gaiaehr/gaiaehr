@@ -193,7 +193,7 @@ Ext.define('App.view.patient.windows.PreventiveCare', {
         this.patientPreventiveCare.load({
             scope:me,
             params: {
-                pid: app.currPatient.pid
+                pid: app.patient.pid
             },
             callback:function(records, operation, success){
                 if(records.length > 0){
@@ -207,7 +207,7 @@ Ext.define('App.view.patient.windows.PreventiveCare', {
     }
 
 //	onPreventiveCareWindowShow: function() {
-//	    this.patientPreventiveCare.load({params: {pid: app.currPatient.pid }});
+//	    this.patientPreventiveCare.load({params: {pid: app.patient.pid }});
 //
 //    }
 

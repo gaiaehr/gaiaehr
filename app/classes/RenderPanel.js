@@ -76,7 +76,7 @@ Ext.define('App.classes.RenderPanel', {
 	},
 
 	setButtonsDisabled:function(buttons, disabled){
-		var disable = disabled || app.currPatient.readOnly;
+		var disable = disabled || app.patient.readOnly;
 		for(var i = 0; i < buttons.length; i++) {
 			var btn = buttons[i];
 			if(btn.disabled != disable){

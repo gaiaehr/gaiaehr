@@ -28,7 +28,7 @@ $lang = i18nRouter::getTranslation();
 	<head>
 		<script type="text/javascript">
 			var app,
-				perm = {},
+				acl = {},
 				user = {},
 				settings = {},
 				i18n = {},
@@ -96,7 +96,7 @@ $lang = i18nRouter::getTranslation();
 				app.onWebCamComplete(msg);
 			}
 			function printQRCode(pid) {
-				var src = settings.site_url + '/patients/' + app.currPatient.pid + '/patientDataQrCode.png?';
+				var src = settings.site_url + '/patients/' + app.patient.pid + '/patientDataQrCode.png?';
 				app.QRCodePrintWin = window.open(src, 'QRCodePrintWin', 'left=20,top=20,width=800,height=600,toolbar=0,resizable=0,location=1,scrollbars=0,menubar=0,directories=0');
 				Ext.defer(function() {
 					app.QRCodePrintWin.print();
@@ -111,7 +111,7 @@ $lang = i18nRouter::getTranslation();
 				ACL.getAllUserPermsAccess(function(provider, response) {
 					var permissions = response.result;
 					for(var i = 0; i < permissions.length; i++) {
-						perm[permissions[i].perm] = permissions[i].value;
+						acl[permissions[i].perm] = permissions[i].value;
 					}
 				});
 				// localization remoting procedures.

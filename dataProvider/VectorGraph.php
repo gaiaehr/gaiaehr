@@ -66,7 +66,7 @@ class VectorGraph
 			foreach($pData as $data) {
 				if($data['age'] == $curve['age_mos']) $curve['PP'] = $data['PP'];
 			}
-			if($params->type == 5 || $params->type == 6 || $params->type == 7 || $params->type == 8) {
+			if($params->type == 6 || $params->type == 7 || $params->type == 8) {
 				$curve['age'] = round($curve['age_mos'] / 12, 2);
 			}else{
 				$curve['age'] = $curve['age_mos'];
@@ -115,26 +115,37 @@ class VectorGraph
 
 	private function getPatientWeightForStatureGraphDataByPid($pid)
 	{
-		$dob = $this->patient->getPatientAgeByPid($pid);
-		$pData = array();
-
-		return $pData;
+		$data = array();
+		foreach($this->encounter->getVitalsByPid($pid) as $foo){
+			$fo['height']= $foo['height_cm'];
+			$fo['PP'] = $foo['weight_kg'];
+			$data[] = $fo;
+		}
+		return $data;
 	}
 
 	public function getPatientWeightForAgeGraphDataByPid($pid)
 	{
-		$dob = $this->patient->getPatientAgeByPid($pid);
-		$pData = array();
-
-		return $pData;
+		$data = array();
+		$dob  = $this->patient->getPatientDOBByPid($pid);
+		foreach($this->encounter->getVitalsByPid($pid) as $foo){
+			$fo['age']= Age::getMonsBetweenDates($dob, $foo['date']) + .5;
+			$fo['PP'] = $foo['weight_kg'];
+			$data[] = $fo;
+		}
+		return $data;
 	}
 
 	public function getPatientStatureForAgeGraphDataByPid($pid)
 	{
-		$dob = $this->patient->getPatientAgeByPid($pid);
-		$pData = array();
-
-		return $pData;
+		$data = array();
+		$dob  = $this->patient->getPatientDOBByPid($pid);
+		foreach($this->encounter->getVitalsByPid($pid) as $foo){
+			$fo['age']= Age::getMonsBetweenDates($dob, $foo['date']) + .5;
+			$fo['PP'] = $foo['height_cm'];
+			$data[] = $fo;
+		}
+		return $data;
 	}
 
 	public function getPatientBMIForAgeGraphDataByPid($pid)

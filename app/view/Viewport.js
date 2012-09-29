@@ -116,6 +116,8 @@ Ext.define('App.view.Viewport', {
 		'App.store.patient.Vitals',
 		'App.store.areas.PoolArea',
 
+        'App.classes.ActivityMonitor',
+
         'App.classes.AbstractPanel',
 		'App.classes.LiveCPTSearch',
 		'App.classes.LiveImmunizationSearch',
@@ -304,7 +306,7 @@ Ext.define('App.view.Viewport', {
 		me.Task = {
 			scope   : me,
 			run     : function() {
-				me.checkSession();
+				//me.checkSession();
 				me.getPatientsInPoolArea();
 				CronJob.run();
 			},
@@ -1274,20 +1276,26 @@ Ext.define('App.view.Viewport', {
 
 	},
 
-	appLogout: function() {
-		Ext.Msg.show({
-			title  : i18n['please_confirm'] + '...',
-			msg    : i18n['are_you_sure_to_quit'] + ' GaiaEHR?',
-			icon   : Ext.MessageBox.QUESTION,
-			buttons: Ext.Msg.YESNO,
-			fn     : function(btn) {
-				if(btn == 'yes') {
-					authProcedures.unAuth(function() {
-						window.location = "./"
-					});
-				}
-			}
-		});
+	appLogout: function(auto) {
+        if(auto === true){
+            authProcedures.unAuth(function() {
+                window.location = "./"
+            });
+        }else{
+            Ext.Msg.show({
+                title  : i18n['please_confirm'] + '...',
+                msg    : i18n['are_you_sure_to_quit'] + ' GaiaEHR?',
+                icon   : Ext.MessageBox.QUESTION,
+                buttons: Ext.Msg.YESNO,
+                fn     : function(btn) {
+                    if(btn == 'yes') {
+                        authProcedures.unAuth(function() {
+                            window.location = "./"
+                        });
+                    }
+                }
+            });
+        }
 	},
 
 	initializePatientPoolDragZone: function(panel) {
@@ -1462,7 +1470,22 @@ Ext.define('App.view.Viewport', {
 	},
 
 	setTask:function(start){
-		start ? Ext.TaskManager.start(this.Task) : Ext.TaskManager.stop(this.Task)
+        var me = this;
+        if(start){
+            Ext.TaskManager.start(me.Task);
+            App.classes.ActivityMonitor.init({
+                interval    : 30000, // 30 sec
+                maxInactive : (1000 * 60 * 6), // 6 minutes
+                //verbose:true,
+                isInactive:function(){
+                    me.appLogout(true);
+                }
+            });
+            App.classes.ActivityMonitor.start();
+        }else{
+            Ext.TaskManager.stop(me.Task);
+            App.classes.ActivityMonitor.stop();
+        }
 	},
 
 	/*

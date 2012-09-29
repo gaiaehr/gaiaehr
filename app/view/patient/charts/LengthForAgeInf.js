@@ -38,10 +38,10 @@ Ext.define('App.view.patient.charts.LengthForAgeInf',{
                         }
                     },
                     {
-                        title         : i18n['age_mos'],
+                        title         : i18n['age'],
                         type          : 'Numeric',
                         position      : 'bottom',
-                        fields        : ['age_mos']
+                        fields        : ['age']
                     }
                 ],
                 series : [
@@ -49,7 +49,7 @@ Ext.define('App.view.patient.charts.LengthForAgeInf',{
                         title       : i18n['length_cm'],
                         type        : 'scatter',
                         axis        : 'left',
-                        xField      : 'age_mos',
+                        xField      : 'age',
                         yField      : 'PP',
                         smooth      : true,
                         highlight   : {
@@ -65,7 +65,7 @@ Ext.define('App.view.patient.charts.LengthForAgeInf',{
                         tips: {
                             trackMouse: true,
                             renderer: function(storeItem, item) {
-                                this.update(i18n['age_mos'] + ': ' + storeItem.get('age_mos') + '<br>' + i18n['length_cm'] + ': ' + storeItem.get('PP'));
+                                this.update(i18n['age'] + ': ' + storeItem.get('age') + '<br>' + i18n['length_cm'] + ': ' + storeItem.get('PP'));
                             }
                         }
                     },
@@ -73,7 +73,7 @@ Ext.define('App.view.patient.charts.LengthForAgeInf',{
                         title       : 'P3',
                         type        : 'line',
                         axis        : 'left',
-                        xField      : 'age_mos',
+                        xField      : 'age',
                         yField      : 'P3',
                         smooth      : true,
                         showMarkers : false
@@ -82,7 +82,7 @@ Ext.define('App.view.patient.charts.LengthForAgeInf',{
                         title       : 'P5',
                         type        : 'line',
                         axis        : 'left',
-                        xField      : 'age_mos',
+                        xField      : 'age',
                         yField      : 'P5',
                         smooth      : true,
                         showMarkers : false
@@ -91,7 +91,7 @@ Ext.define('App.view.patient.charts.LengthForAgeInf',{
                         title       : 'P10',
                         type        : 'line',
                         axis        : 'left',
-                        xField      : 'age_mos',
+                        xField      : 'age',
                         yField      : 'P10',
                         smooth      : true,
                         showMarkers : false
@@ -100,7 +100,7 @@ Ext.define('App.view.patient.charts.LengthForAgeInf',{
                         title       : 'P25',
                         type        : 'line',
                         axis        : 'left',
-                        xField      : 'age_mos',
+                        xField      : 'age',
                         yField      : 'P25',
                         smooth      : true,
                         showMarkers : false
@@ -109,7 +109,7 @@ Ext.define('App.view.patient.charts.LengthForAgeInf',{
                         title       : 'P50',
                         type        : 'line',
                         axis        : 'left',
-                        xField      : 'age_mos',
+                        xField      : 'age',
                         yField      : 'P50',
                         smooth      : true,
                         showMarkers : false,
@@ -124,7 +124,7 @@ Ext.define('App.view.patient.charts.LengthForAgeInf',{
                         title       : 'P75',
                         type        : 'line',
                         axis        : 'left',
-                        xField      : 'age_mos',
+                        xField      : 'age',
                         yField      : 'P75',
                         smooth      : true,
                         showMarkers : false
@@ -133,7 +133,7 @@ Ext.define('App.view.patient.charts.LengthForAgeInf',{
                         title       : 'P95',
                         type        : 'line',
                         axis        : 'left',
-                        xField      : 'age_mos',
+                        xField      : 'age',
                         yField      : 'P95',
                         smooth      : true,
                         showMarkers : false
@@ -142,7 +142,7 @@ Ext.define('App.view.patient.charts.LengthForAgeInf',{
                         title       : 'P97',
                         type        : 'line',
                         axis        : 'left',
-                        xField      : 'age_mos',
+                        xField      : 'age',
                         yField      : 'P97',
                         smooth      : true,
                         showMarkers : false

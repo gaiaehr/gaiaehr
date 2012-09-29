@@ -42,7 +42,7 @@ Ext.define('App.view.patient.charts.HeadCircumference',{
 
                         type          : 'Numeric',
                         position      : 'bottom',
-                        fields        : ['age_mos'],
+                        fields        : ['age'],
                         minimum       : me.yMinimum,
                         maximum       : me.yMaximum
                     }
@@ -52,7 +52,7 @@ Ext.define('App.view.patient.charts.HeadCircumference',{
                         title       : i18n['circumference_cm'],
                         type        : 'scatter',
                         axis        : 'left',
-                        xField      : 'age_mos',
+                        xField      : 'age',
                         yField      : 'PP',
                         smooth      : true,
                         highlight   : {
@@ -68,7 +68,7 @@ Ext.define('App.view.patient.charts.HeadCircumference',{
                         tips: {
                             trackMouse: true,
                             renderer: function(storeItem, item) {
-                                this.update( me.yTitle + ' : ' + storeItem.get('age_mos') + '<br>'+ me.xTitle +': ' + storeItem.get('PP'));
+                                this.update( me.yTitle + ' : ' + storeItem.get('age') + '<br>'+ me.xTitle +': ' + storeItem.get('PP'));
                             }
                         }
                     },
@@ -76,7 +76,7 @@ Ext.define('App.view.patient.charts.HeadCircumference',{
                         title       : '97%',
                         type        : 'line',
                         axis        : 'left',
-                        xField      : 'age_mos',
+                        xField      : 'age',
                         yField      : 'P97',
                         smooth      : true,
                         showMarkers : false,
@@ -94,7 +94,7 @@ Ext.define('App.view.patient.charts.HeadCircumference',{
                         title       : '95%',
                         type        : 'line',
                         axis        : 'left',
-                        xField      : 'age_mos',
+                        xField      : 'age',
                         yField      : 'P95',
                         smooth      : true,
                         showMarkers : false,
@@ -112,7 +112,7 @@ Ext.define('App.view.patient.charts.HeadCircumference',{
                         title       : '75%',
                         type        : 'line',
                         axis        : 'left',
-                        xField      : 'age_mos',
+                        xField      : 'age',
                         yField      : 'P75',
                         smooth      : true,
                         showMarkers : false,
@@ -130,7 +130,7 @@ Ext.define('App.view.patient.charts.HeadCircumference',{
                         title       : '50%',
                         type        : 'line',
                         axis        : 'left',
-                        xField      : 'age_mos',
+                        xField      : 'age',
                         yField      : 'P50',
                         smooth      : true,
                         showMarkers : false,
@@ -148,7 +148,7 @@ Ext.define('App.view.patient.charts.HeadCircumference',{
                         title       : '25%',
                         type        : 'line',
                         axis        : 'left',
-                        xField      : 'age_mos',
+                        xField      : 'age',
                         yField      : 'P25',
                         smooth      : true,
                         showMarkers : false,
@@ -166,7 +166,7 @@ Ext.define('App.view.patient.charts.HeadCircumference',{
                         title       : '10%',
                         type        : 'line',
                         axis        : 'left',
-                        xField      : 'age_mos',
+                        xField      : 'age',
                         yField      : 'P10',
                         smooth      : true,
                         showMarkers : false,
@@ -184,7 +184,7 @@ Ext.define('App.view.patient.charts.HeadCircumference',{
                         title       : '5%',
                         type        : 'line',
                         axis        : 'left',
-                        xField      : 'age_mos',
+                        xField      : 'age',
                         yField      : 'P5',
                         smooth      : true,
                         showMarkers : false,
@@ -202,7 +202,7 @@ Ext.define('App.view.patient.charts.HeadCircumference',{
                         title       : '3%',
                         type        : 'line',
                         axis        : 'left',
-                        xField      : 'age_mos',
+                        xField      : 'age',
                         yField      : 'P3',
                         smooth      : true,
                         showMarkers : false,

@@ -68,6 +68,12 @@ class i18nRouter
 	{
 		return $_SESSION['site']['lang'];
 	}
-	
+
+    public static function t($key){
+
+        $lang = self::getTranslation();
+
+        return (array_key_exists($key,$lang) ? $lang[$key] : $key);
+    }
 }
 

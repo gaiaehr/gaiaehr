@@ -211,7 +211,7 @@ Ext.define('App.view.patient.windows.Charts', {
         for(var i = 0; i < btns.length; i++) {
             btn = btns[i];
             if(btn.type == 'button' && (
-                btn.action == 'bpPulseTemp' || btn.action == 'WeightForAgeInf' || btn.action == 'LengthForAgeInf' || btn.action == 'WeightForRecumbentInf' || btn.action == 'HeadCircumferenceInf')) {
+                btn.action == 'WeightForAgeInf' || btn.action == 'LengthForAgeInf' || btn.action == 'WeightForRecumbentInf' || btn.action == 'HeadCircumferenceInf')) {
                 btn.setVisible(app.patient.age.DMY.years < 2);
             } else if(btn.type == 'button') {
                 btn.setVisible(app.patient.age.DMY.years >= 2);

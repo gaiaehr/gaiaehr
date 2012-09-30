@@ -270,8 +270,8 @@ Ext.define('App.view.Viewport', {
 		'App.view.miscellaneous.MySettings',
 		'App.view.miscellaneous.OfficeNotes',
 		'App.view.miscellaneous.Websearch',
-		
-        'App.view.reports.ReportCenter'
+
+        'Modules.Module'
 
 	],
 
@@ -306,7 +306,7 @@ Ext.define('App.view.Viewport', {
 		me.Task = {
 			scope   : me,
 			run     : function() {
-				//me.checkSession();
+				me.checkSession();
 				me.getPatientsInPoolArea();
 				CronJob.run();
 			},
@@ -709,11 +709,7 @@ Ext.define('App.view.Viewport', {
         me.MainPanel.add(Ext.create('App.view.messages.Messages'));
         me.MainPanel.add(Ext.create('App.view.search.PatientSearch'));
         me.MainPanel.add(Ext.create('App.view.areas.FloorPlan'));
-        /**
-         * Reports
-         */
-        me.ReportCenter = me.MainPanel.add(Ext.create('App.view.reports.ReportCenter'));
-        me.ReportPanel = me.MainPanel.add(Ext.create('App.view.reports.ReportPanel'));
+
         /**
          * Patient Area
          */
@@ -736,13 +732,6 @@ Ext.define('App.view.Viewport', {
         me.MainPanel.add(Ext.create('App.view.miscellaneous.OfficeNotes'));
         me.MainPanel.add(Ext.create('App.view.miscellaneous.Websearch'));
         
-        /*
-         * Reports
-         * TODO: ACL for the reports
-         * The reports will be modulized and then give ACL to each of them.
-         */
-        //me.MainPanel.add(Ext.create('App.view.reports.ClientListReport'));
-
         me.ppdz = me.MainPanel.add(Ext.create('App.view.areas.PatientPoolDropZone'));
 
 		if(acl['access_gloabal_settings']) me.MainPanel.add(Ext.create('App.view.administration.Globals'));
@@ -852,7 +841,7 @@ Ext.define('App.view.Viewport', {
 		me.items = [ me.Header, me.navColumn, me.MainPanel, me.Footer ];
 
 		me.listeners = {
-			//render : me.appRender,
+			render : me.appRender,
 			beforerender: me.beforeAppRender
 		};
 
@@ -1434,23 +1423,23 @@ Ext.define('App.view.Viewport', {
 	 * When the application finishes loading all the GaiaEHR core.
 	 * Then it will load all the modules.
 	 */
-	//appRender: function() {
-    //    this.loadModules();
-	//},
+	appRender: function() {
+        this.loadModules();
+	},
 
 	/*
 	 * Load all the modules on the modules folder.
 	 * This folder will hold modules created by third-party. 
 	 */
-    // loadModules:function(){
-        // Modules.getEnabledModules(function(provider, response){
-            // var modules = response.result;
-            // for(var i=0; i < modules.length; i++){
-                // say('Module ' + modules[i].dir + ' loaded!');
-                // Ext.create('Modules.'+modules[i].dir+'.Main');
-            // }
-        // });
-    // },
+    loadModules:function(){
+        Modules.getEnabledModules(function(provider, response){
+            var modules = response.result;
+            for(var i=0; i < modules.length; i++){
+                say('Module ' + modules[i].dir + ' loaded!');
+                Ext.create('Modules.'+modules[i].dir+'.Main');
+            }
+        });
+    },
 
 	removeAppMask: function() {
 		Ext.get('mainapp-loading').remove();

@@ -121,6 +121,9 @@
 .icoArrowRightSmall{
 	background-image: url(../images/icons/arrow_right.png) !important;
 }
+.icoArrowLeftSmall{
+	background-image: url(../images/icons/arrow_left.png) !important;
+}
 .icoArrowDown{
     background-image: url(../images/icons/icoArrowDown.png) !important;
 }

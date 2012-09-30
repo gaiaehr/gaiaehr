@@ -9,7 +9,7 @@ Ext.define('Modules.Module', {
     /**
      * @param panel
      */
-    addPanel:function(panel)
+    addAppPanel:function(panel)
     {
         app.MainPanel.add(panel);
     },
@@ -32,22 +32,18 @@ Ext.define('Modules.Module', {
     addNavigationNodes:function(parentId, node)
     {
         var parent;
-        if(parentId == 'root' || parentId == null)
-        {
+        if(parentId == 'root' || parentId == null){
             parent = app.storeTree.tree.getRootNode();
-        }
-        else
-        {
+        }else{
             parent = app.storeTree.tree.getNodeById(parentId);
         }
-        if(Ext.isArray(node)) 
-        {
+
+        if(Ext.isArray(node)){
             for(var i=0; i < node.length; i++) parent.appendChild(node[i]);
-        } 
-        else 
-        {
+        }else{
             parent.appendChild(node);
         }
+
 
     },
 

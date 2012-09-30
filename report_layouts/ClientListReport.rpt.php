@@ -66,33 +66,33 @@ $pathCSS = ($params['pdf'] ? $_SESSION['site']['root'] : '../');
 
 <html>
 <head>
-<link rel="stylesheet" type="text/css" href="<?=$pathCSS ?>/resources/css/printReport.css">
+<link rel="stylesheet" type="text/css" href="<?php print $pathCSS ?>/resources/css/printReport.css">
 </head>
 <body>
 <h3>Client List Report (Patient List)</h3>
 <table>
 	<tr>
-		<th><?=$LANG['last_visit'] ?></th>
-		<th><?=$LANG['patient'] ?></th>
-		<th><?=$LANG['id'] ?></th>
-		<th><?=$LANG['street'] ?></th>
-		<th><?=$LANG['city'] ?></th>
-		<th><?=$LANG['state'] ?></th>
-		<th><?=$LANG['zipcode'] ?></th>
-		<th><?=$LANG['patient_home_phone'] ?></th>
-		<th><?=$LANG['patient_work_phone'] ?></th>
+		<th><?php print $LANG['last_visit'] ?></th>
+		<th><?php print $LANG['patient'] ?></th>
+		<th><?php print $LANG['id'] ?></th>
+		<th><?php print $LANG['street'] ?></th>
+		<th><?php print $LANG['city'] ?></th>
+		<th><?php print $LANG['state'] ?></th>
+		<th><?php print $LANG['zipcode'] ?></th>
+		<th><?php print $LANG['patient_home_phone'] ?></th>
+		<th><?php print $LANG['patient_work_phone'] ?></th>
 	</tr>
 	<?php foreach($db->fetchRecords(PDO::FETCH_ASSOC) as $row) { ?>
 	<tr>
-		<td><?=date("m/d/Y", strtotime($params['close_date'])) ?></td>
-		<td><?=$row['PatientName'] ?></td>
-		<td><?=$row['pid'] ?></td>
-		<td><?=$row['address'] ?></td>
-		<td><?=$row['city'] ?></td>
-		<td><?=$row['state'] ?></td>
-		<td><?=$row['zipcode'] ?></td>
-		<td><?=$row['home_phone'] ?></td>
-		<td><?=$row['work_phone'] ?></td>
+		<td><?php print date("m/d/Y", strtotime($params['close_date'])) ?></td>
+		<td><?php print $row['PatientName'] ?></td>
+		<td><?php print $row['pid'] ?></td>
+		<td><?php print $row['address'] ?></td>
+		<td><?php print $row['city'] ?></td>
+		<td><?php print $row['state'] ?></td>
+		<td><?php print $row['zipcode'] ?></td>
+		<td><?php print $row['home_phone'] ?></td>
+		<td><?php print $row['work_phone'] ?></td>
 	</tr>
 	<?php } ?>
 </table>

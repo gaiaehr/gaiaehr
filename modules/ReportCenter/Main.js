@@ -1,84 +1,27 @@
-Ext.define('Modules.ReportCenter.Main', 
+Ext.define('Modules.reportcenter.Main',
 {
     extend     : 'Modules.Module',
     constructor: function() 
     {
         var me = this;
-        //
-        //        /**
-        //         * @param panel     (Ext.component)     Component to add to MainPanel
-        //         */
-        //        me.addPanel(Ext.create('Modules.ReportCenter.view.reportCenter'));
-        //
-        //        /**
-        //         * funtion to add navigation links
-        //         * @param parentId  (string)            navigation node parent ID,
-        //         * @param node      (object || array)   navigation node configuration properties
-        //         */
-        //        me.addNavigationNodes('navigationReportCenter',
-        //        {
-        //            text	:i18n['client_list_report'],
-        //            leaf	:true,
-        //            cls		:'file',
-        //            iconCls	:'icoReport',
-        //            id		: 'panelClientListReport'
-        //        });
-
         /**
-         * add Patient Category
-         * @type {*}
+         * @param panel     (Ext.component)     Component to add to MainPanel
          */
-        me.patientCat = app.ReportCenter.addCategory(i18n['patient_reports'], 250);
+        me.addAppPanel(Ext.create('Modules.reportcenter.view.ReportCenter'));
+        me.addAppPanel(Ext.create('Modules.reportcenter.view.ReportPanel'));
         /**
-         * Patient Category Links...
-         * @type {*}
+         * funtion to add navigation links
+         * @param parentId  (string)            navigation node parent ID,
+         * @param node      (object || array)   navigation node configuration properties
          */
-        me.link1 = app.ReportCenter.addReportByCategory(me.patientCat, i18n['prescriptions_and_dispensations'], function(btn) 
+        me.addNavigationNodes('root',
         {
-            say(btn);
-            say(app.ReportCenter);
-            say(app.ReportPanel);
-            app.ReportCenter.goToReportPanel('panelReportPanel');
-        });
-        me.link2 = app.ReportCenter.addReportByCategory(me.patientCat, i18n['clinical'], function(btn) 
-        {
-            app.ReportCenter.goToReportPanel('panelReportPanel');
-        });
-        me.link3 = app.ReportCenter.addReportByCategory(me.patientCat, i18n['referrals'], function(btn) 
-        {
-            app.ReportCenter.goToReportPanel('panelReportPanel');
-        });
-        me.link4 = app.ReportCenter.addReportByCategory(me.patientCat, i18n['immunization_registry'], function(btn) 
-        {
-            app.ReportCenter.goToReportPanel('panelReportPanel');
-        });
-
-
-
-        /**
-         * add clicnic category
-         * @type {*}
-         */
-        me.clinicCat = app.ReportCenter.addCategory(i18n['clinic_reports'], 260);
-        /**
-         * Clicnic Category Links...
-         * @type {*}
-         */
-        me.link5 = app.ReportCenter.addReportByCategory(me.clinicCat, i18n['standard_measures'], function(btn) 
-        {
-            app.ReportCenter.goToReportPanel('panelReportPanel');
-        });
-        me.link6 = app.ReportCenter.addReportByCategory(me.clinicCat, i18n['clinical_quality_measures_cqm'], function(btn) 
-        {
-            app.ReportCenter.goToReportPanel('panelReportPanel');
-        });
-        me.link7 = app.ReportCenter.addReportByCategory(me.clinicCat, i18n['automated_measure_calculations_amc'], function(btn) 
-        {
-            app.ReportCenter.goToReportPanel('panelReportPanel');
-        });
-        me.link8 = app.ReportCenter.addReportByCategory(me.clinicCat, i18n['automated_measure_calculations_tracking'], function(btn) 
-        {
-            app.ReportCenter.goToReportPanel('panelReportPanel');
+            //text	:i18n['client_list_report'],
+            text	:'Report Center',
+            leaf	:true,
+            cls		:'file',
+            iconCls	:'icoReport',
+            id		: 'panelReportCenter'
         });
         me.callParent();
     }

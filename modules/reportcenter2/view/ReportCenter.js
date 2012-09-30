@@ -197,8 +197,8 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                             name      : 'to'
                         }
                     ],
-                    fn:function(){
-                        alert('nope');
+                    fn:function(msg){
+                        alert(msg);
                     }
                 });
             });
@@ -220,8 +220,8 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                             name      : 'to'
                         }
                     ],
-                    fn:function(){
-                        alert('sip');
+                    fn:function(msg){
+                        alert(msg);
                     }
                 });
             });
@@ -274,6 +274,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                 form = panel.down('form');
             form.setTitle(formConfig.title);
             form.action = formConfig.action;
+            form.reportFn = formConfig.fn;
             form.removeAll();
             form.add(formConfig.items);
         },

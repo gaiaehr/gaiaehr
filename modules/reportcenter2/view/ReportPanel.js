@@ -67,7 +67,11 @@ Ext.define('Modules.reportcenter.view.ReportPanel',
 							startDate: me.FilterForm.getForm().findField("from").getValue(),
 							endDate: me.FilterForm.getForm().findField("to").getValue(),
 							pdf: true
-						};
+						}, form = me.FilterForm;
+
+                        if(typeof form.reportFn == 'function'){
+                            form.reportFn('this report has custom function');
+                        }
                         me.PDFPanel.el.dom.src = 'report_layouts/ClientListReport.rpt.php?params=' + Ext.JSON.encode(jsonPayload);
 					}
 				},
@@ -86,7 +90,11 @@ Ext.define('Modules.reportcenter.view.ReportPanel',
 							startDate: me.FilterForm.getForm().findField("from").getValue(),
 							endDate: me.FilterForm.getForm().findField("to").getValue(),
 							pdf: false
-						};
+                        }, form = me.FilterForm;
+
+                        if(typeof form.reportFn == 'function'){
+                            form.reportFn('this report has custom function');
+                        }
 						me.PDFPanel.el.dom.src = 'report_layouts/ClientListReport.rpt.php?params=' + Ext.JSON.encode(jsonPayload);
 					}
 				},

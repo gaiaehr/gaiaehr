@@ -139,7 +139,7 @@ Ext.define('App.view.patient.windows.Charts', {
             me.WeightForRecumbentInf = Ext.create('App.view.patient.charts.HeadCircumference', {
                 title   : i18n['weight_for_recumbent_0_3_mos'],
                 xTitle  : i18n['weight_kg'],
-                yTitle  : i18n['age_months'],
+                yTitle  : i18n['length_cm'],
                 xMinimum: 1,
                 xMaximum: 20,
                 yMinimum: 45,

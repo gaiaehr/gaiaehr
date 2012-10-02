@@ -1463,9 +1463,9 @@ Ext.define('App.view.Viewport', {
         if(start){
             Ext.TaskManager.start(me.Task);
             App.classes.ActivityMonitor.init({
-                interval    : 30000, // 30 sec
-                maxInactive : (1000 * 60 * 6), // 6 minutes
-                //verbose:true,
+                interval    : 10000,        // 10 sec
+                maxInactive : (1000 * 60 * 10),  // 1 minute   (1000 * 60 * 5) = 5min
+                verbose:true,
                 isInactive:function(){
                     me.appLogout(true);
                 }

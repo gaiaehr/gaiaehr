@@ -82,35 +82,51 @@ class VectorGraph
 	public function getPatientWeightForAgeInfGraphDataByPid($pid)
 	{
 		$data = array();
-		$dob        = $this->patient->getPatientDOBByPid($pid);
-		$vitals     = $this->encounter->getVitalsByPid($pid);
-		$data['age']= Age::getMonsBetweenDates($dob, $vitals['date']) + .5;
-		$data['PP'] = $vitals['weight_kg'];
+		$dob  = $this->patient->getPatientDOBByPid($pid);
+		foreach($this->encounter->getVitalsByPid($pid) as $foo){
+			$fo['age']= Age::getMonsBetweenDates($dob, $foo['date']) + .5;
+			$fo['PP'] = $foo['weight_kg'];
+			$data[] = $fo;
+		}
 		return $data;
 	}
 
 	public function getPatientLengthForAgeInfGraphDataByPid($pid)
 	{
-		$dob = $this->patient->getPatientAgeByPid($pid);
-		$pData = array();
-
-		return $pData;
+		$data = array();
+		$dob  = $this->patient->getPatientDOBByPid($pid);
+		foreach($this->encounter->getVitalsByPid($pid) as $foo){
+			$fo['age']= Age::getMonsBetweenDates($dob, $foo['date']) + .5;
+			$fo['PP'] = $foo['height_cm'];
+			$data[] = $fo;
+		}
+		return $data;
 	}
 
 	public function getPatientWeightForRecumbentInfGraphDataByPid($pid)
 	{
-		$dob = $this->patient->getPatientAgeByPid($pid);
-		$pData = array();
-
-		return $pData;
+		$data = array();
+		$dob  = $this->patient->getPatientDOBByPid($pid);
+		foreach($this->encounter->getVitalsByPid($pid) as $foo){
+			$fo['age']= $foo['height_cm'];
+			$fo['PP'] = $foo['weight_kg'];
+			$data[] = $fo;
+		}
+		return $data;
 	}
 
 	public function getPatientHeadCircumferenceInfGraphDataByPid($pid)
 	{
-		$dob = $this->patient->getPatientAgeByPid($pid);
-		$pData = array();
-
-		return $pData;
+		$data = array();
+		$dob  = $this->patient->getPatientDOBByPid($pid);
+		foreach($this->encounter->getVitalsByPid($pid) as $foo){
+			$fo['age']= Age::getMonsBetweenDates($dob, $foo['date']) + .5;
+			$fo['PP'] = $foo['head_circumference_cm'];
+			if($fo['PP'] != null && $fo['PP'] != ''){
+				$data[] = $fo;
+			}
+		}
+		return $data;
 	}
 
 	private function getPatientWeightForStatureGraphDataByPid($pid)
@@ -178,8 +194,8 @@ class VectorGraph
 
 //print '<pre>';
 //$params       = new stdClass();
-//$params->type = 8;
-//$params->pid  = 1;
+//$params->type = 3;
+//$params->pid  = 4;
 //$v = new VectorGraph();
+//print_r($v->getPatientWeightForRecumbentInfGraphDataByPid(4));
 //print_r($v->getGraphData($params));
-//print_r($v->getPatientBMIForAgeGraphDataByPid(1));

@@ -1268,7 +1268,7 @@ Ext.define('App.view.Viewport', {
 
     cancelAutoLogout:function(){
         var me = this;
-        me.el.mask();
+        me.el.unmask();
         me.LogoutTask.stop(me.LogoutTaskTimer);
         me.logoutWarinigWindow.destroy();
         delete me.logoutWarinigWindow;

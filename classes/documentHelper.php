@@ -11,6 +11,11 @@
  * @copyright   Gnu Public License (GPLv3)
  *
  */
+ 
+ 
+ /*
+  * Load the current session
+  */
 if(!isset($_SESSION)){
     session_name ( 'GaiaEHR' );
     session_start();
@@ -18,18 +23,10 @@ if(!isset($_SESSION)){
 }
 
 /*
- * Include PHP Word Class Library.
+ * Include PHP Word, PHP Excel, PHP PowerPoint Class Library.
  */
 include_once($_SESSION['site']['root'] . '/lib/PHPWord/PHPWord.php');
-
-/*
- * Include PHP Excel Class Library.
- */
 include_once($_SESSION['site']['root'] . '/lib/PHExcel/PHPExcel.php');
-
-/*
- * Include PHP PowerPoint Class Library.
- */
 include_once($_SESSION['site']['root'] . '/lib/PHPPowerPoint/PHPPowerpoint.php');
 
 
@@ -38,6 +35,10 @@ include_once($_SESSION['site']['root'] . '/lib/PHPPowerPoint/PHPPowerpoint.php')
  */
 class DocumentHelper 
 {
+	/*
+	 * Method to convert any given HTML string to a valid DOCX document.
+	 * This document is compatible with LibreOffice Suite.
+	 */
 	public function HTMLtoDOCX(string $HTML)
 	{
 		

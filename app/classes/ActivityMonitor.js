@@ -76,6 +76,7 @@ Ext.define('App.classes.ActivityMonitor', {
     },
     
     captureActivity : function(eventObj, el, eventOptions) {
+        if(app.logoutWarinigWindow) app.cancelAutoLogout();
         this.lastActive = new Date();
     },
     
@@ -90,7 +91,7 @@ Ext.define('App.classes.ActivityMonitor', {
             this.isInactive();
         }
         else {
-            this.log('CURRENTLY INACTIVE FOR ' + inactive + ' (ms)');
+            this.log('CURRENTLY INACTIVE FOR ' + Math.floor(inactive / 1000) + '(s)');
             this.isActive();
         }
     },

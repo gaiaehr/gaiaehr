@@ -1265,10 +1265,60 @@ Ext.define('App.view.Viewport', {
 
 	},
 
+
+    cancelAutoLogout:function(){
+        var me = this;
+        me.el.mask();
+        me.LogoutTask.stop(me.LogoutTaskTimer);
+        me.logoutWarinigWindow.destroy();
+        delete me.logoutWarinigWindow;
+        App.classes.ActivityMonitor.start();
+    },
+
+    startAutoLogout:function(){
+        var me = this;
+        me.logoutWarinigWindow = Ext.create('Ext.Container',{
+            floating:true,
+            cls:'logout-warning-window',
+            html:'Logging Out in...',
+            seconds:10
+        }).show();
+
+        app.el.mask();
+
+        if(!me.LogoutTask) me.LogoutTask = new Ext.util.TaskRunner();
+        if(!me.LogoutTaskTimer){
+            me.LogoutTaskTimer = me.LogoutTask.start({
+                scope:me,
+                run: me.logoutCounter,
+                interval: 1000
+            });
+        }else{
+            me.LogoutTask.start(me.LogoutTaskTimer);
+        }
+
+
+    },
+
+    logoutCounter:function(){
+        var me = this,
+            sec = me.logoutWarinigWindow.seconds - 1;
+        if(sec <= 0) {
+            me.logoutWarinigWindow.update('Logging Out... Bye! Bye!');
+            me.appLogout(true);
+        }else{
+            me.logoutWarinigWindow.update('Logging Out in '+sec+'sec');
+            me.logoutWarinigWindow.seconds = sec;
+            say('Logging Out in '+sec+'sec');
+        }
+    },
+
 	appLogout: function(auto) {
+        var me = this;
         if(auto === true){
+            me.setTask(false);
             authProcedures.unAuth(function() {
-                window.location = "./"
+                window.location = './'
             });
         }else{
             Ext.Msg.show({
@@ -1279,7 +1329,8 @@ Ext.define('App.view.Viewport', {
                 fn     : function(btn) {
                     if(btn == 'yes') {
                         authProcedures.unAuth(function() {
-                            window.location = "./"
+                            me.setTask(false);
+                            window.location = './'
                         });
                     }
                 }
@@ -1464,10 +1515,10 @@ Ext.define('App.view.Viewport', {
             Ext.TaskManager.start(me.Task);
             App.classes.ActivityMonitor.init({
                 interval    : 10000,        // 10 sec
-                maxInactive : (1000 * 60 * 10),  // 1 minute   (1000 * 60 * 5) = 5min
+                maxInactive : (1000 * 60),  // 1 minute   (1000 * 60 * 5) = 5min
                 verbose:true,
                 isInactive:function(){
-                    me.appLogout(true);
+                    me.startAutoLogout();
                 }
             });
             App.classes.ActivityMonitor.start();

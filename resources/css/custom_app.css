@@ -7,6 +7,15 @@
 	font-family: 'OpenSans-CondLight';
 	src: url('../fonts/OpenSans-CondLight.ttf');
 }
+.logout-warning-window {
+	background-color:red;
+	padding:10px;
+	font-weight:bold;
+	font-size:15px;
+	color:white;
+	border: 3px solid #e2e2e2;
+}
+
 .x-grid-empty {
 	padding: 5px;
 }

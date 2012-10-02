@@ -76,6 +76,7 @@ Ext.define('App.classes.ActivityMonitor', {
     },
     
     captureActivity : function(eventObj, el, eventOptions) {
+        if(app.logoutWarinigWindow) app.cancelAutoLogout();
         this.lastActive = new Date();
     },
     

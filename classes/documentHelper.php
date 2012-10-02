@@ -44,7 +44,12 @@ class DocumentHelper
 		
 	}
 	
-	
+	private function detectParagraph(string $HTML)
+	{
+		$pattern = "/<p ?.*>(.*)<\/p>/";
+		preg_match($pattern, $string, $matches);
+		return $matches;
+	}
 }
 
 

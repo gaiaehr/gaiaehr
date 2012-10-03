@@ -37,7 +37,7 @@ class DocumentHelper
 {
 	/*
 	 * Method to convert any given HTML string to a valid DOCX document.
-	 * This document is compatible with LibreOffice Suite.
+	 * This document is compatible with LibreOffice Suite too.
 	 */
 	public function HTMLtoDOCX(string $HTML)
 	{
@@ -46,6 +46,8 @@ class DocumentHelper
 	
 	/*
 	 * Method to detect the order of things.
+	 * if the first thing is a paragraph and then a table
+	 * this method should be able to catalog thigs out.
 	 */
 	private function HTMLOrder(string $HTML)
 	{

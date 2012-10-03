@@ -91,7 +91,7 @@ Ext.define('App.classes.ActivityMonitor', {
             this.isInactive();
         }
         else {
-            this.log('CURRENTLY INACTIVE FOR ' + Math.floor(inactive / 1000) + '(s)');
+            this.log('CURRENTLY INACTIVE FOR ' + Math.floor(inactive / 1000) + ' SECONDS)');
             this.isActive();
         }
     },

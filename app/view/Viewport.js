@@ -276,14 +276,14 @@ Ext.define('App.view.Viewport', {
 	],
 
 	minWidthToFullMode: 1680,
-	currency          : i18n['currency'],
+	currency          : '$',
+    activityMonitorInterval: 5,     // in seconds
+    activityMonitorMaxInactive: 1,  // in minutes
+    cronTaskInterval:3,             // in seconds
 
 	initComponent: function() {
-
 		Ext.tip.QuickTipManager.init();
-
 		var me = this;
-
 		me.lastCardNode = null;
 		me.currCardCmp = null;
 		me.currEncounterId = null; // to be replace by me.patient
@@ -303,14 +303,14 @@ Ext.define('App.view.Viewport', {
 		 * TaskScheduler
 		 * This will run all the procedures inside the checkSession
 		 */
-		me.Task = {
+		me.cronTask = {
 			scope   : me,
 			run     : function() {
 				me.checkSession();
 				me.getPatientsInPoolArea();
 				CronJob.run();
 			},
-			interval: 10000 // 10 second
+			interval: me.cronTaskInterval * 1000
 		};
 
 		/*
@@ -616,12 +616,10 @@ Ext.define('App.view.Viewport', {
 						selectionchange: me.onNavigationNodeSelected
 					}
 				},
-				{
-					xtype      : 'panel',
+				me.patientPoolArea = Ext.create('Ext.Panel',{
 					title      : i18n['patient_pool_areas'],
 					layout     : 'fit',
 					region     : 'south',
-					itemId     : 'patientPoolArea',
 					bodyPadding: 5,
 					height     : 25,
 					cls        : 'patient-pool',
@@ -654,7 +652,7 @@ Ext.define('App.view.Viewport', {
 							}
 						}
 					]
-				}
+				})
 			],
 			dockedItems: [
 				{
@@ -1059,34 +1057,31 @@ Ext.define('App.view.Viewport', {
 	},
 
 	navCollapsed: function() {
-		var navView = this.navColumn.getComponent('patientPoolArea'),
-		//appLogo = this.Header.getComponent('appLogo'),
-			foot = this.Footer, footView;
+		var me = this,
+            navView = me.patientPoolArea,
+			foot = me.Footer, footView;
 
 		if(foot) {
 			footView = foot.down('dataview');
 			foot.setHeight(60);
 			footView.show();
 		}
-
-		//appLogo.hide();
+        me.navColumn.isCollapsed = true;
 		navView.hide();
-
 	},
 
 	navExpanded: function() {
-		var navView = this.navColumn.getComponent('patientPoolArea'),
-		//appLogo = this.Header.getComponent('appLogo'),
-			foot = this.Footer, footView;
+		var me = this,
+            navView = me.patientPoolArea,
+			foot = me.Footer, footView;
 
 		if(foot) {
 			footView = foot.down('dataview');
 			foot.setHeight(30);
 			footView.hide();
 		}
-		//appLogo.show();
+        me.navColumn.isCollapsed = false;
 		navView.show();
-
 	},
 
 	/*
@@ -1243,7 +1238,8 @@ Ext.define('App.view.Viewport', {
 	},
 
 	getPatientsInPoolArea: function() {
-		var poolArea = this.navColumn.getComponent('patientPoolArea'),
+		var me = this,
+            poolArea = me.patientPoolArea,
 			height = 35;
 		this.patientPoolStore.load({
 			callback: function(records) {
@@ -1254,10 +1250,11 @@ Ext.define('App.view.Viewport', {
 				} else {
 					height = 25;
 				}
-				height = (height >= 303) ? 303 : height;
-				poolArea.down('dataview').refresh();
-				poolArea.setHeight(height);
-				poolArea.doLayout();
+                if(me.navColumn.collapsed === false && !me.navColumn.isCollapsingOrExpanding){
+                    height = (height >= 303) ? 303 : height;
+    				poolArea.down('dataview').refresh();
+    				poolArea.setHeight(height);
+                }
 			}
 		});
 
@@ -1382,6 +1379,7 @@ Ext.define('App.view.Viewport', {
 					var sourceEl = e.getTarget(panel.itemSelector, 10),
 						patientData = panel.getRecord(sourceEl).data;
 					this.removeFromGroup(this.ddGroup);
+                    say('initializeOpenEncounterDragZone | patientData:');
 					say(patientData);
 					if(patientData.floorPlanId != null && patientData.patientZoneId == null){
 						app.navigateTo('panelAreaFloorPlan');
@@ -1512,10 +1510,10 @@ Ext.define('App.view.Viewport', {
 	setTask:function(start){
         var me = this;
         if(start){
-            Ext.TaskManager.start(me.Task);
+            Ext.TaskManager.start(me.cronTask);
             App.classes.ActivityMonitor.init({
-                interval    : 10000,        // 10 sec
-                maxInactive : (1000 * 60),  // 1 minute   (1000 * 60 * 5) = 5min
+                interval    : me.activityMonitorInterval * 1000,
+                maxInactive : (1000 * 60 * me.activityMonitorMaxInactive),
                 verbose:true,
                 isInactive:function(){
                     me.startAutoLogout();
@@ -1523,7 +1521,7 @@ Ext.define('App.view.Viewport', {
             });
             App.classes.ActivityMonitor.start();
         }else{
-            Ext.TaskManager.stop(me.Task);
+            Ext.TaskManager.stop(me.cronTask);
             App.classes.ActivityMonitor.stop();
         }
 	},

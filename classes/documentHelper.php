@@ -44,6 +44,28 @@ class DocumentHelper
 		
 	}
 	
+	/*
+	 * Method to detect the order of things.
+	 */
+	private function HTMLOrder(string $HTML)
+	{
+		
+	}
+	
+	/*
+	 * Method to detect tables and return the correct object to form a DocX Document
+	 */
+	private function detectTables(string $HTML)
+	{
+		$pattern = "/<table ?.*>(.*)<\/table>/";
+		preg_match($pattern, $string, $matches);
+		return $matches;
+		// TODO: this should be more elaborated.
+	}
+	
+	/*
+	 * Method to detect paragraphs and return the correct object to form a DocX Document
+	 */
 	private function detectParagraph(string $HTML)
 	{
 		$pattern = "/<p ?.*>(.*)<\/p>/";

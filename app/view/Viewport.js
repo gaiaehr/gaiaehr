@@ -275,11 +275,13 @@ Ext.define('App.view.Viewport', {
 
 	],
 
-	minWidthToFullMode: 1680,
-	currency          : '$',
-    activityMonitorInterval: 5,     // in seconds
-    activityMonitorMaxInactive: 1,  // in minutes
-    cronTaskInterval:3,             // in seconds
+    // app settings
+	minWidthToFullMode: 1680,       // full mode = nav expanded
+	currency          : '$',        // currency used
+    activityMonitorInterval: 5,     // in seconds - interval to check for mouse and keyboard activity
+    activityMonitorMaxInactive: 1,  // in minutes - Maximum time application can be inactive (no mouse or keyboard imput)
+    cronTaskInterval:3,             // in seconds - interval to run me.cronTask (check PHP session, refresh Patient Pool Areas, and PHP Cron Job)
+    // end app settings
 
 	initComponent: function() {
 		Ext.tip.QuickTipManager.init();
@@ -626,6 +628,7 @@ Ext.define('App.view.Viewport', {
 					split      : true,
 					collapsible: true,
 					border     : false,
+//                    overflowY: 'auto',
 					items      : [
 						{
 							xtype            : 'dataview',
@@ -651,7 +654,7 @@ Ext.define('App.view.Viewport', {
 								render: me.initializeOpenEncounterDragZone
 							}
 						}
-					]
+                    ]
 				})
 			],
 			dockedItems: [
@@ -1251,7 +1254,7 @@ Ext.define('App.view.Viewport', {
 					height = 25;
 				}
                 if(me.navColumn.collapsed === false && !me.navColumn.isCollapsingOrExpanding){
-                    height = (height >= 303) ? 303 : height;
+                    height = (height > 300) ? 300 : height;
     				poolArea.down('dataview').refresh();
     				poolArea.setHeight(height);
                 }

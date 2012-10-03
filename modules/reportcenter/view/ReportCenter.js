@@ -203,8 +203,13 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                 });
             });
 
+            /*
+             * Visits Category List
+             * TODO: Pass the report indicator telling what report should be rendering
+             * this indicator will also be the logic for field rendering.
+             */
             me.visitCategory = me.addCategory(i18n['visit_reports'], 260);
-            me.lin9 = me.addReportByCategory(me.visitCategory, i18n['super_bill'], function(btn) {
+            me.link9 = me.addReportByCategory(me.visitCategory, i18n['super_bill'], function(btn) {
                 me.goToReportPanelAndSetForm({
                     title: i18n['super_bill'],
                     action: 'clientListReport',

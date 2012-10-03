@@ -80,7 +80,7 @@ Ext.define('App.view.areas.PatientPoolDropZone', {
 							dataIndex: 'pid'
 						},
 						{
-							header   : i18n['patien_name'],
+							header   : i18n['patient_name'],
 							flex     : 1,
 							dataIndex: 'name'
 						}

@@ -1,10 +1,20 @@
-/**
- * @namespace Navigation.getNavigation
- * @namespace Patient.currPatientSet
- * @namespace Patient.currPatientUnset
- * @namespace authProcedures.unAuth
- * @namespace user
- * @namespace acl
+ /*
+ * -----------------------------------------------------------------------------------------------------------
+ * brief: Viewport.js (CORE)
+ * ----------------------------------------------------------------------------------------------------------- 
+ * Description: This are the viewport, the absolute panel of GaiaEHR application
+ * this will manage all the panels on the application, this file should not
+ * be modified by extrangers. 
+ * 
+ * Third-party companies: If you want to add a extra app's, widgets, modules, or another other improvement
+ * to the application you should create it using the documentation on How To Create (Modules, PlugIns, and Widgets)
+ * All other things are going to the CORE of the application.
+ * 
+ * Remember this is a BETA software, all the structure are subject to change.
+ * When the software are more mature, we will maintain the API and CORE for a LTS version (Long Term Support).
+ * 
+ * Enjoy the application!
+ * 
  */
 Ext.define('App.view.Viewport', {
 	extend  : 'Ext.Viewport',
@@ -13,6 +23,12 @@ Ext.define('App.view.Viewport', {
 
 		'Ext.ux.LiveSearchGridPanel',
 
+		/*
+		 * Load the models, the model are the representative of the database
+		 * table structure with modifications behind the PHP counterpart.
+		 * All table should be declared here, and Sencha's ExtJS models.
+		 * This are spreaded in all the core application. 
+		 */
 		'App.model.administration.ActiveProblems',
 		'App.model.administration.DefaultDocuments',
 		'App.model.administration.DocumentsTemplates',
@@ -65,6 +81,11 @@ Ext.define('App.view.Viewport', {
 		'App.model.areas.PoolArea',
 		'App.model.areas.PoolDropAreas',
 
+		/*
+		 * Load all the stores used by GaiaEHR
+		 * this includes ComboBoxes, and other stores used by the web application
+		 * most of this stores are consumed by the dataStore directory.
+		 */
 		'App.store.administration.ActiveProblems',
 		'App.store.administration.DefaultDocuments',
 		'App.store.administration.DocumentsTemplates',
@@ -116,8 +137,16 @@ Ext.define('App.view.Viewport', {
 		'App.store.patient.Vitals',
 		'App.store.areas.PoolArea',
 
+		/*
+		 * Load the activity by the user
+		 * This will detect the activity of the user, if the user are idle by a
+		 * certain time, it will logout.
+		 */
         'App.classes.ActivityMonitor',
 
+		/*
+		 * Load the classes that the CORE application needs
+		 */
         'App.classes.AbstractPanel',
 		'App.classes.LiveCPTSearch',
 		'App.classes.LiveImmunizationSearch',
@@ -129,26 +158,48 @@ Ext.define('App.view.Viewport', {
 		'App.classes.NodeDisabled',
 		'App.classes.PhotoIdWindow',
 
+		/*
+		 * Load the RenderPanel
+		 * This is the main panel when all the forms are rendered.
+		 */
 		'App.classes.RenderPanel',
 
+		/*
+		 * Load the charts related controls
+		 */
 		'Ext.chart.*',
 		'Ext.form.*',
 		'Ext.fx.target.Sprite',
 
+		/*
+		 * Load the DropDown related components
+		 */
 		'Ext.dd.DropZone',
 		'Ext.dd.DragZone',
 
+		/*
+		 * Load the Extensible related controls and panels
+		 * This is the Calendar Component that GaiaEHR uses.
+		 */
 		'Extensible.calendar.CalendarPanel',
 		'Extensible.calendar.gadget.CalendarListPanel',
 		'Extensible.calendar.data.MemoryCalendarStore',
 		'Extensible.calendar.data.MemoryEventStore',
 
+		/*
+		 * Load the form specific related fields
+		 * Not all the fields are the same.
+		 */
         'App.classes.form.fields.Help',
         'App.classes.form.fields.Checkbox',
         'App.classes.form.fields.Currency',
         'App.classes.form.fields.DateTime',
         'App.classes.form.Panel',
-        
+
+		/*
+		 * Load the combo boxes spreaded on all the web application 
+		 * remember this are all reusable combo boxes.
+		 */        
 		'App.classes.combo.ActiveFacilities',
         'App.classes.combo.ActiveInsurances',
 		'App.classes.combo.Allergies',
@@ -211,6 +262,9 @@ Ext.define('App.view.Viewport', {
 		'App.classes.window.Window',
 		'App.classes.NodeDisabled',
 
+		/*
+		 * Load the patient window related panels
+		 */
 		'App.view.patient.windows.Medical',
 		'App.view.patient.windows.Charts',
 		'App.view.patient.windows.PreventiveCare',
@@ -218,6 +272,9 @@ Ext.define('App.view.Viewport', {
 		'App.view.patient.windows.DocumentViewer',
 		'App.view.patient.windows.ArrivalLog',
 
+		/*
+		 * Load the patient related panels
+		 */
         'App.view.dashboard.panel.Portlet',
         'App.view.dashboard.panel.ChartPortlet',
         'App.view.dashboard.panel.GridPortlet',
@@ -228,12 +285,21 @@ Ext.define('App.view.Viewport', {
         'App.view.dashboard.panel.PortalPanel',
         'App.view.dashboard.Dashboard',
 
+		/*
+		 * Load the root related panels
+		 */
 		'App.view.calendar.Calendar',
 		'App.view.messages.Messages',
 
+		/*
+		 * Load the areas related panels
+		 */
 		'App.view.areas.FloorPlan',
 		'App.view.areas.PatientPoolDropZone',
 
+		/*
+		 * Load the patient related panels
+		 */
 		'App.view.patient.ItemsToReview',
 		'App.view.patient.EncounterDocumentsGrid',
 		'App.view.patient.encounter.ICDs',
@@ -246,10 +312,16 @@ Ext.define('App.view.Viewport', {
 		'App.view.patient.windows.Medical',
 		'App.view.patient.VisitCheckout',
 
+		/*
+		 * Load the fees related panels
+		 */
 		'App.view.fees.Billing',
 		'App.view.fees.PaymentEntryWindow',
 		'App.view.fees.Payments',
 
+		/*
+		 * Load the administration related panels
+		 */
 		'App.view.administration.DataManager',
 		'App.view.administration.Documents',
 		'App.view.administration.Facilities',
@@ -265,12 +337,18 @@ Ext.define('App.view.Viewport', {
 		'App.view.administration.ExternalDataLoads',
 		'App.view.administration.Users',
 
+		/*
+		 * Load the miscellaneous related panels
+		 */
 		'App.view.miscellaneous.Addressbook',
 		'App.view.miscellaneous.MyAccount',
 		'App.view.miscellaneous.MySettings',
 		'App.view.miscellaneous.OfficeNotes',
 		'App.view.miscellaneous.Websearch',
 
+		/*
+		 * Dynamically load the modules 
+		 */
         'Modules.Module'
 
 	],
@@ -278,7 +356,8 @@ Ext.define('App.view.Viewport', {
 	minWidthToFullMode: 1680,
 	currency          : i18n['currency'],
 
-	initComponent: function() {
+	initComponent: function() 
+	{
 
 		Ext.tip.QuickTipManager.init();
 
@@ -305,7 +384,8 @@ Ext.define('App.view.Viewport', {
 		 */
 		me.Task = {
 			scope   : me,
-			run     : function() {
+			run     : function() 
+			{
 				me.checkSession();
 				me.getPatientsInPoolArea();
 				CronJob.run();
@@ -316,7 +396,8 @@ Ext.define('App.view.Viewport', {
 		/*
 		 * The store for the Navigation Tree menu.
 		 */ 
-		me.storeTree = Ext.create('App.store.navigation.Navigation', {
+		me.storeTree = Ext.create('App.store.navigation.Navigation', 
+		{
 			autoLoad : true,
 			listeners: {
 				scope: me,
@@ -329,20 +410,29 @@ Ext.define('App.view.Viewport', {
 		 */
 		me.patientPoolStore = Ext.create('App.store.areas.PoolArea');
 
-		if(me.currency == '$') {
+		/*
+		 * TODO: this should be managed by the language files
+		 * The language file has a definition for this.
+		 */ 
+		if(me.currency == '$') 
+		{
 			me.icoMoney = 'icoDollar';
-		} else if(me.currency == '€') {
+		} else if(me.currency == '€') 
+		{
 			me.icoMoney = 'icoEuro';
-		} else if(me.currency == '£') {
+		} else if(me.currency == '£') 
+		{
 			me.icoMoney = 'icoLibra';
-		} else if(me.currency == '¥') {
+		} else if(me.currency == '¥') 
+		{
 			me.icoMoney = 'icoYen';
 		}
 
 		/**
 		 * GaiaEHR Support Page
 		 */
-		me.winSupport = Ext.create('Ext.window.Window', {
+		me.winSupport = Ext.create('Ext.window.Window', 
+		{
 			title        : i18n['support'],
 			closeAction  : 'hide',
 			bodyStyle    : 'background-color: #ffffff; padding: 5px;',
@@ -355,13 +445,15 @@ Ext.define('App.view.Viewport', {
 			dockedItems  : {
 				xtype: 'toolbar',
 				dock : 'top',
-				items: ['-', {
+				items: ['-', 
+				{
 					text   : "List issues",
 					iconCls: 'list',
 					action : 'http://GaiaEHR.org/projects/GaiaEHR001/issues',
 					scope  : me,
 					handler: me.showMiframe
-				}, '-', {
+				}, '-', 
+				{
 					text   : "Create an issue",
 					iconCls: 'icoAddRecord',
 					action : 'http://GaiaEHR.org/projects/GaiaEHR001/issues/new',
@@ -374,7 +466,8 @@ Ext.define('App.view.Viewport', {
 		/**
 		 * header Panel
 		 */
-		me.Header = Ext.create('Ext.container.Container', {
+		me.Header = Ext.create('Ext.container.Container', 
+		{
 			region     : 'north',
 			height     : 44,
 			split      : false,
@@ -634,7 +727,6 @@ Ext.define('App.view.Viewport', {
 							loadMask         : false,
 							cls              : 'patient-pool-view',
 							tpl              : '<tpl for=".">' +
-
 								'<div class="patient-pool-btn x-btn x-btn-default-large {priority}">' +
 								'<div class="patient_btn_img"><img src="{photoSrc}" width="35" height="35"></div>' +
 								'<div class="patient_btn_info">' +
@@ -687,7 +779,7 @@ Ext.define('App.view.Viewport', {
 		});
 
 		/**
-		 * MainPanel is where all the pages are display
+		 * MainPanel is where all the pages are displayed
 		 */
 		me.MainPanel = Ext.create('Ext.container.Container', {
 			region   : 'center',
@@ -1093,7 +1185,8 @@ Ext.define('App.view.Viewport', {
 	 * Function to get the current active panel.
 	 * NOTE: This may be used on all the application.
 	 */
-	getActivePanel: function() {
+	getActivePanel: function() 
+	{
 		return this.MainPanel.getLayout().getActiveItem();
 	},
 

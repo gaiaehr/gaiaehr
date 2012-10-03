@@ -1071,6 +1071,8 @@ $LANG = array(
 	'create_html'							=> 'Crear HTML',
 	'last_visit'							=> 'Última visita',
 	'id'									=> 'ID',
-	'zipcode'								=> 'Código postal'
+	'zipcode'								=> 'Código postal',
+	'visit_reports'							=> 'Reporte de visitas',
+	'super_bill'							=> 'Facturación Súper'
 );
 ?>

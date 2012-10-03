@@ -1,0 +1,8 @@
+Changes
+=======
+
+The original source of the PHPWord files is http://phpword.codeplex.com/
+
+17/03/2012
+Replaced utf8_encode() function with utf8_encode_dummy() - so utf8 characters can now be handled. See:
+http://htmltodocx.codeplex.com/SourceControl/changeset/view/f676be705744#htmltodocx%2fpatches%2fphpword%2futf8_encode_090512.patch

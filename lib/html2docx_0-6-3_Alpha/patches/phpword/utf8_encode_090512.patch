@@ -1,0 +1,184 @@
+Index: Cell.php
+===================================================================
+--- Cell.php	(revision 6801)
++++ Cell.php	(revision 11250)
+@@ -108,7 +108,7 @@
+ 	 * @return PHPWord_Section_Text
+ 	 */
+ 	public function addText($text, $styleFont = null, $styleParagraph = null) {
+-		$text = utf8_encode($text);
++		$text = utf8encode_dummy($text);
+ 		$text = new PHPWord_Section_Text($text, $styleFont, $styleParagraph);
+ 		$this->_elementCollection[] = $text;
+ 		return $text;
+@@ -124,9 +124,9 @@
+ 	 */
+ 	public function addLink($linkSrc, $linkName = null, $style = null) {
+ 		if($this->_insideOf == 'section') {
+-			$linkSrc = utf8_encode($linkSrc);
++			$linkSrc = utf8encode_dummy($linkSrc);
+ 			if(!is_null($linkName)) {
+-				$linkName = utf8_encode($linkName);
++				$linkName = utf8encode_dummy($linkName);
+ 			}
+ 			
+ 			$link = new PHPWord_Section_Link($linkSrc, $linkName, $style);
+@@ -160,7 +160,7 @@
+ 	 * @return PHPWord_Section_ListItem
+ 	 */
+ 	public function addListItem($text, $depth = 0, $styleText = null, $styleList = null) {
+-		$text = utf8_encode($text);
++		$text = utf8encode_dummy($text);
+ 		$listItem = new PHPWord_Section_ListItem($text, $depth, $styleText, $styleList);
+ 		$this->_elementCollection[] = $listItem;
+ 		return $listItem;
+@@ -269,7 +269,7 @@
+ 	 */
+ 	public function addPreserveText($text, $styleFont = null, $styleParagraph = null) {
+ 		if($this->_insideOf == 'footer' || $this->_insideOf == 'header') {
+-			$text = utf8_encode($text);
++			$text = utf8encode_dummy($text);
+ 			$ptext = new PHPWord_Section_Footer_PreserveText($text, $styleFont, $styleParagraph);
+ 			$this->_elementCollection[] = $ptext;
+ 			return $ptext;
+Index: TextRun.php
+===================================================================
+--- TextRun.php	(revision 6801)
++++ TextRun.php	(revision 11250)
+@@ -80,7 +80,7 @@
+ 	 * @return PHPWord_Section_Text
+ 	 */
+ 	public function addText($text = null, $styleFont = null) {
+-		$givenText = utf8_encode($text);
++		$givenText = utf8encode_dummy($text);
+ 		$text = new PHPWord_Section_Text($givenText, $styleFont);
+ 		$this->_elementCollection[] = $text;
+ 		return $text;
+@@ -95,9 +95,9 @@
+ 	 * @return PHPWord_Section_Link
+ 	 */
+ 	public function addLink($linkSrc, $linkName = null, $styleFont = null) {
+-		$linkSrc = utf8_encode($linkSrc);
++		$linkSrc = utf8encode_dummy($linkSrc);
+ 		if(!is_null($linkName)) {
+-			$linkName = utf8_encode($linkName);
++			$linkName = utf8encode_dummy($linkName);
+ 		}
+ 		
+ 		$link = new PHPWord_Section_Link($linkSrc, $linkName, $styleFont);
+Index: Header.php
+===================================================================
+--- Header.php	(revision 6801)
++++ Header.php	(revision 11250)
+@@ -72,7 +72,7 @@
+ 	 * @return PHPWord_Section_Text
+ 	 */
+ 	public function addText($text, $styleFont = null, $styleParagraph = null) {
+-		$givenText = utf8_encode($text);
++		$givenText = utf8encode_dummy($text);
+ 		$text = new PHPWord_Section_Text($givenText, $styleFont, $styleParagraph);
+ 		$this->_elementCollection[] = $text;
+ 		return $text;
+@@ -162,7 +162,7 @@
+ 	 * @return PHPWord_Section_Footer_PreserveText
+ 	 */
+ 	public function addPreserveText($text, $styleFont = null, $styleParagraph = null) {
+-		$text = utf8_encode($text);
++		$text = utf8encode_dummy($text);
+ 		$ptext = new PHPWord_Section_Footer_PreserveText($text, $styleFont, $styleParagraph);
+ 		$this->_elementCollection[] = $ptext;
+ 		return $ptext;
+Index: Footer.php
+===================================================================
+--- Footer.php	(revision 6801)
++++ Footer.php	(revision 11250)
+@@ -72,7 +72,7 @@
+ 	 * @return PHPWord_Section_Text
+ 	 */
+ 	public function addText($text, $styleFont = null, $styleParagraph = null) {
+-		$givenText = utf8_encode($text);
++		$givenText = utf8encode_dummy($text);
+ 		$text = new PHPWord_Section_Text($givenText, $styleFont, $styleParagraph);
+ 		$this->_elementCollection[] = $text;
+ 		return $text;
+@@ -162,7 +162,7 @@
+ 	 * @return PHPWord_Section_Footer_PreserveText
+ 	 */
+ 	public function addPreserveText($text, $styleFont = null, $styleParagraph = null) {
+-		$text = utf8_encode($text);
++		$text = utf8encode_dummy($text);
+ 		$ptext = new PHPWord_Section_Footer_PreserveText($text, $styleFont, $styleParagraph);
+ 		$this->_elementCollection[] = $ptext;
+ 		return $ptext;
+Index: Template.php
+===================================================================
+--- Template.php	(revision 6801)
++++ Template.php	(revision 11250)
+@@ -86,7 +86,7 @@
+         }
+         
+         if(!is_array($replace)) {
+-            $replace = utf8_encode($replace);
++            $replace = utf8encode_dummy($replace);
+         }
+         
+         $this->_documentXML = str_replace($search, $replace, $this->_documentXML);
+Index: Section.php
+===================================================================
+--- Section.php	(revision 6801)
++++ Section.php	(revision 11250)
+@@ -109,7 +109,7 @@
+ 	 * @return PHPWord_Section_Text
+ 	 */
+ 	public function addText($text, $styleFont = null, $styleParagraph = null) {
+-		$givenText = utf8_encode($text);
++		$givenText = utf8encode_dummy($text);
+ 		$text = new PHPWord_Section_Text($givenText, $styleFont, $styleParagraph);
+ 		$this->_elementCollection[] = $text;
+ 		return $text;
+@@ -125,9 +125,9 @@
+ 	 * @return PHPWord_Section_Link
+ 	 */
+ 	public function addLink($linkSrc, $linkName = null, $styleFont = null, $styleParagraph = null) {
+-		$linkSrc = utf8_encode($linkSrc);
++		$linkSrc = utf8encode_dummy($linkSrc);
+ 		if(!is_null($linkName)) {
+-			$linkName = utf8_encode($linkName);
++			$linkName = utf8encode_dummy($linkName);
+ 		}
+ 		
+ 		$link = new PHPWord_Section_Link($linkSrc, $linkName, $styleFont, $styleParagraph);
+@@ -179,7 +179,7 @@
+ 	 * @return PHPWord_Section_ListItem
+ 	 */
+ 	public function addListItem($text, $depth = 0, $styleFont = null, $styleList = null, $styleParagraph = null) {
+-		$text = utf8_encode($text);
++		$text = utf8encode_dummy($text);
+ 		$listItem = new PHPWord_Section_ListItem($text, $depth, $styleFont, $styleList, $styleParagraph);
+ 		$this->_elementCollection[] = $listItem;
+ 		return $listItem;
+@@ -287,7 +287,7 @@
+ 	 * @return PHPWord_Section_Title
+ 	 */
+ 	public function addTitle($text, $depth = 1) {
+-		$text = utf8_encode($text);
++		$text = utf8encode_dummy($text);
+ 		$styles = PHPWord_Style::getStyles();
+ 		if(array_key_exists('Heading_'.$depth, $styles)) {
+ 			$style = 'Heading'.$depth;
+Index: PHPWord.php
+===================================================================
+--- PHPWord.php	(revision 6801)
++++ PHPWord.php	(revision 11250)
+@@ -32,7 +32,11 @@
+     PHPWord_Autoloader::Register();
+ }
+ 
++function utf8encode_dummy($data) {
++  return $data;
++}
+ 
++
+ /**
+  * PHPWord
+  *

@@ -262,6 +262,7 @@ class PoolArea
 				}
 			}
 		}
+		$patients = array_slice($patients, 0, 6);
 		return $patients;
 	}
 

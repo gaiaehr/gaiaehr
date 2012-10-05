@@ -30,7 +30,9 @@ if(!defined('_GaiaEXEC')) die('No direct access allowed.');
 	            }
 	        });
         Ext.onReady(function(){
-            Ext.direct.Manager.addProvider(App.data.REMOTING_API);
+	        for(var x=0; x < App.data.length; x++){
+                Ext.direct.Manager.addProvider(App.data[x]);
+            }
             app = Ext.create('App.view.login.Login');
         }); // End App
         </script>

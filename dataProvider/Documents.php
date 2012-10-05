@@ -766,10 +766,11 @@ class Documents
                     <td>".$params['primary_subscriber_employer_zip_code']."</td>
                     <td>".$params['primary_subscriber_employer_state']."</td>
                     <td>".$params['primary_subscriber_employer_country']."</td>
-                 </tr><tr>
-                    <th>".i18nRouter::t("insurance_data")."</th>
-                 </tr>
-                 <tr>
+                 </tr>"
+            ;
+	    if(isset($params['secondary_insurance_provider'])){
+            $html .=
+	            "<tr>
                     <th>".i18nRouter::t("secondary")."</th>
                  </tr>
                  <tr>
@@ -791,8 +792,8 @@ class Documents
                  <tr>
                     <th>".i18nRouter::t("subscriber_last_name")."</th>
                     <th>".i18nRouter::t("subscriber_relationship")."</th>
-             /  ////     <th>".i18nRouter::t("subscriber_ss")."</th>
-             //  ///     <th>".i18nRouter::t("subscriber_date_of_birth")."</th>
+            /////     <th>".i18nRouter::t("subscriber_ss")."</th>
+            /////     <th>".i18nRouter::t("subscriber_date_of_birth")."</th>
                     <th>".i18nRouter::t("subscriber_phone")."</th>
                     <th>".i18nRouter::t("subscriber_address")."</th>
                  </tr>
@@ -831,11 +832,12 @@ class Documents
                     <td>".$params['secondary_subscriber_employer_zip_code']."</td>
                     <td>".$params['secondary_subscriber_employer_state']."</td>
                     <td>".$params['secondary_subscriber_employer_country']."</td>
-                 </tr>
-                 <tr>
-                    <th>".i18nRouter::t("insurance_data")."</th>
-                 </tr>
-                 <tr>
+                 </tr>"
+            ;
+        }
+	    if(isset($params['tertiary_insurance_provider'])){
+            $html .=
+                "<tr>
                     <th>".i18nRouter::t("tertiary")."</th>
                  </tr>
                  <tr>
@@ -857,8 +859,8 @@ class Documents
                  <tr>
                     <th>".i18nRouter::t("subscriber_last_name")."</th>
                     <th>".i18nRouter::t("subscriber_relationship")."</th>
-             /  ////     <th>".i18nRouter::t("subscriber_ss")."</th>
-             //  ///     <th>".i18nRouter::t("subscriber_date_of_birth")."</th>
+             /////     <th>".i18nRouter::t("subscriber_ss")."</th>
+             ////     <th>".i18nRouter::t("subscriber_date_of_birth")."</th>
                     <th>".i18nRouter::t("subscriber_phone")."</th>
                     <th>".i18nRouter::t("subscriber_address")."</th>
                  </tr>
@@ -900,6 +902,45 @@ class Documents
                  </tr>".
             '</table>'
         ;
+	    }
+        $html .="<table>
+	         <tr>
+	            <th>".i18nRouter::t("billing_information")."</th>
+	         </tr>
+	         <tr>
+	            <th>".i18nRouter::t("date")."</th>
+	            <th>".i18nRouter::t("provider")."</th>
+	            <th>".i18nRouter::t("code")."</th>
+	            <th>".i18nRouter::t("fee")."</th>
+	         </tr>
+	         <tr>
+	            <td>".$params['date']."</td>
+	            <td>".$params['provider']."</td>
+	            <td>".$params['code']."</td>
+	            <td>".$params['fee']."</td>
+	         </tr>
+
+	    </table>"
+	    ;
+	    $html .="<table>
+	         <tr>
+	            <th>".i18nRouter::t("billing_information")."</th>
+	         </tr>
+	         <tr>
+	            <th>".i18nRouter::t("date")."</th>
+	            <th>".i18nRouter::t("provider")."</th>
+	            <th>".i18nRouter::t("code")."</th>
+	            <th>".i18nRouter::t("fee")."</th>
+	         </tr>
+	         <tr>
+	            <td>".$params['date']."</td>
+	            <td>".$params['provider']."</td>
+	            <td>".$params['code']."</td>
+	            <td>".$params['fee']."</td>
+	         </tr>
+
+	    </table>";
+
 
 
 

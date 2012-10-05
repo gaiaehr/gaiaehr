@@ -103,7 +103,13 @@ $lang = i18nRouter::getTranslation();
 				}, 1000);
 			}
 			Ext.onReady(function() {
-				Ext.direct.Manager.addProvider(App.data.REMOTING_API);
+
+				for(var x=0; x < App.data.length; x++){
+					console.log(App.data[x]);
+					Ext.direct.Manager.addProvider(App.data[x]);
+				}
+
+
 				CronJob.run();
 				Globals.setGlobals(function(provider, response) {
 					settings.site_url = response.result.site.url + '/sites/' + response.result.site.site;

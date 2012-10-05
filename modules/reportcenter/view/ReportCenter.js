@@ -210,6 +210,13 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                     action: 'clientListReport',
                     items : [
                         {
+	                        xtype          : 'patienlivetsearch',
+	                        fieldLabel     : i18n['name'],
+	                        hideLabel      : false,
+	                        name           : 'pid',
+	                        width          : 570
+                        },
+	                    {
                             xtype     : 'datefield',
                             fieldLabel: i18n['from'],
                             name      : 'from'

@@ -44,7 +44,7 @@ Ext.define('Modules.reportcenter.view.ReportPanel',
 		//-----------------------------------------------------------------------
 		me.FilterForm = Ext.create('Ext.form.Panel',
 		{
-			height     	: 120,
+
 			bodyPadding	: 10,
 			margin     	: '0 0 3 0',
 			collapsible	: true,

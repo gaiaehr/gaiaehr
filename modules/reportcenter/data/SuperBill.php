@@ -115,13 +115,24 @@ class SuperBill
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-    private function CreateSuperBill($params){
-        $patientData = $this->getAllPatientData($params);
+    public function CreateSuperBill(stdClass $params){
 
-        return 1;
+        if(isset($params->pid)){
+            $records = $this->getEncounterByDateFromToAndPatient($params->from,$params->to,$params->pid);
+        }else{
+            $records =  $this->getEncounterByDateFromTo($params->from,$params->to);
+        }
+        $html = '';
+        foreach($records as $rec=>$num) {
+            $html .= $this->htmlSuperBill($num);
+        }
+        ob_end_clean();
+        $this->PDFDocumentBuilder($html);
+        return $html;
     }
 
-    public function getEncounterByDateFromTo($from,$to){
+    public function getEncounterByDateFromToAndPatient($from,$to,$pid){
+
 
         $this->db->setSQL("SELECT  form_data_encounter.pid,
                                    form_data_encounter.eid,
@@ -130,24 +141,36 @@ class SuperBill
                            FROM form_data_encounter
                            LEFT JOIN form_data_demographics
                            ON form_data_encounter.pid = form_data_demographics.pid
-                           where service_date BETWEEN '$from' AND '$to'");
+                           WHERE form_data_encounter.start_date BETWEEN '$from' AND '$to'
+                           AND form_data_encounter.pid = '$pid'");
         $encountersWithPatientsInfo = $this->db->fetchRecords(PDO::FETCH_ASSOC);
-        print $encountersWithPatientsInfo;
         return $encountersWithPatientsInfo;
     }
 
-    public function PDFDocumentBuilder($params)
+    public function getEncounterByDateFromTo($from,$to){
+
+
+        $this->db->setSQL("SELECT  form_data_encounter.pid,
+                                   form_data_encounter.eid,
+                                   form_data_encounter.start_date,
+                                   form_data_demographics.*
+                           FROM form_data_encounter
+                           LEFT JOIN form_data_demographics
+                           ON form_data_encounter.pid = form_data_demographics.pid
+                           where form_data_encounter.start_date BETWEEN '$from' AND '$to'");
+        $encountersWithPatientsInfo = $this->db->fetchRecords(PDO::FETCH_ASSOC);
+        return $encountersWithPatientsInfo;
+    }
+
+    public function PDFDocumentBuilder($html)
     {
-        $pid           = $params->pid;
-        $from          = $params->from;
-        $to            = $params->to;
 
         $this->pdf->SetCreator('TCPDF');
         $this->pdf->SetAuthor($_SESSION['user']['name']);
         $siteLogo = '../sites/'.$_SESSION['site']['site'].'/logo.jpg';
         $logo = (file_exists($siteLogo) ? $siteLogo : '../ui_app/logo.jpg');
         $this->pdf->SetHeaderData(
-            $logo,
+            '',
             '20',
             'Ernesto\'s Clinic',
             "Cond. Capital Center\nPDO Suite 205\nAve. Arterial Hostos 239                                                                                                                                   Tel: 787-787-7878\nCarolina PR. 00987                                                                                                                                         Fax: 787-787-7878");//need to be change
@@ -157,15 +180,14 @@ class SuperBill
         $this->pdf->SetMargins(15, 27, 15);
         $this->pdf->SetHeaderMargin(5);
         $this->pdf->SetFooterMargin(10);
-        $this->pdf->SetFontSize(10);
+        $this->pdf->SetFontSize(5);
         $this->pdf->SetAutoPageBreak(true, 25);
         $this->pdf->setFontSubsetting(true);
         $this->pdf->AddPage();
 
-        $html = $this->CreateSuperBill($pid);
 
         $this->pdf->writeHTML($html);
-        $this->pdf->Output('path', 'F');
+        $this->pdf->Output('testing', 'i');
         $this->pdf->Close();
         return true;
     }
@@ -482,6 +504,8 @@ class SuperBill
 	    ----------------------------------------------------------------------------------------------------------------------
 	    ";
 
+        return $html;
+
     }
 
 }
@@ -492,6 +516,7 @@ class SuperBill
 $e = new SuperBill();
 $params = new stdClass();
 $params->pid = 1;
-$params->from = '2012-09-05';
+$params->from = '2011-09-05';
 $params->to = '2013-09-05';
-$e->getEncounterByDateFromTo('00000','000000');
+echo '<pre>';
+print_r($e->CreateSuperBill($params));

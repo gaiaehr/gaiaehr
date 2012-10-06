@@ -23,7 +23,6 @@ $_SESSION['site']['flops'] = 0;
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>GaiaEHR - Demo</title>
-
     <link   rel="stylesheet"        href="lib/sencha-touch-2.0.0-gpl/resources/css/android.css" type="text/css">
     <link   rel="stylesheet"        href="app_m/resources/css/sink.css?2" type="text/css">
     <script type="text/javascript"  src="http://maps.google.com/maps/api/js?sensor=false"></script>

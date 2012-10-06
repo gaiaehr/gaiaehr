@@ -62,7 +62,8 @@ $lang = i18nRouter::getTranslation();
 
 		<script src="data/api.php"></script>
 		<script type="text/javascript">
-			Ext.Loader.setConfig({
+			Ext.Loader.setConfig(
+			{
 				enabled       : true,
 				disableCaching: false,
 				paths         : {

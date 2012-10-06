@@ -19,10 +19,12 @@ if(!defined('_GaiaEXEC')) die('No direct access allowed.');
 	<script src="data/api.php"></script>
 	<script type="text/javascript">
 		var app, i18n = {};
-		function say(a){
+		function say(a)
+		{
 			console.log(a);
 		}
-        Ext.Loader.setConfig({
+        Ext.Loader.setConfig(
+        {
             enabled       : true,
             disableCaching: false,
             paths         : {
@@ -32,7 +34,8 @@ if(!defined('_GaiaEXEC')) die('No direct access allowed.');
 	</script>
 	<script type="text/javascript">
 		Ext.require('App.view.sitesetup.SiteSetup');
-        Ext.onReady(function() {
+        Ext.onReady(function() 
+        {
         	Ext.direct.Manager.addProvider(App.data.REMOTING_API);
 			// localization remoting procedures.
 			// ie: i18n['dashboard'] = Dashboard (en_US)

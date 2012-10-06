@@ -6,6 +6,10 @@ if(!isset($_SESSION)){
 }
 include_once($_SESSION['site']['root'] . '/dataProvider/Modules.php');
 $m = new Modules();
+
+/*
+ * getREMOTING_API
+ */
 function getREMOTING_API($API, $moduleDir = false){
 	$actions = array();
 	foreach($API as $aname=>&$a){

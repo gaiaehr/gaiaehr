@@ -8,19 +8,7 @@
 	"enable":true,
 	"debug":false,
 	"actionsAPI":{
-		"ReportCenter":{
-			"methods":{
-				"helloWorld":
-				{
-					"len":0
-				},
-				"helloWorld2":
-				{
-					"len":0
-				}
-			}
-		},
-		"ReportCenter2":{
+		"SuperBill":{
 			"methods":{
 				"helloWorld":
 				{

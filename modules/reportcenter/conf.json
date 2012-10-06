@@ -10,13 +10,9 @@
 	"actionsAPI":{
 		"SuperBill":{
 			"methods":{
-				"helloWorld":
+				"CreateSuperBill":
 				{
-					"len":0
-				},
-				"helloWorld2":
-				{
-					"len":0
+					"len":1
 				}
 			}
 		}

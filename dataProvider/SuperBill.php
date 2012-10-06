@@ -115,12 +115,26 @@ class SuperBill
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-    private function CreateSuperBill($pid){
-        $patientData = $this->getAllPatientData($pid);
+    private function CreateSuperBill($params){
+        $patientData = $this->getAllPatientData($params);
 
         return 1;
     }
 
+    public function getEncounterByDateFromTo($from,$to){
+
+        $this->db->setSQL("SELECT  form_data_encounter.pid,
+                                   form_data_encounter.eid,
+                                   form_data_encounter.start_date,
+                                   form_data_demographics.*
+                           FROM form_data_encounter
+                           LEFT JOIN form_data_demographics
+                           ON form_data_encounter.pid = form_data_demographics.pid
+                           where service_date BETWEEN '$from' AND '$to'");
+        $encountersWithPatientsInfo = $this->db->fetchRecords(PDO::FETCH_ASSOC);
+        print $encountersWithPatientsInfo;
+        return $encountersWithPatientsInfo;
+    }
 
     public function PDFDocumentBuilder($params)
     {
@@ -151,12 +165,12 @@ class SuperBill
         $html = $this->CreateSuperBill($pid);
 
         $this->pdf->writeHTML($html);
-        $this->pdf->Output($path, 'F');
+        $this->pdf->Output('path', 'F');
         $this->pdf->Close();
         return true;
     }
 
-    public function htmlSuperBill(){
+    public function htmlSuperBill($params){
         $html = '';
         $html .=
             "<table>
@@ -475,8 +489,9 @@ class SuperBill
 
 
 
-//$e = new Documents();
-//$params = new stdClass();
-//$params->pid = 1;
-//$params->documentId = 7;
-//$e->PDFDocumentBuilder($params,'C:/wamp/www/gaiaehr/sites/default/patients/1/DoctorsNotes/1342132079.pdf');
+$e = new SuperBill();
+$params = new stdClass();
+$params->pid = 1;
+$params->from = '2012-09-05';
+$params->to = '2013-09-05';
+$e->getEncounterByDateFromTo('00000','000000');

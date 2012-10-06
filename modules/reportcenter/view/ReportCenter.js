@@ -212,7 +212,6 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
             me.link9 = me.addReportByCategory(me.visitCategory, i18n['super_bill'], function(btn) {
                 me.goToReportPanelAndSetForm({
                     title: i18n['super_bill'],
-                    action: 'clientListReport',
                     items : [
                         {
 	                        xtype          : 'patienlivetsearch',

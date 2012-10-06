@@ -105,7 +105,6 @@ $lang = i18nRouter::getTranslation();
 			Ext.onReady(function() {
 
 				for(var x=0; x < App.data.length; x++){
-					console.log(App.data[x]);
 					Ext.direct.Manager.addProvider(App.data[x]);
 				}
 

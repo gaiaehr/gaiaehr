@@ -90,7 +90,7 @@ function doRpc($cdata){
 		);
 
 		if(isset($cdata->module)){
-			require_once("../modules/$cdata->module/data/$action.php");
+			require_once("../modules/$cdata->module/dataProvider/$action.php");
 		}else{
 			require_once("../dataProvider/$action.php");
 		}

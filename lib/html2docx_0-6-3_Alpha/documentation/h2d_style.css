@@ -1,0 +1,56 @@
+body {
+  padding: 5px;
+  font-family: arial, sans-serif;
+  font-size: 13px;
+  background-color: #bbb;
+}
+
+div.container {
+  border-width: 1px 2px 2px 1px;
+  border-color: #111;
+  border-style: solid;
+  width: 800px;
+  padding: 20px;
+  background-color: #fff;
+}
+
+div.control {
+  border: 1px solid #ccc;
+  padding: 5px;
+  background-color: #f8f8f8;
+}
+
+code {
+  font-family: courier;
+  width: 670px;
+}
+
+table {
+  font-size: 13px;
+  border-collapse: collapse;
+}
+
+th, td {
+  border: 1px solid #ccc;
+  padding: 1px 5px 1px 2px;
+  text-align: left;
+}
+
+th {
+  background-color: #f8f8f8;
+  font-size: 14px;
+}
+
+td.heading {
+  font-weight: bold;
+}
+
+img.medium-image-size {
+  width: 150px;
+  height: 150px;
+}
+
+img.small-image-size {
+  width: 80px;
+  height: 80px;
+}

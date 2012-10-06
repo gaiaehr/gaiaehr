@@ -30,15 +30,18 @@ class i18nRouter
 		$en_US = $LANG;
 		
 		// This file will be called when the user or the administrator select 
-		// a diferent language.
+		// a diferent language. But the primary language will be called first.
+		// So if some words are not translated by the selected language it can be 
+		// displayed by the original language. 
 		include_once($_SESSION['site']['root'] . '/langs/' . $_SESSION['site']['localization'] . '.php');
 		return array_merge($en_US, $LANG);
 	}
 
 	// -----------------------------------------------------------------------
 	// This will loop through the langs directory and get
-	// the available languages for GaiaEHR
+	// all the available languages for GaiaEHR
 	// This function is consumed by the dropdown list.
+	// Need more translations go to: https://www.transifex.com/projects/p/gaiaehr/
 	// -----------------------------------------------------------------------
 	public static function getAvailableLanguages()
 	{
@@ -69,10 +72,12 @@ class i18nRouter
 		return $_SESSION['site']['lang'];
 	}
 
-    public static function t($key){
-
+	// -----------------------------------------------------------------------
+	// ???
+	// -----------------------------------------------------------------------
+    public static function t($key)
+    {
         $lang = self::getTranslation();
-
         return (array_key_exists($key,$lang) ? $lang[$key] : $key);
     }
 }

@@ -21,7 +21,7 @@ class Globals extends dbHelper {
 
         $this->setSQL("SELECT gl_name, gl_index, gl_value FROM globals");
         // ****************************************************************************************************
-        // $rows = $mitos_db->fetchRecords(PDO::FETCH_ASSOC) because we wwant to print all recods into one row
+        // $rows = $mitos_db->fetchRecords(PDO::FETCH_ASSOC) because we want to print all recods into one row
         // ****************************************************************************************************
         $rows = array();
         foreach($this->fetchRecords() as $row){

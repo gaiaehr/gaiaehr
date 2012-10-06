@@ -26,7 +26,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
 
             /*
              * Patient Reports List
-             * TODO: Pass the report indicator telling what report show be rendering
+             * TODO: Pass the report indicator telling what report should be rendering
              * this indicator will also be the logic for field rendering.
              */
             me.patientCategory = me.addCategory(i18n['patient_reports'], 260);
@@ -123,7 +123,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
 
             /*
              * Clinic Reports List
-             * TODO: Pass the report indicator telling what report show be rendering
+             * TODO: Pass the report indicator telling what report should be rendering
              * this indicator will also be the logic for field rendering.
              */
             me.clinicCategory = me.addCategory(i18n['clinic_reports'], 260);
@@ -203,10 +203,15 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                 });
             });
 
-            me.visitCategory = me.addCategory('visit_reports', 260);
-            me.lin9 = me.addReportByCategory(me.visitCategory, 'super_bill', function(btn) {
+            /*
+             * Visits Category List
+             * TODO: Pass the report indicator telling what report should be rendering
+             * this indicator will also be the logic for field rendering.
+             */
+            me.visitCategory = me.addCategory(i18n['visit_reports'], 260);
+            me.link9 = me.addReportByCategory(me.visitCategory, i18n['super_bill'], function(btn) {
                 me.goToReportPanelAndSetForm({
-                    title:'super_bill',
+                    title: i18n['super_bill'],
                     action: 'clientListReport',
                     items : [
                         {

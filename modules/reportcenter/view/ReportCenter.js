@@ -197,8 +197,8 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                             name      : 'to'
                         }
                     ],
-                    fn:function(msg){
-                        alert(msg);
+                    fn:function(){
+
                     }
                 });
             });
@@ -224,17 +224,17 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
 	                    {
                             xtype     : 'datefield',
                             fieldLabel: i18n['from'],
-                            name      : 'from'
+                            name      : 'from',
+                            format:'Y-m-d'
                         },
                         {
                             xtype     : 'datefield',
                             fieldLabel: i18n['to'],
-                            name      : 'to'
+                            name      : 'to',
+                            format:'Y-m-d'
                         }
                     ],
-                    fn:function(msg){
-                        alert(msg);
-                    }
+                    fn:SuperBill.CreateSuperBill
                 });
             });
 

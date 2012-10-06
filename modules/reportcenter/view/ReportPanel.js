@@ -57,45 +57,32 @@ Ext.define('Modules.reportcenter.view.ReportPanel',
 					text   : i18n['create_pdf'],
 					iconCls: 'icoReport',
                     scope:me,
-					handler: function()
+					handler: function(btm)
 					{
+                        var form = me.FilterForm,
+                            params = form.getForm().getValues();
+
+                        if(typeof form.reportFn == 'function'){
+                            form.reportFn(params, function(provider, response){
+                                me.PDFPanel.el.dom.src = response.result.url;
+                            });
+                        }else{
+                            Ext.Msg.alert('Oops!','No function provided');
+                        }
+
+
 						// create a veriable to then convert it to json string
 						// and pass it to the report, usin payload has the
 						// variable. PDF format
-						var jsonPayload =
-						{
-							startDate: me.FilterForm.getForm().findField("from").getValue(),
-							endDate: me.FilterForm.getForm().findField("to").getValue(),
-							pdf: true
-						}, form = me.FilterForm;
+//						var jsonPayload =
+//						{
+//							startDate: me.FilterForm.getForm().findField("from").getValue(),
+//							endDate: me.FilterForm.getForm().findField("to").getValue(),
+//							pdf: true
+//						}, form = me.FilterForm;
 
-                        if(typeof form.reportFn == 'function'){
-                            form.reportFn('this report has custom function');
-                        }
-                        me.PDFPanel.el.dom.src = 'report_layouts/ClientListReport.rpt.php?params=' + Ext.JSON.encode(jsonPayload);
-					}
-				},
-				'-',
-				{
-					text   : i18n['create_html'],
-					iconCls: 'icoReport',
-                    scope:me,
-					handler: function()
-					{
-						// create a veriable to then convert it to json string
-						// and pass it to the report, usin payload has the
-						// variable. HTML format
-						var jsonPayload =
-						{
-							startDate: me.FilterForm.getForm().findField("from").getValue(),
-							endDate: me.FilterForm.getForm().findField("to").getValue(),
-							pdf: false
-                        }, form = me.FilterForm;
 
-                        if(typeof form.reportFn == 'function'){
-                            form.reportFn('this report has custom function');
-                        }
-						me.PDFPanel.el.dom.src = 'report_layouts/ClientListReport.rpt.php?params=' + Ext.JSON.encode(jsonPayload);
+                        //me.PDFPanel.el.dom.src = 'report_layouts/ClientListReport.rpt.php?params=' + Ext.JSON.encode(jsonPayload);
 					}
 				},
 				'-',

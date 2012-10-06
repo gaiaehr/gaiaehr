@@ -12,6 +12,7 @@ if(!isset($_SESSION)) {
     session_cache_limiter('private');
 }
 include_once($_SESSION['site']['root'] . '/classes/dbHelper.php');
+include_once($_SESSION['site']['root'] . '/classes/FileManager.php');
 include_once($_SESSION['site']['root'] . '/dataProvider/Patient.php');
 include_once($_SESSION['site']['root'] . '/dataProvider/User.php');
 include_once($_SESSION['site']['root'] . '/dataProvider/Fees.php');
@@ -39,6 +40,7 @@ class SuperBill
 
     private $i18n;
 
+	private $fileManager;
 
 //	private $dompdf;
     public $pdf;
@@ -50,6 +52,7 @@ class SuperBill
         $this->patient  = new Patient();
         $this->fees = new Fees();
         $this->i18n = new i18nRouter();
+        $this->fileManager = new FileManager();
         $this->pdf = new DocumentPDF('P', 'mm', 'A4', true, 'UTF-8', false);
         return;
     }
@@ -61,9 +64,8 @@ class SuperBill
             $html .= $this->htmlSuperBill($num);
         }
         ob_end_clean();
-	    //print $html;
-        $this->PDFDocumentBuilder($html);
-        return $html;
+	    $Url = $this->PDFDocumentBuilder($html);
+        return array('success' => true, 'html' => $html, 'url' => $Url);
     }
 
     public function getEncounterByDateFromToAndPatient($from,$to,$pid = null)
@@ -83,7 +85,10 @@ class SuperBill
 
     public function PDFDocumentBuilder($html)
     {
+	    $TempPdfPath = $this->fileManager->getSiteTempDir().$this->fileManager->getTempDirAvailableName().'.pdf';
 
+//	    print $path;
+//	    exit;
         $this->pdf->SetCreator('TCPDF');
         $this->pdf->SetAuthor($_SESSION['user']['name']);
         $siteLogo = $_SESSION['site']['root'] .'/sites/'.$_SESSION['site']['site'].'/logo.jpg';
@@ -106,15 +111,15 @@ class SuperBill
         $this->pdf->setFontSubsetting(true);
         $this->pdf->AddPage();
         $this->pdf->writeHTML($html, true, false, false, false, '');
-        $this->pdf->Output('testing', 'i');
+        $this->pdf->Output($_SESSION['site']['root'].$TempPdfPath, 'F');
         $this->pdf->Close();
-        return true;
+        return $_SESSION['site']['url'].$TempPdfPath;
     }
 
     public function htmlSuperBill($params){
         $html = '';
         $html .=
-            "<table border=\"1\" >
+            "<table border=\"1\" width=\"100%\" >
                  <tr>
                     <th colspan=\"6\">".i18nRouter::t("patient_data")."</th>
                  </tr>
@@ -180,7 +185,7 @@ class SuperBill
         ;
         // INSURANCE DATA _~_~_~_~_~_~__~~
         $html .=
-            "<table  border=\"1\">
+            "<table  border=\"1\" width=\"100%\">
                  <tr>
                     <th colspan=\"6\">".i18nRouter::t("insurance_data")." (".i18nRouter::t("primary").")</th>
                  </tr>
@@ -379,7 +384,7 @@ class SuperBill
         }
 	    $html .="</table>";
         $html .=
-	        "<table border=\"1\" >
+	        "<table border=\"1\" width=\"100%\">
 	         <tr>
 	            <th>".i18nRouter::t("billing_information")."</th>
 	         </tr>
@@ -408,11 +413,11 @@ class SuperBill
 
 
 
-
-$e = new SuperBill();
-$params = new stdClass();
-$params->pid = 1;
-$params->from = '2011-09-05';
-$params->to = '2013-09-05';
-echo '<pre>';
-print_r($e->CreateSuperBill($params));
+//
+//$e = new SuperBill();
+//$params = new stdClass();
+//$params->pid = 1;
+//$params->from = '2011-09-05';
+//$params->to = '2013-09-05';
+//echo '<pre>';
+//print_r($e->CreateSuperBill($params));

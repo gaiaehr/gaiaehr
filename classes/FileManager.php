@@ -25,7 +25,7 @@ class FileManager
 	function __construct()
 	{
 		$this->db = new dbHelper();
-		$this->tempDir = $_SESSION['site']['directory'] . '/temp/';
+		$this->tempDir = $_SESSION['site']['directory'] . '/sites/' . $_SESSION['site']['site'] .  '/temp/';
 		chmod($this->tempDir, 0777);
 		return;
 	}
@@ -146,7 +146,11 @@ class FileManager
 		}
 	}
 
-	private function getTempDirAvailableName()
+	public function getSiteTempDir(){
+		return $this->tempDir;
+	}
+
+	public function getTempDirAvailableName()
 	{
 		$name = time();
 		while(file_exists($this->tempDir . $name)) {

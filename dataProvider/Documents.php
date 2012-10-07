@@ -20,27 +20,10 @@ include_once($_SESSION['site']['root'] . '/dataProvider/PreventiveCare.php');
 include_once($_SESSION['site']['root'] . '/dataProvider/Medical.php');
 include_once($_SESSION['site']['root'] . '/dataProvider/Services.php');
 include_once($_SESSION['site']['root'] . '/dataProvider/Facilities.php');
+include_once($_SESSION['site']['root'] . '/dataProvider/DocumentPDF.php');
+
 include_once($_SESSION['site']['root'] . '/lib/tcpdf/config/lang/eng.php');
-include_once($_SESSION['site']['root'] . '/lib/tcpdf/tcpdf.php');
 include_once($_SESSION['site']['root'] . '/dataProvider/i18nRouter.php');
-
-
-class MYPDF extends TCPDF {
-
-    //Page header
-
-
-    // Page footer
-    public function Footer() {
-
-        $this->SetLineStyle( array( 'width' => 0.2,'color' => array(0, 0, 0) ) );
-            $this->Line( 15, $this->getPageHeight() - 0.5 * 15 - 2,
-        $this->getPageWidth() - 15, $this->getPageHeight() - 0.5 * 15 - 2 );
-            $this->SetFont('times', '', 8 );
-            $this->SetY( -0.5 * 15, true );
-            $this->Cell( 15, 0, 'Created by GaiaEHR (Electronic Health Record) ');
-    }
-}
 
 
 
@@ -97,7 +80,7 @@ class Documents
 
 
 
-        $this->pdf = new MYPDF('P', 'mm', 'A4', true, 'UTF-8', false);
+        $this->pdf = new DocumentPDF('P', 'mm', 'A4', true, 'UTF-8', false);
         //$this->dompdf = new DOMPDF();
 		return;
 	}

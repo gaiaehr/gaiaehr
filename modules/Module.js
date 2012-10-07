@@ -26,7 +26,7 @@ Ext.define('Modules.Module', {
      * @param parentId
      * @param node
      * 
-     * Desc: Method to add items to the navigtion tree.
+     * Desc: Method to add items to the navigation tree.
      * 
      */
     addNavigationNodes:function(parentId, node)
@@ -38,10 +38,14 @@ Ext.define('Modules.Module', {
             parent = app.storeTree.tree.getNodeById(parentId);
         }
 
+        var firstChildNode = parent.findChildBy(function(node){
+            return node.hasChildNodes();
+        });
+
         if(Ext.isArray(node)){
-            for(var i=0; i < node.length; i++) parent.appendChild(node[i]);
+            for(var i=0; i < node.length; i++) parent.insertBefore(node[i], firstChildNode);
         }else{
-            parent.appendChild(node);
+            parent.insertBefore(node, firstChildNode);
         }
 
 

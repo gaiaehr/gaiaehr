@@ -301,6 +301,7 @@ $LANG = array(
 	'reason'								=> 'Reason',
 	'observation'							=> 'Observation',
 	'dismiss_alert'							=> 'Dismiss Alert?',
+	'dismissed'							    => 'Dismissed',
 	'no_alerts_found'						=> 'No Alerts Found',
 	'new_encounter_form'					=> 'New Encounter Form',
 	'create_encounter'						=> 'Create Encounter',

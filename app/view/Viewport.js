@@ -964,6 +964,9 @@ Ext.define('App.view.Viewport', {
 	* Show the Document window dialog.
 	*/ 
 	onNewDocumentsWin: function(action) {
+
+		this.NewDocumentsWindow.eid = this.patient.eid;
+		this.NewDocumentsWindow.pid = this.patient.pid;
 		this.NewDocumentsWindow.show();
 		this.NewDocumentsWindow.cardSwitch(action);
 	},

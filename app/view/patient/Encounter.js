@@ -279,9 +279,9 @@ Ext.define('App.view.patient.Encounter', {
                 listeners  : {
                     scope: me,
                     show : function() {
-                        me.EncounterOrdersStore.load({params: {eid: app.currEncounterId}});
+                        me.EncounterOrdersStore.load({params: {eid: app.patient.eid}});
                         if(acl['access_encounter_checkout']){
-                            me.checkoutAlertArea.load({params: {eid: app.currEncounterId}});
+                            me.checkoutAlertArea.load({params: {eid: app.patient.eid}});
                         }
                         me.documentsimplegrid.loadDocs(me.eid);
                     }
@@ -862,7 +862,7 @@ Ext.define('App.view.patient.Encounter', {
                             }
                         });
                         me.msg('Sweet!', i18n['encounter_updated']);
-                        me.encounterEventHistoryStore.load({params: {eid: app.currEncounterId}});
+                        me.encounterEventHistoryStore.load({params: {eid: app.patient.eid}});
                     } else {
                         app.accessDenied();
                     }
@@ -942,8 +942,8 @@ Ext.define('App.view.patient.Encounter', {
     openEncounter: function(eid) {
         var me = this, vitals;
         me.resetTabs();
-        me.eid = eid;
-        me.encounterStore.getProxy().extraParams.eid = eid;
+        me.eid = app.patient.eid = eid;
+        me.encounterStore.getProxy().extraParams.eid = me.eid;
         me.encounterStore.load({
             scope   : me,
             callback: function(record) {
@@ -1007,7 +1007,7 @@ Ext.define('App.view.patient.Encounter', {
                 Encounter.closeEncounter(values, function(provider, response) {
                     if(response.result.success) {
                         if(me.stopTimer()) {
-
+                            app.patient.eid = null;
                             app.openPatientVisits();
                             me.msg('Sweet!', i18n['encounter_closed']);
                         }

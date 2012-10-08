@@ -463,7 +463,9 @@ Ext.define('App.view.patient.Summary', {
 			})
 		}
 		if(acl['access_patient_preventive_care_alerts']) {
-			me.stores.push(me.patientsDismissedAlerts = Ext.create('App.store.patient.DismissedAlerts'));
+			me.stores.push(me.patientsDismissedAlerts = Ext.create('App.store.patient.DismissedAlerts',{
+                //listeners
+            }));
 			me.tabPanel.add({
 				title  : i18n['dismissed_preventive_care_alerts'],
 				xtype  : 'grid',
@@ -491,7 +493,12 @@ Ext.define('App.view.patient.Summary', {
 						header   : i18n['observation'],
 						dataIndex: 'observation',
 						flex     : true
-
+					},
+					{
+						header   : i18n['dismissed'],
+						dataIndex: 'dismiss',
+                        width    : 60,
+						renderer : me.boolRenderer
 					}
 				],
 
@@ -567,6 +574,7 @@ Ext.define('App.view.patient.Summary', {
 						}
 
 					]
+
 				})
 			})
 		}

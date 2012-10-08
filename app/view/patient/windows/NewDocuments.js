@@ -12,7 +12,6 @@
 Ext.define('App.view.patient.windows.NewDocuments', {
 	extend     : 'App.classes.window.Window',
 	title      : i18n['order_window'],
-	id         : 'OrderWindow',
 	layout     : 'fit',
 	closeAction: 'hide',
 	height     : 430,
@@ -23,6 +22,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 		margin: 5
 	},
 	pid:null,
+    eid:null,
 	initComponent: function() {
 		var me = this;
 		me.patientPrescriptionStore = Ext.create('App.store.patient.PatientsPrescription');
@@ -444,7 +444,8 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 		];
 		me.listeners = {
 			scope: me,
-			show : me.onDocumentsWinShow
+			show : me.onDocumentsWinShow,
+            hide : me.onDocumentsWinHide
 		};
 		me.callParent(arguments);
 	},
@@ -521,7 +522,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 
 	},
 	onCreateLabs: function (){
-		var records =this.patientsLabsOrdersStore.data.items,
+		var records = this.patientsLabsOrdersStore.data.items,
 			data = [];
         for(var i=0; i < records.length; i++ ){
             data.push(records[i].data);
@@ -569,5 +570,18 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 		me.patientsLabsOrdersStore.removeAll();
 		doctorsNoteBody.reset();
 		template.reset();
-	}
+
+
+        var dock = this.tabPanel.getDockedItems()[0],
+            visible = this.eid != null;
+        dock.items.items[0].setVisible(visible);
+        dock.items.items[1].setVisible(visible);
+        dock.items.items[2].setVisible(visible);
+        if(!visible) me.cardSwitch('notes');
+	},
+    onDocumentsWinHide : function(){
+        if(app.currCardCmp.id == 'panelSummary'){
+           app.currCardCmp.patientDocumentsStore.load({params: {pid: this.pid}});
+        }
+    }
 });

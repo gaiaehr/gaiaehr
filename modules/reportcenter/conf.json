@@ -15,6 +15,14 @@
 					"len":1
 				}
 			}
+		},
+		"ClientList":{
+			"methods":{
+				"CreateClientList":
+				{
+					"len":1
+				}
+			}
 		}
 	},
 	"extjs":[

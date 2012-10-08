@@ -26,14 +26,14 @@ class i18nRouter
 	public static function getTranslation()
 	{
 		// This language file is need by default.
-		include_once($_SESSION['site']['root'] . '/langs/en_US.php');
+		include($_SESSION['site']['root'] . '/langs/en_US.php');
 		$en_US = $LANG;
 		
 		// This file will be called when the user or the administrator select 
 		// a diferent language. But the primary language will be called first.
 		// So if some words are not translated by the selected language it can be 
 		// displayed by the original language. 
-		include_once($_SESSION['site']['root'] . '/langs/' . $_SESSION['site']['localization'] . '.php');
+		include($_SESSION['site']['root'] . '/langs/' . $_SESSION['site']['localization'] . '.php');
 		return array_merge($en_US, $LANG);
 	}
 
@@ -73,7 +73,7 @@ class i18nRouter
 	}
 
 	// -----------------------------------------------------------------------
-	// ???
+	// this function will look for the translation, if none found will return the key
 	// -----------------------------------------------------------------------
     public static function t($key)
     {
@@ -82,3 +82,4 @@ class i18nRouter
     }
 }
 
+//	print i18nRouter::t('patient_home_phone');

@@ -2,11 +2,7 @@ Ext.define('App.view.dashboard.panel.OnotesPortlet', {
 
 	extend       : 'Ext.grid.Panel',
 	alias        : 'widget.onotesportlet',
-	height       : 300,
-	/**
-	 * Custom function used for column renderer
-	 * @param {Object} val
-	 */
+	height       : 250,
 	initComponent: function() {
 		var me = this;
 		Ext.define('OnotesPortletModel', {
@@ -32,7 +28,6 @@ Ext.define('App.view.dashboard.panel.OnotesPortlet', {
 		});
 
 		Ext.apply(this, {
-			//height: 300,
 			height     : this.height,
 			store      : this.store,
 			stripeRows : true,

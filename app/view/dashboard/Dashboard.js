@@ -34,8 +34,7 @@ Ext.define('App.view.dashboard.Dashboard',
 	],
 	getTools      : function() 
 	{
-		return 
-		[
+		return [
 		{
 			xtype  : 'tool',
 			type   : 'gear',
@@ -48,8 +47,7 @@ Ext.define('App.view.dashboard.Dashboard',
 					portlet.setLoading(false);
 				}, 2000);
 			}
-		}
-		];
+		}];
 	},
 	initComponent : function() 
 	{
@@ -68,57 +66,56 @@ Ext.define('App.view.dashboard.Dashboard',
 					id   : 'col-1',
 					items: 
 					[
-					{
-						id       : 'portlet-onotes',
-						title    : i18n['office_notes'],
-						tools    : this.getTools(),
-						items    : Ext.create('App.view.dashboard.panel.OnotesPortlet'),
-						listeners: 
-						{
-							'close': Ext.bind(this.onPortletClose, this)
-						}
-					}
-						//,
-						//{
-						//	id       : 'portlet-2',
-						//	title    : 'Portlet 2',
-						//	tools    : this.getTools(),
-						//	html     : content,
-						//	listeners: {
-						//		'close': Ext.bind(this.onPortletClose, this)
-						//	}
-						//}
-					]
-					}
-						//,
-						//{
-						//	id   : 'col-2',
-						//	items: [
-						//		{
-						//			id       : 'portlet-1',
-						//			title    : 'Grid Portlet',
-						//			tools    : this.getTools(),
-						//			items    : Ext.create('App.view.dashboard.panel.GridPortlet'),
-						//			listeners: {
-						//				'close': Ext.bind(this.onPortletClose, this)
-						//			}
-						//		}
-						//	]
-						//},
-						//{
-						//	id   : 'col-3',
-						//	items: [
-						//		{
-						//			id       : 'portlet-4',
-						//			title    : 'Portlet 4',
-						//			tools    : this.getTools(),
-						//			items    : Ext.create('App.view.dashboard.panel.ChartPortlet'),
-						//			listeners: {
-						//				'close': Ext.bind(this.onPortletClose, this)
-						//			}
-						//		}
-						//	]
-						//}
+                        {
+//                            id       : 'portlet-onotes',
+                            title    : i18n['office_notes'],
+                            tools    : this.getTools(),
+                            items    : Ext.create('App.view.dashboard.panel.OnotesPortlet'),
+                            listeners:
+                            {
+                                close: Ext.bind(this.onPortletClose, this)
+                            }
+                        }
+                            //,
+                            //{
+                            //	id       : 'portlet-2',
+                            //	title    : 'Portlet 2',
+                            //	tools    : this.getTools(),
+                            //	html     : content,
+                            //	listeners: {
+                            //		'close': Ext.bind(this.onPortletClose, this)
+                            //	}
+                            //}
+                        ]
+					},
+                    {
+//                        id   : 'col-2',
+                        items: [
+                            {
+                                title    : 'Office Visits',
+                                tools    : this.getTools(),
+                                items    : Ext.create('App.view.dashboard.panel.VisitsPortlet'),
+                                listeners: {
+                                    close: Ext.bind(this.onPortletClose, this)
+                                }
+                            }
+                        ]
+                    }
+//                    ,
+//                    {
+//                        id   : 'col-3',
+//                        items: [
+//                            {
+//                                id       : 'portlet-4',
+//                                title    : 'Portlet 4',
+//                                tools    : this.getTools(),
+//                                items    : Ext.create('App.view.dashboard.panel.ChartPortlet'),
+//                                listeners: {
+//                                    'close': Ext.bind(this.onPortletClose, this)
+//                                }
+//                            }
+//                        ]
+//                    }
 					]
 				}
 			]

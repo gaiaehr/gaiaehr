@@ -24,7 +24,6 @@ class FileManager
 
 	function __construct()
 	{
-		$this->db = new dbHelper();
 		$this->tempDir = $_SESSION['site']['directory'] . '/sites/' . $_SESSION['site']['site'] .  '/temp/';
 		chmod($this->tempDir, 0777);
 		return;

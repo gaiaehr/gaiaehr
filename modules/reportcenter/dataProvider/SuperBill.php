@@ -11,115 +11,58 @@ if(!isset($_SESSION)) {
     session_start();
     session_cache_limiter('private');
 }
+include_once('Reports.php');
 include_once($_SESSION['site']['root'] . '/classes/dbHelper.php');
-include_once($_SESSION['site']['root'] . '/classes/FileManager.php');
 include_once($_SESSION['site']['root'] . '/dataProvider/Patient.php');
 include_once($_SESSION['site']['root'] . '/dataProvider/User.php');
 include_once($_SESSION['site']['root'] . '/dataProvider/Fees.php');
-include_once($_SESSION['site']['root'] . '/dataProvider/DocumentPDF.php');
-
-include_once($_SESSION['site']['root'] . '/lib/tcpdf/config/lang/eng.php');
 include_once($_SESSION['site']['root'] . '/dataProvider/i18nRouter.php');
 
-class SuperBill
+
+class SuperBill extends Reports
 {
-    /**
-     * @var dbHelper
-     */
     private $db;
-    /**
-     * @var user
-     */
     private $user;
-    /**
-     * @var Patient
-     */
     private $patient;
-
     private $fees;
-
-    private $i18n;
-
-	private $fileManager;
-
-//	private $dompdf;
-    public $pdf;
-
     function __construct()
     {
+	    parent::__construct();
         $this->db       = new dbHelper();
         $this->user     = new User();
         $this->patient  = new Patient();
-        $this->fees = new Fees();
-        $this->i18n = new i18nRouter();
-        $this->fileManager = new FileManager();
-        $this->pdf = new DocumentPDF('P', 'mm', 'A4', true, 'UTF-8', false);
+        $this->fees     = new Fees();
         return;
     }
 
-
     public function CreateSuperBill(stdClass $params){
         $html = '';
-        foreach($this->getEncounterByDateFromToAndPatient($params->from,$params->to,$params->pid) as $rec=>$num) {
-            $html .= $this->htmlSuperBill($num);
+        foreach($this->getEncounterByDateFromToAndPatient($params->from,$params->to,$params->pid) AS $eData) {
+            $html .= $this->htmlSuperBill($eData);
         }
         ob_end_clean();
-	    $Url = $this->PDFDocumentBuilder($html);
+	    $Url = $this->ReportBuilder($html);
         return array('success' => true, 'html' => $html, 'url' => $Url);
     }
 
     public function getEncounterByDateFromToAndPatient($from,$to,$pid = null)
     {
-	    $sql = "SELECT form_data_encounter.pid,
+	    $sql = 'SELECT form_data_encounter.pid,
                        form_data_encounter.eid,
                        form_data_encounter.start_date,
                        form_data_demographics.*
                	  FROM form_data_encounter
-             LEFT JOIN form_data_demographics ON form_data_encounter.pid = form_data_demographics.pid
-                 WHERE form_data_encounter.start_date BETWEEN '$from' AND '$to'";
-	    if($pid == null) $sql .= "AND form_data_encounter.pid = '$pid'";
+             LEFT JOIN form_data_demographics ON form_data_encounter.pid = form_data_demographics.pid';
+	    if($from != '' && $to != '') $sql .= "WHERE form_data_encounter.start_date BETWEEN '$from' AND '$to'";
+	    if($pid != '') $sql .= " AND form_data_encounter.pid = '$pid'";
         $this->db->setSQL($sql);
         return $this->db->fetchRecords(PDO::FETCH_ASSOC);
-    }
-
-
-    public function PDFDocumentBuilder($html)
-    {
-	    $TempPdfPath = $this->fileManager->getSiteTempDir().$this->fileManager->getTempDirAvailableName().'.pdf';
-
-//	    print $path;
-//	    exit;
-        $this->pdf->SetCreator('TCPDF');
-        $this->pdf->SetAuthor($_SESSION['user']['name']);
-        $siteLogo = $_SESSION['site']['root'] .'/sites/'.$_SESSION['site']['site'].'/logo.jpg';
-        $logo = (file_exists($siteLogo) ? $siteLogo : $_SESSION['site']['root'] .'/resources/images/logo.jpg');
-
-	   // TODO: set from admin area
-        $this->pdf->SetHeaderData(
-	        $logo,
-            '20',
-            'Ernesto\'s Clinic',
-            "Cond. Capital Center\nPDO Suite 205\nAve. Arterial Hostos 239                                                                                                                                   Tel: 787-787-7878\nCarolina PR. 00987                                                                                                                                         Fax: 787-787-7878");//need to be change
-        $this->pdf->setHeaderFont(Array('helvetica', '', 14));
-        $this->pdf->setFooterFont(Array('helvetica', '', 8));
-        $this->pdf->SetDefaultMonospacedFont('courier');
-        $this->pdf->SetMargins(15, 27, 15);
-        $this->pdf->SetHeaderMargin(5);
-        $this->pdf->SetFooterMargin(10);
-        $this->pdf->SetFontSize(10);
-        $this->pdf->SetAutoPageBreak(true, 25);
-        $this->pdf->setFontSubsetting(true);
-        $this->pdf->AddPage();
-        $this->pdf->writeHTML($html, true, false, false, false, '');
-        $this->pdf->Output($_SESSION['site']['root'].$TempPdfPath, 'F');
-        $this->pdf->Close();
-        return $_SESSION['site']['url'].$TempPdfPath;
     }
 
     public function htmlSuperBill($params){
         $html = '';
         $html .=
-            "<table border=\"1\" width=\"100%\" >
+            "<table border=\"0\" width=\"100%\" >
                  <tr>
                     <th colspan=\"6\">".i18nRouter::t("patient_data")."</th>
                  </tr>
@@ -185,7 +128,7 @@ class SuperBill
         ;
         // INSURANCE DATA _~_~_~_~_~_~__~~
         $html .=
-            "<table  border=\"1\" width=\"100%\">
+            "<table  border=\"0\" width=\"100%\">
                  <tr>
                     <th colspan=\"6\">".i18nRouter::t("insurance_data")." (".i18nRouter::t("primary").")</th>
                  </tr>
@@ -384,7 +327,7 @@ class SuperBill
         }
 	    $html .="</table>";
         $html .=
-	        "<table border=\"1\" width=\"100%\">
+	        "<table border=\"0\" width=\"100%\">
 	         <tr>
 	            <th>".i18nRouter::t("billing_information")."</th>
 	         </tr>
@@ -402,18 +345,12 @@ class SuperBill
 	         </tr>
 
 	         </table>
-	    ---------------------------------------------------------------------------------------------------------------------------------------------------------
+
+	    <hr>
 		";
-
         return $html;
-
     }
-
 }
-
-
-
-//
 //$e = new SuperBill();
 //$params = new stdClass();
 //$params->pid = 1;

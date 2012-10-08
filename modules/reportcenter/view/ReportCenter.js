@@ -33,19 +33,21 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
             me.ClientListReport = me.addReportByCategory(me.patientCategory, i18n['client_list_report'], function(btn) {
                 me.goToReportPanelAndSetForm({
                     title:i18n['client_list_report'],
-                    action: 'clientListReport',
                     items : [
                         {
                             xtype     : 'datefield',
                             fieldLabel: i18n['from'],
-                            name      : 'from'
+                            name      : 'from',
+                            format:'Y-m-d'
                         },
                         {
                             xtype     : 'datefield',
                             fieldLabel: i18n['to'],
-                            name      : 'to'
+                            name      : 'to',
+                            format:'Y-m-d'
                         }
-                    ]
+                    ],
+                    fn:ClientList.CreateClientList
                 });
             });
             me.link1 = me.addReportByCategory(me.patientCategory, i18n['prescriptions_and_dispensations'], function(btn) {

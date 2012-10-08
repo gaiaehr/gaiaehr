@@ -47,23 +47,22 @@ class SuperBill extends Reports
 
     public function getEncounterByDateFromToAndPatient($from,$to,$pid = null)
     {
-	    $sql = "SELECT form_data_encounter.pid,
+	    $sql = 'SELECT form_data_encounter.pid,
                        form_data_encounter.eid,
                        form_data_encounter.start_date,
                        form_data_demographics.*
                	  FROM form_data_encounter
-             LEFT JOIN form_data_demographics ON form_data_encounter.pid = form_data_demographics.pid
-                 WHERE form_data_encounter.start_date BETWEEN '$from' AND '$to'";
-	    if($pid == null) $sql .= "AND form_data_encounter.pid = '$pid'";
+             LEFT JOIN form_data_demographics ON form_data_encounter.pid = form_data_demographics.pid';
+	    if($from != '' && $to != '') $sql .= "WHERE form_data_encounter.start_date BETWEEN '$from' AND '$to'";
+	    if($pid != '') $sql .= " AND form_data_encounter.pid = '$pid'";
         $this->db->setSQL($sql);
         return $this->db->fetchRecords(PDO::FETCH_ASSOC);
     }
 
-
     public function htmlSuperBill($params){
         $html = '';
         $html .=
-            "<table border=\"1\" width=\"100%\" >
+            "<table border=\"0\" width=\"100%\" >
                  <tr>
                     <th colspan=\"6\">".i18nRouter::t("patient_data")."</th>
                  </tr>
@@ -129,7 +128,7 @@ class SuperBill extends Reports
         ;
         // INSURANCE DATA _~_~_~_~_~_~__~~
         $html .=
-            "<table  border=\"1\" width=\"100%\">
+            "<table  border=\"0\" width=\"100%\">
                  <tr>
                     <th colspan=\"6\">".i18nRouter::t("insurance_data")." (".i18nRouter::t("primary").")</th>
                  </tr>
@@ -328,7 +327,7 @@ class SuperBill extends Reports
         }
 	    $html .="</table>";
         $html .=
-	        "<table border=\"1\" width=\"100%\">
+	        "<table border=\"0\" width=\"100%\">
 	         <tr>
 	            <th>".i18nRouter::t("billing_information")."</th>
 	         </tr>
@@ -346,7 +345,8 @@ class SuperBill extends Reports
 	         </tr>
 
 	         </table>
-	    ---------------------------------------------------------------------------------------------------------------------------------------------------------
+
+	    <hr>
 		";
         return $html;
     }

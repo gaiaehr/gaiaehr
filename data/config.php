@@ -1148,7 +1148,7 @@ $API = array(
             )
         )
     ),
-    
+
 	'i18nRouter'=>array(
 		'methods'=>array(
 			'getTranslation'=>array(
@@ -1191,5 +1191,4 @@ $API = array(
             )
         )
     )
-
 );

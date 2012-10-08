@@ -53,9 +53,17 @@ class Modules
 		return $modules;
 	}
 
+	public function getEnabledModulesAPI(){
+		$actions = array();
+		foreach($this->getEnabledModules() AS $module){
+			$actions = array_merge($actions, $module['actionsAPI']);
+		}
+		return $actions;
+	}
+
 	private function getModuleConfig($module)
 	{
-		if(is_dir($this->modulesDir.$module)) 
+		if(is_dir($this->modulesDir.$module))
 		{
 			$text = file_get_contents($this->modulesDir.$module.'/conf.json');
 			return json_decode($text, true);

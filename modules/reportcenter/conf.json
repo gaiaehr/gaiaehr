@@ -7,41 +7,42 @@
 	"dir":"reportcenter",
 	"enable":true,
 	"debug":false,
-	"files":{
-		"extjs":[
-			{
-				"file":"ModuleModel.js",
-				"path":"model/"
-			},
-			{
-				"file":"store/ModuleStore.js",
-				"path":"store/"
-			},
-			{
-				"file":"view/reportCenter.js",
-				"path":"view/"
+	"actionsAPI":{
+		"SuperBill":{
+			"methods":{
+				"CreateSuperBill":
+				{
+					"len":1
+				}
 			}
-		],
-		"data":[
-			{
-				"file":"ModuleClass.php",
-				"path":"data/"
-			},
-			{
-				"file":"ModuleClass2.php",
-				"path":"data/"
+		},
+		"ClientList":{
+			"methods":{
+				"CreateClientList":
+				{
+					"len":1
+				}
 			}
-		],
-		"install":[
-			{
-				"file":"sql/install_schema.sql"
-			},
-			{
-				"table":"report_list"
-			},
-			{
-				"table":"report_acl"
-			}
-		]
-	}
+		}
+	},
+	"extjs":[
+		{
+			"file":"ModuleModel.js",
+			"path":"model/"
+		},
+		{
+			"file":"store/ModuleStore.js",
+			"path":"store/"
+		},
+		{
+			"file":"view/reportCenter.js",
+			"path":"view/"
+		}
+	],
+	"install":[
+		{
+			"file":"sql/install_schema.sql"
+		}
+	]
+
 }

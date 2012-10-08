@@ -8,12 +8,16 @@ if(!isset($_SESSION)){
     session_start();
     session_cache_limiter('private');
 }
+include_once('../dataProvider/Modules.php');
 require('config.php');
+$modules = new Modules();
+$API = array_merge($API, $modules->getEnabledModulesAPI());
 class BogusAction {
 	public $action;
 	public $method;
 	public $data;
 	public $tid;
+	public $module;
 }
 
 $isForm = false;
@@ -21,6 +25,7 @@ $isUpload = false;
 if(isset($HTTP_RAW_POST_DATA)){
 	header('Content-Type: text/javascript');
 	$data = json_decode($HTTP_RAW_POST_DATA);
+	if(isset($_REQUEST['module'])) $data->module = $_REQUEST['module'];
 }else if(isset($_POST['extAction'])){ // form post
 	$isForm = true;
 	$isUpload = $_POST['extUpload'] == 'true';
@@ -29,6 +34,8 @@ if(isset($HTTP_RAW_POST_DATA)){
 	$data->method = $_POST['extMethod'];
     $data->tid = isset($_POST['extTID']) ? $_POST['extTID'] : null; // not set for upload
 	$data->data = array($_POST, $_FILES);
+	if(isset($_REQUEST['module'])) $data->module = $_REQUEST['module'];
+
 }else{
 	die('Invalid request.');
 }
@@ -82,7 +89,12 @@ function doRpc($cdata){
 			'method'=>$method
 		);
 
-		require_once("../dataProvider/$action.php");
+		if(isset($cdata->module)){
+			require_once("../modules/$cdata->module/dataProvider/$action.php");
+		}else{
+			require_once("../dataProvider/$action.php");
+		}
+
 		$o = new $action();
         if (isset($mdef['len'])) {
 		    $params = isset($cdata->data) && is_array($cdata->data) ? $cdata->data : array();

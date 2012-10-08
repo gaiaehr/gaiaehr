@@ -26,13 +26,13 @@ $db = new dbHelper();
 //------------------------------------------------------------------------------
 // Load the PDF class.
 //------------------------------------------------------------------------------
-include_once($_SESSION['site']['root']."/lib/dompdf_0-6-0_beta3/dompdf_config.inc.php");
-$pdfDocument = new DOMPDF();
+include_once($_SESSION['site']['root'] . '/lib/tcpdf/config/lang/eng.php');
+$pdfDocument = new DocumentPDF('P', 'mm', 'A4', true, 'UTF-8', false);
 
 //------------------------------------------------------------------------------
 // Loads up the language file.
 //------------------------------------------------------------------------------
-include_once($_SESSION['site']['root'] . '/langs/' . $_SESSION['site']['localization'] . '.php');
+include_once($_SESSION['site']['root'] . '/dataProvider/i18nRouter.php');
 
 // Get Client List SQL Statement
 $sql = "SELECT
@@ -60,6 +60,7 @@ $db->setSQL($sql);
 // Start buffering, this will record all the HTML code
 // to then pass it to the DomPDF class.
 //------------------------------------------------------------------------------
+
 ob_start();
 $pathCSS = ($params['pdf'] ? $_SESSION['site']['root'] : '../');
 ?>
@@ -72,15 +73,15 @@ $pathCSS = ($params['pdf'] ? $_SESSION['site']['root'] : '../');
 <h3>Client List Report (Patient List)</h3>
 <table>
 	<tr>
-		<th><?php print $LANG['last_visit'] ?></th>
-		<th><?php print $LANG['patient'] ?></th>
-		<th><?php print $LANG['id'] ?></th>
-		<th><?php print $LANG['street'] ?></th>
-		<th><?php print $LANG['city'] ?></th>
-		<th><?php print $LANG['state'] ?></th>
-		<th><?php print $LANG['zipcode'] ?></th>
-		<th><?php print $LANG['patient_home_phone'] ?></th>
-		<th><?php print $LANG['patient_work_phone'] ?></th>
+		<th><?php i18nRouter::t('last_visit') ?></th>
+		<th><?php i18nRouter::t('patient') ?></th>
+		<th><?php i18nRouter::t('id') ?></th>
+		<th><?php i18nRouter::t('street') ?></th>
+		<th><?php i18nRouter::t('city') ?></th>
+		<th><?php i18nRouter::t('state') ?></th>
+		<th><?php i18nRouter::t('zipcode') ?></th>
+		<th><?php i18nRouter::t('patient_home_phone') ?></th>
+		<th><?php i18nRouter::t('patient_work_phone') ?></th>
 	</tr>
 	<?php foreach($db->fetchRecords(PDO::FETCH_ASSOC) as $row) { ?>
 	<tr>
@@ -105,13 +106,26 @@ $pathCSS = ($params['pdf'] ? $_SESSION['site']['root'] : '../');
 // Get the HTML content and pass it to the DomPDF class.
 // Below this code, there should not be any more HTML code.
 //------------------------------------------------------------------------------
+
 $html = ob_get_contents(); 
 ob_end_clean();
 if($params['pdf'])
 {
-	$pdfDocument->load_html($html);
-	$pdfDocument->render();
-	$pdfDocument->stream("ClientList.pdf", array("Attachment" => 0));
+	$pdfDocument->SetCreator('GaiaEHR Report Center');
+	$pdfDocument->SetAuthor($_SESSION['user']['name']);
+	$pdfDocument->setHeaderFont(Array('helvetica', '', 14));
+	$pdfDocument->setFooterFont(Array('helvetica', '', 8));
+	$pdfDocument->SetDefaultMonospacedFont('courier');
+	$pdfDocument->SetMargins(15, 27, 15);
+	$pdfDocument->SetHeaderMargin(5);
+	$pdfDocument->SetFooterMargin(10);
+	$pdfDocument->SetFontSize(10);
+	$pdfDocument->SetAutoPageBreak(true, 25);
+	$pdfDocument->setFontSubsetting(true);
+	$pdfDocument->AddPage();
+	$pdfDocument->writeHTML($html, true, false, false, false, '');
+	$pdfDocument->Output('ClientListReport', 'FD');
+	$pdfDocument->Close();
 }
 else 
 {

@@ -64,7 +64,7 @@ class Navigation {
 
 	    array_push($nav, $patient);
         // *************************************************************************************
-        // Fees Folder
+        // Billing Manager Folder
         // *************************************************************************************
         array_push( $nav, array( 'text' => $this->i18n['billing_manager'], 'cls' => 'folder', 'expanded' => true, 'id' => 'navigationBilling', 'children' =>
             array(

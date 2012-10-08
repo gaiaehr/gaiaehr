@@ -50,7 +50,7 @@ Ext.define('App.classes.LiveLabsSearch', {
 			hideTrigger : true,
 			minChars    : 1,
 			listConfig  : {
-				loadingText: i18n['searching'] + '...',
+			loadingText: i18n['searching'] + '...',
 				//emptyText	: 'No matching posts found.',
 				//---------------------------------------------------------------------
 				// Custom rendering template for each item

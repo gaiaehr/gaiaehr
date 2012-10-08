@@ -13,11 +13,11 @@ Ext.define('App.view.patient.windows.PreventiveCare', {
 	extend       : 'App.classes.window.Window',
 	title        : i18n['preventive_care_window'],
 	closeAction  : 'hide',
-	height       : 350,
-	width        : 700,
+	height       : 550,
+	width        : 900,
 	bodyStyle    : 'background-color:#fff',
 	modal        : true,
-    layout:'fit',
+    layout       : 'fit',
 	defaults     : {
 		margin: 5
 	},
@@ -31,7 +31,6 @@ Ext.define('App.view.patient.windows.PreventiveCare', {
 		});
 
 		me.grid  = Ext.create('App.classes.GridPanel', {
-			title      : i18n['suggestions'],
             store      : me.patientPreventiveCare,
 			features: Ext.create('Ext.grid.feature.Grouping', {
 					groupHeaderTpl   : i18n['type'] + ': {name} ({rows.length} ' + i18n['item'] + '{[values.rows.length > 1 ? "s" : ""]})',

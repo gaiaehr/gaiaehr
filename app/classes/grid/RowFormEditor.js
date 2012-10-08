@@ -38,7 +38,7 @@ Ext.define('App.classes.grid.RowFormEditor', {
     ],
 
     saveBtnText  : i18n['update'],
-    cancelBtnText: i18n['remove'],
+    cancelBtnText: i18n['cancel'],
     removeBtnText: i18n['remove'],
     errorsText: i18n['errors'],
     dirtyText: i18n['commit_cancel_your_changes'],

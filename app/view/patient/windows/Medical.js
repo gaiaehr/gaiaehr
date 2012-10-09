@@ -1146,7 +1146,6 @@ Ext.define('App.view.patient.windows.Medical', {
 														anchor    : '100%'
 													}
 												],
-												//   url: 'dataProvider/DocumentHandler.php'
 												api        : {
 													submit: DocumentHandler.uploadDocument
 												}
@@ -1394,25 +1393,30 @@ Ext.define('App.view.patient.windows.Medical', {
 
 	onLabUpload: function(btn) {
 		var me = this,
-			form = me.uploadWin.down('form').getForm(),
+            formPanel = me.uploadWin.down('form'),
+			form = formPanel.getForm(),
 			win = btn.up('window');
 
 		if(form.isValid()) {
+            formPanel.el.mask(i18n['uploading_laboratory'] + '...');
 			form.submit({
-				waitMsg: i18n['uploading_laboratory'] + '...',
+				//waitMsg: i18n['uploading_laboratory'] + '...',
 				params : {
 					pid    : app.patient.pid,
 					docType: 'laboratory',
 					eid : app.patient.eid
 				},
 				success: function(fp, o) {
+                    formPanel.el.unmask();
+                    say(o.result);
 					win.close();
 					me.getLabDocument(o.result.doc.url);
 					me.addNewLabResults(o.result.doc.id);
 				},
 				failure: function(fp, o) {
+                    formPanel.el.unmask();
+                    say(o.result);
 					win.close();
-
 				}
 			});
 		}

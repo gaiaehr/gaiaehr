@@ -25,5 +25,6 @@ class DocumentPDF extends TCPDF {
             $this->SetFont('times', '', 8 );
             $this->SetY( -0.5 * 15, true );
             $this->Cell( 15, 0, 'Created by GaiaEHR (Electronic Health Record) ');
+	        $this->Cell( 333, 0, 'Page '.$this->getAliasNumPage().'/'.$this->getAliasNbPages(), 0, false, 'C', 0, '', 0, false, 'T', 'M');
     }
 }

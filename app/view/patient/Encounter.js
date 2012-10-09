@@ -942,6 +942,8 @@ Ext.define('App.view.patient.Encounter', {
     openEncounter: function(eid) {
         var me = this, vitals;
         me.resetTabs();
+        say('patient data');
+        say(app.patient);
         me.eid = app.patient.eid = eid;
         me.encounterStore.getProxy().extraParams.eid = me.eid;
         me.encounterStore.load({
@@ -1118,10 +1120,9 @@ Ext.define('App.view.patient.Encounter', {
      * This will update the timer every sec
      */
     encounterTimer: function() {
-        var me = this;
-        var timer = me.timer(me.currEncounterStartDate, new Date()),
-            patient = app.patient;
-        me.updateTitle(patient.name +' #'+patient.pid+ ' - ' + patient.age.str + ' - ' + Ext.Date.format(me.currEncounterStartDate, 'F j, Y, g:i:s a') + ' (' + i18n['opened_encounter'] + ')', app.patient.readOnly, timer);
+        var me = this,
+            timer = me.timer(me.currEncounterStartDate, new Date());
+        me.updateTitle(app.patient.name +' #'+app.patient.pid+ ' - ' + app.patient.age.str + ' - ' + Ext.Date.format(me.currEncounterStartDate, 'F j, Y, g:i:s a') + ' (' + i18n['opened_encounter'] + ')', app.patient.readOnly, timer);
     },
 
     /**

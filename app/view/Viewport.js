@@ -1015,7 +1015,7 @@ Ext.define('App.view.Viewport', {
 					Emergency.createNewEmergency(function(provider, response){
 						emergency = response.result.emergency;
 						if(response.result.success){
-							me.setCurrPatient(emergency.pid,emergency.name, emergency.priority, function(){
+							me.setPatient(emergency.pid,emergency.name, function(){
 								me.openEncounter(emergency.eid);
 							});
 							me.msg('Sweet!',emergency.name + ' ' + i18n['created'])
@@ -1061,7 +1061,7 @@ Ext.define('App.view.Viewport', {
 	},
 
 	stowPatientRecord: function() {
-		this.patientUnset();
+		this.unsetPatient();
 		this.navigateTo('panelDashboard');
 	},
 
@@ -1197,17 +1197,17 @@ Ext.define('App.view.Viewport', {
 			post = selection[0];
 		if(post) {
 			Patient.currPatientSet({pid: post.get('pid')}, function() {
-				me.setCurrPatient(post.get('pid'), post.get('fullname') , '', function() {
+				me.setPatient(post.get('pid'), post.get('fullname'), function() {
 					me.openPatientSummary();
 				});
 			});
 		}
 	},
 
-	setCurrPatient: function(pid, fullname, priority, callback) {
+	setPatient: function(pid, fullname, callback) {
 		var me = this;
 
-		me.patientUnset(function() {
+		me.unsetPatient(function() {
 			Patient.currPatientSet({ pid: pid }, function(provider, response) {
 				var data = response.result, msg1, msg2;
 				if(data.readOnly) {
@@ -1236,27 +1236,26 @@ Ext.define('App.view.Viewport', {
                         sex     : data.patient.sex,
                         dob     : data.patient.dob,
                         age     : data.patient.age,
+                        priority: data.patient.priority,
                         readOnly: readOnly,
                         eid     : null
                     };
 
-                    say(data.patient);
-
                     me.patientBtn.update({pid:data.patient.pid, name:data.patient.name});
-					me.patientBtn.addCls(priority);
+					me.patientBtn.addCls(data.patient.priority);
 					me.patientBtn.enable();
 					if(me.patientOpenVisitsBtn) me.patientOpenVisitsBtn.enable();
 					if(me.patientCreateEncounterBtn) me.patientCreateEncounterBtn.enable();
 					if(me.patientCloseCurrEncounterBtn) me.patientCloseCurrEncounterBtn.enable();
 					if(me.patientChargeBtn) me.patientChargeBtn.enable();
 					if(me.patientCheckOutBtn) me.patientCheckOutBtn.enable();
-					if(typeof callback == 'function') callback(true);
+					if(typeof callback == 'function') callback(me.patient);
 				}
 			});
 		});
 	},
 
-	patientUnset: function(callback) {
+    unsetPatient: function(callback) {
 		var me = this;
 		Patient.currPatientUnset(function() {
 			me.currEncounterId = null;
@@ -1267,13 +1266,14 @@ Ext.define('App.view.Viewport', {
                 dob     : null,
                 age     : null,
                 eid     : null,
+                priority: null,
                 readOnly: false
             };
 
 			me.patientButtonRemoveCls();
-			if(typeof callback == 'function') {
+			if(typeof callback == 'function'){
 				callback(true);
-			} else {
+			}else{
 				if(me.patientCreateEncounterBtn) me.patientCreateEncounterBtn.disable();
 				if(me.patientOpenVisitsBtn) me.patientOpenVisitsBtn.disable();
 				if(me.patientCloseCurrEncounterBtn) me.patientCloseCurrEncounterBtn.disable();
@@ -1281,7 +1281,6 @@ Ext.define('App.view.Viewport', {
 				if(me.patientCheckOutBtn) me.patientCheckOutBtn.disable();
 				me.patientBtn.disable();
 				me.patientBtn.update({ pid: 'record number', name: i18n['no_patient_selected']});
-
 			}
 		});
 	},
@@ -1332,7 +1331,7 @@ Ext.define('App.view.Viewport', {
 	},
 
 	patientBtnRender: function(btn) {
-		this.patientUnset();
+		this.unsetPatient();
 		this.initializePatientPoolDragZone(btn)
 	},
 
@@ -1541,7 +1540,7 @@ Ext.define('App.view.Viewport', {
 			},
 			notifyDrop: function(dd, e, data) {
 				app.MainPanel.el.unmask();
-				me.setCurrPatient(data.patientData.pid, data.patientData.name, data.patientData.priority, function() {
+				me.setPatient(data.patientData.pid, data.patientData.name, function() {
 					/**
 					 * if encounter id is set and pool area is check out....  go to Patient Checkout panel
 					 */

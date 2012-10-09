@@ -77,7 +77,7 @@ Ext.define('App.view.patient.NewPatient', {
 
                 if(response.result.success){
                     me.msg('Sweet!', i18n['patient'] + ' "' + fullname + '" ' + i18n['created'] + '... ');
-                    app.setCurrPatient(pid, fullname, '', function(success) {
+                    app.setPatient(pid, fullname, function(success) {
                         if(success) {
                             app.openPatientSummary();
                         }
@@ -153,7 +153,7 @@ Ext.define('App.view.patient.NewPatient', {
 	onActive: function(callback) {
 		this.confirmationWin(function(btn) {
 			if(btn == 'yes') {
-				app.patientUnset();
+				app.unsetPatient();
 				callback(true);
 			} else {
 				callback(false);

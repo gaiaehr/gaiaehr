@@ -39,7 +39,7 @@ Ext.define('App.view.areas.PatientPoolDropZone', {
 		};
 
 		PoolArea.sendPatientToPoolArea(params, function() {
-			app.patientUnset();
+			app.unsetPatient();
 			Ext.getCmp('panelPoolArea').reloadStores();
 		});
 
@@ -110,7 +110,7 @@ Ext.define('App.view.areas.PatientPoolDropZone', {
 	onPatientDblClick: function(store, record) {
 		var data = record.data;
 		// TODO: set priority
-		app.setCurrPatient(data.pid, data.name, '', function() {
+		app.setPatient(data.pid, data.name, function() {
 			app.openPatientSummary();
 		});
 	},

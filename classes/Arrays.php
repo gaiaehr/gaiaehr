@@ -44,7 +44,25 @@ class Arrays
 		}
 		if($sort_ascending) {
 			$array = array_reverse($temp_array);
+		} else $array = $temp_array;
+	}
+
+	static function arrayToObject($array)
+	{
+		if(!is_array($array)) {
+			return $array;
 		}
-		else $array = $temp_array;
+		$object = new stdClass();
+		if(is_array($array) && count($array) > 0) {
+			foreach($array as $name=> $value) {
+				$name = strtolower(trim($name));
+				if(!empty($name)) {
+					$object->$name = self::arrayToObject($value);
+				}
+			}
+			return $object;
+		} else {
+			return false;
+		}
 	}
 }

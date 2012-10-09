@@ -1065,6 +1065,6 @@ $LANG = array(
 	'primary'						    	=> 'Primary',
 	'secondary'							    => 'Secondary',
 	'tertiary'							    => 'Tertiary',
-	'super_bill'							=> 'Super Billing'
+	'billing_information'					=> 'Billing Information',
 );
 ?>

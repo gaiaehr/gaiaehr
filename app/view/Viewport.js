@@ -354,11 +354,11 @@ Ext.define('App.view.Viewport', {
 	],
 
     // app settings
-	minWidthToFullMode: 1680,       // full mode = nav expanded
+	minWidthToFullMode: 1600,       // full mode = nav expanded
 	currency          : '$',        // currency used
-    activityMonitorInterval: 20,     // in seconds - interval to check for mouse and keyboard activity
-    activityMonitorMaxInactive: 10,  // in minutes - Maximum time application can be inactive (no mouse or keyboard imput)
-    cronTaskInterval:20,             // in seconds - interval to run me.cronTask (check PHP session, refresh Patient Pool Areas, and PHP Cron Job)
+    activityMonitorInterval: 10,    // in seconds - interval to check for mouse and keyboard activity
+    activityMonitorMaxInactive: 10, // in minutes - Maximum time application can be inactive (no mouse or keyboard imput)
+    cronTaskInterval:10,            // in seconds - interval to run me.cronTask (check PHP session, refresh Patient Pool Areas, and PHP Cron Job)
     // end app settings
 
 	initComponent: function() 
@@ -368,6 +368,8 @@ Ext.define('App.view.Viewport', {
 		me.lastCardNode = null;
 		me.currCardCmp = null;
 		me.currEncounterId = null; // to be replace by me.patient
+
+        me.fullMode = window.innerWidth >= me.minWidthToFullMode;
 
         me.patient = {
             name    : null,
@@ -398,7 +400,7 @@ Ext.define('App.view.Viewport', {
 		/*
 		 * The store for the Navigation Tree menu.
 		 */ 
-		me.storeTree = Ext.create('App.store.navigation.Navigation', 
+		me.storeTree = Ext.create('App.store.navigation.Navigation',
 		{
 			autoLoad : true,
 			listeners: {
@@ -558,7 +560,6 @@ Ext.define('App.view.Viewport', {
         });
         me.Header.add({
             xtype      : 'panel',
-            width      : 260,
             bodyPadding: '8 11 5 11',
             margin     : '0 0 0 3',
             style      : 'float:left',
@@ -566,7 +567,7 @@ Ext.define('App.view.Viewport', {
                 {
                     xtype     : 'patienlivetsearch',
                     emptyText : i18n['patient_live_search'] + '...',
-                    fieldStyle: 'width:230',
+                    fieldStyle: me.fullMode ? 'width:300' : 'width:250',
                     listeners : {
                         scope : me,
                         select: me.liveSearchSelect,
@@ -847,7 +848,7 @@ Ext.define('App.view.Viewport', {
 		 * Footer Panel
 		 */
 		me.Footer = Ext.create('Ext.container.Container', {
-			height : window.innerWidth < me.minWidthToFullMode ? 60 : 30,
+			height : me.fullMode ? 30 : 60,
 			split  : false,
 			padding: '3 0',
 			region : 'south',
@@ -1122,7 +1123,7 @@ Ext.define('App.view.Viewport', {
 	},
 
 	afterNavigationLoad: function() {
-		window.innerWidth < this.minWidthToFullMode ? this.navColumn.collapse() : this.navColumn.expand();
+		this.fullMode ? this.navColumn.expand() : this.navColumn.collapse();
 		this.navigateToDefault();
 		this.removeAppMask();
 		this.setTask(true);

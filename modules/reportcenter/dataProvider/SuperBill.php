@@ -36,7 +36,8 @@ class SuperBill extends Reports
     }
 
     public function CreateSuperBill(stdClass $params){
-        $html = '';
+	    $params->to = ($params->to == '')? date('Y-m-d') : $params->to;
+        $html = "<br><h1>Super Bill ($params->from - $params->to )</h1>";
         foreach($this->getEncounterByDateFromToAndPatient($params->from,$params->to,$params->pid) AS $eData) {
             $html .= $this->htmlSuperBill($eData);
         }
@@ -47,7 +48,6 @@ class SuperBill extends Reports
 
     public function getEncounterByDateFromToAndPatient($from,$to,$pid = null)
     {
-	    $to = ($to == '')? date('Y-m-d') : $to;
 	    $sql = "SELECT form_data_encounter.pid,
                        form_data_encounter.eid,
                        form_data_encounter.start_date,
@@ -65,161 +65,78 @@ class SuperBill extends Reports
         $html .=
             "<table border=\"0\" width=\"100%\" >
                  <tr>
-                    <th colspan=\"3\" style=\"font-weight: bold;\">".i18nRouter::t("patient_data")."</th>
+                    <th colspan=\"3\" style=\"font-weight: bold;\">".i18nRouter::t("patient")."</th>
                  </tr>
                  <tr>
                     <td>".i18nRouter::t("name").': '.$params['title'].' '.$params['fname'].' '.$params['mname'].' '.$params['lname']."</td>
                     <td>".i18nRouter::t("sex").': '.$params['sex']."</td>
-                    <td>".i18nRouter::t("occupation").': '.$params['occupation']."</td>
-                 </tr>
-                 <tr>
-                    <td>".i18nRouter::t("date_of_birth").': '.$params['DOB']."</td>
                     <td>".i18nRouter::t("emer_contact").': '.$params['emer_contact']."</td>
-                    <td>".i18nRouter::t("home_phone").': '.$params['home_phone']."</td>
                  </tr>
                  <tr>
-                    <td>".i18nRouter::t("social_security").': '.$params['SS']."</td>
-                     <td>".i18nRouter::t("mobile_phone").': '.$params['mobile_phone']."</td>
+                    <td>".i18nRouter::t("date_of_birth").': '.date('m-d-Y', strtotime($params['DOB']))."</td>
+                    <td>".i18nRouter::t("occupation").': '.$params['occupation']."</td>
                     <td>".i18nRouter::t("emer_phone").': '.$params['emer_phone']."</td>
                  </tr>
                  <tr>
-                    <td colspan=\"2\">".i18nRouter::t("address").': '.$params['address'].' '.$params['city'].', '.$params['state'].' '.$params['zipcode']."</td>
+                    <td>".i18nRouter::t("address").': '.$params['address'].' '.$params['city'].', '.$params['state'].' '.$params['zipcode']."</td>
+                    <td>".i18nRouter::t("social_security").': '.$params['SS']."</td>
+                    <td>".i18nRouter::t("home_phone").': '.$params['home_phone']."<br>".i18nRouter::t("mobile_phone").': '.$params['mobile_phone']."</td>
 
-                 </tr>".
-                '</table>'.
-	            '<br>'
+                 </tr>
+                 <tr><td>
+                 </td></tr>".
+	        '</table>'
         ;
         // INSURANCE DATA _~_~_~_~_~_~__~~
         $html .=
             "<table  border=\"0\" width=\"100%\">
                  <tr>
-                    <th colspan=\"6\" style=\"font-weight: bold;\">".i18nRouter::t("insurance_data")." (".i18nRouter::t("primary").")</th>
+                    <th colspan=\"3\" style=\"font-weight: bold;\">".i18nRouter::t("insurance_data")." (".i18nRouter::t("primary").")</th>
                  </tr>
                  <tr>
-                    <td>".i18nRouter::t("provider")."</td>
-                    <td>".i18nRouter::t("plan_name")."</td>
-                    <td>".i18nRouter::t("policy_number")."</td>
-                    <td>".i18nRouter::t("group_number")."</td>
-                    <td>".i18nRouter::t("subscriber_first_name")."</td>
-                    <td>".i18nRouter::t("subscriber_middle_name")."</td>
+                    <td>".i18nRouter::t("provider").': '.$params['primary_insurance_provider']."</td>
+                    <td>".i18nRouter::t("subscriber_name").': '.$params['primary_subscriber_fname'].' '.$params['primary_subscriber_mname'].' '.$params['primary_subscriber_lname']."</td>
+                    <td>".i18nRouter::t("subscriber_employer").': '.$params['primary_subscriber_employer']."</td>
                  </tr>
                  <tr>
-                    <td>".$params['primary_insurance_provider']."</td>
-                    <td>".$params['primary_plan_name']."</td>
-                    <td>".$params['primary_policy_number']."</td>
-                    <td>".$params['primary_group_number']."</td>
-                    <td>".$params['primary_subscriber_fname']."</td>
-                    <td>".$params['primary_subscriber_mname']."</td>
+                    <td>".i18nRouter::t("plan_name").': '.$params['primary_plan_name'].'<br>'.i18nRouter::t("effective_date").': '.$params['primary_effective_date']."</td>
+                    <td>".i18nRouter::t("subscriber_address").': '.$params['primary_subscriber_street'].' '.$params['primary_subscriber_city'].', '.$params['primary_subscriber_state'].' '.$params['primary_subscriber_zip_code']."</td>
+                    <td>".i18nRouter::t("employer_address").': '.$params['primary_subscriber_employer_street'].' '.$params['primary_subscriber_employer_city'].', '.$params['primary_subscriber_employer_state'].' '.$params['primary_subscriber_employer_zip_code']."</td>
                  </tr>
                  <tr>
-                    <td>".i18nRouter::t("subscriber_last_name")."</td>
-                    <td>".i18nRouter::t("relationship")."</td>
-                    <td>".i18nRouter::t("social_security")."</td>
-                    <td>".i18nRouter::t("date_of_birth")."</td>
-                    <td>".i18nRouter::t("phone")."</td>
-                    <td>".i18nRouter::t("address")."</td>
+                    <td>".i18nRouter::t("group_number").': '.$params['primary_group_number']."</td>
+                    <td>".i18nRouter::t("phone").': '.$params['primary_subscriber_phone']."</td>
+                    <td>".i18nRouter::t("subscriber_employer").': '.$params['primary_subscriber_employer']."</td>
                  </tr>
                  <tr>
-                    <td>".$params['primary_subscriber_lname']."</td>
-                    <td>".$params['primary_subscriber_relationship']."</td>
-                    <td>".$params['city']."</td>
-                    <td>".$params['state']."</td>
-                    <td>".$params['primary_subscriber_phone']."</td>
-                    <td>".$params['primary_subscriber_street']."</td>
+                    <td>".i18nRouter::t("policy_number").': '.$params['primary_policy_number']."</td>
                  </tr>
-                 <tr>
-                    <td>".i18nRouter::t("subscriber_zip")."</td>
-                    <td>".i18nRouter::t("subscriber_city")."</td>
-                    <td>".i18nRouter::t("subscriber_state")."</td>
-                    <td>".i18nRouter::t("subscriber_country")."</td>
-                    <td>".i18nRouter::t("subscriber_employer")."</td>
-                    <td>".i18nRouter::t("subscriber_employer_street")."</td>
-                 </tr>
-                 <tr>
-                    <td>".$params['primary_subscriber_zip_code']."</td>
-                    <td>".$params['primary_subscriber_city']."</td>
-                    <td>".$params['primary_subscriber_state']."</td>
-                    <td>".$params['primary_subscriber_country']."</td>
-                    <td>".$params['primary_subscriber_employer']."</td>
-                    <td>".$params['primary_subscriber_employer_city']."</td>
-                 </tr>
-                 <tr>
-                    <td>".i18nRouter::t("subscriber_employer_city")."</td>
-                    <td>".i18nRouter::t("subscriber_employer_zip")."</td>
-                    <td>".i18nRouter::t("subscriber_employer_state")."</td>
-                    <td colspan=\"3\">".i18nRouter::t("subscriber_employer_country")."</td>
-                 </tr>
-                 <tr>
-                    <td>".$params['primary_subscriber_employer_city']."</td>
-                    <td>".$params['primary_subscriber_employer_zip_code']."</td>
-                    <td>".$params['primary_subscriber_employer_state']."</td>
-                    <td colspan=\"3\">".$params['primary_subscriber_employer_country']."</td>
-                 </tr>";
+                 <tr>";
         if(isset($params['secondary_insurance_provider'])){
             $html .=
-                "<tr>
-                    <th colspan=\"6\">".i18nRouter::t("secondary")."</th>
-                </tr>
-                <tr>
-                    <td>".i18nRouter::t("provider")."</td>
-                    <td>".i18nRouter::t("plan_name")."</td>
-                    <td>".i18nRouter::t("policy_number")."</td>
-                    <td>".i18nRouter::t("group_number")."</td>
-                    <td>".i18nRouter::t("subscriber_first_name")."</td>
-                    <td>".i18nRouter::t("subscriber_middle_name")."</td>
-                </tr>
-                <tr>
-                    <td>".$params['secondary_insurance_provider']."</td>
-                    <td>".$params['secondary_plan_name']."</td>
-                    <td>".$params['secondary_policy_number']."</td>
-                    <td>".$params['secondary_group_number']."</td>
-                    <td>".$params['secondary_subscriber_fname']."</td>
-                    <td>".$params['secondary_subscriber_mname']."</td>
-                </tr>
-                <tr>
-                    <td>".i18nRouter::t("subscriber_last_name")."</td>
-                    <td>".i18nRouter::t("subscriber_relationship")."</td>
-                    <td>".i18nRouter::t("subscriber_ss")."</td>
-                    <td>".i18nRouter::t("subscriber_date_of_birth")."</td>
-                    <td>".i18nRouter::t("subscriber_phone")."</td>
-                    <td>".i18nRouter::t("subscriber_address")."</td>
-                </tr>
-                <tr>
-                    <td>".$params['secondary_subscriber_lname']."</td>
-                    <td>".$params['secondary_subscriber_relationship']."</td>
-                    <td>".$params['secondary_subscriber_city']."</td>
-                    <td>".$params['secondary_subscriber_state']."</td>
-                    <td>".$params['secondary_subscriber_phone']."</td>
-                    <td>".$params['secondary_subscriber_street']."</td>
-                </tr>
-                <tr>
-                    <td>".i18nRouter::t("subscriber_zip")."</td>
-                    <td>".i18nRouter::t("subscriber_city")."</td>
-                    <td>".i18nRouter::t("subscriber_state")."</td>
-                    <td>".i18nRouter::t("subscriber_country")."</td>
-                    <td>".i18nRouter::t("subscriber_employer")."</td>
-                    <td>".i18nRouter::t("subscriber_employer_street")."</td>
-                </tr>
-                <tr>
-                    <td>".$params['secondary_subscriber_zip_code']."</td>
-                    <td>".$params['secondary_subscriber_city']."</td>
-                    <td>".$params['secondary_subscriber_state']."</td>
-                    <td>".$params['secondary_subscriber_country']."</td>
-                    <td>".$params['secondary_subscriber_employer']."</td>
-                    <td>".$params['secondary_subscriber_employer_city']."</td>
-                </tr>
-                <tr>
-                    <td colspan=\"2\">>".i18nRouter::t("subscriber_employer_city")."</td>
-                    <td colspan=\"2\">>".i18nRouter::t("subscriber_employer_zip")."</td>
-                    <td colspan=\"2\">>".i18nRouter::t("subscriber_employer_state")."</td>
-                    <td colspan=\"2\">>".i18nRouter::t("subscriber_employer_country")."</td>
-                </tr>
-                <tr>
-                    <td>".$params['secondary_subscriber_employer_city']."</td>
-                    <td>".$params['secondary_subscriber_employer_zip_code']."</td>
-                    <td>".$params['secondary_subscriber_employer_state']."</td>
-                    <td>".$params['secondary_subscriber_employer_country']."</td>
-                </tr>"
+	            "<table  border=\"0\" width=\"100%\">
+                 <tr>
+                    <th colspan=\"3\" style=\"font-weight: bold;\">".i18nRouter::t("insurance_data")." (".i18nRouter::t("primary").")</th>
+                 </tr>
+                 <tr>
+                    <td>".i18nRouter::t("provider").': '.$params['primary_insurance_provider']."</td>
+                    <td>".i18nRouter::t("subscriber_name").': '.$params['primary_subscriber_fname'].' '.$params['primary_subscriber_mname'].' '.$params['primary_subscriber_lname']."</td>
+                    <td>".i18nRouter::t("subscriber_employer").': '.$params['primary_subscriber_employer']."</td>
+                 </tr>
+                 <tr>
+                    <td>".i18nRouter::t("plan_name").': '.$params['primary_plan_name'].'<br>'.i18nRouter::t("effective_date").': '.$params['primary_effective_date']."</td>
+                    <td>".i18nRouter::t("subscriber_address").': '.$params['primary_subscriber_street'].' '.$params['primary_subscriber_city'].', '.$params['primary_subscriber_state'].' '.$params['primary_subscriber_zip_code']."</td>
+                    <td>".i18nRouter::t("employer_address").': '.$params['primary_subscriber_employer_street'].' '.$params['primary_subscriber_employer_city'].', '.$params['primary_subscriber_employer_state'].' '.$params['primary_subscriber_employer_zip_code']."</td>
+                 </tr>
+                 <tr>
+                    <td>".i18nRouter::t("group_number").': '.$params['primary_group_number']."</td>
+                    <td>".i18nRouter::t("phone").': '.$params['primary_subscriber_phone']."</td>
+                    <td>".i18nRouter::t("subscriber_employer").': '.$params['primary_subscriber_employer']."</td>
+                 </tr>
+                 <tr>
+                    <td>".i18nRouter::t("policy_number").': '.$params['primary_policy_number']."</td>
+                 </tr>
+                 <tr>";
             ;
         }
         if(isset($params['tertiary_insurance_provider'])){
@@ -308,7 +225,6 @@ class SuperBill extends Reports
 	         </tr>
 
 	         </table>
-
 	    <hr>
 		";
         return $html;

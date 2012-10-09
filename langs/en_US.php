@@ -1058,12 +1058,13 @@ $LANG = array(
 	'group_number'							=> 'Group Number',
 	'subscriber_name'					    => 'Subscriber Name',
 	'relationship'				            => 'Relationship',
-	''							=> '',
-	''							=> '',
-	''							=> '',
-	''							=> '',
-	''							=> '',
-	''							=> '',
+	'subscriber_employer'					=> 'Subscriber Employer',
+	'subscriber_address'					=> 'Subscriber Address',
+	'employer_address'						=> 'Employer Address',
+	'effective_date'						=> 'Effective Date',
+	'primary'						    	=> 'Primary',
+	'secondary'							    => 'Secondary',
+	'tertiary'							    => 'Tertiary',
 	'super_bill'							=> 'Super Billing'
 );
 ?>

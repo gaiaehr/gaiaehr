@@ -43,9 +43,10 @@ class SuperBill extends Reports
         $html = "<br><h1>Super Bill ($params->from - $params->to )</h1>";
         foreach($this->getEncounterByDateFromToAndPatient($params->from,$params->to,$params->pid) AS $eData) {
             $html .= $this->htmlSuperBill($eData);
-	        $html .= $this->addCodes($html,$edata['eid']);
+	        $html .= $this->addCodes($eData['eid'],$eData['start_date'],$eData['prov_uid']);
         }
         ob_end_clean();
+
 	    $Url = $this->ReportBuilder($html);
         return array('success' => true, 'html' => $html, 'url' => $Url);
     }
@@ -63,29 +64,34 @@ class SuperBill extends Reports
 	    $this->db->setSQL($sql);
         return $this->db->fetchRecords(PDO::FETCH_ASSOC);
     }
-	public function addCodes($html,$eid){
-		$codes=$this->encounter->getEncounterCodes($eid);
-//	    print $codes;
+	public function addCodes($eid,$date,$provider){
+		$codes=$this->encounter->getEncounterCodesByEid($eid);
+
+
+		$html = '';
 	    $html .=
             "<table  border=\"0\" width=\"100%\">
             <tr>
-               <th colspan=\"3\" style=\"font-weight: bold;\">".i18nRouter::t("billing_information")."</th>
+               <th colspan=\"4\" style=\"font-weight: bold;\">".i18nRouter::t("billing_information")."</th>
             </tr>
             <tr>
-               <td>".i18nRouter::t("date")."</td>
+               <td>".i18nRouter::t("service_date")."</td>
 	           <td>".i18nRouter::t("provider")."</td>
 	           <td>".i18nRouter::t("code")."</td>
 	           <td>".i18nRouter::t("fee")."</td>
-            </tr>
-            <tr>
-	           <td>".$codes['date']."</td>
-	           <td>".$codes['provider']."</td>
-	           <td>".$codes['code']."</td>
-	           <td>".$codes['fee']."</td>
-	        </tr>
-            </table>
-	        <hr>";
-		return $html
+            </tr>";
+		foreach($codes as $code){
+			$html .= "<tr>
+					<td>".$date."</td>
+					<td>".$provider."</td>
+					<td>".$code['type'].': '.$code['code']."</td>
+					<td>".$code['charge']."</td>
+				</tr>";
+		}
+		$html .= "<hr></table>";
+
+
+		return $html;
 	}
 
     public function htmlSuperBill($params){

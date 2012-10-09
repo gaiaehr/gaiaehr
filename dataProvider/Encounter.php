@@ -392,11 +392,11 @@ class Encounter
 
 	public function getEncounterCodes($params)
 	{
-		if($params->eid == ''){
-			$eid = $params;
-		}else{
-			$eid=$params->eid;
-		}
+		return $this->getEncounterCodesByEid($params->eid);
+	}
+
+	public function getEncounterCodesByEid($eid)
+	{
 		$records = array();
 		foreach($this->diagnosis->getICDByEid($eid) as $fo) {
 			$fo['type'] = 'ICD';

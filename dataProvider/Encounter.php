@@ -392,17 +392,22 @@ class Encounter
 
 	public function getEncounterCodes($params)
 	{
+		if($params->eid == ''){
+			$eid = $params;
+		}else{
+			$eid=$params->eid;
+		}
 		$records = array();
-		foreach($this->diagnosis->getICDByEid($params->eid) as $fo) {
+		foreach($this->diagnosis->getICDByEid($eid) as $fo) {
 			$fo['type'] = 'ICD';
 			$records[]  = $fo;
 		}
-		$foo = $this->services->getCptByEid($params->eid);
+		$foo = $this->services->getCptByEid($eid);
 		foreach($foo['rows'] as $fo) {
 			$fo['type'] = 'CPT';
 			$records[]  = $fo;
 		}
-		$foo = $this->services->getHCPCByEid($params->eid);
+		$foo = $this->services->getHCPCByEid($eid);
 		foreach($foo['rows'] as $fo) {
 			$fo['type'] = 'HCPC';
 			$records[]  = $fo;

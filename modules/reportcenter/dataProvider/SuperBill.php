@@ -16,6 +16,7 @@ include_once($_SESSION['site']['root'] . '/classes/dbHelper.php');
 include_once($_SESSION['site']['root'] . '/dataProvider/Patient.php');
 include_once($_SESSION['site']['root'] . '/dataProvider/User.php');
 include_once($_SESSION['site']['root'] . '/dataProvider/Fees.php');
+include_once($_SESSION['site']['root'] . '/dataProvider/Encounter.php');
 include_once($_SESSION['site']['root'] . '/dataProvider/i18nRouter.php');
 
 
@@ -25,6 +26,7 @@ class SuperBill extends Reports
     private $user;
     private $patient;
     private $fees;
+    private $encounter;
     function __construct()
     {
 	    parent::__construct();
@@ -32,6 +34,7 @@ class SuperBill extends Reports
         $this->user     = new User();
         $this->patient  = new Patient();
         $this->fees     = new Fees();
+        $this->encounter= new Encounter();
         return;
     }
 
@@ -40,6 +43,7 @@ class SuperBill extends Reports
         $html = "<br><h1>Super Bill ($params->from - $params->to )</h1>";
         foreach($this->getEncounterByDateFromToAndPatient($params->from,$params->to,$params->pid) AS $eData) {
             $html .= $this->htmlSuperBill($eData);
+	        $html .= $this->addCodes($html,$edata['eid']);
         }
         ob_end_clean();
 	    $Url = $this->ReportBuilder($html);
@@ -59,6 +63,30 @@ class SuperBill extends Reports
 	    $this->db->setSQL($sql);
         return $this->db->fetchRecords(PDO::FETCH_ASSOC);
     }
+	public function addCodes($html,$eid){
+		$codes=$this->encounter->getEncounterCodes($eid);
+//	    print $codes;
+	    $html .=
+            "<table  border=\"0\" width=\"100%\">
+            <tr>
+               <th colspan=\"3\" style=\"font-weight: bold;\">".i18nRouter::t("billing_information")."</th>
+            </tr>
+            <tr>
+               <td>".i18nRouter::t("date")."</td>
+	           <td>".i18nRouter::t("provider")."</td>
+	           <td>".i18nRouter::t("code")."</td>
+	           <td>".i18nRouter::t("fee")."</td>
+            </tr>
+            <tr>
+	           <td>".$codes['date']."</td>
+	           <td>".$codes['provider']."</td>
+	           <td>".$codes['code']."</td>
+	           <td>".$codes['fee']."</td>
+	        </tr>
+            </table>
+	        <hr>";
+		return $html
+	}
 
     public function htmlSuperBill($params){
         $html = '';
@@ -164,32 +192,11 @@ class SuperBill extends Reports
                 </tr>";
         }
 	    $html .="</table>";
-	    $html .=
-            "<table  border=\"0\" width=\"100%\">
-            <tr>
-               <th colspan=\"3\" style=\"font-weight: bold;\">".i18nRouter::t("billing_information")."</th>
-            </tr>
-            <tr>
-               <td>".i18nRouter::t("date")."</td>
-	           <td>".i18nRouter::t("provider")."</td>
-	           <td>".i18nRouter::t("code")."</td>
-	           <td>".i18nRouter::t("fee")."</td>
-            </tr>
-            <tr>
-	           <td>".$params['date']."</td>
-	           <td>".$params['provider']."</td>
-	           <td>".$params['code']."</td>
-	           <td>".$params['fee']."</td>
-	        </tr>
-           	</table>
-	        <hr>";
         return $html;
     }
 }
 //$e = new SuperBill();
 //$params = new stdClass();
 //$params->pid = 1;
-//$params->from = '2011-09-05';
-//$params->to = '2013-09-05';
-////echo '<pre>';
+//echo '<pre>';
 //print_r($e->CreateSuperBill($params));

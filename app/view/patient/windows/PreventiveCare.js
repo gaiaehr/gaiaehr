@@ -167,7 +167,7 @@ Ext.define('App.view.patient.windows.PreventiveCare', {
 			date=field.up('form').query('[action="date"]')[0],
 			eid=field.up('form').query('[action="eid"]')[0],
 			observation=field.up('form').query('[action="observation"]')[0];
-		eid.setValue(app.currEncounterId);
+		eid.setValue(app.patient.eid);
 		if(newValue){
 			reason.setDisabled(false);
 			date.setDisabled(false);

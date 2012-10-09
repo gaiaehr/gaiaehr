@@ -367,7 +367,6 @@ Ext.define('App.view.Viewport', {
 		var me = this;
 		me.lastCardNode = null;
 		me.currCardCmp = null;
-		me.currEncounterId = null; // to be replace by me.patient
 
         me.fullMode = window.innerWidth >= me.minWidthToFullMode;
 
@@ -1230,8 +1229,8 @@ Ext.define('App.view.Viewport', {
 				}
 
 				function continueSettingPatient(readOnly) {
-					me.currEncounterId = null;
-                    me.patient = {
+
+	                me.patient = {
                         pid     : data.patient.pid,
                         name    : data.patient.name,
                         sex     : data.patient.sex,

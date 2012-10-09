@@ -1403,7 +1403,7 @@ Ext.define('App.view.patient.windows.Medical', {
 				params : {
 					pid    : app.patient.pid,
 					docType: 'laboratory',
-					eid : app.currEncounterId
+					eid : app.patient.eid
 				},
 				success: function(fp, o) {
 					win.close();
@@ -1520,7 +1520,7 @@ Ext.define('App.view.patient.windows.Medical', {
 		var me = this,
 			BtnId = btn.itemId,
 			params = {
-				eid : app.currEncounterId,
+				eid : app.patient.eid,
 				area: BtnId
 			};
 
@@ -1593,40 +1593,40 @@ Ext.define('App.view.patient.windows.Medical', {
 			created_uid: app.user.id,
 			pid        : app.patient.pid,
 			create_date: new Date(),
-			eid        : app.currEncounterId,
+			eid        : app.patient.eid,
 			begin_date : new Date()
 
 		});
 		grid.editingPlugin.startEdit(0, 0);
-		if(app.currEncounterId != null) {
+		if(app.patient.eid != null) {
 			if(grid.action == 'patientImmuListGrid') {
 				params = {
-					eid : app.currEncounterId,
+					eid : app.patient.eid,
 					area: 'review_immunizations'
 				};
 			} else if(grid.action == 'patientAllergiesListGrid') {
 				params = {
-					eid : app.currEncounterId,
+					eid : app.patient.eid,
 					area: 'review_allergies'
 				};
 			} else if(grid.action == 'patientMedicalListGrid') {
 				params = {
-					eid : app.currEncounterId,
+					eid : app.patient.eid,
 					area: 'review_active_problems'
 				};
 			} else if(grid.action == 'patientSurgeryListGrid') {
 				params = {
-					eid : app.currEncounterId,
+					eid : app.patient.eid,
 					area: 'review_surgery'
 				};
 			} else if(grid.action == 'patientDentalListGrid') {
 				params = {
-					eid : app.currEncounterId,
+					eid : app.patient.eid,
 					area: 'review_dental'
 				};
 			} else if(grid.action == 'patientMedicationsListGrid') {
 				params = {
-					eid : app.currEncounterId,
+					eid : app.patient.eid,
 					area: 'review_medications'
 				};
 			}
@@ -1774,7 +1774,7 @@ Ext.define('App.view.patient.windows.Medical', {
 		me.setTitle(p.name + (p.readOnly ? ' <span style="color:red">[' + i18n['read_mode'] + ']</span>' : ''));
 		me.setReadOnly(app.patient.readOnly);
 		for(var i = 0; i < reviewBts.length; i++) {
-			reviewBts[i].setVisible((app.currEncounterId != null));
+			reviewBts[i].setVisible((app.patient.eid != null));
 		}
 		me.labPanelsStore.load();
 		me.patientImmuListStore.load({params: {pid: app.patient.pid}});

@@ -268,7 +268,7 @@ Ext.define('App.view.patient.ItemsToReview', {
         me.patientSurgeryStore.load({params: {pid: app.patient.pid}});
         me.patientDentalStore.load({params: {pid: app.patient.pid}});
         me.patientMedicationsStore.load({params: {pid: app.patient.pid}});
-        Medical.getEncounterReviewByEid(app.currEncounterId, function(provider, response) {
+        Medical.getEncounterReviewByEid(app.patient.eid, function(provider, response) {
             me.column4.getForm().setValues(response.result);
         });
     },
@@ -277,8 +277,8 @@ Ext.define('App.view.patient.ItemsToReview', {
         var me = this, panel = me.down('form'),
             form = panel.getForm(),
             values = form.getFieldValues(),
-            params = { eid:app.currEncounterId };
-        values.eid = app.currEncounterId;
+            params = { eid:app.patient.eid };
+        values.eid = app.patient.eid;
         Medical.reviewAllMedicalWindowEncounter(params, function(provider, response) {
 
         });

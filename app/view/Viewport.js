@@ -1599,7 +1599,7 @@ Ext.define('App.view.Viewport', {
 	},
 
 	getCurrPatient: function() {
-		return this.patient;
+		return this.patient.pid;
 	},
 
 	getApp: function() {

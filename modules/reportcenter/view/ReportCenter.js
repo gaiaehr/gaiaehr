@@ -225,6 +225,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
 	                    {
                             xtype     : 'datefield',
                             fieldLabel: i18n['from'],
+                            allowBlank: false,
                             name      : 'from',
                             format:'Y-m-d'
                         },

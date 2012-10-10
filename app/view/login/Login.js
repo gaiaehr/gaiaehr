@@ -330,10 +330,8 @@ Ext.define('App.view.login.Login',{
     },
 
     onResized:function(){
-        var win = this.winLogon,
-            ch =  win.getHeight() - (win.getHeight() / 2),
-            cw = win.getWidth() - (win.getWidth() / 2);
-
-        win.alignTo(this, 'c', [-cw, -ch]);
+        this.winLogon.alignTo(this, 'c-c');
+        this.notice1.alignTo(Ext.getBody(),'t-t',[0,10]);
+        if(this.notice2) this.notice2.alignTo(Ext.getBody(),'t-t',[0,85]);
     }
 });

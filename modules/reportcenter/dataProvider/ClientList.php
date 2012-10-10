@@ -6,7 +6,8 @@
  * Time: 12:24 PM
  * To change this template use File | Settings | File Templates.
  */
-if(!isset($_SESSION)) {
+if(!isset($_SESSION)) 
+{
     session_name('GaiaEHR');
     session_start();
     session_cache_limiter('private');
@@ -35,7 +36,8 @@ class ClientList extends Reports
         return;
     }
 
-    public function CreateClientList(stdClass $params){
+    public function CreateClientList(stdClass $params)
+    {
 	    $html = "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../../resources/css/printReport.css\">
             <h3>Client List Report (Patient List)</h3>
 	        <table>
@@ -50,7 +52,8 @@ class ClientList extends Reports
 	                <th>".i18nRouter::t('home_phone')."</th>
 	                <th>".i18nRouter::t('work_phone')."</th>
 	            </tr>";
-        foreach($this->getClientList($params->from,$params->to) AS $eData) {
+        foreach($this->getClientList($params->from,$params->to) AS $eData) 
+        {
             $html .= $this->htmlClientList($eData);
         }
 	    $html .= "</table><div style=\"page-break-after:always\"></div>";
@@ -80,9 +83,11 @@ class ClientList extends Reports
     }
 
 
-    public function htmlClientList($eData){
+    public function htmlClientList($eData)
+    {
 	    $html = '';
-        foreach($eData as $row) {
+        foreach($eData as $row) 
+        {
 		    $html .= "<tr>
             <td>".date('m/d/Y', strtotime($row['close_date']))."</td>
             <td>".$row['PatientName']."</td>
@@ -93,7 +98,7 @@ class ClientList extends Reports
             <td>".$row['zipcode']."</td>
             <td>".$row['home_phone']."</td>
             <td>".$row['work_phone']."</td>
-        </tr>";
+        	</tr>";
         }
 	    return $html;
     }

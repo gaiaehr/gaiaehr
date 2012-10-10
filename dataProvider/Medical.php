@@ -350,28 +350,19 @@ class Medical
 		$id = $data['id'];
 		unset($data['id']);
 
-		$fo = array();
 		foreach($data as $key => $val){
 			$foo = explode('_', $key);
-			if(sizeof($foo) > 1){
-				$fo[0] = $val;
+			if(sizeof($foo) == 1){
+				$observationValue = $val;
 			}else{
 				$this->db->setSQL("UPDATE patient_labs_results
-									  SET observation_value = '$val',
-									      unit = '$fo[0]'
+									  SET observation_value = '$observationValue',
+									      unit = '$val'
 								    WHERE patient_lab_id = '$id'
 								      AND observation_loinc = '$foo[0]'");
 				$this->db->execLog();
-				$fo = array();
 			}
-
-
-
 		}
-
-
-		//unset($data['id'],$data['data'],$data['columns']);
-		//$this->db->setSQL($this->db->sqlBind($data,'patient_labs_results','U',"id = '$params->id'"));
 		return $params;
 	}
 

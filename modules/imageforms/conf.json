@@ -1,24 +1,16 @@
 {
-	"name":"Report Center Module",
+	"name":"Image Base Form",
 	"version":"1.0.0",
-	"extjs_version":"4.1.1",
-	"author":"Gino Rivera Falú",
-	"description":"A report center for GaiaEHR, has all the necessary report for start ups.",
-	"dir":"reportcenter",
-	"enable":false,
+	"extjs_version":"4.1.1a",
+	"author":"Ernesto J Rodriguez",
+	"description":"Module to add image forms functionality",
+	"dir":"imageforms",
+	"enable":true,
 	"debug":false,
 	"actionsAPI":{
-		"SuperBill":{
+		"TEst":{
 			"methods":{
 				"CreateSuperBill":
-				{
-					"len":1
-				}
-			}
-		},
-		"ClientList":{
-			"methods":{
-				"CreateClientList":
 				{
 					"len":1
 				}

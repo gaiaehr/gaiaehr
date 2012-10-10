@@ -19,6 +19,9 @@ class Reports
 	protected $fileManager;
     protected $pdf;
 
+	/*
+	 * The first thing all classes do, the construct.
+	 */
     function __construct()
     {
         $this->fileManager = new FileManager();

@@ -26,6 +26,10 @@ class ClientList extends Reports
     private $user;
     private $patient;
     private $fees;
+	
+	/*
+	 * The first thing all classes do, the construct.
+	 */
     function __construct()
     {
 	    parent::__construct();

@@ -27,6 +27,10 @@ class SuperBill extends Reports
     private $patient;
     private $fees;
     private $encounter;
+	
+	/*
+	 * The first thing all classes do, the construct.
+	 */
     function __construct()
     {
 	    parent::__construct();

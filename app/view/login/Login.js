@@ -185,7 +185,7 @@ Ext.define('App.view.login.Login',{
             style:'text-align:center',
             html:'<h1>~~~ NOTICE ~~~</h1>This demo version is 500% slower because files are not minified (compressed) or compiled.<br>' +
                 'Please allow about 30sec for the app to download.<br>' +
-                '<span style="text-decoration: underline;">Compiled version loads between 3 -5 seconds.</span>',
+                '<span style="text-decoration: underline;">Compiled version loads between 3 - 5 seconds.</span>',
             seconds:10
         }).show();
 

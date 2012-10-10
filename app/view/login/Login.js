@@ -178,18 +178,29 @@ Ext.define('App.view.login.Login',{
         }).show();
 
 
-        me.logoutWarinigWindow = Ext.create('Ext.Container',{
+        me.notice1 = Ext.create('Ext.Container',{
             floating:true,
-            top:30,
             cls:'logout-warning-window',
-            style:'text-align:center',
-            html:'<h1>~~~ NOTICE ~~~</h1>This demo version is 500% slower because files are not minified (compressed) or compiled.<br>' +
-                'Please allow about 30sec for the app to download.<br>' +
-                '<span style="text-decoration: underline;">Compiled version loads between 3 - 5 seconds.</span>',
+            style:'text-align:center; width:800',
+            html:'This demo version is 500% slower because files are not minified (compressed) or compiled.<br>' +
+                'Please allow about 30sec for the app to download. <span style="text-decoration: underline;">Compiled version loads between 3 - 5 seconds.</span>',
             seconds:10
         }).show();
+        me.notice1.alignTo(Ext.getBody(),'t-t',[0,10]);
 
-        me.logoutWarinigWindow.alignTo(Ext.getBody(),'t-t',[0,20]);
+        if(!Ext.isChrome && !Ext.isOpera10_5){
+            me.notice2 = Ext.create('Ext.Container',{
+                floating:true,
+                cls:'logout-warning-window',
+                style:'text-align:center; width:800',
+                html:'GaiaEHR rely heavily on javascript and web 2.0 / ajax requests, although any browser will do the work<br>' +
+                    'we strongly recomend to used any of the fastest browsers to day, <span style="text-decoration: underline;">' +
+                    '<a href="https://www.google.com/intl/en/chrome/" target="_blank" style="color: white;">Google Chrome</a></span> or <a href="http://www.opera.com/" target="_blank" style="color: white;">Opera</a></span>',
+                seconds:10
+            }).show();
+            me.notice2.alignTo(Ext.getBody(),'t-t',[0,85]);
+        }
+
 
         me.listeners = {
             resize:me.onResized

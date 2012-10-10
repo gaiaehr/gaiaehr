@@ -41,7 +41,7 @@
 	],
 	"install":[
 		{
-			"file":"sql/install_schema.sql"
+			"file":""
 		}
 	]
 

@@ -85,19 +85,15 @@ class Calendar {
      * @param stdClass $params
      * @return array
      */
-    public function addEvent(stdClass $params){
-
-        $sql = "SELECT fname, mname, lname FROM form_data_demographics WHERE pid='$params->patient_id'";
-        $this->db->setSQL($sql);
-        $rec = $this->db->fetchRecord();
-        $fullName = Person::fullname($rec['fname'],$rec['mname'],$rec['lname']);
-
+    public function addEvent(stdClass $params)
+    {
+		$row = array();
         $row['user_id']             = $params->calendarId;
         $row['category']            = $params->category;
         $row['facility']            = $params->facility;
         $row['billing_facillity']   = $params->billing_facility;
         $row['patient_id']          = $params->patient_id;
-        $row['title']               = $fullName;
+        $row['title']               = $params->title;
         $row['status']              = $params->status;
         $row['start']               = $params->start;
         $row['end']                 = $params->end;
@@ -107,23 +103,10 @@ class Calendar {
         $row['url']                 = $params->url;
         $row['ad']                  = $params->ad;
 
-        $sql = $this->db->sqlBind($row, "calendar_events", "I");
-        $this->db->setSQL($sql);
-        $ret = $this->db->execLog();
-        // ********************************************************************
-        // If no error found, return the same record back to the calendar
-        // ********************************************************************
-        if ($ret[2]){
-            echo '{ success: false, errors: { reason: "'. $ret[2] .'" }}';
-        } else {
-            $sql = ("SELECT * FROM calendar_events WHERE id = '$this->db->lastInsertId'");
-            $this->db->setSQL($sql);
-            $rows = array();
-            foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row){
-                array_push($rows, $row);
-            }
-            return array('success'=>true, 'message'=>'Loaded data', 'data'=>$rows);
-        }
+        $this->db->setSQL($this->db->sqlBind($row, 'calendar_events', 'I'));
+        $this->db->execLog();
+
+        return array('success'=>true, 'message'=>'Loaded data', 'data'=>$params);
     }
 
     /**

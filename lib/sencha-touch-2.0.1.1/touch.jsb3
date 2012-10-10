@@ -1,0 +1,1681 @@
+{
+    "projectName": "Sencha Touch",
+    "licenseText": "\nThis file is part of Sencha Touch 2\n\nCopyright (c) 2012 Sencha Inc\n\nContact:  http://www.sencha.com/contact\n\nCommercial Usage\nLicensees holding valid commercial licenses may use this file in accordance with the Commercial Software License Agreement provided with the Software or, alternatively, in accordance with the terms contained in a written agreement between you and Sencha.\n\nIf you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.\n",
+    "packages": [
+        {
+            "name": "Foundation",
+            "target": "pkgs/foundation.js",
+            "id": "foundation",
+            "files": [
+                {
+                    "path": "src/core/",
+                    "name": "Ext.js"
+                },
+                {
+                    "path": "src/core/version/",
+                    "name": "Version.js"
+                },
+                {
+                    "path": "src/core/lang/",
+                    "name": "String.js"
+                },
+                {
+                    "path": "src/core/lang/",
+                    "name": "Array.js"
+                },
+                {
+                    "path": "src/core/lang/",
+                    "name": "Number.js"
+                },
+                {
+                    "path": "src/core/lang/",
+                    "name": "Object.js"
+                },
+                {
+                    "path": "src/core/lang/",
+                    "name": "Function.js"
+                },
+                {
+                    "path": "src/core/lang/",
+                    "name": "JSON.js"
+                },
+                {
+                    "path": "src/core/lang/",
+                    "name": "Error.js"
+                },
+                {
+                    "path": "src/core/lang/",
+                    "name": "Date.js"
+                },
+                {
+                    "path": "src/core/class/",
+                    "name": "Base.js"
+                },
+                {
+                    "path": "src/core/class/",
+                    "name": "Class.js"
+                },
+                {
+                    "path": "src/core/class/",
+                    "name": "ClassManager.js"
+                },
+                {
+                    "path": "src/core/class/",
+                    "name": "Loader.js"
+                }
+            ]
+        },
+        {
+            "name": "DOM",
+            "target": "pkgs/dom.js",
+            "id": "dom",
+            "files": [
+                {
+                    "path": "src/core/",
+                    "name": "EventManager.js"
+                },
+                {
+                    "path": "src/core/",
+                    "name": "Ext-more.js"
+                },
+                {
+                    "path": "src/env/",
+                    "name": "Browser.js"
+                },
+                {
+                    "path": "src/env/",
+                    "name": "OS.js"
+                },
+                {
+                    "path": "src/env/",
+                    "name": "Feature.js"
+                },
+                {
+                    "path": "src/dom/",
+                    "name": "Query.js"
+                },
+                {
+                    "path": "src/dom/",
+                    "name": "Helper.js"
+                },
+                {
+                    "path": "src/mixin/",
+                    "name": "Identifiable.js",
+                    "clsName": "Ext.mixin.Identifiable"
+                },
+                {
+                    "path": "src/dom/",
+                    "name": "Element.js"
+                },
+                {
+                    "path": "src/dom/",
+                    "name": "Element.static.js"
+                },
+                {
+                    "path": "src/dom/",
+                    "name": "Element.alignment.js"
+                },
+                {
+                    "path": "src/dom/",
+                    "name": "Element.insertion.js"
+                },
+                {
+                    "path": "src/dom/",
+                    "name": "Element.position.js"
+                },
+                {
+                    "path": "src/dom/",
+                    "name": "Element.style.js"
+                },
+                {
+                    "path": "src/dom/",
+                    "name": "Element.traversal.js"
+                },
+                {
+                    "path": "src/dom/",
+                    "name": "CompositeElementLite.js"
+                }
+            ]
+        },
+        {
+            "name": "Manifest",
+            "target": "pkgs/manifest.js",
+            "id": "manifest",
+            "files": [
+                {
+                    "path": "bootstrap/",
+                    "name": "prefix.js"
+                },
+                {
+                    "path": "bootstrap/",
+                    "name": "data-release.js"
+                },
+                {
+                    "path": "",
+                    "name": "sencha-touch-debug-suffix.js"
+                },
+                {
+                    "path": "bootstrap/",
+                    "name": "suffix.js"
+                }
+            ]
+        },
+        {
+            "name": "All Manifest",
+            "target": "pkgs/all_manifest.js",
+            "id": "all_manifest",
+            "files": [
+                {
+                    "path": "",
+                    "name": "sencha-touch-all-debug-suffix.js"
+                }
+            ]
+        },
+        {
+            "name": "Classes",
+            "target": "pkgs/classes.js",
+            "id": "classes",
+            "files": [
+                {
+                    "clsName": "Ext.ComponentManager",
+                    "name": "ComponentManager.js",
+                    "path": "src/"
+                },
+                {
+                    "clsName": "Ext.ComponentQuery",
+                    "name": "ComponentQuery.js",
+                    "path": "src/"
+                },
+                {
+                    "clsName": "Ext.XTemplateParser",
+                    "name": "XTemplateParser.js",
+                    "path": "src/"
+                },
+                {
+                    "clsName": "Ext.app.Action",
+                    "name": "Action.js",
+                    "path": "src/app/"
+                },
+                {
+                    "clsName": "Ext.app.Route",
+                    "name": "Route.js",
+                    "path": "src/app/"
+                },
+                {
+                    "clsName": "Ext.app.Router",
+                    "name": "Router.js",
+                    "path": "src/app/"
+                },
+                {
+                    "clsName": "Ext.behavior.Behavior",
+                    "name": "Behavior.js",
+                    "path": "src/behavior/"
+                },
+                {
+                    "clsName": "Ext.data.Error",
+                    "name": "Error.js",
+                    "path": "src/data/"
+                },
+                {
+                    "clsName": "Ext.data.JsonP",
+                    "name": "JsonP.js",
+                    "path": "src/data/"
+                },
+                {
+                    "clsName": "Ext.data.Operation",
+                    "name": "Operation.js",
+                    "path": "src/data/"
+                },
+                {
+                    "clsName": "Ext.data.Request",
+                    "name": "Request.js",
+                    "path": "src/data/"
+                },
+                {
+                    "clsName": "Ext.data.ResultSet",
+                    "name": "ResultSet.js",
+                    "path": "src/data/"
+                },
+                {
+                    "clsName": "Ext.data.SortTypes",
+                    "name": "SortTypes.js",
+                    "path": "src/data/"
+                },
+                {
+                    "clsName": "Ext.data.Types",
+                    "name": "Types.js",
+                    "path": "src/data/"
+                },
+                {
+                    "clsName": "Ext.data.Validations",
+                    "name": "Validations.js",
+                    "path": "src/data/"
+                },
+                {
+                    "clsName": "Ext.data.identifier.Simple",
+                    "name": "Simple.js",
+                    "path": "src/data/identifier/"
+                },
+                {
+                    "clsName": "Ext.data.identifier.Uuid",
+                    "name": "Uuid.js",
+                    "path": "src/data/identifier/"
+                },
+                {
+                    "clsName": "Ext.data.writer.Writer",
+                    "name": "Writer.js",
+                    "path": "src/data/writer/"
+                },
+                {
+                    "clsName": "Ext.data.writer.Xml",
+                    "name": "Xml.js",
+                    "path": "src/data/writer/"
+                },
+                {
+                    "clsName": "Ext.direct.RemotingMethod",
+                    "name": "RemotingMethod.js",
+                    "path": "src/direct/"
+                },
+                {
+                    "clsName": "Ext.direct.Transaction",
+                    "name": "Transaction.js",
+                    "path": "src/direct/"
+                },
+                {
+                    "clsName": "Ext.dom.CompositeElement",
+                    "name": "CompositeElement.js",
+                    "path": "src/dom/"
+                },
+                {
+                    "clsName": "Ext.event.Controller",
+                    "name": "Controller.js",
+                    "path": "src/event/"
+                },
+                {
+                    "clsName": "Ext.event.Event",
+                    "name": "Event.js",
+                    "path": "src/event/"
+                },
+                {
+                    "clsName": "Ext.event.ListenerStack",
+                    "name": "ListenerStack.js",
+                    "path": "src/event/"
+                },
+                {
+                    "clsName": "Ext.event.publisher.Publisher",
+                    "name": "Publisher.js",
+                    "path": "src/event/publisher/"
+                },
+                {
+                    "clsName": "Ext.event.recognizer.Recognizer",
+                    "name": "Recognizer.js",
+                    "path": "src/event/recognizer/"
+                },
+                {
+                    "clsName": "Ext.event.recognizer.Touch",
+                    "name": "Touch.js",
+                    "path": "src/event/recognizer/"
+                },
+                {
+                    "clsName": "Ext.fx.State",
+                    "name": "State.js",
+                    "path": "src/fx/"
+                },
+                {
+                    "clsName": "Ext.fx.easing.Abstract",
+                    "name": "Abstract.js",
+                    "path": "src/fx/easing/"
+                },
+                {
+                    "clsName": "Ext.fx.easing.Bounce",
+                    "name": "Bounce.js",
+                    "path": "src/fx/easing/"
+                },
+                {
+                    "clsName": "Ext.fx.easing.Linear",
+                    "name": "Linear.js",
+                    "path": "src/fx/easing/"
+                },
+                {
+                    "clsName": "Ext.fx.easing.Momentum",
+                    "name": "Momentum.js",
+                    "path": "src/fx/easing/"
+                },
+                {
+                    "clsName": "Ext.log.Base",
+                    "name": "Base.js",
+                    "path": "src/log/"
+                },
+                {
+                    "clsName": "Ext.log.Logger",
+                    "name": "Logger.js",
+                    "path": "src/log/"
+                },
+                {
+                    "clsName": "Ext.log.filter.Filter",
+                    "name": "Filter.js",
+                    "path": "src/log/filter/"
+                },
+                {
+                    "clsName": "Ext.log.filter.Priority",
+                    "name": "Priority.js",
+                    "path": "src/log/filter/"
+                },
+                {
+                    "clsName": "Ext.log.formatter.Formatter",
+                    "name": "Formatter.js",
+                    "path": "src/log/formatter/"
+                },
+                {
+                    "clsName": "Ext.log.writer.Writer",
+                    "name": "Writer.js",
+                    "path": "src/log/writer/"
+                },
+                {
+                    "clsName": "Ext.mixin.Mixin",
+                    "name": "Mixin.js",
+                    "path": "src/mixin/"
+                },
+                {
+                    "clsName": "Ext.mixin.Selectable",
+                    "name": "Selectable.js",
+                    "path": "src/mixin/"
+                },
+                {
+                    "clsName": "Ext.mixin.Traversable",
+                    "name": "Traversable.js",
+                    "path": "src/mixin/"
+                },
+                {
+                    "clsName": "Ext.util.DelayedTask",
+                    "name": "DelayedTask.js",
+                    "path": "src/util/"
+                },
+                {
+                    "clsName": "Ext.util.Filter",
+                    "name": "Filter.js",
+                    "path": "src/util/"
+                },
+                {
+                    "clsName": "Ext.util.Point",
+                    "name": "Point.js",
+                    "path": "src/util/"
+                },
+                {
+                    "clsName": "Ext.util.Region",
+                    "name": "Region.js",
+                    "path": "src/util/"
+                },
+                {
+                    "clsName": "Ext.util.Sorter",
+                    "name": "Sorter.js",
+                    "path": "src/util/"
+                },
+                {
+                    "clsName": "Ext.util.Inflector",
+                    "name": "Inflector.js",
+                    "path": "src/util/"
+                },
+                {
+                    "clsName": "Ext.Anim",
+                    "name": "Anim.js",
+                    "path": "src/"
+                },
+                {
+                    "clsName": "Ext.XTemplateCompiler",
+                    "name": "XTemplateCompiler.js",
+                    "path": "src/"
+                },
+                {
+                    "clsName": "Ext.data.Field",
+                    "name": "Field.js",
+                    "path": "src/data/"
+                },
+                {
+                    "clsName": "Ext.data.identifier.Sequential",
+                    "name": "Sequential.js",
+                    "path": "src/data/identifier/"
+                },
+                {
+                    "clsName": "Ext.data.writer.Json",
+                    "name": "Json.js",
+                    "path": "src/data/writer/"
+                },
+                {
+                    "clsName": "Ext.event.Dispatcher",
+                    "name": "Dispatcher.js",
+                    "path": "src/event/"
+                },
+                {
+                    "clsName": "Ext.event.Dom",
+                    "name": "Dom.js",
+                    "path": "src/event/"
+                },
+                {
+                    "clsName": "Ext.event.Touch",
+                    "name": "Touch.js",
+                    "path": "src/event/"
+                },
+                {
+                    "clsName": "Ext.event.publisher.ComponentPaint",
+                    "name": "ComponentPaint.js",
+                    "path": "src/event/publisher/"
+                },
+                {
+                    "clsName": "Ext.event.publisher.Dom",
+                    "name": "Dom.js",
+                    "path": "src/event/publisher/"
+                },
+                {
+                    "clsName": "Ext.event.publisher.TouchGesture",
+                    "name": "TouchGesture.js",
+                    "path": "src/event/publisher/"
+                },
+                {
+                    "clsName": "Ext.event.recognizer.MultiTouch",
+                    "name": "MultiTouch.js",
+                    "path": "src/event/recognizer/"
+                },
+                {
+                    "clsName": "Ext.event.recognizer.Pinch",
+                    "name": "Pinch.js",
+                    "path": "src/event/recognizer/"
+                },
+                {
+                    "clsName": "Ext.event.recognizer.Rotate",
+                    "name": "Rotate.js",
+                    "path": "src/event/recognizer/"
+                },
+                {
+                    "clsName": "Ext.event.recognizer.SingleTouch",
+                    "name": "SingleTouch.js",
+                    "path": "src/event/recognizer/"
+                },
+                {
+                    "clsName": "Ext.event.recognizer.DoubleTap",
+                    "name": "DoubleTap.js",
+                    "path": "src/event/recognizer/"
+                },
+                {
+                    "clsName": "Ext.event.recognizer.Drag",
+                    "name": "Drag.js",
+                    "path": "src/event/recognizer/"
+                },
+                {
+                    "clsName": "Ext.event.recognizer.LongPress",
+                    "name": "LongPress.js",
+                    "path": "src/event/recognizer/"
+                },
+                {
+                    "clsName": "Ext.event.recognizer.Tap",
+                    "name": "Tap.js",
+                    "path": "src/event/recognizer/"
+                },
+                {
+                    "clsName": "Ext.DateExtras",
+                    "name": "DateExtras.js",
+                    "path": "src/"
+                },
+                {
+                    "clsName": "Ext.fx.Easing",
+                    "name": "Easing.js",
+                    "path": "src/fx/"
+                },
+                {
+                    "clsName": "Ext.fx.easing.BoundMomentum",
+                    "name": "BoundMomentum.js",
+                    "path": "src/fx/easing/"
+                },
+                {
+                    "clsName": "Ext.fx.easing.EaseIn",
+                    "name": "EaseIn.js",
+                    "path": "src/fx/easing/"
+                },
+                {
+                    "clsName": "Ext.fx.easing.EaseOut",
+                    "name": "EaseOut.js",
+                    "path": "src/fx/easing/"
+                },
+                {
+                    "clsName": "Ext.log.formatter.Default",
+                    "name": "Default.js",
+                    "path": "src/log/formatter/"
+                },
+                {
+                    "clsName": "Ext.log.formatter.Identity",
+                    "name": "Identity.js",
+                    "path": "src/log/formatter/"
+                },
+                {
+                    "clsName": "Ext.log.writer.Console",
+                    "name": "Console.js",
+                    "path": "src/log/writer/"
+                },
+                {
+                    "clsName": "Ext.log.writer.DocumentTitle",
+                    "name": "DocumentTitle.js",
+                    "path": "src/log/writer/"
+                },
+                {
+                    "clsName": "Ext.mixin.Filterable",
+                    "name": "Filterable.js",
+                    "path": "src/mixin/"
+                },
+                {
+                    "clsName": "Ext.mixin.Observable",
+                    "name": "Observable.js",
+                    "path": "src/mixin/"
+                },
+                {
+                    "clsName": "Ext.Evented",
+                    "name": "Evented.js",
+                    "path": "src/"
+                },
+                {
+                    "clsName": "Ext.AbstractComponent",
+                    "name": "AbstractComponent.js",
+                    "path": "src/"
+                },
+                {
+                    "clsName": "Ext.app.Controller",
+                    "name": "Controller.js",
+                    "path": "src/app/"
+                },
+                {
+                    "clsName": "Ext.app.History",
+                    "name": "History.js",
+                    "path": "src/app/"
+                },
+                {
+                    "clsName": "Ext.app.Profile",
+                    "name": "Profile.js",
+                    "path": "src/app/"
+                },
+                {
+                    "clsName": "Ext.app.Application",
+                    "name": "Application.js",
+                    "path": "src/app/"
+                },
+                {
+                    "clsName": "Ext.data.Batch",
+                    "name": "Batch.js",
+                    "path": "src/data/"
+                },
+                {
+                    "clsName": "Ext.data.Connection",
+                    "name": "Connection.js",
+                    "path": "src/data/"
+                },
+                {
+                    "clsName": "Ext.Ajax",
+                    "name": "Ajax.js",
+                    "path": "src/"
+                },
+                {
+                    "clsName": "Ext.data.reader.Reader",
+                    "name": "Reader.js",
+                    "path": "src/data/reader/"
+                },
+                {
+                    "clsName": "Ext.data.reader.Json",
+                    "name": "Json.js",
+                    "path": "src/data/reader/"
+                },
+                {
+                    "clsName": "Ext.data.proxy.Proxy",
+                    "name": "Proxy.js",
+                    "path": "src/data/proxy/"
+                },
+                {
+                    "clsName": "Ext.data.proxy.Client",
+                    "name": "Client.js",
+                    "path": "src/data/proxy/"
+                },
+                {
+                    "clsName": "Ext.data.proxy.Memory",
+                    "name": "Memory.js",
+                    "path": "src/data/proxy/"
+                },
+                {
+                    "clsName": "Ext.data.proxy.Server",
+                    "name": "Server.js",
+                    "path": "src/data/proxy/"
+                },
+                {
+                    "clsName": "Ext.data.proxy.JsonP",
+                    "name": "JsonP.js",
+                    "path": "src/data/proxy/"
+                },
+                {
+                    "clsName": "Ext.data.proxy.WebStorage",
+                    "name": "WebStorage.js",
+                    "path": "src/data/proxy/"
+                },
+                {
+                    "clsName": "Ext.data.proxy.LocalStorage",
+                    "name": "LocalStorage.js",
+                    "path": "src/data/proxy/"
+                },
+                {
+                    "clsName": "Ext.data.proxy.SessionStorage",
+                    "name": "SessionStorage.js",
+                    "path": "src/data/proxy/"
+                },
+                {
+                    "clsName": "Ext.data.reader.Array",
+                    "name": "Array.js",
+                    "path": "src/data/reader/"
+                },
+                {
+                    "clsName": "Ext.data.reader.Xml",
+                    "name": "Xml.js",
+                    "path": "src/data/reader/"
+                },
+                {
+                    "clsName": "Ext.direct.Provider",
+                    "name": "Provider.js",
+                    "path": "src/direct/"
+                },
+                {
+                    "clsName": "Ext.direct.JsonProvider",
+                    "name": "JsonProvider.js",
+                    "path": "src/direct/"
+                },
+                {
+                    "clsName": "Ext.direct.PollingProvider",
+                    "name": "PollingProvider.js",
+                    "path": "src/direct/"
+                },
+                {
+                    "clsName": "Ext.fx.animation.Abstract",
+                    "name": "Abstract.js",
+                    "path": "src/fx/animation/"
+                },
+                {
+                    "clsName": "Ext.fx.animation.Cube",
+                    "name": "Cube.js",
+                    "path": "src/fx/animation/"
+                },
+                {
+                    "clsName": "Ext.fx.animation.Fade",
+                    "name": "Fade.js",
+                    "path": "src/fx/animation/"
+                },
+                {
+                    "clsName": "Ext.fx.animation.FadeOut",
+                    "name": "FadeOut.js",
+                    "path": "src/fx/animation/"
+                },
+                {
+                    "clsName": "Ext.fx.animation.Flip",
+                    "name": "Flip.js",
+                    "path": "src/fx/animation/"
+                },
+                {
+                    "clsName": "Ext.fx.animation.Pop",
+                    "name": "Pop.js",
+                    "path": "src/fx/animation/"
+                },
+                {
+                    "clsName": "Ext.fx.animation.PopOut",
+                    "name": "PopOut.js",
+                    "path": "src/fx/animation/"
+                },
+                {
+                    "clsName": "Ext.fx.animation.Slide",
+                    "name": "Slide.js",
+                    "path": "src/fx/animation/"
+                },
+                {
+                    "clsName": "Ext.fx.animation.SlideOut",
+                    "name": "SlideOut.js",
+                    "path": "src/fx/animation/"
+                },
+                {
+                    "clsName": "Ext.fx.Animation",
+                    "name": "Animation.js",
+                    "path": "src/fx/"
+                },
+                {
+                    "clsName": "Ext.fx.layout.card.Abstract",
+                    "name": "Abstract.js",
+                    "path": "src/fx/layout/card/"
+                },
+                {
+                    "clsName": "Ext.fx.layout.card.Scroll",
+                    "name": "Scroll.js",
+                    "path": "src/fx/layout/card/"
+                },
+                {
+                    "clsName": "Ext.fx.layout.card.Style",
+                    "name": "Style.js",
+                    "path": "src/fx/layout/card/"
+                },
+                {
+                    "clsName": "Ext.fx.layout.card.Cover",
+                    "name": "Cover.js",
+                    "path": "src/fx/layout/card/"
+                },
+                {
+                    "clsName": "Ext.fx.layout.card.Cube",
+                    "name": "Cube.js",
+                    "path": "src/fx/layout/card/"
+                },
+                {
+                    "clsName": "Ext.fx.layout.card.Fade",
+                    "name": "Fade.js",
+                    "path": "src/fx/layout/card/"
+                },
+                {
+                    "clsName": "Ext.fx.layout.card.Flip",
+                    "name": "Flip.js",
+                    "path": "src/fx/layout/card/"
+                },
+                {
+                    "clsName": "Ext.fx.layout.card.Pop",
+                    "name": "Pop.js",
+                    "path": "src/fx/layout/card/"
+                },
+                {
+                    "clsName": "Ext.fx.layout.card.Reveal",
+                    "name": "Reveal.js",
+                    "path": "src/fx/layout/card/"
+                },
+                {
+                    "clsName": "Ext.fx.layout.card.Slide",
+                    "name": "Slide.js",
+                    "path": "src/fx/layout/card/"
+                },
+                {
+                    "clsName": "Ext.fx.layout.Card",
+                    "name": "Card.js",
+                    "path": "src/fx/layout/"
+                },
+                {
+                    "clsName": "Ext.fx.runner.Css",
+                    "name": "Css.js",
+                    "path": "src/fx/runner/"
+                },
+                {
+                    "clsName": "Ext.fx.runner.CssTransition",
+                    "name": "CssTransition.js",
+                    "path": "src/fx/runner/"
+                },
+                {
+                    "clsName": "Ext.fx.Runner",
+                    "name": "Runner.js",
+                    "path": "src/fx/"
+                },
+                {
+                    "clsName": "Ext.layout.Default",
+                    "name": "Default.js",
+                    "path": "src/layout/"
+                },
+                {
+                    "clsName": "Ext.layout.AbstractBox",
+                    "name": "AbstractBox.js",
+                    "path": "src/layout/"
+                },
+                {
+                    "clsName": "Ext.layout.Fit",
+                    "name": "Fit.js",
+                    "path": "src/layout/"
+                },
+                {
+                    "clsName": "Ext.layout.Card",
+                    "name": "Card.js",
+                    "path": "src/layout/"
+                },
+                {
+                    "clsName": "Ext.layout.HBox",
+                    "name": "HBox.js",
+                    "path": "src/layout/"
+                },
+                {
+                    "clsName": "Ext.layout.VBox",
+                    "name": "VBox.js",
+                    "path": "src/layout/"
+                },
+                {
+                    "clsName": "Ext.layout.Layout",
+                    "name": "Layout.js",
+                    "path": "src/layout/"
+                },
+                {
+                    "clsName": "Ext.log.writer.Remote",
+                    "name": "Remote.js",
+                    "path": "src/log/writer/"
+                },
+                {
+                    "clsName": "Ext.mixin.Sortable",
+                    "name": "Sortable.js",
+                    "path": "src/mixin/"
+                },
+                {
+                    "clsName": "Ext.util.AbstractMixedCollection",
+                    "name": "AbstractMixedCollection.js",
+                    "path": "src/util/"
+                },
+                {
+                    "clsName": "Ext.util.Collection",
+                    "name": "Collection.js",
+                    "path": "src/util/"
+                },
+                {
+                    "clsName": "Ext.data.Errors",
+                    "name": "Errors.js",
+                    "path": "src/data/"
+                },
+                {
+                    "clsName": "Ext.data.StoreManager",
+                    "name": "StoreManager.js",
+                    "path": "src/data/"
+                },
+                {
+                    "clsName": "Ext.direct.Manager",
+                    "name": "Manager.js",
+                    "path": "src/direct/"
+                },
+                {
+                    "clsName": "Ext.data.proxy.Direct",
+                    "name": "Direct.js",
+                    "path": "src/data/proxy/"
+                },
+                {
+                    "clsName": "Ext.direct.Event",
+                    "name": "Event.js",
+                    "path": "src/direct/"
+                },
+                {
+                    "clsName": "Ext.direct.RemotingEvent",
+                    "name": "RemotingEvent.js",
+                    "path": "src/direct/"
+                },
+                {
+                    "clsName": "Ext.direct.ExceptionEvent",
+                    "name": "ExceptionEvent.js",
+                    "path": "src/direct/"
+                },
+                {
+                    "clsName": "Ext.util.Format",
+                    "name": "Format.js",
+                    "path": "src/util/"
+                },
+                {
+                    "clsName": "Ext.Template",
+                    "name": "Template.js",
+                    "path": "src/"
+                },
+                {
+                    "clsName": "Ext.XTemplate",
+                    "name": "XTemplate.js",
+                    "path": "src/"
+                },
+                {
+                    "clsName": "Ext.util.Geolocation",
+                    "name": "Geolocation.js",
+                    "path": "src/util/"
+                },
+                {
+                    "clsName": "Ext.util.Grouper",
+                    "name": "Grouper.js",
+                    "path": "src/util/"
+                },
+                {
+                    "clsName": "Ext.util.HashMap",
+                    "name": "HashMap.js",
+                    "path": "src/util/"
+                },
+                {
+                    "clsName": "Ext.AbstractManager",
+                    "name": "AbstractManager.js",
+                    "path": "src/"
+                },
+                {
+                    "clsName": "Ext.data.ModelManager",
+                    "name": "ModelManager.js",
+                    "path": "src/data/"
+                },
+                {
+                    "clsName": "Ext.data.NodeInterface",
+                    "name": "NodeInterface.js",
+                    "path": "src/data/"
+                },
+                {
+                    "clsName": "Ext.data.association.Association",
+                    "name": "Association.js",
+                    "path": "src/data/association/"
+                },
+                {
+                    "clsName": "Ext.data.association.BelongsTo",
+                    "name": "BelongsTo.js",
+                    "path": "src/data/association/"
+                },
+                {
+                    "clsName": "Ext.data.association.HasMany",
+                    "name": "HasMany.js",
+                    "path": "src/data/association/"
+                },
+                {
+                    "clsName": "Ext.data.association.HasOne",
+                    "name": "HasOne.js",
+                    "path": "src/data/association/"
+                },
+                {
+                    "clsName": "Ext.util.LineSegment",
+                    "name": "LineSegment.js",
+                    "path": "src/util/"
+                },
+                {
+                    "clsName": "Ext.util.SizeMonitor",
+                    "name": "SizeMonitor.js",
+                    "path": "src/util/"
+                },
+                {
+                    "clsName": "Ext.event.publisher.ComponentSize",
+                    "name": "ComponentSize.js",
+                    "path": "src/event/publisher/"
+                },
+                {
+                    "clsName": "Ext.util.Sortable",
+                    "name": "Sortable.js",
+                    "path": "src/util/"
+                },
+                {
+                    "clsName": "Ext.util.MixedCollection",
+                    "name": "MixedCollection.js",
+                    "path": "src/util/"
+                },
+                {
+                    "clsName": "Ext.ItemCollection",
+                    "name": "ItemCollection.js",
+                    "path": "src/"
+                },
+                {
+                    "clsName": "Ext.data.proxy.Ajax",
+                    "name": "Ajax.js",
+                    "path": "src/data/proxy/"
+                },
+                {
+                    "clsName": "Ext.data.Model",
+                    "name": "Model.js",
+                    "path": "src/data/"
+                },
+                {
+                    "clsName": "Ext.data.Store",
+                    "name": "Store.js",
+                    "path": "src/data/"
+                },
+                {
+                    "clsName": "Ext.data.ArrayStore",
+                    "name": "ArrayStore.js",
+                    "path": "src/data/"
+                },
+                {
+                    "clsName": "Ext.data.DirectStore",
+                    "name": "DirectStore.js",
+                    "path": "src/data/"
+                },
+                {
+                    "clsName": "Ext.data.JsonStore",
+                    "name": "JsonStore.js",
+                    "path": "src/data/"
+                },
+                {
+                    "clsName": "Ext.data.NodeStore",
+                    "name": "NodeStore.js",
+                    "path": "src/data/"
+                },
+                {
+                    "clsName": "Ext.data.TreeStore",
+                    "name": "TreeStore.js",
+                    "path": "src/data/"
+                },
+                {
+                    "clsName": "Ext.data.proxy.Rest",
+                    "name": "Rest.js",
+                    "path": "src/data/proxy/"
+                },
+                {
+                    "clsName": "Ext.direct.RemotingProvider",
+                    "name": "RemotingProvider.js",
+                    "path": "src/direct/"
+                },
+                {
+                    "clsName": "Ext.util.TapRepeater",
+                    "name": "TapRepeater.js",
+                    "path": "src/util/"
+                },
+                {
+                    "clsName": "Ext.util.translatable.Abstract",
+                    "name": "Abstract.js",
+                    "path": "src/util/translatable/"
+                },
+                {
+                    "clsName": "Ext.util.translatable.CssTransform",
+                    "name": "CssTransform.js",
+                    "path": "src/util/translatable/"
+                },
+                {
+                    "clsName": "Ext.util.translatable.ScrollPosition",
+                    "name": "ScrollPosition.js",
+                    "path": "src/util/translatable/"
+                },
+                {
+                    "clsName": "Ext.util.Translatable",
+                    "name": "Translatable.js",
+                    "path": "src/util/"
+                },
+                {
+                    "clsName": "Ext.behavior.Translatable",
+                    "name": "Translatable.js",
+                    "path": "src/behavior/"
+                },
+                {
+                    "clsName": "Ext.scroll.Scroller",
+                    "name": "Scroller.js",
+                    "path": "src/scroll/"
+                },
+                {
+                    "clsName": "Ext.util.Draggable",
+                    "name": "Draggable.js",
+                    "path": "src/util/"
+                },
+                {
+                    "clsName": "Ext.behavior.Draggable",
+                    "name": "Draggable.js",
+                    "path": "src/behavior/"
+                },
+                {
+                    "clsName": "Ext.Component",
+                    "name": "Component.js",
+                    "path": "src/"
+                },
+                {
+                    "clsName": "Ext.Button",
+                    "name": "Button.js",
+                    "path": "src/"
+                },
+                {
+                    "clsName": "Ext.Decorator",
+                    "name": "Decorator.js",
+                    "path": "src/"
+                },
+                {
+                    "clsName": "Ext.Img",
+                    "name": "Img.js",
+                    "path": "src/"
+                },
+                {
+                    "clsName": "Ext.Label",
+                    "name": "Label.js",
+                    "path": "src/"
+                },
+                {
+                    "clsName": "Ext.Map",
+                    "name": "Map.js",
+                    "path": "src/"
+                },
+                {
+                    "clsName": "Ext.Mask",
+                    "name": "Mask.js",
+                    "path": "src/"
+                },
+                {
+                    "clsName": "Ext.LoadMask",
+                    "name": "LoadMask.js",
+                    "path": "src/"
+                },
+                {
+                    "clsName": "Ext.Media",
+                    "name": "Media.js",
+                    "path": "src/"
+                },
+                {
+                    "clsName": "Ext.Audio",
+                    "name": "Audio.js",
+                    "path": "src/"
+                },
+                {
+                    "clsName": "Ext.Spacer",
+                    "name": "Spacer.js",
+                    "path": "src/"
+                },
+                {
+                    "clsName": "Ext.Title",
+                    "name": "Title.js",
+                    "path": "src/"
+                },
+                {
+                    "clsName": "Ext.Video",
+                    "name": "Video.js",
+                    "path": "src/"
+                },
+                {
+                    "clsName": "Ext.carousel.Indicator",
+                    "name": "Indicator.js",
+                    "path": "src/carousel/"
+                },
+                {
+                    "clsName": "Ext.carousel.Item",
+                    "name": "Item.js",
+                    "path": "src/carousel/"
+                },
+                {
+                    "clsName": "Ext.dataview.IndexBar",
+                    "name": "IndexBar.js",
+                    "path": "src/dataview/"
+                },
+                {
+                    "clsName": "Ext.dataview.ListItemHeader",
+                    "name": "ListItemHeader.js",
+                    "path": "src/dataview/"
+                },
+                {
+                    "clsName": "Ext.dataview.element.Container",
+                    "name": "Container.js",
+                    "path": "src/dataview/element/"
+                },
+                {
+                    "clsName": "Ext.dataview.element.List",
+                    "name": "List.js",
+                    "path": "src/dataview/element/"
+                },
+                {
+                    "clsName": "Ext.event.publisher.ComponentDelegation",
+                    "name": "ComponentDelegation.js",
+                    "path": "src/event/publisher/"
+                },
+                {
+                    "clsName": "Ext.field.Input",
+                    "name": "Input.js",
+                    "path": "src/field/"
+                },
+                {
+                    "clsName": "Ext.field.Field",
+                    "name": "Field.js",
+                    "path": "src/field/"
+                },
+                {
+                    "clsName": "Ext.field.Checkbox",
+                    "name": "Checkbox.js",
+                    "path": "src/field/"
+                },
+                {
+                    "clsName": "Ext.field.Radio",
+                    "name": "Radio.js",
+                    "path": "src/field/"
+                },
+                {
+                    "clsName": "Ext.field.Text",
+                    "name": "Text.js",
+                    "path": "src/field/"
+                },
+                {
+                    "clsName": "Ext.field.Email",
+                    "name": "Email.js",
+                    "path": "src/field/"
+                },
+                {
+                    "clsName": "Ext.field.Hidden",
+                    "name": "Hidden.js",
+                    "path": "src/field/"
+                },
+                {
+                    "clsName": "Ext.field.Number",
+                    "name": "Number.js",
+                    "path": "src/field/"
+                },
+                {
+                    "clsName": "Ext.field.Password",
+                    "name": "Password.js",
+                    "path": "src/field/"
+                },
+                {
+                    "clsName": "Ext.field.Search",
+                    "name": "Search.js",
+                    "path": "src/field/"
+                },
+                {
+                    "clsName": "Ext.field.Spinner",
+                    "name": "Spinner.js",
+                    "path": "src/field/"
+                },
+                {
+                    "clsName": "Ext.field.TextAreaInput",
+                    "name": "TextAreaInput.js",
+                    "path": "src/field/"
+                },
+                {
+                    "clsName": "Ext.field.TextArea",
+                    "name": "TextArea.js",
+                    "path": "src/field/"
+                },
+                {
+                    "clsName": "Ext.field.Url",
+                    "name": "Url.js",
+                    "path": "src/field/"
+                },
+                {
+                    "clsName": "Ext.plugin.ListPaging",
+                    "name": "ListPaging.js",
+                    "path": "src/plugin/"
+                },
+                {
+                    "clsName": "Ext.plugin.PullRefresh",
+                    "name": "PullRefresh.js",
+                    "path": "src/plugin/"
+                },
+                {
+                    "clsName": "Ext.scroll.indicator.Abstract",
+                    "name": "Abstract.js",
+                    "path": "src/scroll/indicator/"
+                },
+                {
+                    "clsName": "Ext.scroll.indicator.CssTransform",
+                    "name": "CssTransform.js",
+                    "path": "src/scroll/indicator/"
+                },
+                {
+                    "clsName": "Ext.scroll.indicator.Default",
+                    "name": "Default.js",
+                    "path": "src/scroll/indicator/"
+                },
+                {
+                    "clsName": "Ext.scroll.indicator.ScrollPosition",
+                    "name": "ScrollPosition.js",
+                    "path": "src/scroll/indicator/"
+                },
+                {
+                    "clsName": "Ext.scroll.Indicator",
+                    "name": "Indicator.js",
+                    "path": "src/scroll/"
+                },
+                {
+                    "clsName": "Ext.scroll.View",
+                    "name": "View.js",
+                    "path": "src/scroll/"
+                },
+                {
+                    "clsName": "Ext.behavior.Scrollable",
+                    "name": "Scrollable.js",
+                    "path": "src/behavior/"
+                },
+                {
+                    "clsName": "Ext.Container",
+                    "name": "Container.js",
+                    "path": "src/"
+                },
+                {
+                    "clsName": "Ext.Panel",
+                    "name": "Panel.js",
+                    "path": "src/"
+                },
+                {
+                    "clsName": "Ext.SegmentedButton",
+                    "name": "SegmentedButton.js",
+                    "path": "src/"
+                },
+                {
+                    "clsName": "Ext.Sheet",
+                    "name": "Sheet.js",
+                    "path": "src/"
+                },
+                {
+                    "clsName": "Ext.ActionSheet",
+                    "name": "ActionSheet.js",
+                    "path": "src/"
+                },
+                {
+                    "clsName": "Ext.TitleBar",
+                    "name": "TitleBar.js",
+                    "path": "src/"
+                },
+                {
+                    "clsName": "Ext.Toolbar",
+                    "name": "Toolbar.js",
+                    "path": "src/"
+                },
+                {
+                    "clsName": "Ext.MessageBox",
+                    "name": "MessageBox.js",
+                    "path": "src/"
+                },
+                {
+                    "clsName": "Ext.carousel.Carousel",
+                    "name": "Carousel.js",
+                    "path": "src/carousel/"
+                },
+                {
+                    "clsName": "Ext.carousel.Infinite",
+                    "name": "Infinite.js",
+                    "path": "src/carousel/"
+                },
+                {
+                    "clsName": "Ext.dataview.component.DataItem",
+                    "name": "DataItem.js",
+                    "path": "src/dataview/component/"
+                },
+                {
+                    "clsName": "Ext.dataview.component.Container",
+                    "name": "Container.js",
+                    "path": "src/dataview/component/"
+                },
+                {
+                    "clsName": "Ext.dataview.DataView",
+                    "name": "DataView.js",
+                    "path": "src/dataview/"
+                },
+                {
+                    "clsName": "Ext.dataview.List",
+                    "name": "List.js",
+                    "path": "src/dataview/"
+                },
+                {
+                    "clsName": "Ext.dataview.NestedList",
+                    "name": "NestedList.js",
+                    "path": "src/dataview/"
+                },
+                {
+                    "clsName": "Ext.form.FieldSet",
+                    "name": "FieldSet.js",
+                    "path": "src/form/"
+                },
+                {
+                    "clsName": "Ext.form.Panel",
+                    "name": "Panel.js",
+                    "path": "src/form/"
+                },
+                {
+                    "clsName": "Ext.navigation.Bar",
+                    "name": "Bar.js",
+                    "path": "src/navigation/"
+                },
+                {
+                    "clsName": "Ext.navigation.View",
+                    "name": "View.js",
+                    "path": "src/navigation/"
+                },
+                {
+                    "clsName": "Ext.picker.Slot",
+                    "name": "Slot.js",
+                    "path": "src/picker/"
+                },
+                {
+                    "clsName": "Ext.picker.Picker",
+                    "name": "Picker.js",
+                    "path": "src/picker/"
+                },
+                {
+                    "clsName": "Ext.field.Select",
+                    "name": "Select.js",
+                    "path": "src/field/"
+                },
+                {
+                    "clsName": "Ext.picker.Date",
+                    "name": "Date.js",
+                    "path": "src/picker/"
+                },
+                {
+                    "clsName": "Ext.field.DatePicker",
+                    "name": "DatePicker.js",
+                    "path": "src/field/"
+                },
+                {
+                    "clsName": "Ext.slider.Thumb",
+                    "name": "Thumb.js",
+                    "path": "src/slider/"
+                },
+                {
+                    "clsName": "Ext.slider.Slider",
+                    "name": "Slider.js",
+                    "path": "src/slider/"
+                },
+                {
+                    "clsName": "Ext.field.Slider",
+                    "name": "Slider.js",
+                    "path": "src/field/"
+                },
+                {
+                    "clsName": "Ext.slider.Toggle",
+                    "name": "Toggle.js",
+                    "path": "src/slider/"
+                },
+                {
+                    "clsName": "Ext.field.Toggle",
+                    "name": "Toggle.js",
+                    "path": "src/field/"
+                },
+                {
+                    "clsName": "Ext.tab.Tab",
+                    "name": "Tab.js",
+                    "path": "src/tab/"
+                },
+                {
+                    "clsName": "Ext.tab.Bar",
+                    "name": "Bar.js",
+                    "path": "src/tab/"
+                },
+                {
+                    "clsName": "Ext.tab.Panel",
+                    "name": "Panel.js",
+                    "path": "src/tab/"
+                },
+                {
+                    "clsName": "Ext.table.Cell",
+                    "name": "Cell.js",
+                    "path": "src/table/"
+                },
+                {
+                    "clsName": "Ext.table.Row",
+                    "name": "Row.js",
+                    "path": "src/table/"
+                },
+                {
+                    "clsName": "Ext.table.Table",
+                    "name": "Table.js",
+                    "path": "src/table/"
+                },
+                {
+                    "clsName": "Ext.viewport.Default",
+                    "name": "Default.js",
+                    "path": "src/viewport/"
+                },
+                {
+                    "clsName": "Ext.viewport.Android",
+                    "name": "Android.js",
+                    "path": "src/viewport/"
+                },
+                {
+                    "clsName": "Ext.viewport.Ios",
+                    "name": "Ios.js",
+                    "path": "src/viewport/"
+                },
+                {
+                    "clsName": "Ext.viewport.Viewport",
+                    "name": "Viewport.js",
+                    "path": "src/viewport/"
+                },
+                {
+                    "clsName": "Ext.event.recognizer.Swipe",
+                    "name": "Swipe.js",
+                    "path": "src/event/recognizer/"
+                },
+                {
+                    "clsName": "Ext.event.recognizer.HorizontalSwipe",
+                    "name": "HorizontalSwipe.js",
+                    "path": "src/event/recognizer/"
+                }
+            ]
+        }
+    ],
+    "builds": [
+        {
+            "name": "All - production",
+            "usage": "This is the build people should use in production if they don't want to go through making their own app-specific build",
+            "target": "sencha-touch-all.js",
+            "compress": true,
+            "options": {
+                "product": "touch",
+                "minVersion": 3,
+                "debug": false,
+                "logger": "no"
+            },
+            "packages": [
+                "foundation",
+                "dom",
+                "classes"
+            ]
+        },
+        {
+            "name": "Core - production",
+            "usage": "This is the build people should use in production with a custom build",
+            "target": "sencha-touch.js",
+            "compress": true,
+            "options": {
+                "product": "touch",
+                "minVersion": 3,
+                "debug": false,
+                "logger": "no"
+            },
+            "packages": [
+                "foundation",
+                "dom"
+            ]
+        },
+        {
+            "name": "Core - development",
+            "usage": "This is the build people should use locally when developing their apps",
+            "target": "sencha-touch-debug.js",
+            "compress": false,
+            "options": {
+                "product": "touch",
+                "minVersion": 2,
+                "debug": true,
+                "logger": "yes"
+            },
+            "packages": [
+                "foundation",
+                "dom",
+                "manifest"
+            ]
+        },
+        {
+            "name": "All - production debug",
+            "usage": "This is the build people should use if they need to debug production-specific issues with their app",
+            "target": "sencha-touch-all-debug.js",
+            "compress": false,
+            "options": {
+                "product": "touch",
+                "minVersion": 3,
+                "debug": true,
+                "logger": "yes"
+            },
+            "packages": [
+                "foundation",
+                "dom",
+                "classes",
+                "all_manifest"
+            ]
+        },
+        {
+            "name": "All - compat",
+            "usage": "This is the build people should use to help migrate their apps from 1.x",
+            "target": "builds/sencha-touch-all-compat.js",
+            "compress": false,
+            "options": {
+                "product": "touch",
+                "minVersion": 2,
+                "debug": true,
+                "logger": "yes"
+            },
+            "packages": [
+                "foundation",
+                "dom",
+                "classes"
+            ]
+        },
+        {
+            "name": "Blink Development",
+            "usage": "Blink Development",
+            "target": "microloader/development.js",
+            "compress": false,
+            "files": [
+                {
+                    "path": "microloader/",
+                    "name": "development.js"
+                }
+            ]
+        },
+        {
+            "name": "Blink Production",
+            "usage": "Blink Production",
+            "target": "microloader/production.js",
+            "compress": true,
+            "files": [
+                {
+                    "path": "microloader/",
+                    "name": "production.js"
+                }
+            ]
+        },
+        {
+            "name": "Blink Testing",
+            "usage": "Blink Testing",
+            "target": "microloader/testing.js",
+            "compress": true,
+            "files": [
+                {
+                    "path": "microloader/",
+                    "name": "testing.js"
+                }
+            ]
+        }
+    ],
+    "resources": [
+        {
+            "src": "src/",
+            "dest": "src"
+        },
+        {
+            "src": "command/",
+            "dest": "command/"
+        },
+        {
+            "src": "index.html",
+            "dest": "index.html"
+        },
+        {
+            "src": "examples/",
+            "dest": "examples/"
+        },
+        {
+            "src": "resources/",
+            "dest": "resources/"
+        },
+        {
+            "src": "touch.jsb3",
+            "dest": "touch.jsb3"
+        },
+        {
+            "src": "version.txt",
+            "dest": "version.txt"
+        },
+        {
+            "src": ".senchasdk",
+            "dest": ".senchasdk"
+        },
+        {
+            "src": "license.txt",
+            "dest": "license.txt"
+        },
+        {
+            "src": "release-notes.html",
+            "dest": "release-notes.html"
+        },
+        {
+            "src": "getting-started.html",
+            "dest": "getting-started.html"
+        }
+    ]
+}

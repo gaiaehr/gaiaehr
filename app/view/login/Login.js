@@ -194,7 +194,7 @@ Ext.define('App.view.login.Login',{
                 cls:'logout-warning-window',
                 style:'text-align:center; width:800',
                 html:'GaiaEHR rely heavily on javascript and web 2.0 / ajax requests, although any browser will do the work<br>' +
-                    'we strongly recomend to use any of the fastest browsers to day, <span style="text-decoration: underline;">' +
+                    'we strongly recommend to use any of the fastest browsers to day, <span style="text-decoration: underline;">' +
                     '<a href="https://www.google.com/intl/en/chrome/" target="_blank" style="color: white;">Google Chrome</a></span> or <a href="http://www.opera.com/" target="_blank" style="color: white;">Opera</a></span>',
                 seconds:10
             }).show();

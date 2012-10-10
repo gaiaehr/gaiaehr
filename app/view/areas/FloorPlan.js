@@ -96,7 +96,7 @@ Ext.define('App.view.areas.FloorPlan', {
 
 	onZoneClicked:function(btn){
 		say(btn);
-		app.setCurrPatient(btn.data.pid, btn.data.name, btn.data.priority, function(){
+		app.setPatient(btn.data.pid, btn.data.name, function(){
 			btn.data.eid ? app.openEncounter(btn.data.eid) : app.openPatientSummary();
 		});
 	},

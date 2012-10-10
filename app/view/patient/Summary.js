@@ -644,7 +644,7 @@ Ext.define('App.view.patient.Summary', {
 		record.store.save({
 			scope   : me,
 			callback: function() {
-                app.setCurrPatient(me.pid, 'toberemove', priority);
+                app.setPatient(me.pid, 'toberemove', null);
 				me.getPatientImgs();
 				me.verifyPatientRequiredInfo();
 				me.readOnlyFields(form.getFields());

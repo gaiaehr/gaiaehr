@@ -24,8 +24,9 @@ class FileManager
 
 	function __construct()
 	{
-		$this->tempDir = $_SESSION['site']['directory'] . '/sites/' . $_SESSION['site']['site'] .  '/temp/';
-		chmod($this->tempDir, 0777);
+		$this->tempDir = '/sites/' . $_SESSION['site']['site'] .  '/temp/';
+		chmod($_SESSION['site']['root'].'/'.$this->tempDir, 0777);
+
 		return;
 	}
 

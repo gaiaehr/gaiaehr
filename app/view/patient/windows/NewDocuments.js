@@ -515,7 +515,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
         for(var i=0; i < records.length; i++ ){
             data.push(records[i].data);
         }
-		DocumentHandler.createDocument({medications:data, pid:app.patient.pid, docType:'Rx', documentId:5, eid: app.currEncounterId}, function(provider, response){
+		DocumentHandler.createDocument({medications:data, pid:app.patient.pid, docType:'Rx', documentId:5, eid: app.patient.eid}, function(provider, response){
 			say(response.result);
 		});
 		this.close();
@@ -527,7 +527,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
         for(var i=0; i < records.length; i++ ){
             data.push(records[i].data);
         }
-		DocumentHandler.createDocument({labs:data, pid:app.patient.pid, docType:'Orders', documentId:4, eid: app.currEncounterId}, function(provider, response){
+		DocumentHandler.createDocument({labs:data, pid:app.patient.pid, docType:'Orders', documentId:4, eid: app.patient.eid}, function(provider, response){
 			say(response.result);
 		});
 		this.close();
@@ -537,7 +537,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 		var me = this,
 			htmlEditor  = bbar.up('toolbar').up('panel').getComponent('body'),
 			value = htmlEditor.getValue();
-		DocumentHandler.createDocument({DoctorsNote:value, pid:app.patient.pid, docType:'DoctorsNotes', eid: app.currEncounterId}, function(provider, response){
+		DocumentHandler.createDocument({DoctorsNote:value, pid:app.patient.pid, docType:'DoctorsNotes', eid: app.patient.eid}, function(provider, response){
 
 			say(response.result);
 		});

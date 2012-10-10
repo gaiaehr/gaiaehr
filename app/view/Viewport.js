@@ -354,11 +354,11 @@ Ext.define('App.view.Viewport', {
 	],
 
     // app settings
-	minWidthToFullMode: 1680,       // full mode = nav expanded
+	minWidthToFullMode: 1600,       // full mode = nav expanded
 	currency          : '$',        // currency used
-    activityMonitorInterval: 20,     // in seconds - interval to check for mouse and keyboard activity
-    activityMonitorMaxInactive: 10,  // in minutes - Maximum time application can be inactive (no mouse or keyboard imput)
-    cronTaskInterval:20,             // in seconds - interval to run me.cronTask (check PHP session, refresh Patient Pool Areas, and PHP Cron Job)
+    activityMonitorInterval: 60,    // in seconds - interval to check for mouse and keyboard activity
+    activityMonitorMaxInactive: 10, // in minutes - Maximum time application can be inactive (no mouse or keyboard imput)
+    cronTaskInterval:10,            // in seconds - interval to run me.cronTask (check PHP session, refresh Patient Pool Areas, and PHP Cron Job)
     // end app settings
 
 	initComponent: function() 
@@ -367,7 +367,8 @@ Ext.define('App.view.Viewport', {
 		var me = this;
 		me.lastCardNode = null;
 		me.currCardCmp = null;
-		me.currEncounterId = null; // to be replace by me.patient
+
+        me.fullMode = window.innerWidth >= me.minWidthToFullMode;
 
         me.patient = {
             name    : null,
@@ -398,7 +399,7 @@ Ext.define('App.view.Viewport', {
 		/*
 		 * The store for the Navigation Tree menu.
 		 */ 
-		me.storeTree = Ext.create('App.store.navigation.Navigation', 
+		me.storeTree = Ext.create('App.store.navigation.Navigation',
 		{
 			autoLoad : true,
 			listeners: {
@@ -558,7 +559,6 @@ Ext.define('App.view.Viewport', {
         });
         me.Header.add({
             xtype      : 'panel',
-            width      : 260,
             bodyPadding: '8 11 5 11',
             margin     : '0 0 0 3',
             style      : 'float:left',
@@ -566,7 +566,7 @@ Ext.define('App.view.Viewport', {
                 {
                     xtype     : 'patienlivetsearch',
                     emptyText : i18n['patient_live_search'] + '...',
-                    fieldStyle: 'width:230',
+                    fieldStyle: me.fullMode ? 'width:300' : 'width:250',
                     listeners : {
                         scope : me,
                         select: me.liveSearchSelect,
@@ -847,7 +847,7 @@ Ext.define('App.view.Viewport', {
 		 * Footer Panel
 		 */
 		me.Footer = Ext.create('Ext.container.Container', {
-			height : window.innerWidth < me.minWidthToFullMode ? 60 : 30,
+			height : me.fullMode ? 30 : 60,
 			split  : false,
 			padding: '3 0',
 			region : 'south',
@@ -1015,7 +1015,7 @@ Ext.define('App.view.Viewport', {
 					Emergency.createNewEmergency(function(provider, response){
 						emergency = response.result.emergency;
 						if(response.result.success){
-							me.setCurrPatient(emergency.pid,emergency.name, emergency.priority, function(){
+							me.setPatient(emergency.pid,emergency.name, function(){
 								me.openEncounter(emergency.eid);
 							});
 							me.msg('Sweet!',emergency.name + ' ' + i18n['created'])
@@ -1061,7 +1061,7 @@ Ext.define('App.view.Viewport', {
 	},
 
 	stowPatientRecord: function() {
-		this.patientUnset();
+		this.unsetPatient();
 		this.navigateTo('panelDashboard');
 	},
 
@@ -1122,7 +1122,7 @@ Ext.define('App.view.Viewport', {
 	},
 
 	afterNavigationLoad: function() {
-		window.innerWidth < this.minWidthToFullMode ? this.navColumn.collapse() : this.navColumn.expand();
+		this.fullMode ? this.navColumn.expand() : this.navColumn.collapse();
 		this.navigateToDefault();
 		this.removeAppMask();
 		this.setTask(true);
@@ -1197,17 +1197,17 @@ Ext.define('App.view.Viewport', {
 			post = selection[0];
 		if(post) {
 			Patient.currPatientSet({pid: post.get('pid')}, function() {
-				me.setCurrPatient(post.get('pid'), post.get('fullname') , '', function() {
+				me.setPatient(post.get('pid'), post.get('fullname'), function() {
 					me.openPatientSummary();
 				});
 			});
 		}
 	},
 
-	setCurrPatient: function(pid, fullname, priority, callback) {
+	setPatient: function(pid, fullname, callback) {
 		var me = this;
 
-		me.patientUnset(function() {
+		me.unsetPatient(function() {
 			Patient.currPatientSet({ pid: pid }, function(provider, response) {
 				var data = response.result, msg1, msg2;
 				if(data.readOnly) {
@@ -1229,34 +1229,33 @@ Ext.define('App.view.Viewport', {
 				}
 
 				function continueSettingPatient(readOnly) {
-					me.currEncounterId = null;
-                    me.patient = {
+
+	                me.patient = {
                         pid     : data.patient.pid,
                         name    : data.patient.name,
                         sex     : data.patient.sex,
                         dob     : data.patient.dob,
                         age     : data.patient.age,
+                        priority: data.patient.priority,
                         readOnly: readOnly,
                         eid     : null
                     };
 
-                    say(data.patient);
-
                     me.patientBtn.update({pid:data.patient.pid, name:data.patient.name});
-					me.patientBtn.addCls(priority);
+					me.patientBtn.addCls(data.patient.priority);
 					me.patientBtn.enable();
 					if(me.patientOpenVisitsBtn) me.patientOpenVisitsBtn.enable();
 					if(me.patientCreateEncounterBtn) me.patientCreateEncounterBtn.enable();
 					if(me.patientCloseCurrEncounterBtn) me.patientCloseCurrEncounterBtn.enable();
 					if(me.patientChargeBtn) me.patientChargeBtn.enable();
 					if(me.patientCheckOutBtn) me.patientCheckOutBtn.enable();
-					if(typeof callback == 'function') callback(true);
+					if(typeof callback == 'function') callback(me.patient);
 				}
 			});
 		});
 	},
 
-	patientUnset: function(callback) {
+    unsetPatient: function(callback) {
 		var me = this;
 		Patient.currPatientUnset(function() {
 			me.currEncounterId = null;
@@ -1267,13 +1266,14 @@ Ext.define('App.view.Viewport', {
                 dob     : null,
                 age     : null,
                 eid     : null,
+                priority: null,
                 readOnly: false
             };
 
 			me.patientButtonRemoveCls();
-			if(typeof callback == 'function') {
+			if(typeof callback == 'function'){
 				callback(true);
-			} else {
+			}else{
 				if(me.patientCreateEncounterBtn) me.patientCreateEncounterBtn.disable();
 				if(me.patientOpenVisitsBtn) me.patientOpenVisitsBtn.disable();
 				if(me.patientCloseCurrEncounterBtn) me.patientCloseCurrEncounterBtn.disable();
@@ -1281,7 +1281,6 @@ Ext.define('App.view.Viewport', {
 				if(me.patientCheckOutBtn) me.patientCheckOutBtn.disable();
 				me.patientBtn.disable();
 				me.patientBtn.update({ pid: 'record number', name: i18n['no_patient_selected']});
-
 			}
 		});
 	},
@@ -1332,7 +1331,7 @@ Ext.define('App.view.Viewport', {
 	},
 
 	patientBtnRender: function(btn) {
-		this.patientUnset();
+		this.unsetPatient();
 		this.initializePatientPoolDragZone(btn)
 	},
 
@@ -1541,7 +1540,7 @@ Ext.define('App.view.Viewport', {
 			},
 			notifyDrop: function(dd, e, data) {
 				app.MainPanel.el.unmask();
-				me.setCurrPatient(data.patientData.pid, data.patientData.name, data.patientData.priority, function() {
+				me.setPatient(data.patientData.pid, data.patientData.name, function() {
 					/**
 					 * if encounter id is set and pool area is check out....  go to Patient Checkout panel
 					 */
@@ -1599,7 +1598,7 @@ Ext.define('App.view.Viewport', {
 	},
 
 	getCurrPatient: function() {
-		return this.patient;
+		return this.patient.pid;
 	},
 
 	getApp: function() {

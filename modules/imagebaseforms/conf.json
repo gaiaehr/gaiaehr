@@ -1,0 +1,48 @@
+{
+	"name":"Report Center Module",
+	"version":"1.0.0",
+	"extjs_version":"4.1.1",
+	"author":"Gino Rivera Falú",
+	"description":"A report center for GaiaEHR, has all the necessary report for start ups.",
+	"dir":"reportcenter",
+	"enable":false,
+	"debug":false,
+	"actionsAPI":{
+		"SuperBill":{
+			"methods":{
+				"CreateSuperBill":
+				{
+					"len":1
+				}
+			}
+		},
+		"ClientList":{
+			"methods":{
+				"CreateClientList":
+				{
+					"len":1
+				}
+			}
+		}
+	},
+	"extjs":[
+		{
+			"file":"ModuleModel.js",
+			"path":"model/"
+		},
+		{
+			"file":"store/ModuleStore.js",
+			"path":"store/"
+		},
+		{
+			"file":"view/reportCenter.js",
+			"path":"view/"
+		}
+	],
+	"install":[
+		{
+			"file":"sql/install_schema.sql"
+		}
+	]
+
+}

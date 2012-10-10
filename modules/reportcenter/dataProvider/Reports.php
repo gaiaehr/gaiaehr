@@ -46,7 +46,7 @@ class Reports
         $this->pdf->SetMargins(15, 27, 15);
         $this->pdf->SetHeaderMargin(5);
         $this->pdf->SetFooterMargin(10);
-        $this->pdf->SetFontSize(8);
+        $this->pdf->SetFontSize(12);
         $this->pdf->SetAutoPageBreak(true, 25);
         $this->pdf->setFontSubsetting(true);
         $this->pdf->AddPage();

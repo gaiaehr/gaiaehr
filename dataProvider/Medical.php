@@ -13,7 +13,7 @@ if(!isset($_SESSION)) {
 }
 include_once($_SESSION['site']['root'] . '/dataProvider/Patient.php');
 include_once($_SESSION['site']['root'] . '/dataProvider/User.php');
-include_once($_SESSION['site']['root'] . '/dataProvider/Services.php');
+include_once($_SESSION['site']['root'] . '/dataProvider/Laboratories.php');
 include_once($_SESSION['site']['root'] . '/classes/dbHelper.php');
 class Medical
 {
@@ -29,14 +29,14 @@ class Medical
 	 * @var Patient
 	 */
 	private $patient;
-	private $services;
+	private $laboratories;
 
 	function __construct()
 	{
 		$this->db      = new dbHelper();
 		$this->user    = new User();
 		$this->patient = new Patient();
-		$this->services = new Services();
+		$this->laboratories = new Laboratories();
 		return;
 	}
 
@@ -330,7 +330,7 @@ class Medical
 		$patient_lab_id = $this->db->lastInsertId;
 
 
-		foreach($this->services->getLabObservationFieldsByParentId($params->parent_id) as $result){
+		foreach($this->laboratories->getLabObservationFieldsByParentId($params->parent_id) as $result){
 			$foo = array();
 			$foo['patient_lab_id'] = $patient_lab_id;
 			$foo['observation_loinc'] = $result->loinc_number;

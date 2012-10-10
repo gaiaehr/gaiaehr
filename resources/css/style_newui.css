@@ -236,7 +236,7 @@
 }
 
 .ux-enclousure{
-	background-image: url(../ui_app/panel_bg.png) !important;
+	background-image: url(../images/panel_bg.png) !important;
 	background-repeat: repeat-x;
 	padding: 6px;
 }

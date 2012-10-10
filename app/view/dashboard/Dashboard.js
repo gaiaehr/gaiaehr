@@ -56,12 +56,10 @@ Ext.define('App.view.dashboard.Dashboard',
 		{
 			pageBody: [
 			{
-				id    : 'app-portal',
 				xtype : 'portalpanel',
 				layout: 'fit',
 				region: 'center',
-				items : 
-				[
+				items : [
 				{
 					id   : 'col-1',
 					items: 

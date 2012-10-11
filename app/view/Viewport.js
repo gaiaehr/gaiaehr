@@ -354,7 +354,7 @@ Ext.define('App.view.Viewport', {
 	],
 
     // app settings
-	minWidthToFullMode: 1600,       // full mode = nav expanded
+	minWidthToFullMode: 1585,       // full mode = nav expanded
 	currency          : '$',        // currency used
     activityMonitorInterval: 60,    // in seconds - interval to check for mouse and keyboard activity
     activityMonitorMaxInactive: 10, // in minutes - Maximum time application can be inactive (no mouse or keyboard imput)

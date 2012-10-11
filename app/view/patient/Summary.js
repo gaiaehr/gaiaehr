@@ -238,6 +238,76 @@ Ext.define('App.view.patient.Summary', {
 				]
 			});
 		}
+        // TODO: add  acl['access_patient_disclosures']
+		if(acl['access_patient_disclosures']) {
+			me.stores.push(me.patientDisclosuresStore = Ext.create('App.store.patient.Disclosures',{
+                autoSync:true
+            }));
+			me.tabPanel.add({
+                xtype      : 'grid',
+				title      : i18n['disclosures'],
+				itemId     : 'disclosuresPanel',
+				bodyPadding: 0,
+				store      : me.patientDisclosuresStore,
+                plugins: Ext.create('Ext.grid.plugin.RowEditing', {
+                    autoCancel  : false,
+                    errorSummary: false,
+                    clicksToEdit: 2,
+//                    listeners   : {
+//                        scope     : me,
+//                        beforeedit: me.beforeServiceEdit
+//                    }
+
+                }),
+				columns    : [
+					{
+                        xtype: 'datecolumn',
+                        format:'Y-m-d',
+						text     : i18n['date'],
+						dataIndex: 'date'
+					},
+                    {
+                        text     : i18n['recipient_name'],
+                        dataIndex: 'recipient',
+                        width:150,
+                        editor:{
+                            xtype:'textfield'
+                        }
+                    },
+					{
+						header   : i18n['type'],
+						dataIndex: 'type',
+                        editor:{
+                            xtype:'textfield'
+                        }
+					},
+					{
+						text     : i18n['description'],
+						dataIndex: 'description',
+                        flex     : 1,
+                        editor:{
+                            xtype:'textfield'
+                        }
+					},
+					{
+						text     : i18n['active'],
+						dataIndex: 'active',
+                        width     : 50,
+                        renderer:me.boolRenderer,
+                        editor:{
+                            xtype:'checkbox'
+                        }
+					}
+				],
+				tbar       : [
+					{
+						text   : i18n['disclosure'],
+						iconCls: 'icoAdd',
+                        handler:me.addDisclosure
+					}
+				]
+			});
+		}
 		if(acl['access_patient_notes']) {
 			me.stores.push(me.patientNotesStore = Ext.create('App.store.patient.Notes'));
 			me.tabPanel.add({
@@ -273,6 +343,7 @@ Ext.define('App.view.patient.Summary', {
 				]
 			});
 		}
+
 		if(acl['access_patient_reminders']) {
 			me.stores.push(me.patientRemindersStore = Ext.create('App.store.patient.Reminders'));
 			me.tabPanel.add({
@@ -596,6 +667,15 @@ Ext.define('App.view.patient.Summary', {
 
 		me.callParent(arguments);
 	},
+
+    addDisclosure:function(btn){
+        var me = this,
+            grid = btn.up('grid'),
+            store = grid.store;
+        grid.plugins[0].cancelEdit();
+        store.add({date:new Date(), pid:app.patient.pid});
+        grid.plugins[0].startEdit(0,0);
+    },
 
 	onDocumentView: function(grid, rowIndex) {
 		var rec = grid.getStore().getAt(rowIndex),

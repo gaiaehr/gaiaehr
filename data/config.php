@@ -931,6 +931,15 @@ $API = array(
             ),
             'getPatientInsurancesCardsUrlByPid'=>array(
             	'len'=>1
+            ),
+            'getPatientDisclosures'=>array(
+            	'len'=>1
+            ),
+            'createPatientDisclosure'=>array(
+            	'len'=>1
+            ),
+            'updatePatientDisclosure'=>array(
+            	'len'=>1
             )
 
         )

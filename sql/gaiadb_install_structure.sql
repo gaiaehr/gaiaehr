@@ -1586,6 +1586,19 @@ CREATE TABLE IF NOT EXISTS `patient_dental` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
+CREATE TABLE IF NOT EXISTS `patient_disclosures` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `pid` bigint(20) NOT NULL COMMENT 'patient ID',
+  `eid` bigint(20) DEFAULT NULL COMMENT 'encounter ID',
+  `uid` bigint(20) DEFAULT NULL COMMENT 'user ID',
+  `date` datetime NOT NULL,
+  `type` varchar(255) DEFAULT NULL,
+  `recipient` varchar(255) DEFAULT NULL,
+  `description` text,
+  `active` tinyint(1) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
 CREATE TABLE IF NOT EXISTS `patient_doctors_notes` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uid` int(11) DEFAULT NULL,

@@ -10,7 +10,6 @@ $LANG = array(
 	'en_US'									=> 'English (USA)',
 	'i18nExtFile'							=> 'ext-lang-en.js',
 	// End of the items
-	
 	'currency'								=> '$',
     'dashboard'         					=> 'Dashboard',
     'calendar'          					=> 'Calendar',
@@ -1066,6 +1065,9 @@ $LANG = array(
 	'secondary'							    => 'Secondary',
 	'tertiary'							    => 'Tertiary',
 	'billing_information'					=> 'Billing Information',
-	'image_forms'   					    => 'Image Forms'
+	'image_forms'   					    => 'Image Forms',
+	'disclosure'   					        => 'Disclosure',
+	'disclosures'   					    => 'Disclosures',
+	'recipient_name'   					    => 'Recipient Name'
 );
 ?>

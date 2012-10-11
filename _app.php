@@ -56,7 +56,7 @@ $lang = i18nRouter::getTranslation();
 		<!-- slide down message div -->
 		<span id="app-msg" style="display:none;"></span>
 		<!-- Ext library -->
-		<script type="text/javascript" src="lib/extjs-4.1.1a/ext-all-debug.js"></script>
+		<script type="text/javascript" src="lib/extjs-4.1.1a/ext-all.js"></script>
 		<!-- Ext Localization file -->
 		<script type="text/javascript" src="lib/extjs-4.1.1a/locale/<?php print $lang['i18nExtFile'] ?>"></script>
 
@@ -64,7 +64,7 @@ $lang = i18nRouter::getTranslation();
 		<script type="text/javascript">
 			Ext.Loader.setConfig({
 				enabled       : true,
-				disableCaching: true,
+				disableCaching: false,
 				paths         : {
 					'Ext'       : 'lib/extjs-4.1.1a/src',
 					'Ext.ux'    : 'app/classes/ux',
@@ -90,7 +90,8 @@ $lang = i18nRouter::getTranslation();
 
 			window.requires = [
 				'Ext.ux.LiveSearchGridPanel',
-
+				'Ext.ux.SlidingPager',
+				'Ext.ux.PreviewPlugin',
 				/*
 				 * Load the models, the model are the representative of the database
 				 * table structure with modifications behind the PHP counterpart.
@@ -249,6 +250,7 @@ $lang = i18nRouter::getTranslation();
 				 * Load the Extensible related controls and panels
 				 * This is the Calendar Component that GaiaEHR uses.
 				 */
+				'Extensible.calendar.data.EventStore',
 				'Extensible.calendar.CalendarPanel',
 				'Extensible.calendar.gadget.CalendarListPanel',
 				'Extensible.calendar.data.MemoryCalendarStore',
@@ -263,6 +265,9 @@ $lang = i18nRouter::getTranslation();
 		        'App.classes.form.fields.Currency',
 		        'App.classes.form.fields.DateTime',
 		        'App.classes.form.Panel',
+
+		        'App.classes.grid.RowFormEditing',
+		        'App.classes.grid.RowFormEditor',
 
 				/*
 				 * Load the combo boxes spreaded on all the web application
@@ -285,14 +290,12 @@ $lang = i18nRouter::getTranslation();
 				'App.classes.combo.CodesTypes',
 				'App.classes.combo.EncounterPriority',
 				'App.classes.combo.Facilities',
-				'App.classes.combo.SmokingStatus',
 				'App.classes.combo.FloorPlanAreas',
 				'App.classes.combo.FollowUp',
-				'App.classes.combo.YesOrNo',
-				'App.classes.combo.YesNoNa',
 				'App.classes.combo.InsurancePayerType',
 				'App.classes.combo.LabObservations',
 				'App.classes.combo.LabsTypes',
+				'App.classes.combo.Languages',
 				'App.classes.combo.Lists',
 				'App.classes.combo.MedicalIssues',
 				'App.classes.combo.Medications',
@@ -306,15 +309,16 @@ $lang = i18nRouter::getTranslation();
 				'App.classes.combo.PaymentMethod',
 				'App.classes.combo.Pharmacies',
 				'App.classes.combo.posCodes',
-				'App.classes.combo.PrescrptionHowTo',
-				'App.classes.combo.PrescrptionOften',
-				'App.classes.combo.PrescrptionTypes',
-				'App.classes.combo.PrescrptionWhen',
+				'App.classes.combo.PrescriptionHowTo',
+				'App.classes.combo.PrescriptionOften',
+				'App.classes.combo.PrescriptionTypes',
+				'App.classes.combo.PrescriptionWhen',
 				'App.classes.combo.PreventiveCareTypes',
 				'App.classes.combo.ProceduresBodySites',
 				'App.classes.combo.Providers',
 				'App.classes.combo.Roles',
 				'App.classes.combo.Sex',
+				'App.classes.combo.SmokingStatus',
 				'App.classes.combo.Surgery',
 				'App.classes.combo.TaxId',
 				'App.classes.combo.Templates',
@@ -325,10 +329,15 @@ $lang = i18nRouter::getTranslation();
 				'App.classes.combo.Types',
 				'App.classes.combo.Units',
 				'App.classes.combo.Users',
-				'App.classes.combo.Languages',
+				'App.classes.combo.YesNoNa',
+				'App.classes.combo.YesNo',
+
+
 
 				'App.classes.window.Window',
 				'App.classes.NodeDisabled',
+
+				'App.view.search.PatientSearch',
 
 				/*
 				 * Load the patient window related panels
@@ -343,14 +352,14 @@ $lang = i18nRouter::getTranslation();
 				/*
 				 * Load the patient related panels
 				 */
-		        'App.view.dashboard.panel.Portlet',
-		        'App.view.dashboard.panel.ChartPortlet',
-		        'App.view.dashboard.panel.GridPortlet',
-		        'App.view.dashboard.panel.OnotesPortlet',
+
 
 		        'App.view.dashboard.panel.PortalColumn',
 		        'App.view.dashboard.panel.PortalDropZone',
 		        'App.view.dashboard.panel.PortalPanel',
+
+				'App.view.dashboard.panel.OnotesPortlet',
+		        'App.view.dashboard.panel.VisitsPortlet',
 		        'App.view.dashboard.Dashboard',
 
 				/*
@@ -368,6 +377,10 @@ $lang = i18nRouter::getTranslation();
 				/*
 				 * Load the patient related panels
 				 */
+				'App.view.patient.encounter.CurrentProceduralTerminology',
+				'App.view.patient.encounter.HealthCareFinancingAdministrationOptions',
+				'App.view.patient.encounter.ICDs',
+
 				'App.view.patient.ItemsToReview',
 				'App.view.patient.EncounterDocumentsGrid',
 				'App.view.patient.encounter.ICDs',
@@ -375,6 +388,7 @@ $lang = i18nRouter::getTranslation();
 				'App.view.patient.Vitals',
 				'App.view.patient.NewPatient',
 				'App.view.patient.Summary',
+				'App.view.patient.ProgressNote',
 				'App.view.patient.Visits',
 				'App.view.patient.Encounter',
 				'App.view.patient.windows.Medical',
@@ -421,20 +435,12 @@ $lang = i18nRouter::getTranslation();
 
 			];
 
-//			for(var r=0; r < requires.length; r++){
-//				var srtArray = requires[r].split('.'), urlStr;
-//				urlStr = srtArray.shift().toLowerCase()+'/';
-//				fileSrt = srtArray.pop() + '.js';
-//				for(var d=0; d < srtArray.length; d++){
-//					urlStr = urlStr + srtArray[d] + '/';
-//				}
-//				document.write('<script type="text/javascript" charset="UTF-8" src="' + urlStr+fileSrt + '"><\/script>');
-//			}
-
-
 			for(var r=0; r < requires.length; r++){
-				document.write('<script type="text/javascript" charset="UTF-8" src="' + Ext.Loader.getPath(requires[r]) + '"><\/script>');
+				(function(){
+					document.write('<script type="text/javascript" charset="UTF-8" src="' + Ext.Loader.getPath(requires[r]) + '"><\/script>')
+				})();
 			}
+
 
 			function copyToClipBoard(token) {
 				app.msg('Sweet!', token + ' copied to clipboard, Ctrl-V or Paste where need it.');

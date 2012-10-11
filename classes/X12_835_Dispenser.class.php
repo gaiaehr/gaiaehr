@@ -8,7 +8,7 @@
  *  
  */
 
-class Dispenser835()
+class Dispenser835
 {
 	
 	function __construct()

@@ -36,7 +36,7 @@ Ext.define('App.view.patient.charts.HeightForStature', {
                                 stroke        : '#bbb',
                                 'stroke-width': 0.5
                             }
-                        },
+                        }
                         //minimum : 7,
                         //maximum : 31
                     },

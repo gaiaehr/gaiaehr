@@ -32,7 +32,8 @@ $lang = i18nRouter::getTranslation();
 				user = {},
 				settings = {},
 				i18n = {},
-				ext = 'extjs-4.1.1a';
+				ext = 'extjs-4.1.1a',
+				requires;
 		</script>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 		<title>GaiaEHR :: (Electronic Health Records)</title>
@@ -88,7 +89,7 @@ $lang = i18nRouter::getTranslation();
 				Ext.direct.Manager.addProvider(App.data[x]);
 			}
 
-			window.requires = [
+			requires = [
 				'Ext.ux.LiveSearchGridPanel',
 				'Ext.ux.SlidingPager',
 				'Ext.ux.PreviewPlugin',
@@ -101,6 +102,7 @@ $lang = i18nRouter::getTranslation();
 				'App.model.administration.ActiveProblems',
 				'App.model.administration.DefaultDocuments',
 				'App.model.administration.DocumentsTemplates',
+				'App.model.administration.ExternalDataLoads',
 				'App.model.administration.FloorPlans',
 				'App.model.administration.FloorPlanZones',
 				'App.model.administration.HeadersAndFooters',
@@ -119,6 +121,7 @@ $lang = i18nRouter::getTranslation();
 				'App.model.fees.PaymentTransactions',
 				'App.model.navigation.Navigation',
 				'App.model.patient.Allergies',
+				'App.model.patient.CheckoutAlertArea',
 				'App.model.patient.CptCodes',
 				'App.model.patient.Dental',
 		        'App.model.patient.Disclosures',
@@ -148,6 +151,14 @@ $lang = i18nRouter::getTranslation();
 				'App.model.patient.VectorGraph',
 				'App.model.patient.VisitPayment',
 				'App.model.patient.Vitals',
+				'App.model.patient.charts.BMIForAge',
+				'App.model.patient.charts.HeadCircumferenceInf',
+				'App.model.patient.charts.LengthForAgeInf',
+				'App.model.patient.charts.StatureForAge',
+				'App.model.patient.charts.WeightForAge',
+				'App.model.patient.charts.WeightForAgeInf',
+				'App.model.patient.charts.WeightForRecumbentInf',
+				'App.model.patient.charts.WeightForStature',
 				'App.model.areas.PoolArea',
 				'App.model.areas.PoolDropAreas',
 
@@ -159,6 +170,7 @@ $lang = i18nRouter::getTranslation();
 				'App.store.administration.ActiveProblems',
 				'App.store.administration.DefaultDocuments',
 				'App.store.administration.DocumentsTemplates',
+				'App.store.administration.ExternalDataLoads',
 				'App.store.administration.FloorPlans',
 				'App.store.administration.FloorPlanZones',
 				'App.store.administration.HeadersAndFooters',
@@ -178,6 +190,7 @@ $lang = i18nRouter::getTranslation();
 				'App.store.fees.PaymentTransactions',
 				'App.store.navigation.Navigation',
 				'App.store.patient.Allergies',
+				'App.store.patient.CheckoutAlertArea',
 				'App.store.patient.Dental',
 		        'App.store.patient.Disclosures',
 				'App.store.patient.Encounter',
@@ -206,6 +219,14 @@ $lang = i18nRouter::getTranslation();
 				'App.store.patient.VectorGraph',
 				'App.store.patient.VisitPayment',
 				'App.store.patient.Vitals',
+				'App.store.patient.charts.BMIForAge',
+				'App.store.patient.charts.HeadCircumferenceInf',
+				'App.store.patient.charts.LengthForAgeInf',
+				'App.store.patient.charts.StatureForAge',
+				'App.store.patient.charts.WeightForAge',
+				'App.store.patient.charts.WeightForAgeInf',
+				'App.store.patient.charts.WeightForRecumbentInf',
+				'App.store.patient.charts.WeightForStature',
 				'App.store.areas.PoolArea',
 
 				/*
@@ -266,6 +287,7 @@ $lang = i18nRouter::getTranslation();
 		        'App.classes.form.fields.DateTime',
 		        'App.classes.form.Panel',
 
+		        'App.classes.grid.EventHistory',
 		        'App.classes.grid.RowFormEditing',
 		        'App.classes.grid.RowFormEditor',
 
@@ -374,6 +396,14 @@ $lang = i18nRouter::getTranslation();
 				'App.view.areas.FloorPlan',
 				'App.view.areas.PatientPoolDropZone',
 
+	            /**
+	             * Load vector charts panel
+	             */
+				'App.view.patient.charts.BPPulseTemp',
+				'App.view.patient.charts.HeadCircumference',
+				'App.view.patient.charts.HeightForStature',
+
+
 				/*
 				 * Load the patient related panels
 				 */
@@ -428,18 +458,77 @@ $lang = i18nRouter::getTranslation();
 				'App.view.miscellaneous.OfficeNotes',
 				'App.view.miscellaneous.Websearch',
 
+				'App.view.signature.SignatureWindow',
 				/*
 				 * Dynamically load the modules
 				 */
 		        'Modules.Module'
-
 			];
 
-			for(var r=0; r < requires.length; r++){
-				(function(){
-					document.write('<script type="text/javascript" charset="UTF-8" src="' + Ext.Loader.getPath(requires[r]) + '"><\/script>')
-				})();
-			}
+
+			(function(){
+			    var scripts = document.getElementsByTagName('script'),
+			        localhostTests = [
+			            /^localhost$/,
+			            /\b(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(:\d{1,5})?\b/ // IP v4
+			        ],
+			        host = window.location.hostname,
+			        isDevelopment = null,
+			        queryString = window.location.search,
+			        test, path, i, ln, scriptSrc, match;
+
+			    for (i = 0, ln = scripts.length; i < ln; i++) {
+			        scriptSrc = scripts[i].src;
+
+			        match = scriptSrc.match(/bootstrap\.js$/);
+
+			        if (match) {
+			            path = scriptSrc.substring(0, scriptSrc.length - match[0].length);
+			            break;
+			        }
+			    }
+
+			    if (queryString.match('(\\?|&)debug') !== null) {
+			        isDevelopment = true;
+			    }
+			    else if (queryString.match('(\\?|&)nodebug') !== null) {
+			        isDevelopment = false;
+			    }
+
+			    if (isDevelopment === null) {
+			        for (i = 0, ln = localhostTests.length; i < ln; i++) {
+			            test = localhostTests[i];
+
+			            if (host.search(test) !== -1) {
+			                isDevelopment = true;
+			                break;
+			            }
+			        }
+			    }
+
+			    if (isDevelopment === null && window.location.protocol === 'file:') {
+			        isDevelopment = true;
+			    }
+
+				if(isDevelopment){
+				say('Loading GaiaEHR Classes (Development)');
+//				var jsb3Buffer = '"files": [';
+					for(var r=0; r < requires.length; r++){
+				        document.write('<script type="text/javascript" charset="UTF-8" src="' + Ext.Loader.getPath(requires[r]) + '"><\/script>');
+//						var arrayBuffer = Ext.Loader.getPath(requires[r]).split('/'),
+//								fileName = arrayBuffer.pop();
+//								filePath = arrayBuffer.join('/');
+//				        jsb3Buffer = jsb3Buffer + '{' +
+//					        '"path": "'+filePath+'/",' +
+//						    '"name": "'+fileName+'"' +
+//				            '},';
+				   }
+//			   jsb3Buffer = jsb3Buffer+' ]';
+				}else{
+					say('Loading GaiaEHR Classes (Production)');
+					document.write('<script type="text/javascript" charset="UTF-8" src="app/all-classes.js"><\/script>');
+				}
+			})();
 
 
 			function copyToClipBoard(token) {

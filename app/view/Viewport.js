@@ -18,7 +18,7 @@
  */
 Ext.define('App.view.Viewport', {
 	extend  : 'Ext.Viewport',
-	requires: window.requires,
+	//requires: window.requires,
     // app settings
 	minWidthToFullMode: 1585,       // full mode = nav expanded
 	currency          : '$',        // currency used
@@ -858,7 +858,6 @@ Ext.define('App.view.Viewport', {
 	},
 
 	liveSearchSelect: function(combo, selection) {
-		this.currEncounterId = null;
 		var me = this,
 			post = selection[0];
 		if(post) {

@@ -1274,7 +1274,7 @@ Ext.define('App.view.Viewport', {
 	setTask:function(start){
         var me = this;
         if(start){
-            Ext.TaskManager.start(me.cronTask);
+
             App.classes.ActivityMonitor.init({
                 interval    : me.activityMonitorInterval * 1000,
                 maxInactive : (1000 * 60 * me.activityMonitorMaxInactive),
@@ -1283,6 +1283,7 @@ Ext.define('App.view.Viewport', {
                     me.startAutoLogout();
                 }
             });
+            Ext.TaskManager.start(me.cronTask);
             App.classes.ActivityMonitor.start();
         }else{
             Ext.TaskManager.stop(me.cronTask);

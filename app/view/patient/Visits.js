@@ -34,7 +34,7 @@ Ext.define('App.view.patient.Visits', {
 		//******************************************************************
 		// Visit History Grid
 		//******************************************************************
-		me.historyGrid = Ext.create('App.classes.GridPanel', {
+		me.historyGrid = Ext.create('Ext.grid.Panel', {
 			title     : i18n['encounter_history'],
 			store     : me.store,
 			columns   : [

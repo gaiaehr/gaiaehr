@@ -1,0 +1,1123 @@
+{
+	"projectName": "GaiaEHR v0.0.3",
+	"licenseText": "Copyright(c) 2012 GaiaEHR",
+	"builds"     : [
+		{
+			"name"   : "GaiaEHR - All Classes",
+			"target" : "all-classes.js",
+			"options": {
+				"debug": true
+			},
+			"files": [
+				{
+					"path": "app/classes/ux/",
+					"name": "LiveSearchGridPanel.js"
+				},
+				{
+					"path": "app/classes/ux/",
+					"name": "SlidingPager.js"
+				},
+				{
+					"path": "app/classes/ux/",
+					"name": "PreviewPlugin.js"
+				},
+				{
+					"path": "app/model/administration/",
+					"name": "ActiveProblems.js"
+				},
+				{
+					"path": "app/model/administration/",
+					"name": "DefaultDocuments.js"
+				},
+				{
+					"path": "app/model/administration/",
+					"name": "DocumentsTemplates.js"
+				},
+				{
+					"path": "app/model/administration/",
+					"name": "ExternalDataLoads.js"
+				},
+				{
+					"path": "app/model/administration/",
+					"name": "FloorPlans.js"
+				},
+				{
+					"path": "app/model/administration/",
+					"name": "FloorPlanZones.js"
+				},
+				{
+					"path": "app/model/administration/",
+					"name": "HeadersAndFooters.js"
+				},
+				{
+					"path": "app/model/administration/",
+					"name": "ImmunizationRelations.js"
+				},
+				{
+					"path": "app/model/administration/",
+					"name": "LabObservations.js"
+				},
+				{
+					"path": "app/model/administration/",
+					"name": "Medications.js"
+				},
+				{
+					"path": "app/model/administration/",
+					"name": "PreventiveCare.js"
+				},
+				{
+					"path": "app/model/administration/",
+					"name": "PreventiveCareActiveProblems.js"
+				},
+				{
+					"path": "app/model/administration/",
+					"name": "PreventiveCareMedications.js"
+				},
+				{
+					"path": "app/model/administration/",
+					"name": "PreventiveCareLabs.js"
+				},
+				{
+					"path": "app/model/administration/",
+					"name": "Services.js"
+				},
+				{
+					"path": "app/model/miscellaneous/",
+					"name": "OfficeNotes.js"
+				},
+				{
+					"path": "app/model/fees/",
+					"name": "Billing.js"
+				},
+				{
+					"path": "app/model/fees/",
+					"name": "Checkout.js"
+				},
+				{
+					"path": "app/model/fees/",
+					"name": "EncountersPayments.js"
+				},
+				{
+					"path": "app/model/fees/",
+					"name": "PaymentTransactions.js"
+				},
+				{
+					"path": "app/model/navigation/",
+					"name": "Navigation.js"
+				},
+				{
+					"path": "app/model/patient/",
+					"name": "Allergies.js"
+				},
+				{
+					"path": "app/model/patient/",
+					"name": "CheckoutAlertArea.js"
+				},
+				{
+					"path": "app/model/patient/",
+					"name": "CptCodes.js"
+				},
+				{
+					"path": "app/model/patient/",
+					"name": "Dental.js"
+				},
+				{
+					"path": "app/model/patient/",
+					"name": "Disclosures.js"
+				},
+				{
+					"path": "app/model/patient/",
+					"name": "Encounter.js"
+				},
+				{
+					"path": "app/model/patient/",
+					"name": "EncounterCPTsICDs.js"
+				},
+				{
+					"path": "app/model/patient/",
+					"name": "Encounters.js"
+				},
+				{
+					"path": "app/model/patient/",
+					"name": "EventHistory.js"
+				},
+				{
+					"path": "app/model/patient/",
+					"name": "Immunization.js"
+				},
+				{
+					"path": "app/model/patient/",
+					"name": "ImmunizationCheck.js"
+				},
+				{
+					"path": "app/model/patient/",
+					"name": "LaboratoryTypes.js"
+				},
+				{
+					"path": "app/model/patient/",
+					"name": "MeaningfulUseAlert.js"
+				},
+				{
+					"path": "app/model/patient/",
+					"name": "MedicalIssues.js"
+				},
+				{
+					"path": "app/model/patient/",
+					"name": "Medications.js"
+				},
+				{
+					"path": "app/model/patient/",
+					"name": "Notes.js"
+				},
+				{
+					"path": "app/model/patient/",
+					"name": "PatientArrivalLog.js"
+				},
+				{
+					"path": "app/model/patient/",
+					"name": "PatientCalendarEvents.js"
+				},
+				{
+					"path": "app/model/patient/",
+					"name": "PatientDocuments.js"
+				},
+				{
+					"path": "app/model/patient/",
+					"name": "PatientImmunization.js"
+				},
+				{
+					"path": "app/model/patient/",
+					"name": "PatientLabsResults.js"
+				},
+				{
+					"path": "app/model/patient/",
+					"name": "PatientsLabsOrders.js"
+				},
+				{
+					"path": "app/model/patient/",
+					"name": "PatientsPrescription.js"
+				},
+				{
+					"path": "app/model/patient/",
+					"name": "PreventiveCare.js"
+				},
+				{
+					"path": "app/model/patient/",
+					"name": "QRCptCodes.js"
+				},
+				{
+					"path": "app/model/patient/",
+					"name": "DismissedAlerts.js"
+				},
+				{
+					"path": "app/model/patient/",
+					"name": "Reminders.js"
+				},
+				{
+					"path": "app/model/patient/",
+					"name": "Surgery.js"
+				},
+				{
+					"path": "app/model/patient/",
+					"name": "VectorGraph.js"
+				},
+				{
+					"path": "app/model/patient/",
+					"name": "VisitPayment.js"
+				},
+				{
+					"path": "app/model/patient/",
+					"name": "Vitals.js"
+				},
+				{
+					"path": "app/model/patient/charts/",
+					"name": "BMIForAge.js"
+				},
+				{
+					"path": "app/model/patient/charts/",
+					"name": "HeadCircumferenceInf.js"
+				},
+				{
+					"path": "app/model/patient/charts/",
+					"name": "LengthForAgeInf.js"
+				},
+				{
+					"path": "app/model/patient/charts/",
+					"name": "StatureForAge.js"
+				},
+				{
+					"path": "app/model/patient/charts/",
+					"name": "WeightForAge.js"
+				},
+				{
+					"path": "app/model/patient/charts/",
+					"name": "WeightForAgeInf.js"
+				},
+				{
+					"path": "app/model/patient/charts/",
+					"name": "WeightForRecumbentInf.js"
+				},
+				{
+					"path": "app/model/patient/charts/",
+					"name": "WeightForStature.js"
+				},
+				{
+					"path": "app/model/areas/",
+					"name": "PoolArea.js"
+				},
+				{
+					"path": "app/model/areas/",
+					"name": "PoolDropAreas.js"
+				},
+				{
+					"path": "app/store/administration/",
+					"name": "ActiveProblems.js"
+				},
+				{
+					"path": "app/store/administration/",
+					"name": "DefaultDocuments.js"
+				},
+				{
+					"path": "app/store/administration/",
+					"name": "DocumentsTemplates.js"
+				},
+				{
+					"path": "app/store/administration/",
+					"name": "ExternalDataLoads.js"
+				},
+				{
+					"path": "app/store/administration/",
+					"name": "FloorPlans.js"
+				},
+				{
+					"path": "app/store/administration/",
+					"name": "FloorPlanZones.js"
+				},
+				{
+					"path": "app/store/administration/",
+					"name": "HeadersAndFooters.js"
+				},
+				{
+					"path": "app/store/administration/",
+					"name": "ImmunizationRelations.js"
+				},
+				{
+					"path": "app/store/administration/",
+					"name": "LabObservations.js"
+				},
+				{
+					"path": "app/store/administration/",
+					"name": "Medications.js"
+				},
+				{
+					"path": "app/store/administration/",
+					"name": "PreventiveCare.js"
+				},
+				{
+					"path": "app/store/administration/",
+					"name": "PreventiveCareActiveProblems.js"
+				},
+				{
+					"path": "app/store/administration/",
+					"name": "PreventiveCareMedications.js"
+				},
+				{
+					"path": "app/store/administration/",
+					"name": "PreventiveCareLabs.js"
+				},
+				{
+					"path": "app/store/administration/",
+					"name": "Services.js"
+				},
+				{
+					"path": "app/store/administration/",
+					"name": "ActiveProblems.js"
+				},
+				{
+					"path": "app/store/miscellaneous/",
+					"name": "OfficeNotes.js"
+				},
+				{
+					"path": "app/store/fees/",
+					"name": "Billing.js"
+				},
+				{
+					"path": "app/store/fees/",
+					"name": "Checkout.js"
+				},
+				{
+					"path": "app/store/fees/",
+					"name": "EncountersPayments.js"
+				},
+				{
+					"path": "app/store/fees/",
+					"name": "PaymentTransactions.js"
+				},
+				{
+					"path": "app/store/navigation/",
+					"name": "Navigation.js"
+				},
+				{
+					"path": "app/store/patient/",
+					"name": "Allergies.js"
+				},
+				{
+					"path": "app/store/patient/",
+					"name": "CheckoutAlertArea.js"
+				},
+				{
+					"path": "app/store/patient/",
+					"name": "Dental.js"
+				},
+				{
+					"path": "app/store/patient/",
+					"name": "Disclosures.js"
+				},
+				{
+					"path": "app/store/patient/",
+					"name": "Encounter.js"
+				},
+				{
+					"path": "app/store/patient/",
+					"name": "EncounterCPTsICDs.js"
+				},
+				{
+					"path": "app/store/patient/",
+					"name": "EncounterEventHistory.js"
+				},
+				{
+					"path": "app/store/patient/",
+					"name": "Encounters.js"
+				},
+				{
+					"path": "app/store/patient/",
+					"name": "Immunization.js"
+				},
+				{
+					"path": "app/store/patient/",
+					"name": "ImmunizationCheck.js"
+				},
+				{
+					"path": "app/store/patient/",
+					"name": "LaboratoryTypes.js"
+				},
+				{
+					"path": "app/store/patient/",
+					"name": "MeaningfulUseAlert.js"
+				},
+				{
+					"path": "app/store/patient/",
+					"name": "MedicalIssues.js"
+				},
+				{
+					"path": "app/store/patient/",
+					"name": "Medications.js"
+				},
+				{
+					"path": "app/store/patient/",
+					"name": "Notes.js"
+				},
+				{
+					"path": "app/store/patient/",
+					"name": "PatientArrivalLog.js"
+				},
+				{
+					"path": "app/store/patient/",
+					"name": "PatientCalendarEvents.js"
+				},
+				{
+					"path": "app/store/patient/",
+					"name": "PatientDocuments.js"
+				},
+				{
+					"path": "app/store/patient/",
+					"name": "DismissedAlerts.js"
+				},
+				{
+					"path": "app/store/patient/",
+					"name": "PatientImmunization.js"
+				},
+				{
+					"path": "app/store/patient/",
+					"name": "PatientLabsResults.js"
+				},
+				{
+					"path": "app/store/patient/",
+					"name": "PatientsLabsOrders.js"
+				},
+				{
+					"path": "app/store/patient/",
+					"name": "PatientsPrescription.js"
+				},
+				{
+					"path": "app/store/patient/",
+					"name": "PreventiveCare.js"
+				},
+				{
+					"path": "app/store/patient/",
+					"name": "QRCptCodes.js"
+				},
+				{
+					"path": "app/store/patient/",
+					"name": "Reminders.js"
+				},
+				{
+					"path": "app/store/patient/",
+					"name": "Surgery.js"
+				},
+				{
+					"path": "app/store/patient/",
+					"name": "VectorGraph.js"
+				},
+				{
+					"path": "app/store/patient/",
+					"name": "VisitPayment.js"
+				},
+				{
+					"path": "app/store/patient/",
+					"name": "Vitals.js"
+				},
+				{
+					"path": "app/store/patient/charts/",
+					"name": "BMIForAge.js"
+				},
+				{
+					"path": "app/store/patient/charts/",
+					"name": "HeadCircumferenceInf.js"
+				},
+				{
+					"path": "app/store/patient/charts/",
+					"name": "LengthForAgeInf.js"
+				},
+				{
+					"path": "app/store/patient/charts/",
+					"name": "StatureForAge.js"
+				},
+				{
+					"path": "app/store/patient/charts/",
+					"name": "WeightForAge.js"
+				},
+				{
+					"path": "app/store/patient/charts/",
+					"name": "WeightForAgeInf.js"
+				},
+				{
+					"path": "app/store/patient/charts/",
+					"name": "WeightForRecumbentInf.js"
+				},
+				{
+					"path": "app/store/patient/charts/",
+					"name": "WeightForStature.js"
+				},
+				{
+					"path": "app/store/areas/",
+					"name": "PoolArea.js"
+				},
+				{
+					"path": "app/classes/",
+					"name": "ActivityMonitor.js"
+				},
+				{
+					"path": "app/classes/",
+					"name": "AbstractPanel.js"
+				},
+				{
+					"path": "app/classes/",
+					"name": "LiveCPTSearch.js"
+				},
+				{
+					"path": "app/classes/",
+					"name": "LiveImmunizationSearch.js"
+				},
+				{
+					"path": "app/classes/",
+					"name": "LiveMedicationSearch.js"
+				},
+				{
+					"path": "app/classes/",
+					"name": "LiveLabsSearch.js"
+				},
+				{
+					"path": "app/classes/",
+					"name": "LivePatientSearch.js"
+				},
+				{
+					"path": "app/classes/",
+					"name": "LiveSurgeriesSearch.js"
+				},
+				{
+					"path": "app/classes/",
+					"name": "ManagedIframe.js"
+				},
+				{
+					"path": "app/classes/",
+					"name": "NodeDisabled.js"
+				},
+				{
+					"path": "app/classes/",
+					"name": "PhotoIdWindow.js"
+				},
+				{
+					"path": "app/classes/",
+					"name": "RenderPanel.js"
+				},
+				{
+					"path": "lib/extjs-4.1.1a/src/fx/target/",
+					"name": "Sprite.js"
+				},
+				{
+					"path": "lib/extjs-4.1.1a/src/dd/",
+					"name": "DropZone.js"
+				},
+				{
+					"path": "lib/extjs-4.1.1a/src/dd/",
+					"name": "DragZone.js"
+				},
+				{
+					"path": "lib/extensible-1.5.1/src/calendar/data/",
+					"name": "EventStore.js"
+				},
+				{
+					"path": "lib/extensible-1.5.1/src/calendar/",
+					"name": "CalendarPanel.js"
+				},
+				{
+					"path": "lib/extensible-1.5.1/src/calendar/gadget/",
+					"name": "CalendarListPanel.js"
+				},
+				{
+					"path": "lib/extensible-1.5.1/src/calendar/data/",
+					"name": "MemoryCalendarStore.js"
+				},
+				{
+					"path": "lib/extensible-1.5.1/src/calendar/data/",
+					"name": "MemoryEventStore.js"
+				},
+				{
+					"path": "app/classes/form/fields/",
+					"name": "Help.js"
+				},
+				{
+					"path": "app/classes/form/fields/",
+					"name": "Checkbox.js"
+				},
+				{
+					"path": "app/classes/form/fields/",
+					"name": "Currency.js"
+				},
+				{
+					"path": "app/classes/form/fields/",
+					"name": "DateTime.js"
+				},
+				{
+					"path": "app/classes/form/",
+					"name": "Panel.js"
+				},
+				{
+					"path": "app/classes/grid/",
+					"name": "EventHistory.js"
+				},
+				{
+					"path": "app/classes/grid/",
+					"name": "RowFormEditing.js"
+				},
+				{
+					"path": "app/classes/grid/",
+					"name": "RowFormEditor.js"
+				},
+				{
+					"path": "app/classes/combo/",
+					"name": "ActiveFacilities.js"
+				},
+				{
+					"path": "app/classes/combo/",
+					"name": "ActiveInsurances.js"
+				},
+				{
+					"path": "app/classes/combo/",
+					"name": "Allergies.js"
+				},
+				{
+					"path": "app/classes/combo/",
+					"name": "AllergiesAbdominal.js"
+				},
+				{
+					"path": "app/classes/combo/",
+					"name": "AllergiesLocal.js"
+				},
+				{
+					"path": "app/classes/combo/",
+					"name": "AllergiesLocation.js"
+				},
+				{
+					"path": "app/classes/combo/",
+					"name": "AllergiesSeverity.js"
+				},
+				{
+					"path": "app/classes/combo/",
+					"name": "AllergiesSkin.js"
+				},
+				{
+					"path": "app/classes/combo/",
+					"name": "AllergiesSystemic.js"
+				},
+				{
+					"path": "app/classes/combo/",
+					"name": "AllergiesTypes.js"
+				},
+				{
+					"path": "app/classes/combo/",
+					"name": "Authorizations.js"
+				},
+				{
+					"path": "app/classes/combo/",
+					"name": "BillingFacilities.js"
+				},
+				{
+					"path": "app/classes/combo/",
+					"name": "CalendarCategories.js"
+				},
+				{
+					"path": "app/classes/combo/",
+					"name": "CalendarStatus.js"
+				},
+				{
+					"path": "app/classes/combo/",
+					"name": "CodesTypes.js"
+				},
+				{
+					"path": "app/classes/combo/",
+					"name": "EncounterPriority.js"
+				},
+				{
+					"path": "app/classes/combo/",
+					"name": "Facilities.js"
+				},
+				{
+					"path": "app/classes/combo/",
+					"name": "FloorPlanAreas.js"
+				},
+				{
+					"path": "app/classes/combo/",
+					"name": "FollowUp.js"
+				},
+				{
+					"path": "app/classes/combo/",
+					"name": "InsurancePayerType.js"
+				},
+				{
+					"path": "app/classes/combo/",
+					"name": "LabObservations.js"
+				},
+				{
+					"path": "app/classes/combo/",
+					"name": "LabsTypes.js"
+				},
+				{
+					"path": "app/classes/combo/",
+					"name": "Languages.js"
+				},
+				{
+					"path": "app/classes/combo/",
+					"name": "Lists.js"
+				},
+				{
+					"path": "app/classes/combo/",
+					"name": "MedicalIssues.js"
+				},
+				{
+					"path": "app/classes/combo/",
+					"name": "Medications.js"
+				},
+				{
+					"path": "app/classes/combo/",
+					"name": "MsgNoteType.js"
+				},
+				{
+					"path": "app/classes/combo/",
+					"name": "MsgStatus.js"
+				},
+				{
+					"path": "app/classes/combo/",
+					"name": "Occurrence.js"
+				},
+				{
+					"path": "app/classes/combo/",
+					"name": "Outcome.js"
+				},
+				{
+					"path": "app/classes/combo/",
+					"name": "Outcome2.js"
+				},
+				{
+					"path": "app/classes/combo/",
+					"name": "PayingEntity.js"
+				},
+				{
+					"path": "app/classes/combo/",
+					"name": "PaymentCategory.js"
+				},
+				{
+					"path": "app/classes/combo/",
+					"name": "PaymentMethod.js"
+				},
+				{
+					"path": "app/classes/combo/",
+					"name": "Pharmacies.js"
+				},
+				{
+					"path": "app/classes/combo/",
+					"name": "posCodes.js"
+				},
+				{
+					"path": "app/classes/combo/",
+					"name": "PrescriptionHowTo.js"
+				},
+				{
+					"path": "app/classes/combo/",
+					"name": "PrescriptionOften.js"
+				},
+				{
+					"path": "app/classes/combo/",
+					"name": "PrescriptionTypes.js"
+				},
+				{
+					"path": "app/classes/combo/",
+					"name": "PrescriptionWhen.js"
+				},
+				{
+					"path": "app/classes/combo/",
+					"name": "PreventiveCareTypes.js"
+				},
+				{
+					"path": "app/classes/combo/",
+					"name": "ProceduresBodySites.js"
+				},
+				{
+					"path": "app/classes/combo/",
+					"name": "Providers.js"
+				},
+				{
+					"path": "app/classes/combo/",
+					"name": "Roles.js"
+				},
+				{
+					"path": "app/classes/combo/",
+					"name": "Sex.js"
+				},
+				{
+					"path": "app/classes/combo/",
+					"name": "SmokingStatus.js"
+				},
+				{
+					"path": "app/classes/combo/",
+					"name": "Surgery.js"
+				},
+				{
+					"path": "app/classes/combo/",
+					"name": "TaxId.js"
+				},
+				{
+					"path": "app/classes/combo/",
+					"name": "Templates.js"
+				},
+				{
+					"path": "app/classes/combo/",
+					"name": "Themes.js"
+				},
+				{
+					"path": "app/classes/combo/",
+					"name": "Time.js"
+				},
+				{
+					"path": "app/classes/combo/",
+					"name": "Titles.js"
+				},
+				{
+					"path": "app/classes/combo/",
+					"name": "TransmitMethod.js"
+				},
+				{
+					"path": "app/classes/combo/",
+					"name": "Types.js"
+				},
+				{
+					"path": "app/classes/combo/",
+					"name": "Units.js"
+				},
+				{
+					"path": "app/classes/combo/",
+					"name": "Users.js"
+				},
+				{
+					"path": "app/classes/combo/",
+					"name": "YesNoNa.js"
+				},
+				{
+					"path": "app/classes/combo/",
+					"name": "YesNo.js"
+				},
+				{
+					"path": "app/classes/window/",
+					"name": "Window.js"
+				},
+				{
+					"path": "app/classes/",
+					"name": "NodeDisabled.js"
+				},
+				{
+					"path": "app/view/search/",
+					"name": "PatientSearch.js"
+				},
+				{
+					"path": "app/view/patient/windows/",
+					"name": "Medical.js"
+				},
+				{
+					"path": "app/view/patient/windows/",
+					"name": "Charts.js"
+				},
+				{
+					"path": "app/view/patient/windows/",
+					"name": "PreventiveCare.js"
+				},
+				{
+					"path": "app/view/patient/windows/",
+					"name": "NewDocuments.js"
+				},
+				{
+					"path": "app/view/patient/windows/",
+					"name": "DocumentViewer.js"
+				},
+				{
+					"path": "app/view/patient/windows/",
+					"name": "ArrivalLog.js"
+				},
+				{
+					"path": "app/view/dashboard/panel/",
+					"name": "PortalColumn.js"
+				},
+				{
+					"path": "app/view/dashboard/panel/",
+					"name": "PortalDropZone.js"
+				},
+				{
+					"path": "app/view/dashboard/panel/",
+					"name": "PortalPanel.js"
+				},
+				{
+					"path": "app/view/dashboard/panel/",
+					"name": "OnotesPortlet.js"
+				},
+				{
+					"path": "app/view/dashboard/panel/",
+					"name": "VisitsPortlet.js"
+				},
+				{
+					"path": "app/view/dashboard/",
+					"name": "Dashboard.js"
+				},
+				{
+					"path": "app/view/calendar/",
+					"name": "Calendar.js"
+				},
+				{
+					"path": "app/view/messages/",
+					"name": "Messages.js"
+				},
+				{
+					"path": "app/view/areas/",
+					"name": "FloorPlan.js"
+				},
+				{
+					"path": "app/view/areas/",
+					"name": "PatientPoolDropZone.js"
+				},
+				{
+					"path": "app/view/patient/charts/",
+					"name": "BPPulseTemp.js"
+				},
+				{
+					"path": "app/view/patient/charts/",
+					"name": "HeadCircumference.js"
+				},
+				{
+					"path": "app/view/patient/charts/",
+					"name": "HeightForStature.js"
+				},
+				{
+					"path": "app/view/patient/encounter/",
+					"name": "CurrentProceduralTerminology.js"
+				},
+				{
+					"path": "app/view/patient/encounter/",
+					"name": "HealthCareFinancingAdministrationOptions.js"
+				},
+				{
+					"path": "app/view/patient/encounter/",
+					"name": "ICDs.js"
+				},
+				{
+					"path": "app/view/patient/",
+					"name": "ItemsToReview.js"
+				},
+				{
+					"path": "app/view/patient/",
+					"name": "EncounterDocumentsGrid.js"
+				},
+				{
+					"path": "app/view/patient/encounter/",
+					"name": "ICDs.js"
+				},
+				{
+					"path": "app/view/patient/",
+					"name": "CheckoutAlertsView.js"
+				},
+				{
+					"path": "app/view/patient/",
+					"name": "Vitals.js"
+				},
+				{
+					"path": "app/view/patient/",
+					"name": "NewPatient.js"
+				},
+				{
+					"path": "app/view/patient/",
+					"name": "Summary.js"
+				},
+				{
+					"path": "app/view/patient/",
+					"name": "ProgressNote.js"
+				},
+				{
+					"path": "app/view/patient/",
+					"name": "Visits.js"
+				},
+				{
+					"path": "app/view/patient/",
+					"name": "Encounter.js"
+				},
+				{
+					"path": "app/view/patient/windows/",
+					"name": "Medical.js"
+				},
+				{
+					"path": "app/view/patient/",
+					"name": "VisitCheckout.js"
+				},
+				{
+					"path": "app/view/fees/",
+					"name": "Billing.js"
+				},
+				{
+					"path": "app/view/fees/",
+					"name": "PaymentEntryWindow.js"
+				},
+				{
+					"path": "app/view/fees/",
+					"name": "Payments.js"
+				},
+				{
+					"path": "app/view/administration/",
+					"name": "DataManager.js"
+				},
+				{
+					"path": "app/view/administration/",
+					"name": "Documents.js"
+				},
+				{
+					"path": "app/view/administration/",
+					"name": "Facilities.js"
+				},
+				{
+					"path": "app/view/administration/",
+					"name": "Globals.js"
+				},
+				{
+					"path": "app/view/administration/",
+					"name": "Layout.js"
+				},
+				{
+					"path": "app/view/administration/",
+					"name": "Lists.js"
+				},
+				{
+					"path": "app/view/administration/",
+					"name": "Log.js"
+				},
+				{
+					"path": "app/view/administration/",
+					"name": "Medications.js"
+				},
+				{
+					"path": "app/view/administration/",
+					"name": "FloorPlans.js"
+				},
+				{
+					"path": "app/view/administration/",
+					"name": "Practice.js"
+				},
+				{
+					"path": "app/view/administration/",
+					"name": "PreventiveCare.js"
+				},
+				{
+					"path": "app/view/administration/",
+					"name": "Roles.js"
+				},
+				{
+					"path": "app/view/administration/",
+					"name": "ExternalDataLoads.js"
+				},
+				{
+					"path": "app/view/administration/",
+					"name": "Users.js"
+				},
+				{
+					"path": "app/view/miscellaneous/",
+					"name": "Addressbook.js"
+				},
+				{
+					"path": "app/view/miscellaneous/",
+					"name": "MyAccount.js"
+				},
+				{
+					"path": "app/view/miscellaneous/",
+					"name": "MySettings.js"
+				},
+				{
+					"path": "app/view/miscellaneous/",
+					"name": "OfficeNotes.js"
+				},
+				{
+					"path": "app/view/miscellaneous/",
+					"name": "Websearch.js"
+				},
+				{
+					"path": "app/view/signature/",
+					"name": "SignatureWindow.js"
+				},
+				{
+					"path": "modules/",
+					"name": "Module.js"
+				},
+				{
+					"path": "app/view/",
+					"name": "Viewport.js"
+				}
+			]
+		},
+		{
+			"name"    : "GaiaEHR - Production",
+			"target"  : "app-all.js",
+			"compress": true,
+			"files"   : [
+				{
+					"path": "./app/",
+					"name": "all-classes.js"
+				}
+			]
+		}
+	],
+	"resources"  : []
+}

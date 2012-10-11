@@ -600,6 +600,35 @@ class Patient
 		}
 	}
 
+	//**************************************************************************************************
+    // Disclosures
+ 	//**************************************************************************************************
+	public function getPatientDisclosures(stdClass $params)
+	{
+		$this->db->setSQL("SELECT * FROM patient_disclosures WHERE pid = '$params->pid'");
+		return $this->db->fetchRecords();
+	}
+
+	public function createPatientDisclosure(stdClass $params)
+	{
+		unset($params->id);
+		$params->active = 1;
+		$data = get_object_vars($params);
+		$this->db->setSQL($this->db->sqlBind($data,'patient_disclosures','I'));
+		$this->db->execLog();
+		$params->id = $this->db->lastInsertId;
+		return $params;
+	}
+
+	public function updatePatientDisclosure(stdClass $params)
+	{
+		$data = get_object_vars($params);
+		unset($data['id']);
+		$this->db->setSQL($this->db->sqlBind($data,'patient_disclosures','U', array('id' => $params->id)));
+		$this->db->execLog();
+		return $params;
+	}
+
 }
 //$p = new Patient();
 //echo '<pre>';

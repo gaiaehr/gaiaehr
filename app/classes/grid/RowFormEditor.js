@@ -185,9 +185,6 @@ Ext.define('App.classes.grid.RowFormEditor', {
     },
 
     reposition: function(animateConfig) {
-
-        say(animateConfig);
-
         if(this.currRowH) this.currRow.setHeight(this.currRowH);
 
         var me = this,
@@ -529,7 +526,7 @@ Ext.define('App.classes.grid.RowFormEditor', {
             tip;
 
         if (!me.tooltip) {
-            tip = me.tooltip = Ext.createWidget('tooltip', {
+            me.tooltip = Ext.createWidget('tooltip', {
                 cls: Ext.baseCSSPrefix + 'grid-row-editor-errors',
                 title: me.errorsText,
                 autoHide: false,

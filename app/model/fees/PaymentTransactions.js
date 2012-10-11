@@ -6,7 +6,7 @@
  * Time: 11:09 PM
  */
 
-Ext.define('App.model.fees.Pa', {
+Ext.define('App.model.fees.PaymentTransactions', {
 	extend: 'Ext.data.Model',
 	fields: [
 

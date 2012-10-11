@@ -251,7 +251,7 @@ Ext.define('App.view.patient.Summary', {
                 plugins: Ext.create('Ext.grid.plugin.RowEditing', {
                     autoCancel  : false,
                     errorSummary: false,
-                    clicksToEdit: 2,
+                    clicksToEdit: 2
 //                    listeners   : {
 //                        scope     : me,
 //                        beforeedit: me.beforeServiceEdit

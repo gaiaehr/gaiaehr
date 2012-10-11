@@ -238,7 +238,6 @@ Ext.define('App.view.patient.Summary', {
 				]
 			});
 		}
-        // TODO: add  acl['access_patient_disclosures']
 		if(acl['access_patient_disclosures']) {
 			me.stores.push(me.patientDisclosuresStore = Ext.create('App.store.patient.Disclosures',{
                 autoSync:true
@@ -673,7 +672,7 @@ Ext.define('App.view.patient.Summary', {
             grid = btn.up('grid'),
             store = grid.store;
         grid.plugins[0].cancelEdit();
-        store.add({date:new Date(), pid:app.patient.pid});
+        store.add({date:new Date(), pid:app.patient.pid, active:1});
         grid.plugins[0].startEdit(0,0);
     },
 

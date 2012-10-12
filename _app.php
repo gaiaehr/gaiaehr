@@ -510,7 +510,7 @@ $lang = i18nRouter::getTranslation();
 			        isDevelopment = true;
 			    }
 
-				if(isDevelopment){
+				if(!isDevelopment){
 				say('Loading GaiaEHR Classes (Development)');
 //				var jsb3Buffer = '"files": [';
 					for(var r=0; r < requires.length; r++){
@@ -526,7 +526,7 @@ $lang = i18nRouter::getTranslation();
 //			   jsb3Buffer = jsb3Buffer+' ]';
 				}else{
 					say('Loading GaiaEHR Classes (Production)');
-					document.write('<script type="text/javascript" charset="UTF-8" src="app/all-classes.js"><\/script>');
+					document.write('<script type="text/javascript" charset="UTF-8" src="app/app-all.js"><\/script>');
 				}
 			})();
 			function copyToClipBoard(token) {

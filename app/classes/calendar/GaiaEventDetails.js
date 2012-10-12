@@ -42,7 +42,7 @@
  */
 Ext.define('App.classes.calendar.GaiaEventDetails', {
 	extend: 'Ext.form.Panel',
-	alias : 'widget.extensible.mitoseventeditform',
+	alias : 'widget.extensible.gaiaeventeditform',
 
 	requires: [
 		'Extensible.form.field.DateRange',

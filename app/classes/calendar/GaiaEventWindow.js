@@ -36,9 +36,9 @@
  * @constructor
  * @param {Object} config The config object
  */
-Ext.define('App.classes.calendar.MitosEventWindow', {
+Ext.define('App.classes.calendar.GaiaEventWindow', {
 	extend: 'Ext.window.Window',
-	alias : 'widget.extensible.mitoseventeditwindow',
+	alias : 'widget.extensible.gaiaeventeditwindow',
 
 	requires            : [
 		'Ext.form.Panel',

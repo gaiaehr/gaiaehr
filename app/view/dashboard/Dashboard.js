@@ -8,30 +8,11 @@
 // 
 // GaiaEHR (Electronic Health Records) 2011
 //******************************************************************************
-Ext.require([
-	'Ext.layout.container.*',
-	'Ext.resizer.Splitter',
-	'Ext.fx.target.Element',
-	'Ext.fx.target.Component',
-	'App.view.dashboard.panel.Portlet',
-	'App.view.dashboard.panel.PortalColumn',
-	'App.view.dashboard.panel.PortalPanel',
-	'App.view.dashboard.panel.PortalDropZone',
-	'App.view.dashboard.panel.GridPortlet',
-	'App.view.dashboard.panel.ChartPortlet',
-	'App.view.dashboard.panel.OnotesPortlet'
-]);
-Ext.define('App.view.dashboard.Dashboard', 
+Ext.define('App.view.dashboard.Dashboard',
 {
 	extend        : 'App.classes.RenderPanel',
 	id            : 'panelDashboard',
 	pageTitle     : i18n['dashboard'],
-	uses          : [
-		'App.view.dashboard.panel.PortalPanel',
-		'App.view.dashboard.panel.PortalColumn',
-		'App.view.dashboard.panel.GridPortlet',
-		'App.view.dashboard.panel.ChartPortlet'
-	],
 	getTools      : function() 
 	{
 		return [
@@ -118,7 +99,7 @@ Ext.define('App.view.dashboard.Dashboard',
 				}
 			]
 		}, null);
-		this.callParent(arguments);
+		this.callParent();
 	},
 	
 	onPortletClose: function(portlet) 

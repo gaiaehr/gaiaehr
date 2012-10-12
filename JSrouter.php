@@ -14,7 +14,6 @@ include_once($_SESSION['site']['root'] . '/dataProvider/i18nRouter.php');
 include_once($_SESSION['site']['root'] . '/dataProvider/ACL.php');
 include_once($_SESSION['site']['root'] . '/dataProvider/User.php');
 include_once($_SESSION['site']['root'] . '/dataProvider/Globals.php');
-
 $i18n = i18nRouter::getTranslation();
 $acl = new ACL();
 $perms = array();
@@ -23,7 +22,6 @@ foreach($acl->getAllUserPermsAccess() AS $perm){
 }
 $user = new User();
 $userData = $user->getCurrentUserBasicData();
-
 header('Content-Type: text/javascript');
 print 'acl = '. json_encode($perms).';';
 print 'i18n = '. json_encode($i18n).';';

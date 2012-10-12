@@ -263,7 +263,7 @@ Ext.define('App.view.calendar.Calendar', {
 			}
 		];
 
-		this.callParent(arguments);
+		this.callParent();
 
 	},
 	/**

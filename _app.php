@@ -80,15 +80,12 @@ $lang = i18nRouter::getTranslation();
 		<script type="text/javascript" src="lib/jpegcam/htdocs/webcam.js"></script>
 		<script type="text/javascript" src="app/classes/Overrides.js"></script>
 		<script type="text/javascript" src="app/classes/VTypes.js"></script>
+		<script src="JSrouter.php"></script>
 		<script type="text/javascript">
-			function say(a) {
-				console.log(a);
-			}
-
+			function say(a) {console.log(a);}
 			for(var x=0; x < App.data.length; x++){
 				Ext.direct.Manager.addProvider(App.data[x]);
 			}
-
 			requires = [
 				'Ext.ux.LiveSearchGridPanel',
 				'Ext.ux.SlidingPager',
@@ -161,7 +158,6 @@ $lang = i18nRouter::getTranslation();
 				'App.model.patient.charts.WeightForStature',
 				'App.model.areas.PoolArea',
 				'App.model.areas.PoolDropAreas',
-
 				/*
 				 * Load all the stores used by GaiaEHR
 				 * this includes ComboBoxes, and other stores used by the web application
@@ -228,14 +224,12 @@ $lang = i18nRouter::getTranslation();
 				'App.store.patient.charts.WeightForRecumbentInf',
 				'App.store.patient.charts.WeightForStature',
 				'App.store.areas.PoolArea',
-
 				/*
 				 * Load the activity by the user
 				 * This will detect the activity of the user, if the user are idle by a
 				 * certain time, it will logout.
 				 */
 		        'App.classes.ActivityMonitor',
-
 				/*
 				 * Load the classes that the CORE application needs
 				 */
@@ -249,33 +243,24 @@ $lang = i18nRouter::getTranslation();
 				'App.classes.ManagedIframe',
 				'App.classes.NodeDisabled',
 				'App.classes.PhotoIdWindow',
-
 				/*
 				 * Load the RenderPanel
 				 * This is the main panel when all the forms are rendered.
 				 */
 				'App.classes.RenderPanel',
-
 				/*
 				 * Load the charts related controls
 				 */
 				'Ext.fx.target.Sprite',
-
 				/*
 				 * Load the DropDown related components
 				 */
 				'Ext.dd.DropZone',
 				'Ext.dd.DragZone',
-
 				/*
 				 * Load the Extensible related controls and panels
 				 * This is the Calendar Component that GaiaEHR uses.
 				 */
-				'Extensible.calendar.data.EventStore',
-				'Extensible.calendar.CalendarPanel',
-				'Extensible.calendar.gadget.CalendarListPanel',
-				'Extensible.calendar.data.MemoryCalendarStore',
-				'Extensible.calendar.data.MemoryEventStore',
 
 				/*
 				 * Load the form specific related fields
@@ -286,11 +271,9 @@ $lang = i18nRouter::getTranslation();
 		        'App.classes.form.fields.Currency',
 		        'App.classes.form.fields.DateTime',
 		        'App.classes.form.Panel',
-
 		        'App.classes.grid.EventHistory',
 		        'App.classes.grid.RowFormEditing',
 		        'App.classes.grid.RowFormEditor',
-
 				/*
 				 * Load the combo boxes spreaded on all the web application
 				 * remember this are all reusable combo boxes.
@@ -353,14 +336,9 @@ $lang = i18nRouter::getTranslation();
 				'App.classes.combo.Users',
 				'App.classes.combo.YesNoNa',
 				'App.classes.combo.YesNo',
-
-
-
 				'App.classes.window.Window',
 				'App.classes.NodeDisabled',
-
 				'App.view.search.PatientSearch',
-
 				/*
 				 * Load the patient window related panels
 				 */
@@ -370,47 +348,38 @@ $lang = i18nRouter::getTranslation();
 				'App.view.patient.windows.NewDocuments',
 				'App.view.patient.windows.DocumentViewer',
 				'App.view.patient.windows.ArrivalLog',
-
 				/*
 				 * Load the patient related panels
 				 */
-
-
 		        'App.view.dashboard.panel.PortalColumn',
 		        'App.view.dashboard.panel.PortalDropZone',
 		        'App.view.dashboard.panel.PortalPanel',
-
 				'App.view.dashboard.panel.OnotesPortlet',
 		        'App.view.dashboard.panel.VisitsPortlet',
 		        'App.view.dashboard.Dashboard',
-
 				/*
 				 * Load the root related panels
 				 */
+				'App.view.calendar.ExtensibleAll',
 				'App.view.calendar.Calendar',
 				'App.view.messages.Messages',
-
 				/*
 				 * Load the areas related panels
 				 */
 				'App.view.areas.FloorPlan',
 				'App.view.areas.PatientPoolDropZone',
-
 	            /**
 	             * Load vector charts panel
 	             */
 				'App.view.patient.charts.BPPulseTemp',
 				'App.view.patient.charts.HeadCircumference',
 				'App.view.patient.charts.HeightForStature',
-
-
 				/*
 				 * Load the patient related panels
 				 */
 				'App.view.patient.encounter.CurrentProceduralTerminology',
 				'App.view.patient.encounter.HealthCareFinancingAdministrationOptions',
 				'App.view.patient.encounter.ICDs',
-
 				'App.view.patient.ItemsToReview',
 				'App.view.patient.EncounterDocumentsGrid',
 				'App.view.patient.encounter.ICDs',
@@ -423,14 +392,12 @@ $lang = i18nRouter::getTranslation();
 				'App.view.patient.Encounter',
 				'App.view.patient.windows.Medical',
 				'App.view.patient.VisitCheckout',
-
 				/*
 				 * Load the fees related panels
 				 */
 				'App.view.fees.Billing',
 				'App.view.fees.PaymentEntryWindow',
 				'App.view.fees.Payments',
-
 				/*
 				 * Load the administration related panels
 				 */
@@ -448,7 +415,6 @@ $lang = i18nRouter::getTranslation();
 				'App.view.administration.Roles',
 				'App.view.administration.ExternalDataLoads',
 				'App.view.administration.Users',
-
 				/*
 				 * Load the miscellaneous related panels
 				 */
@@ -457,15 +423,12 @@ $lang = i18nRouter::getTranslation();
 				'App.view.miscellaneous.MySettings',
 				'App.view.miscellaneous.OfficeNotes',
 				'App.view.miscellaneous.Websearch',
-
 				'App.view.signature.SignatureWindow',
 				/*
 				 * Dynamically load the modules
 				 */
 		        'Modules.Module'
 			];
-
-
 			(function(){
 			    var scripts = document.getElementsByTagName('script'),
 			        localhostTests = [
@@ -526,11 +489,9 @@ $lang = i18nRouter::getTranslation();
 //			   jsb3Buffer = jsb3Buffer+' ]';
 				}else{
 					say('Loading GaiaEHR Classes (Production)');
-					document.write('<script type="text/javascript" charset="UTF-8" src="app/all-classes.js"><\/script>');
+					document.write('<script type="text/javascript" charset="UTF-8" src="app/app-all.js"><\/script>');
 				}
 			})();
-
-
 			function copyToClipBoard(token) {
 				app.msg('Sweet!', token + ' copied to clipboard, Ctrl-V or Paste where need it.');
 				if(window.clipboardData) {
@@ -540,6 +501,7 @@ $lang = i18nRouter::getTranslation();
 					return (token);
 				}
 			}
+
 			function onWebCamComplete(msg) {
 				app.onWebCamComplete(msg);
 			}
@@ -551,35 +513,13 @@ $lang = i18nRouter::getTranslation();
 				}, 1000);
 			}
 			Ext.onReady(function() {
-
-
-
-				CronJob.run();
-				Globals.setGlobals(function(provider, response) {
-					settings.site_url = response.result.site.url + '/sites/' + response.result.site.site;
-				});
-				ACL.getAllUserPermsAccess(function(provider, response) {
-					var permissions = response.result;
-					for(var i = 0; i < permissions.length; i++) {
-						acl[permissions[i].perm] = permissions[i].value;
-					}
-				});
-				// localization remoting procedures.
-				// ie: i18n['dashboard'] = Dashboard (en_US)
-				// ie: i18n['dashboard'] = Tablero (es_PR)
-				i18nRouter.getTranslation(function(provider, response)
-				{
-					i18n = response.result;
-				});
-				User.getCurrentUserBasicData(function(provider, response) {
-					var userData = response.result;
-					user.id = userData.id;
-					user.name = userData.title + ' ' + userData.lname;
-					/**
-					 * lets create the Application Viewport (render the application),
-					 * and store the application viewport instance in "app".
-					 * @type {*}
-					 */
+				/**
+				 * lets create the Application Viewport (render the application),
+				 * and store the application viewport instance in "app".
+				 * @type {*}
+				 */
+				CronJob.run(function(){
+					say('Loading GaiaEHR');
 					app = Ext.create('App.view.Viewport');
 				});
 			});

@@ -64,11 +64,8 @@ class Globals extends dbHelper {
         $conn->setSQL("SELECT gl_name, gl_value FROM globals");
         foreach($conn->fetchRecords(PDO::FETCH_ASSOC) as $setting){
             $_SESSION['global_settings'][$setting['gl_name']] = $setting['gl_value'];
-
         }
-
 	    $_SESSION['global_settings']['timezone_offset']  = -14400;
-
-        return $_SESSION;
+        return $_SESSION['site']['url']. '/sites/' . $_SESSION['site']['site'];
     }
 }

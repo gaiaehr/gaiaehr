@@ -657,7 +657,7 @@ Ext.define('App.view.administration.Documents', {
         });
 
         me.pageBody = [ me.LeftCol, me.TeamplateEditor , me.TokensGrid ];
-		me.callParent(arguments);
+		me.callParent();
 	},
 	/**
 	 * if the form is valid send the POST request

@@ -664,7 +664,7 @@ Ext.define('App.view.patient.Summary', {
 			render: me.beforePanelRender
 		};
 
-		me.callParent(arguments);
+		me.callParent();
 	},
 
     addDisclosure:function(btn){

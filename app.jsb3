@@ -22,6 +22,10 @@
 					"name": "PreviewPlugin.js"
 				},
 				{
+					"path": "app/classes/",
+					"name": "RenderPanel.js"
+				},
+				{
 					"path": "app/model/administration/",
 					"name": "ActiveProblems.js"
 				},
@@ -558,10 +562,6 @@
 					"name": "PhotoIdWindow.js"
 				},
 				{
-					"path": "app/classes/",
-					"name": "RenderPanel.js"
-				},
-				{
 					"path": "lib/extjs-4.1.1a/src/fx/target/",
 					"name": "Sprite.js"
 				},
@@ -572,26 +572,6 @@
 				{
 					"path": "lib/extjs-4.1.1a/src/dd/",
 					"name": "DragZone.js"
-				},
-				{
-					"path": "lib/extensible-1.5.1/src/calendar/data/",
-					"name": "EventStore.js"
-				},
-				{
-					"path": "lib/extensible-1.5.1/src/calendar/",
-					"name": "CalendarPanel.js"
-				},
-				{
-					"path": "lib/extensible-1.5.1/src/calendar/gadget/",
-					"name": "CalendarListPanel.js"
-				},
-				{
-					"path": "lib/extensible-1.5.1/src/calendar/data/",
-					"name": "MemoryCalendarStore.js"
-				},
-				{
-					"path": "lib/extensible-1.5.1/src/calendar/data/",
-					"name": "MemoryEventStore.js"
 				},
 				{
 					"path": "app/classes/form/fields/",
@@ -916,6 +896,10 @@
 				{
 					"path": "app/view/dashboard/",
 					"name": "Dashboard.js"
+				},
+				{
+					"path": "app/view/calendar/",
+					"name": "ExtensibleAll.js"
 				},
 				{
 					"path": "app/view/calendar/",

@@ -188,11 +188,16 @@
         "file": "lib/extensible-all.js",
         "isDebug": true,
         "includeDeps": true,
-        "pkgDeps": [
-            "pkgs/extensible-core.js",
-            "pkgs/recurrence.js",
-            "pkgs/calendar.js"
-        ],
+        "files": [{
+	        "text": "extensible-core.js",
+            "path": "extensible-1.5.1/pkgs/"
+        },{
+	        "text": "recurrence.js",
+            "path": "extensible-1.5.1/pkgs/"
+        },{
+	        "text": "calendar.js",
+            "path": "extensible-1.5.1/pkgs/"
+        }],
         "fileIncludes": []
     }],
     "resources": [{

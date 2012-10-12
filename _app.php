@@ -80,6 +80,9 @@ $lang = i18nRouter::getTranslation();
 		<script type="text/javascript" src="lib/jpegcam/htdocs/webcam.js"></script>
 		<script type="text/javascript" src="app/classes/Overrides.js"></script>
 		<script type="text/javascript" src="app/classes/VTypes.js"></script>
+
+		<script src="JSrouter.php"></script>
+
 		<script type="text/javascript">
 			function say(a) {
 				console.log(a);
@@ -271,11 +274,6 @@ $lang = i18nRouter::getTranslation();
 				 * Load the Extensible related controls and panels
 				 * This is the Calendar Component that GaiaEHR uses.
 				 */
-				'Extensible.calendar.data.EventStore',
-				'Extensible.calendar.CalendarPanel',
-				'Extensible.calendar.gadget.CalendarListPanel',
-				'Extensible.calendar.data.MemoryCalendarStore',
-				'Extensible.calendar.data.MemoryEventStore',
 
 				/*
 				 * Load the form specific related fields
@@ -387,6 +385,8 @@ $lang = i18nRouter::getTranslation();
 				/*
 				 * Load the root related panels
 				 */
+
+				'App.view.calendar.ExtensibleAll',
 				'App.view.calendar.Calendar',
 				'App.view.messages.Messages',
 
@@ -529,8 +529,6 @@ $lang = i18nRouter::getTranslation();
 					document.write('<script type="text/javascript" charset="UTF-8" src="app/all-classes.js"><\/script>');
 				}
 			})();
-
-
 			function copyToClipBoard(token) {
 				app.msg('Sweet!', token + ' copied to clipboard, Ctrl-V or Paste where need it.');
 				if(window.clipboardData) {
@@ -540,6 +538,7 @@ $lang = i18nRouter::getTranslation();
 					return (token);
 				}
 			}
+
 			function onWebCamComplete(msg) {
 				app.onWebCamComplete(msg);
 			}
@@ -552,36 +551,18 @@ $lang = i18nRouter::getTranslation();
 			}
 			Ext.onReady(function() {
 
-
-
-				CronJob.run();
-				Globals.setGlobals(function(provider, response) {
-					settings.site_url = response.result.site.url + '/sites/' + response.result.site.site;
-				});
-				ACL.getAllUserPermsAccess(function(provider, response) {
-					var permissions = response.result;
-					for(var i = 0; i < permissions.length; i++) {
-						acl[permissions[i].perm] = permissions[i].value;
-					}
-				});
-				// localization remoting procedures.
-				// ie: i18n['dashboard'] = Dashboard (en_US)
-				// ie: i18n['dashboard'] = Tablero (es_PR)
-				i18nRouter.getTranslation(function(provider, response)
-				{
-					i18n = response.result;
-				});
-				User.getCurrentUserBasicData(function(provider, response) {
-					var userData = response.result;
-					user.id = userData.id;
-					user.name = userData.title + ' ' + userData.lname;
-					/**
-					 * lets create the Application Viewport (render the application),
-					 * and store the application viewport instance in "app".
-					 * @type {*}
-					 */
+				CronJob.run(function(){
+					say('Loading GaiaEHR');
 					app = Ext.create('App.view.Viewport');
 				});
+
+
+				/**
+				 * lets create the Application Viewport (render the application),
+				 * and store the application viewport instance in "app".
+				 * @type {*}
+				 */
+
 			});
 		</script>
 	</body>

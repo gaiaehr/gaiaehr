@@ -650,7 +650,7 @@ Ext.define('App.view.patient.Encounter', {
         me.listeners = {
             beforerender: me.beforePanelRender
         };
-        me.callParent(arguments);
+        me.callParent();
         me.down('panel').addDocked(me.panelToolBar);
     },
     newDoc                : function(btn) {

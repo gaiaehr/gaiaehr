@@ -684,7 +684,7 @@ Ext.define('App.view.administration.DataManager', {
         }); // END GRID
 
         me.pageBody = [ me.dataManagerGrid ];
-        me.callParent(arguments);
+        me.callParent();
     },
 
     onAddData: function() {

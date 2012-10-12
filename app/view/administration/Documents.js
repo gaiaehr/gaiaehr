@@ -21,7 +21,7 @@ Ext.define('App.view.administration.Documents', {
 		var me = this;
 
         me.templatesDocumentsStore = Ext.create('App.store.administration.DocumentsTemplates');
-		me.headersAndFooterStore   = Ext.create('App.store.administration.HeadersAndFooters');
+//		me.headersAndFooterStore   = Ext.create('App.store.administration.HeadersAndFooters');
 		me.defaultsDocumentsStore   = Ext.create('App.store.administration.DefaultDocuments');
 
         Ext.define('tokenModel', {
@@ -447,49 +447,49 @@ Ext.define('App.view.administration.Documents', {
 
 
 
-		me.HeaderFootergrid = Ext.create('Ext.grid.Panel', {
-			title      : i18n['header_footer_templates'],
-			region     : 'south',
-			height     : 250,
-			split      : true,
-			hideHeaders: true,
-			store      : me.headersAndFooterStore,
-			columns    : [
-				{
-					flex     : 1,
-					sortable : true,
-					dataIndex: 'title',
-                    editor:{
-                        xtype:'textfield',
-                        allowBlank:false
-                    }
-				},
-				{
-					icon: 'resources/images/icons/delete.png',
-					tooltip: i18n['remove'],
-					scope:me,
-					handler: me.onRemoveDocument
-				}
-			],
-			listeners  : {
-				scope    : me,
-				itemclick: me.onDocumentsGridItemClick
-			},
-			tbar       :[
-                '->',
-                {
-                    text : i18n['new'],
-                    scope: me,
-                    handler: me.newHeaderOrFooterTemplate
-                }
-            ],
-            plugins:[
-                me.rowEditor2 = Ext.create('Ext.grid.plugin.RowEditing', {
-                    clicksToEdit: 2
-                })
-
-            ]
-		});
+//		me.HeaderFootergrid = Ext.create('Ext.grid.Panel', {
+//			title      : i18n['header_footer_templates'],
+//			region     : 'south',
+//			height     : 250,
+//			split      : true,
+//			hideHeaders: true,
+//			store      : me.headersAndFooterStore,
+//			columns    : [
+//				{
+//					flex     : 1,
+//					sortable : true,
+//					dataIndex: 'title',
+//                    editor:{
+//                        xtype:'textfield',
+//                        allowBlank:false
+//                    }
+//				},
+//				{
+//					icon: 'resources/images/icons/delete.png',
+//					tooltip: i18n['remove'],
+//					scope:me,
+//					handler: me.onRemoveDocument
+//				}
+//			],
+//			listeners  : {
+//				scope    : me,
+//				itemclick: me.onDocumentsGridItemClick
+//			},
+//			tbar       :[
+//                '->',
+//                {
+//                    text : i18n['new'],
+//                    scope: me,
+//                    handler: me.newHeaderOrFooterTemplate
+//                }
+//            ],
+//            plugins:[
+//                me.rowEditor2 = Ext.create('Ext.grid.plugin.RowEditing', {
+//                    clicksToEdit: 2
+//                })
+//
+//            ]
+//		});
 
 		me.DocumentsDefaultsGrid = Ext.create('Ext.grid.Panel', {
 			title      : i18n['documents_defaults'],
@@ -587,7 +587,7 @@ Ext.define('App.view.administration.Documents', {
             width      : 250,
             border     : false,
             split      : true,
-            items:[  me.DocumentsDefaultsGrid, me.DocumentsGrid, me.HeaderFootergrid ]
+            items:[  me.DocumentsDefaultsGrid, me.DocumentsGrid ]
         });
 
 		me.TeamplateEditor = Ext.create('Ext.form.Panel', {
@@ -727,19 +727,19 @@ Ext.define('App.view.administration.Documents', {
 
     },
 
-	newHeaderOrFooterTemplate:function(){
-        var me = this,
-            store = me.headersAndFooterStore;
-        me.rowEditor2.cancelEdit();
-        store.insert(0,{
-            title: i18n['new_header_or_footer'],
-	        template_type:'headerorfootertemplate',
-            date: new Date(),
-	        type: 2
-        });
-        me.rowEditor2.startEdit(0, 0);
-
-    },
+//	newHeaderOrFooterTemplate:function(){
+//        var me = this,
+//            store = me.headersAndFooterStore;
+//        me.rowEditor2.cancelEdit();
+//        store.insert(0,{
+//            title: i18n['new_header_or_footer'],
+//	        template_type:'headerorfootertemplate',
+//            date: new Date(),
+//	        type: 2
+//        });
+//        me.rowEditor2.startEdit(0, 0);
+//
+//    },
 
     copyToClipBoard:function(grid, rowIndex, colIndex){
         var rec = grid.getStore().getAt(rowIndex),
@@ -758,9 +758,9 @@ Ext.define('App.view.administration.Documents', {
 	 * to call every this panel becomes active
 	 */
 	onActive            : function(callback) {
-        var me = this;
+        var me = this
         me.templatesDocumentsStore.load();
-        me.headersAndFooterStore.load();
+//        me.headersAndFooterStore.load();
         me.defaultsDocumentsStore.load();
 		callback(true);
 	}

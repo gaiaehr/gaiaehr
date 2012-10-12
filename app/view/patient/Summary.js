@@ -308,73 +308,108 @@ Ext.define('App.view.patient.Summary', {
 			});
 		}
 		if(acl['access_patient_notes']) {
-			me.stores.push(me.patientNotesStore = Ext.create('App.store.patient.Notes'));
+			me.stores.push(me.patientNotesStore = Ext.create('App.store.patient.Notes',{
+			                autoSync:true
+			            }));
 			me.tabPanel.add({
 				title      : i18n['notes'],
 				itemId     : 'notesPanel',
 				xtype      : 'grid',
 				bodyPadding: 0,
 				store      : me.patientNotesStore,
+                plugins: Ext.create('Ext.grid.plugin.RowEditing', {
+                           autoCancel  : false,
+                           errorSummary: false,
+                           clicksToEdit: 2
+
+                }),
 				columns    : [
 					{
+                        xtype    : 'datecolumn',
 						text     : i18n['date'],
-						dataIndex: 'date'
+                        format   :'Y-m-d',
+                        dataIndex: 'date'
 					},
 					{
 						header   : i18n['type'],
-						dataIndex: 'type'
+						dataIndex: 'type',
+                        editor:{
+                            xtype:'textfield'
+                        }
 					},
 					{
 						text     : i18n['note'],
 						dataIndex: 'body',
-						flex     : 1
+						flex     : 1,
+                        editor:{
+                            xtype:'textfield'
+                        }
 					},
 					{
 						text     : i18n['user'],
+                        width    : 225,
 						dataIndex: 'user_name'
 					}
 				],
 				tbar       : [
 					{
 						text   : i18n['add_note'],
-						iconCls: 'icoAdd'
+						iconCls: 'icoAdd',
+                        handler:me.addNote
 					}
 				]
 			});
 		}
 
 		if(acl['access_patient_reminders']) {
-			me.stores.push(me.patientRemindersStore = Ext.create('App.store.patient.Reminders'));
+			me.stores.push(me.patientRemindersStore = Ext.create('App.store.patient.Reminders',{
+			                autoSync:true
+			            }));
 			me.tabPanel.add({
 				title      : i18n['reminders'],
 				itemId     : 'remindersPanel',
 				xtype      : 'grid',
 				bodyPadding: 0,
 				store      : me.patientRemindersStore,
-				columns    : [
-					{
-						text     : i18n['date'],
-						dataIndex: 'date'
-					},
-					{
+                plugins: Ext.create('Ext.grid.plugin.RowEditing', {
+                   autoCancel  : false,
+                   errorSummary: false,
+                   clicksToEdit: 2
 
-						header   : i18n['type'],
-						dataIndex: 'type'
-					},
-					{
-						text     : i18n['note'],
-						dataIndex: 'body',
-						flex     : 1
-					},
-					{
-						text     : i18n['user'],
-						dataIndex: 'user_name'
-					}
+               }),
+				columns    : [
+                    {
+                        xtype    : 'datecolumn',
+                        text     : i18n['date'],
+                        format   :'Y-m-d',
+                        dataIndex: 'date'
+                    },
+                    {
+                        header   : i18n['type'],
+                        dataIndex: 'type',
+                        editor:{
+                            xtype:'textfield'
+                        }
+                    },
+                    {
+                        text     : i18n['note'],
+                        dataIndex: 'body',
+                        flex     : 1,
+                        editor:{
+                            xtype:'textfield'
+                        }
+                    },
+                    {
+                        text     : i18n['user'],
+                        width    : 225,
+                        dataIndex: 'user_name'
+                    }
 				],
 				tbar       : [
 					{
 						text   : i18n['add_reminder'],
-						iconCls: 'icoAdd'
+						iconCls: 'icoAdd',
+                        handler:me.addReminder
 					}
 				]
 			})
@@ -673,6 +708,22 @@ Ext.define('App.view.patient.Summary', {
             store = grid.store;
         grid.plugins[0].cancelEdit();
         store.insert(0,{date:new Date(), pid:app.patient.pid, active:1});
+        grid.plugins[0].startEdit(0,0);
+    },
+    addNote:function(btn){
+        var me = this,
+            grid = btn.up('grid'),
+            store = grid.store;
+        grid.plugins[0].cancelEdit();
+        store.insert(0,{date:new Date(), pid:app.patient.pid, uid:app.user.id, eid:app.patient.eid});
+        grid.plugins[0].startEdit(0,0);
+    },
+    addReminder:function(btn){
+        var me = this,
+            grid = btn.up('grid'),
+            store = grid.store;
+        grid.plugins[0].cancelEdit();
+        store.insert(0,{date:new Date(), pid:app.patient.pid, uid:app.user.id, eid:app.patient.eid});
         grid.plugins[0].startEdit(0,0);
     },
 

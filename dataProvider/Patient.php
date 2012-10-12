@@ -325,16 +325,54 @@ class Patient
 			return array('success' => true);
 		}
 	}
+	public function addPatientNotes(stdClass $params)
+	{
+		unset($params->id);
+		$data = get_object_vars($params);
+		unset($data['user_name']);
+		$this->db->setSQL($this->db->sqlBind($data,'patient_notes','I'));
+		$this->db->execLog();
+		$params->id = $this->db->lastInsertId;
+		$params->user_name = $this->user->getUserNameById($params->uid);
+		return $params;
+	}
+	public function addPatientReminders(stdClass $params)
+	{
+		unset($params->id);
+		$data = get_object_vars($params);
+		unset($data['user_name']);
+		$this->db->setSQL($this->db->sqlBind($data,'patient_reminders','I'));
+		$this->db->execLog();
+		$params->id = $this->db->lastInsertId;
+		$params->user_name = $this->user->getUserNameById($params->uid);
+		return $params;
+	}
+	public function updatePatientNotes(stdClass $params)
+	{
+		$data = get_object_vars($params);
+		unset($data['id'],$data['user_name']);
+		$this->db->setSQL($this->db->sqlBind($data,'patient_notes','U', array('id' => $params->id)));
+		$this->db->execLog();
+		return $params;
+	}
+	public function updatePatientReminders(stdClass $params)
+	{
+		$data = get_object_vars($params);
+		unset($data['id'],$data['user_name']);
+		$this->db->setSQL($this->db->sqlBind($data,'patient_reminders','U', array('id' => $params->id)));
+		$this->db->execLog();
+		return $params;
 
+	}
 	public function getPatientNotes(stdClass $params)
 	{
-		$notes = array();
+		$reminders = array();
 		$this->db->setSQL("SELECT * FROM patient_notes WHERE pid = '$params->pid'");
 		foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row) {
 			$row['user_name'] = $this->user->getUserNameById($row['uid']);
-			$notes[]          = $row;
+			$reminders[]      = $row;
 		}
-		return $notes;
+		return $reminders;
 	}
 
 	public function getPatientReminders(stdClass $params)

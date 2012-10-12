@@ -940,6 +940,18 @@ $API = array(
             ),
             'updatePatientDisclosure'=>array(
             	'len'=>1
+            ),
+            'addPatientReminders'=>array(
+            	'len'=>1
+            ),
+            'updatePatientReminders'=>array(
+            	'len'=>1
+            ),
+            'addPatientNotes'=>array(
+            	'len'=>1
+            ),
+            'updatePatientNotes'=>array(
+            	'len'=>1
             )
 
         )

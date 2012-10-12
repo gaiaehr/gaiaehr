@@ -14,8 +14,8 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 	title      : i18n['order_window'],
 	layout     : 'fit',
 	closeAction: 'hide',
-	height     : 430,
-	width      : 730,
+    height       : 750,
+   	width        : 1200,
 	bodyStyle  : 'background-color:#fff',
 	modal      : true,
 	defaults   : {
@@ -41,7 +41,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 								xtype  : 'grid',
 								margin : 10,
 								store  : me.patientsLabsOrdersStore,
-								height : 320,
+								height : 640,
 								columns: [
 
 									{
@@ -99,7 +99,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 								xtype  : 'grid',
 								margin : 10,
 								store  : me.patientPrescriptionStore,
-								height : 320,
+								height : 640,
 								columns: [
 
 									{
@@ -173,7 +173,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 								xtype  : 'grid',
 								margin : 10,
 								store  : me.patientPrescriptionStore,
-								height : 285,
+								height : 605,
 								columns: [
 
 									{
@@ -420,8 +420,8 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 								action:'body',
 								itemId:'body',
 								enableFontSize: false,
-								height : 285,
-								width  : 700,
+								height : 605,
+								width  : 1170,
 								margin:5
 
 							}

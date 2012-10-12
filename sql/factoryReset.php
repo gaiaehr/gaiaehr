@@ -48,6 +48,7 @@ $tables = array(
 	'patient_documents',
 	'patient_prescriptions',
 	'patient_reminders',
+	'patient_disclosures',
 	'patient_surgery',
 	'patient_out_chart',
 	'patient_zone',

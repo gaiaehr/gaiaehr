@@ -8,6 +8,6 @@
 Ext.define('App.store.patient.Notes', {
 	extend: 'Ext.data.Store',
 	model     : 'App.model.patient.Notes',
-	remoteSort: true,
+	remoteSort: false,
 	autoLoad  : false
 });

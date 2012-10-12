@@ -173,10 +173,11 @@ class Documents
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	private function get_PatientTokensData($pid, $allNeededInfo, $tokens)
+	public function get_PatientTokensData($pid, $allNeededInfo, $tokens)
 	{
 		$patientData       = $this->getAllPatientData($pid);
 		$age               = $this->patient->getPatientAgeByDOB($patientData['DOB']);
+
 		$patienInformation = array
 		(
 			'[PATIENT_NAME]'                      => $patientData['fname'],
@@ -204,7 +205,7 @@ class Documents
 			'[PATIENT_EMERGENCY_PHONE]'           => $patientData['emer_phone'],
 			'[PATIENT_PROVIDER]'                  => $this->user->getUserFullNameById($patientData['provider']),
 			'[PATIENT_PHARMACY]'                  => $patientData['pharmacy'],
-			'[PATIENT_AGE]'                       => $age['age'],
+			'[PATIENT_AGE]'                       => $age['DMY']['years'],
 			'[PATIENT_OCCUPATION]'                => $patientData['occupation'],
 			'[PATIENT_EMPLOYEER]'                 => $patientData['employer_name'],
 			'[PATIENT_RACE]'                      => $patientData['race'],
@@ -675,7 +676,7 @@ class Documents
         $this->pdf->SetMargins(15, 27, 15);
         $this->pdf->SetHeaderMargin(5);
         $this->pdf->SetFooterMargin(10);
-        $this->pdf->SetFontSize(10);
+        $this->pdf->SetFontSize(12);
         $this->pdf->SetAutoPageBreak(true, 25);
         $this->pdf->setFontSubsetting(true);
         $this->pdf->AddPage();
@@ -731,4 +732,5 @@ class Documents
 //$params = new stdClass();
 //$params->pid = 1;
 //$params->documentId = 7;
-//$e->PDFDocumentBuilder($params,'C:/wamp/www/gaiaehr/sites/default/patients/1/DoctorsNotes/1342132079.pdf');
+//echo'<pre>';
+//$e->get_PatientTokensData(1,'','');

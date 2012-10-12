@@ -8,6 +8,6 @@
 Ext.define('App.store.patient.Reminders', {
 	extend: 'Ext.data.Store',
 	model     : 'App.model.patient.Reminders',
-	remoteSort: true,
+	remoteSort: false,
 	autoLoad  : false
 });

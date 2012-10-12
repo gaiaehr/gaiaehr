@@ -14,7 +14,7 @@ Ext.define('App.model.patient.Notes', {
         {name: 'eid', type: 'int'},
         {name: 'pid', type: 'int'},
         {name: 'uid', type: 'int'},
-        {name: 'date', type: 'date'},
+        {name: 'date', type: 'date', dateFormat:'Y-m-d H:i:s'},
         {name: 'body', type: 'string'},
         {name: 'type', type: 'string'},
         {name: 'user_name', type: 'string'}
@@ -22,7 +22,9 @@ Ext.define('App.model.patient.Notes', {
 	proxy : {
 		type: 'direct',
 		api : {
-			read  : Patient.getPatientNotes
+			read    : Patient.getPatientNotes,
+            create  : Patient.addPatientNotes,
+            update  : Patient.updatePatientNotes
 		}
 	}
 });

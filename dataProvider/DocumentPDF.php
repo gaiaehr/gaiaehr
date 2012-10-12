@@ -11,8 +11,8 @@ if(!isset($_SESSION)) {
 	session_start();
 	session_cache_limiter('private');
 }
-include_once($_SESSION['site']['root'] . '/lib/tcpdf/tcpdf.php');
-include_once($_SESSION['site']['root'] . '/dataProvider/i18nRouter.php');
+include_once($_SESSION['root'] . '/lib/tcpdf/tcpdf.php');
+include_once($_SESSION['root'] . '/dataProvider/i18nRouter.php');
 class DocumentPDF extends TCPDF {
     //Page header
 

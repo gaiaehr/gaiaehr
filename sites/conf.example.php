@@ -22,7 +22,7 @@ $_SESSION['site']['AESkey'] = "%key%";
  */
 if(!$_SESSION['site']['localization']) $_SESSION['site']['localization'] = '%lang%';
 $_SESSION['site']['theme'] = '%theme%';
-$_SESSION['site']['directory']      = str_replace('\\', '/', dirname(__FILE__));
+$_SESSION['site']['path']      = str_replace('\\', '/', dirname(__FILE__));
 /**
  * Setup Command
  * If it's true, the application will

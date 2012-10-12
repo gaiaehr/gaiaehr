@@ -24,8 +24,8 @@ class FileManager
 
 	function __construct()
 	{
-		$this->tempDir = '/sites/' . $_SESSION['site']['site'] .  '/temp/';
-		chmod($_SESSION['site']['root'].'/'.$this->tempDir, 0777);
+		$this->tempDir = $_SESSION['site']['temp'].'/';
+		chmod($this->tempDir, 0777);
 
 		return;
 	}
@@ -102,7 +102,7 @@ class FileManager
 
 	public function setWorkingDir()
 	{
-		$workingDir = $_SESSION['site']['root'] . '/temp/'. $this->getTempDirAvailableName();
+		$workingDir = $_SESSION['root'] . '/temp/'. $this->getTempDirAvailableName();
 		if(!is_dir($workingDir)){
 			if(mkdir($workingDir, 0777, true)){
 				chmod($workingDir, 0777);

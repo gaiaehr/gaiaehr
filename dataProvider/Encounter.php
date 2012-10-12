@@ -11,15 +11,15 @@ if(!isset($_SESSION)) {
 	session_start();
 	session_cache_limiter('private');
 }
-include_once($_SESSION['site']['root'] . '/classes/dbHelper.php');
-include_once($_SESSION['site']['root'] . '/dataProvider/Patient.php');
-include_once($_SESSION['site']['root'] . '/dataProvider/User.php');
-include_once($_SESSION['site']['root'] . '/dataProvider/PoolArea.php');
-include_once($_SESSION['site']['root'] . '/dataProvider/Medical.php');
-include_once($_SESSION['site']['root'] . '/dataProvider/PreventiveCare.php');
+include_once($_SESSION['root'] . '/classes/dbHelper.php');
+include_once($_SESSION['root'] . '/dataProvider/Patient.php');
+include_once($_SESSION['root'] . '/dataProvider/User.php');
+include_once($_SESSION['root'] . '/dataProvider/PoolArea.php');
+include_once($_SESSION['root'] . '/dataProvider/Medical.php');
+include_once($_SESSION['root'] . '/dataProvider/PreventiveCare.php');
 
-include_once($_SESSION['site']['root'] . '/dataProvider/Services.php');
-include_once($_SESSION['site']['root'] . '/dataProvider/DiagnosisCodes.php');
+include_once($_SESSION['root'] . '/dataProvider/Services.php');
+include_once($_SESSION['root'] . '/dataProvider/DiagnosisCodes.php');
 class Encounter
 {
 	/**

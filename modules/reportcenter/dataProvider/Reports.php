@@ -11,8 +11,8 @@ if(!isset($_SESSION)) {
     session_start();
     session_cache_limiter('private');
 }
-include_once($_SESSION['site']['root'] . '/classes/FileManager.php');
-include_once($_SESSION['site']['root'] . '/dataProvider/DocumentPDF.php');
+include_once($_SESSION['root'] . '/classes/FileManager.php');
+include_once($_SESSION['root'] . '/dataProvider/DocumentPDF.php');
 
 class Reports
 {
@@ -34,8 +34,8 @@ class Reports
 	    $TempPdfPath = $this->fileManager->getSiteTempDir().$this->fileManager->getTempDirAvailableName().'.pdf';
         $this->pdf->SetCreator('TCPDF');
         $this->pdf->SetAuthor($_SESSION['user']['name']);
-        $siteLogo = $_SESSION['site']['root'] .'/sites/'.$_SESSION['site']['site'].'/logo.jpg';
-        $logo = (file_exists($siteLogo) ? $siteLogo : $_SESSION['site']['root'] .'/resources/images/logo.jpg');
+        $siteLogo = $_SESSION['site']['path'].'/logo.jpg';
+        $logo = (file_exists($siteLogo) ? $siteLogo : $_SESSION['root'] .'/resources/images/logo.jpg');
 
 	   // TODO: set from admin area
         $this->pdf->SetHeaderData(
@@ -54,9 +54,9 @@ class Reports
         $this->pdf->setFontSubsetting(true);
         $this->pdf->AddPage();
         $this->pdf->writeHTML($html, true, false, false, false, '');
-        $this->pdf->Output($_SESSION['site']['root'].$TempPdfPath, 'F');
+        $this->pdf->Output($_SESSION['root'].$TempPdfPath, 'F');
         $this->pdf->Close();
-        return $_SESSION['site']['url'].$TempPdfPath;
+        return $_SESSION['url'].$TempPdfPath;
     }
 }
 //

@@ -15,11 +15,11 @@ if(!isset($_SESSION)) {
 	session_start();
 	session_cache_limiter('private');
 }
-include_once($_SESSION['site']['root'] . '/dataProvider/Person.php');
-include_once($_SESSION['site']['root'] . '/classes/dbHelper.php');
-include_once($_SESSION['site']['root'] . '/classes/Time.php');
-include_once($_SESSION['site']['root'] . '/dataProvider/User.php');
-include_once($_SESSION['site']['root'] . '/dataProvider/ACL.php');
+include_once($_SESSION['root'] . '/dataProvider/Person.php');
+include_once($_SESSION['root'] . '/classes/dbHelper.php');
+include_once($_SESSION['root'] . '/classes/Time.php');
+include_once($_SESSION['root'] . '/dataProvider/User.php');
+include_once($_SESSION['root'] . '/dataProvider/ACL.php');
 class Patient
 {
 	/**
@@ -59,7 +59,7 @@ class Patient
 	 */
 	public function currPatientSet(stdClass $params)
 	{
-		include_once($_SESSION['site']['root'] . '/dataProvider/PoolArea.php');
+		include_once($_SESSION['root'] . '/dataProvider/PoolArea.php');
 		$poolArea = new PoolArea();
 		$_SESSION['patient']['pid']  = $params->pid;
 		$_SESSION['patient']['name'] = $this->getPatientFullNameByPid($params->pid);
@@ -248,9 +248,7 @@ class Patient
 
 	private function createPatientDir($pid)
 	{
-		$root = $_SESSION['site']['root'];
-		$site = $_SESSION['site']['site'];
-		$path = $root . '/sites/' . $site . '/patients/' . $pid;
+		$path = $_SESSION['site']['path'] . '/patients/' . $pid;
 		if(!file_exists($path)) {
 			if(mkdir($path, 0777, true)) {
 				chmod($path, 0777);
@@ -266,21 +264,17 @@ class Patient
 	public function createPatientQrCode($pid, $fullname)
 	{
 		//set it to writable location, a place for temp generated PNG files
-		$root         = $_SESSION['site']['root'];
-		$site         = $_SESSION['site']['site'];
-		$path         = $root . '/sites/' . $site . '/patients/' . $pid;
+		$path         = $_SESSION['site']['path'] . '/patients/' . $pid;
 		$data         = '{"name":"' . $fullname . '","pid":' . $pid . ',"ehr": "GaiaEHR"}';
 		$PNG_TEMP_DIR = $path;
-		include($root . "/lib/phpqrcode/qrlib.php");
+		include($_SESSION['root'] . '/lib/phpqrcode/qrlib.php');
 		$filename = $PNG_TEMP_DIR . '/patientDataQrCode.png';
 		QRcode::png($data, $filename, 'Q', 2, 2);
 	}
 
 	public function createDefaultPhotoId($pid){
-		$root = $_SESSION['site']['root'];
-		$site = $_SESSION['site']['site'];
-		$newImg = $root . '/sites/' . $site . '/patients/' . $pid .'/patientPhotoId.jpg';
-		copy($root.'/resources/images/icons/patientPhotoId.jpg', $newImg);
+		$newImg = $_SESSION['site']['path'] . '/patients/' . $pid .'/patientPhotoId.jpg';
+		copy($_SESSION['root'].'/resources/images/icons/patientPhotoId.jpg', $newImg);
 		return;
 	}
 
@@ -558,8 +552,7 @@ class Patient
 
 	public function getPatientPhotoSrcIdByPid($pid = null){
 		$pid = ($pid == null) ? $_SESSION['patient']['pid'] : $pid;
-		$site = $_SESSION['site']['site'];
-		return  'sites/' . $site . '/patients/' . $pid .'/patientPhotoId.jpg';
+		return  $_SESSION['site']['path'] . '/patients/' . $pid .'/patientPhotoId.jpg';
 	}
 
 

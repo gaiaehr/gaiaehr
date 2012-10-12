@@ -12,12 +12,12 @@ if(!isset($_SESSION)) {
     session_cache_limiter('private');
 }
 include_once('Reports.php');
-include_once($_SESSION['site']['root'] . '/classes/dbHelper.php');
-include_once($_SESSION['site']['root'] . '/dataProvider/Patient.php');
-include_once($_SESSION['site']['root'] . '/dataProvider/User.php');
-include_once($_SESSION['site']['root'] . '/dataProvider/Fees.php');
-include_once($_SESSION['site']['root'] . '/dataProvider/Encounter.php');
-include_once($_SESSION['site']['root'] . '/dataProvider/i18nRouter.php');
+include_once($_SESSION['root'] . '/classes/dbHelper.php');
+include_once($_SESSION['root'] . '/dataProvider/Patient.php');
+include_once($_SESSION['root'] . '/dataProvider/User.php');
+include_once($_SESSION['root'] . '/dataProvider/Fees.php');
+include_once($_SESSION['root'] . '/dataProvider/Encounter.php');
+include_once($_SESSION['root'] . '/dataProvider/i18nRouter.php');
 
 
 class SuperBill extends Reports

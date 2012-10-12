@@ -11,9 +11,9 @@ if(!isset($_SESSION)){
     session_start();
     session_cache_limiter('private');
 }
-include_once($_SESSION['site']['root'].'/classes/dbHelper.php');
-include_once($_SESSION['site']['root'].'/classes/Time.php');
-include_once($_SESSION['site']['root'].'/dataProvider/Person.php');
+include_once($_SESSION['root'].'/classes/dbHelper.php');
+include_once($_SESSION['root'].'/classes/Time.php');
+include_once($_SESSION['root'].'/dataProvider/Person.php');
 class Messages extends dbHelper {
 
     /**
@@ -76,7 +76,7 @@ class Messages extends dbHelper {
         $row['pid']             = $params->pid;
         $row['from_id']         = $_SESSION['user']['id'];
         $row['to_id']           = $params->to_id;
-        $row['facility_id']     = $_SESSION['site']['facility'];
+        $row['facility_id']     = $_SESSION['site']['dir'];
         $row['authorized']      = $params->authorized;
         $row['message_status']  = $params->message_status;
         $row['subject']         = $params->subject;

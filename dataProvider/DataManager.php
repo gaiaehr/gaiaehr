@@ -4,8 +4,8 @@ if(!isset($_SESSION)) {
 	session_start();
 	session_cache_limiter('private');
 }
-include_once($_SESSION['site']['root'] . '/classes/dbHelper.php');
-include_once($_SESSION['site']['root'] . '/dataProvider/Laboratories.php');
+include_once($_SESSION['root'] . '/classes/dbHelper.php');
+include_once($_SESSION['root'] . '/dataProvider/Laboratories.php');
 /**
  * @brief       Services Class.
  * @details     This class will handle all services

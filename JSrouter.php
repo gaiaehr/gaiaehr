@@ -10,10 +10,10 @@ if(!isset($_SESSION)) {
 	session_start();
 	session_cache_limiter('private');
 }
-include_once($_SESSION['site']['root'] . '/dataProvider/i18nRouter.php');
-include_once($_SESSION['site']['root'] . '/dataProvider/ACL.php');
-include_once($_SESSION['site']['root'] . '/dataProvider/User.php');
-include_once($_SESSION['site']['root'] . '/dataProvider/Globals.php');
+include_once($_SESSION['root'] . '/dataProvider/i18nRouter.php');
+include_once($_SESSION['root'] . '/dataProvider/ACL.php');
+include_once($_SESSION['root'] . '/dataProvider/User.php');
+include_once($_SESSION['root'] . '/dataProvider/Globals.php');
 $i18n = i18nRouter::getTranslation();
 $acl = new ACL();
 $perms = array();

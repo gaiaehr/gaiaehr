@@ -2,9 +2,9 @@
 session_name ( 'GaiaEHR' );
 session_start();
 session_cache_limiter('private');
-$_SESSION['site']['root'] = '/wamp/www/GaiaEHR-Official';
+$_SESSION['root'] = '/wamp/www/GaiaEHR-Official';
 
-include_once($_SESSION['site']['root'].'/classes/dbHelper.php');
+include_once($_SESSION['root'].'/classes/dbHelper.php');
 
 echo "Unit Test:<br/>";
 echo "-----------------------------------------------------------------------------------------------------------<br/>";

@@ -11,16 +11,16 @@ if(!isset($_SESSION)) {
 	session_start();
 	session_cache_limiter('private');
 }
-include_once($_SESSION['site']['root'] . '/classes/dbHelper.php');
-include_once($_SESSION['site']['root'] . '/dataProvider/Patient.php');
-include_once($_SESSION['site']['root'] . '/dataProvider/User.php');
-include_once($_SESSION['site']['root'] . '/dataProvider/Encounter.php');
-include_once($_SESSION['site']['root'] . '/dataProvider/Services.php');
-include_once($_SESSION['site']['root'] . '/dataProvider/Facilities.php');
-include_once($_SESSION['site']['root'] . '/dataProvider/Documents.php');
-include_once($_SESSION['site']['root'] . '/dataProvider/Prescriptions.php');
-include_once($_SESSION['site']['root'] . '/dataProvider/Orders.php');
-include_once($_SESSION['site']['root'] . '/dataProvider/DoctorsNotes.php');
+include_once($_SESSION['root'] . '/classes/dbHelper.php');
+include_once($_SESSION['root'] . '/dataProvider/Patient.php');
+include_once($_SESSION['root'] . '/dataProvider/User.php');
+include_once($_SESSION['root'] . '/dataProvider/Encounter.php');
+include_once($_SESSION['root'] . '/dataProvider/Services.php');
+include_once($_SESSION['root'] . '/dataProvider/Facilities.php');
+include_once($_SESSION['root'] . '/dataProvider/Documents.php');
+include_once($_SESSION['root'] . '/dataProvider/Prescriptions.php');
+include_once($_SESSION['root'] . '/dataProvider/Orders.php');
+include_once($_SESSION['root'] . '/dataProvider/DoctorsNotes.php');
 class DocumentHandler
 {
 
@@ -120,7 +120,7 @@ class DocumentHandler
 
 	protected function getDocumentUrl()
 	{
-		return $_SESSION['site']['url'] . '/sites/' . $_SESSION['site']['site'] . '/patients/' . $this->pid . '/' . $this->docType . '/' . $this->fileName;
+		return $_SESSION['site']['path'] . '/patients/' . $this->pid . '/' . $this->docType . '/' . $this->fileName;
 	}
 
 	protected function reNameFile($file)
@@ -154,7 +154,7 @@ class DocumentHandler
 		}
 
 
-		$path = $_SESSION['site']['root'] . '/sites/' . $_SESSION['site']['site'] . '/patients/' . $this->pid . '/' . $this->docType . '/';
+		$path = $_SESSION['site']['path'] . '/patients/' . $this->pid . '/' . $this->docType . '/';
 		if(is_dir($path) || mkdir($path, 0777, true)) {
 			chmod($path, 0777);
 		}

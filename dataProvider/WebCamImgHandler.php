@@ -11,7 +11,7 @@ if(!isset($_SESSION)){
     session_start();
     session_cache_limiter('private');
 }
-$img = $_SESSION['site']['root'] . '/sites/' . $_SESSION['site']['site'] . '/patients/' . $_SESSION['patient']['pid'] . '/patientPhotoId.jpg';
+$img = $_SESSION['site']['path'] . '/patients/' . $_SESSION['patient']['pid'] . '/patientPhotoId.jpg';
 $result = file_put_contents( $img, file_get_contents('php://input') );
 
 if (!$result) {

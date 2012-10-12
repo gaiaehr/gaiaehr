@@ -6,7 +6,7 @@ if(!isset($_SESSION)){
 }
 ini_set('max_input_time', '1500');
 ini_set('max_execution_time', '1500');
-include_once($_SESSION['site']['root'] . '/classes/Time.php');
+include_once($_SESSION['root'] . '/classes/Time.php');
 /**
  * @brief       Database Helper Class.
  * @details     A PDO helper for GaiaEHR, contains custom function to manage the database
@@ -307,7 +307,7 @@ class dbHelper {
             $data['comments']   = $this->sql_statement;
             $data['user']       = $_SESSION['user']['name'];
             $data['checksum']   = crc32($this->sql_statement);
-            $data['facility']   = $_SESSION['site']['facility'];
+            $data['facility']   = $_SESSION['site']['dir'];
             $data['patient_id'] = $_SESSION['patient']['pid'];
             $data['ip'] = $_SESSION['server']['REMOTE_ADDR'];
 

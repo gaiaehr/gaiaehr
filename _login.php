@@ -1,5 +1,4 @@
 <?php
-if(!defined('_GaiaEXEC')) die('No direct access allowed.');
 /* Logon Screen Window
  * Description: Obviously the Logon Window. I think every WebApp has one.
  * 
@@ -7,13 +6,14 @@ if(!defined('_GaiaEXEC')) die('No direct access allowed.');
  * Version 0.0.3
  * Revision: N/A
  */
+if(!defined('_GaiaEXEC')) die('No direct access allowed.');
 ?>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
         <title>GaiaEHR Logon Screen</title>
         <script type="text/javascript" src="lib/extjs-4.1.1a/ext-all.js"></script>
-            <link rel="stylesheet" type="text/css" href="resources/css/ext-all-gray.css">
+		<link rel="stylesheet" type="text/css" href="resources/css/ext-all-gray.css">
         <link rel="stylesheet" type="text/css" href="resources/css/style_newui.css" >
         <link rel="stylesheet" type="text/css" href="resources/css/custom_app.css" >
 
@@ -22,15 +22,19 @@ if(!defined('_GaiaEXEC')) die('No direct access allowed.');
         <script src="data/api.php"></script>
         <script type="text/javascript">
 	        var app, site = '<?php print $site ?>', lang = '<?php print $lang ?>';
-	        Ext.Loader.setConfig({
-	            enabled       : true,
-	            disableCaching: false,
-	            paths         : {
-	                'App'       : 'app'
-	            }
+	        Ext.Loader.setConfig(
+	        {
+	            	enabled       : true,
+	            	disableCaching: false,
+	            	paths         : 
+	            	{
+	                	'App'       : 'app'
+	            	}
 	        });
-        Ext.onReady(function(){
-	        for(var x=0; x < App.data.length; x++){
+        Ext.onReady(function()
+        {
+	        for(var x=0; x < App.data.length; x++)
+	        {
                 Ext.direct.Manager.addProvider(App.data[x]);
             }
             app = Ext.create('App.view.login.Login');

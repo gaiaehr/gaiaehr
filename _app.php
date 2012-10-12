@@ -53,13 +53,23 @@ $_SESSION['site']['flops'] = 0;
 		<script src="JSrouter.php"></script>
 		<script src="data/api.php"></script>
 		<script type="text/javascript">
-			// Ext Localization file
-			(function(){document.write('<script type="text/javascript" src="lib/extjs-4.1.1a/locale/'+ i18n['i18nExtFile']+'"><\/script>')})();
+			/*
+			 * Ext Localization file
+			 * Using a anonymous function, in javascript.
+			 * Is not intended to be used globally just this once.
+			 */
+			(function()
+			{
+				document.write('<script type="text/javascript" src="lib/extjs-4.1.1a/locale/'+ i18n['i18nExtFile']+'"><\/script>')
+			}
+			)();
 			// Set and enable Ext.loader for dynamic class loading
-			Ext.Loader.setConfig({
+			Ext.Loader.setConfig(
+			{
 				enabled       : true,
 				disableCaching: false,
-				paths         : {
+				paths         : 
+				{
 					'Ext'       : 'lib/extjs-4.1.1a/src',
 					'Ext.ux'    : 'app/classes/ux',
 					'App'       : 'app',
@@ -422,7 +432,9 @@ $_SESSION['site']['flops'] = 0;
 				 */
 		        'Modules.Module'
 			];
-			(function(){
+			
+			(function()
+			{
 			    var scripts = document.getElementsByTagName('script'),
 			        localhostTests = [
 			            /^localhost$/,
@@ -433,43 +445,50 @@ $_SESSION['site']['flops'] = 0;
 			        queryString = window.location.search,
 			        test, path, i, ln, scriptSrc, match;
 
-			    for (i = 0, ln = scripts.length; i < ln; i++) {
+			    for (i = 0, ln = scripts.length; i < ln; i++) 
+			    {
 			        scriptSrc = scripts[i].src;
-
 			        match = scriptSrc.match(/bootstrap\.js$/);
-
-			        if (match) {
+			        if (match) 
+			        {
 			            path = scriptSrc.substring(0, scriptSrc.length - match[0].length);
 			            break;
 			        }
 			    }
 
-			    if (queryString.match('(\\?|&)debug') !== null) {
+			    if (queryString.match('(\\?|&)debug') !== null) 
+			    {
 			        isDevelopment = true;
 			    }
-			    else if (queryString.match('(\\?|&)nodebug') !== null) {
+			    
+			    else if (queryString.match('(\\?|&)nodebug') !== null) 
+			    {
 			        isDevelopment = false;
 			    }
 
-			    if (isDevelopment === null) {
-			        for (i = 0, ln = localhostTests.length; i < ln; i++) {
+			    if (isDevelopment === null) 
+			    {
+			        for (i = 0, ln = localhostTests.length; i < ln; i++) 
+			        {
 			            test = localhostTests[i];
-
-			            if (host.search(test) !== -1) {
+			            if (host.search(test) !== -1) 
+			            {
 			                isDevelopment = true;
 			                break;
 			            }
 			        }
 			    }
 
-			    if (isDevelopment === null && window.location.protocol === 'file:') {
+			    if (isDevelopment === null && window.location.protocol === 'file:') 
+			    {
 			        isDevelopment = true;
 			    }
 
 				if(isDevelopment){
 				say('Loading GaiaEHR Classes (Development)');
 //				var jsb3Buffer = '"files": [';
-					for(var r=0; r < requires.length; r++){
+					for(var r=0; r < requires.length; r++)
+					{
 				        document.write('<script type="text/javascript" charset="UTF-8" src="' + Ext.Loader.getPath(requires[r]) + '"><\/script>');
 //						var arrayBuffer = Ext.Loader.getPath(requires[r]).split('/'),
 //								fileName = arrayBuffer.pop();
@@ -480,42 +499,72 @@ $_SESSION['site']['flops'] = 0;
 //				            '},';
 				   }
 //			   jsb3Buffer = jsb3Buffer+' ]';
-				}else{
+				}
+				else
+				{
 					say('Loading GaiaEHR Classes (Production)');
 					document.write('<script type="text/javascript" charset="UTF-8" src="app/app-all.js"><\/script>');
 				}
 			})();
-			function copyToClipBoard(token) {
+			
+			/*
+			 * Function to Copy to the clip doard.
+			 * This function is consumable in all the application.
+			 */
+			function copyToClipBoard(token) 
+			{
 				app.msg('Sweet!', token + ' copied to clipboard, Ctrl-V or Paste where need it.');
-				if(window.clipboardData) {
+				if(window.clipboardData) 
+				{
 					window.clipboardData.setData('text', token);
 					return null;
-				} else {
+				} 
+				else 
+				{
 					return (token);
 				}
 			}
 
-			function onWebCamComplete(msg) {
+			/*
+			 * onWebCamComplete
+			 * ???
+			 */
+			function onWebCamComplete(msg) 
+			{
 				app.onWebCamComplete(msg);
 			}
-			function printQRCode(pid) {
+			
+			/*
+			 * Function to pop-up a Window and enable the user to print the QR Code.
+			 */
+			function printQRCode(pid) 
+			{
 				var src = settings.site_url + '/patients/' + app.patient.pid + '/patientDataQrCode.png?';
 				app.QRCodePrintWin = window.open(src, 'QRCodePrintWin', 'left=20,top=20,width=800,height=600,toolbar=0,resizable=0,location=1,scrollbars=0,menubar=0,directories=0');
-				Ext.defer(function() {
+				Ext.defer(function() 
+				{
 					app.QRCodePrintWin.print();
 				}, 1000);
 			}
-			Ext.onReady(function() {
+			
+			/*
+			 * Sencha ExtJS OnReady Event
+			 * When all the JS code is loaded execute the entire code once.
+			 */
+			Ext.onReady(function() 
+			{
 				/**
 				 * lets create the Application Viewport (render the application),
 				 * and store the application viewport instance in "app".
 				 * @type {*}
 				 */
-				CronJob.run(function(){
+				CronJob.run(function()
+				{
 					say('Loading GaiaEHR');
 					app = Ext.create('App.view.Viewport');
 				});
 			});
+			
 		</script>
 	</body>
 </html>

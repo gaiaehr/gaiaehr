@@ -11,7 +11,7 @@ if(!isset($_SESSION)){
     session_start();
     session_cache_limiter('private');
 }
-include_once($_SESSION['site']['root'] . '/classes/FileManager.php');
+include_once($_SESSION['root'] . '/classes/FileManager.php');
 
 class Modules
 {
@@ -19,7 +19,7 @@ class Modules
 
 	function __construct()
     {
-		$this->modulesDir = $_SESSION['site']['root'] . '/modules/';
+		$this->modulesDir = $_SESSION['root'] . '/modules/';
 	}
 
 	public function getAllModules()

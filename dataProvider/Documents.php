@@ -11,19 +11,19 @@ if(!isset($_SESSION)) {
 	session_start();
 	session_cache_limiter('private');
 }
-include_once($_SESSION['site']['root'] . '/classes/dbHelper.php');
-include_once($_SESSION['site']['root'] . '/dataProvider/Patient.php');
-include_once($_SESSION['site']['root'] . '/dataProvider/User.php');
-include_once($_SESSION['site']['root'] . '/dataProvider/Encounter.php');
-include_once($_SESSION['site']['root'] . '/dataProvider/Fees.php');
-include_once($_SESSION['site']['root'] . '/dataProvider/PreventiveCare.php');
-include_once($_SESSION['site']['root'] . '/dataProvider/Medical.php');
-include_once($_SESSION['site']['root'] . '/dataProvider/Services.php');
-include_once($_SESSION['site']['root'] . '/dataProvider/Facilities.php');
-include_once($_SESSION['site']['root'] . '/dataProvider/DocumentPDF.php');
+include_once($_SESSION['root'] . '/classes/dbHelper.php');
+include_once($_SESSION['root'] . '/dataProvider/Patient.php');
+include_once($_SESSION['root'] . '/dataProvider/User.php');
+include_once($_SESSION['root'] . '/dataProvider/Encounter.php');
+include_once($_SESSION['root'] . '/dataProvider/Fees.php');
+include_once($_SESSION['root'] . '/dataProvider/PreventiveCare.php');
+include_once($_SESSION['root'] . '/dataProvider/Medical.php');
+include_once($_SESSION['root'] . '/dataProvider/Services.php');
+include_once($_SESSION['root'] . '/dataProvider/Facilities.php');
+include_once($_SESSION['root'] . '/dataProvider/DocumentPDF.php');
 
-include_once($_SESSION['site']['root'] . '/lib/tcpdf/config/lang/eng.php');
-include_once($_SESSION['site']['root'] . '/dataProvider/i18nRouter.php');
+include_once($_SESSION['root'] . '/lib/tcpdf/config/lang/eng.php');
+include_once($_SESSION['root'] . '/dataProvider/i18nRouter.php');
 
 
 
@@ -173,10 +173,11 @@ class Documents
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	private function get_PatientTokensData($pid, $allNeededInfo, $tokens)
+	public function get_PatientTokensData($pid, $allNeededInfo, $tokens)
 	{
 		$patientData       = $this->getAllPatientData($pid);
 		$age               = $this->patient->getPatientAgeByDOB($patientData['DOB']);
+
 		$patienInformation = array
 		(
 			'[PATIENT_NAME]'                      => $patientData['fname'],
@@ -204,7 +205,7 @@ class Documents
 			'[PATIENT_EMERGENCY_PHONE]'           => $patientData['emer_phone'],
 			'[PATIENT_PROVIDER]'                  => $this->user->getUserFullNameById($patientData['provider']),
 			'[PATIENT_PHARMACY]'                  => $patientData['pharmacy'],
-			'[PATIENT_AGE]'                       => $age['age'],
+			'[PATIENT_AGE]'                       => $age['DMY']['years'],
 			'[PATIENT_OCCUPATION]'                => $patientData['occupation'],
 			'[PATIENT_EMPLOYEER]'                 => $patientData['employer_name'],
 			'[PATIENT_RACE]'                      => $patientData['race'],
@@ -661,8 +662,8 @@ class Documents
         $regex = '(\[\w*?\])';
         $this->pdf->SetCreator('TCPDF');
         $this->pdf->SetAuthor($_SESSION['user']['name']);
-		$siteLogo = '../sites/'.$_SESSION['site']['site'].'/logo.jpg';
-		$logo = (file_exists($siteLogo) ? $siteLogo : $_SESSION['site']['root'] .'/resources/images/logo.jpg');
+		$siteLogo = $_SESSION['site']['path'].'/logo.jpg';
+		$logo = (file_exists($siteLogo) ? $siteLogo : $_SESSION['root'] .'/resources/images/logo.jpg');
 
         $this->pdf->SetHeaderData(
 	        $logo,
@@ -675,7 +676,7 @@ class Documents
         $this->pdf->SetMargins(15, 27, 15);
         $this->pdf->SetHeaderMargin(5);
         $this->pdf->SetFooterMargin(10);
-        $this->pdf->SetFontSize(10);
+        $this->pdf->SetFontSize(12);
         $this->pdf->SetAutoPageBreak(true, 25);
         $this->pdf->setFontSubsetting(true);
         $this->pdf->AddPage();
@@ -697,7 +698,7 @@ class Documents
         foreach($tokens[0] as $index=>$tok) {
 
             if($tok == '[PATIENT_PICTURE]') {
-                $this->pdf->Image( "../". '/sites/' . $_SESSION['site']['site']. '/patients/' . $pid . '/' . 'patientPhotoId.jpg', 150, 55, 35, 35, 'jpg', 'www.gaiaehr.org', '', true, 150, '', false, false, 1, false, false, false);
+                $this->pdf->Image( $_SESSION['site']['path']. '/patients/' . $pid . '/' . 'patientPhotoId.jpg', 150, 55, 35, 35, 'jpg', 'www.gaiaehr.org', '', true, 150, '', false, false, 1, false, false, false);
             }
 
         }
@@ -731,4 +732,5 @@ class Documents
 //$params = new stdClass();
 //$params->pid = 1;
 //$params->documentId = 7;
-//$e->PDFDocumentBuilder($params,'C:/wamp/www/gaiaehr/sites/default/patients/1/DoctorsNotes/1342132079.pdf');
+//echo'<pre>';
+//$e->get_PatientTokensData(1,'','');

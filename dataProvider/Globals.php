@@ -11,7 +11,7 @@ if(!isset($_SESSION)){
     session_start();
     session_cache_limiter('private');
 }
-include_once($_SESSION['site']['root'].'/classes/dbHelper.php');
+include_once($_SESSION['root'].'/classes/dbHelper.php');
 class Globals extends dbHelper {
 
     /**
@@ -66,6 +66,6 @@ class Globals extends dbHelper {
             $_SESSION['global_settings'][$setting['gl_name']] = $setting['gl_value'];
         }
 	    $_SESSION['global_settings']['timezone_offset']  = -14400;
-        return $_SESSION['site']['url']. '/sites/' . $_SESSION['site']['site'];
+        return $_SESSION['site']['path'];
     }
 }

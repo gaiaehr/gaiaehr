@@ -13,8 +13,8 @@ if(!isset($_SESSION)){
     session_start();
     session_cache_limiter('private');
 }
-include_once($_SESSION['site']['root'].'/classes/Sessions.php');
-include_once($_SESSION['site']['root'] .'/dataProvider/Patient.php');
+include_once($_SESSION['root'].'/classes/Sessions.php');
+include_once($_SESSION['root'] .'/dataProvider/Patient.php');
 
 class authProcedures {
 
@@ -108,10 +108,6 @@ class authProcedures {
         if ($params->authPass != $aes->decrypt($user['password'])){
             return array('success'=>false, 'error'=>'The username or password you provided is invalid.');
         } else {
-			//------------------------------------------
-	        // set site where user is authorized to access;
-			//------------------------------------------
-	        $_SESSION['site']['site'] = $params->site;
         	//-------------------------------------------
         	// Change some User related variables and go
         	//-------------------------------------------
@@ -180,7 +176,7 @@ class authProcedures {
 
     public function getSites(){
         $rows = array();
-        foreach($_SESSION['site']['sites'] as $row){
+        foreach($_SESSION['sites']['sites'] as $row){
             $site['site_id'] = $row;
             $site['site']    = $row;
             array_push($rows,$site);

@@ -12,7 +12,7 @@ if(!isset($_SESSION)){
     session_cache_limiter('private');
 }
 $_SESSION['site']['flops'] = 0;
-include_once($_SESSION['site']['root'].'/classes/dbHelper.php');
+include_once($_SESSION['root'].'/classes/dbHelper.php');
 class Facilities {
     /**
      * @var dbHelper

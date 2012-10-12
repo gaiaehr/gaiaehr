@@ -4,8 +4,8 @@ if(!isset($_SESSION)) {
 	session_start();
 	session_cache_limiter('private');
 }
-include_once($_SESSION['site']['root'] . '/classes/FileManager.php');
-include_once($_SESSION['site']['root'] . '/dataProvider/ACL.php');
+include_once($_SESSION['root'] . '/classes/FileManager.php');
+include_once($_SESSION['root'] . '/dataProvider/ACL.php');
 set_time_limit(0);
 ini_set('memory_limit', '512M');
 class SiteSetup
@@ -15,7 +15,7 @@ class SiteSetup
 
 	function __construct()
 	{
-		chdir($_SESSION['site']['root']);
+		chdir($_SESSION['root']);
 	}
 
 	public function checkDatabaseCredentials(stdClass $params)
@@ -62,7 +62,7 @@ class SiteSetup
 	{
 		$row = array();
 		// check if ...
-		$status = (empty($_SESSION['site']['sites']) ? 'Ok' : 'Fail');
+		$status = (empty($_SESSION['sites']['sites']) ? 'Ok' : 'Fail');
 		$row[]  = array('msg'=> 'GaiaEHR is not installed', 'status'=> $status);
 		// verified that php 5.2.0 or later is installed
 		$status = (version_compare(phpversion(), "5.3.2", ">=") ? 'Ok' : 'Fail');

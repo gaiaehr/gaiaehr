@@ -12,7 +12,7 @@ if(!isset($_SESSION)){
     session_cache_limiter('private');
 }
 
-include_once($_SESSION['site']['root'].'/classes/dbHelper.php');
+include_once($_SESSION['root'].'/classes/dbHelper.php');
 
 $db = new dbHelper();
 $tables = array(
@@ -48,6 +48,7 @@ $tables = array(
 	'patient_documents',
 	'patient_prescriptions',
 	'patient_reminders',
+	'patient_disclosures',
 	'patient_surgery',
 	'patient_out_chart',
 	'patient_zone',
@@ -121,7 +122,7 @@ foreach($tables as $table){
 }
 
 print '<h1>Patient Directories Clean Up!</h1>';
-$path = '../sites/'.$_SESSION['site']['facility'].'/patients/';
+$path = '../sites/'.$_SESSION['site']['dir'].'/patients/';
 $patientsDir = getDirectoryList($path);
 
 foreach($patientsDir as $dir){

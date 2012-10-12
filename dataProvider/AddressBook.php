@@ -17,8 +17,8 @@
     session_cache_limiter('private');
 }
 
-include_once($_SESSION['site']['root'].'/classes/dbHelper.php');
-include_once($_SESSION['site']['root'].'/dataProvider/Person.php');
+include_once($_SESSION['root'].'/classes/dbHelper.php');
+include_once($_SESSION['root'].'/dataProvider/Person.php');
 
 class AddressBook {
 

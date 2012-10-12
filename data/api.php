@@ -4,7 +4,7 @@ if(!isset($_SESSION)){
     session_start();
     session_cache_limiter('private');
 }
-include_once($_SESSION['site']['root'] . '/dataProvider/Modules.php');
+include_once($_SESSION['root'] . '/dataProvider/Modules.php');
 $m = new Modules();
 
 /*

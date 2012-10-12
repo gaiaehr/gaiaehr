@@ -11,8 +11,8 @@ if(!isset($_SESSION)){
     session_start();
     session_cache_limiter('private');
 }
-include_once($_SESSION['site']['root'].'/classes/Sessions.php');
-include_once($_SESSION['site']['root'].'/dataProvider/Patient.php');
+include_once($_SESSION['root'].'/classes/Sessions.php');
+include_once($_SESSION['root'].'/dataProvider/Patient.php');
 class CronJob {
 
 	function run(){

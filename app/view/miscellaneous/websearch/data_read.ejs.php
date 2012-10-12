@@ -11,7 +11,7 @@
 session_name("GaiaEHR");
 session_start();
 session_cache_limiter('private');
-require_once($_SESSION['site']['root'] . "/classes/XMLParser.class.php");
+require_once($_SESSION['root'] . "/classes/XMLParser.class.php");
 //--------------------------------------------------------------------------------
 // lets declare few vars for later use.
 //--------------------------------------------------------------------------------

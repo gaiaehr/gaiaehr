@@ -18,7 +18,7 @@
  */
 Ext.define('App.view.Viewport', {
 	extend  : 'Ext.Viewport',
-	//requires: window.requires,
+	requires: window.requires,
     // app settings
 	minWidthToFullMode: 1585,       // full mode = nav expanded
 	currency          : '$',        // currency used

@@ -12,9 +12,9 @@ if(!isset($_SESSION)) {
 	session_cache_limiter('private');
 }
 $_SESSION['site']['flops'] = 0;
-include_once($_SESSION['site']['root'] . '/classes/dbHelper.php');
-include_once($_SESSION['site']['root'] . '/classes/Time.php');
-include_once($_SESSION['site']['root'] . '/classes/FileManager.php');
+include_once($_SESSION['root'] . '/classes/dbHelper.php');
+include_once($_SESSION['root'] . '/classes/Time.php');
+include_once($_SESSION['root'] . '/classes/FileManager.php');
 set_time_limit(0);
 ini_set('memory_limit', '512M');
 class ExternalDataUpdate
@@ -553,7 +553,7 @@ class ExternalDataUpdate
 
 	private function getCodeDir()
 	{
-		return $_SESSION['site']['root'] . '/contrib/' . strtolower($this->codeType);
+		return $_SESSION['root'] . '/contrib/' . strtolower($this->codeType);
 	}
 
 	public function getCurrentCodesInfo()

@@ -11,7 +11,7 @@ if(!isset($_SESSION)){
     session_start();
     session_cache_limiter('private');
 }
-include_once($_SESSION['site']['root'].'/dataProvider/ACL.php');
+include_once($_SESSION['root'].'/dataProvider/ACL.php');
 
 class Navigation {
     /**
@@ -22,7 +22,7 @@ class Navigation {
     private $t;
 
     function __construct(){
-    	include_once($_SESSION['site']['root'] . '/langs/' . $_SESSION['site']['localization'] . '.php');
+    	include_once($_SESSION['root'] . '/langs/' . $_SESSION['site']['localization'] . '.php');
         $this->ACL = new ACL();
 		$this->i18n = $LANG;
     }

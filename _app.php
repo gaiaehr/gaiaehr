@@ -5,7 +5,6 @@
  * vars are defined here inluding "var app" witch refers to
  * the applciation Viewport.
  *
- *
  * version 1.0.0
  * revision: N/A
  * author: GI Technologies, 2011
@@ -15,14 +14,6 @@
  */
 if(!defined('_GaiaEXEC')) die('No direct access allowed.');
 $_SESSION['site']['flops'] = 0;
-
-/*
- * This is used for the correct loading of the language file 
- * of Sencha ExtJS.
- */
-include_once('dataProvider/i18nRouter.php');
-$lang = i18nRouter::getTranslation();
-
 ?>
 <html>
 	<head>
@@ -58,11 +49,13 @@ $lang = i18nRouter::getTranslation();
 		<span id="app-msg" style="display:none;"></span>
 		<!-- Ext library -->
 		<script type="text/javascript" src="lib/extjs-4.1.1a/ext-all.js"></script>
-		<!-- Ext Localization file -->
-		<script type="text/javascript" src="lib/extjs-4.1.1a/locale/<?php print $lang['i18nExtFile'] ?>"></script>
-
+		<!-- JSrouter and Ext.deirect API files -->
+		<script src="JSrouter.php"></script>
 		<script src="data/api.php"></script>
 		<script type="text/javascript">
+			// Ext Localization file
+			(function(){document.write('<script type="text/javascript" src="lib/extjs-4.1.1a/locale/'+ i18n['i18nExtFile']+'"><\/script>')})();
+			// Set and enable Ext.loader for dynamic class loading
 			Ext.Loader.setConfig({
 				enabled       : true,
 				disableCaching: false,
@@ -80,7 +73,7 @@ $lang = i18nRouter::getTranslation();
 		<script type="text/javascript" src="lib/jpegcam/htdocs/webcam.js"></script>
 		<script type="text/javascript" src="app/classes/Overrides.js"></script>
 		<script type="text/javascript" src="app/classes/VTypes.js"></script>
-		<script src="JSrouter.php"></script>
+
 		<script type="text/javascript">
 			function say(a) {console.log(a);}
 			for(var x=0; x < App.data.length; x++){

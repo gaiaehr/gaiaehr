@@ -25,14 +25,13 @@ if($handle = opendir('sites/')){
 	}
 	closedir($handle);
 }
-// site(s) data
-$_SESSION['site']['self']       = $_SERVER['PHP_SELF'];
-$_SESSION['site']['sites']      = $sites;
-$_SESSION['site']['sitesCount'] = count($sites);
-$_SESSION['site']['sites_conf'] = $confs;
-$_SESSION['site']['root']       = str_replace('\\', '/', dirname(__FILE__));
-$_SESSION['site']['url']        = 'http://' . $_SERVER['HTTP_HOST'] . str_replace('/index.php', '', $_SERVER['PHP_SELF']);
-$_SESSION['site']['facility']   = 'default'; // THIS IS A TEMP VARIABLE
+// general
+$_SESSION['root']       = str_replace('\\', '/', dirname(__FILE__));
+$_SESSION['url']        = 'http://' . $_SERVER['HTTP_HOST'] . str_replace('/index.php', '', $_SERVER['PHP_SELF']);
+// sites values
+$_SESSION['sites']['sites'] = $sites;
+$_SESSION['sites']['count'] = count($sites);;
+$_SESSION['sites']['confs'] = $confs;
 // timeout values
 $_SESSION['inactive']['time']    = 60;
 $_SESSION['inactive']['start']   = true;

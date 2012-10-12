@@ -271,7 +271,7 @@ Ext.define('App.view.Viewport', {
         });
         me.Header.add({
             xtype    : 'button',
-            text     : user.name,
+            text     : user.title + ' ' + user.lname,
             scale    : 'large',
             iconCls  : 'icoDoctor',
             iconAlign: 'left',

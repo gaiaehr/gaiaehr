@@ -672,7 +672,7 @@ Ext.define('App.view.patient.Summary', {
             grid = btn.up('grid'),
             store = grid.store;
         grid.plugins[0].cancelEdit();
-        store.add({date:new Date(), pid:app.patient.pid, active:1});
+        store.insert(0,{date:new Date(), pid:app.patient.pid, active:1});
         grid.plugins[0].startEdit(0,0);
     },
 

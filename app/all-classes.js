@@ -1650,7 +1650,7 @@ Ext.define('App.model.patient.Notes', {
         {name: 'eid', type: 'int'},
         {name: 'pid', type: 'int'},
         {name: 'uid', type: 'int'},
-        {name: 'date', type: 'date'},
+        {name: 'date', type: 'date', dateFormat:'Y-m-d H:i:s'},
         {name: 'body', type: 'string'},
         {name: 'type', type: 'string'},
         {name: 'user_name', type: 'string'}
@@ -1658,7 +1658,9 @@ Ext.define('App.model.patient.Notes', {
 	proxy : {
 		type: 'direct',
 		api : {
-			read  : Patient.getPatientNotes
+			read    : Patient.getPatientNotes,
+            create  : Patient.addPatientNotes,
+            update  : Patient.updatePatientNotes
 		}
 	}
 });
@@ -1993,7 +1995,7 @@ Ext.define('App.model.patient.Reminders', {
 		{name: 'eid', type: 'int'},
 		{name: 'pid', type: 'int'},
 		{name: 'uid', type: 'int'},
-		{name: 'date', type: 'date'},
+		{name: 'date', type: 'date', dateFormat:'Y-m-d H:i:s'},
 		{name: 'body', type: 'string'},
 		{name: 'type', type: 'string'},
         {name: 'user_name', type: 'string'}
@@ -2001,7 +2003,9 @@ Ext.define('App.model.patient.Reminders', {
 	proxy : {
 		type: 'direct',
 		api : {
-			read  : Patient.getPatientReminders
+			read  : Patient.getPatientReminders,
+            create: Patient.addPatientReminders,
+            update: Patient.updatePatientReminders
 		}
 	}
 });
@@ -3169,7 +3173,7 @@ Ext.define('App.store.patient.Medications', {
 Ext.define('App.store.patient.Notes', {
 	extend: 'Ext.data.Store',
 	model     : 'App.model.patient.Notes',
-	remoteSort: true,
+	remoteSort: false,
 	autoLoad  : false
 });
 /**
@@ -3328,7 +3332,7 @@ Ext.define('App.store.patient.QRCptCodes', {
 Ext.define('App.store.patient.Reminders', {
 	extend: 'Ext.data.Store',
 	model     : 'App.model.patient.Reminders',
-	remoteSort: true,
+	remoteSort: false,
 	autoLoad  : false
 });
 /**
@@ -11407,8 +11411,8 @@ Ext.define('App.view.patient.windows.PreventiveCare', {
 	extend       : 'App.classes.window.Window',
 	title        : i18n['preventive_care_window'],
 	closeAction  : 'hide',
-	height       : 550,
-	width        : 900,
+    height       : 750,
+   	width        : 1200,
 	bodyStyle    : 'background-color:#fff',
 	modal        : true,
     layout       : 'fit',
@@ -11621,8 +11625,8 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 	title      : i18n['order_window'],
 	layout     : 'fit',
 	closeAction: 'hide',
-	height     : 430,
-	width      : 730,
+    height       : 750,
+   	width        : 1200,
 	bodyStyle  : 'background-color:#fff',
 	modal      : true,
 	defaults   : {
@@ -11648,7 +11652,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 								xtype  : 'grid',
 								margin : 10,
 								store  : me.patientsLabsOrdersStore,
-								height : 320,
+								height : 640,
 								columns: [
 
 									{
@@ -11706,7 +11710,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 								xtype  : 'grid',
 								margin : 10,
 								store  : me.patientPrescriptionStore,
-								height : 320,
+								height : 640,
 								columns: [
 
 									{
@@ -11780,7 +11784,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 								xtype  : 'grid',
 								margin : 10,
 								store  : me.patientPrescriptionStore,
-								height : 285,
+								height : 605,
 								columns: [
 
 									{
@@ -12027,8 +12031,8 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 								action:'body',
 								itemId:'body',
 								enableFontSize: false,
-								height : 285,
-								width  : 700,
+								height : 605,
+								width  : 1170,
 								margin:5
 
 							}
@@ -28495,73 +28499,108 @@ Ext.define('App.view.patient.Summary', {
 			});
 		}
 		if(acl['access_patient_notes']) {
-			me.stores.push(me.patientNotesStore = Ext.create('App.store.patient.Notes'));
+			me.stores.push(me.patientNotesStore = Ext.create('App.store.patient.Notes',{
+			                autoSync:true
+			            }));
 			me.tabPanel.add({
 				title      : i18n['notes'],
 				itemId     : 'notesPanel',
 				xtype      : 'grid',
 				bodyPadding: 0,
 				store      : me.patientNotesStore,
+                plugins: Ext.create('Ext.grid.plugin.RowEditing', {
+                           autoCancel  : false,
+                           errorSummary: false,
+                           clicksToEdit: 2
+
+                }),
 				columns    : [
 					{
+                        xtype    : 'datecolumn',
 						text     : i18n['date'],
-						dataIndex: 'date'
+                        format   :'Y-m-d',
+                        dataIndex: 'date'
 					},
 					{
 						header   : i18n['type'],
-						dataIndex: 'type'
+						dataIndex: 'type',
+                        editor:{
+                            xtype:'textfield'
+                        }
 					},
 					{
 						text     : i18n['note'],
 						dataIndex: 'body',
-						flex     : 1
+						flex     : 1,
+                        editor:{
+                            xtype:'textfield'
+                        }
 					},
 					{
 						text     : i18n['user'],
+                        width    : 225,
 						dataIndex: 'user_name'
 					}
 				],
 				tbar       : [
 					{
 						text   : i18n['add_note'],
-						iconCls: 'icoAdd'
+						iconCls: 'icoAdd',
+                        handler:me.addNote
 					}
 				]
 			});
 		}
 
 		if(acl['access_patient_reminders']) {
-			me.stores.push(me.patientRemindersStore = Ext.create('App.store.patient.Reminders'));
+			me.stores.push(me.patientRemindersStore = Ext.create('App.store.patient.Reminders',{
+			                autoSync:true
+			            }));
 			me.tabPanel.add({
 				title      : i18n['reminders'],
 				itemId     : 'remindersPanel',
 				xtype      : 'grid',
 				bodyPadding: 0,
 				store      : me.patientRemindersStore,
-				columns    : [
-					{
-						text     : i18n['date'],
-						dataIndex: 'date'
-					},
-					{
+                plugins: Ext.create('Ext.grid.plugin.RowEditing', {
+                   autoCancel  : false,
+                   errorSummary: false,
+                   clicksToEdit: 2
 
-						header   : i18n['type'],
-						dataIndex: 'type'
-					},
-					{
-						text     : i18n['note'],
-						dataIndex: 'body',
-						flex     : 1
-					},
-					{
-						text     : i18n['user'],
-						dataIndex: 'user_name'
-					}
+               }),
+				columns    : [
+                    {
+                        xtype    : 'datecolumn',
+                        text     : i18n['date'],
+                        format   :'Y-m-d',
+                        dataIndex: 'date'
+                    },
+                    {
+                        header   : i18n['type'],
+                        dataIndex: 'type',
+                        editor:{
+                            xtype:'textfield'
+                        }
+                    },
+                    {
+                        text     : i18n['note'],
+                        dataIndex: 'body',
+                        flex     : 1,
+                        editor:{
+                            xtype:'textfield'
+                        }
+                    },
+                    {
+                        text     : i18n['user'],
+                        width    : 225,
+                        dataIndex: 'user_name'
+                    }
 				],
 				tbar       : [
 					{
 						text   : i18n['add_reminder'],
-						iconCls: 'icoAdd'
+						iconCls: 'icoAdd',
+                        handler:me.addReminder
 					}
 				]
 			})
@@ -28859,7 +28898,23 @@ Ext.define('App.view.patient.Summary', {
             grid = btn.up('grid'),
             store = grid.store;
         grid.plugins[0].cancelEdit();
-        store.add({date:new Date(), pid:app.patient.pid, active:1});
+        store.insert(0,{date:new Date(), pid:app.patient.pid, active:1});
+        grid.plugins[0].startEdit(0,0);
+    },
+    addNote:function(btn){
+        var me = this,
+            grid = btn.up('grid'),
+            store = grid.store;
+        grid.plugins[0].cancelEdit();
+        store.insert(0,{date:new Date(), pid:app.patient.pid, uid:app.user.id, eid:app.patient.eid});
+        grid.plugins[0].startEdit(0,0);
+    },
+    addReminder:function(btn){
+        var me = this,
+            grid = btn.up('grid'),
+            store = grid.store;
+        grid.plugins[0].cancelEdit();
+        store.insert(0,{date:new Date(), pid:app.patient.pid, uid:app.user.id, eid:app.patient.eid});
         grid.plugins[0].startEdit(0,0);
     },
 
@@ -35682,7 +35737,7 @@ Ext.define('App.view.administration.Documents', {
 		var me = this;
 
         me.templatesDocumentsStore = Ext.create('App.store.administration.DocumentsTemplates');
-		me.headersAndFooterStore   = Ext.create('App.store.administration.HeadersAndFooters');
+//		me.headersAndFooterStore   = Ext.create('App.store.administration.HeadersAndFooters');
 		me.defaultsDocumentsStore   = Ext.create('App.store.administration.DefaultDocuments');
 
         Ext.define('tokenModel', {
@@ -36108,49 +36163,49 @@ Ext.define('App.view.administration.Documents', {
 
 
 
-		me.HeaderFootergrid = Ext.create('Ext.grid.Panel', {
-			title      : i18n['header_footer_templates'],
-			region     : 'south',
-			height     : 250,
-			split      : true,
-			hideHeaders: true,
-			store      : me.headersAndFooterStore,
-			columns    : [
-				{
-					flex     : 1,
-					sortable : true,
-					dataIndex: 'title',
-                    editor:{
-                        xtype:'textfield',
-                        allowBlank:false
-                    }
-				},
-				{
-					icon: 'resources/images/icons/delete.png',
-					tooltip: i18n['remove'],
-					scope:me,
-					handler: me.onRemoveDocument
-				}
-			],
-			listeners  : {
-				scope    : me,
-				itemclick: me.onDocumentsGridItemClick
-			},
-			tbar       :[
-                '->',
-                {
-                    text : i18n['new'],
-                    scope: me,
-                    handler: me.newHeaderOrFooterTemplate
-                }
-            ],
-            plugins:[
-                me.rowEditor2 = Ext.create('Ext.grid.plugin.RowEditing', {
-                    clicksToEdit: 2
-                })
-
-            ]
-		});
+//		me.HeaderFootergrid = Ext.create('Ext.grid.Panel', {
+//			title      : i18n['header_footer_templates'],
+//			region     : 'south',
+//			height     : 250,
+//			split      : true,
+//			hideHeaders: true,
+//			store      : me.headersAndFooterStore,
+//			columns    : [
+//				{
+//					flex     : 1,
+//					sortable : true,
+//					dataIndex: 'title',
+//                    editor:{
+//                        xtype:'textfield',
+//                        allowBlank:false
+//                    }
+//				},
+//				{
+//					icon: 'resources/images/icons/delete.png',
+//					tooltip: i18n['remove'],
+//					scope:me,
+//					handler: me.onRemoveDocument
+//				}
+//			],
+//			listeners  : {
+//				scope    : me,
+//				itemclick: me.onDocumentsGridItemClick
+//			},
+//			tbar       :[
+//                '->',
+//                {
+//                    text : i18n['new'],
+//                    scope: me,
+//                    handler: me.newHeaderOrFooterTemplate
+//                }
+//            ],
+//            plugins:[
+//                me.rowEditor2 = Ext.create('Ext.grid.plugin.RowEditing', {
+//                    clicksToEdit: 2
+//                })
+//
+//            ]
+//		});
 
 		me.DocumentsDefaultsGrid = Ext.create('Ext.grid.Panel', {
 			title      : i18n['documents_defaults'],
@@ -36248,7 +36303,7 @@ Ext.define('App.view.administration.Documents', {
             width      : 250,
             border     : false,
             split      : true,
-            items:[  me.DocumentsDefaultsGrid, me.DocumentsGrid, me.HeaderFootergrid ]
+            items:[  me.DocumentsDefaultsGrid, me.DocumentsGrid ]
         });
 
 		me.TeamplateEditor = Ext.create('Ext.form.Panel', {
@@ -36388,19 +36443,19 @@ Ext.define('App.view.administration.Documents', {
 
     },
 
-	newHeaderOrFooterTemplate:function(){
-        var me = this,
-            store = me.headersAndFooterStore;
-        me.rowEditor2.cancelEdit();
-        store.insert(0,{
-            title: i18n['new_header_or_footer'],
-	        template_type:'headerorfootertemplate',
-            date: new Date(),
-	        type: 2
-        });
-        me.rowEditor2.startEdit(0, 0);
-
-    },
+//	newHeaderOrFooterTemplate:function(){
+//        var me = this,
+//            store = me.headersAndFooterStore;
+//        me.rowEditor2.cancelEdit();
+//        store.insert(0,{
+//            title: i18n['new_header_or_footer'],
+//	        template_type:'headerorfootertemplate',
+//            date: new Date(),
+//	        type: 2
+//        });
+//        me.rowEditor2.startEdit(0, 0);
+//
+//    },
 
     copyToClipBoard:function(grid, rowIndex, colIndex){
         var rec = grid.getStore().getAt(rowIndex),
@@ -36419,9 +36474,9 @@ Ext.define('App.view.administration.Documents', {
 	 * to call every this panel becomes active
 	 */
 	onActive            : function(callback) {
-        var me = this;
+        var me = this
         me.templatesDocumentsStore.load();
-        me.headersAndFooterStore.load();
+//        me.headersAndFooterStore.load();
         me.defaultsDocumentsStore.load();
 		callback(true);
 	}
@@ -43276,7 +43331,7 @@ Ext.define('Modules.Module', {
  */
 Ext.define('App.view.Viewport', {
 	extend  : 'Ext.Viewport',
-	//requires: window.requires,
+	requires: window.requires,
     // app settings
 	minWidthToFullMode: 1585,       // full mode = nav expanded
 	currency          : '$',        // currency used

@@ -484,7 +484,7 @@ $_SESSION['site']['flops'] = 0;
 			        isDevelopment = true;
 			    }
 
-				if(!isDevelopment){
+				if(isDevelopment){
 				say('Loading GaiaEHR Classes (Development)');
 //				var jsb3Buffer = '"files": [';
 					document.write('<script type="text/javascript" charset="UTF-8" src="app/view/calendar/ExtensibleAll.js"><\/script>');

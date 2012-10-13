@@ -120,7 +120,7 @@ class DocumentHandler
 
 	protected function getDocumentUrl()
 	{
-		return $_SESSION['site']['path'] . '/patients/' . $this->pid . '/' . $this->docType . '/' . $this->fileName;
+		return $_SESSION['site']['url'] . '/patients/' . $this->pid . '/' . $this->docType . '/' . $this->fileName;
 	}
 
 	protected function reNameFile($file)

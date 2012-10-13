@@ -70,10 +70,11 @@ class authProcedures {
         // variables to connect to the database.
         //-------------------------------------------
 	    define('_GaiaEXEC', 1);
-	    include_once('../registry.php');
-	    include_once('../classes/AES.php');
-	    include_once('../classes/dbHelper.php');
-        $fileConf = '../sites/' . $params->site . '/conf.php';
+	    chdir($_SESSION['root']);
+	    include_once('registry.php');
+	    include_once('classes/AES.php');
+	    include_once('classes/dbHelper.php');
+        $fileConf = 'sites/' . $params->site . '/conf.php';
         if (file_exists($fileConf)){
             /** @noinspection PhpIncludeInspection */
             include_once($fileConf);

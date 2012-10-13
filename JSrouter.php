@@ -22,8 +22,9 @@ foreach($acl->getAllUserPermsAccess() AS $perm){
 }
 $user = new User();
 $userData = $user->getCurrentUserBasicData();
+Globals::setGlobals();
 header('Content-Type: text/javascript');
 print 'acl = '. json_encode($perms).';';
 print 'i18n = '. json_encode($i18n).';';
 print 'user = '. json_encode($userData).';';
-print 'settings.site_url = "'. Globals::setGlobals().'";';
+print 'settings.site_url = "'. $_SESSION['site']['url'] .'";';

@@ -8,6 +8,4 @@ session_name ( 'GaiaEHR' );
 session_start();
 session_cache_limiter('private');
 
-echo '<pre>';
-print_r($_SESSION);
-echo '</pre>';
+echo '<pre>' . $_SESSION . '</pre>';

@@ -24,7 +24,7 @@ if(!$_SESSION['site']['localization']) $_SESSION['site']['localization'] = '%lan
 $_SESSION['site']['theme'] = '%theme%';
 
 $_SESSION['site']['dir']   = basename(dirname(__FILE__));
-$_SESSION['site']['url']   = $_SESSION['url'] . '/' . $_SESSION['site']['dir'];
+$_SESSION['site']['url']   = $_SESSION['url'] . '/sites/' . $_SESSION['site']['dir'];
 $_SESSION['site']['path']  = str_replace('\\', '/', dirname(__FILE__));
 $_SESSION['site']['temp']['url']  = $_SESSION['site']['url'] . '/temp';
 $_SESSION['site']['temp']['path']  = $_SESSION['site']['path'] . '/temp';

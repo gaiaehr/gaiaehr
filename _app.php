@@ -363,7 +363,7 @@ $_SESSION['site']['flops'] = 0;
 				/*
 				 * Load the root related panels
 				 */
-				'App.view.calendar.ExtensibleAll',
+				//'App.view.calendar.ExtensibleAll',
 				'App.view.calendar.Calendar',
 				'App.view.messages.Messages',
 				/*
@@ -484,9 +484,10 @@ $_SESSION['site']['flops'] = 0;
 			        isDevelopment = true;
 			    }
 
-				if(isDevelopment){
+				if(!isDevelopment){
 				say('Loading GaiaEHR Classes (Development)');
 //				var jsb3Buffer = '"files": [';
+					document.write('<script type="text/javascript" charset="UTF-8" src="app/view/calendar/ExtensibleAll.js"><\/script>');
 					for(var r=0; r < requires.length; r++)
 					{
 				        document.write('<script type="text/javascript" charset="UTF-8" src="' + Ext.Loader.getPath(requires[r]) + '"><\/script>');
@@ -498,6 +499,7 @@ $_SESSION['site']['flops'] = 0;
 //						    '"name": "'+fileName+'"' +
 //				            '},';
 				   }
+
 //			   jsb3Buffer = jsb3Buffer+' ]';
 				}
 				else

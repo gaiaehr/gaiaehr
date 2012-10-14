@@ -112,7 +112,7 @@ Ext.define('App.view.login.Login',{
                 text    : 'Login',
                 name    : 'btn_login',
                 scope   : me,
-                handler : me.onSubmit
+                handler : me.loginSubmit
             },'-',{
                 text    : 'Reset',
                 name    : 'btn_reset',
@@ -173,7 +173,7 @@ Ext.define('App.view.login.Login',{
             items			: [{ xtype: 'box', width: 483, height: 135, html: '<img src="resources/images/logon_header.png" />'}, me.formLogin ],
             listeners:{
                 scope:me,
-                afterrender:me.onAfterrender
+                afterrender:me.afterAppRender
             }
         }).show();
 
@@ -203,7 +203,7 @@ Ext.define('App.view.login.Login',{
 
 
         me.listeners = {
-            resize:me.onResized
+            resize:me.onAppResize
         };
 
         me.callParent(arguments);
@@ -215,13 +215,13 @@ Ext.define('App.view.login.Login',{
      */
     onEnter:function(field, e){
         if (e.getKey() == e.ENTER) {
-           this.onSubmit();
+           this.loginSubmit();
         }
     },
     /**
      * Form Submit/Logon function
      */
-    onSubmit:function(){
+    loginSubmit:function(){
         var me = this,
             formPanel = this.formLogin,
             form = formPanel.getForm(),
@@ -230,7 +230,6 @@ Ext.define('App.view.login.Login',{
         if(form.isValid()){
             formPanel.el.mask('Sending credentials...');
             params.checkInMode = checkInMode;
-            console.log(params);
             authProcedures.login(params, function(provider, response){
                 if(response.result.success){
                     window.location = './';
@@ -279,7 +278,7 @@ Ext.define('App.view.login.Login',{
     /**
      * After form is render load store
      */
-    onAfterrender:function(){
+    afterAppRender:function(){
         var me = this;
         if(me.showSite){
             me.storeSites.load({
@@ -329,7 +328,7 @@ Ext.define('App.view.login.Login',{
         m.slideIn('t').pause(3000).ghost('t', {remove:true});
     },
 
-    onResized:function(){
+    onAppResize:function(){
         this.winLogon.alignTo(this, 'c-c');
         this.notice1.alignTo(Ext.getBody(),'t-t',[0,10]);
         if(this.notice2) this.notice2.alignTo(Ext.getBody(),'t-t',[0,85]);

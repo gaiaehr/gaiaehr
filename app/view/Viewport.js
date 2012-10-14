@@ -490,7 +490,7 @@ Ext.define('App.view.Viewport', {
         me.MainPanel.add(Ext.create('App.view.miscellaneous.MySettings'));
         me.MainPanel.add(Ext.create('App.view.miscellaneous.OfficeNotes'));
         me.MainPanel.add(Ext.create('App.view.miscellaneous.Websearch'));
-        
+
         me.ppdz = me.MainPanel.add(Ext.create('App.view.areas.PatientPoolDropZone'));
 
 		if(acl['access_gloabal_settings']) me.MainPanel.add(Ext.create('App.view.administration.Globals'));
@@ -1043,9 +1043,7 @@ Ext.define('App.view.Viewport', {
             html:'Logging Out in...',
             seconds:10
         }).show();
-
         app.el.mask();
-
         if(!me.LogoutTask) me.LogoutTask = new Ext.util.TaskRunner();
         if(!me.LogoutTaskTimer){
             me.LogoutTaskTimer = me.LogoutTask.start({
@@ -1059,7 +1057,6 @@ Ext.define('App.view.Viewport', {
 
 
     },
-
     logoutCounter:function(){
         var me = this,
             sec = me.logoutWarinigWindow.seconds - 1;

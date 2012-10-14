@@ -24,6 +24,7 @@ $_SESSION['site']['flops'] = 0;
 				settings = {},
 				i18n = {},
 				ext = 'extjs-4.1.1a',
+				version = '0.0.4.164',
 				requires;
 		</script>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -60,7 +61,7 @@ $_SESSION['site']['flops'] = 0;
 			 */
 			(function()
 			{
-				document.write('<script type="text/javascript" src="lib/extjs-4.1.1a/locale/'+ i18n['i18nExtFile']+'"><\/script>')
+				document.write('<script type="text/javascript" src="lib/extjs-4.1.1a/locale/'+ i18n['i18nExtFile'] + '?_v' + version + '"><\/script>')
 			}
 			)();
 			// Set and enable Ext.loader for dynamic class loading
@@ -79,7 +80,6 @@ $_SESSION['site']['flops'] = 0;
 			});
 		</script>
 		<script type="text/javascript" src="lib/webcam_control/swfobject.js"></script>
-		<script type="text/javascript" src="lib/extensible-1.5.1/src/Extensible.js"></script>
 		<script type="text/javascript" src="lib/jpegcam/htdocs/webcam.js"></script>
 		<script type="text/javascript" src="app/classes/Overrides.js"></script>
 		<script type="text/javascript" src="app/classes/VTypes.js"></script>
@@ -487,10 +487,10 @@ $_SESSION['site']['flops'] = 0;
 				if(isDevelopment){
 				say('Loading GaiaEHR Classes (Development)');
 //				var jsb3Buffer = '"files": [';
-					document.write('<script type="text/javascript" charset="UTF-8" src="app/view/calendar/ExtensibleAll.js"><\/script>');
+					document.write('<script type="text/javascript" charset="UTF-8" src="app/view/calendar/ExtensibleAll.js?_v' + version + '"><\/script>');
 					for(var r=0; r < requires.length; r++)
 					{
-				        document.write('<script type="text/javascript" charset="UTF-8" src="' + Ext.Loader.getPath(requires[r]) + '"><\/script>');
+				        document.write('<script type="text/javascript" charset="UTF-8" src="' + Ext.Loader.getPath(requires[r]) + '?_v' + version + '"><\/script>');
 //						var arrayBuffer = Ext.Loader.getPath(requires[r]).split('/'),
 //								fileName = arrayBuffer.pop();
 //								filePath = arrayBuffer.join('/');
@@ -505,7 +505,7 @@ $_SESSION['site']['flops'] = 0;
 				else
 				{
 					say('Loading GaiaEHR Classes (Production)');
-					document.write('<script type="text/javascript" charset="UTF-8" src="app/app-all.js"><\/script>');
+					document.write('<script type="text/javascript" charset="UTF-8" src="app/app-all.js' + '?_v' + version + '"><\/script>');
 				}
 			})();
 			

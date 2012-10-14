@@ -590,7 +590,7 @@ class Patient
 
 	public function getPatientPhotoSrcIdByPid($pid = null){
 		$pid = ($pid == null) ? $_SESSION['patient']['pid'] : $pid;
-		return  $_SESSION['site']['path'] . '/patients/' . $pid .'/patientPhotoId.jpg';
+		return  $_SESSION['site']['url'] . '/patients/' . $pid .'/patientPhotoId.jpg';
 	}
 
 

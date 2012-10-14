@@ -1,12973 +1,6 @@
 /*
 Copyright(c) 2012 GaiaEHR
 */
-/**
- * @class Ext.ux.LiveSearchGridPanel
- * @extends Ext.grid.Panel
- * <p>A GridPanel class with live search support.</p>
- * @author Nicolas Ferrero
- */
-Ext.define('Ext.ux.LiveSearchGridPanel', {
-    extend: 'Ext.grid.Panel',
-    requires: [
-        'Ext.toolbar.TextItem',
-        'Ext.form.field.Checkbox',
-        'Ext.form.field.Text',
-        'Ext.ux.statusbar.StatusBar'
-    ],
-    
-    /**
-     * @private
-     * search value initialization
-     */
-    searchValue: null,
-    
-    /**
-     * @private
-     * The row indexes where matching strings are found. (used by previous and next buttons)
-     */
-    indexes: [],
-    
-    /**
-     * @private
-     * The row index of the first search, it could change if next or previous buttons are used.
-     */
-    currentIndex: null,
-    
-    /**
-     * @private
-     * The generated regular expression used for searching.
-     */
-    searchRegExp: null,
-    
-    /**
-     * @private
-     * Case sensitive mode.
-     */
-    caseSensitive: false,
-    
-    /**
-     * @private
-     * Regular expression mode.
-     */
-    regExpMode: false,
-    
-    /**
-     * @cfg {String} matchCls
-     * The matched string css classe.
-     */
-    matchCls: 'x-livesearch-match',
-    
-    defaultStatusText: i18n['nothing_found'],
-    
-    // Component initialization override: adds the top and bottom toolbars and setup headers renderer.
-    initComponent: function() {
-        var me = this;
-        me.tbar = [i18n['search'],{
-                 xtype: 'textfield',
-                 name: 'searchField',
-                 hideLabel: true,
-                 width: 200,
-                 listeners: {
-                     change: {
-                         fn: me.onTextFieldChange,
-                         scope: this,
-                         buffer: 100
-                     }
-                 }
-            }, {
-                xtype: 'button',
-                text: '<',
-                tooltip: i18n['find_previous_row'],
-                handler: me.onPreviousClick,
-                scope: me
-            },{
-                xtype: 'button',
-                text: '>',
-                tooltip: i18n['find_next_row'],
-                handler: me.onNextClick,
-                scope: me
-            }, '-', {
-                xtype: 'checkbox',
-                hideLabel: true,
-                margin: '0 0 0 4px',
-                handler: me.regExpToggle,
-                scope: me                
-            }, i18n['regular_expression'], {
-                xtype: 'checkbox',
-                hideLabel: true,
-                margin: '0 0 0 4px',
-                handler: me.caseSensitiveToggle,
-                scope: me
-            }, i18n['case_sensitive']];
-
-        me.bbar = Ext.create('Ext.ux.StatusBar', {
-            defaultText: me.defaultStatusText,
-            name: 'searchStatusBar'
-        });
-        
-        me.callParent(arguments);
-    },
-    
-    // afterRender override: it adds textfield and statusbar reference and start monitoring keydown events in textfield input 
-    afterRender: function() {
-        var me = this;
-        me.callParent(arguments);
-        me.textField = me.down('textfield[name=searchField]');
-        me.statusBar = me.down('statusbar[name=searchStatusBar]');
-    },
-    // detects html tag
-    tagsRe: /<[^>]*>/gm,
-    
-    // DEL ASCII code
-    tagsProtect: '\x0f',
-    
-    // detects regexp reserved word
-    regExpProtect: /\\|\/|\+|\\|\.|\[|\]|\{|\}|\?|\$|\*|\^|\|/gm,
-    
-    /**
-     * In normal mode it returns the value with protected regexp characters.
-     * In regular expression mode it returns the raw value except if the regexp is invalid.
-     * @return {String} The value to process or null if the textfield value is blank or invalid.
-     * @private
-     */
-    getSearchValue: function() {
-        var me = this,
-            value = me.textField.getValue();
-            
-        if (value === '') {
-            return null;
-        }
-        if (!me.regExpMode) {
-            value = value.replace(me.regExpProtect, function(m) {
-                return '\\' + m;
-            });
-        } else {
-            try {
-                new RegExp(value);
-            } catch (error) {
-                me.statusBar.setStatus({
-                    text: error.message,
-                    iconCls: 'x-status-error'
-                });
-                return null;
-            }
-            // this is stupid
-            if (value === '^' || value === '$') {
-                return null;
-            }
-        }
-
-        return value;
-    },
-    
-    /**
-     * Finds all strings that matches the searched value in each grid cells.
-     * @private
-     */
-     onTextFieldChange: function() {
-         var me = this,
-             count = 0;
-
-         me.view.refresh();
-         // reset the statusbar
-         me.statusBar.setStatus({
-             text: me.defaultStatusText,
-             iconCls: ''
-         });
-
-         me.searchValue = me.getSearchValue();
-         me.indexes = [];
-         me.currentIndex = null;
-
-         if (me.searchValue !== null) {
-             me.searchRegExp = new RegExp(me.searchValue, 'g' + (me.caseSensitive ? '' : 'i'));
-             
-             
-             me.store.each(function(record, idx) {
-                 var td = Ext.fly(me.view.getNode(idx)).down('td'),
-                     cell, matches, cellHTML;
-                 while(td) {
-                     cell = td.down('.x-grid-cell-inner');
-                     matches = cell.dom.innerHTML.match(me.tagsRe);
-                     cellHTML = cell.dom.innerHTML.replace(me.tagsRe, me.tagsProtect);
-                     
-                     // populate indexes array, set currentIndex, and replace wrap matched string in a span
-                     cellHTML = cellHTML.replace(me.searchRegExp, function(m) {
-                        count += 1;
-                        if (Ext.Array.indexOf(me.indexes, idx) === -1) {
-                            me.indexes.push(idx);
-                        }
-                        if (me.currentIndex === null) {
-                            me.currentIndex = idx;
-                        }
-                        return '<span class="' + me.matchCls + '">' + m + '</span>';
-                     });
-                     // restore protected tags
-                     Ext.each(matches, function(match) {
-                        cellHTML = cellHTML.replace(me.tagsProtect, match); 
-                     });
-                     // update cell html
-                     cell.dom.innerHTML = cellHTML;
-                     td = td.next();
-                 }
-             }, me);
-
-             // results found
-             if (me.currentIndex !== null) {
-                 me.getSelectionModel().select(me.currentIndex);
-                 me.statusBar.setStatus({
-                     text: count + ' ' + i18n['matches_found'],
-                     iconCls: 'x-status-valid'
-                 });
-             }
-         }
-
-         // no results found
-         if (me.currentIndex === null) {
-             me.getSelectionModel().deselectAll();
-         }
-
-         // force textfield focus
-         me.textField.focus();
-     },
-    
-    /**
-     * Selects the previous row containing a match.
-     * @private
-     */   
-    onPreviousClick: function() {
-        var me = this,
-            idx;
-            
-        if ((idx = Ext.Array.indexOf(me.indexes, me.currentIndex)) !== -1) {
-            me.currentIndex = me.indexes[idx - 1] || me.indexes[me.indexes.length - 1];
-            me.getSelectionModel().select(me.currentIndex);
-         }
-    },
-    
-    /**
-     * Selects the next row containing a match.
-     * @private
-     */    
-    onNextClick: function() {
-         var me = this,
-             idx;
-             
-         if ((idx = Ext.Array.indexOf(me.indexes, me.currentIndex)) !== -1) {
-            me.currentIndex = me.indexes[idx + 1] || me.indexes[0];
-            me.getSelectionModel().select(me.currentIndex);
-         }
-    },
-    
-    /**
-     * Switch to case sensitive mode.
-     * @private
-     */    
-    caseSensitiveToggle: function(checkbox, checked) {
-        this.caseSensitive = checked;
-        this.onTextFieldChange();
-    },
-    
-    /**
-     * Switch to regular expression mode
-     * @private
-     */
-    regExpToggle: function(checkbox, checked) {
-        this.regExpMode = checked;
-        this.onTextFieldChange();
-    }
-});
-/**
-* @class Ext.ux.SlidingPager
-* @extends Object
-* Plugin for PagingToolbar which replaces the textfield input with a slider
-* @constructor
-* Create a new ItemSelector
-* @param {Object} config Configuration options
-*/
-Ext.define('Ext.ux.SlidingPager', {
-    extend: 'Object',
-    requires: [
-        'Ext.slider.Single',
-        'Ext.slider.Tip'
-    ],
-
-    constructor : function(config) {
-        if (config) {
-            Ext.apply(this, config);
-        }
-    },
-
-    init : function(pbar){
-        var idx = pbar.items.indexOf(pbar.child("#inputItem")),
-            slider;
-
-        Ext.each(pbar.items.getRange(idx - 2, idx + 2), function(c){
-            c.hide();
-        });
-
-        slider = Ext.create('Ext.slider.Single', {
-            width: 114,
-            minValue: 1,
-            maxValue: 1,
-            hideLabel: true,
-            tipText: function(thumb) {
-                return Ext.String.format(i18n['page'] + ' <b>{0}</b> ' + i18n['of'] + ' <b>{1}</b>', thumb.value, thumb.slider.maxValue);
-            },
-            listeners: {
-                changecomplete: function(s, v){
-                    pbar.store.loadPage(v);
-                }
-            }
-        });
-
-        pbar.insert(idx + 1, slider);
-
-        pbar.on({
-            change: function(pb, data){
-                if(data){
-                slider.setMaxValue(data.pageCount);
-                slider.setValue(data.currentPage);
-
-                }
-            }
-        });
-    }
-});
-
-/**
- * @class Ext.ux.PreviewPlugin
- * @extends Ext.AbstractPlugin
- *
- * The Preview enables you to show a configurable preview of a record.
- *
- * This plugin assumes that it has control over the features used for this
- * particular grid section and may conflict with other plugins.
- *
- * @alias plugin.preview
- * @ptype preview
- */
-Ext.define('Ext.ux.PreviewPlugin', {
-	extend     : 'Ext.AbstractPlugin',
-	alias      : 'plugin.preview',
-	requires   : ['Ext.grid.feature.RowBody', 'Ext.grid.feature.RowWrap'],
-
-	// private, css class to use to hide the body
-	hideBodyCls: 'x-grid-row-body-hidden',
-
-	/**
-	 * @cfg {String} bodyField
-	 * Field to display in the preview. Must me a field within the Model definition
-	 * that the store is using.
-	 */
-	bodyField: '',
-
-	/**
-	 * @cfg {Boolean} previewExpanded
-	 */
-	previewExpanded: true,
-
-	constructor: function(config) {
-		this.callParent(arguments);
-		var bodyField = this.bodyField,
-			hideBodyCls = this.hideBodyCls,
-			section = this.getCmp(),
-			features = [
-				{
-					ftype            : 'rowbody',
-					getAdditionalData: function(data, idx, record, orig, view) {
-						var o = Ext.grid.feature.RowBody.prototype.getAdditionalData.apply(this, arguments);
-						Ext.apply(o, {
-							rowBody   : data[bodyField],
-							rowBodyCls: section.previewExpanded ? '' : hideBodyCls
-						}, null);
-						return o;
-					}
-				},
-				{
-					ftype: 'rowwrap'
-				}
-			];
-
-		section.previewExpanded = this.previewExpanded;
-		if(!section.features) {
-			section.features = [];
-		}
-		section.features = features.concat(section.features);
-	},
-
-	/**
-	 * Toggle between the preview being expanded/hidden
-	 * @param {Boolean} expanded Pass true to expand the record and false to not show the preview.
-	 */
-	toggleExpanded: function(expanded) {
-		var view = this.getCmp();
-		this.previewExpanded = view.previewExpanded = expanded;
-		view.refresh();
-	},
-
-	/**
-	 * Expand Selected row and collapse all others
-	 * @param index
-	 */
-	toggleRowExpanded: function() {
-		var hideBodyCls = this.hideBodyCls,
-			view = this.getCmp(),
-			rowIndex = view.getStore().indexOf(view.getSelectionModel().getLastSelected()),
-			rows = view.getNodes(),
-			row = view.getNode(rowIndex);
-
-		if(!view.previewExpanded) {
-			Ext.each(rows, function(row) {
-				Ext.get(Ext.get(row).query('.x-grid-rowbody-tr')).addCls(hideBodyCls);
-			});
-			Ext.get(Ext.get(row).query('.x-grid-rowbody-tr')).removeCls(hideBodyCls);
-            view.up('grid').doLayout();
-		}
-	}
-
-});
-/**
- * Render panel
- *
- * @namespace FormLayoutEngine.getFields
- */
-Ext.define('App.classes.RenderPanel', {
-	extend       : 'Ext.container.Container',
-	alias        : 'widget.renderpanel',
-	cls          : 'RenderPanel',
-	layout       : 'border',
-	frame        : false,
-	border       : false,
-	pageLayout   : 'fit',
-	pageBody     : [],
-	pageTitle    : '',
-	initComponent: function() {
-		var me = this;
-		Ext.apply(me, {
-			items: [
-				{
-					cls   : 'RenderPanel-header',
-					itemId: 'RenderPanel-header',
-					xtype : 'container',
-					region: 'north',
-					layout: 'fit',
-					height: 33,
-					html  : '<div class="panel_title">' + me.pageTitle + '</div>'
-
-				},
-				{
-					cls    : 'RenderPanel-body-container',
-                    itemId : 'RenderPanel-body-container',
-					xtype  : 'container',
-					region : 'center',
-					layout : 'fit',
-					padding: 5,
-					items  : [
-						{
-							cls     : 'RenderPanel-body',
-							xtype   : 'panel',
-							frame   : true,
-							layout  : this.pageLayout,
-							border  : false,
-                            itemId  : 'pageLayout',
-							defaults: {frame: false, border: false, autoScroll: true},
-							items   : me.pageBody
-						}
-					]
-				}
-			]
-		}, this);
-		me.callParent(arguments);
-	},
-
-	updateTitle: function(pageTitle, readOnly, timer) {
-		
-		var readOnlyDiv = '<div class="readOnly">' + i18n['read_only'] + '</div>',
-			timerDiv = '<span class="timer">' + timer + '</span>';
-		this.getComponent('RenderPanel-header').update('<div class="panel_title">' + pageTitle + '</div>' + (readOnly ? readOnlyDiv : '') + (timer ?  timerDiv : ''));
-	},
-
-	setReadOnly:function(readOnly){
-		var forms = this.query('form');
-
-		for(var j = 0; j < forms.length; j++) {
-			var form = forms[j], items;
-			if(form.readOnly != readOnly){
-				form.readOnly = readOnly;
-				items = form.getForm().getFields().items;
-				for(var k = 0; k < items.length; k++){
-					items[k].setReadOnly(readOnly);
-				}
-			}
-		}
-		return readOnly;
-	},
-
-	setButtonsDisabled:function(buttons, disabled){
-		var disable = disabled || app.patient.readOnly;
-		for(var i = 0; i < buttons.length; i++) {
-			var btn = buttons[i];
-			if(btn.disabled != disable){
-				btn.disabled = disable;
-				btn.setDisabled(disable)
-			}
-		}
-	},
-
-	goBack: function() {
-		app.goBack();
-	},
-
-	checkIfCurrPatient: function() {
-		return app.getCurrPatient();
-	},
-
-	patientInfoAlert: function() {
-		var patient = app.getCurrPatient();
-
-		Ext.Msg.alert(i18n['status'], i18n['patient'] + ': ' + patient.name + ' (' + patient.pid + ')');
-	},
-
-	currPatientError: function() {
-		Ext.Msg.show({
-			title  : 'Oops! ' + i18n['no_patient_selected'],
-			msg    : i18n['select_patient_patient_live_search'],
-			scope  : this,
-			buttons: Ext.Msg.OK,
-			icon   : Ext.Msg.ERROR,
-			fn     : function() {
-				this.goBack();
-			}
-		});
-	},
-
-	getFormItems: function(formPanel, formToRender, callback) {
-        if(formPanel){
-            formPanel.removeAll();
-            FormLayoutEngine.getFields({formToRender: formToRender}, function(provider, response) {
-                var items = eval(response.result);
-                  formPanel.add(items);
-                if(typeof callback == 'function') {
-                    callback(formPanel, items, true);
-                }
-            });
-        }
-	},
-
-	boolRenderer: function(val) {
-		if(val == '1' || val == true || val == 'true') {
-			return '<img style="padding-left: 13px" src="resources/images/icons/yes.gif" />';
-		} else if(val == '0' || val == false || val == 'false') {
-			return '<img style="padding-left: 13px" src="resources/images/icons/no.gif" />';
-		}
-		return val;
-	},
-
-	alertRenderer: function(val) {
-		if(val == '1' || val == true || val == 'true') {
-			return '<img style="padding-left: 13px" src="resources/images/icons/no.gif" />';
-		} else if(val == '0' || val == false || val == 'false') {
-			return '<img style="padding-left: 13px" src="resources/images/icons/yes.gif" />';
-		}
-		return val;
-	},
-
-    warnRenderer:function(val, metaData, record){
-	    var toolTip = record.data.warningMsg ? record.data.warningMsg : '';
-        if(val == '1' || val == true || val == 'true') {
-            return '<img src="resources/images/icons/icoImportant.png" ' + toolTip + ' />';
-        }
-        return '';
-    },
-
-	onExpandRemoveMask: function(cmb) {
-		cmb.picker.loadMask.destroy()
-	},
-
-	strToLowerUnderscores: function(str) {
-		return str.toLowerCase().replace(/ /gi, "_");
-	},
-
-	getCurrPatient: function() {
-		return app.getCurrPatient();
-	},
-
-	getApp: function() {
-		return app.getApp();
-	},
-
-	msg: function(title, format) {
-		app.msg(title, format)
-	},
-
-	alert:function(msg, icon) {
-		app.alert(msg,icon)
-	},
-
-    passwordVerificationWin:function(callback){
-        var msg = Ext.Msg.prompt(i18n['password_verification'], i18n['please_enter_your_password'] + ':', function(btn, password) {
-            callback(btn, password);
-        });
-        var f = msg.textField.getInputId();
-        document.getElementById(f).type = 'password';
-        return msg;
-    },
-    getPageHeader:function(){
-        return this.getComponent('RenderPanel-header');
-    },
-    getPageBodyContainer:function(){
-        return this.getComponent('RenderPanel-body-container');
-    },
-    getPageBody:function(){
-        return this.getPageBodyContainer().down('panel');
-    }
-
-});
-
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:09 PM
- */
-
-
-Ext.define('App.model.administration.ActiveProblems', {
-	extend: 'Ext.data.Model',
-	fields: [
-		{name: 'code_text' },
-		{name: 'code' }
-	]
-
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:09 PM
- */
-
-
-Ext.define('App.model.administration.DefaultDocuments', {
-	extend: 'Ext.data.Model',
-	fields: [
-		{name: 'id', type:'int' },
-        {name: 'title', type:'string' },
-		{name: 'body', type:'string' },
-		{name: 'template_type', type:'string' },
-		{name: 'date', type:'date', dateFormat:'Y-m-d H:i:s' }
-
-	]
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:09 PM
- */
-
-
-Ext.define('App.model.administration.DocumentsTemplates', {
-	extend: 'Ext.data.Model',
-	fields: [
-		{name: 'id', type:'int' },
-        {name: 'title', type:'string' },
-		{name: 'body', type:'string' },
-		{name: 'template_type', type:'string' },
-		{name: 'date', type:'date', dateFormat:'Y-m-d H:i:s' }
-
-	]
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:09 PM
- */
-
-
-Ext.define('App.model.administration.ExternalDataLoads', {
-	extend: 'Ext.data.Model',
-	fields: [
-		{name: 'date' },
-        {name: 'version' },
-		{name: 'path' },
-		{name: 'basename' },
-		{name: 'codeType' }
-	]
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:09 PM
- */
-
-
-Ext.define('App.model.administration.FloorPlans', {
-	extend: 'Ext.data.Model',
-	fields: [
-		{name: 'id', type: 'int'},
-		{name: 'title', type: 'string'}
-	]
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:09 PM
- */
-
-
-Ext.define('App.model.administration.FloorPlanZones', {
-	extend: 'Ext.data.Model',
-	fields: [
-		{name: 'id', type: 'int'},
-		{name: 'floor_plan_id', type: 'int'},
-		{name: 'title', type: 'string'},
-		{name: 'type', type: 'string'},
-		{name: 'x', type: 'int'},
-		{name: 'y', type: 'int'},
-		{name: 'active', type: 'bool'}
-	]
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:09 PM
- */
-
-
-Ext.define('App.model.administration.HeadersAndFooters', {
-	extend: 'Ext.data.Model',
-	fields: [
-		{name: 'id', type:'int' },
-        {name: 'title', type:'string' },
-        {name: 'template_type', type:'string' },
-		{name: 'body', type:'string' },
-		{name: 'date', type:'date', dateFormat:'Y-m-d H:i:s' }
-
-	]
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:09 PM
- */
-
-
-Ext.define('App.model.administration.ImmunizationRelations', {
-	extend: 'Ext.data.Model',
-	fields: [
-		{name: 'id', type: 'int'},
-		{name: 'immunization_id', type: 'int'},
-		{name: 'foreign_id', type: 'int'},
-		{name: 'code' },
-		{name: 'code_text', type: 'string' },
-		{name: 'code_type' }
-
-	],
-    proxy: {
-    		type       : 'direct',
-    		api        : {
-    			read  : PreventiveCare.getRelations,
-    			create: PreventiveCare.addRelations,
-    			destroy: PreventiveCare.removeRelations
-    		}
-
-
-    	}
-
-
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:09 PM
- */
-
-
-Ext.define('App.model.administration.LabObservations', {
-	extend: 'Ext.data.Model',
-	fields: [
-		{name: 'id' },
-        {name: 'code_text_short' },
-		{name: 'parent_id' },
-		{name: 'parent_loinc' },
-		{name: 'parent_name' },
-		{name: 'sequence' },
-		{name: 'loinc_number' },
-		{name: 'loinc_name' },
-		{name: 'default_unit' },
-		{name: 'range_start' },
-		{name: 'range_end' },
-		{name: 'required_in_panel' },
-		{name: 'description' },
-		{name: 'active', type:'bool' }
-	]
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:09 PM
- */
-
-
-Ext.define('App.model.administration.Medications', {
-	extend: 'Ext.data.Model',
-	fields: [
-		{name: 'id', type: 'int'},
-		{name: 'PRODUCTNDC' },
-		{name: 'PROPRIETARYNAME' },
-		{name: 'NONPROPRIETARYNAME' },
-		{name: 'DOSAGEFORMNAME' },
-		{name: 'ROUTENAME' },
-		{name: 'ACTIVE_NUMERATOR_STRENGTH' },
-		{name: 'ACTIVE_INGRED_UNIT' }
-	],
-    proxy: {
-    		type       : 'direct',
-    		api        : {
-    			read  : Medications.getMedications,
-    			create: Medications.addMedications,
-    			destroy: Medications.removeMedications,
-			    update: Medications.updateMedications
-    		},
-    		reader     : {
-    			totalProperty: 'totals',
-    			root         : 'rows'
-    		}
-
-    	}
-
-
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:09 PM
- */
-
-
-Ext.define('App.model.administration.PreventiveCare', {
-	extend: 'Ext.data.Model',
-	fields: [
-		{name: 'id', type: 'int'},
-		{name: 'pid', type: 'int'},
-		{name: 'preventive_care_id', type: 'int'},
-		{name: 'uid', type: 'int'},
-		{name: 'description', type: 'string'},
-		{name: 'age_start', type: 'string'},
-		{name: 'age_end', type: 'string'},
-		{name: 'sex', type: 'string'},
-		{name: 'pregnant', type: 'bool'},
-		{name: 'frequency', type: 'string'},
-		{name: 'category_id', type: 'string'},
-		{name: 'code', type: 'string'},
-		{name: 'coding_system', type: 'string'},
-		{name: 'dismiss', type: 'bool'},
-		{name: 'frequency_type', type: 'string'},
-		{name: 'reason', type: 'string'},
-		{name: 'times_to_perform', type: 'string'},
-		{name: 'doc_url1', type: 'string'},
-		{name: 'doc_url2', type: 'string'},
-		{name: 'doc_url3', type: 'string'},
-		{name: 'active', type:'bool'}
-	]
-
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:09 PM
- */
-
-
-Ext.define('App.model.administration.PreventiveCareActiveProblems', {
-	extend: 'Ext.data.Model',
-	fields: [
-		{name: 'guideline_id', type: 'int'},
-		{name: 'code', type: 'string'},
-		{name: 'code_text', type: 'string'}
-	]
-
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:09 PM
- */
-
-
-Ext.define('App.model.administration.PreventiveCareMedications', {
-	extend: 'Ext.data.Model',
-	fields: [
-		{name: 'guideline_id', type: 'int'},
-		{name: 'code', type: 'string'},
-		{name: 'code_text', type: 'string'}
-	]
-
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:09 PM
- */
-
-
-Ext.define('App.model.administration.PreventiveCareLabs', {
-	extend: 'Ext.data.Model',
-	fields: [
-		{name: 'id', type: 'int'},
-		{name: 'value_name', type: 'string'},
-		{name: 'greater_than', type: 'string'},
-		{name: 'less_than', type: 'string'},
-		{name: 'equal_to', type: 'string'},
-		{name: 'code', type: 'string'},
-		{name: 'preventive_care_id', type: 'string'}
-	]
-
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:09 PM
- */
-
-
-Ext.define('App.model.administration.Services', {
-	extend: 'Ext.data.Model',
-	fields: [
-		{name: 'id', type: 'int'},
-		{name: 'code_text', type: 'string'},
-		{name: 'sg_code', type: 'string'},
-		{name: 'long_desc', type: 'string'},
-		{name: 'code_text_short', type: 'string'},
-		{name: 'code', type: 'string'},
-		{name: 'code_type', type: 'string'},
-		{name: 'modifier', type: 'string'},
-		{name: 'units', type: 'string'},
-		{name: 'fee', type: 'int'},
-		{name: 'superbill', type: 'string'},
-		{name: 'related_code', type: 'string'},
-		{name: 'taxrates', type: 'string'},
-		{name: 'active', type: 'bool'},
-		{name: 'reportable', type: 'string'},
-        ////////////////////////////////////
-		{name: 'sex', type: 'string'},
-		{name: 'age_start', type: 'int'},
-		{name: 'age_end', type: 'int'},
-		{name: 'times_to_perform', type: 'int'},
-		{name: 'frequency_number', type: 'int'},
-		{name: 'frequency_time', type: 'string'},
-		{name: 'pregnant', type: 'bool'},
-		{name: 'only_once', type: 'bool'},
-		{name: 'active_problems', type: 'string'},
-		{name: 'medications', type: 'string'},
-		{name: 'labs', type: 'string'}
-	]
-
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:09 PM
- */
-
-Ext.define('App.model.miscellaneous.OfficeNotes', {
-	extend: 'Ext.data.Model',
-    fields: [
-        {name: 'id', type: 'int'},
-        {name: 'date', type: 'date', dateFormat: 'c'},
-        {name: 'body', type: 'string'},
-        {name: 'user', type: 'string'},
-        {name: 'facility_id', type: 'string'},
-        {name: 'activity', type: 'string'}
-    ],
-    proxy : {
-        type: 'direct',
-        api : {
-            read  : OfficeNotes.getOfficeNotes,
-            create: OfficeNotes.addOfficeNotes,
-            update: OfficeNotes.updateOfficeNotes
-        }
-    }
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:09 PM
- */
-
-Ext.define('App.model.fees.Billing', {
-    extend: 'Ext.data.Model',
-    fields: [
-        {name: 'eid', type: 'int '},
-        {name: 'pid', type: 'int'},
-        {name: 'patientName', type: 'string'},
-        {name: 'primaryProvider', type: 'string'},
-        {name: 'encounterProvider', type: 'string'},
-        {name: 'supervisorProvider', type: 'string'},
-        {name: 'facility', type: 'string'},
-        {name: 'billing_facility', type: 'string'},
-        {name: 'start_date', type: 'string'},
-        {name: 'close_date', type: 'string'},
-        {name: 'billing_stage', type: 'int'},
-        {name: 'icdxCodes', type: 'auto'}
-    ],
-    proxy : {
-        type: 'direct',
-        api : {
-            read  : Fees.getFilterEncountersBillingData
-        },
-        reader     : {
-            root: 'encounters',
-            totalProperty: 'totals'
-        }
-    }
-
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:09 PM
- */
-
-Ext.define('App.model.fees.Checkout', {
-	extend: 'Ext.data.Model',
-	fields: [
-        {name: 'id', type: 'int'},
-        {name: 'time', type: 'string'},
-        {name: 'follow_up_facility', type: 'string'},
-        {name: 'note', type: 'string'},
-        {name: 'reminder', type: 'string'},
-        {name: 'patient_name', type: 'string'},
-        {name: 'encounter_number', type: 'int'},
-        {name: 'transaction_facility', type: 'string'},
-        {name: 'transaction_number', type: 'int'},
-        {name: 'transaction_date', type: 'date', dateFormat:'Y-m-d H:i:s'},
-        {name: 'payment_amount', type: 'string'},
-        {name: 'paying_entity', type: 'string'},
-        {name: 'post_to_date', type: 'date', dateFormat:'Y-m-d H:i:s'},
-        {name: 'check_number', type: 'int'}
-	],
-	proxy : {
-		type: 'direct',
-        api : {
-            read  : Fees.getPaymentsBySearch
-        },
-        reader: {
-            root         : 'rows',
-            totalProperty: 'totals'
-        }
-	}
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:09 PM
- *
- * @namespace Fees.EncountersPayment
- *
- */
-
-Ext.define('App.model.fees.EncountersPayments', {
-	extend: 'Ext.data.Model',
-	fields: [
-        {name: 'id', type: 'int'},
-        {name: 'paying_entity', type: 'string'},
-        {name: 'payment_from', type: 'string'},
-        {name: 'no', type: 'int'},
-        {name: 'payment_method', type: 'string'},
-        {name: 'pay_to', type: 'string'},
-        {name: 'amount', type: 'string'},
-        {name: 'date_from', type: 'date', dateFormat:'Y-m-d H:i:s'},
-        {name: 'date_to', type: 'date', dateFormat:'Y-m-d H:i:s'},
-        {name: 'note', type: 'string'}
-	],
-    proxy : {
-        type: 'direct',
-        api : {
-            read :Fees.getPaymentsBySearch
-        },
-        reader: {
-            root         : 'rows',
-            totalProperty: 'totals'
-        }
-    }
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:09 PM
- */
-
-Ext.define('App.model.fees.PaymentTransactions', {
-	extend: 'Ext.data.Model',
-	fields: [
-
-	],
-	proxy : {
-		type: 'direct',
-        api : {
-            read  : Fees.getPaymentsBySearch
-        },
-        reader: {
-            root         : 'rows',
-            totalProperty: 'totals'
-        }
-	}
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/19/12
- * Time: 1:01 PM
- */
-Ext.define('App.model.navigation.Navigation', {
-	extend   : 'Ext.data.Model',
-	fields   : [
-		{name: 'text', type: 'string'},
-		{name: 'disabled', type: 'bool', defaultValue: false}
-	],
-	proxy    : {
-		type: 'direct',
-		api : {
-			read: Navigation.getNavigation
-		}
-	}
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:09 PM
- */
-
-Ext.define('App.model.patient.Allergies', {
-	extend: 'Ext.data.Model',
-	fields: [
-		{name: 'id', type: 'int'},
-		{name: 'eid', type: 'int'},
-		{name: 'pid', type: 'int'},
-		{name: 'created_uid', type: 'int'},
-		{name: 'updated_uid', type: 'int'},
-		{name: 'create_date', type: 'date', dateFormat: 'c'},
-		{name: 'allergy_type', type: 'string'},
-		{name: 'allergy', type: 'string'},
-		{name: 'allergy_id', type: 'int'},
-		{name: 'begin_date', type: 'date', dateFormat: 'c'},
-		{name: 'end_date', type: 'date', dateFormat: 'c'},
-		{name: 'reaction', type: 'string'},
-		{name: 'location', type: 'string'},
-		{name: 'severity', type: 'string'},
-        {name: 'alert', type: 'bool'}
-	],
-	proxy : {
-		type: 'direct',
-		api : {
-			read  : Medical.getPatientAllergies,
-			create: Medical.addPatientAllergies,
-			update: Medical.updatePatientAllergies
-		}
-	}
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:09 PM
- */
-Ext.define('App.model.patient.CheckoutAlertArea', {
-	extend: 'Ext.data.Model',
-	fields: [
-        {name: 'alert', type: 'string'},
-        {name: 'alertType', type: 'int'}
-
-	],
-	proxy : {
-		type: 'direct',
-		api : {
-			read: Encounter.checkoutAlerts
-		}
-	}
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:09 PM
- */
-Ext.define('App.model.patient.CptCodes', {
-    extend: 'Ext.data.Model',
-    fields: [
-        {name: 'id', type:'int'},
-        {name: 'eid', type:'int'},
-        {name: 'code', type: 'string'},
-        {name: 'code_text', type: 'string'},
-        {name: 'code_text_medium', type: 'string'},
-        {name: 'place_of_service', type: 'string'},
-        {name: 'emergency', type: 'bool'},
-        {name: 'charge', type: 'string'},
-        {name: 'days_of_units', type: 'string'},
-        {name: 'essdt_plan', type: 'string'},
-        {name: 'modifiers', type: 'string'},
-        {name: 'status', type: 'int', defaultValue: 0}
-    ],
-    proxy : {
-        type  : 'direct',
-        api   : {
-            read: Services.getCptCodes,
-            create: Services.addCptCode,
-            update: Services.updateCptCode,
-            destroy: Services.deleteCptCode
-        },
-        reader: {
-            root         : 'rows',
-            totalProperty: 'totals'
-        }
-    }
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:09 PM
- */
-
-Ext.define('App.model.patient.Dental', {
-	extend: 'Ext.data.Model',
-	fields: [
-		{name: 'id', type: 'int'},
-		{name: 'eid', type: 'int'},
-		{name: 'pid', type: 'int'},
-		{name: 'created_uid', type: 'int'},
-		{name: 'updated_uid', type: 'int'},
-		{name: 'create_date', type: 'date', dateFormat: 'c'},
-		{name: 'title', type: 'string'},
-		{name: 'diagnosis_code', type: 'string'},
-		{name: 'begin_date', type: 'date', dateFormat: 'c'},
-		{name: 'end_date', type: 'date', dateFormat: 'c'},
-		{name: 'ocurrence', type: 'string'},
-		{name: 'referred_by', type: 'string'},
-		{name: 'outcome', type: 'string'},
-		{name: 'destination', type: 'string'},
-        {name: 'alert', type: 'bool'}
-	],
-	proxy : {
-		type: 'direct',
-		api : {
-			read  : Medical.getPatientDental,
-			create: Medical.addPatientDental,
-			update: Medical.updatePatientDental
-		}
-	}
-});
- /**
- * Created by JetBrains PhpStorm.
- * User: Omar U. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:09 PM
- */
-
-Ext.define('App.model.patient.Disclosures', {
-	extend: 'Ext.data.Model',
-	fields: [
-
-        {name: 'id', type: 'int'},
-        {name: 'eid', type: 'int'},
-        {name: 'pid', type: 'int'},
-        {name: 'uid', type: 'int'},
-        {name: 'date', type: 'date', dateFormat:'Y-m-d H:i:s'},
-        {name: 'type', type: 'string'},
-        {name: 'recipient', type: 'string'},
-        {name: 'description', type: 'string'},
-        {name: 'active', type: 'bool'}
-	],
-	proxy : {
-		type: 'direct',
-		api : {
-			read  : Patient.getPatientDisclosures,
-			create  : Patient.createPatientDisclosure,
-			update  : Patient.updatePatientDisclosure
-		}
-	}
-});
-
-
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:09 PM
- */
-Ext.define('App.model.patient.Encounter', {
-	extend : 'Ext.data.Model',
-	fields : [
-		{name: 'eid', type: 'int'},
-		{name: 'pid', type: 'int'},
-		{name: 'open_uid', type: 'string'},
-		{name: 'close_uid', type: 'string'},
-		{name: 'brief_description', type: 'string'},
-		{name: 'visit_category', type: 'string'},
-		{name: 'facility', type: 'string'},
-		{name: 'billing_facility', type: 'string'},
-		{name: 'priority', type: 'string'},
-		{name: 'start_date', type: 'date', dateFormat:'Y-m-d H:i:s'},
-		{name: 'close_date', type: 'date', dateFormat:'Y-m-d H:i:s'},
-		{name: 'onset_date', type: 'date', dateFormat:'Y-m-d H:i:s'}
-	],
-	proxy  : {
-		type       : 'direct',
-		api        : {
-			read: Encounter.getEncounter,
-			create: Encounter.createEncounter,
-			update: Encounter.updateEncounter
-		},
-		reader     : {
-			type: 'json',
-			root: 'encounter'
-		}
-	},
-    hasMany: [
-        {model: 'App.model.patient.Vitals', name: 'vitals', primaryKey: 'eid'},
-        {model: 'App.model.patient.ReviewOfSystems', name: 'reviewofsystems', primaryKey: 'eid'},
-        {model: 'App.model.patient.ReviewOfSystemsCheck', name: 'reviewofsystemschecks', primaryKey: 'eid'},
-        {model: 'App.model.patient.SOAP', name: 'soap', primaryKey: 'eid'},
-        {model: 'App.model.patient.SpeechDictation', name: 'speechdictation', primaryKey: 'eid'}
-    ]
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:09 PM
- */
-Ext.define('App.model.patient.EncounterCPTsICDs', {
-	extend : 'Ext.data.Model',
-	fields : [
-		{name: 'code'},
-		{name: 'code_text'},
-		{name: 'type'},
-		{name: 'code_text_short'}
-	],
-	proxy  : {
-		type       : 'direct',
-		api        : {
-			read: Encounter.getEncounterCodes
-		},
-		reader     : {
-			type: 'json',
-			root: 'encounter'
-		}
-	}
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:09 PM
- */
-Ext.define('App.model.patient.Encounters', {
-	extend : 'Ext.data.Model',
-	fields : [
-		{name: 'eid', type: 'int'},
-		{name: 'pid', type: 'int'},
-		{name: 'open_uid', type: 'string'},
-		{name: 'close_uid', type: 'string'},
-		{name: 'brief_description', type: 'string'},
-		{name: 'visit_category', type: 'string'},
-		{name: 'facility', type: 'string'},
-		{name: 'billing_facility', type: 'string'},
-		{name: 'sensitivity', type: 'string'},
-		{name: 'start_date', type: 'date', dateFormat:'Y-m-d H:i:s'},
-		{name: 'close_date', type: 'date', dateFormat:'Y-m-d H:i:s'},
-		{name: 'onset_date', type: 'date', dateFormat:'Y-m-d H:i:s'}
-	],
-	proxy  : {
-		type       : 'direct',
-		api        : {
-			read: Encounter.getEncounters
-		},
-		reader     : {
-			type: 'json',
-			root: 'encounter'
-		}
-	}
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:09 PM
- */
-
-Ext.define('App.model.patient.EventHistory', {
-	extend: 'Ext.data.Model',
-	fields: [
-		{name: 'id', type: 'int'},
-		{name: 'eid', type: 'int'},
-		{name: 'pid', type: 'int'},
-		{name: 'date', type: 'date', dateFormat: 'Y-m-d H:i:s'},
-		{name: 'user', type: 'string'},
-		{name: 'event', type: 'string'}
-	]
-});
-
-
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:09 PM
- */
-Ext.define('App.model.patient.Immunization', {
-	extend: 'Ext.data.Model',
-	fields: [
-        {name: 'id', type: 'int'},
-        {name: 'code', type: 'int'},
-		{name: 'code_text', type: 'string'}
-
-	],
-	proxy : {
-		type: 'direct',
-		api : {
-			read: Medical.getImmunizationsList
-		}
-	}
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:09 PM
- */
-Ext.define('App.model.patient.ImmunizationCheck', {
-	extend: 'Ext.data.Model',
-	fields: [
-        {name: 'id', type: 'int'},
-        {name: 'pid', type: 'int'},
-        {name: 'immunization_id', type: 'int'},
-		{name: 'immunization_name', type: 'string'},
-		{name: 'alert', type: 'bool'}
-
-	],
-	proxy : {
-		type: 'direct',
-		api : {
-			read: Medical.getPatientImmunizations
-		}
-	}
-});
- /**
- * Created by JetBrains PhpStorm.
- * User: Omar U. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:09 PM
- */
-
-Ext.define('App.model.patient.LaboratoryTypes', {
-	extend: 'Ext.data.Model',
-	fields: [
-
-		{name: 'id', type: 'int'},
-		{name: 'label', type: 'string'},
-		{name: 'fields' }
-
-	],
-	proxy : {
-		type: 'direct',
-		api : {
-			read  : Laboratories.getActiveLaboratoryTypes
-		}
-	}
-});
-
-
- /**
- * Created by JetBrains PhpStorm.
- * User: Omar U. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:09 PM
- */
-
-Ext.define('App.model.patient.MeaningfulUseAlert', {
-	extend: 'Ext.data.Model',
-	fields: [
-
-		{name: 'name', type: 'string'},
-		{name: 'val', type: 'bool'}
-	],
-	proxy : {
-		type: 'direct',
-		api : {
-			read  : Patient.getMeaningfulUserAlertByPid
-		}
-	}
-});
-
-
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:09 PM
- */
-
-Ext.define('App.model.patient.MedicalIssues', {
-	extend: 'Ext.data.Model',
-	fields: [
-
-		{name: 'id', type: 'int'},
-		{name: 'eid', type: 'int'},
-		{name: 'pid', type: 'int'},
-		{name: 'created_uid', type: 'int'},
-		{name: 'updated_uid', type: 'int'},
-		{name: 'create_date', type: 'date', dateFormat: 'c'},
-		{name: 'code', type: 'string'},
-		{name: 'code_text', type: 'string'},
-		{name: 'begin_date', type: 'date', dateFormat: 'c'},
-		{name: 'end_date', type: 'date', dateFormat: 'c'},
-		{name: 'ocurrence', type: 'string'},
-		{name: 'referred_by', type: 'string'},
-		{name: 'outcome', type: 'string'},
-        {name: 'alert', type: 'bool'}
-
-	],
-	proxy : {
-		type: 'direct',
-		api : {
-			read  : Medical.getMedicalIssues,
-			create: Medical.addMedicalIssues,
-			update: Medical.updateMedicalIssues
-		}
-	}
-});
-
-
- /**
- * Created by JetBrains PhpStorm.
- * User: Omar U. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:09 PM
- */
-
-Ext.define('App.model.patient.Medications', {
-	extend: 'Ext.data.Model',
-	fields: [
-
-		{name: 'id', type: 'int'},
-		{name: 'eid', type: 'int'},
-		{name: 'pid', type: 'int'},
-		{name: 'created_uid', type: 'int'},
-		{name: 'updated_uid', type: 'int'},
-		{name: 'create_date', type: 'date', dateFormat: 'c'},
-		{name: 'medication', type: 'string'},
-		{name: 'medication_id', type: 'string'},
-		{name: 'begin_date', type: 'date', dateFormat: 'c'},
-		{name: 'end_date', type: 'date', dateFormat: 'c'},
-		{name: 'ocurrence', type: 'string'},
-		{name: 'referred_by', type: 'string'},
-		{name: 'outcome', type: 'string'},
-        {name: 'alert', type: 'bool'}
-	],
-	proxy : {
-		type: 'direct',
-		api : {
-			read  : Medical.getPatientMedications,
-			create: Medical.addPatientMedications,
-			update: Medical.updatePatientMedications
-		}
-	}
-});
-
-
- /**
- * Created by JetBrains PhpStorm.
- * User: Omar U. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:09 PM
- */
-
-Ext.define('App.model.patient.Notes', {
-	extend: 'Ext.data.Model',
-	fields: [
-
-        {name: 'id', type: 'int'},
-        {name: 'eid', type: 'int'},
-        {name: 'pid', type: 'int'},
-        {name: 'uid', type: 'int'},
-        {name: 'date', type: 'date'},
-        {name: 'body', type: 'string'},
-        {name: 'type', type: 'string'},
-        {name: 'user_name', type: 'string'}
-	],
-	proxy : {
-		type: 'direct',
-		api : {
-			read  : Patient.getPatientNotes
-		}
-	}
-});
-
-
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:09 PM
- */
-Ext.define('App.model.patient.PatientArrivalLog', {
-	extend: 'Ext.data.Model',
-	fields: [
-        {name: 'id', type: 'int'},
-        {name: 'area_id', type: 'int'},
-        {name: 'pid', type: 'int'},
-		{name: 'time', type: 'string'},
-		{name: 'name', type: 'string'},
-		{name: 'status', type: 'string'},
-		{name: 'area', type: 'string'},
-		{name: 'warning', type: 'bool'},
-		{name: 'warningMsg', type: 'string'},
-		{name: 'isNew', type: 'bool'}
-	],
-	proxy : {
-		type: 'direct',
-		api : {
-			read: PoolArea.getPatientsArrivalLog,
-			create: PoolArea.addPatientArrivalLog,
-			update: PoolArea.updatePatientArrivalLog,
-			destroy: PoolArea.removePatientArrivalLog
-		}
-	}
-});
- /**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:09 PM
- */
-Ext.define('App.model.patient.PatientCalendarEvents', {
-	extend   : 'Ext.data.Model',
-	fields   : [
-		{name: 'id', type: 'int'},
-		{name: 'user_id', type: 'int'},
-		{name: 'category', type: 'int'},
-		{name: 'facility', type: 'int'},
-		{name: 'billing_facillity', type: 'int'},
-		{name: 'patient_id', type: 'int'},
-		{name: 'title', type: 'string'},
-		{name: 'status', type: 'string'},
-		{name: 'start', type: 'date', dateFormat:'Y-m-d H:s:i'},
-		{name: 'end', type: 'date', dateFormat:'Y-m-d H:s:i'},
-		{name: 'data', type: 'string'},
-		{name: 'rrule', type: 'string'},
-		{name: 'loc', type: 'string'},
-		{name: 'notes', type: 'string'},
-		{name: 'url', type: 'string'},
-		{name: 'ad', type: 'string'}
-	],
-	proxy    : {
-		type       : 'direct',
-		api        : {
-			read: Calendar.getPatientFutureEvents
-		},
-		reader     : {
-			type: 'json'
-		}
-	}
-});
- /**
- * Created by JetBrains PhpStorm.
- * User: Omar U. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:09 PM
- */
-
-Ext.define('App.model.patient.PatientDocuments', {
-	extend: 'Ext.data.Model',
-	fields: [
-
-        {name: 'id', type: 'int'},
-        {name: 'pid', type: 'int'},
-        {name: 'eid', type: 'int'},
-        {name: 'uid', type: 'int'},
-        {name: 'docType', type: 'string'},
-        {name: 'name', type: 'string'},
-        {name: 'date', type: 'date', dateFormat: 'c'},
-        {name: 'url', type: 'string'},
-        {name: 'note', type: 'string'},
-        {name: 'title', type: 'string'}
-	],
-	proxy : {
-		type: 'direct',
-		api : {
-			read  : Patient.getPatientDocuments,
-            update: Documents.updateDocumentsTitle
-		}
-	}
-});
-
-
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:09 PM
- */
-Ext.define('App.model.patient.PatientImmunization', {
-	extend: 'Ext.data.Model',
-	fields: [
-		{name: 'id', type: 'int'},
-		{name: 'pid', type: 'int'},
-		{name: 'eid', type: 'int'},
-		{name: 'created_uid', type: 'int'},
-		{name: 'updated_uid', type: 'int'},
-		{name: 'immunization_name', type: 'string'},
-		{name: 'immunization_id', type: 'int'},
-		{name: 'administered_date', type: 'date', dateFormat: 'c'},
-		{name: 'manufacturer', type: 'string'},
-		{name: 'lot_number', type: 'string'},
-		{name: 'administered_by', type: 'string'},
-		{name: 'education_date', type: 'date', dateFormat: 'c'},
-		{name: 'dosis'},
-		{name: 'create_date', type: 'date', dateFormat: 'c'},
-		{name: 'note', type: 'string'},
-        {name: 'alert', type: 'bool'}
-	],
-	proxy : {
-		type: 'direct',
-		api : {
-			read  : Medical.getPatientImmunizations,
-			create: Medical.addPatientImmunization,
-			update: Medical.updatePatientImmunization
-		}
-	}
-});
- /**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:09 PM
- */
-Ext.define('App.model.patient.PatientLabsResults', {
-	extend   : 'Ext.data.Model',
-	fields   : [
-		{name: 'id', type: 'int'},
-		{name: 'pid', type: 'int'},
-		{name: 'uid', type: 'int'},
-		{name: 'auth_uid', type: 'int'},
-		{name: 'eid', type: 'int'},
-		{name: 'document_id', type: 'int'},
-		{name: 'document_url'},
-		{name: 'date', type: 'date', dateFormat:'Y-m-d H:s:i'},
-		{name: 'data'},
-		{name: 'columns'},
-		{name: 'parent_id'}
-	],
-	proxy    : {
-		type       : 'direct',
-		api        : {
-			read: Medical.getPatientLabsResults,
-			create: Medical.addPatientLabsResult,
-			update: Medical.updatePatientLabsResult,
-			destroy: Medical.deletePatientLabsResult
-		},
-		reader     : {
-			type: 'json'
-		}
-	}
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:09 PM
- */
-Ext.define('App.model.patient.PatientsLabsOrders', {
-	extend: 'Ext.data.Model',
-	fields: [
-        {name: 'laboratories', type: 'string'}
-
-	],
-	proxy : {
-		type: 'direct',
-		api : {
-		}
-	}
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:09 PM
- */
-Ext.define('App.model.patient.PatientsPrescription', {
-	extend: 'Ext.data.Model',
-	fields: [
-        {name: 'medication', type: 'string'},
-        {name: 'medication_id', type: 'string'},
-        {name: 'dose', type: 'int'},
-		{name: 'dose_mg', type: 'string'},
-		{name: 'take_pills', type: 'int'},
-		{name: 'type', type: 'string'},
-		{name: 'route', type: 'string'},
-		{name: 'prescription_often', type: 'string'},
-		{name: 'prescription_when', type: 'string'},
-		{name: 'dispense', type: 'string'},
-		{name: 'refill', type: 'string'},
-		{name: 'begin_date'},
-		{name: 'end_date'}
-
-	],
-	proxy : {
-		type: 'direct',
-		api : {
-		}
-	}
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:09 PM
- */
-Ext.define('App.model.patient.PreventiveCare', {
-	extend: 'Ext.data.Model',
-	fields: [
-		{name: 'id', type: 'int'},
-		{name: 'pid', type: 'int'},
-		{name: 'eid', type: 'int'},
-		{name: 'uid', type: 'int'},
-		{name: 'description'},
-		{name: 'date', dateFormat: 'Y-m-d'},
-		{name: 'observation'},
-		{name: 'type'},
-		{name: 'dismiss'},
-		{name: 'reason'},
-		{name: 'alert', type: 'bool'}
-	],
-	proxy : {
-		type: 'direct',
-		api : {
-			update: PreventiveCare.addPreventivePatientDismiss,
-			read  : PreventiveCare.getPreventiveCareCheck
-		}
-	}
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:09 PM
- */
-Ext.define('App.model.patient.QRCptCodes', {
-    extend: 'Ext.data.Model',
-    fields: [
-        {name: 'id', type:'int'},
-        {name: 'eid', type:'int'},
-        {name: 'code', type: 'string'},
-        {name: 'code_text', type: 'string'},
-        {name: 'code_text_medium', type: 'string'},
-        {name: 'place_of_service', type: 'string'},
-        {name: 'emergency', type: 'bool'},
-        {name: 'charge', type: 'string'},
-        {name: 'days_of_units', type: 'string'},
-        {name: 'essdt_plan', type: 'string'},
-        {name: 'modifiers', type: 'string'},
-        {name: 'status', type: 'int', defaultValue: 0}
-    ],
-    proxy : {
-        type  : 'direct',
-        api   : {
-            read: Services.getCptCodes
-        },
-        reader: {
-            root         : 'rows',
-            totalProperty: 'totals'
-        }
-    }
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:09 PM
- */
-
-Ext.define('App.model.patient.DismissedAlerts', {
-	extend: 'Ext.data.Model',
-	fields: [
-		{name: 'id', type: 'int'},
-		{name: 'date', type: 'date', dateFormat: 'c'},
-		{name: 'preventive_care_id', type: 'int'},
-		{name: 'reason', type: 'string'},
-		{name: 'observation', type: 'string'},
-		{name: 'dismiss', type: 'bool'},
-		{name: 'description', type: 'string'}
-	],
-	proxy : {
-		type: 'direct',
-		api : {
-			read  : PreventiveCare.getPreventiveCareDismissedAlertsByPid,
-			update: PreventiveCare.updatePreventiveCareDismissedAlertsByPid
-		}
-	}
-});
- /**
- * Created by JetBrains PhpStorm.
- * User: Omar U. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:09 PM
- */
-
-Ext.define('App.model.patient.Reminders', {
-	extend: 'Ext.data.Model',
-	fields: [
-
-		{name: 'id', type: 'int'},
-		{name: 'eid', type: 'int'},
-		{name: 'pid', type: 'int'},
-		{name: 'uid', type: 'int'},
-		{name: 'date', type: 'date'},
-		{name: 'body', type: 'string'},
-		{name: 'type', type: 'string'},
-        {name: 'user_name', type: 'string'}
-	],
-	proxy : {
-		type: 'direct',
-		api : {
-			read  : Patient.getPatientReminders
-		}
-	}
-});
-
-
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:09 PM
- */
-
-Ext.define('App.model.patient.Surgery', {
-	extend: 'Ext.data.Model',
-	fields: [
-		{name: 'id', type: 'int'},
-		{name: 'eid', type: 'int'},
-		{name: 'pid', type: 'int'},
-		{name: 'created_uid', type: 'int'},
-		{name: 'updated_uid', type: 'int'},
-		{name: 'create_date', type: 'date', dateFormat: 'c'},
-		{name: 'surgery', type: 'string'},
-		{name: 'surgery_id', type: 'string'},
-		{name: 'date', type: 'date', dateFormat: 'c'},
-		{name: 'referred_by', type: 'string'},
-		{name: 'outcome', type: 'string'},
-		{name: 'notes', type: 'string'},
-        {name: 'alert', type: 'bool'}
-	],
-	proxy : {
-		type: 'direct',
-		api : {
-			read  : Medical.getPatientSurgery,
-			create: Medical.addPatientSurgery,
-			update: Medical.updatePatientSurgery
-		}
-	}
-});
- /**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:09 PM
- */
-Ext.define('App.model.patient.VectorGraph', {
-	extend   : 'Ext.data.Model',
-	fields   : [
-		{name: 'age_mos', type: 'float'},
-		{name: 'height', type: 'float'},
-		{name: 'PP', type: 'float'},
-		{name: 'P3', type: 'float'},
-		{name: 'P5', type: 'float'},
-		{name: 'P10', type: 'float'},
-		{name: 'P25', type: 'float'},
-		{name: 'P50', type: 'float'},
-		{name: 'P75', type: 'float'},
-		{name: 'P85', type: 'float'},
-		{name: 'P90', type: 'float'},
-		{name: 'P95', type: 'float'},
-		{name: 'P97', type: 'float'}
-	],
-	proxy    : {
-		type       : 'direct',
-		api        : {
-			read: VectorGraph.getGraphData
-		},
-		reader     : {
-			type: 'json'
-		}
-	}
-
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 4/13/12
- * Time: 10:37 PM
- */
-
-Ext.define('App.model.patient.VisitPayment', {
-	extend: 'Ext.data.Model',
-	fields: [
-        {name: 'id', type: 'int'},
-        {name: 'no', type: 'int'},
-        {name: 'date', type: 'date', dateFormat:'Y-m-d H:i:s'},
-        {name: 'facility', type: 'string'},
-        {name: 'received_from', type: 'string'},
-        {name: 'amount', type: 'string'},
-        {name: 'for_payment_of', type: 'string'},
-        {name: 'paid_by', type: 'string'},
-        {name: 'description', type: 'string'},
-        {name: 'next_appointment', type: 'date', dateFormat:'Y-m-d H:i:s'},
-        {name: 'accounted_amount', type: 'string'},
-        {name: 'payment_amount', type: 'string'},
-        {name: 'balance_due', type: 'string'}
-	],
-    proxy : {
-        type: 'direct',
-        api : {
-            read  : Encounter.Checkout
-        },
-        reader     : {
-            type: 'json'
-        }
-    }
-});
- /**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:09 PM
- */
-Ext.define('App.model.patient.Vitals', {
-	extend   : 'Ext.data.Model',
-	fields   : [
-		{name: 'id', type: 'int'},
-		{name: 'pid', type: 'int'},
-		{name: 'eid', type: 'int'},
-		{name: 'uid', type: 'int'},
-		{name: 'auth_uid', type: 'int'},
-		{name: 'date', type: 'date', dateFormat:'Y-m-d H:i:s' },
-		{name: 'weight_lbs', type: 'float', useNull:true},
-		{name: 'weight_kg', type: 'float', useNull:true},
-		{name: 'height_in', type: 'float', useNull:true},
-		{name: 'height_cm', type: 'float', useNull:true},
-		{name: 'bp_systolic', type: 'float', useNull:true},
-		{name: 'bp_diastolic', type: 'float', useNull:true},
-		{name: 'pulse', type: 'int', useNull:true},
-		{name: 'respiration', type: 'int', useNull:true},
-		{name: 'temp_f', type: 'float', useNull:true},
-		{name: 'temp_c', type: 'float', useNull:true},
-		{name: 'temp_location', type: 'string'},
-		{name: 'oxygen_saturation', type: 'float', useNull:true},
-		{name: 'head_circumference_in', type: 'float', useNull:true},
-		{name: 'head_circumference_cm', type: 'float', useNull:true},
-		{name: 'waist_circumference_in', type: 'float', useNull:true},
-		{name: 'waist_circumference_cm', type: 'float', useNull:true},
-		{name: 'bmi', type: 'int', useNull:true},
-		{name: 'bmi_status', type: 'string', useNull:true},
-		{name: 'other_notes', type: 'string'},
-		{name: 'administer_by', type: 'string'},
-		{name: 'authorized_by', type: 'string'},
-
-		{name: 'bp_systolic_normal', type: 'int', defaultValue: 120 },
-		{name: 'bp_diastolic_normal', type: 'int', defaultValue: 80 }
-
-	],
-	proxy    : {
-		type       : 'direct',
-		api        : {
-			read: Encounter.getVitals,
-			create: Encounter.addVitals,
-			update: Encounter.updateVitals
-		},
-		reader     : {
-			type: 'json'
-		}
-	},
-    belongsTo: { model: 'App.model.patient.Encounter', foreignKey: 'eid' }
-
-});
- /**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:09 PM
- */
-Ext.define('App.model.patient.charts.BMIForAge', {
-	extend   : 'Ext.data.Model',
-	fields   : [
-		{name: 'age', type: 'float'},
-		{name: 'PP', type: 'float'},
-		{name: 'P3', type: 'float'},
-		{name: 'P5', type: 'float'},
-		{name: 'P10', type: 'float'},
-		{name: 'P25', type: 'float'},
-		{name: 'P50', type: 'float'},
-		{name: 'P75', type: 'float'},
-		{name: 'P90', type: 'float'},
-		{name: 'P95', type: 'float'},
-		{name: 'P97', type: 'float'}
-	],
-	proxy    : {
-		type       : 'direct',
-		api        : {
-			read: VectorGraph.getGraphData
-		},
-		reader     : {
-			type: 'json'
-		},
-        extraParams:{
-            type:8
-        }
-	}
-
-});
- /**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:09 PM
- */
-Ext.define('App.model.patient.charts.HeadCircumferenceInf', {
-	extend   : 'Ext.data.Model',
-	fields   : [
-		{name: 'age', type: 'float'},
-		{name: 'PP', type: 'float'},
-		{name: 'P3', type: 'float'},
-		{name: 'P5', type: 'float'},
-		{name: 'P10', type: 'float'},
-		{name: 'P25', type: 'float'},
-		{name: 'P50', type: 'float'},
-		{name: 'P75', type: 'float'},
-		{name: 'P90', type: 'float'},
-		{name: 'P95', type: 'float'},
-		{name: 'P97', type: 'float'}
-	],
-	proxy    : {
-		type       : 'direct',
-		api        : {
-			read: VectorGraph.getGraphData
-		},
-		reader     : {
-			type: 'json'
-		},
-        extraParams:{
-            type:4
-        }
-	}
-
-});
- /**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:09 PM
- */
-Ext.define('App.model.patient.charts.LengthForAgeInf', {
-	extend   : 'Ext.data.Model',
-	fields   : [
-		{name: 'age', type: 'float'},
-		{name: 'PP', type: 'float'},
-		{name: 'P3', type: 'float'},
-		{name: 'P5', type: 'float'},
-		{name: 'P10', type: 'float'},
-		{name: 'P25', type: 'float'},
-		{name: 'P50', type: 'float'},
-		{name: 'P75', type: 'float'},
-		{name: 'P90', type: 'float'},
-		{name: 'P95', type: 'float'},
-		{name: 'P97', type: 'float'}
-	],
-	proxy    : {
-		type       : 'direct',
-		api        : {
-			read: VectorGraph.getGraphData
-		},
-		reader     : {
-			type: 'json'
-		},
-        extraParams:{
-            type:2
-        }
-	}
-
-});
- /**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:09 PM
- */
-Ext.define('App.model.patient.charts.StatureForAge', {
-	extend   : 'Ext.data.Model',
-	fields   : [
-		{name: 'age', type: 'float'},
-		{name: 'PP', type: 'float'},
-		{name: 'P3', type: 'float'},
-		{name: 'P5', type: 'float'},
-		{name: 'P10', type: 'float'},
-		{name: 'P25', type: 'float'},
-		{name: 'P50', type: 'float'},
-		{name: 'P75', type: 'float'},
-		{name: 'P90', type: 'float'},
-		{name: 'P95', type: 'float'},
-		{name: 'P97', type: 'float'}
-	],
-	proxy    : {
-		type       : 'direct',
-		api        : {
-			read: VectorGraph.getGraphData
-		},
-		reader     : {
-			type: 'json'
-		},
-        extraParams:{
-            type:7
-        }
-	}
-
-});
- /**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:09 PM
- */
-Ext.define('App.model.patient.charts.WeightForAge', {
-	extend   : 'Ext.data.Model',
-	fields   : [
-		{name: 'age', type: 'float'},
-		{name: 'PP', type: 'float'},
-		{name: 'P3', type: 'float'},
-		{name: 'P5', type: 'float'},
-		{name: 'P10', type: 'float'},
-		{name: 'P25', type: 'float'},
-		{name: 'P50', type: 'float'},
-		{name: 'P75', type: 'float'},
-		{name: 'P90', type: 'float'},
-		{name: 'P95', type: 'float'},
-		{name: 'P97', type: 'float'}
-	],
-	proxy    : {
-		type       : 'direct',
-		api        : {
-			read: VectorGraph.getGraphData
-		},
-		reader     : {
-			type: 'json'
-		},
-        extraParams:{
-            type:6
-        }
-	}
-
-});
- /**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:09 PM
- */
-Ext.define('App.model.patient.charts.WeightForAgeInf', {
-	extend   : 'Ext.data.Model',
-	fields   : [
-		{name: 'age', type: 'float'},
-		{name: 'PP', type: 'float'},
-		{name: 'P3', type: 'float'},
-		{name: 'P5', type: 'float'},
-		{name: 'P10', type: 'float'},
-		{name: 'P25', type: 'float'},
-		{name: 'P50', type: 'float'},
-		{name: 'P75', type: 'float'},
-		{name: 'P90', type: 'float'},
-		{name: 'P95', type: 'float'},
-		{name: 'P97', type: 'float'}
-	],
-	proxy    : {
-		type       : 'direct',
-		api        : {
-			read: VectorGraph.getGraphData
-		},
-		reader     : {
-			type: 'json'
-		},
-        extraParams:{
-            type:1
-        }
-	}
-
-});
- /**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:09 PM
- */
-Ext.define('App.model.patient.charts.WeightForRecumbentInf', {
-	extend   : 'Ext.data.Model',
-	fields   : [
-		{name: 'age', type: 'float'},
-		{name: 'PP', type: 'float'},
-		{name: 'P3', type: 'float'},
-		{name: 'P5', type: 'float'},
-		{name: 'P10', type: 'float'},
-		{name: 'P25', type: 'float'},
-		{name: 'P50', type: 'float'},
-		{name: 'P75', type: 'float'},
-		{name: 'P90', type: 'float'},
-		{name: 'P95', type: 'float'},
-		{name: 'P97', type: 'float'}
-	],
-	proxy    : {
-		type       : 'direct',
-		api        : {
-			read: VectorGraph.getGraphData
-		},
-		reader     : {
-			type: 'json'
-		},
-        extraParams:{
-            type:3
-        }
-	}
-
-});
- /**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:09 PM
- */
-Ext.define('App.model.patient.charts.WeightForStature', {
-	extend   : 'Ext.data.Model',
-	fields   : [
-        {name: 'height', type: 'float'},
-		{name: 'PP', type: 'float'},
-		{name: 'P3', type: 'float'},
-		{name: 'P5', type: 'float'},
-		{name: 'P10', type: 'float'},
-		{name: 'P25', type: 'float'},
-		{name: 'P50', type: 'float'},
-		{name: 'P75', type: 'float'},
-		{name: 'P85', type: 'float'},
-		{name: 'P90', type: 'float'},
-		{name: 'P95', type: 'float'},
-		{name: 'P97', type: 'float'}
-	],
-	proxy    : {
-		type       : 'direct',
-		api        : {
-			read: VectorGraph.getGraphData
-		},
-		reader     : {
-			type: 'json'
-		},
-        extraParams:{
-            type:5
-        }
-	}
-
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:09 PM
- * @namespace Patient.getPatientsByPoolArea
- */
-Ext.define('App.model.areas.PoolArea', {
-	extend   : 'Ext.data.Model',
-	fields   : [
-		{name: 'pid', type: 'int'},
-		{name: 'eid', type: 'int'},
-		{name: 'name', type: 'string'},
-		{name: 'shortName', type: 'string'},
-		{name: 'photoSrc', type: 'string'},
-		{name: 'poolArea', type: 'string'},
-		{name: 'floorPlanId', type: 'int'},
-		{name: 'floorPlanRequireZone', type: 'bool'},
-		{name: 'zoneId', type: 'int'},
-		{name: 'patientZoneId', type: 'int'},
-		{name: 'priority', type: 'string'}
-	],
-	proxy    : {
-		type       : 'direct',
-		api        : {
-			read: PoolArea.getPatientsByPoolAreaAccess
-		}
-	}
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:09 PM
- * @namespace Patient.getPatientsByPoolArea
- */
-Ext.define('App.model.areas.PoolDropAreas', {
-	extend   : 'Ext.data.Model',
-	fields   : [
-		{name: 'name', type: 'string'},
-		{name: 'pid', type: 'int'},
-		{name: 'pic', type: 'string'}
-	]
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:09 PM
- */
-
-
-Ext.define('App.store.administration.ActiveProblems', {
-	model: 'App.model.administration.ActiveProblems',
-	extend: 'Ext.data.Store',
-	proxy: {
-		type       : 'direct',
-		api        : {
-			read  : Services.getActiveProblems,
-			create: Services.addActiveProblems,
-			destroy: Services.removeActiveProblems
-		},
-		reader     : {
-			totalProperty: 'totals',
-			root         : 'rows'
-		}
-	},
-	autoLoad  : false
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:09 PM
- */
-
-
-Ext.define('App.store.administration.DefaultDocuments', {
-	model: 'App.model.administration.DefaultDocuments',
-	extend: 'Ext.data.Store',
-	proxy: {
-		type       : 'direct',
-		api        : {
-			read  : DocumentHandler.getDefaultDocumentsTemplates,
-			create: DocumentHandler.addDocumentsTemplates,
-			update: DocumentHandler.updateDocumentsTemplates
-		}
-	},
-    autoSync: true,
-	autoLoad: false
-
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:09 PM
- */
-
-
-Ext.define('App.store.administration.DocumentsTemplates', {
-	model: 'App.model.administration.DocumentsTemplates',
-	extend: 'Ext.data.Store',
-	proxy: {
-		type       : 'direct',
-		api        : {
-			read  : DocumentHandler.getDocumentsTemplates,
-			create: DocumentHandler.addDocumentsTemplates,
-			update: DocumentHandler.updateDocumentsTemplates
-		}
-	},
-    autoSync: true,
-	autoLoad: false
-
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:11 PM
- */
-
-
-Ext.define('App.store.administration.ExternalDataLoads', {
-	model: 'App.model.administration.ExternalDataLoads',
-	extend: 'Ext.data.Store',
-	constructor:function(config){
-		var me = this;
-		me.proxy = {
-			type       : 'direct',
-			api        : {
-				read  : ExternalDataUpdate.getCodeFiles
-			},
-			extraParams: {
-				codeType: config.codeType
-			}
-		};
-		me.callParent(arguments);
-	},
-	remoteSort: false,
-	autoLoad  : false
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:11 PM
- */
-Ext.define('App.store.administration.FloorPlans', {
-	model: 'App.model.administration.FloorPlans',
-	extend: 'Ext.data.Store',
-	proxy: {
-		type       : 'direct',
-		api        : {
-			read  : FloorPlans.getFloorPlans,
-			create: FloorPlans.createFloorPlan,
-			update: FloorPlans.updateFloorPlan
-		}
-	},
-    autoSync  : true,
-	autoLoad  : false
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:11 PM
- */
-Ext.define('App.store.administration.FloorPlanZones', {
-	model: 'App.model.administration.FloorPlanZones',
-	extend: 'Ext.data.Store',
-	proxy: {
-		type       : 'direct',
-		api        : {
-			read  : FloorPlans.getFloorPlanZones,
-			create: FloorPlans.createFloorPlanZone,
-			update: FloorPlans.updateFloorPlanZone
-		}
-	},
-    autoSync  : true,
-	autoLoad  : false
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:09 PM
- */
-
-
-Ext.define('App.store.administration.HeadersAndFooters', {
-	model: 'App.model.administration.HeadersAndFooters',
-	extend: 'Ext.data.Store',
-	proxy: {
-		type       : 'direct',
-		api        : {
-			read  : DocumentHandler.getHeadersAndFootersTemplates,
-			create: DocumentHandler.addDocumentsTemplates,
-			update: DocumentHandler.updateDocumentsTemplates
-		}
-	},
-    autoSync: true,
-	autoLoad: false
-
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:09 PM
- */
-
-
-Ext.define('App.store.administration.ImmunizationRelations', {
-	model: 'App.model.administration.ImmunizationRelations',
-	extend: 'Ext.data.Store',
-    autoLoad  : false,
-	autoSync  : true,
-	remoteSort: false
-
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:09 PM
- */
-
-
-Ext.define('App.store.administration.LabObservations', {
-	model: 'App.model.administration.LabObservations',
-	extend: 'Ext.data.Store',
-	proxy: {
-		type       : 'direct',
-		api        : {
-			read  : Laboratories.getLabObservations,
-			create: Laboratories.addLabObservation,
-			update: Laboratories.updateLabObservation,
-			destroy: Laboratories.removeLabObservation
-		}
-	},
-    autoSync: true,
-	autoLoad  : false
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:09 PM
- */
-
-
-Ext.define('App.store.administration.Medications', {
-	model: 'App.model.administration.Medications',
-	extend: 'Ext.data.Store',
-    autoLoad  : false,
-	autoSync  : true,
-	remoteSort: true
-
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:11 PM
- */
-
-
-Ext.define('App.store.administration.PreventiveCare', {
-	model: 'App.model.administration.PreventiveCare',
-	extend: 'Ext.data.Store',
-	proxy: {
-		type       : 'direct',
-		api        : {
-			read  : PreventiveCare.getGuideLinesByCategory,
-			create: PreventiveCare.addGuideLine,
-			update: PreventiveCare.updateGuideLine
-		},
-		reader     : {
-			totalProperty: 'totals',
-			root         : 'rows'
-		},
-		extraParams: {
-			code_type: this.code_type,
-			query    : this.query,
-			active   : this.active
-		}
-	},
-    autoSync  : true,
-	remoteSort: false,
-	autoLoad  : false
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:11 PM
- */
-
-
-Ext.define('App.store.administration.PreventiveCareActiveProblems', {
-	model: 'App.model.administration.PreventiveCareActiveProblems',
-	extend: 'Ext.data.Store',
-	proxy: {
-		type       : 'direct',
-		api        : {
-			read  : PreventiveCare.getGuideLineActiveProblems,
-			create: PreventiveCare.addGuideLineActiveProblems,
-			destroy: PreventiveCare.removeGuideLineActiveProblems
-		}
-	},
-	remoteSort: false,
-	autoLoad  : false
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:11 PM
- */
-
-
-Ext.define('App.store.administration.PreventiveCareMedications', {
-	model: 'App.model.administration.PreventiveCareMedications',
-	extend: 'Ext.data.Store',
-	proxy: {
-		type       : 'direct',
-		api        : {
-			read  : PreventiveCare.getGuideLineMedications,
-			create: PreventiveCare.addGuideLineMedications,
-			destroy: PreventiveCare.removeGuideLineMedications
-		}
-	},
-	remoteSort: false,
-	autoLoad  : false
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:11 PM
- */
-
-
-Ext.define('App.store.administration.PreventiveCareLabs', {
-	model: 'App.model.administration.PreventiveCareLabs',
-	extend: 'Ext.data.Store',
-	proxy: {
-		type       : 'direct',
-		api        : {
-			read  : PreventiveCare.getGuideLineLabs,
-			create: PreventiveCare.addGuideLineLabs,
-			destroy: PreventiveCare.removeGuideLineLabs,
-			update: PreventiveCare.updateGuideLineLabs
-		}
-	},
-	remoteSort: false,
-	autoLoad  : false
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:11 PM
- */
-
-
-Ext.define('App.store.administration.Services', {
-	model: 'App.model.administration.Services',
-	extend: 'Ext.data.Store',
-	proxy: {
-		type       : 'direct',
-		api        : {
-			read  : DataManager.getServices,
-			create: DataManager.addService,
-			update: DataManager.updateService
-		},
-		reader     : {
-			totalProperty: 'totals',
-			root         : 'rows'
-		},
-		extraParams: {
-			code_type: this.code_type,
-			query    : this.query,
-			active   : this.active
-		}
-	},
-    autoSync  : true,
-	remoteSort: true,
-	autoLoad  : false
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:09 PM
- */
-
-
-Ext.define('App.store.administration.ActiveProblems', {
-	model: 'App.model.administration.ActiveProblems',
-	extend: 'Ext.data.Store',
-	proxy: {
-		type       : 'direct',
-		api        : {
-			read  : Services.getActiveProblems,
-			create: Services.addActiveProblems,
-			destroy: Services.removeActiveProblems
-		},
-		reader     : {
-			totalProperty: 'totals',
-			root         : 'rows'
-		}
-	},
-	autoLoad  : false
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Plushy
- * Date: 3/26/12
- * Time: 10:18 PM
- * To change this template use File | Settings | File Templates.
- */
-Ext.define('App.store.miscellaneous.OfficeNotes', {
-	extend    : 'Ext.data.Store',
-	model     : 'App.model.miscellaneous.OfficeNotes',
-	autoLoad  : false
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez
- * Date: 3/26/12
- * Time: 10:18 PM
- */
-Ext.define('App.store.fees.Billing', {
-	extend    : 'Ext.data.Store',
-	model     : 'App.model.fees.Billing',
-	autoLoad  : false
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Plushy
- * Date: 3/26/12
- * Time: 10:18 PM
- * To change this template use File | Settings | File Templates.
- */
-Ext.define('App.store.fees.Checkout', {
-	extend    : 'Ext.data.Store',
-	model     : 'App.model.fees.Checkout',
-	autoLoad  : false
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Plushy
- * Date: 3/26/12
- * Time: 10:18 PM
- * To change this template use File | Settings | File Templates.
- */
-Ext.define('App.store.fees.EncountersPayments', {
-	extend    : 'Ext.data.Store',
-	model     : 'App.model.fees.EncountersPayments',
-	autoLoad  : false
-});
-
-/**
- * Created by JetBrains PhpStorm.
- * User: Plushy
- * Date: 3/26/12
- * Time: 10:18 PM
- * To change this template use File | Settings | File Templates.
- */
-Ext.define('App.store.fees.PaymentTransactions', {
-	extend    : 'Ext.data.Store',
-	model     : 'App.model.fees.PaymentTransactions',
-	autoLoad  : false
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/19/12
- * Time: 1:03 PM
- */
-Ext.define('App.store.navigation.Navigation', {
-	extend  : 'Ext.data.TreeStore',
-	requires: ['App.model.navigation.Navigation'],
-	model   : 'App.model.navigation.Navigation'
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:11 PM
- */
-
-Ext.define('App.store.patient.Allergies', {
-	extend: 'Ext.data.Store',
-	model     : 'App.model.patient.Allergies',
-    remoteSort: false,
-	autoLoad  : false
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:11 PM
- */
-Ext.define('App.store.patient.CheckoutAlertArea', {
-	extend: 'Ext.data.Store',
-	model     : 'App.model.patient.CheckoutAlertArea',
-	remoteSort: false,
-	autoLoad  : false
-});
-
-
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:11 PM
- */
-
-Ext.define('App.store.patient.Dental', {
-	extend: 'Ext.data.Store',
-	model     : 'App.model.patient.Dental',
-    remoteSort: false,
-	autoLoad  : false
-});
-/*
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:11 PM
- */
-Ext.define('App.store.patient.Disclosures', {
-	extend: 'Ext.data.Store',
-	model     : 'App.model.patient.Disclosures',
-	remoteSort: false,
-	autoLoad  : false
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:11 PM
- */
-Ext.define('App.store.patient.Encounter', {
-	extend: 'Ext.data.Store',
-	requires: ['App.model.patient.Encounter'],
-	pageSize: 10,
-	model   : 'App.model.patient.Encounter'
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:11 PM
- */
-Ext.define('App.store.patient.EncounterCPTsICDs', {
-	extend: 'Ext.data.Store',
-	model     : 'App.model.patient.EncounterCPTsICDs',
-	remoteSort: false,
-	autoLoad  : false
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:11 PM
- */
-Ext.define('App.store.patient.EncounterEventHistory', {
-	extend: 'Ext.data.Store',
-	model     : 'App.model.patient.EventHistory',
-    proxy : {
-        type: 'direct',
-        api : {
-            read  : Encounter.getEncounterEventHistory
-        }
-    },
-    autoLoad:false
-});
-
-
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:11 PM
- */
-Ext.define('App.store.patient.Encounters', {
-	extend: 'Ext.data.Store',
-	requires: ['App.model.patient.Encounters'],
-	pageSize: 25,
-	model   : 'App.model.patient.Encounters',
-    remoteSort:true
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:11 PM
- */
-Ext.define('App.store.patient.Immunization', {
-	extend: 'Ext.data.Store',
-	model     : 'App.model.patient.Immunization',
-	remoteSort: false,
-	autoLoad  : true
-});
-
-
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:11 PM
- */
-Ext.define('App.store.patient.ImmunizationCheck', {
-	extend: 'Ext.data.Store',
-	model     : 'App.model.patient.ImmunizationCheck',
-	remoteSort: true,
-	autoLoad  : false
-});
-
-
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:11 PM
- */
-Ext.define('App.store.patient.LaboratoryTypes', {
-	extend: 'Ext.data.Store',
-	model     : 'App.model.patient.LaboratoryTypes',
-	remoteSort: false
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:11 PM
- */
-Ext.define('App.store.patient.MeaningfulUseAlert', {
-	extend: 'Ext.data.Store',
-	model     : 'App.model.patient.MeaningfulUseAlert',
-	remoteSort: true,
-	autoLoad  : false
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:11 PM
- */
-Ext.define('App.store.patient.MedicalIssues', {
-	extend: 'Ext.data.Store',
-	model     : 'App.model.patient.MedicalIssues',
-    remoteSort: false,
-	autoLoad  : false
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:11 PM
- */
-Ext.define('App.store.patient.Medications', {
-	extend: 'Ext.data.Store',
-	model     : 'App.model.patient.Medications',
-    remoteSort: false,
-	autoLoad  : false
-});
-/*
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:11 PM
- */
-Ext.define('App.store.patient.Notes', {
-	extend: 'Ext.data.Store',
-	model     : 'App.model.patient.Notes',
-	remoteSort: true,
-	autoLoad  : false
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:11 PM
- */
-Ext.define('App.store.patient.PatientArrivalLog', {
-	extend: 'Ext.data.Store',
-	model     : 'App.model.patient.PatientArrivalLog',
-	remoteSort: true,
-	autoLoad  : false
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:11 PM
- */
-Ext.define('App.store.patient.PatientCalendarEvents', {
-	extend: 'Ext.data.Store',
-	model     : 'App.model.patient.PatientCalendarEvents',
-	remoteSort: false,
-	autoLoad  : false
-});
-/*
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:11 PM
- */
-Ext.define('App.store.patient.PatientDocuments', {
-	extend: 'Ext.data.Store',
-	model     : 'App.model.patient.PatientDocuments',
-	remoteSort: false,
-	autoLoad  : false,
-	autoSync:true
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:11 PM
- */
-
-Ext.define('App.store.patient.DismissedAlerts', {
-	extend: 'Ext.data.Store',
-	model     : 'App.model.patient.DismissedAlerts',
-    remoteSort: false,
-	autoLoad  : false,
-    autoSync  : true
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:11 PM
- */
-Ext.define('App.store.patient.PatientImmunization', {
-	extend: 'Ext.data.Store',
-	model     : 'App.model.patient.PatientImmunization',
-	remoteSort: false,
-	autoLoad  : false
-});
-
-
-
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:11 PM
- */
-Ext.define('App.store.patient.PatientLabsResults', {
-	extend: 'Ext.data.Store',
-	model     : 'App.model.patient.PatientLabsResults',
-	remoteSort: false,
-	autoLoad  : false
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:11 PM
- */
-Ext.define('App.store.patient.PatientsLabsOrders', {
-	extend: 'Ext.data.Store',
-	model     : 'App.model.patient.PatientsLabsOrders',
-	remoteSort: false,
-	autoLoad  : false
-});
-
-
-
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:11 PM
- */
-Ext.define('App.store.patient.PatientsPrescription', {
-	extend: 'Ext.data.Store',
-	model     : 'App.model.patient.PatientsPrescription',
-	remoteSort: false,
-	autoLoad  : false
-});
-
-
-
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:11 PM
- */
-Ext.define('App.store.patient.PreventiveCare', {
-	extend: 'Ext.data.Store',
-	model     : 'App.model.patient.PreventiveCare',
-	remoteSort: false,
-	autoLoad  : false
-});
-
-
-
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:11 PM
- */
-
-Ext.define('App.store.patient.QRCptCodes', {
-	extend: 'Ext.data.Store',
-	model     : 'App.model.patient.QRCptCodes',
-	remoteSort: false,
-	autoLoad  : false
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:11 PM
- */
-Ext.define('App.store.patient.Reminders', {
-	extend: 'Ext.data.Store',
-	model     : 'App.model.patient.Reminders',
-	remoteSort: true,
-	autoLoad  : false
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:11 PM
- */
-
-Ext.define('App.store.patient.Surgery', {
-	extend: 'Ext.data.Store',
-	model     : 'App.model.patient.Surgery',
-	remoteSort: false,
-	autoLoad  : false
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:11 PM
- */
-Ext.define('App.store.patient.VectorGraph', {
-	extend: 'Ext.data.Store',
-	requires: ['App.model.patient.VectorGraph'],
-	model   : 'App.model.patient.VectorGraph'
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 4/13/12
- * Time: 11:32 PM
- */
-
-Ext.define('App.store.patient.VisitPayment', {
-	extend: 'Ext.data.Store',
-	requires: ['App.model.patient.VisitPayment'],
-	model   : 'App.model.patient.VisitPayment'
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:11 PM
- */
-Ext.define('App.store.patient.Vitals', {
-	extend: 'Ext.data.Store',
-	requires: ['App.model.patient.Vitals'],
-	pageSize: 10,
-	model   : 'App.model.patient.Vitals'
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:11 PM
- */
-Ext.define('App.store.patient.charts.BMIForAge', {
-	extend: 'Ext.data.Store',
-	requires: ['App.model.patient.charts.BMIForAge'],
-	model   : 'App.model.patient.charts.BMIForAge'
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:11 PM
- */
-Ext.define('App.store.patient.charts.HeadCircumferenceInf', {
-	extend: 'Ext.data.Store',
-	requires: ['App.model.patient.charts.HeadCircumferenceInf'],
-	model   : 'App.model.patient.charts.HeadCircumferenceInf'
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:11 PM
- */
-Ext.define('App.store.patient.charts.LengthForAgeInf', {
-	extend: 'Ext.data.Store',
-	requires: ['App.model.patient.charts.LengthForAgeInf'],
-	model   : 'App.model.patient.charts.LengthForAgeInf'
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:11 PM
- */
-Ext.define('App.store.patient.charts.StatureForAge', {
-	extend: 'Ext.data.Store',
-	requires: ['App.model.patient.charts.StatureForAge'],
-	model   : 'App.model.patient.charts.StatureForAge'
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:11 PM
- */
-Ext.define('App.store.patient.charts.WeightForAge', {
-	extend: 'Ext.data.Store',
-	requires: ['App.model.patient.charts.WeightForAge'],
-	model   : 'App.model.patient.charts.WeightForAge'
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:11 PM
- */
-Ext.define('App.store.patient.charts.WeightForAgeInf', {
-	extend: 'Ext.data.Store',
-	requires: ['App.model.patient.charts.WeightForAgeInf'],
-	model   : 'App.model.patient.charts.WeightForAgeInf'
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:11 PM
- */
-Ext.define('App.store.patient.charts.WeightForRecumbentInf', {
-	extend: 'Ext.data.Store',
-	requires: ['App.model.patient.charts.WeightForRecumbentInf'],
-	model   : 'App.model.patient.charts.WeightForRecumbentInf'
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:11 PM
- */
-Ext.define('App.store.patient.charts.WeightForStature', {
-	extend: 'Ext.data.Store',
-	requires: ['App.model.patient.charts.WeightForStature'],
-	model   : 'App.model.patient.charts.WeightForStature'
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 11:11 PM
- */
-Ext.define('App.store.areas.PoolArea', {
-	extend: 'Ext.data.Store',
-	requires: ['App.model.areas.PoolArea'],
-	pageSize: 10,
-	model   : 'App.model.areas.PoolArea'
-});
-/**
- * @class Ext.ux.ActivityMonitor
- * @author Arthur Kay (http://www.akawebdesign.com)
- * @singleton
- * @version 1.0
- *
- * GitHub Project: https://github.com/arthurakay/ExtJS-Activity-Monitor
- */
-Ext.define('App.classes.ActivityMonitor', {
-    singleton   : true,
-
-    ui          : null,
-    runner      : null,
-    task        : null,
-    lastActive  : null,
-    
-    ready       : false,
-    verbose     : false,
-    interval    : (1000 * 60), //1 minute
-    maxInactive : (1000 * 60 * 2), //5 minutes
-    
-    init : function(config) {
-        if (!config) { config = {}; }
-        
-        Ext.apply(this, config, {
-            runner     : new Ext.util.TaskRunner(),
-            ui         : Ext.getBody(),
-            task       : {
-                run      : this.monitorUI,
-                interval : config.interval || this.interval,
-                scope    : this
-            }
-        });
-        this.ready = true;
-    },
-    
-    isReady : function() {
-        return this.ready;
-    },
-    
-    isActive   : Ext.emptyFn,
-    isInactive : Ext.emptyFn,
-    
-    start : function() {
-        if (!this.isReady()) {
-            this.log('Please run ActivityMonitor.init()');
-            return false;
-        }
-        
-        this.ui.on('mousemove', this.captureActivity, this);
-        this.ui.on('keydown', this.captureActivity, this);
-        
-        this.lastActive = new Date();
-        this.log('ActivityMonitor has been started.');
-        
-        this.runner.start(this.task);
-
-        return true;
-    },
-    
-    stop : function() {
-        if (!this.isReady()) {
-            this.log('Please run ActivityMonitor.init()');
-            return false;
-        }
-        
-        this.runner.stop(this.task);
-        this.lastActive = null;
-        
-        this.ui.un('mousemove', this.captureActivity);
-        this.ui.un('keydown', this.captureActivity);
-        
-        this.log('ActivityMonitor has been stopped.');
-
-        return true;
-    },
-    
-    captureActivity : function(eventObj, el, eventOptions) {
-        if(app.logoutWarinigWindow) app.cancelAutoLogout();
-        this.lastActive = new Date();
-    },
-    
-    monitorUI : function() {
-        var now      = new Date(),
-            inactive = (now - this.lastActive);
-        
-        if (inactive >= this.maxInactive) {
-            this.log('MAXIMUM INACTIVE TIME HAS BEEN REACHED');
-            this.stop(); //remove event listeners
-            
-            this.isInactive();
-        }
-        else {
-            this.log('CURRENTLY INACTIVE FOR ' + Math.floor(inactive / 1000) + ' SECONDS)');
-            this.isActive();
-        }
-    },
-    
-    log : function(msg) {
-        if (this.verbose) {
-            window.console.log(msg);
-        }
-    }
-    
-});
-
-/**
- * Render panel
- *
- * @namespace FormLayoutEngine.getFields
- */
-Ext.define('App.classes.AbstractPanel', {
-
-	setReadOnly:function(readOnly){
-		var forms = this.query('form');
-
-		for(var j = 0; j < forms.length; j++) {
-			var form = forms[j], items;
-			if(form.readOnly != readOnly){
-				form.readOnly = readOnly;
-				items = form.getForm().getFields().items;
-				for(var k = 0; k < items.length; k++){
-					items[k].setReadOnly(readOnly);
-				}
-			}
-		}
-		return readOnly;
-	},
-
-	setButtonsDisabled:function(buttons, disabled){
-		var disable = disabled || app.patient.readOnly;
-		for(var i = 0; i < buttons.length; i++) {
-			var btn = buttons[i];
-			if(btn.disabled != disable){
-				btn.disabled = disable;
-				btn.setDisabled(disable)
-			}
-		}
-	},
-
-	goBack: function() {
-		app.goBack();
-	},
-
-	checkIfCurrPatient: function() {
-		return app.getCurrPatient();
-	},
-
-	patientInfoAlert: function() {
-		var patient = app.getCurrPatient();
-
-		Ext.Msg.alert(i18n['status'], i18n['patient'] + ': ' + patient.name + ' (' + patient.pid + ')');
-	},
-
-	currPatientError: function() {
-		Ext.Msg.show({
-			title  : 'Oops! ' + i18n['no_patient_selected'],
-			msg    : i18n['select_patient_patient_live_search'],
-			scope  : this,
-			buttons: Ext.Msg.OK,
-			icon   : Ext.Msg.ERROR,
-			fn     : function() {
-				this.goBack();
-			}
-		});
-	},
-
-	getFormItems: function(formPanel, formToRender, callback) {
-		formPanel.removeAll();
-
-		FormLayoutEngine.getFields({formToRender: formToRender}, function(provider, response) {
-			var items = eval(response.result);
-            formPanel.add(items);
-			if(typeof callback == 'function') {
-				callback(formPanel, items, true);
-			}
-		});
-	},
-
-	boolRenderer: function(val) {
-		if(val == '1' || val == true || val == 'true') {
-			return '<img style="padding-left: 13px" src="resources/images/icons/yes.gif" />';
-		} else if(val == '0' || val == false || val == 'false') {
-			return '<img style="padding-left: 13px" src="resources/images/icons/no.gif" />';
-		}
-		return val;
-	},
-
-	alertRenderer: function(val) {
-		if(val == '1' || val == true || val == 'true') {
-			return '<img style="padding-left: 13px" src="resources/images/icons/no.gif" />';
-		} else if(val == '0' || val == false || val == 'false') {
-			return '<img style="padding-left: 13px" src="resources/images/icons/yes.gif" />';
-		}
-		return val;
-	},
-
-    warnRenderer:function(val, metaData, record){
-	    say(record);
-	    var toolTip = record.data.warningMsg ? record.data.warningMsg : '';
-
-        if(val == '1' || val == true || val == 'true') {
-            return '<img src="resources/images/icons/icoImportant.png" ' + toolTip + ' />';
-        }else{
-            return val;
-        }
-    },
-
-	onExpandRemoveMask: function(cmb) {
-		cmb.picker.loadMask.destroy()
-	},
-
-	strToLowerUnderscores: function(str) {
-		return str.toLowerCase().replace(/ /gi, "_");
-	},
-
-	getCurrPatient: function() {
-		return app.getCurrPatient();
-	},
-
-	getApp: function() {
-		return app.getApp();
-	},
-
-	msg: function(title, format) {
-		app.msg(title, format)
-	},
-
-	alert:function(msg, icon) {
-		app.alert(msg,icon)
-	},
-
-    passwordVerificationWin:function(callback){
-        var msg = Ext.Msg.prompt(i18n['password_verification'], i18n['please_enter_your_password'] + ':', function(btn, password) {
-            callback(btn, password);
-        });
-        var f = msg.textField.getInputId();
-        document.getElementById(f).type = 'password';
-        return msg;
-    },
-    getPageHeader:function(){
-        return this.getComponent('RenderPanel-header');
-    },
-    getPageBodyContainer:function(){
-        return this.getComponent('RenderPanel-body-container');
-    },
-    getPageBody:function(){
-        return this.getPageBodyContainer().down('panel');
-    }
-
-});
-
-/**
- * Created by JetBrains PhpStorm.
- * User: ernesto
- * Date: 6/27/11
- * Time: 8:43 AM
- * To change this template use File | Settings | File Templates.
- *
- *
- * @namespace Services.liveIDCXSearch
- */
-Ext.define('App.classes.LiveCPTSearch', {
-    extend       : 'Ext.form.field.ComboBox',
-    alias        : 'widget.livecptsearch',
-    hideLabel    : true,
-    triggerTip   : i18n['click_to_clear_selection'],
-    spObj        : '',
-    spForm       : '',
-    spExtraParam : '',
-    qtip         : i18n['clearable_combo_box'],
-    trigger1Class: 'x-form-select-trigger',
-    trigger2Class: 'x-form-clear-trigger',
-    initComponent: function() {
-        var me = this;
-
-        Ext.define('liveCPTSearchModel', {
-            extend: 'Ext.data.Model',
-            fields: [
-	            {name: 'id'},
-	            {name: 'eid'},
-	            {name: 'code', type: 'strig'},
-	            {name: 'code_text', type: 'string'},
-	            {name: 'code_text_medium', type: 'string'},
-	            {name: 'place_of_service', type: 'string'},
-	            {name: 'emergency', type: 'string'},
-	            {name: 'charge', type: 'string'},
-	            {name: 'days_of_units', type: 'string'},
-	            {name: 'essdt_plan', type: 'string'},
-	            {name: 'modifiers', type: 'string'}
-            ],
-            proxy : {
-                type       : 'direct',
-                api        : {
-                    read: ServiceCodes.liveCodeSearch
-                },
-                reader     : {
-                    totalProperty: 'totals',
-                    root         : 'rows'
-                },
-                extraParams: { code_type: 'cpt' }
-            }
-        });
-
-        me.store = Ext.create('Ext.data.Store', {
-            model   : 'liveCPTSearchModel',
-            pageSize: 25,
-            autoLoad: false
-        });
-
-        Ext.apply(this, {
-            store       : me.store,
-            displayField: 'code_text',
-            valueField  : 'code',
-            emptyText   : i18n['search'] + '...',
-            typeAhead   : true,
-            minChars    : 1,
-            anchor      : '100%',
-            listConfig  : {
-                loadingText: i18n['searching'] + '...',
-                //emptyText	: 'No matching posts found.',
-                //---------------------------------------------------------------------
-                // Custom rendering template for each item
-                //---------------------------------------------------------------------
-                getInnerTpl: function() {
-                    return '<div class="search-item">{code}: {code_text}</div>';
-                }
-            },
-            pageSize    : 25
-        }, null);
-
-        me.callParent();
-    },
-
-
-    onRender: function(ct, position) {
-        this.callParent(arguments);
-        var id = this.getId();
-        this.triggerConfig = {
-            tag: 'div', cls: 'x-form-twin-triggers', style: 'display:block;', cn: [
-                {tag: "img", style: Ext.isIE? 'margin-left:0;height:21px' : '', src: Ext.BLANK_IMAGE_URL, id: "trigger2" + id, name: "trigger2" + id, cls: "x-form-trigger " + this.trigger2Class}
-            ]};
-        this.triggerEl.replaceWith(this.triggerConfig);
-        this.triggerEl.on('mouseup', function(e) {
-                if(e.target.name == "trigger2" + id) {
-                    this.reset();
-                    this.oldValue = null;
-                    if(this.spObj !== '' && this.spExtraParam !== '') {
-                        Ext.getCmp(this.spObj).store.setExtraParam(this.spExtraParam, '');
-                        Ext.getCmp(this.spObj).store.load()
-                    }
-                    if(this.spForm !== '') {
-                        Ext.getCmp(this.spForm).getForm().reset();
-                    }
-                }
-            }, this);
-        var trigger2 = Ext.get("trigger2" + id);
-        trigger2.addClsOnOver('x-form-trigger-over');
-    }
-
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: ernesto
- * Date: 6/27/11
- * Time: 8:43 AM
- * To change this template use File | Settings | File Templates.
- *
- *
- * @namespace Patient.patientLiveSearch
- */
-Ext.define('App.classes.LiveImmunizationSearch', {
-	extend       : 'Ext.form.ComboBox',
-	alias        : 'widget.immunizationlivesearch',
-	hideLabel    : true,
-
-	initComponent: function() {
-		var me = this;
-
-		Ext.define('liveImmunizationSearchModel', {
-			extend: 'Ext.data.Model',
-			fields: [
-				{name: 'id'},
-				{name: 'code'},
-				{name: 'code_text'},
-				{name: 'code_text_short'}
-
-			],
-			proxy : {
-				type  : 'direct',
-				api   : {
-					read: Medical.getImmunizationLiveSearch
-				},
-				reader: {
-					totalProperty: 'totals',
-					root         : 'rows'
-				}
-			}
-		});
-
-		me.store = Ext.create('Ext.data.Store', {
-			model   : 'liveImmunizationSearchModel',
-			pageSize: 10,
-			autoLoad: false
-		});
-
-		Ext.apply(this, {
-			store       : me.store,
-			displayField: 'code_text_short',
-			valueField  : 'code_text_short',
-			emptyText   : i18n['search_for_a_immunizations'] + '...',
-			typeAhead   : true,
-			minChars    : 1,
-			listConfig  : {
-				loadingText: i18n['searching'] + '...',
-				//emptyText	: 'No matching posts found.',
-				//---------------------------------------------------------------------
-				// Custom rendering template for each item
-				//---------------------------------------------------------------------
-				getInnerTpl: function() {
-					return '<div class="search-item"><h3>{code}<span style="font-weight: normal"> ({code_text}) </span></div>';
-				}
-			},
-			pageSize    : 10
-		}, null);
-
-		me.callParent();
-	}
-
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: ernesto
- * Date: 6/27/11
- * Time: 8:43 AM
- * To change this template use File | Settings | File Templates.
- *
- *
- * @namespace Patient.patientLiveSearch
- */
-Ext.define('App.classes.LiveMedicationSearch', {
-	extend       : 'Ext.form.ComboBox',
-	alias        : 'widget.medicationlivetsearch',
-	hideLabel    : true,
-
-	initComponent: function() {
-		var me = this;
-
-		Ext.define('liveMedicationsSearchModel', {
-			extend: 'Ext.data.Model',
-			fields: [
-				{name: 'id'},
-				{name: 'PROPRIETARYNAME'},
-				{name: 'PRODUCTNDC'},
-				{name: 'NONPROPRIETARYNAME'},
-				{name: 'ACTIVE_NUMERATOR_STRENGTH'},
-				{name: 'ACTIVE_INGRED_UNIT'}
-			],
-			proxy : {
-				type  : 'direct',
-				api   : {
-					read: Medical.getMedicationLiveSearch
-				},
-				reader: {
-					totalProperty: 'totals',
-					root         : 'rows'
-				}
-			}
-		});
-
-		me.store = Ext.create('Ext.data.Store', {
-			model   : 'liveMedicationsSearchModel',
-			pageSize: 10,
-			autoLoad: false
-		});
-
-		Ext.apply(this, {
-			store       : me.store,
-			displayField: 'PROPRIETARYNAME',
-			valueField  : 'PROPRIETARYNAME',
-			emptyText   : i18n['search_for_a_medication'] + '...',
-			typeAhead   : false,
-			hideTrigger : true,
-			minChars    : 1,
-			listConfig  : {
-				loadingText: i18n['searching'] + '...',
-				//emptyText	: 'No matching posts found.',
-				//---------------------------------------------------------------------
-				// Custom rendering template for each item
-				//---------------------------------------------------------------------
-				getInnerTpl: function() {
-					return '<div class="search-item"><h3>{PROPRIETARYNAME}<span style="font-weight: normal"> ({NONPROPRIETARYNAME}) </span></h3>{ACTIVE_NUMERATOR_STRENGTH} | {ACTIVE_INGRED_UNIT}</div>';
-				}
-			},
-			pageSize    : 10
-		}, null);
-
-		me.callParent();
-	}
-
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: ernesto
- * Date: 6/27/11
- * Time: 8:43 AM
- * To change this template use File | Settings | File Templates.
- *
- *
- * @namespace Patient.patientLiveSearch
- */
-Ext.define('App.classes.LiveLabsSearch', {
-	extend       : 'Ext.form.ComboBox',
-	alias        : 'widget.labslivetsearch',
-	hideLabel    : true,
-
-	initComponent: function() {
-		var me = this;
-
-		Ext.define('liveLabsSearchModel', {
-			extend: 'Ext.data.Model',
-			fields: [
-				{name: 'id'},
-				{name: 'loinc_name'},
-				{name: 'loinc_number'}
-			],
-			proxy : {
-				type  : 'direct',
-				api   : {
-					read: Medical.getLabsLiveSearch
-				},
-				reader: {
-					totalProperty: 'totals',
-					root         : 'rows'
-				}
-			}
-		});
-
-		me.store = Ext.create('Ext.data.Store', {
-			model   : 'liveLabsSearchModel',
-			pageSize: 10,
-			autoLoad: false
-		});
-
-		Ext.apply(this, {
-			store       : me.store,
-			displayField: 'loinc_name',
-			valueField  : 'id',
-			emptyText   : i18n['search'] + '...',
-			typeAhead   : false,
-			hideTrigger : true,
-			minChars    : 1,
-			listConfig  : {
-			loadingText: i18n['searching'] + '...',
-				//emptyText	: 'No matching posts found.',
-				//---------------------------------------------------------------------
-				// Custom rendering template for each item
-				//---------------------------------------------------------------------
-				getInnerTpl: function() {
-					return '<div class="search-item"><h3>{loinc_name}</h3></div>';
-				}
-			},
-			pageSize    : 10
-		}, null);
-
-		me.callParent();
-	}
-
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: ernesto
- * Date: 6/27/11
- * Time: 8:43 AM
- * To change this template use File | Settings | File Templates.
- *
- *
- * @namespace Patient.patientLiveSearch
- */
-Ext.define('App.classes.LivePatientSearch', {
-	extend       : 'Ext.form.ComboBox',
-	alias        : 'widget.patienlivetsearch',
-	hideLabel    : true,
-
-	initComponent: function() {
-		var me = this;
-
-		Ext.define('patientLiveSearchModel', {
-			extend: 'Ext.data.Model',
-			fields: [
-				{name: 'pid', type: 'int'},
-				{name: 'pubpid', type: 'int'},
-				{name: 'fullname', type: 'string'},
-				{name: 'DOB', type: 'string'},
-				{name: 'SS', type: 'string'}
-			],
-			proxy : {
-				type  : 'direct',
-				api   : {
-					read: Patient.patientLiveSearch
-				},
-				reader: {
-					totalProperty: 'totals',
-					root         : 'rows'
-				}
-			}
-		});
-
-		me.store = Ext.create('Ext.data.Store', {
-			model   : 'patientLiveSearchModel',
-			pageSize: 10,
-			autoLoad: false
-		});
-
-		Ext.apply(this, {
-			store       : me.store,
-			displayField: 'fullname',
-			valueField  : 'pid',
-			emptyText   : me.emptyText,
-			typeAhead   : false,
-			hideTrigger : true,
-			minChars    : 1,
-			listConfig  : {
-				loadingText: i18n['searching'] + '...',
-				//emptyText	: 'No matching posts found.',
-				//---------------------------------------------------------------------
-				// Custom rendering template for each item
-				//---------------------------------------------------------------------
-				getInnerTpl: function() {
-					return '<div class="search-item"><h3><span>{fullname}</span>&nbsp;&nbsp;({pid})</h3>DOB:&nbsp;{DOB}&nbsp;SS:&nbsp;{SS}</div>';
-				}
-			},
-			pageSize    : 10
-		}, null);
-
-		me.callParent();
-	}
-
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: ernesto
- * Date: 6/27/11
- * Time: 8:43 AM
- * To change this template use File | Settings | File Templates.
- *
- *
- * @namespace Patient.patientLiveSearch
- */
-Ext.define('App.classes.LiveSurgeriesSearch', {
-	extend       : 'Ext.form.ComboBox',
-	alias        : 'widget.surgerieslivetsearch',
-	hideLabel    : true,
-
-	initComponent: function() {
-		var me = this;
-
-		Ext.define('liveSurgeriesSearchModel', {
-			extend: 'Ext.data.Model',
-			fields: [
-				{name: 'id'},
-				{name: 'type'},
-				{name: 'type_num'},
-				{name: 'surgery'}
-			],
-			proxy : {
-				type  : 'direct',
-				api   : {
-					read: Medical.getSurgeriesLiveSearch
-				},
-				reader: {
-					totalProperty: 'totals',
-					root         : 'rows'
-				}
-			}
-		});
-
-		me.store = Ext.create('Ext.data.Store', {
-			model   : 'liveSurgeriesSearchModel',
-			pageSize: 10,
-			autoLoad: false
-		});
-
-		Ext.apply(this, {
-			store       : me.store,
-			displayField: 'surgery',
-			valueField  : 'surgery',
-			emptyText   : i18n['search_for_a_surgery'] + '...',
-			typeAhead   : true,
-			minChars    : 1,
-			listConfig  : {
-				loadingText: i18n['searching'] + '...',
-				//emptyText	: 'No matching posts found.',
-				//---------------------------------------------------------------------
-				// Custom rendering template for each item
-				//---------------------------------------------------------------------
-				getInnerTpl: function() {
-					return '<div class="search-item"><h3>{surgery}<span style="font-weight: normal"> ({type}) </span></h3></div>';
-				}
-			},
-			pageSize    : 10
-		}, null);
-
-		me.callParent();
-	}
-
-});
-/*
- * Copyright 2007-2011, Active Group, Inc.  All rights reserved.
- * ******************************************************************************
- * This file is distributed on an AS IS BASIS WITHOUT ANY WARRANTY; without even
- * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * ***********************************************************************************
- * @version 4.0 alpha-1
- * [For Ext 4.0 or higher only]
- *
- * License: Ext.ux.ManagedIframe.Component and Ext.ux.ManagedIframe.Element
- * are licensed under the terms of the Open Source GPL 3.0 license:
- * http://www.gnu.org/licenses/gpl.html
- *
- * Commercial use is prohibited without a Commercial Developement License. See
- * http://licensing.theactivegroup.com.
- *
- */
-
-/**
- * @class Ext.ux.ManagedIframe.Component
- * @extends Ext.Component
- */
-
-Ext.define('App.classes.ManagedIframe', {
-
-	/* Begin Definitions */
-	extend: 'Ext.Component',
-	alias : 'widget.miframe',
-	/* End Definitions */
-
-	hideMode  : Ext.isIE ? 'display' : 'nosize',
-
-	/*
-	 * @cfg {Boolean} autoScroll True to set overflow:auto on the nested iframe.
-	 * If False, overflow is forced to hidden.
-	 * Note: set to undefined to control overflow-x/y via the frameStyle config option
-	 */
-	autoScroll: true,
-
-	/*
-	 * @cfg {String/Object} frameStyle (optional) Style string or object configuration representing
-	 * the desired style attributes to apply to the embedded IFRAME.
-	 * Defaults to 'height:100%; width:100%;'
-	 */
-	frameStyle: null,
-
-	frameCls: 'ux-miframe',
-
-	shimCls: 'ux-miframe-shim',
-
-	shimUrl    : Ext.BLANK_IMAGE_URL,
-
-	/*
-	 * @cfg {String} src (optional) Uri to load into the frame
-	 */
-	src        : null,
-
-	/*
-	 * @cfg {Boolean} autoMask True to display a loadMask during page content changes
-	 */
-	autoMask   : true,
-
-	/*
-	 * @cfg {String} maskMessage default message text rendered during masking operations
-	 */
-	maskMessage: 'Loading...',
-
-	resetUrl: 'javascript:void(0);',
-
-	ariaRole: 'presentation',
-
-	unsupportedText: i18n['frames_are_disabled'],
-
-	/*
-	 * Bubble frame events to upstream containers
-	 */
-	bubbleEvents   : ['documentloaded', 'load'],
-
-	initComponent: function() {
-
-		var me = this,
-			frameStyle = Ext.isString(me.frameStyle)
-				? Ext.core.Element.parseStyles(me.frameStyle)
-				: me.frameStyle || {};
-
-		me.autoEl = {
-			cn: [
-				Ext.applyIf(
-					me.frameConfig || {},
-					{
-						tag        : 'iframe',
-						cls        : me.frameCls,
-						style      : Ext.apply(
-							{
-								"height": "100%",
-								"width" : "100%"
-							},
-							frameStyle
-						),
-						frameBorder: 'no',
-						role       : me.ariaRole,
-						name       : me.getId(),
-						src        : me.resetUrl || ''
-					}
-				),
-				{tag: 'noframes', html: me.unsupportedText},
-				{
-					tag       : 'img',
-					cls       : me.shimCls,
-					galleryimg: "no",
-					style     : "position:absolute;top:0;left:0;display:none;z-index:20;height:100%;width:100%;",
-					src       : me.shimUrl
-				}
-			]
-		};
-		this.callParent();
-	},
-
-	renderSelectors: {
-		frameElement: 'iframe.ux-miframe',
-		frameShim   : 'img.ux-miframe-shim'
-	},
-
-	afterRender     : function() {
-		var me = this;
-		me.callParent();
-
-		if(me.frameElement) {
-			me.frameElement.relayEvent('load', me);  //propagate DOM events to the component and bubbled consumers
-			me.on({
-				load : me.onFrameLoad,
-				scope: me
-			});
-		}
-		if(me.frameShim) {
-			me.frameShim.autoBoxAdjust = false;
-			me.frameShim.setVisibilityMode(Ext.core.Element.DISPLAY);
-		}
-		//permit layout to quiesce
-		Ext.defer(me.setSrc, 50, me, []);
-	},
-
-	// private
-	getContentTarget: function() {
-		return this.frameElement;
-	},
-
-	getActionEl: function() {
-		return this.frameElement || this.el;
-	},
-
-	/*
-	 * @private
-	 */
-	onFrameLoad: function(e) {
-		var me = this;
-		me.fireEvent('documentloaded', me, me.frameElement);
-		if(me.autoMask) {
-			me.setLoading(false);
-		}
-	},
-
-	/*
-	 * Setter - Changes the current src attribute of the IFRAME, applying a loadMask
-	 * over the frame (if autoMask is true)
-	 * Note: call without the uri argument to simply refresh the frame with the current src value
-	 */
-	setSrc     : function(uri) {
-		var me = this;
-		uri = uri || me.src || me.defaultSrc;
-		if(uri && me.rendered && me.frameElement) {
-			me.autoMask &&
-				me.isVisible(true) &&
-			me.setLoading(me.maskMessage || '');
-
-			me.frameElement.dom.src = uri;
-		}
-		me.src = uri;
-		return me;
-	},
-
-	/**
-	 * contentEl is NOT supported, but tpl/data, and html ARE.
-	 * @private
-	 */
-	initContent: function() {
-		var me = this,
-			content = me.data || me.html;
-
-		if(me.contentEl && Ext.isDefined(Ext.global.console)) {
-			Ext.global.console.warn('Ext.ux.ManagedIframe.Component: \'contentEl\' is not supported by this class.');
-		}
-
-		// Make sure this.tpl is an instantiated XTemplate
-		if(me.tpl && !me.tpl.isTemplate) {
-			me.tpl = Ext.create('Ext.XTemplate', me.tpl);
-		}
-
-		if(content) {
-			me.update(content);  //no-op until alpha2 release
-		}
-		delete me.contentEl;
-	},
-
-	/**
-	 * Update(replacing) the document content of the IFRAME.
-	 * @param {Mixed} htmlOrData
-	 * If this component has been configured with a template via the tpl config
-	 * then it will use this argument as data to populate the frame.
-	 * If this component was not configured with a template, the components
-	 * content area (iframe) will be updated via Ext.ux.ManagedIframe.Element update
-	 * @param {Boolean} loadScripts (optional) Defaults to false
-	 * @param {Function} callback (optional) Callback to execute when scripts have finished loading
-	 */
-	updateAlpha2: function(htmlOrData, loadScripts, callback) {
-		var me = this;
-
-		if(me.tpl && !Ext.isString(htmlOrData)) {
-			me.data = htmlOrData;
-			me.html = me.tpl.apply(htmlOrData || {});
-		} else {
-			me.html = Ext.core.DomHelper.markup(htmlOrData);
-		}
-
-		if(me.rendered) {
-			me.getContentTarget().update(me.html, loadScripts, callback);
-		}
-		return me;
-	},
-
-	//Frame writing scheduled for Aplha2, so no-op for now
-	update      : function() {
-	},
-
-	/**
-	 * Sets the overflow on the IFRAME element of the component.
-	 * @param {Boolean} scroll True to allow the IFRAME to auto scroll.
-	 * @return {Ext.ux.ManagedIframe.Component} this
-	 */
-	setAutoScroll: function(scroll) {
-		var me = this,
-			targetEl;
-		if(Ext.isDefined(scroll)) {  //permits frameStyle overrides
-			scroll = !!scroll;
-			if(me.rendered && (targetEl = me.getContentTarget())) {
-				targetEl.setStyle('overflow', scroll ? 'auto' : 'hidden');
-			}
-			me.autoScroll = scroll;
-		}
-		return me;
-	},
-
-	/*
-	 *   Toggle the transparent shim on/off
-	 */
-	toggleShim   : function(enabled) {
-		var me = this;
-		if(me.frameShim) {
-			me.frameShim[enabled ? 'show' : 'hide']();
-		}
-		return me.frameShim;
-	},
-
-	onDestroy: function() {
-		var me = this, frame;
-		if(frame = me.frameElement) {
-			frame.clearListeners();
-			frame.remove();
-		}
-		me.deleteMembers('frameElement', 'frameShim');
-		me.callParent();
-	}
-
-});
-
-/**
- * A plugin that provides the ability to visually indicate to the user that a node is disabled.
- *
- * Notes:
- * - Compatible with Ext 4.x
- * - If the view already defines a getRowClass function, the original function will be called before this plugin.
- *
- var tree = Ext.create('Ext.tree.Panel',{
- plugins: [{
- ptype: 'nodedisabled'
- }]
- ...
- });
- *
- * @class Ext.ux.tree.plugin.NodeDisabled
- * @extends Ext.AbstractPlugin
- * @author Phil Crawford
- * @license Licensed under the terms of the Open Source <a href="http://www.gnu.org/licenses/lgpl.html">LGPL 3.0 license</a>.  Commercial use is permitted to the extent that the code/component(s) do NOT become part of another Open Source or Commercially licensed development library or toolkit without explicit permission.
- * @version 0.1 (July 1, 2011)
- * @constructor
- * @param {Object} config
- */
-Ext.define('App.classes.NodeDisabled', {
-    alias:'plugin.nodedisabled', extend:'Ext.AbstractPlugin'
-
-
-    //configurables
-    /**
-     * @cfg {String} disabledCls
-     * The CSS class applied when the {@link Ext.data.Model} of the node has a 'disabled' field with a true value.
-     */, disabledCls:'tree-node-disabled'
-    /**
-     * @cfg {Boolean} preventSelection
-     * True to prevent selection of a node that is disabled. Default true.
-     */, preventSelection:true
-
-    /**
-     * @cfg {Boolean} preventChecking
-     * True to prevent checking of a node that is disabled. Default true.
-     */, preventChecking:true
-
-    //properties
-
-
-    /**
-     * @private
-     * @param {Ext.tree.Panel} tree
-     */, init:function (tree) {
-        var me = this
-            , view = tree.getView()
-            , origFn
-            , origScope;
-
-        me.callParent(arguments);
-
-        origFn = view.getRowClass;
-        if (origFn) {
-            origScope = view.scope || me;
-            Ext.apply(view, {
-                getRowClass:function () {
-                    var v1, v2;
-                    v1 = origFn.apply(origScope, arguments) || '';
-                    v2 = me.getRowClass.apply(me, arguments) || '';
-                    return (v1 && v2) ? v1 + ' ' + v2 : v1 + v2;
-                }
-            }, null);
-        } else {
-            Ext.apply(view, {
-                getRowClass:Ext.Function.bind(me.getRowClass, me)
-            }, null);
-        }
-
-        if (me.preventSelection) {
-            tree.getSelectionModel().on('beforeselect', me.onBeforeNodeSelect, me);
-        }
-
-        if (me.preventChecking) {
-            tree.on('checkchange', me.checkchange, me);
-        }
-    } // eof init
-
-
-    /**
-     * Returns a properly typed result.
-     * @return {Ext.tree.Panel}
-     */, getCmp:function () {
-        return this.callParent(arguments);
-    } //eof getCmp
-
-    /**
-     * @private
-     * @param {Ext.data.Model} record
-     * @param {Number} index
-     * @param {Object} rowParams
-     * @param {Ext.data.Store} ds
-     * @return {String}
-     */, getRowClass:function (record, index, rowParams, ds) {
-        return record.get('disabled') ? this.disabledCls : '';
-    }//eof getRowClass
-
-    /**
-     * @private
-     * @param {Ext.selection.TreeModel} sm
-     * @param {Ext.data.Model} node
-     * @return {Boolean}
-     */, onBeforeNodeSelect:function (sm, node) {
-        if (node.get('disabled')) {
-            return false;
-        }
-    }//eof onBeforeNodeSelect
-
-    /**
-     * @event checkchange
-     * Fires when a node with a checkbox's checked property changes
-     * @param {Ext.data.Model} node The node who's checked property was changed
-     * @param {Boolean} checked The node's new checked state
-     */, checkchange:function (node, checked) {
-        if (node.get('disabled')) {
-            node.set('checked', !checked);
-        }
-    }//eof checkchange
-
-});//eo class
-
-//end of file
-//******************************************************************************
-// Photo ID Window
-//******************************************************************************
-Ext.define('App.classes.PhotoIdWindow', {
-	extend       : 'Ext.window.Window',
-	alias        : 'widget.photoidwindow',
-	height       : 320,
-	width        : 320,
-	layout       : 'fit',
-	renderTo     : document.body,
-	initComponent: function() {
-		var me = this;
-
-
-		window.webcam.set_api_url( 'dataProvider/WebCamImgHandler.php' );
-	    window.webcam.set_swf_url( 'lib/jpegcam/htdocs/webcam.swf' );
-	    window.webcam.set_quality( 100 ); // JPEG quality (1 - 100)
-	    window.webcam.set_shutter_sound( true, 'lib/jpegcam/htdocs/shutter.mp3' ); // play shutter click sound
-	    window.webcam.set_hook( 'onComplete', 'onWebCamComplete' );
-
-		Ext.apply(this, {
-			html:window.webcam.get_html(320, 320),
-			buttons: [
-				{
-					text   : i18n['capture'],
-					iconCls: 'save',
-					handler: me.captureToCanvas
-				},
-				{
-					text   : i18n['cancel'],
-					scope:me,
-					handler: function(){
-						this.close();
-					}
-				}
-			]
-		},null);
-		me.callParent(arguments);
-	},
-
-	captureToCanvas:function(){
-		window.webcam.snap();
-	}
-});
-/**
- * @class Ext.fx.target.Sprite
-
- This class represents an animation target for a {@link Ext.draw.Sprite}. In general this class will not be
- created directly, the {@link Ext.draw.Sprite} will be passed to the animation and
- and the appropriate target will be created.
-
- * @markdown
- */
-
-Ext.define('Ext.fx.target.Sprite', {
-
-    /* Begin Definitions */
-
-    extend: 'Ext.fx.target.Target',
-
-    /* End Definitions */
-
-    type: 'draw',
-
-    getFromPrim: function (sprite, attr) {
-        var obj;
-        switch (attr) {
-            case 'rotate':
-            case 'rotation':
-                obj = sprite.attr.rotation;
-                return {
-                    x: obj.x || 0,
-                    y: obj.y || 0,
-                    degrees: obj.degrees || 0
-                };
-            case 'scale':
-            case 'scaling':
-                obj = sprite.attr.scaling;
-                return {
-                    x: obj.x || 1,
-                    y: obj.y || 1,
-                    cx: obj.cx || 0,
-                    cy: obj.cy || 0
-                };
-            case 'translate':
-            case 'translation':
-                obj = sprite.attr.translation;
-                return {
-                    x: obj.x || 0,
-                    y: obj.y || 0
-                };
-            default:
-                return sprite.attr[attr];
-        }
-    },
-
-    getAttr: function (attr, val) {
-        return [
-            [this.target, val != undefined ? val : this.getFromPrim(this.target, attr)]
-        ];
-    },
-
-    setAttr: function (targetData) {
-        var ln = targetData.length,
-            spriteArr = [],
-            attrsConf, attr, attrArr, attrs, sprite, idx, value, i, j, x, y, ln2;
-        for (i = 0; i < ln; i++) {
-            attrsConf = targetData[i].attrs;
-            for (attr in attrsConf) {
-                attrArr = attrsConf[attr];
-                ln2 = attrArr.length;
-                for (j = 0; j < ln2; j++) {
-                    sprite = attrArr[j][0];
-                    attrs = attrArr[j][1];
-                    if (attr === 'translate' || attr === 'translation') {
-                        value = {
-                            x: attrs.x,
-                            y: attrs.y
-                        };
-                    }
-                    else if (attr === 'rotate' || attr === 'rotation') {
-                        x = attrs.x;
-                        if (isNaN(x)) {
-                            x = null;
-                        }
-                        y = attrs.y;
-                        if (isNaN(y)) {
-                            y = null;
-                        }
-                        value = {
-                            degrees: attrs.degrees,
-                            x: x,
-                            y: y
-                        };
-                    } else if (attr === 'scale' || attr === 'scaling') {
-                        x = attrs.x;
-                        if (isNaN(x)) {
-                            x = null;
-                        }
-                        y = attrs.y;
-                        if (isNaN(y)) {
-                            y = null;
-                        }
-                        value = {
-                            x: x,
-                            y: y,
-                            cx: attrs.cx,
-                            cy: attrs.cy
-                        };
-                    }
-                    else if (attr === 'width' || attr === 'height' || attr === 'x' || attr === 'y') {
-                        value = parseFloat(attrs);
-                    }
-                    else {
-                        value = attrs;
-                    }
-                    idx = Ext.Array.indexOf(spriteArr, sprite);
-                    if (idx == -1) {
-                        spriteArr.push([sprite, {}]);
-                        idx = spriteArr.length - 1;
-                    }
-                    spriteArr[idx][1][attr] = value;
-                }
-            }
-        }
-        ln = spriteArr.length;
-        for (i = 0; i < ln; i++) {
-            spriteArr[i][0].setAttributes(spriteArr[i][1]);
-        }
-        this.target.redraw();
-    }
-});
-
-/**
- * This class provides a container DD instance that allows dropping on multiple child target nodes.
- *
- * By default, this class requires that child nodes accepting drop are registered with {@link Ext.dd.Registry}.
- * However a simpler way to allow a DropZone to manage any number of target elements is to configure the
- * DropZone with an implementation of {@link #getTargetFromEvent} which interrogates the passed
- * mouse event to see if it has taken place within an element, or class of elements. This is easily done
- * by using the event's {@link Ext.EventObject#getTarget getTarget} method to identify a node based on a
- * {@link Ext.DomQuery} selector.
- *
- * Once the DropZone has detected through calling getTargetFromEvent, that the mouse is over
- * a drop target, that target is passed as the first parameter to {@link #onNodeEnter}, {@link #onNodeOver},
- * {@link #onNodeOut}, {@link #onNodeDrop}. You may configure the instance of DropZone with implementations
- * of these methods to provide application-specific behaviour for these events to update both
- * application state, and UI state.
- *
- * For example to make a GridPanel a cooperating target with the example illustrated in
- * {@link Ext.dd.DragZone DragZone}, the following technique might be used:
- *
- *     myGridPanel.on('render', function() {
- *         myGridPanel.dropZone = new Ext.dd.DropZone(myGridPanel.getView().scroller, {
- *
- *             // If the mouse is over a grid row, return that node. This is
- *             // provided as the "target" parameter in all "onNodeXXXX" node event handling functions
- *             getTargetFromEvent: function(e) {
- *                 return e.getTarget(myGridPanel.getView().rowSelector);
- *             },
- *
- *             // On entry into a target node, highlight that node.
- *             onNodeEnter : function(target, dd, e, data){
- *                 Ext.fly(target).addCls('my-row-highlight-class');
- *             },
- *
- *             // On exit from a target node, unhighlight that node.
- *             onNodeOut : function(target, dd, e, data){
- *                 Ext.fly(target).removeCls('my-row-highlight-class');
- *             },
- *
- *             // While over a target node, return the default drop allowed class which
- *             // places a "tick" icon into the drag proxy.
- *             onNodeOver : function(target, dd, e, data){
- *                 return Ext.dd.DropZone.prototype.dropAllowed;
- *             },
- *
- *             // On node drop we can interrogate the target to find the underlying
- *             // application object that is the real target of the dragged data.
- *             // In this case, it is a Record in the GridPanel's Store.
- *             // We can use the data set up by the DragZone's getDragData method to read
- *             // any data we decided to attach in the DragZone's getDragData method.
- *             onNodeDrop : function(target, dd, e, data){
- *                 var rowIndex = myGridPanel.getView().findRowIndex(target);
- *                 var r = myGridPanel.getStore().getAt(rowIndex);
- *                 Ext.Msg.alert('Drop gesture', 'Dropped Record id ' + data.draggedRecord.id +
- *                     ' on Record id ' + r.id);
- *                 return true;
- *             }
- *         });
- *     }
- *
- * See the {@link Ext.dd.DragZone DragZone} documentation for details about building a DragZone which
- * cooperates with this DropZone.
- */
-Ext.define('Ext.dd.DropZone', {
-    extend: 'Ext.dd.DropTarget',
-    requires: ['Ext.dd.Registry'],
-
-    /**
-     * Returns a custom data object associated with the DOM node that is the target of the event.  By default
-     * this looks up the event target in the {@link Ext.dd.Registry}, although you can override this method to
-     * provide your own custom lookup.
-     * @param {Event} e The event
-     * @return {Object} data The custom data
-     */
-    getTargetFromEvent : function(e){
-        return Ext.dd.Registry.getTargetFromEvent(e);
-    },
-
-    /**
-     * Called when the DropZone determines that a {@link Ext.dd.DragSource} has entered a drop node
-     * that has either been registered or detected by a configured implementation of {@link #getTargetFromEvent}.
-     * This method has no default implementation and should be overridden to provide
-     * node-specific processing if necessary.
-     * @param {Object} nodeData The custom data associated with the drop node (this is the same value returned from 
-     * {@link #getTargetFromEvent} for this node)
-     * @param {Ext.dd.DragSource} source The drag source that was dragged over this drop zone
-     * @param {Event} e The event
-     * @param {Object} data An object containing arbitrary data supplied by the drag source
-     */
-    onNodeEnter : function(n, dd, e, data){
-        
-    },
-
-    /**
-     * Called while the DropZone determines that a {@link Ext.dd.DragSource} is over a drop node
-     * that has either been registered or detected by a configured implementation of {@link #getTargetFromEvent}.
-     * The default implementation returns this.dropAllowed, so it should be
-     * overridden to provide the proper feedback.
-     * @param {Object} nodeData The custom data associated with the drop node (this is the same value returned from
-     * {@link #getTargetFromEvent} for this node)
-     * @param {Ext.dd.DragSource} source The drag source that was dragged over this drop zone
-     * @param {Event} e The event
-     * @param {Object} data An object containing arbitrary data supplied by the drag source
-     * @return {String} status The CSS class that communicates the drop status back to the source so that the
-     * underlying {@link Ext.dd.StatusProxy} can be updated
-     * @template
-     */
-    onNodeOver : function(n, dd, e, data){
-        return this.dropAllowed;
-    },
-
-    /**
-     * Called when the DropZone determines that a {@link Ext.dd.DragSource} has been dragged out of
-     * the drop node without dropping.  This method has no default implementation and should be overridden to provide
-     * node-specific processing if necessary.
-     * @param {Object} nodeData The custom data associated with the drop node (this is the same value returned from
-     * {@link #getTargetFromEvent} for this node)
-     * @param {Ext.dd.DragSource} source The drag source that was dragged over this drop zone
-     * @param {Event} e The event
-     * @param {Object} data An object containing arbitrary data supplied by the drag source
-     * @template
-     */
-    onNodeOut : function(n, dd, e, data){
-        
-    },
-
-    /**
-     * Called when the DropZone determines that a {@link Ext.dd.DragSource} has been dropped onto
-     * the drop node.  The default implementation returns false, so it should be overridden to provide the
-     * appropriate processing of the drop event and return true so that the drag source's repair action does not run.
-     * @param {Object} nodeData The custom data associated with the drop node (this is the same value returned from
-     * {@link #getTargetFromEvent} for this node)
-     * @param {Ext.dd.DragSource} source The drag source that was dragged over this drop zone
-     * @param {Event} e The event
-     * @param {Object} data An object containing arbitrary data supplied by the drag source
-     * @return {Boolean} True if the drop was valid, else false
-     * @template
-     */
-    onNodeDrop : function(n, dd, e, data){
-        return false;
-    },
-
-    /**
-     * Called while the DropZone determines that a {@link Ext.dd.DragSource} is being dragged over it,
-     * but not over any of its registered drop nodes.  The default implementation returns this.dropNotAllowed, so
-     * it should be overridden to provide the proper feedback if necessary.
-     * @param {Ext.dd.DragSource} source The drag source that was dragged over this drop zone
-     * @param {Event} e The event
-     * @param {Object} data An object containing arbitrary data supplied by the drag source
-     * @return {String} status The CSS class that communicates the drop status back to the source so that the
-     * underlying {@link Ext.dd.StatusProxy} can be updated
-     * @template
-     */
-    onContainerOver : function(dd, e, data){
-        return this.dropNotAllowed;
-    },
-
-    /**
-     * Called when the DropZone determines that a {@link Ext.dd.DragSource} has been dropped on it,
-     * but not on any of its registered drop nodes.  The default implementation returns false, so it should be
-     * overridden to provide the appropriate processing of the drop event if you need the drop zone itself to
-     * be able to accept drops.  It should return true when valid so that the drag source's repair action does not run.
-     * @param {Ext.dd.DragSource} source The drag source that was dragged over this drop zone
-     * @param {Event} e The event
-     * @param {Object} data An object containing arbitrary data supplied by the drag source
-     * @return {Boolean} True if the drop was valid, else false
-     * @template
-     */
-    onContainerDrop : function(dd, e, data){
-        return false;
-    },
-
-    /**
-     * The function a {@link Ext.dd.DragSource} calls once to notify this drop zone that the source is now over
-     * the zone.  The default implementation returns this.dropNotAllowed and expects that only registered drop
-     * nodes can process drag drop operations, so if you need the drop zone itself to be able to process drops
-     * you should override this method and provide a custom implementation.
-     * @param {Ext.dd.DragSource} source The drag source that was dragged over this drop zone
-     * @param {Event} e The event
-     * @param {Object} data An object containing arbitrary data supplied by the drag source
-     * @return {String} status The CSS class that communicates the drop status back to the source so that the
-     * underlying {@link Ext.dd.StatusProxy} can be updated
-     * @template
-     */
-    notifyEnter : function(dd, e, data){
-        return this.dropNotAllowed;
-    },
-
-    /**
-     * The function a {@link Ext.dd.DragSource} calls continuously while it is being dragged over the drop zone.
-     * This method will be called on every mouse movement while the drag source is over the drop zone.
-     * It will call {@link #onNodeOver} while the drag source is over a registered node, and will also automatically
-     * delegate to the appropriate node-specific methods as necessary when the drag source enters and exits
-     * registered nodes ({@link #onNodeEnter}, {@link #onNodeOut}). If the drag source is not currently over a
-     * registered node, it will call {@link #onContainerOver}.
-     * @param {Ext.dd.DragSource} source The drag source that was dragged over this drop zone
-     * @param {Event} e The event
-     * @param {Object} data An object containing arbitrary data supplied by the drag source
-     * @return {String} status The CSS class that communicates the drop status back to the source so that the
-     * underlying {@link Ext.dd.StatusProxy} can be updated
-     * @template
-     */
-    notifyOver : function(dd, e, data){
-        var n = this.getTargetFromEvent(e);
-        if(!n) { // not over valid drop target
-            if(this.lastOverNode){
-                this.onNodeOut(this.lastOverNode, dd, e, data);
-                this.lastOverNode = null;
-            }
-            return this.onContainerOver(dd, e, data);
-        }
-        if(this.lastOverNode != n){
-            if(this.lastOverNode){
-                this.onNodeOut(this.lastOverNode, dd, e, data);
-            }
-            this.onNodeEnter(n, dd, e, data);
-            this.lastOverNode = n;
-        }
-        return this.onNodeOver(n, dd, e, data);
-    },
-
-    /**
-     * The function a {@link Ext.dd.DragSource} calls once to notify this drop zone that the source has been dragged
-     * out of the zone without dropping.  If the drag source is currently over a registered node, the notification
-     * will be delegated to {@link #onNodeOut} for node-specific handling, otherwise it will be ignored.
-     * @param {Ext.dd.DragSource} source The drag source that was dragged over this drop target
-     * @param {Event} e The event
-     * @param {Object} data An object containing arbitrary data supplied by the drag zone
-     * @template
-     */
-    notifyOut : function(dd, e, data){
-        if(this.lastOverNode){
-            this.onNodeOut(this.lastOverNode, dd, e, data);
-            this.lastOverNode = null;
-        }
-    },
-
-    /**
-     * The function a {@link Ext.dd.DragSource} calls once to notify this drop zone that the dragged item has
-     * been dropped on it.  The drag zone will look up the target node based on the event passed in, and if there
-     * is a node registered for that event, it will delegate to {@link #onNodeDrop} for node-specific handling,
-     * otherwise it will call {@link #onContainerDrop}.
-     * @param {Ext.dd.DragSource} source The drag source that was dragged over this drop zone
-     * @param {Event} e The event
-     * @param {Object} data An object containing arbitrary data supplied by the drag source
-     * @return {Boolean} False if the drop was invalid.
-     * @template
-     */
-    notifyDrop : function(dd, e, data){
-        if(this.lastOverNode){
-            this.onNodeOut(this.lastOverNode, dd, e, data);
-            this.lastOverNode = null;
-        }
-        var n = this.getTargetFromEvent(e);
-        return n ?
-            this.onNodeDrop(n, dd, e, data) :
-            this.onContainerDrop(dd, e, data);
-    },
-
-    // private
-    triggerCacheRefresh : function() {
-        Ext.dd.DDM.refreshCache(this.groups);
-    }
-});
-/**
- * This class provides a container DD instance that allows dragging of multiple child source nodes.
- *
- * This class does not move the drag target nodes, but a proxy element which may contain any DOM structure you wish. The
- * DOM element to show in the proxy is provided by either a provided implementation of {@link #getDragData}, or by
- * registered draggables registered with {@link Ext.dd.Registry}
- *
- * If you wish to provide draggability for an arbitrary number of DOM nodes, each of which represent some application
- * object (For example nodes in a {@link Ext.view.View DataView}) then use of this class is the most efficient way to
- * "activate" those nodes.
- *
- * By default, this class requires that draggable child nodes are registered with {@link Ext.dd.Registry}. However a
- * simpler way to allow a DragZone to manage any number of draggable elements is to configure the DragZone with an
- * implementation of the {@link #getDragData} method which interrogates the passed mouse event to see if it has taken
- * place within an element, or class of elements. This is easily done by using the event's {@link
- * Ext.EventObject#getTarget getTarget} method to identify a node based on a {@link Ext.DomQuery} selector. For example,
- * to make the nodes of a DataView draggable, use the following technique. Knowledge of the use of the DataView is
- * required:
- *
- *     myDataView.on('render', function(v) {
- *         myDataView.dragZone = new Ext.dd.DragZone(v.getEl(), {
- *
- *     //      On receipt of a mousedown event, see if it is within a DataView node.
- *     //      Return a drag data object if so.
- *             getDragData: function(e) {
- *
- *     //          Use the DataView's own itemSelector (a mandatory property) to
- *     //          test if the mousedown is within one of the DataView's nodes.
- *                 var sourceEl = e.getTarget(v.itemSelector, 10);
- *
- *     //          If the mousedown is within a DataView node, clone the node to produce
- *     //          a ddel element for use by the drag proxy. Also add application data
- *     //          to the returned data object.
- *                 if (sourceEl) {
- *                     d = sourceEl.cloneNode(true);
- *                     d.id = Ext.id();
- *                     return {
- *                         ddel: d,
- *                         sourceEl: sourceEl,
- *                         repairXY: Ext.fly(sourceEl).getXY(),
- *                         sourceStore: v.store,
- *                         draggedRecord: v.{@link Ext.view.View#getRecord getRecord}(sourceEl)
- *                     }
- *                 }
- *             },
- *
- *     //      Provide coordinates for the proxy to slide back to on failed drag.
- *     //      This is the original XY coordinates of the draggable element captured
- *     //      in the getDragData method.
- *             getRepairXY: function() {
- *                 return this.dragData.repairXY;
- *             }
- *         });
- *     });
- *
- * See the {@link Ext.dd.DropZone DropZone} documentation for details about building a DropZone which cooperates with
- * this DragZone.
- */
-Ext.define('Ext.dd.DragZone', {
-    extend: 'Ext.dd.DragSource',
-
-    /**
-     * Creates new DragZone.
-     * @param {String/HTMLElement/Ext.Element} el The container element or ID of it.
-     * @param {Object} config
-     */
-    constructor : function(el, config){
-        this.callParent([el, config]);
-        if (this.containerScroll) {
-            Ext.dd.ScrollManager.register(this.el);
-        }
-    },
-
-    /**
-     * @property {Object} dragData
-     * This property contains the data representing the dragged object. This data is set up by the implementation of the
-     * {@link #getDragData} method. It must contain a ddel property, but can contain any other data according to the
-     * application's needs.
-     */
-
-    /**
-     * @cfg {Boolean} containerScroll
-     * True to register this container with the Scrollmanager for auto scrolling during drag operations.
-     */
-
-    /**
-     * Called when a mousedown occurs in this container. Looks in {@link Ext.dd.Registry} for a valid target to drag
-     * based on the mouse down. Override this method to provide your own lookup logic (e.g. finding a child by class
-     * name). Make sure your returned object has a "ddel" attribute (with an HTML Element) for other functions to work.
-     * @param {Event} e The mouse down event
-     * @return {Object} The dragData
-     */
-    getDragData : function(e){
-        return Ext.dd.Registry.getHandleFromEvent(e);
-    },
-
-    /**
-     * Called once drag threshold has been reached to initialize the proxy element. By default, it clones the
-     * this.dragData.ddel
-     * @param {Number} x The x position of the click on the dragged object
-     * @param {Number} y The y position of the click on the dragged object
-     * @return {Boolean} true to continue the drag, false to cancel
-     * @template
-     */
-    onInitDrag : function(x, y){
-        this.proxy.update(this.dragData.ddel.cloneNode(true));
-        this.onStartDrag(x, y);
-        return true;
-    },
-
-    /**
-     * Called after a repair of an invalid drop. By default, highlights this.dragData.ddel
-     * @template
-     */
-    afterRepair : function(){
-        var me = this;
-        if (Ext.enableFx) {
-            Ext.fly(me.dragData.ddel).highlight(me.repairHighlightColor);
-        }
-        me.dragging = false;
-    },
-
-    /**
-     * Called before a repair of an invalid drop to get the XY to animate to. By default returns the XY of
-     * this.dragData.ddel
-     * @param {Event} e The mouse up event
-     * @return {Number[]} The xy location (e.g. `[100, 200]`)
-     * @template
-     */
-    getRepairXY : function(e){
-        return Ext.fly(this.dragData.ddel).getXY();
-    },
-
-    destroy : function(){
-        this.callParent();
-        if (this.containerScroll) {
-            Ext.dd.ScrollManager.unregister(this.el);
-        }
-    }
-});
-
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 11/1/11
- * Time: 12:37 PM
- */
-Ext.define('App.classes.form.fields.Help', {
-    extend       : 'Ext.Img',
-    alias        : 'widget.helpbutton',
-    src          : 'resources/images/icons/icohelp.png',
-    height       : 16,
-    width        : 16,
-    margin       : '3 10',
-    helpMsg      : i18n['help_message'],
-    initComponent: function() {
-        var me = this;
-        me.listeners = {
-            render: function(c) {
-                me.setToolTip(c.getEl());
-            }
-        };
-        me.callParent();
-    },
-
-    setToolTip: function(el) {
-        Ext.create('Ext.tip.ToolTip', {
-            target      : el,
-            dismissDelay: 0,
-            html        : this.helpMsg
-        });
-    }
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 11/1/11
- * Time: 12:37 PM
- */
-Ext.define('App.classes.form.fields.Checkbox', {
-	extend        : 'Ext.form.field.Checkbox',
-	alias         : 'widget.mitos.checkbox',
-	inputValue    : '1',
-	uncheckedValue: '0'
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: GaiaEHR
- * Date: 3/18/12
- * Time: 10:02 PM
- * To change this template use File | Settings | File Templates.
- */
-/*
- * GNU General Public License Usage
- * This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
- *
- * http://www.gnu.org/licenses/lgpl.html
- *
- * @description: This class provide aditional format to numbers by extending Ext.form.field.Number
- *
- * @author: Greivin Britton
- * @email: brittongr@gmail.com
- * @version: 2 compatible with ExtJS 4
- */
-Ext.define('App.classes.form.fields.Currency',
-    {
-        extend:'Ext.form.field.Number', //Extending the NumberField
-        alias:'widget.mitos.currency', //Defining the xtype,
-        currencySymbol:'$',
-        useThousandSeparator:true,
-        thousandSeparator:',',
-        alwaysDisplayDecimals:true,
-        fieldStyle:'text-align: right;',
-        initComponent:function () {
-            if (this.useThousandSeparator && this.decimalSeparator == ',' && this.thousandSeparator == ',')
-                this.thousandSeparator = '.';
-            else
-            if (this.allowDecimals && this.thousandSeparator == '.' && this.decimalSeparator == '.')
-                this.decimalSeparator = ',';
-
-            this.callParent(arguments);
-        },
-        setValue:function (value) {
-            App.classes.form.fields.Currency.superclass.setValue.call(this, value != null ? value.toString().replace('.', this.decimalSeparator) : value);
-
-            this.setRawValue(this.getFormattedValue(this.getValue()));
-        },
-        getFormattedValue:function (value) {
-            if (Ext.isEmpty(value) || !this.hasFormat())
-                return value;
-            else {
-                var neg = null;
-
-                value = (neg = value < 0) ? value * -1 : value;
-                value = this.allowDecimals && this.alwaysDisplayDecimals ? value.toFixed(this.decimalPrecision) : value;
-
-                if (this.useThousandSeparator) {
-                    if (this.useThousandSeparator && Ext.isEmpty(this.thousandSeparator))
-                        throw ('NumberFormatException: invalid thousandSeparator, property must has a valid character.');
-
-                    if (this.thousandSeparator == this.decimalSeparator)
-                        throw ('NumberFormatException: invalid thousandSeparator, thousand separator must be different from decimalSeparator.');
-
-                    value = value.toString();
-
-                    var ps = value.split('.');
-                    ps[1] = ps[1] ? ps[1] : null;
-
-                    var whole = ps[0];
-
-                    var r = /(\d+)(\d{3})/;
-
-                    var ts = this.thousandSeparator;
-
-                    while (r.test(whole))
-                        whole = whole.replace(r, '$1' + ts + '$2');
-
-                    value = whole + (ps[1] ? this.decimalSeparator + ps[1] : '');
-                }
-
-                return Ext.String.format('{0}{1}{2}', (neg ? '-' : ''), (Ext.isEmpty(this.currencySymbol) ? '' : this.currencySymbol + ' '), value);
-            }
-        },
-        /**
-         * overrides parseValue to remove the format applied by this class
-         */
-        parseValue:function (value) {
-            //Replace the currency symbol and thousand separator
-            return App.classes.form.fields.Currency.superclass.parseValue.call(this, this.removeFormat(value));
-        },
-        /**
-         * Remove only the format added by this class to let the superclass validate with it's rules.
-         * @param {Object} value
-         */
-        removeFormat:function (value) {
-            if (Ext.isEmpty(value) || !this.hasFormat())
-                return value;
-            else {
-                value = value.toString().replace(this.currencySymbol + ' ', '');
-
-                value = this.useThousandSeparator ? value.replace(new RegExp('[' + this.thousandSeparator + ']', 'g'), '') : value;
-
-                return value;
-            }
-        },
-        /**
-         * Remove the format before validating the the value.
-         * @param {Number} value
-         */
-        getErrors:function (value) {
-            return App.classes.form.fields.Currency.superclass.getErrors.call(this, this.removeFormat(value));
-        },
-        hasFormat:function () {
-            return this.decimalSeparator != '.' || (this.useThousandSeparator == true && this.getRawValue() != null) || !Ext.isEmpty(this.currencySymbol) || this.alwaysDisplayDecimals;
-        },
-        /**
-         * Display the numeric value with the fixed decimal precision and without the format using the setRawValue, don't need to do a setValue because we don't want a double
-         * formatting and process of the value because beforeBlur perform a getRawValue and then a setValue.
-         */
-        onFocus:function () {
-            this.setRawValue(this.removeFormat(this.getRawValue()));
-
-            this.callParent(arguments);
-        }
-    });
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 1/22/12
- * Time: 11:46 AM
- */
-/**
- * @class Ext.ux.form.field.DateTime
- * @extends Ext.form.FieldContainer
- * @author atian25 (http://www.sencha.com/forum/member.php?51682-atian25)
- * @author ontho (http://www.sencha.com/forum/member.php?285806-ontho)
- * @author jakob.ketterl (http://www.sencha.com/forum/member.php?25102-jakob.ketterl)
- */
-Ext.define('App.classes.form.fields.DateTime', {
-	extend: 'Ext.form.FieldContainer',
-	mixins: {
-		field: 'Ext.form.field.Field'
-	},
-	alias : 'widget.mitos.datetime',
-
-	//configurables
-
-	combineErrors: true,
-	msgTarget    : 'under',
-	layout       : 'hbox',
-	readOnly     : false,
-
-	/**
-	 * @cfg {String} dateFormat
-	 * The default is 'Y-m-d'
-	 */
-	dateFormat    : 'Y-m-d',
-	/**
-	 * @cfg {String} timeFormat
-	 * The default is 'H:i:s'
-	 */
-	timeFormat    : 'g:i:s a',
-	/**
-	 * @cfg {String} dateTimeFormat
-	 * The format used when submitting the combined value.
-	 * Defaults to 'Y-m-d H:i:s'
-	 */
-	dateTimeFormat: 'Y-m-d H:i:s',
-	/**
-	 * @cfg {Object} dateConfig
-	 * Additional config options for the date field.
-	 */
-	dateConfig    : {},
-	/**
-	 * @cfg {Object} timeConfig
-	 * Additional config options for the time field.
-	 */
-	timeConfig    : {},
-
-
-	// properties
-
-	dateValue: null, // Holds the actual date
-	/**
-	 * @property dateField
-	 * @type Ext.form.field.Date
-	 */
-	dateField: null,
-	/**
-	 * @property timeField
-	 * @type Ext.form.field.Time
-	 */
-	timeField: null,
-
-	initComponent: function() {
-		var me = this;
-		me.items = me.items || [];
-
-		me.dateField = Ext.create('Ext.form.field.Date', Ext.apply({
-			format     : me.dateFormat,
-			flex       : 1,
-			submitValue: false
-		}, me.dateConfig, null));
-		me.items.push(me.dateField);
-
-		me.timeField = Ext.create('Ext.form.field.Time', Ext.apply({
-			format     : me.timeFormat,
-			flex       : 1,
-			submitValue: false
-		}, me.timeConfig, null));
-		me.items.push(me.timeField);
-
-		for(var i = 0; i < me.items.length; i++) {
-			me.items[i].on('focus', Ext.bind(me.onItemFocus, me));
-			me.items[i].on('blur', Ext.bind(me.onItemBlur, me));
-			me.items[i].on('specialkey', function(field, event) {
-				var key = event.getKey(),
-					tab = key == event.TAB;
-
-				if(tab && me.focussedItem == me.dateField) {
-					event.stopEvent();
-					me.timeField.focus();
-					return;
-				}
-
-				me.fireEvent('specialkey', field, event);
-			});
-		}
-
-		if(me.layout == 'vbox') me.height = 44;
-
-		me.callParent();
-
-		// this dummy is necessary because Ext.Editor will not check whether an inputEl is present or not
-		this.inputEl = {
-			dom         : {},
-			swallowEvent: function() {
-			}
-		};
-
-		me.initField();
-	},
-
-	focus: function() {
-		this.callParent();
-		this.dateField.focus();
-	},
-
-	onItemFocus: function(item) {
-		if(this.blurTask) this.blurTask.cancel();
-		this.focussedItem = item;
-	},
-
-	onItemBlur: function(item) {
-		var me = this;
-		if(item != me.focussedItem) return;
-		// 100ms to focus a new item that belongs to us, otherwise we will assume the user left the field
-		me.blurTask = new Ext.util.DelayedTask(function() {
-			me.fireEvent('blur', me);
-		});
-		me.blurTask.delay(100);
-	},
-
-	getValue: function() {
-		var value = null,
-			date = this.dateField.getSubmitValue(),
-			time = this.timeField.getSubmitValue();
-
-		if(date) {
-			if(time) {
-				var format = this.getFormat();
-				value = Ext.Date.parse(date + ' ' + time, format);
-			}
-			else {
-				value = this.dateField.getValue();
-			}
-		}
-		return value;
-	},
-
-	getSubmitValue: function() {
-		var value = this.getValue();
-		return value ? Ext.Date.format(value, this.dateTimeFormat) : null;
-	},
-
-	setValue: function(value) {
-		if(Ext.isString(value)) {
-			value = Ext.Date.parse(value, this.dateTimeFormat);
-		}
-		this.dateField.setValue(value);
-		this.timeField.setValue(value);
-	},
-
-	getFormat    : function() {
-		return (this.dateField.submitFormat || this.dateField.format) + " " + (this.timeField.submitFormat || this.timeField.format);
-	},
-
-	// Bug? A field-mixin submits the data from getValue, not getSubmitValue
-	getSubmitData: function() {
-		var me = this,
-			data = null;
-		if(!me.disabled && me.submitValue && !me.isFileUpload()) {
-			data = {};
-			data[me.getName()] = '' + me.getSubmitValue();
-		}
-		return data;
-	},
-
-    setReadOnly:function(value){
-        this.dateField.setReadOnly(value);
-        this.timeField.setReadOnly(value);
-    }
-});
-
-//eo file
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 10/31/11
- * Time: 3:24 PM
- */
-Ext.define('App.classes.form.Panel', {
-	extend   : 'Ext.form.Panel',
-	alias    : 'widget.mitos.form',
-	bodyStyle: 'padding: 10px;',
-	autoWidth: true,
-	border   : false
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 3/14/12
- * Time: 9:07 PM
- */
-Ext.define('App.classes.grid.EventHistory',{
-    extend: 'Ext.grid.Panel',
-    alias : 'widget.mitos.eventhistorygrid',
-    initComponent:function(){
-        Ext.apply(this,{
-            columns: [
-                { header: i18n['date'],  dataIndex: 'date', width: 140, renderer: Ext.util.Format.dateRenderer('Y-m-d g:i:s a') },
-                { header: i18n['user'],  dataIndex: 'user', width: 150 },
-                { header: i18n['event'], dataIndex: 'event', flex: 1 }
-            ]
-        },null);
-
-        this.callParent(arguments);
-    }
-});
-/*
-
-This file is part of Ext JS 4
-
-Copyright (c) 2011 Sencha Inc
-
-Contact:  http://www.sencha.com/contact
-
-GNU General Public License Usage
-This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
-
-If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
-
-*/
-/**
- * The Ext.grid.plugin.RowEditing plugin injects editing at a row level for a Grid. When editing begins,
- * a small floating dialog will be shown for the appropriate row. Each editable column will show a field
- * for editing. There is a button to save or cancel all changes for the edit.
- *
- * The field that will be used for the editor is defined at the
- * {@link Ext.grid.column.Column#editor editor}. The editor can be a field instance or a field configuration.
- * If an editor is not specified for a particular column then that column won't be editable and the value of
- * the column will be displayed.
- *
- * The editor may be shared for each column in the grid, or a different one may be specified for each column.
- * An appropriate field type should be chosen to match the data structure that it will be editing. For example,
- * to edit a date, it would be useful to specify {@link Ext.form.field.Date} as the editor.
- *
- *     @example
- *     Ext.create('Ext.data.Store', {
- *         storeId:'simpsonsStore',
- *         fields:['name', 'email', 'phone'],
- *         data: [
- *             {"name":"Lisa", "email":"lisa@simpsons.com", "phone":"555-111-1224"},
- *             {"name":"Bart", "email":"bart@simpsons.com", "phone":"555--222-1234"},
- *             {"name":"Homer", "email":"home@simpsons.com", "phone":"555-222-1244"},
- *             {"name":"Marge", "email":"marge@simpsons.com", "phone":"555-222-1254"}
- *         ]
- *     });
- *
- *     Ext.create('Ext.grid.Panel', {
- *         title: 'Simpsons',
- *         store: Ext.data.StoreManager.lookup('simpsonsStore'),
- *         columns: [
- *             {header: 'Name',  dataIndex: 'name', editor: 'textfield'},
- *             {header: 'Email', dataIndex: 'email', flex:1,
- *                 editor: {
- *                     xtype: 'textfield',
- *                     allowBlank: false
- *                 }
- *             },
- *             {header: 'Phone', dataIndex: 'phone'}
- *         ],
- *         selType: 'rowmodel',
- *         plugins: [
- *             Ext.create('Ext.grid.plugin.RowEditing', {
- *                 clicksToEdit: 1
- *             })
- *         ],
- *         height: 200,
- *         width: 400,
- *         renderTo: Ext.getBody()
- *     });
- */
-Ext.define('App.classes.grid.RowFormEditing', {
-    extend: 'Ext.grid.plugin.Editing',
-    alias: 'plugin.rowformediting',
-
-    requires: [
-        'App.classes.grid.RowFormEditor'
-    ],
-
-    editStyle: 'row',
-
-    /**
-     * @cfg {Boolean} autoCancel
-     * True to automatically cancel any pending changes when the row editor begins editing a new row.
-     * False to force the user to explicitly cancel the pending changes. Defaults to true.
-     */
-    autoCancel: true,
-
-    /**
-     * @cfg {Number} clicksToMoveEditor
-     * The number of clicks to move the row editor to a new row while it is visible and actively editing another row.
-     * This will default to the same value as {@link Ext.grid.plugin.Editing#clicksToEdit clicksToEdit}.
-     */
-
-    /**
-     * @cfg {Boolean} errorSummary
-     * True to show a {@link Ext.tip.ToolTip tooltip} that summarizes all validation errors present
-     * in the row editor. Set to false to prevent the tooltip from showing. Defaults to true.
-     */
-    errorSummary: true,
-
-    /**
-     * @event beforeedit
-     * Fires before row editing is triggered.
-     *
-     * @param {Ext.grid.plugin.Editing} editor
-     * @param {Object} e An edit event with the following properties:
-     *
-     * - grid - The grid this editor is on
-     * - view - The grid view
-     * - store - The grid store
-     * - record - The record being edited
-     * - row - The grid table row
-     * - column - The grid {@link Ext.grid.column.Column Column} defining the column that initiated the edit
-     * - rowIdx - The row index that is being edited
-     * - colIdx - The column index that initiated the edit
-     * - cancel - Set this to true to cancel the edit or return false from your handler.
-     */
-    
-    /**
-     * @event canceledit
-     * Fires when the user has started editing a row but then cancelled the edit
-     * @param {Object} grid The grid
-     */
-    
-    /**
-     * @event edit
-     * Fires after a row is edited. Usage example:
-     *
-     *     grid.on('edit', function(editor, e) {
-     *         // commit the changes right after editing finished
-     *         e.record.commit();
-     *     };
-     *
-     * @param {Ext.grid.plugin.Editing} editor
-     * @param {Object} e An edit event with the following properties:
-     *
-     * - grid - The grid this editor is on
-     * - view - The grid view
-     * - store - The grid store
-     * - record - The record being edited
-     * - row - The grid table row
-     * - column - The grid {@link Ext.grid.column.Column Column} defining the column that initiated the edit
-     * - rowIdx - The row index that is being edited
-     * - colIdx - The column index that initiated the edit
-     */
-    /**
-     * @event validateedit
-     * Fires after a cell is edited, but before the value is set in the record. Return false to cancel the change. The
-     * edit event object has the following properties
-     *
-     * Usage example showing how to remove the red triangle (dirty record indicator) from some records (not all). By
-     * observing the grid's validateedit event, it can be cancelled if the edit occurs on a targeted row (for example)
-     * and then setting the field's new value in the Record directly:
-     *
-     *     grid.on('validateedit', function(editor, e) {
-     *       var myTargetRow = 6;
-     *
-     *       if (e.rowIdx == myTargetRow) {
-     *         e.cancel = true;
-     *         e.record.data[e.field] = e.value;
-     *       }
-     *     });
-     *
-     * @param {Ext.grid.plugin.Editing} editor
-     * @param {Object} e An edit event with the following properties:
-     *
-     * - grid - The grid this editor is on
-     * - view - The grid view
-     * - store - The grid store
-     * - record - The record being edited
-     * - row - The grid table row
-     * - column - The grid {@link Ext.grid.column.Column Column} defining the column that initiated the edit
-     * - rowIdx - The row index that is being edited
-     * - colIdx - The column index that initiated the edit
-     * - cancel - Set this to true to cancel the edit or return false from your handler.
-     */
-
-    constructor: function() {
-        var me = this;
-        me.callParent(arguments);
-
-        if (!me.clicksToMoveEditor) {
-            me.clicksToMoveEditor = me.clicksToEdit;
-        }
-
-        me.autoCancel = !!me.autoCancel;
-    },
-
-    init: function(grid) {
-        this.callParent([grid]);
-    },
-
-    /**
-     * @private
-     * AbstractComponent calls destroy on all its plugins at destroy time.
-     */
-    destroy: function() {
-        var me = this;
-        Ext.destroy(me.editor);
-        me.callParent(arguments);
-    },
-
-    /**
-     * Starts editing the specified record, using the specified Column definition to define which field is being edited.
-     * @param {Ext.data.Model} record The Store data record which backs the row to be edited.
-     * @param {Ext.data.Model} columnHeader The Column object defining the column to be edited. @override
-     */
-    startEdit: function(record, columnHeader) {
-        var me = this,
-            editor = me.getEditor();
-
-        if (me.callParent(arguments) === false) {
-            return false;
-        }
-
-        // Fire off our editor
-        if (editor.beforeEdit() !== false) {
-            editor.startEdit(me.context.record, me.context.column);
-        }
-    },
-
-    // private
-    cancelEdit: function() {
-        var me = this;
-
-        if (me.editing) {
-            me.getEditor().cancelEdit();
-            me.callParent(arguments);
-            
-            me.fireEvent('canceledit', me.context);
-        }
-    },
-
-    // private
-    completeEdit: function() {
-        var me = this;
-
-        if (me.editing && me.validateEdit()) {
-            me.editing = false;
-            me.fireEvent('edit', me, me.context);
-        }
-    },
-
-    completeRemove:function(){
-        var me = this;
-
-        if (me.editing) {
-            me.getEditor().completeRemove();
-            //me.callParent(arguments);
-
-            me.fireEvent('completeremove', me, me.context);
-        }
-
-    },
-
-    // private
-    validateEdit: function() {
-        var me             = this,
-            editor         = me.editor,
-            context        = me.context,
-            record         = context.record,
-            newValues      = {},
-            originalValues = {},
-            editors        = editor.getForm().getFields().items,
-            e,
-            eLen           = editors.length,
-            name, item;
-
-        for (e = 0; e < eLen; e++) {
-            item = editors[e];
-            name = item.name;
-
-            newValues[name]      = item.getValue();
-            originalValues[name] = record.get(name);
-        }
-
-        Ext.apply(context, {
-            newValues      : newValues,
-            originalValues : originalValues
-        });
-
-        return me.callParent(arguments) && me.getEditor().completeEdit();
-    },
-
-    // private
-    getEditor: function() {
-        var me = this;
-
-        if (!me.editor) {
-            me.editor = me.initEditor();
-        }
-        return me.editor;
-    },
-
-    // private
-    initEditor: function() {
-        var me       = this,
-            grid     = me.grid,
-            view     = me.view,
-            headerCt = grid.headerCt,
-            btns     = ['saveBtnText', 'cancelBtnText', 'errorsText', 'dirtyText'],
-            b,
-            bLen     = btns.length,
-            cfg      = {
-                autoCancel: me.autoCancel,
-                errorSummary: me.errorSummary,
-                fields: headerCt.getGridColumns(),
-                hidden: true,
-
-                // keep a reference..
-                editingPlugin: me,
-                renderTo: view.el
-            },
-            item;
-
-        for (b = 0; b < bLen; b++) {
-            item = btns[b];
-
-            if (Ext.isDefined(me[item])) {
-                cfg[item] = me[item];
-            }
-        }
-        return Ext.create('App.classes.grid.RowFormEditor', cfg);
-    },
-
-    // private
-    initEditTriggers: function() {
-        var me = this,
-            moveEditorEvent = me.clicksToMoveEditor === 1 ? 'click' : 'dblclick';
-
-        me.callParent(arguments);
-
-        if (me.clicksToMoveEditor !== me.clicksToEdit) {
-            me.mon(me.view, 'cell' + moveEditorEvent, me.moveEditorByClick, me);
-        }
-    },
-
-    addHeaderEvents: function(){
-        var me = this;
-        me.callParent();
-
-        me.mon(me.grid.headerCt, {
-            scope: me,
-            columnresize: me.onColumnResize,
-            columnhide: me.onColumnHide,
-            columnshow: me.onColumnShow,
-            columnmove: me.onColumnMove
-        });
-    },
-
-    startEditByClick: function() {
-        var me = this;
-        if (!me.editing || me.clicksToMoveEditor === me.clicksToEdit) {
-            me.callParent(arguments);
-        }
-    },
-
-    moveEditorByClick: function() {
-        var me = this;
-        if (me.editing) {
-            me.superclass.startEditByClick.apply(me, arguments);
-        }
-    },
-
-    // private
-    onColumnAdd: function(ct, column) {
-        if (column.isHeader) {
-            var me = this,
-                editor;
-
-            me.initFieldAccessors(column);
-            editor = me.getEditor();
-
-            if (editor && editor.onColumnAdd) {
-                editor.onColumnAdd(column);
-            }
-        }
-    },
-
-    // private
-    onColumnRemove: function(ct, column) {
-        if (column.isHeader) {
-            var me = this,
-                editor = me.getEditor();
-
-            if (editor && editor.onColumnRemove) {
-                editor.onColumnRemove(column);
-            }
-            me.removeFieldAccessors(column);
-        }
-    },
-
-    // private
-    onColumnResize: function(ct, column, width) {
-        if (column.isHeader) {
-            var me = this,
-                editor = me.getEditor();
-
-            if (editor && editor.onColumnResize) {
-                editor.onColumnResize(column, width);
-            }
-        }
-    },
-
-    // private
-    onColumnHide: function(ct, column) {
-        // no isHeader check here since its already a columnhide event.
-        var me = this,
-            editor = me.getEditor();
-
-        if (editor && editor.onColumnHide) {
-            editor.onColumnHide(column);
-        }
-    },
-
-    // private
-    onColumnShow: function(ct, column) {
-        // no isHeader check here since its already a columnshow event.
-        var me = this,
-            editor = me.getEditor();
-
-        if (editor && editor.onColumnShow) {
-            editor.onColumnShow(column);
-        }
-    },
-
-    // private
-    onColumnMove: function(ct, column, fromIdx, toIdx) {
-        // no isHeader check here since its already a columnmove event.
-        var me = this,
-            editor = me.getEditor();
-
-        if (editor && editor.onColumnMove) {
-            editor.onColumnMove(column, fromIdx, toIdx);
-        }
-    },
-
-    // private
-    setColumnField: function(column, field) {
-        var me = this;
-        me.callParent(arguments);
-        me.getEditor().setField(column.field, column);
-    }
-});
-
-
-/*
-
-This file is part of Ext JS 4
-
-Copyright (c) 2011 Sencha Inc
-
-Contact:  http://www.sencha.com/contact
-
-GNU General Public License Usage
-This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
-
-If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
-
-*/
-// Currently has the following issues:
-// - Does not handle postEditValue
-// - Fields without editors need to sync with their values in Store
-// - starting to edit another record while already editing and dirty should probably prevent it
-// - aggregating validation messages
-// - tabIndex is not managed bc we leave elements in dom, and simply move via positioning
-// - layout issues when changing sizes/width while hidden (layout bug)
-
-/**
- * @class Ext.grid.RowEditor
- * @extends Ext.form.Panel
- *
- * Internal utility class used to provide row editing functionality. For developers, they should use
- * the RowEditing plugin to use this functionality with a grid.
- *
- * @ignore
- */
-Ext.define('App.classes.grid.RowFormEditor', {
-    extend: 'Ext.form.Panel',
-    requires: [
-        'Ext.tip.ToolTip',
-        'Ext.util.HashMap',
-        'Ext.util.KeyNav'
-    ],
-
-    saveBtnText  : i18n['update'],
-    cancelBtnText: i18n['cancel'],
-    removeBtnText: i18n['remove'],
-    errorsText: i18n['errors'],
-    dirtyText: i18n['commit_cancel_your_changes'],
-    lastScrollLeft: 0,
-    lastScrollTop: 0,
-    bodyPadding: 5,
-    padding:'0 0 5 0',
-    border: false,
-    buttonAlign:'center',
-    // Change the hideMode to offsets so that we get accurate measurements when
-    // the roweditor is hidden for laying out things like a TriggerField.
-    hideMode: 'offsets',
-
-    initComponent: function() {
-        var me = this,
-            form, plugin;
-
-        me.cls = Ext.baseCSSPrefix + 'grid-row-editor grid-row-form-editor';
-        me.currRowH = null;
-        plugin = me.editingPlugin;
-        me.items = plugin.formItems;
-
-        me.buttons = [{
-            action: 'update',
-            xtype: 'button',
-            handler: plugin.completeEdit,
-            scope: plugin,
-            text: me.saveBtnText,
-            disabled: !me.isValid,
-            minWidth: Ext.panel.Panel.prototype.minButtonWidth
-        },
-        {
-            xtype: 'button',
-            handler: plugin.cancelEdit,
-            scope: plugin,
-            text: me.cancelBtnText,
-            minWidth: Ext.panel.Panel.prototype.minButtonWidth
-        }];
-        if(plugin.enableRemove){
-            me.buttons.push({
-                xtype: 'button',
-                handler: plugin.completeRemove,
-                scope: plugin,
-                text: me.removeBtnText,
-                minWidth: Ext.panel.Panel.prototype.minButtonWidth
-            });
-        }
-
-        me.callParent(arguments);
-        form = me.getForm();
-        me.setFields();
-        form.trackResetOnLoad = true;
-    },
-
-    onFieldValueChange: function() {
-        var me = this,
-            form = me.getForm(),
-            valid = form.isValid(), btn;
-        if (me.errorSummary && me.isVisible()) {
-            me[valid ? 'hideToolTip' : 'showToolTip']();
-        }
-        btn = me.query('button[action="update"]')[0];
-        if (btn){
-            btn.setDisabled(!valid);
-        }
-        me.isValid = valid;
-    },
-
-    afterRender: function() {
-        var me = this,
-            plugin = me.editingPlugin;
-
-        me.callParent(arguments);
-        me.mon(me.renderTo, 'scroll', me.onCtScroll, me, { buffer: 100 });
-
-        // Prevent from bubbling click events to the grid view
-        me.mon(me.el, {
-            click: Ext.emptyFn,
-            stopPropagation: true
-        });
-
-        me.el.swallowEvent([
-            'keypress',
-            'keydown'
-        ]);
-
-        me.keyNav = new Ext.util.KeyNav(me.el, {
-            //enter: plugin.completeEdit,
-            esc: plugin.onEscKey,
-            scope: plugin
-        });
-
-        me.mon(plugin.view, {
-            beforerefresh: me.onBeforeViewRefresh,
-            refresh: me.onViewRefresh,
-            scope: me
-        });
-    },
-
-    onBeforeViewRefresh: function(view) {
-        var me = this,
-            viewDom = view.el.dom;
-
-        if (me.el.dom.parentNode === viewDom) {
-            viewDom.removeChild(me.el.dom);
-        }
-    },
-
-    onViewRefresh: function(view) {
-        var me = this,
-            viewDom = view.el.dom,
-            context = me.context,
-            idx;
-
-        viewDom.appendChild(me.el.dom);
-
-        // Recover our row node after a view refresh
-        if (context && (idx = context.store.indexOf(context.record)) >= 0) {
-            context.row = view.getNode(idx);
-            me.reposition();
-            if (me.tooltip && me.tooltip.isVisible()) {
-                me.tooltip.setTarget(context.row);
-            }
-        } else {
-            me.editingPlugin.cancelEdit();
-        }
-    },
-
-    onCtScroll: function(e, target) {
-        var me = this,
-            scrollTop  = target.scrollTop,
-            scrollLeft = target.scrollLeft;
-
-        if (scrollTop !== me.lastScrollTop) {
-            me.lastScrollTop = scrollTop;
-            if ((me.tooltip && me.tooltip.isVisible()) || me.hiddenTip) {
-                me.repositionTip();
-            }
-        }
-        if (scrollLeft !== me.lastScrollLeft) {
-            me.lastScrollLeft = scrollLeft;
-            me.reposition();
-        }
-    },
-
-    reposition: function(animateConfig) {
-        if(this.currRowH) this.currRow.setHeight(this.currRowH);
-
-        var me = this,
-            context = me.context,
-            row = context && Ext.get(context.row),
-            //btns = me.getFloatingButtons(),
-            //btnEl = btns.el,
-            grid = me.editingPlugin.grid,
-            viewEl = grid.view.el,
-            scroller = grid.verticalScroller,
-
-
-            // always get data from ColumnModel as its what drives
-            // the GridView's sizing
-            mainBodyWidth = grid.headerCt.getFullWidth(),
-            scrollerWidth = grid.getWidth(),
-
-            // use the minimum as the columns may not fill up the entire grid
-            // width
-            width = Math.min(mainBodyWidth, scrollerWidth),
-            scrollLeft = grid.view.el.dom.scrollLeft,
-            //btnWidth = btns.getWidth(),
-            //left = (width - btnWidth) / 2 + scrollLeft,
-            y, rowH, newHeight,
-
-            invalidateScroller = function() {
-                if (scroller) {
-                    scroller.invalidate();
-                    btnEl.scrollIntoView(viewEl, false);
-                }
-                if (animateConfig && animateConfig.callback) {
-                    animateConfig.callback.call(animateConfig.scope || me);
-                }
-            };
-
-        // need to set both top/left
-        if (row && Ext.isElement(row.dom)) {
-            // Bring our row into view if necessary, so a row editor that's already
-            // visible and animated to the row will appear smooth
-            row.scrollIntoView(viewEl, false);
-
-            // Get the y position of the row relative to its top-most static parent.
-            // offsetTop will be relative to the table, and is incorrect
-            // when mixed with certain grid features (e.g., grouping).
-            y = row.getXY()[1] + 19;
-
-
-            me.currRowH = row.getHeight();
-            me.currRow = row;
-
-            row.setHeight(me.getHeight() + 19);
-
-            // IE doesn't set the height quite right.
-            // This isn't a border-box issue, it even happens
-            // in IE8 and IE7 quirks.
-            // TODO: Test in IE9!
-            if (Ext.isIE) {
-                newHeight += 2;
-            }
-
-            if (animateConfig) {
-                var animObj = {
-                    to: {
-                        y: y
-                    },
-                    duration: animateConfig.duration || 125,
-                    listeners: {
-                        afteranimate: function() {
-                            invalidateScroller();
-                            y = row.getXY()[1] + 19;
-                            me.el.setY(y);
-                        }
-                    }
-                };
-                me.animate(animObj);
-            } else {
-                me.el.setY(y);
-                invalidateScroller();
-            }
-        }
-        if (me.getWidth() != mainBodyWidth) {
-            me.setWidth(mainBodyWidth);
-        }
-        //btnEl.setLeft(left);
-    },
-
-    resizeEditor:function(){
-
-        if(this.currRowH) this.currRow.setHeight(this.currRowH);
-
-        var me = this,
-            context = me.context,
-            row = context && Ext.get(context.row),
-            //btns = me.getFloatingButtons(),
-            //btnEl = btns.el,
-            grid = me.editingPlugin.grid,
-            viewEl = grid.view.el,
-            scroller = grid.verticalScroller,
-
-
-            // always get data from ColumnModel as its what drives
-            // the GridView's sizing
-            mainBodyWidth = grid.headerCt.getFullWidth(),
-            scrollerWidth = grid.getWidth(),
-
-            // use the minimum as the columns may not fill up the entire grid
-            // width
-            width = Math.min(mainBodyWidth, scrollerWidth),
-            scrollLeft = grid.view.el.dom.scrollLeft,
-            //btnWidth = btns.getWidth(),
-            //left = (width - btnWidth) / 2 + scrollLeft,
-            y, rowH, newHeight;
-
-
-        // need to set both top/left
-        if (row && Ext.isElement(row.dom)) {
-            // Bring our row into view if necessary, so a row editor that's already
-            // visible and animated to the row will appear smooth
-            row.scrollIntoView(viewEl, false);
-
-            // Get the y position of the row relative to its top-most static parent.
-            // offsetTop will be relative to the table, and is incorrect
-            // when mixed with certain grid features (e.g., grouping).
-            y = row.getXY()[1] + 19;
-
-
-            me.currRowH = row.getHeight();
-            me.currRow = row;
-
-            row.setHeight(me.getHeight() + 19);
-
-            // IE doesn't set the height quite right.
-            // This isn't a border-box issue, it even happens
-            // in IE8 and IE7 quirks.
-            // TODO: Test in IE9!
-            if (Ext.isIE) {
-                newHeight += 2;
-            }
-
-        }
-        if (me.getWidth() != mainBodyWidth) {
-            me.setWidth(mainBodyWidth);
-        }
-    },
-
-    getGridStores:function(){
-        var me = this,
-            grids = me.query('grid'),
-            stores = [];
-        for(var i=0; i < grids.length; i++){
-            stores.push(grids[i].store);
-        }
-        return stores;
-    },
-
-    syncChildStoresChanges:function(){
-        var me = this,
-            stores = me.getGridStores();
-        for(var i=0; i < stores.length; i++){
-            stores[i].sync();
-        }
-    },
-
-    rejectChildStoresChanges:function(){
-        var me = this,
-            stores = me.getGridStores();
-        for(var i=0; i < stores.length; i++){
-            stores[i].rejectChanges();
-        }
-    },
-
-    getEditor: function(fieldInfo) {
-        var me = this;
-
-        if (Ext.isNumber(fieldInfo)) {
-            // Query only form fields. This just future-proofs us in case we add
-            // other components to RowEditor later on.  Don't want to mess with
-            // indices.
-            return me.query('>[isFormField]')[fieldInfo];
-        } else if (fieldInfo instanceof Ext.grid.column.Column) {
-            return fieldInfo.getEditor();
-        }
-        return false;
-    },
-
-    setFields: function(column) {
-        var me = this,
-            form = me.getForm(),
-            fields = form.getFields().items,
-            containers = me.query('container');
-        for(var i=0; i < fields.length; i++){
-            me.mon(fields[i], 'change', me.onFieldValueChange, me);
-        }
-        for(var k=0; k < containers.length; k++){
-            me.mon(containers[k], 'resize', me.resizeEditor, me);
-        }
-    },
-
-    loadRecord: function(record) {
-        var me = this,
-            form = me.getForm();
-        form.loadRecord(record);
-        if (form.isValid()) {
-            me.hideToolTip();
-        } else {
-            me.showToolTip();
-        }
-
-        // render display fields so they honor the column renderer/template
-        Ext.Array.forEach(me.query('>displayfield'), function(field) {
-            me.renderColumnData(field, record);
-        }, me);
-    },
-
-    renderColumnData: function(field, record) {
-        var me = this,
-            grid = me.editingPlugin.grid,
-            headerCt = grid.headerCt,
-            view = grid.view,
-            store = view.store,
-            form = me.getForm();
-
-        form.loadRecord(record);
-    },
-
-    beforeEdit: function() {
-        var me = this;
-
-        me.getGridStores();
-
-        if (me.isVisible() && !me.autoCancel && me.isDirty()) {
-            me.showToolTip();
-            return false;
-        }
-    },
-
-    /**
-     * Start editing the specified grid at the specified position.
-     * @param {Ext.data.Model} record The Store data record which backs the row to be edited.
-     * @param {Ext.data.Model} columnHeader The Column object defining the column to be edited.
-     */
-    startEdit: function(record, columnHeader) {
-        var me = this,
-            grid = me.editingPlugin.grid,
-            view = grid.getView(),
-            store = grid.store,
-            context = me.context = Ext.apply(me.editingPlugin.context, {
-                view: grid.getView(),
-                store: store
-            });
-
-        // make sure our row is selected before editing
-        context.grid.getSelectionModel().select(record);
-
-        // Reload the record data
-        me.loadRecord(record);
-
-        if (!me.isVisible()) {
-            me.show();
-            me.focusContextCell();
-        } else {
-            me.reposition({
-                callback: this.focusContextCell
-            });
-        }
-    },
-
-    // Focus the cell on start edit based upon the current context
-    focusContextCell: function() {
-        var field = this.getEditor(this.context.colIdx);
-        if (field && field.focus) {
-            field.focus();
-        }
-    },
-
-    cancelEdit: function() {
-        var me = this,
-            form = me.getForm();
-        me.rejectChildStoresChanges();
-        me.hide();
-        form.clearInvalid();
-        form.reset();
-    },
-
-    completeEdit: function() {
-        var me = this,
-            form = me.getForm();
-
-        if (!form.isValid()) {
-            return;
-        }
-        me.syncChildStoresChanges();
-        form.updateRecord(me.context.record);
-        me.hide();
-        return true;
-    },
-
-    completeRemove:function(){
-        var me = this,
-            form = me.getForm(),
-            view = me.context.view,
-            store = me.context.store,
-            record = view.getSelectionModel().getLastSelected();
-
-        store.remove(record);
-        me.hide();
-        form.clearInvalid();
-        form.reset();
-        me.editingPlugin.fireEvent('afterremove', me.context);
-    },
-
-    onShow: function() {
-        var me = this;
-        me.callParent(arguments);
-        me.reposition();
-    },
-
-    onHide: function() {
-        var me = this;
-        me.callParent(arguments);
-        me.hideToolTip();
-        me.invalidateScroller();
-        if (me.context) {
-            me.context.view.focus();
-            me.context = null;
-        }
-        me.currRow.setHeight(me.currRowH);
-        me.currRowH = null;
-    },
-
-    isDirty: function() {
-        var me = this,
-            form = me.getForm();
-        return form.isDirty();
-    },
-
-    getToolTip: function() {
-        var me = this,
-            tip;
-
-        if (!me.tooltip) {
-            me.tooltip = Ext.createWidget('tooltip', {
-                cls: Ext.baseCSSPrefix + 'grid-row-editor-errors',
-                title: me.errorsText,
-                autoHide: false,
-                closable: true,
-                closeAction: 'disable',
-                anchor: 'left'
-            });
-        }
-        return me.tooltip;
-    },
-
-    hideToolTip: function() {
-        var me = this,
-            tip = me.getToolTip();
-        if (tip.rendered) {
-            tip.disable();
-        }
-        me.hiddenTip = false;
-    },
-
-    showToolTip: function() {
-        var me = this,
-            tip = me.getToolTip(),
-            context = me.context,
-            row = Ext.get(context.row),
-            viewEl = context.grid.view.el;
-
-        tip.setTarget(row);
-        tip.showAt([-10000, -10000]);
-        tip.body.update(me.getErrors());
-        tip.mouseOffset = [viewEl.getWidth() - row.getWidth() + me.lastScrollLeft + 15, 0];
-        me.repositionTip();
-        tip.doLayout();
-        tip.enable();
-    },
-
-    repositionTip: function() {
-        var me = this,
-            tip = me.getToolTip(),
-            context = me.context,
-            row = Ext.get(context.row),
-            viewEl = context.grid.view.el,
-            viewHeight = viewEl.getHeight(),
-            viewTop = me.lastScrollTop,
-            viewBottom = viewTop + viewHeight,
-            rowHeight = row.getHeight(),
-            rowTop = row.dom.offsetTop,
-            rowBottom = rowTop + rowHeight;
-
-        if (rowBottom > viewTop && rowTop < viewBottom) {
-            tip.show();
-            me.hiddenTip = false;
-        } else {
-            tip.hide();
-            me.hiddenTip = true;
-        }
-    },
-
-    getErrors: function() {
-        var me = this,
-            dirtyText = !me.autoCancel && me.isDirty() ? me.dirtyText + '<br />' : '',
-            errors = [];
-
-        Ext.Array.forEach(me.query('>[isFormField]'), function(field) {
-            errors = errors.concat(
-                Ext.Array.map(field.getErrors(), function(e) {
-                    return '<li>' + e + '</li>';
-                })
-            );
-        }, me);
-
-        return dirtyText + '<ul>' + errors.join('') + '</ul>';
-    },
-
-    invalidateScroller: function() {
-        var me = this,
-            context = me.context,
-            scroller = context.grid.verticalScroller;
-
-        if (scroller) {
-            scroller.invalidate();
-        }
-    }
-});
-
-Ext.define('App.classes.combo.ActiveFacilities', {
-	extend       : 'Ext.form.ComboBox',
-	alias        : 'widget.mitos.activefacilitiescombo',
-	initComponent: function() {
-		var me = this;
-
-		Ext.define('ActiveFacilitiesComboModel', {
-			extend: 'Ext.data.Model',
-			fields: [
-				{name: 'option_name', type: 'string' },
-				{name: 'option_value', type: 'int' }
-			],
-			proxy : {
-				type: 'direct',
-				api : {
-					read: CombosData.getActiveFacilities
-				}
-			}
-		});
-
-		me.store = Ext.create('Ext.data.Store', {
-			model   : 'ActiveFacilitiesComboModel',
-			autoLoad: true
-		});
-
-		Ext.apply(this, {
-			editable    : false,
-			queryMode   : 'local',
-			valueField  : 'option_value',
-			displayField: 'option_name',
-			emptyText   : i18n['select'],
-			store       : me.store
-		}, null);
-		me.callParent(arguments);
-	}
-});
-Ext.define('App.classes.combo.ActiveInsurances', {
-	extend       : 'Ext.form.ComboBox',
-	alias        : 'widget.activeinsurancescombo',
-	initComponent: function() {
-		var me = this;
-
-		// *************************************************************************************
-		// Structure, data for Insurance Payer Types
-		// AJAX -> component_data.ejs.php
-		// *************************************************************************************
-
-        Ext.define('ActiveInsurancesComboModel', {
-      			extend: 'Ext.data.Model',
-      			fields: [
-      				{name: 'option_name', type: 'string' },
-      				{name: 'option_value', type: 'string' }
-      			],
-      			proxy : {
-      				type: 'direct',
-      				api : {
-      					read: CombosData.getActiveInsurances
-      				}
-      			}
-      		});
-
-      		me.store = Ext.create('Ext.data.Store', {
-      			model   : 'ActiveInsurancesComboModel'
-      		});
-
-		Ext.apply(this, {
-			editable    : false,
-			displayField: 'option_name',
-			valueField  : 'option_value',
-			emptyText   : i18n['select'],
-			store       : me.store
-		}, null);
-		me.callParent();
-	}
-});
-Ext.define('App.classes.combo.Allergies', {
-	extend       : 'Ext.form.ComboBox',
-	alias        : 'widget.mitos.allergiescombo',
-	initComponent: function() {
-		var me = this;
-
-		Ext.define('AllergiesComboModel', {
-			extend: 'Ext.data.Model',
-			fields: [
-				{name: 'id', type: 'int' },
-				{name: 'allergy_name' },
-				{name: 'allergy_type', type: 'string' }
-			],
-			proxy : {
-				type       : 'direct',
-				api        : {
-					read: CombosData.getAllergiesByType
-				}
-			}
-		});
-
-		me.store = Ext.create('Ext.data.Store', {
-			model   : 'AllergiesComboModel',
-			autoLoad: false
-		});
-
-		Ext.apply(this, {
-			editable    : false,
-			queryMode   : 'local',
-			displayField: 'allergy_name',
-			valueField  : 'allergy_name',
-			emptyText   : i18n['select'],
-			store       : me.store
-		}, null);
-		me.callParent(arguments);
-	}
-});
-Ext.define('App.classes.combo.AllergiesAbdominal', {
-	extend       : 'Ext.form.ComboBox',
-	alias        : 'widget.mitos.allergiesabdominalcombo',
-	initComponent: function() {
-		var me = this;
-
-		Ext.define('allergiesabdominalModel', {
-			extend: 'Ext.data.Model',
-			fields: [
-				{name: 'option_name', type: 'string' },
-				{name: 'option_value', type: 'string' }
-			],
-			proxy : {
-				type       : 'direct',
-				api        : {
-					read: CombosData.getOptionsByListId
-				},
-				extraParams: {
-					list_id: 82
-				}
-			}
-		});
-
-		me.store = Ext.create('Ext.data.Store', {
-			model   : 'allergiesabdominalModel',
-			autoLoad: true
-		});
-
-		Ext.apply(this, {
-			editable    : false,
-			queryMode   : 'local',
-			displayField: 'option_name',
-			valueField  : 'option_value',
-			emptyText   : i18n['select'],
-			store       : me.store
-		}, null);
-		me.callParent(arguments);
-	}
-});
-Ext.define('App.classes.combo.AllergiesLocal', {
-	extend       : 'Ext.form.ComboBox',
-	alias        : 'widget.mitos.allergieslocalcombo',
-	initComponent: function() {
-		var me = this;
-
-		Ext.define('allergieslocalModel', {
-			extend: 'Ext.data.Model',
-			fields: [
-				{name: 'option_name', type: 'string' },
-				{name: 'option_value', type: 'string' }
-			],
-			proxy : {
-				type       : 'direct',
-				api        : {
-					read: CombosData.getOptionsByListId
-				},
-				extraParams: {
-					list_id: 81
-				}
-			}
-		});
-
-		me.store = Ext.create('Ext.data.Store', {
-			model   : 'allergieslocalModel',
-			autoLoad: true
-		});
-
-		Ext.apply(this, {
-			editable    : false,
-			queryMode   : 'local',
-			displayField: 'option_name',
-			valueField  : 'option_value',
-			emptyText   : i18n['select'],
-			store       : me.store
-		}, null);
-		me.callParent(arguments);
-	}
-});
-Ext.define('App.classes.combo.AllergiesLocation', {
-	extend       : 'Ext.form.ComboBox',
-	alias        : 'widget.mitos.allergieslocationcombo',
-	initComponent: function() {
-		var me = this;
-
-		Ext.define('allergieslocationModel', {
-			extend: 'Ext.data.Model',
-			fields: [
-				{name: 'option_name', type: 'string' },
-				{name: 'option_value', type: 'string' }
-			],
-			proxy : {
-				type       : 'direct',
-				api        : {
-					read: CombosData.getOptionsByListId
-				},
-				extraParams: {
-					list_id: 79
-				}
-			}
-		});
-
-		me.store = Ext.create('Ext.data.Store', {
-			model   : 'allergieslocationModel',
-			autoLoad: true
-		});
-
-		Ext.apply(this, {
-			editable    : false,
-			queryMode   : 'local',
-			displayField: 'option_name',
-			valueField  : 'option_value',
-			emptyText   : i18n['select'],
-			store       : me.store
-		}, null);
-		me.callParent(arguments);
-	}
-});
-Ext.define('App.classes.combo.AllergiesSeverity', {
-	extend       : 'Ext.form.ComboBox',
-	alias        : 'widget.mitos.allergiesseveritycombo',
-	initComponent: function() {
-		var me = this;
-
-		Ext.define('allergiesseverityModel', {
-			extend: 'Ext.data.Model',
-			fields: [
-				{name: 'option_name', type: 'string' },
-				{name: 'option_value', type: 'string' }
-			],
-			proxy : {
-				type       : 'direct',
-				api        : {
-					read: CombosData.getOptionsByListId
-				},
-				extraParams: {
-					list_id: 84
-				}
-			}
-		});
-
-		me.store = Ext.create('Ext.data.Store', {
-			model   : 'allergiesseverityModel',
-			autoLoad: true
-		});
-
-		Ext.apply(this, {
-			editable    : false,
-			queryMode   : 'local',
-			displayField: 'option_name',
-			valueField  : 'option_value',
-			emptyText   : i18n['select'],
-			store       : me.store
-		}, null);
-		me.callParent(arguments);
-	}
-});
-Ext.define('App.classes.combo.AllergiesSkin', {
-	extend       : 'Ext.form.ComboBox',
-	alias        : 'widget.mitos.allergiesskincombo',
-	initComponent: function() {
-		var me = this;
-
-		Ext.define('allergiesskinModel', {
-			extend: 'Ext.data.Model',
-			fields: [
-				{name: 'option_name', type: 'string' },
-				{name: 'option_value', type: 'string' }
-			],
-			proxy : {
-				type       : 'direct',
-				api        : {
-					read: CombosData.getOptionsByListId
-				},
-				extraParams: {
-					list_id: 80
-				}
-			}
-		});
-
-		me.store = Ext.create('Ext.data.Store', {
-			model   : 'allergiesskinModel',
-			autoLoad: true
-		});
-
-		Ext.apply(this, {
-			editable    : false,
-			queryMode   : 'local',
-			displayField: 'option_name',
-			valueField  : 'option_value',
-			emptyText   : i18n['select'],
-			store       : me.store
-		}, null);
-		me.callParent(arguments);
-	}
-});
-Ext.define('App.classes.combo.AllergiesSystemic', {
-	extend       : 'Ext.form.ComboBox',
-	alias        : 'widget.mitos.allergiessystemiccombo',
-	initComponent: function() {
-		var me = this;
-
-		Ext.define('allergiessystemicModel', {
-			extend: 'Ext.data.Model',
-			fields: [
-				{name: 'option_name', type: 'string' },
-				{name: 'option_value', type: 'string' }
-			],
-			proxy : {
-				type       : 'direct',
-				api        : {
-					read: CombosData.getOptionsByListId
-				},
-				extraParams: {
-					list_id: 83
-				}
-			}
-		});
-
-		me.store = Ext.create('Ext.data.Store', {
-			model   : 'allergiessystemicModel',
-			autoLoad: true
-		});
-
-		Ext.apply(this, {
-			editable    : false,
-			queryMode   : 'local',
-			displayField: 'option_name',
-			valueField  : 'option_value',
-			emptyText   : i18n['select'],
-			store       : me.store
-		}, null);
-		me.callParent(arguments);
-	}
-});
-Ext.define('App.classes.combo.AllergiesTypes', {
-	extend       : 'Ext.form.ComboBox',
-	alias        : 'widget.mitos.allergiestypescombo',
-	initComponent: function() {
-		var me = this;
-
-		Ext.define('AllergiesTypesComboModel', {
-			extend: 'Ext.data.Model',
-			fields: [
-				{name: 'allergy_type', type: 'string' }
-			],
-			proxy : {
-				type       : 'direct',
-				api        : {
-					read: CombosData.getAllergieTypes
-				}
-			}
-		});
-
-		me.store = Ext.create('Ext.data.Store', {
-			model   : 'AllergiesTypesComboModel',
-			autoLoad: false
-		});
-
-		Ext.apply(this, {
-			editable    : false,
-			//queryMode   : 'local',
-			displayField: 'allergy_type',
-			valueField  : 'allergy_type',
-			emptyText   : i18n['select'],
-			store       : me.store
-		}, null);
-		me.callParent(arguments);
-	}
-});
-Ext.define('App.classes.combo.Authorizations', {
-	extend       : 'Ext.form.ComboBox',
-	alias        : 'widget.mitos.authorizationscombo',
-	initComponent: function() {
-		var me = this;
-
-		Ext.define('AuthorizationsModel', {
-			extend: 'Ext.data.Model',
-			fields: [
-				{name: 'id', type: 'int'},
-				{name: 'name', type: 'string'}
-			],
-			proxy : {
-				type: 'direct',
-				api : {
-					read: CombosData.getAuthorizations
-				}
-			}
-		});
-
-		me.store = Ext.create('Ext.data.Store', {
-			model   : 'AuthorizationsModel',
-			autoLoad: true
-		});
-
-		Ext.apply(this, {
-			editable    : false,
-			queryMode   : 'local',
-			valueField  : 'id',
-			displayField: 'name',
-			emptyText   : i18n['select'],
-			store       : me.store
-		}, null);
-
-		me.callParent(arguments);
-	}
-});
-Ext.define('App.classes.combo.BillingFacilities', {
-	extend       : 'Ext.form.ComboBox',
-	alias        : 'widget.mitos.billingfacilitiescombo',
-	initComponent: function() {
-		var me = this;
-
-		Ext.define('BillingFacilitiesComboModel', {
-			extend: 'Ext.data.Model',
-			fields: [
-				{name: 'option_name', type: 'string' },
-				{name: 'option_value', type: 'int' }
-			],
-			proxy : {
-				type: 'direct',
-				api : {
-					read: CombosData.getBillingFacilities
-				}
-			}
-		});
-
-		me.store = Ext.create('Ext.data.Store', {
-			model   : 'BillingFacilitiesComboModel',
-			autoLoad: true
-		});
-
-		Ext.apply(this, {
-			editable    : false,
-			queryMode   : 'local',
-			valueField  : 'option_value',
-			displayField: 'option_name',
-			emptyText   : i18n['select'],
-			store       : me.store
-		}, null);
-		me.callParent(arguments);
-	}
-});
-Ext.define('App.classes.combo.CalendarCategories', {
-	extend      : 'Ext.form.ComboBox',
-	alias       : 'widget.mitos.calcategoriescombobox',
-	editable    : false,
-	displayField: 'catname',
-	valueField  : 'catid',
-	emptyText   : i18n['select'],
-
-	initComponent: function() {
-		var me = this;
-
-		Ext.define('CalendarCategoriesModel', {
-			extend: 'Ext.data.Model',
-			fields: [
-				{name: 'catid', type: 'int'},
-				{name: 'catname', type: 'string'}
-			],
-			proxy : {
-				type: 'direct',
-				api : {
-					read: CombosData.getCalendarCategories
-				}
-			}
-		});
-
-		me.store = Ext.create('Ext.data.Store', {
-			model   : 'CalendarCategoriesModel',
-			autoLoad: true
-		});
-
-
-		Ext.apply(this, {
-			store: me.store
-		}, null);
-		me.callParent();
-	}
-}); 
-Ext.define('App.classes.combo.CalendarStatus', {
-	extend: 'Ext.form.ComboBox',
-	alias : 'widget.mitos.calstatuscombobox',
-	name  : 'status',
-
-	initComponent: function() {
-		var me = this;
-
-		Ext.define('CalendarStatusModel', {
-			extend: 'Ext.data.Model',
-			fields: [
-				{name: 'option_name', type: 'string' },
-				{name: 'option_value', type: 'string' }
-			],
-			proxy : {
-				type       : 'direct',
-				api        : {
-					read: CombosData.getOptionsByListId
-				},
-				extraParams: {
-					list_id: 30
-				}
-			}
-		});
-
-		me.store = Ext.create('Ext.data.Store', {
-			model   : 'CalendarStatusModel',
-			autoLoad: true
-		});
-
-		Ext.apply(this, {
-			editable    : false,
-			queryMode   : 'local',
-			displayField: 'option_name',
-			valueField  : 'option_value',
-			emptyText   : i18n['select'],
-			store       : me.store
-		}, null);
-		me.callParent();
-	} // end initComponent
-}); 
-Ext.define('App.classes.combo.CodesTypes', {
-	extend       : 'Ext.form.ComboBox',
-	alias        : 'widget.mitos.codestypescombo',
-	initComponent: function() {
-		var me = this;
-
-		Ext.define('CodesTypesModel', {
-			extend: 'Ext.data.Model',
-			fields: [
-				{name: 'option_name', type: 'string' },
-				{name: 'option_value', type: 'string' }
-			],
-			proxy : {
-				type       : 'direct',
-				api        : {
-					read: CombosData.getOptionsByListId
-				},
-				extraParams: {
-					list_id: 56
-				}
-			}
-		});
-
-		me.store = Ext.create('Ext.data.Store', {
-			model   : 'CodesTypesModel',
-			autoLoad: true
-		});
-
-		Ext.apply(this, {
-			editable    : false,
-			queryMode   : 'local',
-			valueField  : 'option_value',
-			displayField: 'option_name',
-			emptyText   : i18n['select'],
-			store       : me.store
-		}, null);
-		me.callParent(arguments);
-	}
-});
-Ext.define('App.classes.combo.EncounterPriority', {
-	extend       : 'Ext.form.ComboBox',
-	alias        : 'widget.encounterprioritycombo',
-	initComponent: function() {
-		var me = this;
-
-		Ext.define('EncounterPriorityModel', {
-			extend: 'Ext.data.Model',
-			fields: [
-				{name: 'option_name', type: 'string' },
-				{name: 'option_value', type: 'string' }
-			],
-			proxy : {
-				type       : 'direct',
-				api        : {
-					read: CombosData.getOptionsByListId
-				},
-				extraParams: {
-					list_id: 94
-				}
-			}
-		});
-
-		me.store = Ext.create('Ext.data.Store', {
-			model   : 'EncounterPriorityModel',
-			autoLoad: true
-		});
-
-		Ext.apply(this, {
-			editable    : false,
-			queryMode   : 'local',
-			displayField: 'option_name',
-			valueField  : 'option_value',
-			emptyText   : i18n['priority'],
-			store       : me.store,
-			listConfig  : {
-				getInnerTpl: function() {
-					return '<span class="{option_name}">{option_name}</span></div>';
-				}
-			}
-		}, null);
-
-		me.on('change', function(cmb ,newValue){
-			var bgColor, color;
-			if(newValue == 'Minimal'){
-				bgColor = '#008000';
-				color = '#ffffff';
-			}else if(newValue == 'Delayed'){
-				bgColor = '#ffff00';
-				color = '#000000';
-			}else if(newValue == 'Immediate'){
-				bgColor = '#ff0000';
-				color = '#ffffff';
-			}else if(newValue == 'Expectant'){
-				bgColor = '#808080';
-				color = '#ffffff';
-			}else if(newValue == 'Deceased'){
-				bgColor = '#000000';
-				color = '#ffffff';
-			}
-
-			this.inputEl.setStyle({
-				'background-color':bgColor,
-				'background-image':'none',
-				'color':color
-			})
-		}, me);
-		me.callParent(arguments);
-	}
-});
-Ext.define('App.classes.combo.Facilities', {
-	extend       : 'Ext.form.ComboBox',
-	alias        : 'widget.mitos.facilitiescombo',
-	initComponent: function() {
-		var me = this;
-
-		Ext.define('FacilitiesComboModel', {
-			extend: 'Ext.data.Model',
-			fields: [
-				{name: 'id', type: 'int'},
-				{name: 'name', type: 'string'}
-			],
-			proxy : {
-				type: 'direct',
-				api : {
-					read: CombosData.getFacilities
-				}
-			}
-		});
-
-		me.store = Ext.create('Ext.data.Store', {
-			model   : 'FacilitiesComboModel',
-			autoLoad: true
-		});
-
-		Ext.apply(this, {
-			editable    : false,
-			queryMode   : 'local',
-			valueField  : 'id',
-			displayField: 'name',
-			emptyText   : i18n['select'],
-			store       : me.store
-		}, null);
-		me.callParent(arguments);
-	}
-});
-Ext.define('App.classes.combo.FloorPlanAreas', {
-	extend       : 'Ext.form.ComboBox',
-	alias        : 'widget.floorplanareascombo',
-	initComponent: function() {
-		var me = this;
-
-		Ext.define('FloorPlanAreasModel', {
-			extend: 'Ext.data.Model',
-			fields: [
-				{name: 'title', type: 'string' },
-				{name: 'id', type: 'int' }
-			],
-			proxy : {
-				type       : 'direct',
-				api        : {
-					read: CombosData.getFloorPlanAreas
-				}
-			}
-		});
-
-		me.store = Ext.create('Ext.data.Store', {
-			model   : 'FloorPlanAreasModel',
-			autoLoad:true
-		});
-
-		Ext.apply(this, {
-			editable    : false,
-			queryMode: 'local',
-			displayField: 'title',
-			valueField  : 'id',
-			emptyText   : i18n['select'],
-			store       : me.store
-		}, null);
-		me.callParent(arguments);
-	}
-});
-Ext.define('App.classes.combo.FollowUp', {
-	extend       : 'Ext.form.ComboBox',
-	alias        : 'widget.mitos.followupcombo',
-	initComponent: function() {
-		var me = this;
-
-		Ext.define('FollowUpModel', {
-			extend: 'Ext.data.Model',
-			fields: [
-				{name: 'option_name', type: 'string' },
-				{name: 'option_value', type: 'string' }
-			],
-			proxy : {
-				type       : 'direct',
-				api        : {
-					read: CombosData.getOptionsByListId
-				},
-				extraParams: {
-					list_id: 90
-				}
-			}
-		});
-
-		me.store = Ext.create('Ext.data.Store', {
-			model   : 'FollowUpModel',
-			autoLoad: true
-		});
-
-		Ext.apply(this, {
-			editable    : false,
-			queryMode   : 'local',
-			displayField: 'option_name',
-			valueField  : 'option_value',
-			emptyText   : i18n['select'],
-			store       : me.store
-		}, null);
-		me.callParent(arguments);
-	}
-});
-Ext.define('App.classes.combo.InsurancePayerType', {
-	extend       : 'Ext.form.ComboBox',
-	alias        : 'widget.mitos.insurancepayertypecombo',
-	initComponent: function() {
-		var me = this;
-
-		// *************************************************************************************
-		// Structure, data for Insurance Payer Types
-		// AJAX -> component_data.ejs.php
-		// *************************************************************************************
-		me.store = Ext.create('Ext.data.Store', {
-			fields: ['id', 'name'],
-			data  : [
-				{"id": "1", "name": i18n['all']},
-				{"id": "16", "name": i18n['other_hcfa']},
-				{"id": "MB", "name": i18n['medicare_part_b']},
-				{"id": "MC", "name": i18n['medicaid']},
-				{"id": "CH", "name": i18n['champusva']},
-				{"id": "CH", "name": i18n['champus']},
-				{"id": "BL", "name": i18n['blue_cross_blue_shield']},
-				{"id": "16", "name": i18n['feca']},
-				{"id": "09", "name": i18n['self_pay']},
-				{"id": "10", "name": i18n['central_certification']},
-				{"id": "11", "name": i18n['other_nonfederal_programs']},
-				{"id": "12", "name": i18n['ppo']},
-				{"id": "13", "name": i18n['pos']},
-				{"id": "14", "name": i18n['epo']},
-				{"id": "15", "name": i18n['indemnity_insurance']},
-				{"id": "16", "name": i18n['hmo']},
-				{"id": "AM", "name": i18n['automobile_medical']},
-				{"id": "CI", "name": i18n['commercial_insurance']},
-				{"id": "DS", "name": i18n['disability']},
-				{"id": "HM", "name": i18n['health_maintenance_organization']},
-				{"id": "LI", "name": i18n['liability']},
-				{"id": "LM", "name": i18n['liability_medical']},
-				{"id": "OF", "name": i18n['other_federal_program']},
-				{"id": "TV", "name": i18n['title_v']},
-				{"id": "VA", "name": i18n['veterans_administration_plan']},
-				{"id": "WC", "name": i18n['workers_compensation_health_plan']},
-				{"id": "ZZ", "name": i18n['mutually_defined']}
-			]
-		});
-
-		Ext.apply(this, {
-			name        : 'freeb_type',
-			editable    : false,
-			displayField: 'name',
-			valueField  : 'id',
-			queryMode   : 'local',
-			emptyText   : i18n['select'],
-			store       : me.store
-		}, null);
-		me.callParent();
-	}
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: ernesto
- * Date: 6/27/11
- * Time: 8:43 AM
- * To change this template use File | Settings | File Templates.
- *
- *
- * @namespace Patient.patientLiveSearch
- */
-Ext.define('App.classes.combo.LabObservations', {
-	extend       : 'Ext.form.ComboBox',
-	alias        : 'widget.labobservationscombo',
-	initComponent: function() {
-		var me = this;
-
-		Ext.define('labObservationsComboModel', {
-			extend: 'Ext.data.Model',
-			fields: [
-              		{name: 'label' },
-              		{name: 'name' },
-              		{name: 'unit' },
-              		{name: 'range_start' },
-              		{name: 'range_end' },
-              		{name: 'threshold' },
-              		{name: 'notes' }
-			],
-			proxy : {
-				type  : 'direct',
-				api   : {
-					read: Services.getAllLabObservations
-				}
-			}
-		});
-
-		me.store = Ext.create('Ext.data.Store', {
-			model   : 'labObservationsComboModel',
-			autoLoad: false
-		});
-
-		Ext.apply(this, {
-			store       : me.store,
-			displayField: 'label',
-			valueField  : 'id',
-			emptyText   : i18n['select_existing_observation'],
-            editable    : false,
-            width: 810,
-			listConfig  : {
-				getInnerTpl: function() {
-					return '<div>' +
-                        '<span style="width:200px;display:inline-block;"><span style="font-weight:bold;">' + i18n['Label'] + ':</span> {label},</span>' +
-                        '<span style="width:90px;display:inline-block;"><span style="font-weight:bold;">' + i18n['unit'] + ':</span> {unit},</span>' +
-                        '<span style="width:150px;display:inline-block;"><span style="font-weight:bold;">' + i18n['range_start'] + ':</span> {range_start},</span>' +
-                        '<span style="width:130px;display:inline-block;"><span style="font-weight:bold;">' + i18n['range_end'] + ':</span> {range_end},</span>' +
-                        '<span style="width:100px;display:inline-block;"><span style="font-weight:bold;">' + i18n['threshold'] + ':</span> {threshold}</span>' +
-                        '</div>';
-				}
-			}
-		}, null);
-
-		me.callParent();
-	}
-
-});
-Ext.define('App.classes.combo.LabsTypes', {
-	extend       : 'Ext.form.ComboBox',
-	alias        : 'widget.mitos.labstypescombo',
-	initComponent: function() {
-		var me = this;
-
-		Ext.define('LabsTypesComboModel', {
-			extend: 'Ext.data.Model',
-			fields: [
-				{name: 'id'},
-				{name: 'code_text_short' },
-				{name: 'parent_name', type: 'string' },
-				{name: 'loinc_name', type: 'string' }
-			],
-			proxy : {
-				type       : 'direct',
-				api        : {
-					read: Services.getActiveLaboratoryTypes
-				}
-			}
-		});
-
-		me.store = Ext.create('Ext.data.Store', {
-			model   : 'LabsTypesComboModel',
-			autoLoad: false
-		});
-
-		Ext.apply(this, {
-			editable    : false,
-			//queryMode   : 'local',
-			displayField: 'loinc_name',
-			valueField  : 'loinc_name',
-			emptyText   : i18n['select'],
-			store       : me.store
-		}, null);
-		me.callParent(arguments);
-	}
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 10/29/11
- * Time: 4:45 PM
- */
-Ext.define('App.classes.combo.Languages', 
-{
-	extend       : 'Ext.form.ComboBox',
-	alias        : 'widget.languagescombo',
-	initComponent: function() 
-	{
-		var me = this;
-
-		Ext.define('LanguagesComboModel', 
-		{
-			extend: 'Ext.data.Model',
-			fields: 
-			[
-				{ name: 'code', type: 'string' },
-				{ name: 'description', type: 'string' }
-			],
-			proxy : 
-			{
-				type: 'direct',
-				api :  
-				{
-					read: i18nRouter.getAvailableLanguages
-				}
-			}
-		});
-
-		me.store = Ext.create('Ext.data.Store', 
-		{
-			model   : 'LanguagesComboModel',
-			autoLoad: true
-		});
-
-		Ext.apply(this, 
-		{
-			editable    : false,
-			queryMode   : 'local',
-			valueField  : 'code',
-			displayField: 'description',
-			store       : me.store
-		}, null);
-		
-		me.callParent();
-	}
-});
-
-Ext.define('App.classes.combo.Lists', {
-	extend       : 'Ext.form.ComboBox',
-	alias        : 'widget.mitos.listscombo',
-	width        : 250,
-	iconCls      : 'icoListOptions',
-	initComponent: function() {
-		var me = this;
-
-		Ext.define('ListComboModel', {
-			extend: 'Ext.data.Model',
-			fields: [
-				{name: 'id'},
-				{name: 'title', type: 'string' }
-			],
-			proxy : {
-				type: 'direct',
-				api : {
-					read: CombosData.getLists
-				}
-			}
-		});
-
-		me.store = Ext.create('Ext.data.Store', {
-			model   : 'ListComboModel',
-			autoLoad: true
-		});
-
-		Ext.apply(this, {
-			editable    : false,
-			queryMode   : 'local',
-			valueField  : 'id',
-			displayField: 'title',
-			emptyText   : i18n['select'],
-			store       : me.store
-		}, null);
-		me.callParent(arguments);
-	}
-});
-Ext.define('App.classes.combo.MedicalIssues', {
-	extend       : 'Ext.form.ComboBox',
-	alias        : 'widget.mitos.medicalissuescombo',
-	initComponent: function() {
-		var me = this;
-
-		Ext.define('MedicalIssuesModel', {
-			extend: 'Ext.data.Model',
-			fields: [
-				{name: 'option_name', type: 'string' },
-				{name: 'option_value', type: 'string' }
-			],
-			proxy : {
-				type       : 'direct',
-				api        : {
-					read: CombosData.getOptionsByListId
-				},
-				extraParams: {
-					list_id: 75
-				}
-			}
-		});
-
-		me.store = Ext.create('Ext.data.Store', {
-			model   : 'MedicalIssuesModel',
-			autoLoad: true
-		});
-
-		Ext.apply(this, {
-			editable    : false,
-			queryMode   : 'local',
-			displayField: 'option_name',
-			valueField  : 'option_value',
-			emptyText   : i18n['select'],
-			store       : me.store
-		}, null);
-		me.callParent(arguments);
-	}
-});
-Ext.define('App.classes.combo.Medications', {
-	extend       : 'Ext.form.ComboBox',
-	alias        : 'widget.mitos.medicationscombo',
-	initComponent: function() {
-		var me = this;
-
-		Ext.define('MedicationsModel', {
-			extend: 'Ext.data.Model',
-			fields: [
-				{name: 'option_name', type: 'string' },
-				{name: 'option_value', type: 'string' }
-			],
-			proxy : {
-				type       : 'direct',
-				api        : {
-					read: CombosData.getOptionsByListId
-				},
-				extraParams: {
-					list_id: 74
-				}
-			}
-		});
-
-		me.store = Ext.create('Ext.data.Store', {
-			model   : 'MedicationsModel',
-			autoLoad: true
-		});
-
-		Ext.apply(this, {
-			editable    : false,
-			queryMode   : 'local',
-			displayField: 'option_name',
-			valueField  : 'option_value',
-			emptyText   : i18n['select'],
-			store       : me.store
-		}, null);
-		me.callParent(arguments);
-	}
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 10/29/11
- * Time: 4:45 PM
- */
-Ext.define('App.classes.combo.MsgNoteType', {
-	extend       : 'Ext.form.ComboBox',
-	alias        : 'widget.msgnotetypecombo',
-	initComponent: function() {
-		var me = this;
-
-		Ext.define('MsgNoteTypeModel', {
-			extend: 'Ext.data.Model',
-			fields: [
-				{name: 'option_name', type: 'string' },
-				{name: 'option_value', type: 'string' }
-			],
-			proxy : {
-				type       : 'direct',
-				api        : {
-					read: CombosData.getOptionsByListId
-				},
-				extraParams: {
-					list_id: 28
-				}
-			}
-		});
-
-		me.store = Ext.create('Ext.data.Store', {
-			model   : 'MsgNoteTypeModel',
-			autoLoad: true
-		});
-
-		Ext.apply(this, {
-			editable    : false,
-			queryMode   : 'local',
-			displayField: 'option_name',
-			valueField  : 'option_value',
-			emptyText   : i18n['select'],
-			store       : me.store
-		}, null);
-		me.callParent();
-	} // end initComponent
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 10/29/11
- * Time: 4:45 PM
- */
-Ext.define('App.classes.combo.MsgStatus', {
-	extend       : 'Ext.form.ComboBox',
-	alias        : 'widget.msgstatuscombo',
-	initComponent: function() {
-		var me = this;
-
-		Ext.define('MsgStatusModel', {
-			extend: 'Ext.data.Model',
-			fields: [
-				{name: 'option_name', type: 'string' },
-				{name: 'option_value', type: 'string' }
-			],
-			proxy : {
-				type       : 'direct',
-				api        : {
-					read: CombosData.getOptionsByListId
-				},
-				extraParams: {
-					list_id: 45
-				}
-			}
-		});
-
-		me.store = Ext.create('Ext.data.Store', {
-			model   : 'MsgStatusModel',
-			autoLoad: true
-		});
-
-		Ext.apply(this, {
-			editable    : false,
-			queryMode   : 'local',
-			displayField: 'option_name',
-			valueField  : 'option_value',
-			emptyText   : i18n['select'],
-			store       : me.store
-		}, null);
-		me.callParent();
-	} // end initComponent
-});
-Ext.define('App.classes.combo.Occurrence', {
-	extend       : 'Ext.form.ComboBox',
-	alias        : 'widget.mitos.occurrencecombo',
-	initComponent: function() {
-		var me = this;
-
-		Ext.define('OccurrenceModel', {
-			extend: 'Ext.data.Model',
-			fields: [
-				{name: 'option_name', type: 'string' },
-				{name: 'option_value', type: 'string' }
-			],
-			proxy : {
-				type       : 'direct',
-				api        : {
-					read: CombosData.getOptionsByListId
-				},
-				extraParams: {
-					list_id: 26
-				}
-			}
-		});
-
-		me.store = Ext.create('Ext.data.Store', {
-			model   : 'OccurrenceModel',
-			autoLoad: true
-		});
-
-		Ext.apply(this, {
-			editable    : false,
-			queryMode   : 'local',
-			displayField: 'option_name',
-			valueField  : 'option_value',
-			emptyText   : i18n['select'],
-			store       : me.store
-		}, null);
-		me.callParent(arguments);
-	}
-});
-Ext.define('App.classes.combo.Outcome', {
-	extend       : 'Ext.form.ComboBox',
-	alias        : 'widget.mitos.outcomecombo',
-	initComponent: function() {
-		var me = this;
-
-		Ext.define('OutcomeModel', {
-			extend: 'Ext.data.Model',
-			fields: [
-				{name: 'option_name', type: 'string' },
-				{name: 'option_value', type: 'string' }
-			],
-			proxy : {
-				type       : 'direct',
-				api        : {
-					read: CombosData.getOptionsByListId
-				},
-				extraParams: {
-					list_id: 27
-				}
-			}
-		});
-
-		me.store = Ext.create('Ext.data.Store', {
-			model   : 'OutcomeModel',
-			autoLoad: true
-		});
-
-		Ext.apply(this, {
-			editable    : false,
-			queryMode   : 'local',
-			displayField: 'option_name',
-			valueField  : 'option_value',
-			emptyText   : i18n['select'],
-			store       : me.store
-		}, null);
-		me.callParent(arguments);
-	}
-});
-Ext.define('App.classes.combo.Outcome2', {
-	extend       : 'Ext.form.ComboBox',
-	alias        : 'widget.mitos.outcome2combo',
-	initComponent: function() {
-		var me = this;
-
-		Ext.define('Outcome2model', {
-			extend: 'Ext.data.Model',
-			fields: [
-				{name: 'option_name', type: 'string' },
-				{name: 'option_value', type: 'string' }
-			],
-			proxy : {
-				type       : 'direct',
-				api        : {
-					read: CombosData.getOptionsByListId
-				},
-				extraParams: {
-					list_id: 74
-				}
-			}
-		});
-
-		me.store = Ext.create('Ext.data.Store', {
-			model   : 'Outcome2model',
-			autoLoad: true
-		});
-
-		Ext.apply(this, {
-			editable    : false,
-			queryMode   : 'local',
-			displayField: 'option_name',
-			valueField  : 'option_value',
-			emptyText   : i18n['select'],
-			store       : me.store
-		}, null);
-		me.callParent(arguments);
-	}
-});
-Ext.define('App.classes.combo.PayingEntity', {
-	extend       : 'Ext.form.ComboBox',
-	alias        : 'widget.mitos.payingentitycombo',
-	initComponent: function() {
-		var me = this;
-
-		Ext.define('PayingEntityModel', {
-			extend: 'Ext.data.Model',
-			fields: [
-				{name: 'option_name', type: 'string' },
-				{name: 'option_value', type: 'string' }
-			],
-			proxy : {
-				type       : 'direct',
-				api        : {
-					read: CombosData.getOptionsByListId
-				},
-				extraParams: {
-					list_id: 54
-				}
-			}
-		});
-
-		me.store = Ext.create('Ext.data.Store', {
-			model   : 'PayingEntityModel',
-			autoLoad: true
-		});
-
-		Ext.apply(this, {
-			editable    : false,
-			queryMode   : 'local',
-			displayField: 'option_name',
-			valueField  : 'option_value',
-			emptyText   : i18n['select'],
-			store       : me.store
-		}, null);
-		me.callParent(arguments);
-	}
-});
-
-Ext.define('App.classes.combo.PaymentCategory', {
-	extend       : 'Ext.form.ComboBox',
-	alias        : 'widget.mitos.paymentcategorycombo',
-	initComponent: function() {
-		var me = this;
-
-		Ext.define('PaymentCategoryModel', {
-			extend: 'Ext.data.Model',
-			fields: [
-				{name: 'option_name', type: 'string' },
-				{name: 'option_value', type: 'string' }
-			],
-			proxy : {
-				type       : 'direct',
-				api        : {
-					read: CombosData.getOptionsByListId
-				},
-				extraParams: {
-					list_id: 49
-				}
-			}
-		});
-
-		me.store = Ext.create('Ext.data.Store', {
-			model   : 'PaymentCategoryModel',
-			autoLoad: true
-		});
-
-		Ext.apply(this, {
-			editable    : false,
-			queryMode   : 'local',
-			displayField: 'option_name',
-			valueField  : 'option_value',
-			emptyText   : i18n['select'],
-			store       : me.store
-		}, null);
-		me.callParent(arguments);
-	}
-});
-Ext.define('App.classes.combo.PaymentMethod', {
-	extend       : 'Ext.form.ComboBox',
-	alias        : 'widget.mitos.paymentmethodcombo',
-	initComponent: function() {
-		var me = this;
-
-		Ext.define('PaymentMethodModel', {
-			extend: 'Ext.data.Model',
-			fields: [
-				{name: 'option_name', type: 'string' },
-				{name: 'option_value', type: 'string' }
-			],
-			proxy : {
-				type       : 'direct',
-				api        : {
-					read: CombosData.getOptionsByListId
-				},
-				extraParams: {
-					list_id: 51
-				}
-			}
-		});
-
-		me.store = Ext.create('Ext.data.Store', {
-			model   : 'PaymentMethodModel',
-			autoLoad: true
-		});
-
-		Ext.apply(this, {
-			editable    : false,
-			queryMode   : 'local',
-			displayField: 'option_name',
-			valueField  : 'option_value',
-			emptyText   : i18n['select'],
-			store       : me.store
-		}, null);
-		me.callParent(arguments);
-	}
-});
-Ext.define('App.classes.combo.Pharmacies', {
-	extend       : 'Ext.form.ComboBox',
-	alias        : 'widget.mitos.pharmaciescombo',
-	initComponent: function() {
-		var me = this;
-
-		Ext.define('PharmaciesComboModel', {
-			extend: 'Ext.data.Model',
-			fields: [
-				{name: 'option_name' },
-				{name: 'option_value' }
-			],
-			proxy : {
-				type       : 'direct',
-				api        : {
-					read: CombosData.getActivePharmacies
-				}
-			}
-		});
-
-		me.store = Ext.create('Ext.data.Store', {
-			model   : 'PharmaciesComboModel',
-			autoLoad: false
-		});
-
-		Ext.apply(this, {
-			editable    : false,
-			//queryMode   : 'local',
-			displayField: 'option_name',
-			valueField  : 'option_value',
-			emptyText   : i18n['select'],
-			store       : me.store
-		}, null);
-		me.callParent(arguments);
-	}
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 10/29/11
- * Time: 4:45 PM
- */
-Ext.define('App.classes.combo.posCodes', {
-	extend       : 'Ext.form.ComboBox',
-	alias        : 'widget.mitos.poscodescombo',
-	initComponent: function() {
-		var me = this;
-
-		Ext.define('PosCodesModel', {
-			extend: 'Ext.data.Model',
-			fields: [
-				{name: 'code', type: 'string' },
-				{name: 'title', type: 'string' }
-			],
-			proxy : {
-				type: 'direct',
-				api : {
-					read: CombosData.getPosCodes
-				}
-			}
-		});
-
-		me.store = Ext.create('Ext.data.Store', {
-			model   : 'PosCodesModel',
-			autoLoad: true
-		});
-
-		Ext.apply(this, {
-			editable    : false,
-			queryMode   : 'local',
-			valueField  : 'code',
-			displayField: 'title',
-			emptyText   : i18n['select'],
-			store       : me.store
-		}, null);
-		me.callParent();
-	} // end initComponent
-});
-Ext.define('App.classes.combo.PrescriptionHowTo', {
-	extend       : 'Ext.form.ComboBox',
-	alias        : 'widget.mitos.prescriptionhowto',
-	initComponent: function() {
-		var me = this;
-
-		Ext.define('PrescriptionHowTomodel', {
-			extend: 'Ext.data.Model',
-			fields: [
-				{name: 'option_name', type: 'string' },
-				{name: 'option_value', type: 'string' }
-			],
-			proxy : {
-				type       : 'direct',
-				api        : {
-					read: CombosData.getOptionsByListId
-				},
-				extraParams: {
-					list_id: 88
-				}
-			}
-		});
-
-		me.store = Ext.create('Ext.data.Store', {
-			model   : 'PrescriptionHowTomodel',
-			autoLoad: true
-		});
-
-		Ext.apply(this, {
-			editable    : false,
-			queryMode   : 'local',
-			displayField: 'option_name',
-			valueField  : 'option_value',
-			emptyText   : i18n['select'],
-			store       : me.store
-		}, null);
-		me.callParent(arguments);
-	}
-});
-Ext.define('App.classes.combo.PrescriptionOften', {
-	extend       : 'Ext.form.ComboBox',
-	alias        : 'widget.mitos.prescriptionoften',
-	initComponent: function() {
-		var me = this;
-
-		Ext.define('PrescriptionOftenmodel', {
-			extend: 'Ext.data.Model',
-			fields: [
-				{name: 'option_name', type: 'string' },
-				{name: 'option_value', type: 'string' }
-			],
-			proxy : {
-				type       : 'direct',
-				api        : {
-					read: CombosData.getOptionsByListId
-				},
-				extraParams: {
-					list_id: 86
-				}
-			}
-		});
-
-		me.store = Ext.create('Ext.data.Store', {
-			model   : 'PrescriptionOftenmodel',
-			autoLoad: true
-		});
-
-		Ext.apply(this, {
-			editable    : false,
-			queryMode   : 'local',
-			displayField: 'option_name',
-			valueField  : 'option_value',
-			emptyText   : i18n['select'],
-			store       : me.store
-		}, null);
-		me.callParent(arguments);
-	}
-});
-Ext.define('App.classes.combo.PrescriptionTypes', {
-	extend       : 'Ext.form.ComboBox',
-	alias        : 'widget.mitos.prescriptiontypes',
-	initComponent: function() {
-		var me = this;
-
-		Ext.define('PrescriptionTypesmodel', {
-			extend: 'Ext.data.Model',
-			fields: [
-				{name: 'option_name', type: 'string' },
-				{name: 'option_value', type: 'string' }
-			],
-			proxy : {
-				type       : 'direct',
-				api        : {
-					read: CombosData.getOptionsByListId
-				},
-				extraParams: {
-					list_id: 89
-				}
-			}
-		});
-
-		me.store = Ext.create('Ext.data.Store', {
-			model   : 'PrescriptionTypesmodel',
-			autoLoad: true
-		});
-
-		Ext.apply(this, {
-			editable    : false,
-			queryMode   : 'local',
-			displayField: 'option_name',
-			valueField  : 'option_value',
-			emptyText   : i18n['select'],
-			store       : me.store
-		}, null);
-		me.callParent(arguments);
-	}
-});
-Ext.define('App.classes.combo.PrescriptionWhen', {
-	extend       : 'Ext.form.ComboBox',
-	alias        : 'widget.mitos.prescriptionwhen',
-	initComponent: function() {
-		var me = this;
-
-		Ext.define('PrescriptionWhenmodel', {
-			extend: 'Ext.data.Model',
-			fields: [
-				{name: 'option_name', type: 'string' },
-				{name: 'option_value', type: 'string' }
-			],
-			proxy : {
-				type       : 'direct',
-				api        : {
-					read: CombosData.getOptionsByListId
-				},
-				extraParams: {
-					list_id: 87
-				}
-			}
-		});
-
-		me.store = Ext.create('Ext.data.Store', {
-			model   : 'PrescriptionWhenmodel',
-			autoLoad: true
-		});
-
-		Ext.apply(this, {
-			editable    : false,
-			queryMode   : 'local',
-			displayField: 'option_name',
-			valueField  : 'option_value',
-			emptyText   : i18n['select'],
-			store       : me.store
-		}, null);
-		me.callParent(arguments);
-	}
-});
-Ext.define('App.classes.combo.PreventiveCareTypes', {
-	extend       : 'Ext.form.ComboBox',
-	alias        : 'widget.mitos.preventivecaretypescombo',
-	initComponent: function() {
-		var me = this;
-
-		Ext.define('PreventiveCareTypesModel', {
-			extend: 'Ext.data.Model',
-			fields: [
-				{name: 'option_name', type: 'string' },
-				{name: 'option_value', type: 'string' }
-			],
-			proxy : {
-				type       : 'direct',
-				api        : {
-					read: CombosData.getOptionsByListId
-				},
-				extraParams: {
-					list_id: 78
-				}
-			}
-		});
-
-		me.store = Ext.create('Ext.data.Store', {
-			model   : 'PreventiveCareTypesModel',
-			autoLoad: true
-		});
-
-		Ext.apply(this, {
-			editable    : false,
-			queryMode   : 'local',
-			valueField  : 'option_value',
-			displayField: 'option_name',
-			emptyText   : i18n['select'],
-			store       : me.store
-		}, null);
-		me.callParent(arguments);
-	}
-});
-/*
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 3/21/12
- * Time: 11:24 PM
- */
-Ext.define('App.classes.combo.ProceduresBodySites', {
-	extend       : 'Ext.form.ComboBox',
-	alias        : 'widget.mitos.proceduresbodysitescombo',
-	initComponent: function() {
-		var me = this;
-
-		Ext.define('ProceduresBodySitesModel', {
-			extend: 'Ext.data.Model',
-			fields: [
-				{name: 'option_name', type: 'string' },
-				{name: 'option_value', type: 'string' }
-			],
-			proxy : {
-				type       : 'direct',
-				api        : {
-					read: CombosData.getOptionsByListId
-				},
-				extraParams: {
-					list_id: 34
-				}
-			}
-		});
-
-		me.store = Ext.create('Ext.data.Store', {
-			model   : 'ProceduresBodySitesModel',
-			autoLoad: true
-		});
-
-		Ext.apply(this, {
-			editable    : false,
-			queryMode   : 'local',
-			displayField: 'option_name',
-			valueField  : 'option_value',
-			emptyText   : i18n['select'],
-			store       : me.store
-		}, null);
-		me.callParent(arguments);
-	}
-});
-Ext.define('App.classes.combo.Providers', {
-	extend       : 'Ext.form.ComboBox',
-	alias        : 'widget.mitos.providerscombo',
-	initComponent: function() {
-		var me = this;
-
-		Ext.define('Providersmodel', {
-			extend: 'Ext.data.Model',
-			fields: [
-				{name: 'id', type: 'string' },
-				{name: 'name', type: 'string' }
-			],
-			proxy : {
-				type       : 'direct',
-				api        : {
-					read: User.getProviders
-				}
-			}
-		});
-
-		me.store = Ext.create('Ext.data.Store', {
-			model   : 'Providersmodel',
-			autoLoad: true
-		});
-
-		Ext.apply(this, {
-			editable    : false,
-			queryMode   : 'local',
-			displayField: 'name',
-			valueField  : 'id',
-			emptyText   : i18n['select'],
-			store       : me.store
-		}, null);
-		me.callParent(arguments);
-	}
-});
-Ext.define('App.classes.combo.Roles', {
-	extend       : 'Ext.form.ComboBox',
-	alias        : 'widget.mitos.rolescombo',
-	initComponent: function() {
-		var me = this;
-
-		Ext.define('RolesComboModel', {
-			extend: 'Ext.data.Model',
-			fields: [
-				{name: 'id', type: 'int'},
-				{name: 'role_name', type: 'string'}
-			],
-			proxy : {
-				type: 'direct',
-				api : {
-					read: CombosData.getRoles
-				}
-			}
-		});
-
-		me.store = Ext.create('Ext.data.Store', {
-			model   : 'RolesComboModel',
-			autoLoad: true
-		});
-
-		Ext.apply(this, {
-			editable    : false,
-			queryMode   : 'local',
-			valueField  : 'id',
-			displayField: 'role_name',
-			emptyText   : i18n['select'],
-			store       : me.store
-		}, null);
-		me.callParent(arguments);
-	}
-});
-Ext.define('App.classes.combo.Sex', {
-	extend       : 'Ext.form.ComboBox',
-	alias        : 'widget.mitos.sexcombo',
-	initComponent: function() {
-		var me = this;
-
-		Ext.define('Sexmodel', {
-			extend: 'Ext.data.Model',
-			fields: [
-				{name: 'option_name', type: 'string' },
-				{name: 'option_value', type: 'string' }
-			],
-			proxy : {
-				type       : 'direct',
-				api        : {
-					read: CombosData.getOptionsByListId
-				},
-				extraParams: {
-					list_id: 19
-				}
-			}
-		});
-
-		me.store = Ext.create('Ext.data.Store', {
-			model   : 'Sexmodel',
-			autoLoad: true
-		});
-
-		Ext.apply(this, {
-			editable    : false,
-			queryMode   : 'local',
-			displayField: 'option_name',
-			valueField  : 'option_value',
-			emptyText   : i18n['select'],
-			store       : me.store
-		}, null);
-		me.callParent(arguments);
-	}
-});
-Ext.define('App.classes.combo.SmokingStatus', {
-	extend       : 'Ext.form.ComboBox',
-	alias        : 'widget.mitos.smokingstatuscombo',
-	initComponent: function() {
-		var me = this;
-
-		Ext.define('smokingstatusModel', {
-			extend: 'Ext.data.Model',
-			fields: [
-				{name: 'option_name', type: 'string' },
-				{name: 'option_value', type: 'string' }
-			],
-			proxy : {
-				type       : 'direct',
-				api        : {
-					read: CombosData.getOptionsByListId
-				},
-				extraParams: {
-					list_id: 58
-				}
-			}
-		});
-
-		me.store = Ext.create('Ext.data.Store', {
-			model   : 'smokingstatusModel',
-			autoLoad: true
-		});
-
-		Ext.apply(this, {
-			editable    : false,
-			queryMode   : 'local',
-			displayField: 'option_name',
-			valueField  : 'option_value',
-			emptyText   : i18n['select'],
-			store       : me.store
-		}, null);
-		me.callParent(arguments);
-	}
-});
-Ext.define('App.classes.combo.Surgery', {
-	extend       : 'Ext.form.ComboBox',
-	alias        : 'widget.mitos.surgerycombo',
-	initComponent: function() {
-		var me = this;
-
-		Ext.define('SurgeryModel', {
-			extend: 'Ext.data.Model',
-			fields: [
-				{name: 'option_name', type: 'string' },
-				{name: 'option_value', type: 'string' }
-			],
-			proxy : {
-				type       : 'direct',
-				api        : {
-					read: CombosData.getOptionsByListId
-				},
-				extraParams: {
-					list_id: 76
-				}
-			}
-		});
-
-		me.store = Ext.create('Ext.data.Store', {
-			model   : 'SurgeryModel',
-			autoLoad: true
-		});
-
-		Ext.apply(this, {
-			editable    : false,
-			queryMode   : 'local',
-			displayField: 'option_name',
-			valueField  : 'option_value',
-			emptyText   : i18n['select'],
-			store       : me.store
-		}, null);
-		me.callParent(arguments);
-	}
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 10/29/11
- * Time: 4:45 PM
- */
-Ext.define('App.classes.combo.TaxId', {
-	extend       : 'Ext.form.ComboBox',
-	alias        : 'widget.mitos.taxidcombo',
-	initComponent: function() {
-		var me = this;
-
-		Ext.define('TaxIdsModel', {
-			extend: 'Ext.data.Model',
-			fields: [
-				{name: 'option_id', type: 'string' },
-				{name: 'title', type: 'string' }
-			],
-			proxy : {
-				type: 'direct',
-				api : {
-					read: CombosData.getTaxIds
-				}
-			}
-		});
-
-		me.store = Ext.create('Ext.data.Store', {
-			model   : 'TaxIdsModel',
-			autoLoad: true
-		});
-
-		Ext.apply(this, {
-			editable    : false,
-			queryMode   : 'local',
-			displayField: 'title',
-			valueField  : 'option_id',
-			emptyText   : i18n['select'],
-			store       : me.store
-		}, null);
-		me.callParent();
-	} // end initComponent
-});
-Ext.define('App.classes.combo.Templates', {
-	extend       : 'Ext.form.ComboBox',
-	alias        : 'widget.mitos.templatescombo',
-	initComponent: function() {
-		var me = this;
-
-		Ext.define('TemplatesComboModel', {
-			extend: 'Ext.data.Model',
-			fields: [
-				{name: 'title', type: 'string' },
-				{name: 'body'}
-			],
-			proxy : {
-				type       : 'direct',
-				api        : {
-					read: CombosData.getTemplatesTypes
-				}
-			}
-		});
-
-		me.store = Ext.create('Ext.data.Store', {
-			model   : 'TemplatesComboModel',
-			autoLoad: false
-		});
-
-		Ext.apply(this, {
-			editable    : false,
-			//queryMode   : 'local',
-			displayField: 'title',
-			valueField  : 'title',
-			emptyText   : i18n['select'],
-			store       : me.store
-		}, null);
-		me.callParent(arguments);
-	}
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 10/29/11
- * Time: 4:45 PM
- */
-Ext.define('App.classes.combo.Themes', {
-	extend       : 'Ext.form.ComboBox',
-	alias        : 'widget.themescombo',
-	initComponent: function() {
-		var me = this;
-
-		Ext.define('ThemesComboModel', {
-			extend: 'Ext.data.Model',
-			fields: [
-				{ name: 'name', type: 'string' },
-				{ name: 'value', type: 'string' }
-			],
-			proxy : {
-				type: 'direct',
-				api : {
-					read: CombosData.getThemes
-				}
-			}
-		});
-
-		me.store = Ext.create('Ext.data.Store', {
-			model   : 'ThemesComboModel',
-			autoLoad: true
-		});
-
-		Ext.apply(this, {
-			editable    : false,
-			queryMode   : 'local',
-			valueField  : 'value',
-			displayField: 'name',
-			emptyText   : i18n['select'],
-			store       : me.store
-		}, null);
-		me.callParent();
-	}
-});
-Ext.define('App.classes.combo.Time', {
-	extend       : 'Ext.form.ComboBox',
-	alias        : 'widget.mitos.timecombo',
-	initComponent: function() {
-		var me = this;
-
-		Ext.define('Timemodel', {
-			extend: 'Ext.data.Model',
-			fields: [
-				{name: 'option_name', type: 'string' },
-				{name: 'option_value', type: 'string' }
-			],
-			proxy : {
-				type       : 'direct',
-				api        : {
-					read: CombosData.getOptionsByListId
-				},
-				extraParams: {
-					list_id: 77
-				}
-			}
-		});
-
-		me.store = Ext.create('Ext.data.Store', {
-			model   : 'Timemodel',
-			autoLoad: true
-		});
-
-		Ext.apply(this, {
-			editable    : false,
-			queryMode   : 'local',
-			displayField: 'option_name',
-			valueField  : 'option_value',
-			emptyText   : i18n['select'],
-			store       : me.store
-		}, null);
-		me.callParent(arguments);
-	}
-});
-Ext.define('App.classes.combo.Titles', {
-	extend       : 'Ext.form.ComboBox',
-	alias        : 'widget.mitos.titlescombo',
-	initComponent: function() {
-		var me = this;
-
-		Ext.define('TitlesModel', {
-			extend: 'Ext.data.Model',
-			fields: [
-				{name: 'option_name', type: 'string' },
-				{name: 'option_value', type: 'string' }
-			],
-			proxy : {
-				type       : 'direct',
-				api        : {
-					read: CombosData.getOptionsByListId
-				},
-				extraParams: {
-					list_id: 22
-				}
-			}
-		});
-
-		me.store = Ext.create('Ext.data.Store', {
-			model   : 'TitlesModel',
-			autoLoad: true
-		});
-
-		Ext.apply(this, {
-			editable    : false,
-			queryMode   : 'local',
-			displayField: 'option_name',
-			valueField  : 'option_value',
-			emptyText   : i18n['select'],
-			store       : me.store
-		}, null);
-		me.callParent(arguments);
-	}
-});
-Ext.define('App.classes.combo.TransmitMethod', {
-	extend       : 'Ext.form.ComboBox',
-	alias        : 'widget.transmitmethodcombo',
-	initComponent: function() {
-		var me = this;
-
-
-		me.storeTrsmit = Ext.create('Ext.data.Store', {
-			fields: ['id', 'name'],
-			data  : [
-				{"id": "1", "name": "Print"},
-				{"id": "2", "name": "Email"},
-				{"id": "3", "name": "Email"}
-			]
-		});
-
-		Ext.apply(this, {
-			name        : 'transmit_method',
-			editable    : false,
-			displayField: 'name',
-			valueField  : 'id',
-			queryMode   : 'local',
-			emptyText   : i18n['select'],
-			store       : me.storeTrsmit
-		}, null);
-		me.callParent();
-	} // end initComponent
-});
-Ext.define('App.classes.combo.Types', {
-	extend       : 'Ext.form.ComboBox',
-	alias        : 'widget.mitos.typescombobox',
-	initComponent: function() {
-		var me = this;
-
-		// *************************************************************************************
-		// Structure, data for Types
-		// AJAX -> component_data.ejs.php
-		// *************************************************************************************
-
-
-		Ext.define('TypesModel', {
-			extend: 'Ext.data.Model',
-			fields: [
-				{name: 'option_name', type: 'string' },
-				{name: 'option_value', type: 'string' }
-			],
-			proxy : {
-				type       : 'direct',
-				api        : {
-					read: CombosData.getOptionsByListId
-				},
-				extraParams: {
-					list_id: 32
-				}
-
-			}
-		});
-
-		me.store = Ext.create('Ext.data.Store', {
-			model   : 'TypesModel',
-			autoLoad: true
-		});
-
-		Ext.apply(this, {
-			name        : 'abook_type',
-			editable    : false,
-			displayField: 'option_name',
-			valueField  : 'option_value',
-			queryMode   : 'local',
-			store       : me.store
-		}, null);
-		me.callParent(arguments);
-	}
-});
-Ext.define('App.classes.combo.Units', {
-	extend       : 'Ext.form.ComboBox',
-	alias        : 'widget.mitos.unitscombo',
-	initComponent: function() {
-		var me = this;
-
-		Ext.define('UnitsModel', {
-			extend: 'Ext.data.Model',
-			fields: [
-				{name: 'option_name', type: 'string' },
-				{name: 'option_value', type: 'string' }
-			],
-			proxy : {
-				type       : 'direct',
-				api        : {
-					read: CombosData.getOptionsByListId
-				},
-				extraParams: {
-					list_id: 38
-				}
-			}
-		});
-
-		me.store = Ext.create('Ext.data.Store', {
-			model   : 'UnitsModel',
-			autoLoad: true
-		});
-
-		Ext.apply(this, {
-			//editable    : false,
-			queryMode   : 'local',
-			valueField  : 'option_value',
-			displayField: 'option_name',
-			//emptyText   : 'Select',
-			store       : me.store
-		}, null);
-		me.callParent(arguments);
-	}
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 10/29/11
- * Time: 4:45 PM
- */
-Ext.define('App.classes.combo.Users', {
-	extend       : 'Ext.form.ComboBox',
-	alias        : 'widget.userscombo',
-	initComponent: function() {
-		var me = this;
-
-		Ext.define('UsersComboModel', {
-			extend: 'Ext.data.Model',
-			fields: [
-				{name: 'id', type: 'int' },
-				{name: 'name', type: 'string' }
-			],
-			proxy : {
-				type: 'direct',
-				api : {
-					read: CombosData.getUsers
-				}
-			}
-		});
-
-		me.store = Ext.create('Ext.data.Store', {
-			model   : 'UsersComboModel',
-			autoLoad: true
-		});
-
-		Ext.apply(this, {
-			editable    : false,
-			queryMode   : 'local',
-			valueField  : 'id',
-			displayField: 'name',
-			emptyText   : i18n['select'],
-			store       : me.store
-		}, null);
-		me.callParent();
-	} // end initComponent
-});
-Ext.define('App.classes.combo.YesNoNa', {
-	extend       : 'Ext.form.ComboBox',
-	alias        : 'widget.mitos.yesnonacombo',
-	initComponent: function() {
-		var me = this;
-
-		Ext.define('yesnonaModel', {
-			extend: 'Ext.data.Model',
-			fields: [
-				{name: 'option_name', type: 'string' },
-				{name: 'option_value', type: 'string' }
-			],
-			proxy : {
-				type       : 'direct',
-				api        : {
-					read: CombosData.getOptionsByListId
-				},
-				extraParams: {
-					list_id: 93
-				}
-			}
-		});
-
-		me.store = Ext.create('Ext.data.Store', {
-			model   : 'yesnonaModel',
-			autoLoad: true
-		});
-
-		Ext.apply(this, {
-			editable    : false,
-			queryMode   : 'local',
-			displayField: 'option_name',
-			valueField  : 'option_value',
-			emptyText   : i18n['select'],
-			store       : me.store
-		}, null);
-		me.callParent(arguments);
-	}
-});
-Ext.define('App.classes.combo.YesNo', {
-	extend       : 'Ext.form.ComboBox',
-	alias        : 'widget.mitos.yesnocombo',
-	initComponent: function() {
-		var me = this;
-
-		Ext.define('yesnoModel', {
-			extend: 'Ext.data.Model',
-			fields: [
-				{name: 'option_name', type: 'string' },
-				{name: 'option_value', type: 'string' }
-			],
-			proxy : {
-				type       : 'direct',
-				api        : {
-					read: CombosData.getOptionsByListId
-				},
-				extraParams: {
-					list_id: 23
-				}
-			}
-		});
-
-		me.store = Ext.create('Ext.data.Store', {
-			model   : 'yesnoModel',
-			autoLoad: true
-		});
-
-		Ext.apply(this, {
-			editable    : false,
-			queryMode   : 'local',
-			displayField: 'option_name',
-			valueField  : 'option_value',
-			emptyText   : i18n['select'],
-			store       : me.store
-		}, null);
-		me.callParent(arguments);
-	}
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 10/31/11
- * Time: 3:21 PM
- */
-Ext.define('App.classes.window.Window', {
-	extend       : 'Ext.window.Window',
-	autoHeight   : true,
-	modal        : true,
-	border       : true,
-	autoScroll   : true,
-	resizable    : false,
-	closeAction  : 'hide',
-	initComponent: function() {
-		this.callParent(arguments);
-	},
-
-	updateTitle: function(pageTitle, readOnly) {
-		this.setTitle(pageTitle + (readOnly ? '[ Read Only ]' : ''));
-	},
-
-	setReadOnly: function() {
-		var forms = this.query('form'),
-			readOnly = app.patient.readOnly;
-		for(var j = 0; j < forms.length; j++) {
-			var form = forms[j], items;
-			if(form.readOnly != readOnly){
-				form.readOnly = readOnly;
-				items = form.getForm().getFields().items;
-				for(var k = 0; k < items.length; k++) {
-					items[k].setReadOnly(readOnly);
-				}
-			}
-		}
-		return readOnly;
-	},
-
-	setButtonsDisabled:function(buttons){
-		var disable = app.patient.readOnly;
-		for(var i = 0; i < buttons.length; i++) {
-			var btn = buttons[i];
-			if(btn.disabled != disable){
-				btn.disabled = disable;
-				btn.setDisabled(disable)
-			}
-		}
-	},
-
-	checkIfCurrPatient: function() {
-		return app.getCurrPatient();
-	},
-
-	patientInfoAlert: function() {
-		var patient = app.getCurrPatient();
-
-		Ext.Msg.alert(i18n['status'], i18n['patient'] + ': ' + patient.name + ' (' + patient.pid + ')');
-	},
-
-	currPatientError: function() {
-		Ext.Msg.show({
-			title  : 'Oops! ' + i18n['no_patient_selected'],
-			msg    : i18n['select_patient_patient_live_search'],
-			scope  : this,
-			buttons: Ext.Msg.OK,
-			icon   : Ext.Msg.ERROR,
-			fn     : function() {
-				this.goBack();
-			}
-		});
-	},
-
-	getFormItems: function(formPanel, formToRender, callback) {
-		formPanel.removeAll();
-
-		FormLayoutEngine.getFields({formToRender: formToRender}, function(provider, response) {
-			var items = eval(response.result);
-			formPanel.add(items);
-			if(typeof callback == 'function') {
-				callback(formPanel, items, true);
-			}
-		});
-	},
-
-	boolRenderer: function(val) {
-		if(val == '1' || val == true || val == 'true') {
-			return '<img style="padding-left: 13px" src="resources/images/icons/yes.gif" />';
-		} else if(val == '0' || val == false || val == 'false') {
-			return '<img style="padding-left: 13px" src="resources/images/icons/no.gif" />';
-		}
-		return val;
-	},
-
-	alertRenderer: function(val) {
-		if(val == '1' || val == true || val == 'true') {
-			return '<img style="padding-left: 13px" src="resources/images/icons/no.gif" />';
-		} else if(val == '0' || val == false || val == 'false') {
-			return '<img style="padding-left: 13px" src="resources/images/icons/yes.gif" />';
-		}
-		return val;
-	},
-
-	warnRenderer:function(val, metaData, record){
-        var toolTip = record.data.warningMsg ? ' data-qtip="'+record.data.warningMsg+'" ' : '';
-        if(val == '1' || val == true || val == 'true') {
-            return '<img src="resources/images/icons/icoImportant.png" ' + toolTip + ' />';
-        }
-    },
-
-	onExpandRemoveMask: function(cmb) {
-		cmb.picker.loadMask.destroy()
-	},
-
-	strToLowerUnderscores: function(str) {
-		return str.toLowerCase().replace(/ /gi, "_");
-	},
-	getCurrPatient: function() {
-		return app.getCurrPatient();
-	},
-
-	getApp: function() {
-		return app.getApp();
-	},
-
-	msg: function(title, format) {
-		app.msg(title, format)
-	},
-
-	passwordVerificationWin: function(callback) {
-		var msg = Ext.Msg.prompt(i18n['password_verification'], i18n['please_enter_your_password'] + ':', function(btn, password) {
-			callback(btn, password);
-		});
-		var f = msg.textField.getInputId();
-		document.getElementById(f).type = 'password';
-		return msg;
-	}
-});
-/**
- * A plugin that provides the ability to visually indicate to the user that a node is disabled.
- *
- * Notes:
- * - Compatible with Ext 4.x
- * - If the view already defines a getRowClass function, the original function will be called before this plugin.
- *
- var tree = Ext.create('Ext.tree.Panel',{
- plugins: [{
- ptype: 'nodedisabled'
- }]
- ...
- });
- *
- * @class Ext.ux.tree.plugin.NodeDisabled
- * @extends Ext.AbstractPlugin
- * @author Phil Crawford
- * @license Licensed under the terms of the Open Source <a href="http://www.gnu.org/licenses/lgpl.html">LGPL 3.0 license</a>.  Commercial use is permitted to the extent that the code/component(s) do NOT become part of another Open Source or Commercially licensed development library or toolkit without explicit permission.
- * @version 0.1 (July 1, 2011)
- * @constructor
- * @param {Object} config
- */
-Ext.define('App.classes.NodeDisabled', {
-    alias:'plugin.nodedisabled', extend:'Ext.AbstractPlugin'
-
-
-    //configurables
-    /**
-     * @cfg {String} disabledCls
-     * The CSS class applied when the {@link Ext.data.Model} of the node has a 'disabled' field with a true value.
-     */, disabledCls:'tree-node-disabled'
-    /**
-     * @cfg {Boolean} preventSelection
-     * True to prevent selection of a node that is disabled. Default true.
-     */, preventSelection:true
-
-    /**
-     * @cfg {Boolean} preventChecking
-     * True to prevent checking of a node that is disabled. Default true.
-     */, preventChecking:true
-
-    //properties
-
-
-    /**
-     * @private
-     * @param {Ext.tree.Panel} tree
-     */, init:function (tree) {
-        var me = this
-            , view = tree.getView()
-            , origFn
-            , origScope;
-
-        me.callParent(arguments);
-
-        origFn = view.getRowClass;
-        if (origFn) {
-            origScope = view.scope || me;
-            Ext.apply(view, {
-                getRowClass:function () {
-                    var v1, v2;
-                    v1 = origFn.apply(origScope, arguments) || '';
-                    v2 = me.getRowClass.apply(me, arguments) || '';
-                    return (v1 && v2) ? v1 + ' ' + v2 : v1 + v2;
-                }
-            }, null);
-        } else {
-            Ext.apply(view, {
-                getRowClass:Ext.Function.bind(me.getRowClass, me)
-            }, null);
-        }
-
-        if (me.preventSelection) {
-            tree.getSelectionModel().on('beforeselect', me.onBeforeNodeSelect, me);
-        }
-
-        if (me.preventChecking) {
-            tree.on('checkchange', me.checkchange, me);
-        }
-    } // eof init
-
-
-    /**
-     * Returns a properly typed result.
-     * @return {Ext.tree.Panel}
-     */, getCmp:function () {
-        return this.callParent(arguments);
-    } //eof getCmp
-
-    /**
-     * @private
-     * @param {Ext.data.Model} record
-     * @param {Number} index
-     * @param {Object} rowParams
-     * @param {Ext.data.Store} ds
-     * @return {String}
-     */, getRowClass:function (record, index, rowParams, ds) {
-        return record.get('disabled') ? this.disabledCls : '';
-    }//eof getRowClass
-
-    /**
-     * @private
-     * @param {Ext.selection.TreeModel} sm
-     * @param {Ext.data.Model} node
-     * @return {Boolean}
-     */, onBeforeNodeSelect:function (sm, node) {
-        if (node.get('disabled')) {
-            return false;
-        }
-    }//eof onBeforeNodeSelect
-
-    /**
-     * @event checkchange
-     * Fires when a node with a checkbox's checked property changes
-     * @param {Ext.data.Model} node The node who's checked property was changed
-     * @param {Boolean} checked The node's new checked state
-     */, checkchange:function (node, checked) {
-        if (node.get('disabled')) {
-            node.set('checked', !checked);
-        }
-    }//eof checkchange
-
-});//eo class
-
-//end of file
-//******************************************************************************
-// ofice_notes.ejs.php
-// office Notes Page
-// v0.0.1
-// 
-// Author: Ernest Rodriguez
-// Modified:
-// 
-// GaiaEHR (Electronic Health Records) 2011
-//******************************************************************************
-Ext.define('App.view.search.PatientSearch', {
-	extend       : 'App.classes.RenderPanel',
-	id           : 'panelPatientSearch',
-	pageTitle    : i18n['advance_patient_search'],
-	pageLayout   : 'border',
-	uses         : [
-		'App.classes.GridPanel'
-	],
-	initComponent: function() {
-		var me = this;
-
-
-		me.form = Ext.create('Ext.form.FormPanel', {
-			region     : 'north',
-			height     : 200,
-			bodyPadding: 10,
-			margin     : '0 0 3 0',
-			buttonAlign: 'left',
-			items      : [
-				{
-					xtype     : 'fieldcontainer',
-					fieldLabel: i18n['name'],
-					layout    : 'hbox',
-					defaults  : { margin: '0 5 0 0' },
-					items     : [
-						{
-							xtype    : 'textfield',
-							emptyText: i18n['first_name'],
-							name     : 'fname'
-						},
-						{
-							xtype    : 'textfield',
-							emptyText: i18n['middle_name'],
-							name     : 'mname'
-						},
-						{
-							xtype    : 'textfield',
-							emptyText: i18n['last_name'],
-							name     : 'lname'
-						}
-					]
-				}
-			],
-
-			buttons: [
-				{
-					text   : i18n['search'],
-					iconCls: 'save',
-					handler: function() {
-
-					}
-				},
-				'-',
-				{
-					text   : i18n['reset'],
-					iconCls: 'save',
-					tooltip: i18n['hide_selected_office_note'],
-					handler: function() {
-
-					}
-				}
-			]
-		});
-		me.grid = Ext.create('App.classes.GridPanel', {
-			region   : 'center',
-			//store    : me.store,
-			columns  : [
-				{ header: 'id', sortable: false, dataIndex: 'id', hidden: true},
-				{ width: 150, header: i18n['date'], sortable: true, dataIndex: 'date', renderer: Ext.util.Format.dateRenderer('Y-m-d H:i:s') },
-				{ width: 150, header: i18n['user'], sortable: true, dataIndex: 'user' },
-				{ flex: 1, header: i18n['note'], sortable: true, dataIndex: 'body' }
-
-			],
-			tbar     : Ext.create('Ext.PagingToolbar', {
-				store      : me.store,
-				displayInfo: true,
-				emptyMsg   : i18n['no_office_notes_to_display'],
-				plugins    : Ext.create('Ext.ux.SlidingPager', {})
-			})
-		}); // END GRID
-		me.pageBody = [ me.form, me.grid ];
-		me.callParent(arguments);
-	}, // end of initComponent
-	/**
-	 * This function is called from MitosAPP.js when
-	 * this panel is selected in the navigation panel.
-	 * place inside this function all the functions you want
-	 * to call every this panel becomes active
-	 */
-	onActive     : function(callback) {
-		callback(true);
-	}
-}); //ens oNotesPage class
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/15/12
- * Time: 4:30 PM
- *
- * @namespace Immunization.getImmunizationsList
- * @namespace Immunization.getPatientImmunizations
- * @namespace Immunization.addPatientImmunization
- */
-Ext.define('App.view.patient.windows.Medical', {
-	extend       : 'App.classes.window.Window',
-	title        : i18n['medical_window'],
-	id           : 'MedicalWindow',
-	layout       : 'card',
-	closeAction  : 'hide',
-	height       : 750,
-	width        : 1200,
-	bodyStyle    : 'background-color:#fff',
-	modal        : true,
-	defaults     : {
-		margin: 5
-	},
-	requires     : [ 'App.view.patient.LaboratoryResults' ],
-	pid          : null,
-	initComponent: function() {
-
-		var me = this;
-
-
-		me.patientImmuListStore = Ext.create('App.store.patient.PatientImmunization', {
-			groupField: 'immunization_name',
-			sorters   : ['immunization_name', 'administered_date'],
-			listeners : {
-				scope     : me,
-				beforesync: me.setDefaults
-			},
-			autoSync  : true
-		});
-		me.patientAllergiesListStore = Ext.create('App.store.patient.Allergies', {
-
-			listeners: {
-				scope     : me,
-				beforesync: me.setDefaults
-			},
-			autoSync : true
-		});
-		me.patientMedicalIssuesStore = Ext.create('App.store.patient.MedicalIssues', {
-
-			listeners: {
-				scope     : me,
-				beforesync: me.setDefaults
-			},
-			autoSync : true
-		});
-		me.patientSurgeryStore = Ext.create('App.store.patient.Surgery', {
-
-			listeners: {
-				scope     : me,
-				beforesync: me.setDefaults
-			},
-			autoSync : true
-		});
-		me.patientDentalStore = Ext.create('App.store.patient.Dental', {
-
-			listeners: {
-				scope     : me,
-				beforesync: me.setDefaults
-			},
-			autoSync : true
-		});
-		me.patientMedicationsStore = Ext.create('App.store.patient.Medications', {
-
-			listeners: {
-				scope     : me,
-				beforesync: me.setDefaults
-			},
-			autoSync : true
-		});
-		me.labPanelsStore = Ext.create('App.store.patient.LaboratoryTypes', {
-			autoSync: true
-		});
-
-		me.items = [
-			{
-				xtype   : 'grid',
-				action  : 'patientImmuListGrid',
-				itemId  : 'patientImmuListGrid',
-				store   : me.patientImmuListStore,
-				features: Ext.create('Ext.grid.feature.Grouping', {
-					groupHeaderTpl   : i18n['immunization'] + ': {name} ({rows.length} Item{[values.rows.length > 1 ? "s" : ""]})',
-					hideGroupedHeader: true
-				}),
-				columns : [
-					{
-						header   : i18n['immunization_name'],
-						width    : 100,
-						dataIndex: 'immunization_name'
-					},
-					{
-						xtype    : 'datecolumn',
-						header   : 'Date',
-						format   : 'Y-m-d',
-						width    : 100,
-						dataIndex: 'administered_date'
-					},
-					{
-						header   : i18n['lot_number'],
-						width    : 100,
-						dataIndex: 'lot_number'
-					},
-					{
-						header   : 'Notes',
-						flex     : 1,
-						dataIndex: 'note'
-					}
-				],
-
-				plugins: Ext.create('App.classes.grid.RowFormEditing', {
-					autoCancel  : false,
-					errorSummary: false,
-					clicksToEdit: 1,
-					formItems   : [
-
-						{
-
-							title : 'general',
-							xtype : 'container',
-							layout: 'vbox',
-							items : [
-								{
-									/**
-									 * Line one
-									 */
-									xtype   : 'fieldcontainer',
-									layout  : 'hbox',
-									defaults: { margin: '0 10 3 0', xtype: 'textfield'},
-									items   : [
-
-										{
-											xtype          : 'immunizationlivesearch',
-											fieldLabel     : i18n['name'],
-											hideLabel      : false,
-											allowBlank     : false,
-											itemId         : 'immunization_name',
-											name           : 'immunization_name',
-											enableKeyEvents: true,
-											action         : 'immunizations',
-											width          : 570,
-											listeners      : {
-												scope : me,
-												select: me.onLiveSearchSelect
-											}
-										},
-										{
-											xtype : 'textfield',
-											hidden: true,
-											name  : 'immunization_id',
-											action: 'idField'
-										},
-										{
-											fieldLabel: i18n['administrator'],
-											name      : 'administered_by',
-											width     : 295,
-											labelWidth: 160
-
-										}
-
-									]
-
-								},
-								{
-									/**
-									 * Line two
-									 */
-									xtype   : 'fieldcontainer',
-									layout  : 'hbox',
-									defaults: { margin: '0 10 3 0', xtype: 'textfield' },
-									items   : [
-										{
-											fieldLabel: i18n['lot_number'],
-											xtype     : 'textfield',
-											width     : 300,
-											name      : 'lot_number'
-
-										},
-										{
-
-											xtype     : 'numberfield',
-											fieldLabel: i18n['dosis_number'],
-											width     : 260,
-											name      : 'dosis'
-										},
-
-										{
-											fieldLabel: i18n['info_statement_given'],
-											width     : 295,
-											labelWidth: 160,
-											xtype     : 'datefield',
-											format    : 'Y-m-d',
-											name      : 'education_date'
-										}
-
-									]
-
-								},
-								{
-									/**
-									 * Line three
-									 */
-									xtype   : 'fieldcontainer',
-									layout  : 'hbox',
-									defaults: { margin: '0 10 3 0', xtype: 'textfield' },
-									items   : [
-
-										{
-											fieldLabel: i18n['notes'],
-											xtype     : 'textfield',
-											width     : 300,
-											name      : 'note'
-
-										},
-										{
-											fieldLabel: i18n['manufacturer'],
-											xtype     : 'textfield',
-											width     : 260,
-
-											name: 'manufacturer'
-
-										},
-
-										{
-											fieldLabel: i18n['date_administered'],
-											xtype     : 'datefield',
-											width     : 295,
-											labelWidth: 160,
-											format    : 'Y-m-d',
-											name      : 'administered_date'
-										}
-
-									]
-
-								}
-
-							]
-
-						}
-
-					]
-				}),
-				bbar   : [
-					'->', {
-						text   : i18n['reviewed'],
-						action : 'review',
-						itemId : 'review_immunizations',
-						scope  : me,
-						handler: me.onReviewed
-					}
-				]
-			},
-
-			{
-				/**
-				 * Allergies Card panel
-				 */
-				xtype  : 'grid',
-				action : 'patientAllergiesListGrid',
-				store  : me.patientAllergiesListStore,
-				columns: [
-					{
-						header   : i18n['type'],
-						width    : 100,
-						dataIndex: 'allergy_type'
-					},
-					{
-						header   : i18n['name'],
-						width    : 100,
-						dataIndex: 'allergy'
-					},
-					{
-						header   : i18n['location'],
-						width    : 100,
-						dataIndex: 'location'
-					},
-					{
-						header   : i18n['severity'],
-						flex     : 1,
-						dataIndex: 'severity'
-					},
-					{
-						text     : i18n['active'],
-						width    : 55,
-						dataIndex: 'alert',
-						renderer : me.boolRenderer
-					}
-				],
-				plugins: me.rowEditingAllergies = Ext.create('App.classes.grid.RowFormEditing', {
-					autoCancel  : false,
-					errorSummary: false,
-					clicksToEdit: 1,
-					formItems   : [
-
-						{
-							title  : i18n['general'],
-							xtype  : 'container',
-							padding: 10,
-							layout : 'vbox',
-							items  : [
-								{
-									/**
-									 * Line one
-									 */
-									xtype   : 'fieldcontainer',
-									layout  : 'hbox',
-									defaults: { margin: '0 10 5 0' },
-									items   : [
-										{
-											xtype          : 'mitos.allergiestypescombo',
-											fieldLabel     : i18n['type'],
-											name           : 'allergy_type',
-											action         : 'allergy_type',
-											allowBlank     : false,
-											width          : 225,
-											labelWidth     : 70,
-											enableKeyEvents: true,
-											listeners      : {
-												scope   : me,
-												'select': me.onAllergyTypeSelect
-											}
-										},
-										{
-											xtype     : 'mitos.allergieslocationcombo',
-											fieldLabel: i18n['location'],
-											name      : 'location',
-											action    : 'location',
-											width     : 225,
-											labelWidth: 70,
-											listeners : {
-												scope   : me,
-												'select': me.onLocationSelect
-											}
-
-										},
-										{
-											fieldLabel: i18n['begin_date'],
-											xtype     : 'datefield',
-											format    : 'Y-m-d',
-											name      : 'begin_date'
-
-										}
-
-									]
-
-								},
-								{
-									/**
-									 * Line two
-									 */
-									xtype   : 'fieldcontainer',
-									layout  : 'hbox',
-									defaults: { margin: '0 10 5 0' },
-									items   : [
-										{
-											xtype          : 'mitos.allergiescombo',
-											fieldLabel     : i18n['allergy'],
-											action         : 'allergie_name',
-											name           : 'allergy',
-											enableKeyEvents: true,
-											disabled       : true,
-											width          : 225,
-											labelWidth     : 70,
-											listeners      : {
-												scope   : me,
-												'select': me.onLiveSearchSelect,
-												change  : me.disableFieldLogic
-											}
-										},
-										{
-											xtype          : 'medicationlivetsearch',
-											fieldLabel     : i18n['allergy'],
-											hideLabel      : false,
-											action         : 'drug_name',
-											name           : 'allergy',
-											hidden         : true,
-											disabled       : true,
-											enableKeyEvents: true,
-											width          : 225,
-											labelWidth     : 70,
-											listeners      : {
-												scope   : me,
-												'select': me.onLiveSearchSelect,
-												change  : me.disableFieldLogic
-											}
-										},
-										{
-											xtype : 'textfield',
-											hidden: true,
-											name  : 'allergy_id',
-											action: 'idField'
-										},
-										{
-											xtype     : 'mitos.allergiesabdominalcombo',
-											fieldLabel: i18n['reaction'],
-											name      : 'reaction',
-											disabled  : true,
-											width     : 225,
-											labelWidth: 70,
-											listeners : {
-												scope : me,
-												change: me.disableFieldLogic
-											}
-
-										},
-										{
-											xtype     : 'mitos.allergieslocalcombo',
-											fieldLabel: i18n['reaction'],
-											name      : 'reaction',
-											hidden    : true,
-											disabled  : true,
-											width     : 225,
-											labelWidth: 70,
-											listeners : {
-												scope : me,
-												change: me.disableFieldLogic
-											}
-
-										},
-										{
-											xtype     : 'mitos.allergiesskincombo',
-											fieldLabel: i18n['reaction'],
-											name      : 'reaction',
-											hidden    : true,
-											disabled  : true,
-											width     : 225,
-											labelWidth: 70,
-											listeners : {
-												scope : me,
-												change: me.disableFieldLogic
-											}
-
-										},
-										{
-											xtype     : 'mitos.allergiessystemiccombo',
-											fieldLabel: i18n['reaction'],
-											name      : 'reaction',
-											hidden    : true,
-											disabled  : true,
-											width     : 225,
-											labelWidth: 70,
-											listeners : {
-												scope : me,
-												change: me.disableFieldLogic
-											}
-
-										},
-										{
-											fieldLabel: i18n['end_date'],
-											xtype     : 'datefield',
-											format    : 'Y-m-d',
-											name      : 'end_date'
-										}
-
-									]
-
-								},
-								{
-									/**
-									 * Line three
-									 */
-									xtype   : 'fieldcontainer',
-									layout  : 'hbox',
-									defaults: { margin: '0 10 5 0' },
-									items   : [
-										{
-											xtype     : 'mitos.allergiesseveritycombo',
-											fieldLabel: i18n['severity'],
-											name      : 'severity',
-											width     : 225,
-											labelWidth: 70
-
-										}
-
-
-									]
-								}
-							]
-						}
-					]
-				}),
-				bbar   : [
-					'->', {
-						text   : i18n['reviewed'],
-						action : 'review',
-						itemId : 'review_allergies',
-						scope  : me,
-						handler: me.onReviewed
-					}
-				]
-			},
-			{
-				/**
-				 * Active Problem Card panel
-				 */
-
-				xtype  : 'grid',
-				action : 'patientMedicalListGrid',
-				store  : me.patientMedicalIssuesStore,
-				columns: [
-
-					{
-						header   : i18n['problem'],
-						flex     : 1,
-						dataIndex: 'code_text'
-					},
-					{
-						xtype    : 'datecolumn',
-						header   : i18n['begin_date'],
-						width    : 100,
-						format   : 'Y-m-d',
-						dataIndex: 'begin_date'
-					},
-					{
-						xtype    : 'datecolumn',
-						header   : i18n['end_date'],
-						width    : 100,
-						format   : 'Y-m-d',
-						dataIndex: 'end_date'
-					}
-
-				],
-				plugins: Ext.create('App.classes.grid.RowFormEditing', {
-					autoCancel  : false,
-					errorSummary: false,
-					clicksToEdit: 1,
-
-					formItems: [
-						{
-							title  : i18n['general'],
-							xtype  : 'container',
-							padding: 10,
-							layout : 'vbox',
-							items  : [
-								{
-									/**
-									 * Line one
-									 */
-									xtype   : 'fieldcontainer',
-									layout  : 'hbox',
-									defaults: { margin: '0 10 5 0' },
-									items   : [
-										{
-											xtype          : 'liveicdxsearch',
-											fieldLabel     : i18n['problem'],
-											name           : 'code_text',
-											allowBlank     : false,
-											hideLabel      : false,
-											itemId         : 'medicalissues',
-											action         : 'medicalissues',
-											enableKeyEvents: true,
-											width          : 510,
-											labelWidth     : 70,
-											listeners      : {
-												scope   : me,
-												'select': me.onLiveSearchSelect
-											}
-										},
-										{
-											xtype : 'textfield',
-											hidden: true,
-											name  : 'code',
-											action: 'idField'
-										},
-
-
-										{
-											fieldLabel: i18n['begin_date'],
-											xtype     : 'datefield',
-											width     : 200,
-											labelWidth: 80,
-											format    : 'Y-m-d',
-											name      : 'begin_date'
-
-										}
-
-									]
-
-								},
-								{
-									/**
-									 * Line two
-									 */
-									xtype   : 'fieldcontainer',
-									layout  : 'hbox',
-									defaults: { margin: '0 10 5 0' },
-									items   : [
-
-										{
-											fieldLabel: i18n['ocurrence'],
-											width     : 250,
-											labelWidth: 70,
-											xtype     : 'mitos.occurrencecombo',
-											name      : 'ocurrence'
-
-										},
-
-										{
-											fieldLabel: i18n['outcome'],
-											xtype     : 'mitos.outcome2combo',
-											width     : 250,
-											labelWidth: 70,
-											name      : 'outcome'
-
-										},
-										{
-											fieldLabel: i18n['end_date'],
-											xtype     : 'datefield',
-											width     : 200,
-											labelWidth: 80,
-											format    : 'Y-m-d',
-											name      : 'end_date'
-
-										}
-
-									]
-
-								},
-								{
-									/**
-									 * Line three
-									 */
-									xtype   : 'fieldcontainer',
-									layout  : 'hbox',
-									defaults: { margin: '0 10 5 0' },
-									items   : [
-
-										{
-											xtype     : 'textfield',
-											width     : 250,
-											labelWidth: 70,
-											fieldLabel: i18n['referred_by'],
-											name      : 'referred_by'
-										}
-
-									]
-								}
-							]
-						}
-
-					]
-				}),
-				bbar   : [
-					'->', {
-						text   : i18n['reviewed'],
-						action : 'review',
-						itemId : 'review_active_problems',
-						scope  : me,
-						handler: me.onReviewed
-					}
-				]
-			},
-			{
-				/**
-				 * Surgery Card panel
-				 */
-
-				xtype  : 'grid',
-				action : 'patientSurgeryListGrid',
-				store  : me.patientSurgeryStore,
-				columns: [
-					{
-						header   : i18n['surgery'],
-						width    : 100,
-						flex     : 1,
-						dataIndex: 'surgery'
-					},
-					{
-						xtype    : 'datecolumn',
-						header   : i18n['date'],
-						width    : 100,
-						format   : 'Y-m-d',
-						dataIndex: 'date'
-					}
-
-				],
-				plugins: Ext.create('App.classes.grid.RowFormEditing', {
-					autoCancel  : false,
-					errorSummary: false,
-					clicksToEdit: 1,
-					formItems   : [
-						{
-							title  : i18n['general'],
-							xtype  : 'container',
-							padding: 10,
-							layout : 'vbox',
-							items  : [
-								{
-									/**
-									 * Line one
-									 */
-									xtype   : 'fieldcontainer',
-									layout  : 'hbox',
-									defaults: { margin: '0 10 5 0' },
-									items   : [
-										{
-											fieldLabel     : i18n['surgery'],
-											name           : 'surgery',
-											hideLabel      : false,
-											allowBlank     : false,
-											width          : 510,
-											labelWidth     : 70,
-											xtype          : 'surgerieslivetsearch',
-											itemId         : 'surgery',
-											action         : 'surgery',
-											enableKeyEvents: true,
-											listeners      : {
-												scope   : me,
-												'select': me.onLiveSearchSelect
-											}
-										},
-										{
-											xtype : 'textfield',
-											hidden: true,
-											name  : 'surgery_id',
-											action: 'idField'
-										},
-										{
-											fieldLabel: i18n['date'],
-											xtype     : 'datefield',
-											width     : 200,
-											labelWidth: 80,
-											format    : 'Y-m-d',
-											name      : 'date'
-
-										}
-
-									]
-
-								},
-								{
-									/**
-									 * Line two
-									 */
-									xtype   : 'fieldcontainer',
-									layout  : 'hbox',
-									defaults: { margin: '0 10 5 0' },
-									items   : [
-										{
-											fieldLabel: i18n['notes'],
-											xtype     : 'textfield',
-											width     : 510,
-											labelWidth: 70,
-											name      : 'notes'
-
-										},
-										{
-											fieldLabel: i18n['outcome'],
-											xtype     : 'mitos.outcome2combo',
-											width     : 200,
-											labelWidth: 80,
-											name      : 'outcome'
-
-										}
-
-
-									]
-
-								},
-								{
-									/**
-									 * Line three
-									 */
-									xtype   : 'fieldcontainer',
-									layout  : 'hbox',
-									defaults: { margin: '0 10 5 0' },
-									items   : [
-										{
-											xtype     : 'textfield',
-											width     : 260,
-											labelWidth: 70,
-
-											fieldLabel: i18n['referred_by'],
-											name      : 'referred_by'
-										}
-
-									]
-								}
-							]
-						}
-
-					]
-				}),
-				bbar   : [
-					'->', {
-						text   : i18n['reviewed'],
-						action : 'review',
-						itemId : 'review_surgery',
-						scope  : me,
-						handler: me.onReviewed
-					}
-				]
-			},
-			{
-				/**
-				 * Dental Card panel
-				 */
-
-				xtype  : 'grid',
-				action : 'patientDentalListGrid',
-				store  : me.patientDentalStore,
-				columns: [
-					{
-						header   : i18n['title'],
-						width    : 100,
-						dataIndex: 'title'
-					},
-					{
-						xtype    : 'datecolumn',
-						header   : i18n['begin_date'],
-						width    : 100,
-						format   : 'Y-m-d',
-						dataIndex: 'begin_date'
-					},
-					{
-						xtype    : 'datecolumn',
-						header   : i18n['end_date'],
-						flex     : 1,
-						format   : 'Y-m-d',
-						dataIndex: 'end_date'
-					}
-				],
-				plugins: Ext.create('App.classes.grid.RowFormEditing', {
-					autoCancel  : false,
-					errorSummary: false,
-					clicksToEdit: 1,
-					formItems   : [
-						{
-							title  : i18n['general'],
-							xtype  : 'container',
-							padding: 10,
-							layout : 'vbox',
-							items  : [
-								{
-									/**
-									 * Line one
-									 */
-									xtype   : 'fieldcontainer',
-									layout  : 'hbox',
-									defaults: { margin: '0 10 5 0' },
-									items   : [
-
-										{   xtype     : 'textfield',
-											width     : 225,
-											labelWidth: 70,
-											fieldLabel: i18n['title'],
-											action    : 'dental',
-											name      : 'title'
-										},
-//                                        {
-//   		                                    xtype:'textfield',
-//   		                                    hidden:true,
-//   		                                    name:'immunization_id',
-//   		                                    action:'idField'
-//   	                                    },
-										{
-											fieldLabel: i18n['begin_date'],
-											xtype     : 'datefield',
-											width     : 200,
-											labelWidth: 80,
-											format    : 'Y-m-d',
-											name      : 'begin_date'
-
-										},
-										{
-											fieldLabel: i18n['outcome'],
-											xtype     : 'mitos.outcome2combo',
-											width     : 250,
-											labelWidth: 70,
-											name      : 'outcome'
-
-										}
-
-									]
-
-								},
-								{
-									/**
-									 * Line two
-									 */
-									xtype   : 'fieldcontainer',
-									layout  : 'hbox',
-									defaults: { margin: '0 10 5 0' },
-									items   : [
-
-										{
-											xtype     : 'textfield',
-											width     : 225,
-											labelWidth: 70,
-											fieldLabel: i18n['referred_by'],
-											name      : 'referred_by'
-										},
-
-										{
-											fieldLabel: i18n['end_date'],
-											xtype     : 'datefield',
-											width     : 200,
-											labelWidth: 80,
-											format    : 'Y-m-d',
-											name      : 'end_date'
-
-										},
-										{
-											fieldLabel: i18n['ocurrence'],
-											xtype     : 'mitos.occurrencecombo',
-											width     : 250,
-											labelWidth: 70,
-											name      : 'ocurrence'
-
-										}
-
-									]
-
-								}
-							]
-						}
-
-					]
-				}),
-				bbar   : [
-					'->', {
-						text   : i18n['reviewed'],
-						action : 'review',
-						itemId : 'review_dental',
-						scope  : me,
-						handler: me.onReviewed
-					}
-				]
-			},
-			{
-				/**
-				 * Medications panel
-				 */
-
-				xtype  : 'grid',
-				action : 'patientMedicationsListGrid',
-				store  : me.patientMedicationsStore,
-				columns: [
-					{
-						header   : i18n['medication'],
-						flex     : 1,
-						dataIndex: 'medication'
-					},
-					{
-						xtype    : 'datecolumn',
-						header   : i18n['begin_date'],
-						width    : 100,
-						format   : 'Y-m-d',
-						dataIndex: 'begin_date'
-					},
-					{
-						xtype    : 'datecolumn',
-						header   : i18n['end_date'],
-						width    : 100,
-						format   : 'Y-m-d',
-						dataIndex: 'end_date'
-					}
-				],
-				plugins: Ext.create('App.classes.grid.RowFormEditing', {
-					autoCancel  : false,
-					errorSummary: false,
-					clicksToEdit: 1,
-
-					formItems: [
-						{
-							title  : i18n['general'],
-							xtype  : 'container',
-							padding: 10,
-							layout : 'vbox',
-							items  : [
-								{
-									/**
-									 * Line one
-									 */
-									xtype   : 'fieldcontainer',
-									layout  : 'hbox',
-									defaults: { margin: '0 10 5 0' },
-									items   : [
-										{
-											xtype          : 'medicationlivetsearch',
-											fieldLabel     : i18n['medication'],
-											hideLabel      : false,
-											itemId         : 'medication',
-											name           : 'medication',
-											action         : 'medication',
-											enableKeyEvents: true,
-											width          : 520,
-											labelWidth     : 70,
-											listeners      : {
-												scope   : me,
-												'select': me.onLiveSearchSelect
-											}
-										},
-										{
-											xtype : 'textfield',
-											hidden: true,
-											name  : 'medication_id',
-											action: 'idField'
-										},
-
-										{
-											fieldLabel: i18n['begin_date'],
-											xtype     : 'datefield',
-											width     : 200,
-											labelWidth: 80,
-											format    : 'Y-m-d',
-											name      : 'begin_date'
-
-										}
-
-									]
-
-								},
-								{
-									/**
-									 * Line two
-									 */
-									xtype   : 'fieldcontainer',
-									layout  : 'hbox',
-									defaults: { margin: '0 10 5 0' },
-									items   : [
-										{
-											fieldLabel: i18n['outcome'],
-											xtype     : 'mitos.outcome2combo',
-											width     : 250,
-											labelWidth: 70,
-											name      : 'outcome'
-										},
-										{
-											xtype     : 'textfield',
-											width     : 260,
-											fieldLabel: i18n['referred_by'],
-											name      : 'referred_by'
-										},
-										{
-											fieldLabel: i18n['end_date'],
-											xtype     : 'datefield',
-											width     : 200,
-											labelWidth: 80,
-											format    : 'Y-m-d',
-											name      : 'end_date'
-										}
-
-									]
-
-								},
-								{
-									/**
-									 * Line three
-									 */
-									xtype   : 'fieldcontainer',
-									layout  : 'hbox',
-									defaults: { margin: '0 10 5 0' },
-									items   : [
-
-										{
-											fieldLabel: i18n['ocurrence'],
-											width     : 250,
-											labelWidth: 70,
-											xtype     : 'mitos.occurrencecombo',
-											name      : 'ocurrence'
-
-										}
-
-									]
-								}
-							]
-						}
-					]
-				}),
-				bbar   : [
-					'->', {
-						text   : i18n['reviewed'],
-						action : 'review',
-						itemId : 'review_medications',
-						scope  : me,
-						handler: me.onReviewed
-					}
-				]
-			},
-			{
-				/**
-				 * Lab panel
-				 */
-				xtype : 'container',
-				action: 'patientLabs',
-				layout: 'border',
-				items : [
-					{
-						xtype     : 'panel',
-						region    : 'north',
-						layout    : 'border',
-						bodyBorder: false,
-						border    : false,
-						height    : 350,
-						split     : true,
-						items     : [
-							{
-								xtype    : 'grid',
-								region   : 'west',
-								width    : 290,
-								split    : true,
-								store    : me.labPanelsStore,
-								columns  : [
-									{
-										header   : i18n['laboratories'],
-										dataIndex: 'label',
-										flex     : 1
-									}
-								],
-								listeners: {
-									scope          : me,
-									itemclick      : me.onLabPanelSelected,
-									selectionchange: me.onLabPanelSelectionChange
-								}
-							},
-							{
-								xtype : 'panel',
-								action: 'labPreviewPanel',
-								title : i18n['laboratory_preview'],
-								region: 'center',
-								items : [
-									me.uploadWin = Ext.create('Ext.window.Window', {
-										draggable  : false,
-										closable   : false,
-										closeAction: 'hide',
-										items      : [
-											{
-												xtype      : 'form',
-												bodyPadding: 10,
-												width      : 400,
-												items      : [
-													{
-														xtype     : 'filefield',
-														name      : 'filePath',
-														buttonText: i18n['select_a_file'] + '...',
-														anchor    : '100%'
-													}
-												],
-												api        : {
-													submit: DocumentHandler.uploadDocument
-												}
-											}
-										],
-										buttons    : [
-											{
-												text   : i18n['cancel'],
-												handler: function() {
-													me.uploadWin.close();
-												}
-											},
-											{
-												text   : i18n['upload'],
-												scope  : me,
-												handler: me.onLabUpload
-											}
-										]
-									})
-								]
-							}
-						],
-						tbar      : [
-							'->',
-							{
-								text: i18n['scan']
-							},
-							'-',
-							{
-								text    : i18n['upload'],
-								disabled: true,
-								action  : 'uploadBtn',
-								scope   : me,
-								handler : me.onLabUploadWind
-							}
-						]
-					},
-					{
-						xtype : 'container',
-						region: 'center',
-						layout: 'border',
-						split : true,
-						items : [
-							{
-								xtype      : 'form',
-								title      : i18n['laboratory_entry_form'],
-								region     : 'west',
-								width      : 290,
-								split      : true,
-								bodyPadding: 5,
-								autoScroll : true,
-								bbar       : [
-									'->',
-									{
-										text   : i18n['reset'],
-										scope  : me,
-										handler: me.onLabResultsReset
-									},
-									'-',
-									{
-										text   : i18n['sign'],
-										scope  : me,
-										handler: me.onLabResultsSign
-									},
-									'-',
-									{
-										text   : i18n['save'],
-										scope  : me,
-										handler: me.onLabResultsSave
-									}
-								]
-							},
-							{
-								xtype : 'panel',
-								region: 'center',
-								height: 300,
-								split : true,
-								items : [
-									{
-										xtype    : 'lalboratoryresultsdataview',
-										action   : 'lalboratoryresultsdataview',
-										store    : Ext.create('App.store.patient.PatientLabsResults'),
-										listeners: {
-											scope    : me,
-											itemclick: me.onLabResultClick
-										}
-									}
-								]
-							}
-						]
-					}
-				]
-			}
-		];
-
-		me.dockedItems = [
-			{
-				xtype: 'toolbar',
-				items: [
-					{
-
-						text        : i18n['immunization'],
-						enableToggle: true,
-						toggleGroup : 'medicalWin',
-						pressed     : true,
-						itemId      : 'immunization',
-						action      : 'immunization',
-						scope       : me,
-						handler     : me.cardSwitch
-					},
-					'-',
-					{
-						text        : i18n['allergies'],
-						enableToggle: true,
-						toggleGroup : 'medicalWin',
-						itemId      : 'allergies',
-						action      : 'allergies',
-						scope       : me,
-						handler     : me.cardSwitch
-					},
-					'-',
-					{
-						text        : i18n['active_problems'],
-						enableToggle: true,
-						toggleGroup : 'medicalWin',
-						itemId      : 'issues',
-						action      : 'issues',
-						scope       : me,
-						handler     : me.cardSwitch
-					},
-					'-',
-					{
-						text        : i18n['surgeries'],
-						enableToggle: true,
-						toggleGroup : 'medicalWin',
-						itemId      : 'surgery',
-						action      : 'surgery',
-						scope       : me,
-						handler     : me.cardSwitch
-					},
-					'-',
-					{
-						text        : i18n['dental'],
-						enableToggle: true,
-						toggleGroup : 'medicalWin',
-						itemId      : 'dental',
-						action      : 'dental',
-						scope       : me,
-						handler     : me.cardSwitch
-					},
-					'-',
-					{
-						text        : i18n['medications'],
-						enableToggle: true,
-						toggleGroup : 'medicalWin',
-						itemId      : 'medications',
-						action      : 'medications',
-						scope       : me,
-						handler     : me.cardSwitch
-					},
-					'-',
-					{
-						text        : i18n['laboratories'],
-						enableToggle: true,
-						toggleGroup : 'medicalWin',
-						itemId      : 'laboratories',
-						action      : 'laboratories',
-						scope       : me,
-						handler     : me.cardSwitch
-					},
-					'->',
-					{
-						text   : i18n['add_new'],
-						action : 'AddRecord',
-						scope  : me,
-						handler: me.onAddItem
-					}
-				]
-			}
-		];
-		me.listeners = {
-			scope: me,
-			show : me.onMedicalWinShow,
-			close : me.onMedicalWinClose
-		};
-		me.callParent(arguments);
-	},
-
-	//*******************************************************
-
-	onLabPanelSelected: function(grid, model) {
-		var me = this,
-			formPanel = me.query('[action="patientLabs"]')[0].down('form'),
-			dataView = me.query('[action="lalboratoryresultsdataview"]')[0],
-			store = dataView.store,
-			fields = model.data.fields;
-
-		me.currLabPanelId = model.data.id;
-		me.removeLabDocument();
-		formPanel.removeAll();
-
-		formPanel.add({
-			xtype : 'textfield',
-			name  : 'id',
-			hidden: true
-		});
-		for(var i = 0; i < fields.length; i++) {
-			formPanel.add({
-				xtype     : 'fieldcontainer',
-				layout    : 'hbox',
-				margin    : 0,
-				anchor    : '100%',
-				fieldLabel: fields[i].code_text_short || fields[i].loinc_name,
-				labelWidth: 130,
-				items     : [
-					{
-						xtype     : 'textfield',
-						name      : fields[i].loinc_number,
-						flex      : 1,
-						allowBlank: fields[i].required_in_panel != 'R'
-					},
-					{
-						xtype: 'mitos.unitscombo',
-						value: fields[i].default_unit,
-						name : fields[i].loinc_number + '_unit',
-						width: 90
-					}
-				]
-			});
-		}
-
-		store.load({params: {parent_id: model.data.id}});
-	},
-
-	onLabPanelSelectionChange: function(model, record) {
-		this.query('[action="uploadBtn"]')[0].setDisabled(record.length == 0);
-	},
-
-	onLabUploadWind: function() {
-		var me = this,
-			previewPanel = me.query('[action="labPreviewPanel"]')[0];
-		me.uploadWin.show();
-		me.uploadWin.alignTo(previewPanel.el.dom, 'tr-tr', [-5, 30])
-	},
-
-	onLabUpload: function(btn) {
-		var me = this,
-            formPanel = me.uploadWin.down('form'),
-			form = formPanel.getForm(),
-			win = btn.up('window');
-
-		if(form.isValid()) {
-            formPanel.el.mask(i18n['uploading_laboratory'] + '...');
-			form.submit({
-				//waitMsg: i18n['uploading_laboratory'] + '...',
-				params : {
-					pid    : app.patient.pid,
-					docType: 'laboratory',
-					eid : app.patient.eid
-				},
-				success: function(fp, o) {
-                    formPanel.el.unmask();
-                    say(o.result);
-					win.close();
-					me.getLabDocument(o.result.doc.url);
-					me.addNewLabResults(o.result.doc.id);
-				},
-				failure: function(fp, o) {
-                    formPanel.el.unmask();
-                    say(o.result);
-					win.close();
-				}
-			});
-		}
-	},
-
-	onLabResultClick: function(view, model) {
-		var me = this,
-			form = me.query('[action="patientLabs"]')[0].down('form').getForm();
-
-		if(me.currDocUrl != model.data.document_url) {
-			form.reset();
-			model.data.data.id = model.data.id;
-			form.setValues(model.data.data);
-			me.getLabDocument(model.data.document_url);
-			me.currDocUrl = model.data.document_url;
-		}
-
-	},
-
-	onLabResultsSign: function() {
-		var me = this,
-			form = me.query('[action="patientLabs"]')[0].down('form').getForm(),
-			dataView = me.query('[action="lalboratoryresultsdataview"]')[0],
-			store = dataView.store,
-			values = form.getValues(),
-			record = dataView.getSelectionModel().getLastSelected();
-
-		if(form.isValid()) {
-			if(values.id) {
-				me.passwordVerificationWin(function(btn, password) {
-					if(btn == 'ok') {
-						User.verifyUserPass(password, function(provider, response) {
-							if(response.result) {
-								say(record);
-								Medical.signPatientLabsResultById(record.data.id, function(provider, response) {
-									store.load({params: {parent_id: me.currLabPanelId}});
-								});
-							} else {
-								Ext.Msg.show({
-									title  : 'Oops!',
-									msg    : i18n['incorrect_password'],
-									//buttons:Ext.Msg.OKCANCEL,
-									buttons: Ext.Msg.OK,
-									icon   : Ext.Msg.ERROR,
-									fn     : function(btn) {
-										if(btn == 'ok') {
-											//me.onLabResultsSign();
-										}
-									}
-								});
-							}
-						});
-					}
-				});
-			} else {
-				Ext.Msg.show({
-					title  : 'Oops!',
-					msg    : i18n['nothing_to_sign'],
-					//buttons:Ext.Msg.OKCANCEL,
-					buttons: Ext.Msg.OK,
-					icon   : Ext.Msg.ERROR,
-					fn     : function(btn) {
-						if(btn == 'ok') {
-							//me.onLabResultsSign();
-						}
-					}
-				});
-			}
-
-		}
-	},
-
-	onLabResultsSave: function(btn) {
-		var me = this,
-			form = btn.up('form').getForm(),
-			dataView = me.query('[action="lalboratoryresultsdataview"]')[0],
-			store = dataView.store,
-			values = form.getValues(),
-			record = dataView.getSelectionModel().getLastSelected();
-
-		if(form.isValid()) {
-			Medical.updatePatientLabsResult(values, function() {
-				store.load({params: {parent_id: record.data.parent_id}});
-				form.reset();
-			});
-		}
-	},
-
-
-	addNewLabResults: function(docId) {
-		var me = this,
-			dataView = me.query('[action="lalboratoryresultsdataview"]')[0],
-			store = dataView.store,
-			params = {
-				parent_id  : me.currLabPanelId,
-				document_id: docId
-			};
-		Medical.addPatientLabsResult(params, function(provider, response) {
-			store.load({params: {parent_id: me.currLabPanelId}});
-
-		});
-	},
-
-	onReviewed: function(btn) {
-		var me = this,
-			BtnId = btn.itemId,
-			params = {
-				eid : app.patient.eid,
-				area: BtnId
-			};
-
-		Medical.reviewMedicalWindowEncounter(params, function(provider, response) {
-			me.msg('Sweet!', i18n['succefully_reviewed']);
-		});
-	},
-
-	onLabResultsReset: function(btn) {
-		var form = btn.up('form').getForm();
-		form.reset();
-	},
-
-	getLabDocument: function(src) {
-		var panel = this.query('[action="labPreviewPanel"]')[0];
-		panel.remove(this.doc);
-		panel.add(this.doc = Ext.create('App.classes.ManagedIframe', {src: src}));
-	},
-
-	removeLabDocument: function(src) {
-		var panel = this.query('[action="labPreviewPanel"]')[0];
-		panel.remove(this.doc);
-	},
-
-	//*********************************************************
-
-	onLiveSearchSelect: function(combo, model) {
-
-		var me = this,
-			field, field2, id;
-		if(combo.action == 'immunizations') {
-			id = model[0].data.id;
-			field = combo.up('container').query('[action="idField"]')[0];
-			field.setValue(id);
-		}
-		else if(combo.id == 'allergie_name' || combo.id == 'drug_name') {
-			id = model[0].data.id;
-			field = combo.up('fieldcontainer').query('[action="idField"]')[0];
-			field.setValue(id);
-
-		}
-		else if(combo.action == 'medicalissues') {
-			id = model[0].data.code;
-			field = combo.up('fieldcontainer').query('[action="idField"]')[0];
-			field2 = combo.up('fieldcontainer').query('[action="medicalissues"]')[0];
-			field.setValue(id);
-			field2.setValue(model[0].data.code_text);
-		}
-		else if(combo.action == 'surgery') {
-			id = model[0].data.id;
-			field = combo.up('fieldcontainer').query('[action="idField"]')[0];
-			field.setValue(id);
-
-		}
-		else if(combo.action == 'medication') {
-			id = model[0].data.id;
-			field = combo.up('fieldcontainer').query('[action="idField"]')[0];
-			field.setValue(id);
-		}
-
-	},
-
-	onAddItem       : function() {
-
-		var me = this, grid = this.getLayout().getActiveItem(), store = grid.store,
-			params;
-
-		grid.editingPlugin.cancelEdit();
-		store.insert(0, {
-			created_uid: app.user.id,
-			pid        : app.patient.pid,
-			create_date: new Date(),
-			eid        : app.patient.eid,
-			begin_date : new Date()
-
-		});
-		grid.editingPlugin.startEdit(0, 0);
-		if(app.patient.eid != null) {
-			if(grid.action == 'patientImmuListGrid') {
-				params = {
-					eid : app.patient.eid,
-					area: 'review_immunizations'
-				};
-			} else if(grid.action == 'patientAllergiesListGrid') {
-				params = {
-					eid : app.patient.eid,
-					area: 'review_allergies'
-				};
-			} else if(grid.action == 'patientMedicalListGrid') {
-				params = {
-					eid : app.patient.eid,
-					area: 'review_active_problems'
-				};
-			} else if(grid.action == 'patientSurgeryListGrid') {
-				params = {
-					eid : app.patient.eid,
-					area: 'review_surgery'
-				};
-			} else if(grid.action == 'patientDentalListGrid') {
-				params = {
-					eid : app.patient.eid,
-					area: 'review_dental'
-				};
-			} else if(grid.action == 'patientMedicationsListGrid') {
-				params = {
-					eid : app.patient.eid,
-					area: 'review_medications'
-				};
-			}
-			Medical.reviewMedicalWindowEncounter(params);
-		}
-
-
-	},
-	hideall         : function(combo, skinCombo, localCombo, abdominalCombo, systemicCombo) {
-
-		skinCombo.hide(true);
-		skinCombo.setDisabled(true);
-		skinCombo.reset();
-		localCombo.hide(true);
-		localCombo.setDisabled(true);
-		localCombo.reset();
-		abdominalCombo.hide(true);
-		abdominalCombo.setDisabled(true);
-		abdominalCombo.reset();
-		systemicCombo.hide(true);
-		systemicCombo.setDisabled(true);
-		systemicCombo.reset();
-
-	},
-	onLocationSelect: function(combo, record) {
-		var me = this,
-			skinCombo = combo.up('form').getForm().findField('skinreaction'),
-			localCombo = combo.up('form').getForm().findField('localreaction'),
-			abdominalCombo = combo.up('form').getForm().findField('abdominalreaction'),
-			systemicCombo = combo.up('form').getForm().findField('systemicreaction'),
-			value = combo.getValue();
-
-		me.hideall(combo, skinCombo, localCombo, abdominalCombo, systemicCombo);
-		if(value == 'Skin') {
-			skinCombo.show(true);
-			skinCombo.setDisabled(false);
-		} else if(value == 'Local') {
-			localCombo.show(true);
-			localCombo.setDisabled(false);
-		} else if(value == 'Abdominal') {
-			abdominalCombo.show(true);
-			abdominalCombo.setDisabled(false);
-		} else if(value == 'Systemic / Anaphylactic') {
-			systemicCombo.show(true);
-			systemicCombo.setDisabled(false);
-
-		}
-	},
-
-
-	disableFieldLogic: function(field, newValue) {
-		field.setDisabled((newValue == '' || newValue == null));
-	},
-
-	onAllergyTypeSelect: function(combo, record) {
-		var me = this,
-			allergyCombo = combo.up('form').getForm().findField('allergie_name'),
-			drugLiveSearch = combo.up('form').getForm().findField('drug_name');
-
-		if(record[0].data.allergy_type == 'Drug'){
-			allergyCombo.hide(true);
-			allergyCombo.setDisabled(true);
-			allergyCombo.reset();
-			drugLiveSearch.show(true);
-			drugLiveSearch.setDisabled(false);
-		}
-		else if(record[0].data.allergy_type == '' || record[0].data.allergy_type == null) {
-			allergyCombo.setDisabled(true);
-			drugLiveSearch.hide(true);
-			drugLiveSearch.setDisabled(true);
-			allergyCombo.show(true);
-		}
-		else {
-			drugLiveSearch.hide(true);
-			drugLiveSearch.setDisabled(true);
-			allergyCombo.show(true);
-			allergyCombo.setDisabled(false);
-			allergyCombo.reset();
-			allergyCombo.store.load({params: {allergy_type: record[0].data.allergy_type}})
-		}
-
-
-	},
-	setDefaults: function(options) {
-		var data;
-
-		if(options.update) {
-			data = options.update[0].data;
-			data.updated_uid = app.user.id;
-		} else if(options.create) {
-
-		}
-	},
-
-	cardSwitch: function(btn) {
-		var me = this,
-			layout = me.getLayout(),
-			addBtn = me.down('toolbar').query('[action="AddRecord"]')[0],
-			p = app.patient,
-			title;
-
-		me.pid = p.pid;
-		addBtn.show();
-
-		if(btn.action == 'immunization') {
-			layout.setActiveItem(0);
-			title = 'Immunizations';
-
-		} else if(btn.action == 'allergies') {
-			layout.setActiveItem(1);
-			title = 'Allergies';
-
-		} else if(btn.action == 'issues') {
-			layout.setActiveItem(2);
-			title = 'Medical Issues';
-
-		} else if(btn.action == 'surgery') {
-			layout.setActiveItem(3);
-			title = 'Surgeries';
-
-		} else if(btn.action == 'dental') {
-			layout.setActiveItem(4);
-			title = 'Dentals';
-
-		} else if(btn.action == 'medications') {
-			layout.setActiveItem(5);
-			title = 'Medications';
-
-		} else if(btn.action == 'laboratories') {
-			layout.setActiveItem(6);
-			title = 'Laboratories';
-			addBtn.hide();
-		}
-
-		me.setTitle(p.name + ' (' + title + ') ' + (p.readOnly ? '-  <span style="color:red">[Read Mode]</span>' : ''));
-
-	},
-
-	onMedicalWinShow: function() {
-		var me = this,
-			reviewBts = me.query('button[action="review"]'),
-			p = app.patient;
-
-		me.pid = p.pid;
-		me.setTitle(p.name + (p.readOnly ? ' <span style="color:red">[' + i18n['read_mode'] + ']</span>' : ''));
-		me.setReadOnly(app.patient.readOnly);
-		for(var i = 0; i < reviewBts.length; i++) {
-			reviewBts[i].setVisible((app.patient.eid != null));
-		}
-		me.labPanelsStore.load();
-		me.patientImmuListStore.load({params: {pid: app.patient.pid}});
-		me.patientAllergiesListStore.load({params: {pid: app.patient.pid}});
-		me.patientMedicalIssuesStore.load({params: {pid: app.patient.pid}});
-		me.patientSurgeryStore.load({params: {pid: app.patient.pid}});
-		me.patientDentalStore.load({params: {pid: app.patient.pid}});
-		me.patientMedicationsStore.load({params: {pid: app.patient.pid}});
-
-    },
-
-    onMedicalWinClose:function(){
-        if(app.currCardCmp.id == 'panelSummary'){
-
-            app.currCardCmp.loadStores();
-
-        }
-
-    }
-
-
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 10:46 PM
- */
-Ext.define('App.view.patient.windows.Charts', {
-    extend       : 'Ext.window.Window',
-    requires     : [
-        'App.store.patient.Vitals'
-    ],
-    title        : i18n['vector_charts'],
-    layout       : 'card',
-    closeAction  : 'hide',
-    modal        : true,
-    width        : window.innerWidth - 200,
-    height       : window.innerHeight - 200,
-    maximizable  : true,
-    //maximized  : true,
-    initComponent: function() {
-        var me = this;
-
-        me.vitalsStore = Ext.create('App.store.patient.Vitals');
-        me.graphStore = Ext.create('App.store.patient.VectorGraph');
-
-        me.WeightForAgeInfStore = Ext.create('App.store.patient.charts.WeightForAgeInf');
-        me.LengthForAgeInfStore = Ext.create('App.store.patient.charts.LengthForAgeInf');
-        me.WeightForRecumbentInfStore = Ext.create('App.store.patient.charts.WeightForRecumbentInf');
-        me.HeadCircumferenceInfStore = Ext.create('App.store.patient.charts.HeadCircumferenceInf');
-        me.WeightForStatureStore = Ext.create('App.store.patient.charts.WeightForStature');
-        me.WeightForAgeStore = Ext.create('App.store.patient.charts.WeightForAge');
-        me.StatureForAgeStore = Ext.create('App.store.patient.charts.StatureForAge');
-        me.BMIForAgeStore = Ext.create('App.store.patient.charts.BMIForAge');
-
-        me.tbar = ['->', {
-            text        : i18n['bp_pulse_temp'],
-            action      : 'bpPulseTemp',
-            pressed     : true,
-            enableToggle: true,
-            toggleGroup : 'charts',
-            scope       : me,
-            handler     : me.onChartSwitch
-        },'-',{
-            text        : i18n['weight_for_age'],
-            action      : 'WeightForAgeInf',
-            enableToggle: true,
-            toggleGroup : 'charts',
-            scope       : me,
-            handler     : me.onChartSwitch
-        },'-',{
-            text        : i18n['length_for_age'],
-            action      : 'LengthForAgeInf',
-            enableToggle: true,
-            toggleGroup : 'charts',
-            scope       : me,
-            handler     : me.onChartSwitch
-        },'-',{
-            text        : i18n['weight_for_recumbent'],
-            action      : 'WeightForRecumbentInf',
-            enableToggle: true,
-            toggleGroup : 'charts',
-            scope       : me,
-            handler     : me.onChartSwitch
-        },'-',{
-            text        : i18n['head_circumference'],
-            action      : 'HeadCircumferenceInf',
-            enableToggle: true,
-            toggleGroup : 'charts',
-            scope       : me,
-            handler     : me.onChartSwitch
-        },'-',{
-            text        : i18n['weight_for_stature'],
-            action      : 'WeightForStature',
-            enableToggle: true,
-            toggleGroup : 'charts',
-            scope       : me,
-            handler     : me.onChartSwitch
-        },'-',{
-            text        : i18n['weight_for_age'],
-            action      : 'WeightForAge',
-            enableToggle: true,
-            toggleGroup : 'charts',
-            scope       : me,
-            handler     : me.onChartSwitch
-        },'-',{
-            text        : i18n['stature_for_age'],
-            action      : 'StatureForAge',
-            enableToggle: true,
-            toggleGroup : 'charts',
-            scope       : me,
-            handler     : me.onChartSwitch
-        },'-',{
-            text        : i18n['bmi_for_age'],
-            action      : 'BMIForAge',
-            enableToggle: true,
-            toggleGroup : 'charts',
-            scope       : me,
-            handler     : me.onChartSwitch
-        },'-'];
-
-        me.tools = [
-            {
-                type   : 'print',
-                tooltip: i18n['print_chart'],
-                handler: function() {
-                    console.log(this.up('window').down('chart'));
-                }
-            }
-        ];
-
-        me.items = [
-            Ext.create('App.view.patient.charts.BPPulseTemp', {
-                store: me.vitalsStore
-            }),
-
-            me.WeightForAgeInf = Ext.create('App.view.patient.charts.HeadCircumference', {
-                title   : i18n['weight_for_age_0_3_mos'],
-                xTitle  : i18n['weight_kg'],
-                yTitle  : i18n['age_months'],
-                xMinimum: 1,
-                xMaximum: 19,
-                yMinimum: 0,
-                yMaximum: 36,
-                store   : me.WeightForAgeInfStore
-            }),
-
-            me.LengthForAgeInf = Ext.create('App.view.patient.charts.HeadCircumference', {
-                title   : i18n['length_for_age_0_3_mos'],
-                xTitle  : i18n['length_cm'],
-                yTitle  : i18n['age_months'],
-                xMinimum: 40,
-                xMaximum: 110,
-                yMinimum: 0,
-                yMaximum: 36,
-                store   : me.LengthForAgeInfStore
-            }),
-
-            me.WeightForRecumbentInf = Ext.create('App.view.patient.charts.HeadCircumference', {
-                title   : i18n['weight_for_recumbent_0_3_mos'],
-                xTitle  : i18n['weight_kg'],
-                yTitle  : i18n['length_cm'],
-                xMinimum: 1,
-                xMaximum: 20,
-                yMinimum: 45,
-                yMaximum: 103.5,
-                store   : me.WeightForRecumbentInfStore
-            }),
-
-            me.HeadCircumferenceInf = Ext.create('App.view.patient.charts.HeadCircumference', {
-                title   : i18n['head_circumference_0_3_mos'],
-                xTitle  : i18n['circumference_cm'],
-                yTitle  : i18n['age_months'],
-                xMinimum: 30,
-                xMaximum: 55,
-                yMinimum: 0,
-                yMaximum: 36,
-                store   : me.HeadCircumferenceInfStore
-            }),
-
-            me.WeightForStature = Ext.create('App.view.patient.charts.HeightForStature', {
-                store: me.WeightForStatureStore
-            }),
-
-            me.WeightForAge = Ext.create('App.view.patient.charts.HeadCircumference', {
-                title   : i18n['weight_for_age_2_20_years'],
-                xTitle  : i18n['weight_kg'],
-                yTitle  : i18n['age_years'],
-                xMinimum: 10,
-                xMaximum: 110,
-                yMinimum: 2,
-                yMaximum: 20,
-                store   : me.WeightForAgeStore
-            }),
-
-            me.StatureForAge = Ext.create('App.view.patient.charts.HeadCircumference', {
-                title   : i18n['stature_for_age_2_20_years'],
-                xTitle  : i18n['stature_cm'],
-                yTitle  : i18n['age_years'],
-                xMinimum: 60,
-                xMaximum: 200,
-                yMinimum: 2,
-                yMaximum: 20,
-                store   : me.StatureForAgeStore
-            }),
-
-            me.BMIForAge = Ext.create('App.view.patient.charts.HeadCircumference', {
-                title   : i18n['bmi_for_age_2_20_years'],
-                xTitle  : i18n['bmi_kg'],
-                yTitle  : i18n['age_years'],
-                xMinimum: 10,
-                xMaximum: 35,
-                yMinimum: 2,
-                yMaximum: 20,
-                store   : me.BMIForAgeStore
-            })
-        ];
-
-        me.listeners = {
-            scope: me,
-            show : me.onWinShow
-        };
-
-        me.callParent(arguments);
-    },
-
-    onWinShow: function() {
-        var me = this, layout = me.getLayout(), btns = me.down('toolbar').items.items, btn;
-        layout.setActiveItem(0);
-        me.vitalsStore.load({params: {pid: app.patient.pid}});
-        for(var i = 0; i < btns.length; i++) {
-            btn = btns[i];
-            if(btn.type == 'button' && (
-                btn.action == 'WeightForAgeInf' || btn.action == 'LengthForAgeInf' || btn.action == 'WeightForRecumbentInf' || btn.action == 'HeadCircumferenceInf')) {
-                btn.setVisible(app.patient.age.DMY.years < 2);
-            } else if(btn.type == 'button') {
-                btn.setVisible(app.patient.age.DMY.years >= 2);
-            }
-        }
-    },
-
-    onChartSwitch: function(btn) {
-        var me = this, layout = me.getLayout(), card, chart, x, y;
-        if(btn.action == 'bpPulseTemp') {
-            layout.setActiveItem(0);
-        } else if(btn.action == 'WeightForAgeInf') {
-            layout.setActiveItem(1);
-            me.WeightForAgeInfStore.load({params: {pid: app.patient.pid}});
-        } else if(btn.action == 'LengthForAgeInf') {
-            layout.setActiveItem(2);
-            me.LengthForAgeInfStore.load({params: {pid: app.patient.pid}});
-        } else if(btn.action == 'WeightForRecumbentInf') {
-            layout.setActiveItem(3);
-            me.WeightForRecumbentInfStore.load({params: {pid: app.patient.pid}});
-        } else if(btn.action == 'HeadCircumferenceInf') {
-            layout.setActiveItem(4);
-            me.HeadCircumferenceInfStore.load({params: {pid: app.patient.pid}});
-        } else if(btn.action == 'WeightForStature') {
-            layout.setActiveItem(5);
-            me.WeightForStatureStore.load({params: {pid: app.patient.pid}});
-        } else if(btn.action == 'WeightForAge') {
-            layout.setActiveItem(6);
-            me.WeightForAgeStore.load({params: {pid: app.patient.pid}});
-        } else if(btn.action == 'StatureForAge') {
-            layout.setActiveItem(7);
-            me.StatureForAgeStore.load({params: {pid: app.patient.pid}});
-        } else if(btn.action == 'BMIForAge') {
-            layout.setActiveItem(8);
-            me.BMIForAgeStore.load({params: {pid: app.patient.pid}});
-        }
-    }
-});
-
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/15/12
- * Time: 4:30 PM
- *
- * @namespace Immunization.getImmunizationsList
- * @namespace Immunization.getPatientImmunizations
- * @namespace Immunization.addPatientImmunization
- */
-Ext.define('App.view.patient.windows.PreventiveCare', {
-	extend       : 'App.classes.window.Window',
-	title        : i18n['preventive_care_window'],
-	closeAction  : 'hide',
-	height       : 550,
-	width        : 900,
-	bodyStyle    : 'background-color:#fff',
-	modal        : true,
-    layout       : 'fit',
-	defaults     : {
-		margin: 5
-	},
-	initComponent: function() {
-		var me = this;
-
-		me.patientPreventiveCare = Ext.create('App.store.patient.PreventiveCare', {
-			groupField: 'type',
-			sorters   : ['type'],
-			autoSync  : true
-		});
-
-		me.grid  = Ext.create('App.classes.GridPanel', {
-            store      : me.patientPreventiveCare,
-			features: Ext.create('Ext.grid.feature.Grouping', {
-					groupHeaderTpl   : i18n['type'] + ': {name} ({rows.length} ' + i18n['item'] + '{[values.rows.length > 1 ? "s" : ""]})',
-					hideGroupedHeader: true,
-				    startCollapsed: true
-			}),
-            columns    : [
-	            {
-		            header     : i18n['type'],
-		            dataIndex: 'type',
-		            width:200
-	            },
-                {
-	                header     : i18n['description'],
-                    dataIndex: 'description',
-	                width: 200
-                },
-                {
-	                header     : i18n['reason'],
-	                dataIndex: 'reason',
-	                flex:1
-
-                }
-
-
-            ],
-			plugins: Ext.create('App.classes.grid.RowFormEditing', {
-				autoCancel  : false,
-				errorSummary: false,
-				clicksToEdit: 1,
-
-				formItems: [
-					{
-						title  : i18n['general'],
-						xtype  : 'container',
-						padding: 10,
-						layout : 'vbox',
-						items  : [
-							{
-								/**
-								 * Line one
-								 */
-								xtype   : 'fieldcontainer',
-								layout  : 'hbox',
-								defaults: { margin: '0 10 5 0' },
-								items   : [
-									{
-										xtype:'textfield',
-										name:'reason',
-										fieldLabel: i18n['reason'],
-										width:585,
-										labelWidth: 70,
-										disabled:true,
-										allowBlank:false,
-										action:'reason'
-									}
-
-								]
-
-							},
-							{
-								/**
-								 * Line two
-								 */
-								xtype   : 'fieldcontainer',
-								layout  : 'hbox',
-								defaults: { margin: '0 10 5 0' },
-								items   : [
-
-									{
-										xtype:'textfield',
-										fieldLabel: i18n['observation'],
-										name      : 'observation',
-										width     : 250,
-										labelWidth: 70,
-										disabled:true,
-										action:'observation'
-									},
-									{
-										fieldLabel: i18n['date'],
-										xtype:'datefield',
-										disabled:true,
-										action:'date',
-										width     : 200,
-										labelWidth: 40,
-										format    : 'Y-m-d',
-										name      : 'date'
-
-									},
-									{
-										xtype:'checkboxfield',
-										name : 'dismiss',
-										fieldLabel : i18n['dismiss_alert'],
-										enableKeyEvents: true,
-										listeners:{
-											scope:me,
-											change:me.onChangeOption
-
-										}
-									},
-									{
-                                        xtype:'textfield',
-                                        hidden:true,
-                                        name:'eid',
-                                        action:'eid'
-                                    }
-
-								]
-
-							}
-						]
-					}
-
-				]
-			})
-
-
-		});
-
-		me.items = [ me.grid ];
-
-//		me.listeners = {
-//			scope: me,
-//			show: me.onPreventiveCareWindowShow
-//		};
-
-
-		this.callParent(arguments);
-
-	},
-	onChangeOption: function(field,newValue){
-		var me=this,
-			reason=field.up('form').query('[action="reason"]')[0],
-			date=field.up('form').query('[action="date"]')[0],
-			eid=field.up('form').query('[action="eid"]')[0],
-			observation=field.up('form').query('[action="observation"]')[0];
-		eid.setValue(app.patient.eid);
-		if(newValue){
-			reason.setDisabled(false);
-			date.setDisabled(false);
-			observation.setDisabled(false);
-		}else if(!newValue){
-			reason.setDisabled(true);
-			date.setDisabled(true);
-			observation.setDisabled(true);
-
-		}else{
-			reason.setDisabled(true);
-			date.setDisabled(true);
-			observation.setDisabled(true);
-		}
-
-
-
-	},
-
-    loadPatientPreventiveCare:function(){
-        var me = this;
-        this.patientPreventiveCare.load({
-            scope:me,
-            params: {
-                pid: app.patient.pid
-            },
-            callback:function(records, operation, success){
-                if(records.length > 0){
-                    me.show();
-                    return true;
-                }else{
-                    return false;
-                }
-            }
-        });
-    }
-
-//	onPreventiveCareWindowShow: function() {
-//	    this.patientPreventiveCare.load({params: {pid: app.patient.pid }});
-//
-//    }
-
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/15/12
- * Time: 4:30 PM
- *
- * @namespace Immunization.getImmunizationsList
- * @namespace Immunization.getPatientImmunizations
- * @namespace Immunization.addPatientImmunization
- */
-Ext.define('App.view.patient.windows.NewDocuments', {
-	extend     : 'App.classes.window.Window',
-	title      : i18n['order_window'],
-	layout     : 'fit',
-	closeAction: 'hide',
-	height     : 430,
-	width      : 730,
-	bodyStyle  : 'background-color:#fff',
-	modal      : true,
-	defaults   : {
-		margin: 5
-	},
-	pid:null,
-    eid:null,
-	initComponent: function() {
-		var me = this;
-		me.patientPrescriptionStore = Ext.create('App.store.patient.PatientsPrescription');
-		me.patientsLabsOrdersStore = Ext.create('App.store.patient.PatientsLabsOrders');
-		
-		me.items = [
-			me.tabPanel = Ext.create('Ext.tab.Panel', {
-
-				items: [
-					{
-						title: i18n['new_lab_order'],
-						items: [
-
-							{
-
-								xtype  : 'grid',
-								margin : 10,
-								store  : me.patientsLabsOrdersStore,
-								height : 320,
-								columns: [
-
-									{
-										xtype: 'actioncolumn',
-										width: 20,
-										items: [
-											{
-												icon   : 'resources/images/icons/delete.png',
-												tooltip: i18n['remove'],
-												scope  : me,
-												handler: me.onRemoveLabs
-											}
-										]
-									},
-									{
-										header   : i18n['lab'],
-										flex    : 1,
-										dataIndex: 'laboratories'
-									}
-
-								],
-
-								bbar:{
-									xtype     : 'mitos.labstypescombo',
-									margin:5,
-									fieldLabel: i18n['add'],
-									hideLabel:false,
-									listeners:{
-										scope:me,
-										select:me.onAddLabs
-									}
-								}
-							}
-						],
-
-
-						bbar : [
-							'->', {
-								text   : i18n['create'],
-								scope  : me,
-								handler: me.onCreateLabs
-							}, {
-								text   : i18n['cancel'],
-								scope  : me,
-								handler: me.onCancel
-							}
-						]
-					},
-					{
-						title: i18n['new_xray_order'],
-						items: [
-
-							{
-
-								xtype  : 'grid',
-								margin : 10,
-								store  : me.patientPrescriptionStore,
-								height : 320,
-								columns: [
-
-									{
-										xtype: 'actioncolumn',
-										width: 20,
-										items: [
-											{
-												icon   : 'resources/images/icons/delete.png',
-												tooltip: i18n['remove'],
-												scope  : me,
-												handler: me.onRemove
-											}
-										]
-									},
-									{
-										header   : i18n['medication'],
-										width    : 100,
-										dataIndex: 'medication'
-									},
-									{
-										header   : i18n['dispense'],
-										width    : 100,
-										dataIndex: 'dispense'
-									},
-									{
-										header   : i18n['refill'],
-										flex     : 1,
-										dataIndex: 'refill'
-									}
-
-								],
-
-								bbar:{
-								xtype:'textfield',
-								margin:5,
-								fieldLabel: i18n['add'],
-								hideLabel:false,
-								listeners:{
-									scope:me,
-									select:me.addMedications
-								}
-							}
-
-							}
-						],
-						bbar : [
-							'->', {
-								text   : i18n['create'],
-								scope  : me,
-								handler: me.Create
-							}, {
-								text   : i18n['cancel'],
-								scope  : me,
-								handler: me.onCancel
-							}
-						]
-					},
-					{
-						title: i18n['new_prescription'],
-						items: [
-							{
-								xtype     : 'mitos.pharmaciescombo',
-								fieldLabel: i18n['pharmacies'],
-								width     : 250,
-								labelWidth: 75,
-								margin    : '10 0 0 10'
-
-							},
-							{
-
-								xtype  : 'grid',
-								margin : 10,
-								store  : me.patientPrescriptionStore,
-								height : 285,
-								columns: [
-
-									{
-										xtype: 'actioncolumn',
-										width: 20,
-										items: [
-											{
-												icon   : 'resources/images/icons/delete.png',
-												tooltip: i18n['remove'],
-												scope  : me,
-												handler: me.onRemove
-											}
-										]
-									},
-									{
-										header   : i18n['medication'],
-										width    : 100,
-										dataIndex: 'medication'
-									},
-									{
-										header   : i18n['dispense'],
-										width    : 100,
-										dataIndex: 'dispense'
-									},
-									{
-										header   : i18n['refill'],
-										flex     : 1,
-										dataIndex: 'refill'
-									}
-
-								],
-
-								plugins: Ext.create('App.classes.grid.RowFormEditing', {
-									autoCancel  : false,
-									errorSummary: false,
-									clicksToEdit: 1,
-									listeners   :{
-										scope   : me,
-										edit    : me.onEditPrescription
-
-									},
-									formItems   : [
-
-										{
-											title : i18n['general'],
-											xtype : 'container',
-											layout: 'vbox',
-											items : [
-												{
-													/**
-													 * Line one
-													 */
-													xtype   : 'fieldcontainer',
-													layout  : 'hbox',
-													defaults: { margin: '5 0 5 5' },
-													items   : [
-														{
-															xtype     : 'medicationlivetsearch',
-															fieldLabel: i18n['medication'],
-															hideLabel : false,
-															action    : 'medication',
-															name      : 'medication',
-															width     : 350,
-															labelWidth: 80,
-															listeners : {
-																scope : me,
-																select: me.addPrescription
-															}
-														},
-														{
-															xtype:'textfield',
-															hidden:true,
-															name:'medication_id',
-															action:'idField'
-														},
-														{
-															xtype     : 'numberfield',
-															fieldLabel: i18n['dose'],
-															labelWidth: 40,
-															action    : 'dose',
-															name      : 'dose',
-															width     : 100,
-															value     : 0,
-															minValue  : 0
-														},
-														{
-															xtype     : 'textfield',
-															fieldLabel: i18n['dose_mg'],
-															action    :'dose_mg',
-															name      : 'dose_mg',
-															hideLabel : true,
-															width     : 150
-														}
-													]
-
-												},
-												{
-													/**
-													 * Line two
-													 */
-													xtype   : 'fieldcontainer',
-													layout  : 'hbox',
-													defaults: { margin: '5 0 5 3'},
-
-													items: [
-														{
-															xtype     : 'numberfield',
-															fieldLabel: i18n['take'],
-															margin    : '5 0 5 5',
-															name      : 'take_pills',
-															width     : 130,
-															labelWidth: 80,
-															value     : 0,
-															minValue  : 0
-														},
-														{
-															xtype     : 'mitos.prescriptiontypes',
-															fieldLabel: i18n['type'],
-															hideLabel : true,
-															name      : 'type',
-															width     : 120
-														},
-														{
-															xtype     : 'mitos.prescriptionhowto',
-															fieldLabel: i18n['route'],
-															name      : 'route',
-															hideLabel : true,
-															width     : 100
-														},
-														{
-															xtype: 'mitos.prescriptionoften',
-															name : 'prescription_often',
-															width: 120
-														},
-														{
-															xtype: 'mitos.prescriptionwhen',
-															name : 'prescription_when',
-															width: 100
-														}
-													]
-
-												},
-												{
-													/**
-													 * Line three
-													 */
-													xtype   : 'fieldcontainer',
-													layout  : 'hbox',
-													defaults: { margin: '5 0 5 5'},
-													items   : [
-														{
-
-															fieldLabel: i18n['dispense'],
-															xtype     : 'numberfield',
-															name      : 'dispense',
-															width     : 130,
-															labelWidth: 80,
-															value     : 0,
-															minValue  : 0
-														},
-														{
-															fieldLabel: i18n['refill'],
-															xtype     : 'numberfield',
-															name      : 'refill',
-															labelWidth: 35,
-															width     : 140,
-															value     : 0,
-															minValue  : 0
-														},
-														{
-															fieldLabel: i18n['begin_date'],
-															xtype     : 'datefield',
-															width     : 190,
-															labelWidth: 70,
-															format    : 'Y-m-d',
-															name      : 'begin_date'
-
-														},
-														{
-															fieldLabel: i18n['end_date'],
-															xtype     : 'datefield',
-															width     : 180,
-															labelWidth: 60,
-															format    : 'Y-m-d',
-															name      : 'end_date'
-														}
-													]
-
-												}
-
-											]
-
-										}
-
-
-									]
-								}),
-								tbar   : [
-									'->',
-									{
-										text   : i18n['new_medication'],
-										scope  : me,
-										handler: me.onAddNewPrescription
-
-									}
-								]
-
-							}
-
-						],
-						bbar : [
-							'->', {
-								text   : i18n['create'],
-								scope  : me,
-								handler: me.onCreatePrescription
-							}, {
-								text   : i18n['cancel'],
-								scope  : me,
-								handler: me.onCancel
-							}
-						]
-
-					},
-					{
-						title: i18n['new_doctors_note'],
-						items: [
-							{
-								xtype     : 'mitos.templatescombo',
-								fieldLabel: i18n['template'],
-								action: 'template',
-								width     : 250,
-								labelWidth: 75,
-								margin    : '10 0 0 10',
-								enableKeyEvents: true,
-								listeners      : {
-									scope   : me,
-									select: me.onTemplateTypeSelect
-								}
-							},
-							{
-
-								xtype: 'htmleditor',
-								name:'body',
-								action:'body',
-								itemId:'body',
-								enableFontSize: false,
-								height : 285,
-								width  : 700,
-								margin:5
-
-							}
-						],
-						bbar : [
-							'->', {
-								text   : i18n['create'],
-								scope  : me,
-								handler: me.onCreateDoctorsNote
-							}, {
-								text   : i18n['cancel'],
-								scope  : me,
-								handler: me.onCancel
-							}
-						]
-					}
-				]
-
-			})
-		];
-		me.listeners = {
-			scope: me,
-			show : me.onDocumentsWinShow,
-            hide : me.onDocumentsWinHide
-		};
-		me.callParent(arguments);
-	},
-
-	onTemplateTypeSelect:function(combo,record){
-		var me          = this,
-			htmlEditor  = combo.up('panel').getComponent('body'),
-			value       = record[0].data.body;
-		htmlEditor.setValue(value);
-	},
-
-	cardSwitch          : function(action) {
-
-		var layout = this.tabPanel.getLayout();
-
-		if(action == 'lab') {
-			layout.setActiveItem(0);
-		} else if(action == 'xRay') {
-			layout.setActiveItem(1);
-		} else if(action == 'prescription') {
-			layout.setActiveItem(2);
-		} else if(action == 'notes') {
-			layout.setActiveItem(3);
-		}
-	},
-	onAddNewPrescription: function(btn) {
-		var grid = btn.up('grid');
-		grid.editingPlugin.cancelEdit();
-
-		this.patientPrescriptionStore.insert(0,{});
-		grid.editingPlugin.startEdit(0, 0);
-	},
-
-	onRemove: function(grid, rowIndex){
-		var me = this,
-			store = grid.getStore(),
-			record = store.getAt(rowIndex);
-			grid.editingPlugin.cancelEdit();
-			store.remove(record);
-	},
-	onRemoveLabs: function(grid, rowIndex){
-		var me = this,
-			store = grid.getStore(),
-			record = store.getAt(rowIndex);
-			store.remove(record);
-	},
-	addPrescription     : function(combo, model) {
-		var me      = this,
-			field   = combo.up('fieldcontainer').query('[action="dose"]')[0],
-			field2  = combo.up('fieldcontainer').query('[action="dose_mg"]')[0],
-			field3  = combo.up('fieldcontainer').query('[action="idField"]')[0],
-			dose    = model[0].data.ACTIVE_NUMERATOR_STRENGTH,
-			dose_mg = model[0].data.ACTIVE_INGRED_UNIT,
-			id      = model[0].data.id;
-		field.setValue(dose);
-		field2.setValue(dose_mg);
-		field3.setValue(id);
-	},
-	onEditPrescription: function(editor,e){
-		say(editor);
-		say(e.record.commit());
-
-	},
-	onCreatePrescription: function (){
-		var records =this.patientPrescriptionStore.data.items,
-			data = [];
-        for(var i=0; i < records.length; i++ ){
-            data.push(records[i].data);
-        }
-		DocumentHandler.createDocument({medications:data, pid:app.patient.pid, docType:'Rx', documentId:5, eid: app.patient.eid}, function(provider, response){
-			say(response.result);
-		});
-		this.close();
-
-	},
-	onCreateLabs: function (){
-		var records = this.patientsLabsOrdersStore.data.items,
-			data = [];
-        for(var i=0; i < records.length; i++ ){
-            data.push(records[i].data);
-        }
-		DocumentHandler.createDocument({labs:data, pid:app.patient.pid, docType:'Orders', documentId:4, eid: app.patient.eid}, function(provider, response){
-			say(response.result);
-		});
-		this.close();
-
-	},
-	onCreateDoctorsNote: function (bbar){
-		var me = this,
-			htmlEditor  = bbar.up('toolbar').up('panel').getComponent('body'),
-			value = htmlEditor.getValue();
-		DocumentHandler.createDocument({DoctorsNote:value, pid:app.patient.pid, docType:'DoctorsNotes', eid: app.patient.eid}, function(provider, response){
-
-			say(response.result);
-		});
-		this.close();
-
-	},
-	onCancel: function(){
-			this.close();
-	},
-
-	addMedications: function(){
-
-	},
-	onAddLabs: function(field, model){
-
-		this.patientsLabsOrdersStore.add({
-			laboratories:model[0].data.loinc_name
-		});
-		field.reset();
-	},
-	onDocumentsWinShow  : function() {
-        var me = this,
-	        doctorsNoteBody = me.query('[action="body"]')[0],
-            template = me.query('[action="template"]')[0],
-	        p = app.patient;
-		me.pid = p.pid;
-        me.setTitle(p.name + (p.readOnly ? ' - <span style="color:red">[' + i18n['read_mode'] + ']</span>' : ''));
-		me.setReadOnly(app.patient.readOnly);
-		me.patientPrescriptionStore.removeAll();
-		me.patientsLabsOrdersStore.removeAll();
-		doctorsNoteBody.reset();
-		template.reset();
-
-
-        var dock = this.tabPanel.getDockedItems()[0],
-            visible = this.eid != null;
-        dock.items.items[0].setVisible(visible);
-        dock.items.items[1].setVisible(visible);
-        dock.items.items[2].setVisible(visible);
-        if(!visible) me.cardSwitch('notes');
-	},
-    onDocumentsWinHide : function(){
-        if(app.currCardCmp.id == 'panelSummary'){
-           app.currCardCmp.patientDocumentsStore.load({params: {pid: this.pid}});
-        }
-    }
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/15/12
- * Time: 4:30 PM
- *
- * @namespace Immunization.getImmunizationsList
- * @namespace Immunization.getPatientImmunizations
- * @namespace Immunization.addPatientImmunization
- */
-Ext.define('App.view.patient.windows.DocumentViewer', {
-	extend     : 'App.classes.window.Window',
-	title      : i18n['documents_viewer_window'],
-	layout     : 'fit',
-	height     : 650,
-	width      : 700,
-	closeAction: 'hide',
-	bodyStyle  : 'background-color:#fff',
-	modal      : true,
-	defaults   : {
-		margin: 5
-	},
-	initComponent: function() {
-		var me = this;
-
-		me.listeners = {
-			scope: me,
-			show : me.onViewerDocumentsWinShow
-		};
-		me.callParent(arguments);
-	},
-
-
-	onViewerDocumentsWinShow  : function() {
-
-
-
-	}
-});
-/**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 2/18/12
- * Time: 10:46 PM
- */
-Ext.define('App.view.patient.windows.ArrivalLog', {
-	extend: 'App.classes.window.Window',
-	title      : i18n['patient_arrival_log'],
-	closeAction: 'hide',
-    layout     : 'fit',
-	modal      : true,
-	width      : 900,
-	height     : 600,
-	maximizable: true,
-	initComponent: function() {
-		var me = this;
-
-
-        me.store = Ext.create('App.store.patient.PatientArrivalLog',{
-            autoSync:true
-        });
-
-		me.tbar = [
-            {
-                xtype       : 'patienlivetsearch',
-                fieldLabel  : i18n['look_for_patient'],
-                width       : 400,
-                hideLabel:false,
-                enableKeyEvents:true,
-                listeners:{
-                    scope:me,
-                    select:me.onPatientSearchSelect,
-                    keyup:me.onPatientSearchKeyUp
-
-                }
-		    },
-            '-',
-            {
-                text: i18n['add_new_patient'],
-                iconCls:'icoAddRecord',
-                action:'newPatientBtn',
-                disabled:true,
-                scope:me,
-                handler:me.onNewPatient
-		    },
-            '->',
-            {
-                xtype:'tool',
-                type: 'refresh',
-                scope:me,
-                handler:me.onGridReload
-            }
-        ];
-
-		me.items = [
-            me.ckGrid = Ext.create('Ext.grid.Panel',{
-                store:me.store,
-                margin:5,
-                columns:[
-                    {
-                        xtype:'actioncolumn',
-                        width:25,
-                        items: [
-                            {
-                                icon: 'resources/images/icons/delete.png',  // Use a URL in the icon config
-                                tooltip: i18n['remove'],
-                                scope:me,
-                                handler: me.onPatientRemove
-                            }
-                        ]
-                    },
-                    {
-                        header: i18n['time'],
-                        dataIndex:'time',
-	                    width:130
-                    },
-                    {
-                        header: i18n['record'] + ' #',
-                        dataIndex:'pid'
-                    },
-                    {
-                        header: i18n['patient_name'],
-                        dataIndex:'name',
-                        flex:1
-                    },
-                    {
-                        header: i18n['insurance'],
-                        dataIndex:'insurance'
-                    },
-                    {
-                        header: i18n['area'],
-                        dataIndex:'area'
-                    },
-                    {
-                        width:25,
-                        dataIndex:'warning',
-                        renderer:me.warnRenderer
-                    }
-                ],
-                listeners:{
-                    scope:me,
-                    itemdblclick:me.onPatientDlbClick
-                }
-
-            })
-		];
-
-		me.listeners = {
-			scope:me,
-			show:me.onWinShow
-		};
-
-		me.callParent(arguments);
-	},
-
-    onPatientSearchSelect:function(field, record){
-        var me = this,
-            store = me.query('grid')[0].getStore(),
-            btn = me.query('button[action="newPatientBtn"]')[0];
-        store.add({
-            pid:record[0].data.pid,
-            name:record[0].data.fullname,
-            time: Ext.Date.format(new Date(), 'Y-m-d H:i:s'),
-            isNew:false
-        });
-        field.reset();
-        btn.setDisabled(true);
-    },
-
-    onPatientSearchKeyUp:function(field){
-        this.query('button[action="newPatientBtn"]')[0].setDisabled(field.getValue() == null);
-    },
-
-    onNewPatient:function(btn){
-        var me = this,
-            field = me.query('patienlivetsearch')[0],
-            name = field.getValue(),
-            store = me.query('grid')[0].getStore();
-        field.reset();
-        btn.disable();
-        store.add({
-            name:name,
-            time: Ext.Date.format(new Date(), 'Y-m-d H:i:s'),
-            isNew:true
-        });
-    },
-
-    onPatientRemove:function(grid, rowIndex){
-        var store = grid.getStore(),
-	        me = this,
-            record = store.getAt(rowIndex);
-	    Encounter.checkForAnOpenedEncounterByPid({pid:record.data.pid,date:Ext.Date.format(new Date(), 'Y-m-d H:i:s')}, function(provider, response){
-		    if(response.result) {
-			    me.msg('Oops!', i18n['patient_have_a_opened_encounter']);
-		    } else {
-			    me.msg('Sweet!', i18n['patient_have_been_removed']);
-			    store.remove(record);
-		    }
-	    });
-
-
-
-
-    },
-
-    onPatientDlbClick:function(grid, record){
-        var me = this,
-            data = record.data;
-	    // TODO: pass priority!
-        app.setPatient(data.pid, data.name, function(){
-            app.openPatientSummary();
-        });
-        me.close();
-    },
-
-    onGridReload:function(){
-        this.store.load();
-    },
-
-	onWinShow:function(){
-        var me = this;
-        me.onGridReload();
-        new Ext.util.DelayedTask(function(){
-            me.query('patienlivetsearch')[0].focus();
-        }).delay(1000);
-
-	}
-
-});
-
-/**
- * @class Ext.ux.PortalColumn
- * @extends Ext.container.Container
- * A layout column class used internally be {@link Ext.app.PortalPanel}.
- */
-Ext.define('App.view.dashboard.panel.PortalColumn', {
-	extend     : 'Ext.container.Container',
-	alias      : 'widget.portalcolumn',
-
-    requires: [
-        'Ext.layout.container.Anchor',
-        'App.view.dashboard.panel.Portlet'
-    ],
-
-    layout: 'anchor',
-    defaultType: 'portlet',
-    cls: 'x-portal-column'
-	//
-	// This is a class so that it could be easily extended
-	// if necessary to provide additional behavior.
-	//
-});
-/**
- * @class Ext.app.PortalDropZone
- * @extends Ext.dd.DropTarget
- * Internal class that manages drag/drop for {@link Ext.app.PortalPanel}.
- */
-Ext.define('App.view.dashboard.panel.PortalDropZone', {
-	extend: 'Ext.dd.DropTarget',
-
-	constructor: function(portal, cfg) {
-		this.portal = portal;
-		Ext.dd.ScrollManager.register(portal.body);
-        App.view.dashboard.panel.PortalDropZone.superclass.constructor.call(this, portal.body, cfg);
-		portal.body.ddScrollConfig = this.ddScrollConfig;
-	},
-
-	ddScrollConfig: {
-		vthresh  : 50,
-		hthresh  : -1,
-		animate  : true,
-		increment: 200
-	},
-
-    createEvent: function(dd, e, data, col, c, pos) {
-        return {
-            portal: this.portal,
-            panel: data.panel,
-            columnIndex: col,
-            column: c,
-            position: pos,
-            data: data,
-            source: dd,
-            rawEvent: e,
-            status: this.dropAllowed
-        };
-    },
-
-    notifyOver: function(dd, e, data) {
-        var xy = e.getXY(),
-            portal = this.portal,
-            proxy = dd.proxy;
-
-        // case column widths
-        if (!this.grid) {
-            this.grid = this.getGrid();
-        }
-
-        // handle case scroll where scrollbars appear during drag
-        var cw = portal.body.dom.clientWidth;
-        if (!this.lastCW) {
-            // set initial client width
-            this.lastCW = cw;
-        } else if (this.lastCW != cw) {
-            // client width has changed, so refresh layout & grid calcs
-            this.lastCW = cw;
-            //portal.doLayout();
-            this.grid = this.getGrid();
-        }
-
-        // determine column
-        var colIndex = 0,
-            colRight = 0,
-            cols = this.grid.columnX,
-            len = cols.length,
-            cmatch = false;
-
-        for (len; colIndex < len; colIndex++) {
-            colRight = cols[colIndex].x + cols[colIndex].w;
-            if (xy[0] < colRight) {
-                cmatch = true;
-                break;
-            }
-        }
-        // no match, fix last index
-        if (!cmatch) {
-            colIndex--;
-        }
-
-        // find insert position
-        var overPortlet, pos = 0,
-            h = 0,
-            match = false,
-            overColumn = portal.items.getAt(colIndex),
-            portlets = overColumn.items.items,
-            overSelf = false;
-
-        len = portlets.length;
-
-        for (len; pos < len; pos++) {
-            overPortlet = portlets[pos];
-            h = overPortlet.el.getHeight();
-            if (h === 0) {
-                overSelf = true;
-            } else if ((overPortlet.el.getY() + (h / 2)) > xy[1]) {
-                match = true;
-                break;
-            }
-        }
-
-        pos = (match && overPortlet ? pos : overColumn.items.getCount()) + (overSelf ? -1 : 0);
-        var overEvent = this.createEvent(dd, e, data, colIndex, overColumn, pos);
-
-        if (portal.fireEvent('validatedrop', overEvent) !== false && portal.fireEvent('beforedragover', overEvent) !== false) {
-
-            // make sure proxy width is fluid in different width columns
-            proxy.getProxy().setWidth('auto');
-            if (overPortlet) {
-                dd.panelProxy.moveProxy(overPortlet.el.dom.parentNode, match ? overPortlet.el.dom : null);
-            } else {
-                dd.panelProxy.moveProxy(overColumn.el.dom, null);
-            }
-
-            this.lastPos = {
-                c: overColumn,
-                col: colIndex,
-                p: overSelf || (match && overPortlet) ? pos : false
-            };
-            this.scrollPos = portal.body.getScroll();
-
-            portal.fireEvent('dragover', overEvent);
-            return overEvent.status;
-        } else {
-            return overEvent.status;
-        }
-
-    },
-
-	notifyOut: function() {
-		delete this.grid;
-	},
-
-    notifyDrop: function(dd, e, data) {
-            delete this.grid;
-            if (!this.lastPos) {
-                return;
-            }
-            var c = this.lastPos.c,
-                col = this.lastPos.col,
-                pos = this.lastPos.p,
-                panel = dd.panel,
-                dropEvent = this.createEvent(dd, e, data, col, c, pos !== false ? pos : c.items.getCount());
-
-            if (this.portal.fireEvent('validatedrop', dropEvent) !== false &&
-                this.portal.fireEvent('beforedrop', dropEvent) !== false) {
-
-                Ext.suspendLayouts();
-
-                // make sure panel is visible prior to inserting so that the layout doesn't ignore it
-                panel.el.dom.style.display = '';
-                dd.panelProxy.hide();
-                dd.proxy.hide();
-
-                if (pos !== false) {
-                    c.insert(pos, panel);
-                } else {
-                    c.add(panel);
-                }
-
-                Ext.resumeLayouts(true);
-
-                this.portal.fireEvent('drop', dropEvent);
-
-                // scroll position is lost on drop, fix it
-                var st = this.scrollPos.top;
-                if (st) {
-                    var d = this.portal.body.dom;
-                    setTimeout(function() {
-                        d.scrollTop = st;
-                    },
-                    10);
-                }
-            }
-
-            delete this.lastPos;
-            return true;
-        },
-
-	// internal cache of body and column coords
-	getGrid   : function() {
-		var box = this.portal.body.getBox();
-		box.columnX = [];
-		this.portal.items.each(function(c) {
-			box.columnX.push({
-				x: c.el.getX(),
-				w: c.el.getWidth()
-			});
-		});
-		return box;
-	},
-
-	// unregister the dropzone from ScrollManager
-	unreg     : function() {
-		Ext.dd.ScrollManager.unregister(this.portal.body);
-        App.view.dashboard.panel.PortalDropZone.superclass.unreg.call(this);
-	}
-});
-
-/**
- * @class Ext.app.PortalPanel
- * @extends Ext.Panel
- * A {@link Ext.Panel Panel} class used for providing drag-drop-enabled portal layouts.
- */
-Ext.define('App.view.dashboard.panel.PortalPanel', {
-	extend  : 'Ext.panel.Panel',
-	alias   : 'widget.portalpanel',
-	requires: [
-        'Ext.layout.container.Column',
-
-        'App.view.dashboard.panel.PortalDropZone',
-        'App.view.dashboard.panel.PortalColumn'
-	],
-
-	cls            : 'x-portal',
-	bodyCls        : 'x-portal-body',
-	defaultType    : 'portalcolumn',
-	componentLayout: 'body',
-	autoScroll     : true,
-
-    manageHeight: false,
-
-    initComponent: function() {
-		var me = this;
-
-		// Implement a Container beforeLayout call from the layout to this Container
-		this.layout = {
-			type: 'column'
-		};
-		this.callParent();
-
-		this.addEvents({
-			validatedrop  : true,
-			beforedragover: true,
-			dragover      : true,
-			beforedrop    : true,
-			drop          : true
-		});
-	},
-
-	// Set columnWidth, and set first and last column classes to allow exact CSS targeting.
-    beforeLayout: function() {
-        var items = this.layout.getLayoutItems(),
-            len = items.length,
-            firstAndLast = ['x-portal-column-first', 'x-portal-column-last'],
-            i, item, last;
-
-        for (i = 0; i < len; i++) {
-            item = items[i];
-            item.columnWidth = 1 / len;
-            last = (i == len-1);
-
-            if (!i) { // if (first)
-                if (last) {
-                    item.addCls(firstAndLast);
-                } else {
-                    item.addCls('x-portal-column-first');
-                    item.removeCls('x-portal-column-last');
-                }
-            } else if (last) {
-                item.addCls('x-portal-column-last');
-                item.removeCls('x-portal-column-first');
-            } else {
-                item.removeCls(firstAndLast);
-            }
-        }
-
-        return this.callParent(arguments);
-    },
-
-	// private
-	initEvents   : function() {
-		this.callParent();
-		this.dd = Ext.create('App.view.dashboard.panel.PortalDropZone', this, this.dropConfig);
-	},
-
-	// private
-    beforeDestroy : function() {
-        if (this.dd) {
-            this.dd.unreg();
-        }
-        this.callParent();
-    }
-});
-
-Ext.define('App.view.dashboard.panel.OnotesPortlet', {
-
-	extend       : 'Ext.grid.Panel',
-	alias        : 'widget.onotesportlet',
-	height       : 250,
-	initComponent: function() {
-		var me = this;
-		Ext.define('OnotesPortletModel', {
-			extend: 'Ext.data.Model',
-			fields: [
-				{name: 'id', type: 'int'},
-				{name: 'date', type: 'date', dateFormat: 'c'},
-				{name: 'body', type: 'string'},
-				{name: 'user', type: 'string'},
-				{name: 'facility_id', type: 'string'},
-				{name: 'activity', type: 'string'}
-			],
-			proxy : {
-				type: 'direct',
-				api : {
-					read: OfficeNotes.getOfficeNotes
-				}
-			}
-		});
-		me.store = Ext.create('Ext.data.Store', {
-			model   : 'OnotesPortletModel',
-			autoLoad: true
-		});
-
-		Ext.apply(this, {
-			height     : this.height,
-			store      : this.store,
-			stripeRows : true,
-			columnLines: true,
-			columns    : [
-				{
-					id       : 'user',
-					text     : 'From',
-					sortable : true,
-					dataIndex: 'user'
-				},
-				{
-					text     : 'Note',
-					sortable : true,
-					dataIndex: 'body',
-					flex     : 1
-				}
-			]
-		}, null);
-
-		this.callParent(arguments);
-	}
-});
-
-Ext.define('App.view.dashboard.panel.VisitsPortlet', {
-    extend: 'Ext.panel.Panel',
-    initComponent: function() {
-        Ext.apply(this, {
-            layout: 'fit',
-            width : 300,
-            height: 250,
-            items : {
-                xtype  : 'chart',
-                animate: false,
-                shadow : false,
-                store  : Ext.create('App.store.patient.Encounters'),
-                axes   : [
-                    {
-                        type    : 'Numeric',
-                        position: 'left',
-                        fields  : ['djia'],
-                        title   : 'Visits',
-                        label   : {
-                            font: '11px Arial'
-                        }
-                    },
-                    {
-                        type    : 'Numeric',
-                        position: 'bottom',
-                        grid    : false,
-                        fields  : ['sp500'],
-                        title   : 'Day',
-                        label   : {
-                            font: '11px Arial'
-                        }
-                    }
-                ],
-                series : [
-                    {
-                        type: 'column',
-                        axis: 'left',
-                        highlight: true,
-                        tips: {
-                          trackMouse: true,
-                          width: 140,
-                          height: 28,
-                          renderer: function(storeItem, item) {
-                            this.setTitle(storeItem.get('name') + ': ' + storeItem.get('data1') + ' $');
-                          }
-                        },
-                        label: {
-                          display: 'insideEnd',
-                          'text-anchor': 'middle',
-                            field: 'data1',
-                            renderer: Ext.util.Format.numberRenderer('0'),
-                            orientation: 'vertical',
-                            color: '#333'
-                        },
-                        xField: 'name',
-                        yField: 'data1'
-                    }
-                ]
-            }
-        }, null);
-
-        this.callParent(arguments);
-    }
-});
-
-//******************************************************************************
-// Users.ejs.php
-// Description: Users Screen
-// v0.0.4
-// 
-// Author: Ernesto J Rodriguez
-// Modified: n/a
-// 
-// GaiaEHR (Electronic Health Records) 2011
-//******************************************************************************
-Ext.define('App.view.dashboard.Dashboard',
-{
-	extend        : 'App.classes.RenderPanel',
-	id            : 'panelDashboard',
-	pageTitle     : i18n['dashboard'],
-	getTools      : function() 
-	{
-		return [
-		{
-			xtype  : 'tool',
-			type   : 'gear',
-			handler: function(e, target, panelHeader) 
-			{
-				var portlet = panelHeader.ownerCt;
-				portlet.setLoading( i18n['working'] + '...');
-				Ext.defer(function() 
-				{
-					portlet.setLoading(false);
-				}, 2000);
-			}
-		}];
-	},
-	initComponent : function() 
-	{
-		var content = '<div class="portlet-content">HELLO WORLD!</div>';
-		Ext.apply(this, 
-		{
-			pageBody: [
-			{
-				xtype : 'portalpanel',
-				layout: 'fit',
-				region: 'center',
-				items : [
-				{
-					id   : 'col-1',
-					items: 
-					[
-                        {
-//                            id       : 'portlet-onotes',
-                            title    : i18n['office_notes'],
-                            tools    : this.getTools(),
-                            items    : Ext.create('App.view.dashboard.panel.OnotesPortlet'),
-                            listeners:
-                            {
-                                close: Ext.bind(this.onPortletClose, this)
-                            }
-                        }
-                            //,
-                            //{
-                            //	id       : 'portlet-2',
-                            //	title    : 'Portlet 2',
-                            //	tools    : this.getTools(),
-                            //	html     : content,
-                            //	listeners: {
-                            //		'close': Ext.bind(this.onPortletClose, this)
-                            //	}
-                            //}
-                        ]
-					},
-                    {
-//                        id   : 'col-2',
-                        items: [
-                            {
-                                title    : 'Office Visits',
-                                tools    : this.getTools(),
-                                items    : Ext.create('App.view.dashboard.panel.VisitsPortlet'),
-                                listeners: {
-                                    close: Ext.bind(this.onPortletClose, this)
-                                }
-                            }
-                        ]
-                    }
-//                    ,
-//                    {
-//                        id   : 'col-3',
-//                        items: [
-//                            {
-//                                id       : 'portlet-4',
-//                                title    : 'Portlet 4',
-//                                tools    : this.getTools(),
-//                                items    : Ext.create('App.view.dashboard.panel.ChartPortlet'),
-//                                listeners: {
-//                                    'close': Ext.bind(this.onPortletClose, this)
-//                                }
-//                            }
-//                        ]
-//                    }
-					]
-				}
-			]
-		}, null);
-		this.callParent();
-	},
-	
-	onPortletClose: function(portlet) 
-	{
-		this.msg(i18n['message'] + '!', portlet.title + ' ' + i18n['was_removed']);
-	},
-	
-	/**
-	 * This function is called from MitosAPP.js when
-	 * this panel is selected in the navigation panel.
-	 * place inside this function all the functions you want
-	 * to call every this panel becomes active
-	 */
-	onActive      : function(callback) 
-	{
-		callback(true);
-	}
-}); //ens UserPage class
-
 /*
 Extensible 1.5.1
 Copyright(c) 2010-2012 Extensible, LLC
@@ -24908,6 +11941,12977 @@ Ext.define('Extensible.calendar.CalendarPanel', {
 
 
 /**
+ * @class Ext.ux.LiveSearchGridPanel
+ * @extends Ext.grid.Panel
+ * <p>A GridPanel class with live search support.</p>
+ * @author Nicolas Ferrero
+ */
+Ext.define('Ext.ux.LiveSearchGridPanel', {
+    extend: 'Ext.grid.Panel',
+    requires: [
+        'Ext.toolbar.TextItem',
+        'Ext.form.field.Checkbox',
+        'Ext.form.field.Text',
+        'Ext.ux.statusbar.StatusBar'
+    ],
+    
+    /**
+     * @private
+     * search value initialization
+     */
+    searchValue: null,
+    
+    /**
+     * @private
+     * The row indexes where matching strings are found. (used by previous and next buttons)
+     */
+    indexes: [],
+    
+    /**
+     * @private
+     * The row index of the first search, it could change if next or previous buttons are used.
+     */
+    currentIndex: null,
+    
+    /**
+     * @private
+     * The generated regular expression used for searching.
+     */
+    searchRegExp: null,
+    
+    /**
+     * @private
+     * Case sensitive mode.
+     */
+    caseSensitive: false,
+    
+    /**
+     * @private
+     * Regular expression mode.
+     */
+    regExpMode: false,
+    
+    /**
+     * @cfg {String} matchCls
+     * The matched string css classe.
+     */
+    matchCls: 'x-livesearch-match',
+    
+    defaultStatusText: i18n['nothing_found'],
+    
+    // Component initialization override: adds the top and bottom toolbars and setup headers renderer.
+    initComponent: function() {
+        var me = this;
+        me.tbar = [i18n['search'],{
+                 xtype: 'textfield',
+                 name: 'searchField',
+                 hideLabel: true,
+                 width: 200,
+                 listeners: {
+                     change: {
+                         fn: me.onTextFieldChange,
+                         scope: this,
+                         buffer: 100
+                     }
+                 }
+            }, {
+                xtype: 'button',
+                text: '<',
+                tooltip: i18n['find_previous_row'],
+                handler: me.onPreviousClick,
+                scope: me
+            },{
+                xtype: 'button',
+                text: '>',
+                tooltip: i18n['find_next_row'],
+                handler: me.onNextClick,
+                scope: me
+            }, '-', {
+                xtype: 'checkbox',
+                hideLabel: true,
+                margin: '0 0 0 4px',
+                handler: me.regExpToggle,
+                scope: me                
+            }, i18n['regular_expression'], {
+                xtype: 'checkbox',
+                hideLabel: true,
+                margin: '0 0 0 4px',
+                handler: me.caseSensitiveToggle,
+                scope: me
+            }, i18n['case_sensitive']];
+
+        me.bbar = Ext.create('Ext.ux.StatusBar', {
+            defaultText: me.defaultStatusText,
+            name: 'searchStatusBar'
+        });
+        
+        me.callParent(arguments);
+    },
+    
+    // afterRender override: it adds textfield and statusbar reference and start monitoring keydown events in textfield input 
+    afterRender: function() {
+        var me = this;
+        me.callParent(arguments);
+        me.textField = me.down('textfield[name=searchField]');
+        me.statusBar = me.down('statusbar[name=searchStatusBar]');
+    },
+    // detects html tag
+    tagsRe: /<[^>]*>/gm,
+    
+    // DEL ASCII code
+    tagsProtect: '\x0f',
+    
+    // detects regexp reserved word
+    regExpProtect: /\\|\/|\+|\\|\.|\[|\]|\{|\}|\?|\$|\*|\^|\|/gm,
+    
+    /**
+     * In normal mode it returns the value with protected regexp characters.
+     * In regular expression mode it returns the raw value except if the regexp is invalid.
+     * @return {String} The value to process or null if the textfield value is blank or invalid.
+     * @private
+     */
+    getSearchValue: function() {
+        var me = this,
+            value = me.textField.getValue();
+            
+        if (value === '') {
+            return null;
+        }
+        if (!me.regExpMode) {
+            value = value.replace(me.regExpProtect, function(m) {
+                return '\\' + m;
+            });
+        } else {
+            try {
+                new RegExp(value);
+            } catch (error) {
+                me.statusBar.setStatus({
+                    text: error.message,
+                    iconCls: 'x-status-error'
+                });
+                return null;
+            }
+            // this is stupid
+            if (value === '^' || value === '$') {
+                return null;
+            }
+        }
+
+        return value;
+    },
+    
+    /**
+     * Finds all strings that matches the searched value in each grid cells.
+     * @private
+     */
+     onTextFieldChange: function() {
+         var me = this,
+             count = 0;
+
+         me.view.refresh();
+         // reset the statusbar
+         me.statusBar.setStatus({
+             text: me.defaultStatusText,
+             iconCls: ''
+         });
+
+         me.searchValue = me.getSearchValue();
+         me.indexes = [];
+         me.currentIndex = null;
+
+         if (me.searchValue !== null) {
+             me.searchRegExp = new RegExp(me.searchValue, 'g' + (me.caseSensitive ? '' : 'i'));
+             
+             
+             me.store.each(function(record, idx) {
+                 var td = Ext.fly(me.view.getNode(idx)).down('td'),
+                     cell, matches, cellHTML;
+                 while(td) {
+                     cell = td.down('.x-grid-cell-inner');
+                     matches = cell.dom.innerHTML.match(me.tagsRe);
+                     cellHTML = cell.dom.innerHTML.replace(me.tagsRe, me.tagsProtect);
+                     
+                     // populate indexes array, set currentIndex, and replace wrap matched string in a span
+                     cellHTML = cellHTML.replace(me.searchRegExp, function(m) {
+                        count += 1;
+                        if (Ext.Array.indexOf(me.indexes, idx) === -1) {
+                            me.indexes.push(idx);
+                        }
+                        if (me.currentIndex === null) {
+                            me.currentIndex = idx;
+                        }
+                        return '<span class="' + me.matchCls + '">' + m + '</span>';
+                     });
+                     // restore protected tags
+                     Ext.each(matches, function(match) {
+                        cellHTML = cellHTML.replace(me.tagsProtect, match); 
+                     });
+                     // update cell html
+                     cell.dom.innerHTML = cellHTML;
+                     td = td.next();
+                 }
+             }, me);
+
+             // results found
+             if (me.currentIndex !== null) {
+                 me.getSelectionModel().select(me.currentIndex);
+                 me.statusBar.setStatus({
+                     text: count + ' ' + i18n['matches_found'],
+                     iconCls: 'x-status-valid'
+                 });
+             }
+         }
+
+         // no results found
+         if (me.currentIndex === null) {
+             me.getSelectionModel().deselectAll();
+         }
+
+         // force textfield focus
+         me.textField.focus();
+     },
+    
+    /**
+     * Selects the previous row containing a match.
+     * @private
+     */   
+    onPreviousClick: function() {
+        var me = this,
+            idx;
+            
+        if ((idx = Ext.Array.indexOf(me.indexes, me.currentIndex)) !== -1) {
+            me.currentIndex = me.indexes[idx - 1] || me.indexes[me.indexes.length - 1];
+            me.getSelectionModel().select(me.currentIndex);
+         }
+    },
+    
+    /**
+     * Selects the next row containing a match.
+     * @private
+     */    
+    onNextClick: function() {
+         var me = this,
+             idx;
+             
+         if ((idx = Ext.Array.indexOf(me.indexes, me.currentIndex)) !== -1) {
+            me.currentIndex = me.indexes[idx + 1] || me.indexes[0];
+            me.getSelectionModel().select(me.currentIndex);
+         }
+    },
+    
+    /**
+     * Switch to case sensitive mode.
+     * @private
+     */    
+    caseSensitiveToggle: function(checkbox, checked) {
+        this.caseSensitive = checked;
+        this.onTextFieldChange();
+    },
+    
+    /**
+     * Switch to regular expression mode
+     * @private
+     */
+    regExpToggle: function(checkbox, checked) {
+        this.regExpMode = checked;
+        this.onTextFieldChange();
+    }
+});
+/**
+* @class Ext.ux.SlidingPager
+* @extends Object
+* Plugin for PagingToolbar which replaces the textfield input with a slider
+* @constructor
+* Create a new ItemSelector
+* @param {Object} config Configuration options
+*/
+Ext.define('Ext.ux.SlidingPager', {
+    extend: 'Object',
+    requires: [
+        'Ext.slider.Single',
+        'Ext.slider.Tip'
+    ],
+
+    constructor : function(config) {
+        if (config) {
+            Ext.apply(this, config);
+        }
+    },
+
+    init : function(pbar){
+        var idx = pbar.items.indexOf(pbar.child("#inputItem")),
+            slider;
+
+        Ext.each(pbar.items.getRange(idx - 2, idx + 2), function(c){
+            c.hide();
+        });
+
+        slider = Ext.create('Ext.slider.Single', {
+            width: 114,
+            minValue: 1,
+            maxValue: 1,
+            hideLabel: true,
+            tipText: function(thumb) {
+                return Ext.String.format(i18n['page'] + ' <b>{0}</b> ' + i18n['of'] + ' <b>{1}</b>', thumb.value, thumb.slider.maxValue);
+            },
+            listeners: {
+                changecomplete: function(s, v){
+                    pbar.store.loadPage(v);
+                }
+            }
+        });
+
+        pbar.insert(idx + 1, slider);
+
+        pbar.on({
+            change: function(pb, data){
+                if(data){
+                slider.setMaxValue(data.pageCount);
+                slider.setValue(data.currentPage);
+
+                }
+            }
+        });
+    }
+});
+
+/**
+ * @class Ext.ux.PreviewPlugin
+ * @extends Ext.AbstractPlugin
+ *
+ * The Preview enables you to show a configurable preview of a record.
+ *
+ * This plugin assumes that it has control over the features used for this
+ * particular grid section and may conflict with other plugins.
+ *
+ * @alias plugin.preview
+ * @ptype preview
+ */
+Ext.define('Ext.ux.PreviewPlugin', {
+	extend     : 'Ext.AbstractPlugin',
+	alias      : 'plugin.preview',
+	requires   : ['Ext.grid.feature.RowBody', 'Ext.grid.feature.RowWrap'],
+
+	// private, css class to use to hide the body
+	hideBodyCls: 'x-grid-row-body-hidden',
+
+	/**
+	 * @cfg {String} bodyField
+	 * Field to display in the preview. Must me a field within the Model definition
+	 * that the store is using.
+	 */
+	bodyField: '',
+
+	/**
+	 * @cfg {Boolean} previewExpanded
+	 */
+	previewExpanded: true,
+
+	constructor: function(config) {
+		this.callParent(arguments);
+		var bodyField = this.bodyField,
+			hideBodyCls = this.hideBodyCls,
+			section = this.getCmp(),
+			features = [
+				{
+					ftype            : 'rowbody',
+					getAdditionalData: function(data, idx, record, orig, view) {
+						var o = Ext.grid.feature.RowBody.prototype.getAdditionalData.apply(this, arguments);
+						Ext.apply(o, {
+							rowBody   : data[bodyField],
+							rowBodyCls: section.previewExpanded ? '' : hideBodyCls
+						}, null);
+						return o;
+					}
+				},
+				{
+					ftype: 'rowwrap'
+				}
+			];
+
+		section.previewExpanded = this.previewExpanded;
+		if(!section.features) {
+			section.features = [];
+		}
+		section.features = features.concat(section.features);
+	},
+
+	/**
+	 * Toggle between the preview being expanded/hidden
+	 * @param {Boolean} expanded Pass true to expand the record and false to not show the preview.
+	 */
+	toggleExpanded: function(expanded) {
+		var view = this.getCmp();
+		this.previewExpanded = view.previewExpanded = expanded;
+		view.refresh();
+	},
+
+	/**
+	 * Expand Selected row and collapse all others
+	 * @param index
+	 */
+	toggleRowExpanded: function() {
+		var hideBodyCls = this.hideBodyCls,
+			view = this.getCmp(),
+			rowIndex = view.getStore().indexOf(view.getSelectionModel().getLastSelected()),
+			rows = view.getNodes(),
+			row = view.getNode(rowIndex);
+
+		if(!view.previewExpanded) {
+			Ext.each(rows, function(row) {
+				Ext.get(Ext.get(row).query('.x-grid-rowbody-tr')).addCls(hideBodyCls);
+			});
+			Ext.get(Ext.get(row).query('.x-grid-rowbody-tr')).removeCls(hideBodyCls);
+            view.up('grid').doLayout();
+		}
+	}
+
+});
+/**
+ * Render panel
+ *
+ * @namespace FormLayoutEngine.getFields
+ */
+Ext.define('App.classes.RenderPanel', {
+	extend       : 'Ext.container.Container',
+	alias        : 'widget.renderpanel',
+	cls          : 'RenderPanel',
+	layout       : 'border',
+	frame        : false,
+	border       : false,
+	pageLayout   : 'fit',
+	pageBody     : [],
+	pageTitle    : '',
+	initComponent: function() {
+		var me = this;
+		Ext.apply(me, {
+			items: [
+				{
+					cls   : 'RenderPanel-header',
+					itemId: 'RenderPanel-header',
+					xtype : 'container',
+					region: 'north',
+					layout: 'fit',
+					height: 33,
+					html  : '<div class="panel_title">' + me.pageTitle + '</div>'
+
+				},
+				{
+					cls    : 'RenderPanel-body-container',
+                    itemId : 'RenderPanel-body-container',
+					xtype  : 'container',
+					region : 'center',
+					layout : 'fit',
+					padding: 5,
+					items  : [
+						{
+							cls     : 'RenderPanel-body',
+							xtype   : 'panel',
+							frame   : true,
+							layout  : this.pageLayout,
+							border  : false,
+                            itemId  : 'pageLayout',
+							defaults: {frame: false, border: false, autoScroll: true},
+							items   : me.pageBody
+						}
+					]
+				}
+			]
+		}, this);
+		me.callParent(arguments);
+	},
+
+	updateTitle: function(pageTitle, readOnly, timer) {
+		
+		var readOnlyDiv = '<div class="readOnly">' + i18n['read_only'] + '</div>',
+			timerDiv = '<span class="timer">' + timer + '</span>';
+		this.getComponent('RenderPanel-header').update('<div class="panel_title">' + pageTitle + '</div>' + (readOnly ? readOnlyDiv : '') + (timer ?  timerDiv : ''));
+	},
+
+	setReadOnly:function(readOnly){
+		var forms = this.query('form');
+
+		for(var j = 0; j < forms.length; j++) {
+			var form = forms[j], items;
+			if(form.readOnly != readOnly){
+				form.readOnly = readOnly;
+				items = form.getForm().getFields().items;
+				for(var k = 0; k < items.length; k++){
+					items[k].setReadOnly(readOnly);
+				}
+			}
+		}
+		return readOnly;
+	},
+
+	setButtonsDisabled:function(buttons, disabled){
+		var disable = disabled || app.patient.readOnly;
+		for(var i = 0; i < buttons.length; i++) {
+			var btn = buttons[i];
+			if(btn.disabled != disable){
+				btn.disabled = disable;
+				btn.setDisabled(disable)
+			}
+		}
+	},
+
+	goBack: function() {
+		app.goBack();
+	},
+
+	checkIfCurrPatient: function() {
+		return app.getCurrPatient();
+	},
+
+	patientInfoAlert: function() {
+		var patient = app.getCurrPatient();
+
+		Ext.Msg.alert(i18n['status'], i18n['patient'] + ': ' + patient.name + ' (' + patient.pid + ')');
+	},
+
+	currPatientError: function() {
+		Ext.Msg.show({
+			title  : 'Oops! ' + i18n['no_patient_selected'],
+			msg    : i18n['select_patient_patient_live_search'],
+			scope  : this,
+			buttons: Ext.Msg.OK,
+			icon   : Ext.Msg.ERROR,
+			fn     : function() {
+				this.goBack();
+			}
+		});
+	},
+
+	getFormItems: function(formPanel, formToRender, callback) {
+        if(formPanel){
+            formPanel.removeAll();
+            FormLayoutEngine.getFields({formToRender: formToRender}, function(provider, response) {
+                var items = eval(response.result);
+                  formPanel.add(items);
+                if(typeof callback == 'function') {
+                    callback(formPanel, items, true);
+                }
+            });
+        }
+	},
+
+	boolRenderer: function(val) {
+		if(val == '1' || val == true || val == 'true') {
+			return '<img style="padding-left: 13px" src="resources/images/icons/yes.gif" />';
+		} else if(val == '0' || val == false || val == 'false') {
+			return '<img style="padding-left: 13px" src="resources/images/icons/no.gif" />';
+		}
+		return val;
+	},
+
+	alertRenderer: function(val) {
+		if(val == '1' || val == true || val == 'true') {
+			return '<img style="padding-left: 13px" src="resources/images/icons/no.gif" />';
+		} else if(val == '0' || val == false || val == 'false') {
+			return '<img style="padding-left: 13px" src="resources/images/icons/yes.gif" />';
+		}
+		return val;
+	},
+
+    warnRenderer:function(val, metaData, record){
+	    var toolTip = record.data.warningMsg ? record.data.warningMsg : '';
+        if(val == '1' || val == true || val == 'true') {
+            return '<img src="resources/images/icons/icoImportant.png" ' + toolTip + ' />';
+        }
+        return '';
+    },
+
+	onExpandRemoveMask: function(cmb) {
+		cmb.picker.loadMask.destroy()
+	},
+
+	strToLowerUnderscores: function(str) {
+		return str.toLowerCase().replace(/ /gi, "_");
+	},
+
+	getCurrPatient: function() {
+		return app.getCurrPatient();
+	},
+
+	getApp: function() {
+		return app.getApp();
+	},
+
+	msg: function(title, format) {
+		app.msg(title, format)
+	},
+
+	alert:function(msg, icon) {
+		app.alert(msg,icon)
+	},
+
+    passwordVerificationWin:function(callback){
+        var msg = Ext.Msg.prompt(i18n['password_verification'], i18n['please_enter_your_password'] + ':', function(btn, password) {
+            callback(btn, password);
+        });
+        var f = msg.textField.getInputId();
+        document.getElementById(f).type = 'password';
+        return msg;
+    },
+    getPageHeader:function(){
+        return this.getComponent('RenderPanel-header');
+    },
+    getPageBodyContainer:function(){
+        return this.getComponent('RenderPanel-body-container');
+    },
+    getPageBody:function(){
+        return this.getPageBodyContainer().down('panel');
+    }
+
+});
+
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:09 PM
+ */
+
+
+Ext.define('App.model.administration.ActiveProblems', {
+	extend: 'Ext.data.Model',
+	fields: [
+		{name: 'code_text' },
+		{name: 'code' }
+	]
+
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:09 PM
+ */
+
+
+Ext.define('App.model.administration.DefaultDocuments', {
+	extend: 'Ext.data.Model',
+	fields: [
+		{name: 'id', type:'int' },
+        {name: 'title', type:'string' },
+		{name: 'body', type:'string' },
+		{name: 'template_type', type:'string' },
+		{name: 'date', type:'date', dateFormat:'Y-m-d H:i:s' }
+
+	]
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:09 PM
+ */
+
+
+Ext.define('App.model.administration.DocumentsTemplates', {
+	extend: 'Ext.data.Model',
+	fields: [
+		{name: 'id', type:'int' },
+        {name: 'title', type:'string' },
+		{name: 'body', type:'string' },
+		{name: 'template_type', type:'string' },
+		{name: 'date', type:'date', dateFormat:'Y-m-d H:i:s' }
+
+	]
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:09 PM
+ */
+
+
+Ext.define('App.model.administration.ExternalDataLoads', {
+	extend: 'Ext.data.Model',
+	fields: [
+		{name: 'date' },
+        {name: 'version' },
+		{name: 'path' },
+		{name: 'basename' },
+		{name: 'codeType' }
+	]
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:09 PM
+ */
+
+
+Ext.define('App.model.administration.FloorPlans', {
+	extend: 'Ext.data.Model',
+	fields: [
+		{name: 'id', type: 'int'},
+		{name: 'title', type: 'string'}
+	]
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:09 PM
+ */
+
+
+Ext.define('App.model.administration.FloorPlanZones', {
+	extend: 'Ext.data.Model',
+	fields: [
+		{name: 'id', type: 'int'},
+		{name: 'floor_plan_id', type: 'int'},
+		{name: 'title', type: 'string'},
+		{name: 'type', type: 'string'},
+		{name: 'x', type: 'int'},
+		{name: 'y', type: 'int'},
+		{name: 'active', type: 'bool'}
+	]
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:09 PM
+ */
+
+
+Ext.define('App.model.administration.HeadersAndFooters', {
+	extend: 'Ext.data.Model',
+	fields: [
+		{name: 'id', type:'int' },
+        {name: 'title', type:'string' },
+        {name: 'template_type', type:'string' },
+		{name: 'body', type:'string' },
+		{name: 'date', type:'date', dateFormat:'Y-m-d H:i:s' }
+
+	]
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:09 PM
+ */
+
+
+Ext.define('App.model.administration.ImmunizationRelations', {
+	extend: 'Ext.data.Model',
+	fields: [
+		{name: 'id', type: 'int'},
+		{name: 'immunization_id', type: 'int'},
+		{name: 'foreign_id', type: 'int'},
+		{name: 'code' },
+		{name: 'code_text', type: 'string' },
+		{name: 'code_type' }
+
+	],
+    proxy: {
+    		type       : 'direct',
+    		api        : {
+    			read  : PreventiveCare.getRelations,
+    			create: PreventiveCare.addRelations,
+    			destroy: PreventiveCare.removeRelations
+    		}
+
+
+    	}
+
+
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:09 PM
+ */
+
+
+Ext.define('App.model.administration.LabObservations', {
+	extend: 'Ext.data.Model',
+	fields: [
+		{name: 'id' },
+        {name: 'code_text_short' },
+		{name: 'parent_id' },
+		{name: 'parent_loinc' },
+		{name: 'parent_name' },
+		{name: 'sequence' },
+		{name: 'loinc_number' },
+		{name: 'loinc_name' },
+		{name: 'default_unit' },
+		{name: 'range_start' },
+		{name: 'range_end' },
+		{name: 'required_in_panel' },
+		{name: 'description' },
+		{name: 'active', type:'bool' }
+	]
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:09 PM
+ */
+
+
+Ext.define('App.model.administration.Medications', {
+	extend: 'Ext.data.Model',
+	fields: [
+		{name: 'id', type: 'int'},
+		{name: 'PRODUCTNDC' },
+		{name: 'PROPRIETARYNAME' },
+		{name: 'NONPROPRIETARYNAME' },
+		{name: 'DOSAGEFORMNAME' },
+		{name: 'ROUTENAME' },
+		{name: 'ACTIVE_NUMERATOR_STRENGTH' },
+		{name: 'ACTIVE_INGRED_UNIT' }
+	],
+    proxy: {
+    		type       : 'direct',
+    		api        : {
+    			read  : Medications.getMedications,
+    			create: Medications.addMedications,
+    			destroy: Medications.removeMedications,
+			    update: Medications.updateMedications
+    		},
+    		reader     : {
+    			totalProperty: 'totals',
+    			root         : 'rows'
+    		}
+
+    	}
+
+
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:09 PM
+ */
+
+
+Ext.define('App.model.administration.PreventiveCare', {
+	extend: 'Ext.data.Model',
+	fields: [
+		{name: 'id', type: 'int'},
+		{name: 'pid', type: 'int'},
+		{name: 'preventive_care_id', type: 'int'},
+		{name: 'uid', type: 'int'},
+		{name: 'description', type: 'string'},
+		{name: 'age_start', type: 'string'},
+		{name: 'age_end', type: 'string'},
+		{name: 'sex', type: 'string'},
+		{name: 'pregnant', type: 'bool'},
+		{name: 'frequency', type: 'string'},
+		{name: 'category_id', type: 'string'},
+		{name: 'code', type: 'string'},
+		{name: 'coding_system', type: 'string'},
+		{name: 'dismiss', type: 'bool'},
+		{name: 'frequency_type', type: 'string'},
+		{name: 'reason', type: 'string'},
+		{name: 'times_to_perform', type: 'string'},
+		{name: 'doc_url1', type: 'string'},
+		{name: 'doc_url2', type: 'string'},
+		{name: 'doc_url3', type: 'string'},
+		{name: 'active', type:'bool'}
+	]
+
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:09 PM
+ */
+
+
+Ext.define('App.model.administration.PreventiveCareActiveProblems', {
+	extend: 'Ext.data.Model',
+	fields: [
+		{name: 'guideline_id', type: 'int'},
+		{name: 'code', type: 'string'},
+		{name: 'code_text', type: 'string'}
+	]
+
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:09 PM
+ */
+
+
+Ext.define('App.model.administration.PreventiveCareMedications', {
+	extend: 'Ext.data.Model',
+	fields: [
+		{name: 'guideline_id', type: 'int'},
+		{name: 'code', type: 'string'},
+		{name: 'code_text', type: 'string'}
+	]
+
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:09 PM
+ */
+
+
+Ext.define('App.model.administration.PreventiveCareLabs', {
+	extend: 'Ext.data.Model',
+	fields: [
+		{name: 'id', type: 'int'},
+		{name: 'value_name', type: 'string'},
+		{name: 'greater_than', type: 'string'},
+		{name: 'less_than', type: 'string'},
+		{name: 'equal_to', type: 'string'},
+		{name: 'code', type: 'string'},
+		{name: 'preventive_care_id', type: 'string'}
+	]
+
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:09 PM
+ */
+
+
+Ext.define('App.model.administration.Services', {
+	extend: 'Ext.data.Model',
+	fields: [
+		{name: 'id', type: 'int'},
+		{name: 'code_text', type: 'string'},
+		{name: 'sg_code', type: 'string'},
+		{name: 'long_desc', type: 'string'},
+		{name: 'code_text_short', type: 'string'},
+		{name: 'code', type: 'string'},
+		{name: 'code_type', type: 'string'},
+		{name: 'modifier', type: 'string'},
+		{name: 'units', type: 'string'},
+		{name: 'fee', type: 'int'},
+		{name: 'superbill', type: 'string'},
+		{name: 'related_code', type: 'string'},
+		{name: 'taxrates', type: 'string'},
+		{name: 'active', type: 'bool'},
+		{name: 'reportable', type: 'string'},
+        ////////////////////////////////////
+		{name: 'sex', type: 'string'},
+		{name: 'age_start', type: 'int'},
+		{name: 'age_end', type: 'int'},
+		{name: 'times_to_perform', type: 'int'},
+		{name: 'frequency_number', type: 'int'},
+		{name: 'frequency_time', type: 'string'},
+		{name: 'pregnant', type: 'bool'},
+		{name: 'only_once', type: 'bool'},
+		{name: 'active_problems', type: 'string'},
+		{name: 'medications', type: 'string'},
+		{name: 'labs', type: 'string'}
+	]
+
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:09 PM
+ */
+
+Ext.define('App.model.miscellaneous.OfficeNotes', {
+	extend: 'Ext.data.Model',
+    fields: [
+        {name: 'id', type: 'int'},
+        {name: 'date', type: 'date', dateFormat: 'c'},
+        {name: 'body', type: 'string'},
+        {name: 'user', type: 'string'},
+        {name: 'facility_id', type: 'string'},
+        {name: 'activity', type: 'string'}
+    ],
+    proxy : {
+        type: 'direct',
+        api : {
+            read  : OfficeNotes.getOfficeNotes,
+            create: OfficeNotes.addOfficeNotes,
+            update: OfficeNotes.updateOfficeNotes
+        }
+    }
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:09 PM
+ */
+
+Ext.define('App.model.fees.Billing', {
+    extend: 'Ext.data.Model',
+    fields: [
+        {name: 'eid', type: 'int '},
+        {name: 'pid', type: 'int'},
+        {name: 'patientName', type: 'string'},
+        {name: 'primaryProvider', type: 'string'},
+        {name: 'encounterProvider', type: 'string'},
+        {name: 'supervisorProvider', type: 'string'},
+        {name: 'facility', type: 'string'},
+        {name: 'billing_facility', type: 'string'},
+        {name: 'start_date', type: 'string'},
+        {name: 'close_date', type: 'string'},
+        {name: 'billing_stage', type: 'int'},
+        {name: 'icdxCodes', type: 'auto'}
+    ],
+    proxy : {
+        type: 'direct',
+        api : {
+            read  : Fees.getFilterEncountersBillingData
+        },
+        reader     : {
+            root: 'encounters',
+            totalProperty: 'totals'
+        }
+    }
+
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:09 PM
+ */
+
+Ext.define('App.model.fees.Checkout', {
+	extend: 'Ext.data.Model',
+	fields: [
+        {name: 'id', type: 'int'},
+        {name: 'time', type: 'string'},
+        {name: 'follow_up_facility', type: 'string'},
+        {name: 'note', type: 'string'},
+        {name: 'reminder', type: 'string'},
+        {name: 'patient_name', type: 'string'},
+        {name: 'encounter_number', type: 'int'},
+        {name: 'transaction_facility', type: 'string'},
+        {name: 'transaction_number', type: 'int'},
+        {name: 'transaction_date', type: 'date', dateFormat:'Y-m-d H:i:s'},
+        {name: 'payment_amount', type: 'string'},
+        {name: 'paying_entity', type: 'string'},
+        {name: 'post_to_date', type: 'date', dateFormat:'Y-m-d H:i:s'},
+        {name: 'check_number', type: 'int'}
+	],
+	proxy : {
+		type: 'direct',
+        api : {
+            read  : Fees.getPaymentsBySearch
+        },
+        reader: {
+            root         : 'rows',
+            totalProperty: 'totals'
+        }
+	}
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:09 PM
+ *
+ * @namespace Fees.EncountersPayment
+ *
+ */
+
+Ext.define('App.model.fees.EncountersPayments', {
+	extend: 'Ext.data.Model',
+	fields: [
+        {name: 'id', type: 'int'},
+        {name: 'paying_entity', type: 'string'},
+        {name: 'payment_from', type: 'string'},
+        {name: 'no', type: 'int'},
+        {name: 'payment_method', type: 'string'},
+        {name: 'pay_to', type: 'string'},
+        {name: 'amount', type: 'string'},
+        {name: 'date_from', type: 'date', dateFormat:'Y-m-d H:i:s'},
+        {name: 'date_to', type: 'date', dateFormat:'Y-m-d H:i:s'},
+        {name: 'note', type: 'string'}
+	],
+    proxy : {
+        type: 'direct',
+        api : {
+            read :Fees.getPaymentsBySearch
+        },
+        reader: {
+            root         : 'rows',
+            totalProperty: 'totals'
+        }
+    }
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:09 PM
+ */
+
+Ext.define('App.model.fees.PaymentTransactions', {
+	extend: 'Ext.data.Model',
+	fields: [
+
+	],
+	proxy : {
+		type: 'direct',
+        api : {
+            read  : Fees.getPaymentsBySearch
+        },
+        reader: {
+            root         : 'rows',
+            totalProperty: 'totals'
+        }
+	}
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/19/12
+ * Time: 1:01 PM
+ */
+Ext.define('App.model.navigation.Navigation', {
+	extend   : 'Ext.data.Model',
+	fields   : [
+		{name: 'text', type: 'string'},
+		{name: 'disabled', type: 'bool', defaultValue: false}
+	],
+	proxy    : {
+		type: 'direct',
+		api : {
+			read: Navigation.getNavigation
+		}
+	}
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:09 PM
+ */
+
+Ext.define('App.model.patient.Allergies', {
+	extend: 'Ext.data.Model',
+	fields: [
+		{name: 'id', type: 'int'},
+		{name: 'eid', type: 'int'},
+		{name: 'pid', type: 'int'},
+		{name: 'created_uid', type: 'int'},
+		{name: 'updated_uid', type: 'int'},
+		{name: 'create_date', type: 'date', dateFormat: 'c'},
+		{name: 'allergy_type', type: 'string'},
+		{name: 'allergy', type: 'string'},
+		{name: 'allergy_id', type: 'int'},
+		{name: 'begin_date', type: 'date', dateFormat: 'c'},
+		{name: 'end_date', type: 'date', dateFormat: 'c'},
+		{name: 'reaction', type: 'string'},
+		{name: 'location', type: 'string'},
+		{name: 'severity', type: 'string'},
+        {name: 'alert', type: 'bool'}
+	],
+	proxy : {
+		type: 'direct',
+		api : {
+			read  : Medical.getPatientAllergies,
+			create: Medical.addPatientAllergies,
+			update: Medical.updatePatientAllergies
+		}
+	}
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:09 PM
+ */
+Ext.define('App.model.patient.CheckoutAlertArea', {
+	extend: 'Ext.data.Model',
+	fields: [
+        {name: 'alert', type: 'string'},
+        {name: 'alertType', type: 'int'}
+
+	],
+	proxy : {
+		type: 'direct',
+		api : {
+			read: Encounter.checkoutAlerts
+		}
+	}
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:09 PM
+ */
+Ext.define('App.model.patient.CptCodes', {
+    extend: 'Ext.data.Model',
+    fields: [
+        {name: 'id', type:'int'},
+        {name: 'eid', type:'int'},
+        {name: 'code', type: 'string'},
+        {name: 'code_text', type: 'string'},
+        {name: 'code_text_medium', type: 'string'},
+        {name: 'place_of_service', type: 'string'},
+        {name: 'emergency', type: 'bool'},
+        {name: 'charge', type: 'string'},
+        {name: 'days_of_units', type: 'string'},
+        {name: 'essdt_plan', type: 'string'},
+        {name: 'modifiers', type: 'string'},
+        {name: 'status', type: 'int', defaultValue: 0}
+    ],
+    proxy : {
+        type  : 'direct',
+        api   : {
+            read: Services.getCptCodes,
+            create: Services.addCptCode,
+            update: Services.updateCptCode,
+            destroy: Services.deleteCptCode
+        },
+        reader: {
+            root         : 'rows',
+            totalProperty: 'totals'
+        }
+    }
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:09 PM
+ */
+
+Ext.define('App.model.patient.Dental', {
+	extend: 'Ext.data.Model',
+	fields: [
+		{name: 'id', type: 'int'},
+		{name: 'eid', type: 'int'},
+		{name: 'pid', type: 'int'},
+		{name: 'created_uid', type: 'int'},
+		{name: 'updated_uid', type: 'int'},
+		{name: 'create_date', type: 'date', dateFormat: 'c'},
+		{name: 'title', type: 'string'},
+		{name: 'diagnosis_code', type: 'string'},
+		{name: 'begin_date', type: 'date', dateFormat: 'c'},
+		{name: 'end_date', type: 'date', dateFormat: 'c'},
+		{name: 'ocurrence', type: 'string'},
+		{name: 'referred_by', type: 'string'},
+		{name: 'outcome', type: 'string'},
+		{name: 'destination', type: 'string'},
+        {name: 'alert', type: 'bool'}
+	],
+	proxy : {
+		type: 'direct',
+		api : {
+			read  : Medical.getPatientDental,
+			create: Medical.addPatientDental,
+			update: Medical.updatePatientDental
+		}
+	}
+});
+ /**
+ * Created by JetBrains PhpStorm.
+ * User: Omar U. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:09 PM
+ */
+
+Ext.define('App.model.patient.Disclosures', {
+	extend: 'Ext.data.Model',
+	fields: [
+
+        {name: 'id', type: 'int'},
+        {name: 'eid', type: 'int'},
+        {name: 'pid', type: 'int'},
+        {name: 'uid', type: 'int'},
+        {name: 'date', type: 'date', dateFormat:'Y-m-d H:i:s'},
+        {name: 'type', type: 'string'},
+        {name: 'recipient', type: 'string'},
+        {name: 'description', type: 'string'},
+        {name: 'active', type: 'bool'}
+	],
+	proxy : {
+		type: 'direct',
+		api : {
+			read  : Patient.getPatientDisclosures,
+			create  : Patient.createPatientDisclosure,
+			update  : Patient.updatePatientDisclosure
+		}
+	}
+});
+
+
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:09 PM
+ */
+Ext.define('App.model.patient.Encounter', {
+	extend : 'Ext.data.Model',
+	fields : [
+		{name: 'eid', type: 'int'},
+		{name: 'pid', type: 'int'},
+		{name: 'open_uid', type: 'string'},
+		{name: 'close_uid', type: 'string'},
+		{name: 'brief_description', type: 'string'},
+		{name: 'visit_category', type: 'string'},
+		{name: 'facility', type: 'string'},
+		{name: 'billing_facility', type: 'string'},
+		{name: 'priority', type: 'string'},
+		{name: 'start_date', type: 'date', dateFormat:'Y-m-d H:i:s'},
+		{name: 'close_date', type: 'date', dateFormat:'Y-m-d H:i:s'},
+		{name: 'onset_date', type: 'date', dateFormat:'Y-m-d H:i:s'}
+	],
+	proxy  : {
+		type       : 'direct',
+		api        : {
+			read: Encounter.getEncounter,
+			create: Encounter.createEncounter,
+			update: Encounter.updateEncounter
+		},
+		reader     : {
+			type: 'json',
+			root: 'encounter'
+		}
+	},
+    hasMany: [
+        {model: 'App.model.patient.Vitals', name: 'vitals', primaryKey: 'eid'},
+        {model: 'App.model.patient.ReviewOfSystems', name: 'reviewofsystems', primaryKey: 'eid'},
+        {model: 'App.model.patient.ReviewOfSystemsCheck', name: 'reviewofsystemschecks', primaryKey: 'eid'},
+        {model: 'App.model.patient.SOAP', name: 'soap', primaryKey: 'eid'},
+        {model: 'App.model.patient.SpeechDictation', name: 'speechdictation', primaryKey: 'eid'}
+    ]
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:09 PM
+ */
+Ext.define('App.model.patient.EncounterCPTsICDs', {
+	extend : 'Ext.data.Model',
+	fields : [
+		{name: 'code'},
+		{name: 'code_text'},
+		{name: 'type'},
+		{name: 'code_text_short'}
+	],
+	proxy  : {
+		type       : 'direct',
+		api        : {
+			read: Encounter.getEncounterCodes
+		},
+		reader     : {
+			type: 'json',
+			root: 'encounter'
+		}
+	}
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:09 PM
+ */
+Ext.define('App.model.patient.Encounters', {
+	extend : 'Ext.data.Model',
+	fields : [
+		{name: 'eid', type: 'int'},
+		{name: 'pid', type: 'int'},
+		{name: 'open_uid', type: 'string'},
+		{name: 'close_uid', type: 'string'},
+		{name: 'brief_description', type: 'string'},
+		{name: 'visit_category', type: 'string'},
+		{name: 'facility', type: 'string'},
+		{name: 'billing_facility', type: 'string'},
+		{name: 'sensitivity', type: 'string'},
+		{name: 'start_date', type: 'date', dateFormat:'Y-m-d H:i:s'},
+		{name: 'close_date', type: 'date', dateFormat:'Y-m-d H:i:s'},
+		{name: 'onset_date', type: 'date', dateFormat:'Y-m-d H:i:s'}
+	],
+	proxy  : {
+		type       : 'direct',
+		api        : {
+			read: Encounter.getEncounters
+		},
+		reader     : {
+			type: 'json',
+			root: 'encounter'
+		}
+	}
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:09 PM
+ */
+
+Ext.define('App.model.patient.EventHistory', {
+	extend: 'Ext.data.Model',
+	fields: [
+		{name: 'id', type: 'int'},
+		{name: 'eid', type: 'int'},
+		{name: 'pid', type: 'int'},
+		{name: 'date', type: 'date', dateFormat: 'Y-m-d H:i:s'},
+		{name: 'user', type: 'string'},
+		{name: 'event', type: 'string'}
+	]
+});
+
+
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:09 PM
+ */
+Ext.define('App.model.patient.Immunization', {
+	extend: 'Ext.data.Model',
+	fields: [
+        {name: 'id', type: 'int'},
+        {name: 'code', type: 'int'},
+		{name: 'code_text', type: 'string'}
+
+	],
+	proxy : {
+		type: 'direct',
+		api : {
+			read: Medical.getImmunizationsList
+		}
+	}
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:09 PM
+ */
+Ext.define('App.model.patient.ImmunizationCheck', {
+	extend: 'Ext.data.Model',
+	fields: [
+        {name: 'id', type: 'int'},
+        {name: 'pid', type: 'int'},
+        {name: 'immunization_id', type: 'int'},
+		{name: 'immunization_name', type: 'string'},
+		{name: 'alert', type: 'bool'}
+
+	],
+	proxy : {
+		type: 'direct',
+		api : {
+			read: Medical.getPatientImmunizations
+		}
+	}
+});
+ /**
+ * Created by JetBrains PhpStorm.
+ * User: Omar U. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:09 PM
+ */
+
+Ext.define('App.model.patient.LaboratoryTypes', {
+	extend: 'Ext.data.Model',
+	fields: [
+
+		{name: 'id', type: 'int'},
+		{name: 'label', type: 'string'},
+		{name: 'fields' }
+
+	],
+	proxy : {
+		type: 'direct',
+		api : {
+			read  : Laboratories.getActiveLaboratoryTypes
+		}
+	}
+});
+
+
+ /**
+ * Created by JetBrains PhpStorm.
+ * User: Omar U. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:09 PM
+ */
+
+Ext.define('App.model.patient.MeaningfulUseAlert', {
+	extend: 'Ext.data.Model',
+	fields: [
+
+		{name: 'name', type: 'string'},
+		{name: 'val', type: 'bool'}
+	],
+	proxy : {
+		type: 'direct',
+		api : {
+			read  : Patient.getMeaningfulUserAlertByPid
+		}
+	}
+});
+
+
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:09 PM
+ */
+
+Ext.define('App.model.patient.MedicalIssues', {
+	extend: 'Ext.data.Model',
+	fields: [
+
+		{name: 'id', type: 'int'},
+		{name: 'eid', type: 'int'},
+		{name: 'pid', type: 'int'},
+		{name: 'created_uid', type: 'int'},
+		{name: 'updated_uid', type: 'int'},
+		{name: 'create_date', type: 'date', dateFormat: 'c'},
+		{name: 'code', type: 'string'},
+		{name: 'code_text', type: 'string'},
+		{name: 'begin_date', type: 'date', dateFormat: 'c'},
+		{name: 'end_date', type: 'date', dateFormat: 'c'},
+		{name: 'ocurrence', type: 'string'},
+		{name: 'referred_by', type: 'string'},
+		{name: 'outcome', type: 'string'},
+        {name: 'alert', type: 'bool'}
+
+	],
+	proxy : {
+		type: 'direct',
+		api : {
+			read  : Medical.getMedicalIssues,
+			create: Medical.addMedicalIssues,
+			update: Medical.updateMedicalIssues
+		}
+	}
+});
+
+
+ /**
+ * Created by JetBrains PhpStorm.
+ * User: Omar U. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:09 PM
+ */
+
+Ext.define('App.model.patient.Medications', {
+	extend: 'Ext.data.Model',
+	fields: [
+
+		{name: 'id', type: 'int'},
+		{name: 'eid', type: 'int'},
+		{name: 'pid', type: 'int'},
+		{name: 'created_uid', type: 'int'},
+		{name: 'updated_uid', type: 'int'},
+		{name: 'create_date', type: 'date', dateFormat: 'c'},
+		{name: 'medication', type: 'string'},
+		{name: 'medication_id', type: 'string'},
+		{name: 'begin_date', type: 'date', dateFormat: 'c'},
+		{name: 'end_date', type: 'date', dateFormat: 'c'},
+		{name: 'ocurrence', type: 'string'},
+		{name: 'referred_by', type: 'string'},
+		{name: 'outcome', type: 'string'},
+        {name: 'alert', type: 'bool'}
+	],
+	proxy : {
+		type: 'direct',
+		api : {
+			read  : Medical.getPatientMedications,
+			create: Medical.addPatientMedications,
+			update: Medical.updatePatientMedications
+		}
+	}
+});
+
+
+ /**
+ * Created by JetBrains PhpStorm.
+ * User: Omar U. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:09 PM
+ */
+
+Ext.define('App.model.patient.Notes', {
+	extend: 'Ext.data.Model',
+	fields: [
+
+        {name: 'id', type: 'int'},
+        {name: 'eid', type: 'int'},
+        {name: 'pid', type: 'int'},
+        {name: 'uid', type: 'int'},
+        {name: 'date', type: 'date', dateFormat:'Y-m-d H:i:s'},
+        {name: 'body', type: 'string'},
+        {name: 'type', type: 'string'},
+        {name: 'user_name', type: 'string'}
+	],
+	proxy : {
+		type: 'direct',
+		api : {
+			read    : Patient.getPatientNotes,
+            create  : Patient.addPatientNotes,
+            update  : Patient.updatePatientNotes
+		}
+	}
+});
+
+
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:09 PM
+ */
+Ext.define('App.model.patient.PatientArrivalLog', {
+	extend: 'Ext.data.Model',
+	fields: [
+        {name: 'id', type: 'int'},
+        {name: 'area_id', type: 'int'},
+        {name: 'pid', type: 'int'},
+		{name: 'time', type: 'string'},
+		{name: 'name', type: 'string'},
+		{name: 'status', type: 'string'},
+		{name: 'area', type: 'string'},
+		{name: 'warning', type: 'bool'},
+		{name: 'warningMsg', type: 'string'},
+		{name: 'isNew', type: 'bool'}
+	],
+	proxy : {
+		type: 'direct',
+		api : {
+			read: PoolArea.getPatientsArrivalLog,
+			create: PoolArea.addPatientArrivalLog,
+			update: PoolArea.updatePatientArrivalLog,
+			destroy: PoolArea.removePatientArrivalLog
+		}
+	}
+});
+ /**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:09 PM
+ */
+Ext.define('App.model.patient.PatientCalendarEvents', {
+	extend   : 'Ext.data.Model',
+	fields   : [
+		{name: 'id', type: 'int'},
+		{name: 'user_id', type: 'int'},
+		{name: 'category', type: 'int'},
+		{name: 'facility', type: 'int'},
+		{name: 'billing_facillity', type: 'int'},
+		{name: 'patient_id', type: 'int'},
+		{name: 'title', type: 'string'},
+		{name: 'status', type: 'string'},
+		{name: 'start', type: 'date', dateFormat:'Y-m-d H:s:i'},
+		{name: 'end', type: 'date', dateFormat:'Y-m-d H:s:i'},
+		{name: 'data', type: 'string'},
+		{name: 'rrule', type: 'string'},
+		{name: 'loc', type: 'string'},
+		{name: 'notes', type: 'string'},
+		{name: 'url', type: 'string'},
+		{name: 'ad', type: 'string'}
+	],
+	proxy    : {
+		type       : 'direct',
+		api        : {
+			read: Calendar.getPatientFutureEvents
+		},
+		reader     : {
+			type: 'json'
+		}
+	}
+});
+ /**
+ * Created by JetBrains PhpStorm.
+ * User: Omar U. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:09 PM
+ */
+
+Ext.define('App.model.patient.PatientDocuments', {
+	extend: 'Ext.data.Model',
+	fields: [
+
+        {name: 'id', type: 'int'},
+        {name: 'pid', type: 'int'},
+        {name: 'eid', type: 'int'},
+        {name: 'uid', type: 'int'},
+        {name: 'docType', type: 'string'},
+        {name: 'name', type: 'string'},
+        {name: 'date', type: 'date', dateFormat: 'c'},
+        {name: 'url', type: 'string'},
+        {name: 'note', type: 'string'},
+        {name: 'title', type: 'string'}
+	],
+	proxy : {
+		type: 'direct',
+		api : {
+			read  : Patient.getPatientDocuments,
+            update: Documents.updateDocumentsTitle
+		}
+	}
+});
+
+
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:09 PM
+ */
+Ext.define('App.model.patient.PatientImmunization', {
+	extend: 'Ext.data.Model',
+	fields: [
+		{name: 'id', type: 'int'},
+		{name: 'pid', type: 'int'},
+		{name: 'eid', type: 'int'},
+		{name: 'created_uid', type: 'int'},
+		{name: 'updated_uid', type: 'int'},
+		{name: 'immunization_name', type: 'string'},
+		{name: 'immunization_id', type: 'int'},
+		{name: 'administered_date', type: 'date', dateFormat: 'c'},
+		{name: 'manufacturer', type: 'string'},
+		{name: 'lot_number', type: 'string'},
+		{name: 'administered_by', type: 'string'},
+		{name: 'education_date', type: 'date', dateFormat: 'c'},
+		{name: 'dosis'},
+		{name: 'create_date', type: 'date', dateFormat: 'c'},
+		{name: 'note', type: 'string'},
+        {name: 'alert', type: 'bool'}
+	],
+	proxy : {
+		type: 'direct',
+		api : {
+			read  : Medical.getPatientImmunizations,
+			create: Medical.addPatientImmunization,
+			update: Medical.updatePatientImmunization
+		}
+	}
+});
+ /**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:09 PM
+ */
+Ext.define('App.model.patient.PatientLabsResults', {
+	extend   : 'Ext.data.Model',
+	fields   : [
+		{name: 'id', type: 'int'},
+		{name: 'pid', type: 'int'},
+		{name: 'uid', type: 'int'},
+		{name: 'auth_uid', type: 'int'},
+		{name: 'eid', type: 'int'},
+		{name: 'document_id', type: 'int'},
+		{name: 'document_url'},
+		{name: 'date', type: 'date', dateFormat:'Y-m-d H:s:i'},
+		{name: 'data'},
+		{name: 'columns'},
+		{name: 'parent_id'}
+	],
+	proxy    : {
+		type       : 'direct',
+		api        : {
+			read: Medical.getPatientLabsResults,
+			create: Medical.addPatientLabsResult,
+			update: Medical.updatePatientLabsResult,
+			destroy: Medical.deletePatientLabsResult
+		},
+		reader     : {
+			type: 'json'
+		}
+	}
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:09 PM
+ */
+Ext.define('App.model.patient.PatientsLabsOrders', {
+	extend: 'Ext.data.Model',
+	fields: [
+        {name: 'laboratories', type: 'string'}
+
+	],
+	proxy : {
+		type: 'direct',
+		api : {
+		}
+	}
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:09 PM
+ */
+Ext.define('App.model.patient.PatientsPrescription', {
+	extend: 'Ext.data.Model',
+	fields: [
+        {name: 'medication', type: 'string'},
+        {name: 'medication_id', type: 'string'},
+        {name: 'dose', type: 'int'},
+		{name: 'dose_mg', type: 'string'},
+		{name: 'take_pills', type: 'int'},
+		{name: 'type', type: 'string'},
+		{name: 'route', type: 'string'},
+		{name: 'prescription_often', type: 'string'},
+		{name: 'prescription_when', type: 'string'},
+		{name: 'dispense', type: 'string'},
+		{name: 'refill', type: 'string'},
+		{name: 'begin_date'},
+		{name: 'end_date'}
+
+	],
+	proxy : {
+		type: 'direct',
+		api : {
+		}
+	}
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:09 PM
+ */
+Ext.define('App.model.patient.PreventiveCare', {
+	extend: 'Ext.data.Model',
+	fields: [
+		{name: 'id', type: 'int'},
+		{name: 'pid', type: 'int'},
+		{name: 'eid', type: 'int'},
+		{name: 'uid', type: 'int'},
+		{name: 'description'},
+		{name: 'date', dateFormat: 'Y-m-d'},
+		{name: 'observation'},
+		{name: 'type'},
+		{name: 'dismiss'},
+		{name: 'reason'},
+		{name: 'alert', type: 'bool'}
+	],
+	proxy : {
+		type: 'direct',
+		api : {
+			update: PreventiveCare.addPreventivePatientDismiss,
+			read  : PreventiveCare.getPreventiveCareCheck
+		}
+	}
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:09 PM
+ */
+Ext.define('App.model.patient.QRCptCodes', {
+    extend: 'Ext.data.Model',
+    fields: [
+        {name: 'id', type:'int'},
+        {name: 'eid', type:'int'},
+        {name: 'code', type: 'string'},
+        {name: 'code_text', type: 'string'},
+        {name: 'code_text_medium', type: 'string'},
+        {name: 'place_of_service', type: 'string'},
+        {name: 'emergency', type: 'bool'},
+        {name: 'charge', type: 'string'},
+        {name: 'days_of_units', type: 'string'},
+        {name: 'essdt_plan', type: 'string'},
+        {name: 'modifiers', type: 'string'},
+        {name: 'status', type: 'int', defaultValue: 0}
+    ],
+    proxy : {
+        type  : 'direct',
+        api   : {
+            read: Services.getCptCodes
+        },
+        reader: {
+            root         : 'rows',
+            totalProperty: 'totals'
+        }
+    }
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:09 PM
+ */
+
+Ext.define('App.model.patient.DismissedAlerts', {
+	extend: 'Ext.data.Model',
+	fields: [
+		{name: 'id', type: 'int'},
+		{name: 'date', type: 'date', dateFormat: 'c'},
+		{name: 'preventive_care_id', type: 'int'},
+		{name: 'reason', type: 'string'},
+		{name: 'observation', type: 'string'},
+		{name: 'dismiss', type: 'bool'},
+		{name: 'description', type: 'string'}
+	],
+	proxy : {
+		type: 'direct',
+		api : {
+			read  : PreventiveCare.getPreventiveCareDismissedAlertsByPid,
+			update: PreventiveCare.updatePreventiveCareDismissedAlertsByPid
+		}
+	}
+});
+ /**
+ * Created by JetBrains PhpStorm.
+ * User: Omar U. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:09 PM
+ */
+
+Ext.define('App.model.patient.Reminders', {
+	extend: 'Ext.data.Model',
+	fields: [
+
+		{name: 'id', type: 'int'},
+		{name: 'eid', type: 'int'},
+		{name: 'pid', type: 'int'},
+		{name: 'uid', type: 'int'},
+		{name: 'date', type: 'date', dateFormat:'Y-m-d H:i:s'},
+		{name: 'body', type: 'string'},
+		{name: 'type', type: 'string'},
+        {name: 'user_name', type: 'string'}
+	],
+	proxy : {
+		type: 'direct',
+		api : {
+			read  : Patient.getPatientReminders,
+            create: Patient.addPatientReminders,
+            update: Patient.updatePatientReminders
+		}
+	}
+});
+
+
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:09 PM
+ */
+
+Ext.define('App.model.patient.Surgery', {
+	extend: 'Ext.data.Model',
+	fields: [
+		{name: 'id', type: 'int'},
+		{name: 'eid', type: 'int'},
+		{name: 'pid', type: 'int'},
+		{name: 'created_uid', type: 'int'},
+		{name: 'updated_uid', type: 'int'},
+		{name: 'create_date', type: 'date', dateFormat: 'c'},
+		{name: 'surgery', type: 'string'},
+		{name: 'surgery_id', type: 'string'},
+		{name: 'date', type: 'date', dateFormat: 'c'},
+		{name: 'referred_by', type: 'string'},
+		{name: 'outcome', type: 'string'},
+		{name: 'notes', type: 'string'},
+        {name: 'alert', type: 'bool'}
+	],
+	proxy : {
+		type: 'direct',
+		api : {
+			read  : Medical.getPatientSurgery,
+			create: Medical.addPatientSurgery,
+			update: Medical.updatePatientSurgery
+		}
+	}
+});
+ /**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:09 PM
+ */
+Ext.define('App.model.patient.VectorGraph', {
+	extend   : 'Ext.data.Model',
+	fields   : [
+		{name: 'age_mos', type: 'float'},
+		{name: 'height', type: 'float'},
+		{name: 'PP', type: 'float'},
+		{name: 'P3', type: 'float'},
+		{name: 'P5', type: 'float'},
+		{name: 'P10', type: 'float'},
+		{name: 'P25', type: 'float'},
+		{name: 'P50', type: 'float'},
+		{name: 'P75', type: 'float'},
+		{name: 'P85', type: 'float'},
+		{name: 'P90', type: 'float'},
+		{name: 'P95', type: 'float'},
+		{name: 'P97', type: 'float'}
+	],
+	proxy    : {
+		type       : 'direct',
+		api        : {
+			read: VectorGraph.getGraphData
+		},
+		reader     : {
+			type: 'json'
+		}
+	}
+
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 4/13/12
+ * Time: 10:37 PM
+ */
+
+Ext.define('App.model.patient.VisitPayment', {
+	extend: 'Ext.data.Model',
+	fields: [
+        {name: 'id', type: 'int'},
+        {name: 'no', type: 'int'},
+        {name: 'date', type: 'date', dateFormat:'Y-m-d H:i:s'},
+        {name: 'facility', type: 'string'},
+        {name: 'received_from', type: 'string'},
+        {name: 'amount', type: 'string'},
+        {name: 'for_payment_of', type: 'string'},
+        {name: 'paid_by', type: 'string'},
+        {name: 'description', type: 'string'},
+        {name: 'next_appointment', type: 'date', dateFormat:'Y-m-d H:i:s'},
+        {name: 'accounted_amount', type: 'string'},
+        {name: 'payment_amount', type: 'string'},
+        {name: 'balance_due', type: 'string'}
+	],
+    proxy : {
+        type: 'direct',
+        api : {
+            read  : Encounter.Checkout
+        },
+        reader     : {
+            type: 'json'
+        }
+    }
+});
+ /**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:09 PM
+ */
+Ext.define('App.model.patient.Vitals', {
+	extend   : 'Ext.data.Model',
+	fields   : [
+		{name: 'id', type: 'int'},
+		{name: 'pid', type: 'int'},
+		{name: 'eid', type: 'int'},
+		{name: 'uid', type: 'int'},
+		{name: 'auth_uid', type: 'int'},
+		{name: 'date', type: 'date', dateFormat:'Y-m-d H:i:s' },
+		{name: 'weight_lbs', type: 'float', useNull:true},
+		{name: 'weight_kg', type: 'float', useNull:true},
+		{name: 'height_in', type: 'float', useNull:true},
+		{name: 'height_cm', type: 'float', useNull:true},
+		{name: 'bp_systolic', type: 'float', useNull:true},
+		{name: 'bp_diastolic', type: 'float', useNull:true},
+		{name: 'pulse', type: 'int', useNull:true},
+		{name: 'respiration', type: 'int', useNull:true},
+		{name: 'temp_f', type: 'float', useNull:true},
+		{name: 'temp_c', type: 'float', useNull:true},
+		{name: 'temp_location', type: 'string'},
+		{name: 'oxygen_saturation', type: 'float', useNull:true},
+		{name: 'head_circumference_in', type: 'float', useNull:true},
+		{name: 'head_circumference_cm', type: 'float', useNull:true},
+		{name: 'waist_circumference_in', type: 'float', useNull:true},
+		{name: 'waist_circumference_cm', type: 'float', useNull:true},
+		{name: 'bmi', type: 'int', useNull:true},
+		{name: 'bmi_status', type: 'string', useNull:true},
+		{name: 'other_notes', type: 'string'},
+		{name: 'administer_by', type: 'string'},
+		{name: 'authorized_by', type: 'string'},
+
+		{name: 'bp_systolic_normal', type: 'int', defaultValue: 120 },
+		{name: 'bp_diastolic_normal', type: 'int', defaultValue: 80 }
+
+	],
+	proxy    : {
+		type       : 'direct',
+		api        : {
+			read: Encounter.getVitals,
+			create: Encounter.addVitals,
+			update: Encounter.updateVitals
+		},
+		reader     : {
+			type: 'json'
+		}
+	},
+    belongsTo: { model: 'App.model.patient.Encounter', foreignKey: 'eid' }
+
+});
+ /**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:09 PM
+ */
+Ext.define('App.model.patient.charts.BMIForAge', {
+	extend   : 'Ext.data.Model',
+	fields   : [
+		{name: 'age', type: 'float'},
+		{name: 'PP', type: 'float'},
+		{name: 'P3', type: 'float'},
+		{name: 'P5', type: 'float'},
+		{name: 'P10', type: 'float'},
+		{name: 'P25', type: 'float'},
+		{name: 'P50', type: 'float'},
+		{name: 'P75', type: 'float'},
+		{name: 'P90', type: 'float'},
+		{name: 'P95', type: 'float'},
+		{name: 'P97', type: 'float'}
+	],
+	proxy    : {
+		type       : 'direct',
+		api        : {
+			read: VectorGraph.getGraphData
+		},
+		reader     : {
+			type: 'json'
+		},
+        extraParams:{
+            type:8
+        }
+	}
+
+});
+ /**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:09 PM
+ */
+Ext.define('App.model.patient.charts.HeadCircumferenceInf', {
+	extend   : 'Ext.data.Model',
+	fields   : [
+		{name: 'age', type: 'float'},
+		{name: 'PP', type: 'float'},
+		{name: 'P3', type: 'float'},
+		{name: 'P5', type: 'float'},
+		{name: 'P10', type: 'float'},
+		{name: 'P25', type: 'float'},
+		{name: 'P50', type: 'float'},
+		{name: 'P75', type: 'float'},
+		{name: 'P90', type: 'float'},
+		{name: 'P95', type: 'float'},
+		{name: 'P97', type: 'float'}
+	],
+	proxy    : {
+		type       : 'direct',
+		api        : {
+			read: VectorGraph.getGraphData
+		},
+		reader     : {
+			type: 'json'
+		},
+        extraParams:{
+            type:4
+        }
+	}
+
+});
+ /**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:09 PM
+ */
+Ext.define('App.model.patient.charts.LengthForAgeInf', {
+	extend   : 'Ext.data.Model',
+	fields   : [
+		{name: 'age', type: 'float'},
+		{name: 'PP', type: 'float'},
+		{name: 'P3', type: 'float'},
+		{name: 'P5', type: 'float'},
+		{name: 'P10', type: 'float'},
+		{name: 'P25', type: 'float'},
+		{name: 'P50', type: 'float'},
+		{name: 'P75', type: 'float'},
+		{name: 'P90', type: 'float'},
+		{name: 'P95', type: 'float'},
+		{name: 'P97', type: 'float'}
+	],
+	proxy    : {
+		type       : 'direct',
+		api        : {
+			read: VectorGraph.getGraphData
+		},
+		reader     : {
+			type: 'json'
+		},
+        extraParams:{
+            type:2
+        }
+	}
+
+});
+ /**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:09 PM
+ */
+Ext.define('App.model.patient.charts.StatureForAge', {
+	extend   : 'Ext.data.Model',
+	fields   : [
+		{name: 'age', type: 'float'},
+		{name: 'PP', type: 'float'},
+		{name: 'P3', type: 'float'},
+		{name: 'P5', type: 'float'},
+		{name: 'P10', type: 'float'},
+		{name: 'P25', type: 'float'},
+		{name: 'P50', type: 'float'},
+		{name: 'P75', type: 'float'},
+		{name: 'P90', type: 'float'},
+		{name: 'P95', type: 'float'},
+		{name: 'P97', type: 'float'}
+	],
+	proxy    : {
+		type       : 'direct',
+		api        : {
+			read: VectorGraph.getGraphData
+		},
+		reader     : {
+			type: 'json'
+		},
+        extraParams:{
+            type:7
+        }
+	}
+
+});
+ /**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:09 PM
+ */
+Ext.define('App.model.patient.charts.WeightForAge', {
+	extend   : 'Ext.data.Model',
+	fields   : [
+		{name: 'age', type: 'float'},
+		{name: 'PP', type: 'float'},
+		{name: 'P3', type: 'float'},
+		{name: 'P5', type: 'float'},
+		{name: 'P10', type: 'float'},
+		{name: 'P25', type: 'float'},
+		{name: 'P50', type: 'float'},
+		{name: 'P75', type: 'float'},
+		{name: 'P90', type: 'float'},
+		{name: 'P95', type: 'float'},
+		{name: 'P97', type: 'float'}
+	],
+	proxy    : {
+		type       : 'direct',
+		api        : {
+			read: VectorGraph.getGraphData
+		},
+		reader     : {
+			type: 'json'
+		},
+        extraParams:{
+            type:6
+        }
+	}
+
+});
+ /**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:09 PM
+ */
+Ext.define('App.model.patient.charts.WeightForAgeInf', {
+	extend   : 'Ext.data.Model',
+	fields   : [
+		{name: 'age', type: 'float'},
+		{name: 'PP', type: 'float'},
+		{name: 'P3', type: 'float'},
+		{name: 'P5', type: 'float'},
+		{name: 'P10', type: 'float'},
+		{name: 'P25', type: 'float'},
+		{name: 'P50', type: 'float'},
+		{name: 'P75', type: 'float'},
+		{name: 'P90', type: 'float'},
+		{name: 'P95', type: 'float'},
+		{name: 'P97', type: 'float'}
+	],
+	proxy    : {
+		type       : 'direct',
+		api        : {
+			read: VectorGraph.getGraphData
+		},
+		reader     : {
+			type: 'json'
+		},
+        extraParams:{
+            type:1
+        }
+	}
+
+});
+ /**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:09 PM
+ */
+Ext.define('App.model.patient.charts.WeightForRecumbentInf', {
+	extend   : 'Ext.data.Model',
+	fields   : [
+		{name: 'age', type: 'float'},
+		{name: 'PP', type: 'float'},
+		{name: 'P3', type: 'float'},
+		{name: 'P5', type: 'float'},
+		{name: 'P10', type: 'float'},
+		{name: 'P25', type: 'float'},
+		{name: 'P50', type: 'float'},
+		{name: 'P75', type: 'float'},
+		{name: 'P90', type: 'float'},
+		{name: 'P95', type: 'float'},
+		{name: 'P97', type: 'float'}
+	],
+	proxy    : {
+		type       : 'direct',
+		api        : {
+			read: VectorGraph.getGraphData
+		},
+		reader     : {
+			type: 'json'
+		},
+        extraParams:{
+            type:3
+        }
+	}
+
+});
+ /**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:09 PM
+ */
+Ext.define('App.model.patient.charts.WeightForStature', {
+	extend   : 'Ext.data.Model',
+	fields   : [
+        {name: 'height', type: 'float'},
+		{name: 'PP', type: 'float'},
+		{name: 'P3', type: 'float'},
+		{name: 'P5', type: 'float'},
+		{name: 'P10', type: 'float'},
+		{name: 'P25', type: 'float'},
+		{name: 'P50', type: 'float'},
+		{name: 'P75', type: 'float'},
+		{name: 'P85', type: 'float'},
+		{name: 'P90', type: 'float'},
+		{name: 'P95', type: 'float'},
+		{name: 'P97', type: 'float'}
+	],
+	proxy    : {
+		type       : 'direct',
+		api        : {
+			read: VectorGraph.getGraphData
+		},
+		reader     : {
+			type: 'json'
+		},
+        extraParams:{
+            type:5
+        }
+	}
+
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:09 PM
+ * @namespace Patient.getPatientsByPoolArea
+ */
+Ext.define('App.model.areas.PoolArea', {
+	extend   : 'Ext.data.Model',
+	fields   : [
+		{name: 'pid', type: 'int'},
+		{name: 'eid', type: 'int'},
+		{name: 'name', type: 'string'},
+		{name: 'shortName', type: 'string'},
+		{name: 'photoSrc', type: 'string'},
+		{name: 'poolArea', type: 'string'},
+		{name: 'floorPlanId', type: 'int'},
+		{name: 'floorPlanRequireZone', type: 'bool'},
+		{name: 'zoneId', type: 'int'},
+		{name: 'patientZoneId', type: 'int'},
+		{name: 'priority', type: 'string'}
+	],
+	proxy    : {
+		type       : 'direct',
+		api        : {
+			read: PoolArea.getPatientsByPoolAreaAccess
+		}
+	}
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:09 PM
+ * @namespace Patient.getPatientsByPoolArea
+ */
+Ext.define('App.model.areas.PoolDropAreas', {
+	extend   : 'Ext.data.Model',
+	fields   : [
+		{name: 'name', type: 'string'},
+		{name: 'pid', type: 'int'},
+		{name: 'pic', type: 'string'}
+	]
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:09 PM
+ */
+
+
+Ext.define('App.store.administration.ActiveProblems', {
+	model: 'App.model.administration.ActiveProblems',
+	extend: 'Ext.data.Store',
+	proxy: {
+		type       : 'direct',
+		api        : {
+			read  : Services.getActiveProblems,
+			create: Services.addActiveProblems,
+			destroy: Services.removeActiveProblems
+		},
+		reader     : {
+			totalProperty: 'totals',
+			root         : 'rows'
+		}
+	},
+	autoLoad  : false
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:09 PM
+ */
+
+
+Ext.define('App.store.administration.DefaultDocuments', {
+	model: 'App.model.administration.DefaultDocuments',
+	extend: 'Ext.data.Store',
+	proxy: {
+		type       : 'direct',
+		api        : {
+			read  : DocumentHandler.getDefaultDocumentsTemplates,
+			create: DocumentHandler.addDocumentsTemplates,
+			update: DocumentHandler.updateDocumentsTemplates
+		}
+	},
+    autoSync: true,
+	autoLoad: false
+
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:09 PM
+ */
+
+
+Ext.define('App.store.administration.DocumentsTemplates', {
+	model: 'App.model.administration.DocumentsTemplates',
+	extend: 'Ext.data.Store',
+	proxy: {
+		type       : 'direct',
+		api        : {
+			read  : DocumentHandler.getDocumentsTemplates,
+			create: DocumentHandler.addDocumentsTemplates,
+			update: DocumentHandler.updateDocumentsTemplates
+		}
+	},
+    autoSync: true,
+	autoLoad: false
+
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:11 PM
+ */
+
+
+Ext.define('App.store.administration.ExternalDataLoads', {
+	model: 'App.model.administration.ExternalDataLoads',
+	extend: 'Ext.data.Store',
+	constructor:function(config){
+		var me = this;
+		me.proxy = {
+			type       : 'direct',
+			api        : {
+				read  : ExternalDataUpdate.getCodeFiles
+			},
+			extraParams: {
+				codeType: config.codeType
+			}
+		};
+		me.callParent(arguments);
+	},
+	remoteSort: false,
+	autoLoad  : false
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:11 PM
+ */
+Ext.define('App.store.administration.FloorPlans', {
+	model: 'App.model.administration.FloorPlans',
+	extend: 'Ext.data.Store',
+	proxy: {
+		type       : 'direct',
+		api        : {
+			read  : FloorPlans.getFloorPlans,
+			create: FloorPlans.createFloorPlan,
+			update: FloorPlans.updateFloorPlan
+		}
+	},
+    autoSync  : true,
+	autoLoad  : false
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:11 PM
+ */
+Ext.define('App.store.administration.FloorPlanZones', {
+	model: 'App.model.administration.FloorPlanZones',
+	extend: 'Ext.data.Store',
+	proxy: {
+		type       : 'direct',
+		api        : {
+			read  : FloorPlans.getFloorPlanZones,
+			create: FloorPlans.createFloorPlanZone,
+			update: FloorPlans.updateFloorPlanZone
+		}
+	},
+    autoSync  : true,
+	autoLoad  : false
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:09 PM
+ */
+
+
+Ext.define('App.store.administration.HeadersAndFooters', {
+	model: 'App.model.administration.HeadersAndFooters',
+	extend: 'Ext.data.Store',
+	proxy: {
+		type       : 'direct',
+		api        : {
+			read  : DocumentHandler.getHeadersAndFootersTemplates,
+			create: DocumentHandler.addDocumentsTemplates,
+			update: DocumentHandler.updateDocumentsTemplates
+		}
+	},
+    autoSync: true,
+	autoLoad: false
+
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:09 PM
+ */
+
+
+Ext.define('App.store.administration.ImmunizationRelations', {
+	model: 'App.model.administration.ImmunizationRelations',
+	extend: 'Ext.data.Store',
+    autoLoad  : false,
+	autoSync  : true,
+	remoteSort: false
+
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:09 PM
+ */
+
+
+Ext.define('App.store.administration.LabObservations', {
+	model: 'App.model.administration.LabObservations',
+	extend: 'Ext.data.Store',
+	proxy: {
+		type       : 'direct',
+		api        : {
+			read  : Laboratories.getLabObservations,
+			create: Laboratories.addLabObservation,
+			update: Laboratories.updateLabObservation,
+			destroy: Laboratories.removeLabObservation
+		}
+	},
+    autoSync: true,
+	autoLoad  : false
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:09 PM
+ */
+
+
+Ext.define('App.store.administration.Medications', {
+	model: 'App.model.administration.Medications',
+	extend: 'Ext.data.Store',
+    autoLoad  : false,
+	autoSync  : true,
+	remoteSort: true
+
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:11 PM
+ */
+
+
+Ext.define('App.store.administration.PreventiveCare', {
+	model: 'App.model.administration.PreventiveCare',
+	extend: 'Ext.data.Store',
+	proxy: {
+		type       : 'direct',
+		api        : {
+			read  : PreventiveCare.getGuideLinesByCategory,
+			create: PreventiveCare.addGuideLine,
+			update: PreventiveCare.updateGuideLine
+		},
+		reader     : {
+			totalProperty: 'totals',
+			root         : 'rows'
+		},
+		extraParams: {
+			code_type: this.code_type,
+			query    : this.query,
+			active   : this.active
+		}
+	},
+    autoSync  : true,
+	remoteSort: false,
+	autoLoad  : false
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:11 PM
+ */
+
+
+Ext.define('App.store.administration.PreventiveCareActiveProblems', {
+	model: 'App.model.administration.PreventiveCareActiveProblems',
+	extend: 'Ext.data.Store',
+	proxy: {
+		type       : 'direct',
+		api        : {
+			read  : PreventiveCare.getGuideLineActiveProblems,
+			create: PreventiveCare.addGuideLineActiveProblems,
+			destroy: PreventiveCare.removeGuideLineActiveProblems
+		}
+	},
+	remoteSort: false,
+	autoLoad  : false
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:11 PM
+ */
+
+
+Ext.define('App.store.administration.PreventiveCareMedications', {
+	model: 'App.model.administration.PreventiveCareMedications',
+	extend: 'Ext.data.Store',
+	proxy: {
+		type       : 'direct',
+		api        : {
+			read  : PreventiveCare.getGuideLineMedications,
+			create: PreventiveCare.addGuideLineMedications,
+			destroy: PreventiveCare.removeGuideLineMedications
+		}
+	},
+	remoteSort: false,
+	autoLoad  : false
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:11 PM
+ */
+
+
+Ext.define('App.store.administration.PreventiveCareLabs', {
+	model: 'App.model.administration.PreventiveCareLabs',
+	extend: 'Ext.data.Store',
+	proxy: {
+		type       : 'direct',
+		api        : {
+			read  : PreventiveCare.getGuideLineLabs,
+			create: PreventiveCare.addGuideLineLabs,
+			destroy: PreventiveCare.removeGuideLineLabs,
+			update: PreventiveCare.updateGuideLineLabs
+		}
+	},
+	remoteSort: false,
+	autoLoad  : false
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:11 PM
+ */
+
+
+Ext.define('App.store.administration.Services', {
+	model: 'App.model.administration.Services',
+	extend: 'Ext.data.Store',
+	proxy: {
+		type       : 'direct',
+		api        : {
+			read  : DataManager.getServices,
+			create: DataManager.addService,
+			update: DataManager.updateService
+		},
+		reader     : {
+			totalProperty: 'totals',
+			root         : 'rows'
+		},
+		extraParams: {
+			code_type: this.code_type,
+			query    : this.query,
+			active   : this.active
+		}
+	},
+    autoSync  : true,
+	remoteSort: true,
+	autoLoad  : false
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:09 PM
+ */
+
+
+Ext.define('App.store.administration.ActiveProblems', {
+	model: 'App.model.administration.ActiveProblems',
+	extend: 'Ext.data.Store',
+	proxy: {
+		type       : 'direct',
+		api        : {
+			read  : Services.getActiveProblems,
+			create: Services.addActiveProblems,
+			destroy: Services.removeActiveProblems
+		},
+		reader     : {
+			totalProperty: 'totals',
+			root         : 'rows'
+		}
+	},
+	autoLoad  : false
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Plushy
+ * Date: 3/26/12
+ * Time: 10:18 PM
+ * To change this template use File | Settings | File Templates.
+ */
+Ext.define('App.store.miscellaneous.OfficeNotes', {
+	extend    : 'Ext.data.Store',
+	model     : 'App.model.miscellaneous.OfficeNotes',
+	autoLoad  : false
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez
+ * Date: 3/26/12
+ * Time: 10:18 PM
+ */
+Ext.define('App.store.fees.Billing', {
+	extend    : 'Ext.data.Store',
+	model     : 'App.model.fees.Billing',
+	autoLoad  : false
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Plushy
+ * Date: 3/26/12
+ * Time: 10:18 PM
+ * To change this template use File | Settings | File Templates.
+ */
+Ext.define('App.store.fees.Checkout', {
+	extend    : 'Ext.data.Store',
+	model     : 'App.model.fees.Checkout',
+	autoLoad  : false
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Plushy
+ * Date: 3/26/12
+ * Time: 10:18 PM
+ * To change this template use File | Settings | File Templates.
+ */
+Ext.define('App.store.fees.EncountersPayments', {
+	extend    : 'Ext.data.Store',
+	model     : 'App.model.fees.EncountersPayments',
+	autoLoad  : false
+});
+
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Plushy
+ * Date: 3/26/12
+ * Time: 10:18 PM
+ * To change this template use File | Settings | File Templates.
+ */
+Ext.define('App.store.fees.PaymentTransactions', {
+	extend    : 'Ext.data.Store',
+	model     : 'App.model.fees.PaymentTransactions',
+	autoLoad  : false
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/19/12
+ * Time: 1:03 PM
+ */
+Ext.define('App.store.navigation.Navigation', {
+	extend  : 'Ext.data.TreeStore',
+	requires: ['App.model.navigation.Navigation'],
+	model   : 'App.model.navigation.Navigation'
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:11 PM
+ */
+
+Ext.define('App.store.patient.Allergies', {
+	extend: 'Ext.data.Store',
+	model     : 'App.model.patient.Allergies',
+    remoteSort: false,
+	autoLoad  : false
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:11 PM
+ */
+Ext.define('App.store.patient.CheckoutAlertArea', {
+	extend: 'Ext.data.Store',
+	model     : 'App.model.patient.CheckoutAlertArea',
+	remoteSort: false,
+	autoLoad  : false
+});
+
+
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:11 PM
+ */
+
+Ext.define('App.store.patient.Dental', {
+	extend: 'Ext.data.Store',
+	model     : 'App.model.patient.Dental',
+    remoteSort: false,
+	autoLoad  : false
+});
+/*
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:11 PM
+ */
+Ext.define('App.store.patient.Disclosures', {
+	extend: 'Ext.data.Store',
+	model     : 'App.model.patient.Disclosures',
+	remoteSort: false,
+	autoLoad  : false
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:11 PM
+ */
+Ext.define('App.store.patient.Encounter', {
+	extend: 'Ext.data.Store',
+	requires: ['App.model.patient.Encounter'],
+	pageSize: 10,
+	model   : 'App.model.patient.Encounter'
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:11 PM
+ */
+Ext.define('App.store.patient.EncounterCPTsICDs', {
+	extend: 'Ext.data.Store',
+	model     : 'App.model.patient.EncounterCPTsICDs',
+	remoteSort: false,
+	autoLoad  : false
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:11 PM
+ */
+Ext.define('App.store.patient.EncounterEventHistory', {
+	extend: 'Ext.data.Store',
+	model     : 'App.model.patient.EventHistory',
+    proxy : {
+        type: 'direct',
+        api : {
+            read  : Encounter.getEncounterEventHistory
+        }
+    },
+    autoLoad:false
+});
+
+
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:11 PM
+ */
+Ext.define('App.store.patient.Encounters', {
+	extend: 'Ext.data.Store',
+	requires: ['App.model.patient.Encounters'],
+	pageSize: 25,
+	model   : 'App.model.patient.Encounters',
+    remoteSort:true
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:11 PM
+ */
+Ext.define('App.store.patient.Immunization', {
+	extend: 'Ext.data.Store',
+	model     : 'App.model.patient.Immunization',
+	remoteSort: false,
+	autoLoad  : true
+});
+
+
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:11 PM
+ */
+Ext.define('App.store.patient.ImmunizationCheck', {
+	extend: 'Ext.data.Store',
+	model     : 'App.model.patient.ImmunizationCheck',
+	remoteSort: true,
+	autoLoad  : false
+});
+
+
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:11 PM
+ */
+Ext.define('App.store.patient.LaboratoryTypes', {
+	extend: 'Ext.data.Store',
+	model     : 'App.model.patient.LaboratoryTypes',
+	remoteSort: false
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:11 PM
+ */
+Ext.define('App.store.patient.MeaningfulUseAlert', {
+	extend: 'Ext.data.Store',
+	model     : 'App.model.patient.MeaningfulUseAlert',
+	remoteSort: true,
+	autoLoad  : false
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:11 PM
+ */
+Ext.define('App.store.patient.MedicalIssues', {
+	extend: 'Ext.data.Store',
+	model     : 'App.model.patient.MedicalIssues',
+    remoteSort: false,
+	autoLoad  : false
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:11 PM
+ */
+Ext.define('App.store.patient.Medications', {
+	extend: 'Ext.data.Store',
+	model     : 'App.model.patient.Medications',
+    remoteSort: false,
+	autoLoad  : false
+});
+/*
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:11 PM
+ */
+Ext.define('App.store.patient.Notes', {
+	extend: 'Ext.data.Store',
+	model     : 'App.model.patient.Notes',
+	remoteSort: false,
+	autoLoad  : false
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:11 PM
+ */
+Ext.define('App.store.patient.PatientArrivalLog', {
+	extend: 'Ext.data.Store',
+	model     : 'App.model.patient.PatientArrivalLog',
+	remoteSort: true,
+	autoLoad  : false
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:11 PM
+ */
+Ext.define('App.store.patient.PatientCalendarEvents', {
+	extend: 'Ext.data.Store',
+	model     : 'App.model.patient.PatientCalendarEvents',
+	remoteSort: false,
+	autoLoad  : false
+});
+/*
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:11 PM
+ */
+Ext.define('App.store.patient.PatientDocuments', {
+	extend: 'Ext.data.Store',
+	model     : 'App.model.patient.PatientDocuments',
+	remoteSort: false,
+	autoLoad  : false,
+	autoSync:true
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:11 PM
+ */
+
+Ext.define('App.store.patient.DismissedAlerts', {
+	extend: 'Ext.data.Store',
+	model     : 'App.model.patient.DismissedAlerts',
+    remoteSort: false,
+	autoLoad  : false,
+    autoSync  : true
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:11 PM
+ */
+Ext.define('App.store.patient.PatientImmunization', {
+	extend: 'Ext.data.Store',
+	model     : 'App.model.patient.PatientImmunization',
+	remoteSort: false,
+	autoLoad  : false
+});
+
+
+
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:11 PM
+ */
+Ext.define('App.store.patient.PatientLabsResults', {
+	extend: 'Ext.data.Store',
+	model     : 'App.model.patient.PatientLabsResults',
+	remoteSort: false,
+	autoLoad  : false
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:11 PM
+ */
+Ext.define('App.store.patient.PatientsLabsOrders', {
+	extend: 'Ext.data.Store',
+	model     : 'App.model.patient.PatientsLabsOrders',
+	remoteSort: false,
+	autoLoad  : false
+});
+
+
+
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:11 PM
+ */
+Ext.define('App.store.patient.PatientsPrescription', {
+	extend: 'Ext.data.Store',
+	model     : 'App.model.patient.PatientsPrescription',
+	remoteSort: false,
+	autoLoad  : false
+});
+
+
+
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:11 PM
+ */
+Ext.define('App.store.patient.PreventiveCare', {
+	extend: 'Ext.data.Store',
+	model     : 'App.model.patient.PreventiveCare',
+	remoteSort: false,
+	autoLoad  : false
+});
+
+
+
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:11 PM
+ */
+
+Ext.define('App.store.patient.QRCptCodes', {
+	extend: 'Ext.data.Store',
+	model     : 'App.model.patient.QRCptCodes',
+	remoteSort: false,
+	autoLoad  : false
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:11 PM
+ */
+Ext.define('App.store.patient.Reminders', {
+	extend: 'Ext.data.Store',
+	model     : 'App.model.patient.Reminders',
+	remoteSort: false,
+	autoLoad  : false
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:11 PM
+ */
+
+Ext.define('App.store.patient.Surgery', {
+	extend: 'Ext.data.Store',
+	model     : 'App.model.patient.Surgery',
+	remoteSort: false,
+	autoLoad  : false
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:11 PM
+ */
+Ext.define('App.store.patient.VectorGraph', {
+	extend: 'Ext.data.Store',
+	requires: ['App.model.patient.VectorGraph'],
+	model   : 'App.model.patient.VectorGraph'
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 4/13/12
+ * Time: 11:32 PM
+ */
+
+Ext.define('App.store.patient.VisitPayment', {
+	extend: 'Ext.data.Store',
+	requires: ['App.model.patient.VisitPayment'],
+	model   : 'App.model.patient.VisitPayment'
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:11 PM
+ */
+Ext.define('App.store.patient.Vitals', {
+	extend: 'Ext.data.Store',
+	requires: ['App.model.patient.Vitals'],
+	pageSize: 10,
+	model   : 'App.model.patient.Vitals'
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:11 PM
+ */
+Ext.define('App.store.patient.charts.BMIForAge', {
+	extend: 'Ext.data.Store',
+	requires: ['App.model.patient.charts.BMIForAge'],
+	model   : 'App.model.patient.charts.BMIForAge'
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:11 PM
+ */
+Ext.define('App.store.patient.charts.HeadCircumferenceInf', {
+	extend: 'Ext.data.Store',
+	requires: ['App.model.patient.charts.HeadCircumferenceInf'],
+	model   : 'App.model.patient.charts.HeadCircumferenceInf'
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:11 PM
+ */
+Ext.define('App.store.patient.charts.LengthForAgeInf', {
+	extend: 'Ext.data.Store',
+	requires: ['App.model.patient.charts.LengthForAgeInf'],
+	model   : 'App.model.patient.charts.LengthForAgeInf'
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:11 PM
+ */
+Ext.define('App.store.patient.charts.StatureForAge', {
+	extend: 'Ext.data.Store',
+	requires: ['App.model.patient.charts.StatureForAge'],
+	model   : 'App.model.patient.charts.StatureForAge'
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:11 PM
+ */
+Ext.define('App.store.patient.charts.WeightForAge', {
+	extend: 'Ext.data.Store',
+	requires: ['App.model.patient.charts.WeightForAge'],
+	model   : 'App.model.patient.charts.WeightForAge'
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:11 PM
+ */
+Ext.define('App.store.patient.charts.WeightForAgeInf', {
+	extend: 'Ext.data.Store',
+	requires: ['App.model.patient.charts.WeightForAgeInf'],
+	model   : 'App.model.patient.charts.WeightForAgeInf'
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:11 PM
+ */
+Ext.define('App.store.patient.charts.WeightForRecumbentInf', {
+	extend: 'Ext.data.Store',
+	requires: ['App.model.patient.charts.WeightForRecumbentInf'],
+	model   : 'App.model.patient.charts.WeightForRecumbentInf'
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:11 PM
+ */
+Ext.define('App.store.patient.charts.WeightForStature', {
+	extend: 'Ext.data.Store',
+	requires: ['App.model.patient.charts.WeightForStature'],
+	model   : 'App.model.patient.charts.WeightForStature'
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 11:11 PM
+ */
+Ext.define('App.store.areas.PoolArea', {
+	extend: 'Ext.data.Store',
+	requires: ['App.model.areas.PoolArea'],
+	pageSize: 10,
+	model   : 'App.model.areas.PoolArea'
+});
+/**
+ * @class Ext.ux.ActivityMonitor
+ * @author Arthur Kay (http://www.akawebdesign.com)
+ * @singleton
+ * @version 1.0
+ *
+ * GitHub Project: https://github.com/arthurakay/ExtJS-Activity-Monitor
+ */
+Ext.define('App.classes.ActivityMonitor', {
+    singleton   : true,
+
+    ui          : null,
+    runner      : null,
+    task        : null,
+    lastActive  : null,
+    
+    ready       : false,
+    verbose     : false,
+    interval    : (1000 * 60), //1 minute
+    maxInactive : (1000 * 60 * 2), //5 minutes
+    
+    init : function(config) {
+        if (!config) { config = {}; }
+        
+        Ext.apply(this, config, {
+            runner     : new Ext.util.TaskRunner(),
+            ui         : Ext.getBody(),
+            task       : {
+                run      : this.monitorUI,
+                interval : config.interval || this.interval,
+                scope    : this
+            }
+        });
+        this.ready = true;
+    },
+    
+    isReady : function() {
+        return this.ready;
+    },
+    
+    isActive   : Ext.emptyFn,
+    isInactive : Ext.emptyFn,
+    
+    start : function() {
+        if (!this.isReady()) {
+            this.log('Please run ActivityMonitor.init()');
+            return false;
+        }
+        
+        this.ui.on('mousemove', this.captureActivity, this);
+        this.ui.on('keydown', this.captureActivity, this);
+        
+        this.lastActive = new Date();
+        this.log('ActivityMonitor has been started.');
+        
+        this.runner.start(this.task);
+
+        return true;
+    },
+    
+    stop : function() {
+        if (!this.isReady()) {
+            this.log('Please run ActivityMonitor.init()');
+            return false;
+        }
+        
+        this.runner.stop(this.task);
+        this.lastActive = null;
+        
+        this.ui.un('mousemove', this.captureActivity);
+        this.ui.un('keydown', this.captureActivity);
+        
+        this.log('ActivityMonitor has been stopped.');
+
+        return true;
+    },
+    
+    captureActivity : function(eventObj, el, eventOptions) {
+        if(app.logoutWarinigWindow) app.cancelAutoLogout();
+        this.lastActive = new Date();
+    },
+    
+    monitorUI : function() {
+        var now      = new Date(),
+            inactive = (now - this.lastActive);
+        
+        if (inactive >= this.maxInactive) {
+            this.log('MAXIMUM INACTIVE TIME HAS BEEN REACHED');
+            this.stop(); //remove event listeners
+            
+            this.isInactive();
+        }
+        else {
+            this.log('CURRENTLY INACTIVE FOR ' + Math.floor(inactive / 1000) + ' SECONDS)');
+            this.isActive();
+        }
+    },
+    
+    log : function(msg) {
+        if (this.verbose) {
+            window.console.log(msg);
+        }
+    }
+    
+});
+
+/**
+ * Render panel
+ *
+ * @namespace FormLayoutEngine.getFields
+ */
+Ext.define('App.classes.AbstractPanel', {
+
+	setReadOnly:function(readOnly){
+		var forms = this.query('form');
+
+		for(var j = 0; j < forms.length; j++) {
+			var form = forms[j], items;
+			if(form.readOnly != readOnly){
+				form.readOnly = readOnly;
+				items = form.getForm().getFields().items;
+				for(var k = 0; k < items.length; k++){
+					items[k].setReadOnly(readOnly);
+				}
+			}
+		}
+		return readOnly;
+	},
+
+	setButtonsDisabled:function(buttons, disabled){
+		var disable = disabled || app.patient.readOnly;
+		for(var i = 0; i < buttons.length; i++) {
+			var btn = buttons[i];
+			if(btn.disabled != disable){
+				btn.disabled = disable;
+				btn.setDisabled(disable)
+			}
+		}
+	},
+
+	goBack: function() {
+		app.goBack();
+	},
+
+	checkIfCurrPatient: function() {
+		return app.getCurrPatient();
+	},
+
+	patientInfoAlert: function() {
+		var patient = app.getCurrPatient();
+
+		Ext.Msg.alert(i18n['status'], i18n['patient'] + ': ' + patient.name + ' (' + patient.pid + ')');
+	},
+
+	currPatientError: function() {
+		Ext.Msg.show({
+			title  : 'Oops! ' + i18n['no_patient_selected'],
+			msg    : i18n['select_patient_patient_live_search'],
+			scope  : this,
+			buttons: Ext.Msg.OK,
+			icon   : Ext.Msg.ERROR,
+			fn     : function() {
+				this.goBack();
+			}
+		});
+	},
+
+	getFormItems: function(formPanel, formToRender, callback) {
+		formPanel.removeAll();
+
+		FormLayoutEngine.getFields({formToRender: formToRender}, function(provider, response) {
+			var items = eval(response.result);
+            formPanel.add(items);
+			if(typeof callback == 'function') {
+				callback(formPanel, items, true);
+			}
+		});
+	},
+
+	boolRenderer: function(val) {
+		if(val == '1' || val == true || val == 'true') {
+			return '<img style="padding-left: 13px" src="resources/images/icons/yes.gif" />';
+		} else if(val == '0' || val == false || val == 'false') {
+			return '<img style="padding-left: 13px" src="resources/images/icons/no.gif" />';
+		}
+		return val;
+	},
+
+	alertRenderer: function(val) {
+		if(val == '1' || val == true || val == 'true') {
+			return '<img style="padding-left: 13px" src="resources/images/icons/no.gif" />';
+		} else if(val == '0' || val == false || val == 'false') {
+			return '<img style="padding-left: 13px" src="resources/images/icons/yes.gif" />';
+		}
+		return val;
+	},
+
+    warnRenderer:function(val, metaData, record){
+	    say(record);
+	    var toolTip = record.data.warningMsg ? record.data.warningMsg : '';
+
+        if(val == '1' || val == true || val == 'true') {
+            return '<img src="resources/images/icons/icoImportant.png" ' + toolTip + ' />';
+        }else{
+            return val;
+        }
+    },
+
+	onExpandRemoveMask: function(cmb) {
+		cmb.picker.loadMask.destroy()
+	},
+
+	strToLowerUnderscores: function(str) {
+		return str.toLowerCase().replace(/ /gi, "_");
+	},
+
+	getCurrPatient: function() {
+		return app.getCurrPatient();
+	},
+
+	getApp: function() {
+		return app.getApp();
+	},
+
+	msg: function(title, format) {
+		app.msg(title, format)
+	},
+
+	alert:function(msg, icon) {
+		app.alert(msg,icon)
+	},
+
+    passwordVerificationWin:function(callback){
+        var msg = Ext.Msg.prompt(i18n['password_verification'], i18n['please_enter_your_password'] + ':', function(btn, password) {
+            callback(btn, password);
+        });
+        var f = msg.textField.getInputId();
+        document.getElementById(f).type = 'password';
+        return msg;
+    },
+    getPageHeader:function(){
+        return this.getComponent('RenderPanel-header');
+    },
+    getPageBodyContainer:function(){
+        return this.getComponent('RenderPanel-body-container');
+    },
+    getPageBody:function(){
+        return this.getPageBodyContainer().down('panel');
+    }
+
+});
+
+/**
+ * Created by JetBrains PhpStorm.
+ * User: ernesto
+ * Date: 6/27/11
+ * Time: 8:43 AM
+ * To change this template use File | Settings | File Templates.
+ *
+ *
+ * @namespace Services.liveIDCXSearch
+ */
+Ext.define('App.classes.LiveCPTSearch', {
+    extend       : 'Ext.form.field.ComboBox',
+    alias        : 'widget.livecptsearch',
+    hideLabel    : true,
+    triggerTip   : i18n['click_to_clear_selection'],
+    spObj        : '',
+    spForm       : '',
+    spExtraParam : '',
+    qtip         : i18n['clearable_combo_box'],
+    trigger1Class: 'x-form-select-trigger',
+    trigger2Class: 'x-form-clear-trigger',
+    initComponent: function() {
+        var me = this;
+
+        Ext.define('liveCPTSearchModel', {
+            extend: 'Ext.data.Model',
+            fields: [
+	            {name: 'id'},
+	            {name: 'eid'},
+	            {name: 'code', type: 'strig'},
+	            {name: 'code_text', type: 'string'},
+	            {name: 'code_text_medium', type: 'string'},
+	            {name: 'place_of_service', type: 'string'},
+	            {name: 'emergency', type: 'string'},
+	            {name: 'charge', type: 'string'},
+	            {name: 'days_of_units', type: 'string'},
+	            {name: 'essdt_plan', type: 'string'},
+	            {name: 'modifiers', type: 'string'}
+            ],
+            proxy : {
+                type       : 'direct',
+                api        : {
+                    read: ServiceCodes.liveCodeSearch
+                },
+                reader     : {
+                    totalProperty: 'totals',
+                    root         : 'rows'
+                },
+                extraParams: { code_type: 'cpt' }
+            }
+        });
+
+        me.store = Ext.create('Ext.data.Store', {
+            model   : 'liveCPTSearchModel',
+            pageSize: 25,
+            autoLoad: false
+        });
+
+        Ext.apply(this, {
+            store       : me.store,
+            displayField: 'code_text',
+            valueField  : 'code',
+            emptyText   : i18n['search'] + '...',
+            typeAhead   : true,
+            minChars    : 1,
+            anchor      : '100%',
+            listConfig  : {
+                loadingText: i18n['searching'] + '...',
+                //emptyText	: 'No matching posts found.',
+                //---------------------------------------------------------------------
+                // Custom rendering template for each item
+                //---------------------------------------------------------------------
+                getInnerTpl: function() {
+                    return '<div class="search-item">{code}: {code_text}</div>';
+                }
+            },
+            pageSize    : 25
+        }, null);
+
+        me.callParent();
+    },
+
+
+    onRender: function(ct, position) {
+        this.callParent(arguments);
+        var id = this.getId();
+        this.triggerConfig = {
+            tag: 'div', cls: 'x-form-twin-triggers', style: 'display:block;', cn: [
+                {tag: "img", style: Ext.isIE? 'margin-left:0;height:21px' : '', src: Ext.BLANK_IMAGE_URL, id: "trigger2" + id, name: "trigger2" + id, cls: "x-form-trigger " + this.trigger2Class}
+            ]};
+        this.triggerEl.replaceWith(this.triggerConfig);
+        this.triggerEl.on('mouseup', function(e) {
+                if(e.target.name == "trigger2" + id) {
+                    this.reset();
+                    this.oldValue = null;
+                    if(this.spObj !== '' && this.spExtraParam !== '') {
+                        Ext.getCmp(this.spObj).store.setExtraParam(this.spExtraParam, '');
+                        Ext.getCmp(this.spObj).store.load()
+                    }
+                    if(this.spForm !== '') {
+                        Ext.getCmp(this.spForm).getForm().reset();
+                    }
+                }
+            }, this);
+        var trigger2 = Ext.get("trigger2" + id);
+        trigger2.addClsOnOver('x-form-trigger-over');
+    }
+
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: ernesto
+ * Date: 6/27/11
+ * Time: 8:43 AM
+ * To change this template use File | Settings | File Templates.
+ *
+ *
+ * @namespace Patient.patientLiveSearch
+ */
+Ext.define('App.classes.LiveImmunizationSearch', {
+	extend       : 'Ext.form.ComboBox',
+	alias        : 'widget.immunizationlivesearch',
+	hideLabel    : true,
+
+	initComponent: function() {
+		var me = this;
+
+		Ext.define('liveImmunizationSearchModel', {
+			extend: 'Ext.data.Model',
+			fields: [
+				{name: 'id'},
+				{name: 'code'},
+				{name: 'code_text'},
+				{name: 'code_text_short'}
+
+			],
+			proxy : {
+				type  : 'direct',
+				api   : {
+					read: Medical.getImmunizationLiveSearch
+				},
+				reader: {
+					totalProperty: 'totals',
+					root         : 'rows'
+				}
+			}
+		});
+
+		me.store = Ext.create('Ext.data.Store', {
+			model   : 'liveImmunizationSearchModel',
+			pageSize: 10,
+			autoLoad: false
+		});
+
+		Ext.apply(this, {
+			store       : me.store,
+			displayField: 'code_text_short',
+			valueField  : 'code_text_short',
+			emptyText   : i18n['search_for_a_immunizations'] + '...',
+			typeAhead   : true,
+			minChars    : 1,
+			listConfig  : {
+				loadingText: i18n['searching'] + '...',
+				//emptyText	: 'No matching posts found.',
+				//---------------------------------------------------------------------
+				// Custom rendering template for each item
+				//---------------------------------------------------------------------
+				getInnerTpl: function() {
+					return '<div class="search-item"><h3>{code}<span style="font-weight: normal"> ({code_text}) </span></div>';
+				}
+			},
+			pageSize    : 10
+		}, null);
+
+		me.callParent();
+	}
+
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: ernesto
+ * Date: 6/27/11
+ * Time: 8:43 AM
+ * To change this template use File | Settings | File Templates.
+ *
+ *
+ * @namespace Patient.patientLiveSearch
+ */
+Ext.define('App.classes.LiveMedicationSearch', {
+	extend       : 'Ext.form.ComboBox',
+	alias        : 'widget.medicationlivetsearch',
+	hideLabel    : true,
+
+	initComponent: function() {
+		var me = this;
+
+		Ext.define('liveMedicationsSearchModel', {
+			extend: 'Ext.data.Model',
+			fields: [
+				{name: 'id'},
+				{name: 'PROPRIETARYNAME'},
+				{name: 'PRODUCTNDC'},
+				{name: 'NONPROPRIETARYNAME'},
+				{name: 'ACTIVE_NUMERATOR_STRENGTH'},
+				{name: 'ACTIVE_INGRED_UNIT'}
+			],
+			proxy : {
+				type  : 'direct',
+				api   : {
+					read: Medical.getMedicationLiveSearch
+				},
+				reader: {
+					totalProperty: 'totals',
+					root         : 'rows'
+				}
+			}
+		});
+
+		me.store = Ext.create('Ext.data.Store', {
+			model   : 'liveMedicationsSearchModel',
+			pageSize: 10,
+			autoLoad: false
+		});
+
+		Ext.apply(this, {
+			store       : me.store,
+			displayField: 'PROPRIETARYNAME',
+			valueField  : 'PROPRIETARYNAME',
+			emptyText   : i18n['search_for_a_medication'] + '...',
+			typeAhead   : false,
+			hideTrigger : true,
+			minChars    : 1,
+			listConfig  : {
+				loadingText: i18n['searching'] + '...',
+				//emptyText	: 'No matching posts found.',
+				//---------------------------------------------------------------------
+				// Custom rendering template for each item
+				//---------------------------------------------------------------------
+				getInnerTpl: function() {
+					return '<div class="search-item"><h3>{PROPRIETARYNAME}<span style="font-weight: normal"> ({NONPROPRIETARYNAME}) </span></h3>{ACTIVE_NUMERATOR_STRENGTH} | {ACTIVE_INGRED_UNIT}</div>';
+				}
+			},
+			pageSize    : 10
+		}, null);
+
+		me.callParent();
+	}
+
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: ernesto
+ * Date: 6/27/11
+ * Time: 8:43 AM
+ * To change this template use File | Settings | File Templates.
+ *
+ *
+ * @namespace Patient.patientLiveSearch
+ */
+Ext.define('App.classes.LiveLabsSearch', {
+	extend       : 'Ext.form.ComboBox',
+	alias        : 'widget.labslivetsearch',
+	hideLabel    : true,
+
+	initComponent: function() {
+		var me = this;
+
+		Ext.define('liveLabsSearchModel', {
+			extend: 'Ext.data.Model',
+			fields: [
+				{name: 'id'},
+				{name: 'loinc_name'},
+				{name: 'loinc_number'}
+			],
+			proxy : {
+				type  : 'direct',
+				api   : {
+					read: Medical.getLabsLiveSearch
+				},
+				reader: {
+					totalProperty: 'totals',
+					root         : 'rows'
+				}
+			}
+		});
+
+		me.store = Ext.create('Ext.data.Store', {
+			model   : 'liveLabsSearchModel',
+			pageSize: 10,
+			autoLoad: false
+		});
+
+		Ext.apply(this, {
+			store       : me.store,
+			displayField: 'loinc_name',
+			valueField  : 'id',
+			emptyText   : i18n['search'] + '...',
+			typeAhead   : false,
+			hideTrigger : true,
+			minChars    : 1,
+			listConfig  : {
+			loadingText: i18n['searching'] + '...',
+				//emptyText	: 'No matching posts found.',
+				//---------------------------------------------------------------------
+				// Custom rendering template for each item
+				//---------------------------------------------------------------------
+				getInnerTpl: function() {
+					return '<div class="search-item"><h3>{loinc_name}</h3></div>';
+				}
+			},
+			pageSize    : 10
+		}, null);
+
+		me.callParent();
+	}
+
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: ernesto
+ * Date: 6/27/11
+ * Time: 8:43 AM
+ * To change this template use File | Settings | File Templates.
+ *
+ *
+ * @namespace Patient.patientLiveSearch
+ */
+Ext.define('App.classes.LivePatientSearch', {
+	extend       : 'Ext.form.ComboBox',
+	alias        : 'widget.patienlivetsearch',
+	hideLabel    : true,
+
+	initComponent: function() {
+		var me = this;
+
+		Ext.define('patientLiveSearchModel', {
+			extend: 'Ext.data.Model',
+			fields: [
+				{name: 'pid', type: 'int'},
+				{name: 'pubpid', type: 'int'},
+				{name: 'fullname', type: 'string'},
+				{name: 'DOB', type: 'string'},
+				{name: 'SS', type: 'string'}
+			],
+			proxy : {
+				type  : 'direct',
+				api   : {
+					read: Patient.patientLiveSearch
+				},
+				reader: {
+					totalProperty: 'totals',
+					root         : 'rows'
+				}
+			}
+		});
+
+		me.store = Ext.create('Ext.data.Store', {
+			model   : 'patientLiveSearchModel',
+			pageSize: 10,
+			autoLoad: false
+		});
+
+		Ext.apply(this, {
+			store       : me.store,
+			displayField: 'fullname',
+			valueField  : 'pid',
+			emptyText   : me.emptyText,
+			typeAhead   : false,
+			hideTrigger : true,
+			minChars    : 1,
+			listConfig  : {
+				loadingText: i18n['searching'] + '...',
+				//emptyText	: 'No matching posts found.',
+				//---------------------------------------------------------------------
+				// Custom rendering template for each item
+				//---------------------------------------------------------------------
+				getInnerTpl: function() {
+					return '<div class="search-item"><h3><span>{fullname}</span>&nbsp;&nbsp;({pid})</h3>DOB:&nbsp;{DOB}&nbsp;SS:&nbsp;{SS}</div>';
+				}
+			},
+			pageSize    : 10
+		}, null);
+
+		me.callParent();
+	}
+
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: ernesto
+ * Date: 6/27/11
+ * Time: 8:43 AM
+ * To change this template use File | Settings | File Templates.
+ *
+ *
+ * @namespace Patient.patientLiveSearch
+ */
+Ext.define('App.classes.LiveSurgeriesSearch', {
+	extend       : 'Ext.form.ComboBox',
+	alias        : 'widget.surgerieslivetsearch',
+	hideLabel    : true,
+
+	initComponent: function() {
+		var me = this;
+
+		Ext.define('liveSurgeriesSearchModel', {
+			extend: 'Ext.data.Model',
+			fields: [
+				{name: 'id'},
+				{name: 'type'},
+				{name: 'type_num'},
+				{name: 'surgery'}
+			],
+			proxy : {
+				type  : 'direct',
+				api   : {
+					read: Medical.getSurgeriesLiveSearch
+				},
+				reader: {
+					totalProperty: 'totals',
+					root         : 'rows'
+				}
+			}
+		});
+
+		me.store = Ext.create('Ext.data.Store', {
+			model   : 'liveSurgeriesSearchModel',
+			pageSize: 10,
+			autoLoad: false
+		});
+
+		Ext.apply(this, {
+			store       : me.store,
+			displayField: 'surgery',
+			valueField  : 'surgery',
+			emptyText   : i18n['search_for_a_surgery'] + '...',
+			typeAhead   : true,
+			minChars    : 1,
+			listConfig  : {
+				loadingText: i18n['searching'] + '...',
+				//emptyText	: 'No matching posts found.',
+				//---------------------------------------------------------------------
+				// Custom rendering template for each item
+				//---------------------------------------------------------------------
+				getInnerTpl: function() {
+					return '<div class="search-item"><h3>{surgery}<span style="font-weight: normal"> ({type}) </span></h3></div>';
+				}
+			},
+			pageSize    : 10
+		}, null);
+
+		me.callParent();
+	}
+
+});
+/*
+ * Copyright 2007-2011, Active Group, Inc.  All rights reserved.
+ * ******************************************************************************
+ * This file is distributed on an AS IS BASIS WITHOUT ANY WARRANTY; without even
+ * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * ***********************************************************************************
+ * @version 4.0 alpha-1
+ * [For Ext 4.0 or higher only]
+ *
+ * License: Ext.ux.ManagedIframe.Component and Ext.ux.ManagedIframe.Element
+ * are licensed under the terms of the Open Source GPL 3.0 license:
+ * http://www.gnu.org/licenses/gpl.html
+ *
+ * Commercial use is prohibited without a Commercial Developement License. See
+ * http://licensing.theactivegroup.com.
+ *
+ */
+
+/**
+ * @class Ext.ux.ManagedIframe.Component
+ * @extends Ext.Component
+ */
+
+Ext.define('App.classes.ManagedIframe', {
+
+	/* Begin Definitions */
+	extend: 'Ext.Component',
+	alias : 'widget.miframe',
+	/* End Definitions */
+
+	hideMode  : Ext.isIE ? 'display' : 'nosize',
+
+	/*
+	 * @cfg {Boolean} autoScroll True to set overflow:auto on the nested iframe.
+	 * If False, overflow is forced to hidden.
+	 * Note: set to undefined to control overflow-x/y via the frameStyle config option
+	 */
+	autoScroll: true,
+
+	/*
+	 * @cfg {String/Object} frameStyle (optional) Style string or object configuration representing
+	 * the desired style attributes to apply to the embedded IFRAME.
+	 * Defaults to 'height:100%; width:100%;'
+	 */
+	frameStyle: null,
+
+	frameCls: 'ux-miframe',
+
+	shimCls: 'ux-miframe-shim',
+
+	shimUrl    : Ext.BLANK_IMAGE_URL,
+
+	/*
+	 * @cfg {String} src (optional) Uri to load into the frame
+	 */
+	src        : null,
+
+	/*
+	 * @cfg {Boolean} autoMask True to display a loadMask during page content changes
+	 */
+	autoMask   : true,
+
+	/*
+	 * @cfg {String} maskMessage default message text rendered during masking operations
+	 */
+	maskMessage: 'Loading...',
+
+	resetUrl: 'javascript:void(0);',
+
+	ariaRole: 'presentation',
+
+	unsupportedText: i18n['frames_are_disabled'],
+
+	/*
+	 * Bubble frame events to upstream containers
+	 */
+	bubbleEvents   : ['documentloaded', 'load'],
+
+	initComponent: function() {
+
+		var me = this,
+			frameStyle = Ext.isString(me.frameStyle)
+				? Ext.core.Element.parseStyles(me.frameStyle)
+				: me.frameStyle || {};
+
+		me.autoEl = {
+			cn: [
+				Ext.applyIf(
+					me.frameConfig || {},
+					{
+						tag        : 'iframe',
+						cls        : me.frameCls,
+						style      : Ext.apply(
+							{
+								"height": "100%",
+								"width" : "100%"
+							},
+							frameStyle
+						),
+						frameBorder: 'no',
+						role       : me.ariaRole,
+						name       : me.getId(),
+						src        : me.resetUrl || ''
+					}
+				),
+				{tag: 'noframes', html: me.unsupportedText},
+				{
+					tag       : 'img',
+					cls       : me.shimCls,
+					galleryimg: "no",
+					style     : "position:absolute;top:0;left:0;display:none;z-index:20;height:100%;width:100%;",
+					src       : me.shimUrl
+				}
+			]
+		};
+		this.callParent();
+	},
+
+	renderSelectors: {
+		frameElement: 'iframe.ux-miframe',
+		frameShim   : 'img.ux-miframe-shim'
+	},
+
+	afterRender     : function() {
+		var me = this;
+		me.callParent();
+
+		if(me.frameElement) {
+			me.frameElement.relayEvent('load', me);  //propagate DOM events to the component and bubbled consumers
+			me.on({
+				load : me.onFrameLoad,
+				scope: me
+			});
+		}
+		if(me.frameShim) {
+			me.frameShim.autoBoxAdjust = false;
+			me.frameShim.setVisibilityMode(Ext.core.Element.DISPLAY);
+		}
+		//permit layout to quiesce
+		Ext.defer(me.setSrc, 50, me, []);
+	},
+
+	// private
+	getContentTarget: function() {
+		return this.frameElement;
+	},
+
+	getActionEl: function() {
+		return this.frameElement || this.el;
+	},
+
+	/*
+	 * @private
+	 */
+	onFrameLoad: function(e) {
+		var me = this;
+		me.fireEvent('documentloaded', me, me.frameElement);
+		if(me.autoMask) {
+			me.setLoading(false);
+		}
+	},
+
+	/*
+	 * Setter - Changes the current src attribute of the IFRAME, applying a loadMask
+	 * over the frame (if autoMask is true)
+	 * Note: call without the uri argument to simply refresh the frame with the current src value
+	 */
+	setSrc     : function(uri) {
+		var me = this;
+		uri = uri || me.src || me.defaultSrc;
+		if(uri && me.rendered && me.frameElement) {
+			me.autoMask &&
+				me.isVisible(true) &&
+			me.setLoading(me.maskMessage || '');
+
+			me.frameElement.dom.src = uri;
+		}
+		me.src = uri;
+		return me;
+	},
+
+	/**
+	 * contentEl is NOT supported, but tpl/data, and html ARE.
+	 * @private
+	 */
+	initContent: function() {
+		var me = this,
+			content = me.data || me.html;
+
+		if(me.contentEl && Ext.isDefined(Ext.global.console)) {
+			Ext.global.console.warn('Ext.ux.ManagedIframe.Component: \'contentEl\' is not supported by this class.');
+		}
+
+		// Make sure this.tpl is an instantiated XTemplate
+		if(me.tpl && !me.tpl.isTemplate) {
+			me.tpl = Ext.create('Ext.XTemplate', me.tpl);
+		}
+
+		if(content) {
+			me.update(content);  //no-op until alpha2 release
+		}
+		delete me.contentEl;
+	},
+
+	/**
+	 * Update(replacing) the document content of the IFRAME.
+	 * @param {Mixed} htmlOrData
+	 * If this component has been configured with a template via the tpl config
+	 * then it will use this argument as data to populate the frame.
+	 * If this component was not configured with a template, the components
+	 * content area (iframe) will be updated via Ext.ux.ManagedIframe.Element update
+	 * @param {Boolean} loadScripts (optional) Defaults to false
+	 * @param {Function} callback (optional) Callback to execute when scripts have finished loading
+	 */
+	updateAlpha2: function(htmlOrData, loadScripts, callback) {
+		var me = this;
+
+		if(me.tpl && !Ext.isString(htmlOrData)) {
+			me.data = htmlOrData;
+			me.html = me.tpl.apply(htmlOrData || {});
+		} else {
+			me.html = Ext.core.DomHelper.markup(htmlOrData);
+		}
+
+		if(me.rendered) {
+			me.getContentTarget().update(me.html, loadScripts, callback);
+		}
+		return me;
+	},
+
+	//Frame writing scheduled for Aplha2, so no-op for now
+	update      : function() {
+	},
+
+	/**
+	 * Sets the overflow on the IFRAME element of the component.
+	 * @param {Boolean} scroll True to allow the IFRAME to auto scroll.
+	 * @return {Ext.ux.ManagedIframe.Component} this
+	 */
+	setAutoScroll: function(scroll) {
+		var me = this,
+			targetEl;
+		if(Ext.isDefined(scroll)) {  //permits frameStyle overrides
+			scroll = !!scroll;
+			if(me.rendered && (targetEl = me.getContentTarget())) {
+				targetEl.setStyle('overflow', scroll ? 'auto' : 'hidden');
+			}
+			me.autoScroll = scroll;
+		}
+		return me;
+	},
+
+	/*
+	 *   Toggle the transparent shim on/off
+	 */
+	toggleShim   : function(enabled) {
+		var me = this;
+		if(me.frameShim) {
+			me.frameShim[enabled ? 'show' : 'hide']();
+		}
+		return me.frameShim;
+	},
+
+	onDestroy: function() {
+		var me = this, frame;
+		if(frame = me.frameElement) {
+			frame.clearListeners();
+			frame.remove();
+		}
+		me.deleteMembers('frameElement', 'frameShim');
+		me.callParent();
+	}
+
+});
+
+/**
+ * A plugin that provides the ability to visually indicate to the user that a node is disabled.
+ *
+ * Notes:
+ * - Compatible with Ext 4.x
+ * - If the view already defines a getRowClass function, the original function will be called before this plugin.
+ *
+ var tree = Ext.create('Ext.tree.Panel',{
+ plugins: [{
+ ptype: 'nodedisabled'
+ }]
+ ...
+ });
+ *
+ * @class Ext.ux.tree.plugin.NodeDisabled
+ * @extends Ext.AbstractPlugin
+ * @author Phil Crawford
+ * @license Licensed under the terms of the Open Source <a href="http://www.gnu.org/licenses/lgpl.html">LGPL 3.0 license</a>.  Commercial use is permitted to the extent that the code/component(s) do NOT become part of another Open Source or Commercially licensed development library or toolkit without explicit permission.
+ * @version 0.1 (July 1, 2011)
+ * @constructor
+ * @param {Object} config
+ */
+Ext.define('App.classes.NodeDisabled', {
+    alias:'plugin.nodedisabled', extend:'Ext.AbstractPlugin'
+
+
+    //configurables
+    /**
+     * @cfg {String} disabledCls
+     * The CSS class applied when the {@link Ext.data.Model} of the node has a 'disabled' field with a true value.
+     */, disabledCls:'tree-node-disabled'
+    /**
+     * @cfg {Boolean} preventSelection
+     * True to prevent selection of a node that is disabled. Default true.
+     */, preventSelection:true
+
+    /**
+     * @cfg {Boolean} preventChecking
+     * True to prevent checking of a node that is disabled. Default true.
+     */, preventChecking:true
+
+    //properties
+
+
+    /**
+     * @private
+     * @param {Ext.tree.Panel} tree
+     */, init:function (tree) {
+        var me = this
+            , view = tree.getView()
+            , origFn
+            , origScope;
+
+        me.callParent(arguments);
+
+        origFn = view.getRowClass;
+        if (origFn) {
+            origScope = view.scope || me;
+            Ext.apply(view, {
+                getRowClass:function () {
+                    var v1, v2;
+                    v1 = origFn.apply(origScope, arguments) || '';
+                    v2 = me.getRowClass.apply(me, arguments) || '';
+                    return (v1 && v2) ? v1 + ' ' + v2 : v1 + v2;
+                }
+            }, null);
+        } else {
+            Ext.apply(view, {
+                getRowClass:Ext.Function.bind(me.getRowClass, me)
+            }, null);
+        }
+
+        if (me.preventSelection) {
+            tree.getSelectionModel().on('beforeselect', me.onBeforeNodeSelect, me);
+        }
+
+        if (me.preventChecking) {
+            tree.on('checkchange', me.checkchange, me);
+        }
+    } // eof init
+
+
+    /**
+     * Returns a properly typed result.
+     * @return {Ext.tree.Panel}
+     */, getCmp:function () {
+        return this.callParent(arguments);
+    } //eof getCmp
+
+    /**
+     * @private
+     * @param {Ext.data.Model} record
+     * @param {Number} index
+     * @param {Object} rowParams
+     * @param {Ext.data.Store} ds
+     * @return {String}
+     */, getRowClass:function (record, index, rowParams, ds) {
+        return record.get('disabled') ? this.disabledCls : '';
+    }//eof getRowClass
+
+    /**
+     * @private
+     * @param {Ext.selection.TreeModel} sm
+     * @param {Ext.data.Model} node
+     * @return {Boolean}
+     */, onBeforeNodeSelect:function (sm, node) {
+        if (node.get('disabled')) {
+            return false;
+        }
+    }//eof onBeforeNodeSelect
+
+    /**
+     * @event checkchange
+     * Fires when a node with a checkbox's checked property changes
+     * @param {Ext.data.Model} node The node who's checked property was changed
+     * @param {Boolean} checked The node's new checked state
+     */, checkchange:function (node, checked) {
+        if (node.get('disabled')) {
+            node.set('checked', !checked);
+        }
+    }//eof checkchange
+
+});//eo class
+
+//end of file
+//******************************************************************************
+// Photo ID Window
+//******************************************************************************
+Ext.define('App.classes.PhotoIdWindow', {
+	extend       : 'Ext.window.Window',
+	alias        : 'widget.photoidwindow',
+	height       : 320,
+	width        : 320,
+	layout       : 'fit',
+	renderTo     : document.body,
+	initComponent: function() {
+		var me = this;
+
+
+		window.webcam.set_api_url( 'dataProvider/WebCamImgHandler.php' );
+	    window.webcam.set_swf_url( 'lib/jpegcam/htdocs/webcam.swf' );
+	    window.webcam.set_quality( 100 ); // JPEG quality (1 - 100)
+	    window.webcam.set_shutter_sound( true, 'lib/jpegcam/htdocs/shutter.mp3' ); // play shutter click sound
+	    window.webcam.set_hook( 'onComplete', 'onWebCamComplete' );
+
+		Ext.apply(this, {
+			html:window.webcam.get_html(320, 320),
+			buttons: [
+				{
+					text   : i18n['capture'],
+					iconCls: 'save',
+					handler: me.captureToCanvas
+				},
+				{
+					text   : i18n['cancel'],
+					scope:me,
+					handler: function(){
+						this.close();
+					}
+				}
+			]
+		},null);
+		me.callParent(arguments);
+	},
+
+	captureToCanvas:function(){
+		window.webcam.snap();
+	}
+});
+/**
+ * @class Ext.fx.target.Sprite
+
+ This class represents an animation target for a {@link Ext.draw.Sprite}. In general this class will not be
+ created directly, the {@link Ext.draw.Sprite} will be passed to the animation and
+ and the appropriate target will be created.
+
+ * @markdown
+ */
+
+Ext.define('Ext.fx.target.Sprite', {
+
+    /* Begin Definitions */
+
+    extend: 'Ext.fx.target.Target',
+
+    /* End Definitions */
+
+    type: 'draw',
+
+    getFromPrim: function (sprite, attr) {
+        var obj;
+        switch (attr) {
+            case 'rotate':
+            case 'rotation':
+                obj = sprite.attr.rotation;
+                return {
+                    x: obj.x || 0,
+                    y: obj.y || 0,
+                    degrees: obj.degrees || 0
+                };
+            case 'scale':
+            case 'scaling':
+                obj = sprite.attr.scaling;
+                return {
+                    x: obj.x || 1,
+                    y: obj.y || 1,
+                    cx: obj.cx || 0,
+                    cy: obj.cy || 0
+                };
+            case 'translate':
+            case 'translation':
+                obj = sprite.attr.translation;
+                return {
+                    x: obj.x || 0,
+                    y: obj.y || 0
+                };
+            default:
+                return sprite.attr[attr];
+        }
+    },
+
+    getAttr: function (attr, val) {
+        return [
+            [this.target, val != undefined ? val : this.getFromPrim(this.target, attr)]
+        ];
+    },
+
+    setAttr: function (targetData) {
+        var ln = targetData.length,
+            spriteArr = [],
+            attrsConf, attr, attrArr, attrs, sprite, idx, value, i, j, x, y, ln2;
+        for (i = 0; i < ln; i++) {
+            attrsConf = targetData[i].attrs;
+            for (attr in attrsConf) {
+                attrArr = attrsConf[attr];
+                ln2 = attrArr.length;
+                for (j = 0; j < ln2; j++) {
+                    sprite = attrArr[j][0];
+                    attrs = attrArr[j][1];
+                    if (attr === 'translate' || attr === 'translation') {
+                        value = {
+                            x: attrs.x,
+                            y: attrs.y
+                        };
+                    }
+                    else if (attr === 'rotate' || attr === 'rotation') {
+                        x = attrs.x;
+                        if (isNaN(x)) {
+                            x = null;
+                        }
+                        y = attrs.y;
+                        if (isNaN(y)) {
+                            y = null;
+                        }
+                        value = {
+                            degrees: attrs.degrees,
+                            x: x,
+                            y: y
+                        };
+                    } else if (attr === 'scale' || attr === 'scaling') {
+                        x = attrs.x;
+                        if (isNaN(x)) {
+                            x = null;
+                        }
+                        y = attrs.y;
+                        if (isNaN(y)) {
+                            y = null;
+                        }
+                        value = {
+                            x: x,
+                            y: y,
+                            cx: attrs.cx,
+                            cy: attrs.cy
+                        };
+                    }
+                    else if (attr === 'width' || attr === 'height' || attr === 'x' || attr === 'y') {
+                        value = parseFloat(attrs);
+                    }
+                    else {
+                        value = attrs;
+                    }
+                    idx = Ext.Array.indexOf(spriteArr, sprite);
+                    if (idx == -1) {
+                        spriteArr.push([sprite, {}]);
+                        idx = spriteArr.length - 1;
+                    }
+                    spriteArr[idx][1][attr] = value;
+                }
+            }
+        }
+        ln = spriteArr.length;
+        for (i = 0; i < ln; i++) {
+            spriteArr[i][0].setAttributes(spriteArr[i][1]);
+        }
+        this.target.redraw();
+    }
+});
+
+/**
+ * This class provides a container DD instance that allows dropping on multiple child target nodes.
+ *
+ * By default, this class requires that child nodes accepting drop are registered with {@link Ext.dd.Registry}.
+ * However a simpler way to allow a DropZone to manage any number of target elements is to configure the
+ * DropZone with an implementation of {@link #getTargetFromEvent} which interrogates the passed
+ * mouse event to see if it has taken place within an element, or class of elements. This is easily done
+ * by using the event's {@link Ext.EventObject#getTarget getTarget} method to identify a node based on a
+ * {@link Ext.DomQuery} selector.
+ *
+ * Once the DropZone has detected through calling getTargetFromEvent, that the mouse is over
+ * a drop target, that target is passed as the first parameter to {@link #onNodeEnter}, {@link #onNodeOver},
+ * {@link #onNodeOut}, {@link #onNodeDrop}. You may configure the instance of DropZone with implementations
+ * of these methods to provide application-specific behaviour for these events to update both
+ * application state, and UI state.
+ *
+ * For example to make a GridPanel a cooperating target with the example illustrated in
+ * {@link Ext.dd.DragZone DragZone}, the following technique might be used:
+ *
+ *     myGridPanel.on('render', function() {
+ *         myGridPanel.dropZone = new Ext.dd.DropZone(myGridPanel.getView().scroller, {
+ *
+ *             // If the mouse is over a grid row, return that node. This is
+ *             // provided as the "target" parameter in all "onNodeXXXX" node event handling functions
+ *             getTargetFromEvent: function(e) {
+ *                 return e.getTarget(myGridPanel.getView().rowSelector);
+ *             },
+ *
+ *             // On entry into a target node, highlight that node.
+ *             onNodeEnter : function(target, dd, e, data){
+ *                 Ext.fly(target).addCls('my-row-highlight-class');
+ *             },
+ *
+ *             // On exit from a target node, unhighlight that node.
+ *             onNodeOut : function(target, dd, e, data){
+ *                 Ext.fly(target).removeCls('my-row-highlight-class');
+ *             },
+ *
+ *             // While over a target node, return the default drop allowed class which
+ *             // places a "tick" icon into the drag proxy.
+ *             onNodeOver : function(target, dd, e, data){
+ *                 return Ext.dd.DropZone.prototype.dropAllowed;
+ *             },
+ *
+ *             // On node drop we can interrogate the target to find the underlying
+ *             // application object that is the real target of the dragged data.
+ *             // In this case, it is a Record in the GridPanel's Store.
+ *             // We can use the data set up by the DragZone's getDragData method to read
+ *             // any data we decided to attach in the DragZone's getDragData method.
+ *             onNodeDrop : function(target, dd, e, data){
+ *                 var rowIndex = myGridPanel.getView().findRowIndex(target);
+ *                 var r = myGridPanel.getStore().getAt(rowIndex);
+ *                 Ext.Msg.alert('Drop gesture', 'Dropped Record id ' + data.draggedRecord.id +
+ *                     ' on Record id ' + r.id);
+ *                 return true;
+ *             }
+ *         });
+ *     }
+ *
+ * See the {@link Ext.dd.DragZone DragZone} documentation for details about building a DragZone which
+ * cooperates with this DropZone.
+ */
+Ext.define('Ext.dd.DropZone', {
+    extend: 'Ext.dd.DropTarget',
+    requires: ['Ext.dd.Registry'],
+
+    /**
+     * Returns a custom data object associated with the DOM node that is the target of the event.  By default
+     * this looks up the event target in the {@link Ext.dd.Registry}, although you can override this method to
+     * provide your own custom lookup.
+     * @param {Event} e The event
+     * @return {Object} data The custom data
+     */
+    getTargetFromEvent : function(e){
+        return Ext.dd.Registry.getTargetFromEvent(e);
+    },
+
+    /**
+     * Called when the DropZone determines that a {@link Ext.dd.DragSource} has entered a drop node
+     * that has either been registered or detected by a configured implementation of {@link #getTargetFromEvent}.
+     * This method has no default implementation and should be overridden to provide
+     * node-specific processing if necessary.
+     * @param {Object} nodeData The custom data associated with the drop node (this is the same value returned from 
+     * {@link #getTargetFromEvent} for this node)
+     * @param {Ext.dd.DragSource} source The drag source that was dragged over this drop zone
+     * @param {Event} e The event
+     * @param {Object} data An object containing arbitrary data supplied by the drag source
+     */
+    onNodeEnter : function(n, dd, e, data){
+        
+    },
+
+    /**
+     * Called while the DropZone determines that a {@link Ext.dd.DragSource} is over a drop node
+     * that has either been registered or detected by a configured implementation of {@link #getTargetFromEvent}.
+     * The default implementation returns this.dropAllowed, so it should be
+     * overridden to provide the proper feedback.
+     * @param {Object} nodeData The custom data associated with the drop node (this is the same value returned from
+     * {@link #getTargetFromEvent} for this node)
+     * @param {Ext.dd.DragSource} source The drag source that was dragged over this drop zone
+     * @param {Event} e The event
+     * @param {Object} data An object containing arbitrary data supplied by the drag source
+     * @return {String} status The CSS class that communicates the drop status back to the source so that the
+     * underlying {@link Ext.dd.StatusProxy} can be updated
+     * @template
+     */
+    onNodeOver : function(n, dd, e, data){
+        return this.dropAllowed;
+    },
+
+    /**
+     * Called when the DropZone determines that a {@link Ext.dd.DragSource} has been dragged out of
+     * the drop node without dropping.  This method has no default implementation and should be overridden to provide
+     * node-specific processing if necessary.
+     * @param {Object} nodeData The custom data associated with the drop node (this is the same value returned from
+     * {@link #getTargetFromEvent} for this node)
+     * @param {Ext.dd.DragSource} source The drag source that was dragged over this drop zone
+     * @param {Event} e The event
+     * @param {Object} data An object containing arbitrary data supplied by the drag source
+     * @template
+     */
+    onNodeOut : function(n, dd, e, data){
+        
+    },
+
+    /**
+     * Called when the DropZone determines that a {@link Ext.dd.DragSource} has been dropped onto
+     * the drop node.  The default implementation returns false, so it should be overridden to provide the
+     * appropriate processing of the drop event and return true so that the drag source's repair action does not run.
+     * @param {Object} nodeData The custom data associated with the drop node (this is the same value returned from
+     * {@link #getTargetFromEvent} for this node)
+     * @param {Ext.dd.DragSource} source The drag source that was dragged over this drop zone
+     * @param {Event} e The event
+     * @param {Object} data An object containing arbitrary data supplied by the drag source
+     * @return {Boolean} True if the drop was valid, else false
+     * @template
+     */
+    onNodeDrop : function(n, dd, e, data){
+        return false;
+    },
+
+    /**
+     * Called while the DropZone determines that a {@link Ext.dd.DragSource} is being dragged over it,
+     * but not over any of its registered drop nodes.  The default implementation returns this.dropNotAllowed, so
+     * it should be overridden to provide the proper feedback if necessary.
+     * @param {Ext.dd.DragSource} source The drag source that was dragged over this drop zone
+     * @param {Event} e The event
+     * @param {Object} data An object containing arbitrary data supplied by the drag source
+     * @return {String} status The CSS class that communicates the drop status back to the source so that the
+     * underlying {@link Ext.dd.StatusProxy} can be updated
+     * @template
+     */
+    onContainerOver : function(dd, e, data){
+        return this.dropNotAllowed;
+    },
+
+    /**
+     * Called when the DropZone determines that a {@link Ext.dd.DragSource} has been dropped on it,
+     * but not on any of its registered drop nodes.  The default implementation returns false, so it should be
+     * overridden to provide the appropriate processing of the drop event if you need the drop zone itself to
+     * be able to accept drops.  It should return true when valid so that the drag source's repair action does not run.
+     * @param {Ext.dd.DragSource} source The drag source that was dragged over this drop zone
+     * @param {Event} e The event
+     * @param {Object} data An object containing arbitrary data supplied by the drag source
+     * @return {Boolean} True if the drop was valid, else false
+     * @template
+     */
+    onContainerDrop : function(dd, e, data){
+        return false;
+    },
+
+    /**
+     * The function a {@link Ext.dd.DragSource} calls once to notify this drop zone that the source is now over
+     * the zone.  The default implementation returns this.dropNotAllowed and expects that only registered drop
+     * nodes can process drag drop operations, so if you need the drop zone itself to be able to process drops
+     * you should override this method and provide a custom implementation.
+     * @param {Ext.dd.DragSource} source The drag source that was dragged over this drop zone
+     * @param {Event} e The event
+     * @param {Object} data An object containing arbitrary data supplied by the drag source
+     * @return {String} status The CSS class that communicates the drop status back to the source so that the
+     * underlying {@link Ext.dd.StatusProxy} can be updated
+     * @template
+     */
+    notifyEnter : function(dd, e, data){
+        return this.dropNotAllowed;
+    },
+
+    /**
+     * The function a {@link Ext.dd.DragSource} calls continuously while it is being dragged over the drop zone.
+     * This method will be called on every mouse movement while the drag source is over the drop zone.
+     * It will call {@link #onNodeOver} while the drag source is over a registered node, and will also automatically
+     * delegate to the appropriate node-specific methods as necessary when the drag source enters and exits
+     * registered nodes ({@link #onNodeEnter}, {@link #onNodeOut}). If the drag source is not currently over a
+     * registered node, it will call {@link #onContainerOver}.
+     * @param {Ext.dd.DragSource} source The drag source that was dragged over this drop zone
+     * @param {Event} e The event
+     * @param {Object} data An object containing arbitrary data supplied by the drag source
+     * @return {String} status The CSS class that communicates the drop status back to the source so that the
+     * underlying {@link Ext.dd.StatusProxy} can be updated
+     * @template
+     */
+    notifyOver : function(dd, e, data){
+        var n = this.getTargetFromEvent(e);
+        if(!n) { // not over valid drop target
+            if(this.lastOverNode){
+                this.onNodeOut(this.lastOverNode, dd, e, data);
+                this.lastOverNode = null;
+            }
+            return this.onContainerOver(dd, e, data);
+        }
+        if(this.lastOverNode != n){
+            if(this.lastOverNode){
+                this.onNodeOut(this.lastOverNode, dd, e, data);
+            }
+            this.onNodeEnter(n, dd, e, data);
+            this.lastOverNode = n;
+        }
+        return this.onNodeOver(n, dd, e, data);
+    },
+
+    /**
+     * The function a {@link Ext.dd.DragSource} calls once to notify this drop zone that the source has been dragged
+     * out of the zone without dropping.  If the drag source is currently over a registered node, the notification
+     * will be delegated to {@link #onNodeOut} for node-specific handling, otherwise it will be ignored.
+     * @param {Ext.dd.DragSource} source The drag source that was dragged over this drop target
+     * @param {Event} e The event
+     * @param {Object} data An object containing arbitrary data supplied by the drag zone
+     * @template
+     */
+    notifyOut : function(dd, e, data){
+        if(this.lastOverNode){
+            this.onNodeOut(this.lastOverNode, dd, e, data);
+            this.lastOverNode = null;
+        }
+    },
+
+    /**
+     * The function a {@link Ext.dd.DragSource} calls once to notify this drop zone that the dragged item has
+     * been dropped on it.  The drag zone will look up the target node based on the event passed in, and if there
+     * is a node registered for that event, it will delegate to {@link #onNodeDrop} for node-specific handling,
+     * otherwise it will call {@link #onContainerDrop}.
+     * @param {Ext.dd.DragSource} source The drag source that was dragged over this drop zone
+     * @param {Event} e The event
+     * @param {Object} data An object containing arbitrary data supplied by the drag source
+     * @return {Boolean} False if the drop was invalid.
+     * @template
+     */
+    notifyDrop : function(dd, e, data){
+        if(this.lastOverNode){
+            this.onNodeOut(this.lastOverNode, dd, e, data);
+            this.lastOverNode = null;
+        }
+        var n = this.getTargetFromEvent(e);
+        return n ?
+            this.onNodeDrop(n, dd, e, data) :
+            this.onContainerDrop(dd, e, data);
+    },
+
+    // private
+    triggerCacheRefresh : function() {
+        Ext.dd.DDM.refreshCache(this.groups);
+    }
+});
+/**
+ * This class provides a container DD instance that allows dragging of multiple child source nodes.
+ *
+ * This class does not move the drag target nodes, but a proxy element which may contain any DOM structure you wish. The
+ * DOM element to show in the proxy is provided by either a provided implementation of {@link #getDragData}, or by
+ * registered draggables registered with {@link Ext.dd.Registry}
+ *
+ * If you wish to provide draggability for an arbitrary number of DOM nodes, each of which represent some application
+ * object (For example nodes in a {@link Ext.view.View DataView}) then use of this class is the most efficient way to
+ * "activate" those nodes.
+ *
+ * By default, this class requires that draggable child nodes are registered with {@link Ext.dd.Registry}. However a
+ * simpler way to allow a DragZone to manage any number of draggable elements is to configure the DragZone with an
+ * implementation of the {@link #getDragData} method which interrogates the passed mouse event to see if it has taken
+ * place within an element, or class of elements. This is easily done by using the event's {@link
+ * Ext.EventObject#getTarget getTarget} method to identify a node based on a {@link Ext.DomQuery} selector. For example,
+ * to make the nodes of a DataView draggable, use the following technique. Knowledge of the use of the DataView is
+ * required:
+ *
+ *     myDataView.on('render', function(v) {
+ *         myDataView.dragZone = new Ext.dd.DragZone(v.getEl(), {
+ *
+ *     //      On receipt of a mousedown event, see if it is within a DataView node.
+ *     //      Return a drag data object if so.
+ *             getDragData: function(e) {
+ *
+ *     //          Use the DataView's own itemSelector (a mandatory property) to
+ *     //          test if the mousedown is within one of the DataView's nodes.
+ *                 var sourceEl = e.getTarget(v.itemSelector, 10);
+ *
+ *     //          If the mousedown is within a DataView node, clone the node to produce
+ *     //          a ddel element for use by the drag proxy. Also add application data
+ *     //          to the returned data object.
+ *                 if (sourceEl) {
+ *                     d = sourceEl.cloneNode(true);
+ *                     d.id = Ext.id();
+ *                     return {
+ *                         ddel: d,
+ *                         sourceEl: sourceEl,
+ *                         repairXY: Ext.fly(sourceEl).getXY(),
+ *                         sourceStore: v.store,
+ *                         draggedRecord: v.{@link Ext.view.View#getRecord getRecord}(sourceEl)
+ *                     }
+ *                 }
+ *             },
+ *
+ *     //      Provide coordinates for the proxy to slide back to on failed drag.
+ *     //      This is the original XY coordinates of the draggable element captured
+ *     //      in the getDragData method.
+ *             getRepairXY: function() {
+ *                 return this.dragData.repairXY;
+ *             }
+ *         });
+ *     });
+ *
+ * See the {@link Ext.dd.DropZone DropZone} documentation for details about building a DropZone which cooperates with
+ * this DragZone.
+ */
+Ext.define('Ext.dd.DragZone', {
+    extend: 'Ext.dd.DragSource',
+
+    /**
+     * Creates new DragZone.
+     * @param {String/HTMLElement/Ext.Element} el The container element or ID of it.
+     * @param {Object} config
+     */
+    constructor : function(el, config){
+        this.callParent([el, config]);
+        if (this.containerScroll) {
+            Ext.dd.ScrollManager.register(this.el);
+        }
+    },
+
+    /**
+     * @property {Object} dragData
+     * This property contains the data representing the dragged object. This data is set up by the implementation of the
+     * {@link #getDragData} method. It must contain a ddel property, but can contain any other data according to the
+     * application's needs.
+     */
+
+    /**
+     * @cfg {Boolean} containerScroll
+     * True to register this container with the Scrollmanager for auto scrolling during drag operations.
+     */
+
+    /**
+     * Called when a mousedown occurs in this container. Looks in {@link Ext.dd.Registry} for a valid target to drag
+     * based on the mouse down. Override this method to provide your own lookup logic (e.g. finding a child by class
+     * name). Make sure your returned object has a "ddel" attribute (with an HTML Element) for other functions to work.
+     * @param {Event} e The mouse down event
+     * @return {Object} The dragData
+     */
+    getDragData : function(e){
+        return Ext.dd.Registry.getHandleFromEvent(e);
+    },
+
+    /**
+     * Called once drag threshold has been reached to initialize the proxy element. By default, it clones the
+     * this.dragData.ddel
+     * @param {Number} x The x position of the click on the dragged object
+     * @param {Number} y The y position of the click on the dragged object
+     * @return {Boolean} true to continue the drag, false to cancel
+     * @template
+     */
+    onInitDrag : function(x, y){
+        this.proxy.update(this.dragData.ddel.cloneNode(true));
+        this.onStartDrag(x, y);
+        return true;
+    },
+
+    /**
+     * Called after a repair of an invalid drop. By default, highlights this.dragData.ddel
+     * @template
+     */
+    afterRepair : function(){
+        var me = this;
+        if (Ext.enableFx) {
+            Ext.fly(me.dragData.ddel).highlight(me.repairHighlightColor);
+        }
+        me.dragging = false;
+    },
+
+    /**
+     * Called before a repair of an invalid drop to get the XY to animate to. By default returns the XY of
+     * this.dragData.ddel
+     * @param {Event} e The mouse up event
+     * @return {Number[]} The xy location (e.g. `[100, 200]`)
+     * @template
+     */
+    getRepairXY : function(e){
+        return Ext.fly(this.dragData.ddel).getXY();
+    },
+
+    destroy : function(){
+        this.callParent();
+        if (this.containerScroll) {
+            Ext.dd.ScrollManager.unregister(this.el);
+        }
+    }
+});
+
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 11/1/11
+ * Time: 12:37 PM
+ */
+Ext.define('App.classes.form.fields.Help', {
+    extend       : 'Ext.Img',
+    alias        : 'widget.helpbutton',
+    src          : 'resources/images/icons/icohelp.png',
+    height       : 16,
+    width        : 16,
+    margin       : '3 10',
+    helpMsg      : i18n['help_message'],
+    initComponent: function() {
+        var me = this;
+        me.listeners = {
+            render: function(c) {
+                me.setToolTip(c.getEl());
+            }
+        };
+        me.callParent();
+    },
+
+    setToolTip: function(el) {
+        Ext.create('Ext.tip.ToolTip', {
+            target      : el,
+            dismissDelay: 0,
+            html        : this.helpMsg
+        });
+    }
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 11/1/11
+ * Time: 12:37 PM
+ */
+Ext.define('App.classes.form.fields.Checkbox', {
+	extend        : 'Ext.form.field.Checkbox',
+	alias         : 'widget.mitos.checkbox',
+	inputValue    : '1',
+	uncheckedValue: '0'
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: GaiaEHR
+ * Date: 3/18/12
+ * Time: 10:02 PM
+ * To change this template use File | Settings | File Templates.
+ */
+/*
+ * GNU General Public License Usage
+ * This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+ *
+ * http://www.gnu.org/licenses/lgpl.html
+ *
+ * @description: This class provide aditional format to numbers by extending Ext.form.field.Number
+ *
+ * @author: Greivin Britton
+ * @email: brittongr@gmail.com
+ * @version: 2 compatible with ExtJS 4
+ */
+Ext.define('App.classes.form.fields.Currency',
+    {
+        extend:'Ext.form.field.Number', //Extending the NumberField
+        alias:'widget.mitos.currency', //Defining the xtype,
+        currencySymbol:'$',
+        useThousandSeparator:true,
+        thousandSeparator:',',
+        alwaysDisplayDecimals:true,
+        fieldStyle:'text-align: right;',
+        initComponent:function () {
+            if (this.useThousandSeparator && this.decimalSeparator == ',' && this.thousandSeparator == ',')
+                this.thousandSeparator = '.';
+            else
+            if (this.allowDecimals && this.thousandSeparator == '.' && this.decimalSeparator == '.')
+                this.decimalSeparator = ',';
+
+            this.callParent(arguments);
+        },
+        setValue:function (value) {
+            App.classes.form.fields.Currency.superclass.setValue.call(this, value != null ? value.toString().replace('.', this.decimalSeparator) : value);
+
+            this.setRawValue(this.getFormattedValue(this.getValue()));
+        },
+        getFormattedValue:function (value) {
+            if (Ext.isEmpty(value) || !this.hasFormat())
+                return value;
+            else {
+                var neg = null;
+
+                value = (neg = value < 0) ? value * -1 : value;
+                value = this.allowDecimals && this.alwaysDisplayDecimals ? value.toFixed(this.decimalPrecision) : value;
+
+                if (this.useThousandSeparator) {
+                    if (this.useThousandSeparator && Ext.isEmpty(this.thousandSeparator))
+                        throw ('NumberFormatException: invalid thousandSeparator, property must has a valid character.');
+
+                    if (this.thousandSeparator == this.decimalSeparator)
+                        throw ('NumberFormatException: invalid thousandSeparator, thousand separator must be different from decimalSeparator.');
+
+                    value = value.toString();
+
+                    var ps = value.split('.');
+                    ps[1] = ps[1] ? ps[1] : null;
+
+                    var whole = ps[0];
+
+                    var r = /(\d+)(\d{3})/;
+
+                    var ts = this.thousandSeparator;
+
+                    while (r.test(whole))
+                        whole = whole.replace(r, '$1' + ts + '$2');
+
+                    value = whole + (ps[1] ? this.decimalSeparator + ps[1] : '');
+                }
+
+                return Ext.String.format('{0}{1}{2}', (neg ? '-' : ''), (Ext.isEmpty(this.currencySymbol) ? '' : this.currencySymbol + ' '), value);
+            }
+        },
+        /**
+         * overrides parseValue to remove the format applied by this class
+         */
+        parseValue:function (value) {
+            //Replace the currency symbol and thousand separator
+            return App.classes.form.fields.Currency.superclass.parseValue.call(this, this.removeFormat(value));
+        },
+        /**
+         * Remove only the format added by this class to let the superclass validate with it's rules.
+         * @param {Object} value
+         */
+        removeFormat:function (value) {
+            if (Ext.isEmpty(value) || !this.hasFormat())
+                return value;
+            else {
+                value = value.toString().replace(this.currencySymbol + ' ', '');
+
+                value = this.useThousandSeparator ? value.replace(new RegExp('[' + this.thousandSeparator + ']', 'g'), '') : value;
+
+                return value;
+            }
+        },
+        /**
+         * Remove the format before validating the the value.
+         * @param {Number} value
+         */
+        getErrors:function (value) {
+            return App.classes.form.fields.Currency.superclass.getErrors.call(this, this.removeFormat(value));
+        },
+        hasFormat:function () {
+            return this.decimalSeparator != '.' || (this.useThousandSeparator == true && this.getRawValue() != null) || !Ext.isEmpty(this.currencySymbol) || this.alwaysDisplayDecimals;
+        },
+        /**
+         * Display the numeric value with the fixed decimal precision and without the format using the setRawValue, don't need to do a setValue because we don't want a double
+         * formatting and process of the value because beforeBlur perform a getRawValue and then a setValue.
+         */
+        onFocus:function () {
+            this.setRawValue(this.removeFormat(this.getRawValue()));
+
+            this.callParent(arguments);
+        }
+    });
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 1/22/12
+ * Time: 11:46 AM
+ */
+/**
+ * @class Ext.ux.form.field.DateTime
+ * @extends Ext.form.FieldContainer
+ * @author atian25 (http://www.sencha.com/forum/member.php?51682-atian25)
+ * @author ontho (http://www.sencha.com/forum/member.php?285806-ontho)
+ * @author jakob.ketterl (http://www.sencha.com/forum/member.php?25102-jakob.ketterl)
+ */
+Ext.define('App.classes.form.fields.DateTime', {
+	extend: 'Ext.form.FieldContainer',
+	mixins: {
+		field: 'Ext.form.field.Field'
+	},
+	alias : 'widget.mitos.datetime',
+
+	//configurables
+
+	combineErrors: true,
+	msgTarget    : 'under',
+	layout       : 'hbox',
+	readOnly     : false,
+
+	/**
+	 * @cfg {String} dateFormat
+	 * The default is 'Y-m-d'
+	 */
+	dateFormat    : 'Y-m-d',
+	/**
+	 * @cfg {String} timeFormat
+	 * The default is 'H:i:s'
+	 */
+	timeFormat    : 'g:i:s a',
+	/**
+	 * @cfg {String} dateTimeFormat
+	 * The format used when submitting the combined value.
+	 * Defaults to 'Y-m-d H:i:s'
+	 */
+	dateTimeFormat: 'Y-m-d H:i:s',
+	/**
+	 * @cfg {Object} dateConfig
+	 * Additional config options for the date field.
+	 */
+	dateConfig    : {},
+	/**
+	 * @cfg {Object} timeConfig
+	 * Additional config options for the time field.
+	 */
+	timeConfig    : {},
+
+
+	// properties
+
+	dateValue: null, // Holds the actual date
+	/**
+	 * @property dateField
+	 * @type Ext.form.field.Date
+	 */
+	dateField: null,
+	/**
+	 * @property timeField
+	 * @type Ext.form.field.Time
+	 */
+	timeField: null,
+
+	initComponent: function() {
+		var me = this;
+		me.items = me.items || [];
+
+		me.dateField = Ext.create('Ext.form.field.Date', Ext.apply({
+			format     : me.dateFormat,
+			flex       : 1,
+			submitValue: false
+		}, me.dateConfig, null));
+		me.items.push(me.dateField);
+
+		me.timeField = Ext.create('Ext.form.field.Time', Ext.apply({
+			format     : me.timeFormat,
+			flex       : 1,
+			submitValue: false
+		}, me.timeConfig, null));
+		me.items.push(me.timeField);
+
+		for(var i = 0; i < me.items.length; i++) {
+			me.items[i].on('focus', Ext.bind(me.onItemFocus, me));
+			me.items[i].on('blur', Ext.bind(me.onItemBlur, me));
+			me.items[i].on('specialkey', function(field, event) {
+				var key = event.getKey(),
+					tab = key == event.TAB;
+
+				if(tab && me.focussedItem == me.dateField) {
+					event.stopEvent();
+					me.timeField.focus();
+					return;
+				}
+
+				me.fireEvent('specialkey', field, event);
+			});
+		}
+
+		if(me.layout == 'vbox') me.height = 44;
+
+		me.callParent();
+
+		// this dummy is necessary because Ext.Editor will not check whether an inputEl is present or not
+		this.inputEl = {
+			dom         : {},
+			swallowEvent: function() {
+			}
+		};
+
+		me.initField();
+	},
+
+	focus: function() {
+		this.callParent();
+		this.dateField.focus();
+	},
+
+	onItemFocus: function(item) {
+		if(this.blurTask) this.blurTask.cancel();
+		this.focussedItem = item;
+	},
+
+	onItemBlur: function(item) {
+		var me = this;
+		if(item != me.focussedItem) return;
+		// 100ms to focus a new item that belongs to us, otherwise we will assume the user left the field
+		me.blurTask = new Ext.util.DelayedTask(function() {
+			me.fireEvent('blur', me);
+		});
+		me.blurTask.delay(100);
+	},
+
+	getValue: function() {
+		var value = null,
+			date = this.dateField.getSubmitValue(),
+			time = this.timeField.getSubmitValue();
+
+		if(date) {
+			if(time) {
+				var format = this.getFormat();
+				value = Ext.Date.parse(date + ' ' + time, format);
+			}
+			else {
+				value = this.dateField.getValue();
+			}
+		}
+		return value;
+	},
+
+	getSubmitValue: function() {
+		var value = this.getValue();
+		return value ? Ext.Date.format(value, this.dateTimeFormat) : null;
+	},
+
+	setValue: function(value) {
+		if(Ext.isString(value)) {
+			value = Ext.Date.parse(value, this.dateTimeFormat);
+		}
+		this.dateField.setValue(value);
+		this.timeField.setValue(value);
+	},
+
+	getFormat    : function() {
+		return (this.dateField.submitFormat || this.dateField.format) + " " + (this.timeField.submitFormat || this.timeField.format);
+	},
+
+	// Bug? A field-mixin submits the data from getValue, not getSubmitValue
+	getSubmitData: function() {
+		var me = this,
+			data = null;
+		if(!me.disabled && me.submitValue && !me.isFileUpload()) {
+			data = {};
+			data[me.getName()] = '' + me.getSubmitValue();
+		}
+		return data;
+	},
+
+    setReadOnly:function(value){
+        this.dateField.setReadOnly(value);
+        this.timeField.setReadOnly(value);
+    }
+});
+
+//eo file
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 10/31/11
+ * Time: 3:24 PM
+ */
+Ext.define('App.classes.form.Panel', {
+	extend   : 'Ext.form.Panel',
+	alias    : 'widget.mitos.form',
+	bodyStyle: 'padding: 10px;',
+	autoWidth: true,
+	border   : false
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 3/14/12
+ * Time: 9:07 PM
+ */
+Ext.define('App.classes.grid.EventHistory',{
+    extend: 'Ext.grid.Panel',
+    alias : 'widget.mitos.eventhistorygrid',
+    initComponent:function(){
+        Ext.apply(this,{
+            columns: [
+                { header: i18n['date'],  dataIndex: 'date', width: 140, renderer: Ext.util.Format.dateRenderer('Y-m-d g:i:s a') },
+                { header: i18n['user'],  dataIndex: 'user', width: 150 },
+                { header: i18n['event'], dataIndex: 'event', flex: 1 }
+            ]
+        },null);
+
+        this.callParent(arguments);
+    }
+});
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
+/**
+ * The Ext.grid.plugin.RowEditing plugin injects editing at a row level for a Grid. When editing begins,
+ * a small floating dialog will be shown for the appropriate row. Each editable column will show a field
+ * for editing. There is a button to save or cancel all changes for the edit.
+ *
+ * The field that will be used for the editor is defined at the
+ * {@link Ext.grid.column.Column#editor editor}. The editor can be a field instance or a field configuration.
+ * If an editor is not specified for a particular column then that column won't be editable and the value of
+ * the column will be displayed.
+ *
+ * The editor may be shared for each column in the grid, or a different one may be specified for each column.
+ * An appropriate field type should be chosen to match the data structure that it will be editing. For example,
+ * to edit a date, it would be useful to specify {@link Ext.form.field.Date} as the editor.
+ *
+ *     @example
+ *     Ext.create('Ext.data.Store', {
+ *         storeId:'simpsonsStore',
+ *         fields:['name', 'email', 'phone'],
+ *         data: [
+ *             {"name":"Lisa", "email":"lisa@simpsons.com", "phone":"555-111-1224"},
+ *             {"name":"Bart", "email":"bart@simpsons.com", "phone":"555--222-1234"},
+ *             {"name":"Homer", "email":"home@simpsons.com", "phone":"555-222-1244"},
+ *             {"name":"Marge", "email":"marge@simpsons.com", "phone":"555-222-1254"}
+ *         ]
+ *     });
+ *
+ *     Ext.create('Ext.grid.Panel', {
+ *         title: 'Simpsons',
+ *         store: Ext.data.StoreManager.lookup('simpsonsStore'),
+ *         columns: [
+ *             {header: 'Name',  dataIndex: 'name', editor: 'textfield'},
+ *             {header: 'Email', dataIndex: 'email', flex:1,
+ *                 editor: {
+ *                     xtype: 'textfield',
+ *                     allowBlank: false
+ *                 }
+ *             },
+ *             {header: 'Phone', dataIndex: 'phone'}
+ *         ],
+ *         selType: 'rowmodel',
+ *         plugins: [
+ *             Ext.create('Ext.grid.plugin.RowEditing', {
+ *                 clicksToEdit: 1
+ *             })
+ *         ],
+ *         height: 200,
+ *         width: 400,
+ *         renderTo: Ext.getBody()
+ *     });
+ */
+Ext.define('App.classes.grid.RowFormEditing', {
+    extend: 'Ext.grid.plugin.Editing',
+    alias: 'plugin.rowformediting',
+
+    requires: [
+        'App.classes.grid.RowFormEditor'
+    ],
+
+    editStyle: 'row',
+
+    /**
+     * @cfg {Boolean} autoCancel
+     * True to automatically cancel any pending changes when the row editor begins editing a new row.
+     * False to force the user to explicitly cancel the pending changes. Defaults to true.
+     */
+    autoCancel: true,
+
+    /**
+     * @cfg {Number} clicksToMoveEditor
+     * The number of clicks to move the row editor to a new row while it is visible and actively editing another row.
+     * This will default to the same value as {@link Ext.grid.plugin.Editing#clicksToEdit clicksToEdit}.
+     */
+
+    /**
+     * @cfg {Boolean} errorSummary
+     * True to show a {@link Ext.tip.ToolTip tooltip} that summarizes all validation errors present
+     * in the row editor. Set to false to prevent the tooltip from showing. Defaults to true.
+     */
+    errorSummary: true,
+
+    /**
+     * @event beforeedit
+     * Fires before row editing is triggered.
+     *
+     * @param {Ext.grid.plugin.Editing} editor
+     * @param {Object} e An edit event with the following properties:
+     *
+     * - grid - The grid this editor is on
+     * - view - The grid view
+     * - store - The grid store
+     * - record - The record being edited
+     * - row - The grid table row
+     * - column - The grid {@link Ext.grid.column.Column Column} defining the column that initiated the edit
+     * - rowIdx - The row index that is being edited
+     * - colIdx - The column index that initiated the edit
+     * - cancel - Set this to true to cancel the edit or return false from your handler.
+     */
+    
+    /**
+     * @event canceledit
+     * Fires when the user has started editing a row but then cancelled the edit
+     * @param {Object} grid The grid
+     */
+    
+    /**
+     * @event edit
+     * Fires after a row is edited. Usage example:
+     *
+     *     grid.on('edit', function(editor, e) {
+     *         // commit the changes right after editing finished
+     *         e.record.commit();
+     *     };
+     *
+     * @param {Ext.grid.plugin.Editing} editor
+     * @param {Object} e An edit event with the following properties:
+     *
+     * - grid - The grid this editor is on
+     * - view - The grid view
+     * - store - The grid store
+     * - record - The record being edited
+     * - row - The grid table row
+     * - column - The grid {@link Ext.grid.column.Column Column} defining the column that initiated the edit
+     * - rowIdx - The row index that is being edited
+     * - colIdx - The column index that initiated the edit
+     */
+    /**
+     * @event validateedit
+     * Fires after a cell is edited, but before the value is set in the record. Return false to cancel the change. The
+     * edit event object has the following properties
+     *
+     * Usage example showing how to remove the red triangle (dirty record indicator) from some records (not all). By
+     * observing the grid's validateedit event, it can be cancelled if the edit occurs on a targeted row (for example)
+     * and then setting the field's new value in the Record directly:
+     *
+     *     grid.on('validateedit', function(editor, e) {
+     *       var myTargetRow = 6;
+     *
+     *       if (e.rowIdx == myTargetRow) {
+     *         e.cancel = true;
+     *         e.record.data[e.field] = e.value;
+     *       }
+     *     });
+     *
+     * @param {Ext.grid.plugin.Editing} editor
+     * @param {Object} e An edit event with the following properties:
+     *
+     * - grid - The grid this editor is on
+     * - view - The grid view
+     * - store - The grid store
+     * - record - The record being edited
+     * - row - The grid table row
+     * - column - The grid {@link Ext.grid.column.Column Column} defining the column that initiated the edit
+     * - rowIdx - The row index that is being edited
+     * - colIdx - The column index that initiated the edit
+     * - cancel - Set this to true to cancel the edit or return false from your handler.
+     */
+
+    constructor: function() {
+        var me = this;
+        me.callParent(arguments);
+
+        if (!me.clicksToMoveEditor) {
+            me.clicksToMoveEditor = me.clicksToEdit;
+        }
+
+        me.autoCancel = !!me.autoCancel;
+    },
+
+    init: function(grid) {
+        this.callParent([grid]);
+    },
+
+    /**
+     * @private
+     * AbstractComponent calls destroy on all its plugins at destroy time.
+     */
+    destroy: function() {
+        var me = this;
+        Ext.destroy(me.editor);
+        me.callParent(arguments);
+    },
+
+    /**
+     * Starts editing the specified record, using the specified Column definition to define which field is being edited.
+     * @param {Ext.data.Model} record The Store data record which backs the row to be edited.
+     * @param {Ext.data.Model} columnHeader The Column object defining the column to be edited. @override
+     */
+    startEdit: function(record, columnHeader) {
+        var me = this,
+            editor = me.getEditor();
+
+        if (me.callParent(arguments) === false) {
+            return false;
+        }
+
+        // Fire off our editor
+        if (editor.beforeEdit() !== false) {
+            editor.startEdit(me.context.record, me.context.column);
+        }
+    },
+
+    // private
+    cancelEdit: function() {
+        var me = this;
+
+        if (me.editing) {
+            me.getEditor().cancelEdit();
+            me.callParent(arguments);
+            
+            me.fireEvent('canceledit', me.context);
+        }
+    },
+
+    // private
+    completeEdit: function() {
+        var me = this;
+
+        if (me.editing && me.validateEdit()) {
+            me.editing = false;
+            me.fireEvent('edit', me, me.context);
+        }
+    },
+
+    completeRemove:function(){
+        var me = this;
+
+        if (me.editing) {
+            me.getEditor().completeRemove();
+            //me.callParent(arguments);
+
+            me.fireEvent('completeremove', me, me.context);
+        }
+
+    },
+
+    // private
+    validateEdit: function() {
+        var me             = this,
+            editor         = me.editor,
+            context        = me.context,
+            record         = context.record,
+            newValues      = {},
+            originalValues = {},
+            editors        = editor.getForm().getFields().items,
+            e,
+            eLen           = editors.length,
+            name, item;
+
+        for (e = 0; e < eLen; e++) {
+            item = editors[e];
+            name = item.name;
+
+            newValues[name]      = item.getValue();
+            originalValues[name] = record.get(name);
+        }
+
+        Ext.apply(context, {
+            newValues      : newValues,
+            originalValues : originalValues
+        });
+
+        return me.callParent(arguments) && me.getEditor().completeEdit();
+    },
+
+    // private
+    getEditor: function() {
+        var me = this;
+
+        if (!me.editor) {
+            me.editor = me.initEditor();
+        }
+        return me.editor;
+    },
+
+    // private
+    initEditor: function() {
+        var me       = this,
+            grid     = me.grid,
+            view     = me.view,
+            headerCt = grid.headerCt,
+            btns     = ['saveBtnText', 'cancelBtnText', 'errorsText', 'dirtyText'],
+            b,
+            bLen     = btns.length,
+            cfg      = {
+                autoCancel: me.autoCancel,
+                errorSummary: me.errorSummary,
+                fields: headerCt.getGridColumns(),
+                hidden: true,
+
+                // keep a reference..
+                editingPlugin: me,
+                renderTo: view.el
+            },
+            item;
+
+        for (b = 0; b < bLen; b++) {
+            item = btns[b];
+
+            if (Ext.isDefined(me[item])) {
+                cfg[item] = me[item];
+            }
+        }
+        return Ext.create('App.classes.grid.RowFormEditor', cfg);
+    },
+
+    // private
+    initEditTriggers: function() {
+        var me = this,
+            moveEditorEvent = me.clicksToMoveEditor === 1 ? 'click' : 'dblclick';
+
+        me.callParent(arguments);
+
+        if (me.clicksToMoveEditor !== me.clicksToEdit) {
+            me.mon(me.view, 'cell' + moveEditorEvent, me.moveEditorByClick, me);
+        }
+    },
+
+    addHeaderEvents: function(){
+        var me = this;
+        me.callParent();
+
+        me.mon(me.grid.headerCt, {
+            scope: me,
+            columnresize: me.onColumnResize,
+            columnhide: me.onColumnHide,
+            columnshow: me.onColumnShow,
+            columnmove: me.onColumnMove
+        });
+    },
+
+    startEditByClick: function() {
+        var me = this;
+        if (!me.editing || me.clicksToMoveEditor === me.clicksToEdit) {
+            me.callParent(arguments);
+        }
+    },
+
+    moveEditorByClick: function() {
+        var me = this;
+        if (me.editing) {
+            me.superclass.startEditByClick.apply(me, arguments);
+        }
+    },
+
+    // private
+    onColumnAdd: function(ct, column) {
+        if (column.isHeader) {
+            var me = this,
+                editor;
+
+            me.initFieldAccessors(column);
+            editor = me.getEditor();
+
+            if (editor && editor.onColumnAdd) {
+                editor.onColumnAdd(column);
+            }
+        }
+    },
+
+    // private
+    onColumnRemove: function(ct, column) {
+        if (column.isHeader) {
+            var me = this,
+                editor = me.getEditor();
+
+            if (editor && editor.onColumnRemove) {
+                editor.onColumnRemove(column);
+            }
+            me.removeFieldAccessors(column);
+        }
+    },
+
+    // private
+    onColumnResize: function(ct, column, width) {
+        if (column.isHeader) {
+            var me = this,
+                editor = me.getEditor();
+
+            if (editor && editor.onColumnResize) {
+                editor.onColumnResize(column, width);
+            }
+        }
+    },
+
+    // private
+    onColumnHide: function(ct, column) {
+        // no isHeader check here since its already a columnhide event.
+        var me = this,
+            editor = me.getEditor();
+
+        if (editor && editor.onColumnHide) {
+            editor.onColumnHide(column);
+        }
+    },
+
+    // private
+    onColumnShow: function(ct, column) {
+        // no isHeader check here since its already a columnshow event.
+        var me = this,
+            editor = me.getEditor();
+
+        if (editor && editor.onColumnShow) {
+            editor.onColumnShow(column);
+        }
+    },
+
+    // private
+    onColumnMove: function(ct, column, fromIdx, toIdx) {
+        // no isHeader check here since its already a columnmove event.
+        var me = this,
+            editor = me.getEditor();
+
+        if (editor && editor.onColumnMove) {
+            editor.onColumnMove(column, fromIdx, toIdx);
+        }
+    },
+
+    // private
+    setColumnField: function(column, field) {
+        var me = this;
+        me.callParent(arguments);
+        me.getEditor().setField(column.field, column);
+    }
+});
+
+
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+GNU General Public License Usage
+This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
+// Currently has the following issues:
+// - Does not handle postEditValue
+// - Fields without editors need to sync with their values in Store
+// - starting to edit another record while already editing and dirty should probably prevent it
+// - aggregating validation messages
+// - tabIndex is not managed bc we leave elements in dom, and simply move via positioning
+// - layout issues when changing sizes/width while hidden (layout bug)
+
+/**
+ * @class Ext.grid.RowEditor
+ * @extends Ext.form.Panel
+ *
+ * Internal utility class used to provide row editing functionality. For developers, they should use
+ * the RowEditing plugin to use this functionality with a grid.
+ *
+ * @ignore
+ */
+Ext.define('App.classes.grid.RowFormEditor', {
+    extend: 'Ext.form.Panel',
+    requires: [
+        'Ext.tip.ToolTip',
+        'Ext.util.HashMap',
+        'Ext.util.KeyNav'
+    ],
+
+    saveBtnText  : i18n['update'],
+    cancelBtnText: i18n['cancel'],
+    removeBtnText: i18n['remove'],
+    errorsText: i18n['errors'],
+    dirtyText: i18n['commit_cancel_your_changes'],
+    lastScrollLeft: 0,
+    lastScrollTop: 0,
+    bodyPadding: 5,
+    padding:'0 0 5 0',
+    border: false,
+    buttonAlign:'center',
+    // Change the hideMode to offsets so that we get accurate measurements when
+    // the roweditor is hidden for laying out things like a TriggerField.
+    hideMode: 'offsets',
+
+    initComponent: function() {
+        var me = this,
+            form, plugin;
+
+        me.cls = Ext.baseCSSPrefix + 'grid-row-editor grid-row-form-editor';
+        me.currRowH = null;
+        plugin = me.editingPlugin;
+        me.items = plugin.formItems;
+
+        me.buttons = [{
+            action: 'update',
+            xtype: 'button',
+            handler: plugin.completeEdit,
+            scope: plugin,
+            text: me.saveBtnText,
+            disabled: !me.isValid,
+            minWidth: Ext.panel.Panel.prototype.minButtonWidth
+        },
+        {
+            xtype: 'button',
+            handler: plugin.cancelEdit,
+            scope: plugin,
+            text: me.cancelBtnText,
+            minWidth: Ext.panel.Panel.prototype.minButtonWidth
+        }];
+        if(plugin.enableRemove){
+            me.buttons.push({
+                xtype: 'button',
+                handler: plugin.completeRemove,
+                scope: plugin,
+                text: me.removeBtnText,
+                minWidth: Ext.panel.Panel.prototype.minButtonWidth
+            });
+        }
+
+        me.callParent(arguments);
+        form = me.getForm();
+        me.setFields();
+        form.trackResetOnLoad = true;
+    },
+
+    onFieldValueChange: function() {
+        var me = this,
+            form = me.getForm(),
+            valid = form.isValid(), btn;
+        if (me.errorSummary && me.isVisible()) {
+            me[valid ? 'hideToolTip' : 'showToolTip']();
+        }
+        btn = me.query('button[action="update"]')[0];
+        if (btn){
+            btn.setDisabled(!valid);
+        }
+        me.isValid = valid;
+    },
+
+    afterRender: function() {
+        var me = this,
+            plugin = me.editingPlugin;
+
+        me.callParent(arguments);
+        me.mon(me.renderTo, 'scroll', me.onCtScroll, me, { buffer: 100 });
+
+        // Prevent from bubbling click events to the grid view
+        me.mon(me.el, {
+            click: Ext.emptyFn,
+            stopPropagation: true
+        });
+
+        me.el.swallowEvent([
+            'keypress',
+            'keydown'
+        ]);
+
+        me.keyNav = new Ext.util.KeyNav(me.el, {
+            //enter: plugin.completeEdit,
+            esc: plugin.onEscKey,
+            scope: plugin
+        });
+
+        me.mon(plugin.view, {
+            beforerefresh: me.onBeforeViewRefresh,
+            refresh: me.onViewRefresh,
+            scope: me
+        });
+    },
+
+    onBeforeViewRefresh: function(view) {
+        var me = this,
+            viewDom = view.el.dom;
+
+        if (me.el.dom.parentNode === viewDom) {
+            viewDom.removeChild(me.el.dom);
+        }
+    },
+
+    onViewRefresh: function(view) {
+        var me = this,
+            viewDom = view.el.dom,
+            context = me.context,
+            idx;
+
+        viewDom.appendChild(me.el.dom);
+
+        // Recover our row node after a view refresh
+        if (context && (idx = context.store.indexOf(context.record)) >= 0) {
+            context.row = view.getNode(idx);
+            me.reposition();
+            if (me.tooltip && me.tooltip.isVisible()) {
+                me.tooltip.setTarget(context.row);
+            }
+        } else {
+            me.editingPlugin.cancelEdit();
+        }
+    },
+
+    onCtScroll: function(e, target) {
+        var me = this,
+            scrollTop  = target.scrollTop,
+            scrollLeft = target.scrollLeft;
+
+        if (scrollTop !== me.lastScrollTop) {
+            me.lastScrollTop = scrollTop;
+            if ((me.tooltip && me.tooltip.isVisible()) || me.hiddenTip) {
+                me.repositionTip();
+            }
+        }
+        if (scrollLeft !== me.lastScrollLeft) {
+            me.lastScrollLeft = scrollLeft;
+            me.reposition();
+        }
+    },
+
+    reposition: function(animateConfig) {
+        if(this.currRowH) this.currRow.setHeight(this.currRowH);
+
+        var me = this,
+            context = me.context,
+            row = context && Ext.get(context.row),
+            //btns = me.getFloatingButtons(),
+            //btnEl = btns.el,
+            grid = me.editingPlugin.grid,
+            viewEl = grid.view.el,
+            scroller = grid.verticalScroller,
+
+
+            // always get data from ColumnModel as its what drives
+            // the GridView's sizing
+            mainBodyWidth = grid.headerCt.getFullWidth(),
+            scrollerWidth = grid.getWidth(),
+
+            // use the minimum as the columns may not fill up the entire grid
+            // width
+            width = Math.min(mainBodyWidth, scrollerWidth),
+            scrollLeft = grid.view.el.dom.scrollLeft,
+            //btnWidth = btns.getWidth(),
+            //left = (width - btnWidth) / 2 + scrollLeft,
+            y, rowH, newHeight,
+
+            invalidateScroller = function() {
+                if (scroller) {
+                    scroller.invalidate();
+                    btnEl.scrollIntoView(viewEl, false);
+                }
+                if (animateConfig && animateConfig.callback) {
+                    animateConfig.callback.call(animateConfig.scope || me);
+                }
+            };
+
+        // need to set both top/left
+        if (row && Ext.isElement(row.dom)) {
+            // Bring our row into view if necessary, so a row editor that's already
+            // visible and animated to the row will appear smooth
+            row.scrollIntoView(viewEl, false);
+
+            // Get the y position of the row relative to its top-most static parent.
+            // offsetTop will be relative to the table, and is incorrect
+            // when mixed with certain grid features (e.g., grouping).
+            y = row.getXY()[1] + 19;
+
+
+            me.currRowH = row.getHeight();
+            me.currRow = row;
+
+            row.setHeight(me.getHeight() + 19);
+
+            // IE doesn't set the height quite right.
+            // This isn't a border-box issue, it even happens
+            // in IE8 and IE7 quirks.
+            // TODO: Test in IE9!
+            if (Ext.isIE) {
+                newHeight += 2;
+            }
+
+            if (animateConfig) {
+                var animObj = {
+                    to: {
+                        y: y
+                    },
+                    duration: animateConfig.duration || 125,
+                    listeners: {
+                        afteranimate: function() {
+                            invalidateScroller();
+                            y = row.getXY()[1] + 19;
+                            me.el.setY(y);
+                        }
+                    }
+                };
+                me.animate(animObj);
+            } else {
+                me.el.setY(y);
+                invalidateScroller();
+            }
+        }
+        if (me.getWidth() != mainBodyWidth) {
+            me.setWidth(mainBodyWidth);
+        }
+        //btnEl.setLeft(left);
+    },
+
+    resizeEditor:function(){
+
+        if(this.currRowH) this.currRow.setHeight(this.currRowH);
+
+        var me = this,
+            context = me.context,
+            row = context && Ext.get(context.row),
+            //btns = me.getFloatingButtons(),
+            //btnEl = btns.el,
+            grid = me.editingPlugin.grid,
+            viewEl = grid.view.el,
+            scroller = grid.verticalScroller,
+
+
+            // always get data from ColumnModel as its what drives
+            // the GridView's sizing
+            mainBodyWidth = grid.headerCt.getFullWidth(),
+            scrollerWidth = grid.getWidth(),
+
+            // use the minimum as the columns may not fill up the entire grid
+            // width
+            width = Math.min(mainBodyWidth, scrollerWidth),
+            scrollLeft = grid.view.el.dom.scrollLeft,
+            //btnWidth = btns.getWidth(),
+            //left = (width - btnWidth) / 2 + scrollLeft,
+            y, rowH, newHeight;
+
+
+        // need to set both top/left
+        if (row && Ext.isElement(row.dom)) {
+            // Bring our row into view if necessary, so a row editor that's already
+            // visible and animated to the row will appear smooth
+            row.scrollIntoView(viewEl, false);
+
+            // Get the y position of the row relative to its top-most static parent.
+            // offsetTop will be relative to the table, and is incorrect
+            // when mixed with certain grid features (e.g., grouping).
+            y = row.getXY()[1] + 19;
+
+
+            me.currRowH = row.getHeight();
+            me.currRow = row;
+
+            row.setHeight(me.getHeight() + 19);
+
+            // IE doesn't set the height quite right.
+            // This isn't a border-box issue, it even happens
+            // in IE8 and IE7 quirks.
+            // TODO: Test in IE9!
+            if (Ext.isIE) {
+                newHeight += 2;
+            }
+
+        }
+        if (me.getWidth() != mainBodyWidth) {
+            me.setWidth(mainBodyWidth);
+        }
+    },
+
+    getGridStores:function(){
+        var me = this,
+            grids = me.query('grid'),
+            stores = [];
+        for(var i=0; i < grids.length; i++){
+            stores.push(grids[i].store);
+        }
+        return stores;
+    },
+
+    syncChildStoresChanges:function(){
+        var me = this,
+            stores = me.getGridStores();
+        for(var i=0; i < stores.length; i++){
+            stores[i].sync();
+        }
+    },
+
+    rejectChildStoresChanges:function(){
+        var me = this,
+            stores = me.getGridStores();
+        for(var i=0; i < stores.length; i++){
+            stores[i].rejectChanges();
+        }
+    },
+
+    getEditor: function(fieldInfo) {
+        var me = this;
+
+        if (Ext.isNumber(fieldInfo)) {
+            // Query only form fields. This just future-proofs us in case we add
+            // other components to RowEditor later on.  Don't want to mess with
+            // indices.
+            return me.query('>[isFormField]')[fieldInfo];
+        } else if (fieldInfo instanceof Ext.grid.column.Column) {
+            return fieldInfo.getEditor();
+        }
+        return false;
+    },
+
+    setFields: function(column) {
+        var me = this,
+            form = me.getForm(),
+            fields = form.getFields().items,
+            containers = me.query('container');
+        for(var i=0; i < fields.length; i++){
+            me.mon(fields[i], 'change', me.onFieldValueChange, me);
+        }
+        for(var k=0; k < containers.length; k++){
+            me.mon(containers[k], 'resize', me.resizeEditor, me);
+        }
+    },
+
+    loadRecord: function(record) {
+        var me = this,
+            form = me.getForm();
+        form.loadRecord(record);
+        if (form.isValid()) {
+            me.hideToolTip();
+        } else {
+            me.showToolTip();
+        }
+
+        // render display fields so they honor the column renderer/template
+        Ext.Array.forEach(me.query('>displayfield'), function(field) {
+            me.renderColumnData(field, record);
+        }, me);
+    },
+
+    renderColumnData: function(field, record) {
+        var me = this,
+            grid = me.editingPlugin.grid,
+            headerCt = grid.headerCt,
+            view = grid.view,
+            store = view.store,
+            form = me.getForm();
+
+        form.loadRecord(record);
+    },
+
+    beforeEdit: function() {
+        var me = this;
+
+        me.getGridStores();
+
+        if (me.isVisible() && !me.autoCancel && me.isDirty()) {
+            me.showToolTip();
+            return false;
+        }
+    },
+
+    /**
+     * Start editing the specified grid at the specified position.
+     * @param {Ext.data.Model} record The Store data record which backs the row to be edited.
+     * @param {Ext.data.Model} columnHeader The Column object defining the column to be edited.
+     */
+    startEdit: function(record, columnHeader) {
+        var me = this,
+            grid = me.editingPlugin.grid,
+            view = grid.getView(),
+            store = grid.store,
+            context = me.context = Ext.apply(me.editingPlugin.context, {
+                view: grid.getView(),
+                store: store
+            });
+
+        // make sure our row is selected before editing
+        context.grid.getSelectionModel().select(record);
+
+        // Reload the record data
+        me.loadRecord(record);
+
+        if (!me.isVisible()) {
+            me.show();
+            me.focusContextCell();
+        } else {
+            me.reposition({
+                callback: this.focusContextCell
+            });
+        }
+    },
+
+    // Focus the cell on start edit based upon the current context
+    focusContextCell: function() {
+        var field = this.getEditor(this.context.colIdx);
+        if (field && field.focus) {
+            field.focus();
+        }
+    },
+
+    cancelEdit: function() {
+        var me = this,
+            form = me.getForm();
+        me.rejectChildStoresChanges();
+        me.hide();
+        form.clearInvalid();
+        form.reset();
+    },
+
+    completeEdit: function() {
+        var me = this,
+            form = me.getForm();
+
+        if (!form.isValid()) {
+            return;
+        }
+        me.syncChildStoresChanges();
+        form.updateRecord(me.context.record);
+        me.hide();
+        return true;
+    },
+
+    completeRemove:function(){
+        var me = this,
+            form = me.getForm(),
+            view = me.context.view,
+            store = me.context.store,
+            record = view.getSelectionModel().getLastSelected();
+
+        store.remove(record);
+        me.hide();
+        form.clearInvalid();
+        form.reset();
+        me.editingPlugin.fireEvent('afterremove', me.context);
+    },
+
+    onShow: function() {
+        var me = this;
+        me.callParent(arguments);
+        me.reposition();
+    },
+
+    onHide: function() {
+        var me = this;
+        me.callParent(arguments);
+        me.hideToolTip();
+        me.invalidateScroller();
+        if (me.context) {
+            me.context.view.focus();
+            me.context = null;
+        }
+        me.currRow.setHeight(me.currRowH);
+        me.currRowH = null;
+    },
+
+    isDirty: function() {
+        var me = this,
+            form = me.getForm();
+        return form.isDirty();
+    },
+
+    getToolTip: function() {
+        var me = this,
+            tip;
+
+        if (!me.tooltip) {
+            me.tooltip = Ext.createWidget('tooltip', {
+                cls: Ext.baseCSSPrefix + 'grid-row-editor-errors',
+                title: me.errorsText,
+                autoHide: false,
+                closable: true,
+                closeAction: 'disable',
+                anchor: 'left'
+            });
+        }
+        return me.tooltip;
+    },
+
+    hideToolTip: function() {
+        var me = this,
+            tip = me.getToolTip();
+        if (tip.rendered) {
+            tip.disable();
+        }
+        me.hiddenTip = false;
+    },
+
+    showToolTip: function() {
+        var me = this,
+            tip = me.getToolTip(),
+            context = me.context,
+            row = Ext.get(context.row),
+            viewEl = context.grid.view.el;
+
+        tip.setTarget(row);
+        tip.showAt([-10000, -10000]);
+        tip.body.update(me.getErrors());
+        tip.mouseOffset = [viewEl.getWidth() - row.getWidth() + me.lastScrollLeft + 15, 0];
+        me.repositionTip();
+        tip.doLayout();
+        tip.enable();
+    },
+
+    repositionTip: function() {
+        var me = this,
+            tip = me.getToolTip(),
+            context = me.context,
+            row = Ext.get(context.row),
+            viewEl = context.grid.view.el,
+            viewHeight = viewEl.getHeight(),
+            viewTop = me.lastScrollTop,
+            viewBottom = viewTop + viewHeight,
+            rowHeight = row.getHeight(),
+            rowTop = row.dom.offsetTop,
+            rowBottom = rowTop + rowHeight;
+
+        if (rowBottom > viewTop && rowTop < viewBottom) {
+            tip.show();
+            me.hiddenTip = false;
+        } else {
+            tip.hide();
+            me.hiddenTip = true;
+        }
+    },
+
+    getErrors: function() {
+        var me = this,
+            dirtyText = !me.autoCancel && me.isDirty() ? me.dirtyText + '<br />' : '',
+            errors = [];
+
+        Ext.Array.forEach(me.query('>[isFormField]'), function(field) {
+            errors = errors.concat(
+                Ext.Array.map(field.getErrors(), function(e) {
+                    return '<li>' + e + '</li>';
+                })
+            );
+        }, me);
+
+        return dirtyText + '<ul>' + errors.join('') + '</ul>';
+    },
+
+    invalidateScroller: function() {
+        var me = this,
+            context = me.context,
+            scroller = context.grid.verticalScroller;
+
+        if (scroller) {
+            scroller.invalidate();
+        }
+    }
+});
+
+Ext.define('App.classes.combo.ActiveFacilities', {
+	extend       : 'Ext.form.ComboBox',
+	alias        : 'widget.mitos.activefacilitiescombo',
+	initComponent: function() {
+		var me = this;
+
+		Ext.define('ActiveFacilitiesComboModel', {
+			extend: 'Ext.data.Model',
+			fields: [
+				{name: 'option_name', type: 'string' },
+				{name: 'option_value', type: 'int' }
+			],
+			proxy : {
+				type: 'direct',
+				api : {
+					read: CombosData.getActiveFacilities
+				}
+			}
+		});
+
+		me.store = Ext.create('Ext.data.Store', {
+			model   : 'ActiveFacilitiesComboModel',
+			autoLoad: true
+		});
+
+		Ext.apply(this, {
+			editable    : false,
+			queryMode   : 'local',
+			valueField  : 'option_value',
+			displayField: 'option_name',
+			emptyText   : i18n['select'],
+			store       : me.store
+		}, null);
+		me.callParent(arguments);
+	}
+});
+Ext.define('App.classes.combo.ActiveInsurances', {
+	extend       : 'Ext.form.ComboBox',
+	alias        : 'widget.activeinsurancescombo',
+	initComponent: function() {
+		var me = this;
+
+		// *************************************************************************************
+		// Structure, data for Insurance Payer Types
+		// AJAX -> component_data.ejs.php
+		// *************************************************************************************
+
+        Ext.define('ActiveInsurancesComboModel', {
+      			extend: 'Ext.data.Model',
+      			fields: [
+      				{name: 'option_name', type: 'string' },
+      				{name: 'option_value', type: 'string' }
+      			],
+      			proxy : {
+      				type: 'direct',
+      				api : {
+      					read: CombosData.getActiveInsurances
+      				}
+      			}
+      		});
+
+      		me.store = Ext.create('Ext.data.Store', {
+      			model   : 'ActiveInsurancesComboModel'
+      		});
+
+		Ext.apply(this, {
+			editable    : false,
+			displayField: 'option_name',
+			valueField  : 'option_value',
+			emptyText   : i18n['select'],
+			store       : me.store
+		}, null);
+		me.callParent();
+	}
+});
+Ext.define('App.classes.combo.Allergies', {
+	extend       : 'Ext.form.ComboBox',
+	alias        : 'widget.mitos.allergiescombo',
+	initComponent: function() {
+		var me = this;
+
+		Ext.define('AllergiesComboModel', {
+			extend: 'Ext.data.Model',
+			fields: [
+				{name: 'id', type: 'int' },
+				{name: 'allergy_name' },
+				{name: 'allergy_type', type: 'string' }
+			],
+			proxy : {
+				type       : 'direct',
+				api        : {
+					read: CombosData.getAllergiesByType
+				}
+			}
+		});
+
+		me.store = Ext.create('Ext.data.Store', {
+			model   : 'AllergiesComboModel',
+			autoLoad: false
+		});
+
+		Ext.apply(this, {
+			editable    : false,
+			queryMode   : 'local',
+			displayField: 'allergy_name',
+			valueField  : 'allergy_name',
+			emptyText   : i18n['select'],
+			store       : me.store
+		}, null);
+		me.callParent(arguments);
+	}
+});
+Ext.define('App.classes.combo.AllergiesAbdominal', {
+	extend       : 'Ext.form.ComboBox',
+	alias        : 'widget.mitos.allergiesabdominalcombo',
+	initComponent: function() {
+		var me = this;
+
+		Ext.define('allergiesabdominalModel', {
+			extend: 'Ext.data.Model',
+			fields: [
+				{name: 'option_name', type: 'string' },
+				{name: 'option_value', type: 'string' }
+			],
+			proxy : {
+				type       : 'direct',
+				api        : {
+					read: CombosData.getOptionsByListId
+				},
+				extraParams: {
+					list_id: 82
+				}
+			}
+		});
+
+		me.store = Ext.create('Ext.data.Store', {
+			model   : 'allergiesabdominalModel',
+			autoLoad: true
+		});
+
+		Ext.apply(this, {
+			editable    : false,
+			queryMode   : 'local',
+			displayField: 'option_name',
+			valueField  : 'option_value',
+			emptyText   : i18n['select'],
+			store       : me.store
+		}, null);
+		me.callParent(arguments);
+	}
+});
+Ext.define('App.classes.combo.AllergiesLocal', {
+	extend       : 'Ext.form.ComboBox',
+	alias        : 'widget.mitos.allergieslocalcombo',
+	initComponent: function() {
+		var me = this;
+
+		Ext.define('allergieslocalModel', {
+			extend: 'Ext.data.Model',
+			fields: [
+				{name: 'option_name', type: 'string' },
+				{name: 'option_value', type: 'string' }
+			],
+			proxy : {
+				type       : 'direct',
+				api        : {
+					read: CombosData.getOptionsByListId
+				},
+				extraParams: {
+					list_id: 81
+				}
+			}
+		});
+
+		me.store = Ext.create('Ext.data.Store', {
+			model   : 'allergieslocalModel',
+			autoLoad: true
+		});
+
+		Ext.apply(this, {
+			editable    : false,
+			queryMode   : 'local',
+			displayField: 'option_name',
+			valueField  : 'option_value',
+			emptyText   : i18n['select'],
+			store       : me.store
+		}, null);
+		me.callParent(arguments);
+	}
+});
+Ext.define('App.classes.combo.AllergiesLocation', {
+	extend       : 'Ext.form.ComboBox',
+	alias        : 'widget.mitos.allergieslocationcombo',
+	initComponent: function() {
+		var me = this;
+
+		Ext.define('allergieslocationModel', {
+			extend: 'Ext.data.Model',
+			fields: [
+				{name: 'option_name', type: 'string' },
+				{name: 'option_value', type: 'string' }
+			],
+			proxy : {
+				type       : 'direct',
+				api        : {
+					read: CombosData.getOptionsByListId
+				},
+				extraParams: {
+					list_id: 79
+				}
+			}
+		});
+
+		me.store = Ext.create('Ext.data.Store', {
+			model   : 'allergieslocationModel',
+			autoLoad: true
+		});
+
+		Ext.apply(this, {
+			editable    : false,
+			queryMode   : 'local',
+			displayField: 'option_name',
+			valueField  : 'option_value',
+			emptyText   : i18n['select'],
+			store       : me.store
+		}, null);
+		me.callParent(arguments);
+	}
+});
+Ext.define('App.classes.combo.AllergiesSeverity', {
+	extend       : 'Ext.form.ComboBox',
+	alias        : 'widget.mitos.allergiesseveritycombo',
+	initComponent: function() {
+		var me = this;
+
+		Ext.define('allergiesseverityModel', {
+			extend: 'Ext.data.Model',
+			fields: [
+				{name: 'option_name', type: 'string' },
+				{name: 'option_value', type: 'string' }
+			],
+			proxy : {
+				type       : 'direct',
+				api        : {
+					read: CombosData.getOptionsByListId
+				},
+				extraParams: {
+					list_id: 84
+				}
+			}
+		});
+
+		me.store = Ext.create('Ext.data.Store', {
+			model   : 'allergiesseverityModel',
+			autoLoad: true
+		});
+
+		Ext.apply(this, {
+			editable    : false,
+			queryMode   : 'local',
+			displayField: 'option_name',
+			valueField  : 'option_value',
+			emptyText   : i18n['select'],
+			store       : me.store
+		}, null);
+		me.callParent(arguments);
+	}
+});
+Ext.define('App.classes.combo.AllergiesSkin', {
+	extend       : 'Ext.form.ComboBox',
+	alias        : 'widget.mitos.allergiesskincombo',
+	initComponent: function() {
+		var me = this;
+
+		Ext.define('allergiesskinModel', {
+			extend: 'Ext.data.Model',
+			fields: [
+				{name: 'option_name', type: 'string' },
+				{name: 'option_value', type: 'string' }
+			],
+			proxy : {
+				type       : 'direct',
+				api        : {
+					read: CombosData.getOptionsByListId
+				},
+				extraParams: {
+					list_id: 80
+				}
+			}
+		});
+
+		me.store = Ext.create('Ext.data.Store', {
+			model   : 'allergiesskinModel',
+			autoLoad: true
+		});
+
+		Ext.apply(this, {
+			editable    : false,
+			queryMode   : 'local',
+			displayField: 'option_name',
+			valueField  : 'option_value',
+			emptyText   : i18n['select'],
+			store       : me.store
+		}, null);
+		me.callParent(arguments);
+	}
+});
+Ext.define('App.classes.combo.AllergiesSystemic', {
+	extend       : 'Ext.form.ComboBox',
+	alias        : 'widget.mitos.allergiessystemiccombo',
+	initComponent: function() {
+		var me = this;
+
+		Ext.define('allergiessystemicModel', {
+			extend: 'Ext.data.Model',
+			fields: [
+				{name: 'option_name', type: 'string' },
+				{name: 'option_value', type: 'string' }
+			],
+			proxy : {
+				type       : 'direct',
+				api        : {
+					read: CombosData.getOptionsByListId
+				},
+				extraParams: {
+					list_id: 83
+				}
+			}
+		});
+
+		me.store = Ext.create('Ext.data.Store', {
+			model   : 'allergiessystemicModel',
+			autoLoad: true
+		});
+
+		Ext.apply(this, {
+			editable    : false,
+			queryMode   : 'local',
+			displayField: 'option_name',
+			valueField  : 'option_value',
+			emptyText   : i18n['select'],
+			store       : me.store
+		}, null);
+		me.callParent(arguments);
+	}
+});
+Ext.define('App.classes.combo.AllergiesTypes', {
+	extend       : 'Ext.form.ComboBox',
+	alias        : 'widget.mitos.allergiestypescombo',
+	initComponent: function() {
+		var me = this;
+
+		Ext.define('AllergiesTypesComboModel', {
+			extend: 'Ext.data.Model',
+			fields: [
+				{name: 'allergy_type', type: 'string' }
+			],
+			proxy : {
+				type       : 'direct',
+				api        : {
+					read: CombosData.getAllergieTypes
+				}
+			}
+		});
+
+		me.store = Ext.create('Ext.data.Store', {
+			model   : 'AllergiesTypesComboModel',
+			autoLoad: false
+		});
+
+		Ext.apply(this, {
+			editable    : false,
+			//queryMode   : 'local',
+			displayField: 'allergy_type',
+			valueField  : 'allergy_type',
+			emptyText   : i18n['select'],
+			store       : me.store
+		}, null);
+		me.callParent(arguments);
+	}
+});
+Ext.define('App.classes.combo.Authorizations', {
+	extend       : 'Ext.form.ComboBox',
+	alias        : 'widget.mitos.authorizationscombo',
+	initComponent: function() {
+		var me = this;
+
+		Ext.define('AuthorizationsModel', {
+			extend: 'Ext.data.Model',
+			fields: [
+				{name: 'id', type: 'int'},
+				{name: 'name', type: 'string'}
+			],
+			proxy : {
+				type: 'direct',
+				api : {
+					read: CombosData.getAuthorizations
+				}
+			}
+		});
+
+		me.store = Ext.create('Ext.data.Store', {
+			model   : 'AuthorizationsModel',
+			autoLoad: true
+		});
+
+		Ext.apply(this, {
+			editable    : false,
+			queryMode   : 'local',
+			valueField  : 'id',
+			displayField: 'name',
+			emptyText   : i18n['select'],
+			store       : me.store
+		}, null);
+
+		me.callParent(arguments);
+	}
+});
+Ext.define('App.classes.combo.BillingFacilities', {
+	extend       : 'Ext.form.ComboBox',
+	alias        : 'widget.mitos.billingfacilitiescombo',
+	initComponent: function() {
+		var me = this;
+
+		Ext.define('BillingFacilitiesComboModel', {
+			extend: 'Ext.data.Model',
+			fields: [
+				{name: 'option_name', type: 'string' },
+				{name: 'option_value', type: 'int' }
+			],
+			proxy : {
+				type: 'direct',
+				api : {
+					read: CombosData.getBillingFacilities
+				}
+			}
+		});
+
+		me.store = Ext.create('Ext.data.Store', {
+			model   : 'BillingFacilitiesComboModel',
+			autoLoad: true
+		});
+
+		Ext.apply(this, {
+			editable    : false,
+			queryMode   : 'local',
+			valueField  : 'option_value',
+			displayField: 'option_name',
+			emptyText   : i18n['select'],
+			store       : me.store
+		}, null);
+		me.callParent(arguments);
+	}
+});
+Ext.define('App.classes.combo.CalendarCategories', {
+	extend      : 'Ext.form.ComboBox',
+	alias       : 'widget.mitos.calcategoriescombobox',
+	editable    : false,
+	displayField: 'catname',
+	valueField  : 'catid',
+	emptyText   : i18n['select'],
+
+	initComponent: function() {
+		var me = this;
+
+		Ext.define('CalendarCategoriesModel', {
+			extend: 'Ext.data.Model',
+			fields: [
+				{name: 'catid', type: 'int'},
+				{name: 'catname', type: 'string'}
+			],
+			proxy : {
+				type: 'direct',
+				api : {
+					read: CombosData.getCalendarCategories
+				}
+			}
+		});
+
+		me.store = Ext.create('Ext.data.Store', {
+			model   : 'CalendarCategoriesModel',
+			autoLoad: true
+		});
+
+
+		Ext.apply(this, {
+			store: me.store
+		}, null);
+		me.callParent();
+	}
+}); 
+Ext.define('App.classes.combo.CalendarStatus', {
+	extend: 'Ext.form.ComboBox',
+	alias : 'widget.mitos.calstatuscombobox',
+	name  : 'status',
+
+	initComponent: function() {
+		var me = this;
+
+		Ext.define('CalendarStatusModel', {
+			extend: 'Ext.data.Model',
+			fields: [
+				{name: 'option_name', type: 'string' },
+				{name: 'option_value', type: 'string' }
+			],
+			proxy : {
+				type       : 'direct',
+				api        : {
+					read: CombosData.getOptionsByListId
+				},
+				extraParams: {
+					list_id: 30
+				}
+			}
+		});
+
+		me.store = Ext.create('Ext.data.Store', {
+			model   : 'CalendarStatusModel',
+			autoLoad: true
+		});
+
+		Ext.apply(this, {
+			editable    : false,
+			queryMode   : 'local',
+			displayField: 'option_name',
+			valueField  : 'option_value',
+			emptyText   : i18n['select'],
+			store       : me.store
+		}, null);
+		me.callParent();
+	} // end initComponent
+}); 
+Ext.define('App.classes.combo.CodesTypes', {
+	extend       : 'Ext.form.ComboBox',
+	alias        : 'widget.mitos.codestypescombo',
+	initComponent: function() {
+		var me = this;
+
+		Ext.define('CodesTypesModel', {
+			extend: 'Ext.data.Model',
+			fields: [
+				{name: 'option_name', type: 'string' },
+				{name: 'option_value', type: 'string' }
+			],
+			proxy : {
+				type       : 'direct',
+				api        : {
+					read: CombosData.getOptionsByListId
+				},
+				extraParams: {
+					list_id: 56
+				}
+			}
+		});
+
+		me.store = Ext.create('Ext.data.Store', {
+			model   : 'CodesTypesModel',
+			autoLoad: true
+		});
+
+		Ext.apply(this, {
+			editable    : false,
+			queryMode   : 'local',
+			valueField  : 'option_value',
+			displayField: 'option_name',
+			emptyText   : i18n['select'],
+			store       : me.store
+		}, null);
+		me.callParent(arguments);
+	}
+});
+Ext.define('App.classes.combo.EncounterPriority', {
+	extend       : 'Ext.form.ComboBox',
+	alias        : 'widget.encounterprioritycombo',
+	initComponent: function() {
+		var me = this;
+
+		Ext.define('EncounterPriorityModel', {
+			extend: 'Ext.data.Model',
+			fields: [
+				{name: 'option_name', type: 'string' },
+				{name: 'option_value', type: 'string' }
+			],
+			proxy : {
+				type       : 'direct',
+				api        : {
+					read: CombosData.getOptionsByListId
+				},
+				extraParams: {
+					list_id: 94
+				}
+			}
+		});
+
+		me.store = Ext.create('Ext.data.Store', {
+			model   : 'EncounterPriorityModel',
+			autoLoad: true
+		});
+
+		Ext.apply(this, {
+			editable    : false,
+			queryMode   : 'local',
+			displayField: 'option_name',
+			valueField  : 'option_value',
+			emptyText   : i18n['priority'],
+			store       : me.store,
+			listConfig  : {
+				getInnerTpl: function() {
+					return '<span class="{option_name}">{option_name}</span></div>';
+				}
+			}
+		}, null);
+
+		me.on('change', function(cmb ,newValue){
+			var bgColor, color;
+			if(newValue == 'Minimal'){
+				bgColor = '#008000';
+				color = '#ffffff';
+			}else if(newValue == 'Delayed'){
+				bgColor = '#ffff00';
+				color = '#000000';
+			}else if(newValue == 'Immediate'){
+				bgColor = '#ff0000';
+				color = '#ffffff';
+			}else if(newValue == 'Expectant'){
+				bgColor = '#808080';
+				color = '#ffffff';
+			}else if(newValue == 'Deceased'){
+				bgColor = '#000000';
+				color = '#ffffff';
+			}
+
+			this.inputEl.setStyle({
+				'background-color':bgColor,
+				'background-image':'none',
+				'color':color
+			})
+		}, me);
+		me.callParent(arguments);
+	}
+});
+Ext.define('App.classes.combo.Facilities', {
+	extend       : 'Ext.form.ComboBox',
+	alias        : 'widget.mitos.facilitiescombo',
+	initComponent: function() {
+		var me = this;
+
+		Ext.define('FacilitiesComboModel', {
+			extend: 'Ext.data.Model',
+			fields: [
+				{name: 'id', type: 'int'},
+				{name: 'name', type: 'string'}
+			],
+			proxy : {
+				type: 'direct',
+				api : {
+					read: CombosData.getFacilities
+				}
+			}
+		});
+
+		me.store = Ext.create('Ext.data.Store', {
+			model   : 'FacilitiesComboModel',
+			autoLoad: true
+		});
+
+		Ext.apply(this, {
+			editable    : false,
+			queryMode   : 'local',
+			valueField  : 'id',
+			displayField: 'name',
+			emptyText   : i18n['select'],
+			store       : me.store
+		}, null);
+		me.callParent(arguments);
+	}
+});
+Ext.define('App.classes.combo.FloorPlanAreas', {
+	extend       : 'Ext.form.ComboBox',
+	alias        : 'widget.floorplanareascombo',
+	initComponent: function() {
+		var me = this;
+
+		Ext.define('FloorPlanAreasModel', {
+			extend: 'Ext.data.Model',
+			fields: [
+				{name: 'title', type: 'string' },
+				{name: 'id', type: 'int' }
+			],
+			proxy : {
+				type       : 'direct',
+				api        : {
+					read: CombosData.getFloorPlanAreas
+				}
+			}
+		});
+
+		me.store = Ext.create('Ext.data.Store', {
+			model   : 'FloorPlanAreasModel',
+			autoLoad:true
+		});
+
+		Ext.apply(this, {
+			editable    : false,
+			queryMode: 'local',
+			displayField: 'title',
+			valueField  : 'id',
+			emptyText   : i18n['select'],
+			store       : me.store
+		}, null);
+		me.callParent(arguments);
+	}
+});
+Ext.define('App.classes.combo.FollowUp', {
+	extend       : 'Ext.form.ComboBox',
+	alias        : 'widget.mitos.followupcombo',
+	initComponent: function() {
+		var me = this;
+
+		Ext.define('FollowUpModel', {
+			extend: 'Ext.data.Model',
+			fields: [
+				{name: 'option_name', type: 'string' },
+				{name: 'option_value', type: 'string' }
+			],
+			proxy : {
+				type       : 'direct',
+				api        : {
+					read: CombosData.getOptionsByListId
+				},
+				extraParams: {
+					list_id: 90
+				}
+			}
+		});
+
+		me.store = Ext.create('Ext.data.Store', {
+			model   : 'FollowUpModel',
+			autoLoad: true
+		});
+
+		Ext.apply(this, {
+			editable    : false,
+			queryMode   : 'local',
+			displayField: 'option_name',
+			valueField  : 'option_value',
+			emptyText   : i18n['select'],
+			store       : me.store
+		}, null);
+		me.callParent(arguments);
+	}
+});
+Ext.define('App.classes.combo.InsurancePayerType', {
+	extend       : 'Ext.form.ComboBox',
+	alias        : 'widget.mitos.insurancepayertypecombo',
+	initComponent: function() {
+		var me = this;
+
+		// *************************************************************************************
+		// Structure, data for Insurance Payer Types
+		// AJAX -> component_data.ejs.php
+		// *************************************************************************************
+		me.store = Ext.create('Ext.data.Store', {
+			fields: ['id', 'name'],
+			data  : [
+				{"id": "1", "name": i18n['all']},
+				{"id": "16", "name": i18n['other_hcfa']},
+				{"id": "MB", "name": i18n['medicare_part_b']},
+				{"id": "MC", "name": i18n['medicaid']},
+				{"id": "CH", "name": i18n['champusva']},
+				{"id": "CH", "name": i18n['champus']},
+				{"id": "BL", "name": i18n['blue_cross_blue_shield']},
+				{"id": "16", "name": i18n['feca']},
+				{"id": "09", "name": i18n['self_pay']},
+				{"id": "10", "name": i18n['central_certification']},
+				{"id": "11", "name": i18n['other_nonfederal_programs']},
+				{"id": "12", "name": i18n['ppo']},
+				{"id": "13", "name": i18n['pos']},
+				{"id": "14", "name": i18n['epo']},
+				{"id": "15", "name": i18n['indemnity_insurance']},
+				{"id": "16", "name": i18n['hmo']},
+				{"id": "AM", "name": i18n['automobile_medical']},
+				{"id": "CI", "name": i18n['commercial_insurance']},
+				{"id": "DS", "name": i18n['disability']},
+				{"id": "HM", "name": i18n['health_maintenance_organization']},
+				{"id": "LI", "name": i18n['liability']},
+				{"id": "LM", "name": i18n['liability_medical']},
+				{"id": "OF", "name": i18n['other_federal_program']},
+				{"id": "TV", "name": i18n['title_v']},
+				{"id": "VA", "name": i18n['veterans_administration_plan']},
+				{"id": "WC", "name": i18n['workers_compensation_health_plan']},
+				{"id": "ZZ", "name": i18n['mutually_defined']}
+			]
+		});
+
+		Ext.apply(this, {
+			name        : 'freeb_type',
+			editable    : false,
+			displayField: 'name',
+			valueField  : 'id',
+			queryMode   : 'local',
+			emptyText   : i18n['select'],
+			store       : me.store
+		}, null);
+		me.callParent();
+	}
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: ernesto
+ * Date: 6/27/11
+ * Time: 8:43 AM
+ * To change this template use File | Settings | File Templates.
+ *
+ *
+ * @namespace Patient.patientLiveSearch
+ */
+Ext.define('App.classes.combo.LabObservations', {
+	extend       : 'Ext.form.ComboBox',
+	alias        : 'widget.labobservationscombo',
+	initComponent: function() {
+		var me = this;
+
+		Ext.define('labObservationsComboModel', {
+			extend: 'Ext.data.Model',
+			fields: [
+              		{name: 'label' },
+              		{name: 'name' },
+              		{name: 'unit' },
+              		{name: 'range_start' },
+              		{name: 'range_end' },
+              		{name: 'threshold' },
+              		{name: 'notes' }
+			],
+			proxy : {
+				type  : 'direct',
+				api   : {
+					read: Services.getAllLabObservations
+				}
+			}
+		});
+
+		me.store = Ext.create('Ext.data.Store', {
+			model   : 'labObservationsComboModel',
+			autoLoad: false
+		});
+
+		Ext.apply(this, {
+			store       : me.store,
+			displayField: 'label',
+			valueField  : 'id',
+			emptyText   : i18n['select_existing_observation'],
+            editable    : false,
+            width: 810,
+			listConfig  : {
+				getInnerTpl: function() {
+					return '<div>' +
+                        '<span style="width:200px;display:inline-block;"><span style="font-weight:bold;">' + i18n['Label'] + ':</span> {label},</span>' +
+                        '<span style="width:90px;display:inline-block;"><span style="font-weight:bold;">' + i18n['unit'] + ':</span> {unit},</span>' +
+                        '<span style="width:150px;display:inline-block;"><span style="font-weight:bold;">' + i18n['range_start'] + ':</span> {range_start},</span>' +
+                        '<span style="width:130px;display:inline-block;"><span style="font-weight:bold;">' + i18n['range_end'] + ':</span> {range_end},</span>' +
+                        '<span style="width:100px;display:inline-block;"><span style="font-weight:bold;">' + i18n['threshold'] + ':</span> {threshold}</span>' +
+                        '</div>';
+				}
+			}
+		}, null);
+
+		me.callParent();
+	}
+
+});
+Ext.define('App.classes.combo.LabsTypes', {
+	extend       : 'Ext.form.ComboBox',
+	alias        : 'widget.mitos.labstypescombo',
+	initComponent: function() {
+		var me = this;
+
+		Ext.define('LabsTypesComboModel', {
+			extend: 'Ext.data.Model',
+			fields: [
+				{name: 'id'},
+				{name: 'code_text_short' },
+				{name: 'parent_name', type: 'string' },
+				{name: 'loinc_name', type: 'string' }
+			],
+			proxy : {
+				type       : 'direct',
+				api        : {
+					read: Services.getActiveLaboratoryTypes
+				}
+			}
+		});
+
+		me.store = Ext.create('Ext.data.Store', {
+			model   : 'LabsTypesComboModel',
+			autoLoad: false
+		});
+
+		Ext.apply(this, {
+			editable    : false,
+			//queryMode   : 'local',
+			displayField: 'loinc_name',
+			valueField  : 'loinc_name',
+			emptyText   : i18n['select'],
+			store       : me.store
+		}, null);
+		me.callParent(arguments);
+	}
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 10/29/11
+ * Time: 4:45 PM
+ */
+Ext.define('App.classes.combo.Languages', 
+{
+	extend       : 'Ext.form.ComboBox',
+	alias        : 'widget.languagescombo',
+	initComponent: function() 
+	{
+		var me = this;
+
+		Ext.define('LanguagesComboModel', 
+		{
+			extend: 'Ext.data.Model',
+			fields: 
+			[
+				{ name: 'code', type: 'string' },
+				{ name: 'description', type: 'string' }
+			],
+			proxy : 
+			{
+				type: 'direct',
+				api :  
+				{
+					read: i18nRouter.getAvailableLanguages
+				}
+			}
+		});
+
+		me.store = Ext.create('Ext.data.Store', 
+		{
+			model   : 'LanguagesComboModel',
+			autoLoad: true
+		});
+
+		Ext.apply(this, 
+		{
+			editable    : false,
+			queryMode   : 'local',
+			valueField  : 'code',
+			displayField: 'description',
+			store       : me.store
+		}, null);
+		
+		me.callParent();
+	}
+});
+
+Ext.define('App.classes.combo.Lists', {
+	extend       : 'Ext.form.ComboBox',
+	alias        : 'widget.mitos.listscombo',
+	width        : 250,
+	iconCls      : 'icoListOptions',
+	initComponent: function() {
+		var me = this;
+
+		Ext.define('ListComboModel', {
+			extend: 'Ext.data.Model',
+			fields: [
+				{name: 'id'},
+				{name: 'title', type: 'string' }
+			],
+			proxy : {
+				type: 'direct',
+				api : {
+					read: CombosData.getLists
+				}
+			}
+		});
+
+		me.store = Ext.create('Ext.data.Store', {
+			model   : 'ListComboModel',
+			autoLoad: true
+		});
+
+		Ext.apply(this, {
+			editable    : false,
+			queryMode   : 'local',
+			valueField  : 'id',
+			displayField: 'title',
+			emptyText   : i18n['select'],
+			store       : me.store
+		}, null);
+		me.callParent(arguments);
+	}
+});
+Ext.define('App.classes.combo.MedicalIssues', {
+	extend       : 'Ext.form.ComboBox',
+	alias        : 'widget.mitos.medicalissuescombo',
+	initComponent: function() {
+		var me = this;
+
+		Ext.define('MedicalIssuesModel', {
+			extend: 'Ext.data.Model',
+			fields: [
+				{name: 'option_name', type: 'string' },
+				{name: 'option_value', type: 'string' }
+			],
+			proxy : {
+				type       : 'direct',
+				api        : {
+					read: CombosData.getOptionsByListId
+				},
+				extraParams: {
+					list_id: 75
+				}
+			}
+		});
+
+		me.store = Ext.create('Ext.data.Store', {
+			model   : 'MedicalIssuesModel',
+			autoLoad: true
+		});
+
+		Ext.apply(this, {
+			editable    : false,
+			queryMode   : 'local',
+			displayField: 'option_name',
+			valueField  : 'option_value',
+			emptyText   : i18n['select'],
+			store       : me.store
+		}, null);
+		me.callParent(arguments);
+	}
+});
+Ext.define('App.classes.combo.Medications', {
+	extend       : 'Ext.form.ComboBox',
+	alias        : 'widget.mitos.medicationscombo',
+	initComponent: function() {
+		var me = this;
+
+		Ext.define('MedicationsModel', {
+			extend: 'Ext.data.Model',
+			fields: [
+				{name: 'option_name', type: 'string' },
+				{name: 'option_value', type: 'string' }
+			],
+			proxy : {
+				type       : 'direct',
+				api        : {
+					read: CombosData.getOptionsByListId
+				},
+				extraParams: {
+					list_id: 74
+				}
+			}
+		});
+
+		me.store = Ext.create('Ext.data.Store', {
+			model   : 'MedicationsModel',
+			autoLoad: true
+		});
+
+		Ext.apply(this, {
+			editable    : false,
+			queryMode   : 'local',
+			displayField: 'option_name',
+			valueField  : 'option_value',
+			emptyText   : i18n['select'],
+			store       : me.store
+		}, null);
+		me.callParent(arguments);
+	}
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 10/29/11
+ * Time: 4:45 PM
+ */
+Ext.define('App.classes.combo.MsgNoteType', {
+	extend       : 'Ext.form.ComboBox',
+	alias        : 'widget.msgnotetypecombo',
+	initComponent: function() {
+		var me = this;
+
+		Ext.define('MsgNoteTypeModel', {
+			extend: 'Ext.data.Model',
+			fields: [
+				{name: 'option_name', type: 'string' },
+				{name: 'option_value', type: 'string' }
+			],
+			proxy : {
+				type       : 'direct',
+				api        : {
+					read: CombosData.getOptionsByListId
+				},
+				extraParams: {
+					list_id: 28
+				}
+			}
+		});
+
+		me.store = Ext.create('Ext.data.Store', {
+			model   : 'MsgNoteTypeModel',
+			autoLoad: true
+		});
+
+		Ext.apply(this, {
+			editable    : false,
+			queryMode   : 'local',
+			displayField: 'option_name',
+			valueField  : 'option_value',
+			emptyText   : i18n['select'],
+			store       : me.store
+		}, null);
+		me.callParent();
+	} // end initComponent
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 10/29/11
+ * Time: 4:45 PM
+ */
+Ext.define('App.classes.combo.MsgStatus', {
+	extend       : 'Ext.form.ComboBox',
+	alias        : 'widget.msgstatuscombo',
+	initComponent: function() {
+		var me = this;
+
+		Ext.define('MsgStatusModel', {
+			extend: 'Ext.data.Model',
+			fields: [
+				{name: 'option_name', type: 'string' },
+				{name: 'option_value', type: 'string' }
+			],
+			proxy : {
+				type       : 'direct',
+				api        : {
+					read: CombosData.getOptionsByListId
+				},
+				extraParams: {
+					list_id: 45
+				}
+			}
+		});
+
+		me.store = Ext.create('Ext.data.Store', {
+			model   : 'MsgStatusModel',
+			autoLoad: true
+		});
+
+		Ext.apply(this, {
+			editable    : false,
+			queryMode   : 'local',
+			displayField: 'option_name',
+			valueField  : 'option_value',
+			emptyText   : i18n['select'],
+			store       : me.store
+		}, null);
+		me.callParent();
+	} // end initComponent
+});
+Ext.define('App.classes.combo.Occurrence', {
+	extend       : 'Ext.form.ComboBox',
+	alias        : 'widget.mitos.occurrencecombo',
+	initComponent: function() {
+		var me = this;
+
+		Ext.define('OccurrenceModel', {
+			extend: 'Ext.data.Model',
+			fields: [
+				{name: 'option_name', type: 'string' },
+				{name: 'option_value', type: 'string' }
+			],
+			proxy : {
+				type       : 'direct',
+				api        : {
+					read: CombosData.getOptionsByListId
+				},
+				extraParams: {
+					list_id: 26
+				}
+			}
+		});
+
+		me.store = Ext.create('Ext.data.Store', {
+			model   : 'OccurrenceModel',
+			autoLoad: true
+		});
+
+		Ext.apply(this, {
+			editable    : false,
+			queryMode   : 'local',
+			displayField: 'option_name',
+			valueField  : 'option_value',
+			emptyText   : i18n['select'],
+			store       : me.store
+		}, null);
+		me.callParent(arguments);
+	}
+});
+Ext.define('App.classes.combo.Outcome', {
+	extend       : 'Ext.form.ComboBox',
+	alias        : 'widget.mitos.outcomecombo',
+	initComponent: function() {
+		var me = this;
+
+		Ext.define('OutcomeModel', {
+			extend: 'Ext.data.Model',
+			fields: [
+				{name: 'option_name', type: 'string' },
+				{name: 'option_value', type: 'string' }
+			],
+			proxy : {
+				type       : 'direct',
+				api        : {
+					read: CombosData.getOptionsByListId
+				},
+				extraParams: {
+					list_id: 27
+				}
+			}
+		});
+
+		me.store = Ext.create('Ext.data.Store', {
+			model   : 'OutcomeModel',
+			autoLoad: true
+		});
+
+		Ext.apply(this, {
+			editable    : false,
+			queryMode   : 'local',
+			displayField: 'option_name',
+			valueField  : 'option_value',
+			emptyText   : i18n['select'],
+			store       : me.store
+		}, null);
+		me.callParent(arguments);
+	}
+});
+Ext.define('App.classes.combo.Outcome2', {
+	extend       : 'Ext.form.ComboBox',
+	alias        : 'widget.mitos.outcome2combo',
+	initComponent: function() {
+		var me = this;
+
+		Ext.define('Outcome2model', {
+			extend: 'Ext.data.Model',
+			fields: [
+				{name: 'option_name', type: 'string' },
+				{name: 'option_value', type: 'string' }
+			],
+			proxy : {
+				type       : 'direct',
+				api        : {
+					read: CombosData.getOptionsByListId
+				},
+				extraParams: {
+					list_id: 74
+				}
+			}
+		});
+
+		me.store = Ext.create('Ext.data.Store', {
+			model   : 'Outcome2model',
+			autoLoad: true
+		});
+
+		Ext.apply(this, {
+			editable    : false,
+			queryMode   : 'local',
+			displayField: 'option_name',
+			valueField  : 'option_value',
+			emptyText   : i18n['select'],
+			store       : me.store
+		}, null);
+		me.callParent(arguments);
+	}
+});
+Ext.define('App.classes.combo.PayingEntity', {
+	extend       : 'Ext.form.ComboBox',
+	alias        : 'widget.mitos.payingentitycombo',
+	initComponent: function() {
+		var me = this;
+
+		Ext.define('PayingEntityModel', {
+			extend: 'Ext.data.Model',
+			fields: [
+				{name: 'option_name', type: 'string' },
+				{name: 'option_value', type: 'string' }
+			],
+			proxy : {
+				type       : 'direct',
+				api        : {
+					read: CombosData.getOptionsByListId
+				},
+				extraParams: {
+					list_id: 54
+				}
+			}
+		});
+
+		me.store = Ext.create('Ext.data.Store', {
+			model   : 'PayingEntityModel',
+			autoLoad: true
+		});
+
+		Ext.apply(this, {
+			editable    : false,
+			queryMode   : 'local',
+			displayField: 'option_name',
+			valueField  : 'option_value',
+			emptyText   : i18n['select'],
+			store       : me.store
+		}, null);
+		me.callParent(arguments);
+	}
+});
+
+Ext.define('App.classes.combo.PaymentCategory', {
+	extend       : 'Ext.form.ComboBox',
+	alias        : 'widget.mitos.paymentcategorycombo',
+	initComponent: function() {
+		var me = this;
+
+		Ext.define('PaymentCategoryModel', {
+			extend: 'Ext.data.Model',
+			fields: [
+				{name: 'option_name', type: 'string' },
+				{name: 'option_value', type: 'string' }
+			],
+			proxy : {
+				type       : 'direct',
+				api        : {
+					read: CombosData.getOptionsByListId
+				},
+				extraParams: {
+					list_id: 49
+				}
+			}
+		});
+
+		me.store = Ext.create('Ext.data.Store', {
+			model   : 'PaymentCategoryModel',
+			autoLoad: true
+		});
+
+		Ext.apply(this, {
+			editable    : false,
+			queryMode   : 'local',
+			displayField: 'option_name',
+			valueField  : 'option_value',
+			emptyText   : i18n['select'],
+			store       : me.store
+		}, null);
+		me.callParent(arguments);
+	}
+});
+Ext.define('App.classes.combo.PaymentMethod', {
+	extend       : 'Ext.form.ComboBox',
+	alias        : 'widget.mitos.paymentmethodcombo',
+	initComponent: function() {
+		var me = this;
+
+		Ext.define('PaymentMethodModel', {
+			extend: 'Ext.data.Model',
+			fields: [
+				{name: 'option_name', type: 'string' },
+				{name: 'option_value', type: 'string' }
+			],
+			proxy : {
+				type       : 'direct',
+				api        : {
+					read: CombosData.getOptionsByListId
+				},
+				extraParams: {
+					list_id: 51
+				}
+			}
+		});
+
+		me.store = Ext.create('Ext.data.Store', {
+			model   : 'PaymentMethodModel',
+			autoLoad: true
+		});
+
+		Ext.apply(this, {
+			editable    : false,
+			queryMode   : 'local',
+			displayField: 'option_name',
+			valueField  : 'option_value',
+			emptyText   : i18n['select'],
+			store       : me.store
+		}, null);
+		me.callParent(arguments);
+	}
+});
+Ext.define('App.classes.combo.Pharmacies', {
+	extend       : 'Ext.form.ComboBox',
+	alias        : 'widget.mitos.pharmaciescombo',
+	initComponent: function() {
+		var me = this;
+
+		Ext.define('PharmaciesComboModel', {
+			extend: 'Ext.data.Model',
+			fields: [
+				{name: 'option_name' },
+				{name: 'option_value' }
+			],
+			proxy : {
+				type       : 'direct',
+				api        : {
+					read: CombosData.getActivePharmacies
+				}
+			}
+		});
+
+		me.store = Ext.create('Ext.data.Store', {
+			model   : 'PharmaciesComboModel',
+			autoLoad: false
+		});
+
+		Ext.apply(this, {
+			editable    : false,
+			//queryMode   : 'local',
+			displayField: 'option_name',
+			valueField  : 'option_value',
+			emptyText   : i18n['select'],
+			store       : me.store
+		}, null);
+		me.callParent(arguments);
+	}
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 10/29/11
+ * Time: 4:45 PM
+ */
+Ext.define('App.classes.combo.posCodes', {
+	extend       : 'Ext.form.ComboBox',
+	alias        : 'widget.mitos.poscodescombo',
+	initComponent: function() {
+		var me = this;
+
+		Ext.define('PosCodesModel', {
+			extend: 'Ext.data.Model',
+			fields: [
+				{name: 'code', type: 'string' },
+				{name: 'title', type: 'string' }
+			],
+			proxy : {
+				type: 'direct',
+				api : {
+					read: CombosData.getPosCodes
+				}
+			}
+		});
+
+		me.store = Ext.create('Ext.data.Store', {
+			model   : 'PosCodesModel',
+			autoLoad: true
+		});
+
+		Ext.apply(this, {
+			editable    : false,
+			queryMode   : 'local',
+			valueField  : 'code',
+			displayField: 'title',
+			emptyText   : i18n['select'],
+			store       : me.store
+		}, null);
+		me.callParent();
+	} // end initComponent
+});
+Ext.define('App.classes.combo.PrescriptionHowTo', {
+	extend       : 'Ext.form.ComboBox',
+	alias        : 'widget.mitos.prescriptionhowto',
+	initComponent: function() {
+		var me = this;
+
+		Ext.define('PrescriptionHowTomodel', {
+			extend: 'Ext.data.Model',
+			fields: [
+				{name: 'option_name', type: 'string' },
+				{name: 'option_value', type: 'string' }
+			],
+			proxy : {
+				type       : 'direct',
+				api        : {
+					read: CombosData.getOptionsByListId
+				},
+				extraParams: {
+					list_id: 88
+				}
+			}
+		});
+
+		me.store = Ext.create('Ext.data.Store', {
+			model   : 'PrescriptionHowTomodel',
+			autoLoad: true
+		});
+
+		Ext.apply(this, {
+			editable    : false,
+			queryMode   : 'local',
+			displayField: 'option_name',
+			valueField  : 'option_value',
+			emptyText   : i18n['select'],
+			store       : me.store
+		}, null);
+		me.callParent(arguments);
+	}
+});
+Ext.define('App.classes.combo.PrescriptionOften', {
+	extend       : 'Ext.form.ComboBox',
+	alias        : 'widget.mitos.prescriptionoften',
+	initComponent: function() {
+		var me = this;
+
+		Ext.define('PrescriptionOftenmodel', {
+			extend: 'Ext.data.Model',
+			fields: [
+				{name: 'option_name', type: 'string' },
+				{name: 'option_value', type: 'string' }
+			],
+			proxy : {
+				type       : 'direct',
+				api        : {
+					read: CombosData.getOptionsByListId
+				},
+				extraParams: {
+					list_id: 86
+				}
+			}
+		});
+
+		me.store = Ext.create('Ext.data.Store', {
+			model   : 'PrescriptionOftenmodel',
+			autoLoad: true
+		});
+
+		Ext.apply(this, {
+			editable    : false,
+			queryMode   : 'local',
+			displayField: 'option_name',
+			valueField  : 'option_value',
+			emptyText   : i18n['select'],
+			store       : me.store
+		}, null);
+		me.callParent(arguments);
+	}
+});
+Ext.define('App.classes.combo.PrescriptionTypes', {
+	extend       : 'Ext.form.ComboBox',
+	alias        : 'widget.mitos.prescriptiontypes',
+	initComponent: function() {
+		var me = this;
+
+		Ext.define('PrescriptionTypesmodel', {
+			extend: 'Ext.data.Model',
+			fields: [
+				{name: 'option_name', type: 'string' },
+				{name: 'option_value', type: 'string' }
+			],
+			proxy : {
+				type       : 'direct',
+				api        : {
+					read: CombosData.getOptionsByListId
+				},
+				extraParams: {
+					list_id: 89
+				}
+			}
+		});
+
+		me.store = Ext.create('Ext.data.Store', {
+			model   : 'PrescriptionTypesmodel',
+			autoLoad: true
+		});
+
+		Ext.apply(this, {
+			editable    : false,
+			queryMode   : 'local',
+			displayField: 'option_name',
+			valueField  : 'option_value',
+			emptyText   : i18n['select'],
+			store       : me.store
+		}, null);
+		me.callParent(arguments);
+	}
+});
+Ext.define('App.classes.combo.PrescriptionWhen', {
+	extend       : 'Ext.form.ComboBox',
+	alias        : 'widget.mitos.prescriptionwhen',
+	initComponent: function() {
+		var me = this;
+
+		Ext.define('PrescriptionWhenmodel', {
+			extend: 'Ext.data.Model',
+			fields: [
+				{name: 'option_name', type: 'string' },
+				{name: 'option_value', type: 'string' }
+			],
+			proxy : {
+				type       : 'direct',
+				api        : {
+					read: CombosData.getOptionsByListId
+				},
+				extraParams: {
+					list_id: 87
+				}
+			}
+		});
+
+		me.store = Ext.create('Ext.data.Store', {
+			model   : 'PrescriptionWhenmodel',
+			autoLoad: true
+		});
+
+		Ext.apply(this, {
+			editable    : false,
+			queryMode   : 'local',
+			displayField: 'option_name',
+			valueField  : 'option_value',
+			emptyText   : i18n['select'],
+			store       : me.store
+		}, null);
+		me.callParent(arguments);
+	}
+});
+Ext.define('App.classes.combo.PreventiveCareTypes', {
+	extend       : 'Ext.form.ComboBox',
+	alias        : 'widget.mitos.preventivecaretypescombo',
+	initComponent: function() {
+		var me = this;
+
+		Ext.define('PreventiveCareTypesModel', {
+			extend: 'Ext.data.Model',
+			fields: [
+				{name: 'option_name', type: 'string' },
+				{name: 'option_value', type: 'string' }
+			],
+			proxy : {
+				type       : 'direct',
+				api        : {
+					read: CombosData.getOptionsByListId
+				},
+				extraParams: {
+					list_id: 78
+				}
+			}
+		});
+
+		me.store = Ext.create('Ext.data.Store', {
+			model   : 'PreventiveCareTypesModel',
+			autoLoad: true
+		});
+
+		Ext.apply(this, {
+			editable    : false,
+			queryMode   : 'local',
+			valueField  : 'option_value',
+			displayField: 'option_name',
+			emptyText   : i18n['select'],
+			store       : me.store
+		}, null);
+		me.callParent(arguments);
+	}
+});
+/*
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 3/21/12
+ * Time: 11:24 PM
+ */
+Ext.define('App.classes.combo.ProceduresBodySites', {
+	extend       : 'Ext.form.ComboBox',
+	alias        : 'widget.mitos.proceduresbodysitescombo',
+	initComponent: function() {
+		var me = this;
+
+		Ext.define('ProceduresBodySitesModel', {
+			extend: 'Ext.data.Model',
+			fields: [
+				{name: 'option_name', type: 'string' },
+				{name: 'option_value', type: 'string' }
+			],
+			proxy : {
+				type       : 'direct',
+				api        : {
+					read: CombosData.getOptionsByListId
+				},
+				extraParams: {
+					list_id: 34
+				}
+			}
+		});
+
+		me.store = Ext.create('Ext.data.Store', {
+			model   : 'ProceduresBodySitesModel',
+			autoLoad: true
+		});
+
+		Ext.apply(this, {
+			editable    : false,
+			queryMode   : 'local',
+			displayField: 'option_name',
+			valueField  : 'option_value',
+			emptyText   : i18n['select'],
+			store       : me.store
+		}, null);
+		me.callParent(arguments);
+	}
+});
+Ext.define('App.classes.combo.Providers', {
+	extend       : 'Ext.form.ComboBox',
+	alias        : 'widget.mitos.providerscombo',
+	initComponent: function() {
+		var me = this;
+
+		Ext.define('Providersmodel', {
+			extend: 'Ext.data.Model',
+			fields: [
+				{name: 'id', type: 'string' },
+				{name: 'name', type: 'string' }
+			],
+			proxy : {
+				type       : 'direct',
+				api        : {
+					read: User.getProviders
+				}
+			}
+		});
+
+		me.store = Ext.create('Ext.data.Store', {
+			model   : 'Providersmodel',
+			autoLoad: true
+		});
+
+		Ext.apply(this, {
+			editable    : false,
+			queryMode   : 'local',
+			displayField: 'name',
+			valueField  : 'id',
+			emptyText   : i18n['select'],
+			store       : me.store
+		}, null);
+		me.callParent(arguments);
+	}
+});
+Ext.define('App.classes.combo.Roles', {
+	extend       : 'Ext.form.ComboBox',
+	alias        : 'widget.mitos.rolescombo',
+	initComponent: function() {
+		var me = this;
+
+		Ext.define('RolesComboModel', {
+			extend: 'Ext.data.Model',
+			fields: [
+				{name: 'id', type: 'int'},
+				{name: 'role_name', type: 'string'}
+			],
+			proxy : {
+				type: 'direct',
+				api : {
+					read: CombosData.getRoles
+				}
+			}
+		});
+
+		me.store = Ext.create('Ext.data.Store', {
+			model   : 'RolesComboModel',
+			autoLoad: true
+		});
+
+		Ext.apply(this, {
+			editable    : false,
+			queryMode   : 'local',
+			valueField  : 'id',
+			displayField: 'role_name',
+			emptyText   : i18n['select'],
+			store       : me.store
+		}, null);
+		me.callParent(arguments);
+	}
+});
+Ext.define('App.classes.combo.Sex', {
+	extend       : 'Ext.form.ComboBox',
+	alias        : 'widget.mitos.sexcombo',
+	initComponent: function() {
+		var me = this;
+
+		Ext.define('Sexmodel', {
+			extend: 'Ext.data.Model',
+			fields: [
+				{name: 'option_name', type: 'string' },
+				{name: 'option_value', type: 'string' }
+			],
+			proxy : {
+				type       : 'direct',
+				api        : {
+					read: CombosData.getOptionsByListId
+				},
+				extraParams: {
+					list_id: 19
+				}
+			}
+		});
+
+		me.store = Ext.create('Ext.data.Store', {
+			model   : 'Sexmodel',
+			autoLoad: true
+		});
+
+		Ext.apply(this, {
+			editable    : false,
+			queryMode   : 'local',
+			displayField: 'option_name',
+			valueField  : 'option_value',
+			emptyText   : i18n['select'],
+			store       : me.store
+		}, null);
+		me.callParent(arguments);
+	}
+});
+Ext.define('App.classes.combo.SmokingStatus', {
+	extend       : 'Ext.form.ComboBox',
+	alias        : 'widget.mitos.smokingstatuscombo',
+	initComponent: function() {
+		var me = this;
+
+		Ext.define('smokingstatusModel', {
+			extend: 'Ext.data.Model',
+			fields: [
+				{name: 'option_name', type: 'string' },
+				{name: 'option_value', type: 'string' }
+			],
+			proxy : {
+				type       : 'direct',
+				api        : {
+					read: CombosData.getOptionsByListId
+				},
+				extraParams: {
+					list_id: 58
+				}
+			}
+		});
+
+		me.store = Ext.create('Ext.data.Store', {
+			model   : 'smokingstatusModel',
+			autoLoad: true
+		});
+
+		Ext.apply(this, {
+			editable    : false,
+			queryMode   : 'local',
+			displayField: 'option_name',
+			valueField  : 'option_value',
+			emptyText   : i18n['select'],
+			store       : me.store
+		}, null);
+		me.callParent(arguments);
+	}
+});
+Ext.define('App.classes.combo.Surgery', {
+	extend       : 'Ext.form.ComboBox',
+	alias        : 'widget.mitos.surgerycombo',
+	initComponent: function() {
+		var me = this;
+
+		Ext.define('SurgeryModel', {
+			extend: 'Ext.data.Model',
+			fields: [
+				{name: 'option_name', type: 'string' },
+				{name: 'option_value', type: 'string' }
+			],
+			proxy : {
+				type       : 'direct',
+				api        : {
+					read: CombosData.getOptionsByListId
+				},
+				extraParams: {
+					list_id: 76
+				}
+			}
+		});
+
+		me.store = Ext.create('Ext.data.Store', {
+			model   : 'SurgeryModel',
+			autoLoad: true
+		});
+
+		Ext.apply(this, {
+			editable    : false,
+			queryMode   : 'local',
+			displayField: 'option_name',
+			valueField  : 'option_value',
+			emptyText   : i18n['select'],
+			store       : me.store
+		}, null);
+		me.callParent(arguments);
+	}
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 10/29/11
+ * Time: 4:45 PM
+ */
+Ext.define('App.classes.combo.TaxId', {
+	extend       : 'Ext.form.ComboBox',
+	alias        : 'widget.mitos.taxidcombo',
+	initComponent: function() {
+		var me = this;
+
+		Ext.define('TaxIdsModel', {
+			extend: 'Ext.data.Model',
+			fields: [
+				{name: 'option_id', type: 'string' },
+				{name: 'title', type: 'string' }
+			],
+			proxy : {
+				type: 'direct',
+				api : {
+					read: CombosData.getTaxIds
+				}
+			}
+		});
+
+		me.store = Ext.create('Ext.data.Store', {
+			model   : 'TaxIdsModel',
+			autoLoad: true
+		});
+
+		Ext.apply(this, {
+			editable    : false,
+			queryMode   : 'local',
+			displayField: 'title',
+			valueField  : 'option_id',
+			emptyText   : i18n['select'],
+			store       : me.store
+		}, null);
+		me.callParent();
+	} // end initComponent
+});
+Ext.define('App.classes.combo.Templates', {
+	extend       : 'Ext.form.ComboBox',
+	alias        : 'widget.mitos.templatescombo',
+	initComponent: function() {
+		var me = this;
+
+		Ext.define('TemplatesComboModel', {
+			extend: 'Ext.data.Model',
+			fields: [
+				{name: 'title', type: 'string' },
+				{name: 'body'}
+			],
+			proxy : {
+				type       : 'direct',
+				api        : {
+					read: CombosData.getTemplatesTypes
+				}
+			}
+		});
+
+		me.store = Ext.create('Ext.data.Store', {
+			model   : 'TemplatesComboModel',
+			autoLoad: false
+		});
+
+		Ext.apply(this, {
+			editable    : false,
+			//queryMode   : 'local',
+			displayField: 'title',
+			valueField  : 'title',
+			emptyText   : i18n['select'],
+			store       : me.store
+		}, null);
+		me.callParent(arguments);
+	}
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 10/29/11
+ * Time: 4:45 PM
+ */
+Ext.define('App.classes.combo.Themes', {
+	extend       : 'Ext.form.ComboBox',
+	alias        : 'widget.themescombo',
+	initComponent: function() {
+		var me = this;
+
+		Ext.define('ThemesComboModel', {
+			extend: 'Ext.data.Model',
+			fields: [
+				{ name: 'name', type: 'string' },
+				{ name: 'value', type: 'string' }
+			],
+			proxy : {
+				type: 'direct',
+				api : {
+					read: CombosData.getThemes
+				}
+			}
+		});
+
+		me.store = Ext.create('Ext.data.Store', {
+			model   : 'ThemesComboModel',
+			autoLoad: true
+		});
+
+		Ext.apply(this, {
+			editable    : false,
+			queryMode   : 'local',
+			valueField  : 'value',
+			displayField: 'name',
+			emptyText   : i18n['select'],
+			store       : me.store
+		}, null);
+		me.callParent();
+	}
+});
+Ext.define('App.classes.combo.Time', {
+	extend       : 'Ext.form.ComboBox',
+	alias        : 'widget.mitos.timecombo',
+	initComponent: function() {
+		var me = this;
+
+		Ext.define('Timemodel', {
+			extend: 'Ext.data.Model',
+			fields: [
+				{name: 'option_name', type: 'string' },
+				{name: 'option_value', type: 'string' }
+			],
+			proxy : {
+				type       : 'direct',
+				api        : {
+					read: CombosData.getOptionsByListId
+				},
+				extraParams: {
+					list_id: 77
+				}
+			}
+		});
+
+		me.store = Ext.create('Ext.data.Store', {
+			model   : 'Timemodel',
+			autoLoad: true
+		});
+
+		Ext.apply(this, {
+			editable    : false,
+			queryMode   : 'local',
+			displayField: 'option_name',
+			valueField  : 'option_value',
+			emptyText   : i18n['select'],
+			store       : me.store
+		}, null);
+		me.callParent(arguments);
+	}
+});
+Ext.define('App.classes.combo.Titles', {
+	extend       : 'Ext.form.ComboBox',
+	alias        : 'widget.mitos.titlescombo',
+	initComponent: function() {
+		var me = this;
+
+		Ext.define('TitlesModel', {
+			extend: 'Ext.data.Model',
+			fields: [
+				{name: 'option_name', type: 'string' },
+				{name: 'option_value', type: 'string' }
+			],
+			proxy : {
+				type       : 'direct',
+				api        : {
+					read: CombosData.getOptionsByListId
+				},
+				extraParams: {
+					list_id: 22
+				}
+			}
+		});
+
+		me.store = Ext.create('Ext.data.Store', {
+			model   : 'TitlesModel',
+			autoLoad: true
+		});
+
+		Ext.apply(this, {
+			editable    : false,
+			queryMode   : 'local',
+			displayField: 'option_name',
+			valueField  : 'option_value',
+			emptyText   : i18n['select'],
+			store       : me.store
+		}, null);
+		me.callParent(arguments);
+	}
+});
+Ext.define('App.classes.combo.TransmitMethod', {
+	extend       : 'Ext.form.ComboBox',
+	alias        : 'widget.transmitmethodcombo',
+	initComponent: function() {
+		var me = this;
+
+
+		me.storeTrsmit = Ext.create('Ext.data.Store', {
+			fields: ['id', 'name'],
+			data  : [
+				{"id": "1", "name": "Print"},
+				{"id": "2", "name": "Email"},
+				{"id": "3", "name": "Email"}
+			]
+		});
+
+		Ext.apply(this, {
+			name        : 'transmit_method',
+			editable    : false,
+			displayField: 'name',
+			valueField  : 'id',
+			queryMode   : 'local',
+			emptyText   : i18n['select'],
+			store       : me.storeTrsmit
+		}, null);
+		me.callParent();
+	} // end initComponent
+});
+Ext.define('App.classes.combo.Types', {
+	extend       : 'Ext.form.ComboBox',
+	alias        : 'widget.mitos.typescombobox',
+	initComponent: function() {
+		var me = this;
+
+		// *************************************************************************************
+		// Structure, data for Types
+		// AJAX -> component_data.ejs.php
+		// *************************************************************************************
+
+
+		Ext.define('TypesModel', {
+			extend: 'Ext.data.Model',
+			fields: [
+				{name: 'option_name', type: 'string' },
+				{name: 'option_value', type: 'string' }
+			],
+			proxy : {
+				type       : 'direct',
+				api        : {
+					read: CombosData.getOptionsByListId
+				},
+				extraParams: {
+					list_id: 32
+				}
+
+			}
+		});
+
+		me.store = Ext.create('Ext.data.Store', {
+			model   : 'TypesModel',
+			autoLoad: true
+		});
+
+		Ext.apply(this, {
+			name        : 'abook_type',
+			editable    : false,
+			displayField: 'option_name',
+			valueField  : 'option_value',
+			queryMode   : 'local',
+			store       : me.store
+		}, null);
+		me.callParent(arguments);
+	}
+});
+Ext.define('App.classes.combo.Units', {
+	extend       : 'Ext.form.ComboBox',
+	alias        : 'widget.mitos.unitscombo',
+	initComponent: function() {
+		var me = this;
+
+		Ext.define('UnitsModel', {
+			extend: 'Ext.data.Model',
+			fields: [
+				{name: 'option_name', type: 'string' },
+				{name: 'option_value', type: 'string' }
+			],
+			proxy : {
+				type       : 'direct',
+				api        : {
+					read: CombosData.getOptionsByListId
+				},
+				extraParams: {
+					list_id: 38
+				}
+			}
+		});
+
+		me.store = Ext.create('Ext.data.Store', {
+			model   : 'UnitsModel',
+			autoLoad: true
+		});
+
+		Ext.apply(this, {
+			//editable    : false,
+			queryMode   : 'local',
+			valueField  : 'option_value',
+			displayField: 'option_name',
+			//emptyText   : 'Select',
+			store       : me.store
+		}, null);
+		me.callParent(arguments);
+	}
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 10/29/11
+ * Time: 4:45 PM
+ */
+Ext.define('App.classes.combo.Users', {
+	extend       : 'Ext.form.ComboBox',
+	alias        : 'widget.userscombo',
+	initComponent: function() {
+		var me = this;
+
+		Ext.define('UsersComboModel', {
+			extend: 'Ext.data.Model',
+			fields: [
+				{name: 'id', type: 'int' },
+				{name: 'name', type: 'string' }
+			],
+			proxy : {
+				type: 'direct',
+				api : {
+					read: CombosData.getUsers
+				}
+			}
+		});
+
+		me.store = Ext.create('Ext.data.Store', {
+			model   : 'UsersComboModel',
+			autoLoad: true
+		});
+
+		Ext.apply(this, {
+			editable    : false,
+			queryMode   : 'local',
+			valueField  : 'id',
+			displayField: 'name',
+			emptyText   : i18n['select'],
+			store       : me.store
+		}, null);
+		me.callParent();
+	} // end initComponent
+});
+Ext.define('App.classes.combo.YesNoNa', {
+	extend       : 'Ext.form.ComboBox',
+	alias        : 'widget.mitos.yesnonacombo',
+	initComponent: function() {
+		var me = this;
+
+		Ext.define('yesnonaModel', {
+			extend: 'Ext.data.Model',
+			fields: [
+				{name: 'option_name', type: 'string' },
+				{name: 'option_value', type: 'string' }
+			],
+			proxy : {
+				type       : 'direct',
+				api        : {
+					read: CombosData.getOptionsByListId
+				},
+				extraParams: {
+					list_id: 93
+				}
+			}
+		});
+
+		me.store = Ext.create('Ext.data.Store', {
+			model   : 'yesnonaModel',
+			autoLoad: true
+		});
+
+		Ext.apply(this, {
+			editable    : false,
+			queryMode   : 'local',
+			displayField: 'option_name',
+			valueField  : 'option_value',
+			emptyText   : i18n['select'],
+			store       : me.store
+		}, null);
+		me.callParent(arguments);
+	}
+});
+Ext.define('App.classes.combo.YesNo', {
+	extend       : 'Ext.form.ComboBox',
+	alias        : 'widget.mitos.yesnocombo',
+	initComponent: function() {
+		var me = this;
+
+		Ext.define('yesnoModel', {
+			extend: 'Ext.data.Model',
+			fields: [
+				{name: 'option_name', type: 'string' },
+				{name: 'option_value', type: 'string' }
+			],
+			proxy : {
+				type       : 'direct',
+				api        : {
+					read: CombosData.getOptionsByListId
+				},
+				extraParams: {
+					list_id: 23
+				}
+			}
+		});
+
+		me.store = Ext.create('Ext.data.Store', {
+			model   : 'yesnoModel',
+			autoLoad: true
+		});
+
+		Ext.apply(this, {
+			editable    : false,
+			queryMode   : 'local',
+			displayField: 'option_name',
+			valueField  : 'option_value',
+			emptyText   : i18n['select'],
+			store       : me.store
+		}, null);
+		me.callParent(arguments);
+	}
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 10/31/11
+ * Time: 3:21 PM
+ */
+Ext.define('App.classes.window.Window', {
+	extend       : 'Ext.window.Window',
+	autoHeight   : true,
+	modal        : true,
+	border       : true,
+	autoScroll   : true,
+	resizable    : false,
+	closeAction  : 'hide',
+	initComponent: function() {
+		this.callParent(arguments);
+	},
+
+	updateTitle: function(pageTitle, readOnly) {
+		this.setTitle(pageTitle + (readOnly ? '[ Read Only ]' : ''));
+	},
+
+	setReadOnly: function() {
+		var forms = this.query('form'),
+			readOnly = app.patient.readOnly;
+		for(var j = 0; j < forms.length; j++) {
+			var form = forms[j], items;
+			if(form.readOnly != readOnly){
+				form.readOnly = readOnly;
+				items = form.getForm().getFields().items;
+				for(var k = 0; k < items.length; k++) {
+					items[k].setReadOnly(readOnly);
+				}
+			}
+		}
+		return readOnly;
+	},
+
+	setButtonsDisabled:function(buttons){
+		var disable = app.patient.readOnly;
+		for(var i = 0; i < buttons.length; i++) {
+			var btn = buttons[i];
+			if(btn.disabled != disable){
+				btn.disabled = disable;
+				btn.setDisabled(disable)
+			}
+		}
+	},
+
+	checkIfCurrPatient: function() {
+		return app.getCurrPatient();
+	},
+
+	patientInfoAlert: function() {
+		var patient = app.getCurrPatient();
+
+		Ext.Msg.alert(i18n['status'], i18n['patient'] + ': ' + patient.name + ' (' + patient.pid + ')');
+	},
+
+	currPatientError: function() {
+		Ext.Msg.show({
+			title  : 'Oops! ' + i18n['no_patient_selected'],
+			msg    : i18n['select_patient_patient_live_search'],
+			scope  : this,
+			buttons: Ext.Msg.OK,
+			icon   : Ext.Msg.ERROR,
+			fn     : function() {
+				this.goBack();
+			}
+		});
+	},
+
+	getFormItems: function(formPanel, formToRender, callback) {
+		formPanel.removeAll();
+
+		FormLayoutEngine.getFields({formToRender: formToRender}, function(provider, response) {
+			var items = eval(response.result);
+			formPanel.add(items);
+			if(typeof callback == 'function') {
+				callback(formPanel, items, true);
+			}
+		});
+	},
+
+	boolRenderer: function(val) {
+		if(val == '1' || val == true || val == 'true') {
+			return '<img style="padding-left: 13px" src="resources/images/icons/yes.gif" />';
+		} else if(val == '0' || val == false || val == 'false') {
+			return '<img style="padding-left: 13px" src="resources/images/icons/no.gif" />';
+		}
+		return val;
+	},
+
+	alertRenderer: function(val) {
+		if(val == '1' || val == true || val == 'true') {
+			return '<img style="padding-left: 13px" src="resources/images/icons/no.gif" />';
+		} else if(val == '0' || val == false || val == 'false') {
+			return '<img style="padding-left: 13px" src="resources/images/icons/yes.gif" />';
+		}
+		return val;
+	},
+
+	warnRenderer:function(val, metaData, record){
+        var toolTip = record.data.warningMsg ? ' data-qtip="'+record.data.warningMsg+'" ' : '';
+        if(val == '1' || val == true || val == 'true') {
+            return '<img src="resources/images/icons/icoImportant.png" ' + toolTip + ' />';
+        }
+    },
+
+	onExpandRemoveMask: function(cmb) {
+		cmb.picker.loadMask.destroy()
+	},
+
+	strToLowerUnderscores: function(str) {
+		return str.toLowerCase().replace(/ /gi, "_");
+	},
+	getCurrPatient: function() {
+		return app.getCurrPatient();
+	},
+
+	getApp: function() {
+		return app.getApp();
+	},
+
+	msg: function(title, format) {
+		app.msg(title, format)
+	},
+
+	passwordVerificationWin: function(callback) {
+		var msg = Ext.Msg.prompt(i18n['password_verification'], i18n['please_enter_your_password'] + ':', function(btn, password) {
+			callback(btn, password);
+		});
+		var f = msg.textField.getInputId();
+		document.getElementById(f).type = 'password';
+		return msg;
+	}
+});
+/**
+ * A plugin that provides the ability to visually indicate to the user that a node is disabled.
+ *
+ * Notes:
+ * - Compatible with Ext 4.x
+ * - If the view already defines a getRowClass function, the original function will be called before this plugin.
+ *
+ var tree = Ext.create('Ext.tree.Panel',{
+ plugins: [{
+ ptype: 'nodedisabled'
+ }]
+ ...
+ });
+ *
+ * @class Ext.ux.tree.plugin.NodeDisabled
+ * @extends Ext.AbstractPlugin
+ * @author Phil Crawford
+ * @license Licensed under the terms of the Open Source <a href="http://www.gnu.org/licenses/lgpl.html">LGPL 3.0 license</a>.  Commercial use is permitted to the extent that the code/component(s) do NOT become part of another Open Source or Commercially licensed development library or toolkit without explicit permission.
+ * @version 0.1 (July 1, 2011)
+ * @constructor
+ * @param {Object} config
+ */
+Ext.define('App.classes.NodeDisabled', {
+    alias:'plugin.nodedisabled', extend:'Ext.AbstractPlugin'
+
+
+    //configurables
+    /**
+     * @cfg {String} disabledCls
+     * The CSS class applied when the {@link Ext.data.Model} of the node has a 'disabled' field with a true value.
+     */, disabledCls:'tree-node-disabled'
+    /**
+     * @cfg {Boolean} preventSelection
+     * True to prevent selection of a node that is disabled. Default true.
+     */, preventSelection:true
+
+    /**
+     * @cfg {Boolean} preventChecking
+     * True to prevent checking of a node that is disabled. Default true.
+     */, preventChecking:true
+
+    //properties
+
+
+    /**
+     * @private
+     * @param {Ext.tree.Panel} tree
+     */, init:function (tree) {
+        var me = this
+            , view = tree.getView()
+            , origFn
+            , origScope;
+
+        me.callParent(arguments);
+
+        origFn = view.getRowClass;
+        if (origFn) {
+            origScope = view.scope || me;
+            Ext.apply(view, {
+                getRowClass:function () {
+                    var v1, v2;
+                    v1 = origFn.apply(origScope, arguments) || '';
+                    v2 = me.getRowClass.apply(me, arguments) || '';
+                    return (v1 && v2) ? v1 + ' ' + v2 : v1 + v2;
+                }
+            }, null);
+        } else {
+            Ext.apply(view, {
+                getRowClass:Ext.Function.bind(me.getRowClass, me)
+            }, null);
+        }
+
+        if (me.preventSelection) {
+            tree.getSelectionModel().on('beforeselect', me.onBeforeNodeSelect, me);
+        }
+
+        if (me.preventChecking) {
+            tree.on('checkchange', me.checkchange, me);
+        }
+    } // eof init
+
+
+    /**
+     * Returns a properly typed result.
+     * @return {Ext.tree.Panel}
+     */, getCmp:function () {
+        return this.callParent(arguments);
+    } //eof getCmp
+
+    /**
+     * @private
+     * @param {Ext.data.Model} record
+     * @param {Number} index
+     * @param {Object} rowParams
+     * @param {Ext.data.Store} ds
+     * @return {String}
+     */, getRowClass:function (record, index, rowParams, ds) {
+        return record.get('disabled') ? this.disabledCls : '';
+    }//eof getRowClass
+
+    /**
+     * @private
+     * @param {Ext.selection.TreeModel} sm
+     * @param {Ext.data.Model} node
+     * @return {Boolean}
+     */, onBeforeNodeSelect:function (sm, node) {
+        if (node.get('disabled')) {
+            return false;
+        }
+    }//eof onBeforeNodeSelect
+
+    /**
+     * @event checkchange
+     * Fires when a node with a checkbox's checked property changes
+     * @param {Ext.data.Model} node The node who's checked property was changed
+     * @param {Boolean} checked The node's new checked state
+     */, checkchange:function (node, checked) {
+        if (node.get('disabled')) {
+            node.set('checked', !checked);
+        }
+    }//eof checkchange
+
+});//eo class
+
+//end of file
+//******************************************************************************
+// ofice_notes.ejs.php
+// office Notes Page
+// v0.0.1
+// 
+// Author: Ernest Rodriguez
+// Modified:
+// 
+// GaiaEHR (Electronic Health Records) 2011
+//******************************************************************************
+Ext.define('App.view.search.PatientSearch', {
+	extend       : 'App.classes.RenderPanel',
+	id           : 'panelPatientSearch',
+	pageTitle    : i18n['advance_patient_search'],
+	pageLayout   : 'border',
+	uses         : [
+		'App.classes.GridPanel'
+	],
+	initComponent: function() {
+		var me = this;
+
+
+		me.form = Ext.create('Ext.form.FormPanel', {
+			region     : 'north',
+			height     : 200,
+			bodyPadding: 10,
+			margin     : '0 0 3 0',
+			buttonAlign: 'left',
+			items      : [
+				{
+					xtype     : 'fieldcontainer',
+					fieldLabel: i18n['name'],
+					layout    : 'hbox',
+					defaults  : { margin: '0 5 0 0' },
+					items     : [
+						{
+							xtype    : 'textfield',
+							emptyText: i18n['first_name'],
+							name     : 'fname'
+						},
+						{
+							xtype    : 'textfield',
+							emptyText: i18n['middle_name'],
+							name     : 'mname'
+						},
+						{
+							xtype    : 'textfield',
+							emptyText: i18n['last_name'],
+							name     : 'lname'
+						}
+					]
+				}
+			],
+
+			buttons: [
+				{
+					text   : i18n['search'],
+					iconCls: 'save',
+					handler: function() {
+
+					}
+				},
+				'-',
+				{
+					text   : i18n['reset'],
+					iconCls: 'save',
+					tooltip: i18n['hide_selected_office_note'],
+					handler: function() {
+
+					}
+				}
+			]
+		});
+		me.grid = Ext.create('App.classes.GridPanel', {
+			region   : 'center',
+			//store    : me.store,
+			columns  : [
+				{ header: 'id', sortable: false, dataIndex: 'id', hidden: true},
+				{ width: 150, header: i18n['date'], sortable: true, dataIndex: 'date', renderer: Ext.util.Format.dateRenderer('Y-m-d H:i:s') },
+				{ width: 150, header: i18n['user'], sortable: true, dataIndex: 'user' },
+				{ flex: 1, header: i18n['note'], sortable: true, dataIndex: 'body' }
+
+			],
+			tbar     : Ext.create('Ext.PagingToolbar', {
+				store      : me.store,
+				displayInfo: true,
+				emptyMsg   : i18n['no_office_notes_to_display'],
+				plugins    : Ext.create('Ext.ux.SlidingPager', {})
+			})
+		}); // END GRID
+		me.pageBody = [ me.form, me.grid ];
+		me.callParent(arguments);
+	}, // end of initComponent
+	/**
+	 * This function is called from MitosAPP.js when
+	 * this panel is selected in the navigation panel.
+	 * place inside this function all the functions you want
+	 * to call every this panel becomes active
+	 */
+	onActive     : function(callback) {
+		callback(true);
+	}
+}); //ens oNotesPage class
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/15/12
+ * Time: 4:30 PM
+ *
+ * @namespace Immunization.getImmunizationsList
+ * @namespace Immunization.getPatientImmunizations
+ * @namespace Immunization.addPatientImmunization
+ */
+Ext.define('App.view.patient.windows.Medical', {
+	extend       : 'App.classes.window.Window',
+	title        : i18n['medical_window'],
+	id           : 'MedicalWindow',
+	layout       : 'card',
+	closeAction  : 'hide',
+	height       : 750,
+	width        : 1200,
+	bodyStyle    : 'background-color:#fff',
+	modal        : true,
+	defaults     : {
+		margin: 5
+	},
+	requires     : [ 'App.view.patient.LaboratoryResults' ],
+	pid          : null,
+	initComponent: function() {
+
+		var me = this;
+
+
+		me.patientImmuListStore = Ext.create('App.store.patient.PatientImmunization', {
+			groupField: 'immunization_name',
+			sorters   : ['immunization_name', 'administered_date'],
+			listeners : {
+				scope     : me,
+				beforesync: me.setDefaults
+			},
+			autoSync  : true
+		});
+		me.patientAllergiesListStore = Ext.create('App.store.patient.Allergies', {
+
+			listeners: {
+				scope     : me,
+				beforesync: me.setDefaults
+			},
+			autoSync : true
+		});
+		me.patientMedicalIssuesStore = Ext.create('App.store.patient.MedicalIssues', {
+
+			listeners: {
+				scope     : me,
+				beforesync: me.setDefaults
+			},
+			autoSync : true
+		});
+		me.patientSurgeryStore = Ext.create('App.store.patient.Surgery', {
+
+			listeners: {
+				scope     : me,
+				beforesync: me.setDefaults
+			},
+			autoSync : true
+		});
+		me.patientDentalStore = Ext.create('App.store.patient.Dental', {
+
+			listeners: {
+				scope     : me,
+				beforesync: me.setDefaults
+			},
+			autoSync : true
+		});
+		me.patientMedicationsStore = Ext.create('App.store.patient.Medications', {
+
+			listeners: {
+				scope     : me,
+				beforesync: me.setDefaults
+			},
+			autoSync : true
+		});
+		me.labPanelsStore = Ext.create('App.store.patient.LaboratoryTypes', {
+			autoSync: true
+		});
+
+		me.items = [
+			{
+				xtype   : 'grid',
+				action  : 'patientImmuListGrid',
+				itemId  : 'patientImmuListGrid',
+				store   : me.patientImmuListStore,
+				features: Ext.create('Ext.grid.feature.Grouping', {
+					groupHeaderTpl   : i18n['immunization'] + ': {name} ({rows.length} Item{[values.rows.length > 1 ? "s" : ""]})',
+					hideGroupedHeader: true
+				}),
+				columns : [
+					{
+						header   : i18n['immunization_name'],
+						width    : 100,
+						dataIndex: 'immunization_name'
+					},
+					{
+						xtype    : 'datecolumn',
+						header   : 'Date',
+						format   : 'Y-m-d',
+						width    : 100,
+						dataIndex: 'administered_date'
+					},
+					{
+						header   : i18n['lot_number'],
+						width    : 100,
+						dataIndex: 'lot_number'
+					},
+					{
+						header   : 'Notes',
+						flex     : 1,
+						dataIndex: 'note'
+					}
+				],
+
+				plugins: Ext.create('App.classes.grid.RowFormEditing', {
+					autoCancel  : false,
+					errorSummary: false,
+					clicksToEdit: 1,
+					formItems   : [
+
+						{
+
+							title : 'general',
+							xtype : 'container',
+							layout: 'vbox',
+							items : [
+								{
+									/**
+									 * Line one
+									 */
+									xtype   : 'fieldcontainer',
+									layout  : 'hbox',
+									defaults: { margin: '0 10 3 0', xtype: 'textfield'},
+									items   : [
+
+										{
+											xtype          : 'immunizationlivesearch',
+											fieldLabel     : i18n['name'],
+											hideLabel      : false,
+											allowBlank     : false,
+											itemId         : 'immunization_name',
+											name           : 'immunization_name',
+											enableKeyEvents: true,
+											action         : 'immunizations',
+											width          : 570,
+											listeners      : {
+												scope : me,
+												select: me.onLiveSearchSelect
+											}
+										},
+										{
+											xtype : 'textfield',
+											hidden: true,
+											name  : 'immunization_id',
+											action: 'idField'
+										},
+										{
+											fieldLabel: i18n['administrator'],
+											name      : 'administered_by',
+											width     : 295,
+											labelWidth: 160
+
+										}
+
+									]
+
+								},
+								{
+									/**
+									 * Line two
+									 */
+									xtype   : 'fieldcontainer',
+									layout  : 'hbox',
+									defaults: { margin: '0 10 3 0', xtype: 'textfield' },
+									items   : [
+										{
+											fieldLabel: i18n['lot_number'],
+											xtype     : 'textfield',
+											width     : 300,
+											name      : 'lot_number'
+
+										},
+										{
+
+											xtype     : 'numberfield',
+											fieldLabel: i18n['dosis_number'],
+											width     : 260,
+											name      : 'dosis'
+										},
+
+										{
+											fieldLabel: i18n['info_statement_given'],
+											width     : 295,
+											labelWidth: 160,
+											xtype     : 'datefield',
+											format    : 'Y-m-d',
+											name      : 'education_date'
+										}
+
+									]
+
+								},
+								{
+									/**
+									 * Line three
+									 */
+									xtype   : 'fieldcontainer',
+									layout  : 'hbox',
+									defaults: { margin: '0 10 3 0', xtype: 'textfield' },
+									items   : [
+
+										{
+											fieldLabel: i18n['notes'],
+											xtype     : 'textfield',
+											width     : 300,
+											name      : 'note'
+
+										},
+										{
+											fieldLabel: i18n['manufacturer'],
+											xtype     : 'textfield',
+											width     : 260,
+
+											name: 'manufacturer'
+
+										},
+
+										{
+											fieldLabel: i18n['date_administered'],
+											xtype     : 'datefield',
+											width     : 295,
+											labelWidth: 160,
+											format    : 'Y-m-d',
+											name      : 'administered_date'
+										}
+
+									]
+
+								}
+
+							]
+
+						}
+
+					]
+				}),
+				bbar   : [
+					'->', {
+						text   : i18n['reviewed'],
+						action : 'review',
+						itemId : 'review_immunizations',
+						scope  : me,
+						handler: me.onReviewed
+					}
+				]
+			},
+
+			{
+				/**
+				 * Allergies Card panel
+				 */
+				xtype  : 'grid',
+				action : 'patientAllergiesListGrid',
+				store  : me.patientAllergiesListStore,
+				columns: [
+					{
+						header   : i18n['type'],
+						width    : 100,
+						dataIndex: 'allergy_type'
+					},
+					{
+						header   : i18n['name'],
+						width    : 100,
+						dataIndex: 'allergy'
+					},
+					{
+						header   : i18n['location'],
+						width    : 100,
+						dataIndex: 'location'
+					},
+					{
+						header   : i18n['severity'],
+						flex     : 1,
+						dataIndex: 'severity'
+					},
+					{
+						text     : i18n['active'],
+						width    : 55,
+						dataIndex: 'alert',
+						renderer : me.boolRenderer
+					}
+				],
+				plugins: me.rowEditingAllergies = Ext.create('App.classes.grid.RowFormEditing', {
+					autoCancel  : false,
+					errorSummary: false,
+					clicksToEdit: 1,
+					formItems   : [
+
+						{
+							title  : i18n['general'],
+							xtype  : 'container',
+							padding: 10,
+							layout : 'vbox',
+							items  : [
+								{
+									/**
+									 * Line one
+									 */
+									xtype   : 'fieldcontainer',
+									layout  : 'hbox',
+									defaults: { margin: '0 10 5 0' },
+									items   : [
+										{
+											xtype          : 'mitos.allergiestypescombo',
+											fieldLabel     : i18n['type'],
+											name           : 'allergy_type',
+											action         : 'allergy_type',
+											allowBlank     : false,
+											width          : 225,
+											labelWidth     : 70,
+											enableKeyEvents: true,
+											listeners      : {
+												scope   : me,
+												'select': me.onAllergyTypeSelect
+											}
+										},
+										{
+											xtype     : 'mitos.allergieslocationcombo',
+											fieldLabel: i18n['location'],
+											name      : 'location',
+											action    : 'location',
+											width     : 225,
+											labelWidth: 70,
+											listeners : {
+												scope   : me,
+												'select': me.onLocationSelect
+											}
+
+										},
+										{
+											fieldLabel: i18n['begin_date'],
+											xtype     : 'datefield',
+											format    : 'Y-m-d',
+											name      : 'begin_date'
+
+										}
+
+									]
+
+								},
+								{
+									/**
+									 * Line two
+									 */
+									xtype   : 'fieldcontainer',
+									layout  : 'hbox',
+									defaults: { margin: '0 10 5 0' },
+									items   : [
+										{
+											xtype          : 'mitos.allergiescombo',
+											fieldLabel     : i18n['allergy'],
+											action         : 'allergie_name',
+											name           : 'allergy',
+											enableKeyEvents: true,
+											disabled       : true,
+											width          : 225,
+											labelWidth     : 70,
+											listeners      : {
+												scope   : me,
+												'select': me.onLiveSearchSelect,
+												change  : me.disableFieldLogic
+											}
+										},
+										{
+											xtype          : 'medicationlivetsearch',
+											fieldLabel     : i18n['allergy'],
+											hideLabel      : false,
+											action         : 'drug_name',
+											name           : 'allergy',
+											hidden         : true,
+											disabled       : true,
+											enableKeyEvents: true,
+											width          : 225,
+											labelWidth     : 70,
+											listeners      : {
+												scope   : me,
+												'select': me.onLiveSearchSelect,
+												change  : me.disableFieldLogic
+											}
+										},
+										{
+											xtype : 'textfield',
+											hidden: true,
+											name  : 'allergy_id',
+											action: 'idField'
+										},
+										{
+											xtype     : 'mitos.allergiesabdominalcombo',
+											fieldLabel: i18n['reaction'],
+											name      : 'reaction',
+											disabled  : true,
+											width     : 225,
+											labelWidth: 70,
+											listeners : {
+												scope : me,
+												change: me.disableFieldLogic
+											}
+
+										},
+										{
+											xtype     : 'mitos.allergieslocalcombo',
+											fieldLabel: i18n['reaction'],
+											name      : 'reaction',
+											hidden    : true,
+											disabled  : true,
+											width     : 225,
+											labelWidth: 70,
+											listeners : {
+												scope : me,
+												change: me.disableFieldLogic
+											}
+
+										},
+										{
+											xtype     : 'mitos.allergiesskincombo',
+											fieldLabel: i18n['reaction'],
+											name      : 'reaction',
+											hidden    : true,
+											disabled  : true,
+											width     : 225,
+											labelWidth: 70,
+											listeners : {
+												scope : me,
+												change: me.disableFieldLogic
+											}
+
+										},
+										{
+											xtype     : 'mitos.allergiessystemiccombo',
+											fieldLabel: i18n['reaction'],
+											name      : 'reaction',
+											hidden    : true,
+											disabled  : true,
+											width     : 225,
+											labelWidth: 70,
+											listeners : {
+												scope : me,
+												change: me.disableFieldLogic
+											}
+
+										},
+										{
+											fieldLabel: i18n['end_date'],
+											xtype     : 'datefield',
+											format    : 'Y-m-d',
+											name      : 'end_date'
+										}
+
+									]
+
+								},
+								{
+									/**
+									 * Line three
+									 */
+									xtype   : 'fieldcontainer',
+									layout  : 'hbox',
+									defaults: { margin: '0 10 5 0' },
+									items   : [
+										{
+											xtype     : 'mitos.allergiesseveritycombo',
+											fieldLabel: i18n['severity'],
+											name      : 'severity',
+											width     : 225,
+											labelWidth: 70
+
+										}
+
+
+									]
+								}
+							]
+						}
+					]
+				}),
+				bbar   : [
+					'->', {
+						text   : i18n['reviewed'],
+						action : 'review',
+						itemId : 'review_allergies',
+						scope  : me,
+						handler: me.onReviewed
+					}
+				]
+			},
+			{
+				/**
+				 * Active Problem Card panel
+				 */
+
+				xtype  : 'grid',
+				action : 'patientMedicalListGrid',
+				store  : me.patientMedicalIssuesStore,
+				columns: [
+
+					{
+						header   : i18n['problem'],
+						flex     : 1,
+						dataIndex: 'code_text'
+					},
+					{
+						xtype    : 'datecolumn',
+						header   : i18n['begin_date'],
+						width    : 100,
+						format   : 'Y-m-d',
+						dataIndex: 'begin_date'
+					},
+					{
+						xtype    : 'datecolumn',
+						header   : i18n['end_date'],
+						width    : 100,
+						format   : 'Y-m-d',
+						dataIndex: 'end_date'
+					}
+
+				],
+				plugins: Ext.create('App.classes.grid.RowFormEditing', {
+					autoCancel  : false,
+					errorSummary: false,
+					clicksToEdit: 1,
+
+					formItems: [
+						{
+							title  : i18n['general'],
+							xtype  : 'container',
+							padding: 10,
+							layout : 'vbox',
+							items  : [
+								{
+									/**
+									 * Line one
+									 */
+									xtype   : 'fieldcontainer',
+									layout  : 'hbox',
+									defaults: { margin: '0 10 5 0' },
+									items   : [
+										{
+											xtype          : 'liveicdxsearch',
+											fieldLabel     : i18n['problem'],
+											name           : 'code_text',
+											allowBlank     : false,
+											hideLabel      : false,
+											itemId         : 'medicalissues',
+											action         : 'medicalissues',
+											enableKeyEvents: true,
+											width          : 510,
+											labelWidth     : 70,
+											listeners      : {
+												scope   : me,
+												'select': me.onLiveSearchSelect
+											}
+										},
+										{
+											xtype : 'textfield',
+											hidden: true,
+											name  : 'code',
+											action: 'idField'
+										},
+
+
+										{
+											fieldLabel: i18n['begin_date'],
+											xtype     : 'datefield',
+											width     : 200,
+											labelWidth: 80,
+											format    : 'Y-m-d',
+											name      : 'begin_date'
+
+										}
+
+									]
+
+								},
+								{
+									/**
+									 * Line two
+									 */
+									xtype   : 'fieldcontainer',
+									layout  : 'hbox',
+									defaults: { margin: '0 10 5 0' },
+									items   : [
+
+										{
+											fieldLabel: i18n['ocurrence'],
+											width     : 250,
+											labelWidth: 70,
+											xtype     : 'mitos.occurrencecombo',
+											name      : 'ocurrence'
+
+										},
+
+										{
+											fieldLabel: i18n['outcome'],
+											xtype     : 'mitos.outcome2combo',
+											width     : 250,
+											labelWidth: 70,
+											name      : 'outcome'
+
+										},
+										{
+											fieldLabel: i18n['end_date'],
+											xtype     : 'datefield',
+											width     : 200,
+											labelWidth: 80,
+											format    : 'Y-m-d',
+											name      : 'end_date'
+
+										}
+
+									]
+
+								},
+								{
+									/**
+									 * Line three
+									 */
+									xtype   : 'fieldcontainer',
+									layout  : 'hbox',
+									defaults: { margin: '0 10 5 0' },
+									items   : [
+
+										{
+											xtype     : 'textfield',
+											width     : 250,
+											labelWidth: 70,
+											fieldLabel: i18n['referred_by'],
+											name      : 'referred_by'
+										}
+
+									]
+								}
+							]
+						}
+
+					]
+				}),
+				bbar   : [
+					'->', {
+						text   : i18n['reviewed'],
+						action : 'review',
+						itemId : 'review_active_problems',
+						scope  : me,
+						handler: me.onReviewed
+					}
+				]
+			},
+			{
+				/**
+				 * Surgery Card panel
+				 */
+
+				xtype  : 'grid',
+				action : 'patientSurgeryListGrid',
+				store  : me.patientSurgeryStore,
+				columns: [
+					{
+						header   : i18n['surgery'],
+						width    : 100,
+						flex     : 1,
+						dataIndex: 'surgery'
+					},
+					{
+						xtype    : 'datecolumn',
+						header   : i18n['date'],
+						width    : 100,
+						format   : 'Y-m-d',
+						dataIndex: 'date'
+					}
+
+				],
+				plugins: Ext.create('App.classes.grid.RowFormEditing', {
+					autoCancel  : false,
+					errorSummary: false,
+					clicksToEdit: 1,
+					formItems   : [
+						{
+							title  : i18n['general'],
+							xtype  : 'container',
+							padding: 10,
+							layout : 'vbox',
+							items  : [
+								{
+									/**
+									 * Line one
+									 */
+									xtype   : 'fieldcontainer',
+									layout  : 'hbox',
+									defaults: { margin: '0 10 5 0' },
+									items   : [
+										{
+											fieldLabel     : i18n['surgery'],
+											name           : 'surgery',
+											hideLabel      : false,
+											allowBlank     : false,
+											width          : 510,
+											labelWidth     : 70,
+											xtype          : 'surgerieslivetsearch',
+											itemId         : 'surgery',
+											action         : 'surgery',
+											enableKeyEvents: true,
+											listeners      : {
+												scope   : me,
+												'select': me.onLiveSearchSelect
+											}
+										},
+										{
+											xtype : 'textfield',
+											hidden: true,
+											name  : 'surgery_id',
+											action: 'idField'
+										},
+										{
+											fieldLabel: i18n['date'],
+											xtype     : 'datefield',
+											width     : 200,
+											labelWidth: 80,
+											format    : 'Y-m-d',
+											name      : 'date'
+
+										}
+
+									]
+
+								},
+								{
+									/**
+									 * Line two
+									 */
+									xtype   : 'fieldcontainer',
+									layout  : 'hbox',
+									defaults: { margin: '0 10 5 0' },
+									items   : [
+										{
+											fieldLabel: i18n['notes'],
+											xtype     : 'textfield',
+											width     : 510,
+											labelWidth: 70,
+											name      : 'notes'
+
+										},
+										{
+											fieldLabel: i18n['outcome'],
+											xtype     : 'mitos.outcome2combo',
+											width     : 200,
+											labelWidth: 80,
+											name      : 'outcome'
+
+										}
+
+
+									]
+
+								},
+								{
+									/**
+									 * Line three
+									 */
+									xtype   : 'fieldcontainer',
+									layout  : 'hbox',
+									defaults: { margin: '0 10 5 0' },
+									items   : [
+										{
+											xtype     : 'textfield',
+											width     : 260,
+											labelWidth: 70,
+
+											fieldLabel: i18n['referred_by'],
+											name      : 'referred_by'
+										}
+
+									]
+								}
+							]
+						}
+
+					]
+				}),
+				bbar   : [
+					'->', {
+						text   : i18n['reviewed'],
+						action : 'review',
+						itemId : 'review_surgery',
+						scope  : me,
+						handler: me.onReviewed
+					}
+				]
+			},
+			{
+				/**
+				 * Dental Card panel
+				 */
+
+				xtype  : 'grid',
+				action : 'patientDentalListGrid',
+				store  : me.patientDentalStore,
+				columns: [
+					{
+						header   : i18n['title'],
+						width    : 100,
+						dataIndex: 'title'
+					},
+					{
+						xtype    : 'datecolumn',
+						header   : i18n['begin_date'],
+						width    : 100,
+						format   : 'Y-m-d',
+						dataIndex: 'begin_date'
+					},
+					{
+						xtype    : 'datecolumn',
+						header   : i18n['end_date'],
+						flex     : 1,
+						format   : 'Y-m-d',
+						dataIndex: 'end_date'
+					}
+				],
+				plugins: Ext.create('App.classes.grid.RowFormEditing', {
+					autoCancel  : false,
+					errorSummary: false,
+					clicksToEdit: 1,
+					formItems   : [
+						{
+							title  : i18n['general'],
+							xtype  : 'container',
+							padding: 10,
+							layout : 'vbox',
+							items  : [
+								{
+									/**
+									 * Line one
+									 */
+									xtype   : 'fieldcontainer',
+									layout  : 'hbox',
+									defaults: { margin: '0 10 5 0' },
+									items   : [
+
+										{   xtype     : 'textfield',
+											width     : 225,
+											labelWidth: 70,
+											fieldLabel: i18n['title'],
+											action    : 'dental',
+											name      : 'title'
+										},
+//                                        {
+//   		                                    xtype:'textfield',
+//   		                                    hidden:true,
+//   		                                    name:'immunization_id',
+//   		                                    action:'idField'
+//   	                                    },
+										{
+											fieldLabel: i18n['begin_date'],
+											xtype     : 'datefield',
+											width     : 200,
+											labelWidth: 80,
+											format    : 'Y-m-d',
+											name      : 'begin_date'
+
+										},
+										{
+											fieldLabel: i18n['outcome'],
+											xtype     : 'mitos.outcome2combo',
+											width     : 250,
+											labelWidth: 70,
+											name      : 'outcome'
+
+										}
+
+									]
+
+								},
+								{
+									/**
+									 * Line two
+									 */
+									xtype   : 'fieldcontainer',
+									layout  : 'hbox',
+									defaults: { margin: '0 10 5 0' },
+									items   : [
+
+										{
+											xtype     : 'textfield',
+											width     : 225,
+											labelWidth: 70,
+											fieldLabel: i18n['referred_by'],
+											name      : 'referred_by'
+										},
+
+										{
+											fieldLabel: i18n['end_date'],
+											xtype     : 'datefield',
+											width     : 200,
+											labelWidth: 80,
+											format    : 'Y-m-d',
+											name      : 'end_date'
+
+										},
+										{
+											fieldLabel: i18n['ocurrence'],
+											xtype     : 'mitos.occurrencecombo',
+											width     : 250,
+											labelWidth: 70,
+											name      : 'ocurrence'
+
+										}
+
+									]
+
+								}
+							]
+						}
+
+					]
+				}),
+				bbar   : [
+					'->', {
+						text   : i18n['reviewed'],
+						action : 'review',
+						itemId : 'review_dental',
+						scope  : me,
+						handler: me.onReviewed
+					}
+				]
+			},
+			{
+				/**
+				 * Medications panel
+				 */
+
+				xtype  : 'grid',
+				action : 'patientMedicationsListGrid',
+				store  : me.patientMedicationsStore,
+				columns: [
+					{
+						header   : i18n['medication'],
+						flex     : 1,
+						dataIndex: 'medication'
+					},
+					{
+						xtype    : 'datecolumn',
+						header   : i18n['begin_date'],
+						width    : 100,
+						format   : 'Y-m-d',
+						dataIndex: 'begin_date'
+					},
+					{
+						xtype    : 'datecolumn',
+						header   : i18n['end_date'],
+						width    : 100,
+						format   : 'Y-m-d',
+						dataIndex: 'end_date'
+					}
+				],
+				plugins: Ext.create('App.classes.grid.RowFormEditing', {
+					autoCancel  : false,
+					errorSummary: false,
+					clicksToEdit: 1,
+
+					formItems: [
+						{
+							title  : i18n['general'],
+							xtype  : 'container',
+							padding: 10,
+							layout : 'vbox',
+							items  : [
+								{
+									/**
+									 * Line one
+									 */
+									xtype   : 'fieldcontainer',
+									layout  : 'hbox',
+									defaults: { margin: '0 10 5 0' },
+									items   : [
+										{
+											xtype          : 'medicationlivetsearch',
+											fieldLabel     : i18n['medication'],
+											hideLabel      : false,
+											itemId         : 'medication',
+											name           : 'medication',
+											action         : 'medication',
+											enableKeyEvents: true,
+											width          : 520,
+											labelWidth     : 70,
+											listeners      : {
+												scope   : me,
+												'select': me.onLiveSearchSelect
+											}
+										},
+										{
+											xtype : 'textfield',
+											hidden: true,
+											name  : 'medication_id',
+											action: 'idField'
+										},
+
+										{
+											fieldLabel: i18n['begin_date'],
+											xtype     : 'datefield',
+											width     : 200,
+											labelWidth: 80,
+											format    : 'Y-m-d',
+											name      : 'begin_date'
+
+										}
+
+									]
+
+								},
+								{
+									/**
+									 * Line two
+									 */
+									xtype   : 'fieldcontainer',
+									layout  : 'hbox',
+									defaults: { margin: '0 10 5 0' },
+									items   : [
+										{
+											fieldLabel: i18n['outcome'],
+											xtype     : 'mitos.outcome2combo',
+											width     : 250,
+											labelWidth: 70,
+											name      : 'outcome'
+										},
+										{
+											xtype     : 'textfield',
+											width     : 260,
+											fieldLabel: i18n['referred_by'],
+											name      : 'referred_by'
+										},
+										{
+											fieldLabel: i18n['end_date'],
+											xtype     : 'datefield',
+											width     : 200,
+											labelWidth: 80,
+											format    : 'Y-m-d',
+											name      : 'end_date'
+										}
+
+									]
+
+								},
+								{
+									/**
+									 * Line three
+									 */
+									xtype   : 'fieldcontainer',
+									layout  : 'hbox',
+									defaults: { margin: '0 10 5 0' },
+									items   : [
+
+										{
+											fieldLabel: i18n['ocurrence'],
+											width     : 250,
+											labelWidth: 70,
+											xtype     : 'mitos.occurrencecombo',
+											name      : 'ocurrence'
+
+										}
+
+									]
+								}
+							]
+						}
+					]
+				}),
+				bbar   : [
+					'->', {
+						text   : i18n['reviewed'],
+						action : 'review',
+						itemId : 'review_medications',
+						scope  : me,
+						handler: me.onReviewed
+					}
+				]
+			},
+			{
+				/**
+				 * Lab panel
+				 */
+				xtype : 'container',
+				action: 'patientLabs',
+				layout: 'border',
+				items : [
+					{
+						xtype     : 'panel',
+						region    : 'north',
+						layout    : 'border',
+						bodyBorder: false,
+						border    : false,
+						height    : 350,
+						split     : true,
+						items     : [
+							{
+								xtype    : 'grid',
+								region   : 'west',
+								width    : 290,
+								split    : true,
+								store    : me.labPanelsStore,
+								columns  : [
+									{
+										header   : i18n['laboratories'],
+										dataIndex: 'label',
+										flex     : 1
+									}
+								],
+								listeners: {
+									scope          : me,
+									itemclick      : me.onLabPanelSelected,
+									selectionchange: me.onLabPanelSelectionChange
+								}
+							},
+							{
+								xtype : 'panel',
+								action: 'labPreviewPanel',
+								title : i18n['laboratory_preview'],
+								region: 'center',
+								items : [
+									me.uploadWin = Ext.create('Ext.window.Window', {
+										draggable  : false,
+										closable   : false,
+										closeAction: 'hide',
+										items      : [
+											{
+												xtype      : 'form',
+												bodyPadding: 10,
+												width      : 400,
+												items      : [
+													{
+														xtype     : 'filefield',
+														name      : 'filePath',
+														buttonText: i18n['select_a_file'] + '...',
+														anchor    : '100%'
+													}
+												],
+												api        : {
+													submit: DocumentHandler.uploadDocument
+												}
+											}
+										],
+										buttons    : [
+											{
+												text   : i18n['cancel'],
+												handler: function() {
+													me.uploadWin.close();
+												}
+											},
+											{
+												text   : i18n['upload'],
+												scope  : me,
+												handler: me.onLabUpload
+											}
+										]
+									})
+								]
+							}
+						],
+						tbar      : [
+							'->',
+							{
+								text: i18n['scan']
+							},
+							'-',
+							{
+								text    : i18n['upload'],
+								disabled: true,
+								action  : 'uploadBtn',
+								scope   : me,
+								handler : me.onLabUploadWind
+							}
+						]
+					},
+					{
+						xtype : 'container',
+						region: 'center',
+						layout: 'border',
+						split : true,
+						items : [
+							{
+								xtype      : 'form',
+								title      : i18n['laboratory_entry_form'],
+								region     : 'west',
+								width      : 290,
+								split      : true,
+								bodyPadding: 5,
+								autoScroll : true,
+								bbar       : [
+									'->',
+									{
+										text   : i18n['reset'],
+										scope  : me,
+										handler: me.onLabResultsReset
+									},
+									'-',
+									{
+										text   : i18n['sign'],
+										scope  : me,
+										handler: me.onLabResultsSign
+									},
+									'-',
+									{
+										text   : i18n['save'],
+										scope  : me,
+										handler: me.onLabResultsSave
+									}
+								]
+							},
+							{
+								xtype : 'panel',
+								region: 'center',
+								height: 300,
+								split : true,
+								items : [
+									{
+										xtype    : 'lalboratoryresultsdataview',
+										action   : 'lalboratoryresultsdataview',
+										store    : Ext.create('App.store.patient.PatientLabsResults'),
+										listeners: {
+											scope    : me,
+											itemclick: me.onLabResultClick
+										}
+									}
+								]
+							}
+						]
+					}
+				]
+			}
+		];
+
+		me.dockedItems = [
+			{
+				xtype: 'toolbar',
+				items: [
+					{
+
+						text        : i18n['immunization'],
+						enableToggle: true,
+						toggleGroup : 'medicalWin',
+						pressed     : true,
+						itemId      : 'immunization',
+						action      : 'immunization',
+						scope       : me,
+						handler     : me.cardSwitch
+					},
+					'-',
+					{
+						text        : i18n['allergies'],
+						enableToggle: true,
+						toggleGroup : 'medicalWin',
+						itemId      : 'allergies',
+						action      : 'allergies',
+						scope       : me,
+						handler     : me.cardSwitch
+					},
+					'-',
+					{
+						text        : i18n['active_problems'],
+						enableToggle: true,
+						toggleGroup : 'medicalWin',
+						itemId      : 'issues',
+						action      : 'issues',
+						scope       : me,
+						handler     : me.cardSwitch
+					},
+					'-',
+					{
+						text        : i18n['surgeries'],
+						enableToggle: true,
+						toggleGroup : 'medicalWin',
+						itemId      : 'surgery',
+						action      : 'surgery',
+						scope       : me,
+						handler     : me.cardSwitch
+					},
+					'-',
+					{
+						text        : i18n['dental'],
+						enableToggle: true,
+						toggleGroup : 'medicalWin',
+						itemId      : 'dental',
+						action      : 'dental',
+						scope       : me,
+						handler     : me.cardSwitch
+					},
+					'-',
+					{
+						text        : i18n['medications'],
+						enableToggle: true,
+						toggleGroup : 'medicalWin',
+						itemId      : 'medications',
+						action      : 'medications',
+						scope       : me,
+						handler     : me.cardSwitch
+					},
+					'-',
+					{
+						text        : i18n['laboratories'],
+						enableToggle: true,
+						toggleGroup : 'medicalWin',
+						itemId      : 'laboratories',
+						action      : 'laboratories',
+						scope       : me,
+						handler     : me.cardSwitch
+					},
+					'->',
+					{
+						text   : i18n['add_new'],
+						action : 'AddRecord',
+						scope  : me,
+						handler: me.onAddItem
+					}
+				]
+			}
+		];
+		me.listeners = {
+			scope: me,
+			show : me.onMedicalWinShow,
+			close : me.onMedicalWinClose
+		};
+		me.callParent(arguments);
+	},
+
+	//*******************************************************
+
+	onLabPanelSelected: function(grid, model) {
+		var me = this,
+			formPanel = me.query('[action="patientLabs"]')[0].down('form'),
+			dataView = me.query('[action="lalboratoryresultsdataview"]')[0],
+			store = dataView.store,
+			fields = model.data.fields;
+
+		me.currLabPanelId = model.data.id;
+		me.removeLabDocument();
+		formPanel.removeAll();
+
+		formPanel.add({
+			xtype : 'textfield',
+			name  : 'id',
+			hidden: true
+		});
+		for(var i = 0; i < fields.length; i++) {
+			formPanel.add({
+				xtype     : 'fieldcontainer',
+				layout    : 'hbox',
+				margin    : 0,
+				anchor    : '100%',
+				fieldLabel: fields[i].code_text_short || fields[i].loinc_name,
+				labelWidth: 130,
+				items     : [
+					{
+						xtype     : 'textfield',
+						name      : fields[i].loinc_number,
+						flex      : 1,
+						allowBlank: fields[i].required_in_panel != 'R'
+					},
+					{
+						xtype: 'mitos.unitscombo',
+						value: fields[i].default_unit,
+						name : fields[i].loinc_number + '_unit',
+						width: 90
+					}
+				]
+			});
+		}
+
+		store.load({params: {parent_id: model.data.id}});
+	},
+
+	onLabPanelSelectionChange: function(model, record) {
+		this.query('[action="uploadBtn"]')[0].setDisabled(record.length == 0);
+	},
+
+	onLabUploadWind: function() {
+		var me = this,
+			previewPanel = me.query('[action="labPreviewPanel"]')[0];
+		me.uploadWin.show();
+		me.uploadWin.alignTo(previewPanel.el.dom, 'tr-tr', [-5, 30])
+	},
+
+	onLabUpload: function(btn) {
+		var me = this,
+            formPanel = me.uploadWin.down('form'),
+			form = formPanel.getForm(),
+			win = btn.up('window');
+
+		if(form.isValid()) {
+            formPanel.el.mask(i18n['uploading_laboratory'] + '...');
+			form.submit({
+				//waitMsg: i18n['uploading_laboratory'] + '...',
+				params : {
+					pid    : app.patient.pid,
+					docType: 'laboratory',
+					eid : app.patient.eid
+				},
+				success: function(fp, o) {
+                    formPanel.el.unmask();
+                    say(o.result);
+					win.close();
+					me.getLabDocument(o.result.doc.url);
+					me.addNewLabResults(o.result.doc.id);
+				},
+				failure: function(fp, o) {
+                    formPanel.el.unmask();
+                    say(o.result);
+					win.close();
+				}
+			});
+		}
+	},
+
+	onLabResultClick: function(view, model) {
+		var me = this,
+			form = me.query('[action="patientLabs"]')[0].down('form').getForm();
+
+		if(me.currDocUrl != model.data.document_url) {
+			form.reset();
+			model.data.data.id = model.data.id;
+			form.setValues(model.data.data);
+			me.getLabDocument(model.data.document_url);
+			me.currDocUrl = model.data.document_url;
+		}
+
+	},
+
+	onLabResultsSign: function() {
+		var me = this,
+			form = me.query('[action="patientLabs"]')[0].down('form').getForm(),
+			dataView = me.query('[action="lalboratoryresultsdataview"]')[0],
+			store = dataView.store,
+			values = form.getValues(),
+			record = dataView.getSelectionModel().getLastSelected();
+
+		if(form.isValid()) {
+			if(values.id) {
+				me.passwordVerificationWin(function(btn, password) {
+					if(btn == 'ok') {
+						User.verifyUserPass(password, function(provider, response) {
+							if(response.result) {
+								say(record);
+								Medical.signPatientLabsResultById(record.data.id, function(provider, response) {
+									store.load({params: {parent_id: me.currLabPanelId}});
+								});
+							} else {
+								Ext.Msg.show({
+									title  : 'Oops!',
+									msg    : i18n['incorrect_password'],
+									//buttons:Ext.Msg.OKCANCEL,
+									buttons: Ext.Msg.OK,
+									icon   : Ext.Msg.ERROR,
+									fn     : function(btn) {
+										if(btn == 'ok') {
+											//me.onLabResultsSign();
+										}
+									}
+								});
+							}
+						});
+					}
+				});
+			} else {
+				Ext.Msg.show({
+					title  : 'Oops!',
+					msg    : i18n['nothing_to_sign'],
+					//buttons:Ext.Msg.OKCANCEL,
+					buttons: Ext.Msg.OK,
+					icon   : Ext.Msg.ERROR,
+					fn     : function(btn) {
+						if(btn == 'ok') {
+							//me.onLabResultsSign();
+						}
+					}
+				});
+			}
+
+		}
+	},
+
+	onLabResultsSave: function(btn) {
+		var me = this,
+			form = btn.up('form').getForm(),
+			dataView = me.query('[action="lalboratoryresultsdataview"]')[0],
+			store = dataView.store,
+			values = form.getValues(),
+			record = dataView.getSelectionModel().getLastSelected();
+
+		if(form.isValid()) {
+			Medical.updatePatientLabsResult(values, function() {
+				store.load({params: {parent_id: record.data.parent_id}});
+				form.reset();
+			});
+		}
+	},
+
+
+	addNewLabResults: function(docId) {
+		var me = this,
+			dataView = me.query('[action="lalboratoryresultsdataview"]')[0],
+			store = dataView.store,
+			params = {
+				parent_id  : me.currLabPanelId,
+				document_id: docId
+			};
+		Medical.addPatientLabsResult(params, function(provider, response) {
+			store.load({params: {parent_id: me.currLabPanelId}});
+
+		});
+	},
+
+	onReviewed: function(btn) {
+		var me = this,
+			BtnId = btn.itemId,
+			params = {
+				eid : app.patient.eid,
+				area: BtnId
+			};
+
+		Medical.reviewMedicalWindowEncounter(params, function(provider, response) {
+			me.msg('Sweet!', i18n['succefully_reviewed']);
+		});
+	},
+
+	onLabResultsReset: function(btn) {
+		var form = btn.up('form').getForm();
+		form.reset();
+	},
+
+	getLabDocument: function(src) {
+		var panel = this.query('[action="labPreviewPanel"]')[0];
+		panel.remove(this.doc);
+		panel.add(this.doc = Ext.create('App.classes.ManagedIframe', {src: src}));
+	},
+
+	removeLabDocument: function(src) {
+		var panel = this.query('[action="labPreviewPanel"]')[0];
+		panel.remove(this.doc);
+	},
+
+	//*********************************************************
+
+	onLiveSearchSelect: function(combo, model) {
+
+		var me = this,
+			field, field2, id;
+		if(combo.action == 'immunizations') {
+			id = model[0].data.id;
+			field = combo.up('container').query('[action="idField"]')[0];
+			field.setValue(id);
+		}
+		else if(combo.id == 'allergie_name' || combo.id == 'drug_name') {
+			id = model[0].data.id;
+			field = combo.up('fieldcontainer').query('[action="idField"]')[0];
+			field.setValue(id);
+
+		}
+		else if(combo.action == 'medicalissues') {
+			id = model[0].data.code;
+			field = combo.up('fieldcontainer').query('[action="idField"]')[0];
+			field2 = combo.up('fieldcontainer').query('[action="medicalissues"]')[0];
+			field.setValue(id);
+			field2.setValue(model[0].data.code_text);
+		}
+		else if(combo.action == 'surgery') {
+			id = model[0].data.id;
+			field = combo.up('fieldcontainer').query('[action="idField"]')[0];
+			field.setValue(id);
+
+		}
+		else if(combo.action == 'medication') {
+			id = model[0].data.id;
+			field = combo.up('fieldcontainer').query('[action="idField"]')[0];
+			field.setValue(id);
+		}
+
+	},
+
+	onAddItem       : function() {
+
+		var me = this, grid = this.getLayout().getActiveItem(), store = grid.store,
+			params;
+
+		grid.editingPlugin.cancelEdit();
+		store.insert(0, {
+			created_uid: app.user.id,
+			pid        : app.patient.pid,
+			create_date: new Date(),
+			eid        : app.patient.eid,
+			begin_date : new Date()
+
+		});
+		grid.editingPlugin.startEdit(0, 0);
+		if(app.patient.eid != null) {
+			if(grid.action == 'patientImmuListGrid') {
+				params = {
+					eid : app.patient.eid,
+					area: 'review_immunizations'
+				};
+			} else if(grid.action == 'patientAllergiesListGrid') {
+				params = {
+					eid : app.patient.eid,
+					area: 'review_allergies'
+				};
+			} else if(grid.action == 'patientMedicalListGrid') {
+				params = {
+					eid : app.patient.eid,
+					area: 'review_active_problems'
+				};
+			} else if(grid.action == 'patientSurgeryListGrid') {
+				params = {
+					eid : app.patient.eid,
+					area: 'review_surgery'
+				};
+			} else if(grid.action == 'patientDentalListGrid') {
+				params = {
+					eid : app.patient.eid,
+					area: 'review_dental'
+				};
+			} else if(grid.action == 'patientMedicationsListGrid') {
+				params = {
+					eid : app.patient.eid,
+					area: 'review_medications'
+				};
+			}
+			Medical.reviewMedicalWindowEncounter(params);
+		}
+
+
+	},
+	hideall         : function(combo, skinCombo, localCombo, abdominalCombo, systemicCombo) {
+
+		skinCombo.hide(true);
+		skinCombo.setDisabled(true);
+		skinCombo.reset();
+		localCombo.hide(true);
+		localCombo.setDisabled(true);
+		localCombo.reset();
+		abdominalCombo.hide(true);
+		abdominalCombo.setDisabled(true);
+		abdominalCombo.reset();
+		systemicCombo.hide(true);
+		systemicCombo.setDisabled(true);
+		systemicCombo.reset();
+
+	},
+	onLocationSelect: function(combo, record) {
+		var me = this,
+			skinCombo = combo.up('form').getForm().findField('skinreaction'),
+			localCombo = combo.up('form').getForm().findField('localreaction'),
+			abdominalCombo = combo.up('form').getForm().findField('abdominalreaction'),
+			systemicCombo = combo.up('form').getForm().findField('systemicreaction'),
+			value = combo.getValue();
+
+		me.hideall(combo, skinCombo, localCombo, abdominalCombo, systemicCombo);
+		if(value == 'Skin') {
+			skinCombo.show(true);
+			skinCombo.setDisabled(false);
+		} else if(value == 'Local') {
+			localCombo.show(true);
+			localCombo.setDisabled(false);
+		} else if(value == 'Abdominal') {
+			abdominalCombo.show(true);
+			abdominalCombo.setDisabled(false);
+		} else if(value == 'Systemic / Anaphylactic') {
+			systemicCombo.show(true);
+			systemicCombo.setDisabled(false);
+
+		}
+	},
+
+
+	disableFieldLogic: function(field, newValue) {
+		field.setDisabled((newValue == '' || newValue == null));
+	},
+
+	onAllergyTypeSelect: function(combo, record) {
+		var me = this,
+			allergyCombo = combo.up('form').getForm().findField('allergie_name'),
+			drugLiveSearch = combo.up('form').getForm().findField('drug_name');
+
+		if(record[0].data.allergy_type == 'Drug'){
+			allergyCombo.hide(true);
+			allergyCombo.setDisabled(true);
+			allergyCombo.reset();
+			drugLiveSearch.show(true);
+			drugLiveSearch.setDisabled(false);
+		}
+		else if(record[0].data.allergy_type == '' || record[0].data.allergy_type == null) {
+			allergyCombo.setDisabled(true);
+			drugLiveSearch.hide(true);
+			drugLiveSearch.setDisabled(true);
+			allergyCombo.show(true);
+		}
+		else {
+			drugLiveSearch.hide(true);
+			drugLiveSearch.setDisabled(true);
+			allergyCombo.show(true);
+			allergyCombo.setDisabled(false);
+			allergyCombo.reset();
+			allergyCombo.store.load({params: {allergy_type: record[0].data.allergy_type}})
+		}
+
+
+	},
+	setDefaults: function(options) {
+		var data;
+
+		if(options.update) {
+			data = options.update[0].data;
+			data.updated_uid = app.user.id;
+		} else if(options.create) {
+
+		}
+	},
+
+	cardSwitch: function(btn) {
+		var me = this,
+			layout = me.getLayout(),
+			addBtn = me.down('toolbar').query('[action="AddRecord"]')[0],
+			p = app.patient,
+			title;
+
+		me.pid = p.pid;
+		addBtn.show();
+
+		if(btn.action == 'immunization') {
+			layout.setActiveItem(0);
+			title = 'Immunizations';
+
+		} else if(btn.action == 'allergies') {
+			layout.setActiveItem(1);
+			title = 'Allergies';
+
+		} else if(btn.action == 'issues') {
+			layout.setActiveItem(2);
+			title = 'Medical Issues';
+
+		} else if(btn.action == 'surgery') {
+			layout.setActiveItem(3);
+			title = 'Surgeries';
+
+		} else if(btn.action == 'dental') {
+			layout.setActiveItem(4);
+			title = 'Dentals';
+
+		} else if(btn.action == 'medications') {
+			layout.setActiveItem(5);
+			title = 'Medications';
+
+		} else if(btn.action == 'laboratories') {
+			layout.setActiveItem(6);
+			title = 'Laboratories';
+			addBtn.hide();
+		}
+
+		me.setTitle(p.name + ' (' + title + ') ' + (p.readOnly ? '-  <span style="color:red">[Read Mode]</span>' : ''));
+
+	},
+
+	onMedicalWinShow: function() {
+		var me = this,
+			reviewBts = me.query('button[action="review"]'),
+			p = app.patient;
+
+		me.pid = p.pid;
+		me.setTitle(p.name + (p.readOnly ? ' <span style="color:red">[' + i18n['read_mode'] + ']</span>' : ''));
+		me.setReadOnly(app.patient.readOnly);
+		for(var i = 0; i < reviewBts.length; i++) {
+			reviewBts[i].setVisible((app.patient.eid != null));
+		}
+		me.labPanelsStore.load();
+		me.patientImmuListStore.load({params: {pid: app.patient.pid}});
+		me.patientAllergiesListStore.load({params: {pid: app.patient.pid}});
+		me.patientMedicalIssuesStore.load({params: {pid: app.patient.pid}});
+		me.patientSurgeryStore.load({params: {pid: app.patient.pid}});
+		me.patientDentalStore.load({params: {pid: app.patient.pid}});
+		me.patientMedicationsStore.load({params: {pid: app.patient.pid}});
+
+    },
+
+    onMedicalWinClose:function(){
+        if(app.currCardCmp.id == 'panelSummary'){
+
+            app.currCardCmp.loadStores();
+
+        }
+
+    }
+
+
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 10:46 PM
+ */
+Ext.define('App.view.patient.windows.Charts', {
+    extend       : 'Ext.window.Window',
+    requires     : [
+        'App.store.patient.Vitals'
+    ],
+    title        : i18n['vector_charts'],
+    layout       : 'card',
+    closeAction  : 'hide',
+    modal        : true,
+    width        : window.innerWidth - 200,
+    height       : window.innerHeight - 200,
+    maximizable  : true,
+    //maximized  : true,
+    initComponent: function() {
+        var me = this;
+
+        me.vitalsStore = Ext.create('App.store.patient.Vitals');
+        me.graphStore = Ext.create('App.store.patient.VectorGraph');
+
+        me.WeightForAgeInfStore = Ext.create('App.store.patient.charts.WeightForAgeInf');
+        me.LengthForAgeInfStore = Ext.create('App.store.patient.charts.LengthForAgeInf');
+        me.WeightForRecumbentInfStore = Ext.create('App.store.patient.charts.WeightForRecumbentInf');
+        me.HeadCircumferenceInfStore = Ext.create('App.store.patient.charts.HeadCircumferenceInf');
+        me.WeightForStatureStore = Ext.create('App.store.patient.charts.WeightForStature');
+        me.WeightForAgeStore = Ext.create('App.store.patient.charts.WeightForAge');
+        me.StatureForAgeStore = Ext.create('App.store.patient.charts.StatureForAge');
+        me.BMIForAgeStore = Ext.create('App.store.patient.charts.BMIForAge');
+
+        me.tbar = ['->', {
+            text        : i18n['bp_pulse_temp'],
+            action      : 'bpPulseTemp',
+            pressed     : true,
+            enableToggle: true,
+            toggleGroup : 'charts',
+            scope       : me,
+            handler     : me.onChartSwitch
+        },'-',{
+            text        : i18n['weight_for_age'],
+            action      : 'WeightForAgeInf',
+            enableToggle: true,
+            toggleGroup : 'charts',
+            scope       : me,
+            handler     : me.onChartSwitch
+        },'-',{
+            text        : i18n['length_for_age'],
+            action      : 'LengthForAgeInf',
+            enableToggle: true,
+            toggleGroup : 'charts',
+            scope       : me,
+            handler     : me.onChartSwitch
+        },'-',{
+            text        : i18n['weight_for_recumbent'],
+            action      : 'WeightForRecumbentInf',
+            enableToggle: true,
+            toggleGroup : 'charts',
+            scope       : me,
+            handler     : me.onChartSwitch
+        },'-',{
+            text        : i18n['head_circumference'],
+            action      : 'HeadCircumferenceInf',
+            enableToggle: true,
+            toggleGroup : 'charts',
+            scope       : me,
+            handler     : me.onChartSwitch
+        },'-',{
+            text        : i18n['weight_for_stature'],
+            action      : 'WeightForStature',
+            enableToggle: true,
+            toggleGroup : 'charts',
+            scope       : me,
+            handler     : me.onChartSwitch
+        },'-',{
+            text        : i18n['weight_for_age'],
+            action      : 'WeightForAge',
+            enableToggle: true,
+            toggleGroup : 'charts',
+            scope       : me,
+            handler     : me.onChartSwitch
+        },'-',{
+            text        : i18n['stature_for_age'],
+            action      : 'StatureForAge',
+            enableToggle: true,
+            toggleGroup : 'charts',
+            scope       : me,
+            handler     : me.onChartSwitch
+        },'-',{
+            text        : i18n['bmi_for_age'],
+            action      : 'BMIForAge',
+            enableToggle: true,
+            toggleGroup : 'charts',
+            scope       : me,
+            handler     : me.onChartSwitch
+        },'-'];
+
+        me.tools = [
+            {
+                type   : 'print',
+                tooltip: i18n['print_chart'],
+                handler: function() {
+                    console.log(this.up('window').down('chart'));
+                }
+            }
+        ];
+
+        me.items = [
+            Ext.create('App.view.patient.charts.BPPulseTemp', {
+                store: me.vitalsStore
+            }),
+
+            me.WeightForAgeInf = Ext.create('App.view.patient.charts.HeadCircumference', {
+                title   : i18n['weight_for_age_0_3_mos'],
+                xTitle  : i18n['weight_kg'],
+                yTitle  : i18n['age_months'],
+                xMinimum: 1,
+                xMaximum: 19,
+                yMinimum: 0,
+                yMaximum: 36,
+                store   : me.WeightForAgeInfStore
+            }),
+
+            me.LengthForAgeInf = Ext.create('App.view.patient.charts.HeadCircumference', {
+                title   : i18n['length_for_age_0_3_mos'],
+                xTitle  : i18n['length_cm'],
+                yTitle  : i18n['age_months'],
+                xMinimum: 40,
+                xMaximum: 110,
+                yMinimum: 0,
+                yMaximum: 36,
+                store   : me.LengthForAgeInfStore
+            }),
+
+            me.WeightForRecumbentInf = Ext.create('App.view.patient.charts.HeadCircumference', {
+                title   : i18n['weight_for_recumbent_0_3_mos'],
+                xTitle  : i18n['weight_kg'],
+                yTitle  : i18n['length_cm'],
+                xMinimum: 1,
+                xMaximum: 20,
+                yMinimum: 45,
+                yMaximum: 103.5,
+                store   : me.WeightForRecumbentInfStore
+            }),
+
+            me.HeadCircumferenceInf = Ext.create('App.view.patient.charts.HeadCircumference', {
+                title   : i18n['head_circumference_0_3_mos'],
+                xTitle  : i18n['circumference_cm'],
+                yTitle  : i18n['age_months'],
+                xMinimum: 30,
+                xMaximum: 55,
+                yMinimum: 0,
+                yMaximum: 36,
+                store   : me.HeadCircumferenceInfStore
+            }),
+
+            me.WeightForStature = Ext.create('App.view.patient.charts.HeightForStature', {
+                store: me.WeightForStatureStore
+            }),
+
+            me.WeightForAge = Ext.create('App.view.patient.charts.HeadCircumference', {
+                title   : i18n['weight_for_age_2_20_years'],
+                xTitle  : i18n['weight_kg'],
+                yTitle  : i18n['age_years'],
+                xMinimum: 10,
+                xMaximum: 110,
+                yMinimum: 2,
+                yMaximum: 20,
+                store   : me.WeightForAgeStore
+            }),
+
+            me.StatureForAge = Ext.create('App.view.patient.charts.HeadCircumference', {
+                title   : i18n['stature_for_age_2_20_years'],
+                xTitle  : i18n['stature_cm'],
+                yTitle  : i18n['age_years'],
+                xMinimum: 60,
+                xMaximum: 200,
+                yMinimum: 2,
+                yMaximum: 20,
+                store   : me.StatureForAgeStore
+            }),
+
+            me.BMIForAge = Ext.create('App.view.patient.charts.HeadCircumference', {
+                title   : i18n['bmi_for_age_2_20_years'],
+                xTitle  : i18n['bmi_kg'],
+                yTitle  : i18n['age_years'],
+                xMinimum: 10,
+                xMaximum: 35,
+                yMinimum: 2,
+                yMaximum: 20,
+                store   : me.BMIForAgeStore
+            })
+        ];
+
+        me.listeners = {
+            scope: me,
+            show : me.onWinShow
+        };
+
+        me.callParent(arguments);
+    },
+
+    onWinShow: function() {
+        var me = this, layout = me.getLayout(), btns = me.down('toolbar').items.items, btn;
+        layout.setActiveItem(0);
+        me.vitalsStore.load({params: {pid: app.patient.pid}});
+        for(var i = 0; i < btns.length; i++) {
+            btn = btns[i];
+            if(btn.type == 'button' && (
+                btn.action == 'WeightForAgeInf' || btn.action == 'LengthForAgeInf' || btn.action == 'WeightForRecumbentInf' || btn.action == 'HeadCircumferenceInf')) {
+                btn.setVisible(app.patient.age.DMY.years < 2);
+            } else if(btn.type == 'button') {
+                btn.setVisible(app.patient.age.DMY.years >= 2);
+            }
+        }
+    },
+
+    onChartSwitch: function(btn) {
+        var me = this, layout = me.getLayout(), card, chart, x, y;
+        if(btn.action == 'bpPulseTemp') {
+            layout.setActiveItem(0);
+        } else if(btn.action == 'WeightForAgeInf') {
+            layout.setActiveItem(1);
+            me.WeightForAgeInfStore.load({params: {pid: app.patient.pid}});
+        } else if(btn.action == 'LengthForAgeInf') {
+            layout.setActiveItem(2);
+            me.LengthForAgeInfStore.load({params: {pid: app.patient.pid}});
+        } else if(btn.action == 'WeightForRecumbentInf') {
+            layout.setActiveItem(3);
+            me.WeightForRecumbentInfStore.load({params: {pid: app.patient.pid}});
+        } else if(btn.action == 'HeadCircumferenceInf') {
+            layout.setActiveItem(4);
+            me.HeadCircumferenceInfStore.load({params: {pid: app.patient.pid}});
+        } else if(btn.action == 'WeightForStature') {
+            layout.setActiveItem(5);
+            me.WeightForStatureStore.load({params: {pid: app.patient.pid}});
+        } else if(btn.action == 'WeightForAge') {
+            layout.setActiveItem(6);
+            me.WeightForAgeStore.load({params: {pid: app.patient.pid}});
+        } else if(btn.action == 'StatureForAge') {
+            layout.setActiveItem(7);
+            me.StatureForAgeStore.load({params: {pid: app.patient.pid}});
+        } else if(btn.action == 'BMIForAge') {
+            layout.setActiveItem(8);
+            me.BMIForAgeStore.load({params: {pid: app.patient.pid}});
+        }
+    }
+});
+
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/15/12
+ * Time: 4:30 PM
+ *
+ * @namespace Immunization.getImmunizationsList
+ * @namespace Immunization.getPatientImmunizations
+ * @namespace Immunization.addPatientImmunization
+ */
+Ext.define('App.view.patient.windows.PreventiveCare', {
+	extend       : 'App.classes.window.Window',
+	title        : i18n['preventive_care_window'],
+	closeAction  : 'hide',
+    height       : 750,
+   	width        : 1200,
+	bodyStyle    : 'background-color:#fff',
+	modal        : true,
+    layout       : 'fit',
+	defaults     : {
+		margin: 5
+	},
+	initComponent: function() {
+		var me = this;
+
+		me.patientPreventiveCare = Ext.create('App.store.patient.PreventiveCare', {
+			groupField: 'type',
+			sorters   : ['type'],
+			autoSync  : true
+		});
+
+		me.grid  = Ext.create('App.classes.GridPanel', {
+            store      : me.patientPreventiveCare,
+			features: Ext.create('Ext.grid.feature.Grouping', {
+					groupHeaderTpl   : i18n['type'] + ': {name} ({rows.length} ' + i18n['item'] + '{[values.rows.length > 1 ? "s" : ""]})',
+					hideGroupedHeader: true,
+				    startCollapsed: true
+			}),
+            columns    : [
+	            {
+		            header     : i18n['type'],
+		            dataIndex: 'type',
+		            width:200
+	            },
+                {
+	                header     : i18n['description'],
+                    dataIndex: 'description',
+	                width: 200
+                },
+                {
+	                header     : i18n['reason'],
+	                dataIndex: 'reason',
+	                flex:1
+
+                }
+
+
+            ],
+			plugins: Ext.create('App.classes.grid.RowFormEditing', {
+				autoCancel  : false,
+				errorSummary: false,
+				clicksToEdit: 1,
+
+				formItems: [
+					{
+						title  : i18n['general'],
+						xtype  : 'container',
+						padding: 10,
+						layout : 'vbox',
+						items  : [
+							{
+								/**
+								 * Line one
+								 */
+								xtype   : 'fieldcontainer',
+								layout  : 'hbox',
+								defaults: { margin: '0 10 5 0' },
+								items   : [
+									{
+										xtype:'textfield',
+										name:'reason',
+										fieldLabel: i18n['reason'],
+										width:585,
+										labelWidth: 70,
+										disabled:true,
+										allowBlank:false,
+										action:'reason'
+									}
+
+								]
+
+							},
+							{
+								/**
+								 * Line two
+								 */
+								xtype   : 'fieldcontainer',
+								layout  : 'hbox',
+								defaults: { margin: '0 10 5 0' },
+								items   : [
+
+									{
+										xtype:'textfield',
+										fieldLabel: i18n['observation'],
+										name      : 'observation',
+										width     : 250,
+										labelWidth: 70,
+										disabled:true,
+										action:'observation'
+									},
+									{
+										fieldLabel: i18n['date'],
+										xtype:'datefield',
+										disabled:true,
+										action:'date',
+										width     : 200,
+										labelWidth: 40,
+										format    : 'Y-m-d',
+										name      : 'date'
+
+									},
+									{
+										xtype:'checkboxfield',
+										name : 'dismiss',
+										fieldLabel : i18n['dismiss_alert'],
+										enableKeyEvents: true,
+										listeners:{
+											scope:me,
+											change:me.onChangeOption
+
+										}
+									},
+									{
+                                        xtype:'textfield',
+                                        hidden:true,
+                                        name:'eid',
+                                        action:'eid'
+                                    }
+
+								]
+
+							}
+						]
+					}
+
+				]
+			})
+
+
+		});
+
+		me.items = [ me.grid ];
+
+//		me.listeners = {
+//			scope: me,
+//			show: me.onPreventiveCareWindowShow
+//		};
+
+
+		this.callParent(arguments);
+
+	},
+	onChangeOption: function(field,newValue){
+		var me=this,
+			reason=field.up('form').query('[action="reason"]')[0],
+			date=field.up('form').query('[action="date"]')[0],
+			eid=field.up('form').query('[action="eid"]')[0],
+			observation=field.up('form').query('[action="observation"]')[0];
+		eid.setValue(app.patient.eid);
+		if(newValue){
+			reason.setDisabled(false);
+			date.setDisabled(false);
+			observation.setDisabled(false);
+		}else if(!newValue){
+			reason.setDisabled(true);
+			date.setDisabled(true);
+			observation.setDisabled(true);
+
+		}else{
+			reason.setDisabled(true);
+			date.setDisabled(true);
+			observation.setDisabled(true);
+		}
+
+
+
+	},
+
+    loadPatientPreventiveCare:function(){
+        var me = this;
+        this.patientPreventiveCare.load({
+            scope:me,
+            params: {
+                pid: app.patient.pid
+            },
+            callback:function(records, operation, success){
+                if(records.length > 0){
+                    me.show();
+                    return true;
+                }else{
+                    return false;
+                }
+            }
+        });
+    }
+
+//	onPreventiveCareWindowShow: function() {
+//	    this.patientPreventiveCare.load({params: {pid: app.patient.pid }});
+//
+//    }
+
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/15/12
+ * Time: 4:30 PM
+ *
+ * @namespace Immunization.getImmunizationsList
+ * @namespace Immunization.getPatientImmunizations
+ * @namespace Immunization.addPatientImmunization
+ */
+Ext.define('App.view.patient.windows.NewDocuments', {
+	extend     : 'App.classes.window.Window',
+	title      : i18n['order_window'],
+	layout     : 'fit',
+	closeAction: 'hide',
+    height       : 750,
+   	width        : 1200,
+	bodyStyle  : 'background-color:#fff',
+	modal      : true,
+	defaults   : {
+		margin: 5
+	},
+	pid:null,
+    eid:null,
+	initComponent: function() {
+		var me = this;
+		me.patientPrescriptionStore = Ext.create('App.store.patient.PatientsPrescription');
+		me.patientsLabsOrdersStore = Ext.create('App.store.patient.PatientsLabsOrders');
+		
+		me.items = [
+			me.tabPanel = Ext.create('Ext.tab.Panel', {
+
+				items: [
+					{
+						title: i18n['new_lab_order'],
+						items: [
+
+							{
+
+								xtype  : 'grid',
+								margin : 10,
+								store  : me.patientsLabsOrdersStore,
+								height : 640,
+								columns: [
+
+									{
+										xtype: 'actioncolumn',
+										width: 20,
+										items: [
+											{
+												icon   : 'resources/images/icons/delete.png',
+												tooltip: i18n['remove'],
+												scope  : me,
+												handler: me.onRemoveLabs
+											}
+										]
+									},
+									{
+										header   : i18n['lab'],
+										flex    : 1,
+										dataIndex: 'laboratories'
+									}
+
+								],
+
+								bbar:{
+									xtype     : 'mitos.labstypescombo',
+									margin:5,
+									fieldLabel: i18n['add'],
+									hideLabel:false,
+									listeners:{
+										scope:me,
+										select:me.onAddLabs
+									}
+								}
+							}
+						],
+
+
+						bbar : [
+							'->', {
+								text   : i18n['create'],
+								scope  : me,
+								handler: me.onCreateLabs
+							}, {
+								text   : i18n['cancel'],
+								scope  : me,
+								handler: me.onCancel
+							}
+						]
+					},
+					{
+						title: i18n['new_xray_order'],
+						items: [
+
+							{
+
+								xtype  : 'grid',
+								margin : 10,
+								store  : me.patientPrescriptionStore,
+								height : 640,
+								columns: [
+
+									{
+										xtype: 'actioncolumn',
+										width: 20,
+										items: [
+											{
+												icon   : 'resources/images/icons/delete.png',
+												tooltip: i18n['remove'],
+												scope  : me,
+												handler: me.onRemove
+											}
+										]
+									},
+									{
+										header   : i18n['medication'],
+										width    : 100,
+										dataIndex: 'medication'
+									},
+									{
+										header   : i18n['dispense'],
+										width    : 100,
+										dataIndex: 'dispense'
+									},
+									{
+										header   : i18n['refill'],
+										flex     : 1,
+										dataIndex: 'refill'
+									}
+
+								],
+
+								bbar:{
+								xtype:'textfield',
+								margin:5,
+								fieldLabel: i18n['add'],
+								hideLabel:false,
+								listeners:{
+									scope:me,
+									select:me.addMedications
+								}
+							}
+
+							}
+						],
+						bbar : [
+							'->', {
+								text   : i18n['create'],
+								scope  : me,
+								handler: me.Create
+							}, {
+								text   : i18n['cancel'],
+								scope  : me,
+								handler: me.onCancel
+							}
+						]
+					},
+					{
+						title: i18n['new_prescription'],
+						items: [
+							{
+								xtype     : 'mitos.pharmaciescombo',
+								fieldLabel: i18n['pharmacies'],
+								width     : 250,
+								labelWidth: 75,
+								margin    : '10 0 0 10'
+
+							},
+							{
+
+								xtype  : 'grid',
+								margin : 10,
+								store  : me.patientPrescriptionStore,
+								height : 605,
+								columns: [
+
+									{
+										xtype: 'actioncolumn',
+										width: 20,
+										items: [
+											{
+												icon   : 'resources/images/icons/delete.png',
+												tooltip: i18n['remove'],
+												scope  : me,
+												handler: me.onRemove
+											}
+										]
+									},
+									{
+										header   : i18n['medication'],
+										width    : 100,
+										dataIndex: 'medication'
+									},
+									{
+										header   : i18n['dispense'],
+										width    : 100,
+										dataIndex: 'dispense'
+									},
+									{
+										header   : i18n['refill'],
+										flex     : 1,
+										dataIndex: 'refill'
+									}
+
+								],
+
+								plugins: Ext.create('App.classes.grid.RowFormEditing', {
+									autoCancel  : false,
+									errorSummary: false,
+									clicksToEdit: 1,
+									listeners   :{
+										scope   : me,
+										edit    : me.onEditPrescription
+
+									},
+									formItems   : [
+
+										{
+											title : i18n['general'],
+											xtype : 'container',
+											layout: 'vbox',
+											items : [
+												{
+													/**
+													 * Line one
+													 */
+													xtype   : 'fieldcontainer',
+													layout  : 'hbox',
+													defaults: { margin: '5 0 5 5' },
+													items   : [
+														{
+															xtype     : 'medicationlivetsearch',
+															fieldLabel: i18n['medication'],
+															hideLabel : false,
+															action    : 'medication',
+															name      : 'medication',
+															width     : 350,
+															labelWidth: 80,
+															listeners : {
+																scope : me,
+																select: me.addPrescription
+															}
+														},
+														{
+															xtype:'textfield',
+															hidden:true,
+															name:'medication_id',
+															action:'idField'
+														},
+														{
+															xtype     : 'numberfield',
+															fieldLabel: i18n['dose'],
+															labelWidth: 40,
+															action    : 'dose',
+															name      : 'dose',
+															width     : 100,
+															value     : 0,
+															minValue  : 0
+														},
+														{
+															xtype     : 'textfield',
+															fieldLabel: i18n['dose_mg'],
+															action    :'dose_mg',
+															name      : 'dose_mg',
+															hideLabel : true,
+															width     : 150
+														}
+													]
+
+												},
+												{
+													/**
+													 * Line two
+													 */
+													xtype   : 'fieldcontainer',
+													layout  : 'hbox',
+													defaults: { margin: '5 0 5 3'},
+
+													items: [
+														{
+															xtype     : 'numberfield',
+															fieldLabel: i18n['take'],
+															margin    : '5 0 5 5',
+															name      : 'take_pills',
+															width     : 130,
+															labelWidth: 80,
+															value     : 0,
+															minValue  : 0
+														},
+														{
+															xtype     : 'mitos.prescriptiontypes',
+															fieldLabel: i18n['type'],
+															hideLabel : true,
+															name      : 'type',
+															width     : 120
+														},
+														{
+															xtype     : 'mitos.prescriptionhowto',
+															fieldLabel: i18n['route'],
+															name      : 'route',
+															hideLabel : true,
+															width     : 100
+														},
+														{
+															xtype: 'mitos.prescriptionoften',
+															name : 'prescription_often',
+															width: 120
+														},
+														{
+															xtype: 'mitos.prescriptionwhen',
+															name : 'prescription_when',
+															width: 100
+														}
+													]
+
+												},
+												{
+													/**
+													 * Line three
+													 */
+													xtype   : 'fieldcontainer',
+													layout  : 'hbox',
+													defaults: { margin: '5 0 5 5'},
+													items   : [
+														{
+
+															fieldLabel: i18n['dispense'],
+															xtype     : 'numberfield',
+															name      : 'dispense',
+															width     : 130,
+															labelWidth: 80,
+															value     : 0,
+															minValue  : 0
+														},
+														{
+															fieldLabel: i18n['refill'],
+															xtype     : 'numberfield',
+															name      : 'refill',
+															labelWidth: 35,
+															width     : 140,
+															value     : 0,
+															minValue  : 0
+														},
+														{
+															fieldLabel: i18n['begin_date'],
+															xtype     : 'datefield',
+															width     : 190,
+															labelWidth: 70,
+															format    : 'Y-m-d',
+															name      : 'begin_date'
+
+														},
+														{
+															fieldLabel: i18n['end_date'],
+															xtype     : 'datefield',
+															width     : 180,
+															labelWidth: 60,
+															format    : 'Y-m-d',
+															name      : 'end_date'
+														}
+													]
+
+												}
+
+											]
+
+										}
+
+
+									]
+								}),
+								tbar   : [
+									'->',
+									{
+										text   : i18n['new_medication'],
+										scope  : me,
+										handler: me.onAddNewPrescription
+
+									}
+								]
+
+							}
+
+						],
+						bbar : [
+							'->', {
+								text   : i18n['create'],
+								scope  : me,
+								handler: me.onCreatePrescription
+							}, {
+								text   : i18n['cancel'],
+								scope  : me,
+								handler: me.onCancel
+							}
+						]
+
+					},
+					{
+						title: i18n['new_doctors_note'],
+						items: [
+							{
+								xtype     : 'mitos.templatescombo',
+								fieldLabel: i18n['template'],
+								action: 'template',
+								width     : 250,
+								labelWidth: 75,
+								margin    : '10 0 0 10',
+								enableKeyEvents: true,
+								listeners      : {
+									scope   : me,
+									select: me.onTemplateTypeSelect
+								}
+							},
+							{
+
+								xtype: 'htmleditor',
+								name:'body',
+								action:'body',
+								itemId:'body',
+								enableFontSize: false,
+								height : 605,
+								width  : 1170,
+								margin:5
+
+							}
+						],
+						bbar : [
+							'->', {
+								text   : i18n['create'],
+								scope  : me,
+								handler: me.onCreateDoctorsNote
+							}, {
+								text   : i18n['cancel'],
+								scope  : me,
+								handler: me.onCancel
+							}
+						]
+					}
+				]
+
+			})
+		];
+		me.listeners = {
+			scope: me,
+			show : me.onDocumentsWinShow,
+            hide : me.onDocumentsWinHide
+		};
+		me.callParent(arguments);
+	},
+
+	onTemplateTypeSelect:function(combo,record){
+		var me          = this,
+			htmlEditor  = combo.up('panel').getComponent('body'),
+			value       = record[0].data.body;
+		htmlEditor.setValue(value);
+	},
+
+	cardSwitch          : function(action) {
+
+		var layout = this.tabPanel.getLayout();
+
+		if(action == 'lab') {
+			layout.setActiveItem(0);
+		} else if(action == 'xRay') {
+			layout.setActiveItem(1);
+		} else if(action == 'prescription') {
+			layout.setActiveItem(2);
+		} else if(action == 'notes') {
+			layout.setActiveItem(3);
+		}
+	},
+	onAddNewPrescription: function(btn) {
+		var grid = btn.up('grid');
+		grid.editingPlugin.cancelEdit();
+
+		this.patientPrescriptionStore.insert(0,{});
+		grid.editingPlugin.startEdit(0, 0);
+	},
+
+	onRemove: function(grid, rowIndex){
+		var me = this,
+			store = grid.getStore(),
+			record = store.getAt(rowIndex);
+			grid.editingPlugin.cancelEdit();
+			store.remove(record);
+	},
+	onRemoveLabs: function(grid, rowIndex){
+		var me = this,
+			store = grid.getStore(),
+			record = store.getAt(rowIndex);
+			store.remove(record);
+	},
+	addPrescription     : function(combo, model) {
+		var me      = this,
+			field   = combo.up('fieldcontainer').query('[action="dose"]')[0],
+			field2  = combo.up('fieldcontainer').query('[action="dose_mg"]')[0],
+			field3  = combo.up('fieldcontainer').query('[action="idField"]')[0],
+			dose    = model[0].data.ACTIVE_NUMERATOR_STRENGTH,
+			dose_mg = model[0].data.ACTIVE_INGRED_UNIT,
+			id      = model[0].data.id;
+		field.setValue(dose);
+		field2.setValue(dose_mg);
+		field3.setValue(id);
+	},
+	onEditPrescription: function(editor,e){
+		say(editor);
+		say(e.record.commit());
+
+	},
+	onCreatePrescription: function (){
+		var records =this.patientPrescriptionStore.data.items,
+			data = [];
+        for(var i=0; i < records.length; i++ ){
+            data.push(records[i].data);
+        }
+		DocumentHandler.createDocument({medications:data, pid:app.patient.pid, docType:'Rx', documentId:5, eid: app.patient.eid}, function(provider, response){
+			say(response.result);
+		});
+		this.close();
+
+	},
+	onCreateLabs: function (){
+		var records = this.patientsLabsOrdersStore.data.items,
+			data = [];
+        for(var i=0; i < records.length; i++ ){
+            data.push(records[i].data);
+        }
+		DocumentHandler.createDocument({labs:data, pid:app.patient.pid, docType:'Orders', documentId:4, eid: app.patient.eid}, function(provider, response){
+			say(response.result);
+		});
+		this.close();
+
+	},
+	onCreateDoctorsNote: function (bbar){
+		var me = this,
+			htmlEditor  = bbar.up('toolbar').up('panel').getComponent('body'),
+			value = htmlEditor.getValue();
+		DocumentHandler.createDocument({DoctorsNote:value, pid:app.patient.pid, docType:'DoctorsNotes', eid: app.patient.eid}, function(provider, response){
+
+			say(response.result);
+		});
+		this.close();
+
+	},
+	onCancel: function(){
+			this.close();
+	},
+
+	addMedications: function(){
+
+	},
+	onAddLabs: function(field, model){
+
+		this.patientsLabsOrdersStore.add({
+			laboratories:model[0].data.loinc_name
+		});
+		field.reset();
+	},
+	onDocumentsWinShow  : function() {
+        var me = this,
+	        doctorsNoteBody = me.query('[action="body"]')[0],
+            template = me.query('[action="template"]')[0],
+	        p = app.patient;
+		me.pid = p.pid;
+        me.setTitle(p.name + (p.readOnly ? ' - <span style="color:red">[' + i18n['read_mode'] + ']</span>' : ''));
+		me.setReadOnly(app.patient.readOnly);
+		me.patientPrescriptionStore.removeAll();
+		me.patientsLabsOrdersStore.removeAll();
+		doctorsNoteBody.reset();
+		template.reset();
+
+
+        var dock = this.tabPanel.getDockedItems()[0],
+            visible = this.eid != null;
+        dock.items.items[0].setVisible(visible);
+        dock.items.items[1].setVisible(visible);
+        dock.items.items[2].setVisible(visible);
+        if(!visible) me.cardSwitch('notes');
+	},
+    onDocumentsWinHide : function(){
+        if(app.currCardCmp.id == 'panelSummary'){
+           app.currCardCmp.patientDocumentsStore.load({params: {pid: this.pid}});
+        }
+    }
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/15/12
+ * Time: 4:30 PM
+ *
+ * @namespace Immunization.getImmunizationsList
+ * @namespace Immunization.getPatientImmunizations
+ * @namespace Immunization.addPatientImmunization
+ */
+Ext.define('App.view.patient.windows.DocumentViewer', {
+	extend     : 'App.classes.window.Window',
+	title      : i18n['documents_viewer_window'],
+	layout     : 'fit',
+	height     : 650,
+	width      : 700,
+	closeAction: 'hide',
+	bodyStyle  : 'background-color:#fff',
+	modal      : true,
+	defaults   : {
+		margin: 5
+	},
+	initComponent: function() {
+		var me = this;
+
+		me.listeners = {
+			scope: me,
+			show : me.onViewerDocumentsWinShow
+		};
+		me.callParent(arguments);
+	},
+
+
+	onViewerDocumentsWinShow  : function() {
+
+
+
+	}
+});
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Ernesto J. Rodriguez (Certun)
+ * File:
+ * Date: 2/18/12
+ * Time: 10:46 PM
+ */
+Ext.define('App.view.patient.windows.ArrivalLog', {
+	extend: 'App.classes.window.Window',
+	title      : i18n['patient_arrival_log'],
+	closeAction: 'hide',
+    layout     : 'fit',
+	modal      : true,
+	width      : 900,
+	height     : 600,
+	maximizable: true,
+	initComponent: function() {
+		var me = this;
+
+
+        me.store = Ext.create('App.store.patient.PatientArrivalLog',{
+            autoSync:true
+        });
+
+		me.tbar = [
+            {
+                xtype       : 'patienlivetsearch',
+                fieldLabel  : i18n['look_for_patient'],
+                width       : 400,
+                hideLabel:false,
+                enableKeyEvents:true,
+                listeners:{
+                    scope:me,
+                    select:me.onPatientSearchSelect,
+                    keyup:me.onPatientSearchKeyUp
+
+                }
+		    },
+            '-',
+            {
+                text: i18n['add_new_patient'],
+                iconCls:'icoAddRecord',
+                action:'newPatientBtn',
+                disabled:true,
+                scope:me,
+                handler:me.onNewPatient
+		    },
+            '->',
+            {
+                xtype:'tool',
+                type: 'refresh',
+                scope:me,
+                handler:me.onGridReload
+            }
+        ];
+
+		me.items = [
+            me.ckGrid = Ext.create('Ext.grid.Panel',{
+                store:me.store,
+                margin:5,
+                columns:[
+                    {
+                        xtype:'actioncolumn',
+                        width:25,
+                        items: [
+                            {
+                                icon: 'resources/images/icons/delete.png',  // Use a URL in the icon config
+                                tooltip: i18n['remove'],
+                                scope:me,
+                                handler: me.onPatientRemove
+                            }
+                        ]
+                    },
+                    {
+                        header: i18n['time'],
+                        dataIndex:'time',
+	                    width:130
+                    },
+                    {
+                        header: i18n['record'] + ' #',
+                        dataIndex:'pid'
+                    },
+                    {
+                        header: i18n['patient_name'],
+                        dataIndex:'name',
+                        flex:1
+                    },
+                    {
+                        header: i18n['insurance'],
+                        dataIndex:'insurance'
+                    },
+                    {
+                        header: i18n['area'],
+                        dataIndex:'area'
+                    },
+                    {
+                        width:25,
+                        dataIndex:'warning',
+                        renderer:me.warnRenderer
+                    }
+                ],
+                listeners:{
+                    scope:me,
+                    itemdblclick:me.onPatientDlbClick
+                }
+
+            })
+		];
+
+		me.listeners = {
+			scope:me,
+			show:me.onWinShow
+		};
+
+		me.callParent(arguments);
+	},
+
+    onPatientSearchSelect:function(field, record){
+        var me = this,
+            store = me.query('grid')[0].getStore(),
+            btn = me.query('button[action="newPatientBtn"]')[0];
+        store.add({
+            pid:record[0].data.pid,
+            name:record[0].data.fullname,
+            time: Ext.Date.format(new Date(), 'Y-m-d H:i:s'),
+            isNew:false
+        });
+        field.reset();
+        btn.setDisabled(true);
+    },
+
+    onPatientSearchKeyUp:function(field){
+        this.query('button[action="newPatientBtn"]')[0].setDisabled(field.getValue() == null);
+    },
+
+    onNewPatient:function(btn){
+        var me = this,
+            field = me.query('patienlivetsearch')[0],
+            name = field.getValue(),
+            store = me.query('grid')[0].getStore();
+        field.reset();
+        btn.disable();
+        store.add({
+            name:name,
+            time: Ext.Date.format(new Date(), 'Y-m-d H:i:s'),
+            isNew:true
+        });
+    },
+
+    onPatientRemove:function(grid, rowIndex){
+        var store = grid.getStore(),
+	        me = this,
+            record = store.getAt(rowIndex);
+	    Encounter.checkForAnOpenedEncounterByPid({pid:record.data.pid,date:Ext.Date.format(new Date(), 'Y-m-d H:i:s')}, function(provider, response){
+		    if(response.result) {
+			    me.msg('Oops!', i18n['patient_have_a_opened_encounter']);
+		    } else {
+			    me.msg('Sweet!', i18n['patient_have_been_removed']);
+			    store.remove(record);
+		    }
+	    });
+
+
+
+
+    },
+
+    onPatientDlbClick:function(grid, record){
+        var me = this,
+            data = record.data;
+	    // TODO: pass priority!
+        app.setPatient(data.pid, data.name, function(){
+            app.openPatientSummary();
+        });
+        me.close();
+    },
+
+    onGridReload:function(){
+        this.store.load();
+    },
+
+	onWinShow:function(){
+        var me = this;
+        me.onGridReload();
+        new Ext.util.DelayedTask(function(){
+            me.query('patienlivetsearch')[0].focus();
+        }).delay(1000);
+
+	}
+
+});
+
+/**
+ * @class Ext.ux.PortalColumn
+ * @extends Ext.container.Container
+ * A layout column class used internally be {@link Ext.app.PortalPanel}.
+ */
+Ext.define('App.view.dashboard.panel.PortalColumn', {
+	extend     : 'Ext.container.Container',
+	alias      : 'widget.portalcolumn',
+
+    requires: [
+        'Ext.layout.container.Anchor',
+        'App.view.dashboard.panel.Portlet'
+    ],
+
+    layout: 'anchor',
+    defaultType: 'portlet',
+    cls: 'x-portal-column'
+	//
+	// This is a class so that it could be easily extended
+	// if necessary to provide additional behavior.
+	//
+});
+/**
+ * @class Ext.app.PortalDropZone
+ * @extends Ext.dd.DropTarget
+ * Internal class that manages drag/drop for {@link Ext.app.PortalPanel}.
+ */
+Ext.define('App.view.dashboard.panel.PortalDropZone', {
+	extend: 'Ext.dd.DropTarget',
+
+	constructor: function(portal, cfg) {
+		this.portal = portal;
+		Ext.dd.ScrollManager.register(portal.body);
+        App.view.dashboard.panel.PortalDropZone.superclass.constructor.call(this, portal.body, cfg);
+		portal.body.ddScrollConfig = this.ddScrollConfig;
+	},
+
+	ddScrollConfig: {
+		vthresh  : 50,
+		hthresh  : -1,
+		animate  : true,
+		increment: 200
+	},
+
+    createEvent: function(dd, e, data, col, c, pos) {
+        return {
+            portal: this.portal,
+            panel: data.panel,
+            columnIndex: col,
+            column: c,
+            position: pos,
+            data: data,
+            source: dd,
+            rawEvent: e,
+            status: this.dropAllowed
+        };
+    },
+
+    notifyOver: function(dd, e, data) {
+        var xy = e.getXY(),
+            portal = this.portal,
+            proxy = dd.proxy;
+
+        // case column widths
+        if (!this.grid) {
+            this.grid = this.getGrid();
+        }
+
+        // handle case scroll where scrollbars appear during drag
+        var cw = portal.body.dom.clientWidth;
+        if (!this.lastCW) {
+            // set initial client width
+            this.lastCW = cw;
+        } else if (this.lastCW != cw) {
+            // client width has changed, so refresh layout & grid calcs
+            this.lastCW = cw;
+            //portal.doLayout();
+            this.grid = this.getGrid();
+        }
+
+        // determine column
+        var colIndex = 0,
+            colRight = 0,
+            cols = this.grid.columnX,
+            len = cols.length,
+            cmatch = false;
+
+        for (len; colIndex < len; colIndex++) {
+            colRight = cols[colIndex].x + cols[colIndex].w;
+            if (xy[0] < colRight) {
+                cmatch = true;
+                break;
+            }
+        }
+        // no match, fix last index
+        if (!cmatch) {
+            colIndex--;
+        }
+
+        // find insert position
+        var overPortlet, pos = 0,
+            h = 0,
+            match = false,
+            overColumn = portal.items.getAt(colIndex),
+            portlets = overColumn.items.items,
+            overSelf = false;
+
+        len = portlets.length;
+
+        for (len; pos < len; pos++) {
+            overPortlet = portlets[pos];
+            h = overPortlet.el.getHeight();
+            if (h === 0) {
+                overSelf = true;
+            } else if ((overPortlet.el.getY() + (h / 2)) > xy[1]) {
+                match = true;
+                break;
+            }
+        }
+
+        pos = (match && overPortlet ? pos : overColumn.items.getCount()) + (overSelf ? -1 : 0);
+        var overEvent = this.createEvent(dd, e, data, colIndex, overColumn, pos);
+
+        if (portal.fireEvent('validatedrop', overEvent) !== false && portal.fireEvent('beforedragover', overEvent) !== false) {
+
+            // make sure proxy width is fluid in different width columns
+            proxy.getProxy().setWidth('auto');
+            if (overPortlet) {
+                dd.panelProxy.moveProxy(overPortlet.el.dom.parentNode, match ? overPortlet.el.dom : null);
+            } else {
+                dd.panelProxy.moveProxy(overColumn.el.dom, null);
+            }
+
+            this.lastPos = {
+                c: overColumn,
+                col: colIndex,
+                p: overSelf || (match && overPortlet) ? pos : false
+            };
+            this.scrollPos = portal.body.getScroll();
+
+            portal.fireEvent('dragover', overEvent);
+            return overEvent.status;
+        } else {
+            return overEvent.status;
+        }
+
+    },
+
+	notifyOut: function() {
+		delete this.grid;
+	},
+
+    notifyDrop: function(dd, e, data) {
+            delete this.grid;
+            if (!this.lastPos) {
+                return;
+            }
+            var c = this.lastPos.c,
+                col = this.lastPos.col,
+                pos = this.lastPos.p,
+                panel = dd.panel,
+                dropEvent = this.createEvent(dd, e, data, col, c, pos !== false ? pos : c.items.getCount());
+
+            if (this.portal.fireEvent('validatedrop', dropEvent) !== false &&
+                this.portal.fireEvent('beforedrop', dropEvent) !== false) {
+
+                Ext.suspendLayouts();
+
+                // make sure panel is visible prior to inserting so that the layout doesn't ignore it
+                panel.el.dom.style.display = '';
+                dd.panelProxy.hide();
+                dd.proxy.hide();
+
+                if (pos !== false) {
+                    c.insert(pos, panel);
+                } else {
+                    c.add(panel);
+                }
+
+                Ext.resumeLayouts(true);
+
+                this.portal.fireEvent('drop', dropEvent);
+
+                // scroll position is lost on drop, fix it
+                var st = this.scrollPos.top;
+                if (st) {
+                    var d = this.portal.body.dom;
+                    setTimeout(function() {
+                        d.scrollTop = st;
+                    },
+                    10);
+                }
+            }
+
+            delete this.lastPos;
+            return true;
+        },
+
+	// internal cache of body and column coords
+	getGrid   : function() {
+		var box = this.portal.body.getBox();
+		box.columnX = [];
+		this.portal.items.each(function(c) {
+			box.columnX.push({
+				x: c.el.getX(),
+				w: c.el.getWidth()
+			});
+		});
+		return box;
+	},
+
+	// unregister the dropzone from ScrollManager
+	unreg     : function() {
+		Ext.dd.ScrollManager.unregister(this.portal.body);
+        App.view.dashboard.panel.PortalDropZone.superclass.unreg.call(this);
+	}
+});
+
+/**
+ * @class Ext.app.PortalPanel
+ * @extends Ext.Panel
+ * A {@link Ext.Panel Panel} class used for providing drag-drop-enabled portal layouts.
+ */
+Ext.define('App.view.dashboard.panel.PortalPanel', {
+	extend  : 'Ext.panel.Panel',
+	alias   : 'widget.portalpanel',
+	requires: [
+        'Ext.layout.container.Column',
+
+        'App.view.dashboard.panel.PortalDropZone',
+        'App.view.dashboard.panel.PortalColumn'
+	],
+
+	cls            : 'x-portal',
+	bodyCls        : 'x-portal-body',
+	defaultType    : 'portalcolumn',
+	componentLayout: 'body',
+	autoScroll     : true,
+
+    manageHeight: false,
+
+    initComponent: function() {
+		var me = this;
+
+		// Implement a Container beforeLayout call from the layout to this Container
+		this.layout = {
+			type: 'column'
+		};
+		this.callParent();
+
+		this.addEvents({
+			validatedrop  : true,
+			beforedragover: true,
+			dragover      : true,
+			beforedrop    : true,
+			drop          : true
+		});
+	},
+
+	// Set columnWidth, and set first and last column classes to allow exact CSS targeting.
+    beforeLayout: function() {
+        var items = this.layout.getLayoutItems(),
+            len = items.length,
+            firstAndLast = ['x-portal-column-first', 'x-portal-column-last'],
+            i, item, last;
+
+        for (i = 0; i < len; i++) {
+            item = items[i];
+            item.columnWidth = 1 / len;
+            last = (i == len-1);
+
+            if (!i) { // if (first)
+                if (last) {
+                    item.addCls(firstAndLast);
+                } else {
+                    item.addCls('x-portal-column-first');
+                    item.removeCls('x-portal-column-last');
+                }
+            } else if (last) {
+                item.addCls('x-portal-column-last');
+                item.removeCls('x-portal-column-first');
+            } else {
+                item.removeCls(firstAndLast);
+            }
+        }
+
+        return this.callParent(arguments);
+    },
+
+	// private
+	initEvents   : function() {
+		this.callParent();
+		this.dd = Ext.create('App.view.dashboard.panel.PortalDropZone', this, this.dropConfig);
+	},
+
+	// private
+    beforeDestroy : function() {
+        if (this.dd) {
+            this.dd.unreg();
+        }
+        this.callParent();
+    }
+});
+
+Ext.define('App.view.dashboard.panel.OnotesPortlet', {
+
+	extend       : 'Ext.grid.Panel',
+	alias        : 'widget.onotesportlet',
+	height       : 250,
+	initComponent: function() {
+		var me = this;
+		Ext.define('OnotesPortletModel', {
+			extend: 'Ext.data.Model',
+			fields: [
+				{name: 'id', type: 'int'},
+				{name: 'date', type: 'date', dateFormat: 'c'},
+				{name: 'body', type: 'string'},
+				{name: 'user', type: 'string'},
+				{name: 'facility_id', type: 'string'},
+				{name: 'activity', type: 'string'}
+			],
+			proxy : {
+				type: 'direct',
+				api : {
+					read: OfficeNotes.getOfficeNotes
+				}
+			}
+		});
+		me.store = Ext.create('Ext.data.Store', {
+			model   : 'OnotesPortletModel',
+			autoLoad: true
+		});
+
+		Ext.apply(this, {
+			height     : this.height,
+			store      : this.store,
+			stripeRows : true,
+			columnLines: true,
+			columns    : [
+				{
+					id       : 'user',
+					text     : 'From',
+					sortable : true,
+					dataIndex: 'user'
+				},
+				{
+					text     : 'Note',
+					sortable : true,
+					dataIndex: 'body',
+					flex     : 1
+				}
+			]
+		}, null);
+
+		this.callParent(arguments);
+	}
+});
+
+Ext.define('App.view.dashboard.panel.VisitsPortlet', {
+    extend: 'Ext.panel.Panel',
+    initComponent: function() {
+        Ext.apply(this, {
+            layout: 'fit',
+            width : 300,
+            height: 250,
+            items : {
+                xtype  : 'chart',
+                animate: false,
+                shadow : false,
+                store  : Ext.create('App.store.patient.Encounters'),
+                axes   : [
+                    {
+                        type    : 'Numeric',
+                        position: 'left',
+                        fields  : ['djia'],
+                        title   : 'Visits',
+                        label   : {
+                            font: '11px Arial'
+                        }
+                    },
+                    {
+                        type    : 'Numeric',
+                        position: 'bottom',
+                        grid    : false,
+                        fields  : ['sp500'],
+                        title   : 'Day',
+                        label   : {
+                            font: '11px Arial'
+                        }
+                    }
+                ],
+                series : [
+                    {
+                        type: 'column',
+                        axis: 'left',
+                        highlight: true,
+                        tips: {
+                          trackMouse: true,
+                          width: 140,
+                          height: 28,
+                          renderer: function(storeItem, item) {
+                            this.setTitle(storeItem.get('name') + ': ' + storeItem.get('data1') + ' $');
+                          }
+                        },
+                        label: {
+                          display: 'insideEnd',
+                          'text-anchor': 'middle',
+                            field: 'data1',
+                            renderer: Ext.util.Format.numberRenderer('0'),
+                            orientation: 'vertical',
+                            color: '#333'
+                        },
+                        xField: 'name',
+                        yField: 'data1'
+                    }
+                ]
+            }
+        }, null);
+
+        this.callParent(arguments);
+    }
+});
+
+//******************************************************************************
+// Users.ejs.php
+// Description: Users Screen
+// v0.0.4
+// 
+// Author: Ernesto J Rodriguez
+// Modified: n/a
+// 
+// GaiaEHR (Electronic Health Records) 2011
+//******************************************************************************
+Ext.define('App.view.dashboard.Dashboard',
+{
+	extend        : 'App.classes.RenderPanel',
+	id            : 'panelDashboard',
+	pageTitle     : i18n['dashboard'],
+	getTools      : function() 
+	{
+		return [
+		{
+			xtype  : 'tool',
+			type   : 'gear',
+			handler: function(e, target, panelHeader) 
+			{
+				var portlet = panelHeader.ownerCt;
+				portlet.setLoading( i18n['working'] + '...');
+				Ext.defer(function() 
+				{
+					portlet.setLoading(false);
+				}, 2000);
+			}
+		}];
+	},
+	initComponent : function() 
+	{
+		var content = '<div class="portlet-content">HELLO WORLD!</div>';
+		Ext.apply(this, 
+		{
+			pageBody: [
+			{
+				xtype : 'portalpanel',
+				layout: 'fit',
+				region: 'center',
+				items : [
+				{
+					id   : 'col-1',
+					items: 
+					[
+                        {
+//                            id       : 'portlet-onotes',
+                            title    : i18n['office_notes'],
+                            tools    : this.getTools(),
+                            items    : Ext.create('App.view.dashboard.panel.OnotesPortlet'),
+                            listeners:
+                            {
+                                close: Ext.bind(this.onPortletClose, this)
+                            }
+                        }
+                            //,
+                            //{
+                            //	id       : 'portlet-2',
+                            //	title    : 'Portlet 2',
+                            //	tools    : this.getTools(),
+                            //	html     : content,
+                            //	listeners: {
+                            //		'close': Ext.bind(this.onPortletClose, this)
+                            //	}
+                            //}
+                        ]
+					},
+                    {
+//                        id   : 'col-2',
+                        items: [
+                            {
+                                title    : 'Office Visits',
+                                tools    : this.getTools(),
+                                items    : Ext.create('App.view.dashboard.panel.VisitsPortlet'),
+                                listeners: {
+                                    close: Ext.bind(this.onPortletClose, this)
+                                }
+                            }
+                        ]
+                    }
+//                    ,
+//                    {
+//                        id   : 'col-3',
+//                        items: [
+//                            {
+//                                id       : 'portlet-4',
+//                                title    : 'Portlet 4',
+//                                tools    : this.getTools(),
+//                                items    : Ext.create('App.view.dashboard.panel.ChartPortlet'),
+//                                listeners: {
+//                                    'close': Ext.bind(this.onPortletClose, this)
+//                                }
+//                            }
+//                        ]
+//                    }
+					]
+				}
+			]
+		}, null);
+		this.callParent();
+	},
+	
+	onPortletClose: function(portlet) 
+	{
+		this.msg(i18n['message'] + '!', portlet.title + ' ' + i18n['was_removed']);
+	},
+	
+	/**
+	 * This function is called from MitosAPP.js when
+	 * this panel is selected in the navigation panel.
+	 * place inside this function all the functions you want
+	 * to call every this panel becomes active
+	 */
+	onActive      : function(callback) 
+	{
+		callback(true);
+	}
+}); //ens UserPage class
+
+/**
  * facilities.ejs.php
  * Description: Patient File ScreenS
  * v0.0.3
@@ -28495,73 +28499,108 @@ Ext.define('App.view.patient.Summary', {
 			});
 		}
 		if(acl['access_patient_notes']) {
-			me.stores.push(me.patientNotesStore = Ext.create('App.store.patient.Notes'));
+			me.stores.push(me.patientNotesStore = Ext.create('App.store.patient.Notes',{
+			                autoSync:true
+			            }));
 			me.tabPanel.add({
 				title      : i18n['notes'],
 				itemId     : 'notesPanel',
 				xtype      : 'grid',
 				bodyPadding: 0,
 				store      : me.patientNotesStore,
+                plugins: Ext.create('Ext.grid.plugin.RowEditing', {
+                           autoCancel  : false,
+                           errorSummary: false,
+                           clicksToEdit: 2
+
+                }),
 				columns    : [
 					{
+                        xtype    : 'datecolumn',
 						text     : i18n['date'],
-						dataIndex: 'date'
+                        format   :'Y-m-d',
+                        dataIndex: 'date'
 					},
 					{
 						header   : i18n['type'],
-						dataIndex: 'type'
+						dataIndex: 'type',
+                        editor:{
+                            xtype:'textfield'
+                        }
 					},
 					{
 						text     : i18n['note'],
 						dataIndex: 'body',
-						flex     : 1
+						flex     : 1,
+                        editor:{
+                            xtype:'textfield'
+                        }
 					},
 					{
 						text     : i18n['user'],
+                        width    : 225,
 						dataIndex: 'user_name'
 					}
 				],
 				tbar       : [
 					{
 						text   : i18n['add_note'],
-						iconCls: 'icoAdd'
+						iconCls: 'icoAdd',
+                        handler:me.addNote
 					}
 				]
 			});
 		}
 
 		if(acl['access_patient_reminders']) {
-			me.stores.push(me.patientRemindersStore = Ext.create('App.store.patient.Reminders'));
+			me.stores.push(me.patientRemindersStore = Ext.create('App.store.patient.Reminders',{
+			                autoSync:true
+			            }));
 			me.tabPanel.add({
 				title      : i18n['reminders'],
 				itemId     : 'remindersPanel',
 				xtype      : 'grid',
 				bodyPadding: 0,
 				store      : me.patientRemindersStore,
-				columns    : [
-					{
-						text     : i18n['date'],
-						dataIndex: 'date'
-					},
-					{
+                plugins: Ext.create('Ext.grid.plugin.RowEditing', {
+                   autoCancel  : false,
+                   errorSummary: false,
+                   clicksToEdit: 2
 
-						header   : i18n['type'],
-						dataIndex: 'type'
-					},
-					{
-						text     : i18n['note'],
-						dataIndex: 'body',
-						flex     : 1
-					},
-					{
-						text     : i18n['user'],
-						dataIndex: 'user_name'
-					}
+               }),
+				columns    : [
+                    {
+                        xtype    : 'datecolumn',
+                        text     : i18n['date'],
+                        format   :'Y-m-d',
+                        dataIndex: 'date'
+                    },
+                    {
+                        header   : i18n['type'],
+                        dataIndex: 'type',
+                        editor:{
+                            xtype:'textfield'
+                        }
+                    },
+                    {
+                        text     : i18n['note'],
+                        dataIndex: 'body',
+                        flex     : 1,
+                        editor:{
+                            xtype:'textfield'
+                        }
+                    },
+                    {
+                        text     : i18n['user'],
+                        width    : 225,
+                        dataIndex: 'user_name'
+                    }
 				],
 				tbar       : [
 					{
 						text   : i18n['add_reminder'],
-						iconCls: 'icoAdd'
+						iconCls: 'icoAdd',
+                        handler:me.addReminder
 					}
 				]
 			})
@@ -28859,7 +28898,23 @@ Ext.define('App.view.patient.Summary', {
             grid = btn.up('grid'),
             store = grid.store;
         grid.plugins[0].cancelEdit();
-        store.add({date:new Date(), pid:app.patient.pid, active:1});
+        store.insert(0,{date:new Date(), pid:app.patient.pid, active:1});
+        grid.plugins[0].startEdit(0,0);
+    },
+    addNote:function(btn){
+        var me = this,
+            grid = btn.up('grid'),
+            store = grid.store;
+        grid.plugins[0].cancelEdit();
+        store.insert(0,{date:new Date(), pid:app.patient.pid, uid:app.user.id, eid:app.patient.eid});
+        grid.plugins[0].startEdit(0,0);
+    },
+    addReminder:function(btn){
+        var me = this,
+            grid = btn.up('grid'),
+            store = grid.store;
+        grid.plugins[0].cancelEdit();
+        store.insert(0,{date:new Date(), pid:app.patient.pid, uid:app.user.id, eid:app.patient.eid});
         grid.plugins[0].startEdit(0,0);
     },
 
@@ -35682,7 +35737,7 @@ Ext.define('App.view.administration.Documents', {
 		var me = this;
 
         me.templatesDocumentsStore = Ext.create('App.store.administration.DocumentsTemplates');
-		me.headersAndFooterStore   = Ext.create('App.store.administration.HeadersAndFooters');
+//		me.headersAndFooterStore   = Ext.create('App.store.administration.HeadersAndFooters');
 		me.defaultsDocumentsStore   = Ext.create('App.store.administration.DefaultDocuments');
 
         Ext.define('tokenModel', {
@@ -36108,49 +36163,49 @@ Ext.define('App.view.administration.Documents', {
 
 
 
-		me.HeaderFootergrid = Ext.create('Ext.grid.Panel', {
-			title      : i18n['header_footer_templates'],
-			region     : 'south',
-			height     : 250,
-			split      : true,
-			hideHeaders: true,
-			store      : me.headersAndFooterStore,
-			columns    : [
-				{
-					flex     : 1,
-					sortable : true,
-					dataIndex: 'title',
-                    editor:{
-                        xtype:'textfield',
-                        allowBlank:false
-                    }
-				},
-				{
-					icon: 'resources/images/icons/delete.png',
-					tooltip: i18n['remove'],
-					scope:me,
-					handler: me.onRemoveDocument
-				}
-			],
-			listeners  : {
-				scope    : me,
-				itemclick: me.onDocumentsGridItemClick
-			},
-			tbar       :[
-                '->',
-                {
-                    text : i18n['new'],
-                    scope: me,
-                    handler: me.newHeaderOrFooterTemplate
-                }
-            ],
-            plugins:[
-                me.rowEditor2 = Ext.create('Ext.grid.plugin.RowEditing', {
-                    clicksToEdit: 2
-                })
-
-            ]
-		});
+//		me.HeaderFootergrid = Ext.create('Ext.grid.Panel', {
+//			title      : i18n['header_footer_templates'],
+//			region     : 'south',
+//			height     : 250,
+//			split      : true,
+//			hideHeaders: true,
+//			store      : me.headersAndFooterStore,
+//			columns    : [
+//				{
+//					flex     : 1,
+//					sortable : true,
+//					dataIndex: 'title',
+//                    editor:{
+//                        xtype:'textfield',
+//                        allowBlank:false
+//                    }
+//				},
+//				{
+//					icon: 'resources/images/icons/delete.png',
+//					tooltip: i18n['remove'],
+//					scope:me,
+//					handler: me.onRemoveDocument
+//				}
+//			],
+//			listeners  : {
+//				scope    : me,
+//				itemclick: me.onDocumentsGridItemClick
+//			},
+//			tbar       :[
+//                '->',
+//                {
+//                    text : i18n['new'],
+//                    scope: me,
+//                    handler: me.newHeaderOrFooterTemplate
+//                }
+//            ],
+//            plugins:[
+//                me.rowEditor2 = Ext.create('Ext.grid.plugin.RowEditing', {
+//                    clicksToEdit: 2
+//                })
+//
+//            ]
+//		});
 
 		me.DocumentsDefaultsGrid = Ext.create('Ext.grid.Panel', {
 			title      : i18n['documents_defaults'],
@@ -36248,7 +36303,7 @@ Ext.define('App.view.administration.Documents', {
             width      : 250,
             border     : false,
             split      : true,
-            items:[  me.DocumentsDefaultsGrid, me.DocumentsGrid, me.HeaderFootergrid ]
+            items:[  me.DocumentsDefaultsGrid, me.DocumentsGrid ]
         });
 
 		me.TeamplateEditor = Ext.create('Ext.form.Panel', {
@@ -36388,19 +36443,19 @@ Ext.define('App.view.administration.Documents', {
 
     },
 
-	newHeaderOrFooterTemplate:function(){
-        var me = this,
-            store = me.headersAndFooterStore;
-        me.rowEditor2.cancelEdit();
-        store.insert(0,{
-            title: i18n['new_header_or_footer'],
-	        template_type:'headerorfootertemplate',
-            date: new Date(),
-	        type: 2
-        });
-        me.rowEditor2.startEdit(0, 0);
-
-    },
+//	newHeaderOrFooterTemplate:function(){
+//        var me = this,
+//            store = me.headersAndFooterStore;
+//        me.rowEditor2.cancelEdit();
+//        store.insert(0,{
+//            title: i18n['new_header_or_footer'],
+//	        template_type:'headerorfootertemplate',
+//            date: new Date(),
+//	        type: 2
+//        });
+//        me.rowEditor2.startEdit(0, 0);
+//
+//    },
 
     copyToClipBoard:function(grid, rowIndex, colIndex){
         var rec = grid.getStore().getAt(rowIndex),
@@ -36419,9 +36474,9 @@ Ext.define('App.view.administration.Documents', {
 	 * to call every this panel becomes active
 	 */
 	onActive            : function(callback) {
-        var me = this;
+        var me = this
         me.templatesDocumentsStore.load();
-        me.headersAndFooterStore.load();
+//        me.headersAndFooterStore.load();
         me.defaultsDocumentsStore.load();
 		callback(true);
 	}
@@ -43276,7 +43331,7 @@ Ext.define('Modules.Module', {
  */
 Ext.define('App.view.Viewport', {
 	extend  : 'Ext.Viewport',
-	//requires: window.requires,
+	requires: window.requires,
     // app settings
 	minWidthToFullMode: 1585,       // full mode = nav expanded
 	currency          : '$',        // currency used

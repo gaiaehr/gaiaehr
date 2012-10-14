@@ -112,7 +112,7 @@ Ext.define('App.view.login.Login',{
                 text    : 'Login',
                 name    : 'btn_login',
                 scope   : me,
-                handler : me.onSubmit
+                handler : me.loginSubmit
             },'-',{
                 text    : 'Reset',
                 name    : 'btn_reset',
@@ -173,7 +173,7 @@ Ext.define('App.view.login.Login',{
             items			: [{ xtype: 'box', width: 483, height: 135, html: '<img src="resources/images/logon_header.png" />'}, me.formLogin ],
             listeners:{
                 scope:me,
-                afterrender:me.onAfterrender
+                afterrender:me.afterAppRender
             }
         }).show();
 
@@ -182,28 +182,40 @@ Ext.define('App.view.login.Login',{
             floating:true,
             cls:'logout-warning-window',
             style:'text-align:center; width:800',
-            html:'This demo version is 500% slower because files are not minified (compressed) or compiled.<br>' +
-                'Please allow about 30sec for the app to download. <span style="text-decoration: underline;">Compiled version loads between 3 - 5 seconds.</span>',
+            html:'This demo version is 300% slower because files are not fully minified (compressed) or compiled.<br>' +
+                'Please allow about 15sec for the app to download. Compiled version loads between 3 - 5 seconds.',
             seconds:10
         }).show();
         me.notice1.alignTo(Ext.getBody(),'t-t',[0,10]);
 
-        if(!Ext.isChrome && !Ext.isOpera10_5){
+        if(Ext.isIE){
+            me.notice2 = Ext.create('Ext.Container',{
+                floating:true,
+                cls:'logout-warning-window',
+                style:'text-align:center; width:800',
+                html:'<span style="font-size: 18px;">WAIT!!! There is a known bug with Internet Explorer - <a href="http://gaiaehr.org:8181/browse/GAIAEH-119" target="_blank" style="color: white;">more info...</a></span><br>' +
+                    'Please, access the application through any of these browsers... ' +
+                    '<span style="text-decoration: underline;"><a href="https://www.google.com/intl/en/chrome/" target="_blank" style="color: white;">Google Chrome</a></span>, ' +
+                    '<span style="text-decoration: underline;"><a href="http://www.mozilla.org/en-US/firefox/new/" target="_blank" style="color: white;">Firefox</a></span>, or ' +
+                    '<span style="text-decoration: underline;"><a href="http://www.opera.com/" target="_blank" style="color: white;">Opera</a></span>'
+            }).show();
+            me.notice2.alignTo(Ext.getBody(),'t-t',[0,85]);
+        }else if(!Ext.isChrome && !Ext.isOpera && !Ext.isGecko){
             me.notice2 = Ext.create('Ext.Container',{
                 floating:true,
                 cls:'logout-warning-window',
                 style:'text-align:center; width:800',
                 html:'GaiaEHR rely heavily on javascript and web 2.0 / ajax requests, although any browser will do the work<br>' +
                     'we strongly recommend to use any of the fastest browsers to day, <span style="text-decoration: underline;">' +
-                    '<a href="https://www.google.com/intl/en/chrome/" target="_blank" style="color: white;">Google Chrome</a></span> or <a href="http://www.opera.com/" target="_blank" style="color: white;">Opera</a></span>',
-                seconds:10
+                    '<span style="text-decoration: underline;"><a href="https://www.google.com/intl/en/chrome/" target="_blank" style="color: white;">Google Chrome</a></span>, ' +
+                    '<span style="text-decoration: underline;"><a href="http://www.mozilla.org/en-US/firefox/new/" target="_blank" style="color: white;">Firefox</a></span>, or ' +
+                    '<span style="text-decoration: underline;"><a href="http://www.opera.com/" target="_blank" style="color: white;">Opera</a></span>'
             }).show();
             me.notice2.alignTo(Ext.getBody(),'t-t',[0,85]);
         }
 
-
         me.listeners = {
-            resize:me.onResized
+            resize:me.onAppResize
         };
 
         me.callParent(arguments);
@@ -215,13 +227,13 @@ Ext.define('App.view.login.Login',{
      */
     onEnter:function(field, e){
         if (e.getKey() == e.ENTER) {
-           this.onSubmit();
+           this.loginSubmit();
         }
     },
     /**
      * Form Submit/Logon function
      */
-    onSubmit:function(){
+    loginSubmit:function(){
         var me = this,
             formPanel = this.formLogin,
             form = formPanel.getForm(),
@@ -230,7 +242,6 @@ Ext.define('App.view.login.Login',{
         if(form.isValid()){
             formPanel.el.mask('Sending credentials...');
             params.checkInMode = checkInMode;
-            console.log(params);
             authProcedures.login(params, function(provider, response){
                 if(response.result.success){
                     window.location = './';
@@ -279,7 +290,7 @@ Ext.define('App.view.login.Login',{
     /**
      * After form is render load store
      */
-    onAfterrender:function(){
+    afterAppRender:function(){
         var me = this;
         if(me.showSite){
             me.storeSites.load({
@@ -329,7 +340,7 @@ Ext.define('App.view.login.Login',{
         m.slideIn('t').pause(3000).ghost('t', {remove:true});
     },
 
-    onResized:function(){
+    onAppResize:function(){
         this.winLogon.alignTo(this, 'c-c');
         this.notice1.alignTo(Ext.getBody(),'t-t',[0,10]);
         if(this.notice2) this.notice2.alignTo(Ext.getBody(),'t-t',[0,85]);

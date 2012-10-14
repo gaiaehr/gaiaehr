@@ -10,6 +10,10 @@
 			},
 			"files": [
 				{
+					"path": "app/view/calendar/",
+					"name": "ExtensibleAll.js"
+				},
+				{
 					"path": "app/classes/ux/",
 					"name": "LiveSearchGridPanel.js"
 				},
@@ -896,10 +900,6 @@
 				{
 					"path": "app/view/dashboard/",
 					"name": "Dashboard.js"
-				},
-				{
-					"path": "app/view/calendar/",
-					"name": "ExtensibleAll.js"
 				},
 				{
 					"path": "app/view/calendar/",

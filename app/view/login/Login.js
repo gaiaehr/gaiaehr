@@ -200,7 +200,7 @@ Ext.define('App.view.login.Login',{
                     '<span style="text-decoration: underline;"><a href="http://www.opera.com/" target="_blank" style="color: white;">Opera</a></span>'
             }).show();
             me.notice2.alignTo(Ext.getBody(),'t-t',[0,85]);
-        }else if(!Ext.isChrome && !Ext.isOpera10_5 && !Ext.isGecko){
+        }else if(!Ext.isChrome && !Ext.isOpera && !Ext.isGecko){
             me.notice2 = Ext.create('Ext.Container',{
                 floating:true,
                 cls:'logout-warning-window',

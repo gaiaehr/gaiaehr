@@ -1,29 +1,36 @@
-Ext.define('App.classes.combo.ActiveFacilities', {
+Ext.define('App.classes.combo.ActiveFacilities', 
+{
 	extend       : 'Ext.form.ComboBox',
 	alias        : 'widget.mitos.activefacilitiescombo',
-	initComponent: function() {
+	initComponent: function() 
+	{
 		var me = this;
 
-		Ext.define('ActiveFacilitiesComboModel', {
+		Ext.define('ActiveFacilitiesComboModel', 
+		{
 			extend: 'Ext.data.Model',
 			fields: [
 				{name: 'option_name', type: 'string' },
 				{name: 'option_value', type: 'int' }
 			],
-			proxy : {
+			proxy : 
+			{
 				type: 'direct',
-				api : {
+				api : 
+				{
 					read: CombosData.getActiveFacilities
 				}
 			}
 		});
 
-		me.store = Ext.create('Ext.data.Store', {
+		me.store = Ext.create('Ext.data.Store', 
+		{
 			model   : 'ActiveFacilitiesComboModel',
 			autoLoad: true
 		});
 
-		Ext.apply(this, {
+		Ext.apply(this, 
+		{
 			editable    : false,
 			queryMode   : 'local',
 			valueField  : 'option_value',

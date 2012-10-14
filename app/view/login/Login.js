@@ -188,23 +188,25 @@ Ext.define('App.view.login.Login',{
         }).show();
         me.notice1.alignTo(Ext.getBody(),'t-t',[0,10]);
 
-        if((!Ext.isChrome && !Ext.isOpera10_5) && !Ext.isIE){
-            me.notice2 = Ext.create('Ext.Container',{
-                floating:true,
-                cls:'logout-warning-window',
-                style:'text-align:center; width:800',
-                html:'GaiaEHR rely heavily on javascript and web 2.0 / ajax requests, although any browser will do the work<br>' +
-                    'we strongly recommend to use any of the fastest browsers to day, <span style="text-decoration: underline;">' +
-                    '<a href="https://www.google.com/intl/en/chrome/" target="_blank" style="color: white;">Google Chrome</a></span> or <a href="http://www.opera.com/" target="_blank" style="color: white;">Opera</a></span>'
-            }).show();
-            me.notice2.alignTo(Ext.getBody(),'t-t',[0,85]);
-        }else{
+        if(Ext.isIE){
             me.notice2 = Ext.create('Ext.Container',{
                 floating:true,
                 cls:'logout-warning-window',
                 style:'text-align:center; width:800',
                 html:'<span style="font-size: 18px;">WAIT!!! There is a known bug with Internet Explorer - <a href="http://gaiaehr.org:8181/browse/GAIAEH-119" target="_blank" style="color: white;">more info...</a></span><br>' +
                     'Please, access the application through any of these browsers... ' +
+                    '<span style="text-decoration: underline;"><a href="https://www.google.com/intl/en/chrome/" target="_blank" style="color: white;">Google Chrome</a></span>, ' +
+                    '<span style="text-decoration: underline;"><a href="http://www.mozilla.org/en-US/firefox/new/" target="_blank" style="color: white;">Firefox</a></span>, or ' +
+                    '<span style="text-decoration: underline;"><a href="http://www.opera.com/" target="_blank" style="color: white;">Opera</a></span>'
+            }).show();
+            me.notice2.alignTo(Ext.getBody(),'t-t',[0,85]);
+        }else if(!Ext.isChrome && !Ext.isOpera10_5 && !Ext.isGecko){
+            me.notice2 = Ext.create('Ext.Container',{
+                floating:true,
+                cls:'logout-warning-window',
+                style:'text-align:center; width:800',
+                html:'GaiaEHR rely heavily on javascript and web 2.0 / ajax requests, although any browser will do the work<br>' +
+                    'we strongly recommend to use any of the fastest browsers to day, <span style="text-decoration: underline;">' +
                     '<span style="text-decoration: underline;"><a href="https://www.google.com/intl/en/chrome/" target="_blank" style="color: white;">Google Chrome</a></span>, ' +
                     '<span style="text-decoration: underline;"><a href="http://www.mozilla.org/en-US/firefox/new/" target="_blank" style="color: white;">Firefox</a></span>, or ' +
                     '<span style="text-decoration: underline;"><a href="http://www.opera.com/" target="_blank" style="color: white;">Opera</a></span>'

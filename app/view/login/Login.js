@@ -182,25 +182,35 @@ Ext.define('App.view.login.Login',{
             floating:true,
             cls:'logout-warning-window',
             style:'text-align:center; width:800',
-            html:'This demo version is 500% slower because files are not minified (compressed) or compiled.<br>' +
-                'Please allow about 30sec for the app to download. <span style="text-decoration: underline;">Compiled version loads between 3 - 5 seconds.</span>',
+            html:'This demo version is 300% slower because files are not fully minified (compressed) or compiled.<br>' +
+                'Please allow about 15sec for the app to download. Compiled version loads between 3 - 5 seconds.',
             seconds:10
         }).show();
         me.notice1.alignTo(Ext.getBody(),'t-t',[0,10]);
 
-        if(!Ext.isChrome && !Ext.isOpera10_5){
+        if((!Ext.isChrome && !Ext.isOpera10_5) && !Ext.isIE){
             me.notice2 = Ext.create('Ext.Container',{
                 floating:true,
                 cls:'logout-warning-window',
                 style:'text-align:center; width:800',
                 html:'GaiaEHR rely heavily on javascript and web 2.0 / ajax requests, although any browser will do the work<br>' +
                     'we strongly recommend to use any of the fastest browsers to day, <span style="text-decoration: underline;">' +
-                    '<a href="https://www.google.com/intl/en/chrome/" target="_blank" style="color: white;">Google Chrome</a></span> or <a href="http://www.opera.com/" target="_blank" style="color: white;">Opera</a></span>',
-                seconds:10
+                    '<a href="https://www.google.com/intl/en/chrome/" target="_blank" style="color: white;">Google Chrome</a></span> or <a href="http://www.opera.com/" target="_blank" style="color: white;">Opera</a></span>'
+            }).show();
+            me.notice2.alignTo(Ext.getBody(),'t-t',[0,85]);
+        }else{
+            me.notice2 = Ext.create('Ext.Container',{
+                floating:true,
+                cls:'logout-warning-window',
+                style:'text-align:center; width:800',
+                html:'<span style="font-size: 18px;">WAIT!!! There is a known bug with Internet Explorer - <a href="http://gaiaehr.org:8181/browse/GAIAEH-119" target="_blank" style="color: white;">more info...</a></span><br>' +
+                    'Please, access the application through any of these browsers... ' +
+                    '<span style="text-decoration: underline;"><a href="https://www.google.com/intl/en/chrome/" target="_blank" style="color: white;">Google Chrome</a></span>, ' +
+                    '<span style="text-decoration: underline;"><a href="http://www.mozilla.org/en-US/firefox/new/" target="_blank" style="color: white;">Firefox</a></span>, or ' +
+                    '<span style="text-decoration: underline;"><a href="http://www.opera.com/" target="_blank" style="color: white;">Opera</a></span>'
             }).show();
             me.notice2.alignTo(Ext.getBody(),'t-t',[0,85]);
         }
-
 
         me.listeners = {
             resize:me.onAppResize

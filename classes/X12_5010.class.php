@@ -3,7 +3,7 @@
 /*
  * X12 835 Dispenser Class
  * version: 0.0.1
- * Desc: This class library will generate a ANSI X12 835 version 5010
+ * Desc: This class library will process diferent kind of ANSI X12 files version 5010
  * from the GaiaEHR database
  *  
  */

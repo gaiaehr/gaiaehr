@@ -193,7 +193,7 @@ class FormLayoutEngine
 		if($params->formToRender == 'Demographics' || $params->formToRender == 1){
 			$rawStr2     = json_encode($items2);
 			$rawStr = "Ext.create('Ext.container.Container',{layout:{type:'vbox',align:'stretch'},items:[Ext.create('Ext.tab.Panel',{border:false,height:240,defaults:{autoScroll:true},items:$rawStr}),";
-			$rawStr .= "Ext.create('Ext.tab.Panel',{border:false,flex:1,defaults:{autoScroll:true},action:'insurances',items:$rawStr2})]})";
+			$rawStr .= "Ext.create('Ext.tab.Panel',{height:390,border:false,flex:1,defaults:{autoScroll:true},action:'insurances',items:$rawStr2})]})";
 		}
 
 

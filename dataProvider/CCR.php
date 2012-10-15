@@ -60,7 +60,7 @@ class CCR
 		//		while($res = sqlFetchArray($result[2])) {
 		//			${"labID{$res['id']}"} = $this->getUuid();
 		//		}
-		$e_styleSheet = $this->ccr->createProcessingInstruction('xml-stylesheet', 'type="text/xsl" href="stylesheet/ccr.xsl"');
+		$e_styleSheet = $this->ccr->createProcessingInstruction('xml-stylesheet', 'type="text/xsl" href="'.$_SESSION['url'].'/lib/ccr/stylesheet/ccr.xsl"');
 		$this->ccr->appendChild($e_styleSheet);
 		$e_ccr = $this->ccr->createElementNS('urn:astm-org:CCR', 'ContinuityOfCareRecord');
 		$this->ccr->appendChild($e_ccr);
@@ -210,7 +210,7 @@ class CCR
 			return;
 		}
 		$ss = new DOMDocument();
-		$ss->load($_SESSION['root'] . "/lib/ccr/stylesheet/cda.xsl");
+		$ss->load($_SESSION['root'] . '/lib/ccr/stylesheet/cda.xsl');
 		$xslt->importStyleSheet($ss);
 		$html = $xslt->transformToXML($ccd);
 		echo $html;
@@ -1512,6 +1512,6 @@ class CCR
 }
 
 $c = new CCR();
-// generate,
+// generate, viewccd
 // yes, hybrid, pure
-$c->createCCR('generate',  'pure');
+$c->createCCR('generate',  'no');

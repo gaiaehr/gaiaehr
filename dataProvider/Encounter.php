@@ -79,15 +79,11 @@ class Encounter
 
 	/**
 	 * @return array
-	 *  NOTES: What is ck?
-	 *  Naming: "checkOpenEncounters"
 	 */
 	public function checkOpenEncounters()
 	{
-		$fields[] = "*";
-		$where[]  = "pid = '" . $_SESSION['patient']['pid'] . "'";
-		$where[]  = "close_date IS NULL";
-		$this->db->setSQL($this->db->sqlSelectBuilder("form_data_encounter", $fields, $where));
+		$pid = $_SESSION['patient']['pid'];
+		$this->db->setSQL("SELECT id FROM form_data_encounter WHERE pid = '$pid' AND close_date IS NULL");
 		$total = $this->db->rowCount();
 		if($total >= 1) {
 			return array('encounter' => true);
@@ -103,37 +99,9 @@ class Encounter
 	 */
 	public function getEncounters(stdClass $params)
 	{
-		$fields[] = "*";
-		if(isset($params->sort)) {
-			$order[$params->sort[0]->direction] = $params->sort[0]->property;
-		} else {
-			$order['DESC'] = 'start_date';
-		}
-		$where[] = "pid = '" . $_SESSION['patient']['pid'] . "'";
-		$this->db->setSQL($this->db->sqlSelectBuilder('form_data_encounter', $fields, $where, $order));
-		$rows = array();
-		foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row) {
-			$row['status'] = ($row['close_date'] == null) ? 'open' : 'close';
-			array_push($rows, $row);
-		}
-		return $rows;
-	}
-
-	/**
-	 * @param stdClass $params
-	 * @return array
-	 *  Naming: "getPatientEncounters"
-	 */
-	public function getEncountersPastDue(stdClass $params)
-	{
-		$fields[] = "*";
-		if(isset($params->sort)) {
-			$order[$params->sort[0]->direction] = $params->sort[0]->property;
-		} else {
-			$order['DESC'] = 'start_date';
-		}
-		$where[] = "pid = '" . $_SESSION['patient']['pid'] . "'";
-		$this->db->setSQL($this->db->sqlSelectBuilder('form_data_encounter', $fields, $where, $order));
+		$pid = $_SESSION['patient']['pid'];
+		$ORDERX = isset($params->sort) ? $params->sort[0]->property .' '. $params->sort[0]->direction : 'start_date DESC';
+		$this->db->setSQL("SELECT * FROM form_data_encounter WHERE pid = '$pid' ORDER BY $ORDERX");
 		$rows = array();
 		foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row) {
 			$row['status'] = ($row['close_date'] == null) ? 'open' : 'close';
@@ -447,7 +415,7 @@ class Encounter
 	public function getEncounterIcdxCodes(stdClass $params)
 	{
 		$this->setEid($params->eid);
-		return $this->services->getIcdxByEid($params->eid);
+		return $this->diagnosis->getICDByEid($params->eid);
 	}
 
 	/**

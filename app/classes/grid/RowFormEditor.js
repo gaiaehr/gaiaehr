@@ -489,11 +489,22 @@ Ext.define('App.classes.grid.RowFormEditor', {
             store = me.context.store,
             record = view.getSelectionModel().getLastSelected();
 
-        store.remove(record);
-        me.hide();
-        form.clearInvalid();
-        form.reset();
-        me.editingPlugin.fireEvent('afterremove', me.context);
+        Ext.Msg.show({
+            title:'WAIT!!!',
+            msg: 'Are you sure you want to remove this record?',
+            buttons: Ext.Msg.YESNO,
+            icon: Ext.Msg.QUESTION,
+            scope:me,
+            fn: function(btn){
+                if (btn == 'yes'){
+                    store.remove(record);
+                    me.hide();
+                    form.clearInvalid();
+                    form.reset();
+                    me.editingPlugin.fireEvent('afterremove', me.context);
+                }
+            }
+        });
     },
 
     onShow: function() {

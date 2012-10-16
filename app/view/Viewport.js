@@ -548,7 +548,7 @@ Ext.define('App.view.Viewport', {
 					dock : 'bottom',
 					items: [
 						{
-							text    : 'Copyright (C) 2011 GaiaEHR (Electronic Health Records) |:|  Open Source Software operating under GPLv3 |:| V' + version,
+							text    : 'Copyright (C) 2011 GaiaEHR (Electronic Health Records) |:|  Open Source Software operating under GPLv3 |:| v' + version,
 							iconCls : 'icoGreen',
 							disabled: true,
 							action  : 'http://GaiaEHR.org/projects/GaiaEHR001',

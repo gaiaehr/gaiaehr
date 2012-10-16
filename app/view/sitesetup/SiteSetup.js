@@ -334,109 +334,111 @@ Ext.define('App.view.sitesetup.SiteSetup',
 								value:'root',
 								allowBlank: false
 							},
-                                    {
-                                        fieldLabel: 'Root Password',
-                                        name      : 'rootPass',
-                                        id        : 'rootPass',
-                                        inputType : 'password',
-//                                        value:'pass',
-                                        allowBlank: true
-                                    },
-                                    {
-                                        fieldLabel: 'SQL Server Host',
-                                        name      : 'dbHost',
-                                        value     : 'localhost',
-                                        allowBlank: false
-                                    },
-                                    {
-                                        fieldLabel: 'SQL Server Port',
-                                        name      : 'dbPort',
-                                        value     : '3306',
-                                        allowBlank: false
-                                    },
-                                    {
-                                        fieldLabel: 'Database Name',
-                                        name      : 'dbName',
-                                        value     : 'gaiadb',
-                                        allowBlank: false
-                                    },
-                                    {
-                                        fieldLabel: 'New Database User',
-                                        name      : 'dbUser',
-//                                        value     : 'test',
-                                        allowBlank: false
-                                    },
-                                    {
-                                        fieldLabel: 'New Database Pass',
-                                        name      : 'dbPass',
-                                        inputType : 'password',
-//                                        value     : 'test',
-                                        allowBlank: false
-                                    }
-                                ],
-                                listeners  : {
-                                    enable: function() {
-                                        conn = 'root';
-                                        Ext.getCmp('dbuserFieldset').collapse();
-                                        Ext.getCmp('dbuserFieldset').disable();
-                                        Ext.getCmp('rootFieldset').expand();
-
-                                    }
-                                }
-                            },
-                            {
-                                xtype      : 'fieldset',
-                                id         : 'dbuserFieldset',
-                                title      : 'Install on a existing database',
-                                defaultType: 'textfield',
-                                collapsed  : true,
-                                disabled   : true,
-                                layout     : 'anchor',
-                                defaults   : {anchor: '100%'},
-                                items      : [
-                                    {
-                                        fieldLabel: 'Database Name',
-                                        name      : 'dbName',
-//                                        value     : 'gaiadb',
-                                        allowBlank: false
-                                    },
-                                    {
-                                        fieldLabel: 'Database User',
-                                        name      : 'dbUser',
-//                                        value     : 'gaiadb',
-                                        allowBlank: false
-                                    },
-                                    {
-                                        fieldLabel: 'Database Pass',
-                                        name      : 'dbPass',
-                                        id        : 'dbPass',
-                                        inputType : 'password',
-//                                        value     : 'pass',
-                                        allowBlank: false
-                                    },
-                                    {
-                                        fieldLabel: 'Database Host',
-                                        name      : 'dbHost',
-                                        value     : 'localhost',
-                                        allowBlank: false
-                                    },
-                                    {
-                                        fieldLabel: 'Database Port',
-                                        name      : 'dbPort',
-                                        value     : '3306',
-                                        allowBlank: false
-                                    }
-                                ],
-                                listeners  : {
-                                    enable: function() {
-                                        conn = 'user';
-                                        Ext.getCmp('rootFieldset').collapse();
-                                        Ext.getCmp('rootFieldset').disable();
-                                        Ext.getCmp('dbuserFieldset').expand();
-
-                                    }
-                                }
-                            }
+							{
+								fieldLabel: 'Root Password',
+								name      : 'rootPass',
+								id        : 'rootPass',
+								inputType : 'password',
+								// value:'pass',
+								allowBlank: true
+							},
+							{
+								fieldLabel: 'SQL Server Host (or IP address)',
+								name      : 'dbHost',
+								value     : 'localhost',
+									allowBlank: false
+							},
+							{
+								fieldLabel: 'SQL Server Port',
+								name      : 'dbPort',
+								value     : '3306',
+								allowBlank: false
+							},
+							{
+								fieldLabel: 'Database Name',
+								name      : 'dbName',
+								value     : 'gaiadb',
+								allowBlank: false
+							},
+							{
+								fieldLabel: 'New Database User',
+								name      : 'dbUser',
+								//value     : 'test',
+								allowBlank: false
+							},
+							{
+								fieldLabel: 'New Database Pass',
+								name      : 'dbPass',
+								inputType : 'password',
+								// value     : 'test',
+								allowBlank: false
+							}
+                            ],
+							listeners  : 
+							{
+								enable: function() 
+								{
+									conn = 'root';
+									Ext.getCmp('dbuserFieldset').collapse();
+									Ext.getCmp('dbuserFieldset').disable();
+									Ext.getCmp('rootFieldset').expand();
+								}
+							}
+						},
+						{
+							xtype      : 'fieldset',
+							id         : 'dbuserFieldset',
+							title      : 'Install on a existing database',
+							defaultType: 'textfield',
+							collapsed  : true,
+							disabled   : true,
+							layout     : 'anchor',
+							defaults   : {anchor: '100%'},
+							items      : [
+							{
+								fieldLabel: 'Database Name',
+								name      : 'dbName',
+								// value     : 'gaiadb',
+								allowBlank: false
+							},
+							{
+								fieldLabel: 'Database User',
+								name      : 'dbUser',
+								// value     : 'gaiadb',
+								allowBlank: false
+							},
+							{
+								fieldLabel: 'Database Pass',
+								name      : 'dbPass',
+								id        : 'dbPass',
+								inputType : 'password',
+								// value     : 'pass',
+								allowBlank: false
+							},
+							{
+								fieldLabel: 'Database Host',
+								name      : 'dbHost',
+								value     : 'localhost',
+								allowBlank: false
+							},
+							{
+								fieldLabel: 'Database Port',
+								name      : 'dbPort',
+								value     : '3306',
+								allowBlank: false
+							}
+							],
+							listeners  : 
+							{
+								enable: function() 
+								{
+									conn = 'user';
+									Ext.getCmp('rootFieldset').collapse();
+									Ext.getCmp('rootFieldset').disable();
+									Ext.getCmp('dbuserFieldset').expand();
+								}
+							}
+						}
                         ],
                         bbar       : [
                             '**Database Connection Test is Required to Continue -->>', '->', '-', {

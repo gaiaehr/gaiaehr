@@ -40,7 +40,6 @@ if(file_exists('sites/'.$site.'/conf.php'))
 	include_once('sites/'.$site.'/conf.php');
 	$_SESSION['site']['localization'] = (isset($_SESSION['site']['localization']) && ($_SESSION['site']['default_localization'] != $_SESSION['site']['localization'])) ? $_SESSION['site']['localization'] : 'en_US';
 };
-print 'lang = '.$_SESSION['site']['localization'];
 /**
  * Make the auth process
  * lets check for 4 things to allow the user in

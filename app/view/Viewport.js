@@ -4,7 +4,7 @@
  * ----------------------------------------------------------------------------------------------------------- 
  * Description: This are the viewport, the absolute panel of GaiaEHR application
  * this will manage all the panels on the application, this file should not
- * be modified by extrangers. 
+ * be modified unless you know what you doing :-)
  * 
  * Third-party companies: If you want to add a extra app's, widgets, modules, or another other improvement
  * to the application you should create it using the documentation on How To Create (Modules, PlugIns, and Widgets)
@@ -18,15 +18,16 @@
  */
 Ext.define('App.view.Viewport', {
 	extend  : 'Ext.Viewport',
-	requires: window.requires,
     // app settings
+    requires: window.requires,      // array is defined on _app.php
+    user: window.user,              // array defined on _app.php
+    version: window.version,        // string defined on _app.php
 	minWidthToFullMode: 1585,       // full mode = nav expanded
-	currency          : '$',        // currency used
+	currency: '$',                  // currency used
     activityMonitorInterval: 60,    // in seconds - interval to check for mouse and keyboard activity
-    activityMonitorMaxInactive: 10, // in minutes - Maximum time application can be inactive (no mouse or keyboard imput)
+    activityMonitorMaxInactive: 10, // in minutes - Maximum time application can be inactive (no mouse or keyboard inputt)
     cronTaskInterval:10,            // in seconds - interval to run me.cronTask (check PHP session, refresh Patient Pool Areas, and PHP Cron Job)
     // end app settings
-
 	initComponent: function() 
 	{
 		Ext.tip.QuickTipManager.init();
@@ -46,7 +47,6 @@ Ext.define('App.view.Viewport', {
             readOnly: false
         };
 
-		me.user = window.user;
 		/**
 		 * TaskScheduler
 		 * This will run all the procedures inside the checkSession
@@ -271,7 +271,7 @@ Ext.define('App.view.Viewport', {
         });
         me.Header.add({
             xtype    : 'button',
-            text     : user.title + ' ' + user.lname,
+            text     : me.user.title + ' ' + me.user.lname,
             scale    : 'large',
             iconCls  : 'icoDoctor',
             iconAlign: 'left',
@@ -548,7 +548,7 @@ Ext.define('App.view.Viewport', {
 					dock : 'bottom',
 					items: [
 						{
-							text    : 'Copyright (C) 2011 GaiaEHR (Electronic Health Records) |:|  Open Source Software operating under GPLv3 ',
+							text    : 'Copyright (C) 2011 GaiaEHR (Electronic Health Records) |:|  Open Source Software operating under GPLv3 |:| v' + me.version,
 							iconCls : 'icoGreen',
 							disabled: true,
 							action  : 'http://GaiaEHR.org/projects/GaiaEHR001',

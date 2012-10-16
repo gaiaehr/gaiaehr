@@ -18566,32 +18566,39 @@ Ext.define('App.classes.grid.RowFormEditor', {
     }
 });
 
-Ext.define('App.classes.combo.ActiveFacilities', {
+Ext.define('App.classes.combo.ActiveFacilities', 
+{
 	extend       : 'Ext.form.ComboBox',
 	alias        : 'widget.mitos.activefacilitiescombo',
-	initComponent: function() {
+	initComponent: function() 
+	{
 		var me = this;
 
-		Ext.define('ActiveFacilitiesComboModel', {
+		Ext.define('ActiveFacilitiesComboModel', 
+		{
 			extend: 'Ext.data.Model',
 			fields: [
 				{name: 'option_name', type: 'string' },
 				{name: 'option_value', type: 'int' }
 			],
-			proxy : {
+			proxy : 
+			{
 				type: 'direct',
-				api : {
+				api : 
+				{
 					read: CombosData.getActiveFacilities
 				}
 			}
 		});
 
-		me.store = Ext.create('Ext.data.Store', {
+		me.store = Ext.create('Ext.data.Store', 
+		{
 			model   : 'ActiveFacilitiesComboModel',
 			autoLoad: true
 		});
 
-		Ext.apply(this, {
+		Ext.apply(this, 
+		{
 			editable    : false,
 			queryMode   : 'local',
 			valueField  : 'option_value',
@@ -19511,15 +19518,15 @@ Ext.define('App.classes.combo.Languages',
 		me.store = Ext.create('Ext.data.Store', 
 		{
 			model   : 'LanguagesComboModel',
-			autoLoad: true
+			autoLoad: false
 		});
 
 		Ext.apply(this, 
 		{
 			editable    : false,
-			queryMode   : 'local',
 			valueField  : 'code',
 			displayField: 'description',
+            emptyText   : i18n['select'],
 			store       : me.store
 		}, null);
 		
@@ -20587,12 +20594,11 @@ Ext.define('App.classes.combo.Themes', {
 
 		me.store = Ext.create('Ext.data.Store', {
 			model   : 'ThemesComboModel',
-			autoLoad: true
+			autoLoad: false
 		});
 
 		Ext.apply(this, {
 			editable    : false,
-			queryMode   : 'local',
 			valueField  : 'value',
 			displayField: 'name',
 			emptyText   : i18n['select'],
@@ -28400,6 +28406,7 @@ Ext.define('App.view.patient.Summary', {
 				title      : i18n['demographics'],
 				action     : 'demoFormPanel',
 				itemId     : 'demoFormPanel',
+                autoScroll : true,
 				border     : false,
 				dockedItems: [
 					{
@@ -43803,7 +43810,7 @@ Ext.define('App.view.Viewport', {
         me.MainPanel.add(Ext.create('App.view.miscellaneous.MySettings'));
         me.MainPanel.add(Ext.create('App.view.miscellaneous.OfficeNotes'));
         me.MainPanel.add(Ext.create('App.view.miscellaneous.Websearch'));
-        
+
         me.ppdz = me.MainPanel.add(Ext.create('App.view.areas.PatientPoolDropZone'));
 
 		if(acl['access_gloabal_settings']) me.MainPanel.add(Ext.create('App.view.administration.Globals'));
@@ -44356,9 +44363,7 @@ Ext.define('App.view.Viewport', {
             html:'Logging Out in...',
             seconds:10
         }).show();
-
         app.el.mask();
-
         if(!me.LogoutTask) me.LogoutTask = new Ext.util.TaskRunner();
         if(!me.LogoutTaskTimer){
             me.LogoutTaskTimer = me.LogoutTask.start({
@@ -44372,7 +44377,6 @@ Ext.define('App.view.Viewport', {
 
 
     },
-
     logoutCounter:function(){
         var me = this,
             sec = me.logoutWarinigWindow.seconds - 1;

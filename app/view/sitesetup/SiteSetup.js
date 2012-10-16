@@ -1,4 +1,10 @@
-Ext.define('App.view.sitesetup.SiteSetup', {
+/*
+ * Site Setup FrontEnd Script 
+ * Desc: Script to install GaiaEHR on host.
+ */
+
+Ext.define('App.view.sitesetup.SiteSetup', 
+{
     extend       : 'Ext.window.Window',
     title        : 'GaiaEHR Site Setup',
     bodyPadding  : 5,
@@ -10,7 +16,8 @@ Ext.define('App.view.sitesetup.SiteSetup', {
     draggable    : false,
     closable     : false,
     bodyStyle    : 'background-color: #ffffff',
-    layout       : {
+    layout       : 
+    {
         type : 'vbox',
         align: 'stretch'
     },
@@ -21,7 +28,8 @@ Ext.define('App.view.sitesetup.SiteSetup', {
         'App.classes.combo.Languages',
         'App.classes.combo.Themes'
     ],
-    initComponent: function() {
+    initComponent: function() 
+    {
         var me = this;
         /**
          * array to store each step success and data
@@ -39,25 +47,37 @@ Ext.define('App.view.sitesetup.SiteSetup', {
         /**
          * Store used to load system requirements
          */
-        Ext.define('Requirements', {extend: 'Ext.data.Model',
-            fields                        : [
+        Ext.define('Requirements', 
+        {
+        	extend: 'Ext.data.Model',
+            fields:[
                 {name: 'msg', type: 'string'},
                 {name: 'status', type: 'string'}
             ]
         });
-        me.requirementsStore = Ext.create('Ext.data.Store', {
+        
+        /*
+         * Store: requirementsStore
+         */
+        me.requirementsStore = Ext.create('Ext.data.Store', 
+        {
             model   : 'Requirements',
-            proxy   : {
+            proxy   : 
+            {
                 type: 'direct',
-                api : {
+                api : 
+                {
                     read: SiteSetup.checkRequirements
                 }
             },
             autoLoad: false
         });
 
-
-        me.enviromentStore = Ext.create('Ext.data.Store', {
+		/* 
+		 * Store: enviromentStore
+		 */
+        me.enviromentStore = Ext.create('Ext.data.Store', 
+        {
             fields: ['value', 'name'],
             data : [
                 {value:'Production', name:'Production/Clinic'},
@@ -66,8 +86,11 @@ Ext.define('App.view.sitesetup.SiteSetup', {
             ]
         });
 
-
-        me.boolStore = Ext.create('Ext.data.Store', {
+		/*
+		 * Simple bool store, yes or no.
+		 */
+        me.boolStore = Ext.create('Ext.data.Store', 
+        {
             fields: ['value', 'name'],
             data : [
                 {value:'Yes', name:'Yes'},
@@ -75,7 +98,9 @@ Ext.define('App.view.sitesetup.SiteSetup', {
             ]
         });
 
-
+		/*
+		 * Size of the clinic, hospital, ect.
+		 */
         me.sizeStore = Ext.create('Ext.data.Store', {
             fields: ['value', 'name'],
             data : [
@@ -86,21 +111,25 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                 {value:'20+', name:'20+ Users'}
             ]
         });
+        
         /**
          * Copy Rights window
          * @type {*}
          */
         me.winCopyright = Ext.create('App.classes.window.CopyRights');
+        
         /**
          * Site Setup window
          * @type {Array}
          */
         me.items = [
-            me.headerPanel = Ext.create('Ext.Container', {
+            me.headerPanel = Ext.create('Ext.Container', 
+            {
                 cls   : 'siteSetupHeader',
                 height: 45,
                 items : [
-                    me.welcomeBtn = Ext.create('Ext.Button', {
+                    me.welcomeBtn = Ext.create('Ext.Button', 
+                    {
                         scale       : 'large',
                         iconCls     : 'icoGrayFace',
                         componentCls: 'setupBts',
@@ -113,7 +142,8 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                         action      : 0,
                         pressed     : true,
                         handler     : me.onHeaderBtnPress
-                    }), me.compatibiltyBtn = Ext.create('Ext.Button', {
+                    }), me.compatibiltyBtn = Ext.create('Ext.Button', 
+                    {
                         scale       : 'large',
                         iconCls     : 'icoGrayFace',
                         componentCls: 'setupBts',
@@ -126,7 +156,8 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                         scope       : me,
                         action      : 1,
                         handler     : me.onHeaderBtnPress
-                    }), me.databaseBtn = Ext.create('Ext.Button', {
+                    }), me.databaseBtn = Ext.create('Ext.Button', 
+                    {
                         scale       : 'large',
                         iconCls     : 'icoGrayFace',
                         componentCls: 'setupBts',
@@ -139,7 +170,8 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                         scope       : me,
                         action      : 2,
                         handler     : me.onHeaderBtnPress
-                    }), me.siteConfigurationBtn = Ext.create('Ext.Button', {
+                    }), me.siteConfigurationBtn = Ext.create('Ext.Button', 
+                    {
                         scale       : 'large',
                         iconCls     : 'icoGrayFace',
                         componentCls: 'setupBts',
@@ -152,7 +184,8 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                         scope       : me,
                         action      : 3,
                         handler     : me.onHeaderBtnPress
-                    }), me.completeBtn = Ext.create('Ext.Button', {
+                    }), me.completeBtn = Ext.create('Ext.Button', 
+                    {
                         scale       : 'large',
                         iconCls     : 'icoGrayFace',
                         componentCls: 'setupBts',
@@ -167,229 +200,245 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                     })
                 ]
             }),
-            me.mainPanel = Ext.create('Ext.Container', {
+            
+            me.mainPanel = Ext.create('Ext.Container', 
+            {
                 flex  : 1,
                 layout: 'card',
 //                activeItem:3,
                 items : [
-                    me.welcome = Ext.create('Ext.Container', {
+                    me.welcome = Ext.create('Ext.Container', 
+                    {
                         action: 0,
                         items : [
+                        {
+							xtype           : 'panel',
+                            title           : 'Welcome to GaiaEHR Site Setup',
+                            styleHtmlContent: true,
+                            cls             : 'welcome',
+                            layout          : 'auto',
+                            items           : [
                             {
-                                xtype           : 'panel',
-                                title           : 'Welcome to GaiaEHR Site Setup',
-                                styleHtmlContent: true,
-                                cls             : 'welcome',
-                                layout          : 'auto',
-                                items           : [
-                                    {
-                                        xtype  : 'container',
-                                        height : 120,
-                                        padding: '5 10 0 10',
-                                        html   : ' <p>Please allow 10-15 minutes to complete the installation process.</p>' + '<p>The GaiaEHR Site Setup will do most of the work for you in just a few clicks.</p>' + '<p>However, you must know how to do the following:</p>' + '<ul>' + '<li>Set permissions on folders & subfolders using an FTP client</li>' + '<li>Create a MySQL database using phpMyAdmin (or by asking your hosting provider)</li>' + '</ul>'
-                                    },
-                                    {
-                                        xtype      : 'fieldset',
-                                        title      : 'License Agreement',
-                                        defaultType: 'textfield',
-                                        layout     : 'anchor',
-                                        margin     : '0 5 5 5',
-                                        items      : [
-                                            me.licence = Ext.create('Ext.Container', {
-                                                height          : 170,
-                                                styleHtmlContent: true,
-                                                autoScroll      : true,
-                                                autoLoad        : 'gpl-licence-en.html'
-                                            }), me.licAgreement = Ext.create('Ext.form.field.Checkbox', {
-                                                boxLabel  : 'I agree to the GaiaEHR terms and conditions',
-                                                name      : 'topping',
-                                                margin    : '5 0 0 0',
-                                                inputValue: '1',
-                                                scope     : me,
-                                                handler   : me.licenceChecked
-                                            })
-                                        ]
-                                    }
+								xtype  : 'container',
+								height : 120,
+								padding: '5 10 0 10',
+								html   : ' <p>Please allow 10-15 minutes to complete the installation process.</p>' + '<p>The GaiaEHR Site Setup will do most of the work for you in just a few clicks.</p>' + '<p>However, you must know how to do the following:</p>' + '<ul>' + '<li>Set permissions on folders & subfolders using an FTP client</li>' + '<li>Create a MySQL database using phpMyAdmin (or by asking your hosting provider)</li>' + '</ul>'
+							},
+                            {
+								xtype      : 'fieldset',
+								title      : 'License Agreement',
+								defaultType: 'textfield',
+								layout     : 'anchor',
+								margin     : '0 5 5 5',
+								items      : [
+								me.licence = Ext.create('Ext.Container', 
+								{
+									height          : 170,
+									styleHtmlContent: true,
+									autoScroll      : true,
+									autoLoad        : 'gpl-licence-en.html'
+								}), me.licAgreement = Ext.create('Ext.form.field.Checkbox', 
+								{
+									boxLabel  : 'I agree to the GaiaEHR terms and conditions',
+									name      : 'topping',
+									margin    : '5 0 0 0',
+									inputValue: '1',
+									scope     : me,
+									handler   : me.licenceChecked
+								})
+							]}
                                 ]
                             }
                         ]
-                    }), me.requirementsGrid = Ext.create('Ext.grid.Panel', {
+                    }), 
+                    me.requirementsGrid = Ext.create('Ext.grid.Panel', 
+                    {
                         store     : me.requirementsStore,
                         frame     : false,
                         title     : 'Requirements',
                         action    : 1,
                         viewConfig: {stripeRows: true},
-                        listeners:{
+                        listeners:
+                        {
                             scope:me,
                             show:me.loadRequirements
                         },
                         columns   : [
-                            {
-                                text     : 'Requirements',
-                                flex     : 1,
-                                sortable : false,
-                                dataIndex: 'msg'
-                            },
-                            {
-                                text     : 'Status',
-                                width    : 150,
-                                sortable : true,
-                                renderer : me.statusRenderer,
-                                dataIndex: 'status'
-                            }
+                        {
+							text     : 'Requirements',
+							flex     : 1,
+							sortable : false,
+							dataIndex: 'msg'
+                        },
+						{
+							text     : 'Status',
+							width    : 150,
+							sortable : true,
+							renderer : me.statusRenderer,
+							dataIndex: 'status'
+						}
                         ],
                         tools     : [
-                            {
-                                type   : 'refresh',
-                                tooltip: 'ReCheck Requirements',
-                                handler: function() {
-                                    me.requirementsStore.load({
-                                        scope   : me,
-                                        callback: me.onRequirementsStoreLoad
-                                    });
-                                }
+						{
+							type   : 'refresh',
+							tooltip: 'ReCheck Requirements',
+							handler: function() 
+							{
+								me.requirementsStore.load(
+								{
+                                	scope   : me,
+                                    callback: me.onRequirementsStoreLoad
+                                });
                             }
+                        }
                         ],
-                        bbar      : ['->', '-', {
-                            text   : 'Re-Check Requirements',
-                            handler: function() {
-                                me.requirementsStore.load({
+                        bbar      : ['->', '-', 
+                        {
+							text   : 'Re-Check Requirements',
+                            handler: function() 
+                            {
+                                me.requirementsStore.load(
+								{
                                     scope   : me,
                                     callback: me.onRequirementsStoreLoad
                                 });
                             }
                         }, '-'
                         ]
-                    }), me.databaseConfiguration = Ext.create('Ext.form.Panel', {
-                        title      : 'Database Configuration',
+                    }), 
+                    me.databaseConfiguration = Ext.create('Ext.form.Panel', 
+					{
+						title      : 'Database Configuration',
                         defaultType: 'textfield',
                         bodyPadding: '0 10',
                         action     : 2,
                         items      : [
+                        {
+							xtype  : 'displayfield',
+							padding: '10px',
+							value  : 'Choose if you want to <a href="javascript:void(0);" onClick="Ext.getCmp(\'rootFieldset\').enable();">create a new database</a> or use an <a href="javascript:void(0);" onClick="Ext.getCmp(\'dbuserFieldset\').enable();">existing database</a><br>'
+						},
+                        {
+							xtype      : 'fieldset',
+                            id         : 'rootFieldset',
+                            title      : 'Create a New Database (Root Access Needed)',
+                            defaultType: 'textfield',
+                            collapsed  : true,
+                            disabled   : true,
+                            layout     : 'anchor',
+                            defaults   : {anchor: '100%'},
+                            items      : [
                             {
-                                xtype  : 'displayfield',
-                                padding: '10px',
-                                value  : 'Choose if you want to <a href="javascript:void(0);" onClick="Ext.getCmp(\'rootFieldset\').enable();">create a new database</a> or use an <a href="javascript:void(0);" onClick="Ext.getCmp(\'dbuserFieldset\').enable();">existing database</a><br>'
-                            },
-                            {
-                                xtype      : 'fieldset',
-                                id         : 'rootFieldset',
-                                title      : 'Create a New Database (Root Access Needed)',
-                                defaultType: 'textfield',
-                                collapsed  : true,
-                                disabled   : true,
-                                layout     : 'anchor',
-                                defaults   : {anchor: '100%'},
-                                items      : [
-                                    {
-                                        fieldLabel: 'Root User',
-                                        name      : 'rootUser',
-                                        value:'root',
-                                        allowBlank: false
-                                    },
-                                    {
-                                        fieldLabel: 'Root Password',
-                                        name      : 'rootPass',
-                                        id        : 'rootPass',
-                                        inputType : 'password',
-//                                        value:'pass',
-                                        allowBlank: true
-                                    },
-                                    {
-                                        fieldLabel: 'SQL Server Host',
-                                        name      : 'dbHost',
-                                        value     : 'localhost',
-                                        allowBlank: false
-                                    },
-                                    {
-                                        fieldLabel: 'SQL Server Port',
-                                        name      : 'dbPort',
-                                        value     : '3306',
-                                        allowBlank: false
-                                    },
-                                    {
-                                        fieldLabel: 'Database Name',
-                                        name      : 'dbName',
-                                        value     : 'gaiadb',
-                                        allowBlank: false
-                                    },
-                                    {
-                                        fieldLabel: 'New Database User',
-                                        name      : 'dbUser',
-//                                        value     : 'test',
-                                        allowBlank: false
-                                    },
-                                    {
-                                        fieldLabel: 'New Database Pass',
-                                        name      : 'dbPass',
-                                        inputType : 'password',
-//                                        value     : 'test',
-                                        allowBlank: false
-                                    }
-                                ],
-                                listeners  : {
-                                    enable: function() {
-                                        conn = 'root';
-                                        Ext.getCmp('dbuserFieldset').collapse();
-                                        Ext.getCmp('dbuserFieldset').disable();
-                                        Ext.getCmp('rootFieldset').expand();
-
-                                    }
-                                }
-                            },
-                            {
-                                xtype      : 'fieldset',
-                                id         : 'dbuserFieldset',
-                                title      : 'Install on a existing database',
-                                defaultType: 'textfield',
-                                collapsed  : true,
-                                disabled   : true,
-                                layout     : 'anchor',
-                                defaults   : {anchor: '100%'},
-                                items      : [
-                                    {
-                                        fieldLabel: 'Database Name',
-                                        name      : 'dbName',
-//                                        value     : 'gaiadb',
-                                        allowBlank: false
-                                    },
-                                    {
-                                        fieldLabel: 'Database User',
-                                        name      : 'dbUser',
-//                                        value     : 'gaiadb',
-                                        allowBlank: false
-                                    },
-                                    {
-                                        fieldLabel: 'Database Pass',
-                                        name      : 'dbPass',
-                                        id        : 'dbPass',
-                                        inputType : 'password',
-//                                        value     : 'pass',
-                                        allowBlank: false
-                                    },
-                                    {
-                                        fieldLabel: 'Database Host',
-                                        name      : 'dbHost',
-                                        value     : 'localhost',
-                                        allowBlank: false
-                                    },
-                                    {
-                                        fieldLabel: 'Database Port',
-                                        name      : 'dbPort',
-                                        value     : '3306',
-                                        allowBlank: false
-                                    }
-                                ],
-                                listeners  : {
-                                    enable: function() {
-                                        conn = 'user';
-                                        Ext.getCmp('rootFieldset').collapse();
-                                        Ext.getCmp('rootFieldset').disable();
-                                        Ext.getCmp('dbuserFieldset').expand();
-
-                                    }
-                                }
-                            }
+								fieldLabel: 'Root User',
+								name      : 'rootUser',
+								value:'root',
+								allowBlank: false
+							},
+							{
+								fieldLabel: 'Root Password',
+								name      : 'rootPass',
+								id        : 'rootPass',
+								inputType : 'password',
+								// value:'pass',
+								allowBlank: true
+							},
+							{
+								fieldLabel: 'SQL Server Host (or IP address)',
+								name      : 'dbHost',
+								value     : 'localhost',
+									allowBlank: false
+							},
+							{
+								fieldLabel: 'SQL Server Port',
+								name      : 'dbPort',
+								value     : '3306',
+								allowBlank: false
+							},
+							{
+								fieldLabel: 'Database Name',
+								name      : 'dbName',
+								value     : 'gaiadb',
+								allowBlank: false
+							},
+							{
+								fieldLabel: 'New Database User',
+								name      : 'dbUser',
+								//value     : 'test',
+								allowBlank: false
+							},
+							{
+								fieldLabel: 'New Database Pass',
+								name      : 'dbPass',
+								inputType : 'password',
+								// value     : 'test',
+								allowBlank: false
+							}
+                            ],
+							listeners  : 
+							{
+								enable: function() 
+								{
+									conn = 'root';
+									Ext.getCmp('dbuserFieldset').collapse();
+									Ext.getCmp('dbuserFieldset').disable();
+									Ext.getCmp('rootFieldset').expand();
+								}
+							}
+						},
+						{
+							xtype      : 'fieldset',
+							id         : 'dbuserFieldset',
+							title      : 'Install on a existing database',
+							defaultType: 'textfield',
+							collapsed  : true,
+							disabled   : true,
+							layout     : 'anchor',
+							defaults   : {anchor: '100%'},
+							items      : [
+							{
+								fieldLabel: 'Database Name',
+								name      : 'dbName',
+								// value     : 'gaiadb',
+								allowBlank: false
+							},
+							{
+								fieldLabel: 'Database User',
+								name      : 'dbUser',
+								// value     : 'gaiadb',
+								allowBlank: false
+							},
+							{
+								fieldLabel: 'Database Pass',
+								name      : 'dbPass',
+								id        : 'dbPass',
+								inputType : 'password',
+								// value     : 'pass',
+								allowBlank: false
+							},
+							{
+								fieldLabel: 'Database Host',
+								name      : 'dbHost',
+								value     : 'localhost',
+								allowBlank: false
+							},
+							{
+								fieldLabel: 'Database Port',
+								name      : 'dbPort',
+								value     : '3306',
+								allowBlank: false
+							}
+							],
+							listeners  : 
+							{
+								enable: function() 
+								{
+									conn = 'user';
+									Ext.getCmp('rootFieldset').collapse();
+									Ext.getCmp('rootFieldset').disable();
+									Ext.getCmp('dbuserFieldset').expand();
+								}
+							}
+						}
                         ],
                         bbar       : [
                             '**Database Connection Test is Required to Continue -->>', '->', '-', {
@@ -733,19 +782,27 @@ Ext.define('App.view.sitesetup.SiteSetup', {
         me.callParent();
     },
 
-    onDbTestCredentials: function() {
+	/*
+	 * Event: onDbTestCredentials
+	 */
+    onDbTestCredentials: function() 
+    {
         var me = this, form = me.databaseConfiguration.getForm(), success, dbInfo;
-        if(typeof form.getValues().dbName !== 'undefined') {
-            if(form.isValid()) {
+        if(typeof form.getValues().dbName !== 'undefined') 
+        {
+            if(form.isValid()) 
+            {
                 me.databaseConfiguration.el.mask('Validating Database Info');
-                SiteSetup.checkDatabaseCredentials(form.getValues(), function(provider, response) {
+                SiteSetup.checkDatabaseCredentials(form.getValues(), function(provider, response) 
+                {
                     success = response.result.success;
                     dbInfo = response.result.dbInfo;
                     me.step[2] = { success: success, dbInfo: dbInfo };
                     me.okToGoNext(success);
                     me.databaseConfiguration.el.unmask();
                     me.isReadyForInstall();
-                    if(!success) Ext.Msg.show({
+                    if(!success) Ext.Msg.show(
+                    {
                         title  : 'Oops!',
                         msg    : response.result.error,
                         buttons: Ext.Msg.Ok,
@@ -753,8 +810,11 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                     });
                 });
             }
-        } else {
-            Ext.Msg.show({
+        } 
+        else 
+        {
+            Ext.Msg.show(
+            {
                 title  : 'Oops!',
                 msg    : 'Please select one of the two options.',
                 buttons: Ext.Msg.Ok,
@@ -763,7 +823,11 @@ Ext.define('App.view.sitesetup.SiteSetup', {
         }
     },
 
-    onInstall:function(){
+	/*
+	 * Event: onInstall
+	 */
+    onInstall:function()
+    {
         var me = this,
             panel = me.siteConfiguration,
             form = panel.getForm(),
@@ -793,11 +857,13 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                                         SiteSetup.createSiteAdmin(values, function(provider, response){
                                             if(response.result.success){
 
-                                                for(var i=0; i < codeFields.length; i++){
+                                                for(var i=0; i < codeFields.length; i++)
+                                                {
                                                     if(codeFields[i].getValue()) codes.push(codeFields[i].name);
                                                 }
                                                 me.installProgress = .5;
-                                                me.loadCodes(codes, function(){
+                                                me.loadCodes(codes, function()
+                                                {
                                                     me.installationPregress.updateProgress(1,'Done!', true);
                                                     me.siteConfigurationContainer.el.unmask();
 
@@ -820,27 +886,40 @@ Ext.define('App.view.sitesetup.SiteSetup', {
         });
     },
 
-    loadCodes:function(codes, callback){
+	/*
+	 * Event: loadCodes
+	 */
+    loadCodes:function(codes, callback)
+    {
         var me = this;
         say(codes[0]);
-        if(codes[0]){
+        if(codes[0])
+        {
             me.installationPregress.updateProgress(me.installProgress +.1,'Loading ' + codes[0] + ' Data', true);
-            SiteSetup.loadCode(codes[0],function(provider, response){
+            SiteSetup.loadCode(codes[0],function(provider, response)
+            {
                 codes.shift();
                 me.loadCodes(codes, callback());
             });
-        }else{
+        }
+        else
+        {
             callback();
         }
     },
 
-    onSurveySubmit:function(){
+	/*
+	 * Event: onSurveySubmit
+	 */
+    onSurveySubmit:function()
+    {
         var me = this,
             succesMsg,
             failureMsg,
             form = me.survey.getForm(),
             values = form.getValues();
-        Ext.data.JsonP.request({
+        Ext.data.JsonP.request(
+        {
             url:'http://gaiaehr.org/survey.php',
             params:values,
             callback:function(data, success){
@@ -857,14 +936,17 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                 me.thanks.update(success ? succesMsg : failureMsg);
                 me.thanks.addCls(success ? 'green-box' : 'red-box');
                 me.thanks.show();
-                Ext.create('Ext.fx.Anim', {
+                Ext.create('Ext.fx.Anim', 
+                {
                     target: me.thanks,
                     duration: 1000,
-                    from: {
+                    from: 
+                    {
                         width: 0,
                         height: 0
                     },
-                    to: {
+                    to: 
+                    {
                         width: 825,
                         height: 120
                     }
@@ -874,7 +956,11 @@ Ext.define('App.view.sitesetup.SiteSetup', {
         })
     },
 
-    onComplete:function(data){
+	/*
+	 * Event: onComplete
+	 */
+    onComplete:function(data)
+    {
         var me = this,
             btn = Ext.getCmp('move-next');
         btn.action = 'next';
@@ -887,36 +973,59 @@ Ext.define('App.view.sitesetup.SiteSetup', {
         me.headerPanel.getComponent(4).setIconCls('icoGreenFace');
         me.installationDetails.update(data);
     },
-
-    onNexStep: function(btn) {
-        if(btn.action == 'install'){
+	
+	/*
+	 * Event: onNexStep
+	 */
+    onNexStep: function(btn) 
+    {
+        if(btn.action == 'install')
+        {
             this.onInstall();
-        }else if(btn.action == 'complete'){
+        }
+        else if(btn.action == 'complete')
+        {
             this.onSurveySubmit();
-        }else{
+        }
+        else
+        {
             this.navigate(this.mainPanel, 'next');
         }
     },
 
-    onStepBack: function() {
+	/*
+	 * Event: onStepBack
+	 */
+    onStepBack: function() 
+    {
         this.navigate(this.mainPanel, 'prev');
     },
 
-    navigate: function(panel, to) {
+	/*
+	 * Event: navigate
+	 */
+    navigate: function(panel, to) 
+    {
         var me = this,
             layout = panel.getLayout(),
             currCard;
-        if(typeof to == 'string') {
+        if(typeof to == 'string') 
+        {
             layout[to]();
-        } else {
+        } 
+        else 
+        {
             layout.setActiveItem(to);
         }
         currCard = layout.getActiveItem();
         me.headerPanel.getComponent(currCard.action).toggle(true);
 
-        if(me.step[currCard.action]){
+        if(me.step[currCard.action])
+        {
             Ext.getCmp('move-next').setDisabled(false);
-        }else{
+        }
+        else
+        {
             Ext.getCmp('move-next').setDisabled(true);
         }
 
@@ -924,21 +1033,33 @@ Ext.define('App.view.sitesetup.SiteSetup', {
         me.isReadyForInstall();
     },
 
-    loadRequirements:function(){
+	/*
+	 * Event: loadRequirements
+	 */
+    loadRequirements:function()
+    {
         var me = this;
-        me.requirementsStore.load({
+        me.requirementsStore.load(
+        {
             scope   : me,
             callback: me.onRequirementsStoreLoad
         });
     },
 
-    licenceChecked: function(checkbox, checked) {
+	/*
+	 * Event: licenceChecked
+	 */
+    licenceChecked: function(checkbox, checked) 
+    {
         var me = this;
         me.step[0] = { success: checked };
         me.okToGoNext(checked);
         me.isReadyForInstall();
     },
 
+	/*
+	 * Event: onRequirementsStoreLoad
+	 */
     onRequirementsStoreLoad: function(records) {
         var me = this, errorCount = 0;
         for(var i = 0; i < records.length; i++) {
@@ -949,61 +1070,99 @@ Ext.define('App.view.sitesetup.SiteSetup', {
         me.isReadyForInstall();
     },
 
-    onHeaderBtnPress: function(btn, pressed) {
-        if(pressed) {
+	/*
+	 * Event: onHeaderBtnPress
+	 */
+    onHeaderBtnPress: function(btn, pressed) 
+    {
+        if(pressed) 
+        {
             this.navigate(this.mainPanel, btn.action);
         }
     },
 
-    isReadyForInstall: function() {
+	/*
+	 * Event: isReadyForInstall
+	 */
+    isReadyForInstall: function() 
+    {
         var me = this,
             btn = Ext.getCmp('move-next'),
             onSiteCofPanel = me.mainPanel.getLayout().getActiveItem().action == 3;
 
-        if(me.checkForError() || !onSiteCofPanel) {
+        if(me.checkForError() || !onSiteCofPanel) 
+        {
             btn.setText('Next');
             btn.action = 'next';
             if(me.mainPanel.getLayout().getActiveItem().action == 3) btn.setDisabled(true);
-        } else {
+        } 
+        else 
+        {
             btn.setText('Install');
             btn.action = 'install';
             btn.setDisabled(false);
         }
     },
 
-    checkForError: function() {
+	/*
+	 * Event: checkForError
+	 */
+    checkForError: function() 
+    {
         var me = this, form = me.siteConfiguration.getForm(), error = 0;
-        for(var i = 0; i < me.step.length; i++) {
+        for(var i = 0; i < me.step.length; i++) 
+        {
             if(!me.step[i].success) error++;
         }
-        if(error == 0 && i == 3) {
-            if(form.isValid()) {
+        if(error == 0 && i == 3) 
+        {
+            if(form.isValid()) 
+            {
                 me.headerPanel.getComponent(3).setIconCls('icoGreenFace');
                 return false;
-            } else {
+            } 
+            else 
+            {
                 me.headerPanel.getComponent(3).setIconCls('icoRedFace');
                 return true;
             }
-        } else {
+        } 
+        else 
+        {
             return true
         }
     },
 
-    okToGoNext: function(ok) {
+	/*
+	 * Event: okToGoNext
+	 */
+    okToGoNext: function(ok) 
+    {
         var me = this, layout = me.mainPanel.getLayout();
         me.headerPanel.getComponent(layout.getActiveItem().action).setIconCls(ok ? 'icoGreenFace' : 'icoRedFace');
         if(layout.getNext()) me.headerPanel.getComponent(layout.getNext().action).setDisabled(!ok);
         if(me.mainPanel.getLayout().getActiveItem().action != 3) Ext.getCmp('move-next').setDisabled(!ok);
     },
 
-    onSiteConfigurationShow:function(){
+	/*
+	 * Event: onSiteConfigurationShow
+	 */
+    onSiteConfigurationShow:function()
+    {
         this.siteConfigurationContainer.setVisible(true);
     },
 
-    statusRenderer: function(val) {
-        if(val == 'Ok') {
+	/*
+	 * Event: statusRenderer
+	 */
+    statusRenderer: function(val) 
+    {
+        if(val == 'Ok') 
+        {
             return '<span style="color:green;">' + val + '</span>';
-        } else {
+        } 
+        else 
+        {
             return '<span style="color:red;">' + val + '</span>';
         }
     }

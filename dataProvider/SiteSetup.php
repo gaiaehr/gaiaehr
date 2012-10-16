@@ -47,19 +47,41 @@ class SiteSetup
 			{
 				return array('success' => false, 'error' => 'Database name in used. Please, use a different Database name');
 			}
-		} 
+		}
 		else 
 		{
 			$success = $this->databaseConn($params->dbHost, $params->dbPort, $params->dbName, $params->dbUser, $params->dbPass);
 		}
 		if($success) 
 		{
+			if($this->setMaxAllowedPacket() === false)
+			{
+				return array('success' => false, 'error' => 'Could not set the MySQL <strong>max_allowed_packet</strong> variable.<br>GaiaEHR requires to set max_allowed_packet to 50M or more.<br>Please check my.cnf or my.ini, also you can install GaiaEHR using MySQL root user');
+			}
 			return array('success' => true, 'dbInfo' => $params);
 		} 
 		else 
 		{
 			return array('success' => false, 'error' => 'Could not connect to sql server!<br>Please, check database information and try again');
 		}
+	}
+
+	function setMaxAllowedPacket()
+	{
+		$stm = $this->conn->query("SELECT @@global.max_allowed_packet AS size");
+		$pkg = $stm->fetch(PDO::FETCH_ASSOC);
+		if($pkg['size'] < 52428800)
+		{
+			$this->conn->exec("SET @@global.max_allowed_packet = 52428800");
+			$error = $this->conn->errorInfo();
+			if(isset($error[2]))
+			{
+				return false;
+			}else{
+				return true;
+			}
+		}
+		return true;
 	}
 
 	function databaseConn($host, $port, $dbName, $dbUser, $dbPass)

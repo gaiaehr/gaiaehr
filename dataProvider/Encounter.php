@@ -702,6 +702,19 @@ class Encounter
 		$this->db->setSQL("SELECT message FROM form_data_encounter WHERE eid = '$eid'");
 		return $this->db->fetchRecord(PDO::FETCH_ASSOC);
 	}
+	public function getEncounterByDateFromToAndPatient($from,$to,$pid = null)
+	{
+	    $sql = " SELECT form_data_encounter.pid,
+	                    form_data_encounter.eid,
+	                    form_data_encounter.start_date,
+	                    form_data_demographics.*
+	               FROM form_data_encounter
+	          LEFT JOIN form_data_demographics ON form_data_encounter.pid = form_data_demographics.pid
+	              WHERE form_data_encounter.start_date BETWEEN '$from 00:00:00' AND '$to 23:59:59'";
+	    if(isset($pid) && $pid != '') $sql .= " AND form_data_encounter.pid = '$pid'";
+	        $this->db->setSQL($sql);
+	    return $this->db->fetchRecords(PDO::FETCH_ASSOC);
+	}
 
 	public function onSaveItemsToReview(stdClass $params)
 	{

@@ -20,7 +20,7 @@ include_once($_SESSION['root'] . '/dataProvider/Encounter.php');
 include_once($_SESSION['root'] . '/dataProvider/i18nRouter.php');
 
 
-class SuperBill extends Reports
+class PrescriptionAndDispensation extends Reports
 {
     private $db;
     private $user;

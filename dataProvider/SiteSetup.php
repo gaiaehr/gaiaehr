@@ -94,6 +94,9 @@ class SiteSetup
 		}
 	}
 
+	/*
+	 * Verify: checkRequirements
+	 */
 	public function checkRequirements()
 	{
 		$row = array();
@@ -123,25 +126,36 @@ class SiteSetup
 	{
 		$siteDir = "sites/$siteId";
 		if(!file_exists($siteDir)) {
-			if(mkdir($siteDir, 0777, true)) {
-				if(chmod($siteDir, 0777)) {
+			if(mkdir($siteDir, 0777, true)) 
+			{
+				if(chmod($siteDir, 0777)) 
+				{
 					if(
 						(mkdir("$siteDir/patients", 0777, true) && chmod("$siteDir/patients", 0777)) &&
 						(mkdir("$siteDir/documents", 0777, true) && chmod("$siteDir/documents", 0777)) &&
 						(mkdir("$siteDir/temp", 0777, true) && chmod("$siteDir/temp", 0777)) &&
 						(mkdir("$siteDir/trash", 0777, true) && chmod("$siteDir/trash", 0777))
-					) {
+					) 
+					{
 						return array('success' => true);
-					} else {
+					} 
+					else 
+					{
 						return array('success' => false, 'error' => 'Something went wrong creating site sub directories');
 					}
-				} else {
+				} 
+				else 
+				{
 					return array('success' => false, 'error' => 'Unable to set "/sites/' . $siteId . '" write permissions,<br>Please, check "/sites/' . $siteId . '" directory write permissions');
 				}
-			} else {
+			} 
+			else 
+			{
 				return array('success' => false, 'error' => 'Unable to create Site directory,<br>Please, check "/sites" directory write permissions');
 			}
-		} else {
+		} 
+		else 
+		{
 			return array('success' => false, 'error' => 'Site ID already in use.<br>Please, choose another Site ID');
 		}
 	}

@@ -1,13 +1,30 @@
 <?php
-if(!isset($_SESSION)) {
+/*
+ * Site Setup: Script
+ * This will install GaiaEHR on:
+ * - Database
+ * - Directory
+ * 
+ */
+if(!isset($_SESSION)) 
+{
 	session_name('GaiaEHR');
 	session_start();
 	session_cache_limiter('private');
 }
+
 include_once($_SESSION['root'] . '/classes/FileManager.php');
 include_once($_SESSION['root'] . '/dataProvider/ACL.php');
+
+/*
+ * Set some PHP internal variables to override internal variables 
+ */
 set_time_limit(0);
 ini_set('memory_limit', '512M');
+
+/*
+ * SiteSetup class
+ */
 class SiteSetup
 {
 	private $conn;
@@ -18,26 +35,37 @@ class SiteSetup
 		chdir($_SESSION['root']);
 	}
 
+	/*
+	 * Verify: checkDatabaseCredentials
+	 */
 	public function checkDatabaseCredentials(stdClass $params)
 	{
-		if(isset($params->rootUser)) {
+		if(isset($params->rootUser)) 
+		{
 			$success = $this->rootDatabaseConn($params->dbHost, $params->dbPort, $params->rootUser, $params->rootPass);
-			if($success && $this->conn->query("USE $params->dbName") !== false) {
+			if($success && $this->conn->query("USE $params->dbName") !== false) 
+			{
 				return array('success' => false, 'error' => 'Database name in used. Please, use a different Database name');
 			}
-		} else {
+		} 
+		else 
+		{
 			$success = $this->databaseConn($params->dbHost, $params->dbPort, $params->dbName, $params->dbUser, $params->dbPass);
 		}
-		if($success) {
+		if($success) 
+		{
 			return array('success' => true, 'dbInfo' => $params);
-		} else {
+		} 
+		else 
+		{
 			return array('success' => false, 'error' => 'Could not connect to sql server!<br>Please, check database information and try again');
 		}
 	}
 
 	function databaseConn($host, $port, $dbName, $dbUser, $dbPass)
 	{
-		try {
+		try 
+		{
 			$this->conn = new PDO("mysql:host=$host;port=$port;dbname=$dbName", $dbUser, $dbPass,
 				array(PDO::MYSQL_ATTR_LOCAL_INFILE => 1, PDO::ATTR_PERSISTENT => true));
 			return true;
@@ -47,12 +75,20 @@ class SiteSetup
 		}
 	}
 
+	/*
+	 * Make a connection to the database: rootDatabaseConn
+	 * We use PDO to make the connection, PDO is a internal library of PHP that make connections
+	 * to any databasem please refer to dbHelper.php to learn more about PHP PDO.
+	 */
 	public function rootDatabaseConn($host, $port, $rootUser, $rootPass)
 	{
-		try {
+		try 
+		{
 			$this->conn = new PDO("mysql:host=$host;port=$port", $rootUser, $rootPass);
 			return true;
-		} catch(PDOException $e) {
+		} 
+		catch(PDOException $e) 
+		{
 			$this->err = $e->getMessage();
 			return false;
 		}

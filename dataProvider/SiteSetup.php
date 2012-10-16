@@ -39,7 +39,11 @@ class SiteSetup
 	{
 		try {
 			$this->conn = new PDO("mysql:host=$host;port=$port;dbname=$dbName", $dbUser, $dbPass,
-				array(PDO::MYSQL_ATTR_LOCAL_INFILE => 1, PDO::ATTR_PERSISTENT => true));
+				array(PDO::MYSQL_ATTR_LOCAL_INFILE => 1,
+				      PDO::ATTR_PERSISTENT => true,
+					  PDO::ATTR_TIMEOUT => 7600
+				)
+			);
 			return true;
 		} catch(PDOException $e) {
 			$this->err = $e->getMessage();

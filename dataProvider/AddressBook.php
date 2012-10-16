@@ -3,7 +3,7 @@
  * @brief       Brief Description
  * @details      
  * Desc: Data Provider (Data Abstraction Layer)
- * This will manage all the data requierements for Patients.
+ * This will manage all the data requierements for Address Book.
  *
  * @author      Ernesto J . Rodriguez(Certun) < erodriguez@certun.com >
  * @version     Vega 1.0

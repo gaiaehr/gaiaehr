@@ -3,7 +3,7 @@
 /*
  * X12 835 Dispenser Class
  * version: 0.0.1
- * Desc: This class library will generate a ANSI X12 835 version 5010
+ * Desc: This class library will process diferent kind of ANSI X12 files version 5010
  * from the GaiaEHR database
  *  
  */
@@ -33,7 +33,21 @@ class x12_5010
 {
 	
 	private $dataBase;
+	private $data;
 	
+	/*
+	 * Variables that will determine the ANSI x12 5010 
+	 * Done with variables, if the file format changes we simply 
+	 * change the separators value.
+	 */
+	private $DataElementSeparator = '*';
+	private $SubElementSeparator = ':';
+	private $RepetitionSeparator = '^';
+	private $SegmentTerminator = '~';
+	
+	/*
+	 * First we open the database for data gathering.
+	 */
 	function __construct()
 	{
 	    $this->$dataBase = new dbHelper();
@@ -41,17 +55,18 @@ class x12_5010
 	}
 	
 	/*
-	 * Will gather all the data and create a well formatted X12 835 5010
-	 * -- Health Care Claim Payment/Advice (The halth insurance send the answer to the clinic of doctor)
+	 * Will gather all the data and create a well formatted X12 837 5010
+	 * -- Health Care Claim (The the clinic or doctor sending the claim to the insurance)
 	 */
-	public static function Generate835()
+	public static function Generate837()
 	{
-		
+		$this->$data837 = 'ISA';
+		$this->$data837 .= '*';
 	}
 	
 	/*
 	 * Parse and check if the file is correctly formated X12 835 5010 Format
-	 * -- Health Care Claim Payment/Advice (The halth insurance send the answer to the clinic of doctor)
+	 * -- Health Care Claim Payment/Advice (The health insurance send the answer to the clinic of doctor)
 	 */
 	public static function Parse835()
 	{

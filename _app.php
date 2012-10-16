@@ -24,7 +24,7 @@ $_SESSION['site']['flops'] = 0;
 				settings = {},
 				i18n = {},
 				ext = 'extjs-4.1.1a',
-				version = '0.0.4.165',
+				version = '0.0.4.166',
 				requires;
 		</script>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">

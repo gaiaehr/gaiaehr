@@ -31,7 +31,7 @@ class Reports
 
     public function ReportBuilder($html)
     {
-	    $TempPdfPath = $this->fileManager->getSiteTempDir().$this->fileManager->getTempDirAvailableName().'.pdf';
+	    $fileName = $this->fileManager->getTempDirAvailableName().'.pdf';
         $this->pdf->SetCreator('TCPDF');
         $this->pdf->SetAuthor($_SESSION['user']['name']);
         $siteLogo = $_SESSION['site']['path'].'/logo.jpg';
@@ -54,9 +54,9 @@ class Reports
         $this->pdf->setFontSubsetting(true);
         $this->pdf->AddPage();
         $this->pdf->writeHTML($html, true, false, false, false, '');
-        $this->pdf->Output($_SESSION['root'].$TempPdfPath, 'F');
+        $this->pdf->Output($_SESSION['site']['temp']['path'] . '/' . $fileName, 'F');
         $this->pdf->Close();
-        return $_SESSION['url'].$TempPdfPath;
+        return $_SESSION['site']['temp']['url'] . '/' . $fileName;
     }
 }
 //

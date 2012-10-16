@@ -189,7 +189,6 @@ class CCR
 	{
 		$this->ccr->preserveWhiteSpace = false;
 		$this->ccr->formatOutput       = true;
-		//TODO: work with temp working directory
 		$this->ccr->save($_SESSION['site']['temp']['path'] . '/ccrForCCD.xml');
 		$xmlDom = new DOMDocument();
 		$xmlDom->loadXML($this->ccr->saveXML());

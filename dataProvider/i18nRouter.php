@@ -48,9 +48,9 @@ class i18nRouter
 		$availableLanguages = array();
 		if($handle = opendir($_SESSION['root'] . '/langs/'))
 		{
-			while(false !== ($entry = readdir($handle))) 
+			while(false !== ($entry = readdir($handle)))
 			{
-				if($entry != '.' && $entry != '..') 
+				if($entry != '.' && $entry != '..')
 				{
 					include_once($_SESSION['root'] . '/langs/' . $entry);
 					$languageContent['code'] = key($LANG);

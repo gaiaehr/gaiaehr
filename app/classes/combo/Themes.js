@@ -27,12 +27,11 @@ Ext.define('App.classes.combo.Themes', {
 
 		me.store = Ext.create('Ext.data.Store', {
 			model   : 'ThemesComboModel',
-			autoLoad: true
+			autoLoad: false
 		});
 
 		Ext.apply(this, {
 			editable    : false,
-			queryMode   : 'local',
 			valueField  : 'value',
 			displayField: 'name',
 			emptyText   : i18n['select'],

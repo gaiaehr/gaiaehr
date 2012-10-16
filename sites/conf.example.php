@@ -20,7 +20,7 @@ $_SESSION['site']['AESkey'] = "%key%";
  * Check if the localization variable already has a value, if not pass the 
  * default language.
  */
-if(!$_SESSION['site']['localization']) $_SESSION['site']['localization'] = '%lang%';
+$_SESSION['site']['default_localization']  = '%lang%';
 $_SESSION['site']['theme'] = '%theme%';
 
 $_SESSION['site']['dir']   = basename(dirname(__FILE__));

@@ -349,10 +349,6 @@ class CombosData {
 			array(
 				'name' => 'Blue',
 				'value' => 'ext-all'
-			),
-			array(
-				'name' => 'Dark / Access',
-				'value' => 'ext-all-access'
 			)
 		);
 	}

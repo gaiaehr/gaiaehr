@@ -18,10 +18,14 @@ if(!defined('_GaiaEXEC')) die('No direct access allowed.');
         <link rel="stylesheet" type="text/css" href="resources/css/custom_app.css" >
 
         <link rel="shortcut icon" href="favicon.ico" >
-
+	    <script src="JSrouter.php"></script>
         <script src="data/api.php"></script>
         <script type="text/javascript">
-	        var app, site = '<?php print $site ?>', lang = '<?php print $lang ?>';
+	        var app, site = '<?php print $_SESSION['site']['dir'] ?>', lang = '<?php print $_SESSION['site']['localization'] ?>', i18n;
+	        function say(a)
+	      		{
+	      			console.log(a);
+	      		}
 	        Ext.Loader.setConfig(
 	        {
 	            	enabled       : true,
@@ -31,14 +35,14 @@ if(!defined('_GaiaEXEC')) die('No direct access allowed.');
 	                	'App'       : 'app'
 	            	}
 	        });
-        Ext.onReady(function()
-        {
 	        for(var x=0; x < App.data.length; x++)
 	        {
                 Ext.direct.Manager.addProvider(App.data[x]);
             }
-            app = Ext.create('App.view.login.Login');
-        }); // End App
+        Ext.onReady(function()
+        {
+	        app = Ext.create('App.view.login.Login');
+        });
         </script>
     </head>
     <body id="login">

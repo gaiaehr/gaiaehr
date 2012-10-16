@@ -34,16 +34,13 @@ $mobile = new Mobile_Detect();
  */
 $site = (isset($_GET['site']) ? $_GET['site'] : 'default');
 
-if(file_exists('sites/'.$site.'/conf.php' && !isset($_SESSION['site']['localization']))) 
+
+if(file_exists('sites/'.$site.'/conf.php'))
 {
 	include_once('sites/'.$site.'/conf.php');
-	$lang = (isset($_SESSION['site']['localization']) ? $_SESSION['site']['localization'] : 'en_US');
-}
-else
-{
-	$lang = 'en_US';
-}
-
+	$_SESSION['site']['localization'] = (isset($_SESSION['site']['localization']) && ($_SESSION['site']['default_localization'] != $_SESSION['site']['localization'])) ? $_SESSION['site']['localization'] : 'en_US';
+};
+print 'lang = '.$_SESSION['site']['localization'];
 /**
  * Make the auth process
  * lets check for 4 things to allow the user in
@@ -57,9 +54,11 @@ if(
 	isset($_SESSION['user']) && 
 	$_SESSION['user']['auth'] == true && 
 	$_SESSION['user']['site'] == $site && 
-	$_SESSION['inactive']['life'] < $_SESSION['inactive']['time'] )
+	$_SESSION['inactive']['life'] < $_SESSION['inactive']['time'])
 {
-    /**
+
+
+	/**
      * if mobile go to mobile app, else go to app
      */
     if($_SESSION['site']['checkInMode'])
@@ -86,6 +85,7 @@ else // Make the logon process or Setup process
      */
 	if($_SESSION['sites']['count'] < 1)
 	{
+		unset($_SESSION['site']);
 		include_once('_install.php');
 	} 
 	else 

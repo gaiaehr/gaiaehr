@@ -479,6 +479,40 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                                                     scope: me,
                                                     keyup: me.isReadyForInstall
                                                 }
+                                            },
+                                            {
+                                                xtype     : 'themescombo',
+                                                fieldLabel: 'Site Theme',
+                                                name      : 'theme',
+                                                allowBlank     : false,
+                                                width:300,
+                                                plugins   : [
+                                                    {
+                                                        ptype  : 'helpicon',
+                                                        helpMsg: '**The themes will change the visual aspect.<br>' + '**This can be change later in the Administrator -> Global Setting'
+                                                    }
+                                                ],
+                                                listeners      : {
+                                                    scope: me,
+                                                    change: me.isReadyForInstall
+                                                }
+                                            },
+                                            {
+                                                xtype     : 'languagescombo',
+                                                fieldLabel: 'Default Language',
+                                                name      : 'lang',
+                                                allowBlank     : false,
+                                                width:300,
+                                                plugins   : [
+                                                    {
+                                                        ptype  : 'helpicon',
+                                                        helpMsg: '**This default language will be the default language during the Logon window.<br>' + '**This can be change later in the Administrator -> Global Setting'
+                                                    }
+                                                ],
+                                                listeners      : {
+                                                    scope: me,
+                                                    change: me.isReadyForInstall
+                                                }
                                             }
                                         ]
                                     },
@@ -489,34 +523,6 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                                         margin: '0 0 7 0',
                                         defaults: { margin: '4 0'},
                                         items   : [
-                                            {
-                                                xtype     : 'themescombo',
-                                                fieldLabel: 'Site Theme',
-                                                name      : 'theme',
-                                                emptytext : 'Select',
-                                                value:'ext-all-gray',
-                                                width:300,
-                                                plugins   : [
-                                                    {
-                                                        ptype  : 'helpicon',
-                                                        helpMsg: '**The themes will change the visual aspect.<br>' + '**This can be change later in the Administrator -> Global Setting'
-                                                    }
-                                                ]
-                                            },
-                                            {
-                                                xtype     : 'languagescombo',
-                                                fieldLabel: 'Default Language',
-                                                name      : 'lang',
-                                                emptytext : 'Select',
-                                                width:300,
-                                                value:'en_US',
-                                                plugins   : [
-                                                    {
-                                                        ptype  : 'helpicon',
-                                                        helpMsg: '**This default language will be the default language during the Logon window.<br>' + '**This can be change later in the Administrator -> Global Setting'
-                                                    }
-                                                ]
-                                            },
                                             {
                                                 xtype     : 'checkboxfield',
                                                 fieldLabel: 'Load ICD9',
@@ -841,7 +847,7 @@ Ext.define('App.view.sitesetup.SiteSetup', {
                 succesMsg = '<h3>Sweet! Data successfully sent :-)</h3>' +
                     '<p>Thanks for taking the time, to help us improve GaiaEHR<br>' +
                     'Stay in touch through <a href="http://www.gaiaehr.org" target="_blank">www.gaiaehr.org</a><br>' +
-                    'We look foward to hear form you at our <a href="http://www.gaiaehr.org/forum" target="_blank">forums</a></p>';
+                    'We look foward to hear form you at our <a href="http://gaiaehr.org/forums/" target="_blank">forums</a></p>';
                 failureMsg = '<h3>Oops! Unable to contact GaiaEHR server :-(</h3>' +
                     '<p>No worries...<br>' +
                     'If you want to help, go to <a href="http://www.gaiaehr.org" target="_blank">www.gaiaehr.org</a> and stay in touch with the community.<br>' +

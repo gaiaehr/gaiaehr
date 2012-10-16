@@ -34,15 +34,15 @@ Ext.define('App.classes.combo.Languages',
 		me.store = Ext.create('Ext.data.Store', 
 		{
 			model   : 'LanguagesComboModel',
-			autoLoad: true
+			autoLoad: false
 		});
 
 		Ext.apply(this, 
 		{
 			editable    : false,
-			queryMode   : 'local',
 			valueField  : 'code',
 			displayField: 'description',
+            emptyText   : i18n['select'],
 			store       : me.store
 		}, null);
 		

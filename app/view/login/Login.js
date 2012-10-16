@@ -291,7 +291,8 @@ Ext.define('App.view.login.Login',{
      * After form is render load store
      */
     afterAppRender:function(){
-        var me = this;
+        var me = this,
+            langCmb = me.formLogin.getComponent('lang');
         if(me.showSite){
             me.storeSites.load({
                 scope   :me,
@@ -305,8 +306,6 @@ Ext.define('App.view.login.Login',{
                             me.currSite = records[0].data.site;
                             if(me.showSite){
                                 me.formLogin.getComponent('site').setValue(this.currSite);
-
-
                             }
                         },100,this);
                     }else{
@@ -316,8 +315,13 @@ Ext.define('App.view.login.Login',{
             });
         }
 
-        me.currLang = 'en_US';
-        me.formLogin.getComponent('lang').setValue(me.currLang);
+        langCmb.store.load({
+            callback:function(){
+                me.currLang = 'en_US';
+                me.formLogin.getComponent('lang').setValue(me.currLang);
+            }
+        });
+
 
         Ext.Function.defer(function(){
             me.formLogin.getComponent('authUser').inputEl.focus();

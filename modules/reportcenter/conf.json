@@ -23,6 +23,14 @@
 					"len":1
 				}
 			}
+		},
+		"Rx":{
+			"methods":{
+				"createPrescriptionsDispensations":
+				{
+					"len":1
+				}
+			}
 		}
 	},
 	"extjs":[

@@ -1068,6 +1068,9 @@ $LANG = array(
 	'image_forms'   					    => 'Image Forms',
 	'disclosure'   					        => 'Disclosure',
 	'disclosures'   					    => 'Disclosures',
+	'rx'               					    => 'Rx',
+	'drug'               					=> 'Drug',
 	'recipient_name'   					    => 'Recipient Name'
+
 );
 ?>

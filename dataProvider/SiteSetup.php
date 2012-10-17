@@ -47,13 +47,17 @@ class SiteSetup
 			{
 				return array('success' => false, 'error' => 'Database name in used. Please, use a different Database name');
 			}
-		} 
+		}
 		else 
 		{
 			$success = $this->databaseConn($params->dbHost, $params->dbPort, $params->dbName, $params->dbUser, $params->dbPass);
 		}
 		if($success) 
 		{
+			if($this->setMaxAllowedPacket() === false)
+			{
+				return array('success' => false, 'error' => 'Could not set the MySQL <strong>max_allowed_packet</strong> variable.<br>GaiaEHR requires to set max_allowed_packet to 50M or more.<br>Please check my.cnf or my.ini, also you can install GaiaEHR using MySQL root user');
+			}
 			return array('success' => true, 'dbInfo' => $params);
 		} 
 		else 
@@ -62,12 +66,34 @@ class SiteSetup
 		}
 	}
 
+	function setMaxAllowedPacket()
+	{
+		$stm = $this->conn->query("SELECT @@global.max_allowed_packet AS size");
+		$pkg = $stm->fetch(PDO::FETCH_ASSOC);
+		if($pkg['size'] < 52428800)
+		{
+			$this->conn->exec("SET @@global.max_allowed_packet = 52428800");
+			$error = $this->conn->errorInfo();
+			if(isset($error[2]))
+			{
+				return false;
+			}else{
+				return true;
+			}
+		}
+		return true;
+	}
+
 	function databaseConn($host, $port, $dbName, $dbUser, $dbPass)
 	{
 		try 
 		{
 			$this->conn = new PDO("mysql:host=$host;port=$port;dbname=$dbName", $dbUser, $dbPass,
-				array(PDO::MYSQL_ATTR_LOCAL_INFILE => 1, PDO::ATTR_PERSISTENT => true));
+				array(PDO::MYSQL_ATTR_LOCAL_INFILE => 1,
+				      PDO::ATTR_PERSISTENT => true,
+					  PDO::ATTR_TIMEOUT => 7600
+				)
+			);
 			return true;
 		} catch(PDOException $e) {
 			$this->err = $e->getMessage();

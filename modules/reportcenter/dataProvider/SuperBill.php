@@ -45,7 +45,7 @@ class SuperBill extends Reports
     public function CreateSuperBill(stdClass $params){
 	    $params->to = ($params->to == '')? date('Y-m-d') : $params->to;
         $html = "<br><h1>Super Bill ($params->from - $params->to )</h1>";
-        foreach($this->getEncounterByDateFromToAndPatient($params->from,$params->to,$params->pid) AS $eData) {
+        foreach($this->encounter->getEncounterByDateFromToAndPatient($params->from,$params->to,$params->pid) AS $eData) {
             $html .= $this->htmlSuperBill($eData);
 	        $html .= $this->addCodes($eData['eid'],$eData['start_date'],$eData['prov_uid']);
         }
@@ -55,19 +55,7 @@ class SuperBill extends Reports
         return array('success' => true, 'html' => $html, 'url' => $Url);
     }
 
-    public function getEncounterByDateFromToAndPatient($from,$to,$pid = null)
-    {
-	    $sql = "SELECT form_data_encounter.pid,
-                       form_data_encounter.eid,
-                       form_data_encounter.start_date,
-                       form_data_demographics.*
-               	  FROM form_data_encounter
-             LEFT JOIN form_data_demographics ON form_data_encounter.pid = form_data_demographics.pid
-                 WHERE form_data_encounter.start_date BETWEEN '$from' AND '$to'";
-		    if(isset($pid) && $pid != '') $sql .= " AND form_data_encounter.pid = '$pid'";
-	    $this->db->setSQL($sql);
-        return $this->db->fetchRecords(PDO::FETCH_ASSOC);
-    }
+
 	public function addCodes($eid,$date,$provider){
 		$codes=$this->encounter->getEncounterCodesByEid($eid);
 

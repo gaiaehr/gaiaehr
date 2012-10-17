@@ -50,22 +50,31 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                     fn:ClientList.CreateClientList
                 });
             });
-            me.link1 = me.addReportByCategory(me.patientCategory, i18n['prescriptions_and_dispensations'], function(btn) {
+            me.Rx = me.addReportByCategory(me.patientCategory, i18n['rx'], function(btn) {
                 me.goToReportPanelAndSetForm({
-                    title:i18n['prescriptions_and_dispensations'],
-                    action: 'clientListReport',
+                    title:i18n['rx'],
                     items : [
                         {
                             xtype     : 'datefield',
                             fieldLabel: i18n['from'],
-                            name      : 'from'
+                            name      : 'from',
+                            format:'Y-m-d'
                         },
                         {
                             xtype     : 'datefield',
                             fieldLabel: i18n['to'],
-                            name      : 'to'
+                            name      : 'to',
+                            format:'Y-m-d'
+                        },
+                        {
+                            xtype          : 'medicationlivetsearch',
+   	                        fieldLabel     : i18n['Drug'],
+   	                        hideLabel      : false,
+   	                        name           : 'drug',
+   	                        width          : 570
                         }
-                    ]
+                    ],
+                    fn:Rx.createPrescriptionsDispensations
                 });
             });
             me.link2 = me.addReportByCategory(me.patientCategory, i18n['clinical'], function(btn) {

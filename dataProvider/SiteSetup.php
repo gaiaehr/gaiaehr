@@ -136,8 +136,7 @@ class SiteSetup
 		$status = (get_magic_quotes_gpc() != 1 ? 'Ok' : 'Fail');
 		$row[]  = array('msg'=> 'get_magic_quotes_gpc off/disabled', 'status'=> $status);
 		// try chmod sites folder and check chmod after that
-		chmod('sites', 777);
-		$status = (substr(sprintf('%o', fileperms('sites')), -4) ? 'Ok' : 'Fail');
+		$status = (chmod('sites', 0777) ? 'Ok' : 'Fail');
 		$row[]  = array('msg'=> 'Sites folder is writable', 'status'=> $status);
 		// check if safe_mode is off
 		$status = (!ini_get('safe_mode') ? 'Ok' : 'Fail');
@@ -152,9 +151,9 @@ class SiteSetup
 	{
 		$siteDir = "sites/$siteId";
 		if(!file_exists($siteDir)) {
-			if(mkdir($siteDir, 0777, true)) 
+			if(mkdir($siteDir, 0777, true))
 			{
-				if(chmod($siteDir, 0777)) 
+				if(chmod($siteDir, 0777))
 				{
 					if(
 						(mkdir("$siteDir/patients", 0777, true) && chmod("$siteDir/patients", 0777)) &&
@@ -163,6 +162,8 @@ class SiteSetup
 						(mkdir("$siteDir/trash", 0777, true) && chmod("$siteDir/trash", 0777))
 					) 
 					{
+						chmod('sites', 0755);
+						chmod($siteDir, 0755);
 						return array('success' => true);
 					} 
 					else 

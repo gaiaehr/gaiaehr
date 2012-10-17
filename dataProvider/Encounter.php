@@ -83,7 +83,7 @@ class Encounter
 	public function checkOpenEncounters()
 	{
 		$pid = $_SESSION['patient']['pid'];
-		$this->db->setSQL("SELECT id FROM form_data_encounter WHERE pid = '$pid' AND close_date IS NULL");
+		$this->db->setSQL("SELECT pid FROM form_data_encounter WHERE pid = '$pid' AND close_date IS NULL");
 		$total = $this->db->rowCount();
 		if($total >= 1) {
 			return array('encounter' => true);

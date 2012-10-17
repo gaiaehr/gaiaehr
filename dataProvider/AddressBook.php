@@ -11,7 +11,8 @@
  * 
  */
  
- if (!isset($_SESSION)) {
+if (!isset($_SESSION)) 
+{
     session_name("GaiaEHR");
     session_start();
     session_cache_limiter('private');

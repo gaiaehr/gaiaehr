@@ -130,6 +130,44 @@ Ext.define('App.view.fees.Billing',
 					defaultValue : 'All'
 
 				}]
+			},
+			{
+				xtype : 'fieldcontainer',
+				items : [
+				{
+					xtype : 'splitbutton',
+					text : i18n['utilities'],
+					// handle a click on the button itself
+					handler : function()
+					{
+						alert("The button was clicked");
+					},
+					menu : new Ext.menu.Menu(
+					{
+						items : [
+						{
+							text : i18n['generate_x12'],
+							handler : function()
+							{
+								alert("Item 1 clicked");
+							}
+						},
+						{
+							text : i18n['generate_cms1500_pdf'],
+							handler : function()
+							{
+								alert("Item 2 clicked");
+							}
+						},
+						{
+							text : i18n['generate_cms1500_text'],
+							handler : function()
+							{
+								alert("Item 2 clicked");
+							}
+						}]
+					})
+				}]
 			}, '->',
 			{
 				xtype : 'tbtext',

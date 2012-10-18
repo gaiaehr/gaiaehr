@@ -1071,7 +1071,12 @@ $LANG = array(
 	'disclosures'   					    => 'Disclosures',
 	'rx'               					    => 'Rx',
 	'drug'               					=> 'Drug',
-	'recipient_name'   					    => 'Recipient Name'
+	'recipient_name'   					    => 'Recipient Name',
+	'generate_x12'							=> 'Generate x12',
+	'generate_cms1500_pdf'					=> 'Generate CMS 1500 PDF format',
+	'generate_cms1500_text'					=> 'Generate CMS 1500 TXT format',
+	'utilities'								=> 'Utilities'
+	
 
 );
 ?>

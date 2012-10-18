@@ -12,14 +12,16 @@
  * @namespace Services.addService
  * @namespace Services.updateService
  */
-Ext.define('App.view.administration.DataManager', {
+Ext.define('App.view.administration.DataManager', 
+{
     extend       : 'App.classes.RenderPanel',
     id           : 'panelDataManager',
     pageTitle    : 'Data Manager',
     uses         : [
         'App.classes.GridPanel', 'App.classes.combo.CodesTypes', 'App.classes.combo.Titles'
     ],
-    initComponent: function() {
+    initComponent: function() 
+    {
         var me = this;
 
         me.active = 1;
@@ -33,12 +35,18 @@ Ext.define('App.view.administration.DataManager', {
         me.ImmuRelationStore = Ext.create('App.store.administration.ImmunizationRelations');
         me.labObservationsStore = Ext.create('App.store.administration.LabObservations');
 
-        function code_type(val) {
-            if(val == '1') {
+        function code_type(val) 
+        {
+            if(val == '1') 
+            {
                 return 'CPT4';
-            }  else if(val == '3') {
+            }  
+            else if(val == '3') 
+            {
                 return 'HCPCS';
-            } else if(val == '100') {
+            } 
+            else if(val == '100') 
+            {
                 return 'CVX';
             }
             return val;
@@ -47,66 +55,64 @@ Ext.define('App.view.administration.DataManager', {
         /**
          * CPT Container
          */
-        me.cptContainer = Ext.create('Ext.container.Container', {
+        me.cptContainer = Ext.create('Ext.container.Container', 
+        {
             layout: 'column',
             action: 'CPT4',
             //hidden: true,
-            items : [
-
-                {
+            items : 
+            [
+			{
                     xtype    : 'fieldcontainer',
                     msgTarget: 'under',
                     defaults : { action: 'field'  },
-                    items    : [
-                        {
-
-                            fieldLabel: 'Type',
-                            xtype     : 'mitos.codestypescombo',
-                            name      : 'code_type'
-                        },
-                        {
-
-                            fieldLabel: 'Code',
-                            xtype     : 'textfield',
-                            name      : 'code'
-                        }
-
-                    ]
-                },
-                {
-                    xtype   : 'fieldcontainer',
-                    margin  : '0 0 0 10',
-                    defaults: { action: 'field' },
-                    items   : [
-                        {
-
-                            fieldLabel: i18n['description'],
-                            xtype     : 'textfield',
-                            name      : 'code_text',
-	                        width:500
-                        }
-                    ]
-                },
-                {
-                    xtype   : 'fieldcontainer',
-                    margin  : '0 0 0 20',
-                    defaults: { action: 'field' },
-                    items   : [
-
-                        {
-
-                            boxLabel: i18n['reportable'],
-                            xtype   : 'checkboxfield',
-                            name    : 'reportable'
-                        },
-                        {
-                            boxLabel  : i18n['active'],
-                            labelWidth: 75,
-                            xtype     : 'checkboxfield',
-                            name      : 'active'
-                        }
-                    ]
-                }
+                    items    : 
+                    [
+					{
+						fieldLabel: 'Type',
+						xtype     : 'mitos.codestypescombo',
+						name      : 'code_type'
+					},
+					{
+						fieldLabel: 'Code',
+						xtype     : 'textfield',
+						name      : 'code'
+					}
+					]
+			},
+			{
+				xtype   : 'fieldcontainer',
+				margin  : '0 0 0 10',
+				defaults: { action: 'field' },
+				items   : 
+				[
+				{
+					fieldLabel: i18n['description'],
+					xtype     : 'textfield',
+					name      : 'code_text',
+					width:500
+				}
+				]
+			},
+			{
+				xtype   : 'fieldcontainer',
+				margin  : '0 0 0 20',
+				defaults: { action: 'field' },
+				items   : 
+				[
+				{
+					boxLabel: i18n['reportable'],
+					xtype   : 'checkboxfield',
+					name    : 'reportable'
+				},
+				{
+					boxLabel  : i18n['active'],
+					labelWidth: 75,
+					xtype     : 'checkboxfield',
+					name      : 'active'
+				}
+				]
+			}
             ]
         });
 
@@ -114,154 +120,150 @@ Ext.define('App.view.administration.DataManager', {
         /**
          * HCPSC Container
          */
-        me.hpccsContainer = Ext.create('Ext.container.Container', {
+        me.hpccsContainer = Ext.create('Ext.container.Container', 
+        {
             layout: 'column',
             action: 'HCPCS',
             //hidden: true,
-            items : [
-
-                {
-                    xtype    : 'fieldcontainer',
-                    msgTarget: 'under',
-                    defaults : { action: 'field'  },
-                    items    : [
-                        {
-
-                            fieldLabel: i18n['type'],
-                            xtype     : 'mitos.codestypescombo',
-                            name      : 'code_type'
-                        },
-                        {
-
-                            fieldLabel: i18n['code'],
-                            xtype     : 'textfield',
-                            name      : 'code'
-                        },
-                        {
-
-                            fieldLabel: i18n['modifier'],
-                            xtype     : 'textfield',
-                            name      : 'mod'
-                        }
-
-                    ]
-                },
-                {
-                    xtype   : 'fieldcontainer',
-                    margin  : '0 0 0 10',
-                    defaults: { action: 'field' },
-                    items   : [
-                        {
-
-                            fieldLabel: i18n['description'],
-                            xtype     : 'textfield',
-                            name      : 'code_text'
-                        },
-                        {
-                            fieldLabel: i18n['category'],
-                            xtype     : 'mitos.titlescombo',
-                            name      : 'title'
-                        }
-                    ]
-                },
-                {
-                    xtype   : 'fieldcontainer',
-                    margin  : '0 0 0 20',
-                    defaults: { action: 'field' },
-                    items   : [
-
-                        {
-                            boxLabel: i18n['reportable'],
-                            xtype   : 'checkboxfield',
-                            name    : 'reportable'
-                        }
-                        ,
-                        {
-                            boxLabel  : i18n['active'],
-                            labelWidth: 75,
-                            xtype     : 'checkboxfield',
-                            name      : 'active'
-                        }
-                    ]
-                }
-
+            items : 
+            [
+			{
+				xtype    : 'fieldcontainer',
+				msgTarget: 'under',
+				defaults : { action: 'field'  },
+				items    : 
+				[
+				{
+					fieldLabel: i18n['type'],
+					xtype     : 'mitos.codestypescombo',
+					name      : 'code_type'
+				},
+				{
+					fieldLabel: i18n['code'],
+					xtype     : 'textfield',
+					name      : 'code'
+				},
+				{
+					fieldLabel: i18n['modifier'],
+					xtype     : 'textfield',
+					name      : 'mod'
+				}
+                ]
+			},
+			{
+				xtype   : 'fieldcontainer',
+				margin  : '0 0 0 10',
+				defaults: { action: 'field' },
+				items   : 
+				[
+				{
+					fieldLabel: i18n['description'],
+					xtype     : 'textfield',
+					name      : 'code_text'
+				},
+				{
+					fieldLabel: i18n['category'],
+					xtype     : 'mitos.titlescombo',
+					name      : 'title'
+				}
+				]
+			},
+			{
+				xtype   : 'fieldcontainer',
+				margin  : '0 0 0 20',
+				defaults: { action: 'field' },
+				items   : 
+				[
+				{
+					boxLabel: i18n['reportable'],
+					xtype   : 'checkboxfield',
+					name    : 'reportable'
+				},
+				{
+					boxLabel  : i18n['active'],
+					labelWidth: 75,
+					xtype     : 'checkboxfield',
+					name      : 'active'
+				}
+				]
+			}
             ]
-
         });
 
         /**
          * CVX Container
          */
-        me.cvxCintainer = Ext.create('Ext.tab.Panel', {
+        me.cvxCintainer = Ext.create('Ext.tab.Panel', 
+        {
             //hidden   : true,
             action   : i18n['immunizations'],
             layout   : 'fit',
             plain    : true,
-            listeners: {
+            listeners: 
+            {
                 scope    : me,
                 tabchange: me.onFormTapChange
             },
-            items    : [
-                {
-                    title  : i18n['general'],
-                    xtype  : 'container',
-                    padding: 10,
-                    layout : 'vbox',
-                    items  : [
-                        {
-                            /**
-                             * line One
-                             */
-                            xtype   : 'fieldcontainer',
-                            layout  : 'hbox',
-                            defaults: { margin: '0 10 5 0', action: 'field' },
-                            items   : [
-                                {
-
-                                    xtype     : 'textfield',
-                                    fieldLabel: i18n['immunization_name'],
-                                    name      : 'code_text',
-                                    labelWidth: 130,
-                                    width     : 703
-                                },
-                                {
-                                    xtype     : 'mitos.sexcombo',
-                                    fieldLabel: i18n['sex'],
-                                    name      : 'sex',
-                                    width     : 100,
-                                    labelWidth: 30
-
-                                }
-
-                            ]
-                        },
-                        {
-                            /**
-                             * Line two
-                             */
-                            xtype   : 'fieldcontainer',
-                            layout  : 'hbox',
-                            defaults: { margin: '0 10 5 0', action: 'field'  },
-                            items   : [
-                                {
-                                    xtype     : 'mitos.codestypescombo',
-                                    fieldLabel: i18n['coding_system'],
-                                    labelWidth: 130,
-                                    value     : 'CVX',
-                                    name      : 'code_type',
-                                    readOnly  : true
-
-                                },
-                                {
-                                    xtype     : 'numberfield',
-                                    fieldLabel: i18n['frequency'],
-                                    margin    : '0 0 5 0',
-                                    value     : 0,
-                                    minValue  : 0,
-                                    width     : 150,
-                                    name      : 'frequency_number'
-
-                                },
+            items    : 
+            [
+			{
+				title  : i18n['general'],
+				xtype  : 'container',
+				padding: 10,
+				layout : 'vbox',
+				items  : 
+				[
+				{
+					/**
+					 * line One
+					*/
+					xtype   : 'fieldcontainer',
+					layout  : 'hbox',
+					defaults: { margin: '0 10 5 0', action: 'field' },
+					items   : 
+					[
+					{
+						xtype     : 'textfield',
+						fieldLabel: i18n['immunization_name'],
+						name      : 'code_text',
+						labelWidth: 130,
+						width     : 703
+					},
+					{
+						xtype     : 'mitos.sexcombo',
+						fieldLabel: i18n['sex'],
+						name      : 'sex',
+						width     : 100,
+						labelWidth: 30
+					}
+					]
+					},
+					{
+						/**
+						 * Line two
+						 */
+						xtype   : 'fieldcontainer',
+						layout  : 'hbox',
+						defaults: { margin: '0 10 5 0', action: 'field'  },
+						items   : 
+						[
+						{
+							xtype     : 'mitos.codestypescombo',
+							fieldLabel: i18n['coding_system'],
+							labelWidth: 130,
+							value     : 'CVX',
+							name      : 'code_type',
+							readOnly  : true
+						},
+						{
+							xtype     : 'numberfield',
+							fieldLabel: i18n['frequency'],
+							margin    : '0 0 5 0',
+							value     : 0,
+							minValue  : 0,
+							width     : 150,
+							name      : 'frequency_number'
+						},
                                 {
                                     xtype: 'mitos.timecombo',
                                     name : 'frequency_time',
@@ -290,55 +292,47 @@ Ext.define('App.view.administration.DataManager', {
 
                         },
                         {
-                            /**
-                             * Line three
-                             */
-                            xtype   : 'fieldcontainer',
-                            layout  : 'hbox',
-                            defaults: { margin: '0 10 5 0', action: 'field'  },
-                            items   : [
-                                {
-                                    xtype     : 'textfield',
-                                    fieldLabel: i18n['code'],
-                                    name      : 'code',
-                                    labelWidth: 130
-
-                                },
-                                {
-                                    xtype     : 'numberfield',
-                                    fieldLabel: i18n['times_to_perform'],
-                                    name      : 'times_to_perform',
-                                    width     : 250,
-                                    value     : 0,
-                                    minValue  : 0,
-                                    tooltip   : i18n['greater_than_1_or_just_check_perform_once']
-
-                                },
-                                {
-
-                                    xtype     : 'numberfield',
-                                    fieldLabel: i18n['age_end'],
-                                    name      : 'age_end',
-                                    labelWidth: 75,
-                                    width     : 140,
-                                    value     : 0,
-                                    minValue  : 0
-
-
-                                },
-
-                                {
-                                    fieldLabel: i18n['perform_only_once'],
-                                    xtype     : 'checkboxfield',
-                                    labelWidth: 105,
-                                    //margin  : '5 0 0 10',
-                                    name      : 'only_once'
-                                }
-
+							/**
+							 * Line three
+							 */
+							xtype   : 'fieldcontainer',
+							layout  : 'hbox',
+							defaults: { margin: '0 10 5 0', action: 'field'  },
+							items   : 
+							[
+							{
+								xtype     : 'textfield',
+								fieldLabel: i18n['code'],
+								name      : 'code',
+								labelWidth: 130
+							},
+							{
+								xtype     : 'numberfield',
+								fieldLabel: i18n['times_to_perform'],
+								name      : 'times_to_perform',
+								width     : 250,
+								value     : 0,
+								minValue  : 0,
+								tooltip   : i18n['greater_than_1_or_just_check_perform_once']
+							},
+							{
+								xtype     : 'numberfield',
+								fieldLabel: i18n['age_end'],
+								name      : 'age_end',
+								labelWidth: 75,
+								width     : 140,
+								value     : 0,
+								minValue  : 0
+							},
+							{
+								fieldLabel: i18n['perform_only_once'],
+								xtype     : 'checkboxfield',
+								labelWidth: 105,
+								//margin  : '5 0 0 10',
+								name      : 'only_once'
+							}
                             ]
-
                         }
-
                     ]
                 },
                 {
@@ -348,7 +342,6 @@ Ext.define('App.view.administration.DataManager', {
                     margin : 5,
                     store  : me.ImmuRelationStore,
                     columns: [
-
                         {
                             xtype: 'actioncolumn',
                             width: 20,
@@ -522,7 +515,8 @@ Ext.define('App.view.administration.DataManager', {
                             header: i18n['label_alias'],
                             dataIndex: 'code_text_short',
                             width:100,
-                            editor:{
+                            editor:
+                            {
                                 xtype:'textfield'
                             }
                         },
@@ -540,7 +534,8 @@ Ext.define('App.view.administration.DataManager', {
                             header: i18n['default_unit'],
                             dataIndex: 'default_unit',
                             width:100,
-                            editor:{
+                            editor:
+                            {
                                 xtype:'mitos.unitscombo'
                             }
                         },
@@ -553,7 +548,8 @@ Ext.define('App.view.administration.DataManager', {
                             header: i18n['range_start'],
                             dataIndex: 'range_start',
                             width:100,
-                            editor:{
+                            editor:
+                            {
                                 xtype:'numberfield'
                             }
                         },
@@ -569,7 +565,8 @@ Ext.define('App.view.administration.DataManager', {
                             header: i18n['description'],
                             dataIndex: 'description',
                             flex:1,
-                            editor:{
+                            editor:
+                            {
                                 xtype:'textfield'
                             }
                         }

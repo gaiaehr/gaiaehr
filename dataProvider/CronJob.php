@@ -6,28 +6,33 @@
  * Time: 10:22 PM
  * To change this template use File | Settings | File Templates.
  */
-if(!isset($_SESSION)){
-    session_name ('GaiaEHR');
-    session_start();
-    session_cache_limiter('private');
+if (!isset($_SESSION))
+{
+	session_name('GaiaEHR');
+	session_start();
+	session_cache_limiter('private');
 }
-include_once($_SESSION['root'].'/classes/Sessions.php');
-include_once($_SESSION['root'].'/dataProvider/Patient.php');
-class CronJob {
+include_once ($_SESSION['root'] . '/classes/Sessions.php');
+include_once ($_SESSION['root'] . '/dataProvider/Patient.php');
+class CronJob
+{
 
-	function run(){
+	function run()
+	{
 		/**
 		 * only run cron if delay time has expired
 		 */
-		if((time() - $_SESSION['cron']['time']) > $_SESSION['cron']['delay'] || $_SESSION['inactive']['start'] ){
+		if ((time() - $_SESSION['cron']['time']) > $_SESSION['cron']['delay'] || $_SESSION['inactive']['start'])
+		{
 			/**
 			 * stuff to run
 			 */
 			$s = new Sessions();
 			$p = new Patient();
 
-			foreach($s->logoutInactiveUsers() as $user){
-				$p->patientChartInByUserId($user['uid']);
+			foreach ($s->logoutInactiveUsers() as $user)
+			{
+				$p -> patientChartInByUserId($user['uid']);
 			}
 
 			/**
@@ -35,12 +40,19 @@ class CronJob {
 			 */
 			$_SESSION['inactive']['start'] = false;
 			$_SESSION['cron']['time'] = time();
-			return array('success'=>true, 'ran'=>true);
+			return array(
+				'success' => true,
+				'ran' => true
+			);
 		}
-		return array('success'=>true, 'ran'=>false);
+		return array(
+			'success' => true,
+			'ran' => false
+		);
 	}
 
 }
+
 //$foo = new CronJob();
 //print '<pre>';
 //$foo->run();

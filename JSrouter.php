@@ -22,7 +22,8 @@ header('Content-Type: text/javascript');
 $i18n = i18nRouter::getTranslation();
 print 'i18n = '. json_encode($i18n).';';
 
-if( isset($_SESSION['user']) && $_SESSION['user']['auth'] == true){
+if( isset($_SESSION['user']) && $_SESSION['user']['auth'] == true)
+{
 
 	$acl = new ACL();
 	$perms = array();

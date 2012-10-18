@@ -1,12 +1,4 @@
 <?php
-if(!isset($_SESSION)){
-    session_name ( 'GaiaEHR' );
-    session_start();
-    session_cache_limiter('private');
-}
-ini_set('max_input_time', '1500');
-ini_set('max_execution_time', '1500');
-include_once($_SESSION['root'] . '/classes/Time.php');
 /**
  * @brief       Database Helper Class.
  * @details     A PDO helper for GaiaEHR, contains custom function to manage the database
@@ -31,11 +23,24 @@ include_once($_SESSION['root'] . '/classes/Time.php');
  *
  * @author      Gino Rivera (Certun) <grivera@certun.com>
  * @author      Ernesto J. Rodriguez (Certun) <erodriguez@certun.com>
- * @version     Vega 1.0
+ * @version     Vega 1.2
  * @copyright   Gnu Public License (GPLv3)
  *
  */
-class dbHelper {
+ 
+if(!isset($_SESSION))
+{
+    session_name ( 'GaiaEHR' );
+    session_start();
+    session_cache_limiter('private');
+}
+
+ini_set('max_input_time', '1500');
+ini_set('max_execution_time', '1500');
+include_once($_SESSION['root'] . '/classes/Time.php');
+
+class dbHelper 
+{
 	
     /**
      * @var
@@ -66,17 +71,21 @@ class dbHelper {
 	function __construct()
     {
         error_reporting(0);
-	    if(isset($_SESSION['site']['db'])){
+	    if(isset($_SESSION['site']['db']))
+	    {
 		    $host   = (string)$_SESSION['site']['db']['host'];
 		    $port   = (int)$_SESSION['site']['db']['port'];
 		    $dbName = (string)$_SESSION['site']['db']['database'];
 		    $dbUser = (string)$_SESSION['site']['db']['username'];
 		    $dbPass = (string)$_SESSION['site']['db']['password'];
-			try {
+			try 
+			{
 	            $this->conn = new PDO( 'mysql:host='.$host.';port='.$port.';dbname='.$dbName,$dbUser,$dbPass,
 	                array(PDO::MYSQL_ATTR_LOCAL_INFILE => 1, PDO::ATTR_PERSISTENT => true)
 	            );
-			} catch (PDOException $e) {
+			} 
+			catch (PDOException $e) 
+			{
 	            $this->err = $e->getMessage();
 			}
 	    }
@@ -136,34 +145,50 @@ class dbHelper {
          * Step 2 -  Create the SET clause
          */
         $sql .= ' SET ';
-		foreach($BindFieldsArray as $key => $value){
+		foreach($BindFieldsArray as $key => $value)
+		{
 			$value = addslashes($value);
-			if(isset($Where) && is_array($Where)){
-				if(!array_key_exists($key, $Where)){
-					if($value == null || $value === 'NULL' || $value === 'null'){
+			if(isset($Where) && is_array($Where))
+			{
+				if(!array_key_exists($key, $Where))
+				{
+					if($value == null || $value === 'NULL' || $value === 'null')
+					{
 						$sql .= $key. '=NULL, ';
-					}else{
+					}
+					else
+					{
 						$value =  preg_replace('/([0-9]{4}-[0-9]{2}-[0-9]{2})T([0-9]{2}:[0-9]{2}:[0-9]{2})/i', '${1} ${2}', trim($value));
 						$sql .= $key. "='$value', ";
 					}
-				}else{
+				}
+				else
+				{
 					return array(
 	                    'success'=>false,
 	                    'error'=>'Where value can not be updated. please make sure to unset it from the array'
 	                );
 				}
-			}else{
+			}
+			else
+			{
 				// TODO: remove this... after new version (above) is implemented throughout the application
 				if( $Where <> ($key . "='$value'") &&
 	                $Where <> ($key . '='.$value) &&
-	                $Where <> ($key . '="'.$value.'"')){
-					if($value == null || $value === 'NULL' || $value === 'null'){
+	                $Where <> ($key . '="'.$value.'"'))
+				{
+					if($value == null || $value === 'NULL' || $value === 'null')
+					{
 						$sql .= $key. '=NULL, ';
-					}else{
+					}
+					else
+					{
 						$value =  preg_replace('/([0-9]{4}-[0-9]{2}-[0-9]{2})T([0-9]{2}:[0-9]{2}:[0-9]{2})/i', '${1} ${2}', trim($value));
 						$sql .= $key. "='$value', ";
 					}
-				}else{
+				}
+				else
+				{
 	                return array(
 	                    'success'=>false,
 	                    'error'=>'Where value can not be updated. please make sure to unset it from the array'
@@ -176,16 +201,21 @@ class dbHelper {
 		/**
          * Step 3 - Create the WHERE clause, if applicable
          */
-		if ($InsertOrUpdate == 'u' && $Where != null){
+		if ($InsertOrUpdate == 'u' && $Where != null)
+		{
 			$sql .= ' WHERE ';
-			if(is_array($Where)){
+			if(is_array($Where))
+			{
 				$count = 0;
-				foreach($Where as $key => $val){
+				foreach($Where as $key => $val)
+				{
 					$and = ($count == 0)? '' : ' AND ';
 					$sql .= $and . $key.'=\''.$val.'\'';
 					$count++;
 				}
-			}else{
+			}
+			else
+			{
 				$sql .= $Where;
 			}
 		}
@@ -211,7 +241,8 @@ class dbHelper {
 	 * @internal param $ (array)$Where
 	 * @return string
 	 */
-    public function sqlSelectBuilder($Table, $Fields = array('*'), $Where = null, $Order = null){
+    public function sqlSelectBuilder($Table, $Fields = array('*'), $Where = null, $Order = null)
+    {
 
         // Step 1 - Select clause and wrote down the fields
         $sqlReturn = 'SELECT ';
@@ -222,9 +253,11 @@ class dbHelper {
         $sqlReturn .= ' FROM ' . $Table . ' ';
 
         // Step 3 - Having clause, filter the records
-        if($Where != null){
+        if($Where != null)
+        {
             $sqlReturn .= ' HAVING ';
-            foreach($Where as $key => $value) {
+            foreach($Where as $key => $value) 
+            {
                 $sqlReturn .= '(' . $value . ')';
                 $sqlReturn .= (is_int($key)) ? ' AND ' : ' ' . $key . ' ';
              }
@@ -232,9 +265,11 @@ class dbHelper {
         }
 
         // Step 4 - Order clause, sort the results
-        if($Order != null){
+        if($Order != null)
+        {
             $sqlReturn .= ' ORDER BY ';
-            foreach($Order as $key => $value) {
+            foreach($Order as $key => $value) 
+            {
                 $sqlReturn .= (!is_int($key)) ? $value . ' ' . $key . ', ' : $value . ', ';
             }
             $sqlReturn = substr($sqlReturn, 0, -2);
@@ -257,7 +292,8 @@ class dbHelper {
     public function execOnly($setLastInsertId = true)
     {
 	    $this->conn->query( $this->sql_statement );
-		if ($setLastInsertId){
+		if ($setLastInsertId)
+		{
 			$this->lastInsertId = $this->conn->lastInsertId();
 		}
 	    return $this->conn->errorInfo();
@@ -288,7 +324,8 @@ class dbHelper {
 			stristr($this->sql_statement, 'DELETE') ||
 			stristr($this->sql_statement, 'UPDATE') ||
 			stristr($this->sql_statement, 'LOAD')  ||
-			stristr($this->sql_statement, 'ALTER')){
+			stristr($this->sql_statement, 'ALTER'))
+		{
 
             $this->lastInsertId = $this->conn->lastInsertId();
 
@@ -358,9 +395,12 @@ class dbHelper {
 		// Get all the records
 		$recordSet = $this->conn->query( $this->sql_statement );
         $err = $this->conn->errorInfo();
-        if(!$err[2]){
+        if(!$err[2])
+        {
             return $recordSet->fetch(PDO::FETCH_ASSOC);
-        } else {
+        } 
+        else 
+        {
             return $err;
         }
 
@@ -382,13 +422,17 @@ class dbHelper {
     public function fetchRecords($fetchStyle = PDO::FETCH_BOTH)
     {
 		$recordSet = $this->conn->query($this->sql_statement);
-		if (stristr($this->sql_statement, 'SELECT')){
+		if (stristr($this->sql_statement, 'SELECT'))
+		{
 			$this->lastInsertId = $this->conn->lastInsertId();
 		}
 		$err = $this->conn->errorInfo();
-		if(!$err[2]){
+		if(!$err[2])
+		{
 			return $recordSet->fetchAll($fetchStyle);
-		} else {
+		} 
+		else 
+		{
 			return $err;
 		}
 	}
@@ -406,9 +450,12 @@ class dbHelper {
      */
 	function getError()
     {
-		if (!$this->err){
+		if (!$this->err)
+		{
 			return $this->conn->errorInfo();
-		} else {
+		} 
+		else 
+		{
 			return $this->err;
 		}
 	}

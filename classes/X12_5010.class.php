@@ -33,7 +33,7 @@ class x12_5010
 {
 	
 	private $dataBase;
-	private $data;
+	private $x12data;
 	
 	/*
 	 * Variables that will determine the ANSI x12 5010 

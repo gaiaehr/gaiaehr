@@ -11,7 +11,6 @@
 Ext.define('App.classes.LiveMedicationSearch', {
 	extend       : 'Ext.form.ComboBox',
 	alias        : 'widget.medicationlivetsearch',
-	hideLabel    : true,
 
 	initComponent: function() {
 		var me = this;

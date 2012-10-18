@@ -69,7 +69,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                         {
                             xtype          : 'medicationlivetsearch',
    	                        fieldLabel     : i18n['Drug'],
-   	                        hideLabel      : false,
+                            hideLabel      : false,
    	                        name           : 'drug',
    	                        width          : 570
                         }

@@ -25,16 +25,26 @@ class i18nRouter
 	// -----------------------------------------------------------------------
 	public static function getTranslation()
 	{
+		if(isset($_SESSION['site']['localization'])){
+			$loc = $_SESSION['site']['localization'];
+		}elseif(isset($_SESSION['site']['default_localization'])){
+			$loc = $_SESSION['site']['default_localization'];
+		}else{
+			$loc = false;
+		}
 		// This language file is need by default.
 		include($_SESSION['root'] . '/langs/en_US.php');
 		$en_US = $LANG;
-		
-		// This file will be called when the user or the administrator select 
-		// a diferent language. But the primary language will be called first.
+		// This file will be called when the user or the administrator select
+		// a different language. But the primary language will be called first.
 		// So if some words are not translated by the selected language it can be 
-		// displayed by the original language. 
-		include($_SESSION['root'] . '/langs/' . $_SESSION['site']['localization'] . '.php');
-		return array_merge($en_US, $LANG);
+		// displayed by the original language.
+		if($loc !== false){
+			include($_SESSION['root'] . '/langs/' . $loc . '.php');
+			return array_merge($en_US, $LANG);
+		}else{
+			return $en_US;
+		}
 	}
 
 	// -----------------------------------------------------------------------
@@ -69,7 +79,7 @@ class i18nRouter
 	// -----------------------------------------------------------------------
 	public static function getDefaultLanguage()
 	{
-		return $_SESSION['site']['lang'];
+		return $_SESSION['site']['default_localization'];
 	}
 
 	// -----------------------------------------------------------------------

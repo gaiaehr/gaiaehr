@@ -868,47 +868,8 @@ Ext.define('App.view.administration.Globals', {
 							defaultType: 'textfield',
 							items      : [
 								{
-									fieldLabel: i18n['path_to_mysql_binaries'],
-									name      : 'mysql_bin_dir'
-								},
-								{
-									fieldLabel: i18n['path_to_perl_binaries'],
-									name      : 'perl_bin_dir'
-								},
-								{
-									fieldLabel: i18n['path_to_temporary_files'],
-									name      : 'temporary_files_dir'
-								},
-								{
-									fieldLabel: i18n['path_for_event_log_backup'],
-									name      : 'backup_log_dir'
-								},
-								{
-									xtype       : 'combo',
-									fieldLabel  : i18n['state_data_type'],
-									name        : 'state_data_type',
-									displayField: 'title',
-									valueField  : 'option_id',
-									editable    : false,
-									store       : me.state_country_data_type_store
-								},
-								{
 									fieldLabel: i18n['state_list'],
 									name      : 'state_list'
-								},
-								{
-									xtype     : 'mitos.checkbox',
-									fieldLabel: i18n['state_list_widget_custom_fields'],
-									name      : 'state_custom_addlist_widget'
-								},
-								{
-									xtype       : 'combo',
-									fieldLabel  : i18n['country_data_type'],
-									name        : 'country_data_type',
-									displayField: 'title',
-									valueField  : 'option_id',
-									editable    : false,
-									store       : me.state_country_data_type_store
 								},
 								{
 									fieldLabel: i18n['country_list'],
@@ -921,10 +882,6 @@ Ext.define('App.view.administration.Globals', {
 								{
 									fieldLabel: i18n['default_reason_for_visit'],
 									name      : 'default_chief_complaint'
-								},
-								{
-									fieldLabel: i18n['default_encounter_form_id'],
-									name      : 'default_new_encounter_form'
 								},
 								{
 									fieldLabel: i18n['patient_id_category_name'],

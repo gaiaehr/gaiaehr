@@ -143,7 +143,7 @@ class SiteSetup
 		$row[]  = array('msg'=> 'PHP safe mode off', 'status'=> $status);
 		// check if ZipArchive is enable
 		$status = (class_exists('ZipArchive') ? 'Ok' : 'Fail');
-		$row[]  = array('msg'=> 'PHP class ZipArchive', 'status'=> $status);
+		$row[]  = array('msg'=> 'PHP  class ZipArchive', 'status'=> $status);
 		return $row;
 	}
 

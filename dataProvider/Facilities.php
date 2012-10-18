@@ -48,8 +48,6 @@ class Facilities {
 
             if (strlen($row['pos_code']) <= 1){
                 $row['pos_code'] = '0'.$row['pos_code'];
-            } else {
-                $row['pos_code'] = $row['pos_code'];
             }
             array_push($rows, $row);
         }
@@ -65,13 +63,14 @@ class Facilities {
     public function addFacility(stdClass $params){
 
         $data = get_object_vars($params);
-
-        $sql = $this->db->sqlBind($data, "facility", "I");
+	    unset($data['id']);
+	    foreach($data AS $key => $val){
+			if($val == '') unset($data[$key]);
+	    }
+        $sql = $this->db->sqlBind($data, 'facility', 'I');
         $this->db->setSQL($sql);
         $this->db->execLog();
-
         $params->id = $this->db->lastInsertId;
-
         return $params;
     }
 
@@ -80,16 +79,11 @@ class Facilities {
      * @return stdClass
      */
     public function updateFacility(stdClass $params){
-
         $data = get_object_vars($params);
-
-        $id = $data['id'];
         unset($data['id']);
-
-        $sql = $this->db->sqlBind($data, "facility", "U", "id='$id'");
+        $sql = $this->db->sqlBind($data, 'facility', 'U', array('id'=>$params->id));
         $this->db->setSQL($sql);
         $this->db->execLog();
-
         return $params;
     }
 
@@ -100,13 +94,11 @@ class Facilities {
      * @return stdClass
      */
     public function deleteFacility(stdClass $params){
-
-
-        $sql = "UPDATE facility SET active = '0' WHERE id='$params->id'";
-
+		$data['active'] = 0;
+	    unset($data['id']);
+	    $sql = $this->db->sqlBind($data, 'facility', 'U', array('id'=>$params->id));
         $this->db->setSQL($sql);
         $this->db->execLog();
-
         return $params;
     }
 
@@ -127,8 +119,8 @@ class Facilities {
 	    return $this->db->fetchRecord(PDO::FETCH_ASSOC);
     }
 
-    public function getActiveFacilitiesById ($facilityid){
-        $this->db->setSQL("SELECT * FROM facility WHERE active = '1' AND id='$facilityid'");
+    public function getActiveFacilitiesById ($facilityId){
+        $this->db->setSQL("SELECT * FROM facility WHERE active = '1' AND id='$facilityId'");
 	    return $this->db->fetchRecord(PDO::FETCH_ASSOC);
     }
 

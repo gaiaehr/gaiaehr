@@ -32,6 +32,7 @@ $LANG = array(
     'administration'						=> 'Administration',
     'global_settings'						=> 'Global Settings',
     'facilities'							=> 'Facilities',
+    'new_facility'  						=> 'New Facility',
     'users'									=> 'Users',
     'user'									=> 'User',
     'practice'								=> 'Practice',

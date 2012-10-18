@@ -13,228 +13,281 @@
  * @namespace User.updateUser
  * @namespace User.chechPasswordHistory
  */
-Ext.define('App.view.administration.FloorPlans', {
-	extend       : 'App.classes.RenderPanel',
-	id           : 'panelFloorPlans',
-	pageTitle    : i18n['floor_plan_editor'],
-	pageLayout   : 'border',
-	floorPlanId  : null,
-	activeZone   : null,
-	initComponent: function() {
+Ext.define('App.view.administration.FloorPlans',
+{
+	extend : 'App.classes.RenderPanel',
+	id : 'panelFloorPlans',
+	pageTitle : i18n['floor_plan_editor'],
+	pageLayout : 'border',
+	floorPlanId : null,
+	activeZone : null,
+	initComponent : function()
+	{
 		var me = this;
-		me.floorPlansStore = Ext.create('App.store.administration.FloorPlans',{
-			autoLoad:true
+		me.floorPlansStore = Ext.create('App.store.administration.FloorPlans',
+		{
+			autoLoad : true
 		});
 		me.floorPlanZonesStore = Ext.create('App.store.administration.FloorPlanZones');
 
-		me.floorPlans = Ext.create('Ext.grid.Panel',{
-			title: i18n['floor_plans'],
-			region:'west',
-			width:200,
-			split:true,
-			hideHeaders:true,
-			store: me.floorPlansStore,
-			plugins:[
-				me.floorPlanEditing = Ext.create('Ext.grid.plugin.RowEditing', {
-		            clicksToEdit: 2
-		        })
-			],
-			columns:[
+		me.floorPlans = Ext.create('Ext.grid.Panel',
+		{
+			title : i18n['floor_plans'],
+			region : 'west',
+			width : 200,
+			split : true,
+			hideHeaders : true,
+			store : me.floorPlansStore,
+			plugins : [me.floorPlanEditing = Ext.create('Ext.grid.plugin.RowEditing',
+			{
+				clicksToEdit : 2
+			})],
+			columns : [
+			{
+				dataIndex : 'title',
+				sortable : false,
+				hideable : false,
+				flex : 1,
+				editor :
 				{
-					dataIndex:'title',
-					sortable: false,
-                    hideable: false,
-					flex: 1,
-					editor:{
-						xtype:'textfield'
-					}
+					xtype : 'textfield'
 				}
-			],
-			tbar:[
-				'->',
-				{
-					text: i18n['add_floor_plan'],
-					action:'newFloorPlan',
-					scope:me,
-					handler:me.onNewFloorPlan
-				}
-			],
-			listeners:{
-				scope:me,
-				select:me.onFloorPlanSelected
+			}],
+			tbar : ['->',
+			{
+				text : i18n['add_floor_plan'],
+				action : 'newFloorPlan',
+				scope : me,
+				handler : me.onNewFloorPlan
+			}],
+			listeners :
+			{
+				scope : me,
+				select : me.onFloorPlanSelected
 			}
 		});
 
-		me.floorPlan = Ext.create('Ext.panel.Panel',{
-			title: i18n['floor_plan'],
-			region:'center',
-			bodyCls:'floorPlan',
-			layout:'absolute',
-			tbar:[
-				'->',
-				{
-					text: i18n['add_zone'],
-					action:'newZone',
-					scope:me,
-					handler:me.onNewZone
-				}
-			]
+		me.floorPlan = Ext.create('Ext.panel.Panel',
+		{
+			title : i18n['floor_plan'],
+			region : 'center',
+			bodyCls : 'floorPlan',
+			layout : 'absolute',
+			tbar : ['->',
+			{
+				text : i18n['add_zone'],
+				action : 'newZone',
+				scope : me,
+				handler : me.onNewZone
+			}]
 		});
 
-
-
-		me.listeners = {
-			show:function(){
-				me.nav = Ext.create('Ext.util.KeyNav', Ext.getDoc(), {
-			        scope: me,
-			        left: function(){
-				        me.moveZone('left')
-			        },
-			        up: function(){
-                        me.moveZone('up')
-                    },
-			        right: function(){
-                        me.moveZone('right')
-                    },
-			        down: function(){
-                        me.moveZone('down')
-                    }
-			    });
+		me.listeners =
+		{
+			show : function()
+			{
+				me.nav = Ext.create('Ext.util.KeyNav', Ext.getDoc(),
+				{
+					scope : me,
+					left : function()
+					{
+						me.moveZone('left')
+					},
+					up : function()
+					{
+						me.moveZone('up')
+					},
+					right : function()
+					{
+						me.moveZone('right')
+					},
+					down : function()
+					{
+						me.moveZone('down')
+					}
+				});
 			},
-            hide:function(){
-                if(me.nav){
-                    Ext.destroy(me.nav);
-                }
-            }
+			hide : function()
+			{
+				if (me.nav)
+				{
+					Ext.destroy(me.nav);
+				}
+			}
 		};
 
-		me.pageBody = [ me.floorPlans, me.floorPlan ];
+		me.pageBody = [me.floorPlans, me.floorPlan];
 		me.callParent(arguments);
 	},
 
-	onNewZone:function(){
+	onNewZone : function()
+	{
 		this.createZone(null);
 	},
 
-	createZone:function(record){
+	createZone : function(record)
+	{
 		var me = this, zone, form;
-		zone = Ext.create('Ext.button.Split', {
-		    text: record ? record.data.title : i18n['new_zone'],
-			toggleGroup:'zones',
-			draggable:{
-				listeners:{
-					scope:me,
-					dragend:me.zoneDragged
+		zone = Ext.create('Ext.button.Split',
+		{
+			text : record ? record.data.title : i18n['new_zone'],
+			toggleGroup : 'zones',
+			draggable :
+			{
+				listeners :
+				{
+					scope : me,
+					dragend : me.zoneDragged
 				}
 			},
-			scale:'medium',
-			x:record ? record.data.x : 0,
-			y:record ? record.data.y : 0,
-			enableToggle:true,
-			toggleHandler:function(btn, pressed){
-				if(pressed){
+			scale : 'medium',
+			x : record ? record.data.x : 0,
+			y : record ? record.data.y : 0,
+			enableToggle : true,
+			toggleHandler : function(btn, pressed)
+			{
+				if (pressed)
+				{
 					me.activeZone = zone;
 					me.floorPlan.focus();
-				}else{
+				}
+				else
+				{
 					me.activeZone = null;
 					var rec = btn.menu.items.items[0].getForm().getRecord();
-					rec.set({x:btn.x,y:btn.y});
+					rec.set(
+					{
+						x : btn.x,
+						y : btn.y
+					});
 				}
 			},
-			menu:[
-				form = Ext.create('Ext.form.Panel',{
-					bodyPadding:'5 5 0 5',
-					items:[
-						{
-							xtype:'textfield',
-							fieldLabel: i18n['zone_name'],
-							labelWidth:80,
-							name:'title'
-						}
-					]
-				})
-			],
-			listeners:{
-				scope:me,
-				menushow:me.afterMenuShow,
-				menuhide:me.afterMenuHide
+			menu : [ form = Ext.create('Ext.form.Panel',
+			{
+				bodyPadding : '5 5 0 5',
+				items : [
+				{
+					xtype : 'textfield',
+					fieldLabel : i18n['zone_name'],
+					labelWidth : 80,
+					name : 'title'
+				}]
+			})],
+			listeners :
+			{
+				scope : me,
+				menushow : me.afterMenuShow,
+				menuhide : me.afterMenuHide
 			}
 		});
 
 		me.floorPlan.add(zone);
 
-		if(record != null){
+		if (record != null)
+		{
 			form.getForm().loadRecord(record)
-		}else{
-			me.floorPlanZonesStore.add({
-				floor_plan_id:me.floorPlanId,
-				title: i18n['new_zone'],
-				x:0,
-				y:0,
-				active:1
+		}
+		else
+		{
+			me.floorPlanZonesStore.add(
+			{
+				floor_plan_id : me.floorPlanId,
+				title : i18n['new_zone'],
+				x : 0,
+				y : 0,
+				active : 1
 			});
 
-			me.floorPlanZonesStore.sync({
-				callback:function(batch, options){
+			me.floorPlanZonesStore.sync(
+			{
+				callback : function(batch, options)
+				{
 					form.getForm().loadRecord(batch.operations[0].records[0])
 				}
 			})
 		}
 	},
 
-	afterMenuShow:function(btn){
+	afterMenuShow : function(btn)
+	{
 		btn.toggle(true);
 	},
 
-	afterMenuHide:function(btn){
-		var form = btn.menu.items.items[0].getForm(),
-			values = form.getValues(),
-			rec = form.getRecord();
+	afterMenuHide : function(btn)
+	{
+		var form = btn.menu.items.items[0].getForm(), values = form.getValues(), rec = form.getRecord();
 		btn.setText(values.title);
 		rec.set(values);
 	},
 
-	moveZone:function(direction){
-		if(app.currCardCmp == this && this.activeZone != null){
+	moveZone : function(direction)
+	{
+		if (app.currCardCmp == this && this.activeZone != null)
+		{
 			var x = this.activeZone.x, y = this.activeZone.y;
-			if(direction == 'left'){
-				x = x-1;
-			}else if(direction == 'right'){
-				x = x+1;
-			}else if(direction == 'up'){
-				y = y-1;
-			}else if(direction == 'down'){
-				y = y+1;
+			if (direction == 'left')
+			{
+				x = x - 1;
 			}
-			this.activeZone.setPosition(x,y);
+			else
+			if (direction == 'right')
+			{
+				x = x + 1;
+			}
+			else
+			if (direction == 'up')
+			{
+				y = y - 1;
+			}
+			else
+			if (direction == 'down')
+			{
+				y = y + 1;
+			}
+			this.activeZone.setPosition(x, y);
 		}
 	},
 
-	zoneDragged:function(drag){
+	zoneDragged : function(drag)
+	{
 		var me = this, rec = drag.comp.menu.items.items[0].getForm().getRecord();
-		rec.set({x:drag.comp.x,y:drag.comp.y});
-	},
-
-	onNewFloorPlan:function(){
-		this.floorPlansStore.add({
-			title: i18n['new_floor_plan']
+		rec.set(
+		{
+			x : drag.comp.x,
+			y : drag.comp.y
 		});
 	},
 
-	onFloorPlanSelected:function(model, record){
+	onNewFloorPlan : function()
+	{
+		this.floorPlansStore.add(
+		{
+			title : i18n['new_floor_plan']
+		});
+	},
+
+	onFloorPlanSelected : function(model, record)
+	{
 		this.floorPlanId = record.data.id;
 		this.reloadFloorPlanZones();
 	},
 
-	reloadFloorPlanZones:function(){
+	reloadFloorPlanZones : function()
+	{
 		var me = this;
 		me.floorPlan.removeAll();
-		me.floorPlanZonesStore.load({
-			params:{ floor_plan_id:this.floorPlanId },
-			scope:me,
-			callback:function(records, operation, success){
+		me.floorPlanZonesStore.load(
+		{
+			params :
+			{
+				floor_plan_id : this.floorPlanId
+			},
+			scope : me,
+			callback : function(records, operation, success)
+			{
 				this.activeZone = null;
-				for(var i=0; i < records.length; i++){
+				for (var i = 0; i < records.length; i++)
+				{
 					me.createZone(records[i]);
 				}
 			}
@@ -247,9 +300,10 @@ Ext.define('App.view.administration.FloorPlans', {
 	 * place inside this function all the functions you want
 	 * to call every this panel becomes active
 	 */
-	onActive: function(callback) {
+	onActive : function(callback)
+	{
 		var me = this;
 		me.floorPlans.getSelectionModel().select(0);
 		callback(true);
 	}
-});
+}); 

@@ -32,6 +32,7 @@ $LANG = array(
     'administration'						=> 'Administración',
     'global_settings'						=> 'Configuración global',
     'facilities'							=> 'Facilidades',
+    'new_facility'  						=> 'Nueva facilidad',
     'users'									=> 'Usuarios',
     'user'									=> 'Usuario',
     'practice'								=> 'Practica',
@@ -1070,7 +1071,10 @@ $LANG = array(
 	'disclosures'   					    => 'Revelaciones',
 	'rx'               					    => 'Rx',
 	'drug'               					=> 'Droga',
-	'recipient_name'   					    => 'Nombre del destinatario'
-
+	'recipient_name'   					    => 'Nombre del destinatario',
+	'generate_x12'							=> 'Generar x12',
+	'generate_cms1500_pdf'					=> 'Generar CMS 1500 formato PDF',
+	'generate_cms1500_text'					=> 'Generar CMS 1500 formato TXT',
+	'utilities'								=> 'Utilidades'
 );
 ?>

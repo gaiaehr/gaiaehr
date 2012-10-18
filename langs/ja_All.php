@@ -10,7 +10,6 @@ $LANG = array(
 	'ja_All'								=> '日本人',
 	'i18nExtFile'							=> 'ext-lang-ja.js',
 	// End of the items
-	
 	'currency'								=> '$',
     'dashboard'         					=> 'ダッシュ ボード',
     'calendar'          					=> 'カレンダー',
@@ -33,6 +32,7 @@ $LANG = array(
     'administration'						=> '管理',
     'global_settings'						=> 'グローバル設定',
     'facilities'							=> '設備',
+    'new_facility'  						=> 'New Facility',
     'users'									=> 'ユーザー',
     'user'									=> 'User',
     'practice'								=> '実践',
@@ -1071,7 +1071,10 @@ $LANG = array(
 	'disclosures'   					    => 'Disclosures',
 	'rx'               					    => 'Rx',
 	'drug'               					=> 'Drug',
-	'recipient_name'   					    => 'Recipient Name'
-
+	'recipient_name'   					    => 'Recipient Name',
+	'generate_x12'							=> 'Generate x12',
+	'generate_cms1500_pdf'					=> 'Generate CMS 1500 PDF format',
+	'generate_cms1500_text'					=> 'Generate CMS 1500 TXT format',
+	'utilities'								=> 'Utilities'
 );
 ?>

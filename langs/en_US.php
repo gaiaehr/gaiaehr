@@ -1076,7 +1076,5 @@ $LANG = array(
 	'generate_cms1500_pdf'					=> 'Generate CMS 1500 PDF format',
 	'generate_cms1500_text'					=> 'Generate CMS 1500 TXT format',
 	'utilities'								=> 'Utilities'
-	
-
 );
 ?>

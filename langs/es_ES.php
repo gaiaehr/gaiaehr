@@ -32,6 +32,7 @@ $LANG = array(
     'administration'						=> 'Administración',
     'global_settings'						=> 'Configuración global',
     'facilities'							=> 'Instalaciones',
+    'new_facility'  						=> 'New Facility',
     'users'									=> 'Usuarios',
     'user'									=> 'User',
     'practice'								=> 'Farmacia',
@@ -492,7 +493,7 @@ $LANG = array(
 	'short_name'							=> 'Nombre corto',
 	'long_name'								=> 'Nombre largo',
 	'show_inactive_codes_only'				=> 'Mostrar solo códigos inactivos',
-	'ops_laboratories'						=> 'Sorry, Unable to add laboratories. Laboratory data are pre-loaded using<br>Logical Observation Identifiers Names and Codes (LOINC)<br>visit <a href="http://loinc.org/" target="_blank">loinc.org</a> for more info.',
+	'ops_laboratories'						=> 'Lo sentimos, no se puede agregar laboratorios. Los datos de laboratorio son pre-cargado con <br> identificadores lógicos de observación Nombres y Códigos (LOINC) visita MedlinePlus <a href="http://loinc.org/" loinc.org target="_blank"> </ a> para obtener más información.',
 	'patient_full_name'						=> 'Nombre completo del paciente',
 	'patient_mothers_maiden_name'			=> 'Nombre de soltera de la madre del paciente',
 	'patient_last_name'						=> 'Apellido del paciente',
@@ -508,8 +509,8 @@ $LANG = array(
 	'patient_city'							=> 'Localidad del paciente',
 	'patient_state'							=> 'Provincia del paciente',
 	'patient_home_address_line_1'			=> 'Dirección del paciente linea 1',
-	'patient_home_address_line_2'			=> 'Patient Home Address Line 2',
-	'patient_home_address_zip_code'			=> 'Patient Home Address Zip Code',
+	'patient_home_address_line_2'			=> 'Paciente Dirección Línea 2',
+	'patient_home_address_zip_code'			=> 'Dirección del paciente código postal',
 	'patient_home_address_city'				=> 'Patient Home Address City',
 	'patient_home_address_state'			=> 'Patient Home Address State',
 	'patient_postal_address_line_1'			=> 'Patient Postal Address Line 1',
@@ -1070,7 +1071,10 @@ $LANG = array(
 	'disclosures'   					    => 'Disclosures',
 	'rx'               					    => 'Rx',
 	'drug'               					=> 'Drug',
-	'recipient_name'   					    => 'Recipient Name'
-
+	'recipient_name'   					    => 'Recipient Name',
+	'generate_x12'							=> 'Generate x12',
+	'generate_cms1500_pdf'					=> 'Generate CMS 1500 PDF format',
+	'generate_cms1500_text'					=> 'Generate CMS 1500 TXT format',
+	'utilities'								=> 'Utilities'
 );
 ?>

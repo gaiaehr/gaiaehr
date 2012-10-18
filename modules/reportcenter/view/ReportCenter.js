@@ -129,6 +129,13 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                             fieldLabel: i18n['to'],
                             name      : 'to',
                             format:'Y-m-d'
+                        },
+                        {
+                            xtype          : 'immunizationlivesearch',
+                            fieldLabel     : i18n['immunization'],
+                            hideLabel      : false,
+                            name           : 'immu',
+                            width          : 570
                         }
                     ],
                     fn:ImmunizationsReport.createImmunizationsReport

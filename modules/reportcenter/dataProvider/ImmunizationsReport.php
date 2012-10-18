@@ -67,6 +67,7 @@ class ImmunizationsReport extends Reports
 		$sql = " SELECT *
 	               FROM patient_immunizations
 	              WHERE create_date BETWEEN '$from 00:00:00' AND '$to 23:59:59'";
+		if(isset($immu) && $immu != '') $sql .= " AND immunization_id = '$immu'";
 	        $this->db->setSQL($sql);
 		return $this->db->fetchRecords(PDO::FETCH_ASSOC);
 	}

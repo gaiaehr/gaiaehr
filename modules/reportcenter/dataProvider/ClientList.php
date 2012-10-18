@@ -45,7 +45,7 @@ class ClientList extends Reports
         $html = "<br><h1>Patient List ($params->from - $params->to )</h1>";
 	    $html2 = "";
 	    $html .=
-        "<table  border=\".1\" width=\"100%\">
+        "<table  border=\"0\" width=\"100%\">
             <tr>
                <th colspan=\"11\" style=\"font-weight: bold;\">".i18nRouter::t("patient_list")."</th>
             </tr>

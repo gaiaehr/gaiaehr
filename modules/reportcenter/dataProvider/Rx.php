@@ -50,7 +50,7 @@ class Rx extends Reports
             </tr>
             <tr>
                <td colspan=\"2\">".i18nRouter::t("patient")."</td>
-               <td>".i18nRouter::t("id")."</td>
+               <td>".i18nRouter::t("pid")."</td>
                <td colspan=\"2\">".i18nRouter::t("drug_name")."</td>
                <td>".i18nRouter::t("units")."</td>
                <td>".i18nRouter::t("type")."</td>
@@ -75,6 +75,7 @@ class Rx extends Reports
 		    $sql = " SELECT *
 		   	           FROM patient_medications
 		   	          WHERE prescription_id = '$id'";
+		    if(isset($drug) && $drug != '') $sql .= " AND medication_id = '$drug'";
 		   	$this->db->setSQL($sql);
 		    $alldata[$key] = $this->db->fetchRecords(PDO::FETCH_ASSOC);
 	    }

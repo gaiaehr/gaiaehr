@@ -30,7 +30,7 @@ Ext.define('App.view.administration.Facilities', {
 			fields: [
 				{name: 'id', type: 'int'},
 				{name: 'name', type: 'string'},
-				{name: 'active', type: 'string'},
+				{name: 'active', type: 'bool'},
 				{name: 'phone', type: 'string'},
 				{name: 'fax', type: 'string'},
 				{name: 'street', type: 'string'},
@@ -39,9 +39,9 @@ Ext.define('App.view.administration.Facilities', {
 				{name: 'postal_code', type: 'string'},
 				{name: 'country_code', type: 'string'},
 				{name: 'federal_ein', type: 'string'},
-				{name: 'service_location', type: 'string'},
-				{name: 'billing_location', type: 'string'},
-				{name: 'accepts_assignment', type: 'string'},
+				{name: 'service_location', type: 'bool'},
+				{name: 'billing_location', type: 'bool'},
+				{name: 'accepts_assignment', type: 'bool'},
 				{name: 'pos_code', type: 'string'},
 				{name: 'x12_sender_id', type: 'string'},
 				{name: 'attn', type: 'string'},
@@ -62,13 +62,14 @@ Ext.define('App.view.administration.Facilities', {
 
 		me.FacilityStore = Ext.create('Ext.data.Store', {
 			model     : 'facilityModel',
-			remoteSort: true
+			remoteSort: true,
+            autoSync:true
 		});
 
 		// *************************************************************************************
 		// Facility Grid Panel
 		// *************************************************************************************
-		me.FacilityGrid = Ext.create('App.classes.GridPanel', {
+		me.FacilityGrid = Ext.create('Ext.grid.Panel', {
 			store    : me.FacilityStore,
 			columns  : [
 				{
@@ -96,6 +97,131 @@ Ext.define('App.view.administration.Facilities', {
 					dataIndex: 'city'
 				}
 			],
+            plugins: Ext.create('App.classes.grid.RowFormEditing', {
+                autoCancel  : false,
+                errorSummary: false,
+                clicksToEdit: 1,
+                formItems   : [
+                    {
+                        xtype:'container',
+                        layout:'column',
+                        defaults     : {
+                            xtype:'container',
+                            columnWidth: 0.5,
+                            padding: 5,
+                            layout:'anchor',
+                            defaultType: 'textfield'
+                        },
+                        items:[
+                            {
+                                defaults:{anchor: '100%'},
+                                items:[
+                                    {
+                                        fieldLabel: i18n['name'],
+                                        name      : 'name',
+                                        allowBlank: false
+                                    },
+                                    {
+                                        fieldLabel: i18n['phone'],
+                                        name      : 'phone',
+                                        vtype     : 'phoneNumber'
+                                    },
+                                    {
+                                        fieldLabel: i18n['fax'],
+                                        name      : 'fax',
+                                        vtype     : 'phoneNumber'
+                                    },
+                                    {
+                                        fieldLabel: i18n['street'],
+                                        name      : 'street'
+                                    },
+                                    {
+                                        fieldLabel: i18n['city'],
+                                        name      : 'city'
+                                    },
+                                    {
+                                        fieldLabel: i18n['state'],
+                                        name      : 'state'
+                                    },
+                                    {
+                                        fieldLabel: i18n['postal_code'],
+                                        name      : 'postal_code',
+                                        vtype     : 'postalCode'
+                                    },
+                                    {
+                                        fieldLabel: i18n['country_code'],
+                                        name      : 'country_code'
+                                    },
+                                    {
+                                        xtype     : 'fieldcontainer',
+                                        fieldLabel: i18n['tax_id'],
+                                        layout    : 'hbox',
+                                        items     : [
+                                            {
+                                                xtype: 'mitos.taxidcombo',
+                                                name : 'tax_id_type',
+                                                width: 50
+                                            },
+                                            {
+                                                xtype: 'textfield',
+                                                name : 'federal_ein'
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                items:[
+                                    {
+                                        xtype     : 'mitos.checkbox',
+                                        fieldLabel: i18n['active'],
+                                        name      : 'active'
+                                    },
+                                    {
+                                        xtype     : 'mitos.checkbox',
+                                        fieldLabel: i18n['service_location'],
+                                        name      : 'service_location'
+                                    },
+                                    {
+                                        xtype     : 'mitos.checkbox',
+                                        fieldLabel: i18n['billing_location'],
+                                        name      : 'billing_location'
+                                    },
+                                    {
+                                        xtype     : 'mitos.checkbox',
+                                        fieldLabel: i18n['accepts_assignment'],
+                                        name      : 'accepts_assignment'
+                                    },
+                                    {
+                                        xtype     : 'mitos.poscodescombo',
+                                        fieldLabel: i18n['pos_code'],
+                                        name      : 'pos_code',
+                                        anchor: '100%'
+                                    },
+                                    {
+                                        fieldLabel: i18n['billing_attn'],
+                                        name      : 'attn',
+                                        anchor: '100%'
+                                    },
+                                    {
+                                        fieldLabel: i18n['clia_number'],
+                                        name      : 'domain_identifier',
+                                        anchor: '100%'
+                                    },
+                                    {
+                                        fieldLabel: 'Facility NPI',
+                                        name      : 'facility_npi',
+                                        anchor: '100%'
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+
+
+
+                ]
+            }),
 			tbar     : Ext.create('Ext.PagingToolbar', {
 				pageSize   : 30,
 				store      : me.FacilityStore,
@@ -104,10 +230,8 @@ Ext.define('App.view.administration.Facilities', {
 				items      : ['-', {
 					text   : i18n['add_new_facility'],
 					iconCls: 'save',
-					handler: function() {
-						var form = me.win.down('form');
-						me.onNew(form, 'facilityModel', i18n['add_new_facility']);
-					}
+                    scope:me,
+					handler: me.addFacility
 				}, '-', {
 					text   : i18n['show_active_facilities'],
 					action : 'active',
@@ -120,149 +244,7 @@ Ext.define('App.view.administration.Facilities', {
 					handler: me.filterFacilitiesby
 				}]
 
-			}),
-			listeners: {
-				itemdblclick: function(view, record) {
-					me.onItemdblclick(me.FacilityStore, record, i18n['edit_facility']);
-				}
-			}
-		}); // END Facility Grid
-
-		// *************************************************************************************
-		// Window User Form
-		// *************************************************************************************
-		me.win = Ext.create('App.classes.window.Window', {
-			width    : 600,
-			items    : [
-				{
-					xtype        : 'mitos.form',
-					fieldDefaults: { msgTarget: 'side', labelWidth: 100 },
-					defaultType  : 'textfield',
-					defaults     : { anchor: '100%' },
-					items        : [
-						{
-							fieldLabel: i18n['name'],
-							name      : 'name',
-							allowBlank: false
-						},
-						{
-							fieldLabel: i18n['phone'],
-							name      : 'phone',
-							vtype     : 'phoneNumber'
-						},
-						{
-							fieldLabel: i18n['fac'],
-							name      : 'fax',
-							vtype     : 'phoneNumber'
-						},
-						{
-							fieldLabel: i18n['street'],
-							name      : 'street'
-						},
-						{
-							fieldLabel: i18n['city'],
-							name      : 'city'
-						},
-						{
-							fieldLabel: i18n['state'],
-							name      : 'state'
-						},
-						{
-							fieldLabel: i18n['postal_code'],
-							name      : 'postal_code',
-							vtype     : 'postalCode'
-						},
-						{
-							fieldLabel: i18n['country_code'],
-							name      : 'country_code'
-						},
-						{
-							xtype     : 'fieldcontainer',
-							fieldLabel: i18n['tax_id'],
-							layout    : 'hbox',
-							items     : [
-								{
-									xtype: 'mitos.taxidcombo',
-									name : 'tax_id_type',
-									width: 50
-								},
-								{
-									xtype: 'textfield',
-									name : 'federal_ein'
-								}
-							]
-						},
-						{
-							xtype     : 'mitos.checkbox',
-							fieldLabel: i18n['active'],
-							name      : 'active'
-						},
-						{
-							xtype     : 'mitos.checkbox',
-							fieldLabel: i18n['service_location'],
-							name      : 'service_location'
-						},
-						{
-							xtype     : 'mitos.checkbox',
-							fieldLabel: i18n['billing_location'],
-							name      : 'billing_location'
-						},
-						{
-							xtype     : 'mitos.checkbox',
-							fieldLabel: i18n['accepts_assignment'],
-							name      : 'accepts_assignment'
-						},
-						{
-							xtype     : 'mitos.poscodescombo',
-							fieldLabel: i18n['pos_code'],
-							name      : 'pos_code'
-						},
-						{
-							fieldLabel: i18n['billing_attn'],
-							name      : 'attn'
-						},
-						{
-							fieldLabel: i18n['clia_number'],
-							name      : 'domain_identifier'
-						},
-						{
-							fieldLabel: 'Facility NPI',
-							name      : 'facility_npi'
-						},
-						{
-							name  : 'id',
-							hidden: true
-						}
-					]
-				}
-			],
-			buttons  : [
-				{
-					text   : i18n['save'],
-					cls    : 'winSave',
-					handler: function() {
-						var form = me.win.down('form').getForm();
-						if(form.isValid()) {
-							me.onSave(form, me.FacilityStore);
-							me.action('close');
-						}
-					}
-				},
-				'-',
-				{
-					text   : i18n['cancel'],
-					scope  : me,
-					handler: function(btn) {
-						btn.up('window').close();
-					}
-				}
-			],
-			listeners: {
-				scope: me,
-				close: function() {
-					me.action('close');
-				}
-			}
+			})
 		});
 
 		me.pageBody = [ me.FacilityGrid ];
@@ -275,55 +257,22 @@ Ext.define('App.view.administration.Facilities', {
 		this.FacilityStore.load();
 	},
 
-	onNew: function(form, model, title) {
-		this.setForm(form, title);
-		form.getForm().reset();
-		var newModel = Ext.ModelManager.create({}, model);
-		form.getForm().loadRecord(newModel);
-		this.action('new');
-		this.win.show();
+	addFacility: function() {
+        var me = this,
+            grid = me.FacilityGrid,
+            store = grid.store;
+      		grid.editingPlugin.cancelEdit();
+      		store.insert(0, {
+                name:i18n['new_facility'],
+                active: 1,
+                service_location:1,
+                billing_location:0,
+                accepts_assignment:0,
+                tax_id_type:'EIN'
+            });
+      		grid.editingPlugin.startEdit(0, 0);
 	},
 
-	onSave: function(form, store) {
-		var record = form.getRecord(),
-			values = form.getValues(),
-			storeIndex = store.indexOf(record);
-		if(storeIndex == -1) {
-			store.add(values);
-		} else {
-			record.set(values);
-		}
-		store.sync();
-		store.load();
-		this.win.close();
-	},
-
-	onItemdblclick: function(store, record, title) {
-		var form = this.win.down('form');
-		this.setForm(form, title);
-		form.getForm().loadRecord(record);
-		this.action('old');
-		this.win.show();
-	},
-
-	setForm: function(form, title) {
-		form.up('window').setTitle(title);
-	},
-
-	openWin: function() {
-		this.win.show();
-	},
-
-	action  : function(action) {
-		var win = this.win,
-			form = win.down('form'),
-			winTbar = win.down('toolbar'),
-			deletebtn = winTbar.getComponent('delete');
-
-		if(action == 'close') {
-			form.getForm().reset();
-		}
-	},
 	/**
 	 * This function is called from MitosAPP.js when
 	 * this panel is selected in the navigation panel.

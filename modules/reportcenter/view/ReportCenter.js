@@ -95,24 +95,6 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                     ]
                 });
             });
-            me.link3 = me.addReportByCategory(me.patientCategory, i18n['referrals'], function(btn) {
-                me.goToReportPanelAndSetForm({
-                    title:i18n['referrals'],
-                    action: 'clientListReport',
-                    items : [
-                        {
-                            xtype     : 'datefield',
-                            fieldLabel: i18n['from'],
-                            name      : 'from'
-                        },
-                        {
-                            xtype     : 'datefield',
-                            fieldLabel: i18n['to'],
-                            name      : 'to'
-                        }
-                    ]
-                });
-            });
             me.ImmunizationReport = me.addReportByCategory(me.patientCategory, i18n['immunization_registry'], function(btn) {
                 me.goToReportPanelAndSetForm({
                     title:i18n['immunization_registry'],

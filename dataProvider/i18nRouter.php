@@ -36,7 +36,7 @@ class i18nRouter
 		include($_SESSION['root'] . '/langs/en_US.php');
 		$en_US = $LANG;
 		// This file will be called when the user or the administrator select
-		// a diferent language. But the primary language will be called first.
+		// a different language. But the primary language will be called first.
 		// So if some words are not translated by the selected language it can be 
 		// displayed by the original language.
 		if($loc !== false){
@@ -79,7 +79,7 @@ class i18nRouter
 	// -----------------------------------------------------------------------
 	public static function getDefaultLanguage()
 	{
-		return $_SESSION['site']['lang'];
+		return $_SESSION['site']['default_localization'];
 	}
 
 	// -----------------------------------------------------------------------

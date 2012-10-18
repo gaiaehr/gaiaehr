@@ -46,7 +46,7 @@ Ext.define('App.classes.LiveImmunizationSearch', {
 		Ext.apply(this, {
 			store       : me.store,
 			displayField: 'code_text_short',
-			valueField  : 'code_text_short',
+			valueField  : 'code',
 			emptyText   : i18n['search_for_a_immunizations'] + '...',
 			typeAhead   : true,
 			minChars    : 1,

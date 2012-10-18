@@ -45,7 +45,7 @@ Ext.define('App.classes.LiveSurgeriesSearch', {
 		Ext.apply(this, {
 			store       : me.store,
 			displayField: 'surgery',
-			valueField  : 'surgery',
+			valueField  : 'id',
 			emptyText   : i18n['search_for_a_surgery'] + '...',
 			typeAhead   : true,
 			minChars    : 1,

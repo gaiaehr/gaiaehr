@@ -47,7 +47,7 @@ Ext.define('App.classes.LiveMedicationSearch', {
 		Ext.apply(this, {
 			store       : me.store,
 			displayField: 'PROPRIETARYNAME',
-			valueField  : 'PROPRIETARYNAME',
+			valueField  : 'id',
 			emptyText   : i18n['search_for_a_medication'] + '...',
 			typeAhead   : false,
 			hideTrigger : true,

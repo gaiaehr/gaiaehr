@@ -684,37 +684,52 @@ Ext.define('App.view.administration.DataManager',
         me.callParent();
     },
 
-    onAddData: function() {
+    onAddData: function() 
+    {
         var me = this;
-        if(me.code_type == 'Laboratories'){
+        if(me.code_type == 'Laboratories')
+        {
             Ext.Msg.alert('Opps!', i18n['ops_laboratories']);
-        }else{
+        }
+        else
+        {
             me.dataManagerGrid.plugins[0].cancelEdit();
             me.store.add({code_type:me.code_type});
             me.dataManagerGrid.plugins[0].startEdit(0,0);
         }
     },
 
-    beforeServiceEdit: function(context, e) {
+    beforeServiceEdit: function(context, e) 
+    {
         var me = this,
             editor = context.editor,
             code_type = e.record.data.code_type,
             grids, thisForm;
 
-        if(code_type == 'CPT4'){
+        if(code_type == 'CPT4')
+        {
             thisForm = me.cptContainer;
-        }else if(code_type == 'HCPCS'){
+        }
+        else if(code_type == 'HCPCS')
+        {
             thisForm = me.hpccsContainer;
-        }else if(code_type == 'Immunizations'){
+        }
+        else if(code_type == 'Immunizations')
+        {
             thisForm = me.cvxCintainer;
-        }else if(code_type == 'Laboratories'){
+        }
+        else if(code_type == 'Laboratories')
+        {
             thisForm = me.labContainer;
         }
 
-        if(!editor.items.length){
+        if(!editor.items.length)
+        {
             editor.add(thisForm);
             editor.setFields();
-        }else if(this.currForm != thisForm){
+        }
+        else if(this.currForm != thisForm)
+        {
             editor.remove(0, false);
             editor.add(thisForm);
             editor.setFields();
@@ -725,11 +740,11 @@ Ext.define('App.view.administration.DataManager',
          * @type {*}
          */
         grids = thisForm.query('grid');
-        for(var i=0; i < grids.length; i++ ){
+        for(var i=0; i < grids.length; i++ )
+        {
             grids[i].getStore().load({params:{selectedId:me.getSelectId()}});
         }
         this.currForm = thisForm;
-
     },
 
     onSearch: function(field) {
@@ -809,7 +824,8 @@ Ext.define('App.view.administration.DataManager',
         store.remove(record);
     },
 
-    getSelectId:function(){
+    getSelectId:function()
+    {
    		var row = this.dataManagerGrid.getSelectionModel().getLastSelected();
    		return row.data.id;
    	},

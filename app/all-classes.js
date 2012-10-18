@@ -17754,8 +17754,6 @@ Ext.define('App.classes.grid.RowFormEditing', {
 
         if (me.editing) {
             me.getEditor().completeRemove();
-            //me.callParent(arguments);
-
             me.fireEvent('completeremove', me, me.context);
         }
 
@@ -18443,11 +18441,22 @@ Ext.define('App.classes.grid.RowFormEditor', {
             store = me.context.store,
             record = view.getSelectionModel().getLastSelected();
 
-        store.remove(record);
-        me.hide();
-        form.clearInvalid();
-        form.reset();
-        me.editingPlugin.fireEvent('afterremove', me.context);
+        Ext.Msg.show({
+            title:'WAIT!!!',
+            msg: 'Are you sure you want to remove this record?',
+            buttons: Ext.Msg.YESNO,
+            icon: Ext.Msg.QUESTION,
+            scope:me,
+            fn: function(btn){
+                if (btn == 'yes'){
+                    store.remove(record);
+                    me.hide();
+                    form.clearInvalid();
+                    form.reset();
+                    me.editingPlugin.fireEvent('afterremove', me.context);
+                }
+            }
+        });
     },
 
     onShow: function() {
@@ -36520,7 +36529,7 @@ Ext.define('App.view.administration.Facilities', {
 			fields: [
 				{name: 'id', type: 'int'},
 				{name: 'name', type: 'string'},
-				{name: 'active', type: 'string'},
+				{name: 'active', type: 'bool'},
 				{name: 'phone', type: 'string'},
 				{name: 'fax', type: 'string'},
 				{name: 'street', type: 'string'},
@@ -36529,9 +36538,9 @@ Ext.define('App.view.administration.Facilities', {
 				{name: 'postal_code', type: 'string'},
 				{name: 'country_code', type: 'string'},
 				{name: 'federal_ein', type: 'string'},
-				{name: 'service_location', type: 'string'},
-				{name: 'billing_location', type: 'string'},
-				{name: 'accepts_assignment', type: 'string'},
+				{name: 'service_location', type: 'bool'},
+				{name: 'billing_location', type: 'bool'},
+				{name: 'accepts_assignment', type: 'bool'},
 				{name: 'pos_code', type: 'string'},
 				{name: 'x12_sender_id', type: 'string'},
 				{name: 'attn', type: 'string'},
@@ -36552,13 +36561,14 @@ Ext.define('App.view.administration.Facilities', {
 
 		me.FacilityStore = Ext.create('Ext.data.Store', {
 			model     : 'facilityModel',
-			remoteSort: true
+			remoteSort: true,
+            autoSync:true
 		});
 
 		// *************************************************************************************
 		// Facility Grid Panel
 		// *************************************************************************************
-		me.FacilityGrid = Ext.create('App.classes.GridPanel', {
+		me.FacilityGrid = Ext.create('Ext.grid.Panel', {
 			store    : me.FacilityStore,
 			columns  : [
 				{
@@ -36586,6 +36596,131 @@ Ext.define('App.view.administration.Facilities', {
 					dataIndex: 'city'
 				}
 			],
+            plugins: Ext.create('App.classes.grid.RowFormEditing', {
+                autoCancel  : false,
+                errorSummary: false,
+                clicksToEdit: 1,
+                formItems   : [
+                    {
+                        xtype:'container',
+                        layout:'column',
+                        defaults     : {
+                            xtype:'container',
+                            columnWidth: 0.5,
+                            padding: 5,
+                            layout:'anchor',
+                            defaultType: 'textfield'
+                        },
+                        items:[
+                            {
+                                defaults:{anchor: '100%'},
+                                items:[
+                                    {
+                                        fieldLabel: i18n['name'],
+                                        name      : 'name',
+                                        allowBlank: false
+                                    },
+                                    {
+                                        fieldLabel: i18n['phone'],
+                                        name      : 'phone',
+                                        vtype     : 'phoneNumber'
+                                    },
+                                    {
+                                        fieldLabel: i18n['fax'],
+                                        name      : 'fax',
+                                        vtype     : 'phoneNumber'
+                                    },
+                                    {
+                                        fieldLabel: i18n['street'],
+                                        name      : 'street'
+                                    },
+                                    {
+                                        fieldLabel: i18n['city'],
+                                        name      : 'city'
+                                    },
+                                    {
+                                        fieldLabel: i18n['state'],
+                                        name      : 'state'
+                                    },
+                                    {
+                                        fieldLabel: i18n['postal_code'],
+                                        name      : 'postal_code',
+                                        vtype     : 'postalCode'
+                                    },
+                                    {
+                                        fieldLabel: i18n['country_code'],
+                                        name      : 'country_code'
+                                    },
+                                    {
+                                        xtype     : 'fieldcontainer',
+                                        fieldLabel: i18n['tax_id'],
+                                        layout    : 'hbox',
+                                        items     : [
+                                            {
+                                                xtype: 'mitos.taxidcombo',
+                                                name : 'tax_id_type',
+                                                width: 50
+                                            },
+                                            {
+                                                xtype: 'textfield',
+                                                name : 'federal_ein'
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                items:[
+                                    {
+                                        xtype     : 'mitos.checkbox',
+                                        fieldLabel: i18n['active'],
+                                        name      : 'active'
+                                    },
+                                    {
+                                        xtype     : 'mitos.checkbox',
+                                        fieldLabel: i18n['service_location'],
+                                        name      : 'service_location'
+                                    },
+                                    {
+                                        xtype     : 'mitos.checkbox',
+                                        fieldLabel: i18n['billing_location'],
+                                        name      : 'billing_location'
+                                    },
+                                    {
+                                        xtype     : 'mitos.checkbox',
+                                        fieldLabel: i18n['accepts_assignment'],
+                                        name      : 'accepts_assignment'
+                                    },
+                                    {
+                                        xtype     : 'mitos.poscodescombo',
+                                        fieldLabel: i18n['pos_code'],
+                                        name      : 'pos_code',
+                                        anchor: '100%'
+                                    },
+                                    {
+                                        fieldLabel: i18n['billing_attn'],
+                                        name      : 'attn',
+                                        anchor: '100%'
+                                    },
+                                    {
+                                        fieldLabel: i18n['clia_number'],
+                                        name      : 'domain_identifier',
+                                        anchor: '100%'
+                                    },
+                                    {
+                                        fieldLabel: 'Facility NPI',
+                                        name      : 'facility_npi',
+                                        anchor: '100%'
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+
+
+
+                ]
+            }),
 			tbar     : Ext.create('Ext.PagingToolbar', {
 				pageSize   : 30,
 				store      : me.FacilityStore,
@@ -36594,10 +36729,8 @@ Ext.define('App.view.administration.Facilities', {
 				items      : ['-', {
 					text   : i18n['add_new_facility'],
 					iconCls: 'save',
-					handler: function() {
-						var form = me.win.down('form');
-						me.onNew(form, 'facilityModel', i18n['add_new_facility']);
-					}
+                    scope:me,
+					handler: me.addFacility
 				}, '-', {
 					text   : i18n['show_active_facilities'],
 					action : 'active',
@@ -36610,149 +36743,7 @@ Ext.define('App.view.administration.Facilities', {
 					handler: me.filterFacilitiesby
 				}]
 
-			}),
-			listeners: {
-				itemdblclick: function(view, record) {
-					me.onItemdblclick(me.FacilityStore, record, i18n['edit_facility']);
-				}
-			}
-		}); // END Facility Grid
-
-		// *************************************************************************************
-		// Window User Form
-		// *************************************************************************************
-		me.win = Ext.create('App.classes.window.Window', {
-			width    : 600,
-			items    : [
-				{
-					xtype        : 'mitos.form',
-					fieldDefaults: { msgTarget: 'side', labelWidth: 100 },
-					defaultType  : 'textfield',
-					defaults     : { anchor: '100%' },
-					items        : [
-						{
-							fieldLabel: i18n['name'],
-							name      : 'name',
-							allowBlank: false
-						},
-						{
-							fieldLabel: i18n['phone'],
-							name      : 'phone',
-							vtype     : 'phoneNumber'
-						},
-						{
-							fieldLabel: i18n['fac'],
-							name      : 'fax',
-							vtype     : 'phoneNumber'
-						},
-						{
-							fieldLabel: i18n['street'],
-							name      : 'street'
-						},
-						{
-							fieldLabel: i18n['city'],
-							name      : 'city'
-						},
-						{
-							fieldLabel: i18n['state'],
-							name      : 'state'
-						},
-						{
-							fieldLabel: i18n['postal_code'],
-							name      : 'postal_code',
-							vtype     : 'postalCode'
-						},
-						{
-							fieldLabel: i18n['country_code'],
-							name      : 'country_code'
-						},
-						{
-							xtype     : 'fieldcontainer',
-							fieldLabel: i18n['tax_id'],
-							layout    : 'hbox',
-							items     : [
-								{
-									xtype: 'mitos.taxidcombo',
-									name : 'tax_id_type',
-									width: 50
-								},
-								{
-									xtype: 'textfield',
-									name : 'federal_ein'
-								}
-							]
-						},
-						{
-							xtype     : 'mitos.checkbox',
-							fieldLabel: i18n['active'],
-							name      : 'active'
-						},
-						{
-							xtype     : 'mitos.checkbox',
-							fieldLabel: i18n['service_location'],
-							name      : 'service_location'
-						},
-						{
-							xtype     : 'mitos.checkbox',
-							fieldLabel: i18n['billing_location'],
-							name      : 'billing_location'
-						},
-						{
-							xtype     : 'mitos.checkbox',
-							fieldLabel: i18n['accepts_assignment'],
-							name      : 'accepts_assignment'
-						},
-						{
-							xtype     : 'mitos.poscodescombo',
-							fieldLabel: i18n['pos_code'],
-							name      : 'pos_code'
-						},
-						{
-							fieldLabel: i18n['billing_attn'],
-							name      : 'attn'
-						},
-						{
-							fieldLabel: i18n['clia_number'],
-							name      : 'domain_identifier'
-						},
-						{
-							fieldLabel: 'Facility NPI',
-							name      : 'facility_npi'
-						},
-						{
-							name  : 'id',
-							hidden: true
-						}
-					]
-				}
-			],
-			buttons  : [
-				{
-					text   : i18n['save'],
-					cls    : 'winSave',
-					handler: function() {
-						var form = me.win.down('form').getForm();
-						if(form.isValid()) {
-							me.onSave(form, me.FacilityStore);
-							me.action('close');
-						}
-					}
-				},
-				'-',
-				{
-					text   : i18n['cancel'],
-					scope  : me,
-					handler: function(btn) {
-						btn.up('window').close();
-					}
-				}
-			],
-			listeners: {
-				scope: me,
-				close: function() {
-					me.action('close');
-				}
-			}
+			})
 		});
 
 		me.pageBody = [ me.FacilityGrid ];
@@ -36765,55 +36756,22 @@ Ext.define('App.view.administration.Facilities', {
 		this.FacilityStore.load();
 	},
 
-	onNew: function(form, model, title) {
-		this.setForm(form, title);
-		form.getForm().reset();
-		var newModel = Ext.ModelManager.create({}, model);
-		form.getForm().loadRecord(newModel);
-		this.action('new');
-		this.win.show();
+	addFacility: function() {
+        var me = this,
+            grid = me.FacilityGrid,
+            store = grid.store;
+      		grid.editingPlugin.cancelEdit();
+      		store.insert(0, {
+                name:i18n['new_facility'],
+                active: 1,
+                service_location:1,
+                billing_location:0,
+                accepts_assignment:0,
+                tax_id_type:'EIN'
+            });
+      		grid.editingPlugin.startEdit(0, 0);
 	},
 
-	onSave: function(form, store) {
-		var record = form.getRecord(),
-			values = form.getValues(),
-			storeIndex = store.indexOf(record);
-		if(storeIndex == -1) {
-			store.add(values);
-		} else {
-			record.set(values);
-		}
-		store.sync();
-		store.load();
-		this.win.close();
-	},
-
-	onItemdblclick: function(store, record, title) {
-		var form = this.win.down('form');
-		this.setForm(form, title);
-		form.getForm().loadRecord(record);
-		this.action('old');
-		this.win.show();
-	},
-
-	setForm: function(form, title) {
-		form.up('window').setTitle(title);
-	},
-
-	openWin: function() {
-		this.win.show();
-	},
-
-	action  : function(action) {
-		var win = this.win,
-			form = win.down('form'),
-			winTbar = win.down('toolbar'),
-			deletebtn = winTbar.getComponent('delete');
-
-		if(action == 'close') {
-			form.getForm().reset();
-		}
-	},
 	/**
 	 * This function is called from MitosAPP.js when
 	 * this panel is selected in the navigation panel.
@@ -37695,47 +37653,8 @@ Ext.define('App.view.administration.Globals', {
 							defaultType: 'textfield',
 							items      : [
 								{
-									fieldLabel: i18n['path_to_mysql_binaries'],
-									name      : 'mysql_bin_dir'
-								},
-								{
-									fieldLabel: i18n['path_to_perl_binaries'],
-									name      : 'perl_bin_dir'
-								},
-								{
-									fieldLabel: i18n['path_to_temporary_files'],
-									name      : 'temporary_files_dir'
-								},
-								{
-									fieldLabel: i18n['path_for_event_log_backup'],
-									name      : 'backup_log_dir'
-								},
-								{
-									xtype       : 'combo',
-									fieldLabel  : i18n['state_data_type'],
-									name        : 'state_data_type',
-									displayField: 'title',
-									valueField  : 'option_id',
-									editable    : false,
-									store       : me.state_country_data_type_store
-								},
-								{
 									fieldLabel: i18n['state_list'],
 									name      : 'state_list'
-								},
-								{
-									xtype     : 'mitos.checkbox',
-									fieldLabel: i18n['state_list_widget_custom_fields'],
-									name      : 'state_custom_addlist_widget'
-								},
-								{
-									xtype       : 'combo',
-									fieldLabel  : i18n['country_data_type'],
-									name        : 'country_data_type',
-									displayField: 'title',
-									valueField  : 'option_id',
-									editable    : false,
-									store       : me.state_country_data_type_store
 								},
 								{
 									fieldLabel: i18n['country_list'],
@@ -37748,10 +37667,6 @@ Ext.define('App.view.administration.Globals', {
 								{
 									fieldLabel: i18n['default_reason_for_visit'],
 									name      : 'default_chief_complaint'
-								},
-								{
-									fieldLabel: i18n['default_encounter_form_id'],
-									name      : 'default_new_encounter_form'
 								},
 								{
 									fieldLabel: i18n['patient_id_category_name'],
@@ -43324,7 +43239,7 @@ Ext.define('Modules.Module', {
  * ----------------------------------------------------------------------------------------------------------- 
  * Description: This are the viewport, the absolute panel of GaiaEHR application
  * this will manage all the panels on the application, this file should not
- * be modified by extrangers. 
+ * be modified unless you know what you doing :-)
  * 
  * Third-party companies: If you want to add a extra app's, widgets, modules, or another other improvement
  * to the application you should create it using the documentation on How To Create (Modules, PlugIns, and Widgets)
@@ -43338,15 +43253,16 @@ Ext.define('Modules.Module', {
  */
 Ext.define('App.view.Viewport', {
 	extend  : 'Ext.Viewport',
-	requires: window.requires,
     // app settings
+    requires: window.requires,      // array is defined on _app.php
+    user: window.user,              // array defined on _app.php
+    version: window.version,        // string defined on _app.php
 	minWidthToFullMode: 1585,       // full mode = nav expanded
-	currency          : '$',        // currency used
+	currency: '$',                  // currency used
     activityMonitorInterval: 60,    // in seconds - interval to check for mouse and keyboard activity
-    activityMonitorMaxInactive: 10, // in minutes - Maximum time application can be inactive (no mouse or keyboard imput)
-    cronTaskInterval:10,            // in seconds - interval to run me.cronTask (check PHP session, refresh Patient Pool Areas, and PHP Cron Job)
+    activityMonitorMaxInactive: 10, // in minutes - Maximum time application can be inactive (no mouse or keyboard inputt)
+    cronTaskInterval:3,             // in seconds - interval to run me.cronTask (check PHP session, refresh Patient Pool Areas, and PHP Cron Job)
     // end app settings
-
 	initComponent: function() 
 	{
 		Ext.tip.QuickTipManager.init();
@@ -43366,7 +43282,6 @@ Ext.define('App.view.Viewport', {
             readOnly: false
         };
 
-		me.user = window.user;
 		/**
 		 * TaskScheduler
 		 * This will run all the procedures inside the checkSession
@@ -43591,7 +43506,7 @@ Ext.define('App.view.Viewport', {
         });
         me.Header.add({
             xtype    : 'button',
-            text     : user.title + ' ' + user.lname,
+            text     : me.user.title + ' ' + me.user.lname,
             scale    : 'large',
             iconCls  : 'icoDoctor',
             iconAlign: 'left',
@@ -43868,7 +43783,7 @@ Ext.define('App.view.Viewport', {
 					dock : 'bottom',
 					items: [
 						{
-							text    : 'Copyright (C) 2011 GaiaEHR (Electronic Health Records) |:|  Open Source Software operating under GPLv3 ',
+							text    : 'Copyright (C) 2011 GaiaEHR (Electronic Health Records) |:|  Open Source Software operating under GPLv3 |:| v' + me.version,
 							iconCls : 'icoGreen',
 							disabled: true,
 							action  : 'http://GaiaEHR.org/projects/GaiaEHR001',

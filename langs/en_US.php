@@ -1071,6 +1071,9 @@ $LANG = array(
 	'disclosures'   					    => 'Disclosures',
 	'rx'               					    => 'Rx',
 	'drug'               					=> 'Drug',
+	'drug_name'               				=> 'Drug Name',
+	'units'               			    	=> 'Units',
+	'instructed'               			    => 'Instructed',
 	'recipient_name'   					    => 'Recipient Name'
 
 );

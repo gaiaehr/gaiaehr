@@ -238,6 +238,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 															name      : 'medication',
 															width     : 350,
 															labelWidth: 80,
+                                                            allowBlank: false,
 															listeners : {
 																scope : me,
 																select: me.addPrescription
@@ -247,6 +248,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 															xtype:'textfield',
 															hidden:true,
 															name:'medication_id',
+                                                            allowBlank: false,
 															action:'idField'
 														},
 														{
@@ -255,6 +257,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 															labelWidth: 40,
 															action    : 'dose',
 															name      : 'dose',
+                                                            allowBlank: false,
 															width     : 100,
 															value     : 0,
 															minValue  : 0
@@ -264,6 +267,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 															fieldLabel: i18n['dose_mg'],
 															action    :'dose_mg',
 															name      : 'dose_mg',
+                                                            allowBlank: false,
 															hideLabel : true,
 															width     : 150
 														}
@@ -284,6 +288,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 															fieldLabel: i18n['take'],
 															margin    : '5 0 5 5',
 															name      : 'take_pills',
+                                                            allowBlank: false,
 															width     : 130,
 															labelWidth: 80,
 															value     : 0,
@@ -292,6 +297,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 														{
 															xtype     : 'mitos.prescriptiontypes',
 															fieldLabel: i18n['type'],
+                                                            allowBlank: false,
 															hideLabel : true,
 															name      : 'type',
 															width     : 120
@@ -299,6 +305,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 														{
 															xtype     : 'mitos.prescriptionhowto',
 															fieldLabel: i18n['route'],
+                                                            allowBlank: false,
 															name      : 'route',
 															hideLabel : true,
 															width     : 100
@@ -306,6 +313,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 														{
 															xtype: 'mitos.prescriptionoften',
 															name : 'prescription_often',
+                                                            allowBlank: false,
 															width: 120
 														},
 														{
@@ -330,6 +338,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 															xtype     : 'numberfield',
 															name      : 'dispense',
 															width     : 130,
+                                                            allowBlank: false,
 															labelWidth: 80,
 															value     : 0,
 															minValue  : 0
@@ -339,6 +348,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 															xtype     : 'numberfield',
 															name      : 'refill',
 															labelWidth: 35,
+                                                            allowBlank: false,
 															width     : 140,
 															value     : 0,
 															minValue  : 0

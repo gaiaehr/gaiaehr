@@ -113,7 +113,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                     ]
                 });
             });
-            me.link4 = me.addReportByCategory(me.patientCategory, i18n['immunization_registry'], function(btn) {
+            me.ImmunizationReport = me.addReportByCategory(me.patientCategory, i18n['immunization_registry'], function(btn) {
                 me.goToReportPanelAndSetForm({
                     title:i18n['immunization_registry'],
                     action: 'clientListReport',
@@ -121,14 +121,17 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                         {
                             xtype     : 'datefield',
                             fieldLabel: i18n['from'],
-                            name      : 'from'
+                            name      : 'from',
+                            format:'Y-m-d'
                         },
                         {
                             xtype     : 'datefield',
                             fieldLabel: i18n['to'],
-                            name      : 'to'
+                            name      : 'to',
+                            format:'Y-m-d'
                         }
-                    ]
+                    ],
+                    fn:ImmunizationsReport.createImmunizationsReport
                 });
             });
 

@@ -44,7 +44,7 @@ class Rx extends Reports
         $html = "<br><h1>Prescriptions and Dispensations ($params->from - $params->to )</h1>";
 	    $html2 = "";
 	    $html .=
-        "<table  border=\".1\" width=\"100%\">
+        "<table  border=\"0\" width=\"100%\">
             <tr>
                <th colspan=\"10\" style=\"font-weight: bold;\">".i18nRouter::t("prescriptions_and_dispensations")."</th>
             </tr>
@@ -89,8 +89,8 @@ class Rx extends Reports
 				$html .= "
 		            <tr>
 						<td colspan=\"2\">".$this->patient->getPatientFullNameByPid($data2['pid'])."</td>
-						<td>".$data2['id']."</td>
-						<td colspan=\"2\"".$data2['medication']."</td>
+						<td>".$data2['pid']."</td>
+						<td colspan=\"2\">".$data2['medication']."</td>
 						<td>".$data2['take_pills']."</td>
 						<td>".$data2['type']."</td>
 						<td colspan=\"3\">".$data2['prescription_often'].' '.$data2['prescription_when']."</td>

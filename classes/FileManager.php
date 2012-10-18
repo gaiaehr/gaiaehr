@@ -32,7 +32,8 @@ class FileManager
 
 	public function cleanUp()
 	{
-		if(is_dir($this->workingDir)){
+		if(is_dir($this->workingDir))
+		{
 			$this->deleteWorkingDir();
 		}
 	}
@@ -41,9 +42,12 @@ class FileManager
 	{
 		$this->setFileExtensionFromFile($file['filePath']['name']);
 		$this->setSrc();
-		if(move_uploaded_file($file['filePath']['tmp_name'], $this->src)) {
+		if(move_uploaded_file($file['filePath']['tmp_name'], $this->src)) 
+		{
 			return true;
-		} else {
+		} 
+		else 
+		{
 			$this->error = 'Unable to move uploaded file to /temp directory';
 			return false;
 		}
@@ -53,7 +57,9 @@ class FileManager
 	{
 		if(move_uploaded_file($file['filePath']['tmp_name'], $dir.$this->setFileExtensionFromFile($file['filePath']['name']))) {
 			return true;
-		} else {
+		} 
+		else 
+		{
 			return false;
 		}
 	}
@@ -61,9 +67,12 @@ class FileManager
 	public function extractUploadedFileToTempDir($file)
 	{
 		$this->setSrc();
-		if($this->extractFileToTempDir($file['filePath']['tmp_name'])) {
+		if($this->extractFileToTempDir($file['filePath']['tmp_name'])) 
+		{
 			return true;
-		} else {
+		} 
+		else 
+		{
 			$this->error = 'Unable to extract zipped file to /temp directory';
 			return false;
 		}
@@ -71,9 +80,12 @@ class FileManager
 
 	public function extractFileToTempDir($file, $deleteSrcFile = false)
 	{
-		if($this->setWorkingDir()){
+		if($this->setWorkingDir())
+		{
 			return $this->extractFileToDir($file, $this->workingDir, $deleteSrcFile);
-		}else{
+		}
+		else
+		{
 			$this->error = 'Unable to create working directory';
 			return false;
 		}
@@ -81,20 +93,27 @@ class FileManager
 
 	public function extractFileToDir($file, $toDir, $deleteSrcFile = false)
 	{
-		if(class_exists('ZipArchive')){
+		if(class_exists('ZipArchive'))
+		{
 			$zip = new ZipArchive();
-			if ($zip->open($file) === true) {
+			if ($zip->open($file) === true) 
+			{
 				$zip->extractTo($toDir);
 				$zip->close();
-				if($deleteSrcFile){
+				if($deleteSrcFile)
+				{
 					$this->deleteFileBySrc($file);
 				}
 				return $this->workingDir;
-			}else{
+			}
+			else
+			{
 				$this->error = 'Unable to open zipped file '. $file;
 				return false;
 			}
-		}else{
+		}
+		else
+		{
 			$this->error = 'Php class ZipArchive required';
 			return false;
 		}
@@ -104,15 +123,20 @@ class FileManager
 	{
 		$workingDir = $_SESSION['root'] . '/temp/'. $this->getTempDirAvailableName();
 		if(!is_dir($workingDir)){
-			if(mkdir($workingDir, 0777, true)){
+			if(mkdir($workingDir, 0777, true))
+			{
 				chmod($workingDir, 0777);
 				$this->workingDir = $workingDir;
 				return true;
-			}else{
+			}
+			else
+			{
 				$this->error = 'Unable to write on /temp directory';
 				return false;
 			}
-		}else{
+		}
+		else
+		{
 			$this->error = $workingDir .' exist';
 			return false;
 		}
@@ -120,40 +144,53 @@ class FileManager
 
 	public function chmodReclusive($dir, $mode)
 	{
-		if(!is_dir($dir)) {
+		if(!is_dir($dir)) 
+		{
 			return chmod($dir, $mode);
 		}
 		$dh = opendir($dir);
-		while($file = readdir($dh)) {
-			if($file != '.' && $file != '..') {
+		while($file = readdir($dh)) 
+		{
+			if($file != '.' && $file != '..') 
+			{
 				$fullPath = $dir . '/' . $file;
-				if(!is_dir($fullPath)) {
-					if(!chmod($fullPath, $mode)) {
+				if(!is_dir($fullPath)) 
+				{
+					if(!chmod($fullPath, $mode)) 
+					{
 						return true;
 					}
-				} else {
-					if(!$this->chmodReclusive($fullPath, $mode)) {
+				} 
+				else 
+				{
+					if(!$this->chmodReclusive($fullPath, $mode)) 
+					{
 						return false;
 					}
 				}
 			}
 		}
 		closedir($dh);
-		if(chmod($dir, $mode)) {
+		if(chmod($dir, $mode)) 
+		{
 			return true;
-		} else {
+		} 
+		else 
+		{
 			return false;
 		}
 	}
 
-	public function getSiteTempDir(){
+	public function getSiteTempDir()
+	{
 		return $this->tempDir;
 	}
 
 	public function getTempDirAvailableName()
 	{
 		$name = time();
-		while(file_exists($this->tempDir . $name)) {
+		while(file_exists($this->tempDir . $name)) 
+		{
 			$name = time();
 		}
 		$this->workingDirName = $name;
@@ -187,14 +224,18 @@ class FileManager
 		return $this->rmdir_recursive($src);
 	}
 
-	public static function scanDir($dir, $readmeFiles = false){
+	public static function scanDir($dir, $readmeFiles = false)
+	{
 		$files = scandir($dir);
 		array_shift($files); // get rid of '.'
 		array_shift($files); // get rid of '..'
-		if(!$readmeFiles){
+		if(!$readmeFiles)
+		{
 			$count = 0;
-			foreach($files as $file){
-				if(strtolower($file) == 'readme.md' || strtolower($file) == 'readme'){
+			foreach($files as $file)
+			{
+				if(strtolower($file) == 'readme.md' || strtolower($file) == 'readme')
+				{
 					unset($files[$count]);
 				}
 				$count++;
@@ -203,15 +244,18 @@ class FileManager
 		return $files;
 	}
 
-	public static function rmdir_recursive($dir) {
+	public static function rmdir_recursive($dir) 
+	{
 	    $files = scandir($dir);
 	    array_shift($files);    // remove '.' from array
 	    array_shift($files);    // remove '..' from array
-	    foreach ($files as $file) {
+	    foreach ($files as $file) 
+	    {
 	        $file = $dir . '/' . $file;
-	        if (is_dir($file)) {
+	        if (is_dir($file)) 
+	        {
 	            self::rmdir_recursive($file);
-		    continue;
+		    	continue;
 	        }
 	        unlink($file);
 	    }

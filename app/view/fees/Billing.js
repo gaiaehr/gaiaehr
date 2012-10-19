@@ -147,6 +147,7 @@ Ext.define('App.view.fees.Billing',
 						items : [
 						{
 							text : i18n['generate_x12'],
+							iconCls: 'icoReport',
 							handler : function()
 							{
 								alert("Item 1 clicked");
@@ -154,6 +155,7 @@ Ext.define('App.view.fees.Billing',
 						},
 						{
 							text : i18n['generate_cms1500_pdf'],
+							iconCls: 'icoReport',
 							handler : function()
 							{
 								alert("Item 2 clicked");
@@ -161,6 +163,7 @@ Ext.define('App.view.fees.Billing',
 						},
 						{
 							text : i18n['generate_cms1500_text'],
+							iconCls: 'icoReport',
 							handler : function()
 							{
 								alert("Item 2 clicked");

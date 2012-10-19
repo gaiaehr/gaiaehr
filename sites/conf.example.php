@@ -22,6 +22,7 @@ $_SESSION['site']['AESkey'] = "%key%";
  */
 $_SESSION['site']['default_localization']  = '%lang%';
 $_SESSION['site']['theme'] = '%theme%';
+$_SESSION['site']['timezone'] = '%timezone%';
 
 $_SESSION['site']['dir']   = basename(dirname(__FILE__));
 $_SESSION['site']['url']   = $_SESSION['url'] . '/sites/' . $_SESSION['site']['dir'];

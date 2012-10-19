@@ -37,6 +37,7 @@ if(!isset($_SESSION))
 
 ini_set('max_input_time', '1500');
 ini_set('max_execution_time', '1500');
+date_default_timezone_set($_SESSION['site']['timezone']);
 include_once($_SESSION['root'] . '/classes/Time.php');
 
 class dbHelper 

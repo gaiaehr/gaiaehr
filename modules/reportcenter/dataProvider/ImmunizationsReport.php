@@ -81,7 +81,7 @@ class ImmunizationsReport extends Reports
 					<td>".$data['pid']."</td>
 					<td colspan=\"2\">".$data['immunization_id']."</td>
 					<td colspan=\"2\">".$data['immunization_name']."</td>
-					<td>".date('m-d-Y', strtotime($data['administered_date']))."</td>
+					<td>".($data['administered_date'] == '' || $data['administered_date'] == null ? '' : date('m-d-Y', strtotime($data['administered_date'])))."</td>
 				</tr>";
 		}
 		return $html;

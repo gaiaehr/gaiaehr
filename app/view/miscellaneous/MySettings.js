@@ -2,131 +2,154 @@
 // new.ejs.php
 // New Patient Entry Form
 // v0.0.1
-// 
+//
 // Author: Ernest Rodriguez
 // Modified: GI Technologies, 2011
-// 
+//
 // GaiaEHR (Electronic Health Records) 2011
 //******************************************************************************
-Ext.define('App.view.miscellaneous.MySettings', {
-	extend       : 'App.classes.RenderPanel',
-	id           : 'panelMySettings',
-	pageTitle    : i18n['my_settings'],
-	uses         : [
-		'App.classes.GridPanel'
-	],
-	initComponent: function() {
+Ext.define('App.view.miscellaneous.MySettings',
+{
+	extend : 'App.classes.RenderPanel',
+	id : 'panelMySettings',
+	pageTitle : i18n['my_settings'],
+	uses : ['App.classes.GridPanel'],
+	initComponent : function()
+	{
 		var panel = this;
 		// *************************************************************************************
 		// User Settings Form
 		// Add or Edit purpose
 		// *************************************************************************************
-		panel.uSettingsForm = Ext.create('App.classes.form.Panel', {
-			id         : 'uSettingsForm',
-			bodyStyle  : 'padding: 10px;',
-			cls        : 'form-white-bg',
-			frame      : true,
+		panel.uSettingsForm = Ext.create('App.classes.form.Panel',
+		{
+			id : 'uSettingsForm',
+			bodyStyle : 'padding: 10px;',
+			cls : 'form-white-bg',
+			frame : true,
 			hideLabels : true,
-			items      : [
+			items : [
+			{
+				xtype : 'textfield',
+				hidden : true,
+				id : 'id',
+				name : 'id'
+			},
+			{
+				xtype : 'fieldset',
+				title : i18n['appearance_settings'],
+				collapsible : true,
+				defaultType : 'textfield',
+				layout : 'anchor',
+				defaults :
 				{
-					xtype: 'textfield', hidden: true, id: 'id', name: 'id'
+					labelWidth : 89,
+					anchor : '100%',
+					layout :
+					{
+						type : 'hbox',
+						defaultMargins :
+						{
+							top : 0,
+							right : 5,
+							bottom : 0,
+							left : 0
+						}
+					}
+				},
+				items : [
+				{
+					// fields
 				},
 				{
-					xtype      : 'fieldset',
-					title      : i18n['appearance_settings'],
-					collapsible: true,
-					defaultType: 'textfield',
-					layout     : 'anchor',
-					defaults   : {
-						labelWidth: 89,
-						anchor    : '100%',
-						layout    : {
-							type          : 'hbox',
-							defaultMargins: {top: 0, right: 5, bottom: 0, left: 0}
-						}
-					},
-					items      : [
-						{
-							// fields
-						},
-						{
 
-						},
-						{
-
-						}
-					]
 				},
 				{
-					xtype      : 'fieldset',
-					title      : i18n['locale_settings'],
-					collapsible: true,
-					defaultType: 'textfield',
-					layout     : 'anchor',
-					defaults   : {
-						labelWidth: 89,
-						anchor    : '100%',
-						layout    : {
-							type          : 'hbox',
-							defaultMargins: {top: 0, right: 5, bottom: 0, left: 0}
-						}
-					},
-					items      : [
-						{
-							// fields
-						},
-						{
 
-						},
+				}]
+			},
+			{
+				xtype : 'fieldset',
+				title : i18n['locale_settings'],
+				collapsible : true,
+				defaultType : 'textfield',
+				layout : 'anchor',
+				defaults :
+				{
+					labelWidth : 89,
+					anchor : '100%',
+					layout :
+					{
+						type : 'hbox',
+						defaultMargins :
 						{
-
+							top : 0,
+							right : 5,
+							bottom : 0,
+							left : 0
 						}
-					]
+					}
+				},
+				items : [
+				{
+					// fields
 				},
 				{
-					xtype      : 'fieldset',
-					title      : i18n['calendar_settings'],
-					collapsible: true,
-					defaultType: 'textfield',
-					layout     : 'anchor',
-					defaults   : {
-						labelWidth: 89,
-						anchor    : '100%',
-						layout    : {
-							type          : 'hbox',
-							defaultMargins: {top: 0, right: 5, bottom: 0, left: 0}
-						}
-					},
-					items      : [
-						{
-							// fields
-						},
-						{
 
-						},
-						{
-
-						}
-					]
-				}
-			],
-			dockedItems: [
+				},
 				{
-					xtype: 'toolbar',
-					dock : 'top',
-					items: [
-						{
-							text    : i18n['save'],
-							iconCls : 'save',
-							id      : 'cmdSave',
-							disabled: true,
-							handler : function() {
 
-							}
+				}]
+			},
+			{
+				xtype : 'fieldset',
+				title : i18n['calendar_settings'],
+				collapsible : true,
+				defaultType : 'textfield',
+				layout : 'anchor',
+				defaults :
+				{
+					labelWidth : 89,
+					anchor : '100%',
+					layout :
+					{
+						type : 'hbox',
+						defaultMargins :
+						{
+							top : 0,
+							right : 5,
+							bottom : 0,
+							left : 0
 						}
-					]
-				}
-			]
+					}
+				},
+				items : [
+				{
+					// fields
+				},
+				{
+
+				},
+				{
+
+				}]
+			}],
+			dockedItems : [
+			{
+				xtype : 'toolbar',
+				dock : 'top',
+				items : [
+				{
+					text : i18n['save'],
+					iconCls : 'save',
+					id : 'cmdSave',
+					disabled : true,
+					handler : function()
+					{
+
+					}
+				}]
+			}]
 		});
 		panel.pageBody = [panel.uSettingsForm];
 		panel.callParent(arguments);
@@ -137,7 +160,9 @@ Ext.define('App.view.miscellaneous.MySettings', {
 	 * place inside this function all the functions you want
 	 * to call every this panel becomes active
 	 */
-	onActive     : function(callback) {
+	onActive : function(callback)
+	{
 		callback(true);
 	}
-}); // End ExtJS
+});
+// End ExtJS

@@ -138,10 +138,6 @@ Ext.define('App.view.fees.Billing',
 					xtype : 'splitbutton',
 					text : i18n['utilities'],
 					// handle a click on the button itself
-					handler : function()
-					{
-						alert("The button was clicked");
-					},
 					menu : new Ext.menu.Menu(
 					{
 						items : [

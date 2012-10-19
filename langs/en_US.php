@@ -1079,6 +1079,6 @@ $LANG = array(
 	'drug_name'               				=> 'Drug Name',
 	'units'               			    	=> 'Units',
 	'instructed'               			    => 'Instructed',
-	'recipient_name'   					    => 'Recipient Name'
+	'manufacturer'   					    => 'Manufacturer'
 );
 ?>

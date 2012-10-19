@@ -44,13 +44,13 @@ class Rx extends Reports
         $html = "<br><h1>Prescriptions and Dispensations ($params->from - $params->to )</h1>";
 	    $html2 = "";
 	    $html .=
-        "<table  border=\".1\" width=\"100%\">
+        "<table  border=\"0\" width=\"100%\">
             <tr>
                <th colspan=\"10\" style=\"font-weight: bold;\">".i18nRouter::t("prescriptions_and_dispensations")."</th>
             </tr>
             <tr>
                <td colspan=\"2\">".i18nRouter::t("patient")."</td>
-               <td>".i18nRouter::t("id")."</td>
+               <td>".i18nRouter::t("pid")."</td>
                <td colspan=\"2\">".i18nRouter::t("drug_name")."</td>
                <td>".i18nRouter::t("units")."</td>
                <td>".i18nRouter::t("type")."</td>
@@ -75,6 +75,7 @@ class Rx extends Reports
 		    $sql = " SELECT *
 		   	           FROM patient_medications
 		   	          WHERE prescription_id = '$id'";
+		    if(isset($drug) && $drug != '') $sql .= " AND medication_id = '$drug'";
 		   	$this->db->setSQL($sql);
 		    $alldata[$key] = $this->db->fetchRecords(PDO::FETCH_ASSOC);
 	    }
@@ -89,8 +90,8 @@ class Rx extends Reports
 				$html .= "
 		            <tr>
 						<td colspan=\"2\">".$this->patient->getPatientFullNameByPid($data2['pid'])."</td>
-						<td>".$data2['id']."</td>
-						<td colspan=\"2\"".$data2['medication']."</td>
+						<td>".$data2['pid']."</td>
+						<td colspan=\"2\">".$data2['medication']."</td>
 						<td>".$data2['take_pills']."</td>
 						<td>".$data2['type']."</td>
 						<td colspan=\"3\">".$data2['prescription_often'].' '.$data2['prescription_when']."</td>

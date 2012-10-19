@@ -1025,6 +1025,9 @@ $API = array(
             'getOptionsByListId'=>array(
                 'len'=>1
             ),
+            'getTimeZoneList'=>array(
+                'len'=>1
+            ),
             'getActivePharmacies'=>array(
                 'len'=>0
             ),

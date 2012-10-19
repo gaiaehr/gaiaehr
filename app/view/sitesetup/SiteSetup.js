@@ -26,6 +26,7 @@ Ext.define('App.view.sitesetup.SiteSetup',
         'App.classes.form.fields.plugin.HelpIcon',
         'App.classes.window.CopyRights',
         'App.classes.combo.Languages',
+        'App.classes.combo.TimeZone',
         'App.classes.combo.Themes'
     ],
     initComponent: function() 
@@ -551,6 +552,23 @@ Ext.define('App.view.sitesetup.SiteSetup',
                                                 fieldLabel: 'Default Language',
                                                 name      : 'lang',
                                                 allowBlank     : false,
+                                                width:300,
+                                                plugins   : [
+                                                    {
+                                                        ptype  : 'helpicon',
+                                                        helpMsg: '**This default language will be the default language during the Logon window.<br>' + '**This can be change later in the Administrator -> Global Setting'
+                                                    }
+                                                ],
+                                                listeners      : {
+                                                    scope: me,
+                                                    change: me.isReadyForInstall
+                                                }
+                                            },
+                                            {
+                                                xtype     : 'timezonecombo',
+                                                fieldLabel: 'Default TimeZone',
+                                                name      : 'timezone',
+                                                allowBlank: false,
                                                 width:300,
                                                 plugins   : [
                                                     {

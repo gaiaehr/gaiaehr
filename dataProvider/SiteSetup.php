@@ -136,7 +136,7 @@ class SiteSetup
 		$status = (get_magic_quotes_gpc() != 1 ? 'Ok' : 'Fail');
 		$row[]  = array('msg'=> 'get_magic_quotes_gpc off/disabled', 'status'=> $status);
 		// try chmod sites folder and check chmod after that
-		$status = (chmod('sites', 0777) ? 'Ok' : 'Fail');
+		$status = (chmod('sites', 0755) ? 'Ok' : 'Fail');
 		$row[]  = array('msg'=> 'Sites folder is writable', 'status'=> $status);
 		// check if safe_mode is off
 		$status = (!ini_get('safe_mode') ? 'Ok' : 'Fail');
@@ -151,19 +151,17 @@ class SiteSetup
 	{
 		$siteDir = "sites/$siteId";
 		if(!file_exists($siteDir)) {
-			if(mkdir($siteDir, 0777, true))
+			if(mkdir($siteDir, 0755, true))
 			{
-				if(chmod($siteDir, 0777))
+				if(chmod($siteDir, 0755))
 				{
 					if(
-						(mkdir("$siteDir/patients", 0777, true) && chmod("$siteDir/patients", 0777)) &&
-						(mkdir("$siteDir/documents", 0777, true) && chmod("$siteDir/documents", 0777)) &&
-						(mkdir("$siteDir/temp", 0777, true) && chmod("$siteDir/temp", 0777)) &&
-						(mkdir("$siteDir/trash", 0777, true) && chmod("$siteDir/trash", 0777))
+						(mkdir("$siteDir/patients", 0755, true) && chmod("$siteDir/patients", 0755)) &&
+						(mkdir("$siteDir/documents", 0755, true) && chmod("$siteDir/documents", 0755)) &&
+						(mkdir("$siteDir/temp", 0755, true) && chmod("$siteDir/temp", 0755)) &&
+						(mkdir("$siteDir/trash", 0755, true) && chmod("$siteDir/trash", 0755))
 					) 
 					{
-						chmod('sites', 0755);
-						chmod($siteDir, 0755);
 						return array('success' => true);
 					} 
 					else 
@@ -273,7 +271,8 @@ class SiteSetup
 					'%port%',
 					'%key%',
 					'%lang%',
-					'%theme%'
+					'%theme%',
+					'%timezone%'
 				);
 				$replace   = array(
 					$params->dbHost,
@@ -284,6 +283,7 @@ class SiteSetup
 					$params->AESkey,
 					$params->lang,
 					$params->theme,
+					$params->timezone,
 				);
 				$newConf   = str_replace($search, $replace, $buffer);
 				$siteDir   = "sites/$params->siteId";

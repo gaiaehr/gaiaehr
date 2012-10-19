@@ -58,6 +58,17 @@ class CombosData {
 		}
     }
 
+    public function getTimeZoneList()
+    {
+        $locations = array();
+        $zones = timezone_identifiers_list();
+        foreach ($zones as $zone)
+        {
+            $locations[] = array('value' => $zone, 'name' => str_replace('_',' ', $zone));
+        }
+        return $locations;
+    }
+
 	public function getActivePharmacies(){
 		$this->db->setSQL("SELECT p.id AS option_value, p.name AS option_name FROM pharmacies AS p WHERE active = '1' ORDER BY p.name DESC");
 		return $this->db->fetchRecords(PDO::FETCH_ASSOC);

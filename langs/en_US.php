@@ -1078,7 +1078,14 @@ $LANG = array(
 	'utilities'								=> 'Utilities',
 	'drug_name'               				=> 'Drug Name',
 	'units'               			    	=> 'Units',
+	'drugs'               			    	=> 'Drugs',
+	'end'               			        => 'End',
+	'age_from'               			    => 'Age From',
+	'date_from'               			    => 'Date From',
+	'age_to'               			        => 'Age To',
+	'date_to'               			    => 'Date To',
+	'immunization_code'                     => 'Immunization Code',
 	'instructed'               			    => 'Instructed',
-	'recipient_name'   					    => 'Recipient Name'
+	'manufacturer'   					    => 'Manufacturer'
 );
 ?>

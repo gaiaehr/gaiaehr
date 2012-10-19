@@ -390,9 +390,10 @@ Ext.define('App.view.fees.Billing',
 				text : '( 1 of 1 )'
 			},
 			{
-				text : '<<<  ' + i18n['back'],
+				text : i18n['back'],
 				scope : me,
 				action : 'back',
+                iconCls:'icoArrowLeftSmall',
 				tooltip : i18n['previous_encounter_details'],
 				handler : me.onBtnBack
 			},
@@ -411,9 +412,11 @@ Ext.define('App.view.fees.Billing',
 				handler : me.onBtnCancel
 			},
 			{
-				text : i18n['next'] + '  >>>',
+				text : i18n['next'],
 				scope : me,
 				action : 'next',
+                iconCls:'icoArrowRightSmall',
+                iconAlign:'right',
 				tooltip : i18n['next_encounter_details'],
 				handler : me.onBtnNext
 			}]
@@ -516,7 +519,7 @@ Ext.define('App.view.fees.Billing',
 				me.cptPanel.setDefaultQRCptCodes();
 			});
 
-			pageInfo[0].setText('( ' + i18n['page'] + ' (rowIndex + 1) of ' + sm.store.data.length + ' )');
+			pageInfo[0].setText('( ' + i18n['page'] + ' ' + (rowIndex + 1) + ' of ' + sm.store.data.length + ' )');
 			nextBtn[0].setDisabled(rowIndex == sm.store.data.length - 1);
 			backbtn[0].setDisabled(rowIndex == 0);
 		}

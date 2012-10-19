@@ -20,9 +20,6 @@ class Globals extends dbHelper {
     public function getGlobals(){
 
         $this->setSQL("SELECT gl_name, gl_index, gl_value FROM globals");
-        // ****************************************************************************************************
-        // $rows = $mitos_db->fetchRecords(PDO::FETCH_ASSOC) because we want to print all recods into one row
-        // ****************************************************************************************************
         $rows = array();
         foreach($this->fetchRecords() as $row){
             $rows[$row[0]] = $row[2];
@@ -69,3 +66,6 @@ class Globals extends dbHelper {
         return $_SESSION['site']['path'];
     }
 }
+//print '<pre>';
+//$g = new Globals();
+//print_r($g->getGlobals());

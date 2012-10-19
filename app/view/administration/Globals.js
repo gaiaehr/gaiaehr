@@ -30,91 +30,43 @@ Ext.define('App.view.administration.Globals',
 			fields : [
 			{
 				name : 'fullname',
-				type : 'auto'
+				type : 'string'
 			},
 			{
 				name : 'default_top_pane',
-				type : 'auto'
+				type : 'string'
 			},
 			{
 				name : 'concurrent_layout',
-				type : 'auto'
+				type : 'string'
 			},
 			{
 				name : 'css_header',
-				type : 'auto'
+				type : 'string'
 			},
 			{
 				name : 'gbl_nav_area_width',
-				type : 'auto'
+				type : 'string'
 			},
 			{
 				name : 'GaiaEHR_name',
-				type : 'auto'
+				type : 'string'
 			},
 			{
 				name : 'full_new_patient_form',
-				type : 'auto'
-			},
-			{
-				name : 'patient_search_results_style',
-				type : 'auto'
-			},
-			{
-				name : 'simplified_demographics',
-				type : 'auto'
-			},
-			{
-				name : 'simplified_prescriptions',
-				type : 'auto'
-			},
-			{
-				name : 'simplified_copay',
-				type : 'auto'
-			},
-			{
-				name : 'use_charges_panel',
-				type : 'auto'
+				type : 'string'
 			},
 			{
 				name : 'online_support_link',
-				type : 'auto'
+				type : 'string'
 			},
 			{
 				name : 'language_default',
-				type : 'auto'
-			},
-			{
-				name : 'language_menu_showall',
-				type : 'auto'
-			},
-			{
-				name : 'translate_layout',
-				type : 'auto'
-			},
-			{
-				name : 'translate_lists',
-				type : 'auto'
-			},
-			{
-				name : 'translate_gacl_groups',
-				type : 'auto'
-			},
-			{
-				name : 'translate_form_titles',
-				type : 'auto'
-			},
-			{
-				name : 'translate_document_categories',
-				type : 'auto'
-			},
-			{
-				name : 'translate_appt_categories',
-				type : 'auto'
+				type : 'string'
 			},
 			{
 				name : 'units_of_measurement',
-				type : 'auto'
+				type : 'string'
 			},
 			{
 				name : 'disable_deprecated_metrics_form',
@@ -122,15 +74,15 @@ Ext.define('App.view.administration.Globals',
 			},
 			{
 				name : 'phone_country_code',
-				type : 'auto'
+				type : 'string'
 			},
 			{
 				name : 'date_display_format',
-				type : 'auto'
+				type : 'string'
 			},
 			{
 				name : 'currency_decimals',
-				type : 'auto'
+				type : 'string'
 			},
 			{
 				name : 'currency_dec_point',
@@ -633,15 +585,15 @@ Ext.define('App.view.administration.Globals',
 			data : [
 			{
 				"title" : i18n['yyyy_mm_dd'],
-				"option_id" : "0"
+				"option_id" : "Y-m-d"
 			},
 			{
 				"title" : i18n['mm_dd_yyyy'],
-				"option_id" : "1"
+				"option_id" : "m/d/Y"
 			},
 			{
 				"title" : i18n['dd_mm_yyyy'],
-				"option_id" : "2"
+				"option_id" : "d/m/Y"
 			}]
 		});
 		me.time_display_format_store = Ext.create('Ext.data.Store',
@@ -650,11 +602,11 @@ Ext.define('App.view.administration.Globals',
 			data : [
 			{
 				"title" : i18n['24_hr'],
-				"option_id" : "0"
+				"option_id" : "H:i"
 			},
 			{
 				"title" : i18n['12 hr'],
-				"option_id" : "1"
+				"option_id" : "g:i a"
 			}]
 		});
 		me.currency_decimals_store = Ext.create('Ext.data.Store',
@@ -785,90 +737,42 @@ Ext.define('App.view.administration.Globals',
 						anchor : '100%'
 					},
 					items : [
-					{
-						xtype : 'combo',
-						fieldLabel : i18n['main_top_pane_screen'],
-						name : 'default_top_pane',
-						displayField : 'title',
-						valueField : 'option_id',
-						editable : false,
-						store : me.default_top_pane_store
-					},
-					{
-						xtype : 'combo',
-						fieldLabel : i18n['layout_style'],
-						name : 'concurrent_layout',
-						displayField : 'title',
-						valueField : 'option_id',
-						editable : false,
-						store : me.concurrent_layout_store
-					},
-					{
-						xtype : 'combo',
-						fieldLabel : i18n['theme'],
-						name : 'css_header',
-						displayField : 'title',
-						valueField : 'option_id',
-						editable : false,
-						store : me.css_header_store
-					},
-					{
-						xtype : 'textfield',
-						fieldLabel : i18n['navigation_area_width'],
-						name : 'gbl_nav_area_width'
-					},
-					{
-						xtype : 'textfield',
-						fieldLabel : i18n['application_title'],
-						name : 'GaiaEHR_name'
-					},
-					{
-						xtype : 'combo',
-						fieldLabel : i18n['new_patient_form'],
-						name : 'full_new_patient_form',
-						displayField : 'title',
-						valueField : 'option_id',
-						editable : false,
-						store : me.full_new_patient_form_store
-					},
-					{
-						xtype : 'combo',
-						fieldLabel : i18n['patient_search_resuls_style'],
-						name : 'patient_search_results_style',
-						displayField : 'title',
-						valueField : 'option_id',
-						editable : false,
-						store : me.patient_search_results_style_store
-					},
-					{
-						xtype : 'mitos.checkbox',
-						fieldLabel : i18n['simplified_demographics'],
-						name : 'simplified_demographics'
-					},
-					{
-						xtype : 'mitos.checkbox',
-						fieldLabel : i18n['simplified_prescriptions'],
-						name : 'simplified_prescriptions'
-					},
-					{
-						xtype : 'mitos.checkbox',
-						fieldLabel : i18n['simplified_copay'],
-						name : 'simplified_copay'
-					},
-					{
-						xtype : 'mitos.checkbox',
-						fieldLabel : i18n['user_charges_panel'],
-						name : 'use_charges_panel'
-					},
-					{
-						xtype : 'textfield',
-						fieldLabel : i18n['online_support_link'],
-						name : 'online_support_link'
-					}]
+                        {
+                            xtype : 'combo',
+                            fieldLabel : i18n['main_top_pane_screen'],
+                            name : 'default_top_pane',
+                            displayField : 'title',
+                            valueField : 'option_id',
+                            editable : false,
+                            store : me.default_top_pane_store
+                        },
+                        {
+                            xtype : 'combo',
+                            fieldLabel : i18n['layout_style'],
+                            name : 'concurrent_layout',
+                            displayField : 'title',
+                            valueField : 'option_id',
+                            editable : false,
+                            store : me.concurrent_layout_store
+                        },
+                        {
+                            xtype : 'combo',
+                            fieldLabel : i18n['theme'],
+                            name : 'css_header',
+                            displayField : 'title',
+                            valueField : 'option_id',
+                            editable : false,
+                            store : me.css_header_store
+                        },
+                        {
+                            xtype : 'textfield',
+                            fieldLabel : i18n['navigation_area_width'],
+                            name : 'gbl_nav_area_width'
+                        }
+                    ]
 				},
 				{
 					title : 'Locale',
-					//defaults: {},
 					defaultType : 'textfield',
 					items : [
 					{
@@ -886,53 +790,6 @@ Ext.define('App.view.administration.Globals',
 						name : 'language_default'
 					},
 					{
-						xtype : 'mitos.checkbox',
-						fieldLabel : i18n['all_language_allowed'],
-						name : 'language_menu_showall'
-					},
-					{
-						xtype : 'languagescombo',
-						fieldLabel : i18n['allowed_languages'] + ' -??-',
-						name : 'lang_description2', // ???????
-						multiSelect : true
-					},
-					{
-						xtype : 'mitos.checkbox',
-						fieldLabel : i18n['allow_debuging_language'] + ' -??-',
-						name : 'Loc4' // ???????
-					},
-					{
-						xtype : 'mitos.checkbox',
-						fieldLabel : i18n['translate_layouts'],
-						name : 'translate_layout'
-					},
-					{
-						xtype : 'mitos.checkbox',
-						fieldLabel : i18n['translate_list'],
-						name : 'translate_lists'
-					},
-					{
-						xtype : 'mitos.checkbox',
-						fieldLabel : i18n['translate_access_control_roles'],
-						name : 'translate_gacl_groups'
-					},
-					{
-						xtype : 'mitos.checkbox',
-						fieldLabel : i18n['translate_patient_note_titles'],
-						name : 'translate_form_titles'
-					},
-					{
-						xtype : 'mitos.checkbox',
-						fieldLabel : i18n['translate_documents_categoies'],
-						name : 'translate_document_categories',
-						id : 'translate_document_categories'
-					},
-					{
-						xtype : 'mitos.checkbox',
-						fieldLabel : i18n['translate_appointment_categories'],
-						name : 'translate_appt_categories'
-					},
-					{
 						xtype : 'combo',
 						fieldLabel : i18n['units_for_visits_forms'],
 						name : 'units_of_measurement',
@@ -940,11 +797,6 @@ Ext.define('App.view.administration.Globals',
 						valueField : 'option_id',
 						editable : false,
 						store : me.units_of_measurement_store
-					},
-					{
-						xtype : 'mitos.checkbox',
-						fieldLabel : i18n['disable_old_metric_vitals_form'],
-						name : 'disable_deprecated_metrics_form'
 					},
 					{
 						xtype : 'textfield',
@@ -962,8 +814,8 @@ Ext.define('App.view.administration.Globals',
 					},
 					{
 						xtype : 'combo',
-						fieldLabel : i18n['time_display_format'] + ' -??-',
-						name : 'date_display_format', // ??????
+						fieldLabel : i18n['time_display_format'],
+						name : 'time_display_format', // ??????
 						displayField : 'title',
 						valueField : 'option_id',
 						editable : false,
@@ -1006,168 +858,93 @@ Ext.define('App.view.administration.Globals',
 					title : 'Features',
 					defaultType : 'mitos.checkbox',
 					items : [
-					{
-						xtype : 'combo',
-						fieldLabel : i18n['specific_application'],
-						name : 'date_display_format',
-						displayField : 'title',
-						valueField : 'option_id',
-						editable : false,
-						store : me.dummyStore
-					},
-					{
-						xtype : 'combo',
-						fieldLabel : i18n['drugs_and_prodructs'],
-						name : 'date_display_format',
-						displayField : 'title',
-						valueField : 'option_id',
-						editable : false,
-						store : me.dummyStore
-					},
-					{
-						fieldLabel : i18n['disable_chart_tracker'],
-						name : 'date_display_format'
-					},
-					{
-						fieldLabel : i18n['disable_immunizations'],
-						name : 'disable_immunizations'
-					},
-					{
-						fieldLabel : i18n['disable_prescriptions'],
-						name : 'disable_prescriptions'
-					},
-					{
-						fieldLabel : i18n['omit_employers'],
-						name : 'omit_employers'
-					},
-					{
-						fieldLabel : i18n['support_multiprovider_events'],
-						name : 'select_multi_providers'
-					},
-					{
-						fieldLabel : i18n['disable_user_groups'],
-						name : 'disable_non_default_groups'
-					},
-					{
-						fieldLabel : i18n['skip_authorization_of_patient_notes'],
-						name : 'ignore_pnotes_authorization'
-					},
-					{
-						fieldLabel : i18n['allow_encounters_claims'],
-						name : 'support_encounter_claims'
-					},
-					{
-						fieldLabel : i18n['advance_directives_warning'],
-						name : 'advance_directives_warning'
-					},
-					{
-						fieldLabel : i18n['configuration_export_import'],
-						name : 'configuration_import_export'
-					},
-					{
-						fieldLabel : i18n['restrict_users_to_facilities'],
-						name : 'restrict_user_facility'
-					},
-					{
-						fieldLabel : i18n['remember_selected_facility'],
-						name : 'set_facility_cookie'
-					},
-					{
-						fieldLabel : i18n['discounts_as_monetary_ammounts'],
-						name : 'discount_by_money'
-					},
-					{
-						fieldLabel : i18n['referral_source_for_encounters'],
-						name : 'gbl_visit_referral_source'
-					},
-					{
-						fieldLabel : i18n['maks_for_patients_ids'],
-						xtype : 'textfield',
-						name : 'gbl_mask_patient_id'
-					},
-					{
-						fieldLabel : i18n['mask_of_invoice_numbers'],
-						xtype : 'textfield',
-						name : 'gbl_mask_invoice_number'
-					},
-					{
-						fieldLabel : i18n['mask_for_product_ids'],
-						xtype : 'textfield',
-						name : 'gbl_mask_product_id'
-					},
-					{
-						fieldLabel : i18n['force_billing_widget_open'],
-						name : 'force_billing_widget_open'
-					},
-					{
-						fieldLabel : i18n['actiate_ccr_ccd_reporting'],
-						name : 'activate_ccr_ccd_report'
-					},
-					{
-						fieldLabel : i18n['hide_encryption_decryption_options_in_document_managment'] + ' -??-',
-						name : 'Feat22' // ?????
-					}]
+                        {
+                            fieldLabel : i18n['disable_chart_tracker'],
+                            name : 'disable_charts'
+                        },
+                        {
+                            fieldLabel : i18n['disable_immunizations'],
+                            name : 'disable_immunizations'
+                        },
+                        {
+                            fieldLabel : i18n['disable_prescriptions'],
+                            name : 'disable_prescriptions'
+                        },
+    //					{
+    //						fieldLabel : i18n['restrict_users_to_facilities'],
+    //						name : 'restrict_user_facility'
+    //					},
+                        {
+                            fieldLabel : i18n['force_billing_widget_open'],
+                            name : 'force_billing_widget_open'
+                        },
+                        {
+                            fieldLabel : i18n['actiate_ccr_ccd_reporting'],
+                            name : 'activate_ccr_ccd_report'
+                        }
+                    ]
 				},
-				{
-					title : i18n['calendar'],
-					defaultType : 'combo',
-					items : [
-					{
-						xtype : 'mitos.checkbox',
-						fieldLabel : i18n['disable_calendar'],
-						name : 'Cal1'
-					},
-					{
-						fieldLabel : i18n['calendar_starting_hour'],
-						name : 'Cal2',
-						displayField : 'title',
-						valueField : 'option_id',
-						editable : false,
-						store : me.dummyStore
-					},
-					{
-						fieldLabel : i18n['calendar_ending_hour'],
-						name : 'Cal3',
-						displayField : 'title',
-						valueField : 'option_id',
-						editable : false,
-						store : me.dummyStore
-					},
-					{
-						fieldLabel : i18n['calendar_interval'],
-						name : 'Cal4',
-						displayField : 'title',
-						valueField : 'option_id',
-						editable : false,
-						store : me.dummyStore
-					},
-					{
-						fieldLabel : i18n['appointment_display_style'],
-						name : 'Cal5',
-						displayField : 'title',
-						valueField : 'option_id',
-						editable : false,
-						store : me.dummyStore
-					},
-					{
-						xtype : 'mitos.checkbox',
-						fieldLabel : i18n['provider_see_entire_calendar'],
-						name : 'Cal6'
-					},
-					{
-						xtype : 'mitos.checkbox',
-						fieldLabel : i18n['auto_create_new_encounters'],
-						name : 'Cal7'
-					},
-					{
-						fieldLabel : i18n['appointment_event_color'],
-						name : 'Cal8',
-						displayField : 'title',
-						valueField : 'option_id',
-						editable : false,
-						store : me.dummyStore
-					}]
-				},
+//				{
+//					title : i18n['calendar'],
+//					defaultType : 'combo',
+//					items : [
+//                        {
+//                            xtype : 'mitos.checkbox',
+//                            fieldLabel : i18n['disable_calendar'],
+//                            name : 'Cal1'
+//                        },
+//                        {
+//                            fieldLabel : i18n['calendar_starting_hour'],
+//                            name : 'Cal2',
+//                            displayField : 'title',
+//                            valueField : 'option_id',
+//                            editable : false,
+//                            store : me.dummyStore
+//                        },
+//                        {
+//                            fieldLabel : i18n['calendar_ending_hour'],
+//                            name : 'Cal3',
+//                            displayField : 'title',
+//                            valueField : 'option_id',
+//                            editable : false,
+//                            store : me.dummyStore
+//                        },
+//                        {
+//                            fieldLabel : i18n['calendar_interval'],
+//                            name : 'Cal4',
+//                            displayField : 'title',
+//                            valueField : 'option_id',
+//                            editable : false,
+//                            store : me.dummyStore
+//                        },
+//                        {
+//                            fieldLabel : i18n['appointment_display_style'],
+//                            name : 'Cal5',
+//                            displayField : 'title',
+//                            valueField : 'option_id',
+//                            editable : false,
+//                            store : me.dummyStore
+//                        },
+//                        {
+//                            xtype : 'mitos.checkbox',
+//                            fieldLabel : i18n['provider_see_entire_calendar'],
+//                            name : 'Cal6'
+//                        },
+//                        {
+//                            xtype : 'mitos.checkbox',
+//                            fieldLabel : i18n['auto_create_new_encounters'],
+//                            name : 'Cal7'
+//                        },
+//                        {
+//                            fieldLabel : i18n['appointment_event_color'],
+//                            name : 'Cal8',
+//                            displayField : 'title',
+//                            valueField : 'option_id',
+//                            editable : false,
+//                            store : me.dummyStore
+//                        }
+//                    ]
+//				},
 				{
 					title : 'Security',
 					defaultType : 'textfield',

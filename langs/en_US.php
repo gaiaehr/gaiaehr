@@ -1071,6 +1071,11 @@ $LANG = array(
 	'disclosures'   					    => 'Disclosures',
 	'rx'               					    => 'Rx',
 	'drug'               					=> 'Drug',
+	'recipient_name'   					    => 'Recipient Name',
+	'generate_x12'							=> 'Generate x12',
+	'generate_cms1500_pdf'					=> 'Generate CMS 1500 PDF format',
+	'generate_cms1500_text'					=> 'Generate CMS 1500 TXT format',
+	'utilities'								=> 'Utilities',
 	'drug_name'               				=> 'Drug Name',
 	'units'               			    	=> 'Units',
 	'drugs'               			    	=> 'Drugs',
@@ -1081,7 +1086,6 @@ $LANG = array(
 	'date_to'               			    => 'Date To',
 	'immunization_code'                     => 'Immunization Code',
 	'instructed'               			    => 'Instructed',
-	'recipient_name'   					    => 'Recipient Name'
-
+	'manufacturer'   					    => 'Manufacturer'
 );
 ?>

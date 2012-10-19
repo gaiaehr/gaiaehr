@@ -15,8 +15,8 @@ if(!isset($_SESSION)) {
 	session_start();
 	session_cache_limiter('private');
 }
-include_once($_SESSION['root'] . '/dataProvider/Person.php');
 include_once($_SESSION['root'] . '/classes/dbHelper.php');
+include_once($_SESSION['root'] . '/dataProvider/Person.php');
 include_once($_SESSION['root'] . '/classes/Time.php');
 include_once($_SESSION['root'] . '/dataProvider/User.php');
 include_once($_SESSION['root'] . '/dataProvider/ACL.php');

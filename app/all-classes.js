@@ -1,12 +1,11 @@
 /*
 Copyright(c) 2012 GaiaEHR
-*/
-/*
 Extensible 1.5.1
 Copyright(c) 2010-2012 Extensible, LLC
 licensing@ext.ensible.com
 http://ext.ensible.com
 */
+
 /**
  * @class Extensible
  * Extensible core utilities and functions.

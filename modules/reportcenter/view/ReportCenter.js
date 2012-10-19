@@ -147,6 +147,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                                         {
                                             xtype     : 'datefield',
                                             fieldLabel: i18n['date_from'],
+                                            format    :'Y-m-d',
                                             name      : 'from'
                                         },
                                         {
@@ -186,6 +187,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                                         {
                                             xtype     : 'datefield',
                                             fieldLabel: i18n['date_to'],
+                                            format    :'Y-m-d',
                                             name      : 'to'
                                         },
                                         {
@@ -215,20 +217,22 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                             xtype     : 'datefield',
                             fieldLabel: i18n['from'],
                             name      : 'from',
-                            format:'Y-m-d'
+                            format    :'Y-m-d',
+                            width     : 350
                         },
                         {
                             xtype     : 'datefield',
                             fieldLabel: i18n['to'],
                             name      : 'to',
-                            format:'Y-m-d'
+                            format    :'Y-m-d',
+                            width     : 350
                         },
                         {
                             xtype          : 'immunizationlivesearch',
                             fieldLabel     : i18n['immunization'],
                             hideLabel      : false,
                             name           : 'immu',
-                            width          : 570
+                            width          : 350
                         }
                     ],
                     fn:ImmunizationsReport.createImmunizationsReport

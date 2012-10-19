@@ -1079,6 +1079,7 @@ $LANG = array(
 	'date_from'               			    => 'Date From',
 	'age_to'               			        => 'Age To',
 	'date_to'               			    => 'Date To',
+	'immunization_code'                     => 'Immunization Code',
 	'instructed'               			    => 'Instructed',
 	'recipient_name'   					    => 'Recipient Name'
 

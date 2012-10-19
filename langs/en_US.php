@@ -1086,6 +1086,8 @@ $LANG = array(
 	'date_to'               			    => 'Date To',
 	'immunization_code'                     => 'Immunization Code',
 	'instructed'               			    => 'Instructed',
+	'Administered'               	        => 'Administered',
+	'search_for_a_patient'         	        => 'Search for a Patient',
 	'manufacturer'   					    => 'Manufacturer'
 );
 ?>

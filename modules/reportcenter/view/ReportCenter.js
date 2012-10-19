@@ -55,25 +55,49 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                     title:i18n['rx'],
                     items : [
                         {
-                            xtype     : 'datefield',
-                            fieldLabel: i18n['from'],
-                            name      : 'from',
-                            format:'Y-m-d',
-                            width     : 275
+                            xtype   : 'fieldcontainer',
+                            layout  : 'hbox',
+                            defaults: { margin: '0 10 5 0' },
+                            items   : [
+
+                                {
+                                    xtype     : 'datefield',
+                                    fieldLabel: i18n['from'],
+                                    name      : 'from',
+                                    format:'Y-m-d',
+                                    width     : 275
+                                },{
+                                    xtype          : 'patienlivetsearch',
+                                    fieldLabel     : i18n['name'],
+                                    hideLabel      : false,
+                                    name           : 'pid',
+                                    width          : 350
+                                }
+                            ]
+
                         },
                         {
-                            xtype     : 'datefield',
-                            fieldLabel: i18n['to'],
-                            name      : 'to',
-                            format    :'Y-m-d',
-                            width     : 275
-                        },
-                        {
-                            xtype     : 'medicationlivetsearch',
-                            fieldLabel     : i18n['drug'],
-                            hideLabel      : false,
-   	                        name           : 'drug',
-   	                        width          : 275
+                            xtype   : 'fieldcontainer',
+                            layout  : 'hbox',
+                            defaults: { margin: '0 10 5 0' },
+                            items   : [
+                                {
+                                    xtype     : 'datefield',
+                                    fieldLabel: i18n['to'],
+                                    name      : 'to',
+                                    format    :'Y-m-d',
+                                    width     : 275
+                                },
+                                {
+                                    xtype     : 'medicationlivetsearch',
+                                    fieldLabel     : i18n['drug'],
+                                    hideLabel      : false,
+                                    name           : 'drug',
+                                    width          : 350
+                                }
+
+                            ]
+
                         }
                     ],
                     fn:Rx.createPrescriptionsDispensations
@@ -92,9 +116,6 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                             layout : 'vbox',
                             items  : [
                                 {
-                                    /**
-                                     * Line one
-                                     */
                                     xtype   : 'fieldcontainer',
                                     layout  : 'hbox',
                                     defaults: { margin: '0 10 5 0' },
@@ -137,9 +158,6 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
 
                                 },
                                 {
-                                    /**
-                                     * Line two
-                                     */
                                     xtype   : 'fieldcontainer',
                                     layout  : 'hbox',
                                     defaults: { margin: '0 10 5 0' },
@@ -176,9 +194,6 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
 
                                 },
                                 {
-                                    /**
-                                     * Line three
-                                     */
                                     xtype   : 'fieldcontainer',
                                     layout  : 'hbox',
                                     defaults: { margin: '0 10 5 0' },

@@ -69,7 +69,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                         {
                             xtype          : 'medicationlivetsearch',
    	                        fieldLabel     : i18n['Drug'],
-   	                        hideLabel      : false,
+                            hideLabel      : false,
    	                        name           : 'drug',
    	                        width          : 570
                         }
@@ -95,25 +95,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                     ]
                 });
             });
-            me.link3 = me.addReportByCategory(me.patientCategory, i18n['referrals'], function(btn) {
-                me.goToReportPanelAndSetForm({
-                    title:i18n['referrals'],
-                    action: 'clientListReport',
-                    items : [
-                        {
-                            xtype     : 'datefield',
-                            fieldLabel: i18n['from'],
-                            name      : 'from'
-                        },
-                        {
-                            xtype     : 'datefield',
-                            fieldLabel: i18n['to'],
-                            name      : 'to'
-                        }
-                    ]
-                });
-            });
-            me.link4 = me.addReportByCategory(me.patientCategory, i18n['immunization_registry'], function(btn) {
+            me.ImmunizationReport = me.addReportByCategory(me.patientCategory, i18n['immunization_registry'], function(btn) {
                 me.goToReportPanelAndSetForm({
                     title:i18n['immunization_registry'],
                     action: 'clientListReport',
@@ -121,14 +103,24 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                         {
                             xtype     : 'datefield',
                             fieldLabel: i18n['from'],
-                            name      : 'from'
+                            name      : 'from',
+                            format:'Y-m-d'
                         },
                         {
                             xtype     : 'datefield',
                             fieldLabel: i18n['to'],
-                            name      : 'to'
+                            name      : 'to',
+                            format:'Y-m-d'
+                        },
+                        {
+                            xtype          : 'immunizationlivesearch',
+                            fieldLabel     : i18n['immunization'],
+                            hideLabel      : false,
+                            name           : 'immu',
+                            width          : 570
                         }
-                    ]
+                    ],
+                    fn:ImmunizationsReport.createImmunizationsReport
                 });
             });
 

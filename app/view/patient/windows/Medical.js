@@ -1556,7 +1556,7 @@ Ext.define('App.view.patient.windows.Medical', {
 		var me = this,
 			field, field2, id;
 		if(combo.action == 'immunizations') {
-			id = model[0].data.id;
+			id = model[0].data.code;
 			field = combo.up('container').query('[action="idField"]')[0];
 			field.setValue(id);
 		}

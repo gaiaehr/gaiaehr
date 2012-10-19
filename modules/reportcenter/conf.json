@@ -31,6 +31,14 @@
 					"len":1
 				}
 			}
+		},
+		"ImmunizationsReport":{
+			"methods":{
+				"createImmunizationsReport":
+				{
+					"len":1
+				}
+			}
 		}
 	},
 	"extjs":[

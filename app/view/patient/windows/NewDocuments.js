@@ -234,8 +234,8 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 															xtype     : 'medicationlivetsearch',
 															fieldLabel: i18n['medication'],
 															hideLabel : false,
-															action    : 'medication',
-															name      : 'medication',
+															action    : 'medication_id',
+															name      : 'medication_id',
 															width     : 350,
 															labelWidth: 80,
                                                             allowBlank: false,
@@ -247,9 +247,8 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 														{
 															xtype:'textfield',
 															hidden:true,
-															name:'medication_id',
-                                                            allowBlank: false,
-															action:'idField'
+															name:'medication',
+															action:'medication'
 														},
 														{
 															xtype     : 'numberfield',
@@ -506,13 +505,13 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 		var me      = this,
 			field   = combo.up('fieldcontainer').query('[action="dose"]')[0],
 			field2  = combo.up('fieldcontainer').query('[action="dose_mg"]')[0],
-			field3  = combo.up('fieldcontainer').query('[action="idField"]')[0],
+			field3  = combo.up('fieldcontainer').query('[action="medication"]')[0],
 			dose    = model[0].data.ACTIVE_NUMERATOR_STRENGTH,
 			dose_mg = model[0].data.ACTIVE_INGRED_UNIT,
-			id      = model[0].data.id;
+			medication      = model[0].data.PROPRIETARYNAME;
 		field.setValue(dose);
 		field2.setValue(dose_mg);
-		field3.setValue(id);
+		field3.setValue(medication);
 	},
 	onEditPrescription: function(editor,e){
 		say(editor);

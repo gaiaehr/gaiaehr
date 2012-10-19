@@ -1073,6 +1073,7 @@ $LANG = array(
 	'drug'               					=> 'Drug',
 	'drug_name'               				=> 'Drug Name',
 	'units'               			    	=> 'Units',
+	'drugs'               			    	=> 'Drugs',
 	'instructed'               			    => 'Instructed',
 	'recipient_name'   					    => 'Recipient Name'
 

@@ -58,20 +58,22 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                             xtype     : 'datefield',
                             fieldLabel: i18n['from'],
                             name      : 'from',
-                            format:'Y-m-d'
+                            format:'Y-m-d',
+                            width     : 275
                         },
                         {
                             xtype     : 'datefield',
                             fieldLabel: i18n['to'],
                             name      : 'to',
-                            format:'Y-m-d'
+                            format    :'Y-m-d',
+                            width     : 275
                         },
                         {
-                            xtype          : 'medicationlivetsearch',
-   	                        fieldLabel     : i18n['Drug'],
+                            xtype     : 'medicationlivetsearch',
+                            fieldLabel     : i18n['drug'],
                             hideLabel      : false,
    	                        name           : 'drug',
-   	                        width          : 570
+   	                        width          : 275
                         }
                     ],
                     fn:Rx.createPrescriptionsDispensations

@@ -339,10 +339,10 @@ class XMLTag
 			$this -> $name = array();
 
 		//Add the reference of it to the end of an array member named for the tag's name
-		$this -> {$name}[] = &$child;
+		$this -> {$name}[] = $child;
 
 		//Add the reference to the children array member
-		$this -> tagChildren[] = &$child;
+		$this -> tagChildren[] = $child;
 
 		//Return a reference to this object for the stack
 		return $this;

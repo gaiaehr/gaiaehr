@@ -163,10 +163,10 @@ Ext.define('App.view.patient.windows.Medical',
 							fieldLabel : i18n['name'],
 							hideLabel : false,
 							allowBlank : false,
-							itemId : 'immunization_name',
-							name : 'immunization_name',
+							itemId : 'immunization_id',
+							name : 'immunization_id',
 							enableKeyEvents : true,
-							action : 'immunizations',
+							action : 'immunization_id',
 							width : 570,
 							listeners :
 							{
@@ -177,8 +177,8 @@ Ext.define('App.view.patient.windows.Medical',
 						{
 							xtype : 'textfield',
 							hidden : true,
-							name : 'immunization_id',
-							action : 'idField'
+							name : 'immunization_name',
+							action : 'immunization_name'
 						},
 						{
 							fieldLabel : i18n['administrator'],
@@ -385,8 +385,7 @@ Ext.define('App.view.patient.windows.Medical',
 							margin : '0 10 5 0'
 						},
 						items : [
-						{
-							xtype : 'mitos.allergiescombo',
+						me.allergieType = Ext.create('App.classes.combo.Allergies',{
 							fieldLabel : i18n['allergy'],
 							action : 'allergie_name',
 							name : 'allergy',
@@ -400,9 +399,8 @@ Ext.define('App.view.patient.windows.Medical',
 								'select' : me.onLiveSearchSelect,
 								change : me.disableFieldLogic
 							}
-						},
-						{
-							xtype : 'medicationlivetsearch',
+						}),
+                        me.allergieMedication = Ext.create('App.classes.LiveMedicationSearch',{
 							fieldLabel : i18n['allergy'],
 							hideLabel : false,
 							action : 'drug_name',
@@ -418,7 +416,7 @@ Ext.define('App.view.patient.windows.Medical',
 								'select' : me.onLiveSearchSelect,
 								change : me.disableFieldLogic
 							}
-						},
+						}),
 						{
 							xtype : 'textfield',
 							hidden : true,
@@ -1013,8 +1011,8 @@ Ext.define('App.view.patient.windows.Medical',
 							fieldLabel : i18n['medication'],
 							hideLabel : false,
 							itemId : 'medication',
-							name : 'medication',
-							action : 'medication',
+							name : 'medication_id',
+							action : 'medication_id',
 							enableKeyEvents : true,
 							width : 520,
 							labelWidth : 70,
@@ -1027,8 +1025,8 @@ Ext.define('App.view.patient.windows.Medical',
 						{
 							xtype : 'textfield',
 							hidden : true,
-							name : 'medication_id',
-							action : 'idField'
+							name : 'medication',
+							action : 'medication'
 						},
 
 						{
@@ -1599,25 +1597,25 @@ Ext.define('App.view.patient.windows.Medical',
 	onLiveSearchSelect : function(combo, model)
 	{
 
-		var me = this, field, field2, id;
-		if (combo.action == 'immunizations')
+		var me = this, field, field2, name;
+		if (combo.action == 'immunization_id')
 		{
-			id = model[0].data.code;
-			field = combo.up('container').query('[action="idField"]')[0];
-			field.setValue(id);
+            name = model[0].data.code_text_short;
+			field = combo.up('container').query('[action="immunization_name"]')[0];
+			field.setValue(name);
 		}
 		else
 		if (combo.id == 'allergie_name' || combo.id == 'drug_name')
 		{
-			id = model[0].data.id;
+            name = model[0].data.id;
 			field = combo.up('fieldcontainer').query('[action="idField"]')[0];
-			field.setValue(id);
+			field.setValue(name);
 
 		}
 		else
 		if (combo.action == 'medicalissues')
 		{
-			id = model[0].data.code;
+            name = model[0].data.code;
 			field = combo.up('fieldcontainer').query('[action="idField"]')[0];
 			field2 = combo.up('fieldcontainer').query('[action="medicalissues"]')[0];
 			field.setValue(id);
@@ -1626,17 +1624,17 @@ Ext.define('App.view.patient.windows.Medical',
 		else
 		if (combo.action == 'surgery')
 		{
-			id = model[0].data.id;
+            name = model[0].data.id;
 			field = combo.up('fieldcontainer').query('[action="idField"]')[0];
 			field.setValue(id);
 
 		}
 		else
-		if (combo.action == 'medication')
+		if (combo.action == 'medication_id')
 		{
-			id = model[0].data.id;
-			field = combo.up('fieldcontainer').query('[action="idField"]')[0];
-			field.setValue(id);
+            name = model[0].data.PROPRIETARYNAME;
+			field = combo.up('fieldcontainer').query('[action="medication"]')[0];
+			field.setValue(name);
 		}
 
 	},
@@ -1716,7 +1714,7 @@ Ext.define('App.view.patient.windows.Medical',
 		}
 
 	},
-	hideall : function(combo, skinCombo, localCombo, abdominalCombo, systemicCombo)
+	hideall : function(skinCombo, localCombo, abdominalCombo, systemicCombo)
 	{
 
 		skinCombo.hide(true);
@@ -1735,9 +1733,14 @@ Ext.define('App.view.patient.windows.Medical',
 	},
 	onLocationSelect : function(combo, record)
 	{
-		var me = this, skinCombo = combo.up('form').getForm().findField('skinreaction'), localCombo = combo.up('form').getForm().findField('localreaction'), abdominalCombo = combo.up('form').getForm().findField('abdominalreaction'), systemicCombo = combo.up('form').getForm().findField('systemicreaction'), value = combo.getValue();
+		var me = this,
+            skinCombo = combo.up('form').getForm().findField('skinreaction'),
+            localCombo = combo.up('form').getForm().findField('localreaction'),
+            abdominalCombo = combo.up('form').getForm().findField('abdominalreaction'),
+            systemicCombo = combo.up('form').getForm().findField('systemicreaction'),
+            value = combo.getValue();
 
-		me.hideall(combo, skinCombo, localCombo, abdominalCombo, systemicCombo);
+		me.hideall(skinCombo, localCombo, abdominalCombo, systemicCombo);
 		if (value == 'Skin')
 		{
 			skinCombo.show(true);
@@ -1771,32 +1774,31 @@ Ext.define('App.view.patient.windows.Medical',
 
 	onAllergyTypeSelect : function(combo, record)
 	{
-		var me = this, allergyCombo = combo.up('form').getForm().findField('allergie_name'), drugLiveSearch = combo.up('form').getForm().findField('drug_name');
-
+		var me = this;
 		if (record[0].data.allergy_type == 'Drug')
 		{
-			allergyCombo.hide(true);
-			allergyCombo.setDisabled(true);
-			allergyCombo.reset();
-			drugLiveSearch.show(true);
-			drugLiveSearch.setDisabled(false);
+			me.allergieType.hide(true);
+            me.allergieType.setDisabled(true);
+            me.allergieType.reset();
+			me.allergieMedication.show(true);
+			me.allergieMedication.setDisabled(false);
 		}
 		else
 		if (record[0].data.allergy_type == '' || record[0].data.allergy_type == null)
 		{
-			allergyCombo.setDisabled(true);
-			drugLiveSearch.hide(true);
-			drugLiveSearch.setDisabled(true);
-			allergyCombo.show(true);
+            me.allergieType.setDisabled(true);
+            me.allergieMedication.hide(true);
+            me.allergieMedication.setDisabled(true);
+            me.allergieType.show(true);
 		}
 		else
 		{
-			drugLiveSearch.hide(true);
-			drugLiveSearch.setDisabled(true);
-			allergyCombo.show(true);
-			allergyCombo.setDisabled(false);
-			allergyCombo.reset();
-			allergyCombo.store.load(
+            me.allergieMedication.hide(true);
+            me.allergieMedication.setDisabled(true);
+            me.allergieType.show(true);
+            me.allergieType.setDisabled(false);
+            me.allergieType.reset();
+            me.allergieType.store.load(
 			{
 				params :
 				{

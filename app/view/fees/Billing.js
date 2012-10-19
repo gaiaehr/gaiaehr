@@ -232,6 +232,9 @@ Ext.define('App.view.fees.Billing',
 			}
 		});
 
+		/*
+		 * Panel: encounterBillingDetails
+		 */
 		me.encounterBillingDetails = Ext.create('Ext.panel.Panel',
 		{
 			defaultTitle : i18n['encounter_billing_details'],
@@ -424,6 +427,9 @@ Ext.define('App.view.fees.Billing',
 		me.callParent(arguments);
 	}, // end of initComponent
 
+	/*
+	 * Function: stage
+	 */
 	stage : function(val)
 	{
 		if (val == '1')
@@ -448,6 +454,9 @@ Ext.define('App.view.fees.Billing',
 		return val;
 	},
 
+	/*
+	 * Event: onBtnClicked
+	 */
 	onBtnClicked : function(btn)
 	{
 		var datefrom = this.query('datefield[action="datefrom"]'), dateto = this.query('datefield[action="dateto"]');
@@ -464,22 +473,34 @@ Ext.define('App.view.fees.Billing',
 		this.reloadGrid();
 
 	},
-
+	
+	/*
+	 * Event: rowDblClicked
+	 */
 	rowDblClicked : function()
 	{
 		this.goToEncounterBillingDetail();
 	},
 
+	/*
+	 * Function: goToEncounterBillingDetail
+	 */
 	goToEncounterBillingDetail : function()
 	{
 		this.getPageBody().getLayout().setActiveItem(1);
 	},
 
+	/*
+	 * Function: goToEncounterList
+	 */
 	goToEncounterList : function()
 	{
 		this.getPageBody().getLayout().setActiveItem(0);
 	},
 
+	/*
+	 * Event: onSelectionChanged
+	 */
 	onSelectionChanged : function(sm, model)
 	{
 		if (model[0])
@@ -505,23 +526,35 @@ Ext.define('App.view.fees.Billing',
 		}
 	},
 
+	/*
+	 * Event: onBtnCancel
+	 */
 	onBtnCancel : function()
 	{
 		this.getPageBody().getLayout().setActiveItem(0);
 	},
 
+	/*
+	 * Event: onBtnBack
+	 */
 	onBtnBack : function()
 	{
 		var sm = this.encountersGrid.getSelectionModel(), currRowIndex = sm.getLastSelected().index, prevRowindex = currRowIndex - 1;
 		sm.select(prevRowindex);
 	},
 
+	/*
+	 * Event: onBtnNext
+	 */
 	onBtnNext : function()
 	{
 		var sm = this.encountersGrid.getSelectionModel(), currRowIndex = sm.getLastSelected().index, nextRowindex = currRowIndex + 1;
 		sm.select(nextRowindex);
 	},
 
+	/*
+	 * Event: onBtnSave
+	 */
 	onBtnSave : function()
 	{
 		var me = this, form = me.icdForm.getForm(), values = form.getValues();
@@ -530,6 +563,9 @@ Ext.define('App.view.fees.Billing',
 		me.msg('Sweet!', i18n['encounter_billing_data_updated']);
 	},
 
+	/*
+	 * Function: getEncounterIcds
+	 */
 	getEncounterIcds : function()
 	{
 		var me = this;
@@ -543,6 +579,9 @@ Ext.define('App.view.fees.Billing',
 		});
 	},
 
+	/*
+	 * Function: updateEncounterIcds
+	 */
 	updateEncounterIcds : function(data)
 	{
 		var me = this;
@@ -556,6 +595,9 @@ Ext.define('App.view.fees.Billing',
 		});
 	},
 
+	/*
+	 * Function: reloadGrid
+	 */
 	reloadGrid : function()
 	{
 		this.patientListStore.load(
@@ -572,6 +614,9 @@ Ext.define('App.view.fees.Billing',
 		});
 	},
 
+	/*
+	 * Function: updateProgressNote
+	 */
 	updateProgressNote : function(eid)
 	{
 		var me = this;

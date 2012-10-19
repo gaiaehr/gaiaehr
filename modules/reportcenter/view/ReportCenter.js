@@ -84,15 +84,124 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                     title:i18n['clinical'],
                     action: 'clientListReport',
                     items : [
+
                         {
-                            xtype     : 'datefield',
-                            fieldLabel: i18n['from'],
-                            name      : 'from'
-                        },
-                        {
-                            xtype     : 'datefield',
-                            fieldLabel: i18n['to'],
-                            name      : 'to'
+                            title  : i18n['general'],
+                            xtype  : 'container',
+                            padding: 10,
+                            layout : 'vbox',
+                            items  : [
+                                {
+                                    /**
+                                     * Line one
+                                     */
+                                    xtype   : 'fieldcontainer',
+                                    layout  : 'hbox',
+                                    defaults: { margin: '0 10 5 0' },
+                                    items   : [
+
+                                        {
+                                            xtype     : 'textfield',
+                                            fieldLabel: i18n['patient_id'],
+                                            name      : 'pid',
+                                            width     : 280
+
+                                        },
+                                        {
+                                            xtype     : 'mitos.sexcombo',
+                                            fieldLabel: i18n['sex'],
+                                            name      : 'sex',
+                                            labelWidth: 75,
+                                            width     : 140,
+                                            minValue  : 0
+
+                                        },
+                                        {
+                                            xtype     : 'mitos.allergieslocationcombo',
+                                            fieldLabel: i18n['location'],
+                                            name      : 'location',
+                                            action    : 'location',
+                                            width     : 225,
+                                            labelWidth: 70
+
+                                        },
+                                        {
+                                            fieldLabel: i18n['begin_date'],
+                                            xtype     : 'datefield',
+                                            format    : 'Y-m-d',
+                                            name      : 'begin_date'
+
+                                        }
+
+                                    ]
+
+                                },
+                                {
+                                    /**
+                                     * Line two
+                                     */
+                                    xtype   : 'fieldcontainer',
+                                    layout  : 'hbox',
+                                    defaults: { margin: '0 10 5 0' },
+                                    items   : [
+                                        {
+                                            xtype     : 'datefield',
+                                            fieldLabel: i18n['date_from'],
+                                            name      : 'from'
+                                        },
+                                        {
+                                            xtype     : 'numberfield',
+                                            fieldLabel: i18n['age_from'],
+                                            name: 'age_from',
+                                            labelWidth: 75,
+                                            width     : 140,
+                                            minValue  : 0
+
+                                        },
+                                        {
+                                            xtype          : 'medicationlivetsearch',
+                                            fieldLabel     : i18n['allergy'],
+                                            hideLabel      : false,
+                                            action         : 'drug_name',
+                                            name           : 'allergy',
+                                            hidden         : true,
+                                            disabled       : true,
+                                            enableKeyEvents: true,
+                                            width          : 225,
+                                            labelWidth     : 70
+                                        }
+
+                                    ]
+
+                                },
+                                {
+                                    /**
+                                     * Line three
+                                     */
+                                    xtype   : 'fieldcontainer',
+                                    layout  : 'hbox',
+                                    defaults: { margin: '0 10 5 0' },
+                                    items   : [
+
+                                        {
+                                            xtype     : 'datefield',
+                                            fieldLabel: i18n['date_to'],
+                                            name      : 'to'
+                                        },
+                                        {
+                                            xtype     : 'numberfield',
+                                            fieldLabel: i18n['age_to'],
+                                            name: 'age_to',
+                                            labelWidth: 75,
+                                            width     :140,
+                                            minValue  : 0
+
+                                        }
+
+
+                                    ]
+                                }
+                            ]
                         }
                     ]
                 });

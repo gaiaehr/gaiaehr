@@ -1074,6 +1074,11 @@ $LANG = array(
 	'drug_name'               				=> 'Drug Name',
 	'units'               			    	=> 'Units',
 	'drugs'               			    	=> 'Drugs',
+	'end'               			        => 'End',
+	'age_from'               			    => 'Age From',
+	'date_from'               			    => 'Date From',
+	'age_to'               			        => 'Age To',
+	'date_to'               			    => 'Date To',
 	'instructed'               			    => 'Instructed',
 	'recipient_name'   					    => 'Recipient Name'
 

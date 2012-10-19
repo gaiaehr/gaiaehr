@@ -4,16 +4,16 @@
  * Author: Gino Rivera Falú (GI Technologies)
  * File: Localization.php
  * Date: 8/23/12
- * 
+ *
  * Description:
  * dataProvider for Localization
- * 
+ *
  */
-if(!isset($_SESSION))
+if (!isset($_SESSION))
 {
-    session_name ('GaiaEHR');
-    session_start();
-    session_cache_limiter('private');
+	session_name('GaiaEHR');
+	session_start();
+	session_cache_limiter('private');
 }
 
 class i18nRouter
@@ -25,24 +25,32 @@ class i18nRouter
 	// -----------------------------------------------------------------------
 	public static function getTranslation()
 	{
-		if(isset($_SESSION['site']['localization'])){
+		if (isset($_SESSION['site']['localization']))
+		{
 			$loc = $_SESSION['site']['localization'];
-		}elseif(isset($_SESSION['site']['default_localization'])){
+		}
+		elseif (isset($_SESSION['site']['default_localization']))
+		{
 			$loc = $_SESSION['site']['default_localization'];
-		}else{
+		}
+		else
+		{
 			$loc = false;
 		}
 		// This language file is need by default.
-		include($_SESSION['root'] . '/langs/en_US.php');
+		include ($_SESSION['root'] . '/langs/en_US.php');
 		$en_US = $LANG;
 		// This file will be called when the user or the administrator select
 		// a different language. But the primary language will be called first.
-		// So if some words are not translated by the selected language it can be 
+		// So if some words are not translated by the selected language it can be
 		// displayed by the original language.
-		if($loc !== false){
-			include($_SESSION['root'] . '/langs/' . $loc . '.php');
+		if ($loc !== false)
+		{
+			include ($_SESSION['root'] . '/langs/' . $loc . '.php');
 			return array_merge($en_US, $LANG);
-		}else{
+		}
+		else
+		{
 			return $en_US;
 		}
 	}
@@ -56,13 +64,13 @@ class i18nRouter
 	public static function getAvailableLanguages()
 	{
 		$availableLanguages = array();
-		if($handle = opendir($_SESSION['root'] . '/langs/'))
+		if ($handle = opendir($_SESSION['root'] . '/langs/'))
 		{
-			while(false !== ($entry = readdir($handle)))
+			while (false !== ($entry = readdir($handle)))
 			{
-				if($entry != '.' && $entry != '..')
+				if ($entry != '.' && $entry != '..')
 				{
-					include_once($_SESSION['root'] . '/langs/' . $entry);
+					include_once ($_SESSION['root'] . '/langs/' . $entry);
 					$languageContent['code'] = key($LANG);
 					$languageContent['description'] = current($LANG);
 					$availableLanguages[] = $languageContent;
@@ -85,11 +93,12 @@ class i18nRouter
 	// -----------------------------------------------------------------------
 	// this function will look for the translation, if none found will return the key
 	// -----------------------------------------------------------------------
-    public static function t($key)
-    {
-        $lang = self::getTranslation();
-        return (array_key_exists($key,$lang) ? $lang[$key] : $key);
-    }
+	public static function t($key)
+	{
+		$lang = self::getTranslation();
+		return (array_key_exists($key, $lang) ? $lang[$key] : $key);
+	}
+
 }
 
 //	print i18nRouter::t('patient_home_phone');

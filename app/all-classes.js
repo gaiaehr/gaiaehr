@@ -1,11 +1,12 @@
 /*
 Copyright(c) 2012 GaiaEHR
+*/
+/*
 Extensible 1.5.1
 Copyright(c) 2010-2012 Extensible, LLC
 licensing@ext.ensible.com
 http://ext.ensible.com
 */
-
 /**
  * @class Extensible
  * Extensible core utilities and functions.
@@ -15843,7 +15844,7 @@ Ext.define('App.classes.LiveImmunizationSearch', {
 		Ext.apply(this, {
 			store       : me.store,
 			displayField: 'code_text_short',
-			valueField  : 'code_text_short',
+			valueField  : 'code',
 			emptyText   : i18n['search_for_a_immunizations'] + '...',
 			typeAhead   : true,
 			minChars    : 1,
@@ -15877,7 +15878,6 @@ Ext.define('App.classes.LiveImmunizationSearch', {
 Ext.define('App.classes.LiveMedicationSearch', {
 	extend       : 'Ext.form.ComboBox',
 	alias        : 'widget.medicationlivetsearch',
-	hideLabel    : true,
 
 	initComponent: function() {
 		var me = this;
@@ -15913,7 +15913,7 @@ Ext.define('App.classes.LiveMedicationSearch', {
 		Ext.apply(this, {
 			store       : me.store,
 			displayField: 'PROPRIETARYNAME',
-			valueField  : 'PROPRIETARYNAME',
+			valueField  : 'id',
 			emptyText   : i18n['search_for_a_medication'] + '...',
 			typeAhead   : false,
 			hideTrigger : true,
@@ -16120,7 +16120,7 @@ Ext.define('App.classes.LiveSurgeriesSearch', {
 		Ext.apply(this, {
 			store       : me.store,
 			displayField: 'surgery',
-			valueField  : 'surgery',
+			valueField  : 'id',
 			emptyText   : i18n['search_for_a_surgery'] + '...',
 			typeAhead   : true,
 			minChars    : 1,
@@ -18574,49 +18574,54 @@ Ext.define('App.classes.grid.RowFormEditor', {
     }
 });
 
-Ext.define('App.classes.combo.ActiveFacilities', 
+Ext.define('App.classes.combo.ActiveFacilities',
 {
-	extend       : 'Ext.form.ComboBox',
-	alias        : 'widget.mitos.activefacilitiescombo',
-	initComponent: function() 
+	extend : 'Ext.form.ComboBox',
+	alias : 'widget.mitos.activefacilitiescombo',
+	initComponent : function()
 	{
 		var me = this;
 
-		Ext.define('ActiveFacilitiesComboModel', 
+		Ext.define('ActiveFacilitiesComboModel',
 		{
-			extend: 'Ext.data.Model',
-			fields: [
-				{name: 'option_name', type: 'string' },
-				{name: 'option_value', type: 'int' }
-			],
-			proxy : 
+			extend : 'Ext.data.Model',
+			fields : [
 			{
-				type: 'direct',
-				api : 
+				name : 'option_name',
+				type : 'string'
+			},
+			{
+				name : 'option_value',
+				type : 'int'
+			}],
+			proxy :
+			{
+				type : 'direct',
+				api :
 				{
-					read: CombosData.getActiveFacilities
+					read : CombosData.getActiveFacilities
 				}
 			}
 		});
 
-		me.store = Ext.create('Ext.data.Store', 
+		me.store = Ext.create('Ext.data.Store',
 		{
-			model   : 'ActiveFacilitiesComboModel',
-			autoLoad: true
+			model : 'ActiveFacilitiesComboModel',
+			autoLoad : true
 		});
 
-		Ext.apply(this, 
+		Ext.apply(this,
 		{
-			editable    : false,
-			queryMode   : 'local',
-			valueField  : 'option_value',
-			displayField: 'option_name',
-			emptyText   : i18n['select'],
-			store       : me.store
+			editable : false,
+			queryMode : 'local',
+			valueField : 'option_value',
+			displayField : 'option_name',
+			emptyText : i18n['select'],
+			store : me.store
 		}, null);
 		me.callParent(arguments);
 	}
-});
+}); 
 Ext.define('App.classes.combo.ActiveInsurances', {
 	extend       : 'Ext.form.ComboBox',
 	alias        : 'widget.activeinsurancescombo',
@@ -21304,1325 +21309,1325 @@ Ext.define('App.view.search.PatientSearch', {
  * @namespace Immunization.getPatientImmunizations
  * @namespace Immunization.addPatientImmunization
  */
-Ext.define('App.view.patient.windows.Medical', {
-	extend       : 'App.classes.window.Window',
-	title        : i18n['medical_window'],
-	id           : 'MedicalWindow',
-	layout       : 'card',
-	closeAction  : 'hide',
-	height       : 750,
-	width        : 1200,
-	bodyStyle    : 'background-color:#fff',
-	modal        : true,
-	defaults     : {
-		margin: 5
+Ext.define('App.view.patient.windows.Medical',
+{
+	extend : 'App.classes.window.Window',
+	title : i18n['medical_window'],
+	id : 'MedicalWindow',
+	layout : 'card',
+	closeAction : 'hide',
+	height : 750,
+	width : 1200,
+	bodyStyle : 'background-color:#fff',
+	modal : true,
+	defaults :
+	{
+		margin : 5
 	},
-	requires     : [ 'App.view.patient.LaboratoryResults' ],
-	pid          : null,
-	initComponent: function() {
+	requires : ['App.view.patient.LaboratoryResults'],
+	pid : null,
+	initComponent : function()
+	{
 
 		var me = this;
 
-
-		me.patientImmuListStore = Ext.create('App.store.patient.PatientImmunization', {
-			groupField: 'immunization_name',
-			sorters   : ['immunization_name', 'administered_date'],
-			listeners : {
-				scope     : me,
-				beforesync: me.setDefaults
-			},
-			autoSync  : true
-		});
-		me.patientAllergiesListStore = Ext.create('App.store.patient.Allergies', {
-
-			listeners: {
-				scope     : me,
-				beforesync: me.setDefaults
+		me.patientImmuListStore = Ext.create('App.store.patient.PatientImmunization',
+		{
+			groupField : 'immunization_name',
+			sorters : ['immunization_name', 'administered_date'],
+			listeners :
+			{
+				scope : me,
+				beforesync : me.setDefaults
 			},
 			autoSync : true
 		});
-		me.patientMedicalIssuesStore = Ext.create('App.store.patient.MedicalIssues', {
+		me.patientAllergiesListStore = Ext.create('App.store.patient.Allergies',
+		{
 
-			listeners: {
-				scope     : me,
-				beforesync: me.setDefaults
+			listeners :
+			{
+				scope : me,
+				beforesync : me.setDefaults
 			},
 			autoSync : true
 		});
-		me.patientSurgeryStore = Ext.create('App.store.patient.Surgery', {
+		me.patientMedicalIssuesStore = Ext.create('App.store.patient.MedicalIssues',
+		{
 
-			listeners: {
-				scope     : me,
-				beforesync: me.setDefaults
+			listeners :
+			{
+				scope : me,
+				beforesync : me.setDefaults
 			},
 			autoSync : true
 		});
-		me.patientDentalStore = Ext.create('App.store.patient.Dental', {
+		me.patientSurgeryStore = Ext.create('App.store.patient.Surgery',
+		{
 
-			listeners: {
-				scope     : me,
-				beforesync: me.setDefaults
+			listeners :
+			{
+				scope : me,
+				beforesync : me.setDefaults
 			},
 			autoSync : true
 		});
-		me.patientMedicationsStore = Ext.create('App.store.patient.Medications', {
+		me.patientDentalStore = Ext.create('App.store.patient.Dental',
+		{
 
-			listeners: {
-				scope     : me,
-				beforesync: me.setDefaults
+			listeners :
+			{
+				scope : me,
+				beforesync : me.setDefaults
 			},
 			autoSync : true
 		});
-		me.labPanelsStore = Ext.create('App.store.patient.LaboratoryTypes', {
-			autoSync: true
+		me.patientMedicationsStore = Ext.create('App.store.patient.Medications',
+		{
+
+			listeners :
+			{
+				scope : me,
+				beforesync : me.setDefaults
+			},
+			autoSync : true
+		});
+		me.labPanelsStore = Ext.create('App.store.patient.LaboratoryTypes',
+		{
+			autoSync : true
 		});
 
 		me.items = [
+		{
+			xtype : 'grid',
+			action : 'patientImmuListGrid',
+			itemId : 'patientImmuListGrid',
+			store : me.patientImmuListStore,
+			features : Ext.create('Ext.grid.feature.Grouping',
 			{
-				xtype   : 'grid',
-				action  : 'patientImmuListGrid',
-				itemId  : 'patientImmuListGrid',
-				store   : me.patientImmuListStore,
-				features: Ext.create('Ext.grid.feature.Grouping', {
-					groupHeaderTpl   : i18n['immunization'] + ': {name} ({rows.length} Item{[values.rows.length > 1 ? "s" : ""]})',
-					hideGroupedHeader: true
-				}),
-				columns : [
-					{
-						header   : i18n['immunization_name'],
-						width    : 100,
-						dataIndex: 'immunization_name'
-					},
-					{
-						xtype    : 'datecolumn',
-						header   : 'Date',
-						format   : 'Y-m-d',
-						width    : 100,
-						dataIndex: 'administered_date'
-					},
-					{
-						header   : i18n['lot_number'],
-						width    : 100,
-						dataIndex: 'lot_number'
-					},
-					{
-						header   : 'Notes',
-						flex     : 1,
-						dataIndex: 'note'
-					}
-				],
-
-				plugins: Ext.create('App.classes.grid.RowFormEditing', {
-					autoCancel  : false,
-					errorSummary: false,
-					clicksToEdit: 1,
-					formItems   : [
-
-						{
-
-							title : 'general',
-							xtype : 'container',
-							layout: 'vbox',
-							items : [
-								{
-									/**
-									 * Line one
-									 */
-									xtype   : 'fieldcontainer',
-									layout  : 'hbox',
-									defaults: { margin: '0 10 3 0', xtype: 'textfield'},
-									items   : [
-
-										{
-											xtype          : 'immunizationlivesearch',
-											fieldLabel     : i18n['name'],
-											hideLabel      : false,
-											allowBlank     : false,
-											itemId         : 'immunization_name',
-											name           : 'immunization_name',
-											enableKeyEvents: true,
-											action         : 'immunizations',
-											width          : 570,
-											listeners      : {
-												scope : me,
-												select: me.onLiveSearchSelect
-											}
-										},
-										{
-											xtype : 'textfield',
-											hidden: true,
-											name  : 'immunization_id',
-											action: 'idField'
-										},
-										{
-											fieldLabel: i18n['administrator'],
-											name      : 'administered_by',
-											width     : 295,
-											labelWidth: 160
-
-										}
-
-									]
-
-								},
-								{
-									/**
-									 * Line two
-									 */
-									xtype   : 'fieldcontainer',
-									layout  : 'hbox',
-									defaults: { margin: '0 10 3 0', xtype: 'textfield' },
-									items   : [
-										{
-											fieldLabel: i18n['lot_number'],
-											xtype     : 'textfield',
-											width     : 300,
-											name      : 'lot_number'
-
-										},
-										{
-
-											xtype     : 'numberfield',
-											fieldLabel: i18n['dosis_number'],
-											width     : 260,
-											name      : 'dosis'
-										},
-
-										{
-											fieldLabel: i18n['info_statement_given'],
-											width     : 295,
-											labelWidth: 160,
-											xtype     : 'datefield',
-											format    : 'Y-m-d',
-											name      : 'education_date'
-										}
-
-									]
-
-								},
-								{
-									/**
-									 * Line three
-									 */
-									xtype   : 'fieldcontainer',
-									layout  : 'hbox',
-									defaults: { margin: '0 10 3 0', xtype: 'textfield' },
-									items   : [
-
-										{
-											fieldLabel: i18n['notes'],
-											xtype     : 'textfield',
-											width     : 300,
-											name      : 'note'
-
-										},
-										{
-											fieldLabel: i18n['manufacturer'],
-											xtype     : 'textfield',
-											width     : 260,
-
-											name: 'manufacturer'
-
-										},
-
-										{
-											fieldLabel: i18n['date_administered'],
-											xtype     : 'datefield',
-											width     : 295,
-											labelWidth: 160,
-											format    : 'Y-m-d',
-											name      : 'administered_date'
-										}
-
-									]
-
-								}
-
-							]
-
-						}
-
-					]
-				}),
-				bbar   : [
-					'->', {
-						text   : i18n['reviewed'],
-						action : 'review',
-						itemId : 'review_immunizations',
-						scope  : me,
-						handler: me.onReviewed
-					}
-				]
-			},
-
+				groupHeaderTpl : i18n['immunization'] + ': {name} ({rows.length} Item{[values.rows.length > 1 ? "s" : ""]})',
+				hideGroupedHeader : true
+			}),
+			columns : [
 			{
-				/**
-				 * Allergies Card panel
-				 */
-				xtype  : 'grid',
-				action : 'patientAllergiesListGrid',
-				store  : me.patientAllergiesListStore,
-				columns: [
-					{
-						header   : i18n['type'],
-						width    : 100,
-						dataIndex: 'allergy_type'
-					},
-					{
-						header   : i18n['name'],
-						width    : 100,
-						dataIndex: 'allergy'
-					},
-					{
-						header   : i18n['location'],
-						width    : 100,
-						dataIndex: 'location'
-					},
-					{
-						header   : i18n['severity'],
-						flex     : 1,
-						dataIndex: 'severity'
-					},
-					{
-						text     : i18n['active'],
-						width    : 55,
-						dataIndex: 'alert',
-						renderer : me.boolRenderer
-					}
-				],
-				plugins: me.rowEditingAllergies = Ext.create('App.classes.grid.RowFormEditing', {
-					autoCancel  : false,
-					errorSummary: false,
-					clicksToEdit: 1,
-					formItems   : [
-
-						{
-							title  : i18n['general'],
-							xtype  : 'container',
-							padding: 10,
-							layout : 'vbox',
-							items  : [
-								{
-									/**
-									 * Line one
-									 */
-									xtype   : 'fieldcontainer',
-									layout  : 'hbox',
-									defaults: { margin: '0 10 5 0' },
-									items   : [
-										{
-											xtype          : 'mitos.allergiestypescombo',
-											fieldLabel     : i18n['type'],
-											name           : 'allergy_type',
-											action         : 'allergy_type',
-											allowBlank     : false,
-											width          : 225,
-											labelWidth     : 70,
-											enableKeyEvents: true,
-											listeners      : {
-												scope   : me,
-												'select': me.onAllergyTypeSelect
-											}
-										},
-										{
-											xtype     : 'mitos.allergieslocationcombo',
-											fieldLabel: i18n['location'],
-											name      : 'location',
-											action    : 'location',
-											width     : 225,
-											labelWidth: 70,
-											listeners : {
-												scope   : me,
-												'select': me.onLocationSelect
-											}
-
-										},
-										{
-											fieldLabel: i18n['begin_date'],
-											xtype     : 'datefield',
-											format    : 'Y-m-d',
-											name      : 'begin_date'
-
-										}
-
-									]
-
-								},
-								{
-									/**
-									 * Line two
-									 */
-									xtype   : 'fieldcontainer',
-									layout  : 'hbox',
-									defaults: { margin: '0 10 5 0' },
-									items   : [
-										{
-											xtype          : 'mitos.allergiescombo',
-											fieldLabel     : i18n['allergy'],
-											action         : 'allergie_name',
-											name           : 'allergy',
-											enableKeyEvents: true,
-											disabled       : true,
-											width          : 225,
-											labelWidth     : 70,
-											listeners      : {
-												scope   : me,
-												'select': me.onLiveSearchSelect,
-												change  : me.disableFieldLogic
-											}
-										},
-										{
-											xtype          : 'medicationlivetsearch',
-											fieldLabel     : i18n['allergy'],
-											hideLabel      : false,
-											action         : 'drug_name',
-											name           : 'allergy',
-											hidden         : true,
-											disabled       : true,
-											enableKeyEvents: true,
-											width          : 225,
-											labelWidth     : 70,
-											listeners      : {
-												scope   : me,
-												'select': me.onLiveSearchSelect,
-												change  : me.disableFieldLogic
-											}
-										},
-										{
-											xtype : 'textfield',
-											hidden: true,
-											name  : 'allergy_id',
-											action: 'idField'
-										},
-										{
-											xtype     : 'mitos.allergiesabdominalcombo',
-											fieldLabel: i18n['reaction'],
-											name      : 'reaction',
-											disabled  : true,
-											width     : 225,
-											labelWidth: 70,
-											listeners : {
-												scope : me,
-												change: me.disableFieldLogic
-											}
-
-										},
-										{
-											xtype     : 'mitos.allergieslocalcombo',
-											fieldLabel: i18n['reaction'],
-											name      : 'reaction',
-											hidden    : true,
-											disabled  : true,
-											width     : 225,
-											labelWidth: 70,
-											listeners : {
-												scope : me,
-												change: me.disableFieldLogic
-											}
-
-										},
-										{
-											xtype     : 'mitos.allergiesskincombo',
-											fieldLabel: i18n['reaction'],
-											name      : 'reaction',
-											hidden    : true,
-											disabled  : true,
-											width     : 225,
-											labelWidth: 70,
-											listeners : {
-												scope : me,
-												change: me.disableFieldLogic
-											}
-
-										},
-										{
-											xtype     : 'mitos.allergiessystemiccombo',
-											fieldLabel: i18n['reaction'],
-											name      : 'reaction',
-											hidden    : true,
-											disabled  : true,
-											width     : 225,
-											labelWidth: 70,
-											listeners : {
-												scope : me,
-												change: me.disableFieldLogic
-											}
-
-										},
-										{
-											fieldLabel: i18n['end_date'],
-											xtype     : 'datefield',
-											format    : 'Y-m-d',
-											name      : 'end_date'
-										}
-
-									]
-
-								},
-								{
-									/**
-									 * Line three
-									 */
-									xtype   : 'fieldcontainer',
-									layout  : 'hbox',
-									defaults: { margin: '0 10 5 0' },
-									items   : [
-										{
-											xtype     : 'mitos.allergiesseveritycombo',
-											fieldLabel: i18n['severity'],
-											name      : 'severity',
-											width     : 225,
-											labelWidth: 70
-
-										}
-
-
-									]
-								}
-							]
-						}
-					]
-				}),
-				bbar   : [
-					'->', {
-						text   : i18n['reviewed'],
-						action : 'review',
-						itemId : 'review_allergies',
-						scope  : me,
-						handler: me.onReviewed
-					}
-				]
+				header : i18n['immunization_name'],
+				width : 100,
+				dataIndex : 'immunization_name'
 			},
 			{
-				/**
-				 * Active Problem Card panel
-				 */
-
-				xtype  : 'grid',
-				action : 'patientMedicalListGrid',
-				store  : me.patientMedicalIssuesStore,
-				columns: [
-
-					{
-						header   : i18n['problem'],
-						flex     : 1,
-						dataIndex: 'code_text'
-					},
-					{
-						xtype    : 'datecolumn',
-						header   : i18n['begin_date'],
-						width    : 100,
-						format   : 'Y-m-d',
-						dataIndex: 'begin_date'
-					},
-					{
-						xtype    : 'datecolumn',
-						header   : i18n['end_date'],
-						width    : 100,
-						format   : 'Y-m-d',
-						dataIndex: 'end_date'
-					}
-
-				],
-				plugins: Ext.create('App.classes.grid.RowFormEditing', {
-					autoCancel  : false,
-					errorSummary: false,
-					clicksToEdit: 1,
-
-					formItems: [
-						{
-							title  : i18n['general'],
-							xtype  : 'container',
-							padding: 10,
-							layout : 'vbox',
-							items  : [
-								{
-									/**
-									 * Line one
-									 */
-									xtype   : 'fieldcontainer',
-									layout  : 'hbox',
-									defaults: { margin: '0 10 5 0' },
-									items   : [
-										{
-											xtype          : 'liveicdxsearch',
-											fieldLabel     : i18n['problem'],
-											name           : 'code_text',
-											allowBlank     : false,
-											hideLabel      : false,
-											itemId         : 'medicalissues',
-											action         : 'medicalissues',
-											enableKeyEvents: true,
-											width          : 510,
-											labelWidth     : 70,
-											listeners      : {
-												scope   : me,
-												'select': me.onLiveSearchSelect
-											}
-										},
-										{
-											xtype : 'textfield',
-											hidden: true,
-											name  : 'code',
-											action: 'idField'
-										},
-
-
-										{
-											fieldLabel: i18n['begin_date'],
-											xtype     : 'datefield',
-											width     : 200,
-											labelWidth: 80,
-											format    : 'Y-m-d',
-											name      : 'begin_date'
-
-										}
-
-									]
-
-								},
-								{
-									/**
-									 * Line two
-									 */
-									xtype   : 'fieldcontainer',
-									layout  : 'hbox',
-									defaults: { margin: '0 10 5 0' },
-									items   : [
-
-										{
-											fieldLabel: i18n['ocurrence'],
-											width     : 250,
-											labelWidth: 70,
-											xtype     : 'mitos.occurrencecombo',
-											name      : 'ocurrence'
-
-										},
-
-										{
-											fieldLabel: i18n['outcome'],
-											xtype     : 'mitos.outcome2combo',
-											width     : 250,
-											labelWidth: 70,
-											name      : 'outcome'
-
-										},
-										{
-											fieldLabel: i18n['end_date'],
-											xtype     : 'datefield',
-											width     : 200,
-											labelWidth: 80,
-											format    : 'Y-m-d',
-											name      : 'end_date'
-
-										}
-
-									]
-
-								},
-								{
-									/**
-									 * Line three
-									 */
-									xtype   : 'fieldcontainer',
-									layout  : 'hbox',
-									defaults: { margin: '0 10 5 0' },
-									items   : [
-
-										{
-											xtype     : 'textfield',
-											width     : 250,
-											labelWidth: 70,
-											fieldLabel: i18n['referred_by'],
-											name      : 'referred_by'
-										}
-
-									]
-								}
-							]
-						}
-
-					]
-				}),
-				bbar   : [
-					'->', {
-						text   : i18n['reviewed'],
-						action : 'review',
-						itemId : 'review_active_problems',
-						scope  : me,
-						handler: me.onReviewed
-					}
-				]
+				xtype : 'datecolumn',
+				header : 'Date',
+				format : 'Y-m-d',
+				width : 100,
+				dataIndex : 'administered_date'
 			},
 			{
-				/**
-				 * Surgery Card panel
-				 */
-
-				xtype  : 'grid',
-				action : 'patientSurgeryListGrid',
-				store  : me.patientSurgeryStore,
-				columns: [
-					{
-						header   : i18n['surgery'],
-						width    : 100,
-						flex     : 1,
-						dataIndex: 'surgery'
-					},
-					{
-						xtype    : 'datecolumn',
-						header   : i18n['date'],
-						width    : 100,
-						format   : 'Y-m-d',
-						dataIndex: 'date'
-					}
-
-				],
-				plugins: Ext.create('App.classes.grid.RowFormEditing', {
-					autoCancel  : false,
-					errorSummary: false,
-					clicksToEdit: 1,
-					formItems   : [
-						{
-							title  : i18n['general'],
-							xtype  : 'container',
-							padding: 10,
-							layout : 'vbox',
-							items  : [
-								{
-									/**
-									 * Line one
-									 */
-									xtype   : 'fieldcontainer',
-									layout  : 'hbox',
-									defaults: { margin: '0 10 5 0' },
-									items   : [
-										{
-											fieldLabel     : i18n['surgery'],
-											name           : 'surgery',
-											hideLabel      : false,
-											allowBlank     : false,
-											width          : 510,
-											labelWidth     : 70,
-											xtype          : 'surgerieslivetsearch',
-											itemId         : 'surgery',
-											action         : 'surgery',
-											enableKeyEvents: true,
-											listeners      : {
-												scope   : me,
-												'select': me.onLiveSearchSelect
-											}
-										},
-										{
-											xtype : 'textfield',
-											hidden: true,
-											name  : 'surgery_id',
-											action: 'idField'
-										},
-										{
-											fieldLabel: i18n['date'],
-											xtype     : 'datefield',
-											width     : 200,
-											labelWidth: 80,
-											format    : 'Y-m-d',
-											name      : 'date'
-
-										}
-
-									]
-
-								},
-								{
-									/**
-									 * Line two
-									 */
-									xtype   : 'fieldcontainer',
-									layout  : 'hbox',
-									defaults: { margin: '0 10 5 0' },
-									items   : [
-										{
-											fieldLabel: i18n['notes'],
-											xtype     : 'textfield',
-											width     : 510,
-											labelWidth: 70,
-											name      : 'notes'
-
-										},
-										{
-											fieldLabel: i18n['outcome'],
-											xtype     : 'mitos.outcome2combo',
-											width     : 200,
-											labelWidth: 80,
-											name      : 'outcome'
-
-										}
-
-
-									]
-
-								},
-								{
-									/**
-									 * Line three
-									 */
-									xtype   : 'fieldcontainer',
-									layout  : 'hbox',
-									defaults: { margin: '0 10 5 0' },
-									items   : [
-										{
-											xtype     : 'textfield',
-											width     : 260,
-											labelWidth: 70,
-
-											fieldLabel: i18n['referred_by'],
-											name      : 'referred_by'
-										}
-
-									]
-								}
-							]
-						}
-
-					]
-				}),
-				bbar   : [
-					'->', {
-						text   : i18n['reviewed'],
-						action : 'review',
-						itemId : 'review_surgery',
-						scope  : me,
-						handler: me.onReviewed
-					}
-				]
+				header : i18n['lot_number'],
+				width : 100,
+				dataIndex : 'lot_number'
 			},
 			{
-				/**
-				 * Dental Card panel
-				 */
+				header : 'Notes',
+				flex : 1,
+				dataIndex : 'note'
+			}],
 
-				xtype  : 'grid',
-				action : 'patientDentalListGrid',
-				store  : me.patientDentalStore,
-				columns: [
-					{
-						header   : i18n['title'],
-						width    : 100,
-						dataIndex: 'title'
-					},
-					{
-						xtype    : 'datecolumn',
-						header   : i18n['begin_date'],
-						width    : 100,
-						format   : 'Y-m-d',
-						dataIndex: 'begin_date'
-					},
-					{
-						xtype    : 'datecolumn',
-						header   : i18n['end_date'],
-						flex     : 1,
-						format   : 'Y-m-d',
-						dataIndex: 'end_date'
-					}
-				],
-				plugins: Ext.create('App.classes.grid.RowFormEditing', {
-					autoCancel  : false,
-					errorSummary: false,
-					clicksToEdit: 1,
-					formItems   : [
-						{
-							title  : i18n['general'],
-							xtype  : 'container',
-							padding: 10,
-							layout : 'vbox',
-							items  : [
-								{
-									/**
-									 * Line one
-									 */
-									xtype   : 'fieldcontainer',
-									layout  : 'hbox',
-									defaults: { margin: '0 10 5 0' },
-									items   : [
-
-										{   xtype     : 'textfield',
-											width     : 225,
-											labelWidth: 70,
-											fieldLabel: i18n['title'],
-											action    : 'dental',
-											name      : 'title'
-										},
-//                                        {
-//   		                                    xtype:'textfield',
-//   		                                    hidden:true,
-//   		                                    name:'immunization_id',
-//   		                                    action:'idField'
-//   	                                    },
-										{
-											fieldLabel: i18n['begin_date'],
-											xtype     : 'datefield',
-											width     : 200,
-											labelWidth: 80,
-											format    : 'Y-m-d',
-											name      : 'begin_date'
-
-										},
-										{
-											fieldLabel: i18n['outcome'],
-											xtype     : 'mitos.outcome2combo',
-											width     : 250,
-											labelWidth: 70,
-											name      : 'outcome'
-
-										}
-
-									]
-
-								},
-								{
-									/**
-									 * Line two
-									 */
-									xtype   : 'fieldcontainer',
-									layout  : 'hbox',
-									defaults: { margin: '0 10 5 0' },
-									items   : [
-
-										{
-											xtype     : 'textfield',
-											width     : 225,
-											labelWidth: 70,
-											fieldLabel: i18n['referred_by'],
-											name      : 'referred_by'
-										},
-
-										{
-											fieldLabel: i18n['end_date'],
-											xtype     : 'datefield',
-											width     : 200,
-											labelWidth: 80,
-											format    : 'Y-m-d',
-											name      : 'end_date'
-
-										},
-										{
-											fieldLabel: i18n['ocurrence'],
-											xtype     : 'mitos.occurrencecombo',
-											width     : 250,
-											labelWidth: 70,
-											name      : 'ocurrence'
-
-										}
-
-									]
-
-								}
-							]
-						}
-
-					]
-				}),
-				bbar   : [
-					'->', {
-						text   : i18n['reviewed'],
-						action : 'review',
-						itemId : 'review_dental',
-						scope  : me,
-						handler: me.onReviewed
-					}
-				]
-			},
+			plugins : Ext.create('App.classes.grid.RowFormEditing',
 			{
-				/**
-				 * Medications panel
-				 */
+				autoCancel : false,
+				errorSummary : false,
+				clicksToEdit : 1,
+				formItems : [
 
-				xtype  : 'grid',
-				action : 'patientMedicationsListGrid',
-				store  : me.patientMedicationsStore,
-				columns: [
-					{
-						header   : i18n['medication'],
-						flex     : 1,
-						dataIndex: 'medication'
-					},
-					{
-						xtype    : 'datecolumn',
-						header   : i18n['begin_date'],
-						width    : 100,
-						format   : 'Y-m-d',
-						dataIndex: 'begin_date'
-					},
-					{
-						xtype    : 'datecolumn',
-						header   : i18n['end_date'],
-						width    : 100,
-						format   : 'Y-m-d',
-						dataIndex: 'end_date'
-					}
-				],
-				plugins: Ext.create('App.classes.grid.RowFormEditing', {
-					autoCancel  : false,
-					errorSummary: false,
-					clicksToEdit: 1,
+				{
 
-					formItems: [
+					title : 'general',
+					xtype : 'container',
+					layout : 'vbox',
+					items : [
+					{
+						/**
+						 * Line one
+						 */
+						xtype : 'fieldcontainer',
+						layout : 'hbox',
+						defaults :
 						{
-							title  : i18n['general'],
-							xtype  : 'container',
-							padding: 10,
-							layout : 'vbox',
-							items  : [
-								{
-									/**
-									 * Line one
-									 */
-									xtype   : 'fieldcontainer',
-									layout  : 'hbox',
-									defaults: { margin: '0 10 5 0' },
-									items   : [
-										{
-											xtype          : 'medicationlivetsearch',
-											fieldLabel     : i18n['medication'],
-											hideLabel      : false,
-											itemId         : 'medication',
-											name           : 'medication',
-											action         : 'medication',
-											enableKeyEvents: true,
-											width          : 520,
-											labelWidth     : 70,
-											listeners      : {
-												scope   : me,
-												'select': me.onLiveSearchSelect
-											}
-										},
-										{
-											xtype : 'textfield',
-											hidden: true,
-											name  : 'medication_id',
-											action: 'idField'
-										},
-
-										{
-											fieldLabel: i18n['begin_date'],
-											xtype     : 'datefield',
-											width     : 200,
-											labelWidth: 80,
-											format    : 'Y-m-d',
-											name      : 'begin_date'
-
-										}
-
-									]
-
-								},
-								{
-									/**
-									 * Line two
-									 */
-									xtype   : 'fieldcontainer',
-									layout  : 'hbox',
-									defaults: { margin: '0 10 5 0' },
-									items   : [
-										{
-											fieldLabel: i18n['outcome'],
-											xtype     : 'mitos.outcome2combo',
-											width     : 250,
-											labelWidth: 70,
-											name      : 'outcome'
-										},
-										{
-											xtype     : 'textfield',
-											width     : 260,
-											fieldLabel: i18n['referred_by'],
-											name      : 'referred_by'
-										},
-										{
-											fieldLabel: i18n['end_date'],
-											xtype     : 'datefield',
-											width     : 200,
-											labelWidth: 80,
-											format    : 'Y-m-d',
-											name      : 'end_date'
-										}
-
-									]
-
-								},
-								{
-									/**
-									 * Line three
-									 */
-									xtype   : 'fieldcontainer',
-									layout  : 'hbox',
-									defaults: { margin: '0 10 5 0' },
-									items   : [
-
-										{
-											fieldLabel: i18n['ocurrence'],
-											width     : 250,
-											labelWidth: 70,
-											xtype     : 'mitos.occurrencecombo',
-											name      : 'ocurrence'
-
-										}
-
-									]
-								}
-							]
-						}
-					]
-				}),
-				bbar   : [
-					'->', {
-						text   : i18n['reviewed'],
-						action : 'review',
-						itemId : 'review_medications',
-						scope  : me,
-						handler: me.onReviewed
-					}
-				]
-			},
-			{
-				/**
-				 * Lab panel
-				 */
-				xtype : 'container',
-				action: 'patientLabs',
-				layout: 'border',
-				items : [
-					{
-						xtype     : 'panel',
-						region    : 'north',
-						layout    : 'border',
-						bodyBorder: false,
-						border    : false,
-						height    : 350,
-						split     : true,
-						items     : [
-							{
-								xtype    : 'grid',
-								region   : 'west',
-								width    : 290,
-								split    : true,
-								store    : me.labPanelsStore,
-								columns  : [
-									{
-										header   : i18n['laboratories'],
-										dataIndex: 'label',
-										flex     : 1
-									}
-								],
-								listeners: {
-									scope          : me,
-									itemclick      : me.onLabPanelSelected,
-									selectionchange: me.onLabPanelSelectionChange
-								}
-							},
-							{
-								xtype : 'panel',
-								action: 'labPreviewPanel',
-								title : i18n['laboratory_preview'],
-								region: 'center',
-								items : [
-									me.uploadWin = Ext.create('Ext.window.Window', {
-										draggable  : false,
-										closable   : false,
-										closeAction: 'hide',
-										items      : [
-											{
-												xtype      : 'form',
-												bodyPadding: 10,
-												width      : 400,
-												items      : [
-													{
-														xtype     : 'filefield',
-														name      : 'filePath',
-														buttonText: i18n['select_a_file'] + '...',
-														anchor    : '100%'
-													}
-												],
-												api        : {
-													submit: DocumentHandler.uploadDocument
-												}
-											}
-										],
-										buttons    : [
-											{
-												text   : i18n['cancel'],
-												handler: function() {
-													me.uploadWin.close();
-												}
-											},
-											{
-												text   : i18n['upload'],
-												scope  : me,
-												handler: me.onLabUpload
-											}
-										]
-									})
-								]
-							}
-						],
-						tbar      : [
-							'->',
-							{
-								text: i18n['scan']
-							},
-							'-',
-							{
-								text    : i18n['upload'],
-								disabled: true,
-								action  : 'uploadBtn',
-								scope   : me,
-								handler : me.onLabUploadWind
-							}
-						]
-					},
-					{
-						xtype : 'container',
-						region: 'center',
-						layout: 'border',
-						split : true,
+							margin : '0 10 3 0',
+							xtype : 'textfield'
+						},
 						items : [
+
+						{
+							xtype : 'immunizationlivesearch',
+							fieldLabel : i18n['name'],
+							hideLabel : false,
+							allowBlank : false,
+							itemId : 'immunization_name',
+							name : 'immunization_name',
+							enableKeyEvents : true,
+							action : 'immunizations',
+							width : 570,
+							listeners :
 							{
-								xtype      : 'form',
-								title      : i18n['laboratory_entry_form'],
-								region     : 'west',
-								width      : 290,
-								split      : true,
-								bodyPadding: 5,
-								autoScroll : true,
-								bbar       : [
-									'->',
-									{
-										text   : i18n['reset'],
-										scope  : me,
-										handler: me.onLabResultsReset
-									},
-									'-',
-									{
-										text   : i18n['sign'],
-										scope  : me,
-										handler: me.onLabResultsSign
-									},
-									'-',
-									{
-										text   : i18n['save'],
-										scope  : me,
-										handler: me.onLabResultsSave
-									}
-								]
-							},
-							{
-								xtype : 'panel',
-								region: 'center',
-								height: 300,
-								split : true,
-								items : [
-									{
-										xtype    : 'lalboratoryresultsdataview',
-										action   : 'lalboratoryresultsdataview',
-										store    : Ext.create('App.store.patient.PatientLabsResults'),
-										listeners: {
-											scope    : me,
-											itemclick: me.onLabResultClick
-										}
-									}
-								]
+								scope : me,
+								select : me.onLiveSearchSelect
 							}
-						]
+						},
+						{
+							xtype : 'textfield',
+							hidden : true,
+							name : 'immunization_id',
+							action : 'idField'
+						},
+						{
+							fieldLabel : i18n['administrator'],
+							name : 'administered_by',
+							width : 295,
+							labelWidth : 160
+
+						}]
+
+					},
+					{
+						/**
+						 * Line two
+						 */
+						xtype : 'fieldcontainer',
+						layout : 'hbox',
+						defaults :
+						{
+							margin : '0 10 3 0',
+							xtype : 'textfield'
+						},
+						items : [
+						{
+							fieldLabel : i18n['lot_number'],
+							xtype : 'textfield',
+							width : 300,
+							name : 'lot_number'
+
+						},
+						{
+
+							xtype : 'numberfield',
+							fieldLabel : i18n['dosis_number'],
+							width : 260,
+							name : 'dosis'
+						},
+
+						{
+							fieldLabel : i18n['info_statement_given'],
+							width : 295,
+							labelWidth : 160,
+							xtype : 'datefield',
+							format : 'Y-m-d',
+							name : 'education_date'
+						}]
+
+					},
+					{
+						/**
+						 * Line three
+						 */
+						xtype : 'fieldcontainer',
+						layout : 'hbox',
+						defaults :
+						{
+							margin : '0 10 3 0',
+							xtype : 'textfield'
+						},
+						items : [
+
+						{
+							fieldLabel : i18n['notes'],
+							xtype : 'textfield',
+							width : 300,
+							name : 'note'
+
+						},
+						{
+							fieldLabel : i18n['manufacturer'],
+							xtype : 'textfield',
+							width : 260,
+
+							name : 'manufacturer'
+
+						},
+
+						{
+							fieldLabel : i18n['date_administered'],
+							xtype : 'datefield',
+							width : 295,
+							labelWidth : 160,
+							format : 'Y-m-d',
+							name : 'administered_date'
+						}]
+
+					}]
+
+				}]
+			}),
+			bbar : ['->',
+			{
+				text : i18n['reviewed'],
+				action : 'review',
+				itemId : 'review_immunizations',
+				scope : me,
+				handler : me.onReviewed
+			}]
+		},
+
+		{
+			/**
+			 * Allergies Card panel
+			 */
+			xtype : 'grid',
+			action : 'patientAllergiesListGrid',
+			store : me.patientAllergiesListStore,
+			columns : [
+			{
+				header : i18n['type'],
+				width : 100,
+				dataIndex : 'allergy_type'
+			},
+			{
+				header : i18n['name'],
+				width : 100,
+				dataIndex : 'allergy'
+			},
+			{
+				header : i18n['location'],
+				width : 100,
+				dataIndex : 'location'
+			},
+			{
+				header : i18n['severity'],
+				flex : 1,
+				dataIndex : 'severity'
+			},
+			{
+				text : i18n['active'],
+				width : 55,
+				dataIndex : 'alert',
+				renderer : me.boolRenderer
+			}],
+			plugins : me.rowEditingAllergies = Ext.create('App.classes.grid.RowFormEditing',
+			{
+				autoCancel : false,
+				errorSummary : false,
+				clicksToEdit : 1,
+				formItems : [
+
+				{
+					title : i18n['general'],
+					xtype : 'container',
+					padding : 10,
+					layout : 'vbox',
+					items : [
+					{
+						/**
+						 * Line one
+						 */
+						xtype : 'fieldcontainer',
+						layout : 'hbox',
+						defaults :
+						{
+							margin : '0 10 5 0'
+						},
+						items : [
+						{
+							xtype : 'mitos.allergiestypescombo',
+							fieldLabel : i18n['type'],
+							name : 'allergy_type',
+							action : 'allergy_type',
+							allowBlank : false,
+							width : 225,
+							labelWidth : 70,
+							enableKeyEvents : true,
+							listeners :
+							{
+								scope : me,
+								'select' : me.onAllergyTypeSelect
+							}
+						},
+						{
+							xtype : 'mitos.allergieslocationcombo',
+							fieldLabel : i18n['location'],
+							name : 'location',
+							action : 'location',
+							width : 225,
+							labelWidth : 70,
+							listeners :
+							{
+								scope : me,
+								'select' : me.onLocationSelect
+							}
+
+						},
+						{
+							fieldLabel : i18n['begin_date'],
+							xtype : 'datefield',
+							format : 'Y-m-d',
+							name : 'begin_date'
+
+						}]
+
+					},
+					{
+						/**
+						 * Line two
+						 */
+						xtype : 'fieldcontainer',
+						layout : 'hbox',
+						defaults :
+						{
+							margin : '0 10 5 0'
+						},
+						items : [
+						{
+							xtype : 'mitos.allergiescombo',
+							fieldLabel : i18n['allergy'],
+							action : 'allergie_name',
+							name : 'allergy',
+							enableKeyEvents : true,
+							disabled : true,
+							width : 225,
+							labelWidth : 70,
+							listeners :
+							{
+								scope : me,
+								'select' : me.onLiveSearchSelect,
+								change : me.disableFieldLogic
+							}
+						},
+						{
+							xtype : 'medicationlivetsearch',
+							fieldLabel : i18n['allergy'],
+							hideLabel : false,
+							action : 'drug_name',
+							name : 'allergy',
+							hidden : true,
+							disabled : true,
+							enableKeyEvents : true,
+							width : 225,
+							labelWidth : 70,
+							listeners :
+							{
+								scope : me,
+								'select' : me.onLiveSearchSelect,
+								change : me.disableFieldLogic
+							}
+						},
+						{
+							xtype : 'textfield',
+							hidden : true,
+							name : 'allergy_id',
+							action : 'idField'
+						},
+						{
+							xtype : 'mitos.allergiesabdominalcombo',
+							fieldLabel : i18n['reaction'],
+							name : 'reaction',
+							disabled : true,
+							width : 225,
+							labelWidth : 70,
+							listeners :
+							{
+								scope : me,
+								change : me.disableFieldLogic
+							}
+
+						},
+						{
+							xtype : 'mitos.allergieslocalcombo',
+							fieldLabel : i18n['reaction'],
+							name : 'reaction',
+							hidden : true,
+							disabled : true,
+							width : 225,
+							labelWidth : 70,
+							listeners :
+							{
+								scope : me,
+								change : me.disableFieldLogic
+							}
+
+						},
+						{
+							xtype : 'mitos.allergiesskincombo',
+							fieldLabel : i18n['reaction'],
+							name : 'reaction',
+							hidden : true,
+							disabled : true,
+							width : 225,
+							labelWidth : 70,
+							listeners :
+							{
+								scope : me,
+								change : me.disableFieldLogic
+							}
+
+						},
+						{
+							xtype : 'mitos.allergiessystemiccombo',
+							fieldLabel : i18n['reaction'],
+							name : 'reaction',
+							hidden : true,
+							disabled : true,
+							width : 225,
+							labelWidth : 70,
+							listeners :
+							{
+								scope : me,
+								change : me.disableFieldLogic
+							}
+
+						},
+						{
+							fieldLabel : i18n['end_date'],
+							xtype : 'datefield',
+							format : 'Y-m-d',
+							name : 'end_date'
+						}]
+
+					},
+					{
+						/**
+						 * Line three
+						 */
+						xtype : 'fieldcontainer',
+						layout : 'hbox',
+						defaults :
+						{
+							margin : '0 10 5 0'
+						},
+						items : [
+						{
+							xtype : 'mitos.allergiesseveritycombo',
+							fieldLabel : i18n['severity'],
+							name : 'severity',
+							width : 225,
+							labelWidth : 70
+
+						}]
+					}]
+				}]
+			}),
+			bbar : ['->',
+			{
+				text : i18n['reviewed'],
+				action : 'review',
+				itemId : 'review_allergies',
+				scope : me,
+				handler : me.onReviewed
+			}]
+		},
+		{
+			/**
+			 * Active Problem Card panel
+			 */
+
+			xtype : 'grid',
+			action : 'patientMedicalListGrid',
+			store : me.patientMedicalIssuesStore,
+			columns : [
+
+			{
+				header : i18n['problem'],
+				flex : 1,
+				dataIndex : 'code_text'
+			},
+			{
+				xtype : 'datecolumn',
+				header : i18n['begin_date'],
+				width : 100,
+				format : 'Y-m-d',
+				dataIndex : 'begin_date'
+			},
+			{
+				xtype : 'datecolumn',
+				header : i18n['end_date'],
+				width : 100,
+				format : 'Y-m-d',
+				dataIndex : 'end_date'
+			}],
+			plugins : Ext.create('App.classes.grid.RowFormEditing',
+			{
+				autoCancel : false,
+				errorSummary : false,
+				clicksToEdit : 1,
+
+				formItems : [
+				{
+					title : i18n['general'],
+					xtype : 'container',
+					padding : 10,
+					layout : 'vbox',
+					items : [
+					{
+						/**
+						 * Line one
+						 */
+						xtype : 'fieldcontainer',
+						layout : 'hbox',
+						defaults :
+						{
+							margin : '0 10 5 0'
+						},
+						items : [
+						{
+							xtype : 'liveicdxsearch',
+							fieldLabel : i18n['problem'],
+							name : 'code_text',
+							allowBlank : false,
+							hideLabel : false,
+							itemId : 'medicalissues',
+							action : 'medicalissues',
+							enableKeyEvents : true,
+							width : 510,
+							labelWidth : 70,
+							listeners :
+							{
+								scope : me,
+								'select' : me.onLiveSearchSelect
+							}
+						},
+						{
+							xtype : 'textfield',
+							hidden : true,
+							name : 'code',
+							action : 'idField'
+						},
+
+						{
+							fieldLabel : i18n['begin_date'],
+							xtype : 'datefield',
+							width : 200,
+							labelWidth : 80,
+							format : 'Y-m-d',
+							name : 'begin_date'
+
+						}]
+
+					},
+					{
+						/**
+						 * Line two
+						 */
+						xtype : 'fieldcontainer',
+						layout : 'hbox',
+						defaults :
+						{
+							margin : '0 10 5 0'
+						},
+						items : [
+
+						{
+							fieldLabel : i18n['ocurrence'],
+							width : 250,
+							labelWidth : 70,
+							xtype : 'mitos.occurrencecombo',
+							name : 'ocurrence'
+
+						},
+
+						{
+							fieldLabel : i18n['outcome'],
+							xtype : 'mitos.outcome2combo',
+							width : 250,
+							labelWidth : 70,
+							name : 'outcome'
+
+						},
+						{
+							fieldLabel : i18n['end_date'],
+							xtype : 'datefield',
+							width : 200,
+							labelWidth : 80,
+							format : 'Y-m-d',
+							name : 'end_date'
+
+						}]
+
+					},
+					{
+						/**
+						 * Line three
+						 */
+						xtype : 'fieldcontainer',
+						layout : 'hbox',
+						defaults :
+						{
+							margin : '0 10 5 0'
+						},
+						items : [
+
+						{
+							xtype : 'textfield',
+							width : 250,
+							labelWidth : 70,
+							fieldLabel : i18n['referred_by'],
+							name : 'referred_by'
+						}]
+					}]
+				}]
+			}),
+			bbar : ['->',
+			{
+				text : i18n['reviewed'],
+				action : 'review',
+				itemId : 'review_active_problems',
+				scope : me,
+				handler : me.onReviewed
+			}]
+		},
+		{
+			/**
+			 * Surgery Card panel
+			 */
+
+			xtype : 'grid',
+			action : 'patientSurgeryListGrid',
+			store : me.patientSurgeryStore,
+			columns : [
+			{
+				header : i18n['surgery'],
+				width : 100,
+				flex : 1,
+				dataIndex : 'surgery'
+			},
+			{
+				xtype : 'datecolumn',
+				header : i18n['date'],
+				width : 100,
+				format : 'Y-m-d',
+				dataIndex : 'date'
+			}],
+			plugins : Ext.create('App.classes.grid.RowFormEditing',
+			{
+				autoCancel : false,
+				errorSummary : false,
+				clicksToEdit : 1,
+				formItems : [
+				{
+					title : i18n['general'],
+					xtype : 'container',
+					padding : 10,
+					layout : 'vbox',
+					items : [
+					{
+						/**
+						 * Line one
+						 */
+						xtype : 'fieldcontainer',
+						layout : 'hbox',
+						defaults :
+						{
+							margin : '0 10 5 0'
+						},
+						items : [
+						{
+							fieldLabel : i18n['surgery'],
+							name : 'surgery',
+							hideLabel : false,
+							allowBlank : false,
+							width : 510,
+							labelWidth : 70,
+							xtype : 'surgerieslivetsearch',
+							itemId : 'surgery',
+							action : 'surgery',
+							enableKeyEvents : true,
+							listeners :
+							{
+								scope : me,
+								'select' : me.onLiveSearchSelect
+							}
+						},
+						{
+							xtype : 'textfield',
+							hidden : true,
+							name : 'surgery_id',
+							action : 'idField'
+						},
+						{
+							fieldLabel : i18n['date'],
+							xtype : 'datefield',
+							width : 200,
+							labelWidth : 80,
+							format : 'Y-m-d',
+							name : 'date'
+
+						}]
+
+					},
+					{
+						/**
+						 * Line two
+						 */
+						xtype : 'fieldcontainer',
+						layout : 'hbox',
+						defaults :
+						{
+							margin : '0 10 5 0'
+						},
+						items : [
+						{
+							fieldLabel : i18n['notes'],
+							xtype : 'textfield',
+							width : 510,
+							labelWidth : 70,
+							name : 'notes'
+
+						},
+						{
+							fieldLabel : i18n['outcome'],
+							xtype : 'mitos.outcome2combo',
+							width : 200,
+							labelWidth : 80,
+							name : 'outcome'
+
+						}]
+
+					},
+					{
+						/**
+						 * Line three
+						 */
+						xtype : 'fieldcontainer',
+						layout : 'hbox',
+						defaults :
+						{
+							margin : '0 10 5 0'
+						},
+						items : [
+						{
+							xtype : 'textfield',
+							width : 260,
+							labelWidth : 70,
+
+							fieldLabel : i18n['referred_by'],
+							name : 'referred_by'
+						}]
+					}]
+				}]
+			}),
+			bbar : ['->',
+			{
+				text : i18n['reviewed'],
+				action : 'review',
+				itemId : 'review_surgery',
+				scope : me,
+				handler : me.onReviewed
+			}]
+		},
+		{
+			/**
+			 * Dental Card panel
+			 */
+
+			xtype : 'grid',
+			action : 'patientDentalListGrid',
+			store : me.patientDentalStore,
+			columns : [
+			{
+				header : i18n['title'],
+				width : 100,
+				dataIndex : 'title'
+			},
+			{
+				xtype : 'datecolumn',
+				header : i18n['begin_date'],
+				width : 100,
+				format : 'Y-m-d',
+				dataIndex : 'begin_date'
+			},
+			{
+				xtype : 'datecolumn',
+				header : i18n['end_date'],
+				flex : 1,
+				format : 'Y-m-d',
+				dataIndex : 'end_date'
+			}],
+			plugins : Ext.create('App.classes.grid.RowFormEditing',
+			{
+				autoCancel : false,
+				errorSummary : false,
+				clicksToEdit : 1,
+				formItems : [
+				{
+					title : i18n['general'],
+					xtype : 'container',
+					padding : 10,
+					layout : 'vbox',
+					items : [
+					{
+						/**
+						 * Line one
+						 */
+						xtype : 'fieldcontainer',
+						layout : 'hbox',
+						defaults :
+						{
+							margin : '0 10 5 0'
+						},
+						items : [
+
+						{
+							xtype : 'textfield',
+							width : 225,
+							labelWidth : 70,
+							fieldLabel : i18n['title'],
+							action : 'dental',
+							name : 'title'
+						},
+						//                                        {
+						//   		                                    xtype:'textfield',
+						//   		                                    hidden:true,
+						//   		                                    name:'immunization_id',
+						//   		                                    action:'idField'
+						//   	                                    },
+						{
+							fieldLabel : i18n['begin_date'],
+							xtype : 'datefield',
+							width : 200,
+							labelWidth : 80,
+							format : 'Y-m-d',
+							name : 'begin_date'
+
+						},
+						{
+							fieldLabel : i18n['outcome'],
+							xtype : 'mitos.outcome2combo',
+							width : 250,
+							labelWidth : 70,
+							name : 'outcome'
+
+						}]
+
+					},
+					{
+						/**
+						 * Line two
+						 */
+						xtype : 'fieldcontainer',
+						layout : 'hbox',
+						defaults :
+						{
+							margin : '0 10 5 0'
+						},
+						items : [
+
+						{
+							xtype : 'textfield',
+							width : 225,
+							labelWidth : 70,
+							fieldLabel : i18n['referred_by'],
+							name : 'referred_by'
+						},
+
+						{
+							fieldLabel : i18n['end_date'],
+							xtype : 'datefield',
+							width : 200,
+							labelWidth : 80,
+							format : 'Y-m-d',
+							name : 'end_date'
+
+						},
+						{
+							fieldLabel : i18n['ocurrence'],
+							xtype : 'mitos.occurrencecombo',
+							width : 250,
+							labelWidth : 70,
+							name : 'ocurrence'
+
+						}]
+
+					}]
+				}]
+			}),
+			bbar : ['->',
+			{
+				text : i18n['reviewed'],
+				action : 'review',
+				itemId : 'review_dental',
+				scope : me,
+				handler : me.onReviewed
+			}]
+		},
+		{
+			/**
+			 * Medications panel
+			 */
+
+			xtype : 'grid',
+			action : 'patientMedicationsListGrid',
+			store : me.patientMedicationsStore,
+			columns : [
+			{
+				header : i18n['medication'],
+				flex : 1,
+				dataIndex : 'medication'
+			},
+			{
+				xtype : 'datecolumn',
+				header : i18n['begin_date'],
+				width : 100,
+				format : 'Y-m-d',
+				dataIndex : 'begin_date'
+			},
+			{
+				xtype : 'datecolumn',
+				header : i18n['end_date'],
+				width : 100,
+				format : 'Y-m-d',
+				dataIndex : 'end_date'
+			}],
+			plugins : Ext.create('App.classes.grid.RowFormEditing',
+			{
+				autoCancel : false,
+				errorSummary : false,
+				clicksToEdit : 1,
+
+				formItems : [
+				{
+					title : i18n['general'],
+					xtype : 'container',
+					padding : 10,
+					layout : 'vbox',
+					items : [
+					{
+						/**
+						 * Line one
+						 */
+						xtype : 'fieldcontainer',
+						layout : 'hbox',
+						defaults :
+						{
+							margin : '0 10 5 0'
+						},
+						items : [
+						{
+							xtype : 'medicationlivetsearch',
+							fieldLabel : i18n['medication'],
+							hideLabel : false,
+							itemId : 'medication',
+							name : 'medication',
+							action : 'medication',
+							enableKeyEvents : true,
+							width : 520,
+							labelWidth : 70,
+							listeners :
+							{
+								scope : me,
+								'select' : me.onLiveSearchSelect
+							}
+						},
+						{
+							xtype : 'textfield',
+							hidden : true,
+							name : 'medication_id',
+							action : 'idField'
+						},
+
+						{
+							fieldLabel : i18n['begin_date'],
+							xtype : 'datefield',
+							width : 200,
+							labelWidth : 80,
+							format : 'Y-m-d',
+							name : 'begin_date'
+
+						}]
+
+					},
+					{
+						/**
+						 * Line two
+						 */
+						xtype : 'fieldcontainer',
+						layout : 'hbox',
+						defaults :
+						{
+							margin : '0 10 5 0'
+						},
+						items : [
+						{
+							fieldLabel : i18n['outcome'],
+							xtype : 'mitos.outcome2combo',
+							width : 250,
+							labelWidth : 70,
+							name : 'outcome'
+						},
+						{
+							xtype : 'textfield',
+							width : 260,
+							fieldLabel : i18n['referred_by'],
+							name : 'referred_by'
+						},
+						{
+							fieldLabel : i18n['end_date'],
+							xtype : 'datefield',
+							width : 200,
+							labelWidth : 80,
+							format : 'Y-m-d',
+							name : 'end_date'
+						}]
+
+					},
+					{
+						/**
+						 * Line three
+						 */
+						xtype : 'fieldcontainer',
+						layout : 'hbox',
+						defaults :
+						{
+							margin : '0 10 5 0'
+						},
+						items : [
+
+						{
+							fieldLabel : i18n['ocurrence'],
+							width : 250,
+							labelWidth : 70,
+							xtype : 'mitos.occurrencecombo',
+							name : 'ocurrence'
+
+						}]
+					}]
+				}]
+			}),
+			bbar : ['->',
+			{
+				text : i18n['reviewed'],
+				action : 'review',
+				itemId : 'review_medications',
+				scope : me,
+				handler : me.onReviewed
+			}]
+		},
+		{
+			/**
+			 * Lab panel
+			 */
+			xtype : 'container',
+			action : 'patientLabs',
+			layout : 'border',
+			items : [
+			{
+				xtype : 'panel',
+				region : 'north',
+				layout : 'border',
+				bodyBorder : false,
+				border : false,
+				height : 350,
+				split : true,
+				items : [
+				{
+					xtype : 'grid',
+					region : 'west',
+					width : 290,
+					split : true,
+					store : me.labPanelsStore,
+					columns : [
+					{
+						header : i18n['laboratories'],
+						dataIndex : 'label',
+						flex : 1
+					}],
+					listeners :
+					{
+						scope : me,
+						itemclick : me.onLabPanelSelected,
+						selectionchange : me.onLabPanelSelectionChange
 					}
-				]
-			}
-		];
+				},
+				{
+					xtype : 'panel',
+					action : 'labPreviewPanel',
+					title : i18n['laboratory_preview'],
+					region : 'center',
+					items : [me.uploadWin = Ext.create('Ext.window.Window',
+					{
+						draggable : false,
+						closable : false,
+						closeAction : 'hide',
+						items : [
+						{
+							xtype : 'form',
+							bodyPadding : 10,
+							width : 400,
+							items : [
+							{
+								xtype : 'filefield',
+								name : 'filePath',
+								buttonText : i18n['select_a_file'] + '...',
+								anchor : '100%'
+							}],
+							api :
+							{
+								submit : DocumentHandler.uploadDocument
+							}
+						}],
+						buttons : [
+						{
+							text : i18n['cancel'],
+							handler : function()
+							{
+								me.uploadWin.close();
+							}
+						},
+						{
+							text : i18n['upload'],
+							scope : me,
+							handler : me.onLabUpload
+						}]
+					})]
+				}],
+				tbar : ['->',
+				{
+					text : i18n['scan']
+				}, '-',
+				{
+					text : i18n['upload'],
+					disabled : true,
+					action : 'uploadBtn',
+					scope : me,
+					handler : me.onLabUploadWind
+				}]
+			},
+			{
+				xtype : 'container',
+				region : 'center',
+				layout : 'border',
+				split : true,
+				items : [
+				{
+					xtype : 'form',
+					title : i18n['laboratory_entry_form'],
+					region : 'west',
+					width : 290,
+					split : true,
+					bodyPadding : 5,
+					autoScroll : true,
+					bbar : ['->',
+					{
+						text : i18n['reset'],
+						scope : me,
+						handler : me.onLabResultsReset
+					}, '-',
+					{
+						text : i18n['sign'],
+						scope : me,
+						handler : me.onLabResultsSign
+					}, '-',
+					{
+						text : i18n['save'],
+						scope : me,
+						handler : me.onLabResultsSave
+					}]
+				},
+				{
+					xtype : 'panel',
+					region : 'center',
+					height : 300,
+					split : true,
+					items : [
+					{
+						xtype : 'lalboratoryresultsdataview',
+						action : 'lalboratoryresultsdataview',
+						store : Ext.create('App.store.patient.PatientLabsResults'),
+						listeners :
+						{
+							scope : me,
+							itemclick : me.onLabResultClick
+						}
+					}]
+				}]
+			}]
+		}];
 
 		me.dockedItems = [
+		{
+			xtype : 'toolbar',
+			items : [
 			{
-				xtype: 'toolbar',
-				items: [
-					{
 
-						text        : i18n['immunization'],
-						enableToggle: true,
-						toggleGroup : 'medicalWin',
-						pressed     : true,
-						itemId      : 'immunization',
-						action      : 'immunization',
-						scope       : me,
-						handler     : me.cardSwitch
-					},
-					'-',
-					{
-						text        : i18n['allergies'],
-						enableToggle: true,
-						toggleGroup : 'medicalWin',
-						itemId      : 'allergies',
-						action      : 'allergies',
-						scope       : me,
-						handler     : me.cardSwitch
-					},
-					'-',
-					{
-						text        : i18n['active_problems'],
-						enableToggle: true,
-						toggleGroup : 'medicalWin',
-						itemId      : 'issues',
-						action      : 'issues',
-						scope       : me,
-						handler     : me.cardSwitch
-					},
-					'-',
-					{
-						text        : i18n['surgeries'],
-						enableToggle: true,
-						toggleGroup : 'medicalWin',
-						itemId      : 'surgery',
-						action      : 'surgery',
-						scope       : me,
-						handler     : me.cardSwitch
-					},
-					'-',
-					{
-						text        : i18n['dental'],
-						enableToggle: true,
-						toggleGroup : 'medicalWin',
-						itemId      : 'dental',
-						action      : 'dental',
-						scope       : me,
-						handler     : me.cardSwitch
-					},
-					'-',
-					{
-						text        : i18n['medications'],
-						enableToggle: true,
-						toggleGroup : 'medicalWin',
-						itemId      : 'medications',
-						action      : 'medications',
-						scope       : me,
-						handler     : me.cardSwitch
-					},
-					'-',
-					{
-						text        : i18n['laboratories'],
-						enableToggle: true,
-						toggleGroup : 'medicalWin',
-						itemId      : 'laboratories',
-						action      : 'laboratories',
-						scope       : me,
-						handler     : me.cardSwitch
-					},
-					'->',
-					{
-						text   : i18n['add_new'],
-						action : 'AddRecord',
-						scope  : me,
-						handler: me.onAddItem
-					}
-				]
-			}
-		];
-		me.listeners = {
-			scope: me,
+				text : i18n['immunization'],
+				enableToggle : true,
+				toggleGroup : 'medicalWin',
+				pressed : true,
+				itemId : 'immunization',
+				action : 'immunization',
+				scope : me,
+				handler : me.cardSwitch
+			}, '-',
+			{
+				text : i18n['allergies'],
+				enableToggle : true,
+				toggleGroup : 'medicalWin',
+				itemId : 'allergies',
+				action : 'allergies',
+				scope : me,
+				handler : me.cardSwitch
+			}, '-',
+			{
+				text : i18n['active_problems'],
+				enableToggle : true,
+				toggleGroup : 'medicalWin',
+				itemId : 'issues',
+				action : 'issues',
+				scope : me,
+				handler : me.cardSwitch
+			}, '-',
+			{
+				text : i18n['surgeries'],
+				enableToggle : true,
+				toggleGroup : 'medicalWin',
+				itemId : 'surgery',
+				action : 'surgery',
+				scope : me,
+				handler : me.cardSwitch
+			}, '-',
+			{
+				text : i18n['dental'],
+				enableToggle : true,
+				toggleGroup : 'medicalWin',
+				itemId : 'dental',
+				action : 'dental',
+				scope : me,
+				handler : me.cardSwitch
+			}, '-',
+			{
+				text : i18n['medications'],
+				enableToggle : true,
+				toggleGroup : 'medicalWin',
+				itemId : 'medications',
+				action : 'medications',
+				scope : me,
+				handler : me.cardSwitch
+			}, '-',
+			{
+				text : i18n['laboratories'],
+				enableToggle : true,
+				toggleGroup : 'medicalWin',
+				itemId : 'laboratories',
+				action : 'laboratories',
+				scope : me,
+				handler : me.cardSwitch
+			}, '->',
+			{
+				text : i18n['add_new'],
+				action : 'AddRecord',
+				scope : me,
+				handler : me.onAddItem
+			}]
+		}];
+		me.listeners =
+		{
+			scope : me,
 			show : me.onMedicalWinShow,
 			close : me.onMedicalWinClose
 		};
@@ -22631,97 +22636,107 @@ Ext.define('App.view.patient.windows.Medical', {
 
 	//*******************************************************
 
-	onLabPanelSelected: function(grid, model) {
-		var me = this,
-			formPanel = me.query('[action="patientLabs"]')[0].down('form'),
-			dataView = me.query('[action="lalboratoryresultsdataview"]')[0],
-			store = dataView.store,
-			fields = model.data.fields;
+	onLabPanelSelected : function(grid, model)
+	{
+		var me = this, formPanel = me.query('[action="patientLabs"]')[0].down('form'), dataView = me.query('[action="lalboratoryresultsdataview"]')[0], store = dataView.store, fields = model.data.fields;
 
 		me.currLabPanelId = model.data.id;
 		me.removeLabDocument();
 		formPanel.removeAll();
 
-		formPanel.add({
+		formPanel.add(
+		{
 			xtype : 'textfield',
-			name  : 'id',
-			hidden: true
+			name : 'id',
+			hidden : true
 		});
-		for(var i = 0; i < fields.length; i++) {
-			formPanel.add({
-				xtype     : 'fieldcontainer',
-				layout    : 'hbox',
-				margin    : 0,
-				anchor    : '100%',
-				fieldLabel: fields[i].code_text_short || fields[i].loinc_name,
-				labelWidth: 130,
-				items     : [
-					{
-						xtype     : 'textfield',
-						name      : fields[i].loinc_number,
-						flex      : 1,
-						allowBlank: fields[i].required_in_panel != 'R'
-					},
-					{
-						xtype: 'mitos.unitscombo',
-						value: fields[i].default_unit,
-						name : fields[i].loinc_number + '_unit',
-						width: 90
-					}
-				]
+		for (var i = 0; i < fields.length; i++)
+		{
+			formPanel.add(
+			{
+				xtype : 'fieldcontainer',
+				layout : 'hbox',
+				margin : 0,
+				anchor : '100%',
+				fieldLabel : fields[i].code_text_short || fields[i].loinc_name,
+				labelWidth : 130,
+				items : [
+				{
+					xtype : 'textfield',
+					name : fields[i].loinc_number,
+					flex : 1,
+					allowBlank : fields[i].required_in_panel != 'R'
+				},
+				{
+					xtype : 'mitos.unitscombo',
+					value : fields[i].default_unit,
+					name : fields[i].loinc_number + '_unit',
+					width : 90
+				}]
 			});
 		}
 
-		store.load({params: {parent_id: model.data.id}});
+		store.load(
+		{
+			params :
+			{
+				parent_id : model.data.id
+			}
+		});
 	},
 
-	onLabPanelSelectionChange: function(model, record) {
+	onLabPanelSelectionChange : function(model, record)
+	{
 		this.query('[action="uploadBtn"]')[0].setDisabled(record.length == 0);
 	},
 
-	onLabUploadWind: function() {
-		var me = this,
-			previewPanel = me.query('[action="labPreviewPanel"]')[0];
+	onLabUploadWind : function()
+	{
+		var me = this, previewPanel = me.query('[action="labPreviewPanel"]')[0];
 		me.uploadWin.show();
 		me.uploadWin.alignTo(previewPanel.el.dom, 'tr-tr', [-5, 30])
 	},
 
-	onLabUpload: function(btn) {
-		var me = this,
-            formPanel = me.uploadWin.down('form'),
-			form = formPanel.getForm(),
-			win = btn.up('window');
+	onLabUpload : function(btn)
+	{
+		var me = this, formPanel = me.uploadWin.down('form'), form = formPanel.getForm(), win = btn.up('window');
 
-		if(form.isValid()) {
-            formPanel.el.mask(i18n['uploading_laboratory'] + '...');
-			form.submit({
+		if (form.isValid())
+		{
+			formPanel.el.mask(i18n['uploading_laboratory'] + '...');
+			form.submit(
+			{
 				//waitMsg: i18n['uploading_laboratory'] + '...',
-				params : {
-					pid    : app.patient.pid,
-					docType: 'laboratory',
+				params :
+				{
+					pid : app.patient.pid,
+					docType : 'laboratory',
 					eid : app.patient.eid
 				},
-				success: function(fp, o) {
-                    formPanel.el.unmask();
-                    say(o.result);
+				success : function(fp, o)
+				{
+					formPanel.el.unmask();
+					say(o.result);
 					win.close();
 					me.getLabDocument(o.result.doc.url);
 					me.addNewLabResults(o.result.doc.id);
 				},
-				failure: function(fp, o) {
-                    formPanel.el.unmask();
-                    say(o.result);
+				failure : function(fp, o)
+				{
+					formPanel.el.unmask();
+					say(o.result);
 					win.close();
 				}
 			});
 		}
 	},
 
-	onLabResultClick: function(view, model) {
-		var me = this,
-			form = me.query('[action="patientLabs"]')[0].down('form').getForm();
+	onLabResultClick : function(view, model)
+	{
+		var me = this, form = me.query('[action="patientLabs"]')[0].down('form').getForm();
 
-		if(me.currDocUrl != model.data.document_url) {
+		if (me.currDocUrl != model.data.document_url)
+		{
 			form.reset();
 			model.data.data.id = model.data.id;
 			form.setValues(model.data.data);
@@ -22731,33 +22746,47 @@ Ext.define('App.view.patient.windows.Medical', {
 
 	},
 
-	onLabResultsSign: function() {
-		var me = this,
-			form = me.query('[action="patientLabs"]')[0].down('form').getForm(),
-			dataView = me.query('[action="lalboratoryresultsdataview"]')[0],
-			store = dataView.store,
-			values = form.getValues(),
-			record = dataView.getSelectionModel().getLastSelected();
+	onLabResultsSign : function()
+	{
+		var me = this, form = me.query('[action="patientLabs"]')[0].down('form').getForm(), dataView = me.query('[action="lalboratoryresultsdataview"]')[0], store = dataView.store, values = form.getValues(), record = dataView.getSelectionModel().getLastSelected();
 
-		if(form.isValid()) {
-			if(values.id) {
-				me.passwordVerificationWin(function(btn, password) {
-					if(btn == 'ok') {
-						User.verifyUserPass(password, function(provider, response) {
-							if(response.result) {
+		if (form.isValid())
+		{
+			if (values.id)
+			{
+				me.passwordVerificationWin(function(btn, password)
+				{
+					if (btn == 'ok')
+					{
+						User.verifyUserPass(password, function(provider, response)
+						{
+							if (response.result)
+							{
 								say(record);
-								Medical.signPatientLabsResultById(record.data.id, function(provider, response) {
-									store.load({params: {parent_id: me.currLabPanelId}});
+								Medical.signPatientLabsResultById(record.data.id, function(provider, response)
+								{
+									store.load(
+									{
+										params :
+										{
+											parent_id : me.currLabPanelId
+										}
+									});
 								});
-							} else {
-								Ext.Msg.show({
-									title  : 'Oops!',
-									msg    : i18n['incorrect_password'],
+							}
+							else
+							{
+								Ext.Msg.show(
+								{
+									title : 'Oops!',
+									msg : i18n['incorrect_password'],
 									//buttons:Ext.Msg.OKCANCEL,
-									buttons: Ext.Msg.OK,
-									icon   : Ext.Msg.ERROR,
-									fn     : function(btn) {
-										if(btn == 'ok') {
+									buttons : Ext.Msg.OK,
+									icon : Ext.Msg.ERROR,
+									fn : function(btn)
+									{
+										if (btn == 'ok')
+										{
 											//me.onLabResultsSign();
 										}
 									}
@@ -22766,15 +22795,20 @@ Ext.define('App.view.patient.windows.Medical', {
 						});
 					}
 				});
-			} else {
-				Ext.Msg.show({
-					title  : 'Oops!',
-					msg    : i18n['nothing_to_sign'],
+			}
+			else
+			{
+				Ext.Msg.show(
+				{
+					title : 'Oops!',
+					msg : i18n['nothing_to_sign'],
 					//buttons:Ext.Msg.OKCANCEL,
-					buttons: Ext.Msg.OK,
-					icon   : Ext.Msg.ERROR,
-					fn     : function(btn) {
-						if(btn == 'ok') {
+					buttons : Ext.Msg.OK,
+					icon : Ext.Msg.ERROR,
+					fn : function(btn)
+					{
+						if (btn == 'ok')
+						{
 							//me.onLabResultsSign();
 						}
 					}
@@ -22784,97 +22818,122 @@ Ext.define('App.view.patient.windows.Medical', {
 		}
 	},
 
-	onLabResultsSave: function(btn) {
-		var me = this,
-			form = btn.up('form').getForm(),
-			dataView = me.query('[action="lalboratoryresultsdataview"]')[0],
-			store = dataView.store,
-			values = form.getValues(),
-			record = dataView.getSelectionModel().getLastSelected();
+	onLabResultsSave : function(btn)
+	{
+		var me = this, form = btn.up('form').getForm(), dataView = me.query('[action="lalboratoryresultsdataview"]')[0], store = dataView.store, values = form.getValues(), record = dataView.getSelectionModel().getLastSelected();
 
-		if(form.isValid()) {
-			Medical.updatePatientLabsResult(values, function() {
-				store.load({params: {parent_id: record.data.parent_id}});
+		if (form.isValid())
+		{
+			Medical.updatePatientLabsResult(values, function()
+			{
+				store.load(
+				{
+					params :
+					{
+						parent_id : record.data.parent_id
+					}
+				});
 				form.reset();
 			});
 		}
 	},
 
-
-	addNewLabResults: function(docId) {
-		var me = this,
-			dataView = me.query('[action="lalboratoryresultsdataview"]')[0],
-			store = dataView.store,
-			params = {
-				parent_id  : me.currLabPanelId,
-				document_id: docId
-			};
-		Medical.addPatientLabsResult(params, function(provider, response) {
-			store.load({params: {parent_id: me.currLabPanelId}});
+	addNewLabResults : function(docId)
+	{
+		var me = this, dataView = me.query('[action="lalboratoryresultsdataview"]')[0], store = dataView.store, params =
+		{
+			parent_id : me.currLabPanelId,
+			document_id : docId
+		};
+		Medical.addPatientLabsResult(params, function(provider, response)
+		{
+			store.load(
+			{
+				params :
+				{
+					parent_id : me.currLabPanelId
+				}
+			});
 
 		});
 	},
 
-	onReviewed: function(btn) {
-		var me = this,
-			BtnId = btn.itemId,
-			params = {
-				eid : app.patient.eid,
-				area: BtnId
-			};
+	onReviewed : function(btn)
+	{
+		var me = this, BtnId = btn.itemId, params =
+		{
+			eid : app.patient.eid,
+			area : BtnId
+		};
 
-		Medical.reviewMedicalWindowEncounter(params, function(provider, response) {
+		Medical.reviewMedicalWindowEncounter(params, function(provider, response)
+		{
 			me.msg('Sweet!', i18n['succefully_reviewed']);
 		});
 	},
 
-	onLabResultsReset: function(btn) {
+	onLabResultsReset : function(btn)
+	{
 		var form = btn.up('form').getForm();
 		form.reset();
 	},
 
-	getLabDocument: function(src) {
+	getLabDocument : function(src)
+	{
 		var panel = this.query('[action="labPreviewPanel"]')[0];
 		panel.remove(this.doc);
-		panel.add(this.doc = Ext.create('App.classes.ManagedIframe', {src: src}));
+		panel.add(this.doc = Ext.create('App.classes.ManagedIframe',
+		{
+			src : src
+		}));
 	},
 
-	removeLabDocument: function(src) {
+	removeLabDocument : function(src)
+	{
 		var panel = this.query('[action="labPreviewPanel"]')[0];
 		panel.remove(this.doc);
 	},
 
 	//*********************************************************
 
-	onLiveSearchSelect: function(combo, model) {
+	onLiveSearchSelect : function(combo, model)
+	{
 
-		var me = this,
-			field, field2, id;
-		if(combo.action == 'immunizations') {
-			id = model[0].data.id;
+		var me = this, field, field2, id;
+		if (combo.action == 'immunizations')
+		{
+			id = model[0].data.code;
 			field = combo.up('container').query('[action="idField"]')[0];
 			field.setValue(id);
 		}
-		else if(combo.id == 'allergie_name' || combo.id == 'drug_name') {
+		else
+		if (combo.id == 'allergie_name' || combo.id == 'drug_name')
+		{
 			id = model[0].data.id;
 			field = combo.up('fieldcontainer').query('[action="idField"]')[0];
 			field.setValue(id);
 
 		}
-		else if(combo.action == 'medicalissues') {
+		else
+		if (combo.action == 'medicalissues')
+		{
 			id = model[0].data.code;
 			field = combo.up('fieldcontainer').query('[action="idField"]')[0];
 			field2 = combo.up('fieldcontainer').query('[action="medicalissues"]')[0];
 			field.setValue(id);
 			field2.setValue(model[0].data.code_text);
 		}
-		else if(combo.action == 'surgery') {
+		else
+		if (combo.action == 'surgery')
+		{
 			id = model[0].data.id;
 			field = combo.up('fieldcontainer').query('[action="idField"]')[0];
 			field.setValue(id);
 
 		}
-		else if(combo.action == 'medication') {
+		else
+		if (combo.action == 'medication')
+		{
 			id = model[0].data.id;
 			field = combo.up('fieldcontainer').query('[action="idField"]')[0];
 			field.setValue(id);
@@ -22882,59 +22941,83 @@ Ext.define('App.view.patient.windows.Medical', {
 
 	},
 
-	onAddItem       : function() {
+	onAddItem : function()
+	{
 
-		var me = this, grid = this.getLayout().getActiveItem(), store = grid.store,
-			params;
+		var me = this, grid = this.getLayout().getActiveItem(), store = grid.store, params;
 
 		grid.editingPlugin.cancelEdit();
-		store.insert(0, {
-			created_uid: app.user.id,
-			pid        : app.patient.pid,
-			create_date: new Date(),
-			eid        : app.patient.eid,
+		store.insert(0,
+		{
+			created_uid : app.user.id,
+			pid : app.patient.pid,
+			create_date : new Date(),
+			eid : app.patient.eid,
 			begin_date : new Date()
 
 		});
 		grid.editingPlugin.startEdit(0, 0);
-		if(app.patient.eid != null) {
-			if(grid.action == 'patientImmuListGrid') {
-				params = {
+		if (app.patient.eid != null)
+		{
+			if (grid.action == 'patientImmuListGrid')
+			{
+				params =
+				{
 					eid : app.patient.eid,
-					area: 'review_immunizations'
+					area : 'review_immunizations'
 				};
-			} else if(grid.action == 'patientAllergiesListGrid') {
-				params = {
+			}
+			else
+			if (grid.action == 'patientAllergiesListGrid')
+			{
+				params =
+				{
 					eid : app.patient.eid,
-					area: 'review_allergies'
+					area : 'review_allergies'
 				};
-			} else if(grid.action == 'patientMedicalListGrid') {
-				params = {
+			}
+			else
+			if (grid.action == 'patientMedicalListGrid')
+			{
+				params =
+				{
 					eid : app.patient.eid,
-					area: 'review_active_problems'
+					area : 'review_active_problems'
 				};
-			} else if(grid.action == 'patientSurgeryListGrid') {
-				params = {
+			}
+			else
+			if (grid.action == 'patientSurgeryListGrid')
+			{
+				params =
+				{
 					eid : app.patient.eid,
-					area: 'review_surgery'
+					area : 'review_surgery'
 				};
-			} else if(grid.action == 'patientDentalListGrid') {
-				params = {
+			}
+			else
+			if (grid.action == 'patientDentalListGrid')
+			{
+				params =
+				{
 					eid : app.patient.eid,
-					area: 'review_dental'
+					area : 'review_dental'
 				};
-			} else if(grid.action == 'patientMedicationsListGrid') {
-				params = {
+			}
+			else
+			if (grid.action == 'patientMedicationsListGrid')
+			{
+				params =
+				{
 					eid : app.patient.eid,
-					area: 'review_medications'
+					area : 'review_medications'
 				};
 			}
 			Medical.reviewMedicalWindowEncounter(params);
 		}
 
-
 	},
-	hideall         : function(combo, skinCombo, localCombo, abdominalCombo, systemicCombo) {
+	hideall : function(combo, skinCombo, localCombo, abdominalCombo, systemicCombo)
+	{
 
 		skinCombo.hide(true);
 		skinCombo.setDisabled(true);
@@ -22950,111 +23033,146 @@ Ext.define('App.view.patient.windows.Medical', {
 		systemicCombo.reset();
 
 	},
-	onLocationSelect: function(combo, record) {
-		var me = this,
-			skinCombo = combo.up('form').getForm().findField('skinreaction'),
-			localCombo = combo.up('form').getForm().findField('localreaction'),
-			abdominalCombo = combo.up('form').getForm().findField('abdominalreaction'),
-			systemicCombo = combo.up('form').getForm().findField('systemicreaction'),
-			value = combo.getValue();
+	onLocationSelect : function(combo, record)
+	{
+		var me = this, skinCombo = combo.up('form').getForm().findField('skinreaction'), localCombo = combo.up('form').getForm().findField('localreaction'), abdominalCombo = combo.up('form').getForm().findField('abdominalreaction'), systemicCombo = combo.up('form').getForm().findField('systemicreaction'), value = combo.getValue();
 
 		me.hideall(combo, skinCombo, localCombo, abdominalCombo, systemicCombo);
-		if(value == 'Skin') {
+		if (value == 'Skin')
+		{
 			skinCombo.show(true);
 			skinCombo.setDisabled(false);
-		} else if(value == 'Local') {
+		}
+		else
+		if (value == 'Local')
+		{
 			localCombo.show(true);
 			localCombo.setDisabled(false);
-		} else if(value == 'Abdominal') {
+		}
+		else
+		if (value == 'Abdominal')
+		{
 			abdominalCombo.show(true);
 			abdominalCombo.setDisabled(false);
-		} else if(value == 'Systemic / Anaphylactic') {
+		}
+		else
+		if (value == 'Systemic / Anaphylactic')
+		{
 			systemicCombo.show(true);
 			systemicCombo.setDisabled(false);
 
 		}
 	},
 
-
-	disableFieldLogic: function(field, newValue) {
+	disableFieldLogic : function(field, newValue)
+	{
 		field.setDisabled((newValue == '' || newValue == null));
 	},
 
-	onAllergyTypeSelect: function(combo, record) {
-		var me = this,
-			allergyCombo = combo.up('form').getForm().findField('allergie_name'),
-			drugLiveSearch = combo.up('form').getForm().findField('drug_name');
+	onAllergyTypeSelect : function(combo, record)
+	{
+		var me = this, allergyCombo = combo.up('form').getForm().findField('allergie_name'), drugLiveSearch = combo.up('form').getForm().findField('drug_name');
 
-		if(record[0].data.allergy_type == 'Drug'){
+		if (record[0].data.allergy_type == 'Drug')
+		{
 			allergyCombo.hide(true);
 			allergyCombo.setDisabled(true);
 			allergyCombo.reset();
 			drugLiveSearch.show(true);
 			drugLiveSearch.setDisabled(false);
 		}
-		else if(record[0].data.allergy_type == '' || record[0].data.allergy_type == null) {
+		else
+		if (record[0].data.allergy_type == '' || record[0].data.allergy_type == null)
+		{
 			allergyCombo.setDisabled(true);
 			drugLiveSearch.hide(true);
 			drugLiveSearch.setDisabled(true);
 			allergyCombo.show(true);
 		}
-		else {
+		else
+		{
 			drugLiveSearch.hide(true);
 			drugLiveSearch.setDisabled(true);
 			allergyCombo.show(true);
 			allergyCombo.setDisabled(false);
 			allergyCombo.reset();
-			allergyCombo.store.load({params: {allergy_type: record[0].data.allergy_type}})
+			allergyCombo.store.load(
+			{
+				params :
+				{
+					allergy_type : record[0].data.allergy_type
+				}
+			})
 		}
 
-
 	},
-	setDefaults: function(options) {
+	setDefaults : function(options)
+	{
 		var data;
 
-		if(options.update) {
+		if (options.update)
+		{
 			data = options.update[0].data;
 			data.updated_uid = app.user.id;
-		} else if(options.create) {
+		}
+		else
+		if (options.create)
+		{
 
 		}
 	},
 
-	cardSwitch: function(btn) {
-		var me = this,
-			layout = me.getLayout(),
-			addBtn = me.down('toolbar').query('[action="AddRecord"]')[0],
-			p = app.patient,
-			title;
+	cardSwitch : function(btn)
+	{
+		var me = this, layout = me.getLayout(), addBtn = me.down('toolbar').query('[action="AddRecord"]')[0], p = app.patient, title;
 
 		me.pid = p.pid;
 		addBtn.show();
 
-		if(btn.action == 'immunization') {
+		if (btn.action == 'immunization')
+		{
 			layout.setActiveItem(0);
 			title = 'Immunizations';
 
-		} else if(btn.action == 'allergies') {
+		}
+		else
+		if (btn.action == 'allergies')
+		{
 			layout.setActiveItem(1);
 			title = 'Allergies';
 
-		} else if(btn.action == 'issues') {
+		}
+		else
+		if (btn.action == 'issues')
+		{
 			layout.setActiveItem(2);
 			title = 'Medical Issues';
 
-		} else if(btn.action == 'surgery') {
+		}
+		else
+		if (btn.action == 'surgery')
+		{
 			layout.setActiveItem(3);
 			title = 'Surgeries';
 
-		} else if(btn.action == 'dental') {
+		}
+		else
+		if (btn.action == 'dental')
+		{
 			layout.setActiveItem(4);
 			title = 'Dentals';
 
-		} else if(btn.action == 'medications') {
+		}
+		else
+		if (btn.action == 'medications')
+		{
 			layout.setActiveItem(5);
 			title = 'Medications';
 
-		} else if(btn.action == 'laboratories') {
+		}
+		else
+		if (btn.action == 'laboratories')
+		{
 			layout.setActiveItem(6);
 			title = 'Laboratories';
 			addBtn.hide();
@@ -23064,38 +23182,74 @@ Ext.define('App.view.patient.windows.Medical', {
 
 	},
 
-	onMedicalWinShow: function() {
-		var me = this,
-			reviewBts = me.query('button[action="review"]'),
-			p = app.patient;
+	onMedicalWinShow : function()
+	{
+		var me = this, reviewBts = me.query('button[action="review"]'), p = app.patient;
 
 		me.pid = p.pid;
 		me.setTitle(p.name + (p.readOnly ? ' <span style="color:red">[' + i18n['read_mode'] + ']</span>' : ''));
 		me.setReadOnly(app.patient.readOnly);
-		for(var i = 0; i < reviewBts.length; i++) {
+		for (var i = 0; i < reviewBts.length; i++)
+		{
 			reviewBts[i].setVisible((app.patient.eid != null));
 		}
 		me.labPanelsStore.load();
-		me.patientImmuListStore.load({params: {pid: app.patient.pid}});
-		me.patientAllergiesListStore.load({params: {pid: app.patient.pid}});
-		me.patientMedicalIssuesStore.load({params: {pid: app.patient.pid}});
-		me.patientSurgeryStore.load({params: {pid: app.patient.pid}});
-		me.patientDentalStore.load({params: {pid: app.patient.pid}});
-		me.patientMedicationsStore.load({params: {pid: app.patient.pid}});
+		me.patientImmuListStore.load(
+		{
+			params :
+			{
+				pid : app.patient.pid
+			}
+		});
+		me.patientAllergiesListStore.load(
+		{
+			params :
+			{
+				pid : app.patient.pid
+			}
+		});
+		me.patientMedicalIssuesStore.load(
+		{
+			params :
+			{
+				pid : app.patient.pid
+			}
+		});
+		me.patientSurgeryStore.load(
+		{
+			params :
+			{
+				pid : app.patient.pid
+			}
+		});
+		me.patientDentalStore.load(
+		{
+			params :
+			{
+				pid : app.patient.pid
+			}
+		});
+		me.patientMedicationsStore.load(
+		{
+			params :
+			{
+				pid : app.patient.pid
+			}
+		});
 
-    },
+	},
 
-    onMedicalWinClose:function(){
-        if(app.currCardCmp.id == 'panelSummary'){
+	onMedicalWinClose : function()
+	{
+		if (app.currCardCmp.id == 'panelSummary')
+		{
 
-            app.currCardCmp.loadStores();
+			app.currCardCmp.loadStores();
 
-        }
+		}
 
-    }
-
-
-});
+	}
+}); 
 /**
  * Created by JetBrains PhpStorm.
  * User: Ernesto J. Rodriguez (Certun)
@@ -23802,6 +23956,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 															name      : 'medication',
 															width     : 350,
 															labelWidth: 80,
+                                                            allowBlank: false,
 															listeners : {
 																scope : me,
 																select: me.addPrescription
@@ -23811,6 +23966,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 															xtype:'textfield',
 															hidden:true,
 															name:'medication_id',
+                                                            allowBlank: false,
 															action:'idField'
 														},
 														{
@@ -23819,6 +23975,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 															labelWidth: 40,
 															action    : 'dose',
 															name      : 'dose',
+                                                            allowBlank: false,
 															width     : 100,
 															value     : 0,
 															minValue  : 0
@@ -23828,6 +23985,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 															fieldLabel: i18n['dose_mg'],
 															action    :'dose_mg',
 															name      : 'dose_mg',
+                                                            allowBlank: false,
 															hideLabel : true,
 															width     : 150
 														}
@@ -23848,6 +24006,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 															fieldLabel: i18n['take'],
 															margin    : '5 0 5 5',
 															name      : 'take_pills',
+                                                            allowBlank: false,
 															width     : 130,
 															labelWidth: 80,
 															value     : 0,
@@ -23856,6 +24015,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 														{
 															xtype     : 'mitos.prescriptiontypes',
 															fieldLabel: i18n['type'],
+                                                            allowBlank: false,
 															hideLabel : true,
 															name      : 'type',
 															width     : 120
@@ -23863,6 +24023,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 														{
 															xtype     : 'mitos.prescriptionhowto',
 															fieldLabel: i18n['route'],
+                                                            allowBlank: false,
 															name      : 'route',
 															hideLabel : true,
 															width     : 100
@@ -23870,6 +24031,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 														{
 															xtype: 'mitos.prescriptionoften',
 															name : 'prescription_often',
+                                                            allowBlank: false,
 															width: 120
 														},
 														{
@@ -23894,6 +24056,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 															xtype     : 'numberfield',
 															name      : 'dispense',
 															width     : 130,
+                                                            allowBlank: false,
 															labelWidth: 80,
 															value     : 0,
 															minValue  : 0
@@ -23903,6 +24066,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 															xtype     : 'numberfield',
 															name      : 'refill',
 															labelWidth: 35,
+                                                            allowBlank: false,
 															width     : 140,
 															value     : 0,
 															minValue  : 0
@@ -25700,88 +25864,90 @@ Ext.define('App.view.messages.Messages', {
  * Time: 9:09 PM
  * To change this template use File | Settings | File Templates.
  */
-Ext.define('App.view.areas.FloorPlan', {
-	id       : 'panelAreaFloorPlan',
-	extend   : 'App.classes.RenderPanel',
-	pageTitle: i18n['area_floor_plan'],
-	floorPlanId:null,
-	initComponent: function() {
+Ext.define('App.view.areas.FloorPlan',
+{
+	id : 'panelAreaFloorPlan',
+	extend : 'App.classes.RenderPanel',
+	pageTitle : i18n['area_floor_plan'],
+	floorPlanId : null,
+	initComponent : function()
+	{
 		var me = this;
 		me.floorPlanZonesStore = Ext.create('App.store.administration.FloorPlanZones');
 
-		me.floorPlan = Ext.create('Ext.panel.Panel',{
-			title: i18n['floor_plans'],
-			layout:'absolute',
-			tbar:[
-				'->',
+		me.floorPlan = Ext.create('Ext.panel.Panel',
+		{
+			title : i18n['floor_plans'],
+			layout : 'absolute',
+			tbar : ['->',
+			{
+				xtype : 'floorplanareascombo',
+				fieldLabel : i18n['area'],
+				labelWidth : 40,
+				listeners :
 				{
-					xtype:'floorplanareascombo',
-					fieldLabel: i18n['area'],
-					labelWidth:40,
-					listeners:{
-						scope:me,
-						select:me.onFloorPlanSelect
-					}
+					scope : me,
+					select : me.onFloorPlanSelect
 				}
-			],
-			tools:[
-				{
-			        type: 'refresh',
-					scope:me,
-			        handler: me.setZones
-				}
-			]
+			}],
+			tools : [
+			{
+				type : 'refresh',
+				scope : me,
+				handler : me.setZones
+			}]
 		});
 
-		me.pageBody = [ me.floorPlan ];
+		me.pageBody = [me.floorPlan];
 
 		me.callParent(arguments);
 	},
 
-
-	loadZone:function(record){
+	loadZone : function(record)
+	{
 		var me = this, zone, form;
-		zone = Ext.create('Ext.button.Split', {
-		    text:record.data.title,
-			scale:'medium',
-			x:record.data.x,
-			y:record.data.y,
-			itemId:record.data.id,
-			scope:me,
-			handler:me.onZoneClicked,
+		zone = Ext.create('Ext.button.Split',
+		{
+			text : record.data.title,
+			scale : 'medium',
+			x : record.data.x,
+			y : record.data.y,
+			itemId : record.data.id,
+			scope : me,
+			handler : me.onZoneClicked,
 			// --->
 			// Zone specific reference data
-			pid:null,
-			zoneId:record.data.id,
-			priority:null,
-			patientZoneId:null,
+			pid : null,
+			zoneId : record.data.id,
+			priority : null,
+			patientZoneId : null,
 			// <---
-			menu:[
-				form = Ext.create('Ext.form.Panel',{
-					bodyPadding:'5 5 0 5',
-					items:[
-						{
-							xtype:'textfield',
-							fieldLabel: i18n['patient_name'],
-							labelWidth:80,
-							name:'patient_name'
-						},
-						{
-							xtype:'button',
-							text: i18n['remove_patient'],
-							handler:function(){
-								me.unSetZone(zone);
-							}
-						}
-					]
-				})
-			],
-			tooltip: i18n['patient_name'] + ': [empty]',
-			listeners:{
-				scope:me,
-				render:me.initializeZone
-//				menushow:me.afterMenuShow,
-//				menuhide:me.afterMenuHide
+			menu : [ form = Ext.create('Ext.form.Panel',
+			{
+				bodyPadding : '5 5 0 5',
+				items : [
+				{
+					xtype : 'textfield',
+					fieldLabel : i18n['patient_name'],
+					labelWidth : 80,
+					name : 'patient_name'
+				},
+				{
+					xtype : 'button',
+					text : i18n['remove_patient'],
+					handler : function()
+					{
+						me.unSetZone(zone);
+					}
+				}]
+			})],
+			tooltip : i18n['patient_name'] + ': [empty]',
+			listeners :
+			{
+				scope : me,
+				render : me.initializeZone
+				//				menushow:me.afterMenuShow,
+				//				menuhide:me.afterMenuHide
 			}
 		});
 		//zone.update({title:record.data.title});
@@ -25789,29 +25955,40 @@ Ext.define('App.view.areas.FloorPlan', {
 		form.getForm().loadRecord(record);
 	},
 
-	onZoneClicked:function(btn){
+	onZoneClicked : function(btn)
+	{
 		say(btn);
-		app.setPatient(btn.data.pid, btn.data.name, function(){
+		app.setPatient(btn.data.pid, btn.data.name, function()
+		{
 			btn.data.eid ? app.openEncounter(btn.data.eid) : app.openPatientSummary();
 		});
 	},
 
-	onFloorPlanSelect:function(field, record){
+	onFloorPlanSelect : function(field, record)
+	{
 		var me = this;
 		me.floorPlanId = record[0].data.id;
-		me.loadZones(function(){
+		me.loadZones(function()
+		{
 			me.setZones();
 		});
 	},
 
-	loadZones:function(callback){
+	loadZones : function(callback)
+	{
 		var me = this;
 		me.floorPlan.removeAll();
-		me.floorPlanZonesStore.load({
-			params:{ floor_plan_id:this.floorPlanId },
-			scope:me,
-			callback:function(records, operation, success){
-				for(var i=0; i < records.length; i++){
+		me.floorPlanZonesStore.load(
+		{
+			params :
+			{
+				floor_plan_id : this.floorPlanId
+			},
+			scope : me,
+			callback : function(records, operation, success)
+			{
+				for (var i = 0; i < records.length; i++)
+				{
 					me.loadZone(records[i]);
 				}
 				callback();
@@ -25819,46 +25996,60 @@ Ext.define('App.view.areas.FloorPlan', {
 		});
 	},
 
-	initializeZone: function(panel) {
+	initializeZone : function(panel)
+	{
 		var me = this;
-		panel.dragZone = Ext.create('Ext.dd.DragZone', panel.getEl(), {
-			ddGroup    : 'patientPoolAreas',
-			getDragData: function(e) {
+		panel.dragZone = Ext.create('Ext.dd.DragZone', panel.getEl(),
+		{
+			ddGroup : 'patientPoolAreas',
+			getDragData : function(e)
+			{
 				var sourceEl = panel.btnEl.dom, d;
-				if(sourceEl) {
+				if (sourceEl)
+				{
 					d = sourceEl.cloneNode(true);
 					d.id = Ext.id();
-					return panel.dragData = {
-								sourceEl: sourceEl,
-								repairXY: Ext.fly(sourceEl).getXY(),
-								ddel    : d,
-								patientData : panel.data,
-								zone: panel
+					return panel.dragData =
+					{
+						sourceEl : sourceEl,
+						repairXY : Ext.fly(sourceEl).getXY(),
+						ddel : d,
+						patientData : panel.data,
+						zone : panel
 					};
 				}
 			},
-			getRepairXY: function(e) {
+			getRepairXY : function(e)
+			{
 				return this.dragData.repairXY;
 			},
-			b4MouseDown: function(e) {
-		        this.autoOffset(e.getPageX(), e.getPageY());
-		    }
+			b4MouseDown : function(e)
+			{
+				this.autoOffset(e.getPageX(), e.getPageY());
+			}
 		});
 
 		panel.dragZone.lock();
 
-		panel.dropZone = Ext.create('Ext.dd.DropZone', panel.getEl(), {
-			ddGroup   : 'patientPoolAreas',
-			notifyOver: function(dd, e, data) {
-				if(panel.pid == null) {
+		panel.dropZone = Ext.create('Ext.dd.DropZone', panel.getEl(),
+		{
+			ddGroup : 'patientPoolAreas',
+			notifyOver : function(dd, e, data)
+			{
+				if (panel.pid == null)
+				{
 					return Ext.dd.DropZone.prototype.dropAllowed;
-				}else{
+				}
+				else
+				{
 					return Ext.dd.DropZone.prototype.dropNotAllowed;
 				}
 			},
-			notifyDrop: function(dd, e, data) {
+			notifyDrop : function(dd, e, data)
+			{
 				panel.data = data.patientData;
-				if(data.zone){
+				if (data.zone)
+				{
 					me.unAssignPatient(data.zone, panel.data);
 				}
 				me.assignPatient(panel, panel.data);
@@ -25866,56 +26057,66 @@ Ext.define('App.view.areas.FloorPlan', {
 		});
 	},
 
-	assignPatient:function(zone, data){
-		var me = this,
-			params = {
-				zone_id:zone.zoneId,
-				pid:data.pid
-			};
-		FloorPlans.setPatientToZone(params,function(provider, response){
+	assignPatient : function(zone, data)
+	{
+		var me = this, params =
+		{
+			zone_id : zone.zoneId,
+			pid : data.pid
+		};
+		FloorPlans.setPatientToZone(params, function(provider, response)
+		{
 			data.patientZoneId = response.result.data.patientZoneId;
 			me.msg('Sweet!', data.name + i18n['successfully_moved'] + '.');
 			me.setZone(zone, data);
 		});
 	},
 
-	unAssignPatient:function(zone, data){
+	unAssignPatient : function(zone, data)
+	{
 		var me = this;
-		FloorPlans.unSetPatientZoneByPatientZoneId(data.patientZoneId,function(){
+		FloorPlans.unSetPatientZoneByPatientZoneId(data.patientZoneId, function()
+		{
 			me.unSetZone(zone)
 		});
 	},
 
-	setZone:function(zone, data){
+	setZone : function(zone, data)
+	{
 		zone.pid = data.pid;
 		zone.priority = data.priority;
 		zone.patientZoneId = data.patientZoneId;
 		zone.dropZone.lock();
 		zone.dragZone.unlock();
-		zone.setTooltip( i18n['patient_name'] + ':' + data.name);
+		zone.setTooltip(i18n['patient_name'] + ':' + data.name);
 		zone.addCls(data.priority);
 	},
 
-	unSetZone:function(zone){
+	unSetZone : function(zone)
+	{
 		zone.pid = null;
 		zone.data = null;
 		zone.dropZone.unlock();
 		zone.dragZone.lock();
-		zone.setTooltip( i18n['patient_name'] + ': [empty]');
+		zone.setTooltip(i18n['patient_name'] + ': [empty]');
 		zone.removeCls(zone.priority);
 	},
 
-	setZones:function(){
+	setZones : function()
+	{
 		var me = this, zone, zones, data;
-		FloorPlans.getPatientsZonesByFloorPlanId(me.floorPlanId, function(provider, response){
+		FloorPlans.getPatientsZonesByFloorPlanId(me.floorPlanId, function(provider, response)
+		{
 			zones = me.floorPlan.items.items;
 			data = response.result;
 
-			for(var j=0; j < zones.length; j++){
+			for (var j = 0; j < zones.length; j++)
+			{
 				me.unSetZone(zones[j]);
 			}
 
-			for(var i=0; i < data.length; i++){
+			for (var i = 0; i < data.length; i++)
+			{
 				zone = me.floorPlan.getComponent(data[i].zoneId);
 				zone.data = data[i];
 				me.setZone(zone, data[i]);
@@ -25923,25 +26124,30 @@ Ext.define('App.view.areas.FloorPlan', {
 		})
 	},
 
-	setFloorPlan:function(floorPlanId){
+	setFloorPlan : function(floorPlanId)
+	{
 
 	},
 
-	onActive: function(callback) {
+	onActive : function(callback)
+	{
 		var me = this;
-		if(me.floorPlanId == null){
+		if (me.floorPlanId == null)
+		{
 			me.floorPlanId = 1;
 			me.floorPlan.query('floorplanareascombo')[0].setValue(me.floorPlanId);
-			me.loadZones(function(){
+			me.loadZones(function()
+			{
 				me.setZones();
 			});
-		}else{
+		}
+		else
+		{
 			me.setZones();
 		}
 		callback(true);
 	}
-
-});
+}); 
 /**
  * Created by JetBrains PhpStorm.
  * User: ernesto
@@ -25949,101 +26155,116 @@ Ext.define('App.view.areas.FloorPlan', {
  * Time: 9:09 PM
  * To change this template use File | Settings | File Templates.
  */
-Ext.define('App.view.areas.PatientPoolDropZone', {
-	id       : 'panelPoolArea',
-	extend   : 'App.classes.RenderPanel',
-	pageTitle: i18n['patient_pool_areas'],
-	initComponent: function() {
+Ext.define('App.view.areas.PatientPoolDropZone',
+{
+	id : 'panelPoolArea',
+	extend : 'App.classes.RenderPanel',
+	pageTitle : i18n['patient_pool_areas'],
+	initComponent : function()
+	{
 		var me = this;
-		me.pageBody = Ext.create('Ext.container.Container', {
-			defaults: {
-				flex  : 1,
-				margin: 5,
+		me.pageBody = Ext.create('Ext.container.Container',
+		{
+			defaults :
+			{
+				flex : 1,
+				margin : 5,
 				frame : false
 			},
-			layout  : {
+			layout :
+			{
 				type : 'hbox',
-				align: 'stretch'
+				align : 'stretch'
 			}
 		});
-		me.listeners = {
-			beforerender: me.getPoolAreas
+		me.listeners =
+		{
+			beforerender : me.getPoolAreas
 		};
 		me.callParent(arguments);
 	},
 
-	onPatientDrop: function(node, data, overModel, dropPosition, eOpts) {
-		var name = (data.records[0].data) ? data.records[0].data.name : data.records[0].name,
-			pid = (data.records[0].data) ? data.records[0].data.pid : data.records[0].pid,
-			params;
+	onPatientDrop : function(node, data, overModel, dropPosition, eOpts)
+	{
+		var name = (data.records[0].data) ? data.records[0].data.name : data.records[0].name, pid = (data.records[0].data) ? data.records[0].data.pid : data.records[0].pid, params;
 		app.msg('Sweet!', name + ' ' + i18n['sent_to'] + ' ' + this.panel.title);
-		params = {
-			pid   : pid,
-			sendTo: this.panel.action
+		params =
+		{
+			pid : pid,
+			sendTo : this.panel.action
 		};
 
-		PoolArea.sendPatientToPoolArea(params, function() {
+		PoolArea.sendPatientToPoolArea(params, function()
+		{
 			app.unsetPatient();
 			Ext.getCmp('panelPoolArea').reloadStores();
 		});
 
-
 	},
 
-	getPoolAreas: function() {
-		var me = this,
-			panel = me.getPageBody().down('container'),
-            areas;
+	getPoolAreas : function()
+	{
+		var me = this, panel = me.getPageBody().down('container'), areas;
 		me.stores = [];
-		PoolArea.getActivePoolAreas(function(provider, response) {
-            areas = response.result;
-            for(var i=0; i < areas.length; i++ ){
-				var store = Ext.create('Ext.data.Store', {
-					model: 'App.model.areas.PoolDropAreas',
-					proxy: {
-						type       : 'direct',
-						api        : {
-							read: PoolArea.getPoolAreaPatients
+		PoolArea.getActivePoolAreas(function(provider, response)
+		{
+			areas = response.result;
+			for (var i = 0; i < areas.length; i++)
+			{
+				var store = Ext.create('Ext.data.Store',
+				{
+					model : 'App.model.areas.PoolDropAreas',
+					proxy :
+					{
+						type : 'direct',
+						api :
+						{
+							read : PoolArea.getPoolAreaPatients
 						},
-						extraParams: {
-							area_id: areas[i].id
+						extraParams :
+						{
+							area_id : areas[i].id
 						}
 					}
 				});
 				me.stores.push(store);
-				panel.add({
-					xtype      : 'grid',
-					title      : areas[i].title,
-					action     : areas[i].id,
-					store      : store,
-					floorPlanId: areas[i].floor_plan_id,
-					columns    : [
-						{
-							header   : i18n['record'] + ' #',
-							width    : 100,
-							dataIndex: 'pid'
-						},
-						{
-							header   : i18n['patient_name'],
-							flex     : 1,
-							dataIndex: 'name'
-						}
-					],
-					viewConfig: {
+				panel.add(
+				{
+					xtype : 'grid',
+					title : areas[i].title,
+					action : areas[i].id,
+					store : store,
+					floorPlanId : areas[i].floor_plan_id,
+					columns : [
+					{
+						header : i18n['record'] + ' #',
+						width : 100,
+						dataIndex : 'pid'
+					},
+					{
+						header : i18n['patient_name'],
+						flex : 1,
+						dataIndex : 'name'
+					}],
+					viewConfig :
+					{
 						loadMask : false,
-						plugins  : {
-							ptype    : 'gridviewdragdrop',
-							dragGroup: 'patientPoolAreas',
-							dropGroup: 'patientPoolAreas'
+						plugins :
+						{
+							ptype : 'gridviewdragdrop',
+							dragGroup : 'patientPoolAreas',
+							dropGroup : 'patientPoolAreas'
 						},
-						listeners: {
+						listeners :
+						{
 							//scope:me,
-							drop: me.onPatientDrop
+							drop : me.onPatientDrop
 						}
 					},
-					listeners : {
-						scope       : me,
-						itemdblclick: me.onPatientDblClick
+					listeners :
+					{
+						scope : me,
+						itemdblclick : me.onPatientDblClick
 					}
 				})
 
@@ -26051,28 +26272,33 @@ Ext.define('App.view.areas.PatientPoolDropZone', {
 		});
 	},
 
-	onPatientDblClick: function(store, record) {
+	onPatientDblClick : function(store, record)
+	{
 		var data = record.data;
 		// TODO: set priority
-		app.setPatient(data.pid, data.name, function() {
+		app.setPatient(data.pid, data.name, function()
+		{
 			app.openPatientSummary();
 		});
 	},
 
-	reloadStores: function() {
-        if(this.stores){
-	        for(var i=0; i < this.stores.length; i++ ){
-	            this.stores[i].load();
-	        }
-        }
+	reloadStores : function()
+	{
+		if (this.stores)
+		{
+			for (var i = 0; i < this.stores.length; i++)
+			{
+				this.stores[i].load();
+			}
+		}
 	},
 
-	onActive: function(callback) {
+	onActive : function(callback)
+	{
 		this.reloadStores();
 		callback(true);
 	}
-
-});
+}); 
 /**
  * Created with JetBrains PhpStorm.
  * User: erodriguez
@@ -30087,1408 +30313,1741 @@ Ext.define('App.view.patient.Visits', {
  * @namespace User.verifyUserPass
  * @namespace ACL.hasPermission
  */
-Ext.define('App.view.patient.Encounter', {
-    extend                : 'App.classes.RenderPanel',
-    id                    : 'panelEncounter',
-    pageTitle             : i18n['encounter'],
-    pageLayout            : 'border',
-    requires              : [
-        'App.store.patient.Encounter', 'App.store.patient.Vitals'
-    ],
-    pid                   : null,
-    eid                   : null,
-    currEncounterStartDate: null,
-    initComponent         : function() {
-        var me = this;
-
-        me.renderAdministrative = acl['access_enc_hcfa'] || acl['access_enc_cpt'] || acl['access_enc_history'];
-
-        me.timerTask = {
-            scope   : me,
-            run     : function() {
-                me.encounterTimer();
-            },
-            interval: 1000 //1 second
-        };
-        /**
-         * stores
-         * @type {*}
-         */
-        me.encounterStore = Ext.create('App.store.patient.Encounter', {
-            listeners: {
-                scope      : me,
-                datachanged: me.updateProgressNote
-            }
-        });
-        me.encounterEventHistoryStore = Ext.create('App.store.patient.EncounterEventHistory');
-        me.EncounterOrdersStore = Ext.create('App.store.patient.EncounterCPTsICDs');
-
-        if(acl['access_encounter_checkout']){
-            me.checkoutAlertArea = Ext.create('App.store.patient.CheckoutAlertArea');
-        }
-
-        /**
-         * New Encounter Panel this panel is located hidden at
-         * the top of the Visit panel and will slide down if
-         * the "New Encounter" button is pressed.
-         */
-        if(acl['add_encounters']){
-            me.newEncounterWindow = Ext.create('Ext.window.Window', {
-                title      : i18n['new_encounter_form'],
-                closeAction: 'hide',
-                modal      : true,
-                width      : 660,
-                items      : [
-                    {
-                        xtype      : 'form',
-                        border     : false,
-                        bodyPadding: '10 10 0 10'
-                    }
-                ],
-                buttons    : [
-                    {
-                        text   : i18n['create_encounter'],
-                        action : 'encounter',
-                        scope  : me,
-                        handler: me.onSave
-                    },
-                    {
-                        text   : i18n['cancel'],
-                        scope  : me,
-                        handler: me.cancelNewEnc
-
-                    }
-                ],
-                listeners  : {
-                    scope: me,
-                    close: me.cancelNewEnc
-                }
-            });
-        }
-        /**
-         * Encounter Checkout window
-         * @type {*}
-         */
-        if(acl['access_encounter_checkout']){
-            me.checkoutWindow = Ext.create('Ext.window.Window', {
-                title      : i18n['checkout_and_signing'],
-                closeAction: 'hide',
-                modal      : true,
-                layout     : 'border',
-                width      : 1000,
-                height     : 660,
-                bodyPadding: 5,
-                items      : [
-                    {
-                        xtype  : 'grid',
-                        title  : i18n['services_diagnostics'],
-                        region : 'center',
-                        store  : me.EncounterOrdersStore,
-                        columns: [
-                            {
-                                header   : i18n['code'],
-                                width    : 60,
-                                dataIndex: 'code'
-                            },
-                            {
-                                header   : i18n['description'],
-                                flex     : 1,
-                                dataIndex: 'code_text'
-                            },
-                            {
-                                header   : i18n['type'],
-                                flex     : 1,
-                                dataIndex: 'type'
-                            }
-                        ]
-                    },
-                    me.documentsimplegrid = Ext.create('App.view.patient.EncounterDocumentsGrid', {
-                        title : i18n['documents'],
-                        region: 'east',
-                        width : 485
-                    }),
-                    {
-                        xtype   : 'form',
-                        title   : i18n['additional_info'],
-                        region  : 'south',
-                        split   : true,
-                        height  : 245,
-                        layout  : 'column',
-                        defaults: {
-                            xtype  : 'fieldset',
-                            padding: 8
-                        },
-                        items   : [
-                            {
-                                xtype      : 'fieldcontainer',
-                                columnWidth: .5,
-                                defaults   : {
-                                    xtype  : 'fieldset',
-                                    padding: 8
-                                },
-                                items      : [
-                                    {
-                                        xtype      : 'fieldset',
-                                        margin     : '5 1 5 5',
-                                        padding    : 8,
-                                        columnWidth: .5,
-                                        height     : 115,
-                                        title      : i18n['messages_notes_and_reminders'],
-                                        items      : [
-                                            {
-                                                xtype     : 'textfield',
-                                                name      : 'message',
-                                                fieldLabel: i18n['message'],
-                                                anchor    : '100%'
-                                            },
-                                            {
-                                                xtype     : 'textfield',
-                                                name      : 'reminder',
-                                                fieldLabel: i18n['reminder'],
-                                                anchor    : '100%'
-                                            },
-                                            {
-                                                xtype     : 'textfield',
-                                                grow      : true,
-                                                name      : 'note',
-                                                fieldLabel: i18n['note'],
-                                                anchor    : '100%'
-                                            }
-                                        ]
-                                    },
-                                    {
-                                        title   : 'Follow Up',
-                                        margin  : '5 1 5 5',
-                                        defaults: {
-                                            anchor: '100%'
-                                        },
-                                        items   : [
-                                            {
-                                                xtype     : 'mitos.followupcombo',
-                                                fieldLabel: i18n['time_interval'],
-                                                name      : 'followup_time'
-                                            },
-                                            {
-                                                fieldLabel: i18n['facility'],
-                                                xtype     : 'mitos.activefacilitiescombo',
-                                                name      : 'followup_facility'
-                                            }
-                                        ]
-                                    }
-                                ]
-                            },
-                            {
-                                xtype      : 'fieldset',
-                                margin     : 5,
-                                padding    : 8,
-                                columnWidth: .5,
-                                layout     : 'fit',
-                                height     : 208,
-                                title      : i18n['warnings_alerts'],
-                                items      : [
-                                    {
-                                        xtype      : 'grid',
-                                        hideHeaders: true,
-                                        store      : me.checkoutAlertArea,
-                                        border     : false,
-                                        rowLines   : false,
-                                        header     : false,
-                                        viewConfig : {
-                                            stripeRows      : false,
-                                            disableSelection: true
-                                        },
-                                        columns    : [
-                                            {
-                                                dataIndex: 'alertType',
-                                                width    : 30,
-                                                renderer : me.alertIconRenderer
-                                            },
-                                            {
-                                                dataIndex: 'alert',
-                                                flex     : 1
-                                            }
-                                        ]
-                                    }
-                                ]
-                            }
-                        ]
-                    }
-                ],
-                buttons    : [
-                    {
-                        text   : i18n['co_sign'],
-                        action : 'encounter',
-                        scope  : me,
-                        handler: me.coSignEncounter
-                    },
-                    {
-                        text   : i18n['sign'],
-                        action : 'encounter',
-                        scope  : me,
-                        handler: me.signEncounter
-                    },
-                    {
-                        text   : i18n['cancel'],
-                        handler: me.cancelCheckout
-
-                    }
-                ],
-                listeners  : {
-                    scope: me,
-                    show : function() {
-                        me.EncounterOrdersStore.load({params: {eid: app.patient.eid}});
-                        if(acl['access_encounter_checkout']){
-                            me.checkoutAlertArea.load({params: {eid: app.patient.eid}});
-                        }
-                        me.documentsimplegrid.loadDocs(me.eid);
-                    }
-
-                }
-
-            });
-        }
-
-//        me.speechDicPanel = Ext.create('Ext.form.Panel', {
-//            autoScroll   : true,
-//            title        : 'Speech Dictation',
-//            action       : 'encounter',
-//            frame        : true,
-//            bodyPadding  : 5,
-//            bodyStyle    : 'background-color:white',
-//            fieldDefaults: { msgTarget: 'side' },
-//            buttons      : [
-//                {
-//                    text   : 'Save',
-//                    iconCls: 'save',
-//                    action : 'speechDictation',
-//                    scope  : me,
-//                    handler: me.onSave
-//                }
-//            ]
-//        });
-
-        if(me.renderAdministrative){
-            me.centerPanel = Ext.create('Ext.tab.Panel', {
-                region     : 'center',
-                margin     : '1 0 0 0',
-                activeTab  : 0,
-                bodyPadding: 5,
-                listeners  : {
-                    render: function() {
-                        this.items.each(function(i) {
-                            i.tab.on('click', function() {
-                                me.onTapPanelChange(this);
-                            });
-                        });
-                    }
-                }
-            });
-        }else{
-            me.centerPanel = Ext.create('Ext.panel.Panel', {
-                region     : 'center',
-                margin     : '1 0 0 0',
-                layout:'fit',
-                bodyPadding: 5
-            });
-        }
-
-        /**
-         * Encounter Tab Panel and its Panels...
-         * @type {*}
-         */
-        me.encounterTabPanel = me.centerPanel.add(
-            Ext.create('Ext.tab.Panel', {
-                title     : me.renderAdministrative ? i18n['encounter'] : false,
-                itemId    : 'encounter',
-                plain     : true,
-                activeItem: 0,
-                border:false,
-                defaults  : {
-                    bodyStyle : 'padding:15px',
-                    bodyBorder: true,
-                    layout    : 'fit'
-                }
-            })
-        );
-        if(acl['access_patient_vitals']){
-            me.vitalsPanel = me.encounterTabPanel.add(
-                Ext.create('Ext.panel.Panel', {
-                    title      : i18n['vitals'],
-                    action     : 'encounter',
-                    cls        : 'vitals-panel',
-                    bodyPadding: '5 10',
-                    overflowY  : 'auto',
-                    frame      : true,
-                    bodyStyle  : 'background-color:white',
-                    layout     : {
-                        type   : 'hbox',
-                        stretch: true
-                    },
-                    items      : [
-                        {
-                            xtype        : 'form',
-                            width        : 313,
-                            margin       : 0,
-                            border       : false,
-                            layout       : 'anchor',
-                            fieldDefaults: { msgTarget: 'side', labelAlign: 'right' },
-                            buttons      : [
-                                {
-                                    text   : i18n['reset'],
-                                    width  : 40,
-                                    scope  : me,
-                                    handler: me.resetVitalsForm
-                                },
-                                {
-                                    text   : i18n['save'],
-                                    action : 'vitals',
-                                    width  : 40,
-                                    scope  : me,
-                                    handler: me.onSave
-                                },
-                                {
-                                    text    : i18n['sign'],
-                                    width   : 40,
-                                    disabled: true,
-                                    action  : 'signBtn',
-                                    scope   : me,
-                                    handler : me.onVitalsSign
-                                }
-
-                            ]
-                        },
-                        {
-                            xtype     : 'vitalsdataview',
-                            flex      : 1,
-                            autoScroll: true,
-                            listeners : {
-                                scope       : me,
-                                itemdblclick: me.onVitalsClick
-                            }
-                        }
-                    ],
-                    dockedItems: {
-                        xtype: 'toolbar',
-                        dock : 'top',
-                        items: [
-                            '->', {
-                                text   : i18n['vector_charts'],
-                                iconCls: 'icoChart',
-                                scope  : me,
-                                handler: me.onChartWindowShow
-                            }
-                        ]
-                    }
-                })
-            );
-        }
-        if(acl['access_review_of_systems']){
-            me.reviewSysPanel = me.encounterTabPanel.add(
-                Ext.create('Ext.form.Panel', {
-                    autoScroll   : true,
-                    action       : 'encounter',
-                    title        : i18n['review_of_systems'],
-                    frame        : true,
-                    bodyPadding  : 5,
-                    bodyStyle    : 'background-color:white',
-                    fieldDefaults: { msgTarget: 'side' },
-                    buttons      : [
-                        {
-                            text   : i18n['save'],
-                            iconCls: 'save',
-                            action : 'reviewOfSystems',
-                            scope  : me,
-                            handler: me.onSave
-                        }
-                    ]
-                })
-            );
-        }
-        if(acl['access_review_of_systems_checks']){
-            me.reviewSysCkPanel = me.encounterTabPanel.add(
-                Ext.create('Ext.form.Panel', {
-                    autoScroll   : true,
-                    action       : 'encounter',
-                    title        : i18n['review_of_systems_checks'],
-                    frame        : true,
-                    bodyPadding  : 5,
-                    bodyStyle    : 'background-color:white',
-                    fieldDefaults: { msgTarget: 'side' },
-                    buttons      : [
-                        {
-                            text   : i18n['save'],
-                            iconCls: 'save',
-                            action : 'reviewOfSystemsChecks',
-                            scope  : me,
-                            handler: me.onSave
-                        }
-                    ]
-                })
-            );
-        }
-        if(acl['access_soap']){
-            me.soapPanel = me.encounterTabPanel.add(
-                Ext.create('Ext.form.Panel', {
-                    autoScroll   : true,
-                    title        : i18n['soap'],
-                    action       : 'encounter',
-                    frame        : true,
-                    bodyPadding  : 5,
-                    bodyStyle    : 'background-color:white',
-                    fieldDefaults: { msgTarget: 'side' },
-                    buttons      : [
-                        {
-                            text   : i18n['save'],
-                            iconCls: 'save',
-                            action : 'soap',
-                            scope  : me,
-                            handler: me.onSave
-                        }
-                    ]
-                })
-            );
-        }
-        if(acl['access_itmes_to_review']){
-            me.itemsToReview = me.encounterTabPanel.add(
-                Ext.create('App.view.patient.ItemsToReview', {
-                    title      : i18n['items_to_review'],
-                    bodyPadding: '7 5 2 5'
-                })
-            );
-        }
-
-        /**
-         * Administravive Tab Panel and its Panels
-         * @type {*}
-         */
-        if(acl['access_enc_hcfa'] || acl['access_enc_cpt'] || acl['access_enc_history']){
-            me.administrativeTabPanel = me.centerPanel.add(
-                Ext.create('Ext.tab.Panel', {
-                    title     : i18n['administrative'],
-                    itemId    : 'administrative',
-                    plain     : true,
-                    activeItem: 0,
-                    defaults  : {
-                        bodyStyle : 'padding:15px',
-                        bodyBorder: true,
-                        layout    : 'fit'
-                    }
-                })
-            );
-        }
-        if(acl['access_enc_hcfa']){
-            me.MiscBillingOptionsPanel = me.administrativeTabPanel.add(
-                Ext.create('App.view.patient.encounter.HealthCareFinancingAdministrationOptions', {
-                    autoScroll: true,
-                    title     : i18n['misc_billing_options_HCFA_1500']
-                })
-            );
-        }
-        if(acl['access_enc_cpt']){
-            me.CurrentProceduralTerminology = me.administrativeTabPanel.add(
-                Ext.create('App.view.patient.encounter.CurrentProceduralTerminology', {
-                    title: i18n['current_procedural_terminology']
-                })
-            );
-        }
-        if(acl['access_enc_history']){
-            me.EncounterEventHistory = me.administrativeTabPanel.add(
-                Ext.create('App.classes.grid.EventHistory', {
-                    bodyStyle: 0,
-                    title    : i18n['encounter_history'],
-                    store    : me.encounterEventHistoryStore
-                })
-            );
-        }
-
-        /**
-         * Progress Note
-         */
-        me.progressNote = Ext.create('App.view.patient.ProgressNote', {
-            title       : i18n['encounter_progress_note'],
-            region      : 'east',
-            margin      : '0 0 0 2',
-            bodyStyle   : 'padding:15px',
-            width       : 500,
-            collapsible : true,
-            animCollapse: true,
-            collapsed   : true,
-            listeners   : {
-                scope   : this,
-                collapse: me.progressNoteCollapseExpand,
-                expand  : me.progressNoteCollapseExpand
-            },
-            tools       : [
-                {
-                    type   : 'print',
-                    tooltip: i18n['print_progress_note'],
-                    scope  : me,
-                    handler: function() {
-                        var win = window.open('print.html', 'win', 'left=20,top=20,width=700,height=700,toolbar=0,resizable=1,location=1,scrollbars=1,menubar=0,directories=0');
-                        var dom = me.progressNote.body.dom;
-                        var wrap = document.createElement('div');
-                        var html = wrap.appendChild(dom.cloneNode(true));
-                        win.document.write(html.innerHTML);
-                        Ext.defer(function() {
-                            win.print();
-                        }, 1000);
-
-                    }
-                }
-            ]
-        });
-
-        me.panelToolBar =  Ext.create('Ext.toolbar.Toolbar', {
-            dock    : 'top',
-            defaults: {
-                scope  : me,
-                handler: me.onMedicalWin
-            },
-            items   : [
-                '-', {
-                    text  : i18n['immunizations'] + ' ',
-                    action: 'immunization'
-                }, '-', {
-                    text  : i18n['allergies'] + ' ',
-                    action: 'allergies'
-                }, '-', {
-                    text  : i18n['active_problems'] + ' ',
-                    action: 'issues'
-                }, '-', {
-                    text  : i18n['surgeries'] + ' ',
-                    action: 'surgery'
-                }, '-', {
-                    text  : i18n['dental'] + ' ',
-                    action: 'dental'
-                }, '-', {
-                    text  : i18n['medications'] + ' ',
-                    action: 'medications'
-                }, '-', {
-                    text  : i18n['laboratories'] + ' ',
-                    action: 'laboratories'
-                }, '-', {
-                    text   : i18n['new_lab_order'],
-                    action : 'lab',
-                    scope  : me,
-                    handler: me.newDoc
-                }, '-', {
-                    text   : i18n['new_xray_order'],
-                    action : 'xRay',
-                    scope  : me,
-                    handler: me.newDoc
-                }, '-', {
-                    text   : i18n['new_prescription'],
-                    action : 'prescription',
-                    scope  : me,
-                    handler: me.newDoc
-                }, '-', {
-                    text   : i18n['new_doctors_note'],
-                    action : 'notes',
-                    scope  : me,
-                    handler: me.newDoc
-                }, '-', '->', '-',
-                me.priorityCombo = Ext.create('App.classes.combo.EncounterPriority', {
-                    listeners: {
-                        scope : me,
-                        select: me.prioritySelect
-                    }
-                }), '-'
-            ]
-        });
-
-        if(acl['access_encounter_checkout']){
-            me.panelToolBar.add({
-                text   : i18n['checkout'],
-                handler: me.onCheckout
-            },'-');
-        }
-
-        me.pageBody = [ me.centerPanel, me.progressNote ];
-        me.listeners = {
-            beforerender: me.beforePanelRender
-        };
-        me.callParent();
-        me.down('panel').addDocked(me.panelToolBar);
-    },
-    newDoc                : function(btn) {
-        app.onNewDocumentsWin(btn.action)
-    },
-    /**
-     * opens the Medical window
-     * @param btn
-     */
-    onMedicalWin          : function(btn) {
-        app.onMedicalWin(btn);
-    },
-    /**
-     * opens the Chart window
-     */
-    onChartWindowShow     : function() {
-        app.onChartsWin();
-    },
-
-    prioritySelect: function(cmb, records) {
-        this.changeEncounterPriority(records[0].data.option_value);
-    },
-
-    changeEncounterPriority:function(priority){
-        var me = this,
-            params = {
-                pid : me.pid,
-                eid : me.eid,
-                priority : priority
-            };
-        Encounter.updateEncounterPriority(params, function(){
-            app.patientButtonRemoveCls();
-            app.patientBtn.addCls(priority);
-        });
-        me.updateProgressNote();
-    },
-
-    /**
-     * Checks for opened encounters, if open encounters are
-     * found alert the user, if not then open the
-     * new encounter window
-     */
-    newEncounter  : function() {
-        var me = this, form, model;
-        me.resetTabs();
-        if(acl['add_encounters']){
-            Encounter.checkOpenEncounters(function(provider, response) {
-                /** @namespace response.result.encounter */
-                if(response.result.encounter) {
-                    Ext.Msg.show({
-                        title  : 'Oops! ' + i18n['open_encounters_found'] + '...',
-                        msg    : i18n['do_you_want_to'] + ' <strong>' + i18n['continue_creating_the_new_encounters'] + '</strong><br>"' + i18n['click_no_to_review_encounter_history'] + '"',
-                        buttons: Ext.Msg.YESNO,
-                        icon   : Ext.Msg.QUESTION,
-                        fn     : function(btn) {
-                            if(btn == 'yes') {
-                                form = me.newEncounterWindow.down('form');
-                                form.getForm().reset();
-                                model = Ext.ModelManager.getModel('App.model.patient.Encounter');
-                                model = Ext.ModelManager.create({
-                                    start_date: new Date()
-                                }, model);
-                                form.getForm().loadRecord(model);
-                                me.newEncounterWindow.show();
-                            } else {
-                                app.openPatientVisits();
-                            }
-                        }
-                    });
-                } else {
-                    form = me.newEncounterWindow.down('form');
-                    form.getForm().reset();
-                    model = Ext.ModelManager.getModel('App.model.patient.Encounter');
-                    model = Ext.ModelManager.create({
-                        start_date: new Date()
-                    }, model);
-                    form.getForm().loadRecord(model);
-                    me.newEncounterWindow.show();
-                }
-            });
-        }else{
-            app.accessDenied();
-        }
-    },
-
-    /**
-     * CheckOut Functions
-     */
-    onCheckout: function() {
-        var me = this, win = me.checkoutWindow, patient = me.getCurrPatient();
-        win.setTitle(patient.name +' #'+patient.pid+ ' - ' + Ext.Date.format(me.currEncounterStartDate, 'F j, Y, g:i:s a') + ' (' + i18n['checkout'] + ')');
-        win.show();
-    },
-    coSignEncounter: function() {
-
-    },
-    signEncounter: function() {
-        this.closeEncounter();
-        this.checkoutWindow.close();
-    },
-    cancelCheckout: function(btn) {
-        var win = btn.up('window'), form = win.down('form').getForm();
-        win.close();
-        form.reset();
-    },
-
-
-
-    /**
-     * Sends the data to the server to be saved.
-     * This function needs the button action to determine
-     * which form  to save.
-     * @param SaveBtn
-     */
-    onSave: function(SaveBtn) {
-        var me = this, panel = me.centerPanel.getActiveTab().getActiveTab(), form;
-          if(SaveBtn.action == "encounter") {
-            form = me.newEncounterWindow.down('form').getForm();
-        } else if(SaveBtn.action == 'vitals') {
-            form = panel.down('form').getForm();
-        } else {
-            form = panel.getForm();
-        }
-        if(form.isValid()) {
-            var values = form.getValues(), store, record, storeIndex;
-
-            if(SaveBtn.action == 'encounter') {
-                ACL.hasPermission('add_encounters', function(provider, response) {
-                    if(response.result) {
-                        store = me.encounterStore;
-                        record = form.getRecord();
-                        storeIndex = store.indexOf(record);
-
-                        if(storeIndex == -1) {
-                            store.add(values);
-                            record = store.last();
-                        } else {
-                            record.set(values);
-                        }
-                        record.save({
-                            callback: function(store) {
-                                app.patientButtonRemoveCls();
-                                app.patientBtn.addCls(store.data.priority);
-                                me.openEncounter(store.data.eid);
-                                SaveBtn.up('window').hide();
-                            }
-                        });
-                    } else {
-                        SaveBtn.up('window').close();
-                        app.accessDenied();
-                    }
-                });
-            } else if(SaveBtn.action == 'vitals') {
-                var VFields = form.getFields().items, VFieldsCount = VFields.length, emptyCount = 0;
-                for(var i = 0; i < VFields.length; i++) {
-                    if(VFields[i].xtype != 'mitos.datetime') {
-                        if(VFields[i].value == '') {
-                            emptyCount++;
-                        }
-                    }
-                }
-                if((VFieldsCount - 3) > emptyCount) {
-                    ACL.hasPermission('add_vitals', function(provider, response) {
-                        if(response.result) {
-                            store = me.encounterStore.getAt(0).vitals();
-                            record = form.getRecord();
-                            values = me.addDefaultData(values);
-                            storeIndex = store.indexOf(record);
-                            if(storeIndex == -1) {
-                                store.insert(0, values);
-                            } else {
-                                record.set(values);
-                            }
-                            store.sync({
-                                scope  : me,
-                                success: function() {
-                                    me.msg('Sweet!', i18n['vitals_saved']);
-                                    me.updateProgressNote();
-                                    me.vitalsPanel.down('vitalsdataview').refresh();
-                                    me.resetVitalsForm();
-                                }
-                            });
-                        } else {
-                            app.accessDenied();
-                        }
-                    });
-                } else {
-                    me.msg('Oops!', i18n['vitals_form_is_epmty'])
-                }
-
-            } else {
-                ACL.hasPermission('edit_encounters', function(provider, response) {
-                    if(response.result) {
-                        store = me.encounterStore;
-                        if(SaveBtn.action == 'reviewOfSystems') {
-                            record = store.getAt(0).reviewofsystems().getAt(0);
-                        } else if(SaveBtn.action == 'reviewOfSystemsChecks') {
-                            record = store.getAt(0).reviewofsystemschecks().getAt(0);
-                        } else if(SaveBtn.action == 'soap') {
-                            record = store.getAt(0).soap().getAt(0);
-                        } else if(SaveBtn.action == 'speechDictation') {
-                            record = store.getAt(0).speechdictation().getAt(0);
-                        }
-                        values = me.addDefaultData(values);
-                        record.set(values);
-                        record.save({
-                            callback: function() {
-                                me.updateProgressNote();
-                            }
-                        });
-                        me.msg('Sweet!', i18n['encounter_updated']);
-                        me.encounterEventHistoryStore.load({params: {eid: app.patient.eid}});
-                    } else {
-                        app.accessDenied();
-                    }
-                });
-            }
-        }
-    },
-
-    onVitalsSign: function() {
-        var me = this,
-            form = me.vitalsPanel.down('form').getForm(),
-            store = me.encounterStore.getAt(0).vitals(),
-            record = form.getRecord();
-        if(form.isValid()) {
-            me.passwordVerificationWin(function(btn, password) {
-                if(btn == 'ok') {
-                    User.verifyUserPass(password, function(provider, response) {
-                        if(response.result) {
-                            record.set({auth_uid: user.id});
-                            store.sync({
-                                callback: function() {
-                                    form.reset();
-                                    me.msg('Sweet!', i18n['vitals_signed']);
-                                    me.updateProgressNote();
-                                    me.resetVitalsForm();
-                                    me.vitalsPanel.down('vitalsdataview').refresh();
-                                }
-                            });
-
-                        } else {
-                            Ext.Msg.show({
-                                title  : 'Oops!',
-                                msg    : i18n['incorrect_password'],
-                                buttons: Ext.Msg.OKCANCEL,
-                                icon   : Ext.Msg.ERROR,
-                                fn     : function(btn) {
-                                    if(btn == 'ok') {
-                                        me.onVitalsSign();
-                                    }
-                                }
-                            });
-                        }
-                    });
-                }
-            });
-        }
-    },
-
-    /**
-     * Takes the form data to be send and adds the default
-     * data used by every encounter form. For example
-     * pid (Patient ID), eid (Encounter ID), uid (User ID),
-     * and date (Current datetime as 00-00-00 00:00:00)
-     * @param data
-     */
-    addDefaultData: function(data) {
-        data.pid = this.pid;
-        data.eid = this.eid;
-        data.uid = user.id;
-        data.date = Ext.Date.format(new Date(), 'Y-m-d H:i:s');
-        return data;
-    },
-
-    /**
-     * Cancels the New Encounter process, closing the window
-     * and send the user to the Patient Summary panel
-     */
-    cancelNewEnc: function() {
-        this.newEncounterWindow.close();
-        app.openPatientSummary();
-    },
-
-    /**
-     *
-     * @param eid
-     */
-    openEncounter: function(eid) {
-        var me = this, vitals;
-        me.resetTabs();
-        say('patient data');
-        say(app.patient);
-        me.eid = app.patient.eid = eid;
-        me.encounterStore.getProxy().extraParams.eid = me.eid;
-        me.encounterStore.load({
-            scope   : me,
-            callback: function(record) {
-                var data = record[0].data;
-                me.pid = data.pid;
-                me.currEncounterStartDate = data.start_date;
-                if(!data.close_date) {
-                    me.startTimer();
-                    me.setButtonsDisabled(me.getButtonsToDisable());
-                } else {
-                    if(me.stopTimer()) {
-                        var timer = me.timer(data.start_date, data.close_date),
-                            patient = app.patient;
-                        me.updateTitle(patient.name +' #'+patient.pid+' - '+patient.age.str+' - ' + Ext.Date.format(me.currEncounterStartDate, 'F j, Y, g:i:s a') + ' (' + i18n['closed_encounter'] + ')', app.patient.readOnly, timer);
-                        me.setButtonsDisabled(me.getButtonsToDisable(), true);
-                    }
-                }
-
-                if(me.vitalsPanel){
-                    vitals = me.vitalsPanel.down('vitalsdataview');
-                    me.resetVitalsForm();
-                    vitals.store = record[0].vitalsStore;
-                    vitals.refresh();
-                }
-
-
-                if(me.reviewSysPanel) me.reviewSysPanel.getForm().loadRecord(record[0].reviewofsystems().getAt(0));
-                if(me.reviewSysCkPanel) me.reviewSysCkPanel.getForm().loadRecord(record[0].reviewofsystemschecks().getAt(0));
-                if(me.soapPanel) me.soapPanel.getForm().loadRecord(record[0].soap().getAt(0));
-
-                //me.speechDicPanel.getForm().loadRecord(record[0].speechdictation().getAt(0));
-
-                me.encounterEventHistoryStore.load({params: {eid: eid}});
-
-                if(me.soapPanel) me.soapPanel.query('icdsfieldset')[0].loadIcds(record[0].soap().getAt(0).data.icdxCodes);
-
-                if(me.CurrentProceduralTerminology) {
-                    me.CurrentProceduralTerminology.encounterCptStoreLoad(me.pid, eid, function() {
-                        me.CurrentProceduralTerminology.setDefaultQRCptCodes();
-                    });
-                }
-                me.priorityCombo.setValue(data.priority);
-                app.PreventiveCareWindow.loadPatientPreventiveCare();
-            }
-        });
-    },
-
-    /**
-     * Function to close the encounter..
-     */
-    closeEncounter            : function() {
-        var me = this, form, values;
-        me.passwordVerificationWin(function(btn, password) {
-            if(btn == 'ok') {
-                form = me.checkoutWindow.down('form').getForm();
-                values = form.getValues();
-                values.eid = me.eid;
-                values.pid = me.pid;
-                values.close_date = Ext.Date.format(new Date(), 'Y-m-d H:i:s');
-                values.signature = password;
-                Encounter.closeEncounter(values, function(provider, response) {
-                    if(response.result.success) {
-                        if(me.stopTimer()) {
-                            app.patient.eid = null;
-                            app.openPatientVisits();
-                            me.msg('Sweet!', i18n['encounter_closed']);
-                        }
-                    } else {
-                        Ext.Msg.show({
-                            title  : 'Oops!',
-                            msg    : i18n['incorrect_password'],
-                            buttons: Ext.Msg.OKCANCEL,
-                            icon   : Ext.Msg.ERROR,
-                            fn     : function(btn) {
-                                if(btn == 'ok') {
-                                    me.closeEncounter();
-                                }
-                            }
-                        });
-                    }
-                });
-            }
-        });
-    },
-    /**
-     * listen for the progress note panel and runs the
-     * doLayout function to re-adjust the dimensions.
-     */
-    progressNoteCollapseExpand: function() {
-        this.centerPanel.doLayout();
-    },
-
-    updateProgressNote: function() {
-        var me = this;
-        Encounter.getProgressNoteByEid(me.eid, function(provider, response) {
-            var data = response.result;
-            me.progressNote.tpl.overwrite(me.progressNote.body, data);
-        });
-    },
-
-    onTapPanelChange: function(panel) {
-        if(panel.card.itemId == 'encounter') {
-            this.isProgressNoteCollapsed(true);
-        } else {
-            this.isProgressNoteCollapsed(true);
-        }
-    },
-
-    isProgressNoteCollapsed: function(ans) {
-        ans ? this.progressNote.collapse() : this.progressNote.expand();
-
-    },
-
-    onVitalsClick: function(view, record, e) {
-        var me = this, form = me.vitalsPanel.down('form').getForm();
-        form.reset();
-        if(!record.data.auth_uid) {
-            me.vitalsPanel.query('button[action="signBtn"]')[0].setDisabled(false);
-            form.loadRecord(record);
-        } else {
-            Ext.Msg.show({
-                title        : 'Oops!',
-                msg          : i18n['this_column_can_not_be_modified_because_it_has_been_signed_by'] + ' ' + record.data.auth_uid,
-                buttons      : Ext.Msg.OK,
-                icon         : Ext.Msg.WARNING,
-                animateTarget: e
-            });
-        }
-    },
-
-    resetVitalsForm  : function() {
-        var me = this, form = me.vitalsPanel.down('form').getForm(), model = Ext.ModelManager.getModel('App.model.patient.Vitals'), newModel = Ext.ModelManager.create({}, model);
-        me.vitalsPanel.query('button[action="signBtn"]')[0].setDisabled(true);
-        form.loadRecord(newModel);
-    },
-
-    //***************************************************************************************************//
-    //***************************************************************************************************//
-    //*********    *****  ******    ****** **************************************************************//
-    //*********  *  ****  ****  ***  ***** **************************************************************//
-    //*********  **  ***  ***  *****  **** **************************************************************//
-    //*********  ***  **  ***  *****  **** **************************************************************//
-    //*********  ****  *  ****  ***  ********************************************************************//
-    //*********  *****    *****    ******* **************************************************************//
-    //***************************************************************************************************//
-    //***************************************************************************************************//
-    alertIconRenderer: function(v) {
-        if(v == 1) {
-            return '<img src="resources/images/icons/icoLessImportant.png" />'
-        } else if(v == 2) {
-            return '<img src="resources/images/icons/icoImportant.png" />'
-        }
-        return v;
-    },
-
-    /**
-     * Start the timerTask
-     */
-    startTimer: function() {
-        Ext.TaskManager.start(this.timerTask);
-        return true;
-    },
-    /**
-     * stops the timerTask
-     */
-    stopTimer : function() {
-        Ext.TaskManager.stop(this.timerTask);
-        return true;
-    },
-
-    /**
-     * This will update the timer every sec
-     */
-    encounterTimer: function() {
-        var me = this,
-            timer = me.timer(me.currEncounterStartDate, new Date());
-        me.updateTitle(app.patient.name +' #'+app.patient.pid+ ' - ' + app.patient.age.str + ' - ' + Ext.Date.format(me.currEncounterStartDate, 'F j, Y, g:i:s a') + ' (' + i18n['opened_encounter'] + ')', app.patient.readOnly, timer);
-    },
-
-    /**
-     * This function use the "start time" and "stop time"
-     * and gets the time elapsed between the two then
-     * returns it as a timer (00:00:00)  or (1 day(s) 00:00:00)
-     * if more than 24 hrs
-     *
-     * @param start
-     * @param stop
-     */
-    timer: function(start, stop) {
-        var ms = Ext.Date.getElapsed(start, stop), t, sec = Math.floor(ms / 1000);
-
-        function twoDigit(d) {
-            return (d >= 10) ? d : '0' + d;
-        }
-
-        var min = Math.floor(sec / 60);
-        sec = sec % 60;
-        t = twoDigit(sec);
-        var hr = Math.floor(min / 60);
-        min = min % 60;
-        t = twoDigit(min) + ":" + t;
-        var day = Math.floor(hr / 24);
-        hr = hr % 24;
-        t = twoDigit(hr) + ":" + t;
-        t = (day == 0 ) ? '<span class="time">' + t + '</span>' : '<span class="day">' + day + ' ' + i18n['day_s'] + '</span><span class="time">' + t + '</span>';
-        return t;
-    },
-
-    /**
-     * Convert Celsius to Fahrenheit
-     * @param field
-     * @param e
-     */
-    cf: function(field, e) {
-        var v = field.getValue(), temp = 9 * v / 5 + 32, res = Ext.util.Format.round(temp, 1);
-        if(e.getKey() != e.TAB) {
-            field.up('form').getForm().findField('temp_f').setValue(res);
-        }
-    },
-    /**
-     * Convert Fahrenheit to Celsius
-     * @param field
-     * @param e
-     */
-    fc: function(field, e) {
-        var v = field.getValue(), temp = (v - 32) * 5 / 9, res = Ext.util.Format.round(temp, 1);
-        if(e.getKey() != e.TAB) {
-            field.up('form').getForm().findField('temp_c').setValue(res);
-        }
-    },
-
-    /**
-     * Convert Lbs to Kg
-     * @param field
-     * @param e
-     */
-    lbskg: function(field, e) {
-        var v = field.getValue(), weight = v / 2.2, res = Ext.util.Format.round(weight, 1);
-        if(e.getKey() != e.TAB) {
-            field.up('form').getForm().findField('weight_kg').setValue(res);
-        }
-    },
-    /**
-     * Convert Kg to Lbs
-     * @param field
-     * @param e
-     */
-    kglbs: function(field, e) {
-        var v = field.getValue(), weight = v * 2.2, res = Ext.util.Format.round(weight, 1);
-        if(e.getKey() != e.TAB) {
-            field.up('form').getForm().findField('weight_lbs').setValue(res);
-        }
-    },
-    /**
-     * Convert Inches to Centimeter
-     * @param field
-     * @param e
-     */
-    incm : function(field, e) {
-        var v = field.getValue(), weight = v * 2.54, res = Ext.util.Format.round(weight, 1);
-        if(e.getKey() != e.TAB) {
-            if(field.name == 'head_circumference_in') {
-                field.up('form').getForm().findField('head_circumference_cm').setValue(res);
-            } else if(field.name == 'waist_circumference_in') {
-                field.up('form').getForm().findField('waist_circumference_cm').setValue(res);
-            } else if(field.name == 'height_in') {
-                field.up('form').getForm().findField('height_cm').setValue(res);
-            }
-        }
-    },
-    /**
-     * Convert Centimeter to Inches
-     * @param field
-     * @param e
-     */
-    cmin : function(field, e) {
-        var v = field.getValue(), weight = v * 0.39, res = Ext.util.Format.round(weight, 1);
-        if(e.getKey() != e.TAB) {
-            if(field.name == 'head_circumference_cm') {
-                field.up('form').getForm().findField('head_circumference_in').setValue(res);
-            } else if(field.name == 'waist_circumference_cm') {
-                field.up('form').getForm().findField('waist_circumference_in').setValue(res);
-            } else if(field.name == 'height_cm') {
-                field.up('form').getForm().findField('height_in').setValue(res);
-            }
-        }
-    },
-
-    bmi: function(field) {
-        var form = field.up('form').getForm(), weight = form.findField('weight_kg').getValue(), height = form.findField('height_cm').getValue(), bmi, status;
-        if(weight > 0 && height > 0) {
-            bmi = weight / (height / 100 * height / 100);
-            if(bmi < 15) {
-                status = i18n['very_severely_underweight']
-            } else if(bmi >= 15 && bmi < 16) {
-                status = i18n['severely_underweight']
-            } else if(bmi >= 16 && bmi < 18.5) {
-                status = i18n['underweight']
-            } else if(bmi >= 18.5 && bmi < 25) {
-                status = i18n['normal']
-            } else if(bmi >= 25 && bmi < 30) {
-                status = i18n['overweight']
-            } else if(bmi >= 30 && bmi < 35) {
-                status = i18n['obese_class_1']
-            } else if(bmi >= 35 && bmi < 40) {
-                status = i18n['obese_class_2']
-            } else if(bmi >= 40) {
-                status = i18n['obese_class_3']
-            }
-            field.up('form').getForm().findField('bmi').setValue(Ext.util.Format.number(bmi, '0.00'));
-            field.up('form').getForm().findField('bmi_status').setValue(status);
-
-        }
-
-    },
-
-    /**
-     * After this panel is render add the forms and listeners for conventions
-     */
-    beforePanelRender: function() {
-        var me = this, form, defaultFields = function() {
-                return [
-                    {name: 'id', type: 'int'},
-                    {name: 'pid', type: 'int'},
-                    {name: 'eid', type: 'int'},
-                    {name: 'uid', type: 'int'}
-                ]
-            };
-        /**
-         * Get 'Vitals' Form Fields and add listeners to convert values
-         */
-        if(me.vitalsPanel){
-            me.getFormItems(me.vitalsPanel.down('form'), 4, function() {
-                form = me.vitalsPanel.down('form').getForm();
-                form.findField('temp_c').addListener('keyup', me.cf, me);
-                form.findField('temp_f').addListener('keyup', me.fc, me);
-                form.findField('weight_lbs').addListener('keyup', me.lbskg, me);
-                form.findField('weight_kg').addListener('keyup', me.kglbs, me);
-                form.findField('height_cm').addListener('keyup', me.cmin, me);
-                form.findField('height_in').addListener('keyup', me.incm, me);
-                form.findField('weight_lbs').addListener('blur', me.bmi, me);
-                form.findField('weight_kg').addListener('blur', me.bmi, me);
-                form.findField('height_cm').addListener('blur', me.bmi, me);
-                form.findField('height_in').addListener('blur', me.bmi, me);
-                form.findField('head_circumference_cm').addListener('keyup', me.cmin, me);
-                form.findField('head_circumference_in').addListener('keyup', me.incm, me);
-                form.findField('waist_circumference_cm').addListener('keyup', me.cmin, me);
-                form.findField('waist_circumference_in').addListener('keyup', me.incm, me);
-            });
-        }
-        /**
-         * Get 'Review of Systems' Form and define the Model using the form fields
-         */
-        if(me.reviewSysPanel){
-            me.getFormItems(me.reviewSysPanel, 8, function() {
-                var formFields = me.reviewSysPanel.getForm().getFields(), modelFields = new defaultFields;
-                for(var i = 0; i < formFields.items.length; i++) {
-                    modelFields.push({name: formFields.items[i].name, type: 'auto'});
-                }
-                Ext.define('App.model.patient.ReviewOfSystems', {
-                    extend   : 'Ext.data.Model',
-                    fields   : modelFields,
-                    proxy    : {
-                        type: 'direct',
-                        api : {
-                            update: Encounter.updateReviewOfSystemsById
-                        }
-                    },
-                    belongsTo: { model: 'App.model.patient.Encounter', foreignKey: 'eid' }
-                });
-            });
-        }
-        /**
-         * Get 'SOAP' Form and define the Model using the form fields
-         */
-        if(me.soapPanel){
-            me.getFormItems(me.soapPanel, 6, function() {
-                var formFields = me.soapPanel.getForm().getFields(), modelFields = new defaultFields;
-                for(var i = 0; i < formFields.items.length; i++) {
-                    modelFields.push({name: formFields.items[i].name, type: 'auto'});
-                }
-                Ext.define('App.model.patient.SOAP', {
-                    extend   : 'Ext.data.Model',
-                    fields   : modelFields,
-                    proxy    : {
-                        type: 'direct',
-                        api : {
-                            update: Encounter.updateSoapById
-                        }
-                    },
-                    belongsTo: { model: 'App.model.patient.Encounter', foreignKey: 'eid' }
-                });
-            });
-        }
-        /**
-         * Get 'Speech Dictation' Form and define the Model using the form fields
-         */
-//        this.getFormItems(me.speechDicPanel, 'Speech Dictation', function() {
-//            var formFields = me.speechDicPanel.getForm().getFields(), modelFields = new defaultFields;
-//            for(var i = 0; i < formFields.items.length; i++) {
-//                modelFields.push({name: formFields.items[i].name, type: 'auto'});
-//            }
-//            Ext.define('App.model.patient.SpeechDictation', {
-//                extend   : 'Ext.data.Model',
-//                fields   : modelFields,
-//                proxy    : {
-//                    type: 'direct',
-//                    api : {
-//                        update: Encounter.updateDictationById
-//                    }
-//                },
-//                belongsTo: { model: 'App.model.patient.Encounter', foreignKey: 'eid' }
-//            });
-//        });
-        /**
-         * Get 'Review of Systems Check' Form and define the Model using the form fields
-         */
-        if(me.reviewSysCkPanel){
-            me.getFormItems(me.reviewSysCkPanel, 9, function() {
-                var formFields = me.reviewSysCkPanel.getForm().getFields(), modelFields = new defaultFields;
-                for(var i = 0; i < formFields.items.length; i++) {
-                    modelFields.push({name: formFields.items[i].name, type: 'auto'});
-                }
-                Ext.define('App.model.patient.ReviewOfSystemsCheck', {
-                    extend   : 'Ext.data.Model',
-                    fields   : modelFields,
-                    proxy    : {
-                        type: 'direct',
-                        api : {
-                            update: Encounter.updateReviewOfSystemsChecksById
-                        }
-                    },
-                    belongsTo: { model: 'App.model.patient.Encounter', foreignKey: 'eid' }
-                });
-            });
-        }
-
-        if(me.newEncounterWindow) me.getFormItems(me.newEncounterWindow.down('form'), 5);
-    },
-
-    getButtonsToDisable: function() {
-        var me = this, buttons = [];
-        if(me.ButtonsToDisable == null){
-            if(me.vitalsPanel) buttons.concat(buttons, me.vitalsPanel.query('button'));
-            if(me.reviewSysPanel) buttons.concat(buttons, me.reviewSysPanel.query('button'));
-            if(me.reviewSysCkPanel) buttons.concat(buttons, me.reviewSysCkPanel.query('button'));
-            if(me.soapPanel) buttons.concat(buttons, me.soapPanel.query('button'));
-            if(me.MiscBillingOptionsPanel) buttons.concat(buttons, me.MiscBillingOptionsPanel.query('button'));
-            if(me.CurrentProceduralTerminology) buttons.concat(buttons, me.CurrentProceduralTerminology.query('button'));
-            if(me.EncounterEventHistory) buttons.concat(buttons, me.EncounterEventHistory.query('button'));
-            if(me.newEncounterWindow) buttons.concat(buttons, me.newEncounterWindow.query('button'));
-            if(me.checkoutWindow) buttons.concat(buttons, me.checkoutWindow.query('button'));
-            me.ButtonsToDisable = buttons;
-        }
-        return me.ButtonsToDisable;
-    },
-
-    resetTabs:function(){
-        var me = this;
-        if(me.renderAdministrative) me.centerPanel.setActiveTab(0);
-        if(me.encounterTabPanel) me.encounterTabPanel.setActiveTab(0);
-        if(me.administrativeTabPanel) me.administrativeTabPanel.setActiveTab(0);
-    },
-
-    onDocumentView: function(grid, rowIndex) {
-        var rec = grid.getStore().getAt(rowIndex),
-            src = rec.data.url;
-        app.onDocumentView(src);
-    },
-    /**
-     * This function is called from MitosAPP.js when
-     * this panel is selected in the navigation panel.
-     * place inside this function all the functions you want
-     * to call every this panel becomes active
-     */
-    onActive      : function(callback) {
-        var me = this, patient = app.patient;
-        if(me.checkIfCurrPatient()) {
-            me.updateTitle(patient.name + ' (' + i18n['visits'] + ')', patient.readOnly, null);
-            me.setReadOnly(patient.readOnly);
-            callback(true);
-        } else {
-            callback(false);
-            me.currPatientError();
-        }
-    }
+Ext.define('App.view.patient.Encounter',
+{
+	extend : 'App.classes.RenderPanel',
+	id : 'panelEncounter',
+	pageTitle : i18n['encounter'],
+	pageLayout : 'border',
+	requires : ['App.store.patient.Encounter', 'App.store.patient.Vitals'],
+	pid : null,
+	eid : null,
+	currEncounterStartDate : null,
+	initComponent : function()
+	{
+		var me = this;
+
+		me.renderAdministrative = acl['access_enc_hcfa'] || acl['access_enc_cpt'] || acl['access_enc_history'];
+
+		me.timerTask =
+		{
+			scope : me,
+			run : function()
+			{
+				me.encounterTimer();
+			},
+			interval : 1000 //1 second
+		};
+		/**
+		 * stores
+		 * @type {*}
+		 */
+		me.encounterStore = Ext.create('App.store.patient.Encounter',
+		{
+			listeners :
+			{
+				scope : me,
+				datachanged : me.updateProgressNote
+			}
+		});
+		me.encounterEventHistoryStore = Ext.create('App.store.patient.EncounterEventHistory');
+		me.EncounterOrdersStore = Ext.create('App.store.patient.EncounterCPTsICDs');
+
+		if (acl['access_encounter_checkout'])
+		{
+			me.checkoutAlertArea = Ext.create('App.store.patient.CheckoutAlertArea');
+		}
+
+		/**
+		 * New Encounter Panel this panel is located hidden at
+		 * the top of the Visit panel and will slide down if
+		 * the "New Encounter" button is pressed.
+		 */
+		if (acl['add_encounters'])
+		{
+			me.newEncounterWindow = Ext.create('Ext.window.Window',
+			{
+				title : i18n['new_encounter_form'],
+				closeAction : 'hide',
+				modal : true,
+				width : 660,
+				items : [
+				{
+					xtype : 'form',
+					border : false,
+					bodyPadding : '10 10 0 10'
+				}],
+				buttons : [
+				{
+					text : i18n['create_encounter'],
+					action : 'encounter',
+					scope : me,
+					handler : me.onSave
+				},
+				{
+					text : i18n['cancel'],
+					scope : me,
+					handler : me.cancelNewEnc
+
+				}],
+				listeners :
+				{
+					scope : me,
+					close : me.cancelNewEnc
+				}
+			});
+		}
+		/**
+		 * Encounter Checkout window
+		 * @type {*}
+		 */
+		if (acl['access_encounter_checkout'])
+		{
+			me.checkoutWindow = Ext.create('Ext.window.Window',
+			{
+				title : i18n['checkout_and_signing'],
+				closeAction : 'hide',
+				modal : true,
+				layout : 'border',
+				width : 1000,
+				height : 660,
+				bodyPadding : 5,
+				items : [
+				{
+					xtype : 'grid',
+					title : i18n['services_diagnostics'],
+					region : 'center',
+					store : me.EncounterOrdersStore,
+					columns : [
+					{
+						header : i18n['code'],
+						width : 60,
+						dataIndex : 'code'
+					},
+					{
+						header : i18n['description'],
+						flex : 1,
+						dataIndex : 'code_text'
+					},
+					{
+						header : i18n['type'],
+						flex : 1,
+						dataIndex : 'type'
+					}]
+				}, me.documentsimplegrid = Ext.create('App.view.patient.EncounterDocumentsGrid',
+				{
+					title : i18n['documents'],
+					region : 'east',
+					width : 485
+				}),
+				{
+					xtype : 'form',
+					title : i18n['additional_info'],
+					region : 'south',
+					split : true,
+					height : 245,
+					layout : 'column',
+					defaults :
+					{
+						xtype : 'fieldset',
+						padding : 8
+					},
+					items : [
+					{
+						xtype : 'fieldcontainer',
+						columnWidth : .5,
+						defaults :
+						{
+							xtype : 'fieldset',
+							padding : 8
+						},
+						items : [
+						{
+							xtype : 'fieldset',
+							margin : '5 1 5 5',
+							padding : 8,
+							columnWidth : .5,
+							height : 115,
+							title : i18n['messages_notes_and_reminders'],
+							items : [
+							{
+								xtype : 'textfield',
+								name : 'message',
+								fieldLabel : i18n['message'],
+								anchor : '100%'
+							},
+							{
+								xtype : 'textfield',
+								name : 'reminder',
+								fieldLabel : i18n['reminder'],
+								anchor : '100%'
+							},
+							{
+								xtype : 'textfield',
+								grow : true,
+								name : 'note',
+								fieldLabel : i18n['note'],
+								anchor : '100%'
+							}]
+						},
+						{
+							title : 'Follow Up',
+							margin : '5 1 5 5',
+							defaults :
+							{
+								anchor : '100%'
+							},
+							items : [
+							{
+								xtype : 'mitos.followupcombo',
+								fieldLabel : i18n['time_interval'],
+								name : 'followup_time'
+							},
+							{
+								fieldLabel : i18n['facility'],
+								xtype : 'mitos.activefacilitiescombo',
+								name : 'followup_facility'
+							}]
+						}]
+					},
+					{
+						xtype : 'fieldset',
+						margin : 5,
+						padding : 8,
+						columnWidth : .5,
+						layout : 'fit',
+						height : 208,
+						title : i18n['warnings_alerts'],
+						items : [
+						{
+							xtype : 'grid',
+							hideHeaders : true,
+							store : me.checkoutAlertArea,
+							border : false,
+							rowLines : false,
+							header : false,
+							viewConfig :
+							{
+								stripeRows : false,
+								disableSelection : true
+							},
+							columns : [
+							{
+								dataIndex : 'alertType',
+								width : 30,
+								renderer : me.alertIconRenderer
+							},
+							{
+								dataIndex : 'alert',
+								flex : 1
+							}]
+						}]
+					}]
+				}],
+				buttons : [
+				{
+					text : i18n['co_sign'],
+					action : 'encounter',
+					scope : me,
+					handler : me.coSignEncounter
+				},
+				{
+					text : i18n['sign'],
+					action : 'encounter',
+					scope : me,
+					handler : me.signEncounter
+				},
+				{
+					text : i18n['cancel'],
+					handler : me.cancelCheckout
+
+				}],
+				listeners :
+				{
+					scope : me,
+					show : function()
+					{
+						me.EncounterOrdersStore.load(
+						{
+							params :
+							{
+								eid : app.patient.eid
+							}
+						});
+						if (acl['access_encounter_checkout'])
+						{
+							me.checkoutAlertArea.load(
+							{
+								params :
+								{
+									eid : app.patient.eid
+								}
+							});
+						}
+						me.documentsimplegrid.loadDocs(me.eid);
+					}
+				}
+
+			});
+		}
+
+		//        me.speechDicPanel = Ext.create('Ext.form.Panel', {
+		//            autoScroll   : true,
+		//            title        : 'Speech Dictation',
+		//            action       : 'encounter',
+		//            frame        : true,
+		//            bodyPadding  : 5,
+		//            bodyStyle    : 'background-color:white',
+		//            fieldDefaults: { msgTarget: 'side' },
+		//            buttons      : [
+		//                {
+		//                    text   : 'Save',
+		//                    iconCls: 'save',
+		//                    action : 'speechDictation',
+		//                    scope  : me,
+		//                    handler: me.onSave
+		//                }
+		//            ]
+		//        });
+
+		if (me.renderAdministrative)
+		{
+			me.centerPanel = Ext.create('Ext.tab.Panel',
+			{
+				region : 'center',
+				margin : '1 0 0 0',
+				activeTab : 0,
+				bodyPadding : 5,
+				listeners :
+				{
+					render : function()
+					{
+						this.items.each(function(i)
+						{
+							i.tab.on('click', function()
+							{
+								me.onTapPanelChange(this);
+							});
+						});
+					}
+				}
+			});
+		}
+		else
+		{
+			me.centerPanel = Ext.create('Ext.panel.Panel',
+			{
+				region : 'center',
+				margin : '1 0 0 0',
+				layout : 'fit',
+				bodyPadding : 5
+			});
+		}
+
+		/**
+		 * Encounter Tab Panel and its Panels...
+		 * @type {*}
+		 */
+		me.encounterTabPanel = me.centerPanel.add(Ext.create('Ext.tab.Panel',
+		{
+			title : me.renderAdministrative ? i18n['encounter'] : false,
+			itemId : 'encounter',
+			plain : true,
+			activeItem : 0,
+			border : false,
+			defaults :
+			{
+				bodyStyle : 'padding:15px',
+				bodyBorder : true,
+				layout : 'fit'
+			}
+		}));
+		if (acl['access_patient_vitals'])
+		{
+			me.vitalsPanel = me.encounterTabPanel.add(Ext.create('Ext.panel.Panel',
+			{
+				title : i18n['vitals'],
+				action : 'encounter',
+				cls : 'vitals-panel',
+				bodyPadding : '5 10',
+				overflowY : 'auto',
+				frame : true,
+				bodyStyle : 'background-color:white',
+				layout :
+				{
+					type : 'hbox',
+					stretch : true
+				},
+				items : [
+				{
+					xtype : 'form',
+					width : 313,
+					margin : 0,
+					border : false,
+					layout : 'anchor',
+					fieldDefaults :
+					{
+						msgTarget : 'side',
+						labelAlign : 'right'
+					},
+					buttons : [
+					{
+						text : i18n['reset'],
+						width : 40,
+						scope : me,
+						handler : me.resetVitalsForm
+					},
+					{
+						text : i18n['save'],
+						action : 'vitals',
+						width : 40,
+						scope : me,
+						handler : me.onSave
+					},
+					{
+						text : i18n['sign'],
+						width : 40,
+						disabled : true,
+						action : 'signBtn',
+						scope : me,
+						handler : me.onVitalsSign
+					}]
+				},
+				{
+					xtype : 'vitalsdataview',
+					flex : 1,
+					autoScroll : true,
+					listeners :
+					{
+						scope : me,
+						itemdblclick : me.onVitalsClick
+					}
+				}],
+				dockedItems :
+				{
+					xtype : 'toolbar',
+					dock : 'top',
+					items : ['->',
+					{
+						text : i18n['vector_charts'],
+						iconCls : 'icoChart',
+						scope : me,
+						handler : me.onChartWindowShow
+					}]
+				}
+			}));
+		}
+		if (acl['access_review_of_systems'])
+		{
+			me.reviewSysPanel = me.encounterTabPanel.add(Ext.create('Ext.form.Panel',
+			{
+				autoScroll : true,
+				action : 'encounter',
+				title : i18n['review_of_systems'],
+				frame : true,
+				bodyPadding : 5,
+				bodyStyle : 'background-color:white',
+				fieldDefaults :
+				{
+					msgTarget : 'side'
+				},
+				buttons : [
+				{
+					text : i18n['save'],
+					iconCls : 'save',
+					action : 'reviewOfSystems',
+					scope : me,
+					handler : me.onSave
+				}]
+			}));
+		}
+		if (acl['access_review_of_systems_checks'])
+		{
+			me.reviewSysCkPanel = me.encounterTabPanel.add(Ext.create('Ext.form.Panel',
+			{
+				autoScroll : true,
+				action : 'encounter',
+				title : i18n['review_of_systems_checks'],
+				frame : true,
+				bodyPadding : 5,
+				bodyStyle : 'background-color:white',
+				fieldDefaults :
+				{
+					msgTarget : 'side'
+				},
+				buttons : [
+				{
+					text : i18n['save'],
+					iconCls : 'save',
+					action : 'reviewOfSystemsChecks',
+					scope : me,
+					handler : me.onSave
+				}]
+			}));
+		}
+		if (acl['access_soap'])
+		{
+			me.soapPanel = me.encounterTabPanel.add(Ext.create('Ext.form.Panel',
+			{
+				autoScroll : true,
+				title : i18n['soap'],
+				action : 'encounter',
+				frame : true,
+				bodyPadding : 5,
+				bodyStyle : 'background-color:white',
+				fieldDefaults :
+				{
+					msgTarget : 'side'
+				},
+				buttons : [
+				{
+					text : i18n['save'],
+					iconCls : 'save',
+					action : 'soap',
+					scope : me,
+					handler : me.onSave
+				}]
+			}));
+		}
+		if (acl['access_itmes_to_review'])
+		{
+			me.itemsToReview = me.encounterTabPanel.add(Ext.create('App.view.patient.ItemsToReview',
+			{
+				title : i18n['items_to_review'],
+				bodyPadding : '7 5 2 5'
+			}));
+		}
+
+		/**
+		 * Administravive Tab Panel and its Panels
+		 * @type {*}
+		 */
+		if (acl['access_enc_hcfa'] || acl['access_enc_cpt'] || acl['access_enc_history'])
+		{
+			me.administrativeTabPanel = me.centerPanel.add(Ext.create('Ext.tab.Panel',
+			{
+				title : i18n['administrative'],
+				itemId : 'administrative',
+				plain : true,
+				activeItem : 0,
+				defaults :
+				{
+					bodyStyle : 'padding:15px',
+					bodyBorder : true,
+					layout : 'fit'
+				}
+			}));
+		}
+		if (acl['access_enc_hcfa'])
+		{
+			me.MiscBillingOptionsPanel = me.administrativeTabPanel.add(Ext.create('App.view.patient.encounter.HealthCareFinancingAdministrationOptions',
+			{
+				autoScroll : true,
+				title : i18n['misc_billing_options_HCFA_1500']
+			}));
+		}
+		if (acl['access_enc_cpt'])
+		{
+			me.CurrentProceduralTerminology = me.administrativeTabPanel.add(Ext.create('App.view.patient.encounter.CurrentProceduralTerminology',
+			{
+				title : i18n['current_procedural_terminology']
+			}));
+		}
+		if (acl['access_enc_history'])
+		{
+			me.EncounterEventHistory = me.administrativeTabPanel.add(Ext.create('App.classes.grid.EventHistory',
+			{
+				bodyStyle : 0,
+				title : i18n['encounter_history'],
+				store : me.encounterEventHistoryStore
+			}));
+		}
+
+		/**
+		 * Progress Note
+		 */
+		me.progressNote = Ext.create('App.view.patient.ProgressNote',
+		{
+			title : i18n['encounter_progress_note'],
+			region : 'east',
+			margin : '0 0 0 2',
+			bodyStyle : 'padding:15px',
+			width : 500,
+			collapsible : true,
+			animCollapse : true,
+			collapsed : true,
+			listeners :
+			{
+				scope : this,
+				collapse : me.progressNoteCollapseExpand,
+				expand : me.progressNoteCollapseExpand
+			},
+			tools : [
+			{
+				type : 'print',
+				tooltip : i18n['print_progress_note'],
+				scope : me,
+				handler : function()
+				{
+					var win = window.open('print.html', 'win', 'left=20,top=20,width=700,height=700,toolbar=0,resizable=1,location=1,scrollbars=1,menubar=0,directories=0');
+					var dom = me.progressNote.body.dom;
+					var wrap = document.createElement('div');
+					var html = wrap.appendChild(dom.cloneNode(true));
+					win.document.write(html.innerHTML);
+					Ext.defer(function()
+					{
+						win.print();
+					}, 1000);
+
+				}
+			}]
+		});
+
+		me.panelToolBar = Ext.create('Ext.toolbar.Toolbar',
+		{
+			dock : 'top',
+			defaults :
+			{
+				scope : me,
+				handler : me.onMedicalWin
+			},
+			items : ['-',
+			{
+				text : i18n['immunizations'] + ' ',
+				action : 'immunization'
+			}, '-',
+			{
+				text : i18n['allergies'] + ' ',
+				action : 'allergies'
+			}, '-',
+			{
+				text : i18n['active_problems'] + ' ',
+				action : 'issues'
+			}, '-',
+			{
+				text : i18n['surgeries'] + ' ',
+				action : 'surgery'
+			}, '-',
+			{
+				text : i18n['dental'] + ' ',
+				action : 'dental'
+			}, '-',
+			{
+				text : i18n['medications'] + ' ',
+				action : 'medications'
+			}, '-',
+			{
+				text : i18n['laboratories'] + ' ',
+				action : 'laboratories'
+			}, '-',
+			{
+				text : i18n['new_lab_order'],
+				action : 'lab',
+				scope : me,
+				handler : me.newDoc
+			}, '-',
+			{
+				text : i18n['new_xray_order'],
+				action : 'xRay',
+				scope : me,
+				handler : me.newDoc
+			}, '-',
+			{
+				text : i18n['new_prescription'],
+				action : 'prescription',
+				scope : me,
+				handler : me.newDoc
+			}, '-',
+			{
+				text : i18n['new_doctors_note'],
+				action : 'notes',
+				scope : me,
+				handler : me.newDoc
+			}, '-', '->', '-', me.priorityCombo = Ext.create('App.classes.combo.EncounterPriority',
+			{
+				listeners :
+				{
+					scope : me,
+					select : me.prioritySelect
+				}
+			}), '-']
+		});
+
+		if (acl['access_encounter_checkout'])
+		{
+			me.panelToolBar.add(
+			{
+				text : i18n['checkout'],
+				handler : me.onCheckout
+			}, '-');
+		}
+
+		me.pageBody = [me.centerPanel, me.progressNote];
+		me.listeners =
+		{
+			beforerender : me.beforePanelRender
+		};
+		me.callParent();
+		me.down('panel').addDocked(me.panelToolBar);
+	},
+	newDoc : function(btn)
+	{
+		app.onNewDocumentsWin(btn.action)
+	},
+	/**
+	 * opens the Medical window
+	 * @param btn
+	 */
+	onMedicalWin : function(btn)
+	{
+		app.onMedicalWin(btn);
+	},
+	/**
+	 * opens the Chart window
+	 */
+	onChartWindowShow : function()
+	{
+		app.onChartsWin();
+	},
+
+	prioritySelect : function(cmb, records)
+	{
+		this.changeEncounterPriority(records[0].data.option_value);
+	},
+
+	changeEncounterPriority : function(priority)
+	{
+		var me = this, params =
+		{
+			pid : me.pid,
+			eid : me.eid,
+			priority : priority
+		};
+		Encounter.updateEncounterPriority(params, function()
+		{
+			app.patientButtonRemoveCls();
+			app.patientBtn.addCls(priority);
+		});
+		me.updateProgressNote();
+	},
+
+	/**
+	 * Checks for opened encounters, if open encounters are
+	 * found alert the user, if not then open the
+	 * new encounter window
+	 */
+	newEncounter : function()
+	{
+		var me = this, form, model;
+		me.resetTabs();
+		if (acl['add_encounters'])
+		{
+			Encounter.checkOpenEncounters(function(provider, response)
+			{
+				/** @namespace response.result.encounter */
+				if (response.result.encounter)
+				{
+					Ext.Msg.show(
+					{
+						title : 'Oops! ' + i18n['open_encounters_found'] + '...',
+						msg : i18n['do_you_want_to'] + ' <strong>' + i18n['continue_creating_the_new_encounters'] + '</strong><br>"' + i18n['click_no_to_review_encounter_history'] + '"',
+						buttons : Ext.Msg.YESNO,
+						icon : Ext.Msg.QUESTION,
+						fn : function(btn)
+						{
+							if (btn == 'yes')
+							{
+								form = me.newEncounterWindow.down('form');
+								form.getForm().reset();
+								model = Ext.ModelManager.getModel('App.model.patient.Encounter');
+								model = Ext.ModelManager.create(
+								{
+									start_date : new Date()
+								}, model);
+								form.getForm().loadRecord(model);
+								me.newEncounterWindow.show();
+							}
+							else
+							{
+								app.openPatientVisits();
+							}
+						}
+					});
+				}
+				else
+				{
+					form = me.newEncounterWindow.down('form');
+					form.getForm().reset();
+					model = Ext.ModelManager.getModel('App.model.patient.Encounter');
+					model = Ext.ModelManager.create(
+					{
+						start_date : new Date()
+					}, model);
+					form.getForm().loadRecord(model);
+					me.newEncounterWindow.show();
+				}
+			});
+		}
+		else
+		{
+			app.accessDenied();
+		}
+	},
+
+	/**
+	 * CheckOut Functions
+	 */
+	onCheckout : function()
+	{
+		var me = this, win = me.checkoutWindow, patient = me.getCurrPatient();
+		win.setTitle(patient.name + ' #' + patient.pid + ' - ' + Ext.Date.format(me.currEncounterStartDate, 'F j, Y, g:i:s a') + ' (' + i18n['checkout'] + ')');
+		win.show();
+	},
+	coSignEncounter : function()
+	{
+
+	},
+	signEncounter : function()
+	{
+		this.closeEncounter();
+		this.checkoutWindow.close();
+	},
+	cancelCheckout : function(btn)
+	{
+		var win = btn.up('window'), form = win.down('form').getForm();
+		win.close();
+		form.reset();
+	},
+
+	/**
+	 * Sends the data to the server to be saved.
+	 * This function needs the button action to determine
+	 * which form  to save.
+	 * @param SaveBtn
+	 */
+	onSave : function(SaveBtn)
+	{
+		var me = this, panel = me.centerPanel.getActiveTab().getActiveTab(), form;
+		if (SaveBtn.action == "encounter")
+		{
+			form = me.newEncounterWindow.down('form').getForm();
+		}
+		else
+		if (SaveBtn.action == 'vitals')
+		{
+			form = panel.down('form').getForm();
+		}
+		else
+		{
+			form = panel.getForm();
+		}
+		if (form.isValid())
+		{
+			var values = form.getValues(), store, record, storeIndex;
+
+			if (SaveBtn.action == 'encounter')
+			{
+				ACL.hasPermission('add_encounters', function(provider, response)
+				{
+					if (response.result)
+					{
+						store = me.encounterStore;
+						record = form.getRecord();
+						storeIndex = store.indexOf(record);
+
+						if (storeIndex == -1)
+						{
+							store.add(values);
+							record = store.last();
+						}
+						else
+						{
+							record.set(values);
+						}
+						record.save(
+						{
+							callback : function(store)
+							{
+								app.patientButtonRemoveCls();
+								app.patientBtn.addCls(store.data.priority);
+								me.openEncounter(store.data.eid);
+								SaveBtn.up('window').hide();
+							}
+						});
+					}
+					else
+					{
+						SaveBtn.up('window').close();
+						app.accessDenied();
+					}
+				});
+			}
+			else
+			if (SaveBtn.action == 'vitals')
+			{
+				var VFields = form.getFields().items, VFieldsCount = VFields.length, emptyCount = 0;
+				for (var i = 0; i < VFields.length; i++)
+				{
+					if (VFields[i].xtype != 'mitos.datetime')
+					{
+						if (VFields[i].value == '')
+						{
+							emptyCount++;
+						}
+					}
+				}
+				if ((VFieldsCount - 3) > emptyCount)
+				{
+					ACL.hasPermission('add_vitals', function(provider, response)
+					{
+						if (response.result)
+						{
+							store = me.encounterStore.getAt(0).vitals();
+							record = form.getRecord();
+							values = me.addDefaultData(values);
+							storeIndex = store.indexOf(record);
+							if (storeIndex == -1)
+							{
+								store.insert(0, values);
+							}
+							else
+							{
+								record.set(values);
+							}
+							store.sync(
+							{
+								scope : me,
+								success : function()
+								{
+									me.msg('Sweet!', i18n['vitals_saved']);
+									me.updateProgressNote();
+									me.vitalsPanel.down('vitalsdataview').refresh();
+									me.resetVitalsForm();
+								}
+							});
+						}
+						else
+						{
+							app.accessDenied();
+						}
+					});
+				}
+				else
+				{
+					me.msg('Oops!', i18n['vitals_form_is_epmty'])
+				}
+
+			}
+			else
+			{
+				ACL.hasPermission('edit_encounters', function(provider, response)
+				{
+					if (response.result)
+					{
+						store = me.encounterStore;
+						if (SaveBtn.action == 'reviewOfSystems')
+						{
+							record = store.getAt(0).reviewofsystems().getAt(0);
+						}
+						else
+						if (SaveBtn.action == 'reviewOfSystemsChecks')
+						{
+							record = store.getAt(0).reviewofsystemschecks().getAt(0);
+						}
+						else
+						if (SaveBtn.action == 'soap')
+						{
+							record = store.getAt(0).soap().getAt(0);
+						}
+						else
+						if (SaveBtn.action == 'speechDictation')
+						{
+							record = store.getAt(0).speechdictation().getAt(0);
+						}
+						values = me.addDefaultData(values);
+						record.set(values);
+						record.save(
+						{
+							callback : function()
+							{
+								me.updateProgressNote();
+							}
+						});
+						me.msg('Sweet!', i18n['encounter_updated']);
+						me.encounterEventHistoryStore.load(
+						{
+							params :
+							{
+								eid : app.patient.eid
+							}
+						});
+					}
+					else
+					{
+						app.accessDenied();
+					}
+				});
+			}
+		}
+	},
+
+	onVitalsSign : function()
+	{
+		var me = this, form = me.vitalsPanel.down('form').getForm(), store = me.encounterStore.getAt(0).vitals(), record = form.getRecord();
+		if (form.isValid())
+		{
+			me.passwordVerificationWin(function(btn, password)
+			{
+				if (btn == 'ok')
+				{
+					User.verifyUserPass(password, function(provider, response)
+					{
+						if (response.result)
+						{
+							record.set(
+							{
+								auth_uid : user.id
+							});
+							store.sync(
+							{
+								callback : function()
+								{
+									form.reset();
+									me.msg('Sweet!', i18n['vitals_signed']);
+									me.updateProgressNote();
+									me.resetVitalsForm();
+									me.vitalsPanel.down('vitalsdataview').refresh();
+								}
+							});
+
+						}
+						else
+						{
+							Ext.Msg.show(
+							{
+								title : 'Oops!',
+								msg : i18n['incorrect_password'],
+								buttons : Ext.Msg.OKCANCEL,
+								icon : Ext.Msg.ERROR,
+								fn : function(btn)
+								{
+									if (btn == 'ok')
+									{
+										me.onVitalsSign();
+									}
+								}
+							});
+						}
+					});
+				}
+			});
+		}
+	},
+
+	/**
+	 * Takes the form data to be send and adds the default
+	 * data used by every encounter form. For example
+	 * pid (Patient ID), eid (Encounter ID), uid (User ID),
+	 * and date (Current datetime as 00-00-00 00:00:00)
+	 * @param data
+	 */
+	addDefaultData : function(data)
+	{
+		data.pid = this.pid;
+		data.eid = this.eid;
+		data.uid = user.id;
+		data.date = Ext.Date.format(new Date(), 'Y-m-d H:i:s');
+		return data;
+	},
+
+	/**
+	 * Cancels the New Encounter process, closing the window
+	 * and send the user to the Patient Summary panel
+	 */
+	cancelNewEnc : function()
+	{
+		this.newEncounterWindow.close();
+		app.openPatientSummary();
+	},
+
+	/**
+	 *
+	 * @param eid
+	 */
+	openEncounter : function(eid)
+	{
+		var me = this, vitals;
+		me.resetTabs();
+		say('patient data');
+		say(app.patient);
+		me.eid = app.patient.eid = eid;
+		me.encounterStore.getProxy().extraParams.eid = me.eid;
+		me.encounterStore.load(
+		{
+			scope : me,
+			callback : function(record)
+			{
+				var data = record[0].data;
+				me.pid = data.pid;
+				me.currEncounterStartDate = data.start_date;
+				if (!data.close_date)
+				{
+					me.startTimer();
+					me.setButtonsDisabled(me.getButtonsToDisable());
+				}
+				else
+				{
+					if (me.stopTimer())
+					{
+						var timer = me.timer(data.start_date, data.close_date), patient = app.patient;
+						me.updateTitle(patient.name + ' #' + patient.pid + ' - ' + patient.age.str + ' - ' + Ext.Date.format(me.currEncounterStartDate, 'F j, Y, g:i:s a') + ' (' + i18n['closed_encounter'] + ')', app.patient.readOnly, timer);
+						me.setButtonsDisabled(me.getButtonsToDisable(), true);
+					}
+				}
+
+				if (me.vitalsPanel)
+				{
+					vitals = me.vitalsPanel.down('vitalsdataview');
+					me.resetVitalsForm();
+					vitals.store = record[0].vitalsStore;
+					vitals.refresh();
+				}
+
+				if (me.reviewSysPanel)
+					me.reviewSysPanel.getForm().loadRecord(record[0].reviewofsystems().getAt(0));
+				if (me.reviewSysCkPanel)
+					me.reviewSysCkPanel.getForm().loadRecord(record[0].reviewofsystemschecks().getAt(0));
+				if (me.soapPanel)
+					me.soapPanel.getForm().loadRecord(record[0].soap().getAt(0));
+
+				//me.speechDicPanel.getForm().loadRecord(record[0].speechdictation().getAt(0));
+
+				me.encounterEventHistoryStore.load(
+				{
+					params :
+					{
+						eid : eid
+					}
+				});
+
+				if (me.soapPanel)
+					me.soapPanel.query('icdsfieldset')[0].loadIcds(record[0].soap().getAt(0).data.icdxCodes);
+
+				if (me.CurrentProceduralTerminology)
+				{
+					me.CurrentProceduralTerminology.encounterCptStoreLoad(me.pid, eid, function()
+					{
+						me.CurrentProceduralTerminology.setDefaultQRCptCodes();
+					});
+				}
+				me.priorityCombo.setValue(data.priority);
+				app.PreventiveCareWindow.loadPatientPreventiveCare();
+			}
+		});
+	},
+
+	/**
+	 * Function to close the encounter..
+	 */
+	closeEncounter : function()
+	{
+		var me = this, form, values;
+		me.passwordVerificationWin(function(btn, password)
+		{
+			if (btn == 'ok')
+			{
+				form = me.checkoutWindow.down('form').getForm();
+				values = form.getValues();
+				values.eid = me.eid;
+				values.pid = me.pid;
+				values.close_date = Ext.Date.format(new Date(), 'Y-m-d H:i:s');
+				values.signature = password;
+				Encounter.closeEncounter(values, function(provider, response)
+				{
+					if (response.result.success)
+					{
+						if (me.stopTimer())
+						{
+							app.patient.eid = null;
+							app.openPatientVisits();
+							me.msg('Sweet!', i18n['encounter_closed']);
+						}
+					}
+					else
+					{
+						Ext.Msg.show(
+						{
+							title : 'Oops!',
+							msg : i18n['incorrect_password'],
+							buttons : Ext.Msg.OKCANCEL,
+							icon : Ext.Msg.ERROR,
+							fn : function(btn)
+							{
+								if (btn == 'ok')
+								{
+									me.closeEncounter();
+								}
+							}
+						});
+					}
+				});
+			}
+		});
+	},
+	/**
+	 * listen for the progress note panel and runs the
+	 * doLayout function to re-adjust the dimensions.
+	 */
+	progressNoteCollapseExpand : function()
+	{
+		this.centerPanel.doLayout();
+	},
+
+	updateProgressNote : function()
+	{
+		var me = this;
+		Encounter.getProgressNoteByEid(me.eid, function(provider, response)
+		{
+			var data = response.result;
+			me.progressNote.tpl.overwrite(me.progressNote.body, data);
+		});
+	},
+
+	onTapPanelChange : function(panel)
+	{
+		if (panel.card.itemId == 'encounter')
+		{
+			this.isProgressNoteCollapsed(true);
+		}
+		else
+		{
+			this.isProgressNoteCollapsed(true);
+		}
+	},
+
+	isProgressNoteCollapsed : function(ans)
+	{
+		ans ? this.progressNote.collapse() : this.progressNote.expand();
+
+	},
+
+	onVitalsClick : function(view, record, e)
+	{
+		var me = this, form = me.vitalsPanel.down('form').getForm();
+		form.reset();
+		if (!record.data.auth_uid)
+		{
+			me.vitalsPanel.query('button[action="signBtn"]')[0].setDisabled(false);
+			form.loadRecord(record);
+		}
+		else
+		{
+			Ext.Msg.show(
+			{
+				title : 'Oops!',
+				msg : i18n['this_column_can_not_be_modified_because_it_has_been_signed_by'] + ' ' + record.data.auth_uid,
+				buttons : Ext.Msg.OK,
+				icon : Ext.Msg.WARNING,
+				animateTarget : e
+			});
+		}
+	},
+
+	resetVitalsForm : function()
+	{
+		var me = this, form = me.vitalsPanel.down('form').getForm(), model = Ext.ModelManager.getModel('App.model.patient.Vitals'), newModel = Ext.ModelManager.create(
+		{
+		}, model);
+		me.vitalsPanel.query('button[action="signBtn"]')[0].setDisabled(true);
+		form.loadRecord(newModel);
+	},
+
+	//***************************************************************************************************//
+	//***************************************************************************************************//
+	//*********    *****  ******    ****** **************************************************************//
+	//*********  *  ****  ****  ***  ***** **************************************************************//
+	//*********  **  ***  ***  *****  **** **************************************************************//
+	//*********  ***  **  ***  *****  **** **************************************************************//
+	//*********  ****  *  ****  ***  ********************************************************************//
+	//*********  *****    *****    ******* **************************************************************//
+	//***************************************************************************************************//
+	//***************************************************************************************************//
+	alertIconRenderer : function(v)
+	{
+		if (v == 1)
+		{
+			return '<img src="resources/images/icons/icoLessImportant.png" />'
+		}
+		else
+		if (v == 2)
+		{
+			return '<img src="resources/images/icons/icoImportant.png" />'
+		}
+		return v;
+	},
+
+	/**
+	 * Start the timerTask
+	 */
+	startTimer : function()
+	{
+		Ext.TaskManager.start(this.timerTask);
+		return true;
+	},
+	/**
+	 * stops the timerTask
+	 */
+	stopTimer : function()
+	{
+		Ext.TaskManager.stop(this.timerTask);
+		return true;
+	},
+
+	/**
+	 * This will update the timer every sec
+	 */
+	encounterTimer : function()
+	{
+		var me = this, timer = me.timer(me.currEncounterStartDate, new Date());
+		me.updateTitle(app.patient.name + ' #' + app.patient.pid + ' - ' + app.patient.age.str + ' - ' + Ext.Date.format(me.currEncounterStartDate, 'F j, Y, g:i:s a') + ' (' + i18n['opened_encounter'] + ')', app.patient.readOnly, timer);
+	},
+
+	/**
+	 * This function use the "start time" and "stop time"
+	 * and gets the time elapsed between the two then
+	 * returns it as a timer (00:00:00)  or (1 day(s) 00:00:00)
+	 * if more than 24 hrs
+	 *
+	 * @param start
+	 * @param stop
+	 */
+	timer : function(start, stop)
+	{
+		var ms = Ext.Date.getElapsed(start, stop), t, sec = Math.floor(ms / 1000);
+
+		function twoDigit(d)
+		{
+			return (d >= 10) ? d : '0' + d;
+		}
+
+		var min = Math.floor(sec / 60);
+		sec = sec % 60;
+		t = twoDigit(sec);
+		var hr = Math.floor(min / 60);
+		min = min % 60;
+		t = twoDigit(min) + ":" + t;
+		var day = Math.floor(hr / 24);
+		hr = hr % 24;
+		t = twoDigit(hr) + ":" + t;
+		t = (day == 0 ) ? '<span class="time">' + t + '</span>' : '<span class="day">' + day + ' ' + i18n['day_s'] + '</span><span class="time">' + t + '</span>';
+		return t;
+	},
+
+	/**
+	 * Convert Celsius to Fahrenheit
+	 * @param field
+	 * @param e
+	 */
+	cf : function(field, e)
+	{
+		var v = field.getValue(), temp = 9 * v / 5 + 32, res = Ext.util.Format.round(temp, 1);
+		if (e.getKey() != e.TAB)
+		{
+			field.up('form').getForm().findField('temp_f').setValue(res);
+		}
+	},
+	/**
+	 * Convert Fahrenheit to Celsius
+	 * @param field
+	 * @param e
+	 */
+	fc : function(field, e)
+	{
+		var v = field.getValue(), temp = (v - 32) * 5 / 9, res = Ext.util.Format.round(temp, 1);
+		if (e.getKey() != e.TAB)
+		{
+			field.up('form').getForm().findField('temp_c').setValue(res);
+		}
+	},
+
+	/**
+	 * Convert Lbs to Kg
+	 * @param field
+	 * @param e
+	 */
+	lbskg : function(field, e)
+	{
+		var v = field.getValue(), weight = v / 2.2, res = Ext.util.Format.round(weight, 1);
+		if (e.getKey() != e.TAB)
+		{
+			field.up('form').getForm().findField('weight_kg').setValue(res);
+		}
+	},
+	/**
+	 * Convert Kg to Lbs
+	 * @param field
+	 * @param e
+	 */
+	kglbs : function(field, e)
+	{
+		var v = field.getValue(), weight = v * 2.2, res = Ext.util.Format.round(weight, 1);
+		if (e.getKey() != e.TAB)
+		{
+			field.up('form').getForm().findField('weight_lbs').setValue(res);
+		}
+	},
+	/**
+	 * Convert Inches to Centimeter
+	 * @param field
+	 * @param e
+	 */
+	incm : function(field, e)
+	{
+		var v = field.getValue(), weight = v * 2.54, res = Ext.util.Format.round(weight, 1);
+		if (e.getKey() != e.TAB)
+		{
+			if (field.name == 'head_circumference_in')
+			{
+				field.up('form').getForm().findField('head_circumference_cm').setValue(res);
+			}
+			else
+			if (field.name == 'waist_circumference_in')
+			{
+				field.up('form').getForm().findField('waist_circumference_cm').setValue(res);
+			}
+			else
+			if (field.name == 'height_in')
+			{
+				field.up('form').getForm().findField('height_cm').setValue(res);
+			}
+		}
+	},
+	/**
+	 * Convert Centimeter to Inches
+	 * @param field
+	 * @param e
+	 */
+	cmin : function(field, e)
+	{
+		var v = field.getValue(), weight = v * 0.39, res = Ext.util.Format.round(weight, 1);
+		if (e.getKey() != e.TAB)
+		{
+			if (field.name == 'head_circumference_cm')
+			{
+				field.up('form').getForm().findField('head_circumference_in').setValue(res);
+			}
+			else
+			if (field.name == 'waist_circumference_cm')
+			{
+				field.up('form').getForm().findField('waist_circumference_in').setValue(res);
+			}
+			else
+			if (field.name == 'height_cm')
+			{
+				field.up('form').getForm().findField('height_in').setValue(res);
+			}
+		}
+	},
+
+	bmi : function(field)
+	{
+		var form = field.up('form').getForm(), weight = form.findField('weight_kg').getValue(), height = form.findField('height_cm').getValue(), bmi, status;
+		if (weight > 0 && height > 0)
+		{
+			bmi = weight / (height / 100 * height / 100);
+			if (bmi < 15)
+			{
+				status = i18n['very_severely_underweight']
+			}
+			else
+			if (bmi >= 15 && bmi < 16)
+			{
+				status = i18n['severely_underweight']
+			}
+			else
+			if (bmi >= 16 && bmi < 18.5)
+			{
+				status = i18n['underweight']
+			}
+			else
+			if (bmi >= 18.5 && bmi < 25)
+			{
+				status = i18n['normal']
+			}
+			else
+			if (bmi >= 25 && bmi < 30)
+			{
+				status = i18n['overweight']
+			}
+			else
+			if (bmi >= 30 && bmi < 35)
+			{
+				status = i18n['obese_class_1']
+			}
+			else
+			if (bmi >= 35 && bmi < 40)
+			{
+				status = i18n['obese_class_2']
+			}
+			else
+			if (bmi >= 40)
+			{
+				status = i18n['obese_class_3']
+			}
+			field.up('form').getForm().findField('bmi').setValue(Ext.util.Format.number(bmi, '0.00'));
+			field.up('form').getForm().findField('bmi_status').setValue(status);
+
+		}
+
+	},
+
+	/**
+	 * After this panel is render add the forms and listeners for conventions
+	 */
+	beforePanelRender : function()
+	{
+		var me = this, form, defaultFields = function()
+		{
+			return [
+			{
+				name : 'id',
+				type : 'int'
+			},
+			{
+				name : 'pid',
+				type : 'int'
+			},
+			{
+				name : 'eid',
+				type : 'int'
+			},
+			{
+				name : 'uid',
+				type : 'int'
+			}]
+		};
+		/**
+		 * Get 'Vitals' Form Fields and add listeners to convert values
+		 */
+		if (me.vitalsPanel)
+		{
+			me.getFormItems(me.vitalsPanel.down('form'), 4, function()
+			{
+				form = me.vitalsPanel.down('form').getForm();
+				form.findField('temp_c').addListener('keyup', me.cf, me);
+				form.findField('temp_f').addListener('keyup', me.fc, me);
+				form.findField('weight_lbs').addListener('keyup', me.lbskg, me);
+				form.findField('weight_kg').addListener('keyup', me.kglbs, me);
+				form.findField('height_cm').addListener('keyup', me.cmin, me);
+				form.findField('height_in').addListener('keyup', me.incm, me);
+				form.findField('weight_lbs').addListener('blur', me.bmi, me);
+				form.findField('weight_kg').addListener('blur', me.bmi, me);
+				form.findField('height_cm').addListener('blur', me.bmi, me);
+				form.findField('height_in').addListener('blur', me.bmi, me);
+				form.findField('head_circumference_cm').addListener('keyup', me.cmin, me);
+				form.findField('head_circumference_in').addListener('keyup', me.incm, me);
+				form.findField('waist_circumference_cm').addListener('keyup', me.cmin, me);
+				form.findField('waist_circumference_in').addListener('keyup', me.incm, me);
+			});
+		}
+		/**
+		 * Get 'Review of Systems' Form and define the Model using the form fields
+		 */
+		if (me.reviewSysPanel)
+		{
+			me.getFormItems(me.reviewSysPanel, 8, function()
+			{
+				var formFields = me.reviewSysPanel.getForm().getFields(), modelFields = new defaultFields;
+				for (var i = 0; i < formFields.items.length; i++)
+				{
+					modelFields.push(
+					{
+						name : formFields.items[i].name,
+						type : 'auto'
+					});
+				}
+				Ext.define('App.model.patient.ReviewOfSystems',
+				{
+					extend : 'Ext.data.Model',
+					fields : modelFields,
+					proxy :
+					{
+						type : 'direct',
+						api :
+						{
+							update : Encounter.updateReviewOfSystemsById
+						}
+					},
+					belongsTo :
+					{
+						model : 'App.model.patient.Encounter',
+						foreignKey : 'eid'
+					}
+				});
+			});
+		}
+		/**
+		 * Get 'SOAP' Form and define the Model using the form fields
+		 */
+		if (me.soapPanel)
+		{
+			me.getFormItems(me.soapPanel, 6, function()
+			{
+				var formFields = me.soapPanel.getForm().getFields(), modelFields = new defaultFields;
+				for (var i = 0; i < formFields.items.length; i++)
+				{
+					modelFields.push(
+					{
+						name : formFields.items[i].name,
+						type : 'auto'
+					});
+				}
+				Ext.define('App.model.patient.SOAP',
+				{
+					extend : 'Ext.data.Model',
+					fields : modelFields,
+					proxy :
+					{
+						type : 'direct',
+						api :
+						{
+							update : Encounter.updateSoapById
+						}
+					},
+					belongsTo :
+					{
+						model : 'App.model.patient.Encounter',
+						foreignKey : 'eid'
+					}
+				});
+			});
+		}
+		/**
+		 * Get 'Speech Dictation' Form and define the Model using the form fields
+		 */
+		//        this.getFormItems(me.speechDicPanel, 'Speech Dictation', function() {
+		//            var formFields = me.speechDicPanel.getForm().getFields(), modelFields = new defaultFields;
+		//            for(var i = 0; i < formFields.items.length; i++) {
+		//                modelFields.push({name: formFields.items[i].name, type: 'auto'});
+		//            }
+		//            Ext.define('App.model.patient.SpeechDictation', {
+		//                extend   : 'Ext.data.Model',
+		//                fields   : modelFields,
+		//                proxy    : {
+		//                    type: 'direct',
+		//                    api : {
+		//                        update: Encounter.updateDictationById
+		//                    }
+		//                },
+		//                belongsTo: { model: 'App.model.patient.Encounter', foreignKey: 'eid' }
+		//            });
+		//        });
+		/**
+		 * Get 'Review of Systems Check' Form and define the Model using the form fields
+		 */
+		if (me.reviewSysCkPanel)
+		{
+			me.getFormItems(me.reviewSysCkPanel, 9, function()
+			{
+				var formFields = me.reviewSysCkPanel.getForm().getFields(), modelFields = new defaultFields;
+				for (var i = 0; i < formFields.items.length; i++)
+				{
+					modelFields.push(
+					{
+						name : formFields.items[i].name,
+						type : 'auto'
+					});
+				}
+				Ext.define('App.model.patient.ReviewOfSystemsCheck',
+				{
+					extend : 'Ext.data.Model',
+					fields : modelFields,
+					proxy :
+					{
+						type : 'direct',
+						api :
+						{
+							update : Encounter.updateReviewOfSystemsChecksById
+						}
+					},
+					belongsTo :
+					{
+						model : 'App.model.patient.Encounter',
+						foreignKey : 'eid'
+					}
+				});
+			});
+		}
+
+		if (me.newEncounterWindow)
+			me.getFormItems(me.newEncounterWindow.down('form'), 5);
+	},
+
+	getButtonsToDisable : function()
+	{
+		var me = this, buttons = [];
+		if (me.ButtonsToDisable == null)
+		{
+			if (me.vitalsPanel)
+				buttons.concat(buttons, me.vitalsPanel.query('button'));
+			if (me.reviewSysPanel)
+				buttons.concat(buttons, me.reviewSysPanel.query('button'));
+			if (me.reviewSysCkPanel)
+				buttons.concat(buttons, me.reviewSysCkPanel.query('button'));
+			if (me.soapPanel)
+				buttons.concat(buttons, me.soapPanel.query('button'));
+			if (me.MiscBillingOptionsPanel)
+				buttons.concat(buttons, me.MiscBillingOptionsPanel.query('button'));
+			if (me.CurrentProceduralTerminology)
+				buttons.concat(buttons, me.CurrentProceduralTerminology.query('button'));
+			if (me.EncounterEventHistory)
+				buttons.concat(buttons, me.EncounterEventHistory.query('button'));
+			if (me.newEncounterWindow)
+				buttons.concat(buttons, me.newEncounterWindow.query('button'));
+			if (me.checkoutWindow)
+				buttons.concat(buttons, me.checkoutWindow.query('button'));
+			me.ButtonsToDisable = buttons;
+		}
+		return me.ButtonsToDisable;
+	},
+
+	resetTabs : function()
+	{
+		var me = this;
+		if (me.renderAdministrative)
+			me.centerPanel.setActiveTab(0);
+		if (me.encounterTabPanel)
+			me.encounterTabPanel.setActiveTab(0);
+		if (me.administrativeTabPanel)
+			me.administrativeTabPanel.setActiveTab(0);
+	},
+
+	onDocumentView : function(grid, rowIndex)
+	{
+		var rec = grid.getStore().getAt(rowIndex), src = rec.data.url;
+		app.onDocumentView(src);
+	},
+	/**
+	 * This function is called from MitosAPP.js when
+	 * this panel is selected in the navigation panel.
+	 * place inside this function all the functions you want
+	 * to call every this panel becomes active
+	 */
+	onActive : function(callback)
+	{
+		var me = this, patient = app.patient;
+		if (me.checkIfCurrPatient())
+		{
+			me.updateTitle(patient.name + ' (' + i18n['visits'] + ')', patient.readOnly, null);
+			me.setReadOnly(patient.readOnly);
+			callback(true);
+		}
+		else
+		{
+			callback(false);
+			me.currPatientError();
+		}
+	}
 });
 
 /**
@@ -31502,1325 +32061,1325 @@ Ext.define('App.view.patient.Encounter', {
  * @namespace Immunization.getPatientImmunizations
  * @namespace Immunization.addPatientImmunization
  */
-Ext.define('App.view.patient.windows.Medical', {
-	extend       : 'App.classes.window.Window',
-	title        : i18n['medical_window'],
-	id           : 'MedicalWindow',
-	layout       : 'card',
-	closeAction  : 'hide',
-	height       : 750,
-	width        : 1200,
-	bodyStyle    : 'background-color:#fff',
-	modal        : true,
-	defaults     : {
-		margin: 5
+Ext.define('App.view.patient.windows.Medical',
+{
+	extend : 'App.classes.window.Window',
+	title : i18n['medical_window'],
+	id : 'MedicalWindow',
+	layout : 'card',
+	closeAction : 'hide',
+	height : 750,
+	width : 1200,
+	bodyStyle : 'background-color:#fff',
+	modal : true,
+	defaults :
+	{
+		margin : 5
 	},
-	requires     : [ 'App.view.patient.LaboratoryResults' ],
-	pid          : null,
-	initComponent: function() {
+	requires : ['App.view.patient.LaboratoryResults'],
+	pid : null,
+	initComponent : function()
+	{
 
 		var me = this;
 
-
-		me.patientImmuListStore = Ext.create('App.store.patient.PatientImmunization', {
-			groupField: 'immunization_name',
-			sorters   : ['immunization_name', 'administered_date'],
-			listeners : {
-				scope     : me,
-				beforesync: me.setDefaults
-			},
-			autoSync  : true
-		});
-		me.patientAllergiesListStore = Ext.create('App.store.patient.Allergies', {
-
-			listeners: {
-				scope     : me,
-				beforesync: me.setDefaults
+		me.patientImmuListStore = Ext.create('App.store.patient.PatientImmunization',
+		{
+			groupField : 'immunization_name',
+			sorters : ['immunization_name', 'administered_date'],
+			listeners :
+			{
+				scope : me,
+				beforesync : me.setDefaults
 			},
 			autoSync : true
 		});
-		me.patientMedicalIssuesStore = Ext.create('App.store.patient.MedicalIssues', {
+		me.patientAllergiesListStore = Ext.create('App.store.patient.Allergies',
+		{
 
-			listeners: {
-				scope     : me,
-				beforesync: me.setDefaults
+			listeners :
+			{
+				scope : me,
+				beforesync : me.setDefaults
 			},
 			autoSync : true
 		});
-		me.patientSurgeryStore = Ext.create('App.store.patient.Surgery', {
+		me.patientMedicalIssuesStore = Ext.create('App.store.patient.MedicalIssues',
+		{
 
-			listeners: {
-				scope     : me,
-				beforesync: me.setDefaults
+			listeners :
+			{
+				scope : me,
+				beforesync : me.setDefaults
 			},
 			autoSync : true
 		});
-		me.patientDentalStore = Ext.create('App.store.patient.Dental', {
+		me.patientSurgeryStore = Ext.create('App.store.patient.Surgery',
+		{
 
-			listeners: {
-				scope     : me,
-				beforesync: me.setDefaults
+			listeners :
+			{
+				scope : me,
+				beforesync : me.setDefaults
 			},
 			autoSync : true
 		});
-		me.patientMedicationsStore = Ext.create('App.store.patient.Medications', {
+		me.patientDentalStore = Ext.create('App.store.patient.Dental',
+		{
 
-			listeners: {
-				scope     : me,
-				beforesync: me.setDefaults
+			listeners :
+			{
+				scope : me,
+				beforesync : me.setDefaults
 			},
 			autoSync : true
 		});
-		me.labPanelsStore = Ext.create('App.store.patient.LaboratoryTypes', {
-			autoSync: true
+		me.patientMedicationsStore = Ext.create('App.store.patient.Medications',
+		{
+
+			listeners :
+			{
+				scope : me,
+				beforesync : me.setDefaults
+			},
+			autoSync : true
+		});
+		me.labPanelsStore = Ext.create('App.store.patient.LaboratoryTypes',
+		{
+			autoSync : true
 		});
 
 		me.items = [
+		{
+			xtype : 'grid',
+			action : 'patientImmuListGrid',
+			itemId : 'patientImmuListGrid',
+			store : me.patientImmuListStore,
+			features : Ext.create('Ext.grid.feature.Grouping',
 			{
-				xtype   : 'grid',
-				action  : 'patientImmuListGrid',
-				itemId  : 'patientImmuListGrid',
-				store   : me.patientImmuListStore,
-				features: Ext.create('Ext.grid.feature.Grouping', {
-					groupHeaderTpl   : i18n['immunization'] + ': {name} ({rows.length} Item{[values.rows.length > 1 ? "s" : ""]})',
-					hideGroupedHeader: true
-				}),
-				columns : [
-					{
-						header   : i18n['immunization_name'],
-						width    : 100,
-						dataIndex: 'immunization_name'
-					},
-					{
-						xtype    : 'datecolumn',
-						header   : 'Date',
-						format   : 'Y-m-d',
-						width    : 100,
-						dataIndex: 'administered_date'
-					},
-					{
-						header   : i18n['lot_number'],
-						width    : 100,
-						dataIndex: 'lot_number'
-					},
-					{
-						header   : 'Notes',
-						flex     : 1,
-						dataIndex: 'note'
-					}
-				],
-
-				plugins: Ext.create('App.classes.grid.RowFormEditing', {
-					autoCancel  : false,
-					errorSummary: false,
-					clicksToEdit: 1,
-					formItems   : [
-
-						{
-
-							title : 'general',
-							xtype : 'container',
-							layout: 'vbox',
-							items : [
-								{
-									/**
-									 * Line one
-									 */
-									xtype   : 'fieldcontainer',
-									layout  : 'hbox',
-									defaults: { margin: '0 10 3 0', xtype: 'textfield'},
-									items   : [
-
-										{
-											xtype          : 'immunizationlivesearch',
-											fieldLabel     : i18n['name'],
-											hideLabel      : false,
-											allowBlank     : false,
-											itemId         : 'immunization_name',
-											name           : 'immunization_name',
-											enableKeyEvents: true,
-											action         : 'immunizations',
-											width          : 570,
-											listeners      : {
-												scope : me,
-												select: me.onLiveSearchSelect
-											}
-										},
-										{
-											xtype : 'textfield',
-											hidden: true,
-											name  : 'immunization_id',
-											action: 'idField'
-										},
-										{
-											fieldLabel: i18n['administrator'],
-											name      : 'administered_by',
-											width     : 295,
-											labelWidth: 160
-
-										}
-
-									]
-
-								},
-								{
-									/**
-									 * Line two
-									 */
-									xtype   : 'fieldcontainer',
-									layout  : 'hbox',
-									defaults: { margin: '0 10 3 0', xtype: 'textfield' },
-									items   : [
-										{
-											fieldLabel: i18n['lot_number'],
-											xtype     : 'textfield',
-											width     : 300,
-											name      : 'lot_number'
-
-										},
-										{
-
-											xtype     : 'numberfield',
-											fieldLabel: i18n['dosis_number'],
-											width     : 260,
-											name      : 'dosis'
-										},
-
-										{
-											fieldLabel: i18n['info_statement_given'],
-											width     : 295,
-											labelWidth: 160,
-											xtype     : 'datefield',
-											format    : 'Y-m-d',
-											name      : 'education_date'
-										}
-
-									]
-
-								},
-								{
-									/**
-									 * Line three
-									 */
-									xtype   : 'fieldcontainer',
-									layout  : 'hbox',
-									defaults: { margin: '0 10 3 0', xtype: 'textfield' },
-									items   : [
-
-										{
-											fieldLabel: i18n['notes'],
-											xtype     : 'textfield',
-											width     : 300,
-											name      : 'note'
-
-										},
-										{
-											fieldLabel: i18n['manufacturer'],
-											xtype     : 'textfield',
-											width     : 260,
-
-											name: 'manufacturer'
-
-										},
-
-										{
-											fieldLabel: i18n['date_administered'],
-											xtype     : 'datefield',
-											width     : 295,
-											labelWidth: 160,
-											format    : 'Y-m-d',
-											name      : 'administered_date'
-										}
-
-									]
-
-								}
-
-							]
-
-						}
-
-					]
-				}),
-				bbar   : [
-					'->', {
-						text   : i18n['reviewed'],
-						action : 'review',
-						itemId : 'review_immunizations',
-						scope  : me,
-						handler: me.onReviewed
-					}
-				]
-			},
-
+				groupHeaderTpl : i18n['immunization'] + ': {name} ({rows.length} Item{[values.rows.length > 1 ? "s" : ""]})',
+				hideGroupedHeader : true
+			}),
+			columns : [
 			{
-				/**
-				 * Allergies Card panel
-				 */
-				xtype  : 'grid',
-				action : 'patientAllergiesListGrid',
-				store  : me.patientAllergiesListStore,
-				columns: [
-					{
-						header   : i18n['type'],
-						width    : 100,
-						dataIndex: 'allergy_type'
-					},
-					{
-						header   : i18n['name'],
-						width    : 100,
-						dataIndex: 'allergy'
-					},
-					{
-						header   : i18n['location'],
-						width    : 100,
-						dataIndex: 'location'
-					},
-					{
-						header   : i18n['severity'],
-						flex     : 1,
-						dataIndex: 'severity'
-					},
-					{
-						text     : i18n['active'],
-						width    : 55,
-						dataIndex: 'alert',
-						renderer : me.boolRenderer
-					}
-				],
-				plugins: me.rowEditingAllergies = Ext.create('App.classes.grid.RowFormEditing', {
-					autoCancel  : false,
-					errorSummary: false,
-					clicksToEdit: 1,
-					formItems   : [
-
-						{
-							title  : i18n['general'],
-							xtype  : 'container',
-							padding: 10,
-							layout : 'vbox',
-							items  : [
-								{
-									/**
-									 * Line one
-									 */
-									xtype   : 'fieldcontainer',
-									layout  : 'hbox',
-									defaults: { margin: '0 10 5 0' },
-									items   : [
-										{
-											xtype          : 'mitos.allergiestypescombo',
-											fieldLabel     : i18n['type'],
-											name           : 'allergy_type',
-											action         : 'allergy_type',
-											allowBlank     : false,
-											width          : 225,
-											labelWidth     : 70,
-											enableKeyEvents: true,
-											listeners      : {
-												scope   : me,
-												'select': me.onAllergyTypeSelect
-											}
-										},
-										{
-											xtype     : 'mitos.allergieslocationcombo',
-											fieldLabel: i18n['location'],
-											name      : 'location',
-											action    : 'location',
-											width     : 225,
-											labelWidth: 70,
-											listeners : {
-												scope   : me,
-												'select': me.onLocationSelect
-											}
-
-										},
-										{
-											fieldLabel: i18n['begin_date'],
-											xtype     : 'datefield',
-											format    : 'Y-m-d',
-											name      : 'begin_date'
-
-										}
-
-									]
-
-								},
-								{
-									/**
-									 * Line two
-									 */
-									xtype   : 'fieldcontainer',
-									layout  : 'hbox',
-									defaults: { margin: '0 10 5 0' },
-									items   : [
-										{
-											xtype          : 'mitos.allergiescombo',
-											fieldLabel     : i18n['allergy'],
-											action         : 'allergie_name',
-											name           : 'allergy',
-											enableKeyEvents: true,
-											disabled       : true,
-											width          : 225,
-											labelWidth     : 70,
-											listeners      : {
-												scope   : me,
-												'select': me.onLiveSearchSelect,
-												change  : me.disableFieldLogic
-											}
-										},
-										{
-											xtype          : 'medicationlivetsearch',
-											fieldLabel     : i18n['allergy'],
-											hideLabel      : false,
-											action         : 'drug_name',
-											name           : 'allergy',
-											hidden         : true,
-											disabled       : true,
-											enableKeyEvents: true,
-											width          : 225,
-											labelWidth     : 70,
-											listeners      : {
-												scope   : me,
-												'select': me.onLiveSearchSelect,
-												change  : me.disableFieldLogic
-											}
-										},
-										{
-											xtype : 'textfield',
-											hidden: true,
-											name  : 'allergy_id',
-											action: 'idField'
-										},
-										{
-											xtype     : 'mitos.allergiesabdominalcombo',
-											fieldLabel: i18n['reaction'],
-											name      : 'reaction',
-											disabled  : true,
-											width     : 225,
-											labelWidth: 70,
-											listeners : {
-												scope : me,
-												change: me.disableFieldLogic
-											}
-
-										},
-										{
-											xtype     : 'mitos.allergieslocalcombo',
-											fieldLabel: i18n['reaction'],
-											name      : 'reaction',
-											hidden    : true,
-											disabled  : true,
-											width     : 225,
-											labelWidth: 70,
-											listeners : {
-												scope : me,
-												change: me.disableFieldLogic
-											}
-
-										},
-										{
-											xtype     : 'mitos.allergiesskincombo',
-											fieldLabel: i18n['reaction'],
-											name      : 'reaction',
-											hidden    : true,
-											disabled  : true,
-											width     : 225,
-											labelWidth: 70,
-											listeners : {
-												scope : me,
-												change: me.disableFieldLogic
-											}
-
-										},
-										{
-											xtype     : 'mitos.allergiessystemiccombo',
-											fieldLabel: i18n['reaction'],
-											name      : 'reaction',
-											hidden    : true,
-											disabled  : true,
-											width     : 225,
-											labelWidth: 70,
-											listeners : {
-												scope : me,
-												change: me.disableFieldLogic
-											}
-
-										},
-										{
-											fieldLabel: i18n['end_date'],
-											xtype     : 'datefield',
-											format    : 'Y-m-d',
-											name      : 'end_date'
-										}
-
-									]
-
-								},
-								{
-									/**
-									 * Line three
-									 */
-									xtype   : 'fieldcontainer',
-									layout  : 'hbox',
-									defaults: { margin: '0 10 5 0' },
-									items   : [
-										{
-											xtype     : 'mitos.allergiesseveritycombo',
-											fieldLabel: i18n['severity'],
-											name      : 'severity',
-											width     : 225,
-											labelWidth: 70
-
-										}
-
-
-									]
-								}
-							]
-						}
-					]
-				}),
-				bbar   : [
-					'->', {
-						text   : i18n['reviewed'],
-						action : 'review',
-						itemId : 'review_allergies',
-						scope  : me,
-						handler: me.onReviewed
-					}
-				]
+				header : i18n['immunization_name'],
+				width : 100,
+				dataIndex : 'immunization_name'
 			},
 			{
-				/**
-				 * Active Problem Card panel
-				 */
-
-				xtype  : 'grid',
-				action : 'patientMedicalListGrid',
-				store  : me.patientMedicalIssuesStore,
-				columns: [
-
-					{
-						header   : i18n['problem'],
-						flex     : 1,
-						dataIndex: 'code_text'
-					},
-					{
-						xtype    : 'datecolumn',
-						header   : i18n['begin_date'],
-						width    : 100,
-						format   : 'Y-m-d',
-						dataIndex: 'begin_date'
-					},
-					{
-						xtype    : 'datecolumn',
-						header   : i18n['end_date'],
-						width    : 100,
-						format   : 'Y-m-d',
-						dataIndex: 'end_date'
-					}
-
-				],
-				plugins: Ext.create('App.classes.grid.RowFormEditing', {
-					autoCancel  : false,
-					errorSummary: false,
-					clicksToEdit: 1,
-
-					formItems: [
-						{
-							title  : i18n['general'],
-							xtype  : 'container',
-							padding: 10,
-							layout : 'vbox',
-							items  : [
-								{
-									/**
-									 * Line one
-									 */
-									xtype   : 'fieldcontainer',
-									layout  : 'hbox',
-									defaults: { margin: '0 10 5 0' },
-									items   : [
-										{
-											xtype          : 'liveicdxsearch',
-											fieldLabel     : i18n['problem'],
-											name           : 'code_text',
-											allowBlank     : false,
-											hideLabel      : false,
-											itemId         : 'medicalissues',
-											action         : 'medicalissues',
-											enableKeyEvents: true,
-											width          : 510,
-											labelWidth     : 70,
-											listeners      : {
-												scope   : me,
-												'select': me.onLiveSearchSelect
-											}
-										},
-										{
-											xtype : 'textfield',
-											hidden: true,
-											name  : 'code',
-											action: 'idField'
-										},
-
-
-										{
-											fieldLabel: i18n['begin_date'],
-											xtype     : 'datefield',
-											width     : 200,
-											labelWidth: 80,
-											format    : 'Y-m-d',
-											name      : 'begin_date'
-
-										}
-
-									]
-
-								},
-								{
-									/**
-									 * Line two
-									 */
-									xtype   : 'fieldcontainer',
-									layout  : 'hbox',
-									defaults: { margin: '0 10 5 0' },
-									items   : [
-
-										{
-											fieldLabel: i18n['ocurrence'],
-											width     : 250,
-											labelWidth: 70,
-											xtype     : 'mitos.occurrencecombo',
-											name      : 'ocurrence'
-
-										},
-
-										{
-											fieldLabel: i18n['outcome'],
-											xtype     : 'mitos.outcome2combo',
-											width     : 250,
-											labelWidth: 70,
-											name      : 'outcome'
-
-										},
-										{
-											fieldLabel: i18n['end_date'],
-											xtype     : 'datefield',
-											width     : 200,
-											labelWidth: 80,
-											format    : 'Y-m-d',
-											name      : 'end_date'
-
-										}
-
-									]
-
-								},
-								{
-									/**
-									 * Line three
-									 */
-									xtype   : 'fieldcontainer',
-									layout  : 'hbox',
-									defaults: { margin: '0 10 5 0' },
-									items   : [
-
-										{
-											xtype     : 'textfield',
-											width     : 250,
-											labelWidth: 70,
-											fieldLabel: i18n['referred_by'],
-											name      : 'referred_by'
-										}
-
-									]
-								}
-							]
-						}
-
-					]
-				}),
-				bbar   : [
-					'->', {
-						text   : i18n['reviewed'],
-						action : 'review',
-						itemId : 'review_active_problems',
-						scope  : me,
-						handler: me.onReviewed
-					}
-				]
+				xtype : 'datecolumn',
+				header : 'Date',
+				format : 'Y-m-d',
+				width : 100,
+				dataIndex : 'administered_date'
 			},
 			{
-				/**
-				 * Surgery Card panel
-				 */
-
-				xtype  : 'grid',
-				action : 'patientSurgeryListGrid',
-				store  : me.patientSurgeryStore,
-				columns: [
-					{
-						header   : i18n['surgery'],
-						width    : 100,
-						flex     : 1,
-						dataIndex: 'surgery'
-					},
-					{
-						xtype    : 'datecolumn',
-						header   : i18n['date'],
-						width    : 100,
-						format   : 'Y-m-d',
-						dataIndex: 'date'
-					}
-
-				],
-				plugins: Ext.create('App.classes.grid.RowFormEditing', {
-					autoCancel  : false,
-					errorSummary: false,
-					clicksToEdit: 1,
-					formItems   : [
-						{
-							title  : i18n['general'],
-							xtype  : 'container',
-							padding: 10,
-							layout : 'vbox',
-							items  : [
-								{
-									/**
-									 * Line one
-									 */
-									xtype   : 'fieldcontainer',
-									layout  : 'hbox',
-									defaults: { margin: '0 10 5 0' },
-									items   : [
-										{
-											fieldLabel     : i18n['surgery'],
-											name           : 'surgery',
-											hideLabel      : false,
-											allowBlank     : false,
-											width          : 510,
-											labelWidth     : 70,
-											xtype          : 'surgerieslivetsearch',
-											itemId         : 'surgery',
-											action         : 'surgery',
-											enableKeyEvents: true,
-											listeners      : {
-												scope   : me,
-												'select': me.onLiveSearchSelect
-											}
-										},
-										{
-											xtype : 'textfield',
-											hidden: true,
-											name  : 'surgery_id',
-											action: 'idField'
-										},
-										{
-											fieldLabel: i18n['date'],
-											xtype     : 'datefield',
-											width     : 200,
-											labelWidth: 80,
-											format    : 'Y-m-d',
-											name      : 'date'
-
-										}
-
-									]
-
-								},
-								{
-									/**
-									 * Line two
-									 */
-									xtype   : 'fieldcontainer',
-									layout  : 'hbox',
-									defaults: { margin: '0 10 5 0' },
-									items   : [
-										{
-											fieldLabel: i18n['notes'],
-											xtype     : 'textfield',
-											width     : 510,
-											labelWidth: 70,
-											name      : 'notes'
-
-										},
-										{
-											fieldLabel: i18n['outcome'],
-											xtype     : 'mitos.outcome2combo',
-											width     : 200,
-											labelWidth: 80,
-											name      : 'outcome'
-
-										}
-
-
-									]
-
-								},
-								{
-									/**
-									 * Line three
-									 */
-									xtype   : 'fieldcontainer',
-									layout  : 'hbox',
-									defaults: { margin: '0 10 5 0' },
-									items   : [
-										{
-											xtype     : 'textfield',
-											width     : 260,
-											labelWidth: 70,
-
-											fieldLabel: i18n['referred_by'],
-											name      : 'referred_by'
-										}
-
-									]
-								}
-							]
-						}
-
-					]
-				}),
-				bbar   : [
-					'->', {
-						text   : i18n['reviewed'],
-						action : 'review',
-						itemId : 'review_surgery',
-						scope  : me,
-						handler: me.onReviewed
-					}
-				]
+				header : i18n['lot_number'],
+				width : 100,
+				dataIndex : 'lot_number'
 			},
 			{
-				/**
-				 * Dental Card panel
-				 */
+				header : 'Notes',
+				flex : 1,
+				dataIndex : 'note'
+			}],
 
-				xtype  : 'grid',
-				action : 'patientDentalListGrid',
-				store  : me.patientDentalStore,
-				columns: [
-					{
-						header   : i18n['title'],
-						width    : 100,
-						dataIndex: 'title'
-					},
-					{
-						xtype    : 'datecolumn',
-						header   : i18n['begin_date'],
-						width    : 100,
-						format   : 'Y-m-d',
-						dataIndex: 'begin_date'
-					},
-					{
-						xtype    : 'datecolumn',
-						header   : i18n['end_date'],
-						flex     : 1,
-						format   : 'Y-m-d',
-						dataIndex: 'end_date'
-					}
-				],
-				plugins: Ext.create('App.classes.grid.RowFormEditing', {
-					autoCancel  : false,
-					errorSummary: false,
-					clicksToEdit: 1,
-					formItems   : [
-						{
-							title  : i18n['general'],
-							xtype  : 'container',
-							padding: 10,
-							layout : 'vbox',
-							items  : [
-								{
-									/**
-									 * Line one
-									 */
-									xtype   : 'fieldcontainer',
-									layout  : 'hbox',
-									defaults: { margin: '0 10 5 0' },
-									items   : [
-
-										{   xtype     : 'textfield',
-											width     : 225,
-											labelWidth: 70,
-											fieldLabel: i18n['title'],
-											action    : 'dental',
-											name      : 'title'
-										},
-//                                        {
-//   		                                    xtype:'textfield',
-//   		                                    hidden:true,
-//   		                                    name:'immunization_id',
-//   		                                    action:'idField'
-//   	                                    },
-										{
-											fieldLabel: i18n['begin_date'],
-											xtype     : 'datefield',
-											width     : 200,
-											labelWidth: 80,
-											format    : 'Y-m-d',
-											name      : 'begin_date'
-
-										},
-										{
-											fieldLabel: i18n['outcome'],
-											xtype     : 'mitos.outcome2combo',
-											width     : 250,
-											labelWidth: 70,
-											name      : 'outcome'
-
-										}
-
-									]
-
-								},
-								{
-									/**
-									 * Line two
-									 */
-									xtype   : 'fieldcontainer',
-									layout  : 'hbox',
-									defaults: { margin: '0 10 5 0' },
-									items   : [
-
-										{
-											xtype     : 'textfield',
-											width     : 225,
-											labelWidth: 70,
-											fieldLabel: i18n['referred_by'],
-											name      : 'referred_by'
-										},
-
-										{
-											fieldLabel: i18n['end_date'],
-											xtype     : 'datefield',
-											width     : 200,
-											labelWidth: 80,
-											format    : 'Y-m-d',
-											name      : 'end_date'
-
-										},
-										{
-											fieldLabel: i18n['ocurrence'],
-											xtype     : 'mitos.occurrencecombo',
-											width     : 250,
-											labelWidth: 70,
-											name      : 'ocurrence'
-
-										}
-
-									]
-
-								}
-							]
-						}
-
-					]
-				}),
-				bbar   : [
-					'->', {
-						text   : i18n['reviewed'],
-						action : 'review',
-						itemId : 'review_dental',
-						scope  : me,
-						handler: me.onReviewed
-					}
-				]
-			},
+			plugins : Ext.create('App.classes.grid.RowFormEditing',
 			{
-				/**
-				 * Medications panel
-				 */
+				autoCancel : false,
+				errorSummary : false,
+				clicksToEdit : 1,
+				formItems : [
 
-				xtype  : 'grid',
-				action : 'patientMedicationsListGrid',
-				store  : me.patientMedicationsStore,
-				columns: [
-					{
-						header   : i18n['medication'],
-						flex     : 1,
-						dataIndex: 'medication'
-					},
-					{
-						xtype    : 'datecolumn',
-						header   : i18n['begin_date'],
-						width    : 100,
-						format   : 'Y-m-d',
-						dataIndex: 'begin_date'
-					},
-					{
-						xtype    : 'datecolumn',
-						header   : i18n['end_date'],
-						width    : 100,
-						format   : 'Y-m-d',
-						dataIndex: 'end_date'
-					}
-				],
-				plugins: Ext.create('App.classes.grid.RowFormEditing', {
-					autoCancel  : false,
-					errorSummary: false,
-					clicksToEdit: 1,
+				{
 
-					formItems: [
+					title : 'general',
+					xtype : 'container',
+					layout : 'vbox',
+					items : [
+					{
+						/**
+						 * Line one
+						 */
+						xtype : 'fieldcontainer',
+						layout : 'hbox',
+						defaults :
 						{
-							title  : i18n['general'],
-							xtype  : 'container',
-							padding: 10,
-							layout : 'vbox',
-							items  : [
-								{
-									/**
-									 * Line one
-									 */
-									xtype   : 'fieldcontainer',
-									layout  : 'hbox',
-									defaults: { margin: '0 10 5 0' },
-									items   : [
-										{
-											xtype          : 'medicationlivetsearch',
-											fieldLabel     : i18n['medication'],
-											hideLabel      : false,
-											itemId         : 'medication',
-											name           : 'medication',
-											action         : 'medication',
-											enableKeyEvents: true,
-											width          : 520,
-											labelWidth     : 70,
-											listeners      : {
-												scope   : me,
-												'select': me.onLiveSearchSelect
-											}
-										},
-										{
-											xtype : 'textfield',
-											hidden: true,
-											name  : 'medication_id',
-											action: 'idField'
-										},
-
-										{
-											fieldLabel: i18n['begin_date'],
-											xtype     : 'datefield',
-											width     : 200,
-											labelWidth: 80,
-											format    : 'Y-m-d',
-											name      : 'begin_date'
-
-										}
-
-									]
-
-								},
-								{
-									/**
-									 * Line two
-									 */
-									xtype   : 'fieldcontainer',
-									layout  : 'hbox',
-									defaults: { margin: '0 10 5 0' },
-									items   : [
-										{
-											fieldLabel: i18n['outcome'],
-											xtype     : 'mitos.outcome2combo',
-											width     : 250,
-											labelWidth: 70,
-											name      : 'outcome'
-										},
-										{
-											xtype     : 'textfield',
-											width     : 260,
-											fieldLabel: i18n['referred_by'],
-											name      : 'referred_by'
-										},
-										{
-											fieldLabel: i18n['end_date'],
-											xtype     : 'datefield',
-											width     : 200,
-											labelWidth: 80,
-											format    : 'Y-m-d',
-											name      : 'end_date'
-										}
-
-									]
-
-								},
-								{
-									/**
-									 * Line three
-									 */
-									xtype   : 'fieldcontainer',
-									layout  : 'hbox',
-									defaults: { margin: '0 10 5 0' },
-									items   : [
-
-										{
-											fieldLabel: i18n['ocurrence'],
-											width     : 250,
-											labelWidth: 70,
-											xtype     : 'mitos.occurrencecombo',
-											name      : 'ocurrence'
-
-										}
-
-									]
-								}
-							]
-						}
-					]
-				}),
-				bbar   : [
-					'->', {
-						text   : i18n['reviewed'],
-						action : 'review',
-						itemId : 'review_medications',
-						scope  : me,
-						handler: me.onReviewed
-					}
-				]
-			},
-			{
-				/**
-				 * Lab panel
-				 */
-				xtype : 'container',
-				action: 'patientLabs',
-				layout: 'border',
-				items : [
-					{
-						xtype     : 'panel',
-						region    : 'north',
-						layout    : 'border',
-						bodyBorder: false,
-						border    : false,
-						height    : 350,
-						split     : true,
-						items     : [
-							{
-								xtype    : 'grid',
-								region   : 'west',
-								width    : 290,
-								split    : true,
-								store    : me.labPanelsStore,
-								columns  : [
-									{
-										header   : i18n['laboratories'],
-										dataIndex: 'label',
-										flex     : 1
-									}
-								],
-								listeners: {
-									scope          : me,
-									itemclick      : me.onLabPanelSelected,
-									selectionchange: me.onLabPanelSelectionChange
-								}
-							},
-							{
-								xtype : 'panel',
-								action: 'labPreviewPanel',
-								title : i18n['laboratory_preview'],
-								region: 'center',
-								items : [
-									me.uploadWin = Ext.create('Ext.window.Window', {
-										draggable  : false,
-										closable   : false,
-										closeAction: 'hide',
-										items      : [
-											{
-												xtype      : 'form',
-												bodyPadding: 10,
-												width      : 400,
-												items      : [
-													{
-														xtype     : 'filefield',
-														name      : 'filePath',
-														buttonText: i18n['select_a_file'] + '...',
-														anchor    : '100%'
-													}
-												],
-												api        : {
-													submit: DocumentHandler.uploadDocument
-												}
-											}
-										],
-										buttons    : [
-											{
-												text   : i18n['cancel'],
-												handler: function() {
-													me.uploadWin.close();
-												}
-											},
-											{
-												text   : i18n['upload'],
-												scope  : me,
-												handler: me.onLabUpload
-											}
-										]
-									})
-								]
-							}
-						],
-						tbar      : [
-							'->',
-							{
-								text: i18n['scan']
-							},
-							'-',
-							{
-								text    : i18n['upload'],
-								disabled: true,
-								action  : 'uploadBtn',
-								scope   : me,
-								handler : me.onLabUploadWind
-							}
-						]
-					},
-					{
-						xtype : 'container',
-						region: 'center',
-						layout: 'border',
-						split : true,
+							margin : '0 10 3 0',
+							xtype : 'textfield'
+						},
 						items : [
+
+						{
+							xtype : 'immunizationlivesearch',
+							fieldLabel : i18n['name'],
+							hideLabel : false,
+							allowBlank : false,
+							itemId : 'immunization_name',
+							name : 'immunization_name',
+							enableKeyEvents : true,
+							action : 'immunizations',
+							width : 570,
+							listeners :
 							{
-								xtype      : 'form',
-								title      : i18n['laboratory_entry_form'],
-								region     : 'west',
-								width      : 290,
-								split      : true,
-								bodyPadding: 5,
-								autoScroll : true,
-								bbar       : [
-									'->',
-									{
-										text   : i18n['reset'],
-										scope  : me,
-										handler: me.onLabResultsReset
-									},
-									'-',
-									{
-										text   : i18n['sign'],
-										scope  : me,
-										handler: me.onLabResultsSign
-									},
-									'-',
-									{
-										text   : i18n['save'],
-										scope  : me,
-										handler: me.onLabResultsSave
-									}
-								]
-							},
-							{
-								xtype : 'panel',
-								region: 'center',
-								height: 300,
-								split : true,
-								items : [
-									{
-										xtype    : 'lalboratoryresultsdataview',
-										action   : 'lalboratoryresultsdataview',
-										store    : Ext.create('App.store.patient.PatientLabsResults'),
-										listeners: {
-											scope    : me,
-											itemclick: me.onLabResultClick
-										}
-									}
-								]
+								scope : me,
+								select : me.onLiveSearchSelect
 							}
-						]
+						},
+						{
+							xtype : 'textfield',
+							hidden : true,
+							name : 'immunization_id',
+							action : 'idField'
+						},
+						{
+							fieldLabel : i18n['administrator'],
+							name : 'administered_by',
+							width : 295,
+							labelWidth : 160
+
+						}]
+
+					},
+					{
+						/**
+						 * Line two
+						 */
+						xtype : 'fieldcontainer',
+						layout : 'hbox',
+						defaults :
+						{
+							margin : '0 10 3 0',
+							xtype : 'textfield'
+						},
+						items : [
+						{
+							fieldLabel : i18n['lot_number'],
+							xtype : 'textfield',
+							width : 300,
+							name : 'lot_number'
+
+						},
+						{
+
+							xtype : 'numberfield',
+							fieldLabel : i18n['dosis_number'],
+							width : 260,
+							name : 'dosis'
+						},
+
+						{
+							fieldLabel : i18n['info_statement_given'],
+							width : 295,
+							labelWidth : 160,
+							xtype : 'datefield',
+							format : 'Y-m-d',
+							name : 'education_date'
+						}]
+
+					},
+					{
+						/**
+						 * Line three
+						 */
+						xtype : 'fieldcontainer',
+						layout : 'hbox',
+						defaults :
+						{
+							margin : '0 10 3 0',
+							xtype : 'textfield'
+						},
+						items : [
+
+						{
+							fieldLabel : i18n['notes'],
+							xtype : 'textfield',
+							width : 300,
+							name : 'note'
+
+						},
+						{
+							fieldLabel : i18n['manufacturer'],
+							xtype : 'textfield',
+							width : 260,
+
+							name : 'manufacturer'
+
+						},
+
+						{
+							fieldLabel : i18n['date_administered'],
+							xtype : 'datefield',
+							width : 295,
+							labelWidth : 160,
+							format : 'Y-m-d',
+							name : 'administered_date'
+						}]
+
+					}]
+
+				}]
+			}),
+			bbar : ['->',
+			{
+				text : i18n['reviewed'],
+				action : 'review',
+				itemId : 'review_immunizations',
+				scope : me,
+				handler : me.onReviewed
+			}]
+		},
+
+		{
+			/**
+			 * Allergies Card panel
+			 */
+			xtype : 'grid',
+			action : 'patientAllergiesListGrid',
+			store : me.patientAllergiesListStore,
+			columns : [
+			{
+				header : i18n['type'],
+				width : 100,
+				dataIndex : 'allergy_type'
+			},
+			{
+				header : i18n['name'],
+				width : 100,
+				dataIndex : 'allergy'
+			},
+			{
+				header : i18n['location'],
+				width : 100,
+				dataIndex : 'location'
+			},
+			{
+				header : i18n['severity'],
+				flex : 1,
+				dataIndex : 'severity'
+			},
+			{
+				text : i18n['active'],
+				width : 55,
+				dataIndex : 'alert',
+				renderer : me.boolRenderer
+			}],
+			plugins : me.rowEditingAllergies = Ext.create('App.classes.grid.RowFormEditing',
+			{
+				autoCancel : false,
+				errorSummary : false,
+				clicksToEdit : 1,
+				formItems : [
+
+				{
+					title : i18n['general'],
+					xtype : 'container',
+					padding : 10,
+					layout : 'vbox',
+					items : [
+					{
+						/**
+						 * Line one
+						 */
+						xtype : 'fieldcontainer',
+						layout : 'hbox',
+						defaults :
+						{
+							margin : '0 10 5 0'
+						},
+						items : [
+						{
+							xtype : 'mitos.allergiestypescombo',
+							fieldLabel : i18n['type'],
+							name : 'allergy_type',
+							action : 'allergy_type',
+							allowBlank : false,
+							width : 225,
+							labelWidth : 70,
+							enableKeyEvents : true,
+							listeners :
+							{
+								scope : me,
+								'select' : me.onAllergyTypeSelect
+							}
+						},
+						{
+							xtype : 'mitos.allergieslocationcombo',
+							fieldLabel : i18n['location'],
+							name : 'location',
+							action : 'location',
+							width : 225,
+							labelWidth : 70,
+							listeners :
+							{
+								scope : me,
+								'select' : me.onLocationSelect
+							}
+
+						},
+						{
+							fieldLabel : i18n['begin_date'],
+							xtype : 'datefield',
+							format : 'Y-m-d',
+							name : 'begin_date'
+
+						}]
+
+					},
+					{
+						/**
+						 * Line two
+						 */
+						xtype : 'fieldcontainer',
+						layout : 'hbox',
+						defaults :
+						{
+							margin : '0 10 5 0'
+						},
+						items : [
+						{
+							xtype : 'mitos.allergiescombo',
+							fieldLabel : i18n['allergy'],
+							action : 'allergie_name',
+							name : 'allergy',
+							enableKeyEvents : true,
+							disabled : true,
+							width : 225,
+							labelWidth : 70,
+							listeners :
+							{
+								scope : me,
+								'select' : me.onLiveSearchSelect,
+								change : me.disableFieldLogic
+							}
+						},
+						{
+							xtype : 'medicationlivetsearch',
+							fieldLabel : i18n['allergy'],
+							hideLabel : false,
+							action : 'drug_name',
+							name : 'allergy',
+							hidden : true,
+							disabled : true,
+							enableKeyEvents : true,
+							width : 225,
+							labelWidth : 70,
+							listeners :
+							{
+								scope : me,
+								'select' : me.onLiveSearchSelect,
+								change : me.disableFieldLogic
+							}
+						},
+						{
+							xtype : 'textfield',
+							hidden : true,
+							name : 'allergy_id',
+							action : 'idField'
+						},
+						{
+							xtype : 'mitos.allergiesabdominalcombo',
+							fieldLabel : i18n['reaction'],
+							name : 'reaction',
+							disabled : true,
+							width : 225,
+							labelWidth : 70,
+							listeners :
+							{
+								scope : me,
+								change : me.disableFieldLogic
+							}
+
+						},
+						{
+							xtype : 'mitos.allergieslocalcombo',
+							fieldLabel : i18n['reaction'],
+							name : 'reaction',
+							hidden : true,
+							disabled : true,
+							width : 225,
+							labelWidth : 70,
+							listeners :
+							{
+								scope : me,
+								change : me.disableFieldLogic
+							}
+
+						},
+						{
+							xtype : 'mitos.allergiesskincombo',
+							fieldLabel : i18n['reaction'],
+							name : 'reaction',
+							hidden : true,
+							disabled : true,
+							width : 225,
+							labelWidth : 70,
+							listeners :
+							{
+								scope : me,
+								change : me.disableFieldLogic
+							}
+
+						},
+						{
+							xtype : 'mitos.allergiessystemiccombo',
+							fieldLabel : i18n['reaction'],
+							name : 'reaction',
+							hidden : true,
+							disabled : true,
+							width : 225,
+							labelWidth : 70,
+							listeners :
+							{
+								scope : me,
+								change : me.disableFieldLogic
+							}
+
+						},
+						{
+							fieldLabel : i18n['end_date'],
+							xtype : 'datefield',
+							format : 'Y-m-d',
+							name : 'end_date'
+						}]
+
+					},
+					{
+						/**
+						 * Line three
+						 */
+						xtype : 'fieldcontainer',
+						layout : 'hbox',
+						defaults :
+						{
+							margin : '0 10 5 0'
+						},
+						items : [
+						{
+							xtype : 'mitos.allergiesseveritycombo',
+							fieldLabel : i18n['severity'],
+							name : 'severity',
+							width : 225,
+							labelWidth : 70
+
+						}]
+					}]
+				}]
+			}),
+			bbar : ['->',
+			{
+				text : i18n['reviewed'],
+				action : 'review',
+				itemId : 'review_allergies',
+				scope : me,
+				handler : me.onReviewed
+			}]
+		},
+		{
+			/**
+			 * Active Problem Card panel
+			 */
+
+			xtype : 'grid',
+			action : 'patientMedicalListGrid',
+			store : me.patientMedicalIssuesStore,
+			columns : [
+
+			{
+				header : i18n['problem'],
+				flex : 1,
+				dataIndex : 'code_text'
+			},
+			{
+				xtype : 'datecolumn',
+				header : i18n['begin_date'],
+				width : 100,
+				format : 'Y-m-d',
+				dataIndex : 'begin_date'
+			},
+			{
+				xtype : 'datecolumn',
+				header : i18n['end_date'],
+				width : 100,
+				format : 'Y-m-d',
+				dataIndex : 'end_date'
+			}],
+			plugins : Ext.create('App.classes.grid.RowFormEditing',
+			{
+				autoCancel : false,
+				errorSummary : false,
+				clicksToEdit : 1,
+
+				formItems : [
+				{
+					title : i18n['general'],
+					xtype : 'container',
+					padding : 10,
+					layout : 'vbox',
+					items : [
+					{
+						/**
+						 * Line one
+						 */
+						xtype : 'fieldcontainer',
+						layout : 'hbox',
+						defaults :
+						{
+							margin : '0 10 5 0'
+						},
+						items : [
+						{
+							xtype : 'liveicdxsearch',
+							fieldLabel : i18n['problem'],
+							name : 'code_text',
+							allowBlank : false,
+							hideLabel : false,
+							itemId : 'medicalissues',
+							action : 'medicalissues',
+							enableKeyEvents : true,
+							width : 510,
+							labelWidth : 70,
+							listeners :
+							{
+								scope : me,
+								'select' : me.onLiveSearchSelect
+							}
+						},
+						{
+							xtype : 'textfield',
+							hidden : true,
+							name : 'code',
+							action : 'idField'
+						},
+
+						{
+							fieldLabel : i18n['begin_date'],
+							xtype : 'datefield',
+							width : 200,
+							labelWidth : 80,
+							format : 'Y-m-d',
+							name : 'begin_date'
+
+						}]
+
+					},
+					{
+						/**
+						 * Line two
+						 */
+						xtype : 'fieldcontainer',
+						layout : 'hbox',
+						defaults :
+						{
+							margin : '0 10 5 0'
+						},
+						items : [
+
+						{
+							fieldLabel : i18n['ocurrence'],
+							width : 250,
+							labelWidth : 70,
+							xtype : 'mitos.occurrencecombo',
+							name : 'ocurrence'
+
+						},
+
+						{
+							fieldLabel : i18n['outcome'],
+							xtype : 'mitos.outcome2combo',
+							width : 250,
+							labelWidth : 70,
+							name : 'outcome'
+
+						},
+						{
+							fieldLabel : i18n['end_date'],
+							xtype : 'datefield',
+							width : 200,
+							labelWidth : 80,
+							format : 'Y-m-d',
+							name : 'end_date'
+
+						}]
+
+					},
+					{
+						/**
+						 * Line three
+						 */
+						xtype : 'fieldcontainer',
+						layout : 'hbox',
+						defaults :
+						{
+							margin : '0 10 5 0'
+						},
+						items : [
+
+						{
+							xtype : 'textfield',
+							width : 250,
+							labelWidth : 70,
+							fieldLabel : i18n['referred_by'],
+							name : 'referred_by'
+						}]
+					}]
+				}]
+			}),
+			bbar : ['->',
+			{
+				text : i18n['reviewed'],
+				action : 'review',
+				itemId : 'review_active_problems',
+				scope : me,
+				handler : me.onReviewed
+			}]
+		},
+		{
+			/**
+			 * Surgery Card panel
+			 */
+
+			xtype : 'grid',
+			action : 'patientSurgeryListGrid',
+			store : me.patientSurgeryStore,
+			columns : [
+			{
+				header : i18n['surgery'],
+				width : 100,
+				flex : 1,
+				dataIndex : 'surgery'
+			},
+			{
+				xtype : 'datecolumn',
+				header : i18n['date'],
+				width : 100,
+				format : 'Y-m-d',
+				dataIndex : 'date'
+			}],
+			plugins : Ext.create('App.classes.grid.RowFormEditing',
+			{
+				autoCancel : false,
+				errorSummary : false,
+				clicksToEdit : 1,
+				formItems : [
+				{
+					title : i18n['general'],
+					xtype : 'container',
+					padding : 10,
+					layout : 'vbox',
+					items : [
+					{
+						/**
+						 * Line one
+						 */
+						xtype : 'fieldcontainer',
+						layout : 'hbox',
+						defaults :
+						{
+							margin : '0 10 5 0'
+						},
+						items : [
+						{
+							fieldLabel : i18n['surgery'],
+							name : 'surgery',
+							hideLabel : false,
+							allowBlank : false,
+							width : 510,
+							labelWidth : 70,
+							xtype : 'surgerieslivetsearch',
+							itemId : 'surgery',
+							action : 'surgery',
+							enableKeyEvents : true,
+							listeners :
+							{
+								scope : me,
+								'select' : me.onLiveSearchSelect
+							}
+						},
+						{
+							xtype : 'textfield',
+							hidden : true,
+							name : 'surgery_id',
+							action : 'idField'
+						},
+						{
+							fieldLabel : i18n['date'],
+							xtype : 'datefield',
+							width : 200,
+							labelWidth : 80,
+							format : 'Y-m-d',
+							name : 'date'
+
+						}]
+
+					},
+					{
+						/**
+						 * Line two
+						 */
+						xtype : 'fieldcontainer',
+						layout : 'hbox',
+						defaults :
+						{
+							margin : '0 10 5 0'
+						},
+						items : [
+						{
+							fieldLabel : i18n['notes'],
+							xtype : 'textfield',
+							width : 510,
+							labelWidth : 70,
+							name : 'notes'
+
+						},
+						{
+							fieldLabel : i18n['outcome'],
+							xtype : 'mitos.outcome2combo',
+							width : 200,
+							labelWidth : 80,
+							name : 'outcome'
+
+						}]
+
+					},
+					{
+						/**
+						 * Line three
+						 */
+						xtype : 'fieldcontainer',
+						layout : 'hbox',
+						defaults :
+						{
+							margin : '0 10 5 0'
+						},
+						items : [
+						{
+							xtype : 'textfield',
+							width : 260,
+							labelWidth : 70,
+
+							fieldLabel : i18n['referred_by'],
+							name : 'referred_by'
+						}]
+					}]
+				}]
+			}),
+			bbar : ['->',
+			{
+				text : i18n['reviewed'],
+				action : 'review',
+				itemId : 'review_surgery',
+				scope : me,
+				handler : me.onReviewed
+			}]
+		},
+		{
+			/**
+			 * Dental Card panel
+			 */
+
+			xtype : 'grid',
+			action : 'patientDentalListGrid',
+			store : me.patientDentalStore,
+			columns : [
+			{
+				header : i18n['title'],
+				width : 100,
+				dataIndex : 'title'
+			},
+			{
+				xtype : 'datecolumn',
+				header : i18n['begin_date'],
+				width : 100,
+				format : 'Y-m-d',
+				dataIndex : 'begin_date'
+			},
+			{
+				xtype : 'datecolumn',
+				header : i18n['end_date'],
+				flex : 1,
+				format : 'Y-m-d',
+				dataIndex : 'end_date'
+			}],
+			plugins : Ext.create('App.classes.grid.RowFormEditing',
+			{
+				autoCancel : false,
+				errorSummary : false,
+				clicksToEdit : 1,
+				formItems : [
+				{
+					title : i18n['general'],
+					xtype : 'container',
+					padding : 10,
+					layout : 'vbox',
+					items : [
+					{
+						/**
+						 * Line one
+						 */
+						xtype : 'fieldcontainer',
+						layout : 'hbox',
+						defaults :
+						{
+							margin : '0 10 5 0'
+						},
+						items : [
+
+						{
+							xtype : 'textfield',
+							width : 225,
+							labelWidth : 70,
+							fieldLabel : i18n['title'],
+							action : 'dental',
+							name : 'title'
+						},
+						//                                        {
+						//   		                                    xtype:'textfield',
+						//   		                                    hidden:true,
+						//   		                                    name:'immunization_id',
+						//   		                                    action:'idField'
+						//   	                                    },
+						{
+							fieldLabel : i18n['begin_date'],
+							xtype : 'datefield',
+							width : 200,
+							labelWidth : 80,
+							format : 'Y-m-d',
+							name : 'begin_date'
+
+						},
+						{
+							fieldLabel : i18n['outcome'],
+							xtype : 'mitos.outcome2combo',
+							width : 250,
+							labelWidth : 70,
+							name : 'outcome'
+
+						}]
+
+					},
+					{
+						/**
+						 * Line two
+						 */
+						xtype : 'fieldcontainer',
+						layout : 'hbox',
+						defaults :
+						{
+							margin : '0 10 5 0'
+						},
+						items : [
+
+						{
+							xtype : 'textfield',
+							width : 225,
+							labelWidth : 70,
+							fieldLabel : i18n['referred_by'],
+							name : 'referred_by'
+						},
+
+						{
+							fieldLabel : i18n['end_date'],
+							xtype : 'datefield',
+							width : 200,
+							labelWidth : 80,
+							format : 'Y-m-d',
+							name : 'end_date'
+
+						},
+						{
+							fieldLabel : i18n['ocurrence'],
+							xtype : 'mitos.occurrencecombo',
+							width : 250,
+							labelWidth : 70,
+							name : 'ocurrence'
+
+						}]
+
+					}]
+				}]
+			}),
+			bbar : ['->',
+			{
+				text : i18n['reviewed'],
+				action : 'review',
+				itemId : 'review_dental',
+				scope : me,
+				handler : me.onReviewed
+			}]
+		},
+		{
+			/**
+			 * Medications panel
+			 */
+
+			xtype : 'grid',
+			action : 'patientMedicationsListGrid',
+			store : me.patientMedicationsStore,
+			columns : [
+			{
+				header : i18n['medication'],
+				flex : 1,
+				dataIndex : 'medication'
+			},
+			{
+				xtype : 'datecolumn',
+				header : i18n['begin_date'],
+				width : 100,
+				format : 'Y-m-d',
+				dataIndex : 'begin_date'
+			},
+			{
+				xtype : 'datecolumn',
+				header : i18n['end_date'],
+				width : 100,
+				format : 'Y-m-d',
+				dataIndex : 'end_date'
+			}],
+			plugins : Ext.create('App.classes.grid.RowFormEditing',
+			{
+				autoCancel : false,
+				errorSummary : false,
+				clicksToEdit : 1,
+
+				formItems : [
+				{
+					title : i18n['general'],
+					xtype : 'container',
+					padding : 10,
+					layout : 'vbox',
+					items : [
+					{
+						/**
+						 * Line one
+						 */
+						xtype : 'fieldcontainer',
+						layout : 'hbox',
+						defaults :
+						{
+							margin : '0 10 5 0'
+						},
+						items : [
+						{
+							xtype : 'medicationlivetsearch',
+							fieldLabel : i18n['medication'],
+							hideLabel : false,
+							itemId : 'medication',
+							name : 'medication',
+							action : 'medication',
+							enableKeyEvents : true,
+							width : 520,
+							labelWidth : 70,
+							listeners :
+							{
+								scope : me,
+								'select' : me.onLiveSearchSelect
+							}
+						},
+						{
+							xtype : 'textfield',
+							hidden : true,
+							name : 'medication_id',
+							action : 'idField'
+						},
+
+						{
+							fieldLabel : i18n['begin_date'],
+							xtype : 'datefield',
+							width : 200,
+							labelWidth : 80,
+							format : 'Y-m-d',
+							name : 'begin_date'
+
+						}]
+
+					},
+					{
+						/**
+						 * Line two
+						 */
+						xtype : 'fieldcontainer',
+						layout : 'hbox',
+						defaults :
+						{
+							margin : '0 10 5 0'
+						},
+						items : [
+						{
+							fieldLabel : i18n['outcome'],
+							xtype : 'mitos.outcome2combo',
+							width : 250,
+							labelWidth : 70,
+							name : 'outcome'
+						},
+						{
+							xtype : 'textfield',
+							width : 260,
+							fieldLabel : i18n['referred_by'],
+							name : 'referred_by'
+						},
+						{
+							fieldLabel : i18n['end_date'],
+							xtype : 'datefield',
+							width : 200,
+							labelWidth : 80,
+							format : 'Y-m-d',
+							name : 'end_date'
+						}]
+
+					},
+					{
+						/**
+						 * Line three
+						 */
+						xtype : 'fieldcontainer',
+						layout : 'hbox',
+						defaults :
+						{
+							margin : '0 10 5 0'
+						},
+						items : [
+
+						{
+							fieldLabel : i18n['ocurrence'],
+							width : 250,
+							labelWidth : 70,
+							xtype : 'mitos.occurrencecombo',
+							name : 'ocurrence'
+
+						}]
+					}]
+				}]
+			}),
+			bbar : ['->',
+			{
+				text : i18n['reviewed'],
+				action : 'review',
+				itemId : 'review_medications',
+				scope : me,
+				handler : me.onReviewed
+			}]
+		},
+		{
+			/**
+			 * Lab panel
+			 */
+			xtype : 'container',
+			action : 'patientLabs',
+			layout : 'border',
+			items : [
+			{
+				xtype : 'panel',
+				region : 'north',
+				layout : 'border',
+				bodyBorder : false,
+				border : false,
+				height : 350,
+				split : true,
+				items : [
+				{
+					xtype : 'grid',
+					region : 'west',
+					width : 290,
+					split : true,
+					store : me.labPanelsStore,
+					columns : [
+					{
+						header : i18n['laboratories'],
+						dataIndex : 'label',
+						flex : 1
+					}],
+					listeners :
+					{
+						scope : me,
+						itemclick : me.onLabPanelSelected,
+						selectionchange : me.onLabPanelSelectionChange
 					}
-				]
-			}
-		];
+				},
+				{
+					xtype : 'panel',
+					action : 'labPreviewPanel',
+					title : i18n['laboratory_preview'],
+					region : 'center',
+					items : [me.uploadWin = Ext.create('Ext.window.Window',
+					{
+						draggable : false,
+						closable : false,
+						closeAction : 'hide',
+						items : [
+						{
+							xtype : 'form',
+							bodyPadding : 10,
+							width : 400,
+							items : [
+							{
+								xtype : 'filefield',
+								name : 'filePath',
+								buttonText : i18n['select_a_file'] + '...',
+								anchor : '100%'
+							}],
+							api :
+							{
+								submit : DocumentHandler.uploadDocument
+							}
+						}],
+						buttons : [
+						{
+							text : i18n['cancel'],
+							handler : function()
+							{
+								me.uploadWin.close();
+							}
+						},
+						{
+							text : i18n['upload'],
+							scope : me,
+							handler : me.onLabUpload
+						}]
+					})]
+				}],
+				tbar : ['->',
+				{
+					text : i18n['scan']
+				}, '-',
+				{
+					text : i18n['upload'],
+					disabled : true,
+					action : 'uploadBtn',
+					scope : me,
+					handler : me.onLabUploadWind
+				}]
+			},
+			{
+				xtype : 'container',
+				region : 'center',
+				layout : 'border',
+				split : true,
+				items : [
+				{
+					xtype : 'form',
+					title : i18n['laboratory_entry_form'],
+					region : 'west',
+					width : 290,
+					split : true,
+					bodyPadding : 5,
+					autoScroll : true,
+					bbar : ['->',
+					{
+						text : i18n['reset'],
+						scope : me,
+						handler : me.onLabResultsReset
+					}, '-',
+					{
+						text : i18n['sign'],
+						scope : me,
+						handler : me.onLabResultsSign
+					}, '-',
+					{
+						text : i18n['save'],
+						scope : me,
+						handler : me.onLabResultsSave
+					}]
+				},
+				{
+					xtype : 'panel',
+					region : 'center',
+					height : 300,
+					split : true,
+					items : [
+					{
+						xtype : 'lalboratoryresultsdataview',
+						action : 'lalboratoryresultsdataview',
+						store : Ext.create('App.store.patient.PatientLabsResults'),
+						listeners :
+						{
+							scope : me,
+							itemclick : me.onLabResultClick
+						}
+					}]
+				}]
+			}]
+		}];
 
 		me.dockedItems = [
+		{
+			xtype : 'toolbar',
+			items : [
 			{
-				xtype: 'toolbar',
-				items: [
-					{
 
-						text        : i18n['immunization'],
-						enableToggle: true,
-						toggleGroup : 'medicalWin',
-						pressed     : true,
-						itemId      : 'immunization',
-						action      : 'immunization',
-						scope       : me,
-						handler     : me.cardSwitch
-					},
-					'-',
-					{
-						text        : i18n['allergies'],
-						enableToggle: true,
-						toggleGroup : 'medicalWin',
-						itemId      : 'allergies',
-						action      : 'allergies',
-						scope       : me,
-						handler     : me.cardSwitch
-					},
-					'-',
-					{
-						text        : i18n['active_problems'],
-						enableToggle: true,
-						toggleGroup : 'medicalWin',
-						itemId      : 'issues',
-						action      : 'issues',
-						scope       : me,
-						handler     : me.cardSwitch
-					},
-					'-',
-					{
-						text        : i18n['surgeries'],
-						enableToggle: true,
-						toggleGroup : 'medicalWin',
-						itemId      : 'surgery',
-						action      : 'surgery',
-						scope       : me,
-						handler     : me.cardSwitch
-					},
-					'-',
-					{
-						text        : i18n['dental'],
-						enableToggle: true,
-						toggleGroup : 'medicalWin',
-						itemId      : 'dental',
-						action      : 'dental',
-						scope       : me,
-						handler     : me.cardSwitch
-					},
-					'-',
-					{
-						text        : i18n['medications'],
-						enableToggle: true,
-						toggleGroup : 'medicalWin',
-						itemId      : 'medications',
-						action      : 'medications',
-						scope       : me,
-						handler     : me.cardSwitch
-					},
-					'-',
-					{
-						text        : i18n['laboratories'],
-						enableToggle: true,
-						toggleGroup : 'medicalWin',
-						itemId      : 'laboratories',
-						action      : 'laboratories',
-						scope       : me,
-						handler     : me.cardSwitch
-					},
-					'->',
-					{
-						text   : i18n['add_new'],
-						action : 'AddRecord',
-						scope  : me,
-						handler: me.onAddItem
-					}
-				]
-			}
-		];
-		me.listeners = {
-			scope: me,
+				text : i18n['immunization'],
+				enableToggle : true,
+				toggleGroup : 'medicalWin',
+				pressed : true,
+				itemId : 'immunization',
+				action : 'immunization',
+				scope : me,
+				handler : me.cardSwitch
+			}, '-',
+			{
+				text : i18n['allergies'],
+				enableToggle : true,
+				toggleGroup : 'medicalWin',
+				itemId : 'allergies',
+				action : 'allergies',
+				scope : me,
+				handler : me.cardSwitch
+			}, '-',
+			{
+				text : i18n['active_problems'],
+				enableToggle : true,
+				toggleGroup : 'medicalWin',
+				itemId : 'issues',
+				action : 'issues',
+				scope : me,
+				handler : me.cardSwitch
+			}, '-',
+			{
+				text : i18n['surgeries'],
+				enableToggle : true,
+				toggleGroup : 'medicalWin',
+				itemId : 'surgery',
+				action : 'surgery',
+				scope : me,
+				handler : me.cardSwitch
+			}, '-',
+			{
+				text : i18n['dental'],
+				enableToggle : true,
+				toggleGroup : 'medicalWin',
+				itemId : 'dental',
+				action : 'dental',
+				scope : me,
+				handler : me.cardSwitch
+			}, '-',
+			{
+				text : i18n['medications'],
+				enableToggle : true,
+				toggleGroup : 'medicalWin',
+				itemId : 'medications',
+				action : 'medications',
+				scope : me,
+				handler : me.cardSwitch
+			}, '-',
+			{
+				text : i18n['laboratories'],
+				enableToggle : true,
+				toggleGroup : 'medicalWin',
+				itemId : 'laboratories',
+				action : 'laboratories',
+				scope : me,
+				handler : me.cardSwitch
+			}, '->',
+			{
+				text : i18n['add_new'],
+				action : 'AddRecord',
+				scope : me,
+				handler : me.onAddItem
+			}]
+		}];
+		me.listeners =
+		{
+			scope : me,
 			show : me.onMedicalWinShow,
 			close : me.onMedicalWinClose
 		};
@@ -32829,97 +33388,107 @@ Ext.define('App.view.patient.windows.Medical', {
 
 	//*******************************************************
 
-	onLabPanelSelected: function(grid, model) {
-		var me = this,
-			formPanel = me.query('[action="patientLabs"]')[0].down('form'),
-			dataView = me.query('[action="lalboratoryresultsdataview"]')[0],
-			store = dataView.store,
-			fields = model.data.fields;
+	onLabPanelSelected : function(grid, model)
+	{
+		var me = this, formPanel = me.query('[action="patientLabs"]')[0].down('form'), dataView = me.query('[action="lalboratoryresultsdataview"]')[0], store = dataView.store, fields = model.data.fields;
 
 		me.currLabPanelId = model.data.id;
 		me.removeLabDocument();
 		formPanel.removeAll();
 
-		formPanel.add({
+		formPanel.add(
+		{
 			xtype : 'textfield',
-			name  : 'id',
-			hidden: true
+			name : 'id',
+			hidden : true
 		});
-		for(var i = 0; i < fields.length; i++) {
-			formPanel.add({
-				xtype     : 'fieldcontainer',
-				layout    : 'hbox',
-				margin    : 0,
-				anchor    : '100%',
-				fieldLabel: fields[i].code_text_short || fields[i].loinc_name,
-				labelWidth: 130,
-				items     : [
-					{
-						xtype     : 'textfield',
-						name      : fields[i].loinc_number,
-						flex      : 1,
-						allowBlank: fields[i].required_in_panel != 'R'
-					},
-					{
-						xtype: 'mitos.unitscombo',
-						value: fields[i].default_unit,
-						name : fields[i].loinc_number + '_unit',
-						width: 90
-					}
-				]
+		for (var i = 0; i < fields.length; i++)
+		{
+			formPanel.add(
+			{
+				xtype : 'fieldcontainer',
+				layout : 'hbox',
+				margin : 0,
+				anchor : '100%',
+				fieldLabel : fields[i].code_text_short || fields[i].loinc_name,
+				labelWidth : 130,
+				items : [
+				{
+					xtype : 'textfield',
+					name : fields[i].loinc_number,
+					flex : 1,
+					allowBlank : fields[i].required_in_panel != 'R'
+				},
+				{
+					xtype : 'mitos.unitscombo',
+					value : fields[i].default_unit,
+					name : fields[i].loinc_number + '_unit',
+					width : 90
+				}]
 			});
 		}
 
-		store.load({params: {parent_id: model.data.id}});
+		store.load(
+		{
+			params :
+			{
+				parent_id : model.data.id
+			}
+		});
 	},
 
-	onLabPanelSelectionChange: function(model, record) {
+	onLabPanelSelectionChange : function(model, record)
+	{
 		this.query('[action="uploadBtn"]')[0].setDisabled(record.length == 0);
 	},
 
-	onLabUploadWind: function() {
-		var me = this,
-			previewPanel = me.query('[action="labPreviewPanel"]')[0];
+	onLabUploadWind : function()
+	{
+		var me = this, previewPanel = me.query('[action="labPreviewPanel"]')[0];
 		me.uploadWin.show();
 		me.uploadWin.alignTo(previewPanel.el.dom, 'tr-tr', [-5, 30])
 	},
 
-	onLabUpload: function(btn) {
-		var me = this,
-            formPanel = me.uploadWin.down('form'),
-			form = formPanel.getForm(),
-			win = btn.up('window');
+	onLabUpload : function(btn)
+	{
+		var me = this, formPanel = me.uploadWin.down('form'), form = formPanel.getForm(), win = btn.up('window');
 
-		if(form.isValid()) {
-            formPanel.el.mask(i18n['uploading_laboratory'] + '...');
-			form.submit({
+		if (form.isValid())
+		{
+			formPanel.el.mask(i18n['uploading_laboratory'] + '...');
+			form.submit(
+			{
 				//waitMsg: i18n['uploading_laboratory'] + '...',
-				params : {
-					pid    : app.patient.pid,
-					docType: 'laboratory',
+				params :
+				{
+					pid : app.patient.pid,
+					docType : 'laboratory',
 					eid : app.patient.eid
 				},
-				success: function(fp, o) {
-                    formPanel.el.unmask();
-                    say(o.result);
+				success : function(fp, o)
+				{
+					formPanel.el.unmask();
+					say(o.result);
 					win.close();
 					me.getLabDocument(o.result.doc.url);
 					me.addNewLabResults(o.result.doc.id);
 				},
-				failure: function(fp, o) {
-                    formPanel.el.unmask();
-                    say(o.result);
+				failure : function(fp, o)
+				{
+					formPanel.el.unmask();
+					say(o.result);
 					win.close();
 				}
 			});
 		}
 	},
 
-	onLabResultClick: function(view, model) {
-		var me = this,
-			form = me.query('[action="patientLabs"]')[0].down('form').getForm();
+	onLabResultClick : function(view, model)
+	{
+		var me = this, form = me.query('[action="patientLabs"]')[0].down('form').getForm();
 
-		if(me.currDocUrl != model.data.document_url) {
+		if (me.currDocUrl != model.data.document_url)
+		{
 			form.reset();
 			model.data.data.id = model.data.id;
 			form.setValues(model.data.data);
@@ -32929,33 +33498,47 @@ Ext.define('App.view.patient.windows.Medical', {
 
 	},
 
-	onLabResultsSign: function() {
-		var me = this,
-			form = me.query('[action="patientLabs"]')[0].down('form').getForm(),
-			dataView = me.query('[action="lalboratoryresultsdataview"]')[0],
-			store = dataView.store,
-			values = form.getValues(),
-			record = dataView.getSelectionModel().getLastSelected();
+	onLabResultsSign : function()
+	{
+		var me = this, form = me.query('[action="patientLabs"]')[0].down('form').getForm(), dataView = me.query('[action="lalboratoryresultsdataview"]')[0], store = dataView.store, values = form.getValues(), record = dataView.getSelectionModel().getLastSelected();
 
-		if(form.isValid()) {
-			if(values.id) {
-				me.passwordVerificationWin(function(btn, password) {
-					if(btn == 'ok') {
-						User.verifyUserPass(password, function(provider, response) {
-							if(response.result) {
+		if (form.isValid())
+		{
+			if (values.id)
+			{
+				me.passwordVerificationWin(function(btn, password)
+				{
+					if (btn == 'ok')
+					{
+						User.verifyUserPass(password, function(provider, response)
+						{
+							if (response.result)
+							{
 								say(record);
-								Medical.signPatientLabsResultById(record.data.id, function(provider, response) {
-									store.load({params: {parent_id: me.currLabPanelId}});
+								Medical.signPatientLabsResultById(record.data.id, function(provider, response)
+								{
+									store.load(
+									{
+										params :
+										{
+											parent_id : me.currLabPanelId
+										}
+									});
 								});
-							} else {
-								Ext.Msg.show({
-									title  : 'Oops!',
-									msg    : i18n['incorrect_password'],
+							}
+							else
+							{
+								Ext.Msg.show(
+								{
+									title : 'Oops!',
+									msg : i18n['incorrect_password'],
 									//buttons:Ext.Msg.OKCANCEL,
-									buttons: Ext.Msg.OK,
-									icon   : Ext.Msg.ERROR,
-									fn     : function(btn) {
-										if(btn == 'ok') {
+									buttons : Ext.Msg.OK,
+									icon : Ext.Msg.ERROR,
+									fn : function(btn)
+									{
+										if (btn == 'ok')
+										{
 											//me.onLabResultsSign();
 										}
 									}
@@ -32964,15 +33547,20 @@ Ext.define('App.view.patient.windows.Medical', {
 						});
 					}
 				});
-			} else {
-				Ext.Msg.show({
-					title  : 'Oops!',
-					msg    : i18n['nothing_to_sign'],
+			}
+			else
+			{
+				Ext.Msg.show(
+				{
+					title : 'Oops!',
+					msg : i18n['nothing_to_sign'],
 					//buttons:Ext.Msg.OKCANCEL,
-					buttons: Ext.Msg.OK,
-					icon   : Ext.Msg.ERROR,
-					fn     : function(btn) {
-						if(btn == 'ok') {
+					buttons : Ext.Msg.OK,
+					icon : Ext.Msg.ERROR,
+					fn : function(btn)
+					{
+						if (btn == 'ok')
+						{
 							//me.onLabResultsSign();
 						}
 					}
@@ -32982,97 +33570,122 @@ Ext.define('App.view.patient.windows.Medical', {
 		}
 	},
 
-	onLabResultsSave: function(btn) {
-		var me = this,
-			form = btn.up('form').getForm(),
-			dataView = me.query('[action="lalboratoryresultsdataview"]')[0],
-			store = dataView.store,
-			values = form.getValues(),
-			record = dataView.getSelectionModel().getLastSelected();
+	onLabResultsSave : function(btn)
+	{
+		var me = this, form = btn.up('form').getForm(), dataView = me.query('[action="lalboratoryresultsdataview"]')[0], store = dataView.store, values = form.getValues(), record = dataView.getSelectionModel().getLastSelected();
 
-		if(form.isValid()) {
-			Medical.updatePatientLabsResult(values, function() {
-				store.load({params: {parent_id: record.data.parent_id}});
+		if (form.isValid())
+		{
+			Medical.updatePatientLabsResult(values, function()
+			{
+				store.load(
+				{
+					params :
+					{
+						parent_id : record.data.parent_id
+					}
+				});
 				form.reset();
 			});
 		}
 	},
 
-
-	addNewLabResults: function(docId) {
-		var me = this,
-			dataView = me.query('[action="lalboratoryresultsdataview"]')[0],
-			store = dataView.store,
-			params = {
-				parent_id  : me.currLabPanelId,
-				document_id: docId
-			};
-		Medical.addPatientLabsResult(params, function(provider, response) {
-			store.load({params: {parent_id: me.currLabPanelId}});
+	addNewLabResults : function(docId)
+	{
+		var me = this, dataView = me.query('[action="lalboratoryresultsdataview"]')[0], store = dataView.store, params =
+		{
+			parent_id : me.currLabPanelId,
+			document_id : docId
+		};
+		Medical.addPatientLabsResult(params, function(provider, response)
+		{
+			store.load(
+			{
+				params :
+				{
+					parent_id : me.currLabPanelId
+				}
+			});
 
 		});
 	},
 
-	onReviewed: function(btn) {
-		var me = this,
-			BtnId = btn.itemId,
-			params = {
-				eid : app.patient.eid,
-				area: BtnId
-			};
+	onReviewed : function(btn)
+	{
+		var me = this, BtnId = btn.itemId, params =
+		{
+			eid : app.patient.eid,
+			area : BtnId
+		};
 
-		Medical.reviewMedicalWindowEncounter(params, function(provider, response) {
+		Medical.reviewMedicalWindowEncounter(params, function(provider, response)
+		{
 			me.msg('Sweet!', i18n['succefully_reviewed']);
 		});
 	},
 
-	onLabResultsReset: function(btn) {
+	onLabResultsReset : function(btn)
+	{
 		var form = btn.up('form').getForm();
 		form.reset();
 	},
 
-	getLabDocument: function(src) {
+	getLabDocument : function(src)
+	{
 		var panel = this.query('[action="labPreviewPanel"]')[0];
 		panel.remove(this.doc);
-		panel.add(this.doc = Ext.create('App.classes.ManagedIframe', {src: src}));
+		panel.add(this.doc = Ext.create('App.classes.ManagedIframe',
+		{
+			src : src
+		}));
 	},
 
-	removeLabDocument: function(src) {
+	removeLabDocument : function(src)
+	{
 		var panel = this.query('[action="labPreviewPanel"]')[0];
 		panel.remove(this.doc);
 	},
 
 	//*********************************************************
 
-	onLiveSearchSelect: function(combo, model) {
+	onLiveSearchSelect : function(combo, model)
+	{
 
-		var me = this,
-			field, field2, id;
-		if(combo.action == 'immunizations') {
-			id = model[0].data.id;
+		var me = this, field, field2, id;
+		if (combo.action == 'immunizations')
+		{
+			id = model[0].data.code;
 			field = combo.up('container').query('[action="idField"]')[0];
 			field.setValue(id);
 		}
-		else if(combo.id == 'allergie_name' || combo.id == 'drug_name') {
+		else
+		if (combo.id == 'allergie_name' || combo.id == 'drug_name')
+		{
 			id = model[0].data.id;
 			field = combo.up('fieldcontainer').query('[action="idField"]')[0];
 			field.setValue(id);
 
 		}
-		else if(combo.action == 'medicalissues') {
+		else
+		if (combo.action == 'medicalissues')
+		{
 			id = model[0].data.code;
 			field = combo.up('fieldcontainer').query('[action="idField"]')[0];
 			field2 = combo.up('fieldcontainer').query('[action="medicalissues"]')[0];
 			field.setValue(id);
 			field2.setValue(model[0].data.code_text);
 		}
-		else if(combo.action == 'surgery') {
+		else
+		if (combo.action == 'surgery')
+		{
 			id = model[0].data.id;
 			field = combo.up('fieldcontainer').query('[action="idField"]')[0];
 			field.setValue(id);
 
 		}
-		else if(combo.action == 'medication') {
+		else
+		if (combo.action == 'medication')
+		{
 			id = model[0].data.id;
 			field = combo.up('fieldcontainer').query('[action="idField"]')[0];
 			field.setValue(id);
@@ -33080,59 +33693,83 @@ Ext.define('App.view.patient.windows.Medical', {
 
 	},
 
-	onAddItem       : function() {
+	onAddItem : function()
+	{
 
-		var me = this, grid = this.getLayout().getActiveItem(), store = grid.store,
-			params;
+		var me = this, grid = this.getLayout().getActiveItem(), store = grid.store, params;
 
 		grid.editingPlugin.cancelEdit();
-		store.insert(0, {
-			created_uid: app.user.id,
-			pid        : app.patient.pid,
-			create_date: new Date(),
-			eid        : app.patient.eid,
+		store.insert(0,
+		{
+			created_uid : app.user.id,
+			pid : app.patient.pid,
+			create_date : new Date(),
+			eid : app.patient.eid,
 			begin_date : new Date()
 
 		});
 		grid.editingPlugin.startEdit(0, 0);
-		if(app.patient.eid != null) {
-			if(grid.action == 'patientImmuListGrid') {
-				params = {
+		if (app.patient.eid != null)
+		{
+			if (grid.action == 'patientImmuListGrid')
+			{
+				params =
+				{
 					eid : app.patient.eid,
-					area: 'review_immunizations'
+					area : 'review_immunizations'
 				};
-			} else if(grid.action == 'patientAllergiesListGrid') {
-				params = {
+			}
+			else
+			if (grid.action == 'patientAllergiesListGrid')
+			{
+				params =
+				{
 					eid : app.patient.eid,
-					area: 'review_allergies'
+					area : 'review_allergies'
 				};
-			} else if(grid.action == 'patientMedicalListGrid') {
-				params = {
+			}
+			else
+			if (grid.action == 'patientMedicalListGrid')
+			{
+				params =
+				{
 					eid : app.patient.eid,
-					area: 'review_active_problems'
+					area : 'review_active_problems'
 				};
-			} else if(grid.action == 'patientSurgeryListGrid') {
-				params = {
+			}
+			else
+			if (grid.action == 'patientSurgeryListGrid')
+			{
+				params =
+				{
 					eid : app.patient.eid,
-					area: 'review_surgery'
+					area : 'review_surgery'
 				};
-			} else if(grid.action == 'patientDentalListGrid') {
-				params = {
+			}
+			else
+			if (grid.action == 'patientDentalListGrid')
+			{
+				params =
+				{
 					eid : app.patient.eid,
-					area: 'review_dental'
+					area : 'review_dental'
 				};
-			} else if(grid.action == 'patientMedicationsListGrid') {
-				params = {
+			}
+			else
+			if (grid.action == 'patientMedicationsListGrid')
+			{
+				params =
+				{
 					eid : app.patient.eid,
-					area: 'review_medications'
+					area : 'review_medications'
 				};
 			}
 			Medical.reviewMedicalWindowEncounter(params);
 		}
 
-
 	},
-	hideall         : function(combo, skinCombo, localCombo, abdominalCombo, systemicCombo) {
+	hideall : function(combo, skinCombo, localCombo, abdominalCombo, systemicCombo)
+	{
 
 		skinCombo.hide(true);
 		skinCombo.setDisabled(true);
@@ -33148,111 +33785,146 @@ Ext.define('App.view.patient.windows.Medical', {
 		systemicCombo.reset();
 
 	},
-	onLocationSelect: function(combo, record) {
-		var me = this,
-			skinCombo = combo.up('form').getForm().findField('skinreaction'),
-			localCombo = combo.up('form').getForm().findField('localreaction'),
-			abdominalCombo = combo.up('form').getForm().findField('abdominalreaction'),
-			systemicCombo = combo.up('form').getForm().findField('systemicreaction'),
-			value = combo.getValue();
+	onLocationSelect : function(combo, record)
+	{
+		var me = this, skinCombo = combo.up('form').getForm().findField('skinreaction'), localCombo = combo.up('form').getForm().findField('localreaction'), abdominalCombo = combo.up('form').getForm().findField('abdominalreaction'), systemicCombo = combo.up('form').getForm().findField('systemicreaction'), value = combo.getValue();
 
 		me.hideall(combo, skinCombo, localCombo, abdominalCombo, systemicCombo);
-		if(value == 'Skin') {
+		if (value == 'Skin')
+		{
 			skinCombo.show(true);
 			skinCombo.setDisabled(false);
-		} else if(value == 'Local') {
+		}
+		else
+		if (value == 'Local')
+		{
 			localCombo.show(true);
 			localCombo.setDisabled(false);
-		} else if(value == 'Abdominal') {
+		}
+		else
+		if (value == 'Abdominal')
+		{
 			abdominalCombo.show(true);
 			abdominalCombo.setDisabled(false);
-		} else if(value == 'Systemic / Anaphylactic') {
+		}
+		else
+		if (value == 'Systemic / Anaphylactic')
+		{
 			systemicCombo.show(true);
 			systemicCombo.setDisabled(false);
 
 		}
 	},
 
-
-	disableFieldLogic: function(field, newValue) {
+	disableFieldLogic : function(field, newValue)
+	{
 		field.setDisabled((newValue == '' || newValue == null));
 	},
 
-	onAllergyTypeSelect: function(combo, record) {
-		var me = this,
-			allergyCombo = combo.up('form').getForm().findField('allergie_name'),
-			drugLiveSearch = combo.up('form').getForm().findField('drug_name');
+	onAllergyTypeSelect : function(combo, record)
+	{
+		var me = this, allergyCombo = combo.up('form').getForm().findField('allergie_name'), drugLiveSearch = combo.up('form').getForm().findField('drug_name');
 
-		if(record[0].data.allergy_type == 'Drug'){
+		if (record[0].data.allergy_type == 'Drug')
+		{
 			allergyCombo.hide(true);
 			allergyCombo.setDisabled(true);
 			allergyCombo.reset();
 			drugLiveSearch.show(true);
 			drugLiveSearch.setDisabled(false);
 		}
-		else if(record[0].data.allergy_type == '' || record[0].data.allergy_type == null) {
+		else
+		if (record[0].data.allergy_type == '' || record[0].data.allergy_type == null)
+		{
 			allergyCombo.setDisabled(true);
 			drugLiveSearch.hide(true);
 			drugLiveSearch.setDisabled(true);
 			allergyCombo.show(true);
 		}
-		else {
+		else
+		{
 			drugLiveSearch.hide(true);
 			drugLiveSearch.setDisabled(true);
 			allergyCombo.show(true);
 			allergyCombo.setDisabled(false);
 			allergyCombo.reset();
-			allergyCombo.store.load({params: {allergy_type: record[0].data.allergy_type}})
+			allergyCombo.store.load(
+			{
+				params :
+				{
+					allergy_type : record[0].data.allergy_type
+				}
+			})
 		}
 
-
 	},
-	setDefaults: function(options) {
+	setDefaults : function(options)
+	{
 		var data;
 
-		if(options.update) {
+		if (options.update)
+		{
 			data = options.update[0].data;
 			data.updated_uid = app.user.id;
-		} else if(options.create) {
+		}
+		else
+		if (options.create)
+		{
 
 		}
 	},
 
-	cardSwitch: function(btn) {
-		var me = this,
-			layout = me.getLayout(),
-			addBtn = me.down('toolbar').query('[action="AddRecord"]')[0],
-			p = app.patient,
-			title;
+	cardSwitch : function(btn)
+	{
+		var me = this, layout = me.getLayout(), addBtn = me.down('toolbar').query('[action="AddRecord"]')[0], p = app.patient, title;
 
 		me.pid = p.pid;
 		addBtn.show();
 
-		if(btn.action == 'immunization') {
+		if (btn.action == 'immunization')
+		{
 			layout.setActiveItem(0);
 			title = 'Immunizations';
 
-		} else if(btn.action == 'allergies') {
+		}
+		else
+		if (btn.action == 'allergies')
+		{
 			layout.setActiveItem(1);
 			title = 'Allergies';
 
-		} else if(btn.action == 'issues') {
+		}
+		else
+		if (btn.action == 'issues')
+		{
 			layout.setActiveItem(2);
 			title = 'Medical Issues';
 
-		} else if(btn.action == 'surgery') {
+		}
+		else
+		if (btn.action == 'surgery')
+		{
 			layout.setActiveItem(3);
 			title = 'Surgeries';
 
-		} else if(btn.action == 'dental') {
+		}
+		else
+		if (btn.action == 'dental')
+		{
 			layout.setActiveItem(4);
 			title = 'Dentals';
 
-		} else if(btn.action == 'medications') {
+		}
+		else
+		if (btn.action == 'medications')
+		{
 			layout.setActiveItem(5);
 			title = 'Medications';
 
-		} else if(btn.action == 'laboratories') {
+		}
+		else
+		if (btn.action == 'laboratories')
+		{
 			layout.setActiveItem(6);
 			title = 'Laboratories';
 			addBtn.hide();
@@ -33262,38 +33934,74 @@ Ext.define('App.view.patient.windows.Medical', {
 
 	},
 
-	onMedicalWinShow: function() {
-		var me = this,
-			reviewBts = me.query('button[action="review"]'),
-			p = app.patient;
+	onMedicalWinShow : function()
+	{
+		var me = this, reviewBts = me.query('button[action="review"]'), p = app.patient;
 
 		me.pid = p.pid;
 		me.setTitle(p.name + (p.readOnly ? ' <span style="color:red">[' + i18n['read_mode'] + ']</span>' : ''));
 		me.setReadOnly(app.patient.readOnly);
-		for(var i = 0; i < reviewBts.length; i++) {
+		for (var i = 0; i < reviewBts.length; i++)
+		{
 			reviewBts[i].setVisible((app.patient.eid != null));
 		}
 		me.labPanelsStore.load();
-		me.patientImmuListStore.load({params: {pid: app.patient.pid}});
-		me.patientAllergiesListStore.load({params: {pid: app.patient.pid}});
-		me.patientMedicalIssuesStore.load({params: {pid: app.patient.pid}});
-		me.patientSurgeryStore.load({params: {pid: app.patient.pid}});
-		me.patientDentalStore.load({params: {pid: app.patient.pid}});
-		me.patientMedicationsStore.load({params: {pid: app.patient.pid}});
+		me.patientImmuListStore.load(
+		{
+			params :
+			{
+				pid : app.patient.pid
+			}
+		});
+		me.patientAllergiesListStore.load(
+		{
+			params :
+			{
+				pid : app.patient.pid
+			}
+		});
+		me.patientMedicalIssuesStore.load(
+		{
+			params :
+			{
+				pid : app.patient.pid
+			}
+		});
+		me.patientSurgeryStore.load(
+		{
+			params :
+			{
+				pid : app.patient.pid
+			}
+		});
+		me.patientDentalStore.load(
+		{
+			params :
+			{
+				pid : app.patient.pid
+			}
+		});
+		me.patientMedicationsStore.load(
+		{
+			params :
+			{
+				pid : app.patient.pid
+			}
+		});
 
-    },
+	},
 
-    onMedicalWinClose:function(){
-        if(app.currCardCmp.id == 'panelSummary'){
+	onMedicalWinClose : function()
+	{
+		if (app.currCardCmp.id == 'panelSummary')
+		{
 
-            app.currCardCmp.loadStores();
+			app.currCardCmp.loadStores();
 
-        }
+		}
 
-    }
-
-
-});
+	}
+}); 
 //******************************************************************************
 // new.ejs.php
 // New Patient Entry Form
@@ -33771,419 +34479,487 @@ Ext.define('App.view.patient.VisitCheckout', {
 // Modified:
 // GaiaEHR (Electronic Health Records) 2011
 //******************************************************************************
-Ext.define('App.view.fees.Billing', {
-	extend       : 'App.classes.RenderPanel',
-	id           : 'panelBilling',
-	pageTitle    : i18n['billing'],
-	uses         : [ 'App.classes.GridPanel' ],
-	pageLayout   : 'card',
-	initComponent: function() {
+Ext.define('App.view.fees.Billing',
+{
+	extend : 'App.classes.RenderPanel',
+	id : 'panelBilling',
+	pageTitle : i18n['billing'],
+	uses : ['App.classes.GridPanel'],
+	pageLayout : 'card',
+	initComponent : function()
+	{
 		var me = this;
 		me.paymentstatus = 1;
 		me.patient = null;
 		me.pastDue = null;
-		me.dateRange = { start: null, limit: null };
+		me.dateRange =
+		{
+			start : null,
+			limit : null
+		};
 
 		me.patientListStore = Ext.create('App.store.fees.Billing');
 
-		me.encountersGrid = Ext.create('Ext.grid.Panel', {
-			store     : me.patientListStore,
-			selModel  : Ext.create('Ext.selection.CheckboxModel', {
-				listeners: {
-					scope          : me,
-					selectionchange: me.onSelectionChanged
+		me.encountersGrid = Ext.create('Ext.grid.Panel',
+		{
+			store : me.patientListStore,
+			selModel : Ext.create('Ext.selection.CheckboxModel',
+			{
+				listeners :
+				{
+					scope : me,
+					selectionchange : me.onSelectionChanged
 				}
 			}),
-			viewConfig: {
-				stripeRows: true
+			viewConfig :
+			{
+				stripeRows : true
 			},
-			columns   : [
+			columns : [
+			{
+				header : i18n['service_date'],
+				dataIndex : 'start_date',
+				width : 200
+			},
+			{
+				header : i18n['patient'],
+				dataIndex : 'patientName',
+				width : 200
+			},
+			{
+				header : i18n['primary_provider'],
+				dataIndex : 'primaryProvider',
+				width : 200
+			},
+			{
+				header : i18n['encounter_provider'],
+				dataIndex : 'encounterProvider',
+				flex : 1
+			},
+			{
+				header : i18n['insurance'],
+				dataIndex : 'insurance',
+				width : 200
+			},
+			{
+				header : i18n['billing_stage'],
+				dataIndex : 'billing_stage',
+				renderer : me.stage,
+				width : 135
+			}],
+			tbar : [
+			{
+				xtype : 'fieldcontainer',
+				items : [
 				{
-					header   : i18n['service_date'],
-					dataIndex: 'start_date',
-					width    : 200
+					xtype : 'displayfield',
+					fieldLabel : i18n['patient_search']
 				},
 				{
-					header   : i18n['patient'],
-					dataIndex: 'patientName',
-					width    : 200
+					xtype : 'patienlivetsearch',
+
+					width : 235,
+					margin : '0 5 0 0'
+
+				}]
+			},
+			{
+				xtype : 'fieldcontainer',
+				items : [
+				{
+					xtype : 'datefield',
+					fieldLabel : i18n['from'],
+					labelWidth : 35,
+					action : 'datefrom',
+					width : 150
 				},
 				{
-					header   : i18n['primary_provider'],
-					dataIndex: 'primaryProvider',
-					width    : 200
+					xtype : 'datefield',
+					fieldLabel : i18n['to'],
+					labelWidth : 35,
+					action : 'dateto',
+					padding : '0 5 0 0',
+					width : 150
+				}]
+			},
+			{
+				xtype : 'fieldcontainer',
+				items : [
+				{
+					xtype : 'mitos.providerscombo',
+					labelWidth : 60,
+					typeAhead : true,
+					padding : '0 5 0 5',
+
+					fieldLabel : i18n['provider'],
+					defaultValue : 'All'
+
 				},
 				{
-					header   : i18n['encounter_provider'],
-					dataIndex: 'encounterProvider',
-					flex     : 1
-				},
+					xtype : 'mitos.insurancepayertypecombo',
+					labelWidth : 60,
+					padding : '0 5 0 5',
+					fieldLabel : i18n['insurance'],
+					defaultValue : 'All'
+
+				}]
+			},
+			{
+				xtype : 'fieldcontainer',
+				items : [
 				{
-					header   : i18n['insurance'],
-					dataIndex: 'insurance',
-					width    : 200
-				},
+					xtype : 'splitbutton',
+					text : i18n['utilities'],
+					// handle a click on the button itself
+					handler : function()
+					{
+						alert("The button was clicked");
+					},
+					menu : new Ext.menu.Menu(
+					{
+						items : [
+						{
+							text : i18n['generate_x12'],
+							iconCls: 'icoReport',
+							handler : function()
+							{
+								alert("Item 1 clicked");
+							}
+						},
+						{
+							text : i18n['generate_cms1500_pdf'],
+							iconCls: 'icoReport',
+							handler : function()
+							{
+								alert("Item 2 clicked");
+							}
+						},
+						{
+							text : i18n['generate_cms1500_text'],
+							iconCls: 'icoReport',
+							handler : function()
+							{
+								alert("Item 2 clicked");
+							}
+						}]
+					})
+				}]
+			}, '->',
+			{
+				xtype : 'tbtext',
+				text : i18n['past_due'] + ':'
+			},
+			{
+				text : '30+',
+				enableToggle : true,
+				action : 30,
+				toggleGroup : 'pastduedates',
+				enableKeyEvents : true,
+				scale : 'large',
+				listeners :
 				{
-					header   : i18n['billing_stage'],
-					dataIndex: 'billing_stage',
-					renderer : me.stage,
-					width    : 135
+					scope : me,
+					click : me.onBtnClicked
 				}
-			],
-			tbar      : [
+			},
+			{
+				text : '60+',
+				enableToggle : true,
+				action : 60,
+				scale : 'large',
+				toggleGroup : 'pastduedates',
+				listeners :
 				{
-					xtype: 'fieldcontainer',
-					items: [
-						{
-							xtype     : 'displayfield',
-							fieldLabel: i18n['patient_search']
-						},
-						{
-							xtype: 'patienlivetsearch',
-
-							width : 235,
-							margin: '0 5 0 0'
-
-						}
-					]
-				},
-				{
-					xtype: 'fieldcontainer',
-					items: [
-						{
-							xtype     : 'datefield',
-							fieldLabel: i18n['from'],
-							labelWidth: 35,
-							action    : 'datefrom',
-							width     : 150
-						},
-						{
-							xtype     : 'datefield',
-							fieldLabel: i18n['to'],
-							labelWidth: 35,
-							action    : 'dateto',
-							padding   : '0 5 0 0',
-							width     : 150
-						}
-					]
-				},
-				{
-					xtype: 'fieldcontainer',
-					items: [
-						{
-							xtype     : 'mitos.providerscombo',
-							labelWidth: 60,
-							typeAhead : true,
-							padding   : '0 5 0 5',
-
-							fieldLabel  : i18n['provider'],
-							defaultValue: 'All'
-
-						},
-						{
-							xtype       : 'mitos.insurancepayertypecombo',
-							labelWidth  : 60,
-							padding     : '0 5 0 5',
-							fieldLabel  : i18n['insurance'],
-							defaultValue: 'All'
-
-
-						}
-					]
-				},
-				'->',
-				{
-					xtype: 'tbtext',
-					text : i18n['past_due'] + ':'
-				},
-				{
-					text           : '30+',
-					enableToggle   : true,
-					action         : 30,
-					toggleGroup    : 'pastduedates',
-					enableKeyEvents: true,
-					scale          : 'large',
-					listeners      : {
-						scope: me,
-						click: me.onBtnClicked
-					}
-				},
-				{
-					text        : '60+',
-					enableToggle: true,
-					action      : 60,
-					scale       : 'large',
-					toggleGroup : 'pastduedates',
-					listeners   : {
-						scope: me,
-						click: me.onBtnClicked
-					}
-				},
-				{
-					text        : '120+',
-					enableToggle: true,
-					action      : 120,
-					scale       : 'large',
-					toggleGroup : 'pastduedates',
-					listeners   : {
-						scope: me,
-						click: me.onBtnClicked
-					}
-				},
-				{
-					text        : '180+',
-					enableToggle: true,
-					action      : 180,
-					scale       : 'large',
-					toggleGroup : 'pastduedates',
-					listeners   : {
-						scope: me,
-						click: me.onBtnClicked
-					}
+					scope : me,
+					click : me.onBtnClicked
 				}
-			],
-			listeners : {
-				scope       : me,
-				itemdblclick: me.rowDblClicked
+			},
+			{
+				text : '120+',
+				enableToggle : true,
+				action : 120,
+				scale : 'large',
+				toggleGroup : 'pastduedates',
+				listeners :
+				{
+					scope : me,
+					click : me.onBtnClicked
+				}
+			},
+			{
+				text : '180+',
+				enableToggle : true,
+				action : 180,
+				scale : 'large',
+				toggleGroup : 'pastduedates',
+				listeners :
+				{
+					scope : me,
+					click : me.onBtnClicked
+				}
+			}],
+			listeners :
+			{
+				scope : me,
+				itemdblclick : me.rowDblClicked
 			}
 		});
 
-		me.encounterBillingDetails = Ext.create('Ext.panel.Panel', {
-			defaultTitle: i18n['encounter_billing_details'],
-			title       : i18n['encounter_billing_details'],
-			layout      : 'border',
-			bodyStyle   : 'background-color:#fff',
-			items       : [
-				Ext.create('Ext.container.Container', {
-					region: 'center',
-					layout: 'border',
-					style : 'background-color:#fff',
+		me.encounterBillingDetails = Ext.create('Ext.panel.Panel',
+		{
+			defaultTitle : i18n['encounter_billing_details'],
+			title : i18n['encounter_billing_details'],
+			layout : 'border',
+			bodyStyle : 'background-color:#fff',
+			items : [Ext.create('Ext.container.Container',
+			{
+				region : 'center',
+				layout : 'border',
+				style : 'background-color:#fff',
+				items : [me.icdForm = Ext.create('Ext.form.Panel',
+				{
+					region : 'north',
+					border : false,
 					items : [
-						me.icdForm = Ext.create('Ext.form.Panel', {
-							region: 'north',
-							border: false,
+					{
+						xtype : 'fieldset',
+						title : i18n['encounter_general_info'],
+						margin : '5 5 0 5',
+						items : [
+						{
+							xtype : 'fieldcontainer',
+							layout :
+							{
+								type : 'hbox'
+							},
+							defaults :
+							{
+								margin : '0 10'
+							},
+							hideLabel : true,
 							items : [
-								{
-									xtype : 'fieldset',
-									title : i18n['encounter_general_info'],
-									margin: '5 5 0 5',
-									items : [
-										{
-											xtype    : 'fieldcontainer',
-											layout   : {
-												type: 'hbox'
-											},
-											defaults : {
-												margin: '0 10'
-											},
-											hideLabel: true,
-											items    : [
-												{
-													xtype     : 'textfield',
-													name      : 'service_date',
-													fieldLabel: i18n['service_date'],
-													labelAlign: 'right',
-													labelWidth: 80
-												},
-												{
-													xtype     : 'textfield',
-													name      : 'insurance',
-													fieldLabel: i18n['insurance'],
-													labelAlign: 'right'
-												},
-												{
-													xtype     : 'textfield',
-													name      : 'facility',
-													fieldLabel: i18n['facillity'],
-													labelAlign: 'right',
-													labelWidth: 60,
-													flex      : 1
-												}
-											]
-										},
-										{
-											xtype    : 'fieldcontainer',
-											layout   : {
-												type: 'hbox'
-											},
-											defaults : {
-												margin: '0 10'
-											},
-											hideLabel: true,
-											items    : [
-												{
-													xtype     : 'textfield',
-													name      : 'hosp_date',
-													fieldLabel: i18n['hosp_date'],
-													labelAlign: 'right',
-													labelWidth: 80
-												},
-												{
-													xtype     : 'textfield',
-													name      : 'sec_insurance',
-													fieldLabel: i18n['sec_insurance'],
-													labelAlign: 'right'
-												},
-												{
-													xtype     : 'textfield',
-													name      : 'provider',
-													fieldLabel: i18n['provider'],
-													labelAlign: 'right',
-													labelWidth: 60,
-													flex      : 1
-												}
-											]
-										},
-										{
-											xtype    : 'fieldcontainer',
-											layout   : {
-												type: 'hbox'
-											},
-											defaults : {
-												margin: '0 10'
-											},
-											hideLabel: true,
-											items    : [
-												{
-													xtype     : 'textfield',
-													name      : 'authorization',
-													fieldLabel: i18n['authorization'],
-													labelAlign: 'right',
-													labelWidth: 80
-												},
-												{
-													xtype     : 'textfield',
-													name      : 'sec_authorization',
-													fieldLabel: i18n['sec_authorization'],
-													labelAlign: 'right'
-												},
-												{
-													xtype     : 'textfield',
-													name      : 'referal_by',
-													fieldLabel: i18n['referal_by'],
-													labelAlign: 'right',
-													labelWidth: 60,
-													flex      : 1
-												}
-											]
-										}
-									]
-								},
-								{
-									xtype : 'icdsfieldset',
-									title : i18n['encounter_icd9'],
-									margin: '5 5 0 5'
-								}
-							]
-						}), me.cptPanel = Ext.create('App.view.patient.encounter.CurrentProceduralTerminology', {
-							region: 'center'
-						})
-					]
-				}),
-
-				me.progressNote = Ext.create('App.view.patient.ProgressNote', {
-					title       : i18n['encounter_progress_note'],
-					region      : 'east',
-					margin      : 5,
-					bodyStyle   : 'padding:15px',
-					width       : 500,
-					autoScroll  : true,
-					collapsible : true,
-					animCollapse: true,
-					collapsed   : false
-				})
-			],
-			buttons     : [
+							{
+								xtype : 'textfield',
+								name : 'service_date',
+								fieldLabel : i18n['service_date'],
+								labelAlign : 'right',
+								labelWidth : 80
+							},
+							{
+								xtype : 'textfield',
+								name : 'insurance',
+								fieldLabel : i18n['insurance'],
+								labelAlign : 'right'
+							},
+							{
+								xtype : 'textfield',
+								name : 'facility',
+								fieldLabel : i18n['facillity'],
+								labelAlign : 'right',
+								labelWidth : 60,
+								flex : 1
+							}]
+						},
+						{
+							xtype : 'fieldcontainer',
+							layout :
+							{
+								type : 'hbox'
+							},
+							defaults :
+							{
+								margin : '0 10'
+							},
+							hideLabel : true,
+							items : [
+							{
+								xtype : 'textfield',
+								name : 'hosp_date',
+								fieldLabel : i18n['hosp_date'],
+								labelAlign : 'right',
+								labelWidth : 80
+							},
+							{
+								xtype : 'textfield',
+								name : 'sec_insurance',
+								fieldLabel : i18n['sec_insurance'],
+								labelAlign : 'right'
+							},
+							{
+								xtype : 'textfield',
+								name : 'provider',
+								fieldLabel : i18n['provider'],
+								labelAlign : 'right',
+								labelWidth : 60,
+								flex : 1
+							}]
+						},
+						{
+							xtype : 'fieldcontainer',
+							layout :
+							{
+								type : 'hbox'
+							},
+							defaults :
+							{
+								margin : '0 10'
+							},
+							hideLabel : true,
+							items : [
+							{
+								xtype : 'textfield',
+								name : 'authorization',
+								fieldLabel : i18n['authorization'],
+								labelAlign : 'right',
+								labelWidth : 80
+							},
+							{
+								xtype : 'textfield',
+								name : 'sec_authorization',
+								fieldLabel : i18n['sec_authorization'],
+								labelAlign : 'right'
+							},
+							{
+								xtype : 'textfield',
+								name : 'referal_by',
+								fieldLabel : i18n['referal_by'],
+								labelAlign : 'right',
+								labelWidth : 60,
+								flex : 1
+							}]
+						}]
+					},
+					{
+						xtype : 'icdsfieldset',
+						title : i18n['encounter_icd9'],
+						margin : '5 5 0 5'
+					}]
+				}), me.cptPanel = Ext.create('App.view.patient.encounter.CurrentProceduralTerminology',
 				{
-					text   : i18n['encounters'],
-					scope  : me,
-					action : 'encounters',
-					tooltip: i18n['back_to_encounter_list'],
-					handler: me.onBtnCancel
-				},
-				'->',
-				{
-					xtype : 'tbtext',
-					action: 'page',
-					text  : '( 1 of 1 )'
-				},
-				{
-					text   : '<<<  ' + i18n['back'],
-					scope  : me,
-					action : 'back',
-					tooltip: i18n['previous_encounter_details'],
-					handler: me.onBtnBack
-				},
-				{
-					text   : i18n['save'],
-					scope  : me,
-					action : 'save',
-					tooltip: i18n['save_billing_details'],
-					handler: me.onBtnSave
-				},
-
-				{
-					text   : i18n['cancel'],
-					scope  : me,
-					action : 'cancel',
-					tooltip: i18n['cancel_and_go_back_to_encounter_list'],
-					handler: me.onBtnCancel
-				},
-				{
-					text   : i18n['next'] + '  >>>',
-					scope  : me,
-					action : 'next',
-					tooltip: i18n['next_encounter_details'],
-					handler: me.onBtnNext
-				}
-			]
+					region : 'center'
+				})]
+			}), me.progressNote = Ext.create('App.view.patient.ProgressNote',
+			{
+				title : i18n['encounter_progress_note'],
+				region : 'east',
+				margin : 5,
+				bodyStyle : 'padding:15px',
+				width : 500,
+				autoScroll : true,
+				collapsible : true,
+				animCollapse : true,
+				collapsed : false
+			})],
+			buttons : [
+			{
+				text : i18n['encounters'],
+				scope : me,
+				action : 'encounters',
+				tooltip : i18n['back_to_encounter_list'],
+				handler : me.onBtnCancel
+			}, '->',
+			{
+				xtype : 'tbtext',
+				action : 'page',
+				text : '( 1 of 1 )'
+			},
+			{
+				text : i18n['back'],
+				scope : me,
+				action : 'back',
+                iconCls:'icoArrowLeftSmall',
+				tooltip : i18n['previous_encounter_details'],
+				handler : me.onBtnBack
+			},
+			{
+				text : i18n['save'],
+				scope : me,
+				action : 'save',
+				tooltip : i18n['save_billing_details'],
+				handler : me.onBtnSave
+			},
+			{
+				text : i18n['cancel'],
+				scope : me,
+				action : 'cancel',
+				tooltip : i18n['cancel_and_go_back_to_encounter_list'],
+				handler : me.onBtnCancel
+			},
+			{
+				text : i18n['next'],
+				scope : me,
+				action : 'next',
+                iconCls:'icoArrowRightSmall',
+                iconAlign:'right',
+				tooltip : i18n['next_encounter_details'],
+				handler : me.onBtnNext
+			}]
 		});
 
-		me.pageBody = [ me.encountersGrid, me.encounterBillingDetails ];
+		me.pageBody = [me.encountersGrid, me.encounterBillingDetails];
 		me.callParent(arguments);
 	}, // end of initComponent
 
-
-	stage: function(val) {
-		if(val == '1') {
+	stage : function(val)
+	{
+		if (val == '1')
+		{
 			return '<img src="resources/images/icons/stage1.png" />';
-		} else if(val == '2') {
+		}
+		else
+		if (val == '2')
+		{
 			return '<img src="resources/images/icons/stage2.png" />';
-		} else if(val == '3') {
+		}
+		else
+		if (val == '3')
+		{
 			return '<img src="resources/images/icons/stage3.png" />';
-		} else if(val == '4') {
+		}
+		else
+		if (val == '4')
+		{
 			return '<img src="resources/images/icons/stage4.png" />';
 		}
 		return val;
 	},
 
-	onBtnClicked: function(btn) {
+	onBtnClicked : function(btn)
+	{
 		var datefrom = this.query('datefield[action="datefrom"]'), dateto = this.query('datefield[action="dateto"]');
-		if(btn.pressed) {
+		if (btn.pressed)
+		{
 			datefrom[0].reset();
 			dateto[0].reset();
 			this.pastDue = btn.action;
-		} else {
+		}
+		else
+		{
 			this.pastDue = 0;
 		}
 		this.reloadGrid();
 
 	},
 
-	rowDblClicked: function() {
+	rowDblClicked : function()
+	{
 		this.goToEncounterBillingDetail();
 	},
 
-	goToEncounterBillingDetail: function() {
+	goToEncounterBillingDetail : function()
+	{
 		this.getPageBody().getLayout().setActiveItem(1);
 	},
 
-	goToEncounterList: function() {
+	goToEncounterList : function()
+	{
 		this.getPageBody().getLayout().setActiveItem(0);
 	},
 
-	onSelectionChanged: function(sm, model) {
-		if(model[0]) {
+	onSelectionChanged : function(sm, model)
+	{
+		if (model[0])
+		{
 			var me = this, title = me.encounterBillingDetails.defaultTitle, backbtn = me.encounterBillingDetails.query('button[action="back"]'), nextBtn = me.encounterBillingDetails.query('button[action="next"]'), pageInfo = me.encounterBillingDetails.query('tbtext[action="page"]'), rowIndex = model[0].index;
 
 			me.pid = model[0].data.pid;
@@ -34194,71 +34970,89 @@ Ext.define('App.view.fees.Billing', {
 
 			me.getEncounterIcds();
 
-			me.cptPanel.encounterCptStoreLoad(me.pid, me.eid, function() {
+			me.cptPanel.encounterCptStoreLoad(me.pid, me.eid, function()
+			{
 				me.cptPanel.setDefaultQRCptCodes();
 			});
 
-			pageInfo[0].setText( '( ' + i18n['page'] + ' (rowIndex + 1) of ' + sm.store.data.length + ' )' );
+			pageInfo[0].setText('( ' + i18n['page'] + ' ' + (rowIndex + 1) + ' of ' + sm.store.data.length + ' )');
 			nextBtn[0].setDisabled(rowIndex == sm.store.data.length - 1);
 			backbtn[0].setDisabled(rowIndex == 0);
 		}
 	},
 
-	onBtnCancel: function() {
+	onBtnCancel : function()
+	{
 		this.getPageBody().getLayout().setActiveItem(0);
 	},
 
-	onBtnBack: function() {
+	onBtnBack : function()
+	{
 		var sm = this.encountersGrid.getSelectionModel(), currRowIndex = sm.getLastSelected().index, prevRowindex = currRowIndex - 1;
 		sm.select(prevRowindex);
 	},
 
-	onBtnNext: function() {
+	onBtnNext : function()
+	{
 		var sm = this.encountersGrid.getSelectionModel(), currRowIndex = sm.getLastSelected().index, nextRowindex = currRowIndex + 1;
 		sm.select(nextRowindex);
 	},
 
-	onBtnSave: function() {
+	onBtnSave : function()
+	{
 		var me = this, form = me.icdForm.getForm(), values = form.getValues();
 
 		me.updateEncounterIcds(values);
 		me.msg('Sweet!', i18n['encounter_billing_data_updated']);
 	},
 
-	getEncounterIcds: function() {
+	getEncounterIcds : function()
+	{
 		var me = this;
 
-		Encounter.getEncounterIcdxCodes({eid: me.eid}, function(provider, response) {
+		Encounter.getEncounterIcdxCodes(
+		{
+			eid : me.eid
+		}, function(provider, response)
+		{
 			me.icdForm.down('icdsfieldset').loadIcds(response.result);
 		});
 	},
 
-	updateEncounterIcds: function(data) {
+	updateEncounterIcds : function(data)
+	{
 		var me = this;
 
 		data.eid = me.eid;
 
-		Encounter.updateEncounterIcdxCodes(data, function(provider, response) {
+		Encounter.updateEncounterIcdxCodes(data, function(provider, response)
+		{
 			say(response.result);
 			return true;
 		});
 	},
 
-	reloadGrid: function() {
-		this.patientListStore.load({
-			params: {
-				query: {
-					patient  : this.patient,
-					pastDue  : this.pastDue,
-					dateRange: this.dateRange
+	reloadGrid : function()
+	{
+		this.patientListStore.load(
+		{
+			params :
+			{
+				query :
+				{
+					patient : this.patient,
+					pastDue : this.pastDue,
+					dateRange : this.dateRange
 				}
 			}
 		});
 	},
 
-	updateProgressNote: function(eid) {
+	updateProgressNote : function(eid)
+	{
 		var me = this;
-		Encounter.getProgressNoteByEid(eid, function(provider, response) {
+		Encounter.getProgressNoteByEid(eid, function(provider, response)
+		{
 			var data = response.result;
 			me.progressNote.tpl.overwrite(me.progressNote.body, data);
 		});
@@ -34270,11 +35064,13 @@ Ext.define('App.view.fees.Billing', {
 	 * place inside this function all the functions you want
 	 * to call every this panel becomes active
 	 */
-	onActive: function(callback) {
+	onActive : function(callback)
+	{
 		this.reloadGrid();
 		callback(true);
 	}
-}); //ens oNotesPage class
+});
+//ens oNotesPage class
 //******************************************************************************
 // new.ejs.php
 // New Patient Entry Form
@@ -34285,616 +35081,617 @@ Ext.define('App.view.fees.Billing', {
 //
 // GaiaEHR (Electronic Health Records) 2011
 //******************************************************************************
-Ext.define('App.view.fees.PaymentEntryWindow', {
-    extend:'Ext.window.Window',
-    title: i18n['add_new_payment'],
-    closeAction:'hide',
-    modal:true,
+Ext.define('App.view.fees.PaymentEntryWindow',
+{
+	extend : 'Ext.window.Window',
+	title : i18n['add_new_payment'],
+	closeAction : 'hide',
+	modal : true,
 
-    initComponent:function () {
+	initComponent : function()
+	{
 
-        var me = this;
+		var me = this;
 
-        me.items = [
-            {
-                xtype:'form',
-                defaults:{ margin:5 },
-                border:false,
-                height:163,
-                width:747,
-                items:[
-                    {
-                        xtype:'fieldcontainer',
-                        layout:'hbox',
-                        items:[
-                            {
-                                fieldLabel: i18n['paying_entity'],
-                                xtype:'mitos.payingentitycombo',
-                                name:'paying_entity',
-                                action: 'new_payment',
-                                labelWidth:98,
-                                width:220
-                            },
-                            {
-                                xtype:'patienlivetsearch',
-                                fieldLabel: i18n['from'],
-                                hideLabel:false,
-                                name:'payer_id',
-                                action: 'new_payment',
-                                anchor:null,
-                                labelWidth:42,
-                                width:300,
-                                margin:'0 0 0 25'
-                            },
-                            {
-                                xtype:'textfield',
-                                fieldLabel: i18n['no'],
-                                action: 'new_payment',
-                                name:'check_number',
-                                labelWidth:47,
-                                width:167,
-                                margin:'0 0 0 25'
-                            }
-                        ]
-                    },
-                    {
-                        xtype:'fieldcontainer',
-                        layout:'hbox',
-                        items:[
-                            {
-                                fieldLabel: i18n['payment_method'],
-                                xtype:'mitos.paymentmethodcombo',
-                                action: 'new_payment',
-                                labelWidth:98,
-                                name:'payment_method',
-                                width:220
-                            },
-                            {
-                                xtype:'mitos.billingfacilitiescombo',
-                                fieldLabel: i18n['pay_to'],
-                                action: 'new_payment',
-                                labelWidth:42,
-                                name:'pay_to',
-                                width:300,
-                                margin:'0 0 0 25'
-                            },
-                            {
-                                xtype:'mitos.currency',
-                                fieldLabel: i18n['amount'],
-                                action: 'new_payment',
-                                name:'amount',
-                                labelWidth:47,
-                                width:167,
-                                margin:'0 0 0 25',
-                                enableKeyEvents:true
-                            }
-                        ]
-                    },
-                    {
-                        fieldLabel: i18n['post_to_date'],
-                        xtype:'datefield',
-                        name:'post_to_date',
-                        action:'new_payment',
-                        format:'Y-m-d',
-                        labelWidth:98,
-                        width:220
-                    },
-                    {
-                        fieldLabel	: i18n['note'],
-                        xtype		: 'textareafield',
-                        grow		: true,
-                        action		: 'new_payment',
-                        name		:'note',
-                        labelWidth	:98,
-                        anchor		:'100%'
-                    }
-                ]
-            }
-        ];
+		me.items = [
+		{
+			xtype : 'form',
+			defaults :
+			{
+				margin : 5
+			},
+			border : false,
+			height : 163,
+			width : 747,
+			items : [
+			{
+				xtype : 'fieldcontainer',
+				layout : 'hbox',
+				items : [
+				{
+					fieldLabel : i18n['paying_entity'],
+					xtype : 'mitos.payingentitycombo',
+					name : 'paying_entity',
+					action : 'new_payment',
+					labelWidth : 98,
+					width : 220
+				},
+				{
+					xtype : 'patienlivetsearch',
+					fieldLabel : i18n['from'],
+					hideLabel : false,
+					name : 'payer_id',
+					action : 'new_payment',
+					anchor : null,
+					labelWidth : 42,
+					width : 300,
+					margin : '0 0 0 25'
+				},
+				{
+					xtype : 'textfield',
+					fieldLabel : i18n['no'],
+					action : 'new_payment',
+					name : 'check_number',
+					labelWidth : 47,
+					width : 167,
+					margin : '0 0 0 25'
+				}]
+			},
+			{
+				xtype : 'fieldcontainer',
+				layout : 'hbox',
+				items : [
+				{
+					fieldLabel : i18n['payment_method'],
+					xtype : 'mitos.paymentmethodcombo',
+					action : 'new_payment',
+					labelWidth : 98,
+					name : 'payment_method',
+					width : 220
+				},
+				{
+					xtype : 'mitos.billingfacilitiescombo',
+					fieldLabel : i18n['pay_to'],
+					action : 'new_payment',
+					labelWidth : 42,
+					name : 'pay_to',
+					width : 300,
+					margin : '0 0 0 25'
+				},
+				{
+					xtype : 'mitos.currency',
+					fieldLabel : i18n['amount'],
+					action : 'new_payment',
+					name : 'amount',
+					labelWidth : 47,
+					width : 167,
+					margin : '0 0 0 25',
+					enableKeyEvents : true
+				}]
+			},
+			{
+				fieldLabel : i18n['post_to_date'],
+				xtype : 'datefield',
+				name : 'post_to_date',
+				action : 'new_payment',
+				format : 'Y-m-d',
+				labelWidth : 98,
+				width : 220
+			},
+			{
+				fieldLabel : i18n['note'],
+				xtype : 'textareafield',
+				grow : true,
+				action : 'new_payment',
+				name : 'note',
+				labelWidth : 98,
+				anchor : '100%'
+			}]
+		}];
 
-        me.buttons = [
-            {
-                text: i18n['save'],
-                scope:me,
-                handler: me.onSave
-            },
-            '-',
-            {
-                text: i18n['reset'],
-                scope:me,
-                handler:me.resetNewPayment
-            }
-        ];
-        me.callParent(arguments);
-    },
-    onSave: function() {
-        var me = this, panel, form, values;
-        panel = me.down('form');
-        form = panel.getForm();
-        values = form.getFieldValues();
-        values.date_created = Ext.Date.format(new Date(), 'Y-m-d H:i:s');
+		me.buttons = [
+		{
+			text : i18n['save'],
+			scope : me,
+			handler : me.onSave
+		}, '-',
+		{
+			text : i18n['reset'],
+			scope : me,
+			handler : me.resetNewPayment
+		}];
+		me.callParent(arguments);
+	},
+	onSave : function()
+	{
+		var me = this, panel, form, values;
+		panel = me.down('form');
+		form = panel.getForm();
+		values = form.getFieldValues();
+		values.date_created = Ext.Date.format(new Date(), 'Y-m-d H:i:s');
 
-        if(form.isValid()) {
+		if (form.isValid())
+		{
 
-            Fees.addPayment(values, function(provider, response){
-                if(response.result.success){
-                    form.reset();
-                    me.hide();
-                }else{
-                    app.msg('Oops!', i18n['payment_entry_error'])
-                }
+			Fees.addPayment(values, function(provider, response)
+			{
+				if (response.result.success)
+				{
+					form.reset();
+					me.hide();
+				}
+				else
+				{
+					app.msg('Oops!', i18n['payment_entry_error'])
+				}
 
-            });
-        }
-    },
+			});
+		}
+	},
 
-    resetNewPayment:function () {
-        var fields = this.query('[action="new_payment"]');
-        for(var i=0; i < fields.length; i++ ){
-            fields[i].reset();
-        }
-    }
-
-
-}); //end Checkout class
+	resetNewPayment : function()
+	{
+		var fields = this.query('[action="new_payment"]');
+		for (var i = 0; i < fields.length; i++)
+		{
+			fields[i].reset();
+		}
+	}
+});
+//end Checkout class
 //******************************************************************************
 // new.ejs.php
 // New payments Forms
 // v0.0.1
-// 
+//
 // Author: Ernest Rodriguez
-// Modified: 
-// 
+// Modified:
+//
 // GaiaEHR (Electronic Health Records) 2011
 //******************************************************************************
-Ext.define('App.view.fees.Payments', {
-    extend:'App.classes.RenderPanel',
-    id:'panelPayments',
-    pageTitle: i18n['payments'],
-    initComponent:function () {
-        var me = this;
+Ext.define('App.view.fees.Payments',
+{
+	extend : 'App.classes.RenderPanel',
+	id : 'panelPayments',
+	pageTitle : i18n['payments'],
+	initComponent : function()
+	{
+		var me = this;
 
-        me.encountersPaymentsStore = Ext.create('App.store.fees.EncountersPayments');
+		me.encountersPaymentsStore = Ext.create('App.store.fees.EncountersPayments');
 
 		/*
 		 * Search Panel Object
 		 */
-	    me.searchPanel = Ext.create('Ext.panel.Panel',{
-		    title: i18n['search'],
-		    layout:'border',
-		    items:[
-			    {
-			        xtype:'form',
-                    height:145,
-				    region:'north',
-                    bodyPadding:10,
-                    bodyStyle:'background-color:transparent',
-                    margin:'0 0 5 0',
-                    items:[
-	                    {
-                            xtype:'fieldcontainer',
-                            layout:'hbox',
-                            items:[
-                                {
-                                    fieldLabel: i18n['paying_entity'],
-                                    xtype:'mitos.payingentitycombo',
-                                    labelWidth:95,
-                                    width:230
-                                },
-                                {
-                                    xtype:'patienlivetsearch',
-                                    fieldLabel: i18n['from'],
-                                    hideLabel:false,
-                                    itemId:'patientFrom',
-                                    name:'from',
-                                    anchor:null,
-                                    labelWidth:42,
-                                    width:470,
-                                    margin:'0 0 0 25'
-                                },
-                                {
-                                    xtype:'textfield',
-                                    fieldLabel: i18n['no'],
-                                    name:'transaction_number',
-                                    labelWidth:45,
-                                    width:230,
-                                    labelAlign:'right',
-                                    margin:'0 0 0 25',
-                                    fieldStyle:'text-align: right;'
-                                }
-
-                            ]
-                        },
-                        {
-                            xtype:'fieldcontainer',
-                            layout:'hbox',
-                            items:[
-                                {
-                                    fieldLabel: i18n['payment_method'],
-                                    xtype:'mitos.paymentmethodcombo',
-                                    labelWidth:95,
-                                    width:230
-                                },
-                                {
-                                    xtype:'mitos.billingfacilitiescombo',
-                                    fieldLabel: i18n['pay_to'],
-                                    labelWidth:42,
-                                    width:470,
-                                    margin:'0 0 0 25'
-                                },
-                                {
-                                    xtype:'mitos.currency',
-                                    fieldLabel: i18n['amount'],
-                                    name:'amount',
-                                    labelWidth:45,
-                                    width:230,
-                                    labelAlign:'right',
-                                    margin:'0 0 0 25',
-                                    enableKeyEvents:true
-                                }
-                            ]
-                        },
-                        {
-                            xtype:'fieldcontainer',
-                            layout:'hbox',
-                            items:[
-                                {
-                                    fieldLabel: i18n['from'],
-                                    xtype:'datefield',
-                                    labelWidth:95,
-                                    width:230
-                                },
-                                {
-                                    fieldLabel: i18n['to'],
-                                    xtype:'datefield',
-                                    margin:'0 0 0 25',
-                                    labelWidth:42,
-                                    width:230
-                                }
-                            ]
-                        }
-                    ],
-                    buttons:[
-                        {
-                            text: i18n['search']
-                        },
-                        '-',
-                        {
-                            text: i18n['reset']
-                        },
-                        '->',
-                        {
-                            text: i18n['add_payment'],
-                            scope: me,
-                            handler:me.onAddPaymentClick
-                        }
-                    ]
-                },
-			    {
-				    xtype:'grid',
-				    region:'center',
-	                store:me.encountersPaymentsStore,
-	                columns:[
-	                    {
-	                        header: i18n['service_date']
-	                    },
-	                    {
-	                        header: i18n['patient_name']
-	                    },
-	                    {
-	                        header: i18n['insurance']
-	                    },
-	                    {
-	                        header: i18n['billing_notes'],
-	                        flex:1
-	                    },
-	                    {
-	                        header: i18n['balance_due']
-	                    }
-	                ]
-			    }
-
-		    ]
-	    });
-
+		me.searchPanel = Ext.create('Ext.panel.Panel',
+		{
+			title : i18n['search'],
+			layout : 'border',
+			items : [
+			{
+				xtype : 'form',
+				height : 145,
+				region : 'north',
+				bodyPadding : 10,
+				bodyStyle : 'background-color:transparent',
+				margin : '0 0 5 0',
+				items : [
+				{
+					xtype : 'fieldcontainer',
+					layout : 'hbox',
+					items : [
+					{
+						fieldLabel : i18n['paying_entity'],
+						xtype : 'mitos.payingentitycombo',
+						labelWidth : 95,
+						width : 230
+					},
+					{
+						xtype : 'patienlivetsearch',
+						fieldLabel : i18n['from'],
+						hideLabel : false,
+						itemId : 'patientFrom',
+						name : 'from',
+						anchor : null,
+						labelWidth : 42,
+						width : 470,
+						margin : '0 0 0 25'
+					},
+					{
+						xtype : 'textfield',
+						fieldLabel : i18n['no'],
+						name : 'transaction_number',
+						labelWidth : 45,
+						width : 230,
+						labelAlign : 'right',
+						margin : '0 0 0 25',
+						fieldStyle : 'text-align: right;'
+					}]
+				},
+				{
+					xtype : 'fieldcontainer',
+					layout : 'hbox',
+					items : [
+					{
+						fieldLabel : i18n['payment_method'],
+						xtype : 'mitos.paymentmethodcombo',
+						labelWidth : 95,
+						width : 230
+					},
+					{
+						xtype : 'mitos.billingfacilitiescombo',
+						fieldLabel : i18n['pay_to'],
+						labelWidth : 42,
+						width : 470,
+						margin : '0 0 0 25'
+					},
+					{
+						xtype : 'mitos.currency',
+						fieldLabel : i18n['amount'],
+						name : 'amount',
+						labelWidth : 45,
+						width : 230,
+						labelAlign : 'right',
+						margin : '0 0 0 25',
+						enableKeyEvents : true
+					}]
+				},
+				{
+					xtype : 'fieldcontainer',
+					layout : 'hbox',
+					items : [
+					{
+						fieldLabel : i18n['from'],
+						xtype : 'datefield',
+						labelWidth : 95,
+						width : 230
+					},
+					{
+						fieldLabel : i18n['to'],
+						xtype : 'datefield',
+						margin : '0 0 0 25',
+						labelWidth : 42,
+						width : 230
+					}]
+				}],
+				buttons : [
+				{
+					text : i18n['search']
+				}, '-',
+				{
+					text : i18n['reset']
+				}, '->',
+				{
+					text : i18n['add_payment'],
+					scope : me,
+					handler : me.onAddPaymentClick
+				}]
+			},
+			{
+				xtype : 'grid',
+				region : 'center',
+				store : me.encountersPaymentsStore,
+				columns : [
+				{
+					header : i18n['service_date']
+				},
+				{
+					header : i18n['patient_name']
+				},
+				{
+					header : i18n['insurance']
+				},
+				{
+					header : i18n['billing_notes'],
+					flex : 1
+				},
+				{
+					header : i18n['balance_due']
+				}]
+			}]
+		});
 
 		/*
 		 * Detail Panel Object
 		 */
-	    me.detailPanel = Ext.create('Ext.panel.Panel',{
-		    title: i18n['detail'],
-		    layout:'border',
-		    items:[
-			    {
-			        xtype:'form',
-                    height:145,
-				    region:'north',
-                    bodyPadding:10,
-                    bodyStyle:'background-color:transparent',
-                    margin:'0 0 5 0',
-                    items:[
-	                    {
-                            xtype:'fieldcontainer',
-                            layout:'hbox',
-                            items:[
-                                {
-                                    fieldLabel: i18n['paying_entity'],
-                                    xtype:'mitos.payingentitycombo',
-                                    labelWidth:95,
-                                    width:230
-                                },
-                                {
-                                    xtype:'patienlivetsearch',
-                                    fieldLabel: i18n['from'],
-                                    hideLabel:false,
-                                    itemId:'patientFrom',
-                                    name:'from',
-                                    anchor:null,
-                                    labelWidth:42,
-                                    width:470,
-                                    margin:'0 0 0 25'
-                                },
-                                {
-                                    xtype:'textfield',
-                                    fieldLabel: i18n['no'],
-                                    name:'transaction_number',
-                                    labelWidth:45,
-                                    width:230,
-                                    labelAlign:'right',
-                                    margin:'0 0 0 25',
-                                    fieldStyle:'text-align: right;'
-                                }
+		me.detailPanel = Ext.create('Ext.panel.Panel',
+		{
+			title : i18n['detail'],
+			layout : 'border',
+			items : [
+			{
+				xtype : 'form',
+				height : 145,
+				region : 'north',
+				bodyPadding : 10,
+				bodyStyle : 'background-color:transparent',
+				margin : '0 0 5 0',
+				items : [
+				{
+					xtype : 'fieldcontainer',
+					layout : 'hbox',
+					items : [
+					{
+						fieldLabel : i18n['paying_entity'],
+						xtype : 'mitos.payingentitycombo',
+						labelWidth : 95,
+						width : 230
+					},
+					{
+						xtype : 'patienlivetsearch',
+						fieldLabel : i18n['from'],
+						hideLabel : false,
+						itemId : 'patientFrom',
+						name : 'from',
+						anchor : null,
+						labelWidth : 42,
+						width : 470,
+						margin : '0 0 0 25'
+					},
+					{
+						xtype : 'textfield',
+						fieldLabel : i18n['no'],
+						name : 'transaction_number',
+						labelWidth : 45,
+						width : 230,
+						labelAlign : 'right',
+						margin : '0 0 0 25',
+						fieldStyle : 'text-align: right;'
+					}]
+				},
+				{
+					xtype : 'fieldcontainer',
+					layout : 'hbox',
+					items : [
+					{
+						fieldLabel : i18n['payment_method'],
+						xtype : 'mitos.paymentmethodcombo',
+						labelWidth : 95,
+						width : 230
+					},
+					{
+						xtype : 'mitos.billingfacilitiescombo',
+						fieldLabel : i18n['pay_to'],
+						labelWidth : 42,
+						width : 470,
+						margin : '0 0 0 25'
+					},
+					{
+						xtype : 'mitos.currency',
+						fieldLabel : i18n['amount'],
+						name : 'amount',
+						labelWidth : 45,
+						width : 230,
+						labelAlign : 'right',
+						margin : '0 0 0 25',
+						enableKeyEvents : true
+					}]
+				},
+				{
+					xtype : 'fieldcontainer',
+					layout : 'hbox',
+					items : [
+					{
+						fieldLabel : i18n['from'],
+						xtype : 'datefield',
+						labelWidth : 95,
+						width : 230
+					},
+					{
+						fieldLabel : i18n['to'],
+						xtype : 'datefield',
+						margin : '0 0 0 25',
+						labelWidth : 42,
+						width : 230
+					}]
+				}],
+				buttons : [
+				{
+					text : i18n['save']
+				}, '-',
+				{
+					text : i18n['reset']
+				}, '->',
+				{
+					text : i18n['add_payment'],
+					scope : me,
+					handler : me.onAddPaymentClick
 
-                            ]
-                        },
-                        {
-                            xtype:'fieldcontainer',
-                            layout:'hbox',
-                            items:[
-                                {
-                                    fieldLabel: i18n['payment_method'],
-                                    xtype:'mitos.paymentmethodcombo',
-                                    labelWidth:95,
-                                    width:230
-                                },
-                                {
-                                    xtype:'mitos.billingfacilitiescombo',
-                                    fieldLabel: i18n['pay_to'],
-                                    labelWidth:42,
-                                    width:470,
-                                    margin:'0 0 0 25'
-                                },
-                                {
-                                    xtype:'mitos.currency',
-                                    fieldLabel: i18n['amount'],
-                                    name:'amount',
-                                    labelWidth:45,
-                                    width:230,
-                                    labelAlign:'right',
-                                    margin:'0 0 0 25',
-                                    enableKeyEvents:true
-                                }
-                            ]
-                        },
-                        {
-                            xtype:'fieldcontainer',
-                            layout:'hbox',
-                            items:[
-                                {
-                                    fieldLabel: i18n['from'],
-                                    xtype:'datefield',
-                                    labelWidth:95,
-                                    width:230
-                                },
-                                {
-                                    fieldLabel: i18n['to'],
-                                    xtype:'datefield',
-                                    margin:'0 0 0 25',
-                                    labelWidth:42,
-                                    width:230
-                                }
-                            ]
-                        }
-                    ],
-				    buttons:[
-			            {
-			                text: i18n['save']
-			            },
-			            '-',
-			            {
-			                text: i18n['reset']
-			            },
-			            '->',
-			            {
-			                text: i18n['add_payment'],
-                            scope: me,
-                            handler:me.onAddPaymentClick
+				}]
+			},
+			{
+				xtype : 'grid',
+				region : 'center',
+				//store:me.encountersPaymentsStore,
+				plugins : Ext.create('App.classes.grid.RowFormEditing',
+				{
+					autoCancel : false,
+					errorSummary : false,
+					clicksToEdit : 1,
+					enableRemove : true,
+					listeners :
+					{
+						scope : me,
+						beforeedit : me.beforeCptEdit
+					}
+				}),
+				columns : [
+				{
+					header : i18n['service_date']
+				},
+				{
+					header : i18n['patient_name']
+				},
+				{
+					header : i18n['insurance']
+				},
+				{
+					header : i18n['billing_notes'],
+					flex : 1
+				},
+				{
+					header : i18n['balance_due']
+				}]
+			}]
+		});
 
-			            }
-			        ]
-                },
-			    {
-				    xtype:'grid',
-				    region:'center',
-	                //store:me.encountersPaymentsStore,
-	                plugins: Ext.create('App.classes.grid.RowFormEditing', {
-                        autoCancel:false,
-                        errorSummary:false,
-                        clicksToEdit:1,
-                        enableRemove:true,
-                        listeners:{
-                            scope:me,
-                            beforeedit:me.beforeCptEdit
-                        }
-                    }),
-	                columns:[
-	                    {
-	                        header: i18n['service_date']
-	                    },
-	                    {
-	                        header: i18n['patient_name']
-	                    },
-	                    {
-	                        header: i18n['insurance']
-	                    },
-	                    {
-	                        header: i18n['billing_notes'],
-	                        flex:1
-	                    },
-	                    {
-	                        header: i18n['balance_due']
-	                    }
-	                ]
-			    }
+		me.tapPanel = Ext.create('Ext.tab.Panel',
+		{
+			layout : 'fit',
+			items : [me.searchPanel, me.detailPanel]
+		});
 
-		    ]
-	    });
+		me.pageBody = [me.tapPanel];
+		me.callParent(arguments);
+	},
 
+	onAddPaymentClick : function()
+	{
+		app.onPaymentEntryWindow();
+	},
 
+	beforeCptEdit : function(editor, e)
+	{
+		this.addCptFields(editor.editor, e.record.data)
+	},
 
-	    me.tapPanel = Ext.create('Ext.tab.Panel',{
-		    layout:'fit',
-            items:[ me.searchPanel, me.detailPanel ]
-        });
+	addCptFields : function(editor, cpts)
+	{
 
-        me.pageBody = [ me.tapPanel ];
-        me.callParent(arguments);
-    },
+		editor.removeAll();
 
-    onAddPaymentClick:function() {
-        app.onPaymentEntryWindow();
-    },
+		var testData = this.testData();
+		for (var i = 0; i < testData.length; i++)
+		{
+			editor.add(
+			{
+				xtype : 'fieldcontainer',
+				layout : 'hbox',
+				items : [
+				{
+					xtype : 'textfield',
+					width : 100,
+					name : 'code',
+					readOnly : true,
+					margin : '0 5 0 10'
+				},
+				{
+					xtype : 'textfield',
+					name : 'copay',
+					readOnly : true,
+					width : 400,
+					margin : '0 5 0 5'
+				},
+				{
+					xtype : 'mitos.currency',
+					name : 'remaining',
+					readOnly : true,
+					width : 100,
+					margin : '0 5 0 5'
+				},
+				{
+					xtype : 'mitos.currency',
+					name : 'allowed',
+					readOnly : true,
+					width : 100,
+					margin : '0 5 0 5'
+				},
+				{
+					xtype : 'mitos.currency',
+					name : 'payment',
+					readOnly : true,
+					width : 100,
+					margin : '0 5 0 5'
+				},
+				{
+					xtype : 'mitos.currency',
+					name : 'deductible',
+					readOnly : true,
+					width : 100,
+					margin : '0 5 0 5'
+				},
+				{
+					xtype : 'mitos.currency',
+					name : 'takeback',
+					readOnly : true,
+					width : 100,
+					margin : '0 5 0 5'
+				},
+				{
+					xtype : 'checkbox',
+					name : 'takeback',
+					readOnly : true,
+					width : 50,
+					margin : '0 5 0 5'
+				},
+				{
+					xtype : 'textfield',
+					name : 'takeback',
+					readOnly : true,
+					width : 100,
+					margin : '0 5 0 5'
+				}]
+			});
+		}
+	},
 
-    beforeCptEdit:function (editor, e) {
-        this.addCptFields(editor.editor, e.record.data)
-    },
+	testData : function()
+	{
+		var data = [], i;
 
+		floor = Math.floor((Math.random() * 6) + 1);
 
-    addCptFields:function (editor, cpts) {
+		for ( i = 0; i < floor; i++)
+		{
+			data.push(
+			{
+				data1 : Math.floor(Math.max((Math.random() * 100), floor)),
+				data2 : Math.floor(Math.max((Math.random() * 100), floor)),
+				data3 : Math.floor(Math.max((Math.random() * 100), floor)),
+				data4 : Math.floor(Math.max((Math.random() * 100), floor)),
+				data5 : Math.floor(Math.max((Math.random() * 100), floor)),
+				data6 : Math.floor(Math.max((Math.random() * 100), floor)),
+				data7 : Math.floor(Math.max((Math.random() * 100), floor)),
+				data8 : Math.floor(Math.max((Math.random() * 100), floor)),
+				data9 : Math.floor(Math.max((Math.random() * 100), floor))
+			});
+		}
+		return data;
+	},
 
-        editor.removeAll();
+	onBtnClick : function(btn)
+	{
+		var me = this;
 
-        var testData = this.testData();
-        for(var i=0; i < testData.length; i++ ){
-            editor.add({
-                xtype:'fieldcontainer',
-                layout:'hbox',
-                items:[
-                    {
-                        xtype:'textfield',
-                        width:100,
-                        name:'code',
-                        readOnly:true,
-                        margin:'0 5 0 10'
-                    },
-                    {
-                        xtype:'textfield',
-                        name:'copay',
-                        readOnly:true,
-                        width:400,
-                        margin:'0 5 0 5'
-                    },
-                    {
-                        xtype:'mitos.currency',
-                        name:'remaining',
-                        readOnly:true,
-                        width:100,
-                        margin:'0 5 0 5'
-                    },
-                    {
-                        xtype:'mitos.currency',
-                        name:'allowed',
-                        readOnly:true,
-                        width:100,
-                        margin:'0 5 0 5'
-                    },
-                    {
-                        xtype:'mitos.currency',
-                        name:'payment',
-                        readOnly:true,
-                        width:100,
-                        margin:'0 5 0 5'
-                    },
-                    {
-                        xtype:'mitos.currency',
-                        name:'deductible',
-                        readOnly:true,
-                        width:100,
-                        margin:'0 5 0 5'
-                    },
-                    {
-                        xtype:'mitos.currency',
-                        name:'takeback',
-                        readOnly:true,
-                        width:100,
-                        margin:'0 5 0 5'
-                    },
-                    {
-                        xtype:'checkbox',
-                        name:'takeback',
-                        readOnly:true,
-                        width:50,
-                        margin:'0 5 0 5'
-                    },
-                    {
-                        xtype:'textfield',
-                        name:'takeback',
-                        readOnly:true,
-                        width:100,
-                        margin:'0 5 0 5'
-                    }
-                ]
-            });
-        }
-    },
+		if (btn.action == 'search')
+		{
+			me.forms.getLayout().setActiveItem(0);
+		}
+		else
+		if (btn.action == 'details')
+		{
+			me.forms.getLayout().setActiveItem(1);
+		}
+		else
+		if (btn.action == 'new')
+		{
+			me.window.show();
+		}
+	},
 
-    testData:function () {
-        var data = [],
-            i;
-
-        floor = Math.floor((Math.random() * 6) + 1);
-
-        for (i = 0; i < floor; i++) {
-            data.push({
-                data1:Math.floor(Math.max((Math.random() * 100), floor)),
-                data2:Math.floor(Math.max((Math.random() * 100), floor)),
-                data3:Math.floor(Math.max((Math.random() * 100), floor)),
-                data4:Math.floor(Math.max((Math.random() * 100), floor)),
-                data5:Math.floor(Math.max((Math.random() * 100), floor)),
-                data6:Math.floor(Math.max((Math.random() * 100), floor)),
-                data7:Math.floor(Math.max((Math.random() * 100), floor)),
-                data8:Math.floor(Math.max((Math.random() * 100), floor)),
-                data9:Math.floor(Math.max((Math.random() * 100), floor))
-            });
-        }
-        return data;
-    },
-
-
-    onBtnClick:function (btn) {
-        var me = this;
-
-        if (btn.action == 'search') {
-            me.forms.getLayout().setActiveItem(0);
-        } else if (btn.action == 'details') {
-            me.forms.getLayout().setActiveItem(1);
-        } else if (btn.action == 'new') {
-            me.window.show();
-        }
-    },
-
-    /**
-     * This function is called from MitosAPP.js when
-     * this panel is selected in the navigation panel.
-     * place inside this function all the functions you want
-     * to call every this panel becomes active
-     */
-    onActive:function (callback) {
-        this.encountersPaymentsStore.load();
-        callback(true);
-    }
-
-}); //end Payments class
+	/**
+	 * This function is called from MitosAPP.js when
+	 * this panel is selected in the navigation panel.
+	 * place inside this function all the functions you want
+	 * to call every this panel becomes active
+	 */
+	onActive : function(callback)
+	{
+		this.encountersPaymentsStore.load();
+		callback(true);
+	}
+});
+//end Payments class
 
 
 /**
@@ -34911,824 +35708,899 @@ Ext.define('App.view.fees.Payments', {
  * @namespace Services.addService
  * @namespace Services.updateService
  */
-Ext.define('App.view.administration.DataManager', {
-    extend       : 'App.classes.RenderPanel',
-    id           : 'panelDataManager',
-    pageTitle    : 'Data Manager',
-    uses         : [
-        'App.classes.GridPanel', 'App.classes.combo.CodesTypes', 'App.classes.combo.Titles'
-    ],
-    initComponent: function() {
-        var me = this;
-
-        me.active = 1;
-        me.dataQuery = '';
-        me.code_type = 'CPT4';
-
-        me.store = Ext.create('App.store.administration.Services');
-
-        me.activeProblemsStore = Ext.create('App.store.administration.ActiveProblems');
-        me.medicationsStore = Ext.create('App.store.administration.Medications');
-        me.ImmuRelationStore = Ext.create('App.store.administration.ImmunizationRelations');
-        me.labObservationsStore = Ext.create('App.store.administration.LabObservations');
-
-        function code_type(val) {
-            if(val == '1') {
-                return 'CPT4';
-            }  else if(val == '3') {
-                return 'HCPCS';
-            } else if(val == '100') {
-                return 'CVX';
-            }
-            return val;
-        }
-
-        /**
-         * CPT Container
-         */
-        me.cptContainer = Ext.create('Ext.container.Container', {
-            layout: 'column',
-            action: 'CPT4',
-            //hidden: true,
-            items : [
-
-                {
-                    xtype    : 'fieldcontainer',
-                    msgTarget: 'under',
-                    defaults : { action: 'field'  },
-                    items    : [
-                        {
-
-                            fieldLabel: 'Type',
-                            xtype     : 'mitos.codestypescombo',
-                            name      : 'code_type'
-                        },
-                        {
-
-                            fieldLabel: 'Code',
-                            xtype     : 'textfield',
-                            name      : 'code'
-                        }
-
-                    ]
-                },
-                {
-                    xtype   : 'fieldcontainer',
-                    margin  : '0 0 0 10',
-                    defaults: { action: 'field' },
-                    items   : [
-                        {
-
-                            fieldLabel: i18n['description'],
-                            xtype     : 'textfield',
-                            name      : 'code_text',
-	                        width:500
-                        }
-                    ]
-                },
-                {
-                    xtype   : 'fieldcontainer',
-                    margin  : '0 0 0 20',
-                    defaults: { action: 'field' },
-                    items   : [
-
-                        {
-
-                            boxLabel: i18n['reportable'],
-                            xtype   : 'checkboxfield',
-                            name    : 'reportable'
-                        },
-                        {
-                            boxLabel  : i18n['active'],
-                            labelWidth: 75,
-                            xtype     : 'checkboxfield',
-                            name      : 'active'
-                        }
-                    ]
-                }
-            ]
-        });
-
-
-        /**
-         * HCPSC Container
-         */
-        me.hpccsContainer = Ext.create('Ext.container.Container', {
-            layout: 'column',
-            action: 'HCPCS',
-            //hidden: true,
-            items : [
-
-                {
-                    xtype    : 'fieldcontainer',
-                    msgTarget: 'under',
-                    defaults : { action: 'field'  },
-                    items    : [
-                        {
-
-                            fieldLabel: i18n['type'],
-                            xtype     : 'mitos.codestypescombo',
-                            name      : 'code_type'
-                        },
-                        {
-
-                            fieldLabel: i18n['code'],
-                            xtype     : 'textfield',
-                            name      : 'code'
-                        },
-                        {
-
-                            fieldLabel: i18n['modifier'],
-                            xtype     : 'textfield',
-                            name      : 'mod'
-                        }
-
-                    ]
-                },
-                {
-                    xtype   : 'fieldcontainer',
-                    margin  : '0 0 0 10',
-                    defaults: { action: 'field' },
-                    items   : [
-                        {
-
-                            fieldLabel: i18n['description'],
-                            xtype     : 'textfield',
-                            name      : 'code_text'
-                        },
-                        {
-                            fieldLabel: i18n['category'],
-                            xtype     : 'mitos.titlescombo',
-                            name      : 'title'
-                        }
-                    ]
-                },
-                {
-                    xtype   : 'fieldcontainer',
-                    margin  : '0 0 0 20',
-                    defaults: { action: 'field' },
-                    items   : [
-
-                        {
-                            boxLabel: i18n['reportable'],
-                            xtype   : 'checkboxfield',
-                            name    : 'reportable'
-                        }
-                        ,
-                        {
-                            boxLabel  : i18n['active'],
-                            labelWidth: 75,
-                            xtype     : 'checkboxfield',
-                            name      : 'active'
-                        }
-                    ]
-                }
-
-            ]
-
-        });
-
-        /**
-         * CVX Container
-         */
-        me.cvxCintainer = Ext.create('Ext.tab.Panel', {
-            //hidden   : true,
-            action   : i18n['immunizations'],
-            layout   : 'fit',
-            plain    : true,
-            listeners: {
-                scope    : me,
-                tabchange: me.onFormTapChange
-            },
-            items    : [
-                {
-                    title  : i18n['general'],
-                    xtype  : 'container',
-                    padding: 10,
-                    layout : 'vbox',
-                    items  : [
-                        {
-                            /**
-                             * line One
-                             */
-                            xtype   : 'fieldcontainer',
-                            layout  : 'hbox',
-                            defaults: { margin: '0 10 5 0', action: 'field' },
-                            items   : [
-                                {
-
-                                    xtype     : 'textfield',
-                                    fieldLabel: i18n['immunization_name'],
-                                    name      : 'code_text',
-                                    labelWidth: 130,
-                                    width     : 703
-                                },
-                                {
-                                    xtype     : 'mitos.sexcombo',
-                                    fieldLabel: i18n['sex'],
-                                    name      : 'sex',
-                                    width     : 100,
-                                    labelWidth: 30
-
-                                }
-
-                            ]
-                        },
-                        {
-                            /**
-                             * Line two
-                             */
-                            xtype   : 'fieldcontainer',
-                            layout  : 'hbox',
-                            defaults: { margin: '0 10 5 0', action: 'field'  },
-                            items   : [
-                                {
-                                    xtype     : 'mitos.codestypescombo',
-                                    fieldLabel: i18n['coding_system'],
-                                    labelWidth: 130,
-                                    value     : 'CVX',
-                                    name      : 'code_type',
-                                    readOnly  : true
-
-                                },
-                                {
-                                    xtype     : 'numberfield',
-                                    fieldLabel: i18n['frequency'],
-                                    margin    : '0 0 5 0',
-                                    value     : 0,
-                                    minValue  : 0,
-                                    width     : 150,
-                                    name      : 'frequency_number'
-
-                                },
-                                {
-                                    xtype: 'mitos.timecombo',
-                                    name : 'frequency_time',
-                                    width: 100
-
-                                },
-                                {
-                                    xtype     : 'numberfield',
-                                    fieldLabel: i18n['age_start'],
-                                    name      : 'age_start',
-                                    labelWidth: 75,
-                                    width     : 140,
-                                    value     : 0,
-                                    minValue  : 0
-
-                                },
-                                {
-                                    fieldLabel: i18n['must_be_pregnant'],
-                                    xtype     : 'checkboxfield',
-                                    labelWidth: 105,
-                                    name      : 'pregnant'
-
-
-                                }
-                            ]
-
-                        },
-                        {
-                            /**
-                             * Line three
-                             */
-                            xtype   : 'fieldcontainer',
-                            layout  : 'hbox',
-                            defaults: { margin: '0 10 5 0', action: 'field'  },
-                            items   : [
-                                {
-                                    xtype     : 'textfield',
-                                    fieldLabel: i18n['code'],
-                                    name      : 'code',
-                                    labelWidth: 130
-
-                                },
-                                {
-                                    xtype     : 'numberfield',
-                                    fieldLabel: i18n['times_to_perform'],
-                                    name      : 'times_to_perform',
-                                    width     : 250,
-                                    value     : 0,
-                                    minValue  : 0,
-                                    tooltip   : i18n['greater_than_1_or_just_check_perform_once']
-
-                                },
-                                {
-
-                                    xtype     : 'numberfield',
-                                    fieldLabel: i18n['age_end'],
-                                    name      : 'age_end',
-                                    labelWidth: 75,
-                                    width     : 140,
-                                    value     : 0,
-                                    minValue  : 0
-
-
-                                },
-
-                                {
-                                    fieldLabel: i18n['perform_only_once'],
-                                    xtype     : 'checkboxfield',
-                                    labelWidth: 105,
-                                    //margin  : '5 0 0 10',
-                                    name      : 'only_once'
-                                }
-
-                            ]
-
-                        }
-
-                    ]
-                },
-                {
-                    title  : i18n['active_problems'],
-                    action : 'problems',
-                    xtype  : 'grid',
-                    margin : 5,
-                    store  : me.ImmuRelationStore,
-                    columns: [
-
-                        {
-                            xtype: 'actioncolumn',
-                            width: 20,
-                            items: [
-                                {
-                                    icon   : 'resources/images/icons/delete.png',
-                                    tooltip: i18n['remove'],
-                                    scope  : me,
-                                    handler: me.onRemoveRelation
-                                }
-                            ]
-                        },
-                        {
-                            header   : i18n['code'],
-                            width    : 100,
-                            dataIndex: 'code'
-                        },
-                        {
-                            header   : i18n['description'],
-                            flex     : 1,
-                            dataIndex: 'code_text'
-                        }
-
-                    ],
-                    bbar   : {
-                        xtype     : 'liveicdxsearch',
-                        margin    : 5,
-                        fieldLabel: i18n['add_problem'],
-                        hideLabel : false,
-                        disable   : true,
-                        listeners : {
-                            scope : me,
-                            select: me.addActiveProblem
-                        }
-                    }
-                },
-                {
-                    title  : i18n['medications'],
-                    action : 'medications',
-                    xtype  : 'grid',
-                    width  : 300,
-                    store  : me.ImmuRelationStore,
-                    columns: [
-                        {
-                            xtype: 'actioncolumn',
-                            width: 20,
-                            items: [
-                                {
-                                    icon   : 'resources/images/icons/delete.png',
-                                    tooltip: i18n['remove'],
-                                    scope  : me,
-                                    handler: me.onRemoveRelation
-                                }
-                            ]
-                        },
-                        {
-                            header   : i18n['code'],
-                            width    : 100,
-                            dataIndex: 'code'
-                        },
-                        {
-                            header   : i18n['description'],
-                            flex     : 1,
-                            dataIndex: 'code_text'
-                        }
-
-                    ],
-                    bbar   : {
-                        xtype     : 'medicationlivetsearch',
-                        margin    : 5,
-                        fieldLabel: i18n['add_problem'],
-                        hideLabel : false,
-                        disable   : true,
-                        listeners : {
-                            scope : me,
-                            select: me.addMedications
-                        }
-                    }
-                },
-                {
-                    title  : i18n['labs'],
-                    action : 'labs',
-                    xtype  : 'grid',
-                    store  : me.ImmuRelationStore,
-                    width  : 300,
-                    columns: [
-                        {
-                            xtype: 'actioncolumn',
-                            width: 20,
-                            items: [
-                                {
-                                    icon   : 'resources/images/icons/delete.png',
-                                    tooltip: i18n['remove'],
-                                    scope  : me,
-                                    handler: me.onRemoveRelation
-                                }
-                            ]
-                        },
-                        {
-                            header   : i18n['value_name'],
-                            flex     : 1,
-                            dataIndex: 'value_name'
-                        },
-                        {
-                            header   : i18n['less_than'],
-                            flex     : 1,
-                            dataIndex: 'less_than'
-                        },
-                        {
-                            header   : i18n['greater_than'],
-                            flex     : 1,
-                            dataIndex: 'greater_than'
-                        },
-                        {
-                            header   : i18n['equal_to'],
-                            flex     : 1,
-                            dataIndex: 'equal_to'
-                        }
-
-                    ]
-                }
-
-            ]
-
-        });
-
-        /**
-         * Labs Container
-         */
-        me.labContainer = Ext.create('Ext.container.Container', {
-            action: i18n['laboratories'],
-            layout: {
-                type:'vbox',
-                align:'stretch'
-            },
-            items : [
-                {
-                    /**
-                     * line One
-                     */
-                    xtype   : 'fieldcontainer',
-                    layout  : 'hbox',
-                    defaults: { margin: '0 10 5 0', action: 'field' },
-                    items   : [
-                        {
-                            xtype     : 'textfield',
-                            fieldLabel: i18n['short_name_alias'],
-                            name      : 'code_text_short',
-                            labelWidth: 130,
-                            width     : 500
-                        },
-                        {
-                            xtype     : 'mitos.checkbox',
-                            fieldLabel: i18n['active'],
-                            name      : 'active',
-                            anchor     : '100%',
-                            labelWidth: 50
-
-                        }
-                    ]
-                },
-                {
-                    xtype  : 'grid',
-                    frame:true,
-                    store:me.labObservationsStore,
-                    plugins: Ext.create('Ext.grid.plugin.CellEditing', {
-                        clicksToEdit: 2
-                    }),
-                    columns: [
-                        {
-                            header: i18n['label_alias'],
-                            dataIndex: 'code_text_short',
-                            width:100,
-                            editor:{
-                                xtype:'textfield'
-                            }
-                        },
-                        {
-                            header: i18n['loinc_name'],
-                            dataIndex: 'loinc_name',
-                            width:200
-                        },
-                        {
-                            header: i18n['loinc_number'],
-                            dataIndex: 'loinc_number',
-                            width:100
-                        },
-                        {
-                            header: i18n['default_unit'],
-                            dataIndex: 'default_unit',
-                            width:100,
-                            editor:{
-                                xtype:'mitos.unitscombo'
-                            }
-                        },
-                        {
-                            header: i18n['req_opt'],
-                            dataIndex: 'required_in_panel',
-                            width:75
-                        },
-                        {
-                            header: i18n['range_start'],
-                            dataIndex: 'range_start',
-                            width:100,
-                            editor:{
-                                xtype:'numberfield'
-                            }
-                        },
-                        {
-                            header: i18n['range_end'],
-                            dataIndex: 'range_end',
-                            width:100,
-                            editor:{
-                                xtype:'numberfield'
-                            }
-                        },
-                        {
-                            header: i18n['description'],
-                            dataIndex: 'description',
-                            flex:1,
-                            editor:{
-                                xtype:'textfield'
-                            }
-                        }
-                    ]
-//                    tbar:[
-//                        {
-//                            xtype:'labobservationscombo',
-//                            fieldLabel:'Add Observation',
-//                            width:300,
-//                            listeners: {
-//                                scope : me,
-//                                select: me.onObservationSelect
-//                            }
-//                        },
-//                        {
-//                            text:'Add Observation',
-//                            iconCls:'icoAddRecord',
-//                            scope:me,
-//                            handler:me.addLabObservation
-//                        }
-//                    ]
-                }
-            ]
-        });
-
-        me.dataManagerGrid = Ext.create('App.classes.GridPanel', {
-            region : 'center',
-            store  : me.store,
-            viewConfig:{
-                loadMask:true
-            },
-            columns: [
-                {
-                    width: 100,
-                    header: i18n['code_type'],
-                    sortable: true,
-                    dataIndex: 'code_type',
-                    renderer: code_type
-                },
-                {
-                    width: 100,
-                    header: i18n['code'],
-                    sortable: true,
-                    dataIndex: 'code'
-                },
-                {
-                    header: i18n['short_name'],
-                    dataIndex: 'code_text_short',
-                    width:100,
-                    flex: 1
-                },
-                {
-                    header: i18n['long_name'],
-                    sortable: true,
-                    dataIndex: 'code_text',
-                    flex: 2
-                },
-                {
-                    width: 60,
-                    header: i18n['active'],
-                    sortable: true,
-                    dataIndex: 'active',
-                    renderer: me.boolRenderer
-                }
-            ],
-            plugins: Ext.create('App.classes.grid.RowFormEditing', {
-                autoCancel  : false,
-                errorSummary: false,
-                clicksToEdit: 1,
-                listeners   : {
-                    scope     : me,
-                    beforeedit: me.beforeServiceEdit
-                }
-            }),
-            tbar   : Ext.create('Ext.PagingToolbar', {
-                store      : me.store,
-                displayInfo: true,
-                emptyMsg   : i18n['no_office_notes_to_display'],
-                plugins    : Ext.create('Ext.ux.SlidingPager', {}),
-                items      : ['-', {
-                    xtype    : 'mitos.codestypescombo',
-                    width    : 150,
-                    listeners: {
-                        scope : me,
-                        select: me.onCodeTypeSelect
-                    }
-                }, '-', {
-                    text   : i18n['add'],
-                    iconCls: 'icoAddRecord',
-                    scope  : me,
-                    handler: me.onAddData
-                }, '-', {
-                    xtype          : 'textfield',
-                    emptyText      : i18n['search'],
-                    width          : 200,
-                    enableKeyEvents: true,
-                    listeners      : {
-                        scope : me,
-                        keyup : me.onSearch,
-                        buffer: 500
-                    }
-                }, '-', {
-                    xtype       : 'button',
-                    text        : i18n['show_inactive_codes_only'],
-                    enableToggle: true,
-                    listeners   : {
-                        scope : me,
-                        toggle: me.onActivePressed
-                    }
-                }]
-            })
-        }); // END GRID
-
-        me.pageBody = [ me.dataManagerGrid ];
-        me.callParent();
-    },
-
-    onAddData: function() {
-        var me = this;
-        if(me.code_type == 'Laboratories'){
-            Ext.Msg.alert('Opps!', i18n['ops_laboratories']);
-        }else{
-            me.dataManagerGrid.plugins[0].cancelEdit();
-            me.store.add({code_type:me.code_type});
-            me.dataManagerGrid.plugins[0].startEdit(0,0);
-        }
-    },
-
-    beforeServiceEdit: function(context, e) {
-        var me = this,
-            editor = context.editor,
-            code_type = e.record.data.code_type,
-            grids, thisForm;
-
-        if(code_type == 'CPT4'){
-            thisForm = me.cptContainer;
-        }else if(code_type == 'HCPCS'){
-            thisForm = me.hpccsContainer;
-        }else if(code_type == 'Immunizations'){
-            thisForm = me.cvxCintainer;
-        }else if(code_type == 'Laboratories'){
-            thisForm = me.labContainer;
-        }
-
-        if(!editor.items.length){
-            editor.add(thisForm);
-            editor.setFields();
-        }else if(this.currForm != thisForm){
-            editor.remove(0, false);
-            editor.add(thisForm);
-            editor.setFields();
-        }
-
-        /**
-         * find grids inside the form and load the its store with the row ID
-         * @type {*}
-         */
-        grids = thisForm.query('grid');
-        for(var i=0; i < grids.length; i++ ){
-            grids[i].getStore().load({params:{selectedId:me.getSelectId()}});
-        }
-        this.currForm = thisForm;
-
-    },
-
-    onSearch: function(field) {
-        var me = this, store = me.store;
-        me.dataQuery = field.getValue();
-        store.proxy.extraParams = {active: me.active, code_type: me.code_type, query: me.dataQuery};
-        me.store.load();
-    },
-
-    onCodeTypeSelect: function(combo, record) {
-        var me = this, store = me.store;
-        me.code_type = record[0].data.option_value;
-        store.proxy.extraParams = {active: me.active, code_type: me.code_type, query: me.dataQuery};
-        me.store.load();
-    },
-
-    onObservationSelect:function(combo, record){
-        say(record[0].data);
-        this.labObservationsStore.add({
-            lab_id: this.getSelectId(),
-            observation_element_id:record[0].data.id
-        });
-        combo.reset();
-    },
-
-    onActivePressed: function(btn, pressed) {
-        var me = this, store = me.store;
-        me.active = pressed ? 0 : 1;
-        store.proxy.extraParams = {active: me.active, code_type: me.code_type, query: me.dataQuery};
-        me.store.load();
-    },
-
-    onFormTapChange: function(panel, newCard, oldCard) {
-        this.ImmuRelationStore.proxy.extraParams = { code_type: newCard.action, selectedId: this.getSelectId() };
-        this.ImmuRelationStore.load();
-    },
-
-    addActiveProblem: function(field, model) {
-        this.ImmuRelationStore.add({
-            code           : model[0].data.code,
-            code_text      : model[0].data.code_text,
-            code_type      : 'problems',
-            foreign_id     : model[0].data.id,
-            immunization_id: this.getSelectId()
-        });
-        field.reset();
-    },
-
-    addMedications: function(field, model) {
-        this.ImmuRelationStore.add({
-            code           : model[0].data.PRODUCTNDC,
-            code_text      : model[0].data.PROPRIETARYNAME,
-            code_type      : 'medications',
-            foreign_id     : model[0].data.id,
-            immunization_id: this.getSelectId()
-        });
-        field.reset();
-
-    },
-
-    addLabObservation:function(){
-        this.labObservationsStore.add({
-            lab_id: this.getSelectId(),
-            label:'',
-            name:'',
-            //unit:'M/uL (H)',
-            range_start:'-99999',
-            range_end:'99999'
-
-        });
-    },
-
-    onRemoveRelation: function(grid, rowIndex) {
-        var me = this,
-            store = grid.getStore(),
-            record = store.getAt(rowIndex);
-        store.remove(record);
-    },
-
-    getSelectId:function(){
-   		var row = this.dataManagerGrid.getSelectionModel().getLastSelected();
-   		return row.data.id;
-   	},
-
-    /**
-     * This function is called from MitosAPP.js when
-     * this panel is selected in the navigation panel.
-     * place inside this function all the functions you want
-     * to call every this panel becomes active
-     */
-    onActive: function(callback) {
-        this.dataManagerGrid.query('combobox')[0].setValue("CPT4");
-        this.store.proxy.extraParams = {active: this.active, code_type: this.code_type, query: this.dataQuery};
-        this.store.load();
-        callback(true);
-    }
-}); //ens servicesPage class
+Ext.define('App.view.administration.DataManager',
+{
+	extend : 'App.classes.RenderPanel',
+	id : 'panelDataManager',
+	pageTitle : 'Data Manager',
+	uses : ['App.classes.GridPanel', 'App.classes.combo.CodesTypes', 'App.classes.combo.Titles'],
+	initComponent : function()
+	{
+		var me = this;
+
+		me.active = 1;
+		me.dataQuery = '';
+		me.code_type = 'CPT4';
+
+		me.store = Ext.create('App.store.administration.Services');
+
+		me.activeProblemsStore = Ext.create('App.store.administration.ActiveProblems');
+		me.medicationsStore = Ext.create('App.store.administration.Medications');
+		me.ImmuRelationStore = Ext.create('App.store.administration.ImmunizationRelations');
+		me.labObservationsStore = Ext.create('App.store.administration.LabObservations');
+
+		function code_type(val)
+		{
+			if (val == '1')
+			{
+				return 'CPT4';
+			}
+			else
+			if (val == '3')
+			{
+				return 'HCPCS';
+			}
+			else
+			if (val == '100')
+			{
+				return 'CVX';
+			}
+			return val;
+		}
+
+		/**
+		 * CPT Container
+		 */
+		me.cptContainer = Ext.create('Ext.container.Container',
+		{
+			layout : 'column',
+			action : 'CPT4',
+			//hidden: true,
+			items : [
+			{
+				xtype : 'fieldcontainer',
+				msgTarget : 'under',
+				defaults :
+				{
+					action : 'field'
+				},
+				items : [
+				{
+					fieldLabel : 'Type',
+					xtype : 'mitos.codestypescombo',
+					name : 'code_type'
+				},
+				{
+					fieldLabel : 'Code',
+					xtype : 'textfield',
+					name : 'code'
+				}]
+			},
+			{
+				xtype : 'fieldcontainer',
+				margin : '0 0 0 10',
+				defaults :
+				{
+					action : 'field'
+				},
+				items : [
+				{
+					fieldLabel : i18n['description'],
+					xtype : 'textfield',
+					name : 'code_text',
+					width : 500
+				}]
+			},
+			{
+				xtype : 'fieldcontainer',
+				margin : '0 0 0 20',
+				defaults :
+				{
+					action : 'field'
+				},
+				items : [
+				{
+					boxLabel : i18n['reportable'],
+					xtype : 'checkboxfield',
+					name : 'reportable'
+				},
+				{
+					boxLabel : i18n['active'],
+					labelWidth : 75,
+					xtype : 'checkboxfield',
+					name : 'active'
+				}]
+			}]
+		});
+
+		/**
+		 * HCPSC Container
+		 */
+		me.hpccsContainer = Ext.create('Ext.container.Container',
+		{
+			layout : 'column',
+			action : 'HCPCS',
+			//hidden: true,
+			items : [
+			{
+				xtype : 'fieldcontainer',
+				msgTarget : 'under',
+				defaults :
+				{
+					action : 'field'
+				},
+				items : [
+				{
+					fieldLabel : i18n['type'],
+					xtype : 'mitos.codestypescombo',
+					name : 'code_type'
+				},
+				{
+					fieldLabel : i18n['code'],
+					xtype : 'textfield',
+					name : 'code'
+				},
+				{
+					fieldLabel : i18n['modifier'],
+					xtype : 'textfield',
+					name : 'mod'
+				}]
+			},
+			{
+				xtype : 'fieldcontainer',
+				margin : '0 0 0 10',
+				defaults :
+				{
+					action : 'field'
+				},
+				items : [
+				{
+					fieldLabel : i18n['description'],
+					xtype : 'textfield',
+					name : 'code_text'
+				},
+				{
+					fieldLabel : i18n['category'],
+					xtype : 'mitos.titlescombo',
+					name : 'title'
+				}]
+			},
+			{
+				xtype : 'fieldcontainer',
+				margin : '0 0 0 20',
+				defaults :
+				{
+					action : 'field'
+				},
+				items : [
+				{
+					boxLabel : i18n['reportable'],
+					xtype : 'checkboxfield',
+					name : 'reportable'
+				},
+				{
+					boxLabel : i18n['active'],
+					labelWidth : 75,
+					xtype : 'checkboxfield',
+					name : 'active'
+				}]
+			}]
+		});
+
+		/**
+		 * CVX Container
+		 */
+		me.cvxCintainer = Ext.create('Ext.tab.Panel',
+		{
+			//hidden   : true,
+			action : i18n['immunizations'],
+			layout : 'fit',
+			plain : true,
+			listeners :
+			{
+				scope : me,
+				tabchange : me.onFormTapChange
+			},
+			items : [
+			{
+				title : i18n['general'],
+				xtype : 'container',
+				padding : 10,
+				layout : 'vbox',
+				items : [
+				{
+					/**
+					 * line One
+					 */
+					xtype : 'fieldcontainer',
+					layout : 'hbox',
+					defaults :
+					{
+						margin : '0 10 5 0',
+						action : 'field'
+					},
+					items : [
+					{
+						xtype : 'textfield',
+						fieldLabel : i18n['immunization_name'],
+						name : 'code_text',
+						labelWidth : 130,
+						width : 703
+					},
+					{
+						xtype : 'mitos.sexcombo',
+						fieldLabel : i18n['sex'],
+						name : 'sex',
+						width : 100,
+						labelWidth : 30
+					}]
+				},
+				{
+					/**
+					 * Line two
+					 */
+					xtype : 'fieldcontainer',
+					layout : 'hbox',
+					defaults :
+					{
+						margin : '0 10 5 0',
+						action : 'field'
+					},
+					items : [
+					{
+						xtype : 'mitos.codestypescombo',
+						fieldLabel : i18n['coding_system'],
+						labelWidth : 130,
+						value : 'CVX',
+						name : 'code_type',
+						readOnly : true
+					},
+					{
+						xtype : 'numberfield',
+						fieldLabel : i18n['frequency'],
+						margin : '0 0 5 0',
+						value : 0,
+						minValue : 0,
+						width : 150,
+						name : 'frequency_number'
+					},
+					{
+						xtype : 'mitos.timecombo',
+						name : 'frequency_time',
+						width : 100
+
+					},
+					{
+						xtype : 'numberfield',
+						fieldLabel : i18n['age_start'],
+						name : 'age_start',
+						labelWidth : 75,
+						width : 140,
+						value : 0,
+						minValue : 0
+
+					},
+					{
+						fieldLabel : i18n['must_be_pregnant'],
+						xtype : 'checkboxfield',
+						labelWidth : 105,
+						name : 'pregnant'
+
+					}]
+
+				},
+				{
+					/**
+					 * Line three
+					 */
+					xtype : 'fieldcontainer',
+					layout : 'hbox',
+					defaults :
+					{
+						margin : '0 10 5 0',
+						action : 'field'
+					},
+					items : [
+					{
+						xtype : 'textfield',
+						fieldLabel : i18n['code'],
+						name : 'code',
+						labelWidth : 130
+					},
+					{
+						xtype : 'numberfield',
+						fieldLabel : i18n['times_to_perform'],
+						name : 'times_to_perform',
+						width : 250,
+						value : 0,
+						minValue : 0,
+						tooltip : i18n['greater_than_1_or_just_check_perform_once']
+					},
+					{
+						xtype : 'numberfield',
+						fieldLabel : i18n['age_end'],
+						name : 'age_end',
+						labelWidth : 75,
+						width : 140,
+						value : 0,
+						minValue : 0
+					},
+					{
+						fieldLabel : i18n['perform_only_once'],
+						xtype : 'checkboxfield',
+						labelWidth : 105,
+						//margin  : '5 0 0 10',
+						name : 'only_once'
+					}]
+				}]
+			},
+			{
+				title : i18n['active_problems'],
+				action : 'problems',
+				xtype : 'grid',
+				margin : 5,
+				store : me.ImmuRelationStore,
+				columns : [
+				{
+					xtype : 'actioncolumn',
+					width : 20,
+					items : [
+					{
+						icon : 'resources/images/icons/delete.png',
+						tooltip : i18n['remove'],
+						scope : me,
+						handler : me.onRemoveRelation
+					}]
+				},
+				{
+					header : i18n['code'],
+					width : 100,
+					dataIndex : 'code'
+				},
+				{
+					header : i18n['description'],
+					flex : 1,
+					dataIndex : 'code_text'
+				}],
+				bbar :
+				{
+					xtype : 'liveicdxsearch',
+					margin : 5,
+					fieldLabel : i18n['add_problem'],
+					hideLabel : false,
+					disable : true,
+					listeners :
+					{
+						scope : me,
+						select : me.addActiveProblem
+					}
+				}
+			},
+			{
+				title : i18n['medications'],
+				action : 'medications',
+				xtype : 'grid',
+				width : 300,
+				store : me.ImmuRelationStore,
+				columns : [
+				{
+					xtype : 'actioncolumn',
+					width : 20,
+					items : [
+					{
+						icon : 'resources/images/icons/delete.png',
+						tooltip : i18n['remove'],
+						scope : me,
+						handler : me.onRemoveRelation
+					}]
+				},
+				{
+					header : i18n['code'],
+					width : 100,
+					dataIndex : 'code'
+				},
+				{
+					header : i18n['description'],
+					flex : 1,
+					dataIndex : 'code_text'
+				}],
+				bbar :
+				{
+					xtype : 'medicationlivetsearch',
+					margin : 5,
+					fieldLabel : i18n['add_problem'],
+					hideLabel : false,
+					disable : true,
+					listeners :
+					{
+						scope : me,
+						select : me.addMedications
+					}
+				}
+			},
+			{
+				title : i18n['labs'],
+				action : 'labs',
+				xtype : 'grid',
+				store : me.ImmuRelationStore,
+				width : 300,
+				columns : [
+				{
+					xtype : 'actioncolumn',
+					width : 20,
+					items : [
+					{
+						icon : 'resources/images/icons/delete.png',
+						tooltip : i18n['remove'],
+						scope : me,
+						handler : me.onRemoveRelation
+					}]
+				},
+				{
+					header : i18n['value_name'],
+					flex : 1,
+					dataIndex : 'value_name'
+				},
+				{
+					header : i18n['less_than'],
+					flex : 1,
+					dataIndex : 'less_than'
+				},
+				{
+					header : i18n['greater_than'],
+					flex : 1,
+					dataIndex : 'greater_than'
+				},
+				{
+					header : i18n['equal_to'],
+					flex : 1,
+					dataIndex : 'equal_to'
+				}]
+			}]
+
+		});
+
+		/**
+		 * Labs Container
+		 */
+		me.labContainer = Ext.create('Ext.container.Container',
+		{
+			action : i18n['laboratories'],
+			layout :
+			{
+				type : 'vbox',
+				align : 'stretch'
+			},
+			items : [
+			{
+				/**
+				 * line One
+				 */
+				xtype : 'fieldcontainer',
+				layout : 'hbox',
+				defaults :
+				{
+					margin : '0 10 5 0',
+					action : 'field'
+				},
+				items : [
+				{
+					xtype : 'textfield',
+					fieldLabel : i18n['short_name_alias'],
+					name : 'code_text_short',
+					labelWidth : 130,
+					width : 500
+				},
+				{
+					xtype : 'mitos.checkbox',
+					fieldLabel : i18n['active'],
+					name : 'active',
+					anchor : '100%',
+					labelWidth : 50
+
+				}]
+			},
+			{
+				xtype : 'grid',
+				frame : true,
+				store : me.labObservationsStore,
+				plugins : Ext.create('Ext.grid.plugin.CellEditing',
+				{
+					clicksToEdit : 2
+				}),
+				columns : [
+				{
+					header : i18n['label_alias'],
+					dataIndex : 'code_text_short',
+					width : 100,
+					editor :
+					{
+						xtype : 'textfield'
+					}
+				},
+				{
+					header : i18n['loinc_name'],
+					dataIndex : 'loinc_name',
+					width : 200
+				},
+				{
+					header : i18n['loinc_number'],
+					dataIndex : 'loinc_number',
+					width : 100
+				},
+				{
+					header : i18n['default_unit'],
+					dataIndex : 'default_unit',
+					width : 100,
+					editor :
+					{
+						xtype : 'mitos.unitscombo'
+					}
+				},
+				{
+					header : i18n['req_opt'],
+					dataIndex : 'required_in_panel',
+					width : 75
+				},
+				{
+					header : i18n['range_start'],
+					dataIndex : 'range_start',
+					width : 100,
+					editor :
+					{
+						xtype : 'numberfield'
+					}
+				},
+				{
+					header : i18n['range_end'],
+					dataIndex : 'range_end',
+					width : 100,
+					editor :
+					{
+						xtype : 'numberfield'
+					}
+				},
+				{
+					header : i18n['description'],
+					dataIndex : 'description',
+					flex : 1,
+					editor :
+					{
+						xtype : 'textfield'
+					}
+				}]
+				//                    tbar:[
+				//                        {
+				//                            xtype:'labobservationscombo',
+				//                            fieldLabel:'Add Observation',
+				//                            width:300,
+				//                            listeners: {
+				//                                scope : me,
+				//                                select: me.onObservationSelect
+				//                            }
+				//                        },
+				//                        {
+				//                            text:'Add Observation',
+				//                            iconCls:'icoAddRecord',
+				//                            scope:me,
+				//                            handler:me.addLabObservation
+				//                        }
+				//                    ]
+			}]
+		});
+
+		me.dataManagerGrid = Ext.create('App.classes.GridPanel',
+		{
+			region : 'center',
+			store : me.store,
+			viewConfig :
+			{
+				loadMask : true
+			},
+			columns : [
+			{
+				width : 100,
+				header : i18n['code_type'],
+				sortable : true,
+				dataIndex : 'code_type',
+				renderer : code_type
+			},
+			{
+				width : 100,
+				header : i18n['code'],
+				sortable : true,
+				dataIndex : 'code'
+			},
+			{
+				header : i18n['short_name'],
+				dataIndex : 'code_text_short',
+				width : 100,
+				flex : 1
+			},
+			{
+				header : i18n['long_name'],
+				sortable : true,
+				dataIndex : 'code_text',
+				flex : 2
+			},
+			{
+				width : 60,
+				header : i18n['active'],
+				sortable : true,
+				dataIndex : 'active',
+				renderer : me.boolRenderer
+			}],
+			plugins : Ext.create('App.classes.grid.RowFormEditing',
+			{
+				autoCancel : false,
+				errorSummary : false,
+				clicksToEdit : 1,
+				listeners :
+				{
+					scope : me,
+					beforeedit : me.beforeServiceEdit
+				}
+			}),
+			tbar : Ext.create('Ext.PagingToolbar',
+			{
+				store : me.store,
+				displayInfo : true,
+				emptyMsg : i18n['no_office_notes_to_display'],
+				plugins : Ext.create('Ext.ux.SlidingPager',
+				{
+				}),
+				items : ['-',
+				{
+					xtype : 'mitos.codestypescombo',
+					width : 150,
+					listeners :
+					{
+						scope : me,
+						select : me.onCodeTypeSelect
+					}
+				}, '-',
+				{
+					text : i18n['add'],
+					iconCls : 'icoAddRecord',
+					scope : me,
+					handler : me.onAddData
+				}, '-',
+				{
+					xtype : 'textfield',
+					emptyText : i18n['search'],
+					width : 200,
+					enableKeyEvents : true,
+					listeners :
+					{
+						scope : me,
+						keyup : me.onSearch,
+						buffer : 500
+					}
+				}, '-',
+				{
+					xtype : 'button',
+					text : i18n['show_inactive_codes_only'],
+					enableToggle : true,
+					listeners :
+					{
+						scope : me,
+						toggle : me.onActivePressed
+					}
+				}]
+			})
+		});
+		// END GRID
+
+		me.pageBody = [me.dataManagerGrid];
+		me.callParent();
+	},
+
+	onAddData : function()
+	{
+		var me = this;
+		if (me.code_type == 'Laboratories')
+		{
+			Ext.Msg.alert('Opps!', i18n['ops_laboratories']);
+		}
+		else
+		{
+			me.dataManagerGrid.plugins[0].cancelEdit();
+			me.store.add(
+			{
+				code_type : me.code_type
+			});
+			me.dataManagerGrid.plugins[0].startEdit(0, 0);
+		}
+	},
+
+	beforeServiceEdit : function(context, e)
+	{
+		var me = this, editor = context.editor, code_type = e.record.data.code_type, grids, thisForm;
+
+		if (code_type == 'CPT4')
+		{
+			thisForm = me.cptContainer;
+		}
+		else
+		if (code_type == 'HCPCS')
+		{
+			thisForm = me.hpccsContainer;
+		}
+		else
+		if (code_type == 'Immunizations')
+		{
+			thisForm = me.cvxCintainer;
+		}
+		else
+		if (code_type == 'Laboratories')
+		{
+			thisForm = me.labContainer;
+		}
+
+		if (!editor.items.length)
+		{
+			editor.add(thisForm);
+			editor.setFields();
+		}
+		else
+		if (this.currForm != thisForm)
+		{
+			editor.remove(0, false);
+			editor.add(thisForm);
+			editor.setFields();
+		}
+
+		/**
+		 * find grids inside the form and load the its store with the row ID
+		 * @type {*}
+		 */
+		grids = thisForm.query('grid');
+		for (var i = 0; i < grids.length; i++)
+		{
+			grids[i].getStore().load(
+			{
+				params :
+				{
+					selectedId : me.getSelectId()
+				}
+			});
+		}
+		this.currForm = thisForm;
+	},
+
+	onSearch : function(field)
+	{
+		var me = this, store = me.store;
+		me.dataQuery = field.getValue();
+		store.proxy.extraParams =
+		{
+			active : me.active,
+			code_type : me.code_type,
+			query : me.dataQuery
+		};
+		me.store.load();
+	},
+
+	onCodeTypeSelect : function(combo, record)
+	{
+		var me = this, store = me.store;
+		me.code_type = record[0].data.option_value;
+		store.proxy.extraParams =
+		{
+			active : me.active,
+			code_type : me.code_type,
+			query : me.dataQuery
+		};
+		me.store.load();
+	},
+
+	onObservationSelect : function(combo, record)
+	{
+		say(record[0].data);
+		this.labObservationsStore.add(
+		{
+			lab_id : this.getSelectId(),
+			observation_element_id : record[0].data.id
+		});
+		combo.reset();
+	},
+
+	onActivePressed : function(btn, pressed)
+	{
+		var me = this, store = me.store;
+		me.active = pressed ? 0 : 1;
+		store.proxy.extraParams =
+		{
+			active : me.active,
+			code_type : me.code_type,
+			query : me.dataQuery
+		};
+		me.store.load();
+	},
+
+	onFormTapChange : function(panel, newCard, oldCard)
+	{
+		this.ImmuRelationStore.proxy.extraParams =
+		{
+			code_type : newCard.action,
+			selectedId : this.getSelectId()
+		};
+		this.ImmuRelationStore.load();
+	},
+
+	addActiveProblem : function(field, model)
+	{
+		this.ImmuRelationStore.add(
+		{
+			code : model[0].data.code,
+			code_text : model[0].data.code_text,
+			code_type : 'problems',
+			foreign_id : model[0].data.id,
+			immunization_id : this.getSelectId()
+		});
+		field.reset();
+	},
+
+	addMedications : function(field, model)
+	{
+		this.ImmuRelationStore.add(
+		{
+			code : model[0].data.PRODUCTNDC,
+			code_text : model[0].data.PROPRIETARYNAME,
+			code_type : 'medications',
+			foreign_id : model[0].data.id,
+			immunization_id : this.getSelectId()
+		});
+		field.reset();
+
+	},
+
+	addLabObservation : function()
+	{
+		this.labObservationsStore.add(
+		{
+			lab_id : this.getSelectId(),
+			label : '',
+			name : '',
+			//unit:'M/uL (H)',
+			range_start : '-99999',
+			range_end : '99999'
+
+		});
+	},
+
+	onRemoveRelation : function(grid, rowIndex)
+	{
+		var me = this, store = grid.getStore(), record = store.getAt(rowIndex);
+		store.remove(record);
+	},
+
+	getSelectId : function()
+	{
+		var row = this.dataManagerGrid.getSelectionModel().getLastSelected();
+		return row.data.id;
+	},
+
+	/**
+	 * This function is called from MitosAPP.js when
+	 * this panel is selected in the navigation panel.
+	 * place inside this function all the functions you want
+	 * to call every this panel becomes active
+	 */
+	onActive : function(callback)
+	{
+		this.dataManagerGrid.query('combobox')[0].setValue("CPT4");
+		this.store.proxy.extraParams =
+		{
+			active : this.active,
+			code_type : this.code_type,
+			query : this.dataQuery
+		};
+		this.store.load();
+		callback(true);
+	}
+});
+//ens servicesPage class
 /**
  * layout.ejs.php
  * Description: Layout Screen Panel
@@ -35739,763 +36611,758 @@ Ext.define('App.view.administration.DataManager', {
  *
  * GaiaEHR (Electronic Health Records) 2011
  */
-Ext.define('App.view.administration.Documents', {
-	extend              : 'App.classes.RenderPanel',
-	id                  : 'panelDocuments',
-	pageTitle           : i18n['document_template_editor'],
-	pageLayout          : 'border',
-	uses                : [
-		'App.classes.GridPanel'
-	],
-	initComponent       : function() {
+Ext.define('App.view.administration.Documents',
+{
+	extend : 'App.classes.RenderPanel',
+	id : 'panelDocuments',
+	pageTitle : i18n['document_template_editor'],
+	pageLayout : 'border',
+	uses : ['App.classes.GridPanel'],
+	initComponent : function()
+	{
 
 		var me = this;
 
-        me.templatesDocumentsStore = Ext.create('App.store.administration.DocumentsTemplates');
-//		me.headersAndFooterStore   = Ext.create('App.store.administration.HeadersAndFooters');
-		me.defaultsDocumentsStore   = Ext.create('App.store.administration.DefaultDocuments');
+		me.templatesDocumentsStore = Ext.create('App.store.administration.DocumentsTemplates');
+		//		me.headersAndFooterStore   = Ext.create('App.store.administration.HeadersAndFooters');
+		me.defaultsDocumentsStore = Ext.create('App.store.administration.DefaultDocuments');
 
-        Ext.define('tokenModel', {
-            extend: 'Ext.data.Model',
-            fields: [
-                {name: 'title',     type: 'string'},
-                {name: 'token',     type: 'string'}
-            ]
-        });
-        me.tokenStore =  Ext.create('Ext.data.Store', {
-             model: 'tokenModel',
-             data : [
-	             {
-		             title: i18n['patient_name'],
-		             token: '[PATIENT_NAME]'
-	             },
-	             {
-		             title: i18n['patient_full_name'],
-		             token: '[PATIENT_FULL_NAME]'
-	             },
-                 {
-                     title: i18n['patient_mothers_maiden_name'],
-                     token: '[PATIENT_MAIDEN_NAME]'
-                 },
-	             {
-                     title: i18n['patient_last_name'],
-                     token: '[PATIENT_LAST_NAME]'
-                 },
-	             {
-                     title: i18n['patient_birthdate'],
-                     token: '[PATIENT_BIRTHDATE]'
-                 },
-	             {
-                     title: i18n['patient_marital_status'],
-                     token: '[PATIENT_MARITAL_STATUS]'
-                 },
-	             {
-                     title: i18n['patient_home_phone'],
-                     token: '[PATIENT_HOME_PHONE]'
-                 },
-	             {
-                     title: i18n['patient_mobile_phone'],
-                     token: '[PATIENT_MOBILE_PHONE]'
-                 },
-	             {
-                     title: i18n['patient_work_phone'],
-                     token: '[PATIENT_WORK_PHONE]'
-                 },
-	             {
-                     title: i18n['patient_email'],
-                     token: '[PATIENT_EMAIL]'
-                 },
-	             {
-                     title: i18n['patient_social_security'],
-                     token: '[PATIENT_SOCIAL_SECURITY]'
-                 },
-                 {
-                     title: i18n['patient_sex'],
-                     token: '[PATIENT_SEX]'
-                 },
-	             {
-                     title: i18n['patient_age'],
-                     token: '[PATIENT_AGE]'
-                 },
-	             {
-                     title: i18n['patient_city'],
-                     token: '[PATIENT_CITY]'
-                 },
-	             {
-                     title: i18n['patient_state'],
-                     token: '[PATIENT_STATE]'
-                 },
-	             {
-                     title: i18n['patient_home_address_line_1'],
-                     token: '[PATIENT_HOME_ADDRESS_LINE_ONE]'
-                 },
-	             {
-                     title: i18n['patient_home_address_line_1'],
-                     token: '[PATIENT_HOME_ADDRESS_LINE_TWO]'
-                 },
-	             {
-		             title: i18n['patient_home_address_zip_code'],
-		             token: '[PATIENT_HOME_ADDRESS_ZIP_CODE]'
-	             },
-	             {
-		             title: i18n['patient_home_address_city'],
-		             token: '[PATIENT_HOME_ADDRESS_CITY]'
-	             },
-	             {
-		             title: i18n['patient_home_address_state'],
-		             token: '[PATIENT_HOME_ADDRESS_STATE]'
-	             },
-	             {
-                     title: i18n['patient_postal_address_line_1'],
-                     token: '[PATIENT_POSTAL_ADDRESS_LINE_ONE]'
-                 },
-	             {
-                     title: i18n['patient_postal_address_line_2'],
-                     token: '[PATIENT_POSTAL_ADDRESS_LINE_TWO]'
-                 },
-	             {
-		             title: i18n['patient_postal_address_zip_code'],
-		             token: '[PATIENT_POSTAL_ADDRESS_ZIP_CODE]'
-	             },
-	             {
-		             title: i18n['patient_postal_address_city'],
-		             token: '[PATIENT_POSTAL_ADDRESS_CITY]'
-	             },
-	             {
-		             title: i18n['patient_postal_address_state'],
-		             token: '[PATIENT_POSTAL_ADDRESS_STATE]'
-	             },
-	             {
-                     title: i18n['patient_tabacco'],
-                     token: '[PATIENT_TABACCO]'
-                 },
-	             {
-                     title: i18n['patient_alcohol'],
-                     token: '[PATIENT_ALCOHOL]'
-                 },
-	             {
-                     title: i18n['patient_drivers_license'],
-                     token: '[PATIENT_DRIVERS_LICENSE]'
-                 },
-	             {
-                     title: i18n['patient_employeer'],
-                     token: '[PATIENT_EMPLOYEER]'
-                 },
-                 {
-                     title: i18n['patient_first_emergency_contact'],
-                     token: '[PATIENT_FIRST_EMERGENCY_CONTACT]'
-                 },
-	             {
-                     title: i18n['patient_referral'],
-                     token: '[PATIENT_REFERRAL]'
-                 },
-	             {
-                     title: i18n['patient_date_referred'],
-                     token: '[PATIENT_REFERRAL_DATE]'
-                 },
-                 {
-                     title: i18n['patient_balance'],
-                     token: '[PATIENT_BALANCE]'
-                 },
-                 {
-                     title: i18n['patient_picture'],
-                     token: '[PATIENT_PICTURE]'
-                 },
-                 {
-                     title: i18n['patient_primary_plan'],
-                     token: '[PATIENT_PRIMARY_PLAN]'
-                 },
-                 {
-                     title: i18n['patient_primary_plan_insured_person'],
-                     token: '[PATIENT_PRIMARY_INSURED_PERSON]'
-                 },
-                 {
-                     title: i18n['patient_primary_plan_contract_number'],
-                     token: '[PATIENT_PRIMARY_CONTRACT_NUMBER]'
-                 },
-                 {
-                     title: i18n['patient_primary_plan_expiration_date'],
-                     token: '[PATIENT_PRIMARY_EXPIRATION_DATE]'
-                 },
-                 {
-                     title: i18n['patient_secondary_plan'],
-                     token: '[PATIENT_SECONDARY_PLAN]'
-                 },
-                 {
-                     title: i18n['patient_secondary_insured_person'],
-                     token: '[PATIENT_SECONDARY_INSURED_PERSON]'
-                 },
-                 {
-                     title: i18n['patient_secondary_plan_contract_number'],
-                     token: '[PATIENT_SECONDARY_CONTRACT_NUMBER]'
-                 },
-                 {
-                     title: i18n['patient_secondary_plan_expiration_date'],
-                     token: '[PATIENT_SECONDARY_EXPIRATION_DATE]'
-                 },
-                 {
-                     title: i18n['patient_referral_details'],
-                     token: '[PATIENT_REFERRAL_DETAILS]'
-                 },
-                 {
-                     title: i18n['patient_referral_reason'],
-                     token: '[PATIENT_REFERRAL_REASON]'
-                 },
-                 {
-                     title: i18n['patient_head_circumference'],
-                     token: '[PATIENT_HEAD_CIRCUMFERENCE]'
-                 },
-                 {
-                     title: i18n['patient_height'],
-                     token: '[PATIENT_HEIGHT]'
-                 },
-                 {
-                     title: i18n['patient_pulse'],
-                     token: '[PATIENT_PULSE]'
-                 },
-                 {
-                     title: i18n['patient_respiratory_rate'],
-                     token: '[PATIENT_RESPIRATORY_RATE]'
-                 },
-                 {
-                     title: i18n['patient_temperature'],
-                     token: '[PATIENT_TEMPERATURE]'
-                 },
-                 {
-                     title: i18n['patient_weight'],
-                     token: '[PATIENT_WEIGHT]'
-                 },
-                 {
-                     title: i18n['patient_pulse_oximeter'],
-                     token: '[PATIENT_PULSE_OXIMETER]'
-                 },
-                 {
-                     title: i18n['patient_blood_preasure'],
-                     token: '[PATIENT_BLOOD_PREASURE]'
-                 },
-                 {
-                     title: i18n['patient_body_mass_index'],
-                     token: '[PATIENT_BMI]'
-                 },
-                 {
-                     title: i18n['patient_active_allergies_list'],
-                     token: '[PATIENT_ACTIVE_ALLERGIES_LIST]'
-                 },
-	             {
-                     title: i18n['patient_inactive_allergies_list'],
-                     token: '[PATIENT_INACTIVE_ALLERGIES_LIST]'
-                 },
-	             {
-                     title: i18n['patient_active_medications_list'],
-                     token: '[PATIENT_ACTIVE_MEDICATIONS_LIST]'
-                 },
-	             {
-                     title: i18n['patient_inactive_medications_list'],
-                     token: '[PATIENT_INACTIVE_MEDICATIONS_LIST]'
-                 },
-	             {
-		             title: i18n['patient_active_problems_list'],
-		             token: '[PATIENT_ACTIVE_PROBLEMS_LIST]'
-	             },
-	             {
-		             title: i18n['patient_inactive_problems_list'],
-		             token: '[PATIENT_INACTIVE_PROBLEMS_LIST]'
-	             },
-	             {
-                     title: i18n['patient_active_immunizations_list'],
-                     token: '[PATIENT_ACTIVE_IMMUNIZATIONS_LIST]'
-                 },
-	             {
-                     title: i18n['patient_inactive_immunizations_list'],
-                     token: '[PATIENT_INACTIVE_IMMUNIZATIONS_LIST]'
-                 },
-	             {
-                     title: i18n['patient_active_dental_list'],
-                     token: '[PATIENT_ACTIVE_DENTAL_LIST]'
-                 },
-	             {
-                     title: i18n['patient_inactive_dental_list'],
-                     token: '[PATIENT_INACTIVE_DENTAL_LIST]'
-                 },
-	             {
-                     title: i18n['patient_active_surgery_list'],
-                     token: '[PATIENT_ACTIVE_SURGERY_LIST]'
-                 },
-	             {
-                     title: i18n['patient_inactive_surgery_list'],
-                     token: '[PATIENT_INACTIVE_SURGERY_LIST]'
-                 },
-                 {
-                     title: i18n['encounter_date'],
-                     token: '[ENCOUNTER_DATE]'
-                 },
-                 {
-                     title: i18n['encounter_subjective_part'],
-                     token: '[ENCOUNTER_SUBJECTIVE]'
-                 },
-                 {
-                     title: i18n['encounter_subjective_part'],
-                     token: '[ENCOUNTER_OBJECTIVE]'
-                 },
-                 {
-                     title: i18n['encounter_assesment'],
-                     token: '[ENCOUNTER_ASSESMENT]'
-                 },
-	             {
-                     title: i18n['encounter_assesment_list'],
-                     token: '[ENCOUNTER_ASSESMENT_LIST]'
-                 },
-	             {
-                     title: i18n['encounter_assesment_code_list'],
-                     token: '[ENCOUNTER_ASSESMENT_CODE_LIST]'
-                 },
-	             {
-                     title: i18n['encounter_assesment_full_list'],
-                     token: '[ENCOUNTER_ASSESMENT_FULL_LIST]'
-                 },
-                 {
-                     title: i18n['encounter_plan'],
-                     token: '[ENCOUNTER_PLAN]'
-                 },
-                 {
-                     title: i18n['encounter_medications'],
-                     token: '[ENCOUNTER_MEDICATIONS]'
-                 },
-                 {
-                     title: i18n['encounter_immunizations'],
-                     token: '[ENCOUNTER_IMMUNIZATIONS]'
-                 },
-                 {
-                     title: i18n['encounter_allergies'],
-                     token: '[ENCOUNTER_ALLERGIES]'
-                 },
-                 {
-                     title: i18n['encounter_active_problems'],
-                     token: '[ENCOUNTER_ACTIVE_PROBLEMS]'
-                 },
-                 {
-                     title: i18n['encounter_surgeries'],
-                     token: '[ENCOUNTER_SURGERIES]'
-                 },
-                 {
-                     title: i18n['encounter_dental'],
-                     token: '[ENCOUNTER_DENTAL]'
-                 },
-                 {
-                     title: i18n['encounter_laboratories'],
-                     token: '[ENCOUNTER_LABORATORIES]'
-                 },
-                 {
-                     title: i18n['encounter_procedures_terms'],
-                     token: '[ENCOUNTER_PROCEDURES_TERMS]'
-                 },
-                 {
-                     title: i18n['encounter_cpt_codes_list'],
-                     token: '[ENCOUNTER_CPT_CODES]'
-                 },
-                 {
-                     title: i18n['encounter_signature'],
-                     token: '[ENCOUNTER_SIGNATURE]'
-                 },
-                 {
-                     title: i18n['orders_laboratories'],
-                     token: '[ORDERS_LABORATORIES]'
-                 },
-                 {
-                     title: i18n['orders_x_rays'],
-                     token: '[ORDERS_XRAYS]'
-                 },
-                 {
-                     title: i18n['orders_referral'],
-                     token: '[ORDERS_REFERRAL]'
-                 },
-                 {
-                     title: i18n['orders_other'],
-                     token: '[ORDERS_OTHER]'
-                 },
-                 {
-                     title: i18n['current_date'],
-                     token: '[CURRENT_DATE]'
-                 },
-                 {
-                     title: i18n['current_time'],
-                     token: '[CURRENT_TIME]'
-                 },
-                 {
-                     title: i18n['current_user_name'],
-                     token: '[CURRENT_USER_NAME]'
-                 },
-                 {
-                     title: i18n['current_user_full_name'],
-                     token: '[CURRENT_USER_FULL_NAME]'
-                 },
-                 {
-                     title: i18n['current_user_license_number'],
-                     token: '[CURRENT_USER_LICENSE_NUMBER]'
-                 },
-                 {
-                     title: i18n['current_user_dea_license_number'],
-                     token: '[CURRENT_USER_DEA_LICENSE_NUMBER]'
-                 },
-	             {
-                     title: i18n['current_user_dm_license_number'],
-                     token: '[CURRENT_USER_DM_LICENSE_NUMBER]'
-                 },
-	             {
-                     title: i18n['current_user_npi_license_number'],
-                     token: '[CURRENT_USER_NPI_LICENSE_NUMBER]'
-                 }//,
-//                 {
-//                     title: '',
-//                     token: '[]'
-//                 },
-//                 {
-//                     title: '',
-//                     token: '[]'
-//                 },
-//                 {
-//                     title: '',
-//                     token: '[]'
-//                 },
-//                 {
-//                     title: '',
-//                     token: '[]'
-//                 },
-//                 {
-//                     title: '',
-//                     token: '[]'
-//                 },
-//                 {
-//                     title: '',
-//                     token: '[]'
-//                 },
-//                 {
-//                     title: '',
-//                     token: '[]'
-//                 }
-             ]
-         });
-
-
-
-//		me.HeaderFootergrid = Ext.create('Ext.grid.Panel', {
-//			title      : i18n['header_footer_templates'],
-//			region     : 'south',
-//			height     : 250,
-//			split      : true,
-//			hideHeaders: true,
-//			store      : me.headersAndFooterStore,
-//			columns    : [
-//				{
-//					flex     : 1,
-//					sortable : true,
-//					dataIndex: 'title',
-//                    editor:{
-//                        xtype:'textfield',
-//                        allowBlank:false
-//                    }
-//				},
-//				{
-//					icon: 'resources/images/icons/delete.png',
-//					tooltip: i18n['remove'],
-//					scope:me,
-//					handler: me.onRemoveDocument
-//				}
-//			],
-//			listeners  : {
-//				scope    : me,
-//				itemclick: me.onDocumentsGridItemClick
-//			},
-//			tbar       :[
-//                '->',
-//                {
-//                    text : i18n['new'],
-//                    scope: me,
-//                    handler: me.newHeaderOrFooterTemplate
-//                }
-//            ],
-//            plugins:[
-//                me.rowEditor2 = Ext.create('Ext.grid.plugin.RowEditing', {
-//                    clicksToEdit: 2
-//                })
-//
-//            ]
-//		});
-
-		me.DocumentsDefaultsGrid = Ext.create('Ext.grid.Panel', {
-			title      : i18n['documents_defaults'],
-			region     : 'north',
-			width      : 250,
-			border     : true,
-			split      : true,
-            store      : me.defaultsDocumentsStore,
-			hideHeaders: true,
-			columns    : [
-				{
-					flex     : 1,
-					sortable : true,
-					dataIndex: 'title',
-                    editor:{
-                        xtype:'textfield',
-                        allowBlank:false
-                    }
-				},
-				{
-					icon: 'resources/images/icons/delete.png',
-					tooltip: i18n['remove'],
-					scope:me,
-					handler: me.onRemoveDocument
-				}
-			],
-			listeners  : {
-				scope    : me,
-				itemclick: me.onDocumentsGridItemClick
+		Ext.define('tokenModel',
+		{
+			extend : 'Ext.data.Model',
+			fields : [
+			{
+				name : 'title',
+				type : 'string'
 			},
-            tbar       :[
-                '->',
-                {
-                    text : i18n['new'],
-                    scope: me,
-                    handler: me.newDefaultTemplates
-                }
-            ],
-            plugins:[
-                me.rowEditor3 = Ext.create('Ext.grid.plugin.RowEditing', {
-                    clicksToEdit: 2
-                })
-
-            ]
+			{
+				name : 'token',
+				type : 'string'
+			}]
 		});
-
-		me.DocumentsGrid = Ext.create('Ext.grid.Panel', {
-			title      : i18n['document_templates'],
-			region     : 'center',
-			width      : 250,
-			border     : true,
-			split      : true,
-            store      : me.templatesDocumentsStore,
-			hideHeaders: true,
-			columns    : [
-				{
-					flex     : 1,
-					sortable : true,
-					dataIndex: 'title',
-                    editor:{
-                        xtype:'textfield',
-                        allowBlank:false
-                    }
-				},
-				{
-					icon: 'resources/images/icons/delete.png',
-					tooltip: i18n['remove'],
-					scope:me,
-					handler: me.onRemoveDocument
-				}
-			],
-			listeners  : {
-				scope    : me,
-				itemclick: me.onDocumentsGridItemClick
+		me.tokenStore = Ext.create('Ext.data.Store',
+		{
+			model : 'tokenModel',
+			data : [
+			{
+				title : i18n['patient_name'],
+				token : '[PATIENT_NAME]'
 			},
-            tbar       :[
-                '->',
-                {
-                    text : i18n['new'],
-                    scope: me,
-                    handler: me.newDocumentTemplate
-                }
-            ],
-            plugins:[
-                me.rowEditor = Ext.create('Ext.grid.plugin.RowEditing', {
-                    clicksToEdit: 2
-                })
-
-            ]
+			{
+				title : i18n['patient_full_name'],
+				token : '[PATIENT_FULL_NAME]'
+			},
+			{
+				title : i18n['patient_mothers_maiden_name'],
+				token : '[PATIENT_MAIDEN_NAME]'
+			},
+			{
+				title : i18n['patient_last_name'],
+				token : '[PATIENT_LAST_NAME]'
+			},
+			{
+				title : i18n['patient_birthdate'],
+				token : '[PATIENT_BIRTHDATE]'
+			},
+			{
+				title : i18n['patient_marital_status'],
+				token : '[PATIENT_MARITAL_STATUS]'
+			},
+			{
+				title : i18n['patient_home_phone'],
+				token : '[PATIENT_HOME_PHONE]'
+			},
+			{
+				title : i18n['patient_mobile_phone'],
+				token : '[PATIENT_MOBILE_PHONE]'
+			},
+			{
+				title : i18n['patient_work_phone'],
+				token : '[PATIENT_WORK_PHONE]'
+			},
+			{
+				title : i18n['patient_email'],
+				token : '[PATIENT_EMAIL]'
+			},
+			{
+				title : i18n['patient_social_security'],
+				token : '[PATIENT_SOCIAL_SECURITY]'
+			},
+			{
+				title : i18n['patient_sex'],
+				token : '[PATIENT_SEX]'
+			},
+			{
+				title : i18n['patient_age'],
+				token : '[PATIENT_AGE]'
+			},
+			{
+				title : i18n['patient_city'],
+				token : '[PATIENT_CITY]'
+			},
+			{
+				title : i18n['patient_state'],
+				token : '[PATIENT_STATE]'
+			},
+			{
+				title : i18n['patient_home_address_line_1'],
+				token : '[PATIENT_HOME_ADDRESS_LINE_ONE]'
+			},
+			{
+				title : i18n['patient_home_address_line_1'],
+				token : '[PATIENT_HOME_ADDRESS_LINE_TWO]'
+			},
+			{
+				title : i18n['patient_home_address_zip_code'],
+				token : '[PATIENT_HOME_ADDRESS_ZIP_CODE]'
+			},
+			{
+				title : i18n['patient_home_address_city'],
+				token : '[PATIENT_HOME_ADDRESS_CITY]'
+			},
+			{
+				title : i18n['patient_home_address_state'],
+				token : '[PATIENT_HOME_ADDRESS_STATE]'
+			},
+			{
+				title : i18n['patient_postal_address_line_1'],
+				token : '[PATIENT_POSTAL_ADDRESS_LINE_ONE]'
+			},
+			{
+				title : i18n['patient_postal_address_line_2'],
+				token : '[PATIENT_POSTAL_ADDRESS_LINE_TWO]'
+			},
+			{
+				title : i18n['patient_postal_address_zip_code'],
+				token : '[PATIENT_POSTAL_ADDRESS_ZIP_CODE]'
+			},
+			{
+				title : i18n['patient_postal_address_city'],
+				token : '[PATIENT_POSTAL_ADDRESS_CITY]'
+			},
+			{
+				title : i18n['patient_postal_address_state'],
+				token : '[PATIENT_POSTAL_ADDRESS_STATE]'
+			},
+			{
+				title : i18n['patient_tabacco'],
+				token : '[PATIENT_TABACCO]'
+			},
+			{
+				title : i18n['patient_alcohol'],
+				token : '[PATIENT_ALCOHOL]'
+			},
+			{
+				title : i18n['patient_drivers_license'],
+				token : '[PATIENT_DRIVERS_LICENSE]'
+			},
+			{
+				title : i18n['patient_employeer'],
+				token : '[PATIENT_EMPLOYEER]'
+			},
+			{
+				title : i18n['patient_first_emergency_contact'],
+				token : '[PATIENT_FIRST_EMERGENCY_CONTACT]'
+			},
+			{
+				title : i18n['patient_referral'],
+				token : '[PATIENT_REFERRAL]'
+			},
+			{
+				title : i18n['patient_date_referred'],
+				token : '[PATIENT_REFERRAL_DATE]'
+			},
+			{
+				title : i18n['patient_balance'],
+				token : '[PATIENT_BALANCE]'
+			},
+			{
+				title : i18n['patient_picture'],
+				token : '[PATIENT_PICTURE]'
+			},
+			{
+				title : i18n['patient_primary_plan'],
+				token : '[PATIENT_PRIMARY_PLAN]'
+			},
+			{
+				title : i18n['patient_primary_plan_insured_person'],
+				token : '[PATIENT_PRIMARY_INSURED_PERSON]'
+			},
+			{
+				title : i18n['patient_primary_plan_contract_number'],
+				token : '[PATIENT_PRIMARY_CONTRACT_NUMBER]'
+			},
+			{
+				title : i18n['patient_primary_plan_expiration_date'],
+				token : '[PATIENT_PRIMARY_EXPIRATION_DATE]'
+			},
+			{
+				title : i18n['patient_secondary_plan'],
+				token : '[PATIENT_SECONDARY_PLAN]'
+			},
+			{
+				title : i18n['patient_secondary_insured_person'],
+				token : '[PATIENT_SECONDARY_INSURED_PERSON]'
+			},
+			{
+				title : i18n['patient_secondary_plan_contract_number'],
+				token : '[PATIENT_SECONDARY_CONTRACT_NUMBER]'
+			},
+			{
+				title : i18n['patient_secondary_plan_expiration_date'],
+				token : '[PATIENT_SECONDARY_EXPIRATION_DATE]'
+			},
+			{
+				title : i18n['patient_referral_details'],
+				token : '[PATIENT_REFERRAL_DETAILS]'
+			},
+			{
+				title : i18n['patient_referral_reason'],
+				token : '[PATIENT_REFERRAL_REASON]'
+			},
+			{
+				title : i18n['patient_head_circumference'],
+				token : '[PATIENT_HEAD_CIRCUMFERENCE]'
+			},
+			{
+				title : i18n['patient_height'],
+				token : '[PATIENT_HEIGHT]'
+			},
+			{
+				title : i18n['patient_pulse'],
+				token : '[PATIENT_PULSE]'
+			},
+			{
+				title : i18n['patient_respiratory_rate'],
+				token : '[PATIENT_RESPIRATORY_RATE]'
+			},
+			{
+				title : i18n['patient_temperature'],
+				token : '[PATIENT_TEMPERATURE]'
+			},
+			{
+				title : i18n['patient_weight'],
+				token : '[PATIENT_WEIGHT]'
+			},
+			{
+				title : i18n['patient_pulse_oximeter'],
+				token : '[PATIENT_PULSE_OXIMETER]'
+			},
+			{
+				title : i18n['patient_blood_preasure'],
+				token : '[PATIENT_BLOOD_PREASURE]'
+			},
+			{
+				title : i18n['patient_body_mass_index'],
+				token : '[PATIENT_BMI]'
+			},
+			{
+				title : i18n['patient_active_allergies_list'],
+				token : '[PATIENT_ACTIVE_ALLERGIES_LIST]'
+			},
+			{
+				title : i18n['patient_inactive_allergies_list'],
+				token : '[PATIENT_INACTIVE_ALLERGIES_LIST]'
+			},
+			{
+				title : i18n['patient_active_medications_list'],
+				token : '[PATIENT_ACTIVE_MEDICATIONS_LIST]'
+			},
+			{
+				title : i18n['patient_inactive_medications_list'],
+				token : '[PATIENT_INACTIVE_MEDICATIONS_LIST]'
+			},
+			{
+				title : i18n['patient_active_problems_list'],
+				token : '[PATIENT_ACTIVE_PROBLEMS_LIST]'
+			},
+			{
+				title : i18n['patient_inactive_problems_list'],
+				token : '[PATIENT_INACTIVE_PROBLEMS_LIST]'
+			},
+			{
+				title : i18n['patient_active_immunizations_list'],
+				token : '[PATIENT_ACTIVE_IMMUNIZATIONS_LIST]'
+			},
+			{
+				title : i18n['patient_inactive_immunizations_list'],
+				token : '[PATIENT_INACTIVE_IMMUNIZATIONS_LIST]'
+			},
+			{
+				title : i18n['patient_active_dental_list'],
+				token : '[PATIENT_ACTIVE_DENTAL_LIST]'
+			},
+			{
+				title : i18n['patient_inactive_dental_list'],
+				token : '[PATIENT_INACTIVE_DENTAL_LIST]'
+			},
+			{
+				title : i18n['patient_active_surgery_list'],
+				token : '[PATIENT_ACTIVE_SURGERY_LIST]'
+			},
+			{
+				title : i18n['patient_inactive_surgery_list'],
+				token : '[PATIENT_INACTIVE_SURGERY_LIST]'
+			},
+			{
+				title : i18n['encounter_date'],
+				token : '[ENCOUNTER_DATE]'
+			},
+			{
+				title : i18n['encounter_subjective_part'],
+				token : '[ENCOUNTER_SUBJECTIVE]'
+			},
+			{
+				title : i18n['encounter_subjective_part'],
+				token : '[ENCOUNTER_OBJECTIVE]'
+			},
+			{
+				title : i18n['encounter_assesment'],
+				token : '[ENCOUNTER_ASSESMENT]'
+			},
+			{
+				title : i18n['encounter_assesment_list'],
+				token : '[ENCOUNTER_ASSESMENT_LIST]'
+			},
+			{
+				title : i18n['encounter_assesment_code_list'],
+				token : '[ENCOUNTER_ASSESMENT_CODE_LIST]'
+			},
+			{
+				title : i18n['encounter_assesment_full_list'],
+				token : '[ENCOUNTER_ASSESMENT_FULL_LIST]'
+			},
+			{
+				title : i18n['encounter_plan'],
+				token : '[ENCOUNTER_PLAN]'
+			},
+			{
+				title : i18n['encounter_medications'],
+				token : '[ENCOUNTER_MEDICATIONS]'
+			},
+			{
+				title : i18n['encounter_immunizations'],
+				token : '[ENCOUNTER_IMMUNIZATIONS]'
+			},
+			{
+				title : i18n['encounter_allergies'],
+				token : '[ENCOUNTER_ALLERGIES]'
+			},
+			{
+				title : i18n['encounter_active_problems'],
+				token : '[ENCOUNTER_ACTIVE_PROBLEMS]'
+			},
+			{
+				title : i18n['encounter_surgeries'],
+				token : '[ENCOUNTER_SURGERIES]'
+			},
+			{
+				title : i18n['encounter_dental'],
+				token : '[ENCOUNTER_DENTAL]'
+			},
+			{
+				title : i18n['encounter_laboratories'],
+				token : '[ENCOUNTER_LABORATORIES]'
+			},
+			{
+				title : i18n['encounter_procedures_terms'],
+				token : '[ENCOUNTER_PROCEDURES_TERMS]'
+			},
+			{
+				title : i18n['encounter_cpt_codes_list'],
+				token : '[ENCOUNTER_CPT_CODES]'
+			},
+			{
+				title : i18n['encounter_signature'],
+				token : '[ENCOUNTER_SIGNATURE]'
+			},
+			{
+				title : i18n['orders_laboratories'],
+				token : '[ORDERS_LABORATORIES]'
+			},
+			{
+				title : i18n['orders_x_rays'],
+				token : '[ORDERS_XRAYS]'
+			},
+			{
+				title : i18n['orders_referral'],
+				token : '[ORDERS_REFERRAL]'
+			},
+			{
+				title : i18n['orders_other'],
+				token : '[ORDERS_OTHER]'
+			},
+			{
+				title : i18n['current_date'],
+				token : '[CURRENT_DATE]'
+			},
+			{
+				title : i18n['current_time'],
+				token : '[CURRENT_TIME]'
+			},
+			{
+				title : i18n['current_user_name'],
+				token : '[CURRENT_USER_NAME]'
+			},
+			{
+				title : i18n['current_user_full_name'],
+				token : '[CURRENT_USER_FULL_NAME]'
+			},
+			{
+				title : i18n['current_user_license_number'],
+				token : '[CURRENT_USER_LICENSE_NUMBER]'
+			},
+			{
+				title : i18n['current_user_dea_license_number'],
+				token : '[CURRENT_USER_DEA_LICENSE_NUMBER]'
+			},
+			{
+				title : i18n['current_user_dm_license_number'],
+				token : '[CURRENT_USER_DM_LICENSE_NUMBER]'
+			},
+			{
+				title : i18n['current_user_npi_license_number'],
+				token : '[CURRENT_USER_NPI_LICENSE_NUMBER]'
+			}//,
+			//                 {
+			//                     title: '',
+			//                     token: '[]'
+			//                 },
+			//                 {
+			//                     title: '',
+			//                     token: '[]'
+			//                 },
+			//                 {
+			//                     title: '',
+			//                     token: '[]'
+			//                 },
+			//                 {
+			//                     title: '',
+			//                     token: '[]'
+			//                 },
+			//                 {
+			//                     title: '',
+			//                     token: '[]'
+			//                 },
+			//                 {
+			//                     title: '',
+			//                     token: '[]'
+			//                 },
+			//                 {
+			//                     title: '',
+			//                     token: '[]'
+			//                 }
+			]
 		});
 
-        me.LeftCol = Ext.create('Ext.container.Container',{
-            region:'west',
-            layout:'border',
-            width      : 250,
-            border     : false,
-            split      : true,
-            items:[  me.DocumentsDefaultsGrid, me.DocumentsGrid ]
-        });
+		//		me.HeaderFootergrid = Ext.create('Ext.grid.Panel', {
+		//			title      : i18n['header_footer_templates'],
+		//			region     : 'south',
+		//			height     : 250,
+		//			split      : true,
+		//			hideHeaders: true,
+		//			store      : me.headersAndFooterStore,
+		//			columns    : [
+		//				{
+		//					flex     : 1,
+		//					sortable : true,
+		//					dataIndex: 'title',
+		//                    editor:{
+		//                        xtype:'textfield',
+		//                        allowBlank:false
+		//                    }
+		//				},
+		//				{
+		//					icon: 'resources/images/icons/delete.png',
+		//					tooltip: i18n['remove'],
+		//					scope:me,
+		//					handler: me.onRemoveDocument
+		//				}
+		//			],
+		//			listeners  : {
+		//				scope    : me,
+		//				itemclick: me.onDocumentsGridItemClick
+		//			},
+		//			tbar       :[
+		//                '->',
+		//                {
+		//                    text : i18n['new'],
+		//                    scope: me,
+		//                    handler: me.newHeaderOrFooterTemplate
+		//                }
+		//            ],
+		//            plugins:[
+		//                me.rowEditor2 = Ext.create('Ext.grid.plugin.RowEditing', {
+		//                    clicksToEdit: 2
+		//                })
+		//
+		//            ]
+		//		});
 
-		me.TeamplateEditor = Ext.create('Ext.form.Panel', {
-			title      : i18n['document_editor'],
-			region     : 'center',
-            layout     : 'fit',
-            autoScroll : false,
-			border     : true,
-			split      : true,
-			hideHeaders: true,
-            items: {
-                xtype: 'htmleditor',
-	            enableFontSize: false,
-                name:'body',
-                margin:5
-            },
-            buttons    :[
-                {
-                    text     : i18n['save'],
-                    scope    : me,
-                    handler  : me.onSaveEditor
-                },
-                {
-                    text     : i18n['cancel'],
-                    scope    : me,
-                    handler  : me.onCancelEditor
-                }
-            ]
+		me.DocumentsDefaultsGrid = Ext.create('Ext.grid.Panel',
+		{
+			title : i18n['documents_defaults'],
+			region : 'north',
+			width : 250,
+			border : true,
+			split : true,
+			store : me.defaultsDocumentsStore,
+			hideHeaders : true,
+			columns : [
+			{
+				flex : 1,
+				sortable : true,
+				dataIndex : 'title',
+				editor :
+				{
+					xtype : 'textfield',
+					allowBlank : false
+				}
+			},
+			{
+				icon : 'resources/images/icons/delete.png',
+				tooltip : i18n['remove'],
+				scope : me,
+				handler : me.onRemoveDocument
+			}],
+			listeners :
+			{
+				scope : me,
+				itemclick : me.onDocumentsGridItemClick
+			},
+			tbar : ['->',
+			{
+				text : i18n['new'],
+				scope : me,
+				handler : me.newDefaultTemplates
+			}],
+			plugins : [me.rowEditor3 = Ext.create('Ext.grid.plugin.RowEditing',
+			{
+				clicksToEdit : 2
+			})]
 		});
 
+		me.DocumentsGrid = Ext.create('Ext.grid.Panel',
+		{
+			title : i18n['document_templates'],
+			region : 'center',
+			width : 250,
+			border : true,
+			split : true,
+			store : me.templatesDocumentsStore,
+			hideHeaders : true,
+			columns : [
+			{
+				flex : 1,
+				sortable : true,
+				dataIndex : 'title',
+				editor :
+				{
+					xtype : 'textfield',
+					allowBlank : false
+				}
+			},
+			{
+				icon : 'resources/images/icons/delete.png',
+				tooltip : i18n['remove'],
+				scope : me,
+				handler : me.onRemoveDocument
+			}],
+			listeners :
+			{
+				scope : me,
+				itemclick : me.onDocumentsGridItemClick
+			},
+			tbar : ['->',
+			{
+				text : i18n['new'],
+				scope : me,
+				handler : me.newDocumentTemplate
+			}],
+			plugins : [me.rowEditor = Ext.create('Ext.grid.plugin.RowEditing',
+			{
+				clicksToEdit : 2
+			})]
+		});
 
-        me.TokensGrid = Ext.create('App.classes.GridPanel', {
-            title      : i18n['available_tokens'],
-            region     : 'east',
-            width      : 250,
-            border     : true,
-            split      : true,
-            hideHeaders: true,
-            store:me.tokenStore,
-            disableSelection:true,
-            viewConfig:{
-                stripeRows:false
-            },
-            columns    : [
-                {
-                    flex     : 1,
-                    sortable : false,
-                    dataIndex: 'token'
-                },
-                {
-                    dataIndex: 'token',
-                    width: 30,
-                    xtype: "templatecolumn",
-                    tpl: new Ext.XTemplate(
-                        "<object id='clipboard{token}' codebase='http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=9,0,0,0' width='16' height='16' align='middle'>",
-                        "<param name='allowScriptAccess' value='always' />",
-                        "<param name='allowFullScreen' value='false' />",
-                        "<param name='movie' value='lib/ClipBoard/clipboard.swf' />",
-                        "<param name='quality' value='high' />",
-                        "<param name='bgcolor' value='#ffffff' />",
-                        "<param name='flashvars' value='callback=copyToClipBoard&callbackArg={token}' />",
-                        "<embed src='lib/ClipBoard/clipboard.swf' flashvars='callback=copyToClipBoard&callbackArg={token}' quality='high' bgcolor='#ffffff' width='16' height='16' name='clipboard{token}' align='middle' allowscriptaccess='always' allowfullscreen='false' type='application/x-shockwave-flash' pluginspage='http://www.adobe.com/go/getflashplayer' />",
-                        "</object>",
-                    null)
-                }
-            ]
-        });
+		me.LeftCol = Ext.create('Ext.container.Container',
+		{
+			region : 'west',
+			layout : 'border',
+			width : 250,
+			border : false,
+			split : true,
+			items : [me.DocumentsDefaultsGrid, me.DocumentsGrid]
+		});
 
-        me.pageBody = [ me.LeftCol, me.TeamplateEditor , me.TokensGrid ];
+		me.TeamplateEditor = Ext.create('Ext.form.Panel',
+		{
+			title : i18n['document_editor'],
+			region : 'center',
+			layout : 'fit',
+			autoScroll : false,
+			border : true,
+			split : true,
+			hideHeaders : true,
+			items :
+			{
+				xtype : 'htmleditor',
+				enableFontSize : false,
+				name : 'body',
+				margin : 5
+			},
+			buttons : [
+			{
+				text : i18n['save'],
+				scope : me,
+				handler : me.onSaveEditor
+			},
+			{
+				text : i18n['cancel'],
+				scope : me,
+				handler : me.onCancelEditor
+			}]
+		});
+
+		me.TokensGrid = Ext.create('App.classes.GridPanel',
+		{
+			title : i18n['available_tokens'],
+			region : 'east',
+			width : 250,
+			border : true,
+			split : true,
+			hideHeaders : true,
+			store : me.tokenStore,
+			disableSelection : true,
+			viewConfig :
+			{
+				stripeRows : false
+			},
+			columns : [
+			{
+				flex : 1,
+				sortable : false,
+				dataIndex : 'token'
+			},
+			{
+				dataIndex : 'token',
+				width : 30,
+				xtype : "templatecolumn",
+				tpl : new Ext.XTemplate("<object id='clipboard{token}' codebase='http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=9,0,0,0' width='16' height='16' align='middle'>", "<param name='allowScriptAccess' value='always' />", "<param name='allowFullScreen' value='false' />", "<param name='movie' value='lib/ClipBoard/clipboard.swf' />", "<param name='quality' value='high' />", "<param name='bgcolor' value='#ffffff' />", "<param name='flashvars' value='callback=copyToClipBoard&callbackArg={token}' />", "<embed src='lib/ClipBoard/clipboard.swf' flashvars='callback=copyToClipBoard&callbackArg={token}' quality='high' bgcolor='#ffffff' width='16' height='16' name='clipboard{token}' align='middle' allowscriptaccess='always' allowfullscreen='false' type='application/x-shockwave-flash' pluginspage='http://www.adobe.com/go/getflashplayer' />", "</object>", null)
+			}]
+		});
+
+		me.pageBody = [me.LeftCol, me.TeamplateEditor, me.TokensGrid];
 		me.callParent();
 	},
 	/**
 	 * if the form is valid send the POST request
 	 */
-	onSave: function() {
+	onSave : function()
+	{
 
 	},
 	/**
 	 * Delete logic
 	 */
-	onDelete: function() {
-		
-	},
-
-    onTokensGridItemClick:function(){
-
-    },
-
-
-    onSaveEditor:function(){
-        var me = this,
-            form = me.down('form').getForm(),
-            record = form.getRecord(),
-            values = form.getValues();
-        record.set(values);
-    },
-    onCancelEditor:function(){
-        var me = this,
-            form = me.down('form').getForm(),
-            grid = me.DocumentsGrid;
-        form.reset();
-        grid.getSelectionModel().deselectAll();
-    },
-
-    onDocumentsGridItemClick:function(grid, record){
-        var me = this;
-        var form = me.down('form').getForm();
-        form.loadRecord(record);
-
-    },
-    newDocumentTemplate:function(){
-        var me = this,
-            store = me.templatesDocumentsStore;
-        me.rowEditor.cancelEdit();
-        store.insert(0,{
-            title: i18n['new_document'],
-	        template_type:'documenttemplate',
-            date: new Date(),
-	        type: 1
-        });
-        me.rowEditor.startEdit(0, 0);
-
-    },
-
-
-	newDefaultTemplates:function(){
-        var me = this,
-            store = me.defaultsDocumentsStore;
-        me.rowEditor3.cancelEdit();
-        store.insert(0,{
-            title: i18n['new_defaults'],
-	        template_type:'defaulttemplate',
-            date: new Date(),
-	        type: 1
-        });
-        me.rowEditor3.startEdit(0, 0);
-
-    },
-
-//	newHeaderOrFooterTemplate:function(){
-//        var me = this,
-//            store = me.headersAndFooterStore;
-//        me.rowEditor2.cancelEdit();
-//        store.insert(0,{
-//            title: i18n['new_header_or_footer'],
-//	        template_type:'headerorfootertemplate',
-//            date: new Date(),
-//	        type: 2
-//        });
-//        me.rowEditor2.startEdit(0, 0);
-//
-//    },
-
-    copyToClipBoard:function(grid, rowIndex, colIndex){
-        var rec = grid.getStore().getAt(rowIndex),
-            text = rec.get('token');
-    },
-
-	onRemoveDocument:function(){
-
+	onDelete : function()
+	{
 
 	},
-	
+
+	onTokensGridItemClick : function()
+	{
+
+	},
+
+	onSaveEditor : function()
+	{
+		var me = this, form = me.down('form').getForm(), record = form.getRecord(), values = form.getValues();
+		record.set(values);
+	},
+	onCancelEditor : function()
+	{
+		var me = this, form = me.down('form').getForm(), grid = me.DocumentsGrid;
+		form.reset();
+		grid.getSelectionModel().deselectAll();
+	},
+
+	onDocumentsGridItemClick : function(grid, record)
+	{
+		var me = this;
+		var form = me.down('form').getForm();
+		form.loadRecord(record);
+
+	},
+	newDocumentTemplate : function()
+	{
+		var me = this, store = me.templatesDocumentsStore;
+		me.rowEditor.cancelEdit();
+		store.insert(0,
+		{
+			title : i18n['new_document'],
+			template_type : 'documenttemplate',
+			date : new Date(),
+			type : 1
+		});
+		me.rowEditor.startEdit(0, 0);
+
+	},
+
+	newDefaultTemplates : function()
+	{
+		var me = this, store = me.defaultsDocumentsStore;
+		me.rowEditor3.cancelEdit();
+		store.insert(0,
+		{
+			title : i18n['new_defaults'],
+			template_type : 'defaulttemplate',
+			date : new Date(),
+			type : 1
+		});
+		me.rowEditor3.startEdit(0, 0);
+
+	},
+
+	//	newHeaderOrFooterTemplate:function(){
+	//        var me = this,
+	//            store = me.headersAndFooterStore;
+	//        me.rowEditor2.cancelEdit();
+	//        store.insert(0,{
+	//            title: i18n['new_header_or_footer'],
+	//	        template_type:'headerorfootertemplate',
+	//            date: new Date(),
+	//	        type: 2
+	//        });
+	//        me.rowEditor2.startEdit(0, 0);
+	//
+	//    },
+
+	copyToClipBoard : function(grid, rowIndex, colIndex)
+	{
+		var rec = grid.getStore().getAt(rowIndex), text = rec.get('token');
+	},
+
+	onRemoveDocument : function()
+	{
+
+	},
+
 	/**
 	 * This function is called from MitosAPP.js when
 	 * this panel is selected in the navigation panel.
 	 * place inside this function all the functions you want
 	 * to call every this panel becomes active
 	 */
-	onActive            : function(callback) {
-        var me = this
-        me.templatesDocumentsStore.load();
-//        me.headersAndFooterStore.load();
-        me.defaultsDocumentsStore.load();
+	onActive : function(callback)
+	{
+		var me = this
+		me.templatesDocumentsStore.load();
+		//        me.headersAndFooterStore.load();
+		me.defaultsDocumentsStore.load();
 		callback(true);
 	}
-});
+}); 
 /**
  * facilities.ejs.php
  * Description: Facilities Screen
@@ -36511,264 +37378,333 @@ Ext.define('App.view.administration.Documents', {
  * @namespace  Facilities.updateFacility
  * @namespace  Facilities.deleteFacility
  */
-Ext.define('App.view.administration.Facilities', {
-	extend       : 'App.classes.RenderPanel',
-	id           : 'panelFacilities',
-	pageTitle    : i18n['facilities_active'],
-	uses         : [
-		'App.classes.GridPanel',
-		'App.classes.window.Window'
-	],
-	initComponent: function() {
+Ext.define('App.view.administration.Facilities',
+{
+	extend : 'App.classes.RenderPanel',
+	id : 'panelFacilities',
+	pageTitle : i18n['facilities_active'],
+	uses : ['App.classes.GridPanel', 'App.classes.window.Window'],
+	initComponent : function()
+	{
 
 		var me = this;
 
-		Ext.define('facilityModel', {
-			extend: 'Ext.data.Model',
-			fields: [
-				{name: 'id', type: 'int'},
-				{name: 'name', type: 'string'},
-				{name: 'active', type: 'bool'},
-				{name: 'phone', type: 'string'},
-				{name: 'fax', type: 'string'},
-				{name: 'street', type: 'string'},
-				{name: 'city', type: 'string'},
-				{name: 'state', type: 'string'},
-				{name: 'postal_code', type: 'string'},
-				{name: 'country_code', type: 'string'},
-				{name: 'federal_ein', type: 'string'},
-				{name: 'service_location', type: 'bool'},
-				{name: 'billing_location', type: 'bool'},
-				{name: 'accepts_assignment', type: 'bool'},
-				{name: 'pos_code', type: 'string'},
-				{name: 'x12_sender_id', type: 'string'},
-				{name: 'attn', type: 'string'},
-				{name: 'domain_identifier', type: 'string'},
-				{name: 'facility_npi', type: 'string'},
-				{name: 'tax_id_type', type: 'string'}
-			],
-			proxy : {
-				type: 'direct',
-				api : {
-					read   : Facilities.getFacilities,
+		Ext.define('facilityModel',
+		{
+			extend : 'Ext.data.Model',
+			fields : [
+			{
+				name : 'id',
+				type : 'int'
+			},
+			{
+				name : 'name',
+				type : 'string'
+			},
+			{
+				name : 'active',
+				type : 'bool'
+			},
+			{
+				name : 'phone',
+				type : 'string'
+			},
+			{
+				name : 'fax',
+				type : 'string'
+			},
+			{
+				name : 'street',
+				type : 'string'
+			},
+			{
+				name : 'city',
+				type : 'string'
+			},
+			{
+				name : 'state',
+				type : 'string'
+			},
+			{
+				name : 'postal_code',
+				type : 'string'
+			},
+			{
+				name : 'country_code',
+				type : 'string'
+			},
+			{
+				name : 'federal_ein',
+				type : 'string'
+			},
+			{
+				name : 'service_location',
+				type : 'bool'
+			},
+			{
+				name : 'billing_location',
+				type : 'bool'
+			},
+			{
+				name : 'accepts_assignment',
+				type : 'bool'
+			},
+			{
+				name : 'pos_code',
+				type : 'string'
+			},
+			{
+				name : 'x12_sender_id',
+				type : 'string'
+			},
+			{
+				name : 'attn',
+				type : 'string'
+			},
+			{
+				name : 'domain_identifier',
+				type : 'string'
+			},
+			{
+				name : 'facility_npi',
+				type : 'string'
+			},
+			{
+				name : 'tax_id_type',
+				type : 'string'
+			}],
+			proxy :
+			{
+				type : 'direct',
+				api :
+				{
+					read : Facilities.getFacilities,
 					create : Facilities.addFacility,
 					update : Facilities.updateFacility,
-					destroy: Facilities.deleteFacility
+					destroy : Facilities.deleteFacility
 				}
 			}
 		});
 
-		me.FacilityStore = Ext.create('Ext.data.Store', {
-			model     : 'facilityModel',
-			remoteSort: true,
-            autoSync:true
+		me.FacilityStore = Ext.create('Ext.data.Store',
+		{
+			model : 'facilityModel',
+			remoteSort : true,
+			autoSync : true
 		});
 
 		// *************************************************************************************
 		// Facility Grid Panel
 		// *************************************************************************************
-		me.FacilityGrid = Ext.create('Ext.grid.Panel', {
-			store    : me.FacilityStore,
-			columns  : [
+		me.FacilityGrid = Ext.create('Ext.grid.Panel',
+		{
+			store : me.FacilityStore,
+			columns : [
+			{
+				text : i18n['name'],
+				flex : 1,
+				sortable : true,
+				dataIndex : 'name'
+			},
+			{
+				text : i18n['phone'],
+				width : 100,
+				sortable : true,
+				dataIndex : 'phone'
+			},
+			{
+				text : i18n['fax'],
+				width : 100,
+				sortable : true,
+				dataIndex : 'fax'
+			},
+			{
+				text : i18n['city'],
+				width : 100,
+				sortable : true,
+				dataIndex : 'city'
+			}],
+			plugins : Ext.create('App.classes.grid.RowFormEditing',
+			{
+				autoCancel : false,
+				errorSummary : false,
+				clicksToEdit : 1,
+				formItems : [
 				{
-					text     : i18n['name'],
-					flex     : 1,
-					sortable : true,
-					dataIndex: 'name'
-				},
+					xtype : 'container',
+					layout : 'column',
+					defaults :
+					{
+						xtype : 'container',
+						columnWidth : 0.5,
+						padding : 5,
+						layout : 'anchor',
+						defaultType : 'textfield'
+					},
+					items : [
+					{
+						defaults :
+						{
+							anchor : '100%'
+						},
+						items : [
+						{
+							fieldLabel : i18n['name'],
+							name : 'name',
+							allowBlank : false
+						},
+						{
+							fieldLabel : i18n['phone'],
+							name : 'phone',
+							vtype : 'phoneNumber'
+						},
+						{
+							fieldLabel : i18n['fax'],
+							name : 'fax',
+							vtype : 'phoneNumber'
+						},
+						{
+							fieldLabel : i18n['street'],
+							name : 'street'
+						},
+						{
+							fieldLabel : i18n['city'],
+							name : 'city'
+						},
+						{
+							fieldLabel : i18n['state'],
+							name : 'state'
+						},
+						{
+							fieldLabel : i18n['postal_code'],
+							name : 'postal_code',
+							vtype : 'postalCode'
+						},
+						{
+							fieldLabel : i18n['country_code'],
+							name : 'country_code'
+						},
+						{
+							xtype : 'fieldcontainer',
+							fieldLabel : i18n['tax_id'],
+							layout : 'hbox',
+							items : [
+							{
+								xtype : 'mitos.taxidcombo',
+								name : 'tax_id_type',
+								width : 50
+							},
+							{
+								xtype : 'textfield',
+								name : 'federal_ein'
+							}]
+						}]
+					},
+					{
+						items : [
+						{
+							xtype : 'mitos.checkbox',
+							fieldLabel : i18n['active'],
+							name : 'active'
+						},
+						{
+							xtype : 'mitos.checkbox',
+							fieldLabel : i18n['service_location'],
+							name : 'service_location'
+						},
+						{
+							xtype : 'mitos.checkbox',
+							fieldLabel : i18n['billing_location'],
+							name : 'billing_location'
+						},
+						{
+							xtype : 'mitos.checkbox',
+							fieldLabel : i18n['accepts_assignment'],
+							name : 'accepts_assignment'
+						},
+						{
+							xtype : 'mitos.poscodescombo',
+							fieldLabel : i18n['pos_code'],
+							name : 'pos_code',
+							anchor : '100%'
+						},
+						{
+							fieldLabel : i18n['billing_attn'],
+							name : 'attn',
+							anchor : '100%'
+						},
+						{
+							fieldLabel : i18n['clia_number'],
+							name : 'domain_identifier',
+							anchor : '100%'
+						},
+						{
+							fieldLabel : 'Facility NPI',
+							name : 'facility_npi',
+							anchor : '100%'
+						}]
+					}]
+				}]
+			}),
+			tbar : Ext.create('Ext.PagingToolbar',
+			{
+				pageSize : 30,
+				store : me.FacilityStore,
+				displayInfo : true,
+				plugins : Ext.create('Ext.ux.SlidingPager',
 				{
-					text     : i18n['phone'],
-					width    : 100,
-					sortable : true,
-					dataIndex: 'phone'
-				},
+				}),
+				items : ['-',
 				{
-					text     : i18n['fax'],
-					width    : 100,
-					sortable : true,
-					dataIndex: 'fax'
-				},
+					text : i18n['add_new_facility'],
+					iconCls : 'save',
+					scope : me,
+					handler : me.addFacility
+				}, '-',
 				{
-					text     : i18n['city'],
-					width    : 100,
-					sortable : true,
-					dataIndex: 'city'
-				}
-			],
-            plugins: Ext.create('App.classes.grid.RowFormEditing', {
-                autoCancel  : false,
-                errorSummary: false,
-                clicksToEdit: 1,
-                formItems   : [
-                    {
-                        xtype:'container',
-                        layout:'column',
-                        defaults     : {
-                            xtype:'container',
-                            columnWidth: 0.5,
-                            padding: 5,
-                            layout:'anchor',
-                            defaultType: 'textfield'
-                        },
-                        items:[
-                            {
-                                defaults:{anchor: '100%'},
-                                items:[
-                                    {
-                                        fieldLabel: i18n['name'],
-                                        name      : 'name',
-                                        allowBlank: false
-                                    },
-                                    {
-                                        fieldLabel: i18n['phone'],
-                                        name      : 'phone',
-                                        vtype     : 'phoneNumber'
-                                    },
-                                    {
-                                        fieldLabel: i18n['fax'],
-                                        name      : 'fax',
-                                        vtype     : 'phoneNumber'
-                                    },
-                                    {
-                                        fieldLabel: i18n['street'],
-                                        name      : 'street'
-                                    },
-                                    {
-                                        fieldLabel: i18n['city'],
-                                        name      : 'city'
-                                    },
-                                    {
-                                        fieldLabel: i18n['state'],
-                                        name      : 'state'
-                                    },
-                                    {
-                                        fieldLabel: i18n['postal_code'],
-                                        name      : 'postal_code',
-                                        vtype     : 'postalCode'
-                                    },
-                                    {
-                                        fieldLabel: i18n['country_code'],
-                                        name      : 'country_code'
-                                    },
-                                    {
-                                        xtype     : 'fieldcontainer',
-                                        fieldLabel: i18n['tax_id'],
-                                        layout    : 'hbox',
-                                        items     : [
-                                            {
-                                                xtype: 'mitos.taxidcombo',
-                                                name : 'tax_id_type',
-                                                width: 50
-                                            },
-                                            {
-                                                xtype: 'textfield',
-                                                name : 'federal_ein'
-                                            }
-                                        ]
-                                    }
-                                ]
-                            },
-                            {
-                                items:[
-                                    {
-                                        xtype     : 'mitos.checkbox',
-                                        fieldLabel: i18n['active'],
-                                        name      : 'active'
-                                    },
-                                    {
-                                        xtype     : 'mitos.checkbox',
-                                        fieldLabel: i18n['service_location'],
-                                        name      : 'service_location'
-                                    },
-                                    {
-                                        xtype     : 'mitos.checkbox',
-                                        fieldLabel: i18n['billing_location'],
-                                        name      : 'billing_location'
-                                    },
-                                    {
-                                        xtype     : 'mitos.checkbox',
-                                        fieldLabel: i18n['accepts_assignment'],
-                                        name      : 'accepts_assignment'
-                                    },
-                                    {
-                                        xtype     : 'mitos.poscodescombo',
-                                        fieldLabel: i18n['pos_code'],
-                                        name      : 'pos_code',
-                                        anchor: '100%'
-                                    },
-                                    {
-                                        fieldLabel: i18n['billing_attn'],
-                                        name      : 'attn',
-                                        anchor: '100%'
-                                    },
-                                    {
-                                        fieldLabel: i18n['clia_number'],
-                                        name      : 'domain_identifier',
-                                        anchor: '100%'
-                                    },
-                                    {
-                                        fieldLabel: 'Facility NPI',
-                                        name      : 'facility_npi',
-                                        anchor: '100%'
-                                    }
-                                ]
-                            }
-                        ]
-                    }
-
-
-
-                ]
-            }),
-			tbar     : Ext.create('Ext.PagingToolbar', {
-				pageSize   : 30,
-				store      : me.FacilityStore,
-				displayInfo: true,
-				plugins    : Ext.create('Ext.ux.SlidingPager', {}),
-				items      : ['-', {
-					text   : i18n['add_new_facility'],
-					iconCls: 'save',
-                    scope:me,
-					handler: me.addFacility
-				}, '-', {
-					text   : i18n['show_active_facilities'],
+					text : i18n['show_active_facilities'],
 					action : 'active',
-					scope  : me,
-					handler: me.filterFacilitiesby
-				}, '-', {
-					text   : i18n['show_inactive_facilities'],
+					scope : me,
+					handler : me.filterFacilitiesby
+				}, '-',
+				{
+					text : i18n['show_inactive_facilities'],
 					action : 'inactive',
-					scope  : me,
-					handler: me.filterFacilitiesby
+					scope : me,
+					handler : me.filterFacilitiesby
 				}]
 
 			})
 		});
 
-		me.pageBody = [ me.FacilityGrid ];
+		me.pageBody = [me.FacilityGrid];
 		me.callParent(arguments);
 	},
 
-	filterFacilitiesby: function(btn) {
+	filterFacilitiesby : function(btn)
+	{
 		this.updateTitle(i18n['Facilities'] + ' (' + Ext.String.capitalize(btn.action) + ')');
-		this.FacilityStore.proxy.extraParams = { active: btn.action == 'active' ? 1 : 0 };
+		this.FacilityStore.proxy.extraParams =
+		{
+			active : btn.action == 'active' ? 1 : 0
+		};
 		this.FacilityStore.load();
 	},
 
-	addFacility: function() {
-        var me = this,
-            grid = me.FacilityGrid,
-            store = grid.store;
-      		grid.editingPlugin.cancelEdit();
-      		store.insert(0, {
-                name:i18n['new_facility'],
-                active: 1,
-                service_location:1,
-                billing_location:0,
-                accepts_assignment:0,
-                tax_id_type:'EIN'
-            });
-      		grid.editingPlugin.startEdit(0, 0);
+	addFacility : function()
+	{
+		var me = this, grid = me.FacilityGrid, store = grid.store;
+		grid.editingPlugin.cancelEdit();
+		store.insert(0,
+		{
+			name : i18n['new_facility'],
+			active : 1,
+			service_location : 1,
+			billing_location : 0,
+			accepts_assignment : 0,
+			tax_id_type : 'EIN'
+		});
+		grid.editingPlugin.startEdit(0, 0);
 	},
 
 	/**
@@ -36777,11 +37713,13 @@ Ext.define('App.view.administration.Facilities', {
 	 * place inside this function all the functions you want
 	 * to call every this panel becomes active
 	 */
-	onActive: function(callback) {
+	onActive : function(callback)
+	{
 		this.FacilityStore.load();
 		callback(true);
 	}
-}); //ens FacilitiesPanel class
+});
+//ens FacilitiesPanel class
 /**
  * Users.ejs.php
  * Description: Users Screen
@@ -36796,972 +37734,1217 @@ Ext.define('App.view.administration.Facilities', {
  * @namespace Globals.updateGlobals
  *
  */
-Ext.define('App.view.administration.Globals', {
-	extend       : 'App.classes.RenderPanel',
-	id           : 'panelGlobals',
-	pageTitle    : 'GaiaEHR ' + i18n['global_settings'],
-	uses         : [ 'App.classes.form.fields.Checkbox' ],
-	initComponent: function() {
+Ext.define('App.view.administration.Globals',
+{
+	extend : 'App.classes.RenderPanel',
+	id : 'panelGlobals',
+	pageTitle : 'GaiaEHR ' + i18n['global_settings'],
+	uses : ['App.classes.form.fields.Checkbox'],
+	initComponent : function()
+	{
 		var me = this;
 		// *************************************************************************************
 		// Global Model and Data store
 		// *************************************************************************************
-		Ext.define('GlobalSettingsModel', {
-			extend: 'Ext.data.Model',
-			fields: [
-				{ name: 'fullname', type: 'auto' },
-				{ name: 'default_top_pane', type: 'auto' },
-				{ name: 'concurrent_layout', type: 'auto' },
-				{ name: 'css_header', type: 'auto' },
-				{ name: 'gbl_nav_area_width', type: 'auto' },
-				{ name: 'GaiaEHR_name', type: 'auto' },
-				{ name: 'full_new_patient_form', type: 'auto' },
-				{ name: 'patient_search_results_style', type: 'auto' },
-				{ name: 'simplified_demographics', type: 'auto' },
-				{ name: 'simplified_prescriptions', type: 'auto' },
-				{ name: 'simplified_copay', type: 'auto' },
-				{ name: 'use_charges_panel', type: 'auto' },
-				{ name: 'online_support_link', type: 'auto' },
-				{ name: 'language_default', type: 'auto' },
-				{ name: 'language_menu_showall', type: 'auto' },
-				{ name: 'translate_layout', type: 'auto' },
-				{ name: 'translate_lists', type: 'auto' },
-				{ name: 'translate_gacl_groups', type: 'auto' },
-				{ name: 'translate_form_titles', type: 'auto' },
-				{ name: 'translate_document_categories', type: 'auto' },
-				{ name: 'translate_appt_categories', type: 'auto' },
-				{ name: 'units_of_measurement', type: 'auto' },
-				{ name: 'disable_deprecated_metrics_form', type: 'auto' },
-				{ name: 'phone_country_code', type: 'auto' },
-				{ name: 'date_display_format', type: 'auto' },
-				{ name: 'currency_decimals', type: 'auto' },
-				{ name: 'currency_dec_point', type: 'auto' },
-				{ name: 'currency_thousands_sep', type: 'auto' },
-				{ name: 'gbl_currency_symbol', type: 'auto' },
-				{ name: 'specific_application', type: 'auto' },
-				{ name: 'inhouse_pharmacy', type: 'auto' },
-				{ name: 'disable_chart_tracker', type: 'auto' },
-				{ name: 'disable_phpmyadmin_link', type: 'auto' },
-				{ name: 'disable_immunizations', type: 'auto' },
-				{ name: 'disable_prescriptions', type: 'auto' },
-				{ name: 'omit_employers', type: 'auto' },
-				{ name: 'select_multi_providers', type: 'auto' },
-				{ name: 'disable_non_default_groups', type: 'auto' },
-				{ name: 'ignore_pnotes_authorization', type: 'auto' },
-				{ name: 'support_encounter_claims', type: 'auto' },
-				{ name: 'advance_directives_warning', type: 'auto' },
-				{ name: 'configuration_import_export', type: 'auto' },
-				{ name: 'restrict_user_facility', type: 'auto' },
-				{ name: 'set_facility_cookie', type: 'auto' },
-				{ name: 'discount_by_money', type: 'auto' },
-				{ name: 'gbl_visit_referral_source', type: 'auto' },
-				{ name: 'gbl_mask_patient_id', type: 'auto' },
-				{ name: 'gbl_mask_invoice_number', type: 'auto' },
-				{ name: 'gbl_mask_product_id', type: 'auto' },
-				{ name: 'force_billing_widget_open', type: 'auto' },
-				{ name: 'activate_ccr_ccd_report', type: 'auto' },
-				{ name: 'disable_calendar', type: 'auto' },
-				{ name: 'schedule_start', type: 'auto' },
-				{ name: 'schedule_end', type: 'auto' },
-				{ name: 'calendar_interval', type: 'auto' },
-				{ name: 'calendar_appt_style', type: 'auto' },
-				{ name: 'docs_see_entire_calendar', type: 'auto' },
-				{ name: 'auto_create_new_encounters', type: 'auto' },
-				{ name: 'timeout', type: 'auto' },
-				{ name: 'secure_password', type: 'auto' },
-				{ name: 'password_history', type: 'auto' },
-				{ name: 'password_expiration_days', type: 'auto' },
-				{ name: 'password_grace_time', type: 'auto' },
-				{ name: 'is_client_ssl_enabled', type: 'auto' },
-				{ name: 'certificate_authority_crt', type: 'auto' },
-				{ name: 'certificate_authority_key', type: 'auto' },
-				{ name: 'client_certificate_valid_in_days', type: 'auto' },
-				{ name: 'Emergency_Login_email_id', type: 'auto' },
-				{ name: 'practice_return_email_path', type: 'auto' },
-				{ name: 'EMAIL_METHOD', type: 'auto' },
-				{ name: 'SMTP_HOST', type: 'auto' },
-				{ name: 'SMTP_PORT', type: 'auto' },
-				{ name: 'SMTP_USER', type: 'auto' },
-				{ name: 'SMTP_PASS', type: 'auto' },
-				{ name: 'EMAIL_NOTIFICATION_HOUR', type: 'auto' },
-				{ name: 'SMS_NOTIFICATION_HOUR', type: 'auto' },
-				{ name: 'SMS_GATEWAY_USENAME', type: 'auto' },
-				{ name: 'SMS_GATEWAY_PASSWORD', type: 'auto' },
-				{ name: 'SMS_GATEWAY_APIKEY', type: 'auto' },
-				{ name: 'enable_auditlog', type: 'auto' },
-				{ name: 'audit_events_patient-record', type: 'auto' },
-				{ name: 'audit_events_scheduling', type: 'auto' },
-				{ name: 'audit_events_order', type: 'auto' },
-				{ name: 'audit_events_security-administration', type: 'auto' },
-				{ name: 'audit_events_backup', type: 'auto' },
-				{ name: 'audit_events_other', type: 'auto' },
-				{ name: 'audit_events_query', type: 'auto' },
-				{ name: 'enable_atna_audit', type: 'auto' },
-				{ name: 'atna_audit_host', type: 'auto' },
-				{ name: 'atna_audit_port', type: 'auto' },
-				{ name: 'atna_audit_localcert', type: 'auto' },
-				{ name: 'atna_audit_cacert', type: 'auto' },
-				{ name: 'mysql_bin_dir', type: 'auto' },
-				{ name: 'perl_bin_dir', type: 'auto' },
-				{ name: 'temporary_files_dir', type: 'auto' },
-				{ name: 'backup_log_dir', type: 'auto' },
-				{ name: 'state_data_type', type: 'auto' },
-				{ name: 'state_list', type: 'auto' },
-				{ name: 'state_custom_addlist_widget', type: 'auto' },
-				{ name: 'country_data_type', type: 'auto' },
-				{ name: 'country_list', type: 'auto' },
-				{ name: 'print_command', type: 'auto' },
-				{ name: 'default_chief_complaint', type: 'auto' },
-				{ name: 'default_new_encounter_form', type: 'auto' },
-				{ name: 'patient_id_category_name', type: 'auto' },
-				{ name: 'patient_photo_category_name', type: 'auto' },
-				{ name: 'MedicareReferrerIsRenderer', type: 'auto' },
-				{ name: 'post_to_date_benchmark', type: 'auto' },
-				{ name: 'enable_hylafax', type: 'auto' },
-				{ name: 'hylafax_server', type: 'auto' },
-				{ name: 'hylafax_basedir', type: 'auto' },
-				{ name: 'hylafax_enscript', type: 'auto' },
-				{ name: 'enable_scanner', type: 'auto' },
-				{ name: 'scanner_output_directory', type: 'auto' }
-			]
+		Ext.define('GlobalSettingsModel',
+		{
+			extend : 'Ext.data.Model',
+			fields : [
+			{
+				name : 'fullname',
+				type : 'string'
+			},
+			{
+				name : 'default_top_pane',
+				type : 'string'
+			},
+			{
+				name : 'concurrent_layout',
+				type : 'string'
+			},
+			{
+				name : 'css_header',
+				type : 'string'
+			},
+			{
+				name : 'gbl_nav_area_width',
+				type : 'string'
+			},
+			{
+				name : 'GaiaEHR_name',
+				type : 'string'
+			},
+			{
+				name : 'full_new_patient_form',
+				type : 'string'
+			},
+			{
+				name : 'online_support_link',
+				type : 'string'
+			},
+			{
+				name : 'language_default',
+				type : 'string'
+			},
+			{
+				name : 'units_of_measurement',
+				type : 'string'
+			},
+			{
+				name : 'disable_deprecated_metrics_form',
+				type : 'auto'
+			},
+			{
+				name : 'phone_country_code',
+				type : 'string'
+			},
+			{
+				name : 'date_display_format',
+				type : 'string'
+			},
+			{
+				name : 'currency_decimals',
+				type : 'string'
+			},
+			{
+				name : 'currency_dec_point',
+				type : 'auto'
+			},
+			{
+				name : 'currency_thousands_sep',
+				type : 'auto'
+			},
+			{
+				name : 'gbl_currency_symbol',
+				type : 'auto'
+			},
+			{
+				name : 'specific_application',
+				type : 'auto'
+			},
+			{
+				name : 'inhouse_pharmacy',
+				type : 'auto'
+			},
+			{
+				name : 'disable_chart_tracker',
+				type : 'auto'
+			},
+			{
+				name : 'disable_phpmyadmin_link',
+				type : 'auto'
+			},
+			{
+				name : 'disable_immunizations',
+				type : 'auto'
+			},
+			{
+				name : 'disable_prescriptions',
+				type : 'auto'
+			},
+			{
+				name : 'omit_employers',
+				type : 'auto'
+			},
+			{
+				name : 'select_multi_providers',
+				type : 'auto'
+			},
+			{
+				name : 'disable_non_default_groups',
+				type : 'auto'
+			},
+			{
+				name : 'ignore_pnotes_authorization',
+				type : 'auto'
+			},
+			{
+				name : 'support_encounter_claims',
+				type : 'auto'
+			},
+			{
+				name : 'advance_directives_warning',
+				type : 'auto'
+			},
+			{
+				name : 'configuration_import_export',
+				type : 'auto'
+			},
+			{
+				name : 'restrict_user_facility',
+				type : 'auto'
+			},
+			{
+				name : 'set_facility_cookie',
+				type : 'auto'
+			},
+			{
+				name : 'discount_by_money',
+				type : 'auto'
+			},
+			{
+				name : 'gbl_visit_referral_source',
+				type : 'auto'
+			},
+			{
+				name : 'gbl_mask_patient_id',
+				type : 'auto'
+			},
+			{
+				name : 'gbl_mask_invoice_number',
+				type : 'auto'
+			},
+			{
+				name : 'gbl_mask_product_id',
+				type : 'auto'
+			},
+			{
+				name : 'force_billing_widget_open',
+				type : 'auto'
+			},
+			{
+				name : 'activate_ccr_ccd_report',
+				type : 'auto'
+			},
+			{
+				name : 'disable_calendar',
+				type : 'auto'
+			},
+			{
+				name : 'schedule_start',
+				type : 'auto'
+			},
+			{
+				name : 'schedule_end',
+				type : 'auto'
+			},
+			{
+				name : 'calendar_interval',
+				type : 'auto'
+			},
+			{
+				name : 'calendar_appt_style',
+				type : 'auto'
+			},
+			{
+				name : 'docs_see_entire_calendar',
+				type : 'auto'
+			},
+			{
+				name : 'auto_create_new_encounters',
+				type : 'auto'
+			},
+			{
+				name : 'timeout',
+				type : 'auto'
+			},
+			{
+				name : 'secure_password',
+				type : 'auto'
+			},
+			{
+				name : 'password_history',
+				type : 'auto'
+			},
+			{
+				name : 'password_expiration_days',
+				type : 'auto'
+			},
+			{
+				name : 'password_grace_time',
+				type : 'auto'
+			},
+			{
+				name : 'is_client_ssl_enabled',
+				type : 'auto'
+			},
+			{
+				name : 'certificate_authority_crt',
+				type : 'auto'
+			},
+			{
+				name : 'certificate_authority_key',
+				type : 'auto'
+			},
+			{
+				name : 'client_certificate_valid_in_days',
+				type : 'auto'
+			},
+			{
+				name : 'Emergency_Login_email_id',
+				type : 'auto'
+			},
+			{
+				name : 'practice_return_email_path',
+				type : 'auto'
+			},
+			{
+				name : 'EMAIL_METHOD',
+				type : 'auto'
+			},
+			{
+				name : 'SMTP_HOST',
+				type : 'auto'
+			},
+			{
+				name : 'SMTP_PORT',
+				type : 'auto'
+			},
+			{
+				name : 'SMTP_USER',
+				type : 'auto'
+			},
+			{
+				name : 'SMTP_PASS',
+				type : 'auto'
+			},
+			{
+				name : 'EMAIL_NOTIFICATION_HOUR',
+				type : 'auto'
+			},
+			{
+				name : 'SMS_NOTIFICATION_HOUR',
+				type : 'auto'
+			},
+			{
+				name : 'SMS_GATEWAY_USENAME',
+				type : 'auto'
+			},
+			{
+				name : 'SMS_GATEWAY_PASSWORD',
+				type : 'auto'
+			},
+			{
+				name : 'SMS_GATEWAY_APIKEY',
+				type : 'auto'
+			},
+			{
+				name : 'enable_auditlog',
+				type : 'auto'
+			},
+			{
+				name : 'audit_events_patient-record',
+				type : 'auto'
+			},
+			{
+				name : 'audit_events_scheduling',
+				type : 'auto'
+			},
+			{
+				name : 'audit_events_order',
+				type : 'auto'
+			},
+			{
+				name : 'audit_events_security-administration',
+				type : 'auto'
+			},
+			{
+				name : 'audit_events_backup',
+				type : 'auto'
+			},
+			{
+				name : 'audit_events_other',
+				type : 'auto'
+			},
+			{
+				name : 'audit_events_query',
+				type : 'auto'
+			},
+			{
+				name : 'enable_atna_audit',
+				type : 'auto'
+			},
+			{
+				name : 'atna_audit_host',
+				type : 'auto'
+			},
+			{
+				name : 'atna_audit_port',
+				type : 'auto'
+			},
+			{
+				name : 'atna_audit_localcert',
+				type : 'auto'
+			},
+			{
+				name : 'atna_audit_cacert',
+				type : 'auto'
+			},
+			{
+				name : 'mysql_bin_dir',
+				type : 'auto'
+			},
+			{
+				name : 'perl_bin_dir',
+				type : 'auto'
+			},
+			{
+				name : 'temporary_files_dir',
+				type : 'auto'
+			},
+			{
+				name : 'backup_log_dir',
+				type : 'auto'
+			},
+			{
+				name : 'state_data_type',
+				type : 'auto'
+			},
+			{
+				name : 'state_list',
+				type : 'auto'
+			},
+			{
+				name : 'state_custom_addlist_widget',
+				type : 'auto'
+			},
+			{
+				name : 'country_data_type',
+				type : 'auto'
+			},
+			{
+				name : 'country_list',
+				type : 'auto'
+			},
+			{
+				name : 'print_command',
+				type : 'auto'
+			},
+			{
+				name : 'default_chief_complaint',
+				type : 'auto'
+			},
+			{
+				name : 'default_new_encounter_form',
+				type : 'auto'
+			},
+			{
+				name : 'patient_id_category_name',
+				type : 'auto'
+			},
+			{
+				name : 'patient_photo_category_name',
+				type : 'auto'
+			},
+			{
+				name : 'MedicareReferrerIsRenderer',
+				type : 'auto'
+			},
+			{
+				name : 'post_to_date_benchmark',
+				type : 'auto'
+			},
+			{
+				name : 'enable_hylafax',
+				type : 'auto'
+			},
+			{
+				name : 'hylafax_server',
+				type : 'auto'
+			},
+			{
+				name : 'hylafax_basedir',
+				type : 'auto'
+			},
+			{
+				name : 'hylafax_enscript',
+				type : 'auto'
+			},
+			{
+				name : 'enable_scanner',
+				type : 'auto'
+			},
+			{
+				name : 'scanner_output_directory',
+				type : 'auto'
+			}]
 		});
 
-		me.store = Ext.create('Ext.data.Store', {
-			model   : 'GlobalSettingsModel',
-			proxy   : {
-				type: 'direct',
-				api : {
-					read: Globals.getGlobals
+		me.store = Ext.create('Ext.data.Store',
+		{
+			model : 'GlobalSettingsModel',
+			proxy :
+			{
+				type : 'direct',
+				api :
+				{
+					read : Globals.getGlobals
 				}
 			},
-			autoLoad: false
+			autoLoad : false
 		});
 
 		//------------------------------------------------------------------------------
 		// When the data is loaded semd values to de form
 		//------------------------------------------------------------------------------
-		me.store.on('load', function() {
-			var rec = me.store.getAt(0); // get the record from the store
+		me.store.on('load', function()
+		{
+			var rec = me.store.getAt(0);
+			// get the record from the store
 			me.globalFormPanel.getForm().loadRecord(rec);
 		});
 		// *************************************************************************************
 		// DataStores for all static combos
 		// *************************************************************************************
-		me.default_top_pane_store = Ext.create('Ext.data.Store', {
-			fields: ['title', 'option_id'],
-			data  : [
-				{"title": i18n['dashboard'], "option_id": "app/dashboard/dashboard.ejs.php"},
-				{"title": i18n['calendar'], "option_id": "app/calendar/calendar.ejs.php"},
-				{"title": i18n['messages'], "option_id": "app/messages/messages.ejs.php"}
-			]
+		me.default_top_pane_store = Ext.create('Ext.data.Store',
+		{
+			fields : ['title', 'option_id'],
+			data : [
+			{
+				"title" : i18n['dashboard'],
+				"option_id" : "app/dashboard/dashboard.ejs.php"
+			},
+			{
+				"title" : i18n['calendar'],
+				"option_id" : "app/calendar/calendar.ejs.php"
+			},
+			{
+				"title" : i18n['messages'],
+				"option_id" : "app/messages/messages.ejs.php"
+			}]
 		});
-		me.fullname_store = Ext.create('Ext.data.Store', {
-			fields: ['format', 'option_id'],
-			data  : [
-				{"format": i18n['last_first_middle'], "option_id": "0"},
-				{"format": i18n['first_middle_last'], "option_id": "1"}
-			]
+		me.fullname_store = Ext.create('Ext.data.Store',
+		{
+			fields : ['format', 'option_id'],
+			data : [
+			{
+				"format" : i18n['last_first_middle'],
+				"option_id" : "0"
+			},
+			{
+				"format" : i18n['first_middle_last'],
+				"option_id" : "1"
+			}]
 		});
-		me.concurrent_layout_store = Ext.create('Ext.data.Store', {
-			fields: ['title', 'option_id'],
-			data  : [
-				{"title": i18n['main_navigation_menu_left'], "option_id": "west"},
-				{"title": i18n['main_navigation_menu_right'], "option_id": "east"}
-			]
+		me.concurrent_layout_store = Ext.create('Ext.data.Store',
+		{
+			fields : ['title', 'option_id'],
+			data : [
+			{
+				"title" : i18n['main_navigation_menu_left'],
+				"option_id" : "west"
+			},
+			{
+				"title" : i18n['main_navigation_menu_right'],
+				"option_id" : "east"
+			}]
 		});
-		me.css_header_store = Ext.create('Ext.data.Store', {
-			fields: ['title', 'option_id'],
-			data  : [
-				{"title": i18n['grey_default'], "option_id": "ext-all-gray.css"},
-				{"title": i18n['blue'], "option_id": "ext-all.css"},
-				{"title": i18n['access'], "option_id": "ext-all-access.css"}
-			]
+		me.css_header_store = Ext.create('Ext.data.Store',
+		{
+			fields : ['title', 'option_id'],
+			data : [
+			{
+				"title" : i18n['grey_default'],
+				"option_id" : "ext-all-gray.css"
+			},
+			{
+				"title" : i18n['blue'],
+				"option_id" : "ext-all.css"
+			},
+			{
+				"title" : i18n['access'],
+				"option_id" : "ext-all-access.css"
+			}]
 		});
-		me.full_new_patient_form_store = Ext.create('Ext.data.Store', {
-			fields: ['title', 'option_id'],
-			data  : [
-				{"title": i18n['oldstyle_static_form_without_search_or_duplication_check'], "option_id": "0"},
-				{"title": i18n['all_demographics_fields_with_search_and_duplication_check'], "option_id": "1"},
-				{"title": i18n['mandatory_or_specified_fields_only_search_and_dup_check'], "option_id": "2"},
-				{"title": i18n['mandatory_or_specified_fields_only_dup_check_no_search'], "option_id": "3"}
-			]
+		me.full_new_patient_form_store = Ext.create('Ext.data.Store',
+		{
+			fields : ['title', 'option_id'],
+			data : [
+			{
+				"title" : i18n['oldstyle_static_form_without_search_or_duplication_check'],
+				"option_id" : "0"
+			},
+			{
+				"title" : i18n['all_demographics_fields_with_search_and_duplication_check'],
+				"option_id" : "1"
+			},
+			{
+				"title" : i18n['mandatory_or_specified_fields_only_search_and_dup_check'],
+				"option_id" : "2"
+			},
+			{
+				"title" : i18n['mandatory_or_specified_fields_only_dup_check_no_search'],
+				"option_id" : "3"
+			}]
 		});
-		me.patient_search_results_style_store = Ext.create('Ext.data.Store', {
-			fields: ['title', 'option_id'],
-			data  : [
-				{"title": i18n['encounter_statistics'], "option_id": "0"},
-				{"title": i18n['mandatory_and_specified_fields'], "option_id": "1"}
-			]
+		me.patient_search_results_style_store = Ext.create('Ext.data.Store',
+		{
+			fields : ['title', 'option_id'],
+			data : [
+			{
+				"title" : i18n['encounter_statistics'],
+				"option_id" : "0"
+			},
+			{
+				"title" : i18n['mandatory_and_specified_fields'],
+				"option_id" : "1"
+			}]
 		});
-		me.units_of_measurement_store = Ext.create('Ext.data.Store', {
-			fields: ['title', 'option_id'],
-			data  : [
-				{"title": i18n['show_both_us_and_metric_main_unit_is_us'], "option_id": "1"},
-				{"title": i18n['show_both_us_and_metric_main_unit_is_metric'], "option_id": "2"},
-				{"title": i18n['show_us_only'], "option_id": "3"},
-				{"title": i18n['show_metric_only'], "option_id": "4"}
-			]
+		me.units_of_measurement_store = Ext.create('Ext.data.Store',
+		{
+			fields : ['title', 'option_id'],
+			data : [
+			{
+				"title" : i18n['show_both_us_and_metric_main_unit_is_us'],
+				"option_id" : "1"
+			},
+			{
+				"title" : i18n['show_both_us_and_metric_main_unit_is_metric'],
+				"option_id" : "2"
+			},
+			{
+				"title" : i18n['show_us_only'],
+				"option_id" : "3"
+			},
+			{
+				"title" : i18n['show_metric_only'],
+				"option_id" : "4"
+			}]
 		});
-		me.date_display_format_store = Ext.create('Ext.data.Store', {
-			fields: ['title', 'option_id'],
-			data  : [
-				{"title": i18n['yyyy_mm_dd'], "option_id": "0"},
-				{"title": i18n['mm_dd_yyyy'], "option_id": "1"},
-				{"title": i18n['dd_mm_yyyy'], "option_id": "2"}
-			]
+		me.date_display_format_store = Ext.create('Ext.data.Store',
+		{
+			fields : ['title', 'option_id'],
+			data : [
+			{
+				"title" : i18n['yyyy_mm_dd'],
+				"option_id" : "Y-m-d"
+			},
+			{
+				"title" : i18n['mm_dd_yyyy'],
+				"option_id" : "m/d/Y"
+			},
+			{
+				"title" : i18n['dd_mm_yyyy'],
+				"option_id" : "d/m/Y"
+			}]
 		});
-		me.time_display_format_store = Ext.create('Ext.data.Store', {
-			fields: ['title', 'option_id'],
-			data  : [
-				{"title": i18n['24_hr'], "option_id": "0"},
-				{"title": i18n['12 hr'], "option_id": "1"}
-			]
+		me.time_display_format_store = Ext.create('Ext.data.Store',
+		{
+			fields : ['title', 'option_id'],
+			data : [
+			{
+				"title" : i18n['24_hr'],
+				"option_id" : "H:i"
+			},
+			{
+				"title" : i18n['12 hr'],
+				"option_id" : "g:i a"
+			}]
 		});
-		me.currency_decimals_store = Ext.create('Ext.data.Store', {
-			fields: ['title', 'option_id'],
-			data  : [
-				{"title": i18n['0'], "option_id": "0"},
-				{"title": i18n['1'], "option_id": "1"},
-				{"title": i18n['2'], "option_id": "2"}
-			]
+		me.currency_decimals_store = Ext.create('Ext.data.Store',
+		{
+			fields : ['title', 'option_id'],
+			data : [
+			{
+				"title" : i18n['0'],
+				"option_id" : "0"
+			},
+			{
+				"title" : i18n['1'],
+				"option_id" : "1"
+			},
+			{
+				"title" : i18n['2'],
+				"option_id" : "2"
+			}]
 		});
-		me.currency_dec_point_store = Ext.create('Ext.data.Store', {
-			fields: ['title', 'option_id'],
-			data  : [
-				{"title": i18n['comma'], "option_id": ","},
-				{"title": i18n['period'], "option_id": "."}
-			]
+		me.currency_dec_point_store = Ext.create('Ext.data.Store',
+		{
+			fields : ['title', 'option_id'],
+			data : [
+			{
+				"title" : i18n['comma'],
+				"option_id" : ","
+			},
+			{
+				"title" : i18n['period'],
+				"option_id" : "."
+			}]
 		});
-		me.currency_thousands_sep_store = Ext.create('Ext.data.Store', {
-			fields: ['title', 'option_id'],
-			data  : [
-				{"title": i18n['comma'], "option_id": ","},
-				{"title": i18n['period'], "option_id": "."},
-				{"title": i18n['space'], "option_id": " "},
-				{"title": i18n['none'], "option_id": ""}
-			]
+		me.currency_thousands_sep_store = Ext.create('Ext.data.Store',
+		{
+			fields : ['title', 'option_id'],
+			data : [
+			{
+				"title" : i18n['comma'],
+				"option_id" : ","
+			},
+			{
+				"title" : i18n['period'],
+				"option_id" : "."
+			},
+			{
+				"title" : i18n['space'],
+				"option_id" : " "
+			},
+			{
+				"title" : i18n['none'],
+				"option_id" : ""
+			}]
 		});
-		me.EMAIL_METHOD_store = Ext.create('Ext.data.Store', {
-			fields: ['title', 'option_id'],
-			data  : [
-				{"title": "PHPMAIL", "option_id": "PHPMAIL"},
-				{"title": "SENDMAIL", "option_id": "SENDMAIL"},
-				{"title": "SMTP", "option_id": "SMTP"}
-			]
+		me.EMAIL_METHOD_store = Ext.create('Ext.data.Store',
+		{
+			fields : ['title', 'option_id'],
+			data : [
+			{
+				"title" : "PHPMAIL",
+				"option_id" : "PHPMAIL"
+			},
+			{
+				"title" : "SENDMAIL",
+				"option_id" : "SENDMAIL"
+			},
+			{
+				"title" : "SMTP",
+				"option_id" : "SMTP"
+			}]
 		});
-		me.state_country_data_type_store = Ext.create('Ext.data.Store', {
-			fields: ['title', 'option_id'],
-			data  : [
-				{"title": i18n['text_field'], "option_id": "2"},
-				{"title": i18n['single_selection_list'], "option_id": "1"},
-				{"title": i18n['single_selection_list_with_ability_to_add_to_the_list'], "option_id": "26"}
-			]
+		me.state_country_data_type_store = Ext.create('Ext.data.Store',
+		{
+			fields : ['title', 'option_id'],
+			data : [
+			{
+				"title" : i18n['text_field'],
+				"option_id" : "2"
+			},
+			{
+				"title" : i18n['single_selection_list'],
+				"option_id" : "1"
+			},
+			{
+				"title" : i18n['single_selection_list_with_ability_to_add_to_the_list'],
+				"option_id" : "26"
+			}]
 		});
 		//**************************************************************************
 		// Dummy Store
 		//**************************************************************************
-		me.dummyStore = new Ext.data.ArrayStore({
-			fields: ['title', 'option_id'],
-			data  : [
-				[i18n['option_1'], 'Option 1'],
-				[i18n['option_2'], 'Option 2'],
-				[i18n['option_3'], 'Option 3'],
-				[i18n['option_5'], 'Option 5'],
-				[i18n['option_6'], 'Option 6'],
-				[i18n['option_7'], 'Option 7']
-			]
+		me.dummyStore = new Ext.data.ArrayStore(
+		{
+			fields : ['title', 'option_id'],
+			data : [[i18n['option_1'], 'Option 1'], [i18n['option_2'], 'Option 2'], [i18n['option_3'], 'Option 3'], [i18n['option_5'], 'Option 5'], [i18n['option_6'], 'Option 6'], [i18n['option_7'], 'Option 7']]
 		});
 		//**************************************************************************
 		// Global Form Panel
 		//**************************************************************************
-		me.globalFormPanel = Ext.create('App.classes.form.Panel', {
-			layout       : 'fit',
-			autoScroll   : true,
-			bodyStyle    : 'padding: 0;',
-			fieldDefaults: { msgTarget: 'side', labelWidth: 220, width: 520 },
-			defaults     : { anchor: '100%' },
-			items        : [
+		me.globalFormPanel = Ext.create('App.classes.form.Panel',
+		{
+			layout : 'fit',
+			autoScroll : true,
+			bodyStyle : 'padding: 0;',
+			fieldDefaults :
+			{
+				msgTarget : 'side',
+				labelWidth : 220,
+				width : 520
+			},
+			defaults :
+			{
+				anchor : '100%'
+			},
+			items : [
+			{
+				xtype : 'tabpanel',
+				activeTab : 0,
+				defaults :
 				{
-					xtype      : 'tabpanel',
-					activeTab  : 0,
-					defaults   : {bodyStyle: 'padding:10px', autoScroll: true },
-					items      : [
+					bodyStyle : 'padding:10px',
+					autoScroll : true
+				},
+				items : [
+				{
+					title : i18n['appearance'],
+					defaults :
+					{
+						anchor : '100%'
+					},
+					items : [
+                        {
+                            xtype : 'combo',
+                            fieldLabel : i18n['main_top_pane_screen'],
+                            name : 'default_top_pane',
+                            displayField : 'title',
+                            valueField : 'option_id',
+                            editable : false,
+                            store : me.default_top_pane_store
+                        },
+                        {
+                            xtype : 'combo',
+                            fieldLabel : i18n['layout_style'],
+                            name : 'concurrent_layout',
+                            displayField : 'title',
+                            valueField : 'option_id',
+                            editable : false,
+                            store : me.concurrent_layout_store
+                        },
+                        {
+                            xtype : 'combo',
+                            fieldLabel : i18n['theme'],
+                            name : 'css_header',
+                            displayField : 'title',
+                            valueField : 'option_id',
+                            editable : false,
+                            store : me.css_header_store
+                        },
+                        {
+                            xtype : 'textfield',
+                            fieldLabel : i18n['navigation_area_width'],
+                            name : 'gbl_nav_area_width'
+                        }
+                    ]
+				},
+				{
+					title : 'Locale',
+					defaultType : 'textfield',
+					items : [
+					{
+						xtype : 'combo',
+						fieldLabel : i18n['fullname_format'],
+						name : 'fullname',
+						displayField : 'format',
+						valueField : 'option_id',
+						editable : false,
+						store : me.fullname_store
+					},
+					{
+						xtype : 'languagescombo',
+						fieldLabel : i18n['default_language'],
+						name : 'language_default'
+					},
+					{
+						xtype : 'combo',
+						fieldLabel : i18n['units_for_visits_forms'],
+						name : 'units_of_measurement',
+						displayField : 'title',
+						valueField : 'option_id',
+						editable : false,
+						store : me.units_of_measurement_store
+					},
+					{
+						xtype : 'textfield',
+						fieldLabel : i18n['telephone_country_code'],
+						name : 'phone_country_code'
+					},
+					{
+						xtype : 'combo',
+						fieldLabel : i18n['date_display_format'],
+						name : 'date_display_format',
+						displayField : 'title',
+						valueField : 'option_id',
+						editable : false,
+						store : me.date_display_format_store
+					},
+					{
+						xtype : 'combo',
+						fieldLabel : i18n['time_display_format'],
+						name : 'time_display_format', // ??????
+						displayField : 'title',
+						valueField : 'option_id',
+						editable : false,
+						store : me.time_display_format_store
+					},
+					{
+						xtype : 'combo',
+						fieldLabel : i18n['currency_decimal_places'],
+						name : 'currency_decimals',
+						displayField : 'title',
+						valueField : 'option_id',
+						editable : false,
+						store : me.currency_decimals_store
+					},
+					{
+						xtype : 'combo',
+						fieldLabel : i18n['currency_decimal_point_symbol'],
+						name : 'currency_dec_point',
+						displayField : 'title',
+						valueField : 'option_id',
+						editable : false,
+						store : me.currency_dec_point_store
+					},
+					{
+						xtype : 'combo',
+						fieldLabel : i18n['currency_thousands_separator'],
+						name : 'currency_thousands_sep',
+						displayField : 'title',
+						valueField : 'option_id',
+						editable : false,
+						store : me.currency_thousands_sep_store
+					},
+					{
+						xtype : 'textfield',
+						fieldLabel : i18n['currency_designator'],
+						name : 'gbl_currency_symbol'
+					}]
+				},
+				{
+					title : 'Features',
+					defaultType : 'mitos.checkbox',
+					items : [
+                        {
+                            fieldLabel : i18n['disable_chart_tracker'],
+                            name : 'disable_charts'
+                        },
+                        {
+                            fieldLabel : i18n['disable_immunizations'],
+                            name : 'disable_immunizations'
+                        },
+                        {
+                            fieldLabel : i18n['disable_prescriptions'],
+                            name : 'disable_prescriptions'
+                        },
+    //					{
+    //						fieldLabel : i18n['restrict_users_to_facilities'],
+    //						name : 'restrict_user_facility'
+    //					},
+                        {
+                            fieldLabel : i18n['force_billing_widget_open'],
+                            name : 'force_billing_widget_open'
+                        },
+                        {
+                            fieldLabel : i18n['actiate_ccr_ccd_reporting'],
+                            name : 'activate_ccr_ccd_report'
+                        }
+                    ]
+				},
+//				{
+//					title : i18n['calendar'],
+//					defaultType : 'combo',
+//					items : [
+//                        {
+//                            xtype : 'mitos.checkbox',
+//                            fieldLabel : i18n['disable_calendar'],
+//                            name : 'Cal1'
+//                        },
+//                        {
+//                            fieldLabel : i18n['calendar_starting_hour'],
+//                            name : 'Cal2',
+//                            displayField : 'title',
+//                            valueField : 'option_id',
+//                            editable : false,
+//                            store : me.dummyStore
+//                        },
+//                        {
+//                            fieldLabel : i18n['calendar_ending_hour'],
+//                            name : 'Cal3',
+//                            displayField : 'title',
+//                            valueField : 'option_id',
+//                            editable : false,
+//                            store : me.dummyStore
+//                        },
+//                        {
+//                            fieldLabel : i18n['calendar_interval'],
+//                            name : 'Cal4',
+//                            displayField : 'title',
+//                            valueField : 'option_id',
+//                            editable : false,
+//                            store : me.dummyStore
+//                        },
+//                        {
+//                            fieldLabel : i18n['appointment_display_style'],
+//                            name : 'Cal5',
+//                            displayField : 'title',
+//                            valueField : 'option_id',
+//                            editable : false,
+//                            store : me.dummyStore
+//                        },
+//                        {
+//                            xtype : 'mitos.checkbox',
+//                            fieldLabel : i18n['provider_see_entire_calendar'],
+//                            name : 'Cal6'
+//                        },
+//                        {
+//                            xtype : 'mitos.checkbox',
+//                            fieldLabel : i18n['auto_create_new_encounters'],
+//                            name : 'Cal7'
+//                        },
+//                        {
+//                            fieldLabel : i18n['appointment_event_color'],
+//                            name : 'Cal8',
+//                            displayField : 'title',
+//                            valueField : 'option_id',
+//                            editable : false,
+//                            store : me.dummyStore
+//                        }
+//                    ]
+//				},
+				{
+					title : 'Security',
+					defaultType : 'textfield',
+					items : [
+					{
+						fieldLabel : i18n['idle_session_timeout_seconds'],
+						name : 'timeout'
+					},
+					{
+						xtype : 'mitos.checkbox',
+						fieldLabel : i18n['require_strong_passwords'],
+						name : 'secure_password',
+						displayField : 'title',
+						valueField : 'option_id',
+						editable : false,
+						store : me.dummyStore
+					},
+					{
+						xtype : 'mitos.checkbox',
+						fieldLabel : i18n['require_unique_passwords'],
+						name : 'password_history'
+					},
+					{
+						fieldLabel : i18n['defaults_password_expiration_days'],
+						name : 'password_expiration_days'
+					},
+					{
+						fieldLabel : i18n['password_expiration_grace_period'],
+						name : 'password_grace_time'
+					},
+					{
+						xtype : 'mitos.checkbox',
+						fieldLabel : i18n['enable_clients_ssl'],
+						name : 'is_client_ssl_enabled'
+					},
+					{
+						fieldLabel : i18n['path_to_ca_certificate_file'],
+						name : 'certificate_authority_crt'
+					},
+					{
+						fieldLabel : i18n['path_to_ca_key_file'],
+						name : 'certificate_authority_key'
+					},
+					{
+						fieldLabel : i18n['client_certificate_expiration_days'],
+						name : 'client_certificate_valid_in_days'
+					},
+					{
+						fieldLabel : i18n['emergency_login_email_address'],
+						name : 'Emergency_Login_email_id'
+					}]
+				},
+				{
+					title : i18n['notifications'],
+					defaultType : 'textfield',
+					items : [
+					{
+						fieldLabel : i18n['notification_email_address'],
+						name : 'practice_return_email_path'
+					},
+					{
+						xtype : 'combo',
+						fieldLabel : i18n['email_transport_method'],
+						name : 'EMAIL_METHOD',
+						displayField : 'title',
+						valueField : 'option_id',
+						editable : false,
+						store : me.EMAIL_METHOD_store
+					},
+					{
+						fieldLabel : i18n['smpt_server_hostname'],
+						name : 'SMTP_HOST'
+					},
+					{
+						fieldLabel : i18n['smpt_server_port_number'],
+						name : 'SMTP_PORT'
+					},
+					{
+						fieldLabel : i18n['smpt_user_for_authentication'],
+						name : 'SMTP_USER'
+					},
+					{
+						fieldLabel : i18n['smpt_password_for_authentication'],
+						name : 'SMTP_PASS'
+					},
+					{
+						fieldLabel : i18n['email_notification_hours'],
+						name : 'EMAIL_NOTIFICATION_HOUR'
+					},
+					{
+						fieldLabel : i18n['sms_notification_hours'],
+						name : 'SMS_NOTIFICATION_HOUR'
+					},
+					{
+						fieldLabel : i18n['sms_gateway_usarname'],
+						name : 'SMS_GATEWAY_USENAME'
+					},
+					{
+						fieldLabel : i18n['sms_gateway_password'],
+						name : 'SMS_GATEWAY_PASSWORD'
+					},
+					{
+						fieldLabel : i18n['sms_gateway_api_Key'],
+						name : 'SMS_GATEWAY_APIKEY'
+					}]
+				},
+				{
+					title : i18n['logging'],
+					defaultType : 'mitos.checkbox',
+					items : [
+					{
+						fieldLabel : i18n['enable_audit_logging'],
+						name : 'enable_auditlog'
+					},
+					{
+						fieldLabel : i18n['audit_logging_patient_record'],
+						name : 'audit_events_patient'
+					},
+					{
+						fieldLabel : i18n['audid_logging_scheduling'],
+						name : 'audit_events_scheduling'
+					},
+					{
+						fieldLabel : i18n['audid_logging_order'],
+						name : 'audit_events_order'
+					},
+					{
+						fieldLabel : i18n['audid_logging_security_administration'],
+						name : 'audit_events_security'
+					},
+					{
+						fieldLabel : i18n['audid_logging_backups'],
+						name : 'audit_events_backup'
+					},
+					{
+						fieldLabel : i18n['audid_logging_miscellaeous'],
+						name : 'audit_events_other'
+					},
+					{
+						fieldLabel : i18n['audid_logging_select_query'],
+						name : 'audit_events_query'
+					},
+					{
+						fieldLabel : i18n['enable_atna_auditing'],
+						name : 'enable_atna_audit'
+					},
+					{
+						xtype : 'textfield',
+						fieldLabel : i18n['atna_audit_host'],
+						name : 'atna_audit_host'
+					},
+					{
+						xtype : 'textfield',
+						fieldLabel : i18n['atna_audit_post'],
+						name : 'atna_audit_port'
+					},
+					{
+						xtype : 'textfield',
+						fieldLabel : i18n['atna_audit_local_certificate'],
+						name : 'atna_audit_localcert'
+					},
+					{
+						xtype : 'textfield',
+						fieldLabel : i18n['atna_audit_ca_certificate'],
+						name : 'atna_audit_cacert'
+					}]
+				},
+				{
+					title : i18n['miscellaneous'],
+					defaultType : 'textfield',
+					items : [
+					{
+						fieldLabel : i18n['state_list'],
+						name : 'state_list'
+					},
+					{
+						fieldLabel : i18n['country_list'],
+						name : 'country_list'
+					},
+					{
+						fieldLabel : i18n['print_command'],
+						name : 'print_command'
+					},
+					{
+						fieldLabel : i18n['default_reason_for_visit'],
+						name : 'default_chief_complaint'
+					},
+					{
+						fieldLabel : i18n['patient_id_category_name'],
+						name : 'patient_id_category_name'
+					},
+					{
+						fieldLabel : i18n['patient_photo_category_name'],
+						name : 'patient_photo_category_name'
+					},
+					{
+						xtype : 'mitos.checkbox',
+						fieldLabel : i18n['medicare_referrer_is_renderer'],
+						name : 'MedicareReferrerIsRenderer'
+					},
+					{
+						fieldLabel : i18n['final_close_date_yyy_mm_dd'],
+						name : 'post_to_date_benchmark'
+					},
+					{
+						xtype : 'mitos.checkbox',
+						fieldLabel : i18n['enable_hylafax_support'],
+						name : 'enable_hylafax'
+					},
+					{
+						fieldLabel : i18n['hylafax_server'],
+						name : 'hylafax_server'
+					},
+					{
+						fieldLabel : i18n['hylafax_directory'],
+						name : 'hylafax_basedir'
+					},
+					{
+						fieldLabel : i18n['hylafax_enscript_command'],
+						name : 'hylafax_enscript'
+					},
+					{
+						xtype : 'mitos.checkbox',
+						fieldLabel : i18n['enable_scanner_support'],
+						name : 'enable_scanner'
+					},
+					{
+						fieldLabel : i18n['scanner_directory'],
+						name : 'scanner_output_directory'
+					}]
+				},
+				{
+					title : i18n['connectors'],
+					defaultType : 'textfield',
+					items : [
+					{
+						xtype : 'mitos.checkbox',
+						fieldLabel : i18n['enable_lab_exchange'],
+						name : 'Conn1'
+					},
+					{
+						fieldLabel : i18n['lab_exchange_site_id'],
+						name : 'Conn2'
+					},
+					{
+						fieldLabel : i18n['lab_exchange_token_id'],
+						name : 'Conn3'
+					},
+					{
+						fieldLabel : i18n['lab_exchange_site_address'],
+						name : 'Conn4'
+					}]
+				}],
+				dockedItems : [
+				{
+					xtype : 'toolbar',
+					dock : 'top',
+					items : [
+					{
+						text : i18n['save_configuration'],
+						iconCls : 'save',
+						handler : function()
 						{
-							title   : i18n['appearance'],
-							defaults: {anchor: '100%'},
-							items   : [
-								{
-									xtype       : 'combo',
-									fieldLabel  : i18n['main_top_pane_screen'],
-									name        : 'default_top_pane',
-									displayField: 'title',
-									valueField  : 'option_id',
-									editable    : false,
-									store       : me.default_top_pane_store
-								},
-								{
-									xtype       : 'combo',
-									fieldLabel  : i18n['layout_style'],
-									name        : 'concurrent_layout',
-									displayField: 'title',
-									valueField  : 'option_id',
-									editable    : false,
-									store       : me.concurrent_layout_store
-								},
-								{
-									xtype       : 'combo',
-									fieldLabel  : i18n['theme'],
-									name        : 'css_header',
-									displayField: 'title',
-									valueField  : 'option_id',
-									editable    : false,
-									store       : me.css_header_store
-								},
-								{
-									xtype     : 'textfield',
-									fieldLabel: i18n['navigation_area_width'],
-									name      : 'gbl_nav_area_width'
-								},
-								{
-									xtype     : 'textfield',
-									fieldLabel: i18n['application_title'],
-									name      : 'GaiaEHR_name'
-								},
-								{
-									xtype       : 'combo',
-									fieldLabel  : i18n['new_patient_form'],
-									name        : 'full_new_patient_form',
-									displayField: 'title',
-									valueField  : 'option_id',
-									editable    : false,
-									store       : me.full_new_patient_form_store
-								},
-								{
-									xtype       : 'combo',
-									fieldLabel  : i18n['patient_search_resuls_style'],
-									name        : 'patient_search_results_style',
-									displayField: 'title',
-									valueField  : 'option_id',
-									editable    : false,
-									store       : me.patient_search_results_style_store
-								},
-								{
-									xtype     : 'mitos.checkbox',
-									fieldLabel: i18n['simplified_demographics'],
-									name      : 'simplified_demographics'
-								},
-								{
-									xtype     : 'mitos.checkbox',
-									fieldLabel: i18n['simplified_prescriptions'],
-									name      : 'simplified_prescriptions'
-								},
-								{
-									xtype     : 'mitos.checkbox',
-									fieldLabel: i18n['simplified_copay'],
-									name      : 'simplified_copay'
-								},
-								{
-									xtype     : 'mitos.checkbox',
-									fieldLabel: i18n['user_charges_panel'],
-									name      : 'use_charges_panel'
-								},
-								{
-									xtype     : 'textfield',
-									fieldLabel: i18n['online_support_link'],
-									name      : 'online_support_link'
-								}
-							]
-						},
-						{
-							title      : 'Locale',
-							//defaults: {},
-							defaultType: 'textfield',
-							items      : [
-								{
-									xtype       : 'combo',
-									fieldLabel  : i18n['fullname_format'],
-									name        : 'fullname',
-									displayField: 'format',
-									valueField  : 'option_id',
-									editable    : false,
-									store       : me.fullname_store
-								},
-								{
-									xtype     : 'languagescombo',
-									fieldLabel: i18n['default_language'],
-									name      : 'language_default'
-								},
-								{
-									xtype     : 'mitos.checkbox',
-									fieldLabel: i18n['all_language_allowed'],
-									name      : 'language_menu_showall'
-								},
-								{
-									xtype      : 'languagescombo',
-									fieldLabel : i18n['allowed_languages'] + ' -??-',
-									name       : 'lang_description2', // ???????
-									multiSelect: true
-								},
-								{
-									xtype     : 'mitos.checkbox',
-									fieldLabel: i18n['allow_debuging_language'] + ' -??-',
-									name      : 'Loc4'  // ???????
-								},
-								{
-									xtype     : 'mitos.checkbox',
-									fieldLabel: i18n['translate_layouts'],
-									name      : 'translate_layout'
-								},
-								{
-									xtype     : 'mitos.checkbox',
-									fieldLabel: i18n['translate_list'],
-									name      : 'translate_lists'
-								},
-								{
-									xtype     : 'mitos.checkbox',
-									fieldLabel: i18n['translate_access_control_roles'],
-									name      : 'translate_gacl_groups'
-								},
-								{
-									xtype     : 'mitos.checkbox',
-									fieldLabel: i18n['translate_patient_note_titles'],
-									name      : 'translate_form_titles'
-								},
-								{
-									xtype     : 'mitos.checkbox',
-									fieldLabel: i18n['translate_documents_categoies'],
-									name      : 'translate_document_categories',
-									id        : 'translate_document_categories'
-								},
-								{
-									xtype     : 'mitos.checkbox',
-									fieldLabel: i18n['translate_appointment_categories'],
-									name      : 'translate_appt_categories'
-								},
-								{
-									xtype       : 'combo',
-									fieldLabel  : i18n['units_for_visits_forms'],
-									name        : 'units_of_measurement',
-									displayField: 'title',
-									valueField  : 'option_id',
-									editable    : false,
-									store       : me.units_of_measurement_store
-								},
-								{
-									xtype     : 'mitos.checkbox',
-									fieldLabel: i18n['disable_old_metric_vitals_form'],
-									name      : 'disable_deprecated_metrics_form'
-								},
-								{
-									xtype     : 'textfield',
-									fieldLabel: i18n['telephone_country_code'],
-									name      : 'phone_country_code'
-								},
-								{
-									xtype       : 'combo',
-									fieldLabel  : i18n['date_display_format'],
-									name        : 'date_display_format',
-									displayField: 'title',
-									valueField  : 'option_id',
-									editable    : false,
-									store       : me.date_display_format_store
-								},
-								{
-									xtype       : 'combo',
-									fieldLabel  : i18n['time_display_format'] + ' -??-',
-									name        : 'date_display_format', // ??????
-									displayField: 'title',
-									valueField  : 'option_id',
-									editable    : false,
-									store       : me.time_display_format_store
-								},
-								{
-									xtype       : 'combo',
-									fieldLabel  : i18n['currency_decimal_places'],
-									name        : 'currency_decimals',
-									displayField: 'title',
-									valueField  : 'option_id',
-									editable    : false,
-									store       : me.currency_decimals_store
-								},
-								{
-									xtype       : 'combo',
-									fieldLabel  : i18n['currency_decimal_point_symbol'],
-									name        : 'currency_dec_point',
-									displayField: 'title',
-									valueField  : 'option_id',
-									editable    : false,
-									store       : me.currency_dec_point_store
-								},
-								{
-									xtype       : 'combo',
-									fieldLabel  : i18n['currency_thousands_separator'],
-									name        : 'currency_thousands_sep',
-									displayField: 'title',
-									valueField  : 'option_id',
-									editable    : false,
-									store       : me.currency_thousands_sep_store
-								},
-								{
-									xtype     : 'textfield',
-									fieldLabel: i18n['currency_designator'],
-									name      : 'gbl_currency_symbol'
-								}
-							]
-						},
-						{
-							title      : 'Features',
-							defaultType: 'mitos.checkbox',
-							items      : [
-								{
-									xtype       : 'combo',
-									fieldLabel  : i18n['specific_application'],
-									name        : 'date_display_format',
-									displayField: 'title',
-									valueField  : 'option_id',
-									editable    : false,
-									store       : me.dummyStore
-								},
-								{
-									xtype       : 'combo',
-									fieldLabel  : i18n['drugs_and_prodructs'],
-									name        : 'date_display_format',
-									displayField: 'title',
-									valueField  : 'option_id',
-									editable    : false,
-									store       : me.dummyStore
-								},
-								{
-									fieldLabel: i18n['disable_chart_tracker'],
-									name      : 'date_display_format'
-								},
-								{
-									fieldLabel: i18n['disable_immunizations'],
-									name      : 'disable_immunizations'
-								},
-								{
-									fieldLabel: i18n['disable_prescriptions'],
-									name      : 'disable_prescriptions'
-								},
-								{
-									fieldLabel: i18n['omit_employers'],
-									name      : 'omit_employers'
-								},
-								{
-									fieldLabel: i18n['support_multiprovider_events'],
-									name      : 'select_multi_providers'
-								},
-								{
-									fieldLabel: i18n['disable_user_groups'],
-									name      : 'disable_non_default_groups'
-								},
-								{
-									fieldLabel: i18n['skip_authorization_of_patient_notes'],
-									name      : 'ignore_pnotes_authorization'
-								},
-								{
-									fieldLabel: i18n['allow_encounters_claims'],
-									name      : 'support_encounter_claims'
-								},
-								{
-									fieldLabel: i18n['advance_directives_warning'],
-									name      : 'advance_directives_warning'
-								},
-								{
-									fieldLabel: i18n['configuration_export_import'],
-									name      : 'configuration_import_export'
-								},
-								{
-									fieldLabel: i18n['restrict_users_to_facilities'],
-									name      : 'restrict_user_facility'
-								},
-								{
-									fieldLabel: i18n['remember_selected_facility'],
-									name      : 'set_facility_cookie'
-								},
-								{
-									fieldLabel: i18n['discounts_as_monetary_ammounts'],
-									name      : 'discount_by_money'
-								},
-								{
-									fieldLabel: i18n['referral_source_for_encounters'],
-									name      : 'gbl_visit_referral_source'
-								},
-								{
-									fieldLabel: i18n['maks_for_patients_ids'],
-									xtype     : 'textfield',
-									name      : 'gbl_mask_patient_id'
-								},
-								{
-									fieldLabel: i18n['mask_of_invoice_numbers'],
-									xtype     : 'textfield',
-									name      : 'gbl_mask_invoice_number'
-								},
-								{
-									fieldLabel: i18n['mask_for_product_ids'],
-									xtype     : 'textfield',
-									name      : 'gbl_mask_product_id'
-								},
-								{
-									fieldLabel: i18n['force_billing_widget_open'],
-									name      : 'force_billing_widget_open'
-								},
-								{
-									fieldLabel: i18n['actiate_ccr_ccd_reporting'],
-									name      : 'activate_ccr_ccd_report'
-								},
-								{
-									fieldLabel: i18n['hide_encryption_decryption_options_in_document_managment'] + ' -??-',
-									name      : 'Feat22'   // ?????
-								}
-							]
-						},
-						{
-							title      : i18n['calendar'],
-							defaultType: 'combo',
-							items      : [
-								{
-									xtype     : 'mitos.checkbox',
-									fieldLabel: i18n['disable_calendar'],
-									name      : 'Cal1'
-								},
-								{
-									fieldLabel  : i18n['calendar_starting_hour'],
-									name        : 'Cal2',
-									displayField: 'title',
-									valueField  : 'option_id',
-									editable    : false,
-									store       : me.dummyStore
-								},
-								{
-									fieldLabel  : i18n['calendar_ending_hour'],
-									name        : 'Cal3',
-									displayField: 'title',
-									valueField  : 'option_id',
-									editable    : false,
-									store       : me.dummyStore
-								},
-								{
-									fieldLabel  : i18n['calendar_interval'],
-									name        : 'Cal4',
-									displayField: 'title',
-									valueField  : 'option_id',
-									editable    : false,
-									store       : me.dummyStore
-								},
-								{
-									fieldLabel  : i18n['appointment_display_style'],
-									name        : 'Cal5',
-									displayField: 'title',
-									valueField  : 'option_id',
-									editable    : false,
-									store       : me.dummyStore
-								},
-								{
-									xtype     : 'mitos.checkbox',
-									fieldLabel: i18n['provider_see_entire_calendar'],
-									name      : 'Cal6'
-								},
-								{
-									xtype     : 'mitos.checkbox',
-									fieldLabel: i18n['auto_create_new_encounters'],
-									name      : 'Cal7'
-								},
-								{
-									fieldLabel  : i18n['appointment_event_color'],
-									name        : 'Cal8',
-									displayField: 'title',
-									valueField  : 'option_id',
-									editable    : false,
-									store       : me.dummyStore
-								}
-							]
-						},
-						{
-							title      : 'Security',
-							defaultType: 'textfield',
-							items      : [
-								{
-									fieldLabel: i18n['idle_session_timeout_seconds'],
-									name      : 'timeout'
-								},
-								{
-									xtype       : 'mitos.checkbox',
-									fieldLabel  : i18n['require_strong_passwords'],
-									name        : 'secure_password',
-									displayField: 'title',
-									valueField  : 'option_id',
-									editable    : false,
-									store       : me.dummyStore
-								},
-								{
-									xtype     : 'mitos.checkbox',
-									fieldLabel: i18n['require_unique_passwords'],
-									name      : 'password_history'
-								},
-								{
-									fieldLabel: i18n['defaults_password_expiration_days'],
-									name      : 'password_expiration_days'
-								},
-								{
-									fieldLabel: i18n['password_expiration_grace_period'],
-									name      : 'password_grace_time'
-								},
-								{
-									xtype     : 'mitos.checkbox',
-									fieldLabel: i18n['enable_clients_ssl'],
-									name      : 'is_client_ssl_enabled'
-								},
-								{
-									fieldLabel: i18n['path_to_ca_certificate_file'],
-									name      : 'certificate_authority_crt'
-								},
-								{
-									fieldLabel: i18n['path_to_ca_key_file'],
-									name      : 'certificate_authority_key'
-								},
-								{
-									fieldLabel: i18n['client_certificate_expiration_days'],
-									name      : 'client_certificate_valid_in_days'
-								},
-								{
-									fieldLabel: i18n['emergency_login_email_address'],
-									name      : 'Emergency_Login_email_id'
-								}
-							]
-						},
-						{
-							title      : i18n['notifications'],
-							defaultType: 'textfield',
-							items      : [
-								{
-									fieldLabel: i18n['notification_email_address'],
-									name      : 'practice_return_email_path'
-								},
-								{
-									xtype       : 'combo',
-									fieldLabel  : i18n['email_transport_method'],
-									name        : 'EMAIL_METHOD',
-									displayField: 'title',
-									valueField  : 'option_id',
-									editable    : false,
-									store       : me.EMAIL_METHOD_store
-								},
-								{
-									fieldLabel: i18n['smpt_server_hostname'],
-									name      : 'SMTP_HOST'
-								},
-								{
-									fieldLabel: i18n['smpt_server_port_number'],
-									name      : 'SMTP_PORT'
-								},
-								{
-									fieldLabel: i18n['smpt_user_for_authentication'],
-									name      : 'SMTP_USER'
-								},
-								{
-									fieldLabel: i18n['smpt_password_for_authentication'],
-									name      : 'SMTP_PASS'
-								},
-								{
-									fieldLabel: i18n['email_notification_hours'],
-									name      : 'EMAIL_NOTIFICATION_HOUR'
-								},
-								{
-									fieldLabel: i18n['sms_notification_hours'],
-									name      : 'SMS_NOTIFICATION_HOUR'
-								},
-								{
-									fieldLabel: i18n['sms_gateway_usarname'],
-									name      : 'SMS_GATEWAY_USENAME'
-								},
-								{
-									fieldLabel: i18n['sms_gateway_password'],
-									name      : 'SMS_GATEWAY_PASSWORD'
-								},
-								{
-									fieldLabel: i18n['sms_gateway_api_Key'],
-									name      : 'SMS_GATEWAY_APIKEY'
-								}
-							]
-						},
-						{
-							title      : i18n['logging'],
-							defaultType: 'mitos.checkbox',
-							items      : [
-								{
-									fieldLabel: i18n['enable_audit_logging'],
-									name      : 'enable_auditlog'
-								},
-								{
-									fieldLabel: i18n['audit_logging_patient_record'],
-									name      : 'audit_events_patient'
-								},
-								{
-									fieldLabel: i18n['audid_logging_scheduling'],
-									name      : 'audit_events_scheduling'
-								},
-								{
-									fieldLabel: i18n['audid_logging_order'],
-									name      : 'audit_events_order'
-								},
-								{
-									fieldLabel: i18n['audid_logging_security_administration'],
-									name      : 'audit_events_security'
-								},
-								{
-									fieldLabel: i18n['audid_logging_backups'],
-									name      : 'audit_events_backup'
-								},
-								{
-									fieldLabel: i18n['audid_logging_miscellaeous'],
-									name      : 'audit_events_other'
-								},
-								{
-									fieldLabel: i18n['audid_logging_select_query'],
-									name      : 'audit_events_query'
-								},
-								{
-									fieldLabel: i18n['enable_atna_auditing'],
-									name      : 'enable_atna_audit'
-								},
-								{
-									xtype     : 'textfield',
-									fieldLabel: i18n['atna_audit_host'],
-									name      : 'atna_audit_host'
-								},
-								{
-									xtype     : 'textfield',
-									fieldLabel: i18n['atna_audit_post'],
-									name      : 'atna_audit_port'
-								},
-								{
-									xtype     : 'textfield',
-									fieldLabel: i18n['atna_audit_local_certificate'],
-									name      : 'atna_audit_localcert'
-								},
-								{
-									xtype     : 'textfield',
-									fieldLabel: i18n['atna_audit_ca_certificate'],
-									name      : 'atna_audit_cacert'
-								}
-							]
-						},
-						{
-							title      : i18n['miscellaneous'],
-							defaultType: 'textfield',
-							items      : [
-								{
-									fieldLabel: i18n['state_list'],
-									name      : 'state_list'
-								},
-								{
-									fieldLabel: i18n['country_list'],
-									name      : 'country_list'
-								},
-								{
-									fieldLabel: i18n['print_command'],
-									name      : 'print_command'
-								},
-								{
-									fieldLabel: i18n['default_reason_for_visit'],
-									name      : 'default_chief_complaint'
-								},
-								{
-									fieldLabel: i18n['patient_id_category_name'],
-									name      : 'patient_id_category_name'
-								},
-								{
-									fieldLabel: i18n['patient_photo_category_name'],
-									name      : 'patient_photo_category_name'
-								},
-								{
-									xtype     : 'mitos.checkbox',
-									fieldLabel: i18n['medicare_referrer_is_renderer'],
-									name      : 'MedicareReferrerIsRenderer'
-								},
-								{
-									fieldLabel: i18n['final_close_date_yyy_mm_dd'],
-									name      : 'post_to_date_benchmark'
-								},
-								{
-									xtype     : 'mitos.checkbox',
-									fieldLabel: i18n['enable_hylafax_support'],
-									name      : 'enable_hylafax'
-								},
-								{
-									fieldLabel: i18n['hylafax_server'],
-									name      : 'hylafax_server'
-								},
-								{
-									fieldLabel: i18n['hylafax_directory'],
-									name      : 'hylafax_basedir'
-								},
-								{
-									fieldLabel: i18n['hylafax_enscript_command'],
-									name      : 'hylafax_enscript'
-								},
-								{
-									xtype     : 'mitos.checkbox',
-									fieldLabel: i18n['enable_scanner_support'],
-									name      : 'enable_scanner'
-								},
-								{
-									fieldLabel: i18n['scanner_directory'],
-									name      : 'scanner_output_directory'
-								}
-							]
-						},
-						{
-							title      : i18n['connectors'],
-							defaultType: 'textfield',
-							items      : [
-								{
-									xtype     : 'mitos.checkbox',
-									fieldLabel: i18n['enable_lab_exchange'],
-									name      : 'Conn1'
-								},
-								{
-									fieldLabel: i18n['lab_exchange_site_id'],
-									name      : 'Conn2'
-								},
-								{
-									fieldLabel: i18n['lab_exchange_token_id'],
-									name      : 'Conn3'
-								},
-								{
-									fieldLabel: i18n['lab_exchange_site_address'],
-									name      : 'Conn4'
-								}
-							]
+							var form = me.globalFormPanel.getForm();
+							me.onSave(form, me.store);
 						}
-					],
-					dockedItems: [
-						{
-							xtype: 'toolbar',
-							dock : 'top',
-							items: [
-								{
-									text   : i18n['save_configuration'],
-									iconCls: 'save',
-									handler: function() {
-										var form = me.globalFormPanel.getForm();
-										me.onSave(form, me.store);
-									}
-								}
-							]
-						}
-					]
-				}
-			]
+					}]
+				}]
+			}]
 		});
-		me.pageBody = [ me.globalFormPanel ];
+		me.pageBody = [me.globalFormPanel];
 		me.callParent(arguments);
 	}, // end of initComponent
-	onSave       : function(form, store) {
-		var record = form.getRecord(),
-			values = form.getValues();
-		Globals.updateGlobals(values, function() {
+	onSave : function(form, store)
+	{
+		var record = form.getRecord(), values = form.getValues();
+		Globals.updateGlobals(values, function()
+		{
 			store.load();
 		});
 
@@ -37773,11 +38956,13 @@ Ext.define('App.view.administration.Globals', {
 	 * place inside this function all the functions you want
 	 * to call every this panel becomes active
 	 */
-	onActive     : function(callback) {
+	onActive : function(callback)
+	{
 		this.store.load();
 		callback(true);
 	}
-}); //ens LogPage class
+});
+//ens LogPage class
 /**
  * layout.ejs.php
  * Description: Layout Screen Panel
@@ -37798,15 +38983,15 @@ Ext.define('App.view.administration.Globals', {
  * @namespace CombosData.getFiledXtypes
  * @namespace CombosData.getOptionsByListId
  */
-Ext.define('App.view.administration.Layout', {
-	extend              : 'App.classes.RenderPanel',
-	id                  : 'panelLayout',
-	pageTitle           : i18n['layout_form_editor'],
-	pageLayout          : 'border',
-	uses                : [
-		'App.classes.GridPanel'
-	],
-	initComponent       : function() {
+Ext.define('App.view.administration.Layout',
+{
+	extend : 'App.classes.RenderPanel',
+	id : 'panelLayout',
+	pageTitle : i18n['layout_form_editor'],
+	pageLayout : 'border',
+	uses : ['App.classes.GridPanel'],
+	initComponent : function()
+	{
 
 		var me = this;
 		me.currForm = null;
@@ -37815,579 +39000,729 @@ Ext.define('App.view.administration.Layout', {
 		// *************************************************************************************
 		// Form Fields TreeGrid Store
 		// *************************************************************************************
-		Ext.define('layoutTreeModel', {
-			extend    : 'Ext.data.Model',
-			fields    : [
-				{name: 'id', type: 'string'},
-				{name: 'text', type: 'string'},
-				{name: 'pos', type: 'string'},
-				{name: 'xtype', type: 'string'},
-				{name: 'form_id', type: 'string'},
-				{name: 'item_of', type: 'string'},
-				{name: 'title', type: 'string'},
-				{name: 'fieldLabel', type: 'string'},
-				{name: 'emptyText', type: 'string'},
-				{name: 'labelWidth', type: 'string'},
-				{name: 'hideLabel', type: 'string'},
-				{name: 'layout', type: 'string'},
-				{name: 'width', type: 'string'},
-				{name: 'height', type: 'string'},
-				{name: 'anchor', type: 'string'},
-				{name: 'margin', type: 'string'},
-				{name: 'flex', type: 'string'},
-				{name: 'collapsible', type: 'string'},
-				{name: 'checkboxToggle', type: 'string'},
-				{name: 'collapsed', type: 'string'},
-				{name: 'inputValue', type: 'string'},
-				{name: 'allowBlank', type: 'string'},
-				{name: 'value', type: 'string'},
-				{name: 'maxValue', type: 'string'},
-				{name: 'minValue', type: 'string'},
-				{name: 'boxLabel', type: 'string'},
-				{name: 'grow', type: 'string'},
-				{name: 'growMin', type: 'string'},
-				{name: 'growMax', type: 'string'},
-				{name: 'increment', type: 'string'},
-				{name: 'name', type: 'string'},
-				{name: 'list_id', type: 'string'}
-			],
-			idProperty: 'id'
+		Ext.define('layoutTreeModel',
+		{
+			extend : 'Ext.data.Model',
+			fields : [
+			{
+				name : 'id',
+				type : 'string'
+			},
+			{
+				name : 'text',
+				type : 'string'
+			},
+			{
+				name : 'pos',
+				type : 'string'
+			},
+			{
+				name : 'xtype',
+				type : 'string'
+			},
+			{
+				name : 'form_id',
+				type : 'string'
+			},
+			{
+				name : 'item_of',
+				type : 'string'
+			},
+			{
+				name : 'title',
+				type : 'string'
+			},
+			{
+				name : 'fieldLabel',
+				type : 'string'
+			},
+			{
+				name : 'emptyText',
+				type : 'string'
+			},
+			{
+				name : 'labelWidth',
+				type : 'string'
+			},
+			{
+				name : 'hideLabel',
+				type : 'string'
+			},
+			{
+				name : 'layout',
+				type : 'string'
+			},
+			{
+				name : 'width',
+				type : 'string'
+			},
+			{
+				name : 'height',
+				type : 'string'
+			},
+			{
+				name : 'anchor',
+				type : 'string'
+			},
+			{
+				name : 'margin',
+				type : 'string'
+			},
+			{
+				name : 'flex',
+				type : 'string'
+			},
+			{
+				name : 'collapsible',
+				type : 'string'
+			},
+			{
+				name : 'checkboxToggle',
+				type : 'string'
+			},
+			{
+				name : 'collapsed',
+				type : 'string'
+			},
+			{
+				name : 'inputValue',
+				type : 'string'
+			},
+			{
+				name : 'allowBlank',
+				type : 'string'
+			},
+			{
+				name : 'value',
+				type : 'string'
+			},
+			{
+				name : 'maxValue',
+				type : 'string'
+			},
+			{
+				name : 'minValue',
+				type : 'string'
+			},
+			{
+				name : 'boxLabel',
+				type : 'string'
+			},
+			{
+				name : 'grow',
+				type : 'string'
+			},
+			{
+				name : 'growMin',
+				type : 'string'
+			},
+			{
+				name : 'growMax',
+				type : 'string'
+			},
+			{
+				name : 'increment',
+				type : 'string'
+			},
+			{
+				name : 'name',
+				type : 'string'
+			},
+			{
+				name : 'list_id',
+				type : 'string'
+			}],
+			idProperty : 'id'
 		});
 		/**
 		 * form fields list (center grid)
 		 */
-		me.fieldsGridStore = Ext.create('Ext.data.TreeStore', {
-			model      : 'layoutTreeModel',
+		me.fieldsGridStore = Ext.create('Ext.data.TreeStore',
+		{
+			model : 'layoutTreeModel',
 			//clearOnLoad: true,
-			proxy      : {
-				type: 'direct',
-				api : {
-					read: FormLayoutBuilder.getFormFieldsTree
+			proxy :
+			{
+				type : 'direct',
+				api :
+				{
+					read : FormLayoutBuilder.getFormFieldsTree
 				}
 			},
 			folderSort : false,
-			autoLoad   : false
+			autoLoad : false
 		});
 		/**
 		 * Xtype Combobox store
 		 */
-		Ext.define('XtypesComboModel', {
-			extend: 'Ext.data.Model',
-			fields: [
-				{name: 'id', type: 'string'},
-				{name: 'name', type: 'string'},
-				{name: 'value', type: 'string'}
-			],
-			proxy : {
-				type: 'direct',
-				api : {
-					read: CombosData.getFiledXtypes
+		Ext.define('XtypesComboModel',
+		{
+			extend : 'Ext.data.Model',
+			fields : [
+			{
+				name : 'id',
+				type : 'string'
+			},
+			{
+				name : 'name',
+				type : 'string'
+			},
+			{
+				name : 'value',
+				type : 'string'
+			}],
+			proxy :
+			{
+				type : 'direct',
+				api :
+				{
+					read : CombosData.getFiledXtypes
 				}
 			}
 		});
-		me.fieldXTypesStore = Ext.create('Ext.data.Store', {
-			model   : 'XtypesComboModel',
-			autoLoad: true
+		me.fieldXTypesStore = Ext.create('Ext.data.Store',
+		{
+			model : 'XtypesComboModel',
+			autoLoad : true
 		});
 
 		/**
 		 * Forms grid store (left grid)
 		 */
-		Ext.define('FormsListModel', {
-			extend: 'Ext.data.Model',
-			fields: [
-				{name: 'id', type: 'string'},
-				{name: 'name', type: 'string'}
-			],
-			proxy : {
-				type: 'direct',
-				api : {
-					read: FormLayoutBuilder.getForms
+		Ext.define('FormsListModel',
+		{
+			extend : 'Ext.data.Model',
+			fields : [
+			{
+				name : 'id',
+				type : 'string'
+			},
+			{
+				name : 'name',
+				type : 'string'
+			}],
+			proxy :
+			{
+				type : 'direct',
+				api :
+				{
+					read : FormLayoutBuilder.getForms
 				}
 			}
 		});
-		me.formsGridStore = Ext.create('Ext.data.Store', {
-			model   : 'FormsListModel',
-			autoLoad: true
+		me.formsGridStore = Ext.create('Ext.data.Store',
+		{
+			model : 'FormsListModel',
+			autoLoad : true
 		});
 
 		/**
 		 * Field available on this form as parent items (fieldset / fieldcontainer )
 		 * use to get the "Child of" combobox data
 		 */
-		Ext.define('ParentFieldsModel', {
-			extend: 'Ext.data.Model',
-			fields: [
-				{name: 'name', type: 'string'},
-				{name: 'value', type: 'string'}
-			],
-			proxy : {
-				type: 'direct',
-				api : {
-					read: FormLayoutBuilder.getParentFields
+		Ext.define('ParentFieldsModel',
+		{
+			extend : 'Ext.data.Model',
+			fields : [
+			{
+				name : 'name',
+				type : 'string'
+			},
+			{
+				name : 'value',
+				type : 'string'
+			}],
+			proxy :
+			{
+				type : 'direct',
+				api :
+				{
+					read : FormLayoutBuilder.getParentFields
 				}
 			}
 		});
-		me.parentFieldsStore = Ext.create('Ext.data.Store', {
-			model   : 'ParentFieldsModel',
-			autoLoad: false
+		me.parentFieldsStore = Ext.create('Ext.data.Store',
+		{
+			model : 'ParentFieldsModel',
+			autoLoad : false
 		});
 
 		/**
 		 * This are the select lists available to use for comboboxes
 		 * this lists can be created an modified at "Lists" administration panel.
 		 */
-		Ext.define('formlistoptionsModel', {
-			extend: 'Ext.data.Model',
-			fields: [
-				{name: 'option_name', type: 'string'},
-				{name: 'option_value', type: 'string'}
-			]
+		Ext.define('formlistoptionsModel',
+		{
+			extend : 'Ext.data.Model',
+			fields : [
+			{
+				name : 'option_name',
+				type : 'string'
+			},
+			{
+				name : 'option_value',
+				type : 'string'
+			}]
 
 		});
-		me.selectListoptionsStore = Ext.create('Ext.data.Store', {
-			model   : 'formlistoptionsModel',
-			proxy   : {
-				type: 'direct',
-				api : {
-					read: CombosData.getOptionsByListId
+		me.selectListoptionsStore = Ext.create('Ext.data.Store',
+		{
+			model : 'formlistoptionsModel',
+			proxy :
+			{
+				type : 'direct',
+				api :
+				{
+					read : CombosData.getOptionsByListId
 				}
 			},
-			autoLoad: false
+			autoLoad : false
 		});
 
 		/**
 		 * This grid only available if the field is a Combobox
 		 */
-		me.selectListGrid = Ext.create('App.classes.GridPanel', {
-			store           : me.selectListoptionsStore,
-			region          : 'south',
-			collapseMode    : 'mini',
-			width           : 250,
-			height          : 250,
-			split           : true,
-			border          : false,
-			titleCollapse   : false,
-			hideCollapseTool: true,
-			collapsible     : true,
-			collapsed       : true,
-			columns         : [
-				{
-					text     : i18n['name'],
-					flex     : 1,
-					sortable : false,
-					dataIndex: 'option_name'
-				},
-				{
-					text     : i18n['value'],
-					flex     : 1,
-					sortable : false,
-					dataIndex: 'option_value'
-				}
-			]
+		me.selectListGrid = Ext.create('App.classes.GridPanel',
+		{
+			store : me.selectListoptionsStore,
+			region : 'south',
+			collapseMode : 'mini',
+			width : 250,
+			height : 250,
+			split : true,
+			border : false,
+			titleCollapse : false,
+			hideCollapseTool : true,
+			collapsible : true,
+			collapsed : true,
+			columns : [
+			{
+				text : i18n['name'],
+				flex : 1,
+				sortable : false,
+				dataIndex : 'option_name'
+			},
+			{
+				text : i18n['value'],
+				flex : 1,
+				sortable : false,
+				dataIndex : 'option_value'
+			}]
 		});
 		/**
 		 * form to create and modified the fields
 		 */
-		me.fieldForm = Ext.create('App.classes.form.Panel', {
-			region       : 'center',
+		me.fieldForm = Ext.create('App.classes.form.Panel',
+		{
+			region : 'center',
 			//url	            : 'app/administration/layout/data.php?task=formRequest',
-			border       : false,
-			autoScroll   : true,
-			fieldDefaults: { msgTarget: 'side', labelWidth: 100 },
-			defaults     : { anchor: '100%' },
-			items        : [
+			border : false,
+			autoScroll : true,
+			fieldDefaults :
+			{
+				msgTarget : 'side',
+				labelWidth : 100
+			},
+			defaults :
+			{
+				anchor : '100%'
+			},
+			items : [
+			{
+				name : 'id',
+				xtype : 'textfield',
+				itemId : 'id',
+				hidden : true
+			},
+			{
+				name : i18n['pos'],
+				xtype : 'textfield',
+				itemId : 'pos',
+				hidden : true
+			},
+			{
+				name : i18n['form_id'],
+				xtype : 'textfield',
+				itemId : 'form_id',
+				hidden : true
+			},
+			{
+				fieldLabel : i18n['type'],
+				xtype : 'combo',
+				name : 'xtype',
+				displayField : 'name',
+				valueField : 'value',
+				allowBlank : false,
+				editable : false,
+				store : me.fieldXTypesStore,
+				queryMode : 'local',
+				margin : '5px 5px 5px 10px',
+				itemId : 'xtype',
+				listeners :
 				{
-					name  : 'id',
-					xtype : 'textfield',
-					itemId: 'id',
-					hidden: true
-				},
-				{
-					name  : i18n['pos'],
-					xtype : 'textfield',
-					itemId: 'pos',
-					hidden: true
-				},
-				{
-					name  : i18n['form_id'],
-					xtype : 'textfield',
-					itemId: 'form_id',
-					hidden: true
-				},
-				{
-					fieldLabel  : i18n['type'],
-					xtype       : 'combo',
-					name        : 'xtype',
-					displayField: 'name',
-					valueField  : 'value',
-					allowBlank  : false,
-					editable    : false,
-					store       : me.fieldXTypesStore,
-					queryMode   : 'local',
-					margin      : '5px 5px 5px 10px',
-					itemId      : 'xtype',
-					listeners   : {
-						scope : me,
-						change: me.onXtypeChange
-					}
-				},
-				{
-					fieldLabel  : i18n['child_of'],
-					xtype       : 'combo',
-					name        : 'item_of',
-					displayField: 'name',
-					valueField  : 'value',
-					editable    : false,
-					hideTrigger : true,
-					store       : me.parentFieldsStore,
-					queryMode   : 'local',
-					margin      : '5px 5px 5px 10px',
-					emptyText   : 'None',
-					itemId      : 'parentFields',
-					listeners   : {
-						scope : me,
-						expand: me.onParentFieldsExpand
-					}
-				},
-				{
-					xtype   : 'fieldset',
-					itemId  : 'aditionalProperties',
-					title   : i18n['aditional_properties'],
-					defaults: { anchor: '100%' },
-					items   : [
-						{
-							fieldLabel: i18n['title'],
-							xtype     : 'textfield',
-							name      : 'title',
-							itemId    : 'title',
-							allowBlank: false,
-							hidden    : true
-						},
-						{
-							fieldLabel: i18n['field_label'],
-							xtype     : 'textfield',
-							name      : 'fieldLabel',
-							itemId    : 'fieldLabel',
-							allowBlank: false,
-							hidden    : true
-						},
-						{
-							fieldLabel: i18n['box_label'],
-							xtype     : 'textfield',
-							name      : 'boxLabel',
-							itemId    : 'boxLabel',
-							allowBlank: false,
-							hidden    : true
-						},
-						{
-							fieldLabel: i18n['label_width'],
-							xtype     : 'textfield',
-							name      : 'labelWidth',
-							itemId    : 'labelWidth',
-							hidden    : true
-						},
-						{
-							fieldLabel: i18n['hide_label'],
-							xtype     : 'checkbox',
-							name      : 'hideLabel',
-							itemId    : 'hideLabel',
-							hidden    : true
-						},
-						{
-							fieldLabel: i18n['empty_text'],
-							xtype     : 'textfield',
-							name      : 'emptyText',
-							itemId    : 'emptyText',
-							hidden    : true
-						},
-						{
-							fieldLabel: i18n['layout'],
-							xtype     : 'textfield',
-							name      : 'layout',
-							itemId    : 'layout',
-							hidden    : true
-						},
-						{
-							fieldLabel: i18n['name'],
-							xtype     : 'textfield',
-							name      : 'name',
-							itemId    : 'name',
-							allowBlank: false,
-							hidden    : true
-						},
-						{
-							fieldLabel: i18n['input_value'],
-							xtype     : 'textfield',
-							name      : 'inputValue',
-							itemId    : 'inputValue',
-							allowBlank: false,
-							hidden    : true
-						},
-						{
-							fieldLabel: i18n['width'],
-							xtype     : 'textfield',
-							name      : 'width',
-							itemId    : 'width',
-							emptyText : 'ei. 5 for 5px',
-							hidden    : true
-						},
-						{
-							fieldLabel: i18n['height'],
-							xtype     : 'textfield',
-							name      : 'height',
-							itemId    : 'height',
-							emptyText : 'ei. 5 for 5px',
-							hidden    : true
-						},
-						{
-							fieldLabel: i18n['anchor'],
-							xtype     : 'textfield',
-							name      : 'anchor',
-							itemId    : 'anchor',
-							emptyText : 'ei. 100%',
-							hidden    : true
-						},
-						{
-							fieldLabel: i18n['flex'],
-							xtype     : 'checkbox',
-							name      : 'flex',
-							itemId    : 'flex',
-							hidden    : true
-						},
-						{
-							fieldLabel: i18n['collapsible'],
-							xtype     : 'checkbox',
-							name      : 'collapsible',
-							itemId    : 'collapsible',
-							hidden    : true
-						},
-						{
-							fieldLabel: i18n['checkbox_toggle'],
-							xtype     : 'checkbox',
-							name      : 'checkboxToggle',
-							itemId    : 'checkboxToggle',
-							hidden    : true
-						},
-						{
-							fieldLabel: i18n['collapsed'],
-							xtype     : 'checkbox',
-							name      : 'collapsed',
-							itemId    : 'collapsed',
-							hidden    : true
-						},
-						{
-							fieldLabel: i18n['margin'],
-							xtype     : 'textfield',
-							name      : 'margin',
-							itemId    : 'margin',
-							emptyText : 'ei. 5 5 5 5',
-							hidden    : true
-						},
-						{
-							fieldLabel: i18n['column_width'],
-							xtype     : 'textfield',
-							name      : 'columnWidth',
-							itemId    : 'columnWidth',
-							emptyText : 'ei. .5',
-							hidden    : true
-						},
-						{
-							fieldLabel: i18n['is_required'],
-							xtype     : 'checkbox',
-							name      : 'allowBlank',
-							itemId    : 'allowBlank',
-							hidden    : true
-						},
-						{
-							fieldLabel: i18n['value'],
-							xtype     : 'textfield',
-							name      : 'value',
-							itemId    : 'value',
-							hidden    : true
-						},
-						{
-							fieldLabel: i18n['max_value'],
-							xtype     : 'textfield',
-							name      : 'maxValue',
-							itemId    : 'maxValue',
-							hidden    : true
-						},
-						{
-							fieldLabel: i18n['min_value'],
-							xtype     : 'textfield',
-							name      : 'minValue',
-							itemId    : 'minValue',
-							hidden    : true
-						},
-						{
-							fieldLabel: i18n['max_value'],
-							xtype     : 'timefield',
-							name      : 'maxValue',
-							itemId    : 'timeMaxValue',
-							hidden    : true
-						},
-						{
-							fieldLabel: i18n['min_value'],
-							xtype     : 'timefield',
-							name      : 'minValue',
-							itemId    : 'timeMinValue',
-							hidden    : true
-						},
-						{
-							fieldLabel: i18n['grow'],
-							xtype     : 'checkbox',
-							name      : 'grow',
-							itemId    : 'grow',
-							hidden    : true
-						},
-						{
-							fieldLabel: i18n['grow_min'],
-							xtype     : 'textfield',
-							name      : 'growMin',
-							itemId    : 'growMin',
-							hidden    : true
-						},
-						{
-							fieldLabel: i18n['grow_max'],
-							xtype     : 'textfield',
-							name      : 'growMax',
-							itemId    : 'growMax',
-							hidden    : true
-						},
-						{
-							fieldLabel: i18n['increment'],
-							xtype     : 'textfield',
-							name      : 'increment',
-							itemId    : 'increment',
-							hidden    : true
-						},
-						{
-							fieldLabel: i18n['list_options'],
-							xtype     : 'mitos.listscombo',
-							name      : 'list_id',
-							itemId    : 'list_id',
-							hidden    : true,
-							allowBlank: false,
-							listeners : {
-								scope : me,
-								change: me.onSelectListSelect
-							}
-						}
-					]
+					scope : me,
+					change : me.onXtypeChange
 				}
-			]
+			},
+			{
+				fieldLabel : i18n['child_of'],
+				xtype : 'combo',
+				name : 'item_of',
+				displayField : 'name',
+				valueField : 'value',
+				editable : false,
+				hideTrigger : true,
+				store : me.parentFieldsStore,
+				queryMode : 'local',
+				margin : '5px 5px 5px 10px',
+				emptyText : 'None',
+				itemId : 'parentFields',
+				listeners :
+				{
+					scope : me,
+					expand : me.onParentFieldsExpand
+				}
+			},
+			{
+				xtype : 'fieldset',
+				itemId : 'aditionalProperties',
+				title : i18n['aditional_properties'],
+				defaults :
+				{
+					anchor : '100%'
+				},
+				items : [
+				{
+					fieldLabel : i18n['title'],
+					xtype : 'textfield',
+					name : 'title',
+					itemId : 'title',
+					allowBlank : false,
+					hidden : true
+				},
+				{
+					fieldLabel : i18n['field_label'],
+					xtype : 'textfield',
+					name : 'fieldLabel',
+					itemId : 'fieldLabel',
+					allowBlank : false,
+					hidden : true
+				},
+				{
+					fieldLabel : i18n['box_label'],
+					xtype : 'textfield',
+					name : 'boxLabel',
+					itemId : 'boxLabel',
+					allowBlank : false,
+					hidden : true
+				},
+				{
+					fieldLabel : i18n['label_width'],
+					xtype : 'textfield',
+					name : 'labelWidth',
+					itemId : 'labelWidth',
+					hidden : true
+				},
+				{
+					fieldLabel : i18n['hide_label'],
+					xtype : 'checkbox',
+					name : 'hideLabel',
+					itemId : 'hideLabel',
+					hidden : true
+				},
+				{
+					fieldLabel : i18n['empty_text'],
+					xtype : 'textfield',
+					name : 'emptyText',
+					itemId : 'emptyText',
+					hidden : true
+				},
+				{
+					fieldLabel : i18n['layout'],
+					xtype : 'textfield',
+					name : 'layout',
+					itemId : 'layout',
+					hidden : true
+				},
+				{
+					fieldLabel : i18n['name'],
+					xtype : 'textfield',
+					name : 'name',
+					itemId : 'name',
+					allowBlank : false,
+					hidden : true
+				},
+				{
+					fieldLabel : i18n['input_value'],
+					xtype : 'textfield',
+					name : 'inputValue',
+					itemId : 'inputValue',
+					allowBlank : false,
+					hidden : true
+				},
+				{
+					fieldLabel : i18n['width'],
+					xtype : 'textfield',
+					name : 'width',
+					itemId : 'width',
+					emptyText : 'ei. 5 for 5px',
+					hidden : true
+				},
+				{
+					fieldLabel : i18n['height'],
+					xtype : 'textfield',
+					name : 'height',
+					itemId : 'height',
+					emptyText : 'ei. 5 for 5px',
+					hidden : true
+				},
+				{
+					fieldLabel : i18n['anchor'],
+					xtype : 'textfield',
+					name : 'anchor',
+					itemId : 'anchor',
+					emptyText : 'ei. 100%',
+					hidden : true
+				},
+				{
+					fieldLabel : i18n['flex'],
+					xtype : 'checkbox',
+					name : 'flex',
+					itemId : 'flex',
+					hidden : true
+				},
+				{
+					fieldLabel : i18n['collapsible'],
+					xtype : 'checkbox',
+					name : 'collapsible',
+					itemId : 'collapsible',
+					hidden : true
+				},
+				{
+					fieldLabel : i18n['checkbox_toggle'],
+					xtype : 'checkbox',
+					name : 'checkboxToggle',
+					itemId : 'checkboxToggle',
+					hidden : true
+				},
+				{
+					fieldLabel : i18n['collapsed'],
+					xtype : 'checkbox',
+					name : 'collapsed',
+					itemId : 'collapsed',
+					hidden : true
+				},
+				{
+					fieldLabel : i18n['margin'],
+					xtype : 'textfield',
+					name : 'margin',
+					itemId : 'margin',
+					emptyText : 'ei. 5 5 5 5',
+					hidden : true
+				},
+				{
+					fieldLabel : i18n['column_width'],
+					xtype : 'textfield',
+					name : 'columnWidth',
+					itemId : 'columnWidth',
+					emptyText : 'ei. .5',
+					hidden : true
+				},
+				{
+					fieldLabel : i18n['is_required'],
+					xtype : 'checkbox',
+					name : 'allowBlank',
+					itemId : 'allowBlank',
+					hidden : true
+				},
+				{
+					fieldLabel : i18n['value'],
+					xtype : 'textfield',
+					name : 'value',
+					itemId : 'value',
+					hidden : true
+				},
+				{
+					fieldLabel : i18n['max_value'],
+					xtype : 'textfield',
+					name : 'maxValue',
+					itemId : 'maxValue',
+					hidden : true
+				},
+				{
+					fieldLabel : i18n['min_value'],
+					xtype : 'textfield',
+					name : 'minValue',
+					itemId : 'minValue',
+					hidden : true
+				},
+				{
+					fieldLabel : i18n['max_value'],
+					xtype : 'timefield',
+					name : 'maxValue',
+					itemId : 'timeMaxValue',
+					hidden : true
+				},
+				{
+					fieldLabel : i18n['min_value'],
+					xtype : 'timefield',
+					name : 'minValue',
+					itemId : 'timeMinValue',
+					hidden : true
+				},
+				{
+					fieldLabel : i18n['grow'],
+					xtype : 'checkbox',
+					name : 'grow',
+					itemId : 'grow',
+					hidden : true
+				},
+				{
+					fieldLabel : i18n['grow_min'],
+					xtype : 'textfield',
+					name : 'growMin',
+					itemId : 'growMin',
+					hidden : true
+				},
+				{
+					fieldLabel : i18n['grow_max'],
+					xtype : 'textfield',
+					name : 'growMax',
+					itemId : 'growMax',
+					hidden : true
+				},
+				{
+					fieldLabel : i18n['increment'],
+					xtype : 'textfield',
+					name : 'increment',
+					itemId : 'increment',
+					hidden : true
+				},
+				{
+					fieldLabel : i18n['list_options'],
+					xtype : 'mitos.listscombo',
+					name : 'list_id',
+					itemId : 'list_id',
+					hidden : true,
+					allowBlank : false,
+					listeners :
+					{
+						scope : me,
+						change : me.onSelectListSelect
+					}
+				}]
+			}]
 		});
 		/**
 		 * this container holds the form and the select list grid.
 		 * remember that the select list grid only shows if
 		 * the field xtype is a combobox
 		 */
-		me.formContainer = Ext.create('Ext.panel.Panel', {
-			title      : i18n['field_configuration'],
-			border     : true,
-			split      : true,
-			width      : 390,
-			region     : 'east',
-			layout     : 'border',
-			bodyStyle  : 'background-color:#fff!important',
-			items      : [
-				me.fieldForm,
-				me.selectListGrid
-			],
-			dockedItems: [
+		me.formContainer = Ext.create('Ext.panel.Panel',
+		{
+			title : i18n['field_configuration'],
+			border : true,
+			split : true,
+			width : 390,
+			region : 'east',
+			layout : 'border',
+			bodyStyle : 'background-color:#fff!important',
+			items : [me.fieldForm, me.selectListGrid],
+			dockedItems : [
+			{
+				xtype : 'toolbar',
+				items : [
 				{
-					xtype: 'toolbar',
-					items: [
-						{
-							text   : i18n['save'],
-							iconCls: 'save',
-							scope  : me,
-							handler: me.onSave
-						},
-						'-',
-						{
-							text   : i18n['new'],
-							iconCls: 'icoAddRecord',
-							scope  : me,
-							handler: me.onFormReset
-						},
-						'-',
-						{
-							text    : i18n['add_child'],
-							iconCls : 'icoAddRecord',
-							itemId  : 'addChild',
-							disabled: true,
-							scope   : me,
-							handler : me.onAddChild
-						},
-						'-',
-						{
-							text   : i18n['delete'],
-							iconCls: 'delete',
-							cls    : 'toolDelete',
-							scope  : me,
-							handler: me.onDelete
-						},
-						'-',
-						{
-							text        : i18n['form_preview'],
-							iconCls     : 'icoPreview',
-							enableToggle: true,
-							listeners   : {
-								scope : me,
-								toggle: me.onFormPreview
-							}
-						}
-					]
+					text : i18n['save'],
+					iconCls : 'save',
+					scope : me,
+					handler : me.onSave
+				}, '-',
+				{
+					text : i18n['new'],
+					iconCls : 'icoAddRecord',
+					scope : me,
+					handler : me.onFormReset
+				}, '-',
+				{
+					text : i18n['add_child'],
+					iconCls : 'icoAddRecord',
+					itemId : 'addChild',
+					disabled : true,
+					scope : me,
+					handler : me.onAddChild
+				}, '-',
+				{
+					text : i18n['delete'],
+					iconCls : 'delete',
+					cls : 'toolDelete',
+					scope : me,
+					handler : me.onDelete
+				}, '-',
+				{
+					text : i18n['form_preview'],
+					iconCls : 'icoPreview',
+					enableToggle : true,
+					listeners :
+					{
+						scope : me,
+						toggle : me.onFormPreview
+					}
+				}]
 
-				}
-			]
+			}]
 		});
 		/**
 		 * This is the fields associated with the current Form selected
 		 */
-		me.fieldsGrid = Ext.create('Ext.tree.Panel', {
-			store      : me.fieldsGridStore,
-			region     : 'center',
-			border     : true,
-			sortable   : false,
-			rootVisible: false,
-			title      : i18n['field_editor_demographics'],
-			viewConfig : {
-				plugins  : { ptype: 'treeviewdragdrop', allowParentInsert: true },
-				listeners: {
-					scope: me,
+		me.fieldsGrid = Ext.create('Ext.tree.Panel',
+		{
+			store : me.fieldsGridStore,
+			region : 'center',
+			border : true,
+			sortable : false,
+			rootVisible : false,
+			title : i18n['field_editor_demographics'],
+			viewConfig :
+			{
+				plugins :
+				{
+					ptype : 'treeviewdragdrop',
+					allowParentInsert : true
+				},
+				listeners :
+				{
+					scope : me,
 					drop : me.onDragDrop
 				}
 			},
-			columns    : [
-				{
-					xtype    : 'treecolumn',
-					text     : i18n['field_type'],
-					sortable : false,
-					dataIndex: 'xtype',
-					width    : 200,
-					align    : 'left'
-				},
-				{
-					text     : i18n['title'],
-					sortable : false,
-					dataIndex: 'title',
-					width    : 100,
-					align    : 'left'
-				},
-				{
-					text     : i18n['label'],
-					sortable : false,
-					dataIndex: 'fieldLabel',
-					flex     : 1,
-					align    : 'left'
-				}
-			],
-			listeners  : {
-				scope    : me,
-				itemclick: me.onFieldsGridClick
+			columns : [
+			{
+				xtype : 'treecolumn',
+				text : i18n['field_type'],
+				sortable : false,
+				dataIndex : 'xtype',
+				width : 200,
+				align : 'left'
+			},
+			{
+				text : i18n['title'],
+				sortable : false,
+				dataIndex : 'title',
+				width : 100,
+				align : 'left'
+			},
+			{
+				text : i18n['label'],
+				sortable : false,
+				dataIndex : 'fieldLabel',
+				flex : 1,
+				align : 'left'
+			}],
+			listeners :
+			{
+				scope : me,
+				itemclick : me.onFieldsGridClick
 			}
 		});
 		/**
@@ -38395,82 +39730,98 @@ Ext.define('App.view.administration.Layout', {
 		 * the user will not have the options to create
 		 * forms, just to modified the fields of existing forms.
 		 */
-		me.formsGrid = Ext.create('App.classes.GridPanel', {
-			title      : i18n['form_list'],
-			region     : 'west',
-			store      : me.formsGridStore,
-			width      : 200,
-			border     : true,
-			split      : true,
-			hideHeaders: true,
-			columns    : [
-				{
-					dataIndex: 'id',
-					hidden   : true
-				},
-				{
-					flex     : 1,
-					sortable : true,
-					dataIndex: 'name'
-				}
-			],
-			listeners  : {
-				scope    : me,
-				itemclick: me.onFormGridItemClick
+		me.formsGrid = Ext.create('App.classes.GridPanel',
+		{
+			title : i18n['form_list'],
+			region : 'west',
+			store : me.formsGridStore,
+			width : 200,
+			border : true,
+			split : true,
+			hideHeaders : true,
+			columns : [
+			{
+				dataIndex : 'id',
+				hidden : true
+			},
+			{
+				flex : 1,
+				sortable : true,
+				dataIndex : 'name'
+			}],
+			listeners :
+			{
+				scope : me,
+				itemclick : me.onFormGridItemClick
 			}
 		});
 		/**
 		 * this panel will render the current form to preview
 		 * all the changes done.
 		 */
-		me.fromPreview = Ext.create('Ext.form.Panel', {
-			region          : 'south',
-			height          : 300,
-			collapsible     : true,
-			titleCollapse   : false,
-			hideCollapseTool: true,
-			collapsed       : true,
-			border          : true,
-			split           : true,
-			collapseMode    : 'header',
-			bodyStyle       : 'padding: 5px',
-			layout          : 'anchor',
-			fieldDefaults   : {msgTarget: 'side'},
-			tools           : [
-				{
-					itemId : 'refresh',
-					type   : 'refresh',
-					scope  : me,
-					handler: me.previewFormRender
-				}
-			]
+		me.fromPreview = Ext.create('Ext.form.Panel',
+		{
+			region : 'south',
+			height : 300,
+			collapsible : true,
+			titleCollapse : false,
+			hideCollapseTool : true,
+			collapsed : true,
+			border : true,
+			split : true,
+			collapseMode : 'header',
+			bodyStyle : 'padding: 5px',
+			layout : 'anchor',
+			fieldDefaults :
+			{
+				msgTarget : 'side'
+			},
+			tools : [
+			{
+				itemId : 'refresh',
+				type : 'refresh',
+				scope : me,
+				handler : me.previewFormRender
+			}]
 		});
 
-		me.pageBody = [ me.fieldsGrid, me.formsGrid , me.formContainer, me.fromPreview ];
+		me.pageBody = [me.fieldsGrid, me.formsGrid, me.formContainer, me.fromPreview];
 		me.callParent(arguments);
 	},
 	/**
 	 * if the form is valid send the POST request
 	 */
-	onSave              : function() {
-		var me = this,
-			form = me.fieldForm.getForm();
-		if(form.isValid()) {
+	onSave : function()
+	{
+		var me = this, form = me.fieldForm.getForm();
+		if (form.isValid())
+		{
 			var params = form.getValues();
 
-			if(form.findField('id').getValue() == '') {
-				FormLayoutBuilder.addField(params, function(provider, response) {
-					if(response.result.success) {
+			if (form.findField('id').getValue() == '')
+			{
+				FormLayoutBuilder.addField(params, function(provider, response)
+				{
+					if (response.result.success)
+					{
 						me.loadFieldsGrid();
-					} else {
+					}
+					else
+					{
 						Ext.Msg.alert('Opps!', response.result.error);
 					}
 				});
-			} else {
-				FormLayoutBuilder.updateField(params, function(provider, response) {
-					if(response.result.success) {
+			}
+			else
+			{
+				FormLayoutBuilder.updateField(params, function(provider, response)
+				{
+					if (response.result.success)
+					{
 						me.loadFieldsGrid();
-					} else {
+					}
+					else
+					{
 						Ext.Msg.alert('Opps!', response.result.error);
 					}
 				});
@@ -38480,33 +39831,40 @@ Ext.define('App.view.administration.Layout', {
 	/**
 	 * Delete logic
 	 */
-	onDelete            : function() {
-		var me = this,
-			form = me.fieldForm.getForm(),
-			rec = form.getRecord();
+	onDelete : function()
+	{
+		var me = this, form = me.fieldForm.getForm(), rec = form.getRecord();
 
-		Ext.Msg.show({
-			title  : i18n['please_confirm'] + '...',
-			icon   : Ext.MessageBox.QUESTION,
-			msg    : i18n['delete_this_field'],
-			buttons: Ext.Msg.YESNO,
-			scope  : this,
-			fn     : function(btn) {
-				if(btn == 'yes') {
-					var params = {
-						id     : rec.data.id,
-						form_id: rec.data.form_id,
-						name   : rec.data.name,
-						xtype  : rec.data.xtype
+		Ext.Msg.show(
+		{
+			title : i18n['please_confirm'] + '...',
+			icon : Ext.MessageBox.QUESTION,
+			msg : i18n['delete_this_field'],
+			buttons : Ext.Msg.YESNO,
+			scope : this,
+			fn : function(btn)
+			{
+				if (btn == 'yes')
+				{
+					var params =
+					{
+						id : rec.data.id,
+						form_id : rec.data.form_id,
+						name : rec.data.name,
+						xtype : rec.data.xtype
 					};
 
-					FormLayoutBuilder.deleteField(params, function(provider, response) {
-						if(response.result.success) {
+					FormLayoutBuilder.deleteField(params, function(provider, response)
+					{
+						if (response.result.success)
+						{
 							me.msg('Sweet!', i18n['field_deleted']);
 							me.currField = null;
 							me.loadFieldsGrid();
 							me.onFormReset();
-						} else {
+						}
+						else
+						{
 							Ext.Msg.alert('Opps!', response.result.error);
 						}
 					});
@@ -38520,25 +39878,30 @@ Ext.define('App.view.administration.Layout', {
 	 * @param data
 	 * @param overModel
 	 */
-	onDragDrop          : function(node, data, overModel) {
-		var me = this,
-			childItems = [];
-        for(var i=0; i < overModel.parentNode.childNodes.length; i++ ){
+	onDragDrop : function(node, data, overModel)
+	{
+		var me = this, childItems = [];
+		for (var i = 0; i < overModel.parentNode.childNodes.length; i++)
+		{
 			childItems.push(overModel.parentNode.childNodes[i].data.id);
 		}
-		var params = {
-			id              : data.records[0].data.id,
-			parentNode      : overModel.parentNode.data.id,
-			parentNodeChilds: childItems
+		var params =
+		{
+			id : data.records[0].data.id,
+			parentNode : overModel.parentNode.data.id,
+			parentNodeChilds : childItems
 		};
 
-
-		FormLayoutBuilder.sortFields(params, function(provider, response) {
-			if(response.result.success) {
+		FormLayoutBuilder.sortFields(params, function(provider, response)
+		{
+			if (response.result.success)
+			{
 				me.msg('Sweet!', i18n['form_fields_sorted']);
 				me.loadFieldsGrid();
 				me.onFormReset();
-			} else {
+			}
+			else
+			{
 				Ext.Msg.alert('Opps!', response.result.error);
 			}
 		});
@@ -38547,16 +39910,15 @@ Ext.define('App.view.administration.Layout', {
 	 * This is to reset the Form and load
 	 * a new Model with the currForm id
 	 */
-	onFormReset         : function() {
-		var formPanel = this.fieldForm,
-			form = formPanel.getForm(),
-			row = this.fieldsGrid.getSelectionModel();
+	onFormReset : function()
+	{
+		var formPanel = this.fieldForm, form = formPanel.getForm(), row = this.fieldsGrid.getSelectionModel();
 		row.deselectAll();
 		form.reset();
-		var model = Ext.ModelManager.getModel('layoutTreeModel'),
-			newModel = Ext.ModelManager.create({
-				form_id: this.currForm
-			}, model);
+		var model = Ext.ModelManager.getModel('layoutTreeModel'), newModel = Ext.ModelManager.create(
+		{
+			form_id : this.currForm
+		}, model);
 		formPanel.el.unmask();
 		form.loadRecord(newModel);
 	},
@@ -38565,17 +39927,16 @@ Ext.define('App.view.administration.Layout', {
 	 * load a new model with the form_id and item_of values.
 	 * This is the easy way to add a child to a fieldset or fieldcontainer.
 	 */
-	onAddChild          : function() {
-		var formPanel = this.fieldForm,
-			form = formPanel.getForm(),
-			row = this.fieldsGrid.getSelectionModel();
+	onAddChild : function()
+	{
+		var formPanel = this.fieldForm, form = formPanel.getForm(), row = this.fieldsGrid.getSelectionModel();
 		row.deselectAll();
 		form.reset();
-		var model = Ext.ModelManager.getModel('layoutTreeModel'),
-			newModel = Ext.ModelManager.create({
-				form_id: this.currForm,
-				item_of: this.currField
-			}, model);
+		var model = Ext.ModelManager.getModel('layoutTreeModel'), newModel = Ext.ModelManager.create(
+		{
+			form_id : this.currForm,
+			item_of : this.currField
+		}, model);
 		formPanel.el.unmask();
 		form.loadRecord(newModel);
 	},
@@ -38588,14 +39949,17 @@ Ext.define('App.view.administration.Layout', {
 	 * @param grid
 	 * @param record
 	 */
-	onFieldsGridClick   : function(grid, record) {
-		var formPanel = this.fieldForm,
-			form = formPanel.getForm();
+	onFieldsGridClick : function(grid, record)
+	{
+		var formPanel = this.fieldForm, form = formPanel.getForm();
 		form.loadRecord(record);
 		this.currField = record.data.id;
-		if(record.data.xtype == 'fieldset' || record.data.xtype == 'fieldcontainer') {
+		if (record.data.xtype == 'fieldset' || record.data.xtype == 'fieldcontainer')
+		{
 			this.formContainer.down('toolbar').getComponent('addChild').enable();
-		} else {
+		}
+		else
+		{
 			this.formContainer.down('toolbar').getComponent('addChild').disable();
 		}
 		formPanel.el.unmask();
@@ -38605,12 +39969,13 @@ Ext.define('App.view.administration.Layout', {
 	 * @param DataView
 	 * @param record
 	 */
-	onFormGridItemClick : function(DataView, record) {
+	onFormGridItemClick : function(DataView, record)
+	{
 		this.currForm = record.get('id');
-		this.fieldsGrid.setTitle( i18n['field_editor'] + ' (' + record.get('name') + ')');
+		this.fieldsGrid.setTitle(i18n['field_editor'] + ' (' + record.get('name') + ')');
 		this.loadFieldsGrid();
 		this.onFormReset();
-		this.fieldForm.el.mask( i18n['or_select_a_field_to_update'] );
+		this.fieldForm.el.mask(i18n['or_select_a_field_to_update']);
 	},
 	/**
 	 *
@@ -38620,8 +39985,15 @@ Ext.define('App.view.administration.Layout', {
 	 * @param combo
 	 * @param value
 	 */
-	onSelectListSelect  : function(combo, value) {
-		this.selectListoptionsStore.load({params: {list_id: value}});
+	onSelectListSelect : function(combo, value)
+	{
+		this.selectListoptionsStore.load(
+		{
+			params :
+			{
+				list_id : value
+			}
+		});
 	},
 	/**
 	 *
@@ -38629,7 +40001,8 @@ Ext.define('App.view.administration.Layout', {
 	 *
 	 * @param combo
 	 */
-	onParentFieldsExpand: function(combo) {
+	onParentFieldsExpand : function(combo)
+	{
 		combo.picker.loadMask.destroy();
 	},
 	/**
@@ -38639,14 +40012,18 @@ Ext.define('App.view.administration.Layout', {
 	 * @param combo
 	 * @param value
 	 */
-	onXtypeChange       : function(combo, value) {
+	onXtypeChange : function(combo, value)
+	{
 		var me = this;
 
-		if(value == 'combobox') {
-			me.selectListGrid.setTitle( i18n['select_list_options']);
+		if (value == 'combobox')
+		{
+			me.selectListGrid.setTitle(i18n['select_list_options']);
 			me.selectListGrid.expand();
 			me.selectListGrid.enable();
-		} else {
+		}
+		else
+		{
 			me.selectListGrid.setTitle('');
 			me.selectListGrid.collapse();
 			me.selectListGrid.disable();
@@ -38656,19 +40033,28 @@ Ext.define('App.view.administration.Layout', {
 		 *
 		 * @param searchStr
 		 */
-		Array.prototype.find = function(searchStr) {
+		Array.prototype.find = function(searchStr)
+		{
 			var returnArray = false;
-			for(var i = 0; i < this.length; i++) {
-				if(typeof(searchStr) == 'function') {
-					if(searchStr.test(this[i])) {
-						if(!returnArray) {
+			for (var i = 0; i < this.length; i++)
+			{
+				if ( typeof (searchStr) == 'function')
+				{
+					if (searchStr.test(this[i]))
+					{
+						if (!returnArray)
+						{
 							returnArray = [];
 						}
 						returnArray.push(i);
 					}
-				} else {
-					if(this[i] === searchStr) {
-						if(!returnArray) {
+				}
+				else
+				{
+					if (this[i] === searchStr)
+					{
+						if (!returnArray)
+						{
 							returnArray = [];
 						}
 						returnArray.push(i);
@@ -38678,7 +40064,6 @@ Ext.define('App.view.administration.Layout', {
 			return returnArray;
 		};
 
-
 		var addProp = me.fieldForm.getComponent('aditionalProperties');
 		var is = addProp.items.keys;
 
@@ -38686,12 +40071,17 @@ Ext.define('App.view.administration.Layout', {
 		 *
 		 * @param items
 		 */
-		function enableItems(items) {
-			for(var i = 0; i < is.length; i++) {
-				if(!items.find(is[i])) {
+		function enableItems(items)
+		{
+			for (var i = 0; i < is.length; i++)
+			{
+				if (!items.find(is[i]))
+				{
 					addProp.getComponent(is[i]).hide();
 					addProp.getComponent(is[i]).disable();
-				} else {
+				}
+				else
+				{
 					addProp.getComponent(is[i]).show();
 					addProp.getComponent(is[i]).enable();
 				}
@@ -38700,135 +40090,58 @@ Ext.define('App.view.administration.Layout', {
 		}
 
 		var items;
-		if(value == 'fieldset') {
-			items = [
-				'title',
-				'collapsible',
-				'collapsed',
-				'checkboxToggle',
-				'margin',
-				'columnWidth'
-			];
-		} else if(value == 'fieldcontainer') {
-			items = [
-				'fieldLabel',
-				'labelWidth',
-				'hideLabel',
-				'width',
-				'layout',
-				'margin',
-				'columnWidth'
-			];
-		} else if(value == 'combobox') {
-			items = [
-				'name',
-				'width',
-				'emptyText',
-				'fieldLabel',
-				'hideLabel',
-				'labelWidth',
-				'margin',
-				'allowBlank',
-				'list_id'
-			];
-		} else if(value == 'mitos.checkbox') {
-			items = [
-				'name',
-				'width',
-				'fieldLabel',
-				'hideLabel',
-				'labelWidth',
-				'margin'
-			];
-		} else if(value == 'textfield') {
-			items = [
-				'name',
-				'width',
-				'anchor',
-				'emptyText',
-				'fieldLabel',
-				'hideLabel',
-				'labelWidth',
-				'allowBlank',
-				'margin'
-			];
-		} else if(value == 'textareafield') {
-			items = [
-				'name',
-				'width',
-				'anchor',
-				'height',
-				'emptyText',
-				'fieldLabel',
-				'hideLabel',
-				'labelWidth',
-				'allowBlank',
-				'grow',
-				'growMin',
-				'growMax',
-				'margin'
-			];
-		} else if(value == 'numberfield') {
-			items = [
-				'name',
-				'width',
-				'value',
-				'emptyText',
-				'maxValue',
-				'minValue',
-				'increment',
-				'fieldLabel',
-				'labelWidth',
-				'hideLabel',
-				'margin'
-			];
-		} else if(value == 'timefield') {
-			items = [
-				'name',
-				'width',
-				'value',
-				'emptyText',
-				'timeMaxValue',
-				'timeMinValue',
-				'increment',
-				'fieldLabel',
-				'labelWidth',
-				'hideLabel',
-				'margin'
-			];
-		} else if(value == 'radiofield') {
-			items = [
-				'name',
-				'width',
-				'boxLabel',
-				'labelWidth',
-				'hideLabel',
-				'margin',
-				'inputValue'
-			];
-		} else if(value == 'datefield' || value == 'mitos.datetime') {
-			items = [
-				'name',
-				'width',
-				'value',
-				'layout',
-				'emptyText',
-				'fieldLabel',
-				'labelWidth',
-				'hideLabel',
-				'allowBlank',
-				'margin'
-			];
-		} else {
-			items = [
-				'name',
-				'width',
-				'emptyText',
-				'fieldLabel',
-				'labelWidth',
-				'hideLabel',
-				'margin'
-			];
+		if (value == 'fieldset')
+		{
+			items = ['title', 'collapsible', 'collapsed', 'checkboxToggle', 'margin', 'columnWidth'];
+		}
+		else
+		if (value == 'fieldcontainer')
+		{
+			items = ['fieldLabel', 'labelWidth', 'hideLabel', 'width', 'layout', 'margin', 'columnWidth'];
+		}
+		else
+		if (value == 'combobox')
+		{
+			items = ['name', 'width', 'emptyText', 'fieldLabel', 'hideLabel', 'labelWidth', 'margin', 'allowBlank', 'list_id'];
+		}
+		else
+		if (value == 'mitos.checkbox')
+		{
+			items = ['name', 'width', 'fieldLabel', 'hideLabel', 'labelWidth', 'margin'];
+		}
+		else
+		if (value == 'textfield')
+		{
+			items = ['name', 'width', 'anchor', 'emptyText', 'fieldLabel', 'hideLabel', 'labelWidth', 'allowBlank', 'margin'];
+		}
+		else
+		if (value == 'textareafield')
+		{
+			items = ['name', 'width', 'anchor', 'height', 'emptyText', 'fieldLabel', 'hideLabel', 'labelWidth', 'allowBlank', 'grow', 'growMin', 'growMax', 'margin'];
+		}
+		else
+		if (value == 'numberfield')
+		{
+			items = ['name', 'width', 'value', 'emptyText', 'maxValue', 'minValue', 'increment', 'fieldLabel', 'labelWidth', 'hideLabel', 'margin'];
+		}
+		else
+		if (value == 'timefield')
+		{
+			items = ['name', 'width', 'value', 'emptyText', 'timeMaxValue', 'timeMinValue', 'increment', 'fieldLabel', 'labelWidth', 'hideLabel', 'margin'];
+		}
+		else
+		if (value == 'radiofield')
+		{
+			items = ['name', 'width', 'boxLabel', 'labelWidth', 'hideLabel', 'margin', 'inputValue'];
+		}
+		else
+		if (value == 'datefield' || value == 'mitos.datetime')
+		{
+			items = ['name', 'width', 'value', 'layout', 'emptyText', 'fieldLabel', 'labelWidth', 'hideLabel', 'allowBlank', 'margin'];
+		}
+		else
+		{
+			items = ['name', 'width', 'emptyText', 'fieldLabel', 'labelWidth', 'hideLabel', 'margin'];
 		}
 		enableItems(items);
 	},
@@ -38839,13 +40152,17 @@ Ext.define('App.view.administration.Layout', {
 	 * @param btn
 	 * @param toggle
 	 */
-	onFormPreview       : function(btn, toggle) {
+	onFormPreview : function(btn, toggle)
+	{
 		var me = this;
 
-		if(toggle === true) {
+		if (toggle === true)
+		{
 			me.previewFormRender();
 			me.fromPreview.expand(false);
-		} else {
+		}
+		else
+		{
 			me.fromPreview.collapse(false);
 		}
 	},
@@ -38853,12 +40170,13 @@ Ext.define('App.view.administration.Layout', {
 	 *
 	 *  this function re-render the preview form
 	 */
-	previewFormRender   : function() {
-		var me = this,
-			form = this.fromPreview;
+	previewFormRender : function()
+	{
+		var me = this, form = this.fromPreview;
 
 		form.el.mask();
-		me.getFormItems(form, me.currForm, function() {
+		me.getFormItems(form, me.currForm, function()
+		{
 			form.doLayout();
 			form.el.unmask();
 		});
@@ -38873,16 +40191,29 @@ Ext.define('App.view.administration.Layout', {
 	 *
 	 *  parentFieldsStore is use to create the child of select list
 	 */
-	loadFieldsGrid      : function() {
-		var me = this,
-			row = me.formsGrid.getSelectionModel();
-		if(me.currForm === null) {
+	loadFieldsGrid : function()
+	{
+		var me = this, row = me.formsGrid.getSelectionModel();
+		if (me.currForm === null)
+		{
 			row.select(0);
 		}
 		me.currForm = row.getLastSelected().data.id;
 
-		me.fieldsGridStore.load({params: {currForm: me.currForm }});
-		me.parentFieldsStore.load({params: {currForm: me.currForm }});
+		me.fieldsGridStore.load(
+		{
+			params :
+			{
+				currForm : me.currForm
+			}
+		});
+		me.parentFieldsStore.load(
+		{
+			params :
+			{
+				currForm : me.currForm
+			}
+		});
 
 		me.previewFormRender();
 		me.fieldsGrid.doLayout()
@@ -38893,19 +40224,22 @@ Ext.define('App.view.administration.Layout', {
 	 * place inside this function all the functions you want
 	 * to call every this panel becomes active
 	 */
-	onActive            : function(callback) {
-        var me = this;
-        me.onFormReset();
-        me.fieldForm.el.mask( i18n['or_select_a_field_to_update'] );
-        me.selectListoptionsStore.load({
-            callback:function(){
-                me.loadFieldsGrid();
-            }
-        });
-        //me.loadFieldsGrid();
+	onActive : function(callback)
+	{
+		var me = this;
+		me.onFormReset();
+		me.fieldForm.el.mask(i18n['or_select_a_field_to_update']);
+		me.selectListoptionsStore.load(
+		{
+			callback : function()
+			{
+				me.loadFieldsGrid();
+			}
+		});
+		//me.loadFieldsGrid();
 		callback(true);
 	}
-});
+}); 
 /**
  *
  * list.ejs.php
@@ -38928,17 +40262,15 @@ Ext.define('App.view.administration.Layout', {
  * @namespace Lists.deleteList
  *
  */
-Ext.define('App.view.administration.Lists', {
-	extend       : 'App.classes.RenderPanel',
-	id           : 'panelLists',
-	pageTitle    : i18n['select_list_options'],
-	pageLayout   : 'border',
-	uses         : [
-		'App.classes.GridPanel',
-		'App.classes.form.Panel',
-		'Ext.grid.plugin.RowEditing'
-	],
-	initComponent: function() {
+Ext.define('App.view.administration.Lists',
+{
+	extend : 'App.classes.RenderPanel',
+	id : 'panelLists',
+	pageTitle : i18n['select_list_options'],
+	pageLayout : 'border',
+	uses : ['App.classes.GridPanel', 'App.classes.form.Panel', 'Ext.grid.plugin.RowEditing'],
+	initComponent : function()
+	{
 
 		var me = this;
 		me.currList = null;
@@ -38947,221 +40279,274 @@ Ext.define('App.view.administration.Lists', {
 		/**
 		 * Options Store
 		 */
-		Ext.define('ListOptionsModel', {
-			extend: 'Ext.data.Model',
-			fields: [
-				{name: 'id', type: 'int'        },
-				{name: 'list_id', type: 'string'    },
-				{name: 'option_value', type: 'string'    },
-				{name: 'option_name', type: 'string'    },
-				{name: 'seq', type: 'string'     },
-				{name: 'notes', type: 'string'    },
-				{name: 'active', type: 'bool'    }
-			]
+		Ext.define('ListOptionsModel',
+		{
+			extend : 'Ext.data.Model',
+			fields : [
+			{
+				name : 'id',
+				type : 'int'
+			},
+			{
+				name : 'list_id',
+				type : 'string'
+			},
+			{
+				name : 'option_value',
+				type : 'string'
+			},
+			{
+				name : 'option_name',
+				type : 'string'
+			},
+			{
+				name : 'seq',
+				type : 'string'
+			},
+			{
+				name : 'notes',
+				type : 'string'
+			},
+			{
+				name : 'active',
+				type : 'bool'
+			}]
 
 		});
-		me.optionsStore = Ext.create('Ext.data.Store', {
-			model   : 'ListOptionsModel',
-			proxy   : {
-				type: 'direct',
-				api : {
-					read  : Lists.getOptions,
-					create: Lists.addOption,
-					update: Lists.updateOption
+		me.optionsStore = Ext.create('Ext.data.Store',
+		{
+			model : 'ListOptionsModel',
+			proxy :
+			{
+				type : 'direct',
+				api :
+				{
+					read : Lists.getOptions,
+					create : Lists.addOption,
+					update : Lists.updateOption
 				}
 			},
-			autoLoad: false
+			autoLoad : false
 		});
 		/**
 		 * List Store
 		 */
-		Ext.define('ListsGridModel', {
-			extend: 'Ext.data.Model',
-			fields: [
-				{name: 'id', type: 'int'        },
-				{name: 'title', type: 'string'    },
-				{name: 'active', type: 'bool'    },
-				{name: 'in_use', type: 'bool'    }
-			]
+		Ext.define('ListsGridModel',
+		{
+			extend : 'Ext.data.Model',
+			fields : [
+			{
+				name : 'id',
+				type : 'int'
+			},
+			{
+				name : 'title',
+				type : 'string'
+			},
+			{
+				name : 'active',
+				type : 'bool'
+			},
+			{
+				name : 'in_use',
+				type : 'bool'
+			}]
 		});
-		me.listsStore = Ext.create('Ext.data.Store', {
-			model   : 'ListsGridModel',
-			proxy   : {
-				type: 'direct',
-				api : {
-					read  : Lists.getLists,
-					create: Lists.addList,
-					update: Lists.updateList
+		me.listsStore = Ext.create('Ext.data.Store',
+		{
+			model : 'ListsGridModel',
+			proxy :
+			{
+				type : 'direct',
+				api :
+				{
+					read : Lists.getLists,
+					create : Lists.addList,
+					update : Lists.updateList
 				}
 			},
-			autoLoad: false
+			autoLoad : false
 		});
 		/**
 		 * RowEditor Classes
 		 */
-		me.optionsRowEditing = Ext.create('Ext.grid.plugin.RowEditing', {
-			autoCancel   : false,
+		me.optionsRowEditing = Ext.create('Ext.grid.plugin.RowEditing',
+		{
+			autoCancel : false,
 			errorSummary : false,
-			listeners    : {
-				scope     : me,
+			listeners :
+			{
+				scope : me,
 				afteredit : me.afterEdit,
-				canceledit: me.onCancelEdit
+				canceledit : me.onCancelEdit
 			}
 		});
-		me.listsRowEditing = Ext.create('Ext.grid.plugin.RowEditing', {
-			autoCancel   : false,
+		me.listsRowEditing = Ext.create('Ext.grid.plugin.RowEditing',
+		{
+			autoCancel : false,
 			errorSummary : false,
-			listeners    : {
-				scope     : me,
+			listeners :
+			{
+				scope : me,
 				afteredit : me.afterEdit,
-				canceledit: me.onCancelEdit
+				canceledit : me.onCancelEdit
 			}
 		});
 		/**
 		 * Lists Grid
 		 */
-		me.listsGrid = Ext.create('App.classes.GridPanel', {
-			store      : me.listsStore,
-			itemId     : 'listsGrid',
-			plugins    : [ me.listsRowEditing ],
-			width      : 320,
-			margin     : '0 2 0 0',
-			region     : 'west',
-			columns    : [
+		me.listsGrid = Ext.create('App.classes.GridPanel',
+		{
+			store : me.listsStore,
+			itemId : 'listsGrid',
+			plugins : [me.listsRowEditing],
+			width : 320,
+			margin : '0 2 0 0',
+			region : 'west',
+			columns : [
+			{
+				text : i18n['select_lists'],
+				flex : 1,
+				sortable : false,
+				dataIndex : 'title',
+				editor :
 				{
-					text     : i18n['select_lists'],
-					flex     : 1,
-					sortable : false,
-					dataIndex: 'title',
-					editor   : {
-						allowBlank: false
-					}
-				},
-				{
-					text     : i18n['active'],
-					width    : 55,
-					sortable : false,
-					dataIndex: 'active',
-					renderer : me.boolRenderer,
-					editor   : {
-						xtype  : 'mitos.checkbox',
-						padding: '0 0 0 18'
-					}
-				},
-				{
-					text     : i18n['in_use'],
-					width    : 55,
-					sortable : false,
-					dataIndex: 'in_use',
-					renderer : me.boolRenderer
+					allowBlank : false
 				}
-			],
-			listeners  : {
-				scope    : me,
-				selectionchange: me.onListsGridClick
 			},
-			dockedItems: [
+			{
+				text : i18n['active'],
+				width : 55,
+				sortable : false,
+				dataIndex : 'active',
+				renderer : me.boolRenderer,
+				editor :
 				{
-					xtype: 'toolbar',
-					dock : 'top',
-					items: [
-						{
-							text   : i18n['new_list'],
-							iconCls: 'icoAddRecord',
-							scope  : me,
-							handler: me.onNewList
-						},
-						'->',
-						{
-							text    : i18n['delete_list'],
-							iconCls : 'icoDeleteBlack',
-							itemId  : 'listDeleteBtn',
-							disabled: true,
-							scope   : me,
-							handler : me.onDelete,
-							tooltip : i18n['can_be_disable']
-						}
-					]
+					xtype : 'mitos.checkbox',
+					padding : '0 0 0 18'
 				}
-			]
+			},
+			{
+				text : i18n['in_use'],
+				width : 55,
+				sortable : false,
+				dataIndex : 'in_use',
+				renderer : me.boolRenderer
+			}],
+			listeners :
+			{
+				scope : me,
+				selectionchange : me.onListsGridClick
+			},
+			dockedItems : [
+			{
+				xtype : 'toolbar',
+				dock : 'top',
+				items : [
+				{
+					text : i18n['new_list'],
+					iconCls : 'icoAddRecord',
+					scope : me,
+					handler : me.onNewList
+				}, '->',
+				{
+					text : i18n['delete_list'],
+					iconCls : 'icoDeleteBlack',
+					itemId : 'listDeleteBtn',
+					disabled : true,
+					scope : me,
+					handler : me.onDelete,
+					tooltip : i18n['can_be_disable']
+				}]
+			}]
 		});
 		/**
 		 * Options Grid
 		 */
-		me.optionsGrid = Ext.create('App.classes.GridPanel', {
-			store      : me.optionsStore,
-			itemId     : 'optionsGrid',
-			plugins    : [ me.optionsRowEditing ],
-			region     : 'center',
-			viewConfig : {
-				plugins  : {
-					ptype   : 'gridviewdragdrop',
-					dragText: i18n['drag_and_drop_reorganize']
+		me.optionsGrid = Ext.create('App.classes.GridPanel',
+		{
+			store : me.optionsStore,
+			itemId : 'optionsGrid',
+			plugins : [me.optionsRowEditing],
+			region : 'center',
+			viewConfig :
+			{
+				plugins :
+				{
+					ptype : 'gridviewdragdrop',
+					dragText : i18n['drag_and_drop_reorganize']
 				},
-				listeners: {
-					scope: me,
+				listeners :
+				{
+					scope : me,
 					drop : me.onDragDrop
 				}
 			},
-			columns    : [
+			columns : [
+			{
+				text : i18n['option_title'],
+				width : 200,
+				sortable : true,
+				dataIndex : 'option_name',
+				editor :
 				{
-					text     : i18n['option_title'],
-					width    : 200,
-					sortable : true,
-					dataIndex: 'option_name',
-					editor   : {
-						allowBlank     : false,
-						enableKeyEvents: true,
-						listeners      : {
-							scope: me,
-							keyup: me.onOptionTitleChange
-						}
-					}
-				},
-				{
-					text     : i18n['option_value'],
-					width    : 200,
-					sortable : true,
-					dataIndex: 'option_value',
-					editor   : {
-						allowBlank: false,
-						readOnly  : true,
-						itemId    : 'optionValueTextField'
-					}
-				},
-				{
-					text     : i18n['notes'],
-					sortable : true,
-					dataIndex: 'notes',
-					flex     : 1,
-					editor   : { allowBlank: true }
-				},
-				{
-					text     : i18n['active'],
-					width    : 55,
-					sortable : false,
-					dataIndex: 'active',
-					renderer : me.boolRenderer,
-					editor   : {
-						xtype  : 'mitos.checkbox',
-						padding: '0 0 0 18'
+					allowBlank : false,
+					enableKeyEvents : true,
+					listeners :
+					{
+						scope : me,
+						keyup : me.onOptionTitleChange
 					}
 				}
-			],
-			dockedItems: [
+			},
+			{
+				text : i18n['option_value'],
+				width : 200,
+				sortable : true,
+				dataIndex : 'option_value',
+				editor :
 				{
-					xtype: 'toolbar',
-					dock : 'top',
-					items: ['->', {
-						text   : i18n['add_option'],
-						iconCls: 'icoAddRecord',
-						scope  : me,
-						handler: me.onNewOption
-					}]
+					allowBlank : false,
+					readOnly : true,
+					itemId : 'optionValueTextField'
 				}
-			]
+			},
+			{
+				text : i18n['notes'],
+				sortable : true,
+				dataIndex : 'notes',
+				flex : 1,
+				editor :
+				{
+					allowBlank : true
+				}
+			},
+			{
+				text : i18n['active'],
+				width : 55,
+				sortable : false,
+				dataIndex : 'active',
+				renderer : me.boolRenderer,
+				editor :
+				{
+					xtype : 'mitos.checkbox',
+					padding : '0 0 0 18'
+				}
+			}],
+			dockedItems : [
+			{
+				xtype : 'toolbar',
+				dock : 'top',
+				items : ['->',
+				{
+					text : i18n['add_option'],
+					iconCls : 'icoAddRecord',
+					scope : me,
+					handler : me.onNewOption
+				}]
+			}]
 		});
-		me.pageBody = [me.listsGrid, me.optionsGrid ];
+		me.pageBody = [me.listsGrid, me.optionsGrid];
 		me.callParent(arguments);
 	},
 
@@ -39169,10 +40554,13 @@ Ext.define('App.view.administration.Lists', {
 	 * This wll load a new record to the grid
 	 * and start the rowEditor
 	 */
-	onNewList: function() {
+	onNewList : function()
+	{
 		var me = this;
 		me.listsRowEditing.cancelEdit();
-		var m = Ext.create('ListsGridModel', {});
+		var m = Ext.create('ListsGridModel',
+		{
+		});
 		me.listsStore.insert(0, m);
 		me.listsRowEditing.startEdit(0, 0);
 	},
@@ -39182,13 +40570,18 @@ Ext.define('App.view.administration.Lists', {
 	 * @param grid
 	 * @param record
 	 */
-	onListsGridClick: function(grid, selected) {
-		var me = this,
-			deleteBtn = me.listsGrid.down('toolbar').getComponent('listDeleteBtn'),
-		inUse = !!selected[0].data.in_use == '1';
+	onListsGridClick : function(grid, selected)
+	{
+		var me = this, deleteBtn = me.listsGrid.down('toolbar').getComponent('listDeleteBtn'), inUse = !!selected[0].data.in_use == '1';
 
 		me.currList = selected[0].data.id;
-		me.optionsStore.load({params: {list_id: me.currList}});
+		me.optionsStore.load(
+		{
+			params :
+			{
+				list_id : me.currList
+			}
+		});
 
 		inUse ? deleteBtn.disable() : deleteBtn.enable();
 	},
@@ -39197,11 +40590,13 @@ Ext.define('App.view.administration.Lists', {
 	 * This wll load a new record to the grid
 	 * and start the rowEditor
 	 */
-	onNewOption: function() {
+	onNewOption : function()
+	{
 		var me = this;
 		me.optionsRowEditing.cancelEdit();
-		var m = Ext.create('ListOptionsModel', {
-			list_id: me.currList
+		var m = Ext.create('ListOptionsModel',
+		{
+			list_id : me.currList
 		});
 		me.optionsStore.insert(0, m);
 		me.optionsRowEditing.startEdit(0, 0);
@@ -39211,9 +40606,9 @@ Ext.define('App.view.administration.Lists', {
 	 * Set the Option Value same as Option Title
 	 * @param a
 	 */
-	onOptionTitleChange: function(a) {
-		var value = a.getValue(),
-			field = a.up('container').getComponent('optionValueTextField');
+	onOptionTitleChange : function(a)
+	{
+		var value = a.getValue(), field = a.up('container').getComponent('optionValueTextField');
 		field.setValue(value);
 	},
 	/**
@@ -39222,58 +40617,77 @@ Ext.define('App.view.administration.Lists', {
 	 * @param data
 	 * @param overModel
 	 */
-	onDragDrop         : function(node, data, overModel) {
-		var me = this,
-			items = overModel.stores[0].data.items,
-			gridItmes = [];
-        for(var i=0; i < items.length; i++ ){
-            gridItmes.push(items[i].data.id);
+	onDragDrop : function(node, data, overModel)
+	{
+		var me = this, items = overModel.stores[0].data.items, gridItmes = [];
+		for (var i = 0; i < items.length; i++)
+		{
+			gridItmes.push(items[i].data.id);
 		}
-		var params = {
-			list_id: data.records[0].data.list_id,
+		var params =
+		{
+			list_id : data.records[0].data.list_id,
 			fields : gridItmes
 		};
-		Lists.sortOptions(params, function() {
-			me.optionsStore.load({params: {list_id: me.currList}});
+		Lists.sortOptions(params, function()
+		{
+			me.optionsStore.load(
+			{
+				params :
+				{
+					list_id : me.currList
+				}
+			});
 		});
 	},
-
 
 	/**
 	 * Row Editting stuff
 	 * @param a
 	 */
-	afterEdit: function(a) {
+	afterEdit : function(a)
+	{
 		a.context.store.sync();
 		//a.context.store.load({params: {list_id: this.currList}});
 	},
 
-	onCancelEdit: function(a) {
-        say(a);
-		a.context.store.load({params: {list_id: this.currList}});
+	onCancelEdit : function(a)
+	{
+		say(a);
+		a.context.store.load(
+		{
+			params :
+			{
+				list_id : this.currList
+			}
+		});
 	},
 
-	onDelete: function(a) {
-		var me = this,
-			grid = a.up('grid'),
-			store = grid.getStore(),
-			sm = grid.getSelectionModel(),
-			record = sm.getLastSelected();
+	onDelete : function(a)
+	{
+		var me = this, grid = a.up('grid'), store = grid.getStore(), sm = grid.getSelectionModel(), record = sm.getLastSelected();
 
-		Ext.Msg.show({
-			title  : i18n['please_confirm'] + '...',
-			icon   : Ext.MessageBox.QUESTION,
-			msg    : i18n['delete_this_record'],
-			buttons: Ext.Msg.YESNO,
-			scope  : me,
-			fn     : function(btn) {
-				if(btn == 'yes') {
-					Lists.deleteList(record.data, function(provider, response) {
-						if(response.result.success) {
+		Ext.Msg.show(
+		{
+			title : i18n['please_confirm'] + '...',
+			icon : Ext.MessageBox.QUESTION,
+			msg : i18n['delete_this_record'],
+			buttons : Ext.Msg.YESNO,
+			scope : me,
+			fn : function(btn)
+			{
+				if (btn == 'yes')
+				{
+					Lists.deleteList(record.data, function(provider, response)
+					{
+						if (response.result.success)
+						{
 							me.msg('Sweet!', i18n['list'] + ' "' + record.data.title + '" ' + i18n['deleted'] + '.');
 							store.load();
 							me.optionsStore.load();
-						} else {
+						}
+						else
+						{
 							Ext.Msg.alert('Oops!', i18n['unable_to_delete'] + ' "' + record.data.title + '"<br>' + i18n['list_currently_used_forms'] + '.');
 						}
 
@@ -39283,12 +40697,20 @@ Ext.define('App.view.administration.Lists', {
 		});
 	},
 
-	loadGrid: function() {
+	loadGrid : function()
+	{
 		var me = this;
-		if(me.currList === null) {
+		if (me.currList === null)
+		{
 			me.currList = me.listsStore.getAt(0).data.id;
 		}
-		me.optionsStore.load({params: {list_id: me.currList}});
+		me.optionsStore.load(
+		{
+			params :
+			{
+				list_id : me.currList
+			}
+		});
 	},
 	/**
 	 * This function is called from MitosAPP.js when
@@ -39296,14 +40718,16 @@ Ext.define('App.view.administration.Lists', {
 	 * place inside this function all the functions you want
 	 * to call every this panel becomes active
 	 */
-	onActive: function(callback) {
-        var me = this;
-        this.listsStore.load({
-            scope:me,
-            callback:me.loadGrid
-        });
+	onActive : function(callback)
+	{
+		var me = this;
+		this.listsStore.load(
+		{
+			scope : me,
+			callback : me.loadGrid
+		});
 		//this.loadGrid();
-        callback(true);
+		callback(true);
 	}
 });
 
@@ -39319,136 +40743,261 @@ Ext.define('App.view.administration.Lists', {
  *
  * @namespace Logs.getLogs
  */
-Ext.define('App.view.administration.Log', {
-	extend       : 'App.classes.RenderPanel',
-	id           : 'panelLog',
-	uses         : [ 'App.classes.GridPanel' ],
-	pageTitle    : i18n['event_history_log'],
-	initComponent: function() {
+Ext.define('App.view.administration.Log',
+{
+	extend : 'App.classes.RenderPanel',
+	id : 'panelLog',
+	uses : ['App.classes.GridPanel'],
+	pageTitle : i18n['event_history_log'],
+	initComponent : function()
+	{
 		var me = this;
 
-		Ext.define('LogsModel', {
-			extend: 'Ext.data.Model',
-			fields: [
-				{name: 'id', type: 'int'},
-				{name: 'date', type: 'string'},
-				{name: 'event', type: 'auto'},
-				{name: 'user', type: 'string'},
-				{name: 'facility', type: 'string'},
-				{name: 'comments', type: 'string'},
-				{name: 'user_notes', type: 'string'},
-				{name: 'patient_id', type: 'string'},
-				{name: 'success', type: 'int'},
-				{name: 'checksum', type: 'string'},
-				{name: 'crt_user', type: 'string'}
-			]
+		Ext.define('LogsModel',
+		{
+			extend : 'Ext.data.Model',
+			fields : [
+			{
+				name : 'id',
+				type : 'int'
+			},
+			{
+				name : 'date',
+				type : 'string'
+			},
+			{
+				name : 'event',
+				type : 'auto'
+			},
+			{
+				name : 'user',
+				type : 'string'
+			},
+			{
+				name : 'facility',
+				type : 'string'
+			},
+			{
+				name : 'comments',
+				type : 'string'
+			},
+			{
+				name : 'user_notes',
+				type : 'string'
+			},
+			{
+				name : 'patient_id',
+				type : 'string'
+			},
+			{
+				name : 'success',
+				type : 'int'
+			},
+			{
+				name : 'checksum',
+				type : 'string'
+			},
+			{
+				name : 'crt_user',
+				type : 'string'
+			}]
 
 		});
 
-		me.logStore = Ext.create('Ext.data.Store', {
-			model   : 'LogsModel',
-			proxy   : {
-				type  : 'direct',
-				api   : {
-					read: Logs.getLogs
+		me.logStore = Ext.create('Ext.data.Store',
+		{
+			model : 'LogsModel',
+			proxy :
+			{
+				type : 'direct',
+				api :
+				{
+					read : Logs.getLogs
 				},
-				reader: {
-					totalProperty: 'totals',
-					root         : 'rows'
+				reader :
+				{
+					totalProperty : 'totals',
+					root : 'rows'
 				}
 			},
-			autoLoad: false
+			autoLoad : false
 		});
 
 		// *************************************************************************************
 		// Create the GridPanel
 		// *************************************************************************************
-		me.logGrid = Ext.create('App.classes.GridPanel', {
-			store    : me.logStore,
-			columns  : [
-				{ text: 'id', sortable: false, dataIndex: 'id', hidden: true},
-				{ width: 120, text: 'Date', sortable: true, dataIndex: 'date' },
-				{ width: 160, text: 'User', sortable: true, dataIndex: 'user' },
-				{ width: 100, text: 'Event', sortable: true, dataIndex: 'event' },
-				{ flex: 1, text: 'Activity', sortable: true, dataIndex: 'comments' }
-			],
-			listeners: {
-				scope       : this,
-				itemclick   : me.onItemclick,
-				itemdblclick: me.onItemdblclick
+		me.logGrid = Ext.create('App.classes.GridPanel',
+		{
+			store : me.logStore,
+			columns : [
+			{
+				text : 'id',
+				sortable : false,
+				dataIndex : 'id',
+				hidden : true
 			},
-			tbar     : Ext.create('Ext.PagingToolbar', {
-				store      : me.logStore,
-				displayInfo: true,
-				emptyMsg   : i18n['no_office_notes_to_display'],
-				plugins    : Ext.create('Ext.ux.SlidingPager', {}),
-				items      : [
+			{
+				width : 120,
+				text : 'Date',
+				sortable : true,
+				dataIndex : 'date'
+			},
+			{
+				width : 160,
+				text : 'User',
+				sortable : true,
+				dataIndex : 'user'
+			},
+			{
+				width : 100,
+				text : 'Event',
+				sortable : true,
+				dataIndex : 'event'
+			},
+			{
+				flex : 1,
+				text : 'Activity',
+				sortable : true,
+				dataIndex : 'comments'
+			}],
+			listeners :
+			{
+				scope : this,
+				itemclick : me.onItemclick,
+				itemdblclick : me.onItemdblclick
+			},
+			tbar : Ext.create('Ext.PagingToolbar',
+			{
+				store : me.logStore,
+				displayInfo : true,
+				emptyMsg : i18n['no_office_notes_to_display'],
+				plugins : Ext.create('Ext.ux.SlidingPager',
+				{
+				}),
+				items : [
+				{
+					xtype : 'button',
+					text : i18n['view_log_event_details'],
+					iconCls : 'edit',
+					itemId : 'detail',
+					disabled : true,
+					handler : function()
 					{
-						xtype   : 'button',
-						text    : i18n['view_log_event_details'],
-						iconCls : 'edit',
-						itemId  : 'detail',
-						disabled: true,
-						handler : function() {
-							me.winLog.show();
-						}
+						me.winLog.show();
 					}
-				]
+				}]
 			})
 		});
 
 		// *************************************************************************************
 		// Event Detail Window
 		// *************************************************************************************
-		me.winLog = Ext.create('Ext.window.Window', {
-			title      : i18n['log_event_details'],
-			width      : 500,
-			closeAction: 'hide',
-			items      : [
+		me.winLog = Ext.create('Ext.window.Window',
+		{
+			title : i18n['log_event_details'],
+			width : 500,
+			closeAction : 'hide',
+			items : [
+			{
+				xtype : 'form',
+				bodyStyle : 'padding: 10px;',
+				autoWidth : true,
+				border : false,
+				hideLabels : true,
+				defaults :
 				{
-					xtype     : 'form',
-					bodyStyle : 'padding: 10px;',
-					autoWidth : true,
-					border    : false,
-					hideLabels: true,
-					defaults  : { labelWidth: 89, anchor: '100%',
-						layout              : { type: 'hbox', defaultMargins: {top: 0, right: 5, bottom: 0, left: 0} }
-					},
-					items     : [
-						{ xtype: 'textfield', hidden: true, name: 'id'},
-						{ fieldLabel: i18n['date'], xtype: 'displayfield', name: 'date'},
-						{ fieldLabel: i18n['event'], xtype: 'displayfield', name: 'event'},
-						{ fieldLabel: i18n['user'], xtype: 'displayfield', name: 'user'},
-						{ fieldLabel: i18n['facility'], xtype: 'displayfield', name: 'facility'},
-						{ fieldLabel: i18n['comments'], xtype: 'displayfield', name: 'comments'},
-						{ fieldLabel: i18n['user_notes'], xtype: 'displayfield', name: 'user_notes'},
-						{ fieldLabel: i18n['patient_id'], xtype: 'displayfield', name: 'patient_id'},
-						{ fieldLabel: i18n['success'], xtype: 'displayfield', name: 'success'},
-						{ fieldLabel: i18n['check_sum'], xtype: 'displayfield', name: 'checksum'},
-						{ fieldLabel: i18n['crt_user'], xtype: 'displayfield', name: 'crt_user'}
-					]
-				}
-			],
-			buttons    : [
-				{
-					text   : i18n['close'],
-					handler: function() {
-						this.up('window').hide();
+					labelWidth : 89,
+					anchor : '100%',
+					layout :
+					{
+						type : 'hbox',
+						defaultMargins :
+						{
+							top : 0,
+							right : 5,
+							bottom : 0,
+							left : 0
+						}
 					}
+				},
+				items : [
+				{
+					xtype : 'textfield',
+					hidden : true,
+					name : 'id'
+				},
+				{
+					fieldLabel : i18n['date'],
+					xtype : 'displayfield',
+					name : 'date'
+				},
+				{
+					fieldLabel : i18n['event'],
+					xtype : 'displayfield',
+					name : 'event'
+				},
+				{
+					fieldLabel : i18n['user'],
+					xtype : 'displayfield',
+					name : 'user'
+				},
+				{
+					fieldLabel : i18n['facility'],
+					xtype : 'displayfield',
+					name : 'facility'
+				},
+				{
+					fieldLabel : i18n['comments'],
+					xtype : 'displayfield',
+					name : 'comments'
+				},
+				{
+					fieldLabel : i18n['user_notes'],
+					xtype : 'displayfield',
+					name : 'user_notes'
+				},
+				{
+					fieldLabel : i18n['patient_id'],
+					xtype : 'displayfield',
+					name : 'patient_id'
+				},
+				{
+					fieldLabel : i18n['success'],
+					xtype : 'displayfield',
+					name : 'success'
+				},
+				{
+					fieldLabel : i18n['check_sum'],
+					xtype : 'displayfield',
+					name : 'checksum'
+				},
+				{
+					fieldLabel : i18n['crt_user'],
+					xtype : 'displayfield',
+					name : 'crt_user'
+				}]
+			}],
+			buttons : [
+			{
+				text : i18n['close'],
+				handler : function()
+				{
+					this.up('window').hide();
 				}
-			]
+			}]
 		});
-		me.pageBody = [ me.logGrid ];
+		me.pageBody = [me.logGrid];
 		me.callParent(arguments);
 	}, // end of initComponent
 
-	onItemclick   : function(view, record) {
-		var form = this.winLog.down('form'),
-			editBtn = this.logGrid.down('toolbar').getComponent('detail');
+	onItemclick : function(view, record)
+	{
+		var form = this.winLog.down('form'), editBtn = this.logGrid.down('toolbar').getComponent('detail');
 		form.getForm().loadRecord(record);
 		editBtn.enable();
 	},
-	onItemdblclick: function(view, record) {
+	onItemdblclick : function(view, record)
+	{
 		var form = this.winLog.down('form');
 		form.getForm().loadRecord(record);
 		this.winLog.show();
@@ -39459,11 +41008,12 @@ Ext.define('App.view.administration.Log', {
 	 * place inside this function all the functions you want
 	 * to call every this panel becomes active
 	 */
-	onActive      : function(callback) {
+	onActive : function(callback)
+	{
 		this.logStore.load();
 		callback(true);
 	}
-});
+}); 
 /**
  * services.ejs.php
  * Services
@@ -39478,215 +41028,220 @@ Ext.define('App.view.administration.Log', {
  * @namespace Services.addService
  * @namespace Services.updateService
  */
-Ext.define('App.view.administration.Medications', {
-	extend   : 'App.classes.RenderPanel',
-	id       : 'panelMedications',
-	pageTitle: i18n['medications'],
+Ext.define('App.view.administration.Medications',
+{
+	extend : 'App.classes.RenderPanel',
+	id : 'panelMedications',
+	pageTitle : i18n['medications'],
 
-	initComponent: function() {
+	initComponent : function()
+	{
 		var me = this;
 		me.query = '';
 
 		me.storeMedications = Ext.create('App.store.administration.Medications');
 
-		me.medicationsGrid = Ext.create('App.classes.GridPanel', {
+		me.medicationsGrid = Ext.create('App.classes.GridPanel',
+		{
 			region : 'center',
-			store  : me.storeMedications,
-			columns: [
+			store : me.storeMedications,
+			columns : [
+			{
+				width : 70,
+				header : i18n['number'],
+				dataIndex : 'PRODUCTNDC',
+				sortable : true
+			},
+			{
+				width : 80,
+				header : i18n['name'],
+				dataIndex : 'PROPRIETARYNAME',
+				sortable : true
+			},
+			{
+				width : 200,
+				header : i18n['active_component'],
+				dataIndex : 'NONPROPRIETARYNAME',
+				sortable : true
+			},
+			{
+				width : 175,
+				header : i18n['dosage'],
+				dataIndex : 'DOSAGEFORMNAME',
+				sortable : true
+			},
+			{
+				width : 45,
+				header : i18n['number'],
+				dataIndex : 'ACTIVE_NUMERATOR_STRENGTH',
+				sortable : true
+			},
+			{
+				flex : 1,
+				header : i18n['unit'],
+				dataIndex : 'ACTIVE_INGRED_UNIT',
+				sortable : true
+			}],
+			plugins : Ext.create('App.classes.grid.RowFormEditing',
+			{
+				autoCancel : false,
+				errorSummary : false,
+				clicksToEdit : 1,
+				enableRemove : true,
+				formItems : [
 				{
-					width    : 70,
-					header   : i18n['number'],
-					dataIndex: 'PRODUCTNDC',
-					sortable : true
-				},
-				{
-					width    : 80,
-					header   : i18n['name'],
-					dataIndex: 'PROPRIETARYNAME',
-					sortable : true
-				},
-				{
-					width    : 200,
-					header   : i18n['active_component'],
-					dataIndex: 'NONPROPRIETARYNAME',
-					sortable : true
-				},
-				{
-					width    : 175,
-					header   : i18n['dosage'],
-					dataIndex: 'DOSAGEFORMNAME',
-					sortable : true
-				},
-				{
-					width    : 45,
-					header   : i18n['number'],
-					dataIndex: 'ACTIVE_NUMERATOR_STRENGTH',
-					sortable : true
-				},
-				{
-					flex     : 1,
-					header   : i18n['unit'],
-					dataIndex: 'ACTIVE_INGRED_UNIT',
-					sortable : true
-				}
-			],
-			plugins: Ext.create('App.classes.grid.RowFormEditing', {
-				autoCancel  : false,
-				errorSummary: false,
-				clicksToEdit: 1,
-				enableRemove:true,
-				formItems   : [
+
+					title : 'general',
+					xtype : 'container',
+					padding : 10,
+					layout : 'vbox',
+					items : [
 					{
+						/**
+						 * Line one
+						 */
+						xtype : 'fieldcontainer',
+						layout : 'hbox',
+						defaults :
+						{
+							margin : '0 10 5 0'
+						},
+						items : [
+						{
+							xtype : 'textfield',
+							fieldLabel : i18n['name'],
+							width : 150,
+							labelWidth : 50,
+							name : 'PROPRIETARYNAME'
 
-						title  : 'general',
-						xtype  : 'container',
-						padding: 10,
-						layout : 'vbox',
-						items  : [
-							{
-								/**
-								 * Line one
-								 */
-								xtype   : 'fieldcontainer',
-								layout  : 'hbox',
-								defaults: { margin: '0 10 5 0' },
-								items   : [
-									{
-										xtype     : 'textfield',
-										fieldLabel: i18n['name'],
-										width     : 150,
-										labelWidth: 50,
-										name      : 'PROPRIETARYNAME'
+						},
+						{
+							xtype : 'textfield',
+							fieldLabel : i18n['active_component'],
+							width : 350,
+							labelWidth : 125,
+							name : 'NONPROPRIETARYNAME'
 
+						},
 
-									},
-									{
-										xtype     : 'textfield',
-										fieldLabel: i18n['active_component'],
-										width     : 350,
-										labelWidth: 125,
-										name      : 'NONPROPRIETARYNAME'
+						{
+							xtype : 'textfield',
+							fieldLabel : i18n['dosage'],
+							width : 200,
+							labelWidth : 50,
+							name : 'DOSAGEFORMNAME'
 
-									},
+						}]
 
-									{
-										xtype     : 'textfield',
-										fieldLabel: i18n['dosage'],
-										width     : 200,
-										labelWidth: 50,
-										name      : 'DOSAGEFORMNAME'
+					},
+					{
+						/**
+						 * Line two
+						 */
+						xtype : 'fieldcontainer',
+						layout : 'hbox',
+						defaults :
+						{
+							margin : '0 10 5 0'
+						},
+						items : [
+						{
+							xtype : 'textfield',
+							fieldLabel : i18n['code'],
+							labelWidth : 50,
+							width : 150,
+							name : 'PRODUCTNDC'
 
-									}
-								]
+						},
+						{
+							xtype : 'textfield',
+							fieldLabel : i18n['dosis'],
+							margin : '0 0 5 0',
+							value : 0,
+							minValue : 0,
+							width : 275,
+							labelWidth : 125,
+							name : 'ACTIVE_NUMERATOR_STRENGTH'
 
-							},
-							{
-								/**
-								 * Line two
-								 */
-								xtype   : 'fieldcontainer',
-								layout  : 'hbox',
-								defaults: { margin: '0 10 5 0' },
-								items   : [
-									{
-										xtype     : 'textfield',
-										fieldLabel: i18n['code'],
-										labelWidth: 50,
-										width     : 150,
-										name      : 'PRODUCTNDC'
+						},
+						{
+							xtype : 'textfield',
+							name : 'ACTIVE_INGRED_UNIT',
+							width : 75
 
+						}]
 
-									},
-									{
-										xtype     : 'textfield',
-										fieldLabel: i18n['dosis'],
-										margin    : '0 0 5 0',
-										value     : 0,
-										minValue  : 0,
-										width     : 275,
-										labelWidth: 125,
-										name      : 'ACTIVE_NUMERATOR_STRENGTH'
+					}]
 
-									},
-									{
-										xtype: 'textfield',
-										name : 'ACTIVE_INGRED_UNIT',
-										width: 75
-
-									}
-								]
-
-							}
-
-						]
-
-
-					}
-				]
+				}]
 
 			}),
-			tbar   : Ext.create('Ext.PagingToolbar', {
-				store      : me.storeMedications,
-				displayInfo: true,
-				emptyMsg   : i18n['no_office_notes_to_display'],
-				plugins    : Ext.create('Ext.ux.SlidingPager', {}),
-				items:[
-					'-',
+			tbar : Ext.create('Ext.PagingToolbar',
+			{
+				store : me.storeMedications,
+				displayInfo : true,
+				emptyMsg : i18n['no_office_notes_to_display'],
+				plugins : Ext.create('Ext.ux.SlidingPager',
+				{
+				}),
+				items : ['-',
+				{
+					text : 'Add New',
+					scope : me,
+					handler : me.onAddMedication
+				}, '-',
+				{
+					xtype : 'textfield',
+					emptyText : i18n['search'],
+					enableKeyEvents : true,
+					itemId : 'query',
+					listeners :
 					{
-					text:'Add New',
-					scope:me,
-					handler:me.onAddMedication
-					},'-',
-					{
-					xtype          : 'textfield',
-					emptyText      : i18n['search'],
-					enableKeyEvents: true,
-					itemId         : 'query',
-					listeners      : {
 						scope : me,
 						keyup : me.onSearchMedications,
-						buffer: 500
-								}
-					},'-',
-					{
-						text: i18n['reset'],
-						scope:me,
-						handler:me.onFieldReset
+						buffer : 500
 					}
-				]
+				}, '-',
+				{
+					text : i18n['reset'],
+					scope : me,
+					handler : me.onFieldReset
+				}]
 			})
 
-
 		});
-		me.pageBody = [ me.medicationsGrid ];
+		me.pageBody = [me.medicationsGrid];
 		me.callParent(arguments);
 	}, // end of initComponent
 
-	onFieldReset: function(){
-
+	onFieldReset : function()
+	{
 
 	},
 
-	onAddMedication: function() {
+	onAddMedication : function()
+	{
 		this.medicationsGrid.editingPlugin.cancelEdit();
 
-		this.storeMedications.insert(0,{});
-		this.medicationsGrid.editingPlugin.startEdit(0,0);
+		this.storeMedications.insert(0,
+		{
+		});
+		this.medicationsGrid.editingPlugin.startEdit(0, 0);
 
 	},
 
-	onSearchMedications: function(field) {
-		var me = this,
-			store = me.storeMedications;
+	onSearchMedications : function(field)
+	{
+		var me = this, store = me.storeMedications;
 
 		me.query = field.getValue();
 
-		store.proxy.extraParams = {query: me.query};
+		store.proxy.extraParams =
+		{
+			query : me.query
+		};
 		store.load();
 	},
-
-
-
 
 	/**
 	 * This function is called from MitosAPP.js when
@@ -39694,13 +41249,17 @@ Ext.define('App.view.administration.Medications', {
 	 * place inside this function all the functions you want
 	 * to call every this panel becomes active
 	 */
-	onActive: function() {
+	onActive : function()
+	{
 		this.medicationsGrid.down('toolbar').getComponent('query').reset();
-		this.storeMedications.proxy.extraParams = {};
+		this.storeMedications.proxy.extraParams =
+		{
+		};
 		this.storeMedications.load();
 
 	}
-}); //ens servicesPage class
+});
+//ens servicesPage class
 /**
  * Users.ejs.php
  * Description: Users Screen
@@ -39716,228 +41275,281 @@ Ext.define('App.view.administration.Medications', {
  * @namespace User.updateUser
  * @namespace User.chechPasswordHistory
  */
-Ext.define('App.view.administration.FloorPlans', {
-	extend       : 'App.classes.RenderPanel',
-	id           : 'panelFloorPlans',
-	pageTitle    : i18n['floor_plan_editor'],
-	pageLayout   : 'border',
-	floorPlanId  : null,
-	activeZone   : null,
-	initComponent: function() {
+Ext.define('App.view.administration.FloorPlans',
+{
+	extend : 'App.classes.RenderPanel',
+	id : 'panelFloorPlans',
+	pageTitle : i18n['floor_plan_editor'],
+	pageLayout : 'border',
+	floorPlanId : null,
+	activeZone : null,
+	initComponent : function()
+	{
 		var me = this;
-		me.floorPlansStore = Ext.create('App.store.administration.FloorPlans',{
-			autoLoad:true
+		me.floorPlansStore = Ext.create('App.store.administration.FloorPlans',
+		{
+			autoLoad : true
 		});
 		me.floorPlanZonesStore = Ext.create('App.store.administration.FloorPlanZones');
 
-		me.floorPlans = Ext.create('Ext.grid.Panel',{
-			title: i18n['floor_plans'],
-			region:'west',
-			width:200,
-			split:true,
-			hideHeaders:true,
-			store: me.floorPlansStore,
-			plugins:[
-				me.floorPlanEditing = Ext.create('Ext.grid.plugin.RowEditing', {
-		            clicksToEdit: 2
-		        })
-			],
-			columns:[
+		me.floorPlans = Ext.create('Ext.grid.Panel',
+		{
+			title : i18n['floor_plans'],
+			region : 'west',
+			width : 200,
+			split : true,
+			hideHeaders : true,
+			store : me.floorPlansStore,
+			plugins : [me.floorPlanEditing = Ext.create('Ext.grid.plugin.RowEditing',
+			{
+				clicksToEdit : 2
+			})],
+			columns : [
+			{
+				dataIndex : 'title',
+				sortable : false,
+				hideable : false,
+				flex : 1,
+				editor :
 				{
-					dataIndex:'title',
-					sortable: false,
-                    hideable: false,
-					flex: 1,
-					editor:{
-						xtype:'textfield'
-					}
+					xtype : 'textfield'
 				}
-			],
-			tbar:[
-				'->',
-				{
-					text: i18n['add_floor_plan'],
-					action:'newFloorPlan',
-					scope:me,
-					handler:me.onNewFloorPlan
-				}
-			],
-			listeners:{
-				scope:me,
-				select:me.onFloorPlanSelected
+			}],
+			tbar : ['->',
+			{
+				text : i18n['add_floor_plan'],
+				action : 'newFloorPlan',
+				scope : me,
+				handler : me.onNewFloorPlan
+			}],
+			listeners :
+			{
+				scope : me,
+				select : me.onFloorPlanSelected
 			}
 		});
 
-		me.floorPlan = Ext.create('Ext.panel.Panel',{
-			title: i18n['floor_plan'],
-			region:'center',
-			bodyCls:'floorPlan',
-			layout:'absolute',
-			tbar:[
-				'->',
-				{
-					text: i18n['add_zone'],
-					action:'newZone',
-					scope:me,
-					handler:me.onNewZone
-				}
-			]
+		me.floorPlan = Ext.create('Ext.panel.Panel',
+		{
+			title : i18n['floor_plan'],
+			region : 'center',
+			bodyCls : 'floorPlan',
+			layout : 'absolute',
+			tbar : ['->',
+			{
+				text : i18n['add_zone'],
+				action : 'newZone',
+				scope : me,
+				handler : me.onNewZone
+			}]
 		});
 
-
-
-		me.listeners = {
-			show:function(){
-				me.nav = Ext.create('Ext.util.KeyNav', Ext.getDoc(), {
-			        scope: me,
-			        left: function(){
-				        me.moveZone('left')
-			        },
-			        up: function(){
-                        me.moveZone('up')
-                    },
-			        right: function(){
-                        me.moveZone('right')
-                    },
-			        down: function(){
-                        me.moveZone('down')
-                    }
-			    });
+		me.listeners =
+		{
+			show : function()
+			{
+				me.nav = Ext.create('Ext.util.KeyNav', Ext.getDoc(),
+				{
+					scope : me,
+					left : function()
+					{
+						me.moveZone('left')
+					},
+					up : function()
+					{
+						me.moveZone('up')
+					},
+					right : function()
+					{
+						me.moveZone('right')
+					},
+					down : function()
+					{
+						me.moveZone('down')
+					}
+				});
 			},
-            hide:function(){
-                if(me.nav){
-                    Ext.destroy(me.nav);
-                }
-            }
+			hide : function()
+			{
+				if (me.nav)
+				{
+					Ext.destroy(me.nav);
+				}
+			}
 		};
 
-		me.pageBody = [ me.floorPlans, me.floorPlan ];
+		me.pageBody = [me.floorPlans, me.floorPlan];
 		me.callParent(arguments);
 	},
 
-	onNewZone:function(){
+	onNewZone : function()
+	{
 		this.createZone(null);
 	},
 
-	createZone:function(record){
+	createZone : function(record)
+	{
 		var me = this, zone, form;
-		zone = Ext.create('Ext.button.Split', {
-		    text: record ? record.data.title : i18n['new_zone'],
-			toggleGroup:'zones',
-			draggable:{
-				listeners:{
-					scope:me,
-					dragend:me.zoneDragged
+		zone = Ext.create('Ext.button.Split',
+		{
+			text : record ? record.data.title : i18n['new_zone'],
+			toggleGroup : 'zones',
+			draggable :
+			{
+				listeners :
+				{
+					scope : me,
+					dragend : me.zoneDragged
 				}
 			},
-			scale:'medium',
-			x:record ? record.data.x : 0,
-			y:record ? record.data.y : 0,
-			enableToggle:true,
-			toggleHandler:function(btn, pressed){
-				if(pressed){
+			scale : 'medium',
+			x : record ? record.data.x : 0,
+			y : record ? record.data.y : 0,
+			enableToggle : true,
+			toggleHandler : function(btn, pressed)
+			{
+				if (pressed)
+				{
 					me.activeZone = zone;
 					me.floorPlan.focus();
-				}else{
+				}
+				else
+				{
 					me.activeZone = null;
 					var rec = btn.menu.items.items[0].getForm().getRecord();
-					rec.set({x:btn.x,y:btn.y});
+					rec.set(
+					{
+						x : btn.x,
+						y : btn.y
+					});
 				}
 			},
-			menu:[
-				form = Ext.create('Ext.form.Panel',{
-					bodyPadding:'5 5 0 5',
-					items:[
-						{
-							xtype:'textfield',
-							fieldLabel: i18n['zone_name'],
-							labelWidth:80,
-							name:'title'
-						}
-					]
-				})
-			],
-			listeners:{
-				scope:me,
-				menushow:me.afterMenuShow,
-				menuhide:me.afterMenuHide
+			menu : [ form = Ext.create('Ext.form.Panel',
+			{
+				bodyPadding : '5 5 0 5',
+				items : [
+				{
+					xtype : 'textfield',
+					fieldLabel : i18n['zone_name'],
+					labelWidth : 80,
+					name : 'title'
+				}]
+			})],
+			listeners :
+			{
+				scope : me,
+				menushow : me.afterMenuShow,
+				menuhide : me.afterMenuHide
 			}
 		});
 
 		me.floorPlan.add(zone);
 
-		if(record != null){
+		if (record != null)
+		{
 			form.getForm().loadRecord(record)
-		}else{
-			me.floorPlanZonesStore.add({
-				floor_plan_id:me.floorPlanId,
-				title: i18n['new_zone'],
-				x:0,
-				y:0,
-				active:1
+		}
+		else
+		{
+			me.floorPlanZonesStore.add(
+			{
+				floor_plan_id : me.floorPlanId,
+				title : i18n['new_zone'],
+				x : 0,
+				y : 0,
+				active : 1
 			});
 
-			me.floorPlanZonesStore.sync({
-				callback:function(batch, options){
+			me.floorPlanZonesStore.sync(
+			{
+				callback : function(batch, options)
+				{
 					form.getForm().loadRecord(batch.operations[0].records[0])
 				}
 			})
 		}
 	},
 
-	afterMenuShow:function(btn){
+	afterMenuShow : function(btn)
+	{
 		btn.toggle(true);
 	},
 
-	afterMenuHide:function(btn){
-		var form = btn.menu.items.items[0].getForm(),
-			values = form.getValues(),
-			rec = form.getRecord();
+	afterMenuHide : function(btn)
+	{
+		var form = btn.menu.items.items[0].getForm(), values = form.getValues(), rec = form.getRecord();
 		btn.setText(values.title);
 		rec.set(values);
 	},
 
-	moveZone:function(direction){
-		if(app.currCardCmp == this && this.activeZone != null){
+	moveZone : function(direction)
+	{
+		if (app.currCardCmp == this && this.activeZone != null)
+		{
 			var x = this.activeZone.x, y = this.activeZone.y;
-			if(direction == 'left'){
-				x = x-1;
-			}else if(direction == 'right'){
-				x = x+1;
-			}else if(direction == 'up'){
-				y = y-1;
-			}else if(direction == 'down'){
-				y = y+1;
+			if (direction == 'left')
+			{
+				x = x - 1;
 			}
-			this.activeZone.setPosition(x,y);
+			else
+			if (direction == 'right')
+			{
+				x = x + 1;
+			}
+			else
+			if (direction == 'up')
+			{
+				y = y - 1;
+			}
+			else
+			if (direction == 'down')
+			{
+				y = y + 1;
+			}
+			this.activeZone.setPosition(x, y);
 		}
 	},
 
-	zoneDragged:function(drag){
+	zoneDragged : function(drag)
+	{
 		var me = this, rec = drag.comp.menu.items.items[0].getForm().getRecord();
-		rec.set({x:drag.comp.x,y:drag.comp.y});
-	},
-
-	onNewFloorPlan:function(){
-		this.floorPlansStore.add({
-			title: i18n['new_floor_plan']
+		rec.set(
+		{
+			x : drag.comp.x,
+			y : drag.comp.y
 		});
 	},
 
-	onFloorPlanSelected:function(model, record){
+	onNewFloorPlan : function()
+	{
+		this.floorPlansStore.add(
+		{
+			title : i18n['new_floor_plan']
+		});
+	},
+
+	onFloorPlanSelected : function(model, record)
+	{
 		this.floorPlanId = record.data.id;
 		this.reloadFloorPlanZones();
 	},
 
-	reloadFloorPlanZones:function(){
+	reloadFloorPlanZones : function()
+	{
 		var me = this;
 		me.floorPlan.removeAll();
-		me.floorPlanZonesStore.load({
-			params:{ floor_plan_id:this.floorPlanId },
-			scope:me,
-			callback:function(records, operation, success){
+		me.floorPlanZonesStore.load(
+		{
+			params :
+			{
+				floor_plan_id : this.floorPlanId
+			},
+			scope : me,
+			callback : function(records, operation, success)
+			{
 				this.activeZone = null;
-				for(var i=0; i < records.length; i++){
+				for (var i = 0; i < records.length; i++)
+				{
 					me.createZone(records[i]);
 				}
 			}
@@ -39950,12 +41562,13 @@ Ext.define('App.view.administration.FloorPlans', {
 	 * place inside this function all the functions you want
 	 * to call every this panel becomes active
 	 */
-	onActive: function(callback) {
+	onActive : function(callback)
+	{
 		var me = this;
 		me.floorPlans.getSelectionModel().select(0);
 		callback(true);
 	}
-});
+}); 
 /**
  * Practice Panel
  *
@@ -39974,113 +41587,287 @@ Ext.define('App.view.administration.FloorPlans', {
  *
  *
  */
-Ext.define('App.view.administration.Practice', {
-	extend       : 'App.classes.RenderPanel',
-	id           : 'panelPractice',
-	pageTitle    : i18n['practice_settings'],
-	uses         : [
-		'App.classes.combo.Titles', 'App.classes.combo.TransmitMethod', 'App.classes.combo.InsurancePayerType'
-	],
-	initComponent: function() {
+Ext.define('App.view.administration.Practice',
+{
+	extend : 'App.classes.RenderPanel',
+	id : 'panelPractice',
+	pageTitle : i18n['practice_settings'],
+	uses : ['App.classes.combo.Titles', 'App.classes.combo.TransmitMethod', 'App.classes.combo.InsurancePayerType'],
+	initComponent : function()
+	{
 		var me = this;
 
 		/**
 		 * Pharmacy Model and Store
 		 */
-		Ext.define('pharmacyGridModel', {
-			extend: 'Ext.data.Model',
-			fields: [
-				{name: 'id', type: 'int'},
-				{name: 'name', type: 'string'},
-				{name: 'transmit_method', type: 'string'},
-				{name: 'email', type: 'string'},
-				{name: 'address_id', type: 'int'},
-				{name: 'line1', type: 'string'},
-				{name: 'line2', type: 'string'},
-				{name: 'city', type: 'string'},
-				{name: 'state', type: 'string'},
-				{name: 'zip', type: 'string'},
-				{name: 'plus_four', type: 'string'},
-				{name: 'country', type: 'string'},
-				{name: 'address_full', type: 'string'},
-				{name: 'phone_id', type: 'int'},
-				{name: 'phone_country_code', type: 'string'},
-				{name: 'phone_area_code', type: 'string'},
-				{name: 'phone_prefix', type: 'string'},
-				{name: 'phone_number', type: 'string'},
-				{name: 'phone_full', type: 'string'},
-				{name: 'fax_id', type: 'int'},
-				{name: 'fax_country_code', type: 'string'},
-				{name: 'fax_area_code', type: 'string'},
-				{name: 'fax_prefix', type: 'string'},
-				{name: 'fax_number', type: 'string'},
-				{name: 'fax_full', type: 'string'},
-				{name: 'active', type: 'bool'}
-			],
-			proxy : {
-				type: 'direct',
-				api : {
-					read  : Practice.getPharmacies,
-					create: Practice.addPharmacy,
-					update: Practice.updatePharmacy
+		Ext.define('pharmacyGridModel',
+		{
+			extend : 'Ext.data.Model',
+			fields : [
+			{
+				name : 'id',
+				type : 'int'
+			},
+			{
+				name : 'name',
+				type : 'string'
+			},
+			{
+				name : 'transmit_method',
+				type : 'string'
+			},
+			{
+				name : 'email',
+				type : 'string'
+			},
+			{
+				name : 'address_id',
+				type : 'int'
+			},
+			{
+				name : 'line1',
+				type : 'string'
+			},
+			{
+				name : 'line2',
+				type : 'string'
+			},
+			{
+				name : 'city',
+				type : 'string'
+			},
+			{
+				name : 'state',
+				type : 'string'
+			},
+			{
+				name : 'zip',
+				type : 'string'
+			},
+			{
+				name : 'plus_four',
+				type : 'string'
+			},
+			{
+				name : 'country',
+				type : 'string'
+			},
+			{
+				name : 'address_full',
+				type : 'string'
+			},
+			{
+				name : 'phone_id',
+				type : 'int'
+			},
+			{
+				name : 'phone_country_code',
+				type : 'string'
+			},
+			{
+				name : 'phone_area_code',
+				type : 'string'
+			},
+			{
+				name : 'phone_prefix',
+				type : 'string'
+			},
+			{
+				name : 'phone_number',
+				type : 'string'
+			},
+			{
+				name : 'phone_full',
+				type : 'string'
+			},
+			{
+				name : 'fax_id',
+				type : 'int'
+			},
+			{
+				name : 'fax_country_code',
+				type : 'string'
+			},
+			{
+				name : 'fax_area_code',
+				type : 'string'
+			},
+			{
+				name : 'fax_prefix',
+				type : 'string'
+			},
+			{
+				name : 'fax_number',
+				type : 'string'
+			},
+			{
+				name : 'fax_full',
+				type : 'string'
+			},
+			{
+				name : 'active',
+				type : 'bool'
+			}],
+			proxy :
+			{
+				type : 'direct',
+				api :
+				{
+					read : Practice.getPharmacies,
+					create : Practice.addPharmacy,
+					update : Practice.updatePharmacy
 				}
 			}
 		});
-		me.pharmacyStore = Ext.create('Ext.data.Store', {
-			model     : 'pharmacyGridModel',
-			remoteSort: false,
-			autoSync:true
+		me.pharmacyStore = Ext.create('Ext.data.Store',
+		{
+			model : 'pharmacyGridModel',
+			remoteSort : false,
+			autoSync : true
 		});
 		// *************************************************************************************
 		// Insurance Record Structure
 		// *************************************************************************************
-		Ext.define('insuranceGridModel', {
-			extend: 'Ext.data.Model',
-			fields: [
-				{name: 'id', type: 'int'},
-				{name: 'name', type: 'string'},
-				{name: 'attn', type: 'string'},
-				{name: 'cms_id', type: 'string'},
-				{name: 'freeb_type', type: 'string'},
-				{name: 'x12_receiver_id', type: 'string'},
-				{name: 'x12_default_partner_id', type: 'string'},
-				{name: 'alt_cms_id', type: 'string'},
-				{name: 'address_id', type: 'int'},
-				{name: 'line1', type: 'string'},
-				{name: 'line2', type: 'string'},
-				{name: 'city', type: 'string'},
-				{name: 'state', type: 'string'},
-				{name: 'zip', type: 'string'},
-				{name: 'plus_four', type: 'string'},
-				{name: 'country', type: 'string'},
-				{name: 'address_full', type: 'string'},
-				{name: 'phone_id', type: 'int'},
-				{name: 'phone_country_code', type: 'string'},
-				{name: 'phone_area_code', type: 'string'},
-				{name: 'phone_prefix', type: 'string'},
-				{name: 'phone_number', type: 'string'},
-				{name: 'phone_full', type: 'string'},
-				{name: 'fax_id', type: 'int'},
-				{name: 'fax_country_code', type: 'string'},
-				{name: 'fax_area_code', type: 'string'},
-				{name: 'fax_prefix', type: 'string'},
-				{name: 'fax_number', type: 'string'},
-				{name: 'fax_full', type: 'string'},
-				{name: 'active', type: 'bool'}
-			],
-			proxy : {
-				type: 'direct',
-				api : {
-					read  : Practice.getInsurances,
-					create: Practice.addInsurance,
-					update: Practice.updateInsurance
+		Ext.define('insuranceGridModel',
+		{
+			extend : 'Ext.data.Model',
+			fields : [
+			{
+				name : 'id',
+				type : 'int'
+			},
+			{
+				name : 'name',
+				type : 'string'
+			},
+			{
+				name : 'attn',
+				type : 'string'
+			},
+			{
+				name : 'cms_id',
+				type : 'string'
+			},
+			{
+				name : 'freeb_type',
+				type : 'string'
+			},
+			{
+				name : 'x12_receiver_id',
+				type : 'string'
+			},
+			{
+				name : 'x12_default_partner_id',
+				type : 'string'
+			},
+			{
+				name : 'alt_cms_id',
+				type : 'string'
+			},
+			{
+				name : 'address_id',
+				type : 'int'
+			},
+			{
+				name : 'line1',
+				type : 'string'
+			},
+			{
+				name : 'line2',
+				type : 'string'
+			},
+			{
+				name : 'city',
+				type : 'string'
+			},
+			{
+				name : 'state',
+				type : 'string'
+			},
+			{
+				name : 'zip',
+				type : 'string'
+			},
+			{
+				name : 'plus_four',
+				type : 'string'
+			},
+			{
+				name : 'country',
+				type : 'string'
+			},
+			{
+				name : 'address_full',
+				type : 'string'
+			},
+			{
+				name : 'phone_id',
+				type : 'int'
+			},
+			{
+				name : 'phone_country_code',
+				type : 'string'
+			},
+			{
+				name : 'phone_area_code',
+				type : 'string'
+			},
+			{
+				name : 'phone_prefix',
+				type : 'string'
+			},
+			{
+				name : 'phone_number',
+				type : 'string'
+			},
+			{
+				name : 'phone_full',
+				type : 'string'
+			},
+			{
+				name : 'fax_id',
+				type : 'int'
+			},
+			{
+				name : 'fax_country_code',
+				type : 'string'
+			},
+			{
+				name : 'fax_area_code',
+				type : 'string'
+			},
+			{
+				name : 'fax_prefix',
+				type : 'string'
+			},
+			{
+				name : 'fax_number',
+				type : 'string'
+			},
+			{
+				name : 'fax_full',
+				type : 'string'
+			},
+			{
+				name : 'active',
+				type : 'bool'
+			}],
+			proxy :
+			{
+				type : 'direct',
+				api :
+				{
+					read : Practice.getInsurances,
+					create : Practice.addInsurance,
+					update : Practice.updateInsurance
 				}
 			}
 		});
-		me.insuranceStore = Ext.create('Ext.data.Store', {
-			model     : 'insuranceGridModel',
-			remoteSort: false,
-			autoSync:true
+		me.insuranceStore = Ext.create('Ext.data.Store',
+		{
+			model : 'insuranceGridModel',
+			remoteSort : false,
+			autoSync : true
 		});
 		// *************************************************************************************
 		// Insurance Numbers Record Structure
@@ -40112,229 +41899,520 @@ Ext.define('App.view.administration.Practice', {
 		// -------------------------------------------------------------------------------------
 		// render function for Default Method column in the Pharmacy grid
 		// -------------------------------------------------------------------------------------
-		function transmit_method(val) {
-			if(val == '1') {
+		function transmit_method(val)
+		{
+			if (val == '1')
+			{
 				return 'Print';
-			} else if(val == '2') {
+			}
+			else
+			if (val == '2')
+			{
 				return 'Email';
-			} else if(val == '3') {
+			}
+			else
+			if (val == '3')
+			{
 				return 'Email';
 			}
 			return val;
 		}
 
-		me.rowEditingPharmacy = Ext.create('App.classes.grid.RowFormEditing', {
-			autoCancel  : false,
-			errorSummary: false,
-			clicksToEdit: 1,
-			formItems   : [
+
+		me.rowEditingPharmacy = Ext.create('App.classes.grid.RowFormEditing',
+		{
+			autoCancel : false,
+			errorSummary : false,
+			clicksToEdit : 1,
+			formItems : [
+			{
+				xtype : 'container',
+				layout : 'hbox',
+				width : 900,
+				items : [
 				{
 					xtype : 'container',
-					layout: 'hbox',
-					width : 900,
+					width : 450,
+					layout : 'anchor',
 					items : [
+					{
+						xtype : 'textfield',
+						fieldLabel : i18n['name'],
+						name : 'name',
+						allowBlank : false,
+						width : 385
+					},
+					{
+						xtype : 'textfield',
+						fieldLabel : i18n['address'],
+						name : 'line1',
+						width : 385
+					},
+					{
+						xtype : 'textfield',
+						fieldLabel : i18n['address_cont'],
+						name : 'line2',
+						width : 385
+					},
+					{
+						xtype : 'fieldcontainer',
+						layout : 'hbox',
+						defaults :
 						{
-							xtype : 'container',
-							width : 450,
-							layout: 'anchor',
-							items : [
-								{ xtype: 'textfield', fieldLabel: i18n['name'], name: 'name', allowBlank: false, width: 385 },
-								{ xtype: 'textfield', fieldLabel: i18n['address'], name: 'line1', width: 385 },
-								{ xtype: 'textfield', fieldLabel: i18n['address_cont'], name: 'line2', width: 385 },
-								{ xtype     : 'fieldcontainer',
-									layout  : 'hbox',
-									defaults: { hideLabel: true },
-									items   : [
-										{ xtype: 'displayfield', width: 105, value: i18n['city_state_zip'] },
-										{ xtype: 'textfield', width: 150, name: 'city' },
-										{ xtype: 'displayfield', width: 5, value: ',' },
-										{ xtype: 'textfield', width: 50, name: 'state' },
-										{ xtype: 'textfield', width: 75, name: 'zip' }
-									]
-								}
-							]
+							hideLabel : true
+						},
+						items : [
+						{
+							xtype : 'displayfield',
+							width : 105,
+							value : i18n['city_state_zip']
 						},
 						{
-							xtype : 'container',
-							width : 300,
-							layout: 'anchor',
-							items : [
-								{
-									xtype: 'textfield', fieldLabel: i18n['email'], name: 'email', width: 275
-								},
-								{
-									xtype   : 'fieldcontainer',
-									layout  : 'hbox',
-									defaults: { hideLabel: true },
-									items   : [
-										{ xtype: 'displayfield', width: 100, value: i18n['phone'] },
-										{ xtype: 'displayfield', width: 5, value: '(' },
-										{ xtype: 'textfield', width: 40, name: 'phone_area_code' },
-										{ xtype: 'displayfield', width: 5, value: ')' },
-										{ xtype: 'textfield', width: 50, name: 'phone_prefix' },
-										{ xtype: 'displayfield', width: 5, value: '-' },
-										{ xtype: 'textfield', width: 70, name: 'phone_number' }
-									]
-								},
-								{
-									xtype   : 'fieldcontainer',
-									layout  : 'hbox',
-									defaults: { hideLabel: true },
-									items   : [
-										{ xtype: 'displayfield', width: 100, value: i18n['fax'] },
-										{ xtype: 'displayfield', width: 5, value: '(' },
-										{ xtype: 'textfield', width: 40, name: 'fax_area_code' },
-										{ xtype: 'displayfield', width: 5, value: ')' },
-										{ xtype: 'textfield', width: 50, name: 'fax_prefix' },
-										{ xtype: 'displayfield', width: 5, value: '-' },
-										{ xtype: 'textfield', width: 70, name: 'fax_number'
-										}
-									]
-								},
-								{
-									xtype: 'transmitmethodcombo', fieldLabel: i18n['default_method'], labelWidth: 100, width: 275
-								}
-							]
+							xtype : 'textfield',
+							width : 150,
+							name : 'city'
 						},
 						{
-							xtype: 'mitos.checkbox', fieldLabel: i18n['active'], labelWidth: 60, name: 'active'
-						}
-					]
-				}
-			]
+							xtype : 'displayfield',
+							width : 5,
+							value : ','
+						},
+						{
+							xtype : 'textfield',
+							width : 50,
+							name : 'state'
+						},
+						{
+							xtype : 'textfield',
+							width : 75,
+							name : 'zip'
+						}]
+					}]
+				},
+				{
+					xtype : 'container',
+					width : 300,
+					layout : 'anchor',
+					items : [
+					{
+						xtype : 'textfield',
+						fieldLabel : i18n['email'],
+						name : 'email',
+						width : 275
+					},
+					{
+						xtype : 'fieldcontainer',
+						layout : 'hbox',
+						defaults :
+						{
+							hideLabel : true
+						},
+						items : [
+						{
+							xtype : 'displayfield',
+							width : 100,
+							value : i18n['phone']
+						},
+						{
+							xtype : 'displayfield',
+							width : 5,
+							value : '('
+						},
+						{
+							xtype : 'textfield',
+							width : 40,
+							name : 'phone_area_code'
+						},
+						{
+							xtype : 'displayfield',
+							width : 5,
+							value : ')'
+						},
+						{
+							xtype : 'textfield',
+							width : 50,
+							name : 'phone_prefix'
+						},
+						{
+							xtype : 'displayfield',
+							width : 5,
+							value : '-'
+						},
+						{
+							xtype : 'textfield',
+							width : 70,
+							name : 'phone_number'
+						}]
+					},
+					{
+						xtype : 'fieldcontainer',
+						layout : 'hbox',
+						defaults :
+						{
+							hideLabel : true
+						},
+						items : [
+						{
+							xtype : 'displayfield',
+							width : 100,
+							value : i18n['fax']
+						},
+						{
+							xtype : 'displayfield',
+							width : 5,
+							value : '('
+						},
+						{
+							xtype : 'textfield',
+							width : 40,
+							name : 'fax_area_code'
+						},
+						{
+							xtype : 'displayfield',
+							width : 5,
+							value : ')'
+						},
+						{
+							xtype : 'textfield',
+							width : 50,
+							name : 'fax_prefix'
+						},
+						{
+							xtype : 'displayfield',
+							width : 5,
+							value : '-'
+						},
+						{
+							xtype : 'textfield',
+							width : 70,
+							name : 'fax_number'
+						}]
+					},
+					{
+						xtype : 'transmitmethodcombo',
+						fieldLabel : i18n['default_method'],
+						labelWidth : 100,
+						width : 275
+					}]
+				},
+				{
+					xtype : 'mitos.checkbox',
+					fieldLabel : i18n['active'],
+					labelWidth : 60,
+					name : 'active'
+				}]
+			}]
 		});
 
-		me.rowEditingInsurance = Ext.create('App.classes.grid.RowFormEditing', {
-			autoCancel  : false,
-			errorSummary: false,
-			clicksToEdit: 1,
-			formItems   : [
+		me.rowEditingInsurance = Ext.create('App.classes.grid.RowFormEditing',
+		{
+			autoCancel : false,
+			errorSummary : false,
+			clicksToEdit : 1,
+			formItems : [
+			{
+				xtype : 'container',
+				layout : 'hbox',
+				width : 900,
+				items : [
 				{
 					xtype : 'container',
-					layout: 'hbox',
-					width : 900,
+					width : 450,
+					layout : 'anchor',
 					items : [
+					{
+						xtype : 'textfield',
+						fieldLabel : i18n['name'],
+						name : 'name',
+						allowBlank : false,
+						width : 385
+					},
+					{
+						xtype : 'textfield',
+						fieldLabel : i18n['address'],
+						name : 'line1',
+						width : 385
+					},
+					{
+						xtype : 'textfield',
+						fieldLabel : i18n['address_cont'],
+						name : 'line2',
+						width : 385
+					},
+					{
+						xtype : 'fieldcontainer',
+						defaults :
 						{
-							xtype : 'container',
-							width : 450,
-							layout: 'anchor',
-							items : [
-								{ xtype: 'textfield', fieldLabel: i18n['name'], name: 'name', allowBlank: false, width: 385 },
-								{ xtype: 'textfield', fieldLabel: i18n['address'], name: 'line1', width: 385 },
-								{ xtype: 'textfield', fieldLabel: i18n['address_cont'], name: 'line2', width: 385 },
-								{ xtype     : 'fieldcontainer',
-									defaults: { hideLabel: true },
-									layout  : 'hbox',
-									items   : [
-										{ xtype: 'displayfield', width: 105, value: i18n['city_state_zip'] },
-										{ xtype: 'textfield', width: 150, name: 'city' },
-										{ xtype: 'displayfield', width: 5, value: ',' },
-										{ xtype: 'textfield', width: 50, name: 'state' },
-										{ xtype: 'textfield', width: 75, name: 'zip' }
-									]
-								}
-							]
+							hideLabel : true
+						},
+						layout : 'hbox',
+						items : [
+						{
+							xtype : 'displayfield',
+							width : 105,
+							value : i18n['city_state_zip']
 						},
 						{
-							xtype : 'container',
-							width : 300,
-							layout: 'anchor',
-							items : [
-								{
-									xtype   : 'fieldcontainer',
-									layout  : 'hbox',
-									defaults: { hideLabel: true },
-									items   : [
-										{ xtype: 'displayfield', width: 100, value: i18n['phone'] },
-										{ xtype: 'displayfield', width: 5, value: '(' },
-										{ xtype: 'textfield', width: 40, name: 'phone_area_code' },
-										{ xtype: 'displayfield', width: 5, value: ')' },
-										{ xtype: 'textfield', width: 50, name: 'phone_prefix' },
-										{ xtype: 'displayfield', width: 5, value: '-' },
-										{ xtype: 'textfield', width: 70, name: 'phone_number' }
-									]
-								},
-								{
-									xtype   : 'fieldcontainer',
-									layout  : 'hbox',
-									defaults: { hideLabel: true },
-									items   : [
-										{ xtype: 'displayfield', width: 100, value: i18n['fax'] },
-										{ xtype: 'displayfield', width: 5, value: '(' },
-										{ xtype: 'textfield', width: 40, name: 'fax_area_code' },
-										{ xtype: 'displayfield', width: 5, value: ')' },
-										{ xtype: 'textfield', width: 50, name: 'fax_prefix' },
-										{ xtype: 'displayfield', width: 5, value: '-' },
-										{ xtype: 'textfield', width: 70, name: 'fax_number'
-										}
-									]
-								},
-								{ xtype: 'textfield', fieldLabel: i18n['cms_id'], name: 'cms_id', width: 275 },
-								{ xtype: 'mitos.insurancepayertypecombo', fieldLabel: i18n['payer_type'], labelWidth: 100, width: 275  },
-								{ xtype: 'textfield', fieldLabel: 'X12 Partner', name: 'x12_default_partner_id' }
-							]
+							xtype : 'textfield',
+							width : 150,
+							name : 'city'
 						},
 						{
-							xtype: 'checkbox', fieldLabel: i18n['active'], labelWidth: 60, name: 'active'
-						}
-					]
-				}
-			]
+							xtype : 'displayfield',
+							width : 5,
+							value : ','
+						},
+						{
+							xtype : 'textfield',
+							width : 50,
+							name : 'state'
+						},
+						{
+							xtype : 'textfield',
+							width : 75,
+							name : 'zip'
+						}]
+					}]
+				},
+				{
+					xtype : 'container',
+					width : 300,
+					layout : 'anchor',
+					items : [
+					{
+						xtype : 'fieldcontainer',
+						layout : 'hbox',
+						defaults :
+						{
+							hideLabel : true
+						},
+						items : [
+						{
+							xtype : 'displayfield',
+							width : 100,
+							value : i18n['phone']
+						},
+						{
+							xtype : 'displayfield',
+							width : 5,
+							value : '('
+						},
+						{
+							xtype : 'textfield',
+							width : 40,
+							name : 'phone_area_code'
+						},
+						{
+							xtype : 'displayfield',
+							width : 5,
+							value : ')'
+						},
+						{
+							xtype : 'textfield',
+							width : 50,
+							name : 'phone_prefix'
+						},
+						{
+							xtype : 'displayfield',
+							width : 5,
+							value : '-'
+						},
+						{
+							xtype : 'textfield',
+							width : 70,
+							name : 'phone_number'
+						}]
+					},
+					{
+						xtype : 'fieldcontainer',
+						layout : 'hbox',
+						defaults :
+						{
+							hideLabel : true
+						},
+						items : [
+						{
+							xtype : 'displayfield',
+							width : 100,
+							value : i18n['fax']
+						},
+						{
+							xtype : 'displayfield',
+							width : 5,
+							value : '('
+						},
+						{
+							xtype : 'textfield',
+							width : 40,
+							name : 'fax_area_code'
+						},
+						{
+							xtype : 'displayfield',
+							width : 5,
+							value : ')'
+						},
+						{
+							xtype : 'textfield',
+							width : 50,
+							name : 'fax_prefix'
+						},
+						{
+							xtype : 'displayfield',
+							width : 5,
+							value : '-'
+						},
+						{
+							xtype : 'textfield',
+							width : 70,
+							name : 'fax_number'
+						}]
+					},
+					{
+						xtype : 'textfield',
+						fieldLabel : i18n['cms_id'],
+						name : 'cms_id',
+						width : 275
+					},
+					{
+						xtype : 'mitos.insurancepayertypecombo',
+						fieldLabel : i18n['payer_type'],
+						labelWidth : 100,
+						width : 275
+					},
+					{
+						xtype : 'textfield',
+						fieldLabel : 'X12 Partner',
+						name : 'x12_default_partner_id'
+					}]
+				},
+				{
+					xtype : 'checkbox',
+					fieldLabel : i18n['active'],
+					labelWidth : 60,
+					name : 'active'
+				}]
+			}]
 
 		});
 		// *************************************************************************************
 		// Grids
 		// *************************************************************************************
-		me.pharmacyGrid = Ext.create('Ext.grid.Panel', {
-			title     : i18n['pharmacies'],
-			store     : me.pharmacyStore,
-			border    : false,
-			frame     : false,
-			viewConfig: { stripeRows: true },
-			plugins   : [ me.rowEditingPharmacy ],
-			columns   : [
-				{ header: i18n['pharmacy_name'], width: 150, sortable: true, dataIndex: 'name' },
-				{ header: i18n['address'], flex: 1, sortable: true, dataIndex: 'address_full' },
-				{ header: i18n['phone'], width: 120, sortable: true, dataIndex: 'phone_full' },
-				{ header: i18n['Fax'], width: 120, sortable: true, dataIndex: 'fax_full' },
-				{ header: i18n['default_method'], flex: 1, sortable: true, dataIndex: 'transmit_method', renderer: transmit_method },
-				{ header: i18n['active'], width: 55, sortable: true, dataIndex: 'active', renderer: me.boolRenderer }
-			],
-			tbar      : [
-				{
-					text   : i18n['add_new_pharmacy'],
-					iconCls: 'save',
-					action : 'pharmacyGridModel',
-					scope  : me,
-					handler: me.onNewRec
-				}
-			]
+		me.pharmacyGrid = Ext.create('Ext.grid.Panel',
+		{
+			title : i18n['pharmacies'],
+			store : me.pharmacyStore,
+			border : false,
+			frame : false,
+			viewConfig :
+			{
+				stripeRows : true
+			},
+			plugins : [me.rowEditingPharmacy],
+			columns : [
+			{
+				header : i18n['pharmacy_name'],
+				width : 150,
+				sortable : true,
+				dataIndex : 'name'
+			},
+			{
+				header : i18n['address'],
+				flex : 1,
+				sortable : true,
+				dataIndex : 'address_full'
+			},
+			{
+				header : i18n['phone'],
+				width : 120,
+				sortable : true,
+				dataIndex : 'phone_full'
+			},
+			{
+				header : i18n['Fax'],
+				width : 120,
+				sortable : true,
+				dataIndex : 'fax_full'
+			},
+			{
+				header : i18n['default_method'],
+				flex : 1,
+				sortable : true,
+				dataIndex : 'transmit_method',
+				renderer : transmit_method
+			},
+			{
+				header : i18n['active'],
+				width : 55,
+				sortable : true,
+				dataIndex : 'active',
+				renderer : me.boolRenderer
+			}],
+			tbar : [
+			{
+				text : i18n['add_new_pharmacy'],
+				iconCls : 'save',
+				action : 'pharmacyGridModel',
+				scope : me,
+				handler : me.onNewRec
+			}]
 		});
-		me.insuranceGrid = Ext.create('Ext.grid.Panel', {
-			title     : i18n['insurance_companies'],
-			store     : me.insuranceStore,
-			border    : false,
-			frame     : false,
-			viewConfig: { stripeRows: true },
-			plugins   : [ me.rowEditingInsurance ],
-			columns   : [
-				{ header: i18n['insurance_name'], width: 150, sortable: true, dataIndex: 'name' },
-				{ header: i18n['address'], flex: 1, sortable: true, dataIndex: 'address_full' },
-				{ header: i18n['Phone'], width: 120, sortable: true, dataIndex: 'phone_full' },
-				{ header: i18n['fax'], width: 120, sortable: true, dataIndex: 'fax_full' },
-				{ header: i18n['default_x12_partner'], flex: 1,  sortable: true, dataIndex: 'x12_default_partner_id' },
-				{ header: i18n['active'], width: 55, sortable: true, dataIndex: 'active', renderer: me.boolRenderer }
-
-			],
-			tbar      : [
-				{
-					text   : i18n['add_new_insurance'],
-					iconCls: 'save',
-					action : 'insuranceGridModel',
-					scope  : me,
-					handler: me.onNewRec
-				}
-			]
+		me.insuranceGrid = Ext.create('Ext.grid.Panel',
+		{
+			title : i18n['insurance_companies'],
+			store : me.insuranceStore,
+			border : false,
+			frame : false,
+			viewConfig :
+			{
+				stripeRows : true
+			},
+			plugins : [me.rowEditingInsurance],
+			columns : [
+			{
+				header : i18n['insurance_name'],
+				width : 150,
+				sortable : true,
+				dataIndex : 'name'
+			},
+			{
+				header : i18n['address'],
+				flex : 1,
+				sortable : true,
+				dataIndex : 'address_full'
+			},
+			{
+				header : i18n['Phone'],
+				width : 120,
+				sortable : true,
+				dataIndex : 'phone_full'
+			},
+			{
+				header : i18n['fax'],
+				width : 120,
+				sortable : true,
+				dataIndex : 'fax_full'
+			},
+			{
+				header : i18n['default_x12_partner'],
+				flex : 1,
+				sortable : true,
+				dataIndex : 'x12_default_partner_id'
+			},
+			{
+				header : i18n['active'],
+				width : 55,
+				sortable : true,
+				dataIndex : 'active',
+				renderer : me.boolRenderer
+			}],
+			tbar : [
+			{
+				text : i18n['add_new_insurance'],
+				iconCls : 'save',
+				action : 'insuranceGridModel',
+				scope : me,
+				handler : me.onNewRec
+			}]
 		});
 
 		//		me.InsuranceNumbersGrid = Ext.create('Ext.grid.Panel', {
@@ -40352,68 +42430,92 @@ Ext.define('App.view.administration.Practice', {
 		//			]
 		//
 		//		});
-				me.x12ParnersGrid = Ext.create('Ext.grid.Panel', {
-		            title    : i18n['x12_partners_clearing_houses'],
-					//store     : me.x12PartnersStore,
-					border    : false,
-					frame     : false,
-		            viewConfig: { stripeRows: true },
-					columns   : [
-						{ text: i18n['name'], flex: 1, sortable: true, dataIndex: 'name' },
-						{ text: i18n['sender_id'], flex: 1, width: 100, sortable: true, dataIndex: 'phone' },
-						{ text: i18n['receiver_id'], flex: 1, width: 100, sortable: true, dataIndex: 'phone' },
-						{ text: i18n['version'], flex: 1, width: 100, sortable: true, dataIndex: 'phone' }
-					]
+		me.x12ParnersGrid = Ext.create('Ext.grid.Panel',
+		{
+			title : i18n['x12_partners_clearing_houses'],
+			//store     : me.x12PartnersStore,
+			border : false,
+			frame : false,
+			viewConfig :
+			{
+				stripeRows : true
+			},
+			columns : [
+			{
+				text : i18n['name'],
+				flex : 1,
+				sortable : true,
+				dataIndex : 'name'
+			},
+			{
+				text : i18n['sender_id'],
+				flex : 1,
+				width : 100,
+				sortable : true,
+				dataIndex : 'phone'
+			},
+			{
+				text : i18n['receiver_id'],
+				flex : 1,
+				width : 100,
+				sortable : true,
+				dataIndex : 'phone'
+			},
+			{
+				text : i18n['version'],
+				flex : 1,
+				width : 100,
+				sortable : true,
+				dataIndex : 'phone'
+			}]
 
-				});
+		});
 
 		// *************************************************************************************
 		// Tab Panel
 		// *************************************************************************************
-		me.praticePanel = Ext.create('Ext.tab.Panel', {
-			activeTab: 0,
-			items    : [
-				me.pharmacyGrid,
-				me.insuranceGrid,
-				//me.InsuranceNumbersGrid,
-				me.x12ParnersGrid,
+		me.praticePanel = Ext.create('Ext.tab.Panel',
+		{
+			activeTab : 0,
+			items : [me.pharmacyGrid, me.insuranceGrid,
+			//me.InsuranceNumbersGrid,
+			me.x12ParnersGrid,
+			{
+				title : i18n['hl7_viewer'],
+				frame : false,
+				border : false,
+				items : [
 				{
-					title      : i18n['hl7_viewer'],
-					frame      : false,
-					border     : false,
-					items      : [
-						{
 
-						}
-					],
-					tbar: [
-						{
-							xtype  : 'button',
-							text   : i18n['clear_hl7_data'],
-							iconCls: 'save',
-							handler: function() {
-								me.onWinOpen();
-							}
-						},
-						'-',
-						{
-							xtype  : 'button',
-							text   : i18n['parse_hl7'],
-							iconCls: 'save',
-							handler: function() {
-								me.onWinOpen();
-							}
-						}
-					]
-				}
-			]
+				}],
+				tbar : [
+				{
+					xtype : 'button',
+					text : i18n['clear_hl7_data'],
+					iconCls : 'save',
+					handler : function()
+					{
+						me.onWinOpen();
+					}
+				}, '-',
+				{
+					xtype : 'button',
+					text : i18n['parse_hl7'],
+					iconCls : 'save',
+					handler : function()
+					{
+						me.onWinOpen();
+					}
+				}]
+			}]
 		});
 
-		me.pageBody = [ me.praticePanel ];
+		me.pageBody = [me.praticePanel];
 		me.callParent(arguments);
 	},
 
-	onNewRec: function(btn) {
+	onNewRec : function(btn)
+	{
 		var me = this, grid = btn.up('grid'), store = grid.store, model = btn.action, plugin = grid.editingPlugin, newModel;
 
 		say(grid);
@@ -40421,8 +42523,9 @@ Ext.define('App.view.administration.Practice', {
 		say(model);
 
 		plugin.cancelEdit();
-		newModel = Ext.ModelManager.create({
-			active:1
+		newModel = Ext.ModelManager.create(
+		{
+			active : 1
 		}, model);
 		say(newModel);
 		store.insert(0, newModel);
@@ -40435,14 +42538,16 @@ Ext.define('App.view.administration.Practice', {
 	 * place inside this function all the functions you want
 	 * to call every this panel becomes active
 	 */
-	onActive: function(callback) {
+	onActive : function(callback)
+	{
 		this.pharmacyStore.load();
 		this.insuranceStore.load();
 		//this.insuranceNumbersStore.load();
 		//this.x12PartnersStore.load();
 		callback(true);
 	}
-}); // end of PracticePage
+});
+// end of PracticePage
 /**
  * services.ejs.php
  * Services
@@ -40457,16 +42562,14 @@ Ext.define('App.view.administration.Practice', {
  * @namespace Services.addService
  * @namespace Services.updateService
  */
-Ext.define('App.view.administration.PreventiveCare', {
-	extend       : 'App.classes.RenderPanel',
-	id           : 'panelPreventiveCare',
-	pageTitle    : i18n['preventive_care'],
-	uses         : [
-		'App.classes.GridPanel',
-		'App.classes.combo.CodesTypes',
-		'App.classes.combo.Titles'
-	],
-	initComponent: function() {
+Ext.define('App.view.administration.PreventiveCare',
+{
+	extend : 'App.classes.RenderPanel',
+	id : 'panelPreventiveCare',
+	pageTitle : i18n['preventive_care'],
+	uses : ['App.classes.GridPanel', 'App.classes.combo.CodesTypes', 'App.classes.combo.Titles'],
+	initComponent : function()
+	{
 		var me = this;
 
 		me.active = 1;
@@ -40474,512 +42577,571 @@ Ext.define('App.view.administration.PreventiveCare', {
 		me.category_id = '3';
 
 		me.store = Ext.create('App.store.administration.PreventiveCare');
-        me.activeProblemsStore = Ext.create('App.store.administration.PreventiveCareActiveProblems');
+		me.activeProblemsStore = Ext.create('App.store.administration.PreventiveCareActiveProblems');
 		me.medicationsStore = Ext.create('App.store.administration.PreventiveCareMedications');
 		me.labsStore = Ext.create('App.store.administration.PreventiveCareLabs');
 
-		function code_type(val) {
-			if(val == '1') {
+		function code_type(val)
+		{
+			if (val == '1')
+			{
 				return 'CPT4';
-			} else if(val == '2') {
+			}
+			else
+			if (val == '2')
+			{
 				return 'ICD9';
-			} else if(val == '3') {
+			}
+			else
+			if (val == '3')
+			{
 				return 'HCPCS';
-			} else if(val == '100') {
+			}
+			else
+			if (val == '100')
+			{
 				return 'CVX';
 			}
 			return val;
 		}
 
-		me.guidelineGrid = Ext.create('App.classes.GridPanel', {
+
+		me.guidelineGrid = Ext.create('App.classes.GridPanel',
+		{
 			region : 'center',
-			store  : me.store,
-			columns: [
-                {
-                    xtype: 'actioncolumn',
-                    width:30,
-                    items: [
-                        {
-                            icon: 'resources/images/icons/delete.png',  // Use a URL in the icon config
-                            tooltip: i18n['remove'],
-                            handler: function(grid, rowIndex, colIndex) {
-                                var rec = grid.getStore().getAt(rowIndex);
-                            },
-                            getClass:function(){
-                                return 'x-grid-icon-padding';
-                            }
-                        }
-                    ]
-                },
-
-				{ flex: 1, header: i18n['description'], sortable: true, dataIndex: 'description' },
-				{ width: 100, header: i18n['age_start'], sortable: true, dataIndex: 'age_start' },
-				{ width: 100, header: i18n['age_end'], sortable: true, dataIndex: 'age_end' },
-				{ width: 100, header: i18n['sex'], sortable: true, dataIndex: 'sex' },
-				{ width: 100, header: i18n['frequency'], sortable: true, dataIndex: 'frequency' }
-
-			],
-			plugins: Ext.create('App.classes.grid.RowFormEditing', {
-				autoCancel  : false,
-				errorSummary: false,
-				clicksToEdit: 1,
-                listeners:{
-                    scope:me,
-	                beforeedit:me.beforeServiceEdit,
-                    edit:me.onServiceEdit,
-                    canceledit:me.onServiceCancelEdit
-
-                },
-				formItems   : [
+			store : me.store,
+			columns : [
+			{
+				xtype : 'actioncolumn',
+				width : 30,
+				items : [
+				{
+					icon : 'resources/images/icons/delete.png', // Use a URL in the icon config
+					tooltip : i18n['remove'],
+					handler : function(grid, rowIndex, colIndex)
 					{
-						/**
-						 * CVX Container
-						 */
-						xtype: 'tabpanel',
-						action: i18n['immunizations'],
-						layout:'fit',
-						plain:true,
-						listeners: {
-							scope:me,
-							tabchange:me.onFormTapChange
+						var rec = grid.getStore().getAt(rowIndex);
+					},
+					getClass : function()
+					{
+						return 'x-grid-icon-padding';
+					}
+				}]
+			},
+
+			{
+				flex : 1,
+				header : i18n['description'],
+				sortable : true,
+				dataIndex : 'description'
+			},
+			{
+				width : 100,
+				header : i18n['age_start'],
+				sortable : true,
+				dataIndex : 'age_start'
+			},
+			{
+				width : 100,
+				header : i18n['age_end'],
+				sortable : true,
+				dataIndex : 'age_end'
+			},
+			{
+				width : 100,
+				header : i18n['sex'],
+				sortable : true,
+				dataIndex : 'sex'
+			},
+			{
+				width : 100,
+				header : i18n['frequency'],
+				sortable : true,
+				dataIndex : 'frequency'
+			}],
+			plugins : Ext.create('App.classes.grid.RowFormEditing',
+			{
+				autoCancel : false,
+				errorSummary : false,
+				clicksToEdit : 1,
+				listeners :
+				{
+					scope : me,
+					beforeedit : me.beforeServiceEdit,
+					edit : me.onServiceEdit,
+					canceledit : me.onServiceCancelEdit
+
+				},
+				formItems : [
+				{
+					/**
+					 * CVX Container
+					 */
+					xtype : 'tabpanel',
+					action : i18n['immunizations'],
+					layout : 'fit',
+					plain : true,
+					listeners :
+					{
+						scope : me,
+						tabchange : me.onFormTapChange
+					},
+					items : [
+					{
+						title : i18n['general'],
+						xtype : 'container',
+						padding : 10,
+						layout : 'vbox',
+						items : [
+						{
+							/**
+							 * line One
+							 */
+							xtype : 'fieldcontainer',
+							layout : 'hbox',
+							defaults :
+							{
+								margin : '0 10 5 0',
+								action : 'field'
+							},
+							items : [
+							{
+
+								xtype : 'textfield',
+								fieldLabel : i18n['description'],
+								name : 'description',
+								labelWidth : 130,
+								width : 703
+							},
+							{
+								xtype : 'mitos.sexcombo',
+								fieldLabel : i18n['sex'],
+								name : 'sex',
+								width : 100,
+								labelWidth : 30
+
+							},
+							{
+								fieldLabel : i18n['active'],
+								xtype : 'checkboxfield',
+								labelWidth : 75,
+								name : 'active'
+							}]
 						},
-						items: [
+						{
+							/**
+							 * Line two
+							 */
+							xtype : 'fieldcontainer',
+							layout : 'hbox',
+							defaults :
 							{
-								title : i18n['general'],
-								xtype : 'container',
-								padding:10,
-								layout:'vbox',
-								items : [
-									{
-										/**
-										 * line One
-										 */
-										xtype   : 'fieldcontainer',
-										layout:'hbox',
-										defaults:{ margin:'0 10 5 0', action:'field' },
-										items   : [
-											{
+								margin : '0 10 5 0',
+								action : 'field'
+							},
+							items : [
+							{
+								xtype : 'mitos.codestypescombo',
+								fieldLabel : i18n['coding_system'],
+								labelWidth : 130,
+								value : 'CVX',
+								name : 'coding_system',
+								readOnly : true
 
-												xtype     : 'textfield',
-												fieldLabel: i18n['description'],
-												name      : 'description',
-												labelWidth:130,
-												width:703
-											},
-											{
-												xtype     : 'mitos.sexcombo',
-												fieldLabel: i18n['sex'],
-												name      : 'sex',
-												width     : 100,
-												labelWidth: 30
-
-											},
-											{
-												fieldLabel: i18n['active'],
-												xtype   : 'checkboxfield',
-												labelWidth:75,
-												name    : 'active'
-											}
-
-
-
-										]
-									},
-									{
-										/**
-										 * Line two
-										 */
-										xtype   : 'fieldcontainer',
-										layout:'hbox',
-										defaults:{ margin:'0 10 5 0', action:'field'  },
-										items   : [
-											{
-												xtype     : 'mitos.codestypescombo',
-												fieldLabel: i18n['coding_system'],
-												labelWidth:130,
-												value     : 'CVX',
-												name      : 'coding_system',
-												readOnly:true
-
-											},
-											{
-												xtype     : 'numberfield',
-												fieldLabel: i18n['frequency'],
-												margin:'0 0 5 0',
-												value     : 0,
-												minValue  : 0,
-												width:150,
-												name      : 'frequency'
-
-											},
-											{
-												xtype: 'mitos.timecombo',
-												name : 'frequency_time',
-												width:100
-
-											},
-											{
-                                                xtype     : 'numberfield',
-                                                fieldLabel: i18n['age_start'],
-                                                name: 'age_start',
-                                                labelWidth: 75,
-                                                width:140,
-                                                value     : 0,
-                                                minValue  : 0
-
-											},
-                                            {
-                                                fieldLabel: i18n['must_be_pregnant'],
-                                                xtype   : 'checkboxfield',
-                                                labelWidth:105,
-                                                name    : 'pregnant'
-
-
-                                            }
-										]
-
-									},
-									{
-										/**
-										 * Line three
-										 */
-										xtype   : 'fieldcontainer',
-										layout:'hbox',
-										defaults:{ margin:'0 10 5 0', action:'field'  },
-										items   : [
-											{
-												xtype     : 'textfield',
-												fieldLabel: i18n['code'],
-												name      : 'code',
-												labelWidth:130
-											},
-											{
-												xtype     : 'numberfield',
-												fieldLabel: i18n['times_to_perform'],
-												name      : 'times_to_perform',
-												width     : 250,
-												value     : 0,
-												minValue  : 0,
-												tooltip   : i18n['greater_than_1_or_just_check_perform_once']
-
-											},
-											{
-
-                                                xtype     : 'numberfield',
-                                                fieldLabel: i18n['age_end'],
-                                                name: 'age_end',
-                                                labelWidth: 75,
-                                                width:140,
-                                                value     : 0,
-                                                minValue  : 0
-
-
-											},
-                                            {
-                                                fieldLabel: i18n['perform_only_once'],
-                                                xtype   : 'checkboxfield',
-                                                labelWidth:105,
-                                                name    : 'only_once'
-                                            }
-
-
-
-										]
-
-									}
-
-								]
 							},
 							{
-								title  : i18n['active_problems'],
-								action:'problems',
-								xtype  : 'grid',
-								margin:5,
-								store: me.activeProblemsStore,
-								columns: [
+								xtype : 'numberfield',
+								fieldLabel : i18n['frequency'],
+								margin : '0 0 5 0',
+								value : 0,
+								minValue : 0,
+								width : 150,
+								name : 'frequency'
 
-									{
-										xtype:'actioncolumn',
-										width:20,
-										items: [
-											{
-												icon: 'resources/images/icons/delete.png',
-												tooltip: i18n['remove'],
-												scope:me,
-												handler: me.onRemoveRelation
-											}
-										]
-									},
-									{
-										header   : i18n['code'],
-										width     : 100,
-										dataIndex: 'code'
-									},
-									{
-										header   : i18n['description'],
-										flex     : 1,
-										dataIndex: 'code_text'
-									}
-
-								],
-								bbar:{
-									xtype:'liveicdxsearch',
-									margin:5,
-									fieldLabel: i18n['add_problem'],
-									hideLabel:false,
-									listeners:{
-										scope:me,
-										select:me.addActiveProblem
-									}
-								}
 							},
 							{
-								title  : i18n['medications'],
-								action :'medications',
-								xtype  : 'grid',
-								width  : 300,
-								store: me.medicationsStore,
-								columns: [
-									{
-										xtype:'actioncolumn',
-										width:20,
-										items: [
-											{
-												icon: 'resources/images/icons/delete.png',
-												tooltip: i18n['remove'],
-												scope:me,
-												handler: me.onRemoveRelation
-											}
-										]
-									},
-									{
-										header   : i18n['code'],
-										width     : 100,
-										dataIndex: 'code'
-									},
-									{
-										header   : i18n['description'],
-										flex     : 1,
-										dataIndex: 'code_text'
-									}
+								xtype : 'mitos.timecombo',
+								name : 'frequency_time',
+								width : 100
 
-								],
-								bbar:{
-									xtype:'medicationlivetsearch',
-									margin:5,
-									fieldLabel: i18n['add_problem'],
-									hideLabel:false,
-									listeners:{
-										scope:me,
-										select:me.addMedications
-									}
-								}
 							},
 							{
-								title  : i18n['labs'],
-								action:'labs',
-								xtype  : 'grid',
-								store: me.labsStore,
-								width  : 300,
-								columns: [
-									{
-										xtype:'actioncolumn',
-										width:20,
-										items: [
-											{
-												icon: 'resources/images/icons/delete.png',
-												tooltip: i18n['remove'],
-												scope:me,
-												handler: me.onRemoveRelation
-											}
-										]
-									},
-									{
-										header   : i18n['value_name'],
-										flex     : 1,
-										dataIndex: 'value_name'
-									},
-									{
-										header   : i18n['less_than'],
-										flex     : 1,
-										dataIndex: 'less_than',
-										editor:{
-											xtype:'numberfield'
-										}
-									},
-									{
-										header   : i18n['greater_than'],
-										flex     : 1,
-										dataIndex: 'greater_than',
-										editor:{
-											xtype:'numberfield'
-										}
-									},
-									{
-										header   : i18n['equal_to'],
-										flex     : 1,
-										dataIndex: 'equal_to',
-										editor:{
-											xtype:'numberfield'
-										}
-									}
+								xtype : 'numberfield',
+								fieldLabel : i18n['age_start'],
+								name : 'age_start',
+								labelWidth : 75,
+								width : 140,
+								value : 0,
+								minValue : 0
 
+							},
+							{
+								fieldLabel : i18n['must_be_pregnant'],
+								xtype : 'checkboxfield',
+								labelWidth : 105,
+								name : 'pregnant'
 
-								],
+							}]
 
-								plugins: Ext.create('Ext.grid.plugin.CellEditing', {
-                                    autoCancel  : true,
-                                    errorSummary: false,
-                                    clicksToEdit: 2,
-                                    listeners:{
-                                        scope:me,
-                                        edit:me.afterLabTimeEdit
+						},
+						{
+							/**
+							 * Line three
+							 */
+							xtype : 'fieldcontainer',
+							layout : 'hbox',
+							defaults :
+							{
+								margin : '0 10 5 0',
+								action : 'field'
+							},
+							items : [
+							{
+								xtype : 'textfield',
+								fieldLabel : i18n['code'],
+								name : 'code',
+								labelWidth : 130
+							},
+							{
+								xtype : 'numberfield',
+								fieldLabel : i18n['times_to_perform'],
+								name : 'times_to_perform',
+								width : 250,
+								value : 0,
+								minValue : 0,
+								tooltip : i18n['greater_than_1_or_just_check_perform_once']
 
-                                    }
+							},
+							{
 
-                                }),
-                                bbar:{
-                                    xtype:'labslivetsearch',
-                                    margin:5,
-                                    fieldLabel: i18n['add_labs'],
-                                    hideLabel:false,
-                                    listeners:{
-                                        scope:me,
-                                        select:me.addLabs
-                                    }
-                                }
+								xtype : 'numberfield',
+								fieldLabel : i18n['age_end'],
+								name : 'age_end',
+								labelWidth : 75,
+								width : 140,
+								value : 0,
+								minValue : 0
+
+							},
+							{
+								fieldLabel : i18n['perform_only_once'],
+								xtype : 'checkboxfield',
+								labelWidth : 105,
+								name : 'only_once'
+							}]
+
+						}]
+					},
+					{
+						title : i18n['active_problems'],
+						action : 'problems',
+						xtype : 'grid',
+						margin : 5,
+						store : me.activeProblemsStore,
+						columns : [
+
+						{
+							xtype : 'actioncolumn',
+							width : 20,
+							items : [
+							{
+								icon : 'resources/images/icons/delete.png',
+								tooltip : i18n['remove'],
+								scope : me,
+								handler : me.onRemoveRelation
+							}]
+						},
+						{
+							header : i18n['code'],
+							width : 100,
+							dataIndex : 'code'
+						},
+						{
+							header : i18n['description'],
+							flex : 1,
+							dataIndex : 'code_text'
+						}],
+						bbar :
+						{
+							xtype : 'liveicdxsearch',
+							margin : 5,
+							fieldLabel : i18n['add_problem'],
+							hideLabel : false,
+							listeners :
+							{
+								scope : me,
+								select : me.addActiveProblem
+							}
+						}
+					},
+					{
+						title : i18n['medications'],
+						action : 'medications',
+						xtype : 'grid',
+						width : 300,
+						store : me.medicationsStore,
+						columns : [
+						{
+							xtype : 'actioncolumn',
+							width : 20,
+							items : [
+							{
+								icon : 'resources/images/icons/delete.png',
+								tooltip : i18n['remove'],
+								scope : me,
+								handler : me.onRemoveRelation
+							}]
+						},
+						{
+							header : i18n['code'],
+							width : 100,
+							dataIndex : 'code'
+						},
+						{
+							header : i18n['description'],
+							flex : 1,
+							dataIndex : 'code_text'
+						}],
+						bbar :
+						{
+							xtype : 'medicationlivetsearch',
+							margin : 5,
+							fieldLabel : i18n['add_problem'],
+							hideLabel : false,
+							listeners :
+							{
+								scope : me,
+								select : me.addMedications
+							}
+						}
+					},
+					{
+						title : i18n['labs'],
+						action : 'labs',
+						xtype : 'grid',
+						store : me.labsStore,
+						width : 300,
+						columns : [
+						{
+							xtype : 'actioncolumn',
+							width : 20,
+							items : [
+							{
+								icon : 'resources/images/icons/delete.png',
+								tooltip : i18n['remove'],
+								scope : me,
+								handler : me.onRemoveRelation
+							}]
+						},
+						{
+							header : i18n['value_name'],
+							flex : 1,
+							dataIndex : 'value_name'
+						},
+						{
+							header : i18n['less_than'],
+							flex : 1,
+							dataIndex : 'less_than',
+							editor :
+							{
+								xtype : 'numberfield'
+							}
+						},
+						{
+							header : i18n['greater_than'],
+							flex : 1,
+							dataIndex : 'greater_than',
+							editor :
+							{
+								xtype : 'numberfield'
+							}
+						},
+						{
+							header : i18n['equal_to'],
+							flex : 1,
+							dataIndex : 'equal_to',
+							editor :
+							{
+								xtype : 'numberfield'
+							}
+						}],
+
+						plugins : Ext.create('Ext.grid.plugin.CellEditing',
+						{
+							autoCancel : true,
+							errorSummary : false,
+							clicksToEdit : 2,
+							listeners :
+							{
+								scope : me,
+								edit : me.afterLabTimeEdit
+
 							}
 
-						]
+						}),
+						bbar :
+						{
+							xtype : 'labslivetsearch',
+							margin : 5,
+							fieldLabel : i18n['add_labs'],
+							hideLabel : false,
+							listeners :
+							{
+								scope : me,
+								select : me.addLabs
+							}
+						}
+					}]
 
-					}
-
-				]
+				}]
 			}),
 
-
-			tbar: me.PagingToolbar = Ext.create('Ext.PagingToolbar', {
-				store      : me.store,
-				displayInfo: true,
-				emptyMsg   : i18n['no_office_notes_to_display'],
-				plugins    : Ext.create('Ext.ux.SlidingPager', {}),
-				items      : [
-                    '-',
-                    {
-                        xtype    : 'mitos.preventivecaretypescombo',
-                        width    : 150,
-                        listeners: {
-                            scope : me,
-                            select: me.onCodeTypeSelect
-                        }
-                    }
-                ]
+			tbar : me.PagingToolbar = Ext.create('Ext.PagingToolbar',
+			{
+				store : me.store,
+				displayInfo : true,
+				emptyMsg : i18n['no_office_notes_to_display'],
+				plugins : Ext.create('Ext.ux.SlidingPager',
+				{
+				}),
+				items : ['-',
+				{
+					xtype : 'mitos.preventivecaretypescombo',
+					width : 150,
+					listeners :
+					{
+						scope : me,
+						select : me.onCodeTypeSelect
+					}
+				}]
 			})
-		}); // END GRID
+		});
+		// END GRID
 
-
-		me.pageBody = [ me.guidelineGrid ];
+		me.pageBody = [me.guidelineGrid];
 		me.callParent(arguments);
 	}, // end of initComponent
 
+	onServiceEdit : function(context, e)
+	{
 
-    onServiceEdit:function(context, e){
+	},
 
-    },
+	onServiceCancelEdit : function(context, e)
+	{
 
-    onServiceCancelEdit:function(context, e){
+	},
 
-    },
+	afterLabTimeEdit : function(editor, e)
+	{
 
-    afterLabTimeEdit:function(editor, e){
+	},
 
-    },
-
-    beforeServiceEdit:function(context, e){
-		var editor = context.editor,
-			grids = editor.query('grid');
-        for(var i=0; i < grids.length; i++ ){
-            grids[i].store.load({params:{id: e.record.data.id}});
+	beforeServiceEdit : function(context, e)
+	{
+		var editor = context.editor, grids = editor.query('grid');
+		for (var i = 0; i < grids.length; i++)
+		{
+			grids[i].store.load(
+			{
+				params :
+				{
+					id : e.record.data.id
+				}
+			});
 		}
-    },
+	},
 
-	onFormTapChange:function(panel, newCard, oldCard){
-        //say(newCard);
+	onFormTapChange : function(panel, newCard, oldCard)
+	{
+		//say(newCard);
 		//this.ImmuRelationStore.proxy.extraParams = { code_type: newCard.action, selected_id:this.getSelectId() };
 		//this.ImmuRelationStore.load();
 	},
 
-//	onSearch: function(field) {
-//		var me = this,
-//			store = me.store;
-//		me.dataQuery = field.getValue();
-//
-//		store.proxy.extraParams = {active: me.active, code_type: me.code_type, query: me.dataQuery};
-//		me.store.load();
-//	},
+	//	onSearch: function(field) {
+	//		var me = this,
+	//			store = me.store;
+	//		me.dataQuery = field.getValue();
+	//
+	//		store.proxy.extraParams = {active: me.active, code_type: me.code_type, query: me.dataQuery};
+	//		me.store.load();
+	//	},
 
-	onCodeTypeSelect: function(combo, record) {
+	onCodeTypeSelect : function(combo, record)
+	{
 		var me = this;
 		me.category_id = record[0].data.option_value;
-		if(me.category_id=='dismiss'){
+		if (me.category_id == 'dismiss')
+		{
 
-		}else{
-            me.PagingToolbar.moveFirst();
-//            me.store.proxy.pageParam = 1;
-//            me.store.proxy.startParam = 0;
-            me.store.proxy.extraParams = {category_id: me.category_id};
-		    me.store.load();
+		}
+		else
+		{
+			me.PagingToolbar.moveFirst();
+			//            me.store.proxy.pageParam = 1;
+			//            me.store.proxy.startParam = 0;
+			me.store.proxy.extraParams =
+			{
+				category_id : me.category_id
+			};
+			me.store.load();
 		}
 	},
 
-//	onNew: function(form, model) {
-//		form.getForm().reset();
-//		var newModel = Ext.ModelManager.create({}, model);
-//		form.getForm().loadRecord(newModel);
-//	},
+	//	onNew: function(form, model) {
+	//		form.getForm().reset();
+	//		var newModel = Ext.ModelManager.create({}, model);
+	//		form.getForm().loadRecord(newModel);
+	//	},
 
-	addActiveProblem:function(field, model){
+	addActiveProblem : function(field, model)
+	{
 
-		this.activeProblemsStore.add({
-			code:model[0].data.code,
-			code_text:model[0].data.code_text,
-            guideline_id: this.getSelectId()
+		this.activeProblemsStore.add(
+		{
+			code : model[0].data.code,
+			code_text : model[0].data.code_text,
+			guideline_id : this.getSelectId()
 		});
 		field.reset();
 	},
-	addMedications:function(field, model){
-		this.medicationsStore.add({
+	addMedications : function(field, model)
+	{
+		this.medicationsStore.add(
+		{
 
-			code:model[0].data.id,
-			code_text:model[0].data.PROPRIETARYNAME,
-            guideline_id: this.getSelectId()
-		});
-		field.reset();
-
-	},
-    addLabs:function(field, model){
-
-		this.labsStore.add({
-            code:model[0].data.loinc_number,
-			value_name:model[0].data.loinc_name,
-			less_than:'0',
-			greater_than:'0',
-			equal_to:'0',
-            preventive_care_id:this.getSelectId()
+			code : model[0].data.id,
+			code_text : model[0].data.PROPRIETARYNAME,
+			guideline_id : this.getSelectId()
 		});
 		field.reset();
 
 	},
+	addLabs : function(field, model)
+	{
 
-    onRemoveRelation:function(grid, rowIndex, colIndex){
-		var me = this,
-            store = grid.getStore(),
-			record = store.getAt(rowIndex);
-        store.remove(record);
+		this.labsStore.add(
+		{
+			code : model[0].data.loinc_number,
+			value_name : model[0].data.loinc_name,
+			less_than : '0',
+			greater_than : '0',
+			equal_to : '0',
+			preventive_care_id : this.getSelectId()
+		});
+		field.reset();
+
 	},
 
+	onRemoveRelation : function(grid, rowIndex, colIndex)
+	{
+		var me = this, store = grid.getStore(), record = store.getAt(rowIndex);
+		store.remove(record);
+	},
 
-	getSelectId:function(){
+	getSelectId : function()
+	{
 		var row = this.guidelineGrid.getSelectionModel().getLastSelected();
 		return row.data.id;
 	},
@@ -40990,13 +43152,18 @@ Ext.define('App.view.administration.PreventiveCare', {
 	 * place inside this function all the functions you want
 	 * to call every this panel becomes active
 	 */
-	onActive: function(callback) {
+	onActive : function(callback)
+	{
 		this.guidelineGrid.query('combobox')[0].setValue(this.category_id);
-        this.store.proxy.extraParams = {category_id: this.category_id};
+		this.store.proxy.extraParams =
+		{
+			category_id : this.category_id
+		};
 		this.store.load();
 		callback(true);
 	}
-}); //ens servicesPage class
+});
+//ens servicesPage class
 /**
  * roles.ejs.php
  * Description: Facilities Screen
@@ -41011,15 +43178,18 @@ Ext.define('App.view.administration.PreventiveCare', {
  * @namespace Roles.saveRolesData
  * @namespace Roles.getRolesData
  */
-Ext.define('App.view.administration.Roles', {
-	extend       : 'App.classes.RenderPanel',
-	id           : 'panelRoles',
-	pageTitle    : i18n['roles_and_permissions'],
-	pageLayout   : {
-		type:'vbox',
-		align:'stretch'
+Ext.define('App.view.administration.Roles',
+{
+	extend : 'App.classes.RenderPanel',
+	id : 'panelRoles',
+	pageTitle : i18n['roles_and_permissions'],
+	pageLayout :
+	{
+		type : 'vbox',
+		align : 'stretch'
 	},
-	initComponent: function() {
+	initComponent : function()
+	{
 
 		var me = this;
 
@@ -41027,57 +43197,50 @@ Ext.define('App.view.administration.Roles', {
 		// Roles Store
 		//******************************************************************************
 
-		me.header = Ext.create('Ext.container.Container',{
-			height:30,
-			html : '<div class="roleHeader">' +
-					'<span class="perm">' + i18n['permission'] + '</span>' +
-					'<span class="role">' + i18n['front_office'] + '</span>' +
-					'<span class="role">' + i18n['auditors'] + '</span>' +
-					'<span class="role">' + i18n['clinician'] + '</span>' +
-					'<span class="role">' + i18n['physician']+ '</span>' +
-					'<span class="role">' + i18n['administrator'] + '</span>' +
-					'</div>'
+		me.header = Ext.create('Ext.container.Container',
+		{
+			height : 30,
+			html : '<div class="roleHeader">' + '<span class="perm">' + i18n['permission'] + '</span>' + '<span class="role">' + i18n['front_office'] + '</span>' + '<span class="role">' + i18n['auditors'] + '</span>' + '<span class="role">' + i18n['clinician'] + '</span>' + '<span class="role">' + i18n['physician'] + '</span>' + '<span class="role">' + i18n['administrator'] + '</span>' + '</div>'
 		});
 
-		me.form = Ext.create('Ext.form.Panel', {
-			flex:1,
-			frame:true,
-			bodyStyle:'background-color:white',
-			bodyPadding: 10,
-			items      : [
-				{
-					xtype      : 'fieldcontainer',
-					defaultType: 'mitos.checkbox',
-					layout     : 'hbox'
-				}
-			],
-			buttons       : [
-				{
-					text   : i18n['save'],
-					iconCls: 'save',
-					margin : '0 20 0 0',
-					scope  : me,
-					handler: me.onSave
-				}
-			]
+		me.form = Ext.create('Ext.form.Panel',
+		{
+			flex : 1,
+			frame : true,
+			bodyStyle : 'background-color:white',
+			bodyPadding : 10,
+			items : [
+			{
+				xtype : 'fieldcontainer',
+				defaultType : 'mitos.checkbox',
+				layout : 'hbox'
+			}],
+			buttons : [
+			{
+				text : i18n['save'],
+				iconCls : 'save',
+				margin : '0 20 0 0',
+				scope : me,
+				handler : me.onSave
+			}]
 		});
 
-		me.pageBody = [ me.header, me.form ];
+		me.pageBody = [me.header, me.form];
 		me.callParent(arguments);
 	},
 
-	onSave: function() {
-		var me = this,
-			form = me.form.getForm(),
-			values = form.getValues(),
-			record = form.getRecord(),
-			changedValues;
+	onSave : function()
+	{
+		var me = this, form = me.form.getForm(), values = form.getValues(), record = form.getRecord(), changedValues;
 
-		if(record.set(values) !== null){
-			me.form.el.mask( i18n['saving_roles'] + '...');
+		if (record.set(values) !== null)
+		{
+			me.form.el.mask(i18n['saving_roles'] + '...');
 			changedValues = record.getChanges();
-			Roles.saveRolesData(changedValues, function(provider, response){
-				if(response.result){
+			Roles.saveRolesData(changedValues, function(provider, response)
+			{
+				if (response.result)
+				{
 					me.form.el.unmask();
 					me.msg('Sweet!', i18n['roles_updated']);
 					record.commit();
@@ -41086,38 +43249,46 @@ Ext.define('App.view.administration.Roles', {
 		}
 	},
 
+	getFormData : function()
+	{
 
-	getFormData: function() {
+		var me = this, form = me.form, formFields = form.getForm().getFields(), modelFields = [], model;
 
-		var me = this,
-			form = me.form,
-			formFields = form.getForm().getFields(),
-			modelFields = [],
-			model;
-
-		for(var i=0; i < formFields.items.length; i++){
-			modelFields.push({name: formFields.items[i].name, type: 'bool'});
+		for (var i = 0; i < formFields.items.length; i++)
+		{
+			modelFields.push(
+			{
+				name : formFields.items[i].name,
+				type : 'bool'
+			});
 		}
 
-		model = Ext.define(form.itemId + 'Model', {
-			extend: 'Ext.data.Model',
-			fields: modelFields,
-			proxy : {
-				type: 'direct',
-				api : {
-					read: Roles.getRolesData
+		model = Ext.define(form.itemId + 'Model',
+		{
+			extend : 'Ext.data.Model',
+			fields : modelFields,
+			proxy :
+			{
+				type : 'direct',
+				api :
+				{
+					read : Roles.getRolesData
 				}
 			}
 		});
 
-		me.store = Ext.create('Ext.data.Store', {
-			model: model
+		me.store = Ext.create('Ext.data.Store',
+		{
+			model : model
 		});
 
-		me.store.load({
-			scope   : this,
-			callback: function(records, operation, success) {
-				if(success) {
+		me.store.load(
+		{
+			scope : this,
+			callback : function(records, operation, success)
+			{
+				if (success)
+				{
 					form.getForm().loadRecord(records[0]);
 					form.el.unmask();
 				}
@@ -41131,19 +43302,20 @@ Ext.define('App.view.administration.Roles', {
 	 * place inside this function all the functions you want
 	 * to call every this panel becomes active
 	 */
-	onActive: function(callback) {
-		var me = this,
-			form = me.form;
-		form.el.mask( i18n['loading'] + '...');
+	onActive : function(callback)
+	{
+		var me = this, form = me.form;
+		form.el.mask(i18n['loading'] + '...');
 		form.removeAll();
-		Roles.getRoleForm(null, function(provider, response) {
+		Roles.getRoleForm(null, function(provider, response)
+		{
 			form.add(eval(response.result));
 			me.getFormData();
 		});
 
 		callback(true);
 	}
-});
+}); 
 /**
  * External Data Loads
  * v0.0.1
@@ -41153,20 +43325,23 @@ Ext.define('App.view.administration.Roles', {
  * GaiaEHR (Electronic Health Records) 2011
  *
  */
-Ext.define('App.view.administration.ExternalDataLoads', {
-	extend       : 'App.classes.RenderPanel',
-	id           : 'panelExternalDataLoads',
-	pageTitle    : i18n['external_data_loads'],
+Ext.define('App.view.administration.ExternalDataLoads',
+{
+	extend : 'App.classes.RenderPanel',
+	id : 'panelExternalDataLoads',
+	pageTitle : i18n['external_data_loads'],
 	/**
 	 * define the layout 'accordion'
 	 * and few more configs
 	 */
-	pageLayout   : {
-		type       : 'accordion',
-		animate    : true,
-		activeOnTop: true
+	pageLayout :
+	{
+		type : 'accordion',
+		animate : true,
+		activeOnTop : true
 	},
-	initComponent: function() {
+	initComponent : function()
+	{
 		var me = this;
 		/**
 		 * var stores is used to hold all the stores inside this class
@@ -41179,10 +43354,23 @@ Ext.define('App.view.administration.ExternalDataLoads', {
 		 */
 		me.stores = [];
 
-		me.stores.push(me.icd9Store = Ext.create('App.store.administration.ExternalDataLoads', {codeType:'ICD9'}));
-		me.stores.push(me.icd10Store = Ext.create('App.store.administration.ExternalDataLoads', {codeType:'ICD10', groupField:'version'}));
-		me.stores.push(me.rxnormStore = Ext.create('App.store.administration.ExternalDataLoads', {codeType:'RXNORM'}));
-		me.stores.push(me.snomedStore = Ext.create('App.store.administration.ExternalDataLoads', {codeType:'SNOMED'}));
+		me.stores.push(me.icd9Store = Ext.create('App.store.administration.ExternalDataLoads',
+		{
+			codeType : 'ICD9'
+		}));
+		me.stores.push(me.icd10Store = Ext.create('App.store.administration.ExternalDataLoads',
+		{
+			codeType : 'ICD10',
+			groupField : 'version'
+		}));
+		me.stores.push(me.rxnormStore = Ext.create('App.store.administration.ExternalDataLoads',
+		{
+			codeType : 'RXNORM'
+		}));
+		me.stores.push(me.snomedStore = Ext.create('App.store.administration.ExternalDataLoads',
+		{
+			codeType : 'SNOMED'
+		}));
 
 		/**
 		 * Since all the grid are very similar I created a function that return a grid
@@ -41203,225 +43391,223 @@ Ext.define('App.view.administration.ExternalDataLoads', {
 		/**
 		 * Here are the panels used inside the accordion layout
 		 */
-		me.icd9 = Ext.create('Ext.form.Panel', {
+		me.icd9 = Ext.create('Ext.form.Panel',
+		{
 			title : i18n['update_icd9'],
-			layout: 'border',
-			items : [ me.icd9Grid, me.icd9Form ]
+			layout : 'border',
+			items : [me.icd9Grid, me.icd9Form]
 		});
 
-		me.icd10 = Ext.create('Ext.panel.Panel', {
+		me.icd10 = Ext.create('Ext.panel.Panel',
+		{
 			title : i18n['update_icd10'],
-			layout: 'border',
-			items : [ me.icd10Grid, me.icd10Form ]
+			layout : 'border',
+			items : [me.icd10Grid, me.icd10Form]
 		});
 
-		me.rxnorm = Ext.create('Ext.panel.Panel', {
+		me.rxnorm = Ext.create('Ext.panel.Panel',
+		{
 			title : i18n['update_rxnorm'],
-			layout: 'border',
-			items : [ me.rxnormGrid, me.rxnormForm ]
+			layout : 'border',
+			items : [me.rxnormGrid, me.rxnormForm]
 		});
 
-		me.snomed = Ext.create('Ext.panel.Panel', {
+		me.snomed = Ext.create('Ext.panel.Panel',
+		{
 			title : i18n['update_snomed'],
-			layout: 'border',
-			items : [ me.snomedGrid, me.snomedForm ]
+			layout : 'border',
+			items : [me.snomedGrid, me.snomedForm]
 		});
 
-		me.pageBody = [ me.icd9, me.icd10, me.rxnorm, me.snomed ];
+		me.pageBody = [me.icd9, me.icd10, me.rxnorm, me.snomed];
 		me.callParent(arguments);
 	},
 
-	getCodeForm: function(action) {
+	getCodeForm : function(action)
+	{
 		var me = this;
-		return Ext.create('Ext.form.Panel', {
-			bodyPadding: 10,
-			region     : 'center',
-			action     : action,
-			frame      : true,
-			bodyStyle  : 'background-color:white',
+		return Ext.create('Ext.form.Panel',
+		{
+			bodyPadding : 10,
+			region : 'center',
+			action : action,
+			frame : true,
+			bodyStyle : 'background-color:white',
 			bodyBorder : true,
-			margin     : '5 0 5 0',
-			items      : [
-				{
-					xtype: 'fieldset',
-					styleHtmlContent:true,
-					action: action,
-					title: i18n['current_version_installed'],
-					html: i18n['no_data_installed'],
-					tpl : i18n['revivion_name'] + ':  {revision_name}<br>' +
-						i18n['revision_number'] + ':  {revision_number}<br>' +
-						i18n['revision_version'] + ': {revision_version}<br>' +
-						i18n['revision_date'] + ':    {revision_date}<br>' +
-						i18n['imported_on'] + ':      {imported_date}'
-				},
-				{
-					xtype: 'fieldset',
-					title: i18n['installation'],
-					action: 'installation',
-					styleHtmlContent:true,
-					html : me.getInstallationDetails(action)
-				},
-				{
-					xtype: 'fieldset',
-					title: i18n['upload'],
-					action: 'upload',
-					items:[
-						{
-
-							xtype     : 'filefield',
-							name      : 'filePath',
-							buttonText: i18n['Select file'] + '...',
-							emptyText : i18n['data_file'],
-							width     : 350,
-							labelWidth: 50,
-							allowBlank: false
-						}
-					]
-				}
-			],
-			api        : {
-				submit: ExternalDataUpdate.updateCodesWithUploadFile
-			},
-			buttons    : [
-				{
-					text   : i18n['update'],
-					action : action,
-					scope  : me,
-					handler: me.uploadFile
-				}
-			]
-		});
-	},
-
-	getCodeGrid: function(title, store, grouping) {
-		var me = this;
-		return Ext.create('Ext.grid.Panel', {
-			title  : title,
-			store  : store,
-			region : 'west',
-			width  : 500,
 			margin : '5 0 5 0',
-			padding: 0,
-			split  : true,
-			columns: me.getDefaultColumns(),
-			listeners:{
-				scope:me,
-				itemdblclick:me.onCodeDblClick
+			items : [
+			{
+				xtype : 'fieldset',
+				styleHtmlContent : true,
+				action : action,
+				title : i18n['current_version_installed'],
+				html : i18n['no_data_installed'],
+				tpl : i18n['revivion_name'] + ':  {revision_name}<br>' + i18n['revision_number'] + ':  {revision_number}<br>' + i18n['revision_version'] + ': {revision_version}<br>' + i18n['revision_date'] + ':    {revision_date}<br>' + i18n['imported_on'] + ':      {imported_date}'
 			},
-			features: grouping ? [{ftype:'grouping'}] : []
+			{
+				xtype : 'fieldset',
+				title : i18n['installation'],
+				action : 'installation',
+				styleHtmlContent : true,
+				html : me.getInstallationDetails(action)
+			},
+			{
+				xtype : 'fieldset',
+				title : i18n['upload'],
+				action : 'upload',
+				items : [
+				{
+
+					xtype : 'filefield',
+					name : 'filePath',
+					buttonText : i18n['Select file'] + '...',
+					emptyText : i18n['data_file'],
+					width : 350,
+					labelWidth : 50,
+					allowBlank : false
+				}]
+			}],
+			api :
+			{
+				submit : ExternalDataUpdate.updateCodesWithUploadFile
+			},
+			buttons : [
+			{
+				text : i18n['update'],
+				action : action,
+				scope : me,
+				handler : me.uploadFile
+			}]
+		});
+	},
+
+	getCodeGrid : function(title, store, grouping)
+	{
+		var me = this;
+		return Ext.create('Ext.grid.Panel',
+		{
+			title : title,
+			store : store,
+			region : 'west',
+			width : 500,
+			margin : '5 0 5 0',
+			padding : 0,
+			split : true,
+			columns : me.getDefaultColumns(),
+			listeners :
+			{
+				scope : me,
+				itemdblclick : me.onCodeDblClick
+			},
+			features : grouping ? [
+			{
+				ftype : 'grouping'
+			}] : []
 		});
 
-
 	},
 
-	getDefaultColumns: function() {
+	getDefaultColumns : function()
+	{
 		return [
-			{
-				header   : i18n['date'],
-				dataIndex: 'date',
-				width    : 98
-			},
-			{
-				header   : i18n['version'],
-				dataIndex: 'version',
-				width    : 98
-			},
-			{
-				header   : i18n['file'],
-				dataIndex: 'basename',
-				width    : 300
-			}
-		];
+		{
+			header : i18n['date'],
+			dataIndex : 'date',
+			width : 98
+		},
+		{
+			header : i18n['version'],
+			dataIndex : 'version',
+			width : 98
+		},
+		{
+			header : i18n['file'],
+			dataIndex : 'basename',
+			width : 300
+		}];
 	},
 
-	getInstallationDetails: function(action) {
-		if(action == 'ICD9') {
-			return '<p>Steps to install the ICD 9 database:</p>' +
-				'<ol>' +
-				'<li>The raw data feed release can be obtained from <a href="https://www.cms.gov/Medicare/Coding/ICD9ProviderDiagnosticCodes/codes.html">this location</a></li>' +
-				'<li>Upload the downloaded .zip file, or place the downloaded ICD 9 database zip file into the following directory: contrib/icd9</li>' +
-				'<li>Double Click the zip file from the "Available ICD9 Data" grid to install</li>' +
-				'</ol>' +
-				'<p style="color:red">NOTE: Importing external data can take more than an hour depending on your hardware configuration. For example, one of the RxNorm data tables contain in excess of 6 million rows.</p>'
-		} else if(action == 'ICD10') {
-			return '<p>Steps to install the ICD 10 database:</p>' +
-				'<ol>' +
-				'<li>The raw data feed release can be obtained from <a href="https://www.cms.gov/Medicare/Coding/ICD10">this location</a></li>' +
-				'<li>Upload the downloaded .zip file, or place the downloaded ICD 10 database zip files into the following directory: contrib/icd10</li>' +
-				'<li>Double Click the zip file from the "Available ICD10 Data" grid to install</li>' +
-				'</ol>' +
-				'<p>These are the ICD10 2012 links:</p>' +
-				'<ol>' +
-				'<li><a href="https://www.cms.gov/Medicare/Coding/ICD10/Downloads/DiagnosisGEMs_2012.zip">DiagnosisGEMs_2012</a></li>' +
-				'<li><a href="https://www.cms.gov/Medicare/Coding/ICD10/Downloads/ProcedureGEMs_2012.zip">ProcedureGEMs_2012</a></li>' +
-				'<li><a href="https://www.cms.gov/Medicare/Coding/ICD10/Downloads/ReimbursementMapping_2012.zip">ReimbursementMapping_2012</a></li>' +
-				'<li><a href="https://www.cms.gov/Medicare/Coding/ICD10/Downloads/2012_PCS_long_and_abbreviated_titles.zip">2012_PCS_long_and_abbreviated_titles</a></li>' +
-				'<li><a href="https://www.cms.gov/Medicare/Coding/ICD10/Downloads/ICD10OrderFiles_2012.zip">ICD10OrderFiles_2012</a></li>' +
-				'</ol>' +
-				'<p style="color:red">NOTE: Importing external data can take more than an hour depending on your hardware configuration. For example, one of the RxNorm data tables contain in excess of 6 million rows.</p>'
-			} else if(action == 'RXNORM') {
-			return '<p>Steps to install the RxNorm database:</p>' +
-				'<ol>' +
-				'<li>The first step is to open an account with the Unified Medical Language System web site <a href="https://utslogin.nlm.nih.gov/cas/login">here</a></li>' +
-				'<li>Then the raw data feed release can be obtained from <a href="http://www.nlm.nih.gov/research/umls/rxnorm/docs/rxnormfiles.html">this location</a></li>' +
-				'<li>Upload the downloaded .zip file, or place the downloaded RxNorm database zip file into the following directory: contrib/rxnorm.</li>' +
-				'<li>Double Click the zip file from the "Available RxNorm Data" grid to install</li>' +
-				'</ol>' +
-				'<p style="color:red">NOTE: Only the full monthly RxNorm release is currently supported</p>'
-			} else if(action == 'SNOMED') {
-			return 'Lorem ipsum dolor sit amet, porta nam suscipit sed id, ' +
-				'vestibulum velit tortor velit viverra, non enim justo, ' +
-				'purus nec, libero sociis lobortis, eu et leo mauris velit. ' +
-				'Magnis tellus blandit fringilla, morbi mauris commodo, nec morbi ac non'
+	getInstallationDetails : function(action)
+	{
+		if (action == 'ICD9')
+		{
+			return '<p>Steps to install the ICD 9 database:</p>' + '<ol>' + '<li>The raw data feed release can be obtained from <a href="https://www.cms.gov/Medicare/Coding/ICD9ProviderDiagnosticCodes/codes.html">this location</a></li>' + '<li>Upload the downloaded .zip file, or place the downloaded ICD 9 database zip file into the following directory: contrib/icd9</li>' + '<li>Double Click the zip file from the "Available ICD9 Data" grid to install</li>' + '</ol>' + '<p style="color:red">NOTE: Importing external data can take more than an hour depending on your hardware configuration. For example, one of the RxNorm data tables contain in excess of 6 million rows.</p>'
+		}
+		else
+		if (action == 'ICD10')
+		{
+			return '<p>Steps to install the ICD 10 database:</p>' + '<ol>' + '<li>The raw data feed release can be obtained from <a href="https://www.cms.gov/Medicare/Coding/ICD10">this location</a></li>' + '<li>Upload the downloaded .zip file, or place the downloaded ICD 10 database zip files into the following directory: contrib/icd10</li>' + '<li>Double Click the zip file from the "Available ICD10 Data" grid to install</li>' + '</ol>' + '<p>These are the ICD10 2012 links:</p>' + '<ol>' + '<li><a href="https://www.cms.gov/Medicare/Coding/ICD10/Downloads/DiagnosisGEMs_2012.zip">DiagnosisGEMs_2012</a></li>' + '<li><a href="https://www.cms.gov/Medicare/Coding/ICD10/Downloads/ProcedureGEMs_2012.zip">ProcedureGEMs_2012</a></li>' + '<li><a href="https://www.cms.gov/Medicare/Coding/ICD10/Downloads/ReimbursementMapping_2012.zip">ReimbursementMapping_2012</a></li>' + '<li><a href="https://www.cms.gov/Medicare/Coding/ICD10/Downloads/2012_PCS_long_and_abbreviated_titles.zip">2012_PCS_long_and_abbreviated_titles</a></li>' + '<li><a href="https://www.cms.gov/Medicare/Coding/ICD10/Downloads/ICD10OrderFiles_2012.zip">ICD10OrderFiles_2012</a></li>' + '</ol>' + '<p style="color:red">NOTE: Importing external data can take more than an hour depending on your hardware configuration. For example, one of the RxNorm data tables contain in excess of 6 million rows.</p>'
+		}
+		else
+		if (action == 'RXNORM')
+		{
+			return '<p>Steps to install the RxNorm database:</p>' + '<ol>' + '<li>The first step is to open an account with the Unified Medical Language System web site <a href="https://utslogin.nlm.nih.gov/cas/login">here</a></li>' + '<li>Then the raw data feed release can be obtained from <a href="http://www.nlm.nih.gov/research/umls/rxnorm/docs/rxnormfiles.html">this location</a></li>' + '<li>Upload the downloaded .zip file, or place the downloaded RxNorm database zip file into the following directory: contrib/rxnorm.</li>' + '<li>Double Click the zip file from the "Available RxNorm Data" grid to install</li>' + '</ol>' + '<p style="color:red">NOTE: Only the full monthly RxNorm release is currently supported</p>'
+		}
+		else
+		if (action == 'SNOMED')
+		{
+			return 'Lorem ipsum dolor sit amet, porta nam suscipit sed id, ' + 'vestibulum velit tortor velit viverra, non enim justo, ' + 'purus nec, libero sociis lobortis, eu et leo mauris velit. ' + 'Magnis tellus blandit fringilla, morbi mauris commodo, nec morbi ac non'
 		}
 
 	},
 
-	uploadFile: function(btn) {
-		var me = this,
-			form = btn.up('form').getForm();
+	uploadFile : function(btn)
+	{
+		var me = this, form = btn.up('form').getForm();
 
-		if(form.isValid()) {
-			form.submit({
-				waitMsg: i18n['uploading_and_updating_code_database'] + '...',
-				scope  : me,
-				params : {
-					codeType: btn.action
+		if (form.isValid())
+		{
+			form.submit(
+			{
+				waitMsg : i18n['uploading_and_updating_code_database'] + '...',
+				scope : me,
+				params :
+				{
+					codeType : btn.action
 				},
-				success: function(fp, o) {
+				success : function(fp, o)
+				{
 					say(o.result);
 				},
-				failure: function(fp, o) {
+				failure : function(fp, o)
+				{
 					say(o.result);
 				}
 			});
 		}
 	},
 
-	onCodeDblClick:function(grid, record){
+	onCodeDblClick : function(grid, record)
+	{
 		var me = this;
 		app.setTask(false);
-		grid.el.mask( i18n['installing_database_please_wait'] + '...');
-        ExternalDataUpdate.updateCodes(record.data, function(provider, response){
+		grid.el.mask(i18n['installing_database_please_wait'] + '...');
+		ExternalDataUpdate.updateCodes(record.data, function(provider, response)
+		{
 			grid.el.unmask();
-			if(response.result.success){
+			if (response.result.success)
+			{
 				me.setCurrentCodesInfo();
 				me.alert(i18n['new_database_installed'], 'info');
-			}else{
+			}
+			else
+			{
 				me.alert(response.result.error, 'error');
 			}
 			app.setTask(true);
 		});
 	},
 
-	setCurrentCodesInfo:function(){
-		var me = this,
-			codes,
-			fieldset;
-        ExternalDataUpdate.getCurrentCodesInfo(function(provider, response){
+	setCurrentCodesInfo : function()
+	{
+		var me = this, codes, fieldset;
+		ExternalDataUpdate.getCurrentCodesInfo(function(provider, response)
+		{
 			codes = response.result;
-			for(var i=0; i < codes.length; i++){
-				if(codes[i].data !== false){
+			for (var i = 0; i < codes.length; i++)
+			{
+				if (codes[i].data !== false)
+				{
 					fieldset = me.query('fieldset[action="'+codes[i].data.codeType+'"]')[0];
 					fieldset.update(codes[i].data);
 				}
@@ -41429,10 +43615,18 @@ Ext.define('App.view.administration.ExternalDataLoads', {
 		});
 	},
 
-	loadStores: function() {
+	loadStores : function()
+	{
 		var me = this;
-		for(var i = 0; i < me.stores.length; i++) {
-			me.stores[i].load({params: {pid: me.pid}});
+		for (var i = 0; i < me.stores.length; i++)
+		{
+			me.stores[i].load(
+			{
+				params :
+				{
+					pid : me.pid
+				}
+			});
 		}
 	},
 
@@ -41442,12 +43636,14 @@ Ext.define('App.view.administration.ExternalDataLoads', {
 	 * place inside this function all the functions you want
 	 * to call every this panel becomes active
 	 */
-	onActive: function(callback) {
+	onActive : function(callback)
+	{
 		this.loadStores();
 		this.setCurrentCodesInfo();
 		callback(true);
 	}
-}); //ens servicesPage class
+});
+//ens servicesPage class
 /**
  * Users.ejs.php
  * Description: Users Screen
@@ -41463,67 +43659,153 @@ Ext.define('App.view.administration.ExternalDataLoads', {
  * @namespace User.updateUser
  * @namespace User.chechPasswordHistory
  */
-Ext.define('App.view.administration.Users', {
-	extend       : 'App.classes.RenderPanel',
-	id           : 'panelUsers',
-	pageTitle    : i18n['users'],
-	uses         : [
-		'App.classes.GridPanel'
-	],
-	initComponent: function() {
+Ext.define('App.view.administration.Users',
+{
+	extend : 'App.classes.RenderPanel',
+	id : 'panelUsers',
+	pageTitle : i18n['users'],
+	uses : ['App.classes.GridPanel'],
+	initComponent : function()
+	{
 
 		var me = this;
 
-		Ext.define('UserModel', {
-			extend: 'Ext.data.Model',
-			fields: [
-				{name: 'id', type: 'int'},
-				{name: 'username', type: 'string'},
-				{name: 'password', type: 'auto'},
-				{name: 'authorized', type: 'bool'},
-				{name: 'active', type: 'bool'},
-				{name: 'info', type: 'string'},
-				{name: 'source', type: 'int'},
-				{name: 'fname', type: 'string'},
-				{name: 'mname', type: 'string'},
-				{name: 'lname', type: 'string'},
-				{name: 'fullname', type: 'string'},
-				{name: 'federaltaxid', type: 'string'},
-				{name: 'federaldrugid', type: 'string'},
-				{name: 'upin', type: 'string'},
-				{name: 'facility_id', type: 'int'},
-				{name: 'see_auth', type: 'bool'},
-				{name: 'active', type: 'bool'},
-				{name: 'npi', type: 'string'},
-				{name: 'title', type: 'string'},
-				{name: 'specialty', type: 'string'},
-				{name: 'cal_ui', type: 'string'},
-				{name: 'taxonomy', type: 'string'},
-				{name: 'calendar', type: 'bool'},
-				{name: 'abook_type', type: 'string'},
-				{name: 'default_warehouse', type: 'string'},
-				{name: 'role_id', type: 'int'}
-			]
+		Ext.define('UserModel',
+		{
+			extend : 'Ext.data.Model',
+			fields : [
+			{
+				name : 'id',
+				type : 'int'
+			},
+			{
+				name : 'username',
+				type : 'string'
+			},
+			{
+				name : 'password',
+				type : 'auto'
+			},
+			{
+				name : 'authorized',
+				type : 'bool'
+			},
+			{
+				name : 'active',
+				type : 'bool'
+			},
+			{
+				name : 'info',
+				type : 'string'
+			},
+			{
+				name : 'source',
+				type : 'int'
+			},
+			{
+				name : 'fname',
+				type : 'string'
+			},
+			{
+				name : 'mname',
+				type : 'string'
+			},
+			{
+				name : 'lname',
+				type : 'string'
+			},
+			{
+				name : 'fullname',
+				type : 'string'
+			},
+			{
+				name : 'federaltaxid',
+				type : 'string'
+			},
+			{
+				name : 'federaldrugid',
+				type : 'string'
+			},
+			{
+				name : 'upin',
+				type : 'string'
+			},
+			{
+				name : 'facility_id',
+				type : 'int'
+			},
+			{
+				name : 'see_auth',
+				type : 'bool'
+			},
+			{
+				name : 'active',
+				type : 'bool'
+			},
+			{
+				name : 'npi',
+				type : 'string'
+			},
+			{
+				name : 'title',
+				type : 'string'
+			},
+			{
+				name : 'specialty',
+				type : 'string'
+			},
+			{
+				name : 'cal_ui',
+				type : 'string'
+			},
+			{
+				name : 'taxonomy',
+				type : 'string'
+			},
+			{
+				name : 'calendar',
+				type : 'bool'
+			},
+			{
+				name : 'abook_type',
+				type : 'string'
+			},
+			{
+				name : 'default_warehouse',
+				type : 'string'
+			},
+			{
+				name : 'role_id',
+				type : 'int'
+			}]
 
 		});
 
-		me.userStore = Ext.create('Ext.data.Store', {
-			model   : 'UserModel',
-			proxy   : {
-				type: 'direct',
-				api : {
-					read  : User.getUsers,
-					create: User.addUser,
-					update: User.updateUser
+		me.userStore = Ext.create('Ext.data.Store',
+		{
+			model : 'UserModel',
+			proxy :
+			{
+				type : 'direct',
+				api :
+				{
+					read : User.getUsers,
+					create : User.addUser,
+					update : User.updateUser
 				}
 			},
-			autoLoad: false
+			autoLoad : false
 		});
 
-		function authCk(val) {
-			if(val == '1') {
+		function authCk(val)
+		{
+			if (val == '1')
+			{
 				return '<img src="resources/images/icons/yes.gif" />';
-			} else if(val == '0') {
+			}
+			else
+			if (val == '0')
+			{
 				return '<img src="resources/images/icons/no.gif" />';
 			}
 			return val;
@@ -41532,228 +43814,440 @@ Ext.define('App.view.administration.Users', {
 		// *************************************************************************************
 		// Create the GridPanel
 		// *************************************************************************************
-		me.userGrid = Ext.create('App.classes.GridPanel', {
-			store      : me.userStore,
-			columns    : [
-				{ text: 'id', sortable: false, dataIndex: 'id', hidden: true},
-				{ width: 100, text: i18n['username'], sortable: true, dataIndex: 'username' },
-				{ width: 200, text: i18n['name'], sortable: true, dataIndex: 'fullname' },
-				{ flex: 1, text: i18n['aditional_info'], sortable: true, dataIndex: 'info' },
-				{ text: i18n['active'], sortable: true, dataIndex: 'active', renderer: authCk },
-				{ text: i18n['authorized'], sortable: true, dataIndex: 'authorized', renderer: authCk },
-				{ text: i18n['calendar_q'], sortable: true, dataIndex: 'calendar', renderer: authCk }
-			],
-			listeners  : {
-				scope       : me,
-				itemdblclick: function(view, record) {
+		me.userGrid = Ext.create('App.classes.GridPanel',
+		{
+			store : me.userStore,
+			columns : [
+			{
+				text : 'id',
+				sortable : false,
+				dataIndex : 'id',
+				hidden : true
+			},
+			{
+				width : 100,
+				text : i18n['username'],
+				sortable : true,
+				dataIndex : 'username'
+			},
+			{
+				width : 200,
+				text : i18n['name'],
+				sortable : true,
+				dataIndex : 'fullname'
+			},
+			{
+				flex : 1,
+				text : i18n['aditional_info'],
+				sortable : true,
+				dataIndex : 'info'
+			},
+			{
+				text : i18n['active'],
+				sortable : true,
+				dataIndex : 'active',
+				renderer : authCk
+			},
+			{
+				text : i18n['authorized'],
+				sortable : true,
+				dataIndex : 'authorized',
+				renderer : authCk
+			},
+			{
+				text : i18n['calendar_q'],
+				sortable : true,
+				dataIndex : 'calendar',
+				renderer : authCk
+			}],
+			listeners :
+			{
+				scope : me,
+				itemdblclick : function(view, record)
+				{
 					me.onItemdblclick(me.userStore, record, i18n['edit_user']);
 				}
 			},
-			dockedItems: [
+			dockedItems : [
+			{
+				xtype : 'toolbar',
+				dock : 'top',
+				items : [
 				{
-					xtype: 'toolbar',
-					dock : 'top',
-					items: [
-						{
-							xtype  : 'button',
-							text   : i18n['add_new_user'],
-							iconCls: 'save',
-							handler: function() {
-								var form = me.win.down('form');
-								me.onNew(form, 'UserModel', i18n['add_new_user']);
-							}
-						}
-					]
-				}
-			]
+					xtype : 'button',
+					text : i18n['add_new_user'],
+					iconCls : 'save',
+					handler : function()
+					{
+						var form = me.win.down('form');
+						me.onNew(form, 'UserModel', i18n['add_new_user']);
+					}
+				}]
+			}]
 		});
 
 		// *************************************************************************************
 		// Window User Form
 		// *************************************************************************************
-		me.win = Ext.create('App.classes.window.Window', {
-			width    : 600,
-			items    : [
+		me.win = Ext.create('App.classes.window.Window',
+		{
+			width : 600,
+			items : [
+			{
+				xtype : 'mitos.form',
+				fieldDefaults :
 				{
-					xtype        : 'mitos.form',
-					fieldDefaults: { msgTarget: 'side', labelWidth: 100 },
-					defaultType  : 'textfield',
-					//hideLabels      : true,
-					defaults     : { labelWidth: 89, anchor: '100%',
-						layout: { type: 'hbox', defaultMargins: {top: 0, right: 5, bottom: 0, left: 0} }
-					},
-					items        : [
-						{
-							xtype : 'textfield',
-							hidden: true, name: 'id'
-						},
-						{
-							xtype    : 'fieldcontainer',
-							defaults : { hideLabel: true },
-							msgTarget: 'under',
-							items    : [
-								{ width: 100, xtype: 'displayfield', value: i18n['username'] + ': '},
-								{ width: 100, xtype: 'textfield', name: 'username', allowBlank:false },
-								{ width: 100, xtype: 'displayfield', value: i18n['password'] + ': '},
-								{ width: 105, xtype: 'textfield', name: 'password', inputType: 'password' }
-							]
-						},
-						{
-							xtype    : 'fieldcontainer',
-							defaults : { hideLabel: true },
-							msgTarget: 'under',
-							items    : [
-								{ width: 100, xtype: 'displayfield', value: i18n['first_middle_last'] },
-								{ width: 50, xtype: 'mitos.titlescombo', name: 'title' },
-								{ width: 80, xtype: 'textfield', name: 'fname', allowBlank:false },
-								{ width: 65, xtype: 'textfield', name: 'mname' },
-								{ width: 105, xtype: 'textfield', name: 'lname' }
-							]
-						},
-						{
-							xtype    : 'fieldcontainer',
-							msgTarget: 'under',
-							items    : [
-								{ width: 150, xtype: 'mitos.checkbox', fieldLabel: i18n['active'], name: 'active' },
-								{ width: 150, xtype: 'mitos.checkbox', fieldLabel: i18n['authorized'], name: 'authorized' },
-								{ width: 150, xtype: 'mitos.checkbox', fieldLabel: i18n['calendar_q'], name: 'calendar' }
-							]
-						},
-						{
-							xtype    : 'fieldcontainer',
-							defaults : { hideLabel: true },
-							msgTarget: 'under',
-							items    : [
-								{ width: 100, xtype: 'displayfield', value: i18n['default_facility'] + ': '},
-								{ width: 100, xtype: 'mitos.facilitiescombo', name: 'facility_id' },
-								{ width: 100, xtype: 'displayfield', value: i18n['authorizations'] + ': '},
-								{ width: 105, xtype: 'mitos.authorizationscombo', name: 'see_auth' }
-							]
-						},
-						{
-							xtype   : 'fieldcontainer',
-							defaults: { hideLabel: true },
-							items   : [
-								{ width: 100, xtype: 'displayfield', value: i18n['access_control'] + ': '},
-								{ width: 100, xtype: 'mitos.rolescombo', name: 'role_id', allowBlank:false },
-								// not implemented yet
-								{ width: 100, xtype: 'displayfield', value: i18n['taxonomy'] + ': '},
-								{ width: 105, xtype: 'textfield', name: 'taxonomy' }
-							]
-						},
-						{
-							xtype   : 'fieldcontainer',
-							defaults: { hideLabel: true },
-							items   : [
-								{ width: 100, xtype: 'displayfield', value: i18n['federal_tax_id'] + ': '},
-								{ width: 100, xtype: 'textfield', name: 'federaltaxid' },
-								{ width: 100, xtype: 'displayfield', value: i18n['fed_drug_id'] + ': '},
-								{ width: 105, xtype: 'textfield', name: 'federaldrugid' }
-							]
-						},
-						{
-							xtype   : 'fieldcontainer',
-							defaults: { hideLabel: true },
-							items   : [
-								{ width: 100, xtype: 'displayfield', value: i18n['upin'] + ': '},
-								{ width: 100, xtype: 'textfield', name: 'upin' },
-								{ width: 100, xtype: 'displayfield', value: i18n['npi'] + ': '},
-								{ width: 105, xtype: 'textfield', name: 'npi' }
-							]
-						},
-						{
-							xtype   : 'fieldcontainer',
-							defaults: { hideLabel: true },
-							items   : [
-								{ width: 100, xtype: 'displayfield', value: i18n['job_description'] + ': '},
-								{ width: 315, xtype: 'textfield', name: 'specialty' }
-							]
-						},
-						{
-							width    : 410,
-							height   : 50,
-							xtype    : 'textfield',
-							name     : 'info',
-							emptyText: i18n['additional_info']
-						}
-					]
-				}
-			],
-			buttons  : [
+					msgTarget : 'side',
+					labelWidth : 100
+				},
+				defaultType : 'textfield',
+				//hideLabels      : true,
+				defaults :
 				{
-					text   : i18n['save'],
-					cls    : 'winSave',
-					handler: function() {
-						var form = me.win.down('form').getForm();
-						if(form.isValid()) {
-							me.onSave(form, me.userStore);
-
+					labelWidth : 89,
+					anchor : '100%',
+					layout :
+					{
+						type : 'hbox',
+						defaultMargins :
+						{
+							top : 0,
+							right : 5,
+							bottom : 0,
+							left : 0
 						}
 					}
 				},
-				'-',
+				items : [
 				{
-					text   : i18n['cancel'],
-					scope  : me,
-					handler: function(btn) {
-						btn.up('window').close();
+					xtype : 'textfield',
+					hidden : true,
+					name : 'id'
+				},
+				{
+					xtype : 'fieldcontainer',
+					defaults :
+					{
+						hideLabel : true
+					},
+					msgTarget : 'under',
+					items : [
+					{
+						width : 100,
+						xtype : 'displayfield',
+						value : i18n['username'] + ': '
+					},
+					{
+						width : 100,
+						xtype : 'textfield',
+						name : 'username',
+						allowBlank : false
+					},
+					{
+						width : 100,
+						xtype : 'displayfield',
+						value : i18n['password'] + ': '
+					},
+					{
+						width : 105,
+						xtype : 'textfield',
+						name : 'password',
+						inputType : 'password'
+					}]
+				},
+				{
+					xtype : 'fieldcontainer',
+					defaults :
+					{
+						hideLabel : true
+					},
+					msgTarget : 'under',
+					items : [
+					{
+						width : 100,
+						xtype : 'displayfield',
+						value : i18n['first_middle_last']
+					},
+					{
+						width : 50,
+						xtype : 'mitos.titlescombo',
+						name : 'title'
+					},
+					{
+						width : 80,
+						xtype : 'textfield',
+						name : 'fname',
+						allowBlank : false
+					},
+					{
+						width : 65,
+						xtype : 'textfield',
+						name : 'mname'
+					},
+					{
+						width : 105,
+						xtype : 'textfield',
+						name : 'lname'
+					}]
+				},
+				{
+					xtype : 'fieldcontainer',
+					msgTarget : 'under',
+					items : [
+					{
+						width : 150,
+						xtype : 'mitos.checkbox',
+						fieldLabel : i18n['active'],
+						name : 'active'
+					},
+					{
+						width : 150,
+						xtype : 'mitos.checkbox',
+						fieldLabel : i18n['authorized'],
+						name : 'authorized'
+					},
+					{
+						width : 150,
+						xtype : 'mitos.checkbox',
+						fieldLabel : i18n['calendar_q'],
+						name : 'calendar'
+					}]
+				},
+				{
+					xtype : 'fieldcontainer',
+					defaults :
+					{
+						hideLabel : true
+					},
+					msgTarget : 'under',
+					items : [
+					{
+						width : 100,
+						xtype : 'displayfield',
+						value : i18n['default_facility'] + ': '
+					},
+					{
+						width : 100,
+						xtype : 'mitos.facilitiescombo',
+						name : 'facility_id'
+					},
+					{
+						width : 100,
+						xtype : 'displayfield',
+						value : i18n['authorizations'] + ': '
+					},
+					{
+						width : 105,
+						xtype : 'mitos.authorizationscombo',
+						name : 'see_auth'
+					}]
+				},
+				{
+					xtype : 'fieldcontainer',
+					defaults :
+					{
+						hideLabel : true
+					},
+					items : [
+					{
+						width : 100,
+						xtype : 'displayfield',
+						value : i18n['access_control'] + ': '
+					},
+					{
+						width : 100,
+						xtype : 'mitos.rolescombo',
+						name : 'role_id',
+						allowBlank : false
+					},
+					// not implemented yet
+					{
+						width : 100,
+						xtype : 'displayfield',
+						value : i18n['taxonomy'] + ': '
+					},
+					{
+						width : 105,
+						xtype : 'textfield',
+						name : 'taxonomy'
+					}]
+				},
+				{
+					xtype : 'fieldcontainer',
+					defaults :
+					{
+						hideLabel : true
+					},
+					items : [
+					{
+						width : 100,
+						xtype : 'displayfield',
+						value : i18n['federal_tax_id'] + ': '
+					},
+					{
+						width : 100,
+						xtype : 'textfield',
+						name : 'federaltaxid'
+					},
+					{
+						width : 100,
+						xtype : 'displayfield',
+						value : i18n['fed_drug_id'] + ': '
+					},
+					{
+						width : 105,
+						xtype : 'textfield',
+						name : 'federaldrugid'
+					}]
+				},
+				{
+					xtype : 'fieldcontainer',
+					defaults :
+					{
+						hideLabel : true
+					},
+					items : [
+					{
+						width : 100,
+						xtype : 'displayfield',
+						value : i18n['upin'] + ': '
+					},
+					{
+						width : 100,
+						xtype : 'textfield',
+						name : 'upin'
+					},
+					{
+						width : 100,
+						xtype : 'displayfield',
+						value : i18n['npi'] + ': '
+					},
+					{
+						width : 105,
+						xtype : 'textfield',
+						name : 'npi'
+					}]
+				},
+				{
+					xtype : 'fieldcontainer',
+					defaults :
+					{
+						hideLabel : true
+					},
+					items : [
+					{
+						width : 100,
+						xtype : 'displayfield',
+						value : i18n['job_description'] + ': '
+					},
+					{
+						width : 315,
+						xtype : 'textfield',
+						name : 'specialty'
+					}]
+				},
+				{
+					width : 410,
+					height : 50,
+					xtype : 'textfield',
+					name : 'info',
+					emptyText : i18n['additional_info']
+				}]
+			}],
+			buttons : [
+			{
+				text : i18n['save'],
+				cls : 'winSave',
+				handler : function()
+				{
+					var form = me.win.down('form').getForm();
+					if (form.isValid())
+					{
+						me.onSave(form, me.userStore);
+
 					}
 				}
-			],
-			listeners: {
-				scope: me,
-				close: function() {
+			}, '-',
+			{
+				text : i18n['cancel'],
+				scope : me,
+				handler : function(btn)
+				{
+					btn.up('window').close();
+				}
+			}],
+			listeners :
+			{
+				scope : me,
+				close : function()
+				{
 					me.action('close');
 				}
 			}
-		}); // END WINDOW
-		me.pageBody = [ me.userGrid ];
+		});
+		// END WINDOW
+		me.pageBody = [me.userGrid];
 		me.callParent(arguments);
 	}, // end of initComponent
 
-	onNew: function(form, model, title) {
+	onNew : function(form, model, title)
+	{
 		this.setForm(form, title);
 		form.getForm().reset();
-		var newModel = Ext.ModelManager.create({}, model);
+		var newModel = Ext.ModelManager.create(
+		{
+		}, model);
 		form.getForm().loadRecord(newModel);
 		this.action('new');
 		this.win.show();
 	},
 
-	onSave: function(form, store) {
-		var me = this,
-			password = form.findField('password').getValue(),
-			id = form.findField('id').getValue();
+	onSave : function(form, store)
+	{
+		var me = this, password = form.findField('password').getValue(), id = form.findField('id').getValue();
 
-		if(password != '') {
-			User.chechPasswordHistory({password: password, id: id}, function(provider, response) {
-				if(response.result.error) {
+		if (password != '')
+		{
+			User.chechPasswordHistory(
+			{
+				password : password,
+				id : id
+			}, function(provider, response)
+			{
+				if (response.result.error)
+				{
 					Ext.Msg.alert('Opps!', i18n['password_currently_used']);
-				} else {
+				}
+				else
+				{
 					me.saveUser(form, store);
 				}
 			});
-		} else {
+		}
+		else
+		{
 			me.saveUser(form, store);
 		}
 
 	},
 
-	saveUser: function(form, store) {
-		var record = form.getRecord(),
-			values = form.getValues(),
-			storeIndex = store.indexOf(record);
-		if(storeIndex == -1) {
+	saveUser : function(form, store)
+	{
+		var record = form.getRecord(), values = form.getValues(), storeIndex = store.indexOf(record);
+		if (storeIndex == -1)
+		{
 			store.add(values);
-		} else {
+		}
+		else
+		{
 			record.set(values);
 		}
 		store.sync();
 		this.win.close();
 	},
 
-
-	onItemdblclick: function(store, record, title) {
+	onItemdblclick : function(store, record, title)
+	{
 		var form = this.win.down('form');
 		this.setForm(form, title);
 		form.getForm().loadRecord(record);
@@ -41761,19 +44255,22 @@ Ext.define('App.view.administration.Users', {
 		this.win.show();
 	},
 
-	setForm: function(form, title) {
+	setForm : function(form, title)
+	{
 		form.up('window').setTitle(title);
 	},
 
-	openWin: function() {
+	openWin : function()
+	{
 		this.win.show();
 	},
 
-	action: function(action) {
-		var win = this.win,
-			form = win.down('form');
+	action : function(action)
+	{
+		var win = this.win, form = win.down('form');
 
-		if(action == 'close') {
+		if (action == 'close')
+		{
 			form.getForm().reset();
 		}
 	},
@@ -41784,11 +44281,13 @@ Ext.define('App.view.administration.Users', {
 	 * place inside this function all the functions you want
 	 * to call every this panel becomes active
 	 */
-	onActive: function(callback) {
+	onActive : function(callback)
+	{
 		this.userStore.load();
 		callback(true);
 	}
-}); //ens UserPage class
+});
+//ens UserPage class
 /**
  * AddressBook Panel
  *
@@ -43174,136 +45673,148 @@ Ext.define('App.view.signature.SignatureWindow', {
 
 
 });
-Ext.define('Modules.Module', {
-    extend:'Ext.Component',
-    constructor:function(){
-        var me = this;
+Ext.define('Modules.Module',
+{
+	extend : 'Ext.Component',
+	constructor : function()
+	{
+		var me = this;
+		me.callParent();
+	},
 
-        me.callParent();
-    },
+	/**
+	 * @param panel
+	 */
+	addAppPanel : function(panel)
+	{
+		app.MainPanel.add(panel);
+	},
 
-    /**
-     * @param panel
-     */
-    addAppPanel:function(panel)
-    {
-        app.MainPanel.add(panel);
-    },
+	/**
+	 * @param item
+	 */
+	addHeaderItem : function(item)
+	{
+		app.Header.add(item);
+	},
 
-    /**
-     * @param item
-     */
-    addHeaderItem:function(item)
-    {
-        app.Header.add(item);
-    },
+	/**
+	 * @param parentId
+	 * @param node
+	 *
+	 * Desc: Method to add items to the navigation tree.
+	 *
+	 */
+	addNavigationNodes : function(parentId, node)
+	{
+		var parent;
+		if (parentId == 'root' || parentId == null)
+		{
+			parent = app.storeTree.tree.getRootNode();
+		}
+		else
+		{
+			parent = app.storeTree.tree.getNodeById(parentId);
+		}
 
-    /**
-     * @param parentId
-     * @param node
-     * 
-     * Desc: Method to add items to the navigation tree.
-     * 
-     */
-    addNavigationNodes:function(parentId, node)
-    {
-        var parent;
-        if(parentId == 'root' || parentId == null){
-            parent = app.storeTree.tree.getRootNode();
-        }else{
-            parent = app.storeTree.tree.getNodeById(parentId);
-        }
+		var firstChildNode = parent.findChildBy(function(node)
+		{
+			return node.hasChildNodes();
+		});
 
-        var firstChildNode = parent.findChildBy(function(node){
-            return node.hasChildNodes();
-        });
+		if (Ext.isArray(node))
+		{
+			for (var i = 0; i < node.length; i++)
+				parent.insertBefore(node[i], firstChildNode);
+		}
+		else
+		{
+			parent.insertBefore(node, firstChildNode);
+		}
 
-        if(Ext.isArray(node)){
-            for(var i=0; i < node.length; i++) parent.insertBefore(node[i], firstChildNode);
-        }else{
-            parent.insertBefore(node, firstChildNode);
-        }
+	},
 
+	addLanguages : function(languages)
+	{
 
-    },
-
-    addLanguages:function(languages){
-
-    }
-
-});
- /*
+	}
+}); 
+/*
  * -----------------------------------------------------------------------------------------------------------
  * brief: Viewport.js (CORE)
- * ----------------------------------------------------------------------------------------------------------- 
+ * -----------------------------------------------------------------------------------------------------------
  * Description: This are the viewport, the absolute panel of GaiaEHR application
  * this will manage all the panels on the application, this file should not
  * be modified unless you know what you doing :-)
- * 
+ *
  * Third-party companies: If you want to add a extra app's, widgets, modules, or another other improvement
  * to the application you should create it using the documentation on How To Create (Modules, PlugIns, and Widgets)
  * All other things are going to the CORE of the application.
- * 
+ *
  * Remember this is a BETA software, all the structure are subject to change.
  * When the software are more mature, we will maintain the API and CORE for a LTS version (Long Term Support).
- * 
+ *
  * Enjoy the application!
- * 
+ *
  */
-Ext.define('App.view.Viewport', {
-	extend  : 'Ext.Viewport',
-    // app settings
-    requires: window.requires,      // array is defined on _app.php
-    user: window.user,              // array defined on _app.php
-    version: window.version,        // string defined on _app.php
-	minWidthToFullMode: 1585,       // full mode = nav expanded
-	currency: '$',                  // currency used
-    activityMonitorInterval: 60,    // in seconds - interval to check for mouse and keyboard activity
-    activityMonitorMaxInactive: 10, // in minutes - Maximum time application can be inactive (no mouse or keyboard inputt)
-    cronTaskInterval:3,             // in seconds - interval to run me.cronTask (check PHP session, refresh Patient Pool Areas, and PHP Cron Job)
-    // end app settings
-	initComponent: function() 
+Ext.define('App.view.Viewport',
+{
+	extend : 'Ext.Viewport',
+	// app settings
+	requires : window.requires, // array is defined on _app.php
+	user : window.user, // array defined on _app.php
+	version : window.version, // string defined on _app.php
+	minWidthToFullMode : 1585, // full mode = nav expanded
+	currency : '$', // currency used
+	activityMonitorInterval : 60, // in seconds - interval to check for mouse and keyboard activity
+	activityMonitorMaxInactive : 10, // in minutes - Maximum time application can be inactive (no mouse or keyboard inputt)
+	cronTaskInterval : 3, // in seconds - interval to run me.cronTask (check PHP session, refresh Patient Pool Areas, and PHP Cron Job)
+	// end app settings
+	initComponent : function()
 	{
 		Ext.tip.QuickTipManager.init();
 		var me = this;
 		me.lastCardNode = null;
 		me.currCardCmp = null;
 
-        me.fullMode = window.innerWidth >= me.minWidthToFullMode;
+		me.fullMode = window.innerWidth >= me.minWidthToFullMode;
 
-        me.patient = {
-            name    : null,
-            pid     : null,
-            sex     : null,
-            dob     : null,
-            age     : null,
-            eid     : null,
-            readOnly: false
-        };
+		me.patient =
+		{
+			name : null,
+			pid : null,
+			sex : null,
+			dob : null,
+			age : null,
+			eid : null,
+			readOnly : false
+		};
 
 		/**
 		 * TaskScheduler
 		 * This will run all the procedures inside the checkSession
 		 */
-		me.cronTask = {
-			scope   : me,
-			run     : function() 
+		me.cronTask =
+		{
+			scope : me,
+			run : function()
 			{
 				me.checkSession();
 				me.getPatientsInPoolArea();
 				CronJob.run();
 			},
-			interval: me.cronTaskInterval * 1000
+			interval : me.cronTaskInterval * 1000
 		};
 
 		/*
 		 * The store for the Navigation Tree menu.
-		 */ 
+		 */
 		me.storeTree = Ext.create('App.store.navigation.Navigation',
 		{
 			autoLoad : true,
-			listeners: {
-				scope: me,
+			listeners :
+			{
+				scope : me,
 				load : me.afterNavigationLoad
 			}
 		});
@@ -43316,17 +45827,23 @@ Ext.define('App.view.Viewport', {
 		/*
 		 * TODO: this should be managed by the language files
 		 * The language file has a definition for this.
-		 */ 
-		if(me.currency == '$') 
+		 */
+		if (me.currency == '$')
 		{
 			me.icoMoney = 'icoDollar';
-		} else if(me.currency == '€') 
+		}
+		else
+		if (me.currency == '€')
 		{
 			me.icoMoney = 'icoEuro';
-		} else if(me.currency == '£') 
+		}
+		else
+		if (me.currency == '£')
 		{
 			me.icoMoney = 'icoLibra';
-		} else if(me.currency == '¥') 
+		}
+		else
+		if (me.currency == '¥')
 		{
 			me.icoMoney = 'icoYen';
 		}
@@ -43334,34 +45851,35 @@ Ext.define('App.view.Viewport', {
 		/**
 		 * GaiaEHR Support Page
 		 */
-		me.winSupport = Ext.create('Ext.window.Window', 
+		me.winSupport = Ext.create('Ext.window.Window',
 		{
-			title        : i18n['support'],
-			closeAction  : 'hide',
-			bodyStyle    : 'background-color: #ffffff; padding: 5px;',
-			animateTarget: me.Footer,
-			resizable    : false,
-			draggable    : false,
-			maximizable  : false,
-			autoScroll   : true,
-			maximized    : true,
-			dockedItems  : {
-				xtype: 'toolbar',
+			title : i18n['support'],
+			closeAction : 'hide',
+			bodyStyle : 'background-color: #ffffff; padding: 5px;',
+			animateTarget : me.Footer,
+			resizable : false,
+			draggable : false,
+			maximizable : false,
+			autoScroll : true,
+			maximized : true,
+			dockedItems :
+			{
+				xtype : 'toolbar',
 				dock : 'top',
-				items: ['-', 
+				items : ['-',
 				{
-					text   : "List issues",
-					iconCls: 'list',
+					text : "List issues",
+					iconCls : 'list',
 					action : 'http://GaiaEHR.org/projects/GaiaEHR001/issues',
-					scope  : me,
-					handler: me.showMiframe
-				}, '-', 
+					scope : me,
+					handler : me.showMiframe
+				}, '-',
 				{
-					text   : "Create an issue",
-					iconCls: 'icoAddRecord',
+					text : "Create an issue",
+					iconCls : 'icoAddRecord',
 					action : 'http://GaiaEHR.org/projects/GaiaEHR001/issues/new',
-					scope  : me,
-					handler: me.showMiframe
+					scope : me,
+					handler : me.showMiframe
 				}]
 			}
 		});
@@ -43369,312 +45887,323 @@ Ext.define('App.view.Viewport', {
 		/**
 		 * header Panel
 		 */
-		me.Header = Ext.create('Ext.container.Container', 
+		me.Header = Ext.create('Ext.container.Container',
 		{
-			region     : 'north',
-			height     : 44,
-			split      : false,
-			collapsible: false,
-			collapsed  : true,
-			frame      : false,
-			border     : false,
-			bodyStyle  : 'background: transparent',
-			margins    : '0 0 0 0'
+			region : 'north',
+			height : 44,
+			split : false,
+			collapsible : false,
+			collapsed : true,
+			frame : false,
+			border : false,
+			bodyStyle : 'background: transparent',
+			margins : '0 0 0 0'
 		});
 
-        me.patientBtn = me.Header.add({
-            xtype    : 'button',
-            scale    : 'large',
-            style    : 'float:left',
-            margin   : 0,
-            scope    : me,
-            handler  : me.openPatientSummary,
-            listeners: {
-                scope      : me,
-                afterrender: me.patientBtnRender
-            },
-            tpl      : me.patientBtnTpl()
-        });
-        me.patientOpenVisitsBtn = me.Header.add({
-            xtype  : 'button',
-            scale  : 'large',
-            style  : 'float:left',
-            margin : '0 0 0 3',
-            cls    : 'headerLargeBtn',
-            padding: 0,
-            iconCls: 'icoBackClock',
-            scope  : me,
-            handler: me.openPatientVisits,
-            tooltip: i18n['open_patient_visits_history']
-        });
-        if(acl['add_encounters']){
-            me.patientCreateEncounterBtn = me.Header.add({
-                xtype  : 'button',
-                scale  : 'large',
-                style  : 'float:left',
-                margin : '0 0 0 3',
-                cls    : 'headerLargeBtn',
-                padding: 0,
-                iconCls: 'icoClock',
-                scope  : me,
-                handler: me.createNewEncounter,
-                tooltip: i18n['create_new_encounter']
-            });
-        }
-        me.patientCloseCurrEncounterBtn = me.Header.add({
-            xtype  : 'button',
-            scale  : 'large',
-            style  : 'float:left',
-            margin : '0 0 0 3',
-            cls    : 'headerLargeBtn',
-            padding: 0,
-            iconCls: 'icoArrowDown',
-            scope  : me,
-            handler: me.stowPatientRecord,
-            tooltip: i18n['show_patient_record']
-        });
-        me.patientCheckOutBtn = me.Header.add({
-            xtype  : 'button',
-            scale  : 'large',
-            style  : 'float:left',
-            margin : '0 0 0 3',
-            cls    : 'headerLargeBtn',
-            padding: 0,
-            iconCls: 'icoCheckOut',
-            scope  : me,
-            handler: me.chargePatient,
-            tooltip: i18n['check_out_patient']
-        });
-        me.patientChargeBtn = me.Header.add({
-            xtype  : 'button',
-            scale  : 'large',
-            style  : 'float:left',
-            margin : '0 0 0 3',
-            cls    : 'headerLargeBtn',
-            padding: 0,
-            iconCls: me.icoMoney,
-            scope  : me,
-            handler: me.onPaymentEntryWindow,
-            tooltip: i18n['payment_entry']
-        });
-        me.Header.add({
-            xtype      : 'panel',
-            bodyPadding: '8 11 5 11',
-            margin     : '0 0 0 3',
-            style      : 'float:left',
-            items      : [
-                {
-                    xtype     : 'patienlivetsearch',
-                    emptyText : i18n['patient_live_search'] + '...',
-                    fieldStyle: me.fullMode ? 'width:300' : 'width:250',
-                    listeners : {
-                        scope : me,
-                        select: me.liveSearchSelect,
-                        blur  : function(combo) {
-                            combo.reset();
-                        }
-                    }
-                }
-            ]
-        });
-        me.Header.add({
-            xtype  : 'button',
-            scale  : 'large',
-            style  : 'float:left',
-            margin : '0 0 0 3',
-            padding: 4,
-            itemId : 'patientNewReset',
-            iconCls: 'icoAddPatient',
-            scope  : me,
-            handler: me.newPatient,
-            tooltip: i18n['create_a_new_patient']
-        });
-        me.Header.add({
-            xtype  : 'button',
-            scale  : 'large',
-            style  : 'float:left',
-            margin : '0 0 0 3',
-            cls    : 'headerLargeBtn emerBtn',
-            overCls: 'emerBtnOver',
-            padding: 0,
-            itemId : 'createEmergency',
-            iconCls: 'icoEmer',
-            scope  : me,
-            handler: me.createEmergency,
-            tooltip: i18n['create_new_emergency']
-        });
-        me.Header.add({
-            xtype    : 'button',
-            text     : me.user.title + ' ' + me.user.lname,
-            scale    : 'large',
-            iconCls  : 'icoDoctor',
-            iconAlign: 'left',
-            cls      : 'drButton',
-            style    : 'float:right',
-            margin   : '0 0 0 3',
-            menu     : [
-                {
-                    text   : i18n['my_account'],
-                    iconCls: 'icoArrowRight',
-                    handler: function() {
-                        me.navigateTo('panelMyAccount');
-                    }
-                },
-                {
-                    text   : i18n['my_settings'],
-                    iconCls: 'icoArrowRight',
-                    handler: function() {
-                        me.navigateTo('panelMySettings');
-                    }
-                },
-                {
-                    text   : i18n['logout'],
-                    iconCls: 'icoArrowRight',
-                    scope  : me,
-                    handler: me.appLogout
-                }
-            ]
-        });
-        me.Header.add({
-            xtype  : 'button',
-            scale  : 'large',
-            style  : 'float:right',
-            margin : '0 0 0 3',
-            cls    : 'headerLargeBtn',
-            padding: 0,
-            itemId : 'patientCheckIn',
-            iconCls: 'icoLog',
-            scope  : me,
-            handler: me.onPatientLog,
-            tooltip: i18n['arrival_log']
-        });
-        me.Header.add({
-            xtype  : 'button',
-            scale  : 'large',
-            style  : 'float:right',
-            margin : '0 0 0 3',
-            cls    : 'headerLargeBtn',
-            padding: 0,
-            itemId : 'patientPoolArea',
-            iconCls: 'icoPoolArea',
-            scope  : me,
-            handler: me.goToPoolAreas,
-            tooltip: i18n['pool_areas']
-        });
-        me.Header.add({
-            xtype  : 'button',
-            scale  : 'large',
-            style  : 'float:right',
-            margin : '0 0 0 3',
-            cls    : 'headerLargeBtn',
-            padding: 0,
-            itemId : 'floorPlans',
-            iconCls: 'icoZoneAreasBig',
-            scope  : me,
-            handler: me.goToFloorPlans,
-            tooltip: i18n['floor_plans']
-        });
+		me.patientBtn = me.Header.add(
+		{
+			xtype : 'button',
+			scale : 'large',
+			style : 'float:left',
+			margin : 0,
+			scope : me,
+			handler : me.openPatientSummary,
+			listeners :
+			{
+				scope : me,
+				afterrender : me.patientBtnRender
+			},
+			tpl : me.patientBtnTpl()
+		});
+		me.patientOpenVisitsBtn = me.Header.add(
+		{
+			xtype : 'button',
+			scale : 'large',
+			style : 'float:left',
+			margin : '0 0 0 3',
+			cls : 'headerLargeBtn',
+			padding : 0,
+			iconCls : 'icoBackClock',
+			scope : me,
+			handler : me.openPatientVisits,
+			tooltip : i18n['open_patient_visits_history']
+		});
+		if (acl['add_encounters'])
+		{
+			me.patientCreateEncounterBtn = me.Header.add(
+			{
+				xtype : 'button',
+				scale : 'large',
+				style : 'float:left',
+				margin : '0 0 0 3',
+				cls : 'headerLargeBtn',
+				padding : 0,
+				iconCls : 'icoClock',
+				scope : me,
+				handler : me.createNewEncounter,
+				tooltip : i18n['create_new_encounter']
+			});
+		}
+		me.patientCloseCurrEncounterBtn = me.Header.add(
+		{
+			xtype : 'button',
+			scale : 'large',
+			style : 'float:left',
+			margin : '0 0 0 3',
+			cls : 'headerLargeBtn',
+			padding : 0,
+			iconCls : 'icoArrowDown',
+			scope : me,
+			handler : me.stowPatientRecord,
+			tooltip : i18n['show_patient_record']
+		});
+		me.patientCheckOutBtn = me.Header.add(
+		{
+			xtype : 'button',
+			scale : 'large',
+			style : 'float:left',
+			margin : '0 0 0 3',
+			cls : 'headerLargeBtn',
+			padding : 0,
+			iconCls : 'icoCheckOut',
+			scope : me,
+			handler : me.chargePatient,
+			tooltip : i18n['check_out_patient']
+		});
+		me.patientChargeBtn = me.Header.add(
+		{
+			xtype : 'button',
+			scale : 'large',
+			style : 'float:left',
+			margin : '0 0 0 3',
+			cls : 'headerLargeBtn',
+			padding : 0,
+			iconCls : me.icoMoney,
+			scope : me,
+			handler : me.onPaymentEntryWindow,
+			tooltip : i18n['payment_entry']
+		});
+		me.Header.add(
+		{
+			xtype : 'panel',
+			bodyPadding : '8 11 5 11',
+			margin : '0 0 0 3',
+			style : 'float:left',
+			items : [
+			{
+				xtype : 'patienlivetsearch',
+				emptyText : i18n['patient_live_search'] + '...',
+				fieldStyle : me.fullMode ? 'width:300' : 'width:250',
+				listeners :
+				{
+					scope : me,
+					select : me.liveSearchSelect,
+					blur : function(combo)
+					{
+						combo.reset();
+					}
+				}
+			}]
+		});
+		me.Header.add(
+		{
+			xtype : 'button',
+			scale : 'large',
+			style : 'float:left',
+			margin : '0 0 0 3',
+			padding : 4,
+			itemId : 'patientNewReset',
+			iconCls : 'icoAddPatient',
+			scope : me,
+			handler : me.newPatient,
+			tooltip : i18n['create_a_new_patient']
+		});
+		me.Header.add(
+		{
+			xtype : 'button',
+			scale : 'large',
+			style : 'float:left',
+			margin : '0 0 0 3',
+			cls : 'headerLargeBtn emerBtn',
+			overCls : 'emerBtnOver',
+			padding : 0,
+			itemId : 'createEmergency',
+			iconCls : 'icoEmer',
+			scope : me,
+			handler : me.createEmergency,
+			tooltip : i18n['create_new_emergency']
+		});
+		me.Header.add(
+		{
+			xtype : 'button',
+			text : me.user.title + ' ' + me.user.lname,
+			scale : 'large',
+			iconCls : 'icoDoctor',
+			iconAlign : 'left',
+			cls : 'drButton',
+			style : 'float:right',
+			margin : '0 0 0 3',
+			menu : [
+			{
+				text : i18n['my_account'],
+				iconCls : 'icoArrowRight',
+				handler : function()
+				{
+					me.navigateTo('panelMyAccount');
+				}
+			},
+			{
+				text : i18n['my_settings'],
+				iconCls : 'icoArrowRight',
+				handler : function()
+				{
+					me.navigateTo('panelMySettings');
+				}
+			},
+			{
+				text : i18n['logout'],
+				iconCls : 'icoArrowRight',
+				scope : me,
+				handler : me.appLogout
+			}]
+		});
+		me.Header.add(
+		{
+			xtype : 'button',
+			scale : 'large',
+			style : 'float:right',
+			margin : '0 0 0 3',
+			cls : 'headerLargeBtn',
+			padding : 0,
+			itemId : 'patientCheckIn',
+			iconCls : 'icoLog',
+			scope : me,
+			handler : me.onPatientLog,
+			tooltip : i18n['arrival_log']
+		});
+		me.Header.add(
+		{
+			xtype : 'button',
+			scale : 'large',
+			style : 'float:right',
+			margin : '0 0 0 3',
+			cls : 'headerLargeBtn',
+			padding : 0,
+			itemId : 'patientPoolArea',
+			iconCls : 'icoPoolArea',
+			scope : me,
+			handler : me.goToPoolAreas,
+			tooltip : i18n['pool_areas']
+		});
+		me.Header.add(
+		{
+			xtype : 'button',
+			scale : 'large',
+			style : 'float:right',
+			margin : '0 0 0 3',
+			cls : 'headerLargeBtn',
+			padding : 0,
+			itemId : 'floorPlans',
+			iconCls : 'icoZoneAreasBig',
+			scope : me,
+			handler : me.goToFloorPlans,
+			tooltip : i18n['floor_plans']
+		});
 
-        /**
+		/**
 		 * The panel definition for the the TreeMenu & the support button
 		 */
-		me.navColumn = Ext.create('Ext.panel.Panel', {
-			title      : i18n['navigation'],
-			stateId    : 'navColumn',
-			layout     : 'border',
-			region     : 'west',
-			width      : 200,
-			split      : true,
-			collapsible: true,
-			collapsed  : false,
-			items      : [
+		me.navColumn = Ext.create('Ext.panel.Panel',
+		{
+			title : i18n['navigation'],
+			stateId : 'navColumn',
+			layout : 'border',
+			region : 'west',
+			width : 200,
+			split : true,
+			collapsible : true,
+			collapsed : false,
+			items : [
+			{
+				xtype : 'treepanel',
+				region : 'center',
+				cls : 'nav_tree',
+				hideHeaders : true,
+				rootVisible : false,
+				border : false,
+				store : me.storeTree,
+				width : 200,
+				plugins : [
 				{
-					xtype      : 'treepanel',
-					region     : 'center',
-					cls        : 'nav_tree',
-					hideHeaders: true,
-					rootVisible: false,
-					border     : false,
-					store      : me.storeTree,
-					width      : 200,
-					plugins    : [
-						{
-                            ptype: 'nodedisabled'
-                        }
-					],
-					//					root       : {
-					//						nodeType : 'async',
-					//						draggable: false
-					//					},
-					listeners  : {
-						scope          : me,
-						selectionchange: me.onNavigationNodeSelected
-					}
-				},
-				me.patientPoolArea = Ext.create('Ext.Panel',{
-					title      : i18n['patient_pool_areas'],
-					layout     : 'fit',
-					region     : 'south',
-					bodyPadding: 5,
-					height     : 25,
-					cls        : 'patient-pool',
-					split      : true,
-					collapsible: true,
-					border     : false,
-//                    overflowY: 'auto',
-					items      : [
-						{
-							xtype            : 'dataview',
-							loadMask         : false,
-							cls              : 'patient-pool-view',
-							tpl              : '<tpl for=".">' +
-								'<div class="patient-pool-btn x-btn x-btn-default-large {priority}">' +
-								'<div class="patient_btn_img"><img src="{photoSrc}" width="35" height="35"></div>' +
-								'<div class="patient_btn_info">' +
-								'<div class="patient-name">{shortName}</div>' +
-								'<div class="patient-name">#{pid} ({poolArea})</div>' +
-								'</div>' +
-								'</div>' +
-								'</tpl>',
-							itemSelector     : 'div.patient-pool-btn',
-							overItemCls      : 'patient-over',
-							selectedItemClass: 'patient-selected',
-							singleSelect     : true,
-							store            : me.patientPoolStore,
-							listeners        : {
-								scope : me,
-								render: me.initializeOpenEncounterDragZone
-							}
-						}
-                    ]
-				})
-			],
-			dockedItems: [
+					ptype : 'nodedisabled'
+				}],
+				//					root       : {
+				//						nodeType : 'async',
+				//						draggable: false
+				//					},
+				listeners :
 				{
-					xtype  : 'toolbar',
-					dock   : 'bottom',
-					border : true,
-					margin : '3 0 0 0',
-					padding: 5,
-					layout : {
-						type: 'hbox',
-						pack: 'center'
-					},
-					items  : ['-', {
-						xtype  : 'button',
-						frame  : true,
-						text   : 'GaiaEHR Support',
-						iconCls: 'icoHelp',
-						action : 'http://gaiaehr.org/',
-						scope  : me,
-						handler: me.showMiframe
-					}, '-']
+					scope : me,
+					selectionchange : me.onNavigationNodeSelected
 				}
-			],
-			listeners  : {
-				scope         : me,
-				beforecollapse: me.navCollapsed,
-				beforeexpand  : me.navExpanded
+			}, me.patientPoolArea = Ext.create('Ext.Panel',
+			{
+				title : i18n['patient_pool_areas'],
+				layout : 'fit',
+				region : 'south',
+				bodyPadding : 5,
+				height : 25,
+				cls : 'patient-pool',
+				split : true,
+				collapsible : true,
+				border : false,
+				//                    overflowY: 'auto',
+				items : [
+				{
+					xtype : 'dataview',
+					loadMask : false,
+					cls : 'patient-pool-view',
+					tpl : '<tpl for=".">' + '<div class="patient-pool-btn x-btn x-btn-default-large {priority}">' + '<div class="patient_btn_img"><img src="{photoSrc}" width="35" height="35"></div>' + '<div class="patient_btn_info">' + '<div class="patient-name">{shortName}</div>' + '<div class="patient-name">#{pid} ({poolArea})</div>' + '</div>' + '</div>' + '</tpl>',
+					itemSelector : 'div.patient-pool-btn',
+					overItemCls : 'patient-over',
+					selectedItemClass : 'patient-selected',
+					singleSelect : true,
+					store : me.patientPoolStore,
+					listeners :
+					{
+						scope : me,
+						render : me.initializeOpenEncounterDragZone
+					}
+				}]
+			})],
+			dockedItems : [
+			{
+				xtype : 'toolbar',
+				dock : 'bottom',
+				border : true,
+				margin : '3 0 0 0',
+				padding : 5,
+				layout :
+				{
+					type : 'hbox',
+					pack : 'center'
+				},
+				items : ['-',
+				{
+					xtype : 'button',
+					frame : true,
+					text : 'GaiaEHR Support',
+					iconCls : 'icoHelp',
+					action : 'http://gaiaehr.org/',
+					scope : me,
+					handler : me.showMiframe
+				}, '-']
+			}],
+			listeners :
+			{
+				scope : me,
+				beforecollapse : me.navCollapsed,
+				beforeexpand : me.navExpanded
 
 			}
 		});
@@ -43682,144 +46211,152 @@ Ext.define('App.view.Viewport', {
 		/**
 		 * MainPanel is where all the pages are displayed
 		 */
-		me.MainPanel = Ext.create('Ext.container.Container', {
-			region   : 'center',
-			layout   : 'card',
-			border   : true,
-			itemId   : 'MainPanel',
-			defaults : { layout: 'fit', xtype: 'container' },
-			listeners: {
-				scope      : me,
-				afterrender: me.initializeOpenEncounterDropZone
+		me.MainPanel = Ext.create('Ext.container.Container',
+		{
+			region : 'center',
+			layout : 'card',
+			border : true,
+			itemId : 'MainPanel',
+			defaults :
+			{
+				layout : 'fit',
+				xtype : 'container'
+			},
+			listeners :
+			{
+				scope : me,
+				afterrender : me.initializeOpenEncounterDropZone
 			}
 		});
-		
-        /**
-         * General Area
-         */
-        me.MainPanel.add(Ext.create('App.view.dashboard.Dashboard')); // TODO: panels
-        me.MainPanel.add(Ext.create('App.view.calendar.Calendar'));
-        me.MainPanel.add(Ext.create('App.view.messages.Messages'));
-        me.MainPanel.add(Ext.create('App.view.search.PatientSearch'));
-        me.MainPanel.add(Ext.create('App.view.areas.FloorPlan'));
 
-        /**
-         * Patient Area
-         */
-        me.MainPanel.add(Ext.create('App.view.patient.NewPatient'));
-        me.MainPanel.add(Ext.create('App.view.patient.Summary'));
-        me.MainPanel.add(Ext.create('App.view.patient.Visits'));
-        me.MainPanel.add(Ext.create('App.view.patient.Encounter'));
-        me.MainPanel.add(Ext.create('App.view.patient.VisitCheckout'));
-        /**
-         * Fees Area
-         */
-        me.MainPanel.add(Ext.create('App.view.fees.Billing'));
-        me.MainPanel.add(Ext.create('App.view.fees.Payments'));
-        /**
-         * Miscellaneous
-         */
-        me.MainPanel.add(Ext.create('App.view.miscellaneous.Addressbook'));
-        me.MainPanel.add(Ext.create('App.view.miscellaneous.MyAccount'));
-        me.MainPanel.add(Ext.create('App.view.miscellaneous.MySettings'));
-        me.MainPanel.add(Ext.create('App.view.miscellaneous.OfficeNotes'));
-        me.MainPanel.add(Ext.create('App.view.miscellaneous.Websearch'));
+		/**
+		 * General Area
+		 */
+		me.MainPanel.add(Ext.create('App.view.dashboard.Dashboard'));
+		// TODO: panels
+		me.MainPanel.add(Ext.create('App.view.calendar.Calendar'));
+		me.MainPanel.add(Ext.create('App.view.messages.Messages'));
+		me.MainPanel.add(Ext.create('App.view.search.PatientSearch'));
+		me.MainPanel.add(Ext.create('App.view.areas.FloorPlan'));
 
-        me.ppdz = me.MainPanel.add(Ext.create('App.view.areas.PatientPoolDropZone'));
+		/**
+		 * Patient Area
+		 */
+		me.MainPanel.add(Ext.create('App.view.patient.NewPatient'));
+		me.MainPanel.add(Ext.create('App.view.patient.Summary'));
+		me.MainPanel.add(Ext.create('App.view.patient.Visits'));
+		me.MainPanel.add(Ext.create('App.view.patient.Encounter'));
+		me.MainPanel.add(Ext.create('App.view.patient.VisitCheckout'));
+		/**
+		 * Fees Area
+		 */
+		me.MainPanel.add(Ext.create('App.view.fees.Billing'));
+		me.MainPanel.add(Ext.create('App.view.fees.Payments'));
+		/**
+		 * Miscellaneous
+		 */
+		me.MainPanel.add(Ext.create('App.view.miscellaneous.Addressbook'));
+		me.MainPanel.add(Ext.create('App.view.miscellaneous.MyAccount'));
+		me.MainPanel.add(Ext.create('App.view.miscellaneous.MySettings'));
+		me.MainPanel.add(Ext.create('App.view.miscellaneous.OfficeNotes'));
+		me.MainPanel.add(Ext.create('App.view.miscellaneous.Websearch'));
 
-		if(acl['access_gloabal_settings']) me.MainPanel.add(Ext.create('App.view.administration.Globals'));
-		if(acl['access_facilities']) me.MainPanel.add(Ext.create('App.view.administration.Facilities'));
-		if(acl['access_users']) me.MainPanel.add(Ext.create('App.view.administration.Users'));
-		if(acl['access_practice']) me.MainPanel.add(Ext.create('App.view.administration.Practice'));
-		if(acl['access_data_manager']) me.MainPanel.add(Ext.create('App.view.administration.DataManager'));
-		if(acl['access_preventive_care']) me.MainPanel.add(Ext.create('App.view.administration.PreventiveCare'));
-		if(acl['access_medications']) me.MainPanel.add(Ext.create('App.view.administration.Medications'));
-		if(acl['access_floor_plans']) me.MainPanel.add(Ext.create('App.view.administration.FloorPlans'));
-		if(acl['access_roles']) me.MainPanel.add(Ext.create('App.view.administration.Roles'));
-		if(acl['access_layouts']) me.MainPanel.add(Ext.create('App.view.administration.Layout'));
-		if(acl['access_lists']) me.MainPanel.add(Ext.create('App.view.administration.Lists'));
-		if(acl['access_event_log']) me.MainPanel.add(Ext.create('App.view.administration.Log'));
-		if(acl['access_documents']) me.MainPanel.add(Ext.create('App.view.administration.Documents'));
+		me.ppdz = me.MainPanel.add(Ext.create('App.view.areas.PatientPoolDropZone'));
 
-        me.MainPanel.add(Ext.create('App.view.administration.ExternalDataLoads'));
+		if (acl['access_gloabal_settings'])
+			me.MainPanel.add(Ext.create('App.view.administration.Globals'));
+		if (acl['access_facilities'])
+			me.MainPanel.add(Ext.create('App.view.administration.Facilities'));
+		if (acl['access_users'])
+			me.MainPanel.add(Ext.create('App.view.administration.Users'));
+		if (acl['access_practice'])
+			me.MainPanel.add(Ext.create('App.view.administration.Practice'));
+		if (acl['access_data_manager'])
+			me.MainPanel.add(Ext.create('App.view.administration.DataManager'));
+		if (acl['access_preventive_care'])
+			me.MainPanel.add(Ext.create('App.view.administration.PreventiveCare'));
+		if (acl['access_medications'])
+			me.MainPanel.add(Ext.create('App.view.administration.Medications'));
+		if (acl['access_floor_plans'])
+			me.MainPanel.add(Ext.create('App.view.administration.FloorPlans'));
+		if (acl['access_roles'])
+			me.MainPanel.add(Ext.create('App.view.administration.Roles'));
+		if (acl['access_layouts'])
+			me.MainPanel.add(Ext.create('App.view.administration.Layout'));
+		if (acl['access_lists'])
+			me.MainPanel.add(Ext.create('App.view.administration.Lists'));
+		if (acl['access_event_log'])
+			me.MainPanel.add(Ext.create('App.view.administration.Log'));
+		if (acl['access_documents'])
+			me.MainPanel.add(Ext.create('App.view.administration.Documents'));
+
+		me.MainPanel.add(Ext.create('App.view.administration.ExternalDataLoads'));
 
 		/**
 		 * Footer Panel
 		 */
-		me.Footer = Ext.create('Ext.container.Container', {
+		me.Footer = Ext.create('Ext.container.Container',
+		{
 			height : me.fullMode ? 30 : 60,
-			split  : false,
-			padding: '3 0',
+			split : false,
+			padding : '3 0',
 			region : 'south',
-			items  : [
+			items : [
+			{
+				xtype : 'dataview',
+				margin : '0 0 3 0',
+				hidden : true,
+				hideMode : 'offsets',
+				cls : 'patient-pool-view-footer x-toolbar x-toolbar-default x-box-layout-ct',
+				tpl : '<div class="x-toolbar-separator x-toolbar-item x-toolbar-separator-horizontal" style="float:left; margin-top:5px;" role="presentation" tabindex="-1"></div>' + '<tpl for=".">' + '<div class="patient-pool-btn-small x-btn x-btn-default-small {priority}" style="float:left">' + '<div class="patient_btn_info">' + '<div class="patient-name">{name} ({pid})</div>' + '</div>' + '</div>' + '<div class="x-toolbar-separator x-toolbar-item x-toolbar-separator-horizontal" style="float:left; margin-top:5px; margin-left:3px;" role="presentation" tabindex="-1"></div>' + '</tpl>',
+				itemSelector : 'div.patient-pool-btn-small',
+				overItemCls : 'patient-over',
+				selectedItemClass : 'patient-selected',
+				singleSelect : true,
+				loadMask : false,
+				store : me.patientPoolStore,
+				listeners :
 				{
-					xtype            : 'dataview',
-					margin           : '0 0 3 0',
-					hidden           : true,
-					hideMode         : 'offsets',
-					cls              : 'patient-pool-view-footer x-toolbar x-toolbar-default x-box-layout-ct',
-					tpl              : '<div class="x-toolbar-separator x-toolbar-item x-toolbar-separator-horizontal" style="float:left; margin-top:5px;" role="presentation" tabindex="-1"></div>' +
-						'<tpl for=".">' +
-						'<div class="patient-pool-btn-small x-btn x-btn-default-small {priority}" style="float:left">' +
-						'<div class="patient_btn_info">' +
-						'<div class="patient-name">{name} ({pid})</div>' +
-						'</div>' +
-						'</div>' +
-						'<div class="x-toolbar-separator x-toolbar-item x-toolbar-separator-horizontal" style="float:left; margin-top:5px; margin-left:3px;" role="presentation" tabindex="-1"></div>' +
-						'</tpl>',
-					itemSelector     : 'div.patient-pool-btn-small',
-					overItemCls      : 'patient-over',
-					selectedItemClass: 'patient-selected',
-					singleSelect     : true,
-					loadMask         : false,
-					store            : me.patientPoolStore,
-					listeners        : {
-						render: me.initializeOpenEncounterDragZone
-					}
-				},
-				{
-					xtype: 'toolbar',
-					dock : 'bottom',
-					items: [
-						{
-							text    : 'Copyright (C) 2011 GaiaEHR (Electronic Health Records) |:|  Open Source Software operating under GPLv3 |:| v' + me.version,
-							iconCls : 'icoGreen',
-							disabled: true,
-							action  : 'http://GaiaEHR.org/projects/GaiaEHR001',
-							scope   : me,
-							handler : me.showMiframe
-						},
-						'->',
-						{
-							text   : i18n['news'],
-							action : 'http://GaiaEHR.org/projects/GaiaEHR001/news',
-							scope  : me,
-							handler: me.showMiframe
-						},
-						'-',
-						{
-							text   : i18n['wiki'],
-							action : 'http://gaiaehr.org/',
-							scope  : me,
-							handler: me.showMiframe
-						},
-						'-',
-						{
-							text   : i18n['issues'],
-							action : 'http://gaiaehr.org/',
-							scope  : me,
-							handler: me.showMiframe
-						},
-						'-',
-						{
-							text   : i18n['forums'],
-							action : 'http://gaiaehr.org/',
-							scope  : me,
-							handler: me.showMiframe
-						}
-					]
+					render : me.initializeOpenEncounterDragZone
 				}
-			]
+			},
+			{
+				xtype : 'toolbar',
+				dock : 'bottom',
+				items : [
+				{
+					text : 'Copyright (C) 2011 GaiaEHR (Electronic Health Records) |:|  Open Source Software operating under GPLv3 |:| v' + me.version,
+					iconCls : 'icoGreen',
+					disabled : true,
+					action : 'http://GaiaEHR.org/projects/GaiaEHR001',
+					scope : me,
+					handler : me.showMiframe
+				}, '->',
+				{
+					text : i18n['news'],
+					action : 'http://GaiaEHR.org/projects/GaiaEHR001/news',
+					scope : me,
+					handler : me.showMiframe
+				}, '-',
+				{
+					text : i18n['wiki'],
+					action : 'http://gaiaehr.org/',
+					scope : me,
+					handler : me.showMiframe
+				}, '-',
+				{
+					text : i18n['issues'],
+					action : 'http://gaiaehr.org/',
+					scope : me,
+					handler : me.showMiframe
+				}, '-',
+				{
+					text : i18n['forums'],
+					action : 'http://gaiaehr.org/',
+					scope : me,
+					handler : me.showMiframe
+				}]
+			}]
 		});
 
 		me.MedicalWindow = Ext.create('App.view.patient.windows.Medical');
@@ -43829,13 +46366,21 @@ Ext.define('App.view.Viewport', {
 		me.NewDocumentsWindow = Ext.create('App.view.patient.windows.NewDocuments');
 		me.DocumentViewerWindow = Ext.create('App.view.patient.windows.DocumentViewer');
 
-		me.layout = { type: 'border', padding: 3 };
-		me.defaults = { split: true };
-		me.items = [ me.Header, me.navColumn, me.MainPanel, me.Footer ];
+		me.layout =
+		{
+			type : 'border',
+			padding : 3
+		};
+		me.defaults =
+		{
+			split : true
+		};
+		me.items = [me.Header, me.navColumn, me.MainPanel, me.Footer];
 
-		me.listeners = {
+		me.listeners =
+		{
 			render : me.appRender,
-			beforerender: me.beforeAppRender
+			beforerender : me.beforeAppRender
 		};
 
 		me.callParent(arguments);
@@ -43846,8 +46391,9 @@ Ext.define('App.view.Viewport', {
 
 	/*
 	 * Show the medical window dialog.
-	 */ 
-	onMedicalWin: function(btn) {
+	 */
+	onMedicalWin : function(btn)
+	{
 		this.MedicalWindow.show();
 		this.MedicalWindow.down('toolbar').getComponent(btn.action).toggle(true);
 		this.MedicalWindow.cardSwitch(btn);
@@ -43855,15 +46401,17 @@ Ext.define('App.view.Viewport', {
 
 	/*
 	 * Show the Charts window dialog.
-	 */ 
-	onChartsWin      : function() {
+	 */
+	onChartsWin : function()
+	{
 		this.ChartsWindow.show();
 	},
-	
+
 	/*
-	* Show the Document window dialog.
-	*/ 
-	onNewDocumentsWin: function(action) {
+	 * Show the Document window dialog.
+	 */
+	onNewDocumentsWin : function(action)
+	{
 
 		this.NewDocumentsWindow.eid = this.patient.eid;
 		this.NewDocumentsWindow.pid = this.patient.pid;
@@ -43871,54 +46419,69 @@ Ext.define('App.view.Viewport', {
 		this.NewDocumentsWindow.cardSwitch(action);
 	},
 
-	onWebCamComplete: function(msg) {
+	onWebCamComplete : function(msg)
+	{
 		var panel = this.getActivePanel();
-		if(panel.id == 'panelSummary') {
+		if (panel.id == 'panelSummary')
+		{
 			panel.completePhotoId();
 		}
 		this.msg('Sweet!', i18n['patient_image_saved']);
 	},
 
-	onPatientLog: function() {
-		if(this.patientArrivalLog) {
+	onPatientLog : function()
+	{
+		if (this.patientArrivalLog)
+		{
 			this.patientArrivalLog.show();
-		} else {
+		}
+		else
+		{
 			this.patientArrivalLog = Ext.create('App.view.patient.windows.ArrivalLog').show();
 		}
 	},
 
 	/*
 	 * Show the Payment Entry window dialog.
-	 */ 
-	onPaymentEntryWindow: function() {
+	 */
+	onPaymentEntryWindow : function()
+	{
 		this.PaymentEntryWindow.show();
 	},
 
 	/*
 	 * Show the new patient form panel.
-	 */ 
-	newPatient: function() {
+	 */
+	newPatient : function()
+	{
 		var me = this;
 		me.navigateTo('panelNewPatient');
 	},
 
-	createEmergency: function() {
+	createEmergency : function()
+	{
 		var me = this, emergency;
 
-		Ext.Msg.show({
-		     title: i18n['wait'] + '!!!',
-		     msg: i18n['are_you_sure_you_want_to_create_a_new'] + ' <span style="color: red">"' + i18n['emergency'] + '"</span>?',
-		     buttons: Ext.Msg.YESNO,
-		     icon: Ext.Msg.WARNING,
-			fn:function(btn){
-				if(btn == 'yes'){
-					Emergency.createNewEmergency(function(provider, response){
+		Ext.Msg.show(
+		{
+			title : i18n['wait'] + '!!!',
+			msg : i18n['are_you_sure_you_want_to_create_a_new'] + ' <span style="color: red">"' + i18n['emergency'] + '"</span>?',
+			buttons : Ext.Msg.YESNO,
+			icon : Ext.Msg.WARNING,
+			fn : function(btn)
+			{
+				if (btn == 'yes')
+				{
+					Emergency.createNewEmergency(function(provider, response)
+					{
 						emergency = response.result.emergency;
-						if(response.result.success){
-							me.setPatient(emergency.pid,emergency.name, function(){
+						if (response.result.success)
+						{
+							me.setPatient(emergency.pid, emergency.name, function()
+							{
 								me.openEncounter(emergency.eid);
 							});
-							me.msg('Sweet!',emergency.name + ' ' + i18n['created'])
+							me.msg('Sweet!', emergency.name + ' ' + i18n['created'])
 						}
 					});
 				}
@@ -43929,99 +46492,124 @@ Ext.define('App.view.Viewport', {
 
 	/*
 	 * Show the Create New Encounter panel.
-	 */ 
-	createNewEncounter: function() {
+	 */
+	createNewEncounter : function()
+	{
 		var me = this;
-		if(acl['access_encounters'] && acl['add_encounters']) {
-			me.navigateTo('panelEncounter', function(success) {
-				if(success) {
+		if (acl['access_encounters'] && acl['add_encounters'])
+		{
+			me.navigateTo('panelEncounter', function(success)
+			{
+				if (success)
+				{
 					me.currCardCmp.newEncounter();
 				}
 			});
-		} else {
+		}
+		else
+		{
 			me.accessDenied();
 		}
 	},
 
-	openPatientSummary: function() {
+	openPatientSummary : function()
+	{
 		var me = this;
-//		if(me.currCardCmp == Ext.getCmp('panelSummary')) {
-//			var same = true;
-//		}
-        if(me.currCardCmp == Ext.getCmp('panelSummary')) {
-            me.currCardCmp.onActive();
-        }else{
-            me.navigateTo('panelSummary');
-        }
-//		me.navigateTo('panelSummary', function() {
-//			if(same) {
-//				me.currCardCmp.onActive();
-//			}
-//		});
+		//		if(me.currCardCmp == Ext.getCmp('panelSummary')) {
+		//			var same = true;
+		//		}
+		if (me.currCardCmp == Ext.getCmp('panelSummary'))
+		{
+			me.currCardCmp.onActive();
+		}
+		else
+		{
+			me.navigateTo('panelSummary');
+		}
+		//		me.navigateTo('panelSummary', function() {
+		//			if(same) {
+		//				me.currCardCmp.onActive();
+		//			}
+		//		});
 	},
 
-	stowPatientRecord: function() {
+	stowPatientRecord : function()
+	{
 		this.unsetPatient();
 		this.navigateTo('panelDashboard');
 	},
 
-	openEncounter: function(eid) {
+	openEncounter : function(eid)
+	{
 		var me = this;
-		if(acl['access_encounters']) {
-			me.navigateTo('panelEncounter', function(success) {
-				if(success) {
+		if (acl['access_encounters'])
+		{
+			me.navigateTo('panelEncounter', function(success)
+			{
+				if (success)
+				{
 					me.currCardCmp.openEncounter(eid);
 				}
 			});
-		} else {
+		}
+		else
+		{
 			me.accessDenied();
 		}
 	},
 
-	checkOutPatient: function(eid) {
+	checkOutPatient : function(eid)
+	{
 		var me = this;
 
-		me.navigateTo('panelVisitCheckout', function(success) {
-			if(success) {
+		me.navigateTo('panelVisitCheckout', function(success)
+		{
+			if (success)
+			{
 				me.currCardCmp.setPanel(eid);
 
 			}
 		});
 	},
 
-	chargePatient: function() {
+	chargePatient : function()
+	{
 		this.navigateTo('panelVisitPayment');
 	},
 
-	openPatientVisits: function() {
+	openPatientVisits : function()
+	{
 		this.navigateTo('panelVisits');
 	},
 
-	goToPoolAreas: function() {
+	goToPoolAreas : function()
+	{
 		this.navigateTo('panelPoolArea');
 	},
 
-	goToFloorPlans: function() {
+	goToFloorPlans : function()
+	{
 		this.navigateTo('panelAreaFloorPlan');
 	},
 
-	navigateTo: function(id, callback) {
-		var tree = this.navColumn.down('treepanel'),
-			treeStore = tree.getStore(),
-			sm = tree.getSelectionModel(),
-			node = treeStore.getNodeById(id);
+	navigateTo : function(id, callback)
+	{
+		var tree = this.navColumn.down('treepanel'), treeStore = tree.getStore(), sm = tree.getSelectionModel(), node = treeStore.getNodeById(id);
 
 		sm.select(node);
-		if(typeof callback == 'function') {
+		if ( typeof callback == 'function')
+		{
 			callback(true);
 		}
 	},
 
-	navigateToDefault: function() {
+	navigateToDefault : function()
+	{
 		this.navigateTo('panelDashboard');
 	},
 
-	afterNavigationLoad: function() {
+	afterNavigationLoad : function()
+	{
 		this.fullMode ? this.navColumn.expand() : this.navColumn.collapse();
 		this.navigateToDefault();
 		this.removeAppMask();
@@ -44029,56 +46617,56 @@ Ext.define('App.view.Viewport', {
 
 	},
 
-	onNavigationNodeSelected: function(model, selected) {
+	onNavigationNodeSelected : function(model, selected)
+	{
 		var me = this;
-		if(0 < selected.length) {
-			if(selected[0].data.leaf) {
-				var tree = me.navColumn.down('treepanel'),
-					sm = tree.getSelectionModel(),
-					card = selected[0].data.id,
-					layout = me.MainPanel.getLayout(),
-					cardCmp = Ext.getCmp(card);
+		if (0 < selected.length)
+		{
+			if (selected[0].data.leaf)
+			{
+				var tree = me.navColumn.down('treepanel'), sm = tree.getSelectionModel(), card = selected[0].data.id, layout = me.MainPanel.getLayout(), cardCmp = Ext.getCmp(card);
 
 				me.currCardCmp = cardCmp;
 				layout.setActiveItem(card);
-				cardCmp.onActive(function(success) {
+				cardCmp.onActive(function(success)
+				{
 					(success) ? me.lastCardNode = sm.getLastSelected() : me.goBack();
 				});
 			}
 		}
 	},
 
-	goBack: function() {
-		var tree = this.navColumn.down('treepanel'),
-			sm = tree.getSelectionModel();
+	goBack : function()
+	{
+		var tree = this.navColumn.down('treepanel'), sm = tree.getSelectionModel();
 		sm.select(this.lastCardNode);
 	},
 
-	navCollapsed: function() {
-		var me = this,
-            navView = me.patientPoolArea,
-			foot = me.Footer, footView;
+	navCollapsed : function()
+	{
+		var me = this, navView = me.patientPoolArea, foot = me.Footer, footView;
 
-		if(foot) {
+		if (foot)
+		{
 			footView = foot.down('dataview');
 			foot.setHeight(60);
 			footView.show();
 		}
-        me.navColumn.isCollapsed = true;
+		me.navColumn.isCollapsed = true;
 		navView.hide();
 	},
 
-	navExpanded: function() {
-		var me = this,
-            navView = me.patientPoolArea,
-			foot = me.Footer, footView;
+	navExpanded : function()
+	{
+		var me = this, navView = me.patientPoolArea, foot = me.Footer, footView;
 
-		if(foot) {
+		if (foot)
+		{
 			footView = foot.down('dataview');
 			foot.setHeight(30);
 			footView.hide();
 		}
-        me.navColumn.isCollapsed = false;
+		me.navColumn.isCollapsed = false;
 		navView.show();
 	},
 
@@ -44086,172 +46674,234 @@ Ext.define('App.view.Viewport', {
 	 * Function to get the current active panel.
 	 * NOTE: This may be used on all the application.
 	 */
-	getActivePanel: function() 
+	getActivePanel : function()
 	{
 		return this.MainPanel.getLayout().getActiveItem();
 	},
 
-	liveSearchSelect: function(combo, selection) {
-		var me = this,
-			post = selection[0];
-		if(post) {
-			Patient.currPatientSet({pid: post.get('pid')}, function() {
-				me.setPatient(post.get('pid'), post.get('fullname'), function() {
+	liveSearchSelect : function(combo, selection)
+	{
+		var me = this, post = selection[0];
+		if (post)
+		{
+			Patient.currPatientSet(
+			{
+				pid : post.get('pid')
+			}, function()
+			{
+				me.setPatient(post.get('pid'), post.get('fullname'), function()
+				{
 					me.openPatientSummary();
 				});
 			});
 		}
 	},
 
-	setPatient: function(pid, fullname, callback) {
+	setPatient : function(pid, fullname, callback)
+	{
 		var me = this;
 
-		me.unsetPatient(function() {
-			Patient.currPatientSet({ pid: pid }, function(provider, response) {
+		me.unsetPatient(function()
+		{
+			Patient.currPatientSet(
+			{
+				pid : pid
+			}, function(provider, response)
+			{
 				var data = response.result, msg1, msg2;
-				if(data.readOnly) {
-					msg1 = data.user + ' ' + i18n['is_currently_working_with'] + ' "' + data.patient.name + '" ' + i18n['in'] + ' "' + data.area + '" ' + i18n['area'] + '.<br>' +
-						i18n['override_read_mode_will_remove_the_patient_from_previous_user'] + '.<br>' +
-						i18n['do_you_would_like_to_override_read_mode'];
+				if (data.readOnly)
+				{
+					msg1 = data.user + ' ' + i18n['is_currently_working_with'] + ' "' + data.patient.name + '" ' + i18n['in'] + ' "' + data.area + '" ' + i18n['area'] + '.<br>' + i18n['override_read_mode_will_remove_the_patient_from_previous_user'] + '.<br>' + i18n['do_you_would_like_to_override_read_mode'];
 					msg2 = data.user + ' ' + i18n['is_currently_working_with'] + ' "' + data.patient.name + '" ' + i18n['in'] + ' "' + data.area + '" ' + i18n['area'] + '.<br>';
-					Ext.Msg.show({
-						title  : i18n['wait'] + '!!!',
-						msg    : data.overrideReadOnly ? msg1 : msg2,
-						buttons: data.overrideReadOnly ? Ext.Msg.YESNO : Ext.Msg.OK,
-						icon   : Ext.MessageBox.WARNING,
-						fn     : function(btn) {
+					Ext.Msg.show(
+					{
+						title : i18n['wait'] + '!!!',
+						msg : data.overrideReadOnly ? msg1 : msg2,
+						buttons : data.overrideReadOnly ? Ext.Msg.YESNO : Ext.Msg.OK,
+						icon : Ext.MessageBox.WARNING,
+						fn : function(btn)
+						{
 							continueSettingPatient(btn != 'yes');
 						}
 					});
-				} else {
+				}
+				else
+				{
 					continueSettingPatient(false);
 				}
 
-				function continueSettingPatient(readOnly) {
+				function continueSettingPatient(readOnly)
+				{
 
-	                me.patient = {
-                        pid     : data.patient.pid,
-                        name    : data.patient.name,
-                        sex     : data.patient.sex,
-                        dob     : data.patient.dob,
-                        age     : data.patient.age,
-                        priority: data.patient.priority,
-                        readOnly: readOnly,
-                        eid     : null
-                    };
+					me.patient =
+					{
+						pid : data.patient.pid,
+						name : data.patient.name,
+						sex : data.patient.sex,
+						dob : data.patient.dob,
+						age : data.patient.age,
+						priority : data.patient.priority,
+						readOnly : readOnly,
+						eid : null
+					};
 
-                    me.patientBtn.update({pid:data.patient.pid, name:data.patient.name});
+					me.patientBtn.update(
+					{
+						pid : data.patient.pid,
+						name : data.patient.name
+					});
 					me.patientBtn.addCls(data.patient.priority);
 					me.patientBtn.enable();
-					if(me.patientOpenVisitsBtn) me.patientOpenVisitsBtn.enable();
-					if(me.patientCreateEncounterBtn) me.patientCreateEncounterBtn.enable();
-					if(me.patientCloseCurrEncounterBtn) me.patientCloseCurrEncounterBtn.enable();
-					if(me.patientChargeBtn) me.patientChargeBtn.enable();
-					if(me.patientCheckOutBtn) me.patientCheckOutBtn.enable();
-					if(typeof callback == 'function') callback(me.patient);
+					if (me.patientOpenVisitsBtn)
+						me.patientOpenVisitsBtn.enable();
+					if (me.patientCreateEncounterBtn)
+						me.patientCreateEncounterBtn.enable();
+					if (me.patientCloseCurrEncounterBtn)
+						me.patientCloseCurrEncounterBtn.enable();
+					if (me.patientChargeBtn)
+						me.patientChargeBtn.enable();
+					if (me.patientCheckOutBtn)
+						me.patientCheckOutBtn.enable();
+					if ( typeof callback == 'function')
+						callback(me.patient);
 				}
+
 			});
 		});
 	},
 
-    unsetPatient: function(callback) {
+	unsetPatient : function(callback)
+	{
 		var me = this;
-		Patient.currPatientUnset(function() {
+		Patient.currPatientUnset(function()
+		{
 			me.currEncounterId = null;
-            me.patient = {
-                pid     : null,
-                name    : null,
-                sex     : null,
-                dob     : null,
-                age     : null,
-                eid     : null,
-                priority: null,
-                readOnly: false
-            };
+			me.patient =
+			{
+				pid : null,
+				name : null,
+				sex : null,
+				dob : null,
+				age : null,
+				eid : null,
+				priority : null,
+				readOnly : false
+			};
 
 			me.patientButtonRemoveCls();
-			if(typeof callback == 'function'){
+			if ( typeof callback == 'function')
+			{
 				callback(true);
-			}else{
-				if(me.patientCreateEncounterBtn) me.patientCreateEncounterBtn.disable();
-				if(me.patientOpenVisitsBtn) me.patientOpenVisitsBtn.disable();
-				if(me.patientCloseCurrEncounterBtn) me.patientCloseCurrEncounterBtn.disable();
-				if(me.patientChargeBtn) me.patientChargeBtn.disable();
-				if(me.patientCheckOutBtn) me.patientCheckOutBtn.disable();
+			}
+			else
+			{
+				if (me.patientCreateEncounterBtn)
+					me.patientCreateEncounterBtn.disable();
+				if (me.patientOpenVisitsBtn)
+					me.patientOpenVisitsBtn.disable();
+				if (me.patientCloseCurrEncounterBtn)
+					me.patientCloseCurrEncounterBtn.disable();
+				if (me.patientChargeBtn)
+					me.patientChargeBtn.disable();
+				if (me.patientCheckOutBtn)
+					me.patientCheckOutBtn.disable();
 				me.patientBtn.disable();
-				me.patientBtn.update({ pid: 'record number', name: i18n['no_patient_selected']});
+				me.patientBtn.update(
+				{
+					pid : 'record number',
+					name : i18n['no_patient_selected']
+				});
 			}
 		});
 	},
 
-	patientButtonRemoveCls:function(){
-        var me = this;
-        me.patientBtn.removeCls('Minimal');
-        me.patientBtn.removeCls('Delayed');
-        me.patientBtn.removeCls('Immediate');
-        me.patientBtn.removeCls('Expectant');
-        me.patientBtn.removeCls('Deceased');
+	patientButtonRemoveCls : function()
+	{
+		var me = this;
+		me.patientBtn.removeCls('Minimal');
+		me.patientBtn.removeCls('Delayed');
+		me.patientBtn.removeCls('Immediate');
+		me.patientBtn.removeCls('Expectant');
+		me.patientBtn.removeCls('Deceased');
 	},
 
-	showMiframe: function(btn) {
+	showMiframe : function(btn)
+	{
 		var me = this, src = btn.action;
-        me.winSupport.remove(me.miframe);
-        me.winSupport.add(me.miframe = Ext.create('App.classes.ManagedIframe', {src: src}));
-        me.winSupport.show();
+		me.winSupport.remove(me.miframe);
+		me.winSupport.add(me.miframe = Ext.create('App.classes.ManagedIframe',
+		{
+			src : src
+		}));
+		me.winSupport.show();
 	},
 
-	msg: function(title, format) {
-		if(!this.msgCt) {
-			this.msgCt = Ext.core.DomHelper.insertFirst(document.body, {id: 'msg-div'}, true);
+	msg : function(title, format)
+	{
+		if (!this.msgCt)
+		{
+			this.msgCt = Ext.core.DomHelper.insertFirst(document.body,
+			{
+				id : 'msg-div'
+			}, true);
 		}
 		this.msgCt.alignTo(document, 't-t');
-		var s = Ext.String.format.apply(String, Array.prototype.slice.call(arguments, 1)),
-			m = Ext.core.DomHelper.append(this.msgCt, {html: '<div class="msg"><h3>' + title + '</h3><p>' + s + '</p></div>'}, true);
-		m.slideIn('t').pause(3000).ghost('t', {remove: true});
+		var s = Ext.String.format.apply(String, Array.prototype.slice.call(arguments, 1)), m = Ext.core.DomHelper.append(this.msgCt,
+		{
+			html : '<div class="msg"><h3>' + title + '</h3><p>' + s + '</p></div>'
+		}, true);
+		m.slideIn('t').pause(3000).ghost('t',
+		{
+			remove : true
+		});
 	},
 
-	checkSession: function() {
-		authProcedures.ckAuth(function(provider, response) {
-			if(!response.result.authorized) {
-					window.location = './';
+	checkSession : function()
+	{
+		authProcedures.ckAuth(function(provider, response)
+		{
+			if (!response.result.authorized)
+			{
+				window.location = './';
 			}
 		});
 	},
 
-	patientBtnTpl: function() {
-		return Ext.create('Ext.XTemplate',
-			'<div class="patient_btn  {priority}">',
-			'<div class="patient_btn_img"><img src="resources/images/icons/user_32.png"></div>',
-			'<div class="patient_btn_info">',
-			'<div class="patient_btn_name">{name}</div>',
-			'<div class="patient_btn_record">( {pid} )</div>',
-			'</div>',
-			'</div>');
+	patientBtnTpl : function()
+	{
+		return Ext.create('Ext.XTemplate', '<div class="patient_btn  {priority}">', '<div class="patient_btn_img"><img src="resources/images/icons/user_32.png"></div>', '<div class="patient_btn_info">', '<div class="patient_btn_name">{name}</div>', '<div class="patient_btn_record">( {pid} )</div>', '</div>', '</div>');
 	},
 
-	patientBtnRender: function(btn) {
+	patientBtnRender : function(btn)
+	{
 		this.unsetPatient();
 		this.initializePatientPoolDragZone(btn)
 	},
 
-	getPatientsInPoolArea: function() {
-		var me = this,
-            poolArea = me.patientPoolArea,
-			height = 35;
-		this.patientPoolStore.load({
-			callback: function(records) {
-				if(records.length >= 1) {
-                    for(var i=0; i < records.length; i++ ){
-                        height = height + 45;
-                    }
-				} else {
+	getPatientsInPoolArea : function()
+	{
+		var me = this, poolArea = me.patientPoolArea, height = 35;
+		this.patientPoolStore.load(
+		{
+			callback : function(records)
+			{
+				if (records.length >= 1)
+				{
+					for (var i = 0; i < records.length; i++)
+					{
+						height = height + 45;
+					}
+				}
+				else
+				{
 					height = 25;
 				}
-                if(me.navColumn.collapsed === false && !me.navColumn.isCollapsingOrExpanding){
-                    height = (height > 300) ? 300 : height;
-    				poolArea.down('dataview').refresh();
-    				poolArea.setHeight(height);
-                }
+				if (me.navColumn.collapsed === false && !me.navColumn.isCollapsingOrExpanding)
+				{
+					height = (height > 300) ? 300 : height;
+					poolArea.down('dataview').refresh();
+					poolArea.setHeight(height);
+				}
 			}
 		});
 
@@ -44259,101 +46909,126 @@ Ext.define('App.view.Viewport', {
 
 	},
 
-
-    cancelAutoLogout:function(){
-        var me = this;
-        me.el.unmask();
-        me.LogoutTask.stop(me.LogoutTaskTimer);
-        me.logoutWarinigWindow.destroy();
-        delete me.logoutWarinigWindow;
-        App.classes.ActivityMonitor.start();
-    },
-
-    startAutoLogout:function(){
-        var me = this;
-        me.logoutWarinigWindow = Ext.create('Ext.Container',{
-            floating:true,
-            cls:'logout-warning-window',
-            html:'Logging Out in...',
-            seconds:10
-        }).show();
-        app.el.mask();
-        if(!me.LogoutTask) me.LogoutTask = new Ext.util.TaskRunner();
-        if(!me.LogoutTaskTimer){
-            me.LogoutTaskTimer = me.LogoutTask.start({
-                scope:me,
-                run: me.logoutCounter,
-                interval: 1000
-            });
-        }else{
-            me.LogoutTask.start(me.LogoutTaskTimer);
-        }
-
-
-    },
-    logoutCounter:function(){
-        var me = this,
-            sec = me.logoutWarinigWindow.seconds - 1;
-        if(sec <= 0) {
-            me.logoutWarinigWindow.update('Logging Out... Bye! Bye!');
-            me.appLogout(true);
-        }else{
-            me.logoutWarinigWindow.update('Logging Out in '+sec+'sec');
-            me.logoutWarinigWindow.seconds = sec;
-            say('Logging Out in '+sec+'sec');
-        }
-    },
-
-	appLogout: function(auto) {
-        var me = this;
-        if(auto === true){
-            me.setTask(false);
-            authProcedures.unAuth(function() {
-                window.location = './'
-            });
-        }else{
-            Ext.Msg.show({
-                title  : i18n['please_confirm'] + '...',
-                msg    : i18n['are_you_sure_to_quit'] + ' GaiaEHR?',
-                icon   : Ext.MessageBox.QUESTION,
-                buttons: Ext.Msg.YESNO,
-                fn     : function(btn) {
-                    if(btn == 'yes') {
-                        authProcedures.unAuth(function() {
-                            me.setTask(false);
-                            window.location = './'
-                        });
-                    }
-                }
-            });
-        }
+	cancelAutoLogout : function()
+	{
+		var me = this;
+		me.el.unmask();
+		me.LogoutTask.stop(me.LogoutTaskTimer);
+		me.logoutWarinigWindow.destroy();
+		delete me.logoutWarinigWindow;
+		App.classes.ActivityMonitor.start();
 	},
 
-	initializePatientPoolDragZone: function(panel) {
-		panel.dragZone = Ext.create('Ext.dd.DragZone', panel.getEl(), {
-			ddGroup    : 'patientPoolAreas',
-			getDragData: function() {
+	startAutoLogout : function()
+	{
+		var me = this;
+		me.logoutWarinigWindow = Ext.create('Ext.Container',
+		{
+			floating : true,
+			cls : 'logout-warning-window',
+			html : 'Logging Out in...',
+			seconds : 10
+		}).show();
+		app.el.mask();
+		if (!me.LogoutTask)
+			me.LogoutTask = new Ext.util.TaskRunner();
+		if (!me.LogoutTaskTimer)
+		{
+			me.LogoutTaskTimer = me.LogoutTask.start(
+			{
+				scope : me,
+				run : me.logoutCounter,
+				interval : 1000
+			});
+		}
+		else
+		{
+			me.LogoutTask.start(me.LogoutTaskTimer);
+		}
+
+	},
+	logoutCounter : function()
+	{
+		var me = this, sec = me.logoutWarinigWindow.seconds - 1;
+		if (sec <= 0)
+		{
+			me.logoutWarinigWindow.update('Logging Out... Bye! Bye!');
+			me.appLogout(true);
+		}
+		else
+		{
+			me.logoutWarinigWindow.update('Logging Out in ' + sec + 'sec');
+			me.logoutWarinigWindow.seconds = sec;
+			say('Logging Out in ' + sec + 'sec');
+		}
+	},
+
+	appLogout : function(auto)
+	{
+		var me = this;
+		if (auto === true)
+		{
+			me.setTask(false);
+			authProcedures.unAuth(function()
+			{
+				window.location = './'
+			});
+		}
+		else
+		{
+			Ext.Msg.show(
+			{
+				title : i18n['please_confirm'] + '...',
+				msg : i18n['are_you_sure_to_quit'] + ' GaiaEHR?',
+				icon : Ext.MessageBox.QUESTION,
+				buttons : Ext.Msg.YESNO,
+				fn : function(btn)
+				{
+					if (btn == 'yes')
+					{
+						authProcedures.unAuth(function()
+						{
+							me.setTask(false);
+							window.location = './'
+						});
+					}
+				}
+			});
+		}
+	},
+
+	initializePatientPoolDragZone : function(panel)
+	{
+		panel.dragZone = Ext.create('Ext.dd.DragZone', panel.getEl(),
+		{
+			ddGroup : 'patientPoolAreas',
+			getDragData : function()
+			{
 				var sourceEl = app.patientBtn.el.dom, d;
-				if(app.currCardCmp != app.ppdz){
+				if (app.currCardCmp != app.ppdz)
+				{
 					app.MainPanel.getLayout().setActiveItem(app.ppdz);
 				}
 				app.navColumn.down('treepanel').getSelectionModel().deselectAll();
 
-				if(sourceEl) {
+				if (sourceEl)
+				{
 					d = sourceEl.cloneNode(true);
 					d.id = Ext.id();
-					return panel.dragData = {
-						copy    : true,
-						sourceEl: sourceEl,
-						repairXY: Ext.fly(sourceEl).getXY(),
-						ddel    : d,
-						records : [ panel.data ],
+					return panel.dragData =
+					{
+						copy : true,
+						sourceEl : sourceEl,
+						repairXY : Ext.fly(sourceEl).getXY(),
+						ddel : d,
+						records : [panel.data],
 						patient : true
 					};
 				}
-                return false;
+				return false;
 			},
-			getRepairXY: function() {
+			getRepairXY : function()
+			{
 				app.goBack();
 				return this.dragData.repairXY;
 			}
@@ -44364,21 +47039,27 @@ Ext.define('App.view.Viewport', {
 	 *
 	 * @param panel
 	 */
-	initializeOpenEncounterDragZone: function(panel) {
-		panel.dragZone = Ext.create('Ext.dd.DragZone', panel.getEl(), {
-			ddGroup:'patient',
-			newGroupReset:true,
-			b4MouseDown:function(e){
-				if(this.newGroupReset){
-					var sourceEl = e.getTarget(panel.itemSelector, 10),
-						patientData = panel.getRecord(sourceEl).data;
+	initializeOpenEncounterDragZone : function(panel)
+	{
+		panel.dragZone = Ext.create('Ext.dd.DragZone', panel.getEl(),
+		{
+			ddGroup : 'patient',
+			newGroupReset : true,
+			b4MouseDown : function(e)
+			{
+				if (this.newGroupReset)
+				{
+					var sourceEl = e.getTarget(panel.itemSelector, 10), patientData = panel.getRecord(sourceEl).data;
 					this.removeFromGroup(this.ddGroup);
-                    say('initializeOpenEncounterDragZone | patientData:');
+					say('initializeOpenEncounterDragZone | patientData:');
 					say(patientData);
-					if(patientData.floorPlanId != null && patientData.patientZoneId == null){
+					if (patientData.floorPlanId != null && patientData.patientZoneId == null)
+					{
 						app.navigateTo('panelAreaFloorPlan');
 						this.ddGroup = 'patientPoolAreas';
-					}else{
+					}
+					else
+					{
 						this.ddGroup = 'patient';
 						app.MainPanel.el.mask(i18n['drop_here_to_open'] + ' <strong>"' + panel.getRecord(sourceEl).data.name + '"</strong> ' + i18n['current_encounter']);
 					}
@@ -44388,72 +47069,93 @@ Ext.define('App.view.Viewport', {
 				this.autoOffset(e.getPageX(), e.getPageY());
 			},
 
-			endDrag: function(e) {
+			endDrag : function(e)
+			{
 				this.newGroupReset = true;
 			},
 
-			getDragData: function(e) {
-				var sourceEl = e.getTarget(panel.itemSelector, 10), d,
-					patientData = panel.getRecord(sourceEl).data;
-				if(sourceEl) {
+			getDragData : function(e)
+			{
+				var sourceEl = e.getTarget(panel.itemSelector, 10), d, patientData = panel.getRecord(sourceEl).data;
+				if (sourceEl)
+				{
 					d = sourceEl.cloneNode(true);
 					d.id = Ext.id();
-					return panel.dragData = {
-						sourceEl   : sourceEl,
-						repairXY   : Ext.fly(sourceEl).getXY(),
-						ddel       : d,
-						patientData: patientData
+					return panel.dragData =
+					{
+						sourceEl : sourceEl,
+						repairXY : Ext.fly(sourceEl).getXY(),
+						ddel : d,
+						patientData : patientData
 					};
 				}
-                return false;
+				return false;
 			},
 
-			getRepairXY: function() {
+			getRepairXY : function()
+			{
 				app.MainPanel.el.unmask();
 				this.newGroupReset = true;
 				return this.dragData.repairXY;
 			}
 		});
 	},
-	
-	onDocumentView: function(src) {
+
+	onDocumentView : function(src)
+	{
 		var me = this;
-		if(me.documentViewWindow) me.DocumentViewerWindow.remove(me.documentViewWindow);
-		me.DocumentViewerWindow.add(me.documentViewWindow = Ext.create('App.classes.ManagedIframe', {src: src}));
+		if (me.documentViewWindow)
+			me.DocumentViewerWindow.remove(me.documentViewWindow);
+		me.DocumentViewerWindow.add(me.documentViewWindow = Ext.create('App.classes.ManagedIframe',
+		{
+			src : src
+		}));
 		me.DocumentViewerWindow.show();
 	},
-	
+
 	/**
 	 *
 	 * @param panel
 	 */
-	initializeOpenEncounterDropZone: function(panel) {
+	initializeOpenEncounterDropZone : function(panel)
+	{
 		var me = this;
-		panel.dropZone = Ext.create('Ext.dd.DropZone', panel.getEl(), {
-			ddGroup   : 'patient',
-			notifyOver: function(dd, e, data) {
+		panel.dropZone = Ext.create('Ext.dd.DropZone', panel.getEl(),
+		{
+			ddGroup : 'patient',
+			notifyOver : function(dd, e, data)
+			{
 				return Ext.dd.DropZone.prototype.dropAllowed;
 			},
-			notifyDrop: function(dd, e, data) {
+			notifyDrop : function(dd, e, data)
+			{
 				app.MainPanel.el.unmask();
-				me.setPatient(data.patientData.pid, data.patientData.name, function() {
+				me.setPatient(data.patientData.pid, data.patientData.name, function()
+				{
 					/**
 					 * if encounter id is set and pool area is check out....  go to Patient Checkout panel
 					 */
-					if(data.patientData.eid && data.patientData.poolArea == 'Check Out') {
+					if (data.patientData.eid && data.patientData.poolArea == 'Check Out')
+					{
 						me.checkOutPatient(data.patientData.eid);
 
-					/**
-					 * if encounter id is set and and user has access to encounter area... go to Encounter panel
-					 * and open the encounter
-					 */
-					} else if(data.patientData.eid && acl['access_encounters']) {
+						/**
+						 * if encounter id is set and and user has access to encounter area... go to Encounter panel
+						 * and open the encounter
+						 */
+					}
+					else
+					if (data.patientData.eid && acl['access_encounters'])
+					{
 						me.openEncounter(data.patientData.eid);
 
-					/**
-					 * else go to patient summary
-					 */
-					} else if(data.patientData.floorPlanId == null){
+						/**
+						 * else go to patient summary
+						 */
+					}
+					else
+					if (data.patientData.floorPlanId == null)
+					{
 						me.openPatientSummary();
 					}
 				});
@@ -44466,90 +47168,119 @@ Ext.define('App.view.Viewport', {
 	 * When the application finishes loading all the GaiaEHR core.
 	 * Then it will load all the modules.
 	 */
-	appRender: function() {
-        this.loadModules();
+	appRender : function()
+	{
+		this.loadModules();
 	},
 
 	/*
 	 * Load all the modules on the modules folder.
-	 * This folder will hold modules created by third-party. 
+	 * This folder will hold modules created by third-party.
 	 */
-    loadModules:function(){
-        Modules.getEnabledModules(function(provider, response){
-            var modules = response.result;
-            for(var i=0; i < modules.length; i++){
-                say('Module ' + modules[i].dir + ' loaded!');
-                Ext.create('Modules.'+modules[i].dir+'.Main');
-            }
-        });
-    },
+	loadModules : function()
+	{
+		Modules.getEnabledModules(function(provider, response)
+		{
+			var modules = response.result;
+			for (var i = 0; i < modules.length; i++)
+			{
+				say('Module ' + modules[i].dir + ' loaded!');
+				Ext.create('Modules.' + modules[i].dir + '.Main');
+			}
+		});
+	},
 
-	removeAppMask: function() {
+	removeAppMask : function()
+	{
 		Ext.get('mainapp-loading').remove();
-		Ext.get('mainapp-loading-mask').fadeOut({remove: true});
+		Ext.get('mainapp-loading-mask').fadeOut(
+		{
+			remove : true
+		});
 	},
 
-	beforeAppRender: function() {
+	beforeAppRender : function()
+	{
 
 	},
 
-	getCurrPatient: function() {
+	getCurrPatient : function()
+	{
 		return this.patient.pid;
 	},
 
-	getApp: function() {
+	getApp : function()
+	{
 		return this;
 	},
 
-	setTask:function(start){
-        var me = this;
-        if(start){
+	setTask : function(start)
+	{
+		var me = this;
+		if (start)
+		{
 
-            App.classes.ActivityMonitor.init({
-                interval    : me.activityMonitorInterval * 1000,
-                maxInactive : (1000 * 60 * me.activityMonitorMaxInactive),
-                verbose:true,
-                isInactive:function(){
-                    me.startAutoLogout();
-                }
-            });
-            Ext.TaskManager.start(me.cronTask);
-            App.classes.ActivityMonitor.start();
-        }else{
-            Ext.TaskManager.stop(me.cronTask);
-            App.classes.ActivityMonitor.stop();
-        }
+			App.classes.ActivityMonitor.init(
+			{
+				interval : me.activityMonitorInterval * 1000,
+				maxInactive : (1000 * 60 * me.activityMonitorMaxInactive),
+				verbose : true,
+				isInactive : function()
+				{
+					me.startAutoLogout();
+				}
+			});
+			Ext.TaskManager.start(me.cronTask);
+			App.classes.ActivityMonitor.start();
+		}
+		else
+		{
+			Ext.TaskManager.stop(me.cronTask);
+			App.classes.ActivityMonitor.stop();
+		}
 	},
 
 	/*
 	 * Access denied massage.
 	 */
-	accessDenied: function() {
-		Ext.Msg.show({
-			title  : 'Oops!',
-			msg    : i18n['access_denied'],
-			buttons: Ext.Msg.OK,
-			icon   : Ext.Msg.ERROR
+	accessDenied : function()
+	{
+		Ext.Msg.show(
+		{
+			title : 'Oops!',
+			msg : i18n['access_denied'],
+			buttons : Ext.Msg.OK,
+			icon : Ext.Msg.ERROR
 		});
 	},
 
-	alert: function(msg,icon) {
-		if(icon == 'error'){
+	alert : function(msg, icon)
+	{
+		if (icon == 'error')
+		{
 			icon = Ext.Msg.ERROR
-		}else if(icon == 'warning'){
+		}
+		else
+		if (icon == 'warning')
+		{
 			icon = Ext.Msg.WARNING
-		}else if(icon == 'question'){
+		}
+		else
+		if (icon == 'question')
+		{
 			icon = Ext.Msg.QUESTION
-		}else{
+		}
+		else
+		{
 			icon = Ext.Msg.INFO
 		}
-		Ext.Msg.show({
-			title  : 'Oops!',
-			msg    : msg,
-			buttons: Ext.Msg.OK,
-			icon   : icon
+		Ext.Msg.show(
+		{
+			title : 'Oops!',
+			msg : msg,
+			buttons : Ext.Msg.OK,
+			icon : icon
 		});
 	}
-
-});
+}); 
 

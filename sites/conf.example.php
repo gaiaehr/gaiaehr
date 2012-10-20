@@ -4,6 +4,7 @@
  * MySQL Config
  * Database Init Configuration
  */
+$_SESSION['site'] = array();
 $_SESSION['site']['db']['type'] = 'mysql';
 $_SESSION['site']['db']['host'] = '%host%';
 $_SESSION['site']['db']['port'] = '%port%';
@@ -20,6 +21,7 @@ $_SESSION['site']['AESkey'] = "%key%";
  * Check if the localization variable already has a value, if not pass the 
  * default language.
  */
+$_SESSION['site']['name']  = '%sitename%';
 $_SESSION['site']['default_localization']  = '%lang%';
 $_SESSION['site']['theme'] = '%theme%';
 $_SESSION['site']['timezone'] = '%timezone%';

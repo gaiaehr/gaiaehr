@@ -55,7 +55,6 @@ class DocumentHandler
 	public function createDocument($params){
 
 		$path =  $this->setWorkingDir($params) . $this->nameFile();
-        $path = str_replace('/','\\',$path);
 
 
 		    $this->documents->PDFDocumentBuilder($params, $path);

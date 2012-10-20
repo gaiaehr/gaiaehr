@@ -47,14 +47,14 @@ class Rx extends Reports
 		$html2 = "";
 		$html .= "<table  border=\"0\" width=\"100%\">
             <tr>
-               <th colspan=\"10\" style=\"font-weight: bold;\">" . i18nRouter::t("prescriptions_and_dispensations") . "</th>
+               <th colspan=\"11\" style=\"font-weight: bold;\">" . i18nRouter::t("prescriptions_and_dispensations") . "</th>
             </tr>
             <tr>
                <td colspan=\"2\">" . i18nRouter::t("patient") . "</td>
                <td>" . i18nRouter::t("pid") . "</td>
                <td colspan=\"2\">" . i18nRouter::t("drug_name") . "</td>
                <td>" . i18nRouter::t("units") . "</td>
-               <td>" . i18nRouter::t("type") . "</td>
+               <td colspan=\"2\">" . i18nRouter::t("type") . "</td>
                <td colspan=\"3\">" . i18nRouter::t("instructed") . "</td>
             </tr>";
 		$html2 = $this -> htmlRxList($params, $html2);
@@ -69,12 +69,14 @@ class Rx extends Reports
 		);
 	}
 
-	public function getPrescriptionsFromAndToAndPid($from, $to, $drug = null)
+	public function getPrescriptionsFromAndToAndPid($from, $to, $drug = null, $pid = null)
 	{
 		$alldata = '';
 		$sql = " SELECT *
 	               FROM patient_prescriptions
 	              WHERE created_date BETWEEN '$from 00:00:00' AND '$to 23:59:59'";
+		if (isset($pid) && $pid != '')
+			$sql .= " AND pid = '$pid'";
 		$this -> db -> setSQL($sql);
 		foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $key => $data)
 		{
@@ -92,7 +94,7 @@ class Rx extends Reports
 
 	public function htmlRxList($params, $html)
 	{
-		foreach ($this->getPrescriptionsFromAndToAndPid($params->from,$params->to,$params->drug) AS $data)
+		foreach ($this->getPrescriptionsFromAndToAndPid($params->from,$params->to,$params->drug,$params->pid) AS $data)
 		{
 			foreach ($data as $data2)
 			{
@@ -102,7 +104,7 @@ class Rx extends Reports
 						<td>" . $data2['pid'] . "</td>
 						<td colspan=\"2\">" . $data2['medication'] . "</td>
 						<td>" . $data2['take_pills'] . "</td>
-						<td>" . $data2['type'] . "</td>
+						<td colspan=\"2\">" . $data2['type'] . "</td>
 						<td colspan=\"3\">" . $data2['prescription_often'] . ' ' . $data2['prescription_when'] . "</td>
 					</tr>";
 			}

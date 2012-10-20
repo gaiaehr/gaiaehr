@@ -47,7 +47,7 @@ Ext.define('App.classes.LivePatientSearch', {
 			store       : me.store,
 			displayField: 'fullname',
 			valueField  : 'pid',
-			emptyText   : me.emptyText,
+            emptyText   : i18n['search_for_a_patient'] + '...',
 			typeAhead   : false,
 			hideTrigger : true,
 			minChars    : 1,

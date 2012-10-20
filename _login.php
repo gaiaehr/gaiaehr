@@ -7,6 +7,8 @@
  * Revision: N/A
  */
 if(!defined('_GaiaEXEC')) die('No direct access allowed.');
+$lang = (isset($_SESSION['site']['localization']) ? $_SESSION['site']['localization'] : 'en_US');
+$site = (isset($_SESSION['site']['dir']) ? $_SESSION['site']['dir'] : false);
 ?>
 <html>
     <head>
@@ -21,7 +23,7 @@ if(!defined('_GaiaEXEC')) die('No direct access allowed.');
 	    <script src="JSrouter.php"></script>
         <script src="data/api.php"></script>
         <script type="text/javascript">
-	        var app, site = '<?php print $_SESSION['site']['dir'] ?>', lang = '<?php print $_SESSION['site']['localization'] ?>', i18n;
+	        var app, site = '<?php print $site ?>', lang = '<?php print $lang ?>', i18n;
 	        function say(a)
 	      		{
 	      			console.log(a);

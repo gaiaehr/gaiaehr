@@ -34,11 +34,12 @@ $mobile = new Mobile_Detect();
  */
 $site = (isset($_GET['site']) ? $_GET['site'] : 'default');
 
-
 if(file_exists('sites/'.$site.'/conf.php'))
 {
 	include_once('sites/'.$site.'/conf.php');
 	$_SESSION['site']['localization'] = (isset($_SESSION['site']['localization']) && ($_SESSION['site']['default_localization'] != $_SESSION['site']['localization'])) ? $_SESSION['site']['localization'] : 'en_US';
+}else{
+	$_SESSION['site'] = array('error' => 'Site configuration file not found, Please contact Support Desk. Thanks!');
 };
 /**
  * Make the auth process
@@ -60,7 +61,7 @@ if(
 	/**
      * if mobile go to mobile app, else go to app
      */
-    if($_SESSION['site']['checkInMode'])
+    if(isset($_SESSION['site']['checkInMode']) && $_SESSION['site']['checkInMode'])
     {
         include_once('checkin/checkin.php');
     }
@@ -89,6 +90,7 @@ else // Make the logon process or Setup process
 	} 
 	else 
 	{
+		$_SESSION['user']['auth'] = false;
         // if mobile go to mobile app, else go to app
         if ($mobile->isMobile()) 
         {

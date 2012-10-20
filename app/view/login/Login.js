@@ -16,6 +16,8 @@ Ext.define('App.view.login.Login',{
         // setting to show site field
         me.showSite = false;
 
+        me.siteError = window.site === false || window.site === '';
+
         Ext.define('SitesModel', {
             extend: 'Ext.data.Model',
             fields: [
@@ -170,7 +172,19 @@ Ext.define('App.view.login.Login',{
             closable		: false,
             width			: 495,
             bodyStyle		: 'background: #ffffff;',
-            items			: [{ xtype: 'box', width: 483, height: 135, html: '<img src="resources/images/logon_header.png" />'}, me.formLogin ],
+            items			: [
+                {
+                    xtype: 'box',
+                    width: 483,
+                    height: 135,
+                    html: '<img src="resources/images/logon_header.png" />'
+                },
+                (me.siteError) ? {
+                    xtype:'container',
+                    padding: 15,
+                    html:'Sorry no site configuration file found. Please contact Support Desk'
+                } : me.formLogin
+            ],
             listeners:{
                 scope:me,
                 afterrender:me.afterAppRender
@@ -293,40 +307,41 @@ Ext.define('App.view.login.Login',{
     afterAppRender:function(){
         var me = this,
             langCmb = me.formLogin.getComponent('lang');
-        if(me.showSite){
-            me.storeSites.load({
-                scope   :me,
-                callback:function(records,operation,success){
-                    if(success === true){
-                        /**
-                         * Lets add a delay to make sure the page is fully render.
-                         * This is to compensate for slow browser.
-                         */
-                        Ext.Function.defer(function(){
-                            me.currSite = records[0].data.site;
-                            if(me.showSite){
-                                me.formLogin.getComponent('site').setValue(this.currSite);
-                            }
-                        },100,this);
-                    }else{
-                        this.msg('Opps! Something went wrong...',  'No site found.');
+        if(!me.siteError){
+            if(me.showSite){
+                me.storeSites.load({
+                    scope   :me,
+                    callback:function(records,operation,success){
+                        if(success === true){
+                            /**
+                             * Lets add a delay to make sure the page is fully render.
+                             * This is to compensate for slow browser.
+                             */
+                            Ext.Function.defer(function(){
+                                me.currSite = records[0].data.site;
+                                if(me.showSite){
+                                    me.formLogin.getComponent('site').setValue(this.currSite);
+                                }
+                            },100,this);
+                        }else{
+                            this.msg('Opps! Something went wrong...',  'No site found.');
+                        }
                     }
+                });
+            }
+
+            langCmb.store.load({
+                callback:function(){
+                    me.currLang = 'en_US';
+                    me.formLogin.getComponent('lang').setValue(me.currLang);
                 }
             });
+
+
+            Ext.Function.defer(function(){
+                me.formLogin.getComponent('authUser').inputEl.focus();
+            },200);
         }
-
-        langCmb.store.load({
-            callback:function(){
-                me.currLang = 'en_US';
-                me.formLogin.getComponent('lang').setValue(me.currLang);
-            }
-        });
-
-
-        Ext.Function.defer(function(){
-            me.formLogin.getComponent('authUser').inputEl.focus();
-        },200);
-
     },
     /**
      *  animated msg alert

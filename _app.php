@@ -19,15 +19,14 @@ $_SESSION['site']['flops'] = 0;
 <html>
 	<head>
 		<script type="text/javascript">
-			var app, acl =
-			{
-			}, user =
-			{
-			}, settings =
-			{
-			}, i18n =
-			{
-			}, ext = 'extjs-4.1.1a', version = '0.0.4.166', requires;
+			var app,
+				acl = {},
+				user = {},
+				settings = {},
+				i18n = {},
+				ext = 'extjs-4.1.1a',
+				version = '0.0.4.166',
+				requires;
 		</script>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 		<title>GaiaEHR :: (Electronic Health Records)</title>
@@ -58,6 +57,7 @@ $_SESSION['site']['flops'] = 0;
 		<script src="JSrouter.php"></script>
 		<script src="data/api.php"></script>
 		<script type="text/javascript">
+			console.log(user);
 			/*
 			 * Ext Localization file
 			 * Using a anonymous function, in javascript.
@@ -98,20 +98,144 @@ $_SESSION['site']['flops'] = 0;
 			{
 				Ext.direct.Manager.addProvider(App.data[x]);
 			}
-			requires = ['Ext.ux.LiveSearchGridPanel', 'Ext.ux.SlidingPager', 'Ext.ux.PreviewPlugin',
-			/*
-			 * Load the models, the model are the representative of the database
-			 * table structure with modifications behind the PHP counterpart.
-			 * All table should be declared here, and Sencha's ExtJS models.
-			 * This are spreaded in all the core application.
-			 */
-			'App.model.administration.ActiveProblems', 'App.model.administration.DefaultDocuments', 'App.model.administration.DocumentsTemplates', 'App.model.administration.ExternalDataLoads', 'App.model.administration.FloorPlans', 'App.model.administration.FloorPlanZones', 'App.model.administration.HeadersAndFooters', 'App.model.administration.ImmunizationRelations', 'App.model.administration.LabObservations', 'App.model.administration.Medications', 'App.model.administration.PreventiveCare', 'App.model.administration.PreventiveCareActiveProblems', 'App.model.administration.PreventiveCareMedications', 'App.model.administration.PreventiveCareLabs', 'App.model.administration.Services', 'App.model.miscellaneous.OfficeNotes', 'App.model.fees.Billing', 'App.model.fees.Checkout', 'App.model.fees.EncountersPayments', 'App.model.fees.PaymentTransactions', 'App.model.navigation.Navigation', 'App.model.patient.Allergies', 'App.model.patient.CheckoutAlertArea', 'App.model.patient.CptCodes', 'App.model.patient.Dental', 'App.model.patient.Disclosures', 'App.model.patient.Encounter', 'App.model.patient.EncounterCPTsICDs', 'App.model.patient.Encounters', 'App.model.patient.EventHistory', 'App.model.patient.Immunization', 'App.model.patient.ImmunizationCheck', 'App.model.patient.LaboratoryTypes', 'App.model.patient.MeaningfulUseAlert', 'App.model.patient.MedicalIssues', 'App.model.patient.Medications', 'App.model.patient.Notes', 'App.model.patient.PatientArrivalLog', 'App.model.patient.PatientCalendarEvents', 'App.model.patient.PatientDocuments', 'App.model.patient.PatientImmunization', 'App.model.patient.PatientLabsResults', 'App.model.patient.PatientsLabsOrders', 'App.model.patient.PatientsPrescription', 'App.model.patient.PreventiveCare', 'App.model.patient.QRCptCodes', 'App.model.patient.DismissedAlerts', 'App.model.patient.Reminders', 'App.model.patient.Surgery', 'App.model.patient.VectorGraph', 'App.model.patient.VisitPayment', 'App.model.patient.Vitals', 'App.model.patient.charts.BMIForAge', 'App.model.patient.charts.HeadCircumferenceInf', 'App.model.patient.charts.LengthForAgeInf', 'App.model.patient.charts.StatureForAge', 'App.model.patient.charts.WeightForAge', 'App.model.patient.charts.WeightForAgeInf', 'App.model.patient.charts.WeightForRecumbentInf', 'App.model.patient.charts.WeightForStature', 'App.model.areas.PoolArea', 'App.model.areas.PoolDropAreas',
+			requires = [
+				'Ext.ux.LiveSearchGridPanel',
+				'Ext.ux.SlidingPager',
+				'Ext.ux.PreviewPlugin',
+				/*
+				 * Load the models, the model are the representative of the database
+				 * table structure with modifications behind the PHP counterpart.
+				 * All table should be declared here, and Sencha's ExtJS models.
+				 * This are spreaded in all the core application.
+				 */
+				'App.model.administration.ActiveProblems',
+				'App.model.administration.DefaultDocuments',
+				'App.model.administration.DocumentsTemplates',
+				'App.model.administration.ExternalDataLoads',
+				'App.model.administration.FloorPlans',
+				'App.model.administration.FloorPlanZones',
+				'App.model.administration.HeadersAndFooters',
+				'App.model.administration.ImmunizationRelations',
+				'App.model.administration.LabObservations',
+				'App.model.administration.Medications',
+				'App.model.administration.PreventiveCare',
+				'App.model.administration.PreventiveCareActiveProblems',
+				'App.model.administration.PreventiveCareMedications',
+				'App.model.administration.PreventiveCareLabs',
+				'App.model.administration.Services',
+				'App.model.miscellaneous.OfficeNotes',
+				'App.model.fees.Billing',
+				'App.model.fees.Checkout',
+				'App.model.fees.EncountersPayments',
+				'App.model.fees.PaymentTransactions',
+				'App.model.navigation.Navigation',
+				'App.model.patient.Allergies',
+				'App.model.patient.CheckoutAlertArea',
+				'App.model.patient.CptCodes',
+				'App.model.patient.Dental',
+				'App.model.patient.Disclosures',
+				'App.model.patient.Encounter',
+				'App.model.patient.EncounterCPTsICDs',
+				'App.model.patient.Encounters',
+				'App.model.patient.EventHistory',
+				'App.model.patient.Immunization',
+				'App.model.patient.ImmunizationCheck',
+				'App.model.patient.LaboratoryTypes',
+				'App.model.patient.MeaningfulUseAlert',
+				'App.model.patient.MedicalIssues',
+				'App.model.patient.Medications',
+				'App.model.patient.Notes',
+				'App.model.patient.PatientArrivalLog',
+				'App.model.patient.PatientCalendarEvents',
+				'App.model.patient.PatientDocuments',
+				'App.model.patient.PatientImmunization',
+				'App.model.patient.PatientLabsResults',
+				'App.model.patient.PatientsLabsOrders',
+				'App.model.patient.PatientsPrescription',
+				'App.model.patient.PreventiveCare',
+				'App.model.patient.QRCptCodes',
+				'App.model.patient.DismissedAlerts',
+				'App.model.patient.Reminders',
+				'App.model.patient.Surgery',
+				'App.model.patient.VectorGraph',
+				'App.model.patient.VisitPayment',
+				'App.model.patient.Vitals',
+				'App.model.patient.charts.BMIForAge',
+				'App.model.patient.charts.HeadCircumferenceInf',
+				'App.model.patient.charts.LengthForAgeInf',
+				'App.model.patient.charts.StatureForAge',
+				'App.model.patient.charts.WeightForAge',
+				'App.model.patient.charts.WeightForAgeInf',
+				'App.model.patient.charts.WeightForRecumbentInf',
+				'App.model.patient.charts.WeightForStature',
+				'App.model.areas.PoolArea',
+				'App.model.areas.PoolDropAreas',
 			/*
 			 * Load all the stores used by GaiaEHR
 			 * this includes ComboBoxes, and other stores used by the web application
 			 * most of this stores are consumed by the dataStore directory.
 			 */
-			'App.store.administration.ActiveProblems', 'App.store.administration.DefaultDocuments', 'App.store.administration.DocumentsTemplates', 'App.store.administration.ExternalDataLoads', 'App.store.administration.FloorPlans', 'App.store.administration.FloorPlanZones', 'App.store.administration.HeadersAndFooters', 'App.store.administration.ImmunizationRelations', 'App.store.administration.LabObservations', 'App.store.administration.Medications', 'App.store.administration.PreventiveCare', 'App.store.administration.PreventiveCareActiveProblems', 'App.store.administration.PreventiveCareMedications', 'App.store.administration.PreventiveCareLabs', 'App.store.administration.Services', 'App.store.administration.ActiveProblems', 'App.store.miscellaneous.OfficeNotes', 'App.store.fees.Billing', 'App.store.fees.Checkout', 'App.store.fees.EncountersPayments', 'App.store.fees.PaymentTransactions', 'App.store.navigation.Navigation', 'App.store.patient.Allergies', 'App.store.patient.CheckoutAlertArea', 'App.store.patient.Dental', 'App.store.patient.Disclosures', 'App.store.patient.Encounter', 'App.store.patient.EncounterCPTsICDs', 'App.store.patient.EncounterEventHistory', 'App.store.patient.Encounters', 'App.store.patient.Immunization', 'App.store.patient.ImmunizationCheck', 'App.store.patient.LaboratoryTypes', 'App.store.patient.MeaningfulUseAlert', 'App.store.patient.MedicalIssues', 'App.store.patient.Medications', 'App.store.patient.Notes', 'App.store.patient.PatientArrivalLog', 'App.store.patient.PatientCalendarEvents', 'App.store.patient.PatientDocuments', 'App.store.patient.DismissedAlerts', 'App.store.patient.PatientImmunization', 'App.store.patient.PatientLabsResults', 'App.store.patient.PatientsLabsOrders', 'App.store.patient.PatientsPrescription', 'App.store.patient.PreventiveCare', 'App.store.patient.QRCptCodes', 'App.store.patient.Reminders', 'App.store.patient.Surgery', 'App.store.patient.VectorGraph', 'App.store.patient.VisitPayment', 'App.store.patient.Vitals', 'App.store.patient.charts.BMIForAge', 'App.store.patient.charts.HeadCircumferenceInf', 'App.store.patient.charts.LengthForAgeInf', 'App.store.patient.charts.StatureForAge', 'App.store.patient.charts.WeightForAge', 'App.store.patient.charts.WeightForAgeInf', 'App.store.patient.charts.WeightForRecumbentInf', 'App.store.patient.charts.WeightForStature', 'App.store.areas.PoolArea',
+				'App.store.administration.ActiveProblems',
+				'App.store.administration.DefaultDocuments',
+				'App.store.administration.DocumentsTemplates',
+				'App.store.administration.ExternalDataLoads',
+				'App.store.administration.FloorPlans',
+				'App.store.administration.FloorPlanZones',
+				'App.store.administration.HeadersAndFooters',
+				'App.store.administration.ImmunizationRelations',
+				'App.store.administration.LabObservations',
+				'App.store.administration.Medications',
+				'App.store.administration.PreventiveCare',
+				'App.store.administration.PreventiveCareActiveProblems',
+				'App.store.administration.PreventiveCareMedications',
+				'App.store.administration.PreventiveCareLabs',
+				'App.store.administration.Services',
+				'App.store.administration.ActiveProblems',
+				'App.store.miscellaneous.OfficeNotes',
+				'App.store.fees.Billing',
+				'App.store.fees.Checkout',
+				'App.store.fees.EncountersPayments',
+				'App.store.fees.PaymentTransactions',
+				'App.store.navigation.Navigation',
+				'App.store.patient.Allergies',
+				'App.store.patient.CheckoutAlertArea',
+				'App.store.patient.Dental',
+				'App.store.patient.Disclosures',
+				'App.store.patient.Encounter',
+				'App.store.patient.EncounterCPTsICDs',
+				'App.store.patient.EncounterEventHistory',
+				'App.store.patient.Encounters',
+				'App.store.patient.Immunization',
+				'App.store.patient.ImmunizationCheck',
+				'App.store.patient.LaboratoryTypes',
+				'App.store.patient.MeaningfulUseAlert',
+				'App.store.patient.MedicalIssues',
+				'App.store.patient.Medications',
+				'App.store.patient.Notes',
+				'App.store.patient.PatientArrivalLog',
+				'App.store.patient.PatientCalendarEvents',
+				'App.store.patient.PatientDocuments',
+				'App.store.patient.DismissedAlerts',
+				'App.store.patient.PatientImmunization',
+				'App.store.patient.PatientLabsResults',
+				'App.store.patient.PatientsLabsOrders',
+				'App.store.patient.PatientsPrescription',
+				'App.store.patient.PreventiveCare',
+				'App.store.patient.QRCptCodes',
+				'App.store.patient.Reminders',
+				'App.store.patient.Surgery',
+				'App.store.patient.VectorGraph',
+				'App.store.patient.VisitPayment',
+				'App.store.patient.Vitals',
+				'App.store.patient.charts.BMIForAge',
+				'App.store.patient.charts.HeadCircumferenceInf',
+				'App.store.patient.charts.LengthForAgeInf',
+				'App.store.patient.charts.StatureForAge',
+				'App.store.patient.charts.WeightForAge',
+				'App.store.patient.charts.WeightForAgeInf',
+				'App.store.patient.charts.WeightForRecumbentInf',
+				'App.store.patient.charts.WeightForStature',
+				'App.store.areas.PoolArea',
 			/*
 			 * Load the activity by the user
 			 * This will detect the activity of the user, if the user are idle by a
@@ -121,76 +245,199 @@ $_SESSION['site']['flops'] = 0;
 			/*
 			 * Load the classes that the CORE application needs
 			 */
-			'App.classes.AbstractPanel', 'App.classes.LiveCPTSearch', 'App.classes.LiveImmunizationSearch', 'App.classes.LiveMedicationSearch', 'App.classes.LiveLabsSearch', 'App.classes.LivePatientSearch', 'App.classes.LiveSurgeriesSearch', 'App.classes.ManagedIframe', 'App.classes.NodeDisabled', 'App.classes.PhotoIdWindow',
-			/*
-			 * Load the RenderPanel
-			 * This is the main panel when all the forms are rendered.
-			 */
-			'App.classes.RenderPanel',
-			/*
-			 * Load the charts related controls
-			 */
-			'Ext.fx.target.Sprite',
-			/*
-			 * Load the DropDown related components
-			 */
-			'Ext.dd.DropZone', 'Ext.dd.DragZone',
-			/*
-			 * Load the Extensible related controls and panels
-			 * This is the Calendar Component that GaiaEHR uses.
-			 */
-
-			/*
-			 * Load the form specific related fields
-			 * Not all the fields are the same.
-			 */
-			'App.classes.form.fields.Help', 'App.classes.form.fields.Checkbox', 'App.classes.form.fields.Currency', 'App.classes.form.fields.DateTime', 'App.classes.form.Panel', 'App.classes.grid.EventHistory', 'App.classes.grid.RowFormEditing', 'App.classes.grid.RowFormEditor',
-			/*
-			 * Load the combo boxes spreaded on all the web application
-			 * remember this are all reusable combo boxes.
-			 */
-			'App.classes.combo.ActiveFacilities', 'App.classes.combo.ActiveInsurances', 'App.classes.combo.Allergies', 'App.classes.combo.AllergiesAbdominal', 'App.classes.combo.AllergiesLocal', 'App.classes.combo.AllergiesLocation', 'App.classes.combo.AllergiesSeverity', 'App.classes.combo.AllergiesSkin', 'App.classes.combo.AllergiesSystemic', 'App.classes.combo.AllergiesTypes', 'App.classes.combo.Authorizations', 'App.classes.combo.BillingFacilities', 'App.classes.combo.CalendarCategories', 'App.classes.combo.CalendarStatus', 'App.classes.combo.CodesTypes', 'App.classes.combo.EncounterPriority', 'App.classes.combo.Facilities', 'App.classes.combo.FloorPlanAreas', 'App.classes.combo.FollowUp', 'App.classes.combo.InsurancePayerType', 'App.classes.combo.LabObservations', 'App.classes.combo.LabsTypes', 'App.classes.combo.Languages', 'App.classes.combo.Lists', 'App.classes.combo.MedicalIssues', 'App.classes.combo.Medications', 'App.classes.combo.MsgNoteType', 'App.classes.combo.MsgStatus', 'App.classes.combo.Occurrence', 'App.classes.combo.Outcome', 'App.classes.combo.Outcome2', 'App.classes.combo.PayingEntity', 'App.classes.combo.PaymentCategory', 'App.classes.combo.PaymentMethod', 'App.classes.combo.Pharmacies', 'App.classes.combo.posCodes', 'App.classes.combo.PrescriptionHowTo', 'App.classes.combo.PrescriptionOften', 'App.classes.combo.PrescriptionTypes', 'App.classes.combo.PrescriptionWhen', 'App.classes.combo.PreventiveCareTypes', 'App.classes.combo.ProceduresBodySites', 'App.classes.combo.Providers', 'App.classes.combo.Roles', 'App.classes.combo.Sex', 'App.classes.combo.SmokingStatus', 'App.classes.combo.Surgery', 'App.classes.combo.TaxId', 'App.classes.combo.Templates', 'App.classes.combo.Themes', 'App.classes.combo.Time', 'App.classes.combo.Titles', 'App.classes.combo.TransmitMethod', 'App.classes.combo.Types', 'App.classes.combo.Units', 'App.classes.combo.Users', 'App.classes.combo.YesNoNa', 'App.classes.combo.YesNo', 'App.classes.window.Window', 'App.classes.NodeDisabled', 'App.view.search.PatientSearch',
-			/*
-			 * Load the patient window related panels
-			 */
-			'App.view.patient.windows.Medical', 'App.view.patient.windows.Charts', 'App.view.patient.windows.PreventiveCare', 'App.view.patient.windows.NewDocuments', 'App.view.patient.windows.DocumentViewer', 'App.view.patient.windows.ArrivalLog',
-			/*
-			 * Load the patient related panels
-			 */
-			'App.view.dashboard.panel.PortalColumn', 'App.view.dashboard.panel.PortalDropZone', 'App.view.dashboard.panel.PortalPanel', 'App.view.dashboard.panel.OnotesPortlet', 'App.view.dashboard.panel.VisitsPortlet', 'App.view.dashboard.Dashboard',
-			/*
-			* Load the root related panels
-			*/
-			//'App.view.calendar.ExtensibleAll',
-			'App.view.calendar.Calendar', 'App.view.messages.Messages',
-			/*
-			 * Load the areas related panels
-			 */
-			'App.view.areas.FloorPlan', 'App.view.areas.PatientPoolDropZone',
-			/**
-			 * Load vector charts panel
-			 */
-			'App.view.patient.charts.BPPulseTemp', 'App.view.patient.charts.HeadCircumference', 'App.view.patient.charts.HeightForStature',
-			/*
-			 * Load the patient related panels
-			 */
-			'App.view.patient.encounter.CurrentProceduralTerminology', 'App.view.patient.encounter.HealthCareFinancingAdministrationOptions', 'App.view.patient.encounter.ICDs', 'App.view.patient.ItemsToReview', 'App.view.patient.EncounterDocumentsGrid', 'App.view.patient.encounter.ICDs', 'App.view.patient.CheckoutAlertsView', 'App.view.patient.Vitals', 'App.view.patient.NewPatient', 'App.view.patient.Summary', 'App.view.patient.ProgressNote', 'App.view.patient.Visits', 'App.view.patient.Encounter', 'App.view.patient.windows.Medical', 'App.view.patient.VisitCheckout',
-			/*
-			 * Load the fees related panels
-			 */
-			'App.view.fees.Billing', 'App.view.fees.PaymentEntryWindow', 'App.view.fees.Payments',
-			/*
-			 * Load the administration related panels
-			 */
-			'App.view.administration.DataManager', 'App.view.administration.Documents', 'App.view.administration.Facilities', 'App.view.administration.Globals', 'App.view.administration.Layout', 'App.view.administration.Lists', 'App.view.administration.Log', 'App.view.administration.Medications', 'App.view.administration.FloorPlans', 'App.view.administration.Practice', 'App.view.administration.PreventiveCare', 'App.view.administration.Roles', 'App.view.administration.ExternalDataLoads', 'App.view.administration.Users',
-			/*
-			 * Load the miscellaneous related panels
-			 */
-			'App.view.miscellaneous.Addressbook', 'App.view.miscellaneous.MyAccount', 'App.view.miscellaneous.MySettings', 'App.view.miscellaneous.OfficeNotes', 'App.view.miscellaneous.Websearch', 'App.view.signature.SignatureWindow',
-			/*
-			 * Dynamically load the modules
-			 */
-			'Modules.Module'];
+			'App.classes.AbstractPanel',
+				'App.classes.LiveCPTSearch',
+				'App.classes.LiveImmunizationSearch',
+				'App.classes.LiveMedicationSearch',
+				'App.classes.LiveLabsSearch',
+				'App.classes.LivePatientSearch',
+				'App.classes.LiveSurgeriesSearch',
+				'App.classes.ManagedIframe',
+				'App.classes.NodeDisabled',
+				'App.classes.PhotoIdWindow',
+				/*
+				 * Load the RenderPanel
+				 * This is the main panel when all the forms are rendered.
+			     */
+				'App.classes.RenderPanel',
+				/*
+				 * Load the charts related controls
+				 */
+				'Ext.fx.target.Sprite',
+				/*
+				 * Load the DropDown related components
+				 */
+				'Ext.dd.DropZone', 'Ext.dd.DragZone',
+				/*
+				 * Load the Extensible related controls and panels
+				 * This is the Calendar Component that GaiaEHR uses.
+				 */
+				/*
+				 * Load the form specific related fields
+				 * Not all the fields are the same.
+				 */
+				'App.classes.form.fields.Help',
+				'App.classes.form.fields.Checkbox',
+				'App.classes.form.fields.Currency',
+				'App.classes.form.fields.DateTime',
+				'App.classes.form.Panel',
+				'App.classes.grid.EventHistory',
+				'App.classes.grid.RowFormEditing',
+				'App.classes.grid.RowFormEditor',
+				/*
+				 * Load the combo boxes spreaded on all the web application
+				 * remember this are all reusable combo boxes.
+				 */
+				'App.classes.combo.ActiveFacilities',
+				'App.classes.combo.ActiveInsurances',
+				'App.classes.combo.Allergies',
+				'App.classes.combo.AllergiesAbdominal',
+				'App.classes.combo.AllergiesLocal',
+				'App.classes.combo.AllergiesLocation',
+				'App.classes.combo.AllergiesSeverity',
+				'App.classes.combo.AllergiesSkin',
+				'App.classes.combo.AllergiesSystemic',
+				'App.classes.combo.AllergiesTypes',
+				'App.classes.combo.Authorizations',
+				'App.classes.combo.BillingFacilities',
+				'App.classes.combo.CalendarCategories',
+				'App.classes.combo.CalendarStatus',
+				'App.classes.combo.CodesTypes',
+				'App.classes.combo.EncounterPriority',
+				'App.classes.combo.Facilities',
+				'App.classes.combo.FloorPlanAreas',
+				'App.classes.combo.FollowUp',
+				'App.classes.combo.InsurancePayerType',
+				'App.classes.combo.LabObservations',
+				'App.classes.combo.LabsTypes',
+				'App.classes.combo.Languages',
+				'App.classes.combo.Lists',
+				'App.classes.combo.MedicalIssues',
+				'App.classes.combo.Medications',
+				'App.classes.combo.MsgNoteType',
+				'App.classes.combo.MsgStatus',
+				'App.classes.combo.Occurrence',
+				'App.classes.combo.Outcome',
+				'App.classes.combo.Outcome2',
+				'App.classes.combo.PayingEntity',
+				'App.classes.combo.PaymentCategory',
+				'App.classes.combo.PaymentMethod',
+				'App.classes.combo.Pharmacies',
+				'App.classes.combo.posCodes',
+				'App.classes.combo.PrescriptionHowTo',
+				'App.classes.combo.PrescriptionOften',
+				'App.classes.combo.PrescriptionTypes',
+				'App.classes.combo.PrescriptionWhen',
+				'App.classes.combo.PreventiveCareTypes',
+				'App.classes.combo.ProceduresBodySites',
+				'App.classes.combo.Providers',
+				'App.classes.combo.Roles',
+				'App.classes.combo.Sex',
+				'App.classes.combo.SmokingStatus',
+				'App.classes.combo.Surgery',
+				'App.classes.combo.TaxId',
+				'App.classes.combo.Templates',
+				'App.classes.combo.Themes',
+				'App.classes.combo.Time',
+				'App.classes.combo.Titles',
+				'App.classes.combo.TransmitMethod',
+				'App.classes.combo.Types',
+				'App.classes.combo.Units',
+				'App.classes.combo.Users',
+				'App.classes.combo.YesNoNa',
+				'App.classes.combo.YesNo',
+				'App.classes.window.Window',
+				'App.classes.NodeDisabled',
+				'App.view.search.PatientSearch',
+				/*
+				 * Load the patient window related panels
+				 */
+				'App.view.patient.windows.Medical',
+				'App.view.patient.windows.Charts',
+				'App.view.patient.windows.PreventiveCare',
+				'App.view.patient.windows.NewDocuments',
+				'App.view.patient.windows.DocumentViewer',
+				'App.view.patient.windows.ArrivalLog',
+				/*
+				 * Load the patient related panels
+				 */
+				'App.view.dashboard.panel.PortalColumn',
+				'App.view.dashboard.panel.PortalDropZone',
+				'App.view.dashboard.panel.PortalPanel',
+				'App.view.dashboard.panel.OnotesPortlet',
+				'App.view.dashboard.panel.VisitsPortlet',
+				'App.view.dashboard.Dashboard',
+				/*
+				* Load the root related panels
+				*/
+				//'App.view.calendar.ExtensibleAll',
+				'App.view.calendar.Calendar',
+				'App.view.messages.Messages',
+				/*
+				 * Load the areas related panels
+				 */
+				'App.view.areas.FloorPlan',
+				'App.view.areas.PatientPoolDropZone',
+				/**
+				 * Load vector charts panel
+				 */
+				'App.view.patient.charts.BPPulseTemp',
+				'App.view.patient.charts.HeadCircumference',
+				'App.view.patient.charts.HeightForStature',
+				/*
+				 * Load the patient related panels
+				 */
+				'App.view.patient.encounter.CurrentProceduralTerminology',
+				'App.view.patient.encounter.HealthCareFinancingAdministrationOptions',
+				'App.view.patient.encounter.ICDs',
+				'App.view.patient.ItemsToReview',
+				'App.view.patient.EncounterDocumentsGrid',
+				'App.view.patient.encounter.ICDs',
+				'App.view.patient.CheckoutAlertsView',
+				'App.view.patient.Vitals',
+				'App.view.patient.NewPatient',
+				'App.view.patient.Summary',
+				'App.view.patient.ProgressNote',
+				'App.view.patient.Visits',
+				'App.view.patient.Encounter',
+				'App.view.patient.windows.Medical',
+				'App.view.patient.VisitCheckout',
+				/*
+				 * Load the fees related panels
+				 */
+				'App.view.fees.Billing',
+				'App.view.fees.PaymentEntryWindow',
+				'App.view.fees.Payments',
+				/*
+				 * Load the administration related panels
+				 */
+				'App.view.administration.DataManager',
+				'App.view.administration.Documents',
+				'App.view.administration.Facilities',
+				'App.view.administration.Globals',
+				'App.view.administration.Layout',
+				'App.view.administration.Lists',
+				'App.view.administration.Log',
+				'App.view.administration.Medications',
+				'App.view.administration.FloorPlans',
+				'App.view.administration.Practice',
+				'App.view.administration.PreventiveCare',
+				'App.view.administration.Roles',
+				'App.view.administration.ExternalDataLoads',
+				'App.view.administration.Users',
+				/*
+				 * Load the miscellaneous related panels
+				 */
+				'App.view.miscellaneous.Addressbook',
+				'App.view.miscellaneous.MyAccount',
+				'App.view.miscellaneous.MySettings',
+				'App.view.miscellaneous.OfficeNotes',
+				'App.view.miscellaneous.Websearch',
+				'App.view.signature.SignatureWindow',
+				/*
+				 * Dynamically load the modules
+				 */
+				'Modules.Module'];
 
 			(function()
 			{
@@ -212,7 +459,7 @@ $_SESSION['site']['flops'] = 0;
 				{
 					isDevelopment = true;
 				}
-				
+
 else
 				if (queryString.match('(\\?|&)nodebug') !== null)
 				{

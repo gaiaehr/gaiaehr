@@ -130,14 +130,14 @@ class SiteSetup
 		$status = (empty($_SESSION['sites']['sites']) ? 'Ok' : 'Fail');
 		$row[]  = array('msg'=> 'GaiaEHR is not installed', 'status'=> $status);
 		// verified that php 5.2.0 or later is installed
-		$status = (version_compare(phpversion(), "5.3.2", ">=") ? 'Ok' : 'Fail');
+		$status = (version_compare(phpversion(), '5.3.2', '>=') ? 'Ok' : 'Fail');
 		$row[]  = array('msg'=> 'PHP 5.3.2 + installed', 'status'=> $status);
 		// Check if get_magic_quotes_gpc is off
 		$status = (get_magic_quotes_gpc() != 1 ? 'Ok' : 'Fail');
 		$row[]  = array('msg'=> 'get_magic_quotes_gpc off/disabled', 'status'=> $status);
 		// try chmod sites folder and check chmod after that
 		$status = (chmod('sites', 0755) ? 'Ok' : 'Fail');
-		$row[]  = array('msg'=> 'Sites folder is writable', 'status'=> $status);
+		$row[]  = array('msg'=> 'Sites own by Web Server', 'status'=> $status);
 		// check if safe_mode is off
 		$status = (!ini_get('safe_mode') ? 'Ok' : 'Fail');
 		$row[]  = array('msg'=> 'PHP safe mode off', 'status'=> $status);

@@ -583,42 +583,56 @@ Ext.define('App.view.patient.Encounter',
 		/**
 		 * Progress Note
 		 */
-		me.progressNote = Ext.create('App.view.patient.ProgressNote',
-		{
-			title : i18n['encounter_progress_note'],
-			region : 'east',
-			margin : '0 0 0 2',
-			bodyStyle : 'padding:15px',
-			width : 500,
-			collapsible : true,
-			animCollapse : true,
-			collapsed : true,
-			listeners :
-			{
-				scope : this,
-				collapse : me.progressNoteCollapseExpand,
-				expand : me.progressNoteCollapseExpand
-			},
-			tools : [
-			{
-				type : 'print',
-				tooltip : i18n['print_progress_note'],
-				scope : me,
-				handler : function()
-				{
-					var win = window.open('print.html', 'win', 'left=20,top=20,width=700,height=700,toolbar=0,resizable=1,location=1,scrollbars=1,menubar=0,directories=0');
-					var dom = me.progressNote.body.dom;
-					var wrap = document.createElement('div');
-					var html = wrap.appendChild(dom.cloneNode(true));
-					win.document.write(html.innerHTML);
-					Ext.defer(function()
-					{
-						win.print();
-					}, 1000);
 
-				}
-			}]
-		});
+        me.progressNote = Ext.create('App.view.patient.ProgressNote',
+        {
+            title : i18n['encounter_progress_note'],
+            tools : [
+            {
+                type : 'print',
+                tooltip : i18n['print_progress_note'],
+                scope : me,
+                handler : function()
+                {
+                    var win = window.open('print.html', 'win', 'left=20,top=20,width=700,height=700,toolbar=0,resizable=1,location=1,scrollbars=1,menubar=0,directories=0');
+                    var dom = me.progressNote.body.dom;
+                    var wrap = document.createElement('div');
+                    var html = wrap.appendChild(dom.cloneNode(true));
+                    win.document.write(html.innerHTML);
+                    Ext.defer(function()
+                    {
+                        win.print();
+                    }, 1000);
+
+                }
+            }]
+        });
+
+
+        me.rightPanel = Ext.create('Ext.tab.Panel',{
+            title : i18n['encounter_progress_note'],
+            margin : '0 0 0 2',
+            width : 500,
+            collapsible : true,
+            animCollapse : true,
+            collapsed : true,
+            listeners :
+         			{
+         				scope : this,
+         				collapse : me.progressNoteCollapseExpand,
+         				expand : me.progressNoteCollapseExpand
+         			},
+            region : 'east',
+            items:[
+                me.progressNote,
+                {
+                    title:'History'
+                }
+            ]
+
+        });
+
+
 
 		me.panelToolBar = Ext.create('Ext.toolbar.Toolbar',
 		{
@@ -699,7 +713,7 @@ Ext.define('App.view.patient.Encounter',
 			}, '-');
 		}
 
-		me.pageBody = [me.centerPanel, me.progressNote];
+		me.pageBody = [me.centerPanel, me.rightPanel];
 		me.listeners =
 		{
 			beforerender : me.beforePanelRender

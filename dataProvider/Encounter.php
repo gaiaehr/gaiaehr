@@ -331,6 +331,12 @@ class Encounter
 				 		 ORDER BY e.start_date DESC");
 		foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) AS $row){
 			$row['start_date'] = date($_SESSION['global_settings']['date_time_display_format'], strtotime($row['start_date']));
+			$icds = '';
+			foreach($this->diagnosis->getICDByEid($params->eid) as $code) {
+				$icds .= '<li><span style="font-weight:bold; text-decoration:none">' . $code['code'] . '</span> - ' . $code['long_desc'] . '</li>';
+			}
+			$row['assessment'] .= '<ul  class="ProgressNote-ul">' . $icds . '</ul>';
+			$row['objective'] .= $this->getObjectiveExtraDataByEid($params->eid);
 			$soap[] = $row;
 		}
 		return $soap;
@@ -538,88 +544,7 @@ class Encounter
 		}
 		//$icdxs = substr($icdxs, 0, -2);
 		$soap = $this->getSoapByEid($eid);
-		$medications = $this->medical->getPatientMedicationsByEncounterID($eid);
-		if(!empty($medications)) {
-			$lis = '';
-			foreach($medications as $foo) {
-				$lis .= '<li>' . $foo['medication'] . ' ' . $foo['dose'] . ' ' . $foo['dose_mg'] . '<br>';
-				$lis .= 'Instruction: ' . $foo['take_pills'] . ' ' . $foo['type'] . ' ' . $foo['by'] . ' ' . $foo['prescription_often'] . ' ' . $foo['prescription_when'] . '<br>';
-				$lis .= 'Dispense: ' . $foo['dispense'] . '  Refill: ' . $foo['refill'] . ' </li>';
-			}
-			$soap['objective'] .= '<p>Medications:</p>';
-			$soap['objective'] .= '<ul class="ProgressNote-ul">' . $lis . '</ul>';
-		}
-		$immunizations = $this->medical->getImmunizationsByEncounterID($eid);
-		if(!empty($immunizations)) {
-			$lis = '';
-			foreach($immunizations as $foo) {
-				$lis .= '<li>Immunization name: ' . $foo['immunization_name'] . '<br>';
-				$lis .= 'Immunization ID: ' . $foo['immunization_id'] . '<br>';
-				$lis .= 'Manufacturer: ' . $foo['manufacturer'] . '<br>';
-				$lis .= 'Lot Number: ' . $foo['lot_number'] . '<br>';
-				$lis .= 'Dosis: ' . $foo['dosis'] . '<br>';
-				$lis .= 'Administered By: ' . $foo['administered_by'] . ' </li>';
-			}
-			$soap['objective'] .= '<p>Immunizations:</p>';
-			$soap['objective'] .= '<ul class="ProgressNote-ul">' . $lis . '</ul>';
-		}
-		$allergies = $this->medical->getAllergiesByEncounterID($eid);
-		if(!empty($allergies)) {
-			$lis = '';
-			foreach($allergies as $foo) {
-				$lis .= '<li>Allergy: ' . $foo['allergy'] . ' (' . $foo['allergy_type'] . ')<br>';
-				$lis .= 'Reaction: ' . $foo['reaction'] . '<br>';
-				$lis .= 'Severity: ' . $foo['severity'] . '<br>';
-				$lis .= 'Location: ' . $foo['location'] . '<br>';
-				$lis .= 'Active?: ' . ($foo['end_date'] != null ? 'Yes' : 'No') . '</li>';
-			}
-			$soap['objective'] .= '<p>Allergies:</p>';
-			$soap['objective'] .= '<ul class="ProgressNote-ul">' . $lis . '</ul>';
-		}
-		$surgeries = $this->medical->getPatientSurgeryByEncounterID($eid);
-		if(!empty($surgeries)) {
-			$lis = '';
-			foreach($surgeries as $foo) {
-				//			    $lis .= '<li>Immunization name: '.$foo['immunization_name'].'<br>';
-				//			    $lis .= 'Immunization ID: ' .$foo['immunization_id'].'<br>';
-				//			    $lis .= 'Administered By: '.$foo['administered_by'].' </li>';
-			}
-			$soap['objective'] .= '<p>Surgeries:</p>';
-			$soap['objective'] .= '<ul class="ProgressNote-ul">' . $lis . '</ul>';
-		}
-		$dental = $this->medical->getPatientDentalByEncounterID($eid);
-		if(!empty($dental)) {
-			$lis = '';
-			foreach($dental as $foo) {
-				//			    $lis .= '<li>Immunization name: '.$foo['immunization_name'].'<br>';
-				//			    $lis .= 'Immunization ID: ' .$foo['immunization_id'].'<br>';
-				//			    $lis .= 'Administered By: '.$foo['administered_by'].' </li>';
-			}
-			$soap['objective'] .= '<p>Dental:</p>';
-			$soap['objective'] .= '<ul class="ProgressNote-ul">' . $lis . '</ul>';
-		}
-		$activeProblems = $this->medical->getMedicalIssuesByEncounterID($eid);
-		if(!empty($activeProblems)) {
-			$lis = '';
-			foreach($activeProblems as $foo) {
-				$lis .= '<li>Immunization name: ' . $foo['immunization_name'] . '<br>';
-				//			    $lis .= 'Immunization ID: ' .$foo['immunization_id'].'<br>';
-				//			    $lis .= 'Administered By: '.$foo['administered_by'].' </li>';
-			}
-			$soap['objective'] .= '<p>Active Problems:</p>';
-			$soap['objective'] .= '<ul class="ProgressNote-ul">' . $lis . '</ul>';
-		}
-		$preventiveCare = $this->preventiveCare->getPreventiveCareDismissPatientByEncounterID($eid);
-		if(!empty($preventiveCare)) {
-			$lis = '';
-			foreach($preventiveCare as $foo) {
-				$lis .= '<li>Description: ' . $foo['description'] . '<br>';
-				$lis .= 'Reason: ' . $foo['reason'] . '<br>';
-				$lis .= 'Observation: ' . $foo['observation'] . ' </li>';
-			}
-			$soap['objective'] .= '<p>Preventive Care:</p>';
-			$soap['objective'] .= '<ul class="ProgressNote-ul">' . $lis . '</ul>';
-		}
+		$soap['objective'] .= $this->getObjectiveExtraDataByEid($eid);
 		$soap['assessment'] = $soap['assessment'] . '<ul  class="ProgressNote-ul">' . $icdxs . '</ul>';
 		$encounter['soap'] = $soap;
 		/**
@@ -634,6 +559,96 @@ class Encounter
 		 */
 		return $encounter;
 	}
+
+
+	private function getObjectiveExtraDataByEid($eid){
+		$ExtraData = '';
+		$medications = $this->medical->getPatientMedicationsByEncounterID($eid);
+		if(!empty($medications)) {
+			$lis = '';
+			foreach($medications as $foo) {
+				$lis .= '<li>' . $foo['medication'] . ' ' . $foo['dose'] . ' ' . $foo['dose_mg'] . '<br>';
+				$lis .= 'Instruction: ' . $foo['take_pills'] . ' ' . $foo['type'] . ' ' . $foo['by'] . ' ' . $foo['prescription_often'] . ' ' . $foo['prescription_when'] . '<br>';
+				$lis .= 'Dispense: ' . $foo['dispense'] . '  Refill: ' . $foo['refill'] . ' </li>';
+			}
+			$ExtraData .= '<p>Medications:</p>';
+			$ExtraData .= '<ul class="ProgressNote-ul">' . $lis . '</ul>';
+		}
+		$immunizations = $this->medical->getImmunizationsByEncounterID($eid);
+		if(!empty($immunizations)) {
+			$lis = '';
+			foreach($immunizations as $foo) {
+				$lis .= '<li>Immunization name: ' . $foo['immunization_name'] . '<br>';
+				$lis .= 'Immunization ID: ' . $foo['immunization_id'] . '<br>';
+				$lis .= 'Manufacturer: ' . $foo['manufacturer'] . '<br>';
+				$lis .= 'Lot Number: ' . $foo['lot_number'] . '<br>';
+				$lis .= 'Dosis: ' . $foo['dosis'] . '<br>';
+				$lis .= 'Administered By: ' . $foo['administered_by'] . ' </li>';
+			}
+			$ExtraData .= '<p>Immunizations:</p>';
+			$ExtraData .= '<ul class="ProgressNote-ul">' . $lis . '</ul>';
+		}
+		$allergies = $this->medical->getAllergiesByEncounterID($eid);
+		if(!empty($allergies)) {
+			$lis = '';
+			foreach($allergies as $foo) {
+				$lis .= '<li>Allergy: ' . $foo['allergy'] . ' (' . $foo['allergy_type'] . ')<br>';
+				$lis .= 'Reaction: ' . $foo['reaction'] . '<br>';
+				$lis .= 'Severity: ' . $foo['severity'] . '<br>';
+				$lis .= 'Location: ' . $foo['location'] . '<br>';
+				$lis .= 'Active?: ' . ($foo['end_date'] != null ? 'Yes' : 'No') . '</li>';
+			}
+			$ExtraData .= '<p>Allergies:</p>';
+			$ExtraData .= '<ul class="ProgressNote-ul">' . $lis . '</ul>';
+		}
+		$surgeries = $this->medical->getPatientSurgeryByEncounterID($eid);
+		if(!empty($surgeries)) {
+			$lis = '';
+			foreach($surgeries as $foo) {
+				//			    $lis .= '<li>Immunization name: '.$foo['immunization_name'].'<br>';
+				//			    $lis .= 'Immunization ID: ' .$foo['immunization_id'].'<br>';
+				//			    $lis .= 'Administered By: '.$foo['administered_by'].' </li>';
+			}
+			$ExtraData .= '<p>Surgeries:</p>';
+			$ExtraData .= '<ul class="ProgressNote-ul">' . $lis . '</ul>';
+		}
+		$dental = $this->medical->getPatientDentalByEncounterID($eid);
+		if(!empty($dental)) {
+			$lis = '';
+			foreach($dental as $foo) {
+				//			    $lis .= '<li>Immunization name: '.$foo['immunization_name'].'<br>';
+				//			    $lis .= 'Immunization ID: ' .$foo['immunization_id'].'<br>';
+				//			    $lis .= 'Administered By: '.$foo['administered_by'].' </li>';
+			}
+			$ExtraData .= '<p>Dental:</p>';
+			$ExtraData .= '<ul class="ProgressNote-ul">' . $lis . '</ul>';
+		}
+		$activeProblems = $this->medical->getMedicalIssuesByEncounterID($eid);
+		if(!empty($activeProblems)) {
+			$lis = '';
+			foreach($activeProblems as $foo) {
+				$lis .= '<li>Immunization name: ' . $foo['immunization_name'] . '<br>';
+				//			    $lis .= 'Immunization ID: ' .$foo['immunization_id'].'<br>';
+				//			    $lis .= 'Administered By: '.$foo['administered_by'].' </li>';
+			}
+			$ExtraData .= '<p>Active Problems:</p>';
+			$ExtraData .= '<ul class="ProgressNote-ul">' . $lis . '</ul>';
+		}
+		$preventiveCare = $this->preventiveCare->getPreventiveCareDismissPatientByEncounterID($eid);
+		if(!empty($preventiveCare)) {
+			$lis = '';
+			foreach($preventiveCare as $foo) {
+				$lis .= '<li>Description: ' . $foo['description'] . '<br>';
+				$lis .= 'Reason: ' . $foo['reason'] . '<br>';
+				$lis .= 'Observation: ' . $foo['observation'] . ' </li>';
+			}
+			$ExtraData .= '<p>Preventive Care:</p>';
+			$ExtraData .= '<ul class="ProgressNote-ul">' . $lis . '</ul>';
+		}
+
+		return $ExtraData;
+	}
+
 
 	protected function addEncounterHistoryEvent($msg)
 	{

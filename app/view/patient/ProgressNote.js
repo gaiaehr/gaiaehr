@@ -19,6 +19,7 @@ Ext.define('App.view.patient.ProgressNote', {
 	extend           : 'Ext.panel.Panel',
     alias            : 'widget.progressnote',
     bodyPadding      : 5,
+    autoScroll       : true,
     loadMask         : false,
 	initComponent: function() {
 		var me = this;

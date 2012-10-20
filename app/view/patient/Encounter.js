@@ -540,6 +540,7 @@ Ext.define('App.view.patient.Encounter', {
              */
             me.progressNote = Ext.create('App.view.patient.ProgressNote', {
                 title: i18n['progress_note'],
+                autoScroll : true,
                 tbar : [
                     '->', {
                         xtype  : 'tool',
@@ -1054,7 +1055,7 @@ Ext.define('App.view.patient.Encounter', {
                 for(var i = 0; i < soaps.length; i++) {
                     me.progressHistory.add(Ext.create('Ext.form.FieldSet', {
                         styleHtmlContent: true,
-                        title: soaps[i].start_date,
+                        title: '<span style="font-weight: bold; font-size: 14px;">'+soaps[i].start_date+'</span>',
                         html: '<strong>' + i18n['subjective'] + ':</strong> ' + (soaps[i].subjective ? soaps[i].subjective : 'none') + '<br>' +
                             '<strong>' + i18n['objective'] + ':</strong> ' + (soaps[i].objective ? soaps[i].objective : 'none') + '<br>' +
                             '<strong>' + i18n['assessment'] + ':</strong> ' + (soaps[i].assessment ? soaps[i].assessment : 'none') + '<br>' +

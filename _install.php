@@ -19,9 +19,7 @@ if (!defined('_GaiaEXEC'))
 		<link rel="stylesheet" type="text/css" href="resources/css/custom_app.css">
 		<script src="data/api.php"></script>
 		<script type="text/javascript">
-			var app, i18n =
-			{
-			};
+			var app, i18n = {};
 			function say(a)
 			{
 				console.log(a);

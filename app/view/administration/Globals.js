@@ -81,6 +81,10 @@ Ext.define('App.view.administration.Globals',
 				type : 'string'
 			},
 			{
+				name : 'time_display_format',
+				type : 'string'
+			},
+			{
 				name : 'currency_decimals',
 				type : 'string'
 			},
@@ -815,7 +819,7 @@ Ext.define('App.view.administration.Globals',
 					{
 						xtype : 'combo',
 						fieldLabel : i18n['time_display_format'],
-						name : 'time_display_format', // ??????
+						name : 'time_display_format',
 						displayField : 'title',
 						valueField : 'option_id',
 						editable : false,

@@ -318,6 +318,25 @@ class Encounter
 
 	/**
 	 * @param stdClass $params
+	 * @return array
+	 */
+	public function getSoapHistory(stdClass $params)
+	{
+		$soap = array();
+		$this->db->setSQL("SELECT s.subjective, s.objective, s.assessment, s.plan, e.start_date
+							 FROM form_data_soap AS s
+					    LEFT JOIN form_data_encounter AS e ON s.eid = e.eid
+							WHERE s.pid = '$params->pid'
+							  AND e.eid != '$params->eid'
+				 		 ORDER BY e.start_date DESC");
+		foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) AS $row){
+			$row['start_date'] = date($_SESSION['global_settings']['date_time_display_format'], strtotime($row['start_date']));
+			$soap[] = $row;
+		}
+		return $soap;
+	}
+	/**
+	 * @param stdClass $params
 	 * @return stdClass
 	 */
 	public function updateSoapById(stdClass $params)
@@ -719,9 +738,8 @@ class Encounter
 	public function onSaveItemsToReview(stdClass $params)
 	{
 		$data = get_object_vars($params);
-		$eid  = $data['eid'];
 		unset($data['eid']);
-		$this->db->setSQL($this->db->sqlBind($data, "form_data_encounter", "U", "eid='$eid'"));
+		$this->db->setSQL($this->db->sqlBind($data, 'form_data_encounter', 'U', array('eid' => $params->eid)));
 		$this->db->execLog();
 		return array('success' => true);
 
@@ -735,5 +753,5 @@ class Encounter
 //
 //$e = new Encounter();
 //echo '<pre>';
-////print_r($e->getEncounter($params));
-//print_r($e->getSoapByEid(1));
+//print_r($e->getEncounter($params));
+//print_r($e->getSoapHistoryByPid(1));

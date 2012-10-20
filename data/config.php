@@ -123,6 +123,9 @@ $API = array(
 	        ),
 	        'onSaveItemsToReview'=>array(
 		        'len'=>1
+	        ),
+	        'getSoapHistory'=>array(
+		        'len'=>1
 	        )
         )
     ),

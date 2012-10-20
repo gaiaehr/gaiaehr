@@ -63,6 +63,7 @@ class Globals extends dbHelper {
             $_SESSION['global_settings'][$setting['gl_name']] = $setting['gl_value'];
         }
 	    $_SESSION['global_settings']['timezone_offset']  = -14400;
+	    $_SESSION['global_settings']['date_time_display_format'] = $_SESSION['global_settings']['date_display_format'] . ' ' . $_SESSION['global_settings']['time_display_format'];
         return $_SESSION['site']['path'];
     }
 }

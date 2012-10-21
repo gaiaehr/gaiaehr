@@ -30317,1458 +30317,1408 @@ Ext.define('App.view.patient.Visits', {
  * @namespace ACL.hasPermission
  */
 Ext.define('App.view.patient.Encounter', {
-        extend                : 'App.classes.RenderPanel',
-        id                    : 'panelEncounter',
-        pageTitle             : i18n['encounter'],
-        pageLayout            : 'border',
-        requires              : ['App.store.patient.Encounter', 'App.store.patient.Vitals'],
-        pid                   : null,
-        eid                   : null,
-        currEncounterStartDate: null,
-        initComponent         : function() {
-            var me = this;
+    extend:'App.classes.RenderPanel',
+    id:'panelEncounter',
+    pageTitle:i18n['encounter'],
+    pageLayout:'border',
+    requires:['App.store.patient.Encounter', 'App.store.patient.Vitals'],
+    pid:null,
+    eid:null,
+    currEncounterStartDate:null,
+    initComponent:function(){
+        var me = this;
+        me.renderAdministrative = acl['access_enc_hcfa'] || acl['access_enc_cpt'] || acl['access_enc_history'];
+        me.timerTask = {
+            scope:me,
+            run:function(){
+                me.encounterTimer();
+            },
+            interval:1000 //1 second
+        };
+        /**
+         * stores
+         * @type {*}
+         */
+        me.encounterStore = Ext.create('App.store.patient.Encounter', {
+            listeners:{
+                scope:me,
+                datachanged:me.updateProgressNote
+            }
+        });
+        me.encounterEventHistoryStore = Ext.create('App.store.patient.EncounterEventHistory');
+        me.EncounterOrdersStore = Ext.create('App.store.patient.EncounterCPTsICDs');
+        if(acl['access_encounter_checkout']){
+            me.checkoutAlertArea = Ext.create('App.store.patient.CheckoutAlertArea');
+        }
+        /**
+         * New Encounter Panel this panel is located hidden at
+         * the top of the Visit panel and will slide down if
+         * the "New Encounter" button is pressed.
+         */
+        if(acl['add_encounters']){
+            me.newEncounterWindow = Ext.create('Ext.window.Window', {
+                title:i18n['new_encounter_form'],
+                closeAction:'hide',
+                closable:false,
+                modal:true,
+                width:660,
+                items:[
+                    {
+                        xtype:'form',
+                        border:false,
+                        bodyPadding:'10 10 0 10'
+                    }
+                ],
+                buttons:[
+                    {
+                        text:i18n['create_encounter'],
+                        action:'encounter',
+                        scope:me,
+                        handler:me.onSave
+                    },
+                    {
+                        text:i18n['cancel'],
+                        scope:me,
+                        handler:me.cancelNewEnc
 
-            me.renderAdministrative = acl['access_enc_hcfa'] || acl['access_enc_cpt'] || acl['access_enc_history'];
-
-            me.timerTask = {
-                scope   : me,
-                run     : function() {
-                    me.encounterTimer();
-                },
-                interval: 1000 //1 second
-            };
-            /**
-             * stores
-             * @type {*}
-             */
-            me.encounterStore = Ext.create('App.store.patient.Encounter', {
-                listeners: {
-                    scope      : me,
-                    datachanged: me.updateProgressNote
+                    }
+                ],
+                listeners:{
+                    scope:me,
+                    close:me.cancelNewEnc
                 }
             });
-            me.encounterEventHistoryStore = Ext.create('App.store.patient.EncounterEventHistory');
-            me.EncounterOrdersStore = Ext.create('App.store.patient.EncounterCPTsICDs');
-
-            if(acl['access_encounter_checkout']) {
-                me.checkoutAlertArea = Ext.create('App.store.patient.CheckoutAlertArea');
-            }
-
-            /**
-             * New Encounter Panel this panel is located hidden at
-             * the top of the Visit panel and will slide down if
-             * the "New Encounter" button is pressed.
-             */
-            if(acl['add_encounters']) {
-                me.newEncounterWindow = Ext.create('Ext.window.Window', {
-                    title      : i18n['new_encounter_form'],
-                    closeAction: 'hide',
-                    modal      : true,
-                    width      : 660,
-                    items      : [
-                        {
-                            xtype      : 'form',
-                            border     : false,
-                            bodyPadding: '10 10 0 10'
-                        }
-                    ],
-                    buttons    : [
-                        {
-                            text   : i18n['create_encounter'],
-                            action : 'encounter',
-                            scope  : me,
-                            handler: me.onSave
-                        },
-                        {
-                            text   : i18n['cancel'],
-                            scope  : me,
-                            handler: me.cancelNewEnc
-
-                        }
-                    ],
-                    listeners  : {
-                        scope: me,
-                        close: me.cancelNewEnc
-                    }
-                });
-            }
-            /**
-             * Encounter Checkout window
-             * @type {*}
-             */
-            if(acl['access_encounter_checkout']) {
-                me.checkoutWindow = Ext.create('Ext.window.Window', {
-                    title      : i18n['checkout_and_signing'],
-                    closeAction: 'hide',
-                    modal      : true,
-                    layout     : 'border',
-                    width      : 1000,
-                    height     : 660,
-                    bodyPadding: 5,
-                    items      : [
-                        {
-                            xtype  : 'grid',
-                            title  : i18n['services_diagnostics'],
-                            region : 'center',
-                            store  : me.EncounterOrdersStore,
-                            columns: [
-                                {
-                                    header   : i18n['code'],
-                                    width    : 60,
-                                    dataIndex: 'code'
-                                },
-                                {
-                                    header   : i18n['description'],
-                                    flex     : 1,
-                                    dataIndex: 'code_text'
-                                },
-                                {
-                                    header   : i18n['type'],
-                                    flex     : 1,
-                                    dataIndex: 'type'
-                                }
-                            ]
-                        },
-                        me.documentsimplegrid = Ext.create('App.view.patient.EncounterDocumentsGrid', {
-                                title : i18n['documents'],
-                                region: 'east',
-                                width : 485
-                            }),
-                        {
-                            xtype   : 'form',
-                            title   : i18n['additional_info'],
-                            region  : 'south',
-                            split   : true,
-                            height  : 245,
-                            layout  : 'column',
-                            defaults: {
-                                xtype  : 'fieldset',
-                                padding: 8
+        }
+        /**
+         * Encounter Checkout window
+         * @type {*}
+         */
+        if(acl['access_encounter_checkout']){
+            me.checkoutWindow = Ext.create('Ext.window.Window', {
+                title:i18n['checkout_and_signing'],
+                closeAction:'hide',
+                modal:true,
+                layout:'border',
+                width:1000,
+                height:660,
+                bodyPadding:5,
+                items:[
+                    {
+                        xtype:'grid',
+                        title:i18n['services_diagnostics'],
+                        region:'center',
+                        store:me.EncounterOrdersStore,
+                        columns:[
+                            {
+                                header:i18n['code'],
+                                width:60,
+                                dataIndex:'code'
                             },
-                            items   : [
-                                {
-                                    xtype      : 'fieldcontainer',
-                                    columnWidth: .5,
-                                    defaults   : {
-                                        xtype  : 'fieldset',
-                                        padding: 8
-                                    },
-                                    items      : [
-                                        {
-                                            xtype      : 'fieldset',
-                                            margin     : '5 1 5 5',
-                                            padding    : 8,
-                                            columnWidth: .5,
-                                            height     : 115,
-                                            title      : i18n['messages_notes_and_reminders'],
-                                            items      : [
-                                                {
-                                                    xtype     : 'textfield',
-                                                    name      : 'message',
-                                                    fieldLabel: i18n['message'],
-                                                    anchor    : '100%'
-                                                },
-                                                {
-                                                    xtype     : 'textfield',
-                                                    name      : 'reminder',
-                                                    fieldLabel: i18n['reminder'],
-                                                    anchor    : '100%'
-                                                },
-                                                {
-                                                    xtype     : 'textfield',
-                                                    grow      : true,
-                                                    name      : 'note',
-                                                    fieldLabel: i18n['note'],
-                                                    anchor    : '100%'
-                                                }
-                                            ]
-                                        },
-                                        {
-                                            title   : 'Follow Up',
-                                            margin  : '5 1 5 5',
-                                            defaults: {
-                                                anchor: '100%'
-                                            },
-                                            items   : [
-                                                {
-                                                    xtype     : 'mitos.followupcombo',
-                                                    fieldLabel: i18n['time_interval'],
-                                                    name      : 'followup_time'
-                                                },
-                                                {
-                                                    fieldLabel: i18n['facility'],
-                                                    xtype     : 'mitos.activefacilitiescombo',
-                                                    name      : 'followup_facility'
-                                                }
-                                            ]
-                                        }
-                                    ]
-                                },
-                                {
-                                    xtype      : 'fieldset',
-                                    margin     : 5,
-                                    padding    : 8,
-                                    columnWidth: .5,
-                                    layout     : 'fit',
-                                    height     : 208,
-                                    title      : i18n['warnings_alerts'],
-                                    items      : [
-                                        {
-                                            xtype      : 'grid',
-                                            hideHeaders: true,
-                                            store      : me.checkoutAlertArea,
-                                            border     : false,
-                                            rowLines   : false,
-                                            header     : false,
-                                            viewConfig : {
-                                                stripeRows      : false,
-                                                disableSelection: true
-                                            },
-                                            columns    : [
-                                                {
-                                                    dataIndex: 'alertType',
-                                                    width    : 30,
-                                                    renderer : me.alertIconRenderer
-                                                },
-                                                {
-                                                    dataIndex: 'alert',
-                                                    flex     : 1
-                                                }
-                                            ]
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                    ],
-                    buttons    : [
-                        {
-                            text   : i18n['co_sign'],
-                            action : 'encounter',
-                            scope  : me,
-                            handler: me.coSignEncounter
-                        },
-                        {
-                            text   : i18n['sign'],
-                            action : 'encounter',
-                            scope  : me,
-                            handler: me.signEncounter
-                        },
-                        {
-                            text   : i18n['cancel'],
-                            handler: me.cancelCheckout
-
-                        }
-                    ],
-                    listeners  : {
-                        scope: me,
-                        show : function() {
-                            me.EncounterOrdersStore.load({
-                                params: {
-                                    eid: app.patient.eid
-                                }
-                            });
-                            if(acl['access_encounter_checkout']) {
-                                me.checkoutAlertArea.load({
-                                    params: {
-                                        eid: app.patient.eid
-                                    }
-                                });
+                            {
+                                header:i18n['description'],
+                                flex:1,
+                                dataIndex:'code_text'
+                            },
+                            {
+                                header:i18n['type'],
+                                flex:1,
+                                dataIndex:'type'
                             }
-                            me.documentsimplegrid.loadDocs(me.eid);
-                        }
+                        ]
+                    },
+                    me.documentsimplegrid = Ext.create('App.view.patient.EncounterDocumentsGrid', {
+                        title:i18n['documents'],
+                        region:'east',
+                        width:485
+                    }),
+                    {
+                        xtype:'form',
+                        title:i18n['additional_info'],
+                        region:'south',
+                        split:true,
+                        height:245,
+                        layout:'column',
+                        defaults:{
+                            xtype:'fieldset',
+                            padding:8
+                        },
+                        items:[
+                            {
+                                xtype:'fieldcontainer',
+                                columnWidth:.5,
+                                defaults:{
+                                    xtype:'fieldset',
+                                    padding:8
+                                },
+                                items:[
+                                    {
+                                        xtype:'fieldset',
+                                        margin:'5 1 5 5',
+                                        padding:8,
+                                        columnWidth:.5,
+                                        height:115,
+                                        title:i18n['messages_notes_and_reminders'],
+                                        items:[
+                                            {
+                                                xtype:'textfield',
+                                                name:'message',
+                                                fieldLabel:i18n['message'],
+                                                anchor:'100%'
+                                            },
+                                            {
+                                                xtype:'textfield',
+                                                name:'reminder',
+                                                fieldLabel:i18n['reminder'],
+                                                anchor:'100%'
+                                            },
+                                            {
+                                                xtype:'textfield',
+                                                grow:true,
+                                                name:'note',
+                                                fieldLabel:i18n['note'],
+                                                anchor:'100%'
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        title:'Follow Up',
+                                        margin:'5 1 5 5',
+                                        defaults:{
+                                            anchor:'100%'
+                                        },
+                                        items:[
+                                            {
+                                                xtype:'mitos.followupcombo',
+                                                fieldLabel:i18n['time_interval'],
+                                                name:'followup_time'
+                                            },
+                                            {
+                                                fieldLabel:i18n['facility'],
+                                                xtype:'mitos.activefacilitiescombo',
+                                                name:'followup_facility'
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                xtype:'fieldset',
+                                margin:5,
+                                padding:8,
+                                columnWidth:.5,
+                                layout:'fit',
+                                height:208,
+                                title:i18n['warnings_alerts'],
+                                items:[
+                                    {
+                                        xtype:'grid',
+                                        hideHeaders:true,
+                                        store:me.checkoutAlertArea,
+                                        border:false,
+                                        rowLines:false,
+                                        header:false,
+                                        viewConfig:{
+                                            stripeRows:false,
+                                            disableSelection:true
+                                        },
+                                        columns:[
+                                            {
+                                                dataIndex:'alertType',
+                                                width:30,
+                                                renderer:me.alertIconRenderer
+                                            },
+                                            {
+                                                dataIndex:'alert',
+                                                flex:1
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
                     }
+                ],
+                buttons:[
+                    {
+                        text:i18n['co_sign'],
+                        action:'encounter',
+                        scope:me,
+                        handler:me.coSignEncounter
+                    },
+                    {
+                        text:i18n['sign'],
+                        action:'encounter',
+                        scope:me,
+                        handler:me.signEncounter
+                    },
+                    {
+                        text:i18n['cancel'],
+                        handler:me.cancelCheckout
 
-                });
-            }
-
-            //        me.speechDicPanel = Ext.create('Ext.form.Panel', {
-            //            autoScroll   : true,
-            //            title        : 'Speech Dictation',
-            //            action       : 'encounter',
-            //            frame        : true,
-            //            bodyPadding  : 5,
-            //            bodyStyle    : 'background-color:white',
-            //            fieldDefaults: { msgTarget: 'side' },
-            //            buttons      : [
-            //                {
-            //                    text   : 'Save',
-            //                    iconCls: 'save',
-            //                    action : 'speechDictation',
-            //                    scope  : me,
-            //                    handler: me.onSave
-            //                }
-            //            ]
-            //        });
-
-            if(me.renderAdministrative) {
-                me.centerPanel = Ext.create('Ext.tab.Panel', {
-                    region     : 'center',
-                    margin     : '1 0 0 0',
-                    activeTab  : 0,
-                    bodyPadding: 5,
-                    listeners  : {
-                        render: function() {
-                            this.items.each(function(i) {
-                                i.tab.on('click', function() {
-                                    me.onTapPanelChange(this);
-                                });
+                    }
+                ],
+                listeners:{
+                    scope:me,
+                    show:function(){
+                        me.EncounterOrdersStore.load({
+                            params:{
+                                eid:app.patient.eid
+                            }
+                        });
+                        if(acl['access_encounter_checkout']){
+                            me.checkoutAlertArea.load({
+                                params:{
+                                    eid:app.patient.eid
+                                }
                             });
                         }
+                        me.documentsimplegrid.loadDocs(me.eid);
                     }
-                });
-            } else {
-                me.centerPanel = Ext.create('Ext.panel.Panel', {
-                    region     : 'center',
-                    margin     : '1 0 0 0',
-                    layout     : 'fit',
-                    bodyPadding: 5
-                });
-            }
+                }
 
-            /**
-             * Encounter Tab Panel and its Panels...
-             * @type {*}
-             */
-            me.encounterTabPanel = me.centerPanel.add(Ext.create('Ext.tab.Panel', {
-                title     : me.renderAdministrative ? i18n['encounter'] : false,
-                itemId    : 'encounter',
-                plain     : true,
-                activeItem: 0,
-                border    : false,
-                defaults  : {
-                    bodyStyle : 'padding:15px',
-                    bodyBorder: true,
-                    layout    : 'fit'
+            });
+        }
+        //        me.speechDicPanel = Ext.create('Ext.form.Panel', {
+        //            autoScroll   : true,
+        //            title        : 'Speech Dictation',
+        //            action       : 'encounter',
+        //            frame        : true,
+        //            bodyPadding  : 5,
+        //            bodyStyle    : 'background-color:white',
+        //            fieldDefaults: { msgTarget: 'side' },
+        //            buttons      : [
+        //                {
+        //                    text   : 'Save',
+        //                    iconCls: 'save',
+        //                    action : 'speechDictation',
+        //                    scope  : me,
+        //                    handler: me.onSave
+        //                }
+        //            ]
+        //        });
+        if(me.renderAdministrative){
+            me.centerPanel = Ext.create('Ext.tab.Panel', {
+                region:'center',
+                margin:'1 0 0 0',
+                activeTab:0,
+                bodyPadding:5,
+                listeners:{
+                    render:function(){
+                        this.items.each(function(i){
+                            i.tab.on('click', function(){
+                                me.onTapPanelChange(this);
+                            });
+                        });
+                    }
+                }
+            });
+        }else{
+            me.centerPanel = Ext.create('Ext.panel.Panel', {
+                region:'center',
+                margin:'1 0 0 0',
+                layout:'fit',
+                bodyPadding:5
+            });
+        }
+        /**
+         * Encounter Tab Panel and its Panels...
+         * @type {*}
+         */
+        me.encounterTabPanel = me.centerPanel.add(Ext.create('Ext.tab.Panel', {
+            title:me.renderAdministrative ? i18n['encounter'] : false,
+            itemId:'encounter',
+            plain:true,
+            activeItem:0,
+            border:false,
+            defaults:{
+                bodyStyle:'padding:15px',
+                bodyBorder:true,
+                layout:'fit'
+            }
+        }));
+        if(acl['access_patient_vitals']){
+            me.vitalsPanel = me.encounterTabPanel.add(Ext.create('Ext.panel.Panel', {
+                title:i18n['vitals'],
+                action:'encounter',
+                cls:'vitals-panel',
+                bodyPadding:'5 10',
+                overflowY:'auto',
+                frame:true,
+                bodyStyle:'background-color:white',
+                layout:{
+                    type:'hbox',
+                    stretch:true
+                },
+                items:[
+                    {
+                        xtype:'form',
+                        width:313,
+                        margin:0,
+                        border:false,
+                        layout:'anchor',
+                        fieldDefaults:{
+                            msgTarget:'side',
+                            labelAlign:'right'
+                        },
+                        buttons:[
+                            {
+                                text:i18n['reset'],
+                                width:40,
+                                scope:me,
+                                handler:me.resetVitalsForm
+                            },
+                            {
+                                text:i18n['save'],
+                                action:'vitals',
+                                width:40,
+                                scope:me,
+                                handler:me.onSave
+                            },
+                            {
+                                text:i18n['sign'],
+                                width:40,
+                                disabled:true,
+                                action:'signBtn',
+                                scope:me,
+                                handler:me.onVitalsSign
+                            }
+                        ]
+                    },
+                    {
+                        xtype:'vitalsdataview',
+                        flex:1,
+                        autoScroll:true,
+                        listeners:{
+                            scope:me,
+                            itemdblclick:me.onVitalsClick
+                        }
+                    }
+                ],
+                dockedItems:{
+                    xtype:'toolbar',
+                    dock:'top',
+                    items:['->', {
+                        text:i18n['vector_charts'],
+                        iconCls:'icoChart',
+                        scope:me,
+                        handler:me.onChartWindowShow
+                    }]
                 }
             }));
-            if(acl['access_patient_vitals']) {
-                me.vitalsPanel = me.encounterTabPanel.add(Ext.create('Ext.panel.Panel', {
-                    title      : i18n['vitals'],
-                    action     : 'encounter',
-                    cls        : 'vitals-panel',
-                    bodyPadding: '5 10',
-                    overflowY  : 'auto',
-                    frame      : true,
-                    bodyStyle  : 'background-color:white',
-                    layout     : {
-                        type   : 'hbox',
-                        stretch: true
-                    },
-                    items      : [
-                        {
-                            xtype        : 'form',
-                            width        : 313,
-                            margin       : 0,
-                            border       : false,
-                            layout       : 'anchor',
-                            fieldDefaults: {
-                                msgTarget : 'side',
-                                labelAlign: 'right'
-                            },
-                            buttons      : [
-                                {
-                                    text   : i18n['reset'],
-                                    width  : 40,
-                                    scope  : me,
-                                    handler: me.resetVitalsForm
-                                },
-                                {
-                                    text   : i18n['save'],
-                                    action : 'vitals',
-                                    width  : 40,
-                                    scope  : me,
-                                    handler: me.onSave
-                                },
-                                {
-                                    text    : i18n['sign'],
-                                    width   : 40,
-                                    disabled: true,
-                                    action  : 'signBtn',
-                                    scope   : me,
-                                    handler : me.onVitalsSign
-                                }
-                            ]
-                        },
-                        {
-                            xtype     : 'vitalsdataview',
-                            flex      : 1,
-                            autoScroll: true,
-                            listeners : {
-                                scope       : me,
-                                itemdblclick: me.onVitalsClick
+        }
+        if(acl['access_review_of_systems']){
+            me.reviewSysPanel = me.encounterTabPanel.add(Ext.create('Ext.form.Panel', {
+                autoScroll:true,
+                action:'encounter',
+                title:i18n['review_of_systems'],
+                frame:true,
+                bodyPadding:5,
+                bodyStyle:'background-color:white',
+                fieldDefaults:{
+                    msgTarget:'side'
+                },
+                buttons:[
+                    {
+                        text:i18n['save'],
+                        iconCls:'save',
+                        action:'reviewOfSystems',
+                        scope:me,
+                        handler:me.onSave
+                    }
+                ]
+            }));
+        }
+        if(acl['access_review_of_systems_checks']){
+            me.reviewSysCkPanel = me.encounterTabPanel.add(Ext.create('Ext.form.Panel', {
+                autoScroll:true,
+                action:'encounter',
+                title:i18n['review_of_systems_checks'],
+                frame:true,
+                bodyPadding:5,
+                bodyStyle:'background-color:white',
+                fieldDefaults:{
+                    msgTarget:'side'
+                },
+                buttons:[
+                    {
+                        text:i18n['save'],
+                        iconCls:'save',
+                        action:'reviewOfSystemsChecks',
+                        scope:me,
+                        handler:me.onSave
+                    }
+                ]
+            }));
+        }
+        if(acl['access_soap']){
+            me.soapPanel = me.encounterTabPanel.add(Ext.create('Ext.form.Panel', {
+                autoScroll:true,
+                title:i18n['soap'],
+                action:'encounter',
+                frame:true,
+                bodyPadding:5,
+                bodyStyle:'background-color:white',
+                fieldDefaults:{
+                    msgTarget:'side'
+                },
+                buttons:[
+                    {
+                        text:i18n['save'],
+                        iconCls:'save',
+                        action:'soap',
+                        scope:me,
+                        handler:me.onSave
+                    }
+                ]
+            }));
+        }
+        if(acl['access_itmes_to_review']){
+            me.itemsToReview = me.encounterTabPanel.add(Ext.create('App.view.patient.ItemsToReview', {
+                title:i18n['items_to_review'],
+                bodyPadding:'7 5 2 5'
+            }));
+        }
+        /**
+         * Administravive Tab Panel and its Panels
+         * @type {*}
+         */
+        if(acl['access_enc_hcfa'] || acl['access_enc_cpt'] || acl['access_enc_history']){
+            me.administrativeTabPanel = me.centerPanel.add(Ext.create('Ext.tab.Panel', {
+                title:i18n['administrative'],
+                itemId:'administrative',
+                plain:true,
+                activeItem:0,
+                defaults:{
+                    bodyStyle:'padding:15px',
+                    bodyBorder:true,
+                    layout:'fit'
+                }
+            }));
+        }
+        if(acl['access_enc_hcfa']){
+            me.MiscBillingOptionsPanel = me.administrativeTabPanel.add(Ext.create('App.view.patient.encounter.HealthCareFinancingAdministrationOptions', {
+                autoScroll:true,
+                title:i18n['misc_billing_options_HCFA_1500']
+            }));
+        }
+        if(acl['access_enc_cpt']){
+            me.CurrentProceduralTerminology = me.administrativeTabPanel.add(Ext.create('App.view.patient.encounter.CurrentProceduralTerminology', {
+                title:i18n['current_procedural_terminology']
+            }));
+        }
+        if(acl['access_enc_history']){
+            me.EncounterEventHistory = me.administrativeTabPanel.add(Ext.create('App.classes.grid.EventHistory', {
+                bodyStyle:0,
+                title:i18n['encounter_history'],
+                store:me.encounterEventHistoryStore
+            }));
+        }
+        /**
+         * Progress Note
+         */
+        me.progressNote = Ext.create('App.view.patient.ProgressNote', {
+            title:i18n['progress_note'],
+            autoScroll:true,
+            tbar:[
+                '->', {
+                    xtype:'tool',
+                    type:'print',
+                    tooltip:i18n['print_progress_note'],
+                    scope:me,
+                    handler:function(){
+                        var win = window.open('print.html', 'win', 'left=20,top=20,width=700,height=700,toolbar=0,resizable=1,location=1,scrollbars=1,menubar=0,directories=0');
+                        var dom = me.progressNote.body.dom;
+                        var wrap = document.createElement('div');
+                        var html = wrap.appendChild(dom.cloneNode(true));
+                        win.document.write(html.innerHTML);
+                        Ext.defer(function(){
+                            win.print();
+                        }, 1000);
+                    }
+                }
+            ]
+        });
+        me.progressHistory = Ext.create('Ext.panel.Panel', {
+            title:i18n['progress_history'],
+            bodyPadding:5,
+            autoScroll:true,
+            items:[
+                {}
+            ]
+        });
+        me.rightPanel = Ext.create('Ext.tab.Panel', {
+            title:i18n['encounter_progress_note'],
+            margin:'0 0 0 2',
+            width:500,
+            collapsible:true,
+            animCollapse:true,
+            collapsed:true,
+            listeners:{
+                scope:this,
+                collapse:me.progressNoteCollapseExpand,
+                expand:me.progressNoteCollapseExpand
+            },
+            region:'east',
+            items:[
+                me.progressNote, me.progressHistory
+            ]
+
+        });
+        me.panelToolBar = Ext.create('Ext.toolbar.Toolbar', {
+            dock:'top',
+            defaults:{
+                scope:me,
+                handler:me.onMedicalWin
+            },
+            items:['-', {
+                text:i18n['immunizations'] + ' ',
+                action:'immunization'
+            }, '-', {
+                text:i18n['allergies'] + ' ',
+                action:'allergies'
+            }, '-', {
+                text:i18n['active_problems'] + ' ',
+                action:'issues'
+            }, '-', {
+                text:i18n['surgeries'] + ' ',
+                action:'surgery'
+            }, '-', {
+                text:i18n['dental'] + ' ',
+                action:'dental'
+            }, '-', {
+                text:i18n['medications'] + ' ',
+                action:'medications'
+            }, '-', {
+                text:i18n['laboratories'] + ' ',
+                action:'laboratories'
+            }, '-', {
+                text:i18n['new_lab_order'],
+                action:'lab',
+                scope:me,
+                handler:me.newDoc
+            }, '-', {
+                text:i18n['new_xray_order'],
+                action:'xRay',
+                scope:me,
+                handler:me.newDoc
+            }, '-', {
+                text:i18n['new_prescription'],
+                action:'prescription',
+                scope:me,
+                handler:me.newDoc
+            }, '-', {
+                text:i18n['new_doctors_note'],
+                action:'notes',
+                scope:me,
+                handler:me.newDoc
+            }, '-', '->', '-', me.priorityCombo = Ext.create('App.classes.combo.EncounterPriority', {
+                listeners:{
+                    scope:me,
+                    select:me.prioritySelect
+                }
+            }), '-'
+            ]
+        });
+        if(acl['access_encounter_checkout']){
+            me.panelToolBar.add({
+                text:i18n['checkout'],
+                handler:me.onCheckout
+            }, '-');
+        }
+        me.pageBody = [me.centerPanel, me.rightPanel];
+        me.listeners = {
+            beforerender:me.beforePanelRender
+        };
+        me.callParent();
+        me.down('panel').addDocked(me.panelToolBar);
+    },
+    newDoc:function(btn){
+        app.onNewDocumentsWin(btn.action)
+    },
+    /**
+     * opens the Medical window
+     * @param btn
+     */
+    onMedicalWin:function(btn){
+        app.onMedicalWin(btn);
+    },
+    /**
+     * opens the Chart window
+     */
+    onChartWindowShow:function(){
+        app.onChartsWin();
+    },
+    prioritySelect:function(cmb, records){
+        this.changeEncounterPriority(records[0].data.option_value);
+    },
+    changeEncounterPriority:function(priority){
+        var me = this, params = {
+            pid:me.pid,
+            eid:me.eid,
+            priority:priority
+        };
+        Encounter.updateEncounterPriority(params, function(){
+            app.patientButtonRemoveCls();
+            app.patientBtn.addCls(priority);
+        });
+        me.updateProgressNote();
+    },
+    /**
+     * Checks for opened encounters, if open encounters are
+     * found alert the user, if not then open the
+     * new encounter window
+     */
+    newEncounter:function(){
+        var me = this, form, model;
+        me.resetTabs();
+        if(acl['add_encounters']){
+            Encounter.checkOpenEncounters(function(provider, response){
+                /** @namespace response.result.encounter */
+                if(response.result.encounter){
+                    Ext.Msg.show({
+                        title:'Oops! ' + i18n['open_encounters_found'] + '...',
+                        msg:i18n['do_you_want_to'] + ' <strong>' + i18n['continue_creating_the_new_encounters'] + '</strong><br>"' + i18n['click_no_to_review_encounter_history'] + '"',
+                        buttons:Ext.Msg.YESNO,
+                        icon:Ext.Msg.QUESTION,
+                        fn:function(btn){
+                            if(btn == 'yes'){
+                                form = me.newEncounterWindow.down('form');
+                                form.getForm().reset();
+                                model = Ext.ModelManager.getModel('App.model.patient.Encounter');
+                                model = Ext.ModelManager.create({
+                                    pid:app.patient.pid,
+                                    start_date:new Date()
+                                }, model);
+                                form.getForm().loadRecord(model);
+                                me.newEncounterWindow.show();
+                            }else{
+                                app.openPatientVisits();
                             }
                         }
-                    ],
-                    dockedItems: {
-                        xtype: 'toolbar',
-                        dock : 'top',
-                        items: ['->', {
-                            text   : i18n['vector_charts'],
-                            iconCls: 'icoChart',
-                            scope  : me,
-                            handler: me.onChartWindowShow
-                        }]
-                    }
-                }));
-            }
-            if(acl['access_review_of_systems']) {
-                me.reviewSysPanel = me.encounterTabPanel.add(Ext.create('Ext.form.Panel', {
-                    autoScroll   : true,
-                    action       : 'encounter',
-                    title        : i18n['review_of_systems'],
-                    frame        : true,
-                    bodyPadding  : 5,
-                    bodyStyle    : 'background-color:white',
-                    fieldDefaults: {
-                        msgTarget: 'side'
-                    },
-                    buttons      : [
-                        {
-                            text   : i18n['save'],
-                            iconCls: 'save',
-                            action : 'reviewOfSystems',
-                            scope  : me,
-                            handler: me.onSave
+                    });
+                }else{
+                    form = me.newEncounterWindow.down('form');
+                    form.getForm().reset();
+                    model = Ext.ModelManager.getModel('App.model.patient.Encounter');
+                    model = Ext.ModelManager.create({
+                        pid:app.patient.pid,
+                        start_date:new Date()
+                    }, model);
+                    form.getForm().loadRecord(model);
+                    me.newEncounterWindow.show();
+                }
+            });
+        }else{
+            app.accessDenied();
+        }
+    },
+    /**
+     * CheckOut Functions
+     */
+    onCheckout:function(){
+        var me = this, win = me.checkoutWindow, patient = me.getCurrPatient();
+        win.setTitle(patient.name + ' #' + patient.pid + ' - ' + Ext.Date.format(me.currEncounterStartDate, 'F j, Y, g:i:s a') + ' (' + i18n['checkout'] + ')');
+        win.show();
+    },
+    coSignEncounter:function(){
+    },
+    signEncounter:function(){
+        this.closeEncounter();
+        this.checkoutWindow.close();
+    },
+    cancelCheckout:function(btn){
+        var win = btn.up('window'), form = win.down('form').getForm();
+        win.close();
+        form.reset();
+    },
+    /**
+     * Sends the data to the server to be saved.
+     * This function needs the button action to determine
+     * which form  to save.
+     * @param SaveBtn
+     */
+    onSave:function(SaveBtn){
+        var me = this, panel = me.centerPanel.getActiveTab().getActiveTab(), form;
+        if(SaveBtn.action == "encounter"){
+            form = me.newEncounterWindow.down('form').getForm();
+        }else if(SaveBtn.action == 'vitals'){
+            form = panel.down('form').getForm();
+        }else{
+            form = panel.getForm();
+        }
+        if(form.isValid()){
+            var values = form.getValues(), store, record, storeIndex;
+            if(SaveBtn.action == 'encounter'){
+                ACL.hasPermission('add_encounters', function(provider, response){
+                    if(response.result){
+                        store = me.encounterStore;
+                        record = form.getRecord();
+                        storeIndex = store.indexOf(record);
+                        values.pid = app.patient.pid;
+                        if(storeIndex == -1){
+                            store.add(values);
+                            record = store.last();
+                        }else{
+                            record.set(values);
                         }
-                    ]
-                }));
-            }
-            if(acl['access_review_of_systems_checks']) {
-                me.reviewSysCkPanel = me.encounterTabPanel.add(Ext.create('Ext.form.Panel', {
-                    autoScroll   : true,
-                    action       : 'encounter',
-                    title        : i18n['review_of_systems_checks'],
-                    frame        : true,
-                    bodyPadding  : 5,
-                    bodyStyle    : 'background-color:white',
-                    fieldDefaults: {
-                        msgTarget: 'side'
-                    },
-                    buttons      : [
-                        {
-                            text   : i18n['save'],
-                            iconCls: 'save',
-                            action : 'reviewOfSystemsChecks',
-                            scope  : me,
-                            handler: me.onSave
-                        }
-                    ]
-                }));
-            }
-            if(acl['access_soap']) {
-                me.soapPanel = me.encounterTabPanel.add(Ext.create('Ext.form.Panel', {
-                    autoScroll   : true,
-                    title        : i18n['soap'],
-                    action       : 'encounter',
-                    frame        : true,
-                    bodyPadding  : 5,
-                    bodyStyle    : 'background-color:white',
-                    fieldDefaults: {
-                        msgTarget: 'side'
-                    },
-                    buttons      : [
-                        {
-                            text   : i18n['save'],
-                            iconCls: 'save',
-                            action : 'soap',
-                            scope  : me,
-                            handler: me.onSave
-                        }
-                    ]
-                }));
-            }
-            if(acl['access_itmes_to_review']) {
-                me.itemsToReview = me.encounterTabPanel.add(Ext.create('App.view.patient.ItemsToReview', {
-                    title      : i18n['items_to_review'],
-                    bodyPadding: '7 5 2 5'
-                }));
-            }
-
-            /**
-             * Administravive Tab Panel and its Panels
-             * @type {*}
-             */
-            if(acl['access_enc_hcfa'] || acl['access_enc_cpt'] || acl['access_enc_history']) {
-                me.administrativeTabPanel = me.centerPanel.add(Ext.create('Ext.tab.Panel', {
-                    title     : i18n['administrative'],
-                    itemId    : 'administrative',
-                    plain     : true,
-                    activeItem: 0,
-                    defaults  : {
-                        bodyStyle : 'padding:15px',
-                        bodyBorder: true,
-                        layout    : 'fit'
-                    }
-                }));
-            }
-            if(acl['access_enc_hcfa']) {
-                me.MiscBillingOptionsPanel = me.administrativeTabPanel.add(Ext.create('App.view.patient.encounter.HealthCareFinancingAdministrationOptions', {
-                        autoScroll: true,
-                        title     : i18n['misc_billing_options_HCFA_1500']
-                    }));
-            }
-            if(acl['access_enc_cpt']) {
-                me.CurrentProceduralTerminology = me.administrativeTabPanel.add(Ext.create('App.view.patient.encounter.CurrentProceduralTerminology', {
-                        title: i18n['current_procedural_terminology']
-                    }));
-            }
-            if(acl['access_enc_history']) {
-                me.EncounterEventHistory = me.administrativeTabPanel.add(Ext.create('App.classes.grid.EventHistory', {
-                    bodyStyle: 0,
-                    title    : i18n['encounter_history'],
-                    store    : me.encounterEventHistoryStore
-                }));
-            }
-
-            /**
-             * Progress Note
-             */
-            me.progressNote = Ext.create('App.view.patient.ProgressNote', {
-                title: i18n['progress_note'],
-                autoScroll : true,
-                tbar : [
-                    '->', {
-                        xtype  : 'tool',
-                        type   : 'print',
-                        tooltip: i18n['print_progress_note'],
-                        scope  : me,
-                        handler: function() {
-                            var win = window.open('print.html', 'win', 'left=20,top=20,width=700,height=700,toolbar=0,resizable=1,location=1,scrollbars=1,menubar=0,directories=0');
-                            var dom = me.progressNote.body.dom;
-                            var wrap = document.createElement('div');
-                            var html = wrap.appendChild(dom.cloneNode(true));
-                            win.document.write(html.innerHTML);
-                            Ext.defer(function() {
-                                win.print();
-                            }, 1000);
-
-                        }
-                    }
-                ]
-            });
-            me.progressHistory = Ext.create('Ext.panel.Panel', {
-                title      : i18n['progress_history'],
-                bodyPadding: 5,
-                autoScroll : true,
-                items      : [
-                    {}
-                ]
-            });
-
-            me.rightPanel = Ext.create('Ext.tab.Panel', {
-                title       : i18n['encounter_progress_note'],
-                margin      : '0 0 0 2',
-                width       : 500,
-                collapsible : true,
-                animCollapse: true,
-                collapsed   : true,
-                listeners   : {
-                    scope   : this,
-                    collapse: me.progressNoteCollapseExpand,
-                    expand  : me.progressNoteCollapseExpand
-                },
-                region      : 'east',
-                items       : [
-                    me.progressNote, me.progressHistory
-                ]
-
-            });
-
-            me.panelToolBar = Ext.create('Ext.toolbar.Toolbar', {
-                dock    : 'top',
-                defaults: {
-                    scope  : me,
-                    handler: me.onMedicalWin
-                },
-                items   : ['-', {
-                    text  : i18n['immunizations'] + ' ',
-                    action: 'immunization'
-                }, '-', {
-                    text  : i18n['allergies'] + ' ',
-                    action: 'allergies'
-                }, '-', {
-                    text  : i18n['active_problems'] + ' ',
-                    action: 'issues'
-                }, '-', {
-                    text  : i18n['surgeries'] + ' ',
-                    action: 'surgery'
-                }, '-', {
-                    text  : i18n['dental'] + ' ',
-                    action: 'dental'
-                }, '-', {
-                    text  : i18n['medications'] + ' ',
-                    action: 'medications'
-                }, '-', {
-                    text  : i18n['laboratories'] + ' ',
-                    action: 'laboratories'
-                }, '-', {
-                    text   : i18n['new_lab_order'],
-                    action : 'lab',
-                    scope  : me,
-                    handler: me.newDoc
-                }, '-', {
-                    text   : i18n['new_xray_order'],
-                    action : 'xRay',
-                    scope  : me,
-                    handler: me.newDoc
-                }, '-', {
-                    text   : i18n['new_prescription'],
-                    action : 'prescription',
-                    scope  : me,
-                    handler: me.newDoc
-                }, '-', {
-                    text   : i18n['new_doctors_note'],
-                    action : 'notes',
-                    scope  : me,
-                    handler: me.newDoc
-                }, '-', '->', '-',
-                me.priorityCombo = Ext.create('App.classes.combo.EncounterPriority', {
-                    listeners: {
-                        scope : me,
-                        select: me.prioritySelect
-                    }
-                }),
-                '-'
-                ]
-            });
-
-            if(acl['access_encounter_checkout']) {
-                me.panelToolBar.add({
-                        text   : i18n['checkout'],
-                        handler: me.onCheckout
-                    }, '-');
-            }
-
-            me.pageBody = [me.centerPanel, me.rightPanel];
-            me.listeners = {
-                beforerender: me.beforePanelRender
-            };
-            me.callParent();
-            me.down('panel').addDocked(me.panelToolBar);
-        },
-        newDoc                : function(btn) {
-            app.onNewDocumentsWin(btn.action)
-        },
-        /**
-         * opens the Medical window
-         * @param btn
-         */
-        onMedicalWin          : function(btn) {
-            app.onMedicalWin(btn);
-        },
-        /**
-         * opens the Chart window
-         */
-        onChartWindowShow     : function() {
-            app.onChartsWin();
-        },
-
-        prioritySelect: function(cmb, records) {
-            this.changeEncounterPriority(records[0].data.option_value);
-        },
-
-        changeEncounterPriority: function(priority) {
-            var me = this, params = {
-                pid     : me.pid,
-                eid     : me.eid,
-                priority: priority
-            };
-            Encounter.updateEncounterPriority(params, function() {
-                app.patientButtonRemoveCls();
-                app.patientBtn.addCls(priority);
-            });
-            me.updateProgressNote();
-        },
-
-        /**
-         * Checks for opened encounters, if open encounters are
-         * found alert the user, if not then open the
-         * new encounter window
-         */
-        newEncounter: function() {
-            var me = this, form, model;
-            me.resetTabs();
-            if(acl['add_encounters']) {
-                Encounter.checkOpenEncounters(function(provider, response) {
-                    /** @namespace response.result.encounter */
-                    if(response.result.encounter) {
-                        Ext.Msg.show({
-                                title  : 'Oops! ' + i18n['open_encounters_found'] + '...',
-                                msg    : i18n['do_you_want_to'] + ' <strong>' + i18n['continue_creating_the_new_encounters'] + '</strong><br>"' + i18n['click_no_to_review_encounter_history'] + '"',
-                                buttons: Ext.Msg.YESNO,
-                                icon   : Ext.Msg.QUESTION,
-                                fn     : function(btn) {
-                                    if(btn == 'yes') {
-                                        form = me.newEncounterWindow.down('form');
-                                        form.getForm().reset();
-                                        model = Ext.ModelManager.getModel('App.model.patient.Encounter');
-                                        model = Ext.ModelManager.create({
-                                                start_date: new Date()
-                                            }, model);
-                                        form.getForm().loadRecord(model);
-                                        me.newEncounterWindow.show();
-                                    } else {
-                                        app.openPatientVisits();
-                                    }
+                        store.sync({
+                            callback:function(batch, options){
+                                if(options.operations.create){
+                                    var data = options.operations.create[0].data;
+                                    app.patientButtonRemoveCls();
+                                    app.patientBtn.addCls(data.priority);
+                                    me.openEncounter(data.eid);
+                                    SaveBtn.up('window').hide();
                                 }
-                            });
-                    } else {
-                        form = me.newEncounterWindow.down('form');
-                        form.getForm().reset();
-                        model = Ext.ModelManager.getModel('App.model.patient.Encounter');
-                        model = Ext.ModelManager.create({
-                                start_date: new Date()
-                            }, model);
-                        form.getForm().loadRecord(model);
-                        me.newEncounterWindow.show();
+
+                            }
+                        });
+                    }else{
+                        SaveBtn.up('window').close();
+                        app.accessDenied();
                     }
                 });
-            } else {
-                app.accessDenied();
-            }
-        },
-
-        /**
-         * CheckOut Functions
-         */
-        onCheckout     : function() {
-            var me = this, win = me.checkoutWindow, patient = me.getCurrPatient();
-            win.setTitle(patient.name + ' #' + patient.pid + ' - ' + Ext.Date.format(me.currEncounterStartDate, 'F j, Y, g:i:s a') + ' (' + i18n['checkout'] + ')');
-            win.show();
-        },
-        coSignEncounter: function() {
-
-        },
-        signEncounter  : function() {
-            this.closeEncounter();
-            this.checkoutWindow.close();
-        },
-        cancelCheckout : function(btn) {
-            var win = btn.up('window'), form = win.down('form').getForm();
-            win.close();
-            form.reset();
-        },
-
-        /**
-         * Sends the data to the server to be saved.
-         * This function needs the button action to determine
-         * which form  to save.
-         * @param SaveBtn
-         */
-        onSave: function(SaveBtn) {
-            var me = this, panel = me.centerPanel.getActiveTab().getActiveTab(), form;
-            if(SaveBtn.action == "encounter") {
-                form = me.newEncounterWindow.down('form').getForm();
-            } else if(SaveBtn.action == 'vitals') {
-                form = panel.down('form').getForm();
-            } else {
-                form = panel.getForm();
-            }
-            if(form.isValid()) {
-                var values = form.getValues(), store, record, storeIndex;
-
-                if(SaveBtn.action == 'encounter') {
-                    ACL.hasPermission('add_encounters', function(provider, response) {
-                        if(response.result) {
-                            store = me.encounterStore;
+            }else if(SaveBtn.action == 'vitals'){
+                var VFields = form.getFields().items, VFieldsCount = VFields.length, emptyCount = 0;
+                for(var i = 0; i < VFields.length; i++){
+                    if(VFields[i].xtype != 'mitos.datetime'){
+                        if(VFields[i].value == ''){
+                            emptyCount++;
+                        }
+                    }
+                }
+                if((VFieldsCount - 3) > emptyCount){
+                    ACL.hasPermission('add_vitals', function(provider, response){
+                        if(response.result){
+                            store = me.encounterStore.getAt(0).vitals();
                             record = form.getRecord();
+                            values = me.addDefaultData(values);
                             storeIndex = store.indexOf(record);
-
-                            if(storeIndex == -1) {
-                                store.add(values);
-                                record = store.last();
-                            } else {
+                            if(storeIndex == -1){
+                                store.insert(0, values);
+                            }else{
                                 record.set(values);
                             }
-                            record.save({
-                                    callback: function(store) {
-                                        app.patientButtonRemoveCls();
-                                        app.patientBtn.addCls(store.data.priority);
-                                        me.openEncounter(store.data.eid);
-                                        SaveBtn.up('window').hide();
-                                    }
-                                });
-                        } else {
-                            SaveBtn.up('window').close();
+                            store.sync({
+                                scope:me,
+                                success:function(){
+                                    me.msg('Sweet!', i18n['vitals_saved']);
+                                    me.updateProgressNote();
+                                    me.vitalsPanel.down('vitalsdataview').refresh();
+                                    me.resetVitalsForm();
+                                }
+                            });
+                        }else{
                             app.accessDenied();
                         }
                     });
-                } else if(SaveBtn.action == 'vitals') {
-                    var VFields = form.getFields().items, VFieldsCount = VFields.length, emptyCount = 0;
-                    for(var i = 0; i < VFields.length; i++) {
-                        if(VFields[i].xtype != 'mitos.datetime') {
-                            if(VFields[i].value == '') {
-                                emptyCount++;
-                            }
+                }else{
+                    me.msg('Oops!', i18n['vitals_form_is_epmty'])
+                }
+            }else{
+                ACL.hasPermission('edit_encounters', function(provider, response){
+                    if(response.result){
+                        store = me.encounterStore;
+                        if(SaveBtn.action == 'reviewOfSystems'){
+                            record = store.getAt(0).reviewofsystems().getAt(0);
+                        }else if(SaveBtn.action == 'reviewOfSystemsChecks'){
+                            record = store.getAt(0).reviewofsystemschecks().getAt(0);
+                        }else if(SaveBtn.action == 'soap'){
+                            record = store.getAt(0).soap().getAt(0);
+                        }else if(SaveBtn.action == 'speechDictation'){
+                            record = store.getAt(0).speechdictation().getAt(0);
                         }
-                    }
-                    if((VFieldsCount - 3) > emptyCount) {
-                        ACL.hasPermission('add_vitals', function(provider, response) {
-                            if(response.result) {
-                                store = me.encounterStore.getAt(0).vitals();
-                                record = form.getRecord();
-                                values = me.addDefaultData(values);
-                                storeIndex = store.indexOf(record);
-                                if(storeIndex == -1) {
-                                    store.insert(0, values);
-                                } else {
-                                    record.set(values);
-                                }
-                                store.sync({
-                                        scope  : me,
-                                        success: function() {
-                                            me.msg('Sweet!', i18n['vitals_saved']);
-                                            me.updateProgressNote();
-                                            me.vitalsPanel.down('vitalsdataview').refresh();
-                                            me.resetVitalsForm();
-                                        }
-                                    });
-                            } else {
-                                app.accessDenied();
+                        values = me.addDefaultData(values);
+                        record.set(values);
+                        record.save({
+                            callback:function(){
+                                me.updateProgressNote();
                             }
                         });
-                    } else {
-                        me.msg('Oops!', i18n['vitals_form_is_epmty'])
-                    }
-
-                } else {
-                    ACL.hasPermission('edit_encounters', function(provider, response) {
-                        if(response.result) {
-                            store = me.encounterStore;
-                            if(SaveBtn.action == 'reviewOfSystems') {
-                                record = store.getAt(0).reviewofsystems().getAt(0);
-                            } else if(SaveBtn.action == 'reviewOfSystemsChecks') {
-                                record = store.getAt(0).reviewofsystemschecks().getAt(0);
-                            } else if(SaveBtn.action == 'soap') {
-                                record = store.getAt(0).soap().getAt(0);
-                            } else if(SaveBtn.action == 'speechDictation') {
-                                record = store.getAt(0).speechdictation().getAt(0);
-                            }
-                            values = me.addDefaultData(values);
-                            record.set(values);
-                            record.save({
-                                    callback: function() {
-                                        me.updateProgressNote();
-                                    }
-                                });
-                            me.msg('Sweet!', i18n['encounter_updated']);
-                            me.encounterEventHistoryStore.load({
-                                    params: {
-                                        eid: app.patient.eid
-                                    }
-                                });
-                        } else {
-                            app.accessDenied();
-                        }
-                    });
-                }
-            }
-        },
-
-        onVitalsSign: function() {
-            var me = this, form = me.vitalsPanel.down('form').getForm(), store = me.encounterStore.getAt(0).vitals(), record = form.getRecord();
-            if(form.isValid()) {
-                me.passwordVerificationWin(function(btn, password) {
-                    if(btn == 'ok') {
-                        User.verifyUserPass(password, function(provider, response) {
-                            if(response.result) {
-                                record.set({
-                                        auth_uid: user.id
-                                    });
-                                store.sync({
-                                        callback: function() {
-                                            form.reset();
-                                            me.msg('Sweet!', i18n['vitals_signed']);
-                                            me.updateProgressNote();
-                                            me.resetVitalsForm();
-                                            me.vitalsPanel.down('vitalsdataview').refresh();
-                                        }
-                                    });
-
-                            } else {
-                                Ext.Msg.show({
-                                        title  : 'Oops!',
-                                        msg    : i18n['incorrect_password'],
-                                        buttons: Ext.Msg.OKCANCEL,
-                                        icon   : Ext.Msg.ERROR,
-                                        fn     : function(btn) {
-                                            if(btn == 'ok') {
-                                                me.onVitalsSign();
-                                            }
-                                        }
-                                    });
+                        me.msg('Sweet!', i18n['encounter_updated']);
+                        me.encounterEventHistoryStore.load({
+                            params:{
+                                eid:app.patient.eid
                             }
                         });
+                    }else{
+                        app.accessDenied();
                     }
                 });
-            }
-        },
-
-        /**
-         * Takes the form data to be send and adds the default
-         * data used by every encounter form. For example
-         * pid (Patient ID), eid (Encounter ID), uid (User ID),
-         * and date (Current datetime as 00-00-00 00:00:00)
-         * @param data
-         */
-        addDefaultData: function(data) {
-            data.pid = this.pid;
-            data.eid = this.eid;
-            data.uid = user.id;
-            data.date = Ext.Date.format(new Date(), 'Y-m-d H:i:s');
-            return data;
-        },
-
-        /**
-         * Cancels the New Encounter process, closing the window
-         * and send the user to the Patient Summary panel
-         */
-        cancelNewEnc: function() {
-            this.newEncounterWindow.close();
-            app.openPatientSummary();
-        },
-
-        /**
-         *
-         * @param eid
-         */
-        openEncounter: function(eid) {
-            var me = this, vitals;
-            me.resetTabs();
-            me.eid = app.patient.eid = eid;
-            me.encounterStore.getProxy().extraParams.eid = me.eid;
-            me.encounterStore.load({
-                scope   : me,
-                callback: function(record) {
-                    var data = record[0].data;
-                    me.pid = data.pid;
-                    me.currEncounterStartDate = data.start_date;
-                    if(!data.close_date) {
-                        me.startTimer();
-                        me.setButtonsDisabled(me.getButtonsToDisable());
-                    } else {
-                        if(me.stopTimer()) {
-                            var timer = me.timer(data.start_date, data.close_date), patient = app.patient;
-                            me.updateTitle(patient.name + ' #' + patient.pid + ' - ' + patient.age.str + ' - ' + Ext.Date.format(me.currEncounterStartDate, 'F j, Y, g:i:s a') + ' (' + i18n['closed_encounter'] + ')', app.patient.readOnly, timer);
-                            me.setButtonsDisabled(me.getButtonsToDisable(), true);
-                        }
-                    }
-
-                    if(me.vitalsPanel) {
-                        vitals = me.vitalsPanel.down('vitalsdataview');
-                        me.resetVitalsForm();
-                        vitals.store = record[0].vitalsStore;
-                        vitals.refresh();
-                    }
-
-                    if(me.reviewSysPanel) me.reviewSysPanel.getForm().loadRecord(record[0].reviewofsystems().getAt(0));
-                    if(me.reviewSysCkPanel) me.reviewSysCkPanel.getForm().loadRecord(record[0].reviewofsystemschecks().getAt(0));
-                    if(me.soapPanel) me.soapPanel.getForm().loadRecord(record[0].soap().getAt(0));
-                    //me.speechDicPanel.getForm().loadRecord(record[0].speechdictation().getAt(0));
-                    me.encounterEventHistoryStore.load({params: {eid: eid}});
-                    if(me.soapPanel)me.soapPanel.query('icdsfieldset')[0].loadIcds(record[0].soap().getAt(0).data.icdxCodes);
-                    if(me.CurrentProceduralTerminology) {
-                        me.CurrentProceduralTerminology.encounterCptStoreLoad(me.pid, eid, function() {
-                            me.CurrentProceduralTerminology.setDefaultQRCptCodes();
-                        });
-                    }
-                    me.priorityCombo.setValue(data.priority);
-                    if(app.PreventiveCareWindow) app.PreventiveCareWindow.loadPatientPreventiveCare();
-                    if(me.progressHistory) me.getProgressNotesHistory();
-                }
-            });
-        },
-
-        /**
-         * Function to close the encounter..
-         */
-        closeEncounter            : function() {
-            var me = this, form, values;
-            me.passwordVerificationWin(function(btn, password) {
-                if(btn == 'ok') {
-                    form = me.checkoutWindow.down('form').getForm();
-                    values = form.getValues();
-                    values.eid = me.eid;
-                    values.pid = me.pid;
-                    values.close_date = Ext.Date.format(new Date(), 'Y-m-d H:i:s');
-                    values.signature = password;
-                    Encounter.closeEncounter(values, function(provider, response) {
-                        if(response.result.success) {
-                            if(me.stopTimer()) {
-                                app.patient.eid = null;
-                                app.openPatientVisits();
-                                me.msg('Sweet!', i18n['encounter_closed']);
-                            }
-                        } else {
-                            Ext.Msg.show({
-                                title  : 'Oops!',
-                                msg    : i18n['incorrect_password'],
-                                buttons: Ext.Msg.OKCANCEL,
-                                icon   : Ext.Msg.ERROR,
-                                fn     : function(btn) {
-                                    if(btn == 'ok') {
-                                        me.closeEncounter();
-                                    }
-                                }
-                            });
-                        }
-                    });
-                }
-            });
-        },
-        /**
-         * listen for the progress note panel and runs the
-         * doLayout function to re-adjust the dimensions.
-         */
-        progressNoteCollapseExpand: function() {
-            this.centerPanel.doLayout();
-        },
-
-        updateProgressNote: function() {
-            var me = this;
-            Encounter.getProgressNoteByEid(me.eid, function(provider, response) {
-                var data = response.result;
-                me.progressNote.tpl.overwrite(me.progressNote.body, data);
-            });
-        },
-
-        getProgressNotesHistory: function() {
-            var me = this, soaps;
-            me.progressHistory.removeAll();
-            Encounter.getSoapHistory({pid: me.pid, eid: me.eid}, function(provider, response) {
-                soaps = response.result;
-                for(var i = 0; i < soaps.length; i++) {
-                    me.progressHistory.add(Ext.create('Ext.form.FieldSet', {
-                        styleHtmlContent: true,
-                        title: '<span style="font-weight: bold; font-size: 14px;">'+soaps[i].start_date+'</span>',
-                        html: '<strong>' + i18n['subjective'] + ':</strong> ' + (soaps[i].subjective ? soaps[i].subjective : 'none') + '<br>' +
-                            '<strong>' + i18n['objective'] + ':</strong> ' + (soaps[i].objective ? soaps[i].objective : 'none') + '<br>' +
-                            '<strong>' + i18n['assessment'] + ':</strong> ' + (soaps[i].assessment ? soaps[i].assessment : 'none') + '<br>' +
-                            '<strong>' + i18n['plan'] + ':</strong> ' + (soaps[i].plan ? soaps[i].plan : 'none')
-                    }))
-                }
-            })
-
-        },
-
-        onTapPanelChange: function(panel) {
-            if(panel.card.itemId == 'encounter') {
-                this.isProgressNoteCollapsed(true);
-            } else {
-                this.isProgressNoteCollapsed(true);
-            }
-        },
-
-        isProgressNoteCollapsed: function(ans) {
-            ans ? this.progressNote.collapse() : this.progressNote.expand();
-
-        },
-
-        onVitalsClick: function(view, record, e) {
-            var me = this, form = me.vitalsPanel.down('form').getForm();
-            form.reset();
-            if(!record.data.auth_uid) {
-                me.vitalsPanel.query('button[action="signBtn"]')[0].setDisabled(false);
-                form.loadRecord(record);
-            } else {
-                Ext.Msg.show({
-                    title        : 'Oops!',
-                    msg          : i18n['this_column_can_not_be_modified_because_it_has_been_signed_by'] + ' ' + record.data.auth_uid,
-                    buttons      : Ext.Msg.OK,
-                    icon         : Ext.Msg.WARNING,
-                    animateTarget: e
-                });
-            }
-        },
-
-        resetVitalsForm  : function() {
-            var me = this, form = me.vitalsPanel.down('form').getForm(), model = Ext.ModelManager.getModel('App.model.patient.Vitals'), newModel = Ext.ModelManager.create({
-                }, model);
-            me.vitalsPanel.query('button[action="signBtn"]')[0].setDisabled(true);
-            form.loadRecord(newModel);
-        },
-
-        //***************************************************************************************************//
-        //***************************************************************************************************//
-        //*********    *****  ******    ****** **************************************************************//
-        //*********  *  ****  ****  ***  ***** **************************************************************//
-        //*********  **  ***  ***  *****  **** **************************************************************//
-        //*********  ***  **  ***  *****  **** **************************************************************//
-        //*********  ****  *  ****  ***  ********************************************************************//
-        //*********  *****    *****    ******* **************************************************************//
-        //***************************************************************************************************//
-        //***************************************************************************************************//
-        alertIconRenderer: function(v) {
-            if(v == 1) {
-                return '<img src="resources/images/icons/icoLessImportant.png" />'
-            } else if(v == 2) {
-                return '<img src="resources/images/icons/icoImportant.png" />'
-            }
-            return v;
-        },
-
-        /**
-         * Start the timerTask
-         */
-        startTimer: function() {
-            Ext.TaskManager.start(this.timerTask);
-            return true;
-        },
-        /**
-         * stops the timerTask
-         */
-        stopTimer : function() {
-            Ext.TaskManager.stop(this.timerTask);
-            return true;
-        },
-
-        /**
-         * This will update the timer every sec
-         */
-        encounterTimer: function() {
-            var me = this, timer = me.timer(me.currEncounterStartDate, new Date());
-            me.updateTitle(app.patient.name + ' #' + app.patient.pid + ' - ' + app.patient.age.str + ' - ' + Ext.Date.format(me.currEncounterStartDate, 'F j, Y, g:i:s a') + ' (' + i18n['opened_encounter'] + ')', app.patient.readOnly, timer);
-        },
-
-        /**
-         * This function use the "start time" and "stop time"
-         * and gets the time elapsed between the two then
-         * returns it as a timer (00:00:00)  or (1 day(s) 00:00:00)
-         * if more than 24 hrs
-         *
-         * @param start
-         * @param stop
-         */
-        timer: function(start, stop) {
-            var ms = Ext.Date.getElapsed(start, stop), t, sec = Math.floor(ms / 1000);
-
-            function twoDigit(d) {
-                return (d >= 10) ? d : '0' + d;
-            }
-
-            var min = Math.floor(sec / 60);
-            sec = sec % 60;
-            t = twoDigit(sec);
-            var hr = Math.floor(min / 60);
-            min = min % 60;
-            t = twoDigit(min) + ":" + t;
-            var day = Math.floor(hr / 24);
-            hr = hr % 24;
-            t = twoDigit(hr) + ":" + t;
-            t = (day == 0 ) ? '<span class="time">' + t + '</span>' : '<span class="day">' + day + ' ' + i18n['day_s'] + '</span><span class="time">' + t + '</span>';
-            return t;
-        },
-
-        /**
-         * Convert Celsius to Fahrenheit
-         * @param field
-         * @param e
-         */
-        cf: function(field, e) {
-            var v = field.getValue(), temp = 9 * v / 5 + 32, res = Ext.util.Format.round(temp, 1);
-            if(e.getKey() != e.TAB) {
-                field.up('form').getForm().findField('temp_f').setValue(res);
-            }
-        },
-        /**
-         * Convert Fahrenheit to Celsius
-         * @param field
-         * @param e
-         */
-        fc: function(field, e) {
-            var v = field.getValue(), temp = (v - 32) * 5 / 9, res = Ext.util.Format.round(temp, 1);
-            if(e.getKey() != e.TAB) {
-                field.up('form').getForm().findField('temp_c').setValue(res);
-            }
-        },
-
-        /**
-         * Convert Lbs to Kg
-         * @param field
-         * @param e
-         */
-        lbskg: function(field, e) {
-            var v = field.getValue(), weight = v / 2.2, res = Ext.util.Format.round(weight, 1);
-            if(e.getKey() != e.TAB) {
-                field.up('form').getForm().findField('weight_kg').setValue(res);
-            }
-        },
-        /**
-         * Convert Kg to Lbs
-         * @param field
-         * @param e
-         */
-        kglbs: function(field, e) {
-            var v = field.getValue(), weight = v * 2.2, res = Ext.util.Format.round(weight, 1);
-            if(e.getKey() != e.TAB) {
-                field.up('form').getForm().findField('weight_lbs').setValue(res);
-            }
-        },
-        /**
-         * Convert Inches to Centimeter
-         * @param field
-         * @param e
-         */
-        incm : function(field, e) {
-            var v = field.getValue(), weight = v * 2.54, res = Ext.util.Format.round(weight, 1);
-            if(e.getKey() != e.TAB) {
-                if(field.name == 'head_circumference_in') {
-                    field.up('form').getForm().findField('head_circumference_cm').setValue(res);
-                } else if(field.name == 'waist_circumference_in') {
-                    field.up('form').getForm().findField('waist_circumference_cm').setValue(res);
-                } else if(field.name == 'height_in') {
-                    field.up('form').getForm().findField('height_cm').setValue(res);
-                }
-            }
-        },
-        /**
-         * Convert Centimeter to Inches
-         * @param field
-         * @param e
-         */
-        cmin : function(field, e) {
-            var v = field.getValue(), weight = v * 0.39, res = Ext.util.Format.round(weight, 1);
-            if(e.getKey() != e.TAB) {
-                if(field.name == 'head_circumference_cm') {
-                    field.up('form').getForm().findField('head_circumference_in').setValue(res);
-                } else if(field.name == 'waist_circumference_cm') {
-                    field.up('form').getForm().findField('waist_circumference_in').setValue(res);
-                } else if(field.name == 'height_cm') {
-                    field.up('form').getForm().findField('height_in').setValue(res);
-                }
-            }
-        },
-
-        bmi: function(field) {
-            var form = field.up('form').getForm(), weight = form.findField('weight_kg').getValue(), height = form.findField('height_cm').getValue(), bmi, status;
-            if(weight > 0 && height > 0) {
-                bmi = weight / (height / 100 * height / 100);
-                if(bmi < 15) {
-                    status = i18n['very_severely_underweight']
-                } else if(bmi >= 15 && bmi < 16) {
-                    status = i18n['severely_underweight']
-                } else if(bmi >= 16 && bmi < 18.5) {
-                    status = i18n['underweight']
-                } else if(bmi >= 18.5 && bmi < 25) {
-                    status = i18n['normal']
-                } else if(bmi >= 25 && bmi < 30) {
-                    status = i18n['overweight']
-                } else if(bmi >= 30 && bmi < 35) {
-                    status = i18n['obese_class_1']
-                } else if(bmi >= 35 && bmi < 40) {
-                    status = i18n['obese_class_2']
-                } else if(bmi >= 40) {
-                    status = i18n['obese_class_3']
-                }
-                field.up('form').getForm().findField('bmi').setValue(Ext.util.Format.number(bmi, '0.00'));
-                field.up('form').getForm().findField('bmi_status').setValue(status);
-
-            }
-
-        },
-
-        /**
-         * After this panel is render add the forms and listeners for conventions
-         */
-        beforePanelRender: function() {
-            var me = this, form, defaultFields = function() {
-                return [
-                    {
-                        name: 'id',
-                        type: 'int'
-                    },
-                    {
-                        name: 'pid',
-                        type: 'int'
-                    },
-                    {
-                        name: 'eid',
-                        type: 'int'
-                    },
-                    {
-                        name: 'uid',
-                        type: 'int'
-                    }
-                ]
-            };
-            /**
-             * Get 'Vitals' Form Fields and add listeners to convert values
-             */
-            if(me.vitalsPanel) {
-                me.getFormItems(me.vitalsPanel.down('form'), 4, function() {
-                    form = me.vitalsPanel.down('form').getForm();
-                    form.findField('temp_c').addListener('keyup', me.cf, me);
-                    form.findField('temp_f').addListener('keyup', me.fc, me);
-                    form.findField('weight_lbs').addListener('keyup', me.lbskg, me);
-                    form.findField('weight_kg').addListener('keyup', me.kglbs, me);
-                    form.findField('height_cm').addListener('keyup', me.cmin, me);
-                    form.findField('height_in').addListener('keyup', me.incm, me);
-                    form.findField('weight_lbs').addListener('blur', me.bmi, me);
-                    form.findField('weight_kg').addListener('blur', me.bmi, me);
-                    form.findField('height_cm').addListener('blur', me.bmi, me);
-                    form.findField('height_in').addListener('blur', me.bmi, me);
-                    form.findField('head_circumference_cm').addListener('keyup', me.cmin, me);
-                    form.findField('head_circumference_in').addListener('keyup', me.incm, me);
-                    form.findField('waist_circumference_cm').addListener('keyup', me.cmin, me);
-                    form.findField('waist_circumference_in').addListener('keyup', me.incm, me);
-                });
-            }
-            /**
-             * Get 'Review of Systems' Form and define the Model using the form fields
-             */
-            if(me.reviewSysPanel) {
-                me.getFormItems(me.reviewSysPanel, 8, function() {
-                    var formFields = me.reviewSysPanel.getForm().getFields(), modelFields = new defaultFields;
-                    for(var i = 0; i < formFields.items.length; i++) {
-                        modelFields.push({
-                                name: formFields.items[i].name,
-                                type: 'auto'
-                            });
-                    }
-                    Ext.define('App.model.patient.ReviewOfSystems', {
-                        extend   : 'Ext.data.Model',
-                        fields   : modelFields,
-                        proxy    : {
-                            type: 'direct',
-                            api : {
-                                update: Encounter.updateReviewOfSystemsById
-                            }
-                        },
-                        belongsTo: {
-                            model     : 'App.model.patient.Encounter',
-                            foreignKey: 'eid'
-                        }
-                    });
-                });
-            }
-            /**
-             * Get 'SOAP' Form and define the Model using the form fields
-             */
-            if(me.soapPanel) {
-                me.getFormItems(me.soapPanel, 6, function() {
-                    var formFields = me.soapPanel.getForm().getFields(), modelFields = new defaultFields;
-                    for(var i = 0; i < formFields.items.length; i++) {
-                        modelFields.push({
-                                name: formFields.items[i].name,
-                                type: 'auto'
-                            });
-                    }
-                    Ext.define('App.model.patient.SOAP', {
-                        extend   : 'Ext.data.Model',
-                        fields   : modelFields,
-                        proxy    : {
-                            type: 'direct',
-                            api : {
-                                update: Encounter.updateSoapById
-                            }
-                        },
-                        belongsTo: {
-                            model     : 'App.model.patient.Encounter',
-                            foreignKey: 'eid'
-                        }
-                        });
-                });
-            }
-            /**
-             * Get 'Speech Dictation' Form and define the Model using the form fields
-             */
-            //        this.getFormItems(me.speechDicPanel, 'Speech Dictation', function() {
-            //            var formFields = me.speechDicPanel.getForm().getFields(), modelFields = new defaultFields;
-            //            for(var i = 0; i < formFields.items.length; i++) {
-            //                modelFields.push({name: formFields.items[i].name, type: 'auto'});
-            //            }
-            //            Ext.define('App.model.patient.SpeechDictation', {
-            //                extend   : 'Ext.data.Model',
-            //                fields   : modelFields,
-            //                proxy    : {
-            //                    type: 'direct',
-            //                    api : {
-            //                        update: Encounter.updateDictationById
-            //                    }
-            //                },
-            //                belongsTo: { model: 'App.model.patient.Encounter', foreignKey: 'eid' }
-            //            });
-            //        });
-            /**
-             * Get 'Review of Systems Check' Form and define the Model using the form fields
-             */
-            if(me.reviewSysCkPanel) {
-                me.getFormItems(me.reviewSysCkPanel, 9, function() {
-                    var formFields = me.reviewSysCkPanel.getForm().getFields(), modelFields = new defaultFields;
-                    for(var i = 0; i < formFields.items.length; i++) {
-                        modelFields.push({
-                            name: formFields.items[i].name,
-                            type: 'auto'
-                        });
-                    }
-                    Ext.define('App.model.patient.ReviewOfSystemsCheck', {
-                        extend   : 'Ext.data.Model',
-                        fields   : modelFields,
-                        proxy    : {
-                            type: 'direct',
-                            api : {
-                                update: Encounter.updateReviewOfSystemsChecksById
-                            }
-                        },
-                        belongsTo: {
-                            model     : 'App.model.patient.Encounter',
-                            foreignKey: 'eid'
-                        }
-                    });
-                });
-            }
-
-            if(me.newEncounterWindow) me.getFormItems(me.newEncounterWindow.down('form'), 5);
-        },
-
-        getButtonsToDisable: function() {
-            var me = this, buttons = [];
-            if(me.ButtonsToDisable == null) {
-                if(me.vitalsPanel)    buttons.concat(buttons, me.vitalsPanel.query('button'));
-                if(me.reviewSysPanel) buttons.concat(buttons, me.reviewSysPanel.query('button'));
-                if(me.reviewSysCkPanel) buttons.concat(buttons, me.reviewSysCkPanel.query('button'));
-                if(me.soapPanel) buttons.concat(buttons, me.soapPanel.query('button'));
-                if(me.MiscBillingOptionsPanel) buttons.concat(buttons, me.MiscBillingOptionsPanel.query('button'));
-                if(me.CurrentProceduralTerminology) buttons.concat(buttons, me.CurrentProceduralTerminology.query('button'));
-                if(me.EncounterEventHistory) buttons.concat(buttons, me.EncounterEventHistory.query('button'));
-                if(me.newEncounterWindow) buttons.concat(buttons, me.newEncounterWindow.query('button'));
-                if(me.checkoutWindow) buttons.concat(buttons, me.checkoutWindow.query('button'));
-                me.ButtonsToDisable = buttons;
-            }
-            return me.ButtonsToDisable;
-        },
-
-        resetTabs: function() {
-            var me = this;
-            if(me.renderAdministrative) me.centerPanel.setActiveTab(0);
-            if(me.encounterTabPanel) me.encounterTabPanel.setActiveTab(0);
-            if(me.administrativeTabPanel) me.administrativeTabPanel.setActiveTab(0);
-            if(me.rightPanel) me.rightPanel.setActiveTab(0);
-        },
-
-        onDocumentView: function(grid, rowIndex) {
-            var rec = grid.getStore().getAt(rowIndex), src = rec.data.url;
-            app.onDocumentView(src);
-        },
-        /**
-         * This function is called from Viewport.js when
-         * this panel is selected in the navigation panel.
-         * place inside this function all the functions you want
-         * to call every this panel becomes active
-         */
-        onActive      : function(callback) {
-            var me = this, patient = app.patient;
-            if(me.checkIfCurrPatient()) {
-                me.updateTitle(patient.name + ' (' + i18n['visits'] + ')', patient.readOnly, null);
-                me.setReadOnly(patient.readOnly);
-                callback(true);
-            } else {
-                callback(false);
-                me.currPatientError();
             }
         }
-    });
+    },
+    onVitalsSign:function(){
+        var me = this, form = me.vitalsPanel.down('form').getForm(), store = me.encounterStore.getAt(0).vitals(), record = form.getRecord();
+        if(form.isValid()){
+            me.passwordVerificationWin(function(btn, password){
+                if(btn == 'ok'){
+                    User.verifyUserPass(password, function(provider, response){
+                        if(response.result){
+                            record.set({
+                                auth_uid:user.id
+                            });
+                            store.sync({
+                                callback:function(){
+                                    form.reset();
+                                    me.msg('Sweet!', i18n['vitals_signed']);
+                                    me.updateProgressNote();
+                                    me.resetVitalsForm();
+                                    me.vitalsPanel.down('vitalsdataview').refresh();
+                                }
+                            });
+                        }else{
+                            Ext.Msg.show({
+                                title:'Oops!',
+                                msg:i18n['incorrect_password'],
+                                buttons:Ext.Msg.OKCANCEL,
+                                icon:Ext.Msg.ERROR,
+                                fn:function(btn){
+                                    if(btn == 'ok'){
+                                        me.onVitalsSign();
+                                    }
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+        }
+    },
+    /**
+     * Takes the form data to be send and adds the default
+     * data used by every encounter form. For example
+     * pid (Patient ID), eid (Encounter ID), uid (User ID),
+     * and date (Current datetime as 00-00-00 00:00:00)
+     * @param data
+     */
+    addDefaultData:function(data){
+        data.pid = this.pid;
+        data.eid = this.eid;
+        data.uid = user.id;
+        data.date = Ext.Date.format(new Date(), 'Y-m-d H:i:s');
+        return data;
+    },
+    /**
+     * Cancels the New Encounter process, closing the window
+     * and send the user to the Patient Summary panel
+     */
+    cancelNewEnc:function(){
+        this.newEncounterWindow.close();
+        app.openPatientSummary();
+    },
+    /**
+     *
+     * @param eid
+     */
+    openEncounter:function(eid){
+        var me = this, vitals;
+        me.resetTabs();
+        me.eid = app.patient.eid = eid;
+        me.encounterStore.getProxy().extraParams.eid = me.eid;
+        me.encounterStore.load({
+            scope:me,
+            callback:function(record){
+                var data = record[0].data;
+                me.pid = data.pid;
+                me.currEncounterStartDate = data.start_date;
+                if(!data.close_date){
+                    me.startTimer();
+                    me.setButtonsDisabled(me.getButtonsToDisable());
+                }else{
+                    if(me.stopTimer()){
+                        var timer = me.timer(data.start_date, data.close_date), patient = app.patient;
+                        me.updateTitle(patient.name + ' #' + patient.pid + ' - ' + patient.age.str + ' - ' + Ext.Date.format(me.currEncounterStartDate, 'F j, Y, g:i:s a') + ' (' + i18n['closed_encounter'] + ')', app.patient.readOnly, timer);
+                        me.setButtonsDisabled(me.getButtonsToDisable(), true);
+                    }
+                }
+                if(me.vitalsPanel){
+                    vitals = me.vitalsPanel.down('vitalsdataview');
+                    me.resetVitalsForm();
+                    vitals.store = record[0].vitalsStore;
+                    vitals.refresh();
+                }
+                if(me.reviewSysPanel) me.reviewSysPanel.getForm().loadRecord(record[0].reviewofsystems().getAt(0));
+                if(me.reviewSysCkPanel) me.reviewSysCkPanel.getForm().loadRecord(record[0].reviewofsystemschecks().getAt(0));
+                if(me.soapPanel) me.soapPanel.getForm().loadRecord(record[0].soap().getAt(0));
+                //me.speechDicPanel.getForm().loadRecord(record[0].speechdictation().getAt(0));
+                me.encounterEventHistoryStore.load({params:{eid:eid}});
+                if(me.soapPanel)me.soapPanel.query('icdsfieldset')[0].loadIcds(record[0].soap().getAt(0).data.icdxCodes);
+                if(me.CurrentProceduralTerminology){
+                    me.CurrentProceduralTerminology.encounterCptStoreLoad(me.pid, eid, function(){
+                        me.CurrentProceduralTerminology.setDefaultQRCptCodes();
+                    });
+                }
+                me.priorityCombo.setValue(data.priority);
+                if(app.PreventiveCareWindow) app.PreventiveCareWindow.loadPatientPreventiveCare();
+                if(me.progressHistory) me.getProgressNotesHistory();
+            }
+        });
+    },
+    /**
+     * Function to close the encounter..
+     */
+    closeEncounter:function(){
+        var me = this, form, values;
+        me.passwordVerificationWin(function(btn, password){
+            if(btn == 'ok'){
+                form = me.checkoutWindow.down('form').getForm();
+                values = form.getValues();
+                values.eid = me.eid;
+                values.pid = me.pid;
+                values.close_date = Ext.Date.format(new Date(), 'Y-m-d H:i:s');
+                values.signature = password;
+                Encounter.closeEncounter(values, function(provider, response){
+                    if(response.result.success){
+                        if(me.stopTimer()){
+                            app.patient.eid = null;
+                            app.openPatientVisits();
+                            me.msg('Sweet!', i18n['encounter_closed']);
+                        }
+                    }else{
+                        Ext.Msg.show({
+                            title:'Oops!',
+                            msg:i18n['incorrect_password'],
+                            buttons:Ext.Msg.OKCANCEL,
+                            icon:Ext.Msg.ERROR,
+                            fn:function(btn){
+                                if(btn == 'ok'){
+                                    me.closeEncounter();
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    },
+    /**
+     * listen for the progress note panel and runs the
+     * doLayout function to re-adjust the dimensions.
+     */
+    progressNoteCollapseExpand:function(){
+        this.centerPanel.doLayout();
+    },
+    updateProgressNote:function(){
+        var me = this;
+        Encounter.getProgressNoteByEid(me.eid, function(provider, response){
+            var data = response.result;
+            me.progressNote.tpl.overwrite(me.progressNote.body, data);
+        });
+    },
+    getProgressNotesHistory:function(){
+        var me = this, soaps;
+        me.progressHistory.removeAll();
+        Encounter.getSoapHistory({pid:me.pid, eid:me.eid}, function(provider, response){
+            soaps = response.result;
+            for(var i = 0; i < soaps.length; i++){
+                me.progressHistory.add(Ext.create('Ext.form.FieldSet', {
+                    styleHtmlContent:true,
+                    title:'<span style="font-weight: bold; font-size: 14px;">' + soaps[i].start_date + '</span>',
+                    html:'<strong>' + i18n['subjective'] + ':</strong> ' + (soaps[i].subjective ? soaps[i].subjective : 'none') + '<br>' + '<strong>' + i18n['objective'] + ':</strong> ' + (soaps[i].objective ? soaps[i].objective : 'none') + '<br>' + '<strong>' + i18n['assessment'] + ':</strong> ' + (soaps[i].assessment ? soaps[i].assessment : 'none') + '<br>' + '<strong>' + i18n['plan'] + ':</strong> ' + (soaps[i].plan ? soaps[i].plan : 'none')
+                }))
+            }
+        })
+    },
+    onTapPanelChange:function(panel){
+        if(panel.card.itemId == 'encounter'){
+            this.isProgressNoteCollapsed(true);
+        }else{
+            this.isProgressNoteCollapsed(true);
+        }
+    },
+    isProgressNoteCollapsed:function(ans){
+        ans ? this.progressNote.collapse() : this.progressNote.expand();
+    },
+    onVitalsClick:function(view, record, e){
+        var me = this, form = me.vitalsPanel.down('form').getForm();
+        form.reset();
+        if(!record.data.auth_uid){
+            me.vitalsPanel.query('button[action="signBtn"]')[0].setDisabled(false);
+            form.loadRecord(record);
+        }else{
+            Ext.Msg.show({
+                title:'Oops!',
+                msg:i18n['this_column_can_not_be_modified_because_it_has_been_signed_by'] + ' ' + record.data.auth_uid,
+                buttons:Ext.Msg.OK,
+                icon:Ext.Msg.WARNING,
+                animateTarget:e
+            });
+        }
+    },
+    resetVitalsForm:function(){
+        var me = this, form = me.vitalsPanel.down('form').getForm(), model = Ext.ModelManager.getModel('App.model.patient.Vitals'), newModel = Ext.ModelManager.create({
+        }, model);
+        me.vitalsPanel.query('button[action="signBtn"]')[0].setDisabled(true);
+        form.loadRecord(newModel);
+    },
+    //***************************************************************************************************//
+    //***************************************************************************************************//
+    //*********    *****  ******    ****** **************************************************************//
+    //*********  *  ****  ****  ***  ***** **************************************************************//
+    //*********  **  ***  ***  *****  **** **************************************************************//
+    //*********  ***  **  ***  *****  **** **************************************************************//
+    //*********  ****  *  ****  ***  ********************************************************************//
+    //*********  *****    *****    ******* **************************************************************//
+    //***************************************************************************************************//
+    //***************************************************************************************************//
+    alertIconRenderer:function(v){
+        if(v == 1){
+            return '<img src="resources/images/icons/icoLessImportant.png" />'
+        }else if(v == 2){
+            return '<img src="resources/images/icons/icoImportant.png" />'
+        }
+        return v;
+    },
+    /**
+     * Start the timerTask
+     */
+    startTimer:function(){
+        Ext.TaskManager.start(this.timerTask);
+        return true;
+    },
+    /**
+     * stops the timerTask
+     */
+    stopTimer:function(){
+        Ext.TaskManager.stop(this.timerTask);
+        return true;
+    },
+    /**
+     * This will update the timer every sec
+     */
+    encounterTimer:function(){
+        var me = this, timer = me.timer(me.currEncounterStartDate, new Date());
+        me.updateTitle(app.patient.name + ' #' + app.patient.pid + ' - ' + app.patient.age.str + ' - ' + Ext.Date.format(me.currEncounterStartDate, 'F j, Y, g:i:s a') + ' (' + i18n['opened_encounter'] + ')', app.patient.readOnly, timer);
+    },
+    /**
+     * This function use the "start time" and "stop time"
+     * and gets the time elapsed between the two then
+     * returns it as a timer (00:00:00)  or (1 day(s) 00:00:00)
+     * if more than 24 hrs
+     *
+     * @param start
+     * @param stop
+     */
+    timer:function(start, stop){
+        var ms = Ext.Date.getElapsed(start, stop), t, sec = Math.floor(ms / 1000);
+
+        function twoDigit(d){
+            return (d >= 10) ? d : '0' + d;
+        }
+
+        var min = Math.floor(sec / 60);
+        sec = sec % 60;
+        t = twoDigit(sec);
+        var hr = Math.floor(min / 60);
+        min = min % 60;
+        t = twoDigit(min) + ":" + t;
+        var day = Math.floor(hr / 24);
+        hr = hr % 24;
+        t = twoDigit(hr) + ":" + t;
+        t = (day == 0 ) ? '<span class="time">' + t + '</span>' : '<span class="day">' + day + ' ' + i18n['day_s'] + '</span><span class="time">' + t + '</span>';
+        return t;
+    },
+    /**
+     * Convert Celsius to Fahrenheit
+     * @param field
+     * @param e
+     */
+    cf:function(field, e){
+        var v = field.getValue(), temp = 9 * v / 5 + 32, res = Ext.util.Format.round(temp, 1);
+        if(e.getKey() != e.TAB){
+            field.up('form').getForm().findField('temp_f').setValue(res);
+        }
+    },
+    /**
+     * Convert Fahrenheit to Celsius
+     * @param field
+     * @param e
+     */
+    fc:function(field, e){
+        var v = field.getValue(), temp = (v - 32) * 5 / 9, res = Ext.util.Format.round(temp, 1);
+        if(e.getKey() != e.TAB){
+            field.up('form').getForm().findField('temp_c').setValue(res);
+        }
+    },
+    /**
+     * Convert Lbs to Kg
+     * @param field
+     * @param e
+     */
+    lbskg:function(field, e){
+        var v = field.getValue(), weight = v / 2.2, res = Ext.util.Format.round(weight, 1);
+        if(e.getKey() != e.TAB){
+            field.up('form').getForm().findField('weight_kg').setValue(res);
+        }
+    },
+    /**
+     * Convert Kg to Lbs
+     * @param field
+     * @param e
+     */
+    kglbs:function(field, e){
+        var v = field.getValue(), weight = v * 2.2, res = Ext.util.Format.round(weight, 1);
+        if(e.getKey() != e.TAB){
+            field.up('form').getForm().findField('weight_lbs').setValue(res);
+        }
+    },
+    /**
+     * Convert Inches to Centimeter
+     * @param field
+     * @param e
+     */
+    incm:function(field, e){
+        var v = field.getValue(), weight = v * 2.54, res = Ext.util.Format.round(weight, 1);
+        if(e.getKey() != e.TAB){
+            if(field.name == 'head_circumference_in'){
+                field.up('form').getForm().findField('head_circumference_cm').setValue(res);
+            }else if(field.name == 'waist_circumference_in'){
+                field.up('form').getForm().findField('waist_circumference_cm').setValue(res);
+            }else if(field.name == 'height_in'){
+                field.up('form').getForm().findField('height_cm').setValue(res);
+            }
+        }
+    },
+    /**
+     * Convert Centimeter to Inches
+     * @param field
+     * @param e
+     */
+    cmin:function(field, e){
+        var v = field.getValue(), weight = v * 0.39, res = Ext.util.Format.round(weight, 1);
+        if(e.getKey() != e.TAB){
+            if(field.name == 'head_circumference_cm'){
+                field.up('form').getForm().findField('head_circumference_in').setValue(res);
+            }else if(field.name == 'waist_circumference_cm'){
+                field.up('form').getForm().findField('waist_circumference_in').setValue(res);
+            }else if(field.name == 'height_cm'){
+                field.up('form').getForm().findField('height_in').setValue(res);
+            }
+        }
+    },
+    bmi:function(field){
+        var form = field.up('form').getForm(), weight = form.findField('weight_kg').getValue(), height = form.findField('height_cm').getValue(), bmi, status;
+        if(weight > 0 && height > 0){
+            bmi = weight / (height / 100 * height / 100);
+            if(bmi < 15){
+                status = i18n['very_severely_underweight']
+            }else if(bmi >= 15 && bmi < 16){
+                status = i18n['severely_underweight']
+            }else if(bmi >= 16 && bmi < 18.5){
+                status = i18n['underweight']
+            }else if(bmi >= 18.5 && bmi < 25){
+                status = i18n['normal']
+            }else if(bmi >= 25 && bmi < 30){
+                status = i18n['overweight']
+            }else if(bmi >= 30 && bmi < 35){
+                status = i18n['obese_class_1']
+            }else if(bmi >= 35 && bmi < 40){
+                status = i18n['obese_class_2']
+            }else if(bmi >= 40){
+                status = i18n['obese_class_3']
+            }
+            field.up('form').getForm().findField('bmi').setValue(Ext.util.Format.number(bmi, '0.00'));
+            field.up('form').getForm().findField('bmi_status').setValue(status);
+        }
+    },
+    /**
+     * After this panel is render add the forms and listeners for conventions
+     */
+    beforePanelRender:function(){
+        var me = this, form, defaultFields = function(){
+            return [
+                {
+                    name:'id',
+                    type:'int'
+                },
+                {
+                    name:'pid',
+                    type:'int'
+                },
+                {
+                    name:'eid',
+                    type:'int'
+                },
+                {
+                    name:'uid',
+                    type:'int'
+                }
+            ]
+        };
+        /**
+         * Get 'Vitals' Form Fields and add listeners to convert values
+         */
+        if(me.vitalsPanel){
+            me.getFormItems(me.vitalsPanel.down('form'), 4, function(){
+                form = me.vitalsPanel.down('form').getForm();
+                form.findField('temp_c').addListener('keyup', me.cf, me);
+                form.findField('temp_f').addListener('keyup', me.fc, me);
+                form.findField('weight_lbs').addListener('keyup', me.lbskg, me);
+                form.findField('weight_kg').addListener('keyup', me.kglbs, me);
+                form.findField('height_cm').addListener('keyup', me.cmin, me);
+                form.findField('height_in').addListener('keyup', me.incm, me);
+                form.findField('weight_lbs').addListener('blur', me.bmi, me);
+                form.findField('weight_kg').addListener('blur', me.bmi, me);
+                form.findField('height_cm').addListener('blur', me.bmi, me);
+                form.findField('height_in').addListener('blur', me.bmi, me);
+                form.findField('head_circumference_cm').addListener('keyup', me.cmin, me);
+                form.findField('head_circumference_in').addListener('keyup', me.incm, me);
+                form.findField('waist_circumference_cm').addListener('keyup', me.cmin, me);
+                form.findField('waist_circumference_in').addListener('keyup', me.incm, me);
+            });
+        }
+        /**
+         * Get 'Review of Systems' Form and define the Model using the form fields
+         */
+        if(me.reviewSysPanel){
+            me.getFormItems(me.reviewSysPanel, 8, function(){
+                var formFields = me.reviewSysPanel.getForm().getFields(), modelFields = new defaultFields;
+                for(var i = 0; i < formFields.items.length; i++){
+                    modelFields.push({
+                        name:formFields.items[i].name,
+                        type:'auto'
+                    });
+                }
+                Ext.define('App.model.patient.ReviewOfSystems', {
+                    extend:'Ext.data.Model',
+                    fields:modelFields,
+                    proxy:{
+                        type:'direct',
+                        api:{
+                            update:Encounter.updateReviewOfSystemsById
+                        }
+                    },
+                    belongsTo:{
+                        model:'App.model.patient.Encounter',
+                        foreignKey:'eid'
+                    }
+                });
+            });
+        }
+        /**
+         * Get 'SOAP' Form and define the Model using the form fields
+         */
+        if(me.soapPanel){
+            me.getFormItems(me.soapPanel, 6, function(){
+                var formFields = me.soapPanel.getForm().getFields(), modelFields = new defaultFields;
+                for(var i = 0; i < formFields.items.length; i++){
+                    modelFields.push({
+                        name:formFields.items[i].name,
+                        type:'auto'
+                    });
+                }
+                Ext.define('App.model.patient.SOAP', {
+                    extend:'Ext.data.Model',
+                    fields:modelFields,
+                    proxy:{
+                        type:'direct',
+                        api:{
+                            update:Encounter.updateSoapById
+                        }
+                    },
+                    belongsTo:{
+                        model:'App.model.patient.Encounter',
+                        foreignKey:'eid'
+                    }
+                });
+            });
+        }
+        /**
+         * Get 'Speech Dictation' Form and define the Model using the form fields
+         */
+        //        this.getFormItems(me.speechDicPanel, 'Speech Dictation', function() {
+        //            var formFields = me.speechDicPanel.getForm().getFields(), modelFields = new defaultFields;
+        //            for(var i = 0; i < formFields.items.length; i++) {
+        //                modelFields.push({name: formFields.items[i].name, type: 'auto'});
+        //            }
+        //            Ext.define('App.model.patient.SpeechDictation', {
+        //                extend   : 'Ext.data.Model',
+        //                fields   : modelFields,
+        //                proxy    : {
+        //                    type: 'direct',
+        //                    api : {
+        //                        update: Encounter.updateDictationById
+        //                    }
+        //                },
+        //                belongsTo: { model: 'App.model.patient.Encounter', foreignKey: 'eid' }
+        //            });
+        //        });
+        /**
+         * Get 'Review of Systems Check' Form and define the Model using the form fields
+         */
+        if(me.reviewSysCkPanel){
+            me.getFormItems(me.reviewSysCkPanel, 9, function(){
+                var formFields = me.reviewSysCkPanel.getForm().getFields(), modelFields = new defaultFields;
+                for(var i = 0; i < formFields.items.length; i++){
+                    modelFields.push({
+                        name:formFields.items[i].name,
+                        type:'auto'
+                    });
+                }
+                Ext.define('App.model.patient.ReviewOfSystemsCheck', {
+                    extend:'Ext.data.Model',
+                    fields:modelFields,
+                    proxy:{
+                        type:'direct',
+                        api:{
+                            update:Encounter.updateReviewOfSystemsChecksById
+                        }
+                    },
+                    belongsTo:{
+                        model:'App.model.patient.Encounter',
+                        foreignKey:'eid'
+                    }
+                });
+            });
+        }
+        if(me.newEncounterWindow) me.getFormItems(me.newEncounterWindow.down('form'), 5);
+    },
+    getButtonsToDisable:function(){
+        var me = this, buttons = [];
+        if(me.ButtonsToDisable == null){
+            if(me.vitalsPanel)    buttons.concat(buttons, me.vitalsPanel.query('button'));
+            if(me.reviewSysPanel) buttons.concat(buttons, me.reviewSysPanel.query('button'));
+            if(me.reviewSysCkPanel) buttons.concat(buttons, me.reviewSysCkPanel.query('button'));
+            if(me.soapPanel) buttons.concat(buttons, me.soapPanel.query('button'));
+            if(me.MiscBillingOptionsPanel) buttons.concat(buttons, me.MiscBillingOptionsPanel.query('button'));
+            if(me.CurrentProceduralTerminology) buttons.concat(buttons, me.CurrentProceduralTerminology.query('button'));
+            if(me.EncounterEventHistory) buttons.concat(buttons, me.EncounterEventHistory.query('button'));
+            if(me.newEncounterWindow) buttons.concat(buttons, me.newEncounterWindow.query('button'));
+            if(me.checkoutWindow) buttons.concat(buttons, me.checkoutWindow.query('button'));
+            me.ButtonsToDisable = buttons;
+        }
+        return me.ButtonsToDisable;
+    },
+    resetTabs:function(){
+        var me = this;
+        if(me.renderAdministrative) me.centerPanel.setActiveTab(0);
+        if(me.encounterTabPanel) me.encounterTabPanel.setActiveTab(0);
+        if(me.administrativeTabPanel) me.administrativeTabPanel.setActiveTab(0);
+        if(me.rightPanel) me.rightPanel.setActiveTab(0);
+    },
+    onDocumentView:function(grid, rowIndex){
+        var rec = grid.getStore().getAt(rowIndex), src = rec.data.url;
+        app.onDocumentView(src);
+    },
+    /**
+     * This function is called from Viewport.js when
+     * this panel is selected in the navigation panel.
+     * place inside this function all the functions you want
+     * to call every this panel becomes active
+     */
+    onActive:function(callback){
+        var me = this, patient = app.patient;
+        if(me.checkIfCurrPatient()){
+            me.updateTitle(patient.name + ' (' + i18n['visits'] + ')', patient.readOnly, null);
+            me.setReadOnly(patient.readOnly);
+            callback(true);
+        }else{
+            callback(false);
+            me.currPatientError();
+        }
+    }
+});
 
 /**
  * Created by JetBrains PhpStorm.
@@ -45483,1530 +45433,1204 @@ Ext.define('Modules.Module',
  * Enjoy the application!
  *
  */
-Ext.define('App.view.Viewport',
-{
-	extend : 'Ext.Viewport',
-	// app settings
-	requires : window.requires, // array is defined on _app.php
-	user : window.user, // array defined on _app.php
-	version : window.version, // string defined on _app.php
-	minWidthToFullMode : 1585, // full mode = nav expanded
-	currency : '$', // currency used
-	activityMonitorInterval : 60, // in seconds - interval to check for mouse and keyboard activity
-	activityMonitorMaxInactive : 10, // in minutes - Maximum time application can be inactive (no mouse or keyboard inputt)
-	cronTaskInterval : 3, // in seconds - interval to run me.cronTask (check PHP session, refresh Patient Pool Areas, and PHP Cron Job)
-	// end app settings
-	initComponent : function()
-	{
-		Ext.tip.QuickTipManager.init();
-		var me = this;
-		me.lastCardNode = null;
-		me.currCardCmp = null;
-
-		me.fullMode = window.innerWidth >= me.minWidthToFullMode;
-
-		me.patient =
-		{
-			name : null,
-			pid : null,
-			sex : null,
-			dob : null,
-			age : null,
-			eid : null,
-			readOnly : false
-		};
-
-		/**
-		 * TaskScheduler
-		 * This will run all the procedures inside the checkSession
-		 */
-		me.cronTask =
-		{
-			scope : me,
-			run : function()
-			{
-				me.checkSession();
-				me.getPatientsInPoolArea();
-				CronJob.run();
-			},
-			interval : me.cronTaskInterval * 1000
-		};
-
-		/*
-		 * The store for the Navigation Tree menu.
-		 */
-		me.storeTree = Ext.create('App.store.navigation.Navigation',
-		{
-			autoLoad : true,
-			listeners :
-			{
-				scope : me,
-				load : me.afterNavigationLoad
-			}
-		});
-
-		/**
-		 * This store will handle the patient pool area
-		 */
-		me.patientPoolStore = Ext.create('App.store.areas.PoolArea');
-
-		/*
-		 * TODO: this should be managed by the language files
-		 * The language file has a definition for this.
-		 */
-		if (me.currency == '$')
-		{
-			me.icoMoney = 'icoDollar';
-		}
-		else
-		if (me.currency == '€')
-		{
-			me.icoMoney = 'icoEuro';
-		}
-		else
-		if (me.currency == '£')
-		{
-			me.icoMoney = 'icoLibra';
-		}
-		else
-		if (me.currency == '¥')
-		{
-			me.icoMoney = 'icoYen';
-		}
-
-		/**
-		 * GaiaEHR Support Page
-		 */
-		me.winSupport = Ext.create('Ext.window.Window',
-		{
-			title : i18n['support'],
-			closeAction : 'hide',
-			bodyStyle : 'background-color: #ffffff; padding: 5px;',
-			animateTarget : me.Footer,
-			resizable : false,
-			draggable : false,
-			maximizable : false,
-			autoScroll : true,
-			maximized : true,
-			dockedItems :
-			{
-				xtype : 'toolbar',
-				dock : 'top',
-				items : ['-',
-				{
-					text : "List issues",
-					iconCls : 'list',
-					action : 'http://GaiaEHR.org/projects/GaiaEHR001/issues',
-					scope : me,
-					handler : me.showMiframe
-				}, '-',
-				{
-					text : "Create an issue",
-					iconCls : 'icoAddRecord',
-					action : 'http://GaiaEHR.org/projects/GaiaEHR001/issues/new',
-					scope : me,
-					handler : me.showMiframe
-				}]
-			}
-		});
-
-		/**
-		 * header Panel
-		 */
-		me.Header = Ext.create('Ext.container.Container',
-		{
-			region : 'north',
-			height : 44,
-			split : false,
-			collapsible : false,
-			collapsed : true,
-			frame : false,
-			border : false,
-			bodyStyle : 'background: transparent',
-			margins : '0 0 0 0'
-		});
-
-		me.patientBtn = me.Header.add(
-		{
-			xtype : 'button',
-			scale : 'large',
-			style : 'float:left',
-			margin : 0,
-			scope : me,
-			handler : me.openPatientSummary,
-			listeners :
-			{
-				scope : me,
-				afterrender : me.patientBtnRender
-			},
-			tpl : me.patientBtnTpl()
-		});
-		me.patientOpenVisitsBtn = me.Header.add(
-		{
-			xtype : 'button',
-			scale : 'large',
-			style : 'float:left',
-			margin : '0 0 0 3',
-			cls : 'headerLargeBtn',
-			padding : 0,
-			iconCls : 'icoBackClock',
-			scope : me,
-			handler : me.openPatientVisits,
-			tooltip : i18n['open_patient_visits_history']
-		});
-		if (acl['add_encounters'])
-		{
-			me.patientCreateEncounterBtn = me.Header.add(
-			{
-				xtype : 'button',
-				scale : 'large',
-				style : 'float:left',
-				margin : '0 0 0 3',
-				cls : 'headerLargeBtn',
-				padding : 0,
-				iconCls : 'icoClock',
-				scope : me,
-				handler : me.createNewEncounter,
-				tooltip : i18n['create_new_encounter']
-			});
-		}
-		me.patientCloseCurrEncounterBtn = me.Header.add(
-		{
-			xtype : 'button',
-			scale : 'large',
-			style : 'float:left',
-			margin : '0 0 0 3',
-			cls : 'headerLargeBtn',
-			padding : 0,
-			iconCls : 'icoArrowDown',
-			scope : me,
-			handler : me.stowPatientRecord,
-			tooltip : i18n['show_patient_record']
-		});
-		me.patientCheckOutBtn = me.Header.add(
-		{
-			xtype : 'button',
-			scale : 'large',
-			style : 'float:left',
-			margin : '0 0 0 3',
-			cls : 'headerLargeBtn',
-			padding : 0,
-			iconCls : 'icoCheckOut',
-			scope : me,
-			handler : me.chargePatient,
-			tooltip : i18n['check_out_patient']
-		});
-		me.patientChargeBtn = me.Header.add(
-		{
-			xtype : 'button',
-			scale : 'large',
-			style : 'float:left',
-			margin : '0 0 0 3',
-			cls : 'headerLargeBtn',
-			padding : 0,
-			iconCls : me.icoMoney,
-			scope : me,
-			handler : me.onPaymentEntryWindow,
-			tooltip : i18n['payment_entry']
-		});
-		me.Header.add(
-		{
-			xtype : 'panel',
-			bodyPadding : '8 11 5 11',
-			margin : '0 0 0 3',
-			style : 'float:left',
-			items : [
-			{
-				xtype : 'patienlivetsearch',
-				emptyText : i18n['patient_live_search'] + '...',
-				fieldStyle : me.fullMode ? 'width:300' : 'width:250',
-				listeners :
-				{
-					scope : me,
-					select : me.liveSearchSelect,
-					blur : function(combo)
-					{
-						combo.reset();
-					}
-				}
-			}]
-		});
-		me.Header.add(
-		{
-			xtype : 'button',
-			scale : 'large',
-			style : 'float:left',
-			margin : '0 0 0 3',
-			padding : 4,
-			itemId : 'patientNewReset',
-			iconCls : 'icoAddPatient',
-			scope : me,
-			handler : me.newPatient,
-			tooltip : i18n['create_a_new_patient']
-		});
-		me.Header.add(
-		{
-			xtype : 'button',
-			scale : 'large',
-			style : 'float:left',
-			margin : '0 0 0 3',
-			cls : 'headerLargeBtn emerBtn',
-			overCls : 'emerBtnOver',
-			padding : 0,
-			itemId : 'createEmergency',
-			iconCls : 'icoEmer',
-			scope : me,
-			handler : me.createEmergency,
-			tooltip : i18n['create_new_emergency']
-		});
-		me.Header.add(
-		{
-			xtype : 'button',
-			text : me.user.title + ' ' + me.user.lname,
-			scale : 'large',
-			iconCls : 'icoDoctor',
-			iconAlign : 'left',
-			cls : 'drButton',
-			style : 'float:right',
-			margin : '0 0 0 3',
-			menu : [
-			{
-				text : i18n['my_account'],
-				iconCls : 'icoArrowRight',
-				handler : function()
-				{
-					me.navigateTo('panelMyAccount');
-				}
-			},
-			{
-				text : i18n['my_settings'],
-				iconCls : 'icoArrowRight',
-				handler : function()
-				{
-					me.navigateTo('panelMySettings');
-				}
-			},
-			{
-				text : i18n['logout'],
-				iconCls : 'icoArrowRight',
-				scope : me,
-				handler : me.appLogout
-			}]
-		});
-		me.Header.add(
-		{
-			xtype : 'button',
-			scale : 'large',
-			style : 'float:right',
-			margin : '0 0 0 3',
-			cls : 'headerLargeBtn',
-			padding : 0,
-			itemId : 'patientCheckIn',
-			iconCls : 'icoLog',
-			scope : me,
-			handler : me.onPatientLog,
-			tooltip : i18n['arrival_log']
-		});
-		me.Header.add(
-		{
-			xtype : 'button',
-			scale : 'large',
-			style : 'float:right',
-			margin : '0 0 0 3',
-			cls : 'headerLargeBtn',
-			padding : 0,
-			itemId : 'patientPoolArea',
-			iconCls : 'icoPoolArea',
-			scope : me,
-			handler : me.goToPoolAreas,
-			tooltip : i18n['pool_areas']
-		});
-		me.Header.add(
-		{
-			xtype : 'button',
-			scale : 'large',
-			style : 'float:right',
-			margin : '0 0 0 3',
-			cls : 'headerLargeBtn',
-			padding : 0,
-			itemId : 'floorPlans',
-			iconCls : 'icoZoneAreasBig',
-			scope : me,
-			handler : me.goToFloorPlans,
-			tooltip : i18n['floor_plans']
-		});
-
-		/**
-		 * The panel definition for the the TreeMenu & the support button
-		 */
-		me.navColumn = Ext.create('Ext.panel.Panel',
-		{
-			title : i18n['navigation'],
-			stateId : 'navColumn',
-			layout : 'border',
-			region : 'west',
-			width : 200,
-			split : true,
-			collapsible : true,
-			collapsed : false,
-			items : [
-			{
-				xtype : 'treepanel',
-				region : 'center',
-				cls : 'nav_tree',
-				hideHeaders : true,
-				rootVisible : false,
-				border : false,
-				store : me.storeTree,
-				width : 200,
-				plugins : [
-				{
-					ptype : 'nodedisabled'
-				}],
-				//					root       : {
-				//						nodeType : 'async',
-				//						draggable: false
-				//					},
-				listeners :
-				{
-					scope : me,
-					selectionchange : me.onNavigationNodeSelected
-				}
-			}, me.patientPoolArea = Ext.create('Ext.Panel',
-			{
-				title : i18n['patient_pool_areas'],
-				layout : 'fit',
-				region : 'south',
-				bodyPadding : 5,
-				height : 25,
-				cls : 'patient-pool',
-				split : true,
-				collapsible : true,
-				border : false,
-				//                    overflowY: 'auto',
-				items : [
-				{
-					xtype : 'dataview',
-					loadMask : false,
-					cls : 'patient-pool-view',
-					tpl : '<tpl for=".">' + '<div class="patient-pool-btn x-btn x-btn-default-large {priority}">' + '<div class="patient_btn_img"><img src="{photoSrc}" width="35" height="35"></div>' + '<div class="patient_btn_info">' + '<div class="patient-name">{shortName}</div>' + '<div class="patient-name">#{pid} ({poolArea})</div>' + '</div>' + '</div>' + '</tpl>',
-					itemSelector : 'div.patient-pool-btn',
-					overItemCls : 'patient-over',
-					selectedItemClass : 'patient-selected',
-					singleSelect : true,
-					store : me.patientPoolStore,
-					listeners :
-					{
-						scope : me,
-						render : me.initializeOpenEncounterDragZone
-					}
-				}]
-			})],
-			dockedItems : [
-			{
-				xtype : 'toolbar',
-				dock : 'bottom',
-				border : true,
-				margin : '3 0 0 0',
-				padding : 5,
-				layout :
-				{
-					type : 'hbox',
-					pack : 'center'
-				},
-				items : ['-',
-				{
-					xtype : 'button',
-					frame : true,
-					text : 'GaiaEHR Support',
-					iconCls : 'icoHelp',
-					action : 'http://gaiaehr.org/',
-					scope : me,
-					handler : me.showMiframe
-				}, '-']
-			}],
-			listeners :
-			{
-				scope : me,
-				beforecollapse : me.navCollapsed,
-				beforeexpand : me.navExpanded
-
-			}
-		});
-
-		/**
-		 * MainPanel is where all the pages are displayed
-		 */
-		me.MainPanel = Ext.create('Ext.container.Container',
-		{
-			region : 'center',
-			layout : 'card',
-			border : true,
-			itemId : 'MainPanel',
-			defaults :
-			{
-				layout : 'fit',
-				xtype : 'container'
-			},
-			listeners :
-			{
-				scope : me,
-				afterrender : me.initializeOpenEncounterDropZone
-			}
-		});
-
-		/**
-		 * General Area
-		 */
-		me.MainPanel.add(Ext.create('App.view.dashboard.Dashboard'));
-		// TODO: panels
-		me.MainPanel.add(Ext.create('App.view.calendar.Calendar'));
-		me.MainPanel.add(Ext.create('App.view.messages.Messages'));
-		me.MainPanel.add(Ext.create('App.view.search.PatientSearch'));
-		me.MainPanel.add(Ext.create('App.view.areas.FloorPlan'));
-
-		/**
-		 * Patient Area
-		 */
-		me.MainPanel.add(Ext.create('App.view.patient.NewPatient'));
-		me.MainPanel.add(Ext.create('App.view.patient.Summary'));
-		me.MainPanel.add(Ext.create('App.view.patient.Visits'));
-		me.MainPanel.add(Ext.create('App.view.patient.Encounter'));
-		me.MainPanel.add(Ext.create('App.view.patient.VisitCheckout'));
-		/**
-		 * Fees Area
-		 */
-		me.MainPanel.add(Ext.create('App.view.fees.Billing'));
-		me.MainPanel.add(Ext.create('App.view.fees.Payments'));
-		/**
-		 * Miscellaneous
-		 */
-		me.MainPanel.add(Ext.create('App.view.miscellaneous.Addressbook'));
-		me.MainPanel.add(Ext.create('App.view.miscellaneous.MyAccount'));
-		me.MainPanel.add(Ext.create('App.view.miscellaneous.MySettings'));
-		me.MainPanel.add(Ext.create('App.view.miscellaneous.OfficeNotes'));
-		me.MainPanel.add(Ext.create('App.view.miscellaneous.Websearch'));
-
-		me.ppdz = me.MainPanel.add(Ext.create('App.view.areas.PatientPoolDropZone'));
-
-		if (acl['access_gloabal_settings'])
-			me.MainPanel.add(Ext.create('App.view.administration.Globals'));
-		if (acl['access_facilities'])
-			me.MainPanel.add(Ext.create('App.view.administration.Facilities'));
-		if (acl['access_users'])
-			me.MainPanel.add(Ext.create('App.view.administration.Users'));
-		if (acl['access_practice'])
-			me.MainPanel.add(Ext.create('App.view.administration.Practice'));
-		if (acl['access_data_manager'])
-			me.MainPanel.add(Ext.create('App.view.administration.DataManager'));
-		if (acl['access_preventive_care'])
-			me.MainPanel.add(Ext.create('App.view.administration.PreventiveCare'));
-		if (acl['access_medications'])
-			me.MainPanel.add(Ext.create('App.view.administration.Medications'));
-		if (acl['access_floor_plans'])
-			me.MainPanel.add(Ext.create('App.view.administration.FloorPlans'));
-		if (acl['access_roles'])
-			me.MainPanel.add(Ext.create('App.view.administration.Roles'));
-		if (acl['access_layouts'])
-			me.MainPanel.add(Ext.create('App.view.administration.Layout'));
-		if (acl['access_lists'])
-			me.MainPanel.add(Ext.create('App.view.administration.Lists'));
-		if (acl['access_event_log'])
-			me.MainPanel.add(Ext.create('App.view.administration.Log'));
-		if (acl['access_documents'])
-			me.MainPanel.add(Ext.create('App.view.administration.Documents'));
-
-		me.MainPanel.add(Ext.create('App.view.administration.ExternalDataLoads'));
-
-		/**
-		 * Footer Panel
-		 */
-		me.Footer = Ext.create('Ext.container.Container',
-		{
-			height : me.fullMode ? 30 : 60,
-			split : false,
-			padding : '3 0',
-			region : 'south',
-			items : [
-			{
-				xtype : 'dataview',
-				margin : '0 0 3 0',
-				hidden : true,
-				hideMode : 'offsets',
-				cls : 'patient-pool-view-footer x-toolbar x-toolbar-default x-box-layout-ct',
-				tpl : '<div class="x-toolbar-separator x-toolbar-item x-toolbar-separator-horizontal" style="float:left; margin-top:5px;" role="presentation" tabindex="-1"></div>' + '<tpl for=".">' + '<div class="patient-pool-btn-small x-btn x-btn-default-small {priority}" style="float:left">' + '<div class="patient_btn_info">' + '<div class="patient-name">{name} ({pid})</div>' + '</div>' + '</div>' + '<div class="x-toolbar-separator x-toolbar-item x-toolbar-separator-horizontal" style="float:left; margin-top:5px; margin-left:3px;" role="presentation" tabindex="-1"></div>' + '</tpl>',
-				itemSelector : 'div.patient-pool-btn-small',
-				overItemCls : 'patient-over',
-				selectedItemClass : 'patient-selected',
-				singleSelect : true,
-				loadMask : false,
-				store : me.patientPoolStore,
-				listeners :
-				{
-					render : me.initializeOpenEncounterDragZone
-				}
-			},
-			{
-				xtype : 'toolbar',
-				dock : 'bottom',
-				items : [
-				{
-					text : 'Copyright (C) 2011 GaiaEHR (Electronic Health Records) |:|  Open Source Software operating under GPLv3 |:| v' + me.version,
-					iconCls : 'icoGreen',
-					disabled : true,
-					action : 'http://GaiaEHR.org/projects/GaiaEHR001',
-					scope : me,
-					handler : me.showMiframe
-				}, '->',
-				{
-					text : i18n['news'],
-					action : 'http://GaiaEHR.org/projects/GaiaEHR001/news',
-					scope : me,
-					handler : me.showMiframe
-				}, '-',
-				{
-					text : i18n['wiki'],
-					action : 'http://gaiaehr.org/',
-					scope : me,
-					handler : me.showMiframe
-				}, '-',
-				{
-					text : i18n['issues'],
-					action : 'http://gaiaehr.org/',
-					scope : me,
-					handler : me.showMiframe
-				}, '-',
-				{
-					text : i18n['forums'],
-					action : 'http://gaiaehr.org/',
-					scope : me,
-					handler : me.showMiframe
-				}]
-			}]
-		});
-
-		me.MedicalWindow = Ext.create('App.view.patient.windows.Medical');
-		me.ChartsWindow = Ext.create('App.view.patient.windows.Charts');
-		me.PaymentEntryWindow = Ext.create('App.view.fees.PaymentEntryWindow');
-		me.PreventiveCareWindow = Ext.create('App.view.patient.windows.PreventiveCare');
-		me.NewDocumentsWindow = Ext.create('App.view.patient.windows.NewDocuments');
-		me.DocumentViewerWindow = Ext.create('App.view.patient.windows.DocumentViewer');
-
-		me.layout =
-		{
-			type : 'border',
-			padding : 3
-		};
-		me.defaults =
-		{
-			split : true
-		};
-		me.items = [me.Header, me.navColumn, me.MainPanel, me.Footer];
-
-		me.listeners =
-		{
-			render : me.appRender,
-			beforerender : me.beforeAppRender
-		};
-
-		me.callParent(arguments);
-
-		me.signature = Ext.create('App.view.signature.SignatureWindow');
-
-	},
-
-	/*
-	 * Show the medical window dialog.
-	 */
-	onMedicalWin : function(btn)
-	{
-		this.MedicalWindow.show();
-		this.MedicalWindow.down('toolbar').getComponent(btn.action).toggle(true);
-		this.MedicalWindow.cardSwitch(btn);
-	},
-
-	/*
-	 * Show the Charts window dialog.
-	 */
-	onChartsWin : function()
-	{
-		this.ChartsWindow.show();
-	},
-
-	/*
-	 * Show the Document window dialog.
-	 */
-	onNewDocumentsWin : function(action)
-	{
-
-		this.NewDocumentsWindow.eid = this.patient.eid;
-		this.NewDocumentsWindow.pid = this.patient.pid;
-		this.NewDocumentsWindow.show();
-		this.NewDocumentsWindow.cardSwitch(action);
-	},
-
-	onWebCamComplete : function(msg)
-	{
-		var panel = this.getActivePanel();
-		if (panel.id == 'panelSummary')
-		{
-			panel.completePhotoId();
-		}
-		this.msg('Sweet!', i18n['patient_image_saved']);
-	},
-
-	onPatientLog : function()
-	{
-		if (this.patientArrivalLog)
-		{
-			this.patientArrivalLog.show();
-		}
-		else
-		{
-			this.patientArrivalLog = Ext.create('App.view.patient.windows.ArrivalLog').show();
-		}
-	},
-
-	/*
-	 * Show the Payment Entry window dialog.
-	 */
-	onPaymentEntryWindow : function()
-	{
-		this.PaymentEntryWindow.show();
-	},
-
-	/*
-	 * Show the new patient form panel.
-	 */
-	newPatient : function()
-	{
-		var me = this;
-		me.navigateTo('panelNewPatient');
-	},
-
-	createEmergency : function()
-	{
-		var me = this, emergency;
-
-		Ext.Msg.show(
-		{
-			title : i18n['wait'] + '!!!',
-			msg : i18n['are_you_sure_you_want_to_create_a_new'] + ' <span style="color: red">"' + i18n['emergency'] + '"</span>?',
-			buttons : Ext.Msg.YESNO,
-			icon : Ext.Msg.WARNING,
-			fn : function(btn)
-			{
-				if (btn == 'yes')
-				{
-					Emergency.createNewEmergency(function(provider, response)
-					{
-						emergency = response.result.emergency;
-						if (response.result.success)
-						{
-							me.setPatient(emergency.pid, emergency.name, function()
-							{
-								me.openEncounter(emergency.eid);
-							});
-							me.msg('Sweet!', emergency.name + ' ' + i18n['created'])
-						}
-					});
-				}
-			}
-		});
-
-	},
-
-	/*
-	 * Show the Create New Encounter panel.
-	 */
-	createNewEncounter : function()
-	{
-		var me = this;
-		if (acl['access_encounters'] && acl['add_encounters'])
-		{
-			me.navigateTo('panelEncounter', function(success)
-			{
-				if (success)
-				{
-					me.currCardCmp.newEncounter();
-				}
-			});
-		}
-		else
-		{
-			me.accessDenied();
-		}
-	},
-
-	openPatientSummary : function()
-	{
-		var me = this;
-		//		if(me.currCardCmp == Ext.getCmp('panelSummary')) {
-		//			var same = true;
-		//		}
-		if (me.currCardCmp == Ext.getCmp('panelSummary'))
-		{
-			me.currCardCmp.onActive();
-		}
-		else
-		{
-			me.navigateTo('panelSummary');
-		}
-		//		me.navigateTo('panelSummary', function() {
-		//			if(same) {
-		//				me.currCardCmp.onActive();
-		//			}
-		//		});
-	},
-
-	stowPatientRecord : function()
-	{
-		this.unsetPatient();
-		this.navigateTo('panelDashboard');
-	},
-
-	openEncounter : function(eid)
-	{
-		var me = this;
-		if (acl['access_encounters'])
-		{
-			me.navigateTo('panelEncounter', function(success)
-			{
-				if (success)
-				{
-					me.currCardCmp.openEncounter(eid);
-				}
-			});
-		}
-		else
-		{
-			me.accessDenied();
-		}
-	},
-
-	checkOutPatient : function(eid)
-	{
-		var me = this;
-
-		me.navigateTo('panelVisitCheckout', function(success)
-		{
-			if (success)
-			{
-				me.currCardCmp.setPanel(eid);
-
-			}
-		});
-	},
-
-	chargePatient : function()
-	{
-		this.navigateTo('panelVisitPayment');
-	},
-
-	openPatientVisits : function()
-	{
-		this.navigateTo('panelVisits');
-	},
-
-	goToPoolAreas : function()
-	{
-		this.navigateTo('panelPoolArea');
-	},
-
-	goToFloorPlans : function()
-	{
-		this.navigateTo('panelAreaFloorPlan');
-	},
-
-	navigateTo : function(id, callback)
-	{
-		var tree = this.navColumn.down('treepanel'), treeStore = tree.getStore(), sm = tree.getSelectionModel(), node = treeStore.getNodeById(id);
-
-		sm.select(node);
-		if ( typeof callback == 'function')
-		{
-			callback(true);
-		}
-	},
-
-	navigateToDefault : function()
-	{
-		this.navigateTo('panelDashboard');
-	},
-
-	afterNavigationLoad : function()
-	{
-		this.fullMode ? this.navColumn.expand() : this.navColumn.collapse();
-		this.navigateToDefault();
-		this.removeAppMask();
-		this.setTask(true);
-
-	},
-
-	onNavigationNodeSelected : function(model, selected)
-	{
-		var me = this;
-		if (0 < selected.length)
-		{
-			if (selected[0].data.leaf)
-			{
-				var tree = me.navColumn.down('treepanel'), sm = tree.getSelectionModel(), card = selected[0].data.id, layout = me.MainPanel.getLayout(), cardCmp = Ext.getCmp(card);
-
-				me.currCardCmp = cardCmp;
-				layout.setActiveItem(card);
-				cardCmp.onActive(function(success)
-				{
-					(success) ? me.lastCardNode = sm.getLastSelected() : me.goBack();
-				});
-			}
-		}
-	},
-
-	goBack : function()
-	{
-		var tree = this.navColumn.down('treepanel'), sm = tree.getSelectionModel();
-		sm.select(this.lastCardNode);
-	},
-
-	navCollapsed : function()
-	{
-		var me = this, navView = me.patientPoolArea, foot = me.Footer, footView;
-
-		if (foot)
-		{
-			footView = foot.down('dataview');
-			foot.setHeight(60);
-			footView.show();
-		}
-		me.navColumn.isCollapsed = true;
-		navView.hide();
-	},
-
-	navExpanded : function()
-	{
-		var me = this, navView = me.patientPoolArea, foot = me.Footer, footView;
-
-		if (foot)
-		{
-			footView = foot.down('dataview');
-			foot.setHeight(30);
-			footView.hide();
-		}
-		me.navColumn.isCollapsed = false;
-		navView.show();
-	},
-
-	/*
-	 * Function to get the current active panel.
-	 * NOTE: This may be used on all the application.
-	 */
-	getActivePanel : function()
-	{
-		return this.MainPanel.getLayout().getActiveItem();
-	},
-
-	liveSearchSelect : function(combo, selection)
-	{
-		var me = this, post = selection[0];
-		if (post)
-		{
-			Patient.currPatientSet(
-			{
-				pid : post.get('pid')
-			}, function()
-			{
-				me.setPatient(post.get('pid'), post.get('fullname'), function()
-				{
-					me.openPatientSummary();
-				});
-			});
-		}
-	},
-
-	setPatient : function(pid, fullname, callback)
-	{
-		var me = this;
-
-		me.unsetPatient(function()
-		{
-			Patient.currPatientSet(
-			{
-				pid : pid
-			}, function(provider, response)
-			{
-				var data = response.result, msg1, msg2;
-				if (data.readOnly)
-				{
-					msg1 = data.user + ' ' + i18n['is_currently_working_with'] + ' "' + data.patient.name + '" ' + i18n['in'] + ' "' + data.area + '" ' + i18n['area'] + '.<br>' + i18n['override_read_mode_will_remove_the_patient_from_previous_user'] + '.<br>' + i18n['do_you_would_like_to_override_read_mode'];
-					msg2 = data.user + ' ' + i18n['is_currently_working_with'] + ' "' + data.patient.name + '" ' + i18n['in'] + ' "' + data.area + '" ' + i18n['area'] + '.<br>';
-					Ext.Msg.show(
-					{
-						title : i18n['wait'] + '!!!',
-						msg : data.overrideReadOnly ? msg1 : msg2,
-						buttons : data.overrideReadOnly ? Ext.Msg.YESNO : Ext.Msg.OK,
-						icon : Ext.MessageBox.WARNING,
-						fn : function(btn)
-						{
-							continueSettingPatient(btn != 'yes');
-						}
-					});
-				}
-				else
-				{
-					continueSettingPatient(false);
-				}
-
-				function continueSettingPatient(readOnly)
-				{
-
-					me.patient =
-					{
-						pid : data.patient.pid,
-						name : data.patient.name,
-						sex : data.patient.sex,
-						dob : data.patient.dob,
-						age : data.patient.age,
-						priority : data.patient.priority,
-						readOnly : readOnly,
-						eid : null
-					};
-
-					me.patientBtn.update(
-					{
-						pid : data.patient.pid,
-						name : data.patient.name
-					});
-					me.patientBtn.addCls(data.patient.priority);
-					me.patientBtn.enable();
-					if (me.patientOpenVisitsBtn)
-						me.patientOpenVisitsBtn.enable();
-					if (me.patientCreateEncounterBtn)
-						me.patientCreateEncounterBtn.enable();
-					if (me.patientCloseCurrEncounterBtn)
-						me.patientCloseCurrEncounterBtn.enable();
-					if (me.patientChargeBtn)
-						me.patientChargeBtn.enable();
-					if (me.patientCheckOutBtn)
-						me.patientCheckOutBtn.enable();
-					if ( typeof callback == 'function')
-						callback(me.patient);
-				}
-
-			});
-		});
-	},
-
-	unsetPatient : function(callback)
-	{
-		var me = this;
-		Patient.currPatientUnset(function()
-		{
-			me.currEncounterId = null;
-			me.patient =
-			{
-				pid : null,
-				name : null,
-				sex : null,
-				dob : null,
-				age : null,
-				eid : null,
-				priority : null,
-				readOnly : false
-			};
-
-			me.patientButtonRemoveCls();
-			if ( typeof callback == 'function')
-			{
-				callback(true);
-			}
-			else
-			{
-				if (me.patientCreateEncounterBtn)
-					me.patientCreateEncounterBtn.disable();
-				if (me.patientOpenVisitsBtn)
-					me.patientOpenVisitsBtn.disable();
-				if (me.patientCloseCurrEncounterBtn)
-					me.patientCloseCurrEncounterBtn.disable();
-				if (me.patientChargeBtn)
-					me.patientChargeBtn.disable();
-				if (me.patientCheckOutBtn)
-					me.patientCheckOutBtn.disable();
-				me.patientBtn.disable();
-				me.patientBtn.update(
-				{
-					pid : 'record number',
-					name : i18n['no_patient_selected']
-				});
-			}
-		});
-	},
-
-	patientButtonRemoveCls : function()
-	{
-		var me = this;
-		me.patientBtn.removeCls('Minimal');
-		me.patientBtn.removeCls('Delayed');
-		me.patientBtn.removeCls('Immediate');
-		me.patientBtn.removeCls('Expectant');
-		me.patientBtn.removeCls('Deceased');
-	},
-
-	showMiframe : function(btn)
-	{
-		var me = this, src = btn.action;
-		me.winSupport.remove(me.miframe);
-		me.winSupport.add(me.miframe = Ext.create('App.classes.ManagedIframe',
-		{
-			src : src
-		}));
-		me.winSupport.show();
-	},
-
-	msg : function(title, format)
-	{
-		if (!this.msgCt)
-		{
-			this.msgCt = Ext.core.DomHelper.insertFirst(document.body,
-			{
-				id : 'msg-div'
-			}, true);
-		}
-		this.msgCt.alignTo(document, 't-t');
-		var s = Ext.String.format.apply(String, Array.prototype.slice.call(arguments, 1)), m = Ext.core.DomHelper.append(this.msgCt,
-		{
-			html : '<div class="msg"><h3>' + title + '</h3><p>' + s + '</p></div>'
-		}, true);
-		m.slideIn('t').pause(3000).ghost('t',
-		{
-			remove : true
-		});
-	},
-
-	checkSession : function()
-	{
-		authProcedures.ckAuth(function(provider, response)
-		{
-			if (!response.result.authorized)
-			{
-				window.location = './';
-			}
-		});
-	},
-
-	patientBtnTpl : function()
-	{
-		return Ext.create('Ext.XTemplate', '<div class="patient_btn  {priority}">', '<div class="patient_btn_img"><img src="resources/images/icons/user_32.png"></div>', '<div class="patient_btn_info">', '<div class="patient_btn_name">{name}</div>', '<div class="patient_btn_record">( {pid} )</div>', '</div>', '</div>');
-	},
-
-	patientBtnRender : function(btn)
-	{
-		this.unsetPatient();
-		this.initializePatientPoolDragZone(btn)
-	},
-
-	getPatientsInPoolArea : function()
-	{
-		var me = this, poolArea = me.patientPoolArea, height = 35;
-		this.patientPoolStore.load(
-		{
-			callback : function(records)
-			{
-				if (records.length >= 1)
-				{
-					for (var i = 0; i < records.length; i++)
-					{
-						height = height + 45;
-					}
-				}
-				else
-				{
-					height = 25;
-				}
-				if (me.navColumn.collapsed === false && !me.navColumn.isCollapsingOrExpanding)
-				{
-					height = (height > 300) ? 300 : height;
-					poolArea.down('dataview').refresh();
-					poolArea.setHeight(height);
-				}
-			}
-		});
-
-		this.ppdz.reloadStores();
-
-	},
-
-	cancelAutoLogout : function()
-	{
-		var me = this;
-		me.el.unmask();
-		me.LogoutTask.stop(me.LogoutTaskTimer);
-		me.logoutWarinigWindow.destroy();
-		delete me.logoutWarinigWindow;
-		App.classes.ActivityMonitor.start();
-	},
-
-	startAutoLogout : function()
-	{
-		var me = this;
-		me.logoutWarinigWindow = Ext.create('Ext.Container',
-		{
-			floating : true,
-			cls : 'logout-warning-window',
-			html : 'Logging Out in...',
-			seconds : 10
-		}).show();
-		app.el.mask();
-		if (!me.LogoutTask)
-			me.LogoutTask = new Ext.util.TaskRunner();
-		if (!me.LogoutTaskTimer)
-		{
-			me.LogoutTaskTimer = me.LogoutTask.start(
-			{
-				scope : me,
-				run : me.logoutCounter,
-				interval : 1000
-			});
-		}
-		else
-		{
-			me.LogoutTask.start(me.LogoutTaskTimer);
-		}
-
-	},
-	logoutCounter : function()
-	{
-		var me = this, sec = me.logoutWarinigWindow.seconds - 1;
-		if (sec <= 0)
-		{
-			me.logoutWarinigWindow.update('Logging Out... Bye! Bye!');
-			me.appLogout(true);
-		}
-		else
-		{
-			me.logoutWarinigWindow.update('Logging Out in ' + sec + 'sec');
-			me.logoutWarinigWindow.seconds = sec;
-			say('Logging Out in ' + sec + 'sec');
-		}
-	},
-
-	appLogout : function(auto)
-	{
-		var me = this;
-		if (auto === true)
-		{
-			me.setTask(false);
-			authProcedures.unAuth(function()
-			{
-				window.location = './'
-			});
-		}
-		else
-		{
-			Ext.Msg.show(
-			{
-				title : i18n['please_confirm'] + '...',
-				msg : i18n['are_you_sure_to_quit'] + ' GaiaEHR?',
-				icon : Ext.MessageBox.QUESTION,
-				buttons : Ext.Msg.YESNO,
-				fn : function(btn)
-				{
-					if (btn == 'yes')
-					{
-						authProcedures.unAuth(function()
-						{
-							me.setTask(false);
-							window.location = './'
-						});
-					}
-				}
-			});
-		}
-	},
-
-	initializePatientPoolDragZone : function(panel)
-	{
-		panel.dragZone = Ext.create('Ext.dd.DragZone', panel.getEl(),
-		{
-			ddGroup : 'patientPoolAreas',
-			getDragData : function()
-			{
-				var sourceEl = app.patientBtn.el.dom, d;
-				if (app.currCardCmp != app.ppdz)
-				{
-					app.MainPanel.getLayout().setActiveItem(app.ppdz);
-				}
-				app.navColumn.down('treepanel').getSelectionModel().deselectAll();
-
-				if (sourceEl)
-				{
-					d = sourceEl.cloneNode(true);
-					d.id = Ext.id();
-					return panel.dragData =
-					{
-						copy : true,
-						sourceEl : sourceEl,
-						repairXY : Ext.fly(sourceEl).getXY(),
-						ddel : d,
-						records : [panel.data],
-						patient : true
-					};
-				}
-				return false;
-			},
-			getRepairXY : function()
-			{
-				app.goBack();
-				return this.dragData.repairXY;
-			}
-		});
-	},
-
-	/**
-	 *
-	 * @param panel
-	 */
-	initializeOpenEncounterDragZone : function(panel)
-	{
-		panel.dragZone = Ext.create('Ext.dd.DragZone', panel.getEl(),
-		{
-			ddGroup : 'patient',
-			newGroupReset : true,
-			b4MouseDown : function(e)
-			{
-				if (this.newGroupReset)
-				{
-					var sourceEl = e.getTarget(panel.itemSelector, 10), patientData = panel.getRecord(sourceEl).data;
-					this.removeFromGroup(this.ddGroup);
-					say('initializeOpenEncounterDragZone | patientData:');
-					say(patientData);
-					if (patientData.floorPlanId != null && patientData.patientZoneId == null)
-					{
-						app.navigateTo('panelAreaFloorPlan');
-						this.ddGroup = 'patientPoolAreas';
-					}
-					else
-					{
-						this.ddGroup = 'patient';
-						app.MainPanel.el.mask(i18n['drop_here_to_open'] + ' <strong>"' + panel.getRecord(sourceEl).data.name + '"</strong> ' + i18n['current_encounter']);
-					}
-					this.addToGroup(this.ddGroup);
-					this.newGroupReset = false;
-				}
-				this.autoOffset(e.getPageX(), e.getPageY());
-			},
-
-			endDrag : function(e)
-			{
-				this.newGroupReset = true;
-			},
-
-			getDragData : function(e)
-			{
-				var sourceEl = e.getTarget(panel.itemSelector, 10), d, patientData = panel.getRecord(sourceEl).data;
-				if (sourceEl)
-				{
-					d = sourceEl.cloneNode(true);
-					d.id = Ext.id();
-					return panel.dragData =
-					{
-						sourceEl : sourceEl,
-						repairXY : Ext.fly(sourceEl).getXY(),
-						ddel : d,
-						patientData : patientData
-					};
-				}
-				return false;
-			},
-
-			getRepairXY : function()
-			{
-				app.MainPanel.el.unmask();
-				this.newGroupReset = true;
-				return this.dragData.repairXY;
-			}
-		});
-	},
-
-	onDocumentView : function(src)
-	{
-		var me = this;
-		if (me.documentViewWindow)
-			me.DocumentViewerWindow.remove(me.documentViewWindow);
-		me.DocumentViewerWindow.add(me.documentViewWindow = Ext.create('App.classes.ManagedIframe',
-		{
-			src : src
-		}));
-		me.DocumentViewerWindow.show();
-	},
-
-	/**
-	 *
-	 * @param panel
-	 */
-	initializeOpenEncounterDropZone : function(panel)
-	{
-		var me = this;
-		panel.dropZone = Ext.create('Ext.dd.DropZone', panel.getEl(),
-		{
-			ddGroup : 'patient',
-			notifyOver : function(dd, e, data)
-			{
-				return Ext.dd.DropZone.prototype.dropAllowed;
-			},
-			notifyDrop : function(dd, e, data)
-			{
-				app.MainPanel.el.unmask();
-				me.setPatient(data.patientData.pid, data.patientData.name, function()
-				{
-					/**
-					 * if encounter id is set and pool area is check out....  go to Patient Checkout panel
-					 */
-					if (data.patientData.eid && data.patientData.poolArea == 'Check Out')
-					{
-						me.checkOutPatient(data.patientData.eid);
-
-						/**
-						 * if encounter id is set and and user has access to encounter area... go to Encounter panel
-						 * and open the encounter
-						 */
-					}
-					else
-					if (data.patientData.eid && acl['access_encounters'])
-					{
-						me.openEncounter(data.patientData.eid);
-
-						/**
-						 * else go to patient summary
-						 */
-					}
-					else
-					if (data.patientData.floorPlanId == null)
-					{
-						me.openPatientSummary();
-					}
-				});
-
-			}
-		});
-	},
-
-	/*
-	 * When the application finishes loading all the GaiaEHR core.
-	 * Then it will load all the modules.
-	 */
-	appRender : function()
-	{
-		this.loadModules();
-	},
-
-	/*
-	 * Load all the modules on the modules folder.
-	 * This folder will hold modules created by third-party.
-	 */
-	loadModules : function()
-	{
-		Modules.getEnabledModules(function(provider, response)
-		{
-			var modules = response.result;
-			for (var i = 0; i < modules.length; i++)
-			{
-				say('Module ' + modules[i].dir + ' loaded!');
-				Ext.create('Modules.' + modules[i].dir + '.Main');
-			}
-		});
-	},
-
-	removeAppMask : function()
-	{
-		Ext.get('mainapp-loading').remove();
-		Ext.get('mainapp-loading-mask').fadeOut(
-		{
-			remove : true
-		});
-	},
-
-	beforeAppRender : function()
-	{
-
-	},
-
-	getCurrPatient : function()
-	{
-		return this.patient.pid;
-	},
-
-	getApp : function()
-	{
-		return this;
-	},
-
-	setTask : function(start)
-	{
-		var me = this;
-		if (start)
-		{
-
-			App.classes.ActivityMonitor.init(
-			{
-				interval : me.activityMonitorInterval * 1000,
-				maxInactive : (1000 * 60 * me.activityMonitorMaxInactive),
-				verbose : true,
-				isInactive : function()
-				{
-					me.startAutoLogout();
-				}
-			});
-			Ext.TaskManager.start(me.cronTask);
-			App.classes.ActivityMonitor.start();
-		}
-		else
-		{
-			Ext.TaskManager.stop(me.cronTask);
-			App.classes.ActivityMonitor.stop();
-		}
-	},
-
-	/*
-	 * Access denied massage.
-	 */
-	accessDenied : function()
-	{
-		Ext.Msg.show(
-		{
-			title : 'Oops!',
-			msg : i18n['access_denied'],
-			buttons : Ext.Msg.OK,
-			icon : Ext.Msg.ERROR
-		});
-	},
-
-	alert : function(msg, icon)
-	{
-		if (icon == 'error')
-		{
-			icon = Ext.Msg.ERROR
-		}
-		else
-		if (icon == 'warning')
-		{
-			icon = Ext.Msg.WARNING
-		}
-		else
-		if (icon == 'question')
-		{
-			icon = Ext.Msg.QUESTION
-		}
-		else
-		{
-			icon = Ext.Msg.INFO
-		}
-		Ext.Msg.show(
-		{
-			title : 'Oops!',
-			msg : msg,
-			buttons : Ext.Msg.OK,
-			icon : icon
-		});
-	}
-}); 
+Ext.define('App.view.Viewport', {
+    extend:'Ext.Viewport',
+    // app settings
+    requires:window.requires,       // array is defined on _app.php
+    user:window.user,               // array defined on _app.php
+    version:window.version,         // string defined on _app.php
+    minWidthToFullMode:1585,        // full mode = nav expanded
+    currency:'$',                   // currency used
+    activityMonitorInterval:60,     // in seconds - interval to check for mouse and keyboard activity
+    activityMonitorMaxInactive:10,  // in minutes - Maximum time application can be inactive (no mouse or keyboard inputt)
+    cronTaskInterval:10,            // in seconds - interval to run me.cronTask (check PHP session, refresh Patient Pool Areas, and PHP Cron Job)
+    // end app settings
+    initComponent:function(){
+        Ext.tip.QuickTipManager.init();
+        var me = this;
+        me.lastCardNode = null;
+        me.currCardCmp = null;
+        me.fullMode = window.innerWidth >= me.minWidthToFullMode;
+        me.patient = {
+            name:null,
+            pid:null,
+            sex:null,
+            dob:null,
+            age:null,
+            eid:null,
+            readOnly:false
+        };
+        /**
+         * TaskScheduler
+         * This will run all the procedures inside the checkSession
+         */
+        me.cronTask = {
+            scope:me,
+            run:function(){
+                me.checkSession();
+                me.getPatientsInPoolArea();
+                CronJob.run();
+            },
+            interval:me.cronTaskInterval * 1000
+        };
+        /*
+         * The store for the Navigation Tree menu.
+         */
+        me.storeTree = Ext.create('App.store.navigation.Navigation', {
+            autoLoad:true,
+            listeners:{
+                scope:me,
+                load:me.afterNavigationLoad
+            }
+        });
+        /**
+         * This store will handle the patient pool area
+         */
+        me.patientPoolStore = Ext.create('App.store.areas.PoolArea');
+        /*
+         * TODO: this should be managed by the language files
+         * The language file has a definition for this.
+         */
+        if(me.currency == '$'){
+            me.icoMoney = 'icoDollar';
+        }else if(me.currency == '€'){
+            me.icoMoney = 'icoEuro';
+        }else if(me.currency == '£'){
+            me.icoMoney = 'icoLibra';
+        }else if(me.currency == '¥'){
+            me.icoMoney = 'icoYen';
+        }
+        /**
+         * GaiaEHR Support Page
+         */
+        me.winSupport = Ext.create('Ext.window.Window', {
+            title:i18n['support'],
+            closeAction:'hide',
+            bodyStyle:'background-color: #ffffff; padding: 5px;',
+            animateTarget:me.Footer,
+            resizable:false,
+            draggable:false,
+            maximizable:false,
+            autoScroll:true,
+            maximized:true,
+            dockedItems:{
+                xtype:'toolbar',
+                dock:'top',
+                items:['-', {
+                    text:"List issues",
+                    iconCls:'list',
+                    action:'http://GaiaEHR.org/projects/GaiaEHR001/issues',
+                    scope:me,
+                    handler:me.showMiframe
+                }, '-', {
+                    text:"Create an issue",
+                    iconCls:'icoAddRecord',
+                    action:'http://GaiaEHR.org/projects/GaiaEHR001/issues/new',
+                    scope:me,
+                    handler:me.showMiframe
+                }]
+            }
+        });
+        /**
+         * header Panel
+         */
+        me.Header = Ext.create('Ext.container.Container', {
+            region:'north',
+            height:44,
+            split:false,
+            collapsible:false,
+            collapsed:true,
+            frame:false,
+            border:false,
+            bodyStyle:'background: transparent',
+            margins:'0 0 0 0'
+        });
+        me.patientBtn = me.Header.add({
+            xtype:'button',
+            scale:'large',
+            style:'float:left',
+            margin:0,
+            scope:me,
+            handler:me.openPatientSummary,
+            listeners:{
+                scope:me,
+                afterrender:me.patientBtnRender
+            },
+            tpl:me.patientBtnTpl()
+        });
+        me.patientOpenVisitsBtn = me.Header.add({
+            xtype:'button',
+            scale:'large',
+            style:'float:left',
+            margin:'0 0 0 3',
+            cls:'headerLargeBtn',
+            padding:0,
+            iconCls:'icoBackClock',
+            scope:me,
+            handler:me.openPatientVisits,
+            tooltip:i18n['open_patient_visits_history']
+        });
+        if(acl['add_encounters']){
+            me.patientCreateEncounterBtn = me.Header.add({
+                xtype:'button',
+                scale:'large',
+                style:'float:left',
+                margin:'0 0 0 3',
+                cls:'headerLargeBtn',
+                padding:0,
+                iconCls:'icoClock',
+                scope:me,
+                handler:me.createNewEncounter,
+                tooltip:i18n['create_new_encounter']
+            });
+        }
+        me.patientCloseCurrEncounterBtn = me.Header.add({
+            xtype:'button',
+            scale:'large',
+            style:'float:left',
+            margin:'0 0 0 3',
+            cls:'headerLargeBtn',
+            padding:0,
+            iconCls:'icoArrowDown',
+            scope:me,
+            handler:me.stowPatientRecord,
+            tooltip:i18n['show_patient_record']
+        });
+        me.patientCheckOutBtn = me.Header.add({
+            xtype:'button',
+            scale:'large',
+            style:'float:left',
+            margin:'0 0 0 3',
+            cls:'headerLargeBtn',
+            padding:0,
+            iconCls:'icoCheckOut',
+            scope:me,
+            handler:me.chargePatient,
+            tooltip:i18n['check_out_patient']
+        });
+        me.patientChargeBtn = me.Header.add({
+            xtype:'button',
+            scale:'large',
+            style:'float:left',
+            margin:'0 0 0 3',
+            cls:'headerLargeBtn',
+            padding:0,
+            iconCls:me.icoMoney,
+            scope:me,
+            handler:me.onPaymentEntryWindow,
+            tooltip:i18n['payment_entry']
+        });
+        me.Header.add({
+            xtype:'panel',
+            bodyPadding:'8 11 5 11',
+            margin:'0 0 0 3',
+            style:'float:left',
+            items:[
+                {
+                    xtype:'patienlivetsearch',
+                    emptyText:i18n['patient_live_search'] + '...',
+                    fieldStyle:me.fullMode ? 'width:300' : 'width:250',
+                    listeners:{
+                        scope:me,
+                        select:me.liveSearchSelect,
+                        blur:function(combo){
+                            combo.reset();
+                        }
+                    }
+                }
+            ]
+        });
+        me.Header.add({
+            xtype:'button',
+            scale:'large',
+            style:'float:left',
+            margin:'0 0 0 3',
+            padding:4,
+            itemId:'patientNewReset',
+            iconCls:'icoAddPatient',
+            scope:me,
+            handler:me.newPatient,
+            tooltip:i18n['create_a_new_patient']
+        });
+        me.Header.add({
+            xtype:'button',
+            scale:'large',
+            style:'float:left',
+            margin:'0 0 0 3',
+            cls:'headerLargeBtn emerBtn',
+            overCls:'emerBtnOver',
+            padding:0,
+            itemId:'createEmergency',
+            iconCls:'icoEmer',
+            scope:me,
+            handler:me.createEmergency,
+            tooltip:i18n['create_new_emergency']
+        });
+        me.Header.add({
+            xtype:'button',
+            text:me.user.title + ' ' + me.user.lname,
+            scale:'large',
+            iconCls:'icoDoctor',
+            iconAlign:'left',
+            cls:'drButton',
+            style:'float:right',
+            margin:'0 0 0 3',
+            menu:[
+                {
+                    text:i18n['my_account'],
+                    iconCls:'icoArrowRight',
+                    handler:function(){
+                        me.navigateTo('panelMyAccount');
+                    }
+                },
+                {
+                    text:i18n['my_settings'],
+                    iconCls:'icoArrowRight',
+                    handler:function(){
+                        me.navigateTo('panelMySettings');
+                    }
+                },
+                {
+                    text:i18n['logout'],
+                    iconCls:'icoArrowRight',
+                    scope:me,
+                    handler:me.appLogout
+                }
+            ]
+        });
+        me.Header.add({
+            xtype:'button',
+            scale:'large',
+            style:'float:right',
+            margin:'0 0 0 3',
+            cls:'headerLargeBtn',
+            padding:0,
+            itemId:'patientCheckIn',
+            iconCls:'icoLog',
+            scope:me,
+            handler:me.onPatientLog,
+            tooltip:i18n['arrival_log']
+        });
+        me.Header.add({
+            xtype:'button',
+            scale:'large',
+            style:'float:right',
+            margin:'0 0 0 3',
+            cls:'headerLargeBtn',
+            padding:0,
+            itemId:'patientPoolArea',
+            iconCls:'icoPoolArea',
+            scope:me,
+            handler:me.goToPoolAreas,
+            tooltip:i18n['pool_areas']
+        });
+        me.Header.add({
+            xtype:'button',
+            scale:'large',
+            style:'float:right',
+            margin:'0 0 0 3',
+            cls:'headerLargeBtn',
+            padding:0,
+            itemId:'floorPlans',
+            iconCls:'icoZoneAreasBig',
+            scope:me,
+            handler:me.goToFloorPlans,
+            tooltip:i18n['floor_plans']
+        });
+        /**
+         * The panel definition for the the TreeMenu & the support button
+         */
+        me.navColumn = Ext.create('Ext.panel.Panel', {
+            title:i18n['navigation'],
+            stateId:'navColumn',
+            layout:'border',
+            region:'west',
+            width:200,
+            split:true,
+            collapsible:true,
+            collapsed:false,
+            items:[
+                {
+                    xtype:'treepanel',
+                    region:'center',
+                    cls:'nav_tree',
+                    hideHeaders:true,
+                    rootVisible:false,
+                    border:false,
+                    store:me.storeTree,
+                    width:200,
+                    plugins:[
+                        {
+                            ptype:'nodedisabled'
+                        }
+                    ],
+                    //					root       : {
+                    //						nodeType : 'async',
+                    //						draggable: false
+                    //					},
+                    listeners:{
+                        scope:me,
+                        selectionchange:me.onNavigationNodeSelected
+                    }
+                },
+                me.patientPoolArea = Ext.create('Ext.Panel', {
+                    title:i18n['patient_pool_areas'],
+                    layout:'fit',
+                    region:'south',
+                    bodyPadding:5,
+                    height:25,
+                    cls:'patient-pool',
+                    split:true,
+                    collapsible:true,
+                    border:false,
+                    //                    overflowY: 'auto',
+                    items:[
+                        {
+                            xtype:'dataview',
+                            loadMask:false,
+                            cls:'patient-pool-view',
+                            tpl:'<tpl for=".">' + '<div class="patient-pool-btn x-btn x-btn-default-large {priority}">' + '<div class="patient_btn_img"><img src="{photoSrc}" width="35" height="35"></div>' + '<div class="patient_btn_info">' + '<div class="patient-name">{shortName}</div>' + '<div class="patient-name">#{pid} ({poolArea})</div>' + '</div>' + '</div>' + '</tpl>',
+                            itemSelector:'div.patient-pool-btn',
+                            overItemCls:'patient-over',
+                            selectedItemClass:'patient-selected',
+                            singleSelect:true,
+                            store:me.patientPoolStore,
+                            listeners:{
+                                scope:me,
+                                render:me.initializeOpenEncounterDragZone
+                            }
+                        }
+                    ]
+                })
+            ],
+            dockedItems:[
+                {
+                    xtype:'toolbar',
+                    dock:'bottom',
+                    border:true,
+                    margin:'3 0 0 0',
+                    padding:5,
+                    layout:{
+                        type:'hbox',
+                        pack:'center'
+                    },
+                    items:['-', {
+                        xtype:'button',
+                        frame:true,
+                        text:'GaiaEHR Support',
+                        iconCls:'icoHelp',
+                        action:'http://gaiaehr.org/',
+                        scope:me,
+                        handler:me.showMiframe
+                    }, '-']
+                }
+            ],
+            listeners:{
+                scope:me,
+                beforecollapse:me.navCollapsed,
+                beforeexpand:me.navExpanded
+
+            }
+        });
+        /**
+         * MainPanel is where all the pages are displayed
+         */
+        me.MainPanel = Ext.create('Ext.container.Container', {
+            region:'center',
+            layout:'card',
+            border:true,
+            itemId:'MainPanel',
+            defaults:{
+                layout:'fit',
+                xtype:'container'
+            },
+            listeners:{
+                scope:me,
+                afterrender:me.initializeOpenEncounterDropZone
+            }
+        });
+        /**
+         * General Area
+         */
+        me.MainPanel.add(Ext.create('App.view.dashboard.Dashboard'));
+        // TODO: panels
+        me.MainPanel.add(Ext.create('App.view.calendar.Calendar'));
+        me.MainPanel.add(Ext.create('App.view.messages.Messages'));
+        me.MainPanel.add(Ext.create('App.view.search.PatientSearch'));
+        me.MainPanel.add(Ext.create('App.view.areas.FloorPlan'));
+        /**
+         * Patient Area
+         */
+        me.MainPanel.add(Ext.create('App.view.patient.NewPatient'));
+        me.MainPanel.add(Ext.create('App.view.patient.Summary'));
+        me.MainPanel.add(Ext.create('App.view.patient.Visits'));
+        me.MainPanel.add(Ext.create('App.view.patient.Encounter'));
+        me.MainPanel.add(Ext.create('App.view.patient.VisitCheckout'));
+        /**
+         * Fees Area
+         */
+        me.MainPanel.add(Ext.create('App.view.fees.Billing'));
+        me.MainPanel.add(Ext.create('App.view.fees.Payments'));
+        /**
+         * Miscellaneous
+         */
+        me.MainPanel.add(Ext.create('App.view.miscellaneous.Addressbook'));
+        me.MainPanel.add(Ext.create('App.view.miscellaneous.MyAccount'));
+        me.MainPanel.add(Ext.create('App.view.miscellaneous.MySettings'));
+        me.MainPanel.add(Ext.create('App.view.miscellaneous.OfficeNotes'));
+        me.MainPanel.add(Ext.create('App.view.miscellaneous.Websearch'));
+        me.ppdz = me.MainPanel.add(Ext.create('App.view.areas.PatientPoolDropZone'));
+        if(acl['access_gloabal_settings'])
+            me.MainPanel.add(Ext.create('App.view.administration.Globals'));
+        if(acl['access_facilities'])
+            me.MainPanel.add(Ext.create('App.view.administration.Facilities'));
+        if(acl['access_users'])
+            me.MainPanel.add(Ext.create('App.view.administration.Users'));
+        if(acl['access_practice'])
+            me.MainPanel.add(Ext.create('App.view.administration.Practice'));
+        if(acl['access_data_manager'])
+            me.MainPanel.add(Ext.create('App.view.administration.DataManager'));
+        if(acl['access_preventive_care'])
+            me.MainPanel.add(Ext.create('App.view.administration.PreventiveCare'));
+        if(acl['access_medications'])
+            me.MainPanel.add(Ext.create('App.view.administration.Medications'));
+        if(acl['access_floor_plans'])
+            me.MainPanel.add(Ext.create('App.view.administration.FloorPlans'));
+        if(acl['access_roles'])
+            me.MainPanel.add(Ext.create('App.view.administration.Roles'));
+        if(acl['access_layouts'])
+            me.MainPanel.add(Ext.create('App.view.administration.Layout'));
+        if(acl['access_lists'])
+            me.MainPanel.add(Ext.create('App.view.administration.Lists'));
+        if(acl['access_event_log'])
+            me.MainPanel.add(Ext.create('App.view.administration.Log'));
+        if(acl['access_documents'])
+            me.MainPanel.add(Ext.create('App.view.administration.Documents'));
+        me.MainPanel.add(Ext.create('App.view.administration.ExternalDataLoads'));
+        /**
+         * Footer Panel
+         */
+        me.Footer = Ext.create('Ext.container.Container', {
+            height:me.fullMode ? 30 : 60,
+            split:false,
+            padding:'3 0',
+            region:'south',
+            items:[
+                {
+                    xtype:'dataview',
+                    margin:'0 0 3 0',
+                    hidden:true,
+                    hideMode:'offsets',
+                    cls:'patient-pool-view-footer x-toolbar x-toolbar-default x-box-layout-ct',
+                    tpl:'<div class="x-toolbar-separator x-toolbar-item x-toolbar-separator-horizontal" style="float:left; margin-top:5px;" role="presentation" tabindex="-1"></div>' + '<tpl for=".">' + '<div class="patient-pool-btn-small x-btn x-btn-default-small {priority}" style="float:left">' + '<div class="patient_btn_info">' + '<div class="patient-name">{name} ({pid})</div>' + '</div>' + '</div>' + '<div class="x-toolbar-separator x-toolbar-item x-toolbar-separator-horizontal" style="float:left; margin-top:5px; margin-left:3px;" role="presentation" tabindex="-1"></div>' + '</tpl>',
+                    itemSelector:'div.patient-pool-btn-small',
+                    overItemCls:'patient-over',
+                    selectedItemClass:'patient-selected',
+                    singleSelect:true,
+                    loadMask:false,
+                    store:me.patientPoolStore,
+                    listeners:{
+                        render:me.initializeOpenEncounterDragZone
+                    }
+                },
+                {
+                    xtype:'toolbar',
+                    dock:'bottom',
+                    items:[
+                        {
+                            text:'Copyright (C) 2011 GaiaEHR (Electronic Health Records) |:|  Open Source Software operating under GPLv3 |:| v' + me.version,
+                            iconCls:'icoGreen',
+                            disabled:true,
+                            action:'http://GaiaEHR.org/projects/GaiaEHR001',
+                            scope:me,
+                            handler:me.showMiframe
+                        },
+                        '->',
+                        {
+                            text:i18n['news'],
+                            action:'http://GaiaEHR.org/projects/GaiaEHR001/news',
+                            scope:me,
+                            handler:me.showMiframe
+                        },
+                        '-',
+                        {
+                            text:i18n['wiki'],
+                            action:'http://gaiaehr.org/',
+                            scope:me,
+                            handler:me.showMiframe
+                        },
+                        '-',
+                        {
+                            text:i18n['issues'],
+                            action:'http://gaiaehr.org/',
+                            scope:me,
+                            handler:me.showMiframe
+                        },
+                        '-',
+                        {
+                            text:i18n['forums'],
+                            action:'http://gaiaehr.org/',
+                            scope:me,
+                            handler:me.showMiframe
+                        }
+                    ]
+                }
+            ]
+        });
+        me.MedicalWindow = Ext.create('App.view.patient.windows.Medical');
+        me.ChartsWindow = Ext.create('App.view.patient.windows.Charts');
+        me.PaymentEntryWindow = Ext.create('App.view.fees.PaymentEntryWindow');
+        me.PreventiveCareWindow = Ext.create('App.view.patient.windows.PreventiveCare');
+        me.NewDocumentsWindow = Ext.create('App.view.patient.windows.NewDocuments');
+        me.DocumentViewerWindow = Ext.create('App.view.patient.windows.DocumentViewer');
+        me.layout = {
+            type:'border',
+            padding:3
+        };
+        me.defaults = {
+            split:true
+        };
+        me.items = [me.Header, me.navColumn, me.MainPanel, me.Footer];
+        me.listeners = {
+            render:me.appRender,
+            beforerender:me.beforeAppRender
+        };
+        me.callParent(arguments);
+        me.signature = Ext.create('App.view.signature.SignatureWindow');
+    },
+    /*
+     * Show the medical window dialog.
+     */
+    onMedicalWin:function(btn){
+        this.MedicalWindow.show();
+        this.MedicalWindow.down('toolbar').getComponent(btn.action).toggle(true);
+        this.MedicalWindow.cardSwitch(btn);
+    },
+    /*
+     * Show the Charts window dialog.
+     */
+    onChartsWin:function(){
+        this.ChartsWindow.show();
+    },
+    /*
+     * Show the Document window dialog.
+     */
+    onNewDocumentsWin:function(action){
+        this.NewDocumentsWindow.eid = this.patient.eid;
+        this.NewDocumentsWindow.pid = this.patient.pid;
+        this.NewDocumentsWindow.show();
+        this.NewDocumentsWindow.cardSwitch(action);
+    },
+    onWebCamComplete:function(msg){
+        var panel = this.getActivePanel();
+        if(panel.id == 'panelSummary'){
+            panel.completePhotoId();
+        }
+        this.msg('Sweet!', i18n['patient_image_saved']);
+    },
+    onPatientLog:function(){
+        if(this.patientArrivalLog){
+            this.patientArrivalLog.show();
+        }else{
+            this.patientArrivalLog = Ext.create('App.view.patient.windows.ArrivalLog').show();
+        }
+    },
+    /*
+     * Show the Payment Entry window dialog.
+     */
+    onPaymentEntryWindow:function(){
+        this.PaymentEntryWindow.show();
+    },
+    /*
+     * Show the new patient form panel.
+     */
+    newPatient:function(){
+        var me = this;
+        me.navigateTo('panelNewPatient');
+    },
+    createEmergency:function(){
+        var me = this, emergency;
+        Ext.Msg.show({
+            title:i18n['wait'] + '!!!',
+            msg:i18n['are_you_sure_you_want_to_create_a_new'] + ' <span style="color: red">"' + i18n['emergency'] + '"</span>?',
+            buttons:Ext.Msg.YESNO,
+            icon:Ext.Msg.WARNING,
+            fn:function(btn){
+                if(btn == 'yes'){
+                    Emergency.createNewEmergency(function(provider, response){
+                        emergency = response.result.emergency;
+                        if(response.result.success){
+                            me.setPatient(emergency.pid, emergency.name, function(){
+                                me.openEncounter(emergency.eid);
+                            });
+                            me.msg('Sweet!', emergency.name + ' ' + i18n['created'])
+                        }
+                    });
+                }
+            }
+        });
+    },
+    /*
+     * Show the Create New Encounter panel.
+     */
+    createNewEncounter:function(){
+        var me = this;
+        if(acl['access_encounters'] && acl['add_encounters']){
+            me.navigateTo('panelEncounter', function(success){
+                if(success){
+                    me.currCardCmp.newEncounter();
+                }
+            });
+        }else{
+            me.accessDenied();
+        }
+    },
+    openPatientSummary:function(){
+        var me = this;
+        //		if(me.currCardCmp == Ext.getCmp('panelSummary')) {
+        //			var same = true;
+        //		}
+        if(me.currCardCmp == Ext.getCmp('panelSummary')){
+            me.currCardCmp.onActive();
+        }else{
+            me.navigateTo('panelSummary');
+        }
+        //		me.navigateTo('panelSummary', function() {
+        //			if(same) {
+        //				me.currCardCmp.onActive();
+        //			}
+        //		});
+    },
+    stowPatientRecord:function(){
+        this.unsetPatient();
+        this.navigateTo('panelDashboard');
+    },
+    openEncounter:function(eid){
+        var me = this;
+        if(acl['access_encounters']){
+            me.navigateTo('panelEncounter', function(success){
+                if(success){
+                    me.currCardCmp.openEncounter(eid);
+                }
+            });
+        }else{
+            me.accessDenied();
+        }
+    },
+    checkOutPatient:function(eid){
+        var me = this;
+        me.navigateTo('panelVisitCheckout', function(success){
+            if(success){
+                me.currCardCmp.setPanel(eid);
+            }
+        });
+    },
+    chargePatient:function(){
+        this.navigateTo('panelVisitPayment');
+    },
+    openPatientVisits:function(){
+        this.navigateTo('panelVisits');
+    },
+    goToPoolAreas:function(){
+        this.navigateTo('panelPoolArea');
+    },
+    goToFloorPlans:function(){
+        this.navigateTo('panelAreaFloorPlan');
+    },
+    navigateTo:function(id, callback){
+        var tree = this.navColumn.down('treepanel'), treeStore = tree.getStore(), sm = tree.getSelectionModel(), node = treeStore.getNodeById(id);
+        sm.select(node);
+        if(typeof callback == 'function'){
+            callback(true);
+        }
+    },
+    navigateToDefault:function(){
+        this.navigateTo('panelDashboard');
+    },
+    afterNavigationLoad:function(){
+        this.fullMode ? this.navColumn.expand() : this.navColumn.collapse();
+        this.navigateToDefault();
+        this.removeAppMask();
+        this.setTask(true);
+    },
+    onNavigationNodeSelected:function(model, selected){
+        var me = this;
+        if(0 < selected.length){
+            if(selected[0].data.leaf){
+                var tree = me.navColumn.down('treepanel'), sm = tree.getSelectionModel(), card = selected[0].data.id, layout = me.MainPanel.getLayout(), cardCmp = Ext.getCmp(card);
+                me.currCardCmp = cardCmp;
+                layout.setActiveItem(card);
+                cardCmp.onActive(function(success){
+                    (success) ? me.lastCardNode = sm.getLastSelected() : me.goBack();
+                });
+            }
+        }
+    },
+    goBack:function(){
+        var tree = this.navColumn.down('treepanel'), sm = tree.getSelectionModel();
+        sm.select(this.lastCardNode);
+    },
+    navCollapsed:function(){
+        var me = this, navView = me.patientPoolArea, foot = me.Footer, footView;
+        if(foot){
+            footView = foot.down('dataview');
+            foot.setHeight(60);
+            footView.show();
+        }
+        me.navColumn.isCollapsed = true;
+        navView.hide();
+    },
+    navExpanded:function(){
+        var me = this, navView = me.patientPoolArea, foot = me.Footer, footView;
+        if(foot){
+            footView = foot.down('dataview');
+            foot.setHeight(30);
+            footView.hide();
+        }
+        me.navColumn.isCollapsed = false;
+        navView.show();
+    },
+    /*
+     * Function to get the current active panel.
+     * NOTE: This may be used on all the application.
+     */
+    getActivePanel:function(){
+        return this.MainPanel.getLayout().getActiveItem();
+    },
+    liveSearchSelect:function(combo, selection){
+        var me = this, post = selection[0];
+        if(post){
+            Patient.currPatientSet({
+                pid:post.get('pid')
+            }, function(){
+                me.setPatient(post.get('pid'), post.get('fullname'), function(){
+                    me.openPatientSummary();
+                });
+            });
+        }
+    },
+    setPatient:function(pid, fullname, callback){
+        var me = this;
+        me.unsetPatient(function(){
+            Patient.currPatientSet({
+                pid:pid
+            }, function(provider, response){
+                var data = response.result, msg1, msg2;
+                if(data.readOnly){
+                    msg1 = data.user + ' ' + i18n['is_currently_working_with'] + ' "' + data.patient.name + '" ' + i18n['in'] + ' "' + data.area + '" ' + i18n['area'] + '.<br>' + i18n['override_read_mode_will_remove_the_patient_from_previous_user'] + '.<br>' + i18n['do_you_would_like_to_override_read_mode'];
+                    msg2 = data.user + ' ' + i18n['is_currently_working_with'] + ' "' + data.patient.name + '" ' + i18n['in'] + ' "' + data.area + '" ' + i18n['area'] + '.<br>';
+                    Ext.Msg.show({
+                        title:i18n['wait'] + '!!!',
+                        msg:data.overrideReadOnly ? msg1 : msg2,
+                        buttons:data.overrideReadOnly ? Ext.Msg.YESNO : Ext.Msg.OK,
+                        icon:Ext.MessageBox.WARNING,
+                        fn:function(btn){
+                            continueSettingPatient(btn != 'yes');
+                        }
+                    });
+                }else{
+                    continueSettingPatient(false);
+                }
+                function continueSettingPatient(readOnly){
+                    me.patient = {
+                        pid:data.patient.pid,
+                        name:data.patient.name,
+                        sex:data.patient.sex,
+                        dob:data.patient.dob,
+                        age:data.patient.age,
+                        priority:data.patient.priority,
+                        readOnly:readOnly,
+                        eid:null
+                    };
+                    me.patientBtn.update({
+                        pid:data.patient.pid,
+                        name:data.patient.name
+                    });
+                    me.patientBtn.addCls(data.patient.priority);
+                    me.patientBtn.enable();
+                    if(me.patientOpenVisitsBtn)
+                        me.patientOpenVisitsBtn.enable();
+                    if(me.patientCreateEncounterBtn)
+                        me.patientCreateEncounterBtn.enable();
+                    if(me.patientCloseCurrEncounterBtn)
+                        me.patientCloseCurrEncounterBtn.enable();
+                    if(me.patientChargeBtn)
+                        me.patientChargeBtn.enable();
+                    if(me.patientCheckOutBtn)
+                        me.patientCheckOutBtn.enable();
+                    if(typeof callback == 'function')
+                        callback(me.patient);
+                }
+            });
+        });
+    },
+    unsetPatient:function(callback){
+        var me = this;
+        Patient.currPatientUnset(function(){
+            me.currEncounterId = null;
+            me.patient = {
+                pid:null,
+                name:null,
+                sex:null,
+                dob:null,
+                age:null,
+                eid:null,
+                priority:null,
+                readOnly:false
+            };
+            me.patientButtonRemoveCls();
+            if(typeof callback == 'function'){
+                callback(true);
+            }else{
+                if(me.patientCreateEncounterBtn)
+                    me.patientCreateEncounterBtn.disable();
+                if(me.patientOpenVisitsBtn)
+                    me.patientOpenVisitsBtn.disable();
+                if(me.patientCloseCurrEncounterBtn)
+                    me.patientCloseCurrEncounterBtn.disable();
+                if(me.patientChargeBtn)
+                    me.patientChargeBtn.disable();
+                if(me.patientCheckOutBtn)
+                    me.patientCheckOutBtn.disable();
+                me.patientBtn.disable();
+                me.patientBtn.update({
+                    pid:'record number',
+                    name:i18n['no_patient_selected']
+                });
+            }
+        });
+    },
+    patientButtonRemoveCls:function(){
+        var me = this;
+        me.patientBtn.removeCls('Minimal');
+        me.patientBtn.removeCls('Delayed');
+        me.patientBtn.removeCls('Immediate');
+        me.patientBtn.removeCls('Expectant');
+        me.patientBtn.removeCls('Deceased');
+    },
+    showMiframe:function(btn){
+        var me = this, src = btn.action;
+        me.winSupport.remove(me.miframe);
+        me.winSupport.add(me.miframe = Ext.create('App.classes.ManagedIframe', {
+            src:src
+        }));
+        me.winSupport.show();
+    },
+    msg:function(title, format){
+        if(!this.msgCt){
+            this.msgCt = Ext.core.DomHelper.insertFirst(document.body, {
+                id:'msg-div'
+            }, true);
+        }
+        this.msgCt.alignTo(document, 't-t');
+        var s = Ext.String.format.apply(String, Array.prototype.slice.call(arguments, 1)), m = Ext.core.DomHelper.append(this.msgCt, {
+            html:'<div class="msg"><h3>' + title + '</h3><p>' + s + '</p></div>'
+        }, true);
+        m.slideIn('t').pause(3000).ghost('t', {
+            remove:true
+        });
+    },
+    checkSession:function(){
+        authProcedures.ckAuth(function(provider, response){
+            if(!response.result.authorized){
+                window.location = './';
+            }
+        });
+    },
+    patientBtnTpl:function(){
+        return Ext.create('Ext.XTemplate', '<div class="patient_btn  {priority}">', '<div class="patient_btn_img"><img src="resources/images/icons/user_32.png"></div>', '<div class="patient_btn_info">', '<div class="patient_btn_name">{name}</div>', '<div class="patient_btn_record">( {pid} )</div>', '</div>', '</div>');
+    },
+    patientBtnRender:function(btn){
+        this.unsetPatient();
+        this.initializePatientPoolDragZone(btn)
+    },
+    getPatientsInPoolArea:function(){
+        var me = this, poolArea = me.patientPoolArea, height = 35;
+        this.patientPoolStore.load({
+            callback:function(records){
+                if(records.length >= 1){
+                    for(var i = 0; i < records.length; i++){
+                        height = height + 45;
+                    }
+                }else{
+                    height = 25;
+                }
+                if(me.navColumn.collapsed === false && !me.navColumn.isCollapsingOrExpanding){
+                    height = (height > 300) ? 300 : height;
+                    poolArea.down('dataview').refresh();
+                    poolArea.setHeight(height);
+                }
+            }
+        });
+        this.ppdz.reloadStores();
+    },
+    cancelAutoLogout:function(){
+        var me = this;
+        me.el.unmask();
+        me.LogoutTask.stop(me.LogoutTaskTimer);
+        me.logoutWarinigWindow.destroy();
+        delete me.logoutWarinigWindow;
+        App.classes.ActivityMonitor.start();
+    },
+    startAutoLogout:function(){
+        var me = this;
+        me.logoutWarinigWindow = Ext.create('Ext.Container', {
+            floating:true,
+            cls:'logout-warning-window',
+            html:'Logging Out in...',
+            seconds:10
+        }).show();
+        app.el.mask();
+        if(!me.LogoutTask)
+            me.LogoutTask = new Ext.util.TaskRunner();
+        if(!me.LogoutTaskTimer){
+            me.LogoutTaskTimer = me.LogoutTask.start({
+                scope:me,
+                run:me.logoutCounter,
+                interval:1000
+            });
+        }else{
+            me.LogoutTask.start(me.LogoutTaskTimer);
+        }
+    },
+    logoutCounter:function(){
+        var me = this, sec = me.logoutWarinigWindow.seconds - 1;
+        if(sec <= 0){
+            me.logoutWarinigWindow.update('Logging Out... Bye! Bye!');
+            me.appLogout(true);
+        }else{
+            me.logoutWarinigWindow.update('Logging Out in ' + sec + 'sec');
+            me.logoutWarinigWindow.seconds = sec;
+            say('Logging Out in ' + sec + 'sec');
+        }
+    },
+    appLogout:function(auto){
+        var me = this;
+        if(auto === true){
+            me.setTask(false);
+            authProcedures.unAuth(function(){
+                window.location = './'
+            });
+        }else{
+            Ext.Msg.show({
+                title:i18n['please_confirm'] + '...',
+                msg:i18n['are_you_sure_to_quit'] + ' GaiaEHR?',
+                icon:Ext.MessageBox.QUESTION,
+                buttons:Ext.Msg.YESNO,
+                fn:function(btn){
+                    if(btn == 'yes'){
+                        authProcedures.unAuth(function(){
+                            me.setTask(false);
+                            window.location = './'
+                        });
+                    }
+                }
+            });
+        }
+    },
+    initializePatientPoolDragZone:function(panel){
+        panel.dragZone = Ext.create('Ext.dd.DragZone', panel.getEl(), {
+            ddGroup:'patientPoolAreas',
+            getDragData:function(){
+                var sourceEl = app.patientBtn.el.dom, d;
+                if(app.currCardCmp != app.ppdz){
+                    app.MainPanel.getLayout().setActiveItem(app.ppdz);
+                }
+                app.navColumn.down('treepanel').getSelectionModel().deselectAll();
+                if(sourceEl){
+                    d = sourceEl.cloneNode(true);
+                    d.id = Ext.id();
+                    return panel.dragData = {
+                        copy:true,
+                        sourceEl:sourceEl,
+                        repairXY:Ext.fly(sourceEl).getXY(),
+                        ddel:d,
+                        records:[panel.data],
+                        patient:true
+                    };
+                }
+                return false;
+            },
+            getRepairXY:function(){
+                app.goBack();
+                return this.dragData.repairXY;
+            }
+        });
+    },
+    /**
+     *
+     * @param panel
+     */
+    initializeOpenEncounterDragZone:function(panel){
+        panel.dragZone = Ext.create('Ext.dd.DragZone', panel.getEl(), {
+            ddGroup:'patient',
+            newGroupReset:true,
+            b4MouseDown:function(e){
+                if(this.newGroupReset){
+                    var sourceEl = e.getTarget(panel.itemSelector, 10), patientData = panel.getRecord(sourceEl).data;
+                    this.removeFromGroup(this.ddGroup);
+                    say('initializeOpenEncounterDragZone | patientData:');
+                    say(patientData);
+                    if(patientData.floorPlanId != null && patientData.patientZoneId == null){
+                        app.navigateTo('panelAreaFloorPlan');
+                        this.ddGroup = 'patientPoolAreas';
+                    }else{
+                        this.ddGroup = 'patient';
+                        app.MainPanel.el.mask(i18n['drop_here_to_open'] + ' <strong>"' + panel.getRecord(sourceEl).data.name + '"</strong> ' + i18n['current_encounter']);
+                    }
+                    this.addToGroup(this.ddGroup);
+                    this.newGroupReset = false;
+                }
+                this.autoOffset(e.getPageX(), e.getPageY());
+            },
+            endDrag:function(e){
+                this.newGroupReset = true;
+            },
+            getDragData:function(e){
+                var sourceEl = e.getTarget(panel.itemSelector, 10), d, patientData = panel.getRecord(sourceEl).data;
+                if(sourceEl){
+                    d = sourceEl.cloneNode(true);
+                    d.id = Ext.id();
+                    return panel.dragData = {
+                        sourceEl:sourceEl,
+                        repairXY:Ext.fly(sourceEl).getXY(),
+                        ddel:d,
+                        patientData:patientData
+                    };
+                }
+                return false;
+            },
+            getRepairXY:function(){
+                app.MainPanel.el.unmask();
+                this.newGroupReset = true;
+                return this.dragData.repairXY;
+            }
+        });
+    },
+    onDocumentView:function(src){
+        var me = this;
+        if(me.documentViewWindow)
+            me.DocumentViewerWindow.remove(me.documentViewWindow);
+        me.DocumentViewerWindow.add(me.documentViewWindow = Ext.create('App.classes.ManagedIframe', {
+            src:src
+        }));
+        me.DocumentViewerWindow.show();
+    },
+    /**
+     *
+     * @param panel
+     */
+    initializeOpenEncounterDropZone:function(panel){
+        var me = this;
+        panel.dropZone = Ext.create('Ext.dd.DropZone', panel.getEl(), {
+            ddGroup:'patient',
+            notifyOver:function(dd, e, data){
+                return Ext.dd.DropZone.prototype.dropAllowed;
+            },
+            notifyDrop:function(dd, e, data){
+                say(data.patientData);
+                app.MainPanel.el.unmask();
+                me.setPatient(data.patientData.pid, data.patientData.name, function(){
+                    /**
+                     * if encounter id is set and pool area is check out....  go to Patient Checkout panel
+                     */
+                    if(data.patientData.eid && data.patientData.poolArea == 'Check Out'){
+                        me.checkOutPatient(data.patientData.eid);
+                        /**
+                         * if encounter id is set and and user has access to encounter area... go to Encounter panel
+                         * and open the encounter
+                         */
+                    }else if(data.patientData.eid && acl['access_encounters']){
+                        me.openEncounter(data.patientData.eid);
+                        /**
+                         * else go to patient summary
+                         */
+                    }else if(data.patientData.floorPlanId == null || data.patientData.floorPlanId == 0){
+                        me.openPatientSummary();
+                    }
+                });
+            }
+        });
+    },
+    /*
+     * When the application finishes loading all the GaiaEHR core.
+     * Then it will load all the modules.
+     */
+    appRender:function(){
+        this.loadModules();
+    },
+    /*
+     * Load all the modules on the modules folder.
+     * This folder will hold modules created by third-party.
+     */
+    loadModules:function(){
+        Modules.getEnabledModules(function(provider, response){
+            var modules = response.result;
+            for(var i = 0; i < modules.length; i++){
+                say('Module ' + modules[i].dir + ' loaded!');
+                Ext.create('Modules.' + modules[i].dir + '.Main');
+            }
+        });
+    },
+    removeAppMask:function(){
+        Ext.get('mainapp-loading').remove();
+        Ext.get('mainapp-loading-mask').fadeOut({
+            remove:true
+        });
+    },
+    beforeAppRender:function(){
+    },
+    getCurrPatient:function(){
+        return this.patient.pid;
+    },
+    getApp:function(){
+        return this;
+    },
+    setTask:function(start){
+        var me = this;
+        if(start){
+            App.classes.ActivityMonitor.init({
+                interval:me.activityMonitorInterval * 1000,
+                maxInactive:(1000 * 60 * me.activityMonitorMaxInactive),
+                verbose:true,
+                isInactive:function(){
+                    me.startAutoLogout();
+                }
+            });
+            Ext.TaskManager.start(me.cronTask);
+            App.classes.ActivityMonitor.start();
+        }else{
+            Ext.TaskManager.stop(me.cronTask);
+            App.classes.ActivityMonitor.stop();
+        }
+    },
+    /*
+     * Access denied massage.
+     */
+    accessDenied:function(){
+        Ext.Msg.show({
+            title:'Oops!',
+            msg:i18n['access_denied'],
+            buttons:Ext.Msg.OK,
+            icon:Ext.Msg.ERROR
+        });
+    },
+    alert:function(msg, icon){
+        if(icon == 'error'){
+            icon = Ext.Msg.ERROR
+        }else if(icon == 'warning'){
+            icon = Ext.Msg.WARNING
+        }else if(icon == 'question'){
+            icon = Ext.Msg.QUESTION
+        }else{
+            icon = Ext.Msg.INFO
+        }
+        Ext.Msg.show({
+            title:'Oops!',
+            msg:msg,
+            buttons:Ext.Msg.OK,
+            icon:icon
+        });
+    }
+});
 

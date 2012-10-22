@@ -14,6 +14,7 @@ if(!isset($_SESSION)) {
 include_once($_SESSION['root'] . '/dataProvider/Patient.php');
 include_once($_SESSION['root'] . '/dataProvider/User.php');
 include_once($_SESSION['root'] . '/dataProvider/Laboratories.php');
+include_once($_SESSION['root'] . '/dataProvider/Medications.php');
 include_once($_SESSION['root'] . '/classes/dbHelper.php');
 class Medical
 {
@@ -30,6 +31,7 @@ class Medical
 	 */
 	private $patient;
 	private $laboratories;
+	private $medications;
 
 	function __construct()
 	{
@@ -37,6 +39,7 @@ class Medical
 		$this->user    = new User();
 		$this->patient = new Patient();
 		$this->laboratories = new Laboratories();
+		$this->medications = new Medications();
 		return;
 	}
 
@@ -99,7 +102,7 @@ class Medical
 	public function addPatientAllergies(stdClass $params)
 	{
 		$data = get_object_vars($params);
-		unset($data['id'],$data['alert']);
+		unset($data['id'],$data['allergy_name'],$data['alert'],$data['allergy1'],$data['allergy2'],$data['reaction1'],$data['reaction2'],$data['reaction3'],$data['reaction4']);
 		$data['begin_date']  = $this->parseDate($data['begin_date']);
 		$data['end_date']    = $this->parseDate($data['end_date']);
 		$data['create_date'] = $this->parseDate($data['create_date']);
@@ -113,7 +116,25 @@ class Medical
 	{
 		$data = get_object_vars($params);
 		$id = $data['id'];
-		unset($data['id'],$data['alert']);
+		unset($data['id'],$data['allergy_name'],$data['alert'],$data['allergy1'],$data['allergy2'],$data['reaction1'],$data['reaction2'],$data['reaction3'],$data['reaction4']);
+		if($params->allergy1 != ''){
+			$data['allergy']=$params->allergy1;
+		}elseif($params->allergy2 != ''){
+			$name=$this->medications->getMedicationNameById($params->allergy2);
+			$data['allergy']=$name['PROPRIETARYNAME'];
+			$data['allergy_id']=$params->allergy2;
+		}
+		$params->allergy=$data['allergy'];
+		if($params->reaction1 != ''){
+			$data['reaction']=$params->reaction1;
+		}elseif($params->reaction2 != ''){
+			$data['reaction']=$params->reaction2;
+		}elseif($params->reaction3 != ''){
+			$data['reaction']=$params->reaction3;
+		}elseif($params->reaction4 != ''){
+			$data['reaction']=$params->reaction4;
+		}
+		$params->reaction=$data['reaction'];
 		$data['begin_date']  = $this->parseDate($data['begin_date']);
 		$data['end_date']    = $this->parseDate($data['end_date']);
 		$data['create_date'] = $this->parseDate($data['create_date']);

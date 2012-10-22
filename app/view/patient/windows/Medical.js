@@ -364,21 +364,19 @@ Ext.define('App.view.patient.windows.Medical', {
                                         me.allergieType = Ext.create('App.classes.combo.Allergies', {
                                             fieldLabel:i18n['allergy'],
                                             action:'allergie_name',
-                                            name:'allergy',
+                                            name:'allergy1',
                                             enableKeyEvents:true,
                                             disabled:true,
                                             width:225,
                                             labelWidth:70,
                                             listeners:{
                                                 scope:me,
-                                                'select':me.onLiveSearchSelect,
                                                 change:me.disableFieldLogic
                                             }
                                         }), me.allergieMedication = Ext.create('App.classes.LiveMedicationSearch', {
                                             fieldLabel:i18n['allergy'],
                                             hideLabel:false,
-                                            action:'drug_name',
-                                            name:'allergy',
+                                            name:'allergy2',
                                             hidden:true,
                                             disabled:true,
                                             enableKeyEvents:true,
@@ -386,18 +384,12 @@ Ext.define('App.view.patient.windows.Medical', {
                                             labelWidth:70,
                                             listeners:{
                                                 scope:me,
-                                                'select':me.onLiveSearchSelect,
                                                 change:me.disableFieldLogic
                                             }
-                                        }), {
-                                            xtype:'textfield',
-                                            hidden:true,
-                                            name:'allergy_id',
-                                            action:'idField'
-                                        }, {
+                                        }), me.allergiesAbdominal = Ext.create('App.classes.combo.AllergiesAbdominal', {
                                             xtype:'mitos.allergiesabdominalcombo',
                                             fieldLabel:i18n['reaction'],
-                                            name:'reaction',
+                                            name:'reaction1',
                                             disabled:true,
                                             width:225,
                                             labelWidth:70,
@@ -406,10 +398,10 @@ Ext.define('App.view.patient.windows.Medical', {
                                                 change:me.disableFieldLogic
                                             }
 
-                                        }, {
+                                        }), me.allergiesLocal = Ext.create('App.classes.combo.AllergiesLocal', {
                                             xtype:'mitos.allergieslocalcombo',
                                             fieldLabel:i18n['reaction'],
-                                            name:'reaction',
+                                            name:'reaction2',
                                             hidden:true,
                                             disabled:true,
                                             width:225,
@@ -419,10 +411,10 @@ Ext.define('App.view.patient.windows.Medical', {
                                                 change:me.disableFieldLogic
                                             }
 
-                                        }, {
+                                        }),  me.allergiesSkin = Ext.create('App.classes.combo.AllergiesSkin', {
                                             xtype:'mitos.allergiesskincombo',
                                             fieldLabel:i18n['reaction'],
-                                            name:'reaction',
+                                            name:'reaction3',
                                             hidden:true,
                                             disabled:true,
                                             width:225,
@@ -432,10 +424,10 @@ Ext.define('App.view.patient.windows.Medical', {
                                                 change:me.disableFieldLogic
                                             }
 
-                                        }, {
+                                        }), me.allergiesSystemic = Ext.create('App.classes.combo.AllergiesSystemic', {
                                             xtype:'mitos.allergiessystemiccombo',
                                             fieldLabel:i18n['reaction'],
-                                            name:'reaction',
+                                            name:'reaction4',
                                             hidden:true,
                                             disabled:true,
                                             width:225,
@@ -445,7 +437,7 @@ Ext.define('App.view.patient.windows.Medical', {
                                                 change:me.disableFieldLogic
                                             }
 
-                                        }, {
+                                        }), {
                                             fieldLabel:i18n['end_date'],
                                             xtype:'datefield',
                                             format:'Y-m-d',
@@ -1495,20 +1487,16 @@ Ext.define('App.view.patient.windows.Medical', {
             field = combo.up('fieldcontainer').getComponent('immunization_name');
             field.setValue(name);
             me.CvxMvxCombo.store.load({params:{cvx_code:model[0].data.cvx_code}})
-        }else if(combo.id == 'allergie_name' || combo.id == 'drug_name'){
-            name = model[0].data.id;
-            field = combo.up('fieldcontainer').query('[action="idField"]')[0];
-            field.setValue(name);
         }else if(combo.action == 'medicalissues'){
             name = model[0].data.code;
             field = combo.up('fieldcontainer').query('[action="idField"]')[0];
             field2 = combo.up('fieldcontainer').query('[action="medicalissues"]')[0];
-            field.setValue(id);
+            field.setValue(name);
             field2.setValue(model[0].data.code_text);
         }else if(combo.action == 'surgery'){
             name = model[0].data.id;
             field = combo.up('fieldcontainer').query('[action="idField"]')[0];
-            field.setValue(id);
+            field.setValue(name);
         }else if(combo.action == 'medication_id'){
             name = model[0].data.PROPRIETARYNAME;
             field = combo.up('fieldcontainer').query('[action="medication"]')[0];
@@ -1577,7 +1565,12 @@ Ext.define('App.view.patient.windows.Medical', {
         systemicCombo.reset();
     },
     onLocationSelect:function(combo, record){
-        var me = this, skinCombo = combo.up('form').getForm().findField('skinreaction'), localCombo = combo.up('form').getForm().findField('localreaction'), abdominalCombo = combo.up('form').getForm().findField('abdominalreaction'), systemicCombo = combo.up('form').getForm().findField('systemicreaction'), value = combo.getValue();
+        var me = this,
+            skinCombo = me.allergiesSkin,
+            localCombo = me.allergiesLocal,
+            abdominalCombo = me.allergiesAbdominal,
+            systemicCombo = me.allergiesSystemic,
+            value = combo.getValue();
         me.hideall(skinCombo, localCombo, abdominalCombo, systemicCombo);
         if(value == 'Skin'){
             skinCombo.show(true);
@@ -1598,29 +1591,35 @@ Ext.define('App.view.patient.windows.Medical', {
     },
     onAllergyTypeSelect:function(combo, record){
         var me = this;
+        me.allergieMedication.hide(true);
+        me.allergieMedication.setDisabled(true);
+        me.allergieMedication.reset();
+        me.allergieType.hide(true);
+        me.allergieType.setDisabled(true);
+        me.allergieType.reset();
         if(record[0].data.allergy_type == 'Drug'){
-            me.allergieType.hide(true);
-            me.allergieType.setDisabled(true);
-            me.allergieType.reset();
             me.allergieMedication.show(true);
             me.allergieMedication.setDisabled(false);
-        }else if(record[0].data.allergy_type == '' || record[0].data.allergy_type == null){
-            me.allergieType.setDisabled(true);
-            me.allergieMedication.hide(true);
-            me.allergieMedication.setDisabled(true);
-            me.allergieType.show(true);
-        }else{
-            me.allergieMedication.hide(true);
-            me.allergieMedication.setDisabled(true);
+        }else if(record[0].data.allergy_type == 'Food'){
+            me.allergieType.reset();
             me.allergieType.show(true);
             me.allergieType.setDisabled(false);
-            me.allergieType.reset();
             me.allergieType.store.load({
-                    params:{
-                        allergy_type:record[0].data.allergy_type
-                    }
-                })
+                params:{
+                    allergy_type:record[0].data.allergy_type
+                }
+            })
+        }else if(record[0].data.allergy_type == 'Environmental'){
+            me.allergieType.reset();
+            me.allergieType.show(true);
+            me.allergieType.setDisabled(false);
+            me.allergieType.store.load({
+                params:{
+                    allergy_type:record[0].data.allergy_type
+                }
+            })
         }
+
     },
     setDefaults:function(options){
         var data;

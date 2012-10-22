@@ -70,6 +70,17 @@ class Medications
         return array('totals'=> 1, 'rows'  => $params);
     }
 
+	public function getMedicationNameById($id)
+    {
+	    $this->db->setSQL("SELECT PROPRIETARYNAME FROM medications WHERE id='$id'");
+	    return $this->db->fetchRecord(PDO::FETCH_ASSOC);
+    }
+
 
 
 }
+
+//$e = new Medications();
+//echo '<pre>';
+//	$here=$e->getMedicationsById(1);
+//print_r($here['PROPRIETARYNAME']);

@@ -13,6 +13,7 @@ Ext.define('App.view.patient.encounter.ICDs', {
     margin:'0 0 3 0',
     layout:'anchor',
 	requires: [ 'App.classes.LiveICDXSearch' ],
+    autoFormSync:true,
     initComponent:function () {
         var me = this;
 
@@ -27,6 +28,7 @@ Ext.define('App.view.patient.encounter.ICDs', {
 
             onTriggerClick: function() {
                 this.destroy();
+                if(me.autoFormSync) me.syncFormStore();
             },
 
             onRender:function (ct, position) {
@@ -66,16 +68,22 @@ Ext.define('App.view.patient.encounter.ICDs', {
                 action:'idcsContainer'
                 //manageOverflow:1
             }
-
         ];
-
         me.callParent(arguments);
+    },
 
+    syncFormStore:function(){
+        var form = this.up('form').getForm(),
+            record = form.getRecord(),
+            store = record.store.sync();
+        record.set(form.getValues());
+        store.sync();
     },
 
     onLiveIcdSelect:function(field, model){
         this.addIcd(model[0].data.code, model[0].data.code_text);
         field.reset();
+        if(this.autoFormSync) this.syncFormStore();
     },
 
 

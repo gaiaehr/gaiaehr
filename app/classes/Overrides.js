@@ -27,6 +27,145 @@ Ext.override(Ext.grid.Panel, {
     emptyText: 'Nothing to Display'
 });
 
+Ext.override(Ext.container.Container, {
+
+    setAutoSyncFormEvent:function(field){
+        if(field.xtype == 'textfield' || field.xtype == 'textareafield'){
+            field.on('keyup', this.autoSyncForm, this);
+        }else if(field.xtype == 'radiofield' || field.xtype == 'mitos.checkbox' || field.xtype == 'checkbox'){
+            field.scope = this;
+            field.handler = this.autoSyncForm;
+        }else{
+            //field.on('select', this.autoSyncForm, this);
+        }
+    },
+
+    autoSyncForm:function(field){
+        var me = this,
+            form = field.up('form').getForm(),
+            record = form.getRecord(),
+            store = record.store,
+            hasChanged;
+        if(typeof me.isLoading == 'undefined' || !me.isLoading) {
+            record.set(form.getValues());
+            hasChanged = (Object.getOwnPropertyNames(record.getChanges()).length !== 0);
+            say(record.getChanges());
+            if(hasChanged === true){
+                me.setFieldDirty(field);
+            }else{
+                me.setFieldClean(field);
+            }
+            if(typeof me.bufferSyncFormFn == 'undefined'){
+                say('bufferSyncFormFn is undefined');
+                me.bufferSyncFormFn = Ext.Function.createBuffered(function(){
+                    say('im createBuffered');
+                    if(hasChanged){
+                        say('hasChanged before sync');
+                        store.sync({
+                            callback:function(){
+                                say('im callback');
+                                me.updateProgressNote();
+                                me.setFormFieldsClean(form);
+                                me.msg('Sweet!', 'Records synced with server');
+                                delete me.bufferSyncFormFn;
+                            }
+                        });
+                    }else{
+                        me.setFormFieldsClean(form);
+                        delete me.bufferSyncFormFn;
+                    }
+                }, 3000);
+            }else{
+                say('bufferSyncFormFn is not undefined');
+                me.bufferSyncFormFn();
+            }
+        }
+    },
+
+    setFieldDirty:function(field){
+        var duration = 2000, el;
+        if(field.xtype == 'textfield' || field.xtype == 'textareafield'){
+            el = field.inputEl;
+        }else if(field.xtype == 'radiofield'){
+            el = field.ownerCt.el;
+        }else if(field.xtype == 'mitos.checkbox' || field.xtype == 'checkbox'){
+            el = field.el;
+        }else{
+            el = field.el;
+        }
+        if(!field.hasChanged){
+            field.hasChanged = true;
+            Ext.create('Ext.fx.Animator', {
+                target: el,
+                duration: duration, // 10 seconds
+                keyframes: {
+                    0: {
+                        backgroundColor: 'FFFFFF'
+                    },
+                    100: {
+                        backgroundColor: 'ffdddd'
+                    }
+                },
+                listeners:{
+                    keyframe:function(fx, keyframe){
+                        if(keyframe == 1){
+                            el.setStyle({'background-image':'none'});
+                        }
+                    }
+                }
+            });
+        }
+    },
+
+    setFieldClean:function(field){
+        var duration = 2000, el;
+        if(field.xtype == 'textfield' || field.xtype == 'textareafield'){
+            el = field.inputEl;
+        }else if(field.xtype == 'radiofield'){
+            el = field.ownerCt.el;
+        }else if(field.xtype == 'mitos.checkbox' || field.xtype == 'checkbox'){
+            el = field.el;
+        }else{
+            el = field.el;
+        }
+        field.hasChanged = false;
+        Ext.create('Ext.fx.Animator', {
+            target: el,
+            duration: duration, // 10 seconds
+            keyframes: {
+                0: {
+                    backgroundColor: 'ffdddd'
+                },
+                100: {
+                    backgroundColor: 'FFFFFF'
+                }
+            },
+            listeners:{
+                keyframe:function(fx, keyframe){
+                    if(keyframe == 1){
+                        Ext.Function.defer(function(){
+                            el.setStyle({'background-image':null});
+                        }, duration - 400);
+                    }
+                }
+            }
+        });
+    },
+    /**
+     * this will set all the fields that has change
+     * @param form
+     */
+    setFormFieldsClean:function(form){
+        var me = this,
+            fields = form.getFields().items;
+        for(var i=0; i < fields.length; i++){
+            if(fields[i].hasChanged){
+                me.setFieldClean(fields[i]);
+            }
+        }
+    }
+});
+
 Ext.override(Ext.grid.ViewDropZone, {
 
 	handleNodeDrop: function(data, record, position) {

@@ -830,35 +830,31 @@ Ext.define('App.view.patient.Encounter', {
                     me.msg('Oops!', i18n['vitals_form_is_epmty'])
                 }
             }else{
-                ACL.hasPermission('edit_encounters', function(provider, response){
-                    if(response.result){
-                        store = me.encounterStore;
-                        if(SaveBtn.action == 'reviewOfSystems'){
-                            record = store.getAt(0).reviewofsystems().getAt(0);
-                        }else if(SaveBtn.action == 'reviewOfSystemsChecks'){
-                            record = store.getAt(0).reviewofsystemschecks().getAt(0);
-                        }else if(SaveBtn.action == 'soap'){
-                            record = store.getAt(0).soap().getAt(0);
-                        }else if(SaveBtn.action == 'speechDictation'){
-                            record = store.getAt(0).speechdictation().getAt(0);
-                        }
-                        values = me.addDefaultData(values);
-                        record.set(values);
-                        record.save({
-                            callback:function(){
-                                me.updateProgressNote();
-                            }
-                        });
-                        me.msg('Sweet!', i18n['encounter_updated']);
-                        me.encounterEventHistoryStore.load({
-                            params:{
-                                eid:app.patient.eid
-                            }
-                        });
-                    }else{
-                        app.accessDenied();
+                if(acl['edit_encounters']){
+                    if(SaveBtn.action == 'reviewOfSystems'){
+                        store = me.encounterStore.getAt(0).reviewofsystems();
+                        record = store.getAt(0);
+                    }else if(SaveBtn.action == 'reviewOfSystemsChecks'){
+                        store = me.encounterStore.getAt(0).reviewofsystemschecks();
+                        record = store.getAt(0);
+                    }else if(SaveBtn.action == 'soap'){
+                        store = me.encounterStore.getAt(0).soap();
+                        record = store.getAt(0);
+                    }else if(SaveBtn.action == 'speechDictation'){
+                        store = me.encounterStore.getAt(0).speechdictation();
+                        record = store.getAt(0);
                     }
-                });
+                    values = me.addDefaultData(values);
+                    record.set(values);
+                    store.sync({
+                        callback:function(){
+                            me.msg('Sweet!', i18n['encounter_updated']);
+                        }
+                    });
+                    me.encounterEventHistoryStore.load({params:{eid:app.patient.eid}});
+                }else{
+                    app.accessDenied();
+                }
             }
         }
     },
@@ -926,7 +922,8 @@ Ext.define('App.view.patient.Encounter', {
      * @param eid
      */
     openEncounter:function(eid){
-        var me = this, vitals;
+        var me = this, vitals, store;
+        me.isLoading = true;
         me.resetTabs();
         me.eid = app.patient.eid = eid;
         me.encounterStore.getProxy().extraParams.eid = me.eid;
@@ -952,12 +949,24 @@ Ext.define('App.view.patient.Encounter', {
                     vitals.store = record[0].vitalsStore;
                     vitals.refresh();
                 }
-                if(me.reviewSysPanel) me.reviewSysPanel.getForm().loadRecord(record[0].reviewofsystems().getAt(0));
-                if(me.reviewSysCkPanel) me.reviewSysCkPanel.getForm().loadRecord(record[0].reviewofsystemschecks().getAt(0));
-                if(me.soapPanel) me.soapPanel.getForm().loadRecord(record[0].soap().getAt(0));
+                if(me.reviewSysPanel){
+                    store = record[0].reviewofsystems();
+                    store.on('write',me.updateProgressNote, me);
+                    me.reviewSysPanel.getForm().loadRecord(store.getAt(0));
+                }
+                if(me.reviewSysCkPanel){
+                    store = record[0].reviewofsystemschecks();
+                    store.on('write',me.updateProgressNote, me);
+                    me.reviewSysCkPanel.getForm().loadRecord(store.getAt(0));
+                }
+                if(me.soapPanel){
+                    store = record[0].soap();
+                    store.on('write',me.updateProgressNote, me);
+                    me.soapPanel.getForm().loadRecord(store.getAt(0));
+                    me.soapPanel.query('icdsfieldset')[0].loadIcds(store.getAt(0).data.icdxCodes);
+                }
                 //me.speechDicPanel.getForm().loadRecord(record[0].speechdictation().getAt(0));
                 me.encounterEventHistoryStore.load({params:{eid:eid}});
-                if(me.soapPanel)me.soapPanel.query('icdsfieldset')[0].loadIcds(record[0].soap().getAt(0).data.icdxCodes);
                 if(me.CurrentProceduralTerminology){
                     me.CurrentProceduralTerminology.encounterCptStoreLoad(me.pid, eid, function(){
                         me.CurrentProceduralTerminology.setDefaultQRCptCodes();
@@ -966,6 +975,7 @@ Ext.define('App.view.patient.Encounter', {
                 me.priorityCombo.setValue(data.priority);
                 if(app.PreventiveCareWindow) app.PreventiveCareWindow.loadPatientPreventiveCare();
                 if(me.progressHistory) me.getProgressNotesHistory();
+                me.isLoading = false;
             }
         });
     },
@@ -1293,6 +1303,7 @@ Ext.define('App.view.patient.Encounter', {
                         name:formFields.items[i].name,
                         type:'auto'
                     });
+                    if(acl['edit_encounters']) me.setAutoSyncFormEvent(formFields.items[i]);
                 }
                 Ext.define('App.model.patient.ReviewOfSystems', {
                     extend:'Ext.data.Model',
@@ -1321,8 +1332,7 @@ Ext.define('App.view.patient.Encounter', {
                         name:formFields.items[i].name,
                         type:'auto'
                     });
-                    formFields.items[i].on('keyup', me.onSoapFieldChange, me);
-                    //say(formFields.items[i])
+                    if(acl['edit_encounters']) me.setAutoSyncFormEvent(formFields.items[i]);
                 }
                 Ext.define('App.model.patient.SOAP', {
                     extend:'Ext.data.Model',
@@ -1336,9 +1346,7 @@ Ext.define('App.view.patient.Encounter', {
                     belongsTo:{
                         model:'App.model.patient.Encounter',
                         foreignKey:'eid'
-                    },
-                    autoSync:true
-
+                    }
                 });
             });
         }
@@ -1373,6 +1381,7 @@ Ext.define('App.view.patient.Encounter', {
                         name:formFields.items[i].name,
                         type:'auto'
                     });
+                    if(acl['edit_encounters']) me.setAutoSyncFormEvent(formFields.items[i]);
                 }
                 Ext.define('App.model.patient.ReviewOfSystemsCheck', {
                     extend:'Ext.data.Model',
@@ -1391,104 +1400,6 @@ Ext.define('App.view.patient.Encounter', {
             });
         }
         if(me.newEncounterWindow) me.getFormItems(me.newEncounterWindow.down('form'), 5);
-    },
-
-    onSoapFieldChange:function(field){
-        var me = this,
-            form = field.up('form').getForm(),
-            record = form.getRecord(),
-            hasChange;
-        record.set(form.getValues());
-        hasChange = (Object.getOwnPropertyNames(record.getChanges()).length !== 0);
-        if(hasChange){
-            me.setFieldDirty(field);
-        }else{
-            me.setFieldClean(field);
-        }
-        if(me.bufferSyncFn){
-            me.bufferSyncFn();
-        }else{
-            me.bufferSync(form);
-        }
-    },
-
-    bufferSync:function(form){
-        var me = this,
-            record = form.getRecord(),
-            hasChange;
-        me.bufferSyncFn = Ext.Function.createBuffered(function(){
-            hasChange = (Object.getOwnPropertyNames(record.getChanges()).length !== 0);
-            if(hasChange){
-                record.store.save({
-                    callback:function(){
-                        me.updateProgressNote();
-                        me.setFormFieldsClean(form)
-                    }
-                })
-            }else{
-                me.setFormFieldsClean(form);
-            }
-        }, 3000);
-    },
-
-    setFieldDirty:function(field){
-        var duration = 2000;
-        field.hasChange = true;
-        Ext.create('Ext.fx.Animator', {
-            target: field.inputEl,
-            duration: duration, // 10 seconds
-            keyframes: {
-                0: {
-                    backgroundColor: 'FFFFFF'
-                },
-                100: {
-                    backgroundColor: 'ffdddd'
-                }
-            },
-            listeners:{
-                keyframe:function(fx, keyframe){
-                    if(keyframe == 1){
-                        field.inputEl.setStyle({'background-image':'none'});
-                    }
-                }
-            }
-        });
-    },
-
-    setFieldClean:function(field){
-        var duration = 2000;
-        field.hasChange = false;
-        Ext.create('Ext.fx.Animator', {
-            target: field.inputEl,
-            duration: duration, // 10 seconds
-            keyframes: {
-                0: {
-                    backgroundColor: 'ffdddd'
-                },
-                100: {
-                    backgroundColor: 'FFFFFF'
-                }
-            },
-            listeners:{
-                keyframe:function(fx, keyframe){
-                    if(keyframe == 1){
-                        Ext.Function.defer(function(){
-                            field.inputEl.setStyle({'background-image':null});
-                        }, duration - 400);
-                    }
-                }
-            }
-        });
-    },
-
-    setFormFieldsClean:function(form){
-        var me = this,
-            fields = form.getFields().items;
-        for(var i=0; i < fields.length; i++){
-            if(fields[i].hasChange){
-                me.setFieldClean(fields[i]);
-            }
-        }
     },
 
     getButtonsToDisable:function(){

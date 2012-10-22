@@ -28,7 +28,6 @@
  * @namespace Encounter.updateDictationById
  * @namespace Encounter.getProgressNoteByEid
  * @namespace User.verifyUserPass
- * @namespace ACL.hasPermission
  */
 Ext.define('App.view.patient.Encounter', {
     extend:'App.classes.RenderPanel',
@@ -763,35 +762,33 @@ Ext.define('App.view.patient.Encounter', {
         if(form.isValid()){
             var values = form.getValues(), store, record, storeIndex;
             if(SaveBtn.action == 'encounter'){
-                ACL.hasPermission('add_encounters', function(provider, response){
-                    if(response.result){
-                        store = me.encounterStore;
-                        record = form.getRecord();
-                        storeIndex = store.indexOf(record);
-                        values.pid = app.patient.pid;
-                        if(storeIndex == -1){
-                            store.add(values);
-                            record = store.last();
-                        }else{
-                            record.set(values);
-                        }
-                        store.sync({
-                            callback:function(batch, options){
-                                if(options.operations.create){
-                                    var data = options.operations.create[0].data;
-                                    app.patientButtonRemoveCls();
-                                    app.patientBtn.addCls(data.priority);
-                                    me.openEncounter(data.eid);
-                                    SaveBtn.up('window').hide();
-                                }
-
-                            }
-                        });
+                if(acl['add_encounters']){
+                    store = me.encounterStore;
+                    record = form.getRecord();
+                    storeIndex = store.indexOf(record);
+                    values.pid = app.patient.pid;
+                    if(storeIndex == -1){
+                        store.add(values);
+                        record = store.last();
                     }else{
-                        SaveBtn.up('window').close();
-                        app.accessDenied();
+                        record.set(values);
                     }
-                });
+                    store.sync({
+                        callback:function(batch, options){
+                            if(options.operations.create){
+                                var data = options.operations.create[0].data;
+                                app.patientButtonRemoveCls();
+                                app.patientBtn.addCls(data.priority);
+                                me.openEncounter(data.eid);
+                                SaveBtn.up('window').hide();
+                            }
+
+                        }
+                    });
+                }else{
+                    SaveBtn.up('window').close();
+                    app.accessDenied();
+                }
             }else if(SaveBtn.action == 'vitals'){
                 var VFields = form.getFields().items, VFieldsCount = VFields.length, emptyCount = 0;
                 for(var i = 0; i < VFields.length; i++){
@@ -802,30 +799,28 @@ Ext.define('App.view.patient.Encounter', {
                     }
                 }
                 if((VFieldsCount - 3) > emptyCount){
-                    ACL.hasPermission('add_vitals', function(provider, response){
-                        if(response.result){
-                            store = me.encounterStore.getAt(0).vitals();
-                            record = form.getRecord();
-                            values = me.addDefaultData(values);
-                            storeIndex = store.indexOf(record);
-                            if(storeIndex == -1){
-                                store.insert(0, values);
-                            }else{
-                                record.set(values);
-                            }
-                            store.sync({
-                                scope:me,
-                                success:function(){
-                                    me.msg('Sweet!', i18n['vitals_saved']);
-                                    me.updateProgressNote();
-                                    me.vitalsPanel.down('vitalsdataview').refresh();
-                                    me.resetVitalsForm();
-                                }
-                            });
+                    if(acl['add_vitals']){
+                        store = me.encounterStore.getAt(0).vitals();
+                        record = form.getRecord();
+                        values = me.addDefaultData(values);
+                        storeIndex = store.indexOf(record);
+                        if(storeIndex == -1){
+                            store.insert(0, values);
                         }else{
-                            app.accessDenied();
+                            record.set(values);
                         }
-                    });
+                        store.sync({
+                            scope:me,
+                            success:function(){
+                                me.msg('Sweet!', i18n['vitals_saved']);
+                                me.updateProgressNote();
+                                me.vitalsPanel.down('vitalsdataview').refresh();
+                                me.resetVitalsForm();
+                            }
+                        });
+                    }else{
+                        app.accessDenied();
+                    }
                 }else{
                     me.msg('Oops!', i18n['vitals_form_is_epmty'])
                 }

@@ -88,7 +88,7 @@ Ext.define('App.view.patient.Encounter', {
                         text:i18n['create_encounter'],
                         action:'encounter',
                         scope:me,
-                        handler:me.onSave
+                        handler:me.onEncounterUpdate
                     },
                     {
                         text:i18n['cancel'],
@@ -306,7 +306,7 @@ Ext.define('App.view.patient.Encounter', {
         //                    iconCls: 'save',
         //                    action : 'speechDictation',
         //                    scope  : me,
-        //                    handler: me.onSave
+        //                    handler: me.onEncounterUpdate
         //                }
         //            ]
         //        });
@@ -386,7 +386,7 @@ Ext.define('App.view.patient.Encounter', {
                                 action:'vitals',
                                 width:40,
                                 scope:me,
-                                handler:me.onSave
+                                handler:me.onEncounterUpdate
                             },
                             {
                                 text:i18n['sign'],
@@ -437,7 +437,7 @@ Ext.define('App.view.patient.Encounter', {
                         iconCls:'save',
                         action:'reviewOfSystems',
                         scope:me,
-                        handler:me.onSave
+                        handler:me.onEncounterUpdate
                     }
                 ]
             }));
@@ -459,7 +459,7 @@ Ext.define('App.view.patient.Encounter', {
                         iconCls:'save',
                         action:'reviewOfSystemsChecks',
                         scope:me,
-                        handler:me.onSave
+                        handler:me.onEncounterUpdate
                     }
                 ]
             }));
@@ -481,7 +481,7 @@ Ext.define('App.view.patient.Encounter', {
                         iconCls:'save',
                         action:'soap',
                         scope:me,
-                        handler:me.onSave
+                        handler:me.onEncounterUpdate
                     }
                 ]
             }));
@@ -751,7 +751,7 @@ Ext.define('App.view.patient.Encounter', {
      * which form  to save.
      * @param SaveBtn
      */
-    onSave:function(SaveBtn){
+    onEncounterUpdate:function(SaveBtn){
         var me = this, panel = me.centerPanel.getActiveTab().getActiveTab(), form;
         if(SaveBtn.action == "encounter"){
             form = me.newEncounterWindow.down('form').getForm();
@@ -1321,6 +1321,8 @@ Ext.define('App.view.patient.Encounter', {
                         name:formFields.items[i].name,
                         type:'auto'
                     });
+                    formFields.items[i].on('keyup', me.onSoapFieldChange, me);
+                    //say(formFields.items[i])
                 }
                 Ext.define('App.model.patient.SOAP', {
                     extend:'Ext.data.Model',
@@ -1334,7 +1336,9 @@ Ext.define('App.view.patient.Encounter', {
                     belongsTo:{
                         model:'App.model.patient.Encounter',
                         foreignKey:'eid'
-                    }
+                    },
+                    autoSync:true
+
                 });
             });
         }
@@ -1388,6 +1392,105 @@ Ext.define('App.view.patient.Encounter', {
         }
         if(me.newEncounterWindow) me.getFormItems(me.newEncounterWindow.down('form'), 5);
     },
+
+    onSoapFieldChange:function(field){
+        var me = this,
+            form = field.up('form').getForm(),
+            record = form.getRecord(),
+            hasChange;
+        record.set(form.getValues());
+        hasChange = (Object.getOwnPropertyNames(record.getChanges()).length !== 0);
+        if(hasChange){
+            me.setFieldDirty(field);
+        }else{
+            me.setFieldClean(field);
+        }
+        if(me.bufferSyncFn){
+            me.bufferSyncFn();
+        }else{
+            me.bufferSync(form);
+        }
+    },
+
+    bufferSync:function(form){
+        var me = this,
+            record = form.getRecord(),
+            hasChange;
+        me.bufferSyncFn = Ext.Function.createBuffered(function(){
+            hasChange = (Object.getOwnPropertyNames(record.getChanges()).length !== 0);
+            if(hasChange){
+                record.store.save({
+                    callback:function(){
+                        me.updateProgressNote();
+                        me.setFormFieldsClean(form)
+                    }
+                })
+            }else{
+                me.setFormFieldsClean(form);
+            }
+        }, 3000);
+    },
+
+    setFieldDirty:function(field){
+        var duration = 2000;
+        field.hasChange = true;
+        Ext.create('Ext.fx.Animator', {
+            target: field.inputEl,
+            duration: duration, // 10 seconds
+            keyframes: {
+                0: {
+                    backgroundColor: 'FFFFFF'
+                },
+                100: {
+                    backgroundColor: 'ffdddd'
+                }
+            },
+            listeners:{
+                keyframe:function(fx, keyframe){
+                    if(keyframe == 1){
+                        field.inputEl.setStyle({'background-image':'none'});
+                    }
+                }
+            }
+        });
+    },
+
+    setFieldClean:function(field){
+        var duration = 2000;
+        field.hasChange = false;
+        Ext.create('Ext.fx.Animator', {
+            target: field.inputEl,
+            duration: duration, // 10 seconds
+            keyframes: {
+                0: {
+                    backgroundColor: 'ffdddd'
+                },
+                100: {
+                    backgroundColor: 'FFFFFF'
+                }
+            },
+            listeners:{
+                keyframe:function(fx, keyframe){
+                    if(keyframe == 1){
+                        Ext.Function.defer(function(){
+                            field.inputEl.setStyle({'background-image':null});
+                        }, duration - 400);
+                    }
+                }
+            }
+        });
+    },
+
+    setFormFieldsClean:function(form){
+        var me = this,
+            fields = form.getFields().items;
+        for(var i=0; i < fields.length; i++){
+            if(fields[i].hasChange){
+                me.setFieldClean(fields[i]);
+            }
+        }
+    },
+
     getButtonsToDisable:function(){
         var me = this, buttons = [];
         if(me.ButtonsToDisable == null){

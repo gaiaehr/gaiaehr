@@ -671,6 +671,14 @@
 				},
 				{
 					"path": "app/classes/combo/",
+					"name": "CVXManufacturers.js"
+				},
+				{
+					"path": "app/classes/combo/",
+					"name": "CVXManufacturersForCvx.js"
+				},
+				{
+					"path": "app/classes/combo/",
 					"name": "EncounterPriority.js"
 				},
 				{

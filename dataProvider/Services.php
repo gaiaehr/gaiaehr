@@ -26,14 +26,31 @@ class Services
 		return $this->db = new dbHelper();
 	}
 
-
-	/**
-	 * CPT CODES SECTION!!!
-	 */
 	/**
 	 * @param stdClass $params
 	 * @return array|stdClass
 	 */
+	public function getCptCodesList(stdClass $params)
+	{
+		$sort = (isset($params->sort[0]) ? 'ORDER BY '.$params->sort[0]->property .' '.$params->sort[0]->direction : '');
+		$params->active = (isset($params->active) ? $params->active : 1);
+		$this->db->setSQL("SELECT * FROM cpt_codes WHERE active = '$params->active' $sort");
+		return $this->db->fetchRecords(PDO::FETCH_ASSOC);
+	}
+
+	/**
+	 * @param stdClass $params
+	 * @return array
+	 */
+	public function getHCPCList(stdClass $params)
+	{
+		$sort = (isset($params->sort[0]) ? 'ORDER BY '.$params->sort[0]->property .' '.$params->sort[0]->direction : '');
+		$params->active = (isset($params->active) ? $params->active : 1);
+		$this->db->setSQL("SELECT * FROM hcpcs_codes WHERE active = '$params->active' $sort");
+		return $this->db->fetchRecords(PDO::FETCH_ASSOC);
+	}
+
+
 	public function getCptCodes(stdClass $params)
 	{
 		if($params->filter === 0) {

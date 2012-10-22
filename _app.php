@@ -303,6 +303,8 @@ $_SESSION['site']['flops'] = 0;
 				'App.classes.combo.CalendarCategories',
 				'App.classes.combo.CalendarStatus',
 				'App.classes.combo.CodesTypes',
+				'App.classes.combo.CVXManufacturers',
+				'App.classes.combo.CVXManufacturersForCvx',
 				'App.classes.combo.EncounterPriority',
 				'App.classes.combo.Facilities',
 				'App.classes.combo.FloorPlanAreas',

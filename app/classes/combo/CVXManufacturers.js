@@ -7,7 +7,7 @@ Ext.define('App.classes.combo.CVXManufacturers', {
 		Ext.define('CVXManufacturersComboModel', {
 			extend: 'Ext.data.Model',
 			fields: [
-				{name: 'mvx_code', type: 'int'},
+				{name: 'mvx_code', type: 'string'},
 				{name: 'manufacturer', type: 'string'}
 			],
 			proxy : {

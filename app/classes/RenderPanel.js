@@ -117,11 +117,12 @@ Ext.define('App.classes.RenderPanel', {
         if(formPanel){
             formPanel.removeAll();
             FormLayoutEngine.getFields({formToRender: formToRender}, function(provider, response) {
-                var items = eval(response.result);
-                  formPanel.add(items);
+                var items = eval(response.result), form;
+                form = formPanel.add(items);
                 if(typeof callback == 'function') {
                     callback(formPanel, items, true);
                 }
+                return form;
             });
         }
 	},

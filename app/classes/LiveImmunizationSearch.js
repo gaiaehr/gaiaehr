@@ -19,16 +19,18 @@ Ext.define('App.classes.LiveImmunizationSearch', {
 		Ext.define('liveImmunizationSearchModel', {
 			extend: 'Ext.data.Model',
 			fields: [
-				{name: 'id'},
-				{name: 'code'},
-				{name: 'code_text'},
-				{name: 'code_text_short'}
+				{name: 'id', type:'int'},
+				{name: 'cvx_code', type:'string'},
+				{name: 'name', type:'string'},
+				{name: 'description', type:'string'},
+				{name: 'note', type:'string'},
+				{name: 'update_date', type:'date', dateFormat:'Y-m-d H:i:s'}
 
 			],
 			proxy : {
 				type  : 'direct',
 				api   : {
-					read: Medical.getImmunizationLiveSearch
+					read: Immunizations.getImmunizationLiveSearch
 				},
 				reader: {
 					totalProperty: 'totals',
@@ -45,8 +47,8 @@ Ext.define('App.classes.LiveImmunizationSearch', {
 
 		Ext.apply(this, {
 			store       : me.store,
-			displayField: 'code_text_short',
-			valueField  : 'code',
+			displayField: 'name',
+			valueField  : 'cvx_code',
 			emptyText   : i18n['search_for_a_immunizations'] + '...',
 			typeAhead   : true,
 			minChars    : 1,
@@ -56,8 +58,8 @@ Ext.define('App.classes.LiveImmunizationSearch', {
 				//---------------------------------------------------------------------
 				// Custom rendering template for each item
 				//---------------------------------------------------------------------
-				getInnerTpl: function() {
-					return '<div class="search-item"><h3>{code}<span style="font-weight: normal"> ({code_text}) </span></div>';
+				getInnerTpl: function(){
+					return '<div class="search-item"><h3>{cvx_code}: <span style="font-weight: normal">{name}</span></div>';
 				}
 			},
 			pageSize    : 10

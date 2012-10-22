@@ -25,9 +25,7 @@ class Laboratories
 
     public function getAllLabs(stdClass $params)
     {
-
-        $sortX = isset($params->sort) ? $params->sort[0]->property . ' ' . $params->sort[0]->direction : 'sequence ASC';
-        $records = array();
+        $sort = isset($params->sort) ? $params->sort[0]->property . ' ' . $params->sort[0]->direction : 'sequence ASC';
         $this->db->setSQL("SELECT lp.id,
 								  lp.parent_id,
 								  lp.parent_loinc,
@@ -41,15 +39,8 @@ class Laboratories
 						     LEFT JOIN labs_loinc AS loinc on loinc.LOINC_NUM = lp.parent_loinc
 						    WHERE parent_name LIKE '%$params->query%'
 					          AND id = parent_id
-					     ORDER BY $sortX");
-        $recs = $this->db->fetchRecords(PDO::FETCH_CLASS);
-        $total = count($recs);
-        $recs = array_slice($recs,$params->start,$params->limit);
-        foreach($recs as $rec) {
-            $rec->code_type = $params->code_type;
-            $records[]      = $rec;
-        }
-        return array('totals'=> $total, 'rows'  => $records);
+					     ORDER BY $sort");
+        return $this->db->fetchRecords(PDO::FETCH_CLASS);
     }
     /**
      * @param stdClass $params

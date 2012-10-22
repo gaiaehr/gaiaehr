@@ -25,7 +25,7 @@ $_SESSION['site']['flops'] = 0;
 				settings = {},
 				i18n = {},
 				ext = 'extjs-4.1.1a',
-				version = '0.0.4.166',
+				version = '0.0.5.168',
 				requires;
 		</script>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -303,6 +303,8 @@ $_SESSION['site']['flops'] = 0;
 				'App.classes.combo.CalendarCategories',
 				'App.classes.combo.CalendarStatus',
 				'App.classes.combo.CodesTypes',
+				'App.classes.combo.CVXManufacturers',
+				'App.classes.combo.CVXManufacturersForCvx',
 				'App.classes.combo.EncounterPriority',
 				'App.classes.combo.Facilities',
 				'App.classes.combo.FloorPlanAreas',

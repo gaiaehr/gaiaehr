@@ -81,6 +81,10 @@ Ext.define('App.view.administration.Globals',
 				type : 'string'
 			},
 			{
+				name : 'time_display_format',
+				type : 'string'
+			},
+			{
 				name : 'currency_decimals',
 				type : 'string'
 			},
@@ -815,7 +819,7 @@ Ext.define('App.view.administration.Globals',
 					{
 						xtype : 'combo',
 						fieldLabel : i18n['time_display_format'],
-						name : 'time_display_format', // ??????
+						name : 'time_display_format',
 						displayField : 'title',
 						valueField : 'option_id',
 						editable : false,
@@ -1229,7 +1233,7 @@ Ext.define('App.view.administration.Globals',
 		this.msg(i18n['new_global_configuration_saved'], i18n['refresh_the_application']);
 	},
 	/**
-	 * This function is called from MitosAPP.js when
+	 * This function is called from Viewport.js when
 	 * this panel is selected in the navigation panel.
 	 * place inside this function all the functions you want
 	 * to call every this panel becomes active

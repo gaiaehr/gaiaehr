@@ -186,10 +186,10 @@ Ext.override(Ext.view.AbstractView, {
 	}
 });
 
-Ext.override(Ext.data.Field, {
-	useNull: true
-
-});
+//Ext.override(Ext.data.Field, {
+//	useNull: true
+//
+//});
 //Ext.override(Ext.view.DropZone, {
 //	onContainerOver : function(dd, e, data) {
 //     var me = this,

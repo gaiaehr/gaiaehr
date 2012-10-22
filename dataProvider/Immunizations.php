@@ -25,9 +25,8 @@ class Immunizations
     }
 
 
-	public function getCVXCodes(stdClass $params)
+	public function getCVXCodesByStatus($status = 'Active')
 	{
-		$status = (isset($params->status) ? $params->status : 'Active');
 		$this->db->setSQL("SELECT * FROM cvx_codes WHERE status = '$status'");
 		return $this->db->fetchRecords(PDO::FETCH_ASSOC);
 	}
@@ -40,7 +39,8 @@ class Immunizations
 		$this->db->execLog();
 	}
 
-	public function updateCVXCodes($xmlFile = false){
+	public function updateCVXCodes($xmlFile = false)
+	{
 		$newCounter = 0;
 		$xmlFile = ($xmlFile == false ? 'http://www2a.cdc.gov/vaccines/iis/iisstandards/XML.asp?rpt=cvx' : $xmlFile);
 		$xml = simplexml_load_file($xmlFile);
@@ -68,7 +68,8 @@ class Immunizations
 		return array('success' => true, 'newCodes' => $newCounter);
 	}
 
-	public function updateMVXCodes($xmlFile = false){
+	public function updateMVXCodes($xmlFile = false)
+	{
 		$newCounter = 0;
 		$xmlFile = ($xmlFile == false ? 'http://www2a.cdc.gov/vaccines/iis/iisstandards/XML.asp?rpt=tradename' : $xmlFile);
 		$xml = simplexml_load_file($xmlFile);
@@ -97,7 +98,30 @@ class Immunizations
 		return array('success' => true, 'newCodes' => $newCounter);
 	}
 
+	public function getImmunizationLiveSearch(stdClass $params)
+	{
+		$this->db->setSQL("SELECT * FROM cvx_codes
+							WHERE cvx_code 	  LIKE '$params->query%'
+							   OR `name` 	  LIKE '$params->query%'
+							   OR description LIKE '$params->query%'");
+        $records =$this->db->fetchRecords(PDO::FETCH_ASSOC);
+		$total = count($records);
+		$records  = array_slice($records, $params->start, $params->limit);
+		return array('totals'=> $total,
+		             'rows'  => $records);
+	}
 
+	public function getMvx(stdClass $params)
+	{
+		return;
+	}
+
+	public function getMvxForCvx(stdClass $params)
+	{
+		$where = (isset($params->cvx_code) ? " WHERE cvx_code = '$params->cvx_code'":'');
+		$this->db->setSQL("SELECT * FROM cvx_mvx $where");
+		return $this->db->fetchRecords(PDO::FETCH_ASSOC);
+	}
 }
 //print '<pre>';
 //$i = new Immunizations();

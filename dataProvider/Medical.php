@@ -84,7 +84,7 @@ class Medical
 		$data['administered_date'] = $this->parseDate($data['administered_date']);
 		$data['education_date']    = $this->parseDate($data['education_date']);
 		$data['create_date']       = $this->parseDate($data['create_date']);
-		$this->db->setSQL($this->db->sqlBind($data, "patient_immunizations", "U", "id='$id'"));
+		$this->db->setSQL($this->db->sqlBind($data, 'patient_immunizations', 'U', array('id' => $id)));
 		$this->db->execLog();
 		return $params;
 
@@ -272,23 +272,7 @@ class Medical
 		return array('totals'=> $total,
 		             'rows'  => $records);
 	}
-	/*************************************************************************************************************/
-	public function getImmunizationLiveSearch(stdClass $params)
-	{
-		$this->db->setSQL("SELECT id,
-								  code,
-								  code_text,
-								  code_text_short
 
-							FROM  immunizations
-							WHERE code_text LIKE '$params->query%'
-							   OR code      LIKE'$params->query%'");
-        $records =$this->db->fetchRecords(PDO::FETCH_ASSOC);
-		$total = count($records);
-		$records  = array_slice($records, $params->start, $params->limit);
-		return array('totals'=> $total,
-		             'rows'  => $records);
-	}
 	/***************************************************************************************************************/
 
 	public function getPatientLabsResults(stdClass $params)

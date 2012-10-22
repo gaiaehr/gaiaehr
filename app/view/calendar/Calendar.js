@@ -267,7 +267,7 @@ Ext.define('App.view.calendar.Calendar', {
 
 	},
 	/**
-	 * This function is called from MitosAPP.js when
+	 * This function is called from Viewport.js when
 	 * this panel is selected in the navigation panel.
 	 * place inside this function all the functions you want
 	 * to call every this panel becomes active

@@ -217,6 +217,7 @@ CREATE TABLE IF NOT EXISTS `cvx_codes` (
   KEY `code` (`code`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=28778 ;
 
+DROP TABLE IF EXISTS `documents_templates`;
 CREATE TABLE IF NOT EXISTS `documents_templates` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(255) DEFAULT NULL,

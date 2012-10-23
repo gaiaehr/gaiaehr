@@ -126,6 +126,9 @@ $API = array(
 			),
 			'getSoapHistory'                 => array(
 				'len'=> 1
+			),
+			'updateEncounterHCFAOptions'     => array(
+				'len'=> 1
 			)
 		)
 	),

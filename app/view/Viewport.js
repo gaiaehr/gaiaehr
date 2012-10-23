@@ -899,7 +899,8 @@ Ext.define('App.view.Viewport', {
         }));
         me.winSupport.show();
     },
-    msg:function(title, format){
+    msg:function(title, format, error){
+        var msgBgCls = (error === true) ? 'msg-red' : 'msg-green';
         if(!this.msgCt){
             this.msgCt = Ext.core.DomHelper.insertFirst(document.body, {
                 id:'msg-div'
@@ -907,7 +908,7 @@ Ext.define('App.view.Viewport', {
         }
         this.msgCt.alignTo(document, 't-t');
         var s = Ext.String.format.apply(String, Array.prototype.slice.call(arguments, 1)), m = Ext.core.DomHelper.append(this.msgCt, {
-            html:'<div class="msg"><h3>' + title + '</h3><p>' + s + '</p></div>'
+            html:'<div class="msg '+msgBgCls+'"><h3>' + title + '</h3><p>' + s + '</p></div>'
         }, true);
         m.slideIn('t').pause(3000).ghost('t', {
             remove:true

@@ -59,17 +59,19 @@ Ext.define('App.classes.AbstractPanel', {
 		});
 	},
 
-	getFormItems: function(formPanel, formToRender, callback) {
-		formPanel.removeAll();
-
-		FormLayoutEngine.getFields({formToRender: formToRender}, function(provider, response) {
-			var items = eval(response.result);
-            formPanel.add(items);
-			if(typeof callback == 'function') {
-				callback(formPanel, items, true);
-			}
-		});
-	},
+    getFormItems: function(formPanel, formToRender, callback) {
+        if(formPanel){
+            formPanel.removeAll();
+            FormLayoutEngine.getFields({formToRender: formToRender}, function(provider, response) {
+                var items = eval(response.result), form;
+                form = formPanel.add(items);
+                if(typeof callback == 'function') {
+                    callback(formPanel, items, true);
+                }
+                return form;
+            });
+        }
+   	},
 
 	boolRenderer: function(val) {
 		if(val == '1' || val == true || val == 'true') {

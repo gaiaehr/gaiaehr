@@ -960,6 +960,11 @@ Ext.define('App.view.patient.Encounter', {
                     me.soapPanel.getForm().loadRecord(store.getAt(0));
                     me.soapPanel.query('icdsfieldset')[0].loadIcds(store.getAt(0).data.icdxCodes);
                 }
+                if(me.MiscBillingOptionsPanel){
+                    store = record[0].hcfaoptions();
+                    store.on('write',me.updateProgressNote, me);
+                    me.MiscBillingOptionsPanel.getForm().loadRecord(store.getAt(0));
+                }
                 //me.speechDicPanel.getForm().loadRecord(record[0].speechdictation().getAt(0));
                 me.encounterEventHistoryStore.load({params:{eid:eid}});
                 if(me.CurrentProceduralTerminology){

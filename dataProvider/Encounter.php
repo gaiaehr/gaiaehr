@@ -160,7 +160,8 @@ class Encounter
 		$encounter['reviewofsystems']       = $this->getReviewOfSystemsByEid($params->eid);
 		$encounter['reviewofsystemschecks'] = $this->getReviewOfSystemsChecksByEid($params->eid);
 		$encounter['soap']                  = $this->getSoapByEid($params->eid);
-		$encounter['speechdictation']       = $this->getDictationByEid($params->eid);
+		//$encounter['speechdictation']       = $this->getDictationByEid($params->eid);
+		$encounter['hcfaoptions']           = $this->getDictationByEid($params->eid);
 		$this->addEncounterHistoryEvent('Encounter viewed');
 		if(!empty($encounter)) {
 			return array('success' => true, 'encounter' => $encounter);
@@ -751,6 +752,16 @@ class Encounter
 	}
 
 	public function onSaveItemsToReview(stdClass $params)
+	{
+		$data = get_object_vars($params);
+		unset($data['eid']);
+		$this->db->setSQL($this->db->sqlBind($data, 'form_data_encounter', 'U', array('eid' => $params->eid)));
+		$this->db->execLog();
+		return array('success' => true);
+
+	}
+
+	public function updateEncounterHCFAOptions(stdClass $params)
 	{
 		$data = get_object_vars($params);
 		unset($data['eid']);

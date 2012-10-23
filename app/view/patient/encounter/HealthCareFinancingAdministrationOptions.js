@@ -8,23 +8,57 @@
 Ext.define('App.view.patient.encounter.HealthCareFinancingAdministrationOptions', {
     extend:'Ext.form.Panel',
     alias:'widget.hcafaoptions',
-    mixins: {
-        functions: 'App.classes.AbstractPanel'
-    },
     pid:null,
     eid:null,
-    initComponent:function () {
+    initComponent:function(){
         var me = this;
-
-
-        me.listeners = {
-            afterrender:me.afterPanelRender
-        };
-        me.callParent(arguments);
+        me.callParent();
+        me.loadHCFAForm();
     },
-
-    afterPanelRender:function(){
-        this.mixins.functions.getFormItems(this, 10);
+    loadHCFAForm:function(){
+        var me = this;
+        me.getFormItems(this, 10, function(panel){
+            var formFields = panel.getForm().getFields(),
+                modelFields =  [
+                    {
+                        name:'id',
+                        type:'int'
+                    },
+                    {
+                        name:'pid',
+                        type:'int'
+                    },
+                    {
+                        name:'eid',
+                        type:'int'
+                    },
+                    {
+                        name:'uid',
+                        type:'int'
+                    }
+                ];
+            for(var i = 0; i < formFields.items.length; i++){
+                modelFields.push({
+                    name:formFields.items[i].name,
+                    type:'auto'
+                });
+                if(acl['edit_enc_hcfa']) me.setAutoSyncFormEvent(formFields.items[i]);
+            }
+            Ext.define('App.model.patient.HCFAOptions', {
+                extend:'Ext.data.Model',
+                fields:modelFields,
+                proxy:{
+                    type:'direct',
+                    api:{
+                        update:Encounter.updateEncounterHCFAOptions
+                    }
+                },
+                belongsTo:{
+                    model:'App.model.patient.Encounter',
+                    foreignKey:'eid'
+                }
+            });
+        });
     }
 
 });

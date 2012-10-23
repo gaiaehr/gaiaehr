@@ -1437,13 +1437,14 @@ Ext.define('App.view.patient.Encounter', {
      */
     onActive:function(callback){
         var me = this, patient = app.patient;
-        if(me.checkIfCurrPatient()){
+        if(patient.pid && patient.eid){
             me.updateTitle(patient.name + ' (' + i18n['visits'] + ')', patient.readOnly, null);
             me.setReadOnly(patient.readOnly);
             callback(true);
         }else{
             callback(false);
-            me.currPatientError();
+            var msg = patient.eid === null ? 'Please create a new encounter or select one from the patient encounter history' : null;
+            me.currPatientError(msg);
         }
     }
 });

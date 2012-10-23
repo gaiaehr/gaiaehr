@@ -15,17 +15,17 @@
 //	}
 //});
 Ext.override(Ext.form.field.Checkbox, {
-    inputValue:'1',
-    uncheckedValue:'0'
+    inputValue: '1',
+    uncheckedValue: '0'
 });
 Ext.override(Ext.form.field.Date, {
-    format:'Y-m-d'
+    format: 'Y-m-d'
 });
 Ext.override(Ext.grid.Panel, {
-    emptyText:'Nothing to Display'
+    emptyText: 'Nothing to Display'
 });
 Ext.override(Ext.container.Container, {
-    setAutoSyncFormEvent:function(field){
+    setAutoSyncFormEvent: function(field){
         if(field.xtype == 'textfield' || field.xtype == 'textareafield'){
             field.on('keyup', this.autoSyncForm, this);
         }else if(field.xtype == 'radiofield' || field.xtype == 'mitos.checkbox' || field.xtype == 'checkbox'){
@@ -35,13 +35,8 @@ Ext.override(Ext.container.Container, {
             //field.on('select', this.autoSyncForm, this);
         }
     },
-    autoSyncForm:function(field){
-        var me = this,
-            panel = field.up('form'),
-            form = panel.getForm(),
-            record = form.getRecord(),
-            store = record.store,
-            hasChanged;
+    autoSyncForm: function(field){
+        var me = this, panel = field.up('form'), form = panel.getForm(), record = form.getRecord(), store = record.store, hasChanged;
         if(typeof me.isLoading == 'undefined' || !me.isLoading){
             record.set(form.getValues());
             hasChanged = (Object.getOwnPropertyNames(record.getChanges()).length !== 0);
@@ -54,7 +49,7 @@ Ext.override(Ext.container.Container, {
                 me.bufferSyncFormFn = Ext.Function.createBuffered(function(){
                     if(hasChanged){
                         store.sync({
-                            callback:function(){
+                            callback: function(){
                                 panel.fireEvent('formstoresynced', store, record, record.getChanges());
                                 me.setFormFieldsClean(form);
                                 me.msg('Sweet!', 'Records synced with server');
@@ -71,7 +66,7 @@ Ext.override(Ext.container.Container, {
             }
         }
     },
-    setFieldDirty:function(field){
+    setFieldDirty: function(field){
         var duration = 2000, el;
         if(field.xtype == 'textfield' || field.xtype == 'textareafield'){
             el = field.inputEl;
@@ -85,27 +80,27 @@ Ext.override(Ext.container.Container, {
         if(!field.hasChanged){
             field.hasChanged = true;
             Ext.create('Ext.fx.Animator', {
-                target:el,
-                duration:duration, // 10 seconds
-                keyframes:{
-                    0:{
-                        backgroundColor:'FFFFFF'
+                target: el,
+                duration: duration, // 10 seconds
+                keyframes: {
+                    0: {
+                        backgroundColor: 'FFFFFF'
                     },
-                    100:{
-                        backgroundColor:'ffdddd'
+                    100: {
+                        backgroundColor: 'ffdddd'
                     }
                 },
-                listeners:{
-                    keyframe:function(fx, keyframe){
+                listeners: {
+                    keyframe: function(fx, keyframe){
                         if(keyframe == 1){
-                            el.setStyle({'background-image':'none'});
+                            el.setStyle({'background-image': 'none'});
                         }
                     }
                 }
             });
         }
     },
-    setFieldClean:function(field){
+    setFieldClean: function(field){
         var duration = 2000, el;
         if(field.xtype == 'textfield' || field.xtype == 'textareafield'){
             el = field.inputEl;
@@ -118,21 +113,21 @@ Ext.override(Ext.container.Container, {
         }
         field.hasChanged = false;
         Ext.create('Ext.fx.Animator', {
-            target:el,
-            duration:duration, // 10 seconds
-            keyframes:{
-                0:{
-                    backgroundColor:'ffdddd'
+            target: el,
+            duration: duration, // 10 seconds
+            keyframes: {
+                0: {
+                    backgroundColor: 'ffdddd'
                 },
-                100:{
-                    backgroundColor:'FFFFFF'
+                100: {
+                    backgroundColor: 'FFFFFF'
                 }
             },
-            listeners:{
-                keyframe:function(fx, keyframe){
+            listeners: {
+                keyframe: function(fx, keyframe){
                     if(keyframe == 1){
                         Ext.Function.defer(function(){
-                            el.setStyle({'background-image':null});
+                            el.setStyle({'background-image': null});
                         }, duration - 400);
                     }
                 }
@@ -143,7 +138,7 @@ Ext.override(Ext.container.Container, {
      * this will set all the fields that has change
      * @param form
      */
-    setFormFieldsClean:function(form){
+    setFormFieldsClean: function(form){
         var me = this, fields = form.getFields().items;
         for(var i = 0; i < fields.length; i++){
             if(fields[i].hasChanged){
@@ -151,7 +146,7 @@ Ext.override(Ext.container.Container, {
             }
         }
     },
-    setReadOnly:function(readOnly){
+    setReadOnly: function(readOnly){
         var forms = this.query('form');
         for(var j = 0; j < forms.length; j++){
             var form = forms[j], items;
@@ -165,7 +160,7 @@ Ext.override(Ext.container.Container, {
         }
         return readOnly;
     },
-    setButtonsDisabled:function(buttons, disabled){
+    setButtonsDisabled: function(buttons, disabled){
         var disable = disabled || app.patient.readOnly;
         for(var i = 0; i < buttons.length; i++){
             var btn = buttons[i];
@@ -175,32 +170,32 @@ Ext.override(Ext.container.Container, {
             }
         }
     },
-    goBack:function(){
+    goBack: function(){
         app.goBack();
     },
-    checkIfCurrPatient:function(){
+    checkIfCurrPatient: function(){
         return app.getCurrPatient();
     },
-    patientInfoAlert:function(){
+    patientInfoAlert: function(){
         var patient = app.getCurrPatient();
         Ext.Msg.alert(i18n['status'], i18n['patient'] + ': ' + patient.name + ' (' + patient.pid + ')');
     },
-    currPatientError:function(){
+    currPatientError: function(msg){
         Ext.Msg.show({
-            title:'Oops! ' + i18n['no_patient_selected'],
-            msg:i18n['select_patient_patient_live_search'],
-            scope:this,
-            buttons:Ext.Msg.OK,
-            icon:Ext.Msg.ERROR,
-            fn:function(){
+            title: 'Oops! ' + i18n['no_patient_selected'],
+            msg: Ext.isString(msg) ? msg : i18n['select_patient_patient_live_search'],
+            scope: this,
+            buttons: Ext.Msg.OK,
+            icon: Ext.Msg.ERROR,
+            fn: function(){
                 this.goBack();
             }
         });
     },
-    getFormItems:function(formPanel, formToRender, callback){
+    getFormItems: function(formPanel, formToRender, callback){
         if(formPanel){
             formPanel.removeAll();
-            FormLayoutEngine.getFields({formToRender:formToRender}, function(provider, response){
+            FormLayoutEngine.getFields({formToRender: formToRender}, function(provider, response){
                 var items = eval(response.result), form;
                 form = formPanel.add(items);
                 if(typeof callback == 'function'){
@@ -210,7 +205,7 @@ Ext.override(Ext.container.Container, {
             });
         }
     },
-    boolRenderer:function(val){
+    boolRenderer: function(val){
         if(val == '1' || val == true || val == 'true'){
             return '<img style="padding-left: 13px" src="resources/images/icons/yes.gif" />';
         }else if(val == '0' || val == false || val == 'false'){
@@ -218,7 +213,7 @@ Ext.override(Ext.container.Container, {
         }
         return val;
     },
-    alertRenderer:function(val){
+    alertRenderer: function(val){
         if(val == '1' || val == true || val == 'true'){
             return '<img style="padding-left: 13px" src="resources/images/icons/no.gif" />';
         }else if(val == '0' || val == false || val == 'false'){
@@ -226,32 +221,32 @@ Ext.override(Ext.container.Container, {
         }
         return val;
     },
-    warnRenderer:function(val, metaData, record){
+    warnRenderer: function(val, metaData, record){
         var toolTip = record.data.warningMsg ? record.data.warningMsg : '';
         if(val == '1' || val == true || val == 'true'){
             return '<img src="resources/images/icons/icoImportant.png" ' + toolTip + ' />';
         }
         return '';
     },
-    onExpandRemoveMask:function(cmb){
+    onExpandRemoveMask: function(cmb){
         cmb.picker.loadMask.destroy()
     },
-    strToLowerUnderscores:function(str){
+    strToLowerUnderscores: function(str){
         return str.toLowerCase().replace(/ /gi, "_");
     },
-    getCurrPatient:function(){
+    getCurrPatient: function(){
         return app.getCurrPatient();
     },
-    getApp:function(){
+    getApp: function(){
         return app.getApp();
     },
-    msg:function(title, format){
+    msg: function(title, format){
         app.msg(title, format)
     },
-    alert:function(msg, icon){
+    alert: function(msg, icon){
         app.alert(msg, icon)
     },
-    passwordVerificationWin:function(callback){
+    passwordVerificationWin: function(callback){
         var msg = Ext.Msg.prompt(i18n['password_verification'], i18n['please_enter_your_password'] + ':', function(btn, password){
             callback(btn, password);
         });
@@ -262,7 +257,7 @@ Ext.override(Ext.container.Container, {
 });
 Ext.override(Ext.grid.ViewDropZone, {
 
-    handleNodeDrop:function(data, record, position){
+    handleNodeDrop: function(data, record, position){
         var view = this.view, store = view.getStore(), index, records, i, len;
         /**
          * fixed to handle the patient button data
@@ -327,7 +322,7 @@ Ext.override(Ext.grid.ViewDropZone, {
     //	}
 });
 Ext.override(Ext.view.AbstractView, {
-    onRender:function(){
+    onRender: function(){
         var me = this;
         me.callOverridden(arguments);
         if(me.loadMask && Ext.isObject(me.store)){

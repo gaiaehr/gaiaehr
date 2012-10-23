@@ -130,42 +130,21 @@ Ext.define('App.view.fees.Billing',
 					defaultValue : 'All'
 
 				}]
-			},
+			}, '-',
 			{
 				xtype : 'fieldcontainer',
 				items : [
 				{
-					xtype : 'splitbutton',
-					text : i18n['utilities'],
-					// handle a click on the button itself
-					menu : new Ext.menu.Menu(
-					{
-						items : [
-						{
-							text : i18n['generate_x12'],
-							iconCls: 'icoReport',
-							handler : function()
-							{
-								alert("Item 1 clicked");
-							}
-						},
-						{
-							text : i18n['generate_cms1500_pdf'],
-							iconCls: 'icoReport',
-							handler : function()
-							{
-								alert("Item 2 clicked");
-							}
-						},
-						{
-							text : i18n['generate_cms1500_text'],
-							iconCls: 'icoReport',
-							handler : function()
-							{
-								alert("Item 2 clicked");
-							}
-						}]
-					})
+					xtype : 'button',
+					text : i18n['generate_x12']
+				},
+				{
+					xtype : 'button',
+					text : i18n['generate_cms1500_pdf']
+				},
+				{
+					xtype : 'button',
+					text : i18n['generate_cms1500_text']
 				}]
 			}, '->',
 			{
@@ -393,7 +372,7 @@ Ext.define('App.view.fees.Billing',
 				text : i18n['back'],
 				scope : me,
 				action : 'back',
-                iconCls:'icoArrowLeftSmall',
+				iconCls : 'icoArrowLeftSmall',
 				tooltip : i18n['previous_encounter_details'],
 				handler : me.onBtnBack
 			},
@@ -415,8 +394,8 @@ Ext.define('App.view.fees.Billing',
 				text : i18n['next'],
 				scope : me,
 				action : 'next',
-                iconCls:'icoArrowRightSmall',
-                iconAlign:'right',
+				iconCls : 'icoArrowRightSmall',
+				iconAlign : 'right',
 				tooltip : i18n['next_encounter_details'],
 				handler : me.onBtnNext
 			}]
@@ -472,7 +451,7 @@ Ext.define('App.view.fees.Billing',
 		this.reloadGrid();
 
 	},
-	
+
 	/*
 	 * Event: rowDblClicked
 	 */

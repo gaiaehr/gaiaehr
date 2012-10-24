@@ -47,21 +47,21 @@ class Clinical extends Reports
 		$html2 = "";
 		$html .= "<table  border=\"0\" width=\"100%\">
             <tr>
-               <th colspan=\"11\" style=\"font-weight: bold;\">" . i18nRouter::t("clinical") . "</th>
+               <th colspan=\"9\" style=\"font-weight: bold;\">" . i18nRouter::t("clinical") . "</th>
             </tr>
             <tr>
                <td colspan=\"2\">" . i18nRouter::t("patient") . "</td>
                <td>" . i18nRouter::t("pid") . "</td>
-               <td colspan=\"2\">" . i18nRouter::t("drug_name") . "</td>
-               <td>" . i18nRouter::t("units") . "</td>
-               <td colspan=\"2\">" . i18nRouter::t("type") . "</td>
-               <td colspan=\"3\">" . i18nRouter::t("instructed") . "</td>
+               <td>" . i18nRouter::t("age") . "</td>
+               <td>" . i18nRouter::t("gender") . "</td>
+               <td colspan=\"2\">" . i18nRouter::t("race") . "</td>
+               <td colspan=\"2\">" . i18nRouter::t("ethnicity") . "</td>
             </tr>";
-		$html2 = $this -> htmlRxList($params, $html2);
+		$html2 = $this -> htmlClinicalList($params, $html2);
 		$html .= $html2;
 		$html .= "</table>";
 		ob_end_clean();
-		//$Url = $this -> ReportBuilder($html, 10);
+		$Url = $this -> ReportBuilder($html, 10);
 		return array(
 			'success' => true,
 			'html' => $html,
@@ -69,55 +69,79 @@ class Clinical extends Reports
 		);
 	}
 
-	public function getPrescriptionsFromAndToAndPid($from, $to, $drug = null, $pid = null)
+	public function getClinical($pid, $sex, $race, $from, $to, $age_from = null, $age_to = null, $ethnicity, $icd)
 	{
-		$alldata = '';
 		$sql = " SELECT *
-	               FROM patient_prescriptions
-	              WHERE created_date BETWEEN '$from 00:00:00' AND '$to 23:59:59'";
+	               FROM form_data_demographics
+	              WHERE date_created BETWEEN '$from 00:00:00' AND '$to 23:59:59'";
+		if (isset($sex) && ($sex != '' && $sex != 'Both'))
+			$sql .= " AND sex = '$sex'";
+		if (isset($race) && $race != '')
+			$sql .= " AND race = '$race'";
 		if (isset($pid) && $pid != '')
 			$sql .= " AND pid = '$pid'";
+		if (isset($ethnicity) && $ethnicity != '')
+			$sql .= " AND ethnicity= '$ethnicity'";
+
 		$this -> db -> setSQL($sql);
-		foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $key => $data)
+		$data = $this->db->fetchRecords(PDO::FETCH_ASSOC);
+
+		foreach ($data as  $key =>$data1)
 		{
-			$id = $data['id'];
-			$sql = " SELECT *
-		   	           FROM patient_medications
-		   	          WHERE prescription_id = '$id'";
-			if (isset($drug) && $drug != '')
-				$sql .= " AND medication_id = '$drug'";
-			$this -> db -> setSQL($sql);
-			$alldata[$key] = $this -> db -> fetchRecords(PDO::FETCH_ASSOC);
+
+			$age = $this->patient->getPatientAgeByDOB($data1['DOB']);
+
+			print 'from'.$age_from;
+			print 'to'.$age_to;
+			print 'age'.$age['DMY']['years'];
+
+			if($age_from < $age['DMY']['years'] && $age_to < $age['DMY']['years'] ){
+				unset($data[$key]);
+			}
+			else if($age_from <= $age['DMY']['years']){
+				unset($data[$key]);
+			}
+			else if($age_to <= $age['DMY']['years']){
+				unset($data[$key]);
+			}
+
+
 		}
-		return $alldata;
+
+		return $data;
 	}
 
-	public function htmlRxList($params, $html)
+	public function htmlClinicalList($params, $html)
 	{
-		foreach ($this->getPrescriptionsFromAndToAndPid($params->from,$params->to,$params->drug,$params->pid) AS $data)
+		foreach ($this->getClinical($params->pid,
+									$params->sex,
+									$params->race,
+									$params->from,
+									$params->to,
+									$params->age_from,
+									$params->age_to,
+									$params->ethnicity,
+									$params->icd) AS $data)
 		{
-			foreach ($data as $data2)
-			{
-				$html .= "
-		            <tr>
-						<td colspan=\"2\">" . $this -> patient -> getPatientFullNameByPid($data2['pid']) . "</td>
-						<td>" . $data2['pid'] . "</td>
-						<td colspan=\"2\">" . $data2['medication'] . "</td>
-						<td>" . $data2['take_pills'] . "</td>
-						<td colspan=\"2\">" . $data2['type'] . "</td>
-						<td colspan=\"3\">" . $data2['prescription_often'] . ' ' . $data2['prescription_when'] . "</td>
-					</tr>";
-			}
+			$age               = $this->patient->getPatientAgeByDOB($data['DOB']);
+			$html .= "
+	            <tr>
+					<td colspan=\"2\">" . $this -> patient -> getPatientFullNameByPid($data['pid']) . "</td>
+					<td>" . $data['pid'] . "</td>
+					<td>" . $age['DMY']['years'] . "</td>
+					<td>" . $data['sex'] . "</td>
+					<td colspan=\"2\">" . $data['race'] . "</td>
+					<td colspan=\"2\">" . $data['ethnicity']. "</td>
+				</tr>";
 		}
 		return $html;
 	}
 
 }
 
-//$e = new Rx();
+//$e = new Clinical();
 //$params = new stdClass();
 //$params->from ='2010-03-08';
 //$params->to ='2013-03-08';
 //echo '<pre>';
-//echo '<pre>';
-//print_r($e->createPrescriptionsDispensations($params));
+//print_r($e->getClinical('','','','2010-03-08','2013-03-08',3,15,'',''));

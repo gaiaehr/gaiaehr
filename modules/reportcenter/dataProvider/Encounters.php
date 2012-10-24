@@ -43,25 +43,21 @@ class Encounters extends Reports
 	public function CreateEncountersReport(stdClass $params)
 	{
 		$params -> to = ($params -> to == '') ? date('Y-m-d') : $params -> to;
-		$html = "<br><h1>Clinical ($params->from - $params->to )</h1>";
+		$html = "<br><h1>Encounters ($params->from - $params->to )</h1>";
 		$html2 = "";
 		$html .= "<table  border=\"0\" width=\"100%\">
             <tr>
-               <th colspan=\"11\" style=\"font-weight: bold;\">" . i18nRouter::t("clinical") . "</th>
+               <th colspan=\"2\" style=\"font-weight: bold;\">" . i18nRouter::t("encounters") . "</th>
             </tr>
             <tr>
-               <td colspan=\"2\">" . i18nRouter::t("patient") . "</td>
-               <td>" . i18nRouter::t("pid") . "</td>
-               <td colspan=\"2\">" . i18nRouter::t("drug_name") . "</td>
-               <td>" . i18nRouter::t("units") . "</td>
-               <td colspan=\"2\">" . i18nRouter::t("type") . "</td>
-               <td colspan=\"3\">" . i18nRouter::t("instructed") . "</td>
+               <td>" . i18nRouter::t("provider") . "</td>
+               <td>" . i18nRouter::t("encounter") . "</td>
             </tr>";
 		$html2 = $this -> htmlEncountersList($params, $html2);
 		$html .= $html2;
 		$html .= "</table>";
 		ob_end_clean();
-		//$Url = $this -> ReportBuilder($html, 10);
+		$Url = $this -> ReportBuilder($html, 10);
 		return array(
 			'success' => true,
 			'html' => $html,
@@ -69,9 +65,8 @@ class Encounters extends Reports
 		);
 	}
 
-	public function getEncountersFromAndToAndPid($from, $to, $drug = null, $pid = null)
+	public function getEncountersFromAndTo($from, $to)
 	{
-		$alldata = '';
 		$sql = " SELECT *
 	               FROM patient_prescriptions
 	              WHERE created_date BETWEEN '$from 00:00:00' AND '$to 23:59:59'";
@@ -87,25 +82,21 @@ class Encounters extends Reports
 			if (isset($drug) && $drug != '')
 				$sql .= " AND medication_id = '$drug'";
 			$this -> db -> setSQL($sql);
-			$alldata[$key] = $this -> db -> fetchRecords(PDO::FETCH_ASSOC);
+			//$alldata[$key] = $this -> db -> fetchRecords(PDO::FETCH_ASSOC);
 		}
-		return $alldata;
+		return $this->db->fetchRecords(PDO::FETCH_ASSOC);
 	}
 
 	public function htmlEncountersList($params, $html)
 	{
-		foreach ($this->getEncountersFromAndToAndPid($params->from,$params->to,$params->drug,$params->pid) AS $data)
+		foreach ($this->getEncountersFromAndTo($params->from,$params->to) AS $data)
 		{
 			foreach ($data as $data2)
 			{
 				$html .= "
 		            <tr>
-						<td colspan=\"2\">" . $this -> patient -> getPatientFullNameByPid($data2['pid']) . "</td>
+						<td>" . $this -> patient -> getPatientFullNameByPid($data2['pid']) . "</td>
 						<td>" . $data2['pid'] . "</td>
-						<td colspan=\"2\">" . $data2['medication'] . "</td>
-						<td>" . $data2['take_pills'] . "</td>
-						<td colspan=\"2\">" . $data2['type'] . "</td>
-						<td colspan=\"3\">" . $data2['prescription_often'] . ' ' . $data2['prescription_when'] . "</td>
 					</tr>";
 			}
 		}

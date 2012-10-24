@@ -57,7 +57,7 @@ class Appointments extends Reports
                <td colspan=\"2\">" . i18nRouter::t("type") . "</td>
                <td colspan=\"3\">" . i18nRouter::t("instructed") . "</td>
             </tr>";
-		$html2 = $this -> htmlRxList($params, $html2);
+		$html2 = $this -> htmlAppointmentsList($params, $html2);
 		$html .= $html2;
 		$html .= "</table>";
 		ob_end_clean();
@@ -69,7 +69,7 @@ class Appointments extends Reports
 		);
 	}
 
-	public function getPrescriptionsFromAndToAndPid($from, $to, $drug = null, $pid = null)
+	public function getAppointmentsFromAndToAndPid($from, $to, $drug = null, $pid = null)
 	{
 		$alldata = '';
 		$sql = " SELECT *
@@ -92,9 +92,9 @@ class Appointments extends Reports
 		return $alldata;
 	}
 
-	public function htmlRxList($params, $html)
+	public function htmlAppointmentsList($params, $html)
 	{
-		foreach ($this->getPrescriptionsFromAndToAndPid($params->from,$params->to,$params->drug,$params->pid) AS $data)
+		foreach ($this->getAppointmentsFromAndToAndPid($params->from,$params->to,$params->drug,$params->pid) AS $data)
 		{
 			foreach ($data as $data2)
 			{

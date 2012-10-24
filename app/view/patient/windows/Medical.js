@@ -676,7 +676,7 @@ Ext.define('App.view.patient.windows.Medical', {
                                     items:[
                                         {
                                             fieldLabel:i18n['surgery'],
-                                            name:'surgery',
+                                            name:'surgery_id',
                                             hideLabel:false,
                                             allowBlank:false,
                                             width:510,
@@ -693,7 +693,7 @@ Ext.define('App.view.patient.windows.Medical', {
                                         {
                                             xtype:'textfield',
                                             hidden:true,
-                                            name:'surgery_id',
+                                            name:'surgery',
                                             action:'idField'
                                         },
                                         {
@@ -1494,7 +1494,7 @@ Ext.define('App.view.patient.windows.Medical', {
             field.setValue(name);
             field2.setValue(model[0].data.code_text);
         }else if(combo.action == 'surgery'){
-            name = model[0].data.id;
+            name = model[0].data.surgery;
             field = combo.up('fieldcontainer').query('[action="idField"]')[0];
             field.setValue(name);
         }else if(combo.action == 'medication_id'){

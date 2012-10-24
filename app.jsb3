@@ -799,6 +799,14 @@
 				},
 				{
 					"path": "app/classes/combo/",
+					"name": "Ethnicity.js"
+				},
+				{
+					"path": "app/classes/combo/",
+					"name": "Ethnicity.js"
+				},
+				{
+					"path": "app/classes/combo/",
 					"name": "SmokingStatus.js"
 				},
 				{

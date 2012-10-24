@@ -103,7 +103,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                     fn:Rx.createPrescriptionsDispensations
                 });
             });
-            me.link2 = me.addReportByCategory(me.patientCategory, i18n['clinical'], function(btn) {
+            me.ClinicalReport = me.addReportByCategory(me.patientCategory, i18n['clinical'], function(btn) {
                 me.goToReportPanelAndSetForm({
                     title:i18n['clinical'],
                     action: 'clientListReport',
@@ -122,11 +122,11 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                                     items   : [
 
                                         {
-                                            xtype     : 'textfield',
-                                            fieldLabel: i18n['patient_id'],
-                                            name      : 'pid',
-                                            width     : 280
-
+                                            xtype          : 'patienlivetsearch',
+                                            fieldLabel     : i18n['patient'],
+                                            hideLabel      : false,
+                                            name           : 'pid',
+                                            width          : 280
                                         },
                                         {
                                             xtype     : 'mitos.sexcombo',
@@ -136,23 +136,16 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                                             width     : 140,
                                             minValue  : 0
 
-                                        },
-                                        {
-                                            xtype     : 'mitos.allergieslocationcombo',
-                                            fieldLabel: i18n['location'],
-                                            name      : 'location',
-                                            action    : 'location',
-                                            width     : 225,
-                                            labelWidth: 70
-
-                                        },
-                                        {
-                                            fieldLabel: i18n['begin_date'],
-                                            xtype     : 'datefield',
-                                            format    : 'Y-m-d',
-                                            name      : 'begin_date'
-
-                                        }
+                                        }//,
+//                                        {
+//                                            xtype     : 'mitos.racecombo',
+//                                            fieldLabel: i18n['race'],
+//                                            name      : 'race',
+//                                            action    : 'race',
+//                                            width     : 225,
+//                                            labelWidth: 70
+//
+//                                        }
 
                                     ]
 
@@ -176,19 +169,16 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                                             width     : 140,
                                             minValue  : 0
 
-                                        },
-                                        {
-                                            xtype          : 'medicationlivetsearch',
-                                            fieldLabel     : i18n['allergy'],
-                                            hideLabel      : false,
-                                            action         : 'drug_name',
-                                            name           : 'allergy',
-                                            hidden         : true,
-                                            disabled       : true,
-                                            enableKeyEvents: true,
-                                            width          : 225,
-                                            labelWidth     : 70
-                                        }
+                                        }//,
+//                                        {
+//                                            xtype     : 'mitos.ethnicitycombo',
+//                                            fieldLabel: i18n['ethnicity'],
+//                                            name      : 'ethnicity',
+//                                            action    : 'ethnicity',
+//                                            width     : 225,
+//                                            labelWidth: 70
+//
+//                                        }
 
                                     ]
 
@@ -213,6 +203,16 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                                             width     :140,
                                             minValue  : 0
 
+                                        },
+                                        {
+                                            xtype     : 'liveicdxsearch',
+                                            fieldLabel: i18n['problem_dx'],
+                                            name      : 'icd',
+                                            hideLabel : false,
+                                            action    : 'icd',
+                                            width     : 225,
+                                            labelWidth: 70
+
                                         }
 
 
@@ -220,7 +220,8 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                                 }
                             ]
                         }
-                    ]
+                    ],
+                    fn:Clinical.createClinicalReport
                 });
             });
             me.ImmunizationReport = me.addReportByCategory(me.patientCategory, i18n['immunization_registry'], function(btn) {
@@ -368,6 +369,28 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                         }
                     ],
                     fn:SuperBill.CreateSuperBill
+                });
+            });
+
+            me.link10 = me.addReportByCategory(me.visitCategory, i18n['appointments'], function(btn) {
+                me.goToReportPanelAndSetForm({
+                    title: i18n['appointments'],
+                    items : [
+	                    {
+                            xtype     : 'datefield',
+                            fieldLabel: i18n['from'],
+                            allowBlank: false,
+                            name      : 'from',
+                            format:'Y-m-d'
+                        },
+                        {
+                            xtype     : 'datefield',
+                            fieldLabel: i18n['to'],
+                            name      : 'to',
+                            format:'Y-m-d'
+                        }
+                    ],
+                    fn:Appointments.CreateAppointmentsReport
                 });
             });
 

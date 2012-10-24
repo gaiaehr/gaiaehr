@@ -643,7 +643,7 @@ Ext.define('App.view.Viewport', {
                     Emergency.createNewEmergency(function(provider, response){
                         emergency = response.result.emergency;
                         if(response.result.success){
-                            me.setPatient(emergency.pid, emergency.name, function(){
+                            me.setPatient(emergency.pid, emergency.eid, function(){
                                 me.openEncounter(emergency.eid);
                             });
                             me.msg('Sweet!', emergency.name + ' ' + i18n['created'])
@@ -786,13 +786,13 @@ Ext.define('App.view.Viewport', {
             Patient.currPatientSet({
                 pid:post.get('pid')
             }, function(){
-                me.setPatient(post.get('pid'), post.get('fullname'), function(){
+                me.setPatient(post.get('pid'), null, function(){
                     me.openPatientSummary();
                 });
             });
         }
     },
-    setPatient:function(pid, fullname, callback){
+    setPatient:function(pid, eid, callback){
         var me = this;
         me.unsetPatient(function(){
             Patient.currPatientSet({
@@ -821,9 +821,9 @@ Ext.define('App.view.Viewport', {
                         sex:data.patient.sex,
                         dob:data.patient.dob,
                         age:data.patient.age,
+                        eid:eid,
                         priority:data.patient.priority,
                         readOnly:readOnly,
-                        eid:null
                     };
                     me.patientBtn.update({
                         pid:data.patient.pid,
@@ -1053,7 +1053,7 @@ Ext.define('App.view.Viewport', {
                 if(this.newGroupReset){
                     var sourceEl = e.getTarget(panel.itemSelector, 10), patientData = panel.getRecord(sourceEl).data;
                     this.removeFromGroup(this.ddGroup);
-                    say('initializeOpenEncounterDragZone | patientData:');
+                    say('drag record:');
                     say(patientData);
                     if(patientData.floorPlanId != null && patientData.patientZoneId == null){
                         app.navigateTo('panelAreaFloorPlan');
@@ -1112,9 +1112,10 @@ Ext.define('App.view.Viewport', {
                 return Ext.dd.DropZone.prototype.dropAllowed;
             },
             notifyDrop:function(dd, e, data){
+                say('drop record');
                 say(data.patientData);
                 app.MainPanel.el.unmask();
-                me.setPatient(data.patientData.pid, data.patientData.name, function(){
+                me.setPatient(data.patientData.pid, data.patientData.eid, function(){
                     /**
                      * if encounter id is set and pool area is check out....  go to Patient Checkout panel
                      */

@@ -39,6 +39,30 @@
 					"len":1
 				}
 			}
+		},
+		"Clinical":{
+			"methods":{
+				"createClinicalReport":
+				{
+					"len":1
+				}
+			}
+		},
+		"Appointments":{
+			"methods":{
+				"CreateAppointmentsReport":
+				{
+					"len":1
+				}
+			}
+		},
+		"Encounters":{
+			"methods":{
+				"CreateEncountersReport":
+				{
+					"len":1
+				}
+			}
 		}
 	},
 	"extjs":[

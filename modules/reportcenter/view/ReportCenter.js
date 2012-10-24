@@ -103,7 +103,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                     fn:Rx.createPrescriptionsDispensations
                 });
             });
-            me.link2 = me.addReportByCategory(me.patientCategory, i18n['clinical'], function(btn) {
+            me.ClinicalReport = me.addReportByCategory(me.patientCategory, i18n['clinical'], function(btn) {
                 me.goToReportPanelAndSetForm({
                     title:i18n['clinical'],
                     action: 'clientListReport',
@@ -220,7 +220,8 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                                 }
                             ]
                         }
-                    ]
+                    ],
+                    fn:Clinical.createClinicalReport
                 });
             });
             me.ImmunizationReport = me.addReportByCategory(me.patientCategory, i18n['immunization_registry'], function(btn) {
@@ -368,6 +369,28 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                         }
                     ],
                     fn:SuperBill.CreateSuperBill
+                });
+            });
+
+            me.link10 = me.addReportByCategory(me.visitCategory, i18n['appointments'], function(btn) {
+                me.goToReportPanelAndSetForm({
+                    title: i18n['appointments'],
+                    items : [
+	                    {
+                            xtype     : 'datefield',
+                            fieldLabel: i18n['from'],
+                            allowBlank: false,
+                            name      : 'from',
+                            format:'Y-m-d'
+                        },
+                        {
+                            xtype     : 'datefield',
+                            fieldLabel: i18n['to'],
+                            name      : 'to',
+                            format:'Y-m-d'
+                        }
+                    ],
+                    fn:Appointments.CreateAppointmentsReport
                 });
             });
 

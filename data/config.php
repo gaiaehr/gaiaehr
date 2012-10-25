@@ -202,6 +202,7 @@ $API = array(
 	'Globals' => array('methods' => array(
 			'setGlobals' => array('len' => 0),
 			'getGlobals' => array('len' => 0),
+			'getAllGlobals' => array('len' => 0),
 			'updateGlobals' => array('len' => 1)
 		), ),
 	/**

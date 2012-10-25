@@ -28,13 +28,26 @@ include_once ($_SESSION['root'] . '/classes/dbHelper.php');
 
 class Globals extends dbHelper
 {
+	
+	/*
+	 * Get all the settings from the database.
+	 */
+	public function getAllGlobals()
+	{
+		$this -> setSQL("SELECT * FROM globals");
+		$rows = array();
+		foreach ($this->fetchRecords() as $row)
+		{
+			$rows[$row[0]] = $row[2];
+		}
+		return $rows;
+	}
 
 	/**
 	 * @return array
 	 */
 	public function getGlobals()
 	{
-
 		$this -> setSQL("SELECT gl_name, gl_index, gl_value FROM globals");
 		$rows = array();
 		foreach ($this->fetchRecords() as $row)

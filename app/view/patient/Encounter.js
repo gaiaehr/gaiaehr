@@ -430,6 +430,7 @@ Ext.define('App.view.patient.Encounter', {
                 fieldDefaults:{
                     msgTarget:'side'
                 },
+                plugins: { ptype:'advanceform', autoSync:acl['edit_encounters'] },
                 buttons:[
                     {
                         text:i18n['save'],
@@ -452,6 +453,7 @@ Ext.define('App.view.patient.Encounter', {
                 fieldDefaults:{
                     msgTarget:'side'
                 },
+                plugins: { ptype:'advanceform', autoSync:acl['edit_encounters'] },
                 buttons:[
                     {
                         text:i18n['save'],
@@ -474,6 +476,7 @@ Ext.define('App.view.patient.Encounter', {
                 fieldDefaults:{
                     msgTarget:'side'
                 },
+                plugins: { ptype:'advanceform', autoSync:acl['edit_encounters'] },
                 buttons:[
                     {
                         text:i18n['save'],
@@ -482,7 +485,17 @@ Ext.define('App.view.patient.Encounter', {
                         scope:me,
                         handler:me.onEncounterUpdate
                     }
-                ]
+                ],
+                listeners:{
+                    recordloaded:function(form, record){
+
+                        say(record.data.icdxCodes);
+                        me.soapPanel.query('icdsfieldset')[0].loadIcds(record.data.icdxCodes);
+                    },
+                    beforesync:function(store, operation){
+                        //me.soapPanel.query('icdsfieldset')[0].loadIcds(record.data.icdxCodes);
+                    }
+                }
             }));
         }
         if(acl['access_itmes_to_review']){
@@ -511,7 +524,8 @@ Ext.define('App.view.patient.Encounter', {
         if(acl['access_enc_hcfa']){
             me.MiscBillingOptionsPanel = me.administrativeTabPanel.add(Ext.create('App.view.patient.encounter.HealthCareFinancingAdministrationOptions', {
                 autoScroll:true,
-                title:i18n['misc_billing_options_HCFA_1500']
+                title:i18n['misc_billing_options_HCFA_1500'],
+                plugins: { ptype:'advanceform', autoSync:acl['edit_enc_hcfa'] }
             }));
         }
         if(acl['access_enc_cpt']){
@@ -782,7 +796,6 @@ Ext.define('App.view.patient.Encounter', {
                                 me.openEncounter(data.eid);
                                 SaveBtn.up('window').hide();
                             }
-
                         }
                     });
                 }else{
@@ -918,7 +931,6 @@ Ext.define('App.view.patient.Encounter', {
      */
     openEncounter:function(eid){
         var me = this, vitals, store;
-        me.isLoading = true;
         me.resetTabs();
         me.eid = app.patient.eid = eid;
         me.encounterStore.getProxy().extraParams.eid = me.eid;
@@ -958,7 +970,7 @@ Ext.define('App.view.patient.Encounter', {
                     store = record[0].soap();
                     store.on('write',me.updateProgressNote, me);
                     me.soapPanel.getForm().loadRecord(store.getAt(0));
-                    me.soapPanel.query('icdsfieldset')[0].loadIcds(store.getAt(0).data.icdxCodes);
+                    //me.soapPanel.query('icdsfieldset')[0].loadIcds(store.getAt(0).data.icdxCodes);
                 }
                 if(me.MiscBillingOptionsPanel){
                     store = record[0].hcfaoptions();
@@ -975,7 +987,6 @@ Ext.define('App.view.patient.Encounter', {
                 me.priorityCombo.setValue(data.priority);
                 if(app.PreventiveCareWindow) app.PreventiveCareWindow.loadPatientPreventiveCare();
                 if(me.progressHistory) me.getProgressNotesHistory();
-                me.isLoading = false;
             }
         });
     },
@@ -1303,7 +1314,6 @@ Ext.define('App.view.patient.Encounter', {
                         name:formFields.items[i].name,
                         type:'auto'
                     });
-                    if(acl['edit_encounters']) me.setAutoSyncFormEvent(formFields.items[i]);
                 }
                 Ext.define('App.model.patient.ReviewOfSystems', {
                     extend:'Ext.data.Model',
@@ -1332,7 +1342,6 @@ Ext.define('App.view.patient.Encounter', {
                         name:formFields.items[i].name,
                         type:'auto'
                     });
-                    if(acl['edit_encounters']) me.setAutoSyncFormEvent(formFields.items[i]);
                 }
                 Ext.define('App.model.patient.SOAP', {
                     extend:'Ext.data.Model',
@@ -1381,7 +1390,6 @@ Ext.define('App.view.patient.Encounter', {
                         name:formFields.items[i].name,
                         type:'auto'
                     });
-                    if(acl['edit_encounters']) me.setAutoSyncFormEvent(formFields.items[i]);
                 }
                 Ext.define('App.model.patient.ReviewOfSystemsCheck', {
                     extend:'Ext.data.Model',

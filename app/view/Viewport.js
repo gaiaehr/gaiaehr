@@ -938,7 +938,7 @@ Ext.define('App.view.Viewport',
 						age : data.patient.age,
 						eid : eid,
 						priority : data.patient.priority,
-						readOnly : readOnly,
+						readOnly : readOnly
 					};
 					me.patientBtn.update(
 					{

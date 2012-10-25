@@ -598,6 +598,10 @@
 					"name": "Panel.js"
 				},
 				{
+					"path": "app/classes/form/",
+					"name": "AdvanceForm.js"
+				},
+				{
 					"path": "app/classes/grid/",
 					"name": "EventHistory.js"
 				},
@@ -680,6 +684,10 @@
 				{
 					"path": "app/classes/combo/",
 					"name": "EncounterPriority.js"
+				},
+				{
+					"path": "app/classes/combo/",
+					"name": "Ethnicity.js"
 				},
 				{
 					"path": "app/classes/combo/",
@@ -791,19 +799,15 @@
 				},
 				{
 					"path": "app/classes/combo/",
+					"name": "Race.js"
+				},
+				{
+					"path": "app/classes/combo/",
 					"name": "Roles.js"
 				},
 				{
 					"path": "app/classes/combo/",
 					"name": "Sex.js"
-				},
-				{
-					"path": "app/classes/combo/",
-					"name": "Ethnicity.js"
-				},
-				{
-					"path": "app/classes/combo/",
-					"name": "Ethnicity.js"
 				},
 				{
 					"path": "app/classes/combo/",

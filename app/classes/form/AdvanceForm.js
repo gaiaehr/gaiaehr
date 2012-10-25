@@ -209,22 +209,20 @@ Ext.define('App.classes.form.AdvanceForm', {
             bar = me.formPanel.getDockedItems()[0],
             cls = me.formPanel.autoSync ? 'autosave' : '';
         if(bar){
-            bar.add(
-                Ext.create('Ext.panel.Tool',{
-                    type:'save',
-                    cls:cls,
-                    tooltip: 'Autosave',
-                    handler: function(event, toolEl, panel, tool){
-                        me.formPanel.autoSync = !me.formPanel.autoSync;
-                        if(me.formPanel.autoSync){
-                            tool.addCls('autosave');
-                        }else{
-                            tool.removeCls('autosave');
-                        }
-                        app.msg('Sweet!','AutoSave is ' + (me.formPanel.autoSync ? 'On' : 'Off'));
+            bar.insert(0, Ext.create('Ext.panel.Tool',{
+                type:'save',
+                cls:cls,
+                tooltip: 'Autosave',
+                handler: function(event, toolEl, panel, tool){
+                    me.formPanel.autoSync = !me.formPanel.autoSync;
+                    if(me.formPanel.autoSync){
+                        tool.addCls('autosave');
+                    }else{
+                        tool.removeCls('autosave');
                     }
-                })
-            );
+                    app.msg('Sweet!','AutoSave is ' + (me.formPanel.autoSync ? 'On' : 'Off'));
+                }
+            }));
         }
     }
 });

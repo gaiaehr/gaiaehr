@@ -1,11 +1,22 @@
-//******************************************************************************
-// Billing.ejs.php
-// Billing Forms
-// v0.0.1
-// Author: Emmanuel J. Carrasquillo
-// Modified:
-// GaiaEHR (Electronic Health Records) 2011
-//******************************************************************************
+/*
+ GaiaEHR (Electronic Health Records)
+ Billing.ejs.php
+ Billing Forms
+ Copyright (C) 2012 Emmanuel J. Carrasquillo
+
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 Ext.define('App.view.fees.Billing',
 {
 	extend : 'App.classes.RenderPanel',
@@ -27,6 +38,9 @@ Ext.define('App.view.fees.Billing',
 
 		me.patientListStore = Ext.create('App.store.fees.Billing');
 
+		/*
+		 *  Encounter data grid.
+		 */
 		me.encountersGrid = Ext.create('Ext.grid.Panel',
 		{
 			store : me.patientListStore,
@@ -98,7 +112,8 @@ Ext.define('App.view.fees.Billing',
 					fieldLabel : i18n['from'],
 					labelWidth : 35,
 					action : 'datefrom',
-					width : 150
+					width : 150,
+					format: globals['date_display_format']
 				},
 				{
 					xtype : 'datefield',
@@ -106,7 +121,8 @@ Ext.define('App.view.fees.Billing',
 					labelWidth : 35,
 					action : 'dateto',
 					padding : '0 5 0 0',
-					width : 150
+					width : 150,
+					format: globals['date_display_format']
 				}]
 			},
 			{
@@ -130,46 +146,21 @@ Ext.define('App.view.fees.Billing',
 					defaultValue : 'All'
 
 				}]
-			},
+			}, '-',
 			{
 				xtype : 'fieldcontainer',
 				items : [
 				{
-					xtype : 'splitbutton',
-					text : i18n['utilities'],
-					// handle a click on the button itself
-					handler : function()
-					{
-						alert("The button was clicked");
-					},
-					menu : new Ext.menu.Menu(
-					{
-						items : [
-						{
-							text : i18n['generate_x12'],
-							iconCls: 'icoReport',
-							handler : function()
-							{
-								alert("Item 1 clicked");
-							}
-						},
-						{
-							text : i18n['generate_cms1500_pdf'],
-							iconCls: 'icoReport',
-							handler : function()
-							{
-								alert("Item 2 clicked");
-							}
-						},
-						{
-							text : i18n['generate_cms1500_text'],
-							iconCls: 'icoReport',
-							handler : function()
-							{
-								alert("Item 2 clicked");
-							}
-						}]
-					})
+					xtype : 'button',
+					text : i18n['generate_x12']
+				},
+				{
+					xtype : 'button',
+					text : i18n['generate_cms1500_pdf']
+				},
+				{
+					xtype : 'button',
+					text : i18n['generate_cms1500_text']
 				}]
 			}, '->',
 			{
@@ -232,6 +223,9 @@ Ext.define('App.view.fees.Billing',
 			}
 		});
 
+		/*
+		 * Panel: encounterBillingDetails
+		 */
 		me.encounterBillingDetails = Ext.create('Ext.panel.Panel',
 		{
 			defaultTitle : i18n['encounter_billing_details'],
@@ -266,14 +260,15 @@ Ext.define('App.view.fees.Billing',
 							hideLabel : true,
 							items : [
 							{
-								xtype : 'textfield',
+								xtype : 'datefield',
 								name : 'service_date',
 								fieldLabel : i18n['service_date'],
 								labelAlign : 'right',
-								labelWidth : 80
+								labelWidth : 80,
+								format: globals['date_display_format']
 							},
 							{
-								xtype : 'textfield',
+								xtype : 'activeinsurancescombo',
 								name : 'insurance',
 								fieldLabel : i18n['insurance'],
 								labelAlign : 'right'
@@ -300,20 +295,21 @@ Ext.define('App.view.fees.Billing',
 							hideLabel : true,
 							items : [
 							{
-								xtype : 'textfield',
+								xtype : 'datefield',
 								name : 'hosp_date',
 								fieldLabel : i18n['hosp_date'],
 								labelAlign : 'right',
-								labelWidth : 80
+								labelWidth : 80,
+								format: globals['date_display_format']
 							},
 							{
-								xtype : 'textfield',
+								xtype : 'activeinsurancescombo',
 								name : 'sec_insurance',
 								fieldLabel : i18n['sec_insurance'],
 								labelAlign : 'right'
 							},
 							{
-								xtype : 'textfield',
+								xtype : 'mitos.providerscombo',
 								name : 'provider',
 								fieldLabel : i18n['provider'],
 								labelAlign : 'right',
@@ -334,7 +330,7 @@ Ext.define('App.view.fees.Billing',
 							hideLabel : true,
 							items : [
 							{
-								xtype : 'textfield',
+								xtype : 'mitos.authorizationscombo',
 								name : 'authorization',
 								fieldLabel : i18n['authorization'],
 								labelAlign : 'right',
@@ -394,7 +390,7 @@ Ext.define('App.view.fees.Billing',
 				text : i18n['back'],
 				scope : me,
 				action : 'back',
-                iconCls:'icoArrowLeftSmall',
+				iconCls : 'icoArrowLeftSmall',
 				tooltip : i18n['previous_encounter_details'],
 				handler : me.onBtnBack
 			},
@@ -416,8 +412,8 @@ Ext.define('App.view.fees.Billing',
 				text : i18n['next'],
 				scope : me,
 				action : 'next',
-                iconCls:'icoArrowRightSmall',
-                iconAlign:'right',
+				iconCls : 'icoArrowRightSmall',
+				iconAlign : 'right',
 				tooltip : i18n['next_encounter_details'],
 				handler : me.onBtnNext
 			}]
@@ -427,6 +423,9 @@ Ext.define('App.view.fees.Billing',
 		me.callParent(arguments);
 	}, // end of initComponent
 
+	/*
+	 * Function: stage
+	 */
 	stage : function(val)
 	{
 		if (val == '1')
@@ -451,6 +450,9 @@ Ext.define('App.view.fees.Billing',
 		return val;
 	},
 
+	/*
+	 * Event: onBtnClicked
+	 */
 	onBtnClicked : function(btn)
 	{
 		var datefrom = this.query('datefield[action="datefrom"]'), dateto = this.query('datefield[action="dateto"]');
@@ -468,21 +470,33 @@ Ext.define('App.view.fees.Billing',
 
 	},
 
+	/*
+	 * Event: rowDblClicked
+	 */
 	rowDblClicked : function()
 	{
 		this.goToEncounterBillingDetail();
 	},
 
+	/*
+	 * Function: goToEncounterBillingDetail
+	 */
 	goToEncounterBillingDetail : function()
 	{
 		this.getPageBody().getLayout().setActiveItem(1);
 	},
 
+	/*
+	 * Function: goToEncounterList
+	 */
 	goToEncounterList : function()
 	{
 		this.getPageBody().getLayout().setActiveItem(0);
 	},
 
+	/*
+	 * Event: onSelectionChanged
+	 */
 	onSelectionChanged : function(sm, model)
 	{
 		if (model[0])
@@ -508,23 +522,35 @@ Ext.define('App.view.fees.Billing',
 		}
 	},
 
+	/*
+	 * Event: onBtnCancel
+	 */
 	onBtnCancel : function()
 	{
 		this.getPageBody().getLayout().setActiveItem(0);
 	},
 
+	/*
+	 * Event: onBtnBack
+	 */
 	onBtnBack : function()
 	{
 		var sm = this.encountersGrid.getSelectionModel(), currRowIndex = sm.getLastSelected().index, prevRowindex = currRowIndex - 1;
 		sm.select(prevRowindex);
 	},
 
+	/*
+	 * Event: onBtnNext
+	 */
 	onBtnNext : function()
 	{
 		var sm = this.encountersGrid.getSelectionModel(), currRowIndex = sm.getLastSelected().index, nextRowindex = currRowIndex + 1;
 		sm.select(nextRowindex);
 	},
 
+	/*
+	 * Event: onBtnSave
+	 */
 	onBtnSave : function()
 	{
 		var me = this, form = me.icdForm.getForm(), values = form.getValues();
@@ -533,6 +559,9 @@ Ext.define('App.view.fees.Billing',
 		me.msg('Sweet!', i18n['encounter_billing_data_updated']);
 	},
 
+	/*
+	 * Function: getEncounterIcds
+	 */
 	getEncounterIcds : function()
 	{
 		var me = this;
@@ -546,6 +575,9 @@ Ext.define('App.view.fees.Billing',
 		});
 	},
 
+	/*
+	 * Function: updateEncounterIcds
+	 */
 	updateEncounterIcds : function(data)
 	{
 		var me = this;
@@ -559,6 +591,9 @@ Ext.define('App.view.fees.Billing',
 		});
 	},
 
+	/*
+	 * Function: reloadGrid
+	 */
 	reloadGrid : function()
 	{
 		this.patientListStore.load(
@@ -575,6 +610,9 @@ Ext.define('App.view.fees.Billing',
 		});
 	},
 
+	/*
+	 * Function: updateProgressNote
+	 */
 	updateProgressNote : function(eid)
 	{
 		var me = this;

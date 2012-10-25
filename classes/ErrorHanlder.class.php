@@ -1,9 +1,10 @@
 <?php
 /*
  GaiaEHR (Electronic Health Records)
- WebCamImgHandler.php
- Web Camera Image Handler dataProvider
- Copyright (C) 2012 Ernesto J. Rodriguez (Certun)
+ ErrorHanlder.class.php
+ Error Hanlding class
+ * Capabilities to better error handling in GaiaEHR application
+ Copyright (C) 2012 Gino Rivera (GI Technologies)
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -18,21 +19,17 @@
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-if (!isset($_SESSION))
-{
-	session_name('GaiaEHR');
-	session_start();
-	session_cache_limiter('private');
-}
-$img = $_SESSION['site']['path'] . '/patients/' . $_SESSION['patient']['pid'] . '/patientPhotoId.jpg';
-$result = file_put_contents($img, file_get_contents('php://input'));
 
-if (!$result)
+class ErrorHanlder
 {
-	print '{"success":false}';
-	exit();
+	public static function catchError()
+	{
+		
+	}
+	
+	public static function logError()
+	{
+		
+	}
 }
-else
-{
-	print '{"success":true, "url":"' . $img . '"}';
-}
+?>

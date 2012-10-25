@@ -43,25 +43,26 @@ class Appointments extends Reports
 	public function CreateAppointmentsReport(stdClass $params)
 	{
 		$params -> to = ($params -> to == '') ? date('Y-m-d') : $params -> to;
-		$html = "<br><h1>Clinical ($params->from - $params->to )</h1>";
+		$html = "<br><h1>Appoinments ($params->from - $params->to )</h1>";
 		$html2 = "";
 		$html .= "<table  border=\"0\" width=\"100%\">
             <tr>
-               <th colspan=\"11\" style=\"font-weight: bold;\">" . i18nRouter::t("clinical") . "</th>
+               <th colspan=\"11\" style=\"font-weight: bold;\">" . i18nRouter::t("appoinments") . "</th>
             </tr>
             <tr>
+               <td colspan=\"2\">" . i18nRouter::t("provider") . "</td>
+               <td colspan=\"2\">" . i18nRouter::t("date") . "</td>
+               <td>" . i18nRouter::t("time") . "</td>
                <td colspan=\"2\">" . i18nRouter::t("patient") . "</td>
-               <td>" . i18nRouter::t("pid") . "</td>
-               <td colspan=\"2\">" . i18nRouter::t("drug_name") . "</td>
-               <td>" . i18nRouter::t("units") . "</td>
+               <td>" . i18nRouter::t("id") . "</td>
                <td colspan=\"2\">" . i18nRouter::t("type") . "</td>
-               <td colspan=\"3\">" . i18nRouter::t("instructed") . "</td>
+               <td>" . i18nRouter::t("note") . "</td>
             </tr>";
 		$html2 = $this -> htmlAppointmentsList($params, $html2);
 		$html .= $html2;
 		$html .= "</table>";
 		ob_end_clean();
-		//$Url = $this -> ReportBuilder($html, 10);
+		$Url = $this -> ReportBuilder($html, 10);
 		return array(
 			'success' => true,
 			'html' => $html,
@@ -69,55 +70,54 @@ class Appointments extends Reports
 		);
 	}
 
-	public function getAppointmentsFromAndToAndPid($from, $to, $drug = null, $pid = null)
+	public function getAppointments($from, $to, $facility, $provider)
 	{
 		$alldata = '';
 		$sql = " SELECT *
-	               FROM patient_prescriptions
-	              WHERE created_date BETWEEN '$from 00:00:00' AND '$to 23:59:59'";
-		if (isset($pid) && $pid != '')
-			$sql .= " AND pid = '$pid'";
+	               FROM calendar_events
+	              WHERE start BETWEEN '$from 00:00:00' AND '$to 23:59:59'";
+		if (isset($facility) && $facility != '')
+			$sql .= " AND facility = '$facility'";
+		if (isset($provider) && $provider != '')
+			$sql .= " AND user_id = '$provider'";
 		$this -> db -> setSQL($sql);
-		foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $key => $data)
-		{
-			$id = $data['id'];
-			$sql = " SELECT *
-		   	           FROM patient_medications
-		   	          WHERE prescription_id = '$id'";
-			if (isset($drug) && $drug != '')
-				$sql .= " AND medication_id = '$drug'";
-			$this -> db -> setSQL($sql);
-			$alldata[$key] = $this -> db -> fetchRecords(PDO::FETCH_ASSOC);
-		}
-		return $alldata;
+
+		return $this->db->fetchRecords(PDO::FETCH_ASSOC);
 	}
 
 	public function htmlAppointmentsList($params, $html)
 	{
-		foreach ($this->getAppointmentsFromAndToAndPid($params->from,$params->to,$params->drug,$params->pid) AS $data)
+		foreach ($this->getAppointments($params->from,$params->to,$params->facility,$params->provider) AS $data)
 		{
-			foreach ($data as $data2)
-			{
-				$html .= "
-		            <tr>
-						<td colspan=\"2\">" . $this -> patient -> getPatientFullNameByPid($data2['pid']) . "</td>
-						<td>" . $data2['pid'] . "</td>
-						<td colspan=\"2\">" . $data2['medication'] . "</td>
-						<td>" . $data2['take_pills'] . "</td>
-						<td colspan=\"2\">" . $data2['type'] . "</td>
-						<td colspan=\"3\">" . $data2['prescription_often'] . ' ' . $data2['prescription_when'] . "</td>
-					</tr>";
-			}
+			$cat= $this->getCalendarCategories($data['category']);
+			$html .= "
+	            <tr>
+					<td colspan=\"2\">" . $this->user->getUserNameById($data['user_id']) . "</td>
+					<td colspan=\"2\">" . date('m-d-Y', strtotime($data['start'])). "</td>
+					<td>" . date('h:i:s', strtotime($data['start'])). "</td>
+					<td colspan=\"2\">" .$this -> patient -> getPatientFullNameByPid($data['patient_id']). "</td>
+					<td>" . $data['patient_id'] . "</td>
+					<td colspan=\"2\">" . $cat['catname'] . "</td>
+					<td>" . $data['notes'] . "</td>
+				</tr>";
+
 		}
 		return $html;
+	}
+	public function getCalendarCategories($category)
+	{
+		$this -> db -> setSQL("SELECT catname
+		                       FROM calendar_categories
+		                       WHERE catid ='$category'");
+		return $this -> db -> fetchRecord(PDO::FETCH_ASSOC);
 	}
 
 }
 
-//$e = new Rx();
+//$e = new Appointments();
 //$params = new stdClass();
 //$params->from ='2010-03-08';
 //$params->to ='2013-03-08';
 //echo '<pre>';
 //echo '<pre>';
-//print_r($e->createPrescriptionsDispensations($params));
+//print_r($e->getCalendarCategories(1));

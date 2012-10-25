@@ -85,30 +85,44 @@ class Clinical extends Reports
 
 		$this -> db -> setSQL($sql);
 		$data = $this->db->fetchRecords(PDO::FETCH_ASSOC);
-
+		$newarray = array();
+		if(($age_from == null && $age_to == null) || ($age_from == '' && $age_to == '')){
+			$age_from=0;
+			$age_to=100;
+		}
 		foreach ($data as  $key =>$data1)
 		{
 
 			$age = $this->patient->getPatientAgeByDOB($data1['DOB']);
-
-			print 'from'.$age_from;
-			print 'to'.$age_to;
-			print 'age'.$age['DMY']['years'];
-
-			if($age_from < $age['DMY']['years'] && $age_to < $age['DMY']['years'] ){
-				unset($data[$key]);
+			$num =$age['DMY']['years'];
+			if($age_from == null){
+				if($age_to != null){
+					if($age_to>=$num){
+						array_push($newarray,$data[$key]);
+					}
+				}
 			}
-			else if($age_from <= $age['DMY']['years']){
-				unset($data[$key]);
+			else if($age_to == null){
+				if($age_from != null){
+					if($age_from<=$num){
+						array_push($newarray,$data[$key]);
+					}
+				}
 			}
-			else if($age_to <= $age['DMY']['years']){
-				unset($data[$key]);
+			else if($age_from<=$num && $age_to>=$num ){
+				array_push($newarray,$data[$key]);
 			}
+//			if($age_from < $age['DMY']['years']){
+//				unset($data[$key]);
+//			}
+//			else if($age_to <= $age['DMY']['years']){
+//				unset($data[$key]);
+//			}
 
 
 		}
 
-		return $data;
+		return $newarray;
 	}
 
 	public function htmlClinicalList($params, $html)
@@ -144,4 +158,4 @@ class Clinical extends Reports
 //$params->from ='2010-03-08';
 //$params->to ='2013-03-08';
 //echo '<pre>';
-//print_r($e->getClinical('','','','2010-03-08','2013-03-08',3,15,'',''));
+//print_r($e->getClinical('','','','2010-03-08','2013-03-08',0,10,'',''));

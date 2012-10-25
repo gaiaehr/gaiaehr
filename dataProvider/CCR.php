@@ -1,9 +1,4 @@
 <?php
-if(!isset($_SESSION)) {
-	session_name('GaiaEHR');
-	session_start();
-	session_cache_limiter('private');
-}
 /**
  * This code was originally create by Garden State Health Systems for OpenEMR
  * (see credits bellow) and heavily modified by Ernesto J Rodriguez to make it
@@ -34,6 +29,13 @@ if(!isset($_SESSION)) {
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
  */
+ 
+if(!isset($_SESSION)) {
+	session_name('GaiaEHR');
+	session_start();
+	session_cache_limiter('private');
+}
+
 class CCR
 {
 	private $ccr;
@@ -1510,7 +1512,7 @@ class CCR
 	}
 }
 
-$c = new CCR();
+//$c = new CCR();
 // generate, viewccd
 // yes, hybrid, pure
-$c->createCCR('generate',  'no');
+//$c->createCCR('generate',  'no');

@@ -1,17 +1,26 @@
 <?php
-/* Main Screen Application
- *
- * Description: This is the main application file, all the global
- * vars are defined here inluding "var app" witch refers to
- * the applciation Viewport.
- *
- * version 1.0.0
- * revision: N/A
- * author: GI Technologies, 2011
- * modified: Ernesto J Rodriguez (Certun)
- *
- * @namespace App.data.REMOTING_API
- */
+ /*
+	 GaiaEHR (Electronic Health Records)
+	 _app.php
+	 Main Screen Application
+	 Copyright (C) 2012 Ernesto J. Rodriguez (Certun)
+
+	 This program is free software: you can redistribute it and/or modify
+	 it under the terms of the GNU General Public License as published by
+	 the Free Software Foundation, either version 3 of the License, or
+	 (at your option) any later version.
+
+	 This program is distributed in the hope that it will be useful,
+	 but WITHOUT ANY WARRANTY; without even the implied warranty of
+	 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	 GNU General Public License for more details.
+
+	 You should have received a copy of the GNU General Public License
+	 along with this program.  If not, see
+	 <http://www.gnu.org/licenses/>
+	 .
+	 */
+
 if (!defined('_GaiaEXEC'))
 	die('No direct access allowed.');
 $_SESSION['site']['flops'] = 0;
@@ -24,6 +33,7 @@ $_SESSION['site']['flops'] = 0;
 				user = {},
 				settings = {},
 				i18n = {},
+				globals = {},
 				ext = 'extjs-4.1.1a',
 				version = '0.0.5.168',
 				requires;

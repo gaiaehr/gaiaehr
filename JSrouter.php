@@ -12,10 +12,16 @@ if(!isset($_SESSION))
 	session_cache_limiter('private');
 }
 include_once($_SESSION['root'] . '/dataProvider/i18nRouter.php');
+include_once($_SESSION['root'] . '/dataProvider/Globals.php');
 header('Content-Type: text/javascript');
 
+// Output the translation selected by the user.
 $i18n = i18nRouter::getTranslation();
-print 'i18n = '. json_encode($i18n).';';
+print 'i18n = '. json_encode( $i18n ).';';
+
+// Output all the globals settings on the database.
+//$global = Globals::getGlobals();
+//print 'globals = '. json_encode( $global ).';';
 
 if(!isset($_SESSION['site']['error']) && (isset($_SESSION['user']) && $_SESSION['user']['auth'] == true))
 {

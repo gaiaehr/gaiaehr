@@ -20,8 +20,8 @@ $i18n = i18nRouter::getTranslation();
 print 'i18n = '. json_encode( $i18n ).';';
 
 // Output all the globals settings on the database.
-//$global = Globals::getAllGlobals();
-//print 'globals = '. json_encode( $global ).';';
+$global = Globals::getGlobals();
+print 'globals = '. json_encode( $global ).';';
 
 if(!isset($_SESSION['site']['error']) && (isset($_SESSION['user']) && $_SESSION['user']['auth'] == true))
 {

@@ -2,7 +2,7 @@
  /*
  GaiaEHR (Electronic Health Records)
  Globals.php
- Gloabl Settings dataProvider
+ Globals Settings dataProvider
  Copyright (C) 2012 Ernesto J. Rodriguez (Certun)
 
  This program is free software: you can redistribute it and/or modify
@@ -24,33 +24,21 @@ if (!isset($_SESSION))
 	session_start();
 	session_cache_limiter('private');
 }
+
 include_once ($_SESSION['root'] . '/classes/dbHelper.php');
 
 class Globals extends dbHelper
 {
 	
-	/*
-	 * Get all the settings from the database.
-	 */
-	public function getAllGlobals()
-	{
-		$this -> setSQL("SELECT * FROM globals");
-		$rows = array();
-		foreach ($this->fetchRecords() as $row)
-		{
-			$rows[$row[0]] = $row[2];
-		}
-		return $rows;
-	}
-
 	/**
 	 * @return array
 	 */
-	public function getGlobals()
+	public static function getGlobals()
 	{
-		$this -> setSQL("SELECT gl_name, gl_index, gl_value FROM globals");
+		$conn = new dbHelper();
+		$conn -> setSQL("SELECT gl_name, gl_index, gl_value FROM globals");
 		$rows = array();
-		foreach ($this->fetchRecords() as $row)
+		foreach ($conn->fetchRecords() as $row)
 		{
 			$rows[$row[0]] = $row[2];
 		}
@@ -108,4 +96,4 @@ class Globals extends dbHelper
 
 //print '<pre>';
 //$g = new Globals();
-//print_r($g->getGlobals());
+//print_r($g->getAllGlobals());

@@ -94,6 +94,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 				'Ext.ux.LiveSearchGridPanel',
 				'Ext.ux.SlidingPager',
 				'Ext.ux.PreviewPlugin',
+				'App.classes.grid.Printer',
 				/**
 				 * Load the models, the model are the representative of the database
 				 * table structure with modifications behind the PHP counterpart.

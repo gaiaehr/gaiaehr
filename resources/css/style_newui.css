@@ -5,7 +5,9 @@
  * New Styles
  * by GI Technologies, 2011
  *============================================================*/
-
+.icon-print {
+	background-image: url(../images/icons/printer.png) !important;
+}
 .icoReport {
 	background-image: url(../images/icons/ico_report.png) !important;
 }

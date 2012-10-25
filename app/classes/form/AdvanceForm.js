@@ -23,21 +23,22 @@ Ext.define('App.classes.form.AdvanceForm', {
     alias: 'plugin.advanceform',
     /**
      * @cfg {Boolean} autoSync
-     * True to autosave the form every time values is change, Default to false
+     * True to autosave the form every time values is change, Default to false.
      */
     autoSync: false,
     /**
-     * autoSyncTool
+     * True to add a tool component to the form panel. Default to true.
+     * @cfg {Boolean} autoSyncTool
      */
     autoSyncTool:true,
     /**
      * @cfg {int} syncDelay
-     * Autosave de delay to sync the form store. Default to 3000
+     * Autosave de delay to sync the form store. Default to 3000.
      */
     syncDelay: 3000,
     /**
      * @cfg {int} transition
-     * Time of Fx background color transition. Default to 2000
+     * Time of Fx background color transition. Default to 2000.
      */
     transition: 2000,
     /**
@@ -208,7 +209,8 @@ Ext.define('App.classes.form.AdvanceForm', {
         var me = this,
             bar = me.formPanel.getDockedItems()[0],
             cls = me.formPanel.autoSync ? 'autosave' : '';
-        if(bar){
+
+        if(bar && me.autoSyncTool){
             bar.insert(0, Ext.create('Ext.panel.Tool',{
                 type:'save',
                 cls:cls,

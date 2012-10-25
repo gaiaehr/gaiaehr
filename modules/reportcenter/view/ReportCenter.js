@@ -136,16 +136,17 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                                             width     : 140,
                                             minValue  : 0
 
-                                        }//,
-//                                        {
-//                                            xtype     : 'mitos.racecombo',
-//                                            fieldLabel: i18n['race'],
-//                                            name      : 'race',
-//                                            action    : 'race',
-//                                            width     : 225,
-//                                            labelWidth: 70
-//
-//                                        }
+                                        },
+                                        {
+                                            xtype     : 'mitos.racecombo',
+                                            fieldLabel: i18n['race'],
+                                            name      : 'race',
+                                            action    : 'race',
+                                            hideLabel : false,
+                                            width     : 225,
+                                            labelWidth: 70
+
+                                        }
 
                                     ]
 
@@ -169,16 +170,17 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                                             width     : 140,
                                             minValue  : 0
 
-                                        }//,
-//                                        {
-//                                            xtype     : 'mitos.ethnicitycombo',
-//                                            fieldLabel: i18n['ethnicity'],
-//                                            name      : 'ethnicity',
-//                                            action    : 'ethnicity',
-//                                            width     : 225,
-//                                            labelWidth: 70
-//
-//                                        }
+                                        },
+                                        {
+                                            xtype     : 'mitos.ethnicitycombo',
+                                            fieldLabel: i18n['ethnicity'],
+                                            name      : 'ethnicity',
+                                            action    : 'ethnicity',
+                                            hideLabel : false,
+                                            width     : 225,
+                                            labelWidth: 70
+
+                                        }
 
                                     ]
 
@@ -203,7 +205,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                                             width     :140,
                                             minValue  : 0
 
-                                        },
+                                        }/*,
                                         {
                                             xtype     : 'liveicdxsearch',
                                             fieldLabel: i18n['problem_dx'],
@@ -213,7 +215,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                                             width     : 225,
                                             labelWidth: 70
 
-                                        }
+                                        }*/
 
 
                                     ]

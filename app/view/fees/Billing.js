@@ -27,6 +27,9 @@ Ext.define('App.view.fees.Billing',
 
 		me.patientListStore = Ext.create('App.store.fees.Billing');
 
+		/*
+		 *  Encounter data grid.
+		 */
 		me.encountersGrid = Ext.create('Ext.grid.Panel',
 		{
 			store : me.patientListStore,
@@ -244,14 +247,14 @@ Ext.define('App.view.fees.Billing',
 							hideLabel : true,
 							items : [
 							{
-								xtype : 'textfield',
+								xtype : 'datefield',
 								name : 'service_date',
 								fieldLabel : i18n['service_date'],
 								labelAlign : 'right',
 								labelWidth : 80
 							},
 							{
-								xtype : 'textfield',
+								xtype : 'activeinsurancescombo',
 								name : 'insurance',
 								fieldLabel : i18n['insurance'],
 								labelAlign : 'right'
@@ -278,20 +281,20 @@ Ext.define('App.view.fees.Billing',
 							hideLabel : true,
 							items : [
 							{
-								xtype : 'textfield',
+								xtype : 'datefield',
 								name : 'hosp_date',
 								fieldLabel : i18n['hosp_date'],
 								labelAlign : 'right',
 								labelWidth : 80
 							},
 							{
-								xtype : 'textfield',
+								xtype : 'activeinsurancescombo',
 								name : 'sec_insurance',
 								fieldLabel : i18n['sec_insurance'],
 								labelAlign : 'right'
 							},
 							{
-								xtype : 'textfield',
+								xtype : 'mitos.providerscombo',
 								name : 'provider',
 								fieldLabel : i18n['provider'],
 								labelAlign : 'right',
@@ -312,7 +315,7 @@ Ext.define('App.view.fees.Billing',
 							hideLabel : true,
 							items : [
 							{
-								xtype : 'textfield',
+								xtype : 'mitos.authorizationscombo',
 								name : 'authorization',
 								fieldLabel : i18n['authorization'],
 								labelAlign : 'right',

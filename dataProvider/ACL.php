@@ -1,18 +1,23 @@
 <?php
-/**
- * Access Control List (ACL).
- *
- * This class will handle all the permissions
- * @author Ernesto J. Rodriguez (certun) <erodriguez@certun.com>
- * @version 1.0
- *
- * @package default
- *
- * Desc: Data Provider (Data Abstraction Layer)
- * This will manage all the data requierements for Access List.
- *
- */
+/*
+ GaiaEHR (Electronic Health Records)
+ ACL.php
+ Access Control List dataProvider
+ Copyright (C) 2012 Ernesto J. Rodriguez (Certun)
 
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 if (!isset($_SESSION))
 {
 	session_name('GaiaEHR');

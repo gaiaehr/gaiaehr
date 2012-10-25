@@ -143,7 +143,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                                             name      : 'race',
                                             action    : 'race',
                                             hideLabel : false,
-                                            width     : 225,
+                                            width     : 275,
                                             labelWidth: 70
 
                                         }
@@ -177,7 +177,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                                             name      : 'ethnicity',
                                             action    : 'ethnicity',
                                             hideLabel : false,
-                                            width     : 225,
+                                            width     : 275,
                                             labelWidth: 70
 
                                         }
@@ -378,18 +378,54 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                 me.goToReportPanelAndSetForm({
                     title: i18n['appointments'],
                     items : [
-	                    {
-                            xtype     : 'datefield',
-                            fieldLabel: i18n['from'],
-                            allowBlank: false,
-                            name      : 'from',
-                            format:'Y-m-d'
+                        {
+                            xtype   : 'fieldcontainer',
+                            layout  : 'hbox',
+                            defaults: { margin: '0 10 5 0' },
+                            items   : [
+                                {
+                                    xtype     : 'datefield',
+                                    fieldLabel: i18n['from'],
+                                    name      : 'from',
+                                    format:'Y-m-d',
+                                    width     : 275
+                                },
+                                {
+                                    xtype     : 'mitos.facilitiescombo',
+                                    fieldLabel: i18n['facility'],
+                                    name      : 'facility',
+                                    hideLabel : false,
+                                    width     : 300,
+                                    labelWidth: 70
+
+                                }
+                            ]
+
                         },
                         {
-                            xtype     : 'datefield',
-                            fieldLabel: i18n['to'],
-                            name      : 'to',
-                            format:'Y-m-d'
+                            xtype   : 'fieldcontainer',
+                            layout  : 'hbox',
+                            defaults: { margin: '0 10 5 0' },
+                            items   : [
+                                {
+                                    xtype     : 'datefield',
+                                    fieldLabel: i18n['to'],
+                                    name      : 'to',
+                                    format    :'Y-m-d',
+                                    width     : 275
+                                },
+                                {
+                                    xtype     : 'mitos.providerscombo',
+                                    fieldLabel: i18n['provider'],
+                                    name      : 'provider',
+                                    hideLabel : false,
+                                    width     : 300,
+                                    labelWidth: 70
+
+                                }
+
+                            ]
+
                         }
                     ],
                     fn:Appointments.CreateAppointmentsReport

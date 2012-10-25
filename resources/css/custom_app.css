@@ -7,6 +7,10 @@
 	font-family: 'OpenSans-CondLight';
 	src: url('../fonts/OpenSans-CondLight.ttf');
 }
+.autosave img {
+	background-color: #05c420 !important;
+	background-image: url("../images/tools-sprites-trans.png") !important;
+}
 .logout-warning-window {
 	background-color:red;
 	padding:10px;

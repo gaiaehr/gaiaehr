@@ -42,7 +42,6 @@ Ext.define('App.view.patient.encounter.HealthCareFinancingAdministrationOptions'
                     name:formFields.items[i].name,
                     type:'auto'
                 });
-                if(acl['edit_enc_hcfa']) me.setAutoSyncFormEvent(formFields.items[i]);
             }
             Ext.define('App.model.patient.HCFAOptions', {
                 extend:'Ext.data.Model',

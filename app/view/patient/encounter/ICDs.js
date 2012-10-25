@@ -75,7 +75,7 @@ Ext.define('App.view.patient.encounter.ICDs', {
     syncFormStore:function(){
         var form = this.up('form').getForm(),
             record = form.getRecord(),
-            store = record.store.sync();
+            store = record.store;
         record.set(form.getValues());
         store.sync();
     },

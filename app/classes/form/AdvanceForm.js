@@ -27,6 +27,10 @@ Ext.define('App.classes.form.AdvanceForm', {
      */
     autoSync: false,
     /**
+     * autoSyncTool
+     */
+    autoSyncTool:true,
+    /**
      * @cfg {int} syncDelay
      * Autosave de delay to sync the form store. Default to 3000
      */
@@ -48,6 +52,7 @@ Ext.define('App.classes.form.AdvanceForm', {
         this.formPanel.on('beforerender', this.setFieldEvent, this);
         this.form = this.formPanel.getForm();
         this.form.loadRecord = this.loadRecord;
+        if(this.autoSyncTool) this.addTool();
     },
     /**
      * Overrides the form basic loadRecord()
@@ -196,6 +201,28 @@ Ext.define('App.classes.form.AdvanceForm', {
             if(typeof fields[i].el != 'undefined' && fields[i].el.hasChanged){
                 me.setFieldDirty(fields[i], el, false, transition);
             }
+        }
+    },
+
+    addTool:function(){
+        var me = this,
+            bar = me.formPanel.getDockedItems()[0],
+            cls = me.formPanel.autoSync ? 'autosave' : '';
+        if(bar){
+            bar.insert(0, Ext.create('Ext.panel.Tool',{
+                type:'save',
+                cls:cls,
+                tooltip: 'Autosave',
+                handler: function(event, toolEl, panel, tool){
+                    me.formPanel.autoSync = !me.formPanel.autoSync;
+                    if(me.formPanel.autoSync){
+                        tool.addCls('autosave');
+                    }else{
+                        tool.removeCls('autosave');
+                    }
+                    app.msg('Sweet!','AutoSave is ' + (me.formPanel.autoSync ? 'On' : 'Off'));
+                }
+            }));
         }
     }
 });

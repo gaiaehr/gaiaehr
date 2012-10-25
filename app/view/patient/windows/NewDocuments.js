@@ -357,7 +357,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 															xtype     : 'datefield',
 															width     : 190,
 															labelWidth: 70,
-															format    : 'Y-m-d',
+															format: globals['date_display_format'],
 															name      : 'begin_date'
 
 														},
@@ -366,7 +366,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 															xtype     : 'datefield',
 															width     : 180,
 															labelWidth: 60,
-															format    : 'Y-m-d',
+															format: globals['date_display_format'],
 															name      : 'end_date'
 														}
 													]

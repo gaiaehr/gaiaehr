@@ -1,6 +1,6 @@
 /*
  GaiaEHR (Electronic Health Records)
- Billing.ejs.php
+ Billing.js
  Billing Forms
  Copyright (C) 2012 Emmanuel J. Carrasquillo
 
@@ -113,7 +113,7 @@ Ext.define('App.view.fees.Billing',
 					labelWidth : 35,
 					action : 'datefrom',
 					width : 150,
-					format: globals['date_display_format']
+					format : globals['date_display_format']
 				},
 				{
 					xtype : 'datefield',
@@ -122,7 +122,7 @@ Ext.define('App.view.fees.Billing',
 					action : 'dateto',
 					padding : '0 5 0 0',
 					width : 150,
-					format: globals['date_display_format']
+					format : globals['date_display_format']
 				}]
 			},
 			{
@@ -265,7 +265,7 @@ Ext.define('App.view.fees.Billing',
 								fieldLabel : i18n['service_date'],
 								labelAlign : 'right',
 								labelWidth : 80,
-								format: globals['date_display_format']
+								format : globals['date_display_format']
 							},
 							{
 								xtype : 'activeinsurancescombo',
@@ -300,7 +300,7 @@ Ext.define('App.view.fees.Billing',
 								fieldLabel : i18n['hosp_date'],
 								labelAlign : 'right',
 								labelWidth : 80,
-								format: globals['date_display_format']
+								format : globals['date_display_format']
 							},
 							{
 								xtype : 'activeinsurancescombo',

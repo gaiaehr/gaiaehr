@@ -38,13 +38,13 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                             xtype     : 'datefield',
                             fieldLabel: i18n['from'],
                             name      : 'from',
-                            format:'Y-m-d'
+                            format: globals['date_display_format']
                         },
                         {
                             xtype     : 'datefield',
                             fieldLabel: i18n['to'],
                             name      : 'to',
-                            format:'Y-m-d'
+                            format: globals['date_display_format']
                         }
                     ],
                     fn:ClientList.CreateClientList
@@ -85,7 +85,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                                     xtype     : 'datefield',
                                     fieldLabel: i18n['to'],
                                     name      : 'to',
-                                    format    :'Y-m-d',
+                                    format: globals['date_display_format'],
                                     width     : 275
                                 },
                                 {
@@ -194,7 +194,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                                         {
                                             xtype     : 'datefield',
                                             fieldLabel: i18n['date_to'],
-                                            format    :'Y-m-d',
+                                            format: globals['date_display_format'],
                                             name      : 'to'
                                         },
                                         {
@@ -271,11 +271,13 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                         {
                             xtype     : 'datefield',
                             fieldLabel: i18n['from'],
+                            format: globals['date_display_format'],
                             name      : 'from'
                         },
                         {
                             xtype     : 'datefield',
                             fieldLabel: i18n['to'],
+                            format: globals['date_display_format'],
                             name      : 'to'
                         }
                     ]
@@ -289,11 +291,13 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                         {
                             xtype     : 'datefield',
                             fieldLabel: i18n['from'],
+                            format: globals['date_display_format'],
                             name      : 'from'
                         },
                         {
                             xtype     : 'datefield',
                             fieldLabel: i18n['to'],
+                            format: globals['date_display_format'],
                             name      : 'to'
                         }
                     ]
@@ -307,11 +311,13 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                         {
                             xtype     : 'datefield',
                             fieldLabel: i18n['from'],
+                            format: globals['date_display_format'],
                             name      : 'from'
                         },
                         {
                             xtype     : 'datefield',
                             fieldLabel: i18n['to'],
+                            format: globals['date_display_format'],
                             name      : 'to'
                         }
                     ]
@@ -325,11 +331,13 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                         {
                             xtype     : 'datefield',
                             fieldLabel: i18n['from'],
+                            format: globals['date_display_format'],
                             name      : 'from'
                         },
                         {
                             xtype     : 'datefield',
                             fieldLabel: i18n['to'],
+                            format: globals['date_display_format'],
                             name      : 'to'
                         }
                     ],
@@ -387,7 +395,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                                     xtype     : 'datefield',
                                     fieldLabel: i18n['from'],
                                     name      : 'from',
-                                    format:'Y-m-d',
+                                    format: globals['date_display_format'],
                                     width     : 275
                                 },
                                 {
@@ -411,7 +419,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                                     xtype     : 'datefield',
                                     fieldLabel: i18n['to'],
                                     name      : 'to',
-                                    format    :'Y-m-d',
+                                    format: globals['date_display_format'],
                                     width     : 275
                                 },
                                 {

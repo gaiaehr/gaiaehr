@@ -111,12 +111,14 @@ Ext.define('App.view.fees.Payments',
 					{
 						fieldLabel : i18n['from'],
 						xtype : 'datefield',
+						format: globals['date_display_format'],
 						labelWidth : 95,
 						width : 230
 					},
 					{
 						fieldLabel : i18n['to'],
 						xtype : 'datefield',
+						format: globals['date_display_format'],
 						margin : '0 0 0 25',
 						labelWidth : 42,
 						width : 230
@@ -242,12 +244,14 @@ Ext.define('App.view.fees.Payments',
 					{
 						fieldLabel : i18n['from'],
 						xtype : 'datefield',
+						format: globals['date_display_format'],
 						labelWidth : 95,
 						width : 230
 					},
 					{
 						fieldLabel : i18n['to'],
 						xtype : 'datefield',
+						format: globals['date_display_format'],
 						margin : '0 0 0 25',
 						labelWidth : 42,
 						width : 230

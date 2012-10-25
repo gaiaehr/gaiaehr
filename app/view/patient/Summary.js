@@ -681,7 +681,7 @@ Ext.define('App.view.patient.Summary',
 								action : 'date',
 								width : 200,
 								labelWidth : 40,
-								format : 'Y-m-d',
+								format: globals['date_display_format'],
 								name : 'date'
 
 							},

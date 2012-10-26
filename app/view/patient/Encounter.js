@@ -990,8 +990,12 @@ Ext.define('App.view.patient.Encounter', {
                 }
                 if(me.MiscBillingOptionsPanel){
                     store = record[0].hcfaoptions();
-                    store.on('write',me.updateProgressNote, me);
+                    //store.on('write',me.updateProgressNote, me);
                     me.MiscBillingOptionsPanel.getForm().loadRecord(store.getAt(0));
+                    say('MiscBillingOptionsPanel');
+                    say(store);
+                    say(me.MiscBillingOptionsPanel.getForm());
+                    say(store.getAt(0));
                 }
                 //me.speechDicPanel.getForm().loadRecord(record[0].speechdictation().getAt(0));
                 me.encounterEventHistoryStore.load({params:{eid:eid}});

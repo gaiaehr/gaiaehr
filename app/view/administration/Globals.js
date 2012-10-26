@@ -51,7 +51,7 @@ Ext.define('App.view.administration.Globals',
 			},
 			{
 				name : 'gbl_nav_area_width',
-				type : 'string'
+				type : 'int'
 			},
 			{
 				name : 'GaiaEHR_name',

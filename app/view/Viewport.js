@@ -33,6 +33,7 @@ Ext.define('App.view.Viewport',
 	{
 		Ext.tip.QuickTipManager.init();
 		var me = this;
+		
 		me.lastCardNode = null;
 		me.currCardCmp = null;
 		me.fullMode = window.innerWidth >= me.minWidthToFullMode;
@@ -368,7 +369,7 @@ Ext.define('App.view.Viewport',
 			stateId : 'navColumn',
 			layout : 'border',
 			region : 'west',
-			width : 200,
+			width : parseFloat( globals['gbl_nav_area_width'] ),
 			split : true,
 			collapsible : true,
 			collapsed : false,
@@ -381,7 +382,7 @@ Ext.define('App.view.Viewport',
 				rootVisible : false,
 				border : false,
 				store : me.storeTree,
-				width : 200,
+				width : parseFloat( globals['gbl_nav_area_width'] ),
 				plugins : [
 				{
 					ptype : 'nodedisabled'
@@ -1443,4 +1444,4 @@ Ext.define('App.view.Viewport',
 			icon : icon
 		});
 	}
-}); 
+});

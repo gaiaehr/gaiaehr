@@ -10,8 +10,7 @@ $LANG = array(
 	'nl_All'								=> 'Hollandsk',
 	'i18nExtFile'							=> 'ext-lang-nl.js',
 	// End of the items
-	'currency'								=> '$',
-    'dashboard'         					=> 'Dashboard',
+	'dashboard'         					=> 'Dashboard',
     'calendar'          					=> 'Kalender',
     'messages'          					=> 'Berichten',
     'patient_search'    					=> 'Patiënten zoeken',

@@ -24,7 +24,7 @@ Ext.define('App.view.Viewport',
 	user : window.user, // array defined on _app.php
 	version : window.version, // string defined on _app.php
 	minWidthToFullMode : 1585, // full mode = nav expanded
-	currency : '$', // currency used
+	currency : globals['gbl_currency_symbol'], // currency used
 	activityMonitorInterval : 60, // in seconds - interval to check for mouse and keyboard activity
 	activityMonitorMaxInactive : 20, // in minutes - Maximum time application can be inactive (no mouse or keyboard inputt)
 	cronTaskInterval : 20, // in seconds - interval to run me.cronTask (check PHP session, refresh Patient Pool Areas, and PHP Cron Job)

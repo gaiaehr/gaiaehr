@@ -10,7 +10,6 @@ $LANG = array(
 	'es_PR'									=> 'Español (Puerto Rico)',
 	'i18nExtFile'							=> 'ext-lang-es.js',
 	// End of the items
-	'currency'								=> '$',
     'dashboard'         					=> 'Tablero',
     'calendar'          					=> 'Calendario',
     'messages'          					=> 'Mensajes',

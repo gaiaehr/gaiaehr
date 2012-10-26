@@ -10,7 +10,6 @@ $LANG = array(
 	'en_GB'									=> 'English (United Kingdom)',
 	'i18nExtFile'							=> 'ext-lang-en_GB.js',
 	// End of the items
-	'currency'								=> '£',
     'dashboard'         					=> 'Dashboard',
     'calendar'          					=> 'Calendar',
     'messages'          					=> 'Messages',

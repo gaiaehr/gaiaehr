@@ -1092,6 +1092,8 @@ $LANG = array(
 	'ethnicity'               	            => 'Ethnicity',
 	'problem_dx'               	            => 'Problem DX',
 	'search_for_a_patient'         	        => 'Search for a Patient',
-	'manufacturer'   					    => 'Manufacturer'
+	'manufacturer'   					    => 'Manufacturer',
+	'autosave_forms'   					    => 'Autosave Forms',
+	'autosave'   					        => 'Autosave'
 );
 ?>

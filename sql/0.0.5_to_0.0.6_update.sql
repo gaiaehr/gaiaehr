@@ -82,7 +82,7 @@ INSERT INTO `globals` (`gl_name`, `gl_index`, `gl_value`) VALUES
 ('is_client_ssl_enabled', 0, '0'),
 ('language_default', 0, 'en_US'),
 ('language_menu_showall', 0, '0'),
-('main_navigation_menu_left', 0, 'east'),
+('main_navigation_menu_left', 0, 'west'),
 ('MedicareReferrerIsRenderer', 0, '0'),
 ('mitosehr_name', 0, 'MitosEHR :: DEMO'),
 ('mysql_bin_dir', 0, 'C:/xampp/mysql/bin'),
@@ -132,4 +132,5 @@ INSERT INTO `globals` (`gl_name`, `gl_index`, `gl_value`) VALUES
 ('translate_layout', 0, '0'),
 ('translate_lists', 0, '0'),
 ('units_of_measurement', 0, '1'),
-('use_charges_panel', 0, '0');
+('use_charges_panel', 0, '0'),
+('autosave', 0, '1');

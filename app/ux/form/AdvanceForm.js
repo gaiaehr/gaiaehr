@@ -22,6 +22,11 @@ Ext.define('App.ux.form.AdvanceForm', {
     extend: 'Ext.AbstractPlugin',
     alias: 'plugin.advanceform',
     /**
+     * @cfg {Boolean} syncAcl
+     * Sync access control, true to allow the store to sync.
+     */
+    syncAcl: true,
+    /**
      * @cfg {Boolean} autoSync
      * True to autosave the form every time values is change, Default to false.
      */
@@ -120,7 +125,7 @@ Ext.define('App.ux.form.AdvanceForm', {
             }else{
                 me.setFieldDirty(field, el, false, me.transition);
             }
-            if(this.formPanel.autoSync){
+            if(this.formPanel.autoSync && this.syncAcl){
                 if(typeof me.bufferSyncFormFn == 'undefined'){
                     me.bufferSyncFormFn = Ext.Function.createBuffered(function(){
                         store.sync();

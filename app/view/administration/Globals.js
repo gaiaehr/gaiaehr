@@ -444,6 +444,10 @@ Ext.define('App.view.administration.Globals',
 			{
 				name : 'scanner_output_directory',
 				type : 'auto'
+			},
+			{
+				name : 'autosave',
+				type : 'auto'
 			}]
 		});
 
@@ -867,6 +871,10 @@ Ext.define('App.view.administration.Globals',
 					title : 'Features',
 					defaultType : 'mitos.checkbox',
 					items : [
+                        {
+                            fieldLabel : i18n['autosave_forms'],
+                            name : 'autosave'
+                        },
                         {
                             fieldLabel : i18n['disable_chart_tracker'],
                             name : 'disable_charts'

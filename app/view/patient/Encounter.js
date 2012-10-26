@@ -430,7 +430,11 @@ Ext.define('App.view.patient.Encounter', {
                 fieldDefaults:{
                     msgTarget:'side'
                 },
-                plugins: { ptype:'advanceform', autoSync:acl['edit_encounters'] },
+                plugins: {
+                    ptype:'advanceform',
+                    autoSync:globals['autosave'],
+                    syncAcl:acl['edit_encounters']
+                },
                 buttons:[
                     {
                         text:i18n['save'],
@@ -453,7 +457,11 @@ Ext.define('App.view.patient.Encounter', {
                 fieldDefaults:{
                     msgTarget:'side'
                 },
-                plugins: { ptype:'advanceform', autoSync:acl['edit_encounters'] },
+                plugins: {
+                    ptype:'advanceform',
+                    autoSync:globals['autosave'],
+                    syncAcl:acl['edit_encounters']
+                },
                 buttons:[
                     {
                         text:i18n['save'],
@@ -476,7 +484,11 @@ Ext.define('App.view.patient.Encounter', {
                 fieldDefaults:{
                     msgTarget:'side'
                 },
-                plugins: { ptype:'advanceform', autoSync:acl['edit_encounters'] },
+                plugins: {
+                    ptype:'advanceform',
+                    autoSync:globals['autosave'],
+                    syncAcl:acl['edit_encounters']
+                },
                 buttons:[
                     {
                         text:i18n['save'],
@@ -525,7 +537,11 @@ Ext.define('App.view.patient.Encounter', {
             me.MiscBillingOptionsPanel = me.administrativeTabPanel.add(Ext.create('App.view.patient.encounter.HealthCareFinancingAdministrationOptions', {
                 autoScroll:true,
                 title:i18n['misc_billing_options_HCFA_1500'],
-                plugins: { ptype:'advanceform', autoSync:acl['edit_enc_hcfa'] }
+                plugins: {
+                    ptype:'advanceform',
+                    autoSync:globals['autosave'],
+                    syncAcl:acl['edit_enc_hcfa']
+                }
             }));
         }
         if(acl['access_enc_cpt']){

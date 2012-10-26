@@ -128,40 +128,52 @@ Ext.define('App.view.fees.Billing',
 			{
 				xtype : 'fieldcontainer',
 				items : [
-				{
-					xtype : 'mitos.providerscombo',
-					labelWidth : 60,
-					typeAhead : true,
-					padding : '0 5 0 5',
+                    {
+                        xtype : 'mitos.providerscombo',
+                        labelWidth : 60,
+                        typeAhead : true,
+                        padding : '0 5 0 5',
+                        fieldLabel : i18n['provider'],
+                        defaultValue : 'All'
 
-					fieldLabel : i18n['provider'],
-					defaultValue : 'All'
+                    },
+                    {
+                        xtype : 'mitos.insurancepayertypecombo',
+                        labelWidth : 60,
+                        padding : '0 5 0 5',
+                        fieldLabel : i18n['insurance'],
+                        defaultValue : 'All'
 
-				},
-				{
-					xtype : 'mitos.insurancepayertypecombo',
-					labelWidth : 60,
-					padding : '0 5 0 5',
-					fieldLabel : i18n['insurance'],
-					defaultValue : 'All'
-
-				}]
+                    }
+                ]
 			}, '-',
 			{
 				xtype : 'fieldcontainer',
+                layout:'vbox',
 				items : [
-				{
-					xtype : 'button',
-					text : i18n['generate_x12']
-				},
-				{
-					xtype : 'button',
-					text : i18n['generate_cms1500_pdf']
-				},
-				{
-					xtype : 'button',
-					text : i18n['generate_cms1500_text']
-				}]
+                    {
+                        xtype : 'button',
+                        width:170,
+                        margin :'0 0 3 0',
+                        text : i18n['generate_cms1500_pdf']
+                    },
+                    {
+                        xtype : 'button',
+                        width:170,
+                        margin :'0 0 3 0',
+                        text : i18n['generate_cms1500_text']
+                    }
+                ]
+			},'-',
+			{
+				xtype : 'fieldcontainer',
+                layout:'vbox',
+				items : [
+                    {
+                        xtype : 'button',
+                        text : i18n['generate_x12']
+                    }
+                ]
 			}, '->',
 			{
 				xtype : 'tbtext',

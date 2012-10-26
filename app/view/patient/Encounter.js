@@ -537,11 +537,26 @@ Ext.define('App.view.patient.Encounter', {
             me.MiscBillingOptionsPanel = me.administrativeTabPanel.add(Ext.create('App.view.patient.encounter.HealthCareFinancingAdministrationOptions', {
                 autoScroll:true,
                 title:i18n['misc_billing_options_HCFA_1500'],
+                frame:true,
+                bodyPadding:5,
+                bodyStyle:'background-color:white',
+                fieldDefaults:{
+                    msgTarget:'side'
+                },
                 plugins: {
                     ptype:'advanceform',
                     autoSync:globals['autosave'],
                     syncAcl:acl['edit_enc_hcfa']
-                }
+                },
+                buttons:[
+                    {
+                        text:i18n['save'],
+                        iconCls:'save',
+                        action:'soap',
+                        scope:me,
+                        handler:me.onEncounterUpdate
+                    }
+                ]
             }));
         }
         if(acl['access_enc_cpt']){
@@ -781,13 +796,11 @@ Ext.define('App.view.patient.Encounter', {
      * @param SaveBtn
      */
     onEncounterUpdate:function(SaveBtn){
-        var me = this, panel = me.centerPanel.getActiveTab().getActiveTab(), form;
+        var me = this, form;
         if(SaveBtn.action == "encounter"){
             form = me.newEncounterWindow.down('form').getForm();
-        }else if(SaveBtn.action == 'vitals'){
-            form = panel.down('form').getForm();
         }else{
-            form = panel.getForm();
+            form = SaveBtn.up('form').getForm();
         }
         if(form.isValid()){
             var values = form.getValues(), store, record, storeIndex;
@@ -855,19 +868,9 @@ Ext.define('App.view.patient.Encounter', {
                 }
             }else{
                 if(acl['edit_encounters']){
-                    if(SaveBtn.action == 'reviewOfSystems'){
-                        store = me.encounterStore.getAt(0).reviewofsystems();
-                        record = store.getAt(0);
-                    }else if(SaveBtn.action == 'reviewOfSystemsChecks'){
-                        store = me.encounterStore.getAt(0).reviewofsystemschecks();
-                        record = store.getAt(0);
-                    }else if(SaveBtn.action == 'soap'){
-                        store = me.encounterStore.getAt(0).soap();
-                        record = store.getAt(0);
-                    }else if(SaveBtn.action == 'speechDictation'){
-                        store = me.encounterStore.getAt(0).speechdictation();
-                        record = store.getAt(0);
-                    }
+                    record = form.getRecord();
+                    store = record.store;
+
                     values = me.addDefaultData(values);
                     record.set(values);
                     store.sync({

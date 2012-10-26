@@ -11,7 +11,7 @@
 //******************************************************************************
 
 Ext.define('Modules.reportcenter.view.ReportCenter', {
-        extend   : 'App.classes.RenderPanel',
+        extend   : 'App.ux.RenderPanel',
         id       : 'panelReportCenter',
         pageTitle: i18n['report_center'],
 

@@ -19,7 +19,7 @@
  */
 Ext.define('App.view.administration.ExternalDataLoads',
 {
-	extend : 'App.classes.RenderPanel',
+	extend : 'App.ux.RenderPanel',
 	id : 'panelExternalDataLoads',
 	pageTitle : i18n['external_data_loads'],
 	/**

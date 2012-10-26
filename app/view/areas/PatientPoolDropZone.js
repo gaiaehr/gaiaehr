@@ -8,7 +8,7 @@
 Ext.define('App.view.areas.PatientPoolDropZone',
 {
 	id : 'panelPoolArea',
-	extend : 'App.classes.RenderPanel',
+	extend : 'App.ux.RenderPanel',
 	pageTitle : i18n['patient_pool_areas'],
 	initComponent : function()
 	{

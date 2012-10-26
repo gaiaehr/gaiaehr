@@ -14,10 +14,10 @@
  * Modified : Ernesto J Rodriguez (Certun) 10/25/2011
  */
 Ext.define('App.view.patient.NewPatient', {
-	extend       : 'App.classes.RenderPanel',
+	extend       : 'App.ux.RenderPanel',
 	id           : 'panelNewPatient',
 	pageTitle    : i18n['patient_entry_form'],
-	uses         : [ 'App.classes.PhotoIdWindow' ],
+	uses         : [ 'App.ux.PhotoIdWindow' ],
 	initComponent: function() {
 
 		var me = this;

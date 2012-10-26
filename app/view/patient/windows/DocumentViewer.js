@@ -10,7 +10,7 @@
  * @namespace Immunization.addPatientImmunization
  */
 Ext.define('App.view.patient.windows.DocumentViewer', {
-	extend     : 'App.classes.window.Window',
+	extend     : 'App.ux.window.Window',
 	title      : i18n['documents_viewer_window'],
 	layout     : 'fit',
 	height     : 650,

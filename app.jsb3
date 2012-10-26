@@ -14,23 +14,23 @@
 					"name": "ExtensibleAll.js"
 				},
 				{
-					"path": "app/classes/ux/",
+					"path": "app/ux/ux/",
 					"name": "LiveSearchGridPanel.js"
 				},
 				{
-					"path": "app/classes/ux/",
+					"path": "app/ux/ux/",
 					"name": "SlidingPager.js"
 				},
 				{
-					"path": "app/classes/ux/",
+					"path": "app/ux/ux/",
 					"name": "PreviewPlugin.js"
 				},
 				{
-					"path": "app/classes/grid/",
+					"path": "app/ux/grid/",
 					"name": "Printer.js"
 				},
 				{
-					"path": "app/classes/",
+					"path": "app/ux/",
 					"name": "RenderPanel.js"
 				},
 				{
@@ -526,47 +526,47 @@
 					"name": "PoolArea.js"
 				},
 				{
-					"path": "app/classes/",
+					"path": "app/ux/",
 					"name": "ActivityMonitor.js"
 				},
 				{
-					"path": "app/classes/",
+					"path": "app/ux/",
 					"name": "AbstractPanel.js"
 				},
 				{
-					"path": "app/classes/",
+					"path": "app/ux/",
 					"name": "LiveCPTSearch.js"
 				},
 				{
-					"path": "app/classes/",
+					"path": "app/ux/",
 					"name": "LiveImmunizationSearch.js"
 				},
 				{
-					"path": "app/classes/",
+					"path": "app/ux/",
 					"name": "LiveMedicationSearch.js"
 				},
 				{
-					"path": "app/classes/",
+					"path": "app/ux/",
 					"name": "LiveLabsSearch.js"
 				},
 				{
-					"path": "app/classes/",
+					"path": "app/ux/",
 					"name": "LivePatientSearch.js"
 				},
 				{
-					"path": "app/classes/",
+					"path": "app/ux/",
 					"name": "LiveSurgeriesSearch.js"
 				},
 				{
-					"path": "app/classes/",
+					"path": "app/ux/",
 					"name": "ManagedIframe.js"
 				},
 				{
-					"path": "app/classes/",
+					"path": "app/ux/",
 					"name": "NodeDisabled.js"
 				},
 				{
-					"path": "app/classes/",
+					"path": "app/ux/",
 					"name": "PhotoIdWindow.js"
 				},
 				{
@@ -582,295 +582,295 @@
 					"name": "DragZone.js"
 				},
 				{
-					"path": "app/classes/form/fields/",
+					"path": "app/ux/form/fields/",
 					"name": "Help.js"
 				},
 				{
-					"path": "app/classes/form/fields/",
+					"path": "app/ux/form/fields/",
 					"name": "Checkbox.js"
 				},
 				{
-					"path": "app/classes/form/fields/",
+					"path": "app/ux/form/fields/",
 					"name": "Currency.js"
 				},
 				{
-					"path": "app/classes/form/fields/",
+					"path": "app/ux/form/fields/",
 					"name": "DateTime.js"
 				},
 				{
-					"path": "app/classes/form/",
+					"path": "app/ux/form/",
 					"name": "Panel.js"
 				},
 				{
-					"path": "app/classes/form/",
+					"path": "app/ux/form/",
 					"name": "AdvanceForm.js"
 				},
 				{
-					"path": "app/classes/grid/",
+					"path": "app/ux/grid/",
 					"name": "EventHistory.js"
 				},
 				{
-					"path": "app/classes/grid/",
+					"path": "app/ux/grid/",
 					"name": "RowFormEditing.js"
 				},
 				{
-					"path": "app/classes/grid/",
+					"path": "app/ux/grid/",
 					"name": "RowFormEditor.js"
 				},
 				{
-					"path": "app/classes/combo/",
+					"path": "app/ux/combo/",
 					"name": "ActiveFacilities.js"
 				},
 				{
-					"path": "app/classes/combo/",
+					"path": "app/ux/combo/",
 					"name": "ActiveInsurances.js"
 				},
 				{
-					"path": "app/classes/combo/",
+					"path": "app/ux/combo/",
 					"name": "Allergies.js"
 				},
 				{
-					"path": "app/classes/combo/",
+					"path": "app/ux/combo/",
 					"name": "AllergiesAbdominal.js"
 				},
 				{
-					"path": "app/classes/combo/",
+					"path": "app/ux/combo/",
 					"name": "AllergiesLocal.js"
 				},
 				{
-					"path": "app/classes/combo/",
+					"path": "app/ux/combo/",
 					"name": "AllergiesLocation.js"
 				},
 				{
-					"path": "app/classes/combo/",
+					"path": "app/ux/combo/",
 					"name": "AllergiesSeverity.js"
 				},
 				{
-					"path": "app/classes/combo/",
+					"path": "app/ux/combo/",
 					"name": "AllergiesSkin.js"
 				},
 				{
-					"path": "app/classes/combo/",
+					"path": "app/ux/combo/",
 					"name": "AllergiesSystemic.js"
 				},
 				{
-					"path": "app/classes/combo/",
+					"path": "app/ux/combo/",
 					"name": "AllergiesTypes.js"
 				},
 				{
-					"path": "app/classes/combo/",
+					"path": "app/ux/combo/",
 					"name": "Authorizations.js"
 				},
 				{
-					"path": "app/classes/combo/",
+					"path": "app/ux/combo/",
 					"name": "BillingFacilities.js"
 				},
 				{
-					"path": "app/classes/combo/",
+					"path": "app/ux/combo/",
 					"name": "CalendarCategories.js"
 				},
 				{
-					"path": "app/classes/combo/",
+					"path": "app/ux/combo/",
 					"name": "CalendarStatus.js"
 				},
 				{
-					"path": "app/classes/combo/",
+					"path": "app/ux/combo/",
 					"name": "CodesTypes.js"
 				},
 				{
-					"path": "app/classes/combo/",
+					"path": "app/ux/combo/",
 					"name": "CVXManufacturers.js"
 				},
 				{
-					"path": "app/classes/combo/",
+					"path": "app/ux/combo/",
 					"name": "CVXManufacturersForCvx.js"
 				},
 				{
-					"path": "app/classes/combo/",
+					"path": "app/ux/combo/",
 					"name": "EncounterPriority.js"
 				},
 				{
-					"path": "app/classes/combo/",
+					"path": "app/ux/combo/",
 					"name": "Ethnicity.js"
 				},
 				{
-					"path": "app/classes/combo/",
+					"path": "app/ux/combo/",
 					"name": "Facilities.js"
 				},
 				{
-					"path": "app/classes/combo/",
+					"path": "app/ux/combo/",
 					"name": "FloorPlanAreas.js"
 				},
 				{
-					"path": "app/classes/combo/",
+					"path": "app/ux/combo/",
 					"name": "FollowUp.js"
 				},
 				{
-					"path": "app/classes/combo/",
+					"path": "app/ux/combo/",
 					"name": "InsurancePayerType.js"
 				},
 				{
-					"path": "app/classes/combo/",
+					"path": "app/ux/combo/",
 					"name": "LabObservations.js"
 				},
 				{
-					"path": "app/classes/combo/",
+					"path": "app/ux/combo/",
 					"name": "LabsTypes.js"
 				},
 				{
-					"path": "app/classes/combo/",
+					"path": "app/ux/combo/",
 					"name": "Languages.js"
 				},
 				{
-					"path": "app/classes/combo/",
+					"path": "app/ux/combo/",
 					"name": "Lists.js"
 				},
 				{
-					"path": "app/classes/combo/",
+					"path": "app/ux/combo/",
 					"name": "MedicalIssues.js"
 				},
 				{
-					"path": "app/classes/combo/",
+					"path": "app/ux/combo/",
 					"name": "Medications.js"
 				},
 				{
-					"path": "app/classes/combo/",
+					"path": "app/ux/combo/",
 					"name": "MsgNoteType.js"
 				},
 				{
-					"path": "app/classes/combo/",
+					"path": "app/ux/combo/",
 					"name": "MsgStatus.js"
 				},
 				{
-					"path": "app/classes/combo/",
+					"path": "app/ux/combo/",
 					"name": "Occurrence.js"
 				},
 				{
-					"path": "app/classes/combo/",
+					"path": "app/ux/combo/",
 					"name": "Outcome.js"
 				},
 				{
-					"path": "app/classes/combo/",
+					"path": "app/ux/combo/",
 					"name": "Outcome2.js"
 				},
 				{
-					"path": "app/classes/combo/",
+					"path": "app/ux/combo/",
 					"name": "PayingEntity.js"
 				},
 				{
-					"path": "app/classes/combo/",
+					"path": "app/ux/combo/",
 					"name": "PaymentCategory.js"
 				},
 				{
-					"path": "app/classes/combo/",
+					"path": "app/ux/combo/",
 					"name": "PaymentMethod.js"
 				},
 				{
-					"path": "app/classes/combo/",
+					"path": "app/ux/combo/",
 					"name": "Pharmacies.js"
 				},
 				{
-					"path": "app/classes/combo/",
+					"path": "app/ux/combo/",
 					"name": "posCodes.js"
 				},
 				{
-					"path": "app/classes/combo/",
+					"path": "app/ux/combo/",
 					"name": "PrescriptionHowTo.js"
 				},
 				{
-					"path": "app/classes/combo/",
+					"path": "app/ux/combo/",
 					"name": "PrescriptionOften.js"
 				},
 				{
-					"path": "app/classes/combo/",
+					"path": "app/ux/combo/",
 					"name": "PrescriptionTypes.js"
 				},
 				{
-					"path": "app/classes/combo/",
+					"path": "app/ux/combo/",
 					"name": "PrescriptionWhen.js"
 				},
 				{
-					"path": "app/classes/combo/",
+					"path": "app/ux/combo/",
 					"name": "PreventiveCareTypes.js"
 				},
 				{
-					"path": "app/classes/combo/",
+					"path": "app/ux/combo/",
 					"name": "ProceduresBodySites.js"
 				},
 				{
-					"path": "app/classes/combo/",
+					"path": "app/ux/combo/",
 					"name": "Providers.js"
 				},
 				{
-					"path": "app/classes/combo/",
+					"path": "app/ux/combo/",
 					"name": "Race.js"
 				},
 				{
-					"path": "app/classes/combo/",
+					"path": "app/ux/combo/",
 					"name": "Roles.js"
 				},
 				{
-					"path": "app/classes/combo/",
+					"path": "app/ux/combo/",
 					"name": "Sex.js"
 				},
 				{
-					"path": "app/classes/combo/",
+					"path": "app/ux/combo/",
 					"name": "SmokingStatus.js"
 				},
 				{
-					"path": "app/classes/combo/",
+					"path": "app/ux/combo/",
 					"name": "Surgery.js"
 				},
 				{
-					"path": "app/classes/combo/",
+					"path": "app/ux/combo/",
 					"name": "TaxId.js"
 				},
 				{
-					"path": "app/classes/combo/",
+					"path": "app/ux/combo/",
 					"name": "Templates.js"
 				},
 				{
-					"path": "app/classes/combo/",
+					"path": "app/ux/combo/",
 					"name": "Themes.js"
 				},
 				{
-					"path": "app/classes/combo/",
+					"path": "app/ux/combo/",
 					"name": "Time.js"
 				},
 				{
-					"path": "app/classes/combo/",
+					"path": "app/ux/combo/",
 					"name": "Titles.js"
 				},
 				{
-					"path": "app/classes/combo/",
+					"path": "app/ux/combo/",
 					"name": "TransmitMethod.js"
 				},
 				{
-					"path": "app/classes/combo/",
+					"path": "app/ux/combo/",
 					"name": "Types.js"
 				},
 				{
-					"path": "app/classes/combo/",
+					"path": "app/ux/combo/",
 					"name": "Units.js"
 				},
 				{
-					"path": "app/classes/combo/",
+					"path": "app/ux/combo/",
 					"name": "Users.js"
 				},
 				{
-					"path": "app/classes/combo/",
+					"path": "app/ux/combo/",
 					"name": "YesNoNa.js"
 				},
 				{
-					"path": "app/classes/combo/",
+					"path": "app/ux/combo/",
 					"name": "YesNo.js"
 				},
 				{
-					"path": "app/classes/window/",
+					"path": "app/ux/window/",
 					"name": "Window.js"
 				},
 				{
-					"path": "app/classes/",
+					"path": "app/ux/",
 					"name": "NodeDisabled.js"
 				},
 				{

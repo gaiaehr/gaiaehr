@@ -18,10 +18,10 @@
  */
 Ext.define('App.view.administration.Users',
 {
-	extend : 'App.classes.RenderPanel',
+	extend : 'App.ux.RenderPanel',
 	id : 'panelUsers',
 	pageTitle : i18n['users'],
-	uses : ['App.classes.GridPanel'],
+	uses : ['App.ux.GridPanel'],
 	initComponent : function()
 	{
 
@@ -171,7 +171,7 @@ Ext.define('App.view.administration.Users',
 		// *************************************************************************************
 		// Create the GridPanel
 		// *************************************************************************************
-		me.userGrid = Ext.create('App.classes.GridPanel',
+		me.userGrid = Ext.create('App.ux.GridPanel',
 		{
 			store : me.userStore,
 			columns : [
@@ -246,7 +246,7 @@ Ext.define('App.view.administration.Users',
 		// *************************************************************************************
 		// Window User Form
 		// *************************************************************************************
-		me.win = Ext.create('App.classes.window.Window',
+		me.win = Ext.create('App.ux.window.Window',
 		{
 			width : 600,
 			items : [

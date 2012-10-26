@@ -8,7 +8,7 @@
 Ext.define('App.view.areas.FloorPlan',
 {
 	id : 'panelAreaFloorPlan',
-	extend : 'App.classes.RenderPanel',
+	extend : 'App.ux.RenderPanel',
 	pageTitle : i18n['area_floor_plan'],
 	floorPlanId : null,
 	initComponent : function()

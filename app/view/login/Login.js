@@ -20,7 +20,7 @@
 Ext.define('App.view.login.Login',
 {
 	extend : 'Ext.Viewport',
-	requires : ['App.classes.combo.Languages'],
+	requires : ['App.ux.combo.Languages'],
 	initComponent : function()
 	{
 		var me = this;

@@ -18,10 +18,10 @@
  */
 Ext.define('App.view.administration.Facilities',
 {
-	extend : 'App.classes.RenderPanel',
+	extend : 'App.ux.RenderPanel',
 	id : 'panelFacilities',
 	pageTitle : i18n['facilities_active'],
-	uses : ['App.classes.GridPanel', 'App.classes.window.Window'],
+	uses : ['App.ux.GridPanel', 'App.ux.window.Window'],
 	initComponent : function()
 	{
 		var me = this;
@@ -158,7 +158,7 @@ Ext.define('App.view.administration.Facilities',
 				sortable : true,
 				dataIndex : 'city'
 			}],
-			plugins : Ext.create('App.classes.grid.RowFormEditing',
+			plugins : Ext.create('App.ux.grid.RowFormEditing',
 			{
 				autoCancel : false,
 				errorSummary : false,

@@ -19,11 +19,11 @@
  */
 Ext.define('App.view.administration.Documents',
 {
-	extend : 'App.classes.RenderPanel',
+	extend : 'App.ux.RenderPanel',
 	id : 'panelDocuments',
 	pageTitle : i18n['document_template_editor'],
 	pageLayout : 'border',
-	uses : ['App.classes.GridPanel'],
+	uses : ['App.ux.GridPanel'],
 	initComponent : function()
 	{
 
@@ -630,7 +630,7 @@ Ext.define('App.view.administration.Documents',
 			}]
 		});
 
-		me.TokensGrid = Ext.create('App.classes.GridPanel',
+		me.TokensGrid = Ext.create('App.ux.GridPanel',
 		{
 			title : i18n['available_tokens'],
 			region : 'east',

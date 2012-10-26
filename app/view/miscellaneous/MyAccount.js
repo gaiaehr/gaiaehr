@@ -7,10 +7,10 @@
  */
 Ext.define('App.view.miscellaneous.MyAccount',
 {
-	extend : 'App.classes.RenderPanel',
+	extend : 'App.ux.RenderPanel',
 	id : 'panelMyAccount',
 	pageTitle : i18n['my_account'],
-	uses : ['App.classes.combo.Titles', 'App.classes.window.Window', 'App.classes.combo.Facilities', 'App.classes.combo.Authorizations'],
+	uses : ['App.ux.combo.Titles', 'App.ux.window.Window', 'App.ux.combo.Facilities', 'App.ux.combo.Authorizations'],
 	initComponent : function()
 	{
 		var me = this;
@@ -107,7 +107,7 @@ Ext.define('App.view.miscellaneous.MyAccount',
 		// User Settings Form
 		// Add or Edit purpose
 		// *************************************************************************************
-		me.myAccountForm = Ext.create('App.classes.form.Panel',
+		me.myAccountForm = Ext.create('App.ux.form.Panel',
 		{
 			cls : 'form-white-bg',
 			frame : true,
@@ -278,7 +278,7 @@ Ext.define('App.view.miscellaneous.MyAccount',
 						width : 110,
 						xtype : 'displayfield',
 						value : 'Default Facility: '
-					}, Ext.create('App.classes.combo.Facilities',
+					}, Ext.create('App.ux.combo.Facilities',
 					{
 						width : 170
 					}),
@@ -286,7 +286,7 @@ Ext.define('App.view.miscellaneous.MyAccount',
 						width : 100,
 						xtype : 'displayfield',
 						value : 'Authorizations: '
-					}, Ext.create('App.classes.combo.Authorizations',
+					}, Ext.create('App.ux.combo.Authorizations',
 					{
 						width : 175
 					})]
@@ -302,7 +302,7 @@ Ext.define('App.view.miscellaneous.MyAccount',
 						width : 110,
 						xtype : 'displayfield',
 						value : 'Access Control: '
-					}, Ext.create('App.classes.combo.Roles',
+					}, Ext.create('App.ux.combo.Roles',
 					{
 						width : 170
 					}),
@@ -433,7 +433,7 @@ Ext.define('App.view.miscellaneous.MyAccount',
 			}
 		});
 
-		me.win = Ext.create('App.classes.window.Window',
+		me.win = Ext.create('App.ux.window.Window',
 		{
 			width : 420,
 			title : i18n['change_you_password'],

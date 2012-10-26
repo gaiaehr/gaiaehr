@@ -18,10 +18,10 @@
  */
 Ext.define('App.view.administration.PreventiveCare',
 {
-	extend : 'App.classes.RenderPanel',
+	extend : 'App.ux.RenderPanel',
 	id : 'panelPreventiveCare',
 	pageTitle : i18n['preventive_care'],
-	uses : ['App.classes.GridPanel', 'App.classes.combo.CodesTypes', 'App.classes.combo.Titles'],
+	uses : ['App.ux.GridPanel', 'App.ux.combo.CodesTypes', 'App.ux.combo.Titles'],
 	initComponent : function()
 	{
 		var me = this;
@@ -60,7 +60,7 @@ Ext.define('App.view.administration.PreventiveCare',
 		}
 
 
-		me.guidelineGrid = Ext.create('App.classes.GridPanel',
+		me.guidelineGrid = Ext.create('App.ux.GridPanel',
 		{
 			region : 'center',
 			store : me.store,
@@ -113,7 +113,7 @@ Ext.define('App.view.administration.PreventiveCare',
 				sortable : true,
 				dataIndex : 'frequency'
 			}],
-			plugins : Ext.create('App.classes.grid.RowFormEditing',
+			plugins : Ext.create('App.ux.grid.RowFormEditing',
 			{
 				autoCancel : false,
 				errorSummary : false,

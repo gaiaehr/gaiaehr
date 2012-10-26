@@ -10,7 +10,7 @@
  * @namespace Immunization.addPatientImmunization
  */
 Ext.define('App.view.patient.windows.Medical', {
-    extend:'App.classes.window.Window',
+    extend:'App.ux.window.Window',
     title:i18n['medical_window'],
     id:'MedicalWindow',
     layout:'card',
@@ -113,7 +113,7 @@ Ext.define('App.view.patient.windows.Medical', {
                         dataIndex:'administered_by'
                     }
                 ],
-                plugins:Ext.create('App.classes.grid.RowFormEditing', {
+                plugins:Ext.create('App.ux.grid.RowFormEditing', {
                     autoCancel:false,
                     errorSummary:false,
                     clicksToEdit:1,
@@ -225,7 +225,7 @@ Ext.define('App.view.patient.windows.Medical', {
                                             name:'note'
 
                                         },
-                                        me.CvxMvxCombo = Ext.create('App.classes.combo.CVXManufacturersForCvx',{
+                                        me.CvxMvxCombo = Ext.create('App.ux.combo.CVXManufacturersForCvx',{
                                             fieldLabel:i18n['manufacturer'],
                                             width:260,
                                             name:'manufacturer'
@@ -293,7 +293,7 @@ Ext.define('App.view.patient.windows.Medical', {
                         renderer:me.boolRenderer
                     }
                 ],
-                plugins:me.rowEditingAllergies = Ext.create('App.classes.grid.RowFormEditing', {
+                plugins:me.rowEditingAllergies = Ext.create('App.ux.grid.RowFormEditing', {
                     autoCancel:false,
                     errorSummary:false,
                     clicksToEdit:1,
@@ -361,7 +361,7 @@ Ext.define('App.view.patient.windows.Medical', {
                                         margin:'0 10 5 0'
                                     },
                                     items:[
-                                        me.allergieType = Ext.create('App.classes.combo.Allergies', {
+                                        me.allergieType = Ext.create('App.ux.combo.Allergies', {
                                             fieldLabel:i18n['allergy'],
                                             action:'allergie_name',
                                             name:'allergy1',
@@ -373,7 +373,7 @@ Ext.define('App.view.patient.windows.Medical', {
                                                 scope:me,
                                                 change:me.disableFieldLogic
                                             }
-                                        }), me.allergieMedication = Ext.create('App.classes.LiveMedicationSearch', {
+                                        }), me.allergieMedication = Ext.create('App.ux.LiveMedicationSearch', {
                                             fieldLabel:i18n['allergy'],
                                             hideLabel:false,
                                             name:'allergy2',
@@ -386,7 +386,7 @@ Ext.define('App.view.patient.windows.Medical', {
                                                 scope:me,
                                                 change:me.disableFieldLogic
                                             }
-                                        }), me.allergiesAbdominal = Ext.create('App.classes.combo.AllergiesAbdominal', {
+                                        }), me.allergiesAbdominal = Ext.create('App.ux.combo.AllergiesAbdominal', {
                                             xtype:'mitos.allergiesabdominalcombo',
                                             fieldLabel:i18n['reaction'],
                                             name:'reaction1',
@@ -398,7 +398,7 @@ Ext.define('App.view.patient.windows.Medical', {
                                                 change:me.disableFieldLogic
                                             }
 
-                                        }), me.allergiesLocal = Ext.create('App.classes.combo.AllergiesLocal', {
+                                        }), me.allergiesLocal = Ext.create('App.ux.combo.AllergiesLocal', {
                                             xtype:'mitos.allergieslocalcombo',
                                             fieldLabel:i18n['reaction'],
                                             name:'reaction2',
@@ -411,7 +411,7 @@ Ext.define('App.view.patient.windows.Medical', {
                                                 change:me.disableFieldLogic
                                             }
 
-                                        }),  me.allergiesSkin = Ext.create('App.classes.combo.AllergiesSkin', {
+                                        }),  me.allergiesSkin = Ext.create('App.ux.combo.AllergiesSkin', {
                                             xtype:'mitos.allergiesskincombo',
                                             fieldLabel:i18n['reaction'],
                                             name:'reaction3',
@@ -424,7 +424,7 @@ Ext.define('App.view.patient.windows.Medical', {
                                                 change:me.disableFieldLogic
                                             }
 
-                                        }), me.allergiesSystemic = Ext.create('App.classes.combo.AllergiesSystemic', {
+                                        }), me.allergiesSystemic = Ext.create('App.ux.combo.AllergiesSystemic', {
                                             xtype:'mitos.allergiessystemiccombo',
                                             fieldLabel:i18n['reaction'],
                                             name:'reaction4',
@@ -506,7 +506,7 @@ Ext.define('App.view.patient.windows.Medical', {
                         dataIndex:'end_date'
                     }
                 ],
-                plugins:Ext.create('App.classes.grid.RowFormEditing', {
+                plugins:Ext.create('App.ux.grid.RowFormEditing', {
                     autoCancel:false,
                     errorSummary:false,
                     clicksToEdit:1,
@@ -653,7 +653,7 @@ Ext.define('App.view.patient.windows.Medical', {
                         dataIndex:'date'
                     }
                 ],
-                plugins:Ext.create('App.classes.grid.RowFormEditing', {
+                plugins:Ext.create('App.ux.grid.RowFormEditing', {
                     autoCancel:false,
                     errorSummary:false,
                     clicksToEdit:1,
@@ -797,7 +797,7 @@ Ext.define('App.view.patient.windows.Medical', {
                         dataIndex:'end_date'
                     }
                 ],
-                plugins:Ext.create('App.classes.grid.RowFormEditing', {
+                plugins:Ext.create('App.ux.grid.RowFormEditing', {
                     autoCancel:false,
                     errorSummary:false,
                     clicksToEdit:1,
@@ -930,7 +930,7 @@ Ext.define('App.view.patient.windows.Medical', {
                         dataIndex:'end_date'
                     }
                 ],
-                plugins:Ext.create('App.classes.grid.RowFormEditing', {
+                plugins:Ext.create('App.ux.grid.RowFormEditing', {
                     autoCancel:false,
                     errorSummary:false,
                     clicksToEdit:1,
@@ -1457,7 +1457,7 @@ Ext.define('App.view.patient.windows.Medical', {
     getLabDocument:function(src){
         var panel = this.query('[action="labPreviewPanel"]')[0];
         panel.remove(this.doc);
-        panel.add(this.doc = Ext.create('App.classes.ManagedIframe', {
+        panel.add(this.doc = Ext.create('App.ux.ManagedIframe', {
                 src:src
             }));
     },

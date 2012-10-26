@@ -19,7 +19,7 @@
  */
 Ext.define('App.view.dashboard.Dashboard',
 {
-	extend        : 'App.classes.RenderPanel',
+	extend        : 'App.ux.RenderPanel',
 	id            : 'panelDashboard',
 	pageTitle     : i18n['dashboard'],
 	getTools      : function() 

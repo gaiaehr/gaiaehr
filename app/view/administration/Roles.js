@@ -18,7 +18,7 @@
  */
 Ext.define('App.view.administration.Roles',
 {
-	extend : 'App.classes.RenderPanel',
+	extend : 'App.ux.RenderPanel',
 	id : 'panelRoles',
 	pageTitle : i18n['roles_and_permissions'],
 	pageLayout :

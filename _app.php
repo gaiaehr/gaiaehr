@@ -69,7 +69,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
                         disableCaching: false,
                         paths: {
                             'Ext': 'lib/extjs-4.1.1a/src',
-                            'Ext.ux': 'app/classes/ux',
+                            'Ext.ux': 'app/ux/ux',
                             'App': 'app',
                             'Modules': 'modules',
                             'Extensible': 'lib/extensible-1.5.1/src'
@@ -78,24 +78,21 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 		</script>
 		<script type="text/javascript" src="lib/webcam_control/swfobject.js"></script>
 		<script type="text/javascript" src="lib/jpegcam/htdocs/webcam.js"></script>
-		<script type="text/javascript" src="app/classes/Overrides.js"></script>
-		<script type="text/javascript" src="app/classes/VTypes.js"></script>
+		<script type="text/javascript" src="app/ux/Overrides.js"></script>
+		<script type="text/javascript" src="app/ux/VTypes.js"></script>
 
 		<script type="text/javascript">
-			function say(a)
-			{
-				console.log(a);
-			}
-
-			for (var x = 0; x < App.data.length; x++)
-			{
-				Ext.direct.Manager.addProvider(App.data[x]);
-			}
+        function say(a){
+            console.log(a);
+        }
+        for(var x = 0; x < App.data.length; x++){
+            Ext.direct.Manager.addProvider(App.data[x]);
+        }
 			requires = [
 				'Ext.ux.LiveSearchGridPanel',
 				'Ext.ux.SlidingPager',
 				'Ext.ux.PreviewPlugin',
-				'App.classes.grid.Printer',
+				'App.ux.grid.Printer',
 				/**
 				 * Load the models, the model are the representative of the database
 				 * table structure with modifications behind the PHP counterpart.
@@ -235,25 +232,25 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 				 * This will detect the activity of the user, if the user are idle by a
 				 * certain time, it will logout.
 				 */
-				'App.classes.ActivityMonitor',
+				'App.ux.ActivityMonitor',
 				/*
 				 * Load the classes that the CORE application needs
 				 */
-				'App.classes.AbstractPanel',
-				'App.classes.LiveCPTSearch',
-				'App.classes.LiveImmunizationSearch',
-				'App.classes.LiveMedicationSearch',
-				'App.classes.LiveLabsSearch',
-				'App.classes.LivePatientSearch',
-				'App.classes.LiveSurgeriesSearch',
-				'App.classes.ManagedIframe',
-				'App.classes.NodeDisabled',
-				'App.classes.PhotoIdWindow',
+				'App.ux.AbstractPanel',
+				'App.ux.LiveCPTSearch',
+				'App.ux.LiveImmunizationSearch',
+				'App.ux.LiveMedicationSearch',
+				'App.ux.LiveLabsSearch',
+				'App.ux.LivePatientSearch',
+				'App.ux.LiveSurgeriesSearch',
+				'App.ux.ManagedIframe',
+				'App.ux.NodeDisabled',
+				'App.ux.PhotoIdWindow',
 				/*
 				 * Load the RenderPanel
 				 * This is the main panel when all the forms are rendered.
 			     */
-				'App.classes.RenderPanel',
+				'App.ux.RenderPanel',
 				/*
 				 * Load the charts related controls
 				 */
@@ -270,83 +267,83 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 				 * Load the form specific related fields
 				 * Not all the fields are the same.
 				 */
-				'App.classes.form.fields.Help',
-				'App.classes.form.fields.Checkbox',
-				'App.classes.form.fields.Currency',
-				'App.classes.form.fields.DateTime',
-				'App.classes.form.AdvanceForm',
-				'App.classes.form.Panel',
-				'App.classes.grid.EventHistory',
-				'App.classes.grid.RowFormEditing',
-				'App.classes.grid.RowFormEditor',
+				'App.ux.form.fields.Help',
+				'App.ux.form.fields.Checkbox',
+				'App.ux.form.fields.Currency',
+				'App.ux.form.fields.DateTime',
+				'App.ux.form.AdvanceForm',
+				'App.ux.form.Panel',
+				'App.ux.grid.EventHistory',
+				'App.ux.grid.RowFormEditing',
+				'App.ux.grid.RowFormEditor',
 				/*
 				 * Load the combo boxes spreaded on all the web application
 				 * remember this are all reusable combo boxes.
 				 */
-				'App.classes.combo.ActiveFacilities',
-				'App.classes.combo.ActiveInsurances',
-				'App.classes.combo.Allergies',
-				'App.classes.combo.AllergiesAbdominal',
-				'App.classes.combo.AllergiesLocal',
-				'App.classes.combo.AllergiesLocation',
-				'App.classes.combo.AllergiesSeverity',
-				'App.classes.combo.AllergiesSkin',
-				'App.classes.combo.AllergiesSystemic',
-				'App.classes.combo.AllergiesTypes',
-				'App.classes.combo.Authorizations',
-				'App.classes.combo.BillingFacilities',
-				'App.classes.combo.CalendarCategories',
-				'App.classes.combo.CalendarStatus',
-				'App.classes.combo.CodesTypes',
-				'App.classes.combo.CVXManufacturers',
-				'App.classes.combo.CVXManufacturersForCvx',
-				'App.classes.combo.EncounterPriority',
-				'App.classes.combo.Ethnicity',
-				'App.classes.combo.Facilities',
-				'App.classes.combo.FloorPlanAreas',
-				'App.classes.combo.FollowUp',
-				'App.classes.combo.InsurancePayerType',
-				'App.classes.combo.LabObservations',
-				'App.classes.combo.LabsTypes',
-				'App.classes.combo.Languages',
-				'App.classes.combo.Lists',
-				'App.classes.combo.MedicalIssues',
-				'App.classes.combo.Medications',
-				'App.classes.combo.MsgNoteType',
-				'App.classes.combo.MsgStatus',
-				'App.classes.combo.Occurrence',
-				'App.classes.combo.Outcome',
-				'App.classes.combo.Outcome2',
-				'App.classes.combo.PayingEntity',
-				'App.classes.combo.PaymentCategory',
-				'App.classes.combo.PaymentMethod',
-				'App.classes.combo.Pharmacies',
-				'App.classes.combo.posCodes',
-				'App.classes.combo.PrescriptionHowTo',
-				'App.classes.combo.PrescriptionOften',
-				'App.classes.combo.PrescriptionTypes',
-				'App.classes.combo.PrescriptionWhen',
-				'App.classes.combo.PreventiveCareTypes',
-				'App.classes.combo.ProceduresBodySites',
-				'App.classes.combo.Providers',
-				'App.classes.combo.Race',
-				'App.classes.combo.Roles',
-				'App.classes.combo.Sex',
-				'App.classes.combo.SmokingStatus',
-				'App.classes.combo.Surgery',
-				'App.classes.combo.TaxId',
-				'App.classes.combo.Templates',
-				'App.classes.combo.Themes',
-				'App.classes.combo.Time',
-				'App.classes.combo.Titles',
-				'App.classes.combo.TransmitMethod',
-				'App.classes.combo.Types',
-				'App.classes.combo.Units',
-				'App.classes.combo.Users',
-				'App.classes.combo.YesNoNa',
-				'App.classes.combo.YesNo',
-				'App.classes.window.Window',
-				'App.classes.NodeDisabled',
+				'App.ux.combo.ActiveFacilities',
+				'App.ux.combo.ActiveInsurances',
+				'App.ux.combo.Allergies',
+				'App.ux.combo.AllergiesAbdominal',
+				'App.ux.combo.AllergiesLocal',
+				'App.ux.combo.AllergiesLocation',
+				'App.ux.combo.AllergiesSeverity',
+				'App.ux.combo.AllergiesSkin',
+				'App.ux.combo.AllergiesSystemic',
+				'App.ux.combo.AllergiesTypes',
+				'App.ux.combo.Authorizations',
+				'App.ux.combo.BillingFacilities',
+				'App.ux.combo.CalendarCategories',
+				'App.ux.combo.CalendarStatus',
+				'App.ux.combo.CodesTypes',
+				'App.ux.combo.CVXManufacturers',
+				'App.ux.combo.CVXManufacturersForCvx',
+				'App.ux.combo.EncounterPriority',
+				'App.ux.combo.Ethnicity',
+				'App.ux.combo.Facilities',
+				'App.ux.combo.FloorPlanAreas',
+				'App.ux.combo.FollowUp',
+				'App.ux.combo.InsurancePayerType',
+				'App.ux.combo.LabObservations',
+				'App.ux.combo.LabsTypes',
+				'App.ux.combo.Languages',
+				'App.ux.combo.Lists',
+				'App.ux.combo.MedicalIssues',
+				'App.ux.combo.Medications',
+				'App.ux.combo.MsgNoteType',
+				'App.ux.combo.MsgStatus',
+				'App.ux.combo.Occurrence',
+				'App.ux.combo.Outcome',
+				'App.ux.combo.Outcome2',
+				'App.ux.combo.PayingEntity',
+				'App.ux.combo.PaymentCategory',
+				'App.ux.combo.PaymentMethod',
+				'App.ux.combo.Pharmacies',
+				'App.ux.combo.posCodes',
+				'App.ux.combo.PrescriptionHowTo',
+				'App.ux.combo.PrescriptionOften',
+				'App.ux.combo.PrescriptionTypes',
+				'App.ux.combo.PrescriptionWhen',
+				'App.ux.combo.PreventiveCareTypes',
+				'App.ux.combo.ProceduresBodySites',
+				'App.ux.combo.Providers',
+				'App.ux.combo.Race',
+				'App.ux.combo.Roles',
+				'App.ux.combo.Sex',
+				'App.ux.combo.SmokingStatus',
+				'App.ux.combo.Surgery',
+				'App.ux.combo.TaxId',
+				'App.ux.combo.Templates',
+				'App.ux.combo.Themes',
+				'App.ux.combo.Time',
+				'App.ux.combo.Titles',
+				'App.ux.combo.TransmitMethod',
+				'App.ux.combo.Types',
+				'App.ux.combo.Units',
+				'App.ux.combo.Users',
+				'App.ux.combo.YesNoNa',
+				'App.ux.combo.YesNo',
+				'App.ux.window.Window',
+				'App.ux.NodeDisabled',
 				'App.view.search.PatientSearch',
 				/*
 				 * Load the patient window related panels

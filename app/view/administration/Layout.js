@@ -18,11 +18,11 @@
  */
 Ext.define('App.view.administration.Layout',
 {
-	extend : 'App.classes.RenderPanel',
+	extend : 'App.ux.RenderPanel',
 	id : 'panelLayout',
 	pageTitle : i18n['layout_form_editor'],
 	pageLayout : 'border',
-	uses : ['App.classes.GridPanel'],
+	uses : ['App.ux.GridPanel'],
 	initComponent : function()
 	{
 
@@ -315,7 +315,7 @@ Ext.define('App.view.administration.Layout',
 		/**
 		 * This grid only available if the field is a Combobox
 		 */
-		me.selectListGrid = Ext.create('App.classes.GridPanel',
+		me.selectListGrid = Ext.create('App.ux.GridPanel',
 		{
 			store : me.selectListoptionsStore,
 			region : 'south',
@@ -345,7 +345,7 @@ Ext.define('App.view.administration.Layout',
 		/**
 		 * form to create and modified the fields
 		 */
-		me.fieldForm = Ext.create('App.classes.form.Panel',
+		me.fieldForm = Ext.create('App.ux.form.Panel',
 		{
 			region : 'center',
 			//url	            : 'app/administration/layout/data.php?task=formRequest',
@@ -763,7 +763,7 @@ Ext.define('App.view.administration.Layout',
 		 * the user will not have the options to create
 		 * forms, just to modified the fields of existing forms.
 		 */
-		me.formsGrid = Ext.create('App.classes.GridPanel',
+		me.formsGrid = Ext.create('App.ux.GridPanel',
 		{
 			title : i18n['form_list'],
 			region : 'west',

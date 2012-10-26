@@ -8,7 +8,7 @@
  */
 Ext.define('App.view.messages.Messages',
 {
-	extend : 'App.classes.RenderPanel',
+	extend : 'App.ux.RenderPanel',
 	id : 'panelMessages',
 	pageTitle : i18n['messages'] + ' (' + i18n['inbox'] + ')',
 	pageLayout : 'border',
@@ -16,7 +16,7 @@ Ext.define('App.view.messages.Messages',
 	{
 		split : true
 	},
-	uses : ['App.classes.GridPanel', 'App.classes.LivePatientSearch', 'App.classes.combo.MsgStatus', 'App.classes.combo.MsgNoteType', 'App.classes.combo.Users'],
+	uses : ['App.ux.GridPanel', 'App.ux.LivePatientSearch', 'App.ux.combo.MsgStatus', 'App.ux.combo.MsgNoteType', 'App.ux.combo.Users'],
 	initComponent : function()
 	{
 
@@ -113,7 +113,7 @@ Ext.define('App.view.messages.Messages',
 		/**
 		 * Message GridPanel
 		 */
-		me.msgGrid = Ext.create('App.classes.GridPanel',
+		me.msgGrid = Ext.create('App.ux.GridPanel',
 		{
 			store : me.storeMsgs,
 			region : 'center',

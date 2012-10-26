@@ -10,10 +10,10 @@
 //******************************************************************************
 Ext.define('App.view.miscellaneous.MySettings',
 {
-	extend : 'App.classes.RenderPanel',
+	extend : 'App.ux.RenderPanel',
 	id : 'panelMySettings',
 	pageTitle : i18n['my_settings'],
-	uses : ['App.classes.GridPanel'],
+	uses : ['App.ux.GridPanel'],
 	initComponent : function()
 	{
 		var panel = this;
@@ -21,7 +21,7 @@ Ext.define('App.view.miscellaneous.MySettings',
 		// User Settings Form
 		// Add or Edit purpose
 		// *************************************************************************************
-		panel.uSettingsForm = Ext.create('App.classes.form.Panel',
+		panel.uSettingsForm = Ext.create('App.ux.form.Panel',
 		{
 			id : 'uSettingsForm',
 			bodyStyle : 'padding: 10px;',

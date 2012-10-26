@@ -10,7 +10,7 @@
  * @namespace Immunization.addPatientImmunization
  */
 Ext.define('App.view.patient.windows.NewDocuments', {
-	extend     : 'App.classes.window.Window',
+	extend     : 'App.ux.window.Window',
 	title      : i18n['order_window'],
 	layout     : 'fit',
 	closeAction: 'hide',
@@ -206,7 +206,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 
 								],
 
-								plugins: Ext.create('App.classes.grid.RowFormEditing', {
+								plugins: Ext.create('App.ux.grid.RowFormEditing', {
 									autoCancel  : false,
 									errorSummary: false,
 									clicksToEdit: 1,

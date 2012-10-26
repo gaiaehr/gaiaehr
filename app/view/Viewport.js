@@ -1020,7 +1020,7 @@ Ext.define('App.view.Viewport',
 	{
 		var me = this, src = btn.action;
 		me.winSupport.remove(me.miframe);
-		me.winSupport.add(me.miframe = Ext.create('App.classes.ManagedIframe',
+		me.winSupport.add(me.miframe = Ext.create('App.ux.ManagedIframe',
 		{
 			src : src
 		}));
@@ -1100,7 +1100,7 @@ Ext.define('App.view.Viewport',
 		me.LogoutTask.stop(me.LogoutTaskTimer);
 		me.logoutWarinigWindow.destroy();
 		delete me.logoutWarinigWindow;
-		App.classes.ActivityMonitor.start();
+		App.ux.ActivityMonitor.start();
 	},
 	startAutoLogout : function()
 	{
@@ -1280,7 +1280,7 @@ Ext.define('App.view.Viewport',
 		var me = this;
 		if (me.documentViewWindow)
 			me.DocumentViewerWindow.remove(me.documentViewWindow);
-		me.DocumentViewerWindow.add(me.documentViewWindow = Ext.create('App.classes.ManagedIframe',
+		me.DocumentViewerWindow.add(me.documentViewWindow = Ext.create('App.ux.ManagedIframe',
 		{
 			src : src
 		}));
@@ -1383,7 +1383,7 @@ Ext.define('App.view.Viewport',
 		var me = this;
 		if (start)
 		{
-			App.classes.ActivityMonitor.init(
+			App.ux.ActivityMonitor.init(
 			{
 				interval : me.activityMonitorInterval * 1000,
 				maxInactive : (1000 * 60 * me.activityMonitorMaxInactive),
@@ -1394,12 +1394,12 @@ Ext.define('App.view.Viewport',
 				}
 			});
 			Ext.TaskManager.start(me.cronTask);
-			App.classes.ActivityMonitor.start();
+			App.ux.ActivityMonitor.start();
 		}
 		else
 		{
 			Ext.TaskManager.stop(me.cronTask);
-			App.classes.ActivityMonitor.stop();
+			App.ux.ActivityMonitor.stop();
 		}
 	},
 	/*

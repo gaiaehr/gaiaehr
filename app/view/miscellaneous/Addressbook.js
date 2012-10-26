@@ -13,10 +13,10 @@
  */
 Ext.define('App.view.miscellaneous.Addressbook',
 {
-	extend : 'App.classes.RenderPanel',
+	extend : 'App.ux.RenderPanel',
 	id : 'panelAddressbook',
 	pageTitle : i18n['address_book'],
-	uses : ['App.classes.GridPanel', 'App.classes.combo.Titles', 'App.classes.window.Window', 'App.classes.combo.Types'],
+	uses : ['App.ux.GridPanel', 'App.ux.combo.Titles', 'App.ux.window.Window', 'App.ux.combo.Types'],
 	initComponent : function()
 	{
 		var me = this;
@@ -262,7 +262,7 @@ Ext.define('App.view.miscellaneous.Addressbook',
 		/**
 		 * Window and form
 		 */
-		me.win = Ext.create('App.classes.window.Window',
+		me.win = Ext.create('App.ux.window.Window',
 		{
 			width : 755,
 			title : i18n['add_or_edit_contact'],

@@ -12,7 +12,7 @@ Ext.define('App.view.patient.encounter.ICDs', {
     padding:'10 15',
     margin:'0 0 3 0',
     layout:'anchor',
-	requires: [ 'App.classes.LiveICDXSearch' ],
+	requires: [ 'App.ux.LiveICDXSearch' ],
     autoFormSync:true,
     initComponent:function () {
         var me = this;

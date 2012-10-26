@@ -6,7 +6,7 @@
  * Time: 10:46 PM
  */
 Ext.define('App.view.patient.windows.ArrivalLog', {
-	extend: 'App.classes.window.Window',
+	extend: 'App.ux.window.Window',
 	title      : i18n['patient_arrival_log'],
 	closeAction: 'hide',
     layout     : 'fit',

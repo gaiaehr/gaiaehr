@@ -18,11 +18,11 @@
  */
 Ext.define('App.view.administration.Lists',
 {
-	extend : 'App.classes.RenderPanel',
+	extend : 'App.ux.RenderPanel',
 	id : 'panelLists',
 	pageTitle : i18n['select_list_options'],
 	pageLayout : 'border',
-	uses : ['App.classes.GridPanel', 'App.classes.form.Panel', 'Ext.grid.plugin.RowEditing'],
+	uses : ['App.ux.GridPanel', 'App.ux.form.Panel', 'Ext.grid.plugin.RowEditing'],
 	initComponent : function()
 	{
 
@@ -149,7 +149,7 @@ Ext.define('App.view.administration.Lists',
 		/**
 		 * Lists Grid
 		 */
-		me.listsGrid = Ext.create('App.classes.GridPanel',
+		me.listsGrid = Ext.create('App.ux.GridPanel',
 		{
 			store : me.listsStore,
 			itemId : 'listsGrid',
@@ -217,7 +217,7 @@ Ext.define('App.view.administration.Lists',
 		/**
 		 * Options Grid
 		 */
-		me.optionsGrid = Ext.create('App.classes.GridPanel',
+		me.optionsGrid = Ext.create('App.ux.GridPanel',
 		{
 			store : me.optionsStore,
 			itemId : 'optionsGrid',

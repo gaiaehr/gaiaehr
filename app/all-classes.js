@@ -13449,7 +13449,7 @@ Ext.define('Ext.ux.PreviewPlugin',
  *
  * @namespace FormLayoutEngine.getFields
  */
-Ext.define('App.classes.RenderPanel',
+Ext.define('App.ux.RenderPanel',
 {
 	extend : 'Ext.container.Container',
 	alias : 'widget.renderpanel',
@@ -18523,7 +18523,7 @@ Ext.define('App.store.areas.PoolArea',
  *
  * GitHub Project: https://github.com/arthurakay/ExtJS-Activity-Monitor
  */
-Ext.define('App.classes.ActivityMonitor',
+Ext.define('App.ux.ActivityMonitor',
 {
 	singleton : true,
 
@@ -18646,7 +18646,7 @@ Ext.define('App.classes.ActivityMonitor',
  *
  * @namespace FormLayoutEngine.getFields
  */
-Ext.define('App.classes.AbstractPanel',
+Ext.define('App.ux.AbstractPanel',
 {
 
 	setReadOnly : function(readOnly)
@@ -18841,7 +18841,7 @@ Ext.define('App.classes.AbstractPanel',
  *
  * @namespace Services.liveIDCXSearch
  */
-Ext.define('App.classes.LiveCPTSearch',
+Ext.define('App.ux.LiveCPTSearch',
 {
 	extend : 'Ext.form.field.ComboBox',
 	alias : 'widget.livecptsearch',
@@ -19007,7 +19007,7 @@ Ext.define('App.classes.LiveCPTSearch',
  *
  * @namespace Patient.patientLiveSearch
  */
-Ext.define('App.classes.LiveImmunizationSearch',
+Ext.define('App.ux.LiveImmunizationSearch',
 {
 	extend : 'Ext.form.ComboBox',
 	alias : 'widget.immunizationlivesearch',
@@ -19091,7 +19091,7 @@ Ext.define('App.classes.LiveImmunizationSearch',
  *
  * @namespace Patient.patientLiveSearch
  */
-Ext.define('App.classes.LiveMedicationSearch',
+Ext.define('App.ux.LiveMedicationSearch',
 {
 	extend : 'Ext.form.ComboBox',
 	alias : 'widget.medicationlivetsearch',
@@ -19181,7 +19181,7 @@ Ext.define('App.classes.LiveMedicationSearch',
  *
  * @namespace Patient.patientLiveSearch
  */
-Ext.define('App.classes.LiveLabsSearch',
+Ext.define('App.ux.LiveLabsSearch',
 {
 	extend : 'Ext.form.ComboBox',
 	alias : 'widget.labslivetsearch',
@@ -19263,7 +19263,7 @@ Ext.define('App.classes.LiveLabsSearch',
  *
  * @namespace Patient.patientLiveSearch
  */
-Ext.define('App.classes.LivePatientSearch',
+Ext.define('App.ux.LivePatientSearch',
 {
 	extend : 'Ext.form.ComboBox',
 	alias : 'widget.patienlivetsearch',
@@ -19356,7 +19356,7 @@ Ext.define('App.classes.LivePatientSearch',
  *
  * @namespace Patient.patientLiveSearch
  */
-Ext.define('App.classes.LiveSurgeriesSearch',
+Ext.define('App.ux.LiveSurgeriesSearch',
 {
 	extend : 'Ext.form.ComboBox',
 	alias : 'widget.surgerieslivetsearch',
@@ -19453,7 +19453,7 @@ Ext.define('App.classes.LiveSurgeriesSearch',
  * @extends Ext.Component
  */
 
-Ext.define('App.classes.ManagedIframe',
+Ext.define('App.ux.ManagedIframe',
 {
 
 	/* Begin Definitions */
@@ -19756,7 +19756,7 @@ Ext.define('App.classes.ManagedIframe',
  * @constructor
  * @param {Object} config
  */
-Ext.define('App.classes.NodeDisabled',
+Ext.define('App.ux.NodeDisabled',
 {
 	alias : 'plugin.nodedisabled',
 	extend : 'Ext.AbstractPlugin'
@@ -19877,7 +19877,7 @@ Ext.define('App.classes.NodeDisabled',
 //******************************************************************************
 // Photo ID Window
 //******************************************************************************
-Ext.define('App.classes.PhotoIdWindow',
+Ext.define('App.ux.PhotoIdWindow',
 {
 	extend : 'Ext.window.Window',
 	alias : 'widget.photoidwindow',
@@ -20518,7 +20518,7 @@ Ext.define('Ext.dd.DragZone',
  * Date: 11/1/11
  * Time: 12:37 PM
  */
-Ext.define('App.classes.form.fields.Help',
+Ext.define('App.ux.form.fields.Help',
 {
 	extend : 'Ext.Img',
 	alias : 'widget.helpbutton',
@@ -20557,7 +20557,7 @@ Ext.define('App.classes.form.fields.Help',
  * Date: 11/1/11
  * Time: 12:37 PM
  */
-Ext.define('App.classes.form.fields.Checkbox',
+Ext.define('App.ux.form.fields.Checkbox',
 {
 	extend : 'Ext.form.field.Checkbox',
 	alias : 'widget.mitos.checkbox',
@@ -20583,7 +20583,7 @@ Ext.define('App.classes.form.fields.Checkbox',
  * @email: brittongr@gmail.com
  * @version: 2 compatible with ExtJS 4
  */
-Ext.define('App.classes.form.fields.Currency',
+Ext.define('App.ux.form.fields.Currency',
 {
 	extend : 'Ext.form.field.Number', //Extending the NumberField
 	alias : 'widget.mitos.currency', //Defining the xtype,
@@ -20604,7 +20604,7 @@ Ext.define('App.classes.form.fields.Currency',
 	},
 	setValue : function(value)
 	{
-		App.classes.form.fields.Currency.superclass.setValue.call(this, value != null ? value.toString().replace('.', this.decimalSeparator) : value);
+		App.ux.form.fields.Currency.superclass.setValue.call(this, value != null ? value.toString().replace('.', this.decimalSeparator) : value);
 
 		this.setRawValue(this.getFormattedValue(this.getValue()));
 	},
@@ -20653,7 +20653,7 @@ Ext.define('App.classes.form.fields.Currency',
 	parseValue : function(value)
 	{
 		//Replace the currency symbol and thousand separator
-		return App.classes.form.fields.Currency.superclass.parseValue.call(this, this.removeFormat(value));
+		return App.ux.form.fields.Currency.superclass.parseValue.call(this, this.removeFormat(value));
 	},
 	/**
 	 * Remove only the format added by this class to let the superclass validate with it's rules.
@@ -20678,7 +20678,7 @@ Ext.define('App.classes.form.fields.Currency',
 	 */
 	getErrors : function(value)
 	{
-		return App.classes.form.fields.Currency.superclass.getErrors.call(this, this.removeFormat(value));
+		return App.ux.form.fields.Currency.superclass.getErrors.call(this, this.removeFormat(value));
 	},
 	hasFormat : function()
 	{
@@ -20709,7 +20709,7 @@ Ext.define('App.classes.form.fields.Currency',
  * @author ontho (http://www.sencha.com/forum/member.php?285806-ontho)
  * @author jakob.ketterl (http://www.sencha.com/forum/member.php?25102-jakob.ketterl)
  */
-Ext.define('App.classes.form.fields.DateTime',
+Ext.define('App.ux.form.fields.DateTime',
 {
 	extend : 'Ext.form.FieldContainer',
 	mixins :
@@ -20924,7 +20924,7 @@ Ext.define('App.classes.form.fields.DateTime',
  * Date: 10/31/11
  * Time: 3:24 PM
  */
-Ext.define('App.classes.form.Panel',
+Ext.define('App.ux.form.Panel',
 {
 	extend : 'Ext.form.Panel',
 	alias : 'widget.mitos.form',
@@ -20939,7 +20939,7 @@ Ext.define('App.classes.form.Panel',
  * Date: 3/14/12
  * Time: 9:07 PM
  */
-Ext.define('App.classes.grid.EventHistory',
+Ext.define('App.ux.grid.EventHistory',
 {
 	extend : 'Ext.grid.Panel',
 	alias : 'widget.mitos.eventhistorygrid',
@@ -21033,12 +21033,12 @@ If you are unsure which license is appropriate for your use, please contact the 
  *         renderTo: Ext.getBody()
  *     });
  */
-Ext.define('App.classes.grid.RowFormEditing',
+Ext.define('App.ux.grid.RowFormEditing',
 {
 	extend : 'Ext.grid.plugin.Editing',
 	alias : 'plugin.rowformediting',
 
-	requires : ['App.classes.grid.RowFormEditor'],
+	requires : ['App.ux.grid.RowFormEditor'],
 
 	editStyle : 'row',
 
@@ -21290,7 +21290,7 @@ Ext.define('App.classes.grid.RowFormEditing',
 				cfg[item] = me[item];
 			}
 		}
-		return Ext.create('App.classes.grid.RowFormEditor', cfg);
+		return Ext.create('App.ux.grid.RowFormEditor', cfg);
 	},
 
 	// private
@@ -21461,7 +21461,7 @@ If you are unsure which license is appropriate for your use, please contact the 
  *
  * @ignore
  */
-Ext.define('App.classes.grid.RowFormEditor',
+Ext.define('App.ux.grid.RowFormEditor',
 {
 	extend : 'Ext.form.Panel',
 	requires : ['Ext.tip.ToolTip', 'Ext.util.HashMap', 'Ext.util.KeyNav'],
@@ -22075,7 +22075,7 @@ Ext.define('App.classes.grid.RowFormEditor',
 	}
 });
 
-Ext.define('App.classes.combo.ActiveFacilities',
+Ext.define('App.ux.combo.ActiveFacilities',
 {
 	extend : 'Ext.form.ComboBox',
 	alias : 'widget.mitos.activefacilitiescombo',
@@ -22123,7 +22123,7 @@ Ext.define('App.classes.combo.ActiveFacilities',
 		me.callParent(arguments);
 	}
 });
-Ext.define('App.classes.combo.ActiveInsurances',
+Ext.define('App.ux.combo.ActiveInsurances',
 {
 	extend : 'Ext.form.ComboBox',
 	alias : 'widget.activeinsurancescombo',
@@ -22174,7 +22174,7 @@ Ext.define('App.classes.combo.ActiveInsurances',
 		me.callParent();
 	}
 });
-Ext.define('App.classes.combo.Allergies',
+Ext.define('App.ux.combo.Allergies',
 {
 	extend : 'Ext.form.ComboBox',
 	alias : 'widget.mitos.allergiescombo',
@@ -22225,7 +22225,7 @@ Ext.define('App.classes.combo.Allergies',
 		me.callParent(arguments);
 	}
 });
-Ext.define('App.classes.combo.AllergiesAbdominal',
+Ext.define('App.ux.combo.AllergiesAbdominal',
 {
 	extend : 'Ext.form.ComboBox',
 	alias : 'widget.mitos.allergiesabdominalcombo',
@@ -22277,7 +22277,7 @@ Ext.define('App.classes.combo.AllergiesAbdominal',
 		me.callParent(arguments);
 	}
 });
-Ext.define('App.classes.combo.AllergiesLocal',
+Ext.define('App.ux.combo.AllergiesLocal',
 {
 	extend : 'Ext.form.ComboBox',
 	alias : 'widget.mitos.allergieslocalcombo',
@@ -22329,7 +22329,7 @@ Ext.define('App.classes.combo.AllergiesLocal',
 		me.callParent(arguments);
 	}
 });
-Ext.define('App.classes.combo.AllergiesLocation',
+Ext.define('App.ux.combo.AllergiesLocation',
 {
 	extend : 'Ext.form.ComboBox',
 	alias : 'widget.mitos.allergieslocationcombo',
@@ -22381,7 +22381,7 @@ Ext.define('App.classes.combo.AllergiesLocation',
 		me.callParent(arguments);
 	}
 });
-Ext.define('App.classes.combo.AllergiesSeverity',
+Ext.define('App.ux.combo.AllergiesSeverity',
 {
 	extend : 'Ext.form.ComboBox',
 	alias : 'widget.mitos.allergiesseveritycombo',
@@ -22433,7 +22433,7 @@ Ext.define('App.classes.combo.AllergiesSeverity',
 		me.callParent(arguments);
 	}
 });
-Ext.define('App.classes.combo.AllergiesSkin',
+Ext.define('App.ux.combo.AllergiesSkin',
 {
 	extend : 'Ext.form.ComboBox',
 	alias : 'widget.mitos.allergiesskincombo',
@@ -22485,7 +22485,7 @@ Ext.define('App.classes.combo.AllergiesSkin',
 		me.callParent(arguments);
 	}
 });
-Ext.define('App.classes.combo.AllergiesSystemic',
+Ext.define('App.ux.combo.AllergiesSystemic',
 {
 	extend : 'Ext.form.ComboBox',
 	alias : 'widget.mitos.allergiessystemiccombo',
@@ -22537,7 +22537,7 @@ Ext.define('App.classes.combo.AllergiesSystemic',
 		me.callParent(arguments);
 	}
 });
-Ext.define('App.classes.combo.AllergiesTypes',
+Ext.define('App.ux.combo.AllergiesTypes',
 {
 	extend : 'Ext.form.ComboBox',
 	alias : 'widget.mitos.allergiestypescombo',
@@ -22581,7 +22581,7 @@ Ext.define('App.classes.combo.AllergiesTypes',
 		me.callParent(arguments);
 	}
 });
-Ext.define('App.classes.combo.Authorizations',
+Ext.define('App.ux.combo.Authorizations',
 {
 	extend : 'Ext.form.ComboBox',
 	alias : 'widget.mitos.authorizationscombo',
@@ -22630,7 +22630,7 @@ Ext.define('App.classes.combo.Authorizations',
 		me.callParent(arguments);
 	}
 });
-Ext.define('App.classes.combo.BillingFacilities',
+Ext.define('App.ux.combo.BillingFacilities',
 {
 	extend : 'Ext.form.ComboBox',
 	alias : 'widget.mitos.billingfacilitiescombo',
@@ -22678,7 +22678,7 @@ Ext.define('App.classes.combo.BillingFacilities',
 		me.callParent(arguments);
 	}
 });
-Ext.define('App.classes.combo.CalendarCategories',
+Ext.define('App.ux.combo.CalendarCategories',
 {
 	extend : 'Ext.form.ComboBox',
 	alias : 'widget.mitos.calcategoriescombobox',
@@ -22726,7 +22726,7 @@ Ext.define('App.classes.combo.CalendarCategories',
 		me.callParent();
 	}
 });
-Ext.define('App.classes.combo.CalendarStatus',
+Ext.define('App.ux.combo.CalendarStatus',
 {
 	extend : 'Ext.form.ComboBox',
 	alias : 'widget.mitos.calstatuscombobox',
@@ -22780,7 +22780,7 @@ Ext.define('App.classes.combo.CalendarStatus',
 		me.callParent();
 	} // end initComponent
 });
-Ext.define('App.classes.combo.CodesTypes',
+Ext.define('App.ux.combo.CodesTypes',
 {
 	extend : 'Ext.form.ComboBox',
 	alias : 'widget.mitos.codestypescombo',
@@ -22832,7 +22832,7 @@ Ext.define('App.classes.combo.CodesTypes',
 		me.callParent(arguments);
 	}
 });
-Ext.define('App.classes.combo.EncounterPriority',
+Ext.define('App.ux.combo.EncounterPriority',
 {
 	extend : 'Ext.form.ComboBox',
 	alias : 'widget.encounterprioritycombo',
@@ -22932,7 +22932,7 @@ Ext.define('App.classes.combo.EncounterPriority',
 		me.callParent(arguments);
 	}
 });
-Ext.define('App.classes.combo.Facilities',
+Ext.define('App.ux.combo.Facilities',
 {
 	extend : 'Ext.form.ComboBox',
 	alias : 'widget.mitos.facilitiescombo',
@@ -22980,7 +22980,7 @@ Ext.define('App.classes.combo.Facilities',
 		me.callParent(arguments);
 	}
 });
-Ext.define('App.classes.combo.FloorPlanAreas',
+Ext.define('App.ux.combo.FloorPlanAreas',
 {
 	extend : 'Ext.form.ComboBox',
 	alias : 'widget.floorplanareascombo',
@@ -23028,7 +23028,7 @@ Ext.define('App.classes.combo.FloorPlanAreas',
 		me.callParent(arguments);
 	}
 });
-Ext.define('App.classes.combo.FollowUp',
+Ext.define('App.ux.combo.FollowUp',
 {
 	extend : 'Ext.form.ComboBox',
 	alias : 'widget.mitos.followupcombo',
@@ -23080,7 +23080,7 @@ Ext.define('App.classes.combo.FollowUp',
 		me.callParent(arguments);
 	}
 });
-Ext.define('App.classes.combo.InsurancePayerType',
+Ext.define('App.ux.combo.InsurancePayerType',
 {
 	extend : 'Ext.form.ComboBox',
 	alias : 'widget.mitos.insurancepayertypecombo',
@@ -23229,7 +23229,7 @@ Ext.define('App.classes.combo.InsurancePayerType',
  *
  * @namespace Patient.patientLiveSearch
  */
-Ext.define('App.classes.combo.LabObservations',
+Ext.define('App.ux.combo.LabObservations',
 {
 	extend : 'Ext.form.ComboBox',
 	alias : 'widget.labobservationscombo',
@@ -23298,7 +23298,7 @@ Ext.define('App.classes.combo.LabObservations',
 		me.callParent();
 	}
 });
-Ext.define('App.classes.combo.LabsTypes',
+Ext.define('App.ux.combo.LabsTypes',
 {
 	extend : 'Ext.form.ComboBox',
 	alias : 'widget.mitos.labstypescombo',
@@ -23359,7 +23359,7 @@ Ext.define('App.classes.combo.LabsTypes',
  * Date: 10/29/11
  * Time: 4:45 PM
  */
-Ext.define('App.classes.combo.Languages',
+Ext.define('App.ux.combo.Languages',
 {
 	extend : 'Ext.form.ComboBox',
 	alias : 'widget.languagescombo',
@@ -23408,7 +23408,7 @@ Ext.define('App.classes.combo.Languages',
 	}
 });
 
-Ext.define('App.classes.combo.Lists',
+Ext.define('App.ux.combo.Lists',
 {
 	extend : 'Ext.form.ComboBox',
 	alias : 'widget.mitos.listscombo',
@@ -23457,7 +23457,7 @@ Ext.define('App.classes.combo.Lists',
 		me.callParent(arguments);
 	}
 });
-Ext.define('App.classes.combo.MedicalIssues',
+Ext.define('App.ux.combo.MedicalIssues',
 {
 	extend : 'Ext.form.ComboBox',
 	alias : 'widget.mitos.medicalissuescombo',
@@ -23509,7 +23509,7 @@ Ext.define('App.classes.combo.MedicalIssues',
 		me.callParent(arguments);
 	}
 });
-Ext.define('App.classes.combo.Medications',
+Ext.define('App.ux.combo.Medications',
 {
 	extend : 'Ext.form.ComboBox',
 	alias : 'widget.mitos.medicationscombo',
@@ -23568,7 +23568,7 @@ Ext.define('App.classes.combo.Medications',
  * Date: 10/29/11
  * Time: 4:45 PM
  */
-Ext.define('App.classes.combo.MsgNoteType',
+Ext.define('App.ux.combo.MsgNoteType',
 {
 	extend : 'Ext.form.ComboBox',
 	alias : 'widget.msgnotetypecombo',
@@ -23627,7 +23627,7 @@ Ext.define('App.classes.combo.MsgNoteType',
  * Date: 10/29/11
  * Time: 4:45 PM
  */
-Ext.define('App.classes.combo.MsgStatus',
+Ext.define('App.ux.combo.MsgStatus',
 {
 	extend : 'Ext.form.ComboBox',
 	alias : 'widget.msgstatuscombo',
@@ -23679,7 +23679,7 @@ Ext.define('App.classes.combo.MsgStatus',
 		me.callParent();
 	} // end initComponent
 });
-Ext.define('App.classes.combo.Occurrence',
+Ext.define('App.ux.combo.Occurrence',
 {
 	extend : 'Ext.form.ComboBox',
 	alias : 'widget.mitos.occurrencecombo',
@@ -23731,7 +23731,7 @@ Ext.define('App.classes.combo.Occurrence',
 		me.callParent(arguments);
 	}
 });
-Ext.define('App.classes.combo.Outcome',
+Ext.define('App.ux.combo.Outcome',
 {
 	extend : 'Ext.form.ComboBox',
 	alias : 'widget.mitos.outcomecombo',
@@ -23783,7 +23783,7 @@ Ext.define('App.classes.combo.Outcome',
 		me.callParent(arguments);
 	}
 });
-Ext.define('App.classes.combo.Outcome2',
+Ext.define('App.ux.combo.Outcome2',
 {
 	extend : 'Ext.form.ComboBox',
 	alias : 'widget.mitos.outcome2combo',
@@ -23835,7 +23835,7 @@ Ext.define('App.classes.combo.Outcome2',
 		me.callParent(arguments);
 	}
 });
-Ext.define('App.classes.combo.PayingEntity',
+Ext.define('App.ux.combo.PayingEntity',
 {
 	extend : 'Ext.form.ComboBox',
 	alias : 'widget.mitos.payingentitycombo',
@@ -23888,7 +23888,7 @@ Ext.define('App.classes.combo.PayingEntity',
 	}
 });
 
-Ext.define('App.classes.combo.PaymentCategory',
+Ext.define('App.ux.combo.PaymentCategory',
 {
 	extend : 'Ext.form.ComboBox',
 	alias : 'widget.mitos.paymentcategorycombo',
@@ -23940,7 +23940,7 @@ Ext.define('App.classes.combo.PaymentCategory',
 		me.callParent(arguments);
 	}
 });
-Ext.define('App.classes.combo.PaymentMethod',
+Ext.define('App.ux.combo.PaymentMethod',
 {
 	extend : 'Ext.form.ComboBox',
 	alias : 'widget.mitos.paymentmethodcombo',
@@ -23992,7 +23992,7 @@ Ext.define('App.classes.combo.PaymentMethod',
 		me.callParent(arguments);
 	}
 });
-Ext.define('App.classes.combo.Pharmacies',
+Ext.define('App.ux.combo.Pharmacies',
 {
 	extend : 'Ext.form.ComboBox',
 	alias : 'widget.mitos.pharmaciescombo',
@@ -24045,7 +24045,7 @@ Ext.define('App.classes.combo.Pharmacies',
  * Date: 10/29/11
  * Time: 4:45 PM
  */
-Ext.define('App.classes.combo.posCodes',
+Ext.define('App.ux.combo.posCodes',
 {
 	extend : 'Ext.form.ComboBox',
 	alias : 'widget.mitos.poscodescombo',
@@ -24093,7 +24093,7 @@ Ext.define('App.classes.combo.posCodes',
 		me.callParent();
 	} // end initComponent
 });
-Ext.define('App.classes.combo.PrescriptionHowTo',
+Ext.define('App.ux.combo.PrescriptionHowTo',
 {
 	extend : 'Ext.form.ComboBox',
 	alias : 'widget.mitos.prescriptionhowto',
@@ -24145,7 +24145,7 @@ Ext.define('App.classes.combo.PrescriptionHowTo',
 		me.callParent(arguments);
 	}
 });
-Ext.define('App.classes.combo.PrescriptionOften',
+Ext.define('App.ux.combo.PrescriptionOften',
 {
 	extend : 'Ext.form.ComboBox',
 	alias : 'widget.mitos.prescriptionoften',
@@ -24197,7 +24197,7 @@ Ext.define('App.classes.combo.PrescriptionOften',
 		me.callParent(arguments);
 	}
 });
-Ext.define('App.classes.combo.PrescriptionTypes',
+Ext.define('App.ux.combo.PrescriptionTypes',
 {
 	extend : 'Ext.form.ComboBox',
 	alias : 'widget.mitos.prescriptiontypes',
@@ -24249,7 +24249,7 @@ Ext.define('App.classes.combo.PrescriptionTypes',
 		me.callParent(arguments);
 	}
 });
-Ext.define('App.classes.combo.PrescriptionWhen',
+Ext.define('App.ux.combo.PrescriptionWhen',
 {
 	extend : 'Ext.form.ComboBox',
 	alias : 'widget.mitos.prescriptionwhen',
@@ -24301,7 +24301,7 @@ Ext.define('App.classes.combo.PrescriptionWhen',
 		me.callParent(arguments);
 	}
 });
-Ext.define('App.classes.combo.PreventiveCareTypes',
+Ext.define('App.ux.combo.PreventiveCareTypes',
 {
 	extend : 'Ext.form.ComboBox',
 	alias : 'widget.mitos.preventivecaretypescombo',
@@ -24360,7 +24360,7 @@ Ext.define('App.classes.combo.PreventiveCareTypes',
  * Date: 3/21/12
  * Time: 11:24 PM
  */
-Ext.define('App.classes.combo.ProceduresBodySites',
+Ext.define('App.ux.combo.ProceduresBodySites',
 {
 	extend : 'Ext.form.ComboBox',
 	alias : 'widget.mitos.proceduresbodysitescombo',
@@ -24412,7 +24412,7 @@ Ext.define('App.classes.combo.ProceduresBodySites',
 		me.callParent(arguments);
 	}
 });
-Ext.define('App.classes.combo.Providers',
+Ext.define('App.ux.combo.Providers',
 {
 	extend : 'Ext.form.ComboBox',
 	alias : 'widget.mitos.providerscombo',
@@ -24460,7 +24460,7 @@ Ext.define('App.classes.combo.Providers',
 		me.callParent(arguments);
 	}
 });
-Ext.define('App.classes.combo.Roles',
+Ext.define('App.ux.combo.Roles',
 {
 	extend : 'Ext.form.ComboBox',
 	alias : 'widget.mitos.rolescombo',
@@ -24508,7 +24508,7 @@ Ext.define('App.classes.combo.Roles',
 		me.callParent(arguments);
 	}
 });
-Ext.define('App.classes.combo.Sex',
+Ext.define('App.ux.combo.Sex',
 {
 	extend : 'Ext.form.ComboBox',
 	alias : 'widget.mitos.sexcombo',
@@ -24560,7 +24560,7 @@ Ext.define('App.classes.combo.Sex',
 		me.callParent(arguments);
 	}
 });
-Ext.define('App.classes.combo.SmokingStatus',
+Ext.define('App.ux.combo.SmokingStatus',
 {
 	extend : 'Ext.form.ComboBox',
 	alias : 'widget.mitos.smokingstatuscombo',
@@ -24612,7 +24612,7 @@ Ext.define('App.classes.combo.SmokingStatus',
 		me.callParent(arguments);
 	}
 });
-Ext.define('App.classes.combo.Surgery',
+Ext.define('App.ux.combo.Surgery',
 {
 	extend : 'Ext.form.ComboBox',
 	alias : 'widget.mitos.surgerycombo',
@@ -24671,7 +24671,7 @@ Ext.define('App.classes.combo.Surgery',
  * Date: 10/29/11
  * Time: 4:45 PM
  */
-Ext.define('App.classes.combo.TaxId',
+Ext.define('App.ux.combo.TaxId',
 {
 	extend : 'Ext.form.ComboBox',
 	alias : 'widget.mitos.taxidcombo',
@@ -24719,7 +24719,7 @@ Ext.define('App.classes.combo.TaxId',
 		me.callParent();
 	} // end initComponent
 });
-Ext.define('App.classes.combo.Templates',
+Ext.define('App.ux.combo.Templates',
 {
 	extend : 'Ext.form.ComboBox',
 	alias : 'widget.mitos.templatescombo',
@@ -24773,7 +24773,7 @@ Ext.define('App.classes.combo.Templates',
  * Date: 10/29/11
  * Time: 4:45 PM
  */
-Ext.define('App.classes.combo.Themes',
+Ext.define('App.ux.combo.Themes',
 {
 	extend : 'Ext.form.ComboBox',
 	alias : 'widget.themescombo',
@@ -24820,7 +24820,7 @@ Ext.define('App.classes.combo.Themes',
 		me.callParent();
 	}
 });
-Ext.define('App.classes.combo.Time',
+Ext.define('App.ux.combo.Time',
 {
 	extend : 'Ext.form.ComboBox',
 	alias : 'widget.mitos.timecombo',
@@ -24872,7 +24872,7 @@ Ext.define('App.classes.combo.Time',
 		me.callParent(arguments);
 	}
 });
-Ext.define('App.classes.combo.Titles',
+Ext.define('App.ux.combo.Titles',
 {
 	extend : 'Ext.form.ComboBox',
 	alias : 'widget.mitos.titlescombo',
@@ -24924,7 +24924,7 @@ Ext.define('App.classes.combo.Titles',
 		me.callParent(arguments);
 	}
 });
-Ext.define('App.classes.combo.TransmitMethod',
+Ext.define('App.ux.combo.TransmitMethod',
 {
 	extend : 'Ext.form.ComboBox',
 	alias : 'widget.transmitmethodcombo',
@@ -24963,7 +24963,7 @@ Ext.define('App.classes.combo.TransmitMethod',
 		me.callParent();
 	} // end initComponent
 });
-Ext.define('App.classes.combo.Types',
+Ext.define('App.ux.combo.Types',
 {
 	extend : 'Ext.form.ComboBox',
 	alias : 'widget.mitos.typescombobox',
@@ -25021,7 +25021,7 @@ Ext.define('App.classes.combo.Types',
 		me.callParent(arguments);
 	}
 });
-Ext.define('App.classes.combo.Units',
+Ext.define('App.ux.combo.Units',
 {
 	extend : 'Ext.form.ComboBox',
 	alias : 'widget.mitos.unitscombo',
@@ -25080,7 +25080,7 @@ Ext.define('App.classes.combo.Units',
  * Date: 10/29/11
  * Time: 4:45 PM
  */
-Ext.define('App.classes.combo.Users',
+Ext.define('App.ux.combo.Users',
 {
 	extend : 'Ext.form.ComboBox',
 	alias : 'widget.userscombo',
@@ -25128,7 +25128,7 @@ Ext.define('App.classes.combo.Users',
 		me.callParent();
 	} // end initComponent
 });
-Ext.define('App.classes.combo.YesNoNa',
+Ext.define('App.ux.combo.YesNoNa',
 {
 	extend : 'Ext.form.ComboBox',
 	alias : 'widget.mitos.yesnonacombo',
@@ -25180,7 +25180,7 @@ Ext.define('App.classes.combo.YesNoNa',
 		me.callParent(arguments);
 	}
 });
-Ext.define('App.classes.combo.YesNo',
+Ext.define('App.ux.combo.YesNo',
 {
 	extend : 'Ext.form.ComboBox',
 	alias : 'widget.mitos.yesnocombo',
@@ -25239,7 +25239,7 @@ Ext.define('App.classes.combo.YesNo',
  * Date: 10/31/11
  * Time: 3:21 PM
  */
-Ext.define('App.classes.window.Window',
+Ext.define('App.ux.window.Window',
 {
 	extend : 'Ext.window.Window',
 	autoHeight : true,
@@ -25431,7 +25431,7 @@ Ext.define('App.classes.window.Window',
  * @constructor
  * @param {Object} config
  */
-Ext.define('App.classes.NodeDisabled',
+Ext.define('App.ux.NodeDisabled',
 {
 	alias : 'plugin.nodedisabled',
 	extend : 'Ext.AbstractPlugin'
@@ -25561,11 +25561,11 @@ Ext.define('App.classes.NodeDisabled',
 //******************************************************************************
 Ext.define('App.view.search.PatientSearch',
 {
-	extend : 'App.classes.RenderPanel',
+	extend : 'App.ux.RenderPanel',
 	id : 'panelPatientSearch',
 	pageTitle : i18n['advance_patient_search'],
 	pageLayout : 'border',
-	uses : ['App.classes.GridPanel'],
+	uses : ['App.ux.GridPanel'],
 	initComponent : function()
 	{
 		var me = this;
@@ -25623,7 +25623,7 @@ Ext.define('App.view.search.PatientSearch',
 				}
 			}]
 		});
-		me.grid = Ext.create('App.classes.GridPanel',
+		me.grid = Ext.create('App.ux.GridPanel',
 		{
 			region : 'center',
 			//store    : me.store,
@@ -25692,7 +25692,7 @@ Ext.define('App.view.search.PatientSearch',
  */
 Ext.define('App.view.patient.windows.Medical',
 {
-	extend : 'App.classes.window.Window',
+	extend : 'App.ux.window.Window',
 	title : i18n['medical_window'],
 	id : 'MedicalWindow',
 	layout : 'card',
@@ -25813,7 +25813,7 @@ Ext.define('App.view.patient.windows.Medical',
 				dataIndex : 'note'
 			}],
 
-			plugins : Ext.create('App.classes.grid.RowFormEditing',
+			plugins : Ext.create('App.ux.grid.RowFormEditing',
 			{
 				autoCancel : false,
 				errorSummary : false,
@@ -25993,7 +25993,7 @@ Ext.define('App.view.patient.windows.Medical',
 				dataIndex : 'alert',
 				renderer : me.boolRenderer
 			}],
-			plugins : me.rowEditingAllergies = Ext.create('App.classes.grid.RowFormEditing',
+			plugins : me.rowEditingAllergies = Ext.create('App.ux.grid.RowFormEditing',
 			{
 				autoCancel : false,
 				errorSummary : false,
@@ -26065,7 +26065,7 @@ Ext.define('App.view.patient.windows.Medical',
 						{
 							margin : '0 10 5 0'
 						},
-						items : [me.allergieType = Ext.create('App.classes.combo.Allergies',
+						items : [me.allergieType = Ext.create('App.ux.combo.Allergies',
 						{
 							fieldLabel : i18n['allergy'],
 							action : 'allergie_name',
@@ -26080,7 +26080,7 @@ Ext.define('App.view.patient.windows.Medical',
 								'select' : me.onLiveSearchSelect,
 								change : me.disableFieldLogic
 							}
-						}), me.allergieMedication = Ext.create('App.classes.LiveMedicationSearch',
+						}), me.allergieMedication = Ext.create('App.ux.LiveMedicationSearch',
 						{
 							fieldLabel : i18n['allergy'],
 							hideLabel : false,
@@ -26231,7 +26231,7 @@ Ext.define('App.view.patient.windows.Medical',
 				format : 'Y-m-d',
 				dataIndex : 'end_date'
 			}],
-			plugins : Ext.create('App.classes.grid.RowFormEditing',
+			plugins : Ext.create('App.ux.grid.RowFormEditing',
 			{
 				autoCancel : false,
 				errorSummary : false,
@@ -26383,7 +26383,7 @@ Ext.define('App.view.patient.windows.Medical',
 				format : 'Y-m-d',
 				dataIndex : 'date'
 			}],
-			plugins : Ext.create('App.classes.grid.RowFormEditing',
+			plugins : Ext.create('App.ux.grid.RowFormEditing',
 			{
 				autoCancel : false,
 				errorSummary : false,
@@ -26528,7 +26528,7 @@ Ext.define('App.view.patient.windows.Medical',
 				format : 'Y-m-d',
 				dataIndex : 'end_date'
 			}],
-			plugins : Ext.create('App.classes.grid.RowFormEditing',
+			plugins : Ext.create('App.ux.grid.RowFormEditing',
 			{
 				autoCancel : false,
 				errorSummary : false,
@@ -26663,7 +26663,7 @@ Ext.define('App.view.patient.windows.Medical',
 				format : 'Y-m-d',
 				dataIndex : 'end_date'
 			}],
-			plugins : Ext.create('App.classes.grid.RowFormEditing',
+			plugins : Ext.create('App.ux.grid.RowFormEditing',
 			{
 				autoCancel : false,
 				errorSummary : false,
@@ -27261,7 +27261,7 @@ Ext.define('App.view.patient.windows.Medical',
 	{
 		var panel = this.query('[action="labPreviewPanel"]')[0];
 		panel.remove(this.doc);
-		panel.add(this.doc = Ext.create('App.classes.ManagedIframe',
+		panel.add(this.doc = Ext.create('App.ux.ManagedIframe',
 		{
 			src : src
 		}));
@@ -27980,7 +27980,7 @@ Ext.define('App.view.patient.windows.Charts',
  */
 Ext.define('App.view.patient.windows.PreventiveCare',
 {
-	extend : 'App.classes.window.Window',
+	extend : 'App.ux.window.Window',
 	title : i18n['preventive_care_window'],
 	closeAction : 'hide',
 	height : 750,
@@ -28003,7 +28003,7 @@ Ext.define('App.view.patient.windows.PreventiveCare',
 			autoSync : true
 		});
 
-		me.grid = Ext.create('App.classes.GridPanel',
+		me.grid = Ext.create('App.ux.GridPanel',
 		{
 			store : me.patientPreventiveCare,
 			features : Ext.create('Ext.grid.feature.Grouping',
@@ -28029,7 +28029,7 @@ Ext.define('App.view.patient.windows.PreventiveCare',
 				flex : 1
 
 			}],
-			plugins : Ext.create('App.classes.grid.RowFormEditing',
+			plugins : Ext.create('App.ux.grid.RowFormEditing',
 			{
 				autoCancel : false,
 				errorSummary : false,
@@ -28202,7 +28202,7 @@ Ext.define('App.view.patient.windows.PreventiveCare',
  */
 Ext.define('App.view.patient.windows.NewDocuments',
 {
-	extend : 'App.classes.window.Window',
+	extend : 'App.ux.window.Window',
 	title : i18n['order_window'],
 	layout : 'fit',
 	closeAction : 'hide',
@@ -28392,7 +28392,7 @@ Ext.define('App.view.patient.windows.NewDocuments',
 						dataIndex : 'refill'
 					}],
 
-					plugins : Ext.create('App.classes.grid.RowFormEditing',
+					plugins : Ext.create('App.ux.grid.RowFormEditing',
 					{
 						autoCancel : false,
 						errorSummary : false,
@@ -28832,7 +28832,7 @@ Ext.define('App.view.patient.windows.NewDocuments',
  */
 Ext.define('App.view.patient.windows.DocumentViewer',
 {
-	extend : 'App.classes.window.Window',
+	extend : 'App.ux.window.Window',
 	title : i18n['documents_viewer_window'],
 	layout : 'fit',
 	height : 650,
@@ -28870,7 +28870,7 @@ Ext.define('App.view.patient.windows.DocumentViewer',
  */
 Ext.define('App.view.patient.windows.ArrivalLog',
 {
-	extend : 'App.classes.window.Window',
+	extend : 'App.ux.window.Window',
 	title : i18n['patient_arrival_log'],
 	closeAction : 'hide',
 	layout : 'fit',
@@ -29555,7 +29555,7 @@ Ext.define('App.view.dashboard.panel.VisitsPortlet',
 //******************************************************************************
 Ext.define('App.view.dashboard.Dashboard',
 {
-	extend : 'App.classes.RenderPanel',
+	extend : 'App.ux.RenderPanel',
 	id : 'panelDashboard',
 	pageTitle : i18n['dashboard'],
 	getTools : function()
@@ -29682,7 +29682,7 @@ Ext.define('App.view.dashboard.Dashboard',
  */
 Ext.define('App.view.calendar.Calendar',
 {
-	extend : 'App.classes.RenderPanel',
+	extend : 'App.ux.RenderPanel',
 	id : 'panelCalendar',
 	pageTitle : i18n['calendar_events'],
 	constructor : function()
@@ -30022,7 +30022,7 @@ Ext.define('App.view.calendar.Calendar',
  */
 Ext.define('App.view.messages.Messages',
 {
-	extend : 'App.classes.RenderPanel',
+	extend : 'App.ux.RenderPanel',
 	id : 'panelMessages',
 	pageTitle : i18n['messages'] + ' (' + i18n['inbox'] + ')',
 	pageLayout : 'border',
@@ -30030,7 +30030,7 @@ Ext.define('App.view.messages.Messages',
 	{
 		split : true
 	},
-	uses : ['App.classes.GridPanel', 'App.classes.LivePatientSearch', 'App.classes.combo.MsgStatus', 'App.classes.combo.MsgNoteType', 'App.classes.combo.Users'],
+	uses : ['App.ux.GridPanel', 'App.ux.LivePatientSearch', 'App.ux.combo.MsgStatus', 'App.ux.combo.MsgNoteType', 'App.ux.combo.Users'],
 	initComponent : function()
 	{
 
@@ -30127,7 +30127,7 @@ Ext.define('App.view.messages.Messages',
 		/**
 		 * Message GridPanel
 		 */
-		me.msgGrid = Ext.create('App.classes.GridPanel',
+		me.msgGrid = Ext.create('App.ux.GridPanel',
 		{
 			store : me.storeMsgs,
 			region : 'center',
@@ -30596,7 +30596,7 @@ Ext.define('App.view.messages.Messages',
 Ext.define('App.view.areas.FloorPlan',
 {
 	id : 'panelAreaFloorPlan',
-	extend : 'App.classes.RenderPanel',
+	extend : 'App.ux.RenderPanel',
 	pageTitle : i18n['area_floor_plan'],
 	floorPlanId : null,
 	initComponent : function()
@@ -30887,7 +30887,7 @@ Ext.define('App.view.areas.FloorPlan',
 Ext.define('App.view.areas.PatientPoolDropZone',
 {
 	id : 'panelPoolArea',
-	extend : 'App.classes.RenderPanel',
+	extend : 'App.ux.RenderPanel',
 	pageTitle : i18n['patient_pool_areas'],
 	initComponent : function()
 	{
@@ -31883,7 +31883,7 @@ Ext.define('App.view.patient.encounter.CurrentProceduralTerminology',
 			}
 		});
 
-		me.cptFormEdit = Ext.create('App.classes.grid.RowFormEditing',
+		me.cptFormEdit = Ext.create('App.ux.grid.RowFormEditing',
 		{
 			autoCancel : false,
 			errorSummary : false,
@@ -32289,7 +32289,7 @@ Ext.define('App.view.patient.encounter.HealthCareFinancingAdministrationOptions'
 	alias : 'widget.hcafaoptions',
 	mixins :
 	{
-		functions : 'App.classes.AbstractPanel'
+		functions : 'App.ux.AbstractPanel'
 	},
 	pid : null,
 	eid : null,
@@ -32324,7 +32324,7 @@ Ext.define('App.view.patient.encounter.ICDs',
 	padding : '10 15',
 	margin : '0 0 3 0',
 	layout : 'anchor',
-	requires : ['App.classes.LiveICDXSearch'],
+	requires : ['App.ux.LiveICDXSearch'],
 	initComponent : function()
 	{
 		var me = this;
@@ -32870,7 +32870,7 @@ Ext.define('App.view.patient.encounter.ICDs',
 	padding : '10 15',
 	margin : '0 0 3 0',
 	layout : 'anchor',
-	requires : ['App.classes.LiveICDXSearch'],
+	requires : ['App.ux.LiveICDXSearch'],
 	initComponent : function()
 	{
 		var me = this;
@@ -33096,10 +33096,10 @@ Ext.define('App.view.patient.Vitals',
  */
 Ext.define('App.view.patient.NewPatient',
 {
-	extend : 'App.classes.RenderPanel',
+	extend : 'App.ux.RenderPanel',
 	id : 'panelNewPatient',
 	pageTitle : i18n['patient_entry_form'],
-	uses : ['App.classes.PhotoIdWindow'],
+	uses : ['App.ux.PhotoIdWindow'],
 	initComponent : function()
 	{
 
@@ -33283,7 +33283,7 @@ Ext.define('App.view.patient.NewPatient',
  */
 Ext.define('App.view.patient.Summary',
 {
-	extend : 'App.classes.RenderPanel',
+	extend : 'App.ux.RenderPanel',
 	id : 'panelSummary',
 	pageTitle : i18n['patient_summary'],
 	pageLayout :
@@ -33886,7 +33886,7 @@ Ext.define('App.view.patient.Summary',
 					renderer : me.boolRenderer
 				}],
 
-				plugins : Ext.create('App.classes.grid.RowFormEditing',
+				plugins : Ext.create('App.ux.grid.RowFormEditing',
 				{
 					autoCancel : false,
 					errorSummary : false,
@@ -34478,7 +34478,7 @@ Ext.define('App.view.patient.Summary',
 	getPhotoIdWindow : function()
 	{
 		var me = this;
-		me.PhotoIdWindow = Ext.create('App.classes.PhotoIdWindow',
+		me.PhotoIdWindow = Ext.create('App.ux.PhotoIdWindow',
 		{
 			title : i18n['patient_photo_id'],
 			loadMask : true,
@@ -34779,10 +34779,10 @@ Ext.define('App.view.patient.ProgressNote',
  */
 Ext.define('App.view.patient.Visits',
 {
-	extend : 'App.classes.RenderPanel',
+	extend : 'App.ux.RenderPanel',
 	id : 'panelVisits',
 	pageTitle : i18n['visits_history'],
-	uses : ['App.classes.GridPanel', 'Ext.ux.PreviewPlugin'],
+	uses : ['App.ux.GridPanel', 'Ext.ux.PreviewPlugin'],
 
 	initComponent : function()
 	{
@@ -34989,7 +34989,7 @@ Ext.define('App.view.patient.Visits',
  */
 Ext.define('App.view.patient.Encounter',
 {
-	extend : 'App.classes.RenderPanel',
+	extend : 'App.ux.RenderPanel',
 	id : 'panelEncounter',
 	pageTitle : i18n['encounter'],
 	pageLayout : 'border',
@@ -35522,7 +35522,7 @@ Ext.define('App.view.patient.Encounter',
 		}
 		if (acl['access_enc_history'])
 		{
-			me.EncounterEventHistory = me.administrativeTabPanel.add(Ext.create('App.classes.grid.EventHistory',
+			me.EncounterEventHistory = me.administrativeTabPanel.add(Ext.create('App.ux.grid.EventHistory',
 			{
 				bodyStyle : 0,
 				title : i18n['encounter_history'],
@@ -35643,7 +35643,7 @@ Ext.define('App.view.patient.Encounter',
 				action : 'notes',
 				scope : me,
 				handler : me.newDoc
-			}, '-', '->', '-', me.priorityCombo = Ext.create('App.classes.combo.EncounterPriority',
+			}, '-', '->', '-', me.priorityCombo = Ext.create('App.ux.combo.EncounterPriority',
 			{
 				listeners :
 				{
@@ -36733,7 +36733,7 @@ Ext.define('App.view.patient.Encounter',
  */
 Ext.define('App.view.patient.windows.Medical',
 {
-	extend : 'App.classes.window.Window',
+	extend : 'App.ux.window.Window',
 	title : i18n['medical_window'],
 	id : 'MedicalWindow',
 	layout : 'card',
@@ -36854,7 +36854,7 @@ Ext.define('App.view.patient.windows.Medical',
 				dataIndex : 'note'
 			}],
 
-			plugins : Ext.create('App.classes.grid.RowFormEditing',
+			plugins : Ext.create('App.ux.grid.RowFormEditing',
 			{
 				autoCancel : false,
 				errorSummary : false,
@@ -37034,7 +37034,7 @@ Ext.define('App.view.patient.windows.Medical',
 				dataIndex : 'alert',
 				renderer : me.boolRenderer
 			}],
-			plugins : me.rowEditingAllergies = Ext.create('App.classes.grid.RowFormEditing',
+			plugins : me.rowEditingAllergies = Ext.create('App.ux.grid.RowFormEditing',
 			{
 				autoCancel : false,
 				errorSummary : false,
@@ -37106,7 +37106,7 @@ Ext.define('App.view.patient.windows.Medical',
 						{
 							margin : '0 10 5 0'
 						},
-						items : [me.allergieType = Ext.create('App.classes.combo.Allergies',
+						items : [me.allergieType = Ext.create('App.ux.combo.Allergies',
 						{
 							fieldLabel : i18n['allergy'],
 							action : 'allergie_name',
@@ -37121,7 +37121,7 @@ Ext.define('App.view.patient.windows.Medical',
 								'select' : me.onLiveSearchSelect,
 								change : me.disableFieldLogic
 							}
-						}), me.allergieMedication = Ext.create('App.classes.LiveMedicationSearch',
+						}), me.allergieMedication = Ext.create('App.ux.LiveMedicationSearch',
 						{
 							fieldLabel : i18n['allergy'],
 							hideLabel : false,
@@ -37272,7 +37272,7 @@ Ext.define('App.view.patient.windows.Medical',
 				format : 'Y-m-d',
 				dataIndex : 'end_date'
 			}],
-			plugins : Ext.create('App.classes.grid.RowFormEditing',
+			plugins : Ext.create('App.ux.grid.RowFormEditing',
 			{
 				autoCancel : false,
 				errorSummary : false,
@@ -37424,7 +37424,7 @@ Ext.define('App.view.patient.windows.Medical',
 				format : 'Y-m-d',
 				dataIndex : 'date'
 			}],
-			plugins : Ext.create('App.classes.grid.RowFormEditing',
+			plugins : Ext.create('App.ux.grid.RowFormEditing',
 			{
 				autoCancel : false,
 				errorSummary : false,
@@ -37569,7 +37569,7 @@ Ext.define('App.view.patient.windows.Medical',
 				format : 'Y-m-d',
 				dataIndex : 'end_date'
 			}],
-			plugins : Ext.create('App.classes.grid.RowFormEditing',
+			plugins : Ext.create('App.ux.grid.RowFormEditing',
 			{
 				autoCancel : false,
 				errorSummary : false,
@@ -37704,7 +37704,7 @@ Ext.define('App.view.patient.windows.Medical',
 				format : 'Y-m-d',
 				dataIndex : 'end_date'
 			}],
-			plugins : Ext.create('App.classes.grid.RowFormEditing',
+			plugins : Ext.create('App.ux.grid.RowFormEditing',
 			{
 				autoCancel : false,
 				errorSummary : false,
@@ -38302,7 +38302,7 @@ Ext.define('App.view.patient.windows.Medical',
 	{
 		var panel = this.query('[action="labPreviewPanel"]')[0];
 		panel.remove(this.doc);
-		panel.add(this.doc = Ext.create('App.classes.ManagedIframe',
+		panel.add(this.doc = Ext.create('App.ux.ManagedIframe',
 		{
 			src : src
 		}));
@@ -38681,10 +38681,10 @@ Ext.define('App.view.patient.windows.Medical',
 //******************************************************************************
 Ext.define('App.view.patient.VisitCheckout',
 {
-	extend : 'App.classes.RenderPanel',
+	extend : 'App.ux.RenderPanel',
 	id : 'panelVisitCheckout',
 	pageTitle : 'Visit Checkout',
-	uses : ['App.classes.GridPanel'],
+	uses : ['App.ux.GridPanel'],
 
 	initComponent : function()
 	{
@@ -39164,10 +39164,10 @@ Ext.define('App.view.patient.VisitCheckout',
 //******************************************************************************
 Ext.define('App.view.fees.Billing',
 {
-	extend : 'App.classes.RenderPanel',
+	extend : 'App.ux.RenderPanel',
 	id : 'panelBilling',
 	pageTitle : i18n['billing'],
-	uses : ['App.classes.GridPanel'],
+	uses : ['App.ux.GridPanel'],
 	pageLayout : 'card',
 	initComponent : function()
 	{
@@ -39934,7 +39934,7 @@ Ext.define('App.view.fees.PaymentEntryWindow',
 //******************************************************************************
 Ext.define('App.view.fees.Payments',
 {
-	extend : 'App.classes.RenderPanel',
+	extend : 'App.ux.RenderPanel',
 	id : 'panelPayments',
 	pageTitle : i18n['payments'],
 	initComponent : function()
@@ -40186,7 +40186,7 @@ Ext.define('App.view.fees.Payments',
 				xtype : 'grid',
 				region : 'center',
 				//store:me.encountersPaymentsStore,
-				plugins : Ext.create('App.classes.grid.RowFormEditing',
+				plugins : Ext.create('App.ux.grid.RowFormEditing',
 				{
 					autoCancel : false,
 					errorSummary : false,
@@ -40392,10 +40392,10 @@ Ext.define('App.view.fees.Payments',
  */
 Ext.define('App.view.administration.DataManager',
 {
-	extend : 'App.classes.RenderPanel',
+	extend : 'App.ux.RenderPanel',
 	id : 'panelDataManager',
 	pageTitle : 'Data Manager',
-	uses : ['App.classes.GridPanel', 'App.classes.combo.CodesTypes', 'App.classes.combo.Titles'],
+	uses : ['App.ux.GridPanel', 'App.ux.combo.CodesTypes', 'App.ux.combo.Titles'],
 	initComponent : function()
 	{
 		var me = this;
@@ -40971,7 +40971,7 @@ Ext.define('App.view.administration.DataManager',
 			}]
 		});
 
-		me.dataManagerGrid = Ext.create('App.classes.GridPanel',
+		me.dataManagerGrid = Ext.create('App.ux.GridPanel',
 		{
 			region : 'center',
 			store : me.store,
@@ -41012,7 +41012,7 @@ Ext.define('App.view.administration.DataManager',
 				dataIndex : 'active',
 				renderer : me.boolRenderer
 			}],
-			plugins : Ext.create('App.classes.grid.RowFormEditing',
+			plugins : Ext.create('App.ux.grid.RowFormEditing',
 			{
 				autoCancel : false,
 				errorSummary : false,
@@ -41295,11 +41295,11 @@ Ext.define('App.view.administration.DataManager',
  */
 Ext.define('App.view.administration.Documents',
 {
-	extend : 'App.classes.RenderPanel',
+	extend : 'App.ux.RenderPanel',
 	id : 'panelDocuments',
 	pageTitle : i18n['document_template_editor'],
 	pageLayout : 'border',
-	uses : ['App.classes.GridPanel'],
+	uses : ['App.ux.GridPanel'],
 	initComponent : function()
 	{
 
@@ -41906,7 +41906,7 @@ Ext.define('App.view.administration.Documents',
 			}]
 		});
 
-		me.TokensGrid = Ext.create('App.classes.GridPanel',
+		me.TokensGrid = Ext.create('App.ux.GridPanel',
 		{
 			title : i18n['available_tokens'],
 			region : 'east',
@@ -42062,10 +42062,10 @@ Ext.define('App.view.administration.Documents',
  */
 Ext.define('App.view.administration.Facilities',
 {
-	extend : 'App.classes.RenderPanel',
+	extend : 'App.ux.RenderPanel',
 	id : 'panelFacilities',
 	pageTitle : i18n['facilities_active'],
-	uses : ['App.classes.GridPanel', 'App.classes.window.Window'],
+	uses : ['App.ux.GridPanel', 'App.ux.window.Window'],
 	initComponent : function()
 	{
 
@@ -42206,7 +42206,7 @@ Ext.define('App.view.administration.Facilities',
 				sortable : true,
 				dataIndex : 'city'
 			}],
-			plugins : Ext.create('App.classes.grid.RowFormEditing',
+			plugins : Ext.create('App.ux.grid.RowFormEditing',
 			{
 				autoCancel : false,
 				errorSummary : false,
@@ -42418,10 +42418,10 @@ Ext.define('App.view.administration.Facilities',
  */
 Ext.define('App.view.administration.Globals',
 {
-	extend : 'App.classes.RenderPanel',
+	extend : 'App.ux.RenderPanel',
 	id : 'panelGlobals',
 	pageTitle : 'GaiaEHR ' + i18n['global_settings'],
-	uses : ['App.classes.form.fields.Checkbox'],
+	uses : ['App.ux.form.fields.Checkbox'],
 	initComponent : function()
 	{
 		var me = this;
@@ -43113,7 +43113,7 @@ Ext.define('App.view.administration.Globals',
 		//**************************************************************************
 		// Global Form Panel
 		//**************************************************************************
-		me.globalFormPanel = Ext.create('App.classes.form.Panel',
+		me.globalFormPanel = Ext.create('App.ux.form.Panel',
 		{
 			layout : 'fit',
 			autoScroll : true,
@@ -43669,11 +43669,11 @@ Ext.define('App.view.administration.Globals',
  */
 Ext.define('App.view.administration.Layout',
 {
-	extend : 'App.classes.RenderPanel',
+	extend : 'App.ux.RenderPanel',
 	id : 'panelLayout',
 	pageTitle : i18n['layout_form_editor'],
 	pageLayout : 'border',
-	uses : ['App.classes.GridPanel'],
+	uses : ['App.ux.GridPanel'],
 	initComponent : function()
 	{
 
@@ -43966,7 +43966,7 @@ Ext.define('App.view.administration.Layout',
 		/**
 		 * This grid only available if the field is a Combobox
 		 */
-		me.selectListGrid = Ext.create('App.classes.GridPanel',
+		me.selectListGrid = Ext.create('App.ux.GridPanel',
 		{
 			store : me.selectListoptionsStore,
 			region : 'south',
@@ -43996,7 +43996,7 @@ Ext.define('App.view.administration.Layout',
 		/**
 		 * form to create and modified the fields
 		 */
-		me.fieldForm = Ext.create('App.classes.form.Panel',
+		me.fieldForm = Ext.create('App.ux.form.Panel',
 		{
 			region : 'center',
 			//url	            : 'app/administration/layout/data.php?task=formRequest',
@@ -44414,7 +44414,7 @@ Ext.define('App.view.administration.Layout',
 		 * the user will not have the options to create
 		 * forms, just to modified the fields of existing forms.
 		 */
-		me.formsGrid = Ext.create('App.classes.GridPanel',
+		me.formsGrid = Ext.create('App.ux.GridPanel',
 		{
 			title : i18n['form_list'],
 			region : 'west',
@@ -44948,11 +44948,11 @@ Ext.define('App.view.administration.Layout',
  */
 Ext.define('App.view.administration.Lists',
 {
-	extend : 'App.classes.RenderPanel',
+	extend : 'App.ux.RenderPanel',
 	id : 'panelLists',
 	pageTitle : i18n['select_list_options'],
 	pageLayout : 'border',
-	uses : ['App.classes.GridPanel', 'App.classes.form.Panel', 'Ext.grid.plugin.RowEditing'],
+	uses : ['App.ux.GridPanel', 'App.ux.form.Panel', 'Ext.grid.plugin.RowEditing'],
 	initComponent : function()
 	{
 
@@ -45079,7 +45079,7 @@ Ext.define('App.view.administration.Lists',
 		/**
 		 * Lists Grid
 		 */
-		me.listsGrid = Ext.create('App.classes.GridPanel',
+		me.listsGrid = Ext.create('App.ux.GridPanel',
 		{
 			store : me.listsStore,
 			itemId : 'listsGrid',
@@ -45147,7 +45147,7 @@ Ext.define('App.view.administration.Lists',
 		/**
 		 * Options Grid
 		 */
-		me.optionsGrid = Ext.create('App.classes.GridPanel',
+		me.optionsGrid = Ext.create('App.ux.GridPanel',
 		{
 			store : me.optionsStore,
 			itemId : 'optionsGrid',
@@ -45429,9 +45429,9 @@ Ext.define('App.view.administration.Lists',
  */
 Ext.define('App.view.administration.Log',
 {
-	extend : 'App.classes.RenderPanel',
+	extend : 'App.ux.RenderPanel',
 	id : 'panelLog',
-	uses : ['App.classes.GridPanel'],
+	uses : ['App.ux.GridPanel'],
 	pageTitle : i18n['event_history_log'],
 	initComponent : function()
 	{
@@ -45510,7 +45510,7 @@ Ext.define('App.view.administration.Log',
 		// *************************************************************************************
 		// Create the GridPanel
 		// *************************************************************************************
-		me.logGrid = Ext.create('App.classes.GridPanel',
+		me.logGrid = Ext.create('App.ux.GridPanel',
 		{
 			store : me.logStore,
 			columns : [
@@ -45714,7 +45714,7 @@ Ext.define('App.view.administration.Log',
  */
 Ext.define('App.view.administration.Medications',
 {
-	extend : 'App.classes.RenderPanel',
+	extend : 'App.ux.RenderPanel',
 	id : 'panelMedications',
 	pageTitle : i18n['medications'],
 
@@ -45725,7 +45725,7 @@ Ext.define('App.view.administration.Medications',
 
 		me.storeMedications = Ext.create('App.store.administration.Medications');
 
-		me.medicationsGrid = Ext.create('App.classes.GridPanel',
+		me.medicationsGrid = Ext.create('App.ux.GridPanel',
 		{
 			region : 'center',
 			store : me.storeMedications,
@@ -45766,7 +45766,7 @@ Ext.define('App.view.administration.Medications',
 				dataIndex : 'ACTIVE_INGRED_UNIT',
 				sortable : true
 			}],
-			plugins : Ext.create('App.classes.grid.RowFormEditing',
+			plugins : Ext.create('App.ux.grid.RowFormEditing',
 			{
 				autoCancel : false,
 				errorSummary : false,
@@ -45961,7 +45961,7 @@ Ext.define('App.view.administration.Medications',
  */
 Ext.define('App.view.administration.FloorPlans',
 {
-	extend : 'App.classes.RenderPanel',
+	extend : 'App.ux.RenderPanel',
 	id : 'panelFloorPlans',
 	pageTitle : i18n['floor_plan_editor'],
 	pageLayout : 'border',
@@ -46273,10 +46273,10 @@ Ext.define('App.view.administration.FloorPlans',
  */
 Ext.define('App.view.administration.Practice',
 {
-	extend : 'App.classes.RenderPanel',
+	extend : 'App.ux.RenderPanel',
 	id : 'panelPractice',
 	pageTitle : i18n['practice_settings'],
-	uses : ['App.classes.combo.Titles', 'App.classes.combo.TransmitMethod', 'App.classes.combo.InsurancePayerType'],
+	uses : ['App.ux.combo.Titles', 'App.ux.combo.TransmitMethod', 'App.ux.combo.InsurancePayerType'],
 	initComponent : function()
 	{
 		var me = this;
@@ -46556,7 +46556,7 @@ Ext.define('App.view.administration.Practice',
 		// *************************************************************************************
 		// Insurance Numbers Record Structure
 		// *************************************************************************************
-		//		me.insuranceNumbersStore = Ext.create('App.classes.restStoreModel', {
+		//		me.insuranceNumbersStore = Ext.create('App.ux.restStoreModel', {
 		//			fields     : [
 		//				{name: 'id', type: 'int'},
 		//				{name: 'name', type: 'string'}
@@ -46569,7 +46569,7 @@ Ext.define('App.view.administration.Practice',
 		// *************************************************************************************
 		// X12 Partners Record Structure
 		// *************************************************************************************
-		//		me.x12PartnersStore = Ext.create('App.classes.restStoreModel', {
+		//		me.x12PartnersStore = Ext.create('App.ux.restStoreModel', {
 		//			fields     : [
 		//				{name: 'id', type: 'int'},
 		//				{name: 'name', type: 'string'}
@@ -46603,7 +46603,7 @@ Ext.define('App.view.administration.Practice',
 		}
 
 
-		me.rowEditingPharmacy = Ext.create('App.classes.grid.RowFormEditing',
+		me.rowEditingPharmacy = Ext.create('App.ux.grid.RowFormEditing',
 		{
 			autoCancel : false,
 			errorSummary : false,
@@ -46788,7 +46788,7 @@ Ext.define('App.view.administration.Practice',
 			}]
 		});
 
-		me.rowEditingInsurance = Ext.create('App.classes.grid.RowFormEditing',
+		me.rowEditingInsurance = Ext.create('App.ux.grid.RowFormEditing',
 		{
 			autoCancel : false,
 			errorSummary : false,
@@ -47248,10 +47248,10 @@ Ext.define('App.view.administration.Practice',
  */
 Ext.define('App.view.administration.PreventiveCare',
 {
-	extend : 'App.classes.RenderPanel',
+	extend : 'App.ux.RenderPanel',
 	id : 'panelPreventiveCare',
 	pageTitle : i18n['preventive_care'],
-	uses : ['App.classes.GridPanel', 'App.classes.combo.CodesTypes', 'App.classes.combo.Titles'],
+	uses : ['App.ux.GridPanel', 'App.ux.combo.CodesTypes', 'App.ux.combo.Titles'],
 	initComponent : function()
 	{
 		var me = this;
@@ -47290,7 +47290,7 @@ Ext.define('App.view.administration.PreventiveCare',
 		}
 
 
-		me.guidelineGrid = Ext.create('App.classes.GridPanel',
+		me.guidelineGrid = Ext.create('App.ux.GridPanel',
 		{
 			region : 'center',
 			store : me.store,
@@ -47343,7 +47343,7 @@ Ext.define('App.view.administration.PreventiveCare',
 				sortable : true,
 				dataIndex : 'frequency'
 			}],
-			plugins : Ext.create('App.classes.grid.RowFormEditing',
+			plugins : Ext.create('App.ux.grid.RowFormEditing',
 			{
 				autoCancel : false,
 				errorSummary : false,
@@ -47864,7 +47864,7 @@ Ext.define('App.view.administration.PreventiveCare',
  */
 Ext.define('App.view.administration.Roles',
 {
-	extend : 'App.classes.RenderPanel',
+	extend : 'App.ux.RenderPanel',
 	id : 'panelRoles',
 	pageTitle : i18n['roles_and_permissions'],
 	pageLayout :
@@ -48011,7 +48011,7 @@ Ext.define('App.view.administration.Roles',
  */
 Ext.define('App.view.administration.ExternalDataLoads',
 {
-	extend : 'App.classes.RenderPanel',
+	extend : 'App.ux.RenderPanel',
 	id : 'panelExternalDataLoads',
 	pageTitle : i18n['external_data_loads'],
 	/**
@@ -48345,10 +48345,10 @@ Ext.define('App.view.administration.ExternalDataLoads',
  */
 Ext.define('App.view.administration.Users',
 {
-	extend : 'App.classes.RenderPanel',
+	extend : 'App.ux.RenderPanel',
 	id : 'panelUsers',
 	pageTitle : i18n['users'],
-	uses : ['App.classes.GridPanel'],
+	uses : ['App.ux.GridPanel'],
 	initComponent : function()
 	{
 
@@ -48498,7 +48498,7 @@ Ext.define('App.view.administration.Users',
 		// *************************************************************************************
 		// Create the GridPanel
 		// *************************************************************************************
-		me.userGrid = Ext.create('App.classes.GridPanel',
+		me.userGrid = Ext.create('App.ux.GridPanel',
 		{
 			store : me.userStore,
 			columns : [
@@ -48573,7 +48573,7 @@ Ext.define('App.view.administration.Users',
 		// *************************************************************************************
 		// Window User Form
 		// *************************************************************************************
-		me.win = Ext.create('App.classes.window.Window',
+		me.win = Ext.create('App.ux.window.Window',
 		{
 			width : 600,
 			items : [
@@ -48987,10 +48987,10 @@ Ext.define('App.view.administration.Users',
  */
 Ext.define('App.view.miscellaneous.Addressbook',
 {
-	extend : 'App.classes.RenderPanel',
+	extend : 'App.ux.RenderPanel',
 	id : 'panelAddressbook',
 	pageTitle : i18n['address_book'],
-	uses : ['App.classes.GridPanel', 'App.classes.combo.Titles', 'App.classes.window.Window', 'App.classes.combo.Types'],
+	uses : ['App.ux.GridPanel', 'App.ux.combo.Titles', 'App.ux.window.Window', 'App.ux.combo.Types'],
 	initComponent : function()
 	{
 		var me = this;
@@ -49236,7 +49236,7 @@ Ext.define('App.view.miscellaneous.Addressbook',
 		/**
 		 * Window and form
 		 */
-		me.win = Ext.create('App.classes.window.Window',
+		me.win = Ext.create('App.ux.window.Window',
 		{
 			width : 755,
 			title : i18n['add_or_edit_contact'],
@@ -49947,10 +49947,10 @@ Ext.define('App.view.miscellaneous.Addressbook',
  */
 Ext.define('App.view.miscellaneous.MyAccount',
 {
-	extend : 'App.classes.RenderPanel',
+	extend : 'App.ux.RenderPanel',
 	id : 'panelMyAccount',
 	pageTitle : i18n['my_account'],
-	uses : ['App.classes.combo.Titles', 'App.classes.window.Window', 'App.classes.combo.Facilities', 'App.classes.combo.Authorizations'],
+	uses : ['App.ux.combo.Titles', 'App.ux.window.Window', 'App.ux.combo.Facilities', 'App.ux.combo.Authorizations'],
 	initComponent : function()
 	{
 		var me = this;
@@ -50047,7 +50047,7 @@ Ext.define('App.view.miscellaneous.MyAccount',
 		// User Settings Form
 		// Add or Edit purpose
 		// *************************************************************************************
-		me.myAccountForm = Ext.create('App.classes.form.Panel',
+		me.myAccountForm = Ext.create('App.ux.form.Panel',
 		{
 			cls : 'form-white-bg',
 			frame : true,
@@ -50218,7 +50218,7 @@ Ext.define('App.view.miscellaneous.MyAccount',
 						width : 110,
 						xtype : 'displayfield',
 						value : 'Default Facility: '
-					}, Ext.create('App.classes.combo.Facilities',
+					}, Ext.create('App.ux.combo.Facilities',
 					{
 						width : 170
 					}),
@@ -50226,7 +50226,7 @@ Ext.define('App.view.miscellaneous.MyAccount',
 						width : 100,
 						xtype : 'displayfield',
 						value : 'Authorizations: '
-					}, Ext.create('App.classes.combo.Authorizations',
+					}, Ext.create('App.ux.combo.Authorizations',
 					{
 						width : 175
 					})]
@@ -50242,7 +50242,7 @@ Ext.define('App.view.miscellaneous.MyAccount',
 						width : 110,
 						xtype : 'displayfield',
 						value : 'Access Control: '
-					}, Ext.create('App.classes.combo.Roles',
+					}, Ext.create('App.ux.combo.Roles',
 					{
 						width : 170
 					}),
@@ -50373,7 +50373,7 @@ Ext.define('App.view.miscellaneous.MyAccount',
 			}
 		});
 
-		me.win = Ext.create('App.classes.window.Window',
+		me.win = Ext.create('App.ux.window.Window',
 		{
 			width : 420,
 			title : i18n['change_you_password'],
@@ -50488,10 +50488,10 @@ Ext.define('App.view.miscellaneous.MyAccount',
 //******************************************************************************
 Ext.define('App.view.miscellaneous.MySettings',
 {
-	extend : 'App.classes.RenderPanel',
+	extend : 'App.ux.RenderPanel',
 	id : 'panelMySettings',
 	pageTitle : i18n['my_settings'],
-	uses : ['App.classes.GridPanel'],
+	uses : ['App.ux.GridPanel'],
 	initComponent : function()
 	{
 		var panel = this;
@@ -50499,7 +50499,7 @@ Ext.define('App.view.miscellaneous.MySettings',
 		// User Settings Form
 		// Add or Edit purpose
 		// *************************************************************************************
-		panel.uSettingsForm = Ext.create('App.classes.form.Panel',
+		panel.uSettingsForm = Ext.create('App.ux.form.Panel',
 		{
 			id : 'uSettingsForm',
 			bodyStyle : 'padding: 10px;',
@@ -50656,7 +50656,7 @@ Ext.define('App.view.miscellaneous.MySettings',
 //******************************************************************************
 Ext.define('App.view.miscellaneous.OfficeNotes',
 {
-	extend : 'App.classes.RenderPanel',
+	extend : 'App.ux.RenderPanel',
 	id : 'panelOfficeNotes',
 	pageTitle : i18n['office_notes'],
 	pageLayout : 'border',
@@ -50887,11 +50887,11 @@ Ext.define('App.view.miscellaneous.OfficeNotes',
 //******************************************************************************
 Ext.define('App.view.miscellaneous.Websearch',
 {
-	extend : 'App.classes.RenderPanel',
+	extend : 'App.ux.RenderPanel',
 	id : 'panelWebsearch',
 	pageTitle : i18n['national_library'],
 	pageLayout : 'border',
-	uses : ['App.classes.GridPanel'],
+	uses : ['App.ux.GridPanel'],
 	initComponent : function()
 	{
 
@@ -51015,7 +51015,7 @@ Ext.define('App.view.miscellaneous.Websearch',
 		{
 			return Ext.String.format('<div class="topic"><span class="search_title">{0}</span><br><span class="search_source">{1}</span><br><span class="search_snippet" style="white-space: normal;">{2}</span></div>', value, record.get('source') || "Unknown", record.get('snippet') || "Unknown");
 		};
-		page.onotesGrid = Ext.create('App.classes.GridPanel',
+		page.onotesGrid = Ext.create('App.ux.GridPanel',
 		{
 			margin : '0 0 2 0',
 			region : 'center',
@@ -52236,7 +52236,7 @@ Ext.define('App.view.Viewport',
 	{
 		var me = this, src = btn.action;
 		me.winSupport.remove(me.miframe);
-		me.winSupport.add(me.miframe = Ext.create('App.classes.ManagedIframe',
+		me.winSupport.add(me.miframe = Ext.create('App.ux.ManagedIframe',
 		{
 			src : src
 		}));
@@ -52315,7 +52315,7 @@ Ext.define('App.view.Viewport',
 		me.LogoutTask.stop(me.LogoutTaskTimer);
 		me.logoutWarinigWindow.destroy();
 		delete me.logoutWarinigWindow;
-		App.classes.ActivityMonitor.start();
+		App.ux.ActivityMonitor.start();
 	},
 	startAutoLogout : function()
 	{
@@ -52495,7 +52495,7 @@ Ext.define('App.view.Viewport',
 		var me = this;
 		if (me.documentViewWindow)
 			me.DocumentViewerWindow.remove(me.documentViewWindow);
-		me.DocumentViewerWindow.add(me.documentViewWindow = Ext.create('App.classes.ManagedIframe',
+		me.DocumentViewerWindow.add(me.documentViewWindow = Ext.create('App.ux.ManagedIframe',
 		{
 			src : src
 		}));
@@ -52597,7 +52597,7 @@ Ext.define('App.view.Viewport',
 		var me = this;
 		if (start)
 		{
-			App.classes.ActivityMonitor.init(
+			App.ux.ActivityMonitor.init(
 			{
 				interval : me.activityMonitorInterval * 1000,
 				maxInactive : (1000 * 60 * me.activityMonitorMaxInactive),
@@ -52608,12 +52608,12 @@ Ext.define('App.view.Viewport',
 				}
 			});
 			Ext.TaskManager.start(me.cronTask);
-			App.classes.ActivityMonitor.start();
+			App.ux.ActivityMonitor.start();
 		}
 		else
 		{
 			Ext.TaskManager.stop(me.cronTask);
-			App.classes.ActivityMonitor.stop();
+			App.ux.ActivityMonitor.stop();
 		}
 	},
 	/*

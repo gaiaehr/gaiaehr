@@ -30,7 +30,7 @@
  * @namespace User.verifyUserPass
  */
 Ext.define('App.view.patient.Encounter', {
-    extend:'App.classes.RenderPanel',
+    extend:'App.ux.RenderPanel',
     id:'panelEncounter',
     pageTitle:i18n['encounter'],
     pageLayout:'border',
@@ -534,7 +534,7 @@ Ext.define('App.view.patient.Encounter', {
             }));
         }
         if(acl['access_enc_history']){
-            me.EncounterEventHistory = me.administrativeTabPanel.add(Ext.create('App.classes.grid.EventHistory', {
+            me.EncounterEventHistory = me.administrativeTabPanel.add(Ext.create('App.ux.grid.EventHistory', {
                 bodyStyle:0,
                 title:i18n['encounter_history'],
                 store:me.encounterEventHistoryStore
@@ -638,7 +638,7 @@ Ext.define('App.view.patient.Encounter', {
                 action:'notes',
                 scope:me,
                 handler:me.newDoc
-            }, '-', '->', '-', me.priorityCombo = Ext.create('App.classes.combo.EncounterPriority', {
+            }, '-', '->', '-', me.priorityCombo = Ext.create('App.ux.combo.EncounterPriority', {
                 listeners:{
                     scope:me,
                     select:me.prioritySelect

@@ -18,7 +18,7 @@
  */
 Ext.define('App.view.administration.Medications',
 {
-	extend : 'App.classes.RenderPanel',
+	extend : 'App.ux.RenderPanel',
 	id : 'panelMedications',
 	pageTitle : i18n['medications'],
 
@@ -29,7 +29,7 @@ Ext.define('App.view.administration.Medications',
 
 		me.storeMedications = Ext.create('App.store.administration.Medications');
 
-		me.medicationsGrid = Ext.create('App.classes.GridPanel',
+		me.medicationsGrid = Ext.create('App.ux.GridPanel',
 		{
 			region : 'center',
 			store : me.storeMedications,
@@ -70,7 +70,7 @@ Ext.define('App.view.administration.Medications',
 				dataIndex : 'ACTIVE_INGRED_UNIT',
 				sortable : true
 			}],
-			plugins : Ext.create('App.classes.grid.RowFormEditing',
+			plugins : Ext.create('App.ux.grid.RowFormEditing',
 			{
 				autoCancel : false,
 				errorSummary : false,
@@ -199,8 +199,8 @@ Ext.define('App.view.administration.Medications',
                         text: 'Print',
                         iconCls: 'icon-print',
                         handler : function(){
-                            App.classes.grid.Printer.printAutomatically = false;
-                            App.classes.grid.Printer.print(this.up('grid'));
+                            App.ux.grid.Printer.printAutomatically = false;
+                            App.ux.grid.Printer.print(this.up('grid'));
                         }
                     }
                 ]

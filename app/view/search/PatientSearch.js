@@ -9,12 +9,12 @@
 // GaiaEHR (Electronic Health Records) 2011
 //******************************************************************************
 Ext.define('App.view.search.PatientSearch', {
-	extend       : 'App.classes.RenderPanel',
+	extend       : 'App.ux.RenderPanel',
 	id           : 'panelPatientSearch',
 	pageTitle    : i18n['advance_patient_search'],
 	pageLayout   : 'border',
 	uses         : [
-		'App.classes.GridPanel'
+		'App.ux.GridPanel'
 	],
 	initComponent: function() {
 		var me = this;
@@ -71,7 +71,7 @@ Ext.define('App.view.search.PatientSearch', {
 				}
 			]
 		});
-		me.grid = Ext.create('App.classes.GridPanel', {
+		me.grid = Ext.create('App.ux.GridPanel', {
 			region   : 'center',
 			//store    : me.store,
 			columns  : [

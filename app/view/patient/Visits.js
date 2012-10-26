@@ -10,11 +10,11 @@
  * @namespace Encounter.getEncounters
  */
 Ext.define('App.view.patient.Visits', {
-	extend   : 'App.classes.RenderPanel',
+	extend   : 'App.ux.RenderPanel',
 	id       : 'panelVisits',
 	pageTitle: i18n['visits_history'],
 	uses     : [
-		'App.classes.GridPanel',
+		'App.ux.GridPanel',
 		'Ext.ux.PreviewPlugin'
 	],
 

@@ -32,7 +32,7 @@ Ext.define('App.view.patient.encounter.CurrentProceduralTerminology', {
         });
 
 
-        me.cptFormEdit = Ext.create('App.classes.grid.RowFormEditing', {
+        me.cptFormEdit = Ext.create('App.ux.grid.RowFormEditing', {
             autoCancel:false,
             errorSummary:false,
             clicksToEdit:1,

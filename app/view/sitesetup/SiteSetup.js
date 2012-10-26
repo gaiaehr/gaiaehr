@@ -22,12 +22,12 @@ Ext.define('App.view.sitesetup.SiteSetup',
         align: 'stretch'
     },
     requires     : [
-        'App.classes.form.fields.Help',
-        'App.classes.form.fields.plugin.HelpIcon',
-        'App.classes.window.CopyRights',
-        'App.classes.combo.Languages',
-        'App.classes.combo.TimeZone',
-        'App.classes.combo.Themes'
+        'App.ux.form.fields.Help',
+        'App.ux.form.fields.plugin.HelpIcon',
+        'App.ux.window.CopyRights',
+        'App.ux.combo.Languages',
+        'App.ux.combo.TimeZone',
+        'App.ux.combo.Themes'
     ],
     initComponent: function() 
     {
@@ -117,7 +117,7 @@ Ext.define('App.view.sitesetup.SiteSetup',
          * Copy Rights window
          * @type {*}
          */
-        me.winCopyright = Ext.create('App.classes.window.CopyRights');
+        me.winCopyright = Ext.create('App.ux.window.CopyRights');
         
         /**
          * Site Setup window

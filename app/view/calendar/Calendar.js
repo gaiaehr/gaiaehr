@@ -16,7 +16,7 @@
  *
  */
 Ext.define('App.view.calendar.Calendar', {
-	extend     : 'App.classes.RenderPanel',
+	extend     : 'App.ux.RenderPanel',
 	id         : 'panelCalendar',
 	pageTitle  : i18n['calendar_events'],
 	constructor: function() {

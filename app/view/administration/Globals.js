@@ -19,10 +19,10 @@
  */
 Ext.define('App.view.administration.Globals',
 {
-	extend : 'App.classes.RenderPanel',
+	extend : 'App.ux.RenderPanel',
 	id : 'panelGlobals',
 	pageTitle : 'GaiaEHR ' + i18n['global_settings'],
-	uses : ['App.classes.form.fields.Checkbox'],
+	uses : ['App.ux.form.fields.Checkbox'],
 	initComponent : function()
 	{
 		var me = this;
@@ -714,7 +714,7 @@ Ext.define('App.view.administration.Globals',
 		//**************************************************************************
 		// Global Form Panel
 		//**************************************************************************
-		me.globalFormPanel = Ext.create('App.classes.form.Panel',
+		me.globalFormPanel = Ext.create('App.ux.form.Panel',
 		{
 			layout : 'fit',
 			autoScroll : true,

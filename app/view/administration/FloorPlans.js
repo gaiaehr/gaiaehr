@@ -18,7 +18,7 @@
  */
 Ext.define('App.view.administration.FloorPlans',
 {
-	extend : 'App.classes.RenderPanel',
+	extend : 'App.ux.RenderPanel',
 	id : 'panelFloorPlans',
 	pageTitle : i18n['floor_plan_editor'],
 	pageLayout : 'border',

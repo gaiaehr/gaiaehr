@@ -19,7 +19,7 @@
  */
 Ext.define('App.view.patient.Summary',
 {
-	extend : 'App.classes.RenderPanel',
+	extend : 'App.ux.RenderPanel',
 	id : 'panelSummary',
 	pageTitle : i18n['patient_summary'],
 	pageLayout :
@@ -622,7 +622,7 @@ Ext.define('App.view.patient.Summary',
 					renderer : me.boolRenderer
 				}],
 
-				plugins : Ext.create('App.classes.grid.RowFormEditing',
+				plugins : Ext.create('App.ux.grid.RowFormEditing',
 				{
 					autoCancel : false,
 					errorSummary : false,
@@ -1214,7 +1214,7 @@ Ext.define('App.view.patient.Summary',
 	getPhotoIdWindow : function()
 	{
 		var me = this;
-		me.PhotoIdWindow = Ext.create('App.classes.PhotoIdWindow',
+		me.PhotoIdWindow = Ext.create('App.ux.PhotoIdWindow',
 		{
 			title : i18n['patient_photo_id'],
 			loadMask : true,

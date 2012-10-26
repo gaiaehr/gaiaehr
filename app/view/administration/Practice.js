@@ -19,10 +19,10 @@
 
 Ext.define('App.view.administration.Practice',
 {
-	extend : 'App.classes.RenderPanel',
+	extend : 'App.ux.RenderPanel',
 	id : 'panelPractice',
 	pageTitle : i18n['practice_settings'],
-	uses : ['App.classes.combo.Titles', 'App.classes.combo.TransmitMethod', 'App.classes.combo.InsurancePayerType'],
+	uses : ['App.ux.combo.Titles', 'App.ux.combo.TransmitMethod', 'App.ux.combo.InsurancePayerType'],
 	initComponent : function()
 	{
 		var me = this;
@@ -302,7 +302,7 @@ Ext.define('App.view.administration.Practice',
 		// *************************************************************************************
 		// Insurance Numbers Record Structure
 		// *************************************************************************************
-		//		me.insuranceNumbersStore = Ext.create('App.classes.restStoreModel', {
+		//		me.insuranceNumbersStore = Ext.create('App.ux.restStoreModel', {
 		//			fields     : [
 		//				{name: 'id', type: 'int'},
 		//				{name: 'name', type: 'string'}
@@ -315,7 +315,7 @@ Ext.define('App.view.administration.Practice',
 		// *************************************************************************************
 		// X12 Partners Record Structure
 		// *************************************************************************************
-		//		me.x12PartnersStore = Ext.create('App.classes.restStoreModel', {
+		//		me.x12PartnersStore = Ext.create('App.ux.restStoreModel', {
 		//			fields     : [
 		//				{name: 'id', type: 'int'},
 		//				{name: 'name', type: 'string'}
@@ -349,7 +349,7 @@ Ext.define('App.view.administration.Practice',
 		}
 
 
-		me.rowEditingPharmacy = Ext.create('App.classes.grid.RowFormEditing',
+		me.rowEditingPharmacy = Ext.create('App.ux.grid.RowFormEditing',
 		{
 			autoCancel : false,
 			errorSummary : false,
@@ -534,7 +534,7 @@ Ext.define('App.view.administration.Practice',
 			}]
 		});
 
-		me.rowEditingInsurance = Ext.create('App.classes.grid.RowFormEditing',
+		me.rowEditingInsurance = Ext.create('App.ux.grid.RowFormEditing',
 		{
 			autoCancel : false,
 			errorSummary : false,

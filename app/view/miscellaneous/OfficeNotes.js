@@ -10,7 +10,7 @@
 //******************************************************************************
 Ext.define('App.view.miscellaneous.OfficeNotes',
 {
-	extend : 'App.classes.RenderPanel',
+	extend : 'App.ux.RenderPanel',
 	id : 'panelOfficeNotes',
 	pageTitle : i18n['office_notes'],
 	pageLayout : 'border',

@@ -17,7 +17,7 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 Ext.define('App.view.patient.windows.PreventiveCare', {
-	extend       : 'App.classes.window.Window',
+	extend       : 'App.ux.window.Window',
 	title        : i18n['preventive_care_window'],
 	closeAction  : 'hide',
     height       : 750,
@@ -37,7 +37,7 @@ Ext.define('App.view.patient.windows.PreventiveCare', {
 			autoSync  : true
 		});
 
-		me.grid  = Ext.create('App.classes.GridPanel', {
+		me.grid  = Ext.create('App.ux.GridPanel', {
             store      : me.patientPreventiveCare,
 			features: Ext.create('Ext.grid.feature.Grouping', {
 					groupHeaderTpl   : i18n['type'] + ': {name} ({rows.length} ' + i18n['item'] + '{[values.rows.length > 1 ? "s" : ""]})',
@@ -64,7 +64,7 @@ Ext.define('App.view.patient.windows.PreventiveCare', {
 
 
             ],
-			plugins: Ext.create('App.classes.grid.RowFormEditing', {
+			plugins: Ext.create('App.ux.grid.RowFormEditing', {
 				autoCancel  : false,
 				errorSummary: false,
 				clicksToEdit: 1,

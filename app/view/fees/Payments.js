@@ -19,7 +19,7 @@
  */
 Ext.define('App.view.fees.Payments',
 {
-	extend : 'App.classes.RenderPanel',
+	extend : 'App.ux.RenderPanel',
 	id : 'panelPayments',
 	pageTitle : i18n['payments'],
 	initComponent : function()
@@ -275,7 +275,7 @@ Ext.define('App.view.fees.Payments',
 				xtype : 'grid',
 				region : 'center',
 				//store:me.encountersPaymentsStore,
-				plugins : Ext.create('App.classes.grid.RowFormEditing',
+				plugins : Ext.create('App.ux.grid.RowFormEditing',
 				{
 					autoCancel : false,
 					errorSummary : false,

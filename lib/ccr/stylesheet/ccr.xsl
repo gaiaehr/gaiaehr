@@ -229,7 +229,7 @@ this XSLT back to the community.
                         </table>
                       </td>
                     </tr>
-                    <span id="ccrcontent">
+                    <!--<span id="ccrcontent">-->
                       <xsl:if test="a:ContinuityOfCareRecord/a:Body/a:Alerts">
                         <tr id="alertsrow">
                           <td>
@@ -1582,7 +1582,7 @@ this XSLT back to the community.
                           </td>
                         </tr>
                       </xsl:if>
-                    </span>
+                    <!--</span>-->
                     <tr>
                       <td/>
                       <td/>
@@ -2599,20 +2599,24 @@ span.header{
     line-height: 16pt;
 	padding-top: 10px;
 }
+table {
+    width:100%;
+}
 table.list {
 	padding-bottom: 5px;
 	border: thin solid #cccccc;
 	border-style-internal: thin solid #cccccc;
 	BORDER-COLLAPSE: collapse;
 	background: white;
-	background-image: none
+	background-image: none;
+    width: 100%;
 }
 table.list th {
 	text-align: left;
 	FONT-WEIGHT: bold;
 	COLOR: white;
 	background: #006699;
-	background-image: none
+	background-image: none;
 }
 table.list td {
 	padding: 5px;

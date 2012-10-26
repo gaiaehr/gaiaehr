@@ -167,8 +167,7 @@ License :
 							<code code="48764-5" codeSystem="2.16.840.1.113883.6.1"/>
 							<title>Purpose</title>
 							<text>
-								<xsl:value-of
-										select="/a:ContinuityOfCareRecord/a:Purpose/a:Description/a:Text"></xsl:value-of>
+								<xsl:value-of select="/a:ContinuityOfCareRecord/a:Purpose/a:Description/a:Text"></xsl:value-of>
 							</text>
 						</section>
 					</component>

@@ -897,7 +897,14 @@ class CCR
 			$e_Actor->appendChild($e_ActorID);
 
 		}
-		$informationData = array();
+		$informationData = array(
+			'facility' => 'facility',
+			'street' => 'street',
+			'city' => 'city',
+			'state' => 'state',
+			'postal_code' => 'postal_code',
+			'phone' => 'phone'
+		);
 		//////// Actor Information Systems
 		$e_Actor = $this->ccr->createElement('Actor');
 		$e_Actors->appendChild($e_Actor);
@@ -1512,7 +1519,7 @@ class CCR
 	}
 }
 
-//$c = new CCR();
+$c = new CCR();
 // generate, viewccd
 // yes, hybrid, pure
-//$c->createCCR('generate',  'no');
+$c->createCCR('viewccd',  'no');

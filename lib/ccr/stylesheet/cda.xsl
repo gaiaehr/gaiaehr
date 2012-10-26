@@ -73,7 +73,7 @@
                   <xsl:call-template name="make-tableofcontents"/>
                </xsl:if>
             </xsl:if>
-            <hr align="left" color="teal" size="2" width="80%"/>
+            <hr align="left" color="teal" size="2" width="100%"/>
             <!-- produce human readable document content -->
             <xsl:apply-templates select="n1:component/n1:structuredBody|n1:component/n1:nonXMLBody"/>
             <br/>
@@ -2239,12 +2239,12 @@ h4 {
 }
 
 div {
-  width: 80%;
+  width: 100%;
 }
 
 table {
   line-height: 10pt;
-  width: 80%;
+  width: 100%;
 }
 
 tr {
@@ -2260,7 +2260,7 @@ td {
   font-size: 12pt;
   font-weight: bold;
   text-align: center;
-  width: 80%;
+  width: 100%;
 }
 
 .header_table{

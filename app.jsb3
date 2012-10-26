@@ -26,6 +26,10 @@
 					"name": "PreviewPlugin.js"
 				},
 				{
+					"path": "app/classes/grid/",
+					"name": "Printer.js"
+				},
+				{
 					"path": "app/classes/",
 					"name": "RenderPanel.js"
 				},

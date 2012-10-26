@@ -1,4 +1,9 @@
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
+
+--
+-- Table structure for table `globals`
+--
 
 DROP TABLE IF EXISTS `globals`;
 CREATE TABLE IF NOT EXISTS `globals` (
@@ -7,6 +12,10 @@ CREATE TABLE IF NOT EXISTS `globals` (
   `gl_value` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`gl_name`,`gl_index`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `globals`
+--
 
 INSERT INTO `globals` (`gl_name`, `gl_index`, `gl_value`) VALUES
 ('activate_ccr_ccd_report', 0, '0'),
@@ -29,7 +38,6 @@ INSERT INTO `globals` (`gl_name`, `gl_index`, `gl_value`) VALUES
 ('certificate_authority_crt', 0, ''),
 ('certificate_authority_key', 0, ''),
 ('client_certificate_valid_in_days', 0, '365'),
-('concurrent_layout', 0, 'west'),
 ('configuration_import_export', 0, '0'),
 ('country_data_type', 0, '26'),
 ('country_list', 0, 'country'),
@@ -74,6 +82,7 @@ INSERT INTO `globals` (`gl_name`, `gl_index`, `gl_value`) VALUES
 ('is_client_ssl_enabled', 0, '0'),
 ('language_default', 0, 'en_US'),
 ('language_menu_showall', 0, '0'),
+('main_navigation_menu_left', 0, 'east'),
 ('MedicareReferrerIsRenderer', 0, '0'),
 ('mitosehr_name', 0, 'MitosEHR :: DEMO'),
 ('mysql_bin_dir', 0, 'C:/xampp/mysql/bin'),

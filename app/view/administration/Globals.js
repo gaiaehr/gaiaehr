@@ -42,7 +42,7 @@ Ext.define('App.view.administration.Globals',
 				type : 'string'
 			},
 			{
-				name : 'concurrent_layout',
+				name : 'main_navigation_menu_left',
 				type : 'string'
 			},
 			{
@@ -503,7 +503,7 @@ Ext.define('App.view.administration.Globals',
 				"option_id" : "1"
 			}]
 		});
-		me.concurrent_layout_store = Ext.create('Ext.data.Store',
+		me.main_navigation_menu_left_store = Ext.create('Ext.data.Store',
 		{
 			fields : ['title', 'option_id'],
 			data : [
@@ -758,11 +758,11 @@ Ext.define('App.view.administration.Globals',
                         {
                             xtype : 'combo',
                             fieldLabel : i18n['layout_style'],
-                            name : 'concurrent_layout',
+                            name : 'main_navigation_menu_left',
                             displayField : 'title',
                             valueField : 'option_id',
                             editable : false,
-                            store : me.concurrent_layout_store
+                            store : me.main_navigation_menu_left_store
                         },
                         {
                             xtype : 'combo',

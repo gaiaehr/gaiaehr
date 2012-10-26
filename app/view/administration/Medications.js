@@ -169,32 +169,41 @@ Ext.define('App.view.administration.Medications',
 				store : me.storeMedications,
 				displayInfo : true,
 				emptyMsg : i18n['no_office_notes_to_display'],
-				plugins : Ext.create('Ext.ux.SlidingPager',
-				{
-				}),
+				plugins : Ext.create('Ext.ux.SlidingPager'),
 				items : ['-',
-				{
-					text : 'Add New',
-					scope : me,
-					handler : me.onAddMedication
-				}, '-',
-				{
-					xtype : 'textfield',
-					emptyText : i18n['search'],
-					enableKeyEvents : true,
-					itemId : 'query',
-					listeners :
-					{
-						scope : me,
-						keyup : me.onSearchMedications,
-						buffer : 500
-					}
-				}, '-',
-				{
-					text : i18n['reset'],
-					scope : me,
-					handler : me.onFieldReset
-				}]
+                    {
+                        text : 'Add New',
+                        scope : me,
+                        handler : me.onAddMedication
+                    },
+                    '-',
+                    {
+                        xtype : 'textfield',
+                        emptyText : i18n['search'],
+                        enableKeyEvents : true,
+                        itemId : 'query',
+                        listeners :
+                        {
+                            scope : me,
+                            keyup : me.onSearchMedications,
+                            buffer : 500
+                        }
+                    },
+                    '-',
+                    {
+                        text : i18n['reset'],
+                        scope : me,
+                        handler : me.onFieldReset
+                    },
+                    {
+                        text: 'Print',
+                        iconCls: 'icon-print',
+                        handler : function(){
+                            App.classes.grid.Printer.printAutomatically = false;
+                            App.classes.grid.Printer.print(this.up('grid'));
+                        }
+                    }
+                ]
 			})
 
 		});

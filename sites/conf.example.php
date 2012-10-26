@@ -21,13 +21,14 @@ $_SESSION['site']['AESkey'] = "%key%";
  * Check if the localization variable already has a value, if not pass the 
  * default language.
  */
-$_SESSION['site']['name']  = '%sitename%';
+$_SESSION['site']['name'] = '%sitename%';
 $_SESSION['site']['default_localization']  = '%lang%';
 $_SESSION['site']['theme'] = '%theme%';
 $_SESSION['site']['timezone'] = '%timezone%';
 
-$_SESSION['site']['dir']   = basename(dirname(__FILE__));
+$_SESSION['site']['id']    = basename(dirname(__FILE__));
+$_SESSION['site']['dir']   = $_SESSION['site']['id'];
 $_SESSION['site']['url']   = $_SESSION['url'] . '/sites/' . $_SESSION['site']['dir'];
 $_SESSION['site']['path']  = str_replace('\\', '/', dirname(__FILE__));
 $_SESSION['site']['temp']['url']  = $_SESSION['site']['url'] . '/temp';
-$_SESSION['site']['temp']['path']  = $_SESSION['site']['path'] . '/temp';
+$_SESSION['site']['temp']['path'] = $_SESSION['site']['path'] . '/temp';

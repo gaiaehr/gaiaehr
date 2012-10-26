@@ -21,6 +21,9 @@ print 'i18n = '. json_encode( $i18n ).';';
 
 // Output all the globals settings on the database.
 $global = Globals::getGlobals();
+$global['root'] = $_SESSION['root'];
+$global['url']  = $_SESSION['url'];
+$global['site']  = $_SESSION['site']['dir'];
 print 'globals = '. json_encode( $global ).';';
 
 if(!isset($_SESSION['site']['error']) && (isset($_SESSION['user']) && $_SESSION['user']['auth'] == true))

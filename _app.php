@@ -82,6 +82,9 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 		<script type="text/javascript" src="app/ux/VTypes.js"></script>
 
 		<script type="text/javascript">
+		function t(){
+
+		}
         function say(a){
             console.log(a);
         }

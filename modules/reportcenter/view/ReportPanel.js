@@ -37,14 +37,17 @@ Ext.define('Modules.reportcenter.view.ReportPanel', {
             // Draw the buttons to render and clear the report panel view.
             buttons: [
                 {
-                    text: i18n['generate'],
+                    text: i18n['generate_report'],
                     iconCls: 'icoReport',
                     scope: me,
                     handler: me.generateReport
                 },
+                '-',
                 {
-                    text: i18n['generate_pdf'],
+                    text: i18n['get_pdf'],
                     iconCls: 'icoReport',
+                    disabled:true,
+                    itemId:'pdf',
                     scope: me,
                     handler: me.generatePDF
                 },
@@ -125,35 +128,46 @@ Ext.define('Modules.reportcenter.view.ReportPanel', {
         }));
     },
 
-    generateReport:function(){
+    generateReport:function(btn){
         var me = this,
-            values = this.formPanel.getForm().getValues();
+            botton= btn.up('toolbar').getComponent('pdf'),
+            values = me.formPanel.getForm().getValues();
+        this.renderContainer.removeAll(true);
+        delete this.pdf;
         if(!me.grid) me.grid = this.getGridPanel();
-        say(values);
-        say(me.store);
+
         me.store.load({params:values});
+        botton.setDisabled(false);
+
+
+
 
     },
-    generatePDF: function(){
+    generatePDF: function(btn){
         var me = this, form = me.formPanel, params = form.getForm().getValues();
-        //me.resetRenderContainer();
+//        me.resetRenderContainer();
         if(typeof form.reportFn == 'function'){
-            var html =App.ux.grid.GridToHtml.getHtml(me.grid)
-            say(html);
+            var html =App.ux.grid.GridToHtml.getHtml(me.grid);
+            this.renderContainer.removeAll(true);
+            delete this.grid;
             form.reportFn({html:html}, function(provider, response){
-                say(response.result.url);
+
                 me.pdf = me.getPDFPanel(response.result.url);
             });
         }else{
             Ext.Msg.alert('Oops!', 'No function provided');
         }
+        btn.setDisabled(true);
     },
 
+
     resetRenderContainer:function(){
+        this.formPanel.down('toolbar').getComponent('pdf').setDisabled(true);
         this.formPanel.getForm().reset();
         this.renderContainer.removeAll(true);
         delete this.grid;
         delete this.pdf;
+
     },
     /**
      * This function is called from MitosAPP.js when

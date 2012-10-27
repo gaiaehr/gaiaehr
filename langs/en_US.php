@@ -1096,6 +1096,9 @@ $LANG = array(
 	'autosave_forms'   					    => 'Autosave Forms',
 	'autosave'   					        => 'Autosave',
 	'generate'   					        => 'Generate',
+	'generate_report'   					=> 'Generate Report',
+	'pdf'   					            => 'PDF',
+	'get_pdf'   					        => 'Get PDF',
 	'generate_pdf'   					    => 'Generate PDF'
 );
 ?>

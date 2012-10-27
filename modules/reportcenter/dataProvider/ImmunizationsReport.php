@@ -40,37 +40,10 @@ class ImmunizationsReport extends Reports
         return;
     }
     public function createImmunizationsReport(stdClass $params){
-//	    $params->to = ($params->to == '')? date('Y-m-d') : $params->to;
-//        $html = "<br><h1>Immunization Registry ($params->from - $params->to )</h1>";
-//	    $html2 = "";
-//	    $html .=
-//        "<table  border=\"0\" width=\"100%\">
-//            <tr>
-//               <th colspan=\"8\" style=\"font-weight: bold;\">".i18nRouter::t("immunization_registry")."</th>
-//            </tr>
-//            <tr>
-//               <td colspan=\"2\">".i18nRouter::t("patient")."</td>
-//               <td>".i18nRouter::t("id")."</td>
-//               <td colspan=\"2\">".i18nRouter::t("immunization_code")."</td>
-//               <td colspan=\"2\">".i18nRouter::t("immunization_name")."</td>
-//               <td>".i18nRouter::t("administered")."</td>
-//            </tr>";
-//        $html2 = $this->htmlImmunizationList($params,$html2);
-//	    $html.= $html2;
-//	    $html .= "</table>";
         ob_end_clean();
 	    $Url = $this->ReportBuilder($params->html, 10);
-        return array('success' => true, 'html' => $html, 'url' => $Url);
+        return array('success' => true, 'url' => $Url);
     }
-	public function getImmunizationsFromAndToAndImmu($from,$to,$immu = null)
-	{
-		$sql = " SELECT *
-	               FROM patient_immunizations
-	              WHERE create_date BETWEEN '$from 00:00:00' AND '$to 23:59:59'";
-		if(isset($immu) && $immu != '') $sql .= " AND immunization_id = '$immu'";
-	        $this->db->setSQL($sql);
-		return $this->db->fetchRecords(PDO::FETCH_ASSOC);
-	}
 
 	public function getImmunizationsReport(stdClass $params)
 	{
@@ -86,26 +59,9 @@ class ImmunizationsReport extends Reports
 		 $records=$this->db->fetchRecords(PDO::FETCH_ASSOC);
 		foreach ($records AS $num=>$rec)
 		{
-			$age = $this->patient->getPatientAgeByDOB($rec['DOB']);
 			$records[$num]['fullname']=$this->patient->getPatientFullNameByPid($rec['pid']);
-
 		}
 		return $records;
-	}
-
-	public function htmlImmunizationList($params,$html){
-		foreach($this->getImmunizationsFromAndToAndImmu($params->from,$params->to,$params->immu) AS $data)
-		{
-			$html .= "
-	            <tr>
-					<td colspan=\"2\">".$this->patient->getPatientFullNameByPid($data['pid'])."</td>
-					<td>".$data['pid']."</td>
-					<td colspan=\"2\">".$data['immunization_id']."</td>
-					<td colspan=\"2\">".$data['immunization_name']."</td>
-					<td>".($data['administered_date'] == '' || $data['administered_date'] == null ? '' : date('m-d-Y', strtotime($data['administered_date'])))."</td>
-				</tr>";
-		}
-		return $html;
 	}
 
 }

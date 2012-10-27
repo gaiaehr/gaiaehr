@@ -105,7 +105,7 @@
 		<table class="header_table">
 			<tbody>
 				<tr>
-					<td width="20%" bgcolor="#D0D0D0">
+					<td width="20%" bgcolor="#DFE8F6">
 						<span class="td_label">
 							<xsl:text>Document Id</xsl:text>
 						</span>
@@ -117,7 +117,7 @@
 					</td>
 				</tr>
 				<tr>
-					<td width="20%" bgcolor="#D0D0D0">
+					<td width="20%" bgcolor="#DFE8F6">
 						<span class="td_label">
 							<xsl:text>Document Created:</xsl:text>
 						</span>
@@ -135,7 +135,7 @@
 	<xsl:template name="confidentiality">
 		<table class="header_table">
 			<tbody>
-				<td width="20%" bgcolor="#D0D0D0">
+				<td width="20%" bgcolor="#DFE8F6">
 					<xsl:text>Confidentiality</xsl:text>
 				</td>
 				<td width="80%">
@@ -165,7 +165,7 @@
 				<tbody>
 					<xsl:for-each select="n1:author/n1:assignedAuthor">
 						<tr>
-							<td width="20%" bgcolor="#D0D0D0">
+							<td width="20%" bgcolor="#DFE8F6">
 								<span class="td_label">
 									<xsl:text>Author</xsl:text>
 								</span>
@@ -203,7 +203,7 @@
 						</tr>
 						<xsl:if test="n1:addr | n1:telecom">
 							<tr>
-								<td bgcolor="#D0D0D0">
+								<td bgcolor="#DFE8F6">
 									<span class="td_label">
 										<xsl:text>Contact info</xsl:text>
 									</span>
@@ -228,7 +228,7 @@
 					<tr>
 						<xsl:for-each select="n1:authenticator">
 							<tr>
-								<td width="20%" bgcolor="#D0D0D0">
+								<td width="20%" bgcolor="#DFE8F6">
 									<span class="td_label">
 										<xsl:text>Signed </xsl:text>
 									</span>
@@ -246,7 +246,7 @@
 							</tr>
 							<xsl:if test="n1:assignedEntity/n1:addr | n1:assignedEntity/n1:telecom">
 								<tr>
-									<td bgcolor="#D0D0D0">
+									<td bgcolor="#DFE8F6">
 										<span class="td_label">
 											<xsl:text>Contact info</xsl:text>
 										</span>
@@ -270,7 +270,7 @@
 			<table class="header_table">
 				<tbody>
 					<tr>
-						<td width="20%" bgcolor="#D0D0D0">
+						<td width="20%" bgcolor="#DFE8F6">
 							<span class="td_label">
 								<xsl:text>Legal authenticator</xsl:text>
 							</span>
@@ -293,7 +293,7 @@
 					</tr>
 					<xsl:if test="n1:legalAuthenticator/n1:assignedEntity/n1:addr | n1:legalAuthenticator/n1:assignedEntity/n1:telecom">
 						<tr>
-							<td bgcolor="#D0D0D0">
+							<td bgcolor="#DFE8F6">
 								<span class="td_label">
 									<xsl:text>Contact info</xsl:text>
 								</span>
@@ -315,7 +315,7 @@
 			<table class="header_table">
 				<tbody>
 					<tr>
-						<td width="20%" bgcolor="#D0D0D0">
+						<td width="20%" bgcolor="#DFE8F6">
 							<span class="td_label">
 								<xsl:text>Entered by</xsl:text>
 							</span>
@@ -328,7 +328,7 @@
 					</tr>
 					<xsl:if test="n1:dataEnterer/n1:assignedEntity/n1:addr | n1:dataEnterer/n1:assignedEntity/n1:telecom">
 						<tr>
-							<td bgcolor="#D0D0D0">
+							<td bgcolor="#DFE8F6">
 								<span class="td_label">
 									<xsl:text>Contact info</xsl:text>
 								</span>
@@ -354,7 +354,7 @@
 							<tr>
 								<xsl:choose>
 									<xsl:when test="n1:code">
-										<td width="20%" bgcolor="#D0D0D0">
+										<td width="20%" bgcolor="#DFE8F6">
 											<span class="td_label">
 												<xsl:text>Encounter Id</xsl:text>
 											</span>
@@ -364,7 +364,7 @@
 												<xsl:with-param name="id" select="n1:id"/>
 											</xsl:call-template>
 										</td>
-										<td width="15%" bgcolor="#D0D0D0">
+										<td width="15%" bgcolor="#DFE8F6">
 											<span class="td_label">
 												<xsl:text>Encounter Type</xsl:text>
 											</span>
@@ -376,7 +376,7 @@
 										</td>
 									</xsl:when>
 									<xsl:otherwise>
-										<td width="20%" bgcolor="#D0D0D0">
+										<td width="20%" bgcolor="#DFE8F6">
 											<span class="td_label">
 												<xsl:text>Encounter Id</xsl:text>
 											</span>
@@ -391,7 +391,7 @@
 							</tr>
 						</xsl:if>
 						<tr>
-							<td width="20%" bgcolor="#D0D0D0">
+							<td width="20%" bgcolor="#DFE8F6">
 								<span class="td_label">
 									<xsl:text>Encounter Date</xsl:text>
 								</span>
@@ -423,7 +423,7 @@
 						</tr>
 						<xsl:if test="n1:location/n1:healthCareFacility">
 							<tr>
-								<td width="20%" bgcolor="#D0D0D0">
+								<td width="20%" bgcolor="#DFE8F6">
 									<span class="td_label">
 										<xsl:text>Encounter Location</xsl:text>
 									</span>
@@ -466,7 +466,7 @@
 						</xsl:if>
 						<xsl:if test="n1:responsibleParty">
 							<tr>
-								<td width="20%" bgcolor="#D0D0D0">
+								<td width="20%" bgcolor="#DFE8F6">
 									<span class="td_label">
 										<xsl:text>Responsible party</xsl:text>
 									</span>
@@ -481,7 +481,7 @@
 						</xsl:if>
 						<xsl:if test="n1:responsibleParty/n1:assignedEntity/n1:addr | n1:responsibleParty/n1:assignedEntity/n1:telecom">
 							<tr>
-								<td width="20%" bgcolor="#D0D0D0">
+								<td width="20%" bgcolor="#DFE8F6">
 									<span class="td_label">
 										<xsl:text>Contact info</xsl:text>
 									</span>
@@ -504,7 +504,7 @@
 			<table class="header_table">
 				<tbody>
 					<tr>
-						<td width="20%" bgcolor="#D0D0D0">
+						<td width="20%" bgcolor="#DFE8F6">
 							<span class="td_label">
 								<xsl:text>Document maintained by</xsl:text>
 							</span>
@@ -532,7 +532,7 @@
 					</tr>
 					<xsl:if test="n1:custodian/n1:assignedCustodian/n1:representedCustodianOrganization/n1:addr |             n1:custodian/n1:assignedCustodian/n1:representedCustodianOrganization/n1:telecom">
 						<tr>
-							<td bgcolor="#D0D0D0">
+							<td bgcolor="#DFE8F6">
 								<span class="td_label">
 									<xsl:text>Contact info</xsl:text>
 								</span>
@@ -563,7 +563,7 @@
 							</xsl:variable>
 							<xsl:if test="$displayName">
 								<tr>
-									<td width="20%" bgcolor="#D0D0D0">
+									<td width="20%" bgcolor="#DFE8F6">
 										<span class="td_label">
 											<xsl:call-template name="firstCharCaseUp">
 												<xsl:with-param name="data" select="$displayName"/>
@@ -616,7 +616,7 @@
 								</xsl:if>
 							</xsl:variable>
 							<tr>
-								<td width="20%" bgcolor="#D0D0D0">
+								<td width="20%" bgcolor="#DFE8F6">
 									<span class="td_label">
 										<xsl:call-template name="firstCharCaseUp">
 											<xsl:with-param name="data" select="$displayName"/>
@@ -642,7 +642,7 @@
 				<tbody>
 					<xsl:for-each select="n1:inFulfillmentOf">
 						<tr>
-							<td width="20%" bgcolor="#D0D0D0">
+							<td width="20%" bgcolor="#DFE8F6">
 								<span class="td_label">
 									<xsl:text>In fulfillment of</xsl:text>
 								</span>
@@ -679,7 +679,7 @@
 				<tbody>
 					<xsl:for-each select="n1:informant">
 						<tr>
-							<td width="20%" bgcolor="#D0D0D0">
+							<td width="20%" bgcolor="#DFE8F6">
 								<span class="td_label">
 									<xsl:text>Informant</xsl:text>
 								</span>
@@ -700,7 +700,7 @@
 						<xsl:choose>
 							<xsl:when test="n1:assignedEntity/n1:addr | n1:assignedEntity/n1:telecom">
 								<tr>
-									<td bgcolor="#D0D0D0">
+									<td bgcolor="#DFE8F6">
 										<span class="td_label">
 											<xsl:text>Contact info</xsl:text>
 										</span>
@@ -716,7 +716,7 @@
 							</xsl:when>
 							<xsl:when test="n1:relatedEntity/n1:addr | n1:relatedEntity/n1:telecom">
 								<tr>
-									<td bgcolor="#D0D0D0">
+									<td bgcolor="#DFE8F6">
 										<span class="td_label">
 											<xsl:text>Contact info</xsl:text>
 										</span>
@@ -743,7 +743,7 @@
 				<tbody>
 					<xsl:for-each select="n1:informationRecipient">
 						<tr>
-							<td width="20%" bgcolor="#D0D0D0">
+							<td width="20%" bgcolor="#DFE8F6">
 								<span class="td_label">
 									<xsl:text>Information recipient:</xsl:text>
 								</span>
@@ -776,7 +776,7 @@
 						</tr>
 						<xsl:if test="n1:intendedRecipient/n1:addr | n1:intendedRecipient/n1:telecom">
 							<tr>
-								<td bgcolor="#D0D0D0">
+								<td bgcolor="#DFE8F6">
 									<span class="td_label">
 										<xsl:text>Contact info</xsl:text>
 									</span>
@@ -800,7 +800,7 @@
 				<tbody>
 					<xsl:for-each select="n1:participant">
 						<tr>
-							<td width="20%" bgcolor="#D0D0D0">
+							<td width="20%" bgcolor="#DFE8F6">
 								<xsl:variable name="participtRole">
 									<xsl:call-template name="translateRoleAssoCode">
 										<xsl:with-param name="classCode" select="n1:associatedEntity/@classCode"/>
@@ -852,7 +852,7 @@
 						</tr>
 						<xsl:if test="n1:associatedEntity/n1:addr | n1:associatedEntity/n1:telecom">
 							<tr>
-								<td bgcolor="#D0D0D0">
+								<td bgcolor="#DFE8F6">
 									<span class="td_label">
 										<xsl:text>Contact info</xsl:text>
 									</span>
@@ -876,7 +876,7 @@
 				<xsl:for-each select="/n1:ClinicalDocument/n1:recordTarget/n1:patientRole">
 					<xsl:if test="not(n1:id/@nullFlavor)">
 						<tr>
-							<td width="20%" bgcolor="#D0D0D0">
+							<td width="20%" bgcolor="#DFE8F6">
 								<span class="td_label">
 									<xsl:text>Patient</xsl:text>
 								</span>
@@ -888,7 +888,7 @@
 							</td>
 						</tr>
 						<tr>
-							<td width="20%" bgcolor="#D0D0D0">
+							<td width="20%" bgcolor="#DFE8F6">
 								<span class="td_label">
 									<xsl:text>Date of birth</xsl:text>
 								</span>
@@ -898,7 +898,7 @@
 									<xsl:with-param name="datetime" select="n1:patient/n1:birthTime"/>
 								</xsl:call-template>
 							</td>
-							<td width="15%" bgcolor="#D0D0D0">
+							<td width="15%" bgcolor="#DFE8F6">
 								<span class="td_label">
 									<xsl:text>Sex</xsl:text>
 								</span>
@@ -911,7 +911,7 @@
 						</tr>
 						<xsl:if test="n1:patient/n1:raceCode | (n1:patient/n1:ethnicGroupCode)">
 							<tr>
-								<td width="20%" bgcolor="#D0D0D0">
+								<td width="20%" bgcolor="#DFE8F6">
 									<span class="td_label">
 										<xsl:text>Race</xsl:text>
 									</span>
@@ -928,7 +928,7 @@
 										</xsl:otherwise>
 									</xsl:choose>
 								</td>
-								<td width="15%" bgcolor="#D0D0D0">
+								<td width="15%" bgcolor="#DFE8F6">
 									<span class="td_label">
 										<xsl:text>Ethnicity</xsl:text>
 									</span>
@@ -948,7 +948,7 @@
 							</tr>
 						</xsl:if>
 						<tr>
-							<td bgcolor="#D0D0D0">
+							<td bgcolor="#DFE8F6">
 								<span class="td_label">
 									<xsl:text>Contact info</xsl:text>
 								</span>
@@ -958,7 +958,7 @@
 									<xsl:with-param name="contact" select="."/>
 								</xsl:call-template>
 							</td>
-							<td bgcolor="#D0D0D0">
+							<td bgcolor="#DFE8F6">
 								<span class="td_label">
 									<xsl:text>Patient IDs</xsl:text>
 								</span>
@@ -982,7 +982,7 @@
 				<tbody>
 					<xsl:for-each select="n1:relatedDocument">
 						<tr>
-							<td width="20%" bgcolor="#D0D0D0">
+							<td width="20%" bgcolor="#DFE8F6">
 								<span class="td_label">
 									<xsl:text>Related document</xsl:text>
 								</span>
@@ -1008,7 +1008,7 @@
 				<tbody>
 					<xsl:for-each select="n1:authorization">
 						<tr>
-							<td width="20%" bgcolor="#D0D0D0">
+							<td width="20%" bgcolor="#DFE8F6">
 								<span class="td_label">
 									<xsl:text>Consent</xsl:text>
 								</span>

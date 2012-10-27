@@ -1522,4 +1522,4 @@ class CCR
 $c = new CCR();
 // generate, viewccd
 // yes, hybrid, pure
-$c->createCCR('viewccd',  'no');
+$c->createCCR($_REQUEST['action'], $_REQUEST['raw']);

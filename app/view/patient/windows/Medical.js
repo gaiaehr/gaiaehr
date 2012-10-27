@@ -232,9 +232,9 @@ Ext.define('App.view.patient.windows.Medical', {
                                         }),
                                         {
                                             fieldLabel:i18n['date_administered'],
-                                            xtype:'datefield',
                                             width:295,
                                             labelWidth:160,
+                                            xtype:'datefield',
                                             format:'Y-m-d',
                                             name:'administered_date'
                                         }

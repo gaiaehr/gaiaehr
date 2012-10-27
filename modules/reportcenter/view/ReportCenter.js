@@ -9,7 +9,6 @@
 // 
 // GaiaEHR (Electronic Health Records) 2012
 //******************************************************************************
-
 Ext.define('Modules.reportcenter.view.ReportCenter', {
         extend   : 'App.ux.RenderPanel',
         id       : 'panelReportCenter',
@@ -19,11 +18,9 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
             var me = this;
 
             me.reports = Ext.create('Ext.panel.Panel', {
-                    layout: 'auto'
-                });
-
+                layout: 'auto'
+            });
             me.pageBody = [ me.reports ];
-
             /*
              * Patient Reports List
              * TODO: Pass the report indicator telling what report should be rendering
@@ -31,7 +28,10 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
              */
             me.patientCategory = me.addCategory(i18n['patient_reports'], 260);
             me.ClientListReport = me.addReportByCategory(me.patientCategory, i18n['client_list_report'], function(btn) {
-                me.goToReportPanelAndSetForm({
+
+                if(!me.clientListStore) me.clientListStore = Ext.create('Modules.reportcenter.store.ClientList');
+
+                me.goToReportPanelAndSetPanel({
                     title:i18n['client_list_report'],
                     items : [
                         {
@@ -45,13 +45,42 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                             fieldLabel: i18n['to'],
                             name      : 'to',
                             format:'Y-m-d'
+                        },{
+                            xtype          : 'patienlivetsearch',
+                            fieldLabel     : i18n['name'],
+                            hideLabel      : false,
+                            name           : 'pid',
+                            width          : 350
                         }
                     ],
-                    fn:ClientList.CreateClientList
+                    fn:ClientList.CreateClientList,
+                    store:me.clientListStore,
+                    columns:[
+                        {
+                            text:'Service Date',
+                            xtype:'datecolumn',
+                            format:'Y-m-d',
+                            dataIndex:'start_date'
+                        },
+                        {
+                            text:'Name',
+                            width:200,
+                            dataIndex:'fullname'
+                        },
+                        {
+                            text:'Address',
+                            flex:1,
+                            dataIndex:'fulladdress'
+                        },
+                        {
+                            text:'Home Phone',
+                            dataIndex:'home_phone'
+                        }
+                    ]
                 });
             });
             me.Rx = me.addReportByCategory(me.patientCategory, i18n['rx'], function(btn) {
-                me.goToReportPanelAndSetForm({
+                me.goToReportPanelAndSetPanel({
                     title:i18n['rx'],
                     items : [
                         {
@@ -104,7 +133,8 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                 });
             });
             me.ClinicalReport = me.addReportByCategory(me.patientCategory, i18n['clinical'], function(btn) {
-                me.goToReportPanelAndSetForm({
+                if(!me.clinicalStore) me.clinicalStore = Ext.create('Modules.reportcenter.store.Clinical');
+                me.goToReportPanelAndSetPanel({
                     title:i18n['clinical'],
                     action: 'clientListReport',
                     items : [
@@ -112,13 +142,13 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                         {
                             title  : i18n['general'],
                             xtype  : 'container',
-                            padding: 10,
+                           // padding: 10,
                             layout : 'vbox',
                             items  : [
                                 {
                                     xtype   : 'fieldcontainer',
                                     layout  : 'hbox',
-                                    defaults: { margin: '0 10 5 0' },
+                                    defaults: { margin: '0 10 0 0' },
                                     items   : [
 
                                         {
@@ -126,7 +156,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                                             fieldLabel     : i18n['patient'],
                                             hideLabel      : false,
                                             name           : 'pid',
-                                            width          : 280
+                                            width          : 270
                                         },
                                         {
                                             xtype     : 'mitos.sexcombo',
@@ -154,7 +184,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                                 {
                                     xtype   : 'fieldcontainer',
                                     layout  : 'hbox',
-                                    defaults: { margin: '0 10 5 0' },
+                                    defaults: { margin: '0 10 0 0' },
                                     items   : [
                                         {
                                             xtype     : 'datefield',
@@ -188,7 +218,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                                 {
                                     xtype   : 'fieldcontainer',
                                     layout  : 'hbox',
-                                    defaults: { margin: '0 10 5 0' },
+                                    defaults: { margin: '0 10 0 0' },
                                     items   : [
 
                                         {
@@ -223,11 +253,32 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                             ]
                         }
                     ],
-                    fn:Clinical.createClinicalReport
+                    fn:Clinical.createClinicalReport,
+                    store:me.clinicalStore,
+                    columns:[
+                        {
+                            text:'Name',
+                            width:200,
+                            dataIndex:'fullname'
+                        },
+                        {
+                            text:'Age',
+                            dataIndex:'age'
+                        },
+                        {
+                            text:'Sex',
+                            dataIndex:'sex'
+                        },
+                        {
+                            text:'Ethnicity',
+                            dataIndex:'ethnicity'
+                        }
+                    ]
                 });
             });
             me.ImmunizationReport = me.addReportByCategory(me.patientCategory, i18n['immunization_registry'], function(btn) {
-                me.goToReportPanelAndSetForm({
+                if(!me.immunizationReportStore) me.immunizationReportStore = Ext.create('Modules.reportcenter.store.ImmunizationsReport');
+                me.goToReportPanelAndSetPanel({
                     title:i18n['immunization_registry'],
                     action: 'clientListReport',
                     items : [
@@ -253,7 +304,30 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                             width          : 350
                         }
                     ],
-                    fn:ImmunizationsReport.createImmunizationsReport
+                    fn:ImmunizationsReport.createImmunizationsReport,
+                    store:me.immunizationReportStore,
+                        columns:[
+                            {
+                                text:'Name',
+                                width:200,
+                                dataIndex:'fullname'
+                            },
+                            {
+                                text:'Immunization Id',
+                                dataIndex:'immunization_id'
+                            },
+                            {
+                                text:'Immunization Name',
+                                dataIndex:'immunization_name',
+                                flex:1
+                            },
+                            {
+                                text:'Administered Date',
+                                dataIndex:'administered_date',
+                                xtype:'datecolumn',
+                                format:'Y-m-d'
+                            }
+                        ]
                 });
             });
 
@@ -264,7 +338,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
              */
             me.clinicCategory = me.addCategory(i18n['clinic_reports'], 260);
             me.link5 = me.addReportByCategory(me.clinicCategory, i18n['standard_measures'], function(btn) {
-                me.goToReportPanelAndSetForm({
+                me.goToReportPanelAndSetPanel({
                     title:i18n['standard_measures'],
                     action: 'clientListReport',
                     items : [
@@ -282,7 +356,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                 });
             });
             me.link6 = me.addReportByCategory(me.clinicCategory, i18n['clinical_quality_measures_cqm'], function(btn) {
-                me.goToReportPanelAndSetForm({
+                me.goToReportPanelAndSetPanel({
                     title:i18n['clinical_quality_measures_cqm'],
                     action: 'clientListReport',
                     items : [
@@ -300,7 +374,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                 });
             });
             me.link7 = me.addReportByCategory(me.clinicCategory, i18n['automated_measure_calculations_amc'], function(btn) {
-                me.goToReportPanelAndSetForm({
+                me.goToReportPanelAndSetPanel({
                     title:i18n['automated_measure_calculations_amc'],
                     action: 'clientListReport',
                     items : [
@@ -318,7 +392,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                 });
             });
             me.link8 = me.addReportByCategory(me.clinicCategory, i18n['automated_measure_calculations_tracking'], function(btn) {
-                me.goToReportPanelAndSetForm({
+                me.goToReportPanelAndSetPanel({
                     title:i18n['automated_measure_calculations_tracking'],
                     action: 'clientListReport',
                     items : [
@@ -346,7 +420,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
              */
             me.visitCategory = me.addCategory(i18n['visit_reports'], 260);
             me.link9 = me.addReportByCategory(me.visitCategory, i18n['super_bill'], function(btn) {
-                me.goToReportPanelAndSetForm({
+                me.goToReportPanelAndSetPanel({
                     title: i18n['super_bill'],
                     items : [
                         {
@@ -375,7 +449,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
             });
 
             me.link10 = me.addReportByCategory(me.visitCategory, i18n['appointments'], function(btn) {
-                me.goToReportPanelAndSetForm({
+                me.goToReportPanelAndSetPanel({
                     title: i18n['appointments'],
                     items : [
                         {
@@ -475,14 +549,17 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
          * Function to call the report panel.
          * Remember the report fields are dynamically rendered.
          */
-        goToReportPanelAndSetForm: function(formConfig) {
-            var panel = app.MainPanel.getLayout().setActiveItem('panelReportPanel'),
-                form = panel.down('form');
-            form.setTitle(formConfig.title);
-            form.action = formConfig.action;
-            form.reportFn = formConfig.fn;
-            form.removeAll();
-            form.add(formConfig.items);
+        goToReportPanelAndSetPanel: function(config) {
+            var panel = app.MainPanel.getLayout().setActiveItem('panelReportPanel');
+            panel.setReportPanel(config);
+
+
+
+//            formPanel.setTitle(config.title);
+//            formPanel.action = config.action;
+//            formPanel.reportFn = config.fn;
+//            formPanel.removeAll();
+//            formPanel.add(config.items);
         },
 
         /**

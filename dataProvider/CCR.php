@@ -58,6 +58,7 @@ class CCR
 
 	function createCCR($action, $raw = 'no')
 	{
+
 		//$result = $this->getActorData();
 		//		while($res = sqlFetchArray($result[2])) {
 		//			${"labID{$res['id']}"} = $this->getUuid();
@@ -180,7 +181,7 @@ class CCR
 					}
 				} else {
 					header('Content-type: application/xml');
-					echo $this->ccr->saveXml();
+					print $this->ccr->saveXml();
 				}
 			}
 		}
@@ -1519,7 +1520,10 @@ class CCR
 	}
 }
 
-$c = new CCR();
-// generate, viewccd
-// yes, hybrid, pure
-$c->createCCR($_REQUEST['action'], $_REQUEST['raw']);
+if(isset($_REQUEST['action']) && isset($_REQUEST['raw'])){
+	$c = new CCR();
+	// generate, viewccd
+	// yes, hybrid, pure
+	$c->createCCR($_REQUEST['action'], $_REQUEST['raw']);
+}
+

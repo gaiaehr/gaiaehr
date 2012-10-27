@@ -92,6 +92,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 				'Ext.ux.LiveSearchGridPanel',
 				'Ext.ux.SlidingPager',
 				'Ext.ux.PreviewPlugin',
+				'App.ux.grid.GridToHtml',
 				'App.ux.grid.Printer',
 				/**
 				 * Load the models, the model are the representative of the database

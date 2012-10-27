@@ -1094,6 +1094,8 @@ $LANG = array(
 	'search_for_a_patient'         	        => 'Search for a Patient',
 	'manufacturer'   					    => 'Manufacturer',
 	'autosave_forms'   					    => 'Autosave Forms',
-	'autosave'   					        => 'Autosave'
+	'autosave'   					        => 'Autosave',
+	'generate'   					        => 'Generate',
+	'generate_pdf'   					    => 'Generate PDF'
 );
 ?>

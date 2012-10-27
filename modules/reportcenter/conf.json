@@ -21,6 +21,10 @@
 				"CreateClientList":
 				{
 					"len":1
+				},
+				"getClientList":
+				{
+					"len":1
 				}
 			}
 		},
@@ -37,12 +41,20 @@
 				"createImmunizationsReport":
 				{
 					"len":1
+				},
+				"getImmunizationsReport":
+				{
+					"len":1
 				}
 			}
 		},
 		"Clinical":{
 			"methods":{
 				"createClinicalReport":
+				{
+					"len":1
+				},
+				"getClinicalList":
 				{
 					"len":1
 				}

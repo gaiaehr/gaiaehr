@@ -60,7 +60,7 @@ class Person
 		return $fullname;
 	}
 
-	public static function fulladdress($street, $streetb, $city, $state, $zip)
+	public static function fulladdress($street, $streetb = null, $city, $state, $zip)
 	{
 
 		if ($street != NULL || $street != "")

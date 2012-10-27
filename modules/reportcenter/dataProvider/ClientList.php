@@ -42,36 +42,47 @@ class ClientList extends Reports
 
 	public function createClientList(stdClass $params)
 	{
-		$params -> to = ($params -> to == '') ? date('Y-m-d') : $params -> to;
-		$html = "<br><h1>Patient List ($params->from - $params->to )</h1>";
-		$html2 = "";
-		$html .= "<table  border=\"0\" width=\"100%\">
-            <tr>
-               <th colspan=\"11\" style=\"font-weight: bold;\">" . i18nRouter::t("patient_list") . "</th>
-            </tr>
-            <tr>
-               <td colspan=\"2\">" . i18nRouter::t("last_visit") . "</td>
-               <td colspan=\"2\">" . i18nRouter::t("patient") . "</td>
-               <td>" . i18nRouter::t("id") . "</td>
-               <td>" . i18nRouter::t("street") . "</td>
-               <td>" . i18nRouter::t("city") . "</td>
-               <td>" . i18nRouter::t("state") . "</td>
-               <td>" . i18nRouter::t("zip") . "</td>
-               <td colspan=\"2\">" . i18nRouter::t("home_phone") . "</td>
-            </tr>";
-		$html2 = $this -> htmlPatientList($params, $html2);
-		$html .= $html2;
-
-		$html .= "</table>";
+//		$params -> to = ($params -> to == '') ? date('Y-m-d') : $params -> to;
+//		$html = "<br><h1>Patient List ($params->from - $params->to )</h1>";
+//		$html2 = "";
+//		$html .= "<table  border=\"0\" width=\"100%\">
+//            <tr>
+//               <th colspan=\"11\" style=\"font-weight: bold;\">" . i18nRouter::t("patient_list") . "</th>
+//            </tr>
+//            <tr>
+//               <td colspan=\"2\">" . i18nRouter::t("last_visit") . "</td>
+//               <td colspan=\"2\">" . i18nRouter::t("patient") . "</td>
+//               <td>" . i18nRouter::t("id") . "</td>
+//               <td>" . i18nRouter::t("street") . "</td>
+//               <td>" . i18nRouter::t("city") . "</td>
+//               <td>" . i18nRouter::t("state") . "</td>
+//               <td>" . i18nRouter::t("zip") . "</td>
+//               <td colspan=\"2\">" . i18nRouter::t("home_phone") . "</td>
+//            </tr>";
+//		$html2 = $this -> htmlPatientList($params, $html2);
+//		$html .= $html2;
+//
+//		$html .= "</table>";
 		ob_end_clean();
-		$Url = $this -> ReportBuilder($html, 10);
+		$Url = $this -> ReportBuilder($params->html, 10);
 		return array(
 			'success' => true,
-			'html' => $html,
+//			'html' => $html,
 			'url' => $Url
 		);
 	}
 
+	public function getClientList(stdClass $params){
+		$params -> to = ($params -> to == '') ? date('Y-m-d') : $params -> to;
+		$records = $this->encounter->getEncounterByDateFromToAndPatient($params->from,$params->to,$params->pid);
+
+		foreach ($records AS $num=>$rec)
+				{
+					$records[$num]['fullname']=$this->patient->getPatientFullNameByPid($rec['pid']);
+					$records[$num]['fulladdress']= $this->patient->getPatientFullAddressByPid($rec['pid']);
+				}
+		return $records;
+	}
 	public function htmlPatientList($params, $html)
 	{
 		foreach ($this->encounter->getEncounterByDateFromToAndPatient($params->from,$params->to,$params->pid) AS $data)
@@ -97,4 +108,4 @@ class ClientList extends Reports
 //$e = new ClientList();
 //$params = new stdClass();
 //echo '<pre>';
-//print_r($e->htmlPatientList($params,''));
+//print_r($e->getClientList($params));

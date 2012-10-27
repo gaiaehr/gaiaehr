@@ -42,29 +42,29 @@ class Clinical extends Reports
 
 	public function createClinicalReport(stdClass $params)
 	{
-		$params -> to = ($params -> to == '') ? date('Y-m-d') : $params -> to;
-		$html = "<br><h1>Clinical ($params->from - $params->to )</h1>";
-		$html2 = "";
-		$html .= "<table  border=\"0\" width=\"100%\">
-            <tr>
-               <th colspan=\"9\" style=\"font-weight: bold;\">" . i18nRouter::t("clinical") . "</th>
-            </tr>
-            <tr>
-               <td colspan=\"2\">" . i18nRouter::t("patient") . "</td>
-               <td>" . i18nRouter::t("pid") . "</td>
-               <td>" . i18nRouter::t("age") . "</td>
-               <td>" . i18nRouter::t("gender") . "</td>
-               <td colspan=\"2\">" . i18nRouter::t("race") . "</td>
-               <td colspan=\"2\">" . i18nRouter::t("ethnicity") . "</td>
-            </tr>";
-		$html2 = $this -> htmlClinicalList($params, $html2);
-		$html .= $html2;
-		$html .= "</table>";
+//		$params -> to = ($params -> to == '') ? date('Y-m-d') : $params -> to;
+//		$html = "<br><h1>Clinical ($params->from - $params->to )</h1>";
+//		$html2 = "";
+//		$html .= "<table  border=\"0\" width=\"100%\">
+//            <tr>
+//               <th colspan=\"9\" style=\"font-weight: bold;\">" . i18nRouter::t("clinical") . "</th>
+//            </tr>
+//            <tr>
+//               <td colspan=\"2\">" . i18nRouter::t("patient") . "</td>
+//               <td>" . i18nRouter::t("pid") . "</td>
+//               <td>" . i18nRouter::t("age") . "</td>
+//               <td>" . i18nRouter::t("gender") . "</td>
+//               <td colspan=\"2\">" . i18nRouter::t("race") . "</td>
+//               <td colspan=\"2\">" . i18nRouter::t("ethnicity") . "</td>
+//            </tr>";
+//		$html2 = $this -> htmlClinicalList($params, $html2);
+//		$html .= $html2;
+//		$html .= "</table>";
 		ob_end_clean();
-		$Url = $this -> ReportBuilder($html, 10);
+		$Url = $this -> ReportBuilder($params->html, 10);
 		return array(
 			'success' => true,
-			'html' => $html,
+//			'html' => $html,
 			'url' => $Url
 		);
 	}
@@ -112,14 +112,72 @@ class Clinical extends Reports
 			else if($age_from<=$num && $age_to>=$num ){
 				array_push($newarray,$data[$key]);
 			}
-//			if($age_from < $age['DMY']['years']){
-//				unset($data[$key]);
-//			}
-//			else if($age_to <= $age['DMY']['years']){
-//				unset($data[$key]);
-//			}
+		}
+
+		return $newarray;
+	}
+
+	public function getClinicalList(stdClass $params)
+	{
+		$params -> to = ($params -> to == '') ? date('Y-m-d') : $params -> to;
+
+		$pid = $params->pid;
+		$sex = $params->sex;
+		$race= $params->race;
+		$from=$params->from;
+		$to= $params->to;
+		$age_from= $params->age_from;
+		$age_to = $params->age_to;
+		$ethnicity= $params->ethnicity;
 
 
+		$sql = " SELECT *
+	               FROM form_data_demographics
+	              WHERE date_created BETWEEN '$from 00:00:00' AND '$to 23:59:59'";
+		if (isset($sex) && ($sex != '' && $sex != 'Both'))
+			$sql .= " AND sex = '$sex'";
+		if (isset($race) && $race != '')
+			$sql .= " AND race = '$race'";
+		if (isset($pid) && $pid != '')
+			$sql .= " AND pid = '$pid'";
+		if (isset($ethnicity) && $ethnicity != '')
+			$sql .= " AND ethnicity= '$ethnicity'";
+
+		$this -> db -> setSQL($sql);
+		$data = $this->db->fetchRecords(PDO::FETCH_ASSOC);
+		$newarray = array();
+		if(($age_from == null && $age_to == null) || ($age_from == '' && $age_to == '')){
+			$age_from=0;
+			$age_to=100;
+		}
+		foreach ($data as  $key =>$data1)
+		{
+
+			$age = $this->patient->getPatientAgeByDOB($data1['DOB']);
+			$num =$age['DMY']['years'];
+			if($age_from == null){
+				if($age_to != null){
+					if($age_to>=$num){
+						array_push($newarray,$data[$key]);
+					}
+				}
+			}
+			else if($age_to == null){
+				if($age_from != null){
+					if($age_from<=$num){
+						array_push($newarray,$data[$key]);
+					}
+				}
+			}
+			else if($age_from<=$num && $age_to>=$num ){
+				array_push($newarray,$data[$key]);
+			}
+		}
+		foreach ($newarray AS $num=>$rec)
+		{
+			$age = $this->patient->getPatientAgeByDOB($rec['DOB']);
+			$newarray[$num]['fullname']=$this->patient->getPatientFullNameByPid($rec['pid']);
+			$newarray[$num]['age']= ($age['DMY']['years']==0)?'':$age['DMY']['years'];
 		}
 
 		return $newarray;
@@ -134,8 +192,7 @@ class Clinical extends Reports
 									$params->to,
 									$params->age_from,
 									$params->age_to,
-									$params->ethnicity,
-									$params->icd) AS $data)
+									$params->ethnicity) AS $data)
 		{
 			$age               = $this->patient->getPatientAgeByDOB($data['DOB']);
 			$html .= "
@@ -150,6 +207,7 @@ class Clinical extends Reports
 		}
 		return $html;
 	}
+
 
 }
 

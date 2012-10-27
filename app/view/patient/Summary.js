@@ -26,6 +26,10 @@ Ext.define('App.view.patient.Summary', {
         type: 'hbox',
         align: 'stretch'
     },
+    requires: [
+               'Ext.XTemplate',
+               'Ext.ux.IFrame'
+	],
     pid: null,
     demographicsData: null,
     initComponent: function(){
@@ -690,6 +694,7 @@ Ext.define('App.view.patient.Summary', {
                         items:[
                             {
                                 text:'View CCR',
+                                margin:'0 0 5 0',
                                 handler:function(){
                                     me.reportPanel.remove(me.miframe);
                                     me.reportPanel.add(me.miframe = Ext.create('App.ux.ManagedIframe', {
@@ -715,12 +720,34 @@ Ext.define('App.view.patient.Summary', {
                         items:[
 
                             {
-                                text:'Export CCR'
+                                text:'Export CCR',
+                                margin:'0 0 5 0',
+                                handler:function(){
+                                    me.reportPanel.remove(me.miframe);
+                                    me.reportPanel.add(me.miframe = Ext.create('App.ux.ManagedIframe', {
+                                        src: 'http://localhost/gaiaehr/dataProvider/CCR.php?action=generate&raw=no'
+                                    }));
+                                }
                             },
                             {
-                                text:'Export CCD'
+                                text:'Export CCD',
+                                handler:function(){
+                                    me.reportPanel.remove(me.miframe);
+
+                                    me.reportPanel.add(me.miframe = Ext.create('App.ux.ManagedIframe', {
+                                        src: 'http://localhost/gaiaehr/dataProvider/CCR.php?action=viewccd&raw=no'
+                                    }));
+                                }
                             }
                         ]
+                    },'-',
+                    {
+                        text: 'Print',
+                        iconCls: 'icon-print',
+                        handler : function(){
+//                           	trg.focus();
+//                           	trg.print();
+                        }
                     }
                 ]
              });

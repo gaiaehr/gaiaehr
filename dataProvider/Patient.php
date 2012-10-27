@@ -236,6 +236,16 @@ class Patient
 		$p = $this -> db -> fetchRecord();
 		return Person::fullname($p['fname'], $p['mname'], $p['lname']);
 	}
+	/**
+	 * @param $pid
+	 * @return string
+	 */
+	public function getPatientFullAddressByPid($pid)
+	{
+		$this -> db -> setSQL("SELECT address,city,state,zipcode FROM form_data_demographics WHERE pid = '$pid'");
+		$p = $this -> db -> fetchRecord();
+		return Person::fulladdress($p['address'],null, $p['city'], $p['state'], $p['zipcode']);
+	}
 
 	/**
 	 * @param \stdClass $params

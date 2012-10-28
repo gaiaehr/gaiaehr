@@ -55,7 +55,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 		<script src="JSrouter.php"></script>
 		<script src="data/api.php"></script>
 		<script type="text/javascript">
-			function i18n(key){	return lang[key] || key; }
+			function i18n(key){	return lang[key] || '*'+key+'*'; }
 			function say(a){ console.log(a); }
 			/**
 			 * Ext Localization file

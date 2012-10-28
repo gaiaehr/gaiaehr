@@ -134,7 +134,7 @@ Ext.define('Modules.reportcenter.view.ReportPanel', {
             values = me.formPanel.getForm().getValues();
         this.renderContainer.removeAll(true);
         delete this.pdf;
-        if(!me.grid) me.grid = this.getGridPanel();
+         me.grid = this.getGridPanel();
 
         me.store.load({params:values});
         botton.setDisabled(false);

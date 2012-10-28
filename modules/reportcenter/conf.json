@@ -33,6 +33,10 @@
 				"createPrescriptionsDispensations":
 				{
 					"len":1
+				},
+				"getPrescriptionsFromAndToAndPid":
+				{
+					"len":1
 				}
 			}
 		},

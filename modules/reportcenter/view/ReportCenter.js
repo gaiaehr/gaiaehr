@@ -79,7 +79,10 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                     ]
                 });
             });
+
             me.Rx = me.addReportByCategory(me.patientCategory, i18n('rx'), function(btn) {
+                if(!me.medicationStore) me.medicationStore = Ext.create('Modules.reportcenter.store.MedicationReport');
+
                 me.goToReportPanelAndSetPanel({
                     title:i18n('rx'),
                     items : [
@@ -129,7 +132,42 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
 
                         }
                     ],
-                    fn:Rx.createPrescriptionsDispensations
+                    fn:Rx.createPrescriptionsDispensations,
+                    store:me.medicationStore,
+                    columns:[
+                        {
+                            text:'Service Date',
+                            xtype:'datecolumn',
+                            format:'Y-m-d',
+                            dataIndex:'start_date'
+                        },
+                        {
+                            text:'Name',
+                            width:200,
+                            dataIndex:'fullname'
+                        },
+                        {
+                            text:'Address',
+                            flex:1,
+                            dataIndex:'fulladdress'
+                        },
+                        {
+                            text:'Medication',
+                            dataIndex:'medication'
+                        },
+                        {
+                            text:'Take',
+                            dataIndex:'take_pills'
+                        },
+                        {
+                            text:'Type',
+                            dataIndex:'type'
+                        },
+                        {
+                            text:'instructions',
+                            dataIndex:'instructions'
+                        }
+                    ]
                 });
             });
             me.ClinicalReport = me.addReportByCategory(me.patientCategory, i18n('clinical'), function(btn) {

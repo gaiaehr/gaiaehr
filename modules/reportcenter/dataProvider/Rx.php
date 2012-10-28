@@ -42,35 +42,20 @@ class Rx extends Reports
 
 	public function createPrescriptionsDispensations(stdClass $params)
 	{
-		$params -> to = ($params -> to == '') ? date('Y-m-d') : $params -> to;
-		$html = "<br><h1>Prescriptions and Dispensations ($params->from - $params->to )</h1>";
-		$html2 = "";
-		$html .= "<table  border=\"0\" width=\"100%\">
-            <tr>
-               <th colspan=\"11\" style=\"font-weight: bold;\">" . i18nRouter::t("prescriptions_and_dispensations") . "</th>
-            </tr>
-            <tr>
-               <td colspan=\"2\">" . i18nRouter::t("patient") . "</td>
-               <td>" . i18nRouter::t("pid") . "</td>
-               <td colspan=\"2\">" . i18nRouter::t("drug_name") . "</td>
-               <td>" . i18nRouter::t("units") . "</td>
-               <td colspan=\"2\">" . i18nRouter::t("type") . "</td>
-               <td colspan=\"3\">" . i18nRouter::t("instructed") . "</td>
-            </tr>";
-		$html2 = $this -> htmlRxList($params, $html2);
-		$html .= $html2;
-		$html .= "</table>";
 		ob_end_clean();
-		$Url = $this -> ReportBuilder($html, 10);
+		$Url = $this -> ReportBuilder($params->html, 10);
 		return array(
 			'success' => true,
-			'html' => $html,
 			'url' => $Url
 		);
 	}
 
-	public function getPrescriptionsFromAndToAndPid($from, $to, $drug = null, $pid = null)
+	public function getPrescriptionsFromAndToAndPid(stdClass $params)
 	{
+		$from = $params->from;
+		$to = $params -> to = ($params -> to == '') ? date('Y-m-d') : $params -> to;
+		$drug = $params->drug;
+		$pid = $params->pid;
 		$alldata = '';
 		$sql = " SELECT *
 	               FROM patient_prescriptions
@@ -89,28 +74,34 @@ class Rx extends Reports
 			$this -> db -> setSQL($sql);
 			$alldata[$key] = $this -> db -> fetchRecords(PDO::FETCH_ASSOC);
 		}
-		return $alldata;
-	}
-
-	public function htmlRxList($params, $html)
-	{
-		foreach ($this->getPrescriptionsFromAndToAndPid($params->from,$params->to,$params->drug,$params->pid) AS $data)
-		{
-			foreach ($data as $data2)
-			{
-				$html .= "
-		            <tr>
-						<td colspan=\"2\">" . $this -> patient -> getPatientFullNameByPid($data2['pid']) . "</td>
-						<td>" . $data2['pid'] . "</td>
-						<td colspan=\"2\">" . $data2['medication'] . "</td>
-						<td>" . $data2['take_pills'] . "</td>
-						<td colspan=\"2\">" . $data2['type'] . "</td>
-						<td colspan=\"3\">" . $data2['prescription_often'] . ' ' . $data2['prescription_when'] . "</td>
-					</tr>";
+		$records = array();
+		foreach($alldata as $data){
+			foreach($data as $key=>$rec){
+				$records[$key]=$rec;
 			}
 		}
-		return $html;
+		return $records;
 	}
+
+//	public function htmlRxList($params, $html)
+//	{
+//		foreach ($this->getPrescriptionsFromAndToAndPid($params->from,$params->to,$params->drug,$params->pid) AS $data)
+//		{
+//			foreach ($data as $data2)
+//			{
+//				$html .= "
+//		            <tr>
+//						<td colspan=\"2\">" . $this -> patient -> getPatientFullNameByPid($data2['pid']) . "</td>
+//						<td>" . $data2['pid'] . "</td>
+//						<td colspan=\"2\">" . $data2['medication'] . "</td>
+//						<td>" . $data2['take_pills'] . "</td>
+//						<td colspan=\"2\">" . $data2['type'] . "</td>
+//						<td colspan=\"3\">" . $data2['prescription_often'] . ' ' . $data2['prescription_when'] . "</td>
+//					</tr>";
+//			}
+//		}
+//		return $html;
+//	}
 
 }
 

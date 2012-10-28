@@ -22,11 +22,11 @@ Ext.define('App.ux.LiveICDXSearch',
 	extend : 'Ext.form.field.ComboBox',
 	alias : 'widget.liveicdxsearch',
 	hideLabel : true,
-	triggerTip : i18n['click_to_clear_selection'],
+	triggerTip : i18n('click_to_clear_selection'),
 	spObj : '',
 	spForm : '',
 	spExtraParam : '',
-	qtip : i18n['clearable_combo_box'],
+	qtip : i18n('clearable_combo_box'),
 	trigger1Class : 'x-form-select-trigger',
 	trigger2Class : 'x-form-clear-trigger',
 	initComponent : function()
@@ -90,7 +90,7 @@ Ext.define('App.ux.LiveICDXSearch',
 			anchor : '100%',
 			listConfig :
 			{
-				loadingText : i18n['searching'] + '...',
+				loadingText : i18n('searching') + '...',
 				//emptyText	: 'No matching posts found.',
 				//---------------------------------------------------------------------
 				// Custom rendering template for each item

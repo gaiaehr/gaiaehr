@@ -67,13 +67,13 @@ Ext.define('App.ux.LiveLabsSearch',
 			store : me.store,
 			displayField : 'loinc_name',
 			valueField : 'id',
-			emptyText : i18n['search'] + '...',
+			emptyText : i18n('search') + '...',
 			typeAhead : false,
 			hideTrigger : true,
 			minChars : 1,
 			listConfig :
 			{
-				loadingText : i18n['searching'] + '...',
+				loadingText : i18n('searching') + '...',
 				//emptyText	: 'No matching posts found.',
 				//---------------------------------------------------------------------
 				// Custom rendering template for each item

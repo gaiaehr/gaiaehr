@@ -50,7 +50,7 @@ Ext.define('Modules.imageforms.view.FormBackgroundImagesCombo', {
 			queryMode   : 'local',
 			displayField: 'name',
 			valueField  : 'value',
-			emptyText   : i18n['select'],
+			emptyText   : i18n('select'),
 			store       : me.store
 		}, null);
 		me.callParent();

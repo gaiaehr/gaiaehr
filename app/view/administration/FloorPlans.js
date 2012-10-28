@@ -20,7 +20,7 @@ Ext.define('App.view.administration.FloorPlans',
 {
 	extend : 'App.ux.RenderPanel',
 	id : 'panelFloorPlans',
-	pageTitle : i18n['floor_plan_editor'],
+	pageTitle : i18n('floor_plan_editor'),
 	pageLayout : 'border',
 	floorPlanId : null,
 	activeZone : null,
@@ -35,7 +35,7 @@ Ext.define('App.view.administration.FloorPlans',
 
 		me.floorPlans = Ext.create('Ext.grid.Panel',
 		{
-			title : i18n['floor_plans'],
+			title : i18n('floor_plans'),
 			region : 'west',
 			width : 200,
 			split : true,
@@ -58,7 +58,7 @@ Ext.define('App.view.administration.FloorPlans',
 			}],
 			tbar : ['->',
 			{
-				text : i18n['add_floor_plan'],
+				text : i18n('add_floor_plan'),
 				action : 'newFloorPlan',
 				scope : me,
 				handler : me.onNewFloorPlan
@@ -72,13 +72,13 @@ Ext.define('App.view.administration.FloorPlans',
 
 		me.floorPlan = Ext.create('Ext.panel.Panel',
 		{
-			title : i18n['floor_plan'],
+			title : i18n('floor_plan'),
 			region : 'center',
 			bodyCls : 'floorPlan',
 			layout : 'absolute',
 			tbar : ['->',
 			{
-				text : i18n['add_zone'],
+				text : i18n('add_zone'),
 				action : 'newZone',
 				scope : me,
 				handler : me.onNewZone
@@ -133,7 +133,7 @@ Ext.define('App.view.administration.FloorPlans',
 		var me = this, zone, form;
 		zone = Ext.create('Ext.button.Split',
 		{
-			text : record ? record.data.title : i18n['new_zone'],
+			text : record ? record.data.title : i18n('new_zone'),
 			toggleGroup : 'zones',
 			draggable :
 			{
@@ -171,7 +171,7 @@ Ext.define('App.view.administration.FloorPlans',
 				items : [
 				{
 					xtype : 'textfield',
-					fieldLabel : i18n['zone_name'],
+					fieldLabel : i18n('zone_name'),
 					labelWidth : 80,
 					name : 'title'
 				}]
@@ -195,7 +195,7 @@ Ext.define('App.view.administration.FloorPlans',
 			me.floorPlanZonesStore.add(
 			{
 				floor_plan_id : me.floorPlanId,
-				title : i18n['new_zone'],
+				title : i18n('new_zone'),
 				x : 0,
 				y : 0,
 				active : 1
@@ -265,7 +265,7 @@ Ext.define('App.view.administration.FloorPlans',
 	{
 		this.floorPlansStore.add(
 		{
-			title : i18n['new_floor_plan']
+			title : i18n('new_floor_plan')
 		});
 	},
 

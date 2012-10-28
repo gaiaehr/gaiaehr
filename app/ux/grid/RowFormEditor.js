@@ -37,11 +37,11 @@ Ext.define('App.ux.grid.RowFormEditor', {
         'Ext.util.KeyNav'
     ],
 
-    saveBtnText  : i18n['update'],
-    cancelBtnText: i18n['cancel'],
-    removeBtnText: i18n['remove'],
-    errorsText: i18n['errors'],
-    dirtyText: i18n['commit_cancel_your_changes'],
+    saveBtnText  : i18n('update'),
+    cancelBtnText: i18n('cancel'),
+    removeBtnText: i18n('remove'),
+    errorsText: i18n('errors'),
+    dirtyText: i18n('commit_cancel_your_changes'),
     lastScrollLeft: 0,
     lastScrollTop: 0,
     bodyPadding: 5,

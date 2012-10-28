@@ -34,7 +34,7 @@ Ext.define('App.ux.combo.Themes', {
 			editable    : false,
 			valueField  : 'value',
 			displayField: 'name',
-			emptyText   : i18n['select'],
+			emptyText   : i18n('select'),
 			store       : me.store
 		}, null);
 		me.callParent();

@@ -11,7 +11,7 @@
 Ext.define('Modules.reportcenter.view.ReportPanel', {
     extend: 'App.ux.RenderPanel',
     id: 'panelReportPanel',
-    pageTitle: i18n['report_center'],
+    pageTitle: i18n('report_center'),
     pageLayout: {
         type: 'vbox',
         align: 'stretch'
@@ -33,18 +33,18 @@ Ext.define('Modules.reportcenter.view.ReportPanel', {
             margin: '0 0 3 0',
             collapsible: true,
             buttonAlign: 'left',
-            title: i18n['filter'],
+            title: i18n('filter'),
             // Draw the buttons to render and clear the report panel view.
             buttons: [
                 {
-                    text: i18n['generate_report'],
+                    text: i18n('generate_report'),
                     iconCls: 'icoReport',
                     scope: me,
                     handler: me.generateReport
                 },
                 '-',
                 {
-                    text: i18n['get_pdf'],
+                    text: i18n('get_pdf'),
                     iconCls: 'icoReport',
                     disabled:true,
                     itemId:'pdf',
@@ -53,7 +53,7 @@ Ext.define('Modules.reportcenter.view.ReportPanel', {
                 },
                 '-',
                 {
-                    text: i18n['reset'],
+                    text: i18n('reset'),
                     iconCls: 'delete',
                     scope: me,
                     handler: me.resetRenderContainer
@@ -76,7 +76,7 @@ Ext.define('Modules.reportcenter.view.ReportPanel', {
                 dock: 'top',
                 items: [
                     {
-                        text: i18n['back'],
+                        text: i18n('back'),
                         iconCls: 'icoArrowLeftSmall',
                         handler: me.goToReportCenter
                     }

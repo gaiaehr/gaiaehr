@@ -21,7 +21,7 @@ Ext.define('App.view.administration.Documents',
 {
 	extend : 'App.ux.RenderPanel',
 	id : 'panelDocuments',
-	pageTitle : i18n['document_template_editor'],
+	pageTitle : i18n('document_template_editor'),
 	pageLayout : 'border',
 	uses : ['App.ux.GridPanel'],
 	initComponent : function()
@@ -51,383 +51,383 @@ Ext.define('App.view.administration.Documents',
 			model : 'tokenModel',
 			data : [
 			{
-				title : i18n['patient_name'],
+				title : i18n('patient_name'),
 				token : '[PATIENT_NAME]'
 			},
 			{
-				title : i18n['patient_full_name'],
+				title : i18n('patient_full_name'),
 				token : '[PATIENT_FULL_NAME]'
 			},
 			{
-				title : i18n['patient_mothers_maiden_name'],
+				title : i18n('patient_mothers_maiden_name'),
 				token : '[PATIENT_MAIDEN_NAME]'
 			},
 			{
-				title : i18n['patient_last_name'],
+				title : i18n('patient_last_name'),
 				token : '[PATIENT_LAST_NAME]'
 			},
 			{
-				title : i18n['patient_birthdate'],
+				title : i18n('patient_birthdate'),
 				token : '[PATIENT_BIRTHDATE]'
 			},
 			{
-				title : i18n['patient_marital_status'],
+				title : i18n('patient_marital_status'),
 				token : '[PATIENT_MARITAL_STATUS]'
 			},
 			{
-				title : i18n['patient_home_phone'],
+				title : i18n('patient_home_phone'),
 				token : '[PATIENT_HOME_PHONE]'
 			},
 			{
-				title : i18n['patient_mobile_phone'],
+				title : i18n('patient_mobile_phone'),
 				token : '[PATIENT_MOBILE_PHONE]'
 			},
 			{
-				title : i18n['patient_work_phone'],
+				title : i18n('patient_work_phone'),
 				token : '[PATIENT_WORK_PHONE]'
 			},
 			{
-				title : i18n['patient_email'],
+				title : i18n('patient_email'),
 				token : '[PATIENT_EMAIL]'
 			},
 			{
-				title : i18n['patient_social_security'],
+				title : i18n('patient_social_security'),
 				token : '[PATIENT_SOCIAL_SECURITY]'
 			},
 			{
-				title : i18n['patient_sex'],
+				title : i18n('patient_sex'),
 				token : '[PATIENT_SEX]'
 			},
 			{
-				title : i18n['patient_age'],
+				title : i18n('patient_age'),
 				token : '[PATIENT_AGE]'
 			},
 			{
-				title : i18n['patient_city'],
+				title : i18n('patient_city'),
 				token : '[PATIENT_CITY]'
 			},
 			{
-				title : i18n['patient_state'],
+				title : i18n('patient_state'),
 				token : '[PATIENT_STATE]'
 			},
 			{
-				title : i18n['patient_home_address_line_1'],
+				title : i18n('patient_home_address_line_1'),
 				token : '[PATIENT_HOME_ADDRESS_LINE_ONE]'
 			},
 			{
-				title : i18n['patient_home_address_line_1'],
+				title : i18n('patient_home_address_line_1'),
 				token : '[PATIENT_HOME_ADDRESS_LINE_TWO]'
 			},
 			{
-				title : i18n['patient_home_address_zip_code'],
+				title : i18n('patient_home_address_zip_code'),
 				token : '[PATIENT_HOME_ADDRESS_ZIP_CODE]'
 			},
 			{
-				title : i18n['patient_home_address_city'],
+				title : i18n('patient_home_address_city'),
 				token : '[PATIENT_HOME_ADDRESS_CITY]'
 			},
 			{
-				title : i18n['patient_home_address_state'],
+				title : i18n('patient_home_address_state'),
 				token : '[PATIENT_HOME_ADDRESS_STATE]'
 			},
 			{
-				title : i18n['patient_postal_address_line_1'],
+				title : i18n('patient_postal_address_line_1'),
 				token : '[PATIENT_POSTAL_ADDRESS_LINE_ONE]'
 			},
 			{
-				title : i18n['patient_postal_address_line_2'],
+				title : i18n('patient_postal_address_line_2'),
 				token : '[PATIENT_POSTAL_ADDRESS_LINE_TWO]'
 			},
 			{
-				title : i18n['patient_postal_address_zip_code'],
+				title : i18n('patient_postal_address_zip_code'),
 				token : '[PATIENT_POSTAL_ADDRESS_ZIP_CODE]'
 			},
 			{
-				title : i18n['patient_postal_address_city'],
+				title : i18n('patient_postal_address_city'),
 				token : '[PATIENT_POSTAL_ADDRESS_CITY]'
 			},
 			{
-				title : i18n['patient_postal_address_state'],
+				title : i18n('patient_postal_address_state'),
 				token : '[PATIENT_POSTAL_ADDRESS_STATE]'
 			},
 			{
-				title : i18n['patient_tabacco'],
+				title : i18n('patient_tabacco'),
 				token : '[PATIENT_TABACCO]'
 			},
 			{
-				title : i18n['patient_alcohol'],
+				title : i18n('patient_alcohol'),
 				token : '[PATIENT_ALCOHOL]'
 			},
 			{
-				title : i18n['patient_drivers_license'],
+				title : i18n('patient_drivers_license'),
 				token : '[PATIENT_DRIVERS_LICENSE]'
 			},
 			{
-				title : i18n['patient_employeer'],
+				title : i18n('patient_employeer'),
 				token : '[PATIENT_EMPLOYEER]'
 			},
 			{
-				title : i18n['patient_first_emergency_contact'],
+				title : i18n('patient_first_emergency_contact'),
 				token : '[PATIENT_FIRST_EMERGENCY_CONTACT]'
 			},
 			{
-				title : i18n['patient_referral'],
+				title : i18n('patient_referral'),
 				token : '[PATIENT_REFERRAL]'
 			},
 			{
-				title : i18n['patient_date_referred'],
+				title : i18n('patient_date_referred'),
 				token : '[PATIENT_REFERRAL_DATE]'
 			},
 			{
-				title : i18n['patient_balance'],
+				title : i18n('patient_balance'),
 				token : '[PATIENT_BALANCE]'
 			},
 			{
-				title : i18n['patient_picture'],
+				title : i18n('patient_picture'),
 				token : '[PATIENT_PICTURE]'
 			},
 			{
-				title : i18n['patient_primary_plan'],
+				title : i18n('patient_primary_plan'),
 				token : '[PATIENT_PRIMARY_PLAN]'
 			},
 			{
-				title : i18n['patient_primary_plan_insured_person'],
+				title : i18n('patient_primary_plan_insured_person'),
 				token : '[PATIENT_PRIMARY_INSURED_PERSON]'
 			},
 			{
-				title : i18n['patient_primary_plan_contract_number'],
+				title : i18n('patient_primary_plan_contract_number'),
 				token : '[PATIENT_PRIMARY_CONTRACT_NUMBER]'
 			},
 			{
-				title : i18n['patient_primary_plan_expiration_date'],
+				title : i18n('patient_primary_plan_expiration_date'),
 				token : '[PATIENT_PRIMARY_EXPIRATION_DATE]'
 			},
 			{
-				title : i18n['patient_secondary_plan'],
+				title : i18n('patient_secondary_plan'),
 				token : '[PATIENT_SECONDARY_PLAN]'
 			},
 			{
-				title : i18n['patient_secondary_insured_person'],
+				title : i18n('patient_secondary_insured_person'),
 				token : '[PATIENT_SECONDARY_INSURED_PERSON]'
 			},
 			{
-				title : i18n['patient_secondary_plan_contract_number'],
+				title : i18n('patient_secondary_plan_contract_number'),
 				token : '[PATIENT_SECONDARY_CONTRACT_NUMBER]'
 			},
 			{
-				title : i18n['patient_secondary_plan_expiration_date'],
+				title : i18n('patient_secondary_plan_expiration_date'),
 				token : '[PATIENT_SECONDARY_EXPIRATION_DATE]'
 			},
 			{
-				title : i18n['patient_referral_details'],
+				title : i18n('patient_referral_details'),
 				token : '[PATIENT_REFERRAL_DETAILS]'
 			},
 			{
-				title : i18n['patient_referral_reason'],
+				title : i18n('patient_referral_reason'),
 				token : '[PATIENT_REFERRAL_REASON]'
 			},
 			{
-				title : i18n['patient_head_circumference'],
+				title : i18n('patient_head_circumference'),
 				token : '[PATIENT_HEAD_CIRCUMFERENCE]'
 			},
 			{
-				title : i18n['patient_height'],
+				title : i18n('patient_height'),
 				token : '[PATIENT_HEIGHT]'
 			},
 			{
-				title : i18n['patient_pulse'],
+				title : i18n('patient_pulse'),
 				token : '[PATIENT_PULSE]'
 			},
 			{
-				title : i18n['patient_respiratory_rate'],
+				title : i18n('patient_respiratory_rate'),
 				token : '[PATIENT_RESPIRATORY_RATE]'
 			},
 			{
-				title : i18n['patient_temperature'],
+				title : i18n('patient_temperature'),
 				token : '[PATIENT_TEMPERATURE]'
 			},
 			{
-				title : i18n['patient_weight'],
+				title : i18n('patient_weight'),
 				token : '[PATIENT_WEIGHT]'
 			},
 			{
-				title : i18n['patient_pulse_oximeter'],
+				title : i18n('patient_pulse_oximeter'),
 				token : '[PATIENT_PULSE_OXIMETER]'
 			},
 			{
-				title : i18n['patient_blood_preasure'],
+				title : i18n('patient_blood_preasure'),
 				token : '[PATIENT_BLOOD_PREASURE]'
 			},
 			{
-				title : i18n['patient_body_mass_index'],
+				title : i18n('patient_body_mass_index'),
 				token : '[PATIENT_BMI]'
 			},
 			{
-				title : i18n['patient_active_allergies_list'],
+				title : i18n('patient_active_allergies_list'),
 				token : '[PATIENT_ACTIVE_ALLERGIES_LIST]'
 			},
 			{
-				title : i18n['patient_inactive_allergies_list'],
+				title : i18n('patient_inactive_allergies_list'),
 				token : '[PATIENT_INACTIVE_ALLERGIES_LIST]'
 			},
 			{
-				title : i18n['patient_active_medications_list'],
+				title : i18n('patient_active_medications_list'),
 				token : '[PATIENT_ACTIVE_MEDICATIONS_LIST]'
 			},
 			{
-				title : i18n['patient_inactive_medications_list'],
+				title : i18n('patient_inactive_medications_list'),
 				token : '[PATIENT_INACTIVE_MEDICATIONS_LIST]'
 			},
 			{
-				title : i18n['patient_active_problems_list'],
+				title : i18n('patient_active_problems_list'),
 				token : '[PATIENT_ACTIVE_PROBLEMS_LIST]'
 			},
 			{
-				title : i18n['patient_inactive_problems_list'],
+				title : i18n('patient_inactive_problems_list'),
 				token : '[PATIENT_INACTIVE_PROBLEMS_LIST]'
 			},
 			{
-				title : i18n['patient_active_immunizations_list'],
+				title : i18n('patient_active_immunizations_list'),
 				token : '[PATIENT_ACTIVE_IMMUNIZATIONS_LIST]'
 			},
 			{
-				title : i18n['patient_inactive_immunizations_list'],
+				title : i18n('patient_inactive_immunizations_list'),
 				token : '[PATIENT_INACTIVE_IMMUNIZATIONS_LIST]'
 			},
 			{
-				title : i18n['patient_active_dental_list'],
+				title : i18n('patient_active_dental_list'),
 				token : '[PATIENT_ACTIVE_DENTAL_LIST]'
 			},
 			{
-				title : i18n['patient_inactive_dental_list'],
+				title : i18n('patient_inactive_dental_list'),
 				token : '[PATIENT_INACTIVE_DENTAL_LIST]'
 			},
 			{
-				title : i18n['patient_active_surgery_list'],
+				title : i18n('patient_active_surgery_list'),
 				token : '[PATIENT_ACTIVE_SURGERY_LIST]'
 			},
 			{
-				title : i18n['patient_inactive_surgery_list'],
+				title : i18n('patient_inactive_surgery_list'),
 				token : '[PATIENT_INACTIVE_SURGERY_LIST]'
 			},
 			{
-				title : i18n['encounter_date'],
+				title : i18n('encounter_date'),
 				token : '[ENCOUNTER_DATE]'
 			},
 			{
-				title : i18n['encounter_subjective_part'],
+				title : i18n('encounter_subjective_part'),
 				token : '[ENCOUNTER_SUBJECTIVE]'
 			},
 			{
-				title : i18n['encounter_subjective_part'],
+				title : i18n('encounter_subjective_part'),
 				token : '[ENCOUNTER_OBJECTIVE]'
 			},
 			{
-				title : i18n['encounter_assesment'],
+				title : i18n('encounter_assesment'),
 				token : '[ENCOUNTER_ASSESMENT]'
 			},
 			{
-				title : i18n['encounter_assesment_list'],
+				title : i18n('encounter_assesment_list'),
 				token : '[ENCOUNTER_ASSESMENT_LIST]'
 			},
 			{
-				title : i18n['encounter_assesment_code_list'],
+				title : i18n('encounter_assesment_code_list'),
 				token : '[ENCOUNTER_ASSESMENT_CODE_LIST]'
 			},
 			{
-				title : i18n['encounter_assesment_full_list'],
+				title : i18n('encounter_assesment_full_list'),
 				token : '[ENCOUNTER_ASSESMENT_FULL_LIST]'
 			},
 			{
-				title : i18n['encounter_plan'],
+				title : i18n('encounter_plan'),
 				token : '[ENCOUNTER_PLAN]'
 			},
 			{
-				title : i18n['encounter_medications'],
+				title : i18n('encounter_medications'),
 				token : '[ENCOUNTER_MEDICATIONS]'
 			},
 			{
-				title : i18n['encounter_immunizations'],
+				title : i18n('encounter_immunizations'),
 				token : '[ENCOUNTER_IMMUNIZATIONS]'
 			},
 			{
-				title : i18n['encounter_allergies'],
+				title : i18n('encounter_allergies'),
 				token : '[ENCOUNTER_ALLERGIES]'
 			},
 			{
-				title : i18n['encounter_active_problems'],
+				title : i18n('encounter_active_problems'),
 				token : '[ENCOUNTER_ACTIVE_PROBLEMS]'
 			},
 			{
-				title : i18n['encounter_surgeries'],
+				title : i18n('encounter_surgeries'),
 				token : '[ENCOUNTER_SURGERIES]'
 			},
 			{
-				title : i18n['encounter_dental'],
+				title : i18n('encounter_dental'),
 				token : '[ENCOUNTER_DENTAL]'
 			},
 			{
-				title : i18n['encounter_laboratories'],
+				title : i18n('encounter_laboratories'),
 				token : '[ENCOUNTER_LABORATORIES]'
 			},
 			{
-				title : i18n['encounter_procedures_terms'],
+				title : i18n('encounter_procedures_terms'),
 				token : '[ENCOUNTER_PROCEDURES_TERMS]'
 			},
 			{
-				title : i18n['encounter_cpt_codes_list'],
+				title : i18n('encounter_cpt_codes_list'),
 				token : '[ENCOUNTER_CPT_CODES]'
 			},
 			{
-				title : i18n['encounter_signature'],
+				title : i18n('encounter_signature'),
 				token : '[ENCOUNTER_SIGNATURE]'
 			},
 			{
-				title : i18n['orders_laboratories'],
+				title : i18n('orders_laboratories'),
 				token : '[ORDERS_LABORATORIES]'
 			},
 			{
-				title : i18n['orders_x_rays'],
+				title : i18n('orders_x_rays'),
 				token : '[ORDERS_XRAYS]'
 			},
 			{
-				title : i18n['orders_referral'],
+				title : i18n('orders_referral'),
 				token : '[ORDERS_REFERRAL]'
 			},
 			{
-				title : i18n['orders_other'],
+				title : i18n('orders_other'),
 				token : '[ORDERS_OTHER]'
 			},
 			{
-				title : i18n['current_date'],
+				title : i18n('current_date'),
 				token : '[CURRENT_DATE]'
 			},
 			{
-				title : i18n['current_time'],
+				title : i18n('current_time'),
 				token : '[CURRENT_TIME]'
 			},
 			{
-				title : i18n['current_user_name'],
+				title : i18n('current_user_name'),
 				token : '[CURRENT_USER_NAME]'
 			},
 			{
-				title : i18n['current_user_full_name'],
+				title : i18n('current_user_full_name'),
 				token : '[CURRENT_USER_FULL_NAME]'
 			},
 			{
-				title : i18n['current_user_license_number'],
+				title : i18n('current_user_license_number'),
 				token : '[CURRENT_USER_LICENSE_NUMBER]'
 			},
 			{
-				title : i18n['current_user_dea_license_number'],
+				title : i18n('current_user_dea_license_number'),
 				token : '[CURRENT_USER_DEA_LICENSE_NUMBER]'
 			},
 			{
-				title : i18n['current_user_dm_license_number'],
+				title : i18n('current_user_dm_license_number'),
 				token : '[CURRENT_USER_DM_LICENSE_NUMBER]'
 			},
 			{
-				title : i18n['current_user_npi_license_number'],
+				title : i18n('current_user_npi_license_number'),
 				token : '[CURRENT_USER_NPI_LICENSE_NUMBER]'
 			}//,
 			//                 {
@@ -462,7 +462,7 @@ Ext.define('App.view.administration.Documents',
 		});
 
 		//		me.HeaderFootergrid = Ext.create('Ext.grid.Panel', {
-		//			title      : i18n['header_footer_templates'],
+		//			title      : i18n('header_footer_templates'),
 		//			region     : 'south',
 		//			height     : 250,
 		//			split      : true,
@@ -480,7 +480,7 @@ Ext.define('App.view.administration.Documents',
 		//				},
 		//				{
 		//					icon: 'resources/images/icons/delete.png',
-		//					tooltip: i18n['remove'],
+		//					tooltip: i18n('remove'),
 		//					scope:me,
 		//					handler: me.onRemoveDocument
 		//				}
@@ -492,7 +492,7 @@ Ext.define('App.view.administration.Documents',
 		//			tbar       :[
 		//                '->',
 		//                {
-		//                    text : i18n['new'],
+		//                    text : i18n('new'),
 		//                    scope: me,
 		//                    handler: me.newHeaderOrFooterTemplate
 		//                }
@@ -507,7 +507,7 @@ Ext.define('App.view.administration.Documents',
 
 		me.DocumentsDefaultsGrid = Ext.create('Ext.grid.Panel',
 		{
-			title : i18n['documents_defaults'],
+			title : i18n('documents_defaults'),
 			region : 'north',
 			width : 250,
 			border : true,
@@ -527,7 +527,7 @@ Ext.define('App.view.administration.Documents',
 			},
 			{
 				icon : 'resources/images/icons/delete.png',
-				tooltip : i18n['remove'],
+				tooltip : i18n('remove'),
 				scope : me,
 				handler : me.onRemoveDocument
 			}],
@@ -538,7 +538,7 @@ Ext.define('App.view.administration.Documents',
 			},
 			tbar : ['->',
 			{
-				text : i18n['new'],
+				text : i18n('new'),
 				scope : me,
 				handler : me.newDefaultTemplates
 			}],
@@ -550,7 +550,7 @@ Ext.define('App.view.administration.Documents',
 
 		me.DocumentsGrid = Ext.create('Ext.grid.Panel',
 		{
-			title : i18n['document_templates'],
+			title : i18n('document_templates'),
 			region : 'center',
 			width : 250,
 			border : true,
@@ -570,7 +570,7 @@ Ext.define('App.view.administration.Documents',
 			},
 			{
 				icon : 'resources/images/icons/delete.png',
-				tooltip : i18n['remove'],
+				tooltip : i18n('remove'),
 				scope : me,
 				handler : me.onRemoveDocument
 			}],
@@ -581,7 +581,7 @@ Ext.define('App.view.administration.Documents',
 			},
 			tbar : ['->',
 			{
-				text : i18n['new'],
+				text : i18n('new'),
 				scope : me,
 				handler : me.newDocumentTemplate
 			}],
@@ -603,7 +603,7 @@ Ext.define('App.view.administration.Documents',
 
 		me.TeamplateEditor = Ext.create('Ext.form.Panel',
 		{
-			title : i18n['document_editor'],
+			title : i18n('document_editor'),
 			region : 'center',
 			layout : 'fit',
 			autoScroll : false,
@@ -619,12 +619,12 @@ Ext.define('App.view.administration.Documents',
 			},
 			buttons : [
 			{
-				text : i18n['save'],
+				text : i18n('save'),
 				scope : me,
 				handler : me.onSaveEditor
 			},
 			{
-				text : i18n['cancel'],
+				text : i18n('cancel'),
 				scope : me,
 				handler : me.onCancelEditor
 			}]
@@ -632,7 +632,7 @@ Ext.define('App.view.administration.Documents',
 
 		me.TokensGrid = Ext.create('App.ux.GridPanel',
 		{
-			title : i18n['available_tokens'],
+			title : i18n('available_tokens'),
 			region : 'east',
 			width : 250,
 			border : true,
@@ -706,7 +706,7 @@ Ext.define('App.view.administration.Documents',
 		me.rowEditor.cancelEdit();
 		store.insert(0,
 		{
-			title : i18n['new_document'],
+			title : i18n('new_document'),
 			template_type : 'documenttemplate',
 			date : new Date(),
 			type : 1
@@ -721,7 +721,7 @@ Ext.define('App.view.administration.Documents',
 		me.rowEditor3.cancelEdit();
 		store.insert(0,
 		{
-			title : i18n['new_defaults'],
+			title : i18n('new_defaults'),
 			template_type : 'defaulttemplate',
 			date : new Date(),
 			type : 1
@@ -735,7 +735,7 @@ Ext.define('App.view.administration.Documents',
 	//            store = me.headersAndFooterStore;
 	//        me.rowEditor2.cancelEdit();
 	//        store.insert(0,{
-	//            title: i18n['new_header_or_footer'],
+	//            title: i18n('new_header_or_footer'),
 	//	        template_type:'headerorfootertemplate',
 	//            date: new Date(),
 	//	        type: 2

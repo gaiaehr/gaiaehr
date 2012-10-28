@@ -31,7 +31,7 @@ Ext.define('App.ux.combo.PreventiveCareTypes', {
 			queryMode   : 'local',
 			valueField  : 'option_value',
 			displayField: 'option_name',
-			emptyText   : i18n['select'],
+			emptyText   : i18n('select'),
 			store       : me.store
 		}, null);
 		me.callParent(arguments);

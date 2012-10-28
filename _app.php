@@ -22,7 +22,6 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 				user = {},
 				settings = {},
 				globals = {},
-				i18n = {},
 				ext = 'extjs-4.1.1a',
 				version = '0.0.5.168',
 				requires;
@@ -56,13 +55,15 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 		<script src="JSrouter.php"></script>
 		<script src="data/api.php"></script>
 		<script type="text/javascript">
+			function i18n(key){	return lang[key] || key; }
+			function say(a){ console.log(a); }
 			/**
 			 * Ext Localization file
 			 * Using a anonymous function, in javascript.
 			 * Is not intended to be used globally just this once.
 			 */
             (function(){
-                document.write('<script type="text/javascript" src="lib/extjs-4.1.1a/locale/' + i18n['i18nExtFile'] + '?_v' + version + '"><\/script>')
+                document.write('<script type="text/javascript" src="lib/extjs-4.1.1a/locale/' + i18n('i18nExtFile') + '?_v' + version + '"><\/script>')
             })();            // Set and enable Ext.loader for dynamic class loading
             Ext.Loader.setConfig({
                         enabled: true,
@@ -82,12 +83,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 		<script type="text/javascript" src="app/ux/VTypes.js"></script>
 
 		<script type="text/javascript">
-		function t(){
 
-		}
-        function say(a){
-            console.log(a);
-        }
         for(var x = 0; x < App.data.length; x++){
             Ext.direct.Manager.addProvider(App.data[x]);
         }

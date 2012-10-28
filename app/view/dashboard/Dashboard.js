@@ -21,7 +21,7 @@ Ext.define('App.view.dashboard.Dashboard',
 {
 	extend        : 'App.ux.RenderPanel',
 	id            : 'panelDashboard',
-	pageTitle     : i18n['dashboard'],
+	pageTitle     : i18n('dashboard'),
 	getTools      : function() 
 	{
 		return [
@@ -31,7 +31,7 @@ Ext.define('App.view.dashboard.Dashboard',
 			handler: function(e, target, panelHeader) 
 			{
 				var portlet = panelHeader.ownerCt;
-				portlet.setLoading( i18n['working'] + '...');
+				portlet.setLoading( i18n('working') + '...');
 				Ext.defer(function() 
 				{
 					portlet.setLoading(false);
@@ -56,7 +56,7 @@ Ext.define('App.view.dashboard.Dashboard',
 					[
                         {
 //                            id       : 'portlet-onotes',
-                            title    : i18n['office_notes'],
+                            title    : i18n('office_notes'),
                             tools    : this.getTools(),
                             items    : Ext.create('App.view.dashboard.panel.OnotesPortlet'),
                             listeners:
@@ -113,7 +113,7 @@ Ext.define('App.view.dashboard.Dashboard',
 	
 	onPortletClose: function(portlet) 
 	{
-		this.msg(i18n['message'] + '!', portlet.title + ' ' + i18n['was_removed']);
+		this.msg(i18n('message') + '!', portlet.title + ' ' + i18n('was_removed'));
 	},
 	
 	/**

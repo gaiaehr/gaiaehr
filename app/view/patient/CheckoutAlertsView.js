@@ -26,7 +26,7 @@ Ext.define('App.view.patient.CheckoutAlertsView',
 	itemSelector : 'div.alert-div',
 	loadMask : true,
 	singleSelect : true,
-	emptyText : '<span style="color: #616161; font-size: 12px;">Sweet! ' + i18n['no_alerts_found'] + '.</span>',
+	emptyText : '<span style="color: #616161; font-size: 12px;">Sweet! ' + i18n('no_alerts_found') + '.</span>',
 	initComponent : function()
 	{
 		var me = this;

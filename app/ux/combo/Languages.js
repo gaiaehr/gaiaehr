@@ -42,7 +42,7 @@ Ext.define('App.ux.combo.Languages',
 			editable    : false,
 			valueField  : 'code',
 			displayField: 'description',
-            emptyText   : i18n['select'],
+            emptyText   : i18n('select'),
 			store       : me.store
 		}, null);
 		

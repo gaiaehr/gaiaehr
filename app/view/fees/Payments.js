@@ -21,7 +21,7 @@ Ext.define('App.view.fees.Payments',
 {
 	extend : 'App.ux.RenderPanel',
 	id : 'panelPayments',
-	pageTitle : i18n['payments'],
+	pageTitle : i18n('payments'),
 	initComponent : function()
 	{
 		var me = this;
@@ -33,7 +33,7 @@ Ext.define('App.view.fees.Payments',
 		 */
 		me.searchPanel = Ext.create('Ext.panel.Panel',
 		{
-			title : i18n['search'],
+			title : i18n('search'),
 			layout : 'border',
 			items : [
 			{
@@ -49,14 +49,14 @@ Ext.define('App.view.fees.Payments',
 					layout : 'hbox',
 					items : [
 					{
-						fieldLabel : i18n['paying_entity'],
+						fieldLabel : i18n('paying_entity'),
 						xtype : 'mitos.payingentitycombo',
 						labelWidth : 95,
 						width : 230
 					},
 					{
 						xtype : 'patienlivetsearch',
-						fieldLabel : i18n['from'],
+						fieldLabel : i18n('from'),
 						hideLabel : false,
 						itemId : 'patientFrom',
 						name : 'from',
@@ -67,7 +67,7 @@ Ext.define('App.view.fees.Payments',
 					},
 					{
 						xtype : 'textfield',
-						fieldLabel : i18n['no'],
+						fieldLabel : i18n('no'),
 						name : 'transaction_number',
 						labelWidth : 45,
 						width : 230,
@@ -81,21 +81,21 @@ Ext.define('App.view.fees.Payments',
 					layout : 'hbox',
 					items : [
 					{
-						fieldLabel : i18n['payment_method'],
+						fieldLabel : i18n('payment_method'),
 						xtype : 'mitos.paymentmethodcombo',
 						labelWidth : 95,
 						width : 230
 					},
 					{
 						xtype : 'mitos.billingfacilitiescombo',
-						fieldLabel : i18n['pay_to'],
+						fieldLabel : i18n('pay_to'),
 						labelWidth : 42,
 						width : 470,
 						margin : '0 0 0 25'
 					},
 					{
 						xtype : 'mitos.currency',
-						fieldLabel : i18n['amount'],
+						fieldLabel : i18n('amount'),
 						name : 'amount',
 						labelWidth : 45,
 						width : 230,
@@ -109,14 +109,14 @@ Ext.define('App.view.fees.Payments',
 					layout : 'hbox',
 					items : [
 					{
-						fieldLabel : i18n['from'],
+						fieldLabel : i18n('from'),
 						xtype : 'datefield',
 						format: globals['date_display_format'],
 						labelWidth : 95,
 						width : 230
 					},
 					{
-						fieldLabel : i18n['to'],
+						fieldLabel : i18n('to'),
 						xtype : 'datefield',
 						format: globals['date_display_format'],
 						margin : '0 0 0 25',
@@ -126,13 +126,13 @@ Ext.define('App.view.fees.Payments',
 				}],
 				buttons : [
 				{
-					text : i18n['search']
+					text : i18n('search')
 				}, '-',
 				{
-					text : i18n['reset']
+					text : i18n('reset')
 				}, '->',
 				{
-					text : i18n['add_payment'],
+					text : i18n('add_payment'),
 					scope : me,
 					handler : me.onAddPaymentClick
 				}]
@@ -143,20 +143,20 @@ Ext.define('App.view.fees.Payments',
 				store : me.encountersPaymentsStore,
 				columns : [
 				{
-					header : i18n['service_date']
+					header : i18n('service_date')
 				},
 				{
-					header : i18n['patient_name']
+					header : i18n('patient_name')
 				},
 				{
-					header : i18n['insurance']
+					header : i18n('insurance')
 				},
 				{
-					header : i18n['billing_notes'],
+					header : i18n('billing_notes'),
 					flex : 1
 				},
 				{
-					header : i18n['balance_due']
+					header : i18n('balance_due')
 				}]
 			}]
 		});
@@ -166,7 +166,7 @@ Ext.define('App.view.fees.Payments',
 		 */
 		me.detailPanel = Ext.create('Ext.panel.Panel',
 		{
-			title : i18n['detail'],
+			title : i18n('detail'),
 			layout : 'border',
 			items : [
 			{
@@ -182,14 +182,14 @@ Ext.define('App.view.fees.Payments',
 					layout : 'hbox',
 					items : [
 					{
-						fieldLabel : i18n['paying_entity'],
+						fieldLabel : i18n('paying_entity'),
 						xtype : 'mitos.payingentitycombo',
 						labelWidth : 95,
 						width : 230
 					},
 					{
 						xtype : 'patienlivetsearch',
-						fieldLabel : i18n['from'],
+						fieldLabel : i18n('from'),
 						hideLabel : false,
 						itemId : 'patientFrom',
 						name : 'from',
@@ -200,7 +200,7 @@ Ext.define('App.view.fees.Payments',
 					},
 					{
 						xtype : 'textfield',
-						fieldLabel : i18n['no'],
+						fieldLabel : i18n('no'),
 						name : 'transaction_number',
 						labelWidth : 45,
 						width : 230,
@@ -214,21 +214,21 @@ Ext.define('App.view.fees.Payments',
 					layout : 'hbox',
 					items : [
 					{
-						fieldLabel : i18n['payment_method'],
+						fieldLabel : i18n('payment_method'),
 						xtype : 'mitos.paymentmethodcombo',
 						labelWidth : 95,
 						width : 230
 					},
 					{
 						xtype : 'mitos.billingfacilitiescombo',
-						fieldLabel : i18n['pay_to'],
+						fieldLabel : i18n('pay_to'),
 						labelWidth : 42,
 						width : 470,
 						margin : '0 0 0 25'
 					},
 					{
 						xtype : 'mitos.currency',
-						fieldLabel : i18n['amount'],
+						fieldLabel : i18n('amount'),
 						name : 'amount',
 						labelWidth : 45,
 						width : 230,
@@ -242,14 +242,14 @@ Ext.define('App.view.fees.Payments',
 					layout : 'hbox',
 					items : [
 					{
-						fieldLabel : i18n['from'],
+						fieldLabel : i18n('from'),
 						xtype : 'datefield',
 						format: globals['date_display_format'],
 						labelWidth : 95,
 						width : 230
 					},
 					{
-						fieldLabel : i18n['to'],
+						fieldLabel : i18n('to'),
 						xtype : 'datefield',
 						format: globals['date_display_format'],
 						margin : '0 0 0 25',
@@ -259,13 +259,13 @@ Ext.define('App.view.fees.Payments',
 				}],
 				buttons : [
 				{
-					text : i18n['save']
+					text : i18n('save')
 				}, '-',
 				{
-					text : i18n['reset']
+					text : i18n('reset')
 				}, '->',
 				{
-					text : i18n['add_payment'],
+					text : i18n('add_payment'),
 					scope : me,
 					handler : me.onAddPaymentClick
 
@@ -289,20 +289,20 @@ Ext.define('App.view.fees.Payments',
 				}),
 				columns : [
 				{
-					header : i18n['service_date']
+					header : i18n('service_date')
 				},
 				{
-					header : i18n['patient_name']
+					header : i18n('patient_name')
 				},
 				{
-					header : i18n['insurance']
+					header : i18n('insurance')
 				},
 				{
-					header : i18n['billing_notes'],
+					header : i18n('billing_notes'),
 					flex : 1
 				},
 				{
-					header : i18n['balance_due']
+					header : i18n('balance_due')
 				}]
 			}]
 		});

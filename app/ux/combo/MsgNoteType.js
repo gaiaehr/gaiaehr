@@ -38,7 +38,7 @@ Ext.define('App.ux.combo.MsgNoteType', {
 			queryMode   : 'local',
 			displayField: 'option_name',
 			valueField  : 'option_value',
-			emptyText   : i18n['select'],
+			emptyText   : i18n('select'),
 			store       : me.store
 		}, null);
 		me.callParent();

@@ -11,7 +11,7 @@
  */
 Ext.define('App.view.patient.windows.NewDocuments', {
 	extend     : 'App.ux.window.Window',
-	title      : i18n['order_window'],
+	title      : i18n('order_window'),
 	layout     : 'fit',
 	closeAction: 'hide',
     height       : 750,
@@ -33,7 +33,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 
 				items: [
 					{
-						title: i18n['new_lab_order'],
+						title: i18n('new_lab_order'),
 						items: [
 
 							{
@@ -50,14 +50,14 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 										items: [
 											{
 												icon   : 'resources/images/icons/delete.png',
-												tooltip: i18n['remove'],
+												tooltip: i18n('remove'),
 												scope  : me,
 												handler: me.onRemoveLabs
 											}
 										]
 									},
 									{
-										header   : i18n['lab'],
+										header   : i18n('lab'),
 										flex    : 1,
 										dataIndex: 'laboratories'
 									}
@@ -67,7 +67,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 								bbar:{
 									xtype     : 'mitos.labstypescombo',
 									margin:5,
-									fieldLabel: i18n['add'],
+									fieldLabel: i18n('add'),
 									hideLabel:false,
 									listeners:{
 										scope:me,
@@ -80,18 +80,18 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 
 						bbar : [
 							'->', {
-								text   : i18n['create'],
+								text   : i18n('create'),
 								scope  : me,
 								handler: me.onCreateLabs
 							}, {
-								text   : i18n['cancel'],
+								text   : i18n('cancel'),
 								scope  : me,
 								handler: me.onCancel
 							}
 						]
 					},
 					{
-						title: i18n['new_xray_order'],
+						title: i18n('new_xray_order'),
 						items: [
 
 							{
@@ -108,24 +108,24 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 										items: [
 											{
 												icon   : 'resources/images/icons/delete.png',
-												tooltip: i18n['remove'],
+												tooltip: i18n('remove'),
 												scope  : me,
 												handler: me.onRemove
 											}
 										]
 									},
 									{
-										header   : i18n['medication'],
+										header   : i18n('medication'),
 										width    : 100,
 										dataIndex: 'medication'
 									},
 									{
-										header   : i18n['dispense'],
+										header   : i18n('dispense'),
 										width    : 100,
 										dataIndex: 'dispense'
 									},
 									{
-										header   : i18n['refill'],
+										header   : i18n('refill'),
 										flex     : 1,
 										dataIndex: 'refill'
 									}
@@ -135,7 +135,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 								bbar:{
 								xtype:'textfield',
 								margin:5,
-								fieldLabel: i18n['add'],
+								fieldLabel: i18n('add'),
 								hideLabel:false,
 								listeners:{
 									scope:me,
@@ -147,22 +147,22 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 						],
 						bbar : [
 							'->', {
-								text   : i18n['create'],
+								text   : i18n('create'),
 								scope  : me,
 								handler: me.Create
 							}, {
-								text   : i18n['cancel'],
+								text   : i18n('cancel'),
 								scope  : me,
 								handler: me.onCancel
 							}
 						]
 					},
 					{
-						title: i18n['new_prescription'],
+						title: i18n('new_prescription'),
 						items: [
 							{
 								xtype     : 'mitos.pharmaciescombo',
-								fieldLabel: i18n['pharmacies'],
+								fieldLabel: i18n('pharmacies'),
 								width     : 250,
 								labelWidth: 75,
 								margin    : '10 0 0 10'
@@ -182,24 +182,24 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 										items: [
 											{
 												icon   : 'resources/images/icons/delete.png',
-												tooltip: i18n['remove'],
+												tooltip: i18n('remove'),
 												scope  : me,
 												handler: me.onRemove
 											}
 										]
 									},
 									{
-										header   : i18n['medication'],
+										header   : i18n('medication'),
 										width    : 100,
 										dataIndex: 'medication'
 									},
 									{
-										header   : i18n['dispense'],
+										header   : i18n('dispense'),
 										width    : 100,
 										dataIndex: 'dispense'
 									},
 									{
-										header   : i18n['refill'],
+										header   : i18n('refill'),
 										flex     : 1,
 										dataIndex: 'refill'
 									}
@@ -218,7 +218,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 									formItems   : [
 
 										{
-											title : i18n['general'],
+											title : i18n('general'),
 											xtype : 'container',
 											layout: 'vbox',
 											items : [
@@ -232,7 +232,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 													items   : [
 														{
 															xtype     : 'medicationlivetsearch',
-															fieldLabel: i18n['medication'],
+															fieldLabel: i18n('medication'),
 															hideLabel : false,
 															action    : 'medication_id',
 															name      : 'medication_id',
@@ -252,7 +252,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 														},
 														{
 															xtype     : 'numberfield',
-															fieldLabel: i18n['dose'],
+															fieldLabel: i18n('dose'),
 															labelWidth: 40,
 															action    : 'dose',
 															name      : 'dose',
@@ -263,7 +263,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 														},
 														{
 															xtype     : 'textfield',
-															fieldLabel: i18n['dose_mg'],
+															fieldLabel: i18n('dose_mg'),
 															action    :'dose_mg',
 															name      : 'dose_mg',
                                                             allowBlank: false,
@@ -284,7 +284,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 													items: [
 														{
 															xtype     : 'numberfield',
-															fieldLabel: i18n['take'],
+															fieldLabel: i18n('take'),
 															margin    : '5 0 5 5',
 															name      : 'take_pills',
                                                             allowBlank: false,
@@ -295,7 +295,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 														},
 														{
 															xtype     : 'mitos.prescriptiontypes',
-															fieldLabel: i18n['type'],
+															fieldLabel: i18n('type'),
                                                             allowBlank: false,
 															hideLabel : true,
 															name      : 'type',
@@ -303,7 +303,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 														},
 														{
 															xtype     : 'mitos.prescriptionhowto',
-															fieldLabel: i18n['route'],
+															fieldLabel: i18n('route'),
                                                             allowBlank: false,
 															name      : 'route',
 															hideLabel : true,
@@ -333,7 +333,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 													items   : [
 														{
 
-															fieldLabel: i18n['dispense'],
+															fieldLabel: i18n('dispense'),
 															xtype     : 'numberfield',
 															name      : 'dispense',
 															width     : 130,
@@ -343,7 +343,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 															minValue  : 0
 														},
 														{
-															fieldLabel: i18n['refill'],
+															fieldLabel: i18n('refill'),
 															xtype     : 'numberfield',
 															name      : 'refill',
 															labelWidth: 35,
@@ -353,7 +353,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 															minValue  : 0
 														},
 														{
-															fieldLabel: i18n['begin_date'],
+															fieldLabel: i18n('begin_date'),
 															xtype     : 'datefield',
 															width     : 190,
 															labelWidth: 70,
@@ -362,7 +362,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 
 														},
 														{
-															fieldLabel: i18n['end_date'],
+															fieldLabel: i18n('end_date'),
 															xtype     : 'datefield',
 															width     : 180,
 															labelWidth: 60,
@@ -383,7 +383,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 								tbar   : [
 									'->',
 									{
-										text   : i18n['new_medication'],
+										text   : i18n('new_medication'),
 										scope  : me,
 										handler: me.onAddNewPrescription
 
@@ -395,11 +395,11 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 						],
 						bbar : [
 							'->', {
-								text   : i18n['create'],
+								text   : i18n('create'),
 								scope  : me,
 								handler: me.onCreatePrescription
 							}, {
-								text   : i18n['cancel'],
+								text   : i18n('cancel'),
 								scope  : me,
 								handler: me.onCancel
 							}
@@ -407,11 +407,11 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 
 					},
 					{
-						title: i18n['new_doctors_note'],
+						title: i18n('new_doctors_note'),
 						items: [
 							{
 								xtype     : 'mitos.templatescombo',
-								fieldLabel: i18n['template'],
+								fieldLabel: i18n('template'),
 								action: 'template',
 								width     : 250,
 								labelWidth: 75,
@@ -437,11 +437,11 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 						],
 						bbar : [
 							'->', {
-								text   : i18n['create'],
+								text   : i18n('create'),
 								scope  : me,
 								handler: me.onCreateDoctorsNote
 							}, {
-								text   : i18n['cancel'],
+								text   : i18n('cancel'),
 								scope  : me,
 								handler: me.onCancel
 							}
@@ -573,7 +573,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
             template = me.query('[action="template"]')[0],
 	        p = app.patient;
 		me.pid = p.pid;
-        me.setTitle(p.name + (p.readOnly ? ' - <span style="color:red">[' + i18n['read_mode'] + ']</span>' : ''));
+        me.setTitle(p.name + (p.readOnly ? ' - <span style="color:red">[' + i18n('read_mode') + ']</span>' : ''));
 		me.setReadOnly(app.patient.readOnly);
 		me.patientPrescriptionStore.removeAll();
 		me.patientsLabsOrdersStore.removeAll();

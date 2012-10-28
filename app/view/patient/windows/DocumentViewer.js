@@ -11,7 +11,7 @@
  */
 Ext.define('App.view.patient.windows.DocumentViewer', {
 	extend     : 'App.ux.window.Window',
-	title      : i18n['documents_viewer_window'],
+	title      : i18n('documents_viewer_window'),
 	layout     : 'fit',
 	height     : 650,
 	width      : 700,

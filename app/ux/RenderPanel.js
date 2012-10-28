@@ -68,7 +68,7 @@ Ext.define('App.ux.RenderPanel', {
 
 	updateTitle: function(pageTitle, readOnly, timer) {
 		
-		var readOnlyDiv = '<div class="readOnly">' + i18n['read_only'] + '</div>',
+		var readOnlyDiv = '<div class="readOnly">' + i18n('read_only') + '</div>',
 			timerDiv = '<span class="timer">' + timer + '</span>';
 		this.getComponent('RenderPanel-header').update('<div class="panel_title">' + pageTitle + '</div>' + (readOnly ? readOnlyDiv : '') + (timer ?  timerDiv : ''));
 	},

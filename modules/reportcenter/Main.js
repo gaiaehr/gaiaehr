@@ -16,7 +16,7 @@ Ext.define('Modules.reportcenter.Main',
 		 */
 		me.addNavigationNodes('root',
 		{
-			//text	:i18n['client_list_report'],
+			//text	:i18n('client_list_report'),
 			text : 'Report Center',
 			leaf : true,
 			cls : 'file',

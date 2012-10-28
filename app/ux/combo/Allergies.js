@@ -62,7 +62,7 @@ Ext.define('App.ux.combo.Allergies',
 			queryMode : 'local',
 			displayField : 'allergy_name',
 			valueField : 'allergy_name',
-			emptyText : i18n['select'],
+			emptyText : i18n('select'),
 			store : me.store
 		}, null);
 		me.callParent(arguments);

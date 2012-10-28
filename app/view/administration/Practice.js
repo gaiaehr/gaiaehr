@@ -21,7 +21,7 @@ Ext.define('App.view.administration.Practice',
 {
 	extend : 'App.ux.RenderPanel',
 	id : 'panelPractice',
-	pageTitle : i18n['practice_settings'],
+	pageTitle : i18n('practice_settings'),
 	uses : ['App.ux.combo.Titles', 'App.ux.combo.TransmitMethod', 'App.ux.combo.InsurancePayerType'],
 	initComponent : function()
 	{
@@ -367,20 +367,20 @@ Ext.define('App.view.administration.Practice',
 					items : [
 					{
 						xtype : 'textfield',
-						fieldLabel : i18n['name'],
+						fieldLabel : i18n('name'),
 						name : 'name',
 						allowBlank : false,
 						width : 385
 					},
 					{
 						xtype : 'textfield',
-						fieldLabel : i18n['address'],
+						fieldLabel : i18n('address'),
 						name : 'line1',
 						width : 385
 					},
 					{
 						xtype : 'textfield',
-						fieldLabel : i18n['address_cont'],
+						fieldLabel : i18n('address_cont'),
 						name : 'line2',
 						width : 385
 					},
@@ -395,7 +395,7 @@ Ext.define('App.view.administration.Practice',
 						{
 							xtype : 'displayfield',
 							width : 105,
-							value : i18n['city_state_zip']
+							value : i18n('city_state_zip')
 						},
 						{
 							xtype : 'textfield',
@@ -426,7 +426,7 @@ Ext.define('App.view.administration.Practice',
 					items : [
 					{
 						xtype : 'textfield',
-						fieldLabel : i18n['email'],
+						fieldLabel : i18n('email'),
 						name : 'email',
 						width : 275
 					},
@@ -441,7 +441,7 @@ Ext.define('App.view.administration.Practice',
 						{
 							xtype : 'displayfield',
 							width : 100,
-							value : i18n['phone']
+							value : i18n('phone')
 						},
 						{
 							xtype : 'displayfield',
@@ -485,7 +485,7 @@ Ext.define('App.view.administration.Practice',
 						{
 							xtype : 'displayfield',
 							width : 100,
-							value : i18n['fax']
+							value : i18n('fax')
 						},
 						{
 							xtype : 'displayfield',
@@ -520,14 +520,14 @@ Ext.define('App.view.administration.Practice',
 					},
 					{
 						xtype : 'transmitmethodcombo',
-						fieldLabel : i18n['default_method'],
+						fieldLabel : i18n('default_method'),
 						labelWidth : 100,
 						width : 275
 					}]
 				},
 				{
 					xtype : 'mitos.checkbox',
-					fieldLabel : i18n['active'],
+					fieldLabel : i18n('active'),
 					labelWidth : 60,
 					name : 'active'
 				}]
@@ -552,20 +552,20 @@ Ext.define('App.view.administration.Practice',
 					items : [
 					{
 						xtype : 'textfield',
-						fieldLabel : i18n['name'],
+						fieldLabel : i18n('name'),
 						name : 'name',
 						allowBlank : false,
 						width : 385
 					},
 					{
 						xtype : 'textfield',
-						fieldLabel : i18n['address'],
+						fieldLabel : i18n('address'),
 						name : 'line1',
 						width : 385
 					},
 					{
 						xtype : 'textfield',
-						fieldLabel : i18n['address_cont'],
+						fieldLabel : i18n('address_cont'),
 						name : 'line2',
 						width : 385
 					},
@@ -580,7 +580,7 @@ Ext.define('App.view.administration.Practice',
 						{
 							xtype : 'displayfield',
 							width : 105,
-							value : i18n['city_state_zip']
+							value : i18n('city_state_zip')
 						},
 						{
 							xtype : 'textfield',
@@ -620,7 +620,7 @@ Ext.define('App.view.administration.Practice',
 						{
 							xtype : 'displayfield',
 							width : 100,
-							value : i18n['phone']
+							value : i18n('phone')
 						},
 						{
 							xtype : 'displayfield',
@@ -664,7 +664,7 @@ Ext.define('App.view.administration.Practice',
 						{
 							xtype : 'displayfield',
 							width : 100,
-							value : i18n['fax']
+							value : i18n('fax')
 						},
 						{
 							xtype : 'displayfield',
@@ -699,13 +699,13 @@ Ext.define('App.view.administration.Practice',
 					},
 					{
 						xtype : 'textfield',
-						fieldLabel : i18n['cms_id'],
+						fieldLabel : i18n('cms_id'),
 						name : 'cms_id',
 						width : 275
 					},
 					{
 						xtype : 'mitos.insurancepayertypecombo',
-						fieldLabel : i18n['payer_type'],
+						fieldLabel : i18n('payer_type'),
 						labelWidth : 100,
 						width : 275
 					},
@@ -717,7 +717,7 @@ Ext.define('App.view.administration.Practice',
 				},
 				{
 					xtype : 'checkbox',
-					fieldLabel : i18n['active'],
+					fieldLabel : i18n('active'),
 					labelWidth : 60,
 					name : 'active'
 				}]
@@ -729,7 +729,7 @@ Ext.define('App.view.administration.Practice',
 		// *************************************************************************************
 		me.pharmacyGrid = Ext.create('Ext.grid.Panel',
 		{
-			title : i18n['pharmacies'],
+			title : i18n('pharmacies'),
 			store : me.pharmacyStore,
 			border : false,
 			frame : false,
@@ -740,38 +740,38 @@ Ext.define('App.view.administration.Practice',
 			plugins : [me.rowEditingPharmacy],
 			columns : [
 			{
-				header : i18n['pharmacy_name'],
+				header : i18n('pharmacy_name'),
 				width : 150,
 				sortable : true,
 				dataIndex : 'name'
 			},
 			{
-				header : i18n['address'],
+				header : i18n('address'),
 				flex : 1,
 				sortable : true,
 				dataIndex : 'address_full'
 			},
 			{
-				header : i18n['phone'],
+				header : i18n('phone'),
 				width : 120,
 				sortable : true,
 				dataIndex : 'phone_full'
 			},
 			{
-				header : i18n['Fax'],
+				header : i18n('Fax'),
 				width : 120,
 				sortable : true,
 				dataIndex : 'fax_full'
 			},
 			{
-				header : i18n['default_method'],
+				header : i18n('default_method'),
 				flex : 1,
 				sortable : true,
 				dataIndex : 'transmit_method',
 				renderer : transmit_method
 			},
 			{
-				header : i18n['active'],
+				header : i18n('active'),
 				width : 55,
 				sortable : true,
 				dataIndex : 'active',
@@ -779,7 +779,7 @@ Ext.define('App.view.administration.Practice',
 			}],
 			tbar : [
 			{
-				text : i18n['add_new_pharmacy'],
+				text : i18n('add_new_pharmacy'),
 				iconCls : 'save',
 				action : 'pharmacyGridModel',
 				scope : me,
@@ -788,7 +788,7 @@ Ext.define('App.view.administration.Practice',
 		});
 		me.insuranceGrid = Ext.create('Ext.grid.Panel',
 		{
-			title : i18n['insurance_companies'],
+			title : i18n('insurance_companies'),
 			store : me.insuranceStore,
 			border : false,
 			frame : false,
@@ -799,37 +799,37 @@ Ext.define('App.view.administration.Practice',
 			plugins : [me.rowEditingInsurance],
 			columns : [
 			{
-				header : i18n['insurance_name'],
+				header : i18n('insurance_name'),
 				width : 150,
 				sortable : true,
 				dataIndex : 'name'
 			},
 			{
-				header : i18n['address'],
+				header : i18n('address'),
 				flex : 1,
 				sortable : true,
 				dataIndex : 'address_full'
 			},
 			{
-				header : i18n['Phone'],
+				header : i18n('Phone'),
 				width : 120,
 				sortable : true,
 				dataIndex : 'phone_full'
 			},
 			{
-				header : i18n['fax'],
+				header : i18n('fax'),
 				width : 120,
 				sortable : true,
 				dataIndex : 'fax_full'
 			},
 			{
-				header : i18n['default_x12_partner'],
+				header : i18n('default_x12_partner'),
 				flex : 1,
 				sortable : true,
 				dataIndex : 'x12_default_partner_id'
 			},
 			{
-				header : i18n['active'],
+				header : i18n('active'),
 				width : 55,
 				sortable : true,
 				dataIndex : 'active',
@@ -837,7 +837,7 @@ Ext.define('App.view.administration.Practice',
 			}],
 			tbar : [
 			{
-				text : i18n['add_new_insurance'],
+				text : i18n('add_new_insurance'),
 				iconCls : 'save',
 				action : 'insuranceGridModel',
 				scope : me,
@@ -862,7 +862,7 @@ Ext.define('App.view.administration.Practice',
 		//		});
 		me.x12ParnersGrid = Ext.create('Ext.grid.Panel',
 		{
-			title : i18n['x12_partners_clearing_houses'],
+			title : i18n('x12_partners_clearing_houses'),
 			//store     : me.x12PartnersStore,
 			border : false,
 			frame : false,
@@ -872,27 +872,27 @@ Ext.define('App.view.administration.Practice',
 			},
 			columns : [
 			{
-				text : i18n['name'],
+				text : i18n('name'),
 				flex : 1,
 				sortable : true,
 				dataIndex : 'name'
 			},
 			{
-				text : i18n['sender_id'],
+				text : i18n('sender_id'),
 				flex : 1,
 				width : 100,
 				sortable : true,
 				dataIndex : 'phone'
 			},
 			{
-				text : i18n['receiver_id'],
+				text : i18n('receiver_id'),
 				flex : 1,
 				width : 100,
 				sortable : true,
 				dataIndex : 'phone'
 			},
 			{
-				text : i18n['version'],
+				text : i18n('version'),
 				flex : 1,
 				width : 100,
 				sortable : true,
@@ -911,7 +911,7 @@ Ext.define('App.view.administration.Practice',
 			//me.InsuranceNumbersGrid,
 			me.x12ParnersGrid,
 			{
-				title : i18n['hl7_viewer'],
+				title : i18n('hl7_viewer'),
 				frame : false,
 				border : false,
 				items : [
@@ -921,7 +921,7 @@ Ext.define('App.view.administration.Practice',
 				tbar : [
 				{
 					xtype : 'button',
-					text : i18n['clear_hl7_data'],
+					text : i18n('clear_hl7_data'),
 					iconCls : 'save',
 					handler : function()
 					{
@@ -930,7 +930,7 @@ Ext.define('App.view.administration.Practice',
 				}, '-',
 				{
 					xtype : 'button',
-					text : i18n['parse_hl7'],
+					text : i18n('parse_hl7'),
 					iconCls : 'save',
 					handler : function()
 					{

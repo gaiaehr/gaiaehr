@@ -20,7 +20,7 @@ Ext.define('App.view.administration.Medications',
 {
 	extend : 'App.ux.RenderPanel',
 	id : 'panelMedications',
-	pageTitle : i18n['medications'],
+	pageTitle : i18n('medications'),
 
 	initComponent : function()
 	{
@@ -36,37 +36,37 @@ Ext.define('App.view.administration.Medications',
 			columns : [
 			{
 				width : 70,
-				header : i18n['number'],
+				header : i18n('number'),
 				dataIndex : 'PRODUCTNDC',
 				sortable : true
 			},
 			{
 				width : 80,
-				header : i18n['name'],
+				header : i18n('name'),
 				dataIndex : 'PROPRIETARYNAME',
 				sortable : true
 			},
 			{
 				width : 200,
-				header : i18n['active_component'],
+				header : i18n('active_component'),
 				dataIndex : 'NONPROPRIETARYNAME',
 				sortable : true
 			},
 			{
 				width : 175,
-				header : i18n['dosage'],
+				header : i18n('dosage'),
 				dataIndex : 'DOSAGEFORMNAME',
 				sortable : true
 			},
 			{
 				width : 45,
-				header : i18n['number'],
+				header : i18n('number'),
 				dataIndex : 'ACTIVE_NUMERATOR_STRENGTH',
 				sortable : true
 			},
 			{
 				flex : 1,
-				header : i18n['unit'],
+				header : i18n('unit'),
 				dataIndex : 'ACTIVE_INGRED_UNIT',
 				sortable : true
 			}],
@@ -97,7 +97,7 @@ Ext.define('App.view.administration.Medications',
 						items : [
 						{
 							xtype : 'textfield',
-							fieldLabel : i18n['name'],
+							fieldLabel : i18n('name'),
 							width : 150,
 							labelWidth : 50,
 							name : 'PROPRIETARYNAME'
@@ -105,7 +105,7 @@ Ext.define('App.view.administration.Medications',
 						},
 						{
 							xtype : 'textfield',
-							fieldLabel : i18n['active_component'],
+							fieldLabel : i18n('active_component'),
 							width : 350,
 							labelWidth : 125,
 							name : 'NONPROPRIETARYNAME'
@@ -114,7 +114,7 @@ Ext.define('App.view.administration.Medications',
 
 						{
 							xtype : 'textfield',
-							fieldLabel : i18n['dosage'],
+							fieldLabel : i18n('dosage'),
 							width : 200,
 							labelWidth : 50,
 							name : 'DOSAGEFORMNAME'
@@ -135,7 +135,7 @@ Ext.define('App.view.administration.Medications',
 						items : [
 						{
 							xtype : 'textfield',
-							fieldLabel : i18n['code'],
+							fieldLabel : i18n('code'),
 							labelWidth : 50,
 							width : 150,
 							name : 'PRODUCTNDC'
@@ -143,7 +143,7 @@ Ext.define('App.view.administration.Medications',
 						},
 						{
 							xtype : 'textfield',
-							fieldLabel : i18n['dosis'],
+							fieldLabel : i18n('dosis'),
 							margin : '0 0 5 0',
 							value : 0,
 							minValue : 0,
@@ -168,7 +168,7 @@ Ext.define('App.view.administration.Medications',
 			{
 				store : me.storeMedications,
 				displayInfo : true,
-				emptyMsg : i18n['no_office_notes_to_display'],
+				emptyMsg : i18n('no_office_notes_to_display'),
 				plugins : Ext.create('Ext.ux.SlidingPager'),
 				items : ['-',
                     {
@@ -179,7 +179,7 @@ Ext.define('App.view.administration.Medications',
                     '-',
                     {
                         xtype : 'textfield',
-                        emptyText : i18n['search'],
+                        emptyText : i18n('search'),
                         enableKeyEvents : true,
                         itemId : 'query',
                         listeners :
@@ -191,7 +191,7 @@ Ext.define('App.view.administration.Medications',
                     },
                     '-',
                     {
-                        text : i18n['reset'],
+                        text : i18n('reset'),
                         scope : me,
                         handler : me.onFieldReset
                     },

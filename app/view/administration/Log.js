@@ -21,7 +21,7 @@ Ext.define('App.view.administration.Log',
 	extend : 'App.ux.RenderPanel',
 	id : 'panelLog',
 	uses : ['App.ux.GridPanel'],
-	pageTitle : i18n['event_history_log'],
+	pageTitle : i18n('event_history_log'),
 	initComponent : function()
 	{
 		var me = this;
@@ -143,14 +143,14 @@ Ext.define('App.view.administration.Log',
 			{
 				store : me.logStore,
 				displayInfo : true,
-				emptyMsg : i18n['no_office_notes_to_display'],
+				emptyMsg : i18n('no_office_notes_to_display'),
 				plugins : Ext.create('Ext.ux.SlidingPager',
 				{
 				}),
 				items : [
 				{
 					xtype : 'button',
-					text : i18n['view_log_event_details'],
+					text : i18n('view_log_event_details'),
 					iconCls : 'edit',
 					itemId : 'detail',
 					disabled : true,
@@ -167,7 +167,7 @@ Ext.define('App.view.administration.Log',
 		// *************************************************************************************
 		me.winLog = Ext.create('Ext.window.Window',
 		{
-			title : i18n['log_event_details'],
+			title : i18n('log_event_details'),
 			width : 500,
 			closeAction : 'hide',
 			items : [
@@ -200,59 +200,59 @@ Ext.define('App.view.administration.Log',
 					name : 'id'
 				},
 				{
-					fieldLabel : i18n['date'],
+					fieldLabel : i18n('date'),
 					xtype : 'displayfield',
 					name : 'date'
 				},
 				{
-					fieldLabel : i18n['event'],
+					fieldLabel : i18n('event'),
 					xtype : 'displayfield',
 					name : 'event'
 				},
 				{
-					fieldLabel : i18n['user'],
+					fieldLabel : i18n('user'),
 					xtype : 'displayfield',
 					name : 'user'
 				},
 				{
-					fieldLabel : i18n['facility'],
+					fieldLabel : i18n('facility'),
 					xtype : 'displayfield',
 					name : 'facility'
 				},
 				{
-					fieldLabel : i18n['comments'],
+					fieldLabel : i18n('comments'),
 					xtype : 'displayfield',
 					name : 'comments'
 				},
 				{
-					fieldLabel : i18n['user_notes'],
+					fieldLabel : i18n('user_notes'),
 					xtype : 'displayfield',
 					name : 'user_notes'
 				},
 				{
-					fieldLabel : i18n['patient_id'],
+					fieldLabel : i18n('patient_id'),
 					xtype : 'displayfield',
 					name : 'patient_id'
 				},
 				{
-					fieldLabel : i18n['success'],
+					fieldLabel : i18n('success'),
 					xtype : 'displayfield',
 					name : 'success'
 				},
 				{
-					fieldLabel : i18n['check_sum'],
+					fieldLabel : i18n('check_sum'),
 					xtype : 'displayfield',
 					name : 'checksum'
 				},
 				{
-					fieldLabel : i18n['crt_user'],
+					fieldLabel : i18n('crt_user'),
 					xtype : 'displayfield',
 					name : 'crt_user'
 				}]
 			}],
 			buttons : [
 			{
-				text : i18n['close'],
+				text : i18n('close'),
 				handler : function()
 				{
 					this.up('window').hide();

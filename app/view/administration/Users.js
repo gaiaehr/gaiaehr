@@ -20,7 +20,7 @@ Ext.define('App.view.administration.Users',
 {
 	extend : 'App.ux.RenderPanel',
 	id : 'panelUsers',
-	pageTitle : i18n['users'],
+	pageTitle : i18n('users'),
 	uses : ['App.ux.GridPanel'],
 	initComponent : function()
 	{
@@ -183,36 +183,36 @@ Ext.define('App.view.administration.Users',
 			},
 			{
 				width : 100,
-				text : i18n['username'],
+				text : i18n('username'),
 				sortable : true,
 				dataIndex : 'username'
 			},
 			{
 				width : 200,
-				text : i18n['name'],
+				text : i18n('name'),
 				sortable : true,
 				dataIndex : 'fullname'
 			},
 			{
 				flex : 1,
-				text : i18n['aditional_info'],
+				text : i18n('aditional_info'),
 				sortable : true,
 				dataIndex : 'info'
 			},
 			{
-				text : i18n['active'],
+				text : i18n('active'),
 				sortable : true,
 				dataIndex : 'active',
 				renderer : authCk
 			},
 			{
-				text : i18n['authorized'],
+				text : i18n('authorized'),
 				sortable : true,
 				dataIndex : 'authorized',
 				renderer : authCk
 			},
 			{
-				text : i18n['calendar_q'],
+				text : i18n('calendar_q'),
 				sortable : true,
 				dataIndex : 'calendar',
 				renderer : authCk
@@ -222,7 +222,7 @@ Ext.define('App.view.administration.Users',
 				scope : me,
 				itemdblclick : function(view, record)
 				{
-					me.onItemdblclick(me.userStore, record, i18n['edit_user']);
+					me.onItemdblclick(me.userStore, record, i18n('edit_user'));
 				}
 			},
 			dockedItems : [
@@ -232,12 +232,12 @@ Ext.define('App.view.administration.Users',
 				items : [
 				{
 					xtype : 'button',
-					text : i18n['add_new_user'],
+					text : i18n('add_new_user'),
 					iconCls : 'save',
 					handler : function()
 					{
 						var form = me.win.down('form');
-						me.onNew(form, 'UserModel', i18n['add_new_user']);
+						me.onNew(form, 'UserModel', i18n('add_new_user'));
 					}
 				}]
 			}]
@@ -292,7 +292,7 @@ Ext.define('App.view.administration.Users',
 					{
 						width : 100,
 						xtype : 'displayfield',
-						value : i18n['username'] + ': '
+						value : i18n('username') + ': '
 					},
 					{
 						width : 100,
@@ -303,7 +303,7 @@ Ext.define('App.view.administration.Users',
 					{
 						width : 100,
 						xtype : 'displayfield',
-						value : i18n['password'] + ': '
+						value : i18n('password') + ': '
 					},
 					{
 						width : 105,
@@ -323,7 +323,7 @@ Ext.define('App.view.administration.Users',
 					{
 						width : 100,
 						xtype : 'displayfield',
-						value : i18n['first_middle_last']
+						value : i18n('first_middle_last')
 					},
 					{
 						width : 50,
@@ -354,19 +354,19 @@ Ext.define('App.view.administration.Users',
 					{
 						width : 150,
 						xtype : 'mitos.checkbox',
-						fieldLabel : i18n['active'],
+						fieldLabel : i18n('active'),
 						name : 'active'
 					},
 					{
 						width : 150,
 						xtype : 'mitos.checkbox',
-						fieldLabel : i18n['authorized'],
+						fieldLabel : i18n('authorized'),
 						name : 'authorized'
 					},
 					{
 						width : 150,
 						xtype : 'mitos.checkbox',
-						fieldLabel : i18n['calendar_q'],
+						fieldLabel : i18n('calendar_q'),
 						name : 'calendar'
 					}]
 				},
@@ -381,7 +381,7 @@ Ext.define('App.view.administration.Users',
 					{
 						width : 100,
 						xtype : 'displayfield',
-						value : i18n['default_facility'] + ': '
+						value : i18n('default_facility') + ': '
 					},
 					{
 						width : 100,
@@ -391,7 +391,7 @@ Ext.define('App.view.administration.Users',
 					{
 						width : 100,
 						xtype : 'displayfield',
-						value : i18n['authorizations'] + ': '
+						value : i18n('authorizations') + ': '
 					},
 					{
 						width : 105,
@@ -409,7 +409,7 @@ Ext.define('App.view.administration.Users',
 					{
 						width : 100,
 						xtype : 'displayfield',
-						value : i18n['access_control'] + ': '
+						value : i18n('access_control') + ': '
 					},
 					{
 						width : 100,
@@ -421,7 +421,7 @@ Ext.define('App.view.administration.Users',
 					{
 						width : 100,
 						xtype : 'displayfield',
-						value : i18n['taxonomy'] + ': '
+						value : i18n('taxonomy') + ': '
 					},
 					{
 						width : 105,
@@ -439,7 +439,7 @@ Ext.define('App.view.administration.Users',
 					{
 						width : 100,
 						xtype : 'displayfield',
-						value : i18n['federal_tax_id'] + ': '
+						value : i18n('federal_tax_id') + ': '
 					},
 					{
 						width : 100,
@@ -449,7 +449,7 @@ Ext.define('App.view.administration.Users',
 					{
 						width : 100,
 						xtype : 'displayfield',
-						value : i18n['fed_drug_id'] + ': '
+						value : i18n('fed_drug_id') + ': '
 					},
 					{
 						width : 105,
@@ -467,7 +467,7 @@ Ext.define('App.view.administration.Users',
 					{
 						width : 100,
 						xtype : 'displayfield',
-						value : i18n['upin'] + ': '
+						value : i18n('upin') + ': '
 					},
 					{
 						width : 100,
@@ -477,7 +477,7 @@ Ext.define('App.view.administration.Users',
 					{
 						width : 100,
 						xtype : 'displayfield',
-						value : i18n['npi'] + ': '
+						value : i18n('npi') + ': '
 					},
 					{
 						width : 105,
@@ -495,7 +495,7 @@ Ext.define('App.view.administration.Users',
 					{
 						width : 100,
 						xtype : 'displayfield',
-						value : i18n['job_description'] + ': '
+						value : i18n('job_description') + ': '
 					},
 					{
 						width : 315,
@@ -508,12 +508,12 @@ Ext.define('App.view.administration.Users',
 					height : 50,
 					xtype : 'textfield',
 					name : 'info',
-					emptyText : i18n['additional_info']
+					emptyText : i18n('additional_info')
 				}]
 			}],
 			buttons : [
 			{
-				text : i18n['save'],
+				text : i18n('save'),
 				cls : 'winSave',
 				handler : function()
 				{
@@ -526,7 +526,7 @@ Ext.define('App.view.administration.Users',
 				}
 			}, '-',
 			{
-				text : i18n['cancel'],
+				text : i18n('cancel'),
 				scope : me,
 				handler : function(btn)
 				{
@@ -573,7 +573,7 @@ Ext.define('App.view.administration.Users',
 			{
 				if (response.result.error)
 				{
-					Ext.Msg.alert('Opps!', i18n['password_currently_used']);
+					Ext.Msg.alert('Opps!', i18n('password_currently_used'));
 				}
 				else
 				{

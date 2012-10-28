@@ -12,7 +12,7 @@ Ext.define('App.view.miscellaneous.Websearch',
 {
 	extend : 'App.ux.RenderPanel',
 	id : 'panelWebsearch',
-	pageTitle : i18n['national_library'],
+	pageTitle : i18n('national_library'),
 	pageLayout : 'border',
 	uses : ['App.ux.GridPanel'],
 	initComponent : function()
@@ -76,10 +76,10 @@ Ext.define('App.view.miscellaneous.Websearch',
 			items : [
 			{
 				xtype : 'radiogroup',
-				fieldLabel : i18n['search_by'],
+				fieldLabel : i18n('search_by'),
 				items : [
 				{
-					boxLabel : i18n['heath_topics'],
+					boxLabel : i18n('heath_topics'),
 					name : 'type',
 					inputValue : 'health_topics'
 				},
@@ -104,7 +104,7 @@ Ext.define('App.view.miscellaneous.Websearch',
 				}
 			}, page.searchField = Ext.create('Ext.form.field.Text',
 			{
-				emptyText : i18n['web_search'] + '...',
+				emptyText : i18n('web_search') + '...',
 				enableKeyEvents : true,
 				hideLabel : true,
 				anchor : '100%',
@@ -146,14 +146,14 @@ Ext.define('App.view.miscellaneous.Websearch',
 			viewConfig :
 			{
 				deferEmptyText : false,
-				emptyText : '<p class="search_nothing_found" style="padding: 10px 0 0 20px; font-size: 24px">' + i18n['nothing_found'] + '!</p>',
+				emptyText : '<p class="search_nothing_found" style="padding: 10px 0 0 20px; font-size: 24px">' + i18n('nothing_found') + '!</p>',
 				stripeRows : true,
-				loadingText : i18n['searching'] + '... ' + i18n['please_wait']
+				loadingText : i18n('searching') + '... ' + i18n('please_wait')
 			},
 			columns : [
 			{
 				flex : 1,
-				header : i18n['search_results'],
+				header : i18n('search_results'),
 				sortable : true,
 				dataIndex : 'title',
 				renderer : page.searchRow
@@ -172,7 +172,7 @@ Ext.define('App.view.miscellaneous.Websearch',
 			{
 				store : page.store,
 				displayInfo : true,
-				emptyMsg : i18n['nothing_to_display'],
+				emptyMsg : i18n('nothing_to_display'),
 				plugins : Ext.create('Ext.ux.SlidingPager',
 				{
 				})
@@ -197,7 +197,7 @@ Ext.define('App.view.miscellaneous.Websearch',
 			layout : 'fit',
 			frame : true,
 			bodyBorder : true,
-			tpl : Ext.create('Ext.XTemplate', '<div class="search_container">', '<div class="search_data">', '<h3 class="search_title">' + i18n['title'] + ': {title}</h3>', '<h4 class="search_source">' + i18n['source'] + ': {source}</h4>', '</div>', '<div class="search_body">{FullSummary}</div>', '</div>')
+			tpl : Ext.create('Ext.XTemplate', '<div class="search_container">', '<div class="search_data">', '<h3 class="search_title">' + i18n('title') + ': {title}</h3>', '<h4 class="search_source">' + i18n('source') + ': {source}</h4>', '</div>', '<div class="search_body">{FullSummary}</div>', '</div>')
 		});
 
 		page.pageBody = [page.searchPanel, page.onotesGrid, page.viewPanel];

@@ -83,12 +83,12 @@ Ext.define('App.ux.LiveImmunizationSearch',
 			store : me.store,
 			displayField : 'name',
 			valueField : 'cvx_code',
-			emptyText : i18n['search_for_a_immunizations'] + '...',
+			emptyText : i18n('search_for_a_immunizations') + '...',
 			typeAhead : true,
 			minChars : 1,
 			listConfig :
 			{
-				loadingText : i18n['searching'] + '...',
+				loadingText : i18n('searching') + '...',
 				//emptyText	: 'No matching posts found.',
 				//---------------------------------------------------------------------
 				// Custom rendering template for each item

@@ -1,7 +1,7 @@
 Ext.define('App.ux.window.CopyRights', {
     extend:'Ext.window.Window',
     id         : 'winCopyright',
-    title      : 'GaiaEHR ' + i18n['copyright_notice'],
+    title      : 'GaiaEHR ' + i18n('copyright_notice'),
     bodyStyle  : 'background-color: #ffffff; padding: 5px;',
     autoLoad   : 'gpl-licence-en.html',
     closeAction: 'hide',

@@ -28,7 +28,7 @@ Ext.define('App.ux.combo.Templates', {
 			//queryMode   : 'local',
 			displayField: 'title',
 			valueField  : 'title',
-			emptyText   : i18n['select'],
+			emptyText   : i18n('select'),
 			store       : me.store
 		}, null);
 		me.callParent(arguments);

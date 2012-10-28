@@ -193,16 +193,16 @@ Ext.define('Ext.ux.GMapPanel', {
 	addAddressToMap     : function(response) {
 		var place, addressinfo, accuracy, point;
 		if(!response || response.Status.code != 200) {
-			Ext.MessageBox.alert(i18n['error'], i18n['code'] + response.Status.code + ' ' + i18n['error_returned']);
+			Ext.MessageBox.alert(i18n('error'), i18n('code') + response.Status.code + ' ' + i18n('error_returned'));
 		} else {
 			place = response.Placemark[0];
 			addressinfo = place.AddressDetails;
 			accuracy = addressinfo.Accuracy;
 			if(accuracy === 0) {
-				Ext.MessageBox.alert( i18n['unable_to_locate_address'], i18n['unable_locate_address_provided']);
+				Ext.MessageBox.alert( i18n('unable_to_locate_address'), i18n('unable_locate_address_provided'));
 			} else {
 				if(accuracy < 7) {
-					Ext.MessageBox.alert(i18n['address_accuracy'], i18n['address_provided_low_accuracy'] + '<br><br>Level ' + accuracy + i18n['accuracy'] + ' (8 = ' + i18n['exact_match'] + ', 1 = ' + i18n['vague_match'] + ')');
+					Ext.MessageBox.alert(i18n('address_accuracy'), i18n('address_provided_low_accuracy') + '<br><br>Level ' + accuracy + i18n('accuracy') + ' (8 = ' + i18n('exact_match') + ', 1 = ' + i18n('vague_match') + ')');
 				} else {
 					point = new GLatLng(place.Point.coordinates[1], place.Point.coordinates[0]);
 					if(typeof this.setCenter.marker === 'object' && typeof point === 'object') {

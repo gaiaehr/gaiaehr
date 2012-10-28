@@ -1,6 +1,6 @@
 Ext.define('Modules.imageforms.view.EncounterImageFormsPanel', {
     extend   : 'Ext.panel.Panel',
-    title: i18n['image_forms'],
+    title: i18n('image_forms'),
     layout:'auto',
     autoScroll:true,
     initComponent: function() {

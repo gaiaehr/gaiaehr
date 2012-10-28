@@ -20,7 +20,7 @@ Ext.define('App.view.administration.Roles',
 {
 	extend : 'App.ux.RenderPanel',
 	id : 'panelRoles',
-	pageTitle : i18n['roles_and_permissions'],
+	pageTitle : i18n('roles_and_permissions'),
 	pageLayout :
 	{
 		type : 'vbox',
@@ -38,7 +38,7 @@ Ext.define('App.view.administration.Roles',
 		me.header = Ext.create('Ext.container.Container',
 		{
 			height : 30,
-			html : '<div class="roleHeader">' + '<span class="perm">' + i18n['permission'] + '</span>' + '<span class="role">' + i18n['front_office'] + '</span>' + '<span class="role">' + i18n['auditors'] + '</span>' + '<span class="role">' + i18n['clinician'] + '</span>' + '<span class="role">' + i18n['physician'] + '</span>' + '<span class="role">' + i18n['administrator'] + '</span>' + '</div>'
+			html : '<div class="roleHeader">' + '<span class="perm">' + i18n('permission') + '</span>' + '<span class="role">' + i18n('front_office') + '</span>' + '<span class="role">' + i18n('auditors') + '</span>' + '<span class="role">' + i18n('clinician') + '</span>' + '<span class="role">' + i18n('physician') + '</span>' + '<span class="role">' + i18n('administrator') + '</span>' + '</div>'
 		});
 
 		me.form = Ext.create('Ext.form.Panel',
@@ -55,7 +55,7 @@ Ext.define('App.view.administration.Roles',
 			}],
 			buttons : [
 			{
-				text : i18n['save'],
+				text : i18n('save'),
 				iconCls : 'save',
 				margin : '0 20 0 0',
 				scope : me,
@@ -73,14 +73,14 @@ Ext.define('App.view.administration.Roles',
 
 		if (record.set(values) !== null)
 		{
-			me.form.el.mask(i18n['saving_roles'] + '...');
+			me.form.el.mask(i18n('saving_roles') + '...');
 			changedValues = record.getChanges();
 			Roles.saveRolesData(changedValues, function(provider, response)
 			{
 				if (response.result)
 				{
 					me.form.el.unmask();
-					me.msg('Sweet!', i18n['roles_updated']);
+					me.msg('Sweet!', i18n('roles_updated'));
 					record.commit();
 				}
 			});
@@ -143,7 +143,7 @@ Ext.define('App.view.administration.Roles',
 	onActive : function(callback)
 	{
 		var me = this, form = me.form;
-		form.el.mask(i18n['loading'] + '...');
+		form.el.mask(i18n('loading') + '...');
 		form.removeAll();
 		Roles.getRoleForm(null, function(provider, response)
 		{

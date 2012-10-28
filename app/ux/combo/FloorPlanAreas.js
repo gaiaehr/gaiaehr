@@ -28,7 +28,7 @@ Ext.define('App.ux.combo.FloorPlanAreas', {
 			queryMode: 'local',
 			displayField: 'title',
 			valueField  : 'id',
-			emptyText   : i18n['select'],
+			emptyText   : i18n('select'),
 			store       : me.store
 		}, null);
 		me.callParent(arguments);

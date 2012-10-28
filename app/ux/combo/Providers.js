@@ -40,7 +40,7 @@ Ext.define('App.ux.combo.Providers',
 			queryMode : 'local',
 			displayField : 'name',
 			valueField : 'id',
-			emptyText : i18n['select'],
+			emptyText : i18n('select'),
 			store : me.store
 		}, null);
 		me.callParent(arguments);

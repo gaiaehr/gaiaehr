@@ -9,7 +9,7 @@ Ext.define('App.view.areas.PatientPoolDropZone',
 {
 	id : 'panelPoolArea',
 	extend : 'App.ux.RenderPanel',
-	pageTitle : i18n['patient_pool_areas'],
+	pageTitle : i18n('patient_pool_areas'),
 	initComponent : function()
 	{
 		var me = this;
@@ -37,7 +37,7 @@ Ext.define('App.view.areas.PatientPoolDropZone',
 	onPatientDrop : function(node, data, overModel, dropPosition, eOpts)
 	{
 		var name = (data.records[0].data) ? data.records[0].data.name : data.records[0].name, pid = (data.records[0].data) ? data.records[0].data.pid : data.records[0].pid, params;
-		app.msg('Sweet!', name + ' ' + i18n['sent_to'] + ' ' + this.panel.title);
+		app.msg('Sweet!', name + ' ' + i18n('sent_to') + ' ' + this.panel.title);
 		params =
 		{
 			pid : pid,
@@ -87,12 +87,12 @@ Ext.define('App.view.areas.PatientPoolDropZone',
 					floorPlanId : areas[i].floor_plan_id,
 					columns : [
 					{
-						header : i18n['record'] + ' #',
+						header : i18n('record') + ' #',
 						width : 100,
 						dataIndex : 'pid'
 					},
 					{
-						header : i18n['patient_name'],
+						header : i18n('patient_name'),
 						flex : 1,
 						dataIndex : 'name'
 					}],

@@ -20,7 +20,7 @@ Ext.define('App.view.administration.Lists',
 {
 	extend : 'App.ux.RenderPanel',
 	id : 'panelLists',
-	pageTitle : i18n['select_list_options'],
+	pageTitle : i18n('select_list_options'),
 	pageLayout : 'border',
 	uses : ['App.ux.GridPanel', 'App.ux.form.Panel', 'Ext.grid.plugin.RowEditing'],
 	initComponent : function()
@@ -159,7 +159,7 @@ Ext.define('App.view.administration.Lists',
 			region : 'west',
 			columns : [
 			{
-				text : i18n['select_lists'],
+				text : i18n('select_lists'),
 				flex : 1,
 				sortable : false,
 				dataIndex : 'title',
@@ -169,7 +169,7 @@ Ext.define('App.view.administration.Lists',
 				}
 			},
 			{
-				text : i18n['active'],
+				text : i18n('active'),
 				width : 55,
 				sortable : false,
 				dataIndex : 'active',
@@ -181,7 +181,7 @@ Ext.define('App.view.administration.Lists',
 				}
 			},
 			{
-				text : i18n['in_use'],
+				text : i18n('in_use'),
 				width : 55,
 				sortable : false,
 				dataIndex : 'in_use',
@@ -198,19 +198,19 @@ Ext.define('App.view.administration.Lists',
 				dock : 'top',
 				items : [
 				{
-					text : i18n['new_list'],
+					text : i18n('new_list'),
 					iconCls : 'icoAddRecord',
 					scope : me,
 					handler : me.onNewList
 				}, '->',
 				{
-					text : i18n['delete_list'],
+					text : i18n('delete_list'),
 					iconCls : 'icoDeleteBlack',
 					itemId : 'listDeleteBtn',
 					disabled : true,
 					scope : me,
 					handler : me.onDelete,
-					tooltip : i18n['can_be_disable']
+					tooltip : i18n('can_be_disable')
 				}]
 			}]
 		});
@@ -228,7 +228,7 @@ Ext.define('App.view.administration.Lists',
 				plugins :
 				{
 					ptype : 'gridviewdragdrop',
-					dragText : i18n['drag_and_drop_reorganize']
+					dragText : i18n('drag_and_drop_reorganize')
 				},
 				listeners :
 				{
@@ -238,7 +238,7 @@ Ext.define('App.view.administration.Lists',
 			},
 			columns : [
 			{
-				text : i18n['option_title'],
+				text : i18n('option_title'),
 				width : 200,
 				sortable : true,
 				dataIndex : 'option_name',
@@ -254,7 +254,7 @@ Ext.define('App.view.administration.Lists',
 				}
 			},
 			{
-				text : i18n['option_value'],
+				text : i18n('option_value'),
 				width : 200,
 				sortable : true,
 				dataIndex : 'option_value',
@@ -266,7 +266,7 @@ Ext.define('App.view.administration.Lists',
 				}
 			},
 			{
-				text : i18n['notes'],
+				text : i18n('notes'),
 				sortable : true,
 				dataIndex : 'notes',
 				flex : 1,
@@ -276,7 +276,7 @@ Ext.define('App.view.administration.Lists',
 				}
 			},
 			{
-				text : i18n['active'],
+				text : i18n('active'),
 				width : 55,
 				sortable : false,
 				dataIndex : 'active',
@@ -293,7 +293,7 @@ Ext.define('App.view.administration.Lists',
 				dock : 'top',
 				items : ['->',
 				{
-					text : i18n['add_option'],
+					text : i18n('add_option'),
 					iconCls : 'icoAddRecord',
 					scope : me,
 					handler : me.onNewOption
@@ -423,9 +423,9 @@ Ext.define('App.view.administration.Lists',
 
 		Ext.Msg.show(
 		{
-			title : i18n['please_confirm'] + '...',
+			title : i18n('please_confirm') + '...',
 			icon : Ext.MessageBox.QUESTION,
-			msg : i18n['delete_this_record'],
+			msg : i18n('delete_this_record'),
 			buttons : Ext.Msg.YESNO,
 			scope : me,
 			fn : function(btn)
@@ -436,13 +436,13 @@ Ext.define('App.view.administration.Lists',
 					{
 						if (response.result.success)
 						{
-							me.msg('Sweet!', i18n['list'] + ' "' + record.data.title + '" ' + i18n['deleted'] + '.');
+							me.msg('Sweet!', i18n('list') + ' "' + record.data.title + '" ' + i18n('deleted') + '.');
 							store.load();
 							me.optionsStore.load();
 						}
 						else
 						{
-							Ext.Msg.alert('Oops!', i18n['unable_to_delete'] + ' "' + record.data.title + '"<br>' + i18n['list_currently_used_forms'] + '.');
+							Ext.Msg.alert('Oops!', i18n('unable_to_delete') + ' "' + record.data.title + '"<br>' + i18n('list_currently_used_forms') + '.');
 						}
 
 					});

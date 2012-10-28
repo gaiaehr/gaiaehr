@@ -28,7 +28,7 @@ Ext.apply(Ext.form.VTypes,
 	{
 		return val.length > 2;
 	},
-	empty_3chrText : i18n['vtype_empty_3chr'],
+	empty_3chrText : i18n('vtype_empty_3chr'),
 
 	// ---------------------------------------
 	// Validate Empty fields, empty field not allowed
@@ -38,7 +38,7 @@ Ext.apply(Ext.form.VTypes,
 	{
 		return val.length > 6;
 	},
-	empty_7chrText : i18n['vtype_empty_7chr'],
+	empty_7chrText : i18n('vtype_empty_7chr'),
 
 	// ---------------------------------------
 	// Validate Empty fields, empty field not allowed
@@ -64,7 +64,7 @@ Ext.apply(Ext.form.VTypes,
 		else
 			return parseInt(matchArr[1], 10) != 0;
 	},
-	SSNText : i18n['vtype_ssn'],
+	SSNText : i18n('vtype_ssn'),
 
 	// ---------------------------------------
 	// Validate Day of Birth, empty field not allowed
@@ -76,7 +76,7 @@ Ext.apply(Ext.form.VTypes,
 		var rgx = /^[0-9]{4}\-(0[1-9]|1[012])\-(0[1-9]|[12][0-9]|3[01])/;
 		return val.match(rgx);
 	},
-	dateValText : i18n['vtype_dateVal'],
+	dateValText : i18n('vtype_dateVal'),
 
 	// ---------------------------------------
 	// Validate email, empty field not allowed
@@ -87,7 +87,7 @@ Ext.apply(Ext.form.VTypes,
 		var rgx = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/
 		return val.match(rgx);
 	},
-	checkEmailText : i18n['vtype_checkEmail'],
+	checkEmailText : i18n('vtype_checkEmail'),
 
 	// ---------------------------------------
 	// Validate for an IP Address format
@@ -97,7 +97,7 @@ Ext.apply(Ext.form.VTypes,
 		var rgx = /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/i;
 		return val.match(rgx);
 	},
-	ipaddressText : i18n['vtype_ipaddress'],
+	ipaddressText : i18n('vtype_ipaddress'),
 
 	// ---------------------------------------
 	// Validate for an valid Phone Number
@@ -107,7 +107,7 @@ Ext.apply(Ext.form.VTypes,
 		var rgx = /^\(?(\d{3})\)?[- ]?(\d{3})[- ]?(\d{4})$/;
 		return val.match(rgx);
 	},
-	phoneNumberText : i18n['vtype_phoneNumber'],
+	phoneNumberText : i18n('vtype_phoneNumber'),
 
 	// ---------------------------------------
 	// Validate for an valid Canadian & US
@@ -132,7 +132,7 @@ Ext.apply(Ext.form.VTypes,
 			return val.match(regexObj.usa);
 		}
 	},
-	postalCodeText : i18n['vtype_postalCode'],
+	postalCodeText : i18n('vtype_postalCode'),
 
 	// ---------------------------------------
 	// Validate for a valid new password
@@ -147,7 +147,7 @@ Ext.apply(Ext.form.VTypes,
 		}
 		return true;
 	},
-	passwordText : i18n['vtype_password'],
+	passwordText : i18n('vtype_password'),
 
 	// ---------------------------------------
 	// Validate for a correct MySQL field
@@ -159,6 +159,6 @@ Ext.apply(Ext.form.VTypes,
 		var regexObj = /[A-Za-z][A-Za-z0-9_]*/;
 		return val.match(regexObj);
 	},
-	mysqlFieldText : i18n['vtype_mysqlField']
+	mysqlFieldText : i18n('vtype_mysqlField')
 
 }); 

@@ -17,7 +17,7 @@ header('Content-Type: text/javascript');
 
 // Output the translation selected by the user.
 $i18n = i18nRouter::getTranslation();
-print 'i18n = '. json_encode( $i18n ).';';
+print 'lang = '. json_encode( $i18n ).';';
 
 // Output all the globals settings on the database.
 $global = Globals::getGlobals();

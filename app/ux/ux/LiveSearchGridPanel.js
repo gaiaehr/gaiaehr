@@ -55,12 +55,12 @@ Ext.define('Ext.ux.LiveSearchGridPanel', {
      */
     matchCls: 'x-livesearch-match',
     
-    defaultStatusText: i18n['nothing_found'],
+    defaultStatusText: i18n('nothing_found'),
     
     // Component initialization override: adds the top and bottom toolbars and setup headers renderer.
     initComponent: function() {
         var me = this;
-        me.tbar = [i18n['search'],{
+        me.tbar = [i18n('search'),{
                  xtype: 'textfield',
                  name: 'searchField',
                  hideLabel: true,
@@ -75,13 +75,13 @@ Ext.define('Ext.ux.LiveSearchGridPanel', {
             }, {
                 xtype: 'button',
                 text: '<',
-                tooltip: i18n['find_previous_row'],
+                tooltip: i18n('find_previous_row'),
                 handler: me.onPreviousClick,
                 scope: me
             },{
                 xtype: 'button',
                 text: '>',
-                tooltip: i18n['find_next_row'],
+                tooltip: i18n('find_next_row'),
                 handler: me.onNextClick,
                 scope: me
             }, '-', {
@@ -90,13 +90,13 @@ Ext.define('Ext.ux.LiveSearchGridPanel', {
                 margin: '0 0 0 4px',
                 handler: me.regExpToggle,
                 scope: me                
-            }, i18n['regular_expression'], {
+            }, i18n('regular_expression'), {
                 xtype: 'checkbox',
                 hideLabel: true,
                 margin: '0 0 0 4px',
                 handler: me.caseSensitiveToggle,
                 scope: me
-            }, i18n['case_sensitive']];
+            }, i18n('case_sensitive')];
 
         me.bbar = Ext.create('Ext.ux.StatusBar', {
             defaultText: me.defaultStatusText,
@@ -214,7 +214,7 @@ Ext.define('Ext.ux.LiveSearchGridPanel', {
              if (me.currentIndex !== null) {
                  me.getSelectionModel().select(me.currentIndex);
                  me.statusBar.setStatus({
-                     text: count + ' ' + i18n['matches_found'],
+                     text: count + ' ' + i18n('matches_found'),
                      iconCls: 'x-status-valid'
                  });
              }

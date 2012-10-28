@@ -20,7 +20,7 @@ Ext.define('App.view.administration.Facilities',
 {
 	extend : 'App.ux.RenderPanel',
 	id : 'panelFacilities',
-	pageTitle : i18n['facilities_active'],
+	pageTitle : i18n('facilities_active'),
 	uses : ['App.ux.GridPanel', 'App.ux.window.Window'],
 	initComponent : function()
 	{
@@ -135,25 +135,25 @@ Ext.define('App.view.administration.Facilities',
 			store : me.FacilityStore,
 			columns : [
 			{
-				text : i18n['name'],
+				text : i18n('name'),
 				flex : 1,
 				sortable : true,
 				dataIndex : 'name'
 			},
 			{
-				text : i18n['phone'],
+				text : i18n('phone'),
 				width : 100,
 				sortable : true,
 				dataIndex : 'phone'
 			},
 			{
-				text : i18n['fax'],
+				text : i18n('fax'),
 				width : 100,
 				sortable : true,
 				dataIndex : 'fax'
 			},
 			{
-				text : i18n['city'],
+				text : i18n('city'),
 				width : 100,
 				sortable : true,
 				dataIndex : 'city'
@@ -183,41 +183,41 @@ Ext.define('App.view.administration.Facilities',
 						},
 						items : [
 						{
-							fieldLabel : i18n['name'],
+							fieldLabel : i18n('name'),
 							name : 'name',
 							allowBlank : false
 						},
 						{
-							fieldLabel : i18n['phone'],
+							fieldLabel : i18n('phone'),
 							name : 'phone'
 						},
 						{
-							fieldLabel : i18n['fax'],
+							fieldLabel : i18n('fax'),
 							name : 'fax'
 						},
 						{
-							fieldLabel : i18n['street'],
+							fieldLabel : i18n('street'),
 							name : 'street'
 						},
 						{
-							fieldLabel : i18n['city'],
+							fieldLabel : i18n('city'),
 							name : 'city'
 						},
 						{
-							fieldLabel : i18n['state'],
+							fieldLabel : i18n('state'),
 							name : 'state'
 						},
 						{
-							fieldLabel : i18n['postal_code'],
+							fieldLabel : i18n('postal_code'),
 							name : 'postal_code'
 						},
 						{
-							fieldLabel : i18n['country_code'],
+							fieldLabel : i18n('country_code'),
 							name : 'country_code'
 						},
 						{
 							xtype : 'fieldcontainer',
-							fieldLabel : i18n['tax_id'],
+							fieldLabel : i18n('tax_id'),
 							layout : 'hbox',
 							items : [
 							{
@@ -235,37 +235,37 @@ Ext.define('App.view.administration.Facilities',
 						items : [
 						{
 							xtype : 'mitos.checkbox',
-							fieldLabel : i18n['active'],
+							fieldLabel : i18n('active'),
 							name : 'active'
 						},
 						{
 							xtype : 'mitos.checkbox',
-							fieldLabel : i18n['service_location'],
+							fieldLabel : i18n('service_location'),
 							name : 'service_location'
 						},
 						{
 							xtype : 'mitos.checkbox',
-							fieldLabel : i18n['billing_location'],
+							fieldLabel : i18n('billing_location'),
 							name : 'billing_location'
 						},
 						{
 							xtype : 'mitos.checkbox',
-							fieldLabel : i18n['accepts_assignment'],
+							fieldLabel : i18n('accepts_assignment'),
 							name : 'accepts_assignment'
 						},
 						{
 							xtype : 'mitos.poscodescombo',
-							fieldLabel : i18n['pos_code'],
+							fieldLabel : i18n('pos_code'),
 							name : 'pos_code',
 							anchor : '100%'
 						},
 						{
-							fieldLabel : i18n['billing_attn'],
+							fieldLabel : i18n('billing_attn'),
 							name : 'attn',
 							anchor : '100%'
 						},
 						{
-							fieldLabel : i18n['clia_number'],
+							fieldLabel : i18n('clia_number'),
 							name : 'domain_identifier',
 							anchor : '100%'
 						},
@@ -287,19 +287,19 @@ Ext.define('App.view.administration.Facilities',
 				}),
 				items : ['-',
 				{
-					text : i18n['add_new_facility'],
+					text : i18n('add_new_facility'),
 					iconCls : 'save',
 					scope : me,
 					handler : me.addFacility
 				}, '-',
 				{
-					text : i18n['show_active_facilities'],
+					text : i18n('show_active_facilities'),
 					action : 'active',
 					scope : me,
 					handler : me.filterFacilitiesby
 				}, '-',
 				{
-					text : i18n['show_inactive_facilities'],
+					text : i18n('show_inactive_facilities'),
 					action : 'inactive',
 					scope : me,
 					handler : me.filterFacilitiesby
@@ -312,7 +312,7 @@ Ext.define('App.view.administration.Facilities',
 	},
 	filterFacilitiesby : function(btn)
 	{
-		this.updateTitle(i18n['Facilities'] + ' (' + Ext.String.capitalize(btn.action) + ')');
+		this.updateTitle(i18n('Facilities') + ' (' + Ext.String.capitalize(btn.action) + ')');
 		this.FacilityStore.proxy.extraParams =
 		{
 			active : btn.action == 'active' ? 1 : 0
@@ -325,7 +325,7 @@ Ext.define('App.view.administration.Facilities',
 		grid.editingPlugin.cancelEdit();
 		store.insert(0,
 		{
-			name : i18n['new_facility'],
+			name : i18n('new_facility'),
 			active : 1,
 			service_location : 1,
 			billing_location : 0,

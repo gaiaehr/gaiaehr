@@ -27,7 +27,7 @@ Ext.define('App.ux.combo.CVXManufacturers', {
 			editable    : false,
 			valueField  : 'mvx_code',
 			displayField: 'manufacturer',
-			emptyText   : i18n['select'],
+			emptyText   : i18n('select'),
 			store       : me.store
 		}, null);
 		me.callParent(arguments);

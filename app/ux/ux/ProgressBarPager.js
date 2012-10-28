@@ -19,7 +19,7 @@ Ext.define('Ext.ux.ProgressBarPager', {
 	 * @cfg {String} defaultText
 	 * <p>The text to display while the store is loading.  Default is 'Loading...'</p>
 	 */
-	defaultText           : i18n['loading'] + '...',
+	defaultText           : i18n('loading') + '...',
 	/**
 	 * @cfg {Object} defaultAnimCfg
 	 * <p>A {@link Ext.fx.Anim Ext.fx.Anim} configuration object.</p>

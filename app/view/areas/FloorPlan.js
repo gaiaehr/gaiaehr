@@ -9,7 +9,7 @@ Ext.define('App.view.areas.FloorPlan',
 {
 	id : 'panelAreaFloorPlan',
 	extend : 'App.ux.RenderPanel',
-	pageTitle : i18n['area_floor_plan'],
+	pageTitle : i18n('area_floor_plan'),
 	floorPlanId : null,
 	initComponent : function()
 	{
@@ -18,12 +18,12 @@ Ext.define('App.view.areas.FloorPlan',
 
 		me.floorPlan = Ext.create('Ext.panel.Panel',
 		{
-			title : i18n['floor_plans'],
+			title : i18n('floor_plans'),
 			layout : 'absolute',
 			tbar : ['->',
 			{
 				xtype : 'floorplanareascombo',
-				fieldLabel : i18n['area'],
+				fieldLabel : i18n('area'),
 				labelWidth : 40,
 				listeners :
 				{
@@ -69,20 +69,20 @@ Ext.define('App.view.areas.FloorPlan',
 				items : [
 				{
 					xtype : 'textfield',
-					fieldLabel : i18n['patient_name'],
+					fieldLabel : i18n('patient_name'),
 					labelWidth : 80,
 					name : 'patient_name'
 				},
 				{
 					xtype : 'button',
-					text : i18n['remove_patient'],
+					text : i18n('remove_patient'),
 					handler : function()
 					{
 						me.unSetZone(zone);
 					}
 				}]
 			})],
-			tooltip : i18n['patient_name'] + ': [empty]',
+			tooltip : i18n('patient_name') + ': [empty]',
 			listeners :
 			{
 				scope : me,
@@ -208,7 +208,7 @@ Ext.define('App.view.areas.FloorPlan',
 		FloorPlans.setPatientToZone(params, function(provider, response)
 		{
 			data.patientZoneId = response.result.data.patientZoneId;
-			me.msg('Sweet!', data.name + i18n['successfully_moved'] + '.');
+			me.msg('Sweet!', data.name + i18n('successfully_moved') + '.');
 			me.setZone(zone, data);
 		});
 	},
@@ -229,7 +229,7 @@ Ext.define('App.view.areas.FloorPlan',
 		zone.patientZoneId = data.patientZoneId;
 		zone.dropZone.lock();
 		zone.dragZone.unlock();
-		zone.setTooltip(i18n['patient_name'] + ':' + data.name);
+		zone.setTooltip(i18n('patient_name') + ':' + data.name);
 		zone.addCls(data.priority);
 	},
 
@@ -239,7 +239,7 @@ Ext.define('App.view.areas.FloorPlan',
 		zone.data = null;
 		zone.dropZone.unlock();
 		zone.dragZone.lock();
-		zone.setTooltip(i18n['patient_name'] + ': [empty]');
+		zone.setTooltip(i18n('patient_name') + ': [empty]');
 		zone.removeCls(zone.priority);
 	},
 

@@ -21,7 +21,7 @@ Ext.define('App.view.administration.ExternalDataLoads',
 {
 	extend : 'App.ux.RenderPanel',
 	id : 'panelExternalDataLoads',
-	pageTitle : i18n['external_data_loads'],
+	pageTitle : i18n('external_data_loads'),
 	/**
 	 * define the layout 'accordion'
 	 * and few more configs
@@ -85,28 +85,28 @@ Ext.define('App.view.administration.ExternalDataLoads',
 		 */
 		me.icd9 = Ext.create('Ext.form.Panel',
 		{
-			title : i18n['update_icd9'],
+			title : i18n('update_icd9'),
 			layout : 'border',
 			items : [me.icd9Grid, me.icd9Form]
 		});
 
 		me.icd10 = Ext.create('Ext.panel.Panel',
 		{
-			title : i18n['update_icd10'],
+			title : i18n('update_icd10'),
 			layout : 'border',
 			items : [me.icd10Grid, me.icd10Form]
 		});
 
 		me.rxnorm = Ext.create('Ext.panel.Panel',
 		{
-			title : i18n['update_rxnorm'],
+			title : i18n('update_rxnorm'),
 			layout : 'border',
 			items : [me.rxnormGrid, me.rxnormForm]
 		});
 
 		me.snomed = Ext.create('Ext.panel.Panel',
 		{
-			title : i18n['update_snomed'],
+			title : i18n('update_snomed'),
 			layout : 'border',
 			items : [me.snomedGrid, me.snomedForm]
 		});
@@ -132,20 +132,20 @@ Ext.define('App.view.administration.ExternalDataLoads',
 				xtype : 'fieldset',
 				styleHtmlContent : true,
 				action : action,
-				title : i18n['current_version_installed'],
-				html : i18n['no_data_installed'],
-				tpl : i18n['revivion_name'] + ':  {revision_name}<br>' + i18n['revision_number'] + ':  {revision_number}<br>' + i18n['revision_version'] + ': {revision_version}<br>' + i18n['revision_date'] + ':    {revision_date}<br>' + i18n['imported_on'] + ':      {imported_date}'
+				title : i18n('current_version_installed'),
+				html : i18n('no_data_installed'),
+				tpl : i18n('revivion_name') + ':  {revision_name}<br>' + i18n('revision_number') + ':  {revision_number}<br>' + i18n('revision_version') + ': {revision_version}<br>' + i18n('revision_date') + ':    {revision_date}<br>' + i18n('imported_on') + ':      {imported_date}'
 			},
 			{
 				xtype : 'fieldset',
-				title : i18n['installation'],
+				title : i18n('installation'),
 				action : 'installation',
 				styleHtmlContent : true,
 				html : me.getInstallationDetails(action)
 			},
 			{
 				xtype : 'fieldset',
-				title : i18n['upload'],
+				title : i18n('upload'),
 				action : 'upload',
 				items : [
 				{
@@ -153,7 +153,7 @@ Ext.define('App.view.administration.ExternalDataLoads',
 					xtype : 'filefield',
 					name : 'filePath',
 					buttonText : i18n['Select file'] + '...',
-					emptyText : i18n['data_file'],
+					emptyText : i18n('data_file'),
 					width : 350,
 					labelWidth : 50,
 					allowBlank : false
@@ -165,7 +165,7 @@ Ext.define('App.view.administration.ExternalDataLoads',
 			},
 			buttons : [
 			{
-				text : i18n['update'],
+				text : i18n('update'),
 				action : action,
 				scope : me,
 				handler : me.uploadFile
@@ -203,17 +203,17 @@ Ext.define('App.view.administration.ExternalDataLoads',
 	{
 		return [
 		{
-			header : i18n['date'],
+			header : i18n('date'),
 			dataIndex : 'date',
 			width : 98
 		},
 		{
-			header : i18n['version'],
+			header : i18n('version'),
 			dataIndex : 'version',
 			width : 98
 		},
 		{
-			header : i18n['file'],
+			header : i18n('file'),
 			dataIndex : 'basename',
 			width : 300
 		}];
@@ -251,7 +251,7 @@ Ext.define('App.view.administration.ExternalDataLoads',
 		{
 			form.submit(
 			{
-				waitMsg : i18n['uploading_and_updating_code_database'] + '...',
+				waitMsg : i18n('uploading_and_updating_code_database') + '...',
 				scope : me,
 				params :
 				{
@@ -273,14 +273,14 @@ Ext.define('App.view.administration.ExternalDataLoads',
 	{
 		var me = this;
 		app.setTask(false);
-		grid.el.mask(i18n['installing_database_please_wait'] + '...');
+		grid.el.mask(i18n('installing_database_please_wait') + '...');
 		ExternalDataUpdate.updateCodes(record.data, function(provider, response)
 		{
 			grid.el.unmask();
 			if (response.result.success)
 			{
 				me.setCurrentCodesInfo();
-				me.alert(i18n['new_database_installed'], 'info');
+				me.alert(i18n('new_database_installed'), 'info');
 			}
 			else
 			{

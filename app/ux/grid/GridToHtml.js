@@ -118,7 +118,9 @@ Ext.define('App.ux.grid.GridToHtml', {
             });
             if(pluginsBody != ''){
                 pluginsBodyMarkup = [
-                    '<tr class="{[xindex % 2 === 0 ? "even" : "odd"]}"><td colspan="' + columns.length + '">', pluginsBody, '</td></tr>'
+                    '<tr style="{[xindex % 2 === 0 ? "even" : "odd"]}">' +
+                    '   <td style="{[xindex % 2 === 0 ? "background-color: #ffffff;" : "background-color: #f9f9f9;"]}" colspan="' + columns.length + '">', pluginsBody, '</td>' +
+                    '</tr>'
                 ];
             }
             grid.title = (typeof grid.title == 'undefined') ? '' : (' :: ' + grid.title);
@@ -140,7 +142,7 @@ Ext.define('App.ux.grid.GridToHtml', {
                 '       <table>',
                 '           <tr>', headings, '</tr>',
                 '           <tpl for=".">',
-                '               <tr class="{[xindex % 2 === 0 ? "even" : "odd"]}">', body, '</tr>', pluginsBodyMarkup.join(''),
+                '               <tr style="{[xindex % 2 === 0 ? "background-color: #ffffff;" : "background-color: #f9f9f9;"]}">', body, '</tr>', pluginsBodyMarkup.join(''),
                 '           </tpl>',
                 '       </table>',
                 '   </body>',
@@ -173,7 +175,7 @@ Ext.define('App.ux.grid.GridToHtml', {
          */
         headerTpl: [
             '<tpl for=".">',
-            '   <th style="background-color: #CCCCCC">{text}</th>',
+            '   <th style="background-color: #CCCCCC; padding: 5px; border-bottom-width: 1px; border-bottom-color: black">{text}</th>',
             '</tpl>'
         ],
         /**

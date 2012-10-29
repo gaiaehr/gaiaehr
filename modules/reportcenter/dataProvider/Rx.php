@@ -80,28 +80,12 @@ class Rx extends Reports
 				$records[$key]=$rec;
 			}
 		}
+		foreach($records as $num=>$rec){
+				$records[$num]['fullname']=$this->patient->getPatientFullNameByPid($rec['pid']);
+				$records[$num]['instructions']=($rec['prescription_often'].' '.$rec['prescription_when']);
+		}
 		return $records;
 	}
-
-//	public function htmlRxList($params, $html)
-//	{
-//		foreach ($this->getPrescriptionsFromAndToAndPid($params->from,$params->to,$params->drug,$params->pid) AS $data)
-//		{
-//			foreach ($data as $data2)
-//			{
-//				$html .= "
-//		            <tr>
-//						<td colspan=\"2\">" . $this -> patient -> getPatientFullNameByPid($data2['pid']) . "</td>
-//						<td>" . $data2['pid'] . "</td>
-//						<td colspan=\"2\">" . $data2['medication'] . "</td>
-//						<td>" . $data2['take_pills'] . "</td>
-//						<td colspan=\"2\">" . $data2['type'] . "</td>
-//						<td colspan=\"3\">" . $data2['prescription_often'] . ' ' . $data2['prescription_when'] . "</td>
-//					</tr>";
-//			}
-//		}
-//		return $html;
-//	}
 
 }
 

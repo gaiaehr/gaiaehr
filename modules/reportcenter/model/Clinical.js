@@ -13,7 +13,8 @@ Ext.define('Modules.reportcenter.model.Clinical', {
         {name: 'fullname', type: 'string'},
         {name: 'age', type: 'string'},
 		{name: 'sex'},
-		{name: 'ethnicity'}
+		{name: 'ethnicity'},
+		{name: 'race'}
 	],
 	proxy : {
 		type: 'direct',

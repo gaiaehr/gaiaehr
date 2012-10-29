@@ -136,35 +136,28 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                     store:me.medicationStore,
                     columns:[
                         {
-                            text:'Service Date',
-                            xtype:'datecolumn',
-                            format:'Y-m-d',
-                            dataIndex:'start_date'
-                        },
-                        {
                             text:'Name',
-                            width:200,
+                            width:250,
                             dataIndex:'fullname'
                         },
                         {
-                            text:'Address',
-                            flex:1,
-                            dataIndex:'fulladdress'
-                        },
-                        {
                             text:'Medication',
+                            width:250,
                             dataIndex:'medication'
                         },
                         {
                             text:'Take',
+                            width:75,
                             dataIndex:'take_pills'
                         },
                         {
                             text:'Type',
+                            width:150,
                             dataIndex:'type'
                         },
                         {
                             text:'instructions',
+                            flex:1,
                             dataIndex:'instructions'
                         }
                     ]
@@ -180,7 +173,6 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                         {
                             title  : i18n('general'),
                             xtype  : 'container',
-                           // padding: 10,
                             layout : 'vbox',
                             items  : [
                                 {
@@ -194,7 +186,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                                             fieldLabel     : i18n('patient'),
                                             hideLabel      : false,
                                             name           : 'pid',
-                                            width          : 270
+                                            width          : 280
                                         },
                                         {
                                             xtype     : 'mitos.sexcombo',
@@ -301,6 +293,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                         },
                         {
                             text:'Age',
+                            width:75,
                             dataIndex:'age'
                         },
                         {
@@ -308,7 +301,13 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                             dataIndex:'sex'
                         },
                         {
+                            text:'Race',
+                            width:250,
+                            dataIndex:'race'
+                        },
+                        {
                             text:'Ethnicity',
+                            flex:1,
                             dataIndex:'ethnicity'
                         }
                     ]

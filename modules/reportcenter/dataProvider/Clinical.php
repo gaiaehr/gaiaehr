@@ -69,53 +69,6 @@ class Clinical extends Reports
 		);
 	}
 
-	public function getClinical($pid, $sex, $race, $from, $to, $age_from = null, $age_to = null, $ethnicity, $icd)
-	{
-		$sql = " SELECT *
-	               FROM form_data_demographics
-	              WHERE date_created BETWEEN '$from 00:00:00' AND '$to 23:59:59'";
-		if (isset($sex) && ($sex != '' && $sex != 'Both'))
-			$sql .= " AND sex = '$sex'";
-		if (isset($race) && $race != '')
-			$sql .= " AND race = '$race'";
-		if (isset($pid) && $pid != '')
-			$sql .= " AND pid = '$pid'";
-		if (isset($ethnicity) && $ethnicity != '')
-			$sql .= " AND ethnicity= '$ethnicity'";
-
-		$this -> db -> setSQL($sql);
-		$data = $this->db->fetchRecords(PDO::FETCH_ASSOC);
-		$newarray = array();
-		if(($age_from == null && $age_to == null) || ($age_from == '' && $age_to == '')){
-			$age_from=0;
-			$age_to=100;
-		}
-		foreach ($data as  $key =>$data1)
-		{
-
-			$age = $this->patient->getPatientAgeByDOB($data1['DOB']);
-			$num =$age['DMY']['years'];
-			if($age_from == null){
-				if($age_to != null){
-					if($age_to>=$num){
-						array_push($newarray,$data[$key]);
-					}
-				}
-			}
-			else if($age_to == null){
-				if($age_from != null){
-					if($age_from<=$num){
-						array_push($newarray,$data[$key]);
-					}
-				}
-			}
-			else if($age_from<=$num && $age_to>=$num ){
-				array_push($newarray,$data[$key]);
-			}
-		}
-
-		return $newarray;
-	}
 
 	public function getClinicalList(stdClass $params)
 	{
@@ -175,37 +128,22 @@ class Clinical extends Reports
 		}
 		foreach ($newarray AS $num=>$rec)
 		{
+			$ethnicity= $this->getEthnicityByKey($rec['ethnicity']);
 			$age = $this->patient->getPatientAgeByDOB($rec['DOB']);
 			$newarray[$num]['fullname']=$this->patient->getPatientFullNameByPid($rec['pid']);
-			$newarray[$num]['age']= ($age['DMY']['years']==0)?'':$age['DMY']['years'];
+			$newarray[$num]['age']= ($age['DMY']['years']==0)?'months':$age['DMY']['years'];
+			$newarray[$num]['ethnicity']= $ethnicity['option_name'];
 		}
+
 
 		return $newarray;
 	}
-
-	public function htmlClinicalList($params, $html)
-	{
-		foreach ($this->getClinical($params->pid,
-									$params->sex,
-									$params->race,
-									$params->from,
-									$params->to,
-									$params->age_from,
-									$params->age_to,
-									$params->ethnicity) AS $data)
-		{
-			$age               = $this->patient->getPatientAgeByDOB($data['DOB']);
-			$html .= "
-	            <tr>
-					<td colspan=\"2\">" . $this -> patient -> getPatientFullNameByPid($data['pid']) . "</td>
-					<td>" . $data['pid'] . "</td>
-					<td>" . $age['DMY']['years'] . "</td>
-					<td>" . $data['sex'] . "</td>
-					<td colspan=\"2\">" . $data['race'] . "</td>
-					<td colspan=\"2\">" . $data['ethnicity']. "</td>
-				</tr>";
-		}
-		return $html;
+	public function getEthnicityByKey($key){
+		$sql = " SELECT option_name
+	               FROM combo_lists_options
+	              WHERE option_value ='$key'";
+		$this -> db -> setSQL($sql);
+		return $this->db->fetchRecord(PDO::FETCH_ASSOC);
 	}
 
 

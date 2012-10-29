@@ -14,7 +14,7 @@ Ext.define('Modules.reportcenter.model.MedicationReport', {
         {name: 'medication', type: 'string'},
         {name: 'take_pills', type: 'string'},
         {name: 'type', type: 'string'},
-        {name: 'instruction', type: 'string'}
+        {name: 'instructions', type: 'string'}
 	],
 	proxy : {
 		type: 'direct',

@@ -23,7 +23,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 				settings = {},
 				globals = {},
 				ext = 'extjs-4.1.1a',
-				version = '0.0.5.168',
+				version = '0.0.5.169',
 				requires;
 		</script>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">

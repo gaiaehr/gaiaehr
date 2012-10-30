@@ -18,6 +18,7 @@ RENAME TABLE `form_data_review_of_systems_check` 	TO `encounter_review_of_system
 RENAME TABLE `form_data_review_of_systems` 			TO `encounter_review_of_systems`;
 RENAME TABLE `form_data_dictation` 					TO `encounter_dictation`;
 
+DROP TABLE IF EXISTS `forms_field_options`;
 CREATE TABLE IF NOT EXISTS `forms_field_options` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `field_id` text COMMENT 'Field ID',

@@ -72,7 +72,7 @@ class Fees
                        demo.lname,
                        demo.provider AS primaryProviderUid
                   FROM encounters AS enc
-             LEFT JOIN form_data_demographics AS demo ON demo.pid = enc.pid
+             LEFT JOIN patient_demographics AS demo ON demo.pid = enc.pid
               ORDER BY enc.service_date ASC ";
 		$this -> db -> setSQL($sql);
 		$encounters = array();
@@ -108,7 +108,7 @@ class Fees
                        demo.lname,
                        demo.provider AS primaryProviderUid
                   FROM encounters AS enc
-             LEFT JOIN form_data_demographics AS demo ON demo.pid = enc.pid
+             LEFT JOIN patient_demographics AS demo ON demo.pid = enc.pid
               ORDER BY enc.service_date ASC ";
 		$this -> db -> setSQL($sql);
 		$encounters = array();

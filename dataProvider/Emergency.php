@@ -120,7 +120,7 @@ class Emergency
 			 * update patient first name to EMERGENCY- encounter id
 			 */
 			$data['fname'] = 'EMERGENCY-' . $this -> emergencyId;
-			$this -> db -> setSQL($this -> db -> sqlBind($data, 'form_data_demographics', 'U', array('pid' => $this -> pid)));
+			$this -> db -> setSQL($this -> db -> sqlBind($data, 'patient_demographics', 'U', array('pid' => $this -> pid)));
 			$this -> db -> execOnly();
 
 			return array(

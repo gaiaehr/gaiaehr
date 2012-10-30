@@ -1,6 +1,7 @@
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
 
+DROP TABLE IF EXISTS `form_data_history`;
 DROP TABLE IF EXISTS `forms_field_options`;
 DROP TABLE IF EXISTS `lists`;
 DROP TABLE IF EXISTS `lang_languages`;
@@ -8,6 +9,14 @@ DROP TABLE IF EXISTS `list_options`;
 DROP TABLE IF EXISTS `lang_definitions`;
 DROP TABLE IF EXISTS `lang_constants`;
 DROP TABLE IF EXISTS `lang_custom`;
+
+RENAME TABLE `form_data_demographics` 				TO `patient_demographics`;
+RENAME TABLE `form_data_referrals` 					TO `patient_referrals`;
+RENAME TABLE `form_data_soap` 						TO `encounter_soap`;
+RENAME TABLE `form_data_vitals` 					TO `encounter_vitals`;
+RENAME TABLE `form_data_review_of_systems_check` 	TO `encounter_review_of_systems_check`;
+RENAME TABLE `form_data_review_of_systems` 			TO `encounter_review_of_systems`;
+RENAME TABLE `form_data_dictation` 					TO `encounter_dictation`;
 
 CREATE TABLE IF NOT EXISTS `forms_field_options` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -992,15 +1001,14 @@ CREATE TABLE IF NOT EXISTS `forms_layout` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=11 ;
 
 INSERT INTO `forms_layout` (`id`, `name`, `form_data`) VALUES
-(1, 'Demographics', 'form_data_demographics'),
-(2, 'Referrals', 'form_data_referrals'),
-(3, 'History', 'form_data_history'),
-(4, 'Vitals', 'form_data_vitals'),
+(1, 'Demographics', 'patient_demographics'),
+(2, 'Referrals', 'patient_referrals'),
+(4, 'Vitals', 'encounter_vitals'),
 (5, 'New Encounter', 'encounters'),
-(6, 'SOAP', 'form_data_soap'),
-(7, 'Speech Dictation', 'form_data_dictation'),
-(8, 'Review of Systems', 'form_data_review_of_systems'),
-(9, 'Review of Systems Check', 'form_data_review_of_systems_check'),
+(6, 'SOAP', 'encounter_soap'),
+(7, 'Speech Dictation', 'encounter_dictation'),
+(8, 'Review of Systems', 'encounter_review_of_systems'),
+(9, 'Review of Systems Check', 'encounter_review_of_systems_check'),
 (10, 'HCFA 1500 Options', 'encounter_hcfa_1500_options');
 
 DROP TABLE IF EXISTS `form_data_encounter`;
@@ -1011,15 +1019,15 @@ CREATE TABLE IF NOT EXISTS `encounters` (
   `open_uid` bigint(20) NOT NULL COMMENT 'User ID who opened the encounter',
   `close_uid` bigint(20) DEFAULT NULL COMMENT 'User ID who Closed/Sign the encounter',
   `prov_uid` bigint(20) DEFAULT NULL COMMENT 'Provider User ID',
-  `sup_uid` bigint(20) DEFAULT NULL COMMENT 'Supervisor User ID',
+  `auth_uid` bigint(20) DEFAULT NULL COMMENT 'Authorized User ID',
+  `onset_date` datetime DEFAULT NULL,
+  `service_date` datetime NOT NULL COMMENT 'Date when the encounter started',
+  `close_date` datetime DEFAULT NULL COMMENT 'Date when the encounter was sign/close',
+  `priority` varchar(255) DEFAULT NULL,
   `brief_description` varchar(255) DEFAULT NULL,
   `visit_category` varchar(255) DEFAULT NULL,
   `facility` varchar(255) DEFAULT NULL,
   `billing_facility` varchar(255) DEFAULT NULL,
-  `priority` varchar(255) DEFAULT NULL,
-  `service_date` datetime NOT NULL,
-  `close_date` datetime DEFAULT NULL,
-  `onset_date` datetime DEFAULT NULL,
   `billing_stage` int(1) DEFAULT NULL COMMENT 'billing stage of this encounter',
   `followup_time` varchar(255) DEFAULT NULL,
   `followup_facility` varchar(255) DEFAULT NULL,

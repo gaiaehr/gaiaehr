@@ -142,13 +142,13 @@ class Encounter
 		$this->db->execLog();
 		$eid     = $this->db->lastInsertId;
 		$default = array('pid' => $params->pid, 'eid' => $eid);
-		$this->db->setSQL($this->db->sqlBind($default, 'form_data_review_of_systems', 'I'));
+		$this->db->setSQL($this->db->sqlBind($default, 'encounter_review_of_systems', 'I'));
 		$this->db->execOnly();
-		$this->db->setSQL($this->db->sqlBind($default, 'form_data_review_of_systems_check', 'I'));
+		$this->db->setSQL($this->db->sqlBind($default, 'encounter_review_of_systems_check', 'I'));
 		$this->db->execOnly();
-		$this->db->setSQL($this->db->sqlBind($default, 'form_data_soap', 'I'));
+		$this->db->setSQL($this->db->sqlBind($default, 'encounter_soap', 'I'));
 		$this->db->execOnly();
-		$this->db->setSQL($this->db->sqlBind($default, 'form_data_dictation', 'I'));
+		$this->db->setSQL($this->db->sqlBind($default, 'encounter_dictation', 'I'));
 		$this->db->execOnly();
 		$this->db->setSQL($this->db->sqlBind($default, 'encounter_hcfa_1500_options', 'I'));
 		$this->db->execOnly();
@@ -234,7 +234,7 @@ class Encounter
 	 */
 	public function getVitalsByPid($pid)
 	{
-		$this->db->setSQL("SELECT * FROM form_data_vitals WHERE pid = '$pid' ORDER BY date DESC");
+		$this->db->setSQL("SELECT * FROM encounter_vitals WHERE pid = '$pid' ORDER BY date DESC");
 		$rows = array();
 		foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row){
 			$row['height_in']     = intval($row['height_in']);
@@ -252,7 +252,7 @@ class Encounter
 	 */
 	public function getVitalsByEid($eid)
 	{
-		$this->db->setSQL("SELECT * FROM form_data_vitals WHERE eid = '$eid' ORDER BY date DESC");
+		$this->db->setSQL("SELECT * FROM encounter_vitals WHERE eid = '$eid' ORDER BY date DESC");
 		$rows = array();
 		foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row){
 			$row['height_in']     = intval($row['height_in']);
@@ -288,7 +288,7 @@ class Encounter
 		$this->setEid($params->eid);
 		$data = get_object_vars($params);
 		unset($data['administer_by'], $data['authorized_by'], $data['id'], $data['bp_diastolic_normal'], $data['bp_systolic_normal']);
-		$this->db->setSQL($this->db->sqlBind($data, 'form_data_vitals', 'I'));
+		$this->db->setSQL($this->db->sqlBind($data, 'encounter_vitals', 'I'));
 		$this->db->execLog();
 		$params->id            = $this->db->lastInsertId;
 		$params->administer_by = $this->user->getUserNameById($params->uid);
@@ -306,7 +306,7 @@ class Encounter
 		$params->date = $this->parseDate($params->date);
 		$data         = get_object_vars($params);
 		unset($data['date'], $data['administer_by'], $data['authorized_by'], $data['id'], $data['bp_diastolic_normal'], $data['bp_systolic_normal']);
-		$sql = $this->db->sqlBind($data, 'form_data_vitals', 'U', array('id' => $params->id));
+		$sql = $this->db->sqlBind($data, 'encounter_vitals', 'U', array('id' => $params->id));
 		$this->db->setSQL($sql);
 		$this->db->execLog();
 		$params->administer_by = $this->user->getUserNameById($params->uid);
@@ -321,7 +321,7 @@ class Encounter
 	 */
 	public function getSoapByEid($eid)
 	{
-		$this->db->setSQL("SELECT * FROM form_data_soap WHERE eid = '$eid' ORDER BY date DESC");
+		$this->db->setSQL("SELECT * FROM encounter_soap WHERE eid = '$eid' ORDER BY date DESC");
 		$soap              = $this->db->fetchRecord(PDO::FETCH_ASSOC);
 		$soap['icdxCodes'] = $this->diagnosis->getICDByEid($eid);
 		return $soap;
@@ -335,7 +335,7 @@ class Encounter
 	{
 		$soap = array();
 		$this->db->setSQL("SELECT s.subjective, s.objective, s.assessment, s.plan, e.service_date
-							 FROM form_data_soap AS s
+							 FROM encounter_soap AS s
 					    LEFT JOIN encounters AS e ON s.eid = e.eid
 							WHERE s.pid = '$params->pid'
 							  AND e.eid != '$params->eid'
@@ -362,7 +362,7 @@ class Encounter
 		$this->setEid($params->eid);
 		$data = get_object_vars($params);
 		unset($data['id'], $data['icdxCodes']);
-		$this->db->setSQL($this->db->sqlBind($data, 'form_data_soap', 'U', "id='" . $params->id . "'"));
+		$this->db->setSQL($this->db->sqlBind($data, 'encounter_soap', 'U', "id='" . $params->id . "'"));
 		$this->db->execLog();
 		$this->db->setSQL("DELETE FROM encounter_codes_icdx WHERE eid = '$params->eid'");
 		$this->db->execOnly();
@@ -377,7 +377,7 @@ class Encounter
 	 */
 	public function getReviewOfSystemsChecksByEid($eid)
 	{
-		$this->db->setSQL("SELECT * FROM form_data_review_of_systems_check WHERE eid = '$eid' ORDER BY date DESC");
+		$this->db->setSQL("SELECT * FROM encounter_review_of_systems_check WHERE eid = '$eid' ORDER BY date DESC");
 		return $this->db->fetchRecords(PDO::FETCH_ASSOC);
 	}
 
@@ -387,7 +387,7 @@ class Encounter
 	 */
 	public function getReviewOfSystemsByEid($eid)
 	{
-		$this->db->setSQL("SELECT * FROM form_data_review_of_systems WHERE eid = '$eid' ORDER BY date DESC");
+		$this->db->setSQL("SELECT * FROM encounter_review_of_systems WHERE eid = '$eid' ORDER BY date DESC");
 		$record = $this->db->fetchRecord();
 		foreach($record as $key => $val){
 			$record[$key] = ($val == null) ? 'null' : $val;
@@ -426,7 +426,7 @@ class Encounter
 	 */
 	public function getDictationByEid($eid)
 	{
-		$this->db->setSQL("SELECT * FROM form_data_dictation WHERE eid = '$eid' ORDER BY date DESC");
+		$this->db->setSQL("SELECT * FROM encounter_dictation WHERE eid = '$eid' ORDER BY date DESC");
 		return $this->db->fetchRecord(PDO::FETCH_ASSOC);
 	}
 
@@ -464,7 +464,7 @@ class Encounter
 		$this->setEid($params->eid);
 		$data = get_object_vars($params);
 		unset($data['id']);
-		$this->db->setSQL($this->db->sqlBind($data, 'form_data_review_of_systems_check', 'U', "id='" . $params->id . "'"));
+		$this->db->setSQL($this->db->sqlBind($data, 'encounter_review_of_systems_check', 'U', "id='" . $params->id . "'"));
 		$this->db->execLog();
 		$this->addEncounterHistoryEvent('Review of System Checks updated');
 		return $params;
@@ -479,7 +479,7 @@ class Encounter
 		$this->setEid($params->eid);
 		$data = get_object_vars($params);
 		unset($data['id']);
-		$this->db->setSQL($this->db->sqlBind($data, 'form_data_review_of_systems', 'U', "id='" . $params->id . "'"));
+		$this->db->setSQL($this->db->sqlBind($data, 'encounter_review_of_systems', 'U', "id='" . $params->id . "'"));
 		$this->db->execLog();
 		$this->addEncounterHistoryEvent('Review of System updated');
 		return $params;
@@ -494,7 +494,7 @@ class Encounter
 		$this->setEid($params->eid);
 		$data = get_object_vars($params);
 		unset($data['id']);
-		$this->db->setSQL($this->db->sqlBind($data, 'form_data_dictation', 'U', "id='" . $params->id . "'"));
+		$this->db->setSQL($this->db->sqlBind($data, 'encounter_dictation', 'U', "id='" . $params->id . "'"));
 		$this->db->execLog();
 		$this->addEncounterHistoryEvent('Speech Dictation updated');
 		return $params;
@@ -758,9 +758,9 @@ class Encounter
 		$sql = " SELECT encounters.pid,
 	                    encounters.eid,
 	                    encounters.service_date,
-	                    form_data_demographics.*
+	                    patient_demographics.*
 	               FROM encounters
-	          LEFT JOIN form_data_demographics ON encounters.pid = form_data_demographics.pid
+	          LEFT JOIN patient_demographics ON encounters.pid = patient_demographics.pid
 	              WHERE encounters.service_date BETWEEN '$from 00:00:00' AND '$to 23:59:59'";
 		if(isset($pid) && $pid != ''){
 			$sql .= " AND encounters.pid = '$pid'";

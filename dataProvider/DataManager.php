@@ -358,7 +358,7 @@ class DataManager
 		$this -> db -> setSQL("SELECT DISTINCT cpt.code, cpt.code_text, cpt.code_text_medium, cpt.code_text_short
                              FROM encounter_codes_cpt AS ecc
                         left JOIN cpt_codes AS cpt ON ecc.code = cpt.code
-                        LEFT JOIN form_data_encounter AS e ON ecc.eid = e.eid
+                        LEFT JOIN encounters AS e ON ecc.eid = e.eid
                             WHERE e.pid = '$pid'
                          ORDER BY e.start_date DESC");
 		$records = $this -> db -> fetchRecords(PDO::FETCH_ASSOC);

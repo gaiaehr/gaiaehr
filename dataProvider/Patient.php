@@ -544,20 +544,14 @@ class Patient
 
 	public function getPatientPregnantStatusByPid($pid)
 	{
-		$this -> db -> setSQL("SELECT *
-                           FROM form_data_encounter
-                           WHERE pid ='$pid'
-                           ORDER BY eid desc ");
+		$this -> db -> setSQL("SELECT * FROM encounters WHERE pid ='$pid' ORDER BY eid desc ");
 		$p = $this -> db -> fetchRecord(PDO::FETCH_ASSOC);
 		return $p['review_pregnant'];
-
 	}
 
 	public function getPatientActiveProblemsById($pid, $tablexx, $columnName)
 	{
-		$this -> db -> setSQL("SELECT $columnName
-                           FROM $tablexx
-                           WHERE pid ='$pid'");
+		$this -> db -> setSQL("SELECT $columnName FROM $tablexx WHERE pid ='$pid'");
 		$records = array();
 		foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $rec)
 		{

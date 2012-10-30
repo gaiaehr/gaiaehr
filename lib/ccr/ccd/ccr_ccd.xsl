@@ -54,7 +54,7 @@ License :
 
 			<id>
 				<xsl:attribute name="root">
-					<xsl:value-of select="/a:ContinuityOfCareRecord/a:CCRDocumentObjectID"></xsl:value-of>
+					<xsl:value-of select="/a:ContinuityOfCareRecord/a:CCRDocumentObjectID"/>
 				</xsl:attribute>
 			</id>
 			<code code="34133-9" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"
@@ -167,7 +167,8 @@ License :
 							<code code="48764-5" codeSystem="2.16.840.1.113883.6.1"/>
 							<title>Purpose</title>
 							<text>
-								<xsl:value-of select="/a:ContinuityOfCareRecord/a:Purpose/a:Description/a:Text"></xsl:value-of>
+								<xsl:value-of
+										select="/a:ContinuityOfCareRecord/a:Purpose/a:Description/a:Text"/>
 							</text>
 						</section>
 					</component>
@@ -231,13 +232,13 @@ License :
 									<entry typeCode="DRIV">
 										<act classCode="ACT" moodCode="EVN">
 											<!--CCD Problem Act Identifier-->
-											<templateId root="2.16.840.1.113883.10.20.1.27"></templateId>
+											<templateId root="2.16.840.1.113883.10.20.1.27"/>
 											<!--C83 Allergy Entry-->
 											<templateId root="2.16.840.1.113883.3.88.11.83.6"/>
 											<!--IHE Concern Entry Conformance Identifier-->
-											<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.1"></templateId>
+											<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.1"/>
 											<!--IHE Allergy and Intolerance Concerns Entry-->
-											<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.3"></templateId>
+											<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.3"/>
 
 											<!-- <id> -->
 											<xsl:call-template name="ccdID">
@@ -248,7 +249,7 @@ License :
 											<entryRelationship typeCode="SUBJ">
 												<observation classCode="OBS" moodCode="EVN">
 													<!--CCD Alert Observation-->
-													<templateId root="2.16.840.1.113883.10.20.1.18"></templateId>
+													<templateId root="2.16.840.1.113883.10.20.1.18"/>
 													<!--CCD Problem Observation-->
 													<templateId root="2.16.840.1.113883.10.20.1.28"/>
 													<!--IHE Problem Entry-->
@@ -258,7 +259,7 @@ License :
 													<!-- <id> -->
 													<xsl:call-template name="ccdID">
 														<xsl:with-param name="ccrObjectID" select="a:CCRDataObjectID"/>
-														<xsl:with-param name="suffix"></xsl:with-param>
+														<xsl:with-param name="suffix"/>
 													</xsl:call-template>
 
 													<code code="416098002" codeSystem="2.16.840.1.113883.6.96"
@@ -545,7 +546,7 @@ License :
 													</td>
 													<td>
 														<xsl:attribute name="ID">
-															<xsl:value-of select="a:CCRDataObjectID"></xsl:value-of>
+															<xsl:value-of select="a:CCRDataObjectID"/>
 														</xsl:attribute>
 														<xsl:value-of select="a:Description/a:Text"/>
 													</td>
@@ -589,7 +590,7 @@ License :
 													<!-- <id> -->
 													<xsl:call-template name="ccdID">
 														<xsl:with-param name="ccrObjectID" select="a:CCRDataObjectID"/>
-														<xsl:with-param name="suffix"></xsl:with-param>
+														<xsl:with-param name="suffix"/>
 													</xsl:call-template>
 
 													<code code="55607006" displayName="Problem"
@@ -782,6 +783,13 @@ License :
 							</section>
 						</component>
 					</xsl:if>
+					<!--
+					********************************************************
+
+					MEDICATIONS
+
+					********************************************************
+					-->
 					<xsl:if test="a:ContinuityOfCareRecord/a:Body/a:Medications">
 						<component>
 							<section>
@@ -945,21 +953,21 @@ License :
 													<low>
 														<xsl:attribute name="value">
 															<xsl:value-of
-																	select="a:Directions/a:Direction/a:Dose/a:Value"></xsl:value-of>
+																	select="a:Directions/a:Direction/a:Dose/a:Value"/>
 														</xsl:attribute>
 														<xsl:attribute name="unit">
 															<xsl:value-of
-																	select="a:Directions/a:Direction/a:Dose/a:Unit"></xsl:value-of>
+																	select="a:Directions/a:Direction/a:Dose/a:Unit"/>
 														</xsl:attribute>
 													</low>
 													<high>
 														<xsl:attribute name="value">
 															<xsl:value-of
-																	select="a:Directions/a:Direction/a:Dose/a:Value"></xsl:value-of>
+																	select="a:Directions/a:Direction/a:Dose/a:Value"/>
 														</xsl:attribute>
 														<xsl:attribute name="unit">
 															<xsl:value-of
-																	select="a:Directions/a:Direction/a:Dose/a:Unit"></xsl:value-of>
+																	select="a:Directions/a:Direction/a:Dose/a:Unit"/>
 														</xsl:attribute>
 													</high>
 												</doseQuantity>
@@ -1976,21 +1984,21 @@ License :
 													<low>
 														<xsl:attribute name="value">
 															<xsl:value-of
-																	select="a:Directions/a:Direction/a:Dose/a:Value"></xsl:value-of>
+																	select="a:Directions/a:Direction/a:Dose/a:Value"/>
 														</xsl:attribute>
 														<xsl:attribute name="unit">
 															<xsl:value-of
-																	select="a:Directions/a:Direction/a:Dose/a:Unit"></xsl:value-of>
+																	select="a:Directions/a:Direction/a:Dose/a:Unit"/>
 														</xsl:attribute>
 													</low>
 													<high>
 														<xsl:attribute name="value">
 															<xsl:value-of
-																	select="a:Directions/a:Direction/a:Dose/a:Value"></xsl:value-of>
+																	select="a:Directions/a:Direction/a:Dose/a:Value"/>
 														</xsl:attribute>
 														<xsl:attribute name="unit">
 															<xsl:value-of
-																	select="a:Directions/a:Direction/a:Dose/a:Unit"></xsl:value-of>
+																	select="a:Directions/a:Direction/a:Dose/a:Unit"/>
 														</xsl:attribute>
 													</high>
 												</doseQuantity>
@@ -2597,7 +2605,7 @@ License :
 					<templateId root="1.3.6.1.4.1.19376.1.5.3.1.2.1" assigningAuthorityName="IHE/PCC"/>
 					<xsl:call-template name="ccdCodedValue">
 						<xsl:with-param name="ccrCodedDescription"
-						                select="/a:ContinuityOfCareRecord/a:Body/a:SocialHistory/a:SocialHistoryElement[a:Type/a:Text='Language']/a:Description"></xsl:with-param>
+						                select="/a:ContinuityOfCareRecord/a:Body/a:SocialHistory/a:SocialHistoryElement[a:Type/a:Text='Language']/a:Description"/>
 						<xsl:with-param name="domain" select="'HumanLanguage'"/>
 						<xsl:with-param name="nodeName" select="'languageCode'"/>
 					</xsl:call-template>
@@ -2808,7 +2816,7 @@ License :
 		</id>
 		<xsl:if test="$CCRActor/a:Organization">
 			<name>
-				<xsl:value-of select="$CCRActor/a:Organization/a:Name"></xsl:value-of>
+				<xsl:value-of select="$CCRActor/a:Organization/a:Name"/>
 			</name>
 		</xsl:if>
 	</xsl:template>
@@ -2890,7 +2898,7 @@ License :
 		<xsl:param name="suffix"/>
 		<id>
 			<xsl:attribute name="root">
-				<xsl:value-of select="$ccrObjectID"></xsl:value-of>
+				<xsl:value-of select="$ccrObjectID"/>
 			</xsl:attribute>
 			<xsl:attribute name="extension">CCRObjectID</xsl:attribute>
 		</id>
@@ -2940,7 +2948,7 @@ License :
 						</xsl:call-template>
 					</xsl:attribute>
 					<xsl:attribute name="code">
-						<xsl:value-of select="$cdaCode"></xsl:value-of>
+						<xsl:value-of select="$cdaCode"/>
 					</xsl:attribute>
 					<xsl:attribute name="codeSystemName">
 						<xsl:call-template name="CDAVocabularyCodeSystemNameLookup">
@@ -2977,7 +2985,7 @@ License :
 				<effectiveTime>
 					<xsl:if test="$type">
 						<xsl:attribute name="xsi:type">
-							<xsl:value-of select="$type"></xsl:value-of>
+							<xsl:value-of select="$type"/>
 						</xsl:attribute>
 					</xsl:if>
 					<low>
@@ -3088,7 +3096,7 @@ License :
 
 	<xsl:template name="ccdStatusObservation">
 		<xsl:param name="status"/>
-		<xsl:variable name="statusText" select="$status/a:Text"></xsl:variable>
+		<xsl:variable name="statusText" select="$status/a:Text"/>
 		<xsl:choose>
 			<xsl:when test="$statusText='Active'">
 				<xsl:call-template name="ccdStatusElement">
@@ -3113,7 +3121,7 @@ License :
 
 	<xsl:template name="ccdStatusProcedure">
 		<xsl:param name="status"/>
-		<xsl:variable name="statusText" select="$status/a:Text"></xsl:variable>
+		<xsl:variable name="statusText" select="$status/a:Text"/>
 		<xsl:choose>
 			<xsl:when test="$statusText='Completed'">
 				<statusCode code="completed"/>
@@ -3130,7 +3138,7 @@ License :
 			<xsl:otherwise>
 				<statusCode>
 					<xsl:attribute name="code">
-						<xsl:value-of select="$statusText"></xsl:value-of>
+						<xsl:value-of select="$statusText"/>
 					</xsl:attribute>
 				</statusCode>
 			</xsl:otherwise>
@@ -3143,11 +3151,11 @@ License :
 		<value>
 			<xsl:attribute name="xsi:type">CE</xsl:attribute>
 			<xsl:attribute name="code">
-				<xsl:value-of select="$statusCode"></xsl:value-of>
+				<xsl:value-of select="$statusCode"/>
 			</xsl:attribute>
 			<xsl:attribute name="codeSystem">2.16.840.1.113883.6.96</xsl:attribute>
 			<xsl:attribute name="displayName">
-				<xsl:value-of select="$statusDisplayName"></xsl:value-of>
+				<xsl:value-of select="$statusDisplayName"/>
 			</xsl:attribute>
 		</value>
 	</xsl:template>

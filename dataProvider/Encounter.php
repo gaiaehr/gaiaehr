@@ -94,7 +94,7 @@ class Encounter
 	public function checkOpenEncounters()
 	{
 		$pid = $_SESSION['patient']['pid'];
-		$this->db->setSQL("SELECT pid FROM form_data_encounter WHERE pid = '$pid' AND close_date IS NULL");
+		$this->db->setSQL("SELECT pid FROM encounters WHERE pid = '$pid' AND close_date IS NULL");
 		$total = $this->db->rowCount();
 		if($total >= 1){
 			return array('encounter' => true);
@@ -111,8 +111,8 @@ class Encounter
 	public function getEncounters(stdClass $params)
 	{
 		$pid    = $_SESSION['patient']['pid'];
-		$ORDERX = isset($params->sort) ? $params->sort[0]->property . ' ' . $params->sort[0]->direction : 'start_date DESC';
-		$this->db->setSQL("SELECT * FROM form_data_encounter WHERE pid = '$pid' ORDER BY $ORDERX");
+		$ORDERX = isset($params->sort) ? $params->sort[0]->property . ' ' . $params->sort[0]->direction : 'service_date DESC';
+		$this->db->setSQL("SELECT * FROM encounters WHERE pid = '$pid' ORDER BY $ORDERX");
 		$rows = array();
 		foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row){
 			$row['status'] = ($row['close_date'] == null) ? 'open' : 'close';
@@ -136,8 +136,8 @@ class Encounter
 				unset($data[$key]);
 			}
 		}
-		$data['start_date'] = $this->parseDate($data['start_date']);
-		$sql                = $this->db->sqlBind($data, 'form_data_encounter', 'I');
+		$data['service_date'] = $this->parseDate($data['service_date']);
+		$sql                = $this->db->sqlBind($data, 'encounters', 'I');
 		$this->db->setSQL($sql);
 		$this->db->execLog();
 		$eid     = $this->db->lastInsertId;
@@ -167,7 +167,7 @@ class Encounter
 	public function getEncounter(stdClass $params)
 	{
 		$this->setEid($params->eid);
-		$this->db->setSQL("SELECT * FROM form_data_encounter WHERE eid = '$params->eid'");
+		$this->db->setSQL("SELECT * FROM encounters WHERE eid = '$params->eid'");
 		$encounter                          = $this->db->fetchRecord(PDO::FETCH_ASSOC);
 		$encounter['vitals']                = $this->getVitalsByPid($encounter['pid']);
 		$encounter['reviewofsystems']       = $this->getReviewOfSystemsByEid($params->eid);
@@ -186,7 +186,7 @@ class Encounter
 	public function updateEncounterPriority($params)
 	{
 		$data['priority'] = $params->priority;
-		$this->db->setSQL($this->db->sqlBind($data, 'form_data_encounter', 'U', array('eid' => $params->eid)));
+		$this->db->setSQL($this->db->sqlBind($data, 'encounters', 'U', array('eid' => $params->eid)));
 		$this->db->execLog();
 		$this->poolArea->updateCurrentPatientPoolAreaByPid(array('eid' => $params->eid, 'priority' => $params->priority), $params->pid);
 	}
@@ -217,7 +217,7 @@ class Encounter
 			if($params->reminder != ''){
 				$this->patient->addPatientReminderByPid($params->pid, $params->reminder, $params->eid);
 			}
-			$this->db->setSQL($this->db->sqlBind($data, 'form_data_encounter', 'U', array('eid' => $params->eid)));
+			$this->db->setSQL($this->db->sqlBind($data, 'encounters', 'U', array('eid' => $params->eid)));
 			$this->db->execLog();
 			$this->addEncounterHistoryEvent('Encounter Closed');
 			return array('success' => true, 'data' => $data);
@@ -334,14 +334,14 @@ class Encounter
 	public function getSoapHistory(stdClass $params)
 	{
 		$soap = array();
-		$this->db->setSQL("SELECT s.subjective, s.objective, s.assessment, s.plan, e.start_date
+		$this->db->setSQL("SELECT s.subjective, s.objective, s.assessment, s.plan, e.service_date
 							 FROM form_data_soap AS s
-					    LEFT JOIN form_data_encounter AS e ON s.eid = e.eid
+					    LEFT JOIN encounters AS e ON s.eid = e.eid
 							WHERE s.pid = '$params->pid'
 							  AND e.eid != '$params->eid'
-				 		 ORDER BY e.start_date DESC");
+				 		 ORDER BY e.service_date DESC");
 		foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) AS $row){
-			$row['start_date'] = date($_SESSION['global_settings']['date_time_display_format'], strtotime($row['start_date']));
+			$row['service_date'] = date($_SESSION['global_settings']['date_time_display_format'], strtotime($row['service_date']));
 			$icds              = '';
 			foreach($this->diagnosis->getICDByEid($params->eid) as $code){
 				$icds .= '<li><span style="font-weight:bold; text-decoration:none">' . $code['code'] . '</span> - ' . $code['long_desc'] . '</li>';
@@ -507,9 +507,9 @@ class Encounter
 	 */
 	public function getProgressNoteByEid($eid)
 	{
-		$this->db->setSQL("SELECT * FROM form_data_encounter WHERE eid = '$eid'");
+		$this->db->setSQL("SELECT * FROM encounters WHERE eid = '$eid'");
 		$encounter                 = $this->db->fetchRecord(PDO::FETCH_ASSOC);
-		$encounter['start_date']   = date('F j, Y, g:i a', strtotime($encounter['start_date']));
+		$encounter['service_date']   = date('F j, Y, g:i a', strtotime($encounter['service_date']));
 		$encounter['patient_name'] = $this->patient->getPatientFullNameByPid($encounter['pid']);
 		$encounter['open_by']      = $this->user->getUserNameById($encounter['open_uid']);
 		$encounter['signed_by']    = $this->user->getUserNameById($encounter['close_uid']);
@@ -695,7 +695,7 @@ class Encounter
                                   review_alcohol,
                                   review_smoke,
                                   review_pregnant
-                             FROM form_data_encounter
+                             FROM encounters
                             WHERE eid = '$params->eid'");
 		$records = $this->db->fetchRecord(PDO::FETCH_ASSOC);
 		foreach($records as $key => $rec){
@@ -726,10 +726,10 @@ class Encounter
 	{
 		$date = strtotime('-1 day', strtotime($params->date));
 		$date = date('Y-m-d H:i:s', $date);
-		$this->db->setSQL("SELECT * FROM form_data_encounter
+		$this->db->setSQL("SELECT * FROM encounters
                            WHERE (pid='$params->pid'
                            AND   close_date is NULL)
-                           AND start_date >= '$date'");
+                           AND service_date >= '$date'");
 		$data = $this->db->fetchRecord(PDO::FETCH_ASSOC);
 		if(isset($data['eid'])){
 			return true;
@@ -741,7 +741,7 @@ class Encounter
 
 	public function getEncounterFollowUpInfoByEid($eid)
 	{
-		$this->db->setSQL("SELECT followup_time, followup_facility FROM form_data_encounter WHERE eid = '$eid'");
+		$this->db->setSQL("SELECT followup_time, followup_facility FROM encounters WHERE eid = '$eid'");
 		$rec                      = $this->db->fetchRecord(PDO::FETCH_ASSOC);
 		$rec['followup_facility'] = intval($rec['followup_facility']);
 		return $rec;
@@ -749,21 +749,21 @@ class Encounter
 
 	public function getEncounterMessageByEid($eid)
 	{
-		$this->db->setSQL("SELECT message FROM form_data_encounter WHERE eid = '$eid'");
+		$this->db->setSQL("SELECT message FROM encounters WHERE eid = '$eid'");
 		return $this->db->fetchRecord(PDO::FETCH_ASSOC);
 	}
 
 	public function getEncounterByDateFromToAndPatient($from, $to, $pid = null)
 	{
-		$sql = " SELECT form_data_encounter.pid,
-	                    form_data_encounter.eid,
-	                    form_data_encounter.start_date,
+		$sql = " SELECT encounters.pid,
+	                    encounters.eid,
+	                    encounters.service_date,
 	                    form_data_demographics.*
-	               FROM form_data_encounter
-	          LEFT JOIN form_data_demographics ON form_data_encounter.pid = form_data_demographics.pid
-	              WHERE form_data_encounter.start_date BETWEEN '$from 00:00:00' AND '$to 23:59:59'";
+	               FROM encounters
+	          LEFT JOIN form_data_demographics ON encounters.pid = form_data_demographics.pid
+	              WHERE encounters.service_date BETWEEN '$from 00:00:00' AND '$to 23:59:59'";
 		if(isset($pid) && $pid != ''){
-			$sql .= " AND form_data_encounter.pid = '$pid'";
+			$sql .= " AND encounters.pid = '$pid'";
 		}
 		$this->db->setSQL($sql);
 		return $this->db->fetchRecords(PDO::FETCH_ASSOC);
@@ -773,7 +773,7 @@ class Encounter
 	{
 		$data = get_object_vars($params);
 		unset($data['eid']);
-		$this->db->setSQL($this->db->sqlBind($data, 'form_data_encounter', 'U', array('eid' => $params->eid)));
+		$this->db->setSQL($this->db->sqlBind($data, 'encounters', 'U', array('eid' => $params->eid)));
 		$this->db->execLog();
 		return array('success' => true);
 

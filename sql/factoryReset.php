@@ -7,7 +7,7 @@
  * To change this template use File | Settings | File Templates.
  */
 if(!isset($_SESSION)){
-    session_name ("GaiaEHR");
+    session_name ('GaiaEHR');
     session_start();
     session_cache_limiter('private');
 }
@@ -23,7 +23,7 @@ $tables = array(
 	'encounter_history',
 	'form_data_demographics',
 	'form_data_dictation',
-	'form_data_encounter',
+	'encounters',
 	'form_data_review_of_systems',
 	'form_data_review_of_systems_check',
 	'form_data_soap',
@@ -35,6 +35,7 @@ $tables = array(
 
 	// patient tables
 	'patient_allergies',
+	'patient_disclosures',
 	'patient_immunizations',
 	'patient_medications',
 	'patient_notes',
@@ -112,20 +113,22 @@ function RemoveReclusiveDir($dir) {
 }
 
 
-print '<h1>SQL Clean Up!</h1>';
+//print '<h1>SQL Clean Up!</h1>';
 
 foreach($tables as $table){
 	$db->setSQL("TRUNCATE TABLE $table");
 	$err = $db->execOnly();
 	$msg = (isset($err[1])) ? 'FAIL!' : 'PASS!';
-	print 'Empty  `' . $table . '`  ' . $msg . '<br>';
+	//print 'Empty  `' . $table . '`  ' . $msg . '<br>';
 }
 
-print '<h1>Patient Directories Clean Up!</h1>';
+//print '<h1>Patient Directories Clean Up!</h1>';
 $path = '../sites/'.$_SESSION['site']['dir'].'/patients/';
 $patientsDir = getDirectoryList($path);
 
 foreach($patientsDir as $dir){
-	print 'Removing directory `' . $path . $dir . ' ' . (RemoveReclusiveDir($path . $dir) ? '` PASS!' : 'FAIL!') . '<br>';
+	RemoveReclusiveDir($path . $dir);
 }
+
+print 'Factory Reset Complete!';
 

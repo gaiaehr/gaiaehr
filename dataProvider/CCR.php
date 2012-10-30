@@ -35,16 +35,27 @@ if(!isset($_SESSION)) {
 	session_start();
 	session_cache_limiter('private');
 }
-
+include_once ($_SESSION['root'] . '/classes/dbHelper.php');
+include_once ($_SESSION['root'] . '/dataProvider/Patient.php');
+include_once ($_SESSION['root'] . '/dataProvider/User.php');
+include_once ($_SESSION['root'] . '/dataProvider/PoolArea.php');
+include_once ($_SESSION['root'] . '/dataProvider/Medical.php');
+include_once ($_SESSION['root'] . '/dataProvider/PreventiveCare.php');
+include_once ($_SESSION['root'] . '/dataProvider/Services.php');
+include_once ($_SESSION['root'] . '/dataProvider/DiagnosisCodes.php');
 class CCR
 {
 	private $ccr;
-
 	private $pid;
 	private $authorID;
 	private $patientID;
 	private $sourceID;
 	private $gaiaID;
+	private $start;
+	private $end;
+
+	private $patient;
+	private $medical;
 
 	function __construct()
 	{
@@ -54,10 +65,22 @@ class CCR
 		$this->patientID = $this->getUuid();
 		$this->sourceID  = $this->getUuid();
 		$this->gaiaID    = $this->getUuid();
+
+
+		$this->patient   = new Patient();
+		$this->medical   = new Medical();
+
 	}
 
-	function createCCR($action, $raw = 'no')
+	function createCCR($request)
 	{
+		$action = $request['action'];
+		$raw    = $request['raw'];
+
+		$this->pid   = $request['pid'];
+		$this->start = $request['start'];
+		$this->end   = $request['end'];
+
 
 		//$result = $this->getActorData();
 		//		while($res = sqlFetchArray($result[2])) {
@@ -134,7 +157,7 @@ class CCR
 		$this->ccr->formatOutput       = true;
 		if($raw == 'yes') {
 			// simply send the xml to a textarea (nice debugging tool)
-			echo '<textarea rows="35" cols="500" style="width:95%" readonly>';
+			echo '<textarea rows="35" cols="500" style="width:100%; height:99%" readonly>';
 			echo $this->ccr->saveXml();
 			echo '</textarea>';
 			return;
@@ -180,6 +203,8 @@ class CCR
 						return;
 					}
 				} else {
+//					print '<pre>';
+//					print_r($this->medical->getPatientImmunizationsByPid($this->pid));
 					header('Content-type: application/xml');
 					print $this->ccr->saveXml();
 				}
@@ -197,6 +222,7 @@ class CCR
 		$xmlDom->loadXML($this->ccr->saveXML());
 		$ccr_ccd = new DOMDocument();
 		$ccr_ccd->load($_SESSION['root'] . '/lib/ccr/ccd/ccr_ccd.xsl');
+
 		$xslt = new XSLTProcessor();
 		$xslt->importStylesheet($ccr_ccd);
 		$ccd                     = new DOMDocument();
@@ -206,9 +232,9 @@ class CCR
 		$ccd->save($_SESSION['site']['temp']['path'] . '/ccdDebug.xml');
 		if($raw == 'yes') {
 			// simply send the xml to a textarea (nice debugging tool)
-			echo "<textarea rows='35' cols='500' style='width:95%' readonly>";
+			echo '<textarea rows="35" cols="500" style="width:100%; height:99%" readonly>';
 			echo $ccd->saveXml();
-			echo "</textarea>";
+			echo '</textarea>';
 			return;
 		}
 		$ss = new DOMDocument();
@@ -317,17 +343,8 @@ class CCR
 
 	function createProblem($e_Problems)
 	{
-		// TODO: sql...
-		//		$result = $this->getProblemData();
-		//		$row    = sqlFetchArray($result);
-		$data   = array(
-			array('date' => '2004-12-23 00:00:00', 'pid'=> 1, 'diagnosis' => 200.00, 'prob_title' => 'title 1', 'comments' => 'none', 'reason' => 'none'),
-			array('date' => '2004-12-23 00:00:00', 'pid'=> 1, 'diagnosis' => 200.18, 'prob_title' => 'title 2', 'comments' => 'none', 'reason' => 'none'),
-			array('date' => '2004-12-23 00:00:00', 'pid'=> 1, 'diagnosis' => 205.18, 'prob_title' => 'title 3', 'comments' => 'none', 'reason' => 'none'),
-			array('date' => '2004-12-23 00:00:00', 'pid'=> 1, 'diagnosis' => 223.18, 'prob_title' => 'title 4', 'comments' => 'none', 'reason' => 'none'),
-		);
+		$data = $this->medical->getPatientProblemsByPid($this->pid);
 		$pCount = 0;
-		//while ($row = sqlFetchArray($result)) {
 		foreach($data AS $row) {
 			$pCount++;
 			$e_Problem = $this->ccr->createElement('Problem');
@@ -396,7 +413,6 @@ class CCR
 			$e_Text = $this->ccr->createElement('Text', $row['reason']);
 			$e_Description->appendChild($e_Text);
 			$e_HealthStatus->appendChild($this->sourceType($this->sourceID));
-
 		}
 	}
 
@@ -479,35 +495,7 @@ class CCR
 
 	function createMedications($e_Medications)
 	{
-		//		$result = getMedicationData();
-		$data = array(
-			array(
-				'date_added'      => '2004-12-23 00:00:00',
-				'pid'             => 1,
-				'active'          => 'active',
-				'drug'            => 'drug',
-				'rxnorm_drugcode' => 'rxnorm_drugcode text',
-				'size'            => '500mg',
-				'title'           => 'This is a Medication title',
-				'form'            => 'casule',
-				'quantity'        => 10,
-				'note'            => 'reaction',
-				'refills'         => 'reaction'
-			),
-			array(
-				'date_added'      => '2004-12-23 00:00:00',
-				'pid'             => 1,
-				'active'          => 'active',
-				'drug'            => 'drug',
-				'rxnorm_drugcode' => 'rxnorm_drugcode text',
-				'size'            => '500mg',
-				'title'           => 'This is a Medication title',
-				'form'            => 'casule',
-				'quantity'        => 10,
-				'note'            => 'reaction',
-				'refills'         => 'reaction'
-			),
-		);
+		$data = $this->medical->getPatientMedicationsByPatientID($this->pid);
 		foreach($data AS $row) {
 			$e_Medication = $this->ccr->createElement('Medication');
 			$e_Medications->appendChild($e_Medication);
@@ -515,7 +503,7 @@ class CCR
 			$e_Medication->appendChild($e_CCRDataObjectID);
 			$e_DateTime = $this->ccr->createElement('DateTime');
 			$e_Medication->appendChild($e_DateTime);
-			$date            = date_create($row['date_added']);
+			$date            = date_create($row['create_date']);
 			$e_ExactDateTime = $this->ccr->createElement('ExactDateTime', $date->format('Y-m-d\TH:i:s\Z'));
 			$e_DateTime->appendChild($e_ExactDateTime);
 			$e_Type = $this->ccr->createElement('Type');
@@ -524,24 +512,24 @@ class CCR
 			$e_Type->appendChild($e_Text);
 			$e_Status = $this->ccr->createElement('Status');
 			$e_Medication->appendChild($e_Status);
-			$e_Text = $this->ccr->createElement('Text', $row['active']);
+			$e_Text = $this->ccr->createElement('Text', ($row['end_date'] == null || $row['end_date'] == '' ? 'Active' : 'Prior History No Longer Active' ));
 			$e_Status->appendChild($e_Text);
 			$e_Medication->appendChild($this->sourceType($this->sourceID));
 			$e_Product = $this->ccr->createElement('Product');
 			$e_Medication->appendChild($e_Product);
 			$e_ProductName = $this->ccr->createElement('ProductName');
 			$e_Product->appendChild($e_ProductName);
-			$e_Text = $this->ccr->createElement('Text', $row['drug']);
+			$e_Text = $this->ccr->createElement('Text', $row['medication']);
 			$e_ProductName->appendChild(clone $e_Text);
 			$e_Code = $this->ccr->createElement('Code');
 			$e_ProductName->appendChild($e_Code);
-			$e_Value = $this->ccr->createElement('Value', $row['rxnorm_drugcode']);
+			$e_Value = $this->ccr->createElement('Value', 'rxnorm_drugcode ???');
 			$e_Code->appendChild($e_Value);
 			$e_Value = $this->ccr->createElement('CodingSystem', 'RxNorm');
 			$e_Code->appendChild($e_Value);
 			$e_Strength = $this->ccr->createElement('Strength');
 			$e_Product->appendChild($e_Strength);
-			$e_Value = $this->ccr->createElement('Value', $row['size']);
+			$e_Value = $this->ccr->createElement('Value', $row['dose_mg']);
 			$e_Strength->appendChild($e_Value);
 			$e_Units = $this->ccr->createElement('Units');
 			$e_Strength->appendChild($e_Units);
@@ -549,15 +537,15 @@ class CCR
 			$e_Units->appendChild($e_Unit);
 			$e_Form = $this->ccr->createElement('Form');
 			$e_Product->appendChild($e_Form);
-			$e_Text = $this->ccr->createElement('Text', $row['form']);
+			$e_Text = $this->ccr->createElement('Text', $row['type']);
 			$e_Form->appendChild($e_Text);
 			$e_Quantity = $this->ccr->createElement('Quantity');
 			$e_Medication->appendChild($e_Quantity);
-			$e_Value = $this->ccr->createElement('Value', $row['quantity']);
+			$e_Value = $this->ccr->createElement('Value', $row['dispense']);
 			$e_Quantity->appendChild($e_Value);
 			$e_Units = $this->ccr->createElement('Units');
 			$e_Quantity->appendChild($e_Units);
-			$e_Unit = $this->ccr->createElement('Unit', '');
+			$e_Unit = $this->ccr->createElement('Unit', $row['dose_mg']);
 			$e_Units->appendChild($e_Unit);
 			$e_Directions = $this->ccr->createElement('Directions');
 			$e_Medication->appendChild($e_Directions);
@@ -565,87 +553,133 @@ class CCR
 			$e_Directions->appendChild($e_Direction);
 			$e_Description = $this->ccr->createElement('Description');
 			$e_Direction->appendChild($e_Description);
-			$e_Text = $this->ccr->createElement('Text', '');
+			$e_Text = $this->ccr->createElement('Text', $row['prescription_often']);
 			$e_Description->appendChild(clone $e_Text);
 			$e_Route = $this->ccr->createElement('Route');
 			$e_Direction->appendChild($e_Route);
-			$e_Text = $this->ccr->createElement('Text', 'Tablet');
+			$e_Text = $this->ccr->createElement('Text', $row['route']);
 			$e_Route->appendChild($e_Text);
 			$e_Site = $this->ccr->createElement('Site');
 			$e_Direction->appendChild($e_Site);
-			$e_Text = $this->ccr->createElement('Text', 'Oral');
+			$e_Text = $this->ccr->createElement('Text', '????');
 			$e_Site->appendChild($e_Text);
 			$e_PatientInstructions = $this->ccr->createElement('PatientInstructions');
 			$e_Medication->appendChild($e_PatientInstructions);
 			$e_Instruction = $this->ccr->createElement('Instruction');
 			$e_PatientInstructions->appendChild($e_Instruction);
-			$e_Text = $this->ccr->createElement('Text', $row['note']);
+			$e_Text = $this->ccr->createElement('Text', $row['prescription_often']);
 			$e_Instruction->appendChild($e_Text);
 			$e_Refills = $this->ccr->createElement('Refills');
 			$e_Medication->appendChild($e_Refills);
 			$e_Refill = $this->ccr->createElement('Refill');
 			$e_Refills->appendChild($e_Refill);
-			$e_Number = $this->ccr->createElement('Number', $row['refills']);
+			$e_Number = $this->ccr->createElement('Number', $row['refill']);
 			$e_Refill->appendChild($e_Number);
-
 		}
 	}
 
 	function createImmunizations($e_Immunizations)
 	{
-		//		$result = getImmunizationData();
-		//			$row = sqlFetchArray($result);
-		$data = array(
-			array(
-				'administered_date' => '2004-12-23 00:00:00',
-				'pid'               => 1,
-				'title'             => 'Title test',
-				'note'              => 'note text'
-			),
-			array(
-				'administered_date' => '2004-12-23 00:00:00',
-				'pid'               => 1,
-				'title'             => 'Title Test',
-				'note'              => 'note text'
-			),
-		);
+		$data = $this->medical->getPatientImmunizationsByPid($this->pid);
 		foreach($data AS $row) {
 			$e_Immunization = $this->ccr->createElement('Immunization');
 			$e_Immunizations->appendChild($e_Immunization);
+
 			$e_CCRDataObjectID = $this->ccr->createElement('CCRDataObjectID', $this->getUuid());
 			$e_Immunization->appendChild($e_CCRDataObjectID);
+
 			$e_DateTime = $this->ccr->createElement('DateTime');
 			$e_Immunization->appendChild($e_DateTime);
-			$date            = date_create($row['administered_date']);
+			$date = date_create($row['administered_date']);
 			$e_ExactDateTime = $this->ccr->createElement('ExactDateTime', $date->format('Y-m-d\TH:i:s\Z'));
 			$e_DateTime->appendChild($e_ExactDateTime);
+
 			$e_Type = $this->ccr->createElement('Type');
 			$e_Immunization->appendChild($e_Type);
 			$e_Text = $this->ccr->createElement('Text', 'Immunization');
 			$e_Type->appendChild($e_Text);
+
 			$e_Status = $this->ccr->createElement('Status');
 			$e_Immunization->appendChild($e_Status);
-			$e_Text = $this->ccr->createElement('Text', 'ACTIVE');
+			$e_Text = $this->ccr->createElement('Text','ACTIVE');
 			$e_Status->appendChild($e_Text);
+
 			$e_Immunization->appendChild($this->sourceType($this->sourceID));
+
 			$e_Product = $this->ccr->createElement('Product');
 			$e_Immunization->appendChild($e_Product);
 			$e_ProductName = $this->ccr->createElement('ProductName');
 			$e_Product->appendChild($e_ProductName);
-			$e_Text = $this->ccr->createElement('Text', $row['title']);
+			$e_Text = $this->ccr->createElement('Text',$row['immunization_name']);
 			$e_ProductName->appendChild($e_Text);
+			$e_Code = $this->ccr->createElement('Code',$row['immunization_id']);
+			$e_ProductName->appendChild($e_Code);
+
 			$e_Directions = $this->ccr->createElement('Directions');
 			$e_Immunization->appendChild($e_Directions);
 			$e_Direction = $this->ccr->createElement('Direction');
 			$e_Directions->appendChild($e_Direction);
 			$e_Description = $this->ccr->createElement('Description');
+
+
+
 			$e_Direction->appendChild($e_Description);
-			$e_Text = $this->ccr->createElement('Text', $row['note']);
+			$e_Text = $this->ccr->createElement('Text',$row['note']);
 			$e_Description->appendChild($e_Text);
 			$e_Code = $this->ccr->createElement('Code');
 			$e_Description->appendChild($e_Code);
 			$e_Value = $this->ccr->createElement('Value', 'None');
 			$e_Code->appendChild($e_Value);
+
+//			$e_Immunization = $this->ccr->createElement('Immunization');
+//			$e_Immunizations->appendChild($e_Immunization);
+//			$e_CCRDataObjectID = $this->ccr->createElement('CCRDataObjectID', $this->getUuid());
+//			$e_Immunization->appendChild($e_CCRDataObjectID);
+//
+//			$e_DateTime = $this->ccr->createElement('DateTime');
+//			$e_Immunization->appendChild($e_DateTime);
+//			$date            = date_create($row['administered_date']);
+//			$e_ExactDateTime = $this->ccr->createElement('ExactDateTime', $date->format('Y-m-d\TH:i:s\Z'));
+//			$e_DateTime->appendChild($e_ExactDateTime);
+//			$e_Type = $this->ccr->createElement('Type');
+//			$e_Immunization->appendChild($e_Type);
+//			$e_Text = $this->ccr->createElement('Text', 'Immunization');
+//			$e_Type->appendChild($e_Text);
+//			$e_Status = $this->ccr->createElement('Status');
+//			$e_Immunization->appendChild($e_Status);
+//			$e_Text = $this->ccr->createElement('Text', 'ACTIVE');
+//			$e_Status->appendChild($e_Text);
+//			$e_Immunization->appendChild($this->sourceType($this->sourceID));
+//
+//
+//			$e_Product = $this->ccr->createElement('Product');
+//			$e_Immunization->appendChild($e_Product);
+//			$e_ProductName = $this->ccr->createElement('ProductName');
+//			$e_Product->appendChild($e_ProductName);
+//			$e_Text = $this->ccr->createElement('Text', $row['immunization_name']);
+//			$e_ProductName->appendChild($e_Text);
+//
+//
+//			$e_Code = $this->ccr->createElement('ProductCode');
+//			$e_Product->appendChild($e_Code);
+//			$e_Text = $this->ccr->createElement('Text', 'sdsdsd');
+//			$e_Code->appendChild($e_Text);
+//
+//
+//
+//
+//			$e_Directions = $this->ccr->createElement('Directions');
+//			$e_Immunization->appendChild($e_Directions);
+//			$e_Direction = $this->ccr->createElement('Direction');
+//			$e_Directions->appendChild($e_Direction);
+//			$e_Description = $this->ccr->createElement('Description');
+//			$e_Direction->appendChild($e_Description);
+//			$e_Text = $this->ccr->createElement('Text', $row['note']);
+//			$e_Description->appendChild($e_Text);
+//			$e_Code = $this->ccr->createElement('Code');
+//			$e_Description->appendChild($e_Code);
+//			$e_Value = $this->ccr->createElement('Value', 'None');
+//			$e_Code->appendChild($e_Value);
 
 		}
 	}
@@ -823,8 +857,7 @@ class CCR
 
 	function createActors($e_Actors)
 	{
-		//		$result = getActorData();
-		$data = array();
+		$data = $this->patient->getPatientDemographicDataByPid($this->pid);
 		foreach($data AS $row) {
 			$e_Actor = $this->ccr->createElement('Actor');
 			$e_Actors->appendChild($e_Actor);
@@ -867,7 +900,7 @@ class CCR
 			$e_IDs->appendChild($e_Source);
 			$e_SourceActor = $this->ccr->createElement('Actor');
 			$e_Source->appendChild($e_SourceActor);
-			$e_ActorID = $this->ccr->createElement('ActorID', getUuid());
+			$e_ActorID = $this->ccr->createElement('ActorID', $this->getUuid());
 			$e_SourceActor->appendChild($e_ActorID);
 			// address
 			$e_Address = $this->ccr->createElement('Address');
@@ -876,7 +909,7 @@ class CCR
 			$e_Address->appendChild($e_Type);
 			$e_Text = $this->ccr->createElement('Text', 'H');
 			$e_Type->appendChild($e_Text);
-			$e_Line1 = $this->ccr->createElement('Line1', $row['street']);
+			$e_Line1 = $this->ccr->createElement('Line1', $row['address']);
 			$e_Address->appendChild($e_Line1);
 			$e_Line2 = $this->ccr->createElement('Line2');
 			$e_Address->appendChild($e_Line1);
@@ -884,11 +917,11 @@ class CCR
 			$e_Address->appendChild($e_City);
 			$e_State = $this->ccr->createElement('State', $row['state']);
 			$e_Address->appendChild($e_State);
-			$e_PostalCode = $this->ccr->createElement('PostalCode', $row['postal_code']);
+			$e_PostalCode = $this->ccr->createElement('PostalCode', $row['zipcode']);
 			$e_Address->appendChild($e_PostalCode);
 			$e_Telephone = $this->ccr->createElement('Telephone');
 			$e_Actor->appendChild($e_Telephone);
-			$e_Value = $this->ccr->createElement('Value', $row['phone_contact']);
+			$e_Value = $this->ccr->createElement('Value', $row['home_phone']);
 			$e_Telephone->appendChild($e_Value);
 			$e_Source = $this->ccr->createElement('Source');
 			$e_Actor->appendChild($e_Source);
@@ -1081,146 +1114,13 @@ class CCR
 		);
 	}
 
-	function getMedicationData()
-	{
-		global $pid, $set, $start, $end;
-		if($set == "on") {
-			$sql    = "
-	      SELECT prescriptions.date_added ,
-	        prescriptions.patient_id,
-	        prescriptions.start_date,
-	        prescriptions.quantity,
-	        prescriptions.interval,
-	        prescriptions.note,
-	        prescriptions.drug,
-	        prescriptions.medication,
-	        IF(prescriptions.active=1,'Active','Prior History No Longer Active') AS active,
-	        prescriptions.provider_id,
-	        prescriptions.size,
-		prescriptions.rxnorm_drugcode,
-	        IFNULL(prescriptions.refills,0) AS refills,
-	        lo2.title AS form,
-	        lo.title
-	      FROM prescriptions
-	      LEFT JOIN list_options AS lo
-	      ON lo.list_id = 'drug_units' AND prescriptions.unit = lo.option_id
-	      LEFT JOIN list_options AS lo2
-	      ON lo2.list_id = 'drug_form' AND prescriptions.form = lo2.option_id
-	      WHERE prescriptions.patient_id = ?
-	      AND prescriptions.date_added BETWEEN ? AND ?
-	      UNION
-	      SELECT
-	        DATE(DATE) AS date_added,
-	        pid AS patient_id,
-	        begdate AS start_date,
-	        '' AS quantity,
-	        '' AS `interval`,
-	        comments AS note,
-	        title AS drug,
-	        '' AS medication,
-	        IF((isnull(enddate) OR enddate = '0000-00-00' OR enddate >= CURDATE()),'Active','Prior History No Longer Active') AS active,
-	        '' AS provider_id,
-	        '' AS size,
-	'' AS rxnorm_drugcode,
-	        0 AS refills,
-	        '' AS form,
-	        '' AS title
-	      FROM
-	        lists
-	      WHERE `type` = 'medication'
-	        AND pid = ?
-	        AND `date` BETWEEN ? AND ?";
-			$result = sqlStatement($sql, array($pid, $start, $end, $pid, $start, $end));
-		} else {
-			$sql    = "
-	      SELECT prescriptions.date_added ,
-	        prescriptions.patient_id,
-	        prescriptions.start_date,
-	        prescriptions.quantity,
-	        prescriptions.interval,
-	        prescriptions.note,
-	        prescriptions.drug,
-	        prescriptions.medication,
-	        IF(prescriptions.active=1,'Active','Prior History No Longer Active') AS active,
-	        prescriptions.provider_id,
-	        prescriptions.size,
-		prescriptions.rxnorm_drugcode,
-	        IFNULL(prescriptions.refills,0) AS refills,
-	        lo2.title AS form,
-	        lo.title
-	      FROM prescriptions
-	      LEFT JOIN list_options AS lo
-	      ON lo.list_id = 'drug_units' AND prescriptions.unit = lo.option_id
-	      LEFT JOIN list_options AS lo2
-	      ON lo2.list_id = 'drug_form' AND prescriptions.form = lo2.option_id
-	      WHERE prescriptions.patient_id = ?
-	      UNION
-	      SELECT
-	        DATE(DATE) AS date_added,
-	        pid AS patient_id,
-	        begdate AS start_date,
-	        '' AS quantity,
-	        '' AS `interval`,
-	        comments AS note,
-	        title AS drug,
-	        '' AS medication,
-	        IF((isnull(enddate) OR enddate = '0000-00-00' OR enddate >= CURDATE()),'Active','Prior History No Longer Active') AS active,
-	        '' AS provider_id,
-	        '' AS size,
-		'' AS rxnorm_drugcode,
-	        0 AS refills,
-	        '' AS form,
-	        '' AS title
-	      FROM
-	        lists
-	      WHERE `type` = 'medication'
-	        AND pid = ?";
-			$result = sqlStatement($sql, array($pid, $pid));
-		}
-		return $result;
-	}
 
-	function getImmunizationData()
-	{
-		global $pid, $set, $start, $end;
-		if($set == "on") {
-			$sql    = "SELECT
-	      immunizations.administered_date,
-	      immunizations.patient_id,
-	      immunizations.vis_date,
-	      immunizations.note,
-	      immunizations.immunization_id,
-	      immunizations.manufacturer,
-	      codes.code_text AS title
-	    FROM immunizations
-	    LEFT JOIN codes ON immunizations.cvx_code = codes.code
-	    LEFT JOIN code_types ON codes.code_type = code_types.ct_id
-	    WHERE immunizations.patient_id = ? AND code_types.ct_key = 'CVX'
-	    AND create_date BETWEEN ? AND ?";
-			$result = sqlStatement($sql, array($pid, $start, $end));
-		} else {
-			$sql    = "SELECT
-	      immunizations.administered_date,
-	      immunizations.patient_id,
-	      immunizations.vis_date,
-	      immunizations.note,
-	      immunizations.immunization_id,
-	      immunizations.manufacturer,
-	      codes.code_text AS title
-	    FROM immunizations
-	    LEFT JOIN codes ON immunizations.cvx_code = codes.code
-	    LEFT JOIN code_types ON codes.code_type = code_types.ct_id
-	    WHERE immunizations.patient_id = ? AND code_types.ct_key = 'CVX'";
-			$result = sqlStatement($sql, array($pid));
-		}
-		return $result;
-	}
+
 
 	function getProcedureData()
 	{
 		global $pid, $set, $start, $end;
-		if($set == "on") {
-			$sql    = "
+		$sql    = "
 	    SELECT
 	      lists.title as proc_title,
 	      lists.date as `date`,
@@ -1273,59 +1173,6 @@ class CCR
 	    WHERE po.patient_id = ?
 	    AND prs.date BETWEEN ? AND ?";
 			$result = sqlStatement($sql, array($pid, $start, $end, $pid, $start, $end));
-		} else {
-			$sql    = "
-	    SELECT
-	      lists.title as proc_title,
-	      lists.date as `date`,
-	      list_options.title as outcome,
-	      '' as laterality,
-	      '' as body_site,
-	      lists.type as `type`,
-	      lists.diagnosis as `code`,
-	      IF(SUBSTRING(lists.diagnosis,1,LOCATE(':',lists.diagnosis)-1) = 'ICD9','ICD9-CM',SUBSTRING(lists.diagnosis,1,LOCATE(':',lists.diagnosis)-1)) AS coding
-	    FROM
-	      lists
-	      LEFT JOIN issue_encounter
-	        ON issue_encounter.list_id = lists.id
-	      LEFT JOIN form_encounter
-	        ON form_encounter.encounter = issue_encounter.encounter
-	      LEFT JOIN facility
-	        ON form_encounter.facility_id = facility.id
-	      LEFT JOIN users
-	        ON form_encounter.provider_id = users.id
-	      LEFT JOIN list_options
-	        ON lists.outcome = list_options.option_id
-	        AND list_options.list_id = 'outcome'
-	    WHERE lists.type = 'surgery'
-	      AND lists.pid = ?
-	    UNION
-	    SELECT
-	      pt.name as proc_title,
-	      prs.date as `date`,
-	      '' as outcome,
-	      ptt.laterality as laterality,
-	      ptt.body_site as body_site,
-	      'Lab Order' as `type`,
-	      ptt.standard_code as `code`,
-	      IF(SUBSTRING(ptt.standard_code,1,LOCATE(':',ptt.standard_code)-1) = 'ICD9','ICD9-CM',SUBSTRING(ptt.standard_code,1,LOCATE(':',ptt.standard_code)-1)) AS coding
-	    FROM
-	      procedure_result AS prs
-	      LEFT JOIN procedure_report AS prp
-	        ON prs.procedure_report_id = prp.procedure_report_id
-	      LEFT JOIN procedure_order AS po
-	        ON prp.procedure_order_id = po.procedure_order_id
-	      LEFT JOIN procedure_type AS pt
-	        ON prs.procedure_type_id = pt.procedure_type_id
-	      LEFT JOIN procedure_type AS ptt
-	        ON pt.parent = ptt.procedure_type_id
-	        AND ptt.procedure_type = 'ord'
-	      LEFT JOIN list_options AS lo
-	        ON lo.list_id = 'proc_unit'
-	        AND pt.units = lo.option_id
-	    WHERE po.patient_id = ? ";
-			$result = sqlStatement($sql, array($pid, $pid));
-		}
 		return $result;
 	}
 
@@ -1480,6 +1327,7 @@ class CCR
 		return $result;
 	}
 
+	// patient data
 	function getActorData()
 	{
 		global $pid;
@@ -1524,6 +1372,6 @@ if(isset($_REQUEST['action']) && isset($_REQUEST['raw'])){
 	$c = new CCR();
 	// generate, viewccd
 	// yes, hybrid, pure
-	$c->createCCR($_REQUEST['action'], $_REQUEST['raw']);
+	$c->createCCR($_REQUEST);
 }
 

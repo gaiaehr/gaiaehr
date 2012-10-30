@@ -543,6 +543,12 @@ Ext.define('App.view.Viewport', {
                             action: 'http://gaiaehr.org/',
                             scope: me,
                             handler: me.showMiframe
+                        },
+                        '-',
+                        {
+                            text: '<span style="color: red">'+i18n('RESET TO FACTORY')+'</span>',
+                            scope: me,
+                            handler: me.resetApp
                         }
                     ]
                 }
@@ -554,6 +560,9 @@ Ext.define('App.view.Viewport', {
         me.PreventiveCareWindow = Ext.create('App.view.patient.windows.PreventiveCare');
         me.NewDocumentsWindow = Ext.create('App.view.patient.windows.NewDocuments');
         me.DocumentViewerWindow = Ext.create('App.view.patient.windows.DocumentViewer');
+        me.newEncounterWindow = Ext.create('App.view.patient.windows.NewEncounter');
+
+
         me.layout = {
             type: 'border',
             padding: 3
@@ -647,30 +656,18 @@ Ext.define('App.view.Viewport', {
     createNewEncounter: function(){
         var me = this;
         if(acl['access_encounters'] && acl['add_encounters']){
-            me.navigateTo('panelEncounter', function(success){
-                if(success){
-                    me.currCardCmp.newEncounter();
-                }
-            });
+            me.newEncounterWindow.show();
         }else{
             me.accessDenied();
         }
     },
     openPatientSummary: function(){
         var me = this;
-        //		if(me.currCardCmp == Ext.getCmp('panelSummary')) {
-        //			var same = true;
-        //		}
         if(me.currCardCmp == Ext.getCmp('panelSummary')){
             me.currCardCmp.onActive();
         }else{
             me.navigateTo('panelSummary');
         }
-        //		me.navigateTo('panelSummary', function() {
-        //			if(same) {
-        //				me.currCardCmp.onActive();
-        //			}
-        //		});
     },
     stowPatientRecord: function(){
         this.unsetPatient();
@@ -679,6 +676,7 @@ Ext.define('App.view.Viewport', {
     openEncounter: function(eid){
         var me = this;
         if(acl['access_encounters']){
+            app.patient.eid = eid;
             me.navigateTo('panelEncounter', function(success){
                 if(success){
                     me.currCardCmp.openEncounter(eid);
@@ -1187,5 +1185,15 @@ Ext.define('App.view.Viewport', {
             buttons: Ext.Msg.OK,
             icon: icon
         });
+    },
+
+    resetApp:function(){
+        Ext.Ajax.request({
+            url: 'sql/factoryReset.php',
+            success: function(response){
+                alert(response.responseText);
+            }
+        });
     }
+
 });

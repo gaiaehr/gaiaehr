@@ -427,7 +427,7 @@ Ext.define('App.view.patient.Summary', {
                 columns: [
                     {
                         header: i18n('date'),
-                        dataIndex: 'start_date'
+                        dataIndex: 'service_date'
                     },
                     {
                         header: i18n('event'),
@@ -697,8 +697,8 @@ Ext.define('App.view.patient.Summary', {
                                 margin:'0 0 5 0',
                                 handler:function(){
                                     me.reportPanel.remove(me.miframe);
-                                    me.reportPanel.add(me.miframe = Ext.create('App.ux.ManagedIframe', {
-                                        src: 'http://localhost/gaiaehr/dataProvider/CCR.php?action=generate&raw=no'
+                                    me.reportPanel.add(me.miframe = Ext.create('App.ux.ManagedIframe',{
+                                        src: 'http://localhost/gaiaehr/dataProvider/CCR.php?action=generate&raw=no&pid=' + me.pid
                                     }));
                                 }
                             },
@@ -706,8 +706,8 @@ Ext.define('App.view.patient.Summary', {
                                 text:'View CCD',
                                 handler:function(){
                                     me.reportPanel.remove(me.miframe);
-                                    me.reportPanel.add(me.miframe = Ext.create('App.ux.ManagedIframe', {
-                                        src: 'http://localhost/gaiaehr/dataProvider/CCR.php?action=viewccd&raw=no'
+                                    me.reportPanel.add(me.miframe = Ext.create('App.ux.ManagedIframe',{
+                                        src: 'http://localhost/gaiaehr/dataProvider/CCR.php?action=viewccd&raw=no&pid=' + me.pid
                                     }));
                                 }
                             }
@@ -718,14 +718,39 @@ Ext.define('App.view.patient.Summary', {
                         layout:'vbox',
                         defaultType:'button',
                         items:[
-
+                            {
+                                text:'Raw CCR',
+                                margin:'0 0 5 0',
+                                handler:function(){
+                                    me.reportPanel.remove(me.miframe);
+                                    me.reportPanel.add(me.miframe = Ext.create('App.ux.ManagedIframe',{
+                                        src: 'http://localhost/gaiaehr/dataProvider/CCR.php?action=generate&raw=yes&pid=' + me.pid
+                                    }));
+                                }
+                            },
+                            {
+                                text:'Raw CCD',
+                                handler:function(){
+                                    me.reportPanel.remove(me.miframe);
+                                    me.reportPanel.add(me.miframe = Ext.create('App.ux.ManagedIframe',{
+                                        src: 'http://localhost/gaiaehr/dataProvider/CCR.php?action=viewccd&raw=yes&pid=' + me.pid
+                                    }));
+                                }
+                            }
+                        ]
+                    },'-',
+                    {
+                        xtype:'container',
+                        layout:'vbox',
+                        defaultType:'button',
+                        items:[
                             {
                                 text:'Export CCR',
                                 margin:'0 0 5 0',
                                 handler:function(){
                                     me.reportPanel.remove(me.miframe);
-                                    me.reportPanel.add(me.miframe = Ext.create('App.ux.ManagedIframe', {
-                                        src: 'http://localhost/gaiaehr/dataProvider/CCR.php?action=generate&raw=no'
+                                    me.reportPanel.add(me.miframe = Ext.create('App.ux.ManagedIframe',{
+                                        src: 'http://localhost/gaiaehr/dataProvider/CCR.php?action=generate&raw=yes&pid=' + me.pid
                                     }));
                                 }
                             },
@@ -733,9 +758,8 @@ Ext.define('App.view.patient.Summary', {
                                 text:'Export CCD',
                                 handler:function(){
                                     me.reportPanel.remove(me.miframe);
-
-                                    me.reportPanel.add(me.miframe = Ext.create('App.ux.ManagedIframe', {
-                                        src: 'http://localhost/gaiaehr/dataProvider/CCR.php?action=viewccd&raw=no'
+                                    me.reportPanel.add(me.miframe = Ext.create('App.ux.ManagedIframe',{
+                                        src: 'http://localhost/gaiaehr/dataProvider/CCR.php?action=viewccd&raw=yes&pid=' + me.pid
                                     }));
                                 }
                             }

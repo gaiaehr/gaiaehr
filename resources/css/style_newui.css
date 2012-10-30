@@ -68,6 +68,9 @@
 .edit{
 	background-image: url(../images/icons/edit.png) !important;
 }
+.icoPatientInfo {
+    background-image: url(../images/icons/icoPatientInfo.png) !important;
+}
 .icoZoneAreas {
     background-image: url(../images/icons/icoZoneAreas.png) !important;
 }

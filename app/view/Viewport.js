@@ -640,6 +640,7 @@ Ext.define('App.view.Viewport', {
                     Emergency.createNewEmergency(function(provider, response){
                         emergency = response.result.emergency;
                         if(response.result.success){
+                            say(emergency);
                             me.setPatient(emergency.pid, emergency.eid, function(){
                                 me.openEncounter(emergency.eid);
                             });

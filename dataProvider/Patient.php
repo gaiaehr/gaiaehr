@@ -130,11 +130,11 @@ class Patient
 			if ($val === true)
 				$data[$key] = 1;
 		}
-		$this -> db -> setSQL($this -> db -> sqlBind($data, 'form_data_demographics', 'I'));
+		$this -> db -> setSQL($this -> db -> sqlBind($data, 'patient_demographics', 'I'));
 		$this -> db -> execLog();
 		$pid = $this -> db -> lastInsertId;
 		$this -> db -> setSQL("SELECT pid, fname, mname, lname
-                     FROM form_data_demographics
+                     FROM patient_demographics
                     WHERE pid = '$pid'");
 		$patient = $this -> db -> fetchRecord(PDO::FETCH_ASSOC);
 		$patient['fullname'] = Person::fullname($patient['fname'], $patient['mname'], $patient['lname']);
@@ -177,7 +177,7 @@ class Patient
 			}
 		}
 
-		$this -> db -> setSQL($this -> db -> sqlBind($data, 'form_data_demographics', 'I'));
+		$this -> db -> setSQL($this -> db -> sqlBind($data, 'patient_demographics', 'I'));
 		$this -> db -> execLog();
 		$pid = $this -> db -> lastInsertId;
 		if (!$this -> createPatientDir($pid))
@@ -216,7 +216,7 @@ class Patient
 			if ($val === true)
 				$data[$key] = 1;
 		}
-		$this -> db -> setSQL($this -> db -> sqlBind($data, 'form_data_demographics', 'U', array('pid' => $params -> pid)));
+		$this -> db -> setSQL($this -> db -> sqlBind($data, 'patient_demographics', 'U', array('pid' => $params -> pid)));
 		$this -> db -> execLog();
 
 		$faullname = $params -> fname . ' ' . $params -> mname . ' ' . $params -> lname;
@@ -232,7 +232,7 @@ class Patient
 	 */
 	public function getPatientFullNameByPid($pid)
 	{
-		$this -> db -> setSQL("SELECT fname,mname,lname FROM form_data_demographics WHERE pid = '$pid'");
+		$this -> db -> setSQL("SELECT fname,mname,lname FROM patient_demographics WHERE pid = '$pid'");
 		$p = $this -> db -> fetchRecord();
 		return Person::fullname($p['fname'], $p['mname'], $p['lname']);
 	}
@@ -242,7 +242,7 @@ class Patient
 	 */
 	public function getPatientFullAddressByPid($pid)
 	{
-		$this -> db -> setSQL("SELECT address,city,state,zipcode FROM form_data_demographics WHERE pid = '$pid'");
+		$this -> db -> setSQL("SELECT address,city,state,zipcode FROM patient_demographics WHERE pid = '$pid'");
 		$p = $this -> db -> fetchRecord();
 		return Person::fulladdress($p['address'],null, $p['city'], $p['state'], $p['zipcode']);
 	}
@@ -257,7 +257,7 @@ class Patient
 	public function patientLiveSearch(stdClass $params)
 	{
 		$this -> db -> setSQL("SELECT pid,pubpid,fname,lname,mname,DOB,SS
-                             FROM form_data_demographics
+                             FROM patient_demographics
                             WHERE fname LIKE '$params->query%'
                                OR lname LIKE '$params->query%'
                                OR mname LIKE '$params->query%'
@@ -285,7 +285,7 @@ class Patient
 	public function getPatientDemographicData(stdClass $params)
 	{
 		$pid = $_SESSION['patient']['pid'];
-		$this -> db -> setSQL("SELECT * FROM form_data_demographics WHERE pid = '$pid'");
+		$this -> db -> setSQL("SELECT * FROM patient_demographics WHERE pid = '$pid'");
 		$rows = array();
 		foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
 		{
@@ -301,7 +301,7 @@ class Patient
 	 */
 	public function getPatientDemographicDataByPid($pid)
 	{
-		$this -> db -> setSQL("SELECT * FROM form_data_demographics WHERE pid = '$pid'");
+		$this -> db -> setSQL("SELECT * FROM patient_demographics WHERE pid = '$pid'");
 		return $this -> db -> fetchRecords(PDO::FETCH_ASSOC);
 
 	}
@@ -347,7 +347,7 @@ class Patient
 
 	public function getPatientAddressById($pid)
 	{
-		$this -> db -> setSQL("SELECT * FROM form_data_demographics WHERE pid = '$pid'");
+		$this -> db -> setSQL("SELECT * FROM patient_demographics WHERE pid = '$pid'");
 		$p = $this -> db -> fetchRecord();
 		$address = $p['address'] . ' <br>' . $p['city'] . ',  ' . $p['state'] . ' ' . $p['country'];
 		return $address;
@@ -356,7 +356,7 @@ class Patient
 	public function getPatientArrivalLogWarningByPid($pid)
 	{
 		$this -> db -> setSQL("SELECT pid
-							 FROM form_data_demographics
+							 FROM patient_demographics
 							WHERE pid = '$pid'
 							  AND (sex IS NULL
 							  OR DOB IS NULL)");
@@ -458,7 +458,7 @@ class Patient
 	///////////////////////////////////////////////////////
 	public function getDOBByPid($pid)
 	{
-		$this -> db -> setSQL("SELECT DOB FROM form_data_demographics WHERE pid = '$pid'");
+		$this -> db -> setSQL("SELECT DOB FROM patient_demographics WHERE pid = '$pid'");
 		$p = $this -> db -> fetchRecord();
 		return $p['DOB'];
 	}
@@ -466,7 +466,7 @@ class Patient
 	public function getPatientDOBByPid($pid)
 	{
 		$this -> db -> setSQL("SELECT DOB
-                           FROM form_data_demographics
+                           FROM patient_demographics
                            WHERE pid ='$pid'");
 		$patient = $this -> db -> fetchRecord(PDO::FETCH_ASSOC);
 		return $patient['DOB'];
@@ -519,7 +519,7 @@ class Patient
 
 	public function getPatientAgeByPid($pid)
 	{
-		$this -> db -> setSQL("SELECT DOB FROM form_data_demographics WHERE pid ='$pid'");
+		$this -> db -> setSQL("SELECT DOB FROM patient_demographics WHERE pid ='$pid'");
 		$p = $this -> db -> fetchRecord(PDO::FETCH_ASSOC);
 		return $this -> getPatientAgeByDOB($p['DOB']);
 	}
@@ -531,7 +531,7 @@ class Patient
 	public function getPatientSexByPid($pid)
 	{
 		$this -> db -> setSQL("SELECT sex
-                           FROM form_data_demographics
+                           FROM patient_demographics
                            WHERE pid ='$pid'");
 		$p = $this -> db -> fetchRecord(PDO::FETCH_ASSOC);
 		return $p['sex'];
@@ -638,7 +638,7 @@ class Patient
                                   lname,
                                   sex,
                                   DOB
-                           FROM form_data_demographics
+                           FROM patient_demographics
                            WHERE pid = '$params->pid'");
 		$patientdata = $this -> db -> fetchRecord(PDO::FETCH_ASSOC);
 

@@ -92,7 +92,7 @@ class Calendar
 			$row['billing_facility'] = intval($row['billing_facillity']);
 			$row['patient_id'] = intval($row['patient_id']);
 
-			$sql = ("SELECT * FROM form_data_demographics WHERE pid= '" . $row['patient_id'] . "'");
+			$sql = ("SELECT * FROM patient_demographics WHERE pid= '" . $row['patient_id'] . "'");
 			$this -> db -> setSQL($sql);
 			foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $urow)
 			{

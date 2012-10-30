@@ -63,11 +63,11 @@ class Messages extends dbHelper
                               users.fname AS user_fname,
                               users.mname AS user_mname,
                               users.lname AS user_lname,
-                              form_data_demographics.fname AS patient_fname,
-                              form_data_demographics.mname AS patient_mname,
-                              form_data_demographics.lname AS patient_lname
+                              patient_demographics.fname AS patient_fname,
+                              patient_demographics.mname AS patient_mname,
+                              patient_demographics.lname AS patient_lname
                          FROM messages
-              LEFT OUTER JOIN form_data_demographics ON messages.pid = form_data_demographics.pid
+              LEFT OUTER JOIN patient_demographics ON messages.pid = patient_demographics.pid
               LEFT OUTER JOIN users ON messages.to_id = users.id
                         WHERE $wherex
                      ORDER BY messages.date

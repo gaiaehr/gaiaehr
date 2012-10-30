@@ -464,7 +464,7 @@ CREATE TABLE IF NOT EXISTS `forms_layout` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=11 ;
 
-CREATE TABLE IF NOT EXISTS `form_data_demographics` (
+CREATE TABLE IF NOT EXISTS `patient_demographics` (
   `pid` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'Patient ID',
   `date_created` datetime NOT NULL COMMENT 'date form saved for the first time',
   `title` varchar(255) DEFAULT NULL,
@@ -581,7 +581,7 @@ CREATE TABLE IF NOT EXISTS `form_data_demographics` (
   PRIMARY KEY (`pid`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COMMENT='Table holds all the Demographics form data for all the patie' AUTO_INCREMENT=2 ;
 
-CREATE TABLE IF NOT EXISTS `form_data_dictation` (
+CREATE TABLE IF NOT EXISTS `encounter_dictation` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `pid` bigint(20) NOT NULL,
   `eid` bigint(20) NOT NULL,
@@ -630,14 +630,14 @@ CREATE TABLE IF NOT EXISTS `form_data_history` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Table holds all the History data for all the patients' AUTO_INCREMENT=1 ;
 
-CREATE TABLE IF NOT EXISTS `form_data_referrals` (
+CREATE TABLE IF NOT EXISTS `patient_referrals` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `pid` bigint(20) NOT NULL COMMENT 'Patient ID',
   `date_created` date NOT NULL COMMENT 'date form saved for the first time',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Table holds all the Referrals form data for all the patients' AUTO_INCREMENT=1 ;
 
-CREATE TABLE IF NOT EXISTS `form_data_review_of_systems` (
+CREATE TABLE IF NOT EXISTS `encounter_review_of_systems` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `pid` bigint(20) DEFAULT '0',
   `eid` bigint(20) NOT NULL,
@@ -782,7 +782,7 @@ CREATE TABLE IF NOT EXISTS `form_data_review_of_systems` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
 
-CREATE TABLE IF NOT EXISTS `form_data_review_of_systems_check` (
+CREATE TABLE IF NOT EXISTS `encounter_review_of_systems_check` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `pid` bigint(20) DEFAULT '0',
   `eid` bigint(20) NOT NULL,
@@ -899,7 +899,7 @@ CREATE TABLE IF NOT EXISTS `form_data_review_of_systems_check` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
 
-CREATE TABLE IF NOT EXISTS `form_data_soap` (
+CREATE TABLE IF NOT EXISTS `encounter_soap` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `pid` bigint(20) DEFAULT '0',
   `eid` bigint(20) NOT NULL,
@@ -912,7 +912,7 @@ CREATE TABLE IF NOT EXISTS `form_data_soap` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
 
-CREATE TABLE IF NOT EXISTS `form_data_vitals` (
+CREATE TABLE IF NOT EXISTS `encounter_vitals` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `pid` bigint(20) NOT NULL COMMENT 'Patient ID',
   `eid` bigint(20) NOT NULL COMMENT 'Encounter ID',

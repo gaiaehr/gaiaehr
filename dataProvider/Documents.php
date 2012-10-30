@@ -152,7 +152,7 @@ class Documents
 	public function getAllPatientData($pid)
 	{
 		$this -> db -> setSQL("SELECT *
-                           	 FROM form_data_demographics
+                           	 FROM patient_demographics
                             WHERE pid = '$pid' ");
 		$record = $this -> db -> fetchRecord(PDO::FETCH_ASSOC);
 		return $record;

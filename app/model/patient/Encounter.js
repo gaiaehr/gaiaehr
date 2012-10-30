@@ -10,8 +10,9 @@ Ext.define('App.model.patient.Encounter', {
 	fields : [
 		{name: 'eid', type: 'int'},
 		{name: 'pid', type: 'int'},
-		{name: 'open_uid', type: 'string'},
-		{name: 'close_uid', type: 'string'},
+		{name: 'open_uid', type: 'int'},
+		{name: 'provider_uid', type: 'int'},
+		{name: 'supervisor_uid', type: 'int'},
 		{name: 'brief_description', type: 'string'},
 		{name: 'visit_category', type: 'string'},
 		{name: 'facility', type: 'string'},

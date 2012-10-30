@@ -209,7 +209,8 @@ class Encounter
 		$this->setEid($params->eid);
 		$data = get_object_vars($params);
 		unset($data['eid'], $data['pid'], $data['signature'], $data['note'], $data['reminder']);
-		$data['close_uid'] = $_SESSION['user']['id'];
+		$data['provider_uid'] = $_SESSION['user']['id'];
+		$data['supervisor_uid'] = $_SESSION['user']['id'];
 		if($this->user->verifyUserPass($params->signature)){
 			if($params->note != ''){
 				$this->patient->addPatientNoteByPid($params->pid, $params->note, $params->eid);
@@ -512,7 +513,7 @@ class Encounter
 		$encounter['service_date']   = date('F j, Y, g:i a', strtotime($encounter['service_date']));
 		$encounter['patient_name'] = $this->patient->getPatientFullNameByPid($encounter['pid']);
 		$encounter['open_by']      = $this->user->getUserNameById($encounter['open_uid']);
-		$encounter['signed_by']    = $this->user->getUserNameById($encounter['close_uid']);
+		$encounter['signed_by']    = $this->user->getUserNameById($encounter['provider_uid']);
 		/**
 		 * Add vitals to progress note
 		 */

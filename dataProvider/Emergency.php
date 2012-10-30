@@ -18,13 +18,11 @@
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-if (!isset($_SESSION))
-{
+if(!isset($_SESSION)){
 	session_name('GaiaEHR');
 	session_start();
 	session_cache_limiter('private');
 }
-
 include_once ($_SESSION['root'] . '/classes/dbHelper.php');
 include_once ($_SESSION['root'] . '/dataProvider/Patient.php');
 include_once ($_SESSION['root'] . '/dataProvider/User.php');
@@ -33,7 +31,6 @@ include_once ($_SESSION['root'] . '/dataProvider/PoolArea.php');
 include_once ($_SESSION['root'] . '/dataProvider/Medical.php');
 include_once ($_SESSION['root'] . '/dataProvider/Encounter.php');
 include_once ($_SESSION['root'] . '/dataProvider/PreventiveCare.php');
-
 class Emergency
 {
 	/**
@@ -76,81 +73,72 @@ class Emergency
 
 	function __construct()
 	{
-		$this -> db = new dbHelper();
-		$this -> user = new User();
-		$this -> patient = new Patient();
-		$this -> services = new Services();
-		$this -> poolArea = new PoolArea();
-		$this -> medical = new Medical();
-		$this -> encounter = new Encounter();
-		$this -> preventiveCare = new PreventiveCare();
+		$this->db             = new dbHelper();
+		$this->user           = new User();
+		$this->patient        = new Patient();
+		$this->services       = new Services();
+		$this->poolArea       = new PoolArea();
+		$this->medical        = new Medical();
+		$this->encounter      = new Encounter();
+		$this->preventiveCare = new PreventiveCare();
 		return;
 	}
 
 	public function createNewEmergency()
 	{
-		$patient = $this -> patient -> createNewPatientOnlyName('EMERGENCY');
-		if ($patient['success'])
-		{
-			$this -> pid = $patient['patient']['pid'];
+		$patient = $this->patient->createNewPatientOnlyName('EMERGENCY');
+		if($patient['success']){
+			$this->pid = $patient['patient']['pid'];
 			/**
 			 * send new patient to the emergency pool area
 			 */
-			$params = new stdClass();
-			$params -> pid = $this -> pid;
-			$params -> priority = $this -> priority;
-			$params -> sendTo = 3;
-			$this -> poolArea -> sendPatientToPoolArea($params);
+			$params           = new stdClass();
+			$params->pid      = $this->pid;
+			$params->priority = $this->priority;
+			$params->sendTo   = 3;
+			$this->poolArea->sendPatientToPoolArea($params);
 			/**
 			 * create new encounter
 			 */
-			$params = new stdClass();
-			$params -> pid = $this -> pid;
-			$params -> brief_description = '***EMERGENCY***';
-			$params -> visit_category = 'Emergency';
-			$params -> priority = $this -> priority;
-			$params -> start_date = Time::getLocalTime();
-			$encounter = $this -> encounter -> createEncounter($params);
-			$this -> eid = $encounter['encounter'] -> eid;
+			$params                    = new stdClass();
+			$params->pid               = $this->pid;
+			$params->brief_description = '***EMERGENCY***';
+			$params->visit_category    = 'Emergency';
+			$params->priority          = $this->priority;
+			$params->service_date        = Time::getLocalTime();
+			$encounter                 = $this->encounter->createEncounter($params);
+			$this->eid                 = $encounter['encounter']->eid;
 			/**
 			 * log the emergency
 			 */
-			$this -> logEmergency();
+			$this->logEmergency();
 			/*
 			 * update patient first name to EMERGENCY- encounter id
 			 */
-			$data['fname'] = 'EMERGENCY-' . $this -> emergencyId;
-			$this -> db -> setSQL($this -> db -> sqlBind($data, 'patient_demographics', 'U', array('pid' => $this -> pid)));
-			$this -> db -> execOnly();
-
+			$data['fname'] = 'EMERGENCY-' . $this->emergencyId;
+			$this->db->setSQL($this->db->sqlBind($data, 'patient_demographics', 'U', array('pid' => $this->pid)));
+			$this->db->execOnly();
 			return array(
-				'success' => true,
-				'emergency' => array(
-					'pid' => $this -> pid,
-					'eid' => $this -> eid,
-					'name' => 'EMERGENCY-' . $this -> emergencyId,
-					'priority' => $params -> priority
+				'success' => true, 'emergency' => array(
+					'pid' => $this->pid, 'eid' => $this->eid, 'name' => 'EMERGENCY-' . $this->emergencyId, 'priority' => $params->priority
 				)
 			);
-		}
-		else
-		{
+		} else {
 			return array(
-				'success' => false,
-				'error' => $patient['error']
+				'success' => false, 'error' => $patient['error']
 			);
 		}
 	}
 
 	public function logEmergency()
 	{
-		$data['pid'] = $this -> pid;
-		$data['eid'] = $this -> eid;
-		$data['uid'] = $_SESSION['user']['id'];
+		$data['pid']          = $this->pid;
+		$data['eid']          = $this->eid;
+		$data['uid']          = $_SESSION['user']['id'];
 		$data['date_created'] = Time::getLocalTime();
-		$this -> db -> setSQL($this -> db -> sqlBind($data, 'emergencies', 'I'));
-		$this -> db -> execLog();
-		$this -> emergencyId = $this -> db -> lastInsertId;
+		$this->db->setSQL($this->db->sqlBind($data, 'emergencies', 'I'));
+		$this->db->execLog();
+		$this->emergencyId = $this->db->lastInsertId;
 	}
 
 }
@@ -158,7 +146,6 @@ class Emergency
 //$params = new stdClass();
 //$params->pid = 2;
 //$params->date = '2012-06-25 10:48:00';
-
 //$e = new Emergency();
 //echo '<pre>';
 //print_r($e->createNewEmergency());

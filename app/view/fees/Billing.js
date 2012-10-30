@@ -59,7 +59,7 @@ Ext.define('App.view.fees.Billing',
 			columns : [
 			{
 				header : i18n('service_date'),
-				dataIndex : 'start_date',
+				dataIndex : 'service_date',
 				width : 200
 			},
 			{

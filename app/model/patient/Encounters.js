@@ -17,7 +17,7 @@ Ext.define('App.model.patient.Encounters', {
 		{name: 'facility', type: 'string'},
 		{name: 'billing_facility', type: 'string'},
 		{name: 'sensitivity', type: 'string'},
-		{name: 'start_date', type: 'date', dateFormat:'Y-m-d H:i:s'},
+		{name: 'service_date', type: 'date', dateFormat:'Y-m-d H:i:s'},
 		{name: 'close_date', type: 'date', dateFormat:'Y-m-d H:i:s'},
 		{name: 'onset_date', type: 'date', dateFormat:'Y-m-d H:i:s'}
 	],

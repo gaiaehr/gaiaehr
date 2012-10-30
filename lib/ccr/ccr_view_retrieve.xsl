@@ -790,9 +790,13 @@ this XSLT back to the community.
 																<xsl:for-each
 																		select="a:ContinuityOfCareRecord/a:Body/a:Immunizations/a:Immunization">
 																	<tr>
+
+																		<xsl:attribute name="id">
+																			<xsl:value-of select="a:CCRDataObjectID"/>
+																		</xsl:attribute>
 																		<td>
-																			<xsl:apply-templates
-																					select="a:Product/a:ProductName/a:Code"/>
+																			<xsl:value-of select="a:Product/a:ProductName/a:Code"/>
+
 																		</td>
 																		<td>
 																			<strong class="clinical">

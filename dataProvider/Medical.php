@@ -79,8 +79,7 @@ class Medical
 
 	public function getPatientImmunizations(stdClass $params)
 	{
-		$immunizations = $this -> getImmunizationsByPatientID($params -> pid);
-
+		$immunizations = $this->getPatientImmunizationsByPid($params -> pid);
 		return $immunizations;
 	}
 
@@ -427,7 +426,7 @@ class Medical
 	 * @param $pid
 	 * @return array
 	 */
-	private function getImmunizationsByPatientID($pid)
+	public function getPatientImmunizationsByPid($pid)
 	{
 		$this -> db -> setSQL("SELECT * FROM patient_immunizations WHERE pid='$pid'");
 
@@ -496,6 +495,11 @@ class Medical
 	public function getMedicalIssuesByEncounterID($eid)
 	{
 		$this -> db -> setSQL("SELECT * FROM patient_issues WHERE eid='$eid'");
+		return $this -> db -> fetchRecords(PDO::FETCH_ASSOC);
+	}
+	public function getPatientProblemsByPid($pid)
+	{
+		$this -> db -> setSQL("SELECT * FROM patient_issues WHERE pid = '$pid'");
 		return $this -> db -> fetchRecords(PDO::FETCH_ASSOC);
 	}
 
@@ -569,21 +573,18 @@ class Medical
 		$data['review_surgery'] = 1;
 		$data['review_medications'] = 1;
 		$data['review_dental'] = 1;
-		$this -> db -> setSQL($this -> db -> sqlBind($data, "form_data_encounter", "U", "eid='$eid'"));
+		$this -> db -> setSQL($this -> db -> sqlBind($data, 'encounters', 'U', array('eid' => $eid)));
 		$this -> db -> execLog();
 		return array('success' => true);
 	}
 
 	public function getEncounterReviewByEid($eid)
 	{
-
-		$this -> db -> setSQL("
-                            SELECT review_alcohol,
-                                   review_smoke,
-                                   review_pregnant
-                            FROM form_data_encounter
-                            WHERE eid = '$eid'
-                          ");
+		$this -> db -> setSQL("SELECT review_alcohol,
+                                      review_smoke,
+                                      review_pregnant
+                            	 FROM encounters
+                            	WHERE eid = '$eid'");
 		return $this -> db -> fetchRecord();
 	}
 
@@ -634,7 +635,7 @@ class Medical
 		$area = $data['area'];
 		unset($data['area'], $data['eid']);
 		$data[$area] = 1;
-		$this -> db -> setSQL($this -> db -> sqlBind($data, "form_data_encounter", "U", "eid='$eid'"));
+		$this -> db -> setSQL($this -> db -> sqlBind($data, 'encounters', 'U', array('eid' => $eid)));
 		$this -> db -> execLog();
 		return array('success' => true);
 	}

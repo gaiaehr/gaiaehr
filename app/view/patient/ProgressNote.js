@@ -38,7 +38,7 @@ Ext.define('App.view.patient.ProgressNote', {
             '                   <div class="header row">' + i18n('signed_by') + ': {[values.signed_by || "-"]} </div>' +
             '               </td>' +
             '               <td>' +
-            '                   <div class="header row">' + i18n('service_date') + ': {start_date} </div>' +
+            '                   <div class="header row">' + i18n('service_date') + ': {service_date} </div>' +
             '                   <div class="header row">' + i18n('visit_category') + ': {visit_category} </div>' +
             '                   <div class="header row">' + i18n('facility') + ': {facility} </div>' +
             '                   <div class="header row">' + i18n('priority') + ': {priority} </div>' +

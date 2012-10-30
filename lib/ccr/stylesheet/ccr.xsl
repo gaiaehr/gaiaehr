@@ -712,7 +712,7 @@ this XSLT back to the community.
                             <table class="list" id="immunizations">
                               <tbody>
                                 <tr>
-                                  <th>Code</th>
+                                  <th>VXCode</th>
                                   <th>Vaccine</th>
                                   <th>Date</th>
                                   <th>Route</th>
@@ -722,7 +722,7 @@ this XSLT back to the community.
                                 <xsl:for-each select="a:ContinuityOfCareRecord/a:Body/a:Immunizations/a:Immunization">
                                   <tr>
                                     <td>
-                                      <xsl:apply-templates select="a:Product/a:ProductName/a:Code"/>
+	                                    <xsl:value-of select="a:Product/a:ProductName/a:Code"/>
                                     </td>
                                     <td>
                                       <strong class="clinical">
@@ -744,7 +744,7 @@ this XSLT back to the community.
                                       </table>
                                     </td>
                                     <td>
-                                      <xsl:value-of select="a:Directions/a:Direction/a:Route/a:Text"/>
+	                                    <xsl:value-of select="a:Directions/a:Direction/a:Route/a:Text"/>
                                     </td>
                                     <td>
                                       <xsl:value-of select="a:Directions/a:Direction/a:Site/a:Text"/>

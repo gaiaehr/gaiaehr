@@ -64,16 +64,16 @@ class Fees
 		$sql = "SELECT enc.eid,
                        enc.pid,
                        enc.prov_uid AS encounterProviderUid,
-                       enc.start_date,
+                       enc.service_date,
                        enc.billing_stage,
                        demo.title,
                        demo.fname,
                        demo.mname,
                        demo.lname,
                        demo.provider AS primaryProviderUid
-                  FROM form_data_encounter AS enc
+                  FROM encounters AS enc
              LEFT JOIN form_data_demographics AS demo ON demo.pid = enc.pid
-              ORDER BY enc.start_date ASC ";
+              ORDER BY enc.service_date ASC ";
 		$this -> db -> setSQL($sql);
 		$encounters = array();
 		foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -100,16 +100,16 @@ class Fees
 		$sql = "SELECT enc.eid,
                        enc.pid,
                        enc.prov_uid AS encounterProviderUid,
-                       enc.start_date,
+                       enc.service_date,
                        enc.billing_stage,
                        demo.title,
                        demo.fname,
                        demo.mname,
                        demo.lname,
                        demo.provider AS primaryProviderUid
-                  FROM form_data_encounter AS enc
+                  FROM encounters AS enc
              LEFT JOIN form_data_demographics AS demo ON demo.pid = enc.pid
-              ORDER BY enc.start_date ASC ";
+              ORDER BY enc.service_date ASC ";
 		$this -> db -> setSQL($sql);
 		$encounters = array();
 		foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)

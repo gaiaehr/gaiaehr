@@ -39,7 +39,7 @@ Ext.define('App.view.patient.Visits', {
 			store     : me.store,
 			columns   : [
 				{ header: 'eid', sortable: false, dataIndex: 'eid', hidden: true},
-				{ width: 150, header: i18n('date'), sortable: true, dataIndex: 'start_date', renderer: Ext.util.Format.dateRenderer('Y-m-d H:i:s') },
+				{ width: 150, header: i18n('date'), sortable: true, dataIndex: 'service_date', renderer: Ext.util.Format.dateRenderer('Y-m-d H:i:s') },
 				{ flex: 1, header: i18n('reason'), sortable: true, dataIndex: 'brief_description' },
 				{ width: 180, header: i18n('provider'), sortable: false, dataIndex: 'provider' },
 				{ width: 120, header: i18n('facility'), sortable: false, dataIndex: 'facility' },

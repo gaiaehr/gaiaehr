@@ -63,45 +63,7 @@ Ext.define('App.view.patient.Encounter', {
         if(acl['access_encounter_checkout']){
             me.checkoutAlertArea = Ext.create('App.store.patient.CheckoutAlertArea');
         }
-        /**
-         * New Encounter Panel this panel is located hidden at
-         * the top of the Visit panel and will slide down if
-         * the "New Encounter" button is pressed.
-         */
-        if(acl['add_encounters']){
-            me.newEncounterWindow = Ext.create('Ext.window.Window', {
-                title:i18n('new_encounter_form'),
-                closeAction:'hide',
-                closable:false,
-                modal:true,
-                width:660,
-                items:[
-                    {
-                        xtype:'form',
-                        border:false,
-                        bodyPadding:'10 10 0 10'
-                    }
-                ],
-                buttons:[
-                    {
-                        text:i18n('create_encounter'),
-                        action:'encounter',
-                        scope:me,
-                        handler:me.onEncounterUpdate
-                    },
-                    {
-                        text:i18n('cancel'),
-                        scope:me,
-                        handler:me.cancelNewEnc
 
-                    }
-                ],
-                listeners:{
-                    scope:me,
-                    close:me.cancelNewEnc
-                }
-            });
-        }
         /**
          * Encounter Checkout window
          * @type {*}
@@ -722,55 +684,6 @@ Ext.define('App.view.patient.Encounter', {
         me.updateProgressNote();
     },
     /**
-     * Checks for opened encounters, if open encounters are
-     * found alert the user, if not then open the
-     * new encounter window
-     */
-    newEncounter:function(){
-        var me = this, form, model;
-        me.resetTabs();
-        if(acl['add_encounters']){
-            Encounter.checkOpenEncounters(function(provider, response){
-                /** @namespace response.result.encounter */
-                if(response.result.encounter){
-                    Ext.Msg.show({
-                        title:'Oops! ' + i18n('open_encounters_found') + '...',
-                        msg:i18n('do_you_want_to') + ' <strong>' + i18n('continue_creating_the_new_encounters') + '</strong><br>"' + i18n('click_no_to_review_encounter_history') + '"',
-                        buttons:Ext.Msg.YESNO,
-                        icon:Ext.Msg.QUESTION,
-                        fn:function(btn){
-                            if(btn == 'yes'){
-                                form = me.newEncounterWindow.down('form');
-                                form.getForm().reset();
-                                model = Ext.ModelManager.getModel('App.model.patient.Encounter');
-                                model = Ext.ModelManager.create({
-                                    pid:app.patient.pid,
-                                    start_date:new Date()
-                                }, model);
-                                form.getForm().loadRecord(model);
-                                me.newEncounterWindow.show();
-                            }else{
-                                app.openPatientVisits();
-                            }
-                        }
-                    });
-                }else{
-                    form = me.newEncounterWindow.down('form');
-                    form.getForm().reset();
-                    model = Ext.ModelManager.getModel('App.model.patient.Encounter');
-                    model = Ext.ModelManager.create({
-                        pid:app.patient.pid,
-                        start_date:new Date()
-                    }, model);
-                    form.getForm().loadRecord(model);
-                    me.newEncounterWindow.show();
-                }
-            });
-        }else{
-            app.accessDenied();
-        }
-    },
-    /**
      * CheckOut Functions
      */
     onCheckout:function(){
@@ -937,14 +850,6 @@ Ext.define('App.view.patient.Encounter', {
         return data;
     },
     /**
-     * Cancels the New Encounter process, closing the window
-     * and send the user to the Patient Summary panel
-     */
-    cancelNewEnc:function(){
-        this.newEncounterWindow.close();
-        app.openPatientSummary();
-    },
-    /**
      *
      * @param eid
      */
@@ -958,13 +863,13 @@ Ext.define('App.view.patient.Encounter', {
             callback:function(record){
                 var data = record[0].data;
                 me.pid = data.pid;
-                me.currEncounterStartDate = data.start_date;
+                me.currEncounterStartDate = data.service_date;
                 if(!data.close_date){
                     me.startTimer();
                     me.setButtonsDisabled(me.getButtonsToDisable());
                 }else{
                     if(me.stopTimer()){
-                        var timer = me.timer(data.start_date, data.close_date), patient = app.patient;
+                        var timer = me.timer(data.service_date, data.close_date), patient = app.patient;
                         me.updateTitle(patient.name + ' #' + patient.pid + ' - ' + patient.age.str + ' - ' + Ext.Date.format(me.currEncounterStartDate, 'F j, Y, g:i:s a') + ' (' + i18n('closed_encounter') + ')', app.patient.readOnly, timer);
                         me.setButtonsDisabled(me.getButtonsToDisable(), true);
                     }
@@ -1072,7 +977,7 @@ Ext.define('App.view.patient.Encounter', {
             for(var i = 0; i < soaps.length; i++){
                 me.progressHistory.add(Ext.create('Ext.form.FieldSet', {
                     styleHtmlContent:true,
-                    title:'<span style="font-weight: bold; font-size: 14px;">' + soaps[i].start_date + '</span>',
+                    title:'<span style="font-weight: bold; font-size: 14px;">' + soaps[i].service_date + '</span>',
                     html:'<strong>' + i18n('subjective') + ':</strong> ' + (soaps[i].subjective ? soaps[i].subjective : 'none') + '<br>' + '<strong>' + i18n('objective') + ':</strong> ' + (soaps[i].objective ? soaps[i].objective : 'none') + '<br>' + '<strong>' + i18n('assessment') + ':</strong> ' + (soaps[i].assessment ? soaps[i].assessment : 'none') + '<br>' + '<strong>' + i18n('plan') + ':</strong> ' + (soaps[i].plan ? soaps[i].plan : 'none')
                 }))
             }
@@ -1430,7 +1335,6 @@ Ext.define('App.view.patient.Encounter', {
                 });
             });
         }
-        if(me.newEncounterWindow) me.getFormItems(me.newEncounterWindow.down('form'), 5);
     },
 
     getButtonsToDisable:function(){

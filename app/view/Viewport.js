@@ -135,11 +135,24 @@ Ext.define('App.view.Viewport', {
             margin: 0,
             scope: me,
             handler: me.openPatientSummary,
+            tooltip: i18n('patient_btn_drag'),
             listeners: {
                 scope: me,
                 afterrender: me.patientBtnRender
             },
             tpl: me.patientBtnTpl()
+        });
+        me.patientSummaryBtn = me.Header.add({
+            xtype: 'button',
+            scale: 'large',
+            style: 'float:left',
+            margin: '0 0 0 3',
+            cls: 'headerLargeBtn',
+            padding: 0,
+            iconCls: 'icoPatientInfo',
+            scope: me,
+            handler: me.openPatientSummary,
+            tooltip: i18n('patient_summary')
         });
         me.patientOpenVisitsBtn = me.Header.add({
             xtype: 'button',
@@ -151,7 +164,7 @@ Ext.define('App.view.Viewport', {
             iconCls: 'icoBackClock',
             scope: me,
             handler: me.openPatientVisits,
-            tooltip: i18n('open_patient_visits_history')
+            tooltip: i18n('patient_visits_history')
         });
         if(acl['add_encounters']){
             me.patientCreateEncounterBtn = me.Header.add({
@@ -164,7 +177,7 @@ Ext.define('App.view.Viewport', {
                 iconCls: 'icoClock',
                 scope: me,
                 handler: me.createNewEncounter,
-                tooltip: i18n('create_new_encounter')
+                tooltip: i18n('new_encounter')
             });
         }
         me.patientCloseCurrEncounterBtn = me.Header.add({
@@ -177,7 +190,7 @@ Ext.define('App.view.Viewport', {
             iconCls: 'icoArrowDown',
             scope: me,
             handler: me.stowPatientRecord,
-            tooltip: i18n('show_patient_record')
+            tooltip: i18n('stow_patient_record')
         });
         me.patientCheckOutBtn = me.Header.add({
             xtype: 'button',
@@ -189,7 +202,7 @@ Ext.define('App.view.Viewport', {
             iconCls: 'icoCheckOut',
             scope: me,
             handler: me.chargePatient,
-            tooltip: i18n('check_out_patient')
+            tooltip: i18n('visit_check_out')
         });
         me.patientChargeBtn = me.Header.add({
             xtype: 'button',
@@ -289,7 +302,7 @@ Ext.define('App.view.Viewport', {
             cls: 'headerLargeBtn',
             padding: 0,
             itemId: 'patientCheckIn',
-            iconCls: 'icoLog',
+            iconCls: 'icoCheckIn',
             scope: me,
             handler: me.onPatientLog,
             tooltip: i18n('arrival_log')
@@ -812,6 +825,7 @@ Ext.define('App.view.Viewport', {
                         });
                     me.patientBtn.addCls(data.patient.priority);
                     me.patientBtn.enable();
+                    if(me.patientSummaryBtn) me.patientSummaryBtn.enable();
                     if(me.patientOpenVisitsBtn) me.patientOpenVisitsBtn.enable();
                     if(me.patientCreateEncounterBtn) me.patientCreateEncounterBtn.enable();
                     if(me.patientCloseCurrEncounterBtn) me.patientCloseCurrEncounterBtn.enable();
@@ -841,6 +855,7 @@ Ext.define('App.view.Viewport', {
                 callback(true);
             }else{
                 if(me.patientCreateEncounterBtn) me.patientCreateEncounterBtn.disable();
+                if(me.patientSummaryBtn) me.patientSummaryBtn.disable();
                 if(me.patientOpenVisitsBtn) me.patientOpenVisitsBtn.disable();
                 if(me.patientCloseCurrEncounterBtn) me.patientCloseCurrEncounterBtn.disable();
                 if(me.patientChargeBtn) me.patientChargeBtn.disable();
@@ -986,28 +1001,36 @@ Ext.define('App.view.Viewport', {
         panel.dragZone = Ext.create('Ext.dd.DragZone', panel.getEl(), {
             ddGroup: 'patientPoolAreas',
             getDragData: function(){
-                var sourceEl = app.patientBtn.el.dom, d;
-                if(app.currCardCmp != app.ppdz){
-                    app.MainPanel.getLayout().setActiveItem(app.ppdz);
-                }
-                app.navColumn.down('treepanel').getSelectionModel().deselectAll();
-                if(sourceEl){
-                    d = sourceEl.cloneNode(true);
-                    d.id = Ext.id();
-                    return panel.dragData = {
-                        copy: true,
-                        sourceEl: sourceEl,
-                        repairXY: Ext.fly(sourceEl).getXY(),
-                        ddel: d,
-                        records: [panel.data],
-                        patient: true
-                    };
+                if(app.patient.pid){
+                    var sourceEl = app.patientBtn.el.dom, d;
+//                    if(app.currCardCmp != app.ppdz){
+//                        app.MainPanel.getLayout().setActiveItem(app.ppdz);
+//                    }
+                    app.navColumn.down('treepanel').getSelectionModel().deselectAll();
+                    if(sourceEl){
+                        d = sourceEl.cloneNode(true);
+                        d.id = Ext.id();
+                        return panel.dragData = {
+                            copy: true,
+                            sourceEl: sourceEl,
+                            repairXY: Ext.fly(sourceEl).getXY(),
+                            ddel: d,
+                            records: [panel.data],
+                            patient: true
+                        };
+                    }
+                    return false;
                 }
                 return false;
             },
             getRepairXY: function(){
                 app.goBack();
                 return this.dragData.repairXY;
+            },
+            onStartDrag:function(){
+                if(app.currCardCmp != app.ppdz){
+                    app.MainPanel.getLayout().setActiveItem(app.ppdz);
+                }
             }
         });
     },

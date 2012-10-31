@@ -662,13 +662,6 @@ Ext.define('App.view.administration.Documents',
 		me.callParent();
 	},
 	/**
-	 * if the form is valid send the POST request
-	 */
-	onSave : function()
-	{
-
-	},
-	/**
 	 * Delete logic
 	 */
 	onDelete : function()

@@ -1226,7 +1226,7 @@ Ext.define('App.view.administration.Globals',
 						handler : function()
 						{
 							var form = me.globalFormPanel.getForm();
-							me.onSave(form, me.store);
+							me.onGloblasSave(form, me.store);
 						}
 					}]
 				}]
@@ -1235,7 +1235,7 @@ Ext.define('App.view.administration.Globals',
 		me.pageBody = [me.globalFormPanel];
 		me.callParent(arguments);
 	}, // end of initComponent
-	onSave : function(form, store)
+	onGloblasSave : function(form, store)
 	{
 		var record = form.getRecord(), values = form.getValues();
 		Globals.updateGlobals(values, function()

@@ -559,7 +559,7 @@ Ext.define('App.view.Viewport', {
                         },
                         '-',
                         {
-                            text: '<span style="color: red">'+i18n('RESET TO FACTORY')+'</span>',
+                            text: '<span style="color: red">'+i18n('FACTORY RESET')+'</span>',
                             scope: me,
                             handler: me.resetApp
                         }

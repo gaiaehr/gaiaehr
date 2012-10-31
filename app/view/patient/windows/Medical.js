@@ -1627,6 +1627,7 @@ Ext.define('App.view.patient.windows.Medical', {
             data = options.update[0].data;
             data.updated_uid = app.user.id;
         }else if(options.create){
+
         }
     },
     cardSwitch:function(btn){

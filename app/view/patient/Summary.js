@@ -351,7 +351,7 @@ Ext.define('App.view.patient.Summary', {
         }
         if(acl['access_patient_reminders']){
             me.stores.push(me.patientRemindersStore = Ext.create('App.store.patient.Reminders', {
-                autoSync: true
+                autoSync: false
             }));
             me.tabPanel.add({
                 title: i18n('reminders'),

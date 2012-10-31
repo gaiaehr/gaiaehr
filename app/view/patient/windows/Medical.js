@@ -33,21 +33,21 @@ Ext.define('App.view.patient.windows.Medical', {
                 scope:me,
                 beforesync:me.setDefaults
             },
-            autoSync:true
+            autoSync:false
         });
         me.patientAllergiesListStore = Ext.create('App.store.patient.Allergies', {
             listeners:{
                 scope:me,
                 beforesync:me.setDefaults
             },
-            autoSync:true
+            autoSync:false
         });
         me.patientMedicalIssuesStore = Ext.create('App.store.patient.MedicalIssues', {
             listeners:{
                 scope:me,
                 beforesync:me.setDefaults
             },
-            autoSync:true
+            autoSync:false
         });
         me.patientSurgeryStore = Ext.create('App.store.patient.Surgery', {
 
@@ -55,21 +55,21 @@ Ext.define('App.view.patient.windows.Medical', {
                     scope:me,
                     beforesync:me.setDefaults
                 },
-                autoSync:true
+                autoSync:false
             });
         me.patientDentalStore = Ext.create('App.store.patient.Dental', {
             listeners:{
                 scope:me,
                 beforesync:me.setDefaults
             },
-            autoSync:true
+            autoSync:false
         });
         me.patientMedicationsStore = Ext.create('App.store.patient.Medications', {
             listeners:{
                 scope:me,
                 beforesync:me.setDefaults
             },
-            autoSync:true
+            autoSync:false
         });
         me.labPanelsStore = Ext.create('App.store.patient.LaboratoryTypes', {
                 autoSync:true

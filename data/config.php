@@ -634,29 +634,68 @@ $API = array(
 	/**
 	 * Pool Area Functions
 	 */
-	'PoolArea' => array('methods' => array(
-			'getPatientsArrivalLog' => array('len' => 1),
-			'addPatientArrivalLog' => array('len' => 1),
-			'updatePatientArrivalLog' => array('len' => 1),
-			'removePatientArrivalLog' => array('len' => 1),
-			'getPoolAreaPatients' => array('len' => 1),
-			'sendPatientToPoolArea' => array('len' => 1),
-			'getActivePoolAreas' => array('len' => 0),
-			'getPatientsByPoolAreaAccess' => array('len' => 1)
-		)),
+	'PoolArea' => array(
+		'methods' => array(
+			'getPatientsArrivalLog' => array(
+				'len' => 1
+			),
+			'addPatientArrivalLog' => array(
+				'len' => 1
+			),
+			'updatePatientArrivalLog' => array(
+				'len' => 1
+			),
+			'removePatientArrivalLog' => array(
+				'len' => 1
+			),
+			'getPoolAreaPatients' => array(
+				'len' => 1
+			),
+			'sendPatientToPoolArea' => array(
+				'len' => 1
+			),
+			'getActivePoolAreas' => array(
+				'len' => 0
+			),
+			'getPatientsByPoolAreaAccess' => array(
+				'len' => 1
+			)
+		)
+	),
 	/**
 	 * Form layout Builder Functions
 	 */
-	'FormLayoutBuilder' => array('methods' => array(
-			'getFormDataTable' => array('len' => 1),
-			'addField' => array('len' => 1),
-			'updateField' => array('len' => 1),
-			'deleteField' => array('len' => 1),
-			'sortFields' => array('len' => 1),
-			'getForms' => array('len' => 0),
-			'getParentFields' => array('len' => 1),
-			'getFormFieldsTree' => array('len' => 1)
-		)),
+	'FormLayoutBuilder' => array(
+		'methods' => array(
+			'getFormDataTable' => array(
+				'len' => 1
+			),
+			'addField' => array(
+				'len' => 1
+			),
+			'updateField' => array(
+				'len' => 1
+			),
+			'deleteField' => array(
+				'len' => 1
+			),
+			'sortFields' => array(
+				'len' => 1
+			),
+			'getForms' => array(
+				'len' => 0
+			),
+			'getParentFields' => array(
+				'len' => 1
+			),
+			'getFormFieldsTree' => array(
+				'len' => 1
+			),
+			'updateFormFieldsTree' => array(
+				'len' => 1
+			)
+		)
+	),
 	/**
 	 * Form layout Builder Functions
 	 */

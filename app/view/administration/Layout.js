@@ -32,149 +32,52 @@ Ext.define('App.view.administration.Layout', {
         Ext.define('layoutTreeModel', {
             extend: 'Ext.data.Model',
             fields: [
-                {
-                    name: 'id',
-                    type: 'string'
-                },
-                {
-                    name: 'text',
-                    type: 'string'
-                },
-                {
-                    name: 'pos',
-                    type: 'string'
-                },
-                {
-                    name: 'xtype',
-                    type: 'string'
-                },
-                {
-                    name: 'form_id',
-                    type: 'string'
-                },
-                {
-                    name: 'item_of',
-                    type: 'string'
-                },
-                {
-                    name: 'title',
-                    type: 'string'
-                },
-                {
-                    name: 'fieldLabel',
-                    type: 'string'
-                },
-                {
-                    name: 'emptyText',
-                    type: 'string'
-                },
-                {
-                    name: 'labelWidth',
-                    type: 'string'
-                },
-                {
-                    name: 'hideLabel',
-                    type: 'string'
-                },
-                {
-                    name: 'layout',
-                    type: 'string'
-                },
-                {
-                    name: 'width',
-                    type: 'string'
-                },
-                {
-                    name: 'height',
-                    type: 'string'
-                },
-                {
-                    name: 'anchor',
-                    type: 'string'
-                },
-                {
-                    name: 'margin',
-                    type: 'string'
-                },
-                {
-                    name: 'flex',
-                    type: 'string'
-                },
-                {
-                    name: 'collapsible',
-                    type: 'string'
-                },
-                {
-                    name: 'checkboxToggle',
-                    type: 'string'
-                },
-                {
-                    name: 'collapsed',
-                    type: 'string'
-                },
-                {
-                    name: 'inputValue',
-                    type: 'string'
-                },
-                {
-                    name: 'allowBlank',
-                    type: 'string'
-                },
-                {
-                    name: 'value',
-                    type: 'string'
-                },
-                {
-                    name: 'maxValue',
-                    type: 'string'
-                },
-                {
-                    name: 'minValue',
-                    type: 'string'
-                },
-                {
-                    name: 'boxLabel',
-                    type: 'string'
-                },
-                {
-                    name: 'grow',
-                    type: 'string'
-                },
-                {
-                    name: 'growMin',
-                    type: 'string'
-                },
-                {
-                    name: 'growMax',
-                    type: 'string'
-                },
-                {
-                    name: 'increment',
-                    type: 'string'
-                },
-                {
-                    name: 'name',
-                    type: 'string'
-                },
-                {
-                    name: 'list_id',
-                    type: 'string'
-                }
+                { name: 'id', type: 'string' },
+                { name: 'text', type: 'string' },
+                { name: 'pos', type: 'string' },
+                { name: 'xtype', type: 'string' },
+                { name: 'form_id', type: 'string' },
+                { name: 'title', type: 'string' },
+                { name: 'fieldLabel', type: 'string' },
+                { name: 'emptyText', type: 'string' },
+                { name: 'labelWidth', type: 'string' },
+                { name: 'hideLabel', type: 'string' },
+                { name: 'layout', type: 'string' },
+                { name: 'width', type: 'string' },
+                { name: 'height', type: 'string' },
+                { name: 'anchor', type: 'string' },
+                { name: 'margin', type: 'string' },
+                { name: 'flex', type: 'string' },
+                { name: 'collapsible', type: 'string' },
+                { name: 'checkboxToggle', type: 'string' },
+                { name: 'collapsed', type: 'string' },
+                { name: 'inputValue', type: 'string' },
+                { name: 'allowBlank', type: 'string' },
+                { name: 'value', type: 'string' },
+                { name: 'maxValue', type: 'string' },
+                { name: 'minValue', type: 'string' },
+                { name: 'boxLabel', type: 'string' },
+                { name: 'grow', type: 'string' },
+                { name: 'growMin', type: 'string' },
+                { name: 'growMax', type: 'string' },
+                { name: 'increment', type: 'string' },
+                { name: 'name', type: 'string' },
+                { name: 'list_id', type: 'string' },
+                { name: 'sort', type: 'auto' }
             ],
-            idProperty: 'id'
+            proxy: {
+                type: 'direct',
+                api: {
+                    read: FormLayoutBuilder.getFormFieldsTree,
+                    update: FormLayoutBuilder.updateFormFieldsTree
+                }
+            }
         });
         /**
          * form fields list (center grid)
          */
         me.fieldsGridStore = Ext.create('Ext.data.TreeStore', {
             model: 'layoutTreeModel',
-            //clearOnLoad: true,
-            proxy: {
-                type: 'direct',
-                api: {
-                    read: FormLayoutBuilder.getFormFieldsTree
-                }
-            },
             folderSort: false,
             autoLoad: false
         });
@@ -184,18 +87,9 @@ Ext.define('App.view.administration.Layout', {
         Ext.define('XtypesComboModel', {
             extend: 'Ext.data.Model',
             fields: [
-                {
-                    name: 'id',
-                    type: 'string'
-                },
-                {
-                    name: 'name',
-                    type: 'string'
-                },
-                {
-                    name: 'value',
-                    type: 'string'
-                }
+                { name: 'id', type: 'string' },
+                { name: 'name', type: 'string' },
+                { name: 'value', type: 'string' }
             ],
             proxy: {
                 type: 'direct',
@@ -214,14 +108,8 @@ Ext.define('App.view.administration.Layout', {
         Ext.define('FormsListModel', {
             extend: 'Ext.data.Model',
             fields: [
-                {
-                    name: 'id',
-                    type: 'string'
-                },
-                {
-                    name: 'name',
-                    type: 'string'
-                }
+                { name: 'id', type: 'string' },
+                { name: 'name', type: 'string' }
             ],
             proxy: {
                 type: 'direct',
@@ -241,14 +129,8 @@ Ext.define('App.view.administration.Layout', {
         Ext.define('ParentFieldsModel', {
             extend: 'Ext.data.Model',
             fields: [
-                {
-                    name: 'name',
-                    type: 'string'
-                },
-                {
-                    name: 'value',
-                    type: 'string'
-                }
+                { name: 'name', type: 'string' },
+                { name: 'value', type: 'string' }
             ],
             proxy: {
                 type: 'direct',
@@ -268,14 +150,8 @@ Ext.define('App.view.administration.Layout', {
         Ext.define('formlistoptionsModel', {
             extend: 'Ext.data.Model',
             fields: [
-                {
-                    name: 'option_name',
-                    type: 'string'
-                },
-                {
-                    name: 'option_value',
-                    type: 'string'
-                }
+                { name: 'option_name', type: 'string' },
+                { name: 'option_value', type: 'string' }
             ]
 
         });
@@ -373,7 +249,7 @@ Ext.define('App.view.administration.Layout', {
                 {
                     fieldLabel: i18n('child_of'),
                     xtype: 'combo',
-                    name: 'item_of',
+                    name: 'parentId',
                     displayField: 'name',
                     valueField: 'value',
                     editable: false,
@@ -796,9 +672,9 @@ Ext.define('App.view.administration.Layout', {
     onFieldSave: function(){
         var me = this, form = me.fieldForm.getForm();
         if(form.isValid()){
-            var params = form.getValues();
+            var values = form.getValues();
             if(form.findField('id').getValue() == ''){
-                FormLayoutBuilder.addField(params, function(provider, response){
+                FormLayoutBuilder.addField(values, function(provider, response){
                     if(response.result.success){
                         me.loadFieldsGrid();
                     }else{
@@ -806,13 +682,24 @@ Ext.define('App.view.administration.Layout', {
                     }
                 });
             }else{
-                FormLayoutBuilder.updateField(params, function(provider, response){
-                    if(response.result.success){
-                        me.loadFieldsGrid();
-                    }else{
-                        Ext.Msg.alert('Opps!', response.result.error);
+                var rec = form.getRecord();
+                rec.set(values);
+                me.fieldsGridStore.sync({
+                    success:function(){
+                        me.previewFormRender();
+                        me.msg('Sweet!', 'Field Updated');
+                    },
+                    failure:function(){
+                        me.msg('Oops!', 'Something went wrong', true);
                     }
                 });
+//                FormLayoutBuilder.updateField(values, function(provider, response){
+//                    if(response.result.success){
+//                        me.loadFieldsGrid();
+//                    }else{
+//                        Ext.Msg.alert('Opps!', response.result.error);
+//                    }
+//                });
             }
         }
     },
@@ -856,24 +743,44 @@ Ext.define('App.view.administration.Layout', {
      * @param overModel
      */
     onDragDrop: function(node, data, overModel){
-        var me = this, childItems = [];
+        var me = this, childItems = [], pos = 10;
+
+
         for(var i = 0; i < overModel.parentNode.childNodes.length; i++){
-            childItems.push(overModel.parentNode.childNodes[i].data.id);
+            overModel.parentNode.childNodes[i].set({pos:pos});
+            pos = pos + 10;
+
         }
-        var params = {
-            id: data.records[0].data.id,
-            parentNode: overModel.parentNode.data.id,
-            parentNodeChilds: childItems
-        };
-        FormLayoutBuilder.sortFields(params, function(provider, response){
-            if(response.result.success){
-                me.msg('Sweet!', i18n('form_fields_sorted'));
-                me.loadFieldsGrid();
-                me.onFormReset();
-            }else{
-                Ext.Msg.alert('Opps!', response.result.error);
+//        var params = {
+//            id: data.records[0].data.id,
+//            parentNode: overModel.parentNode.data.id,
+//            parentNodeChilds: childItems
+//        };
+
+        data.records[0].sort = childItems;
+        me.fieldsGridStore.sync({
+            success:function(){
+                me.previewFormRender();
+                me.msg('Sweet!', 'Field Updated');
+            },
+            failure:function(){
+                me.msg('Oops!', 'Something went wrong', true);
             }
         });
+        say(me.fieldsGridStore);
+        say(data.records[0]);
+
+        //say(data.records[0].save());
+
+//        FormLayoutBuilder.sortFields(params, function(provider, response){
+//            if(response.result.success){
+//                me.msg('Sweet!', i18n('form_fields_sorted'));
+//                me.loadFieldsGrid();
+//                me.onFormReset();
+//            }else{
+//                Ext.Msg.alert('Opps!', response.result.error);
+//            }
+//        });
     },
     /**
      * This is to reset the Form and load
@@ -891,7 +798,7 @@ Ext.define('App.view.administration.Layout', {
     },
     /**
      *
-     * load a new model with the form_id and item_of values.
+     * load a new model with the form_id and parentId values.
      * This is the easy way to add a child to a fieldset or fieldcontainer.
      */
     onAddChild: function(){
@@ -900,7 +807,7 @@ Ext.define('App.view.administration.Layout', {
         form.reset();
         var model = Ext.ModelManager.getModel('layoutTreeModel'), newModel = Ext.ModelManager.create({
                 form_id: this.currForm,
-                item_of: this.currField
+                parentId: this.currField
             }, model);
         formPanel.el.unmask();
         form.loadRecord(newModel);
@@ -1025,7 +932,7 @@ Ext.define('App.view.administration.Layout', {
 
         var items;
         if(value == 'fieldset'){
-            items = ['title', 'collapsible', 'collapsed', 'checkboxToggle', 'margin', 'columnWidth'];
+            items = ['title', 'collapsible', 'collapsed', 'checkboxToggle', 'margin', 'columnWidth', 'layout'];
         }else if(value == 'fieldcontainer'){
             items = ['fieldLabel', 'labelWidth', 'hideLabel', 'width', 'layout', 'margin', 'columnWidth'];
         }else if(value == 'combobox'){

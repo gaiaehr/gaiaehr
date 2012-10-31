@@ -74,7 +74,7 @@ class FormLayoutEngine
                     LEFT JOIN forms_layout AS fl
                            ON ff.form_id = fl.id
                         WHERE (fl.name = '$params->formToRender' OR fl.id = '$params->formToRender')
-                          AND (ff.item_of IS NULL OR ff.item_of = '0')
+                          AND (ff.parentId IS NULL OR ff.parentId = '0')
                      ORDER BY pos ASC, ff.id ASC");
 		/**
 		 * for each parent item lets get all the options and children items
@@ -124,7 +124,7 @@ class FormLayoutEngine
 			/**
 			 * unset the stuff that are not properties
 			 */
-			unset($item['id'], $item['form_id'], $item['item_of'], $item['pos']);
+			unset($item['id'], $item['form_id'], $item['parentId'], $item['pos']);
 
 			/**
 			 * push this item into the $items Array
@@ -219,7 +219,7 @@ class FormLayoutEngine
 	function getChildItems($parent)
 	{
 		$items = array();
-		$this->db->setSQL("Select * FROM forms_fields WHERE item_of = '$parent' ORDER BY pos ASC");
+		$this->db->setSQL("Select * FROM forms_fields WHERE parentId = '$parent' ORDER BY pos ASC");
 		foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) as $item) {
 			$opts = $this->getItemsOptions($item['id']);
 			foreach($opts as $opt => $val) {
@@ -241,7 +241,7 @@ class FormLayoutEngine
 			 */
 			$item['items'] = $this->getChildItems($item['id']);
 			if($item['items'] == null) unset($item['items']);
-			unset($item['id'], $item['form_id'], $item['item_of'], $item['pos']);
+			unset($item['id'], $item['form_id'], $item['parentId'], $item['pos']);
 			array_push($items, $item);
 		}
 		return $items;

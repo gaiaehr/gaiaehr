@@ -86,7 +86,7 @@ class Emergency
 
 	public function createNewEmergency()
 	{
-		$patient = $this->patient->createNewPatientOnlyName('EMERGENCY');
+		$patient = $this->patient->createNewPatientOnlyName('EMER');
 		if($patient['success']){
 			$this->pid = $patient['patient']['pid'];
 			/**
@@ -115,12 +115,12 @@ class Emergency
 			/*
 			 * update patient first name to EMERGENCY- encounter id
 			 */
-			$data['fname'] = 'EMERGENCY-' . $this->emergencyId;
+			$data['fname'] = 'EMER-' . $this->emergencyId;
 			$this->db->setSQL($this->db->sqlBind($data, 'patient_demographics', 'U', array('pid' => $this->pid)));
 			$this->db->execOnly();
 			return array(
 				'success' => true, 'emergency' => array(
-					'pid' => $this->pid, 'eid' => $this->eid, 'name' => 'EMERGENCY-' . $this->emergencyId, 'priority' => $params->priority
+					'pid' => $this->pid, 'eid' => $this->eid, 'name' => 'EMER-' . $this->emergencyId, 'priority' => $params->priority
 				)
 			);
 		} else {

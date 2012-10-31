@@ -30,18 +30,21 @@ Ext.define('App.view.patient.NewPatient', {
 			bodyStyle    : 'padding: 5px',
 			layout       : 'anchor',
 			fieldDefaults: { msgTarget: 'side' },
-			dockedItems  : {
-				xtype: 'toolbar',
-				dock : 'top',
-				items: [
-					{
-						text   : i18n('create_new_patient'),
-						iconCls: 'save',
-						scope  : me,
-						handler: me.onSave
-					}
-				]
-			}
+			buttons: [
+                {
+                    text   : i18n('reset'),
+                    handler: function(){
+                        me.form.getForm().reset();
+                    }
+                },
+                {
+                    text   : i18n('save'),
+                    iconCls: 'save',
+                    scope  : me,
+                    handler: me.onNewPatientSave
+                }
+            ]
+
 		});
 		me.pageBody = [ me.form ];
 
@@ -52,44 +55,27 @@ Ext.define('App.view.patient.NewPatient', {
 		me.callParent(arguments);
 	},
 
-	onSave: function() {
-		var me = this, form, values, date;
-
-		date = me.form.add({
-			xtype : 'textfield',
-			name  : 'date_created',
-			hidden: true,
-			value : Ext.Date.format(new Date(), 'Y-m-d H:i:s')
-		});
-
-        form = me.form.getForm();
-        values = form.getFieldValues();
+	onNewPatientSave: function() {
+		var me = this,
+            form = me.form.getForm(),
+            values = form.getFieldValues();
 
 		if(form.isValid()) {
-
+            values.date_created = Ext.Date.format(new Date(), 'Y-m-d H:i:s');
             Patient.createNewPatient(values, function(provider, response){
-
-                /** @namespace action.result.patient.pid */
-                /** @namespace action.result.patient.fullname */
-
-                var pid = response.result.patient.pid,
-                    fullname = response.result.patient.fullname;
-
                 if(response.result.success){
-                    me.msg('Sweet!', i18n('patient') + ' "' + fullname + '" ' + i18n('created') + '... ');
-                    app.setPatient(pid, fullname, function(success) {
+                    me.msg('Sweet!', i18n('patient') + ' "' + response.result.patient.fullname + '" ' + i18n('created') + '... ');
+                    app.setPatient(response.result.patient.pid, null, function(success) {
                         if(success) {
+                            form.reset();
                             app.openPatientSummary();
                         }
                     });
                 }else{
-                    Ext.Msg.alert('Opps!', i18n('something_went_wrong_saving_the_patient'));
+                    me.msg('Oops!', i18n('something_went_wrong_saving_the_patient'), true);
                 }
-
             });
 		}
-
-        me.form.remove(date);
 	},
 
 	confirmationWin: function(callback) {
@@ -120,7 +106,6 @@ Ext.define('App.view.patient.NewPatient', {
     copyData:function(combo, records){
         var form = combo.up('form').getForm();
         if(combo.value == 'self'){
-
             var values = form.getValues(),
                 patientData = {
                     primary_subscriber_title:values.title,
@@ -151,8 +136,10 @@ Ext.define('App.view.patient.NewPatient', {
 	 * to call every this panel becomes active
 	 */
 	onActive: function(callback) {
+        var me = this;
 		this.confirmationWin(function(btn) {
 			if(btn == 'yes') {
+                //me.form.getForm().reset();
 				app.unsetPatient();
 				callback(true);
 			} else {

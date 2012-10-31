@@ -476,8 +476,13 @@ Ext.define('App.ux.grid.RowFormEditor', {
         if (!form.isValid()) {
             return;
         }
-        me.syncChildStoresChanges();
         form.updateRecord(me.context.record);
+        form._record.store.sync({
+            callback:function(){
+                me.fireEvent('sync', me, me.context);
+            }
+        });
+        me.syncChildStoresChanges();
         me.hide();
         return true;
     },

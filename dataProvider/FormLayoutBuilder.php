@@ -95,9 +95,9 @@ class FormLayoutBuilder {
             $field['form_id']   = $data['form_id'];
             $field['xtype']     = $data['xtype'];
 
-            if(isset($data['item_of'])){
-                $field['item_of'] = $data['item_of'];
-                unset($data['item_of']);
+            if(isset($data['parentId'])){
+	            $field['parentId']  = (is_numeric($data['parentId']) ? intval($data['parentId']) : null);
+                unset($data['parentId']);
             }
 
             unset($data['form_id'],$data['xtype']);
@@ -114,7 +114,7 @@ class FormLayoutBuilder {
              * take each option and insert it in the forms_field_options
              * table using $field_id
              */
-            $this->insertOptions($data, $field_id);
+            $this->setFieldOptions($data, $field_id, true);
 
             return array('success' => true);
         }
@@ -138,6 +138,8 @@ class FormLayoutBuilder {
          * set it to true, and "off" set it to false
          */
         $data = $this->sanitizedData($data);
+
+	    //print_r($data);
         /**
          * if not xtype fieldcontainer and fieldset the add some
          * default values.
@@ -148,45 +150,28 @@ class FormLayoutBuilder {
          * things from the $data array.
          *
          * The $field array is use to update the forms_fields
-         * table. with the new xtype, form_id, item_of.
+         * table. with the new xtype, form_id, parentId.
          *
          * The $data array is use later to update the forms_field_options
          * table.
          */
         $field              = array();
-        $id                 = $data['id'];
+	    $field['xtype']     = $data['xtype'];
         $field['form_id']   = intval($data['form_id']);
-        $field['xtype']     = $data['xtype'];
-        /**
-         * if item_of is not empty add it the the $field array
-         * and remove it from the $data array
-         */
-        if(isset($data['item_of'])){
-            $field['item_of'] = intval($data['item_of']);
-            unset($data['item_of']);
-        }
-
-        unset($data['form_id'],$data['xtype'],$data['id']);
+        $field['parentId']  = (is_numeric($data['parentId']) ? intval($data['parentId']) : null);
+        $field['pos']       = intval($data['pos']);
         /**
          * Exec the new field sql statement and store the its ID
          * in $field_id to then store its options
          */
-	    //return $field;
-        $this->db->setSQL($this->db->sqlBind($field, "forms_fields", "U", "id='$id'"));
-        $ret = $this->db->execLog();
-        //$this->checkError($ret);
-        /**
-         * delete old field options
-         */
-//        $this->db->setSQL("DELETE FROM forms_field_options WHERE field_id='$id'");
-//        $ret = $this->db->execOnly();
-//        $this->checkError($ret);
+        $this->db->setSQL($this->db->sqlBind($field, 'forms_fields', 'U', array('id' => $params->id)));
+        $this->db->execLog();
         /**
          * take the remaining $data array and insert it in the
          * forms_field_options table one by one.
          */
-        $this->insertOptions($data, $id);
-
+	    unset($data['id'],$data['xtype'],$data['form_id'],$data['parentId'],$data['pos'],$data['leaf']);
+        $this->setFieldOptions($data, $params->id);
         return array('success' => true);
     }
 
@@ -260,6 +245,17 @@ class FormLayoutBuilder {
         return array('success' => true);
     }
 
+	public function updateFormFieldsTree($params){
+		if(is_array($params)){
+			foreach($params as $field){
+				$this->updateField($field);
+			}
+		}else{
+			$this->updateField($params);
+		}
+		return $params;
+	}
+
     /**
      * This function sorts the fields when the drag and drop is use and
      * print success if no error found along the way.
@@ -277,10 +273,10 @@ class FormLayoutBuilder {
         $parentItem = $data['parentNode'];
         $childItems = $data['parentNodeChilds'];
         /**
-         * set the field item_of to the parent id and run the sql to
-         * update the item item_of column
+         * set the field parentId to the parent id and run the sql to
+         * update the item parentId column
          */
-        $field['item_of'] = $parentItem;
+        $field['parentId'] = $parentItem;
         $sql = $this->db->sqlBind($field, "forms_fields", "U", "id='$item'");
         $this->db->setSQL($sql);
         $ret = $this->db->execOnly();
@@ -349,31 +345,24 @@ class FormLayoutBuilder {
         return;
     }
 
-    /**
-     * @param $data
-     * @param $id
-     * @return mixed
-     */
-    private function insertOptions($data , $id){
-
-            $json = json_encode($data, JSON_NUMERIC_CHECK);
-            $options = array('field_id' => $id, 'options' => $json);
-
-            $sql = ("SELECT count(*) FROM forms_field_options WHERE field_id = '$id'");
-            $this->db->setSQL($sql);
-            $field = $this->db->fetchRecord();
-
-            if($field['count(*)'] == 0){
-                $sql = $this->db->sqlBind($options, "forms_field_options", "I");
-            }else{
-                $sql = $this->db->sqlBind($options, "forms_field_options", "U", "field_id ='".$id."'" );
-            }
-
-            $this->db->setSQL($sql);
-            $ret = $this->db->execOnly();
-            $this->checkError($ret);
-
-        return;
+	/**
+	 * @param $data
+	 * @param $id
+	 * @param $new
+	 * @return mixed
+	 */
+    private function setFieldOptions($data , $id, $new = false){
+        $json = json_encode($data, JSON_NUMERIC_CHECK);
+        if($new){
+	        $options = array('field_id' => $id, 'options' => $json);
+            $sql = $this->db->sqlBind($options, 'forms_field_options', 'I');
+        }else{
+	        $options = array('options' => $json);
+            $sql = $this->db->sqlBind($options, 'forms_field_options', 'U', array('field_id' => $id));
+        }
+        $this->db->setSQL($sql);
+        $this->db->execOnly();
+    return;
     }
     /**
      * @param $data
@@ -419,7 +408,7 @@ class FormLayoutBuilder {
      * @return bool
      */
     private function fieldHasChild($id){
-        $this->db->setSQL("SELECT id FROM forms_fields WHERE item_of ='$id'");
+        $this->db->setSQL("SELECT id FROM forms_fields WHERE parentId ='$id'");
         $this->db->fetchRecords(PDO::FETCH_ASSOC);
         $count = $this->db->rowCount();
         if($count >= 1 ) {
@@ -553,7 +542,7 @@ class FormLayoutBuilder {
     public function getFormFieldsTree(stdClass $params){
         $fields = array();
         if(isset($params->currForm)){
-            $this->db->setSQL("Select * FROM forms_fields WHERE form_id = '$params->currForm' AND (item_of IS NULL OR item_of = '0') ORDER BY pos ASC, id ASC");
+            $this->db->setSQL("Select * FROM forms_fields WHERE form_id = '$params->currForm' AND (parentId IS NULL OR parentId = '0') ORDER BY pos ASC, id ASC");
             $results = $this->db->fetchRecords(PDO::FETCH_ASSOC);
             foreach($results as $item){
                 $opts = $this->getItemsOptions($item['id']);
@@ -583,7 +572,7 @@ class FormLayoutBuilder {
      */
     private function getChildItems($parent){
         $items = array();
-        $this->db->setSQL("Select * FROM forms_fields WHERE item_of = '$parent' ORDER BY pos ASC");
+        $this->db->setSQL("Select * FROM forms_fields WHERE parentId = '$parent' ORDER BY pos ASC");
         foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) as $item){
             $opts = $this->getItemsOptions($item['id']);
             foreach($opts as $opt => $val){

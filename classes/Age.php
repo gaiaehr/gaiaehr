@@ -36,9 +36,26 @@ class Age
 		return round($diff / 86400);
 	}
 
+	public static function getAgeMonthDecimalByDobAndTargetDate($dob,$target) {
+		// date format Y-m-d H:i:s
+	    $dateDOB = explode(' ',$dob);
+	    $dateDOB = explode('-', $dateDOB[0]);
+	    $dateTarget = explode(' ',$target);
+	    $dateTarget = explode('-',$dateTarget[0]);
+	    // Collect differences
+	    $iDiffYear  = $dateTarget[0] - $dateDOB[0];
+	    $iDiffMonth = $dateTarget[1] - $dateDOB[1];
+	    $iDiffDay   = $dateTarget[2] - $dateDOB[2];
+	    // If birthday has not happen yet for this year, subtract 1.
+	    if($iDiffMonth < 0 || ($iDiffMonth == 0 && $iDiffDay < 0)) $iDiffYear--;
+	    // Ensure diffYear is not less than 0
+	    if ($iDiffYear < 0) $iDiffYear = 0;
+	    return (12 * $iDiffYear) + $iDiffMonth;
+	}
 }
 
-//print Age::getDaysBetweenDates("2007-03-24", "2009-06-26");
+//print '<pre>';
+//print Age::getAgeMonthDecimalByDobAndTargetDate("2007-03-24 00:00:00", "2009-06-26 00:00:00");
 
 
 

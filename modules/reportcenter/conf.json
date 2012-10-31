@@ -69,6 +69,10 @@
 				"CreateAppointmentsReport":
 				{
 					"len":1
+				},
+				"getAppointmentsList":
+				{
+					"len":1
 				}
 			}
 		},

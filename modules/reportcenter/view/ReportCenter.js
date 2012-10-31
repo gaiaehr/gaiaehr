@@ -486,6 +486,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
             });
 
             me.link10 = me.addReportByCategory(me.visitCategory, i18n('appointments'), function(btn) {
+                if(!me.appointmentsReportStore) me.appointmentsReportStore = Ext.create('Modules.reportcenter.store.Appointment');
                 me.goToReportPanelAndSetPanel({
                     title: i18n('appointments'),
                     items : [
@@ -539,7 +540,47 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
 
                         }
                     ],
-                    fn:Appointments.CreateAppointmentsReport
+                    fn:Appointments.CreateAppointmentsReport,
+                        store:me.appointmentsReportStore,
+                            columns:[
+                                {
+                                    text:'Provider',
+                                    width:200,
+                                    dataIndex:'provider'
+                                },
+                                {
+                                    text:'Patient',
+                                    width:200,
+                                    dataIndex:'fullname'
+                                },
+                                {
+                                    text:'Date',
+                                    dataIndex:'start',
+                                    xtype:'datecolumn',
+                                    format:'Y-m-d'
+                                },
+                                {
+                                    text:'Time',
+                                    dataIndex:'start_time',
+                                    xtype:'datecolumn',
+                                    format:'h:i a'
+                                },
+                                {
+                                    text:'Category',
+                                    dataIndex:'catname',
+                                    width:200
+                                },
+                                {
+                                    text:'Facility',
+                                    dataIndex:'facility',
+                                    width:250
+                                },
+                                {
+                                    text:'Notes',
+                                    dataIndex:'notes',
+                                    flex:1
+                                }
+                            ]
                 });
             });
 

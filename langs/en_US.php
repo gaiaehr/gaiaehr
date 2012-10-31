@@ -1102,6 +1102,7 @@ $LANG = array(
 	'get_pdf'   					        => 'Get PDF',
 	'generate_pdf'   					    => 'Generate PDF',
 	'patient_btn_drag'   				    => 'Click for Summary or Drag to Send Patient to Another Pool Area',
-	'username_exist_alert'   				=> 'Username exist, please try a unique username'
+	'username_exist_alert'   				=> 'Username exist, please try a unique username',
+	'record_saved'   				        => 'Record Saved'
 );
 ?>

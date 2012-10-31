@@ -854,10 +854,11 @@ Ext.define('App.view.patient.Summary', {
         record.store.save({
                 scope: me,
                 callback: function(){
-                    app.setPatient(me.pid, 'toberemove', null);
+                    app.setPatient(me.pid, null);
                     me.getPatientImgs();
                     me.verifyPatientRequiredInfo();
                     me.readOnlyFields(form.getFields());
+                    me.msg('Sweet!', i18n('record_saved'))
                 }
             });
     },

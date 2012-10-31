@@ -234,8 +234,8 @@ Ext.define('App.view.patient.Summary', {
         }
         if(acl['access_patient_disclosures']){
             me.stores.push(me.patientDisclosuresStore = Ext.create('App.store.patient.Disclosures', {
-                    autoSync: true
-                }));
+                autoSync: false
+            }));
             me.tabPanel.add({
                 xtype: 'grid',
                 title: i18n('disclosures'),
@@ -243,14 +243,10 @@ Ext.define('App.view.patient.Summary', {
                 bodyPadding: 0,
                 store: me.patientDisclosuresStore,
                 plugins: Ext.create('Ext.grid.plugin.RowEditing', {
-                        autoCancel: false,
-                        errorSummary: false,
-                        clicksToEdit: 2
-                        //                    listeners   : {
-                        //                        scope     : me,
-                        //                        beforeedit: me.beforeServiceEdit
-                        //                    }
-                    }),
+                    autoCancel: false,
+                    errorSummary: false,
+                    clicksToEdit: 2
+                }),
                 columns: [
                     {
                         xtype: 'datecolumn',
@@ -302,7 +298,7 @@ Ext.define('App.view.patient.Summary', {
         }
         if(acl['access_patient_notes']){
             me.stores.push(me.patientNotesStore = Ext.create('App.store.patient.Notes', {
-                autoSync: true
+                autoSync: false
             }));
             me.tabPanel.add({
                 title: i18n('notes'),
@@ -311,11 +307,11 @@ Ext.define('App.view.patient.Summary', {
                 bodyPadding: 0,
                 store: me.patientNotesStore,
                 plugins: Ext.create('Ext.grid.plugin.RowEditing', {
-                        autoCancel: false,
-                        errorSummary: false,
-                        clicksToEdit: 2
+                    autoCancel: false,
+                    errorSummary: false,
+                    clicksToEdit: 2
 
-                    }),
+                }),
                 columns: [
                     {
                         xtype: 'datecolumn',

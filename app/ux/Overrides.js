@@ -34,15 +34,42 @@
 //	}
 //});
 Ext.override(Ext.form.field.Checkbox, {
-        inputValue: '1',
-        uncheckedValue: '0'
-    });
+    inputValue: '1',
+    uncheckedValue: '0'
+});
 Ext.override(Ext.form.field.Date, {
-        format: 'Y-m-d'
-    });
+    format: 'Y-m-d'
+});
 Ext.override(Ext.grid.Panel, {
-        emptyText: 'Nothing to Display'
-    });
+    emptyText: 'Nothing to Display'
+});
+Ext.override(Ext.grid.plugin.Editing, {
+    cancelEdit: function() {
+        var me = this;
+        me.grid.store.rejectChanges();
+        me.editing = false;
+        me.fireEvent('canceledit', me, me.context);
+    }
+});
+Ext.override(Ext.grid.RowEditor, {
+    completeEdit: function() {
+        var me = this,
+            form = me.getForm();
+
+        if (!form.isValid()) {
+            return;
+        }
+
+        form.updateRecord(me.context.record);
+        form._record.store.sync({
+            callback:function(){
+                me.fireEvent('sync', me, me.context);
+            }
+        });
+        me.hide();
+        return true;
+    }
+});
 Ext.override(Ext.container.Container, {
         setAutoSyncFormEvent: function(field){
             if(field.xtype == 'textfield' || field.xtype == 'textareafield'){

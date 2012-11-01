@@ -67,7 +67,8 @@ Ext.define('App.view.administration.Lists', {
                 api: {
                     read: Lists.getLists,
                     create: Lists.addList,
-                    update: Lists.updateList
+                    update: Lists.updateList,
+                    destroy: Lists.deleteList
                 }
             }
         });
@@ -137,7 +138,7 @@ Ext.define('App.view.administration.Lists', {
             ],
             listeners: {
                 scope: me,
-                selectionchange: me.onListsGridClick
+                select: me.onListsGridClick
             },
             dockedItems: [
                 {
@@ -157,7 +158,7 @@ Ext.define('App.view.administration.Lists', {
                             itemId: 'listDeleteBtn',
                             disabled: true,
                             scope: me,
-                            handler: me.onDelete,
+                            handler: me.onListDelete,
                             tooltip: i18n('can_be_disable')
                         }
                     ]
@@ -260,8 +261,8 @@ Ext.define('App.view.administration.Lists', {
      * @param selected
      */
     onListsGridClick: function(grid, selected){
-        var me = this, deleteBtn = me.listsGrid.down('toolbar').getComponent('listDeleteBtn'), inUse = !!selected[0].data.in_use == '1';
-        me.currList = selected[0].data.id;
+        var me = this, deleteBtn = me.listsGrid.down('toolbar').getComponent('listDeleteBtn'), inUse = !!selected.data.in_use == '1';
+        me.currList = selected.data.id;
         me.optionsStore.load({params:{list_id: me.currList}});
         inUse ? deleteBtn.disable() : deleteBtn.enable();
     },
@@ -310,24 +311,18 @@ Ext.define('App.view.administration.Lists', {
         });
     },
     /**
-     * Row Editting stuff
+     *
      * @param a
      */
-//    afterEdit: function(a){
-//        a.context.store.sync();
-//        //a.context.store.load({params: {list_id: this.currList}});
-//    },
-//    onCancelEdit: function(a){
-//        say(a);
-//        a.context.store.load({
-//                params: {
-//                    list_id: this.currList
-//                }
-//            });
-//    },
-    onDelete: function(a){
-        var me = this, grid = a.up('grid'), store = grid.getStore(), sm = grid.getSelectionModel(), record = sm.getLastSelected();
-        Ext.Msg.show({
+    onListDelete: function(a){
+        var me = this,
+            grid = a.up('grid'),
+            store = grid.getStore(),
+            sm = grid.getSelectionModel(),
+            record = sm.getLastSelected();
+
+        if(!record.data.in_use){
+            Ext.Msg.show({
                 title: i18n('please_confirm') + '...',
                 icon: Ext.MessageBox.QUESTION,
                 msg: i18n('delete_this_record'),
@@ -335,24 +330,24 @@ Ext.define('App.view.administration.Lists', {
                 scope: me,
                 fn: function(btn){
                     if(btn == 'yes'){
-                        Lists.deleteList(record.data, function(provider, response){
-                            if(response.result.success){
-                                me.msg('Sweet!', i18n('list') + ' "' + record.data.title + '" ' + i18n('deleted') + '.');
-                                store.load();
+                        store.remove(record);
+                        store.sync({
+                            success:function(){
+                                me.msg('Sweet!', i18n('record_deleted'));
                                 me.optionsStore.load();
-                            }else{
-                                Ext.Msg.alert('Oops!', i18n('unable_to_delete') + ' "' + record.data.title + '"<br>' + i18n('list_currently_used_forms') + '.');
+                            },
+                            failure:function(){
+                                me.msg('Oops!', i18n('unable_to_delete') + ' "' + record.data.title, true);
                             }
                         });
                     }
                 }
             });
+        }else{
+            Ext.Msg.alert('Oops!', i18n('unable_to_delete') + ' "' + record.data.title + '"<br>' + i18n('list_currently_used_forms') + '.');
+        }
     },
-    loadGrid: function(){
-        var me = this;
-        if(me.currList === null) me.currList = me.listsStore.getAt(0).data.id;
-        me.optionsStore.load({ params:{list_id:me.currList}});
-    },
+
     /**
      * This function is called from Viewport.js when
      * this panel is selected in the navigation panel.
@@ -361,11 +356,8 @@ Ext.define('App.view.administration.Lists', {
      */
     onActive: function(callback){
         var me = this;
-        this.listsStore.load({
-                scope: me,
-                callback: me.loadGrid
-            });
-        //this.loadGrid();
+        this.listsStore.load();
+        this.optionsStore.load();
         callback(true);
     }
 });

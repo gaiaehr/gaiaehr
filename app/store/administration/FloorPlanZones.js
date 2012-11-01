@@ -28,7 +28,8 @@ Ext.define('App.store.administration.FloorPlanZones',
 		{
 			read : FloorPlans.getFloorPlanZones,
 			create : FloorPlans.createFloorPlanZone,
-			update : FloorPlans.updateFloorPlanZone
+			update : FloorPlans.updateFloorPlanZone,
+			destroy : FloorPlans.removeFloorPlanZone
 		}
 	},
 	autoSync : true,

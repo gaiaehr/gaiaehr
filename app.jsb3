@@ -591,6 +591,10 @@
 				},
 				{
 					"path": "app/ux/form/fields/",
+					"name": "ColorPicker.js"
+				},
+				{
+					"path": "app/ux/form/fields/",
 					"name": "Currency.js"
 				},
 				{

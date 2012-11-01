@@ -580,7 +580,8 @@ Ext.define('App.view.patient.Encounter', {
             },
             region:'east',
             items:[
-                me.progressNote, me.progressHistory
+                me.progressNote,
+                me.progressHistory
             ]
 
         });
@@ -985,13 +986,13 @@ Ext.define('App.view.patient.Encounter', {
     },
     onTapPanelChange:function(panel){
         if(panel.card.itemId == 'encounter'){
-            this.isProgressNoteCollapsed(true);
+            this.setEncounterProgressCollapsed(true);
         }else{
-            this.isProgressNoteCollapsed(true);
+            this.setEncounterProgressCollapsed(true);
         }
     },
-    isProgressNoteCollapsed:function(ans){
-        ans ? this.progressNote.collapse() : this.progressNote.expand();
+    setEncounterProgressCollapsed:function(ans){
+        ans ? this.rightPanel.collapse() : this.rightPanel.expand();
     },
     onVitalsClick:function(view, record, e){
         var me = this, form = me.vitalsPanel.down('form').getForm();

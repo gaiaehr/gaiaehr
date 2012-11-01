@@ -74,7 +74,7 @@ class FormLayoutEngine
                     LEFT JOIN forms_layout AS fl
                            ON ff.form_id = fl.id
                         WHERE (fl.name = '$params->formToRender' OR fl.id = '$params->formToRender')
-                          AND (ff.parentId IS NULL OR ff.parentId = '0')
+                          AND (ff.parentId IS NULL OR ff.parentId = 'NaN')
                      ORDER BY pos ASC, ff.id ASC");
 		/**
 		 * for each parent item lets get all the options and children items

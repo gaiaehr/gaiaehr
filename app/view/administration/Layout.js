@@ -32,11 +32,12 @@ Ext.define('App.view.administration.Layout', {
         Ext.define('layoutTreeModel', {
             extend: 'Ext.data.Model',
             fields: [
-                { name: 'id', type: 'string' },
+                { name: 'id', type: 'int' },
+                { name: 'parentId', type: 'string' },
                 { name: 'text', type: 'string' },
-                { name: 'pos', type: 'string' },
+                { name: 'pos', type: 'int' },
                 { name: 'xtype', type: 'string' },
-                { name: 'form_id', type: 'string' },
+                { name: 'form_id', type: 'int' },
                 { name: 'title', type: 'string' },
                 { name: 'fieldLabel', type: 'string' },
                 { name: 'emptyText', type: 'string' },
@@ -69,7 +70,9 @@ Ext.define('App.view.administration.Layout', {
                 type: 'direct',
                 api: {
                     read: FormLayoutBuilder.getFormFieldsTree,
-                    update: FormLayoutBuilder.updateFormFieldsTree
+                    create: FormLayoutBuilder.createFormField,
+                    update: FormLayoutBuilder.updateFormField,
+                    destroy: FormLayoutBuilder.removeFormField
                 }
             }
         });
@@ -168,12 +171,10 @@ Ext.define('App.view.administration.Layout', {
         /**
          * This grid only available if the field is a Combobox
          */
-        me.selectListGrid = Ext.create('App.ux.GridPanel', {
+        me.selectListGrid = Ext.create('Ext.grid.Panel', {
             store: me.selectListoptionsStore,
-            region: 'south',
             collapseMode: 'mini',
-            width: 250,
-            height: 250,
+            height:200,
             split: true,
             border: false,
             titleCollapse: false,
@@ -198,9 +199,8 @@ Ext.define('App.view.administration.Layout', {
         /**
          * form to create and modified the fields
          */
-        me.fieldForm = Ext.create('App.ux.form.Panel', {
-            region: 'center',
-            //url	            : 'app/administration/layout/data.php?task=formRequest',
+        me.fieldForm = Ext.create('Ext.form.Panel', {
+            flex:2,
             border: false,
             autoScroll: true,
             fieldDefaults: {
@@ -212,24 +212,6 @@ Ext.define('App.view.administration.Layout', {
             },
             items: [
                 {
-                    name: 'id',
-                    xtype: 'textfield',
-                    itemId: 'id',
-                    hidden: true
-                },
-                {
-                    name: i18n('pos'),
-                    xtype: 'textfield',
-                    itemId: 'pos',
-                    hidden: true
-                },
-                {
-                    name: i18n('form_id'),
-                    xtype: 'textfield',
-                    itemId: 'form_id',
-                    hidden: true
-                },
-                {
                     fieldLabel: i18n('type'),
                     xtype: 'combo',
                     name: 'xtype',
@@ -239,7 +221,7 @@ Ext.define('App.view.administration.Layout', {
                     editable: false,
                     store: me.fieldXTypesStore,
                     queryMode: 'local',
-                    margin: '5px 5px 5px 10px',
+                    margin: '5 5 5 10',
                     itemId: 'xtype',
                     listeners: {
                         scope: me,
@@ -256,7 +238,7 @@ Ext.define('App.view.administration.Layout', {
                     hideTrigger: true,
                     store: me.parentFieldsStore,
                     queryMode: 'local',
-                    margin: '5px 5px 5px 10px',
+                    margin: '5 5 5 10',
                     emptyText: 'None',
                     itemId: 'parentFields',
                     listeners: {
@@ -268,6 +250,7 @@ Ext.define('App.view.administration.Layout', {
                     xtype: 'fieldset',
                     itemId: 'aditionalProperties',
                     title: i18n('aditional_properties'),
+                    margin: '0 5 5 5',
                     defaults: {
                         anchor: '100%'
                     },
@@ -505,22 +488,39 @@ Ext.define('App.view.administration.Layout', {
             split: true,
             width: 390,
             region: 'east',
-            layout: 'border',
+            layout: {
+                type:'vbox',
+                align:'stretch'
+            },
             bodyStyle: 'background-color:#fff!important',
-            items: [me.fieldForm, me.selectListGrid],
+            items: [ me.fieldForm, me.selectListGrid ],
+            buttons:[
+                {
+                    text: i18n('delete'),
+                    iconCls: 'icoDeleteBlack',
+                    scope: me,
+                    handler: me.onFieldDelete
+                },
+                {
+                    text: i18n('reset'),
+                    iconCls: 'icoReload',
+                    scope: me,
+                    handler: me.onFormReset
+                },
+                {
+                    text: i18n('save'),
+                    iconCls: 'save',
+                    scope: me,
+                    handler: me.onFieldSave
+                }
+            ],
             dockedItems: [
                 {
                     xtype: 'toolbar',
                     items: [
+                        '->',
                         {
-                            text: i18n('save'),
-                            iconCls: 'save',
-                            scope: me,
-                            handler: me.onFieldSave
-                        },
-                        '-',
-                        {
-                            text: i18n('new'),
+                            text: i18n('add_new'),
                             iconCls: 'icoAddRecord',
                             scope: me,
                             handler: me.onFormReset
@@ -533,14 +533,6 @@ Ext.define('App.view.administration.Layout', {
                             disabled: true,
                             scope: me,
                             handler: me.onAddChild
-                        },
-                        '-',
-                        {
-                            text: i18n('delete'),
-                            iconCls: 'delete',
-                            cls: 'toolDelete',
-                            scope: me,
-                            handler: me.onFieldDelete
                         },
                         '-',
                         {
@@ -670,44 +662,42 @@ Ext.define('App.view.administration.Layout', {
      * if the form is valid send the POST request
      */
     onFieldSave: function(){
-        var me = this, form = me.fieldForm.getForm();
+        var me = this,
+            form = me.fieldForm.getForm(),
+            record = form.getRecord(),
+            store = me.fieldsGridStore,
+            parentNode = store.getNodeById(record.data.parentId) || store.getRootNode(),
+            values = form.getValues();
+
+
         if(form.isValid()){
-            var values = form.getValues();
-            if(form.findField('id').getValue() == ''){
-                FormLayoutBuilder.addField(values, function(provider, response){
-                    if(response.result.success){
-                        me.loadFieldsGrid();
-                    }else{
-                        Ext.Msg.alert('Opps!', response.result.error);
-                    }
-                });
-            }else{
-                var rec = form.getRecord();
-                rec.set(values);
-                me.fieldsGridStore.sync({
-                    success:function(){
-                        me.previewFormRender();
-                        me.msg('Sweet!', 'Field Updated');
-                    },
-                    failure:function(){
-                        me.msg('Oops!', 'Something went wrong', true);
-                    }
-                });
-//                FormLayoutBuilder.updateField(values, function(provider, response){
-//                    if(response.result.success){
-//                        me.loadFieldsGrid();
-//                    }else{
-//                        Ext.Msg.alert('Opps!', response.result.error);
-//                    }
-//                });
-            }
+
+            values.form_id = record.data.form_id;
+            values.leaf = (values.xtype != 'fieldcontainer' && values.xtype != 'fieldset');
+            record.set(values);
+            if(record.data.id == 0) parentNode.appendChild(record);
+
+            me.fieldsGridStore.sync({
+               success:function(batch){
+                   me.previewFormRender();
+                   me.loadCurrFormParentField();
+                   // this is the quick way to apply the return changes to the model
+                   record.set(batch.proxy.reader.rawData);
+                   record.commit();
+                   me.msg('Sweet!', i18n('record_saved'));
+               },
+               failure:function(batch){
+                   Ext.Msg.alert('Oops!', batch.proxy.reader.rawData.error);
+                   me.loadFieldsGrid();
+               }
+           });
         }
     },
     /**
      * Delete logic
      */
     onFieldDelete: function(){
-        var me = this, form = me.fieldForm.getForm(), rec = form.getRecord();
+        var me = this, form = me.fieldForm.getForm(), record = form.getRecord();
         Ext.Msg.show({
             title: i18n('please_confirm') + '...',
             icon: Ext.MessageBox.QUESTION,
@@ -716,20 +706,15 @@ Ext.define('App.view.administration.Layout', {
             scope: this,
             fn: function(btn){
                 if(btn == 'yes'){
-                    var params = {
-                        id: rec.data.id,
-                        form_id: rec.data.form_id,
-                        name: rec.data.name,
-                        xtype: rec.data.xtype
-                    };
-                    FormLayoutBuilder.deleteField(params, function(provider, response){
-                        if(response.result.success){
-                            me.msg('Sweet!', i18n('field_deleted'));
-                            me.currField = null;
+                    record.remove();
+                    me.fieldsGridStore.sync({
+                        success:function(){
+                            me.previewFormRender();
+                            me.msg('Sweet!', i18n('record_removed'));
+                        },
+                        failure:function(batch){
+                            Ext.Msg.alert('Oops!', batch.proxy.reader.rawData.error);
                             me.loadFieldsGrid();
-                            me.onFormReset();
-                        }else{
-                            Ext.Msg.alert('Opps!', response.result.error);
                         }
                     });
                 }
@@ -744,54 +729,36 @@ Ext.define('App.view.administration.Layout', {
      */
     onDragDrop: function(node, data, overModel){
         var me = this, childItems = [], pos = 10;
-
-
         for(var i = 0; i < overModel.parentNode.childNodes.length; i++){
             overModel.parentNode.childNodes[i].set({pos:pos});
             pos = pos + 10;
-
         }
-//        var params = {
-//            id: data.records[0].data.id,
-//            parentNode: overModel.parentNode.data.id,
-//            parentNodeChilds: childItems
-//        };
-
         data.records[0].sort = childItems;
         me.fieldsGridStore.sync({
             success:function(){
                 me.previewFormRender();
                 me.msg('Sweet!', 'Field Updated');
             },
-            failure:function(){
-                me.msg('Oops!', 'Something went wrong', true);
+            failure:function(batch){
+                Ext.Msg.alert('Oops!', batch.proxy.reader.rawData.error);
+                me.loadFieldsGrid();
             }
         });
-        say(me.fieldsGridStore);
-        say(data.records[0]);
-
-        //say(data.records[0].save());
-
-//        FormLayoutBuilder.sortFields(params, function(provider, response){
-//            if(response.result.success){
-//                me.msg('Sweet!', i18n('form_fields_sorted'));
-//                me.loadFieldsGrid();
-//                me.onFormReset();
-//            }else{
-//                Ext.Msg.alert('Opps!', response.result.error);
-//            }
-//        });
     },
     /**
      * This is to reset the Form and load
      * a new Model with the currForm id
      */
     onFormReset: function(){
-        var formPanel = this.fieldForm, form = formPanel.getForm(), row = this.fieldsGrid.getSelectionModel();
-        row.deselectAll();
+        var me = this,
+            formPanel = me.fieldForm,
+            form = formPanel.getForm(),
+            selection = me.fieldsGrid.getSelectionModel();
+        selection.deselectAll();
         form.reset();
-        var model = Ext.ModelManager.getModel('layoutTreeModel'), newModel = Ext.ModelManager.create({
-                form_id: this.currForm
+        var model = Ext.ModelManager.getModel('layoutTreeModel'),
+            newModel = Ext.ModelManager.create({
+                form_id: me.currForm
             }, model);
         formPanel.el.unmask();
         form.loadRecord(newModel);
@@ -823,6 +790,7 @@ Ext.define('App.view.administration.Layout', {
      */
     onFieldsGridClick: function(grid, record){
         var formPanel = this.fieldForm, form = formPanel.getForm();
+        say(record);
         form.loadRecord(record);
         this.currField = record.data.id;
         if(record.data.xtype == 'fieldset' || record.data.xtype == 'fieldcontainer'){
@@ -854,10 +822,10 @@ Ext.define('App.view.administration.Layout', {
      */
     onSelectListSelect: function(combo, value){
         this.selectListoptionsStore.load({
-                params: {
-                    list_id: value
-                }
-            });
+            params: {
+                list_id: value
+            }
+        });
     },
     /**
      *
@@ -966,8 +934,8 @@ Ext.define('App.view.administration.Layout', {
     onFormPreview: function(btn, toggle){
         var me = this;
         if(toggle === true){
-            me.previewFormRender();
             me.fromPreview.expand(false);
+            me.previewFormRender();
         }else{
             me.fromPreview.collapse(false);
         }
@@ -978,11 +946,13 @@ Ext.define('App.view.administration.Layout', {
      */
     previewFormRender: function(){
         var me = this, form = this.fromPreview;
-        form.el.mask();
-        me.getFormItems(form, me.currForm, function(){
-            form.doLayout();
-            form.el.unmask();
-        });
+        if(form.collapsed !== true){
+            form.el.mask();
+            me.getFormItems(form, me.currForm, function(){
+                form.el.unmask();
+            });
+        }
+
     },
     /**
      *
@@ -995,22 +965,21 @@ Ext.define('App.view.administration.Layout', {
      */
     loadFieldsGrid: function(){
         var me = this, row = me.formsGrid.getSelectionModel();
-        if(me.currForm === null){
-            row.select(0);
-        }
+        if(me.currForm === null) row.select(0);
         me.currForm = row.getLastSelected().data.id;
         me.fieldsGridStore.load({
-                params: {
-                    currForm: me.currForm
-                }
-            });
-        me.parentFieldsStore.load({
-                params: {
-                    currForm: me.currForm
-                }
-            });
+            params: {
+                currForm: me.currForm
+            }
+        });
+        me.loadCurrFormParentField();
         me.previewFormRender();
         me.fieldsGrid.doLayout()
+    },
+
+    loadCurrFormParentField:function(){
+        var me = this;
+        me.parentFieldsStore.load({params:{currForm: me.currForm}});
     },
     /**
      * This function is called from Viewport.js when

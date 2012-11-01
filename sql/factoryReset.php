@@ -81,7 +81,9 @@ $tables = array(
 	'sct_concepts',
 	'sct_descriptions',
 	'sct_relationships',
-	'standardized_tables_track'
+	'standardized_tables_track',
+
+	'log'
 );
 
 function getDirectoryList ($directory)

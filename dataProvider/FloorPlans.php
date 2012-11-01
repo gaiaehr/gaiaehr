@@ -18,8 +18,7 @@
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-if (!isset($_SESSION))
-{
+if(!isset($_SESSION)){
 	session_name('GaiaEHR');
 	session_start();
 	session_cache_limiter('private');
@@ -54,28 +53,28 @@ class FloorPlans
 
 	function __construct()
 	{
-		$this -> db = new dbHelper();
-		$this -> user = new User();
-		$this -> acl = new ACL();
-		$this -> patient = new Patient();
-		$this -> services = new Services();
-		$this -> pool = new PoolArea();
+		$this->db       = new dbHelper();
+		$this->user     = new User();
+		$this->acl      = new ACL();
+		$this->patient  = new Patient();
+		$this->services = new Services();
+		$this->pool     = new PoolArea();
 		return;
 	}
 
 	public function getFloorPlans()
 	{
-		$this -> db -> setSQL("SELECT * FROM floor_plans");
-		return $this -> db -> fetchRecords(PDO::FETCH_ASSOC);
+		$this->db->setSQL("SELECT * FROM floor_plans");
+		return $this->db->fetchRecords(PDO::FETCH_ASSOC);
 	}
 
 	public function createFloorPlan(stdClass $params)
 	{
 		$data = get_object_vars($params);
 		unset($data['id']);
-		$this -> db -> setSQL($this -> db -> sqlBind($data, 'floor_plans', 'I'));
-		$this -> db -> execLog();
-		$params -> id = $this -> db -> lastInsertId;
+		$this->db->setSQL($this->db->sqlBind($data, 'floor_plans', 'I'));
+		$this->db->execLog();
+		$params->id = $this->db->lastInsertId;
 		return $params;
 	}
 
@@ -83,23 +82,23 @@ class FloorPlans
 	{
 		$data = get_object_vars($params);
 		unset($data['id']);
-		$this -> db -> setSQL($this -> db -> sqlBind($data, 'floor_plans', 'U', array('id' => $params -> id)));
-		$this -> db -> execLog();
+		$this->db->setSQL($this->db->sqlBind($data, 'floor_plans', 'U', array('id' => $params->id)));
+		$this->db->execLog();
 		return $params;
 	}
 
 	public function getFloorPlanZones(stdClass $params)
 	{
-		return $this -> getFloorPlanZonesByFloorPlanId($params -> floor_plan_id);
+		return $this->getFloorPlanZonesByFloorPlanId($params->floor_plan_id);
 	}
 
 	public function createFloorPlanZone(stdClass $params)
 	{
 		$data = get_object_vars($params);
 		unset($data['id']);
-		$this -> db -> setSQL($this -> db -> sqlBind($data, 'floor_plans_zones', 'I'));
-		$this -> db -> execLog();
-		$params -> id = $this -> db -> lastInsertId;
+		$this->db->setSQL($this->db->sqlBind($data, 'floor_plans_zones', 'I'));
+		$this->db->execLog();
+		$params->id = $this->db->lastInsertId;
 		return $params;
 	}
 
@@ -107,47 +106,52 @@ class FloorPlans
 	{
 		$data = get_object_vars($params);
 		unset($data['id']);
-		$this -> db -> setSQL($this -> db -> sqlBind($data, 'floor_plans_zones', 'U', array('id' => $params -> id)));
-		$this -> db -> execLog();
+		$this->db->setSQL($this->db->sqlBind($data, 'floor_plans_zones', 'U', array('id' => $params->id)));
+		$this->db->execLog();
+		return $params;
+	}
+
+	public function removeFloorPlanZone(stdClass $params)
+	{
+		$this->db->setSQL("DELETE FROM floor_plans_zones WHERE id = '$params->id'");
+		$this->db->execLog();
 		return $params;
 	}
 
 	//******************************************************************************************************************
 	//******************************************************************************************************************
-
 	public function setPatientToZone($params)
 	{
-		$params -> uid = $_SESSION['user']['id'];
-		$params -> time_in = Time::getLocalTime();
-		$data = get_object_vars($params);
+		$params->uid     = $_SESSION['user']['id'];
+		$params->time_in = Time::getLocalTime();
+		$data            = get_object_vars($params);
 		unset($data['id']);
-		$this -> db -> setSQL($this -> db -> sqlBind($data, 'patient_zone', 'I'));
-		$this -> db -> execLog();
-		$params -> patientZoneId = $this -> db -> lastInsertId;
+		$this->db->setSQL($this->db->sqlBind($data, 'patient_zone', 'I'));
+		$this->db->execLog();
+		$params->patientZoneId = $this->db->lastInsertId;
 		return array(
-			'success' => true,
-			'data' => $params
+			'success' => true, 'data' => $params
 		);
 	}
 
 	public function unSetPatientZoneByPatientZoneId($PatientZoneId)
 	{
 		$data['time_out'] = Time::getLocalTime();
-		$this -> db -> setSQL($this -> db -> sqlBind($data, 'patient_zone', 'U', array('id' => $PatientZoneId)));
-		$this -> db -> execLog();
+		$this->db->setSQL($this->db->sqlBind($data, 'patient_zone', 'U', array('id' => $PatientZoneId)));
+		$this->db->execLog();
 	}
 
 	public function unSetPatientFromZoneByPid($pid)
 	{
 
-		return $params;
+		return;
 
 	}
 
 	public function getPatientsZonesByFloorPlanId($FloorPlanId)
 	{
 		$zones = array();
-		$this -> db -> setSQL("SELECT pz.id AS patientZoneId,
+		$this->db->setSQL("SELECT pz.id AS patientZoneId,
 								  pz.pid,
 								  pz.uid,
 								  pz.zone_id AS zoneId,
@@ -156,30 +160,26 @@ class FloorPlans
 							 FROM patient_zone AS pz
 						LEFT JOIN floor_plans_zones AS fpz ON pz.zone_id = fpz.id
 							WHERE fpz.floor_plan_id = $FloorPlanId AND pz.time_out IS NULL");
-		foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $zone)
-		{
-			$zone['name'] = $this -> patient -> getPatientFullNameByPid($zone['pid']);
-			$zone['photoSrc'] = $this -> patient -> getPatientPhotoSrcIdByPid($zone['pid']);
-			$zone['warning'] = $this -> patient -> getPatientArrivalLogWarningByPid($zone['pid']);
-
-			$pool = $this -> pool -> getCurrentPatientPoolAreaByPid($zone['pid']);
+		foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) as $zone){
+			$zone['name']     = $this->patient->getPatientFullNameByPid($zone['pid']);
+			$zone['photoSrc'] = $this->patient->getPatientPhotoSrcIdByPid($zone['pid']);
+			$zone['warning']  = $this->patient->getPatientArrivalLogWarningByPid($zone['pid']);
+			$pool             = $this->pool->getCurrentPatientPoolAreaByPid($zone['pid']);
 			$zone['poolArea'] = $pool['poolArea'];
 			$zone['priority'] = $pool['priority'];
-			$zone['eid'] = $pool['eid'];
-			$zones[] = $zone;
+			$zone['eid']      = $pool['eid'];
+			$zones[]          = $zone;
 		}
-
 		return $zones;
 	}
 
 	//******************************************************************************************************************
 	// private functions
 	//******************************************************************************************************************
-
 	private function getFloorPlanZonesByFloorPlanId($floor_plan_id)
 	{
-		$this -> db -> setSQL("SELECT * FROM floor_plans_zones WHERE floor_plan_id = '$floor_plan_id'");
-		return $this -> db -> fetchRecords(PDO::FETCH_ASSOC);
+		$this->db->setSQL("SELECT * FROM floor_plans_zones WHERE floor_plan_id = '$floor_plan_id'");
+		return $this->db->fetchRecords(PDO::FETCH_ASSOC);
 	}
 
 }

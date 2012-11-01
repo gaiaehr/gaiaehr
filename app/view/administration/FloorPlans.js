@@ -16,297 +16,324 @@
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-Ext.define('App.view.administration.FloorPlans',
-{
-	extend : 'App.ux.RenderPanel',
-	id : 'panelFloorPlans',
-	pageTitle : i18n('floor_plan_editor'),
-	pageLayout : 'border',
-	floorPlanId : null,
-	activeZone : null,
-	initComponent : function()
-	{
-		var me = this;
-		me.floorPlansStore = Ext.create('App.store.administration.FloorPlans',
-		{
-			autoLoad : true
-		});
-		me.floorPlanZonesStore = Ext.create('App.store.administration.FloorPlanZones');
+Ext.define('App.view.administration.FloorPlans', {
+    extend: 'App.ux.RenderPanel',
+    id: 'panelFloorPlans',
+    pageTitle: i18n('floor_plan_editor'),
+    pageLayout: 'border',
+    floorPlanId: null,
+    activeZone: null,
+    initComponent: function(){
+        var me = this;
+        me.floorPlansStore = Ext.create('App.store.administration.FloorPlans');
+        me.floorZonesStore = Ext.create('App.store.administration.FloorPlanZones');
+        me.floorPlans = Ext.create('Ext.grid.Panel', {
+            title: i18n('floor_plans'),
+            region: 'west',
+            width: 200,
+            split: true,
+            hideHeaders: true,
+            store: me.floorPlansStore,
+            plugins: [
+                me.floorPlanEditing = Ext.create('Ext.grid.plugin.RowEditing', {
+                    clicksToEdit: 2
+                })
+            ],
+            columns: [
+                {
+                    dataIndex: 'title',
+                    sortable: false,
+                    hideable: false,
+                    flex: 1,
+                    editor: {
+                        xtype: 'textfield',
+                        emptyText:i18n('new_floor_plan')
+                    }
+                }
+            ],
+            tbar: ['->',
+                {
+                    text: i18n('add_floor_plan'),
+                    action: 'newFloorPlan',
+                    scope: me,
+                    handler: me.onNewFloorPlan
+                }
+            ],
+            listeners: {
+                scope: me,
+                select: me.onFloorPlanSelected
+            }
+        });
+        me.floorPlanZones = Ext.create('Ext.panel.Panel', {
+            title: i18n('floor_plan'),
+            region: 'center',
+            bodyCls: 'floorPlan',
+            layout: 'absolute',
+            tbar: [
+                {
+                    text: i18n('add_zone'),
+                    action: 'newZone',
+                    scope: me,
+                    handler: me.onNewZone
+                }
+            ]
+        });
+        me.floorPlanZoneEditor = Ext.create('Ext.window.Window', {
+            closeAction:'hide',
+            items:[
+                {
+                    xtype:'form',
+                    border:false,
+                    bodyPadding: '10',
+                    defaults:{
+                        labelWidth: 80,
+                        anchor:'100%'
+                    },
+                    items:[
+                        {
+                            xtype: 'textfield',
+                            fieldLabel: i18n('zone_name'),
+                            name: 'title'
+                        },
+                        {
+                            xtype:'colorcombo',
+                            fieldLabel: i18n('color'),
+                            name:'color'
+                        },
+                        {
+                            xtype: 'numberfield',
+                            fieldLabel: i18n('width'),
+                            minValue: 30,
+                            maxValue: 200,
+                            name: 'width'
+                        },
+                        {
+                            xtype: 'numberfield',
+                            fieldLabel: i18n('height'),
+                            minValue: 30,
+                            maxValue: 200,
+                            name: 'height'
+                        }
+                    ]
 
-		me.floorPlans = Ext.create('Ext.grid.Panel',
-		{
-			title : i18n('floor_plans'),
-			region : 'west',
-			width : 200,
-			split : true,
-			hideHeaders : true,
-			store : me.floorPlansStore,
-			plugins : [me.floorPlanEditing = Ext.create('Ext.grid.plugin.RowEditing',
-			{
-				clicksToEdit : 2
-			})],
-			columns : [
-			{
-				dataIndex : 'title',
-				sortable : false,
-				hideable : false,
-				flex : 1,
-				editor :
-				{
-					xtype : 'textfield'
-				}
-			}],
-			tbar : ['->',
-			{
-				text : i18n('add_floor_plan'),
-				action : 'newFloorPlan',
-				scope : me,
-				handler : me.onNewFloorPlan
-			}],
-			listeners :
-			{
-				scope : me,
-				select : me.onFloorPlanSelected
-			}
-		});
+                }
+            ],
+            buttons:[
+                {
+                    text:i18n('remove'),
+                    xtype:'button',
+                    scope:me,
+                    handler:me.onZoneRemove
+                },
+                '-',
+                {
+                    text:i18n('cancel'),
+                    xtype:'button',
+                    scope:me,
+                    handler:me.onZoneCancel
+                },
+                '-',
+                {
+                    text:i18n('save'),
+                    xtype:'button',
+                    scope:me,
+                    handler:me.onZoneSave
+                }
+            ]
+        });
+        me.listeners = {
+            show: function(){
+                me.nav = Ext.create('Ext.util.KeyNav', Ext.getDoc(), {
+                        scope: me,
+                        left: function(){
+                            me.moveZone('left')
+                        },
+                        up: function(){
+                            me.moveZone('up')
+                        },
+                        right: function(){
+                            me.moveZone('right')
+                        },
+                        down: function(){
+                            me.moveZone('down')
+                        }
+                    });
+            },
+            hide: function(){
+                if(me.nav){
+                    Ext.destroy(me.nav);
+                }
+            }
+        };
+        me.pageBody = [me.floorPlans, me.floorPlanZones];
+        me.callParent(arguments);
+    },
+    setEditMode:function(bool){
+        this.floorPlanZoneEditor.setVisible(bool);
+    },
+    getEditor:function(){
+        return this.floorPlanZoneEditor.down('form');
+    },
+    onZoneCancel:function(btn){
+        btn.up('window').hide();
+    },
+    onZoneSave:function(btn){
+        var editor = this.getEditor(),
+            form = editor.getForm(),
+            values = form.getValues(),
+            record = form.getRecord();
+        editor.zone.setText(values.title);
+        record.set(values);
+    },
+    onZoneToggled:function(zone, pressed){
+        var me = this;
+        me.setEditMode(pressed);
+        if(pressed){
+            me.activeZone = zone;
+            me.getEditor().zone = zone;
+            me.floorPlanZones.focus();
+            me.getEditor().getForm().loadRecord(zone.record);
+        }else{
+            me.activeZone = null;
+            zone.record.set({
+                x: zone.x,
+                y: zone.y
+            });
+        }
+    },
+    onZoneRemove:function(btn){
+        var me = this,
+            editor = this.getEditor(),
+            form = editor.getForm(),
+            record = form.getRecord(),
+            zone = editor.zone;
+        Ext.Msg.show({
+            title:'Wait!',
+            msg: 'This action is final. Are you sure you want to remove <span style="font-weight: bold">"'+record.data.title+'"</span>?',
+            buttons: Ext.Msg.YESNO,
+            icon: Ext.Msg.WARNING,
+            fn:function(btn){
+                if(btn == 'yes'){
+                    me.floorZonesStore.remove(record);
+                    me.floorZonesStore.sync({
+                        success:function(){
+                            me.floorPlanZones.remove(zone, true);
+                            editor.up('window').hide();
+                        }
+                    });
+                }
+            }
+        });
 
-		me.floorPlan = Ext.create('Ext.panel.Panel',
-		{
-			title : i18n('floor_plan'),
-			region : 'center',
-			bodyCls : 'floorPlan',
-			layout : 'absolute',
-			tbar : ['->',
-			{
-				text : i18n('add_zone'),
-				action : 'newZone',
-				scope : me,
-				handler : me.onNewZone
-			}]
-		});
+    },
+    onNewZone: function(){
+        this.createZone(null);
+    },
+    createZone: function(record){
+        var me = this, zone, form;
+        zone = Ext.create('Ext.button.Split', {
+            text: record ? record.data.title : i18n('new_zone'),
+            toggleGroup: 'zones',
+            draggable: {
+                listeners: {
+                    scope: me,
+                    dragend: me.zoneDragged
+                }
+            },
+            scale: 'medium',
+            x: record ? record.data.x : 5,
+            y: record ? record.data.y : 5,
+            enableToggle: true,
+            scope:me,
+            toggleHandler: me.onZoneToggled
+        });
+        me.floorPlanZones.add(zone);
+        if(record != null){
+            zone.record = record;
+        }else{
+            me.floorZonesStore.add({
+                floor_plan_id: me.floorPlanId,
+                title: i18n('new_zone'),
+                x: 0,
+                y: 0,
+                active: 1
+            });
+            me.floorZonesStore.sync({
+                callback: function(batch, options){
+                    zone.record = batch.operations[0].records[0];
+                }
+            })
+        }
+    },
 
-		me.listeners =
-		{
-			show : function()
-			{
-				me.nav = Ext.create('Ext.util.KeyNav', Ext.getDoc(),
-				{
-					scope : me,
-					left : function()
-					{
-						me.moveZone('left')
-					},
-					up : function()
-					{
-						me.moveZone('up')
-					},
-					right : function()
-					{
-						me.moveZone('right')
-					},
-					down : function()
-					{
-						me.moveZone('down')
-					}
-				});
-			},
-			hide : function()
-			{
-				if (me.nav)
-				{
-					Ext.destroy(me.nav);
-				}
-			}
-		};
-
-		me.pageBody = [me.floorPlans, me.floorPlan];
-		me.callParent(arguments);
-	},
-
-	onNewZone : function()
-	{
-		this.createZone(null);
-	},
-
-	createZone : function(record)
-	{
-		var me = this, zone, form;
-		zone = Ext.create('Ext.button.Split',
-		{
-			text : record ? record.data.title : i18n('new_zone'),
-			toggleGroup : 'zones',
-			draggable :
-			{
-				listeners :
-				{
-					scope : me,
-					dragend : me.zoneDragged
-				}
-			},
-			scale : 'medium',
-			x : record ? record.data.x : 0,
-			y : record ? record.data.y : 0,
-			enableToggle : true,
-			toggleHandler : function(btn, pressed)
-			{
-				if (pressed)
-				{
-					me.activeZone = zone;
-					me.floorPlan.focus();
-				}
-				else
-				{
-					me.activeZone = null;
-					var rec = btn.menu.items.items[0].getForm().getRecord();
-					rec.set(
-					{
-						x : btn.x,
-						y : btn.y
-					});
-				}
-			},
-			menu : [ form = Ext.create('Ext.form.Panel',
-			{
-				bodyPadding : '5 5 0 5',
-				items : [
-				{
-					xtype : 'textfield',
-					fieldLabel : i18n('zone_name'),
-					labelWidth : 80,
-					name : 'title'
-				}]
-			})],
-			listeners :
-			{
-				scope : me,
-				menushow : me.afterMenuShow,
-				menuhide : me.afterMenuHide
-			}
-		});
-
-		me.floorPlan.add(zone);
-
-		if (record != null)
-		{
-			form.getForm().loadRecord(record)
-		}
-		else
-		{
-			me.floorPlanZonesStore.add(
-			{
-				floor_plan_id : me.floorPlanId,
-				title : i18n('new_zone'),
-				x : 0,
-				y : 0,
-				active : 1
-			});
-
-			me.floorPlanZonesStore.sync(
-			{
-				callback : function(batch, options)
-				{
-					form.getForm().loadRecord(batch.operations[0].records[0])
-				}
-			})
-		}
-	},
-
-	afterMenuShow : function(btn)
-	{
-		btn.toggle(true);
-	},
-
-	afterMenuHide : function(btn)
-	{
-		var form = btn.menu.items.items[0].getForm(), values = form.getValues(), rec = form.getRecord();
-		btn.setText(values.title);
-		rec.set(values);
-	},
-
-	moveZone : function(direction)
-	{
-		if (app.currCardCmp == this && this.activeZone != null)
-		{
-			var x = this.activeZone.x, y = this.activeZone.y;
-			if (direction == 'left')
-			{
-				x = x - 1;
-			}
-			else
-			if (direction == 'right')
-			{
-				x = x + 1;
-			}
-			else
-			if (direction == 'up')
-			{
-				y = y - 1;
-			}
-			else
-			if (direction == 'down')
-			{
-				y = y + 1;
-			}
-			this.activeZone.setPosition(x, y);
-		}
-	},
-
-	zoneDragged : function(drag)
-	{
-		var me = this, rec = drag.comp.menu.items.items[0].getForm().getRecord();
-		rec.set(
-		{
-			x : drag.comp.x,
-			y : drag.comp.y
-		});
-	},
-
-	onNewFloorPlan : function()
-	{
-		this.floorPlansStore.add(
-		{
-			title : i18n('new_floor_plan')
-		});
-	},
-
-	onFloorPlanSelected : function(model, record)
-	{
-		this.floorPlanId = record.data.id;
-		this.reloadFloorPlanZones();
-	},
-
-	reloadFloorPlanZones : function()
-	{
-		var me = this;
-		me.floorPlan.removeAll();
-		me.floorPlanZonesStore.load(
-		{
-			params :
-			{
-				floor_plan_id : this.floorPlanId
-			},
-			scope : me,
-			callback : function(records, operation, success)
-			{
-				this.activeZone = null;
-				for (var i = 0; i < records.length; i++)
-				{
-					me.createZone(records[i]);
-				}
-			}
-		});
-	},
-
-	/**
-	 * This function is called from Viewport.js when
-	 * this panel is selected in the navigation panel.
-	 * place inside this function all the functions you want
-	 * to call every this panel becomes active
-	 */
-	onActive : function(callback)
-	{
-		var me = this;
-		me.floorPlans.getSelectionModel().select(0);
-		callback(true);
-	}
+    afterMenuShow: function(btn){
+        btn.toggle(true);
+    },
+    afterMenuHide: function(btn){
+        var form = btn.menu.items.items[0].getForm(),
+            record = form.getRecord();
+        form.loadRecord(record);
+//            values = form.getValues(),
+//            record = form.getRecord();
+//        btn.setText(values.title);
+//        record.set(values);
+    },
+    moveZone: function(direction){
+        if(app.currCardCmp == this && this.activeZone != null){
+            var x = this.activeZone.x, y = this.activeZone.y;
+            if(direction == 'left'){
+                x = x - 1;
+            }else if(direction == 'right'){
+                x = x + 1;
+            }else if(direction == 'up'){
+                y = y - 1;
+            }else if(direction == 'down'){
+                y = y + 1;
+            }
+            this.activeZone.setPosition(x, y);
+        }
+    },
+    zoneDragged: function(drag){
+        var me = this, rec = drag.comp.menu.items.items[0].getForm().getRecord();
+        rec.set({
+            x: drag.comp.x,
+            y: drag.comp.y
+        });
+    },
+    onNewFloorPlan: function(){
+        this.floorPlansStore.add({});
+    },
+    onFloorPlanSelected: function(model, record){
+        this.floorPlanId = record.data.id;
+        this.reloadFloorPlanZones();
+    },
+    reloadFloorPlanZones: function(){
+        var me = this;
+        me.floorPlanZones.removeAll();
+        me.floorZonesStore.load({
+            params:{ floor_plan_id: this.floorPlanId },
+            scope: me,
+            callback: function(records, operation, success){
+                this.activeZone = null;
+                for(var i = 0; i < records.length; i++){
+                    me.createZone(records[i]);
+                }
+            }
+        });
+    },
+    /**
+     * This function is called from Viewport.js when
+     * this panel is selected in the navigation panel.
+     * place inside this function all the functions you want
+     * to call every this panel becomes active
+     */
+    onActive: function(callback){
+        var me = this;
+        me.floorPlansStore.load({
+            callback:function(){
+                me.floorPlans.getSelectionModel().select(0);
+            }
+        });
+        callback(true);
+    }
 });

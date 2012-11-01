@@ -155,6 +155,9 @@ $API = array(
 			'updateFloorPlanZone' => array(
 				'len' => 1
 			),
+			'removeFloorPlanZone' => array(
+				'len' => 1
+			),
 			'setPatientToZone' => array(
 				'len' => 1
 			),

@@ -670,18 +670,6 @@ $API = array(
 			'getFormDataTable' => array(
 				'len' => 1
 			),
-			'addField' => array(
-				'len' => 1
-			),
-			'updateField' => array(
-				'len' => 1
-			),
-			'deleteField' => array(
-				'len' => 1
-			),
-			'sortFields' => array(
-				'len' => 1
-			),
 			'getForms' => array(
 				'len' => 0
 			),
@@ -691,7 +679,13 @@ $API = array(
 			'getFormFieldsTree' => array(
 				'len' => 1
 			),
-			'updateFormFieldsTree' => array(
+			'createFormField' => array(
+				'len' => 1
+			),
+			'updateFormField' => array(
+				'len' => 1
+			),
+			'removeFormField' => array(
 				'len' => 1
 			)
 		)

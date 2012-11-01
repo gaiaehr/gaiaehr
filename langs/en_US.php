@@ -844,7 +844,7 @@ $LANG = array(
 	'field_deleted'							=> 'Field deleted',
 	'form_fields_sorted'					=> 'Form Fields Sorted',
 	'field_editor'							=> 'Field editor',
-	'or_select_a_field_to_update' 			=> 'Click "New" or Select a field to update',
+	'or_select_a_field_to_update' 			=> 'Click "Add New" or Select a field to update',
 	'select_list_options'					=> 'Select List Options',
 	'select_lists'							=> 'Select Lists',
 	'in_use'								=> 'In Use?',
@@ -1103,6 +1103,7 @@ $LANG = array(
 	'generate_pdf'   					    => 'Generate PDF',
 	'patient_btn_drag'   				    => 'Click for Summary or Drag to Send Patient to Another Pool Area',
 	'username_exist_alert'   				=> 'Username exist, please try a unique username',
-	'record_saved'   				        => 'Record Saved'
+	'record_saved'   				        => 'Record Saved',
+	'record_removed'   				        => 'Record Removed'
 );
 ?>

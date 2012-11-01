@@ -125,7 +125,6 @@ Ext.define('App.view.administration.Facilities',
 		{
 			model : 'facilityModel',
 			remoteSort : true,
-			autoSync : true
 		});
 		// *************************************************************************************
 		// Facility Grid Panel
@@ -325,7 +324,6 @@ Ext.define('App.view.administration.Facilities',
 		grid.editingPlugin.cancelEdit();
 		store.insert(0,
 		{
-			name : i18n('new_facility'),
 			active : 1,
 			service_location : 1,
 			billing_location : 0,

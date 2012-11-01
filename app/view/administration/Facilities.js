@@ -119,7 +119,7 @@ Ext.define('App.view.administration.Facilities', {
         });
         me.FacilityStore = Ext.create('Ext.data.Store', {
             model: 'facilityModel',
-            remoteSort: true,
+            remoteSort: true
         });
         // *************************************************************************************
         // Facility Grid Panel

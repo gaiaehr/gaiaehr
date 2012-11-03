@@ -239,8 +239,8 @@ Ext.define('App.view.administration.FloorPlans', {
             height:record.data.height
         };
         record.store.sync();
-        me.floorPlanZoneEditor.hide();
         me.applyZoneConfig(editor.zone, config);
+        me.setEditMode(false);
     },
     onZoneHandler:function(zone){
         var me = this;

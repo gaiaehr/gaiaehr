@@ -21,8 +21,18 @@ Ext.define('App.model.administration.FloorPlanZones', {
 		{name: 'height', type: 'int', useNull:true},
 		{name: 'x', type: 'int'},
 		{name: 'y', type: 'int'},
-		{name: 'show_priority_color', type: 'bool'},
-		{name: 'show_patient_preview', type: 'bool'},
-		{name: 'active', type: 'bool'}
-	]
+		{name: 'show_priority_color', type: 'int'},
+		{name: 'show_patient_preview', type: 'int'},
+		{name: 'active', type: 'int'}
+	],
+    proxy :{
+        type : 'direct',
+        api :
+        {
+            read : FloorPlans.getFloorPlanZones,
+            create : FloorPlans.createFloorPlanZone,
+            update : FloorPlans.updateFloorPlanZone,
+            destroy : FloorPlans.removeFloorPlanZone
+        }
+    }
 });

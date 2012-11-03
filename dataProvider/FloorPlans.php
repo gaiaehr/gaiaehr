@@ -94,6 +94,7 @@ class FloorPlans
 
 	public function createFloorPlanZone(stdClass $params)
 	{
+
 		$data = get_object_vars($params);
 		unset($data['id']);
 		$this->db->setSQL($this->db->sqlBind($data, 'floor_plans_zones', 'I'));

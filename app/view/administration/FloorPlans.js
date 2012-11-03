@@ -169,7 +169,6 @@ Ext.define('App.view.administration.FloorPlans', {
                 }
             }
         });
-
         me.listeners = {
             show: function(){
                 me.nav = Ext.create('Ext.util.KeyNav', Ext.getDoc(),{
@@ -192,19 +191,21 @@ Ext.define('App.view.administration.FloorPlans', {
                 if(me.nav) Ext.destroy(me.nav);
             }
         };
-
-        me.zoneBufferSync = Ext.Function.createBuffered(function(){
-            me.floorZonesStore.sync();
-        },500);
-
         me.pageBody = [me.floorPlans, me.floorPlanZones ];
         me.callParent(arguments);
     },
-    setEditMode:function(bool){
+    setEditMode:function(bool, zone){
         var me = this;
+        if(bool){
+            me.activeZone = zone;
+            me.getEditor().zone = zone;
+            me.floorPlanZones.focus();
+            me.getEditor().getForm().loadRecord(zone.record);
+        }else{
+            me.getEditor().getForm().reset();
+            me.activeZone = null;
+        }
         me.floorPlanZoneEditor.setVisible(bool);
-        me.getEditor().getForm().reset();
-        if(!bool) me.activeZone = null;
     },
     getEditor:function(){
         return this.floorPlanZoneEditor.down('form');
@@ -253,11 +254,7 @@ Ext.define('App.view.administration.FloorPlans', {
     },
     onZoneHandler:function(zone){
         var me = this;
-        me.setEditMode(true);
-        me.activeZone = zone;
-        me.getEditor().zone = zone;
-        me.floorPlanZones.focus();
-        me.getEditor().getForm().loadRecord(zone.record);
+        me.setEditMode(true, zone);
     },
     onZoneRemove:function(){
         var me = this,
@@ -362,7 +359,6 @@ Ext.define('App.view.administration.FloorPlans', {
     onFloorPlanSelected: function(model, record){
         this.floorPlanId = record.data.id;
         this.reloadFloorPlanZones();
-        this.setEditMode(false);
     },
     reloadFloorPlanZones: function(){
         var me = this;
@@ -371,7 +367,7 @@ Ext.define('App.view.administration.FloorPlans', {
             params:{ floor_plan_id: this.floorPlanId },
             scope: me,
             callback: function(records, operation, success){
-                this.activeZone = null;
+                me.setEditMode(false);
                 for(var i = 0; i < records.length; i++) me.createZone(records[i]);
             }
         });

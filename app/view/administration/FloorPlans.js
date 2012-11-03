@@ -82,6 +82,7 @@ Ext.define('App.view.administration.FloorPlans', {
         me.floorPlanZoneEditor = Ext.create('Ext.window.Window', {
             title:i18n('zone_editor'),
             closeAction:'hide',
+            closable:false,
             items:[
                 {
                     xtype:'form',
@@ -160,7 +161,13 @@ Ext.define('App.view.administration.FloorPlans', {
                     scope:me,
                     handler:me.onZoneSave
                 }
-            ]
+            ],
+            listeners:{
+                scope:me,
+                afterrender:function(win){
+                   win.alignTo(this.floorPlanZones.getEl(), 'tr-tr', [-130, 70]);
+                }
+            }
         });
         me.listeners = {
             show: function(){
@@ -184,18 +191,21 @@ Ext.define('App.view.administration.FloorPlans', {
                 if(me.nav) Ext.destroy(me.nav);
             }
         };
-
-        me.zoneBufferSync = Ext.Function.createBuffered(function(){
-            me.floorZonesStore.sync();
-        },500);
-
-        me.pageBody = [me.floorPlans, me.floorPlanZones];
+        me.pageBody = [me.floorPlans, me.floorPlanZones ];
         me.callParent(arguments);
     },
-    setEditMode:function(bool){
+    setEditMode:function(bool, zone){
         var me = this;
+        if(bool){
+            me.activeZone = zone;
+            me.getEditor().zone = zone;
+            me.floorPlanZones.focus();
+            me.getEditor().getForm().loadRecord(zone.record);
+        }else{
+            me.getEditor().getForm().reset();
+            me.activeZone = null;
+        }
         me.floorPlanZoneEditor.setVisible(bool);
-        if(!bool) me.activeZone = null;
     },
     getEditor:function(){
         return this.floorPlanZoneEditor.down('form');
@@ -244,11 +254,7 @@ Ext.define('App.view.administration.FloorPlans', {
     },
     onZoneHandler:function(zone){
         var me = this;
-        me.setEditMode(true);
-        me.activeZone = zone;
-        me.getEditor().zone = zone;
-        me.floorPlanZones.focus();
-        me.getEditor().getForm().loadRecord(zone.record);
+        me.setEditMode(true, zone);
     },
     onZoneRemove:function(){
         var me = this,
@@ -338,7 +344,6 @@ Ext.define('App.view.administration.FloorPlans', {
             }
             this.activeZone.setPosition(x, y);
             this.activeZone.record.set({x:x,y:y});
-            //this.zoneBufferSync();
         }
     },
     zoneDragged: function(drag){
@@ -362,7 +367,7 @@ Ext.define('App.view.administration.FloorPlans', {
             params:{ floor_plan_id: this.floorPlanId },
             scope: me,
             callback: function(records, operation, success){
-                this.activeZone = null;
+                me.setEditMode(false);
                 for(var i = 0; i < records.length; i++) me.createZone(records[i]);
             }
         });

@@ -73,6 +73,7 @@ Ext.define('App.view.administration.FloorPlans', {
                 {
                     text: i18n('add_zone'),
                     action: 'newZone',
+                    iconCls:'icoAdd',
                     scope: me,
                     handler: me.onNewZone
                 }
@@ -87,7 +88,7 @@ Ext.define('App.view.administration.FloorPlans', {
                     border:false,
                     bodyPadding: '10',
                     defaults:{
-                        labelWidth: 80,
+                        labelWidth: 130,
                         anchor:'100%'
                     },
                     items:[
@@ -98,8 +99,13 @@ Ext.define('App.view.administration.FloorPlans', {
                         },
                         {
                             xtype:'colorcombo',
+                            fieldLabel: i18n('bg_color'),
+                            name:'bg_color'
+                        },
+                        {
+                            xtype:'colorcombo',
                             fieldLabel: i18n('border_color'),
-                            name:'color'
+                            name:'border_color'
                         },
                         {
                             xtype: 'numberfield',
@@ -114,6 +120,21 @@ Ext.define('App.view.administration.FloorPlans', {
                             minValue: 30,
                             maxValue: 200,
                             name: 'height'
+                        },
+                        {
+                            xtype: 'checkbox',
+                            fieldLabel: i18n('show_priority_color'),
+                            name: 'show_priority_color'
+                        },
+                        {
+                            xtype: 'checkbox',
+                            fieldLabel: i18n('show_patient_preview'),
+                            name: 'show_patient_preview'
+                        },
+                        {
+                            xtype: 'checkbox',
+                            fieldLabel: i18n('active'),
+                            name: 'active'
                         }
                     ]
 
@@ -183,11 +204,21 @@ Ext.define('App.view.administration.FloorPlans', {
             form = editor.getForm(),
             values = form.getValues(),
             record = form.getRecord();
-        editor.zone.setText(values.title);
         record.set(values);
+        config = {
+            text: record.data.title,
+            scale: record.data.scale,
+            style:{
+                'border-color':record.data.border_color,
+                'background-color':record.data.bg_color
+            },
+            width:record.data.width,
+            height:record.data.height
+        };
+        this.applyZoneConfig(editor.zone, config);
     },
     onZoneToggled:function(zone, pressed){
-        var me = this;
+        var me = this, config;
         me.setEditMode(pressed);
         if(pressed){
             me.activeZone = zone;
@@ -241,8 +272,11 @@ Ext.define('App.view.administration.FloorPlans', {
                     dragend: me.zoneDragged
                 }
             },
-            scale: 'medium',
-            style:{'border-color':record.data.color},
+            scale: record.data.scale,
+            style:{
+                'border-color':record.data.border_color,
+                'background-color':record.data.bg_color
+            },
             x: record ? record.data.x : 5,
             y: record ? record.data.y : 5,
             width:record.data.width,
@@ -258,9 +292,11 @@ Ext.define('App.view.administration.FloorPlans', {
             me.floorZonesStore.add({
                 floor_plan_id: me.floorPlanId,
                 title: i18n('new_zone'),
-                x: 0,
-                y: 0,
-                active: 1
+                x: 5,
+                y: 5,
+                show_priority_color: 1,
+                show_patient_preview: 1,
+                active: 0
             });
             me.floorZonesStore.sync({
                 callback: function(batch, options){
@@ -269,19 +305,24 @@ Ext.define('App.view.administration.FloorPlans', {
             })
         }
     },
-
-    afterMenuShow: function(btn){
-        btn.toggle(true);
+    applyZoneConfig:function(zone, config){
+        zone.setText(config.text);
+        zone.getEl().applyStyles(config.style);
+        zone.setScale(config.scale);
+        zone.setSize(config.width, config.height);
     },
-    afterMenuHide: function(btn){
-        var form = btn.menu.items.items[0].getForm(),
-            record = form.getRecord();
-        form.loadRecord(record);
+//    afterMenuShow: function(btn){
+//        btn.toggle(true);
+//    },
+//    afterMenuHide: function(btn){
+//        var form = btn.menu.items.items[0].getForm(),
+//            record = form.getRecord();
+//        form.loadRecord(record);
 //            values = form.getValues(),
 //            record = form.getRecord();
 //        btn.setText(values.title);
 //        record.set(values);
-    },
+//    },
     moveZone: function(direction){
         if(app.currCardCmp == this && this.activeZone != null){
             var x = this.activeZone.x, y = this.activeZone.y;
@@ -298,11 +339,7 @@ Ext.define('App.view.administration.FloorPlans', {
         }
     },
     zoneDragged: function(drag){
-        var me = this, rec = drag.comp.menu.items.items[0].getForm().getRecord();
-        rec.set({
-            x: drag.comp.x,
-            y: drag.comp.y
-        });
+        drag.comp.toggle(true);
     },
     onNewFloorPlan: function(){
         this.floorPlansStore.add({});

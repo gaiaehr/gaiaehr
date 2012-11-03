@@ -14,11 +14,15 @@ Ext.define('App.model.administration.FloorPlanZones', {
 		{name: 'floor_plan_id', type: 'int'},
 		{name: 'title', type: 'string'},
 		{name: 'type', type: 'string'},
-		{name: 'color', type: 'string', useNull:true},
+		{name: 'bg_color', type: 'string', useNull:true},
+		{name: 'border_color', type: 'string', useNull:true},
+		{name: 'scale', type: 'string', defaultValue:'medium'},
 		{name: 'width', type: 'int', useNull:true},
 		{name: 'height', type: 'int', useNull:true},
 		{name: 'x', type: 'int'},
 		{name: 'y', type: 'int'},
+		{name: 'show_priority_color', type: 'bool'},
+		{name: 'show_patient_preview', type: 'bool'},
 		{name: 'active', type: 'bool'}
 	]
 });

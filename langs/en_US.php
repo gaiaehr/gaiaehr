@@ -1104,6 +1104,11 @@ $LANG = array(
 	'patient_btn_drag'   				    => 'Click for Summary or Drag to Send Patient to Another Pool Area',
 	'username_exist_alert'   				=> 'Username exist, please try a unique username',
 	'record_saved'   				        => 'Record Saved',
-	'record_removed'   				        => 'Record Removed'
+	'record_removed'   				        => 'Record Removed',
+	'zone_editor'	                        => 'Zone Editor',
+	'bg_color'	                            => 'Background Color',
+	'border_color'	                        => 'Border Color',
+	'show_priority_color'	                => 'Show Priority Color',
+	'show_patient_preview'	                => 'Show Patient Preview'
 );
 ?>

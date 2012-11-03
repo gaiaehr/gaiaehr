@@ -21,17 +21,6 @@ Ext.define('App.store.administration.FloorPlanZones',
 {
 	model : 'App.model.administration.FloorPlanZones',
 	extend : 'Ext.data.Store',
-	proxy :
-	{
-		type : 'direct',
-		api :
-		{
-			read : FloorPlans.getFloorPlanZones,
-			create : FloorPlans.createFloorPlanZone,
-			update : FloorPlans.updateFloorPlanZone,
-			destroy : FloorPlans.removeFloorPlanZone
-		}
-	},
-	autoSync : true,
+	autoSync : false,
 	autoLoad : false
 }); 

@@ -26,6 +26,47 @@ DROP TABLE IF EXISTS `lang_custom`;
 -- ************************************************************************************
 -- ************************************************************************************
 
+
+CREATE TABLE IF NOT EXISTS `floor_plans_zones` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `floor_plan_id` bigint(20) NOT NULL,
+  `title` varchar(255) DEFAULT NULL,
+  `type` varchar(255) DEFAULT NULL,
+  `bg_color` varchar(10) DEFAULT NULL,
+  `border_color` varchar(10) DEFAULT NULL,
+  `scale` varchar(30) DEFAULT NULL,
+  `width` int(11) DEFAULT NULL,
+  `height` int(11) DEFAULT NULL,
+  `x` int(11) DEFAULT NULL,
+  `y` int(11) DEFAULT NULL,
+  `show_priority_color` tinyint(1) DEFAULT '1',
+  `show_patient_preview` tinyint(1) DEFAULT '1',
+  `active` tinyint(1) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=29 ;
+
+INSERT INTO `floor_plans_zones` (`id`, `floor_plan_id`, `title`, `type`, `bg_color`, `border_color`, `scale`, `width`, `height`, `x`, `y`, `show_priority_color`, `show_patient_preview`, `active`) VALUES
+(1, 1, '312', NULL, NULL, NULL, 'medium', NULL, NULL, 50, 273, 1, 1, 1),
+(2, 1, '316', NULL, NULL, NULL, 'medium', NULL, NULL, 50, 411, 1, 1, 1),
+(3, 1, '314', NULL, NULL, NULL, 'medium', NULL, NULL, 50, 342, 1, 1, 1),
+(4, 1, '304', NULL, NULL, NULL, 'medium', NULL, NULL, 100, 34, 1, 1, 1),
+(5, 1, '317', NULL, NULL, NULL, 'medium', NULL, NULL, 50, 446, 1, 1, 1),
+(6, 1, '301', NULL, NULL, NULL, 'medium', NULL, NULL, 249, 34, 1, 1, 1),
+(7, 1, '308', NULL, NULL, NULL, 'medium', NULL, NULL, 50, 136, 1, 1, 1),
+(8, 1, '318', NULL, NULL, NULL, 'medium', NULL, NULL, 50, 481, 1, 1, 1),
+(9, 1, '303', NULL, NULL, NULL, 'medium', NULL, NULL, 150, 34, 1, 1, 1),
+(10, 1, '315', NULL, NULL, NULL, 'medium', NULL, NULL, 50, 376, 1, 1, 1),
+(11, 1, '302', NULL, NULL, NULL, 'medium', NULL, NULL, 199, 34, 1, 1, 1),
+(12, 1, '310', NULL, NULL, NULL, 'medium', NULL, NULL, 50, 204, 1, 1, 1),
+(13, 1, '311', NULL, NULL, NULL, 'medium', NULL, NULL, 50, 238, 1, 1, 1),
+(14, 1, '305', NULL, NULL, NULL, 'medium', NULL, NULL, 50, 34, 1, 1, 1),
+(15, 1, '307', NULL, NULL, NULL, 'medium', NULL, NULL, 50, 102, 1, 1, 1),
+(16, 1, '313', NULL, NULL, NULL, 'medium', NULL, NULL, 50, 308, 1, 1, 1),
+(17, 1, '309', NULL, NULL, NULL, 'medium', NULL, NULL, 49, 170, 1, 1, 1),
+(18, 1, '306', NULL, NULL, NULL, 'medium', NULL, NULL, 50, 68, 1, 1, 1),
+(20, 2, 'Hello', NULL, '#33CCCC', '#33CCCC', 'medium', NULL, NULL, 100, 238, 1, 1, 1),
+(28, 2, 'Hello2', NULL, '#99CC00', '#99CC00', 'medium', NULL, NULL, 95, 163, 1, 1, 1);
+
 DROP TABLE IF EXISTS `forms_fields`;
 CREATE TABLE IF NOT EXISTS `forms_fields` (
   `id` bigint(11) NOT NULL AUTO_INCREMENT,

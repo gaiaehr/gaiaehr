@@ -40,7 +40,6 @@ if(!defined('_GaiaEXEC')) die('No direct access allowed.');
         Ext.require('App.view.sitesetup.SiteSetup');
         Ext.onReady(function(){
             i18nRouter.getTranslation(function(provider, response){
-                i18n = response.result;
                 app = Ext.create('App.view.sitesetup.SiteSetup').show();
             });
         });

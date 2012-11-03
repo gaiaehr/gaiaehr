@@ -79,6 +79,7 @@ Ext.define('App.view.administration.FloorPlans', {
             ]
         });
         me.floorPlanZoneEditor = Ext.create('Ext.window.Window', {
+            title:i18n('zone_editor'),
             closeAction:'hide',
             items:[
                 {
@@ -97,7 +98,7 @@ Ext.define('App.view.administration.FloorPlans', {
                         },
                         {
                             xtype:'colorcombo',
-                            fieldLabel: i18n('color'),
+                            fieldLabel: i18n('border_color'),
                             name:'color'
                         },
                         {
@@ -241,8 +242,11 @@ Ext.define('App.view.administration.FloorPlans', {
                 }
             },
             scale: 'medium',
+            style:{'border-color':record.data.color},
             x: record ? record.data.x : 5,
             y: record ? record.data.y : 5,
+            width:record.data.width,
+            height:record.data.height,
             enableToggle: true,
             scope:me,
             toggleHandler: me.onZoneToggled

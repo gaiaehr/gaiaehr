@@ -826,12 +826,12 @@ Ext.define('App.view.patient.windows.Medical', {
                                             action:'dental',
                                             name:'title'
                                         },
-                                        //                                        {
-                                        //   		                                    xtype:'textfield',
-                                        //   		                                    hidden:true,
-                                        //   		                                    name:'immunization_id',
-                                        //   		                                    action:'idField'
-                                        //   	                                    },
+//                                        {
+//   		                                    xtype:'textfield',
+//   		                                    hidden:true,
+//   		                                    name:'dental_id',
+//   		                                    action:'idField'
+//   	                                    },
                                         {
                                             fieldLabel:i18n('begin_date'),
                                             xtype:'datefield',

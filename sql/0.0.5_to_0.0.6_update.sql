@@ -26,7 +26,7 @@ DROP TABLE IF EXISTS `lang_custom`;
 -- ************************************************************************************
 -- ************************************************************************************
 
-
+DROP TABLE IF EXISTS `floor_plans_zones`;
 CREATE TABLE IF NOT EXISTS `floor_plans_zones` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `floor_plan_id` bigint(20) NOT NULL,

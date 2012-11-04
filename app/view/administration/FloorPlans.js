@@ -82,6 +82,7 @@ Ext.define('App.view.administration.FloorPlans', {
         me.floorPlanZoneEditor = Ext.create('Ext.window.Window', {
             title:i18n('zone_editor'),
             closeAction:'hide',
+            closable:false,
             items:[
                 {
                     xtype:'form',
@@ -137,7 +138,6 @@ Ext.define('App.view.administration.FloorPlans', {
                             name: 'active'
                         }
                     ]
-
                 }
             ],
             buttons:[
@@ -147,7 +147,7 @@ Ext.define('App.view.administration.FloorPlans', {
                     scope:me,
                     handler:me.onZoneRemove
                 },
-                '-',
+                '->',
                 {
                     text:i18n('cancel'),
                     xtype:'button',
@@ -161,49 +161,82 @@ Ext.define('App.view.administration.FloorPlans', {
                     scope:me,
                     handler:me.onZoneSave
                 }
-            ]
+            ],
+            listeners:{
+                scope:me,
+                afterrender:function(win){
+                   win.alignTo(this.floorPlanZones.getEl(), 'tr-tr', [-130, 70]);
+                }
+            }
         });
         me.listeners = {
             show: function(){
-                me.nav = Ext.create('Ext.util.KeyNav', Ext.getDoc(), {
-                        scope: me,
-                        left: function(){
-                            me.moveZone('left')
-                        },
-                        up: function(){
-                            me.moveZone('up')
-                        },
-                        right: function(){
-                            me.moveZone('right')
-                        },
-                        down: function(){
-                            me.moveZone('down')
-                        }
-                    });
+                me.nav = Ext.create('Ext.util.KeyNav', Ext.getDoc(),{
+                    scope: me,
+                    left: function(){
+                        me.moveZone('left');
+                    },
+                    up: function(){
+                        me.moveZone('up');
+                    },
+                    right: function(){
+                        me.moveZone('right');
+                    },
+                    down: function(){
+                        me.moveZone('down');
+                    }
+                });
             },
             hide: function(){
-                if(me.nav){
-                    Ext.destroy(me.nav);
-                }
+                if(me.nav) Ext.destroy(me.nav);
             }
         };
-        me.pageBody = [me.floorPlans, me.floorPlanZones];
+        me.pageBody = [me.floorPlans, me.floorPlanZones ];
         me.callParent(arguments);
     },
-    setEditMode:function(bool){
-        this.floorPlanZoneEditor.setVisible(bool);
+    setEditMode:function(bool, zone){
+        var me = this;
+        if(bool){
+            me.activeZone = zone;
+            me.getEditor().zone = zone;
+            me.floorPlanZones.focus();
+            me.getEditor().getForm().loadRecord(zone.record);
+        }else{
+            me.getEditor().getForm().reset();
+            me.activeZone = null;
+        }
+        me.floorPlanZoneEditor.setVisible(bool);
     },
     getEditor:function(){
         return this.floorPlanZoneEditor.down('form');
     },
     onZoneCancel:function(btn){
-        btn.up('window').hide();
+        var me = this,
+            zone = me.activeZone,
+            record = zone.record,
+            config;
+        record.reject();
+        config = {
+            text: record.data.title,
+            scale: record.data.scale,
+            style:{
+                'border-color':record.data.border_color,
+                'background-color':record.data.bg_color
+            },
+            width:record.data.width,
+            height:record.data.height
+        };
+        me.activeZone.setPosition(record.data.x, record.data.y);
+        me.applyZoneConfig(zone, config);
+        me.setEditMode(false);
     },
-    onZoneSave:function(btn){
-        var editor = this.getEditor(),
+    onZoneSave:function(){
+        var me = this,
+            editor = me.getEditor(),
             form = editor.getForm(),
             values = form.getValues(),
-            record = form.getRecord();
+            record = form.getRecord(),
+            config;
         record.set(values);
         config = {
             text: record.data.title,
@@ -215,25 +248,15 @@ Ext.define('App.view.administration.FloorPlans', {
             width:record.data.width,
             height:record.data.height
         };
-        this.applyZoneConfig(editor.zone, config);
+        record.store.sync();
+        me.applyZoneConfig(editor.zone, config);
+        me.setEditMode(false);
     },
-    onZoneToggled:function(zone, pressed){
-        var me = this, config;
-        me.setEditMode(pressed);
-        if(pressed){
-            me.activeZone = zone;
-            me.getEditor().zone = zone;
-            me.floorPlanZones.focus();
-            me.getEditor().getForm().loadRecord(zone.record);
-        }else{
-            me.activeZone = null;
-            zone.record.set({
-                x: zone.x,
-                y: zone.y
-            });
-        }
+    onZoneHandler:function(zone){
+        var me = this;
+        me.setEditMode(true, zone);
     },
-    onZoneRemove:function(btn){
+    onZoneRemove:function(){
         var me = this,
             editor = this.getEditor(),
             form = editor.getForm(),
@@ -256,73 +279,57 @@ Ext.define('App.view.administration.FloorPlans', {
                 }
             }
         });
-
     },
     onNewZone: function(){
-        this.createZone(null);
+        var me = this;
+        me.floorZonesStore.add({
+            floor_plan_id: me.floorPlanId,
+            title: i18n('new_zone'),
+            x: 5,
+            y: 5,
+            show_priority_color: 1,
+            show_patient_preview: 1,
+            active: 0
+        });
+        me.floorZonesStore.sync({
+            callback: function(batch){
+                me.createZone(batch.operations[0].records[0]);
+            }
+        });
     },
     createZone: function(record){
-        var me = this, zone, form;
-        zone = Ext.create('Ext.button.Split', {
-            text: record ? record.data.title : i18n('new_zone'),
-            toggleGroup: 'zones',
-            draggable: {
-                listeners: {
-                    scope: me,
-                    dragend: me.zoneDragged
-                }
-            },
-            scale: record.data.scale,
-            style:{
-                'border-color':record.data.border_color,
-                'background-color':record.data.bg_color
-            },
-            x: record ? record.data.x : 5,
-            y: record ? record.data.y : 5,
-            width:record.data.width,
-            height:record.data.height,
-            enableToggle: true,
-            scope:me,
-            toggleHandler: me.onZoneToggled
-        });
-        me.floorPlanZones.add(zone);
-        if(record != null){
-            zone.record = record;
-        }else{
-            me.floorZonesStore.add({
-                floor_plan_id: me.floorPlanId,
-                title: i18n('new_zone'),
-                x: 5,
-                y: 5,
-                show_priority_color: 1,
-                show_patient_preview: 1,
-                active: 0
-            });
-            me.floorZonesStore.sync({
-                callback: function(batch, options){
-                    zone.record = batch.operations[0].records[0];
-                }
+        var me = this, zone;
+        zone = me.floorPlanZones.add(
+            Ext.create('Ext.button.Split', {
+                text: record.data.title,
+                draggable: {
+                    listeners: {
+                        scope: me,
+                        dragend: me.zoneDragged
+                    }
+                },
+                scale: record.data.scale,
+                style:{
+                    'border-color':record.data.border_color,
+                    'background-color':record.data.bg_color
+                },
+                x: record ? record.data.x : 5,
+                y: record ? record.data.y : 5,
+                width:record.data.width,
+                height:record.data.height,
+                scope:me,
+                handler: me.onZoneHandler
             })
-        }
+        );
+        zone.record = record;
     },
     applyZoneConfig:function(zone, config){
+        say(config);
         zone.setText(config.text);
         zone.getEl().applyStyles(config.style);
         zone.setScale(config.scale);
         zone.setSize(config.width, config.height);
     },
-//    afterMenuShow: function(btn){
-//        btn.toggle(true);
-//    },
-//    afterMenuHide: function(btn){
-//        var form = btn.menu.items.items[0].getForm(),
-//            record = form.getRecord();
-//        form.loadRecord(record);
-//            values = form.getValues(),
-//            record = form.getRecord();
-//        btn.setText(values.title);
-//        record.set(values);
-//    },
     moveZone: function(direction){
         if(app.currCardCmp == this && this.activeZone != null){
             var x = this.activeZone.x, y = this.activeZone.y;
@@ -336,10 +343,15 @@ Ext.define('App.view.administration.FloorPlans', {
                 y = y + 1;
             }
             this.activeZone.setPosition(x, y);
+            this.activeZone.record.set({x:x,y:y});
         }
     },
     zoneDragged: function(drag){
-        drag.comp.toggle(true);
+        var zone = drag.comp;
+        zone.record.set({
+            x: zone.x,
+            y: zone.y
+        });
     },
     onNewFloorPlan: function(){
         this.floorPlansStore.add({});
@@ -355,10 +367,8 @@ Ext.define('App.view.administration.FloorPlans', {
             params:{ floor_plan_id: this.floorPlanId },
             scope: me,
             callback: function(records, operation, success){
-                this.activeZone = null;
-                for(var i = 0; i < records.length; i++){
-                    me.createZone(records[i]);
-                }
+                me.setEditMode(false);
+                for(var i = 0; i < records.length; i++) me.createZone(records[i]);
             }
         });
     },

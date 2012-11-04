@@ -145,7 +145,7 @@
 }
 .mitos-mask-msg {
     z-index:300001;
-    background: url(../images/loading.jpg) no-repeat white center top;
+    background: url(../images/loading.gif) no-repeat white center top;
     left:   45%;
     top:    40%;
 }

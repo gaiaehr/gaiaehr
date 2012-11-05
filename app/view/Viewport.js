@@ -37,6 +37,7 @@ Ext.define('App.view.Viewport', {
         me.patient = {
             name: null,
             pid: null,
+            pic: null,
             sex: null,
             dob: null,
             age: null,
@@ -385,7 +386,15 @@ Ext.define('App.view.Viewport', {
                             xtype: 'dataview',
                             loadMask: false,
                             cls: 'patient-pool-view',
-                            tpl: '<tpl for=".">' + '<div class="patient-pool-btn x-btn x-btn-default-large {priority}">' + '<div class="patient_btn_img"><img src="{photoSrc}" width="35" height="35"></div>' + '<div class="patient_btn_info">' + '<div class="patient-name">{shortName}</div>' + '<div class="patient-name">#{pid} ({poolArea})</div>' + '</div>' + '</div>' + '</tpl>',
+                            tpl: '<tpl for=".">' +
+                                '<div class="patient-pool-btn x-btn x-btn-default-large {priority}">' +
+                                '<div class="patient_btn_img"><img src="{photoSrc}" width="32" height="32"></div>' +
+                                '<div class="patient_btn_info">' +
+                                '<div class="patient-name">{shortName}</div>' +
+                                '<div class="patient-name">#{pid} ({poolArea})</div>' +
+                                '</div>' +
+                                '</div>' +
+                                '</tpl>',
                             itemSelector: 'div.patient-pool-btn',
                             overItemCls: 'patient-over',
                             selectedItemClass: 'patient-selected',
@@ -812,6 +821,7 @@ Ext.define('App.view.Viewport', {
                     me.patient = {
                         pid: data.patient.pid,
                         name: data.patient.name,
+                        pic: data.patient.pic,
                         sex: data.patient.sex,
                         dob: data.patient.dob,
                         age: data.patient.age,
@@ -819,12 +829,7 @@ Ext.define('App.view.Viewport', {
                         priority: data.patient.priority,
                         readOnly: readOnly
                     };
-                    me.patientBtn.update({
-                            pid: data.patient.pid,
-                            name: data.patient.name
-                        });
-                    me.patientBtn.addCls(data.patient.priority);
-                    me.patientBtn.enable();
+                    me.patientButtonSet(me.patient);
                     if(me.patientSummaryBtn) me.patientSummaryBtn.enable();
                     if(me.patientOpenVisitsBtn) me.patientOpenVisitsBtn.enable();
                     if(me.patientCreateEncounterBtn) me.patientCreateEncounterBtn.enable();
@@ -843,6 +848,7 @@ Ext.define('App.view.Viewport', {
             me.patient = {
                 pid: null,
                 name: null,
+                pic: null,
                 sex: null,
                 dob: null,
                 age: null,
@@ -860,13 +866,36 @@ Ext.define('App.view.Viewport', {
                 if(me.patientCloseCurrEncounterBtn) me.patientCloseCurrEncounterBtn.disable();
                 if(me.patientChargeBtn) me.patientChargeBtn.disable();
                 if(me.patientCheckOutBtn) me.patientCheckOutBtn.disable();
-                me.patientBtn.disable();
-                me.patientBtn.update({
-                    pid: 'record number',
-                    name: i18n('no_patient_selected')
-                });
+                me.patientButtonSet();
             }
         });
+    },
+    patientButtonSet: function(data){
+        var me = this,
+            patient = data || {};
+        me.patientBtn.update({
+            pid: patient.pid || 'record number',
+            pic: patient.pic || (globals['url']+'/resources/images/icons/user_32.png'),
+            name: patient.name || i18n('no_patient_selected')
+        });
+        me.patientButtonRemoveCls();
+        if(patient.priority) me.patientBtn.addCls(data.priority);
+        me.patientBtn.setDisabled(!patient.pid);
+
+
+//        me.patientBtn.update({
+//            pid: data.pid ? data.pid : 'record number',
+//            pic: data.pic ? data.pic : globals['url']+'/resources/images/icons/user_32.png',
+//            name: data.name ? data.name : i18n('no_patient_selected')
+//        });
+//        if(data){
+//            if(data.priority) me.patientBtn.addCls(data.priority);
+//            me.patientBtn.enable();
+//        }else{
+//
+//            me.patientBtn.disable();
+//            me.patientButtonRemoveCls();
+//        }
     },
     patientButtonRemoveCls: function(){
         var me = this;
@@ -907,10 +936,19 @@ Ext.define('App.view.Viewport', {
         });
     },
     patientBtnTpl: function(){
-        return Ext.create('Ext.XTemplate', '<div class="patient_btn  {priority}">', '<div class="patient_btn_img"><img src="resources/images/icons/user_32.png"></div>', '<div class="patient_btn_info">', '<div class="patient_btn_name">{name}</div>', '<div class="patient_btn_record">( {pid} )</div>', '</div>', '</div>');
+        return Ext.create('Ext.XTemplate',
+            '<div class="patient_btn  {priority}">',
+            '   <div class="patient_btn_img">' +
+            '       <img src="{pic}" width="32" height="32">' +
+            '   </div>',
+            '   <div class="patient_btn_info">',
+            '       <div class="patient_btn_name">{name}</div>',
+            '       <div class="patient_btn_record">( {pid} )</div>',
+            '   </div>',
+            '</div>');
     },
     patientBtnRender: function(btn){
-        this.unsetPatient();
+        this.patientButtonSet();
         this.initializePatientPoolDragZone(btn)
     },
     getPatientsInPoolArea: function(){

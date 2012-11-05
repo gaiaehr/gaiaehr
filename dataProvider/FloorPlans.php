@@ -94,7 +94,6 @@ class FloorPlans
 
 	public function createFloorPlanZone(stdClass $params)
 	{
-
 		$data = get_object_vars($params);
 		unset($data['id']);
 		$this->db->setSQL($this->db->sqlBind($data, 'floor_plans_zones', 'I'));
@@ -130,6 +129,7 @@ class FloorPlans
 		$this->db->setSQL($this->db->sqlBind($data, 'patient_zone', 'I'));
 		$this->db->execLog();
 		$params->patientZoneId = $this->db->lastInsertId;
+		//$params->patientSummary = $this->patient->ge
 		return array(
 			'success' => true, 'data' => $params
 		);
@@ -144,7 +144,6 @@ class FloorPlans
 
 	public function unSetPatientFromZoneByPid($pid)
 	{
-
 		return;
 
 	}
@@ -174,6 +173,9 @@ class FloorPlans
 		return $zones;
 	}
 
+	public function getZonePatientSummaryByPid(){
+
+	}
 	//******************************************************************************************************************
 	// private functions
 	//******************************************************************************************************************

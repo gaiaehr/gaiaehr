@@ -1,0 +1,593 @@
+﻿D0120 periodic oral evaluation - established patient
+D0140 limited oral evaluation - problem focused
+D0145 oral evaluation for a patient under three years of age and counseling with primary caregiver
+D0150 comprehensive oral evaluation - new or established patient
+D0160 detailed and extensive oral evaluation - problem focused, by report
+D0170 re-evaluation - limited, problem focused (established patient; not post-operative visit)
+D0180 comprehensive periodontal evaluation - new or established patient
+D0210 intraoral - complete series (including bitewings)
+D0220 intraoral - periapical first film
+D0230 intraoral - periapical each additional film
+D0240 intraoral - occlusal film
+D0250 extraoral - first film
+D0260 extraoral - each additional film
+D0270 bitewing - single film
+D0272 bitewings - two films
+D0273 bitewings - three films
+D0274 bitewings - four films
+D0277 vertical bitewings - 7 to 8 films
+D0290 posterior-anterior or lateral skull and facial bone survey film
+D0310 sialography
+D0320 temporomandibular joint arthrogram, including injection/
+D0321 other temporomandibular joint films, by report
+D0322 tomographic survey
+D0330 panoramic film
+D0340 cephalometric film
+D0350 oral/facial photographic images
+D0360 cone beam ct - craniofacial data capture
+D0362 cone beam - two-dimensional image reconstruction using existing data, includes multiple images
+D0363 cone beam - three-dimensional image reconstruction using existing data, includes multiple images
+D0415 collection of microorganisms for culture and sensitivity
+D0416 viral culture
+D0417 collection and preparation of saliva sample for laboratory diagnostic testing
+D0418 analysis of saliva sample
+D0421 genetic test for susceptibility to oral diseases
+D0425 caries susceptibility tests
+D0431 adjunctive pre-diagnostic test that aids in detection of mucosal abnormalities including premalignant and malignant lesions, not to include cytology or biopsy procedures
+D0460 pulp vitality tests
+D0470 diagnostic casts
+D0472 accession of tissue, gross examination, preparation and transmission of written report
+D0473 accession of tissue, gross and microscopic examination, preparation and transmission of written report
+D0474 accession of tissue, gross and microscopic examination, including assessment of surgical margins for presence of disease, preparation and transmission of written report
+D0480 accession of exfoliative cytologic smears, microscopic examination, preparation and transmission of written report
+D0486 accession of transepithelial cytologic sample, microscopic examination, preparation and transmission of written report
+D0475 decalcification procedure
+D0476 special stains for microorganisms
+D0477 special stains, not for microorganisms
+D0478 immunohistochemical stains
+D0479 tissue in-situ hybridization, including interpretation
+D0481 electron microscopy - diagnostic
+D0482 direct immunofluorescence
+D0483 indirect immunofluorescence
+D0484 consultation on slides prepared elsewhere
+D0485 consultation, including preparation of slides from biopsy material supplied by referring source
+D0502 other oral pathology procedures, by report
+D0999 unspecified diagnostic procedure, by report
+D1110 prophylaxis - adult
+D1120 prophylaxis - child
+D1203 topical application of fluoride - child
+D1204 topical application of fluoride - adult
+D1206 topical fluoride varnish; therapeutic application for moderate to high caries risk patients
+D1310 nutritional counseling for control of dental disease
+D1320 tobacco counseling for the control and prevention of oral disease
+D1330 oral hygiene instructions
+D1351 sealant - per tooth
+D1352 preventive resin restoration in a moderate to high caries risk patient - permanent tooth
+D1510 space maintainer - fixed - unilateral
+D1515 space maintainer - fixed - bilateral
+D1520 space maintainer - removable - unilateral
+D1525 space maintainer - removable - bilateral
+D1550 re-cementation of space maintainer
+D1555 removal of fixed space maintainer
+D2140 amalgam - one surface, primary or permanent
+D2150 amalgam - two surfaces, primary or permanent
+D2160 amalgam - three surfaces, primary or permanent
+D2161 amalgam - four or more surfaces, primary or permanent
+D2330 resin-based composite - one surface, anterior
+D2331 resin-based composite - two surfaces, anterior
+D2332 resin-based composite - three surfaces, anterior
+D2335 resin-based composite - four or more surfaces or involving incisal angle (anterior)
+D2390 resin-based composite crown, anterior
+D2391 resin-based composite - one surface, posterior
+D2392 resin-based composite - two surfaces, posterior
+D2393 resin-based composite - three surfaces, posterior
+D2394 resin-based composite - four or more surfaces, posterior
+D2410 gold foil - one surface
+D2420 gold foil - two surfaces
+D2430 gold foil - three surfaces
+D2510 inlay - metallic - one surface
+D2520 inlay - metallic - two surfaces
+D2530 inlay - metallic - three or more surfaces
+D2542 onlay - metallic - two surfaces
+D2543 onlay - metallic - three surfaces
+D2544 onlay - metallic - four or more surfaces
+D2610 inlay - porcelain/ceramic - one surface
+D2620 inlay - porcelain/ceramic - two surfaces
+D2630 inlay - porcelain/ceramic - three or more surfaces
+D2642 onlay - porcelain/ceramic - two surfaces
+D2643 onlay - porcelain/ceramic - three surfaces
+D2644 onlay - porcelain/ceramic - four or more surfaces
+D2650 inlay - resin-based composite - one surface
+D2651 inlay - resin-based composite - two surfaces
+D2652 inlay - resin-based composite - three or more surfaces
+D2662 onlay - resin-based composite - two surfaces
+D2663 onlay - resin-based composite - three surfaces
+D2664 onlay - resin-based composite - four or more surfaces
+D2710 crown - resin-based composite (indirect)
+D2712 crown - 3⁄4 resin-based composite (indirect)
+D2720 crown - resin with high noble metal
+D2721 crown - resin with predominantly base metal
+D2722 crown - resin with noble metal
+D2740 crown - porcelain/ceramic substrate
+D2750 crown - porcelain fused to high noble metal
+D2751 crown - porcelain fused to predominantly base metal
+D2752 crown - porcelain fused to noble metal
+D2780 crown - 3⁄4 cast high noble metal
+D2781 crown - 3⁄4 cast predominantly base metal
+D2782 crown - 3⁄4 cast noble metal
+D2783 crown - 3⁄4 porcelain/ceramic
+D2790 crown - full cast high noble metal
+D2791 crown - full cast predominantly base metal
+D2792 crown - full cast noble metal
+D2794 crown - titanium
+D2799 provisional crown
+D2910 recement inlay, onlay, or partial coverage restoration
+D2915 recement cast or prefabricated post and core
+D2920 recement crown
+D2930 prefabricated stainless steel crown - primary tooth
+D2931 prefabricated stainless steel crown - permanent tooth
+D2932 prefabricated resin crown
+D2933 prefabricated stainless steel crown with resin window
+D2934 prefabricated esthetic coated stainless steel crown - primary tooth
+D2940 protective restoration
+D2950 core buildup, including any pins
+D2951 pin retention - per tooth, in addition to restoration
+D2952 post and core in addition to crown, indirectly fabricated
+D2953 each additional indirectly fabricated post - same tooth
+D2954 prefabricated post and core in addition to crown
+D2955 post removal (not in conjunction with endodontic therapy)
+D2957 each additional prefabricated post - same tooth
+D2960 labial veneer (resin laminate) - chairside
+D2961 labial veneer (resin laminate) - laboratory
+D2962 labial veneer (porcelain laminate) - laboratory
+D2970 temporary crown (fractured tooth)
+D2971 additional procedures to construct new crown under existing partial denture framework
+D2975 coping
+D2980 crown repair, by report
+D2999 unspecified restorative procedure, by report
+D3110 pulp cap - direct (excluding final restoration)
+D3120 pulp cap - indirect (excluding final restoration)
+D3220 therapeutic pulpotomy (excluding final restoration) - removal of pulp coronal to the dentinocemental junction and application of medicament
+D3221 pulpal debridement, primary and permanent teeth
+D3222 partial pulpotomy for apexogenesis - permanent tooth with incomplete root development
+D3230 pulpal therapy (resorbable filling) - anterior, primary tooth (excluding final restoration)
+D3240 pulpal therapy (resorbable filling) - posterior, primary tooth (excluding final restoration)
+D3310 endodontic therapy, anterior tooth (excluding final restoration)
+D3320 endodontic therapy, bicuspid tooth (excluding final restoration)
+D3330 endodontic therapy, molar (excluding final restoration)
+D3331 treatment of root canal obstruction; non-surgical access
+D3332 incomplete endodontic therapy; inoperable, unrestorable or fractured tooth
+D3333 internal root repair of perforation defects
+D3346 retreatment of previous root canal therapy - anterior
+D3347 retreatment of previous root canal therapy - bicuspid
+D3348 retreatment of previous root canal therapy - molar
+D3351 apexification/recalcification/pulpal regeneration - initial visit (apical closure/calcific repair of perforations, root resorption, pulp space disinfection, etc.)
+D3352 apexification/recalcification/pulpal regeneration - interim medication replacement (apical closure/calcific repair of perforations, root resorption, pulp space disinfection, etc.)
+D3353 apexification/recalcification - final visit (includes completed root canal therapy - apical closure/calcific repair of perforations, root resorption, etc.)
+D3354 pulpal regeneration - (completion of regenerative treatment in an immature permanent tooth with a necrotic pulp); does not include final restoration
+D3410 apicoectomy/periradicular surgery - anterior
+D3421 apicoectomy/periradicular surgery - bicuspid (first root)
+D3425 apicoectomy/periradicular surgery - molar (first root)
+D3426 apicoectomy/periradicular surgery (each additional root)
+D3430 retrograde filling - per root
+D3450 root amputation - per root
+D3460 endodontic endosseous implant
+D3470 intentional reimplantation (including necessary splinting)
+D3910 surgical procedure for isolation of tooth with rubber dam
+D3920 hemisection (including any root removal), not including root canal therapy
+D3950 canal preparation and fitting of preformed dowel or post
+D3999 unspecified endodontic procedure, by report
+D4210 gingivectomy or gingivoplasty - four or more contiguous teeth or tooth bounded spaces per quadrant
+D4211 gingivectomy or gingivoplasty - one to three contiguous teeth or tooth bounded spaces per quadrant
+D4230 anatomical crown exposure - four or more contiguous teeth per quadrant
+D4231 anatomical crown exposure - one to three teeth per quadrant
+D4240 gingival flap procedure, including root planing - four or more contiguous teeth or tooth bounded spaces per quadrant
+D4241 gingival flap procedure, including root planing - one to three contiguous teeth or tooth bounded spaces per quadrant
+D4245 apically positioned flap
+D4249 clinical crown lengthening - hard tissue
+D4260 osseous surgery (including flap entry and closure) - four or more contiguous teeth or tooth bounded spaces per quadrant
+D4261 osseous surgery (including flap entry and closure) - one to three contiguous teeth or tooth bounded spaces per quadrant
+D4263 bone replacement graft - first site in quadrant
+D4264 bone replacement graft - each additional site in quadrant
+D4265 biologic materials to aid in soft and osseous tissue regeneration
+D4266 guided tissue regeneration - resorbable barrier, per site
+D4267 guided tissue regeneration - nonresorbable barrier, per site (includes membrane removal)
+D4268 surgical revision procedure, per tooth
+D4270 pedicle soft tissue graft procedure
+D4271 free soft tissue graft procedure (including donor site surgery)
+D4273 subepithelial connective tissue graft procedures, per tooth
+D4274 distal or proximal wedge procedure (when not performed in conjunction with surgical procedures in the same anatomical area)
+D4275 soft tissue allograft
+D4276 combined connective tissue and double pedicle graft, per tooth
+D4320 provisional splinting - intracoronal
+D4321 provisional splinting - extracoronal
+D4341 periodontal scaling and root planing - four or more teeth per quadrant
+D4342 periodontal scaling and root planing - one to three teeth per quadrant
+D4355 full mouth debridement to enable comprehensive evaluation and diagnosis
+D4381 localized delivery of antimicrobial agents via a controlled release vehicle into diseased crevicular tissue, per tooth, by report
+D4910 periodontal maintenance
+D4920 unscheduled dressing change (by someone other than treating dentist)
+D4999 unspecified periodontal procedure, by report
+D5110 complete denture - maxillary
+D5120 complete denture - mandibular
+D5130 immediate denture - maxillary
+D5140 immediate denture - mandibular
+D5211 maxillary partial denture - resin base (including any conventional clasps, rests and teeth)
+D5212 mandibular partial denture - resin base (including any conventional clasps, rests and teeth)
+D5213 maxillary partial denture - cast metal framework with resin denture bases (including any conventional clasps, rests and teeth)
+D5214 mandibular partial denture - cast metal framework with resin denture bases (including any conventional clasps, rests and teeth)
+D5225 maxillary partial denture - flexible base (including any clasps, rests and teeth) 
+D5226 mandibular partial denture - flexible base (including any clasps, rests and teeth)
+D5281 removable unilateral partial denture - one piece cast metal (including clasps and teeth)
+D5410 adjust complete denture - maxillary
+D5411 adjust complete denture - mandibular
+D5421 adjust partial denture - maxillary
+D5422 adjust partial denture - mandibular
+D5510 repair broken complete denture base
+D5520 replace missing or broken teeth - complete denture (each tooth) Repairs to Partial Dentures
+D5610 repair resin denture base
+D5620 repair cast framework
+D5630 repair or replace broken clasp
+D5640 replace broken teeth - per tooth
+D5650 add tooth to existing partial denture
+D5660 add clasp to existing partial denture
+D5670 replace all teeth and acrylic on cast metal framework (maxillary)
+D5671 replace all teeth and acrylic on cast metal framework (mandibular)
+D5710 rebase complete maxillary denture
+D5711 rebase complete mandibular denture
+D5720 rebase maxillary partial denture
+D5721 rebase mandibular partial denture
+D5730 reline complete maxillary denture (chairside)
+D5731 reline complete mandibular denture (chairside)
+D5740 reline maxillary partial denture (chairside)
+D5741 reline mandibular partial denture (chairside)
+D5750 reline complete maxillary denture (laboratory)
+D5751 reline complete mandibular denture (laboratory)
+D5760 reline maxillary partial denture (laboratory)
+D5761 reline mandibular partial denture (laboratory)
+D5810 interim complete denture (maxillary)
+D5811 interim complete denture (mandibular)
+D5820 interim partial denture (maxillary)
+D5821 interim partial denture (mandibular)
+D5850 tissue conditioning, maxillary
+D5851 tissue conditioning, mandibular
+D5860 overdenture - complete, by report
+D5861 overdenture - partial, by report
+D5862 precision attachment, by report
+D5867 replacement of replaceable part of semi-precision or precision attachment (male or female component)
+D5875 modification of removable prosthesis following implant surgery
+D5899 unspecified removable prosthodontic procedure, by report
+D5911 facial moulage (sectional)
+D5912 facial moulage (complete)
+D5913 nasal prosthesis
+D5914 auricular prosthesis
+D5915 orbital prosthesis
+D5916 ocular prosthesis
+D5919 facial prosthesis
+D5922 nasal septal prosthesis
+D5923 ocular prosthesis, interim
+D5924 cranial prosthesis
+D5925 facial augmentation implant prosthesis
+D5926 nasal prosthesis, replacement
+D5927 auricular prosthesis, replacement
+D5928 orbital prosthesis, replacement
+D5929 facial prosthesis, replacement
+D5931 obturator prosthesis, surgical
+D5932 obturator prosthesis, definitive
+D5933 obturator prosthesis, modification
+D5934 mandibular resection prosthesis with guide flange
+D5935 mandibular resection prosthesis without guide flange
+D5936 obturator prosthesis, interim
+D5937 trismus appliance (not for TMD treatment)
+D5951 feeding aid
+D5952 speech aid prosthesis, pediatric
+D5953 speech aid prosthesis, adult
+D5954 palatal augmentation prosthesis
+D5955 palatal lift prosthesis, definitive
+D5958 palatal lift prosthesis, interim
+D5959 palatal lift prosthesis, modification
+D5960 speech aid prosthesis, modification
+D5982 surgical stent
+D5983 radiation carrier
+D5984 radiation shield
+D5985 radiation cone locator
+D5986 fluoride gel carrier
+D5987 commissure splint
+D5988 surgical splint
+D5991 topical medicament carrier
+D5992 adjust maxillofacial prosthetic appliance, by report
+D5993 maintenance and cleaning of a maxillofacial prosthesis (extra or intraoral) other than required adjustments, by report
+D5999 unspecified maxillofacial prosthesis, by report
+D6190 radiographic/surgical implant index, by report
+D6010 surgical placement of implant body: endosteal implant
+D6012 surgical placement of interim implant body for transitional prosthesis: endosteal implant
+D6040 surgical placement: eposteal implant
+D6050 surgical placement: transosteal implant
+D6100 implant removal, by report
+D6055 connecting bar - implant supported or abutment supported
+D6056 prefabricated abutment - includes placement
+D6057 custom abutment - includes placement
+D6053 implant/abutment supported removable denture for completely edentulous arch
+D6054 implant/abutment supported removable denture for partially edentulous arch
+D6078 implant/abutment supported fixed denture for completely edentulous arch
+D6079 implant/abutment supported fixed denture for partially edentulous arch
+D6058 abutment supported porcelain/ceramic crown
+D6059 abutment supported porcelain fused to metal crown (high noble metal)
+D6060 abutment supported porcelain fused to metal crown (predominantly base metal)
+D6061 abutment supported porcelain fused to metal crown (noble metal)
+D6062 abutment supported cast metal crown (high noble metal)
+D6063 abutment supported cast metal crown (predominantly base metal)
+D6064 abutment supported cast metal crown (noble metal)
+D6094 abutment supported crown - (titanium)
+D6065 implant supported porcelain/ceramic crown
+D6066 implant supported porcelain fused to metal crown (titanium, titanium alloy, high noble metal)
+D6067 implant supported metal crown (titanium, titanium alloy, high noble metal)
+D6068 abutment supported retainer for porcelain/ceramic FPD
+D6069 abutment supported retainer for porcelain fused to metal FPD (high noble metal)
+D6070 abutment supported retainer for porcelain fused to metal FPD (predominantly base metal)
+D6071 abutment supported retainer for porcelain fused to metal FPD (noble metal)
+D6072 abutment supported retainer for cast metal FPD (high noble metal)
+D6073 abutment supported retainer for cast metal FPD (predominantly base metal)
+D6074 abutment supported retainer for cast metal FPD (noble metal)
+D6194 abutment supported retainer crown for FPD - (titanium)
+D6075 implant supported retainer for ceramic FPD
+D6076 implant supported retainer for porcelain fused to metal FPD (titanium, titanium alloy, or high noble metal)
+D6077 implant supported retainer for cast metal FPD (titanium, titanium alloy, or high noble metal)
+D6080 implant maintenance procedures, including removal of prosthesis, cleansing of prosthesis and abutments and reinsertion of prosthesis
+D6090 repair implant supported prosthesis, by report
+D6095 repair implant abutment, by report
+D6091 replacement of semi-precision or precision attachment (male or female component) of implant/abutment supported prosthesis, per attachment
+D6092 recement implant/abutment supported crown
+D6093 recement implant/abutment supported fixed partial denture
+D6199 unspecified implant procedure, by report
+D6205 pontic - indirect resin based composite
+D6210 pontic - cast high noble metal
+D6211 pontic - cast predominantly base metal
+D6212 pontic - cast noble metal
+D6214 pontic - titanium
+D6240 pontic - porcelain fused to high noble metal
+D6241 pontic - porcelain fused to predominantly base metal
+D6242 pontic - porcelain fused to noble metal
+D6245 pontic - porcelain/ceramic
+D6250 pontic - resin with high noble metal
+D6251 pontic - resin with predominantly base metal
+D6252 pontic - resin with noble metal
+D6253 provisional pontic
+D6254 interim pontic
+D6545 retainer - cast metal for resin bonded fixed prosthesis
+D6548 retainer - porcelain/ceramic for resin bonded fixed prosthesis
+D6600 inlay - porcelain/ceramic, two surfaces
+D6601 inlay - porcelain/ceramic, three or more surfaces
+D6602 inlay - cast high noble metal, two surfaces
+D6603 inlay - cast high noble metal, three or more surfaces
+D6604 inlay - cast predominantly base metal, two surfaces
+D6605 inlay - cast predominantly base metal, three or more surfaces
+D6606 inlay - cast noble metal, two surfaces
+D6607 inlay - cast noble metal, three or more surfaces
+D6624 inlay - titanium
+D6608 onlay - porcelain/ceramic, two surfaces
+D6609 onlay - porcelain/ceramic, three or more surfaces
+D6610 onlay - cast high noble metal, two surfaces
+D6611 onlay - cast high noble metal, three or more surfaces
+D6612 onlay - cast predominantly base metal, two surfaces
+D6613 onlay - cast predominantly base metal, three or more surfaces
+D6614 onlay - cast noble metal, two surfaces
+D6615 onlay - cast noble metal, three or more surfaces
+D6634 onlay - titanium
+D6710 crown - indirect resin based composite
+D6720 crown - resin with high noble metal
+D6721 crown - resin with predominantly base metal
+D6722 crown - resin with noble metal
+D6740 crown - porcelain/ceramic
+D6750 crown - porcelain fused to high noble metal
+D6751 crown - porcelain fused to predominantly base metal
+D6752 crown - porcelain fused to noble metal
+D6780 crown - 3⁄4 cast high noble metal
+D6781 crown - 3⁄4 cast predominantly base metal
+D6782 crown - 3⁄4 cast noble metal
+D6783 crown - 3⁄4 porcelain/ceramic
+D6790 crown - full cast high noble metal
+D6791 crown - full cast predominantly base metal
+D6792 crown - full cast noble metal
+D6794 crown - titanium
+D6793 provisional retainer crown
+D6795 interim retainer crown
+D6920 connector bar
+D6930 recement fixed partial denture
+D6940 stress breaker
+D6950 precision attachment
+D6970 post and core in addition to fixed partial denture retainer, indirectly fabricated
+D6972 prefabricated post and core in addition to fixed partial denture retainer
+D6973 core build up for retainer, including any pins
+D6975 coping - metal
+D6976 each additional indirectly fabricated post - same tooth
+D6977 each additional prefabricated post - same tooth
+D6980 fixed partial denture repair, by report
+D6985 pediatric partial denture, fixed
+D6999 unspecified fixed prosthodontic procedure, by report
+D7111 extraction, coronal remnants - deciduous tooth
+D7140 extraction, erupted tooth or exposed root (elevation and/or forceps removal)
+D7210 surgical removal of erupted tooth requiring removal of bone and/or sectioning of tooth, and including elevation of mucoperiosteal flap if indicated
+D7220 removal of impacted tooth - soft tissue
+D7230 removal of impacted tooth - partially bony
+D7240 removal of impacted tooth - completely bony
+D7241 removal of impacted tooth - completely bony, with unusual surgical complications
+D7250 surgical removal of residual tooth roots (cutting procedure)
+D7251 coronectomy - intentional partial tooth removal
+D7260 oroantral fistula closure
+D7261 primary closure of a sinus perforation
+D7270 tooth reimplantation and/or stabilization of accidentally evulsed or displaced tooth
+D7272 tooth transplantation (includes reimplantation from one site to another and splinting and/or stabilization)
+D7280 surgical access of an unerupted tooth
+D7282 mobilization of erupted or malpositioned tooth to aid eruption
+D7283 placement of device to facilitate eruption of impacted tooth
+D7285 biopsy of oral tissue - hard (bone, tooth)
+D7286 biopsy of oral tissue - soft
+D7287 exfoliative cytological sample collection
+D7288 brush biopsy - transepithelial sample collection
+D7290 surgical repositioning of teeth
+D7291 transseptal fiberotomy/supra crestal fiberotomy, by report
+D7292 surgical placement: temporary anchorage device [screw retained plate] requiring surgical flap
+D7293 surgical placement: temporary anchorage device requiring surgical flap
+D7294 surgical placement: temporary anchorage device without surgical flap
+D7295 harvest of bone fur use in autogenous grafting procedure
+D7310 alveoloplasty in conjunction with extractions - four or more teeth or tooth spaces, per quadrant
+D7311 alveoloplasty in conjunction with extractions - one to three teeth or tooth spaces, per quadrant
+D7320 alveoloplasty not in conjunction with extractions - four or more teeth or tooth spaces, per quadrant
+D7321 alveoloplasty not in conjunction with extractions - one to three teeth or tooth spaces, per quadrant
+D7340 vestibuloplasty - ridge extension (secondary epithelialization)
+D7350 vestibuloplasty - ridge extension (including soft tissue grafts, muscle reattachment, revision of soft tissue attachment and management of hypertrophied and hyperplastic tissue)
+D7410 excision of benign lesion up to 1.25 cm
+D7411 excision of benign lesion greater than 1.25 cm
+D7412 excision of benign lesion, complicated
+D7413 excision of malignant lesion up to 1.25 cm
+D7414 excision of malignant lesion greater than 1.25 cm
+D7415 excision of malignant lesion, complicated
+D7465 destruction of lesion(s) by physical or chemical method, by report
+D7440 excision of malignant tumor - lesion diameter up to 1.25 cm
+D7441 excision of malignant tumor - lesion diameter greater than 1.25 cm
+D7450 removal of benign odontogenic cyst or tumor - lesion diameter up to 1.25 cm
+D7451 removal of benign odontogenic cyst or tumor - lesion diameter greater than 1.25 cm
+D7460 removal of benign nonodontogenic cyst or tumor - lesion diameter up to 1.25 cm
+D7461 removal of benign nonodontogenic cyst or tumor - lesion diameter greater than 1.25 cm
+D7471 removal of lateral exostosis (maxilla or mandible)
+D7472 removal of torus palatinus
+D7473 removal of torus mandibularis
+D7485 surgical reduction of osseous tuberosity
+D7490 radical resection of maxilla or mandible
+D7510 incision and drainage of abscess - intraoral soft tissue
+D7511 incision and drainage of abscess - intraoral soft tissue - complicated (includes drainage of multiple fascial spaces)
+D7520 incision and drainage of abscess - extraoral soft tissue
+D7521 incision and drainage of abscess - extraoral soft tissue - complicated (includes drainage of multiple fascial spaces)
+D7530 removal of foreign body from mucosa, skin, or subcutaneous alveolar tissue
+D7540 removal of reaction producing foreign bodies, musculoskeletal system
+D7550 partial ostectomy/sequestrectomy for removal of non-vital bone
+D7560 maxillary sinusotomy for removal of tooth fragment or foreign body
+D7610 maxilla - open reduction (teeth immobilized, if present)
+D7620 maxilla - closed reduction (teeth immobilized, if present)
+D7630 mandible - open reduction (teeth immobilized, if present)
+D7640 mandible - closed reduction (teeth immobilized, if present)
+D7650 malar and/or zygomatic arch - open reduction
+D7660 malar and/or zygomatic arch - closed reduction
+D7670 alveolus - closed reduction, may include stabilization of teeth
+D7671 alveolus - open reduction, may include stabilization of teeth
+D7680 facial bones - complicated reduction with fixation and multiple surgical approaches
+D7710 maxilla - open reduction
+D7720 maxilla - closed reduction
+D7730 mandible - open reduction
+D7740 mandible - closed reduction
+D7750 malar and/or zygomatic arch - open reduction
+D7760 malar and/or zygomatic arch - closed reduction
+D7770 alveolus - open reduction stabilization of teeth
+D7771 alveolus, closed reduction stabilization of teeth
+D7780 facial bones - complicated reduction with fixation and multiple surgical approaches
+D7810 open reduction of dislocation
+D7820 closed reduction of dislocation
+D7830 manipulation under anesthesia
+D7840 condylectomy
+D7850 surgical discectomy, with/without implant
+D7852 disc repair
+D7854 synovectomy
+D7856 myotomy
+D7858 joint reconstruction
+D7860 arthrotomy
+D7865 arthroplasty
+D7870 arthrocentesis
+D7871 non-arthroscopic lysis and lavage
+D7872 arthroscopy - diagnosis, with or without biopsy
+D7873 arthroscopy - surgical: lavage and lysis of adhesions
+D7874 arthroscopy - surgical: disc repositioning and stabilization
+D7875 arthroscopy - surgical: synovectomy
+D7876 arthroscopy - surgical: discectomy
+D7877 arthroscopy - surgical: debridement
+D7880 occlusal orthotic device, by report
+D7899  unspecified TMD therapy, by report
+D7910 suture of recent small wounds up to 5 cm
+D7911 complicated suture - up to 5 cm
+D7912 complicated suture - greater than 5 cm
+D7920 skin graft (identify defect covered, location and type of graft)
+D7940 osteoplasty - for orthognathic deformities
+D7941 osteotomy - mandibular rami
+D7943 osteotomy - mandibular rami with bone graft; includes obtaining the graft
+D7944 osteotomy - segmented or subapical
+D7945 osteotomy - body of mandible
+D7946 LeFort I (maxilla - total)
+D7947 LeFort I (maxilla - segmented)
+D7948 LeFort II or LeFort III (osteoplasty of facial bones for midface hypoplasia or retrusion)-without bone graft
+D7949 LeFort II or LeFort III - with bone graft
+D7950 osseous, osteoperiosteal, or cartilage graft of the mandible or maxilla - autogenous or nonautogenous, by report
+D7951 sinus augmentation with bone or bone substitutes
+D7953 bone replacement graft for ridge preservation - per site
+D7955 repair of maxillofacial soft and/or hard tissue defect
+D7960 frenulectomy - also known as frenectomy or frenotomy - separate procedure not incidental to another procedure
+D7963 frenuloplasty
+D7970 excision of hyperplastic tissue - per arch
+D7971 excision of pericoronal gingiva
+D7972 surgical reduction of fibrous tuberosity
+D7980 sialolithotomy
+D7981 excision of salivary gland, by report
+D7982 sialodochoplasty
+D7983 closure of salivary fistula
+D7990 emergency tracheotomy
+D7991 coronoidectomy
+D7995 synthetic graft - mandible or facial bones, by report
+D7996 implant-mandible for augmentation purposes (excluding alveolar ridge), by report
+D7997 appliance removal (not by dentist who placed appliance), includes removal of archbar
+D7998 intraoral placement of a fixation device not in conjunction with a fracture
+D7999 unspecified oral surgery procedure, by report
+D8010 limited orthodontic treatment of the primary dentition
+D8020 limited orthodontic treatment of the transitional dentition
+D8030 limited orthodontic treatment of the adolescent dentition
+D8040 limited orthodontic treatment of the adult dentition
+D8050 interceptive orthodontic treatment of the primary dentition
+D8060 interceptive orthodontic treatment of the transitional dentitionComprehensive Orthodontic
+D8070 comprehensive orthodontic treatment of the transitional dentition
+D8080 comprehensive orthodontic treatment of the adolescent dentition
+D8090 comprehensive orthodontic treatment of the adult dentition
+D8210 removable appliance therapy
+D8220 fixed appliance therapy
+D8660 pre-orthodontic treatment visit
+D8670 periodic orthodontic treatment visit (as part of contract)
+D8680 orthodontic retention (removal of appliances, construction and placement of retainer(s))
+D8690 orthodontic treatment (alternative billing to a contract fee)
+D8691 repair of orthodontic appliance
+D8692 replacement of lost or broken retainer
+D8693 rebonding or recementing; and/or repair, as required, of fixed retainers
+D8999 unspecified orthodontic procedure, by report
+D9110 palliative (emergency) treatment of dental pain - minor procedure
+D9120 fixed partial denture sectioning
+D9210 local anesthesia not in conjunction with operative or surgical procedures
+D9211 regional block anesthesia
+D9212 trigeminal division block anesthesia
+D9215 local anesthesia in conjunction with operative or surgical procedures
+D9220 deep sedation/general anesthesia - first 30 minutes
+D9221 deep sedation/general anesthesia - each additional 15 minutes
+D9230 inhalation of nitrous oxide/anxiolysis, analgesia
+D9241 intravenous conscious sedation/analgesia - first 30 minutes
+D9242 intravenous conscious sedation/analgesia - each additional 15 minutes
+D9248 non-intravenous conscious sedation
+D9310 consultation - diagnostic service provided by dentist or physician other than requesting dentist or physician
+D9410 house/extended care facility call
+D9420 hospital or ambulatory surgical center call
+D9430 office visit for observation (during regularly scheduled hours) - no other services performed
+D9440 office visit - after regularly scheduled hours
+D9450 case presentation, detailed and extensive treatment planning
+D9610 therapeutic parenteral drug, single administration
+D9612 therapeutic parenteral drugs, two or more administrations, different medications
+D9630 other drugs and/or medicaments, by report
+D9910 application of desensitizing medicament
+D9911 application of desensitizing resin for cervical and/or root surface, per tooth
+D9920 behavior management, by report
+D9930 treatment of complications (post-surgical) - unusual circumstances, by report
+D9940 occlusal guard, by report
+D9941 fabrication of athletic mouthguard
+D9942 repair and/or reline of occlusal guard
+D9950 occlusion analysis - mounted case
+D9951 occlusal adjustment - limited
+D9952 occlusal adjustment - complete
+D9970 enamel microabrasion
+D9971 odontoplasty 1-2 teeth; includes removal of enamel projections
+D9972 external bleaching - per arch
+D9973 external bleaching - per tooth
+D9974 internal bleaching - per tooth
+D9999 unspecified adjunctive procedure, by report

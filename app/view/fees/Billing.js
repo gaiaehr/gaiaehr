@@ -193,7 +193,7 @@ Ext.define('App.view.fees.Billing',
 				}
 			},
 			{
-				text : i18('60+'),
+				text : i18n('60+'),
 				enableToggle : true,
 				action : 60,
 				scale : 'large',
@@ -205,7 +205,7 @@ Ext.define('App.view.fees.Billing',
 				}
 			},
 			{
-				text : i18('120+'),
+				text : i18n('120+'),
 				enableToggle : true,
 				action : 120,
 				scale : 'large',
@@ -217,7 +217,7 @@ Ext.define('App.view.fees.Billing',
 				}
 			},
 			{
-				text : i18('180+'),
+				text : i18n('180+'),
 				enableToggle : true,
 				action : 180,
 				scale : 'large',

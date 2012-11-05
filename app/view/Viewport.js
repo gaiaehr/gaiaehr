@@ -191,7 +191,7 @@ Ext.define('App.view.Viewport', {
             iconCls: 'icoArrowDown',
             scope: me,
             handler: me.stowPatientRecord,
-            tooltip: i18n('show_patient_record')
+            tooltip: i18n('stow_patient_record')
         });
         me.patientCheckOutBtn = me.Header.add({
             xtype: 'button',

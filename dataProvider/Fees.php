@@ -27,6 +27,7 @@ if (!isset($_SESSION))
 	session_start();
 	session_cache_limiter('private');
 }
+
 include_once ($_SESSION['root'] . '/classes/dbHelper.php');
 include_once ($_SESSION['root'] . '/dataProvider/Patient.php');
 include_once ($_SESSION['root'] . '/dataProvider/User.php');
@@ -204,8 +205,7 @@ class Fees
 		 * than doing a foreach in php code, also less code.
 		 *
 		 * $balance = 0;
-		 * $this -> db -> setSQL("SELECT * FROM payment_transactions WHERE payer_id =
-		 * '$pid'");
+		 * $this -> db -> setSQL("SELECT * FROM payment_transactions WHERE payer_id = '$pid'");
 		 * foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
 		 * {
 		 * $balance = $balance + $row['amount'];

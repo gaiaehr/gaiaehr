@@ -361,10 +361,6 @@ Ext.define('App.view.Viewport', {
                             ptype: 'nodedisabled'
                         }
                     ],
-                    //					root       : {
-                    //						nodeType : 'async',
-                    //						draggable: false
-                    //					},
                     listeners: {
                         scope: me,
                         selectionchange: me.onNavigationNodeSelected
@@ -881,21 +877,6 @@ Ext.define('App.view.Viewport', {
         me.patientButtonRemoveCls();
         if(patient.priority) me.patientBtn.addCls(data.priority);
         me.patientBtn.setDisabled(!patient.pid);
-
-
-//        me.patientBtn.update({
-//            pid: data.pid ? data.pid : 'record number',
-//            pic: data.pic ? data.pic : globals['url']+'/resources/images/icons/user_32.png',
-//            name: data.name ? data.name : i18n('no_patient_selected')
-//        });
-//        if(data){
-//            if(data.priority) me.patientBtn.addCls(data.priority);
-//            me.patientBtn.enable();
-//        }else{
-//
-//            me.patientBtn.disable();
-//            me.patientButtonRemoveCls();
-//        }
     },
     patientButtonRemoveCls: function(){
         var me = this;

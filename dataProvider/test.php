@@ -14,7 +14,7 @@
 //	exit;
 //}
 if(!isset($_SESSION)) {
-    session_name("GaiaEHR");
+    session_name('GaiaEHR');
     session_start();
     session_cache_limiter('private');
 }
@@ -52,48 +52,61 @@ $db = new dbHelper();
 //    }
 //    return  $ary;
 //}
-$filename = "cdt.txt";
-$handle   = fopen($filename, 'r');
-$string     = fread($handle, filesize($filename));
+
 
 //$division = Array(":",";");
 
 //$res = multiexplode($division,$string);
-function is_odd($int){
-    return ($int & 1);
-}
-$res = explode('?',$string);
-//print_r($res);
-$data = array();
-foreach($res as $num => $val){
-    echo '<pre>';
-	if($num != 0){
-	    if(is_odd($num)){
-	        $data['code'] = $val;
-
-	    }else{
-		        //$surgeries=($inside);
-			 $data['description']=$val;
-//			    print_r($data);
-//		           print $db->sqlBind($data, 'cdt_codes', 'I');
-//		           echo '<br>';
-		    $db -> setSQL($db->sqlBind($data, 'cdt_codes', 'I'));
-		    		$db -> execLog();
-//        $sql=  "INSERT INTO cdt_codes (code, description) VALUES('".$data['code']."','".$data['description']."')";
+//function is_odd($int){
+//    return ($int & 1);
+//}
+//$res = explode('?',$string);
+////print_r($res);
+//$data = array();
+//foreach($res as $num => $val){
+//    echo '<pre>';
+//	if($num != 0){
+//	    if(is_odd($num)){
+//	        $data['code'] = $val;
 //
-//                mysql_query($sql);
-//                echo $sql . "\n";
-//                if(mysql_error()) {
-//                    echo mysql_error() . "\n";
-//                }
+//	    }else{
+//		        //$surgeries=($inside);
+//			 $data['description']=$val;
+////			    print_r($data);
+////		           print $db->sqlBind($data, 'cdt_codes', 'I');
+////		           echo '<br>';
+//		    $db -> setSQL($db->sqlBind($data, 'cdt_codes', 'I'));
+//		    		$db -> execLog();
+////        $sql=  "INSERT INTO cdt_codes (code, description) VALUES('".$data['code']."','".$data['description']."')";
+////
+////                mysql_query($sql);
+////                echo $sql . "\n";
+////                if(mysql_error()) {
+////                    echo mysql_error() . "\n";
+////                }
+//
+//	    }
+//	}
+//}
 
-	    }
-	}
+$filename   = 'cdt.txt';
+$handle     = fopen($filename, 'r');
+$string     = fread($handle, filesize($filename));
+//preg_match("/(\w*?) (.*\n)/", $string, $matches, PREG_OFFSET_CAPTURE);
+//
+//print '<pre>';
+//print_r($matches);
+//
+//$html = "<b>bold text</b><a href=howdy.html>click me</a>";
+
+preg_match_all("/(.*?) (.*)\n/", $string, $matches, PREG_SET_ORDER);
+foreach ($matches as $val){
+	$data = array('code' => $val[1], 'text' => $val[2]);
+	$db->setSQL($db->sqlBind($data,'cdt_codes','I'));
+	$db->execOnly();
 }
-
 
 //    print_r($res);
-
 //foreach($res as $num => $val){
 //    echo '<pre>';
 //    if(is_odd($num)){

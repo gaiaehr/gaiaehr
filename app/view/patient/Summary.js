@@ -1309,10 +1309,14 @@ Ext.define('App.view.patient.Summary', {
                 });
                 me.getPatientImgs();
                 me.verifyPatientRequiredInfo();
-                Patient.getPatientInsurancesCardsUrlByPid(me.pid, function(url){
-                    me.primaryInsuranceImg.update('<img src="' + (url.Primary.url ? url.Primary.url : 'resources/images/icons/no_card.jpg') + '" height="154" width="254" />');
-                    me.secondaryInsuranceImg.update('<img src="' + (url.Secondary.url ? url.Secondary.url : 'resources/images/icons/no_card.jpg') + '" height="154" width="254" />');
-                    me.tertiaryInsuranceImg.update('<img src="' + (url.Tertiary.url ? url.Tertiary.url : 'resources/images/icons/no_card.jpg') + '" height="154" width="254" />');
+                Patient.getPatientInsurancesCardsUrlByPid(me.pid, function(isurance){
+                    var noCard = 'resources/images/icons/no_card.jpg',
+                        Ins1 = isurance.Primary.url ? isurance.Primary.url : noCard,
+                        Ins2 = isurance.Secondary.url ? isurance.Secondary.url : noCard,
+                        Ins3 = isurance.Tertiary.url ? isurance.Tertiary.url : noCard;
+                    me.primaryInsuranceImg.update('<img src="'+Ins1+'" height="154" width="254" />');
+                    me.secondaryInsuranceImg.update('<img src="'+Ins2+'" height="154" width="254" />');
+                    me.tertiaryInsuranceImg.update('<img src="'+Ins3+'" height="154" width="254" />');
                 });
             }
             /**

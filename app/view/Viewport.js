@@ -1048,7 +1048,7 @@ Ext.define('App.view.Viewport', {
                     this.removeFromGroup(this.ddGroup);
                     say('drag record:');
                     say(patientData);
-                    if(patientData.floorPlanId != null && patientData.patientZoneId == null){
+                    if(patientData.floorPlanId != 0 && patientData.patientZoneId == 0){
                         app.navigateTo('panelAreaFloorPlan');
                         this.ddGroup = 'patientPoolAreas';
                     }else{

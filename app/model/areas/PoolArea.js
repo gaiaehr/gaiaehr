@@ -16,7 +16,6 @@ Ext.define('App.model.areas.PoolArea', {
 		{name: 'photoSrc', type: 'string'},
 		{name: 'poolArea', type: 'string'},
 		{name: 'floorPlanId', type: 'int'},
-		{name: 'floorPlanRequireZone', type: 'bool'},
 		{name: 'zoneId', type: 'int'},
 		{name: 'patientZoneId', type: 'int'},
 		{name: 'priority', type: 'string'}

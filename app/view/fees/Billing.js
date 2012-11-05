@@ -180,7 +180,7 @@ Ext.define('App.view.fees.Billing',
 				text : i18n('past_due') + ':'
 			},
 			{
-				text : '30+',
+				text : i18n('30+'),
 				enableToggle : true,
 				action : 30,
 				toggleGroup : 'pastduedates',
@@ -193,7 +193,7 @@ Ext.define('App.view.fees.Billing',
 				}
 			},
 			{
-				text : '60+',
+				text : i18('60+'),
 				enableToggle : true,
 				action : 60,
 				scale : 'large',
@@ -205,7 +205,7 @@ Ext.define('App.view.fees.Billing',
 				}
 			},
 			{
-				text : '120+',
+				text : i18('120+'),
 				enableToggle : true,
 				action : 120,
 				scale : 'large',
@@ -217,7 +217,7 @@ Ext.define('App.view.fees.Billing',
 				}
 			},
 			{
-				text : '180+',
+				text : i18('180+'),
 				enableToggle : true,
 				action : 180,
 				scale : 'large',

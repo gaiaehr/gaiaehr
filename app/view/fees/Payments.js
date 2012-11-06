@@ -28,7 +28,7 @@ Ext.define('App.view.fees.Payments',
 
 		me.encountersPaymentsStore = Ext.create('App.store.fees.EncountersPayments');
 
-		/*
+		/**
 		 * Search Panel Object
 		 */
 		me.searchPanel = Ext.create('Ext.panel.Panel',
@@ -126,10 +126,15 @@ Ext.define('App.view.fees.Payments',
 				}],
 				buttons : [
 				{
-					text : i18n('search')
+					text : i18n('search'),
+					scope : me
+					// TODO: Create the function to search the patient.
 				}, '-',
 				{
-					text : i18n('reset')
+					text : i18n('reset'),
+					scope : me,
+					handler: mr.onFormResetButton
+					// TODO: Create the function event to reset the form.
 				}, '->',
 				{
 					text : i18n('add_payment'),
@@ -161,7 +166,7 @@ Ext.define('App.view.fees.Payments',
 			}]
 		});
 
-		/*
+		/**
 		 * Detail Panel Object
 		 */
 		me.detailPanel = Ext.create('Ext.panel.Panel',
@@ -317,6 +322,9 @@ Ext.define('App.view.fees.Payments',
 		me.callParent(arguments);
 	},
 
+	/**
+	 * Shows the payment entry window. 
+	 */
 	onAddPaymentClick : function()
 	{
 		app.onPaymentEntryWindow();
@@ -449,6 +457,14 @@ Ext.define('App.view.fees.Payments',
 		{
 			me.window.show();
 		}
+	},
+	
+	/**
+	 * 
+	 */
+	onFormResetButton: function(btn)
+	{
+		alert('Hello there');
 	},
 
 	/**

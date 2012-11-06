@@ -175,7 +175,7 @@ Ext.define('App.view.patient.ProgressNote', {
             '                                   </tr>' +
             '                                   <tr class="x-grid-row">' +
             '                                       <td class="x-grid-cell">' +
-            '                                           <div class="x-grid-cell-inner ">' + i18n('oxygen_saturation') + '</div>' +
+            '                                           <div class="x-grid-cell-inner ">' + i18n('oxygen_saturation') + '%</div>' +
             '                                       </td>' +
             '                                   </tr>' +
             '                                   <tr class="x-grid-row">' +

@@ -39,27 +39,29 @@ class ClientList extends Reports
 
 		return;
 	}
+
 	public function createClientList(stdClass $params)
 	{
 		ob_end_clean();
-		$Url = $this -> ReportBuilder($params->html, 10);
+		$Url = $this -> ReportBuilder($params -> html, 10);
 		return array(
 			'success' => true,
 			'url' => $Url
 		);
 	}
-	public function getClientList(stdClass $params){
-		$params -> to = ($params -> to == '') ? date('Y-m-d') : $params -> to;
-		$records = $this->encounter->getEncounterByDateFromToAndPatient($params->from,$params->to,$params->pid);
 
-		foreach ($records AS $num=>$rec)
-				{
-					$records[$num]['fullname']=$this->patient->getPatientFullNameByPid($rec['pid']);
-					$records[$num]['fulladdress']= $this->patient->getPatientFullAddressByPid($rec['pid']);
-				}
+	public function getClientList(stdClass $params)
+	{
+		$params -> to = ($params -> to == '') ? date('Y-m-d') : $params -> to;
+		$records = $this -> encounter -> getEncounterByDateFromToAndPatient($params -> from, $params -> to, $params -> pid);
+
+		foreach ($records AS $num => $rec)
+		{
+			$records[$num]['fullname'] = $this -> patient -> getPatientFullNameByPid($rec['pid']);
+			$records[$num]['fulladdress'] = $this -> patient -> getPatientFullAddressByPid($rec['pid']);
+		}
 		return $records;
 	}
-
 
 }
 

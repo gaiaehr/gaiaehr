@@ -53,7 +53,6 @@ class Appointments extends Reports
 		);
 	}
 
-
 	public function getAppointmentsList(stdClass $params)
 	{
 		$params -> to = ($params -> to == '') ? date('Y-m-d') : $params -> to;
@@ -83,6 +82,7 @@ class Appointments extends Reports
 		}
 		return $alldata;
 	}
+	
 	public function getCalendarCategories($category)
 	{
 		$this -> db -> setSQL("SELECT catname

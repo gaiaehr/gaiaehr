@@ -61,25 +61,6 @@ class Fees
 
 	public function getFilterEncountersBillingData(stdClass $params)
 	{
-
-		/*
-		 * MySQL can hadle ternary conditions too, it will be much faster that way.
-		 * 
-		 * $sql = "SELECT enc.eid,
-                       enc.pid,
-                       enc.prov_uid AS encounterProviderUid,
-                       enc.service_date,
-                       enc.billing_stage,
-                       demo.title,
-                       demo.fname,
-                       demo.mname,
-                       demo.lname,
-                       demo.provider AS primaryProviderUid
-                  FROM encounters AS enc
-             LEFT JOIN patient_demographics AS demo ON demo.pid = enc.pid
-              ORDER BY enc.service_date ASC ";
-		 */
-		 
 		$sql = "SELECT enc.eid,
                        enc.pid,
                        if(enc.provider_uid is null, 'None', enc.provider_uid) AS encounterProviderUid,
@@ -92,15 +73,12 @@ class Fees
                        if(demo.provider is null, 'None', demo.provider) AS primaryProviderUid
                   FROM encounters AS enc
              LEFT JOIN patient_demographics AS demo ON demo.pid = enc.pid
-              ORDER BY enc.service_date ASC"; 
+              ORDER BY enc.service_date ASC";
+              
 		$this -> db -> setSQL($sql);
 		$encounters = array();
 		foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
 		{
-
-			//$row['primaryProvider'] = $row['primaryProviderUid'] == null ? 'None' : $this -> user -> getUserNameById($row['primaryProviderUid']);
-			//$row['encounterProvider'] = $row['encounterProviderUid'] == null ? 'None' : $this -> user -> getUserNameById($row['encounterProviderUid']);
-
 			$row['patientName'] = $row['title'] . ' ' . Person::fullname($row['fname'], $row['mname'], $row['lname']);
 			$encounters[] = $row;
 		}
@@ -115,25 +93,6 @@ class Fees
 
 	public function getEncountersByPayment(stdClass $params)
 	{
-
-		/**
-		 * MySQL can hadle ternary conditions too, it will be much faster that way.
-		 * 
-		 * $sql = "SELECT enc.eid,
-                       enc.pid,
-                       enc.prov_uid AS encounterProviderUid,
-                       enc.service_date,
-                       enc.billing_stage,
-                       demo.title,
-                       demo.fname,
-                       demo.mname,
-                       demo.lname,
-                       demo.provider AS primaryProviderUid
-                  FROM encounters AS enc
-             LEFT JOIN patient_demographics AS demo ON demo.pid = enc.pid
-              ORDER BY enc.service_date ASC ";
-		 */
-			  
 		$sql = "SELECT enc.eid,
                        enc.pid,
                        if(enc.provider_uid is null, 'None', enc.provider_uid) AS encounterProviderUid,
@@ -146,15 +105,12 @@ class Fees
                        if(demo.provider is null, 'None', demo.provider) AS primaryProviderUid
                   FROM encounters AS enc
              LEFT JOIN patient_demographics AS demo ON demo.pid = enc.pid
-              ORDER BY enc.service_date ASC";			  
+              ORDER BY enc.service_date ASC";
+              
 		$this -> db -> setSQL($sql);
 		$encounters = array();
 		foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
 		{
-
-			//$row['primaryProvider'] = $row['primaryProviderUid'] == null ? 'None' : $this -> user -> getUserNameById($row['primaryProviderUid']);
-			//$row['encounterProvider'] = $row['encounterProviderUid'] == null ? 'None' : $this -> user -> getUserNameById($row['encounterProviderUid']);
-
 			$row['patientName'] = $row['title'] . ' ' . Person::fullname($row['fname'], $row['mname'], $row['lname']);
 			$encounters[] = $row;
 		}
@@ -199,21 +155,6 @@ class Fees
 
 	public function getPatientBalanceByPid($pid)
 	{
-
-		/**
-		 * MySQL Server can do math, and obviously doing the math in SQL is much faster
-		 * than doing a foreach in php code, also less code.
-		 *
-		 * $balance = 0;
-		 * $this -> db -> setSQL("SELECT * FROM payment_transactions WHERE payer_id = '$pid'");
-		 * foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
-		 * {
-		 * $balance = $balance + $row['amount'];
-		 * }
-		 * return $balance;
-		 *
-		 */
-
 		$this -> db -> setSQL("SELECT SUM(amount) as balance FROM payment_transactions WHERE payer_id = '$pid'");
 		$balance_total = $this -> db -> fetchRecord();
 		return $balance_total['balance'];

@@ -133,7 +133,7 @@ Ext.define('App.view.fees.Payments',
 				{
 					text : i18n('reset'),
 					scope : me,
-					handler: mr.onFormResetButton
+					handler: me.onFormResetButton
 					// TODO: Create the function event to reset the form.
 				}, '->',
 				{
@@ -460,7 +460,7 @@ Ext.define('App.view.fees.Payments',
 	},
 	
 	/**
-	 * 
+	 * Reset the form of search.
 	 */
 	onFormResetButton: function(btn)
 	{

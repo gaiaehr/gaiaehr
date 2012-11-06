@@ -159,6 +159,45 @@ class Fees
 		$balance_total = $this -> db -> fetchRecord();
 		return $balance_total['balance'];
 	}
+	
+	/**
+	 * Function to search patient billing transactions
+	 * depending on given criteria
+	 */
+	public function getBillingByPatient(stdClass $params)
+	{
+		$sql = "SELECT
+					enc.eid,
+					enc.pid,
+					If(enc.provider_uid Is Null, 'None', enc.provider_uid) As encounterProviderUid,
+					enc.service_date,
+					enc.billing_stage,
+					demo.title,
+					demo.fname,
+					demo.mname,
+					demo.lname,
+					If(demo.provider Is Null, 'None', demo.provider) As primaryProviderUid, demo.primary_insurance_provider
+				FROM
+					encounters As enc Left Join
+					patient_demographics As demo 
+				ON
+					demo.pid = enc.pid
+				ORDER BY
+					enc.service_date";
+		$this -> db -> setSQL($sql);
+		$encounters = array();
+		foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
+		{
+			$row['patientName'] = $row['title'] . ' ' . Person::fullname($row['fname'], $row['mname'], $row['lname']);
+			$encounters[] = $row;
+		}
+		$total = count($encounters);
+		$encounters = array_slice($encounters, $params -> start, $params -> limit);
+		return array(
+			'totals' => $total,
+			'encounters' => $encounters
+		);
+	}
 
 }
 

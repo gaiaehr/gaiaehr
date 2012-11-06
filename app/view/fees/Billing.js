@@ -154,6 +154,22 @@ Ext.define('App.view.fees.Billing',
 					xtype : 'button',
 					width : 170,
 					margin : '0 0 3 0',
+					text : i18n('search'),
+					listeners :
+					{
+						scope : me,
+						click : me.onSeachClick
+					}
+				}]
+			},'-',
+			{
+				xtype : 'fieldcontainer',
+				layout : 'vbox',
+				items : [
+				{
+					xtype : 'button',
+					width : 170,
+					margin : '0 0 3 0',
 					text : i18n('generate_cms1500_pdf')
 				},
 				{
@@ -627,6 +643,14 @@ Ext.define('App.view.fees.Billing',
 			var data = response.result;
 			me.progressNote.tpl.overwrite(me.progressNote.body, data);
 		});
+	},
+	
+	/**
+	 * Event: Search for billing based on the search fields 
+	 */
+	onSeachClick: function(btn)
+	{
+		alert('Seach');
 	},
 
 	/**

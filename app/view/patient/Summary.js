@@ -162,7 +162,7 @@ Ext.define('App.view.patient.Summary', {
                         {
 
                             header: i18n('name'),
-                            dataIndex: 'title',
+                            dataIndex: 'description',
                             flex: 1
 
                         }

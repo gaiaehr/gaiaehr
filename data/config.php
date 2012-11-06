@@ -395,6 +395,9 @@ $API = array(
 			),
 			'getSurgeriesLiveSearch' => array(
 				'len' => 1
+			),
+			'getCDTLiveSearch' => array(
+				'len' => 1
 			)
 		)
 	),

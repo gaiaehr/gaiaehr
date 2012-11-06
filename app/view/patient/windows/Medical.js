@@ -778,9 +778,9 @@ Ext.define('App.view.patient.windows.Medical', {
                 store:me.patientDentalStore,
                 columns:[
                     {
-                        header:i18n('title'),
-                        width:100,
-                        dataIndex:'title'
+                        header:i18n('dental'),
+                        width:990,
+                        dataIndex:'description'
                     },
                     {
                         xtype:'datecolumn',
@@ -819,19 +819,27 @@ Ext.define('App.view.patient.windows.Medical', {
                                     },
                                     items:[
                                         {
-                                            xtype:'textfield',
-                                            width:225,
+                                            fieldLabel:i18n('dental'),
+                                            name:'cdt_code',
+                                            hideLabel:false,
+                                            allowBlank:false,
+                                            width:510,
                                             labelWidth:70,
-                                            fieldLabel:i18n('title'),
-                                            action:'dental',
-                                            name:'title'
+                                            xtype:'cdtlivetsearch',
+                                            itemId:'cdt',
+                                            action:'cdt',
+                                            enableKeyEvents:true,
+                                            listeners:{
+                                                scope:me,
+                                                'select':me.onLiveSearchSelect
+                                            }
                                         },
-//                                        {
-//   		                                    xtype:'textfield',
-//   		                                    hidden:true,
-//   		                                    name:'dental_id',
-//   		                                    action:'idField'
-//   	                                    },
+                                        {
+                                            xtype:'textfield',
+                                            hidden:true,
+                                            name:'description',
+                                            action:'description'
+                                        },
                                         {
                                             fieldLabel:i18n('begin_date'),
                                             xtype:'datefield',
@@ -1500,6 +1508,10 @@ Ext.define('App.view.patient.windows.Medical', {
         }else if(combo.action == 'medication_id'){
             name = model[0].data.PROPRIETARYNAME;
             field = combo.up('fieldcontainer').query('[action="medication"]')[0];
+            field.setValue(name);
+        }else if(combo.action == 'cdt'){
+            name = model[0].data.text;
+            field = combo.up('fieldcontainer').query('[action="description"]')[0];
             field.setValue(name);
         }
     },

@@ -1643,7 +1643,7 @@ CREATE TABLE IF NOT EXISTS `patient_immunizations` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
-CREATE TABLE IF NOT EXISTS `patient_issues` (
+CREATE TABLE IF NOT EXISTS `patient_active_problems` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `pid` bigint(20) DEFAULT NULL COMMENT 'patient ID',
   `eid` bigint(20) DEFAULT NULL COMMENT 'encounter ID',

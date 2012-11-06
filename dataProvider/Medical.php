@@ -561,6 +561,20 @@ class Medical
 			'rows' => $records
 		);
 	}
+	public function getCDTLiveSearch(stdClass $params)
+	{
+		$this -> db -> setSQL("SELECT *
+   							FROM  cdt_codes
+   							WHERE text      LIKE'$params->query%'
+   							  OR code         LIKE'$params->query%'");
+		$records = $this -> db -> fetchRecords(PDO::FETCH_ASSOC);
+		$total = count($records);
+		$records = array_slice($records, $params -> start, $params -> limit);
+		return array(
+			'totals' => $total,
+			'rows' => $records
+		);
+	}
 
 	public function reviewAllMedicalWindowEncounter(stdClass $params)
 	{

@@ -1,7 +1,7 @@
 /*
  GaiaEHR (Electronic Health Records)
  Billing.js
- Billing Store
+ Billing Model
  Copyright (C) 2012 Ernesto J. Rodriguez
 
  This program is free software: you can redistribute it and/or modify

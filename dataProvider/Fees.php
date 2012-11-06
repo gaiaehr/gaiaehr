@@ -59,6 +59,10 @@ class Fees
 		return;
 	}
 
+	/**
+	 * function: getFilterEncountersBillingData
+	 * The first call to populate the dataGrid on the Billing panel.
+	 */
 	public function getFilterEncountersBillingData(stdClass $params)
 	{
 		$sql = "SELECT enc.eid,
@@ -74,7 +78,7 @@ class Fees
                   FROM encounters AS enc
              LEFT JOIN patient_demographics AS demo ON demo.pid = enc.pid
               ORDER BY enc.service_date ASC";
-              
+
 		$this -> db -> setSQL($sql);
 		$encounters = array();
 		foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -106,7 +110,7 @@ class Fees
                   FROM encounters AS enc
              LEFT JOIN patient_demographics AS demo ON demo.pid = enc.pid
               ORDER BY enc.service_date ASC";
-              
+
 		$this -> db -> setSQL($sql);
 		$encounters = array();
 		foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -159,7 +163,7 @@ class Fees
 		$balance_total = $this -> db -> fetchRecord();
 		return $balance_total['balance'];
 	}
-	
+
 	/**
 	 * Function to search patient billing transactions
 	 * depending on given criteria

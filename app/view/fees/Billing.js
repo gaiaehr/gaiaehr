@@ -1,4 +1,4 @@
-/*
+/**
  GaiaEHR (Electronic Health Records)
  Billing.js
  Billing Forms
@@ -91,10 +91,11 @@ Ext.define('App.view.fees.Billing',
 				renderer : me.stage,
 				width : 135
 			}],
+			// ToolBar for Encounter DataGrid.
 			tbar : [
 			{
 				xtype : 'fieldcontainer',
-				itemId : 'fieldContainerPatientseach',
+				itemId : 'fieldContainerPatientSearch',
 				items : [
 				{
 					xtype : 'displayfield',
@@ -116,7 +117,6 @@ Ext.define('App.view.fees.Billing',
 					itemId : 'datefrom',
 					fieldLabel : i18n('from'),
 					labelWidth : 35,
-					action : 'datefrom',
 					width : 150,
 					format : globals['date_display_format']
 				},
@@ -259,7 +259,7 @@ Ext.define('App.view.fees.Billing',
 			}
 		});
 
-		/*
+		/**
 		 * Panel: encounterBillingDetails
 		 */
 		me.encounterBillingDetails = Ext.create('Ext.panel.Panel',
@@ -459,7 +459,7 @@ Ext.define('App.view.fees.Billing',
 		me.callParent(arguments);
 	},
 
-	/*
+	/**
 	 * Function: stage
 	 */
 	stage : function(val)
@@ -503,7 +503,7 @@ Ext.define('App.view.fees.Billing',
 
 	},
 
-	/*
+	/**
 	 * Event: rowDblClicked
 	 */
 	rowDblClicked : function()
@@ -511,7 +511,7 @@ Ext.define('App.view.fees.Billing',
 		this.goToEncounterBillingDetail();
 	},
 
-	/*
+	/**
 	 * Function: goToEncounterBillingDetail
 	 */
 	goToEncounterBillingDetail : function()
@@ -519,7 +519,7 @@ Ext.define('App.view.fees.Billing',
 		this.getPageBody().getLayout().setActiveItem(1);
 	},
 
-	/*
+	/**
 	 * Function: goToEncounterList
 	 */
 	goToEncounterList : function()
@@ -527,7 +527,7 @@ Ext.define('App.view.fees.Billing',
 		this.getPageBody().getLayout().setActiveItem(0);
 	},
 
-	/*
+	/**
 	 * Event: onSelectionChanged
 	 */
 	onSelectionChanged : function(sm, model)
@@ -555,7 +555,7 @@ Ext.define('App.view.fees.Billing',
 		}
 	},
 
-	/*
+	/**
 	 * Event: onBtnCancel
 	 */
 	onBtnCancel : function()
@@ -563,7 +563,7 @@ Ext.define('App.view.fees.Billing',
 		this.getPageBody().getLayout().setActiveItem(0);
 	},
 
-	/*
+	/**
 	 * Event: onBtnBack
 	 */
 	onBtnBack : function()
@@ -572,7 +572,7 @@ Ext.define('App.view.fees.Billing',
 		sm.select(prevRowindex);
 	},
 
-	/*
+	/**
 	 * Event: onBtnNext
 	 */
 	onBtnNext : function()
@@ -581,7 +581,7 @@ Ext.define('App.view.fees.Billing',
 		sm.select(nextRowindex);
 	},
 
-	/*
+	/**
 	 * Event: onBtnSave
 	 */
 	onBtnSave : function()
@@ -592,7 +592,7 @@ Ext.define('App.view.fees.Billing',
 		me.msg('Sweet!', i18n('encounter_billing_data_updated'));
 	},
 
-	/*
+	/**
 	 * Function: getEncounterIcds
 	 */
 	getEncounterIcds : function()
@@ -608,7 +608,7 @@ Ext.define('App.view.fees.Billing',
 		});
 	},
 
-	/*
+	/**
 	 * Function: updateEncounterIcds
 	 */
 	updateEncounterIcds : function(data)
@@ -624,7 +624,7 @@ Ext.define('App.view.fees.Billing',
 		});
 	},
 
-	/*
+	/**
 	 * Function: updateProgressNote
 	 */
 	updateProgressNote : function(eid)
@@ -638,11 +638,11 @@ Ext.define('App.view.fees.Billing',
 	},
 
 	/**
-	 * Event: Search for billing based on the search fields
+	 * Function: Search for billing based on the search fields
 	 */
 	ReloadGrid : function(btn)
 	{
-		var topBarItems = me.encountersGrid.getDockedItems('toolbar[dock="top"]')[0];
+		var topBarItems = this.encountersGrid.getDockedItems('toolbar[dock="top"]')[0];
 		this.patientListStore.load(
 		{
 			params :
@@ -653,7 +653,7 @@ Ext.define('App.view.fees.Billing',
 					dateto : topBarItems.getComponent('fieldContainerDateRange').getComponent('dateto').getValue(),
 					provider : topBarItems.getComponent('fieldContainerInsurance').getComponent('provider').getValue(),
 					insurance : topBarItems.getComponent('fieldContainerInsurance').getComponent('insurance').getValue(),
-					patient : topBarItems.getComponent('fieldContainerInsurance').getComponent('patienlivetsearch').getValue(),
+					patient : topBarItems.getComponent('fieldContainerPatientSearch').getComponent('patienlivetsearch').getValue(),
 					pastDue : this.pastDue
 				}
 			}
@@ -672,4 +672,3 @@ Ext.define('App.view.fees.Billing',
 		callback(true);
 	}
 });
-//ens oNotesPage class

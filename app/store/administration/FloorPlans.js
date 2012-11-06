@@ -21,16 +21,6 @@ Ext.define('App.store.administration.FloorPlans',
 {
 	model : 'App.model.administration.FloorPlans',
 	extend : 'Ext.data.Store',
-	proxy :
-	{
-		type : 'direct',
-		api :
-		{
-			read : FloorPlans.getFloorPlans,
-			create : FloorPlans.createFloorPlan,
-			update : FloorPlans.updateFloorPlan
-		}
-	},
-	autoSync : true,
+	autoSync : false,
 	autoLoad : false
 }); 

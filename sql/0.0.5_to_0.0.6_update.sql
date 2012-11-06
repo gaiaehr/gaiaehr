@@ -629,6 +629,67 @@ INSERT INTO `cdt_codes` (`id`, `code`, `text`) VALUES
 (592, 'D9974', 'internal bleaching - per tooth'),
 (593, 'D9999', 'unspecified adjunctive procedure, by report');
 
+DROP TABLE IF EXISTS `floor_plans`;
+CREATE TABLE IF NOT EXISTS `floor_plans` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) DEFAULT NULL,
+  `active` tinyint(1) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=10 ;
+
+INSERT INTO `floor_plans` (`id`, `title`, `active`) VALUES
+(1, 'Emergency Example', 1),
+(2, 'Clinic Example', 1),
+(3, 'Clinic Example 2', 1);
+
+DROP TABLE IF EXISTS `floor_plans_zones`;
+CREATE TABLE IF NOT EXISTS `floor_plans_zones` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `floor_plan_id` bigint(20) NOT NULL,
+  `title` varchar(255) DEFAULT NULL,
+  `type` varchar(255) DEFAULT NULL,
+  `bg_color` varchar(10) DEFAULT NULL,
+  `border_color` varchar(10) DEFAULT NULL,
+  `scale` varchar(30) DEFAULT NULL,
+  `width` int(11) DEFAULT NULL,
+  `height` int(11) DEFAULT NULL,
+  `x` int(11) DEFAULT NULL,
+  `y` int(11) DEFAULT NULL,
+  `show_priority_color` tinyint(1) DEFAULT '1',
+  `show_patient_preview` tinyint(1) DEFAULT '1',
+  `active` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=47 ;
+
+INSERT INTO `floor_plans_zones` (`id`, `floor_plan_id`, `title`, `type`, `bg_color`, `border_color`, `scale`, `width`, `height`, `x`, `y`, `show_priority_color`, `show_patient_preview`, `active`) VALUES
+(1, 1, '312', NULL, NULL, NULL, 'medium', NULL, NULL, 50, 273, 1, 1, 1),
+(2, 1, '316', NULL, NULL, NULL, 'medium', NULL, NULL, 50, 411, 1, 1, 1),
+(3, 1, '314', NULL, NULL, NULL, 'medium', NULL, NULL, 50, 342, 1, 1, 1),
+(4, 1, '304', NULL, NULL, NULL, 'medium', NULL, NULL, 100, 34, 1, 1, 1),
+(5, 1, '317', NULL, NULL, NULL, 'medium', NULL, NULL, 50, 446, 1, 1, 1),
+(6, 1, '301', NULL, NULL, NULL, 'medium', NULL, NULL, 249, 34, 1, 1, 1),
+(7, 1, '308', NULL, NULL, NULL, 'medium', NULL, NULL, 50, 136, 1, 1, 1),
+(8, 1, '318', NULL, NULL, NULL, 'medium', NULL, NULL, 50, 481, 1, 1, 1),
+(9, 1, '303', NULL, NULL, NULL, 'medium', NULL, NULL, 150, 34, 1, 1, 1),
+(10, 1, '315', NULL, NULL, NULL, 'medium', NULL, NULL, 50, 376, 1, 1, 1),
+(11, 1, '302', NULL, NULL, NULL, 'medium', NULL, NULL, 199, 34, 1, 1, 1),
+(12, 1, '310', NULL, NULL, NULL, 'medium', NULL, NULL, 50, 204, 1, 1, 1),
+(13, 1, '311', NULL, NULL, NULL, 'medium', NULL, NULL, 50, 238, 1, 1, 1),
+(14, 1, '305', NULL, NULL, NULL, 'medium', NULL, NULL, 50, 34, 1, 1, 1),
+(15, 1, '307', NULL, NULL, NULL, 'medium', NULL, NULL, 50, 102, 1, 1, 1),
+(16, 1, '313', NULL, NULL, NULL, 'medium', NULL, NULL, 50, 308, 1, 1, 1),
+(17, 1, '309', NULL, NULL, NULL, 'medium', NULL, NULL, 49, 170, 1, 1, 1),
+(18, 1, '306', NULL, NULL, NULL, 'medium', NULL, NULL, 50, 68, 1, 1, 1),
+(29, 2, 'Room 3', NULL, NULL, NULL, 'medium', 200, 200, 82, 280, 1, 1, 1),
+(30, 2, 'New Zone', NULL, NULL, NULL, 'medium', 200, 200, 329, 280, 1, 1, 1),
+(32, 2, 'Room 1', NULL, NULL, NULL, 'medium', 200, 200, 82, 16, 1, 1, 1),
+(34, 2, 'Room 2', NULL, NULL, NULL, 'medium', 200, 200, 329, 15, 1, 1, 1),
+(36, 3, 'Triage', NULL, '#CCFFCC', NULL, 'medium', 200, 100, 81, 327, 1, 1, 1),
+(37, 3, 'Room 1', NULL, '#CCFFCC', NULL, 'medium', 200, 100, 81, 225, 1, 1, 1),
+(38, 3, 'Room 2', NULL, '#CCFFCC', NULL, 'medium', 200, 200, 81, 23, 1, 1, 0),
+(39, 3, 'Room 5', NULL, '#CCFFCC', NULL, 'medium', 200, 100, 283, 23, 1, 1, 0),
+(40, 3, 'X-Ray Room', NULL, '#CCFFCC', NULL, 'medium', 200, 100, 484, 23, 1, 1, 1),
+(42, 3, 'Dr.Office', NULL, '#FFFF99', NULL, 'medium', 280, 200, 404, 227, 1, 1, 0);
 
 DROP TABLE IF EXISTS `floor_plans_zones`;
 CREATE TABLE IF NOT EXISTS `floor_plans_zones` (

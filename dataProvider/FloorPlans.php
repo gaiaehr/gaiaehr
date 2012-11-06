@@ -86,6 +86,14 @@ class FloorPlans
 		$this->db->execLog();
 		return $params;
 	}
+	public function removeFloorPlan(stdClass $params)
+	{
+		$params->floorPlanId = $params->id;
+		$this->removeFloorPlanZone($params);
+		$this->db->setSQL("DELETE FROM floor_plans WHERE id = '$params->id'");
+		$this->db->execLog();
+		return $params;
+	}
 
 	public function getFloorPlanZones(stdClass $params)
 	{
@@ -102,18 +110,31 @@ class FloorPlans
 		return $params;
 	}
 
-	public function updateFloorPlanZone(stdClass $params)
+	public function updateFloorPlanZone($params)
 	{
-		$data = get_object_vars($params);
-		unset($data['id']);
-		$this->db->setSQL($this->db->sqlBind($data, 'floor_plans_zones', 'U', array('id' => $params->id)));
-		$this->db->execLog();
+		if(is_array($params)){
+			foreach($params AS $zone){
+				$data = get_object_vars($zone);
+				unset($data['id']);
+				$this->db->setSQL($this->db->sqlBind($data, 'floor_plans_zones', 'U', array('id' => $params->id)));
+				$this->db->execLog();
+			}
+		}else{
+			$data = get_object_vars($params);
+			unset($data['id']);
+			$this->db->setSQL($this->db->sqlBind($data, 'floor_plans_zones', 'U', array('id' => $params->id)));
+			$this->db->execLog();
+		}
 		return $params;
 	}
 
 	public function removeFloorPlanZone(stdClass $params)
 	{
-		$this->db->setSQL("DELETE FROM floor_plans_zones WHERE id = '$params->id'");
+		if(isset($params->floorPlanId)){
+			$this->db->setSQL("DELETE FROM floor_plans_zones WHERE floor_plan_id = '$params->floorPlanId'");
+		}else{
+			$this->db->setSQL("DELETE FROM floor_plans_zones WHERE id = '$params->id'");
+		}
 		$this->db->execLog();
 		return $params;
 	}

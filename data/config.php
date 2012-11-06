@@ -146,6 +146,9 @@ $API = array(
 			'updateFloorPlan' => array(
 				'len' => 1
 			),
+			'removeFloorPlan' => array(
+				'len' => 1
+			),
 			'getFloorPlanZones' => array(
 				'len' => 1
 			),

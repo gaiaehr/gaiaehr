@@ -12,5 +12,16 @@ Ext.define('App.model.administration.FloorPlans', {
 	fields: [
 		{name: 'id', type: 'int'},
 		{name: 'title', type: 'string'}
-	]
+	],
+    proxy :
+   	{
+   		type : 'direct',
+   		api :
+   		{
+   			read : FloorPlans.getFloorPlans,
+   			create : FloorPlans.createFloorPlan,
+   			update : FloorPlans.updateFloorPlan,
+   			destroy : FloorPlans.removeFloorPlan
+   		}
+   	},
 });

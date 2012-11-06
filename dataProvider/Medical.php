@@ -186,7 +186,7 @@ class Medical
 		$data['begin_date'] = $this -> parseDate($data['begin_date']);
 		$data['end_date'] = $this -> parseDate($data['end_date']);
 		$data['create_date'] = $this -> parseDate($data['create_date']);
-		$this -> db -> setSQL($this -> db -> sqlBind($data, 'patient_issues', 'I'));
+		$this -> db -> setSQL($this -> db -> sqlBind($data, 'patient_active_problems', 'I'));
 		$this -> db -> execLog();
 		$params -> id = $this -> db -> lastInsertId;
 		return $params;
@@ -200,7 +200,7 @@ class Medical
 		$data['begin_date'] = $this -> parseDate($data['begin_date']);
 		$data['end_date'] = $this -> parseDate($data['end_date']);
 		$data['create_date'] = $this -> parseDate($data['create_date']);
-		$this -> db -> setSQL($this -> db -> sqlBind($data, "patient_issues", "U", "id='$id'"));
+		$this -> db -> setSQL($this -> db -> sqlBind($data, "patient_active_problems", "U", "id='$id'"));
 		$this -> db -> execLog();
 		return $params;
 
@@ -475,7 +475,7 @@ class Medical
 	 */
 	private function getMedicalIssuesByPatientID($pid)
 	{
-		$this -> db -> setSQL("SELECT * FROM patient_issues WHERE pid='$pid'");
+		$this -> db -> setSQL("SELECT * FROM patient_active_problems WHERE pid='$pid'");
 		$records = array();
 		foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $rec)
 		{
@@ -494,12 +494,12 @@ class Medical
 	 */
 	public function getMedicalIssuesByEncounterID($eid)
 	{
-		$this -> db -> setSQL("SELECT * FROM patient_issues WHERE eid='$eid'");
+		$this -> db -> setSQL("SELECT * FROM patient_active_problems WHERE eid='$eid'");
 		return $this -> db -> fetchRecords(PDO::FETCH_ASSOC);
 	}
 	public function getPatientProblemsByPid($pid)
 	{
-		$this -> db -> setSQL("SELECT * FROM patient_issues WHERE pid = '$pid'");
+		$this -> db -> setSQL("SELECT * FROM patient_active_problems WHERE pid = '$pid'");
 		return $this -> db -> fetchRecords(PDO::FETCH_ASSOC);
 	}
 

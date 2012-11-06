@@ -448,7 +448,7 @@ class PreventiveCare
 	public function checkProblem($pid, $preventiveId)
 	{
 
-		$check = $this -> checkMedicationProblemLabs($pid, $preventiveId, 'patient_issues', 'active_problems', 'code');
+		$check = $this -> checkMedicationProblemLabs($pid, $preventiveId, 'patient_active_problems', 'active_problems', 'code');
 		if ($check)
 		{
 			return true;

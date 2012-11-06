@@ -17,7 +17,7 @@
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-Ext.Ext.define('App.model.fees.Billing',
+Ext.define('App.model.fees.Billing',
 {
 	extend : 'Ext.data.Model',
 	fields : [

@@ -2,7 +2,7 @@
  GaiaEHR (Electronic Health Records)
  Billing.js
  Billing Forms
- Copyright (C) 2012 Emmanuel J. Carrasquillo
+ Copyright (C) 2012 Certun, inc.
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -24,6 +24,7 @@ Ext.define('App.view.fees.Billing',
 	pageTitle : i18n('billing'),
 	uses : ['App.ux.GridPanel'],
 	pageLayout : 'card',
+
 	initComponent : function()
 	{
 		var me = this;
@@ -38,8 +39,10 @@ Ext.define('App.view.fees.Billing',
 
 		me.patientListStore = Ext.create('App.store.fees.Billing');
 
-		/*
+		/**
 		 *  Encounter data grid.
+		 * Gives a list of encounter based on the patient search
+		 *
 		 */
 		me.encountersGrid = Ext.create('Ext.grid.Panel',
 		{
@@ -91,6 +94,7 @@ Ext.define('App.view.fees.Billing',
 			tbar : [
 			{
 				xtype : 'fieldcontainer',
+				itemId : 'fieldContainerPatientseach',
 				items : [
 				{
 					xtype : 'displayfield',
@@ -98,17 +102,18 @@ Ext.define('App.view.fees.Billing',
 				},
 				{
 					xtype : 'patienlivetsearch',
-
+					itemId : 'patienlivetsearch',
 					width : 235,
 					margin : '0 5 0 0'
-
 				}]
 			},
 			{
 				xtype : 'fieldcontainer',
+				itemId : 'fieldContainerDateRange',
 				items : [
 				{
 					xtype : 'datefield',
+					itemId : 'datefrom',
 					fieldLabel : i18n('from'),
 					labelWidth : 35,
 					action : 'datefrom',
@@ -117,9 +122,9 @@ Ext.define('App.view.fees.Billing',
 				},
 				{
 					xtype : 'datefield',
+					itemId : 'dateto',
 					fieldLabel : i18n('to'),
 					labelWidth : 35,
-					action : 'dateto',
 					padding : '0 5 0 0',
 					width : 150,
 					format : globals['date_display_format']
@@ -127,9 +132,11 @@ Ext.define('App.view.fees.Billing',
 			},
 			{
 				xtype : 'fieldcontainer',
+				itemId : 'fieldContainerInsurance',
 				items : [
 				{
 					xtype : 'mitos.providerscombo',
+					itemId : 'provider',
 					labelWidth : 60,
 					typeAhead : true,
 					padding : '0 5 0 5',
@@ -139,6 +146,7 @@ Ext.define('App.view.fees.Billing',
 				},
 				{
 					xtype : 'mitos.insurancepayertypecombo',
+					itemId : 'insurance',
 					labelWidth : 60,
 					padding : '0 5 0 5',
 					fieldLabel : i18n('insurance'),
@@ -148,11 +156,12 @@ Ext.define('App.view.fees.Billing',
 			}, '-',
 			{
 				xtype : 'fieldcontainer',
+				itemId : 'fieldContainerSearch',
 				layout : 'vbox',
 				items : [
 				{
 					xtype : 'button',
-					width : 170,
+					width : 80,
 					margin : '0 0 3 0',
 					text : i18n('search'),
 					listeners :
@@ -161,9 +170,10 @@ Ext.define('App.view.fees.Billing',
 						click : me.onSeachClick
 					}
 				}]
-			},'-',
+			}, '-',
 			{
 				xtype : 'fieldcontainer',
+				itemId : 'fieldContainerGenerate1500',
 				layout : 'vbox',
 				items : [
 				{
@@ -181,6 +191,7 @@ Ext.define('App.view.fees.Billing',
 			}, '-',
 			{
 				xtype : 'fieldcontainer',
+				itemId : 'fieldContainerGenerateANSI',
 				layout : 'vbox',
 				items : [
 				{
@@ -446,7 +457,7 @@ Ext.define('App.view.fees.Billing',
 
 		me.pageBody = [me.encountersGrid, me.encounterBillingDetails];
 		me.callParent(arguments);
-	}, // end of initComponent
+	},
 
 	/*
 	 * Function: stage
@@ -472,12 +483,12 @@ Ext.define('App.view.fees.Billing',
 		}
 	},
 
-	/*
+	/**
 	 * Event: onBtnClicked
 	 */
 	onBtnClicked : function(btn)
 	{
-		var datefrom = this.query('datefield[action="datefrom"]'), dateto = this.query('datefield[action="dateto"]');
+		var datefrom = this.query('datefield[itemId="datefrom"]'), dateto = this.query('datefield[itemId="dateto"]');
 		if (btn.pressed)
 		{
 			datefrom[0].reset();
@@ -488,7 +499,7 @@ Ext.define('App.view.fees.Billing',
 		{
 			this.pastDue = 0;
 		}
-		this.reloadGrid();
+		this.ReloadGrid();
 
 	},
 
@@ -614,25 +625,6 @@ Ext.define('App.view.fees.Billing',
 	},
 
 	/*
-	 * Function: reloadGrid
-	 */
-	reloadGrid : function()
-	{
-		this.patientListStore.load(
-		{
-			params :
-			{
-				query :
-				{
-					patient : this.patient,
-					pastDue : this.pastDue,
-					dateRange : this.dateRange
-				}
-			}
-		});
-	},
-
-	/*
 	 * Function: updateProgressNote
 	 */
 	updateProgressNote : function(eid)
@@ -644,13 +636,28 @@ Ext.define('App.view.fees.Billing',
 			me.progressNote.tpl.overwrite(me.progressNote.body, data);
 		});
 	},
-	
+
 	/**
-	 * Event: Search for billing based on the search fields 
+	 * Event: Search for billing based on the search fields
 	 */
-	onSeachClick: function(btn)
+	ReloadGrid : function(btn)
 	{
-		alert('Seach');
+		var topBarItems = me.encountersGrid.getDockedItems('toolbar[dock="top"]')[0];
+		this.patientListStore.load(
+		{
+			params :
+			{
+				query :
+				{
+					datefrom : topBarItems.getComponent('fieldContainerDateRange').getComponent('datefrom').getValue(),
+					dateto : topBarItems.getComponent('fieldContainerDateRange').getComponent('dateto').getValue(),
+					provider : topBarItems.getComponent('fieldContainerInsurance').getComponent('provider').getValue(),
+					insurance : topBarItems.getComponent('fieldContainerInsurance').getComponent('insurance').getValue(),
+					patient : topBarItems.getComponent('fieldContainerInsurance').getComponent('patienlivetsearch').getValue(),
+					pastDue : this.pastDue
+				}
+			}
+		});
 	},
 
 	/**
@@ -661,7 +668,7 @@ Ext.define('App.view.fees.Billing',
 	 */
 	onActive : function(callback)
 	{
-		this.reloadGrid();
+		this.ReloadGrid();
 		callback(true);
 	}
 });

@@ -88,16 +88,16 @@ $API = array(
 			'sendNewMessage' => array('len' => 1),
 			'replyMessage' => array('len' => 1),
 			'updateMessage' => array('len' => 1)
-		)), /**
-	 * Fees Functions
-	 */
+		)), 
+	/**
+	  * Fees Functions
+	  */
 	'Fees' => array('methods' => array(
 			'getFilterEncountersBillingData' => array('len' => 1),
 			'getEncountersByPayment' => array('len' => 1),
 			'addPayment' => array('len' => 1),
 			'getPatientBalance' => array('len' => 1),
-			'getPaymentsBySearch' => array('len' => 1),
-			'getBillingByPatient' => array('len' => 1)
+			'getPaymentsBySearch' => array('len' => 1)
 		)),
 	/**
 	 * Facilities Functions

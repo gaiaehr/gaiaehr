@@ -128,52 +128,49 @@ Ext.define('App.view.fees.Billing',
 			{
 				xtype : 'fieldcontainer',
 				items : [
-                    {
-                        xtype : 'mitos.providerscombo',
-                        labelWidth : 60,
-                        typeAhead : true,
-                        padding : '0 5 0 5',
-                        fieldLabel : i18n('provider'),
-                        defaultValue : 'All'
+				{
+					xtype : 'mitos.providerscombo',
+					labelWidth : 60,
+					typeAhead : true,
+					padding : '0 5 0 5',
+					fieldLabel : i18n('provider'),
+					defaultValue : 'All'
 
-                    },
-                    {
-                        xtype : 'mitos.insurancepayertypecombo',
-                        labelWidth : 60,
-                        padding : '0 5 0 5',
-                        fieldLabel : i18n('insurance'),
-                        defaultValue : 'All'
+				},
+				{
+					xtype : 'mitos.insurancepayertypecombo',
+					labelWidth : 60,
+					padding : '0 5 0 5',
+					fieldLabel : i18n('insurance'),
+					defaultValue : 'All'
 
-                    }
-                ]
+				}]
 			}, '-',
 			{
 				xtype : 'fieldcontainer',
-                layout:'vbox',
+				layout : 'vbox',
 				items : [
-                    {
-                        xtype : 'button',
-                        width:170,
-                        margin :'0 0 3 0',
-                        text : i18n('generate_cms1500_pdf')
-                    },
-                    {
-                        xtype : 'button',
-                        width:170,
-                        margin :'0 0 3 0',
-                        text : i18n('generate_cms1500_text')
-                    }
-                ]
-			},'-',
+				{
+					xtype : 'button',
+					width : 170,
+					margin : '0 0 3 0',
+					text : i18n('generate_cms1500_pdf')
+				},
+				{
+					xtype : 'button',
+					width : 170,
+					margin : '0 0 3 0',
+					text : i18n('generate_cms1500_text')
+				}]
+			}, '-',
 			{
 				xtype : 'fieldcontainer',
-                layout:'vbox',
+				layout : 'vbox',
 				items : [
-                    {
-                        xtype : 'button',
-                        text : i18n('generate_x12')
-                    }
-                ]
+				{
+					xtype : 'button',
+					text : i18n('generate_x12')
+				}]
 			}, '->',
 			{
 				xtype : 'tbtext',
@@ -440,26 +437,23 @@ Ext.define('App.view.fees.Billing',
 	 */
 	stage : function(val)
 	{
-		if (val == '1')
+		switch(val)
 		{
-			return '<img src="resources/images/icons/stage1.png" />';
+			case 1:
+				return '<img src="resources/images/icons/stage1.png" />';
+				break;
+			case 2:
+				return '<img src="resources/images/icons/stage2.png" />';
+				break;
+			case 3:
+				return '<img src="resources/images/icons/stage3.png" />';
+				break;
+			case 4:
+				return '<img src="resources/images/icons/stage4.png" />';
+				break;
+			default:
+				return val;
 		}
-		else
-		if (val == '2')
-		{
-			return '<img src="resources/images/icons/stage2.png" />';
-		}
-		else
-		if (val == '3')
-		{
-			return '<img src="resources/images/icons/stage3.png" />';
-		}
-		else
-		if (val == '4')
-		{
-			return '<img src="resources/images/icons/stage4.png" />';
-		}
-		return val;
 	},
 
 	/*

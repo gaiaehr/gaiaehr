@@ -51,12 +51,21 @@ Ext.define('App.view.administration.FloorPlans', {
                     }
                 }
             ],
-            tbar: ['->',
+            tbar: [
                 {
                     text: i18n('add_floor_plan'),
                     action: 'newFloorPlan',
+                    iconCls:'icoAdd',
                     scope: me,
                     handler: me.onNewFloorPlan
+                },
+                '-',
+                {
+                    text: i18n('delete'),
+                    action: 'newFloorPlan',
+                    iconCls:'icoDelete',
+                    scope: me,
+                    handler: me.onRemoveFloorPlan
                 }
             ],
             listeners: {
@@ -112,14 +121,14 @@ Ext.define('App.view.administration.FloorPlans', {
                             xtype: 'numberfield',
                             fieldLabel: i18n('width'),
                             minValue: 30,
-                            maxValue: 200,
+                            maxValue: 300,
                             name: 'width'
                         },
                         {
                             xtype: 'numberfield',
                             fieldLabel: i18n('height'),
                             minValue: 30,
-                            maxValue: 200,
+                            maxValue: 300,
                             name: 'height'
                         },
                         {
@@ -279,6 +288,33 @@ Ext.define('App.view.administration.FloorPlans', {
                 }
             }
         });
+    },
+    onRemoveFloorPlan:function(btn){
+        var me = this,
+            grid = btn.up('grid'),
+            store = grid.store,
+            sm = grid.getSelectionModel(),
+            record = sm.getLastSelected();
+        Ext.Msg.show({
+            title:'Wait!',
+            msg: 'This action is final. Are you sure you want to remove <span style="font-weight: bold">"'+record.data.title+'"</span>?',
+            buttons: Ext.Msg.YESNO,
+            icon: Ext.Msg.WARNING,
+            fn:function(btn){
+                if(btn == 'yes'){
+                    store.remove(record);
+                    store.sync({
+                        callback:function(){
+                            sm.deselectAll();
+                            me.floorPlanZones.removeAll();
+                            me.msg('Sweet!',i18n('record_removed'))
+                        }
+                    });
+
+                }
+            }
+        });
+
     },
     onNewZone: function(){
         var me = this;

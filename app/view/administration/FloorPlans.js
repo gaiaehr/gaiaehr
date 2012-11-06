@@ -47,13 +47,13 @@ Ext.define('App.view.administration.FloorPlans', {
                     flex: 1,
                     editor: {
                         xtype: 'textfield',
-                        emptyText:i18n('new_floor_plan')
+                        emptyText:i18n('new_floor')
                     }
                 }
             ],
             tbar: [
                 {
-                    text: i18n('add_floor_plan'),
+                    text: i18n('add_floor'),
                     action: 'newFloorPlan',
                     iconCls:'icoAdd',
                     scope: me,
@@ -61,7 +61,7 @@ Ext.define('App.view.administration.FloorPlans', {
                 },
                 '-',
                 {
-                    text: i18n('delete'),
+                    text: i18n('remove_floor'),
                     action: 'newFloorPlan',
                     iconCls:'icoDelete',
                     scope: me,

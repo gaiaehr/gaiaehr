@@ -17,17 +17,17 @@
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-Ext.define('App.ux.LiveSurgeriesSearch',
+Ext.define('App.ux.LiveCDTSearch',
 {
 	extend : 'Ext.form.ComboBox',
-	alias : 'widget.surgerieslivetsearch',
+	alias : 'widget.cdtlivetsearch',
 	hideLabel : true,
 
 	initComponent : function()
 	{
 		var me = this;
 
-		Ext.define('liveSurgeriesSearchModel',
+		Ext.define('liveCDTSearchModel',
 		{
 			extend : 'Ext.data.Model',
 			fields : [
@@ -35,20 +35,17 @@ Ext.define('App.ux.LiveSurgeriesSearch',
 				name : 'id'
 			},
 			{
-				name : 'type'
+				name : 'code'
 			},
 			{
-				name : 'type_num'
-			},
-			{
-				name : 'surgery'
+				name : 'text'
 			}],
 			proxy :
 			{
 				type : 'direct',
 				api :
 				{
-					read : Medical.getSurgeriesLiveSearch
+					read : Medical.getCDTLiveSearch
 				},
 				reader :
 				{
@@ -60,7 +57,7 @@ Ext.define('App.ux.LiveSurgeriesSearch',
 
 		me.store = Ext.create('Ext.data.Store',
 		{
-			model : 'liveSurgeriesSearchModel',
+			model : 'liveCDTSearchModel',
 			pageSize : 10,
 			autoLoad : false
 		});
@@ -68,9 +65,9 @@ Ext.define('App.ux.LiveSurgeriesSearch',
 		Ext.apply(this,
 		{
 			store : me.store,
-			displayField : 'surgery',
-			valueField : 'id',
-			emptyText : i18n('search_for_a_surgery') + '...',
+			displayField : 'text',
+			valueField : 'code',
+			emptyText : i18n('search_for_a_CDT') + '...',
 			typeAhead : false,
             hideTrigger : true,
 			minChars : 1,
@@ -83,7 +80,7 @@ Ext.define('App.ux.LiveSurgeriesSearch',
 				//---------------------------------------------------------------------
 				getInnerTpl : function()
 				{
-					return '<div class="search-item"><h3>{surgery}<span style="font-weight: normal"> ({type}) </span></h3></div>';
+					return '<div class="search-item"><h3>{code}<span style="font-weight: normal"> ({text}) </span></h3></div>';
 				}
 			},
 			pageSize : 10

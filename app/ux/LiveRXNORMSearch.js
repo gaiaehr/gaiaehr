@@ -17,38 +17,35 @@
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-Ext.define('App.ux.LiveSurgeriesSearch',
+Ext.define('App.ux.LiveRXNORMSearch',
 {
 	extend : 'Ext.form.ComboBox',
-	alias : 'widget.surgerieslivetsearch',
+	alias : 'widget.rxnormlivetsearch',
 	hideLabel : true,
 
 	initComponent : function()
 	{
 		var me = this;
 
-		Ext.define('liveSurgeriesSearchModel',
+		Ext.define('liveRXNORMSearchModel',
 		{
 			extend : 'Ext.data.Model',
 			fields : [
 			{
-				name : 'id'
+				name : 'RXCUI'
 			},
 			{
-				name : 'type'
+				name : 'STR'
 			},
 			{
-				name : 'type_num'
-			},
-			{
-				name : 'surgery'
+				name : 'RXAUI'
 			}],
 			proxy :
 			{
 				type : 'direct',
 				api :
 				{
-					read : Medical.getSurgeriesLiveSearch
+					read : Medical.getRXNORMLiveSearch
 				},
 				reader :
 				{
@@ -60,7 +57,7 @@ Ext.define('App.ux.LiveSurgeriesSearch',
 
 		me.store = Ext.create('Ext.data.Store',
 		{
-			model : 'liveSurgeriesSearchModel',
+			model : 'liveRXNORMSearchModel',
 			pageSize : 10,
 			autoLoad : false
 		});
@@ -68,12 +65,12 @@ Ext.define('App.ux.LiveSurgeriesSearch',
 		Ext.apply(this,
 		{
 			store : me.store,
-			displayField : 'surgery',
-			valueField : 'id',
-			emptyText : i18n('search_for_a_surgery') + '...',
+			displayField : 'STR',
+			valueField : 'RXCUI',
+			emptyText : i18n('search_for_a_RXNORM') + '...',
 			typeAhead : false,
             hideTrigger : true,
-			minChars : 1,
+			minChars : 3,
 			listConfig :
 			{
 				loadingText : i18n('searching') + '...',
@@ -83,7 +80,7 @@ Ext.define('App.ux.LiveSurgeriesSearch',
 				//---------------------------------------------------------------------
 				getInnerTpl : function()
 				{
-					return '<div class="search-item"><h3>{surgery}<span style="font-weight: normal"> ({type}) </span></h3></div>';
+					return '<div class="search-item"><h3>{RXCUI}<span style="font-weight: normal"> ({STR}) </span></h3></div>';
 				}
 			},
 			pageSize : 10

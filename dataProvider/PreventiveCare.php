@@ -184,11 +184,9 @@ class PreventiveCare
 		{
 			foreach ($foo AS $fo)
 			{
-				$this -> db -> setSQL("SELECT id AS code,
-										  CONCAT(PROPRIETARYNAME,
-										  ' (',ACTIVE_NUMERATOR_STRENGTH,') ',
-										  ACTIVE_INGRED_UNIT) AS code_text
-								     FROM medications
+				$this -> db -> setSQL("SELECT RXCUI AS code,
+										  STR AS code_text
+								     FROM rxnconso
 								    WHERE id = '$fo'");
 				$medication = $this -> db -> fetchRecord(PDO::FETCH_CLASS);
 				$medication['guideline_id'] = $params -> id;
@@ -448,7 +446,7 @@ class PreventiveCare
 	public function checkProblem($pid, $preventiveId)
 	{
 
-		$check = $this -> checkMedicationProblemLabs($pid, $preventiveId, 'patient_issues', 'active_problems', 'code');
+		$check = $this -> checkMedicationProblemLabs($pid, $preventiveId, 'patient_active_problems', 'active_problems', 'code');
 		if ($check)
 		{
 			return true;
@@ -464,7 +462,7 @@ class PreventiveCare
 	public function checkMedications($pid, $preventiveId)
 	{
 
-		$check = $this -> checkMedicationProblemLabs($pid, $preventiveId, 'patient_medications', 'medications', 'medication_id');
+		$check = $this -> checkMedicationProblemLabs($pid, $preventiveId, 'patient_medications', 'medications', 'RXCUI');
 		if ($check)
 		{
 			return true;

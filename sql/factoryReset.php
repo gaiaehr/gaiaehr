@@ -39,7 +39,7 @@ $tables = array(
 	'patient_immunizations',
 	'patient_medications',
 	'patient_notes',
-	'patient_issues',
+	'patient_active_problems',
 	'patient_dental',
 	'patient_doctors_notes',
 	'patient_orders',
@@ -82,7 +82,6 @@ $tables = array(
 	'sct_descriptions',
 	'sct_relationships',
 	'standardized_tables_track',
-
 	'log'
 );
 

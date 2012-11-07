@@ -1,23 +1,4 @@
 <?php
-/**
- GaiaEHR (Electronic Health Records)
- Billing.js
- Billing Forms
- Copyright (C) 2012 Certun, inc.
-
- This program is free software: you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation, either version 3 of the License, or
- (at your option) any later version.
-
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
 $API = array(
 	'Modules' => array('methods' => array(
 			'getAllModules' => array('len' => 0),
@@ -107,8 +88,7 @@ $API = array(
 			'sendNewMessage' => array('len' => 1),
 			'replyMessage' => array('len' => 1),
 			'updateMessage' => array('len' => 1)
-		)),
-	/**
+		)), /**
 	 * Fees Functions
 	 */
 	'Fees' => array('methods' => array(
@@ -176,7 +156,9 @@ $API = array(
 			'getLabsLiveSearch' => array('len' => 1),
 			'reviewAllMedicalWindowEncounter' => array('len' => 1),
 			'getEncounterReviewByEid' => array('len' => 1),
-			'getSurgeriesLiveSearch' => array('len' => 1)
+			'getSurgeriesLiveSearch' => array('len' => 1),
+			'getCDTLiveSearch' => array('len' => 1),
+			'getRXNORMLiveSearch' => array('len' => 1)
 		)),
 	/**
 	 * AddressBook Functions

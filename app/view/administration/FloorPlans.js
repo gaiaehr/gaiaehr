@@ -92,6 +92,7 @@ Ext.define('App.view.administration.FloorPlans', {
             title:i18n('zone_editor'),
             closeAction:'hide',
             closable:false,
+            resizable:false,
             items:[
                 {
                     xtype:'form',
@@ -198,23 +199,35 @@ Ext.define('App.view.administration.FloorPlans', {
             },
             hide: function(){
                 if(me.nav) Ext.destroy(me.nav);
+                me.setEditMode(false);
             }
         };
         me.pageBody = [me.floorPlans, me.floorPlanZones ];
         me.callParent(arguments);
     },
-    setEditMode:function(bool, zone){
+    setEditMode:function(show, zone){
+        var me = this, el = me.activeZone ? me.activeZone.getEl() : null;
+        if(el){
+            me.floorPlanZoneEditor.hide(null, function(){
+                me.setEditor(show, zone);
+            });
+        }else{
+            me.setEditor(show, zone);
+        }
+    },
+    setEditor:function(show, zone){
         var me = this;
-        if(bool){
+        if(show){
             me.activeZone = zone;
             me.getEditor().zone = zone;
             me.floorPlanZones.focus();
             me.getEditor().getForm().loadRecord(zone.record);
+            me.floorPlanZoneEditor.show(zone.getEl());
         }else{
+            me.floorPlanZoneEditor.hide();
             me.getEditor().getForm().reset();
             me.activeZone = null;
         }
-        me.floorPlanZoneEditor.setVisible(bool);
     },
     getEditor:function(){
         return this.floorPlanZoneEditor.down('form');
@@ -393,6 +406,7 @@ Ext.define('App.view.administration.FloorPlans', {
         this.floorPlansStore.add({});
     },
     onFloorPlanSelected: function(model, record){
+        this.setEditMode(false);
         this.floorPlanId = record.data.id;
         this.reloadFloorPlanZones();
     },

@@ -280,7 +280,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 				'App.ux.grid.RowFormEditing',
 				'App.ux.grid.RowFormEditor',
 				/*
-				 * Load the combo boxes spreaded on all the web application
+				 * Load the combo boxes spread on all the web application
 				 * remember this are all reusable combo boxes.
 				 */
 				'App.ux.combo.ActiveFacilities',
@@ -488,7 +488,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
                 }
             })();
             /**
-			 * Function to Copy to the clip doard.
+			 * Function to Copy to the clip board.
 			 * This function is consumable in all the application.
 			 */
             function copyToClipBoard(token){

@@ -2865,30 +2865,8 @@ INSERT INTO `globals` (`gl_name`, `gl_index`, `gl_value`) VALUES
 ('use_charges_panel', 0, '0'),
 ('autosave', 0, '1');
 
--- phpMyAdmin SQL Dump
--- version 3.4.9
--- http://www.phpmyadmin.net
---
--- Host: localhost
--- Generation Time: Nov 07, 2012 at 06:42 PM
--- Server version: 5.5.20
--- PHP Version: 5.3.9
-
-SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
-SET time_zone = "+00:00";
-
---
--- Database: `mitosdb`
---
-
--- --------------------------------------------------------
-
---
--- Table structure for table `patient_active_problems`
---
-
-DROP TABLE IF EXISTS `patient_active_problems`;
 DROP TABLE IF EXISTS `patient_issues`;
+DROP TABLE IF EXISTS `patient_active_problems`;
 CREATE TABLE IF NOT EXISTS `patient_active_problems` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `pid` bigint(20) DEFAULT NULL COMMENT 'patient ID',
@@ -2906,7 +2884,7 @@ CREATE TABLE IF NOT EXISTS `patient_active_problems` (
   `updated_uid` bigint(20) DEFAULT NULL COMMENT 'updated by User ID',
   `outcome` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 
 

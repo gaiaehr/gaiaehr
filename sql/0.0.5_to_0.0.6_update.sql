@@ -2865,6 +2865,48 @@ INSERT INTO `globals` (`gl_name`, `gl_index`, `gl_value`) VALUES
 ('use_charges_panel', 0, '0'),
 ('autosave', 0, '1');
 
+-- phpMyAdmin SQL Dump
+-- version 3.4.9
+-- http://www.phpmyadmin.net
+--
+-- Host: localhost
+-- Generation Time: Nov 07, 2012 at 06:42 PM
+-- Server version: 5.5.20
+-- PHP Version: 5.3.9
+
+SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
+
+--
+-- Database: `mitosdb`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `patient_active_problems`
+--
+
+DROP TABLE IF EXISTS `patient_active_problems`;
+DROP TABLE IF EXISTS `patient_issues`;
+CREATE TABLE IF NOT EXISTS `patient_active_problems` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `pid` bigint(20) DEFAULT NULL COMMENT 'patient ID',
+  `eid` bigint(20) DEFAULT NULL COMMENT 'encounter ID',
+  `code` varchar(255) DEFAULT NULL,
+  `code_text` varchar(255) DEFAULT NULL,
+  `diagnosis_code` varchar(100) DEFAULT NULL,
+  `begin_date` datetime DEFAULT NULL,
+  `end_date` datetime DEFAULT NULL,
+  `ocurrence` varchar(50) DEFAULT NULL,
+  `referred_by` varchar(50) DEFAULT NULL,
+  `create_date` datetime DEFAULT NULL,
+  `update_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created_uid` bigint(20) DEFAULT NULL COMMENT 'created by User ID',
+  `updated_uid` bigint(20) DEFAULT NULL COMMENT 'updated by User ID',
+  `outcome` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
 
 
 

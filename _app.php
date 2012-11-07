@@ -242,6 +242,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 				'App.ux.LiveMedicationSearch',
 				'App.ux.LiveLabsSearch',
 				'App.ux.LiveCDTSearch',
+				'App.ux.LiveRXNORMSearch',
 				'App.ux.LivePatientSearch',
 				'App.ux.LiveSurgeriesSearch',
 				'App.ux.ManagedIframe',

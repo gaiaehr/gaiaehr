@@ -960,7 +960,7 @@ Ext.define('App.view.patient.windows.Medical', {
                                     },
                                     items:[
                                         {
-                                            xtype:'medicationlivetsearch',
+                                            xtype:'rxnormlivetsearch',
                                             fieldLabel:i18n('medication'),
                                             hideLabel:false,
                                             itemId:'medication',
@@ -1506,7 +1506,7 @@ Ext.define('App.view.patient.windows.Medical', {
             field = combo.up('fieldcontainer').query('[action="idField"]')[0];
             field.setValue(name);
         }else if(combo.action == 'medication_id'){
-            name = model[0].data.PROPRIETARYNAME;
+            name = model[0].data.STR;
             field = combo.up('fieldcontainer').query('[action="medication"]')[0];
             field.setValue(name);
         }else if(combo.action == 'cdt'){

@@ -576,6 +576,21 @@ class Medical
 		);
 	}
 
+	public function getRXNORMLiveSearch(stdClass $params)
+	{
+		$this -> db -> setSQL("SELECT *
+   							FROM  rxnconso
+   							WHERE RXCUI      LIKE'$params->query%'
+   							  OR STR         LIKE'$params->query%'");
+		$records = $this -> db -> fetchRecords(PDO::FETCH_ASSOC);
+		$total = count($records);
+		$records = array_slice($records, $params -> start, $params -> limit);
+		return array(
+			'totals' => $total,
+			'rows' => $records
+		);
+	}
+
 	public function reviewAllMedicalWindowEncounter(stdClass $params)
 	{
 		$data = get_object_vars($params);

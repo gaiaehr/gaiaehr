@@ -398,6 +398,9 @@ $API = array(
 			),
 			'getCDTLiveSearch' => array(
 				'len' => 1
+			),
+			'getRXNORMLiveSearch' => array(
+				'len' => 1
 			)
 		)
 	),

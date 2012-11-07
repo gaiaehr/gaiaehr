@@ -82,7 +82,6 @@ $tables = array(
 	'sct_descriptions',
 	'sct_relationships',
 	'standardized_tables_track',
-
 	'log'
 );
 

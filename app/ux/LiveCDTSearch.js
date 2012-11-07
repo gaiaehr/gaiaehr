@@ -68,7 +68,8 @@ Ext.define('App.ux.LiveCDTSearch',
 			displayField : 'text',
 			valueField : 'code',
 			emptyText : i18n('search_for_a_CDT') + '...',
-			typeAhead : true,
+			typeAhead : false,
+            hideTrigger : true,
 			minChars : 1,
 			listConfig :
 			{

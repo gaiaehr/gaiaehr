@@ -71,7 +71,8 @@ Ext.define('App.ux.LiveSurgeriesSearch',
 			displayField : 'surgery',
 			valueField : 'id',
 			emptyText : i18n('search_for_a_surgery') + '...',
-			typeAhead : true,
+			typeAhead : false,
+            hideTrigger : true,
 			minChars : 1,
 			listConfig :
 			{

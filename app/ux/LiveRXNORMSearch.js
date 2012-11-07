@@ -68,8 +68,9 @@ Ext.define('App.ux.LiveRXNORMSearch',
 			displayField : 'STR',
 			valueField : 'RXCUI',
 			emptyText : i18n('search_for_a_RXNORM') + '...',
-			typeAhead : true,
-			minChars : 1,
+			typeAhead : false,
+            hideTrigger : true,
+			minChars : 3,
 			listConfig :
 			{
 				loadingText : i18n('searching') + '...',

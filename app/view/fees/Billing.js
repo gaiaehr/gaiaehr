@@ -645,13 +645,21 @@ Ext.define( 'App.view.fees.Billing',
 	 */
 	ReloadGrid : function(btn)
 	{
-		var topBarItems = this.encountersGrid.getDockedItems('toolbar[dock="top"]')[0];
+		// Declare some variables
+		var topBarItems = this.encountersGrid.getDockedItems('toolbar[dock="top"]')[0],
+		datefrom = topBarItems.getComponent( 'fieldContainerDateRange' ).getComponent( 'datefrom' ).getValue( ), 
+		dateto = topBarItems.getComponent( 'fieldContainerDateRange' ).getComponent( 'dateto' ).getValue( );
+
+		// Check if the dateFrom and dateTo are in use, if they are clear the pastDue variable
+		if(datefrom || dateto) this.pastDue = 0;
+		
+		// Load the ExtJs dataStore with the new parameters
 		this.patientListStore.load(
 		{
 			params :
 			{
-				datefrom : topBarItems.getComponent( 'fieldContainerDateRange' ).getComponent( 'datefrom' ).getValue( ),
-				dateto : topBarItems.getComponent( 'fieldContainerDateRange' ).getComponent( 'dateto' ).getValue( ),
+				datefrom : datefrom,
+				dateto : dateto,
 				provider : topBarItems.getComponent( 'fieldContainerInsurance' ).getComponent( 'provider' ).getValue( ),
 				insurance : topBarItems.getComponent( 'fieldContainerInsurance' ).getComponent( 'insurance' ).getValue( ),
 				patient : topBarItems.getComponent( 'fieldContainerPatientSearch' ).getComponent( 'patienlivetsearch' ).getValue( ),

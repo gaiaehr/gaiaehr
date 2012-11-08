@@ -74,52 +74,57 @@ class Fees
 		(int)$total = 0;
 		(string)$sql = '';
 
-		// Check for the passed parameters from extjs and apply them to the where clause.
+		// Check for the passed parameters from exist and apply them to the where clause.
 		if ($params -> datefrom && $params -> dateto)
 		{
 			$whereCommand = 'WHERE';
-			$whereClause .= chr(13) . " AND encounters.onset_date BETWEEN '" . $params -> datefrom . "' AND '" . $params -> dateto . "'";
+			$whereClause .= chr(13) . " AND encounters.service_date BETWEEN '" . substr( $params -> datefrom, 0 , -9 ) . " 00:00:00' AND '" . substr( $params -> dateto, 0 , -9 ) . " 23:00:00'";
 		}
 		if ($params -> patient)
 		{
 			$whereCommand = 'WHERE';
 			$whereClause .= chr(13) . " AND encounters.pid = '" . $params -> patient . "'";
 		}
-		if ($params -> provider && $params -> provider <> 'All')
+		if ($params -> provider && $params -> provider <> 'all')
 		{
 			$whereCommand = 'WHERE';
 			$whereClause .= chr(13) . " AND encounters.provider_uid = '" . $params -> patient . "'";
+		}
+		if ($params -> insurance && $params -> insurance <> '1')
+		{
+			$whereCommand = 'WHERE';
+			$whereClause .= chr(13) . " AND patient_demographics.primary_insurance_provider = '" . $params -> insurance . "'";
 		}
 		
 		// Eliminate the first 6 characters of the where clause
 		// this to eliminate and extra AND from the SQL statement
 		$whereClause = substr($whereClause, 6);
 
-		$sql = "Select
+		$sql = "SELECT
 					encounters.eid,
 					encounters.pid,
-					If(encounters.provider_uid Is Null, 'None', encounters.provider_uid)
-					As encounterProviderUid,
-					If(patient_demographics.provider Is Null, 'None',
-					patient_demographics.provider) As primaryProviderUid,
+					If(encounters.provider_uid Is Null, 'None', encounters.provider_uid) As encounterProviderUid,
+					If(patient_demographics.provider Is Null, 'None', patient_demographics.provider) As primaryProviderUid,
 					encounters.service_date,
 					encounters.billing_stage,
+					patient_demographics.primary_insurance_provider,
 					patient_demographics.title,
 					patient_demographics.fname,
 					patient_demographics.mname,
 					patient_demographics.lname,
-					encounters.onset_date,
 					encounters.close_date,
 					encounters.supervisor_uid,
 					encounters.provider_uid,
 					encounters.open_uid
-				From
-					encounters Left Join
-					patient_demographics On patient_demographics.pid = encounters.pid
+				FROM
+					encounters 
+				LEFT JOIN
+					patient_demographics 
+				ON patient_demographics.pid = encounters.pid
 				$whereCommand $whereClause
-				Order By
+				ORDER BY
   					encounters.service_date";
-
+		error_log($sql);
 		$this -> db -> setSQL($sql);
 		foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
 		{

@@ -52,10 +52,10 @@ class Fees
 
 	function __construct()
 	{
-		$this -> db = new dbHelper();
-		$this -> user = new User();
-		$this -> patient = new Patient();
-		$this -> enc = new Encounter();
+		(object)$this -> db = new dbHelper();
+		(object)$this -> user = new User();
+		(object)$this -> patient = new Patient();
+		(object)$this -> enc = new Encounter();
 		return;
 	}
 

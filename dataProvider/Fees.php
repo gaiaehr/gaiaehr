@@ -249,9 +249,3 @@ class Fees
 	}
 
 }
-
-//$params = new stdClass();
-//
-//$p = new Fees($params);
-//echo '<pre>';
-//print_r($p->getEncountersByPayment($params));

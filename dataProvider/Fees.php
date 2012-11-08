@@ -3,7 +3,7 @@
  GaiaEHR (Electronic Health Records)
  Fees.php
  Fees dataProvider
- Copyright (C) 2012 Ernesto J. Rodriguez (Certun)
+ Copyright (C) 2012 Certun, Inc.
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -65,6 +65,70 @@ class Fees
 	 */
 	public function getFilterEncountersBillingData(stdClass $params)
 	{
+		// Declare all the variables that we are gone to use.
+		(string)$whereClause = '';
+		(string)$whereCommand = '';
+		(array)$encounters = '';
+		(int)$total = 0;
+		(string)$sql = '';
+		
+		// Check for the passed parameters from extjs and apply them to the where clause.
+		if ($params -> datefrom && $params -> dateto) $whereCommand = 'WHERE'; $whereClause .= chr(13) . " AND encounters.onset_date BETWEEN '" . $params -> datefrom . "' AND '" . $params -> dateto . "'";
+		if($params -> patient) $whereCommand = 'WHERE'; $whereClause .= chr(13) . " AND encounters.pid = '" . $params -> patient . "'";
+		
+		// Eliminate the first 6 characters of the where clause
+		// this to eliminate and extra AND from the SQL statement
+		$whereClause = substr($whereClause, 6);
+		
+		$sql = "Select
+					encounters.eid,
+					encounters.pid,
+					If(encounters.provider_uid Is Null, 'None', encounters.provider_uid)
+					As encounterProviderUid,
+					If(patient_demographics.provider Is Null, 'None',
+					patient_demographics.provider) As primaryProviderUid,
+					encounters.service_date,
+					encounters.billing_stage,
+					patient_demographics.title,
+					patient_demographics.fname,
+					patient_demographics.mname,
+					patient_demographics.lname,
+					encounters.onset_date,
+					encounters.close_date,
+					encounters.supervisor_uid,
+					encounters.provider_uid,
+					encounters.open_uid
+				From
+					encounters Left Join
+					patient_demographics On patient_demographics.pid = encounters.pid
+				$whereCommand $whereClause
+				Order By
+  					encounters.service_date";
+
+		$this -> db -> setSQL($sql);
+		foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
+		{
+			$row['patientName'] = $row['title'] . ' ' . Person::fullname($row['fname'], $row['mname'], $row['lname']);
+			$encounters[] = $row;
+		}
+		$total = count($encounters);
+		$encounters = array_slice( $encounters, $params -> start, $params -> limit);
+		return array(
+			'totals' => $total,
+			'encounters' => $encounters
+		);
+
+	}
+	
+	/**
+	 * Function: getEncountersByPayment
+	 */
+	public function getEncountersByPayment(stdClass $params)
+	{
+		// Declare all the variables that we are gone to use.
+		(string)$sql = '';
+		(array)$encounters = '';
+		(int)$total = 0;
 		
 		$sql = "SELECT enc.eid,
                        enc.pid,
@@ -81,7 +145,7 @@ class Fees
               ORDER BY enc.service_date ASC";
 
 		$this -> db -> setSQL($sql);
-		$encounters = array();
+		
 		foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
 		{
 			$row['patientName'] = $row['title'] . ' ' . Person::fullname($row['fname'], $row['mname'], $row['lname']);
@@ -96,38 +160,9 @@ class Fees
 
 	}
 
-	public function getEncountersByPayment(stdClass $params)
-	{
-		$sql = "SELECT enc.eid,
-                       enc.pid,
-                       if(enc.provider_uid is null, 'None', enc.provider_uid) AS encounterProviderUid,
-                       enc.service_date,
-                       enc.billing_stage,
-                       demo.title,
-                       demo.fname,
-                       demo.mname,
-                       demo.lname,
-                       if(demo.provider is null, 'None', demo.provider) AS primaryProviderUid
-                  FROM encounters AS enc
-             LEFT JOIN patient_demographics AS demo ON demo.pid = enc.pid
-              ORDER BY enc.service_date ASC";
-
-		$this -> db -> setSQL($sql);
-		$encounters = array();
-		foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
-		{
-			$row['patientName'] = $row['title'] . ' ' . Person::fullname($row['fname'], $row['mname'], $row['lname']);
-			$encounters[] = $row;
-		}
-		$total = count($encounters);
-		$encounters = array_slice($encounters, $params -> start, $params -> limit);
-		return array(
-			'totals' => $total,
-			'encounters' => $encounters
-		);
-
-	}
-
+	/**
+	 * Function: getPaymentsBySearch
+	 */
 	public function getPaymentsBySearch(stdClass $params)
 	{
 		//TODO: Payment search function
@@ -138,6 +173,9 @@ class Fees
 		);
 	}
 
+	/**
+	 * Function: addPayment
+	 */
 	public function addPayment(stdClass $params)
 	{
 		$data = get_object_vars($params);
@@ -153,11 +191,17 @@ class Fees
 		}
 	}
 
+	/**
+	 * Function: getPatientBalance
+	 */
 	public function getPatientBalance(stdClass $params)
 	{
 		return $this -> getPatientBalanceByPid($params -> pid);
 	}
 
+	/**
+	 * Function: getPatientBalanceByPid
+	 */
 	public function getPatientBalanceByPid($pid)
 	{
 		$this -> db -> setSQL("SELECT SUM(amount) as balance FROM payment_transactions WHERE payer_id = '$pid'");

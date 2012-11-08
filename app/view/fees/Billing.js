@@ -17,11 +17,11 @@
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-Ext.define('App.view.fees.Billing',
+Ext.define( 'App.view.fees.Billing',
 {
 	extend : 'App.ux.RenderPanel',
 	id : 'panelBilling',
-	pageTitle : i18n('billing'),
+	pageTitle : i18n( 'billing' ),
 	uses : ['App.ux.GridPanel'],
 	pageLayout : 'card',
 
@@ -37,56 +37,56 @@ Ext.define('App.view.fees.Billing',
 			limit : null
 		};
 
-		me.patientListStore = Ext.create('App.store.fees.Billing');
+		me.patientListStore = Ext.create( 'App.store.fees.Billing' );
 
 		/**
 		 *  Encounter data grid.
 		 * Gives a list of encounter based on the patient search
 		 *
 		 */
-		me.encountersGrid = Ext.create('Ext.grid.Panel',
+		me.encountersGrid = Ext.create( 'Ext.grid.Panel',
 		{
 			store : me.patientListStore,
-			selModel : Ext.create('Ext.selection.CheckboxModel',
+			selModel : Ext.create( 'Ext.selection.CheckboxModel',
 			{
 				listeners :
 				{
 					scope : me,
 					selectionchange : me.onSelectionChanged
 				}
-			}),
+			} ),
 			viewConfig :
 			{
 				stripeRows : true
 			},
 			columns : [
 			{
-				header : i18n('service_date'),
+				header : i18n( 'service_date' ),
 				dataIndex : 'service_date',
 				width : 200
 			},
 			{
-				header : i18n('patient'),
+				header : i18n( 'patient' ),
 				dataIndex : 'patientName',
 				width : 200
 			},
 			{
-				header : i18n('primary_provider'),
+				header : i18n( 'primary_provider' ),
 				dataIndex : 'primaryProvider',
 				width : 200
 			},
 			{
-				header : i18n('encounter_provider'),
+				header : i18n( 'encounter_provider' ),
 				dataIndex : 'encounterProvider',
 				flex : 1
 			},
 			{
-				header : i18n('insurance'),
+				header : i18n( 'insurance' ),
 				dataIndex : 'insurance',
 				width : 200
 			},
 			{
-				header : i18n('billing_stage'),
+				header : i18n( 'billing_stage' ),
 				dataIndex : 'billing_stage',
 				renderer : me.stage,
 				width : 135
@@ -99,7 +99,7 @@ Ext.define('App.view.fees.Billing',
 				items : [
 				{
 					xtype : 'displayfield',
-					fieldLabel : i18n('patient_search')
+					fieldLabel : i18n( 'patient_search' )
 				},
 				{
 					xtype : 'patienlivetsearch',
@@ -115,7 +115,7 @@ Ext.define('App.view.fees.Billing',
 				{
 					xtype : 'datefield',
 					itemId : 'datefrom',
-					fieldLabel : i18n('from'),
+					fieldLabel : i18n( 'from' ),
 					labelWidth : 35,
 					width : 150,
 					format : globals['date_display_format']
@@ -123,7 +123,7 @@ Ext.define('App.view.fees.Billing',
 				{
 					xtype : 'datefield',
 					itemId : 'dateto',
-					fieldLabel : i18n('to'),
+					fieldLabel : i18n( 'to' ),
 					labelWidth : 35,
 					padding : '0 5 0 0',
 					width : 150,
@@ -140,7 +140,7 @@ Ext.define('App.view.fees.Billing',
 					labelWidth : 60,
 					typeAhead : true,
 					padding : '0 5 0 5',
-					fieldLabel : i18n('provider'),
+					fieldLabel : i18n( 'provider' ),
 					defaultValue : 'All'
 
 				},
@@ -149,7 +149,7 @@ Ext.define('App.view.fees.Billing',
 					itemId : 'insurance',
 					labelWidth : 60,
 					padding : '0 5 0 5',
-					fieldLabel : i18n('insurance'),
+					fieldLabel : i18n( 'insurance' ),
 					defaultValue : 'All'
 
 				}]
@@ -163,11 +163,11 @@ Ext.define('App.view.fees.Billing',
 					xtype : 'button',
 					width : 80,
 					margin : '0 0 3 0',
-					text : i18n('search'),
+					text : i18n( 'search' ),
 					listeners :
 					{
 						scope : me,
-						click : me.onSeachClick
+						click : me.ReloadGrid
 					}
 				}]
 			}, '-',
@@ -180,13 +180,13 @@ Ext.define('App.view.fees.Billing',
 					xtype : 'button',
 					width : 170,
 					margin : '0 0 3 0',
-					text : i18n('generate_cms1500_pdf')
+					text : i18n( 'generate_cms1500_pdf' )
 				},
 				{
 					xtype : 'button',
 					width : 170,
 					margin : '0 0 3 0',
-					text : i18n('generate_cms1500_text')
+					text : i18n( 'generate_cms1500_text' )
 				}]
 			}, '-',
 			{
@@ -196,15 +196,15 @@ Ext.define('App.view.fees.Billing',
 				items : [
 				{
 					xtype : 'button',
-					text : i18n('generate_x12')
+					text : i18n( 'generate_x12' )
 				}]
 			}, '->',
 			{
 				xtype : 'tbtext',
-				text : i18n('past_due') + ':'
+				text : i18n( 'past_due' ) + ':'
 			},
 			{
-				text : i18n('30+'),
+				text : i18n( '30+' ),
 				enableToggle : true,
 				action : 30,
 				toggleGroup : 'pastduedates',
@@ -217,7 +217,7 @@ Ext.define('App.view.fees.Billing',
 				}
 			},
 			{
-				text : i18n('60+'),
+				text : i18n( '60+' ),
 				enableToggle : true,
 				action : 60,
 				scale : 'large',
@@ -229,7 +229,7 @@ Ext.define('App.view.fees.Billing',
 				}
 			},
 			{
-				text : i18n('120+'),
+				text : i18n( '120+' ),
 				enableToggle : true,
 				action : 120,
 				scale : 'large',
@@ -241,7 +241,7 @@ Ext.define('App.view.fees.Billing',
 				}
 			},
 			{
-				text : i18n('180+'),
+				text : i18n( '180+' ),
 				enableToggle : true,
 				action : 180,
 				scale : 'large',
@@ -257,30 +257,30 @@ Ext.define('App.view.fees.Billing',
 				scope : me,
 				itemdblclick : me.rowDblClicked
 			}
-		});
+		} );
 
 		/**
 		 * Panel: encounterBillingDetails
 		 */
-		me.encounterBillingDetails = Ext.create('Ext.panel.Panel',
+		me.encounterBillingDetails = Ext.create( 'Ext.panel.Panel',
 		{
-			defaultTitle : i18n('encounter_billing_details'),
-			title : i18n('encounter_billing_details'),
+			defaultTitle : i18n( 'encounter_billing_details' ),
+			title : i18n( 'encounter_billing_details' ),
 			layout : 'border',
 			bodyStyle : 'background-color:#fff',
-			items : [Ext.create('Ext.container.Container',
+			items : [Ext.create( 'Ext.container.Container',
 			{
 				region : 'center',
 				layout : 'border',
 				style : 'background-color:#fff',
-				items : [me.icdForm = Ext.create('Ext.form.Panel',
+				items : [me.icdForm = Ext.create( 'Ext.form.Panel',
 				{
 					region : 'north',
 					border : false,
 					items : [
 					{
 						xtype : 'fieldset',
-						title : i18n('encounter_general_info'),
+						title : i18n( 'encounter_general_info' ),
 						margin : '5 5 0 5',
 						items : [
 						{
@@ -298,7 +298,7 @@ Ext.define('App.view.fees.Billing',
 							{
 								xtype : 'datefield',
 								name : 'service_date',
-								fieldLabel : i18n('service_date'),
+								fieldLabel : i18n( 'service_date' ),
 								labelAlign : 'right',
 								labelWidth : 80,
 								format : globals['date_display_format']
@@ -306,13 +306,13 @@ Ext.define('App.view.fees.Billing',
 							{
 								xtype : 'activeinsurancescombo',
 								name : 'insurance',
-								fieldLabel : i18n('insurance'),
+								fieldLabel : i18n( 'insurance' ),
 								labelAlign : 'right'
 							},
 							{
 								xtype : 'textfield',
 								name : 'facility',
-								fieldLabel : i18n('facillity'),
+								fieldLabel : i18n( 'facillity' ),
 								labelAlign : 'right',
 								labelWidth : 60,
 								flex : 1
@@ -333,7 +333,7 @@ Ext.define('App.view.fees.Billing',
 							{
 								xtype : 'datefield',
 								name : 'hosp_date',
-								fieldLabel : i18n('hosp_date'),
+								fieldLabel : i18n( 'hosp_date' ),
 								labelAlign : 'right',
 								labelWidth : 80,
 								format : globals['date_display_format']
@@ -341,13 +341,13 @@ Ext.define('App.view.fees.Billing',
 							{
 								xtype : 'activeinsurancescombo',
 								name : 'sec_insurance',
-								fieldLabel : i18n('sec_insurance'),
+								fieldLabel : i18n( 'sec_insurance' ),
 								labelAlign : 'right'
 							},
 							{
 								xtype : 'mitos.providerscombo',
 								name : 'provider',
-								fieldLabel : i18n('provider'),
+								fieldLabel : i18n( 'provider' ),
 								labelAlign : 'right',
 								labelWidth : 60,
 								flex : 1
@@ -368,20 +368,20 @@ Ext.define('App.view.fees.Billing',
 							{
 								xtype : 'mitos.authorizationscombo',
 								name : 'authorization',
-								fieldLabel : i18n('authorization'),
+								fieldLabel : i18n( 'authorization' ),
 								labelAlign : 'right',
 								labelWidth : 80
 							},
 							{
 								xtype : 'textfield',
 								name : 'sec_authorization',
-								fieldLabel : i18n('sec_authorization'),
+								fieldLabel : i18n( 'sec_authorization' ),
 								labelAlign : 'right'
 							},
 							{
 								xtype : 'textfield',
 								name : 'referal_by',
-								fieldLabel : i18n('referal_by'),
+								fieldLabel : i18n( 'referal_by' ),
 								labelAlign : 'right',
 								labelWidth : 60,
 								flex : 1
@@ -390,16 +390,16 @@ Ext.define('App.view.fees.Billing',
 					},
 					{
 						xtype : 'icdsfieldset',
-						title : i18n('encounter_icd9'),
+						title : i18n( 'encounter_icd9' ),
 						margin : '5 5 0 5'
 					}]
-				}), me.cptPanel = Ext.create('App.view.patient.encounter.CurrentProceduralTerminology',
+				} ), me.cptPanel = Ext.create( 'App.view.patient.encounter.CurrentProceduralTerminology',
 				{
 					region : 'center'
-				})]
-			}), me.progressNote = Ext.create('App.view.patient.ProgressNote',
+				} )]
+			} ), me.progressNote = Ext.create( 'App.view.patient.ProgressNote',
 			{
-				title : i18n('encounter_progress_note'),
+				title : i18n( 'encounter_progress_note' ),
 				region : 'east',
 				margin : 5,
 				bodyStyle : 'padding:15px',
@@ -408,13 +408,13 @@ Ext.define('App.view.fees.Billing',
 				collapsible : true,
 				animCollapse : true,
 				collapsed : false
-			})],
+			} )],
 			buttons : [
 			{
-				text : i18n('encounters'),
+				text : i18n( 'encounters' ),
 				scope : me,
 				action : 'encounters',
-				tooltip : i18n('back_to_encounter_list'),
+				tooltip : i18n( 'back_to_encounter_list' ),
 				handler : me.onBtnCancel
 			}, '->',
 			{
@@ -423,40 +423,40 @@ Ext.define('App.view.fees.Billing',
 				text : '( 1 of 1 )'
 			},
 			{
-				text : i18n('back'),
+				text : i18n( 'back' ),
 				scope : me,
 				action : 'back',
 				iconCls : 'icoArrowLeftSmall',
-				tooltip : i18n('previous_encounter_details'),
+				tooltip : i18n( 'previous_encounter_details' ),
 				handler : me.onBtnBack
 			},
 			{
-				text : i18n('save'),
+				text : i18n( 'save' ),
 				scope : me,
 				action : 'save',
-				tooltip : i18n('save_billing_details'),
+				tooltip : i18n( 'save_billing_details' ),
 				handler : me.onBtnSave
 			},
 			{
-				text : i18n('cancel'),
+				text : i18n( 'cancel' ),
 				scope : me,
 				action : 'cancel',
-				tooltip : i18n('cancel_and_go_back_to_encounter_list'),
+				tooltip : i18n( 'cancel_and_go_back_to_encounter_list' ),
 				handler : me.onBtnCancel
 			},
 			{
-				text : i18n('next'),
+				text : i18n( 'next' ),
 				scope : me,
 				action : 'next',
 				iconCls : 'icoArrowRightSmall',
 				iconAlign : 'right',
-				tooltip : i18n('next_encounter_details'),
+				tooltip : i18n( 'next_encounter_details' ),
 				handler : me.onBtnNext
 			}]
-		});
+		} );
 
 		me.pageBody = [me.encountersGrid, me.encounterBillingDetails];
-		me.callParent(arguments);
+		me.callParent( arguments );
 	},
 
 	/**
@@ -488,18 +488,18 @@ Ext.define('App.view.fees.Billing',
 	 */
 	onBtnClicked : function(btn)
 	{
-		var datefrom = this.query('datefield[itemId="datefrom"]'), dateto = this.query('datefield[itemId="dateto"]');
+		var datefrom = this.query( 'datefield[itemId="datefrom"]' ), dateto = this.query( 'datefield[itemId="dateto"]' );
 		if (btn.pressed)
 		{
-			datefrom[0].reset();
-			dateto[0].reset();
+			datefrom[0].reset( );
+			dateto[0].reset( );
 			this.pastDue = btn.action;
 		}
 		else
 		{
 			this.pastDue = 0;
 		}
-		this.ReloadGrid();
+		this.ReloadGrid( );
 
 	},
 
@@ -508,7 +508,7 @@ Ext.define('App.view.fees.Billing',
 	 */
 	rowDblClicked : function()
 	{
-		this.goToEncounterBillingDetail();
+		this.goToEncounterBillingDetail( );
 	},
 
 	/**
@@ -516,7 +516,7 @@ Ext.define('App.view.fees.Billing',
 	 */
 	goToEncounterBillingDetail : function()
 	{
-		this.getPageBody().getLayout().setActiveItem(1);
+		this.getPageBody( ).getLayout( ).setActiveItem( 1 );
 	},
 
 	/**
@@ -524,7 +524,7 @@ Ext.define('App.view.fees.Billing',
 	 */
 	goToEncounterList : function()
 	{
-		this.getPageBody().getLayout().setActiveItem(0);
+		this.getPageBody( ).getLayout( ).setActiveItem( 0 );
 	},
 
 	/**
@@ -534,24 +534,24 @@ Ext.define('App.view.fees.Billing',
 	{
 		if (model[0])
 		{
-			var me = this, title = me.encounterBillingDetails.defaultTitle, backbtn = me.encounterBillingDetails.query('button[action="back"]'), nextBtn = me.encounterBillingDetails.query('button[action="next"]'), pageInfo = me.encounterBillingDetails.query('tbtext[action="page"]'), rowIndex = model[0].index;
+			var me = this, title = me.encounterBillingDetails.defaultTitle, backbtn = me.encounterBillingDetails.query( 'button[action="back"]' ), nextBtn = me.encounterBillingDetails.query( 'button[action="next"]' ), pageInfo = me.encounterBillingDetails.query( 'tbtext[action="page"]' ), rowIndex = model[0].index;
 
 			me.pid = model[0].data.pid;
 			me.eid = model[0].data.eid;
 
-			me.updateProgressNote(me.eid);
-			me.encounterBillingDetails.setTitle(title + ' ( ' + model[0].data.patientName + ' )');
+			me.updateProgressNote( me.eid );
+			me.encounterBillingDetails.setTitle( title + ' ( ' + model[0].data.patientName + ' )' );
 
-			me.getEncounterIcds();
+			me.getEncounterIcds( );
 
-			me.cptPanel.encounterCptStoreLoad(me.pid, me.eid, function()
+			me.cptPanel.encounterCptStoreLoad( me.pid, me.eid, function()
 			{
-				me.cptPanel.setDefaultQRCptCodes();
-			});
+				me.cptPanel.setDefaultQRCptCodes( );
+			} );
 
-			pageInfo[0].setText('( ' + i18n('page') + ' ' + (rowIndex + 1) + ' of ' + sm.store.data.length + ' )');
-			nextBtn[0].setDisabled(rowIndex == sm.store.data.length - 1);
-			backbtn[0].setDisabled(rowIndex == 0);
+			pageInfo[0].setText( '( ' + i18n( 'page' ) + ' ' + (rowIndex + 1) + ' of ' + sm.store.data.length + ' )' );
+			nextBtn[0].setDisabled( rowIndex == sm.store.data.length - 1 );
+			backbtn[0].setDisabled( rowIndex == 0 );
 		}
 	},
 
@@ -560,7 +560,7 @@ Ext.define('App.view.fees.Billing',
 	 */
 	onBtnCancel : function()
 	{
-		this.getPageBody().getLayout().setActiveItem(0);
+		this.getPageBody( ).getLayout( ).setActiveItem( 0 );
 	},
 
 	/**
@@ -568,8 +568,8 @@ Ext.define('App.view.fees.Billing',
 	 */
 	onBtnBack : function()
 	{
-		var sm = this.encountersGrid.getSelectionModel(), currRowIndex = sm.getLastSelected().index, prevRowindex = currRowIndex - 1;
-		sm.select(prevRowindex);
+		var sm = this.encountersGrid.getSelectionModel( ), currRowIndex = sm.getLastSelected( ).index, prevRowindex = currRowIndex - 1;
+		sm.select( prevRowindex );
 	},
 
 	/**
@@ -577,8 +577,8 @@ Ext.define('App.view.fees.Billing',
 	 */
 	onBtnNext : function()
 	{
-		var sm = this.encountersGrid.getSelectionModel(), currRowIndex = sm.getLastSelected().index, nextRowindex = currRowIndex + 1;
-		sm.select(nextRowindex);
+		var sm = this.encountersGrid.getSelectionModel( ), currRowIndex = sm.getLastSelected( ).index, nextRowindex = currRowIndex + 1;
+		sm.select( nextRowindex );
 	},
 
 	/**
@@ -586,10 +586,10 @@ Ext.define('App.view.fees.Billing',
 	 */
 	onBtnSave : function()
 	{
-		var me = this, form = me.icdForm.getForm(), values = form.getValues();
+		var me = this, form = me.icdForm.getForm( ), values = form.getValues( );
 
-		me.updateEncounterIcds(values);
-		me.msg('Sweet!', i18n('encounter_billing_data_updated'));
+		me.updateEncounterIcds( values );
+		me.msg( 'Sweet!', i18n( 'encounter_billing_data_updated' ) );
 	},
 
 	/**
@@ -604,8 +604,8 @@ Ext.define('App.view.fees.Billing',
 			eid : me.eid
 		}, function(provider, response)
 		{
-			me.icdForm.down('icdsfieldset').loadIcds(response.result);
-		});
+			me.icdForm.down( 'icdsfieldset' ).loadIcds( response.result );
+		} );
 	},
 
 	/**
@@ -617,11 +617,11 @@ Ext.define('App.view.fees.Billing',
 
 		data.eid = me.eid;
 
-		Encounter.updateEncounterIcdxCodes(data, function(provider, response)
+		Encounter.updateEncounterIcdxCodes( data, function(provider, response)
 		{
-			say(response.result);
+			say( response.result );
 			return true;
-		});
+		} );
 	},
 
 	/**
@@ -630,11 +630,11 @@ Ext.define('App.view.fees.Billing',
 	updateProgressNote : function(eid)
 	{
 		var me = this;
-		Encounter.getProgressNoteByEid(eid, function(provider, response)
+		Encounter.getProgressNoteByEid( eid, function(provider, response)
 		{
 			var data = response.result;
-			me.progressNote.tpl.overwrite(me.progressNote.body, data);
-		});
+			me.progressNote.tpl.overwrite( me.progressNote.body, data );
+		} );
 	},
 
 	/**
@@ -647,17 +647,15 @@ Ext.define('App.view.fees.Billing',
 		{
 			params :
 			{
-				query :
-				{
-					datefrom : topBarItems.getComponent('fieldContainerDateRange').getComponent('datefrom').getValue(),
-					dateto : topBarItems.getComponent('fieldContainerDateRange').getComponent('dateto').getValue(),
-					provider : topBarItems.getComponent('fieldContainerInsurance').getComponent('provider').getValue(),
-					insurance : topBarItems.getComponent('fieldContainerInsurance').getComponent('insurance').getValue(),
-					patient : topBarItems.getComponent('fieldContainerPatientSearch').getComponent('patienlivetsearch').getValue(),
-					pastDue : this.pastDue
-				}
+				datefrom : topBarItems.getComponent( 'fieldContainerDateRange' ).getComponent( 'datefrom' ).getValue( ),
+				dateto : topBarItems.getComponent( 'fieldContainerDateRange' ).getComponent( 'dateto' ).getValue( ),
+				provider : topBarItems.getComponent( 'fieldContainerInsurance' ).getComponent( 'provider' ).getValue( ),
+				insurance : topBarItems.getComponent( 'fieldContainerInsurance' ).getComponent( 'insurance' ).getValue( ),
+				patient : topBarItems.getComponent( 'fieldContainerPatientSearch' ).getComponent( 'patienlivetsearch' ).getValue( ),
+				pastDue : this.pastDue
 			}
-		});
+		} );
+
 	},
 
 	/**
@@ -668,7 +666,7 @@ Ext.define('App.view.fees.Billing',
 	 */
 	onActive : function(callback)
 	{
-		this.ReloadGrid();
-		callback(true);
+		this.ReloadGrid( );
+		callback( true );
 	}
-});
+} );

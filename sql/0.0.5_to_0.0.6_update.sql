@@ -2846,4 +2846,55 @@ CREATE TABLE IF NOT EXISTS `patient_active_problems` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 
+-- phpMyAdmin SQL Dump
+-- version 3.4.9
+-- http://www.phpmyadmin.net
+--
+-- Host: localhost
+-- Generation Time: Nov 08, 2012 at 12:11 AM
+-- Server version: 5.5.20
+-- PHP Version: 5.3.9
+
+SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
+
+--
+-- Database: `mitosdb`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `patient_medications`
+--
+
+DROP TABLE IF EXISTS `patient_medications`;
+CREATE TABLE IF NOT EXISTS `patient_medications` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `pid` bigint(20) DEFAULT NULL COMMENT 'patient ID',
+  `eid` bigint(20) DEFAULT NULL COMMENT 'encounter ID',
+  `medication` varchar(50) DEFAULT NULL,
+  `RXCUI` varchar(50) DEFAULT NULL,
+  `begin_date` datetime DEFAULT NULL,
+  `end_date` datetime DEFAULT NULL,
+  `ocurrence` varchar(50) DEFAULT NULL,
+  `referred_by` varchar(50) DEFAULT NULL,
+  `create_date` datetime DEFAULT NULL,
+  `update_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created_uid` bigint(20) DEFAULT NULL COMMENT 'created by User ID',
+  `updated_uid` bigint(20) DEFAULT NULL COMMENT 'updated by User ID',
+  `outcome` varchar(50) DEFAULT NULL,
+  `prescription_id` int(11) DEFAULT NULL,
+  `route` varchar(255) DEFAULT NULL,
+  `dispense` int(11) DEFAULT NULL,
+  `dose` int(11) DEFAULT NULL,
+  `dose_mg` varchar(255) DEFAULT NULL,
+  `prescription_often` varchar(255) DEFAULT NULL,
+  `prescription_when` varchar(255) DEFAULT NULL,
+  `refill` int(11) DEFAULT NULL,
+  `take_pills` int(11) DEFAULT NULL,
+  `type` varchar(255) DEFAULT NULL,
+  `codingsystem` varchar(255) NOT NULL DEFAULT 'RXNORM',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=21 ;
 

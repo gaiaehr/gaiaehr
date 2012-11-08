@@ -13,7 +13,8 @@ $new->setOutputType('json');
 //echo $new->findRxcuiByString('viagra');
 echo '<pre>';
 //print_r(json_decode($new->findRxcuiByID('umlscui','C0716276'), true));//-----2
-print_r(json_decode($new->getSpellingSuggestions('tilenal'), true));
+//print_r(json_decode($new->getSpellingSuggestions('tilenal'), true));
+//print_r(json_decode($new->getStrength(315935)));
 //print_r(json_decode($new->getRxConceptProperties('213271'), true));//-------3
 //print_r(json_decode($new->getRelatedByType('SBD+SBDF','174742'), true));
 //print_r(json_decode($new->getAllRelatedInfo('866350'), true));

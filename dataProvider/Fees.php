@@ -74,28 +74,38 @@ class Fees
 		(int)$total = 0;
 		(string)$sql = '';
 
-		// Check for the passed parameters from exist and apply them to the where clause.
+		/* Check for the passed parameters from exist and apply them to the where clause. */
+		// Look between service date
 		if ($params -> datefrom && $params -> dateto)
 		{
 			$whereCommand = 'WHERE';
 			$whereClause .= chr(13) . " AND encounters.service_date BETWEEN '" . substr( $params -> datefrom, 0 , -9 ) . " 00:00:00' AND '" . substr( $params -> dateto, 0 , -9 ) . " 23:00:00'";
 		}
+		// Look for a specific patient
 		if ($params -> patient)
 		{
 			$whereCommand = 'WHERE';
 			$whereClause .= chr(13) . " AND encounters.pid = '" . $params -> patient . "'";
 		}
+		// Look for a specific provider
 		if ($params -> provider && $params -> provider <> 'all')
 		{
 			$whereCommand = 'WHERE';
 			$whereClause .= chr(13) . " AND encounters.provider_uid = '" . $params -> patient . "'";
 		}
+		// Look for the primary insurance
 		if ($params -> insurance && $params -> insurance <> '1')
 		{
 			$whereCommand = 'WHERE';
 			$whereClause .= chr(13) . " AND patient_demographics.primary_insurance_provider = '" . $params -> insurance . "'";
 		}
-		
+		// Look for pastDue dates
+		// TODO: Consider the payment on the SQL statement
+		if($params -> pastDue)
+		{
+			$whereCommand = 'WHERE';
+			$whereClause .= chr(13) . " AND DATEDIFF(NOW(),encounters.service_date) >= " . $params -> pastDue;
+		}
 		// Eliminate the first 6 characters of the where clause
 		// this to eliminate and extra AND from the SQL statement
 		$whereClause = substr($whereClause, 6);
@@ -150,19 +160,29 @@ class Fees
 		(array)$encounters = '';
 		(int)$total = 0;
 
-		$sql = "SELECT enc.eid,
-                       enc.pid,
-                       if(enc.provider_uid is null, 'None', enc.provider_uid) AS encounterProviderUid,
-                       enc.service_date,
-                       enc.billing_stage,
-                       demo.title,
-                       demo.fname,
-                       demo.mname,
-                       demo.lname,
-                       if(demo.provider is null, 'None', demo.provider) AS primaryProviderUid
-                  FROM encounters AS enc
-             LEFT JOIN patient_demographics AS demo ON demo.pid = enc.pid
-              ORDER BY enc.service_date ASC";
+		$sql = "SELECT
+					encounters.eid,
+					encounters.pid,
+					If(encounters.provider_uid Is Null, 'None', encounters.provider_uid) As encounterProviderUid,
+					If(patient_demographics.provider Is Null, 'None', patient_demographics.provider) As primaryProviderUid,
+					encounters.service_date,
+					encounters.billing_stage,
+					patient_demographics.primary_insurance_provider,
+					patient_demographics.title,
+					patient_demographics.fname,
+					patient_demographics.mname,
+					patient_demographics.lname,
+					encounters.close_date,
+					encounters.supervisor_uid,
+					encounters.provider_uid,
+					encounters.open_uid
+				FROM
+					encounters 
+				LEFT JOIN
+					patient_demographics 
+				ON patient_demographics.pid = encounters.pid
+				ORDER BY
+  					encounters.service_date";
 
 		$this -> db -> setSQL($sql);
 

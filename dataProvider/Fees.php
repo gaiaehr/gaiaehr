@@ -62,53 +62,48 @@ class Fees
 	}
 
 	/**
-	 * function: getFilterEncountersBillingData
-	 * The first call to populate the dataGrid on the Billing panel.
+	 * Function: getFilterEncountersBillingData
+	 * The first call to populate the dataGrid on the Billing panel
+	 * also it will be used to filter the data by passing parameters
+	 * from extjs.
 	 */
 	public function getFilterEncountersBillingData(stdClass $params)
 	{
 		// Declare all the variables that we are gone to use.
 		(string)$whereClause = '';
-		(string)$whereCommand = '';
 		(array)$encounters = '';
 		(int)$total = 0;
 		(string)$sql = '';
 
-		/* Check for the passed parameters from exist and apply them to the where clause. */
 		// Look between service date
 		if ($params -> datefrom && $params -> dateto)
-		{
-			$whereCommand = 'WHERE';
-			$whereClause .= chr(13) . " AND encounters.service_date BETWEEN '" . substr( $params -> datefrom, 0 , -9 ) . " 00:00:00' AND '" . substr( $params -> dateto, 0 , -9 ) . " 23:00:00'";
-		}
+			$whereClause .= chr(13) . " AND encounters.service_date BETWEEN '" . substr($params -> datefrom, 0, -9) . " 00:00:00' AND '" . substr($params -> dateto, 0, -9) . " 23:00:00'";
+
 		// Look for a specific patient
 		if ($params -> patient)
-		{
-			$whereCommand = 'WHERE';
 			$whereClause .= chr(13) . " AND encounters.pid = '" . $params -> patient . "'";
-		}
+
 		// Look for a specific provider
 		if ($params -> provider && $params -> provider <> 'all')
-		{
-			$whereCommand = 'WHERE';
 			$whereClause .= chr(13) . " AND encounters.provider_uid = '" . $params -> patient . "'";
-		}
+
 		// Look for the primary insurance
 		if ($params -> insurance && $params -> insurance <> '1')
-		{
-			$whereCommand = 'WHERE';
 			$whereClause .= chr(13) . " AND patient_demographics.primary_insurance_provider = '" . $params -> insurance . "'";
-		}
+
 		// Look for pastDue dates
 		// TODO: Consider the payment on the SQL statement
-		if($params -> pastDue)
-		{
-			$whereCommand = 'WHERE';
+		if ($params -> pastDue)
 			$whereClause .= chr(13) . " AND DATEDIFF(NOW(),encounters.service_date) >= " . $params -> pastDue;
-		}
+
 		// Eliminate the first 6 characters of the where clause
 		// this to eliminate and extra AND from the SQL statement
 		$whereClause = substr($whereClause, 6);
+
+		// If the whereClause variable is used go ahead and
+		// and add the where command.
+		if ($whereClause)
+			$whereClause = 'WHERE ' . $whereClause;
 
 		$sql = "SELECT
 					encounters.eid,
@@ -131,10 +126,10 @@ class Fees
 				LEFT JOIN
 					patient_demographics 
 				ON patient_demographics.pid = encounters.pid
-				$whereCommand $whereClause
+				$whereClause
 				ORDER BY
   					encounters.service_date";
-		error_log($sql);
+					
 		$this -> db -> setSQL($sql);
 		foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
 		{

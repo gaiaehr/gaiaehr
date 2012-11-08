@@ -639,6 +639,9 @@ Ext.define( 'App.view.fees.Billing',
 
 	/**
 	 * Function: Search for billing based on the search fields
+	 * This function will pass all the fields to the server side 
+	 * so PHP dataProvider can calculate and do the search against 
+	 * the SQL Server
 	 */
 	ReloadGrid : function(btn)
 	{

@@ -52,6 +52,8 @@ class Fees
 
 	function __construct()
 	{
+		// Declare all the variables that we are gone to use
+		// within the class.
 		(object)$this -> db = new dbHelper();
 		(object)$this -> user = new User();
 		(object)$this -> patient = new Patient();
@@ -71,15 +73,28 @@ class Fees
 		(array)$encounters = '';
 		(int)$total = 0;
 		(string)$sql = '';
-		
+
 		// Check for the passed parameters from extjs and apply them to the where clause.
-		if ($params -> datefrom && $params -> dateto) $whereCommand = 'WHERE'; $whereClause .= chr(13) . " AND encounters.onset_date BETWEEN '" . $params -> datefrom . "' AND '" . $params -> dateto . "'";
-		if($params -> patient) $whereCommand = 'WHERE'; $whereClause .= chr(13) . " AND encounters.pid = '" . $params -> patient . "'";
+		if ($params -> datefrom && $params -> dateto)
+		{
+			$whereCommand = 'WHERE';
+			$whereClause .= chr(13) . " AND encounters.onset_date BETWEEN '" . $params -> datefrom . "' AND '" . $params -> dateto . "'";
+		}
+		if ($params -> patient)
+		{
+			$whereCommand = 'WHERE';
+			$whereClause .= chr(13) . " AND encounters.pid = '" . $params -> patient . "'";
+		}
+		if ($params -> provider && $params -> provider <> 'All')
+		{
+			$whereCommand = 'WHERE';
+			$whereClause .= chr(13) . " AND encounters.provider_uid = '" . $params -> patient . "'";
+		}
 		
 		// Eliminate the first 6 characters of the where clause
 		// this to eliminate and extra AND from the SQL statement
 		$whereClause = substr($whereClause, 6);
-		
+
 		$sql = "Select
 					encounters.eid,
 					encounters.pid,
@@ -112,14 +127,14 @@ class Fees
 			$encounters[] = $row;
 		}
 		$total = count($encounters);
-		$encounters = array_slice( $encounters, $params -> start, $params -> limit);
+		$encounters = array_slice($encounters, $params -> start, $params -> limit);
 		return array(
 			'totals' => $total,
 			'encounters' => $encounters
 		);
 
 	}
-	
+
 	/**
 	 * Function: getEncountersByPayment
 	 */
@@ -129,7 +144,7 @@ class Fees
 		(string)$sql = '';
 		(array)$encounters = '';
 		(int)$total = 0;
-		
+
 		$sql = "SELECT enc.eid,
                        enc.pid,
                        if(enc.provider_uid is null, 'None', enc.provider_uid) AS encounterProviderUid,
@@ -145,7 +160,7 @@ class Fees
               ORDER BY enc.service_date ASC";
 
 		$this -> db -> setSQL($sql);
-		
+
 		foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
 		{
 			$row['patientName'] = $row['title'] . ' ' . Person::fullname($row['fname'], $row['mname'], $row['lname']);
@@ -183,11 +198,11 @@ class Fees
 		$this -> db -> execLog();
 		if ($this -> db -> lastInsertId == 0)
 		{
-			return array('success' => false);
+			return (array)$success = 'false';
 		}
 		else
 		{
-			return array('success' => true);
+			return (array)$success = 'true';
 		}
 	}
 
@@ -204,8 +219,12 @@ class Fees
 	 */
 	public function getPatientBalanceByPid($pid)
 	{
+		// Declare all the variables that we are gone to use.
+		(array)$balance_total = '';
+
 		$this -> db -> setSQL("SELECT SUM(amount) as balance FROM payment_transactions WHERE payer_id = '$pid'");
 		$balance_total = $this -> db -> fetchRecord();
+
 		return $balance_total['balance'];
 	}
 

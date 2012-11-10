@@ -32,9 +32,9 @@ $color: #000 !default;
  * @var {string} $font-family
  * The default font-family to be used throughout the theme.
  */
-$font-family: tahoma,arial,verdana,sans-serif !default;
+$font-family: tahoma, arial, verdana, sans-serif !default;
 
-$font-size  : 12px !default;
+$font-size: 12px !default;
 
 /**
  * @var {string} $base-gradient
@@ -46,7 +46,7 @@ $base-gradient: 'matte' !default;
  * @var {color} $base-color
  * The base color to be used throughout the theme.
  */
-$base-color   : #C0D4ED !default;
+$base-color: #C0D4ED !default;
 $neutral-color: #eeeeee !default;
 
 /**
@@ -111,7 +111,6 @@ $scope-reset-css: false !default;
  * The base color for CSS shadows
  */
 $css-shadow-background-color: #ccc !default;
-
 
 /**
  * @var {color} $include-shadow-images

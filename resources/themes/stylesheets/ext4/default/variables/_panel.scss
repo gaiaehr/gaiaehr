@@ -6,7 +6,8 @@ $include-panel-uis: true;
 // ===============================
 $panel-border-radius: null !default;
 $panel-border-width: 1px !default;
-$panel-base-color: adjust-color($base-color, $hue: 0deg, $saturation: 0.542%, $lightness: 7.843%) !default; //#DFE8F6
+$panel-base-color: adjust-color($base-color, $hue: 0deg, $saturation: 0.542%, $lightness: 7.843%) !default;
+//#DFE8F6
 $panel-border-color: adjust-color($base-color, $hue: 0deg, $saturation: 7.644%, $lightness: -8.627%) !default;
 
 // ===============================
@@ -36,7 +37,8 @@ $panel-header-padding: 3px 5px 4px !default;
 $panel-header-vertical-padding: 5px 4px !default;
 
 //fonts
-$panel-header-font-size: ceil($font-size * .9) !default; //11px
+$panel-header-font-size: ceil($font-size * .9) !default;
+//11px
 $panel-header-line-height: 17px !default;
 $panel-header-font-weight: bold !default;
 $panel-header-font-family: $font-family !default;

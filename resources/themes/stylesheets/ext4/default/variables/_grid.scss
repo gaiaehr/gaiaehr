@@ -98,7 +98,9 @@ $grid-editor-font: normal #{$grid-row-cell-font-size}/#{$grid-editor-line-height
 $grid-row-editor-background-color: adjust-color($base-color, $hue: 1deg, $saturation: 11%, $lightness: 11%) !default;
 $grid-row-editor-border-color: $panel-border-color !default;
 $grid-row-editor-border-width: 1px !default;
-$grid-row-editor-border: $grid-row-editor-border-width solid $grid-row-editor-border-color !important !default;
+$grid-row-editor-border: $grid-row-editor-border-width solid $grid-row-editor-border-color!important
+!default
+;
 $grid-row-editor-field-padding-horizontal: 2px !default;
 $grid-row-editor-cb-wrap-padding-top: 0 !default;
 $grid-row-editor-checkbox-margin-left: -4px !default;

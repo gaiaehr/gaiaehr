@@ -23,7 +23,8 @@ $toolbar-separator-highlight-color: #fff !default;
 
 //text
 $toolbar-text-font-family: $font-family !default;
-$toolbar-text-font-size: ceil($font-size * .9) !default; //11px
+$toolbar-text-font-size: ceil($font-size * .9) !default;
+//11px
 $toolbar-text-font-weight: normal !default;
 $toolbar-text-color: mix($mix-color, #000, 30) !default;
 $toolbar-text-padding: 3px 4px 0 4px !default;

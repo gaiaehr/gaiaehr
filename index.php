@@ -33,14 +33,10 @@ $mobile = new Mobile_Detect();
  * set the site using the url parameter site, or default if not given
  */
 $site = (isset($_GET['site']) ? $_GET['site'] : 'default');
-
-if (file_exists('sites/' . $site . '/conf.php'))
-{
+if(file_exists('sites/' . $site . '/conf.php')){
 	include_once ('sites/' . $site . '/conf.php');
 	$_SESSION['site']['localization'] = (isset($_SESSION['site']['localization']) && ($_SESSION['site']['default_localization'] != $_SESSION['site']['localization'])) ? $_SESSION['site']['localization'] : 'en_US';
-}
-else
-{
+} else {
 	$_SESSION['site'] = array('error' => 'Site configuration file not found, Please contact Support Desk. Thanks!');
 };
 /**
@@ -53,52 +49,32 @@ else
  * (to make sure ths user hasn't been out for a long time)
  *
  */
-if (isset($_SESSION['user']) && $_SESSION['user']['auth'] == true && $_SESSION['user']['site'] == $site && $_SESSION['inactive']['life'] < $_SESSION['inactive']['time'])
-{
-
-	/**
-	 * if mobile go to mobile app, else go to app
-	 */
-	if (isset($_SESSION['site']['checkInMode']) && $_SESSION['site']['checkInMode'])
-	{
-		include_once ('checkin/checkin.php');
-	}
-	elseif ($mobile -> isMobile())
-	{
-		include_once ('_app_m.php');
-	}
-	else
-	{
-		include_once ('dataProvider/Globals.php');
-		Globals::setGlobals();
-		include_once ('_app.php');
-	}
-
-}
-else// Make the logon process or Setup process
-{
-	/**
-	 * If no directory is found inside sites dir run the setup wizard,
-	 * if a directory is found inside sites dir run the logon screen
-	 */
-	if ($_SESSION['sites']['count'] < 1)
-	{
-		unset($_SESSION['site']);
-		include_once ('_install.php');
-	}
-	else
-	{
-		$_SESSION['user']['auth'] = false;
-		// if mobile go to mobile app, else go to app
-		if ($mobile -> isMobile())
-		{
-			include_once ('_login_m.php');
+if($mobile->isMobile()){
+	header('Location: app_m/index.html');
+}else{
+	if(isset($_SESSION['user']) && $_SESSION['user']['auth'] == true && $_SESSION['user']['site'] == $site && $_SESSION['inactive']['life'] < $_SESSION['inactive']['time']){
+		/**
+		 * if mobile go to mobile app, else go to app
+		 */
+		if(isset($_SESSION['site']['checkInMode']) && $_SESSION['site']['checkInMode']){
+			include_once('checkin/checkin.php');
+		} else {
+			include_once('_app.php');
 		}
-		else
-		{
-			include_once ('_login.php');
+	} else { // Make the logon process or Setup process
+		/**
+		 * If no directory is found inside sites dir run the setup wizard,
+		 * if a directory is found inside sites dir run the logon screen
+		 */
+		if($_SESSION['sites']['count'] < 1){
+			unset($_SESSION['site']);
+			include_once('_install.php');
+		} else {
+			$_SESSION['user']['auth'] = false;
+			include_once('_login.php');
 		}
 	}
 }
-
 $_SESSION['inactive']['timeout'] = time();
+
+

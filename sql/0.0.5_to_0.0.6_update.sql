@@ -2845,29 +2845,6 @@ CREATE TABLE IF NOT EXISTS `patient_active_problems` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
-
--- phpMyAdmin SQL Dump
--- version 3.4.9
--- http://www.phpmyadmin.net
---
--- Host: localhost
--- Generation Time: Nov 08, 2012 at 12:11 AM
--- Server version: 5.5.20
--- PHP Version: 5.3.9
-
-SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
-SET time_zone = "+00:00";
-
---
--- Database: `mitosdb`
---
-
--- --------------------------------------------------------
-
---
--- Table structure for table `patient_medications`
---
-
 DROP TABLE IF EXISTS `patient_medications`;
 CREATE TABLE IF NOT EXISTS `patient_medications` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,

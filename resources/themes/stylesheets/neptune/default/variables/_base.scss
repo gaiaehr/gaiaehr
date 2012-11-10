@@ -27,7 +27,8 @@ $color: #000 !default;
  * The default font-family to be used throughout the theme.
  */
 $font-family: "Helvetica Neue", Arial, Verdana, sans-serif !default;
-$ui-font-family: $font-family; // Deprecated
+$ui-font-family: $font-family;
+// Deprecated
 // $ui-font-family: "Lucida Grande", Verdana, Tahoma, sans-serif !default;
 
 /**
@@ -51,7 +52,8 @@ $base-gradient: matte !default;
  * @var {color} $base-color
  * The base color to be used throughout the theme.
  */
-$base-color: #167CCE !default; // Momentum blue
+$base-color: #167CCE !default;
+// Momentum blue
 $base-light-color: #A6DDFF !default;
 $base-dark-color: #0E4DAD !default;
 

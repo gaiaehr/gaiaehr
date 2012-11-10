@@ -14,9 +14,12 @@ $grid-header-over-background-color: $mixed-color !default;
 $grid-header-over-border-color: darken($grid-header-over-background-color, 20%) !default;
 $grid-header-over-background-gradient: $grid-header-background-gradient !default;
 $grid-header-padding: 4px 6px !default;
-$grid-header-trigger-height: 22px !default; // Deprecated
-$grid-header-trigger-width: 14px !default; // Deprecated
-$grid-header-color: #606060 !default;//color-by-background($grid-header-background-color) !default;
+$grid-header-trigger-height: 22px !default;
+// Deprecated
+$grid-header-trigger-width: 14px !default;
+// Deprecated
+$grid-header-color: #606060 !default;
+//color-by-background($grid-header-background-color) !default;
 
 // ===============================
 // ========= GRID ROWS ===========
@@ -47,17 +50,22 @@ $grid-row-cell-border-style: solid !default;
 $grid-row-cell-border-width: 0 !default;
 
 //row cell alt
-$grid-row-cell-alt-background: $neutral-light-color !default; //$mixed-color !default;
+$grid-row-cell-alt-background: $neutral-light-color !default;
+//$mixed-color !default;
 
 //row cell over
-$grid-row-cell-over-background-color: $base-light-color !default;//lighten($base-color, 20%) !default;
-$grid-row-cell-over-border-color: transparent !default; // Deprecated
+$grid-row-cell-over-background-color: $base-light-color !default;
+//lighten($base-color, 20%) !default;
+$grid-row-cell-over-border-color: transparent !default;
+// Deprecated
 $grid-row-cell-over-background-gradient: $base-gradient !default;
 $grid-row-cell-over-color: color-by-background(darken($grid-row-cell-over-background-color, 20%), 80%);
 
 //row cell selected
-$grid-row-cell-selected-border-style: solid !default; // Deprecated
-$grid-row-cell-selected-background-color: $base-dark-color !default; //lighten($base-color, 15%) !default;
+$grid-row-cell-selected-border-style: solid !default;
+// Deprecated
+$grid-row-cell-selected-background-color: $base-dark-color !default;
+//lighten($base-color, 15%) !default;
 $grid-row-cell-selected-border-color: lighten($base-color, 5%) !default;
 $grid-row-cell-selected-color: color-by-background($base-color, 80%);
 
@@ -81,7 +89,8 @@ $grid-cell-special-over-background-color: $grid-row-cell-over-border-color !defa
 $grid-row-cell-special-background-gradient: $base-gradient;
 
 //cell with col lines
-$grid-cell-with-col-lines-border-color: #E0E3E6 !default;// adjust-color($base-color, $hue: 0deg, $saturation: -55.556%, $lightness: -2.549%) !default;
+$grid-cell-with-col-lines-border-color: #E0E3E6 !default;
+// adjust-color($base-color, $hue: 0deg, $saturation: -55.556%, $lightness: -2.549%) !default;
 
 // ===============================
 // ======== GROUPED GRID =========
@@ -105,7 +114,8 @@ $grid-editor-font: normal #{$grid-row-cell-font-size}/#{$grid-editor-line-height
 $grid-row-editor-background-color: adjust-color($base-color, $hue: 1deg, $saturation: 11%, $lightness: 11%) !default;
 $grid-row-editor-border-color: $panel-border-color !default;
 $grid-row-editor-border-width: 1px !default;
-$grid-row-editor-border: $grid-row-editor-border-width solid $grid-row-editor-border-color !important;
+$grid-row-editor-border: $grid-row-editor-border-width solid $grid-row-editor-border-color!important
+;
 
 $grid-row-editor-field-padding-horizontal: 2px !default;
 $grid-row-editor-checkbox-padding-top: 2px !default;

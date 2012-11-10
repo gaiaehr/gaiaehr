@@ -20,7 +20,8 @@ $toolbar-separator-highlight-color: lighten($toolbar-background-color, 7%) !defa
 
 //text
 $toolbar-text-font-family: $ui-font-family;
-$toolbar-text-font-size: $toolbar-font-size !default; //11px
+$toolbar-text-font-size: $toolbar-font-size !default;
+//11px
 $toolbar-text-font-weight: normal !default;
 $toolbar-text-color: color-by-background($toolbar-background-color, 50%) !default;
 $toolbar-text-padding: 3px 4px 0 4px !default;

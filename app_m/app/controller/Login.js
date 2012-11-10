@@ -5,18 +5,19 @@
  * Time: 11:37 AM
  * To change this template use File | Settings | File Templates.
  */
-Ext.define('App.controller.Main', {
+Ext.define('App.controller.Login', {
     extend: 'Ext.app.Controller',
 
     config: {
         refs: {
-            loginWindow: 'contianer'
+            loginWindow: '[action="loginWindow"]',
+            loginForm: '[action="loginForm"]'
         }
     },
 
     init:function(){
         console.log(this.getLoginWindow());
-        //this.getViewport().add(Ext.create('App.view.Login').show());
+        console.log(this.getLoginForm());
     }
 
 

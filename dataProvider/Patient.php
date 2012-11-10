@@ -270,7 +270,11 @@ class Patient
 	public function getPatientDemographicDataByPid($pid)
 	{
 		$this->db->setSQL("SELECT * FROM patient_demographics WHERE pid = '$pid'");
-		return $this->db->fetchRecords(PDO::FETCH_ASSOC);
+		$patient = $this->db->fetchRecord(PDO::FETCH_ASSOC);
+		$patient['pic'] = $this->getPatientPhotoSrcIdByPid($patient['pid']);
+		$patient['name'] = Person::fullname($patient['fname'],$patient['mname'],$patient['lname']);
+		$patient['age'] = $this->getPatientAgeByDOB($patient['DOB']);
+		return $patient;
 
 	}
 

@@ -26,17 +26,22 @@ $button-base-color-over: color-offset($button-base-color, 10%);
 $button-base-color-pressed: $button-base-color-over;
 $button-base-color-disabled: $button-base-color;
 
-$button-border-color: darken($button-base-color, 20%) !default; // Deprecated
-$button-border-color-over: darken($button-base-color, 25%) !default; // Deprecated
-$button-border-color-pressed: darken($button-base-color, 25%) !default; // Deprecated
-$button-border-color-disabled: $button-border-color !default; // Deprecated
+$button-border-color: darken($button-base-color, 20%) !default;
+// Deprecated
+$button-border-color-over: darken($button-base-color, 25%) !default;
+// Deprecated
+$button-border-color-pressed: darken($button-base-color, 25%) !default;
+// Deprecated
+$button-border-color-disabled: $button-border-color !default;
+// Deprecated
 
 $button-background-gradient: $base-gradient !default;
 $button-background-gradient-over: $base-gradient !default;
 $button-background-gradient-pressed: $base-gradient !default;
 $button-background-gradient-disabled: $base-gradient !default;
 
-$button-color: color-by-background($button-base-color, 60%) !default; // Deprecated
+$button-color: color-by-background($button-base-color, 60%) !default;
+// Deprecated
 $button-color-disabled: lighten($button-color, 35) !default;
 
 /**

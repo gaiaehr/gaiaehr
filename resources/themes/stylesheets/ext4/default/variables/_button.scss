@@ -6,7 +6,8 @@ $button-small-border-radius: 3px !default;
 $button-small-border-width: 1px !default;
 $button-small-padding: 2px !default;
 $button-small-text-padding: 4px;
-$button-small-font-size: ceil($font-size * .9) !default; //11px
+$button-small-font-size: ceil($font-size * .9) !default;
+//11px
 $button-small-font-size-over: $button-small-font-size !default;
 $button-small-font-size-focus: $button-small-font-size-over !default;
 $button-small-font-size-pressed: $button-small-font-size !default;
@@ -27,7 +28,8 @@ $button-medium-border-radius: 3px !default;
 $button-medium-border-width: 1px !default;
 $button-medium-padding: 3px !default;
 $button-medium-text-padding: 3px !default;
-$button-medium-font-size: ceil($font-size * .9) !default; //11px
+$button-medium-font-size: ceil($font-size * .9) !default;
+//11px
 $button-medium-font-size-over: $button-medium-font-size !default;
 $button-medium-font-size-focus: $button-medium-font-size-over !default;
 $button-medium-font-size-pressed: $button-medium-font-size !default;
@@ -48,7 +50,8 @@ $button-large-border-radius: 3px !default;
 $button-large-border-width: 1px !default;
 $button-large-padding: 3px !default;
 $button-large-text-padding: 3px !default;
-$button-large-font-size: ceil($font-size * .9) !default; //11px
+$button-large-font-size: ceil($font-size * .9) !default;
+//11px
 $button-large-font-size-over: $button-large-font-size !default;
 $button-large-font-size-focus: $button-large-font-size-over !default;
 $button-large-font-size-pressed: $button-large-font-size !default;
@@ -66,11 +69,15 @@ $button-large-font-family-disabled: $button-large-font-family !default;
 $button-large-icon-size: 32px !default;
 
 //base colors for the default button
-$button-default-base-color: adjust-color($neutral-color, $hue: 0deg, $saturation: -55.556%, $lightness: 12.745%) !default; //F7F7F7
-$button-default-base-color-over: adjust-color($base-color, $hue: -6.667deg, $saturation: 44.444%, $lightness: 10.588%) !default; //E4F3FF
+$button-default-base-color: adjust-color($neutral-color, $hue: 0deg, $saturation: -55.556%, $lightness: 12.745%) !default;
+//F7F7F7
+$button-default-base-color-over: adjust-color($base-color, $hue: -6.667deg, $saturation: 44.444%, $lightness: 10.588%) !default;
+//E4F3FF
 $button-default-base-color-focus: $button-default-base-color-over !default;
-$button-default-base-color-pressed: adjust-color($base-color, $hue: -0.725deg, $saturation: -9.556%, $lightness: -3.725%) !default; //B6CBE4
-$button-default-base-color-disabled: adjust-color($base-color, $hue: 0deg, $saturation: -55.556%, $lightness: 12.745%) !default; //F7F7F7
+$button-default-base-color-pressed: adjust-color($base-color, $hue: -0.725deg, $saturation: -9.556%, $lightness: -3.725%) !default;
+//B6CBE4
+$button-default-base-color-disabled: adjust-color($base-color, $hue: 0deg, $saturation: -55.556%, $lightness: 12.745%) !default;
+//F7F7F7
 
 $button-default-border-color: adjust-color($button-default-base-color, $hue: 0deg, $saturation: 0%, $lightness: -18.039%) !default;
 $button-default-border-color-over: adjust-color($button-default-base-color-over, $hue: 8.177deg, $saturation: -28.283%, $lightness: -12.745%) !default;

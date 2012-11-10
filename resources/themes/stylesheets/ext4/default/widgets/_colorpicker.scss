@@ -3,47 +3,47 @@
  * @member Ext.picker.Color
  */
 @mixin extjs-colorpicker {
-    .#{$prefix}color-picker {
-        width: 144px;
-        height: 90px;
-        cursor: pointer;
-    }
+  .#{$prefix}color-picker {
+    width: 144px;
+    height: 90px;
+    cursor: pointer;
+  }
 
-    .#{$prefix}color-picker a {
-        border: 1px solid #fff;
+  .#{$prefix}color-picker a {
+    border: 1px solid #fff;
 
-        float: left;
+    float: left;
 
-        padding: 2px;
+    padding: 2px;
 
-        text-decoration: none;
+    text-decoration: none;
 
-        -moz-outline: 0 none;
-        outline: 0 none;
+    -moz-outline: 0 none;
+    outline: 0 none;
 
-        cursor: pointer;
-    }
+    cursor: pointer;
+  }
 
-    .#{$prefix}color-picker a:hover,
-    .#{$prefix}color-picker a.#{$prefix}color-picker-selected {
-        border-color: $colorpicker-over-border-color;
-        background-color: $colorpicker-over-background-color;
-    }
+  .#{$prefix}color-picker a:hover,
+  .#{$prefix}color-picker a.#{$prefix}color-picker-selected {
+    border-color: $colorpicker-over-border-color;
+    background-color: $colorpicker-over-background-color;
+  }
 
-    .#{$prefix}color-picker em {
-        display: block;
+  .#{$prefix}color-picker em {
+    display: block;
 
-        border: 1px solid $colorpicker-item-border-color;
-    }
+    border: 1px solid $colorpicker-item-border-color;
+  }
 
-    .#{$prefix}color-picker em span {
-        cursor: pointer;
+  .#{$prefix}color-picker em span {
+    cursor: pointer;
 
-        display: block;
+    display: block;
 
-        height: 10px;
-        width: 10px;
+    height: 10px;
+    width: 10px;
 
-        line-height: 10px;
-    }
+    line-height: 10px;
+  }
 }

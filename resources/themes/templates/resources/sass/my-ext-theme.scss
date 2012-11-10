@@ -17,13 +17,13 @@ $include-default: false;
 @include extjs-menu;
 @include extjs-grid;
 @include extjs-form;
-    @include extjs-form-field;
-    @include extjs-form-fieldset;
-    @include extjs-form-file;
-    @include extjs-form-checkboxfield;
-    @include extjs-form-checkboxgroup;
-    @include extjs-form-triggerfield;
-    @include extjs-form-htmleditor;
+@include extjs-form-field;
+@include extjs-form-fieldset;
+@include extjs-form-file;
+@include extjs-form-checkboxfield;
+@include extjs-form-checkboxgroup;
+@include extjs-form-triggerfield;
+@include extjs-form-htmleditor;
 @include extjs-panel;
 @include extjs-qtip;
 @include extjs-slider;
@@ -42,4 +42,5 @@ $include-default: false;
 // This only applies to new UIs. It does not apply to default component images (i.e. when changing $base-color)
 // The value can either be true, in which case the image path will be "../images/"
 // or a string, of where the path is
-$relative-image-path-for-uis: true; // defaults to "../images/" when true
+$relative-image-path-for-uis: true;
+// defaults to "../images/" when true

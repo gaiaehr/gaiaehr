@@ -37,8 +37,26 @@ Ext.define('App.view.areas.FloorPlan', {
 
         me.patientInfo = Ext.create('Ext.Window',{
             title:'',
-            html:'placeholder',
+            width:300,
             closeAction:'hide',
+            tpl: new Ext.XTemplate(
+                '<div class="zoneSummaryContainer">'+
+                '   <div class="zoneSummaryArea">' +
+                '       <img src="{pic}" height="96" width="96">' +
+                '       <p>Name: {name}</p>' +
+                '       <p>DOB: {DOB}</p>' +
+                '       <p>Age: {age.str}</p>' +
+                '       <p>Sex: {sex}</p>' +
+                '   </div>' +
+//                '   <div class="zoneSummaryArea">' +
+//                '       <p>Service Date: {service_date}</p>' +
+//                '       <p>Provider: {provider} ({phone})</p>' +
+//                '       <p>Diagnosis: {diagnosis}</p>' +
+//                '       <p>Plan: {plan}</p>' +
+//                '       <p>Status: {status}</p>' +
+//                '   </div>' +
+                '</div>'
+            ),
             listeners:{
                 scope:me,
                 blur:{
@@ -86,11 +104,14 @@ Ext.define('App.view.areas.FloorPlan', {
         );
         zone.record = record;
     },
-    onZoneArrowClicked:function(btn){
+    onZoneArrowClicked:function(zone){
         var me = this;
-        me.patientInfo.show();
-        me.patientInfo.alignTo(btn.getEl(), 'tl-tr?').show();
-        me.patientInfo.focus();
+        if(zone.data){
+            me.patientInfo.update(zone.data.patient);
+            me.patientInfo.show();
+            me.patientInfo.alignTo(zone.getEl(), 'tl-tr?').show();
+            me.patientInfo.focus();
+        }
     },
     onZoneClicked: function(btn){
         app.setPatient(btn.data.pid, btn.data.name, function(){
@@ -139,6 +160,8 @@ Ext.define('App.view.areas.FloorPlan', {
                             patientData: panel.data,
                             zone: panel
                         };
+                    }else{
+                        return false;
                     }
                 },
                 getRepairXY: function(e){
@@ -192,6 +215,7 @@ Ext.define('App.view.areas.FloorPlan', {
         zone.dragZone.unlock();
         zone.setTooltip(i18n('patient_name') + ':' + data.name);
         zone.addCls(data.priority);
+        zone.data = data;
     },
     unSetZone: function(zone){
         zone.pid = null;
@@ -200,6 +224,7 @@ Ext.define('App.view.areas.FloorPlan', {
         zone.dragZone.lock();
         zone.setTooltip(i18n('patient_name') + ': [empty]');
         zone.removeCls(zone.priority);
+        zone.data = null;
     },
     setZones: function(){
         var me = this, zone, zones, data;

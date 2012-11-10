@@ -26,6 +26,15 @@ DROP TABLE IF EXISTS `lang_custom`;
 -- ************************************************************************************
 -- ************************************************************************************
 
+DROP TABLE IF EXISTS `applications`;
+CREATE TABLE IF NOT EXISTS `applications` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `app_name` varchar(255) NOT NULL,
+  `pvt_key` varchar(255) NOT NULL,
+  `active` int(11) DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
 DROP TABLE IF EXISTS `cdt_codes`;
 CREATE TABLE IF NOT EXISTS `cdt_codes` (
   `id` int(11) NOT NULL AUTO_INCREMENT,

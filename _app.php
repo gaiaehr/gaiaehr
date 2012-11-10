@@ -411,6 +411,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 				/*
 				 * Load the administration related panels
 				 */
+				'App.view.administration.Applications',
 				'App.view.administration.DataManager',
 				'App.view.administration.Documents',
 				'App.view.administration.Facilities',

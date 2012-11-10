@@ -482,6 +482,8 @@ Ext.define('App.view.Viewport', {
         me.MainPanel.add(Ext.create('App.view.miscellaneous.Websearch'));
         me.ppdz = me.MainPanel.add(Ext.create('App.view.areas.PatientPoolDropZone'));
 
+        me.MainPanel.add(Ext.create('App.view.administration.Applications'));
+
         if(acl['access_gloabal_settings']) me.MainPanel.add(Ext.create('App.view.administration.Globals'));
         if(acl['access_facilities']) me.MainPanel.add(Ext.create('App.view.administration.Facilities'));
         if(acl['access_users']) me.MainPanel.add(Ext.create('App.view.administration.Users'));

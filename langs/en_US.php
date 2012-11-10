@@ -254,7 +254,8 @@ $LANG = array(
     'reviewed'								=> 'Reviewed',
     'location'								=> 'Location',
     'severity'								=> 'Severity',
-    'active'								=> 'Active?',
+    'active?'								=> 'Active?',
+    'active'								=> 'Active',
     'begin_date'							=> 'Begin Date',
     'allergy'								=> 'Allergy',
     'reaction'								=> 'Reaction',
@@ -1110,6 +1111,8 @@ $LANG = array(
 	'bg_color'	                            => 'Background Color',
 	'border_color'	                        => 'Border Color',
 	'show_priority_color'	                => 'Show Priority Color',
-	'show_patient_preview'	                => 'Show Patient Preview'
+	'show_patient_preview'	                => 'Show Patient Preview',
+	'applications'	                        => 'Applications',
+	'private_key'	                        => 'Private Key'
 );
 ?>

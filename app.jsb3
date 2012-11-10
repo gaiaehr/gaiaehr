@@ -1035,6 +1035,10 @@
 				},
 				{
 					"path": "app/view/administration/",
+					"name": "Applications.js"
+				},
+				{
+					"path": "app/view/administration/",
 					"name": "DataManager.js"
 				},
 				{

@@ -33,7 +33,7 @@ if(!isset($_SESSION)) {
 include_once ($_SESSION['root'] . '/dataProvider/Patient.php');
 include_once ($_SESSION['root'] . '/dataProvider/Medications.php');
 include_once ($_SESSION['root'] . '/classes/dbHelper.php');
-class Medical
+class Rxnorm
 {
 	/**
 	 * @var dbHelper

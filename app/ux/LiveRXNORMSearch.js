@@ -80,7 +80,7 @@ Ext.define('App.ux.LiveRXNORMSearch',
 				//---------------------------------------------------------------------
 				getInnerTpl : function()
 				{
-					return '<div class="search-item"><h3>{RXCUI}<span style="font-weight: normal"> ({STR}) </span></h3></div>';
+					return '<div class="search-item"><h3>{STR}<span style="font-weight: normal"> ({RXCUI}) </span></h3></div>';
 				}
 			},
 			pageSize : 10

@@ -34,6 +34,7 @@ include_once ($_SESSION['root'] . '/dataProvider/Patient.php');
 include_once ($_SESSION['root'] . '/dataProvider/User.php');
 include_once ($_SESSION['root'] . '/dataProvider/Laboratories.php');
 include_once ($_SESSION['root'] . '/dataProvider/Medications.php');
+include_once ($_SESSION['root'] . '/dataProvider/Rxnorm.php');
 include_once ($_SESSION['root'] . '/classes/dbHelper.php');
 class Medical
 {
@@ -51,6 +52,7 @@ class Medical
 	private $patient;
 	private $laboratories;
 	private $medications;
+	private $rxnorm;
 
 	function __construct()
 	{
@@ -59,6 +61,7 @@ class Medical
 		$this->patient      = new Patient();
 		$this->laboratories = new Laboratories();
 		$this->medications  = new Medications();
+		$this->rxnorm  = new Rxnorm();
 		return;
 	}
 
@@ -123,8 +126,8 @@ class Medical
 		if($params->allergy1 != '') {
 			$data['allergy'] = $params->allergy1;
 		} elseif($params->allergy2 != '') {
-			$name               = $this->medications->getMedicationNameById($params->allergy2);
-			$data['allergy']    = $name['PROPRIETARYNAME'];
+			$name               = $this->rxnorm->getMedicationNameByRXCUI($params->allergy2);
+			$data['allergy']    = $name;
 			$data['allergy_id'] = $params->allergy2;
 		}
 		$params->allergy = $data['allergy'];
@@ -159,8 +162,8 @@ class Medical
 		if($params->allergy1 != '') {
 			$data['allergy'] = $params->allergy1;
 		} elseif($params->allergy2 != '') {
-			$name               = $this->medications->getMedicationNameById($params->allergy2);
-			$data['allergy']    = $name['PROPRIETARYNAME'];
+			$name               = $this->rxnorm->getMedicationNameByRXCUI($params->allergy2);
+			$data['allergy']    = $name;
 			$data['allergy_id'] = $params->allergy2;
 		}
 		$params->allergy = $data['allergy'];

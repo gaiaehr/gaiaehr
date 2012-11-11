@@ -23,41 +23,32 @@ if(!isset($_SESSION)){
 	session_start();
 	session_cache_limiter('private');
 }
-include_once ($_SESSION['root'] . '/classes/dbHelper.php');
-class API
-{
-	private $db;
-	private $request;
+$_SESSION['root'] = 'C:/inetpub/wwwroot/gaiaehr';
+include_once($_SESSION['root'] . '/classes/dbHelper.php');
+include_once($_SESSION['root'] . '/classes/Arrays.php');
 
-	public function __construct()
-	{
-		global $_REQUEST;
-		$this->db = new dbHelper();
-		$this->request = $_REQUEST;
+/**
+ * verify private key
+ */
 
-	}
+$action = $_REQUEST['action'];
+$method = $_REQUEST['method'];
+
+include_once("../dataProvider/$action.php");
+$o = new $action();
+print_r($o->$method());
 
 
-	public function generatePrivateKey()
-	{
-		$chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz023456789';
-		srand((double)microtime() * 1000000);
-		$i      = 0;
-		$AESkey = 'PVT_';
-		while($i <= 27){
-			$num    = rand() % 33;
-			$tmp    = substr($chars, $num, 1);
-			$AESkey = $AESkey . $tmp;
-			$i++;
-		}
-		if(strlen($AESkey) == 32){
-			return $AESkey;
-		} else {
-			return false;
-		}
+$params = $_REQUEST['data'];
 
-	}
-}
+//print_r(call_user_func_array(array(
+//	$o, $method
+//), $params));
+/**
+ * verify if authorized
+ */
 
-$api = new API();
-print $api->generatePrivateKey();
+//print_r($_REQUEST);
+
+
+

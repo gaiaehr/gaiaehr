@@ -58,43 +58,62 @@ class Rxnorm
 		                   FROM rxnsat
 		                   WHERE RXCUI = '$RXCUI'
 		                   AND  ATN = 'RXN_AVAILABLE_STRENGTH'");
-		return $this->db->fetchRecord(PDO::FETCH_ASSOC);
+		$rec = $this->db->fetchRecord(PDO::FETCH_ASSOC);
+		return $rec['ATV'];
 	}
 	public function getDrugRouteByRXCUI($RXCUI){
 		$this->db->setSQL("SELECT ATV
 		                   FROM rxnsat
 		                   WHERE RXCUI = '$RXCUI'
 		                   AND  ATN = 'DRT'");
-		return $this->db->fetchRecord(PDO::FETCH_ASSOC);
+		$rec = $this->db->fetchRecord(PDO::FETCH_ASSOC);
+		return $rec['ATV'];
 	}
 	public function getDoseformByRXCUI($RXCUI){
 		$this->db->setSQL("SELECT ATV
 		                   FROM rxnsat
 		                   WHERE RXCUI = '$RXCUI'
 		                   AND  ATN = 'DDF'");
-		return $this->db->fetchRecord(PDO::FETCH_ASSOC);
+		$rec = $this->db->fetchRecord(PDO::FETCH_ASSOC);
+		return $rec['ATV'];
 	}
 	public function getDoseformAbbreviateByRXCUI($RXCUI){
 		$this->db->setSQL("SELECT ATV
 		                   FROM rxnsat
 		                   WHERE RXCUI = '$RXCUI'
 		                   AND  ATN = 'DDFA'");
-		return $this->db->fetchRecord(PDO::FETCH_ASSOC);
+		$rec = $this->db->fetchRecord(PDO::FETCH_ASSOC);
+		return $rec['ATV'];
 	}
-
-	public function getQuantityByRXCUI($RXCUI){
-		$this->db->setSQL("SELECT ATV
-		                   FROM rxnsat
-		                   WHERE RXCUI = '$RXCUI'
-		                   AND  ATN = 'RXN_QUANTITY'");
-		return $this->db->fetchRecord(PDO::FETCH_ASSOC);
-	}
-
 	public function getDatabaseShortNameByRXCUI($RXCUI){
 		$this->db->setSQL("SELECT SAB
 		                   FROM rxnsat
 		                   WHERE RXCUI = '$RXCUI'");
-		return $this->db->fetchRecord(PDO::FETCH_ASSOC);
+		$rec = $this->db->fetchRecord(PDO::FETCH_ASSOC);
+		return $rec['SAB'];
+	}
+
+	public function getRXNORMLiveSearch(stdClass $params)
+	{
+		$this->db->setSQL("SELECT *
+   							   FROM  rxnconso
+   							   WHERE RXCUI    	LIKE'$params->query%'
+   							   OR STR         	LIKE'$params->query%'
+   							   GROUP BY RXCUI");
+		$records = $this->db->fetchRecords(PDO::FETCH_ASSOC);
+		foreach($records as $val => $rec){
+			$records[$val]['RXN_AVAILABLE_STRENGTH'] = $this->getStrengthByRXCUI($rec['RXCUI']);
+			$records[$val]['DRT'] = $this->getDrugRouteByRXCUI($rec['RXCUI']);
+			$records[$val]['DDF'] = $this->getDoseformByRXCUI($rec['RXCUI']);
+			$records[$val]['DDFA'] = $this->getDoseformAbbreviateByRXCUI($rec['RXCUI']);
+			$records[$val]['SAB'] = $this->getDatabaseShortNameByRXCUI($rec['RXCUI']);
+		}
+		$total   = count($records);
+		$records = array_slice($records, $params->start, $params->limit);
+		return array(
+			'totals' => $total,
+			'rows'   => $records
+		);
 	}
 }
 

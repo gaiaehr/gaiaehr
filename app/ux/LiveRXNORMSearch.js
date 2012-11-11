@@ -31,21 +31,21 @@ Ext.define('App.ux.LiveRXNORMSearch',
 		{
 			extend : 'Ext.data.Model',
 			fields : [
-			{
-				name : 'RXCUI'
-			},
-			{
-				name : 'STR'
-			},
-			{
-				name : 'RXAUI'
-			}],
+			{name : 'RXCUI'},
+			{name : 'STR'},
+			{name : 'RXN_AVAILABLE_STRENGTH'},
+			{name : 'DRT'},
+			{name : 'DDF'},
+			{name : 'DDFA'},
+			{name : 'RXN_QUANTITY'},
+			{name : 'SAB'},
+			{name : 'RXAUI'}],
 			proxy :
 			{
 				type : 'direct',
 				api :
 				{
-					read : Medical.getRXNORMLiveSearch
+					read : Rxnorm.getRXNORMLiveSearch
 				},
 				reader :
 				{

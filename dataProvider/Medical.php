@@ -120,12 +120,34 @@ class Medical
 	{
 		$data = get_object_vars($params);
 		unset($data['id'], $data['allergy_name'], $data['alert'], $data['allergy1'], $data['allergy2'], $data['reaction1'], $data['reaction2'], $data['reaction3'], $data['reaction4']);
+		if($params->allergy1 != '') {
+			$data['allergy'] = $params->allergy1;
+		} elseif($params->allergy2 != '') {
+			$name               = $this->medications->getMedicationNameById($params->allergy2);
+			$data['allergy']    = $name['PROPRIETARYNAME'];
+			$data['allergy_id'] = $params->allergy2;
+		}
+		$params->allergy = $data['allergy'];
+		if($params->reaction1 != '') {
+			$data['reaction'] = $params->reaction1;
+		} elseif($params->reaction2 != '') {
+			$data['reaction'] = $params->reaction2;
+		}
+		elseif($params->reaction3 != '') {
+			$data['reaction'] = $params->reaction3;
+		}
+		elseif($params->reaction4 != '') {
+			$data['reaction'] = $params->reaction4;
+		}
+		$params->reaction    = $data['reaction'];
 		$data['begin_date']  = $this->parseDate($data['begin_date']);
 		$data['end_date']    = $this->parseDate($data['end_date']);
 		$data['create_date'] = $this->parseDate($data['create_date']);
 		$this->db->setSQL($this->db->sqlBind($data, 'patient_allergies', 'I'));
 		$this->db->execLog();
 		$params->id = $this->db->lastInsertId;
+		$params->alert = ($params->end_date == null || $params->end_date == '0000-00-00 00:00:00' || $params->end_date == '') ? 1 : 0;
+
 		return $params;
 	}
 
@@ -546,21 +568,6 @@ class Medical
 		);
 	}
 
-	public function getRXNORMLiveSearch(stdClass $params)
-	{
-		$this->db->setSQL("SELECT *
-   							   FROM  rxnconso
-   							   WHERE RXCUI    	LIKE'$params->query%'
-   							   OR STR         	LIKE'$params->query%'
-   							   GROUP BY RXCUI");
-		$records = $this->db->fetchRecords(PDO::FETCH_ASSOC);
-		$total   = count($records);
-		$records = array_slice($records, $params->start, $params->limit);
-		return array(
-			'totals' => $total,
-			'rows'   => $records
-		);
-	}
 
 	public function reviewAllMedicalWindowEncounter(stdClass $params)
 	{

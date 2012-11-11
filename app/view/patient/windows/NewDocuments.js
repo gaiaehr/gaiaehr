@@ -231,11 +231,11 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 													defaults: { margin: '5 0 5 5' },
 													items   : [
 														{
-															xtype     : 'medicationlivetsearch',
+															xtype     : 'rxnormlivetsearch',
 															fieldLabel: i18n('medication'),
 															hideLabel : false,
 															action    : 'medication_id',
-															name      : 'medication_id',
+															name      : 'RXCUI',
 															width     : 350,
 															labelWidth: 80,
                                                             allowBlank: false,

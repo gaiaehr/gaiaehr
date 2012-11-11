@@ -12775,7 +12775,18 @@ Ext.define('App.model.administration.FloorPlans', {
 	fields: [
 		{name: 'id', type: 'int'},
 		{name: 'title', type: 'string'}
-	]
+	],
+    proxy :
+   	{
+   		type : 'direct',
+   		api :
+   		{
+   			read : FloorPlans.getFloorPlans,
+   			create : FloorPlans.createFloorPlan,
+   			update : FloorPlans.updateFloorPlan,
+   			destroy : FloorPlans.removeFloorPlan
+   		}
+   	},
 });
 /**
  * Created by JetBrains PhpStorm.
@@ -12793,10 +12804,27 @@ Ext.define('App.model.administration.FloorPlanZones', {
 		{name: 'floor_plan_id', type: 'int'},
 		{name: 'title', type: 'string'},
 		{name: 'type', type: 'string'},
+		{name: 'bg_color', type: 'string', useNull:true},
+		{name: 'border_color', type: 'string', useNull:true},
+		{name: 'scale', type: 'string', defaultValue:'medium'},
+		{name: 'width', type: 'int', useNull:true},
+		{name: 'height', type: 'int', useNull:true},
 		{name: 'x', type: 'int'},
 		{name: 'y', type: 'int'},
-		{name: 'active', type: 'bool'}
-	]
+		{name: 'show_priority_color', type: 'int'},
+		{name: 'show_patient_preview', type: 'int'},
+		{name: 'active', type: 'int'}
+	],
+    proxy :{
+        type : 'direct',
+        api :
+        {
+            read : FloorPlans.getFloorPlanZones,
+            create : FloorPlans.createFloorPlanZone,
+            update : FloorPlans.updateFloorPlanZone,
+            destroy : FloorPlans.removeFloorPlanZone
+        }
+    }
 });
 /**
  * Created by JetBrains PhpStorm.
@@ -13350,8 +13378,8 @@ Ext.define('App.model.patient.Dental', {
 		{name: 'created_uid', type: 'int'},
 		{name: 'updated_uid', type: 'int'},
 		{name: 'create_date', type: 'date', dateFormat: 'c'},
-		{name: 'title', type: 'string'},
-		{name: 'diagnosis_code', type: 'string'},
+		{name: 'cdt_code', type: 'string'},
+		{name: 'description', type: 'string'},
 		{name: 'begin_date', type: 'date', dateFormat: 'c'},
 		{name: 'end_date', type: 'date', dateFormat: 'c'},
 		{name: 'ocurrence', type: 'string'},
@@ -14545,7 +14573,6 @@ Ext.define('App.model.areas.PoolArea', {
 		{name: 'photoSrc', type: 'string'},
 		{name: 'poolArea', type: 'string'},
 		{name: 'floorPlanId', type: 'int'},
-		{name: 'floorPlanRequireZone', type: 'bool'},
 		{name: 'zoneId', type: 'int'},
 		{name: 'patientZoneId', type: 'int'},
 		{name: 'priority', type: 'string'}
@@ -14757,17 +14784,7 @@ Ext.define('App.store.administration.FloorPlans',
 {
 	model : 'App.model.administration.FloorPlans',
 	extend : 'Ext.data.Store',
-	proxy :
-	{
-		type : 'direct',
-		api :
-		{
-			read : FloorPlans.getFloorPlans,
-			create : FloorPlans.createFloorPlan,
-			update : FloorPlans.updateFloorPlan
-		}
-	},
-	autoSync : true,
+	autoSync : false,
 	autoLoad : false
 }); 
 /*
@@ -14793,17 +14810,7 @@ Ext.define('App.store.administration.FloorPlanZones',
 {
 	model : 'App.model.administration.FloorPlanZones',
 	extend : 'Ext.data.Store',
-	proxy :
-	{
-		type : 'direct',
-		api :
-		{
-			read : FloorPlans.getFloorPlanZones,
-			create : FloorPlans.createFloorPlanZone,
-			update : FloorPlans.updateFloorPlanZone
-		}
-	},
-	autoSync : true,
+	autoSync : false,
 	autoLoad : false
 }); 
 /*
@@ -16206,7 +16213,8 @@ Ext.define('App.ux.LiveCPTSearch',
 			displayField : 'code_text',
 			valueField : 'code',
 			emptyText : i18n('search') + '...',
-			typeAhead : true,
+			typeAhead : false,
+            hideTrigger : true,
 			minChars : 1,
 			anchor : '100%',
 			listConfig :
@@ -16739,7 +16747,8 @@ Ext.define('App.ux.LiveSurgeriesSearch',
 			displayField : 'surgery',
 			valueField : 'id',
 			emptyText : i18n('search_for_a_surgery') + '...',
-			typeAhead : true,
+			typeAhead : false,
+            hideTrigger : true,
 			minChars : 1,
 			listConfig :
 			{
@@ -17846,6 +17855,38 @@ Ext.define('App.ux.form.fields.Checkbox', {
 	alias         : 'widget.mitos.checkbox',
 	inputValue    : '1',
 	uncheckedValue: '0'
+});
+Ext.define('App.ux.form.fields.ColorPicker', {
+    extend: 'Ext.form.field.Trigger',
+    alias: 'widget.colorcombo',
+    triggerTip: 'Please select a color.',
+    onTriggerClick: function(){
+        var me = this;
+        picker = Ext.create('Ext.picker.Color', {
+            pickerField: this,
+            ownerCt: this,
+            renderTo: document.body,
+            floating: true,
+            hidden: true,
+            focusOnShow: true,
+            style: {
+                backgroundColor: "#fff"
+            },
+            listeners: {
+                scope: this,
+                select: function(field, value, opts){
+                    me.setValue('#' + value);
+                    me.inputEl.setStyle({backgroundColor: value});
+                    picker.hide();
+                },
+                show: function(field, opts){
+                    field.getEl().monitorMouseLeave(500, field.hide, field);
+                }
+            }
+        });
+        picker.alignTo(me.inputEl, 'tl-bl?');
+        picker.show(me.inputEl);
+    }
 });
 /*
  GaiaEHR (Electronic Health Records)
@@ -19359,8 +19400,13 @@ Ext.define('App.ux.grid.RowFormEditor', {
         if (!form.isValid()) {
             return;
         }
-        me.syncChildStoresChanges();
         form.updateRecord(me.context.record);
+        form._record.store.sync({
+            callback:function(){
+                me.fireEvent('sync', me, me.context);
+            }
+        });
+        me.syncChildStoresChanges();
         me.hide();
         return true;
     },
@@ -22567,21 +22613,21 @@ Ext.define('App.view.patient.windows.Medical', {
                 scope:me,
                 beforesync:me.setDefaults
             },
-            autoSync:true
+            autoSync:false
         });
         me.patientAllergiesListStore = Ext.create('App.store.patient.Allergies', {
             listeners:{
                 scope:me,
                 beforesync:me.setDefaults
             },
-            autoSync:true
+            autoSync:false
         });
         me.patientMedicalIssuesStore = Ext.create('App.store.patient.MedicalIssues', {
             listeners:{
                 scope:me,
                 beforesync:me.setDefaults
             },
-            autoSync:true
+            autoSync:false
         });
         me.patientSurgeryStore = Ext.create('App.store.patient.Surgery', {
 
@@ -22589,21 +22635,21 @@ Ext.define('App.view.patient.windows.Medical', {
                     scope:me,
                     beforesync:me.setDefaults
                 },
-                autoSync:true
+                autoSync:false
             });
         me.patientDentalStore = Ext.create('App.store.patient.Dental', {
             listeners:{
                 scope:me,
                 beforesync:me.setDefaults
             },
-            autoSync:true
+            autoSync:false
         });
         me.patientMedicationsStore = Ext.create('App.store.patient.Medications', {
             listeners:{
                 scope:me,
                 beforesync:me.setDefaults
             },
-            autoSync:true
+            autoSync:false
         });
         me.labPanelsStore = Ext.create('App.store.patient.LaboratoryTypes', {
                 autoSync:true
@@ -23312,9 +23358,9 @@ Ext.define('App.view.patient.windows.Medical', {
                 store:me.patientDentalStore,
                 columns:[
                     {
-                        header:i18n('title'),
-                        width:100,
-                        dataIndex:'title'
+                        header:i18n('dental'),
+                        width:990,
+                        dataIndex:'description'
                     },
                     {
                         xtype:'datecolumn',
@@ -23353,19 +23399,27 @@ Ext.define('App.view.patient.windows.Medical', {
                                     },
                                     items:[
                                         {
-                                            xtype:'textfield',
-                                            width:225,
+                                            fieldLabel:i18n('dental'),
+                                            name:'cdt_code',
+                                            hideLabel:false,
+                                            allowBlank:false,
+                                            width:510,
                                             labelWidth:70,
-                                            fieldLabel:i18n('title'),
-                                            action:'dental',
-                                            name:'title'
+                                            xtype:'cdtlivetsearch',
+                                            itemId:'cdt',
+                                            action:'cdt',
+                                            enableKeyEvents:true,
+                                            listeners:{
+                                                scope:me,
+                                                'select':me.onLiveSearchSelect
+                                            }
                                         },
-                                        //                                        {
-                                        //   		                                    xtype:'textfield',
-                                        //   		                                    hidden:true,
-                                        //   		                                    name:'immunization_id',
-                                        //   		                                    action:'idField'
-                                        //   	                                    },
+                                        {
+                                            xtype:'textfield',
+                                            hidden:true,
+                                            name:'description',
+                                            action:'description'
+                                        },
                                         {
                                             fieldLabel:i18n('begin_date'),
                                             xtype:'datefield',
@@ -23486,7 +23540,7 @@ Ext.define('App.view.patient.windows.Medical', {
                                     },
                                     items:[
                                         {
-                                            xtype:'medicationlivetsearch',
+                                            xtype:'rxnormlivetsearch',
                                             fieldLabel:i18n('medication'),
                                             hideLabel:false,
                                             itemId:'medication',
@@ -24032,8 +24086,12 @@ Ext.define('App.view.patient.windows.Medical', {
             field = combo.up('fieldcontainer').query('[action="idField"]')[0];
             field.setValue(name);
         }else if(combo.action == 'medication_id'){
-            name = model[0].data.PROPRIETARYNAME;
+            name = model[0].data.STR;
             field = combo.up('fieldcontainer').query('[action="medication"]')[0];
+            field.setValue(name);
+        }else if(combo.action == 'cdt'){
+            name = model[0].data.text;
+            field = combo.up('fieldcontainer').query('[action="description"]')[0];
             field.setValue(name);
         }
     },
@@ -24161,6 +24219,7 @@ Ext.define('App.view.patient.windows.Medical', {
             data = options.update[0].data;
             data.updated_uid = app.user.id;
         }else if(options.create){
+
         }
     },
     cardSwitch:function(btn){
@@ -26513,13 +26572,24 @@ Ext.define('App.view.calendar.Calendar', {
 		Ext.fly('app-msg').update('').addCls('x-hidden');
 	}
 });
-/**
- *
- * @namespace Messages.getMessages
- * @namespace Messages.sendNewMessage
- * @namespace Messages.replyMessage
- * @namespace Messages.deleteMessage
- * @namespace Messages.updateMessage
+/*
+ GaiaEHR (Electronic Health Records)
+ Messages.js
+ Messages Panel
+ Copyright (C) 2012 Ernesto Rodriguez
+
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 Ext.define('App.view.messages.Messages',
 {
@@ -27086,7 +27156,7 @@ Ext.define('App.view.messages.Messages',
 		this.storeMsgs.load();
 		callback(true);
 	}
-}); 
+});
 
 /**
  * Created by JetBrains PhpStorm.
@@ -27095,290 +27165,258 @@ Ext.define('App.view.messages.Messages',
  * Time: 9:09 PM
  * To change this template use File | Settings | File Templates.
  */
-Ext.define('App.view.areas.FloorPlan',
-{
-	id : 'panelAreaFloorPlan',
-	extend : 'App.ux.RenderPanel',
-	pageTitle : i18n('area_floor_plan'),
-	floorPlanId : null,
-	initComponent : function()
-	{
-		var me = this;
-		me.floorPlanZonesStore = Ext.create('App.store.administration.FloorPlanZones');
+Ext.define('App.view.areas.FloorPlan', {
+    id: 'panelAreaFloorPlan',
+    extend: 'App.ux.RenderPanel',
+    pageTitle: i18n('area_floor_plan'),
+    floorPlanId: null,
+    initComponent: function(){
+        var me = this;
+        me.floorPlanZonesStore = Ext.create('App.store.administration.FloorPlanZones');
 
-		me.floorPlan = Ext.create('Ext.panel.Panel',
-		{
-			title : i18n('floor_plans'),
-			layout : 'absolute',
-			tbar : ['->',
-			{
-				xtype : 'floorplanareascombo',
-				fieldLabel : i18n('area'),
-				labelWidth : 40,
-				listeners :
-				{
-					scope : me,
-					select : me.onFloorPlanSelect
-				}
-			}],
-			tools : [
-			{
-				type : 'refresh',
-				scope : me,
-				handler : me.setZones
-			}]
-		});
+        me.floorPlan = Ext.create('Ext.panel.Panel', {
+            title: i18n('floor_plans'),
+            layout: 'absolute',
+            tbar: ['->', {
+                xtype: 'floorplanareascombo',
+                fieldLabel: i18n('area'),
+                labelWidth: 40,
+                listeners: {
+                    scope: me,
+                    select: me.onFloorPlanSelect
+                }
+            }],
+            tools: [
+                {
+                    type: 'refresh',
+                    scope: me,
+                    handler: me.setZones
+                }
+            ]
+        });
 
-		me.pageBody = [me.floorPlan];
+        me.patientInfo = Ext.create('Ext.Window',{
+            title:'',
+            width:300,
+            closeAction:'hide',
+            tpl: new Ext.XTemplate(
+                '<div class="zoneSummaryContainer">'+
+                '   <div class="zoneSummaryArea">' +
+                '       <img src="{pic}" height="96" width="96">' +
+                '       <p>Name: {name}</p>' +
+                '       <p>DOB: {DOB}</p>' +
+                '       <p>Age: {age.str}</p>' +
+                '       <p>Sex: {sex}</p>' +
+                '   </div>' +
+//                '   <div class="zoneSummaryArea">' +
+//                '       <p>Service Date: {service_date}</p>' +
+//                '       <p>Provider: {provider} ({phone})</p>' +
+//                '       <p>Diagnosis: {diagnosis}</p>' +
+//                '       <p>Plan: {plan}</p>' +
+//                '       <p>Status: {status}</p>' +
+//                '   </div>' +
+                '</div>'
+            ),
+            listeners:{
+                scope:me,
+                blur:{
+                    element:'el',
+                    fn:me.onPatientInfoBlur
+                }
+            }
+        });
 
-		me.callParent(arguments);
-	},
+        me.pageBody = [ me.floorPlan ];
+        me.callParent(arguments);
 
-	loadZone : function(record)
-	{
-		var me = this, zone, form;
-		zone = Ext.create('Ext.button.Split',
-		{
-			text : record.data.title,
-			scale : 'medium',
-			x : record.data.x,
-			y : record.data.y,
-			itemId : record.data.id,
-			scope : me,
-			handler : me.onZoneClicked,
-			// --->
-			// Zone specific reference data
-			pid : null,
-			zoneId : record.data.id,
-			priority : null,
-			patientZoneId : null,
-			// <---
-			menu : [ form = Ext.create('Ext.form.Panel',
-			{
-				bodyPadding : '5 5 0 5',
-				items : [
-				{
-					xtype : 'textfield',
-					fieldLabel : i18n('patient_name'),
-					labelWidth : 80,
-					name : 'patient_name'
-				},
-				{
-					xtype : 'button',
-					text : i18n('remove_patient'),
-					handler : function()
-					{
-						me.unSetZone(zone);
-					}
-				}]
-			})],
-			tooltip : i18n('patient_name') + ': [empty]',
-			listeners :
-			{
-				scope : me,
-				render : me.initializeZone
-				//				menushow:me.afterMenuShow,
-				//				menuhide:me.afterMenuHide
-			}
-		});
-		//zone.update({title:record.data.title});
-		me.floorPlan.add(zone);
-		form.getForm().loadRecord(record);
-	},
+    },
 
-	onZoneClicked : function(btn)
-	{
-		say(btn);
-		app.setPatient(btn.data.pid, btn.data.name, function()
-		{
-			btn.data.eid ? app.openEncounter(btn.data.eid) : app.openPatientSummary();
-		});
-	},
-
-	onFloorPlanSelect : function(field, record)
-	{
-		var me = this;
-		me.floorPlanId = record[0].data.id;
-		me.loadZones(function()
-		{
-			me.setZones();
-		});
-	},
-
-	loadZones : function(callback)
-	{
-		var me = this;
-		me.floorPlan.removeAll();
-		me.floorPlanZonesStore.load(
-		{
-			params :
-			{
-				floor_plan_id : this.floorPlanId
-			},
-			scope : me,
-			callback : function(records, operation, success)
-			{
-				for (var i = 0; i < records.length; i++)
-				{
-					me.loadZone(records[i]);
-				}
-				callback();
-			}
-		});
-	},
-
-	initializeZone : function(panel)
-	{
-		var me = this;
-		panel.dragZone = Ext.create('Ext.dd.DragZone', panel.getEl(),
-		{
-			ddGroup : 'patientPoolAreas',
-			getDragData : function(e)
-			{
-				var sourceEl = panel.btnEl.dom, d;
-				if (sourceEl)
-				{
-					d = sourceEl.cloneNode(true);
-					d.id = Ext.id();
-					return panel.dragData =
-					{
-						sourceEl : sourceEl,
-						repairXY : Ext.fly(sourceEl).getXY(),
-						ddel : d,
-						patientData : panel.data,
-						zone : panel
-					};
-				}
-			},
-			getRepairXY : function(e)
-			{
-				return this.dragData.repairXY;
-			},
-			b4MouseDown : function(e)
-			{
-				this.autoOffset(e.getPageX(), e.getPageY());
-			}
-		});
-
-		panel.dragZone.lock();
-
-		panel.dropZone = Ext.create('Ext.dd.DropZone', panel.getEl(),
-		{
-			ddGroup : 'patientPoolAreas',
-			notifyOver : function(dd, e, data)
-			{
-				if (panel.pid == null)
-				{
-					return Ext.dd.DropZone.prototype.dropAllowed;
-				}
-				else
-				{
-					return Ext.dd.DropZone.prototype.dropNotAllowed;
-				}
-			},
-			notifyDrop : function(dd, e, data)
-			{
-				panel.data = data.patientData;
-				if (data.zone)
-				{
-					me.unAssignPatient(data.zone, panel.data);
-				}
-				me.assignPatient(panel, panel.data);
-			}
-		});
-	},
-
-	assignPatient : function(zone, data)
-	{
-		var me = this, params =
-		{
-			zone_id : zone.zoneId,
-			pid : data.pid
-		};
-		FloorPlans.setPatientToZone(params, function(provider, response)
-		{
-			data.patientZoneId = response.result.data.patientZoneId;
-			me.msg('Sweet!', data.name + i18n('successfully_moved') + '.');
-			me.setZone(zone, data);
-		});
-	},
-
-	unAssignPatient : function(zone, data)
-	{
-		var me = this;
-		FloorPlans.unSetPatientZoneByPatientZoneId(data.patientZoneId, function()
-		{
-			me.unSetZone(zone)
-		});
-	},
-
-	setZone : function(zone, data)
-	{
-		zone.pid = data.pid;
-		zone.priority = data.priority;
-		zone.patientZoneId = data.patientZoneId;
-		zone.dropZone.lock();
-		zone.dragZone.unlock();
-		zone.setTooltip(i18n('patient_name') + ':' + data.name);
-		zone.addCls(data.priority);
-	},
-
-	unSetZone : function(zone)
-	{
-		zone.pid = null;
-		zone.data = null;
-		zone.dropZone.unlock();
-		zone.dragZone.lock();
-		zone.setTooltip(i18n('patient_name') + ': [empty]');
-		zone.removeCls(zone.priority);
-	},
-
-	setZones : function()
-	{
-		var me = this, zone, zones, data;
-		FloorPlans.getPatientsZonesByFloorPlanId(me.floorPlanId, function(provider, response)
-		{
-			zones = me.floorPlan.items.items;
-			data = response.result;
-
-			for (var j = 0; j < zones.length; j++)
-			{
-				me.unSetZone(zones[j]);
-			}
-
-			for (var i = 0; i < data.length; i++)
-			{
-				zone = me.floorPlan.getComponent(data[i].zoneId);
-				zone.data = data[i];
-				me.setZone(zone, data[i]);
-			}
-		})
-	},
-
-	setFloorPlan : function(floorPlanId)
-	{
-
-	},
-
-	onActive : function(callback)
-	{
-		var me = this;
-		if (me.floorPlanId == null)
-		{
-			me.floorPlanId = 1;
-			me.floorPlan.query('floorplanareascombo')[0].setValue(me.floorPlanId);
-			me.loadZones(function()
-			{
-				me.setZones();
-			});
-		}
-		else
-		{
-			me.setZones();
-		}
-		callback(true);
-	}
-}); 
+    createZone: function(record){
+        var me = this, zone;
+        zone = me.floorPlan.add(
+            Ext.create('Ext.button.Split', {
+                text: record.data.title,
+                scale: record.data.scale,
+                itemId: record.data.id,
+                style:{
+                    'border-color':record.data.border_color,
+                    'background-color':record.data.bg_color
+                },
+                x: record.data.x,
+                y: record.data.y,
+                width:record.data.width,
+                height:record.data.height,
+                scope:me,
+                handler: me.onZoneClicked,
+                tooltip: i18n('patient_name') + ': [empty]',
+                listeners: {
+                    scope: me,
+                    render: me.initializeZone,
+                    arrowclick:me.onZoneArrowClicked
+                },
+                // patient zone specific reference data --->
+                pid: null,
+                zoneId: record.data.id,
+                priority: null,
+                patientZoneId: null
+                // <---
+            })
+        );
+        zone.record = record;
+    },
+    onZoneArrowClicked:function(zone){
+        var me = this;
+        if(zone.data){
+            me.patientInfo.update(zone.data.patient);
+            me.patientInfo.show();
+            me.patientInfo.alignTo(zone.getEl(), 'tl-tr?').show();
+            me.patientInfo.focus();
+        }
+    },
+    onZoneClicked: function(btn){
+        app.setPatient(btn.data.pid, btn.data.name, function(){
+            btn.data.eid ? app.openEncounter(btn.data.eid) : app.openPatientSummary();
+        });
+    },
+    onPatientInfoBlur:function(){
+        this.patientInfo.hide();
+    },
+    onFloorPlanSelect: function(field, record){
+        var me = this;
+        me.floorPlanId = record[0].data.id;
+        me.loadZones(function(){
+            me.setZones();
+        });
+    },
+    loadZones: function(callback){
+        var me = this;
+        me.floorPlan.removeAll();
+        me.floorPlanZonesStore.load({
+                params: {
+                    floor_plan_id: this.floorPlanId
+                },
+                scope: me,
+                callback: function(records, operation, success){
+                    for(var i = 0; i < records.length; i++){
+                        me.createZone(records[i]);
+                    }
+                    callback();
+                }
+            });
+    },
+    initializeZone: function(panel){
+        var me = this;
+        panel.dragZone = Ext.create('Ext.dd.DragZone', panel.getEl(), {
+                ddGroup: 'patientPoolAreas',
+                getDragData: function(e){
+                    var sourceEl = panel.btnEl.dom, d;
+                    if(sourceEl){
+                        d = sourceEl.cloneNode(true);
+                        d.id = Ext.id();
+                        return panel.dragData = {
+                            sourceEl: sourceEl,
+                            repairXY: Ext.fly(sourceEl).getXY(),
+                            ddel: d,
+                            patientData: panel.data,
+                            zone: panel
+                        };
+                    }else{
+                        return false;
+                    }
+                },
+                getRepairXY: function(e){
+                    return this.dragData.repairXY;
+                },
+                b4MouseDown: function(e){
+                    this.autoOffset(e.getPageX(), e.getPageY());
+                }
+            });
+        panel.dragZone.lock();
+        panel.dropZone = Ext.create('Ext.dd.DropZone', panel.getEl(), {
+                ddGroup: 'patientPoolAreas',
+                notifyOver: function(dd, e, data){
+                    if(panel.pid == null){
+                        return Ext.dd.DropZone.prototype.dropAllowed;
+                    }else{
+                        return Ext.dd.DropZone.prototype.dropNotAllowed;
+                    }
+                },
+                notifyDrop: function(dd, e, data){
+                    panel.data = data.patientData;
+                    if(data.zone){
+                        me.unAssignPatient(data.zone, panel.data);
+                    }
+                    me.assignPatient(panel, panel.data);
+                }
+            });
+    },
+    assignPatient: function(zone, data){
+        var me = this, params = {
+            zone_id: zone.zoneId,
+            pid: data.pid
+        };
+        FloorPlans.setPatientToZone(params, function(provider, response){
+            data.patientZoneId = response.result.data.patientZoneId;
+            me.msg('Sweet!', data.name + i18n('successfully_moved') + '.');
+            me.setZone(zone, data);
+        });
+    },
+    unAssignPatient: function(zone, data){
+        var me = this;
+        FloorPlans.unSetPatientZoneByPatientZoneId(data.patientZoneId, function(){
+            me.unSetZone(zone)
+        });
+    },
+    setZone: function(zone, data){
+        zone.pid = data.pid;
+        zone.priority = data.priority;
+        zone.patientZoneId = data.patientZoneId;
+        zone.dropZone.lock();
+        zone.dragZone.unlock();
+        zone.setTooltip(i18n('patient_name') + ':' + data.name);
+        zone.addCls(data.priority);
+        zone.data = data;
+    },
+    unSetZone: function(zone){
+        zone.pid = null;
+        zone.data = null;
+        zone.dropZone.unlock();
+        zone.dragZone.lock();
+        zone.setTooltip(i18n('patient_name') + ': [empty]');
+        zone.removeCls(zone.priority);
+        zone.data = null;
+    },
+    setZones: function(){
+        var me = this, zone, zones, data;
+        FloorPlans.getPatientsZonesByFloorPlanId(me.floorPlanId, function(provider, response){
+            zones = me.floorPlan.items.items;
+            data = response.result;
+            for(var j = 0; j < zones.length; j++){
+                me.unSetZone(zones[j]);
+            }
+            for(var i = 0; i < data.length; i++){
+                zone = me.floorPlan.getComponent(data[i].zoneId);
+                zone.data = data[i];
+                me.setZone(zone, data[i]);
+            }
+        })
+    },
+    setFloorPlan: function(floorPlanId){
+    },
+    onActive: function(callback){
+        var me = this;
+        if(me.floorPlanId == null){
+            me.floorPlanId = 1;
+            me.floorPlan.query('floorplanareascombo')[0].setValue(me.floorPlanId);
+            me.loadZones(function(){
+                me.setZones();
+            });
+        }else{
+            me.setZones();
+        }
+        callback(true);
+    }
+});
 /**
  * Created by JetBrains PhpStorm.
  * User: ernesto
@@ -27386,150 +27424,116 @@ Ext.define('App.view.areas.FloorPlan',
  * Time: 9:09 PM
  * To change this template use File | Settings | File Templates.
  */
-Ext.define('App.view.areas.PatientPoolDropZone',
-{
-	id : 'panelPoolArea',
-	extend : 'App.ux.RenderPanel',
-	pageTitle : i18n('patient_pool_areas'),
-	initComponent : function()
-	{
-		var me = this;
-		me.pageBody = Ext.create('Ext.container.Container',
-		{
-			defaults :
-			{
-				flex : 1,
-				margin : 5,
-				frame : false
-			},
-			layout :
-			{
-				type : 'hbox',
-				align : 'stretch'
-			}
-		});
-		me.listeners =
-		{
-			beforerender : me.getPoolAreas
-		};
-		me.callParent(arguments);
-	},
-
-	onPatientDrop : function(node, data, overModel, dropPosition, eOpts)
-	{
-		var name = (data.records[0].data) ? data.records[0].data.name : data.records[0].name, pid = (data.records[0].data) ? data.records[0].data.pid : data.records[0].pid, params;
-		app.msg('Sweet!', name + ' ' + i18n('sent_to') + ' ' + this.panel.title);
-		params =
-		{
-			pid : pid,
-			sendTo : this.panel.action
-		};
-
-		PoolArea.sendPatientToPoolArea(params, function()
-		{
-			app.unsetPatient();
-			Ext.getCmp('panelPoolArea').reloadStores();
-		});
-
-	},
-
-	getPoolAreas : function()
-	{
-		var me = this, panel = me.getPageBody().down('container'), areas;
-		me.stores = [];
-		PoolArea.getActivePoolAreas(function(provider, response)
-		{
-			areas = response.result;
-			for (var i = 0; i < areas.length; i++)
-			{
-				var store = Ext.create('Ext.data.Store',
-				{
-					model : 'App.model.areas.PoolDropAreas',
-					proxy :
-					{
-						type : 'direct',
-						api :
-						{
-							read : PoolArea.getPoolAreaPatients
-						},
-						extraParams :
-						{
-							area_id : areas[i].id
-						}
-					}
-				});
-				me.stores.push(store);
-				panel.add(
-				{
-					xtype : 'grid',
-					title : areas[i].title,
-					action : areas[i].id,
-					store : store,
-					floorPlanId : areas[i].floor_plan_id,
-					columns : [
-					{
-						header : i18n('record') + ' #',
-						width : 100,
-						dataIndex : 'pid'
-					},
-					{
-						header : i18n('patient_name'),
-						flex : 1,
-						dataIndex : 'name'
-					}],
-					viewConfig :
-					{
-						loadMask : false,
-						plugins :
-						{
-							ptype : 'gridviewdragdrop',
-							dragGroup : 'patientPoolAreas',
-							dropGroup : 'patientPoolAreas'
-						},
-						listeners :
-						{
-							//scope:me,
-							drop : me.onPatientDrop
-						}
-					},
-					listeners :
-					{
-						scope : me,
-						itemdblclick : me.onPatientDblClick
-					}
-				})
-
-			}
-		});
-	},
-
-	onPatientDblClick : function(store, record)
-	{
-		var data = record.data;
-		// TODO: set priority
-		app.setPatient(data.pid, data.name, function()
-		{
-			app.openPatientSummary();
-		});
-	},
-
-	reloadStores : function()
-	{
-		if (this.stores)
-		{
-			for (var i = 0; i < this.stores.length; i++)
-			{
-				this.stores[i].load();
-			}
-		}
-	},
-
-	onActive : function(callback)
-	{
-		this.reloadStores();
-		callback(true);
-	}
-}); 
+Ext.define('App.view.areas.PatientPoolDropZone', {
+        id: 'panelPoolArea',
+        extend: 'App.ux.RenderPanel',
+        pageTitle: i18n('patient_pool_areas'),
+        initComponent: function(){
+            var me = this;
+            me.pageBody = Ext.create('Ext.container.Container', {
+                    defaults: {
+                        flex: 1,
+                        margin: 5,
+                        frame: false
+                    },
+                    layout: {
+                        type: 'hbox',
+                        align: 'stretch'
+                    }
+                });
+            me.listeners = {
+                beforerender: me.getPoolAreas
+            };
+            me.callParent(arguments);
+        },
+        onPatientDrop: function(node, data, overModel, dropPosition, eOpts){
+            var name = (data.records[0].data) ? data.records[0].data.name : data.records[0].name, pid = (data.records[0].data) ? data.records[0].data.pid : data.records[0].pid, params;
+            app.msg('Sweet!', name + ' ' + i18n('sent_to') + ' ' + this.panel.title);
+            params = {
+                pid: pid,
+                sendTo: this.panel.action
+            };
+            PoolArea.sendPatientToPoolArea(params, function(){
+                app.unsetPatient();
+                Ext.getCmp('panelPoolArea').reloadStores();
+            });
+        },
+        getPoolAreas: function(){
+            var me = this, panel = me.getPageBody().down('container'), areas;
+            me.stores = [];
+            PoolArea.getActivePoolAreas(function(provider, response){
+                areas = response.result;
+                for(var i = 0; i < areas.length; i++){
+                    var store = Ext.create('Ext.data.Store', {
+                            model: 'App.model.areas.PoolDropAreas',
+                            proxy: {
+                                type: 'direct',
+                                api: {
+                                    read: PoolArea.getPoolAreaPatients
+                                },
+                                extraParams: {
+                                    area_id: areas[i].id
+                                }
+                            }
+                        });
+                    me.stores.push(store);
+                    panel.add({
+                            xtype: 'grid',
+                            title: areas[i].title,
+                            action: areas[i].id,
+                            store: store,
+                            floorPlanId: areas[i].floor_plan_id,
+                            columns: [
+                                {
+                                    header: i18n('record') + ' #',
+                                    width: 100,
+                                    dataIndex: 'pid'
+                                },
+                                {
+                                    header: i18n('patient_name'),
+                                    flex: 1,
+                                    dataIndex: 'name'
+                                }
+                            ],
+                            viewConfig: {
+                                loadMask: false,
+                                plugins: {
+                                    ptype: 'gridviewdragdrop',
+                                    dragGroup: 'patientPoolAreas',
+                                    dropGroup: 'patientPoolAreas'
+                                },
+                                listeners: {
+                                    //scope:me,
+                                    drop: me.onPatientDrop
+                                }
+                            },
+                            listeners: {
+                                scope: me,
+                                itemdblclick: me.onPatientDblClick
+                            }
+                        })
+                }
+            });
+        },
+        onPatientDblClick: function(store, record){
+            var data = record.data;
+            // TODO: set priority
+            app.setPatient(data.pid, data.name, function(){
+                app.openPatientSummary();
+            });
+        },
+        reloadStores: function(){
+            if(this.stores){
+                for(var i = 0; i < this.stores.length; i++){
+                    this.stores[i].load();
+                }
+            }
+        },
+        onActive: function(callback){
+            this.reloadStores();
+            callback(true);
+        }
+    });
 /**
  * Created with JetBrains PhpStorm.
  * User: erodriguez
@@ -28930,15 +28934,15 @@ Ext.define('App.view.patient.encounter.ICDs', {
  * To change this template use File | Settings | File Templates.
  */
 Ext.define('App.view.patient.ItemsToReview', {
-    extend       : 'Ext.panel.Panel',
-    alias        : 'widget.itemstoreview',
-    layout       : 'column',
-    frame        : true,
-    bodyPadding  : 5,
-    bodyBorder   : true,
-    bodyStyle    : 'background-color:white',
-    eid          : null,
-    initComponent: function() {
+    extend: 'Ext.panel.Panel',
+    alias: 'widget.itemstoreview',
+    layout: 'column',
+    frame: true,
+    bodyPadding: 5,
+    bodyBorder: true,
+    bodyStyle: 'background-color:white',
+    eid: null,
+    initComponent: function(){
         var me = this;
         me.patientImmuListStore = Ext.create('App.store.patient.PatientImmunization');
         me.patientAllergiesListStore = Ext.create('App.store.patient.Allergies');
@@ -28946,186 +28950,183 @@ Ext.define('App.view.patient.ItemsToReview', {
         me.patientSurgeryStore = Ext.create('App.store.patient.Surgery');
         me.patientDentalStore = Ext.create('App.store.patient.Dental');
         me.patientMedicationsStore = Ext.create('App.store.patient.Medications');
-
         me.column1 = Ext.create('Ext.container.Container', {
             columnWidth: 0.3333,
-            defaults   : {
-                xtype : 'grid',
+            defaults: {
+                xtype: 'grid',
                 margin: '0 5 5 0'
             },
-            items      : [
+            items: [
                 {
-                    title  : i18n('immunizations'),
-                    frame  : true,
-                    height : 180,
-                    store  : me.patientImmuListStore,
+                    title: i18n('immunizations'),
+                    frame: true,
+                    height: 180,
+                    store: me.patientImmuListStore,
                     columns: [
                         {
-                            header   : i18n('immunization'),
-                            width    : 250,
+                            header: i18n('immunization'),
+                            width: 250,
                             dataIndex: 'immunization_name'
                         },
                         {
-                            header   : i18n('date'),
-                            width    : 90,
-                            xtype    : 'datecolumn',
-                            format   : 'Y-m-d',
+                            header: i18n('date'),
+                            width: 90,
+                            xtype: 'datecolumn',
+                            format: 'Y-m-d',
                             dataIndex: 'administered_date'
                         },
                         {
-                            header   : i18n('notes'),
-                            flex     : 1,
+                            header: i18n('notes'),
+                            flex: 1,
                             dataIndex: 'note'
                         }
                     ]
                 },
                 {
-                    title  : i18n('allergies'),
-                    frame  : true,
-                    height : 180,
-                    store  : me.patientAllergiesListStore,
+                    title: i18n('allergies'),
+                    frame: true,
+                    height: 180,
+                    store: me.patientAllergiesListStore,
                     columns: [
                         {
-                            header   : i18n('type'),
-                            width    : 100,
+                            header: i18n('type'),
+                            width: 100,
                             dataIndex: 'allergy_type'
                         },
                         {
-                            header   : i18n('name'),
-                            width    : 100,
+                            header: i18n('name'),
+                            width: 100,
                             dataIndex: 'allergy'
                         },
                         {
-                            header   : i18n('severity'),
-                            flex     : 1,
+                            header: i18n('severity'),
+                            flex: 1,
                             dataIndex: 'severity'
                         }
                     ]
                 }
             ]
         });
-
         me.column2 = Ext.create('Ext.container.Container', {
             columnWidth: 0.3333,
-            defaults   : {
-                xtype : 'grid',
+            defaults: {
+                xtype: 'grid',
                 margin: '0 5 5 0'
             },
-            items      : [
+            items: [
                 {
-                    title  : i18n('active_problems'),
-                    frame  : true,
-                    height : 180,
-                    store  : me.patientMedicalIssuesStore,
+                    title: i18n('active_problems'),
+                    frame: true,
+                    height: 180,
+                    store: me.patientMedicalIssuesStore,
                     columns: [
                         {
-                            header   : i18n('problem'),
-                            width    : 250,
+                            header: i18n('problem'),
+                            width: 250,
                             dataIndex: 'code'
                         },
                         {
-                            xtype    : 'datecolumn',
-                            header   : i18n('begin_date'),
-                            width    : 90,
-                            format   : 'Y-m-d',
+                            xtype: 'datecolumn',
+                            header: i18n('begin_date'),
+                            width: 90,
+                            format: 'Y-m-d',
                             dataIndex: 'begin_date'
                         },
                         {
-                            xtype    : 'datecolumn',
-                            header   : i18n('end_date'),
-                            flex     : 1,
-                            format   : 'Y-m-d',
+                            xtype: 'datecolumn',
+                            header: i18n('end_date'),
+                            flex: 1,
+                            format: 'Y-m-d',
                             dataIndex: 'end_date'
                         }
                     ]
                 },
                 {
-                    title  : i18n('surgery'),
-                    frame  : true,
-                    height : 180,
-                    store  : me.patientSurgeryStore,
+                    title: i18n('surgery'),
+                    frame: true,
+                    height: 180,
+                    store: me.patientSurgeryStore,
                     columns: [
                         {
-                            header   : i18n('type'),
-                            width    : 250,
+                            header: i18n('type'),
+                            width: 250,
                             dataIndex: 'type'
                         },
                         {
-                            xtype    : 'datecolumn',
-                            header   : i18n('begin_date'),
-                            width    : 90,
-                            format   : 'Y-m-d',
+                            xtype: 'datecolumn',
+                            header: i18n('begin_date'),
+                            width: 90,
+                            format: 'Y-m-d',
                             dataIndex: 'begin_date'
                         },
                         {
-                            xtype    : 'datecolumn',
-                            header   : i18n('end_date'),
-                            flex     : 1,
-                            format   : 'Y-m-d',
+                            xtype: 'datecolumn',
+                            header: i18n('end_date'),
+                            flex: 1,
+                            format: 'Y-m-d',
                             dataIndex: 'end_date'
                         }
                     ]
                 }
             ]
         });
-
         me.column3 = Ext.create('Ext.container.Container', {
             columnWidth: 0.3333,
-            defaults   : {
-                xtype : 'grid',
+            defaults: {
+                xtype: 'grid',
                 margin: '0 0 5 0'
             },
-            items      : [
+            items: [
                 {
-                    title  : i18n('dental'),
-                    frame  : true,
-                    height : 180,
-                    store  : me.patientDentalStore,
+                    title: i18n('dental'),
+                    frame: true,
+                    height: 180,
+                    store: me.patientDentalStore,
                     columns: [
                         {
-                            header   : i18n('title'),
-                            width    : 250,
+                            header: i18n('title'),
+                            width: 250,
                             dataIndex: 'title'
                         },
                         {
-                            xtype    : 'datecolumn',
-                            header   : i18n('begin_date'),
-                            width    : 90,
-                            format   : 'Y-m-d',
+                            xtype: 'datecolumn',
+                            header: i18n('begin_date'),
+                            width: 90,
+                            format: 'Y-m-d',
                             dataIndex: 'begin_date'
                         },
                         {
-                            xtype    : 'datecolumn',
-                            header   : i18n('end_date'),
-                            flex     : 1,
-                            format   : 'Y-m-d',
+                            xtype: 'datecolumn',
+                            header: i18n('end_date'),
+                            flex: 1,
+                            format: 'Y-m-d',
                             dataIndex: 'end_date'
                         }
                     ]
                 },
                 {
-                    title  : i18n('medications'),
-                    frame  : true,
-                    height : 180,
-                    store  : me.patientMedicationsStore,
+                    title: i18n('medications'),
+                    frame: true,
+                    height: 180,
+                    store: me.patientMedicationsStore,
                     columns: [
                         {
-                            header   : i18n('medication'),
-                            width    : 250,
+                            header: i18n('medication'),
+                            width: 250,
                             dataIndex: 'medication'
                         },
                         {
-                            xtype    : 'datecolumn',
-                            header   : i18n('begin_date'),
-                            width    : 90,
-                            format   : 'Y-m-d',
+                            xtype: 'datecolumn',
+                            header: i18n('begin_date'),
+                            width: 90,
+                            format: 'Y-m-d',
                             dataIndex: 'begin_date'
                         },
                         {
-                            xtype    : 'datecolumn',
-                            header   : i18n('end_date'),
-                            flex     : 1,
-                            format   : 'Y-m-d',
+                            xtype: 'datecolumn',
+                            header: i18n('end_date'),
+                            flex: 1,
+                            format: 'Y-m-d',
                             dataIndex: 'end_date'
                         }
                     ]
@@ -29134,57 +29135,52 @@ Ext.define('App.view.patient.ItemsToReview', {
         });
         me.column4 = Ext.create('Ext.form.Panel', {
             columnWidth: 0.3333,
-            border     : false,
-            items      : [
-
+            border: false,
+            items: [
                 {
                     fieldLabel: i18n('smoking_status'),
-                    xtype     : 'mitos.smokingstatuscombo',
+                    xtype: 'mitos.smokingstatuscombo',
                     labelWidth: 100,
-                    width     : 325,
-                    name      : 'review_smoke'
+                    width: 325,
+                    name: 'review_smoke'
 
 
                 },
                 {
                     fieldLabel: i18n('alcohol'),
-                    xtype     : 'mitos.yesnocombo',
+                    xtype: 'mitos.yesnocombo',
                     labelWidth: 100,
-                    width     : 325,
-                    name      : 'review_alcohol'
+                    width: 325,
+                    name: 'review_alcohol'
 
 
                 },
                 {
                     fieldLabel: i18n('pregnant'),
-                    xtype     : 'mitos.yesnonacombo',
+                    xtype: 'mitos.yesnonacombo',
                     labelWidth: 100,
-                    width     : 325,
-                    name      : 'review_pregnant'
+                    width: 325,
+                    name: 'review_pregnant'
 
 
                 }
-
             ]
         });
-
         me.items = [ me.column1, me.column2, me.column3 , me.column4 ];
         me.buttons = [
             {
-                text   : i18n('review_all'),
-                name   : 'review',
-                scope  : me,
-                handler: me.onSave
+                text: i18n('review_all'),
+                name: 'review',
+                scope: me,
+                handler: me.onReviewAll
             }
         ];
-
         me.listeners = {
             show: me.storesLoad
         };
         me.callParent(arguments);
     },
-
-    storesLoad: function() {
+    storesLoad: function(){
         var me = this;
         me.patientImmuListStore.load({params: {pid: app.patient.pid}});
         me.patientAllergiesListStore.load({params: {pid: app.patient.pid}});
@@ -29192,25 +29188,20 @@ Ext.define('App.view.patient.ItemsToReview', {
         me.patientSurgeryStore.load({params: {pid: app.patient.pid}});
         me.patientDentalStore.load({params: {pid: app.patient.pid}});
         me.patientMedicationsStore.load({params: {pid: app.patient.pid}});
-        Medical.getEncounterReviewByEid(app.patient.eid, function(provider, response) {
+        Medical.getEncounterReviewByEid(app.patient.eid, function(provider, response){
             me.column4.getForm().setValues(response.result);
         });
     },
-
-    onSave: function() {
-        var me = this, panel = me.down('form'),
-            form = panel.getForm(),
-            values = form.getFieldValues(),
-            params = { eid:app.patient.eid };
+    onReviewAll: function(){
+        var me = this, panel = me.down('form'), form = panel.getForm(), values = form.getFieldValues(), params = { eid: app.patient.eid };
         values.eid = app.patient.eid;
-        Medical.reviewAllMedicalWindowEncounter(params, function(provider, response) {
-
+        Medical.reviewAllMedicalWindowEncounter(params, function(provider, response){
         });
-        if(form.isValid()) {
-            Encounter.onSaveItemsToReview(values, function(provider, response) {
-                if(response.result.success) {
+        if(form.isValid()){
+            Encounter.onReviewAllItemsToReview(values, function(provider, response){
+                if(response.result.success){
                     app.msg('Sweet!', i18n('items_to_review_save_and_review'))
-                } else {
+                }else{
                     app.msg('Oops!', i18n('items_to_review_entry_error'))
                 }
             });
@@ -29636,18 +29627,21 @@ Ext.define('App.view.patient.NewPatient', {
 			bodyStyle    : 'padding: 5px',
 			layout       : 'anchor',
 			fieldDefaults: { msgTarget: 'side' },
-			dockedItems  : {
-				xtype: 'toolbar',
-				dock : 'top',
-				items: [
-					{
-						text   : i18n('create_new_patient'),
-						iconCls: 'save',
-						scope  : me,
-						handler: me.onSave
-					}
-				]
-			}
+			buttons: [
+                {
+                    text   : i18n('reset'),
+                    handler: function(){
+                        me.form.getForm().reset();
+                    }
+                },
+                {
+                    text   : i18n('save'),
+                    iconCls: 'save',
+                    scope  : me,
+                    handler: me.onNewPatientSave
+                }
+            ]
+
 		});
 		me.pageBody = [ me.form ];
 
@@ -29658,44 +29652,27 @@ Ext.define('App.view.patient.NewPatient', {
 		me.callParent(arguments);
 	},
 
-	onSave: function() {
-		var me = this, form, values, date;
-
-		date = me.form.add({
-			xtype : 'textfield',
-			name  : 'date_created',
-			hidden: true,
-			value : Ext.Date.format(new Date(), 'Y-m-d H:i:s')
-		});
-
-        form = me.form.getForm();
-        values = form.getFieldValues();
+	onNewPatientSave: function() {
+		var me = this,
+            form = me.form.getForm(),
+            values = form.getFieldValues();
 
 		if(form.isValid()) {
-
+            values.date_created = Ext.Date.format(new Date(), 'Y-m-d H:i:s');
             Patient.createNewPatient(values, function(provider, response){
-
-                /** @namespace action.result.patient.pid */
-                /** @namespace action.result.patient.fullname */
-
-                var pid = response.result.patient.pid,
-                    fullname = response.result.patient.fullname;
-
                 if(response.result.success){
-                    me.msg('Sweet!', i18n('patient') + ' "' + fullname + '" ' + i18n('created') + '... ');
-                    app.setPatient(pid, fullname, function(success) {
+                    me.msg('Sweet!', i18n('patient') + ' "' + response.result.patient.fullname + '" ' + i18n('created') + '... ');
+                    app.setPatient(response.result.patient.pid, null, function(success) {
                         if(success) {
+                            form.reset();
                             app.openPatientSummary();
                         }
                     });
                 }else{
-                    Ext.Msg.alert('Opps!', i18n('something_went_wrong_saving_the_patient'));
+                    me.msg('Oops!', i18n('something_went_wrong_saving_the_patient'), true);
                 }
-
             });
 		}
-
-        me.form.remove(date);
 	},
 
 	confirmationWin: function(callback) {
@@ -29726,7 +29703,6 @@ Ext.define('App.view.patient.NewPatient', {
     copyData:function(combo, records){
         var form = combo.up('form').getForm();
         if(combo.value == 'self'){
-
             var values = form.getValues(),
                 patientData = {
                     primary_subscriber_title:values.title,
@@ -29757,8 +29733,10 @@ Ext.define('App.view.patient.NewPatient', {
 	 * to call every this panel becomes active
 	 */
 	onActive: function(callback) {
+        var me = this;
 		this.confirmationWin(function(btn) {
 			if(btn == 'yes') {
+                //me.form.getForm().reset();
 				app.unsetPatient();
 				callback(true);
 			} else {
@@ -29931,7 +29909,7 @@ Ext.define('App.view.patient.Summary', {
                         {
 
                             header: i18n('name'),
-                            dataIndex: 'title',
+                            dataIndex: 'description',
                             flex: 1
 
                         }
@@ -30003,8 +29981,8 @@ Ext.define('App.view.patient.Summary', {
         }
         if(acl['access_patient_disclosures']){
             me.stores.push(me.patientDisclosuresStore = Ext.create('App.store.patient.Disclosures', {
-                    autoSync: true
-                }));
+                autoSync: false
+            }));
             me.tabPanel.add({
                 xtype: 'grid',
                 title: i18n('disclosures'),
@@ -30012,14 +29990,10 @@ Ext.define('App.view.patient.Summary', {
                 bodyPadding: 0,
                 store: me.patientDisclosuresStore,
                 plugins: Ext.create('Ext.grid.plugin.RowEditing', {
-                        autoCancel: false,
-                        errorSummary: false,
-                        clicksToEdit: 2
-                        //                    listeners   : {
-                        //                        scope     : me,
-                        //                        beforeedit: me.beforeServiceEdit
-                        //                    }
-                    }),
+                    autoCancel: false,
+                    errorSummary: false,
+                    clicksToEdit: 2
+                }),
                 columns: [
                     {
                         xtype: 'datecolumn',
@@ -30071,7 +30045,7 @@ Ext.define('App.view.patient.Summary', {
         }
         if(acl['access_patient_notes']){
             me.stores.push(me.patientNotesStore = Ext.create('App.store.patient.Notes', {
-                autoSync: true
+                autoSync: false
             }));
             me.tabPanel.add({
                 title: i18n('notes'),
@@ -30080,11 +30054,11 @@ Ext.define('App.view.patient.Summary', {
                 bodyPadding: 0,
                 store: me.patientNotesStore,
                 plugins: Ext.create('Ext.grid.plugin.RowEditing', {
-                        autoCancel: false,
-                        errorSummary: false,
-                        clicksToEdit: 2
+                    autoCancel: false,
+                    errorSummary: false,
+                    clicksToEdit: 2
 
-                    }),
+                }),
                 columns: [
                     {
                         xtype: 'datecolumn',
@@ -30124,7 +30098,7 @@ Ext.define('App.view.patient.Summary', {
         }
         if(acl['access_patient_reminders']){
             me.stores.push(me.patientRemindersStore = Ext.create('App.store.patient.Reminders', {
-                autoSync: true
+                autoSync: false
             }));
             me.tabPanel.add({
                 title: i18n('reminders'),
@@ -30623,10 +30597,11 @@ Ext.define('App.view.patient.Summary', {
         record.store.save({
                 scope: me,
                 callback: function(){
-                    app.setPatient(me.pid, 'toberemove', null);
+                    app.setPatient(me.pid, null);
                     me.getPatientImgs();
                     me.verifyPatientRequiredInfo();
                     me.readOnlyFields(form.getFields());
+                    me.msg('Sweet!', i18n('record_saved'))
                 }
             });
     },
@@ -31081,10 +31056,14 @@ Ext.define('App.view.patient.Summary', {
                 });
                 me.getPatientImgs();
                 me.verifyPatientRequiredInfo();
-                Patient.getPatientInsurancesCardsUrlByPid(me.pid, function(url){
-                    me.primaryInsuranceImg.update('<img src="' + (url.Primary.url ? url.Primary.url : 'resources/images/icons/no_card.jpg') + '" height="154" width="254" />');
-                    me.secondaryInsuranceImg.update('<img src="' + (url.Secondary.url ? url.Secondary.url : 'resources/images/icons/no_card.jpg') + '" height="154" width="254" />');
-                    me.tertiaryInsuranceImg.update('<img src="' + (url.Tertiary.url ? url.Tertiary.url : 'resources/images/icons/no_card.jpg') + '" height="154" width="254" />');
+                Patient.getPatientInsurancesCardsUrlByPid(me.pid, function(isurance){
+                    var noCard = 'resources/images/icons/no_card.jpg',
+                        Ins1 = isurance.Primary.url ? isurance.Primary.url : noCard,
+                        Ins2 = isurance.Secondary.url ? isurance.Secondary.url : noCard,
+                        Ins3 = isurance.Tertiary.url ? isurance.Tertiary.url : noCard;
+                    me.primaryInsuranceImg.update('<img src="'+Ins1+'" height="154" width="254" />');
+                    me.secondaryInsuranceImg.update('<img src="'+Ins2+'" height="154" width="254" />');
+                    me.tertiaryInsuranceImg.update('<img src="'+Ins3+'" height="154" width="254" />');
                 });
             }
             /**
@@ -32203,7 +32182,8 @@ Ext.define('App.view.patient.Encounter', {
             },
             region:'east',
             items:[
-                me.progressNote, me.progressHistory
+                me.progressNote,
+                me.progressHistory
             ]
 
         });
@@ -32608,13 +32588,13 @@ Ext.define('App.view.patient.Encounter', {
     },
     onTapPanelChange:function(panel){
         if(panel.card.itemId == 'encounter'){
-            this.isProgressNoteCollapsed(true);
+            this.setEncounterProgressCollapsed(true);
         }else{
-            this.isProgressNoteCollapsed(true);
+            this.setEncounterProgressCollapsed(true);
         }
     },
-    isProgressNoteCollapsed:function(ans){
-        ans ? this.progressNote.collapse() : this.progressNote.expand();
+    setEncounterProgressCollapsed:function(ans){
+        ans ? this.rightPanel.collapse() : this.rightPanel.expand();
     },
     onVitalsClick:function(view, record, e){
         var me = this, form = me.vitalsPanel.down('form').getForm();
@@ -33042,21 +33022,21 @@ Ext.define('App.view.patient.windows.Medical', {
                 scope:me,
                 beforesync:me.setDefaults
             },
-            autoSync:true
+            autoSync:false
         });
         me.patientAllergiesListStore = Ext.create('App.store.patient.Allergies', {
             listeners:{
                 scope:me,
                 beforesync:me.setDefaults
             },
-            autoSync:true
+            autoSync:false
         });
         me.patientMedicalIssuesStore = Ext.create('App.store.patient.MedicalIssues', {
             listeners:{
                 scope:me,
                 beforesync:me.setDefaults
             },
-            autoSync:true
+            autoSync:false
         });
         me.patientSurgeryStore = Ext.create('App.store.patient.Surgery', {
 
@@ -33064,21 +33044,21 @@ Ext.define('App.view.patient.windows.Medical', {
                     scope:me,
                     beforesync:me.setDefaults
                 },
-                autoSync:true
+                autoSync:false
             });
         me.patientDentalStore = Ext.create('App.store.patient.Dental', {
             listeners:{
                 scope:me,
                 beforesync:me.setDefaults
             },
-            autoSync:true
+            autoSync:false
         });
         me.patientMedicationsStore = Ext.create('App.store.patient.Medications', {
             listeners:{
                 scope:me,
                 beforesync:me.setDefaults
             },
-            autoSync:true
+            autoSync:false
         });
         me.labPanelsStore = Ext.create('App.store.patient.LaboratoryTypes', {
                 autoSync:true
@@ -33787,9 +33767,9 @@ Ext.define('App.view.patient.windows.Medical', {
                 store:me.patientDentalStore,
                 columns:[
                     {
-                        header:i18n('title'),
-                        width:100,
-                        dataIndex:'title'
+                        header:i18n('dental'),
+                        width:990,
+                        dataIndex:'description'
                     },
                     {
                         xtype:'datecolumn',
@@ -33828,19 +33808,27 @@ Ext.define('App.view.patient.windows.Medical', {
                                     },
                                     items:[
                                         {
-                                            xtype:'textfield',
-                                            width:225,
+                                            fieldLabel:i18n('dental'),
+                                            name:'cdt_code',
+                                            hideLabel:false,
+                                            allowBlank:false,
+                                            width:510,
                                             labelWidth:70,
-                                            fieldLabel:i18n('title'),
-                                            action:'dental',
-                                            name:'title'
+                                            xtype:'cdtlivetsearch',
+                                            itemId:'cdt',
+                                            action:'cdt',
+                                            enableKeyEvents:true,
+                                            listeners:{
+                                                scope:me,
+                                                'select':me.onLiveSearchSelect
+                                            }
                                         },
-                                        //                                        {
-                                        //   		                                    xtype:'textfield',
-                                        //   		                                    hidden:true,
-                                        //   		                                    name:'immunization_id',
-                                        //   		                                    action:'idField'
-                                        //   	                                    },
+                                        {
+                                            xtype:'textfield',
+                                            hidden:true,
+                                            name:'description',
+                                            action:'description'
+                                        },
                                         {
                                             fieldLabel:i18n('begin_date'),
                                             xtype:'datefield',
@@ -33961,7 +33949,7 @@ Ext.define('App.view.patient.windows.Medical', {
                                     },
                                     items:[
                                         {
-                                            xtype:'medicationlivetsearch',
+                                            xtype:'rxnormlivetsearch',
                                             fieldLabel:i18n('medication'),
                                             hideLabel:false,
                                             itemId:'medication',
@@ -34507,8 +34495,12 @@ Ext.define('App.view.patient.windows.Medical', {
             field = combo.up('fieldcontainer').query('[action="idField"]')[0];
             field.setValue(name);
         }else if(combo.action == 'medication_id'){
-            name = model[0].data.PROPRIETARYNAME;
+            name = model[0].data.STR;
             field = combo.up('fieldcontainer').query('[action="medication"]')[0];
+            field.setValue(name);
+        }else if(combo.action == 'cdt'){
+            name = model[0].data.text;
+            field = combo.up('fieldcontainer').query('[action="description"]')[0];
             field.setValue(name);
         }
     },
@@ -34636,6 +34628,7 @@ Ext.define('App.view.patient.windows.Medical', {
             data = options.update[0].data;
             data.updated_uid = app.user.id;
         }else if(options.create){
+
         }
     },
     cardSwitch:function(btn){
@@ -34724,75 +34717,71 @@ Ext.define('App.view.patient.windows.Medical', {
 // GaiaEHR (Electronic Health Records) 2011
 //******************************************************************************
 Ext.define('App.view.patient.VisitCheckout', {
-	extend       : 'App.ux.RenderPanel',
-	id           : 'panelVisitCheckout',
-	pageTitle    : 'Visit Checkout',
-	uses         : ['App.ux.GridPanel'],
-
-    initComponent:function () {
+    extend: 'App.ux.RenderPanel',
+    id: 'panelVisitCheckout',
+    pageTitle: 'Visit Checkout',
+    uses: ['App.ux.GridPanel'],
+    initComponent: function(){
         var me = this;
-
         me.serviceStore = Ext.create('Ext.data.Store', {
-            model:'App.model.patient.CptCodes'
+            model: 'App.model.patient.CptCodes'
         });
-
-
         me.pageBody = Ext.create('Ext.panel.Panel', {
-            itemId:'visitpayment',
-            defaults:{
-                bodyStyle : 'padding:15px',
+            itemId: 'visitpayment',
+            defaults: {
+                bodyStyle: 'padding:15px',
                 bodyBorder: true,
                 labelWidth: 110
             },
-            items:[
+            items: [
                 {
-                    xtype :'container',
-                    layout:{
-                        type : 'hbox',
+                    xtype: 'container',
+                    layout: {
+                        type: 'hbox',
                         align: 'stretch'
                     },
                     height: 400,
-                    items:[
+                    items: [
                         {
-                            xtype : 'panel',
-	                        title: i18n('copay_payment'),
-	                        border:true,
-	                        frame:true,
-	                        bodyPadding:10,
-	                        bodyBorder: true,
-	                        bodyStyle:'background-color:#fff',
+                            xtype: 'panel',
+                            title: i18n('copay_payment'),
+                            border: true,
+                            frame: true,
+                            bodyPadding: 10,
+                            bodyBorder: true,
+                            bodyStyle: 'background-color:#fff',
                             margin: 5,
-                            flex  : 2,
+                            flex: 2,
                             items: [
                                 {
-                                    xtype:'container',
-                                    itemId:'serviceContainer',
-                                    layout:'anchor',
-                                    items:[
+                                    xtype: 'container',
+                                    itemId: 'serviceContainer',
+                                    layout: 'anchor',
+                                    items: [
                                         {
-                                            xtype  : 'grid',
-                                            frame:false,
-                                            border:false,
-                                            flex   : 1,
-                                            maxHeight:220,
+                                            xtype: 'grid',
+                                            frame: false,
+                                            border: false,
+                                            flex: 1,
+                                            maxHeight: 220,
                                             store: me.serviceStore,
-                                            columns:[
+                                            columns: [
                                                 {
-                                                    xtype:'actioncolumn',
-                                                    width:20,
+                                                    xtype: 'actioncolumn',
+                                                    width: 20,
                                                     items: [
                                                         {
                                                             icon: 'resources/images/icons/delete.png',
                                                             tooltip: i18n('remove'),
-                                                            scope:me,
+                                                            scope: me,
                                                             handler: me.onRemoveService
                                                         }
                                                     ]
                                                 },
                                                 {
                                                     header: i18n('item'),
-                                                    flex:1,
-                                                    dataIndex:'code_text',
+                                                    flex: 1,
+                                                    dataIndex: 'code_text',
                                                     editor: {
                                                         xtype: 'livecptsearch',
                                                         allowBlank: false
@@ -34800,20 +34789,20 @@ Ext.define('App.view.patient.VisitCheckout', {
                                                 },
                                                 {
                                                     header: i18n('paid'),
-                                                    xtype:'actioncolumn',
-                                                    dataIndex:'charge',
-                                                    width:35
+                                                    xtype: 'actioncolumn',
+                                                    dataIndex: 'charge',
+                                                    width: 35
 
                                                 },
                                                 {
                                                     header: i18n('charge'),
                                                     width: 95,
-                                                    dataIndex:'charge',
+                                                    dataIndex: 'charge',
                                                     editor: {
                                                         xtype: 'textfield',
                                                         allowBlank: false
                                                     },
-                                                    renderer:me.currencyRenderer
+                                                    renderer: me.currencyRenderer
                                                 }
                                             ],
                                             plugins: [
@@ -34825,153 +34814,152 @@ Ext.define('App.view.patient.VisitCheckout', {
                                     ]
                                 },
                                 {
-                                    xtype:'container',
+                                    xtype: 'container',
                                     style: 'float:right',
-                                    width:208,
+                                    width: 208,
                                     defaults: {
                                         labelWidth: 108,
-                                        labelAlign:'right',
+                                        labelAlign: 'right',
                                         action: 'receipt',
-                                        width:208,
+                                        width: 208,
                                         margin: '1 0'
                                     },
-                                    items:[
+                                    items: [
                                         {
                                             fieldLabel: i18n('total'),
-                                            xtype     : 'mitos.currency',
-                                            action    : 'totalField'
+                                            xtype: 'mitos.currency',
+                                            action: 'totalField'
                                         },
                                         {
                                             fieldLabel: i18n('amount_due'),
-                                            xtype     : 'mitos.currency'
+                                            xtype: 'mitos.currency'
                                         },
-
                                         {
                                             fieldLabel: i18n('payment_amount'),
-                                            xtype     : 'mitos.currency'
+                                            xtype: 'mitos.currency'
                                         },
                                         {
                                             fieldLabel: i18n('balance'),
-                                            xtype     : 'mitos.currency'
+                                            xtype: 'mitos.currency'
                                         }
                                     ]
                                 }
                             ],
-	                        buttons:[
+                            buttons: [
                                 {
                                     text: i18n('add_service'),
                                     scope: me,
-                                    handler:me.onNewService
+                                    handler: me.onNewService
                                 },
                                 '-',
-		                        {
-			                        text: i18n('add_copay'),
-                                    scope:me,
-			                        handler:me.onAddCoPay
-		                        },
+                                {
+                                    text: i18n('add_copay'),
+                                    scope: me,
+                                    handler: me.onAddCoPay
+                                },
                                 '->',
                                 {
                                     text: i18n('add_payment'),
                                     scope: me,
-                                    handler:me.onAddPaymentClick
+                                    handler: me.onAddPaymentClick
                                 },
                                 {
                                     text: i18n('save'),
-                                    scope:me,
-                                    handler: me.onSave
+                                    scope: me,
+                                    handler: me.onCheckoutSave
                                 }
-	                        ]
+                            ]
                         },
                         {
 
-	                        xtype:'documentsimplegrid',
-	                        title: i18n('documents'),
-	                        frame:true,
-                            margin : '5 5 5 0',
-                            flex   : 1
+                            xtype: 'documentsimplegrid',
+                            title: i18n('documents'),
+                            frame: true,
+                            margin: '5 5 5 0',
+                            flex: 1
                         }
                     ]
                 },
                 {
-                    xtype:'container',
-                    layout:'hbox',
-                    defaults: { height:195 },
-                    items:[
+                    xtype: 'container',
+                    layout: 'hbox',
+                    defaults: { height: 195 },
+                    items: [
                         {
                             xtype: 'form',
                             title: i18n('notes_and_reminders'),
-	                        frame:true,
-	                        flex:2,
-                            action:'formnotes',
-	                        bodyPadding:10,
-	                        margin:'0 5 5 5',
+                            frame: true,
+                            flex: 2,
+                            action: 'formnotes',
+                            bodyPadding: 10,
+                            margin: '0 5 5 5',
                             bodyBorder: true,
-                            bodyStyle:'background-color:#fff',
-                            defaults: { anchor:'100%'},
-                            items:[
+                            bodyStyle: 'background-color:#fff',
+                            defaults: { anchor: '100%'},
+                            items: [
                                 {
-                                    xtype     : 'displayfield',
+                                    xtype: 'displayfield',
                                     fieldLabel: i18n('message'),
                                     name: 'message'
                                 },
                                 {
-                                    xtype     : 'textfield',
+                                    xtype: 'textfield',
                                     fieldLabel: i18n('note'),
                                     name: 'new_note',
                                     action: 'notes'
                                 },
                                 {
-                                    xtype     : 'textfield',
-                                    grow      : true,
+                                    xtype: 'textfield',
+                                    grow: true,
                                     fieldLabel: i18n('reminders'),
                                     name: 'new_reminder',
                                     action: 'notes'
                                 }
                             ],
-	                        buttons:[
+                            buttons: [
                                 {
                                     text: i18n('save'),
-                                    scope:me,
-                                    handler: me.onSaveNotes
+                                    scope: me,
+                                    handler: me.onCheckoutSaveNotes
                                 },
                                 '-',
                                 {
                                     text: i18n('reset'),
-                                    scope:me,
-                                    handler:me.resetNotes
+                                    scope: me,
+                                    handler: me.resetNotes
                                 }
                             ]
                         },
                         {
-                            xtype:'form',
+                            xtype: 'form',
                             title: i18n('followup_information'),
-	                        frame:true,
-	                        flex:1,
-	                        margin:'0 5 5 0',
-	                        bodyPadding:10,
+                            frame: true,
+                            flex: 1,
+                            margin: '0 5 5 0',
+                            bodyPadding: 10,
                             bodyBorder: true,
-                            bodyStyle:'background-color:#fff',
-                            defaults:{
-                                labelWidth:110,
-                                anchor:'100%'
+                            bodyStyle: 'background-color:#fff',
+                            defaults: {
+                                labelWidth: 110,
+                                anchor: '100%'
                             },
-                            items:[
+                            items: [
                                 {
                                     fieldLabel: i18n('time'),
-                                    xtype     : 'textfield',
-                                    name     : 'followup_time'
+                                    xtype: 'textfield',
+                                    name: 'followup_time'
                                 },
                                 {
                                     fieldLabel: i18n('facility'),
-                                    xtype     : 'mitos.activefacilitiescombo',
-	                                name:'followup_facility'
+                                    xtype: 'mitos.activefacilitiescombo',
+                                    name: 'followup_facility'
                                 }
                             ],
-	                        buttons:[
+                            buttons: [
                                 {
                                     text: i18n('schedule_appointment'),
-	                                scope:me,
-                                    handler:me.scheduleAppointment
+                                    scope: me,
+                                    handler: me.scheduleAppointment
                                 }
                             ]
                         }
@@ -34979,201 +34967,152 @@ Ext.define('App.view.patient.VisitCheckout', {
                 }
             ]
         });
-
         me.callParent(arguments);
-
-
     },
-
-
-
-
-    onNewService:function(btn){
-        var grid = btn.up('panel').down('grid'),
-            store = grid.store;
-
+    onNewService: function(btn){
+        var grid = btn.up('panel').down('grid'), store = grid.store;
         say(grid);
         say(store);
-
-        store.add({code_text:' ',charge:'20.00'});
-
-
+        store.add({code_text: ' ', charge: '20.00'});
     },
-
-    onAddCoPay:function(btn){
-        var grid = btn.up('panel').down('grid'),
-            store = grid.store;
-
-        store.add({code_text:'Co-Pay',charge:'00.00'});
+    onAddCoPay: function(btn){
+        var grid = btn.up('panel').down('grid'), store = grid.store;
+        store.add({code_text: 'Co-Pay', charge: '00.00'});
     },
-
-    onAddService:function(){
+    onAddService: function(){
         var totalField = this.query('[action="totalField"]')[0];
-
     },
-
-    onRemoveService:function(grid, rowIndex){
-        var me = this,
-            totalField = me.query('[action="totalField"]')[0],
-            totalVal = totalField.getValue(),
-            rec = grid.getStore().getAt(rowIndex),
-            newVal;
-
+    onRemoveService: function(grid, rowIndex){
+        var me = this, totalField = me.query('[action="totalField"]')[0], totalVal = totalField.getValue(), rec = grid.getStore().getAt(rowIndex), newVal;
         me.serviceStore.remove(rec);
         newVal = totalVal - rec.data.charge;
         totalField.setValue(newVal);
-
     },
-
-
-    cancelPrint:function (btn) {
+    cancelPrint: function(btn){
         var win = btn.up('window');
         win.close();
     },
-
-	resetReceiptForm:function () {
+    resetReceiptForm: function(){
         var fields = this.query('[action="receipt"]');
-        for(var i=0; i < fields.length; i++ ){
+        for(var i = 0; i < fields.length; i++){
             fields[i].reset();
         }
     },
-
-    resetNotes:function () {
+    resetNotes: function(){
         var fields = this.query('[action="notes"]');
-        for(var i=0; i < fields.length; i++ ){
+        for(var i = 0; i < fields.length; i++){
             fields[i].reset();
         }
     },
-
-    onAddPaymentClick:function() {
+    onAddPaymentClick: function(){
         app.onPaymentEntryWindow();
     },
-
-    currencyRenderer:function(v){
+    currencyRenderer: function(v){
         return ('<span style="float:right; padding-right:17px">$ ' + v + '</span>');
     },
-
-    onSaveNotes: function() {
+    onCheckoutSaveNotes: function(){
         var me = this, form, values, container = me.query('form[action="formnotes"]');
         form = container[0].getForm();
-
         values = form.getFieldValues();
         values.date = Ext.Date.format(new Date(), 'Y-m-d H:i:s');
         values.pid = app.patient.pid;
         values.eid = me.eid;
         values.uid = app.user.id;
-        values.type ='administrative';
-
-        if(form.isValid()) {
-
+        values.type = 'administrative';
+        if(form.isValid()){
             Patient.addPatientNoteAndReminder(values, function(provider, response){
                 if(response.result.success){
-	                app.msg('Sweet!', i18n('note_and_reminder'));
+                    app.msg('Sweet!', i18n('note_and_reminder'));
                 }else{
                     app.msg('Oops!', i18n('note_entry_error'));
                 }
             });
         }
     },
-
-	scheduleAppointment:function(btn){
-		var form = btn.up('form').getForm(),
-			time = form.findField('followup_time').getValue(),
-			facility = form.findField('followup_facility').getValue(),
-			calendar = Ext.getCmp('app-calendar'),
-			date;
-
-
-		switch(time){
-			case '1 Day':
-				date = Ext.Date.add(new Date(), Ext.Date.DAY, 1);
-				break;
-			case '2 Days':
-				date = Ext.Date.add(new Date(), Ext.Date.DAY, 2);
-				break;
-			case '3 Days':
-				date = Ext.Date.add(new Date(), Ext.Date.DAY, 3);
-				break;
-			case '1 Week':
-				date = Ext.Date.add(new Date(), Ext.Date.DAY, 7);
-				break;
-			case '2 Weeks':
-				date = Ext.Date.add(new Date(), Ext.Date.DAY, 14);
-				break;
-			case '3 Weeks':
-				date = Ext.Date.add(new Date(), Ext.Date.DAY, 21);
-				break;
-			case '1 Month':
-				date = Ext.Date.add(new Date(), Ext.Date.MONTH, 1);
-				break;
-			case '2 Months':
-				date = Ext.Date.add(new Date(), Ext.Date.MONTH, 2);
-				break;
-			case '3 Months':
-				date = Ext.Date.add(new Date(), Ext.Date.MONTH, 3);
-				break;
-			case '4 Months':
-				date = Ext.Date.add(new Date(), Ext.Date.MONTH, 4);
-				break;
-			case '5 Months':
-				date = Ext.Date.add(new Date(), Ext.Date.MONTH, 5);
-				break;
-			case '6 Months':
-				date = Ext.Date.add(new Date(), Ext.Date.MONTH, 6);
-				break;
-			case '1 Year':
-				date = Ext.Date.add(new Date(), Ext.Date.YEAR, 1);
-				break;
-			case '2 Year':
-				date = Ext.Date.add(new Date(), Ext.Date.YEAR, 2);
-				break;
-			default:
-				date = new Date();
-				break;
-		}
-
-		app.navigateTo('panelCalendar');
-		calendar.facility = facility;
-		calendar.setStartDate(date);
-	},
-
-	getVisitOtherInfo:function(){
-		var me = this, forms, fields = [];
-		forms = me.query('form');
-
-		Encounter.getEncounterFollowUpInfoByEid(me.eid, function(provider, response){
-			forms[1].getForm().setValues(response.result);
-		});
-
-		Encounter.getEncounterMessageByEid(me.eid, function(provider, response){
-			forms[0].getForm().setValues(response.result);
-		});
-        for(var i=0; i < forms.length; i++ ){
+    scheduleAppointment: function(btn){
+        var form = btn.up('form').getForm(), time = form.findField('followup_time').getValue(), facility = form.findField('followup_facility').getValue(), calendar = Ext.getCmp('app-calendar'), date;
+        switch(time){
+            case '1 Day':
+                date = Ext.Date.add(new Date(), Ext.Date.DAY, 1);
+                break;
+            case '2 Days':
+                date = Ext.Date.add(new Date(), Ext.Date.DAY, 2);
+                break;
+            case '3 Days':
+                date = Ext.Date.add(new Date(), Ext.Date.DAY, 3);
+                break;
+            case '1 Week':
+                date = Ext.Date.add(new Date(), Ext.Date.DAY, 7);
+                break;
+            case '2 Weeks':
+                date = Ext.Date.add(new Date(), Ext.Date.DAY, 14);
+                break;
+            case '3 Weeks':
+                date = Ext.Date.add(new Date(), Ext.Date.DAY, 21);
+                break;
+            case '1 Month':
+                date = Ext.Date.add(new Date(), Ext.Date.MONTH, 1);
+                break;
+            case '2 Months':
+                date = Ext.Date.add(new Date(), Ext.Date.MONTH, 2);
+                break;
+            case '3 Months':
+                date = Ext.Date.add(new Date(), Ext.Date.MONTH, 3);
+                break;
+            case '4 Months':
+                date = Ext.Date.add(new Date(), Ext.Date.MONTH, 4);
+                break;
+            case '5 Months':
+                date = Ext.Date.add(new Date(), Ext.Date.MONTH, 5);
+                break;
+            case '6 Months':
+                date = Ext.Date.add(new Date(), Ext.Date.MONTH, 6);
+                break;
+            case '1 Year':
+                date = Ext.Date.add(new Date(), Ext.Date.YEAR, 1);
+                break;
+            case '2 Year':
+                date = Ext.Date.add(new Date(), Ext.Date.YEAR, 2);
+                break;
+            default:
+                date = new Date();
+                break;
+        }
+        app.navigateTo('panelCalendar');
+        calendar.facility = facility;
+        calendar.setStartDate(date);
+    },
+    getVisitOtherInfo: function(){
+        var me = this, forms, fields = [];
+        forms = me.query('form');
+        Encounter.getEncounterFollowUpInfoByEid(me.eid, function(provider, response){
+            forms[1].getForm().setValues(response.result);
+        });
+        Encounter.getEncounterMessageByEid(me.eid, function(provider, response){
+            forms[0].getForm().setValues(response.result);
+        });
+        for(var i = 0; i < forms.length; i++){
             fields.push(forms[i].getForm().getFields().items);
         }
-	},
-
-	setPanel:function(eid){
-		this.eid = eid || null;
-		this.query('documentsimplegrid')[0].loadDocs(eid);
-
-		this.getVisitOtherInfo();
-	},
-
+    },
+    setPanel: function(eid){
+        this.eid = eid || null;
+        this.query('documentsimplegrid')[0].loadDocs(eid);
+        this.getVisitOtherInfo();
+    },
     /**
      * This function is called from Viewport.js when
      * this panel is selected in the navigation panel.
      * place inside this function all the functions you want
      * to call every this panel becomes active
      */
-    onActive: function(callback) {
+    onActive: function(callback){
         var me = this;
-
-        if(me.checkIfCurrPatient()) {
+        if(me.checkIfCurrPatient()){
             var patient = me.getCurrPatient();
-	        me.updateTitle(patient.name + ' - #' + patient.pid + ' (' + i18n('visit_checkout') + ')');
-	        callback(true);
-        } else {
+            me.updateTitle(patient.name + ' - #' + patient.pid + ' (' + i18n('visit_checkout') + ')');
+            callback(true);
+        }else{
             callback(false);
             me.currPatientError();
         }
@@ -35833,182 +35772,169 @@ Ext.define('App.view.fees.Billing',
 });
 //ens oNotesPage class
 /*
-	GaiaEHR (Electronic Health Records)
-	PaymentEntryWindow.js
-	Payment Entry Window
-    Copyright (C) 2012 Ernesto J Rodriguez
+ GaiaEHR (Electronic Health Records)
+ PaymentEntryWindow.js
+ Payment Entry Window
+ Copyright (C) 2012 Ernesto J Rodriguez
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ You should have received a copy of the GNU General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-Ext.define('App.view.fees.PaymentEntryWindow',
-{
-	extend : 'Ext.window.Window',
-	title : i18n('add_new_payment'),
-	closeAction : 'hide',
-	modal : true,
-
-	initComponent : function()
-	{
-
-		var me = this;
-
-		me.items = [
-		{
-			xtype : 'form',
-			defaults :
-			{
-				margin : 5
-			},
-			border : false,
-			height : 163,
-			width : 747,
-			items : [
-			{
-				xtype : 'fieldcontainer',
-				layout : 'hbox',
-				items : [
-				{
-					fieldLabel : i18n('paying_entity'),
-					xtype : 'mitos.payingentitycombo',
-					name : 'paying_entity',
-					action : 'new_payment',
-					labelWidth : 98,
-					width : 220
-				},
-				{
-					xtype : 'patienlivetsearch',
-					fieldLabel : i18n('from'),
-					hideLabel : false,
-					name : 'payer_id',
-					action : 'new_payment',
-					anchor : null,
-					labelWidth : 42,
-					width : 300,
-					margin : '0 0 0 25'
-				},
-				{
-					xtype : 'textfield',
-					fieldLabel : i18n('no'),
-					action : 'new_payment',
-					name : 'check_number',
-					labelWidth : 47,
-					width : 167,
-					margin : '0 0 0 25'
-				}]
-			},
-			{
-				xtype : 'fieldcontainer',
-				layout : 'hbox',
-				items : [
-				{
-					fieldLabel : i18n('payment_method'),
-					xtype : 'mitos.paymentmethodcombo',
-					action : 'new_payment',
-					labelWidth : 98,
-					name : 'payment_method',
-					width : 220
-				},
-				{
-					xtype : 'mitos.billingfacilitiescombo',
-					fieldLabel : i18n('pay_to'),
-					action : 'new_payment',
-					labelWidth : 42,
-					name : 'pay_to',
-					width : 300,
-					margin : '0 0 0 25'
-				},
-				{
-					xtype : 'mitos.currency',
-					fieldLabel : i18n('amount'),
-					action : 'new_payment',
-					name : 'amount',
-					labelWidth : 47,
-					width : 167,
-					margin : '0 0 0 25',
-					enableKeyEvents : true
-				}]
-			},
-			{
-				fieldLabel : i18n('post_to_date'),
-				xtype : 'datefield',
-				name : 'post_to_date',
-				action : 'new_payment',
-				format : globals['date_display_format'],
-				labelWidth : 98,
-				width : 220
-			},
-			{
-				fieldLabel : i18n('note'),
-				xtype : 'textareafield',
-				grow : true,
-				action : 'new_payment',
-				name : 'note',
-				labelWidth : 98,
-				anchor : '100%'
-			}]
-		}];
-
-		me.buttons = [
-		{
-			text : i18n('save'),
-			scope : me,
-			handler : me.onSave
-		}, '-',
-		{
-			text : i18n('reset'),
-			scope : me,
-			handler : me.resetNewPayment
-		}];
-		me.callParent(arguments);
-	},
-	onSave : function()
-	{
-		var me = this, panel, form, values;
-		panel = me.down('form');
-		form = panel.getForm();
-		values = form.getFieldValues();
-		values.date_created = Ext.Date.format(new Date(), 'Y-m-d H:i:s');
-
-		if (form.isValid())
-		{
-
-			Fees.addPayment(values, function(provider, response)
-			{
-				if (response.result.success)
-				{
-					form.reset();
-					me.hide();
-				}
-				else
-				{
-					app.msg('Oops!', i18n('payment_entry_error'))
-				}
-
-			});
-		}
-	},
-
-	resetNewPayment : function()
-	{
-		var fields = this.query('[action="new_payment"]');
-		for (var i = 0; i < fields.length; i++)
-		{
-			fields[i].reset();
-		}
-	}
+Ext.define('App.view.fees.PaymentEntryWindow', {
+    extend: 'Ext.window.Window',
+    title: i18n('add_new_payment'),
+    closeAction: 'hide',
+    modal: true,
+    initComponent: function(){
+        var me = this;
+        me.items = [
+            {
+                xtype: 'form',
+                defaults: {
+                    margin: 5
+                },
+                border: false,
+                height: 163,
+                width: 747,
+                items: [
+                    {
+                        xtype: 'fieldcontainer',
+                        layout: 'hbox',
+                        items: [
+                            {
+                                fieldLabel: i18n('paying_entity'),
+                                xtype: 'mitos.payingentitycombo',
+                                name: 'paying_entity',
+                                action: 'new_payment',
+                                labelWidth: 98,
+                                width: 220
+                            },
+                            {
+                                xtype: 'patienlivetsearch',
+                                fieldLabel: i18n('from'),
+                                hideLabel: false,
+                                name: 'payer_id',
+                                action: 'new_payment',
+                                anchor: null,
+                                labelWidth: 42,
+                                width: 300,
+                                margin: '0 0 0 25'
+                            },
+                            {
+                                xtype: 'textfield',
+                                fieldLabel: i18n('no'),
+                                action: 'new_payment',
+                                name: 'check_number',
+                                labelWidth: 47,
+                                width: 167,
+                                margin: '0 0 0 25'
+                            }
+                        ]
+                    },
+                    {
+                        xtype: 'fieldcontainer',
+                        layout: 'hbox',
+                        items: [
+                            {
+                                fieldLabel: i18n('payment_method'),
+                                xtype: 'mitos.paymentmethodcombo',
+                                action: 'new_payment',
+                                labelWidth: 98,
+                                name: 'payment_method',
+                                width: 220
+                            },
+                            {
+                                xtype: 'mitos.billingfacilitiescombo',
+                                fieldLabel: i18n('pay_to'),
+                                action: 'new_payment',
+                                labelWidth: 42,
+                                name: 'pay_to',
+                                width: 300,
+                                margin: '0 0 0 25'
+                            },
+                            {
+                                xtype: 'mitos.currency',
+                                fieldLabel: i18n('amount'),
+                                action: 'new_payment',
+                                name: 'amount',
+                                labelWidth: 47,
+                                width: 167,
+                                margin: '0 0 0 25',
+                                enableKeyEvents: true
+                            }
+                        ]
+                    },
+                    {
+                        fieldLabel: i18n('post_to_date'),
+                        xtype: 'datefield',
+                        name: 'post_to_date',
+                        action: 'new_payment',
+                        format: globals['date_display_format'],
+                        labelWidth: 98,
+                        width: 220
+                    },
+                    {
+                        fieldLabel: i18n('note'),
+                        xtype: 'textareafield',
+                        grow: true,
+                        action: 'new_payment',
+                        name: 'note',
+                        labelWidth: 98,
+                        anchor: '100%'
+                    }
+                ]
+            }
+        ];
+        me.buttons = [
+            {
+                text: i18n('save'),
+                scope: me,
+                handler: me.onPaymentSave
+            },
+            '-',
+            {
+                text: i18n('reset'),
+                scope: me,
+                handler: me.resetNewPayment
+            }
+        ];
+        me.callParent(arguments);
+    },
+    onPaymentSave: function(){
+        var me = this, panel, form, values;
+        panel = me.down('form');
+        form = panel.getForm();
+        values = form.getFieldValues();
+        values.date_created = Ext.Date.format(new Date(), 'Y-m-d H:i:s');
+        if(form.isValid()){
+            Fees.addPayment(values, function(provider, response){
+                if(response.result.success){
+                    form.reset();
+                    me.hide();
+                }else{
+                    app.msg('Oops!', i18n('payment_entry_error'))
+                }
+            });
+        }
+    },
+    resetNewPayment: function(){
+        var fields = this.query('[action="new_payment"]');
+        for(var i = 0; i < fields.length; i++){
+            fields[i].reset();
+        }
+    }
 });
-//end Checkout class
+
 /*
 	GaiaEHR (Electronic Health Records)
 	Payments.js
@@ -36476,6 +36402,158 @@ Ext.define('App.view.fees.Payments',
 });
 //end Payments class
 
+
+/*
+ GaiaEHR (Electronic Health Records)
+ Facilities.js
+ Copyright (C) 2012 Ernesto Rodriguez
+
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+Ext.define('App.view.administration.Applications', {
+    extend: 'App.ux.RenderPanel',
+    id: 'panelApplications',
+    pageTitle: i18n('applications'),
+    initComponent: function(){
+        var me = this;
+        Ext.define('ApplicationsModel', {
+            extend: 'Ext.data.Model',
+            fields: [
+                { name: 'id', type: 'int' },
+                { name: 'app_name', type: 'string' },
+                { name: 'pvt_key', type: 'string' },
+                { name: 'active', type: 'bool' }
+            ],
+            proxy: {
+                type: 'direct',
+                api: {
+                    read: Applications.getApplications,
+                    create: Applications.addApplication,
+                    update: Applications.updateApplication,
+                    destroy: Applications.deleteApplication
+                }
+            }
+        });
+        me.store = Ext.create('Ext.data.Store', {
+            model: 'ApplicationsModel',
+            remoteSort: false
+        });
+        // *************************************************************************************
+        // Facility Grid Panel
+        // *************************************************************************************
+        me.grid = Ext.create('Ext.grid.Panel', {
+            store: me.store,
+            plugins: [
+                me.edditing = Ext.create('Ext.grid.plugin.RowEditing', {
+                    clicksToEdit: 2,
+                    errorSummary : false
+                })
+            ],
+            columns: [
+                {
+                    xtype:'actioncolumn',
+                    width:20,
+                    items: [
+                        {
+                            icon: 'resources/images/icons/cross.png',  // Use a URL in the icon config
+                            tooltip: 'Remove',
+                            scope:me,
+                            handler: me.removeApplication
+                        }
+                    ]
+
+                },
+                {
+                    text: i18n('name'),
+                    flex: 1,
+                    sortable: true,
+                    dataIndex: 'app_name',
+                    editor:{
+                        xtype:'textfield',
+                        allowBlank:false
+                    }
+                },
+                {
+                    text: i18n('private_key'),
+                    flex: 1,
+                    sortable: true,
+                    dataIndex: 'pvt_key'
+                },
+                {
+                    text: i18n('active?'),
+                    width: 50,
+                    sortable: true,
+                    renderer: me.boolRenderer,
+                    dataIndex: 'active',
+                    editor:{
+                        xtype:'checkbox'
+                    }
+                }
+            ],
+            tbar:[
+                {
+                    text:i18n('add'),
+                    iconCls:'icoAdd',
+                    scope:me,
+                    handler:me.addApplication
+                }
+            ]
+        });
+        me.pageBody = [me.grid];
+        me.callParent(arguments);
+    },
+
+    removeApplication:function(grid, rowIndex, colIndex){
+        var me = this,
+            record = me.store.getAt(rowIndex);
+        Ext.Msg.show({
+            title:'Wait!',
+            msg: 'This action is final. Are you sure you want to remove <span style="font-weight: bold">"'+record.data.app_name+'"</span>?',
+            buttons: Ext.Msg.YESNO,
+            icon: Ext.Msg.WARNING,
+            fn:function(btn){
+                if(btn == 'yes'){
+                    me.edditing.cancelEdit();
+                    me.store.remove(record);
+                    me.store.sync({
+                        callback:function(){
+                            me.msg('Sweet!', i18n('record_removed'))
+                        }
+                    });
+                }
+            }
+        });
+    },
+
+    addApplication:function(){
+        var me = this;
+        me.edditing.cancelEdit();
+        me.store.insert(0,{active:1});
+        me.edditing.startEdit(0,0);
+    },
+
+    /**
+     * This function is called from Viewport.js when
+     * this panel is selected in the navigation panel.
+     * place inside this function all the functions you want
+     * to call every this panel becomes active
+     */
+    onActive: function(callback){
+        this.store.load();
+        callback(true);
+    }
+});
 
 /*
  GaiaEHR (Electronic Health Records)
@@ -38028,13 +38106,6 @@ Ext.define('App.view.administration.Documents',
 		me.callParent();
 	},
 	/**
-	 * if the form is valid send the POST request
-	 */
-	onSave : function()
-	{
-
-	},
-	/**
 	 * Delete logic
 	 */
 	onDelete : function()
@@ -38154,337 +38225,322 @@ Ext.define('App.view.administration.Documents',
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-Ext.define('App.view.administration.Facilities',
-{
-	extend : 'App.ux.RenderPanel',
-	id : 'panelFacilities',
-	pageTitle : i18n('facilities_active'),
-	uses : ['App.ux.GridPanel', 'App.ux.window.Window'],
-	initComponent : function()
-	{
-		var me = this;
-		Ext.define('facilityModel',
-		{
-			extend : 'Ext.data.Model',
-			fields : [
-			{
-				name : 'id',
-				type : 'int'
-			},
-			{
-				name : 'name',
-				type : 'string'
-			},
-			{
-				name : 'active',
-				type : 'bool'
-			},
-			{
-				name : 'phone',
-				type : 'string'
-			},
-			{
-				name : 'fax',
-				type : 'string'
-			},
-			{
-				name : 'street',
-				type : 'string'
-			},
-			{
-				name : 'city',
-				type : 'string'
-			},
-			{
-				name : 'state',
-				type : 'string'
-			},
-			{
-				name : 'postal_code',
-				type : 'string'
-			},
-			{
-				name : 'country_code',
-				type : 'string'
-			},
-			{
-				name : 'federal_ein',
-				type : 'string'
-			},
-			{
-				name : 'service_location',
-				type : 'bool'
-			},
-			{
-				name : 'billing_location',
-				type : 'bool'
-			},
-			{
-				name : 'accepts_assignment',
-				type : 'bool'
-			},
-			{
-				name : 'pos_code',
-				type : 'string'
-			},
-			{
-				name : 'x12_sender_id',
-				type : 'string'
-			},
-			{
-				name : 'attn',
-				type : 'string'
-			},
-			{
-				name : 'domain_identifier',
-				type : 'string'
-			},
-			{
-				name : 'facility_npi',
-				type : 'string'
-			},
-			{
-				name : 'tax_id_type',
-				type : 'string'
-			}],
-			proxy :
-			{
-				type : 'direct',
-				api :
-				{
-					read : Facilities.getFacilities,
-					create : Facilities.addFacility,
-					update : Facilities.updateFacility,
-					destroy : Facilities.deleteFacility
-				}
-			}
-		});
-		me.FacilityStore = Ext.create('Ext.data.Store',
-		{
-			model : 'facilityModel',
-			remoteSort : true,
-			autoSync : true
-		});
-		// *************************************************************************************
-		// Facility Grid Panel
-		// *************************************************************************************
-		me.FacilityGrid = Ext.create('Ext.grid.Panel',
-		{
-			store : me.FacilityStore,
-			columns : [
-			{
-				text : i18n('name'),
-				flex : 1,
-				sortable : true,
-				dataIndex : 'name'
-			},
-			{
-				text : i18n('phone'),
-				width : 100,
-				sortable : true,
-				dataIndex : 'phone'
-			},
-			{
-				text : i18n('fax'),
-				width : 100,
-				sortable : true,
-				dataIndex : 'fax'
-			},
-			{
-				text : i18n('city'),
-				width : 100,
-				sortable : true,
-				dataIndex : 'city'
-			}],
-			plugins : Ext.create('App.ux.grid.RowFormEditing',
-			{
-				autoCancel : false,
-				errorSummary : false,
-				clicksToEdit : 1,
-				formItems : [
-				{
-					xtype : 'container',
-					layout : 'column',
-					defaults :
-					{
-						xtype : 'container',
-						columnWidth : 0.5,
-						padding : 5,
-						layout : 'anchor',
-						defaultType : 'textfield'
-					},
-					items : [
-					{
-						defaults :
-						{
-							anchor : '100%'
-						},
-						items : [
-						{
-							fieldLabel : i18n('name'),
-							name : 'name',
-							allowBlank : false
-						},
-						{
-							fieldLabel : i18n('phone'),
-							name : 'phone'
-						},
-						{
-							fieldLabel : i18n('fax'),
-							name : 'fax'
-						},
-						{
-							fieldLabel : i18n('street'),
-							name : 'street'
-						},
-						{
-							fieldLabel : i18n('city'),
-							name : 'city'
-						},
-						{
-							fieldLabel : i18n('state'),
-							name : 'state'
-						},
-						{
-							fieldLabel : i18n('postal_code'),
-							name : 'postal_code'
-						},
-						{
-							fieldLabel : i18n('country_code'),
-							name : 'country_code'
-						},
-						{
-							xtype : 'fieldcontainer',
-							fieldLabel : i18n('tax_id'),
-							layout : 'hbox',
-							items : [
-							{
-								xtype : 'mitos.taxidcombo',
-								name : 'tax_id_type',
-								width : 50
-							},
-							{
-								xtype : 'textfield',
-								name : 'federal_ein'
-							}]
-						}]
-					},
-					{
-						items : [
-						{
-							xtype : 'mitos.checkbox',
-							fieldLabel : i18n('active'),
-							name : 'active'
-						},
-						{
-							xtype : 'mitos.checkbox',
-							fieldLabel : i18n('service_location'),
-							name : 'service_location'
-						},
-						{
-							xtype : 'mitos.checkbox',
-							fieldLabel : i18n('billing_location'),
-							name : 'billing_location'
-						},
-						{
-							xtype : 'mitos.checkbox',
-							fieldLabel : i18n('accepts_assignment'),
-							name : 'accepts_assignment'
-						},
-						{
-							xtype : 'mitos.poscodescombo',
-							fieldLabel : i18n('pos_code'),
-							name : 'pos_code',
-							anchor : '100%'
-						},
-						{
-							fieldLabel : i18n('billing_attn'),
-							name : 'attn',
-							anchor : '100%'
-						},
-						{
-							fieldLabel : i18n('clia_number'),
-							name : 'domain_identifier',
-							anchor : '100%'
-						},
-						{
-							fieldLabel : 'Facility NPI',
-							name : 'facility_npi',
-							anchor : '100%'
-						}]
-					}]
-				}]
-			}),
-			tbar : Ext.create('Ext.PagingToolbar',
-			{
-				pageSize : 30,
-				store : me.FacilityStore,
-				displayInfo : true,
-				plugins : Ext.create('Ext.ux.SlidingPager',
-				{
-				}),
-				items : ['-',
-				{
-					text : i18n('add_new_facility'),
-					iconCls : 'save',
-					scope : me,
-					handler : me.addFacility
-				}, '-',
-				{
-					text : i18n('show_active_facilities'),
-					action : 'active',
-					scope : me,
-					handler : me.filterFacilitiesby
-				}, '-',
-				{
-					text : i18n('show_inactive_facilities'),
-					action : 'inactive',
-					scope : me,
-					handler : me.filterFacilitiesby
-				}]
+Ext.define('App.view.administration.Facilities', {
+    extend: 'App.ux.RenderPanel',
+    id: 'panelFacilities',
+    pageTitle: i18n('facilities_active'),
+    uses: ['App.ux.GridPanel', 'App.ux.window.Window'],
+    initComponent: function(){
+        var me = this;
+        Ext.define('facilityModel', {
+            extend: 'Ext.data.Model',
+            fields: [
+                {
+                    name: 'id',
+                    type: 'int'
+                },
+                {
+                    name: 'name',
+                    type: 'string'
+                },
+                {
+                    name: 'active',
+                    type: 'bool'
+                },
+                {
+                    name: 'phone',
+                    type: 'string'
+                },
+                {
+                    name: 'fax',
+                    type: 'string'
+                },
+                {
+                    name: 'street',
+                    type: 'string'
+                },
+                {
+                    name: 'city',
+                    type: 'string'
+                },
+                {
+                    name: 'state',
+                    type: 'string'
+                },
+                {
+                    name: 'postal_code',
+                    type: 'string'
+                },
+                {
+                    name: 'country_code',
+                    type: 'string'
+                },
+                {
+                    name: 'federal_ein',
+                    type: 'string'
+                },
+                {
+                    name: 'service_location',
+                    type: 'bool'
+                },
+                {
+                    name: 'billing_location',
+                    type: 'bool'
+                },
+                {
+                    name: 'accepts_assignment',
+                    type: 'bool'
+                },
+                {
+                    name: 'pos_code',
+                    type: 'string'
+                },
+                {
+                    name: 'x12_sender_id',
+                    type: 'string'
+                },
+                {
+                    name: 'attn',
+                    type: 'string'
+                },
+                {
+                    name: 'domain_identifier',
+                    type: 'string'
+                },
+                {
+                    name: 'facility_npi',
+                    type: 'string'
+                },
+                {
+                    name: 'tax_id_type',
+                    type: 'string'
+                }
+            ],
+            proxy: {
+                type: 'direct',
+                api: {
+                    read: Facilities.getFacilities,
+                    create: Facilities.addFacility,
+                    update: Facilities.updateFacility,
+                    destroy: Facilities.deleteFacility
+                }
+            }
+        });
+        me.FacilityStore = Ext.create('Ext.data.Store', {
+            model: 'facilityModel',
+            remoteSort: true
+        });
+        // *************************************************************************************
+        // Facility Grid Panel
+        // *************************************************************************************
+        me.FacilityGrid = Ext.create('Ext.grid.Panel', {
+            store: me.FacilityStore,
+            columns: [
+                {
+                    text: i18n('name'),
+                    flex: 1,
+                    sortable: true,
+                    dataIndex: 'name'
+                },
+                {
+                    text: i18n('phone'),
+                    width: 100,
+                    sortable: true,
+                    dataIndex: 'phone'
+                },
+                {
+                    text: i18n('fax'),
+                    width: 100,
+                    sortable: true,
+                    dataIndex: 'fax'
+                },
+                {
+                    text: i18n('city'),
+                    width: 100,
+                    sortable: true,
+                    dataIndex: 'city'
+                }
+            ],
+            plugins: Ext.create('App.ux.grid.RowFormEditing', {
+                autoCancel: false,
+                errorSummary: false,
+                clicksToEdit: 1,
+                formItems: [
+                    {
+                        xtype: 'container',
+                        layout: 'column',
+                        defaults: {
+                            xtype: 'container',
+                            columnWidth: 0.5,
+                            padding: 5,
+                            layout: 'anchor',
+                            defaultType: 'textfield'
+                        },
+                        items: [
+                            {
+                                defaults: {
+                                    anchor: '100%'
+                                },
+                                items: [
+                                    {
+                                        fieldLabel: i18n('name'),
+                                        name: 'name',
+                                        allowBlank: false
+                                    },
+                                    {
+                                        fieldLabel: i18n('phone'),
+                                        name: 'phone'
+                                    },
+                                    {
+                                        fieldLabel: i18n('fax'),
+                                        name: 'fax'
+                                    },
+                                    {
+                                        fieldLabel: i18n('street'),
+                                        name: 'street'
+                                    },
+                                    {
+                                        fieldLabel: i18n('city'),
+                                        name: 'city'
+                                    },
+                                    {
+                                        fieldLabel: i18n('state'),
+                                        name: 'state'
+                                    },
+                                    {
+                                        fieldLabel: i18n('postal_code'),
+                                        name: 'postal_code'
+                                    },
+                                    {
+                                        fieldLabel: i18n('country_code'),
+                                        name: 'country_code'
+                                    },
+                                    {
+                                        xtype: 'fieldcontainer',
+                                        fieldLabel: i18n('tax_id'),
+                                        layout: 'hbox',
+                                        items: [
+                                            {
+                                                xtype: 'mitos.taxidcombo',
+                                                name: 'tax_id_type',
+                                                width: 50
+                                            },
+                                            {
+                                                xtype: 'textfield',
+                                                name: 'federal_ein'
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                items: [
+                                    {
+                                        xtype: 'mitos.checkbox',
+                                        fieldLabel: i18n('active'),
+                                        name: 'active'
+                                    },
+                                    {
+                                        xtype: 'mitos.checkbox',
+                                        fieldLabel: i18n('service_location'),
+                                        name: 'service_location'
+                                    },
+                                    {
+                                        xtype: 'mitos.checkbox',
+                                        fieldLabel: i18n('billing_location'),
+                                        name: 'billing_location'
+                                    },
+                                    {
+                                        xtype: 'mitos.checkbox',
+                                        fieldLabel: i18n('accepts_assignment'),
+                                        name: 'accepts_assignment'
+                                    },
+                                    {
+                                        xtype: 'mitos.poscodescombo',
+                                        fieldLabel: i18n('pos_code'),
+                                        name: 'pos_code',
+                                        anchor: '100%'
+                                    },
+                                    {
+                                        fieldLabel: i18n('billing_attn'),
+                                        name: 'attn',
+                                        anchor: '100%'
+                                    },
+                                    {
+                                        fieldLabel: i18n('clia_number'),
+                                        name: 'domain_identifier',
+                                        anchor: '100%'
+                                    },
+                                    {
+                                        fieldLabel: 'Facility NPI',
+                                        name: 'facility_npi',
+                                        anchor: '100%'
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }),
+            tbar: Ext.create('Ext.PagingToolbar', {
+                pageSize: 30,
+                store: me.FacilityStore,
+                displayInfo: true,
+                plugins: Ext.create('Ext.ux.SlidingPager', {
+                    }),
+                items: ['-', {
+                    text: i18n('add_new_facility'),
+                    iconCls: 'save',
+                    scope: me,
+                    handler: me.addFacility
+                }, '-', {
+                    text: i18n('show_active_facilities'),
+                    action: 'active',
+                    scope: me,
+                    handler: me.filterFacilitiesby
+                }, '-', {
+                    text: i18n('show_inactive_facilities'),
+                    action: 'inactive',
+                    scope: me,
+                    handler: me.filterFacilitiesby
+                }]
 
-			})
-		});
-		me.pageBody = [me.FacilityGrid];
-		me.callParent(arguments);
-	},
-	filterFacilitiesby : function(btn)
-	{
-		this.updateTitle(i18n('Facilities') + ' (' + Ext.String.capitalize(btn.action) + ')');
-		this.FacilityStore.proxy.extraParams =
-		{
-			active : btn.action == 'active' ? 1 : 0
-		};
-		this.FacilityStore.load();
-	},
-	addFacility : function()
-	{
-		var me = this, grid = me.FacilityGrid, store = grid.store;
-		grid.editingPlugin.cancelEdit();
-		store.insert(0,
-		{
-			name : i18n('new_facility'),
-			active : 1,
-			service_location : 1,
-			billing_location : 0,
-			accepts_assignment : 0,
-			tax_id_type : 'EIN'
-		});
-		grid.editingPlugin.startEdit(0, 0);
-	},
-	/**
-	 * This function is called from Viewport.js when
-	 * this panel is selected in the navigation panel.
-	 * place inside this function all the functions you want
-	 * to call every this panel becomes active
-	 */
-	onActive : function(callback)
-	{
-		this.FacilityStore.load();
-		callback(true);
-	}
+            })
+        });
+        me.pageBody = [me.FacilityGrid];
+        me.callParent(arguments);
+    },
+    filterFacilitiesby: function(btn){
+        this.updateTitle(i18n('Facilities') + ' (' + Ext.String.capitalize(btn.action) + ')');
+        this.FacilityStore.proxy.extraParams = {
+            active: btn.action == 'active' ? 1 : 0
+        };
+        this.FacilityStore.load();
+    },
+    addFacility: function(){
+        var me = this, grid = me.FacilityGrid, store = grid.store;
+        grid.editingPlugin.cancelEdit();
+        store.insert(0, {
+            active: 1,
+            service_location: 1,
+            billing_location: 0,
+            accepts_assignment: 0,
+            tax_id_type: 'EIN'
+        });
+        grid.editingPlugin.startEdit(0, 0);
+    },
+    /**
+     * This function is called from Viewport.js when
+     * this panel is selected in the navigation panel.
+     * place inside this function all the functions you want
+     * to call every this panel becomes active
+     */
+    onActive: function(callback){
+        this.FacilityStore.load();
+        callback(true);
+    }
 });
-//ens FacilitiesPanel class
+
  /*
  GaiaEHR (Electronic Health Records)
  Globals.js
@@ -39713,7 +39769,7 @@ Ext.define('App.view.administration.Globals',
 						handler : function()
 						{
 							var form = me.globalFormPanel.getForm();
-							me.onSave(form, me.store);
+							me.onGloblasSave(form, me.store);
 						}
 					}]
 				}]
@@ -39722,7 +39778,7 @@ Ext.define('App.view.administration.Globals',
 		me.pageBody = [me.globalFormPanel];
 		me.callParent(arguments);
 	}, // end of initComponent
-	onSave : function(form, store)
+	onGloblasSave : function(form, store)
 	{
 		var record = form.getRecord(), values = form.getValues();
 		Globals.updateGlobals(values, function()
@@ -39763,1262 +39819,989 @@ Ext.define('App.view.administration.Globals',
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-Ext.define('App.view.administration.Layout',
-{
-	extend : 'App.ux.RenderPanel',
-	id : 'panelLayout',
-	pageTitle : i18n('layout_form_editor'),
-	pageLayout : 'border',
-	uses : ['App.ux.GridPanel'],
-	initComponent : function()
-	{
+Ext.define('App.view.administration.Layout', {
+    extend: 'App.ux.RenderPanel',
+    id: 'panelLayout',
+    pageTitle: i18n('layout_form_editor'),
+    pageLayout: 'border',
+    uses: ['App.ux.GridPanel'],
+    initComponent: function(){
+        var me = this;
+        me.currForm = null;
+        me.currField = null;
+        // *************************************************************************************
+        // Form Fields TreeGrid Store
+        // *************************************************************************************
+        Ext.define('layoutTreeModel', {
+            extend: 'Ext.data.Model',
+            fields: [
+                { name: 'id', type: 'int' },
+                { name: 'parentId', type: 'string' },
+                { name: 'text', type: 'string' },
+                { name: 'pos', type: 'int' },
+                { name: 'xtype', type: 'string' },
+                { name: 'form_id', type: 'int' },
+                { name: 'title', type: 'string' },
+                { name: 'fieldLabel', type: 'string' },
+                { name: 'emptyText', type: 'string' },
+                { name: 'labelWidth', type: 'string' },
+                { name: 'hideLabel', type: 'string' },
+                { name: 'layout', type: 'string' },
+                { name: 'width', type: 'string' },
+                { name: 'height', type: 'string' },
+                { name: 'anchor', type: 'string' },
+                { name: 'margin', type: 'string' },
+                { name: 'flex', type: 'string' },
+                { name: 'collapsible', type: 'string' },
+                { name: 'checkboxToggle', type: 'string' },
+                { name: 'collapsed', type: 'string' },
+                { name: 'inputValue', type: 'string' },
+                { name: 'allowBlank', type: 'string' },
+                { name: 'value', type: 'string' },
+                { name: 'maxValue', type: 'string' },
+                { name: 'minValue', type: 'string' },
+                { name: 'boxLabel', type: 'string' },
+                { name: 'grow', type: 'string' },
+                { name: 'growMin', type: 'string' },
+                { name: 'growMax', type: 'string' },
+                { name: 'increment', type: 'string' },
+                { name: 'name', type: 'string' },
+                { name: 'list_id', type: 'string' },
+                { name: 'sort', type: 'auto' }
+            ],
+            proxy: {
+                type: 'direct',
+                api: {
+                    read: FormLayoutBuilder.getFormFieldsTree,
+                    create: FormLayoutBuilder.createFormField,
+                    update: FormLayoutBuilder.updateFormField,
+                    destroy: FormLayoutBuilder.removeFormField
+                }
+            }
+        });
+        /**
+         * form fields list (center grid)
+         */
+        me.fieldsGridStore = Ext.create('Ext.data.TreeStore', {
+            model: 'layoutTreeModel',
+            folderSort: false,
+            autoLoad: false
+        });
+        /**
+         * Xtype Combobox store
+         */
+        Ext.define('XtypesComboModel', {
+            extend: 'Ext.data.Model',
+            fields: [
+                { name: 'id', type: 'string' },
+                { name: 'name', type: 'string' },
+                { name: 'value', type: 'string' }
+            ],
+            proxy: {
+                type: 'direct',
+                api: {
+                    read: CombosData.getFiledXtypes
+                }
+            }
+        });
+        me.fieldXTypesStore = Ext.create('Ext.data.Store', {
+            model: 'XtypesComboModel',
+            autoLoad: true
+        });
+        /**
+         * Forms grid store (left grid)
+         */
+        Ext.define('FormsListModel', {
+            extend: 'Ext.data.Model',
+            fields: [
+                { name: 'id', type: 'string' },
+                { name: 'name', type: 'string' }
+            ],
+            proxy: {
+                type: 'direct',
+                api: {
+                    read: FormLayoutBuilder.getForms
+                }
+            }
+        });
+        me.formsGridStore = Ext.create('Ext.data.Store', {
+            model: 'FormsListModel',
+            autoLoad: true
+        });
+        /**
+         * Field available on this form as parent items (fieldset / fieldcontainer )
+         * use to get the "Child of" combobox data
+         */
+        Ext.define('ParentFieldsModel', {
+            extend: 'Ext.data.Model',
+            fields: [
+                { name: 'name', type: 'string' },
+                { name: 'value', type: 'string' }
+            ],
+            proxy: {
+                type: 'direct',
+                api: {
+                    read: FormLayoutBuilder.getParentFields
+                }
+            }
+        });
+        me.parentFieldsStore = Ext.create('Ext.data.Store', {
+            model: 'ParentFieldsModel',
+            autoLoad: false
+        });
+        /**
+         * This are the select lists available to use for comboboxes
+         * this lists can be created an modified at "Lists" administration panel.
+         */
+        Ext.define('formlistoptionsModel', {
+            extend: 'Ext.data.Model',
+            fields: [
+                { name: 'option_name', type: 'string' },
+                { name: 'option_value', type: 'string' }
+            ]
 
-		var me = this;
-		me.currForm = null;
-		me.currField = null;
+        });
+        me.selectListoptionsStore = Ext.create('Ext.data.Store', {
+            model: 'formlistoptionsModel',
+            proxy: {
+                type: 'direct',
+                api: {
+                    read: CombosData.getOptionsByListId
+                }
+            },
+            autoLoad: false
+        });
+        /**
+         * This grid only available if the field is a Combobox
+         */
+        me.selectListGrid = Ext.create('Ext.grid.Panel', {
+            store: me.selectListoptionsStore,
+            collapseMode: 'mini',
+            height:200,
+            split: true,
+            border: false,
+            titleCollapse: false,
+            hideCollapseTool: true,
+            collapsible: true,
+            collapsed: true,
+            columns: [
+                {
+                    text: i18n('name'),
+                    flex: 1,
+                    sortable: false,
+                    dataIndex: 'option_name'
+                },
+                {
+                    text: i18n('value'),
+                    flex: 1,
+                    sortable: false,
+                    dataIndex: 'option_value'
+                }
+            ]
+        });
+        /**
+         * form to create and modified the fields
+         */
+        me.fieldForm = Ext.create('Ext.form.Panel', {
+            flex:2,
+            border: false,
+            autoScroll: true,
+            fieldDefaults: {
+                msgTarget: 'side',
+                labelWidth: 100
+            },
+            defaults: {
+                anchor: '100%'
+            },
+            items: [
+                {
+                    fieldLabel: i18n('type'),
+                    xtype: 'combo',
+                    name: 'xtype',
+                    displayField: 'name',
+                    valueField: 'value',
+                    allowBlank: false,
+                    editable: false,
+                    store: me.fieldXTypesStore,
+                    queryMode: 'local',
+                    margin: '5 5 5 10',
+                    itemId: 'xtype',
+                    listeners: {
+                        scope: me,
+                        change: me.onXtypeChange
+                    }
+                },
+                {
+                    fieldLabel: i18n('child_of'),
+                    xtype: 'combo',
+                    name: 'parentId',
+                    displayField: 'name',
+                    valueField: 'value',
+                    editable: false,
+                    hideTrigger: true,
+                    store: me.parentFieldsStore,
+                    queryMode: 'local',
+                    margin: '5 5 5 10',
+                    emptyText: 'None',
+                    itemId: 'parentFields',
+                    listeners: {
+                        scope: me,
+                        expand: me.onParentFieldsExpand
+                    }
+                },
+                {
+                    xtype: 'fieldset',
+                    itemId: 'aditionalProperties',
+                    title: i18n('aditional_properties'),
+                    margin: '0 5 5 5',
+                    defaults: {
+                        anchor: '100%'
+                    },
+                    items: [
+                        {
+                            fieldLabel: i18n('title'),
+                            xtype: 'textfield',
+                            name: 'title',
+                            itemId: 'title',
+                            allowBlank: false,
+                            hidden: true
+                        },
+                        {
+                            fieldLabel: i18n('field_label'),
+                            xtype: 'textfield',
+                            name: 'fieldLabel',
+                            itemId: 'fieldLabel',
+                            allowBlank: false,
+                            hidden: true
+                        },
+                        {
+                            fieldLabel: i18n('box_label'),
+                            xtype: 'textfield',
+                            name: 'boxLabel',
+                            itemId: 'boxLabel',
+                            allowBlank: false,
+                            hidden: true
+                        },
+                        {
+                            fieldLabel: i18n('label_width'),
+                            xtype: 'textfield',
+                            name: 'labelWidth',
+                            itemId: 'labelWidth',
+                            hidden: true
+                        },
+                        {
+                            fieldLabel: i18n('hide_label'),
+                            xtype: 'checkbox',
+                            name: 'hideLabel',
+                            itemId: 'hideLabel',
+                            hidden: true
+                        },
+                        {
+                            fieldLabel: i18n('empty_text'),
+                            xtype: 'textfield',
+                            name: 'emptyText',
+                            itemId: 'emptyText',
+                            hidden: true
+                        },
+                        {
+                            fieldLabel: i18n('layout'),
+                            xtype: 'textfield',
+                            name: 'layout',
+                            itemId: 'layout',
+                            hidden: true
+                        },
+                        {
+                            fieldLabel: i18n('name'),
+                            xtype: 'textfield',
+                            name: 'name',
+                            itemId: 'name',
+                            allowBlank: false,
+                            hidden: true
+                        },
+                        {
+                            fieldLabel: i18n('input_value'),
+                            xtype: 'textfield',
+                            name: 'inputValue',
+                            itemId: 'inputValue',
+                            allowBlank: false,
+                            hidden: true
+                        },
+                        {
+                            fieldLabel: i18n('width'),
+                            xtype: 'textfield',
+                            name: 'width',
+                            itemId: 'width',
+                            emptyText: 'ei. 5 for 5px',
+                            hidden: true
+                        },
+                        {
+                            fieldLabel: i18n('height'),
+                            xtype: 'textfield',
+                            name: 'height',
+                            itemId: 'height',
+                            emptyText: 'ei. 5 for 5px',
+                            hidden: true
+                        },
+                        {
+                            fieldLabel: i18n('anchor'),
+                            xtype: 'textfield',
+                            name: 'anchor',
+                            itemId: 'anchor',
+                            emptyText: 'ei. 100%',
+                            hidden: true
+                        },
+                        {
+                            fieldLabel: i18n('flex'),
+                            xtype: 'checkbox',
+                            name: 'flex',
+                            itemId: 'flex',
+                            hidden: true
+                        },
+                        {
+                            fieldLabel: i18n('collapsible'),
+                            xtype: 'checkbox',
+                            name: 'collapsible',
+                            itemId: 'collapsible',
+                            hidden: true
+                        },
+                        {
+                            fieldLabel: i18n('checkbox_toggle'),
+                            xtype: 'checkbox',
+                            name: 'checkboxToggle',
+                            itemId: 'checkboxToggle',
+                            hidden: true
+                        },
+                        {
+                            fieldLabel: i18n('collapsed'),
+                            xtype: 'checkbox',
+                            name: 'collapsed',
+                            itemId: 'collapsed',
+                            hidden: true
+                        },
+                        {
+                            fieldLabel: i18n('margin'),
+                            xtype: 'textfield',
+                            name: 'margin',
+                            itemId: 'margin',
+                            emptyText: 'ei. 5 5 5 5',
+                            hidden: true
+                        },
+                        {
+                            fieldLabel: i18n('column_width'),
+                            xtype: 'textfield',
+                            name: 'columnWidth',
+                            itemId: 'columnWidth',
+                            emptyText: 'ei. .5',
+                            hidden: true
+                        },
+                        {
+                            fieldLabel: i18n('is_required'),
+                            xtype: 'checkbox',
+                            name: 'allowBlank',
+                            itemId: 'allowBlank',
+                            hidden: true
+                        },
+                        {
+                            fieldLabel: i18n('value'),
+                            xtype: 'textfield',
+                            name: 'value',
+                            itemId: 'value',
+                            hidden: true
+                        },
+                        {
+                            fieldLabel: i18n('max_value'),
+                            xtype: 'textfield',
+                            name: 'maxValue',
+                            itemId: 'maxValue',
+                            hidden: true
+                        },
+                        {
+                            fieldLabel: i18n('min_value'),
+                            xtype: 'textfield',
+                            name: 'minValue',
+                            itemId: 'minValue',
+                            hidden: true
+                        },
+                        {
+                            fieldLabel: i18n('max_value'),
+                            xtype: 'timefield',
+                            name: 'maxValue',
+                            itemId: 'timeMaxValue',
+                            hidden: true
+                        },
+                        {
+                            fieldLabel: i18n('min_value'),
+                            xtype: 'timefield',
+                            name: 'minValue',
+                            itemId: 'timeMinValue',
+                            hidden: true
+                        },
+                        {
+                            fieldLabel: i18n('grow'),
+                            xtype: 'checkbox',
+                            name: 'grow',
+                            itemId: 'grow',
+                            hidden: true
+                        },
+                        {
+                            fieldLabel: i18n('grow_min'),
+                            xtype: 'textfield',
+                            name: 'growMin',
+                            itemId: 'growMin',
+                            hidden: true
+                        },
+                        {
+                            fieldLabel: i18n('grow_max'),
+                            xtype: 'textfield',
+                            name: 'growMax',
+                            itemId: 'growMax',
+                            hidden: true
+                        },
+                        {
+                            fieldLabel: i18n('increment'),
+                            xtype: 'textfield',
+                            name: 'increment',
+                            itemId: 'increment',
+                            hidden: true
+                        },
+                        {
+                            fieldLabel: i18n('list_options'),
+                            xtype: 'mitos.listscombo',
+                            name: 'list_id',
+                            itemId: 'list_id',
+                            hidden: true,
+                            allowBlank: false,
+                            listeners: {
+                                scope: me,
+                                change: me.onSelectListSelect
+                            }
+                        }
+                    ]
+                }
+            ]
+        });
+        /**
+         * this container holds the form and the select list grid.
+         * remember that the select list grid only shows if
+         * the field xtype is a combobox
+         */
+        me.formContainer = Ext.create('Ext.panel.Panel', {
+            title: i18n('field_configuration'),
+            border: true,
+            split: true,
+            width: 390,
+            region: 'east',
+            layout: {
+                type:'vbox',
+                align:'stretch'
+            },
+            bodyStyle: 'background-color:#fff!important',
+            items: [ me.fieldForm, me.selectListGrid ],
+            buttons:[
+                {
+                    text: i18n('delete'),
+                    iconCls: 'icoDeleteBlack',
+                    scope: me,
+                    handler: me.onFieldDelete
+                },
+                {
+                    text: i18n('reset'),
+                    iconCls: 'icoReload',
+                    scope: me,
+                    handler: me.onFormReset
+                },
+                {
+                    text: i18n('save'),
+                    iconCls: 'save',
+                    scope: me,
+                    handler: me.onFieldSave
+                }
+            ],
+            dockedItems: [
+                {
+                    xtype: 'toolbar',
+                    items: [
+                        '->',
+                        {
+                            text: i18n('add_new'),
+                            iconCls: 'icoAddRecord',
+                            scope: me,
+                            handler: me.onFormReset
+                        },
+                        '-',
+                        {
+                            text: i18n('add_child'),
+                            iconCls: 'icoAddRecord',
+                            itemId: 'addChild',
+                            disabled: true,
+                            scope: me,
+                            handler: me.onAddChild
+                        },
+                        '-',
+                        {
+                            text: i18n('form_preview'),
+                            iconCls: 'icoPreview',
+                            enableToggle: true,
+                            listeners: {
+                                scope: me,
+                                toggle: me.onFormPreview
+                            }
+                        }
+                    ]
 
-		// *************************************************************************************
-		// Form Fields TreeGrid Store
-		// *************************************************************************************
-		Ext.define('layoutTreeModel',
-		{
-			extend : 'Ext.data.Model',
-			fields : [
-			{
-				name : 'id',
-				type : 'string'
-			},
-			{
-				name : 'text',
-				type : 'string'
-			},
-			{
-				name : 'pos',
-				type : 'string'
-			},
-			{
-				name : 'xtype',
-				type : 'string'
-			},
-			{
-				name : 'form_id',
-				type : 'string'
-			},
-			{
-				name : 'item_of',
-				type : 'string'
-			},
-			{
-				name : 'title',
-				type : 'string'
-			},
-			{
-				name : 'fieldLabel',
-				type : 'string'
-			},
-			{
-				name : 'emptyText',
-				type : 'string'
-			},
-			{
-				name : 'labelWidth',
-				type : 'string'
-			},
-			{
-				name : 'hideLabel',
-				type : 'string'
-			},
-			{
-				name : 'layout',
-				type : 'string'
-			},
-			{
-				name : 'width',
-				type : 'string'
-			},
-			{
-				name : 'height',
-				type : 'string'
-			},
-			{
-				name : 'anchor',
-				type : 'string'
-			},
-			{
-				name : 'margin',
-				type : 'string'
-			},
-			{
-				name : 'flex',
-				type : 'string'
-			},
-			{
-				name : 'collapsible',
-				type : 'string'
-			},
-			{
-				name : 'checkboxToggle',
-				type : 'string'
-			},
-			{
-				name : 'collapsed',
-				type : 'string'
-			},
-			{
-				name : 'inputValue',
-				type : 'string'
-			},
-			{
-				name : 'allowBlank',
-				type : 'string'
-			},
-			{
-				name : 'value',
-				type : 'string'
-			},
-			{
-				name : 'maxValue',
-				type : 'string'
-			},
-			{
-				name : 'minValue',
-				type : 'string'
-			},
-			{
-				name : 'boxLabel',
-				type : 'string'
-			},
-			{
-				name : 'grow',
-				type : 'string'
-			},
-			{
-				name : 'growMin',
-				type : 'string'
-			},
-			{
-				name : 'growMax',
-				type : 'string'
-			},
-			{
-				name : 'increment',
-				type : 'string'
-			},
-			{
-				name : 'name',
-				type : 'string'
-			},
-			{
-				name : 'list_id',
-				type : 'string'
-			}],
-			idProperty : 'id'
-		});
-		/**
-		 * form fields list (center grid)
-		 */
-		me.fieldsGridStore = Ext.create('Ext.data.TreeStore',
-		{
-			model : 'layoutTreeModel',
-			//clearOnLoad: true,
-			proxy :
-			{
-				type : 'direct',
-				api :
-				{
-					read : FormLayoutBuilder.getFormFieldsTree
-				}
-			},
-			folderSort : false,
-			autoLoad : false
-		});
-		/**
-		 * Xtype Combobox store
-		 */
-		Ext.define('XtypesComboModel',
-		{
-			extend : 'Ext.data.Model',
-			fields : [
-			{
-				name : 'id',
-				type : 'string'
-			},
-			{
-				name : 'name',
-				type : 'string'
-			},
-			{
-				name : 'value',
-				type : 'string'
-			}],
-			proxy :
-			{
-				type : 'direct',
-				api :
-				{
-					read : CombosData.getFiledXtypes
-				}
-			}
-		});
-		me.fieldXTypesStore = Ext.create('Ext.data.Store',
-		{
-			model : 'XtypesComboModel',
-			autoLoad : true
-		});
+                }
+            ]
+        });
+        /**
+         * This is the fields associated with the current Form selected
+         */
+        me.fieldsGrid = Ext.create('Ext.tree.Panel', {
+            store: me.fieldsGridStore,
+            region: 'center',
+            border: true,
+            sortable: false,
+            rootVisible: false,
+            title: i18n('field_editor_demographics'),
+            viewConfig: {
+                plugins: {
+                    ptype: 'treeviewdragdrop',
+                    allowParentInsert: true
+                },
+                listeners: {
+                    scope: me,
+                    drop: me.onDragDrop
+                }
+            },
+            columns: [
+                {
+                    xtype: 'treecolumn',
+                    text: i18n('field_type'),
+                    sortable: false,
+                    dataIndex: 'xtype',
+                    width: 200,
+                    align: 'left'
+                },
+                {
+                    text: i18n('title'),
+                    sortable: false,
+                    dataIndex: 'title',
+                    width: 100,
+                    align: 'left'
+                },
+                {
+                    text: i18n('label'),
+                    sortable: false,
+                    dataIndex: 'fieldLabel',
+                    flex: 1,
+                    align: 'left'
+                }
+            ],
+            listeners: {
+                scope: me,
+                itemclick: me.onFieldsGridClick
+            }
+        });
+        /**
+         * Form grid will show the available forms to modified.
+         * the user will not have the options to create
+         * forms, just to modified the fields of existing forms.
+         */
+        me.formsGrid = Ext.create('App.ux.GridPanel', {
+            title: i18n('form_list'),
+            region: 'west',
+            store: me.formsGridStore,
+            width: 200,
+            border: true,
+            split: true,
+            hideHeaders: true,
+            columns: [
+                {
+                    dataIndex: 'id',
+                    hidden: true
+                },
+                {
+                    flex: 1,
+                    sortable: true,
+                    dataIndex: 'name'
+                }
+            ],
+            listeners: {
+                scope: me,
+                itemclick: me.onFormGridItemClick
+            }
+        });
+        /**
+         * this panel will render the current form to preview
+         * all the changes done.
+         */
+        me.fromPreview = Ext.create('Ext.form.Panel', {
+            region: 'south',
+            height: 300,
+            collapsible: true,
+            titleCollapse: false,
+            hideCollapseTool: true,
+            collapsed: true,
+            border: true,
+            split: true,
+            collapseMode: 'header',
+            bodyStyle: 'padding: 5px',
+            layout: 'anchor',
+            fieldDefaults: {
+                msgTarget: 'side'
+            },
+            tools: [
+                {
+                    itemId: 'refresh',
+                    type: 'refresh',
+                    scope: me,
+                    handler: me.previewFormRender
+                }
+            ]
+        });
+        me.pageBody = [me.fieldsGrid, me.formsGrid, me.formContainer, me.fromPreview];
+        me.callParent(arguments);
+    },
+    /**
+     * if the form is valid send the POST request
+     */
+    onFieldSave: function(){
+        var me = this,
+            form = me.fieldForm.getForm(),
+            record = form.getRecord(),
+            store = me.fieldsGridStore,
+            parentNode = store.getNodeById(record.data.parentId) || store.getRootNode(),
+            values = form.getValues();
 
-		/**
-		 * Forms grid store (left grid)
-		 */
-		Ext.define('FormsListModel',
-		{
-			extend : 'Ext.data.Model',
-			fields : [
-			{
-				name : 'id',
-				type : 'string'
-			},
-			{
-				name : 'name',
-				type : 'string'
-			}],
-			proxy :
-			{
-				type : 'direct',
-				api :
-				{
-					read : FormLayoutBuilder.getForms
-				}
-			}
-		});
-		me.formsGridStore = Ext.create('Ext.data.Store',
-		{
-			model : 'FormsListModel',
-			autoLoad : true
-		});
 
-		/**
-		 * Field available on this form as parent items (fieldset / fieldcontainer )
-		 * use to get the "Child of" combobox data
-		 */
-		Ext.define('ParentFieldsModel',
-		{
-			extend : 'Ext.data.Model',
-			fields : [
-			{
-				name : 'name',
-				type : 'string'
-			},
-			{
-				name : 'value',
-				type : 'string'
-			}],
-			proxy :
-			{
-				type : 'direct',
-				api :
-				{
-					read : FormLayoutBuilder.getParentFields
-				}
-			}
-		});
-		me.parentFieldsStore = Ext.create('Ext.data.Store',
-		{
-			model : 'ParentFieldsModel',
-			autoLoad : false
-		});
+        if(form.isValid()){
 
-		/**
-		 * This are the select lists available to use for comboboxes
-		 * this lists can be created an modified at "Lists" administration panel.
-		 */
-		Ext.define('formlistoptionsModel',
-		{
-			extend : 'Ext.data.Model',
-			fields : [
-			{
-				name : 'option_name',
-				type : 'string'
-			},
-			{
-				name : 'option_value',
-				type : 'string'
-			}]
+            values.form_id = record.data.form_id;
+            values.leaf = (values.xtype != 'fieldcontainer' && values.xtype != 'fieldset');
+            record.set(values);
+            if(record.data.id == 0) parentNode.appendChild(record);
 
-		});
-		me.selectListoptionsStore = Ext.create('Ext.data.Store',
-		{
-			model : 'formlistoptionsModel',
-			proxy :
-			{
-				type : 'direct',
-				api :
-				{
-					read : CombosData.getOptionsByListId
-				}
-			},
-			autoLoad : false
-		});
+            me.fieldsGridStore.sync({
+               success:function(batch){
+                   me.previewFormRender();
+                   me.loadCurrFormParentField();
+                   // this is the quick way to apply the return changes to the model
+                   record.set(batch.proxy.reader.rawData);
+                   record.commit();
+                   me.msg('Sweet!', i18n('record_saved'));
+               },
+               failure:function(batch){
+                   Ext.Msg.alert('Oops!', batch.proxy.reader.rawData.error);
+                   me.loadFieldsGrid();
+               }
+           });
+        }
+    },
+    /**
+     * Delete logic
+     */
+    onFieldDelete: function(){
+        var me = this, form = me.fieldForm.getForm(), record = form.getRecord();
+        Ext.Msg.show({
+            title: i18n('please_confirm') + '...',
+            icon: Ext.MessageBox.QUESTION,
+            msg: i18n('delete_this_field'),
+            buttons: Ext.Msg.YESNO,
+            scope: this,
+            fn: function(btn){
+                if(btn == 'yes'){
+                    record.remove();
+                    me.fieldsGridStore.sync({
+                        success:function(){
+                            me.previewFormRender();
+                            me.msg('Sweet!', i18n('record_removed'));
+                        },
+                        failure:function(batch){
+                            Ext.Msg.alert('Oops!', batch.proxy.reader.rawData.error);
+                            me.loadFieldsGrid();
+                        }
+                    });
+                }
+            }
+        });
+    },
+    /**
+     *
+     * @param node
+     * @param data
+     * @param overModel
+     */
+    onDragDrop: function(node, data, overModel){
+        var me = this, childItems = [], pos = 10;
+        for(var i = 0; i < overModel.parentNode.childNodes.length; i++){
+            overModel.parentNode.childNodes[i].set({pos:pos});
+            pos = pos + 10;
+        }
+        data.records[0].sort = childItems;
+        me.fieldsGridStore.sync({
+            success:function(){
+                me.previewFormRender();
+                me.msg('Sweet!', 'Field Updated');
+            },
+            failure:function(batch){
+                Ext.Msg.alert('Oops!', batch.proxy.reader.rawData.error);
+                me.loadFieldsGrid();
+            }
+        });
+    },
+    /**
+     * This is to reset the Form and load
+     * a new Model with the currForm id
+     */
+    onFormReset: function(){
+        var me = this,
+            formPanel = me.fieldForm,
+            form = formPanel.getForm(),
+            selection = me.fieldsGrid.getSelectionModel();
+        selection.deselectAll();
+        form.reset();
+        var model = Ext.ModelManager.getModel('layoutTreeModel'),
+            newModel = Ext.ModelManager.create({
+                form_id: me.currForm
+            }, model);
+        formPanel.el.unmask();
+        form.loadRecord(newModel);
+    },
+    /**
+     *
+     * load a new model with the form_id and parentId values.
+     * This is the easy way to add a child to a fieldset or fieldcontainer.
+     */
+    onAddChild: function(){
+        var formPanel = this.fieldForm, form = formPanel.getForm(), row = this.fieldsGrid.getSelectionModel();
+        row.deselectAll();
+        form.reset();
+        var model = Ext.ModelManager.getModel('layoutTreeModel'), newModel = Ext.ModelManager.create({
+                form_id: this.currForm,
+                parentId: this.currField
+            }, model);
+        formPanel.el.unmask();
+        form.loadRecord(newModel);
+    },
+    /**
+     *
+     * This will load the current field data to the form,
+     * set the currField, and enable the Add Child btn if
+     * the field allows child items (fieldset or fieldcontainer)
+     *
+     * @param grid
+     * @param record
+     */
+    onFieldsGridClick: function(grid, record){
+        var formPanel = this.fieldForm, form = formPanel.getForm();
+        say(record);
+        form.loadRecord(record);
+        this.currField = record.data.id;
+        if(record.data.xtype == 'fieldset' || record.data.xtype == 'fieldcontainer'){
+            this.formContainer.down('toolbar').getComponent('addChild').enable();
+        }else{
+            this.formContainer.down('toolbar').getComponent('addChild').disable();
+        }
+        formPanel.el.unmask();
+    },
+    /**
+     *
+     * @param DataView
+     * @param record
+     */
+    onFormGridItemClick: function(DataView, record){
+        this.currForm = record.get('id');
+        this.fieldsGrid.setTitle(i18n('field_editor') + ' (' + record.get('name') + ')');
+        this.loadFieldsGrid();
+        this.onFormReset();
+        this.fieldForm.el.mask(i18n('or_select_a_field_to_update'));
+    },
+    /**
+     *
+     * This will load the Select List options. This Combobox shows only when
+     * a Type of Combobox is selected
+     *
+     * @param combo
+     * @param value
+     */
+    onSelectListSelect: function(combo, value){
+        this.selectListoptionsStore.load({
+            params: {
+                list_id: value
+            }
+        });
+    },
+    /**
+     *
+     * This is to handle a error when loading a combobox store.
+     *
+     * @param combo
+     */
+    onParentFieldsExpand: function(combo){
+        combo.picker.loadMask.destroy();
+    },
+    /**
+     * onXtypeChange will search the combo value and enable/disable
+     * the fields appropriate for the xtype selected
+     *
+     * @param combo
+     * @param value
+     */
+    onXtypeChange: function(combo, value){
+        var me = this;
+        if(value == 'combobox'){
+            me.selectListGrid.setTitle(i18n('select_list_options'));
+            me.selectListGrid.expand();
+            me.selectListGrid.enable();
+        }else{
+            me.selectListGrid.setTitle('');
+            me.selectListGrid.collapse();
+            me.selectListGrid.disable();
+        }
+        /**
+         *
+         * @param searchStr
+         */
+        Array.prototype.find = function(searchStr){
+            var returnArray = false;
+            for(var i = 0; i < this.length; i++){
+                if(typeof (searchStr) == 'function'){
+                    if(searchStr.test(this[i])){
+                        if(!returnArray){
+                            returnArray = [];
+                        }
+                        returnArray.push(i);
+                    }
+                }else{
+                    if(this[i] === searchStr){
+                        if(!returnArray){
+                            returnArray = [];
+                        }
+                        returnArray.push(i);
+                    }
+                }
+            }
+            return returnArray;
+        };
+        var addProp = me.fieldForm.getComponent('aditionalProperties');
+        var is = addProp.items.keys;
 
-		/**
-		 * This grid only available if the field is a Combobox
-		 */
-		me.selectListGrid = Ext.create('App.ux.GridPanel',
-		{
-			store : me.selectListoptionsStore,
-			region : 'south',
-			collapseMode : 'mini',
-			width : 250,
-			height : 250,
-			split : true,
-			border : false,
-			titleCollapse : false,
-			hideCollapseTool : true,
-			collapsible : true,
-			collapsed : true,
-			columns : [
-			{
-				text : i18n('name'),
-				flex : 1,
-				sortable : false,
-				dataIndex : 'option_name'
-			},
-			{
-				text : i18n('value'),
-				flex : 1,
-				sortable : false,
-				dataIndex : 'option_value'
-			}]
-		});
-		/**
-		 * form to create and modified the fields
-		 */
-		me.fieldForm = Ext.create('App.ux.form.Panel',
-		{
-			region : 'center',
-			//url	            : 'app/administration/layout/data.php?task=formRequest',
-			border : false,
-			autoScroll : true,
-			fieldDefaults :
-			{
-				msgTarget : 'side',
-				labelWidth : 100
-			},
-			defaults :
-			{
-				anchor : '100%'
-			},
-			items : [
-			{
-				name : 'id',
-				xtype : 'textfield',
-				itemId : 'id',
-				hidden : true
-			},
-			{
-				name : i18n('pos'),
-				xtype : 'textfield',
-				itemId : 'pos',
-				hidden : true
-			},
-			{
-				name : i18n('form_id'),
-				xtype : 'textfield',
-				itemId : 'form_id',
-				hidden : true
-			},
-			{
-				fieldLabel : i18n('type'),
-				xtype : 'combo',
-				name : 'xtype',
-				displayField : 'name',
-				valueField : 'value',
-				allowBlank : false,
-				editable : false,
-				store : me.fieldXTypesStore,
-				queryMode : 'local',
-				margin : '5px 5px 5px 10px',
-				itemId : 'xtype',
-				listeners :
-				{
-					scope : me,
-					change : me.onXtypeChange
-				}
-			},
-			{
-				fieldLabel : i18n('child_of'),
-				xtype : 'combo',
-				name : 'item_of',
-				displayField : 'name',
-				valueField : 'value',
-				editable : false,
-				hideTrigger : true,
-				store : me.parentFieldsStore,
-				queryMode : 'local',
-				margin : '5px 5px 5px 10px',
-				emptyText : 'None',
-				itemId : 'parentFields',
-				listeners :
-				{
-					scope : me,
-					expand : me.onParentFieldsExpand
-				}
-			},
-			{
-				xtype : 'fieldset',
-				itemId : 'aditionalProperties',
-				title : i18n('aditional_properties'),
-				defaults :
-				{
-					anchor : '100%'
-				},
-				items : [
-				{
-					fieldLabel : i18n('title'),
-					xtype : 'textfield',
-					name : 'title',
-					itemId : 'title',
-					allowBlank : false,
-					hidden : true
-				},
-				{
-					fieldLabel : i18n('field_label'),
-					xtype : 'textfield',
-					name : 'fieldLabel',
-					itemId : 'fieldLabel',
-					allowBlank : false,
-					hidden : true
-				},
-				{
-					fieldLabel : i18n('box_label'),
-					xtype : 'textfield',
-					name : 'boxLabel',
-					itemId : 'boxLabel',
-					allowBlank : false,
-					hidden : true
-				},
-				{
-					fieldLabel : i18n('label_width'),
-					xtype : 'textfield',
-					name : 'labelWidth',
-					itemId : 'labelWidth',
-					hidden : true
-				},
-				{
-					fieldLabel : i18n('hide_label'),
-					xtype : 'checkbox',
-					name : 'hideLabel',
-					itemId : 'hideLabel',
-					hidden : true
-				},
-				{
-					fieldLabel : i18n('empty_text'),
-					xtype : 'textfield',
-					name : 'emptyText',
-					itemId : 'emptyText',
-					hidden : true
-				},
-				{
-					fieldLabel : i18n('layout'),
-					xtype : 'textfield',
-					name : 'layout',
-					itemId : 'layout',
-					hidden : true
-				},
-				{
-					fieldLabel : i18n('name'),
-					xtype : 'textfield',
-					name : 'name',
-					itemId : 'name',
-					allowBlank : false,
-					hidden : true
-				},
-				{
-					fieldLabel : i18n('input_value'),
-					xtype : 'textfield',
-					name : 'inputValue',
-					itemId : 'inputValue',
-					allowBlank : false,
-					hidden : true
-				},
-				{
-					fieldLabel : i18n('width'),
-					xtype : 'textfield',
-					name : 'width',
-					itemId : 'width',
-					emptyText : 'ei. 5 for 5px',
-					hidden : true
-				},
-				{
-					fieldLabel : i18n('height'),
-					xtype : 'textfield',
-					name : 'height',
-					itemId : 'height',
-					emptyText : 'ei. 5 for 5px',
-					hidden : true
-				},
-				{
-					fieldLabel : i18n('anchor'),
-					xtype : 'textfield',
-					name : 'anchor',
-					itemId : 'anchor',
-					emptyText : 'ei. 100%',
-					hidden : true
-				},
-				{
-					fieldLabel : i18n('flex'),
-					xtype : 'checkbox',
-					name : 'flex',
-					itemId : 'flex',
-					hidden : true
-				},
-				{
-					fieldLabel : i18n('collapsible'),
-					xtype : 'checkbox',
-					name : 'collapsible',
-					itemId : 'collapsible',
-					hidden : true
-				},
-				{
-					fieldLabel : i18n('checkbox_toggle'),
-					xtype : 'checkbox',
-					name : 'checkboxToggle',
-					itemId : 'checkboxToggle',
-					hidden : true
-				},
-				{
-					fieldLabel : i18n('collapsed'),
-					xtype : 'checkbox',
-					name : 'collapsed',
-					itemId : 'collapsed',
-					hidden : true
-				},
-				{
-					fieldLabel : i18n('margin'),
-					xtype : 'textfield',
-					name : 'margin',
-					itemId : 'margin',
-					emptyText : 'ei. 5 5 5 5',
-					hidden : true
-				},
-				{
-					fieldLabel : i18n('column_width'),
-					xtype : 'textfield',
-					name : 'columnWidth',
-					itemId : 'columnWidth',
-					emptyText : 'ei. .5',
-					hidden : true
-				},
-				{
-					fieldLabel : i18n('is_required'),
-					xtype : 'checkbox',
-					name : 'allowBlank',
-					itemId : 'allowBlank',
-					hidden : true
-				},
-				{
-					fieldLabel : i18n('value'),
-					xtype : 'textfield',
-					name : 'value',
-					itemId : 'value',
-					hidden : true
-				},
-				{
-					fieldLabel : i18n('max_value'),
-					xtype : 'textfield',
-					name : 'maxValue',
-					itemId : 'maxValue',
-					hidden : true
-				},
-				{
-					fieldLabel : i18n('min_value'),
-					xtype : 'textfield',
-					name : 'minValue',
-					itemId : 'minValue',
-					hidden : true
-				},
-				{
-					fieldLabel : i18n('max_value'),
-					xtype : 'timefield',
-					name : 'maxValue',
-					itemId : 'timeMaxValue',
-					hidden : true
-				},
-				{
-					fieldLabel : i18n('min_value'),
-					xtype : 'timefield',
-					name : 'minValue',
-					itemId : 'timeMinValue',
-					hidden : true
-				},
-				{
-					fieldLabel : i18n('grow'),
-					xtype : 'checkbox',
-					name : 'grow',
-					itemId : 'grow',
-					hidden : true
-				},
-				{
-					fieldLabel : i18n('grow_min'),
-					xtype : 'textfield',
-					name : 'growMin',
-					itemId : 'growMin',
-					hidden : true
-				},
-				{
-					fieldLabel : i18n('grow_max'),
-					xtype : 'textfield',
-					name : 'growMax',
-					itemId : 'growMax',
-					hidden : true
-				},
-				{
-					fieldLabel : i18n('increment'),
-					xtype : 'textfield',
-					name : 'increment',
-					itemId : 'increment',
-					hidden : true
-				},
-				{
-					fieldLabel : i18n('list_options'),
-					xtype : 'mitos.listscombo',
-					name : 'list_id',
-					itemId : 'list_id',
-					hidden : true,
-					allowBlank : false,
-					listeners :
-					{
-						scope : me,
-						change : me.onSelectListSelect
-					}
-				}]
-			}]
-		});
-		/**
-		 * this container holds the form and the select list grid.
-		 * remember that the select list grid only shows if
-		 * the field xtype is a combobox
-		 */
-		me.formContainer = Ext.create('Ext.panel.Panel',
-		{
-			title : i18n('field_configuration'),
-			border : true,
-			split : true,
-			width : 390,
-			region : 'east',
-			layout : 'border',
-			bodyStyle : 'background-color:#fff!important',
-			items : [me.fieldForm, me.selectListGrid],
-			dockedItems : [
-			{
-				xtype : 'toolbar',
-				items : [
-				{
-					text : i18n('save'),
-					iconCls : 'save',
-					scope : me,
-					handler : me.onSave
-				}, '-',
-				{
-					text : i18n('new'),
-					iconCls : 'icoAddRecord',
-					scope : me,
-					handler : me.onFormReset
-				}, '-',
-				{
-					text : i18n('add_child'),
-					iconCls : 'icoAddRecord',
-					itemId : 'addChild',
-					disabled : true,
-					scope : me,
-					handler : me.onAddChild
-				}, '-',
-				{
-					text : i18n('delete'),
-					iconCls : 'delete',
-					cls : 'toolDelete',
-					scope : me,
-					handler : me.onDelete
-				}, '-',
-				{
-					text : i18n('form_preview'),
-					iconCls : 'icoPreview',
-					enableToggle : true,
-					listeners :
-					{
-						scope : me,
-						toggle : me.onFormPreview
-					}
-				}]
+        /**
+         *
+         * @param items
+         */
+        function enableItems(items){
+            for(var i = 0; i < is.length; i++){
+                if(!items.find(is[i])){
+                    addProp.getComponent(is[i]).hide();
+                    addProp.getComponent(is[i]).disable();
+                }else{
+                    addProp.getComponent(is[i]).show();
+                    addProp.getComponent(is[i]).enable();
+                }
+            }
+        }
 
-			}]
-		});
-		/**
-		 * This is the fields associated with the current Form selected
-		 */
-		me.fieldsGrid = Ext.create('Ext.tree.Panel',
-		{
-			store : me.fieldsGridStore,
-			region : 'center',
-			border : true,
-			sortable : false,
-			rootVisible : false,
-			title : i18n('field_editor_demographics'),
-			viewConfig :
-			{
-				plugins :
-				{
-					ptype : 'treeviewdragdrop',
-					allowParentInsert : true
-				},
-				listeners :
-				{
-					scope : me,
-					drop : me.onDragDrop
-				}
-			},
-			columns : [
-			{
-				xtype : 'treecolumn',
-				text : i18n('field_type'),
-				sortable : false,
-				dataIndex : 'xtype',
-				width : 200,
-				align : 'left'
-			},
-			{
-				text : i18n('title'),
-				sortable : false,
-				dataIndex : 'title',
-				width : 100,
-				align : 'left'
-			},
-			{
-				text : i18n('label'),
-				sortable : false,
-				dataIndex : 'fieldLabel',
-				flex : 1,
-				align : 'left'
-			}],
-			listeners :
-			{
-				scope : me,
-				itemclick : me.onFieldsGridClick
-			}
-		});
-		/**
-		 * Form grid will show the available forms to modified.
-		 * the user will not have the options to create
-		 * forms, just to modified the fields of existing forms.
-		 */
-		me.formsGrid = Ext.create('App.ux.GridPanel',
-		{
-			title : i18n('form_list'),
-			region : 'west',
-			store : me.formsGridStore,
-			width : 200,
-			border : true,
-			split : true,
-			hideHeaders : true,
-			columns : [
-			{
-				dataIndex : 'id',
-				hidden : true
-			},
-			{
-				flex : 1,
-				sortable : true,
-				dataIndex : 'name'
-			}],
-			listeners :
-			{
-				scope : me,
-				itemclick : me.onFormGridItemClick
-			}
-		});
-		/**
-		 * this panel will render the current form to preview
-		 * all the changes done.
-		 */
-		me.fromPreview = Ext.create('Ext.form.Panel',
-		{
-			region : 'south',
-			height : 300,
-			collapsible : true,
-			titleCollapse : false,
-			hideCollapseTool : true,
-			collapsed : true,
-			border : true,
-			split : true,
-			collapseMode : 'header',
-			bodyStyle : 'padding: 5px',
-			layout : 'anchor',
-			fieldDefaults :
-			{
-				msgTarget : 'side'
-			},
-			tools : [
-			{
-				itemId : 'refresh',
-				type : 'refresh',
-				scope : me,
-				handler : me.previewFormRender
-			}]
-		});
+        var items;
+        if(value == 'fieldset'){
+            items = ['title', 'collapsible', 'collapsed', 'checkboxToggle', 'margin', 'columnWidth', 'layout'];
+        }else if(value == 'fieldcontainer'){
+            items = ['fieldLabel', 'labelWidth', 'hideLabel', 'width', 'layout', 'margin', 'columnWidth'];
+        }else if(value == 'combobox'){
+            items = ['name', 'width', 'emptyText', 'fieldLabel', 'hideLabel', 'labelWidth', 'margin', 'allowBlank', 'list_id'];
+        }else if(value == 'mitos.checkbox'){
+            items = ['name', 'width', 'fieldLabel', 'hideLabel', 'labelWidth', 'margin'];
+        }else if(value == 'textfield'){
+            items = ['name', 'width', 'anchor', 'emptyText', 'fieldLabel', 'hideLabel', 'labelWidth', 'allowBlank', 'margin'];
+        }else if(value == 'textareafield'){
+            items = ['name', 'width', 'anchor', 'height', 'emptyText', 'fieldLabel', 'hideLabel', 'labelWidth', 'allowBlank', 'grow', 'growMin', 'growMax', 'margin'];
+        }else if(value == 'numberfield'){
+            items = ['name', 'width', 'value', 'emptyText', 'maxValue', 'minValue', 'increment', 'fieldLabel', 'labelWidth', 'hideLabel', 'margin'];
+        }else if(value == 'timefield'){
+            items = ['name', 'width', 'value', 'emptyText', 'timeMaxValue', 'timeMinValue', 'increment', 'fieldLabel', 'labelWidth', 'hideLabel', 'margin'];
+        }else if(value == 'radiofield'){
+            items = ['name', 'width', 'boxLabel', 'labelWidth', 'hideLabel', 'margin', 'inputValue'];
+        }else if(value == 'datefield' || value == 'mitos.datetime'){
+            items = ['name', 'width', 'value', 'layout', 'emptyText', 'fieldLabel', 'labelWidth', 'hideLabel', 'allowBlank', 'margin'];
+        }else{
+            items = ['name', 'width', 'emptyText', 'fieldLabel', 'labelWidth', 'hideLabel', 'margin'];
+        }
+        enableItems(items);
+    },
+    /**
+     *
+     * On toggle down/true expand the preview panel and re-render the form
+     *
+     * @param btn
+     * @param toggle
+     */
+    onFormPreview: function(btn, toggle){
+        var me = this;
+        if(toggle === true){
+            me.fromPreview.expand(false);
+            me.previewFormRender();
+        }else{
+            me.fromPreview.collapse(false);
+        }
+    },
+    /**
+     *
+     *  this function re-render the preview form
+     */
+    previewFormRender: function(){
+        var me = this, form = this.fromPreview;
+        if(form.collapsed !== true){
+            form.el.mask();
+            me.getFormItems(form, me.currForm, function(){
+                form.el.unmask();
+            });
+        }
 
-		me.pageBody = [me.fieldsGrid, me.formsGrid, me.formContainer, me.fromPreview];
-		me.callParent(arguments);
-	},
-	/**
-	 * if the form is valid send the POST request
-	 */
-	onSave : function()
-	{
-		var me = this, form = me.fieldForm.getForm();
-		if (form.isValid())
-		{
-			var params = form.getValues();
+    },
+    /**
+     *
+     *  re-load the fields grid (main TreeGrid)
+     *  check if a form is selected, if not the select the first choice
+     *  save the form id inside this.currForm and load the grid and the
+     *  parent fields of this form.
+     *
+     *  parentFieldsStore is use to create the child of select list
+     */
+    loadFieldsGrid: function(){
+        var me = this, row = me.formsGrid.getSelectionModel();
+        if(me.currForm === null) row.select(0);
+        me.currForm = row.getLastSelected().data.id;
+        me.fieldsGridStore.load({
+            params: {
+                currForm: me.currForm
+            }
+        });
+        me.loadCurrFormParentField();
+        me.previewFormRender();
+        me.fieldsGrid.doLayout()
+    },
 
-			if (form.findField('id').getValue() == '')
-			{
-				FormLayoutBuilder.addField(params, function(provider, response)
-				{
-					if (response.result.success)
-					{
-						me.loadFieldsGrid();
-					}
-					else
-					{
-						Ext.Msg.alert('Opps!', response.result.error);
-					}
-				});
-			}
-			else
-			{
-				FormLayoutBuilder.updateField(params, function(provider, response)
-				{
-					if (response.result.success)
-					{
-						me.loadFieldsGrid();
-					}
-					else
-					{
-						Ext.Msg.alert('Opps!', response.result.error);
-					}
-				});
-			}
-		}
-	},
-	/**
-	 * Delete logic
-	 */
-	onDelete : function()
-	{
-		var me = this, form = me.fieldForm.getForm(), rec = form.getRecord();
-
-		Ext.Msg.show(
-		{
-			title : i18n('please_confirm') + '...',
-			icon : Ext.MessageBox.QUESTION,
-			msg : i18n('delete_this_field'),
-			buttons : Ext.Msg.YESNO,
-			scope : this,
-			fn : function(btn)
-			{
-				if (btn == 'yes')
-				{
-					var params =
-					{
-						id : rec.data.id,
-						form_id : rec.data.form_id,
-						name : rec.data.name,
-						xtype : rec.data.xtype
-					};
-
-					FormLayoutBuilder.deleteField(params, function(provider, response)
-					{
-						if (response.result.success)
-						{
-							me.msg('Sweet!', i18n('field_deleted'));
-							me.currField = null;
-							me.loadFieldsGrid();
-							me.onFormReset();
-						}
-						else
-						{
-							Ext.Msg.alert('Opps!', response.result.error);
-						}
-					});
-				}
-			}
-		});
-	},
-	/**
-	 *
-	 * @param node
-	 * @param data
-	 * @param overModel
-	 */
-	onDragDrop : function(node, data, overModel)
-	{
-		var me = this, childItems = [];
-		for (var i = 0; i < overModel.parentNode.childNodes.length; i++)
-		{
-			childItems.push(overModel.parentNode.childNodes[i].data.id);
-		}
-		var params =
-		{
-			id : data.records[0].data.id,
-			parentNode : overModel.parentNode.data.id,
-			parentNodeChilds : childItems
-		};
-
-		FormLayoutBuilder.sortFields(params, function(provider, response)
-		{
-			if (response.result.success)
-			{
-				me.msg('Sweet!', i18n('form_fields_sorted'));
-				me.loadFieldsGrid();
-				me.onFormReset();
-			}
-			else
-			{
-				Ext.Msg.alert('Opps!', response.result.error);
-			}
-		});
-	},
-	/**
-	 * This is to reset the Form and load
-	 * a new Model with the currForm id
-	 */
-	onFormReset : function()
-	{
-		var formPanel = this.fieldForm, form = formPanel.getForm(), row = this.fieldsGrid.getSelectionModel();
-		row.deselectAll();
-		form.reset();
-		var model = Ext.ModelManager.getModel('layoutTreeModel'), newModel = Ext.ModelManager.create(
-		{
-			form_id : this.currForm
-		}, model);
-		formPanel.el.unmask();
-		form.loadRecord(newModel);
-	},
-	/**
-	 *
-	 * load a new model with the form_id and item_of values.
-	 * This is the easy way to add a child to a fieldset or fieldcontainer.
-	 */
-	onAddChild : function()
-	{
-		var formPanel = this.fieldForm, form = formPanel.getForm(), row = this.fieldsGrid.getSelectionModel();
-		row.deselectAll();
-		form.reset();
-		var model = Ext.ModelManager.getModel('layoutTreeModel'), newModel = Ext.ModelManager.create(
-		{
-			form_id : this.currForm,
-			item_of : this.currField
-		}, model);
-		formPanel.el.unmask();
-		form.loadRecord(newModel);
-	},
-	/**
-	 *
-	 * This will load the current field data to the form,
-	 * set the currField, and enable the Add Child btn if
-	 * the field allows child items (fieldset or fieldcontainer)
-	 *
-	 * @param grid
-	 * @param record
-	 */
-	onFieldsGridClick : function(grid, record)
-	{
-		var formPanel = this.fieldForm, form = formPanel.getForm();
-		form.loadRecord(record);
-		this.currField = record.data.id;
-		if (record.data.xtype == 'fieldset' || record.data.xtype == 'fieldcontainer')
-		{
-			this.formContainer.down('toolbar').getComponent('addChild').enable();
-		}
-		else
-		{
-			this.formContainer.down('toolbar').getComponent('addChild').disable();
-		}
-		formPanel.el.unmask();
-	},
-	/**
-	 *
-	 * @param DataView
-	 * @param record
-	 */
-	onFormGridItemClick : function(DataView, record)
-	{
-		this.currForm = record.get('id');
-		this.fieldsGrid.setTitle(i18n('field_editor') + ' (' + record.get('name') + ')');
-		this.loadFieldsGrid();
-		this.onFormReset();
-		this.fieldForm.el.mask(i18n('or_select_a_field_to_update'));
-	},
-	/**
-	 *
-	 * This will load the Select List options. This Combobox shows only when
-	 * a Type of Combobox is selected
-	 *
-	 * @param combo
-	 * @param value
-	 */
-	onSelectListSelect : function(combo, value)
-	{
-		this.selectListoptionsStore.load(
-		{
-			params :
-			{
-				list_id : value
-			}
-		});
-	},
-	/**
-	 *
-	 * This is to handle a error when loading a combobox store.
-	 *
-	 * @param combo
-	 */
-	onParentFieldsExpand : function(combo)
-	{
-		combo.picker.loadMask.destroy();
-	},
-	/**
-	 * onXtypeChange will search the combo value and enable/disable
-	 * the fields appropriate for the xtype selected
-	 *
-	 * @param combo
-	 * @param value
-	 */
-	onXtypeChange : function(combo, value)
-	{
-		var me = this;
-
-		if (value == 'combobox')
-		{
-			me.selectListGrid.setTitle(i18n('select_list_options'));
-			me.selectListGrid.expand();
-			me.selectListGrid.enable();
-		}
-		else
-		{
-			me.selectListGrid.setTitle('');
-			me.selectListGrid.collapse();
-			me.selectListGrid.disable();
-		}
-
-		/**
-		 *
-		 * @param searchStr
-		 */
-		Array.prototype.find = function(searchStr)
-		{
-			var returnArray = false;
-			for (var i = 0; i < this.length; i++)
-			{
-				if ( typeof (searchStr) == 'function')
-				{
-					if (searchStr.test(this[i]))
-					{
-						if (!returnArray)
-						{
-							returnArray = [];
-						}
-						returnArray.push(i);
-					}
-				}
-				else
-				{
-					if (this[i] === searchStr)
-					{
-						if (!returnArray)
-						{
-							returnArray = [];
-						}
-						returnArray.push(i);
-					}
-				}
-			}
-			return returnArray;
-		};
-
-		var addProp = me.fieldForm.getComponent('aditionalProperties');
-		var is = addProp.items.keys;
-
-		/**
-		 *
-		 * @param items
-		 */
-		function enableItems(items)
-		{
-			for (var i = 0; i < is.length; i++)
-			{
-				if (!items.find(is[i]))
-				{
-					addProp.getComponent(is[i]).hide();
-					addProp.getComponent(is[i]).disable();
-				}
-				else
-				{
-					addProp.getComponent(is[i]).show();
-					addProp.getComponent(is[i]).enable();
-				}
-
-			}
-		}
-
-		var items;
-		if (value == 'fieldset')
-		{
-			items = ['title', 'collapsible', 'collapsed', 'checkboxToggle', 'margin', 'columnWidth'];
-		}
-		else
-		if (value == 'fieldcontainer')
-		{
-			items = ['fieldLabel', 'labelWidth', 'hideLabel', 'width', 'layout', 'margin', 'columnWidth'];
-		}
-		else
-		if (value == 'combobox')
-		{
-			items = ['name', 'width', 'emptyText', 'fieldLabel', 'hideLabel', 'labelWidth', 'margin', 'allowBlank', 'list_id'];
-		}
-		else
-		if (value == 'mitos.checkbox')
-		{
-			items = ['name', 'width', 'fieldLabel', 'hideLabel', 'labelWidth', 'margin'];
-		}
-		else
-		if (value == 'textfield')
-		{
-			items = ['name', 'width', 'anchor', 'emptyText', 'fieldLabel', 'hideLabel', 'labelWidth', 'allowBlank', 'margin'];
-		}
-		else
-		if (value == 'textareafield')
-		{
-			items = ['name', 'width', 'anchor', 'height', 'emptyText', 'fieldLabel', 'hideLabel', 'labelWidth', 'allowBlank', 'grow', 'growMin', 'growMax', 'margin'];
-		}
-		else
-		if (value == 'numberfield')
-		{
-			items = ['name', 'width', 'value', 'emptyText', 'maxValue', 'minValue', 'increment', 'fieldLabel', 'labelWidth', 'hideLabel', 'margin'];
-		}
-		else
-		if (value == 'timefield')
-		{
-			items = ['name', 'width', 'value', 'emptyText', 'timeMaxValue', 'timeMinValue', 'increment', 'fieldLabel', 'labelWidth', 'hideLabel', 'margin'];
-		}
-		else
-		if (value == 'radiofield')
-		{
-			items = ['name', 'width', 'boxLabel', 'labelWidth', 'hideLabel', 'margin', 'inputValue'];
-		}
-		else
-		if (value == 'datefield' || value == 'mitos.datetime')
-		{
-			items = ['name', 'width', 'value', 'layout', 'emptyText', 'fieldLabel', 'labelWidth', 'hideLabel', 'allowBlank', 'margin'];
-		}
-		else
-		{
-			items = ['name', 'width', 'emptyText', 'fieldLabel', 'labelWidth', 'hideLabel', 'margin'];
-		}
-		enableItems(items);
-	},
-	/**
-	 *
-	 * On toggle down/true expand the preview panel and re-render the form
-	 *
-	 * @param btn
-	 * @param toggle
-	 */
-	onFormPreview : function(btn, toggle)
-	{
-		var me = this;
-
-		if (toggle === true)
-		{
-			me.previewFormRender();
-			me.fromPreview.expand(false);
-		}
-		else
-		{
-			me.fromPreview.collapse(false);
-		}
-	},
-	/**
-	 *
-	 *  this function re-render the preview form
-	 */
-	previewFormRender : function()
-	{
-		var me = this, form = this.fromPreview;
-
-		form.el.mask();
-		me.getFormItems(form, me.currForm, function()
-		{
-			form.doLayout();
-			form.el.unmask();
-		});
-
-	},
-	/**
-	 *
-	 *  re-load the fields grid (main TreeGrid)
-	 *  check if a form is selected, if not the select the first choice
-	 *  save the form id inside this.currForm and load the grid and the
-	 *  parent fields of this form.
-	 *
-	 *  parentFieldsStore is use to create the child of select list
-	 */
-	loadFieldsGrid : function()
-	{
-		var me = this, row = me.formsGrid.getSelectionModel();
-		if (me.currForm === null)
-		{
-			row.select(0);
-		}
-		me.currForm = row.getLastSelected().data.id;
-
-		me.fieldsGridStore.load(
-		{
-			params :
-			{
-				currForm : me.currForm
-			}
-		});
-		me.parentFieldsStore.load(
-		{
-			params :
-			{
-				currForm : me.currForm
-			}
-		});
-
-		me.previewFormRender();
-		me.fieldsGrid.doLayout()
-	},
-	/**
-	 * This function is called from Viewport.js when
-	 * this panel is selected in the navigation panel.
-	 * place inside this function all the functions you want
-	 * to call every this panel becomes active
-	 */
-	onActive : function(callback)
-	{
-		var me = this;
-		me.onFormReset();
-		me.fieldForm.el.mask(i18n('or_select_a_field_to_update'));
-		me.selectListoptionsStore.load(
-		{
-			callback : function()
-			{
-				me.loadFieldsGrid();
-			}
-		});
-		//me.loadFieldsGrid();
-		callback(true);
-	}
+    loadCurrFormParentField:function(){
+        var me = this;
+        me.parentFieldsStore.load({params:{currForm: me.currForm}});
+    },
+    /**
+     * This function is called from Viewport.js when
+     * this panel is selected in the navigation panel.
+     * place inside this function all the functions you want
+     * to call every this panel becomes active
+     */
+    onActive: function(callback){
+        var me = this;
+        me.onFormReset();
+        me.fieldForm.el.mask(i18n('or_select_a_field_to_update'));
+        me.selectListoptionsStore.load({
+            callback: function(){
+                me.loadFieldsGrid();
+            }
+        });
+        //me.loadFieldsGrid();
+        callback(true);
+    }
 }); 
 /*
  GaiaEHR (Electronic Health Records)
@@ -41038,473 +40821,350 @@ Ext.define('App.view.administration.Layout',
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-Ext.define('App.view.administration.Lists',
-{
-	extend : 'App.ux.RenderPanel',
-	id : 'panelLists',
-	pageTitle : i18n('select_list_options'),
-	pageLayout : 'border',
-	uses : ['App.ux.GridPanel', 'App.ux.form.Panel', 'Ext.grid.plugin.RowEditing'],
-	initComponent : function()
-	{
+Ext.define('App.view.administration.Lists', {
+    extend: 'App.ux.RenderPanel',
+    id: 'panelLists',
+    pageTitle: i18n('select_list_options'),
+    pageLayout: 'border',
+    uses: ['App.ux.GridPanel', 'App.ux.form.Panel', 'Ext.grid.plugin.RowEditing'],
+    initComponent: function(){
+        var me = this;
+        me.currList = null;
+        me.currTask = null;
+        /**
+         * Options Store
+         */
+        Ext.define('ListOptionsModel', {
+            extend: 'Ext.data.Model',
+            fields: [
+                {name: 'id',type: 'int'},
+                {name: 'list_id',type: 'string'},
+                {name: 'option_value',type: 'string'},
+                {name: 'option_name',type: 'string'},
+                {name: 'seq',type: 'string'},
+                {name: 'notes',type: 'string'},
+                {name: 'active',type: 'bool'}
+            ],
+            proxy: {
+               type: 'direct',
+               api: {
+                   read: Lists.getOptions,
+                   create: Lists.addOption,
+                   update: Lists.updateOption
+               }
+           }
+        });
+        me.optionsStore = Ext.create('Ext.data.Store', {
+            model: 'ListOptionsModel',
+            autoLoad: false
+        });
 
-		var me = this;
-		me.currList = null;
-		me.currTask = null;
+        Ext.define('ListsGridModel', {
+            extend: 'Ext.data.Model',
+            fields: [
+                {name: 'id',type: 'int'},
+                {name: 'title',type: 'string'},
+                {name: 'active',type: 'bool'},
+                {name: 'in_use',type: 'bool'}
+            ],
+            proxy: {
+                type: 'direct',
+                api: {
+                    read: Lists.getLists,
+                    create: Lists.addList,
+                    update: Lists.updateList,
+                    destroy: Lists.deleteList
+                }
+            }
+        });
+        me.listsStore = Ext.create('Ext.data.Store', {
+            model: 'ListsGridModel',
+            autoLoad: false
+        });
+        /**
+         * RowEditor Classes
+         */
+        me.optionsRowEditing = Ext.create('Ext.grid.plugin.RowEditing', {
+            autoCancel: false,
+            errorSummary: false
+//            listeners: {
+//                scope: me,
+//                afteredit: me.afterEdit,
+//                canceledit: me.onCancelEdit
+//            }
+        });
+        me.listsRowEditing = Ext.create('Ext.grid.plugin.RowEditing', {
+            autoCancel: false,
+            errorSummary: false
+//            listeners: {
+//                scope: me,
+//                //afteredit: me.afterEdit,
+//                //canceledit: me.onCancelEdit
+//            }
+        });
+        /**
+         * Lists Grid
+         */
+        me.listsGrid = Ext.create('App.ux.GridPanel', {
+            store: me.listsStore,
+            itemId: 'listsGrid',
+            plugins: [me.listsRowEditing],
+            width: 320,
+            margin: '0 2 0 0',
+            region: 'west',
+            columns: [
+                {
+                    text: i18n('select_lists'),
+                    flex: 1,
+                    sortable: false,
+                    dataIndex: 'title',
+                    editor: {
+                        allowBlank: false
+                    }
+                },
+                {
+                    text: i18n('active'),
+                    width: 55,
+                    sortable: false,
+                    dataIndex: 'active',
+                    renderer: me.boolRenderer,
+                    editor: {
+                        xtype: 'mitos.checkbox',
+                        padding: '0 0 0 18'
+                    }
+                },
+                {
+                    text: i18n('in_use'),
+                    width: 55,
+                    sortable: false,
+                    dataIndex: 'in_use',
+                    renderer: me.boolRenderer
+                }
+            ],
+            listeners: {
+                scope: me,
+                select: me.onListsGridClick
+            },
+            dockedItems: [
+                {
+                    xtype: 'toolbar',
+                    dock: 'top',
+                    items: [
+                        {
+                            text: i18n('new_list'),
+                            iconCls: 'icoAddRecord',
+                            scope: me,
+                            handler: me.onNewList
+                        },
+                        '->',
+                        {
+                            text: i18n('delete_list'),
+                            iconCls: 'icoDeleteBlack',
+                            itemId: 'listDeleteBtn',
+                            disabled: true,
+                            scope: me,
+                            handler: me.onListDelete,
+                            tooltip: i18n('can_be_disable')
+                        }
+                    ]
+                }
+            ]
+        });
+        /**
+         * Options Grid
+         */
+        me.optionsGrid = Ext.create('App.ux.GridPanel', {
+            store: me.optionsStore,
+            itemId: 'optionsGrid',
+            plugins: [me.optionsRowEditing],
+            region: 'center',
+            viewConfig: {
+                plugins: {
+                    ptype: 'gridviewdragdrop',
+                    dragText: i18n('drag_and_drop_reorganize')
+                },
+                listeners: {
+                    scope: me,
+                    drop: me.onDragDrop
+                }
+            },
+            columns: [
+                {
+                    text: i18n('option_title'),
+                    width: 200,
+                    sortable: true,
+                    dataIndex: 'option_name',
+                    editor: {
+                        allowBlank: false,
+                        enableKeyEvents: true,
+                        listeners: {
+                            scope: me,
+                            keyup: me.onOptionTitleChange
+                        }
+                    }
+                },
+                {
+                    text: i18n('option_value'),
+                    width: 200,
+                    sortable: true,
+                    dataIndex: 'option_value',
+                    editor: {
+                        allowBlank: false,
+                        itemId: 'optionValueTextField'
+                    }
+                },
+                {
+                    text: i18n('notes'),
+                    sortable: true,
+                    dataIndex: 'notes',
+                    flex: 1,
+                    editor: {
+                        allowBlank: true
+                    }
+                },
+                {
+                    text: i18n('active'),
+                    width: 55,
+                    sortable: false,
+                    dataIndex: 'active',
+                    renderer: me.boolRenderer,
+                    editor: {
+                        xtype: 'mitos.checkbox',
+                        padding: '0 0 0 18'
+                    }
+                }
+            ],
+            dockedItems: [
+                {
+                    xtype: 'toolbar',
+                    dock: 'top',
+                    items: ['->', {
+                        text: i18n('add_option'),
+                        iconCls: 'icoAddRecord',
+                        scope: me,
+                        handler: me.onNewOption
+                    }]
+                }
+            ]
+        });
+        me.pageBody = [me.listsGrid, me.optionsGrid];
+        me.callParent(arguments);
+    },
+    /**
+     * This wll load a new record to the grid
+     * and start the rowEditor
+     */
+    onNewList: function(){
+        var me = this, m;
+        me.listsRowEditing.cancelEdit();
+        me.listsStore.insert(0, Ext.create('ListsGridModel'));
+        me.listsRowEditing.startEdit(0, 0);
+    },
+    /**
+     *
+     * @param grid
+     * @param selected
+     */
+    onListsGridClick: function(grid, selected){
+        var me = this, deleteBtn = me.listsGrid.down('toolbar').getComponent('listDeleteBtn'), inUse = !!selected.data.in_use == '1';
+        me.currList = selected.data.id;
+        me.optionsStore.load({params:{list_id: me.currList}});
+        inUse ? deleteBtn.disable() : deleteBtn.enable();
+    },
+    /**
+     * This wll load a new record to the grid
+     * and start the rowEditor
+     */
+    onNewOption: function(){
+        var me = this, m;
+        me.optionsRowEditing.cancelEdit();
+        m = Ext.create('ListOptionsModel', {
+            list_id: me.currList
+        });
+        me.optionsStore.insert(0, m);
+        me.optionsRowEditing.startEdit(0, 0);
+    },
+    /**
+     * Set the Option Value same as Option Title
+     * @param a
+     */
+    onOptionTitleChange: function(a){
+        var value = a.getValue(), field = a.up('container').getComponent('optionValueTextField');
+        field.setValue(value);
+    },
+    /**
+     * Logic to sort the options
+     * @param node
+     * @param data
+     * @param overModel
+     */
+    onDragDrop: function(node, data, overModel){
+        var me = this, items = overModel.stores[0].data.items, gridItmes = [];
+        for(var i = 0; i < items.length; i++){
+            gridItmes.push(items[i].data.id);
+        }
+        var params = {
+            list_id: data.records[0].data.list_id,
+            fields: gridItmes
+        };
+        Lists.sortOptions(params, function(){
+            me.optionsStore.load({
+                    params: {
+                        list_id: me.currList
+                    }
+                });
+        });
+    },
+    /**
+     *
+     * @param a
+     */
+    onListDelete: function(a){
+        var me = this,
+            grid = a.up('grid'),
+            store = grid.getStore(),
+            sm = grid.getSelectionModel(),
+            record = sm.getLastSelected();
 
-		/**
-		 * Options Store
-		 */
-		Ext.define('ListOptionsModel',
-		{
-			extend : 'Ext.data.Model',
-			fields : [
-			{
-				name : 'id',
-				type : 'int'
-			},
-			{
-				name : 'list_id',
-				type : 'string'
-			},
-			{
-				name : 'option_value',
-				type : 'string'
-			},
-			{
-				name : 'option_name',
-				type : 'string'
-			},
-			{
-				name : 'seq',
-				type : 'string'
-			},
-			{
-				name : 'notes',
-				type : 'string'
-			},
-			{
-				name : 'active',
-				type : 'bool'
-			}]
+        if(!record.data.in_use){
+            Ext.Msg.show({
+                title: i18n('please_confirm') + '...',
+                icon: Ext.MessageBox.QUESTION,
+                msg: i18n('delete_this_record'),
+                buttons: Ext.Msg.YESNO,
+                scope: me,
+                fn: function(btn){
+                    if(btn == 'yes'){
+                        store.remove(record);
+                        store.sync({
+                            success:function(){
+                                me.msg('Sweet!', i18n('record_deleted'));
+                                me.optionsStore.load();
+                            },
+                            failure:function(){
+                                me.msg('Oops!', i18n('unable_to_delete') + ' "' + record.data.title, true);
+                            }
+                        });
+                    }
+                }
+            });
+        }else{
+            Ext.Msg.alert('Oops!', i18n('unable_to_delete') + ' "' + record.data.title + '"<br>' + i18n('list_currently_used_forms') + '.');
+        }
+    },
 
-		});
-		me.optionsStore = Ext.create('Ext.data.Store',
-		{
-			model : 'ListOptionsModel',
-			proxy :
-			{
-				type : 'direct',
-				api :
-				{
-					read : Lists.getOptions,
-					create : Lists.addOption,
-					update : Lists.updateOption
-				}
-			},
-			autoLoad : false
-		});
-		/**
-		 * List Store
-		 */
-		Ext.define('ListsGridModel',
-		{
-			extend : 'Ext.data.Model',
-			fields : [
-			{
-				name : 'id',
-				type : 'int'
-			},
-			{
-				name : 'title',
-				type : 'string'
-			},
-			{
-				name : 'active',
-				type : 'bool'
-			},
-			{
-				name : 'in_use',
-				type : 'bool'
-			}]
-		});
-		me.listsStore = Ext.create('Ext.data.Store',
-		{
-			model : 'ListsGridModel',
-			proxy :
-			{
-				type : 'direct',
-				api :
-				{
-					read : Lists.getLists,
-					create : Lists.addList,
-					update : Lists.updateList
-				}
-			},
-			autoLoad : false
-		});
-		/**
-		 * RowEditor Classes
-		 */
-		me.optionsRowEditing = Ext.create('Ext.grid.plugin.RowEditing',
-		{
-			autoCancel : false,
-			errorSummary : false,
-			listeners :
-			{
-				scope : me,
-				afteredit : me.afterEdit,
-				canceledit : me.onCancelEdit
-			}
-		});
-		me.listsRowEditing = Ext.create('Ext.grid.plugin.RowEditing',
-		{
-			autoCancel : false,
-			errorSummary : false,
-			listeners :
-			{
-				scope : me,
-				afteredit : me.afterEdit,
-				canceledit : me.onCancelEdit
-			}
-		});
-		/**
-		 * Lists Grid
-		 */
-		me.listsGrid = Ext.create('App.ux.GridPanel',
-		{
-			store : me.listsStore,
-			itemId : 'listsGrid',
-			plugins : [me.listsRowEditing],
-			width : 320,
-			margin : '0 2 0 0',
-			region : 'west',
-			columns : [
-			{
-				text : i18n('select_lists'),
-				flex : 1,
-				sortable : false,
-				dataIndex : 'title',
-				editor :
-				{
-					allowBlank : false
-				}
-			},
-			{
-				text : i18n('active'),
-				width : 55,
-				sortable : false,
-				dataIndex : 'active',
-				renderer : me.boolRenderer,
-				editor :
-				{
-					xtype : 'mitos.checkbox',
-					padding : '0 0 0 18'
-				}
-			},
-			{
-				text : i18n('in_use'),
-				width : 55,
-				sortable : false,
-				dataIndex : 'in_use',
-				renderer : me.boolRenderer
-			}],
-			listeners :
-			{
-				scope : me,
-				selectionchange : me.onListsGridClick
-			},
-			dockedItems : [
-			{
-				xtype : 'toolbar',
-				dock : 'top',
-				items : [
-				{
-					text : i18n('new_list'),
-					iconCls : 'icoAddRecord',
-					scope : me,
-					handler : me.onNewList
-				}, '->',
-				{
-					text : i18n('delete_list'),
-					iconCls : 'icoDeleteBlack',
-					itemId : 'listDeleteBtn',
-					disabled : true,
-					scope : me,
-					handler : me.onDelete,
-					tooltip : i18n('can_be_disable')
-				}]
-			}]
-		});
-		/**
-		 * Options Grid
-		 */
-		me.optionsGrid = Ext.create('App.ux.GridPanel',
-		{
-			store : me.optionsStore,
-			itemId : 'optionsGrid',
-			plugins : [me.optionsRowEditing],
-			region : 'center',
-			viewConfig :
-			{
-				plugins :
-				{
-					ptype : 'gridviewdragdrop',
-					dragText : i18n('drag_and_drop_reorganize')
-				},
-				listeners :
-				{
-					scope : me,
-					drop : me.onDragDrop
-				}
-			},
-			columns : [
-			{
-				text : i18n('option_title'),
-				width : 200,
-				sortable : true,
-				dataIndex : 'option_name',
-				editor :
-				{
-					allowBlank : false,
-					enableKeyEvents : true,
-					listeners :
-					{
-						scope : me,
-						keyup : me.onOptionTitleChange
-					}
-				}
-			},
-			{
-				text : i18n('option_value'),
-				width : 200,
-				sortable : true,
-				dataIndex : 'option_value',
-				editor :
-				{
-					allowBlank : false,
-					readOnly : true,
-					itemId : 'optionValueTextField'
-				}
-			},
-			{
-				text : i18n('notes'),
-				sortable : true,
-				dataIndex : 'notes',
-				flex : 1,
-				editor :
-				{
-					allowBlank : true
-				}
-			},
-			{
-				text : i18n('active'),
-				width : 55,
-				sortable : false,
-				dataIndex : 'active',
-				renderer : me.boolRenderer,
-				editor :
-				{
-					xtype : 'mitos.checkbox',
-					padding : '0 0 0 18'
-				}
-			}],
-			dockedItems : [
-			{
-				xtype : 'toolbar',
-				dock : 'top',
-				items : ['->',
-				{
-					text : i18n('add_option'),
-					iconCls : 'icoAddRecord',
-					scope : me,
-					handler : me.onNewOption
-				}]
-			}]
-		});
-		me.pageBody = [me.listsGrid, me.optionsGrid];
-		me.callParent(arguments);
-	},
-
-	/**
-	 * This wll load a new record to the grid
-	 * and start the rowEditor
-	 */
-	onNewList : function()
-	{
-		var me = this;
-		me.listsRowEditing.cancelEdit();
-		var m = Ext.create('ListsGridModel',
-		{
-		});
-		me.listsStore.insert(0, m);
-		me.listsRowEditing.startEdit(0, 0);
-	},
-
-	/**
-	 *
-	 * @param grid
-	 * @param record
-	 */
-	onListsGridClick : function(grid, selected)
-	{
-		var me = this, deleteBtn = me.listsGrid.down('toolbar').getComponent('listDeleteBtn'), inUse = !!selected[0].data.in_use == '1';
-
-		me.currList = selected[0].data.id;
-		me.optionsStore.load(
-		{
-			params :
-			{
-				list_id : me.currList
-			}
-		});
-
-		inUse ? deleteBtn.disable() : deleteBtn.enable();
-	},
-
-	/**
-	 * This wll load a new record to the grid
-	 * and start the rowEditor
-	 */
-	onNewOption : function()
-	{
-		var me = this;
-		me.optionsRowEditing.cancelEdit();
-		var m = Ext.create('ListOptionsModel',
-		{
-			list_id : me.currList
-		});
-		me.optionsStore.insert(0, m);
-		me.optionsRowEditing.startEdit(0, 0);
-	},
-
-	/**
-	 * Set the Option Value same as Option Title
-	 * @param a
-	 */
-	onOptionTitleChange : function(a)
-	{
-		var value = a.getValue(), field = a.up('container').getComponent('optionValueTextField');
-		field.setValue(value);
-	},
-	/**
-	 * Logic to sort the options
-	 * @param node
-	 * @param data
-	 * @param overModel
-	 */
-	onDragDrop : function(node, data, overModel)
-	{
-		var me = this, items = overModel.stores[0].data.items, gridItmes = [];
-		for (var i = 0; i < items.length; i++)
-		{
-			gridItmes.push(items[i].data.id);
-		}
-		var params =
-		{
-			list_id : data.records[0].data.list_id,
-			fields : gridItmes
-		};
-		Lists.sortOptions(params, function()
-		{
-			me.optionsStore.load(
-			{
-				params :
-				{
-					list_id : me.currList
-				}
-			});
-		});
-	},
-
-	/**
-	 * Row Editting stuff
-	 * @param a
-	 */
-	afterEdit : function(a)
-	{
-		a.context.store.sync();
-		//a.context.store.load({params: {list_id: this.currList}});
-	},
-
-	onCancelEdit : function(a)
-	{
-		say(a);
-		a.context.store.load(
-		{
-			params :
-			{
-				list_id : this.currList
-			}
-		});
-	},
-
-	onDelete : function(a)
-	{
-		var me = this, grid = a.up('grid'), store = grid.getStore(), sm = grid.getSelectionModel(), record = sm.getLastSelected();
-
-		Ext.Msg.show(
-		{
-			title : i18n('please_confirm') + '...',
-			icon : Ext.MessageBox.QUESTION,
-			msg : i18n('delete_this_record'),
-			buttons : Ext.Msg.YESNO,
-			scope : me,
-			fn : function(btn)
-			{
-				if (btn == 'yes')
-				{
-					Lists.deleteList(record.data, function(provider, response)
-					{
-						if (response.result.success)
-						{
-							me.msg('Sweet!', i18n('list') + ' "' + record.data.title + '" ' + i18n('deleted') + '.');
-							store.load();
-							me.optionsStore.load();
-						}
-						else
-						{
-							Ext.Msg.alert('Oops!', i18n('unable_to_delete') + ' "' + record.data.title + '"<br>' + i18n('list_currently_used_forms') + '.');
-						}
-
-					});
-				}
-			}
-		});
-	},
-
-	loadGrid : function()
-	{
-		var me = this;
-		if (me.currList === null)
-		{
-			me.currList = me.listsStore.getAt(0).data.id;
-		}
-		me.optionsStore.load(
-		{
-			params :
-			{
-				list_id : me.currList
-			}
-		});
-	},
-	/**
-	 * This function is called from Viewport.js when
-	 * this panel is selected in the navigation panel.
-	 * place inside this function all the functions you want
-	 * to call every this panel becomes active
-	 */
-	onActive : function(callback)
-	{
-		var me = this;
-		this.listsStore.load(
-		{
-			scope : me,
-			callback : me.loadGrid
-		});
-		//this.loadGrid();
-		callback(true);
-	}
+    /**
+     * This function is called from Viewport.js when
+     * this panel is selected in the navigation panel.
+     * place inside this function all the functions you want
+     * to call every this panel becomes active
+     */
+    onActive: function(callback){
+        var me = this;
+        this.listsStore.load();
+        this.optionsStore.load();
+        callback(true);
+    }
 });
 
 /*
@@ -42055,317 +41715,445 @@ Ext.define('App.view.administration.Medications',
 	}
 });
 //ens servicesPage class
-/*
- GaiaEHR (Electronic Health Records)
- FloorPlans.js
- Copyright (C) 2012 Ernesto Rodriguez
-
- This program is free software: you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation, either version 3 of the License, or
- (at your option) any later version.
-
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with this program.  If not, see <http://www.gnu.org/licenses/>.
+/**
+ * GaiaEHR (Electronic Health Records)
+ * FloorPlans.js
+ * Copyright (C) 2012 Ernesto Rodriguez
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-Ext.define('App.view.administration.FloorPlans',
-{
-	extend : 'App.ux.RenderPanel',
-	id : 'panelFloorPlans',
-	pageTitle : i18n('floor_plan_editor'),
-	pageLayout : 'border',
-	floorPlanId : null,
-	activeZone : null,
-	initComponent : function()
-	{
-		var me = this;
-		me.floorPlansStore = Ext.create('App.store.administration.FloorPlans',
-		{
-			autoLoad : true
-		});
-		me.floorPlanZonesStore = Ext.create('App.store.administration.FloorPlanZones');
+Ext.define('App.view.administration.FloorPlans', {
+    extend: 'App.ux.RenderPanel',
+    id: 'panelFloorPlans',
+    pageTitle: i18n('floor_plan_editor'),
+    pageLayout: 'border',
+    floorPlanId: null,
+    activeZone: null,
+    initComponent: function(){
+        var me = this;
+        me.floorPlansStore = Ext.create('App.store.administration.FloorPlans');
+        me.floorZonesStore = Ext.create('App.store.administration.FloorPlanZones');
+        me.floorPlans = Ext.create('Ext.grid.Panel', {
+            title: i18n('floor_plans'),
+            region: 'west',
+            width: 200,
+            split: true,
+            hideHeaders: true,
+            store: me.floorPlansStore,
+            plugins: [
+                me.floorPlanEditing = Ext.create('Ext.grid.plugin.RowEditing', {
+                    clicksToEdit: 2
+                })
+            ],
+            columns: [
+                {
+                    dataIndex: 'title',
+                    sortable: false,
+                    hideable: false,
+                    flex: 1,
+                    editor: {
+                        xtype: 'textfield',
+                        emptyText:i18n('new_floor')
+                    }
+                }
+            ],
+            tbar: [
+                {
+                    text: i18n('add_floor'),
+                    action: 'newFloorPlan',
+                    iconCls:'icoAdd',
+                    scope: me,
+                    handler: me.onNewFloorPlan
+                },
+                '-',
+                {
+                    text: i18n('remove_floor'),
+                    action: 'newFloorPlan',
+                    iconCls:'icoDelete',
+                    scope: me,
+                    handler: me.onRemoveFloorPlan
+                }
+            ],
+            listeners: {
+                scope: me,
+                select: me.onFloorPlanSelected
+            }
+        });
+        me.floorPlanZones = Ext.create('Ext.panel.Panel', {
+            title: i18n('floor_plan'),
+            region: 'center',
+            bodyCls: 'floorPlan',
+            layout: 'absolute',
+            tbar: [
+                {
+                    text: i18n('add_zone'),
+                    action: 'newZone',
+                    iconCls:'icoAdd',
+                    scope: me,
+                    handler: me.onNewZone
+                }
+            ]
+        });
+        me.floorPlanZoneEditor = Ext.create('Ext.window.Window', {
+            title:i18n('zone_editor'),
+            closeAction:'hide',
+            closable:false,
+            resizable:false,
+            items:[
+                {
+                    xtype:'form',
+                    border:false,
+                    bodyPadding: '10',
+                    defaults:{
+                        labelWidth: 130,
+                        anchor:'100%'
+                    },
+                    items:[
+                        {
+                            xtype: 'textfield',
+                            fieldLabel: i18n('zone_name'),
+                            name: 'title'
+                        },
+                        {
+                            xtype:'colorcombo',
+                            fieldLabel: i18n('bg_color'),
+                            name:'bg_color'
+                        },
+                        {
+                            xtype:'colorcombo',
+                            fieldLabel: i18n('border_color'),
+                            name:'border_color'
+                        },
+                        {
+                            xtype: 'numberfield',
+                            fieldLabel: i18n('width'),
+                            minValue: 30,
+                            maxValue: 300,
+                            name: 'width'
+                        },
+                        {
+                            xtype: 'numberfield',
+                            fieldLabel: i18n('height'),
+                            minValue: 30,
+                            maxValue: 300,
+                            name: 'height'
+                        },
+                        {
+                            xtype: 'checkbox',
+                            fieldLabel: i18n('show_priority_color'),
+                            name: 'show_priority_color'
+                        },
+                        {
+                            xtype: 'checkbox',
+                            fieldLabel: i18n('show_patient_preview'),
+                            name: 'show_patient_preview'
+                        },
+                        {
+                            xtype: 'checkbox',
+                            fieldLabel: i18n('active'),
+                            name: 'active'
+                        }
+                    ]
+                }
+            ],
+            buttons:[
+                {
+                    text:i18n('remove'),
+                    xtype:'button',
+                    scope:me,
+                    handler:me.onZoneRemove
+                },
+                '->',
+                {
+                    text:i18n('cancel'),
+                    xtype:'button',
+                    scope:me,
+                    handler:me.onZoneCancel
+                },
+                '-',
+                {
+                    text:i18n('save'),
+                    xtype:'button',
+                    scope:me,
+                    handler:me.onZoneSave
+                }
+            ],
+            listeners:{
+                scope:me,
+                afterrender:function(win){
+                   win.alignTo(this.floorPlanZones.getEl(), 'tr-tr', [-130, 70]);
+                }
+            }
+        });
+        me.listeners = {
+            show: function(){
+                me.nav = Ext.create('Ext.util.KeyNav', Ext.getDoc(),{
+                    scope: me,
+                    left: function(){
+                        me.moveZone('left');
+                    },
+                    up: function(){
+                        me.moveZone('up');
+                    },
+                    right: function(){
+                        me.moveZone('right');
+                    },
+                    down: function(){
+                        me.moveZone('down');
+                    }
+                });
+            },
+            hide: function(){
+                if(me.nav) Ext.destroy(me.nav);
+                me.setEditMode(false);
+            }
+        };
+        me.pageBody = [me.floorPlans, me.floorPlanZones ];
+        me.callParent(arguments);
+    },
+    setEditMode:function(show, zone){
+        var me = this, el = me.activeZone ? me.activeZone.getEl() : null;
+        if(el){
+            me.floorPlanZoneEditor.hide(null, function(){
+                me.setEditor(show, zone);
+            });
+        }else{
+            me.setEditor(show, zone);
+        }
+    },
+    setEditor:function(show, zone){
+        var me = this;
+        if(show){
+            me.activeZone = zone;
+            me.getEditor().zone = zone;
+            me.floorPlanZones.focus();
+            me.getEditor().getForm().loadRecord(zone.record);
+            me.floorPlanZoneEditor.show(zone.getEl());
+        }else{
+            me.floorPlanZoneEditor.hide();
+            me.getEditor().getForm().reset();
+            me.activeZone = null;
+        }
+    },
+    getEditor:function(){
+        return this.floorPlanZoneEditor.down('form');
+    },
+    onZoneCancel:function(btn){
+        var me = this,
+            zone = me.activeZone,
+            record = zone.record,
+            config;
+        record.reject();
+        config = {
+            text: record.data.title,
+            scale: record.data.scale,
+            style:{
+                'border-color':record.data.border_color,
+                'background-color':record.data.bg_color
+            },
+            width:record.data.width,
+            height:record.data.height
+        };
+        me.activeZone.setPosition(record.data.x, record.data.y);
+        me.applyZoneConfig(zone, config);
+        me.setEditMode(false);
+    },
+    onZoneSave:function(){
+        var me = this,
+            editor = me.getEditor(),
+            form = editor.getForm(),
+            values = form.getValues(),
+            record = form.getRecord(),
+            config;
+        record.set(values);
+        config = {
+            text: record.data.title,
+            scale: record.data.scale,
+            style:{
+                'border-color':record.data.border_color,
+                'background-color':record.data.bg_color
+            },
+            width:record.data.width,
+            height:record.data.height
+        };
+        record.store.sync();
+        me.applyZoneConfig(editor.zone, config);
+        me.setEditMode(false);
+    },
+    onZoneHandler:function(zone){
+        var me = this;
+        me.setEditMode(true, zone);
+    },
+    onZoneRemove:function(){
+        var me = this,
+            editor = this.getEditor(),
+            form = editor.getForm(),
+            record = form.getRecord(),
+            zone = editor.zone;
+        Ext.Msg.show({
+            title:'Wait!',
+            msg: 'This action is final. Are you sure you want to remove <span style="font-weight: bold">"'+record.data.title+'"</span>?',
+            buttons: Ext.Msg.YESNO,
+            icon: Ext.Msg.WARNING,
+            fn:function(btn){
+                if(btn == 'yes'){
+                    me.floorZonesStore.remove(record);
+                    me.floorZonesStore.sync({
+                        success:function(){
+                            me.floorPlanZones.remove(zone, true);
+                            editor.up('window').hide();
+                        }
+                    });
+                }
+            }
+        });
+    },
+    onRemoveFloorPlan:function(btn){
+        var me = this,
+            grid = btn.up('grid'),
+            store = grid.store,
+            sm = grid.getSelectionModel(),
+            record = sm.getLastSelected();
+        Ext.Msg.show({
+            title:'Wait!',
+            msg: 'This action is final. Are you sure you want to remove <span style="font-weight: bold">"'+record.data.title+'"</span>?',
+            buttons: Ext.Msg.YESNO,
+            icon: Ext.Msg.WARNING,
+            fn:function(btn){
+                if(btn == 'yes'){
+                    store.remove(record);
+                    store.sync({
+                        callback:function(){
+                            sm.deselectAll();
+                            me.floorPlanZones.removeAll();
+                            me.msg('Sweet!',i18n('record_removed'))
+                        }
+                    });
 
-		me.floorPlans = Ext.create('Ext.grid.Panel',
-		{
-			title : i18n('floor_plans'),
-			region : 'west',
-			width : 200,
-			split : true,
-			hideHeaders : true,
-			store : me.floorPlansStore,
-			plugins : [me.floorPlanEditing = Ext.create('Ext.grid.plugin.RowEditing',
-			{
-				clicksToEdit : 2
-			})],
-			columns : [
-			{
-				dataIndex : 'title',
-				sortable : false,
-				hideable : false,
-				flex : 1,
-				editor :
-				{
-					xtype : 'textfield'
-				}
-			}],
-			tbar : ['->',
-			{
-				text : i18n('add_floor_plan'),
-				action : 'newFloorPlan',
-				scope : me,
-				handler : me.onNewFloorPlan
-			}],
-			listeners :
-			{
-				scope : me,
-				select : me.onFloorPlanSelected
-			}
-		});
+                }
+            }
+        });
 
-		me.floorPlan = Ext.create('Ext.panel.Panel',
-		{
-			title : i18n('floor_plan'),
-			region : 'center',
-			bodyCls : 'floorPlan',
-			layout : 'absolute',
-			tbar : ['->',
-			{
-				text : i18n('add_zone'),
-				action : 'newZone',
-				scope : me,
-				handler : me.onNewZone
-			}]
-		});
-
-		me.listeners =
-		{
-			show : function()
-			{
-				me.nav = Ext.create('Ext.util.KeyNav', Ext.getDoc(),
-				{
-					scope : me,
-					left : function()
-					{
-						me.moveZone('left')
-					},
-					up : function()
-					{
-						me.moveZone('up')
-					},
-					right : function()
-					{
-						me.moveZone('right')
-					},
-					down : function()
-					{
-						me.moveZone('down')
-					}
-				});
-			},
-			hide : function()
-			{
-				if (me.nav)
-				{
-					Ext.destroy(me.nav);
-				}
-			}
-		};
-
-		me.pageBody = [me.floorPlans, me.floorPlan];
-		me.callParent(arguments);
-	},
-
-	onNewZone : function()
-	{
-		this.createZone(null);
-	},
-
-	createZone : function(record)
-	{
-		var me = this, zone, form;
-		zone = Ext.create('Ext.button.Split',
-		{
-			text : record ? record.data.title : i18n('new_zone'),
-			toggleGroup : 'zones',
-			draggable :
-			{
-				listeners :
-				{
-					scope : me,
-					dragend : me.zoneDragged
-				}
-			},
-			scale : 'medium',
-			x : record ? record.data.x : 0,
-			y : record ? record.data.y : 0,
-			enableToggle : true,
-			toggleHandler : function(btn, pressed)
-			{
-				if (pressed)
-				{
-					me.activeZone = zone;
-					me.floorPlan.focus();
-				}
-				else
-				{
-					me.activeZone = null;
-					var rec = btn.menu.items.items[0].getForm().getRecord();
-					rec.set(
-					{
-						x : btn.x,
-						y : btn.y
-					});
-				}
-			},
-			menu : [ form = Ext.create('Ext.form.Panel',
-			{
-				bodyPadding : '5 5 0 5',
-				items : [
-				{
-					xtype : 'textfield',
-					fieldLabel : i18n('zone_name'),
-					labelWidth : 80,
-					name : 'title'
-				}]
-			})],
-			listeners :
-			{
-				scope : me,
-				menushow : me.afterMenuShow,
-				menuhide : me.afterMenuHide
-			}
-		});
-
-		me.floorPlan.add(zone);
-
-		if (record != null)
-		{
-			form.getForm().loadRecord(record)
-		}
-		else
-		{
-			me.floorPlanZonesStore.add(
-			{
-				floor_plan_id : me.floorPlanId,
-				title : i18n('new_zone'),
-				x : 0,
-				y : 0,
-				active : 1
-			});
-
-			me.floorPlanZonesStore.sync(
-			{
-				callback : function(batch, options)
-				{
-					form.getForm().loadRecord(batch.operations[0].records[0])
-				}
-			})
-		}
-	},
-
-	afterMenuShow : function(btn)
-	{
-		btn.toggle(true);
-	},
-
-	afterMenuHide : function(btn)
-	{
-		var form = btn.menu.items.items[0].getForm(), values = form.getValues(), rec = form.getRecord();
-		btn.setText(values.title);
-		rec.set(values);
-	},
-
-	moveZone : function(direction)
-	{
-		if (app.currCardCmp == this && this.activeZone != null)
-		{
-			var x = this.activeZone.x, y = this.activeZone.y;
-			if (direction == 'left')
-			{
-				x = x - 1;
-			}
-			else
-			if (direction == 'right')
-			{
-				x = x + 1;
-			}
-			else
-			if (direction == 'up')
-			{
-				y = y - 1;
-			}
-			else
-			if (direction == 'down')
-			{
-				y = y + 1;
-			}
-			this.activeZone.setPosition(x, y);
-		}
-	},
-
-	zoneDragged : function(drag)
-	{
-		var me = this, rec = drag.comp.menu.items.items[0].getForm().getRecord();
-		rec.set(
-		{
-			x : drag.comp.x,
-			y : drag.comp.y
-		});
-	},
-
-	onNewFloorPlan : function()
-	{
-		this.floorPlansStore.add(
-		{
-			title : i18n('new_floor_plan')
-		});
-	},
-
-	onFloorPlanSelected : function(model, record)
-	{
-		this.floorPlanId = record.data.id;
-		this.reloadFloorPlanZones();
-	},
-
-	reloadFloorPlanZones : function()
-	{
-		var me = this;
-		me.floorPlan.removeAll();
-		me.floorPlanZonesStore.load(
-		{
-			params :
-			{
-				floor_plan_id : this.floorPlanId
-			},
-			scope : me,
-			callback : function(records, operation, success)
-			{
-				this.activeZone = null;
-				for (var i = 0; i < records.length; i++)
-				{
-					me.createZone(records[i]);
-				}
-			}
-		});
-	},
-
-	/**
-	 * This function is called from Viewport.js when
-	 * this panel is selected in the navigation panel.
-	 * place inside this function all the functions you want
-	 * to call every this panel becomes active
-	 */
-	onActive : function(callback)
-	{
-		var me = this;
-		me.floorPlans.getSelectionModel().select(0);
-		callback(true);
-	}
+    },
+    onNewZone: function(){
+        var me = this;
+        me.floorZonesStore.add({
+            floor_plan_id: me.floorPlanId,
+            title: i18n('new_zone'),
+            x: 5,
+            y: 5,
+            show_priority_color: 1,
+            show_patient_preview: 1,
+            active: 0
+        });
+        me.floorZonesStore.sync({
+            callback: function(batch){
+                me.createZone(batch.operations[0].records[0]);
+            }
+        });
+    },
+    createZone: function(record){
+        var me = this, zone;
+        zone = me.floorPlanZones.add(
+            Ext.create('Ext.button.Split', {
+                text: record.data.title,
+                draggable: {
+                    listeners: {
+                        scope: me,
+                        dragend: me.zoneDragged
+                    }
+                },
+                scale: record.data.scale,
+                style:{
+                    'border-color':record.data.border_color,
+                    'background-color':record.data.bg_color
+                },
+                x: record ? record.data.x : 5,
+                y: record ? record.data.y : 5,
+                width:record.data.width,
+                height:record.data.height,
+                scope:me,
+                handler: me.onZoneHandler
+            })
+        );
+        zone.record = record;
+    },
+    applyZoneConfig:function(zone, config){
+        say(config);
+        zone.setText(config.text);
+        zone.getEl().applyStyles(config.style);
+        zone.setScale(config.scale);
+        zone.setSize(config.width, config.height);
+    },
+    moveZone: function(direction){
+        if(app.currCardCmp == this && this.activeZone != null){
+            var x = this.activeZone.x, y = this.activeZone.y;
+            if(direction == 'left'){
+                x = x - 1;
+            }else if(direction == 'right'){
+                x = x + 1;
+            }else if(direction == 'up'){
+                y = y - 1;
+            }else if(direction == 'down'){
+                y = y + 1;
+            }
+            this.activeZone.setPosition(x, y);
+            this.activeZone.record.set({x:x,y:y});
+        }
+    },
+    zoneDragged: function(drag){
+        var zone = drag.comp;
+        zone.record.set({
+            x: zone.x,
+            y: zone.y
+        });
+    },
+    onNewFloorPlan: function(){
+        this.floorPlansStore.add({});
+    },
+    onFloorPlanSelected: function(model, record){
+        this.setEditMode(false);
+        this.floorPlanId = record.data.id;
+        this.reloadFloorPlanZones();
+    },
+    reloadFloorPlanZones: function(){
+        var me = this;
+        me.floorPlanZones.removeAll();
+        me.floorZonesStore.load({
+            params:{ floor_plan_id: this.floorPlanId },
+            scope: me,
+            callback: function(records, operation, success){
+                me.setEditMode(false);
+                for(var i = 0; i < records.length; i++) me.createZone(records[i]);
+            }
+        });
+    },
+    /**
+     * This function is called from Viewport.js when
+     * this panel is selected in the navigation panel.
+     * place inside this function all the functions you want
+     * to call every this panel becomes active
+     */
+    onActive: function(callback){
+        var me = this;
+        me.floorPlansStore.load({
+            callback:function(){
+                me.floorPlans.getSelectionModel().select(0);
+            }
+        });
+        callback(true);
+    }
 });
 
 /*
@@ -42386,968 +42174,938 @@ Ext.define('App.view.administration.FloorPlans',
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+Ext.define('App.view.administration.Practice', {
+    extend: 'App.ux.RenderPanel',
+    id: 'panelPractice',
+    pageTitle: i18n('practice_settings'),
+    uses: ['App.ux.combo.Titles', 'App.ux.combo.TransmitMethod', 'App.ux.combo.InsurancePayerType'],
+    initComponent: function(){
+        var me = this;
+        /**
+         * Pharmacy Model and Store
+         */
+        Ext.define('pharmacyGridModel', {
+            extend: 'Ext.data.Model',
+            fields: [
+                {
+                    name: 'id',
+                    type: 'int'
+                },
+                {
+                    name: 'name',
+                    type: 'string'
+                },
+                {
+                    name: 'transmit_method',
+                    type: 'string'
+                },
+                {
+                    name: 'email',
+                    type: 'string'
+                },
+                {
+                    name: 'address_id',
+                    type: 'int'
+                },
+                {
+                    name: 'line1',
+                    type: 'string'
+                },
+                {
+                    name: 'line2',
+                    type: 'string'
+                },
+                {
+                    name: 'city',
+                    type: 'string'
+                },
+                {
+                    name: 'state',
+                    type: 'string'
+                },
+                {
+                    name: 'zip',
+                    type: 'string'
+                },
+                {
+                    name: 'plus_four',
+                    type: 'string'
+                },
+                {
+                    name: 'country',
+                    type: 'string'
+                },
+                {
+                    name: 'address_full',
+                    type: 'string'
+                },
+                {
+                    name: 'phone_id',
+                    type: 'int'
+                },
+                {
+                    name: 'phone_country_code',
+                    type: 'string'
+                },
+                {
+                    name: 'phone_area_code',
+                    type: 'string'
+                },
+                {
+                    name: 'phone_prefix',
+                    type: 'string'
+                },
+                {
+                    name: 'phone_number',
+                    type: 'string'
+                },
+                {
+                    name: 'phone_full',
+                    type: 'string'
+                },
+                {
+                    name: 'fax_id',
+                    type: 'int'
+                },
+                {
+                    name: 'fax_country_code',
+                    type: 'string'
+                },
+                {
+                    name: 'fax_area_code',
+                    type: 'string'
+                },
+                {
+                    name: 'fax_prefix',
+                    type: 'string'
+                },
+                {
+                    name: 'fax_number',
+                    type: 'string'
+                },
+                {
+                    name: 'fax_full',
+                    type: 'string'
+                },
+                {
+                    name: 'active',
+                    type: 'bool'
+                }
+            ],
+            proxy: {
+                type: 'direct',
+                api: {
+                    read: Practice.getPharmacies,
+                    create: Practice.addPharmacy,
+                    update: Practice.updatePharmacy
+                }
+            }
+        });
+        me.pharmacyStore = Ext.create('Ext.data.Store', {
+            model: 'pharmacyGridModel',
+            remoteSort: false
+        });
+        // *************************************************************************************
+        // Insurance Record Structure
+        // *************************************************************************************
+        Ext.define('insuranceGridModel', {
+            extend: 'Ext.data.Model',
+            fields: [
+                {
+                    name: 'id',
+                    type: 'int'
+                },
+                {
+                    name: 'name',
+                    type: 'string'
+                },
+                {
+                    name: 'attn',
+                    type: 'string'
+                },
+                {
+                    name: 'cms_id',
+                    type: 'string'
+                },
+                {
+                    name: 'freeb_type',
+                    type: 'string'
+                },
+                {
+                    name: 'x12_receiver_id',
+                    type: 'string'
+                },
+                {
+                    name: 'x12_default_partner_id',
+                    type: 'string'
+                },
+                {
+                    name: 'alt_cms_id',
+                    type: 'string'
+                },
+                {
+                    name: 'address_id',
+                    type: 'int'
+                },
+                {
+                    name: 'line1',
+                    type: 'string'
+                },
+                {
+                    name: 'line2',
+                    type: 'string'
+                },
+                {
+                    name: 'city',
+                    type: 'string'
+                },
+                {
+                    name: 'state',
+                    type: 'string'
+                },
+                {
+                    name: 'zip',
+                    type: 'string'
+                },
+                {
+                    name: 'plus_four',
+                    type: 'string'
+                },
+                {
+                    name: 'country',
+                    type: 'string'
+                },
+                {
+                    name: 'address_full',
+                    type: 'string'
+                },
+                {
+                    name: 'phone_id',
+                    type: 'int'
+                },
+                {
+                    name: 'phone_country_code',
+                    type: 'string'
+                },
+                {
+                    name: 'phone_area_code',
+                    type: 'string'
+                },
+                {
+                    name: 'phone_prefix',
+                    type: 'string'
+                },
+                {
+                    name: 'phone_number',
+                    type: 'string'
+                },
+                {
+                    name: 'phone_full',
+                    type: 'string'
+                },
+                {
+                    name: 'fax_id',
+                    type: 'int'
+                },
+                {
+                    name: 'fax_country_code',
+                    type: 'string'
+                },
+                {
+                    name: 'fax_area_code',
+                    type: 'string'
+                },
+                {
+                    name: 'fax_prefix',
+                    type: 'string'
+                },
+                {
+                    name: 'fax_number',
+                    type: 'string'
+                },
+                {
+                    name: 'fax_full',
+                    type: 'string'
+                },
+                {
+                    name: 'active',
+                    type: 'bool'
+                }
+            ],
+            proxy: {
+                type: 'direct',
+                api: {
+                    read: Practice.getInsurances,
+                    create: Practice.addInsurance,
+                    update: Practice.updateInsurance
+                }
+            }
+        });
+        me.insuranceStore = Ext.create('Ext.data.Store', {
+            model: 'insuranceGridModel',
+            remoteSort: false
+        });
+        // *************************************************************************************
+        // Insurance Numbers Record Structure
+        // *************************************************************************************
+        //		me.insuranceNumbersStore = Ext.create('App.ux.restStoreModel', {
+        //			fields     : [
+        //				{name: 'id', type: 'int'},
+        //				{name: 'name', type: 'string'}
+        //			],
+        //			model      : 'insuranceNumbersModel',
+        //			idProperty : 'id',
+        //			url        : 'app/administration/practice/data.php',
+        //			extraParams: { task: "insuranceNumbers"}
+        //		});
+        // *************************************************************************************
+        // X12 Partners Record Structure
+        // *************************************************************************************
+        //		me.x12PartnersStore = Ext.create('App.ux.restStoreModel', {
+        //			fields     : [
+        //				{name: 'id', type: 'int'},
+        //				{name: 'name', type: 'string'}
+        //			],
+        //			model      : 'x12PartnersModel',
+        //			idProperty : 'id',
+        //			url        : 'app/administration/practice/data.php',
+        //			extraParams: { task: "x12Partners"}
+        //		});
+        // -------------------------------------------------------------------------------------
+        // render function for Default Method column in the Pharmacy grid
+        // -------------------------------------------------------------------------------------
+        function transmit_method(val){
+            if(val == '1'){
+                return 'Print';
+            }else if(val == '2'){
+                return 'Email';
+            }else if(val == '3'){
+                return 'Email';
+            }
+            return val;
+        }
 
-Ext.define('App.view.administration.Practice',
-{
-	extend : 'App.ux.RenderPanel',
-	id : 'panelPractice',
-	pageTitle : i18n('practice_settings'),
-	uses : ['App.ux.combo.Titles', 'App.ux.combo.TransmitMethod', 'App.ux.combo.InsurancePayerType'],
-	initComponent : function()
-	{
-		var me = this;
+        me.rowEditingPharmacy = Ext.create('App.ux.grid.RowFormEditing', {
+            autoCancel: false,
+            errorSummary: false,
+            clicksToEdit: 1,
+            formItems: [
+                {
+                    xtype: 'container',
+                    layout: 'hbox',
+                    width: 900,
+                    items: [
+                        {
+                            xtype: 'container',
+                            width: 450,
+                            layout: 'anchor',
+                            items: [
+                                {
+                                    xtype: 'textfield',
+                                    fieldLabel: i18n('name'),
+                                    name: 'name',
+                                    allowBlank: false,
+                                    width: 385
+                                },
+                                {
+                                    xtype: 'textfield',
+                                    fieldLabel: i18n('address'),
+                                    name: 'line1',
+                                    width: 385
+                                },
+                                {
+                                    xtype: 'textfield',
+                                    fieldLabel: i18n('address_cont'),
+                                    name: 'line2',
+                                    width: 385
+                                },
+                                {
+                                    xtype: 'fieldcontainer',
+                                    layout: 'hbox',
+                                    defaults: {
+                                        hideLabel: true
+                                    },
+                                    items: [
+                                        {
+                                            xtype: 'displayfield',
+                                            width: 105,
+                                            value: i18n('city_state_zip')
+                                        },
+                                        {
+                                            xtype: 'textfield',
+                                            width: 150,
+                                            name: 'city'
+                                        },
+                                        {
+                                            xtype: 'displayfield',
+                                            width: 5,
+                                            value: ','
+                                        },
+                                        {
+                                            xtype: 'textfield',
+                                            width: 50,
+                                            name: 'state'
+                                        },
+                                        {
+                                            xtype: 'textfield',
+                                            width: 75,
+                                            name: 'zip'
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            xtype: 'container',
+                            width: 300,
+                            layout: 'anchor',
+                            items: [
+                                {
+                                    xtype: 'textfield',
+                                    fieldLabel: i18n('email'),
+                                    name: 'email',
+                                    width: 275
+                                },
+                                {
+                                    xtype: 'fieldcontainer',
+                                    layout: 'hbox',
+                                    defaults: {
+                                        hideLabel: true
+                                    },
+                                    items: [
+                                        {
+                                            xtype: 'displayfield',
+                                            width: 100,
+                                            value: i18n('phone')
+                                        },
+                                        {
+                                            xtype: 'displayfield',
+                                            width: 5,
+                                            value: '('
+                                        },
+                                        {
+                                            xtype: 'textfield',
+                                            width: 40,
+                                            name: 'phone_area_code'
+                                        },
+                                        {
+                                            xtype: 'displayfield',
+                                            width: 5,
+                                            value: ')'
+                                        },
+                                        {
+                                            xtype: 'textfield',
+                                            width: 50,
+                                            name: 'phone_prefix'
+                                        },
+                                        {
+                                            xtype: 'displayfield',
+                                            width: 5,
+                                            value: '-'
+                                        },
+                                        {
+                                            xtype: 'textfield',
+                                            width: 70,
+                                            name: 'phone_number'
+                                        }
+                                    ]
+                                },
+                                {
+                                    xtype: 'fieldcontainer',
+                                    layout: 'hbox',
+                                    defaults: {
+                                        hideLabel: true
+                                    },
+                                    items: [
+                                        {
+                                            xtype: 'displayfield',
+                                            width: 100,
+                                            value: i18n('fax')
+                                        },
+                                        {
+                                            xtype: 'displayfield',
+                                            width: 5,
+                                            value: '('
+                                        },
+                                        {
+                                            xtype: 'textfield',
+                                            width: 40,
+                                            name: 'fax_area_code'
+                                        },
+                                        {
+                                            xtype: 'displayfield',
+                                            width: 5,
+                                            value: ')'
+                                        },
+                                        {
+                                            xtype: 'textfield',
+                                            width: 50,
+                                            name: 'fax_prefix'
+                                        },
+                                        {
+                                            xtype: 'displayfield',
+                                            width: 5,
+                                            value: '-'
+                                        },
+                                        {
+                                            xtype: 'textfield',
+                                            width: 70,
+                                            name: 'fax_number'
+                                        }
+                                    ]
+                                },
+                                {
+                                    xtype: 'transmitmethodcombo',
+                                    fieldLabel: i18n('default_method'),
+                                    labelWidth: 100,
+                                    width: 275
+                                }
+                            ]
+                        },
+                        {
+                            xtype: 'mitos.checkbox',
+                            fieldLabel: i18n('active'),
+                            labelWidth: 60,
+                            name: 'active'
+                        }
+                    ]
+                }
+            ]
+        });
+        me.rowEditingInsurance = Ext.create('App.ux.grid.RowFormEditing', {
+            autoCancel: false,
+            errorSummary: false,
+            clicksToEdit: 1,
+            formItems: [
+                {
+                    xtype: 'container',
+                    layout: 'hbox',
+                    width: 900,
+                    items: [
+                        {
+                            xtype: 'container',
+                            width: 450,
+                            layout: 'anchor',
+                            items: [
+                                {
+                                    xtype: 'textfield',
+                                    fieldLabel: i18n('name'),
+                                    name: 'name',
+                                    allowBlank: false,
+                                    width: 385
+                                },
+                                {
+                                    xtype: 'textfield',
+                                    fieldLabel: i18n('address'),
+                                    name: 'line1',
+                                    width: 385
+                                },
+                                {
+                                    xtype: 'textfield',
+                                    fieldLabel: i18n('address_cont'),
+                                    name: 'line2',
+                                    width: 385
+                                },
+                                {
+                                    xtype: 'fieldcontainer',
+                                    defaults: {
+                                        hideLabel: true
+                                    },
+                                    layout: 'hbox',
+                                    items: [
+                                        {
+                                            xtype: 'displayfield',
+                                            width: 105,
+                                            value: i18n('city_state_zip')
+                                        },
+                                        {
+                                            xtype: 'textfield',
+                                            width: 150,
+                                            name: 'city'
+                                        },
+                                        {
+                                            xtype: 'displayfield',
+                                            width: 5,
+                                            value: ','
+                                        },
+                                        {
+                                            xtype: 'textfield',
+                                            width: 50,
+                                            name: 'state'
+                                        },
+                                        {
+                                            xtype: 'textfield',
+                                            width: 75,
+                                            name: 'zip'
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            xtype: 'container',
+                            width: 300,
+                            layout: 'anchor',
+                            items: [
+                                {
+                                    xtype: 'fieldcontainer',
+                                    layout: 'hbox',
+                                    defaults: {
+                                        hideLabel: true
+                                    },
+                                    items: [
+                                        {
+                                            xtype: 'displayfield',
+                                            width: 100,
+                                            value: i18n('phone')
+                                        },
+                                        {
+                                            xtype: 'displayfield',
+                                            width: 5,
+                                            value: '('
+                                        },
+                                        {
+                                            xtype: 'textfield',
+                                            width: 40,
+                                            name: 'phone_area_code'
+                                        },
+                                        {
+                                            xtype: 'displayfield',
+                                            width: 5,
+                                            value: ')'
+                                        },
+                                        {
+                                            xtype: 'textfield',
+                                            width: 50,
+                                            name: 'phone_prefix'
+                                        },
+                                        {
+                                            xtype: 'displayfield',
+                                            width: 5,
+                                            value: '-'
+                                        },
+                                        {
+                                            xtype: 'textfield',
+                                            width: 70,
+                                            name: 'phone_number'
+                                        }
+                                    ]
+                                },
+                                {
+                                    xtype: 'fieldcontainer',
+                                    layout: 'hbox',
+                                    defaults: {
+                                        hideLabel: true
+                                    },
+                                    items: [
+                                        {
+                                            xtype: 'displayfield',
+                                            width: 100,
+                                            value: i18n('fax')
+                                        },
+                                        {
+                                            xtype: 'displayfield',
+                                            width: 5,
+                                            value: '('
+                                        },
+                                        {
+                                            xtype: 'textfield',
+                                            width: 40,
+                                            name: 'fax_area_code'
+                                        },
+                                        {
+                                            xtype: 'displayfield',
+                                            width: 5,
+                                            value: ')'
+                                        },
+                                        {
+                                            xtype: 'textfield',
+                                            width: 50,
+                                            name: 'fax_prefix'
+                                        },
+                                        {
+                                            xtype: 'displayfield',
+                                            width: 5,
+                                            value: '-'
+                                        },
+                                        {
+                                            xtype: 'textfield',
+                                            width: 70,
+                                            name: 'fax_number'
+                                        }
+                                    ]
+                                },
+                                {
+                                    xtype: 'textfield',
+                                    fieldLabel: i18n('cms_id'),
+                                    name: 'cms_id',
+                                    width: 275
+                                },
+                                {
+                                    xtype: 'mitos.insurancepayertypecombo',
+                                    fieldLabel: i18n('payer_type'),
+                                    labelWidth: 100,
+                                    width: 275
+                                },
+                                {
+                                    xtype: 'textfield',
+                                    fieldLabel: 'X12 Partner',
+                                    name: 'x12_default_partner_id'
+                                }
+                            ]
+                        },
+                        {
+                            xtype: 'checkbox',
+                            fieldLabel: i18n('active'),
+                            labelWidth: 60,
+                            name: 'active'
+                        }
+                    ]
+                }
+            ]
 
-		/**
-		 * Pharmacy Model and Store
-		 */
-		Ext.define('pharmacyGridModel',
-		{
-			extend : 'Ext.data.Model',
-			fields : [
-			{
-				name : 'id',
-				type : 'int'
-			},
-			{
-				name : 'name',
-				type : 'string'
-			},
-			{
-				name : 'transmit_method',
-				type : 'string'
-			},
-			{
-				name : 'email',
-				type : 'string'
-			},
-			{
-				name : 'address_id',
-				type : 'int'
-			},
-			{
-				name : 'line1',
-				type : 'string'
-			},
-			{
-				name : 'line2',
-				type : 'string'
-			},
-			{
-				name : 'city',
-				type : 'string'
-			},
-			{
-				name : 'state',
-				type : 'string'
-			},
-			{
-				name : 'zip',
-				type : 'string'
-			},
-			{
-				name : 'plus_four',
-				type : 'string'
-			},
-			{
-				name : 'country',
-				type : 'string'
-			},
-			{
-				name : 'address_full',
-				type : 'string'
-			},
-			{
-				name : 'phone_id',
-				type : 'int'
-			},
-			{
-				name : 'phone_country_code',
-				type : 'string'
-			},
-			{
-				name : 'phone_area_code',
-				type : 'string'
-			},
-			{
-				name : 'phone_prefix',
-				type : 'string'
-			},
-			{
-				name : 'phone_number',
-				type : 'string'
-			},
-			{
-				name : 'phone_full',
-				type : 'string'
-			},
-			{
-				name : 'fax_id',
-				type : 'int'
-			},
-			{
-				name : 'fax_country_code',
-				type : 'string'
-			},
-			{
-				name : 'fax_area_code',
-				type : 'string'
-			},
-			{
-				name : 'fax_prefix',
-				type : 'string'
-			},
-			{
-				name : 'fax_number',
-				type : 'string'
-			},
-			{
-				name : 'fax_full',
-				type : 'string'
-			},
-			{
-				name : 'active',
-				type : 'bool'
-			}],
-			proxy :
-			{
-				type : 'direct',
-				api :
-				{
-					read : Practice.getPharmacies,
-					create : Practice.addPharmacy,
-					update : Practice.updatePharmacy
-				}
-			}
-		});
-		me.pharmacyStore = Ext.create('Ext.data.Store',
-		{
-			model : 'pharmacyGridModel',
-			remoteSort : false,
-			autoSync : true
-		});
-		// *************************************************************************************
-		// Insurance Record Structure
-		// *************************************************************************************
-		Ext.define('insuranceGridModel',
-		{
-			extend : 'Ext.data.Model',
-			fields : [
-			{
-				name : 'id',
-				type : 'int'
-			},
-			{
-				name : 'name',
-				type : 'string'
-			},
-			{
-				name : 'attn',
-				type : 'string'
-			},
-			{
-				name : 'cms_id',
-				type : 'string'
-			},
-			{
-				name : 'freeb_type',
-				type : 'string'
-			},
-			{
-				name : 'x12_receiver_id',
-				type : 'string'
-			},
-			{
-				name : 'x12_default_partner_id',
-				type : 'string'
-			},
-			{
-				name : 'alt_cms_id',
-				type : 'string'
-			},
-			{
-				name : 'address_id',
-				type : 'int'
-			},
-			{
-				name : 'line1',
-				type : 'string'
-			},
-			{
-				name : 'line2',
-				type : 'string'
-			},
-			{
-				name : 'city',
-				type : 'string'
-			},
-			{
-				name : 'state',
-				type : 'string'
-			},
-			{
-				name : 'zip',
-				type : 'string'
-			},
-			{
-				name : 'plus_four',
-				type : 'string'
-			},
-			{
-				name : 'country',
-				type : 'string'
-			},
-			{
-				name : 'address_full',
-				type : 'string'
-			},
-			{
-				name : 'phone_id',
-				type : 'int'
-			},
-			{
-				name : 'phone_country_code',
-				type : 'string'
-			},
-			{
-				name : 'phone_area_code',
-				type : 'string'
-			},
-			{
-				name : 'phone_prefix',
-				type : 'string'
-			},
-			{
-				name : 'phone_number',
-				type : 'string'
-			},
-			{
-				name : 'phone_full',
-				type : 'string'
-			},
-			{
-				name : 'fax_id',
-				type : 'int'
-			},
-			{
-				name : 'fax_country_code',
-				type : 'string'
-			},
-			{
-				name : 'fax_area_code',
-				type : 'string'
-			},
-			{
-				name : 'fax_prefix',
-				type : 'string'
-			},
-			{
-				name : 'fax_number',
-				type : 'string'
-			},
-			{
-				name : 'fax_full',
-				type : 'string'
-			},
-			{
-				name : 'active',
-				type : 'bool'
-			}],
-			proxy :
-			{
-				type : 'direct',
-				api :
-				{
-					read : Practice.getInsurances,
-					create : Practice.addInsurance,
-					update : Practice.updateInsurance
-				}
-			}
-		});
-		me.insuranceStore = Ext.create('Ext.data.Store',
-		{
-			model : 'insuranceGridModel',
-			remoteSort : false,
-			autoSync : true
-		});
-		// *************************************************************************************
-		// Insurance Numbers Record Structure
-		// *************************************************************************************
-		//		me.insuranceNumbersStore = Ext.create('App.ux.restStoreModel', {
-		//			fields     : [
-		//				{name: 'id', type: 'int'},
-		//				{name: 'name', type: 'string'}
-		//			],
-		//			model      : 'insuranceNumbersModel',
-		//			idProperty : 'id',
-		//			url        : 'app/administration/practice/data.php',
-		//			extraParams: { task: "insuranceNumbers"}
-		//		});
-		// *************************************************************************************
-		// X12 Partners Record Structure
-		// *************************************************************************************
-		//		me.x12PartnersStore = Ext.create('App.ux.restStoreModel', {
-		//			fields     : [
-		//				{name: 'id', type: 'int'},
-		//				{name: 'name', type: 'string'}
-		//			],
-		//			model      : 'x12PartnersModel',
-		//			idProperty : 'id',
-		//			url        : 'app/administration/practice/data.php',
-		//			extraParams: { task: "x12Partners"}
-		//		});
+        });
+        // *************************************************************************************
+        // Grids
+        // *************************************************************************************
+        me.pharmacyGrid = Ext.create('Ext.grid.Panel', {
+            title: i18n('pharmacies'),
+            store: me.pharmacyStore,
+            border: false,
+            frame: false,
+            viewConfig: {
+                stripeRows: true
+            },
+            plugins: [me.rowEditingPharmacy],
+            columns: [
+                {
+                    header: i18n('pharmacy_name'),
+                    width: 150,
+                    sortable: true,
+                    dataIndex: 'name'
+                },
+                {
+                    header: i18n('address'),
+                    flex: 1,
+                    sortable: true,
+                    dataIndex: 'address_full'
+                },
+                {
+                    header: i18n('phone'),
+                    width: 120,
+                    sortable: true,
+                    dataIndex: 'phone_full'
+                },
+                {
+                    header: i18n('Fax'),
+                    width: 120,
+                    sortable: true,
+                    dataIndex: 'fax_full'
+                },
+                {
+                    header: i18n('default_method'),
+                    flex: 1,
+                    sortable: true,
+                    dataIndex: 'transmit_method',
+                    renderer: transmit_method
+                },
+                {
+                    header: i18n('active'),
+                    width: 55,
+                    sortable: true,
+                    dataIndex: 'active',
+                    renderer: me.boolRenderer
+                }
+            ],
+            tbar: [
+                {
+                    text: i18n('add_new_pharmacy'),
+                    iconCls: 'save',
+                    action: 'pharmacyGridModel',
+                    scope: me,
+                    handler: me.onNewRec
+                }
+            ]
+        });
+        me.insuranceGrid = Ext.create('Ext.grid.Panel', {
+            title: i18n('insurance_companies'),
+            store: me.insuranceStore,
+            border: false,
+            frame: false,
+            viewConfig: {
+                stripeRows: true
+            },
+            plugins: [me.rowEditingInsurance],
+            columns: [
+                {
+                    header: i18n('insurance_name'),
+                    width: 150,
+                    sortable: true,
+                    dataIndex: 'name'
+                },
+                {
+                    header: i18n('address'),
+                    flex: 1,
+                    sortable: true,
+                    dataIndex: 'address_full'
+                },
+                {
+                    header: i18n('Phone'),
+                    width: 120,
+                    sortable: true,
+                    dataIndex: 'phone_full'
+                },
+                {
+                    header: i18n('fax'),
+                    width: 120,
+                    sortable: true,
+                    dataIndex: 'fax_full'
+                },
+                {
+                    header: i18n('default_x12_partner'),
+                    flex: 1,
+                    sortable: true,
+                    dataIndex: 'x12_default_partner_id'
+                },
+                {
+                    header: i18n('active'),
+                    width: 55,
+                    sortable: true,
+                    dataIndex: 'active',
+                    renderer: me.boolRenderer
+                }
+            ],
+            tbar: [
+                {
+                    text: i18n('add_new_insurance'),
+                    iconCls: 'save',
+                    action: 'insuranceGridModel',
+                    scope: me,
+                    handler: me.onNewRec
+                }
+            ]
+        });
+        //		me.InsuranceNumbersGrid = Ext.create('Ext.grid.Panel', {
+        //            title    : 'Insurance Numbers',
+        //			//store     : me.insuranceNumbersStore,
+        //			border    : false,
+        //			frame     : false,
+        //            viewConfig: { stripeRows: true },
+        //			columns   : [
+        //				{ text: 'Name', flex: 1, sortable: true, dataIndex: 'name' },
+        //				{ width: 100, sortable: true, dataIndex: 'address' },
+        //				{ text: 'Provider #', flex: 1, width: 100, sortable: true, dataIndex: 'phone' },
+        //				{ text: 'Rendering #', flex: 1, width: 100, sortable: true, dataIndex: 'phone' },
+        //				{ text: 'Group #', flex: 1, width: 100, sortable: true, dataIndex: 'phone' }
+        //			]
+        //
+        //		});
+        me.x12ParnersGrid = Ext.create('Ext.grid.Panel', {
+            title: i18n('x12_partners_clearing_houses'),
+            //store     : me.x12PartnersStore,
+            border: false,
+            frame: false,
+            viewConfig: {
+                stripeRows: true
+            },
+            columns: [
+                {
+                    text: i18n('name'),
+                    flex: 1,
+                    sortable: true,
+                    dataIndex: 'name'
+                },
+                {
+                    text: i18n('sender_id'),
+                    flex: 1,
+                    width: 100,
+                    sortable: true,
+                    dataIndex: 'phone'
+                },
+                {
+                    text: i18n('receiver_id'),
+                    flex: 1,
+                    width: 100,
+                    sortable: true,
+                    dataIndex: 'phone'
+                },
+                {
+                    text: i18n('version'),
+                    flex: 1,
+                    width: 100,
+                    sortable: true,
+                    dataIndex: 'phone'
+                }
+            ]
 
-		// -------------------------------------------------------------------------------------
-		// render function for Default Method column in the Pharmacy grid
-		// -------------------------------------------------------------------------------------
-		function transmit_method(val)
-		{
-			if (val == '1')
-			{
-				return 'Print';
-			}
-			else
-			if (val == '2')
-			{
-				return 'Email';
-			}
-			else
-			if (val == '3')
-			{
-				return 'Email';
-			}
-			return val;
-		}
+        });
+        // *************************************************************************************
+        // Tab Panel
+        // *************************************************************************************
+        me.praticePanel = Ext.create('Ext.tab.Panel', {
+            activeTab: 0,
+            items: [me.pharmacyGrid, me.insuranceGrid, //me.InsuranceNumbersGrid,
+                me.x12ParnersGrid, {
+                    title: i18n('hl7_viewer'),
+                    frame: false,
+                    border: false,
+                    items: [
+                        {
 
-
-		me.rowEditingPharmacy = Ext.create('App.ux.grid.RowFormEditing',
-		{
-			autoCancel : false,
-			errorSummary : false,
-			clicksToEdit : 1,
-			formItems : [
-			{
-				xtype : 'container',
-				layout : 'hbox',
-				width : 900,
-				items : [
-				{
-					xtype : 'container',
-					width : 450,
-					layout : 'anchor',
-					items : [
-					{
-						xtype : 'textfield',
-						fieldLabel : i18n('name'),
-						name : 'name',
-						allowBlank : false,
-						width : 385
-					},
-					{
-						xtype : 'textfield',
-						fieldLabel : i18n('address'),
-						name : 'line1',
-						width : 385
-					},
-					{
-						xtype : 'textfield',
-						fieldLabel : i18n('address_cont'),
-						name : 'line2',
-						width : 385
-					},
-					{
-						xtype : 'fieldcontainer',
-						layout : 'hbox',
-						defaults :
-						{
-							hideLabel : true
-						},
-						items : [
-						{
-							xtype : 'displayfield',
-							width : 105,
-							value : i18n('city_state_zip')
-						},
-						{
-							xtype : 'textfield',
-							width : 150,
-							name : 'city'
-						},
-						{
-							xtype : 'displayfield',
-							width : 5,
-							value : ','
-						},
-						{
-							xtype : 'textfield',
-							width : 50,
-							name : 'state'
-						},
-						{
-							xtype : 'textfield',
-							width : 75,
-							name : 'zip'
-						}]
-					}]
-				},
-				{
-					xtype : 'container',
-					width : 300,
-					layout : 'anchor',
-					items : [
-					{
-						xtype : 'textfield',
-						fieldLabel : i18n('email'),
-						name : 'email',
-						width : 275
-					},
-					{
-						xtype : 'fieldcontainer',
-						layout : 'hbox',
-						defaults :
-						{
-							hideLabel : true
-						},
-						items : [
-						{
-							xtype : 'displayfield',
-							width : 100,
-							value : i18n('phone')
-						},
-						{
-							xtype : 'displayfield',
-							width : 5,
-							value : '('
-						},
-						{
-							xtype : 'textfield',
-							width : 40,
-							name : 'phone_area_code'
-						},
-						{
-							xtype : 'displayfield',
-							width : 5,
-							value : ')'
-						},
-						{
-							xtype : 'textfield',
-							width : 50,
-							name : 'phone_prefix'
-						},
-						{
-							xtype : 'displayfield',
-							width : 5,
-							value : '-'
-						},
-						{
-							xtype : 'textfield',
-							width : 70,
-							name : 'phone_number'
-						}]
-					},
-					{
-						xtype : 'fieldcontainer',
-						layout : 'hbox',
-						defaults :
-						{
-							hideLabel : true
-						},
-						items : [
-						{
-							xtype : 'displayfield',
-							width : 100,
-							value : i18n('fax')
-						},
-						{
-							xtype : 'displayfield',
-							width : 5,
-							value : '('
-						},
-						{
-							xtype : 'textfield',
-							width : 40,
-							name : 'fax_area_code'
-						},
-						{
-							xtype : 'displayfield',
-							width : 5,
-							value : ')'
-						},
-						{
-							xtype : 'textfield',
-							width : 50,
-							name : 'fax_prefix'
-						},
-						{
-							xtype : 'displayfield',
-							width : 5,
-							value : '-'
-						},
-						{
-							xtype : 'textfield',
-							width : 70,
-							name : 'fax_number'
-						}]
-					},
-					{
-						xtype : 'transmitmethodcombo',
-						fieldLabel : i18n('default_method'),
-						labelWidth : 100,
-						width : 275
-					}]
-				},
-				{
-					xtype : 'mitos.checkbox',
-					fieldLabel : i18n('active'),
-					labelWidth : 60,
-					name : 'active'
-				}]
-			}]
-		});
-
-		me.rowEditingInsurance = Ext.create('App.ux.grid.RowFormEditing',
-		{
-			autoCancel : false,
-			errorSummary : false,
-			clicksToEdit : 1,
-			formItems : [
-			{
-				xtype : 'container',
-				layout : 'hbox',
-				width : 900,
-				items : [
-				{
-					xtype : 'container',
-					width : 450,
-					layout : 'anchor',
-					items : [
-					{
-						xtype : 'textfield',
-						fieldLabel : i18n('name'),
-						name : 'name',
-						allowBlank : false,
-						width : 385
-					},
-					{
-						xtype : 'textfield',
-						fieldLabel : i18n('address'),
-						name : 'line1',
-						width : 385
-					},
-					{
-						xtype : 'textfield',
-						fieldLabel : i18n('address_cont'),
-						name : 'line2',
-						width : 385
-					},
-					{
-						xtype : 'fieldcontainer',
-						defaults :
-						{
-							hideLabel : true
-						},
-						layout : 'hbox',
-						items : [
-						{
-							xtype : 'displayfield',
-							width : 105,
-							value : i18n('city_state_zip')
-						},
-						{
-							xtype : 'textfield',
-							width : 150,
-							name : 'city'
-						},
-						{
-							xtype : 'displayfield',
-							width : 5,
-							value : ','
-						},
-						{
-							xtype : 'textfield',
-							width : 50,
-							name : 'state'
-						},
-						{
-							xtype : 'textfield',
-							width : 75,
-							name : 'zip'
-						}]
-					}]
-				},
-				{
-					xtype : 'container',
-					width : 300,
-					layout : 'anchor',
-					items : [
-					{
-						xtype : 'fieldcontainer',
-						layout : 'hbox',
-						defaults :
-						{
-							hideLabel : true
-						},
-						items : [
-						{
-							xtype : 'displayfield',
-							width : 100,
-							value : i18n('phone')
-						},
-						{
-							xtype : 'displayfield',
-							width : 5,
-							value : '('
-						},
-						{
-							xtype : 'textfield',
-							width : 40,
-							name : 'phone_area_code'
-						},
-						{
-							xtype : 'displayfield',
-							width : 5,
-							value : ')'
-						},
-						{
-							xtype : 'textfield',
-							width : 50,
-							name : 'phone_prefix'
-						},
-						{
-							xtype : 'displayfield',
-							width : 5,
-							value : '-'
-						},
-						{
-							xtype : 'textfield',
-							width : 70,
-							name : 'phone_number'
-						}]
-					},
-					{
-						xtype : 'fieldcontainer',
-						layout : 'hbox',
-						defaults :
-						{
-							hideLabel : true
-						},
-						items : [
-						{
-							xtype : 'displayfield',
-							width : 100,
-							value : i18n('fax')
-						},
-						{
-							xtype : 'displayfield',
-							width : 5,
-							value : '('
-						},
-						{
-							xtype : 'textfield',
-							width : 40,
-							name : 'fax_area_code'
-						},
-						{
-							xtype : 'displayfield',
-							width : 5,
-							value : ')'
-						},
-						{
-							xtype : 'textfield',
-							width : 50,
-							name : 'fax_prefix'
-						},
-						{
-							xtype : 'displayfield',
-							width : 5,
-							value : '-'
-						},
-						{
-							xtype : 'textfield',
-							width : 70,
-							name : 'fax_number'
-						}]
-					},
-					{
-						xtype : 'textfield',
-						fieldLabel : i18n('cms_id'),
-						name : 'cms_id',
-						width : 275
-					},
-					{
-						xtype : 'mitos.insurancepayertypecombo',
-						fieldLabel : i18n('payer_type'),
-						labelWidth : 100,
-						width : 275
-					},
-					{
-						xtype : 'textfield',
-						fieldLabel : 'X12 Partner',
-						name : 'x12_default_partner_id'
-					}]
-				},
-				{
-					xtype : 'checkbox',
-					fieldLabel : i18n('active'),
-					labelWidth : 60,
-					name : 'active'
-				}]
-			}]
-
-		});
-		// *************************************************************************************
-		// Grids
-		// *************************************************************************************
-		me.pharmacyGrid = Ext.create('Ext.grid.Panel',
-		{
-			title : i18n('pharmacies'),
-			store : me.pharmacyStore,
-			border : false,
-			frame : false,
-			viewConfig :
-			{
-				stripeRows : true
-			},
-			plugins : [me.rowEditingPharmacy],
-			columns : [
-			{
-				header : i18n('pharmacy_name'),
-				width : 150,
-				sortable : true,
-				dataIndex : 'name'
-			},
-			{
-				header : i18n('address'),
-				flex : 1,
-				sortable : true,
-				dataIndex : 'address_full'
-			},
-			{
-				header : i18n('phone'),
-				width : 120,
-				sortable : true,
-				dataIndex : 'phone_full'
-			},
-			{
-				header : i18n('Fax'),
-				width : 120,
-				sortable : true,
-				dataIndex : 'fax_full'
-			},
-			{
-				header : i18n('default_method'),
-				flex : 1,
-				sortable : true,
-				dataIndex : 'transmit_method',
-				renderer : transmit_method
-			},
-			{
-				header : i18n('active'),
-				width : 55,
-				sortable : true,
-				dataIndex : 'active',
-				renderer : me.boolRenderer
-			}],
-			tbar : [
-			{
-				text : i18n('add_new_pharmacy'),
-				iconCls : 'save',
-				action : 'pharmacyGridModel',
-				scope : me,
-				handler : me.onNewRec
-			}]
-		});
-		me.insuranceGrid = Ext.create('Ext.grid.Panel',
-		{
-			title : i18n('insurance_companies'),
-			store : me.insuranceStore,
-			border : false,
-			frame : false,
-			viewConfig :
-			{
-				stripeRows : true
-			},
-			plugins : [me.rowEditingInsurance],
-			columns : [
-			{
-				header : i18n('insurance_name'),
-				width : 150,
-				sortable : true,
-				dataIndex : 'name'
-			},
-			{
-				header : i18n('address'),
-				flex : 1,
-				sortable : true,
-				dataIndex : 'address_full'
-			},
-			{
-				header : i18n('Phone'),
-				width : 120,
-				sortable : true,
-				dataIndex : 'phone_full'
-			},
-			{
-				header : i18n('fax'),
-				width : 120,
-				sortable : true,
-				dataIndex : 'fax_full'
-			},
-			{
-				header : i18n('default_x12_partner'),
-				flex : 1,
-				sortable : true,
-				dataIndex : 'x12_default_partner_id'
-			},
-			{
-				header : i18n('active'),
-				width : 55,
-				sortable : true,
-				dataIndex : 'active',
-				renderer : me.boolRenderer
-			}],
-			tbar : [
-			{
-				text : i18n('add_new_insurance'),
-				iconCls : 'save',
-				action : 'insuranceGridModel',
-				scope : me,
-				handler : me.onNewRec
-			}]
-		});
-
-		//		me.InsuranceNumbersGrid = Ext.create('Ext.grid.Panel', {
-		//            title    : 'Insurance Numbers',
-		//			//store     : me.insuranceNumbersStore,
-		//			border    : false,
-		//			frame     : false,
-		//            viewConfig: { stripeRows: true },
-		//			columns   : [
-		//				{ text: 'Name', flex: 1, sortable: true, dataIndex: 'name' },
-		//				{ width: 100, sortable: true, dataIndex: 'address' },
-		//				{ text: 'Provider #', flex: 1, width: 100, sortable: true, dataIndex: 'phone' },
-		//				{ text: 'Rendering #', flex: 1, width: 100, sortable: true, dataIndex: 'phone' },
-		//				{ text: 'Group #', flex: 1, width: 100, sortable: true, dataIndex: 'phone' }
-		//			]
-		//
-		//		});
-		me.x12ParnersGrid = Ext.create('Ext.grid.Panel',
-		{
-			title : i18n('x12_partners_clearing_houses'),
-			//store     : me.x12PartnersStore,
-			border : false,
-			frame : false,
-			viewConfig :
-			{
-				stripeRows : true
-			},
-			columns : [
-			{
-				text : i18n('name'),
-				flex : 1,
-				sortable : true,
-				dataIndex : 'name'
-			},
-			{
-				text : i18n('sender_id'),
-				flex : 1,
-				width : 100,
-				sortable : true,
-				dataIndex : 'phone'
-			},
-			{
-				text : i18n('receiver_id'),
-				flex : 1,
-				width : 100,
-				sortable : true,
-				dataIndex : 'phone'
-			},
-			{
-				text : i18n('version'),
-				flex : 1,
-				width : 100,
-				sortable : true,
-				dataIndex : 'phone'
-			}]
-
-		});
-
-		// *************************************************************************************
-		// Tab Panel
-		// *************************************************************************************
-		me.praticePanel = Ext.create('Ext.tab.Panel',
-		{
-			activeTab : 0,
-			items : [me.pharmacyGrid, me.insuranceGrid,
-			//me.InsuranceNumbersGrid,
-			me.x12ParnersGrid,
-			{
-				title : i18n('hl7_viewer'),
-				frame : false,
-				border : false,
-				items : [
-				{
-
-				}],
-				tbar : [
-				{
-					xtype : 'button',
-					text : i18n('clear_hl7_data'),
-					iconCls : 'save',
-					handler : function()
-					{
-						me.onWinOpen();
-					}
-				}, '-',
-				{
-					xtype : 'button',
-					text : i18n('parse_hl7'),
-					iconCls : 'save',
-					handler : function()
-					{
-						me.onWinOpen();
-					}
-				}]
-			}]
-		});
-
-		me.pageBody = [me.praticePanel];
-		me.callParent(arguments);
-	},
-
-	onNewRec : function(btn)
-	{
-		var me = this, grid = btn.up('grid'), store = grid.store, model = btn.action, plugin = grid.editingPlugin, newModel;
-
-		say(grid);
-		say(plugin);
-		say(model);
-
-		plugin.cancelEdit();
-		newModel = Ext.ModelManager.create(
-		{
-			active : 1
-		}, model);
-		say(newModel);
-		store.insert(0, newModel);
-		plugin.startEdit(0, 0);
-	},
-
-	/**
-	 * This function is called from Viewport.js when
-	 * this panel is selected in the navigation panel.
-	 * place inside this function all the functions you want
-	 * to call every this panel becomes active
-	 */
-	onActive : function(callback)
-	{
-		this.pharmacyStore.load();
-		this.insuranceStore.load();
-		//this.insuranceNumbersStore.load();
-		//this.x12PartnersStore.load();
-		callback(true);
-	}
+                        }
+                    ],
+                    tbar: [
+                        {
+                            xtype: 'button',
+                            text: i18n('clear_hl7_data'),
+                            iconCls: 'save',
+                            handler: function(){
+                                me.onWinOpen();
+                            }
+                        },
+                        '-',
+                        {
+                            xtype: 'button',
+                            text: i18n('parse_hl7'),
+                            iconCls: 'save',
+                            handler: function(){
+                                me.onWinOpen();
+                            }
+                        }
+                    ]
+                }]
+        });
+        me.pageBody = [me.praticePanel];
+        me.callParent(arguments);
+    },
+    onNewRec: function(btn){
+        var me = this, grid = btn.up('grid'), store = grid.store, model = btn.action, plugin = grid.editingPlugin, newModel;
+        say(grid);
+        say(plugin);
+        say(model);
+        plugin.cancelEdit();
+        newModel = Ext.ModelManager.create({
+                active: 1
+            }, model);
+        say(newModel);
+        store.insert(0, newModel);
+        plugin.startEdit(0, 0);
+    },
+    /**
+     * This function is called from Viewport.js when
+     * this panel is selected in the navigation panel.
+     * place inside this function all the functions you want
+     * to call every this panel becomes active
+     */
+    onActive: function(callback){
+        this.pharmacyStore.load();
+        this.insuranceStore.load();
+        //this.insuranceNumbersStore.load();
+        //this.x12PartnersStore.load();
+        callback(true);
+    }
 });
-// end of PracticePage
+
 /*
  GaiaEHR (Electronic Health Records)
  PreventiveCare.js
@@ -43986,143 +43744,109 @@ Ext.define('App.view.administration.PreventiveCare',
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-Ext.define('App.view.administration.Roles',
-{
-	extend : 'App.ux.RenderPanel',
-	id : 'panelRoles',
-	pageTitle : i18n('roles_and_permissions'),
-	pageLayout :
-	{
-		type : 'vbox',
-		align : 'stretch'
-	},
-	initComponent : function()
-	{
-
-		var me = this;
-
-		//******************************************************************************
-		// Roles Store
-		//******************************************************************************
-
-		me.header = Ext.create('Ext.container.Container',
-		{
-			height : 30,
-			html : '<div class="roleHeader">' + '<span class="perm">' + i18n('permission') + '</span>' + '<span class="role">' + i18n('front_office') + '</span>' + '<span class="role">' + i18n('auditors') + '</span>' + '<span class="role">' + i18n('clinician') + '</span>' + '<span class="role">' + i18n('physician') + '</span>' + '<span class="role">' + i18n('administrator') + '</span>' + '</div>'
-		});
-
-		me.form = Ext.create('Ext.form.Panel',
-		{
-			flex : 1,
-			frame : true,
-			bodyStyle : 'background-color:white',
-			bodyPadding : 10,
-			items : [
-			{
-				xtype : 'fieldcontainer',
-				defaultType : 'mitos.checkbox',
-				layout : 'hbox'
-			}],
-			buttons : [
-			{
-				text : i18n('save'),
-				iconCls : 'save',
-				margin : '0 20 0 0',
-				scope : me,
-				handler : me.onSave
-			}]
-		});
-
-		me.pageBody = [me.header, me.form];
-		me.callParent(arguments);
-	},
-
-	onSave : function()
-	{
-		var me = this, form = me.form.getForm(), values = form.getValues(), record = form.getRecord(), changedValues;
-
-		if (record.set(values) !== null)
-		{
-			me.form.el.mask(i18n('saving_roles') + '...');
-			changedValues = record.getChanges();
-			Roles.saveRolesData(changedValues, function(provider, response)
-			{
-				if (response.result)
-				{
-					me.form.el.unmask();
-					me.msg('Sweet!', i18n('roles_updated'));
-					record.commit();
-				}
-			});
-		}
-	},
-
-	getFormData : function()
-	{
-
-		var me = this, form = me.form, formFields = form.getForm().getFields(), modelFields = [], model;
-
-		for (var i = 0; i < formFields.items.length; i++)
-		{
-			modelFields.push(
-			{
-				name : formFields.items[i].name,
-				type : 'bool'
-			});
-		}
-
-		model = Ext.define(form.itemId + 'Model',
-		{
-			extend : 'Ext.data.Model',
-			fields : modelFields,
-			proxy :
-			{
-				type : 'direct',
-				api :
-				{
-					read : Roles.getRolesData
-				}
-			}
-		});
-
-		me.store = Ext.create('Ext.data.Store',
-		{
-			model : model
-		});
-
-		me.store.load(
-		{
-			scope : this,
-			callback : function(records, operation, success)
-			{
-				if (success)
-				{
-					form.getForm().loadRecord(records[0]);
-					form.el.unmask();
-				}
-			}
-		});
-	},
-
-	/**
-	 * This function is called from Viewport.js when
-	 * this panel is selected in the navigation panel.
-	 * place inside this function all the functions you want
-	 * to call every this panel becomes active
-	 */
-	onActive : function(callback)
-	{
-		var me = this, form = me.form;
-		form.el.mask(i18n('loading') + '...');
-		form.removeAll();
-		Roles.getRoleForm(null, function(provider, response)
-		{
-			form.add(eval(response.result));
-			me.getFormData();
-		});
-
-		callback(true);
-	}
+Ext.define('App.view.administration.Roles', {
+    extend: 'App.ux.RenderPanel',
+    id: 'panelRoles',
+    pageTitle: i18n('roles_and_permissions'),
+    pageLayout: {
+        type: 'vbox',
+        align: 'stretch'
+    },
+    initComponent: function(){
+        var me = this;
+        //******************************************************************************
+        // Roles Store
+        //******************************************************************************
+        me.header = Ext.create('Ext.container.Container', {
+            height: 30,
+            html: '<div class="roleHeader">' + '<span class="perm">' + i18n('permission') + '</span>' + '<span class="role">' + i18n('front_office') + '</span>' + '<span class="role">' + i18n('auditors') + '</span>' + '<span class="role">' + i18n('clinician') + '</span>' + '<span class="role">' + i18n('physician') + '</span>' + '<span class="role">' + i18n('administrator') + '</span>' + '</div>'
+        });
+        me.form = Ext.create('Ext.form.Panel', {
+            flex: 1,
+            frame: true,
+            bodyStyle: 'background-color:white',
+            bodyPadding: 10,
+            items: [
+                {
+                    xtype: 'fieldcontainer',
+                    defaultType: 'mitos.checkbox',
+                    layout: 'hbox'
+                }
+            ],
+            buttons: [
+                {
+                    text: i18n('save'),
+                    iconCls: 'save',
+                    margin: '0 20 0 0',
+                    scope: me,
+                    handler: me.onRolesSave
+                }
+            ]
+        });
+        me.pageBody = [me.header, me.form];
+        me.callParent(arguments);
+    },
+    onRolesSave: function(){
+        var me = this, form = me.form.getForm(), values = form.getValues(), record = form.getRecord(), changedValues;
+        if(record.set(values) !== null){
+            me.form.el.mask(i18n('saving_roles') + '...');
+            changedValues = record.getChanges();
+            Roles.saveRolesData(changedValues, function(provider, response){
+                if(response.result){
+                    me.form.el.unmask();
+                    me.msg('Sweet!', i18n('roles_updated'));
+                    record.commit();
+                }
+            });
+        }
+    },
+    getFormData: function(){
+        var me = this, form = me.form, formFields = form.getForm().getFields(), modelFields = [], model;
+        for(var i = 0; i < formFields.items.length; i++){
+            modelFields.push({
+                name: formFields.items[i].name,
+                type: 'bool'
+            });
+        }
+        model = Ext.define(form.itemId + 'Model', {
+            extend: 'Ext.data.Model',
+            fields: modelFields,
+            proxy: {
+                type: 'direct',
+                api: {
+                    read: Roles.getRolesData
+                }
+            }
+        });
+        me.store = Ext.create('Ext.data.Store', {
+            model: model
+        });
+        me.store.load({
+            scope: this,
+            callback: function(records, operation, success){
+                if(success){
+                    form.getForm().loadRecord(records[0]);
+                    form.el.unmask();
+                }
+            }
+        });
+    },
+    /**
+     * This function is called from Viewport.js when
+     * this panel is selected in the navigation panel.
+     * place inside this function all the functions you want
+     * to call every this panel becomes active
+     */
+    onActive: function(callback){
+        var me = this, form = me.form;
+        form.el.mask(i18n('loading') + '...');
+        form.removeAll();
+        Roles.getRoleForm(null, function(provider, response){
+            form.add(eval(response.result));
+            me.getFormData();
+        });
+        callback(true);
+    }
 });
 
 /*
@@ -44481,633 +44205,586 @@ Ext.define('App.view.administration.ExternalDataLoads',
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-Ext.define('App.view.administration.Users',
-{
-	extend : 'App.ux.RenderPanel',
-	id : 'panelUsers',
-	pageTitle : i18n('users'),
-	uses : ['App.ux.GridPanel'],
-	initComponent : function()
-	{
+Ext.define('App.view.administration.Users', {
+    extend: 'App.ux.RenderPanel',
+    id: 'panelUsers',
+    pageTitle: i18n('users'),
+    uses: ['App.ux.GridPanel'],
+    initComponent: function(){
+        var me = this;
+        Ext.define('UserModel', {
+            extend: 'Ext.data.Model',
+            fields: [
+                {
+                    name: 'id',
+                    type: 'int'
+                },
+                {
+                    name: 'username',
+                    type: 'string'
+                },
+                {
+                    name: 'password',
+                    type: 'auto'
+                },
+                {
+                    name: 'authorized',
+                    type: 'bool'
+                },
+                {
+                    name: 'active',
+                    type: 'bool'
+                },
+                {
+                    name: 'info',
+                    type: 'string'
+                },
+                {
+                    name: 'source',
+                    type: 'int'
+                },
+                {
+                    name: 'fname',
+                    type: 'string'
+                },
+                {
+                    name: 'mname',
+                    type: 'string'
+                },
+                {
+                    name: 'lname',
+                    type: 'string'
+                },
+                {
+                    name: 'fullname',
+                    type: 'string'
+                },
+                {
+                    name: 'federaltaxid',
+                    type: 'string'
+                },
+                {
+                    name: 'federaldrugid',
+                    type: 'string'
+                },
+                {
+                    name: 'upin',
+                    type: 'string'
+                },
+                {
+                    name: 'facility_id',
+                    type: 'int'
+                },
+                {
+                    name: 'see_auth',
+                    type: 'bool'
+                },
+                {
+                    name: 'active',
+                    type: 'bool'
+                },
+                {
+                    name: 'npi',
+                    type: 'string'
+                },
+                {
+                    name: 'title',
+                    type: 'string'
+                },
+                {
+                    name: 'specialty',
+                    type: 'string'
+                },
+                {
+                    name: 'cal_ui',
+                    type: 'string'
+                },
+                {
+                    name: 'taxonomy',
+                    type: 'string'
+                },
+                {
+                    name: 'calendar',
+                    type: 'bool'
+                },
+                {
+                    name: 'abook_type',
+                    type: 'string'
+                },
+                {
+                    name: 'default_warehouse',
+                    type: 'string'
+                },
+                {
+                    name: 'role_id',
+                    type: 'int'
+                }
+            ]
 
-		var me = this;
+        });
+        me.userStore = Ext.create('Ext.data.Store', {
+                model: 'UserModel',
+                proxy: {
+                    type: 'direct',
+                    api: {
+                        read: User.getUsers,
+                        create: User.addUser,
+                        update: User.updateUser
+                    }
+                },
+                autoLoad: false
+            });
+        function authCk(val){
+            if(val == '1'){
+                return '<img src="resources/images/icons/yes.gif" />';
+            }else if(val == '0'){
+                return '<img src="resources/images/icons/no.gif" />';
+            }
+            return val;
+        }
 
-		Ext.define('UserModel',
-		{
-			extend : 'Ext.data.Model',
-			fields : [
-			{
-				name : 'id',
-				type : 'int'
-			},
-			{
-				name : 'username',
-				type : 'string'
-			},
-			{
-				name : 'password',
-				type : 'auto'
-			},
-			{
-				name : 'authorized',
-				type : 'bool'
-			},
-			{
-				name : 'active',
-				type : 'bool'
-			},
-			{
-				name : 'info',
-				type : 'string'
-			},
-			{
-				name : 'source',
-				type : 'int'
-			},
-			{
-				name : 'fname',
-				type : 'string'
-			},
-			{
-				name : 'mname',
-				type : 'string'
-			},
-			{
-				name : 'lname',
-				type : 'string'
-			},
-			{
-				name : 'fullname',
-				type : 'string'
-			},
-			{
-				name : 'federaltaxid',
-				type : 'string'
-			},
-			{
-				name : 'federaldrugid',
-				type : 'string'
-			},
-			{
-				name : 'upin',
-				type : 'string'
-			},
-			{
-				name : 'facility_id',
-				type : 'int'
-			},
-			{
-				name : 'see_auth',
-				type : 'bool'
-			},
-			{
-				name : 'active',
-				type : 'bool'
-			},
-			{
-				name : 'npi',
-				type : 'string'
-			},
-			{
-				name : 'title',
-				type : 'string'
-			},
-			{
-				name : 'specialty',
-				type : 'string'
-			},
-			{
-				name : 'cal_ui',
-				type : 'string'
-			},
-			{
-				name : 'taxonomy',
-				type : 'string'
-			},
-			{
-				name : 'calendar',
-				type : 'bool'
-			},
-			{
-				name : 'abook_type',
-				type : 'string'
-			},
-			{
-				name : 'default_warehouse',
-				type : 'string'
-			},
-			{
-				name : 'role_id',
-				type : 'int'
-			}]
-
-		});
-
-		me.userStore = Ext.create('Ext.data.Store',
-		{
-			model : 'UserModel',
-			proxy :
-			{
-				type : 'direct',
-				api :
-				{
-					read : User.getUsers,
-					create : User.addUser,
-					update : User.updateUser
-				}
-			},
-			autoLoad : false
-		});
-
-		function authCk(val)
-		{
-			if (val == '1')
-			{
-				return '<img src="resources/images/icons/yes.gif" />';
-			}
-			else
-			if (val == '0')
-			{
-				return '<img src="resources/images/icons/no.gif" />';
-			}
-			return val;
-		}
-
-		// *************************************************************************************
-		// Create the GridPanel
-		// *************************************************************************************
-		me.userGrid = Ext.create('App.ux.GridPanel',
-		{
-			store : me.userStore,
-			columns : [
-			{
-				text : 'id',
-				sortable : false,
-				dataIndex : 'id',
-				hidden : true
-			},
-			{
-				width : 100,
-				text : i18n('username'),
-				sortable : true,
-				dataIndex : 'username'
-			},
-			{
-				width : 200,
-				text : i18n('name'),
-				sortable : true,
-				dataIndex : 'fullname'
-			},
-			{
-				flex : 1,
-				text : i18n('aditional_info'),
-				sortable : true,
-				dataIndex : 'info'
-			},
-			{
-				text : i18n('active'),
-				sortable : true,
-				dataIndex : 'active',
-				renderer : authCk
-			},
-			{
-				text : i18n('authorized'),
-				sortable : true,
-				dataIndex : 'authorized',
-				renderer : authCk
-			},
-			{
-				text : i18n('calendar_q'),
-				sortable : true,
-				dataIndex : 'calendar',
-				renderer : authCk
-			}],
-			listeners :
-			{
-				scope : me,
-				itemdblclick : function(view, record)
-				{
-					me.onItemdblclick(me.userStore, record, i18n('edit_user'));
-				}
-			},
-			dockedItems : [
-			{
-				xtype : 'toolbar',
-				dock : 'top',
-				items : [
-				{
-					xtype : 'button',
-					text : i18n('add_new_user'),
-					iconCls : 'save',
-					handler : function()
-					{
-						var form = me.win.down('form');
-						me.onNew(form, 'UserModel', i18n('add_new_user'));
-					}
-				}]
-			}]
-		});
-
-		// *************************************************************************************
-		// Window User Form
-		// *************************************************************************************
-		me.win = Ext.create('App.ux.window.Window',
-		{
-			width : 600,
-			items : [
-			{
-				xtype : 'mitos.form',
-				fieldDefaults :
-				{
-					msgTarget : 'side',
-					labelWidth : 100
-				},
-				defaultType : 'textfield',
-				//hideLabels      : true,
-				defaults :
-				{
-					labelWidth : 89,
-					anchor : '100%',
-					layout :
-					{
-						type : 'hbox',
-						defaultMargins :
-						{
-							top : 0,
-							right : 5,
-							bottom : 0,
-							left : 0
-						}
-					}
-				},
-				items : [
-				{
-					xtype : 'textfield',
-					hidden : true,
-					name : 'id'
-				},
-				{
-					xtype : 'fieldcontainer',
-					defaults :
-					{
-						hideLabel : true
-					},
-					msgTarget : 'under',
-					items : [
-					{
-						width : 100,
-						xtype : 'displayfield',
-						value : i18n('username') + ': '
-					},
-					{
-						width : 100,
-						xtype : 'textfield',
-						name : 'username',
-						allowBlank : false
-					},
-					{
-						width : 100,
-						xtype : 'displayfield',
-						value : i18n('password') + ': '
-					},
-					{
-						width : 105,
-						xtype : 'textfield',
-						name : 'password',
-						inputType : 'password'
-					}]
-				},
-				{
-					xtype : 'fieldcontainer',
-					defaults :
-					{
-						hideLabel : true
-					},
-					msgTarget : 'under',
-					items : [
-					{
-						width : 100,
-						xtype : 'displayfield',
-						value : i18n('first_middle_last')
-					},
-					{
-						width : 50,
-						xtype : 'mitos.titlescombo',
-						name : 'title'
-					},
-					{
-						width : 80,
-						xtype : 'textfield',
-						name : 'fname',
-						allowBlank : false
-					},
-					{
-						width : 65,
-						xtype : 'textfield',
-						name : 'mname'
-					},
-					{
-						width : 105,
-						xtype : 'textfield',
-						name : 'lname'
-					}]
-				},
-				{
-					xtype : 'fieldcontainer',
-					msgTarget : 'under',
-					items : [
-					{
-						width : 150,
-						xtype : 'mitos.checkbox',
-						fieldLabel : i18n('active'),
-						name : 'active'
-					},
-					{
-						width : 150,
-						xtype : 'mitos.checkbox',
-						fieldLabel : i18n('authorized'),
-						name : 'authorized'
-					},
-					{
-						width : 150,
-						xtype : 'mitos.checkbox',
-						fieldLabel : i18n('calendar_q'),
-						name : 'calendar'
-					}]
-				},
-				{
-					xtype : 'fieldcontainer',
-					defaults :
-					{
-						hideLabel : true
-					},
-					msgTarget : 'under',
-					items : [
-					{
-						width : 100,
-						xtype : 'displayfield',
-						value : i18n('default_facility') + ': '
-					},
-					{
-						width : 100,
-						xtype : 'mitos.facilitiescombo',
-						name : 'facility_id'
-					},
-					{
-						width : 100,
-						xtype : 'displayfield',
-						value : i18n('authorizations') + ': '
-					},
-					{
-						width : 105,
-						xtype : 'mitos.authorizationscombo',
-						name : 'see_auth'
-					}]
-				},
-				{
-					xtype : 'fieldcontainer',
-					defaults :
-					{
-						hideLabel : true
-					},
-					items : [
-					{
-						width : 100,
-						xtype : 'displayfield',
-						value : i18n('access_control') + ': '
-					},
-					{
-						width : 100,
-						xtype : 'mitos.rolescombo',
-						name : 'role_id',
-						allowBlank : false
-					},
-					// not implemented yet
-					{
-						width : 100,
-						xtype : 'displayfield',
-						value : i18n('taxonomy') + ': '
-					},
-					{
-						width : 105,
-						xtype : 'textfield',
-						name : 'taxonomy'
-					}]
-				},
-				{
-					xtype : 'fieldcontainer',
-					defaults :
-					{
-						hideLabel : true
-					},
-					items : [
-					{
-						width : 100,
-						xtype : 'displayfield',
-						value : i18n('federal_tax_id') + ': '
-					},
-					{
-						width : 100,
-						xtype : 'textfield',
-						name : 'federaltaxid'
-					},
-					{
-						width : 100,
-						xtype : 'displayfield',
-						value : i18n('fed_drug_id') + ': '
-					},
-					{
-						width : 105,
-						xtype : 'textfield',
-						name : 'federaldrugid'
-					}]
-				},
-				{
-					xtype : 'fieldcontainer',
-					defaults :
-					{
-						hideLabel : true
-					},
-					items : [
-					{
-						width : 100,
-						xtype : 'displayfield',
-						value : i18n('upin') + ': '
-					},
-					{
-						width : 100,
-						xtype : 'textfield',
-						name : 'upin'
-					},
-					{
-						width : 100,
-						xtype : 'displayfield',
-						value : i18n('npi') + ': '
-					},
-					{
-						width : 105,
-						xtype : 'textfield',
-						name : 'npi'
-					}]
-				},
-				{
-					xtype : 'fieldcontainer',
-					defaults :
-					{
-						hideLabel : true
-					},
-					items : [
-					{
-						width : 100,
-						xtype : 'displayfield',
-						value : i18n('job_description') + ': '
-					},
-					{
-						width : 315,
-						xtype : 'textfield',
-						name : 'specialty'
-					}]
-				},
-				{
-					width : 410,
-					height : 50,
-					xtype : 'textfield',
-					name : 'info',
-					emptyText : i18n('additional_info')
-				}]
-			}],
-			buttons : [
-			{
-				text : i18n('save'),
-				cls : 'winSave',
-				handler : function()
-				{
-					var form = me.win.down('form').getForm();
-					if (form.isValid())
-					{
-						me.onSave(form, me.userStore);
-
-					}
-				}
-			}, '-',
-			{
-				text : i18n('cancel'),
-				scope : me,
-				handler : function(btn)
-				{
-					btn.up('window').close();
-				}
-			}],
-			listeners :
-			{
-				scope : me,
-				close : function()
-				{
-					me.action('close');
-				}
-			}
-		});
-		// END WINDOW
-		me.pageBody = [me.userGrid];
-		me.callParent(arguments);
-	}, // end of initComponent
-
-	onNew : function(form, model, title)
-	{
-		this.setForm(form, title);
-		form.getForm().reset();
-		var newModel = Ext.ModelManager.create(
-		{
-		}, model);
-		form.getForm().loadRecord(newModel);
-		this.action('new');
-		this.win.show();
-	},
-
-	onSave : function(form, store)
-	{
-		var me = this, password = form.findField('password').getValue(), id = form.findField('id').getValue();
-
-		if (password != '')
-		{
-			User.chechPasswordHistory(
-			{
-				password : password,
-				id : id
-			}, function(provider, response)
-			{
-				if (response.result.error)
-				{
-					Ext.Msg.alert('Opps!', i18n('password_currently_used'));
-				}
-				else
-				{
-					me.saveUser(form, store);
-				}
-			});
-		}
-		else
-		{
-			me.saveUser(form, store);
-		}
-
-	},
-
-	saveUser : function(form, store)
-	{
-		var record = form.getRecord(), values = form.getValues(), storeIndex = store.indexOf(record);
-		if (storeIndex == -1)
-		{
-			store.add(values);
-		}
-		else
-		{
-			record.set(values);
-		}
-		store.sync();
-		this.win.close();
-	},
-
-	onItemdblclick : function(store, record, title)
-	{
-		var form = this.win.down('form');
-		this.setForm(form, title);
-		form.getForm().loadRecord(record);
-		this.action('old');
-		this.win.show();
-	},
-
-	setForm : function(form, title)
-	{
-		form.up('window').setTitle(title);
-	},
-
-	openWin : function()
-	{
-		this.win.show();
-	},
-
-	action : function(action)
-	{
-		var win = this.win, form = win.down('form');
-
-		if (action == 'close')
-		{
-			form.getForm().reset();
-		}
-	},
-
-	/**
-	 * This function is called from Viewport.js when
-	 * this panel is selected in the navigation panel.
-	 * place inside this function all the functions you want
-	 * to call every this panel becomes active
-	 */
-	onActive : function(callback)
-	{
-		this.userStore.load();
-		callback(true);
-	}
+        // *************************************************************************************
+        // Create the GridPanel
+        // *************************************************************************************
+        me.userGrid = Ext.create('App.ux.GridPanel', {
+            store: me.userStore,
+            columns: [
+                {
+                    text: 'id',
+                    sortable: false,
+                    dataIndex: 'id',
+                    hidden: true
+                },
+                {
+                    width: 100,
+                    text: i18n('username'),
+                    sortable: true,
+                    dataIndex: 'username'
+                },
+                {
+                    width: 200,
+                    text: i18n('name'),
+                    sortable: true,
+                    dataIndex: 'fullname'
+                },
+                {
+                    flex: 1,
+                    text: i18n('aditional_info'),
+                    sortable: true,
+                    dataIndex: 'info'
+                },
+                {
+                    text: i18n('active'),
+                    sortable: true,
+                    dataIndex: 'active',
+                    renderer: authCk
+                },
+                {
+                    text: i18n('authorized'),
+                    sortable: true,
+                    dataIndex: 'authorized',
+                    renderer: authCk
+                },
+                {
+                    text: i18n('calendar_q'),
+                    sortable: true,
+                    dataIndex: 'calendar',
+                    renderer: authCk
+                }
+            ],
+            listeners: {
+                scope: me,
+                itemdblclick: function(view, record){
+                    me.onItemdblclick(me.userStore, record, i18n('edit_user'));
+                }
+            },
+            dockedItems: [
+                {
+                    xtype: 'toolbar',
+                    dock: 'top',
+                    items: [
+                        {
+                            xtype: 'button',
+                            text: i18n('add_new_user'),
+                            iconCls: 'save',
+                            handler: function(){
+                                var form = me.win.down('form');
+                                me.onNew(form, 'UserModel', i18n('add_new_user'));
+                            }
+                        }
+                    ]
+                }
+            ]
+        });
+        // *************************************************************************************
+        // Window User Form
+        // *************************************************************************************
+        me.win = Ext.create('App.ux.window.Window', {
+            width: 600,
+            items: [
+                {
+                    xtype: 'mitos.form',
+                    fieldDefaults: {
+                        msgTarget: 'side',
+                        labelWidth: 100
+                    },
+                    defaultType: 'textfield',
+                    //hideLabels      : true,
+                    defaults: {
+                        labelWidth: 89,
+                        anchor: '100%',
+                        layout: {
+                            type: 'hbox',
+                            defaultMargins: {
+                                top: 0,
+                                right: 5,
+                                bottom: 0,
+                                left: 0
+                            }
+                        }
+                    },
+                    items: [
+                        {
+                            xtype: 'textfield',
+                            hidden: true,
+                            name: 'id'
+                        },
+                        {
+                            xtype: 'fieldcontainer',
+                            defaults: {
+                                hideLabel: true
+                            },
+                            msgTarget: 'under',
+                            items: [
+                                {
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: i18n('username') + ': '
+                                },
+                                {
+                                    width: 100,
+                                    xtype: 'textfield',
+                                    name: 'username',
+                                    allowBlank: false
+                                },
+                                {
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: i18n('password') + ': '
+                                },
+                                {
+                                    width: 105,
+                                    xtype: 'textfield',
+                                    name: 'password',
+                                    inputType: 'password'
+                                }
+                            ]
+                        },
+                        {
+                            xtype: 'fieldcontainer',
+                            defaults: {
+                                hideLabel: true
+                            },
+                            msgTarget: 'under',
+                            items: [
+                                {
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: i18n('first_middle_last')
+                                },
+                                {
+                                    width: 50,
+                                    xtype: 'mitos.titlescombo',
+                                    name: 'title'
+                                },
+                                {
+                                    width: 80,
+                                    xtype: 'textfield',
+                                    name: 'fname',
+                                    allowBlank: false
+                                },
+                                {
+                                    width: 65,
+                                    xtype: 'textfield',
+                                    name: 'mname'
+                                },
+                                {
+                                    width: 105,
+                                    xtype: 'textfield',
+                                    name: 'lname'
+                                }
+                            ]
+                        },
+                        {
+                            xtype: 'fieldcontainer',
+                            msgTarget: 'under',
+                            items: [
+                                {
+                                    width: 150,
+                                    xtype: 'mitos.checkbox',
+                                    fieldLabel: i18n('active'),
+                                    name: 'active'
+                                },
+                                {
+                                    width: 150,
+                                    xtype: 'mitos.checkbox',
+                                    fieldLabel: i18n('authorized'),
+                                    name: 'authorized'
+                                },
+                                {
+                                    width: 150,
+                                    xtype: 'mitos.checkbox',
+                                    fieldLabel: i18n('calendar_q'),
+                                    name: 'calendar'
+                                }
+                            ]
+                        },
+                        {
+                            xtype: 'fieldcontainer',
+                            defaults: {
+                                hideLabel: true
+                            },
+                            msgTarget: 'under',
+                            items: [
+                                {
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: i18n('default_facility') + ': '
+                                },
+                                {
+                                    width: 100,
+                                    xtype: 'mitos.facilitiescombo',
+                                    name: 'facility_id'
+                                },
+                                {
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: i18n('authorizations') + ': '
+                                },
+                                {
+                                    width: 105,
+                                    xtype: 'mitos.authorizationscombo',
+                                    name: 'see_auth'
+                                }
+                            ]
+                        },
+                        {
+                            xtype: 'fieldcontainer',
+                            defaults: {
+                                hideLabel: true
+                            },
+                            items: [
+                                {
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: i18n('access_control') + ': '
+                                },
+                                {
+                                    width: 100,
+                                    xtype: 'mitos.rolescombo',
+                                    name: 'role_id',
+                                    allowBlank: false
+                                },
+                                // not implemented yet
+                                {
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: i18n('taxonomy') + ': '
+                                },
+                                {
+                                    width: 105,
+                                    xtype: 'textfield',
+                                    name: 'taxonomy'
+                                }
+                            ]
+                        },
+                        {
+                            xtype: 'fieldcontainer',
+                            defaults: {
+                                hideLabel: true
+                            },
+                            items: [
+                                {
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: i18n('federal_tax_id') + ': '
+                                },
+                                {
+                                    width: 100,
+                                    xtype: 'textfield',
+                                    name: 'federaltaxid'
+                                },
+                                {
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: i18n('fed_drug_id') + ': '
+                                },
+                                {
+                                    width: 105,
+                                    xtype: 'textfield',
+                                    name: 'federaldrugid'
+                                }
+                            ]
+                        },
+                        {
+                            xtype: 'fieldcontainer',
+                            defaults: {
+                                hideLabel: true
+                            },
+                            items: [
+                                {
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: i18n('upin') + ': '
+                                },
+                                {
+                                    width: 100,
+                                    xtype: 'textfield',
+                                    name: 'upin'
+                                },
+                                {
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: i18n('npi') + ': '
+                                },
+                                {
+                                    width: 105,
+                                    xtype: 'textfield',
+                                    name: 'npi'
+                                }
+                            ]
+                        },
+                        {
+                            xtype: 'fieldcontainer',
+                            defaults: {
+                                hideLabel: true
+                            },
+                            items: [
+                                {
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: i18n('job_description') + ': '
+                                },
+                                {
+                                    width: 315,
+                                    xtype: 'textfield',
+                                    name: 'specialty'
+                                }
+                            ]
+                        },
+                        {
+                            width: 410,
+                            height: 50,
+                            xtype: 'textfield',
+                            name: 'info',
+                            emptyText: i18n('additional_info')
+                        }
+                    ]
+                }
+            ],
+            buttons: [
+                {
+                    text: i18n('save'),
+                    cls: 'winSave',
+                    handler: function(){
+                        var form = me.win.down('form').getForm();
+                        if(form.isValid()){
+                            me.onUserSave(form, me.userStore);
+                        }
+                    }
+                },
+                '-',
+                {
+                    text: i18n('cancel'),
+                    scope: me,
+                    handler: function(btn){
+                        btn.up('window').close();
+                    }
+                }
+            ],
+            listeners: {
+                scope: me,
+                close: function(){
+                    me.action('close');
+                }
+            }
+        });
+        // END WINDOW
+        me.pageBody = [me.userGrid];
+        me.callParent(arguments);
+    }, // end of initComponent
+    onNew: function(form, model, title){
+        this.setForm(form, title);
+        form.getForm().reset();
+        var newModel = Ext.ModelManager.create({
+            }, model);
+        form.getForm().loadRecord(newModel);
+        this.action('new');
+        this.win.show();
+    },
+    onUserSave: function(form, store){
+        var me = this, password = form.findField('password').getValue(), id = form.findField('id').getValue();
+        if(password != ''){
+            User.chechPasswordHistory({
+                    password: password,
+                    id: id
+                }, function(provider, response){
+                    if(response.result.error){
+                        Ext.Msg.alert('Opps!', i18n('password_currently_used'));
+                    }else{
+                        me.saveUser(form, store);
+                    }
+                });
+        }else{
+            me.saveUser(form, store);
+        }
+    },
+    saveUser: function(form, store){
+        var me = this, record = form.getRecord(), values = form.getValues(), storeIndex = store.indexOf(record);
+        if(storeIndex == -1){
+            store.add(values);
+        }else{
+            record.set(values);
+        }
+        store.sync({
+            success:function(){
+                me.win.close();
+            },
+            failure:function(){
+                store.load();
+                me.msg('Opps!', i18n('username_exist_alert'), true);
+            }
+        });
+    },
+    onItemdblclick: function(store, record, title){
+        var form = this.win.down('form');
+        this.setForm(form, title);
+        form.getForm().loadRecord(record);
+        this.action('old');
+        this.win.show();
+    },
+    setForm: function(form, title){
+        form.up('window').setTitle(title);
+    },
+    openWin: function(){
+        this.win.show();
+    },
+    action: function(action){
+        var win = this.win, form = win.down('form');
+        if(action == 'close'){
+            form.getForm().reset();
+        }
+    },
+    /**
+     * This function is called from Viewport.js when
+     * this panel is selected in the navigation panel.
+     * place inside this function all the functions you want
+     * to call every this panel becomes active
+     */
+    onActive: function(callback){
+        this.userStore.load();
+        callback(true);
+    }
 });
 //ens UserPage class
 /**
@@ -45123,959 +44800,914 @@ Ext.define('App.view.administration.Users',
  * @namespace AddressBook.updateAddress
  *
  */
-Ext.define('App.view.miscellaneous.Addressbook',
-{
-	extend : 'App.ux.RenderPanel',
-	id : 'panelAddressbook',
-	pageTitle : i18n('address_book'),
-	uses : ['App.ux.GridPanel', 'App.ux.combo.Titles', 'App.ux.window.Window', 'App.ux.combo.Types'],
-	initComponent : function()
-	{
-		var me = this;
-		var currRec;
+Ext.define('App.view.miscellaneous.Addressbook', {
+    extend: 'App.ux.RenderPanel',
+    id: 'panelAddressbook',
+    pageTitle: i18n('address_book'),
+    uses: ['App.ux.GridPanel', 'App.ux.combo.Titles', 'App.ux.window.Window', 'App.ux.combo.Types'],
+    initComponent: function(){
+        var me = this;
+        var currRec;
+        /**
+         * Addresses Store and Model
+         */
+        Ext.define('addressBookModel', {
+            extend: 'Ext.data.Model',
+            fields: [
+                {
+                    name: 'id',
+                    type: 'int'
+                },
+                {
+                    name: 'username',
+                    type: 'string'
+                },
+                {
+                    name: 'password',
+                    type: 'string'
+                },
+                {
+                    name: 'authorized',
+                    type: 'string'
+                },
+                {
+                    name: 'info',
+                    type: 'string'
+                },
+                {
+                    name: 'source',
+                    type: 'int'
+                },
+                {
+                    name: 'fname',
+                    type: 'string'
+                },
+                {
+                    name: 'mname',
+                    type: 'string'
+                },
+                {
+                    name: 'lname',
+                    type: 'string'
+                },
+                {
+                    name: 'fullname',
+                    type: 'string'
+                },
+                {
+                    name: 'federaltaxid',
+                    type: 'string'
+                },
+                {
+                    name: 'federaldrugid',
+                    type: 'string'
+                },
+                {
+                    name: 'upin',
+                    type: 'string'
+                },
+                {
+                    name: 'facility',
+                    type: 'string'
+                },
+                {
+                    name: 'facility_id',
+                    type: 'int'
+                },
+                {
+                    name: 'see_auth',
+                    type: 'int'
+                },
+                {
+                    name: 'active',
+                    type: 'int'
+                },
+                {
+                    name: 'npi',
+                    type: 'string'
+                },
+                {
+                    name: 'title',
+                    type: 'string'
+                },
+                {
+                    name: 'specialty',
+                    type: 'string'
+                },
+                {
+                    name: 'billname',
+                    type: 'string'
+                },
+                {
+                    name: 'email',
+                    type: 'string'
+                },
+                {
+                    name: 'url',
+                    type: 'string'
+                },
+                {
+                    name: 'assistant',
+                    type: 'string'
+                },
+                {
+                    name: 'organization',
+                    type: 'string'
+                },
+                {
+                    name: 'valedictory',
+                    type: 'string'
+                },
+                {
+                    name: 'fulladdress',
+                    type: 'string'
+                },
+                {
+                    name: 'street',
+                    type: 'string'
+                },
+                {
+                    name: 'streetb',
+                    type: 'string'
+                },
+                {
+                    name: 'city',
+                    type: 'string'
+                },
+                {
+                    name: 'state',
+                    type: 'string'
+                },
+                {
+                    name: 'zip',
+                    type: 'string'
+                },
+                {
+                    name: 'street2',
+                    type: 'string'
+                },
+                {
+                    name: 'streetb2',
+                    type: 'string'
+                },
+                {
+                    name: 'city2',
+                    type: 'string'
+                },
+                {
+                    name: 'state2',
+                    type: 'string'
+                },
+                {
+                    name: 'zip2',
+                    type: 'string'
+                },
+                {
+                    name: 'phone',
+                    type: 'string'
+                },
+                {
+                    name: 'fax',
+                    type: 'string'
+                },
+                {
+                    name: 'phonew1',
+                    type: 'string'
+                },
+                {
+                    name: 'phonew2',
+                    type: 'string'
+                },
+                {
+                    name: 'phonecell',
+                    type: 'string'
+                },
+                {
+                    name: 'notes',
+                    type: 'string'
+                },
+                {
+                    name: 'cal_ui',
+                    type: 'string'
+                },
+                {
+                    name: 'taxonomy',
+                    type: 'string'
+                },
+                {
+                    name: 'ssi_relayhealth',
+                    type: 'string'
+                },
+                {
+                    name: 'calendar',
+                    type: 'int'
+                },
+                {
+                    name: 'abook_type',
+                    type: 'string'
+                },
+                {
+                    name: 'pwd_expiration_date',
+                    type: 'string'
+                },
+                {
+                    name: 'pwd_history1',
+                    type: 'string'
+                },
+                {
+                    name: 'pwd_history2',
+                    type: 'string'
+                },
+                {
+                    name: 'default_warehouse',
+                    type: 'string'
+                }
+            ],
+            proxy: {
+                type: 'direct',
+                api: {
+                    read: AddressBook.getAddresses,
+                    create: AddressBook.addContact,
+                    update: AddressBook.updateAddress
+                },
+                reader: {
+                    totalProperty: 'totals',
+                    root: 'rows'
+                }
+            }
+        });
+        me.store = Ext.create('Ext.data.Store', {
+            model: 'addressBookModel',
+            remoteSort: false
+        });
+        /**
+         * Window and form
+         */
+        me.win = Ext.create('App.ux.window.Window', {
+            width: 755,
+            title: i18n('add_or_edit_contact'),
+            items: [
+                {
+                    xtype: 'mitos.form',
+                    items: [
+                        {
+                            xtype: 'fieldset',
+                            title: i18n('primary_info'),
+                            collapsible: true,
+                            defaultType: 'textfield',
+                            layout: 'anchor',
+                            defaults: {
+                                labelWidth: 89,
+                                anchor: '100%',
+                                layout: {
+                                    type: 'hbox',
+                                    defaultMargins: {
+                                        top: 0,
+                                        right: 5,
+                                        bottom: 0,
+                                        left: 0
+                                    }
+                                }
+                            },
+                            items: [
+                                {
+                                    xtype: 'fieldcontainer',
+                                    defaults: {
+                                        hideLabel: true
+                                    },
+                                    msgTarget: 'under',
+                                    items: [
+                                        {
+                                            width: 100,
+                                            xtype: 'displayfield',
+                                            value: 'Type: '
+                                        },
+                                        {
+                                            width: 130,
+                                            xtype: 'mitos.typescombobox'
+                                        }
+                                    ]
+                                },
+                                {
+                                    xtype: 'fieldcontainer',
+                                    defaults: {
+                                        hideLabel: true
+                                    },
+                                    msgTarget: 'under',
+                                    items: [
+                                        {
+                                            width: 100,
+                                            xtype: 'displayfield',
+                                            value: 'First, Middle, Last: '
+                                        },
+                                        {
+                                            width: 55,
+                                            xtype: 'mitos.titlescombo',
+                                            name: 'title'
+                                        },
+                                        {
+                                            width: 130,
+                                            xtype: 'textfield',
+                                            name: 'fname'
+                                        },
+                                        {
+                                            width: 100,
+                                            xtype: 'textfield',
+                                            name: 'mname'
+                                        },
+                                        {
+                                            width: 280,
+                                            xtype: 'textfield',
+                                            name: 'lname'
+                                        }
+                                    ]
+                                },
+                                {
+                                    xtype: 'fieldcontainer',
+                                    msgTarget: 'side',
+                                    items: [
+                                        {
+                                            width: 100,
+                                            xtype: 'displayfield',
+                                            value: 'Specialty: '
+                                        },
+                                        {
+                                            width: 130,
+                                            xtype: 'textfield',
+                                            name: 'specialty'
+                                        },
+                                        {
+                                            width: 90,
+                                            xtype: 'displayfield',
+                                            value: 'Organization: '
+                                        },
+                                        {
+                                            width: 120,
+                                            xtype: 'textfield',
+                                            name: 'organization'
+                                        },
+                                        {
+                                            width: 80,
+                                            xtype: 'displayfield',
+                                            value: 'Valedictory: '
+                                        },
+                                        {
+                                            width: 135,
+                                            xtype: 'textfield',
+                                            name: 'valedictory'
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            xtype: 'fieldset',
+                            title: i18n('primary_address'),
+                            collapsible: true,
+                            defaultType: 'textfield',
+                            layout: 'anchor',
+                            defaults: {
+                                labelWidth: 89,
+                                anchor: '100%',
+                                layout: {
+                                    type: 'hbox',
+                                    defaultMargins: {
+                                        top: 0,
+                                        right: 5,
+                                        bottom: 0,
+                                        left: 0
+                                    }
+                                }
+                            },
+                            items: [
+                                {
+                                    xtype: 'fieldcontainer',
+                                    items: [
+                                        {
+                                            width: 100,
+                                            xtype: 'displayfield',
+                                            value: 'Address: '
+                                        },
+                                        {
+                                            width: 130,
+                                            xtype: 'textfield',
+                                            name: 'street'
+                                        },
+                                        {
+                                            width: 100,
+                                            xtype: 'displayfield',
+                                            value: 'Addrress Cont: '
+                                        },
+                                        {
+                                            width: 335,
+                                            xtype: 'textfield',
+                                            name: 'streetb'
+                                        }
+                                    ]
+                                },
+                                {
+                                    xtype: 'fieldcontainer',
+                                    items: [
+                                        {
+                                            width: 100,
+                                            xtype: 'displayfield',
+                                            value: 'City: '
+                                        },
+                                        {
+                                            width: 130,
+                                            xtype: 'textfield',
+                                            name: 'city'
+                                        },
+                                        {
+                                            width: 100,
+                                            xtype: 'displayfield',
+                                            value: 'State: '
+                                        },
+                                        {
+                                            width: 120,
+                                            xtype: 'textfield',
+                                            name: 'state'
+                                        },
+                                        {
+                                            width: 80,
+                                            xtype: 'displayfield',
+                                            value: 'Postal Code: '
+                                        },
+                                        {
+                                            width: 125,
+                                            xtype: 'textfield',
+                                            name: 'zip'
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            xtype: 'fieldset',
+                            title: i18n('secondary_address'),
+                            collapsible: true,
+                            collapsed: true,
+                            defaultType: 'textfield',
+                            layout: 'anchor',
+                            defaults: {
+                                labelWidth: 89,
+                                anchor: '100%',
+                                layout: {
+                                    type: 'hbox',
+                                    defaultMargins: {
+                                        top: 0,
+                                        right: 5,
+                                        bottom: 0,
+                                        left: 0
+                                    }
+                                }
+                            },
+                            items: [
+                                {
+                                    xtype: 'fieldcontainer',
+                                    items: [
+                                        {
+                                            width: 100,
+                                            xtype: 'displayfield',
+                                            value: 'Address: '
+                                        },
+                                        {
+                                            width: 130,
+                                            xtype: 'textfield',
+                                            name: 'street2'
+                                        },
+                                        {
+                                            width: 100,
+                                            xtype: 'displayfield',
+                                            value: 'Cont.: '
+                                        },
+                                        {
+                                            width: 335,
+                                            xtype: 'textfield',
+                                            name: 'streetb2'
+                                        }
+                                    ]
+                                },
+                                {
+                                    xtype: 'fieldcontainer',
+                                    items: [
+                                        {
+                                            width: 100,
+                                            xtype: 'displayfield',
+                                            value: 'City: '
+                                        },
+                                        {
+                                            width: 130,
+                                            xtype: 'textfield',
+                                            name: 'city2'
+                                        },
+                                        {
+                                            width: 100,
+                                            xtype: 'displayfield',
+                                            value: 'State: '
+                                        },
+                                        {
+                                            width: 120,
+                                            xtype: 'textfield',
+                                            name: 'state2'
+                                        },
+                                        {
+                                            width: 80,
+                                            xtype: 'displayfield',
+                                            value: 'Postal Code: '
+                                        },
+                                        {
+                                            width: 125,
+                                            xtype: 'textfield',
+                                            name: 'zip2'
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            xtype: 'fieldset',
+                            title: i18n('phone_numbers'),
+                            collapsible: true,
+                            collapsed: true,
+                            defaultType: 'textfield',
+                            layout: 'anchor',
+                            defaults: {
+                                labelWidth: 89,
+                                anchor: '100%',
+                                layout: {
+                                    type: 'hbox',
+                                    defaultMargins: {
+                                        top: 0,
+                                        right: 5,
+                                        bottom: 0,
+                                        left: 0
+                                    }
+                                }
+                            },
+                            items: [
+                                {
+                                    xtype: 'fieldcontainer',
+                                    items: [
+                                        {
+                                            width: 100,
+                                            xtype: 'displayfield',
+                                            value: 'Home Phone: '
+                                        },
+                                        {
+                                            width: 130,
+                                            xtype: 'textfield',
+                                            name: 'phone'
+                                        },
+                                        {
+                                            width: 90,
+                                            xtype: 'displayfield',
+                                            value: 'Mobile Phone: '
+                                        },
+                                        {
+                                            width: 130,
+                                            xtype: 'textfield',
+                                            name: 'phonecell'
+                                        }
+                                    ]
+                                },
+                                {
+                                    xtype: 'fieldcontainer',
+                                    items: [
+                                        {
+                                            width: 100,
+                                            xtype: 'displayfield',
+                                            value: 'Work Phone: '
+                                        },
+                                        {
+                                            width: 130,
+                                            xtype: 'textfield',
+                                            name: 'phonew1'
+                                        },
+                                        {
+                                            width: 90,
+                                            xtype: 'displayfield',
+                                            value: 'Work Phone: '
+                                        },
+                                        {
+                                            width: 130,
+                                            xtype: 'textfield',
+                                            name: 'phonew2'
+                                        },
+                                        {
+                                            width: 60,
+                                            xtype: 'displayfield',
+                                            value: 'FAX: '
+                                        },
+                                        {
+                                            width: 140,
+                                            xtype: 'textfield',
+                                            name: 'fax'
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            xtype: 'fieldset',
+                            title: i18n('online_info'),
+                            collapsible: true,
+                            collapsed: true,
+                            defaultType: 'textfield',
+                            layout: 'anchor',
+                            defaults: {
+                                labelWidth: 89,
+                                anchor: '100%',
+                                layout: {
+                                    type: 'hbox',
+                                    defaultMargins: {
+                                        top: 0,
+                                        right: 5,
+                                        bottom: 0,
+                                        left: 0
+                                    }
+                                }
+                            },
+                            items: [
+                                {
+                                    xtype: 'fieldcontainer',
+                                    items: [
+                                        {
+                                            width: 100,
+                                            xtype: 'displayfield',
+                                            value: 'Email: '
+                                        },
+                                        {
+                                            width: 130,
+                                            xtype: 'textfield',
+                                            name: 'email'
+                                        },
+                                        {
+                                            width: 90,
+                                            xtype: 'displayfield',
+                                            value: 'Assistant: '
+                                        },
+                                        {
+                                            width: 130,
+                                            xtype: 'textfield',
+                                            name: 'assistant'
+                                        },
+                                        {
+                                            width: 60,
+                                            xtype: 'displayfield',
+                                            value: 'Website: '
+                                        },
+                                        {
+                                            width: 140,
+                                            xtype: 'textfield',
+                                            name: 'url'
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            xtype: 'fieldset',
+                            title: i18n('other_info'),
+                            collapsible: true,
+                            collapsed: true,
+                            defaultType: 'textfield',
+                            layout: 'anchor',
+                            defaults: {
+                                labelWidth: 89,
+                                anchor: '100%',
+                                layout: {
+                                    type: 'hbox',
+                                    defaultMargins: {
+                                        top: 0,
+                                        right: 5,
+                                        bottom: 0,
+                                        left: 0
+                                    }
+                                }
+                            },
+                            items: [
+                                {
+                                    xtype: 'fieldcontainer',
+                                    items: [
+                                        {
+                                            width: 50,
+                                            xtype: 'displayfield',
+                                            value: 'UPIN: '
+                                        },
+                                        {
+                                            width: 80,
+                                            xtype: 'textfield',
+                                            name: 'upin'
+                                        },
+                                        {
+                                            width: 50,
+                                            xtype: 'displayfield',
+                                            value: 'NPI: '
+                                        },
+                                        {
+                                            width: 80,
+                                            xtype: 'textfield',
+                                            name: 'npi'
+                                        },
+                                        {
+                                            width: 50,
+                                            xtype: 'displayfield',
+                                            value: 'TIN: '
+                                        },
+                                        {
+                                            width: 80,
+                                            xtype: 'textfield',
+                                            name: 'federaltaxid'
+                                        },
+                                        {
+                                            width: 80,
+                                            xtype: 'displayfield',
+                                            value: 'Taxonomy: '
+                                        },
+                                        {
+                                            width: 90,
+                                            xtype: 'textfield',
+                                            name: 'taxonomy'
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            width: 720,
+                            xtype: 'htmleditor',
+                            name: 'notes',
+                            emptyText: i18n('notes')
+                        }
+                    ]
+                }
+            ],
+            buttons: [
+                {
+                    text: i18n('save'),
+                    scope: me,
+                    handler: me.onAddressSave
+                },
+                {
+                    text: i18n('cancel'),
+                    scope: me,
+                    handler: me.onCancel
+                }
+            ],
+            listeners: {
+                close: me.onWinClose
+            }
+        });
+        // END WINDOW
+        // *************************************************************************************
+        // Create the GridPanel
+        // *************************************************************************************
+        me.grid = Ext.create('Ext.grid.GridPanel', {
+            store: me.store,
+            layout: 'fit',
+            frame: true,
+            loadMask: true,
+            viewConfig: {
+                stripeRows: true
+            },
+            listeners: {
+                scope: me,
+                itemclick: me.girdItemclick,
+                itemdblclick: me.gridItemdblclick
 
-		/**
-		 * Addresses Store and Model
-		 */
-		Ext.define('addressBookModel',
-		{
-			extend : 'Ext.data.Model',
-			fields : [
-			{
-				name : 'id',
-				type : 'int'
-			},
-			{
-				name : 'username',
-				type : 'string'
-			},
-			{
-				name : 'password',
-				type : 'string'
-			},
-			{
-				name : 'authorized',
-				type : 'string'
-			},
-			{
-				name : 'info',
-				type : 'string'
-			},
-			{
-				name : 'source',
-				type : 'int'
-			},
-			{
-				name : 'fname',
-				type : 'string'
-			},
-			{
-				name : 'mname',
-				type : 'string'
-			},
-			{
-				name : 'lname',
-				type : 'string'
-			},
-			{
-				name : 'fullname',
-				type : 'string'
-			},
-			{
-				name : 'federaltaxid',
-				type : 'string'
-			},
-			{
-				name : 'federaldrugid',
-				type : 'string'
-			},
-			{
-				name : 'upin',
-				type : 'string'
-			},
-			{
-				name : 'facility',
-				type : 'string'
-			},
-			{
-				name : 'facility_id',
-				type : 'int'
-			},
-			{
-				name : 'see_auth',
-				type : 'int'
-			},
-			{
-				name : 'active',
-				type : 'int'
-			},
-			{
-				name : 'npi',
-				type : 'string'
-			},
-			{
-				name : 'title',
-				type : 'string'
-			},
-			{
-				name : 'specialty',
-				type : 'string'
-			},
-			{
-				name : 'billname',
-				type : 'string'
-			},
-			{
-				name : 'email',
-				type : 'string'
-			},
-			{
-				name : 'url',
-				type : 'string'
-			},
-			{
-				name : 'assistant',
-				type : 'string'
-			},
-			{
-				name : 'organization',
-				type : 'string'
-			},
-			{
-				name : 'valedictory',
-				type : 'string'
-			},
-			{
-				name : 'fulladdress',
-				type : 'string'
-			},
-			{
-				name : 'street',
-				type : 'string'
-			},
-			{
-				name : 'streetb',
-				type : 'string'
-			},
-			{
-				name : 'city',
-				type : 'string'
-			},
-			{
-				name : 'state',
-				type : 'string'
-			},
-			{
-				name : 'zip',
-				type : 'string'
-			},
-			{
-				name : 'street2',
-				type : 'string'
-			},
-			{
-				name : 'streetb2',
-				type : 'string'
-			},
-			{
-				name : 'city2',
-				type : 'string'
-			},
-			{
-				name : 'state2',
-				type : 'string'
-			},
-			{
-				name : 'zip2',
-				type : 'string'
-			},
-			{
-				name : 'phone',
-				type : 'string'
-			},
-			{
-				name : 'fax',
-				type : 'string'
-			},
-			{
-				name : 'phonew1',
-				type : 'string'
-			},
-			{
-				name : 'phonew2',
-				type : 'string'
-			},
-			{
-				name : 'phonecell',
-				type : 'string'
-			},
-			{
-				name : 'notes',
-				type : 'string'
-			},
-			{
-				name : 'cal_ui',
-				type : 'string'
-			},
-			{
-				name : 'taxonomy',
-				type : 'string'
-			},
-			{
-				name : 'ssi_relayhealth',
-				type : 'string'
-			},
-			{
-				name : 'calendar',
-				type : 'int'
-			},
-			{
-				name : 'abook_type',
-				type : 'string'
-			},
-			{
-				name : 'pwd_expiration_date',
-				type : 'string'
-			},
-			{
-				name : 'pwd_history1',
-				type : 'string'
-			},
-			{
-				name : 'pwd_history2',
-				type : 'string'
-			},
-			{
-				name : 'default_warehouse',
-				type : 'string'
-			}],
-			proxy :
-			{
-				type : 'direct',
-				api :
-				{
-					read : AddressBook.getAddresses,
-					create : AddressBook.addContact,
-					update : AddressBook.updateAddress
-				},
-				reader :
-				{
-					totalProperty : 'totals',
-					root : 'rows'
-				}
-			}
-		});
-		me.store = Ext.create('Ext.data.Store',
-		{
-			model : 'addressBookModel',
-			remoteSort : false
-		});
-
-		/**
-		 * Window and form
-		 */
-		me.win = Ext.create('App.ux.window.Window',
-		{
-			width : 755,
-			title : i18n('add_or_edit_contact'),
-			items : [
-			{
-				xtype : 'mitos.form',
-				items : [
-				{
-					xtype : 'fieldset',
-					title : i18n('primary_info'),
-					collapsible : true,
-					defaultType : 'textfield',
-					layout : 'anchor',
-					defaults :
-					{
-						labelWidth : 89,
-						anchor : '100%',
-						layout :
-						{
-							type : 'hbox',
-							defaultMargins :
-							{
-								top : 0,
-								right : 5,
-								bottom : 0,
-								left : 0
-							}
-						}
-					},
-					items : [
-					{
-						xtype : 'fieldcontainer',
-						defaults :
-						{
-							hideLabel : true
-						},
-						msgTarget : 'under',
-						items : [
-						{
-							width : 100,
-							xtype : 'displayfield',
-							value : 'Type: '
-						},
-						{
-							width : 130,
-							xtype : 'mitos.typescombobox'
-						}]
-					},
-					{
-						xtype : 'fieldcontainer',
-						defaults :
-						{
-							hideLabel : true
-						},
-						msgTarget : 'under',
-						items : [
-						{
-							width : 100,
-							xtype : 'displayfield',
-							value : 'First, Middle, Last: '
-						},
-						{
-							width : 55,
-							xtype : 'mitos.titlescombo',
-							name : 'title'
-						},
-						{
-							width : 130,
-							xtype : 'textfield',
-							name : 'fname'
-						},
-						{
-							width : 100,
-							xtype : 'textfield',
-							name : 'mname'
-						},
-						{
-							width : 280,
-							xtype : 'textfield',
-							name : 'lname'
-						}]
-					},
-					{
-						xtype : 'fieldcontainer',
-						msgTarget : 'side',
-						items : [
-						{
-							width : 100,
-							xtype : 'displayfield',
-							value : 'Specialty: '
-						},
-						{
-							width : 130,
-							xtype : 'textfield',
-							name : 'specialty'
-						},
-						{
-							width : 90,
-							xtype : 'displayfield',
-							value : 'Organization: '
-						},
-						{
-							width : 120,
-							xtype : 'textfield',
-							name : 'organization'
-						},
-						{
-							width : 80,
-							xtype : 'displayfield',
-							value : 'Valedictory: '
-						},
-						{
-							width : 135,
-							xtype : 'textfield',
-							name : 'valedictory'
-						}]
-					}]
-				},
-				{
-					xtype : 'fieldset',
-					title : i18n('primary_address'),
-					collapsible : true,
-					defaultType : 'textfield',
-					layout : 'anchor',
-					defaults :
-					{
-						labelWidth : 89,
-						anchor : '100%',
-						layout :
-						{
-							type : 'hbox',
-							defaultMargins :
-							{
-								top : 0,
-								right : 5,
-								bottom : 0,
-								left : 0
-							}
-						}
-					},
-					items : [
-					{
-						xtype : 'fieldcontainer',
-						items : [
-						{
-							width : 100,
-							xtype : 'displayfield',
-							value : 'Address: '
-						},
-						{
-							width : 130,
-							xtype : 'textfield',
-							name : 'street'
-						},
-						{
-							width : 100,
-							xtype : 'displayfield',
-							value : 'Addrress Cont: '
-						},
-						{
-							width : 335,
-							xtype : 'textfield',
-							name : 'streetb'
-						}]
-					},
-					{
-						xtype : 'fieldcontainer',
-						items : [
-						{
-							width : 100,
-							xtype : 'displayfield',
-							value : 'City: '
-						},
-						{
-							width : 130,
-							xtype : 'textfield',
-							name : 'city'
-						},
-						{
-							width : 100,
-							xtype : 'displayfield',
-							value : 'State: '
-						},
-						{
-							width : 120,
-							xtype : 'textfield',
-							name : 'state'
-						},
-						{
-							width : 80,
-							xtype : 'displayfield',
-							value : 'Postal Code: '
-						},
-						{
-							width : 125,
-							xtype : 'textfield',
-							name : 'zip'
-						}]
-					}]
-				},
-				{
-					xtype : 'fieldset',
-					title : i18n('secondary_address'),
-					collapsible : true,
-					collapsed : true,
-					defaultType : 'textfield',
-					layout : 'anchor',
-					defaults :
-					{
-						labelWidth : 89,
-						anchor : '100%',
-						layout :
-						{
-							type : 'hbox',
-							defaultMargins :
-							{
-								top : 0,
-								right : 5,
-								bottom : 0,
-								left : 0
-							}
-						}
-					},
-					items : [
-					{
-						xtype : 'fieldcontainer',
-						items : [
-						{
-							width : 100,
-							xtype : 'displayfield',
-							value : 'Address: '
-						},
-						{
-							width : 130,
-							xtype : 'textfield',
-							name : 'street2'
-						},
-						{
-							width : 100,
-							xtype : 'displayfield',
-							value : 'Cont.: '
-						},
-						{
-							width : 335,
-							xtype : 'textfield',
-							name : 'streetb2'
-						}]
-					},
-					{
-						xtype : 'fieldcontainer',
-						items : [
-						{
-							width : 100,
-							xtype : 'displayfield',
-							value : 'City: '
-						},
-						{
-							width : 130,
-							xtype : 'textfield',
-							name : 'city2'
-						},
-						{
-							width : 100,
-							xtype : 'displayfield',
-							value : 'State: '
-						},
-						{
-							width : 120,
-							xtype : 'textfield',
-							name : 'state2'
-						},
-						{
-							width : 80,
-							xtype : 'displayfield',
-							value : 'Postal Code: '
-						},
-						{
-							width : 125,
-							xtype : 'textfield',
-							name : 'zip2'
-						}]
-					}]
-				},
-				{
-					xtype : 'fieldset',
-					title : i18n('phone_numbers'),
-					collapsible : true,
-					collapsed : true,
-					defaultType : 'textfield',
-					layout : 'anchor',
-					defaults :
-					{
-						labelWidth : 89,
-						anchor : '100%',
-						layout :
-						{
-							type : 'hbox',
-							defaultMargins :
-							{
-								top : 0,
-								right : 5,
-								bottom : 0,
-								left : 0
-							}
-						}
-					},
-					items : [
-					{
-						xtype : 'fieldcontainer',
-						items : [
-						{
-							width : 100,
-							xtype : 'displayfield',
-							value : 'Home Phone: '
-						},
-						{
-							width : 130,
-							xtype : 'textfield',
-							name : 'phone'
-						},
-						{
-							width : 90,
-							xtype : 'displayfield',
-							value : 'Mobile Phone: '
-						},
-						{
-							width : 130,
-							xtype : 'textfield',
-							name : 'phonecell'
-						}]
-					},
-					{
-						xtype : 'fieldcontainer',
-						items : [
-						{
-							width : 100,
-							xtype : 'displayfield',
-							value : 'Work Phone: '
-						},
-						{
-							width : 130,
-							xtype : 'textfield',
-							name : 'phonew1'
-						},
-						{
-							width : 90,
-							xtype : 'displayfield',
-							value : 'Work Phone: '
-						},
-						{
-							width : 130,
-							xtype : 'textfield',
-							name : 'phonew2'
-						},
-						{
-							width : 60,
-							xtype : 'displayfield',
-							value : 'FAX: '
-						},
-						{
-							width : 140,
-							xtype : 'textfield',
-							name : 'fax'
-						}]
-					}]
-				},
-				{
-					xtype : 'fieldset',
-					title : i18n('online_info'),
-					collapsible : true,
-					collapsed : true,
-					defaultType : 'textfield',
-					layout : 'anchor',
-					defaults :
-					{
-						labelWidth : 89,
-						anchor : '100%',
-						layout :
-						{
-							type : 'hbox',
-							defaultMargins :
-							{
-								top : 0,
-								right : 5,
-								bottom : 0,
-								left : 0
-							}
-						}
-					},
-					items : [
-					{
-						xtype : 'fieldcontainer',
-						items : [
-						{
-							width : 100,
-							xtype : 'displayfield',
-							value : 'Email: '
-						},
-						{
-							width : 130,
-							xtype : 'textfield',
-							name : 'email'
-						},
-						{
-							width : 90,
-							xtype : 'displayfield',
-							value : 'Assistant: '
-						},
-						{
-							width : 130,
-							xtype : 'textfield',
-							name : 'assistant'
-						},
-						{
-							width : 60,
-							xtype : 'displayfield',
-							value : 'Website: '
-						},
-						{
-							width : 140,
-							xtype : 'textfield',
-							name : 'url'
-						}]
-					}]
-				},
-				{
-					xtype : 'fieldset',
-					title : i18n('other_info'),
-					collapsible : true,
-					collapsed : true,
-					defaultType : 'textfield',
-					layout : 'anchor',
-					defaults :
-					{
-						labelWidth : 89,
-						anchor : '100%',
-						layout :
-						{
-							type : 'hbox',
-							defaultMargins :
-							{
-								top : 0,
-								right : 5,
-								bottom : 0,
-								left : 0
-							}
-						}
-					},
-					items : [
-					{
-						xtype : 'fieldcontainer',
-						items : [
-						{
-							width : 50,
-							xtype : 'displayfield',
-							value : 'UPIN: '
-						},
-						{
-							width : 80,
-							xtype : 'textfield',
-							name : 'upin'
-						},
-						{
-							width : 50,
-							xtype : 'displayfield',
-							value : 'NPI: '
-						},
-						{
-							width : 80,
-							xtype : 'textfield',
-							name : 'npi'
-						},
-						{
-							width : 50,
-							xtype : 'displayfield',
-							value : 'TIN: '
-						},
-						{
-							width : 80,
-							xtype : 'textfield',
-							name : 'federaltaxid'
-						},
-						{
-							width : 80,
-							xtype : 'displayfield',
-							value : 'Taxonomy: '
-						},
-						{
-							width : 90,
-							xtype : 'textfield',
-							name : 'taxonomy'
-						}]
-					}]
-				},
-				{
-					width : 720,
-					xtype : 'htmleditor',
-					name : 'notes',
-					emptyText : i18n('notes')
-				}]
-			}],
-			buttons : [
-			{
-				text : i18n('save'),
-				scope : me,
-				handler : me.onSave
-			},
-			{
-				text : i18n('cancel'),
-				scope : me,
-				handler : me.onCancel
-			}],
-			listeners :
-			{
-				close : me.onWinClose
-			}
-		});
-		// END WINDOW
-
-		// *************************************************************************************
-		// Create the GridPanel
-		// *************************************************************************************
-		me.grid = Ext.create('Ext.grid.GridPanel',
-		{
-			store : me.store,
-			layout : 'fit',
-			frame : true,
-			loadMask : true,
-			viewConfig :
-			{
-				stripeRows : true
-			},
-			listeners :
-			{
-				scope : me,
-				itemclick : me.girdItemclick,
-				itemdblclick : me.gridItemdblclick
-
-			},
-			columns : [
-			{
-				header : i18n('name'),
-				width : 150,
-				sortable : true,
-				dataIndex : 'fullname'
-			},
-			{
-				header : i18n('local'),
-				width : 50,
-				sortable : true,
-				dataIndex : 'username',
-				renderer : me.local
-			},
-			{
-				header : i18n('type'),
-				sortable : true,
-				dataIndex : 'ab_title'
-			},
-			{
-				header : i18n('specialty'),
-				sortable : true,
-				dataIndex : 'specialty'
-			},
-			{
-				header : i18n('work_phone'),
-				sortable : true,
-				dataIndex : 'phonew1'
-			},
-			{
-				header : i18n('mobile'),
-				sortable : true,
-				dataIndex : 'phonecell'
-			},
-			{
-				header : i18n('fax'),
-				sortable : true,
-				dataIndex : 'fax'
-			},
-			{
-				header : i18n('email'),
-				flex : 1,
-				sortable : true,
-				dataIndex : 'email'
-			},
-			{
-				header : i18n('primary_address'),
-				flex : 1,
-				sortable : true,
-				dataIndex : 'fulladdress'
-			}],
-			dockedItems : [
-			{
-				xtype : 'toolbar',
-				dock : 'top',
-				items : [
-				{
-					text : i18n('add_contact'),
-					iconCls : 'icoAddressBook',
-					scope : me,
-					handler : me.onAddContact
-				}]
-			}]
-		});
-
-		me.pageBody = [me.grid];
-		me.callParent(arguments);
-	},
-
-	onAddContact : function()
-	{
-		this.win.show();
-	},
-
-	onSave : function(btn)
-	{
-		var me = this, win = btn.up('window'), form = win.down('form').getForm(), store = me.store;
-
-		if (form.isValid())
-		{
-			var record = form.getRecord(), values = form.getValues(), storeIndex = store.indexOf(record);
-
-			if (storeIndex == -1)
-			{
-				store.add(values);
-			}
-			else
-			{
-				record.set(values);
-			}
-			store.sync();
-			store.load();
-			win.close();
-			me.msg('Sweet!', i18n('message_sent'));
-		}
-	},
-
-	onCancel : function()
-	{
-		this.win.close();
-	},
-
-	girdItemclick : function(grid, record)
-	{
-
-	},
-
-	gridItemdblclick : function(grid, record)
-	{
-		this.win.down('form').getForm().loadRecord(record);
-		this.win.show();
-	},
-
-	onWinClose : function(window)
-	{
-		window.down('form').getForm().reset();
-	},
-
-	onCopyClipBoard : function(company)
-	{
-		var store = Ext.getCmp('grid').store;
-		var record = store.getById(company);
-
-		var s = '';
-		for (key in record.data)
-		{
-			s += key + ': ' + record.data[key] + '\n';
-		}
-
-		alert(i18n('following_data_copied_to_clipboard') + ':\n\n' + s);
-
-		if (window.clipboardData)
-		{
-			window.clipboardData.setData('text', s);
-		}
-		else
-		{
-			return (s);
-		}
-	},
-
-	local : function(val)
-	{
-		if (val !== '')
-		{
-			return '<img src="resources/images/icons/yes.gif" />';
-		}
-		return val;
-	},
-
-	/**
-	 * This function is called from Viewport.js when
-	 * this panel is selected in the navigation panel.
-	 * place inside this function all the functions you want
-	 * to call every this panel becomes active
-	 */
-	onActive : function(callback)
-	{
-		this.store.load();
-		callback(true);
-	}
-}); 
+            },
+            columns: [
+                {
+                    header: i18n('name'),
+                    width: 150,
+                    sortable: true,
+                    dataIndex: 'fullname'
+                },
+                {
+                    header: i18n('local'),
+                    width: 50,
+                    sortable: true,
+                    dataIndex: 'username',
+                    renderer: me.local
+                },
+                {
+                    header: i18n('type'),
+                    sortable: true,
+                    dataIndex: 'ab_title'
+                },
+                {
+                    header: i18n('specialty'),
+                    sortable: true,
+                    dataIndex: 'specialty'
+                },
+                {
+                    header: i18n('work_phone'),
+                    sortable: true,
+                    dataIndex: 'phonew1'
+                },
+                {
+                    header: i18n('mobile'),
+                    sortable: true,
+                    dataIndex: 'phonecell'
+                },
+                {
+                    header: i18n('fax'),
+                    sortable: true,
+                    dataIndex: 'fax'
+                },
+                {
+                    header: i18n('email'),
+                    flex: 1,
+                    sortable: true,
+                    dataIndex: 'email'
+                },
+                {
+                    header: i18n('primary_address'),
+                    flex: 1,
+                    sortable: true,
+                    dataIndex: 'fulladdress'
+                }
+            ],
+            dockedItems: [
+                {
+                    xtype: 'toolbar',
+                    dock: 'top',
+                    items: [
+                        {
+                            text: i18n('add_contact'),
+                            iconCls: 'icoAddressBook',
+                            scope: me,
+                            handler: me.onAddContact
+                        }
+                    ]
+                }
+            ]
+        });
+        me.pageBody = [me.grid];
+        me.callParent(arguments);
+    },
+    onAddContact: function(){
+        this.win.show();
+    },
+    onAddressSave: function(btn){
+        var me = this, win = btn.up('window'), form = win.down('form').getForm(), store = me.store;
+        if(form.isValid()){
+            var record = form.getRecord(), values = form.getValues(), storeIndex = store.indexOf(record);
+            if(storeIndex == -1){
+                store.add(values);
+            }else{
+                record.set(values);
+            }
+            store.sync();
+            store.load();
+            win.close();
+            me.msg('Sweet!', i18n('message_sent'));
+        }
+    },
+    onCancel: function(){
+        this.win.close();
+    },
+    girdItemclick: function(grid, record){
+    },
+    gridItemdblclick: function(grid, record){
+        this.win.down('form').getForm().loadRecord(record);
+        this.win.show();
+    },
+    onWinClose: function(window){
+        window.down('form').getForm().reset();
+    },
+    onCopyClipBoard: function(company){
+        var store = Ext.getCmp('grid').store;
+        var record = store.getById(company);
+        var s = '';
+        for(key in record.data){
+            s += key + ': ' + record.data[key] + '\n';
+        }
+        alert(i18n('following_data_copied_to_clipboard') + ':\n\n' + s);
+        if(window.clipboardData){
+            window.clipboardData.setData('text', s);
+        }else{
+            return (s);
+        }
+    },
+    local: function(val){
+        if(val !== ''){
+            return '<img src="resources/images/icons/yes.gif" />';
+        }
+        return val;
+    },
+    /**
+     * This function is called from Viewport.js when
+     * this panel is selected in the navigation panel.
+     * place inside this function all the functions you want
+     * to call every this panel becomes active
+     */
+    onActive: function(callback){
+        this.store.load();
+        callback(true);
+    }
+});
 
 /**
  * Author: Ernesto J Rodriguez <erodriuez@certun.com>
@@ -47396,6 +47028,7 @@ Ext.define('App.view.Viewport', {
         me.patient = {
             name: null,
             pid: null,
+            pic: null,
             sex: null,
             dob: null,
             age: null,
@@ -47549,7 +47182,7 @@ Ext.define('App.view.Viewport', {
             iconCls: 'icoArrowDown',
             scope: me,
             handler: me.stowPatientRecord,
-            tooltip: i18n('show_patient_record')
+            tooltip: i18n('stow_patient_record')
         });
         me.patientCheckOutBtn = me.Header.add({
             xtype: 'button',
@@ -47719,10 +47352,6 @@ Ext.define('App.view.Viewport', {
                             ptype: 'nodedisabled'
                         }
                     ],
-                    //					root       : {
-                    //						nodeType : 'async',
-                    //						draggable: false
-                    //					},
                     listeners: {
                         scope: me,
                         selectionchange: me.onNavigationNodeSelected
@@ -47744,7 +47373,15 @@ Ext.define('App.view.Viewport', {
                             xtype: 'dataview',
                             loadMask: false,
                             cls: 'patient-pool-view',
-                            tpl: '<tpl for=".">' + '<div class="patient-pool-btn x-btn x-btn-default-large {priority}">' + '<div class="patient_btn_img"><img src="{photoSrc}" width="35" height="35"></div>' + '<div class="patient_btn_info">' + '<div class="patient-name">{shortName}</div>' + '<div class="patient-name">#{pid} ({poolArea})</div>' + '</div>' + '</div>' + '</tpl>',
+                            tpl: '<tpl for=".">' +
+                                '<div class="patient-pool-btn x-btn x-btn-default-large {priority}">' +
+                                '<div class="patient_btn_img"><img src="{photoSrc}" width="32" height="32"></div>' +
+                                '<div class="patient_btn_info">' +
+                                '<div class="patient-name">{shortName}</div>' +
+                                '<div class="patient-name">#{pid} ({poolArea})</div>' +
+                                '</div>' +
+                                '</div>' +
+                                '</tpl>',
                             itemSelector: 'div.patient-pool-btn',
                             overItemCls: 'patient-over',
                             selectedItemClass: 'patient-selected',
@@ -47836,6 +47473,8 @@ Ext.define('App.view.Viewport', {
         me.MainPanel.add(Ext.create('App.view.miscellaneous.Websearch'));
         me.ppdz = me.MainPanel.add(Ext.create('App.view.areas.PatientPoolDropZone'));
 
+        me.MainPanel.add(Ext.create('App.view.administration.Applications'));
+
         if(acl['access_gloabal_settings']) me.MainPanel.add(Ext.create('App.view.administration.Globals'));
         if(acl['access_facilities']) me.MainPanel.add(Ext.create('App.view.administration.Facilities'));
         if(acl['access_users']) me.MainPanel.add(Ext.create('App.view.administration.Users'));
@@ -47918,7 +47557,7 @@ Ext.define('App.view.Viewport', {
                         },
                         '-',
                         {
-                            text: '<span style="color: red">'+i18n('RESET TO FACTORY')+'</span>',
+                            text: '<span style="color: red">'+i18n('FACTORY RESET')+'</span>',
                             scope: me,
                             handler: me.resetApp
                         }
@@ -48171,6 +47810,7 @@ Ext.define('App.view.Viewport', {
                     me.patient = {
                         pid: data.patient.pid,
                         name: data.patient.name,
+                        pic: data.patient.pic,
                         sex: data.patient.sex,
                         dob: data.patient.dob,
                         age: data.patient.age,
@@ -48178,12 +47818,7 @@ Ext.define('App.view.Viewport', {
                         priority: data.patient.priority,
                         readOnly: readOnly
                     };
-                    me.patientBtn.update({
-                            pid: data.patient.pid,
-                            name: data.patient.name
-                        });
-                    me.patientBtn.addCls(data.patient.priority);
-                    me.patientBtn.enable();
+                    me.patientButtonSet(me.patient);
                     if(me.patientSummaryBtn) me.patientSummaryBtn.enable();
                     if(me.patientOpenVisitsBtn) me.patientOpenVisitsBtn.enable();
                     if(me.patientCreateEncounterBtn) me.patientCreateEncounterBtn.enable();
@@ -48202,6 +47837,7 @@ Ext.define('App.view.Viewport', {
             me.patient = {
                 pid: null,
                 name: null,
+                pic: null,
                 sex: null,
                 dob: null,
                 age: null,
@@ -48219,13 +47855,21 @@ Ext.define('App.view.Viewport', {
                 if(me.patientCloseCurrEncounterBtn) me.patientCloseCurrEncounterBtn.disable();
                 if(me.patientChargeBtn) me.patientChargeBtn.disable();
                 if(me.patientCheckOutBtn) me.patientCheckOutBtn.disable();
-                me.patientBtn.disable();
-                me.patientBtn.update({
-                    pid: 'record number',
-                    name: i18n('no_patient_selected')
-                });
+                me.patientButtonSet();
             }
         });
+    },
+    patientButtonSet: function(data){
+        var me = this,
+            patient = data || {};
+        me.patientBtn.update({
+            pid: patient.pid || 'record number',
+            pic: patient.pic || (globals['url']+'/resources/images/icons/user_32.png'),
+            name: patient.name || i18n('no_patient_selected')
+        });
+        me.patientButtonRemoveCls();
+        if(patient.priority) me.patientBtn.addCls(data.priority);
+        me.patientBtn.setDisabled(!patient.pid);
     },
     patientButtonRemoveCls: function(){
         var me = this;
@@ -48266,10 +47910,19 @@ Ext.define('App.view.Viewport', {
         });
     },
     patientBtnTpl: function(){
-        return Ext.create('Ext.XTemplate', '<div class="patient_btn  {priority}">', '<div class="patient_btn_img"><img src="resources/images/icons/user_32.png"></div>', '<div class="patient_btn_info">', '<div class="patient_btn_name">{name}</div>', '<div class="patient_btn_record">( {pid} )</div>', '</div>', '</div>');
+        return Ext.create('Ext.XTemplate',
+            '<div class="patient_btn  {priority}">',
+            '   <div class="patient_btn_img">' +
+            '       <img src="{pic}" width="32" height="32">' +
+            '   </div>',
+            '   <div class="patient_btn_info">',
+            '       <div class="patient_btn_name">{name}</div>',
+            '       <div class="patient_btn_record">( {pid} )</div>',
+            '   </div>',
+            '</div>');
     },
     patientBtnRender: function(btn){
-        this.unsetPatient();
+        this.patientButtonSet();
         this.initializePatientPoolDragZone(btn)
     },
     getPatientsInPoolArea: function(){
@@ -48407,7 +48060,7 @@ Ext.define('App.view.Viewport', {
                     this.removeFromGroup(this.ddGroup);
                     say('drag record:');
                     say(patientData);
-                    if(patientData.floorPlanId != null && patientData.patientZoneId == null){
+                    if(patientData.floorPlanId != 0 && patientData.patientZoneId == 0){
                         app.navigateTo('panelAreaFloorPlan');
                         this.ddGroup = 'patientPoolAreas';
                     }else{
@@ -48580,5 +48233,4 @@ Ext.define('App.view.Viewport', {
     }
 
 });
-
 

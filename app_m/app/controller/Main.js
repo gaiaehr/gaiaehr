@@ -8,16 +8,32 @@
 Ext.define('App.controller.Main', {
     extend: 'Ext.app.Controller',
 
+    requires:['Ext.data.proxy.JsonP'],
+
     config: {
+        control: {
+            loginButton: {
+                tap: 'doLogin'
+            },
+            logoutButton: {
+                tap: 'doLogout'
+            }
+        },
+
         refs: {
-            loginWindow: 'contianer'
+            loginWindow: 'loginWindow',
+            loginButton: 'button[action=login]',
+            logoutButton: 'button[action=logout]'
         }
     },
 
-    init:function(){
-        console.log(this.getLoginWindow());
-        //this.getViewport().add(Ext.create('App.view.Login').show());
+
+    doLogin:function(){
+        this.getLoginWindow().hide();
+        if(App.app.isPhone){
+            Ext.Viewport.add(Ext.create('App.view.MainPhone'));
+        }else{
+            Ext.Viewport.add(Ext.create('App.view.MainTablet'));
+        }
     }
-
-
 });

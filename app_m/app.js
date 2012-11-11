@@ -9,12 +9,19 @@ Ext.application({
     name: 'App',
 
     requires: [
-        'Ext.MessageBox'
+        'Ext.data.Store',
+        'Ext.List',
+        'Ext.MessageBox',
+        'Ext.data.proxy.JsonP',
+        'Ext.plugin.ListPaging',
+        'Ext.plugin.PullRefresh'
     ],
 
-    controllers: ['Main','Login'],
+    controllers: ['Main'],
 
-    views: ['Viewport','Login'],
+    views: ['Login','MainTablet','MainPhone'],
+
+    stores: ['Patients'],
 
     icon: {
         '57': 'resources/icons/Icon.png',
@@ -48,6 +55,8 @@ Ext.application({
             width: isPhone ? '100%' : 400,
             height: isPhone ? '100%' : 400
         }));
+
+        App.app.isPhone = isPhone;
     },
 
     onUpdated: function() {

@@ -398,9 +398,6 @@ $API = array(
 			),
 			'getCDTLiveSearch' => array(
 				'len' => 1
-			),
-			'getRXNORMLiveSearch' => array(
-				'len' => 1
 			)
 		)
 	),
@@ -423,6 +420,13 @@ $API = array(
 	'ServiceCodes' => array(
 		'methods' => array(
 			'liveCodeSearch' => array(
+				'len' => 1
+			)
+		)
+	),
+	'Rxnorm' => array(
+		'methods' => array(
+			'getRXNORMLiveSearch' => array(
 				'len' => 1
 			)
 		)

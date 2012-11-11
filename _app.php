@@ -50,7 +50,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 		<!-- slide down message div -->
 		<span id="app-msg" style="display:none;"></span>
 		<!-- Ext library -->
-		<script type="text/javascript" src="lib/extjs-4.1.1a/ext-all-debug.js"></script>
+		<script type="text/javascript" src="lib/extjs-4.1.1a/ext-all.js"></script>
 		<!-- JSrouter and Ext.deirect API files -->
 		<script src="JSrouter.php"></script>
 		<script src="data/api.php"></script>

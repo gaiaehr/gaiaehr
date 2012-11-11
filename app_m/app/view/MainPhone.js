@@ -1,27 +1,21 @@
 Ext.define('App.view.MainPhone', {
-    extend: 'Ext.dataview.NestedList',
+    extend: 'Ext.Container',
     requires: ['Ext.TitleBar'],
 
-    id: 'mainNestedList',
-
     config: {
-        fullscreen: true,
-        title: 'GaiaEHR Air',
-        useTitleAsBackText: false,
-        layout: {
-            animation: {
-                duration: 250,
-                easing: 'ease-in-out'
-            }
+        layout:{
+            type:'vbox',
+            align:'stretch'
         },
-
-        store: 'Patients',
-
-        toolbar: {
-            id: 'mainNavigationBar',
-            xtype : 'titlebar',
-            docked: 'top',
-            title : 'Welcome'
-        }
+        items:[
+            {
+                xtype : 'titlebar',
+                title : 'Patients'
+            },
+            {
+                xtype : 'patientlist',
+                flex:1
+            }
+        ]
     }
 });

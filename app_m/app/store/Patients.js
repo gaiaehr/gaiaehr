@@ -10,9 +10,6 @@ Ext.define('App.store.Patients', {
             type: 'jsonp',
             url: 'http://localhost/gaiaehr/data/mobileRouter.php',
 
-            pageParam: 'page',
-            limitParam: 'rpp',
-
             extraParams: {
                 action: 'PoolArea',
                 method: 'getPatientsByPoolAreaAccess',
@@ -21,7 +18,7 @@ Ext.define('App.store.Patients', {
 
             reader: {
                 type: 'json',
-                rootProperty: 'results'
+                rootProperty: 'data'
             }
         }
     }

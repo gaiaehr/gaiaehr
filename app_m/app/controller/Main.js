@@ -27,9 +27,11 @@ Ext.define('App.controller.Main', {
         }
     },
 
-
     doLogin:function(){
-        this.getLoginWindow().hide();
+        /**
+         * TODO: auth logic
+         */
+        this.getLoginWindow().destroy();
         if(App.app.isPhone){
             Ext.Viewport.add(Ext.create('App.view.MainPhone'));
         }else{

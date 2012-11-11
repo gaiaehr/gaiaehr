@@ -273,7 +273,7 @@ Ext.define('App.view.patient.windows.Medical', {
                     },
                     {
                         header:i18n('name'),
-                        width:100,
+                        width:375,
                         dataIndex:'allergy'
                     },
                     {
@@ -373,14 +373,14 @@ Ext.define('App.view.patient.windows.Medical', {
                                                 scope:me,
                                                 change:me.disableFieldLogic
                                             }
-                                        }), me.allergieMedication = Ext.create('App.ux.LiveMedicationSearch', {
+                                        }), me.allergieMedication = Ext.create('App.ux.LiveRXNORMSearch', {
                                             fieldLabel:i18n('allergy'),
                                             hideLabel:false,
                                             name:'allergy2',
                                             hidden:true,
                                             disabled:true,
                                             enableKeyEvents:true,
-                                            width:225,
+                                            width:550,
                                             labelWidth:70,
                                             listeners:{
                                                 scope:me,
@@ -964,7 +964,7 @@ Ext.define('App.view.patient.windows.Medical', {
                                             fieldLabel:i18n('medication'),
                                             hideLabel:false,
                                             itemId:'medication',
-                                            name:'medication_id',
+                                            name:'RXCUI',
                                             action:'medication_id',
                                             enableKeyEvents:true,
                                             width:520,

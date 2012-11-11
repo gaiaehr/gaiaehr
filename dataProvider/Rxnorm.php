@@ -93,6 +93,15 @@ class Rxnorm
 		return $rec['SAB'];
 	}
 
+	public function getMedicationNameByRXCUI($RXCUI){
+		$this->db->setSQL("SELECT STR
+		                   FROM rxnconso
+		                   WHERE RXCUI = '$RXCUI'
+		                   GROUP BY RXCUI");
+		$rec = $this->db->fetchRecord(PDO::FETCH_ASSOC);
+		return $rec['STR'];
+	}
+
 	public function getRXNORMLiveSearch(stdClass $params)
 	{
 		$this->db->setSQL("SELECT *
@@ -117,7 +126,7 @@ class Rxnorm
 	}
 }
 
-//
-//$e = new Medical();
+
+//$e = new Rxnorm();
 //echo '<pre>';
-//print_r($e->getPatientMedicationsByPatientID(1));
+//print_r($e->getMedicationNameByRXCUI(213269));

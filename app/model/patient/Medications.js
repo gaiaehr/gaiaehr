@@ -17,7 +17,7 @@ Ext.define('App.model.patient.Medications', {
 		{name: 'updated_uid', type: 'int'},
 		{name: 'create_date', type: 'date', dateFormat: 'c'},
 		{name: 'medication', type: 'string'},
-		{name: 'medication_id', type: 'string'},
+		{name: 'RXCUI', type: 'string'},
 		{name: 'begin_date', type: 'date', dateFormat: 'c'},
 		{name: 'end_date', type: 'date', dateFormat: 'c'},
 		{name: 'ocurrence', type: 'string'},

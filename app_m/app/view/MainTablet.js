@@ -22,7 +22,7 @@ Ext.define('App.view.MainTablet', {
 
         items: [
             {
-                id: 'launchscreen',
+                id: 'mainPanel',
                 cls : 'card',
                 scrollable: true,
                 html: '' +
@@ -52,6 +52,7 @@ Ext.define('App.view.MainTablet', {
                 layout:'vbox',
                 items:[
                     {
+                        action: 'leftNavBar',
                         xtype : 'titlebar',
                         docked: 'top',
                         title : 'Patients'
@@ -65,10 +66,10 @@ Ext.define('App.view.MainTablet', {
 
             },
             {
-                id: 'mainNavigationBar',
+                action: 'mainNavBar',
                 xtype : 'titlebar',
                 docked: 'top',
-                title : 'GaiaEHR Air'
+                title : 'Welcome GaiaEHR Air'
 
             }
         ]

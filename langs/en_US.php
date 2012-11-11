@@ -1110,10 +1110,6 @@ $LANG = array(
 	'bg_color'	                            => 'Background Color',
 	'border_color'	                        => 'Border Color',
 	'show_priority_color'	                => 'Show Priority Color',
-	'show_patient_preview'	                => 'Show Patient Preview',
-	'30+'									=> '30+',
-	'60+'									=> '60+',
-	'120+'									=> '120+',
-	'180+'									=> '180+'
+	'show_patient_preview'	                => 'Show Patient Preview'
 );
 ?>

@@ -11,7 +11,8 @@ $loadmask-msg-inner-icon: 'grid/loading.gif' !default;
 $loadmask-msg-inner-border-color: adjust-color($base-color, $hue: 1.111deg, $saturation: -14.017%, $lightness: -9.608%) !default;
 $loadmask-msg-inner-background-color: #eee !default;
 $loadmask-msg-inner-color: #222 !default;
-$loadmask-msg-inner-font-size: ceil($font-size * .9) !default; //11px
+$loadmask-msg-inner-font-size: ceil($font-size * .9) !default;
+//11px
 $loadmask-msg-inner-font-weight: normal !default;
 $loadmask-msg-inner-font-family: $font-family !default;
 $loadmask-msg-inner-font: $loadmask-msg-inner-font-weight $loadmask-msg-inner-font-size $loadmask-msg-inner-font-family !default;

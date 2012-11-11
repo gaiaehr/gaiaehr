@@ -457,24 +457,58 @@ $API = array(
 	'Logs' => array('methods' => array('getLogs' => array('len' => 1), )),
 	'Documents' => array('methods' => array('updateDocumentsTitle' => array('len' => 1), )),
 	'Test' => array('methods' => array(
-			'getRec' => array('len' => 0),
-			'getRec2' => array('len' => 0),
-			'addRec' => array('len' => 1),
-		)),
+		'getRec' => array('len' => 0),
+		'getRec2' => array('len' => 0),
+		'addRec' => array('len' => 1),
+	)),
 	'CronJob' => array('methods' => array('run' => array('len' => 0))),
 	'i18nRouter' => array('methods' => array(
-			'getTranslation' => array('len' => 0),
-			'getDefaultLanguage' => array('len' => 0),
-			'getAvailableLanguages' => array('len' => 0)
-		)),
-	'SiteSetup' => array('methods' => array(
-			'checkDatabaseCredentials' => array('len' => 1),
-			'checkRequirements' => array('len' => 0),
-			'setSiteDirBySiteId' => array('len' => 1),
-			'createDatabaseStructure' => array('len' => 1),
-			'loadDatabaseData' => array('len' => 1),
-			'createSiteAdmin' => array('len' => 1),
-			'createSConfigurationFile' => array('len' => 1),
-			'loadCode' => array('len' => 1)
-		))
+		'getTranslation' => array('len' => 0),
+		'getDefaultLanguage' => array('len' => 0),
+		'getAvailableLanguages' => array('len' => 0)
+	)),
+	'SiteSetup' => array(
+		'methods' => array(
+			'checkDatabaseCredentials' => array(
+				'len' => 1
+			),
+			'checkRequirements' => array(
+				'len' => 0
+			),
+			'setSiteDirBySiteId' => array(
+				'len' => 1
+			),
+			'createDatabaseStructure' => array(
+				'len' => 1
+			),
+			'loadDatabaseData' => array(
+				'len' => 1
+			),
+			'createSiteAdmin' => array(
+				'len' => 1
+			),
+			'createSConfigurationFile' => array(
+				'len' => 1
+			),
+			'loadCode' => array(
+				'len' => 1
+			)
+		)
+	),
+	'Applications' => array(
+		'methods' => array(
+			'getApplications' => array(
+				'len' => 1
+			),
+			'addApplication' => array(
+				'len' => 1
+			),
+			'updateApplication' => array(
+				'len' => 1
+			),
+			'deleteApplication' => array(
+				'len' => 1
+			)
+		)
+	)
 );

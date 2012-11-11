@@ -5,21 +5,21 @@
 @import 'mixins/reset-extras';
 
 @mixin no-select {
-    user-select: none;
-    -o-user-select: none;
-    -ms-user-select: none;
-    -moz-user-select: -moz-none;
-    -webkit-user-select: none;
+  user-select: none;
+  -o-user-select: none;
+  -ms-user-select: none;
+  -moz-user-select: -moz-none;
+  -webkit-user-select: none;
 
-    cursor:default;
+  cursor: default;
 }
 
 @mixin important-no-border-radius {
-    //we need to hard code this so we can declare !important
-    -moz-border-radius: 0 !important;
-    -webkit-border-radius: 0 !important;
-    -o-border-radius: 0 !important;
-    -ms-border-radius: 0 !important;
-    -khtml-border-radius: 0 !important;
-    border-radius: 0 !important;
+//we need to hard code this so we can declare !important
+  -moz-border-radius: 0 !important;
+  -webkit-border-radius: 0 !important;
+  -o-border-radius: 0 !important;
+  -ms-border-radius: 0 !important;
+  -khtml-border-radius: 0 !important;
+  border-radius: 0 !important;
 }

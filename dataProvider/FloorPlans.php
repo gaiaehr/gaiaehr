@@ -182,8 +182,7 @@ class FloorPlans
 						LEFT JOIN floor_plans_zones AS fpz ON pz.zone_id = fpz.id
 							WHERE fpz.floor_plan_id = $FloorPlanId AND pz.time_out IS NULL");
 		foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) as $zone){
-			$zone['name']     = $this->patient->getPatientFullNameByPid($zone['pid']);
-			$zone['photoSrc'] = $this->patient->getPatientPhotoSrcIdByPid($zone['pid']);
+			$zone['patient']  = $this->patient->getPatientDemographicDataByPid($zone['pid']);
 			$zone['warning']  = $this->patient->getPatientArrivalLogWarningByPid($zone['pid']);
 			$pool             = $this->pool->getCurrentPatientPoolAreaByPid($zone['pid']);
 			$zone['poolArea'] = $pool['poolArea'];

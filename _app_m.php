@@ -1,6 +1,4 @@
 <?php
-if (!defined('_GaiaEXEC'))
-	die('No direct access allowed.');
 /* Main Screen Application
  *
  * Description: This is the main application, with all the panels

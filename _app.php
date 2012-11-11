@@ -23,7 +23,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 				settings = {},
 				globals = {},
 				ext = 'extjs-4.1.1a',
-				version = '0.0.5.169',
+				version = '0.0.5.170',
 				requires;
 		</script>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -50,7 +50,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 		<!-- slide down message div -->
 		<span id="app-msg" style="display:none;"></span>
 		<!-- Ext library -->
-		<script type="text/javascript" src="lib/extjs-4.1.1a/ext-all-debug.js"></script>
+		<script type="text/javascript" src="lib/extjs-4.1.1a/ext-all.js"></script>
 		<!-- JSrouter and Ext.deirect API files -->
 		<script src="JSrouter.php"></script>
 		<script src="data/api.php"></script>
@@ -411,6 +411,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 				/*
 				 * Load the administration related panels
 				 */
+				'App.view.administration.Applications',
 				'App.view.administration.DataManager',
 				'App.view.administration.Documents',
 				'App.view.administration.Facilities',

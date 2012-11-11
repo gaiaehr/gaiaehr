@@ -12,13 +12,14 @@ $tip-body-font-weight: normal !default;
 $tip-body-padding: 3px 3px 0 !default;
 $tip-body-link-color: darken($tip-body-color, 10%) !default;
 
-$tip-header-color      : $tip-body-color !default;
-$tip-header-font-size  : $tip-body-font-size !default;
+$tip-header-color: $tip-body-color !default;
+$tip-header-font-size: $tip-body-font-size !default;
 $tip-header-font-weight: bold !default;
-$tip-header-padding    : 3px 3px 0 !default;  
+$tip-header-padding: 3px 3px 0 !default;
 
 //borders
-$tip-border-color: #fff !default; //color-offset($tip-base-color, $mode: dark, $contrast: 20%) !default;
+$tip-border-color: #fff !default;
+//color-offset($tip-base-color, $mode: dark, $contrast: 20%) !default;
 $tip-border-width: 0 !default;
 $tip-border-radius: 5px !default;
 

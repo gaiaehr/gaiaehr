@@ -3,22 +3,22 @@
 /* = disabled nodes
  */
 
-body{
+body {
 	background: #FFFFFF;
 	font-family: 'Helvetica';
 }
 
-h2,h1,h3{
+h2, h1, h3 {
 	color: #596F8F;
 	display: block;
 	border-bottom: 1px dotted #000099;
 }
 
-table{
+table {
 	width: 100%;
 	font-size: 12px;
 }
 
-th{
+th {
 	border-bottom: 1px solid #555555;
 }

@@ -23,32 +23,66 @@ if(!isset($_SESSION)){
 	session_start();
 	session_cache_limiter('private');
 }
+define('_GaiaEXEC', 1);
 $_SESSION['root'] = 'C:/inetpub/wwwroot/gaiaehr';
-include_once($_SESSION['root'] . '/classes/dbHelper.php');
 include_once($_SESSION['root'] . '/classes/Arrays.php');
-
 /**
  * verify private key
  */
 
-$action = $_REQUEST['action'];
-$method = $_REQUEST['method'];
+function appHasAccess($pvtKey){
+	return true;
+}
+try{
+	if(isset($_REQUEST['action']) && isset($_REQUEST['method']) && isset($_REQUEST['pvtKey']) && isset($_REQUEST['siteId'])){
+		$action = $_REQUEST['action'];
+		$method = $_REQUEST['method'];
+		$pvtKey = $_REQUEST['pvtKey'];
+		$siteId = $_REQUEST['siteId'];
+		include_once('../registry.php');
+			if(file_exists("../sites/$siteId/conf.php")){
+				include_once("../sites/$siteId/conf.php");
+				include_once('../classes/dbHelper.php');
+				if(appHasAccess($pvtKey)){
+					if(file_exists("../dataProvider/$action.php")){
+						include_once("../dataProvider/$action.php");
+						if(class_exists($action)){
+						    $controller = new $action();
+							if(function_exists($controller->$method())){
+								$result = $controller->$method();
+							}else{
+								throw new Exception('Invalid Method');
+							}
+						}else{
+							throw new Exception('Invalid Action');
+						}
+					}else{
+						throw new Exception("Unable to find \"$action\" file");
+					}
+				}else{
+					throw new Exception('Access Denied, please make sure API private key is installed correctly and active');
+				}
+			}else{
+				throw new Exception("Unable to find \"$siteId\" configuration file");
+			}
+	}else{
+		throw new Exception("Missing required params");
+	}
+} catch(Exception $e){
+	$result['success'] = false;
+	$result['type']    = 'exception';
+	$result['message'] = $e->getMessage();
+	$result['where']   = $e->getTraceAsString();
+}
 
-include_once("../dataProvider/$action.php");
-$o = new $action();
-print_r($o->$method());
+$callback = $_REQUEST['callback'];
 
-
-$params = $_REQUEST['data'];
-
-//print_r(call_user_func_array(array(
-//	$o, $method
-//), $params));
-/**
- * verify if authorized
- */
-
-//print_r($_REQUEST);
-
-
-
+//print '<pre>';
+//print_r($result);
+if ($callback) {
+    header('Content-Type: text/javascript');
+	print $callback . '(' . json_encode($result) . ');';
+} else {
+    header('Content-Type: application/x-json');
+	print json_encode($result);
+}

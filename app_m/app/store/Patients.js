@@ -19,6 +19,11 @@ Ext.define('App.store.Patients', {
             reader: {
                 type: 'json',
                 rootProperty: 'data'
+            },
+            listeners:{
+                exception:function(proxy, response){
+                    Ext.Msg.alert('Oops!', response.message);
+                }
             }
         }
     }

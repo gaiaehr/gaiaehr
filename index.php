@@ -49,7 +49,7 @@ if(file_exists('sites/' . $site . '/conf.php')){
  * (to make sure ths user hasn't been out for a long time)
  *
  */
-$mobileDebug = false;
+$mobileDebug = true;
 if($mobile->isMobile() || $mobileDebug){
 	header('Location: app_m/index.html');
 }else{

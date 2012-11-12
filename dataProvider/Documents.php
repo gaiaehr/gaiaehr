@@ -658,7 +658,7 @@ class Documents
 		{
 			$html .= "
                     <p>
-                    $med->medication $med->dose  $med->dose_mg<br>
+                    $med->medication $med->dose <br>
                     Instruction: $med->take_pills $med->type $med->by $med->prescription_often $med->prescription_when<br>
                     Dispense: $med->dispense  Refill: $med->refill
                     </p>";

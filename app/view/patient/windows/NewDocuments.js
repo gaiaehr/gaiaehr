@@ -231,11 +231,11 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 													defaults: { margin: '5 0 5 5' },
 													items   : [
 														{
-															xtype     : 'medicationlivetsearch',
+															xtype     : 'rxnormlivetsearch',
 															fieldLabel: i18n('medication'),
 															hideLabel : false,
 															action    : 'medication_id',
-															name      : 'medication_id',
+															name      : 'RXCUI',
 															width     : 350,
 															labelWidth: 80,
                                                             allowBlank: false,
@@ -251,24 +251,13 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 															action:'medication'
 														},
 														{
-															xtype     : 'numberfield',
+															xtype     : 'textfield',
 															fieldLabel: i18n('dose'),
 															labelWidth: 40,
 															action    : 'dose',
 															name      : 'dose',
                                                             allowBlank: false,
-															width     : 100,
-															value     : 0,
-															minValue  : 0
-														},
-														{
-															xtype     : 'textfield',
-															fieldLabel: i18n('dose_mg'),
-															action    :'dose_mg',
-															name      : 'dose_mg',
-                                                            allowBlank: false,
-															hideLabel : true,
-															width     : 150
+															width     : 250
 														}
 													]
 
@@ -504,13 +493,10 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 	addPrescription     : function(combo, model) {
 		var me      = this,
 			field   = combo.up('fieldcontainer').query('[action="dose"]')[0],
-			field2  = combo.up('fieldcontainer').query('[action="dose_mg"]')[0],
 			field3  = combo.up('fieldcontainer').query('[action="medication"]')[0],
-			dose    = model[0].data.ACTIVE_NUMERATOR_STRENGTH,
-			dose_mg = model[0].data.ACTIVE_INGRED_UNIT,
-			medication      = model[0].data.PROPRIETARYNAME;
-		field.setValue(dose);
-		field2.setValue(dose_mg);
+			strength    = model[0].data.RXN_AVAILABLE_STRENGTH,
+			medication      = model[0].data.STR;
+		field.setValue(strength);
 		field3.setValue(medication);
 	},
 	onEditPrescription: function(editor,e){
@@ -519,11 +505,14 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 
 	},
 	onCreatePrescription: function (){
-		var records =this.patientPrescriptionStore.data.items,
+        say('hello');
+		var records = this.patientPrescriptionStore.data.items,
 			data = [];
+        say(records);
         for(var i=0; i < records.length; i++ ){
             data.push(records[i].data);
         }
+        say('stuck');
 		DocumentHandler.createDocument({medications:data, pid:app.patient.pid, docType:'Rx', documentId:5, eid: app.patient.eid}, function(provider, response){
 			say(response.result);
 		});

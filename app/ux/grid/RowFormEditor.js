@@ -477,11 +477,13 @@ Ext.define('App.ux.grid.RowFormEditor', {
             return;
         }
         form.updateRecord(me.context.record);
-        form._record.store.sync({
-            callback:function(){
-                me.fireEvent('sync', me, me.context);
-            }
-        });
+        if(me.editingPlugin.autoSync){
+            form._record.store.sync({
+                callback:function(){
+                    me.fireEvent('sync', me, me.context);
+                }
+            });
+        }
         me.syncChildStoresChanges();
         me.hide();
         return true;

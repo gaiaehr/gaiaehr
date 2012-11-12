@@ -3634,6 +3634,5 @@ CREATE TABLE IF NOT EXISTS `patient_medications` (
   `refill` int(11) DEFAULT NULL,
   `codingsystem` varchar(255) NOT NULL DEFAULT 'RXNORM',
   `STRENGTH` varchar(255) DEFAULT NULL,
-  `QUANTITY` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=21 ;

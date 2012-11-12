@@ -9,9 +9,8 @@ Ext.define('App.model.patient.PatientsPrescription', {
 	extend: 'Ext.data.Model',
 	fields: [
         {name: 'medication', type: 'string'},
-        {name: 'medication_id', type: 'string'},
+        {name: 'RXCUI', type: 'string'},
         {name: 'dose', type: 'int'},
-		{name: 'dose_mg', type: 'string'},
 		{name: 'take_pills', type: 'int'},
 		{name: 'type', type: 'string'},
 		{name: 'route', type: 'string'},

@@ -73,6 +73,12 @@ Ext.define('App.ux.grid.RowFormEditing', {
     editStyle: 'row',
 
     /**
+     * @cfg {Boolean} autoSync
+     * True to automatically Sync any pending changes during complete edit method.
+     * False to force the user to explicitly sync all pending changes. Defaults to true.
+     */
+    autoSync: true,
+    /**
      * @cfg {Boolean} autoCancel
      * True to automatically cancel any pending changes when the row editor begins editing a new row.
      * False to force the user to explicitly cancel the pending changes. Defaults to true.

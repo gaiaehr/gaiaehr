@@ -49,7 +49,8 @@ if(file_exists('sites/' . $site . '/conf.php')){
  * (to make sure ths user hasn't been out for a long time)
  *
  */
-if($mobile->isMobile()){
+$mobileDebug = true;
+if($mobile->isMobile() || $mobileDebug){
 	header('Location: app_m/index.html');
 }else{
 	if(isset($_SESSION['user']) && $_SESSION['user']['auth'] == true && $_SESSION['user']['site'] == $site && $_SESSION['inactive']['life'] < $_SESSION['inactive']['time']){

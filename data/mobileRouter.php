@@ -74,11 +74,7 @@ try{
 	$result['message'] = $e->getMessage();
 	$result['where']   = $e->getTraceAsString();
 }
-
 $callback = $_REQUEST['callback'];
-
-//print '<pre>';
-//print_r($result);
 if ($callback) {
     header('Content-Type: text/javascript');
 	print $callback . '(' . json_encode($result) . ');';

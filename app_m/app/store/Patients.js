@@ -22,7 +22,8 @@ Ext.define('App.store.Patients', {
             },
             listeners:{
                 exception:function(proxy, response){
-                    Ext.Msg.alert('Oops!', response.message);
+                    console.log(response);
+                    Ext.Msg.alert('Oops!', response, Ext.emptyFn);
                 }
             }
         }

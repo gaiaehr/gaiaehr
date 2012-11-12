@@ -28,21 +28,21 @@ Ext.define('App.view.MainTablet', {
                 scrollable: true,
                 html: '' +
                     '<div class="features">' +
-                    '   <h2>Welcome to GaiaEHR <span class="version">v1.0.0</span></h2>' +
+                    '   <h2>Welcome to GaiaEHR Air <span class="version">Beta 0.0.1</span></h2>' +
                     '   <div class="feature main">' +
-                    '       <h3>Access Every where</h3>' +
+                    '       <h3>Unleash GaiaEHR</h3>' +
                     '       <p>This is the Kitchen Sink &#8212; a collection of features and examples in an easy-to-browse format. Each example also has a &#8220;view source&#8221; button which shows how it was created.</p>' +
                     '   </div>' +
                     '   <div class="feature">' +
-                    '       <h3>Unbelievable Performance</h3>' +
+                    '       <h3>Unleash GaiaEHR</h3>' +
                     '       <p>Faster layouts and animations, smoother scrolling, and overall more responsive.</p>' +
                     '   </div>' +
                     '   <div class="feature">' +
-                    '       <h3>Improved Architecture</h3>' +
+                    '       <h3>Mobile Architecture</h3>' +
                     '       <p>Our new class system is simpler to write and easier to extend. All new MVC and state-management support.</p>' +
                     '   </div>' +
                     '   <div class="feature">' +
-                    '       <h3>Native Packaging</h3>' +
+                    '       <h3>Simple</h3>' +
                     '       <p>Sencha SDK Tools now allow you to build your app for App Store distribution, on Windows and Mac.</p>' +
                     '   </div>' +
                     '   <div class="feature">' +

@@ -30,8 +30,8 @@ if($handle = opendir('sites/'))
 }
 
 // general
-if(!isset($_SESSION['root'])) $_SESSION['root'] = str_replace('\\', '/', dirname(__FILE__));
-if(!isset($_SESSION['url'])) $_SESSION['url']   = 'http://' . $_SERVER['HTTP_HOST'] . str_replace('/index.php', '', $_SERVER['PHP_SELF']);
+$_SESSION['root'] = str_replace('\\', '/', dirname(__FILE__));
+$_SESSION['url']   = 'http://' . $_SERVER['HTTP_HOST'].'/'.basename(dirname(__FILE__));
 // sites values
 $_SESSION['sites']['sites'] = $sites;
 $_SESSION['sites']['count'] = count($sites);;

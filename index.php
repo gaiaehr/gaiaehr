@@ -21,11 +21,13 @@ session_name('GaiaEHR');
 session_start();
 session_cache_limiter('private');
 define('_GaiaEXEC', 1);
-include_once ('classes/Mobile_Detect.php');
-$m = new Mobile_Detect();
-$mDebug = false;
-if($m->isMobile() || $mDebug){
-	header('Location: app_m/');
+include_once('classes/Mobile_Detect.php');
+$mobile = new Mobile_Detect();
+$site = (isset($_GET['site']) ? $_GET['site'] : 'default');
+
+$mDebug = true;
+if($mobile->isMobile() || $mDebug){
+	header('Location: _aire/#'.$site);
 }else{
 	/**
 	 * Startup the registry
@@ -36,7 +38,6 @@ if($m->isMobile() || $mDebug){
 	/**
 	 * set the site using the url parameter site, or default if not given
 	 */
-	$site = (isset($_GET['site']) ? $_GET['site'] : 'default');
 	if(file_exists('sites/' . $site . '/conf.php')){
 		include_once ('sites/' . $site . '/conf.php');
 		$_SESSION['site']['localization'] = (isset($_SESSION['site']['localization']) && ($_SESSION['site']['default_localization'] != $_SESSION['site']['localization'])) ? $_SESSION['site']['localization'] : 'en_US';

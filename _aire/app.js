@@ -53,7 +53,7 @@ Ext.application({
             modal: !isPhone,
             centered: !isPhone,
             width: isPhone ? '100%' : 400,
-            height: isPhone ? '100%' : 400
+            height: isPhone ? '100%' : 420
         }));
 
         App.app.isPhone = isPhone;

@@ -15,8 +15,8 @@ Ext.define('App.view.Login', {
                 items: [
                     {
                         xtype: 'image',
-                        src: '../resources/images/gaiaehr_small_white.png',
-                        height: 50
+                        src: '../resources/images/gaiaehr_aire.png',
+                        height: 86
                     },
                     {
                         xtype: 'fieldset',

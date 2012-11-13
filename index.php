@@ -25,7 +25,7 @@ include_once('classes/Mobile_Detect.php');
 $mobile = new Mobile_Detect();
 $site = (isset($_GET['site']) ? $_GET['site'] : 'default');
 
-$mDebug = true;
+$mDebug = false;
 if($mobile->isMobile() || $mDebug){
 	header('Location: _aire/#'.$site);
 }else{

@@ -29,9 +29,11 @@ include_once($_SESSION['root'] . '/classes/Arrays.php');
 /**
  * verify private key
  */
-
 function appHasAccess($pvtKey){
-	return true;
+	global $db;
+	$db->setSQL("SELECT count(*) AS app FROM applications WHERE pvt_key = '$pvtKey' AND active = '1'");
+	$record = $db->fetchRecord(PDO::FETCH_ASSOC);
+	return ($record['app'] == 1 ? true : false);
 }
 try{
 	if(isset($_REQUEST['action']) && isset($_REQUEST['method']) && isset($_REQUEST['pvtKey']) && isset($_REQUEST['siteId'])){
@@ -40,33 +42,36 @@ try{
 		$pvtKey = $_REQUEST['pvtKey'];
 		$siteId = $_REQUEST['siteId'];
 		include_once('../registry.php');
-			if(file_exists("../sites/$siteId/conf.php")){
-				include_once("../sites/$siteId/conf.php");
-				include_once('../classes/dbHelper.php');
-				if(appHasAccess($pvtKey)){
-					if(file_exists("../dataProvider/$action.php")){
-						include_once("../dataProvider/$action.php");
-						if(class_exists($action)){
-						    $controller = new $action();
-							if(function_exists($controller->$method())){
-								$result = $controller->$method();
-							}else{
-								throw new Exception('Invalid Method');
-							}
+		$confFile = "../sites/$siteId/conf.php";
+		if(file_exists($confFile)){
+			include_once($confFile);
+			include_once('../classes/dbHelper.php');
+			$db = new dbHelper();
+			if(appHasAccess($pvtKey)){
+				$actionFile = "../dataProvider/$action.php";
+				if(file_exists($actionFile)){
+					include_once($actionFile);
+					if(class_exists($action)){
+					    $controller = new $action();
+						if(function_exists($controller->$method())){
+							$result = $controller->$method();
 						}else{
-							throw new Exception('Invalid Action');
+							throw new Exception('Invalid Method');
 						}
 					}else{
-						throw new Exception("Unable to find \"$action\" file");
+						throw new Exception('Invalid Action');
 					}
 				}else{
-					throw new Exception('Access Denied, please make sure API private key is installed correctly and active');
+					throw new Exception("Unable to find \"$action\" file");
 				}
 			}else{
-				throw new Exception("Unable to find \"$siteId\" configuration file");
+				throw new Exception('Access Denied, please make sure API private key is installed correctly and active');
 			}
+		}else{
+			throw new Exception("Unable to find \"$siteId\" configuration file");
+		}
 	}else{
-		throw new Exception("Missing required params");
+		throw new Exception('Missing required params');
 	}
 } catch(Exception $e){
 	$result['success'] = false;

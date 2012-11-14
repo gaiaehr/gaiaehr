@@ -1,7 +1,4 @@
 <?php
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Headers: origin, x-requested-with, content-type");
-header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
 //----------------------------------------------------------------------------------------------------------------------
 // We sould comment this code and clean it a littler bit.
 // This code was a copy nd paste by Ernesto.

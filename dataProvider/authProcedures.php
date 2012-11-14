@@ -24,6 +24,7 @@ if(!isset($_SESSION)){
 	session_cache_limiter('private');
 }
 include_once ($_SESSION['root'] . '/classes/Sessions.php');
+include_once ($_SESSION['root'] . '/classes/Crypt.php');
 include_once ($_SESSION['root'] . '/dataProvider/Patient.php');
 class authProcedures
 {
@@ -157,9 +158,9 @@ class authProcedures
 			$_SESSION['site']['checkInMode']  = $params->checkInMode;
 			$_SESSION['timeout']              = time();
 			$session                          = new Sessions();
-			$session->loginSession();
+			$token = Crypt::encrypt($session->loginSession());
 			$_SESSION['inactive']['timeout'] = time();
-			return array('success' => true);
+			return array('success' => true, 'token' => $token);
 		}
 	}
 

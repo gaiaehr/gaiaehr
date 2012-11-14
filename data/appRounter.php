@@ -12,11 +12,6 @@ if(!isset($_SESSION)){
 	session_cache_limiter('private');
 }
 define('_GaiaEXEC', 1);
-include_once('../registry.php');
-include_once('../dataProvider/Modules.php');
-include_once('config.php');
-$modules = new Modules();
-$API     = array_merge($API, $modules->getEnabledModulesAPI());
 class BogusAction
 {
 	public $action;
@@ -33,28 +28,35 @@ if(isset($HTTP_RAW_POST_DATA)){
 	if(isset($_REQUEST['module'])) $data->module = $_REQUEST['module'];
 } else {
 	if(isset($_POST['extAction'])){
-		// form post
 		$isForm       = true;
 		$isUpload     = $_POST['extUpload'] == 'true';
 		$data         = new BogusAction();
 		$data->action = $_POST['extAction'];
 		$data->method = $_POST['extMethod'];
 		$data->tid    = isset($_POST['extTID']) ? $_POST['extTID'] : null;
-		// not set for upload
-		$data->data = array(
-			$_POST, $_FILES
-		);
+		$data->data = array($_POST, $_FILES);
 		if(isset($_REQUEST['module'])) $data->module = $_REQUEST['module'];
-
 	} else {
 		die('Invalid request.');
 	}
 }
+include_once('../registry.php');
+include_once('../sites/'.$data->server->site.'/conf.php');
+include_once('../dataProvider/Modules.php');
+include_once('../dataProvider/Applications.php');
+include_once('config.php');
+$modules = new Modules();
+$app = new Applications();
+$access = $app->hasAccess($data->server->pvtKey);
+$API     = array_merge($API, $modules->getEnabledModulesAPI());
 function doRpc($cdata)
 {
 	global $API;
+	global $access;
 	try{
-
+		if(!$access){
+			throw new Exception('Access Denied: Please make sure API Key is typed correctly in the settings tab');
+		}
 		if(!isset($API[$cdata->action])){
 			throw new Exception('Call to undefined action: ' . $cdata->action);
 		}
@@ -75,6 +77,7 @@ function doRpc($cdata)
 		} else {
 			require_once ("../dataProvider/$action.php");
 		}
+
 		$o = new $action();
 		if(isset($mdef['len'])){
 			$params = isset($cdata->data) && is_array($cdata->data) ? $cdata->data : array();
@@ -87,6 +90,7 @@ function doRpc($cdata)
 		doAroundCalls($mdef['after'], $cdata, $r);
 		doAroundCalls($a['after'], $cdata, $r);
 	} catch(Exception $e){
+		$r['success'] = false;
 		$r['type']    = 'exception';
 		$r['message'] = $e->getMessage();
 		$r['where']   = $e->getTraceAsString();
@@ -118,6 +122,7 @@ if(is_array($data)){
 } else {
 	$response = doRpc($data);
 }
+
 if($isForm && $isUpload){
 	echo '<html><body><textarea>';
 	echo json_encode($response);

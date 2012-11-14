@@ -62,6 +62,12 @@ class Applications
 		return $params;
 	}
 
+	public function hasAccess($pvtKey){
+		$this->db->setSQL("SELECT count(*) AS total FROM applications WHERE pvt_key = '$pvtKey' AND active = '1'");
+		$app = $this->db->fetchRecord(PDO::FETCH_ASSOC);
+		return ($app['total'] == 0 ? false : true);
+	}
+
 	public function generatePrivateKey()
 	{
 		$chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ023456789';

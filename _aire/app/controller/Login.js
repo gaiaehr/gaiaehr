@@ -7,14 +7,13 @@
  */
 Ext.define('App.controller.Login', {
     extend: 'Ext.app.Controller',
-
     config: {
         control: {
             settingsForm: {
                 initialize: 'setSettingsValues'
             },
-            loginButton:{
-                tap:'doLogin'
+            loginButton: {
+                tap: 'doLogin'
             }
         },
         refs: {
@@ -25,35 +24,39 @@ Ext.define('App.controller.Login', {
             pvtKeyField: 'textfield[action=pvtKey]'
         }
     },
-
-    doLogin:function(){
-
+    doLogin: function(){
         var me = this,
-            values = this.getLoginForm().getValues();
-        values = Ext.Object.merge(values, this.getSettingsForm().getValues());
+            values = this.getLoginForm().getValues(),
+            server = this.getSettingsForm().getValues();
+        values.site = server.site;
+        App.app.server = server;
+        Ext.Viewport.mask({xtype: 'loadmask', message: 'Be Right Back!'});
         Ext.ns('App.data');
         App.data = {
-            url:values.url+'data/router.php',
-//            url:'http://192.168.1.100/gaiaehr/data/appRounter.php',
-//            url:'http://www.gaiaehr.org/demo/data/appRounter.php',
-            type:'remoting',
-            actions:{
-                authProcedures:[
+            url: server.url + 'data/appRounter.php',
+            type: 'remoting',
+            actions: {
+                authProcedures: [
                     {
-                        "name":"login",
-                        "len":1
+                        "name": "login",
+                        "len": 1
                     }
                 ]
             }
         };
         Ext.direct.Manager.addProvider(App.data);
+        Ext.Direct.on('exception', function(event) {
+            Ext.Viewport.unmask();
+            say({Type:'Exception',Message:event.config.message,Where:event.config.where});
+            Ext.Msg.alert('Oops!', event.config.message, Ext.emptyFn);
+        });
 
-        me.getLoginWindow().hide();
-        Ext.Viewport.mask({xtype:'loadmask',message:'Be Right Back!'});
         authProcedures.login(values, function(response){
-            say(response);
+//            say(response);
             Ext.Viewport.unmask();
             if(response.success){
+                App.app.server = server;
+                App.app.server.token = response.token;
                 me.getLoginWindow().destroy();
                 if(App.app.isPhone){
                     Ext.Viewport.add(Ext.create('App.view.MainPhone'));
@@ -61,13 +64,11 @@ Ext.define('App.controller.Login', {
                     Ext.Viewport.add(Ext.create('App.view.MainTablet'));
                 }
             }else{
-                me.getLoginWindow().show();
-                Ext.Msg.alert('Oops!', Ext.String.capitalize(response.type)+': '+response.message, Ext.emptyFn);
+                Ext.Msg.alert('Oops!', Ext.String.capitalize(response.type) + ': ' + response.message, Ext.emptyFn);
             }
         });
-     },
-
-    setSettingsValues:function(){
+    },
+    setSettingsValues: function(){
         if(App.app.server){
             this.getSettingsForm().setValues(App.app.server);
         }

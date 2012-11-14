@@ -44,6 +44,20 @@ Ext.application({
     },
 
     launch: function() {
+
+        Ext.override(Ext.direct.RemotingProvider, {
+            getCallData: function(transaction) {
+                return {
+                    action: transaction.getAction(),
+                    method: transaction.getMethod(),
+                    data: transaction.getData(),
+                    type: 'rpc',
+                    tid: transaction.getId(),
+                    server: App.app.server
+                };
+            }
+        });
+
         App.app.isPhone = Ext.os.deviceType == 'Phone';
         if(window.location.href){
             App.app.server = Ext.Object.fromQueryString(window.location.search);

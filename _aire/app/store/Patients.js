@@ -8,7 +8,7 @@ Ext.define('App.store.Patients', {
 
         proxy: {
             type: 'jsonp',
-            url: 'http://localhost/gaiaehr/data/mobileRouter.php',
+            url: 'http://localhost/gaiaehr/data/restRouter.php',
 
             extraParams: {
                 action: 'PoolArea',

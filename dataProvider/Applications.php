@@ -62,19 +62,26 @@ class Applications
 		return $params;
 	}
 
+	public function hasAccess($pvtKey){
+		$this->db->setSQL("SELECT count(*) AS total FROM applications WHERE pvt_key = '$pvtKey' AND active = '1'");
+		$app = $this->db->fetchRecord(PDO::FETCH_ASSOC);
+		return ($app['total'] == 0 ? false : true);
+	}
+
 	public function generatePrivateKey()
 	{
-		$chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz023456789';
+		$chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ023456789';
 		srand((double)microtime() * 1000000);
 		$i      = 0;
-		$AESkey = 'PVT_';
-		while($i <= 27){
-			$num    = rand() % 33;
+		$AESkey = '';
+		while($i <= 19){
+			$num    = rand() % 35;
 			$tmp    = substr($chars, $num, 1);
 			$AESkey = $AESkey . $tmp;
+			if($i == 3 || $i == 7 || $i == 11 || $i == 15) $AESkey = $AESkey . '-';
 			$i++;
 		}
-		if(strlen($AESkey) == 32){
+		if(strlen($AESkey) == 24){
 			return $AESkey;
 		} else {
 			return false;
@@ -82,6 +89,5 @@ class Applications
 
 	}
 }
-//
-//$api = new API();
+//$api = new Applications();
 //print $api->generatePrivateKey();

@@ -27,7 +27,7 @@ $site = (isset($_GET['site']) ? $_GET['site'] : 'default');
 
 $mDebug = false;
 if($mobile->isMobile() || $mDebug){
-	header('Location: _aire/#'.$site);
+	header('Location: _aire/?site='.$site);
 }else{
 	/**
 	 * Startup the registry

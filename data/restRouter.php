@@ -36,7 +36,7 @@ function appHasAccess($pvtKey){
 	return ($record['app'] == 1 ? true : false);
 }
 try{
-	if(isset($_REQUEST['action']) && isset($_REQUEST['method']) && isset($_REQUEST['pvtKey']) && isset($_REQUEST['siteId'])){
+	if(isset($_REQUEST['action']) && isset($_REQUEST['method']) && isset($_REQUEST['pvtKey']) && isset($_REQUEST['site'])){
 		$action = $_REQUEST['action'];
 		$method = $_REQUEST['method'];
 		$pvtKey = $_REQUEST['pvtKey'];

@@ -1,5 +1,5 @@
 Ext.define('App.view.Login', {
-    extend: 'Ext.Panel',
+    extend: 'Ext.TabPanel',
     xtype: 'loginWindow',
     requires: [
         'Ext.Img',
@@ -7,30 +7,37 @@ Ext.define('App.view.Login', {
         'Ext.form.*'
     ],
     config: {
-        scrollable: true,
-        layout:'fit',
+        tabBar:{
+            docked:'bottom',
+            layout:{
+                pack:'center'
+            }
+        },
         items:[
             {
+                title:'Login',
+                iconCls: 'user',
                 xtype:'formpanel',
+                action:'login',
                 items: [
                     {
                         xtype: 'image',
                         src: '../resources/images/gaiaehr_aire.png',
-                        height: 86
+                        height: 86,
+                        margin: '0 0 20 0'
                     },
                     {
                         xtype: 'fieldset',
-                        title: 'User Loin',
                         instructions: 'Welcome to GaiaEHR Mobile',
                         items: [
                             {
                                 xtype: 'textfield',
-                                name : 'username',
+                                name : 'authUser',
                                 label: 'Username'
                             },
                             {
                                 xtype: 'passwordfield',
-                                name: 'password',
+                                name: 'authPass',
                                 label: 'Password'
                             },
                             {
@@ -41,8 +48,8 @@ Ext.define('App.view.Login', {
                                 displayField: 'title',
                                 store: {
                                     data: [
-                                        { title: 'English (US)', value: 'Master'},
-                                        { title: 'Spanish', value: 'Student'}
+                                        { title: 'English (US)', value: 'en_US'},
+                                        { title: 'Spanish', value: 'es'}
                                     ]
                                 }
                             }
@@ -53,6 +60,45 @@ Ext.define('App.view.Login', {
                         text:'Submit',
                         ui: 'confirm',
                         action:'login'
+                    }
+                ]
+            },
+            {
+                title:'Settings',
+                iconCls: 'settings',
+                xtype:'formpanel',
+                action:'settings',
+                items: [
+                    {
+                        xtype: 'image',
+                        src: '../resources/images/gaiaehr_aire.png',
+                        height: 86
+                    },
+                    {
+                        xtype: 'fieldset',
+                        action:'settings',
+                        instructions: '1. Site ID: If you dont have a Site ID leave the default value<br>' +
+                            '2. URL: Type server URL without extra parameters.<br>' +
+                            'Example: http://www.server.com/ or http://www.server.com/gaiaehr/<br>' +
+                            '3. Key: You can generate a Key from Administration->Applications',
+                        items: [
+                            {
+                                xtype: 'textfield',
+                                name : 'site',
+                                label: 'Site ID'
+                            },
+                            {
+                                xtype: 'textfield',
+                                name: 'url',
+                                label: 'Server URL'
+                            },
+                            {
+                                xtype: 'textfield',
+                                name: 'pvtKey',
+                                label: 'Key',
+                                action: 'pvtKey'
+                            }
+                        ]
                     }
                 ]
             }

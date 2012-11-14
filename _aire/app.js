@@ -14,10 +14,11 @@ Ext.application({
         'Ext.MessageBox',
         'Ext.data.proxy.JsonP',
         'Ext.plugin.ListPaging',
-        'Ext.plugin.PullRefresh'
+        'Ext.plugin.PullRefresh',
+        'Ext.carousel.Carousel'
     ],
 
-    controllers: ['Main'],
+    controllers: ['Main','Login'],
 
     views: ['Login','MainTablet','MainPhone'],
 
@@ -42,21 +43,27 @@ Ext.application({
     },
 
     launch: function() {
-        var isPhone = Ext.os.deviceType == 'Phone';
+        App.app.isPhone = Ext.os.deviceType == 'Phone';
+        if(window.location.href){
+            App.app.server = Ext.Object.fromQueryString(window.location.search);
+            App.app.server.url = window.location.href.replace('_aire/'+window.location.search, '');
+            App.app.server.router = App.app.server.url+'data/restRouter.php';
+            App.app.server.pvtKey = '8BAR-NYRB-8R9E-RFYW-EGOV';
+        }
+
 
         // Destroy the #appLoadingIndicator element
         Ext.fly('appLoadingIndicator').destroy();
 
         // Initialize the main view
         Ext.Viewport.add(Ext.create('App.view.Login',{
-            border: !isPhone,
-            modal: !isPhone,
-            centered: !isPhone,
-            width: isPhone ? '100%' : 400,
-            height: isPhone ? '100%' : 420
+            border: !App.app.isPhone ? 5 : 0,
+            style: !App.app.isPhone ? 'border-color: black; border-style: solid;' : '',
+            modal: !App.app.isPhone,
+            centered: !App.app.isPhone,
+            width: App.app.isPhone ? '100%' : 520,
+            height: App.app.isPhone ? '100%' : 440
         }));
-
-        App.app.isPhone = isPhone;
     },
 
     onUpdated: function() {

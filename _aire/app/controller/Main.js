@@ -12,30 +12,15 @@ Ext.define('App.controller.Main', {
 
     config: {
         control: {
-            loginButton: {
-                tap: 'doLogin'
-            },
             logoutButton: {
                 tap: 'doLogout'
             }
         },
 
         refs: {
-            loginWindow: 'loginWindow',
-            loginButton: 'button[action=login]',
             logoutButton: 'button[action=logout]'
         }
-    },
-
-    doLogin:function(){
-        /**
-         * TODO: auth logic
-         */
-        this.getLoginWindow().destroy();
-        if(App.app.isPhone){
-            Ext.Viewport.add(Ext.create('App.view.MainPhone'));
-        }else{
-            Ext.Viewport.add(Ext.create('App.view.MainTablet'));
-        }
     }
+
+
 });

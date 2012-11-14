@@ -82,8 +82,8 @@ try{
 $callback = $_REQUEST['callback'];
 if ($callback) {
     header('Content-Type: text/javascript');
-	print $callback . '(' . json_encode($result) . ');';
+	print $callback . '(' . json_encode($_REQUEST) . ');';
 } else {
     header('Content-Type: application/x-json');
-	print json_encode($result);
+	print json_encode($_REQUEST);
 }

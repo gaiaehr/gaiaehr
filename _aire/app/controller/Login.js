@@ -35,21 +35,21 @@ Ext.define('App.controller.Login', {
         Ext.ns('App.data');
         App.data = {
 //            url:values.url+'data/router.php',
-//            url:'http://192.168.1.100/data/router.php',
-            url:'http://www.gaiaehr.org/demo/data/router.php',
+            url:'http://192.168.1.100/gaiaehr/data/appRounter.php',
+//            url:'http://www.gaiaehr.org/demo/data/router.php',
             type:'remoting',
             actions:{
-                CombosData:[
+                authProcedures:[
                     {
-                        "name":"getTimeZoneList",
-                        "len":0
+                        "name":"login",
+                        "len":1
                     }
                 ]
             }
         };
         Ext.direct.Manager.addProvider(App.data);
 
-        CombosData.getTimeZoneList(function(provider, response){
+        authProcedures.login({authUser:'admin',authPass:'pass',lang:'en_US',site:App.app.server.site}, function(provider, response){
             say(provider);
             say(response);
         });

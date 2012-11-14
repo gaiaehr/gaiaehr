@@ -168,7 +168,6 @@ Ext.define('App.view.login.Login',
 
 		if (me.showSite)
 		{
-
 			me.storeSites = Ext.create('Ext.data.Store',
 			{
 				model : 'SitesModel',

@@ -32,12 +32,12 @@ Ext.define('App.view.Login', {
                         items: [
                             {
                                 xtype: 'textfield',
-                                name : 'username',
+                                name : 'authUser',
                                 label: 'Username'
                             },
                             {
                                 xtype: 'passwordfield',
-                                name: 'password',
+                                name: 'authPass',
                                 label: 'Password'
                             },
                             {

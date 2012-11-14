@@ -51,7 +51,7 @@ class authProcedures
 		//-------------------------------------------
 		if(strlen($params->authUser) >= 26){
 			return array(
-				'success' => false, 'error' => 'Possible hack, please use the Logon Screen.'
+				'success' => false, 'type' => 'error', 'message' => 'Possible hack, please use the Logon Screen.'
 			);
 		}
 		//-------------------------------------------
@@ -64,7 +64,7 @@ class authProcedures
 		//-------------------------------------------
 		if(strlen($params->authPass) >= 11){
 			return array(
-				'success' => false, 'error' => 'Possible hack, please use the Logon Screen.'
+				'success' => false, 'type' => 'error', 'message' => 'Possible hack, please use the Logon Screen.'
 			);
 		}
 		//-------------------------------------------
@@ -72,7 +72,7 @@ class authProcedures
 		//-------------------------------------------
 		if(!$params->authUser){
 			return array(
-				'success' => false, 'error' => 'The username field can not be in blank. Try again.'
+				'success' => false, 'type' => 'error', 'message' => 'The username field can not be in blank. Try again.'
 			);
 		}
 		//-------------------------------------------
@@ -80,7 +80,7 @@ class authProcedures
 		//-------------------------------------------
 		if(!$params->authPass){
 			return array(
-				'success' => false, 'error' => 'The password field can not be in blank. Try again.'
+				'success' => false, 'type' => 'error', 'message' => 'The password field can not be in blank. Try again.'
 			);
 		}
 		//-------------------------------------------
@@ -101,13 +101,13 @@ class authProcedures
 			$err = $db->getError();
 			if(!is_array($err)){
 				return array(
-					'success' => false, 'error' => 'For some reason, I can\'t connect to the database.'
+					'success' => false, 'type' => 'error', 'message' => 'For some reason, I can\'t connect to the database.'
 				);
 			}
 			// Do not stop here!, continue with the rest of the code.
 		} else {
 			return array(
-				'success' => false, 'error' => 'No configuration file found for site <span style="font-weight:bold">' . $params->site . '</span>.<br>Please double check URL or contact support desk.'
+				'success' => false, 'type' => 'error', 'message' => 'No configuration file found for site <span style="font-weight:bold">' . $params->site . '</span>.<br>Please double check URL or contact support desk.'
 			);
 		}
 		//-------------------------------------------
@@ -130,7 +130,7 @@ class authProcedures
 		$user = $db->fetchRecord();
 		if($params->authPass != $aes->decrypt($user['password'])){
 			return array(
-				'success' => false, 'error' => 'The username or password you provided is invalid.'
+				'success' => false, 'type' => 'error', 'message' => 'The username or password you provided is invalid.'
 			);
 		} else {
 			//-------------------------------------------

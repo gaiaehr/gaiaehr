@@ -30,13 +30,12 @@ Ext.define('App.controller.Login', {
 
         var me = this,
             values = this.getLoginForm().getValues();
-        values = Ext.Object.merge(values, this.getSettingsForm().getValues(values));
-
+        values = Ext.Object.merge(values, this.getSettingsForm().getValues());
         Ext.ns('App.data');
         App.data = {
-//            url:values.url+'data/router.php',
+            url:values.url+'data/router.php',
 //            url:'http://192.168.1.100/gaiaehr/data/appRounter.php',
-            url:'http://www.gaiaehr.org/demo/data/appRounter.php',
+//            url:'http://www.gaiaehr.org/demo/data/appRounter.php',
             type:'remoting',
             actions:{
                 authProcedures:[
@@ -49,41 +48,27 @@ Ext.define('App.controller.Login', {
         };
         Ext.direct.Manager.addProvider(App.data);
 
-        authProcedures.login({authUser:'admin',authPass:'pass',lang:'en_US',site:App.app.server.site}, function(provider, response){
-            say(provider);
+        me.getLoginWindow().hide();
+        Ext.Viewport.mask({xtype:'loadmask',message:'Be Right Back!'});
+        authProcedures.login(values, function(response){
             say(response);
+            Ext.Viewport.unmask();
+            if(response.success){
+                me.getLoginWindow().destroy();
+                if(App.app.isPhone){
+                    Ext.Viewport.add(Ext.create('App.view.MainPhone'));
+                }else{
+                    Ext.Viewport.add(Ext.create('App.view.MainTablet'));
+                }
+            }else{
+                me.getLoginWindow().show();
+                Ext.Msg.alert('Oops!', Ext.String.capitalize(response.type)+': '+response.message, Ext.emptyFn);
+            }
         });
-
-//        say(values);
-//        Ext.Viewport.mask();
-//        Ext.data.JsonP.request({
-//            scope:me,
-//            url: values.url+'data/restRouter.php',
-//            params: values,
-//            success: function(result, request) {
-//                Ext.Viewport.unmask();
-//                if(result.success){
-//                    me.getLoginWindow().destroy();
-//                    if(App.app.isPhone){
-//                        Ext.Viewport.add(Ext.create('App.view.MainPhone'));
-//                    }else{
-//                        Ext.Viewport.add(Ext.create('App.view.MainTablet'));
-//                    }
-//                }else{
-//                    Ext.Msg.alert('Oops!', Ext.String.capitalize(result.type)+': '+result.message, Ext.emptyFn);
-//                }
-//            },
-//            failure:function(result, request){
-//                Ext.Msg.alert('Oops!', Ext.String.capitalize(result.type)+': '+result.message, Ext.emptyFn);
-//            }
-//        });
-
-
      },
 
     setSettingsValues:function(){
         if(App.app.server){
-//            this.getSettingsForm().hide();
             this.getSettingsForm().setValues(App.app.server);
         }
     }

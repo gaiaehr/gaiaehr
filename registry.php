@@ -16,11 +16,12 @@ if(!defined('_GaiaEXEC')) die('No direct access allowed.');
  */
 $sites    = array();
 $confs    = array();
-if($handle = opendir('sites/'))
+$dir = (file_exists('sites/') ? 'sites/' : '../sites/');
+if($handle = opendir($dir))
 {
 	while(false !== ($entry = readdir($handle))) 
 	{
-		if($entry != '.' && $entry != '..' && is_dir('sites/' . $entry) === true) 
+		if($entry != '.' && $entry != '..' && is_dir($dir . $entry) === true)
 		{
 			$confs[] = "$entry/conf.php";
 			$sites[] = $entry;

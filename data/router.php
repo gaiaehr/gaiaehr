@@ -1,4 +1,7 @@
 <?php
+header("Access-Control-Allow-Origin: {$_SERVER['HTTP_ORIGIN']}");
+header('Access-Control-Allow-Headers: x-requested-with');
+header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
 //----------------------------------------------------------------------------------------------------------------------
 // We sould comment this code and clean it a littler bit.
 // This code was a copy nd paste by Ernesto.
@@ -133,21 +136,6 @@ if(is_array($data)){
 } else {
 	$response = doRpc($data);
 }
- // Allow from any origin
-    if (isset($_SERVER['HTTP_ORIGIN'])) {
-        header("Access-Control-Allow-Origin: {$_SERVER['HTTP_ORIGIN']}");
-        header('Access-Control-Allow-Credentials: true');
-    }
-
-    // Access-Control headers are received during OPTIONS requests
-    if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
-
-        if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD']))
-            header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
-
-        if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']))
-            header("Access-Control-Allow-Headers: {$_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']}");
-    }
 if($isForm && $isUpload){
 	echo '<html><body><textarea>';
 	echo json_encode($response);

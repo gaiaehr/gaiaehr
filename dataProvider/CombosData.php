@@ -24,6 +24,7 @@ if (!isset($_SESSION))
 	session_start();
 	session_cache_limiter('private');
 }
+header('Access-Control-Allow-Origin: *');
 include_once ($_SESSION['root'] . '/classes/dbHelper.php');
 include_once ($_SESSION['root'] . '/dataProvider/i18nRouter.php');
 

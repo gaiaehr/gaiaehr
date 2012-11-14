@@ -3,7 +3,6 @@
 // We sould comment this code and clean it a littler bit.
 // This code was a copy nd paste by Ernesto.
 //----------------------------------------------------------------------------------------------------------------------
-header('Access-Control-Allow-Origin: *');
 if(!isset($_SESSION)){
 	session_name('GaiaEHR');
 	session_start();
@@ -134,6 +133,7 @@ if(is_array($data)){
 } else {
 	$response = doRpc($data);
 }
+header('Access-Control-Allow-Origin: *');
 if($isForm && $isUpload){
 	echo '<html><body><textarea>';
 	echo json_encode($response);

@@ -35,8 +35,8 @@ Ext.define('App.controller.Login', {
         Ext.ns('App.data');
         App.data = {
 //            url:values.url+'data/router.php',
-            url:'http://192.168.1.100/gaiaehr/data/appRounter.php',
-//            url:'http://www.gaiaehr.org/demo/data/router.php',
+//            url:'http://192.168.1.100/gaiaehr/data/appRounter.php',
+            url:'http://www.gaiaehr.org/demo/data/appRounter.php',
             type:'remoting',
             actions:{
                 authProcedures:[

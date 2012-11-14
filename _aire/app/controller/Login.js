@@ -27,33 +27,55 @@ Ext.define('App.controller.Login', {
     },
 
     doLogin:function(){
-        var me = this,
-            form = this.getLoginForm(),
-            values = form.getValues(),
-            server = false;
-        if(App.app.server) server = Ext.Object.toQueryString(App.app.server);
-        values.server = server;
 
-        say(values);
-        Ext.Viewport.mask();
-        Ext.data.JsonP.request({
-            scope:me,
-            url: server ? App.app.server.router : values.url+'data/restRouter.php',
-            params: values,
-            success: function(result, request) {
-                Ext.Viewport.unmask();
-                if(result.success){
-                    me.getLoginWindow().destroy();
-                    if(App.app.isPhone){
-                        Ext.Viewport.add(Ext.create('App.view.MainPhone'));
-                    }else{
-                        Ext.Viewport.add(Ext.create('App.view.MainTablet'));
+        var me = this,
+            values = this.getLoginForm().getValues();
+        values = Ext.Object.merge(values, this.getSettingsForm().getValues(values));
+
+        Ext.ns('App.data');
+        App.data = {
+//            url:values.url+'data/router.php',
+            url:'http://www.gaiaehr.org/demo/data/router.php',
+            type:'remoting',
+            actions:{
+                CombosData:[
+                    {
+                        "name":"getTimeZoneList",
+                        "len":0
                     }
-                }else{
-                    Ext.Msg.alert('Oops!', Ext.String.capitalize(result.type)+': '+result.message, Ext.emptyFn);
-                }
+                ]
             }
+        };
+        Ext.direct.Manager.addProvider(App.data);
+
+        CombosData.getTimeZoneList(function(provider, response){
+            say(provider);
+            say(response);
         });
+
+//        say(values);
+//        Ext.Viewport.mask();
+//        Ext.data.JsonP.request({
+//            scope:me,
+//            url: values.url+'data/restRouter.php',
+//            params: values,
+//            success: function(result, request) {
+//                Ext.Viewport.unmask();
+//                if(result.success){
+//                    me.getLoginWindow().destroy();
+//                    if(App.app.isPhone){
+//                        Ext.Viewport.add(Ext.create('App.view.MainPhone'));
+//                    }else{
+//                        Ext.Viewport.add(Ext.create('App.view.MainTablet'));
+//                    }
+//                }else{
+//                    Ext.Msg.alert('Oops!', Ext.String.capitalize(result.type)+': '+result.message, Ext.emptyFn);
+//                }
+//            },
+//            failure:function(result, request){
+//                Ext.Msg.alert('Oops!', Ext.String.capitalize(result.type)+': '+result.message, Ext.emptyFn);
+//            }
+//        });
 
 
      },

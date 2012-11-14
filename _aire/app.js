@@ -9,6 +9,7 @@ Ext.application({
     name: 'App',
 
     requires: [
+        'Ext.direct.*',
         'Ext.data.Store',
         'Ext.List',
         'Ext.MessageBox',
@@ -58,7 +59,7 @@ Ext.application({
         // Initialize the main view
         Ext.Viewport.add(Ext.create('App.view.Login',{
             border: !App.app.isPhone ? 5 : 0,
-            style: !App.app.isPhone ? 'border-color: black; border-style: solid;' : '',
+            style: !App.app.isPhone ? 'border-color: black; border-style: solid; border-radius: 5px' : '',
             modal: !App.app.isPhone,
             centered: !App.app.isPhone,
             width: App.app.isPhone ? '100%' : 520,

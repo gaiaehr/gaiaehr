@@ -18,15 +18,13 @@
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-if (!isset($_SESSION))
-{
+if(!isset($_SESSION)){
 	session_name('GaiaEHR');
 	session_start();
 	session_cache_limiter('private');
 }
 include_once ($_SESSION['root'] . '/classes/Sessions.php');
 include_once ($_SESSION['root'] . '/dataProvider/Patient.php');
-
 class authProcedures
 {
 
@@ -34,7 +32,7 @@ class authProcedures
 
 	function __construct()
 	{
-		$this -> session = new Sessions();
+		$this->session = new Sessions();
 	}
 
 	/**
@@ -43,7 +41,6 @@ class authProcedures
 	 */
 	public function login(stdClass $params)
 	{
-
 		//-------------------------------------------
 		// Check that the username do not pass
 		// the maximum limit of the field.
@@ -52,11 +49,9 @@ class authProcedures
 		// If this condition is met, the user did not
 		// use the logon form. Possible hack.
 		//-------------------------------------------
-		if (strlen($params -> authUser) >= 26)
-		{
+		if(strlen($params->authUser) >= 26){
 			return array(
-				'success' => false,
-				'error' => 'Possible hack, please use the Logon Screen.'
+				'success' => false, 'error' => 'Possible hack, please use the Logon Screen.'
 			);
 		}
 		//-------------------------------------------
@@ -67,31 +62,25 @@ class authProcedures
 		// If this condition is met, the user did not
 		// use the logon form. Possible hack.
 		//-------------------------------------------
-		if (strlen($params -> authPass) >= 11)
-		{
+		if(strlen($params->authPass) >= 11){
 			return array(
-				'success' => false,
-				'error' => 'Possible hack, please use the Logon Screen.'
+				'success' => false, 'error' => 'Possible hack, please use the Logon Screen.'
 			);
 		}
 		//-------------------------------------------
 		// Simple check username
 		//-------------------------------------------
-		if (!$params -> authUser)
-		{
+		if(!$params->authUser){
 			return array(
-				'success' => false,
-				'error' => 'The username field can not be in blank. Try again.'
+				'success' => false, 'error' => 'The username field can not be in blank. Try again.'
 			);
 		}
 		//-------------------------------------------
 		// Simple check password
 		//-------------------------------------------
-		if (!$params -> authPass)
-		{
+		if(!$params->authPass){
 			return array(
-				'success' => false,
-				'error' => 'The password field can not be in blank. Try again.'
+				'success' => false, 'error' => 'The password field can not be in blank. Try again.'
 			);
 		}
 		//-------------------------------------------
@@ -104,34 +93,28 @@ class authProcedures
 		include_once ('registry.php');
 		include_once ('classes/AES.php');
 		include_once ('classes/dbHelper.php');
-		$fileConf = 'sites/' . $params -> site . '/conf.php';
-		if (file_exists($fileConf))
-		{
+		$fileConf = 'sites/' . $params->site . '/conf.php';
+		if(file_exists($fileConf)){
 			/** @noinspection PhpIncludeInspection */
 			include_once ($fileConf);
-			$db = new dbHelper();
-			$err = $db -> getError();
-			if (!is_array($err))
-			{
+			$db  = new dbHelper();
+			$err = $db->getError();
+			if(!is_array($err)){
 				return array(
-					'success' => false,
-					'error' => 'For some reason, I can\'t connect to the database.'
+					'success' => false, 'error' => 'For some reason, I can\'t connect to the database.'
 				);
 			}
 			// Do not stop here!, continue with the rest of the code.
-		}
-		else
-		{
+		} else {
 			return array(
-				'success' => false,
-				'error' => 'No configuration file found for site <span style="font-weight:bold">' . $params -> site . '</span>.<br>Please double check URL or contact support desk.'
+				'success' => false, 'error' => 'No configuration file found for site <span style="font-weight:bold">' . $params->site . '</span>.<br>Please double check URL or contact support desk.'
 			);
 		}
 		//-------------------------------------------
 		// remove empty space from username and password
 		//-------------------------------------------
-		$params -> authUser = str_replace(' ', '', $params -> authUser);
-		$params -> authPass = str_replace(' ', '', $params -> authPass);
+		$params->authUser = str_replace(' ', '', $params->authUser);
+		$params->authPass = str_replace(' ', '', $params->authPass);
 		//-------------------------------------------
 		// Convert the password to AES and validate
 		//-------------------------------------------
@@ -139,47 +122,42 @@ class authProcedures
 		//-------------------------------------------
 		// Username & password match
 		//-------------------------------------------
-		$db -> setSQL("SELECT id, username, title, fname, mname, lname, email, password
+		$db->setSQL("SELECT id, username, title, fname, mname, lname, email, password
                          FROM users
         		        WHERE username   = '$params->authUser'
         		          AND authorized = '1'
         		        LIMIT 1");
-
-		$user = $db -> fetchRecord();
-		if ($params -> authPass != $aes -> decrypt($user['password']))
-		{
+		$user = $db->fetchRecord();
+		if($params->authPass != $aes->decrypt($user['password'])){
 			return array(
-				'success' => false,
-				'error' => 'The username or password you provided is invalid.'
+				'success' => false, 'error' => 'The username or password you provided is invalid.'
 			);
-		}
-		else
-		{
+		} else {
 			//-------------------------------------------
 			// Change some User related variables and go
 			//-------------------------------------------
-			$_SESSION['user']['name'] = $user['title'] . " " . $user['lname'] . ", " . $user['fname'] . " " . $user['mname'];
-			$_SESSION['user']['id'] = $user['id'];
+			$_SESSION['user']['name']  = $user['title'] . " " . $user['lname'] . ", " . $user['fname'] . " " . $user['mname'];
+			$_SESSION['user']['id']    = $user['id'];
 			$_SESSION['user']['email'] = $user['email'];
-			$_SESSION['user']['site'] = $params -> site;
-			$_SESSION['user']['auth'] = true;
+			$_SESSION['user']['site']  = $params->site;
+			$_SESSION['user']['auth']  = true;
 			//-------------------------------------------
 			// Also fetch the current version of the
 			// Application & Database
 			//-------------------------------------------
 			$sql = "SELECT * FROM version LIMIT 1";
-			$db -> setSQL($sql);
-			$version = $db -> fetchRecord();
-			$_SESSION['ver']['codeName'] = $version['v_tag'];
-			$_SESSION['ver']['major'] = $version['v_major'];
-			$_SESSION['ver']['rev'] = $version['v_patch'];
-			$_SESSION['ver']['minor'] = $version['v_minor'];
-			$_SESSION['ver']['database'] = $version['v_database'];
-			$_SESSION['site']['localization'] = $params -> lang;
-			$_SESSION['site']['checkInMode'] = $params -> checkInMode;
-			$_SESSION['timeout'] = time();
-			$session = new Sessions();
-			$session -> loginSession();
+			$db->setSQL($sql);
+			$version                          = $db->fetchRecord();
+			$_SESSION['ver']['codeName']      = $version['v_tag'];
+			$_SESSION['ver']['major']         = $version['v_major'];
+			$_SESSION['ver']['rev']           = $version['v_patch'];
+			$_SESSION['ver']['minor']         = $version['v_minor'];
+			$_SESSION['ver']['database']      = $version['v_database'];
+			$_SESSION['site']['localization'] = $params->lang;
+			$_SESSION['site']['checkInMode']  = $params->checkInMode;
+			$_SESSION['timeout']              = time();
+			$session                          = new Sessions();
+			$session->loginSession();
 			$_SESSION['inactive']['timeout'] = time();
 			return array('success' => true);
 		}
@@ -193,8 +171,8 @@ class authProcedures
 	{
 		$s = new Sessions();
 		$p = new Patient();
-		$s -> logoutSession();
-		$p -> patientChartInByPid($_SESSION['patient']['pid']);
+		$s->logoutSession();
+		$p->patientChartInByPid($_SESSION['patient']['pid']);
 		session_unset();
 		session_destroy();
 		return;
@@ -213,15 +191,12 @@ class authProcedures
 		//
 		// return an exit code
 		//****************************************************************
-		if ($_SESSION['site']['flops'] < 300)
-		{
+		if($_SESSION['site']['flops'] < 300){
 			$session = new Sessions();
-			$session -> updateSession();
+			$session->updateSession();
 			return array('authorized' => true);
-		}
-		else
-		{
-			$this -> unAuth();
+		} else {
+			$this->unAuth();
 			return array('authorized' => false);
 		}
 	}
@@ -229,10 +204,9 @@ class authProcedures
 	public function getSites()
 	{
 		$rows = array();
-		foreach ($_SESSION['sites']['sites'] as $row)
-		{
+		foreach($_SESSION['sites']['sites'] as $row){
 			$site['site_id'] = $row;
-			$site['site'] = $row;
+			$site['site']    = $row;
 			array_push($rows, $site);
 		}
 		return $rows;

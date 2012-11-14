@@ -48,8 +48,8 @@ Ext.define('App.view.Login', {
                                 displayField: 'title',
                                 store: {
                                     data: [
-                                        { title: 'English (US)', value: 'Master'},
-                                        { title: 'Spanish', value: 'Student'}
+                                        { title: 'English (US)', value: 'en_US'},
+                                        { title: 'Spanish', value: 'es'}
                                     ]
                                 }
                             }
@@ -78,8 +78,9 @@ Ext.define('App.view.Login', {
                         xtype: 'fieldset',
                         action:'settings',
                         instructions: '1. Site ID: If you dont have a Site ID leave the default value<br>' +
-                            '2. URL: Type server URL without extra parameters. Example: http://www.server.com<br>' +
-                            '3. Pvt Key: You can generate a Pvt Key from menu administration -> Applications',
+                            '2. URL: Type server URL without extra parameters.<br>' +
+                            'Example: http://www.server.com/ or http://www.server.com/gaiaehr/<br>' +
+                            '3. Key: You can generate a Key from Administration->Applications',
                         items: [
                             {
                                 xtype: 'textfield',
@@ -94,7 +95,7 @@ Ext.define('App.view.Login', {
                             {
                                 xtype: 'textfield',
                                 name: 'pvtKey',
-                                label: 'Pvt Key',
+                                label: 'Key',
                                 action: 'pvtKey'
                             }
                         ]

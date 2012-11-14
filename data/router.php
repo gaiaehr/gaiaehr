@@ -3,6 +3,7 @@
 // We sould comment this code and clean it a littler bit.
 // This code was a copy nd paste by Ernesto.
 //----------------------------------------------------------------------------------------------------------------------
+header('Access-Control-Allow-Origin: *');
 if(!isset($_SESSION)){
 	session_name('GaiaEHR');
 	session_start();

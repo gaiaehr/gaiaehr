@@ -1,7 +1,10 @@
 Ext.define('App.view.MainPhone', {
     extend: 'Ext.Container',
     xtype: 'mainphoneview',
-    requires: ['Ext.TitleBar'],
+    requires: [
+        'Ext.TitleBar',
+        'App.view.PatientList'
+    ],
 
     config: {
         layout:{

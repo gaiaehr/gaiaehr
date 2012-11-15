@@ -1,15 +1,12 @@
 Ext.define('App.model.Patients', {
     extend: 'Ext.data.Model',
-
     config: {
         fields: [
-            {name: 'id',          type: 'string'},
-            {name: 'text',        type: 'string'},
-            {name: 'source',      type: 'string'},
-            {name: 'animation',   type: 'auto'},
-            {name: 'limit',       type: 'auto'},
-            {name: 'preventHide', type: 'boolean'},
-            {name: 'view',        type: 'string'}
+            {name: 'pid',          type: 'string'},
+            {name: 'name',        type: 'string'},
+            {name: 'poolArea',      type: 'string'},
+            {name: 'photoSrc',   type: 'auto'},
+            {name: 'zoneTimeIn',       type: 'auto'}
         ]
     }
 });

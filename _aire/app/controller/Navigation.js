@@ -5,18 +5,15 @@
  * Time: 11:37 AM
  * To change this template use File | Settings | File Templates.
  */
-Ext.define('App.controller.Main', {
+Ext.define('App.controller.Navigation', {
     extend: 'Ext.app.Controller',
 
     requires:['Ext.data.proxy.JsonP'],
 
     config: {
         control: {
-            mainTabletView: {
-                show: 'onMainPanelShow'
-            },
-            mainPhoneView: {
-                show: 'onMainPanelShow'
+            patienLlist: {
+                select: 'onPatientListSelect'
             }
         },
 
@@ -28,7 +25,9 @@ Ext.define('App.controller.Main', {
     },
 
 
-    onMainPanelShow: function(){
-        this.getPatienLlist().getStore().load();
+    onPatientListSelect: function(a,b,c){
+        say(a);
+        say(b);
+        say(c);
     }
 });

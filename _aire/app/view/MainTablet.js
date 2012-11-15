@@ -3,14 +3,12 @@ Ext.define('App.view.MainTablet', {
     xtype: 'maintabletview',
 
     requires: [
-        'Ext.dataview.NestedList',
         'Ext.navigation.Bar',
         'App.view.PatientList'
     ],
 
     config: {
         fullscreen: true,
-
         layout: {
             type: 'card',
             animation: {
@@ -19,13 +17,13 @@ Ext.define('App.view.MainTablet', {
                 duration: 250
             }
         },
-
         items: [
             {
                 id: 'mainPanel',
                 cls : 'card',
                 padding:10,
                 scrollable: true,
+                action:'mainPanel',
                 html: '' +
                     '<div class="features">' +
                     '   <h2>Welcome to GaiaEHR Air <span class="version">Beta 0.0.1</span></h2>' +
@@ -51,7 +49,6 @@ Ext.define('App.view.MainTablet', {
                     '   </div>' +
                     '   <div class="footer">Learn more at <a href="http://www.gaiaehr.org/touch" target="blank">GaiaEHR Air</a></div>' +
                     '</div>'
-
             },
             {
                 xtype:'container',

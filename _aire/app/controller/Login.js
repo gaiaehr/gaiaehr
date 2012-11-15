@@ -47,6 +47,12 @@ Ext.define('App.controller.Login', {
                         "name": "login",
                         "len": 1
                     }
+                ],
+                PoolArea: [
+                    {
+                        "name": "getPatientsByPoolAreaAccess",
+                        "len": 0
+                    }
                 ]
             }
         };

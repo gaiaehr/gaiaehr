@@ -33,3 +33,12 @@
 .leftNav{
 	border-right: 1px solid #ccc;
 }
+.patientList img {
+    float: left;
+}
+.patientList h2 {
+	margin-left: 70px;
+}
+.patientList p {
+	margin-left: 70px;
+}

@@ -8,7 +8,9 @@
 Ext.define('App.view.PatientList', {
     extend: 'Ext.List',
     xtype:'patientlist',
-
+    requires:[
+        'App.store.Patients'
+    ],
     config: {
         store: Ext.create('App.store.Patients'),
         limit: 20,
@@ -21,10 +23,10 @@ Ext.define('App.view.PatientList', {
         emptyText: '<p class="no-searches">No Patients found</p>',
 
         itemTpl: Ext.create('Ext.XTemplate',
-            '<img src="{profile_image_url}" />',
-            '<div class="tweet">',
-            '<h2>{from_user}</h2>',
-            '<p>{text}</p>',
+            '<div class="patientList">',
+            '   <img src="{photoSrc}" width="48" height="48"/>',
+            '   <h2>{name}</h2>',
+            '   <p>#{pid}</p>',
             '</div>'
         )
     }

@@ -19,11 +19,11 @@ Ext.application({
         'Ext.carousel.Carousel'
     ],
 
-    controllers: ['Main','Login'],
+    controllers: ['Main','Login','Navigation'],
 
-    views: ['Login','MainTablet','MainPhone'],
+    views: ['Login'],
 
-    stores: ['Patients'],
+//    stores: ['Patients'],
 
     icon: {
         '57': 'resources/icons/Icon.png',

@@ -1,9 +1,24 @@
-.mainPanel .x-scroll-view, .mainPanel .x-layout-card-item {
-	background-color: #F1F1F1;
+.leftNav .x-list-item.x-item-selected .x-dock-horizontal .x-dock-body {
+	background: url('../images/listSelectBg.png')no-repeat right top transparent;
+}
+.leftNav .x-scroll-scroller {
+	background: url('../images/leftNavBg.png') repeat-y right top transparent;
+}
+.leftNav .x-scroll-scroller .x-list-header, .leftNav .x-navigation-bar{
+	border-right: solid 1px #cccccc;
+}
+.leftNav .x-list-item .x-dock-horizontal{
+	margin-right: -1px!important;
+}
+.leftNav .x-list-item-body {
+	min-height: 61px;
+	padding: 0.3em;
+}
+.mainPanel .x-layout-card-item{
+	background-color: #fdfdfd;
 }
 .features {
 	font-size: 19px;
-	padding: 5px;
 }.features .version {
 	font-weight: bold;
 }
@@ -32,9 +47,6 @@
 }
 .features .footer a {
 	color: white;
-}
-.leftNav{
-	border-right: 1px solid #ccc;
 }
 .patientList img {
     float: left;

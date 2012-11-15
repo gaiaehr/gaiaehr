@@ -12,7 +12,6 @@ Ext.define('App.view.MainTablet', {
         layout: 'fit',
         items: [
             {
-                padding:10,
                 scrollable: true,
                 action:'mainPanel',
                 cls:'mainPanel',
@@ -24,6 +23,7 @@ Ext.define('App.view.MainTablet', {
                         duration: 250
                     }
                 },
+                defaults:{ padding:10 },
                 items:[
                     {
                         title:'Home',

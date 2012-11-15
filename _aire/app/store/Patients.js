@@ -6,6 +6,12 @@ Ext.define('App.store.Patients', {
         pageSize: 20,
         autoLoad: true,
 
+        grouper: {
+           groupFn: function(record) {
+               return record.get('poolArea');
+           }
+       },
+
         proxy: {
             //paramsAsHash: true,
             directFn: PoolArea.getPatientsByPoolAreaAccess,

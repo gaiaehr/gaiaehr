@@ -12,7 +12,7 @@ Ext.define('App.controller.Navigation', {
 
     config: {
         control: {
-            patienLlist: {
+            patientList: {
                 select: 'onPatientListSelect',
                 show: 'onPatientListShow'
             },
@@ -31,42 +31,45 @@ Ext.define('App.controller.Navigation', {
             mainTabletView: 'maintabletview',
             mainPhoneView: 'mainphoneview',
             mainPanel: 'container[action=mainPanel]',
-            patienLlist: 'patientlist',
+            mainNavBar: 'titlebar[action=mainNavBar]',
+            patientList: 'patientlist',
             homeBtn: 'button[action=home]',
             backBtn: 'button[action=back]'
         }
     },
 
     onPatientListShow:function(){
-        this.getPatienLlist().getStore().load();
+        this.getPatientList().getStore().load();
     },
 
     onPatientListSelect: function(view, model){
         this.getMainPanel().setActiveItem(1);
-        Ext.Msg.alert('Patient', model.data.name, Ext.emptyFn);
+        this.getMainNavBar().setTitle(model.data.name);
     },
 
     onMainPanelActiveItemChange:function(card, newActiveItem){
-        var hBtn = this.getHomeBtn(),
-            bBtn = this.getBackBtn();
-        say(newActiveItem.action);
+        var bBtn = this.getBackBtn();
+        var hBtn = this.getHomeBtn();
         if(newActiveItem.action == 'home'){
-//            hBtn.hide();
             bBtn.hide();
+            hBtn.hide();
         }else if(newActiveItem.action == 'pSummary'){
-//            hBtn.show();
-            bBtn.show();
+            bBtn.hide();
+            hBtn.show();
         }else{
-//            hBtn.show();
             bBtn.show();
         }
     },
 
     onHomeBtnTap:function(){
+        this.getPatientList().deselectAll();
+        this.getMainNavBar().setTitle('Home');
         this.getMainPanel().setActiveItem(0);
     },
 
     onBackBtnTap:function(){
-        this.getMainPanel().setActiveItem(0);
+        var panel = this.getMainPanel(),
+            prev = panel.items.items.indexOf(panel.getActiveItem()) - 1;
+        panel.setActiveItem(prev);
     }
 });

@@ -1,31 +1,15 @@
 Ext.define('App.store.Patients', {
-    extend: 'Ext.data.Store',
+    extend: 'Ext.data.DirectStore',
+    requires: ['App.model.Patients'],
     config: {
-        fields: ['from_user', 'profile_image_url', 'text', 'created_at'],
-
+        model: 'App.model.Patients',
         pageSize: 20,
         autoLoad: false,
 
         proxy: {
-            type: 'jsonp',
-            url: 'http://localhost/gaiaehr/data/restRouter.php',
-
-            extraParams: {
-                action: 'PoolArea',
-                method: 'getPatientsByPoolAreaAccess',
-                len: 1
-            },
-
-            reader: {
-                type: 'json',
-                rootProperty: 'data'
-            },
-            listeners:{
-                exception:function(proxy, response){
-                    console.log(response);
-                    Ext.Msg.alert('Oops!', response, Ext.emptyFn);
-                }
-            }
+            //paramsAsHash: true,
+            directFn: PoolArea.getPatientsByPoolAreaAccess,
+            simpleSortMode: true
         }
     }
 });

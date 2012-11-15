@@ -1,6 +1,10 @@
 Ext.define('App.view.MainPhone', {
     extend: 'Ext.Container',
-    requires: ['Ext.TitleBar'],
+    xtype: 'mainphoneview',
+    requires: [
+        'Ext.TitleBar',
+        'App.view.PatientList'
+    ],
 
     config: {
         layout:{
@@ -10,7 +14,21 @@ Ext.define('App.view.MainPhone', {
         items:[
             {
                 xtype : 'titlebar',
-                title : 'Patients'
+                title : 'Patients',
+                items: [
+                    {
+                        iconCls: 'home',
+                        iconMask: true,
+                        align: 'left',
+                        action:'home'
+                    },
+                    {
+                        ui:'decline',
+                        text: 'Logout',
+                        align: 'right',
+                        action:'logout'
+                    }
+                ]
             },
             {
                 xtype : 'patientlist',

@@ -12,12 +12,9 @@ Ext.define('App.controller.Main', {
 
     config: {
         control: {
-            mainTabletView: {
-                show: 'onMainPanelShow'
-            },
-            mainPhoneView: {
-                show: 'onMainPanelShow'
-            }
+//            patienLlist: {
+//                show: 'onMainPanelShow'
+//            }
         },
 
         refs: {
@@ -29,6 +26,6 @@ Ext.define('App.controller.Main', {
 
 
     onMainPanelShow: function(){
-        this.getPatienLlist().getStore().load();
+        //this.getPatienLlist().getStore().load();
     }
 });

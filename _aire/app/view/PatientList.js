@@ -16,7 +16,7 @@ Ext.define('App.view.PatientList', {
         limit: 20,
 
         plugins: [
-            { xclass: 'Ext.plugin.ListPaging' },
+//            { xclass: 'Ext.plugin.ListPaging' },
             { xclass: 'Ext.plugin.PullRefresh' }
         ],
 

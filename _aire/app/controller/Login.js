@@ -81,7 +81,7 @@ Ext.define('App.controller.Login', {
     },
     doLogout:function(){
         var me = this;
-        Ext.Msg.confirm('Wait!', 'Are you sure you want to Logout?', function(btn){
+        Ext.Msg.confirm('Logout...', 'Are you sure?', function(btn){
             if(btn == 'yes'){
                 if(App.app.isPhone){
                     Ext.Viewport.remove(me.getMainPhoneView());

@@ -1,10 +1,10 @@
+.mainPanel .x-scroll-view, .mainPanel .x-layout-card-item {
+	background-color: #F1F1F1;
+}
 .features {
 	font-size: 19px;
 	padding: 5px;
-	border: 1px solid #ccc;
-	background-color: white;
-	border-radius: 5px;
-}.features . version {
+}.features .version {
 	font-weight: bold;
 }
 .features h2 {
@@ -13,10 +13,12 @@
 	margin: 20px 0;
 }
 .feature {
-	background: url("../images/circle-learn.png") 0 0 no-repeat #ffffff;
+	background: url("../images/circle-learn.png") 10px 10px no-repeat #ffffff;
 	min-height: 60px;
 	margin: 10px;
 	padding: 10px 10px 10px 70px;
+	border: solid 1px #cccccc;
+	border-radius: 5px;
 }
 .feature h3 {
 	font-weight: bold;
@@ -26,6 +28,7 @@
 	padding: 5px 10px;
 	border-radius: 5px;
 	background-color: #1469a4;
+	margin: 5px 10px;
 }
 .features .footer a {
 	color: white;

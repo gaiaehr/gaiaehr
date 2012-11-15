@@ -4,7 +4,7 @@ Ext.define('App.store.Patients', {
     config: {
         model: 'App.model.Patients',
         pageSize: 20,
-        autoLoad: false,
+        autoLoad: true,
 
         proxy: {
             //paramsAsHash: true,

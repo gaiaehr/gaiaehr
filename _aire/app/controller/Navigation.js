@@ -25,9 +25,8 @@ Ext.define('App.controller.Navigation', {
     },
 
 
-    onPatientListSelect: function(a,b,c){
-        say(a);
-        say(b);
-        say(c);
+    onPatientListSelect: function(view, model){
+        Ext.Msg.alert('Patient', model.data.name, Ext.emptyFn);
+
     }
 });

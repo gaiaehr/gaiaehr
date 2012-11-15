@@ -14,13 +14,19 @@ Ext.define('App.controller.Login', {
             },
             loginButton: {
                 tap: 'doLogin'
+            },
+            logoutButton: {
+                tap: 'doLogout'
             }
         },
         refs: {
+            mainPhoneView: 'mainphoneview',
+            mainTabletView: 'maintabletview',
             settingsForm: 'formpanel[action=settings]',
             loginForm: 'formpanel[action=login]',
             loginWindow: 'loginWindow',
             loginButton: 'button[action=login]',
+            logoutButton: 'button[action=logout]',
             pvtKeyField: 'textfield[action=pvtKey]'
         }
     },
@@ -52,7 +58,6 @@ Ext.define('App.controller.Login', {
         });
 
         authProcedures.login(values, function(response){
-//            say(response);
             Ext.Viewport.unmask();
             if(response.success){
                 App.app.server = server;
@@ -65,6 +70,26 @@ Ext.define('App.controller.Login', {
                 }
             }else{
                 Ext.Msg.alert('Oops!', Ext.String.capitalize(response.type) + ': ' + response.message, Ext.emptyFn);
+            }
+        });
+    },
+    doLogout:function(){
+        var me = this;
+        Ext.Msg.confirm('Wait!', 'Are you sure you want to Logout?', function(btn){
+            if(btn == 'yes'){
+                if(App.app.isPhone){
+                    Ext.Viewport.remove(me.getMainPhoneView());
+                }else{
+                    Ext.Viewport.remove(me.getMainTabletView());
+                }
+                Ext.Viewport.add(Ext.create('App.view.Login',{
+                    border: !App.app.isPhone ? 5 : 0,
+                    style: !App.app.isPhone ? 'border-color: black; border-style: solid; border-radius: 5px' : '',
+                    modal: !App.app.isPhone,
+                    centered: !App.app.isPhone,
+                    width: App.app.isPhone ? '100%' : 520,
+                    height: App.app.isPhone ? '100%' : 440
+                }));
             }
         });
     },

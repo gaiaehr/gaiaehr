@@ -11,15 +11,15 @@ Ext.define('App.controller.Main', {
     requires:['Ext.data.proxy.JsonP'],
 
     config: {
-        control: {
-            logoutButton: {
-                tap: 'doLogout'
-            }
-        },
-
-        refs: {
-            logoutButton: 'button[action=logout]'
-        }
+//        control: {
+//            logoutButton: {
+//                tap: 'doLogout'
+//            }
+//        },
+//
+//        refs: {
+//            logoutButton: 'button[action=logout]'
+//        }
     }
 
 

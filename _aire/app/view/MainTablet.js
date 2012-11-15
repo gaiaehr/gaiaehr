@@ -1,6 +1,6 @@
 Ext.define('App.view.MainTablet', {
     extend: 'Ext.Container',
-    xtype: 'mainview',
+    xtype: 'maintabletview',
 
     requires: [
         'Ext.dataview.NestedList',
@@ -77,8 +77,21 @@ Ext.define('App.view.MainTablet', {
                 action: 'mainNavBar',
                 xtype : 'titlebar',
                 docked: 'top',
-                title : 'Home'
-
+                title : 'Home',
+                items: [
+                    {
+                        iconCls: 'home',
+                        iconMask: true,
+                        align: 'left',
+                        action:'home'
+                    },
+                    {
+                        ui:'decline',
+                        text: 'Logout',
+                        align: 'right',
+                        action:'logout'
+                    }
+                ]
             }
         ]
     }

@@ -1,7 +1,7 @@
 {
     "applicationName": "GaiaEHR Aire",
     "applicationId": "com.gaiaehr.aire",
-    "outputPath": "./build",
+    "outputPath": "./build/",
     "versionString": "1.0.0",
     "versionCode": "100",
     "inputPath": "./",
@@ -25,8 +25,8 @@
         "ACCESS_COARSE_LOCATION",
         "CALL_PHONE"
     ],
-    "sdkPath": "C:/android-sdk",
-    "androidAPILevel": "16",
+    "sdkPath": "~/adt-bundle-mac/sdk",
+    "androidAPILevel": "15",
     "orientations": [
         "portrait",
         "landscapeLeft",

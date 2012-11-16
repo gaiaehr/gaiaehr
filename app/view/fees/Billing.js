@@ -681,3 +681,4 @@ Ext.define( 'App.view.fees.Billing',
 		callback( true );
 	}
 } );
+

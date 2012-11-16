@@ -4,7 +4,13 @@ Ext.define('App.store.Patients', {
     config: {
         model: 'App.model.Patients',
         pageSize: 20,
-        autoLoad: false,
+        autoLoad: true,
+
+        grouper: {
+           groupFn: function(record) {
+               return record.get('poolArea');
+           }
+       },
 
         proxy: {
             //paramsAsHash: true,

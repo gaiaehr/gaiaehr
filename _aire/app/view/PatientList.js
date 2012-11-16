@@ -14,9 +14,9 @@ Ext.define('App.view.PatientList', {
     config: {
         store: Ext.create('App.store.Patients'),
         limit: 20,
-
+        grouped     : true,
         plugins: [
-            { xclass: 'Ext.plugin.ListPaging' },
+//            { xclass: 'Ext.plugin.ListPaging' },
             { xclass: 'Ext.plugin.PullRefresh' }
         ],
 

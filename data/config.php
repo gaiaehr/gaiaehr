@@ -126,69 +126,6 @@ $API = array(
 	/**
 	 * Medical Functions
 	 */
-<<<<<<< HEAD
-	'Medical' => array('methods' => array(
-			'getImmunizationsList' => array('len' => 0),
-			'getPatientImmunizations' => array('len' => 1),
-			'addPatientImmunization' => array('len' => 1),
-			'updatePatientImmunization' => array('len' => 1),
-			'getPatientAllergies' => array('len' => 1),
-			'addPatientAllergies' => array('len' => 1),
-			'updatePatientAllergies' => array('len' => 1),
-			'getMedicalIssues' => array('len' => 1),
-			'addMedicalIssues' => array('len' => 1),
-			'updateMedicalIssues' => array('len' => 1),
-			'getPatientSurgery' => array('len' => 1),
-			'addPatientSurgery' => array('len' => 1),
-			'updatePatientSurgery' => array('len' => 1),
-			'getPatientDental' => array('len' => 1),
-			'addPatientDental' => array('len' => 1),
-			'updatePatientDental' => array('len' => 1),
-			'getPatientMedications' => array('len' => 1),
-			'addPatientMedications' => array('len' => 1),
-			'updatePatientMedications' => array('len' => 1),
-			'getMedicationLiveSearch' => array('len' => 1),
-			'getPatientLabsResults' => array('len' => 1),
-			'addPatientLabsResult' => array('len' => 1),
-			'updatePatientLabsResult' => array('len' => 1),
-			'deletePatientLabsResult' => array('len' => 1),
-			'signPatientLabsResultById' => array('len' => 1),
-			'reviewMedicalWindowEncounter' => array('len' => 1),
-			'getLabsLiveSearch' => array('len' => 1),
-			'reviewAllMedicalWindowEncounter' => array('len' => 1),
-			'getEncounterReviewByEid' => array('len' => 1),
-			'getSurgeriesLiveSearch' => array('len' => 1),
-			'getCDTLiveSearch' => array('len' => 1),
-			'getRXNORMLiveSearch' => array('len' => 1)
-		)),
-	/**
-	 * AddressBook Functions
-	 */
-	'AddressBook' => array('methods' => array(
-			'getAddresses' => array('len' => 1),
-			'addContact' => array('len' => 1),
-			'updateAddress' => array('len' => 1)
-		)),
-	'ServiceCodes' => array('methods' => array('liveCodeSearch' => array('len' => 1))),
-	'Medications' => array('methods' => array(
-			'getMedications' => array('len' => 1),
-			'addMedications' => array('len' => 1),
-			'removeMedications' => array('len' => 1),
-			'updateMedications' => array('len' => 1),
-		)),
-	'Immunizations' => array('methods' => array(
-			'getMvx' => array('len' => 1),
-			'getMvxForCvx' => array('len' => 1),
-			'getImmunizationLiveSearch' => array('len' => 1),
-		)),
-	'Laboratories' => array('methods' => array(
-			'getLabObservations' => array('len' => 1),
-			'addLabObservation' => array('len' => 1),
-			'updateLabObservation' => array('len' => 1),
-			'removeLabObservation' => array('len' => 1),
-			'getActiveLaboratoryTypes' => array('len' => 1)
-		)),
-=======
 	'Medical' => array(
 		'methods' => array(
 			'getImmunizationsList' => array(
@@ -364,7 +301,6 @@ $API = array(
 			)
 		)
 	),
->>>>>>> 67f810f2182a68b4cd8c119358277ed0da1118ff
 	/**
 	 * Practice Functions
 	 */

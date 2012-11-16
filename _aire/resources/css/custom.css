@@ -1,5 +1,5 @@
 .leftNav .x-list-item.x-item-selected .x-dock-horizontal .x-dock-body {
-	background: url('../images/listSelectBg.png')no-repeat right top transparent;
+	background: url('../images/listSelectBg.png')no-repeat right center transparent;
 }
 .leftNav .x-scroll-scroller {
 	background: url('../images/leftNavBg.png') repeat-y right top transparent;

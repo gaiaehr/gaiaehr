@@ -12,6 +12,8 @@ if(!isset($_SESSION)){
 	session_cache_limiter('private');
 }
 include_once ($_SESSION['root'] . '/classes/dbHelper.php');
+include_once ($_SESSION['root'] . '/classes/Crypt.php');
+include_once ($_SESSION['root'] . '/dataProvider/Crypt.php');
 class Sessions
 {
 	/**
@@ -39,6 +41,26 @@ class Sessions
 		$this->db->execLog();
 		$_SESSION['session_id'] = $this->db->lastInsertId;
 		return $_SESSION['session_id'];
+	}
+
+	public function setSessionByToken($token)
+	{
+		$s = json_decode(Crypt::decrypt($token));
+		$this->db->setSQL("SELECT s.id AS sid, s.uid AS uid, u.title, u.lname, u.fname, u.mname, u.email
+							 FROM users_sessions AS s
+						LEFT JOIN users AS u ON s.uid = u.id
+							WHERE s.id = '$s->sid' AND s.logout IS NULL");
+		$r = $this->db->fetchRecord(PDO::FETCH_ASSOC);
+		if(!empty($r)){
+			$_SESSION['user']['name']  = $r['title'] . " " . $r['lname'] . ", " . $r['fname'] . " " . $r['mname'];
+			$_SESSION['user']['id']    = $r['uid'];
+			$_SESSION['user']['email'] = $r['email'];
+			$_SESSION['user']['site']  = $s->site;
+			$_SESSION['user']['auth']  = true;
+			return true;
+		}else{
+			return false;
+		}
 	}
 
 	public function updateSession()
@@ -74,7 +96,5 @@ class Sessions
 	}
 
 }
-
-//
 //$s = new Sessions();
-//$s->logoutInactiveUsers();
+//$s->setSessionByToken("uzUc7qJ4YHc6F76WfoRnJwSycND+CLaUVmL2AcdEyHniHzONcq2C70wo7A+oA8aw\/C\/Q8UrRPZ7rrrmNut482w==");

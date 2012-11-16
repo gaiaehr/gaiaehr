@@ -158,7 +158,7 @@ class authProcedures
 			$_SESSION['site']['checkInMode']  = $params->checkInMode;
 			$_SESSION['timeout']              = time();
 			$session                          = new Sessions();
-			$token = Crypt::encrypt($session->loginSession());
+			$token = Crypt::encrypt('{"uid":'.$user['id'].',"sid":'.$session->loginSession().',"site":"'.$params->site.'"}');
 			$_SESSION['inactive']['timeout'] = time();
 			return array('success' => true, 'token' => $token);
 		}

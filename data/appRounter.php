@@ -44,17 +44,25 @@ include_once('../registry.php');
 include_once('../sites/'.$data->server->site.'/conf.php');
 include_once('../dataProvider/Modules.php');
 include_once('../dataProvider/Applications.php');
+include_once('../classes/Sessions.php');
 include_once('config.php');
 $modules = new Modules();
 $app = new Applications();
-$access = $app->hasAccess($data->server->pvtKey);
+$appAccess = $app->hasAccess($data->server->pvtKey);
 $API     = array_merge($API, $modules->getEnabledModulesAPI());
+
+
+if(isset($data->server->token)){
+	$s = new Sessions();
+	$userAccess = $s->setSessionByToken($data->server->token);
+}
+
 function doRpc($cdata)
 {
 	global $API;
-	global $access;
+	global $appAccess;
 	try{
-		if(!$access){
+		if(!$appAccess){
 			throw new Exception('Access Denied: Please make sure API Key is typed correctly in the settings tab');
 		}
 		if(!isset($API[$cdata->action])){

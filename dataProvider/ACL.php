@@ -46,15 +46,15 @@ class ACL
 
 	/**
 	 * @internal param string $user_id
-	 * @param null $user_id
+	 * @param null $uid
+	 * @internal param null $user_id
 	 */
-	public function __construct($user_id = null)
+	public function __construct($uid = null)
 	{
 		$this->conn       = new dbHelper();
-		$this->user_id    = ($user_id == null) ? $_SESSION['user']['id'] : $user_id;
+		$this->user_id    = ($uid == null) ? $_SESSION['user']['id'] : $uid;
 		$this->user_roles = $this->getUserRoles();
 		$this->buildACL();
-
 	}
 
 	/**
@@ -124,7 +124,7 @@ class ACL
 	}
 
 	/**
-	 * @param $perm_id
+	 * @param $perm_Key
 	 * @return mixed
 	 */
 	private function getPermNameByPermKey($perm_Key)
@@ -136,7 +136,7 @@ class ACL
 	}
 
 	/**
-	 * @param $role_id
+	 * @param $role_key
 	 * @return mixed
 	 */
 	private function getRoleNameByRoleKey($role_key)

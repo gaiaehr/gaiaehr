@@ -47,12 +47,15 @@ class PoolArea
 	 * @var Services
 	 */
 	private $services;
+	/**
+	 * @var
+	 */
+	private $acl;
 
 	function __construct()
 	{
 		$this->db       = new dbHelper();
 		$this->user     = new User();
-		$this->acl      = new ACL();
 		$this->patient  = new Patient();
 		$this->services = new Services();
 		return;
@@ -227,12 +230,12 @@ class PoolArea
 	/**
 	 * Form now this is just getting the latest open encounter for all the patients.
 	 *
+	 * @param null $uid
 	 * @return array
 	 */
-	//public function getPatientsByPoolArea()
-	//{
-	public function getPatientsByPoolAreaAccess()
+	public function getPatientsByPoolAreaAccess($uid = null)
 	{
+		$this->acl = new ACL($uid);
 		$patients = array();
 		if($this->acl->hasPermission('use_pool_areas')){
 			if($this->acl->hasPermission('access_poolcheckin')){

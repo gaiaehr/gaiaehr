@@ -31,16 +31,21 @@ Ext.define('App.controller.Login', {
         }
     },
     doLogin: function(){
+
+
+
         var me = this,
             values = this.getLoginForm().getValues(),
             server = this.getSettingsForm().getValues();
         values.site = server.site;
         App.app.server = server;
         Ext.Viewport.mask({xtype: 'loadmask', message: 'Be Right Back!'});
-        Ext.ns('App.data');
-        App.data = {
-            url: server.url + 'data/appRounter.php',
+
+        Ext.direct.Manager.addProvider({
+            id:'ServerProvider',
+            url: server.url+'/data/appRounter.php',
             type: 'remoting',
+            namespace : 'DataProvider',
             actions: {
                 authProcedures: [
                     {
@@ -54,16 +59,10 @@ Ext.define('App.controller.Login', {
                         "len": 0
                     }
                 ]
-            }
-        };
-        Ext.direct.Manager.addProvider(App.data);
-        Ext.Direct.on('exception', function(event) {
-            Ext.Viewport.unmask();
-            say({Type:'Exception',Message:event.config.message,Where:event.config.where});
-            Ext.Msg.alert('Oops!', event.config.message, Ext.emptyFn);
+           }
         });
 
-        authProcedures.login(values, function(response){
+        DataProvider.authProcedures.login(values, function(response){
             Ext.Viewport.unmask();
             if(response.success){
                 App.app.server = server;
@@ -75,13 +74,13 @@ Ext.define('App.controller.Login', {
                     Ext.Viewport.add(Ext.create('App.view.MainTablet'));
                 }
             }else{
-                Ext.Msg.alert('Oops!', Ext.String.capitalize(response.type) + ': ' + response.message, Ext.emptyFn);
+                App.MsgOk('Oops!', Ext.String.capitalize(response.type) + ': ' + response.message, Ext.emptyFn);
             }
         });
     },
     doLogout:function(){
         var me = this;
-        Ext.Msg.confirm('Logout...', 'Are you sure?', function(btn){
+        App.MsgOkCancel('Logout...', 'Are you sure?', function(btn){
             if(btn == 'yes'){
                 if(App.app.isPhone){
                     Ext.Viewport.remove(me.getMainPhoneView());

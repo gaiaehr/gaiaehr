@@ -66,16 +66,16 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
                 document.write('<script type="text/javascript" src="lib/extjs-4.1.1a/locale/' + i18n('i18nExtFile') + '?_v' + version + '"><\/script>')
             })();            // Set and enable Ext.loader for dynamic class loading
             Ext.Loader.setConfig({
-                        enabled: true,
-                        disableCaching: false,
-                        paths: {
-                            'Ext': 'lib/extjs-4.1.1a/src',
-                            'Ext.ux': 'app/ux/ux',
-                            'App': 'app',
-                            'Modules': 'modules',
-                            'Extensible': 'lib/extensible-1.5.1/src'
-                        }
-                    });
+                enabled: true,
+                disableCaching: false,
+                paths: {
+                    'Ext': 'lib/extjs-4.1.1a/src',
+                    'Ext.ux': 'app/ux/ux',
+                    'App': 'app',
+                    'Modules': 'modules',
+                    'Extensible': 'lib/extensible-1.5.1/src'
+                }
+            });
 		</script>
 		<script type="text/javascript" src="lib/webcam_control/swfobject.js"></script>
 		<script type="text/javascript" src="lib/jpegcam/htdocs/webcam.js"></script>

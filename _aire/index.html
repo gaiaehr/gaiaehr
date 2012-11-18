@@ -16,7 +16,7 @@
         #appLoadingIndicator {
             height: 100%;
             width: 100%;
-            background: url('../resources/images/loading.gif') no-repeat center center;
+            background: url('resources/images/loading.gif') no-repeat center center;
         }
 
 
@@ -55,17 +55,36 @@
             /*}*/
         /*}*/
     </style>
+
+</head>
+<body>
+    <div id="appLoadingIndicator"></div>
+    <script src="touch/sencha-touch-all.js"></script>
     <script type="text/javascript">
         function say(m){console.log(m);}
+        window.dataprovider = {
+            id:'ServerProvider',
+            url: '/data/appRounter.php',
+            type: 'remoting',
+            namespace : 'DataProvider',
+            actions: {
+                authProcedures: [
+                    {
+                        "name": "login",
+                        "len": 1
+                    }
+                ],
+                PoolArea: [
+                    {
+                        "name": "getPatientsByPoolAreaAccess",
+                        "len": 0
+                    }
+                ]
+           }
+        };
+        Ext.direct.Manager.addProvider(window.dataprovider);
     </script>
     <!-- The line below must be kept intact for Sencha Command to build your application -->
     <script id="microloader" type="text/javascript" src="touch/microloader/development.js"></script>
-</head>
-<body>
-    <div id="appLoadingIndicator">
-        <!--<div></div>-->
-        <!--<div></div>-->
-        <!--<div></div>-->
-    </div>
 </body>
 </html>

@@ -22,7 +22,7 @@ Ext.define('App.view.Login', {
                 items: [
                     {
                         xtype: 'image',
-                        src: '../resources/images/gaiaehr_aire.png',
+                        src: 'resources/images/gaiaehr_aire.png',
                         height: 86,
                         margin: '0 0 20 0'
                     },
@@ -73,7 +73,7 @@ Ext.define('App.view.Login', {
                 items: [
                     {
                         xtype: 'image',
-                        src: '../resources/images/gaiaehr_aire.png',
+                        src: 'resources/images/gaiaehr_aire.png',
                         height: 86
                     },
                     {

@@ -4,6 +4,7 @@ Ext.define('App.view.MainPhone', {
     requires: [
         'Ext.TitleBar',
         'App.view.PatientList'
+
     ],
 
     config: {

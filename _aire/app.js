@@ -4,26 +4,26 @@ Ext.Loader.setPath({
     'App': 'app'
 });
 //</debug>
-
 Ext.application({
     name: 'App',
 
     requires: [
         'Ext.direct.*',
-        'Ext.data.Store',
+        'Ext.device.*',
         'Ext.List',
         'Ext.MessageBox',
-        'Ext.data.proxy.JsonP',
         'Ext.plugin.ListPaging',
         'Ext.plugin.PullRefresh',
-        'Ext.carousel.Carousel'
+        'Ext.carousel.Carousel',
+        'App.view.Login',
+        'App.view.MainPhone'
     ],
 
     controllers: ['Main','Login','Navigation'],
 
-    views: ['Login'],
+    views: ['Login', 'MainTablet', 'MainTablet'],
 
-//    stores: ['Patients'],
+    stores: ['Patients'],
 
     icon: {
         '57': 'resources/icons/Icon.png',
@@ -44,6 +44,32 @@ Ext.application({
     },
 
     launch: function() {
+        App.isNative = (Ext.device.Device.platform == 'Android' || Ext.device.Device.platform == 'iOS');
+        App.MsgOk = function(title, msg, callback){
+            if(App.isNative){
+                navigator.notification.alert(msg,function(){
+                    if(typeof callback == 'function') callback();
+                }, title, 'Ok');
+            }else{
+                Ext.Msg.alert(title, msg, function(btn){
+                    if(typeof callback == 'function') callback(btn);
+                });
+            }
+
+        };
+
+        App.MsgOkCancel = function(title, msg, callback){
+            if(App.isNative){
+                navigator.notification.confirm(msg, function(buttonIndex){
+                    var btn = buttonIndex == 1 ? 'yes' :'no';
+                    if(typeof callback == 'function') callback(btn);
+                }, title);
+            }else{
+                Ext.Msg.confirm(title, msg, function(btn){
+                    if(typeof callback == 'function') callback(btn);
+                });
+            }
+        };
 
         Ext.override(Ext.direct.RemotingProvider, {
             getCallData: function(transaction) {
@@ -56,6 +82,12 @@ Ext.application({
                     server: App.app.server
                 };
             }
+        });
+
+        Ext.Direct.on('exception', function(event) {
+            Ext.Viewport.unmask();
+            say({Type:'Exception',Message:event.config.message,Where:event.config.where});
+            App.MsgOk('Oops!', event.config.message, Ext.emptyFn);
         });
 
         App.app.isPhone = Ext.os.deviceType == 'Phone';

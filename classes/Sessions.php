@@ -13,7 +13,7 @@ if(!isset($_SESSION)){
 }
 include_once ($_SESSION['root'] . '/classes/dbHelper.php');
 include_once ($_SESSION['root'] . '/classes/Crypt.php');
-include_once ($_SESSION['root'] . '/dataProvider/Crypt.php');
+include_once ($_SESSION['root'] . '/classes/Crypt.php');
 class Sessions
 {
 	/**

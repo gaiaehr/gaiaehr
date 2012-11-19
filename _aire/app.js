@@ -44,7 +44,14 @@ Ext.application({
     },
 
     launch: function() {
+        App.db = null;
         App.isNative = (Ext.device.Device.platform == 'Android' || Ext.device.Device.platform == 'iOS');
+        App.isPhone = Ext.os.deviceType == 'Phone';
+
+        if(App.isNative){
+            App.db = window.openDatabase("Database", "1.0", "Cordova Demo", 200000);
+        }
+
         App.MsgOk = function(title, msg, callback){
             if(App.isNative){
                 navigator.notification.alert(msg,function(){
@@ -79,7 +86,7 @@ Ext.application({
                     data: transaction.getData(),
                     type: 'rpc',
                     tid: transaction.getId(),
-                    server: App.app.server
+                    server: App.server
                 };
             }
         });
@@ -90,26 +97,19 @@ Ext.application({
             App.MsgOk('Oops!', event.config.message, Ext.emptyFn);
         });
 
-        App.app.isPhone = Ext.os.deviceType == 'Phone';
-        if(window.location.href){
-            App.app.server = Ext.Object.fromQueryString(window.location.search);
-            App.app.server.url = window.location.href.replace('_aire/'+window.location.search, '');
-            App.app.server.router = App.app.server.url+'data/restRouter.php';
-            App.app.server.pvtKey = '8BAR-NYRB-8R9E-RFYW-EGOV';
-        }
-
+        App.isPhone = Ext.os.deviceType == 'Phone';
 
         // Destroy the #appLoadingIndicator element
         Ext.fly('appLoadingIndicator').destroy();
 
         // Initialize the main view
         Ext.Viewport.add(Ext.create('App.view.Login',{
-            border: !App.app.isPhone ? 5 : 0,
-            style: !App.app.isPhone ? 'border-color: black; border-style: solid; border-radius: 5px' : '',
-            modal: !App.app.isPhone,
-            centered: !App.app.isPhone,
-            width: App.app.isPhone ? '100%' : 520,
-            height: App.app.isPhone ? '100%' : 440
+            border: !App.isPhone ? 5 : 0,
+            style: !App.isPhone ? 'border-color: black; border-style: solid; border-radius: 5px' : '',
+            modal: !App.isPhone,
+            centered: !App.isPhone,
+            width: App.isPhone ? '100%' : 520,
+            height: App.isPhone ? '100%' : 440
         }));
     },
 

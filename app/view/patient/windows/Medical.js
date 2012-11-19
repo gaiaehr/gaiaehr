@@ -530,7 +530,7 @@ Ext.define('App.view.patient.windows.Medical', {
                                         {
                                             xtype:'liveicdxsearch',
                                             fieldLabel:i18n('problem'),
-                                            name:'code_text',
+                                            name:'code',
                                             allowBlank:false,
                                             hideLabel:false,
                                             itemId:'medicalissues',
@@ -546,8 +546,8 @@ Ext.define('App.view.patient.windows.Medical', {
                                         {
                                             xtype:'textfield',
                                             hidden:true,
-                                            name:'code',
-                                            action:'idField'
+                                            name:'code_text',
+                                            action:'code_text'
                                         },
                                         {
                                             fieldLabel:i18n('begin_date'),
@@ -1496,11 +1496,8 @@ Ext.define('App.view.patient.windows.Medical', {
             field.setValue(name);
             me.CvxMvxCombo.store.load({params:{cvx_code:model[0].data.cvx_code}})
         }else if(combo.action == 'medicalissues'){
-            name = model[0].data.code;
-            field = combo.up('fieldcontainer').query('[action="idField"]')[0];
-            field2 = combo.up('fieldcontainer').query('[action="medicalissues"]')[0];
-            field.setValue(name);
-            field2.setValue(model[0].data.code_text);
+            field = combo.up('fieldcontainer').query('[action="code_text"]')[0];
+            field.setValue(model[0].data.code_text);
         }else if(combo.action == 'surgery'){
             name = model[0].data.surgery;
             field = combo.up('fieldcontainer').query('[action="idField"]')[0];

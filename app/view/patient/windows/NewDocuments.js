@@ -175,28 +175,15 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 								store  : me.patientPrescriptionStore,
 								height : 605,
 								columns: [
-
 									{
-										xtype: 'actioncolumn',
-										width: 20,
-										items: [
-											{
-												icon   : 'resources/images/icons/delete.png',
-												tooltip: i18n('remove'),
-												scope  : me,
-												handler: me.onRemove
-											}
-										]
+										header   : i18n('date'),
+										width    : 100,
+										dataIndex: 'date'
 									},
 									{
-										header   : i18n('medication'),
+										header   : i18n('medications'),
 										width    : 100,
-										dataIndex: 'medication'
-									},
-									{
-										header   : i18n('dispense'),
-										width    : 100,
-										dataIndex: 'dispense'
+										dataIndex: 'medications'
 									},
 									{
 										header   : i18n('refill'),
@@ -216,155 +203,205 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 
 									},
 									formItems   : [
+                                        {
 
-										{
-											title : i18n('general'),
-											xtype : 'container',
-											layout: 'vbox',
-											items : [
-												{
-													/**
-													 * Line one
-													 */
-													xtype   : 'fieldcontainer',
-													layout  : 'hbox',
-													defaults: { margin: '5 0 5 5' },
-													items   : [
-														{
-															xtype     : 'rxnormlivetsearch',
-															fieldLabel: i18n('medication'),
-															hideLabel : false,
-															action    : 'medication_id',
-															name      : 'RXCUI',
-															width     : 350,
-															labelWidth: 80,
-                                                            allowBlank: false,
-															listeners : {
-																scope : me,
-																select: me.addPrescription
-															}
-														},
-														{
-															xtype:'textfield',
-															hidden:true,
-															name:'medication',
-															action:'medication'
-														},
-														{
-															xtype     : 'textfield',
-															fieldLabel: i18n('dose'),
-															labelWidth: 40,
-															action    : 'dose',
-															name      : 'dose',
-                                                            allowBlank: false,
-															width     : 250
-														}
-													]
+                                            xtype  : 'grid',
+                                            margin : 10,
+                                            store  : me.patientPrescriptionStore,
+                                            height : 250,
+                                            columns: [
+                                                {
+                                                    header   : i18n('date'),
+                                                    width    : 100,
+                                                    dataIndex: 'date'
+                                                },
+                                                {
+                                                    header   : i18n('medications'),
+                                                    width    : 100,
+                                                    dataIndex: 'medications'
+                                                },
+                                                {
+                                                    header   : i18n('refill'),
+                                                    flex     : 1,
+                                                    dataIndex: 'refill'
+                                                }
 
-												},
-												{
-													/**
-													 * Line two
-													 */
-													xtype   : 'fieldcontainer',
-													layout  : 'hbox',
-													defaults: { margin: '5 0 5 3'},
+                                            ],
 
-													items: [
-														{
-															xtype     : 'numberfield',
-															fieldLabel: i18n('take'),
-															margin    : '5 0 5 5',
-															name      : 'take_pills',
-                                                            allowBlank: false,
-															width     : 130,
-															labelWidth: 80,
-															value     : 0,
-															minValue  : 0
-														},
-														{
-															xtype     : 'mitos.prescriptiontypes',
-															fieldLabel: i18n('type'),
-                                                            allowBlank: false,
-															hideLabel : true,
-															name      : 'type',
-															width     : 120
-														},
-														{
-															xtype     : 'mitos.prescriptionhowto',
-															fieldLabel: i18n('route'),
-                                                            allowBlank: false,
-															name      : 'route',
-															hideLabel : true,
-															width     : 100
-														},
-														{
-															xtype: 'mitos.prescriptionoften',
-															name : 'prescription_often',
-                                                            allowBlank: false,
-															width: 120
-														},
-														{
-															xtype: 'mitos.prescriptionwhen',
-															name : 'prescription_when',
-															width: 100
-														}
-													]
+                                            plugins: Ext.create('App.ux.grid.RowFormEditing', {
+                                                autoCancel  : false,
+                                                errorSummary: false,
+                                                clicksToEdit: 1,
+                                                listeners   :{
+                                                    scope   : me,
+                                                    edit    : me.onEditPrescription
 
-												},
-												{
-													/**
-													 * Line three
-													 */
-													xtype   : 'fieldcontainer',
-													layout  : 'hbox',
-													defaults: { margin: '5 0 5 5'},
-													items   : [
-														{
+                                                },
+                                                formItems   : [
 
-															fieldLabel: i18n('dispense'),
-															xtype     : 'numberfield',
-															name      : 'dispense',
-															width     : 130,
-                                                            allowBlank: false,
-															labelWidth: 80,
-															value     : 0,
-															minValue  : 0
-														},
-														{
-															fieldLabel: i18n('refill'),
-															xtype     : 'numberfield',
-															name      : 'refill',
-															labelWidth: 35,
-                                                            allowBlank: false,
-															width     : 140,
-															value     : 0,
-															minValue  : 0
-														},
-														{
-															fieldLabel: i18n('begin_date'),
-															xtype     : 'datefield',
-															width     : 190,
-															labelWidth: 70,
-															format: globals['date_display_format'],
-															name      : 'begin_date'
 
-														},
-														{
-															fieldLabel: i18n('end_date'),
-															xtype     : 'datefield',
-															width     : 180,
-															labelWidth: 60,
-															format: globals['date_display_format'],
-															name      : 'end_date'
-														}
-													]
+                                                    {
+                                                        title : i18n('general'),
+                                                        xtype : 'container',
+                                                        layout: 'vbox',
+                                                        items : [
+                                                            {
+                                                                /**
+                                                                 * Line one
+                                                                 */
+                                                                xtype   : 'fieldcontainer',
+                                                                layout  : 'hbox',
+                                                                defaults: { margin: '5 0 5 5' },
+                                                                items   : [
+                                                                    {
+                                                                        xtype     : 'rxnormlivetsearch',
+                                                                        fieldLabel: i18n('medication'),
+                                                                        hideLabel : false,
+                                                                        action    : 'medication_id',
+                                                                        name      : 'RXCUI',
+                                                                        width     : 350,
+                                                                        labelWidth: 80,
+                                                                        allowBlank: false,
+                                                                        listeners : {
+                                                                            scope : me,
+                                                                            select: me.addPrescription
+                                                                        }
+                                                                    },
+                                                                    {
+                                                                        xtype:'textfield',
+                                                                        hidden:true,
+                                                                        name:'medication',
+                                                                        action:'medication'
+                                                                    },
+                                                                    {
+                                                                        xtype     : 'textfield',
+                                                                        fieldLabel: i18n('dose'),
+                                                                        labelWidth: 40,
+                                                                        action    : 'dose',
+                                                                        name      : 'dose',
+                                                                        allowBlank: false,
+                                                                        width     : 250
+                                                                    }
+                                                                ]
 
-												}
+                                                            },
+                                                            {
+                                                                /**
+                                                                 * Line two
+                                                                 */
+                                                                xtype   : 'fieldcontainer',
+                                                                layout  : 'hbox',
+                                                                defaults: { margin: '5 0 5 3'},
 
-											]
+                                                                items: [
+                                                                    {
+                                                                        xtype     : 'numberfield',
+                                                                        fieldLabel: i18n('take'),
+                                                                        margin    : '5 0 5 5',
+                                                                        name      : 'take_pills',
+                                                                        allowBlank: false,
+                                                                        width     : 130,
+                                                                        labelWidth: 80,
+                                                                        value     : 0,
+                                                                        minValue  : 0
+                                                                    },
+                                                                    {
+                                                                        xtype     : 'mitos.prescriptiontypes',
+                                                                        fieldLabel: i18n('type'),
+                                                                        allowBlank: false,
+                                                                        hideLabel : true,
+                                                                        name      : 'type',
+                                                                        width     : 120
+                                                                    },
+                                                                    {
+                                                                        xtype     : 'mitos.prescriptionhowto',
+                                                                        fieldLabel: i18n('route'),
+                                                                        allowBlank: false,
+                                                                        name      : 'route',
+                                                                        hideLabel : true,
+                                                                        width     : 100
+                                                                    },
+                                                                    {
+                                                                        xtype: 'mitos.prescriptionoften',
+                                                                        name : 'prescription_often',
+                                                                        allowBlank: false,
+                                                                        width: 120
+                                                                    },
+                                                                    {
+                                                                        xtype: 'mitos.prescriptionwhen',
+                                                                        name : 'prescription_when',
+                                                                        width: 100
+                                                                    }
+                                                                ]
 
-										}
+                                                            },
+                                                            {
+                                                                /**
+                                                                 * Line three
+                                                                 */
+                                                                xtype   : 'fieldcontainer',
+                                                                layout  : 'hbox',
+                                                                defaults: { margin: '5 0 5 5'},
+                                                                items   : [
+                                                                    {
+
+                                                                        fieldLabel: i18n('dispense'),
+                                                                        xtype     : 'numberfield',
+                                                                        name      : 'dispense',
+                                                                        width     : 130,
+                                                                        allowBlank: false,
+                                                                        labelWidth: 80,
+                                                                        value     : 0,
+                                                                        minValue  : 0
+                                                                    },
+                                                                    {
+                                                                        fieldLabel: i18n('refill'),
+                                                                        xtype     : 'numberfield',
+                                                                        name      : 'refill',
+                                                                        labelWidth: 35,
+                                                                        allowBlank: false,
+                                                                        width     : 140,
+                                                                        value     : 0,
+                                                                        minValue  : 0
+                                                                    },
+                                                                    {
+                                                                        fieldLabel: i18n('begin_date'),
+                                                                        xtype     : 'datefield',
+                                                                        width     : 190,
+                                                                        labelWidth: 70,
+                                                                        format: globals['date_display_format'],
+                                                                        name      : 'begin_date'
+
+                                                                    },
+                                                                    {
+                                                                        fieldLabel: i18n('end_date'),
+                                                                        xtype     : 'datefield',
+                                                                        width     : 180,
+                                                                        labelWidth: 60,
+                                                                        format: globals['date_display_format'],
+                                                                        name      : 'end_date'
+                                                                    }
+                                                                ]
+
+                                                            }
+
+                                                        ]
+
+                                                    }
+                                                ]
+                                            }),
+                                            tbar   : [
+                                                '->',
+                                                {
+                                                    text   : i18n('new_medication'),
+                                                    scope  : me,
+                                                    handler: me.onAddNewPrescription
+
+                                                }
+                                            ]
+
+                                        }
+
 
 
 									]

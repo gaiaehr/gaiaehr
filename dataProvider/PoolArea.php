@@ -230,11 +230,12 @@ class PoolArea
 	/**
 	 * Form now this is just getting the latest open encounter for all the patients.
 	 *
-	 * @param null $uid
+	 * @param $params
 	 * @return array
 	 */
-	public function getPatientsByPoolAreaAccess($uid = null)
+	public function getPatientsByPoolAreaAccess($params)
 	{
+		$uid = (is_object($params)) ? $params->uis : $params;
 		$this->acl = new ACL($uid);
 		$patients = array();
 		if($this->acl->hasPermission('use_pool_areas')){

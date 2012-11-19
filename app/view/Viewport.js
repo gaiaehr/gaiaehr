@@ -937,6 +937,9 @@ Ext.define('App.view.Viewport', {
     getPatientsInPoolArea: function(){
         var me = this, poolArea = me.patientPoolArea, height = 35;
         this.patientPoolStore.load({
+            extraPrams:{
+                uid:me.user.id
+            },
             callback: function(records){
                 if(records.length >= 1){
                     for(var i = 0; i < records.length; i++){

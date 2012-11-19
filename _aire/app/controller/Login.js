@@ -38,31 +38,12 @@ Ext.define('App.controller.Login', {
         values.site = server.site;
         App.server = server;
         Ext.Viewport.mask({xtype: 'loadmask', message: 'Be Right Back!'});
-
-        Ext.direct.Manager.addProvider({
-            id:'ServerProvider',
-            url: server.url+'/data/appRounter.php',
-            type: 'remoting',
-            namespace : 'DataProvider',
-            actions: {
-                authProcedures: [
-                    {
-                        "name": "login",
-                        "len": 1
-                    }
-                ],
-                PoolArea: [
-                    {
-                        "name": "getPatientsByPoolAreaAccess",
-                        "len": 0
-                    }
-                ]
-           }
-        });
+        window.ExtDirectManagerProvider.setUrl(server.url+'data/appRouter.php');
         if(App.isNative) me.saveServerData(App.server);
         DataProvider.authProcedures.login(values, function(response){
             Ext.Viewport.unmask();
             if(response.success){
+                App.user = response.user;
                 App.server.token = response.token;
                 me.getLoginWindow().destroy();
                 if(App.isPhone){
@@ -74,8 +55,6 @@ Ext.define('App.controller.Login', {
 
                 App.MsgOk('Oops!', Ext.String.capitalize(response.type) + ': ' + response.message, Ext.emptyFn);
             }
-
-
         });
     },
 
@@ -102,7 +81,7 @@ Ext.define('App.controller.Login', {
 
     setSettingsValues: function(tx, results){
     	var me = this;
-    	say('***** Total rows: '+results.rows.length)
+    	say('***** Total rows: '+results.rows.length);
     	if(results.rows.length == 0){
     		tx.executeSql('INSERT INTO GaiaEHRAirServerData (id, url, site, pvtKey) VALUES (1, "", "", "")');
 			me.dbError('****** No data found ******');

@@ -9,7 +9,9 @@ Ext.define('App.view.PatientList', {
     extend: 'Ext.List',
     xtype:'patientlist',
     requires:[
-        'App.store.Patients'
+        'App.store.Patients',
+//        'Ext.plugin.ListPaging',
+        'Ext.plugin.PullRefresh'
     ],
     config: {
         store: Ext.create('App.store.Patients'),

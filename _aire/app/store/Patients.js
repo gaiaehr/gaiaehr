@@ -15,7 +15,10 @@ Ext.define('App.store.Patients', {
         proxy: {
             //paramsAsHash: true,
             directFn: DataProvider.PoolArea.getPatientsByPoolAreaAccess,
-            simpleSortMode: true
+            simpleSortMode: true,
+            extraParams:{
+                uid:null
+            }
         }
     }
 });

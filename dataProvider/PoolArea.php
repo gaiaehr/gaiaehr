@@ -235,7 +235,7 @@ class PoolArea
 	 */
 	public function getPatientsByPoolAreaAccess($params)
 	{
-		$uid = (is_object($params)) ? $params->uis : $params;
+		$uid = (is_object($params)) ? $params->uid : $params;
 		$this->acl = new ACL($uid);
 		$patients = array();
 		if($this->acl->hasPermission('use_pool_areas')){

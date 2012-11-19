@@ -13,6 +13,7 @@ Ext.define('App.controller.Navigation', {
     config: {
         control: {
             patientList: {
+                initialize : 'onPatientListInit',
                 select: 'onPatientListSelect',
                 show: 'onPatientListShow'
             },
@@ -36,6 +37,12 @@ Ext.define('App.controller.Navigation', {
             homeBtn: 'button[action=home]',
             backBtn: 'button[action=back]'
         }
+    },
+
+    onPatientListInit:function(){
+        var store = this.getPatientList().getStore();
+        store.getProxy()._extraParams.uid = App.user.id;
+        store.load();
     },
 
     onPatientListShow:function(){

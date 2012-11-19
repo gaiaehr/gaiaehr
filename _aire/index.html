@@ -62,9 +62,22 @@
     <script src="touch/sencha-touch-all.js"></script>
     <script type="text/javascript">
         function say(m){console.log(m);}
-        window.dataprovider = {
+        Ext.override(Ext.direct.RemotingProvider, {
+            getCallData: function(transaction) {
+                return {
+                    action: transaction.getAction(),
+                    method: transaction.getMethod(),
+                    data: transaction.getData(),
+                    type: 'rpc',
+                    tid: transaction.getId(),
+                    server: getServerData()
+                };
+            }
+        });
+        window.ExtDirectManager = Ext.direct.Manager;
+        window.ExtDirectManagerProvider = window.ExtDirectManager.addProvider({
             id:'ServerProvider',
-            url: 'http://www.gaiaehr.org/demo/data/appRounter.php',
+            url: 'http://www.gaiaehr.org/demo/data/appRouter.php',
             type: 'remoting',
             namespace : 'DataProvider',
             actions: {
@@ -77,12 +90,16 @@
                 PoolArea: [
                     {
                         "name": "getPatientsByPoolAreaAccess",
-                        "len": 0
+                        "len": 1
                     }
                 ]
            }
-        };
-        Ext.direct.Manager.addProvider(window.dataprovider);
+        });
+
+        function getServerData(){
+            return App.server || {};
+        }
+
     </script>
     <!-- The line below must be kept intact for Sencha Command to build your application -->
     <script id="microloader" type="text/javascript" src="touch/microloader/development.js"></script>

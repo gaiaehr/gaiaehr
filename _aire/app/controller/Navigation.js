@@ -34,6 +34,7 @@ Ext.define('App.controller.Navigation', {
             mainPanel: 'container[action=mainPanel]',
             mainNavBar: 'titlebar[action=mainNavBar]',
             patientList: 'patientlist',
+            patientSummaryPanel: 'patientSummaryPanel',
             homeBtn: 'button[action=home]',
             backBtn: 'button[action=back]'
         }
@@ -52,6 +53,8 @@ Ext.define('App.controller.Navigation', {
     onPatientListSelect: function(view, model){
         this.getMainPanel().setActiveItem(1);
         this.getMainNavBar().setTitle(model.data.name);
+        this.getApplication().getController('App.controller.PatientSummary').loadPatient(model.data.pid);
+
     },
 
     onMainPanelActiveItemChange:function(card, newActiveItem){

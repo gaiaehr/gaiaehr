@@ -1,0 +1,50 @@
+/**
+ * Created with JetBrains PhpStorm.
+ * User: ernesto
+ * Date: 11/10/12
+ * Time: 11:37 AM
+ * To change this template use File | Settings | File Templates.
+ */
+Ext.define('App.controller.PatientSummary', {
+    extend: 'Ext.app.Controller',
+    config: {
+        control: {
+            patientSummaryHeader: {
+                initialize:'onHeaderInitialize'
+            }
+        },
+
+        refs: {
+            patientSummaryPanel: 'patientSummaryPanel',
+            patientSummaryHeader: 'container[action=patientSummaryHeader]',
+            patientSummaryList: 'patientSummaryPanel > list'
+
+        }
+    },
+
+    loadPatient:function(pid){
+        var panel = this.getPatientSummaryPanel(),
+            header = this.getPatientSummaryHeader(),
+            list = this.getPatientSummaryList();
+        panel.pid = pid;
+        header.getTpl().overwrite(header.element, {name:'fulano', pid:pid});
+        list.getStore().load();
+    },
+
+    onHeaderTap:function(){
+        App.MsgOk('TODO', 'Go To Encounter Area')
+    },
+
+    onHeaderInitialize:function(container){
+        var panel = this.getPatientSummaryPanel();
+        container.element.on({
+            tap: function(e, node) {
+                App.MsgOk('TODO', 'Go To Encounter PID: ' + panel.pid);
+            }
+        });
+    }
+
+
+
+
+});

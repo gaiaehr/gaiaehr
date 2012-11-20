@@ -1,19 +1,59 @@
+body,
+input,
+isindex,
+input[type="password"],
+input[type="search"],
+.x-form-label,
+.x-list .x-list-item,
+.x-spinner .x-input-el, .x-field-select .x-input-el {
+	color: #666666;
+}
+
+.x-toolbar-dark,
+.x-tabbar-dark,
+.x-list .x-list-item.x-item-selected .x-dock-horizontal {
+	background-image: none;
+}
+.x-list-normal.x-list-grouped .x-list-header-wrap .x-dock-horizontal {
+	padding-top: 47px;
+}
+.x-list-normal .x-list-header-wrap .x-item-header, .x-list-normal .x-list-header {
+	background: url('../images/leftNavBg.png') repeat-y right top #f0f0f0!important;
+	border-top: none;
+	border-bottom: solid 5px #dddddd;
+	color: #666666;
+	font-size: 20px;
+	padding-right: 5px;
+}
+.x-list-normal .x-list-header-wrap .x-item-header, .x-list-normal .x-list-header .x-innerhtml {
+	background: url('../images/listHeaderBg.png') no-repeat right bottom transparent;
+	padding: 5px 0;
+}
 .leftNav .x-list-item.x-item-selected .x-dock-horizontal .x-dock-body {
 	background: url('../images/listSelectBg.png')no-repeat right center transparent;
 }
 .leftNav .x-scroll-scroller {
 	background: url('../images/leftNavBg.png') repeat-y right top transparent;
 }
-.leftNav .x-scroll-scroller .x-list-header, .leftNav .x-navigation-bar{
-	border-right: solid 1px #cccccc;
-}
 .leftNav .x-list-item .x-dock-horizontal{
 	margin-right: -1px!important;
 }
 .leftNav .x-list-item-body {
 	min-height: 61px;
-	padding: 0.3em;
+	padding: 0;
 }
+
+
+.mainPanel .x-list-normal .x-list-header-wrap .x-item-header, .mainPanel .x-list-normal .x-list-header {
+	/*background-color: #F7F7F7;*/
+	background-color: #F7F7F7!important;
+	background-image: none!important;
+}
+.mainPanel .x-list-normal .x-list-header-wrap .x-item-header, .mainPanel .x-list-normal .x-list-header .x-innerhtml {
+	background: url('../images/listHeaderBg.png') no-repeat right bottom transparent;
+}
+
+
 .mainPanel .x-layout-card-item{
 	background-color: #fdfdfd;
 }
@@ -49,11 +89,30 @@
 	color: white;
 }
 .patientList img {
+	border: solid 1px #cccccc;
     float: left;
 }
-.patientList h2 {
-	margin-left: 70px;
+.patientList .info {
+	margin-left: 80px;
+	padding: 5px 10px;
 }
-.patientList p {
-	margin-left: 70px;
+.patientHeader {
+	overflow: auto;
+	background-color: #f0f0f0;
+}
+.patientHeader .left,
+.patientHeader .left img {
+	float: left;
+}
+.patientHeader .left img {
+	border: solid 1px #ccc;
+}
+.patientHeader p {
+	padding: 10px;
+}
+.patientHeader .left p {
+	margin-left: 135px;
+}
+.patientHeader .right {
+	text-align: right;
 }

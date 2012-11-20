@@ -10,7 +10,6 @@ Ext.define('App.view.PatientList', {
     xtype:'patientlist',
     requires:[
         'App.store.Patients',
-//        'Ext.plugin.ListPaging',
         'Ext.plugin.PullRefresh'
     ],
     config: {
@@ -26,9 +25,11 @@ Ext.define('App.view.PatientList', {
 
         itemTpl: Ext.create('Ext.XTemplate',
             '<div class="patientList">',
-            '   <img src="{photoSrc}" width="48" height="48"/>',
-            '   <h2>{name}</h2>',
-            '   <p>#{pid}</p>',
+            '   <img src="{photoSrc}" width="80" height="80"/>',
+            '   <div class="info">',
+            '       <p>{name}</p>',
+            '       <p>#{pid}</p>',
+            '   </div>',
             '</div>'
         )
     }

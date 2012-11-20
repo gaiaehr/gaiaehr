@@ -19,7 +19,7 @@ Ext.application({
         'App.view.MainPhone'
     ],
 
-    controllers: ['Main','Login','Navigation'],
+    controllers: ['Main','Login','Navigation','PatientSummary'],
 
     views: ['Login', 'MainTablet', 'MainTablet'],
 
@@ -78,12 +78,6 @@ Ext.application({
                 });
             }
         };
-
-        Ext.Direct.on('exception', function(event) {
-            Ext.Viewport.unmask();
-            say({Type:'Exception',Message:event.config.message,Where:event.config.where});
-            App.MsgOk('Oops!', event.config.message, Ext.emptyFn);
-        });
 
         App.isPhone = Ext.os.deviceType == 'Phone';
 

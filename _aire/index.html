@@ -62,6 +62,7 @@
     <script src="touch/sencha-touch-all.js"></script>
     <script type="text/javascript">
         function say(m){console.log(m);}
+        function getServerData(){return App.server || {};}
         Ext.override(Ext.direct.RemotingProvider, {
             getCallData: function(transaction) {
                 return {
@@ -95,11 +96,10 @@
                 ]
            }
         });
-
-        function getServerData(){
-            return App.server || {};
-        }
-
+        Ext.Direct.on('exception', function(event) {
+            Ext.Viewport.unmask();
+            say('Type: Exception, Message: '+event.config.message+', Where: '+event.config.where);
+        });
     </script>
     <!-- The line below must be kept intact for Sencha Command to build your application -->
     <script id="microloader" type="text/javascript" src="touch/microloader/development.js"></script>

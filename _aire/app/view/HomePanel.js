@@ -5,9 +5,9 @@
  * Time: 10:31 PM
  * To change this template use File | Settings | File Templates.
  */
-Ext.define('App.view.Home',{
+Ext.define('App.view.HomePanel',{
     extend:'Ext.Panel',
-    xtype:'homePanel',
+    xtype:'homepanel',
     config:{
         action:'home',
         html: '<div class="features">' +

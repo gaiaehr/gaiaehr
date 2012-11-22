@@ -15,9 +15,9 @@ Ext.define('App.controller.PatientSummary', {
         },
 
         refs: {
-            patientSummaryPanel: 'patientSummaryPanel',
+            patientSummaryPanel: 'patientsummarypanel',
             patientSummaryHeader: 'container[action=patientSummaryHeader]',
-            patientSummaryList: 'patientSummaryPanel > list'
+            patientSummaryList: 'patientsummarypanel > list'
 
         }
     },

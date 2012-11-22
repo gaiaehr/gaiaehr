@@ -5,9 +5,9 @@
  * Time: 1:45 PM
  * To change this template use File | Settings | File Templates.
  */
-Ext.define('App.view.LeftNav', {
+Ext.define('App.view.NavPanel', {
     extend: 'Ext.Container',
-    xtype:'leftNav',
+    xtype:'navpanel',
     requires:[
         'Ext.navigation.Bar',
         'App.view.PatientList',

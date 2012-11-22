@@ -1,4 +1,4 @@
-Ext.define('App.view.MainPhone', {
+Ext.define('App.view.MainPhoneView', {
     extend: 'Ext.Container',
     xtype: 'mainphoneview',
     requires: [

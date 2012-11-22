@@ -5,9 +5,9 @@
  * Time: 10:31 PM
  * To change this template use File | Settings | File Templates.
  */
-Ext.define('App.view.PatientSummary',{
+Ext.define('App.view.PatientSummaryPanel',{
     extend:'Ext.Panel',
-    xtype:'patientSummaryPanel',
+    xtype:'patientsummarypanel',
     config:{
         layout: 'vbox',
         scrollable:false,

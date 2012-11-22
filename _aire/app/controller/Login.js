@@ -49,7 +49,7 @@ Ext.define('App.controller.Login', {
                 if(App.isPhone){
                     Ext.Viewport.add(Ext.create('App.view.MainPhone'));
                 }else{
-                    Ext.Viewport.add(Ext.create('App.view.MainTablet'));
+                    Ext.Viewport.add(Ext.create('App.view.MainTabletView'));
                 }
             }else{
 

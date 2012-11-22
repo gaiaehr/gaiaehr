@@ -17,12 +17,14 @@ Ext.application({
         'Ext.plugin.PullRefresh',
         'Ext.carousel.Carousel',
         'App.view.Login',
-        'App.view.MainPhone'
+
+        'App.view.MainTabletView',
+        'App.view.MainPhoneView'
     ],
 
     controllers: ['Main','Login','Navigation','PatientSummary'],
 
-    views: ['Login', 'MainTablet', 'MainTablet'],
+    views: ['Login', 'MainTabletView', 'MainPhoneView'],
 
     stores: ['Patients'],
 

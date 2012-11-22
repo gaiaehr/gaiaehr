@@ -12,11 +12,11 @@ Ext.define('App.controller.Navigation', {
 
     config: {
         control: {
-            leftNav:{
-                collapsechange:'onLeftNavCollapseChange'
+            navPanel:{
+                collapsechange:'onNavPanelCollapseChange'
             },
-            leftNavCollapseBtn:{
-                tap:'onLeftNavCollapseBtnTap'
+            navPanelCollapseBtn:{
+                tap:'onNavPanelCollapseBtnTap'
             },
             patientList: {
                 initialize : 'onPatientListInit',
@@ -44,9 +44,9 @@ Ext.define('App.controller.Navigation', {
             mainTabletView: 'maintabletview',
             mainPhoneView: 'mainphoneview',
 
-            leftNav: 'leftNav',
-            leftNavCollapseBtn: 'button[action=leftNavCollapseBtn]',
-            leftNavTitleBar: 'titlebar[action=leftNavTitleBar]',
+            navPanel: 'navpanel',
+            navPanelCollapseBtn: 'button[action=leftNavCollapseBtn]',
+            navPanelTitleBar: 'titlebar[action=leftNavTitleBar]',
             patientList: 'patientList',
             medicalRecordMenu: 'medicalRecordMenu',
 
@@ -110,18 +110,18 @@ Ext.define('App.controller.Navigation', {
     },
 
     setPatientList:function(){
-        this.getLeftNav().setActiveItem(0)
+        this.getNavPanel().setActiveItem(0)
     },
 
     setMedicalRecordMenu:function(){
         this.setNavCollapse(true);
-        this.getLeftNav().setActiveItem(1);
+        this.getNavPanel().setActiveItem(1);
     },
 
     setNavCollapse: function(collapse) {
-        var nav = this.getLeftNav(),
-            title = this.getLeftNavTitleBar();
-        this.getLeftNavTitleBar().setTitle(collapse ? '' : 'Patients');
+        var nav = this.getNavPanel(),
+            title = this.getNavPanelTitleBar();
+        this.getNavPanelTitleBar().setTitle(collapse ? '' : 'Patients');
         nav.collapsed = collapse;
         nav.setWidth(collapse ? 85 : 350);
         nav.fireEvent('collapsechange', collapse, nav, title);
@@ -133,13 +133,13 @@ Ext.define('App.controller.Navigation', {
         }, this);
     },
 
-    onLeftNavCollapseBtnTap:function(){
-        var collapsed = this.getLeftNav().collapsed;
+    onNavPanelCollapseBtnTap:function(){
+        var collapsed = this.getNavPanel().collapsed;
         this.setNavCollapse(!collapsed);
     },
 
-    onLeftNavCollapseChange:function(collapse){
-        this.getLeftNavCollapseBtn().setWidth(85);
+    onNavPanelCollapseChange:function(collapse){
+        this.getNavPanelCollapseBtn().setWidth(85);
     }
 
 });

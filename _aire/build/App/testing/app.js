@@ -76673,7 +76673,7 @@ Ext.define('App.controller.Login', {
                 if(App.isPhone){
                     Ext.Viewport.add(Ext.create('App.view.MainPhone'));
                 }else{
-                    Ext.Viewport.add(Ext.create('App.view.MainTablet'));
+                    Ext.Viewport.add(Ext.create('App.view.MainTabletView'));
                 }
             }else{
 
@@ -77204,7 +77204,7 @@ Ext.define('App.view.PatientSummary',{
     }
 });
 
-Ext.define('App.view.MainTablet', {
+Ext.define('App.view.MainTabletView', {
     extend: 'Ext.Container',
     xtype: 'maintabletview',
 
@@ -77368,7 +77368,7 @@ Ext.application({
 
     controllers: ['Main','Login','Navigation','PatientSummary'],
 
-    views: ['Login', 'MainTablet', 'MainTablet'],
+    views: ['Login', 'MainTabletView', 'MainTabletView'],
 
     stores: ['Patients'],
 

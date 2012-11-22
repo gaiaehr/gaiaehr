@@ -4,9 +4,10 @@ Ext.define('App.view.MainTablet', {
 
     requires: [
         'Ext.navigation.Bar',
-        'App.view.PatientList',
+        'App.view.LeftNav',
         'App.view.Home',
         'App.view.PatientSummary'
+
     ],
 
     config: {
@@ -17,6 +18,14 @@ Ext.define('App.view.MainTablet', {
                 scrollable: false,
                 action:'mainPanel',
                 cls:'mainPanel',
+//                style: 'width: 100%; height: 100%; position: absolute; opacity: 1; z-index: 5',
+//                draggable: {
+//                    direction: 'horizontal',
+//                    constraint: {
+//                        min: { x: -270, y: 0 },
+//                        max: { x: 0, y: 0 }
+//                    }
+//                },
                 layout: {
                     type: 'card',
                     animation: {
@@ -48,30 +57,15 @@ Ext.define('App.view.MainTablet', {
                         action:'pDocuments',
                         html:'<h1>Documents Placeholder'
                     }
-                ]
-            },
-            {
-                xtype:'container',
-                docked: 'left',
-                layout:'vbox',
-                cls:'leftNav',
-                items:[
-                    {
-                        action: 'leftNavBar',
-                        xtype : 'titlebar',
-                        docked: 'top',
-                        title : 'Patients'
-                    },
-                    {
-                        xtype : 'patientlist',
-                        width:350,
-                        flex:1
-                    }
-                ]
 
+                ]
             },
             {
-                action: 'mainNavBar',
+                xtype:'leftNav',
+                docked: 'left'
+            },
+            {
+                action: 'mainTitleBar',
                 xtype : 'titlebar',
                 docked: 'top',
                 title : 'Home',
@@ -100,6 +94,7 @@ Ext.define('App.view.MainTablet', {
                     }
                 ]
             }
+
         ]
     }
 });

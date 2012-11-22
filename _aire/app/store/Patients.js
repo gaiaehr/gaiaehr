@@ -4,7 +4,7 @@ Ext.define('App.store.Patients', {
     config: {
         model: 'App.model.Patients',
         pageSize: 20,
-        autoLoad: true,
+        autoLoad: false,
 
         grouper: {
            groupFn: function(record) {

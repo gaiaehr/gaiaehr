@@ -36,10 +36,12 @@ Ext.define('App.controller.PatientSummary', {
     },
 
     onHeaderInitialize:function(container){
-        var panel = this.getPatientSummaryPanel();
+        var me = this,
+            panel = me.getPatientSummaryPanel();
         container.element.on({
             tap: function(e, node) {
-                App.MsgOk('TODO', 'Go To Encounter PID: ' + panel.pid);
+                me.getApplication().getController('App.controller.Navigation').setMedicalRecordMenu();
+                //App.MsgOk('TODO', 'Go To Encounter PID: ' + panel.pid);
             }
         });
     }

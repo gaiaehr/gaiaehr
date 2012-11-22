@@ -7,7 +7,7 @@
  */
 Ext.define('App.view.PatientList', {
     extend: 'Ext.List',
-    xtype:'patientlist',
+    xtype:'patientList',
     requires:[
         'App.store.Patients',
         'Ext.plugin.PullRefresh'
@@ -17,7 +17,6 @@ Ext.define('App.view.PatientList', {
         limit: 20,
         grouped     : true,
         plugins: [
-//            { xclass: 'Ext.plugin.ListPaging' },
             { xclass: 'Ext.plugin.PullRefresh' }
         ],
 

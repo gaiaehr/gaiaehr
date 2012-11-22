@@ -1,6 +1,7 @@
 //<debug>
 Ext.Loader.setPath({
     'Ext': 'touch/src',
+    'Ext.ux': 'ux',
     'App': 'app'
 });
 //</debug>
@@ -78,8 +79,6 @@ Ext.application({
                 });
             }
         };
-
-        App.isPhone = Ext.os.deviceType == 'Phone';
 
         // Destroy the #appLoadingIndicator element
         Ext.fly('appLoadingIndicator').destroy();

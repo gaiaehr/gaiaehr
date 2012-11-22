@@ -12,13 +12,25 @@ Ext.define('App.controller.Navigation', {
 
     config: {
         control: {
+            leftNav:{
+                collapsechange:'onLeftNavCollapseChange'
+            },
+            leftNavCollapseBtn:{
+                tap:'onLeftNavCollapseBtnTap'
+            },
             patientList: {
                 initialize : 'onPatientListInit',
                 select: 'onPatientListSelect',
                 show: 'onPatientListShow'
             },
+            medicalRecordMenu: {
+                select: 'onMedicalRecordMenuSelect'
+            },
             mainPanel: {
                 activeitemchange: 'onMainPanelActiveItemChange'
+            },
+            mainPanelTitleBar:{
+                initialize:'onMainPanelTitleBarInitialize'
             },
             homeBtn: {
                 tap: 'onHomeBtnTap'
@@ -31,19 +43,28 @@ Ext.define('App.controller.Navigation', {
         refs: {
             mainTabletView: 'maintabletview',
             mainPhoneView: 'mainphoneview',
+
+            leftNav: 'leftNav',
+            leftNavCollapseBtn: 'button[action=leftNavCollapseBtn]',
+            leftNavTitleBar: 'titlebar[action=leftNavTitleBar]',
+            patientList: 'patientList',
+            medicalRecordMenu: 'medicalRecordMenu',
+
             mainPanel: 'container[action=mainPanel]',
-            mainNavBar: 'titlebar[action=mainNavBar]',
-            patientList: 'patientlist',
-            patientSummaryPanel: 'patientSummaryPanel',
+            mainPanelTitleBar: 'titlebar[action=mainTitleBar]',
             homeBtn: 'button[action=home]',
-            backBtn: 'button[action=back]'
+            backBtn: 'button[action=back]',
+
+            patientSummaryPanel: 'patientSummaryPanel'
+
         }
     },
 
     onPatientListInit:function(){
         var store = this.getPatientList().getStore();
         store.getProxy()._extraParams.uid = App.user.id;
-        store.load();
+//        say(store);
+//        store.load();
     },
 
     onPatientListShow:function(){
@@ -52,7 +73,7 @@ Ext.define('App.controller.Navigation', {
 
     onPatientListSelect: function(view, model){
         this.getMainPanel().setActiveItem(1);
-        this.getMainNavBar().setTitle(model.data.name);
+        this.getMainPanelTitleBar().setTitle(model.data.name);
         this.getApplication().getController('App.controller.PatientSummary').loadPatient(model.data.pid);
 
     },
@@ -73,13 +94,52 @@ Ext.define('App.controller.Navigation', {
 
     onHomeBtnTap:function(){
         this.getPatientList().deselectAll();
-        this.getMainNavBar().setTitle('Home');
         this.getMainPanel().setActiveItem(0);
+        this.getMainPanelTitleBar().setTitle('Home');
+
     },
 
     onBackBtnTap:function(){
         var panel = this.getMainPanel(),
             prev = panel.items.items.indexOf(panel.getActiveItem()) - 1;
         panel.setActiveItem(prev);
+    },
+
+    onMedicalRecordMenuSelect:function(view, model){
+        say(model.data.action + ' Clicked!');
+    },
+
+    setPatientList:function(){
+        this.getLeftNav().setActiveItem(0)
+    },
+
+    setMedicalRecordMenu:function(){
+        this.setNavCollapse(true);
+        this.getLeftNav().setActiveItem(1);
+    },
+
+    setNavCollapse: function(collapse) {
+        var nav = this.getLeftNav(),
+            title = this.getLeftNavTitleBar();
+        this.getLeftNavTitleBar().setTitle(collapse ? '' : 'Patients');
+        nav.collapsed = collapse;
+        nav.setWidth(collapse ? 85 : 350);
+        nav.fireEvent('collapsechange', collapse, nav, title);
+    },
+
+    onMainPanelTitleBarInitialize:function(comp){
+        comp.element.on('swipe', function(event){
+            this.setNavCollapse(event.direction == 'left')
+        }, this);
+    },
+
+    onLeftNavCollapseBtnTap:function(){
+        var collapsed = this.getLeftNav().collapsed;
+        this.setNavCollapse(!collapsed);
+    },
+
+    onLeftNavCollapseChange:function(collapse){
+        this.getLeftNavCollapseBtn().setWidth(85);
     }
+
 });

@@ -700,6 +700,173 @@ INSERT INTO `floor_plans_zones` (`id`, `floor_plan_id`, `title`, `type`, `bg_col
 (40, 3, 'X-Ray Room', NULL, '#CCFFCC', NULL, 'medium', 200, 100, 484, 23, 1, 1, 1),
 (42, 3, 'Dr.Office', NULL, '#FFFF99', NULL, 'medium', 280, 200, 404, 227, 1, 1, 0);
 
+
+
+DROP TABLE IF EXISTS `encounter_review_of_systems`;
+CREATE TABLE IF NOT EXISTS `encounter_review_of_systems` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `pid` bigint(20) DEFAULT '0',
+  `eid` bigint(20) NOT NULL,
+  `uid` varchar(255) DEFAULT NULL,
+  `date` datetime NOT NULL,
+  `weight_change` varchar(255) DEFAULT NULL,
+  `weakness` varchar(255) DEFAULT NULL,
+  `fatigue` varchar(255) DEFAULT NULL,
+  `anorexia` varchar(255) DEFAULT NULL,
+  `fever` varchar(255) DEFAULT NULL,
+  `chills` varchar(255) DEFAULT NULL,
+  `night_sweats` varchar(255) DEFAULT NULL,
+  `insomnia` varchar(255) DEFAULT NULL,
+  `irritability` varchar(255) DEFAULT NULL,
+  `heat_or_cold` varchar(255) DEFAULT NULL,
+  `intolerance` varchar(255) DEFAULT NULL,
+  `change_in_vision` varchar(255) DEFAULT NULL,
+  `eye_pain` varchar(255) DEFAULT NULL,
+  `family_history_of_glaucoma` varchar(255) DEFAULT NULL,
+  `irritation` varchar(255) DEFAULT NULL,
+  `redness` varchar(255) DEFAULT NULL,
+  `excessive_tearing` varchar(255) DEFAULT NULL,
+  `double_vision` varchar(255) DEFAULT NULL,
+  `blind_spots` varchar(255) DEFAULT NULL,
+  `photophobia` varchar(255) DEFAULT NULL,
+  `hearing_loss` varchar(255) DEFAULT NULL,
+  `discharge` varchar(255) DEFAULT NULL,
+  `pain` varchar(255) DEFAULT NULL,
+  `vertigo` varchar(255) DEFAULT NULL,
+  `tinnitus` varchar(255) DEFAULT NULL,
+  `frequent_colds` varchar(255) DEFAULT NULL,
+  `sore_throat` varchar(255) DEFAULT NULL,
+  `sinus_problems` varchar(255) DEFAULT NULL,
+  `post_nasal_drip` varchar(255) DEFAULT NULL,
+  `nosebleed` varchar(255) DEFAULT NULL,
+  `snoring` varchar(255) DEFAULT NULL,
+  `apnea` varchar(255) DEFAULT NULL,
+  `breast_mass` varchar(255) DEFAULT NULL,
+  `abnormal_mammogram` varchar(255) DEFAULT NULL,
+  `biopsy` varchar(255) DEFAULT NULL,
+  `cough` varchar(255) DEFAULT NULL,
+  `sputum` varchar(255) DEFAULT NULL,
+  `shortness_of_breath` varchar(255) DEFAULT NULL,
+  `wheezing` varchar(255) DEFAULT NULL,
+  `hemoptysis` varchar(255) DEFAULT NULL,
+  `asthma` varchar(255) DEFAULT NULL,
+  `copd` varchar(255) DEFAULT NULL,
+  `thyroid_problems` varchar(255) DEFAULT NULL,
+  `diabetes` varchar(255) DEFAULT NULL,
+  `abnormal_blood_test` varchar(255) DEFAULT NULL,
+  `chest_pain` varchar(255) DEFAULT NULL,
+  `palpitation` varchar(255) DEFAULT NULL,
+  `syncope` varchar(255) DEFAULT NULL,
+  `pnd` varchar(255) DEFAULT NULL,
+  `doe` varchar(255) DEFAULT NULL,
+  `orthopnea` varchar(255) DEFAULT NULL,
+  `peripheral` varchar(255) DEFAULT NULL,
+  `edema` varchar(255) DEFAULT NULL,
+  `leg_pain_cramping` varchar(255) DEFAULT NULL,
+  `arrythmia` varchar(255) DEFAULT NULL,
+  `heart_problem` varchar(255) DEFAULT NULL,
+  `history_of_heart_murmur` varchar(255) DEFAULT NULL,
+  `polyuria` varchar(255) DEFAULT NULL,
+  `polydypsia` varchar(255) DEFAULT NULL,
+  `dysuria` varchar(255) DEFAULT NULL,
+  `hematuria` varchar(255) DEFAULT NULL,
+  `frequency` varchar(255) DEFAULT NULL,
+  `urgency` varchar(255) DEFAULT NULL,
+  `utis` varchar(255) DEFAULT NULL,
+  `incontinence` varchar(255) DEFAULT NULL,
+  `renal_stones` varchar(255) DEFAULT NULL,
+  `hesitancy` varchar(255) DEFAULT NULL,
+  `dribbling` varchar(255) DEFAULT NULL,
+  `stream` varchar(255) DEFAULT NULL,
+  `nocturia` varchar(255) DEFAULT NULL,
+  `erections` varchar(255) DEFAULT NULL,
+  `ejaculations` varchar(255) DEFAULT NULL,
+  `cancer` varchar(255) DEFAULT NULL,
+  `psoriasis` varchar(255) DEFAULT NULL,
+  `acne` varchar(255) DEFAULT NULL,
+  `disease` varchar(255) DEFAULT NULL,
+  `other` varchar(255) DEFAULT NULL,
+  `anemia` varchar(255) DEFAULT NULL,
+  `hiv` varchar(255) DEFAULT NULL,
+  `f_h_blood_problems` varchar(255) DEFAULT NULL,
+  `hai_status` text,
+  `allergies` text,
+  `bleeding_problems` text,
+  `frequent_illness` text,
+  `dysphagia` text,
+  `heartburn` text,
+  `food_intolerance` text,
+  `belching` text,
+  `bloating` text,
+  `flatulence` text,
+  `nausea` text,
+  `vomiting` text,
+  `jaundice` text,
+  `h_o_hepatitis` text,
+  `hematemesis` text,
+  `diarrhea` text,
+  `hematochezia` text,
+  `changed_bowel` text,
+  `constipation` text,
+  `female_g` text,
+  `female_p` text,
+  `female_ap` text,
+  `lmp` text,
+  `female_lc` text,
+  `menopause` text,
+  `flow` text,
+  `abnormal_hair_growth` text,
+  `menarche` text,
+  `symptoms` text,
+  `f_h_female_hirsutism_striae` text,
+  `anxiety` text,
+  `depression` text,
+  `psychiatric_medication` text,
+  `social_difficulties` text,
+  `psychiatric_diagnosis` text,
+  `fms` text,
+  `swelling` text,
+  `Warm` text,
+  `muscle` text,
+  `stiffness` text,
+  `aches` text,
+  `arthritis` text,
+  `chronic_joint_pain` text,
+  `loc` text,
+  `stroke` text,
+  `paralysis` text,
+  `tia` text,
+  `numbness` text,
+  `memory_problems` text,
+  `seizures` text,
+  `intellectual_decline` text,
+  `dementia` text,
+  `headache` text,
+  `cons_weakness` text,
+  `brest_discharge` varchar(255) DEFAULT NULL,
+  `fem_frequency` varchar(255) DEFAULT NULL,
+  `redness_mus` int(11) DEFAULT NULL,
+  `dysphagia_gas` varchar(5) DEFAULT NULL,
+  `belching_gas` varchar(5) DEFAULT NULL,
+  `pain_gas` varchar(5) DEFAULT NULL,
+  `dysuria_gen` varchar(5) DEFAULT NULL,
+  `warm_mus` varchar(5) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6 ;
+
+--
+-- Dumping data for table `encounter_review_of_systems`
+--
+
+INSERT INTO `encounter_review_of_systems` (`id`, `pid`, `eid`, `uid`, `date`, `weight_change`, `weakness`, `fatigue`, `anorexia`, `fever`, `chills`, `night_sweats`, `insomnia`, `irritability`, `heat_or_cold`, `intolerance`, `change_in_vision`, `eye_pain`, `family_history_of_glaucoma`, `irritation`, `redness`, `excessive_tearing`, `double_vision`, `blind_spots`, `photophobia`, `hearing_loss`, `discharge`, `pain`, `vertigo`, `tinnitus`, `frequent_colds`, `sore_throat`, `sinus_problems`, `post_nasal_drip`, `nosebleed`, `snoring`, `apnea`, `breast_mass`, `abnormal_mammogram`, `biopsy`, `cough`, `sputum`, `shortness_of_breath`, `wheezing`, `hemoptysis`, `asthma`, `copd`, `thyroid_problems`, `diabetes`, `abnormal_blood_test`, `chest_pain`, `palpitation`, `syncope`, `pnd`, `doe`, `orthopnea`, `peripheral`, `edema`, `leg_pain_cramping`, `arrythmia`, `heart_problem`, `history_of_heart_murmur`, `polyuria`, `polydypsia`, `dysuria`, `hematuria`, `frequency`, `urgency`, `utis`, `incontinence`, `renal_stones`, `hesitancy`, `dribbling`, `stream`, `nocturia`, `erections`, `ejaculations`, `cancer`, `psoriasis`, `acne`, `disease`, `other`, `anemia`, `hiv`, `f_h_blood_problems`, `hai_status`, `allergies`, `bleeding_problems`, `frequent_illness`, `dysphagia`, `heartburn`, `food_intolerance`, `belching`, `bloating`, `flatulence`, `nausea`, `vomiting`, `jaundice`, `h_o_hepatitis`, `hematemesis`, `diarrhea`, `hematochezia`, `changed_bowel`, `constipation`, `female_g`, `female_p`, `female_ap`, `lmp`, `female_lc`, `menopause`, `flow`, `abnormal_hair_growth`, `menarche`, `symptoms`, `f_h_female_hirsutism_striae`, `anxiety`, `depression`, `psychiatric_medication`, `social_difficulties`, `psychiatric_diagnosis`, `fms`, `swelling`, `Warm`, `muscle`, `stiffness`, `aches`, `arthritis`, `chronic_joint_pain`, `loc`, `stroke`, `paralysis`, `tia`, `numbness`, `memory_problems`, `seizures`, `intellectual_decline`, `dementia`, `headache`, `cons_weakness`, `brest_discharge`, `fem_frequency`, `redness_mus`, `dysphagia_gas`, `belching_gas`, `pain_gas`, `dysuria_gen`, `warm_mus`) VALUES
+(5, 2, 2, '0', '0000-00-00 00:00:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '0', '0', '0', '1', '0');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `forms_fields`
+--
+
 DROP TABLE IF EXISTS `forms_fields`;
 CREATE TABLE IF NOT EXISTS `forms_fields` (
   `id` bigint(11) NOT NULL AUTO_INCREMENT,
@@ -709,6 +876,10 @@ CREATE TABLE IF NOT EXISTS `forms_fields` (
   `pos` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_bin AUTO_INCREMENT=1146 ;
+
+--
+-- Dumping data for table `forms_fields`
+--
 
 INSERT INTO `forms_fields` (`id`, `form_id`, `xtype`, `parentId`, `pos`) VALUES
 (95, 1, 'fieldset', 0, 10),
@@ -1679,6 +1850,12 @@ INSERT INTO `forms_fields` (`id`, `form_id`, `xtype`, `parentId`, `pos`) VALUES
 (1144, 1, 'fieldcontainer', 108, 10),
 (1145, 1, 'fieldcontainer', 108, 20);
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `forms_field_options`
+--
+
 DROP TABLE IF EXISTS `forms_field_options`;
 CREATE TABLE IF NOT EXISTS `forms_field_options` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -1686,6 +1863,10 @@ CREATE TABLE IF NOT EXISTS `forms_field_options` (
   `options` text COMMENT 'Field options data stored as JSON string',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1521 ;
+
+--
+-- Dumping data for table `forms_field_options`
+--
 
 INSERT INTO `forms_field_options` (`id`, `field_id`, `options`) VALUES
 (1, '95', '{"title":"Who","collapsible":true,"checkboxToggle":false,"collapsed":false}'),
@@ -2043,9 +2224,9 @@ INSERT INTO `forms_field_options` (`id`, `field_id`, `options`) VALUES
 (384, '509', '{"boxLabel":"YES","name":"polydypsia","inputValue":1,"margin":"0 5 0 0"}'),
 (385, '510', '{"boxLabel":"NO","name":"polydypsia","inputValue":0,"margin":"0 5 0 0"}'),
 (386, '511', '{"fieldLabel":"Dysuria","labelWidth":85,"layout":"hbox","width":250}'),
-(387, '512', '{"boxLabel":"N\\/A","name":"dysuria","inputValue":"nulll","margin":"0 5 0 0"}'),
-(388, '513', '{"boxLabel":"YES","name":"dysuria","inputValue":1,"margin":"0 5 0 0"}'),
-(389, '514', '{"boxLabel":"NO","name":"dysuria","inputValue":0,"margin":"0 5 0 0"}'),
+(387, '512', '{"hideLabel":false,"margin":"0 5 0 0","collapsible":false,"checkboxToggle":false,"collapsed":false,"inputValue":"nulll","boxLabel":"N\\/A","name":"dysuria_gen"}'),
+(388, '513', '{"hideLabel":false,"margin":"0 5 0 0","inputValue":1,"boxLabel":"YES","name":"dysuria_gen","collapsible":false,"checkboxToggle":false,"collapsed":false}'),
+(389, '514', '{"hideLabel":false,"margin":"0 5 0 0","inputValue":0,"boxLabel":"NO","name":"dysuria_gen","collapsible":false,"checkboxToggle":false,"collapsed":false}'),
 (390, '515', '{"fieldLabel":"Hematuria","hideLabel":false,"layout":"hbox","width":255}'),
 (391, '516', '{"boxLabel":"N\\/A","name":"hematuria","inputValue":"null","margin":"0 5 0 0"}'),
 (392, '517', '{"boxLabel":"YES","name":"hematuria","inputValue":1,"margin":"0 5 0 0"}'),
@@ -2162,18 +2343,18 @@ INSERT INTO `forms_field_options` (`id`, `field_id`, `options`) VALUES
 (512, '635', '{"fieldLabel":"Line 4","hideLabel":true,"layout":"hbox"}'),
 (513, '636', '{"fieldLabel":"Line 5","hideLabel":true,"layout":"hbox"}'),
 (514, '637', '{"fieldLabel":"Line 6","hideLabel":true,"layout":"hbox"}'),
-(517, '640', '{"boxLabel":"N\\/A","hideLabel":false,"name":"dysphagia ","inputValue":"null","margin":"0 5 0 0"}'),
-(518, '641', '{"boxLabel":"YES","hideLabel":false,"name":"dysphagia ","inputValue":1,"margin":"0 5 0 0"}'),
-(519, '642', '{"boxLabel":"NO","hideLabel":false,"name":"dysphagia ","inputValue":0,"margin":"0 5 0 0"}'),
+(517, '640', '{"hideLabel":false,"margin":"0 5 0 0","inputValue":"null","boxLabel":"N\\/A","name":"dysphagia_gas","collapsible":false,"checkboxToggle":false,"collapsed":false}'),
+(518, '641', '{"hideLabel":false,"margin":"0 5 0 0","inputValue":1,"boxLabel":"YES","name":"dysphagia_gas","collapsible":false,"checkboxToggle":false,"collapsed":false}'),
+(519, '642', '{"hideLabel":false,"margin":"0 5 0 0","inputValue":0,"boxLabel":"NO","name":"dysphagia_gas","collapsible":false,"checkboxToggle":false,"collapsed":false}'),
 (521, '644', '{"boxLabel":"N\\/A","hideLabel":false,"name":"heartburn","inputValue":"null","margin":"0 5 0 0"}'),
 (522, '645', '{"boxLabel":"YES","hideLabel":false,"name":"heartburn","inputValue":1,"margin":"0 5 0 0"}'),
 (523, '646', '{"boxLabel":"NO","hideLabel":false,"name":"heartburn","inputValue":0,"margin":"0 5 0 0"}'),
 (525, '648', '{"boxLabel":"N\\/A","hideLabel":false,"name":"food_intolerance","inputValue":"null","margin":"0 5 0 0"}'),
 (526, '649', '{"boxLabel":"YES","hideLabel":false,"name":"food_intolerance","inputValue":1,"margin":"0 5 0 0"}'),
 (527, '650', '{"boxLabel":"NO","hideLabel":false,"name":"food_intolerance","inputValue":0,"margin":"0 5 0 0"}'),
-(528, '651', '{"boxLabel":"N\\/A","hideLabel":false,"name":"belching ","inputValue":"null","margin":"0 5 0 0"}'),
-(529, '652', '{"boxLabel":"YES","hideLabel":false,"name":"belching ","inputValue":1,"margin":"0 5 0 0"}'),
-(530, '653', '{"boxLabel":"NO","hideLabel":false,"name":"belching ","inputValue":0,"margin":"0 5 0 0"}'),
+(528, '651', '{"hideLabel":false,"margin":"0 5 0 0","inputValue":"null","boxLabel":"N\\/A","name":"belching_gas","collapsible":false,"checkboxToggle":false,"collapsed":false}'),
+(529, '652', '{"hideLabel":false,"margin":"0 5 0 0","inputValue":1,"boxLabel":"YES","name":"belching_gas","collapsible":false,"checkboxToggle":false,"collapsed":false}'),
+(530, '653', '{"hideLabel":false,"margin":"0 5 0 0","inputValue":0,"boxLabel":"NO","name":"belching_gas","collapsible":false,"checkboxToggle":false,"collapsed":false}'),
 (532, '655', '{"boxLabel":"N\\/A","hideLabel":false,"name":"bloating","inputValue":"null","margin":"0 5 0 0"}'),
 (533, '656', '{"boxLabel":"YES","hideLabel":false,"name":"bloating","inputValue":1,"margin":"0 5 0 0"}'),
 (534, '657', '{"boxLabel":"NO","hideLabel":false,"name":"bloating","inputValue":0,"margin":"0 5 0 0"}'),
@@ -2186,9 +2367,9 @@ INSERT INTO `forms_field_options` (`id`, `field_id`, `options`) VALUES
 (544, '667', '{"boxLabel":"N\\/A","hideLabel":false,"name":"vomiting","inputValue":"null","margin":"0 5 0 0"}'),
 (545, '668', '{"boxLabel":"YES","hideLabel":false,"name":"vomiting","inputValue":1,"margin":"0 5 0 0"}'),
 (546, '669', '{"boxLabel":"NO","hideLabel":false,"name":"vomiting","inputValue":0,"margin":"0 5 0 0"}'),
-(548, '671', '{"boxLabel":"N\\/A","hideLabel":false,"name":"pain","inputValue":"null","margin":"0 5 0 0"}'),
-(549, '672', '{"boxLabel":"YES","hideLabel":false,"name":"pain","inputValue":1,"margin":"0 5 0 0"}'),
-(550, '673', '{"boxLabel":"NO","hideLabel":false,"name":"pain","inputValue":0,"margin":"0 5 0 0"}'),
+(548, '671', '{"hideLabel":false,"margin":"0 5 0 0","inputValue":"null","boxLabel":"N\\/A","name":"pain_gas","collapsible":false,"checkboxToggle":false,"collapsed":false}'),
+(549, '672', '{"hideLabel":false,"margin":"0 5 0 0","inputValue":1,"boxLabel":"YES","name":"pain_gas","collapsible":false,"checkboxToggle":false,"collapsed":false}'),
+(550, '673', '{"hideLabel":false,"margin":"0 5 0 0","inputValue":0,"boxLabel":"NO","name":"pain_gas","collapsible":false,"checkboxToggle":false,"collapsed":false}'),
 (553, '676', '{"boxLabel":"N\\/A","hideLabel":false,"name":"jaundice","inputValue":"null","margin":"0 5 0 0"}'),
 (554, '677', '{"boxLabel":"YES","hideLabel":false,"name":"jaundice","inputValue":1,"margin":"0 5 0 0"}'),
 (555, '678', '{"boxLabel":"NO","hideLabel":false,"name":"jaundice","inputValue":0,"margin":"0 5 0 0"}'),
@@ -2312,12 +2493,12 @@ INSERT INTO `forms_field_options` (`id`, `field_id`, `options`) VALUES
 (745, '789', '{"boxLabel":"N\\/A","hideLabel":false,"name":"swelling","inputValue":"null","margin":"0 5 0 0"}'),
 (746, '790', '{"boxLabel":"YES","hideLabel":false,"name":"swelling","inputValue":1,"margin":"0 5 0 0"}'),
 (747, '791', '{"boxLabel":"NO","hideLabel":false,"name":"swelling","inputValue":0,"margin":"0 5 0 0"}'),
-(749, '793', '{"boxLabel":"N\\/A","hideLabel":false,"name":"redness","inputValue":"null","margin":"0 5 0 0"}'),
-(750, '794', '{"boxLabel":"YES","hideLabel":false,"name":"redness","inputValue":1,"margin":"0 5 0 0"}'),
-(751, '795', '{"boxLabel":"NO","hideLabel":false,"name":"redness","inputValue":0,"margin":"0 5 0 0"}'),
-(753, '797', '{"boxLabel":"N\\/A","hideLabel":false,"name":"warm","inputValue":"null","margin":"0 5 0 0"}'),
-(754, '798', '{"boxLabel":"YES","hideLabel":false,"name":"warm","inputValue":1,"margin":"0 5 0 0"}'),
-(755, '799', '{"boxLabel":"NO","hideLabel":false,"name":"warm","inputValue":0,"margin":"0 5 0 0"}'),
+(749, '793', '{"hideLabel":false,"margin":"0 5 0 0","inputValue":"null","boxLabel":"N\\/A","name":"redness_mus","collapsible":false,"checkboxToggle":false,"collapsed":false}'),
+(750, '794', '{"hideLabel":false,"margin":"0 5 0 0","inputValue":1,"boxLabel":"YES","name":"redness_mus","collapsible":false,"checkboxToggle":false,"collapsed":false}'),
+(751, '795', '{"hideLabel":false,"margin":"0 5 0 0","inputValue":0,"boxLabel":"NO","name":"redness_mus","collapsible":false,"checkboxToggle":false,"collapsed":false}'),
+(753, '797', '{"hideLabel":false,"margin":"0 5 0 0","inputValue":"null","boxLabel":"N\\/A","name":"warm_mus","collapsible":false,"checkboxToggle":false,"collapsed":false}'),
+(754, '798', '{"hideLabel":false,"margin":"0 5 0 0","inputValue":1,"boxLabel":"YES","name":"warm_mus","collapsible":false,"checkboxToggle":false,"collapsed":false}'),
+(755, '799', '{"hideLabel":false,"margin":"0 5 0 0","inputValue":0,"boxLabel":"NO","name":"warm_mus","collapsible":false,"checkboxToggle":false,"collapsed":false}'),
 (757, '801', '{"boxLabel":"N\\/A","hideLabel":false,"name":"muscle","inputValue":"null","margin":"0 5 0 0"}'),
 (758, '802', '{"boxLabel":"YES","hideLabel":false,"name":"muscle","inputValue":1,"margin":"0 5 0 0"}'),
 (759, '803', '{"boxLabel":"NO","hideLabel":false,"name":"muscle","inputValue":0,"margin":"0 5 0 0"}'),

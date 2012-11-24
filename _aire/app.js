@@ -1,6 +1,7 @@
 //<debug>
 Ext.Loader.setPath({
     'Ext': 'touch/src',
+    'Ext.ux': 'ux',
     'App': 'app'
 });
 //</debug>
@@ -16,12 +17,14 @@ Ext.application({
         'Ext.plugin.PullRefresh',
         'Ext.carousel.Carousel',
         'App.view.Login',
-        'App.view.MainPhone'
+
+        'App.view.MainTabletView',
+        'App.view.MainPhoneView'
     ],
 
-    controllers: ['Main','Login','Navigation'],
+    controllers: ['Main','Login','Navigation','PatientSummary'],
 
-    views: ['Login', 'MainTablet', 'MainTablet'],
+    views: ['Login', 'MainTabletView', 'MainPhoneView'],
 
     stores: ['Patients'],
 
@@ -44,6 +47,8 @@ Ext.application({
     },
 
     launch: function() {
+        var me = this;
+
         App.db = null;
         App.isNative = (Ext.device.Device.platform == 'Android' || Ext.device.Device.platform == 'iOS');
         App.isPhone = Ext.os.deviceType == 'Phone';
@@ -62,7 +67,6 @@ Ext.application({
                     if(typeof callback == 'function') callback(btn);
                 });
             }
-
         };
 
         App.MsgOkCancel = function(title, msg, callback){
@@ -77,27 +81,6 @@ Ext.application({
                 });
             }
         };
-
-        Ext.override(Ext.direct.RemotingProvider, {
-            getCallData: function(transaction) {
-                return {
-                    action: transaction.getAction(),
-                    method: transaction.getMethod(),
-                    data: transaction.getData(),
-                    type: 'rpc',
-                    tid: transaction.getId(),
-                    server: App.server
-                };
-            }
-        });
-
-        Ext.Direct.on('exception', function(event) {
-            Ext.Viewport.unmask();
-            say({Type:'Exception',Message:event.config.message,Where:event.config.where});
-            App.MsgOk('Oops!', event.config.message, Ext.emptyFn);
-        });
-
-        App.isPhone = Ext.os.deviceType == 'Phone';
 
         // Destroy the #appLoadingIndicator element
         Ext.fly('appLoadingIndicator').destroy();

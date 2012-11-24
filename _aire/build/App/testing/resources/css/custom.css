@@ -1,0 +1,118 @@
+body,
+input,
+isindex,
+input[type="password"],
+input[type="search"],
+.x-form-label,
+.x-list .x-list-item,
+.x-spinner .x-input-el, .x-field-select .x-input-el {
+	color: #666666;
+}
+
+.x-toolbar-dark,
+.x-tabbar-dark,
+.x-list .x-list-item.x-item-selected .x-dock-horizontal {
+	background-image: none;
+}
+.x-list-normal.x-list-grouped .x-list-header-wrap .x-dock-horizontal {
+	padding-top: 47px;
+}
+.x-list-normal .x-list-header-wrap .x-item-header, .x-list-normal .x-list-header {
+	background: url('../images/leftNavBg.png') repeat-y right top #f0f0f0!important;
+	border-top: none;
+	border-bottom: solid 5px #dddddd;
+	color: #666666;
+	font-size: 20px;
+	padding-right: 5px;
+}
+.x-list-normal .x-list-header-wrap .x-item-header, .x-list-normal .x-list-header .x-innerhtml {
+	background: url('../images/listHeaderBg.png') no-repeat right bottom transparent;
+	padding: 5px 0;
+}
+.leftNav .x-list-item.x-item-selected .x-dock-horizontal .x-dock-body {
+	background: url('../images/listSelectBg.png')no-repeat right center transparent;
+}
+.leftNav .x-scroll-scroller {
+	background: url('../images/leftNavBg.png') repeat-y right top transparent;
+}
+.leftNav .x-list-item .x-dock-horizontal{
+	margin-right: -1px!important;
+}
+.leftNav .x-list-item-body {
+	min-height: 61px;
+	padding: 0;
+}
+
+
+.mainPanel .x-list-normal .x-list-header-wrap .x-item-header, .mainPanel .x-list-normal .x-list-header {
+	/*background-color: #F7F7F7;*/
+	background-color: #F7F7F7!important;
+	background-image: none!important;
+}
+.mainPanel .x-list-normal .x-list-header-wrap .x-item-header, .mainPanel .x-list-normal .x-list-header .x-innerhtml {
+	background: url('../images/listHeaderBg.png') no-repeat right bottom transparent;
+}
+
+
+.mainPanel .x-layout-card-item{
+	background-color: #fdfdfd;
+}
+.features {
+	font-size: 19px;
+}.features .version {
+	font-weight: bold;
+}
+.features h2 {
+	font-size: 32px;
+	text-align: center;
+	margin: 20px 0;
+}
+.feature {
+	background: url("../images/circle-learn.png") 10px 10px no-repeat #ffffff;
+	min-height: 60px;
+	margin: 10px;
+	padding: 10px 10px 10px 70px;
+	border: solid 1px #cccccc;
+	border-radius: 5px;
+}
+.feature h3 {
+	font-weight: bold;
+}
+.features .footer {
+	color: white;
+	padding: 5px 10px;
+	border-radius: 5px;
+	background-color: #1469a4;
+	margin: 5px 10px;
+}
+.features .footer a {
+	color: white;
+}
+.patientList img {
+	border: solid 1px #cccccc;
+    float: left;
+}
+.patientList .info {
+	margin-left: 80px;
+	padding: 5px 10px;
+}
+.patientHeader {
+	overflow: auto;
+	background-color: #f0f0f0;
+}
+.patientHeader .left,
+.patientHeader .left img {
+	float: left;
+}
+.patientHeader .left img {
+	border: solid 1px #ccc;
+}
+.patientHeader p {
+	padding: 10px;
+}
+.patientHeader .left p {
+	margin-left: 135px;
+}
+.patientHeader .right {
+	text-align: right;
+}

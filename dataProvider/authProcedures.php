@@ -160,7 +160,15 @@ class authProcedures
 			$session                          = new Sessions();
 			$token = Crypt::encrypt('{"uid":'.$user['id'].',"sid":'.$session->loginSession().',"site":"'.$params->site.'"}');
 			$_SESSION['inactive']['timeout'] = time();
-			return array('success' => true, 'token' => $token);
+			return array(
+				'success' => true,
+				'token' => $token,
+				'user' => array(
+					'id' => $_SESSION['user']['id'],
+					'name' => $_SESSION['user']['name'],
+					'email' => $_SESSION['user']['email'],
+				)
+			);
 		}
 	}
 

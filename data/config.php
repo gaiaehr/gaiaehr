@@ -346,6 +346,14 @@ $API = array(
 			'updateOfficeNotes' => array('len' => 1)
 		)),
 	/**
+	 * Prescriptions Functions
+	 */
+	'Prescriptions' => array('methods' => array(
+			'getPrescriptions' => array('len' => 1),
+			'addNewPrescriptions' => array('len' => 1),
+			'updatePrescriptions' => array('len' => 1)
+		)),
+	/**
 	 * Services Functions
 	 */
 	'DataManager' => array('methods' => array(

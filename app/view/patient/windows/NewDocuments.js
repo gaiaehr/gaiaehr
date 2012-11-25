@@ -187,7 +187,9 @@ Ext.define('App.view.patient.windows.NewDocuments', {
                                         xtype:'datecolumn',
                                         format:'Y-m-d',
                                         width:100,
-                                        dataIndex: 'date'
+                                        dataIndex: 'created_date',
+                                        name: 'created_date',
+                                        action: 'created_date'
 
 									},
 									{
@@ -196,9 +198,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
                                         editor:{
                                             xtype:'textfield'
                                         },
-										dataIndex: 'note',
-                                        name: 'note',
-                                        action: 'note'
+										dataIndex: 'note'
 									}
 
 								],
@@ -630,11 +630,11 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 
     beforePrescriptionsEdit : function(editor, e) {
         var form = editor.editor.getForm(),
-            search = form.findField('note'),
-            newRecord = e.record.data.date == '';
+            search = form.findField('created_date'),
+            newRecord = e.record.data.created_date == '';
         search.setVisible(newRecord);
         if(newRecord){
-            e.record.data.date = new Date();
+            e.record.data.created_date = new Date();
         }
     }
 

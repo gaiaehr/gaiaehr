@@ -74,4 +74,29 @@ class Prescriptions
 		}
 	}
 
+	public function addNewPrescriptions(stdClass $params){
+		$data = get_object_vars($params);
+				$data['created_date'] = $this->parseDate($data['created_date']);
+				$data['pid']= $_SESSION['patient']['pid'];
+				$data['uid']= $_SESSION['user']['id'];
+				$this->db->setSQL($this->db->sqlBind($data, 'patient_prescriptions', 'I'));
+				$this->db->execLog();
+				$params->id = $this->db->lastInsertId;
+				return $params;
+
+	}
+	public function getPrescriptions(stdClass $params){
+
+
+	}
+
+	public function updatePrescriptions(stdClass $params){
+
+
+	}
+
+	public function parseDate($date)
+	{
+		return str_replace('T', ' ', $date);
+	}
 }

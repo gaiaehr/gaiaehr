@@ -9,13 +9,16 @@ Ext.define('App.model.patient.PatientsPrescriptions', {
 	extend: 'Ext.data.Model',
 	fields: [
 
-		{name: 'date'},
+		{name: 'created_date'},
 		{name: 'note'}
 
 	],
 	proxy : {
 		type: 'direct',
 		api : {
+            read  : Prescriptions.getPrescriptions,
+            create: Prescriptions.addNewPrescriptions,
+            update: Prescriptions.updatePrescriptions
 		}
 	}
 });

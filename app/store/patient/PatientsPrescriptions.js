@@ -5,9 +5,9 @@
  * Date: 2/18/12
  * Time: 11:11 PM
  */
-Ext.define('App.store.patient.PatientsPrescription', {
+Ext.define('App.store.patient.PatientsPrescriptions', {
 	extend: 'Ext.data.Store',
-	model     : 'App.model.patient.PatientsPrescription',
+	model     : 'App.model.patient.PatientsPrescriptions',
 	remoteSort: false,
 	autoLoad  : false
 });

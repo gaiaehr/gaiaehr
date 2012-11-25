@@ -26,6 +26,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 	initComponent: function() {
 		var me = this;
 		me.patientPrescriptionStore = Ext.create('App.store.patient.PatientsPrescription');
+		me.patientPrescriptionsStore = Ext.create('App.store.patient.PatientsPrescriptions');
 		me.patientsLabsOrdersStore = Ext.create('App.store.patient.PatientsLabsOrders');
 		
 		me.items = [
@@ -172,28 +173,47 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 
 								xtype  : 'grid',
 								margin : 10,
-								store  : me.patientPrescriptionStore,
+								store  : me.patientPrescriptionsStore,
 								height : 300,
+                                plugins: [
+                                        me.edditing = Ext.create('Ext.grid.plugin.RowEditing', {
+                                        clicksToEdit: 2,
+                                        errorSummary : false
+                                     })
+                                ],
 								columns: [
 									{
 										header   : i18n('date'),
-										width    : 100,
-										dataIndex: 'date'
+                                        xtype:'datecolumn',
+                                        format:'Y-m-d',
+                                        width:100,
+                                        dataIndex: 'date'
+
 									},
 									{
 										header   : i18n('notes'),
 										flex     : 1,
-										dataIndex: 'note'
+                                        editor:{
+                                            xtype:'textfield'
+                                        },
+										dataIndex: 'note',
+                                        name: 'note',
+                                        action: 'note'
 									}
 
 								],
+
+                                listeners:{
+                                    scope:me,
+                                    beforeedit:me.beforePrescriptionsEdit
+                                },
 
                                 tbar   : [
                                     '->',
                                     {
                                         text   : i18n('new_prescription'),
                                         scope  : me,
-                                        handler: me.onAddNewPrescription
+                                        handler: me.onAddNewPrescriptions
 
                                     }
                                 ]
@@ -493,6 +513,13 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 		this.patientPrescriptionStore.insert(0,{});
 		grid.editingPlugin.startEdit(0, 0);
 	},
+    onAddNewPrescriptions: function(btn) {
+		var grid = btn.up('grid');
+		grid.editingPlugin.cancelEdit();
+
+		this.patientPrescriptionsStore.insert(0,{});
+		grid.editingPlugin.startEdit(0, 0);
+	},
 
 	onRemove: function(grid, rowIndex){
 		var me = this,
@@ -517,8 +544,8 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 		field3.setValue(medication);
 	},
 	onEditPrescription: function(editor,e){
-		say(editor);
-		say(e.record.commit());
+//		say(editor);
+//		say(e.record.commit());
 
 	},
 	onCreatePrescription: function (){
@@ -594,9 +621,23 @@ Ext.define('App.view.patient.windows.NewDocuments', {
         dock.items.items[2].setVisible(visible);
         if(!visible) me.cardSwitch('notes');
 	},
+
     onDocumentsWinHide : function(){
         if(app.currCardCmp.id == 'panelSummary'){
            app.currCardCmp.patientDocumentsStore.load({params: {pid: this.pid}});
         }
+    },
+
+    beforePrescriptionsEdit : function(editor, e) {
+        var form = editor.editor.getForm(),
+            search = form.findField('note'),
+            newRecord = e.record.data.date == '';
+        search.setVisible(newRecord);
+        if(newRecord){
+            e.record.data.date = new Date();
+        }
     }
+
+
+
 });

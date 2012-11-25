@@ -92,7 +92,7 @@ Ext.define('App.view.patient.windows.Medical', {
                     },
                     {
                         xtype:'datecolumn',
-                        header:'Date',
+                        header:i18n('Date'),
                         format:'Y-m-d',
                         width:100,
                         dataIndex:'administered_date'
@@ -103,12 +103,12 @@ Ext.define('App.view.patient.windows.Medical', {
                         dataIndex:'lot_number'
                     },
                     {
-                        header:'Notes',
+                        header:i18n('Notes'),
                         flex:1,
                         dataIndex:'note'
                     },
                     {
-                        header:'Administered by',
+                        header:i18n('Administered by'),
                         width:150,
                         dataIndex:'administered_by'
                     }

@@ -7,7 +7,7 @@
  */
 Ext.define('App.view.MedicalRecordMenu', {
     extend: 'Ext.List',
-    xtype:'medicalRecordMenu',
+    xtype:'medicalrecordmenu',
     requires:[
         'App.store.Patients',
         'Ext.plugin.PullRefresh'
@@ -17,32 +17,37 @@ Ext.define('App.view.MedicalRecordMenu', {
         data: [
             {
                 text:'Demographics',
-                action:'demographics',
+                action:'patientdemographicspanel',
                 cls:''
             },
             {
                 text:'Progress Notes',
-                action:'progressNotes',
+                action:'patientprogressnotespanel',
+                cls:''
+            },
+            {
+                text:'Charts',
+                action:'patientchartspanel',
                 cls:''
             },
             {
                 text:'Images',
-                action:'images',
+                action:'patientimagespanel',
                 cls:''
             },
             {
                 text:'Documents',
-                action:'documents',
+                action:'patientdocumentspanel',
                 cls:''
             },
             {
                 text:'Lab Results',
-                action:'labResults',
+                action:'patientlabresultspanel',
                 cls:''
             },
             {
                 text:'Clinical Orders',
-                action:'clinicalOrders',
+                action:'patientclinicalorderspanel',
                 cls:''
             }
         ],

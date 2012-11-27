@@ -38,6 +38,7 @@ Ext.define('App.controller.Login', {
         values.site = server.site;
         App.server = server;
         Ext.Viewport.mask({xtype: 'loadmask', message: 'Be Right Back!'});
+
         window.ExtDirectManagerProvider.setUrl(server.url+'data/appRouter.php');
         if(App.isNative) me.saveServerData(App.server);
         DataProvider.authProcedures.login(values, function(response){

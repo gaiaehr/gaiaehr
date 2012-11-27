@@ -7,7 +7,7 @@
  */
 Ext.define('App.view.MedicalRecordNav', {
     extend: 'Ext.Container',
-    xtype:'medicalRecordNav',
+    xtype:'medicalrecordnav',
     requires:[
         'App.view.MedicalRecordMenu'
     ],
@@ -23,12 +23,12 @@ Ext.define('App.view.MedicalRecordNav', {
                 },
                 tpl: Ext.create('Ext.XTemplate',
                     '<div class="medicalRecordNavHeader">',
-                    '   <img src="http://localhost/gaiaehr/sites/default/patients/{pid}/patientPhotoId.jpg{photoSrc}" width="80" height="80"/>',
+                    '   <img src="http://localhost/gaiaehr/sites/default/patients/{pid}/patientPhotoId.jpg{photoSrc}" width="85" height="85"/>',
                     '</div>'
                 )
             },
             {
-                xtype:'medicalRecordMenu',
+                xtype:'medicalrecordmenu',
                 flex:1
             }
         ]

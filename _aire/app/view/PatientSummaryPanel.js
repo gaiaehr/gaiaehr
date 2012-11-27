@@ -5,17 +5,19 @@
  * Time: 10:31 PM
  * To change this template use File | Settings | File Templates.
  */
-Ext.define('App.view.PatientSummaryPanel',{
-    extend:'Ext.Panel',
-    xtype:'patientsummarypanel',
-    config:{
+Ext.define('App.view.PatientSummaryPanel', {
+    extend: 'Ext.Panel',
+    xtype: 'patientsummarypanel',
+    config: {
         layout: 'vbox',
-        scrollable:false,
-        items:[
+        scrollable: false,
+        nav: 'patientlistnav',
+        tier: 2,
+        items: [
             {
-                xtype:'container',
-                action:'patientSummaryHeader',
-                tpl: Ext.create('Ext.XTemplate',
+                xtype: 'container',
+                action: 'patientSummaryHeader',
+                tpl: Ext.create('Ext.XTemplate', '' +
                     '<div class="patientHeader">',
                     '   <div class="left">',
                     '       <img src="http://localhost/gaiaehr/sites/default/patients/{pid}/patientPhotoId.jpg{photoSrc}" width="132" height="132"/>',
@@ -33,8 +35,8 @@ Ext.define('App.view.PatientSummaryPanel',{
             },
             {
                 xtype: 'list',
-                flex:1,
-                margin:'10 0 0 0',
+                flex: 1,
+                margin: '10 0 0 0',
                 itemTpl: '<div class="contact">{firstName} <strong>{lastName}</strong></div>',
                 store: Ext.create('App.store.Patients'),
                 grouped: true

@@ -220,6 +220,9 @@ $API = array(
 			),
 			'getCDTLiveSearch' => array(
 				'len' => 1
+			),
+			'getPatientsMedicalSummaryGrouped' => array(
+				'len' => 1
 			)
 		)
 	),

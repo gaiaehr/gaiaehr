@@ -41848,6 +41848,13532 @@ Ext.define('Ext.carousel.Carousel', {
 }, function() {
 });
 
+(function () {
+    if (!Ext.global.Float32Array) {
+        // Typed Array polyfill
+        var Float32Array = function (array) {
+            if (typeof array === 'number') {
+                this.length = array;
+            } else if ('length' in array) {
+                this.length = array.length;
+                for (var i = 0, len = array.length; i < len; i++) {
+                    this[i] = +array[i];
+                }
+            }
+        };
+
+        Float32Array.prototype = [];
+        Ext.global.Float32Array = Float32Array;
+    }
+})();
+
+/**
+ * Utility class providing mathematics functionalities through all the draw package.
+ */
+Ext.define('Ext.draw.Draw', {
+    singleton: true,
+
+    radian: Math.PI / 180,
+    pi2: Math.PI * 2,
+
+    /**
+     * Function that returns its first element.
+     * @param {Mixed} a
+     * @return {Mixed}
+     */
+    reflectFn: function (a) {
+        return a;
+    },
+
+    /**
+     * Converting degrees to radians.
+     * @param {Number} degrees
+     * @return {Number}
+     */
+    rad: function (degrees) {
+        return degrees % 360 * Math.PI / 180;
+    },
+
+    /**
+     * Converting radians to degrees.
+     * @param {Number} radian
+     * @return {Number}
+     */
+    degrees: function (radian) {
+        return radian * 180 / Math.PI % 360;
+    },
+
+    /**
+     *
+     * @param bbox1
+     * @param bbox2
+     * @param [padding]
+     * @return {Boolean}
+     */
+    isBBoxIntersect: function (bbox1, bbox2, padding) {
+        padding = padding || 0;
+        return (Math.max(bbox1.x, bbox2.x) - padding > Math.min(bbox1.x + bbox1.width, bbox2.x + bbox2.width)) ||
+            (Math.max(bbox1.y, bbox2.y) - padding > Math.min(bbox1.y + bbox1.height, bbox2.y + bbox2.height));
+    },
+
+    /**
+     * Natural cubic spline interpolation.
+     * This algorithm runs in linear time.
+     *
+     * @param {Array} points Array of numbers.
+     */
+    spline: function (points) {
+        var i, j, ln = points.length,
+            nd, d, y, ny,
+            r = 0,
+            zs = new Float32Array(points.length),
+            result = new Float32Array(points.length * 3 - 2);
+
+        zs[0] = 0;
+        zs[ln - 1] = 0;
+
+        for (i = 1; i < ln - 1; i++) {
+            zs[i] = (points[i + 1] + points[i - 1] - 2 * points[i]) - zs[i - 1];
+            r = 1 / (4 - r);
+            zs[i] *= r;
+        }
+
+        for (i = ln - 2; i > 0; i--) {
+            r = 3.732050807568877 + 48.248711305964385 / (-13.928203230275537 + Math.pow(0.07179676972449123, i));
+            zs[i] -= zs[i + 1] * r;
+        }
+
+        ny = points[0];
+        nd = ny - zs[0];
+        for (i = 0, j = 0; i < ln - 1; j += 3) {
+            y = ny;
+            d = nd;
+            i++;
+            ny = points[i];
+            nd = ny - zs[i];
+            result[j] = y;
+            result[j + 1] = (nd + 2 * d) / 3;
+            result[j + 2] = (nd * 2 + d) / 3;
+        }
+        result[j] = ny;
+        return result;
+    },
+
+    /**
+     * @method
+     * @private
+     * Work around for iOS.
+     * Nested 3d-transforms seems to prevent the redraw inside it until some event is fired.
+     */
+    updateIOS: Ext.os.is.iOS ? function () {
+        Ext.getBody().createChild({id: 'frame-workaround', style: 'position: absolute; top: 0px; bottom: 0px; left: 0px; right: 0px; background: rgba(0,0,0,0.001); z-index: 100000'});
+        Ext.draw.Animator.schedule(function () {Ext.get('frame-workaround').destroy();});
+    } : Ext.emptyFn
+});
+
+/**
+ * Limited cache is a size limited cache container that stores limited number of objects.
+ * 
+ * When {@link #get} is called, the container will try to find the object in the list.
+ * If failed it will call the {@link #feeder} to create that object. If there are too many
+ * objects in the container, the old ones are removed.
+ * 
+ * __Note:__ This is not using a Least Recently Used policy due to simplicity and performance consideration.
+ */
+Ext.define("Ext.draw.LimitedCache", {
+    config: {
+        /**
+         * @cfg {Number}
+         * The amount limit of the cache.
+         */
+        limit: 40,
+
+        /**
+         * @cfg {Function}
+         * Function that generates the object when look-up failed.
+         * @return {Number}
+         */
+        feeder: function () {
+            return 0;
+        },
+
+        /**
+         * @cfg {Object}
+         * The scope for {@link #feeder}
+         */
+        scope: null
+    },
+    cache: null,
+
+    constructor: function (config) {
+        this.cache = {};
+        this.cache.list = [];
+        this.cache.tail = 0;
+        this.initConfig(config);
+    },
+
+    /**
+     * Get a cached object.
+     * @param {String} id
+     * @param {Mixed...} args Arguments appended to feeder.
+     * @return {Object}
+     */
+    get: function (id) {
+        // TODO: Implement cache hit optimization
+        var cache = this.cache,
+            limit = this.getLimit(),
+            feeder = this.getFeeder(),
+            scope = this.getScope() || this;
+
+        if (cache[id]) {
+            return cache[id].value;
+        }
+        if (cache.list[cache.tail]) {
+            delete cache[cache.list[cache.tail].cacheId];
+        }
+        cache[id] = cache.list[cache.tail] = {
+            value: feeder.apply(scope, Array.prototype.slice.call(arguments, 1)),
+            cacheId: id
+        };
+        cache.tail++;
+        if (cache.tail === limit) {
+            cache.tail = 0;
+        }
+        return cache[id].value;
+    },
+
+    /**
+     * Clear all the objects.
+     */
+    clear: function () {
+        this.cache = {};
+        this.cache.list = [];
+        this.cache.tail = 0;
+    }
+});
+
+/**
+ * @class Ext.draw.gradient.Gradient
+ * 
+ * Creates a gradient.
+ */
+Ext.define("Ext.draw.gradient.Gradient", {
+    requires: ["Ext.draw.LimitedCache"],
+    mixins: {
+        identifiable: 'Ext.mixin.Identifiable'
+    },
+    identifiablePrefix: 'ext-gradient-',
+    isGradient: true,
+    statics: {
+        gradientCache: null
+    },
+
+    config: {
+        /**
+         * @cfg {Array/Object} Defines the stops of the gradient.
+         */
+        stops: []
+    },
+
+    applyStops: function (newStops) {
+        var stops = [],
+            ln = newStops.length,
+            i, stop, color;
+
+        for (i = 0; i < ln; i++) {
+            stop = newStops[i];
+            color = Ext.draw.Color.fly(stop.color || 'none');
+            stops.push({
+                offset: Math.min(1, Math.max(0, 'offset' in stop ? stop.offset : stop.position || 0)),
+                color: color.toString()
+            });
+        }
+        stops.sort(function (a, b) {
+            return a.offset - b.offset;
+        });
+        return stops;
+    },
+
+    onClassExtended: function (subClass, member) {
+        if (!member.alias && member.type) {
+            member.alias = 'gradient.' + member.type;
+        }
+    },
+    
+    constructor: function (config) {
+        config = config || {};
+        this.gradientCache = new Ext.draw.LimitedCache({
+            feeder: function (gradient, ctx, bbox) {
+                return gradient.generateGradient(ctx, bbox);
+            },
+            scope: this
+        });
+        this.initConfig(config);
+        this.id = config.id;
+        this.getId();
+    },
+
+    /**
+     * @protected
+     * Generates the gradient for the given context.
+     * @param ctx The context.
+     * @param bbox 
+     * @return {Object}
+     */
+    generateGradient: Ext.emptyFn,
+
+    /**
+     * @private
+     * @param ctx
+     * @param bbox
+     * @return {*}
+     */
+    getGradient: function (ctx, bbox) {
+        return this.gradientCache.get(this.id + ',' + bbox.x + ',' + bbox.y + ',' + bbox.width + ',' + bbox.height, this, ctx, bbox);
+    },
+
+    /**
+     * @private
+     */
+    clearCache: function () {
+        this.gradientCache.clear();
+    }
+
+});
+
+(function () {
+    /**
+     * Represents an RGB color and provides helper functions on it e.g. to get
+     * color components in HSL color space.
+     */
+    Ext.define('Ext.draw.Color', {
+        statics: {
+            colorToHexRe: /(.*?)rgb\((\d+),\s*(\d+),\s*(\d+)\)/,
+            rgbToHexRe: /\s*rgb\((\d+),\s*(\d+),\s*(\d+)\)/,
+            rgbaToHexRe: /\s*rgba\((\d+),\s*(\d+),\s*(\d+),\s*([\.\d]+)\)/,
+            hexRe: /\s*#([0-9a-fA-F][0-9a-fA-F]?)([0-9a-fA-F][0-9a-fA-F]?)([0-9a-fA-F][0-9a-fA-F]?)\s*/
+        },
+
+        isColor: true,
+        /**
+         * @cfg {Number} lightnessFactor
+         *
+         * The default factor to compute the lighter or darker color.
+         */
+        lightnessFactor: 0.2,
+
+        /**
+         * @constructor
+         * @param {Number} red Red component (0..255)
+         * @param {Number} green Green component (0..255)
+         * @param {Number} blue Blue component (0..255)
+         * @param {Number} [alpha=1] (optional) Alpha component (0..1)
+         */
+        constructor: function (red, green, blue, alpha) {
+            this.setRGB(red, green, blue, alpha);
+        },
+
+        setRGB: function (red, green, blue, alpha) {
+            var me = this;
+            me.r = Math.min(255, Math.max(0, red));
+            me.g = Math.min(255, Math.max(0, green));
+            me.b = Math.min(255, Math.max(0, blue));
+            if (alpha === undefined) {
+                me.a = 1;
+            } else {
+                me.a = Math.min(1, Math.max(0, alpha));
+            }
+        },
+
+        /**
+         * Returns the gray value (0 to 255) of the color.
+         *
+         * The gray value is calculated using the formula r*0.3 + g*0.59 + b*0.11.
+         *
+         * @return {Number}
+         */
+        getGrayscale: function () {
+            // http://en.wikipedia.org/wiki/Grayscale#Converting_color_to_grayscale
+            return this.r * 0.3 + this.g * 0.59 + this.b * 0.11;
+        },
+        
+        /**
+         * Get the equivalent HSL components of the color.
+         * @param {Array} [target] Optional array to receive the values.
+         * @return {Array}
+         */
+        getHSL: function (target) {
+            var me = this,
+                r = me.r / 255,
+                g = me.g / 255,
+                b = me.b / 255,
+                max = Math.max(r, g, b),
+                min = Math.min(r, g, b),
+                delta = max - min,
+                h,
+                s = 0,
+                l = 0.5 * (max + min);
+
+            // min==max means achromatic (hue is undefined)
+            if (min !== max) {
+                s = (l < 0.5) ? delta / (max + min) : delta / (2 - max - min);
+                if (r === max) {
+                    h = 60 * (g - b) / delta;
+                } else if (g === max) {
+                    h = 120 + 60 * (b - r) / delta;
+                } else {
+                    h = 240 + 60 * (r - g) / delta;
+                }
+                if (h < 0) {
+                    h += 360;
+                }
+                if (h >= 360) {
+                    h -= 360;
+                }
+            }
+            if (target) {
+                target[0] = h;
+                target[1] = s;
+                target[2] = l;
+            } else {
+                target = [h, s, l];
+            }
+            return target;
+        },
+
+        /**
+         * Set current color based on the specified HSL values.
+         *
+         * @param {Number} h Hue component (0..359)
+         * @param {Number} s Saturation component (0..1)
+         * @param {Number} l Lightness component (0..1)
+         * @return this
+         */
+        setHSL: function (h, s, l) {
+            var c, x, m,
+                abs = Math.abs,
+                floor = Math.floor;
+            h = (h % 360 + 360 ) % 360;
+            s = s > 1 ? 1 : s < 0 ? 0 : s;
+            l = l > 1 ? 1 : l < 0 ? 0 : l;
+            if (s === 0 || h === null) {
+                l *= 255;
+                this.setRGB(l, l, l);
+            }
+            else {
+                // http://en.wikipedia.org/wiki/HSL_and_HSV#From_HSL
+                // C is the chroma
+                // X is the second largest component
+                // m is the lightness adjustment
+                h /= 60;
+                c = s * (1 - abs(2 * l - 1));
+                x = c * (1 - abs(h - 2 * floor(h / 2) - 1));
+                m = l - c / 2;
+                m *= 255;
+                c *= 255;
+                x *= 255;
+                switch (floor(h)) {
+                    case 0:
+                        this.setRGB(c + m, x + m, m);
+                        break;
+                    case 1:
+                        this.setRGB(x + m, c + m, m);
+                        break;
+                    case 2:
+                        this.setRGB(m, c + m, x + m);
+                        break;
+                    case 3:
+                        this.setRGB(m, x + m, c + m);
+                        break;
+                    case 4:
+                        this.setRGB(x + m, m, c + m);
+                        break;
+                    case 5:
+                        this.setRGB(c + m, m, x + m);
+                        break;
+                }
+            }
+            return this;
+        },
+
+        /**
+         * Return a new color that is lighter than this color.
+         * @param {Number} [factor=0.2] Lighter factor (0..1).
+         * @return {Ext.draw.Color}
+         */
+        createLighter: function (factor) {
+            var hsl = this.getHSL();
+            factor = factor || this.lightnessFactor;
+            // COMPAT Ext.util.Numbers -> Ext.Number
+            hsl[2] = hsl[2] + factor;
+            if (hsl[2] > 1) {
+                hsl[2] = 1;
+            } else if (hsl[2] < 0) {
+                hsl[2] = 0;
+            }
+            return Ext.draw.Color.fromHSL(hsl[0], hsl[1], hsl[2]);
+        },
+
+        /**
+         * Return a new color that is darker than this color.
+         * @param {Number} [factor=0.2] Darker factor (0..1).
+         * @return {Ext.draw.Color}
+         */
+        createDarker: function (factor) {
+            factor = factor || this.lightnessFactor;
+            return this.createLighter(-factor);
+        },
+
+        /**
+         * Return the color in the hex format, i.e. '#rrggbb'.
+         * @return {String}
+         */
+        toString: function () {
+            if (this.a === 1) {
+                var me = this,
+                    round = Math.round,
+                    r = round(me.r).toString(16),
+                    g = round(me.g).toString(16),
+                    b = round(me.b).toString(16);
+                r = (r.length === 1) ? '0' + r : r;
+                g = (g.length === 1) ? '0' + g : g;
+                b = (b.length === 1) ? '0' + b : b;
+                return ['#', r, g, b].join('');
+            } else {
+                return 'rgba(' + [Math.round(this.r), Math.round(this.g), Math.round(this.b), this.a].join(',') + ')';
+            }
+        },
+
+        /**
+         * Convert a color to hexadecimal format.
+         *
+         * @param {String/Array} color The color value (i.e 'rgb(255, 255, 255)', 'color: #ffffff').
+         * Can also be an Array, in this case the function handles the first member.
+         * @return {String} The color in hexadecimal format.
+         */
+        toHex: function (color) {
+            if (Ext.isArray(color)) {
+                color = color[0];
+            }
+            if (!Ext.isString(color)) {
+                return '';
+            }
+            if (color.substr(0, 1) === '#') {
+                return color;
+            }
+            var digits = Ext.draw.Color.colorToHexRe.exec(color);
+
+            if (Ext.isArray(digits)) {
+                var red = parseInt(digits[2], 10),
+                    green = parseInt(digits[3], 10),
+                    blue = parseInt(digits[4], 10),
+                    rgb = blue | (green << 8) | (red << 16);
+                return digits[1] + '#' + ("000000" + rgb.toString(16)).slice(-6);
+            }
+            else {
+                return '';
+            }
+        },
+
+        /**
+         * Parse the string and set current color.
+         *
+         * Supported formats: '#rrggbb', '#rgb', and 'rgb(r,g,b)'.
+         *
+         * If the string is not recognized, an `undefined` will be returned instead.
+         *
+         * @param {String} str Color in string.
+         * @return this
+         */
+        setFromString: function (str) {
+            var values, r, g, b, a = 1,
+                parse = parseInt;
+
+            if (str === 'none') {
+                this.r = this.g = this.b = this.a = 0;
+                return this;
+            }
+
+            if ((str.length === 4 || str.length === 7) && str.substr(0, 1) === '#') {
+                values = str.match(Ext.draw.Color.hexRe);
+                if (values) {
+                    r = parse(values[1], 16) >> 0;
+                    g = parse(values[2], 16) >> 0;
+                    b = parse(values[3], 16) >> 0;
+                    if (str.length === 4) {
+                        r += (r * 16);
+                        g += (g * 16);
+                        b += (b * 16);
+                    }
+                }
+            }
+            else if ((values = str.match(Ext.draw.Color.rgbToHexRe))) {
+                r = +values[1];
+                g = +values[2];
+                b = +values[3];
+            } else if ((values = str.match(Ext.draw.Color.rgbaToHexRe))) {
+                r = +values[1];
+                g = +values[2];
+                b = +values[3];
+                a = +values[4];
+            } else {
+                if (Ext.draw.Color.ColorList.hasOwnProperty(str.toLowerCase())) {
+                    return this.setFromString(Ext.draw.Color.ColorList[str.toLowerCase()]);
+                }
+            }
+            if (typeof r === 'undefined') {
+                return this;
+            }
+            this.r = r;
+            this.g = g;
+            this.b = b;
+            this.a = a;
+            return this;
+        }
+    }, function () {
+        var flyColor = new this();
+
+
+        // TODO(zhangbei): do we have a better way to convert color names to rgb?
+        this.addStatics({
+            /**
+             * Returns a flyweight instance of Ext.draw.Color.
+             *
+             * Can be called with either a CSS color string or with separate
+             * arguments for red, green, blue, alpha.
+             * 
+             * @param {Number/String} red Red component (0..255) or CSS color string.
+             * @param {Number} [green] Green component (0..255)
+             * @param {Number} [blue] Blue component (0..255)
+             * @param {Number} [alpha=1] Alpha component (0..1)
+             * @return {Ext.draw.Color}
+             * @static
+             */
+            fly: function (r, g, b, a) {
+                switch (arguments.length) {
+                    case 1:
+                        flyColor.setFromString(r);
+                        break;
+                    case 3:
+                    case 4:
+                        flyColor.setRGB(r, g, b, a);
+                        break;
+                    default:
+                        return null;
+                }
+                return flyColor;
+            },
+
+            ColorList: {
+                "aliceblue": "#f0f8ff", "antiquewhite": "#faebd7", "aqua": "#00ffff", "aquamarine": "#7fffd4", "azure": "#f0ffff",
+                "beige": "#f5f5dc", "bisque": "#ffe4c4", "black": "#000000", "blanchedalmond": "#ffebcd", "blue": "#0000ff", "blueviolet": "#8a2be2", "brown": "#a52a2a", "burlywood": "#deb887",
+                "cadetblue": "#5f9ea0", "chartreuse": "#7fff00", "chocolate": "#d2691e", "coral": "#ff7f50", "cornflowerblue": "#6495ed", "cornsilk": "#fff8dc", "crimson": "#dc143c", "cyan": "#00ffff",
+                "darkblue": "#00008b", "darkcyan": "#008b8b", "darkgoldenrod": "#b8860b", "darkgray": "#a9a9a9", "darkgreen": "#006400", "darkkhaki": "#bdb76b", "darkmagenta": "#8b008b", "darkolivegreen": "#556b2f",
+                "darkorange": "#ff8c00", "darkorchid": "#9932cc", "darkred": "#8b0000", "darksalmon": "#e9967a", "darkseagreen": "#8fbc8f", "darkslateblue": "#483d8b", "darkslategray": "#2f4f4f", "darkturquoise": "#00ced1",
+                "darkviolet": "#9400d3", "deeppink": "#ff1493", "deepskyblue": "#00bfff", "dimgray": "#696969", "dodgerblue": "#1e90ff",
+                "firebrick": "#b22222", "floralwhite": "#fffaf0", "forestgreen": "#228b22", "fuchsia": "#ff00ff",
+                "gainsboro": "#dcdcdc", "ghostwhite": "#f8f8ff", "gold": "#ffd700", "goldenrod": "#daa520", "gray": "#808080", "green": "#008000", "greenyellow": "#adff2f",
+                "honeydew": "#f0fff0", "hotpink": "#ff69b4",
+                "indianred ": "#cd5c5c", "indigo ": "#4b0082", "ivory": "#fffff0", "khaki": "#f0e68c",
+                "lavender": "#e6e6fa", "lavenderblush": "#fff0f5", "lawngreen": "#7cfc00", "lemonchiffon": "#fffacd", "lightblue": "#add8e6", "lightcoral": "#f08080", "lightcyan": "#e0ffff", "lightgoldenrodyellow": "#fafad2",
+                "lightgray": "#d3d3d3", "lightgrey": "#d3d3d3", "lightgreen": "#90ee90", "lightpink": "#ffb6c1", "lightsalmon": "#ffa07a", "lightseagreen": "#20b2aa", "lightskyblue": "#87cefa", "lightslategray": "#778899", "lightsteelblue": "#b0c4de",
+                "lightyellow": "#ffffe0", "lime": "#00ff00", "limegreen": "#32cd32", "linen": "#faf0e6",
+                "magenta": "#ff00ff", "maroon": "#800000", "mediumaquamarine": "#66cdaa", "mediumblue": "#0000cd", "mediumorchid": "#ba55d3", "mediumpurple": "#9370d8", "mediumseagreen": "#3cb371", "mediumslateblue": "#7b68ee",
+                "mediumspringgreen": "#00fa9a", "mediumturquoise": "#48d1cc", "mediumvioletred": "#c71585", "midnightblue": "#191970", "mintcream": "#f5fffa", "mistyrose": "#ffe4e1", "moccasin": "#ffe4b5",
+                "navajowhite": "#ffdead", "navy": "#000080",
+                "oldlace": "#fdf5e6", "olive": "#808000", "olivedrab": "#6b8e23", "orange": "#ffa500", "orangered": "#ff4500", "orchid": "#da70d6",
+                "palegoldenrod": "#eee8aa", "palegreen": "#98fb98", "paleturquoise": "#afeeee", "palevioletred": "#d87093", "papayawhip": "#ffefd5", "peachpuff": "#ffdab9", "peru": "#cd853f", "pink": "#ffc0cb", "plum": "#dda0dd", "powderblue": "#b0e0e6", "purple": "#800080",
+                "red": "#ff0000", "rosybrown": "#bc8f8f", "royalblue": "#4169e1",
+                "saddlebrown": "#8b4513", "salmon": "#fa8072", "sandybrown": "#f4a460", "seagreen": "#2e8b57", "seashell": "#fff5ee", "sienna": "#a0522d", "silver": "#c0c0c0", "skyblue": "#87ceeb", "slateblue": "#6a5acd", "slategray": "#708090", "snow": "#fffafa", "springgreen": "#00ff7f", "steelblue": "#4682b4",
+                "tan": "#d2b48c", "teal": "#008080", "thistle": "#d8bfd8", "tomato": "#ff6347", "turquoise": "#40e0d0",
+                "violet": "#ee82ee",
+                "wheat": "#f5deb3", "white": "#ffffff", "whitesmoke": "#f5f5f5",
+                "yellow": "#ffff00", "yellowgreen": "#9acd32"
+            },
+
+            /**
+             * Create a new color based on the specified HSL values.
+             *
+             * @param {Number} h Hue component (0..359)
+             * @param {Number} s Saturation component (0..1)
+             * @param {Number} l Lightness component (0..1)
+             * @return {Ext.draw.Color}
+             * @static
+             */
+            fromHSL: function (h, s, l) {
+                return (new this(0, 0, 0, 0)).setHSL(h, s, l);
+            },
+
+            /**
+             * Parse the string and create a new color.
+             *
+             * Supported formats: '#rrggbb', '#rgb', and 'rgb(r,g,b)'.
+             *
+             * If the string is not recognized, an undefined will be returned instead.
+             *
+             * @param {String} string Color in string.
+             * @returns {Ext.draw.Color}
+             * @static
+             */
+            fromString: function (string) {
+                return (new this(0, 0, 0, 0)).setFromString(string);
+            },
+
+            /**
+             * Convenience method for creating a color.
+             * 
+             * Can be called with several different combinations of arguments:
+             * 
+             *     // Ext.draw.Color is returned unchanged.
+             *     Ext.draw.Color.create(new Ext.draw.color(255, 0, 0, 0));
+             * 
+             *     // CSS color string.
+             *     Ext.draw.Color.create("red");
+             * 
+             *     // Array of red, green, blue, alpha
+             *     Ext.draw.Color.create([255, 0, 0, 0]);
+             * 
+             *     // Separate arguments of red, green, blue, alpha
+             *     Ext.draw.Color.create(255, 0, 0, 0);
+             * 
+             *     // Returns black when no arguments given.
+             *     Ext.draw.Color.create();
+             * 
+             * @param {Ext.draw.Color/String/Number[]/Number} [red] Red component (0..255),
+             * CSS color string or array of all components.
+             * @param {Number} [green] Green component (0..255)
+             * @param {Number} [blue] Blue component (0..255)
+             * @param {Number} [alpha=1] Alpha component (0..1)
+             * @return {Ext.draw.Color}
+             * @static
+             */
+            create: function (arg) {
+                if (arg instanceof this) {
+                    return arg;
+                } else if (Ext.isArray(arg)) {
+                    return new Ext.draw.Color(arg[0], arg[1], arg[2], arg[3]);
+                } else if (Ext.isString(arg)) {
+                    return Ext.draw.Color.fromString(arg);
+                } else if (arguments.length > 2) {
+                    return new Ext.draw.Color(arguments[0], arguments[1], arguments[2], arguments[3]);
+                } else {
+                    return new Ext.draw.Color(0, 0, 0, 0);
+                }
+            }
+        });
+    });
+})();
+
+/**
+ * @private
+ * @class Ext.draw.sprite.AttributeParser
+ *
+ * Parsers used for sprite attributes.
+ */
+Ext.define("Ext.draw.sprite.AttributeParser", {
+    singleton: true,
+    attributeRe: /^url\(#([a-zA-Z\-]+)\)$/,
+    requires: ['Ext.draw.Color'],
+
+    "default": function (n) {
+        return n;
+    },
+    
+    string: function (n) {
+        return String(n);
+    },
+    
+    number: function (n) {
+        if (!isNaN(n)) {
+            return n;
+        }
+    },
+    
+    angle: function (n) {
+        if (!isNaN(n)) {
+            n %= Math.PI * 2;
+            if (n < -Math.PI) {
+                n += Math.PI * 2;
+            }
+            if (n > Math.PI) {
+                n -= Math.PI * 2;
+            }
+            return n;
+        }
+    },
+    
+    data: function (n) {
+        if (Ext.isArray(n)) {
+            return n.slice();
+        } else if (n instanceof Float32Array) {
+            return new Float32Array(n);
+        }
+    },
+    
+    bool: function (n) {
+        return !!n;
+    },
+    
+    color: function (n) {
+        if (n instanceof Ext.draw.Color) {
+            return n.toString();
+        } else if (n instanceof Ext.draw.gradient.Gradient) {
+            return n;
+        } else if (!n) {
+            return 'none';
+        } else if (Ext.isString(n)) {
+            return n;
+        } else if (n.type === 'linear') {
+            return Ext.create('Ext.draw.gradient.Linear', n);
+        } else if (n.type === 'radial') {
+            return Ext.create('Ext.draw.gradient.Radial', n);
+        } else if (n.type === 'pattern') {
+            return Ext.create('Ext.draw.gradient.Pattern', n);
+        }
+    },
+
+    limited: function (low, hi) {
+        return (function (n) {
+            return isNaN(n) ? undefined : Math.min(Math.max(+n, low), hi);
+        });
+    },
+    
+    limited01: function (n) {
+        return isNaN(n) ? undefined : Math.min(Math.max(+n, 0), 1);
+    },
+    
+    enums: function () {
+        var enums = {},
+            args = Array.prototype.slice.call(arguments, 0),
+            i, ln;
+
+        for (i = 0, ln = args.length; i < ln; i++) {
+            enums[args[i]] = true;
+        }
+        return (function (n) {
+            return n in enums ? n : undefined;
+        });
+    }
+});
+
+(function () {
+    function compute(from, to, delta) {
+        return from + (to - from) * delta;
+    }
+
+    /**
+     * @private
+     * @class Ext.draw.sprite.AnimationParser
+     *
+     * Parsers for sprite attributes used in animations.
+     */
+    Ext.define("Ext.draw.sprite.AnimationParser", {
+        singleton: true,
+        attributeRe: /^url\(#([a-zA-Z\-]+)\)$/,
+        requires: ['Ext.draw.Color'],
+
+        color: {
+            parseInitial: function (color1, color2) {
+                if (Ext.isString(color1)) {
+                    color1 = Ext.draw.Color.create(color1);
+                }
+                if (Ext.isString(color2)) {
+                    color2 = Ext.draw.Color.create(color2);
+
+                }
+                if ((color1 instanceof Ext.draw.Color) && (color2 instanceof Ext.draw.Color)) {
+                    return [
+                        [color1.r, color1.g, color1.b, color1.a],
+                        [color2.r, color2.g, color2.b, color2.a]
+                    ];
+                } else {
+                    return [color1 || color2, color2 || color1];
+                }
+            },
+            compute: function (from, to, delta) {
+                if (!Ext.isArray(from) || !Ext.isArray(to)) {
+                    return to || from;
+                } else {
+                    return [compute(from[0], to[0], delta), compute(from[1], to[1], delta), compute(from[2], to[2], delta), compute(from[3], to[3], delta)];
+
+                }
+            },
+            serve: function (array) {
+                var color = Ext.draw.Color.fly(array[0], array[1], array[2], array[3]);
+                return color.toString();
+            }
+        },
+
+        number: {
+            parse: function (n) {
+                return n === null ? null : +n;
+            },
+
+            compute: function (from, to, delta) {
+                if (!Ext.isNumber(from) || !Ext.isNumber(to)) {
+                    return to || from;
+                } else {
+                    return compute(from, to, delta);
+                }
+            }
+        },
+
+        angle: {
+            parseInitial: function (from, to) {
+                if (to - from > Math.PI) {
+                    to -= Math.PI * 2;
+                } else if (to - from < -Math.PI) {
+                    to += Math.PI * 2;
+                }
+                return [from, to];
+            },
+
+            compute: function (from, to, delta) {
+                if (!Ext.isNumber(from) || !Ext.isNumber(to)) {
+                    return to || from;
+                } else {
+                    return compute(from, to, delta);
+                }
+            }
+        },
+
+        path: {
+            parseInitial: function (from, to) {
+                var fromStripes = from.toStripes(),
+                    toStripes = to.toStripes(),
+                    i, j,
+                    fromLength = fromStripes.length, toLength = toStripes.length,
+                    fromStripe, toStripe,
+                    length,
+                    lastStripe = toStripes[toLength - 1],
+                    endPoint = [lastStripe[lastStripe.length - 2], lastStripe[lastStripe.length - 1]];
+                for (i = fromLength; i < toLength; i++) {
+                    fromStripes.push(fromStripes[fromLength - 1].slice(0));
+                }
+                for (i = toLength; i < fromLength; i++) {
+                    toStripes.push(endPoint.slice(0));
+                }
+                length = fromStripes.length;
+
+                toStripes.path = to;
+                toStripes.temp = new Ext.draw.Path();
+
+                for (i = 0; i < length; i++) {
+                    fromStripe = fromStripes[i];
+                    toStripe = toStripes[i];
+                    fromLength = fromStripe.length;
+                    toLength = toStripe.length;
+                    toStripes.temp.types.push('M');
+                    for (j = toLength; j < fromLength; j += 6) {
+                        toStripe.push(endPoint[0], endPoint[1], endPoint[0], endPoint[1], endPoint[0], endPoint[1]);
+                    }
+
+                    lastStripe = toStripes[toStripes.length - 1];
+                    endPoint = [lastStripe[lastStripe.length - 2], lastStripe[lastStripe.length - 1]];
+                    for (j = fromLength; j < toLength; j += 6) {
+                        fromStripe.push(endPoint[0], endPoint[1], endPoint[0], endPoint[1], endPoint[0], endPoint[1]);
+                    }
+                    for (i = 0; i < toStripe.length; i++) {
+                        toStripe[i] -= fromStripe[i];
+                    }
+                    for (i = 2; i < toStripe.length; i += 6) {
+                        toStripes.temp.types.push('C');
+                    }
+                }
+
+                return [fromStripes, toStripes];
+            },
+
+            compute: function (fromStripes, toStripes, delta) {
+                if (delta >= 1) {
+                    return toStripes.path;
+                }
+                var i = 0, ln = fromStripes.length,
+                    j = 0, ln2, from, to,
+                    temp = toStripes.temp.coords, pos = 0;
+                for (; i < ln; i++) {
+                    from = fromStripes[i];
+                    to = toStripes[i];
+                    ln2 = from.length;
+                    for (j = 0; j < ln2; j++) {
+                        temp[pos++] = to[j] * delta + from[j];
+                    }
+                }
+                return toStripes.temp;
+            }
+        },
+
+        data: {
+            compute: function (from, to, delta, target) {
+                var lf = from.length - 1,
+                    lt = to.length - 1,
+                    len = Math.max(lf, lt),
+                    f, t, i;
+                if (!target || target === from) {
+                    target = [];
+                }
+                target.length = len + 1;
+                for (i = 0; i <= len; i++) {
+                    f = from[Math.min(i, lf)];
+                    t = to[Math.min(i, lt)];
+                    if (isNaN(f)) {
+                        target[i] = t;
+                    } else {
+                        target[i] = (t - f) * delta + f;
+                    }
+                }
+                return target;
+            }
+        },
+
+        text: {
+            compute: function (from, to, delta) {
+                return from.substr(0, Math.round(from.length * (1 - delta))) + to.substr(Math.round(to.length * (1 - delta)));
+            }
+        },
+
+        limited: "number",
+        limited01: "number"
+    });
+})();
+
+/**
+ * @private
+ * Flyweight object to process the attribute of a sprite.
+ */
+Ext.define("Ext.draw.sprite.AttributeDefinition", {
+    requires: [
+        'Ext.draw.sprite.AttributeParser',
+        'Ext.draw.sprite.AnimationParser'
+    ],
+
+    config: {
+        /**
+         * @cfg {Object} defaults Defines the default values of attributes.
+         */
+        defaults: {
+
+        },
+
+        /**
+         * @cfg {Object} aliases Defines the aletrnative names for attributes.
+         */
+        aliases: {
+
+        },
+
+        /**
+         * @cfg {Object} animationProcessors Defines the process used to animate between attributes.
+         */
+        animationProcessors: {
+
+        },
+
+        /**
+         * @cfg {Object} processors Defines the preprocessing used on the attribute.
+         */
+        processors: {
+
+        },
+
+        /**
+         * @cfg {Object} dirty Defines what other attributes need to be updated when an attribute is changed.
+         */
+        dirtyTriggers: {
+
+        },
+
+        /**
+         * @cfg {Object} updaters Defines the postprocessing used by the attribute.
+         */
+        updaters: {
+
+        }
+    },
+
+    inheritableStatics: {
+        processorRe: /^(\w+)\(([\w\-,]*)\)$/
+    },
+
+    constructor: function (config) {
+        var me = this;
+        me.initConfig(config);
+    },
+
+    applyDefaults: function (defaults, oldDefaults) {
+        oldDefaults = Ext.apply(oldDefaults || {}, this.normalize(defaults));
+        return oldDefaults;
+    },
+
+    applyAliases: function (aliases, oldAliases) {
+        return Ext.apply(oldAliases || {}, aliases);
+    },
+
+    applyProcessors: function (processors, oldProcessors) {
+        this.getAnimationProcessors();
+        var name,
+            result = oldProcessors || {},
+            defaultProcessor = Ext.draw.sprite.AttributeParser,
+            processorRe = this.self.processorRe,
+            animationProcessors = {}, anyAnimationProcessors,
+            match, fn;
+
+        for (name in processors) {
+            fn = processors[name];
+            if (!Ext.isFunction(fn)) {
+                if (Ext.isString(fn)) {
+                    match = fn.match(processorRe);
+                    if (match) {
+                        fn = defaultProcessor[match[1]].apply(defaultProcessor, match[2].split(','));
+                    } else {
+                        animationProcessors[name] = fn;
+                        anyAnimationProcessors = true;
+                        fn = defaultProcessor[fn];
+                    }
+                } else {
+                    continue;
+                }
+            }
+            result[name] = fn;
+        }
+
+        if (anyAnimationProcessors) {
+            this.setAnimationProcessors(animationProcessors);
+        }
+
+        return result;
+    },
+
+    applyAnimationProcessors: function (animationProcessors, oldAnimationProcessors) {
+        var parser = Ext.draw.sprite.AnimationParser,
+            item;
+
+        if (!oldAnimationProcessors) {
+            oldAnimationProcessors = {};
+        }
+
+        for (var name in animationProcessors) {
+            item = animationProcessors[name];
+            if (item === 'none') {
+                oldAnimationProcessors[name] = null;
+            } else if (Ext.isString(item) && !(name in oldAnimationProcessors)) {
+                if (item in parser) {
+                    while (Ext.isString(parser[item])) {
+                        item = parser[item];
+                    }
+                    oldAnimationProcessors[name] = parser[item];
+                }
+            } else if (Ext.isObject(item)) {
+                oldAnimationProcessors[name] = item;
+            }
+        }
+        return oldAnimationProcessors;
+    },
+
+    applyDirtyTriggers: function (dirtyTriggers, oldDirtyTrigger) {
+        if (!oldDirtyTrigger) {
+            oldDirtyTrigger = {};
+        }
+        for (var name in dirtyTriggers) {
+            oldDirtyTrigger[name] = dirtyTriggers[name].split(',');
+        }
+        return oldDirtyTrigger;
+    },
+
+    applyUpdaters: function (updaters, oldUpdaters) {
+        return Ext.apply(oldUpdaters || {}, updaters);
+    },
+
+    batchedNormalize: function (batchedChanges, reserveUnrecognized) {
+        if (!batchedChanges) {
+            return {};
+        }
+        var definition = this,
+            processors = definition.getProcessors(),
+            aliases = definition.getAliases(),
+            normalized = {}, i, ln,
+            undef, name, val,
+            translation, rotation, scaling,
+            matrix, subVal, split;
+        if ('rotation' in batchedChanges) {
+            rotation = batchedChanges.rotation;
+        }
+        else {
+            rotation = ('rotate' in batchedChanges) ? batchedChanges.rotate : undef;
+        }
+
+        if ('scaling' in batchedChanges) {
+            scaling = batchedChanges.scaling;
+        }
+        else {
+            scaling = ('scale' in batchedChanges) ? batchedChanges.scale : undef;
+        }
+
+        if ('translation' in batchedChanges) {
+            translation = batchedChanges.translation;
+        } else {
+            translation = ('translate' in batchedChanges) ? batchedChanges.translate : undef;
+        }
+
+        if (typeof scaling !== 'undefined') {
+            if (Ext.isNumber(scaling)) {
+                normalized.scalingX = scaling;
+                normalized.scalingY = scaling;
+            } else {
+                if ('x' in scaling) {
+                    normalized.scalingX = scaling.x;
+                }
+                if ('y' in scaling) {
+                    normalized.scalingY = scaling.y;
+                }
+                if ('centerX' in scaling) {
+                    normalized.scalingCenterX = scaling.centerX;
+                }
+                if ('centerY' in scaling) {
+                    normalized.scalingCenterY = scaling.centerY;
+                }
+            }
+        }
+
+        if (typeof rotation !== 'undefined') {
+            if (Ext.isNumber(rotation)) {
+                rotation = Ext.draw.Draw.rad(rotation);
+                normalized.rotationRads = rotation;
+            } else {
+                if ('rads' in rotation) {
+                    normalized.rotationRads = rotation.rads;
+                } else if ('degrees' in rotation) {
+                    if (Ext.isArray(rotation.degrees)) {
+                        normalized.rotationRads = rotation.degrees.map(function (deg) {
+                            return Ext.draw.Draw.rad(deg);
+                        });
+                    } else {
+                        normalized.rotationRads = Ext.draw.Draw.rad(rotation.degrees);
+                    }
+                }
+                if ('centerX' in rotation) {
+                    normalized.rotationCenterX = rotation.centerX;
+                }
+                if ('centerY' in rotation) {
+                    normalized.rotationCenterY = rotation.centerY;
+                }
+            }
+        }
+        if (typeof translation !== 'undefined') {
+            if ('x' in translation) {
+                normalized.translationX = translation.x;
+            }
+            if ('y' in translation) {
+                normalized.translationY = translation.y;
+            }
+        }
+
+        if ('matrix' in batchedChanges) {
+            matrix = Ext.draw.Matrix.create(batchedChanges.matrix);
+            split = matrix.split();
+
+            normalized.matrix = matrix;
+            normalized.rotationRads = split.rotation;
+            normalized.rotationCenterX = 0;
+            normalized.rotationCenterY = 0;
+            normalized.scalingX = split.scaleX;
+            normalized.scalingY = split.scaleY;
+            normalized.scalingCenterX = 0;
+            normalized.scalingCenterY = 0;
+            normalized.translationX = split.translateX;
+            normalized.translationY = split.translateY;
+        }
+
+        for (name in batchedChanges) {
+            val = batchedChanges[name];
+            if (typeof val === 'undefined') {
+                continue;
+            } else if (Ext.isArray(val)) {
+                if (name in aliases) {
+                    name = aliases[name];
+                }
+                if (name in processors) {
+                    normalized[name] = [];
+                    for (i = 0, ln = val.length; i < ln; i++) {
+                        subVal = processors[name].call(this, val[i]);
+                        if (typeof val !== 'undefined') {
+                            normalized[name][i] = subVal;
+                        }
+                    }
+                } else if (reserveUnrecognized){
+                    normalized[name] = val;
+                }
+            } else {
+                if (name in aliases) {
+                    name = aliases[name];
+                }
+                if (name in processors) {
+                    val = processors[name].call(this, val);
+                    if (typeof val !== 'undefined') {
+                        normalized[name] = val;
+                    }
+                } else if (reserveUnrecognized){
+                    normalized[name] = val;
+                }
+            }
+        }
+        return normalized;
+    },
+
+    /**
+     * Normalizes the changes given via their processors before they are applied as attributes.
+     *
+     * @param changes The changes given.
+     * @return {Object} The normalized values.
+     */
+    normalize: function (changes, reserveUnrecognized) {
+        if (!changes) {
+            return {};
+        }
+        var definition = this,
+            processors = definition.getProcessors(),
+            aliases = definition.getAliases(),
+            translation = changes.translation || changes.translate,
+            normalized = {},
+            name, val, rotation, scaling, matrix, split;
+
+        if ('rotation' in changes) {
+            rotation = changes.rotation;
+        }
+        else {
+            rotation = ('rotate' in changes) ? changes.rotate : undefined;
+        }
+
+        if ('scaling' in changes) {
+            scaling = changes.scaling;
+        }
+        else {
+            scaling = ('scale' in changes) ? changes.scale : undefined;
+        }
+
+        if (translation) {
+            if ('x' in translation) {
+                normalized.translationX = translation.x;
+            }
+            if ('y' in translation) {
+                normalized.translationY = translation.y;
+            }
+        }
+
+        if (typeof scaling !== 'undefined') {
+            if (Ext.isNumber(scaling)) {
+                normalized.scalingX = scaling;
+                normalized.scalingY = scaling;
+            } else {
+                if ('x' in scaling) {
+                    normalized.scalingX = scaling.x;
+                }
+                if ('y' in scaling) {
+                    normalized.scalingY = scaling.y;
+                }
+                if ('centerX' in scaling) {
+                    normalized.scalingCenterX = scaling.centerX;
+                }
+                if ('centerY' in scaling) {
+                    normalized.scalingCenterY = scaling.centerY;
+                }
+            }
+        }
+
+        if (typeof rotation !== 'undefined') {
+            if (Ext.isNumber(rotation)) {
+                rotation = Ext.draw.Draw.rad(rotation);
+                normalized.rotationRads = rotation;
+            } else {
+                if ('rads' in rotation) {
+                    normalized.rotationRads = rotation.rads;
+                } else if ('degrees' in rotation) {
+                    normalized.rotationRads = Ext.draw.Draw.rad(rotation.degrees);
+                }
+                if ('centerX' in rotation) {
+                    normalized.rotationCenterX = rotation.centerX;
+                }
+                if ('centerY' in rotation) {
+                    normalized.rotationCenterY = rotation.centerY;
+                }
+            }
+        }
+
+        if ('matrix' in changes) {
+            matrix = Ext.draw.Matrix.create(changes.matrix);
+            split = matrix.split();
+
+            normalized.matrix = matrix;
+            normalized.rotationRads = split.rotation;
+            normalized.rotationCenterX = 0;
+            normalized.rotationCenterY = 0;
+            normalized.scalingX = split.scaleX;
+            normalized.scalingY = split.scaleY;
+            normalized.scalingCenterX = 0;
+            normalized.scalingCenterY = 0;
+            normalized.translationX = split.translateX;
+            normalized.translationY = split.translateY;
+        }
+
+        for (name in changes) {
+            val = changes[name];
+            if (typeof val === 'undefined') {
+                continue;
+            }
+            if (name in aliases) {
+                name = aliases[name];
+            }
+            if (name in processors) {
+                val = processors[name].call(this, val);
+                if (typeof val !== 'undefined') {
+                    normalized[name] = val;
+                }
+            } else if (reserveUnrecognized){
+                normalized[name] = val;
+            }
+        }
+        return normalized;
+    },
+
+    setBypassingNormalization: function (attr, modifierStack, changes) {
+        return modifierStack.pushDown(attr, changes);
+    },
+
+    set: function (attr, modifierStack, changes) {
+        changes = this.normalize(changes);
+        return this.setBypassingNormalization(attr, modifierStack, changes);
+    }
+});
+
+/**
+ * @class Ext.draw.modifier.Modifier
+ * 
+ * Each sprite has a stack of modifiers. The resulting attributes of sprite is
+ * the content of the stack top. When setting attributes to a sprite,
+ * changes will be pushed-down though the stack of modifiers and pop-back the
+ * additive changes; When modifier is triggered to change the attribute of a
+ * sprite, it will pop-up the changes to the top.
+ */
+Ext.define("Ext.draw.modifier.Modifier", {
+    config: {
+        /**
+         * @cfg {Ext.draw.modifier.Modifier} previous Previous modifier that receives
+         * the push-down changes.
+         */
+        previous: null,
+
+        /**
+         * @cfg {Ext.draw.modifier.Modifier} next Next modifier that receives the
+         * pop-up changes.
+         */
+        next: null,
+
+        /**
+         * @cfg {Ext.draw.sprite.Sprite} sprite The sprite that the modifier is bound.
+         */
+        sprite: null
+    },
+
+    constructor: function (config) {
+        this.initConfig(config);
+    },
+
+    updateNext: function (next) {
+        if (next) {
+            next.setPrevious(this);
+        }
+    },
+
+    updatePrev: function (prev) {
+        if (prev) {
+            prev.setNext    (this);
+        }
+    },
+
+    /**
+     * Validate attribute set before use.
+     * 
+     * @param {Object} attr The attribute to be validated. Note that it may be already initialized, so do
+     * not override properties that has already be used.
+     */
+    prepareAttributes: function (attr) {
+        if (this._previous) {
+            this._previous.prepareAttributes(attr);
+        }
+    },
+
+    /**
+     * Invoked when changes need to be popped up to the top. 
+     * @param attributes The source attributes.
+     * @param changes The changes to be popped up.
+     */
+    popUp: function (attributes, changes) {
+        if (this._next) {
+            this._next.popUp(attributes, changes);
+        } else {
+            Ext.apply(attributes, changes);
+        }
+    },
+
+    /**
+     * Invoked when changes need to pushed down to the sprite.
+     * @param attr The source attributes.
+     * @param {Object} changes The changes to make. This object might be changed unexpectedly inside the method. 
+     * @return {Mixed}
+     */
+    pushDown: function (attr, changes) {
+        if (this._previous) {
+            return this._previous.pushDown(attr, changes);
+        } else {
+            for (var name in changes) {
+                if (changes[name] === attr[name]) {
+                    delete changes[name];
+                }
+            }
+            return changes;
+        }
+    }
+});
+
+/**
+ * @class Ext.draw.modifier.Target
+ * @extends Ext.draw.modifier.Modifier
+ * 
+ * This is the destination modifier that has to be put at
+ * the top of the modifier stack.
+ *
+ */
+Ext.define("Ext.draw.modifier.Target", {
+    extend: "Ext.draw.modifier.Modifier",
+    alias: 'modifier.target',
+    statics: {
+        uniqueId: 0
+    },
+
+    /**
+     * @inheritdoc
+     */
+    prepareAttributes: function (attr) {
+        if (this._previous) {
+            this._previous.prepareAttributes(attr);
+        }
+        // TODO: Investigate the performance hit for introducing an id
+        attr.attributeId = 'attribute-' + Ext.draw.modifier.Target.uniqueId++;
+        if (!attr.hasOwnProperty('canvasAttributes')) {
+            attr.bbox = {
+                plain: {dirty: true},
+                transform: {dirty: true}
+            };
+            attr.dirty = true;
+            attr.dirtyFlags = {};
+            attr.canvasAttributes = {};
+            attr.matrix = new Ext.draw.Matrix();
+            attr.inverseMatrix = new Ext.draw.Matrix();
+        }
+    },
+
+    /**
+     * @private
+     * Applies the appropriate dirty flags from the modifier changes.
+     * @param attr The source attributes.
+     * @param changes The modifier changes.
+     */
+    setDirtyFlags: function (attr, changes) {
+        Ext.apply(attr, changes);
+        var sprite = this._sprite,
+            dirtyTriggers = sprite.self.def._dirtyTriggers,
+            name, dirtyFlags = attr.dirtyFlags, flags, any = false,
+            triggers, trigger, i, ln, canvasNames;
+
+        for (name in changes) {
+            if ((triggers = dirtyTriggers[name])) {
+                i = 0;
+                while ((trigger = triggers[i++])) {
+                    if (!(flags = dirtyFlags[trigger])) {
+                        flags = dirtyFlags[trigger] = [];
+                    }
+                    flags.push(name);
+                }
+            }
+        }
+
+        for (name in changes) {
+            any = true;
+            break;
+        }
+
+        if (!any) {
+            return;
+        }
+
+        // This can prevent sub objects to set duplicated attributes to
+        // context.
+        if (dirtyFlags.canvas) {
+            canvasNames = dirtyFlags.canvas;
+            delete dirtyFlags.canvas;
+            for (i = 0, ln = canvasNames.length; i < ln; i++) {
+                name = canvasNames[i];
+                attr.canvasAttributes[name] = attr[name];
+            }
+        }
+
+        // Spreading dirty flags to children
+        if (attr.hasOwnProperty('children')) {
+            for (i = 0, ln = attr.children.length; i < ln; i++) {
+                Ext.apply(attr.children[i].dirtyFlags, dirtyFlags);
+                sprite.updateDirtyFlags(attr.children[i]);
+            }
+        }
+
+        sprite.setDirty(true);
+    },
+
+    /**
+     * @inheritdoc
+     */
+    popUp: function (attributes, changes) {
+        this.setDirtyFlags(attributes, changes);
+        this._sprite.updateDirtyFlags(attributes);
+    },
+
+    /**
+     * @inheritdoc
+     */
+    pushDown: function (attr, changes) {
+        if (this._previous) {
+            changes = this._previous.pushDown(attr, changes);
+        }
+        this.setDirtyFlags(attr, changes);
+        this._sprite.updateDirtyFlags(attr);
+        return changes;
+    }
+});
+
+(function () {
+    var pow = Math.pow,
+        sin = Math.sin,
+        cos = Math.cos,
+        sqrt = Math.sqrt,
+        pi = Math.PI,
+        easings, addEasing, poly, createPoly, easing, i, l;
+
+    //create polynomial easing equations
+    poly = ['quad', 'cubic', 'quart', 'quint'];
+
+    //create other easing equations
+    easings = {
+        pow: function (p, x) {
+            return pow(p, x[0] || 6);
+        },
+
+        expo: function (p) {
+            return pow(2, 8 * (p - 1));
+        },
+
+        circ: function (p) {
+            return 1 - sqrt(1 - p * p);
+        },
+
+        sine: function (p) {
+            return 1 - sin((1 - p) * pi / 2);
+        },
+
+        back: function (p, n) {
+            n = n || 1.616;
+            return p * p * ((n + 1) * p - n);
+        },
+
+        bounce: function (p) {
+            var value;
+            for (var a = 0, b = 1; 1; a += b, b /= 2) {
+                if (p >= (7 - 4 * a) / 11) {
+                    value = b * b - pow((11 - 6 * a - 11 * p) / 4, 2);
+                    break;
+                }
+            }
+            return value;
+        },
+
+        elastic: function (p, x) {
+            return pow(2, 10 * --p) * cos(20 * p * pi * (x || 1) / 3);
+        }
+    };
+
+    //Add easeIn, easeOut, easeInOut options to all easing equations.
+    addEasing = function (easing, params) {
+        params = params && params.length ? params : [ params ];
+        return Ext.apply(easing, {
+
+            easeIn: function (pos) {
+                return easing(pos, params);
+            },
+
+            easeOut: function (pos) {
+                return 1 - easing(1 - pos, params);
+            },
+
+            easeInOut: function (pos) {
+                return (pos <= 0.5) ? easing(2 * pos, params) / 2
+                    : (2 - easing(2 * (1 - pos), params)) / 2;
+            }
+        });
+    };
+
+    //Append the polynomial equations with easing support to the EasingPrototype.
+    createPoly = function (times) {
+        return function (p) {
+            return pow(p, times);
+        };
+    };
+
+    for (i = 0, l = poly.length; i < l; ++i) {
+        easings[poly[i]] = createPoly(i + 2);
+    }
+
+    //Add linear interpolator
+    easings.linear = function (x) {
+        return x;
+    };
+
+    for (easing in easings) {
+        if (easings.hasOwnProperty(easing)) {
+            addEasing(easings[easing]);
+        }
+    }
+
+    /**
+     * @class
+     * Contains transition equations such as `Quad`, `Cubic`, `Quart`, `Quint`,
+     * `Expo`, `Circ`, `Pow`, `Sine`, `Back`, `Bounce`, `Elastic`, etc.
+     *
+     * Contains transition equations such as `Quad`, `Cubic`, `Quart`, `Quint`, `Expo`, `Circ`, `Pow`, `Sine`, `Back`, `Bounce`, `Elastic`, etc.
+     * Each transition also contains methods for applying this function as ease in, ease out or ease in and out accelerations.
+     *
+     *     var fx = Ext.create('Ext.draw.fx.Sprite', {
+     *         sprite: sprite,
+     *         duration: 1000,
+     *         easing: 'backOut'
+     *     });
+     */
+    Ext.define('Ext.draw.TimingFunctions', {
+        singleton: true,
+        easingMap: {
+            linear: easings.linear,
+            easeIn: easings.quad.easeIn,
+            easeOut: easings.quad.easeOut,
+            easeInOut: easings.quad.easeInOut,
+            backIn: easings.back,
+            backOut: function (x, n) {
+                return 1 - easings.back(1 - x, n);
+            },
+            backInOut: function (x, n) {
+                if (x < 0.5) {
+                    return easings.back(x * 2, n) * 0.5;
+                } else {
+                    return 1 - easings.back((1 - x) * 2, n) * 0.5;
+                }
+            },
+            elasticIn: function (x, n) {
+                return 1 - easings.elastic(1 - x, n);
+            },
+            elasticOut: easings.elastic,
+            bounceIn: easings.bounce,
+            bounceOut: function (x) {
+                return 1 - easings.bounce(1 - x);
+            }
+        }
+    }, function () {
+        Ext.apply(this, easings);
+    });
+
+})();
+
+
+/**
+ * @class Ext.draw.Animator
+ * 
+ * Singleton class that manages the animation pool.
+ */
+Ext.define('Ext.draw.Animator', {
+    uses: ['Ext.draw.Draw'],
+    singleton: true,
+
+    frameCallbacks: {},
+    frameCallbackId: 0,
+    scheduled: 0,
+    frameStartTimeOffset: Ext.frameStartTime,
+    animations: [],
+
+    /**
+     *  Cross platform `animationTime` implementation.
+     *  @return {Number}
+     */
+    animationTime: function () {
+        return Ext.frameStartTime - this.frameStartTimeOffset;
+    },
+
+    /**
+     * Adds an animated object to the animation pool.
+     *
+     * @param {Object} animation The animation descriptor to add to the pool.
+     */
+    add: function (animation) {
+        if (!this.contains(animation)) {
+            this.animations.push(animation);
+            Ext.draw.Animator.ignite();
+            if ('fireEvent' in animation) {
+                animation.fireEvent('animationstart', animation);
+            }
+        }
+    },
+
+    /**
+     * Removes an animation from the pool.
+     * TODO: This is broken when called within `step` method.
+     * @param {Object} animation The animation to remove from the pool.
+     */
+    remove: function (animation) {
+        var me = this,
+            animations = me.animations,
+            i = 0,
+            l = animations.length;
+
+        for (; i < l; ++i) {
+            if (animations[i] === animation) {
+                animations.splice(i, 1);
+                if ('fireEvent' in animation) {
+                    animation.fireEvent('animationend', animation);
+                }
+                return;
+            }
+        }
+    },
+
+    /**
+     * Returns `true` or `false` whether it contains the given animation or not.
+     *
+     * @param {Object} animation The animation to check for.
+     * @return {Boolean}
+     */
+    contains: function (animation) {
+        return this.animations.indexOf(animation) > -1;
+    },
+
+    /**
+     * Returns `true` or `false` whether the pool is empty or not.
+     * @return {Boolean}
+     */
+    empty: function () {
+        return this.animations.length === 0;
+    },
+
+    /**
+     * Given a frame time it will filter out finished animations from the pool.
+     *
+     * @param {Number} frameTime The frame's start time, in milliseconds.
+     */
+    step: function (frameTime) {
+        var me = this,
+        // TODO: Try to find a way to get rid of this copy
+            animations = me.animations.slice(),
+            animation,
+            i = 0, j = 0,
+            l = animations.length;
+
+        for (; i < l; ++i) {
+            animation = animations[i];
+            animation.step(frameTime);
+            if (animation.animating) {
+                animations[j++] = animation;
+            } else {
+                me.animations.splice(j, 1);
+                if (animation.fireEvent) {
+                    animation.fireEvent('animationend');
+                }
+            }
+        }
+    },
+
+    /**
+     * Register an one-time callback that will be called at the next frame.
+     * @param callback
+     * @param scope
+     * @return {String}
+     */
+    schedule: function (callback, scope) {
+        scope = scope || this;
+        var id = 'frameCallback' + (this.frameCallbackId++);
+
+        if (Ext.isString(callback)) {
+            callback = scope[callback];
+        }
+        Ext.draw.Animator.frameCallbacks[id] = {fn: callback, scope: scope, once: true};
+        this.scheduled++;
+        Ext.draw.Animator.ignite();
+        return id;
+    },
+
+    /**
+     * Cancel a registered one-time callback
+     * @param id
+     */
+    cancel: function (id) {
+        if (Ext.draw.Animator.frameCallbacks[id] && Ext.draw.Animator.frameCallbacks[id].once) {
+            this.scheduled--;
+            delete Ext.draw.Animator.frameCallbacks[id];
+        }
+    },
+
+    /**
+     * Register a recursive callback that will be called at every frame.
+     *
+     * @param callback
+     * @param scope
+     * @return {String}
+     */
+    addFrameCallback: function (callback, scope) {
+        scope = scope || this;
+        if (Ext.isString(callback)) {
+            callback = scope[callback];
+        }
+        var id = 'frameCallback' + (this.frameCallbackId++);
+
+        Ext.draw.Animator.frameCallbacks[id] = {fn: callback, scope: scope};
+        return id;
+    },
+
+    /**
+     * Unregister a recursive callback.
+     * @param id
+     */
+    removeFrameCallback: function (id) {
+        delete Ext.draw.Animator.frameCallbacks[id];
+    },
+
+    /**
+     * @private
+     */
+    fireFrameCallbacks: function () {
+        var callbacks = this.frameCallbacks,
+            once = [],
+            id, i, ln, fn, cb;
+
+        for (id in callbacks) {
+            cb = callbacks[id];
+            fn = cb.fn;
+            if (Ext.isString(fn)) {
+                fn = cb.scope[fn];
+            }
+            fn.call(cb.scope);
+            if (cb.once) {
+                once.push(id);
+            }
+        }
+        for (i = 0, ln = once.length; i < ln; i++) {
+            this.scheduled--;
+            delete callbacks[once[i]];
+        }
+    }
+}, function () {
+    //Initialize the endless animation loop.
+    var looping = false,
+        frame = Ext.draw.Animator,
+        requestAnimationFramePolyfill = (function (global) {
+            return global.requestAnimationFrame ||
+                global.webkitRequestAnimationFrame ||
+                global.mozAnimationFrame ||
+                global.oAnimationFrame ||
+                global.msAnimationFrame ||
+                function (callback) { setTimeout(callback, 1); };
+        })(Ext.global),
+        animationStartTimePolyfill = (function (global) {
+            return (global.animationStartTime ? function () { return global.animationStartTime; } : null) ||
+                (global.webkitAnimationStartTime ? function () { return global.webkitAnimationStartTime; } : null) ||
+                (global.mozAnimationStartTime ? function () { return global.mozAnimationStartTime; } : null) ||
+                (global.oAnimationStartTime ? function () { return global.oAnimationStartTime; } : null) ||
+                (global.msAnimationStartTime ? function () { return global.msAnimationStartTime; } : null) ||
+                (Date.now ? function () { return Date.now(); } :
+                    function () { return +new Date(); });
+
+        })(Ext.global);
+
+
+    function animationLoop() {
+        Ext.frameStartTime = animationStartTimePolyfill();
+
+        frame.step(frame.animationTime());
+        frame.fireFrameCallbacks();
+        if (frame.scheduled || !frame.empty()) {
+            requestAnimationFramePolyfill(animationLoop);
+        } else {
+            looping = false;
+        }
+
+    }
+
+
+    frame.ignite = function () {
+        if (!looping) {
+            looping = true;
+            requestAnimationFramePolyfill(animationLoop);
+            Ext.draw.Draw.updateIOS();
+        }
+    };
+
+});
+
+/**
+ * @class Ext.draw.modifier.Animation
+ * @extends Ext.draw.modifier.Modifier
+ *
+ * The Animation modifier.
+ * 
+ * Sencha Touch allows users to use transitional animation on sprites. Simply set the duration
+ * and easing in the animation modifier, then all the changes to the sprites will be animated.
+ * 
+ * Also, you can use different durations and easing functions on different attributes by using
+ * {@link customDuration} and {@link customEasings}.
+ * 
+ * By default, an animation modifier will be created during the initialization of a sprite.
+ * You can get the modifier of `sprite` by `sprite.fx`.
+ *
+ */
+Ext.define("Ext.draw.modifier.Animation", {
+    mixins: {
+        observable: 'Ext.mixin.Observable'
+    },
+    requires: [
+        'Ext.draw.TimingFunctions',
+        'Ext.draw.Animator'
+    ],
+    extend: 'Ext.draw.modifier.Modifier',
+    alias: 'modifier.animation',
+
+    config: {
+        /**
+         * @cfg {Function} easing
+         * Default easing function.
+         */
+        easing: function (x) {
+            return x;
+        },
+
+        /**
+         * @cfg {Number} duration
+         * Default duration time (ms).
+         */
+        duration: 0,
+
+        /**
+         * @cfg {Object} customEasings Overrides the default easing function for defined attributes.
+         */
+        customEasings: {},
+
+        /**
+         * @cfg {Object} customDuration Overrides the default duration for defined attributes.
+         */
+        customDuration: {}
+    },
+
+    constructor: function () {
+        this.anyAnimation = false;
+        this.anySpecialAnimations = false;
+        this.animating = 0;
+        this.animatingPool = [];
+        this.callSuper(arguments);
+    },
+
+    /**
+     * @inheritdoc
+     */
+    prepareAttributes: function (attr) {
+        if (!attr.hasOwnProperty('timers')) {
+            attr.animating = false;
+            attr.timers = {};
+            attr.animationOriginal = Ext.Object.chain(attr);
+            attr.animationOriginal.upperLevel = attr;
+        }
+        if (this._previous) {
+            this._previous.prepareAttributes(attr.animationOriginal);
+        }
+    },
+
+    updateSprite: function (sprite) {
+        // Apply the config that was configured in the sprite.
+        this.setConfig(sprite.config.fx);
+    },
+
+    updateDuration: function (duration) {
+        this.anyAnimation = duration > 0;
+    },
+
+    applyEasing: function (easing) {
+        if (typeof easing === 'string') {
+            return Ext.draw.TimingFunctions.easingMap[easing];
+        } else {
+            return easing;
+        }
+    },
+
+    applyCustomEasings: function (newCustomEasing, oldCustomEasing) {
+        oldCustomEasing = oldCustomEasing || {};
+        var attr, attrs, easing, i, ln;
+
+        for (attr in newCustomEasing) {
+            easing = newCustomEasing[attr];
+            attrs = attr.split(',');
+            if (typeof easing === 'string') {
+                easing = Ext.draw.TimingFunctions.easingMap[easing];
+            }
+            for (i = 0, ln = attrs.length; i < ln; i++) {
+                oldCustomEasing[attrs[i]] = easing;
+            }
+        }
+        return oldCustomEasing;
+    },
+
+    /**
+     * Set special easings on the given attributes.
+     * @param attrs The source attributes.
+     * @param easing The special easings.
+     */
+    setEasingOn: function (attrs, easing) {
+        attrs = Ext.Array.from(attrs).slice();
+        var customEasing = {},
+            i = 0,
+            ln = attrs.length;
+
+        for (; i < ln; i++) {
+            customEasing[attrs[i]] = easing;
+        }
+        this.setDurationEasings(customEasing);
+    },
+
+    /**
+     * Remove special easings on the given attributes.
+     * @param attrs The source attributes.
+     */
+    clearEasingOn: function (attrs) {
+        attrs = Ext.Array.from(attrs, true);
+        var i = 0, ln = attrs.length;
+        for (; i < ln; i++) {
+            delete this._customEasing[attrs[i]];
+        }
+    },
+
+    applyCustomDuration: function (newCustomDuration, oldCustomDuration) {
+        oldCustomDuration = oldCustomDuration || {};
+        var attr, duration, attrs, i, ln, anySpecialAnimations = this.anySpecialAnimations;
+
+        for (attr in newCustomDuration) {
+            duration = newCustomDuration[attr];
+            attrs = attr.split(',');
+            anySpecialAnimations = true;
+
+            for (i = 0, ln = attrs.length; i < ln; i++) {
+                oldCustomDuration[attrs[i]] = duration;
+            }
+        }
+        this.anySpecialAnimations = anySpecialAnimations;
+        return oldCustomDuration;
+    },
+
+    /**
+     * Set special duration on the given attributes.
+     * @param attrs The source attributes.
+     * @param duration The special duration.
+     */
+    setDurationOn: function (attrs, duration) {
+        attrs = Ext.Array.from(attrs).slice();
+        var customDurations = {},
+            i = 0,
+            ln = attrs.length;
+
+        for (; i < ln; i++) {
+            customDurations[attrs[i]] = duration;
+        }
+        this.setCustomDuration(customDurations);
+    },
+
+    /**
+     * Remove special easings on the given attributes.
+     * @param attrs The source attributes.
+     */
+    clearDurationOn: function (attrs) {
+        attrs = Ext.Array.from(attrs, true);
+        var i = 0, ln = attrs.length;
+
+        for (; i < ln; i++) {
+            delete this._customDuration[attrs[i]];
+        }
+    },
+
+    /**
+     * @private
+     * Initializes Animator for the animation.
+     * @param attributes The source attributes.
+     * @param animating The animating flag.
+     */
+    setAnimating: function (attributes, animating) {
+        var me = this,
+            i, j;
+
+        if (attributes.animating !== animating) {
+            attributes.animating = animating;
+            if (animating) {
+                me.animatingPool.push(attributes);
+                if (me.animating === 0) {
+                    Ext.draw.Animator.add(me);
+                }
+                me.animating++;
+            } else {
+                for (i = 0, j = 0; i < me.animatingPool.length; i++) {
+                    if (me.animatingPool[i] !== attributes) {
+                        me.animatingPool[j++] = me.animatingPool[i];
+                    }
+                }
+                me.animating = me.animatingPool.length = j;
+            }
+        }
+    },
+
+    /**
+     * @private
+     * Set the attr with given easing and duration.
+     * @param {Object} attr The attributes collection.
+     * @param {Object} changes The changes that popped up from lower modifier.
+     * @return {Object} The changes to pop up.
+     */
+    setAttrs: function (attr, changes) {
+        var timers = attr.timers,
+            parsers = this._sprite.self.def._animationProcessors,
+            defaultEasing = this._easing,
+            defaultDuration = this._duration,
+            customDuration = this._customDuration,
+            customEasings = this._customEasings,
+            anySpecial = this.anySpecialAnimations,
+            any = this.anyAnimation || anySpecial,
+            original = attr.animationOriginal,
+            ignite = false,
+            timer, name, newValue, startValue, parser, easing, duration;
+
+        if (!any) {
+            // If there is no animation enabled
+            // When applying changes to attributes, simply stop current animation
+            // and set the value.
+            for (name in changes) {
+                if (attr[name] === changes[name]) {
+                    delete changes[name];
+                } else {
+                    attr[name] = changes[name];
+                }
+                delete original[name];
+                delete timers[name];
+            }
+            return changes;
+        } else {
+            // If any animation
+            for (name in changes) {
+                newValue = changes[name];
+                startValue = attr[name];
+                if (newValue !== startValue && any && startValue !== undefined && startValue !== null && (parser = parsers[name])) {
+                    // If this property is animating.
+
+                    // Figure out the desired duration and easing.
+                    easing = defaultEasing;
+                    duration = defaultDuration;
+                    if (anySpecial) {
+                        // Deducing the easing function and duration
+                        if (name in customEasings) {
+                            easing = customEasings[name];
+                        }
+                        if (name in customDuration) {
+                            duration = customDuration[name];
+                        }
+                    }
+
+                    // If the property is animating
+                    if (duration) {
+                        if (!timers[name]) {
+                            timers[name] = {};
+                        }
+
+                        timer = timers[name];
+                        timer.start = 0;
+                        timer.easing = easing;
+                        timer.duration = duration;
+                        timer.compute = parser.compute;
+                        timer.serve = parser.serve || Ext.draw.Draw.reflectFn;
+
+                        if (parser.parseInitial) {
+                            var initial = parser.parseInitial(startValue, newValue);
+                            timer.source = initial[0];
+                            timer.target = initial[1];
+                        } else if (parser.parse) {
+                            timer.source = parser.parse(startValue);
+                            timer.target = parser.parse(newValue);
+                        } else {
+                            timer.source = startValue;
+                            timer.target = newValue;
+                        }
+                        // The animation started. Change to originalVal.
+                        timers[name] = timer;
+                        original[name] = newValue;
+                        delete changes[name];
+                        ignite = true;
+                        continue;
+                    } else {
+                        delete original[name];
+                    }
+                } else {
+                    delete original[name];
+                }
+
+                // If the property is not animating.
+                delete timers[name];
+            }
+        }
+
+        if (ignite && !attr.animating) {
+            this.setAnimating(attr, true);
+        }
+
+        return changes;
+    },
+
+    /**
+     * @private
+     *
+     * Update attributes to current value according to current animation time.
+     * This method will not effect the values of lower layers, but may delete a
+     * value from it.
+     * @param attr The source attributes.
+     * @return {Object} the changes to popup.
+     */
+    updateAttributes: function (attr) {
+        if (!attr.animating) {
+            return {};
+        }
+        var changes = {}, change,
+            any = false,
+            original = attr.animationOriginal,
+            timers = attr.timers,
+            now = Ext.draw.Animator.animationTime(),
+            name, timer, delta;
+
+        // If updated in the same frame, return.
+        if (attr.lastUpdate === now) {
+            return {};
+        }
+
+        for (name in timers) {
+            timer = timers[name];
+            if (!timer.start) {
+                timer.start = now;
+                delta = 0;
+            } else {
+                delta = (now - timer.start) / timer.duration;
+            }
+            if (delta >= 1) {
+                changes[name] = original[name];
+                delete original[name];
+                delete timers[name];
+            } else {
+                changes[name] = timer.serve(timer.compute(timer.source, timer.target, timer.easing(delta), attr[name]));
+                any = true;
+            }
+        }
+        attr.lastUpdate = now;
+        this.setAnimating(attr, any);
+        return changes;
+    },
+
+    /**
+     * @inheritdoc
+     */
+    pushDown: function (attr, changes) {
+        changes = Ext.draw.modifier.Modifier.prototype.pushDown.call(this, attr.animationOriginal, changes);
+        return this.setAttrs(attr, changes);
+    },
+
+    /**
+     * @inheritdoc
+     */
+    popUp: function (attr, changes) {
+        attr = attr.upperLevel;
+        changes = this.setAttrs(attr, changes);
+        if (this._next) {
+            return this._next.popUp(attr, changes);
+        } else {
+            return Ext.apply(attr, changes);
+        }
+    },
+
+    // This is called as an animated object in `Ext.draw.Animator`.
+    step: function () {
+        var me = this,
+            pool = me.animatingPool.slice(),
+            attributes,
+            i, ln;
+
+        for (i = 0, ln = pool.length; i < ln; i++) {
+            attributes = pool[i];
+            var changes = this.updateAttributes(attributes),
+                name;
+
+            // Looking for anything in changes
+            //noinspection LoopStatementThatDoesntLoopJS
+            for (name in changes) {
+                if (this._next) {
+                    this._next.popUp(attributes, changes);
+                }
+                break;
+            }
+        }
+    },
+
+    /**
+     * Stop all animations effected by this modifier
+     */
+    stop: function () {
+        this.step();
+
+        var me = this,
+            pool = me.animatingPool,
+            i, ln;
+
+        for (i = 0, ln = pool.length; i < ln; i++) {
+            pool[i].animating = false;
+        }
+        me.animatingPool.length = 0;
+        me.animating = 0;
+        Ext.draw.Animator.remove(me);
+    },
+
+    destroy: function () {
+        var me = this;
+        me.animatingPool.length = 0;
+        me.animating = 0;
+    }
+});
+
+/**
+ * @class Ext.draw.modifier.Highlight
+ * @extends Ext.draw.modifier.Modifier
+ * 
+ * Highlight is a modifier that will override the attributes
+ * with its `highlightStyle` attributes when `highlighted` is true.
+ */
+Ext.define("Ext.draw.modifier.Highlight", {
+    extend: 'Ext.draw.modifier.Modifier',
+    alias: 'modifier.highlight',
+
+    config: {
+        
+        /**
+         * @cfg {Boolean} enabled 'true' if the highlight is applied.
+         */
+        enabled: false,
+
+        /**
+         * @cfg {Object} highlightStyle The style attributes of the highlight modifier.
+         */
+        highlightStyle: null
+    },
+
+    preFx: true,
+
+    applyHighlightStyle: function (style, oldStyle) {
+        oldStyle = oldStyle || {};
+        if (this.getSprite()) {
+            Ext.apply(oldStyle, this.getSprite().self.def.normalize(style));
+        } else {
+            Ext.apply(oldStyle, style);
+        }
+        return oldStyle;
+    },
+
+    /**
+     * @inheritdoc
+     */
+    prepareAttributes: function (attr) {
+        if (!attr.hasOwnProperty('highlightOriginal')) {
+            attr.highlighted = false;
+            attr.highlightOriginal = Ext.Object.chain(attr);
+        }
+        if (this._previous) {
+            this._previous.prepareAttributes(attr.highlightOriginal);
+        }
+    },
+
+    updateSprite: function (sprite, oldSprite) {
+        if (sprite) {
+            if (this.getHighlightStyle()) {
+                this._highlightStyle = sprite.self.def.normalize(this.getHighlightStyle());
+            }
+            this.setHighlightStyle(sprite.config.highlightCfg);
+        }
+
+        // Before attaching to a sprite, register the highlight related
+        // attributes to its definition.
+        //
+        // TODO(zhangbei): Unfortunately this will effect all the sprites of the same type.
+        // As the redundant attributes would not effect performance, it is not yet a big problem.
+        var def = sprite.self.def;
+        this.setSprite(sprite);
+        def.setConfig({
+            defaults: {
+                highlighted: false
+            },
+
+            processors: {
+                highlighted: 'bool'
+            },
+
+            aliases: {
+                "highlight": "highlighted",
+                "highlighting": "highlighted"
+            },
+
+            dirtyFlags: {
+            },
+
+            updaters: {
+
+            }
+        });
+    },
+
+    /**
+     * Filter modifier changes if overriding source attributes.
+     * @param attr The source attributes.
+     * @param changes The modifier changes.
+     * @return {*} The filtered changes.
+     */
+    filterChanges: function (attr, changes) {
+        var me = this,
+            name,
+            original = attr.highlightOriginal,
+            style = me.getHighlightStyle();
+        if (attr.highlighted) {
+            for (name in changes) {
+                if (style.hasOwnProperty(name)) {
+                    // If it's highlighted, then save the changes to lower level
+                    // on overridden attributes.
+                    original[name] = changes[name];
+                    delete changes[name];
+                }
+            }
+        }
+
+        for (name in changes) {
+            if (name !== 'highlighted' && original[name] === changes[name]) {
+                // If it's highlighted, then save the changes to lower level
+                // on overridden attributes.
+                delete changes[name];
+            }
+        }
+
+        return changes;
+    },
+
+    /**
+     * @inheritdoc
+     */
+    pushDown: function (attr, changes) {
+        var style = this.getHighlightStyle(),
+            original = attr.highlightOriginal,
+            oldHighlighted, name;
+
+        if (changes.hasOwnProperty('highlighted')) {
+            oldHighlighted = changes.highlighted;
+            // Hide `highlighted` and `highlightStyle` to underlying modifiers.
+            delete changes.highlighted;
+
+            if (this._previous) {
+                changes = this._previous.pushDown(original, changes);
+            }
+            changes = this.filterChanges(attr, changes);
+
+            if (oldHighlighted !== attr.highlighted) {
+                if (oldHighlighted) {
+                    // switching on
+                    // At this time, original should be empty.
+                    for (name in style) {
+                        // If changes[name] just changed the value in lower levels,
+                        if (name in changes) {
+                            original[name] = changes[name];
+                        } else {
+                            original[name] = attr[name];
+                        }
+                        if (original[name] !== style[name]) {
+                            changes[name] = style[name];
+                        }
+                    }
+                } else {
+                    // switching off
+                    for (name in style) {
+                        if (!(name in changes)) {
+                            changes[name] = original[name];
+                        }
+                        delete original[name]; // TODO: Need deletion API?
+                    }
+                }
+                changes.highlighted = oldHighlighted;
+            }
+        } else {
+            if (this._previous) {
+                changes = this._previous.pushDown(original, changes);
+            }
+            changes = this.filterChanges(attr, changes);
+        }
+
+        return changes;
+    },
+
+    /**
+     * @inheritdoc
+     */
+    popUp: function (attr, changes) {
+        changes = this.filterChanges(attr, changes);
+        Ext.draw.modifier.Modifier.prototype.popUp.call(this, attr, changes);
+    }
+});
+
+/**
+ * A Sprite is an object rendered in a Drawing surface. There are different options and types of sprites.
+ * The configuration of a Sprite is an object with the following properties:
+ *
+ * Additionally there are three transform objects that can be set with `setAttributes` which are `translate`, `rotate` and
+ * `scale`.
+ *
+ * For translate, the configuration object contains `x` and `y` attributes that indicate where to
+ * translate the object. For example:
+ *
+ *     sprite.setAttributes({
+ *       translate: {
+ *        x: 10,
+ *        y: 10
+ *       }
+ *     }, true);
+ *
+ * For rotation, the configuration object contains `x` and `y` attributes for the center of the rotation (which are optional),
+ * and a `degrees` attribute that specifies the rotation in degrees. For example:
+ *
+ *     sprite.setAttributes({
+ *       rotate: {
+ *        degrees: 90
+ *       }
+ *     }, true);
+ *
+ * For scaling, the configuration object contains `x` and `y` attributes for the x-axis and y-axis scaling. For example:
+ *
+ *     sprite.setAttributes({
+ *       scale: {
+ *        x: 10,
+ *        y: 3
+ *       }
+ *     }, true);
+ *
+ * Sprites can be created with a reference to a {@link Ext.draw.Surface}
+ *
+ *      var drawComponent = Ext.create('Ext.draw.Component', {
+ *          // ...
+ *      });
+ *
+ *      var sprite = Ext.create('Ext.draw.sprite.Sprite', {
+ *          type: 'circle',
+ *          fill: '#ff0',
+ *          surface: drawComponent.surface,
+ *          radius: 5
+ *      });
+ *
+ * Sprites can also be added to the surface as a configuration object:
+ *
+ *      var sprite = drawComponent.surface.add({
+ *          type: 'circle',
+ *          fill: '#ff0',
+ *          radius: 5
+ *      });
+ *
+ * In order to properly apply properties and render the sprite we have to
+ * `show` the sprite setting the option `redraw` to `true`:
+ *
+ *      sprite.show(true);
+ *
+ * The constructor configuration object of the Sprite can also be used and passed into the {@link Ext.draw.Surface}
+ * `add` method to append a new sprite to the canvas. For example:
+ *
+ *     drawComponent.surface.add({
+ *         type: 'circle',
+ *         fill: '#ffc',
+ *         radius: 100,
+ *         x: 100,
+ *         y: 100
+ *     });
+ */
+Ext.define('Ext.draw.sprite.Sprite', {
+    alias: 'sprite.sprite',
+
+    mixins: {
+        observable: 'Ext.mixin.Observable'
+    },
+
+    requires: [
+        'Ext.draw.Draw',
+        'Ext.draw.gradient.Gradient',
+        'Ext.draw.sprite.AttributeDefinition',
+        'Ext.draw.sprite.AttributeParser',
+        'Ext.draw.modifier.Target',
+        'Ext.draw.modifier.Animation',
+        'Ext.draw.modifier.Highlight'
+    ],
+
+    isSprite: true,
+
+    inheritableStatics: {
+        def: {
+            processors: {
+                /**
+                 * @cfg {String} [strokeStyle="none"] The color of the stroke (a CSS color value).
+                 */
+                strokeStyle: "color",
+
+                /**
+                 * @cfg {String} [fillStyle="none"] The color of the shadow (a CSS color value).
+                 */
+                fillStyle: "color",
+
+                /**
+                 * @cfg {Number} [strokeOpacity=1] The opacity of the stroke. Limited from 0 to 1.
+                 */
+                strokeOpacity: "limited01",
+
+                /**
+                 * @cfg {Number} [fillOpacity=1] The opacity of the fill. Limited from 0 to 1.
+                 */
+                fillOpacity: "limited01",
+
+                /**
+                 * @cfg {Number} [lineWidth=1] The width of the line stroke.
+                 */
+                lineWidth: "number",
+
+                /**
+                 * @cfg {String} [lineCap="butt"] The style of the line caps.
+                 */
+                lineCap: "enums(butt,round,square)",
+
+                /**
+                 * @cfg {String} [lineJoin="miter"] The style of the line join.
+                 */
+                lineJoin: "enums(round,bevel,miter)",
+
+                /**
+                 * @cfg {Number} [miterLimit=1] Sets the distance between the inner corner and the outer corner where two lines meet.
+                 */
+                miterLimit: "number",
+
+                /**
+                 * @cfg {String} [shadowColor="none"] The color of the shadow (a CSS color value).
+                 */
+                shadowColor: "color",
+
+                /**
+                 * @cfg {Number} [shadowOffsetX=0] The offset of the sprite's shadow on the x-axis.
+                 */
+                shadowOffsetX: "number",
+
+                /**
+                 * @cfg {Number} [shadowOffsetY=0] The offset of the sprite's shadow on the y-axis.
+                 */
+                shadowOffsetY: "number",
+
+                /**
+                 * @cfg {Number} [shadowBlur=0] The amount blur used on the shadow.
+                 */
+                shadowBlur: "number",
+
+                /**
+                 * @cfg {Number} [globalAlpha=1] The opacity of the sprite. Limited from 0 to 1.
+                 */
+                globalAlpha: "limited01",
+                globalCompositeOperation: "enums(source-over,destination-over,source-in,destination-in,source-out,destination-out,source-atop,destination-atop,lighter,xor,copy)",
+
+                /**
+                 * @cfg {Boolean} [hidden=false] Determines whether or not the sprite is hidden.
+                 */
+                hidden: "bool",
+
+                /**
+                 * @cfg {Boolean} [transformFillStroke=false] Determines whether the fill and stroke are affected by sprite transformations.
+                 */
+                transformFillStroke: "bool",
+
+                /**
+                 * @cfg {Number} [zIndex=0] The stacking order of the sprite.
+                 */
+                zIndex: "number",
+
+                /**
+                 * @cfg {Number} [translationX=0] The translation of the sprite on the x-axis.
+                 */
+                translationX: "number",
+
+                /**
+                 * @cfg {Number} [translationY=0] The translation of the sprite on the y-axis.
+                 */
+                translationY: "number",
+
+                /**
+                 * @cfg {Number} [rotationRads=0] The degree of rotation of the sprite.
+                 */
+                rotationRads: "number",
+
+                /**
+                 * @cfg {Number} [rotationCenterX=null] The central coordinate of the sprite's scale operation on the x-axis.
+                 */
+                rotationCenterX: "number",
+
+                /**
+                 * @cfg {Number} [rotationCenterY=null] The central coordinate of the sprite's rotate operation on the y-axis.
+                 */
+                rotationCenterY: "number",
+
+                /**
+                 * @cfg {Number} [scalingX=1] The scaling of the sprite on the x-axis.
+                 */
+                scalingX: "number",
+
+                /**
+                 * @cfg {Number} [scalingY=1] The scaling of the sprite on the y-axis.
+                 */
+                scalingY: "number",
+
+                /**
+                 * @cfg {Number} [scalingCenterX=null] The central coordinate of the sprite's scale operation on the x-axis.
+                 */
+                scalingCenterX: "number",
+
+                /**
+                 * @cfg {Number} [scalingCenterY=null] The central coordinate of the sprite's scale operation on the y-axis.
+                 */
+                scalingCenterY: "number"
+            },
+
+            aliases: {
+                "stroke": "strokeStyle",
+                "fill": "fillStyle",
+                "color": "fillStyle",
+                "stroke-width": "lineWidth",
+                "stroke-linecap": "lineCap",
+                "stroke-linejoin": "lineJoin",
+                "stroke-miterlimit": "miterLimit",
+                "text-anchor": "textAlign",
+                "opacity": "globalAlpha",
+
+                translateX: "translationX",
+                translateY: "translationY",
+                rotateRads: "rotationRads",
+                rotateCenterX: "rotationCenterX",
+                rotateCenterY: "rotationCenterY",
+                scaleX: "scalingX",
+                scaleY: "scalingY",
+                scaleCenterX: "scalingCenterX",
+                scaleCenterY: "scalingCenterY"
+            },
+
+            defaults: {
+                hidden: false,
+                zIndex: 0,
+
+                strokeStyle: "none",
+                fillStyle: "none",
+                lineWidth: 1,
+                lineCap: "butt",
+                lineJoin: "miter",
+                miterLimit: 1,
+
+                shadowColor: "none",
+                shadowOffsetX: 0,
+                shadowOffsetY: 0,
+                shadowBlur: 0,
+
+                globalAlpha: 1,
+                strokeOpacity: 1,
+                fillOpacity: 1,
+                transformFillStroke: false,
+
+                translationX: 0,
+                translationY: 0,
+                rotationRads: 0,
+                rotationCenterX: null,
+                rotationCenterY: null,
+                scalingX: 1,
+                scalingY: 1,
+                scalingCenterX: null,
+                scalingCenterY: null
+            },
+
+            dirtyTriggers: {
+                hidden: "canvas",
+                zIndex: "zIndex",
+
+                globalAlpha: "canvas",
+                globalCompositeOperation: "canvas",
+
+                transformFillStroke: "canvas",
+                strokeStyle: "canvas",
+                fillStyle: "canvas",
+                strokeOpacity: "canvas",
+                fillOpacity: "canvas",
+
+                lineWidth: "canvas",
+                lineCap: "canvas",
+                lineJoin: "canvas",
+                miterLimit: "canvas",
+
+                shadowColor: "canvas",
+                shadowOffsetX: "canvas",
+                shadowOffsetY: "canvas",
+                shadowBlur: "canvas",
+
+                translationX: "transform",
+                translationY: "transform",
+                rotationRads: "transform",
+                rotationCenterX: "transform",
+                rotationCenterY: "transform",
+                scalingX: "transform",
+                scalingY: "transform",
+                scalingCenterX: "transform",
+                scalingCenterY: "transform"
+            },
+
+            updaters: {
+                "bbox": function (attrs) {
+                    attrs.bbox.plain.dirty = true;
+                    attrs.bbox.transform.dirty = true;
+                    if (
+                        attrs.rotationRads !== 0 && (attrs.rotationCenterX === null || attrs.rotationCenterY === null) ||
+                            ((attrs.scalingX !== 1 || attrs.scalingY !== 1) &&
+                                (attrs.scalingCenterX === null || attrs.scalingCenterY === null)
+                                )
+                        ) {
+                        if (!attrs.dirtyFlags.transform) {
+                            attrs.dirtyFlags.transform = [];
+                        }
+                    }
+                },
+
+                "zIndex": function (attrs) {
+                    attrs.dirtyZIndex = true;
+                },
+
+                "transform": function (attrs) {
+                    attrs.dirtyTransform = true;
+                    attrs.bbox.transform.dirty = true;
+                }
+            }
+        }
+    },
+
+    config: {
+        parent: null
+    },
+
+    onClassExtended: function (Class, member) {
+        var initCfg = Class.superclass.self.def.initialConfig,
+            cfg;
+
+        if (member.inheritableStatics && member.inheritableStatics.def) {
+            cfg = Ext.merge({}, initCfg, member.inheritableStatics.def);
+            Class.def = Ext.create("Ext.draw.sprite.AttributeDefinition", cfg);
+            delete member.inheritableStatics.def;
+        } else {
+            Class.def = Ext.create("Ext.draw.sprite.AttributeDefinition", initCfg);
+        }
+    },
+
+    constructor: function (config) {
+        if (this.$className === 'Ext.draw.sprite.Sprite') {
+            throw 'Ext.draw.sprite.Sprite is an abstract class';
+        }
+        config = config || {};
+        var me = this,
+            groups = [].concat(config.group || []),
+            i, ln;
+
+        me.id = config.id || Ext.id(null, 'ext-sprite-');
+        me.group = new Array(groups.length);
+
+        for (i = 0, ln = groups.length; i < ln; i++) {
+            me.group[i] = groups[i].id || groups[i].toString();
+        }
+
+        me.attr = {};
+        me.initConfig(config);
+        var modifiers = Ext.Array.from(config.modifiers, true);
+        me.prepareModifiers(modifiers);
+        me.initializeAttributes();
+        me.setAttributes(me.self.def.getDefaults(), true);
+        me.setAttributes(config);
+    },
+
+    getDirty: function () {
+        return this.attr.dirty;
+    },
+
+    setDirty: function (dirty) {
+        if ((this.attr.dirty = dirty)) {
+            if (this._parent) {
+                this._parent.setDirty(true);
+            }
+        }
+    },
+
+    addModifier: function (modifier, reinitializeAttributes) {
+        var me = this;
+        if (!(modifier instanceof Ext.draw.modifier.Modifier)) {
+            modifier = Ext.factory(modifier, null, null, 'modifier');
+        }
+        modifier.setSprite(this);
+        if (modifier.preFx || modifier.config && modifier.config.preFx) {
+            if (me.fx.getPrevious()) {
+                me.fx.getPrevious().setNext(modifier);
+            }
+            modifier.setNext(me.fx);
+        } else {
+            me.topModifier.getPrevious().setNext(modifier);
+            modifier.setNext(me.topModifier);
+        }
+        if (reinitializeAttributes) {
+            me.initializeAttributes();
+        }
+        return modifier;
+    },
+
+    prepareModifiers: function (additionalModifiers) {
+        // Set defaults
+        var me = this,
+            modifier, i, ln;
+
+        me.topModifier = new Ext.draw.modifier.Target({sprite: me});
+
+        // Link modifiers
+        me.fx = new Ext.draw.modifier.Animation({sprite: me});
+        me.fx.setNext(me.topModifier);
+
+        for (i = 0, ln = additionalModifiers.length; i < ln; i++) {
+            me.addModifier(additionalModifiers[i], false);
+        }
+    },
+
+    initializeAttributes: function () {
+        var me = this;
+        me.topModifier.prepareAttributes(me.attr);
+    },
+
+    updateDirtyFlags: function (attrs) {
+        var me = this,
+            dirtyFlags = attrs.dirtyFlags, flags,
+            updaters = me.self.def._updaters,
+            any = false,
+            dirty = false,
+            flag;
+
+        do {
+            any = false;
+            for (flag in dirtyFlags) {
+                me.updateDirtyFlags = Ext.emptyFn;
+                flags = dirtyFlags[flag];
+                delete dirtyFlags[flag];
+                if (updaters[flag]) {
+                    updaters[flag].call(me, attrs, flags);
+                }
+                any = true;
+                delete me.updateDirtyFlags;
+            }
+            dirty = dirty || any;
+        } while (any);
+
+        if (dirty) {
+            me.setDirty(true);
+        }
+    },
+
+    /**
+     * Set attributes of the sprite.
+     *
+     * @param {Object} changes The content of the change.
+     * @param {Boolean} [bypassNormalization] `true` to avoid normalization of the given changes.
+     * @param {Boolean} [avoidCopy] `true` to avoid copying the `changes` object.
+     * The content of object may be destroyed.
+     */
+    setAttributes: function (changes, bypassNormalization, avoidCopy) {
+        var attributes = this.attr;
+        if (bypassNormalization) {
+            if (avoidCopy) {
+                this.topModifier.pushDown(attributes, changes);
+            } else {
+                this.topModifier.pushDown(attributes, Ext.apply({}, changes));
+            }
+        } else {
+            this.topModifier.pushDown(attributes, this.self.def.normalize(changes));
+        }
+    },
+
+    /**
+     * Set attributes of the sprite, assuming the names and values have already been
+     * normalized.
+     *
+     * @deprecated Use setAttributes directy with bypassNormalization argument being `true`.
+     * @param {Object} changes The content of the change.
+     * @param {Boolean} [avoidCopy] `true` to avoid copying the `changes` object.
+     * The content of object may be destroyed.
+     */
+    setAttributesBypassingNormalization: function (changes, avoidCopy) {
+        return this.setAttributes(changes, true, avoidCopy);
+    },
+
+    /**
+     * Returns the bounding box for the given Sprite as calculated with the Canvas engine.
+     *
+     * @param {Boolean} [isWithoutTransform] Whether to calculate the bounding box with the current transforms or not.
+     */
+    getBBox: function (isWithoutTransform) {
+        var me = this,
+            attr = me.attr,
+            bbox = attr.bbox,
+            plain = bbox.plain,
+            transform = bbox.transform;
+        if (plain.dirty) {
+            me.updatePlainBBox(plain);
+            plain.dirty = false;
+        }
+        if (isWithoutTransform) {
+            return plain;
+        } else {
+            me.applyTransformations();
+            if (transform.dirty) {
+                me.updateTransformedBBox(transform, plain);
+                transform.dirty = false;
+            }
+            return transform;
+        }
+    },
+
+    /**
+     * @protected
+     * @function
+     * Subclass will fill the plain object with `x`, `y`, `width`, `height` information of the plain bounding box of
+     * this sprite.
+     *
+     * @param {Object} plain Target object.
+     */
+    updatePlainBBox: Ext.emptyFn,
+
+    /**
+     * @protected
+     * Subclass will fill the plain object with `x`, `y`, `width`, `height` information of the transformed
+     * bounding box of this sprite.
+     *
+     * @param {Object} transform Target object.
+     * @param {Object} plain Auxilary object providing information of plain object.
+     */
+    updateTransformedBBox: function (transform, plain) {
+        this.attr.matrix.transformBBox(plain, 0, transform);
+    },
+
+    /**
+     * Subclass can rewrite this function to gain better performance.
+     * @param {Boolean} isWithoutTransform
+     * @return {Array}
+     */
+    getBBoxCenter: function (isWithoutTransform) {
+        var bbox = this.getBBox(isWithoutTransform);
+        if (bbox) {
+            return [
+                bbox.x + bbox.width * 0.5,
+                bbox.y + bbox.height * 0.5
+            ];
+        } else {
+            return [0, 0];
+        }
+    },
+
+    /**
+     * Hide the sprite.
+     * @return {Ext.draw.sprite.Sprite} this
+     * @chainable
+     */
+    hide: function () {
+        this.attr.hidden = true;
+        this.setDirty(true);
+        return this;
+    },
+
+    /**
+     * Show the sprite.
+     * @return {Ext.draw.sprite.Sprite} this
+     * @chainable
+     */
+    show: function () {
+        this.attr.hidden = false;
+        this.setDirty(true);
+        return this;
+    },
+
+    useAttributes: function (ctx) {
+        this.applyTransformations();
+        var attrs = this.attr,
+            canvasAttributes = attrs.canvasAttributes,
+            strokeStyle = canvasAttributes.strokeStyle,
+            fillStyle = canvasAttributes.fillStyle,
+            id;
+
+        if (strokeStyle) {
+            if (strokeStyle.isGradient) {
+                ctx.strokeStyle = 'black';
+                ctx.strokeGradient = strokeStyle;
+            } else {
+                ctx.strokeGradient = false;
+            }
+        }
+
+        if (fillStyle) {
+            if (fillStyle.isGradient) {
+                ctx.fillStyle = 'black';
+                ctx.fillGradient = fillStyle;
+            } else {
+                ctx.fillGradient = false;
+            }
+        }
+
+        for (id in canvasAttributes) {
+            if (canvasAttributes[id] !== undefined && canvasAttributes[id] !== ctx[id]) {
+                ctx[id] = canvasAttributes[id];
+            }
+        }
+
+        ctx.setGradientBBox(this.getBBox(this.attr.transformFillStroke));
+    },
+
+    // @private
+    applyTransformations: function (force) {
+        if (!force && !this.attr.dirtyTransform) {
+            return;
+        }
+        var me = this,
+            attr = me.attr,
+            center = me.getBBoxCenter(true),
+            centerX = center[0],
+            centerY = center[1],
+
+            x = attr.translationX,
+            y = attr.translationY,
+
+            sx = attr.scalingX,
+            sy = attr.scalingY === null ? attr.scalingX : attr.scalingY,
+            scx = attr.scalingCenterX === null ? centerX : attr.scalingCenterX,
+            scy = attr.scalingCenterY === null ? centerY : attr.scalingCenterY,
+
+            rad = attr.rotationRads,
+            rcx = attr.rotationCenterX === null ? centerX : attr.rotationCenterX,
+            rcy = attr.rotationCenterY === null ? centerY : attr.rotationCenterY,
+
+            cos = Math.cos(rad),
+            sin = Math.sin(rad);
+
+        if (sx === 1 && sy === 1) {
+            scx = 0;
+            scy = 0;
+        }
+
+        if (rad === 0) {
+            rcx = 0;
+            rcy = 0;
+        }
+
+        attr.matrix.elements = [
+            cos * sx, sin * sy,
+            -sin * sx, cos * sy,
+            scx + (rcx - cos * rcx - scx + rcy * sin) * sx + x,
+            scy + (rcy - cos * rcy - scy + rcx * -sin) * sy + y
+        ];
+        attr.matrix.inverse(attr.inverseMatrix);
+        attr.dirtyTransform = false;
+        attr.bbox.transform.dirty = true;
+    },
+
+    /**
+     * Called before rendering.
+     */
+    preRender: Ext.emptyFn,
+
+    /**
+     * Render method.
+     * @param {Ext.draw.Surface} surface The surface.
+     * @param {Object} ctx A context object compatible with CanvasRenderingContext2D.
+     * @param {Array} region The clip region (or called dirty rect) of the current rendering. Not be confused
+     * with `surface.getRegion()`.
+     *
+     * @return {*} returns `false` to stop rendering in this frame. All the sprite haven't been rendered
+     * will have their dirty flag untouched.
+     */
+    render: Ext.emptyFn,
+
+    repaint: function () {
+        var parent = this.getParent();
+        while (parent && !(parent instanceof Ext.draw.Surface)) {
+            parent = parent.getParent();
+        }
+        if (parent) {
+            parent.renderFrame();
+        }
+    },
+
+    /**
+     * Removes the sprite and clears all listeners.
+     */
+    destroy: function () {
+        var me = this, modifier = me.topModifier, curr;
+        while (modifier) {
+            curr = modifier;
+            modifier = modifier.getPrevious();
+            curr.destroy();
+        }
+        delete me.attr;
+
+        me.destroy = Ext.emptyFn;
+        if (me.fireEvent('beforedestroy', me) !== false) {
+            me.fireEvent('destroy', me);
+        }
+        this.callSuper();
+    }
+}, function () {
+    this.def = Ext.create("Ext.draw.sprite.AttributeDefinition", this.def);
+});
+
+
+(function () {
+    var PI2_3 = 2.0943951023931953/* 120 Deg */,
+        abs = Math.abs,
+        sin = Math.cos,
+        cos = Math.cos,
+        acos = Math.acos,
+        sqrt = Math.sqrt,
+        exp = Math.exp,
+        log = Math.log;
+
+    /**
+     * @private
+     * Singleton Class that provides methods to solve cubic equation.
+     */
+    Ext.define("Ext.draw.Solver", {
+        singleton: true,
+        /**
+         * Cubic root of number
+         * @param number {Number}
+         */
+        cubicRoot: function (number) {
+            if (number > 0) {
+                return exp(log(number) / 3);
+            } else if (number < 0) {
+                return -exp(log(-number) / 3);
+            } else {
+                return 0;
+            }
+        },
+
+        /**
+         * Returns the function f(x) = a * x + b and solver for f(x) = y
+         * @param a
+         * @param b
+         */
+        linearFunction: function (a, b) {
+            var result;
+            if (a === 0) {
+                result = function (t) {
+                    return b;
+                };
+                result.solve = function (y) {
+                    // if y == d there should be a real root
+                    // but we can ignore it for geometry calculations.
+                    return [];
+                };
+            } else {
+                result = function (t) {
+                    return a * t + b;
+                };
+                result.solve = function (y) {
+                    return [(y - b) / a];
+                };
+            }
+            return result;
+        },
+
+        /**
+         * Returns the function f(x) = a * x ^ 2 + b * x + c and solver for f(x) = y
+         *
+         * @param a
+         * @param b
+         * @param c
+         */
+        quadraticFunction: function (a, b, c) {
+            var result;
+            if (a === 0) {
+                return this.linearFunction(b, c);
+            } else {
+                // Quadratic equation.
+                result = function (t) {
+                    return (a * t + b) * t + c;
+                };
+                var delta0temp = b * b - 4 * a * c,
+                    delta = function (y) {
+                        return delta0temp + 4 * a * y;
+                    }, solveTemp0 = 1 / a * 0.5,
+                    solveTemp1 = -solveTemp0 * b;
+                solveTemp0 = abs(solveTemp0);
+                result.solve = function (y) {
+                    var deltaTemp = delta(y);
+                    if (deltaTemp < 0) {
+                        return [];
+                    }
+                    deltaTemp = sqrt(deltaTemp);
+                    // have to distinct roots here.
+                    return [solveTemp1 - deltaTemp * solveTemp0, solveTemp1 + deltaTemp * solveTemp0];
+                };
+            }
+            return result;
+        },
+
+        /**
+         * Returns the function f(x) = a * x^3 + b * x^2 + c * x + d and solver for f(x) = y
+         * @param a
+         * @param b
+         * @param c
+         * @param d
+         */
+        cubicFunction: function (a, b, c, d) {
+            var result;
+            if (a === 0) {
+                return this.quadraticFunction(b, c, d);
+            } else {
+                result = function (t) {
+                    return ((a * t + b) * t + c) * t + d;
+                };
+
+                var b_a_3 = b / a / 3,
+                    c_a = c / a,
+                    d_a = d / a,
+                    b2 = b_a_3 * b_a_3,
+                    deltaTemp0 = (b_a_3 * c_a - d_a) * 0.5 - b_a_3 * b2,
+                    deltaTemp1 = b2 - c_a / 3,
+                    deltaTemp13 = deltaTemp1 * deltaTemp1 * deltaTemp1;
+
+                if (deltaTemp1 === 0) {
+                    result.solve = function (y) {
+                        return [-b_a_3 + this.cubicRoot(deltaTemp0 * 2 + y / a)];
+                    };
+                } else {
+                    if (deltaTemp1 > 0) {
+                        var deltaTemp1_2 = sqrt(deltaTemp1),
+                            deltaTemp13_2 = deltaTemp1_2 * deltaTemp1_2 * deltaTemp1_2;
+                        deltaTemp1_2 += deltaTemp1_2;
+                    }
+                    result.solve = function (y) {
+                        y /= a;
+                        var d0 = deltaTemp0 + y * 0.5,
+                            deltaTemp = d0 * d0 - deltaTemp13;
+                        if (deltaTemp > 0) {
+                            deltaTemp = sqrt(deltaTemp);
+                            return [-b_a_3 + this.cubicRoot(d0 + deltaTemp) + this.cubicRoot(d0 - deltaTemp)];
+                        } else if (deltaTemp === 0) {
+                            var cr = this.cubicRoot(d0),
+                                root0 = -b_a_3 - cr;
+                            if (d0 >= 0) {
+                                return [root0, root0, -b_a_3 + 2 * cr];
+                            } else {
+                                return [-b_a_3 + 2 * cr, root0, root0];
+                            }
+                        } else {
+                            var theta = acos(d0 / deltaTemp13_2) / 3,
+                                ra = deltaTemp1_2 * cos(theta) - b_a_3,
+                                rb = deltaTemp1_2 * cos(theta + PI2_3) - b_a_3,
+                                rc = deltaTemp1_2 * cos(theta - PI2_3) - b_a_3;
+                            if (ra < rb) {
+                                if (rb < rc) {
+                                    return [ra, rb, rc];
+                                } else if (ra < rc) {
+                                    return[ra, rc, rb];
+                                } else {
+                                    return [rc, ra, rb];
+                                }
+                            } else {
+                                if (ra < rc) {
+                                    return [rb, ra, rc];
+                                } else if (rb < rc) {
+                                    return [rb, rc, ra];
+                                } else {
+                                    return [rc, rb, ra];
+                                }
+                            }
+                        }
+                    };
+                }
+            }
+            return result;
+        },
+
+        createBezierSolver: function (a, b, c, d) {
+            return this.cubicFunction(3 * (b - c) + d - a, 3 * (a - 2 * b + c), 3 * (b - a), a);
+        }
+    });
+})();
+
+/**
+ * Class representing a path.
+ * Designed to be compatible with [CanvasPathMethods](http://www.whatwg.org/specs/web-apps/current-work/multipage/the-canvas-element.html#canvaspathmethods)
+ * and will hopefully be replaced by the browsers' implementation of the Path object.
+ */
+Ext.define("Ext.draw.Path", {
+    requires: ['Ext.draw.Draw', 'Ext.draw.Solver'],
+    statics: {
+        pathRe: /,?([achlmqrstvxz]),?/gi,
+        pathRe2: /-/gi,
+        pathSplitRe: /\s|,/g
+    },
+    svgString: '',
+
+    /**
+     * Create a path from pathString
+     * @constructor
+     * @param pathString
+     */
+    constructor: function (pathString) {
+        var me = this;
+        me.coords = [];
+        me.types = [];
+        me.cursor = null;
+        me.startX = 0;
+        me.startY = 0;
+        me.solvers = {};
+        if (pathString) {
+            me.fromSvgString(pathString);
+        }
+    },
+
+    /**
+     * Clear the path.
+     */
+    clear: function () {
+        var me = this;
+        me.coords.length = 0;
+        me.types.length = 0;
+        me.cursor = null;
+        me.startX = 0;
+        me.startY = 0;
+        me.solvers = {};
+        me.dirt();
+    },
+
+    /**
+     * @private
+     */
+    dirt: function () {
+        this.svgString = '';
+    },
+
+    /**
+     * Move to a position.
+     * @param {Number} x
+     * @param {Number} y
+     */
+    moveTo: function (x, y) {
+        var me = this;
+        if (!me.cursor) {
+            me.cursor = [x, y];
+        }
+        me.coords.push(x, y);
+        me.types.push('M');
+        me.startX = x;
+        me.startY = y;
+        me.cursor[0] = x;
+        me.cursor[1] = y;
+        me.dirt();
+    },
+
+    /**
+     * A straight line to a position.
+     * @param {Number} x
+     * @param {Number} y
+     */
+    lineTo: function (x, y) {
+        var me = this;
+        if (!me.cursor) {
+            me.cursor = [x, y];
+            me.coords.push(x, y);
+            me.types.push('M');
+        } else {
+            me.coords.push(x, y);
+            me.types.push('L');
+        }
+        me.cursor[0] = x;
+        me.cursor[1] = y;
+        me.dirt();
+    },
+
+    /**
+     * A cubic bezier curve to a position.
+     * @param {Number} cx1
+     * @param {Number} cy1
+     * @param {Number} cx2
+     * @param {Number} cy2
+     * @param {Number} x
+     * @param {Number} y
+     */
+    bezierCurveTo: function (cx1, cy1, cx2, cy2, x, y) {
+        var me = this;
+        if (!me.cursor) {
+            me.moveTo(cx1, cy1);
+        }
+        me.coords.push(cx1, cy1, cx2, cy2, x, y);
+        me.types.push('C');
+        me.cursor[0] = x;
+        me.cursor[1] = y;
+        me.dirt();
+    },
+
+    /**
+     * A quadratic bezier curve to a position.
+     * @param {Number} cx
+     * @param {Number} cy
+     * @param {Number} x
+     * @param {Number} y
+     */
+    quadraticCurveTo: function (cx, cy, x, y) {
+        var me = this;
+        if (!me.cursor) {
+            me.moveTo(cx, cy);
+        }
+        me.bezierCurveTo(
+            (me.cursor[0] * 2 + cx) / 3, (me.cursor[1] * 2 + cy) / 3,
+            (x * 2 + cx) / 3, (y * 2 + cy) / 3,
+            x, y
+        );
+    },
+
+    /**
+     * Close this path with a straight line.
+     */
+    closePath: function () {
+        var me = this;
+        if (me.cursor) {
+            me.types.push('Z');
+            me.dirt();
+        }
+    },
+
+    /**
+     * Create a elliptic arc curve compatible with SVG's arc to instruction.
+     *
+     * The curve start from (`x1`, `y1`) and ends at (`x2`, `y2`). The ellipse
+     * has radius `rx` and `ry` and a rotation of `rotation`.
+     * @param {Number} x1
+     * @param {Number} y1
+     * @param {Number} x2
+     * @param {Number} y2
+     * @param {Number} [rx]
+     * @param {Number} [ry]
+     * @param {Number} [rotation]
+     */
+    arcTo: function (x1, y1, x2, y2, rx, ry, rotation) {
+        var me = this;
+        if (ry === undefined) {
+            ry = rx;
+        }
+
+        if (rotation === undefined) {
+            rotation = 0;
+        }
+
+        if (!me.cursor) {
+            me.moveTo(x1, y1);
+            return;
+        }
+
+        if (rx === 0 || ry === 0) {
+            me.lineTo(x1, y1);
+            return;
+        }
+
+        x2 -= x1;
+        y2 -= y1;
+
+        var x0 = me.cursor[0] - x1,
+            y0 = me.cursor[1] - y1,
+            area = x2 * y0 - y2 * x0,
+            cos, sin, xx, yx, xy, yy,
+            l0 = Math.sqrt(x0 * x0 + y0 * y0),
+            l2 = Math.sqrt(x2 * x2 + y2 * y2),
+            dist, cx, cy;
+        // cos rx, -sin ry , x1 - cos rx x1 + ry sin y1 
+        // sin rx, cos ry, -rx sin x1 + y1 - cos ry y1
+        if (area === 0) {
+            me.lineTo(x1, y1);
+            return;
+        }
+
+        if (ry !== rx) {
+            cos = Math.cos(rotation);
+            sin = Math.sin(rotation);
+            xx = cos / rx;
+            yx = sin / ry;
+            xy = -sin / rx;
+            yy = cos / ry;
+            var temp = xx * x0 + yx * y0;
+            y0 = xy * x0 + yy * y0;
+            x0 = temp;
+            temp = xx * x2 + yx * y2;
+            y2 = xy * x2 + yy * y2;
+            x2 = temp;
+        } else {
+            x0 /= rx;
+            y0 /= ry;
+            x2 /= rx;
+            y2 /= ry;
+        }
+
+        cx = x0 * l2 + x2 * l0;
+        cy = y0 * l2 + y2 * l0;
+        dist = 1 / (Math.sin(Math.asin(Math.abs(area) / (l0 * l2)) * 0.5) * Math.sqrt(cx * cx + cy * cy));
+        cx *= dist;
+        cy *= dist;
+
+        var k0 = (cx * x0 + cy * y0) / (x0 * x0 + y0 * y0),
+            k2 = (cx * x2 + cy * y2) / (x2 * x2 + y2 * y2);
+        var cosStart = x0 * k0 - cx,
+            sinStart = y0 * k0 - cy,
+            cosEnd = x2 * k2 - cx,
+            sinEnd = y2 * k2 - cy,
+            startAngle = Math.atan2(sinStart, cosStart),
+            endAngle = Math.atan2(sinEnd, cosEnd);
+        if (area > 0) {
+            if (endAngle < startAngle) {
+                endAngle += Math.PI * 2;
+            }
+        } else {
+            if (startAngle < endAngle) {
+                startAngle += Math.PI * 2;
+            }
+        }
+        if (ry !== rx) {
+            cx = cos * cx * rx - sin * cy * ry + x1;
+            cy = sin * cy * ry + cos * cy * ry + y1;
+            me.lineTo(cos * rx * cosStart - sin * ry * sinStart + cx,
+                sin * rx * cosStart + cos * ry * sinStart + cy);
+            me.ellipse(cx, cy, rx, ry, rotation, startAngle, endAngle, area < 0);
+        } else {
+            cx = cx * rx + x1;
+            cy = cy * ry + y1;
+            me.lineTo(rx * cosStart + cx, ry * sinStart + cy);
+            me.ellipse(cx, cy, rx, ry, rotation, startAngle, endAngle, area < 0);
+        }
+    },
+
+    /**
+     * Create an elliptic arc.
+     *
+     * See [the whatwg reference of ellipse](http://www.whatwg.org/specs/web-apps/current-work/multipage/the-canvas-element.html#dom-context-2d-ellipse).
+     *
+     * @param cx
+     * @param cy
+     * @param radiusX
+     * @param radiusY
+     * @param rotation
+     * @param startAngle
+     * @param endAngle
+     * @param anticlockwise
+     */
+    ellipse: function (cx, cy, radiusX, radiusY, rotation, startAngle, endAngle, anticlockwise) {
+        var me = this,
+            coords = me.coords,
+            start = coords.length, count,
+            i, j;
+        if (endAngle - startAngle >= Math.PI * 2) {
+            me.ellipse(cx, cy, radiusX, radiusY, rotation, startAngle, startAngle + Math.PI, anticlockwise);
+            me.ellipse(cx, cy, radiusX, radiusY, rotation, startAngle + Math.PI, endAngle, anticlockwise);
+            return;
+        }
+        if (!anticlockwise) {
+            if (endAngle < startAngle) {
+                endAngle += Math.PI * 2;
+            }
+            count = me.approximateArc(coords, cx, cy, radiusX, radiusY, rotation, startAngle, endAngle);
+        } else {
+            if (startAngle < endAngle) {
+                startAngle += Math.PI * 2;
+            }
+            count = me.approximateArc(coords, cx, cy, radiusX, radiusY, rotation, endAngle, startAngle);
+            for (i = start, j = coords.length - 2; i < j; i += 2, j -= 2) {
+                var temp = coords[i];
+                coords[i] = coords[j];
+                coords[j] = temp;
+                temp = coords[i + 1];
+                coords[i + 1] = coords[j + 1];
+                coords[j + 1] = temp;
+            }
+        }
+
+        if (!me.cursor) {
+            me.cursor = [coords[coords.length - 2], coords[coords.length - 1]];
+            me.types.push('M');
+        } else {
+            me.cursor[0] = coords[coords.length - 2];
+            me.cursor[1] = coords[coords.length - 1];
+            me.types.push('L');
+        }
+
+        for (i = 2; i < count; i += 6) {
+            me.types.push('C');
+        }
+        me.dirt();
+    },
+
+    /**
+     * Create an circular arc.
+     *
+     * @param x
+     * @param y
+     * @param radius
+     * @param startAngle
+     * @param endAngle
+     * @param anticlockwise
+     */
+    arc: function (x, y, radius, startAngle, endAngle, anticlockwise) {
+        this.ellipse(x, y, radius, radius, 0, startAngle, endAngle, anticlockwise);
+    },
+
+    /**
+     * Draw a rectangle and close it.
+     *
+     * @param x
+     * @param y
+     * @param width
+     * @param height
+     */
+    rect: function (x, y, width, height) {
+        var me = this;
+        me.moveTo(x, y);
+        me.lineTo(x + width, y);
+        me.lineTo(x + width, y + height);
+        me.lineTo(x, y + height);
+        me.closePath();
+    },
+
+    /**
+     * @private
+     * @param result
+     * @param cx
+     * @param cy
+     * @param rx
+     * @param ry
+     * @param phi
+     * @param theta1
+     * @param theta2
+     * @return {Number}
+     */
+    approximateArc: function (result, cx, cy, rx, ry, phi, theta1, theta2) {
+        var cosPhi = Math.cos(phi),
+            sinPhi = Math.sin(phi),
+            cosTheta1 = Math.cos(theta1),
+            sinTheta1 = Math.sin(theta1),
+            xx = cosPhi * cosTheta1 * rx - sinPhi * sinTheta1 * ry,
+            yx = -cosPhi * sinTheta1 * rx - sinPhi * cosTheta1 * ry,
+            xy = sinPhi * cosTheta1 * rx + cosPhi * sinTheta1 * ry,
+            yy = -sinPhi * sinTheta1 * rx + cosPhi * cosTheta1 * ry,
+            rightAngle = Math.PI / 2,
+            count = 2,
+            exx = xx,
+            eyx = yx,
+            exy = xy,
+            eyy = yy,
+            rho = 0.547443256150549,
+            temp, y1, x3, y3, x2, y2;
+
+        theta2 -= theta1;
+        if (theta2 < 0) {
+            theta2 += Math.PI * 2;
+        }
+        result.push(xx + cx, xy + cy);
+        while (theta2 >= rightAngle) {
+            result.push(
+                exx + eyx * rho + cx, exy + eyy * rho + cy,
+                exx * rho + eyx + cx, exy * rho + eyy + cy,
+                eyx + cx, eyy + cy
+            );
+            count += 6;
+            theta2 -= rightAngle;
+            temp = exx;
+            exx = eyx;
+            eyx = -temp;
+            temp = exy;
+            exy = eyy;
+            eyy = -temp;
+        }
+        if (theta2) {
+            y1 = (0.3294738052815987 + 0.012120855841304373 * theta2) * theta2;
+            x3 = Math.cos(theta2);
+            y3 = Math.sin(theta2);
+            x2 = x3 + y1 * y3;
+            y2 = y3 - y1 * x3;
+            result.push(
+                exx + eyx * y1 + cx, exy + eyy * y1 + cy,
+                exx * x2 + eyx * y2 + cx, exy * x2 + eyy * y2 + cy,
+                exx * x3 + eyx * y3 + cx, exy * x3 + eyy * y3 + cy
+            );
+            count += 6;
+        }
+        return count;
+    },
+
+    /**
+     * [http://www.w3.org/TR/SVG/implnote.html#ArcImplementationNotes](http://www.w3.org/TR/SVG/implnote.html#ArcImplementationNotes)
+     * @param rx
+     * @param ry
+     * @param rotation Differ from svg spec, this is radian.
+     * @param fA
+     * @param fS
+     * @param x2
+     * @param y2
+     */
+    arcSvg: function (rx, ry, rotation, fA, fS, x2, y2) {
+        if (rx < 0) {
+            rx = -rx;
+        }
+        if (ry < 0) {
+            ry = -ry;
+        }
+        var me = this,
+            x1 = me.cursor[0],
+            y1 = me.cursor[1],
+            hdx = (x1 - x2) / 2,
+            hdy = (y1 - y2) / 2,
+            cosPhi = Math.cos(rotation),
+            sinPhi = Math.sin(rotation),
+            xp = hdx * cosPhi + hdy * sinPhi,
+            yp = -hdx * sinPhi + hdy * cosPhi,
+            ratX = xp / rx,
+            ratY = yp / ry,
+            lambda = ratX * ratX + ratY * ratY,
+            cx = (x1 + x2) * 0.5, cy = (y1 + y2) * 0.5,
+            cpx = 0, cpy = 0;
+        if (lambda >= 1) {
+            lambda = Math.sqrt(lambda);
+            rx *= lambda;
+            ry *= lambda;
+            // me gives lambda == cpx == cpy == 0;
+        } else {
+            lambda = Math.sqrt(1 / lambda - 1);
+            if (fA === fS) {
+                lambda = -lambda;
+            }
+            cpx = lambda * rx * ratY;
+            cpy = -lambda * ry * ratX;
+            cx += cosPhi * cpx - sinPhi * cpy;
+            cy += sinPhi * cpx + cosPhi * cpy;
+        }
+
+        var theta1 = Math.atan2((yp - cpy) / ry, (xp - cpx) / rx),
+            deltaTheta = Math.atan2((-yp - cpy) / ry, (-xp - cpx) / rx) - theta1;
+
+        if (fS) {
+            if (deltaTheta <= 0) {
+                deltaTheta += Math.PI * 2;
+            }
+        } else {
+            if (deltaTheta >= 0) {
+                deltaTheta -= Math.PI * 2;
+            }
+        }
+        me.ellipse(cx, cy, rx, ry, rotation, theta1, theta1 + deltaTheta, 1 - fS);
+    },
+
+    /**
+     * Feed the path from svg path string.
+     * @param pathString
+     */
+    fromSvgString: function (pathString) {
+        if (!pathString) {
+            return;
+        }
+        var me = this,
+            parts,
+            paramCounts = {
+                a: 7, c: 6, h: 1, l: 2, m: 2, q: 4, s: 4, t: 2, v: 1, z: 0,
+                A: 7, C: 6, H: 1, L: 2, M: 2, Q: 4, S: 4, T: 2, V: 1, Z: 0
+            },
+            lastCommand = '',
+            lastControlX, lastControlY,
+            lastX = 0, lastY = 0,
+            part = false, i, partLength, relative;
+
+        // Split the string to items.
+        if (Ext.isString(pathString)) {
+            parts = pathString.replace(Ext.draw.Path.pathRe, " $1 ").replace(Ext.draw.Path.pathRe2, " -").split(Ext.draw.Path.pathSplitRe);
+        } else if (Ext.isArray(pathString)) {
+            parts = pathString.join(',').split(Ext.draw.Path.pathSplitRe);
+        }
+
+        // Remove empty entries
+        for (i = 0, partLength = 0; i < parts.length; i++) {
+            if (parts[i] !== '') {
+                parts[partLength++] = parts[i];
+            }
+        }
+        parts.length = partLength;
+
+        me.clear();
+        for (i = 0; i < parts.length;) {
+            lastCommand = part;
+            part = parts[i];
+            relative = (part.toUpperCase() !== part);
+            i++;
+            switch (part) {
+                case 'M':
+                    me.moveTo(lastX = +parts[i], lastY = +parts[i + 1]);
+                    i += 2;
+                    while (i < partLength && !paramCounts.hasOwnProperty(parts[i])) {
+                        me.lineTo(lastX = +parts[i], lastY = +parts[i + 1]);
+                        i += 2;
+                    }
+                    break;
+                case 'L':
+                    me.lineTo(lastX = +parts[i], lastY = +parts[i + 1]);
+                    i += 2;
+                    while (i < partLength && !paramCounts.hasOwnProperty(parts[i])) {
+                        me.lineTo(lastX = +parts[i], lastY = +parts[i + 1]);
+                        i += 2;
+                    }
+                    break;
+                case 'A':
+                    while (i < partLength && !paramCounts.hasOwnProperty(parts[i])) {
+                        me.arcSvg(
+                            +parts[i], +parts[i + 1],
+                            +parts[i + 2] * Math.PI / 180,
+                            +parts[i + 3], +parts[i + 4],
+                            lastX = +parts[i + 5], lastY = +parts[i + 6]);
+                        i += 7;
+                    }
+                    break;
+                case 'C':
+                    while (i < partLength && !paramCounts.hasOwnProperty(parts[i])) {
+                        me.bezierCurveTo(
+                            +parts[i ], +parts[i + 1],
+                            lastControlX = +parts[i + 2], lastControlY = +parts[i + 3],
+                            lastX = +parts[i + 4], lastY = +parts[i + 5]);
+                        i += 6;
+                    }
+                    break;
+                case 'Z':
+                    me.closePath();
+                    break;
+                case 'm':
+                    me.moveTo(lastX += +parts[i], lastY += +parts[i + 1]);
+                    i += 2;
+                    while (i < partLength && !paramCounts.hasOwnProperty(parts[i])) {
+                        me.lineTo(lastX += +parts[i], lastY += +parts[i + 1]);
+                        i += 2;
+                    }
+                    break;
+                case 'l':
+                    me.lineTo(lastX += +parts[i], lastY += +parts[i + 1]);
+                    i += 2;
+                    while (i < partLength && !paramCounts.hasOwnProperty(parts[i])) {
+                        me.lineTo(lastX += +parts[i], lastY += +parts[i + 1]);
+                        i += 2;
+                    }
+                    break;
+                case 'a':
+                    while (i < partLength && !paramCounts.hasOwnProperty(parts[i])) {
+                        me.arcSvg(
+                            +parts[i], +parts[i + 1],
+                            +parts[i + 2] * Math.PI / 180,
+                            +parts[i + 3], +parts[i + 4],
+                            lastX += +parts[i + 5], lastY += +parts[i + 6]);
+                        i += 7;
+                    }
+                    break;
+                case 'c':
+                    while (i < partLength && !paramCounts.hasOwnProperty(parts[i])) {
+                        me.bezierCurveTo(lastX + (+parts[i]), lastY + (+parts[i + 1]),
+                            lastControlX = lastX + (+parts[i + 2]), lastControlY = lastY + (+parts[i + 3]),
+                            lastX += +parts[i + 4], lastY += +parts[i + 5]);
+                        i += 6;
+                    }
+                    break;
+                case 'z':
+                    me.closePath();
+                    break;
+                case 's':
+                    if (!(lastCommand === 'c' || lastCommand === 'C' || lastCommand === 's' || lastCommand === 'S')) {
+                        lastControlX = lastX;
+                        lastControlY = lastY;
+                    }
+
+                    while (i < partLength && !paramCounts.hasOwnProperty(parts[i])) {
+                        me.bezierCurveTo(
+                            lastX + lastX - lastControlX, lastY + lastY - lastControlY,
+                            lastControlX = lastX + (+parts[i]), lastControlY = lastY + (+parts[i + 1]),
+                            lastX += +parts[i + 2], lastY += +parts[i + 3]);
+                        i += 4;
+                    }
+                    break;
+                case 'S':
+                    if (!(lastCommand === 'c' || lastCommand === 'C' || lastCommand === 's' || lastCommand === 'S')) {
+                        lastControlX = lastX;
+                        lastControlY = lastY;
+                    }
+                    while (i < partLength && !paramCounts.hasOwnProperty(parts[i])) {
+                        me.bezierCurveTo(
+                            lastX + lastX - lastControlX, lastY + lastY - lastControlY,
+                            lastControlX = +parts[i], lastControlY = +parts[i + 1],
+                            lastX = (+parts[i + 2]), lastY = (+parts[i + 3]));
+                        i += 4;
+                    }
+                    break;
+                case 'q':
+                    while (i < partLength && !paramCounts.hasOwnProperty(parts[i])) {
+                        me.quadraticCurveTo(
+                            lastControlX = lastX + (+parts[i]), lastControlY = lastY + (+parts[i + 1]),
+                            lastX += +parts[i + 2], lastY += +parts[i + 3]);
+                        i += 4;
+                    }
+                    break;
+                case 'Q':
+                    while (i < partLength && !paramCounts.hasOwnProperty(parts[i])) {
+                        me.quadraticCurveTo(
+                            lastControlX = +parts[i], lastControlY = +parts[i + 1],
+                            lastX = +parts[i + 2], lastY = +parts[i + 3]);
+                        i += 4;
+                    }
+                    break;
+                case 't':
+                    if (!(lastCommand === 'q' || lastCommand === 'Q' || lastCommand === 't' || lastCommand === 'T')) {
+                        lastControlX = lastX;
+                        lastControlY = lastY;
+                    }
+                    while (i < partLength && !paramCounts.hasOwnProperty(parts[i])) {
+                        me.quadraticCurveTo(
+                            lastControlX = lastX + lastX - lastControlX, lastControlY = lastY + lastY - lastControlY,
+                            lastX += +parts[i + 1], lastY += +parts[i + 2]);
+                        i += 2;
+                    }
+                    break;
+                case 'T':
+                    if (!(lastCommand === 'q' || lastCommand === 'Q' || lastCommand === 't' || lastCommand === 'T')) {
+                        lastControlX = lastX;
+                        lastControlY = lastY;
+                    }
+                    while (i < partLength && !paramCounts.hasOwnProperty(parts[i])) {
+                        me.quadraticCurveTo(
+                            lastControlX = lastX + lastX - lastControlX, lastControlY = lastY + lastY - lastControlY,
+                            lastX = (+parts[i + 1]), lastY = (+parts[i + 2]));
+                        i += 2;
+                    }
+                    break;
+                case 'h':
+                    while (i < partLength && !paramCounts.hasOwnProperty(parts[i])) {
+                        me.lineTo(lastX += +parts[i], lastY);
+                        i++;
+                    }
+                    break;
+                case 'H':
+                    while (i < partLength && !paramCounts.hasOwnProperty(parts[i])) {
+                        me.lineTo(lastX = +parts[i], lastY);
+                        i++;
+                    }
+                    break;
+                case 'v':
+                    while (i < partLength && !paramCounts.hasOwnProperty(parts[i])) {
+                        me.lineTo(lastX, lastY += +parts[i]);
+                        i++;
+                    }
+                    break;
+                case 'V':
+                    while (i < partLength && !paramCounts.hasOwnProperty(parts[i])) {
+                        me.lineTo(lastX, lastY = +parts[i]);
+                        i++;
+                    }
+                    break;
+            }
+        }
+    },
+
+    /**
+     * @private
+     * @param x1
+     * @param y1
+     * @param x2
+     * @param y2
+     * @param x
+     * @param y
+     * @return {Number}
+     */
+    rayTestLine: function (x1, y1, x2, y2, x, y) {
+        var cx;
+        if (y1 === y2) {
+            if (y === y1) {
+                if (Math.min(x1, x2) <= x && x <= Math.max(x1, x2)) {
+                    return -1;
+                }
+            } else {
+                return 0;
+            }
+        }
+        if (y1 < y && y < y2 || y2 < y && y < y1) {
+            cx = (y - y1) * (x2 - x1) / (y2 - y1) + x1;
+            if (cx === x) {
+                return -1;
+            } else if (cx < x) {
+                return 0;
+            } else {
+                return 1;
+            }
+        } else {
+            return 0;
+        }
+    },
+
+    /**
+     * @private
+     * @param x1
+     * @param y1
+     * @param x2
+     * @param y2
+     * @param x3
+     * @param y3
+     * @param x4
+     * @param y4
+     * @param x
+     * @param y
+     * @return {*}
+     */
+    rayTestCubicBezier: function (x1, y1, x2, y2, x3, y3, x4, y4, x, y, idx) {
+        if (Math.min(x1, x2, x3, x4) <= x && x <= Math.max(x1, x2, x3, x4)) {
+            if (Math.min(y1, y2, y3, y4) <= y && y <= Math.max(y1, y2, y3, y4)) {
+                var me = this,
+                    solver = me.solvers[idx] || (me.solvers[idx] = Ext.draw.Solver.createBezierSolver(x1, x2, x3, x4)),
+                    result = solver.solve(y);
+                return (+(x <= result[0] && 0 <= result[0] && result[0] <= 1)) +
+                    (+(x <= result[1] && 0 <= result[1] && result[1] <= 1)) +
+                    (+(x <= result[2] && 0 <= result[2] && result[2] <= 1));
+            }
+        }
+        return 0;
+    },
+
+    /**
+     * Test wether the given point is on or inside the path.
+     * @param x
+     * @param y
+     * @return {Boolean}
+     */
+    isPointInPath: function (x, y) {
+        var me = this,
+            i, j, count = 0, test = 0,
+            types = me.types,
+            coords = me.coords,
+            ln = types.length, firstX = null, firstY = null, lastX = 0, lastY = 0;
+        for (i = 0, j = 0; i < ln; i++) {
+            switch (types[i]) {
+                case 'M':
+                    if (firstX !== null) {
+                        test = me.rayTestLine(firstX, firstY, lastX, lastY, x, y);
+                        if (test < 0) {
+                            count += 1;
+                        } else {
+                            count += test;
+                        }
+                    }
+                    firstX = lastX = coords[j];
+                    firstY = lastY = coords[j + 1];
+                    j += 2;
+                    break;
+                case 'L':
+                    test = me.rayTestLine(lastX, lastY, coords[j], coords[j + 1], x, y);
+                    if (test < 0) {
+                        return true;
+                    }
+                    count += test;
+                    lastX = coords[j];
+                    lastY = coords[j + 1];
+                    j += 2;
+                    break;
+                case 'C':
+                    test = me.rayTestCubicBezier(
+                        lastX, lastY,
+                        coords[j], coords[j + 1],
+                        coords[j + 2], coords[j + 3],
+                        coords[j + 4], coords[j + 5],
+                        x, y, i);
+                    if (test < 0) {
+                        return true;
+                    }
+                    count += test;
+                    lastX = coords[j + 4];
+                    lastY = coords[j + 5];
+                    j += 6;
+                    break;
+                case 'Z':
+                    break;
+            }
+        }
+        return count % 2 === 1;
+    },
+
+    /**
+     * Clone this path.
+     * @return {Ext.draw.Path}
+     */
+    clone: function () {
+        var me = this,
+            path = new Ext.draw.Path();
+        path.coords = me.coords.slice(0);
+        path.types = me.types.slice(0);
+        path.cursor = me.cursor ? me.cursor.slice(0) : null;
+        path.startX = me.startX;
+        path.startY = me.startY;
+        path.svgString = me.svgString;
+        return path;
+    },
+
+    /**
+     * Transform the current path by a matrix.
+     * @param {Ext.draw.Matrix} matrix
+     */
+    transform: function (matrix) {
+        if (matrix.isIdentity()) {
+            return;
+        }
+        var xx = matrix.getXX(), yx = matrix.getYX(), dx = matrix.getDX(),
+            xy = matrix.getXY(), yy = matrix.getYY(), dy = matrix.getDY(),
+            coords = this.coords,
+            i = 0, ln = coords.length,
+            x, y;
+
+        for (; i < ln; i += 2) {
+            x = coords[i];
+            y = coords[i + 1];
+            coords[i] = x * xx + y * yx + dx;
+            coords[i + 1] = x * xy + y * yy + dy;
+        }
+        this.dirt();
+    },
+
+    /**
+     * Get the bounding box of this matrix.
+     * @param {Object} [target] Optional object to receive the result.
+     *
+     * @return {Object} Object with x, y, width and height
+     */
+    getDimension: function (target) {
+        if (!target) {
+            target = {};
+        }
+
+        if (!this.types || !this.types.length) {
+            target.x = 0;
+            target.y = 0;
+            target.width = 0;
+            target.height = 0;
+            return target;
+        }
+
+        target.left = Infinity;
+        target.top = Infinity;
+        target.right = -Infinity;
+        target.bottom = -Infinity;
+        var i = 0, j = 0,
+            types = this.types,
+            coords = this.coords,
+            ln = types.length, x, y;
+        for (; i < ln; i++) {
+            switch (types[i]) {
+                case 'M':
+                case 'L':
+                    x = coords[j];
+                    y = coords[j + 1];
+                    target.left = Math.min(x, target.left);
+                    target.top = Math.min(y, target.top);
+                    target.right = Math.max(x, target.right);
+                    target.bottom = Math.max(y, target.bottom);
+                    j += 2;
+                    break;
+                case 'C':
+                    this.expandDimension(target, x, y,
+                        coords[j], coords[j + 1],
+                        coords[j + 2], coords[j + 3],
+                        x = coords[j + 4], y = coords[j + 5]);
+                    j += 6;
+                    break;
+            }
+        }
+
+        target.x = target.left;
+        target.y = target.top;
+        target.width = target.right - target.left;
+        target.height = target.bottom - target.top;
+        return target;
+    },
+
+    /**
+     * Get the bounding box as if the path is transformed by a matrix.
+     *
+     * @param {Ext.draw.Matrix} matrix
+     * @param {Object} [target] Optional object to receive the result.
+     *
+     * @return {Object} An object with x, y, width and height.
+     */
+    getDimensionWithTransform: function (matrix, target) {
+        if (!this.types || !this.types.length) {
+            if (!target) {
+                target = {};
+            }
+            target.x = 0;
+            target.y = 0;
+            target.width = 0;
+            target.height = 0;
+            return target;
+        }
+
+        target.left = Infinity;
+        target.top = Infinity;
+        target.right = -Infinity;
+        target.bottom = -Infinity;
+
+        var xx = matrix.getXX(), yx = matrix.getYX(), dx = matrix.getDX(),
+            xy = matrix.getXY(), yy = matrix.getYY(), dy = matrix.getDY(),
+            i = 0, j = 0,
+            types = this.types,
+            coords = this.coords,
+            ln = types.length, x, y;
+        for (; i < ln; i++) {
+            switch (types[i]) {
+                case 'M':
+                case 'L':
+                    x = coords[j] * xx + coords[j + 1] * yx + dx;
+                    y = coords[j] * xy + coords[j + 1] * yy + dy;
+                    target.left = Math.min(x, target.left);
+                    target.top = Math.min(y, target.top);
+                    target.right = Math.max(x, target.right);
+                    target.bottom = Math.max(y, target.bottom);
+                    j += 2;
+                    break;
+                case 'C':
+                    this.expandDimension(target,
+                        x, y,
+                        coords[j] * xx + coords[j + 1] * yx + dx,
+                        coords[j] * xy + coords[j + 1] * yy + dy,
+                        coords[j + 2] * xx + coords[j + 3] * yx + dx,
+                        coords[j + 2] * xy + coords[j + 3] * yy + dy,
+                        x = coords[j + 4] * xx + coords[j + 5] * yx + dx,
+                        y = coords[j + 4] * xy + coords[j + 5] * yy + dy);
+                    j += 6;
+                    break;
+            }
+        }
+        if (!target) {
+            target = {};
+        }
+        target.x = target.left;
+        target.y = target.top;
+        target.width = target.right - target.left;
+        target.height = target.bottom - target.top;
+        return target;
+    },
+
+    /**
+     * @private
+     * Expand the rect by the bbox of a bezier curve.
+     *
+     * @param target
+     * @param x1
+     * @param y1
+     * @param cx1
+     * @param cy1
+     * @param cx2
+     * @param cy2
+     * @param x2
+     * @param y2
+     */
+    expandDimension: function (target, x1, y1, cx1, cy1, cx2, cy2, x2, y2) {
+        var me = this,
+            l = target.left, r = target.right, t = target.top, b = target.bottom,
+            dim = me.dim || (me.dim = []);
+
+        me.curveDimension(x1, cx1, cx2, x2, dim);
+        l = Math.min(l, dim[0]);
+        r = Math.max(r, dim[1]);
+
+        me.curveDimension(y1, cy1, cy2, y2, dim);
+        t = Math.min(t, dim[0]);
+        b = Math.max(b, dim[1]);
+
+        target.left = l;
+        target.right = r;
+        target.top = t;
+        target.bottom = b;
+    },
+
+    /**
+     * @private
+     * Determin the
+     * @param a
+     * @param b
+     * @param c
+     * @param d
+     * @param dim
+     */
+    curveDimension: function (a, b, c, d, dim) {
+        var qa = 3 * (-a + 3 * (b - c) + d),
+            qb = 6 * (a - 2 * b + c),
+            qc = -3 * (a - b), x, y,
+            min = Math.min(a, d),
+            max = Math.max(a, d), delta;
+
+        if (qa === 0) {
+            if (qb === 0) {
+                dim[0] = min;
+                dim[1] = max;
+                return;
+            } else {
+                x = -qc / qb;
+                if (0 < x && x < 1) {
+                    y = this.interpolate(a, b, c, d, x);
+                    min = Math.min(min, y);
+                    max = Math.max(max, y);
+                }
+            }
+        } else {
+            delta = qb * qb - 4 * qa * qc;
+            if (delta >= 0) {
+                delta = Math.sqrt(delta);
+                x = (delta - qb) / 2 / qa;
+                if (0 < x && x < 1) {
+                    y = this.interpolate(a, b, c, d, x);
+                    min = Math.min(min, y);
+                    max = Math.max(max, y);
+                }
+                if (delta > 0) {
+                    x -= delta / qa;
+                    if (0 < x && x < 1) {
+                        y = this.interpolate(a, b, c, d, x);
+                        min = Math.min(min, y);
+                        max = Math.max(max, y);
+                    }
+                }
+            }
+        }
+        dim[0] = min;
+        dim[1] = max;
+    },
+
+    /**
+     * @private
+     *
+     * Returns `a * (1 - t) ^ 3 + 3 * b (1 - t) ^ 2 * t + 3 * c (1 - t) * t ^ 3 + d * t ^ 3`.
+     *
+     * @param a
+     * @param b
+     * @param c
+     * @param d
+     * @param t
+     * @return {Number}
+     */
+    interpolate: function (a, b, c, d, t) {
+        if (t === 0) {
+            return a;
+        }
+        if (t === 1) {
+            return d;
+        }
+        var rate = (1 - t) / t;
+        return t * t * t * (d + rate * (3 * c + rate * (3 * b + rate * a)));
+    },
+
+    /**
+     * Reconstruct path from cubic bezier curve stripes.
+     * @param {Array} stripes
+     */
+    fromStripes: function (stripes) {
+        var me = this,
+            i = 0, ln = stripes.length,
+            j, ln2, stripe;
+        me.clear();
+        for (; i < ln; i++) {
+            stripe = stripes[i];
+            me.coords.push.apply(me.coords, stripe);
+            me.types.push('M');
+            for (j = 2, ln2 = stripe.length; j < ln2; j += 6) {
+                me.types.push('C');
+            }
+        }
+        if (!me.cursor) {
+            me.cursor = [];
+        }
+        me.cursor[0] = me.coords[me.coords.length - 2];
+        me.cursor[1] = me.coords[me.coords.length - 1];
+        me.dirt();
+    },
+
+    /**
+     * Convert path to bezier curve stripes.
+     * @param {Array} [target] The optional array to receive the result.
+     * @return {Array}
+     */
+    toStripes: function (target) {
+        var stripes = target || [], curr,
+            x, y, lastX, lastY, startX, startY,
+            i, j,
+            types = this.types,
+            coords = this.coords,
+            ln = types.length;
+        for (i = 0, j = 0; i < ln; i++) {
+            switch (types[i]) {
+                case 'M':
+                    curr = [startX = lastX = coords[j++], startY = lastY = coords[j++]];
+                    stripes.push(curr);
+                    break;
+                case 'L':
+                    x = coords[j++];
+                    y = coords[j++];
+                    curr.push((lastX + lastX + x) / 3, (lastY + lastY + y) / 3, (lastX + x + x) / 3, (lastY + y + y) / 3, lastX = x, lastY = y);
+                    break;
+                case 'C':
+                    curr.push(coords[j++], coords[j++], coords[j++], coords[j++], lastX = coords[j++], lastY = coords[j++]);
+                    break;
+                case 'Z':
+                    x = startX;
+                    y = startY;
+                    curr.push((lastX + lastX + x) / 3, (lastY + lastY + y) / 3, (lastX + x + x) / 3, (lastY + y + y) / 3, lastX = x, lastY = y);
+                    break;
+            }
+        }
+        return stripes;
+    },
+
+    /**
+     * @private
+     * Update cache for svg string of this path.
+     */
+    updateSvgString: function () {
+        var result = [],
+            types = this.types,
+            coords = this.coords,
+            ln = types.length,
+            i = 0, j = 0;
+        for (; i < ln; i++) {
+            switch (types[i]) {
+                case 'M':
+                    result.push('M' + coords[j] + ',' + coords[j + 1]);
+                    j += 2;
+                    break;
+                case 'L':
+                    result.push('L' + coords[j] + ',' + coords[j + 1]);
+                    j += 2;
+                    break;
+                case 'C':
+                    result.push('C' + coords[j] + ',' + coords[j + 1] + ' ' +
+                        coords[j + 2] + ',' + coords[j + 3] + ' ' +
+                        coords[j + 4] + ',' + coords[j + 5]);
+                    j += 6;
+                    break;
+                case 'Z':
+                    result.push('Z');
+                    break;
+            }
+        }
+        this.svgString = result.join('');
+    },
+
+    /**
+     * Return an svg path string for this path.
+     * @return {String}
+     */
+    toString: function () {
+        if (!this.svgString) {
+            this.updateSvgString();
+        }
+        return this.svgString;
+    }
+});
+
+/**
+ * @class Ext.draw.sprite.Path
+ * @extends Ext.draw.sprite.Sprite
+ *
+ * A sprite that represents a path.
+ *
+ *     @example preview miniphone
+ *     var component = new Ext.draw.Component({
+ *       items: [{
+ *         type: 'path',
+ *         path: 'M75,75 c0,-25 50,25 50,0 c0,-25 -50,25 -50,0',
+ *         fillStyle: 'blue'
+ *       }]
+ *     });
+ *     Ext.Viewport.setLayout('fit');
+ *     Ext.Viewport.add(component);
+ */
+Ext.define("Ext.draw.sprite.Path", {
+    extend: "Ext.draw.sprite.Sprite",
+    requires: ['Ext.draw.Draw', 'Ext.draw.Path'],
+    alias: 'sprite.path',
+    type: 'path',
+    inheritableStatics: {
+        def: {
+            processors: {
+                /**
+                 * @cfg {String} path The SVG based path string used by the sprite.
+                 */
+                path: function (n, o) {
+                    if (!(n instanceof Ext.draw.Path)) {
+                        n = new Ext.draw.Path(n);
+                    }
+                    return n;
+                }
+            },
+            aliases: {
+                "d": "path"
+            },
+            dirtyTriggers: {
+                path: 'bbox'
+            },
+            updaters: {
+                "path": function (attr) {
+                    var path = attr.path;
+                    if (!path || path.bindAttr !== attr) {
+                        path = new Ext.draw.Path();
+                        path.bindAttr = attr;
+                        attr.path = path;
+                    }
+                    path.clear();
+                    this.updatePath(path, attr);
+                    attr.dirtyFlags.bbox = ['path'];
+                }
+            }
+        }
+    },
+
+    updatePlainBBox: function (plain) {
+        if (this.attr.path) {
+            this.attr.path.getDimension(plain);
+        }
+    },
+
+    updateTransformedBBox: function (transform) {
+        if (this.attr.path) {
+            this.attr.path.getDimensionWithTransform(this.attr.matrix, transform);
+        }
+    },
+
+    render: function (surface, ctx) {
+        var mat = this.attr.matrix,
+            attr = this.attr;
+        if (!attr.path || attr.path.coords.length === 0) {
+            return;
+        }
+        mat.toContext(ctx);
+        ctx.appendPath(attr.path);
+        ctx.fillStroke(attr);
+    },
+
+    /**
+     * Update the path.
+     * @param {Ext.draw.Path} path An empty path to draw on using path API.
+     * @param {Object} attr The attribute object. Note: DO NOT use the `sprite.attr` instead of this
+     * if you want to work with instancing.
+     */
+    updatePath: function (path, attr) {}
+});
+
+/**
+ * @class Ext.draw.sprite.Circle
+ * @extends Ext.draw.sprite.Path
+ *
+ * A sprite that represents a circle.
+ *
+ *     @example preview miniphone
+ *     new Ext.draw.Component({
+ *       fullscreen: true,
+ *       items: [{
+ *         type: 'circle',
+ *         cx: 100,
+ *         cy: 100,
+ *         r: 25,
+ *         fillStyle: 'blue'
+ *       }]
+ *     });
+ *
+ */
+Ext.define("Ext.draw.sprite.Circle", {
+    extend: "Ext.draw.sprite.Path",
+    alias: 'sprite.circle',
+    type: 'circle',
+    inheritableStatics: {
+        def: {
+            processors: {
+                /**
+                 * @cfg {Number} [cx=0] The center coordinate of the sprite on the x-axis.
+                 */
+                cx: "number",
+
+                /**
+                 * @cfg {Number} [cy=0] The center coordinate of the sprite on the y-axis.
+                 */
+                cy: "number",
+
+                /**
+                 * @cfg {Number} [r=0] The radius of the sprite.
+                 */
+                r: "number"
+            },
+            aliases: {
+                radius: "r",
+                x: "cx",
+                y: "cy",
+                centerX: "cx",
+                centerY: "cy"
+            },
+            defaults: {
+                cx: 0,
+                cy: 0,
+                r: 0
+            },
+            dirtyTriggers: {
+                cx: 'path',
+                cy: 'path',
+                r: 'path'
+            }
+        }
+    },
+
+    updatePlainBBox: function (plain) {
+        var attr = this.attr,
+            cx = attr.cx,
+            cy = attr.cy,
+            r = attr.r;
+        plain.x = cx - r;
+        plain.y = cy - r;
+        plain.width = r + r;
+        plain.height = r + r;
+    },
+
+    updateTransformedBBox: function (transform) {
+        var attr = this.attr,
+            cx = attr.cx,
+            cy = attr.cy,
+            r = attr.r,
+            matrix = attr.matrix,
+            scalesX = matrix.getScaleX(),
+            scalesY = matrix.getScaleY(),
+            w, h;
+        w = scalesX * r;
+        h = scalesY * r;
+        transform.x = matrix.x(cx, cy) - w;
+        transform.y = matrix.y(cx, cy) - h;
+        transform.width = w + w;
+        transform.height = h + h;
+    },
+
+    updatePath: function (path, attr) {
+        path.arc(attr.cx, attr.cy, attr.r, 0, Math.PI * 2, false);
+    }
+});
+
+/**
+ * @class Ext.draw.sprite.Ellipse
+ * @extends Ext.draw.sprite.Path
+ * 
+ * A sprite that represents an ellipse.
+ *
+ *     @example preview miniphone
+ *     var component = new Ext.draw.Component({
+ *       items: [{
+ *         type: 'ellipse',
+ *         cx: 100,
+ *         cy: 100,
+ *         rx: 40,
+ *         ry: 25,
+ *         fillStyle: 'blue'
+ *       }]
+ *     });
+ *     Ext.Viewport.setLayout('fit');
+ *     Ext.Viewport.add(component);
+ */
+Ext.define("Ext.draw.sprite.Ellipse", {
+    extend: "Ext.draw.sprite.Path",
+    alias: 'sprite.ellipse',
+    type: 'circle',
+    inheritableStatics: {
+        def: {
+            processors: {
+                /**
+                 * @cfg {Number} [cx=0] The center coordinate of the sprite on the x-axis.
+                 */
+                cx: "number",
+                
+                /**
+                 * @cfg {Number} [cy=0] The center coordinate of the sprite on the y-axis.
+                 */
+                cy: "number",
+                
+                /**
+                 * @cfg {Number} [rx=1] The radius of the sprite on the x-axis.
+                 */
+                rx: "number",
+
+                /**
+                 * @cfg {Number} [ry=1] The radius of the sprite on the y-axis.
+                 */
+                ry: "number",
+
+                /**
+                 * @cfg {Number} [axisRotation=0] The rotation of the sprite about its axis.
+                 */
+                axisRotation: "number"
+            },
+            aliases: {
+                radius: "r",
+                x: "cx",
+                y: "cy",
+                centerX: "cx",
+                centerY: "cy",
+                radiusX: "rx",
+                radiusY: "ry"
+            },
+            defaults: {
+                cx: 0,
+                cy: 0,
+                rx: 1,
+                ry: 1,
+                axisRotation: 0
+            },
+            dirtyTriggers: {
+                cx: 'path',
+                cy: 'path',
+                rx: 'path',
+                ry: 'path',
+                axisRotation: 'path'
+            }
+        }
+    },
+
+    updatePlainBBox: function (plain) {
+        var attr = this.attr,
+            cx = attr.cx,
+            cy = attr.cy,
+            rx = attr.rx,
+            ry = attr.ry;
+        plain.x = cx - rx;
+        plain.y = cy - ry;
+        plain.width = rx + rx;
+        plain.height = ry + ry;
+    },
+
+    updateTransformedBBox: function (transform) {
+        var attr = this.attr,
+            cx = attr.cx,
+            cy = attr.cy,
+            rx = attr.rx,
+            ry = attr.ry,
+            rxy = ry / rx,
+            matrix = attr.matrix.clone(),
+            xx, xy, yx, yy, dx, dy, w, h;
+        matrix.append(1, 0, 0, rxy, 0, cy * (1 - rxy));
+        xx = matrix.getXX();
+        yx = matrix.getYX();
+        dx = matrix.getDX();
+        xy = matrix.getXY();
+        yy = matrix.getYY();
+        dy = matrix.getDY();
+        w = Math.sqrt(xx * xx + yx * yx) * rx;
+        h = Math.sqrt(xy * xy + yy * yy) * rx;
+        transform.x = cx * xx + cy * yx + dx - w;
+        transform.y = cx * xy + cy * yy + dy - h;
+        transform.width = w + w;
+        transform.height = h + h;
+    },
+
+    updatePath: function (path, attr) {
+        path.ellipse(attr.cx, attr.cy, attr.rx, attr.ry, attr.axisRotation, 0, Math.PI * 2, false);
+    }
+});
+
+/**
+ * Utility class to provide a way to *approximately* measure the dimension of texts without a drawing context.
+ */
+Ext.define("Ext.draw.TextMeasurer", {
+    singleton: true,
+
+    uses: ['Ext.draw.engine.Canvas'],
+
+    measureDiv: null,
+    measureCache: {},
+
+    /**
+     * @private Measure the size of a text with specific font by using DOM to measure it.
+     * Could be very expensive therefore should be used lazily.
+     * @param {String} text
+     * @param {String} font
+     * @return {Object} An object with `width` and `height` properties.
+     * @return {Number} return.width
+     * @return {Number} return.height
+     */
+    actualMeasureText: function (text, font) {
+        var me = Ext.draw.TextMeasurer,
+            measureDiv = me.measureDiv,
+            FARAWAY = 100000,
+            size;
+
+        if (!measureDiv) {
+            var parent = Ext.Element.create({
+                style: {
+                    "overflow": "hidden",
+                    "position": "relative",
+                    "float": "left", // DO NOT REMOVE THE QUOTE OR IT WILL BREAK COMPRESSOR
+                    "width": 0,
+                    "height": 0
+                }
+            });
+            me.measureDiv = measureDiv = Ext.Element.create({});
+            measureDiv.setStyle({
+                "position": 'absolute',
+                "x": FARAWAY,
+                "y": FARAWAY,
+                "z-index": -FARAWAY,
+                "white-space": "nowrap",
+                "display": 'block',
+                "padding": 0,
+                "margin": 0
+            });
+            Ext.getBody().appendChild(parent);
+            parent.appendChild(measureDiv);
+        }
+        if (font) {
+            measureDiv.setStyle({
+                font: font,
+                lineHeight: 'normal'
+            });
+        }
+        measureDiv.setText('(' + text + ')');
+        size = measureDiv.getSize();
+        measureDiv.setText('()');
+        size.width -= measureDiv.getSize().width;
+        return size;
+    },
+
+    /**
+     * Measure a single-line text with specific font.
+     * This will split the text to characters and add up their size.
+     * That may *not* be the exact size of the text as it is displayed.
+     * @param {String} text
+     * @param {String} font
+     * @return {Object} An object with `width` and `height` properties.
+     * @return {Number} return.width
+     * @return {Number} return.height
+     */
+    measureTextSingleLine: function (text, font) {
+        text = text.toString();
+        var cache = this.measureCache,
+            chars = text.split(''),
+            width = 0,
+            height = 0,
+            cachedItem, charactor, i, ln, size;
+
+        if (!cache[font]) {
+            cache[font] = {};
+        }
+        cache = cache[font];
+
+        if (cache[text]) {
+            return cache[text];
+        }
+
+        for (i = 0, ln = chars.length; i < ln; i++) {
+            charactor = chars[i];
+            if (!(cachedItem = cache[charactor])) {
+                size = this.actualMeasureText(charactor, font);
+                cachedItem = cache[charactor] = size;
+            }
+            width += cachedItem.width;
+            height = Math.max(height, cachedItem.height);
+        }
+        return cache[text] = {
+            width: width,
+            height: height
+        };
+    },
+
+    /**
+     * Measure a text with specific font.
+     * This will split the text to lines and add up their size.
+     * That may *not* be the exact size of the text as it is displayed.
+     * @param {String} text
+     * @param {String} font
+     * @return {Object} An object with `width` and `height` properties.
+     * @return {Number} return.width
+     * @return {Number} return.height
+     */
+    measureText: function (text, font) {
+        var lines = text.split('\n'),
+            ln = lines.length,
+            height = 0,
+            width = 0,
+            line, i;
+
+        if (ln === 1) {
+            return this.measureTextSingleLine(text, font);
+        }
+
+        for (i = 0; i < ln; i++) {
+            line = this.measureTextSingleLine(lines[i], font);
+            height += line.height;
+            width = Math.max(width, line.width);
+        }
+
+        return {
+            width: width,
+            height: height
+        };
+    }
+});
+
+/**
+ * @class Ext.draw.sprite.Text
+ * @extends Ext.draw.sprite.Sprite
+ *
+ * A sprite that represents text.
+ *
+ *     @example preview miniphone
+ *     var component = new Ext.draw.Component({
+ *       items: [{
+ *         type: 'text',
+ *         x: 50,
+ *         y: 50,
+ *         text: 'Sencha',
+ *         fontSize: 18,
+ *         fillStyle: 'blue'
+ *       }]
+ *     });
+ *     Ext.Viewport.setLayout('fit');
+ *     Ext.Viewport.add(component);
+ */
+Ext.define("Ext.draw.sprite.Text", {
+    extend: "Ext.draw.sprite.Sprite",
+    requires: ['Ext.draw.TextMeasurer'],
+    alias: 'sprite.text',
+    type: 'text',
+    lineBreakRe: /\n/g,
+    inheritableStatics: {
+        shortHand1Re: /'(.*)'/g,
+        shortHand2Re: / /g,
+        shortHand3Re: /\s*,\s*/g,
+        shortHand4Re: /\$\$\$\$/g,
+        def: {
+            processors: {
+                /**
+                 * @cfg {Number} [x=0] The position of the sprite on the x-axis.
+                 */
+                x: "number",
+
+                /**
+                 * @cfg {Number} [y=0] The position of the sprite on the y-axis.
+                 */
+                y: "number",
+
+                /**
+                 * @cfg {String} [text=''] The text represented in the sprite.
+                 */
+                text: "string",
+
+                /**
+                 * @cfg {String/Number} [fontSize='10px'] The size of the font displayed.
+                 */
+                fontSize: function (n) {
+                    if (!isNaN(n)) {
+                        return +n + 'px';
+                    } else if (n.match(Ext.dom.Element.unitRe)) {
+                        return n;
+                    }
+                },
+
+                /**
+                 * @cfg {String} [fontStyle=''] The style of the font displayed. {normal, italic, oblique}
+                 */
+                fontStyle: "enums(,italic,oblique)",
+
+                /**
+                 * @cfg {String} [fontVariant=''] The variant of the font displayed. {normal, small-caps}
+                 */
+                fontVariant: "enums(,small-caps)",
+
+                /**
+                 * @cfg {String} [fontWeight=''] The weight of the font displayed. {normal, bold, bolder, lighter}
+                 */
+                fontWeight: (function (fontWeights) {
+                    return function (n) {
+                        if (!n) {
+                            return "";
+                        } else if (n === 'normal') {
+                            return '';
+                        } else if (!isNaN(n)) {
+                            n = +n;
+                            if (100 <= n && n <= 900) {
+                                return n;
+                            }
+                        } else if (n in fontWeights) {
+                            return n;
+                        }
+                    };
+                })({"normal": true, "bold": true, "bolder": true, "lighter": true}),
+
+                /**
+                 * @cfg {String} [fontFamily='sans-serif'] The family of the font displayed.
+                 */
+                fontFamily: "string",
+
+                /**
+                 * @cfg {String} [textAlign='start'] The alignment of the text displayed. {left, right, center, start, end}
+                 */
+                textAlign: (function (textAligns) {
+                    return function (n) {
+                        if (n === 'middle') {
+                            return 'center';
+                        } else if (!n) {
+                            return "center";
+                        } else if (!Ext.isString(n)) {
+                            return undefined;
+                        } else if (n in textAligns) {
+                            return n;
+                        }
+                    };
+                })({"left": true, "right": true, "center": true, "start": true, "end": true}),
+
+                /**
+                 * @cfg {String} [textBaseline="alphabetic"] The baseline of the text displayed. {top, hanging, middle, alphabetic, ideographic, bottom}
+                 */
+                textBaseline: (function (textBaselines) {
+                    return function (n) {
+                        if (n === false) {
+                            return "alphabetic";
+                        } else if (n in textBaselines) {
+                            return n;
+                        } else if (n === 'center') {
+                            return 'middle';
+                        }
+                    };
+                })({"top": true, "hanging": true, "middle": true, "alphabetic": true, "ideographic": true, "bottom": true}),
+
+                /**
+                 * @cfg {String} [font='10px sans-serif'] The font displayed.
+                 */
+                font: "string"
+            },
+            aliases: {
+                "font-size": "fontSize",
+                "font-family": "fontFamily",
+                "font-weight": "fontWeight",
+                "font-variant": "fontVariant",
+                "text-anchor": "textAlign"
+            },
+            defaults: {
+                fontStyle: '',
+                fontVariant: '',
+                fontWeight: '',
+                fontSize: '10px',
+                fontFamily: 'sans-serif',
+                font: '10px sans-serif',
+                textBaseline: "alphabetic",
+                textAlign: "start",
+                strokeStyle: 'none',
+                divBased: true,
+                fillStyle: '#000',
+                x: 0,
+                y: 0,
+                text: ''
+            },
+            dirtyTriggers: {
+                fontStyle: 'font,bbox',
+                fontVariant: 'font,bbox',
+                fontWeight: 'font,bbox',
+                fontSize: 'font,bbox',
+                fontFamily: 'font,bbox',
+                font: 'font-short-hand,bbox,canvas',
+                textBaseline: 'bbox',
+                textAlign: 'bbox',
+                x: "bbox",
+                y: "bbox",
+                text: "bbox"
+            },
+            updaters: {
+                "font-short-hand": (function (dispatcher) {
+                    return function (attrs) {
+                        // TODO: Do this according to http://www.w3.org/TR/CSS21/fonts.html#font-shorthand
+                        var value = attrs.font,
+                            parts, part, i, ln, dispKey;
+                        value = value.replace(Ext.draw.sprite.Text.shortHand1Re, function (a, arg1) {
+                            return arg1.replace(Ext.draw.sprite.Text.shortHand2Re, '$$$$');
+                        });
+                        value = value.replace(Ext.draw.sprite.Text.shortHand3Re, ',');
+                        parts = value.split(' ');
+
+                        attrs = {};
+                        for (i = 0, ln = parts.length; i < ln; i++) {
+                            part = parts[i];
+                            dispKey = dispatcher[part];
+                            if (dispKey) {
+                                attrs[dispKey] = part;
+                            } else if (part.match(Ext.dom.Element.unitRe)) {
+                                attrs.fontSize = part;
+                            } else {
+                                attrs.fontFamily = part.replace(Ext.draw.sprite.Text.shortHand4Re, ' ');
+                            }
+                        }
+                        this.setAttributesBypassingNormalization(attrs);
+                    };
+                })({
+                    "italic": "fontStyles",
+                    "oblique": "fontStyles",
+                    "bold": "fontWeights",
+                    "bolder": "fontWeights",
+                    "lighter": "fontWeights",
+                    "100": "fontWeights",
+                    "200": "fontWeights",
+                    "300": "fontWeights",
+                    "400": "fontWeights",
+                    "500": "fontWeights",
+                    "600": "fontWeights",
+                    "700": "fontWeights",
+                    "800": "fontWeights",
+                    "900": "fontWeights",
+                    "small-caps": "fontVariant"
+                }),
+                "font": function (attrs) {
+                    var font = '';
+                    if (attrs.fontWeight) {
+                        font += attrs.fontWeight + ' ';
+                    }
+                    if (attrs.fontVariant) {
+                        font += attrs.fontVariant + ' ';
+                    }
+                    if (attrs.fontSize) {
+                        font += attrs.fontSize + ' ';
+                    }
+                    if (attrs.fontFamily) {
+                        font += attrs.fontFamily + ' ';
+                    }
+                    this.setAttributesBypassingNormalization({
+                        font: font.substr(0, font.length - 1)
+                    });
+                }
+            }
+        }
+    },
+
+    constructor: function (config) {
+        Ext.draw.sprite.Sprite.prototype.constructor.call(this, config);
+    },
+
+    updatePlainBBox: function (plain) {
+        var me = this,
+            attr = me.attr,
+            x = attr.x,
+            y = attr.y,
+            font = attr.font,
+            text = attr.text,
+            baseline = attr.textBaseline,
+            alignment = attr.textAlign,
+            size = Ext.draw.TextMeasurer.measureText(text, font),
+            height = size.height,
+            width = size.width;
+
+        switch (baseline) {
+            case 'hanging' :
+            case 'top':
+                break;
+            case 'ideographic' :
+            case 'bottom' :
+                y -= height;
+                break;
+            case 'alphabetic' :
+                y -= height * 0.8;
+                break;
+            case 'middle' :
+            case 'center' :
+                y -= height * 0.5;
+                break;
+        }
+        switch (alignment) {
+            case 'end' :
+            case 'right' :
+                x -= width;
+                break;
+            case 'middle' :
+            case 'center' :
+                x -= width * 0.5;
+                break;
+        }
+
+        plain.x = x;
+        plain.y = y;
+        plain.width = width;
+        plain.height = height;
+    },
+
+    setText: function (text) {
+        this.setAttributesBypassingNormalization({text: text});
+    },
+
+    setElementStyles: function (element, styles) {
+        var stylesCache = element.stylesCache || (element.stylesCache = {}),
+            style = element.dom.style,
+            name;
+        for (name in styles) {
+            if (stylesCache[name] !== styles[name]) {
+                stylesCache[name] = style[name] = styles[name];
+            }
+        }
+    },
+
+    render: function (surface, ctx) {
+        var attr = this.attr,
+            mat = Ext.draw.Matrix.fly(attr.matrix.elements.slice(0)),
+            bbox = this.getBBox(true),
+            x, y, i, lines;
+        if (attr.text.length === 0) {
+            return;
+        }
+
+        lines = attr.text.split('\n');
+        // Simulate textBaseline and textAlign.
+        x = attr.bbox.plain.x;
+        y = attr.bbox.plain.y;
+        mat.toContext(ctx);
+        for (i = 0; i < lines.length; i++) {
+            if (ctx.fillStyle !== 'rgba(0, 0, 0, 0)') {
+                ctx.fillText(lines[i], x, y + bbox.height / lines.length * i);
+            }
+            if (ctx.strokeStyle !== 'rgba(0, 0, 0, 0)') {
+                ctx.strokeText(lines[i], x, y + bbox.height / lines.length * i);
+            }
+        }
+    }
+});
+
+/**
+ * @class Ext.draw.sprite.EllipticalArc
+ * @extends Ext.draw.sprite.Ellipse
+ *
+ * A sprite that represents an elliptical arc.
+ *
+ *     @example preview miniphone
+ *     var component = new Ext.draw.Component({
+ *       items: [{
+ *         type: 'ellipticalArc',
+ *         cx: 100,
+ *         cy: 100,
+ *         rx: 40,
+ *         ry: 25,
+ *         fillStyle: 'blue',
+ *         startAngle: 0,
+ *         endAngle: Math.PI,
+ *         anticlockwise: true,
+ *       }]
+ *     });
+ *     Ext.Viewport.setLayout('fit');
+ *     Ext.Viewport.add(component);
+ */
+Ext.define("Ext.draw.sprite.EllipticalArc", {
+    extend: "Ext.draw.sprite.Ellipse",
+    alias: 'sprite.ellipticalArc',
+    type: 'ellipticalArc',
+    inheritableStatics: {
+        def: {
+            processors: {
+                /**
+                 * @cfg {Number} [startAngle=0] The beginning angle of the arc.
+                 */
+                startAngle: "number",
+
+                /**
+                 * @cfg {Number} [endAngle=Math.PI*2] The ending angle of the arc.
+                 */
+                endAngle: "number",
+
+                /**
+                 * @cfg {Boolean} [anticlockwise=false] Determines whether or not the arc is drawn clockwise.
+                 */
+                anticlockwise: "bool"
+            },
+            aliases: {
+                from: "startAngle",
+                to: "endAngle",
+                start: "startAngle",
+                end: "endAngle"
+            },
+            defaults: {
+                startAngle: 0,
+                endAngle: Math.PI * 2,
+                anticlockwise: false
+            },
+            dirtyTriggers: {
+                startAngle: 'path',
+                endAngle: 'path',
+                anticlockwise: 'path'
+            }
+        }
+    },
+
+    updatePath: function (path, attr) {
+        path.ellipse(attr.cx, attr.cy, attr.rx, attr.ry, attr.axisRotation, attr.startAngle, attr.endAngle, attr.anticlockwise);
+    }
+});
+
+/**
+ * @class Ext.draw.sprite.Sector
+ * @extends Ext.draw.sprite.Path
+ * 
+ * A sprite representing a pie slice.
+ */
+Ext.define("Ext.draw.sprite.Sector", {
+    extend: "Ext.draw.sprite.Path",
+    alias: 'sprite.sector',
+    type: 'sector',
+    inheritableStatics: {
+        def: {
+            processors: {
+                /**
+                 * @cfg {Number} [centerX=0] The center coordinate of the sprite on the x-axis.
+                 */
+                centerX: "number",
+
+                /**
+                 * @cfg {Number} [centerY=0] The center coordinate of the sprite on the y-axis.
+                 */
+                centerY: "number",
+
+                /**
+                 * @cfg {Number} [startAngle=0] The starting angle of the sprite.
+                 */
+                startAngle: "number",
+
+                /**
+                 * @cfg {Number} [endAngle=0] The ending angle of the sprite.
+                 */
+                endAngle: "number",
+
+                /**
+                 * @cfg {Number} [startRho=0] The starting point of the radius of the sprite.
+                 */
+                startRho: "number",
+
+                /**
+                 * @cfg {Number} [endRho=150] The ending point of the radius of the sprite.
+                 */
+                endRho: "number",
+
+                /**
+                 * @cfg {Number} [margin=0] The margin of the sprite from the center of pie.
+                 */
+                margin: "number"
+            },
+            aliases: {
+                rho: 'endRho'
+            },
+            dirtyTriggers: {
+                centerX: "path,bbox",
+                centerY: "path,bbox",
+                startAngle: "path,bbox",
+                endAngle: "path,bbox",
+                startRho: "path,bbox",
+                endRho: "path,bbox",
+                margin: "path,bbox"
+            },
+            defaults: {
+                centerX: 0,
+                centerY: 0,
+                startAngle: 0,
+                endAngle: 0,
+                startRho: 0,
+                endRho: 150,
+                margin: 0,
+                path: 'M 0,0'
+            }
+        }
+    },
+
+    updatePath: function (path, attr) {
+        var startAngle = Math.min(attr.startAngle, attr.endAngle),
+            endAngle = Math.max(attr.startAngle, attr.endAngle),
+            midAngle = (startAngle + endAngle) * 0.5,
+            margin = attr.margin,
+            centerX = attr.centerX,
+            centerY = attr.centerY,
+            startRho = Math.min(attr.startRho, attr.endRho),
+            endRho = Math.max(attr.startRho, attr.endRho);
+
+        if (margin) {
+            centerX += margin * Math.cos(midAngle);
+            centerY += margin * Math.sin(midAngle);
+        }
+        path.moveTo(centerX + startRho * Math.cos(startAngle), centerY + startRho * Math.sin(startAngle));
+        path.lineTo(centerX + endRho * Math.cos(startAngle), centerY + endRho * Math.sin(startAngle));
+        path.arc(centerX, centerY, endRho, startAngle, endAngle, false);
+        path.lineTo(centerX + startRho * Math.cos(endAngle), centerY + startRho * Math.sin(endAngle));
+        path.arc(centerX, centerY, startRho, endAngle, startAngle, true);
+    }
+});
+
+/**
+ * @class Ext.draw.sprite.Composite
+ * @extends Ext.draw.sprite.Sprite
+ * 
+ * Represents a group of sprites.
+ */
+Ext.define("Ext.draw.sprite.Composite", {
+    extend: "Ext.draw.sprite.Sprite",
+    alias: 'sprite.composite',
+    type: 'composite',
+    constructor: function () {
+        this.callSuper(arguments);
+        this.sprites = [];
+        this.sprites.map = {};
+    },
+
+    /**
+     * Adds a sprite to the composite.
+     */
+    add: function (sprite) {
+        if (!(sprite instanceof Ext.draw.sprite.Sprite)) {
+            sprite = Ext.create('sprite.' + sprite.type, sprite);
+            sprite.setParent(this);
+        }
+        var oldTransformations = sprite.applyTransformations,
+            me = this,
+            attr = me.attr;
+
+        sprite.applyTransformations = function () {
+            if (sprite.attr.dirtyTransform) {
+                attr.dirtyTransform = true;
+                attr.bbox.plain.dirty = true;
+                attr.bbox.transform.dirty = true;
+            }
+            oldTransformations.call(sprite);
+        };
+        this.sprites.push(sprite);
+        this.sprites.map[sprite.id] = sprite.getId();
+        attr.bbox.plain.dirty = true;
+        attr.bbox.transform.dirty = true;
+    },
+
+    /**
+     * Updates the bounding box of the composite, which contains the bounding box of all sprites in the composite.
+     */
+    updatePlainBBox: function (plain) {
+        var me = this,
+            left = Infinity,
+            right = -Infinity,
+            top = Infinity,
+            bottom = -Infinity,
+            sprite, bbox, i, ln;
+
+        for (i = 0, ln = me.sprites.length; i < ln; i++) {
+            sprite = me.sprites[i];
+            sprite.applyTransformations();
+            bbox = sprite.getBBox();
+            if (left > bbox.x) {
+                left = bbox.x;
+            }
+            if (right < bbox.x + bbox.width) {
+                right = bbox.x + bbox.width;
+            }
+            if (top > bbox.y) {
+                top = bbox.y;
+            }
+            if (bottom < bbox.y + bbox.height) {
+                bottom = bbox.y + bbox.height;
+            }
+        }
+        plain.x = left;
+        plain.y = top;
+        plain.width = right - left;
+        plain.height = bottom - top;
+    },
+
+    /**
+     * Renders all sprites contained in the composite to the surface.
+     */
+    render: function (surface, ctx, region) {
+        var mat = this.attr.matrix,
+            i, ln;
+
+        mat.toContext(ctx);
+        for (i = 0, ln = this.sprites.length; i < ln; i++) {
+            surface.renderSprite(this.sprites[i], region);
+        }
+    }
+});
+
+/**
+ * @class Ext.draw.sprite.Arc
+ * @extend Ext.draw.sprite.Circle
+ * 
+ *  A sprite that represents a circular arc.
+ *
+ *     @example preview miniphone
+ *     var component = new Ext.draw.Component({
+ *       items: [{
+ *         type: 'arc',
+ *         cx: 100,
+ *         cy: 100,
+ *         r: 25,
+ *         fillStyle: 'blue',
+ *         startAngle: 0,
+ *         endAngle: Math.PI,
+ *         anticlockwise: true
+ *       }]
+ *     });
+ *     Ext.Viewport.setLayout('fit');
+ *     Ext.Viewport.add(component);
+ */
+Ext.define("Ext.draw.sprite.Arc", {
+    extend: "Ext.draw.sprite.Circle",
+    alias: 'sprite.arc',
+    type: 'arc',
+    inheritableStatics: {
+        def: {
+            processors: {
+                /**
+                 * @cfg {Number} [startAngle=0] The beginning angle of the arc.
+                 */
+                startAngle: "number",
+
+                /**
+                 * @cfg {Number} [endAngle=Math.PI*2] The ending angle of the arc.
+                 */
+                endAngle: "number",
+
+                /**
+                 * @cfg {Boolean} [anticlockwise=false] Determines whether or not the arc is drawn clockwise.
+                 */
+                anticlockwise: "bool"
+            },
+            aliases: {
+                from: "startAngle",
+                to: "endAngle",
+                start: "startAngle",
+                end: "endAngle"
+            },
+            defaults: {
+                startAngle: 0,
+                endAngle: Math.PI * 2,
+                anticlockwise: false
+            },
+            dirtyTriggers: {
+                startAngle: 'path',
+                endAngle: 'path',
+                anticlockwise: 'path'
+            }
+        }
+    },
+
+    updatePath: function (path, attr) {
+        path.arc(attr.cx, attr.cy, attr.r, attr.startAngle, attr.endAngle, attr.anticlockwise);
+    }
+});
+
+/**
+ * @class Ext.draw.sprite.Rect
+ * @extends Ext.draw.sprite.Path
+ *
+ * A sprite that represents a rectangle.
+ *
+ *     @example preview miniphone
+ *     var component = new Ext.draw.Component({
+ *       items: [{
+ *         type: 'rect',
+ *         x: 50,
+ *         y: 50,
+ *         width: 50,
+ *         height: 50,
+ *         fillStyle: 'blue'
+ *       }]
+ *     });
+ *     Ext.Viewport.setLayout('fit');
+ *     Ext.Viewport.add(component);
+ */
+Ext.define("Ext.draw.sprite.Rect", {
+    extend: "Ext.draw.sprite.Path",
+    alias: 'sprite.rect',
+    type: 'rect',
+    inheritableStatics: {
+        def: {
+            processors: {
+                /**
+                 * @cfg {Number} [x=0] The position of the sprite on the x-axis.
+                 */
+                x: 'number',
+
+                /**
+                 * @cfg {Number} [y=0] The position of the sprite on the y-axis.
+                 */
+                y: 'number',
+
+                /**
+                 * @cfg {Number} [width=1] The width of the sprite.
+                 */
+                width: 'number',
+
+                /**
+                 * @cfg {Number} [height=1] The height of the sprite.
+                 */
+                height: 'number',
+
+                /**
+                 * @cfg {Number} [radius=0] The radius of the rounded corners.
+                 */
+                radius: 'number'
+            },
+            aliases: {
+
+            },
+            dirtyTriggers: {
+                x: 'path',
+                y: 'path',
+                width: 'path',
+                height: 'path',
+                radius: 'path'
+            },
+            defaults: {
+                x: 0,
+                y: 0,
+                width: 1,
+                height: 1,
+                radius: 0
+            }
+        }
+    },
+
+    updatePlainBBox: function (plain) {
+        var attr = this.attr;
+        plain.x = attr.x;
+        plain.y = attr.y;
+        plain.width = attr.width;
+        plain.height = attr.height;
+    },
+
+    updateTransformedBBox: function (transform, plain) {
+        this.attr.matrix.transformBBox(plain, this.attr.radius, transform);
+    },
+
+    updatePath: function (path, attr) {
+        var x = attr.x,
+            y = attr.y,
+            width = attr.width,
+            height = attr.height,
+            radius = Math.min(attr.radius, Math.abs(attr.height) * 0.5, Math.abs(attr.width) * 0.5);
+        if (radius === 0) {
+            path.rect(x, y, width, height);
+        } else {
+            path.moveTo(x + radius, y);
+            path.arcTo(x + width, y, x + width, y + height, radius);
+            path.arcTo(x + width, y + height, x, y + height, radius);
+            path.arcTo(x, y + height, x, y, radius);
+            path.arcTo(x, y, x + radius, y, radius);
+        }
+    }
+});
+
+/**
+ * @class Ext.draw.sprite.Image
+ * @extends Ext.draw.sprite.Rect
+ * 
+ * A sprite that represents an image.
+ */
+Ext.define("Ext.draw.sprite.Image", {
+    extend: "Ext.draw.sprite.Rect",
+    alias: 'sprite.image',
+    type: 'image',
+    statics: {
+        imageLoaders: {}
+    },
+
+    inheritableStatics: {
+        def: {
+            processors: {
+                /**
+                 * @cfg {String} [src=''] The image source of the sprite.
+                 */
+                src: 'string'
+            },
+            defaults: {
+                src: '',
+                width: null,
+                height: null
+            }
+        }
+    },
+
+    render: function (surface, ctx) {
+        var me = this,
+            attr = me.attr,
+            mat = attr.matrix,
+            src = attr.src,
+            x = attr.x,
+            y = attr.y,
+            width = attr.width,
+            height = attr.height,
+            loadingStub = Ext.draw.sprite.Image.imageLoaders[src],
+            imageLoader,
+            i;
+
+        if (loadingStub && loadingStub.done) {
+            mat.toContext(ctx);
+            ctx.drawImage(loadingStub.image, x, y, width || loadingStub.width, height || loadingStub.width);
+        } else if (!loadingStub) {
+            imageLoader = new Image();
+            loadingStub = Ext.draw.sprite.Image.imageLoaders[src] = {
+                image: imageLoader,
+                done: false,
+                pendingSprites: [me],
+                pendingSurfaces: [surface]
+            };
+            imageLoader.width = width;
+            imageLoader.height = height;
+            imageLoader.onload = function () {
+                if (!loadingStub.done) {
+                    loadingStub.done = true;
+                    for (i = 0; i < loadingStub.pendingSprites.length; i++) {
+                        loadingStub.pendingSprites[i].setDirty(true);
+                    }
+                    for (i in loadingStub.pendingSurfaces) {
+                        loadingStub.pendingSurfaces[i].renderFrame();
+                    }
+                }
+            };
+            imageLoader.src = src;
+        } else {
+            Ext.Array.include(loadingStub.pendingSprites, me);
+            Ext.Array.include(loadingStub.pendingSurfaces, surface);
+        }
+    }
+});
+
+/**
+ * @class Ext.draw.sprite.Instancing
+ * @extends Ext.draw.sprite.Sprite
+ *
+ * Sprite that represents multiple instances based on the given template.
+ */
+Ext.define("Ext.draw.sprite.Instancing", {
+    extend: "Ext.draw.sprite.Sprite",
+    alias: 'sprite.instancing',
+    type: 'instancing',
+    config: {
+        
+        /**
+         * @cfg {Object} [template=null] The sprite template used by all instances.
+         */
+        template: null
+    },
+    instances: null,
+    constructor: function (config) {
+        this.instances = [];
+        this.callSuper([config]);
+        if (config && config.template) {
+            this.setTemplate(config.template);
+        }
+    },
+
+    applyTemplate: function (template) {
+        if (!(template instanceof Ext.draw.sprite.Sprite)) {
+            template = Ext.create(template.xclass || "sprite." + template.type, template);
+        }
+        template.setParent(this);
+        template.attr.children = [];
+        this.instances = [];
+        this.position = 0;
+        return template;
+    },
+
+    /**
+     * Creates a new sprite instance.
+     * 
+     * @param {Object} config The configuration of the instance.
+     * @param {Object} [data]
+     * @param {Boolean} [bypassNormalization] 'true' to bypass attribute normalization.
+     * @param {Boolean} [avoidCopy] 'true' to avoid copying.
+     * @return {Object} The attributes of the instance.
+     */
+    createInstance: function (config, data, bypassNormalization, avoidCopy) {
+        var template = this.getTemplate(),
+            originalAttr = template.attr,
+            attr = Ext.Object.chain(originalAttr);
+        template.topModifier.prepareAttributes(attr);
+        template.attr = attr;
+        template.setAttributes(config, bypassNormalization, avoidCopy);
+        attr.data = data;
+        this.instances.push(attr);
+        template.attr = originalAttr;
+        this.position++;
+        originalAttr.children.push(attr);
+        return attr;
+    },
+
+    /**
+     * Not supported.
+     * 
+     * @return {null}
+     */
+    getBBox: function () { return null; },
+
+    /**
+     * Returns the bounding box for the instance at the given index.
+     *
+     * @param {Number} index The index of the instance.
+     * @param {Boolean} [isWithoutTransform] 'true' to not apply sprite transforms to the bounding box.
+     * @return {Object} The bounding box for the instance.
+     */
+    getBBoxFor: function (index, isWithoutTransform) {
+        var template = this.getTemplate(),
+            originalAttr = template.attr,
+            bbox;
+        template.attr = this.instances[index];
+        bbox = template.getBBox(isWithoutTransform);
+        template.attr = originalAttr;
+        return bbox;
+    },
+
+    render: function (surface, ctx, clipRegion) {
+        var me = this,
+            mat = me.attr.matrix,
+            template = me.getTemplate(),
+            originalAttr = template.attr,
+            instances = me.instances,
+            i, ln = me.position;
+
+        mat.toContext(ctx);
+        template.preRender(surface, ctx, clipRegion);
+        template.useAttributes(ctx);
+        for (i = 0; i < ln; i++) {
+            if (instances[i].dirtyZIndex) {
+                break;
+            }
+        }
+        for (i = 0; i < ln; i++) {
+            if (instances[i].hidden) {
+                continue;
+            }
+            ctx.save();
+            template.attr = instances[i];
+            template.applyTransformations();
+            template.useAttributes(ctx);
+            template.render(surface, ctx, clipRegion);
+            ctx.restore();
+        }
+        template.attr = originalAttr;
+    },
+
+    /**
+     * Sets the attributes for the instance at the given index.
+     * 
+     * @param {Number} index the index of the instance
+     * @param {Object} changes the attributes to change
+     * @param {Boolean} [bypassNormalization] 'true' to avoid attribute normalization
+     */
+    setAttributesFor: function (index, changes, bypassNormalization) {
+        var template = this.getTemplate(),
+            originalAttr = template.attr,
+            attr = this.instances[index];
+        template.attr = attr;
+        try {
+            if (bypassNormalization) {
+                changes = Ext.apply({}, changes);
+            } else {
+                changes = template.self.def.normalize(changes);
+            }
+            template.topModifier.pushDown(attr, changes);
+            template.updateDirtyFlags(attr);
+        } finally {
+            template.attr = originalAttr;
+        }
+    },
+
+    destroy: function () {
+        this.callSuper();
+        this.instances.length = 0;
+        this.instances = null;
+        if (this.getTemplate()) {
+            this.getTemplate().destroy();
+        }
+    }
+});
+
+/**
+ * Linear gradient.
+ *
+ *      @example preview miniphone
+ *  new Ext.draw.Component({
+ *      fullscreen: true,
+ *      items: [
+ *          {
+ *              type: 'circle',
+ *              cx: 100,
+ *              cy: 100,
+ *              r: 25,
+ *              fillStyle: {
+ *                  type: 'linear',
+ *                  degrees: 90,
+ *                  stops: [
+ *                      {
+ *                          offset: 0,
+ *                          color: 'green'
+ *                      },
+ *                      {
+ *                          offset: 1,
+ *                          color: 'blue'
+ *                      }
+ *                  ]
+ *              }
+ *          }
+ *      ]
+ *  });
+*/
+
+Ext.define("Ext.draw.gradient.Linear", {
+    extend: 'Ext.draw.gradient.Gradient',
+    type: 'linear',
+    config: {
+        /**
+         * @cfg {Number} The degree of rotation of the gradient.
+         */
+        degrees: 0
+    },
+
+    setAngle: function (angle) {
+        this.setDegrees(angle);
+    },
+
+    updateDegrees: function () {
+        this.clearCache();
+    },
+
+    updateStops: function () {
+        this.clearCache();
+    },
+
+    /**
+     * @inheritdoc
+     */
+    generateGradient: function (ctx, bbox) {
+        var angle = Ext.draw.Draw.rad(this.getDegrees()),
+            cos = Math.cos(angle),
+            sin = Math.sin(angle),
+            w = bbox.width,
+            h = bbox.height,
+            cx = bbox.x + w * 0.5,
+            cy = bbox.y + h * 0.5,
+            stops = this.getStops(),
+            ln = stops.length,
+            gradient,
+            l, i;
+
+        if (!isNaN(cx) && !isNaN(cy) && h > 0 && w > 0) {
+            l = (Math.sqrt(h * h + w * w) * Math.abs(Math.cos(angle - Math.atan(h / w)))) / 2;
+            gradient = ctx.createLinearGradient(
+                cx + cos * l, cy + sin * l,
+                cx - cos * l, cy - sin * l
+            );
+
+            for (i = 0; i < ln; i++) {
+                gradient.addColorStop(stops[i].offset, stops[i].color);
+            }
+            return gradient;
+        }
+        return 'none';
+    }
+});
+
+/**
+ * Radial gradient.
+ * 
+ *     @example preview miniphone
+ *     var component = new Ext.draw.Component({
+ *       items: [{
+ *         type: 'circle',
+ *         cx: 100,
+ *         cy: 100,
+ *         r: 25,
+ *         fillStyle: {
+ *           type: 'radial',
+ *           start: {
+ *             x: 0,
+ *             y: 0,
+ *             r: 0
+ *           },
+ *           end: {
+ *             x: 0,
+ *             y: 0,
+ *             r: 1
+ *           },
+ *           stops: [
+ *             {
+ *               offset: 0,
+ *               color: 'white'
+ *             },
+ *             {
+ *               offset: 1,
+ *               color: 'blue'
+ *             }
+ *           ]
+ *         }
+ *       }]
+ *     });
+ *     Ext.Viewport.setLayout('fit');
+ *     Ext.Viewport.add(component);
+ */
+Ext.define("Ext.draw.gradient.Radial", {
+    extend: 'Ext.draw.gradient.Gradient',
+    type: 'radial',
+    config: {
+        /**
+         * @cfg {Object} start The starting circle of the gradient.
+         */
+        start: {
+            x: 0,
+            y: 0,
+            r: 0
+        },
+        /**
+         * @cfg {Object} end The ending circle of the gradient.
+         */
+        end: {
+            x: 0,
+            y: 0,
+            r: 1
+        }
+    },
+
+    applyStart: function (newStart, oldStart) {
+        if (!oldStart) {
+            return newStart;
+        }
+        var circle = {
+            x: oldStart.x,
+            y: oldStart.y,
+            r: oldStart.r
+        };
+
+        if ('x' in newStart) {
+            circle.x = newStart.x;
+        } else if ('centerX' in newStart) {
+            circle.x = newStart.centerX;
+        }
+
+        if ('y' in newStart) {
+            circle.y = newStart.y;
+        } else if ('centerY' in newStart) {
+            circle.y = newStart.centerY;
+        }
+
+        if ('r' in newStart) {
+            circle.r = newStart.r;
+        } else if ('radius' in newStart) {
+            circle.r = newStart.radius;
+        }
+        return circle;
+    },
+
+    applyEnd: function (newEnd, oldEnd) {
+        if (!oldEnd) {
+            return newEnd;
+        }
+        var circle = {
+            x: oldEnd.x,
+            y: oldEnd.y,
+            r: oldEnd.r
+        };
+
+        if ('x' in newEnd) {
+            circle.x = newEnd.x;
+        } else if ('centerX' in newEnd) {
+            circle.x = newEnd.centerX;
+        }
+
+        if ('y' in newEnd) {
+            circle.y = newEnd.y;
+        } else if ('centerY' in newEnd) {
+            circle.y = newEnd.centerY;
+        }
+
+        if ('r' in newEnd) {
+            circle.r = newEnd.r;
+        } else if ('radius' in newEnd) {
+            circle.r = newEnd.radius;
+        }
+        return circle;
+    },
+
+    /**
+     * @inheritdoc
+     */
+    generateGradient: function (ctx, bbox) {
+        var start = this.getStart(),
+            end = this.getEnd(),
+            w = bbox.width * 0.5,
+            h = bbox.height * 0.5,
+            x = bbox.x + w,
+            y = bbox.y + h,
+            gradient = ctx.createRadialGradient(
+                x + start.x * w, y + start.y * h, start.r * Math.max(w, h),
+                x + end.x * w, y + end.y * h, end.r * Math.max(w, h)
+            ),
+            stops = this.getStops(),
+            ln = stops.length,
+            i;
+
+        for (i = 0; i < ln; i++) {
+            gradient.addColorStop(stops[i].offset, stops[i].color);
+        }
+        return gradient;
+    }
+});
+
+/**
+ * Utility class to calculate [affine transformation](http://en.wikipedia.org/wiki/Affine_transformation) matrix.
+ *
+ * This class is compatible with SVGMatrix except:
+ * 
+ *   1. Ext.draw.Matrix is not read only.
+ *   2. Using Number as its components rather than floats.
+ *   
+ * Using this class to reduce the severe numeric problem with HTML Canvas and SVG transformation.
+ * 
+ */
+Ext.define('Ext.draw.Matrix', {
+
+    statics: {
+        /**
+         * @static
+         * Return the affine matrix that transform two points (x0, y0) and (x1, y1) to (x0p, y0p) and (x1p, y1p)
+         * @param x0
+         * @param y0
+         * @param x1
+         * @param y1
+         * @param x0p
+         * @param y0p
+         * @param x1p
+         * @param y1p
+         */
+        createAffineMatrixFromTwoPair: function (x0, y0, x1, y1, x0p, y0p, x1p, y1p) {
+            var dx = x1 - x0,
+                dy = y1 - y0,
+                dxp = x1p - x0p,
+                dyp = y1p - y0p,
+                r = 1 / (dx * dx + dy * dy),
+                a = dx * dxp + dy * dyp,
+                b = dxp * dy - dx * dyp,
+                c = -a * x0 - b * y0,
+                f = b * x0 - a * y0;
+
+            return new this(a * r, -b * r, b * r, a * r, c * r + x0p, f * r + y0p);
+        },
+
+        /**
+         * @static
+         * Return the affine matrix that transform two points (x0, y0) and (x1, y1) to (x0p, y0p) and (x1p, y1p)
+         * @param x0
+         * @param y0
+         * @param x1
+         * @param y1
+         * @param x0p
+         * @param y0p
+         * @param x1p
+         * @param y1p
+         */
+        createPanZoomFromTwoPair: function (x0, y0, x1, y1, x0p, y0p, x1p, y1p) {
+            if (arguments.length === 2) {
+                return this.createPanZoomFromTwoPair.apply(this, x0.concat(y0));
+            }
+            var dx = x1 - x0,
+                dy = y1 - y0,
+                cx = (x0 + x1) * 0.5,
+                cy = (y0 + y1) * 0.5,
+                dxp = x1p - x0p,
+                dyp = y1p - y0p,
+                cxp = (x0p + x1p) * 0.5,
+                cyp = (y0p + y1p) * 0.5,
+                r = dx * dx + dy * dy,
+                rp = dxp * dxp + dyp * dyp,
+                scale = Math.sqrt(rp / r);
+
+            return new this(scale, 0, 0, scale, cxp - scale * cx, cyp - scale * cy);
+        },
+
+        /**
+         * @static
+         * Create a flyweight to wrap the given array.
+         * The flyweight will directly refer the object and the elements can be changed by other methods.
+         *
+         * Do not hold the instance of flyweight matrix.
+         *
+         * @param {Array} elements
+         * @return {Ext.draw.Matrix}
+         */
+        fly: (function () {
+            var flyMatrix = null,
+                simplefly = function (elements) {
+                    flyMatrix.elements = elements;
+                    return flyMatrix;
+                };
+
+            return function (elements) {
+                if (!flyMatrix) {
+                    flyMatrix = new Ext.draw.Matrix();
+                }
+                flyMatrix.elements = elements;
+                Ext.draw.Matrix.fly = simplefly;
+                return flyMatrix;
+            };
+        })(),
+
+        /**
+         * @static
+         * Create a matrix from `mat`. If `mat` is already a matrix, returns it.
+         * @param {Mixed} mat
+         * @return {Ext.draw.Matrix}
+         */
+        create: function (mat) {
+            if (mat instanceof this) {
+                return mat;
+            }
+            return new this(mat);
+        }
+    },
+
+    /**
+     * Create an affine transform matrix.
+     *
+     * @param xx Coefficient from x to x
+     * @param xy Coefficient from x to y
+     * @param yx Coefficient from y to x
+     * @param yy Coefficient from y to y
+     * @param dx Offset of x
+     * @param dy Offset of y
+     */
+    constructor: function (xx, xy, yx, yy, dx, dy) {
+        if (xx && xx.length === 6) {
+            this.elements = xx.slice();
+        } else if (xx !== undefined) {
+            this.elements = [xx, xy, yx, yy, dx, dy];
+        } else {
+            this.elements = [1, 0, 0, 1, 0, 0];
+        }
+    },
+
+    /**
+     * Prepend a matrix onto the current.
+     *
+     * __Note:__ The given transform will come after the current one.
+     *
+     * @param xx Coefficient from x to x.
+     * @param xy Coefficient from x to y.
+     * @param yx Coefficient from y to x.
+     * @param yy Coefficient from y to y.
+     * @param dx Offset of x.
+     * @param dy Offset of y.
+     * @return {Ext.draw.Matrix} this
+     */
+    prepend: function (xx, xy, yx, yy, dx, dy) {
+        var elements = this.elements,
+            xx0 = elements[0],
+            xy0 = elements[1],
+            yx0 = elements[2],
+            yy0 = elements[3],
+            dx0 = elements[4],
+            dy0 = elements[5];
+
+        elements[0] = xx * xx0 + yx * xy0;
+        elements[1] = xy * xx0 + yy * xy0;
+        elements[2] = xx * yx0 + yx * yy0;
+        elements[3] = xy * yx0 + yy * yy0;
+        elements[4] = xx * dx0 + yx * dy0 + dx;
+        elements[5] = xy * dx0 + yy * dy0 + dy;
+        return this;
+    },
+
+    /**
+     * Prepend a matrix onto the current.
+     *
+     * __Note:__ The given transform will come after the current one.
+     * @param {Ext.draw.Matrix} matrix
+     * @return {Ext.draw.Matrix} this
+     */
+    prependMatrix: function (matrix) {
+        return this.prepend.apply(this, matrix.elements);
+    },
+
+    /**
+     * Postpend a matrix onto the current.
+     *
+     * __Note:__ The given transform will come before the current one.
+     *
+     * @param xx Coefficient from x to x.
+     * @param xy Coefficient from x to y.
+     * @param yx Coefficient from y to x.
+     * @param yy Coefficient from y to y.
+     * @param dx Offset of x.
+     * @param dy Offset of y.
+     * @return {Ext.draw.Matrix} this
+     */
+    append: function (xx, xy, yx, yy, dx, dy) {
+        var elements = this.elements,
+            xx0 = elements[0],
+            xy0 = elements[1],
+            yx0 = elements[2],
+            yy0 = elements[3],
+            dx0 = elements[4],
+            dy0 = elements[5];
+
+        elements[0] = xx * xx0 + xy * yx0;
+        elements[1] = xx * xy0 + xy * yy0;
+        elements[2] = yx * xx0 + yy * yx0;
+        elements[3] = yx * xy0 + yy * yy0;
+        elements[4] = dx * xx0 + dy * yx0 + dx0;
+        elements[5] = dx * xy0 + dy * yy0 + dy0;
+        return this;
+    },
+
+    /**
+     * Postpend a matrix onto the current.
+     *
+     * __Note:__ The given transform will come before the current one.
+     *
+     * @param {Ext.draw.Matrix} matrix
+     * @return {Ext.draw.Matrix} this
+     */
+    appendMatrix: function (matrix) {
+        return this.append.apply(this, matrix.elements);
+    },
+
+    /**
+     * Set the elements of a Matrix
+     * @param {Number} xx
+     * @param {Number} xy
+     * @param {Number} yx
+     * @param {Number} yy
+     * @param {Number} dx
+     * @param {Number} dy
+     * @return {Ext.draw.Matrix} this
+     */
+    set: function (xx, xy, yx, yy, dx, dy) {
+        var elements = this.elements;
+
+        elements[0] = xx;
+        elements[1] = xy;
+        elements[2] = yx;
+        elements[3] = yy;
+        elements[4] = dx;
+        elements[5] = dy;
+        return this;
+    },
+
+    /**
+     * Return a new matrix represents the opposite transformation of the current one.
+     *
+     * @param {Ext.draw.Matrix} [target] A target matrix. If present, it will receive
+     * the result of inversion to avoid creating a new object.
+     *
+     * @return {Ext.draw.Matrix}
+     */
+    inverse: function (target) {
+        var elements = this.elements,
+            a = elements[0],
+            b = elements[1],
+            c = elements[2],
+            d = elements[3],
+            e = elements[4],
+            f = elements[5],
+            rDim = 1 / (a * d - b * c);
+
+        a *= rDim;
+        b *= rDim;
+        c *= rDim;
+        d *= rDim;
+        if (target) {
+            target.set(d, -b, -c, a, c * f - d * e, b * e - a * f);
+            return target;
+        } else {
+            return new Ext.draw.Matrix(d, -b, -c, a, c * f - d * e, b * e - a * f);
+        }
+    },
+
+    /**
+     * Translate the matrix.
+     *
+     * @param {Number} x
+     * @param {Number} y
+     * @param {Boolean} [prepend] If `true`, this will transformation be prepended to the matrix.
+     * @return {Ext.draw.Matrix} this
+     */
+    translate: function (x, y, prepend) {
+        if (prepend) {
+            return this.prepend(1, 0, 0, 1, x, y);
+        } else {
+            return this.append(1, 0, 0, 1, x, y);
+        }
+    },
+
+    /**
+     * Scale the matrix.
+     *
+     * @param {Number} sx
+     * @param {Number} sy
+     * @param {Number} scx
+     * @param {Number} scy
+     * @param {Boolean} [prepend] If `true`, this will transformation be prepended to the matrix.
+     * @return {Ext.draw.Matrix} this
+     */
+    scale: function (sx, sy, scx, scy, prepend) {
+        var me = this;
+
+        // null or undefined
+        if (sy == null) {
+            sy = sx;
+        }
+        if (scx === undefined) {
+            scx = 0;
+        }
+        if (scy === undefined) {
+            scy = 0;
+        }
+
+        if (prepend) {
+            return me.prepend(sx, 0, 0, sy, scx - scx * sx, scy - scy * sy);
+        } else {
+            return me.append(sx, 0, 0, sy, scx - scx * sx, scy - scy * sy);
+        }
+    },
+
+    /**
+     * Rotate the matrix.
+     *
+     * @param {Number} angle Radians to rotate
+     * @param {Number|null} rcx Center of rotation.
+     * @param {Number|null} rcy Center of rotation.
+     * @param {Boolean} [prepend] If `true`, this will transformation be prepended to the matrix.
+     * @return {Ext.draw.Matrix} this
+     */
+    rotate: function (angle, rcx, rcy, prepend) {
+        var me = this,
+            cos = Math.cos(angle),
+            sin = Math.sin(angle);
+
+        rcx = rcx || 0;
+        rcy = rcy || 0;
+
+        if (prepend) {
+            return me.prepend(
+                cos, sin,
+                -sin, cos,
+                rcx - cos * rcx + rcy * sin,
+                rcy - cos * rcy - rcx * sin
+            );
+        } else {
+            return me.append(
+                cos, sin,
+                -sin, cos,
+                rcx - cos * rcx + rcy * sin,
+                rcy - cos * rcy - rcx * sin
+            );
+        }
+    },
+
+    /**
+     * Rotate the matrix by the angle of a vector.
+     *
+     * @param {Number} x
+     * @param {Number} y
+     * @param {Boolean} [prepend] If `true`, this will transformation be prepended to the matrix.
+     * @return {Ext.draw.Matrix} this
+     */
+    rotateFromVector: function (x, y, prepend) {
+        var me = this,
+            d = Math.sqrt(x * x + y * y),
+            cos = x / d,
+            sin = y / d;
+        if (prepend) {
+            return me.prepend(cos, sin, -sin, cos, 0, 0);
+        } else {
+            return me.append(cos, sin, -sin, cos, 0, 0);
+        }
+    },
+
+    /**
+     * Clone this matrix.
+     * @return {Ext.draw.Matrix}
+     */
+    clone: function () {
+        return new Ext.draw.Matrix(this.elements);
+    },
+
+    /**
+     * Horizontally flip the matrix
+     * @return {Ext.draw.Matrix} this
+     */
+    flipX: function () {
+        return this.append(-1, 0, 0, 1, 0, 0);
+    },
+
+    /**
+     * Vertically flip the matrix
+     * @return {Ext.draw.Matrix} this
+     */
+    flipY: function () {
+        return this.append(1, 0, 0, -1, 0, 0);
+    },
+
+    /**
+     * Skew the matrix
+     * @param {Number} angle
+     * @return {Ext.draw.Matrix} this
+     */
+    skewX: function (angle) {
+        return this.append(1, Math.tan(angle), 0, -1, 0, 0);
+    },
+
+    /**
+     * Skew the matrix
+     * @param {Number} angle
+     * @return {Ext.draw.Matrix} this
+     */
+    skewY: function (angle) {
+        return this.append(1, 0, Math.tan(angle), -1, 0, 0);
+    },
+
+    /**
+     * Reset the matrix to identical.
+     * @return {Ext.draw.Matrix} this
+     */
+    reset: function () {
+        return this.set(1, 0, 0, 1, 0, 0);
+    },
+
+    /**
+     * @private
+     * Split Matrix to `{{devicePixelRatio,c,0},{b,devicePixelRatio,0},{0,0,1}}.{{xx,0,dx},{0,yy,dy},{0,0,1}}`
+     * @return {Object} Object with b,c,d=devicePixelRatio,xx,yy,dx,dy
+     */
+    precisionCompensate: function (devicePixelRatio, comp) {
+        var elements = this.elements,
+            x2x = elements[0],
+            x2y = elements[1],
+            y2x = elements[2],
+            y2y = elements[3],
+            newDx = elements[4],
+            newDy = elements[5],
+            r = x2y * y2x - x2x * y2y;
+
+        comp.b = devicePixelRatio * x2y / x2x;
+        comp.c = devicePixelRatio * y2x / y2y;
+        comp.d = devicePixelRatio;
+        comp.xx = x2x / devicePixelRatio;
+        comp.yy = y2y / devicePixelRatio;
+        comp.dx = (newDy * x2x * y2x - newDx * x2x * y2y) / r / devicePixelRatio;
+        comp.dy = (newDx * x2y * y2y - newDy * x2x * y2y) / r / devicePixelRatio;
+    },
+
+    /**
+     * @private
+     * Split Matrix to `{{1,c,0},{b,d,0},{0,0,1}}.{{xx,0,dx},{0,xx,dy},{0,0,1}}`
+     * @return {Object} Object with b,c,d,xx,yy=xx,dx,dy
+     */
+    precisionCompensateRect: function (devicePixelRatio, comp) {
+        var elements = this.elements,
+            x2x = elements[0],
+            x2y = elements[1],
+            y2x = elements[2],
+            y2y = elements[3],
+            newDx = elements[4],
+            newDy = elements[5],
+            yxOnXx = y2x / x2x;
+
+        comp.b = devicePixelRatio * x2y / x2x;
+        comp.c = devicePixelRatio * yxOnXx;
+        comp.d = devicePixelRatio * y2y / x2x;
+        comp.xx = x2x / devicePixelRatio;
+        comp.yy = x2x / devicePixelRatio;
+        comp.dx = (newDy * y2x - newDx * y2y) / (x2y * yxOnXx - y2y) / devicePixelRatio;
+        comp.dy = -(newDy * x2x - newDx * x2y) / (x2y * yxOnXx - y2y) / devicePixelRatio;
+    },
+
+    /**
+     * Transform point returning the x component of the result.
+     * @param {Number} x
+     * @param {Number} y
+     * @return {Number} x component of the result.
+     */
+    x: function (x, y) {
+        var elements = this.elements;
+        return x * elements[0] + y * elements[2] + elements[4];
+    },
+
+    /**
+     * Transform point returning the y component of the result.
+     * @param {Number} x
+     * @param {Number} y
+     * @return {Number} y component of the result.
+     */
+    y: function (x, y) {
+        var elements = this.elements;
+
+        return x * elements[1] + y * elements[3] + elements[5];
+    },
+
+    /**
+     * @private
+     * @param i
+     * @param j
+     * @return {String}
+     */
+    get: function (i, j) {
+        return +this.elements[i + j * 2].toFixed(4);
+    },
+
+    /**
+     * Transform a point to a new array.
+     * @param {Array} point
+     * @return {Array}
+     */
+    transformPoint: function (point) {
+        var elements = this.elements;
+
+        return [
+            point[0] * elements[0] + point[1] * elements[2] + elements[4],
+            point[0] * elements[1] + point[1] * elements[3] + elements[5]
+        ];
+    },
+
+    /**
+     *
+     * @param {Object} bbox Given as `{x: Number, y: Number, width: Number, height: Number}`.
+     * @param {Number} [radius]
+     * @param {Object} [target] Optional target object to recieve the result.
+     * Recommanded to use it for better gc.
+     *
+     * @return {Object} Object with x, y, width and height.
+     */
+    transformBBox: function (bbox, radius, target) {
+        var elements = this.elements,
+            l = bbox.x,
+            t = bbox.y,
+            w0 = bbox.width * 0.5,
+            h0 = bbox.height * 0.5,
+            xx = elements[0],
+            xy = elements[1],
+            yx = elements[2],
+            yy = elements[3],
+            cx = l + w0,
+            cy = t + h0,
+            w, h, scales;
+
+        if (radius) {
+            w0 -= radius;
+            h0 -= radius;
+            scales = [
+                Math.sqrt(elements[0] * elements[0] + elements[2] * elements[2]),
+                Math.sqrt(elements[1] * elements[1] + elements[3] * elements[3])
+            ];
+            w = Math.abs(w0 * xx) + Math.abs(h0 * yx) + Math.abs(scales[0] * radius);
+            h = Math.abs(w0 * xy) + Math.abs(h0 * yy) + Math.abs(scales[1] * radius);
+        } else {
+            w = Math.abs(w0 * xx) + Math.abs(h0 * yx);
+            h = Math.abs(w0 * xy) + Math.abs(h0 * yy);
+        }
+
+        if (!target) {
+            target = {};
+        }
+
+        target.x = cx * xx + cy * yx + elements[4] - w;
+        target.y = cx * xy + cy * yy + elements[5] - h;
+        target.width = w + w;
+        target.height = h + h;
+
+        return target;
+    },
+
+    /**
+     * Transform a list for points.
+     *
+     * __Note:__ will change the original list but not points inside it.
+     * @param {Array} list
+     * @return {Array} list
+     */
+    transformList: function (list) {
+        var elements = this.elements,
+            xx = elements[0], yx = elements[2], dx = elements[4],
+            xy = elements[1], yy = elements[3], dy = elements[5],
+            ln = list.length,
+            p, i;
+
+        for (i = 0; i < ln; i++) {
+            p = list[i];
+            list[i] = [
+                p[0] * xx + p[1] * yx + dx,
+                p[0] * xy + p[1] * yy + dy
+            ];
+        }
+        return list;
+    },
+
+    /**
+     * Determines whether this matrix is an identity matrix (no transform).
+     * @return {Boolean}
+     */
+    isIdentity: function () {
+        var elements = this.elements;
+
+        return elements[0] === 1 &&
+            elements[1] === 0 &&
+            elements[2] === 0 &&
+            elements[3] === 1 &&
+            elements[4] === 0 &&
+            elements[5] === 0;
+    },
+
+    /**
+     * Determines if this matrix has the same values as another matrix.
+     * @param {Ext.draw.Matrix} matrix
+     * @return {Boolean}
+     */
+    equals: function (matrix) {
+        var elements = this.elements,
+            elements2 = matrix.elements;
+
+        return elements[0] === elements2[0] &&
+            elements[1] === elements2[1] &&
+            elements[2] === elements2[2] &&
+            elements[3] === elements2[3] &&
+            elements[4] === elements2[4] &&
+            elements[5] === elements2[5];
+    },
+
+    /**
+     * Create an array of elements by horizontal order (xx,yx,dx,yx,yy,dy).
+     * @return {Array}
+     */
+    toArray: function () {
+        var elements = this.elements;
+        return [elements[0], elements[2], elements[4], elements[1], elements[3], elements[5]];
+    },
+
+    /**
+     * Create an array of elements by vertical order (xx,xy,yx,yy,dx,dy).
+     * @return {Array|String}
+     */
+    toVerticalArray: function () {
+        return this.elements.slice();
+    },
+
+    /**
+     * Get an array of elements.
+     * The numbers are rounded to keep only 4 decimals.
+     * @return {Array}
+     */
+    toString: function () {
+        var me = this;
+        return [me.get(0, 0), me.get(0, 1), me.get(1, 0), me.get(1, 1), me.get(2, 0), me.get(2, 1)].join(',');
+    },
+
+    /**
+     * Apply the matrix to a drawing context.
+     * @param {Object} ctx
+     * @return {Ext.draw.Matrix} this
+     */
+    toContext: function (ctx) {
+        ctx.transform.apply(ctx, this.elements);
+        return this;
+    },
+
+    /**
+     * Return a string that can be used as transform attribute in SVG.
+     * @return {String}
+     */
+    toSvg: function () {
+        var elements = this.elements;
+        // The reason why we cannot use `.join` is the `1e5` form is not accepted in svg.
+        return "matrix(" +
+            elements[0].toFixed(9) + ',' +
+            elements[1].toFixed(9) + ',' +
+            elements[2].toFixed(9) + ',' +
+            elements[3].toFixed(9) + ',' +
+            elements[4].toFixed(9) + ',' +
+            elements[5].toFixed(9) +
+            ")";
+    },
+
+    /**
+     * Get the x scale of the matrix.
+     * @return {Number}
+     */
+    getScaleX: function () {
+        var elements = this.elements;
+        return Math.sqrt(elements[0] * elements[0] + elements[2] * elements[2]);
+    },
+
+    /**
+     * Get the y scale of the matrix.
+     * @return {Number}
+     */
+    getScaleY: function () {
+        var elements = this.elements;
+        return Math.sqrt(elements[1] * elements[1] + elements[3] * elements[3]);
+    },
+
+    /**
+     * Get x-to-x component of the matrix
+     * @return {Number}
+     */
+    getXX: function () {
+        return this.elements[0];
+    },
+
+    /**
+     * Get x-to-y component of the matrix.
+     * @return {Number}
+     */
+    getXY: function () {
+        return this.elements[1];
+    },
+
+    /**
+     * Get y-to-x component of the matrix.
+     * @return {Number}
+     */
+    getYX: function () {
+        return this.elements[2];
+    },
+
+    /**
+     * Get y-to-y component of the matrix.
+     * @return {Number}
+     */
+    getYY: function () {
+        return this.elements[3];
+    },
+
+    /**
+     * Get offset x component of the matrix.
+     * @return {Number}
+     */
+    getDX: function () {
+        return this.elements[4];
+    },
+
+    /**
+     * Get offset y component of the matrix.
+     * @return {Number}
+     */
+    getDY: function () {
+        return this.elements[5];
+    },
+
+    /**
+     * Split matrix into Translate Scale, Shear, and Rotate.
+     * @return {Object}
+     */
+    split: function () {
+        var el = this.elements,
+            xx = el[0],
+            xy = el[1],
+            yx = el[2],
+            yy = el[3],
+            out = {
+                translateX: el[4],
+                translateY: el[5]
+            };
+        out.scaleX = Math.sqrt(xx * xx + yx * yx);
+        out.shear = (xx * xy + yx * yy) / out.scaleX;
+        xy -= out.shear * xx;
+        yy -= out.shear * yx;
+        out.scaleY = Math.sqrt(xy * xy + yy * yy);
+        out.shear /= out.scaleY;
+        out.rotation = -Math.atan2(yx / out.scaleX, xy / out.scaleY);
+        out.isSimple = Math.abs(out.shear) < 1e-9 && (!out.rotation || Math.abs(out.scaleX - out.scaleY) < 1e-9);
+        return out;
+    }
+}, function () {
+    function registerName(properties, name, i) {
+        properties[name] = {
+            get: function () {
+                return this.elements[i];
+            },
+            set: function (val) {
+                this.elements[i] = val;
+            }
+        };
+    }
+
+    // Compatibility with SVGMatrix
+    // https://developer.mozilla.org/en/DOM/SVGMatrix
+    if (Object.defineProperties) {
+        var properties = {};
+        /**
+         * @property {Number} a Get x-to-x component of the matrix. Avoid using it for performance consideration.
+         * Use {@link #getXX} instead.
+         */
+        registerName(properties, 'a', 0);
+
+        // TODO: Help me finish this. 
+        registerName(properties, 'b', 1);
+        registerName(properties, 'c', 2);
+        registerName(properties, 'd', 3);
+        registerName(properties, 'e', 4);
+        registerName(properties, 'f', 5);
+        Object.defineProperties(this.prototype, properties);
+    }
+
+    /**
+     * Postpend a matrix onto the current.
+     *
+     * __Note:__ The given transform will come before the current one.
+     *
+     * @method
+     * @param {Ext.draw.Matrix} matrix
+     * @return {Ext.draw.Matrix} this
+     */
+    this.prototype.multiply = this.prototype.appendMatrix;
+});
+
+/**
+ * @deprecated
+ * A collection of sprites that delegates sprite functions to its elements.
+ * 
+ * Avoid using this multiple groups in a surface as it is error prone.
+ * The group notion may be remove in future releases.
+ * 
+ */
+Ext.define("Ext.draw.Group", {
+    mixins: {
+        observable: 'Ext.mixin.Observable'
+    },
+
+    config: {
+        surface: null
+    },
+
+    statics: {
+        /**
+         * @private
+         * @param name
+         * @return {Function}
+         */
+        createRelayEvent: function (name) {
+            return (function (e) {
+                this.fireEvent(name, e);
+            });
+        },
+
+        /**
+         * @private
+         * @param name
+         * @return {Function}
+         */
+        createDispatcherMethod: function (name) {
+            return function () {
+                var args = Array.prototype.slice.call(arguments, 0), items = this.items, i = 0, ln = items.length, item;
+                while (i < ln) {
+                    item = items[i++];
+                    item[name].apply(item, args);
+                }
+            };
+        }
+    },
+
+    autoDestroy: false,
+
+    constructor: function (config) {
+        this.initConfig(config);
+        this.map = {};
+        this.items = [];
+        this.length = 0;
+    },
+
+    /**
+     * Add sprite to group.
+     * @param {Ext.draw.sprite.Sprite} sprite
+     */
+    add: function (sprite) {
+        var id = sprite.getId(),
+            oldSprite = this.map[id];
+        if (!oldSprite) {
+            sprite.group.push(this.id);
+            this.map[id] = sprite;
+            this.items.push(sprite);
+            this.length++;
+        } else if (sprite !== oldSprite) {
+            Ext.Logger.error('Sprite with duplicated id.');
+        }
+    },
+
+    /**
+     * Remote sprite from group.
+     * @param {Ext.draw.sprite.Sprite} sprite
+     * @param {Boolean} [destroySprite]
+     */
+    remove: function (sprite, destroySprite) {
+        var id = sprite.getId(),
+            oldSprite = this.map[id];
+
+        destroySprite = destroySprite || this.autoDestroy;
+        if (oldSprite) {
+            if (oldSprite === sprite) {
+                delete this.map[id];
+                this.length--;
+                Ext.Array.remove(this.items, sprite);
+                if (destroySprite) {
+                    oldSprite.destroy();
+                } else {
+                    Ext.Array.remove(sprite.group, this);
+                }
+            } else if (sprite !== oldSprite) {
+                Ext.Logger.error('Sprite with duplicated id.');
+            }
+        }
+    },
+
+    /**
+     * Add a list of sprites to group.
+     * @param {Array|Ext.draw.sprite.Sprite} sprites
+     */
+    addAll: function (sprites) {
+        if (sprites.isSprite) {
+            this.add(sprites);
+        } else if (Ext.isArray(sprites)) {
+            var i = 0;
+            while (i < sprites.length) {
+                this.add(sprites[i++]);
+            }
+        }
+    },
+
+    /**
+     * Iterate all sprites with specific function.
+     * __Note:__ Avoid using this for performance consideration.
+     * @param {Function} fn Function to iterate.
+     */
+    each: function (fn) {
+        var i = 0,
+            items = this.items,
+            ln = items.length;
+        while (i < ln) {
+            if (false === fn(items[i])) {
+                return;
+            }
+        }
+    },
+
+    /**
+     * Clear the group
+     * @param {Boolean} [destroySprite]
+     */
+    clear: function (destroySprite) {
+        var i, ln, sprite, items;
+
+        if (destroySprite || this.autoDestroy) {
+            items = this.items.slice(0);
+            for (i = 0, ln = items.length; i < ln; i++) {
+                items[i].destroy();
+            }
+        } else {
+            items = this.items.slice(0);
+            for (i = 0, ln = items.length; i < ln; i++) {
+                sprite = items[i];
+                Ext.Array.remove(sprite.group, this);
+            }
+        }
+        this.length = 0;
+        this.map = {};
+        this.items.length = 0;
+    },
+
+    /**
+     * Get the i-th sprite of the group.
+     * __Note:__ Do not reply on the order of the sprite. It could be changed by {@link Ext.draw.Surface#stableSort}. 
+     * @param {Number}  index
+     * @return {Ext.draw.sprite.Sprite}
+     */
+    getAt: function (index) {
+        return this.items[index];
+    },
+
+    /**
+     * Get the sprite with id or index.
+     * It will first find sprite with given id, otherwise will try to use the id as an index.
+     * @param {String|Number} id
+     * @return {Ext.draw.sprite.Sprite}
+     */
+    get: function (id) {
+        return this.map[id] || this.items[id];
+    },
+
+    /**
+     * Destroy the group and remove it from surface.
+     */
+    destroy: function () {
+        this.clear();
+        this.getSurface().getGroups().remove(this);
+    }
+}, function () {
+
+    this.addMembers({
+        /**
+         * Set attributes to all sprites in the group.
+         *
+         * @param {Object} o Sprite attribute options just like in {@link Ext.draw.sprite.Sprite}.
+         * @method
+         */
+        setAttributes: this.createDispatcherMethod('setAttributes'),
+
+        /**
+         * Display all sprites in the group.
+         *
+         * @param {Boolean} o Whether to re-render the frame.
+         * @method
+         */
+        show: this.createDispatcherMethod('show'),
+
+        /**
+         * Hide all sprites in the group.
+         *
+         * @param {Boolean} o Whether to re-render the frame.
+         * @method
+         */
+        hide: this.createDispatcherMethod('hide'),
+
+        /**
+         * Set dirty flag for all sprites in the group
+         * @method
+         */
+        setDirty: this.createDispatcherMethod('setDirty'),
+
+        /**
+         * Return the minimal bounding box that contains all the sprites bounding boxes in this group.
+         * 
+         * Bad performance. Avoid using it.
+         */
+        getBBox: function (isWithTransform) {
+            if (this.length === 0) {
+                return {x: 0, y: 0, width: 0, height: 0};
+            }
+            var i, ln, l = Infinity, r = -Infinity, t = Infinity, b = -Infinity, bbox;
+            for (i = 0, ln = this.items.length; i < ln; i++) {
+                bbox = this.items[i].getBBox(isWithTransform);
+                if (!bbox) {
+                    continue;
+                }
+                if (bbox.x + bbox.width > r) {
+                    r = bbox.x + bbox.width;
+                }
+                if (bbox.x < l) {
+                    l = bbox.x;
+                }
+                if (bbox.y + bbox.height > b) {
+                    b = bbox.y + bbox.height;
+                }
+                if (bbox.y < t) {
+                    t = bbox.y;
+                }
+            }
+            return {
+                x: l,
+                y: t,
+                height: b - t,
+                width: r - l
+            };
+        }
+    });
+});
+
+/**
+ * A Surface is an interface to render methods inside a draw {@link Ext.draw.Component}.
+ * A Surface contains methods to render sprites, get bounding boxes of sprites, add
+ * sprites to the canvas, initialize other graphic components, etc. One of the most used
+ * methods for this class is the `add` method, to add Sprites to the surface.
+ *
+ * Most of the Surface methods are abstract and they have a concrete implementation
+ * in VML or SVG engines.
+ *
+ * A Surface instance can be accessed as a property of a draw component. For example:
+ *
+ *     drawComponent.getSurface('main').add({
+ *         type: 'circle',
+ *         fill: '#ffc',
+ *         radius: 100,
+ *         x: 100,
+ *         y: 100
+ *     });
+ *
+ * The configuration object passed in the `add` method is the same as described in the {@link Ext.draw.sprite.Sprite}
+ * class documentation.
+ *
+ * ## Example
+ *
+ *     drawComponent.getSurface('main').add([
+ *         {
+ *             type: 'circle',
+ *             radius: 10,
+ *             fill: '#f00',
+ *             x: 10,
+ *             y: 10,
+ *             group: 'circles'
+ *         },
+ *         {
+ *             type: 'circle',
+ *             radius: 10,
+ *             fill: '#0f0',
+ *             x: 50,
+ *             y: 50,
+ *             group: 'circles'
+ *         },
+ *         {
+ *             type: 'circle',
+ *             radius: 10,
+ *             fill: '#00f',
+ *             x: 100,
+ *             y: 100,
+ *             group: 'circles'
+ *         },
+ *         {
+ *             type: 'rect',
+ *             radius: 10,
+ *             x: 10,
+ *             y: 10,
+ *             group: 'rectangles'
+ *         },
+ *         {
+ *             type: 'rect',
+ *             radius: 10,
+ *             x: 50,
+ *             y: 50,
+ *             group: 'rectangles'
+ *         },
+ *         {
+ *             type: 'rect',
+ *             radius: 10,
+ *             x: 100,
+ *             y: 100,
+ *             group: 'rectangles'
+ *         }
+ *     ]);
+ *
+ */
+Ext.define('Ext.draw.Surface', {
+    extend: 'Ext.Component',
+    xtype: 'surface',
+
+    requires: [
+        'Ext.draw.sprite.*',
+        'Ext.draw.gradient.*',
+        'Ext.draw.sprite.AttributeDefinition',
+        'Ext.draw.Matrix',
+        'Ext.draw.Draw',
+        'Ext.draw.Group'
+    ],
+
+    uses: [
+        "Ext.draw.engine.Canvas"
+    ],
+
+    defaultIdPrefix: 'ext-surface-',
+
+    /**
+     * The reported device pixel density.
+     */
+    devicePixelRatio: window.devicePixelRatio,
+
+    statics: {
+        /**
+         * Stably sort the list of sprites by their zIndex.
+         * TODO: Improve the performance. Reduce gc impact.
+         * @param list
+         */
+        stableSort: function (list) {
+            if (list.length < 2) {
+                return;
+            }
+            var keys = {}, sortedKeys, result = [], i, ln, zIndex;
+
+            for (i = 0, ln = list.length; i < ln; i++) {
+                zIndex = list[i].attr.zIndex;
+                if (!keys[zIndex]) {
+                    keys[zIndex] = [list[i]];
+                } else {
+                    keys[zIndex].push(list[i]);
+                }
+            }
+            sortedKeys = Object.keys(keys).sort(function (a, b) {return a - b;});
+            for (i = 0, ln = sortedKeys.length; i < ln; i++) {
+                result.push.apply(result, keys[sortedKeys[i]]);
+            }
+            for (i = 0, ln = list.length; i < ln; i++) {
+                list[i] = result[i];
+            }
+        }
+    },
+
+    config: {
+        /**
+         * @cfg {Array}
+         * The region of the surface related to its component.
+         */
+        region: null,
+
+        /**
+         * @cfg {Object}
+         * The config of a background sprite of current surface
+         */
+        background: null,
+
+        /**
+         * @cfg {Ext.draw.Group}
+         * The default group of the surfaces.
+         */
+        items: [],
+
+        /**
+         * @cfg {Array}
+         * An array of groups.
+         */
+        groups: [],
+
+        /**
+         * @cfg {Boolean}
+         * Indicates whether the surface needs redraw.
+         */
+        dirty: false
+    },
+
+    dirtyPredecessor: 0,
+
+    constructor: function (config) {
+        var me = this;
+
+        me.predecessors = [];
+        me.successors = [];
+        me.pendingRenderFrame = false;
+
+        me.callSuper([config]);
+        me.matrix = new Ext.draw.Matrix();
+        me.inverseMatrix = me.matrix.inverse(me.inverseMatrix);
+        me.resetTransform();
+    },
+
+    /**
+     * Round the number to align to the pixels on device.
+     * @param num The number to align.
+     * @return {Number} The resultant alignment.
+     */
+    roundPixel: function (num) {
+        return Math.round(this.devicePixelRatio * num) / this.devicePixelRatio;
+    },
+
+    /**
+     * Mark the surface to render after another surface is updated.
+     * @param surface The surface to wait for.
+     */
+    waitFor: function (surface) {
+        var me = this,
+            predecessors = me.predecessors;
+        if (!Ext.Array.contains(predecessors, surface)) {
+            predecessors.push(surface);
+            surface.successors.push(me);
+            if (surface._dirty) {
+                me.dirtyPredecessor++;
+            }
+        }
+    },
+
+    setDirty: function (dirty) {
+        if (this._dirty !== dirty) {
+            var successors = this.successors, successor,
+                i, ln = successors.length;
+            for (i = 0; i < ln; i++) {
+                successor = successors[i];
+                if (dirty) {
+                    successor.dirtyPredecessor++;
+                    successor.setDirty(true);
+                } else {
+                    successor.dirtyPredecessor--;
+                    if (successor.dirtyPredecessor === 0 && successor.pendingRenderFrame) {
+                        successor.renderFrame();
+                    }
+                }
+            }
+            this._dirty = dirty;
+        }
+    },
+
+    applyElement: function (newElement, oldElement) {
+        if (oldElement) {
+            oldElement.set(newElement);
+        } else {
+            oldElement = Ext.Element.create(newElement);
+        }
+        this.setDirty(true);
+        return oldElement;
+    },
+
+    applyBackground: function (background, oldBackground) {
+        this.setDirty(true);
+        if (Ext.isString(background)) {
+            background = { fillStyle: background };
+        }
+        return Ext.factory(background, Ext.draw.sprite.Rect, oldBackground);
+    },
+
+    applyRegion: function (region, oldRegion) {
+        if (oldRegion && region[0] === oldRegion[0] && region[1] === oldRegion[1] && region[2] === oldRegion[2] && region[3] === oldRegion[3]) {
+            return;
+        }
+        if (Ext.isArray(region)) {
+            return [region[0], region[1], region[2], region[3]];
+        } else if (Ext.isObject(region)) {
+            return [
+                region.x || region.left,
+                region.y || region.top,
+                region.width || (region.right - region.left),
+                region.height || (region.bottom - region.top)
+            ];
+        }
+    },
+
+    updateRegion: function (region) {
+        var me = this,
+            l = region[0],
+            t = region[1],
+            r = l + region[2],
+            b = t + region[3],
+            background = this.getBackground(),
+            element = me.element;
+
+        element.setBox({
+            top: Math.floor(t),
+            left: Math.floor(l),
+            width: Math.ceil(r - Math.floor(l)),
+            height: Math.ceil(b - Math.floor(t))
+        });
+
+        if (background) {
+            background.setAttributes({
+                x: 0,
+                y: 0,
+                width: Math.ceil(r - Math.floor(l)),
+                height: Math.ceil(b - Math.floor(t))
+            });
+        }
+        me.setDirty(true);
+    },
+
+    /**
+     * Reset the matrix of the surface.
+     */
+    resetTransform: function () {
+        this.matrix.set(1, 0, 0, 1, 0, 0);
+        this.inverseMatrix.set(1, 0, 0, 1, 0, 0);
+        this.setDirty(true);
+    },
+
+    updateComponent: function (component, oldComponent) {
+        if (component) {
+            component.element.dom.appendChild(this.element.dom);
+        }
+    },
+    /**
+     * Add a Sprite to the surface.
+     * You can put any number of object as parameter.
+     * See {@link Ext.draw.sprite.Sprite} for the configuration object to be passed into this method.
+     *
+     * For example:
+     *
+     *     drawComponent.surface.add({
+     *         type: 'circle',
+     *         fill: '#ffc',
+     *         radius: 100,
+     *         x: 100,
+     *         y: 100
+     *     });
+     *
+     */
+    add: function () {
+        var me = this,
+            args = Array.prototype.slice.call(arguments),
+            argIsArray = Ext.isArray(args[0]),
+            sprite, items, i, ln, results, group, groups;
+
+        items = argIsArray ? args[0] : args;
+        results = [];
+        for (i = 0, ln = items.length; i < ln; i++) {
+            sprite = items[i];
+            if (!items[i]) {
+                continue;
+            }
+            sprite = me.prepareItems(args[0])[0];
+            groups = sprite.group;
+            if (groups.length) {
+                for (i = 0, ln = groups.length; i < ln; i++) {
+                    group = groups[i];
+                    me.getGroup(group).add(sprite);
+                }
+            }
+
+            me.getItems().add(sprite);
+            results.push(sprite);
+            sprite.setParent(this);
+            me.onAdd(sprite);
+        }
+
+        me.dirtyZIndex = true;
+        me.setDirty(true);
+        if (!argIsArray && results.length === 1) {
+            return results[0];
+        } else {
+            return results;
+        }
+    },
+
+    /**
+     * @protected
+     * Invoked when a sprite is adding to the surface.
+     * @param {Ext.draw.sprite.Sprite} sprite The sprite to be added.
+     */
+    onAdd: Ext.emptyFn,
+
+    /**
+     * Remove a given sprite from the surface, optionally destroying the sprite in the process.
+     * You can also call the sprite own `remove` method.
+     *
+     * For example:
+     *
+     *      drawComponent.surface.remove(sprite);
+     *      // or...
+     *      sprite.remove();
+     *
+     * @param {Ext.draw.sprite.Sprite} sprite
+     * @param {Boolean} destroySprite
+     */
+    remove: function (sprite, destroySprite) {
+        if (sprite) {
+            if (destroySprite === true) {
+                sprite.destroy();
+            } else {
+                this.getGroups().each(function (item) {
+                    item.remove(sprite);
+                });
+                this.getItems().remove(sprite);
+            }
+            this.dirtyZIndex = true;
+            this.setDirty(true);
+        }
+    },
+
+    /**
+     * Remove all sprites from the surface, optionally destroying the sprites in the process.
+     *
+     * For example:
+     *
+     *      drawComponent.surface.removeAll();
+     *
+     */
+    removeAll: function () {
+        this.getItems().clear();
+        this.dirtyZIndex = true;
+    },
+
+    // @private
+    applyItems: function (items, oldItems) {
+        var result;
+
+        if (items instanceof Ext.draw.Group) {
+            result = items;
+        } else {
+            result = new Ext.draw.Group({surface: this});
+            result.autoDestroy = true;
+            result.addAll(this.prepareItems(items));
+        }
+        this.setDirty(true);
+        return result;
+    },
+
+    /**
+     * @private
+     * Initialize and apply defaults to surface items.
+     */
+    prepareItems: function (items) {
+        items = [].concat(items);
+        // Make sure defaults are applied and item is initialized
+        var me = this,
+            item, i, ln, j,
+            removeSprite = function (sprite) {
+                this.remove(sprite, false);
+            };
+
+        for (i = 0, ln = items.length; i < ln; i++) {
+            item = items[i];
+            if (!(item instanceof Ext.draw.sprite.Sprite)) {
+                // Temporary, just take in configs...
+                item = items[i] = me.createItem(item);
+            }
+            for (j = 0; j < item.group.length; j++) {
+                me.getGroup(item.group[i]).add(item);
+            }
+            item.on('beforedestroy', removeSprite, me);
+        }
+        return items;
+    },
+
+    applyGroups: function (groups, oldGroups) {
+        var result;
+
+        if (groups instanceof Ext.util.MixedCollection) {
+            result = groups;
+        } else {
+            result = new Ext.util.MixedCollection();
+            result.addAll(groups);
+        }
+        if (oldGroups) {
+            oldGroups.each(function (group) {
+                if (!result.contains()) {
+                    group.destroy();
+                }
+            });
+            oldGroups.destroy();
+        }
+        this.setDirty(true);
+        return result;
+    },
+
+    /**
+     * @deprecated Do not use groups directly
+     * Returns a new group or an existent group associated with the current surface.
+     * The group returned is a {@link Ext.draw.Group} group.
+     *
+     * For example:
+     *
+     *      var spriteGroup = drawComponent.surface.getGroup('someGroupId');
+     *
+     * @param {String} id The unique identifier of the group.
+     * @return {Ext.draw.Group} The group.
+     */
+    getGroup: function (id) {
+        var group;
+        if (typeof id === "string") {
+            group = this.getGroups().get(id);
+            if (!group) {
+                group = this.createGroup(id);
+            }
+        } else {
+            group = id;
+        }
+        return group;
+    },
+
+    /**
+     * @private
+     * @deprecated Do not use groups directly
+     * @param id
+     * @return {Ext.draw.Group} The group.
+     */
+    createGroup: function (id) {
+        var group = this.getGroups().get(id);
+
+        if (!group) {
+            group = new Ext.draw.Group({surface: this});
+            group.id = id || Ext.id(null, 'ext-surface-group-');
+            this.getGroups().add(group);
+        }
+        this.setDirty(true);
+        return group;
+    },
+
+    /**
+     * @private
+     * @deprecated Do not use groups directly
+     * @param group
+     */
+    removeGroup: function (group) {
+        if (Ext.isString(group)) {
+            group = this.getGroups().get(group);
+        }
+        if (group) {
+            this.getGroups().remove(group);
+            group.destroy();
+        }
+        this.setDirty(true);
+    },
+
+    /**
+     * @private Creates an item and appends it to the surface. Called
+     * as an internal method when calling `add`.
+     */
+    createItem: function (config) {
+        var sprite = Ext.create(config.xclass || 'sprite.' + config.type, config);
+        return sprite;
+    },
+
+    /**
+     * @deprecated Use the `sprite.getBBox(isWithoutTransform)` directly.
+     * @param sprite
+     * @param isWithoutTransform
+     * @return {Object}
+     */
+    getBBox: function (sprite, isWithoutTransform) {
+        return sprite.getBBox(isWithoutTransform);
+    },
+
+    /**
+     * Empty the surface content (without touching the sprites.)
+     */
+    clear: Ext.emptyFn,
+
+    /**
+     * @private
+     * Order the items by their z-index if any of that has been changed since last sort.
+     */
+    orderByZIndex: function () {
+        var me = this,
+            items = me.getItems().items,
+            dirtyZIndex = false,
+            i, ln;
+
+        if (me.getDirty()) {
+            for (i = 0, ln = items.length; i < ln; i++) {
+                if (items[i].attr.dirtyZIndex) {
+                    dirtyZIndex = true;
+                    break;
+                }
+            }
+            if (dirtyZIndex) {
+                // sort by zIndex
+                Ext.draw.Surface.stableSort(items);
+                this.setDirty(true);
+            }
+
+            for (i = 0, ln = items.length; i < ln; i++) {
+                items[i].attr.dirtyZIndex = false;
+            }
+        }
+    },
+
+    /**
+     * Force the element to redraw.
+     */
+    repaint: function () {
+        var me = this;
+        me.repaint = Ext.emptyFn;
+        setTimeout(function () {
+            delete me.repaint;
+            me.element.repaint();
+        }, 1);
+    },
+
+    /**
+     * Triggers the re-rendering of the canvas.
+     */
+    renderFrame: function () {
+        if (!this.element) {
+            return;
+        }
+        if (this.dirtyPredecessor > 0) {
+            this.pendingRenderFrame = true;
+        }
+
+        var me = this,
+            region = this.getRegion(),
+            background = me.getBackground(),
+            items = me.getItems().items,
+            item, i, ln;
+
+        // Cannot render before the surface is placed.
+        if (!region) {
+            return;
+        }
+
+        // This will also check the dirty flags of the sprites.
+        me.orderByZIndex();
+        if (me.getDirty()) {
+            me.clear();
+            me.clearTransform();
+
+            if (background) {
+                me.renderSprite(background);
+            }
+
+            for (i = 0, ln = items.length; i < ln; i++) {
+                item = items[i];
+                item.applyTransformations();
+                if (false === me.renderSprite(item)) {
+                    return;
+                }
+                item.attr.textPositionCount = me.textPosition;
+            }
+
+            me.setDirty(false);
+        }
+    },
+
+    /**
+     * @private
+     * Renders a single sprite into the surface.
+     * Do not call it from outside `renderFrame` method.
+     *
+     * @param {Ext.draw.sprite.Sprite} sprite The Sprite to be rendered.
+     * @return {Boolean} returns `false` to stop the rendering to continue.
+     */
+    renderSprite: Ext.emptyFn,
+
+    /**
+     * @private
+     * Clears the current transformation state on the surface.
+     */
+    clearTransform: Ext.emptyFn,
+
+    /**
+     * Returns 'true' if the surface is dirty.
+     * @return {Boolean} 'true' if the surface is dirty
+     */
+    getDirty: function () {
+        return this._dirty;
+    },
+
+    /**
+     * Destroys the surface. This is done by removing all components from it and
+     * also removing its reference to a DOM element.
+     *
+     * For example:
+     *
+     *      drawComponent.surface.destroy();
+     */
+    destroy: function () {
+        var me = this;
+        me.removeAll();
+        me.setBackground(null);
+        me.setGroups([]);
+        me.getGroups().destroy();
+        me.predecessors = null;
+        me.successors = null;
+        me.callSuper();
+    }
+});
+
+
+
+/**
+ * @class Ext.draw.engine.SvgContext
+ *
+ * A class that imitates a canvas context but generates svg elements instead.
+ */
+Ext.define('Ext.draw.engine.SvgContext', {
+    /**
+     * @private
+     * Properties to be saved/restored in `save` and `restore` method.
+     */
+    toSave: ["strokeOpacity", "strokeStyle", "fillOpacity", "fillStyle", "globalAlpha", "lineWidth", "lineCap",
+             "lineJoin", "miterLimit", "shadowOffsetX", "shadowOffsetY", "shadowBlur", "shadowColor",
+             "globalCompositeOperation", "position"],
+
+    "strokeOpacity": 1,
+    "strokeStyle": "none",
+    "fillOpacity": 1,
+    "fillStyle": "none",
+    "globalAlpha": 1,
+    "lineWidth": 1,
+    "lineCap": "butt",
+    "lineJoin": "miter",
+    "miterLimit": 10,
+    "shadowOffsetX": 0,
+    "shadowOffsetY": 0,
+    "shadowBlur": 0,
+    "shadowColor": "none",
+    "globalCompositeOperation": "src",
+
+    constructor: function (SvgSurface) {
+        this.surface = SvgSurface;
+        this.status = [];
+        this.matrix = new Ext.draw.Matrix();
+        this.path = null;
+        this.clear();
+    },
+
+    /**
+     * Clears the context.
+     */
+    clear: function () {
+        this.group = this.surface.mainGroup;
+        this.position = 0;
+        this.path = null;
+    },
+
+    /**
+     * @private
+     * @param tag
+     * @return {*}
+     */
+    getElement: function (tag) {
+        return this.surface.getSvgElement(this.group, tag, this.position++);
+    },
+
+    /**
+     * Pushes the context state to the state stack.
+     */
+    save: function () {
+        var toSave = this.toSave,
+            obj = {},
+            group = this.getElement('g');
+
+        for (var i = 0; i < toSave.length; i++) {
+            if (toSave[i] in this) {
+                obj[toSave[i]] = this[toSave[i]];
+            }
+        }
+        this.position = 0;
+        obj.matrix = this.matrix.clone();
+        this.status.push(obj);
+        this.group = group;
+    },
+
+    /**
+     * Pops the state stack and restores the state.
+     */
+    restore: function () {
+        var toSave = this.toSave,
+            obj = this.status.pop(),
+            children = this.group.dom.childNodes;
+        while (children.length > this.position) {
+            Ext.fly(children[children.length - 1]).destroy();
+        }
+        for (var i = 0; i < toSave.length; i++) {
+            if (toSave[i] in obj) {
+                this[toSave[i]] = obj[toSave[i]];
+            } else {
+                delete this[toSave[i]];
+            }
+        }
+
+        this.setTransform.apply(this, obj.matrix.elements);
+        this.group = this.group.getParent();
+    },
+
+    /**
+     * Changes the transformation matrix to apply the matrix given by the arguments as described below.
+     * @param xx
+     * @param yx
+     * @param xy
+     * @param yy
+     * @param dx
+     * @param dy
+     */
+    transform: function (xx, yx, xy, yy, dx, dy) {
+        if (this.path) {
+            var inv = Ext.draw.Matrix.fly([xx, yx, xy, yy, dx, dy]).inverse();
+            this.path.transform(inv);
+        }
+        this.matrix.append(xx, yx, xy, yy, dx, dy);
+    },
+
+    /**
+     * Changes the transformation matrix to the matrix given by the arguments as described below.
+     * @param xx
+     * @param yx
+     * @param xy
+     * @param yy
+     * @param dx
+     * @param dy
+     */
+    setTransform: function (xx, yx, xy, yy, dx, dy) {
+        if (this.path) {
+            this.path.transform(this.matrix);
+        }
+        this.matrix.reset();
+        this.transform(xx, yx, xy, yy, dx, dy);
+    },
+
+    setGradientBBox: function (bbox) {
+        this.bbox = bbox;
+    },
+
+    /**
+     * Resets the current default path.
+     */
+    beginPath: function () {
+        this.path = new Ext.draw.Path();
+    },
+
+    /**
+     * Creates a new subpath with the given point.
+     * @param x
+     * @param y
+     */
+    moveTo: function (x, y) {
+        if (!this.path) {
+            this.beginPath();
+        }
+        this.path.moveTo(x, y);
+        this.path.element = null;
+    },
+
+    /**
+     * Adds the given point to the current subpath, connected to the previous one by a straight line.
+     * @param x
+     * @param y
+     */
+    lineTo: function (x, y) {
+        if (!this.path) {
+            this.beginPath();
+        }
+        this.path.lineTo(x, y);
+        this.path.element = null;
+    },
+
+    /**
+     * Adds a new closed subpath to the path, representing the given rectangle.
+     * @param x
+     * @param y
+     * @param width
+     * @param height
+     */
+    rect: function (x, y, width, height) {
+        this.moveTo(x, y);
+        this.lineTo(x + width, y);
+        this.lineTo(x + width, y + height);
+        this.lineTo(x, y + height);
+        this.closePath();
+    },
+
+    /**
+     * Paints the box that outlines the given rectangle onto the canvas, using the current stroke style.
+     * @param x
+     * @param y
+     * @param width
+     * @param height
+     */
+    strokeRect: function (x, y, width, height) {
+        this.beginPath();
+        this.rect(x, y, width, height);
+        this.stroke();
+    },
+
+    /**
+     * Paints the given rectangle onto the canvas, using the current fill style.
+     * @param x
+     * @param y
+     * @param width
+     * @param height
+     */
+    fillRect: function (x, y, width, height) {
+        this.beginPath();
+        this.rect(x, y, width, height);
+        this.fill();
+    },
+
+    /**
+     * Marks the current subpath as closed, and starts a new subpath with a point the same as the start and end of the newly closed subpath.
+     */
+    closePath: function () {
+        if (!this.path) {
+            this.beginPath();
+        }
+        this.path.closePath();
+        this.path.element = null;
+    },
+
+    /**
+     * Arc command using svg parameters.
+     * @param r1
+     * @param r2
+     * @param rotation
+     * @param large
+     * @param swipe
+     * @param x2
+     * @param y2
+     */
+    arcSvg: function (r1, r2, rotation, large, swipe, x2, y2) {
+        if (!this.path) {
+            this.beginPath();
+        }
+        this.path.arcSvg(r1, r2, rotation, large, swipe, x2, y2);
+        this.path.element = null;
+    },
+
+    /**
+     * Adds points to the subpath such that the arc described by the circumference of the circle described by the arguments, starting at the given start angle and ending at the given end angle, going in the given direction (defaulting to clockwise), is added to the path, connected to the previous point by a straight line.
+     * @param x
+     * @param y
+     * @param radius
+     * @param startAngle
+     * @param endAngle
+     * @param anticlockwise
+     */
+    arc: function (x, y, radius, startAngle, endAngle, anticlockwise) {
+        if (!this.path) {
+            this.beginPath();
+        }
+        this.path.arc(x, y, radius, startAngle, endAngle, anticlockwise);
+        this.path.element = null;
+    },
+
+    /**
+     * Adds points to the subpath such that the arc described by the circumference of the ellipse described by the arguments, starting at the given start angle and ending at the given end angle, going in the given direction (defaulting to clockwise), is added to the path, connected to the previous point by a straight line.
+     * @param x
+     * @param y
+     * @param radiusX
+     * @param radiusY
+     * @param rotation
+     * @param startAngle
+     * @param endAngle
+     * @param anticlockwise
+     */
+    ellipse: function (x, y, radiusX, radiusY, rotation, startAngle, endAngle, anticlockwise) {
+        if (!this.path) {
+            this.beginPath();
+        }
+        this.path.ellipse(x, y, radiusX, radiusY, rotation, startAngle, endAngle, anticlockwise);
+        this.path.element = null;
+    },
+
+    /**
+     * Adds an arc with the given control points and radius to the current subpath, connected to the previous point by a straight line.
+     * If two radii are provided, the first controls the width of the arc's ellipse, and the second controls the height. If only one is provided, or if they are the same, the arc is from a circle.
+     * In the case of an ellipse, the rotation argument controls the clockwise inclination of the ellipse relative to the x-axis.
+     * @param x1
+     * @param y1
+     * @param x2
+     * @param y2
+     * @param radiusX
+     * @param radiusY
+     * @param rotation
+     */
+    arcTo: function (x1, y1, x2, y2, radiusX, radiusY, rotation) {
+        if (!this.path) {
+            this.beginPath();
+        }
+        this.path.arcTo(x1, y1, x2, y2, radiusX, radiusY, rotation);
+        this.path.element = null;
+    },
+
+    /**
+     * Adds the given point to the current subpath, connected to the previous one by a cubic Bézier curve with the given control points.
+     * @param x1
+     * @param y1
+     * @param x2
+     * @param y2
+     * @param x3
+     * @param y3
+     */
+    bezierCurveTo: function (x1, y1, x2, y2, x3, y3) {
+        if (!this.path) {
+            this.beginPath();
+        }
+        this.path.bezierCurveTo(x1, y1, x2, y2, x3, y3);
+        this.path.element = null;
+    },
+
+    /**
+     * Strokes the given text at the given position. If a maximum width is provided, the text will be scaled to fit that width if necessary.
+     * @param text
+     * @param x
+     * @param y
+     */
+    strokeText: function (text, x, y) {
+        text = String(text);
+        if (this.strokeStyle) {
+            var element = this.getElement('text'),
+                tspan = this.surface.getSvgElement(element, 'tspan', 0);
+            this.surface.setElementAttributes(element, {
+                "x": x,
+                "y": y,
+                "transform": this.matrix.toSvg(),
+                "stroke": this.strokeStyle,
+                "fill": "none",
+                "opacity": this.globalAlpha,
+                "stroke-opacity": this.strokeOpacity,
+                "style": "font: " + this.font
+            });
+            if (tspan.dom.firstChild) {
+                tspan.dom.removeChild(tspan.dom.firstChild);
+            }
+            tspan.appendChild(document.createTextNode(Ext.String.htmlDecode(text)));
+        }
+    },
+
+    /**
+     * Fills the given text at the given position. If a maximum width is provided, the text will be scaled to fit that width if necessary.
+     * @param text
+     * @param x
+     * @param y
+     */
+    fillText: function (text, x, y) {
+        text = String(text);
+        if (this.fillStyle) {
+            var element = this.getElement('text'),
+                tspan = this.surface.getSvgElement(element, 'tspan', 0);
+            this.surface.setElementAttributes(element, {
+                "x": x,
+                "y": y,
+                "transform": this.matrix.toSvg(),
+                "fill": this.fillStyle,
+                "opacity": this.globalAlpha,
+                "fill-opacity": this.fillOpacity,
+                "style": "font: " + this.font
+            });
+            if (tspan.dom.firstChild) {
+                tspan.dom.removeChild(tspan.dom.firstChild);
+            }
+            this.surface.setElementAttributes(tspan, {
+                "alignment-baseline": "middle",
+                "baseline-shift": "-50%"
+            });
+            tspan.appendChild(document.createTextNode(Ext.String.htmlDecode(text)));
+        }
+    },
+
+    /**
+     * Draws the given image onto the canvas.
+     * If the first argument isn't an img, canvas, or video element, throws a TypeMismatchError exception. If the image has no image data, throws an InvalidStateError exception. If the one of the source rectangle dimensions is zero, throws an IndexSizeError exception. If the image isn't yet fully decoded, then nothing is drawn.
+     * @param image
+     * @param sx
+     * @param sy
+     * @param sw
+     * @param sh
+     * @param dx
+     * @param dy
+     * @param dw
+     * @param dh
+     */
+    drawImage: function (image, sx, sy, sw, sh, dx, dy, dw, dh) {
+        var me = this,
+            element = me.getElement('image'),
+            x = sx, y = sy,
+            width = typeof sw === 'undefined' ? image.width : sw,
+            height = typeof sh === 'undefined' ? image.height : sh,
+            viewBox = null;
+        if (typeof dh !== 'undefined') {
+            viewBox = sx + " " + sy + " " + sw + " " + sh;
+            x = dx;
+            y = dy;
+            width = dw;
+            height = dh;
+        }
+        element.dom.setAttributeNS("http:/" + "/www.w3.org/1999/xlink", "href", image.src);
+        me.surface.setElementAttributes(element, {
+            viewBox: viewBox,
+            x: x,
+            y: y,
+            width: width,
+            height: height,
+            opacity: me.globalAlpha,
+            transform: me.matrix.toSvg()
+        });
+    },
+
+    /**
+     * Fills the subpaths of the current default path or the given path with the current fill style.
+     */
+    fill: function () {
+        if (!this.path) {
+            return;
+        }
+        if (this.fillStyle) {
+            var path,
+                fillGradient = this.fillGradient,
+                bbox = this.bbox,
+                element = this.path.element;
+            if (!element) {
+                path = this.path.toString();
+                element = this.path.element = this.getElement('path');
+                this.surface.setElementAttributes(element, {
+                    "d": path,
+                    "transform": this.matrix.toSvg()
+                });
+            }
+            this.surface.setElementAttributes(element, {
+                "fill": fillGradient && bbox ? fillGradient.getGradient(this, bbox) : this.fillStyle,
+                "fill-opacity": this.fillOpacity * this.globalAlpha
+            });
+        }
+    },
+
+    /**
+     * Strokes the subpaths of the current default path or the given path with the current stroke style.
+     */
+    stroke: function () {
+        if (!this.path) {
+            return;
+        }
+        if (this.strokeStyle) {
+            var path,
+                strokeGradient = this.strokeGradient,
+                bbox = this.bbox,
+                element = this.path.element;
+            if (!element || !this.path.svgString) {
+                path = this.path.toString();
+                element = this.path.element = this.getElement('path');
+                this.surface.setElementAttributes(element, {
+                    "fill": "none",
+                    "d": path,
+                    "transform": this.matrix.toSvg()
+                });
+            }
+            this.surface.setElementAttributes(element, {
+                "stroke": strokeGradient && bbox ? strokeGradient.getGradient(this, bbox) : this.strokeStyle,
+                "stroke-linecap": this.lineCap,
+                "stroke-linejoin": this.lineJoin,
+                "stroke-width": this.lineWidth,
+                "stroke-opacity": this.strokeOpacity * this.globalAlpha
+            });
+        }
+    },
+
+    /**
+     * @protected
+     *
+     * Note: After the method guarantees the transform matrix will be inverted.
+     * @param {Object} attr The attribute object
+     * @param {Boolean} [transformFillStroke] Indicate whether to transform fill and stroke. If this is not
+     *      given, then uses `attr.transformFillStroke` instead.
+     */
+    fillStroke: function (attr, transformFillStroke) {
+        var ctx = this,
+            fillStyle = ctx.fillStyle,
+            strokeStyle = ctx.strokeStyle,
+            fillOpacity = ctx.fillOpacity,
+            strokeOpacity = ctx.strokeOpacity;
+
+        if (transformFillStroke === undefined) {
+            transformFillStroke = attr.transformFillStroke;
+        }
+
+        if (!transformFillStroke) {
+            attr.inverseMatrix.toContext(ctx);
+        }
+
+        if (fillStyle && fillOpacity !== 0) {
+            ctx.fill();
+        }
+
+        if (strokeStyle && strokeOpacity !== 0) {
+            ctx.stroke();
+        }
+    },
+
+    appendPath: function (path) {
+        this.path = path.clone();
+    },
+
+    /**
+     * Returns an object that represents a linear gradient that paints along the line given by the coordinates represented by the arguments.
+     * @param x0
+     * @param y0
+     * @param x1
+     * @param y1
+     * @return {Ext.draw.engine.SvgContext.Gradient}
+     */
+    createLinearGradient: function (x0, y0, x1, y1) {
+        var element = this.surface.getNextDef('linearGradient');
+        this.surface.setElementAttributes(element, {
+            "x1": x0,
+            "y1": y0,
+            "x2": x1,
+            "y2": y1,
+            "gradientUnits": "userSpaceOnUse"
+        });
+        return new Ext.draw.engine.SvgContext.Gradient(this, this.surface, element);
+    },
+
+    /**
+     * Returns a CanvasGradient object that represents a radial gradient that paints along the cone given by the circles represented by the arguments.
+     * If either of the radii are negative, throws an IndexSizeError exception.
+     * @param x0
+     * @param y0
+     * @param r0
+     * @param x1
+     * @param y1
+     * @param r1
+     * @return {Ext.draw.engine.SvgContext.Gradient}
+     */
+    createRadialGradient: function (x0, y0, r0, x1, y1, r1) {
+        var element = this.surface.getNextDef('radialGradient');
+        this.surface.setElementAttributes(element, {
+            "fx": x0,
+            "fy": y0,
+            "cx": x1,
+            "cy": y1,
+            "r": r1,
+            "gradientUnits": "userSpaceOnUse"
+        });
+        return new Ext.draw.engine.SvgContext.Gradient(this, this.surface, element, r1 / r0);
+    }
+});
+
+/**
+ * @class Ext.draw.engine.SvgContext.Gradient
+ */
+Ext.define("Ext.draw.engine.SvgContext.Gradient", {
+    constructor: function (ctx, surface, element, compression) {
+        this.ctx = ctx;
+        this.surface = surface;
+        this.element = element;
+        this.position = 0;
+        this.compression = compression || 0;
+    },
+
+    /**
+     * Adds a color stop with the given color to the gradient at the given offset. 0.0 is the offset at one end of the gradient, 1.0 is the offset at the other end.
+     * @param offset
+     * @param color
+     */
+    addColorStop: function (offset, color) {
+        var stop = this.surface.getSvgElement(this.element, 'stop', this.position++),
+            compression = this.compression;
+        this.surface.setElementAttributes(stop, {
+            "offset": (((1 - compression) * offset + compression) * 100).toFixed(2) + '%',
+            "stop-color": color
+        });
+    },
+
+    toString: function () {
+        return 'url(#' + this.element.getId() + ')';
+    }
+});
+
+/**
+ * @class Ext.draw.engine.Svg
+ * @extends Ext.draw.Surface
+ *
+ * SVG engine.
+ */
+Ext.define('Ext.draw.engine.Svg', {
+    extend: 'Ext.draw.Surface',
+    requires: ['Ext.draw.engine.SvgContext'],
+
+    statics: {
+        BBoxTextCache: {}
+    },
+
+    getElementConfig: function () {
+        return {
+            reference: 'element',
+            style: {
+                position: 'absolute'
+            },
+            children: [
+                {
+                    reference: 'innerElement',
+                    style: {
+                        width: '100%',
+                        height: '100%',
+                        position: 'relative'
+                    },
+                    children: [
+                        {
+                            tag: 'svg',
+                            reference: 'svgElement',
+                            namespace: "http://www.w3.org/2000/svg",
+                            version: 1.1,
+                            cls: 'x-surface'
+                        }
+                    ]
+                }
+            ]
+        };
+    },
+
+    constructor: function (config) {
+        var me = this;
+        me.callSuper([config]);
+        me.mainGroup = me.createSvgNode("g");
+        me.defElement = me.createSvgNode("defs");
+        // me.svgElement is assigned in element creation of Ext.Component.
+        me.svgElement.appendChild(me.mainGroup);
+        me.svgElement.appendChild(me.defElement);
+        me.ctx = new Ext.draw.engine.SvgContext(me);
+    },
+
+    /**
+     * Creates a DOM element under the SVG namespace of the given type.
+     * @param type The type of the SVG DOM element.
+     * @return {*} The created element.
+     */
+    createSvgNode: function (type) {
+        var node = document.createElementNS("http://www.w3.org/2000/svg", type);
+        return Ext.get(node);
+    },
+
+    /**
+     * @private
+     * Returns the SVG DOM element at the given position. If it does not already exist or is a different element tag
+     * it will be created and inserted into the DOM.
+     * @param group The parent DOM element.
+     * @param tag The SVG element tag.
+     * @param position The position of the element in the DOM.
+     * @return {Ext.dom.Element} The SVG element.
+     */
+    getSvgElement: function (group, tag, position) {
+        var element;
+        if (group.dom.childNodes.length > position) {
+            element = group.dom.childNodes[position];
+            if (element.tagName === tag) {
+                return Ext.get(element);
+            } else {
+                Ext.destroy(element);
+            }
+        }
+
+        element = Ext.get(this.createSvgNode(tag));
+        if (position === 0) {
+            group.insertFirst(element);
+        } else {
+            element.insertAfter(Ext.fly(group.dom.childNodes[position - 1]));
+        }
+        element.cache = {};
+        return element;
+    },
+
+    /**
+     * @private
+     * Applies attributes to the given element.
+     * @param element The DOM element to be applied.
+     * @param attributes The attributes to apply to the element.
+     */
+    setElementAttributes: function (element, attributes) {
+        var dom = element.dom,
+            cache = element.cache,
+            name, value;
+        for (name in attributes) {
+            value = attributes[name];
+            if (cache[name] !== value) {
+                cache[name] = value;
+                dom.setAttribute(name, value);
+            }
+        }
+    },
+
+    /**
+     * @private
+     * Gets the next reference element under the SVG 'defs' tag.
+     * @param tagName The type of reference element.
+     * @return {Ext.dom.Element} The reference element.
+     */
+    getNextDef: function (tagName) {
+        return this.getSvgElement(this.defElement, tagName, this.defPosition++);
+    },
+
+    /**
+     * @inheritdoc
+     */
+    clearTransform: function () {
+        var me = this;
+        me.mainGroup.set({transform: me.matrix.toSvg()});
+    },
+
+    /**
+     * @inheritdoc
+     */
+    clear: function () {
+        this.ctx.clear();
+        this.defPosition = 0;
+    },
+
+    /**
+     * @inheritdoc
+     */
+    renderSprite: function (sprite) {
+        var me = this,
+            region = me.getRegion(),
+            ctx = me.ctx;
+        if (sprite.attr.hidden || sprite.attr.opacity === 0) {
+            ctx.save();
+            ctx.restore();
+            return;
+        }
+        try {
+            ctx.save();
+            sprite.preRender(this);
+            sprite.applyTransformations();
+            sprite.useAttributes(ctx);
+            if (false === sprite.render(this, ctx, [0, 0, region[2], region[3]])) {
+                return false;
+            }
+            sprite.setDirty(false);
+        } finally {
+            ctx.restore();
+        }
+    },
+
+    /**
+     * Destroys the Canvas element and prepares it for Garbage Collection.
+     */
+    destroy: function (path, matrix, band) {
+        var me = this;
+        me.ctx.destroy();
+        me.mainGroup.destroy();
+        delete me.mainGroup;
+        delete me.ctx;
+        me.callSuper(arguments);
+    }
+});
+
+/**
+ * @class Ext.draw.engine.Canvas
+ * @extends Ext.draw.Surface
+ *
+ * Provides specific methods to draw with 2D Canvas element.
+ */
+Ext.define('Ext.draw.engine.Canvas', {
+    extend: 'Ext.draw.Surface',
+    config: {
+        /**
+         * @cfg {Boolean} highPrecision
+         * True to have the canvas use JavaScript Number instead of single precision floating point for transforms.
+         *
+         * For example, when using huge data to plot line series, the transform matrix of the canvas will have
+         * a big element. Due to the implementation of SVGMatrix, the elements are restored by 32-bits floats, which
+         * will work incorrectly. To compensate that, we enable the canvas context to perform all the transform by
+         * JavaScript. Do not use it if you are not encountering 32-bits floating point errors problem since it will
+         * have a performance penalty.
+         */
+        highPrecision: false
+    },
+    requires: ['Ext.draw.Animator'],
+
+    statics: {
+        contextOverrides: {
+            setGradientBBox: function (bbox) {
+                this.bbox = bbox;
+            },
+
+            /**
+             * Fills the subpaths of the current default path or the given path with the current fill style.
+             */
+            fill: function () {
+                var fillStyle = this.fillStyle,
+                    fillGradient = this.fillGradient,
+                    fillOpacity = this.fillOpacity,
+                    rgba = 'rgba(0, 0, 0, 0)',
+                    rgba0 = 'rgba(0, 0, 0, 0.0)',
+                    bbox = this.bbox,
+                    alpha = this.globalAlpha;
+
+                if (fillStyle !== rgba && fillStyle !== rgba0 && fillOpacity !== 0) {
+                    if (fillGradient && bbox) {
+                        this.fillStyle = fillGradient.getGradient(this, bbox);
+                    }
+
+                    if (fillOpacity !== 1) {
+                        this.globalAlpha = alpha * fillOpacity;
+                    }
+                    this.$fill();
+                    if (fillOpacity !== 1) {
+                        this.globalAlpha = alpha;
+                    }
+
+                    if (fillGradient && bbox) {
+                        this.fillStyle = fillStyle;
+                    }
+                }
+            },
+
+            /**
+             * Strokes the subpaths of the current default path or the given path with the current stroke style.
+             */
+            stroke: function (transformFillStroke) {
+                var strokeStyle = this.strokeStyle,
+                    strokeGradient = this.strokeGradient,
+                    strokeOpacity = this.strokeOpacity,
+                    rgba = 'rgba(0, 0, 0, 0)',
+                    rgba0 = 'rgba(0, 0, 0, 0.0)',
+                    bbox = this.bbox,
+                    alpha = this.globalAlpha;
+
+                if (strokeStyle !== rgba && strokeStyle !== rgba0 && strokeOpacity !== 0) {
+                    if (strokeGradient && bbox) {
+                        this.strokeStyle = strokeGradient.getGradient(this, bbox);
+                    }
+
+                    if (strokeOpacity !== 1) {
+                        this.globalAlpha = alpha * strokeOpacity;
+                    }
+                    this.$stroke();
+                    if (strokeOpacity !== 1) {
+                        this.globalAlpha = alpha;
+                    }
+
+                    if (strokeGradient && bbox) {
+                        this.strokeStyle = strokeStyle;
+                    }
+                }
+            },
+
+            fillStroke: function (attr, transformFillStroke) {
+                var ctx = this,
+                    fillStyle = this.fillStyle,
+                    fillOpacity = this.fillOpacity,
+                    strokeStyle = this.strokeStyle,
+                    strokeOpacity = this.strokeOpacity,
+                    shadowColor = ctx.shadowColor,
+                    shadowBlur = ctx.shadowBlur,
+                    rgba = 'rgba(0, 0, 0, 0)',
+                    rgba0 = 'rgba(0, 0, 0, 0.0)';
+
+                if (transformFillStroke === undefined) {
+                    transformFillStroke = attr.transformFillStroke;
+                }
+
+                if (!transformFillStroke) {
+                    attr.inverseMatrix.toContext(ctx);
+                }
+                if (fillStyle !== rgba && fillStyle !== rgba0 && fillOpacity !== 0) {
+                    ctx.fill();
+                    ctx.shadowColor = 'rgba(0,0,0,0)';
+                    ctx.shadowBlur = 0;
+                }
+                if (strokeStyle !== rgba && strokeStyle !== rgba0 && strokeOpacity !== 0) {
+                    ctx.stroke();
+                }
+                ctx.shadowColor = shadowColor;
+                ctx.shadowBlur = shadowBlur;
+            },
+
+            /**
+             * Adds points to the subpath such that the arc described by the circumference of the ellipse described by the arguments, starting at the given start angle and ending at the given end angle, going in the given direction (defaulting to clockwise), is added to the path, connected to the previous point by a straight line.
+             * @param cx
+             * @param cy
+             * @param rx
+             * @param ry
+             * @param rotation
+             * @param start
+             * @param end
+             * @param anticlockwise
+             */
+            ellipse: function (cx, cy, rx, ry, rotation, start, end, anticlockwise) {
+                var cos = Math.cos(rotation),
+                    sin = Math.sin(rotation);
+                this.transform(cos * rx, sin * rx, -sin * ry, cos * ry, cx, cy);
+                this.arc(0, 0, 1, start, end, anticlockwise);
+                this.transform(
+                    cos / rx, -sin / ry,
+                    sin / rx, cos / ry,
+                    -(cos * cx + sin * cy) / rx, (sin * cx - cos * cy) / ry);
+            },
+
+            /**
+             * Uses the given path commands to begin a new path on the canvas.
+             * @param path
+             */
+            appendPath: function (path) {
+                var me = this,
+                    i = 0, j = 0,
+                    types = path.types,
+                    coords = path.coords,
+                    ln = path.types.length;
+                me.beginPath();
+                for (; i < ln; i++) {
+                    switch (types[i]) {
+                        case "M":
+                            me.moveTo(coords[j], coords[j + 1]);
+                            j += 2;
+                            break;
+                        case "L":
+                            me.lineTo(coords[j], coords[j + 1]);
+                            j += 2;
+                            break;
+                        case "C":
+                            me.bezierCurveTo(
+                                coords[j], coords[j + 1],
+                                coords[j + 2], coords[j + 3],
+                                coords[j + 4], coords[j + 5]
+                            );
+                            j += 6;
+                            break;
+                        case "Z":
+                            me.closePath();
+                            break;
+                        default:
+                    }
+                }
+            }
+        }
+    },
+
+    splitThreshold: 1800,
+
+    getElementConfig: function () {
+        return {
+            reference: 'element',
+            style: {
+                position: 'absolute'
+            },
+            children: [
+                {
+                    reference: 'innerElement',
+                    style: {
+                        width: '100%',
+                        height: '100%',
+                        position: 'relative'
+                    }
+                }
+            ]
+        };
+    },
+
+    /**
+     * @private
+     *
+     * Creates the canvas element.
+     */
+    createCanvas: function () {
+        var canvas = Ext.Element.create({
+                tag: 'canvas',
+                cls: 'x-surface'
+            }), name, overrides = Ext.draw.engine.Canvas.contextOverrides,
+            ctx = canvas.dom.getContext('2d'),
+            backingStoreRatio = ctx.webkitBackingStorePixelRatio ||
+                ctx.mozBackingStorePixelRatio ||
+                ctx.msBackingStorePixelRatio ||
+                ctx.oBackingStorePixelRatio ||
+                ctx.backingStorePixelRatio || 1;
+
+        this.devicePixelRatio /= backingStoreRatio;
+
+        if (ctx.ellipse) {
+            delete overrides.ellipse;
+        }
+
+        for (name in overrides) {
+            ctx['$' + name] = ctx[name];
+        }
+        Ext.apply(ctx, overrides);
+
+        if (this.getHighPrecision()) {
+            this.enablePrecisionCompensation(ctx);
+        } else {
+            this.disablePrecisionCompensation(ctx);
+        }
+
+        this.innerElement.appendChild(canvas);
+        this.canvases.push(canvas);
+        this.contexts.push(ctx);
+    },
+
+    /**
+     * Initialize the canvas element.
+     */
+    initElement: function () {
+        this.callSuper();
+        this.canvases = [];
+        this.contexts = [];
+        this.createCanvas();
+        this.activeCanvases = 0;
+    },
+
+    updateHighPrecision: function (pc) {
+        var contexts = this.contexts,
+            ln = contexts.length,
+            i, context;
+
+        for (i = 0; i < ln; i++) {
+            context = contexts[i];
+            if (pc) {
+                this.enablePrecisionCompensation(context);
+            } else {
+                this.disablePrecisionCompensation(context);
+            }
+        }
+    },
+
+    precisionMethods: {
+        rect: false,
+        fillRect: false,
+        strokeRect: false,
+        clearRect: false,
+        moveTo: false,
+        lineTo: false,
+        arc: false,
+        arcTo: false,
+        save: false,
+        restore: false,
+        updatePrecisionCompensate: false,
+        setTransform: false,
+        transform: false,
+        scale: false,
+        translate: false,
+        rotate: false,
+        quadraticCurveTo: false,
+        bezierCurveTo: false,
+        createLinearGradient: false,
+        createRadialGradient: false,
+        fillText: false,
+        strokeText: false,
+        drawImage: false
+    },
+
+    /**
+     * @private
+     * Clears canvas of compensation for canvas' use of single precision floating point.
+     * @param {CanvasRenderingContext2D} ctx The canvas context.
+     */
+    disablePrecisionCompensation: function (ctx) {
+        var precisionMethods = this.precisionMethods,
+            name;
+
+        for (name in precisionMethods) {
+            delete ctx[name];
+        }
+
+        this.setDirty(true);
+    },
+
+    /**
+     * @private
+     * Compensate for canvas' use of single precision floating point.
+     * @param {CanvasRenderingContext2D} ctx The canvas context.
+     */
+    enablePrecisionCompensation: function (ctx) {
+        var surface = this,
+            xx = 1, yy = 1,
+            dx = 0, dy = 0,
+            matrix = new Ext.draw.Matrix(),
+            transStack = [],
+            comp = {},
+            originalCtx = ctx.constructor.prototype;
+
+        var override = {
+            /**
+             * Adds a new closed subpath to the path, representing the given rectangle.
+             * @param x
+             * @param y
+             * @param w
+             * @param h
+             * @return {*}
+             */
+            rect: function (x, y, w, h) {
+                return originalCtx.rect.call(this, x * xx + dx, y * yy + dy, w * xx, h * yy);
+            },
+
+            /**
+             * Paints the given rectangle onto the canvas, using the current fill style.
+             * @param x
+             * @param y
+             * @param w
+             * @param h
+             */
+            fillRect: function (x, y, w, h) {
+                this.updatePrecisionCompensateRect();
+                originalCtx.fillRect.call(this, x * xx + dx, y * yy + dy, w * xx, h * yy);
+                this.updatePrecisionCompensate();
+            },
+
+            /**
+             * Paints the box that outlines the given rectangle onto the canvas, using the current stroke style.
+             * @param x
+             * @param y
+             * @param w
+             * @param h
+             */
+            strokeRect: function (x, y, w, h) {
+                this.updatePrecisionCompensateRect();
+                originalCtx.strokeRect.call(this, x * xx + dx, y * yy + dy, w * xx, h * yy);
+                this.updatePrecisionCompensate();
+            },
+
+            /**
+             * Clears all pixels on the canvas in the given rectangle to transparent black.
+             * @param x
+             * @param y
+             * @param w
+             * @param h
+             */
+            clearRect: function (x, y, w, h) {
+                return originalCtx.clearRect.call(this, x * xx + dx, y * yy + dy, w * xx, h * yy);
+            },
+
+            /**
+             * Creates a new subpath with the given point.
+             * @param x
+             * @param y
+             */
+            moveTo: function (x, y) {
+                return originalCtx.moveTo.call(this, x * xx + dx, y * yy + dy);
+            },
+
+            /**
+             * Adds the given point to the current subpath, connected to the previous one by a straight line.
+             * @param x
+             * @param y
+             */
+            lineTo: function (x, y) {
+                return originalCtx.lineTo.call(this, x * xx + dx, y * yy + dy);
+            },
+
+            /**
+             * Adds points to the subpath such that the arc described by the circumference of the circle described by the arguments, starting at the given start angle and ending at the given end angle, going in the given direction (defaulting to clockwise), is added to the path, connected to the previous point by a straight line.
+             * @param x
+             * @param y
+             * @param radius
+             * @param startAngle
+             * @param endAngle
+             * @param anticlockwise
+             */
+            arc: function (x, y, radius, startAngle, endAngle, anticlockwise) {
+                this.updatePrecisionCompensateRect();
+                originalCtx.arc.call(this, x * xx + dx, y * xx + dy, radius * xx, startAngle, endAngle, anticlockwise);
+                this.updatePrecisionCompensate();
+            },
+
+            /**
+             * Adds an arc with the given control points and radius to the current subpath, connected to the previous point by a straight line.
+             * If two radii are provided, the first controls the width of the arc's ellipse, and the second controls the height. If only one is provided, or if they are the same, the arc is from a circle.
+             * In the case of an ellipse, the rotation argument controls the clockwise inclination of the ellipse relative to the x-axis.
+             * @param x1
+             * @param y1
+             * @param x2
+             * @param y2
+             * @param radius
+             */
+            arcTo: function (x1, y1, x2, y2, radius) {
+                this.updatePrecisionCompensateRect();
+                originalCtx.arcTo.call(this, x1 * xx + dx, y1 * yy + dy, x2 * xx + dx, y2 * yy + dy, radius * xx);
+                this.updatePrecisionCompensate();
+            },
+
+            /**
+             * Pushes the context state to the state stack.
+             */
+            save: function () {
+                transStack.push(matrix);
+                matrix = matrix.clone();
+                return originalCtx.save.call(this);
+            },
+
+            /**
+             * Pops the state stack and restores the state.
+             */
+            restore: function () {
+                matrix = transStack.pop();
+                originalCtx.restore.call(this);
+                this.updatePrecisionCompensate();
+            },
+            updatePrecisionCompensate: function () {
+                matrix.precisionCompensate(surface.devicePixelRatio, comp);
+                xx = comp.xx;
+                yy = comp.yy;
+                dx = comp.dx;
+                dy = comp.dy;
+                return originalCtx.setTransform.call(this, surface.devicePixelRatio, comp.b, comp.c, comp.d, 0, 0);
+            },
+            updatePrecisionCompensateRect: function () {
+                matrix.precisionCompensateRect(surface.devicePixelRatio, comp);
+                xx = comp.xx;
+                yy = comp.yy;
+                dx = comp.dx;
+                dy = comp.dy;
+                return originalCtx.setTransform.call(this, surface.devicePixelRatio, comp.b, comp.c, comp.d, 0, 0);
+            },
+
+            /**
+             * Changes the transformation matrix to the matrix given by the arguments as described below.
+             * @param x2x
+             * @param x2y
+             * @param y2x
+             * @param y2y
+             * @param newDx
+             * @param newDy
+             */
+            setTransform: function (x2x, x2y, y2x, y2y, newDx, newDy) {
+                matrix.set(x2x, x2y, y2x, y2y, newDx, newDy);
+                this.updatePrecisionCompensate();
+            },
+
+            /**
+             * Changes the transformation matrix to apply the matrix given by the arguments as described below.
+             * @param x2x
+             * @param x2y
+             * @param y2x
+             * @param y2y
+             * @param newDx
+             * @param newDy
+             */
+            transform: function (x2x, x2y, y2x, y2y, newDx, newDy) {
+                matrix.append(x2x, x2y, y2x, y2y, newDx, newDy);
+                this.updatePrecisionCompensate();
+            },
+
+            /**
+             * Scales the transformation matrix.
+             * @param sx
+             * @param sy
+             * @return {*}
+             */
+            scale: function (sx, sy) {
+                return this.transform(sx, 0, 0, sy, 0, 0);
+            },
+
+            /**
+             * Translates the transformation matrix.
+             * @param dx
+             * @param dy
+             * @return {*}
+             */
+            translate: function (dx, dy) {
+                return this.transform(1, 0, 0, 1, dx, dy);
+            },
+
+            /**
+             * Rotates the transformation matrix.
+             * @param radians
+             * @return {*}
+             */
+            rotate: function (radians) {
+                var cos = Math.cos(radians),
+                    sin = Math.sin(radians);
+                return this.transform(cos, sin, -sin, cos, 0, 0);
+            },
+
+            /**
+             * Adds the given point to the current subpath, connected to the previous one by a quadratic Bézier curve with the given control point.
+             * @param cx
+             * @param cy
+             * @param x
+             * @param y
+             * @return {*}
+             */
+            quadraticCurveTo: function (cx, cy, x, y) {
+                return originalCtx.quadraticCurveTo.call(this,
+                    cx * xx + dx,
+                    cy * yy + dy,
+                    x * xx + dx,
+                    y * yy + dy
+                );
+            },
+
+            /**
+             * Adds the given point to the current subpath, connected to the previous one by a cubic Bézier curve with the given control points.
+             * @param c1x
+             * @param c1y
+             * @param c2x
+             * @param c2y
+             * @param x
+             * @param y
+             * @return {*}
+             */
+            bezierCurveTo: function (c1x, c1y, c2x, c2y, x, y) {
+                return originalCtx.bezierCurveTo.call(this,
+                    c1x * xx + dx,
+                    c1y * yy + dy,
+                    c2x * xx + dx,
+                    c2y * yy + dy,
+                    x * xx + dx,
+                    y * yy + dy
+                );
+            },
+
+            /**
+             * Returns an object that represents a linear gradient that paints along the line given by the coordinates represented by the arguments.
+             * @param x0
+             * @param y0
+             * @param x1
+             * @param y1
+             * @return {*}
+             */
+            createLinearGradient: function (x0, y0, x1, y1) {
+                this.updatePrecisionCompensateRect();
+                var grad = originalCtx.createLinearGradient.call(this,
+                    x0 * xx + dx,
+                    y0 * yy + dy,
+                    x1 * xx + dx,
+                    y1 * yy + dy
+                );
+                this.updatePrecisionCompensate();
+                return grad;
+            },
+
+            /**
+             * Returns a CanvasGradient object that represents a radial gradient that paints along the cone given by the circles represented by the arguments.
+             * If either of the radii are negative, throws an IndexSizeError exception.
+             * @param x0
+             * @param y0
+             * @param r0
+             * @param x1
+             * @param y1
+             * @param r1
+             * @return {*}
+             */
+            createRadialGradient: function (x0, y0, r0, x1, y1, r1) {
+                this.updatePrecisionCompensateRect();
+                var grad = originalCtx.createLinearGradient.call(this,
+                    x0 * xx + dx,
+                    y0 * xx + dy,
+                    r0 * xx,
+                    x1 * xx + dx,
+                    y1 * xx + dy,
+                    r1 * xx
+                );
+                this.updatePrecisionCompensate();
+                return grad;
+            },
+
+            /**
+             * Fills the given text at the given position. If a maximum width is provided, the text will be scaled to fit that width if necessary.
+             * @param text
+             * @param x
+             * @param y
+             * @param maxWidth
+             */
+            fillText: function (text, x, y, maxWidth) {
+                originalCtx.setTransform.apply(this, matrix.elements);
+                if (typeof maxWidth === 'undefined') {
+                    originalCtx.fillText.call(this, text, x, y);
+                } else {
+                    originalCtx.fillText.call(this, text, x, y, maxWidth);
+                }
+                this.updatePrecisionCompensate();
+            },
+
+            /**
+             * Strokes the given text at the given position. If a maximum width is provided, the text will be scaled to fit that width if necessary.
+             * @param text
+             * @param x
+             * @param y
+             * @param maxWidth
+             */
+            strokeText: function (text, x, y, maxWidth) {
+                originalCtx.setTransform.apply(this, matrix.elements);
+                if (typeof maxWidth === 'undefined') {
+                    originalCtx.strokeText.call(this, text, x, y);
+                } else {
+                    originalCtx.strokeText.call(this, text, x, y, maxWidth);
+                }
+                this.updatePrecisionCompensate();
+            },
+
+            /**
+             * Fills the subpaths of the current default path or the given path with the current fill style.
+             */
+            fill: function () {
+                this.updatePrecisionCompensateRect();
+                originalCtx.fill.call(this);
+                this.updatePrecisionCompensate();
+            },
+
+            /**
+             * Strokes the subpaths of the current default path or the given path with the current stroke style.
+             */
+            stroke: function () {
+                this.updatePrecisionCompensateRect();
+                originalCtx.stroke.call(this);
+                this.updatePrecisionCompensate();
+            },
+
+            /**
+             * Draws the given image onto the canvas.
+             * If the first argument isn't an img, canvas, or video element, throws a TypeMismatchError exception. If the image has no image data, throws an InvalidStateError exception. If the one of the source rectangle dimensions is zero, throws an IndexSizeError exception. If the image isn't yet fully decoded, then nothing is drawn.
+             * @param img_elem
+             * @param arg1
+             * @param arg2
+             * @param arg3
+             * @param arg4
+             * @param dst_x
+             * @param dst_y
+             * @param dw
+             * @param dh
+             * @return {*}
+             */
+            drawImage: function (img_elem, arg1, arg2, arg3, arg4, dst_x, dst_y, dw, dh) {
+                switch (arguments.length) {
+                    case 3:
+                        return originalCtx.drawImage.call(this, img_elem, arg1 * xx + dx, arg2 * yy + dy);
+                    case 5:
+                        return originalCtx.drawImage.call(this, img_elem, arg1 * xx + dx, arg2 * yy + dy, arg3 * xx, arg4 * yy);
+                    case 9:
+                        return originalCtx.drawImage.call(this, img_elem, arg1, arg2, arg3, arg4, dst_x * xx + dx, dst_y * yy * dy, dw * xx, dh * yy);
+                }
+            }
+        };
+        Ext.apply(ctx, override);
+        this.setDirty(true);
+    },
+
+    updateRegion: function (region) {
+        this.callSuper([region]);
+
+        var me = this,
+            l = Math.floor(region[0]),
+            t = Math.floor(region[1]),
+            r = Math.ceil(region[0] + region[2]),
+            b = Math.ceil(region[1] + region[3]),
+            devicePixelRatio = me.devicePixelRatio,
+            w = r - l,
+            h = b - t,
+            splitThreshold = Math.round(me.splitThreshold / devicePixelRatio),
+            splits = Math.ceil(w / splitThreshold),
+            activeCanvases = me.activeCanvases,
+            i, offsetX, dom, leftWidth;
+
+        for (i = 0, offsetX = 0; i < splits; i++, offsetX += splitThreshold) {
+            if (i >= me.canvases.length) {
+                me.createCanvas();
+            }
+            dom = me.canvases[i].dom;
+            dom.style.left = offsetX + 'px';
+            if (h * devicePixelRatio !== dom.height) {
+                dom.height = h * devicePixelRatio;
+                dom.style.height = h + 'px';
+            }
+            leftWidth = Math.min(splitThreshold, w - offsetX);
+            if (leftWidth * devicePixelRatio !== dom.width) {
+                dom.width = leftWidth * devicePixelRatio;
+                dom.style.width = leftWidth + 'px';
+            }
+            me.applyDefaults(me.contexts[i]);
+        }
+
+        for (; i < activeCanvases; i++) {
+            dom = me.canvases[i].dom;
+            dom.width = 0;
+            dom.height = 0;
+        }
+        me.activeCanvases = splits;
+        me.clear();
+    },
+
+    /**
+     * @inheritdoc
+     */
+    clearTransform: function () {
+        var me = this,
+            activeCanvases = me.activeCanvases,
+            i, ctx;
+
+        for (i = 0; i < activeCanvases; i++) {
+            ctx = me.contexts[i];
+            ctx.translate(-me.splitThreshold * i, 0);
+            ctx.scale(me.devicePixelRatio, me.devicePixelRatio);
+            me.matrix.toContext(ctx);
+        }
+
+    },
+
+    /**
+     * @private
+     * @inheritdoc
+     */
+    renderSprite: function (sprite) {
+        var me = this,
+            region = me._region,
+            surfaceMatrix = me.matrix,
+            parent = sprite._parent,
+            matrix = Ext.draw.Matrix.fly([1, 0, 0, 1, 0, 0]),
+            bbox, i, offsetX, ctx, width, left = 0, top, right = region[2], bottom;
+
+        while (parent && (parent !== me)) {
+            matrix.prependMatrix(parent.matrix || parent.attr && parent.attr.matrix);
+            parent = parent.getParent();
+        }
+        matrix.prependMatrix(surfaceMatrix);
+        bbox = sprite.getBBox();
+        if (bbox) {
+            bbox = matrix.transformBBox(bbox);
+        }
+
+        sprite.preRender(me);
+
+        if (sprite.attr.hidden || sprite.attr.globalAlpha === 0) {
+            sprite.setDirty(false);
+            return;
+        }
+
+        top = 0;
+        bottom = top + region[3];
+
+        for (i = 0, offsetX = 0; i < me.activeCanvases; i++, offsetX += me.splitThreshold / me.devicePixelRatio) {
+            ctx = me.contexts[i];
+            width = Math.min(region[2] - offsetX, me.splitThreshold / me.devicePixelRatio);
+            left = offsetX;
+            right = left + width;
+
+            if (bbox) {
+                if (bbox.x > right ||
+                    bbox.x + bbox.width < left ||
+                    bbox.y > bottom ||
+                    bbox.y + bbox.height < top) {
+                    continue;
+                }
+            }
+
+            try {
+                ctx.save();
+                // Set attributes to context.
+                sprite.useAttributes(ctx);
+                // Render shape
+                if (false === sprite.render(me, ctx, [left, top, width, bottom - top])) {
+                    return false;
+                }
+            } finally {
+                ctx.restore();
+            }
+        }
+        sprite.setDirty(false);
+    },
+
+    applyDefaults: function (ctx) {
+        ctx.strokeStyle = 'rgba(0,0,0,0)';
+        ctx.fillStyle = 'rgba(0,0,0,0)';
+        ctx.textAlign = 'start';
+        ctx.textBaseline = 'top';
+        ctx.miterLimit = 1;
+    },
+
+    /**
+     * @inheritdoc
+     */
+    clear: function () {
+        var me = this,
+            activeCanvases = this.activeCanvases,
+            i, canvas, ctx, width, height;
+        for (i = 0; i < activeCanvases; i++) {
+            canvas = me.canvases[i].dom;
+            ctx = me.contexts[i];
+            width = canvas.width;
+            height = canvas.height;
+            if (Ext.os.is.Android && !Ext.os.is.Android4) {
+                // TODO: Verify this is the proper check (Chrome)
+                // On chrome this is faster:
+                //noinspection SillyAssignmentJS
+                canvas.width = canvas.width;
+                // Fill the gap between surface defaults and canvas defaults
+                me.applyDefaults(ctx);
+            } else {
+                ctx.setTransform(1, 0, 0, 1, 0, 0);
+                ctx.clearRect(0, 0, width, height);
+            }
+        }
+        me.setDirty(true);
+    },
+
+    /**
+     * Destroys the Canvas element and prepares it for Garbage Collection.
+     */
+    destroy: function () {
+        var me = this,
+            i, ln = me.canvases.length;
+        for (i = 0; i < ln; i++) {
+            me.contexts[i] = null;
+            me.canvases[i].destroy();
+            me.canvases[i] = null;
+        }
+        delete me.contexts;
+        delete me.canvases;
+        me.callSuper(arguments);
+    }
+}, function () {
+    if (Ext.os.is.Android4 && Ext.browser.is.Chrome) {
+        this.prototype.splitThreshold = 3000;
+    } else if (Ext.os.is.Android) {
+        this.prototype.splitThreshold = 1e10;
+    }
+});
+
+/**
+ * The Draw Component is a surface in which sprites can be rendered. The Draw Component
+ * manages and holds a `Surface` instance: an interface that has
+ * an SVG or VML implementation depending on the browser capabilities and where
+ * Sprites can be appended.
+ * One way to create a draw component is:
+ *
+ *     var drawComponent = new Ext.draw.Component({
+ *         items: [{
+ *             type: 'circle',
+ *             fill: '#79BB3F',
+ *             radius: 100,
+ *             x: 100,
+ *             y: 100
+ *         }]
+ *     });
+ *
+ *     new Ext.Panel({
+ *         fullscreen: true,
+ *         items: [drawComponent]
+ *     });
+ *
+ * In this case we created a draw component and added a sprite to it.
+ * The *type* of the sprite is *circle* so if you run this code you'll see a yellow-ish
+ * circle in a Window. When setting `viewBox` to `false` we are responsible for setting the object's position and
+ * dimensions accordingly.
+ *
+ * You can also add sprites by using the surface's add method:
+ *
+ *     drawComponent.getSurface('main').add({
+ *         type: 'circle',
+ *         fill: '#79BB3F',
+ *         radius: 100,
+ *         x: 100,
+ *         y: 100
+ *     });
+ *
+ * For more information on Sprites, the core elements added to a draw component's surface,
+ * refer to the {@link Ext.draw.sprite.Sprite} documentation.
+ */
+Ext.define('Ext.draw.Component', {
+
+    extend: 'Ext.Container',
+    xtype: 'draw',
+    defaultType: 'surface',
+
+    requires: [
+        'Ext.draw.Surface',
+        'Ext.draw.engine.Svg',
+        'Ext.draw.engine.Canvas'
+    ],
+    engine: 'Ext.draw.engine.Canvas',
+    statics: {
+        WATERMARK: 'Powered by <span style="color:#22E962; font-weight: 900">Sencha Touch</span> <span style="color:#75cdff; font-weight: 900">GPL</span>'
+    },
+    config: {
+        cls: 'x-draw-component',
+
+        /**
+         * @deprecated 2.2.0 Please implement custom resize event handler.
+         * Resize the draw component by the content size of the main surface.
+         *
+         * __Note:__ It is applied only when there is only one surface.
+         */
+        autoSize: false,
+
+        /**
+         * @deprecated 2.2.0 Please implement custom resize event handler.
+         * Pan/Zoom the content in main surface to fit the component size.
+         *
+         * __Note:__ It is applied only when there is only one surface.
+         */
+        viewBox: false,
+
+        /**
+         * @deprecated 2.2.0 Please implement custom resize event handler.
+         * Fit the main surface to the size of component.
+         *
+         * __Note:__ It is applied only when there is only one surface.
+         */
+        fitSurface: true,
+
+        /**
+         * @cfg {Function} [resizeHandler] The resize function that can be configured to have a behavior.
+         */
+        resizeHandler: null,
+
+        background: null,
+
+        sprites: null
+    },
+
+    constructor: function (config) {
+        config = config || {};
+        // If use used `items` config, they are actually using `sprites`
+        if (config.items) {
+            config.sprites = config.items;
+            delete config.items;
+        }
+        this.callSuper(arguments);
+        this.frameCallbackId = Ext.draw.Animator.addFrameCallback('renderFrame', this);
+    },
+
+    initialize: function () {
+        var me = this;
+        me.callSuper();
+        me.element.on('resize', 'onResize', this);
+
+    },
+
+    applySprites: function (sprites) {
+        // Never update
+        if (!sprites) {
+            return;
+        }
+
+        sprites = Ext.Array.from(sprites);
+
+        var ln = sprites.length,
+            i, surface;
+
+        for (i = 0; i < ln; i++) {
+            if (sprites[i].surface instanceof Ext.draw.Surface) {
+                surface = sprites[i].surface;
+            } else if (Ext.isString(sprites[i].surface)) {
+                surface = this.getSurface(sprites[i].surface);
+            } else {
+                surface = this.getSurface('main');
+            }
+            surface.add(sprites[i]);
+        }
+    },
+
+    getElementConfig: function () {
+        return {
+            reference: 'element',
+            className: 'x-container',
+            children: [
+                {
+                    reference: 'innerElement',
+                    className: 'x-inner',
+                    children: [
+                        {
+                            reference: 'watermarkElement',
+                            cls: 'x-chart-watermark',
+                            html: Ext.draw.Component.WATERMARK,
+                            style: Ext.draw.Component.WATERMARK ? '': 'display: none'
+                        }
+                    ]
+                }
+            ]
+        };
+    },
+
+    updateBackground: function (background) {
+        this.element.setStyle({
+            background: background
+        });
+    },
+
+    /**
+     * @protected
+     * Place water mark after resize.
+     */
+    onPlaceWatermark: function () {
+        // Do nothing
+    },
+
+    onResize: function () {
+        var me = this,
+            size = me.element.getSize();
+        me.fireEvent('resize', me, size);
+        if (me.getResizeHandler()) {
+            me.getResizeHandler().call(me, size);
+        } else {
+            me.resizeHandler(size);
+        }
+        me.renderFrame();
+        me.onPlaceWatermark();
+    },
+
+    resizeHandler: function (size) {
+        var me = this;
+
+
+        me.getItems().each(function (surface) {
+            surface.setRegion([0, 0, size.width, size.height]);
+        });
+    },
+
+    /**
+     * Get a surface by the given id or create one if it doesn't exist.
+     * @param {String} [id="main"]
+     * @return {Ext.draw.Surface}
+     */
+    getSurface: function (id) {
+        id = this.getId() + '-' + (id || 'main');
+        var me = this,
+            surfaces = me.getItems(),
+            surface = surfaces.get(id),
+            size;
+
+        if (!surface) {
+            surface = me.add({xclass: me.engine, id: id});
+            if (me.getFitSurface()) {
+                size = me.element.getSize();
+                surface.setRegion([0, 0, size.width, size.height]);
+            }
+            surface.renderFrame();
+        }
+        return surface;
+    },
+
+    /**
+     * Render all the surfaces in the component.
+     */
+    renderFrame: function () {
+        var me = this,
+            i, ln, bbox,
+            surfaces = me.getItems();
+
+        for (i = 0, ln = surfaces.length; i < ln; i++) {
+            surfaces.items[i].renderFrame();
+        }
+    },
+
+    destroy: function () {
+        Ext.draw.Animator.removeFrameCallback(this.frameCallbackId);
+        this.callSuper();
+    }
+}, function () {
+    if (location.search.match('svg')) {
+        Ext.draw.Component.prototype.engine = 'Ext.draw.engine.Svg';
+    } else if (Ext.os.is.Android4 && !Ext.browser.is.Chrome && Ext.os.version.getMinor() === 1) {
+        // http://code.google.com/p/android/issues/detail?id=37529
+        Ext.draw.Component.prototype.engine = 'Ext.draw.engine.Svg';
+    }
+});
+
+/**
+ * @class Ext.chart.Markers
+ * @extends Ext.draw.sprite.Instancing
+ * 
+ * Marker sprite. A specialized version of instancing sprite that groups instances.
+ * Putting a marker is grouped by its category id. Clearing removes that category.
+ */
+Ext.define("Ext.chart.Markers", {
+    extend: 'Ext.draw.sprite.Instancing',
+    revisions: 0,
+
+    constructor: function () {
+        this.callSuper(arguments);
+        this.map = {};
+        this.revisions = {};
+    },
+
+    /**
+     * Clear the markers in the category
+     * @param {String} category
+     */
+    clear: function (category) {
+        category = category || 'default';
+        if (!(category in this.revisions)) {
+            this.revisions[category] = 1;
+        } else {
+            this.revisions[category]++;
+        }
+    },
+
+    /**
+     * Put a marker in the category with additional
+     * attributes.
+     * @param {String} category
+     * @param {Object} markerAttr
+     * @param {String|Number} index
+     * @param {Boolean} [canonical]
+     * @param {Boolean} [keepRevision]
+     */
+    putMarkerFor: function (category, markerAttr, index, canonical, keepRevision) {
+        category = category || 'default';
+
+        var me = this,
+            map = me.map[category] || (me.map[category] = {});
+        if (index in map) {
+            me.setAttributesFor(map[index], markerAttr, canonical);
+        } else {
+            map[index] = me.instances.length;
+            me.createInstance(markerAttr, null, canonical);
+        }
+        me.instances[map[index]].category = category;
+        if (!keepRevision) {
+            me.instances[map[index]].revision = me.revisions[category] || (me.revisions[category] = 1);
+        }
+    },
+
+    /**
+     *
+     * @param {String} id
+     * @param {Mixed} index
+     * @param {Boolean} [isWithoutTransform]
+     */
+    getMarkerBBoxFor: function (category, index, isWithoutTransform) {
+        if (category in this.map) {
+            if (index in this.map[category]) {
+                return this.getBBoxFor(this.map[category][index], isWithoutTransform);
+            }
+        }
+    },
+
+    getBBox: function () { return null; },
+
+    render: function (surface, ctx, clipRegion) {
+        var me = this,
+            revisions = me.revisions,
+            mat = me.attr.matrix,
+            template = me.getTemplate(),
+            originalAttr = template.attr,
+            instances = me.instances,
+            i, ln = me.instances.length;
+        mat.toContext(ctx);
+        template.preRender(surface, ctx, clipRegion);
+        template.useAttributes(ctx);
+        for (i = 0; i < ln; i++) {
+            if (instances[i].hidden || instances[i].revision !== revisions[instances[i].category]) {
+                continue;
+            }
+            ctx.save();
+            template.attr = instances[i];
+            template.applyTransformations();
+            template.useAttributes(ctx);
+            template.render(surface, ctx, clipRegion);
+            ctx.restore();
+        }
+        template.attr = originalAttr;
+    }
+});
+
+/**
+ * @class Ext.chart.label.Callout
+ * @extends Ext.draw.modifier.Modifier
+ * 
+ * This is a modifier to place labels and callouts by additional attributes.
+ */
+Ext.define("Ext.chart.label.Callout", {
+    extend: 'Ext.draw.modifier.Modifier',
+
+    prepareAttributes: function (attr) {
+        if (!attr.hasOwnProperty('calloutOriginal')) {
+            attr.calloutOriginal = Ext.Object.chain(attr);
+        }
+        if (this._previous) {
+            this._previous.prepareAttributes(attr.calloutOriginal);
+        }
+    },
+
+    setAttrs: function (attr, changes) {
+        var callout = attr.callout,
+            origin = attr.calloutOriginal,
+            bbox = attr.bbox.plain,
+            width = (bbox.width || 0) + attr.labelOverflowPadding,
+            height = (bbox.height || 0) + attr.labelOverflowPadding,
+            dx, dy, r;
+
+        if ('callout' in changes) {
+            callout = changes.callout;
+        }
+
+        if ('callout' in changes || 'calloutPlaceX' in changes || 'calloutPlaceY' in changes || 'x' in changes || 'y' in changes) {
+            var rotationRads = 'rotationRads' in changes ? origin.rotationRads = changes.rotationRads : origin.rotationRads,
+                x = 'x' in changes ? (origin.x = changes.x) : origin.x,
+                y = 'y' in changes ? (origin.y = changes.y) : origin.y,
+                calloutPlaceX = 'calloutPlaceX' in changes ? changes.calloutPlaceX : attr.calloutPlaceX,
+                calloutPlaceY = 'calloutPlaceY' in changes ? changes.calloutPlaceY : attr.calloutPlaceY,
+                calloutVertical = 'calloutVertical' in changes ? changes.calloutVertical : attr.calloutVertical,
+                temp;
+
+            // Normalize Rotations
+            rotationRads %= Math.PI * 2;
+            if (Math.cos(rotationRads) < 0) {
+                rotationRads = (rotationRads + Math.PI) % (Math.PI * 2);
+            }
+
+            if (rotationRads > Math.PI) {
+                rotationRads -= Math.PI * 2;
+            }
+
+            if (calloutVertical) {
+                rotationRads = rotationRads * (1 - callout) + Math.PI / 2 * callout;
+                temp = width;
+                width = height;
+                height = temp;
+            } else {
+                rotationRads = rotationRads * (1 - callout);
+            }
+            changes.rotationRads = rotationRads;
+
+
+            // Placing label.
+            changes.x = x * (1 - callout) + calloutPlaceX * callout;
+            changes.y = y * (1 - callout) + calloutPlaceY * callout;
+
+
+            // Placing the end of the callout line.
+            dx = calloutPlaceX - x;
+            dy = calloutPlaceY - y;
+            if (Math.abs(dy * width) > Math.abs(height * dx)) {
+                // on top/bottom
+                if (dy > 0) {
+                    changes.calloutEndX = changes.x - (height / (dy * 2) * dx) * callout;
+                    changes.calloutEndY = changes.y - height / 2 * callout;
+                } else {
+                    changes.calloutEndX = changes.x + (height / (dy * 2) * dx) * callout;
+                    changes.calloutEndY = changes.y + height / 2 * callout;
+                }
+            } else {
+                // on left/right
+                if (dx > 0) {
+                    changes.calloutEndX = changes.x - width / 2;
+                    changes.calloutEndY = changes.y - (width / (dx * 2) * dy) * callout;
+                } else {
+                    changes.calloutEndX = changes.x + width / 2;
+                    changes.calloutEndY = changes.y + (width / (dx * 2) * dy) * callout;
+                }
+            }
+        }
+
+        return changes;
+    },
+
+    pushDown: function (attr, changes) {
+        changes = Ext.draw.modifier.Modifier.prototype.pushDown.call(this, attr.calloutOriginal, changes);
+        return this.setAttrs(attr, changes);
+    },
+
+    popUp: function (attr, changes) {
+        attr = attr.__proto__;
+        changes = this.setAttrs(attr, changes);
+        if (this._next) {
+            return this._next.popUp(attr, changes);
+        } else {
+            return Ext.apply(attr, changes);
+        }
+    }
+});
+
+/**
+ * @class Ext.chart.label.Label
+ * @extends Ext.draw.sprite.Text
+ * 
+ * Sprite used to represent labels in series.
+ */
+Ext.define("Ext.chart.label.Label", {
+    extend: "Ext.draw.sprite.Text",
+    requires: ['Ext.chart.label.Callout'],
+
+    inheritableStatics: {
+        def: {
+            processors: {
+                callout: 'limited01',
+                calloutPlaceX: 'number',
+                calloutPlaceY: 'number',
+                calloutStartX: 'number',
+                calloutStartY: 'number',
+                calloutEndX: 'number',
+                calloutEndY: 'number',
+                calloutColor: 'color',
+                calloutVertical: 'bool',
+                labelOverflowPadding: 'number'
+            },
+            defaults: {
+                callout: 0,
+                calloutPlaceX: 0,
+                calloutPlaceY: 0,
+                calloutStartX: 0,
+                calloutStartY: 0,
+                calloutEndX: 0,
+                calloutEndY: 0,
+                calloutVertical: false,
+                calloutColor: 'black',
+                labelOverflowPadding: 5
+            },
+
+            dirtyTriggers: {
+                callout: 'transform',
+                calloutPlaceX: 'transform',
+                calloutPlaceY: 'transform',
+                labelOverflowPadding: 'transform',
+                calloutRotation: 'transform'
+            }
+        }
+    },
+
+    config: {
+        /**
+         * @cfg {Object} fx Animation configuration.
+         */
+        fx: {
+            customDuration: {
+                callout: 200
+            }
+        }
+    },
+
+    prepareModifiers: function () {
+        this.callSuper(arguments);
+        this.calloutModifier = new Ext.chart.label.Callout({sprite: this});
+        this.fx.setNext(this.calloutModifier);
+        this.calloutModifier.setNext(this.topModifier);
+    },
+
+    render: function (surface, ctx, clipRegion) {
+        var me = this,
+            attr = me.attr;
+        ctx.save();
+        ctx.globalAlpha *= Math.max(0, attr.callout - 0.5) * 2;
+        if (ctx.globalAlpha > 0) {
+            ctx.strokeStyle = attr.calloutColor;
+            ctx.fillStyle = attr.calloutColor;
+            ctx.beginPath();
+            ctx.moveTo(me.attr.calloutStartX, me.attr.calloutStartY);
+            ctx.lineTo(me.attr.calloutEndX, me.attr.calloutEndY);
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.arc(me.attr.calloutStartX, me.attr.calloutStartY, 1, 0, 2 * Math.PI, true);
+            ctx.fill();
+
+            ctx.beginPath();
+            ctx.arc(me.attr.calloutEndX, me.attr.calloutEndY, 1, 0, 2 * Math.PI, true);
+            ctx.fill();
+        }
+        ctx.restore();
+
+        Ext.draw.sprite.Text.prototype.render.apply(this, arguments);
+    }
+});
+
+/**
+ * Series is the abstract class containing the common logic to all chart series. Series includes
+ * methods from Labels, Highlights, Tips and Callouts mixins. This class implements the logic of
+ * animating, hiding, showing all elements and returning the color of the series to be used as a legend item.
+ *
+ * ## Listeners
+ *
+ * The series class supports listeners via the Observable syntax. Some of these listeners are:
+ *
+ *  - `itemmouseup` When the user interacts with a marker.
+ *  - `itemmousedown` When the user interacts with a marker.
+ *  - `itemmousemove` When the user interacts with a marker.
+ *  - (similar `item*` events occur for many raw mouse and touch events)
+ *  - `afterrender` Will be triggered when the animation ends or when the series has been rendered completely.
+ *
+ * For example:
+ *
+ *     series: [{
+ *         type: 'column',
+ *         axis: 'left',
+ *         listeners: {
+ *             'afterrender': function() {
+ *                 console('afterrender');
+ *             }
+ *         },
+ *         xField: 'category',
+ *         yField: 'data1'
+ *     }]
+ *
+ */
+Ext.define('Ext.chart.series.Series', {
+
+    requires: ['Ext.chart.Markers', 'Ext.chart.label.Label'],
+
+    mixins: {
+        observable: 'Ext.mixin.Observable'
+    },
+
+    /**
+     * @property {String} type
+     * The type of series. Set in subclasses.
+     * @protected
+     */
+    type: null,
+
+    /**
+     * @property {String} seriesType
+     * Default series sprite type.
+     */
+    seriesType: 'sprite',
+
+    identifiablePrefix: 'ext-line-',
+
+    observableType: 'series',
+
+    config: {
+        /**
+         * @private
+         * @cfg {Object} chart The chart that the series is bound.
+         */
+        chart: null,
+
+        /**
+         * @cfg {String} title
+         * The human-readable name of the series.
+         */
+        title: null,
+
+        /**
+         * @cfg {Function} renderer
+         * A function that can be overridden to set custom styling properties to each rendered element.
+         * Passes in (sprite, record, attributes, index, store) to the function.
+         * 
+         * @param sprite The sprite affected by the renderer.
+         * @param record The store record associated with the sprite.
+         * @param attributes The list of attributes to be applied to the sprite.
+         * @param index The index of the sprite.
+         * @param store The store used by the series.
+         * @return {*} The resultant attributes.
+         */
+        renderer: function (sprite, record, attributes, index, store) {
+            return attributes;
+        },
+
+        /**
+         * @cfg {Boolean} showInLegend
+         * Whether to show this series in the legend.
+         */
+        showInLegend: true,
+
+        //@private triggerdrawlistener flag
+        triggerAfterDraw: false,
+
+        /**
+         * @private
+         * Not supported.
+         */
+        themeStyle: {},
+
+        /**
+         * @cfg {Object} style Custom style configuration for the sprite used in the series.
+         */
+        style: {},
+
+        /**
+         * @cfg {Object} subStyle This is the cyclic used if the series has multiple sprites.
+         */
+        subStyle: {},
+
+        /**
+         * @cfg {Array} colors
+         * An array of color values which will be used, in order, as the pie slice fill colors.
+         */
+        colors: null,
+
+        /**
+         * @protected
+         * @cfg {Object} store The store of values used in the series.
+         */
+        store: null,
+
+        /**
+         * @cfg {Object} label
+         * The style object for labels.
+         */
+        label: {textBaseline: 'middle', textAlign: 'center', font: '14px Helvetica'},
+
+        /**
+         * @cfg {Number} labelOverflowPadding
+         * Extra distance value for which the labelOverflow listener is triggered.
+         */
+        labelOverflowPadding: 5,
+
+        /**
+         * @cfg {String} labelField
+         * The store record field name to be used for the series labels.
+         */
+        labelField: null,
+
+        /**
+         * @cfg {Object} marker
+         * The sprite template used by marker instances on the series.
+         */
+        marker: null,
+
+        /**
+         * @cfg {Object} markerSubStyle
+         * This is cyclic used if series have multiple marker sprites.
+         */
+        markerSubStyle: null,
+
+        /**
+         * @protected
+         * @cfg {Object} itemInstancing The sprite template used to create sprite instances in the series.
+         */
+        itemInstancing: null,
+
+        /**
+         * @cfg {Object} background Sets the background of the surface the series is attached.
+         */
+        background: null,
+
+        /**
+         * @cfg {Object} highlightItem The item currently highlighted in the series.
+         */
+        highlightItem: null,
+
+        /**
+         * @protected
+         * @cfg {Object} surface The surface that the series is attached.
+         */
+        surface: null,
+
+        /**
+         * @protected
+         * @cfg {Object} overlaySurface The surface that series markers are attached.
+         */
+        overlaySurface: null,
+
+        /**
+         * @cfg {Boolean|Array} hidden
+         */
+        hidden: false,
+
+        /**
+         * @cfg {Object} highlightCfg The sprite configuration used when highlighting items in the series.
+         */
+        highlightCfg: null
+    },
+
+    directions: [],
+
+    sprites: null,
+
+    getFields: function (fieldCategory) {
+        var me = this,
+            fields = [], fieldsItem,
+            i, ln;
+        for (i = 0, ln = fieldCategory.length; i < ln; i++) {
+            fieldsItem = me['get' + fieldCategory[i] + 'Field']();
+            fields.push(fieldsItem);
+        }
+        return fields;
+    },
+
+    updateColors: function (colorSet) {
+        this.setSubStyle({fillStyle: colorSet});
+        this.doUpdateStyles();
+    },
+
+    applyHighlightCfg: function (highlight, oldHighlight) {
+        return Ext.apply(oldHighlight || {}, highlight);
+    },
+
+    applyItemInstancing: function (instancing, oldInstancing) {
+        return Ext.merge(oldInstancing || {}, instancing);
+    },
+
+    setAttributesForItem: function (item, change) {
+        if (item && item.sprite) {
+            if (item.sprite.itemsMarker && item.category === 'items') {
+                item.sprite.putMarker(item.category, change, item.index, false, true);
+            }
+            if (item.sprite.isMarkerHolder && item.category === 'markers') {
+                item.sprite.putMarker(item.category, change, item.index, false, true);
+            } else if (item.sprite instanceof Ext.draw.sprite.Instancing) {
+                item.sprite.setAttributesFor(item.index, change);
+            } else {
+
+                item.sprite.setAttributes(change);
+            }
+        }
+    },
+
+    applyHighlightItem: function (newHighlightItem, oldHighlightItem) {
+        if (newHighlightItem === oldHighlightItem) {
+            return;
+        }
+        if (Ext.isObject(newHighlightItem) && Ext.isObject(oldHighlightItem)) {
+            if (newHighlightItem.sprite === oldHighlightItem.sprite &&
+                newHighlightItem.index === oldHighlightItem.index
+                ) {
+                return;
+            }
+        }
+        return newHighlightItem;
+    },
+
+    updateHighlightItem: function (newHighlightItem, oldHighlightItem) {
+        this.setAttributesForItem(oldHighlightItem, {highlighted: false});
+        this.setAttributesForItem(newHighlightItem, {highlighted: true});
+    },
+
+    constructor: function (config) {
+        var me = this;
+        me.getId();
+        me.sprites = [];
+        me.dataRange = [];
+        Ext.ComponentManager.register(me);
+        me.mixins.observable.constructor.apply(me, arguments);
+    },
+
+    applyStore: function (store) {
+        return Ext.StoreManager.lookup(store);
+    },
+
+    getStore: function () {
+        return this._store || this.getChart() && this.getChart().getStore();
+    },
+
+    updateStore: function (newStore, oldStore) {
+        var me = this,
+            chartStore = this.getChart() && this.getChart().getStore();
+        newStore = newStore || chartStore;
+        oldStore = oldStore || chartStore;
+
+        if (oldStore) {
+            oldStore.un('updaterecord', 'onUpdateRecord', me);
+            oldStore.un('refresh', 'refresh', me);
+        }
+        if (newStore) {
+            newStore.on('updaterecord', 'onUpdateRecord', me);
+            newStore.on('refresh', 'refresh', me);
+            me.refresh();
+        }
+    },
+
+    onStoreChanged: function () {
+        var store = this.getStore();
+        if (store) {
+            this.refresh();
+        }
+    },
+
+    coordinateStacked: function (direction, directionOffset, directionCount) {
+        var me = this,
+            store = me.getStore(),
+            items = store.getData().items,
+            axis = me['get' + direction + 'Axis'](),
+            hidden = me.getHidden(),
+            range = {min: 0, max: 0},
+            directions = me['fieldCategory' + direction],
+            fieldCategoriesItem,
+            i, j, k, fields, field, data, dataStart = [], style = {},
+            stacked = me.getStacked(),
+            sprites = me.getSprites();
+
+        if (sprites.length > 0) {
+            for (i = 0; i < directions.length; i++) {
+                fieldCategoriesItem = directions[i];
+                fields = me.getFields([fieldCategoriesItem]);
+                for (j = 0; j < items.length; j++) {
+                    dataStart[j] = 0;
+                }
+                for (j = 0; j < fields.length; j++) {
+                    style = {};
+                    field = fields[j];
+                    if (hidden[j]) {
+                        style['dataStart' + fieldCategoriesItem] = dataStart;
+                        style['data' + fieldCategoriesItem] = dataStart;
+                        sprites[j].setAttributes(style);
+                        continue;
+                    }
+                    data = me.coordinateData(items, field, axis);
+                    if (stacked) {
+                        style['dataStart' + fieldCategoriesItem] = dataStart;
+                        dataStart = dataStart.slice(0);
+                        for (k = 0; k < items.length; k++) {
+                            dataStart[k] += data[k];
+                        }
+                        style['data' + fieldCategoriesItem] = dataStart;
+                    } else {
+                        style['dataStart' + fieldCategoriesItem] = dataStart;
+                        style['data' + fieldCategoriesItem] = data;
+                    }
+                    sprites[j].setAttributes(style);
+                    if (stacked) {
+                        me.getRangeOfData(dataStart, range);
+                    } else {
+                        me.getRangeOfData(data, range);
+                    }
+                }
+            }
+            me.dataRange[directionOffset] = range.min;
+            me.dataRange[directionOffset + directionCount] = range.max;
+            style = {};
+            style['dataMin' + direction] = range.min;
+            style['dataMax' + direction] = range.max;
+            for (i = 0; i < sprites.length; i++) {
+                sprites[i].setAttributes(style);
+            }
+        }
+    },
+
+    coordinate: function (direction, directionOffset, directionCount) {
+        var me = this,
+            store = me.getStore(),
+            items = store.getData().items,
+            axis = me['get' + direction + 'Axis'](),
+            range = {min: Infinity, max: -Infinity},
+            fieldCategory = me['fieldCategory' + direction] || [direction],
+            fields = me.getFields(fieldCategory),
+            i, field, data, style = {},
+            sprites = me.getSprites();
+        if (sprites.length > 0) {
+            for (i = 0; i < fieldCategory.length; i++) {
+                field = fields[i];
+                data = me.coordinateData(items, field, axis);
+                me.getRangeOfData(data, range);
+                style['data' + fieldCategory[i]] = data;
+            }
+            me.dataRange[directionOffset] = range.min;
+            me.dataRange[directionOffset + directionCount] = range.max;
+            style['dataMin' + direction] = range.min;
+            style['dataMax' + direction] = range.max;
+            for (i = 0; i < sprites.length; i++) {
+                sprites[i].setAttributes(style);
+            }
+        }
+    },
+
+    /**
+     * @private
+     * This method will return an array containing data coordinated by a specific axis.
+     * @param items
+     * @param field
+     * @param axis
+     * @return {Array}
+     */
+    coordinateData: function (items, field, axis) {
+        var data = [],
+            length = items.length,
+            layout = axis && axis.getLayout(),
+            coord = axis ? function (x, field, idx, items) {
+                return layout.getCoordFor(x, field, idx, items);
+            } : function (x) { return +x; },
+            i;
+        for (i = 0; i < length; i++) {
+            data[i] = coord(items[i].data[field], field, i, items);
+        }
+        return data;
+    },
+
+    getRangeOfData: function (data, range) {
+        var i, length = data.length,
+            value, min = range.min, max = range.max;
+        for (i = 0; i < length; i++) {
+            value = data[i];
+            if (value < min) {
+                min = value;
+            }
+            if (value > max) {
+                max = value;
+            }
+        }
+        range.min = min;
+        range.max = max;
+    },
+
+    updateLabelData: function () {
+        var me = this,
+            store = me.getStore(),
+            items = store.getData().items,
+            sprites = me.getSprites(),
+            labelField = me.getLabelField(),
+            i, ln, labels;
+        if (sprites.length > 0 && labelField) {
+            labels = [];
+            for (i = 0, ln = items.length; i < ln; i++) {
+                labels.push(items[i].get(labelField));
+            }
+            for (i = 0, ln = sprites.length; i < ln; i++) {
+                sprites[i].setAttributes({labels: labels});
+            }
+        }
+    },
+
+    processData: function () {
+        if (!this.getStore()) {
+            return;
+        }
+
+        var me = this,
+            directions = this.directions,
+            i, ln = directions.length,
+            fieldCategory, axis;
+        for (i = 0; i < ln; i++) {
+            fieldCategory = directions[i];
+            if (me['get' + fieldCategory + 'Axis']) {
+                axis = me['get' + fieldCategory + 'Axis']();
+                if (axis) {
+                    axis.processData(me);
+                    continue;
+                }
+            }
+            if (me['coordinate' + fieldCategory]) {
+                me['coordinate' + fieldCategory]();
+            }
+        }
+        me.updateLabelData();
+    },
+
+    applyBackground: function (background) {
+        if (this.getChart()) {
+            this.getSurface().setBackground(background);
+            return this.getSurface().getBackground();
+        } else {
+            return background;
+        }
+    },
+
+    updateChart: function (newChart, oldChart) {
+        var me = this;
+        if (oldChart) {
+            oldChart.un("axeschanged", 'onAxesChanged', me);
+            // TODO: destroy them
+            me.sprites = [];
+            me.setSurface(null);
+            me.setOverlaySurface(null);
+            me.onChartDetached(oldChart);
+        }
+        if (newChart) {
+            me.setSurface(newChart.getSurface(this.getId() + '-surface', 'series'));
+            me.setOverlaySurface(newChart.getSurface(me.getId() + '-overlay-surface', 'overlay'));
+            me.getOverlaySurface().waitFor(me.getSurface());
+
+            newChart.on("axeschanged", 'onAxesChanged', me);
+            if (newChart.getAxes()) {
+                me.onAxesChanged(newChart);
+            }
+            me.onChartAttached(newChart);
+        }
+
+        me.updateStore(me._store, null);
+    },
+
+    onAxesChanged: function (chart) {
+        var me = this,
+            axes = chart.getAxes(), axis,
+            directionMap = {}, directionMapItem,
+            fieldMap = {}, fieldMapItem,
+            directions = this.directions, direction,
+            i, ln, j, ln2, k, ln3;
+
+        for (i = 0, ln = directions.length; i < ln; i++) {
+            direction = directions[i];
+            fieldMap[direction] = me.getFields(me['fieldCategory' + direction]);
+        }
+
+        for (i = 0, ln = axes.length; i < ln; i++) {
+            axis = axes[i];
+            if (!directionMap[axis.getDirection()]) {
+                directionMap[axis.getDirection()] = [axis];
+            } else {
+                directionMap[axis.getDirection()].push(axis);
+            }
+        }
+
+        for (i = 0, ln = directions.length; i < ln; i++) {
+            direction = directions[i];
+            if (directionMap[direction]) {
+                directionMapItem = directionMap[direction];
+                for (j = 0, ln2 = directionMapItem.length; j < ln2; j++) {
+                    axis = directionMapItem[j];
+                    if (axis.getFields().length === 0) {
+                        me['set' + direction + 'Axis'](axis);
+                    } else {
+                        fieldMapItem = fieldMap[direction];
+                        if (fieldMapItem) {
+                            for (k = 0, ln3 = fieldMapItem.length; k < ln3; k++) {
+                                if (axis.fieldsMap[fieldMapItem[k]]) {
+                                    me['set' + direction + 'Axis'](axis);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+
+    onChartDetached: function (oldChart) {
+        this.fireEvent("chartdetached", oldChart);
+    },
+
+    onChartAttached: function (chart) {
+        var me = this;
+        me.setBackground(me.getBackground());
+        me.fireEvent("chartattached", chart);
+        me.processData();
+    },
+
+    updateOverlaySurface: function (overlaySurface) {
+        var me = this;
+        if (overlaySurface) {
+            if (me.getLabel()) {
+                me.getOverlaySurface().add(me.getLabel());
+            }
+        }
+    },
+
+    applyLabel: function (newLabel, oldLabel) {
+        if (!oldLabel) {
+            oldLabel = new Ext.chart.Markers({zIndex: 10});
+            oldLabel.setTemplate(new Ext.chart.label.Label(newLabel));
+        } else {
+            oldLabel.getTemplate().setAttributes(newLabel);
+        }
+        return oldLabel;
+    },
+
+    createItemInstancingSprite: function (sprite, itemInstancing) {
+        var me = this,
+            template,
+            markers = new Ext.chart.Markers();
+
+        markers.setAttributes({zIndex: 1e100});
+        var config = Ext.apply({}, itemInstancing);
+        if (me.getHighlightCfg()) {
+            config.highlightCfg = me.getHighlightCfg();
+            config.modifiers = ['highlight'];
+        }
+        markers.setTemplate(config);
+        template = markers.getTemplate();
+        template.setAttributes(me.getStyle());
+        template.fx.on('animationstart', 'onSpriteAnimationStart', this);
+        template.fx.on('animationend', 'onSpriteAnimationEnd', this);
+        sprite.bindMarker("items", markers);
+
+        me.getSurface().add(markers);
+        return markers;
+    },
+
+    getDefaultSpriteConfig: function () {
+        return {
+            type: this.seriesType
+        };
+    },
+
+    createSprite: function () {
+        var me = this,
+            surface = me.getSurface(),
+            itemInstancing = me.getItemInstancing(),
+            marker, config,
+            sprite = surface.add(me.getDefaultSpriteConfig());
+
+        sprite.setAttributes(this.getStyle());
+
+        if (itemInstancing) {
+            sprite.itemsMarker = me.createItemInstancingSprite(sprite, itemInstancing);
+        }
+
+        if (sprite.bindMarker) {
+            if (me.getMarker()) {
+                marker = new Ext.chart.Markers();
+                config = Ext.merge({}, me.getMarker());
+                if (me.getHighlightCfg()) {
+                    config.highlightCfg = me.getHighlightCfg();
+                    config.modifiers = ['highlight'];
+                }
+                marker.setTemplate(config);
+                marker.getTemplate().fx.setCustomDuration({
+                    translationX: 0,
+                    translationY: 0
+                });
+                sprite.dataMarker = marker;
+                sprite.bindMarker("markers", marker);
+                me.getOverlaySurface().add(marker);
+            }
+            if (me.getLabelField()) {
+                sprite.bindMarker("labels", me.getLabel());
+            }
+        }
+
+        if (sprite.setDataItems) {
+            sprite.setDataItems(me.getStore().getData());
+        }
+
+        sprite.fx.on('animationstart', 'onSpriteAnimationStart', me);
+        sprite.fx.on('animationend', 'onSpriteAnimationEnd', me);
+
+        me.sprites.push(sprite);
+
+        return sprite;
+    },
+
+    /**
+     * Performs drawing of this series.
+     */
+    getSprites: Ext.emptyFn,
+
+    onUpdateRecord: function () {
+        // TODO: do something REALLY FAST.
+        this.processData();
+    },
+
+    refresh: function () {
+        this.processData();
+    },
+
+    isXType: function (xtype) {
+        return xtype === 'series';
+    },
+
+    getItemId: function () {
+        return this.getId();
+    },
+
+    applyStyle: function (style, oldStyle) {
+        // TODO: Incremental setter
+        var cls = Ext.ClassManager.get(Ext.ClassManager.getNameByAlias('sprite.' + this.seriesType));
+        if (cls && cls.def) {
+            style = cls.def.normalize(style);
+        }
+        return Ext.apply(oldStyle || Ext.Object.chain(this.getThemeStyle()), style);
+    },
+
+    applyMarker: function (marker, oldMarker) {
+        var type = (marker && marker.type) || (oldMarker && oldMarker.type) || this.seriesType,
+            cls;
+        if (type) {
+            cls = Ext.ClassManager.get(Ext.ClassManager.getNameByAlias('sprite.' + type));
+            if (cls && cls.def) {
+                marker = cls.def.normalize(marker, true);
+                marker.type = type;
+                return Ext.merge(oldMarker || {}, marker);
+            }
+            return Ext.merge(oldMarker || {}, marker);
+        }
+    },
+
+    applyMarkerSubStyle: function (marker, oldMarker) {
+        var type = (marker && marker.type) || (oldMarker && oldMarker.type) || this.seriesType,
+            cls;
+        if (type) {
+            cls = Ext.ClassManager.get(Ext.ClassManager.getNameByAlias('sprite.' + type));
+            if (cls && cls.def) {
+                marker = cls.def.batchedNormalize(marker, true);
+                return Ext.merge(oldMarker || {}, marker);
+            }
+            return Ext.merge(oldMarker || {}, marker);
+        }
+    },
+
+    applySubStyle: function (subStyle, oldSubStyle) {
+        var cls = Ext.ClassManager.get(Ext.ClassManager.getNameByAlias('sprite.' + this.seriesType));
+        if (cls && cls.def) {
+            subStyle = cls.def.batchedNormalize(subStyle, true);
+            return Ext.merge(oldSubStyle || {}, subStyle);
+        }
+        return Ext.merge(oldSubStyle || {}, subStyle);
+    },
+
+    updateHidden: function (hidden) {
+        // TODO: remove this when jacky fix the problem.
+        this.getColors();
+        this.getSubStyle();
+        this.setSubStyle({hidden: hidden});
+        this.processData();
+        this.doUpdateStyles();
+    },
+
+    /**
+     *
+     * @param {Number} index
+     * @param {Boolean} value
+     */
+    setHiddenByIndex: function (index, value) {
+        if (Ext.isArray(this.getHidden())) {
+            this.getHidden()[index] = value;
+            this.updateHidden(this.getHidden());
+        } else {
+            this.setHidden(value);
+        }
+    },
+
+    updateStyle: function () {
+        this.doUpdateStyles();
+    },
+
+    updateSubStyle: function () {
+        this.doUpdateStyles();
+    },
+
+    doUpdateStyles: function () {
+        var sprites = this.sprites,
+            itemInstancing = this.getItemInstancing(),
+            i = 0, ln = sprites && sprites.length,
+            markerCfg = this.getMarker(),
+            style;
+        for (; i < ln; i++) {
+            style = this.getStyleByIndex(i);
+            if (itemInstancing) {
+                sprites[i].itemsMarker.getTemplate().setAttributes(style);
+            } else {
+                sprites[i].setAttributes(style);
+            }
+            if (markerCfg && sprites[i].dataMarker) {
+                sprites[i].dataMarker.getTemplate().setAttributes(this.getMarkerStyleByIndex(i));
+            }
+        }
+    },
+
+    getMarkerStyleByIndex: function (i) {
+        return this.getOverriddenStyleByIndex(i, this.getOverriddenStyleByIndex(i, this.getMarkerSubStyle(), this.getMarker()), this.getStyleByIndex(i));
+    },
+
+    getStyleByIndex: function (i) {
+        return this.getOverriddenStyleByIndex(i, this.getSubStyle(), this.getStyle());
+    },
+
+    getOverriddenStyleByIndex: function (i, subStyle, baseStyle) {
+        var subStyleItem,
+            result = Ext.Object.chain(baseStyle || {});
+        for (var name in subStyle) {
+            subStyleItem = subStyle[name];
+            if (Ext.isArray(subStyleItem)) {
+                result[name] = subStyleItem[i % subStyle[name].length];
+            } else {
+                result[name] = subStyleItem;
+            }
+        }
+        return result;
+    },
+
+    /**
+     * For a given x/y point relative to the main region, find a corresponding item from this
+     * series, if any.
+     * @param {Number} x
+     * @param {Number} y
+     * @param {Object} [target] optional target to receive the result
+     * @return {Object} An object describing the item, or null if there is no matching item. The exact contents of
+     * this object will vary by series type, but should always contain at least the following:
+     *
+     * @return {Ext.data.Model} return.record the record of the item.
+     * @return {Array} return.point the x/y coordinates relative to the chart box of a single point
+     * for this data item, which can be used as e.g. a tooltip anchor point.
+     * @return {Ext.draw.sprite.Sprite} return.sprite the item's rendering Sprite.
+     * @return {Number} return.subSprite the index if sprite is an instancing sprite.
+     */
+    getItemForPoint: Ext.emptyFn,
+
+    onSpriteAnimationStart: function (sprite) {
+        this.fireEvent('animationstart', sprite);
+    },
+
+    onSpriteAnimationEnd: function (sprite) {
+        this.fireEvent('animationend', sprite);
+    },
+
+    /**
+     * Provide legend information to target array.
+     *
+     * @param {Array} target
+     *
+     * The information consists:
+     * @param {String} target.name
+     * @param {String} target.markColor
+     * @param {Boolean} target.disabled
+     * @param {String} target.series
+     * @param {Number} target.index
+     */
+    provideLegendInfo: function (target) {
+        target.push({
+            name: this.getTitle() || this.getId(),
+            mark: 'black',
+            disabled: false,
+            series: this.getId(),
+            index: 0
+        });
+    },
+
+    destroy: function () {
+        Ext.ComponentManager.unregister(this);
+        var store = this.getStore();
+        if (store && store.getAutoDestroy()) {
+            Ext.destroy(store);
+        }
+        this.setStore(null);
+        this.callSuper();
+    }
+});
+
+/**
+ * @class Ext.chart.interactions.Abstract
+ *
+ * Defines a common abstract parent class for all interactions.
+ *
+ */
+Ext.define('Ext.chart.interactions.Abstract', {
+
+    xtype: 'interaction',
+
+    mixins: {
+        observable: "Ext.mixin.Observable"
+    },
+
+    config: {
+        /**
+         * @cfg {String} gesture
+         * Specifies which gesture type should be used for starting the interaction.
+         */
+        gesture: 'tap',
+
+        /**
+         * @cfg {Ext.chart.AbstractChart} chart The chart that the interaction is bound.
+         */
+        chart: null,
+
+        /**
+         * @cfg {Boolean} enabled 'true' if the interaction is enabled.
+         */
+        enabled: true
+    },
+
+    /**
+     * Android device is emerging too many events so if we re-render every frame it will take for-ever to finish a frame.
+     * This throttle technique will limit the timespan between two frames.
+     */
+    throttleGap: 0,
+
+    stopAnimationBeforeSync: false,
+
+    constructor: function (config) {
+        var me = this;
+        me.initConfig(config);
+        Ext.ComponentManager.register(this);
+    },
+
+    /**
+     * @protected
+     * A method to be implemented by subclasses where all event attachment should occur.
+     */
+    initialize: Ext.emptyFn,
+
+    updateChart: function (newChart, oldChart) {
+        var me = this, gestures = me.getGestures();
+        if (oldChart === newChart) {
+            return;
+        }
+        if (oldChart) {
+            me.removeChartListener(oldChart);
+        }
+        if (newChart) {
+            me.addChartListener();
+        }
+    },
+
+    getGestures: function () {
+        var gestures = {};
+        gestures[this.getGesture()] = this.onGesture;
+        return gestures;
+    },
+
+    /**
+     * @protected
+     * Placeholder method.
+     */
+    onGesture: Ext.emptyFn,
+
+    /**
+     * @protected Find and return a single series item corresponding to the given event,
+     * or null if no matching item is found.
+     * @param {Event} e
+     * @return {Object} the item object or null if none found.
+     */
+    getItemForEvent: function (e) {
+        var me = this,
+            chart = me.getChart(),
+            chartXY = chart.getEventXY(e);
+        return chart.getItemForPoint(chartXY[0], chartXY[1]);
+    },
+
+    /**
+     * @protected Find and return all series items corresponding to the given event.
+     * @param {Event} e
+     * @return {Array} array of matching item objects
+     */
+    getItemsForEvent: function (e) {
+        var me = this,
+            chart = me.getChart(),
+            chartXY = chart.getEventXY(e);
+        return chart.getItemsForPoint(chartXY[0], chartXY[1]);
+    },
+
+    /**
+     * @private
+     */
+    addChartListener: function () {
+        var me = this,
+            chart = me.getChart(),
+            gestures = me.getGestures(),
+            gesture, fn;
+        me.listeners = me.listeners || {};
+
+        function insertGesture(name, fn) {
+            chart.on(
+                name,
+                // wrap the handler so it does not fire if the event is locked by another interaction
+                me.listeners[name] = function (e) {
+                    var locks = me.getLocks();
+                    if (!(name in locks) || locks[name] === me) {
+                        if (e && e.stopPropagation) {
+                            e.stopPropagation();
+                            e.preventDefault();
+                        }
+                        return (Ext.isFunction(fn) ? fn : me[fn]).apply(this, arguments);
+                    }
+                },
+                me
+            );
+        }
+
+        for (gesture in gestures) {
+            insertGesture(gesture, gestures[gesture]);
+        }
+    },
+
+    removeChartListener: function (chart) {
+        var me = this,
+            gestures = me.getGestures(),
+            gesture, fn;
+
+        function removeGesture(name) {
+            chart.un(name, me.listeners[name]);
+            delete me.listeners[name];
+        }
+
+        for (gesture in gestures) {
+            removeGesture(gesture);
+        }
+    },
+
+    lockEvents: function () {
+        var me = this,
+            locks = me.getLocks(),
+            args = Array.prototype.slice.call(arguments),
+            i = args.length;
+        while (i--) {
+            locks[args[i]] = me;
+        }
+    },
+
+    unlockEvents: function () {
+        var locks = this.getLocks(),
+            args = Array.prototype.slice.call(arguments),
+            i = args.length;
+        while (i--) {
+            delete locks[args[i]];
+        }
+    },
+
+    getLocks: function () {
+        var chart = this.getChart();
+        return chart.lockedEvents || (chart.lockedEvents = {});
+    },
+
+    isMultiTouch: function () {
+        return !(Ext.os.is.MultiTouch === false || (Ext.os.is.Android3 || Ext.os.is.Android2) || Ext.os.is.Desktop);
+    },
+
+    initializeDefaults: Ext.emptyFn,
+
+    doSync: function () {
+        var chart = this.getChart();
+        if (this.syncTimer) {
+            clearTimeout(this.syncTimer);
+            this.syncTimer = null;
+        }
+        if (this.stopAnimationBeforeSync) {
+            chart.resizing = true;
+        }
+        chart.redraw();
+        if (this.stopAnimationBeforeSync) {
+            chart.resizing = false;
+        }
+        this.syncThrottle = +new Date() + this.throttleGap;
+    },
+
+    sync: function () {
+        var me = this;
+        if (me.throttleGap && Ext.frameStartTime < me.syncThrottle) {
+            if (me.syncTimer) {
+                return;
+            }
+            me.syncTimer = setTimeout(function () {
+                me.doSync();
+            }, me.throttleGap);
+        } else {
+            me.doSync();
+        }
+    },
+
+    getItemId: function () {
+        return this.getId();
+    },
+
+    isXType: function (xtype) {
+        return xtype === 'interaction';
+    },
+
+    destroy: function () {
+        Ext.ComponentManager.unregister(this);
+        this.listeners = [];
+        this.callSuper();
+    }
+}, function () {
+    if (Ext.os.is.Android2) {
+        this.prototype.throttleGap = 20;
+    } else if (Ext.os.is.Android4) {
+        this.prototype.throttleGap = 40;
+    }
+});
+
+/**
+ * @class Ext.chart.MarkerHolder
+ * @extends Ext.mixin.Mixin
+ * 
+ * Mixin that provides the functionality to place markers.
+ */
+Ext.define("Ext.chart.MarkerHolder", {
+    extend: 'Ext.mixin.Mixin',
+    mixinConfig: {
+        id: 'markerHolder',
+        hooks: {
+            constructor: 'constructor',
+            preRender: 'preRender'
+        }
+    },
+
+    isMarkerHolder: true,
+
+    constructor: function () {
+        this.boundMarkers = {};
+        this.cleanRedraw = false;
+    },
+
+    /**
+     *
+     * @param name {String}
+     * @param marker {Ext.chart.Markers}
+     */
+    bindMarker: function (name, marker) {
+        if (marker) {
+            if (!this.boundMarkers[name]) {
+                this.boundMarkers[name] = [];
+            }
+            Ext.Array.include(this.boundMarkers[name], marker);
+        }
+    },
+
+    getBoundMarker: function (name) {
+        return this.boundMarkers[name];
+    },
+
+    preRender: function () {
+        var boundMarkers = this.boundMarkers, boundMarkersItem,
+            name, i, ln, id = this.getId(),
+            parent = this.getParent(),
+            matrix = this.surfaceMatrix ? this.surfaceMatrix.set(1, 0, 0, 1, 0, 0) : (this.surfaceMatrix = new Ext.draw.Matrix());
+
+        this.cleanRedraw = !this.attr.dirty;
+        if (!this.cleanRedraw) {
+            for (name in this.boundMarkers) {
+                if (boundMarkers[name]) {
+                    for (boundMarkersItem = boundMarkers[name], i = 0, ln = boundMarkersItem.length; i < ln; i++) {
+                        boundMarkersItem[i].clear(id);
+                    }
+                }
+            }
+        }
+
+        while (parent && parent.attr && parent.attr.matrix) {
+            matrix.prependMatrix(parent.attr.matrix);
+            parent = parent.getParent();
+        }
+        matrix.prependMatrix(parent.matrix);
+        this.surfaceMatrix = matrix;
+        this.inverseSurfaceMatrix = matrix.inverse(this.inverseSurfaceMatrix);
+    },
+
+    putMarker: function (name, markerAttr, index, canonical, keepRevision) {
+        var boundMarkersItem, i, ln, id = this.getId();
+        if (this.boundMarkers[name]) {
+            for (boundMarkersItem = this.boundMarkers[name], i = 0, ln = boundMarkersItem.length; i < ln; i++) {
+                boundMarkersItem[i].putMarkerFor(id, markerAttr, index, canonical);
+            }
+        }
+    },
+
+    getMarkerBBox: function (name, index, isWithoutTransform) {
+        var boundMarkersItem, i, ln, id = this.getId();
+        if (this.boundMarkers[name]) {
+            for (boundMarkersItem = this.boundMarkers[name], i = 0, ln = boundMarkersItem.length; i < ln; i++) {
+                return boundMarkersItem[i].getMarkerBBoxFor(id, index, isWithoutTransform);
+            }
+        }
+    }
+});
+
+/**
+ * @private
+ * @class Ext.chart.axis.sprite.Axis
+ * @extends Ext.draw.sprite.Sprite
+ *
+ * The axis sprite. Currently all types of the axis will be rendered with this sprite.
+ * TODO(touch-2.2): Split different types of axis into different sprite classes.
+ */
+Ext.define("Ext.chart.axis.sprite.Axis", {
+    extend: 'Ext.draw.sprite.Sprite',
+    mixins: {
+        markerHolder: "Ext.chart.MarkerHolder"
+    },
+
+    requires: ['Ext.draw.sprite.Text'],
+
+    inheritableStatics: {
+        def: {
+            processors: {
+                /**
+                 * @cfg {Boolean} grid 'true' if the axis has a grid.
+                 */
+                grid: 'bool',
+                
+                /**
+                 * @cfg {Boolean} axisLine 'true' if the main line of the axis is drawn.
+                 */
+                axisLine: 'bool',
+                
+                /**
+                 * @cfg {Boolean} minorTricks 'true' if the axis has sub ticks.
+                 */
+                minorTicks: 'bool',
+
+                /**
+                 * @cfg {Number} minorTickSize The length of the minor ticks.
+                 */
+                minorTickSize: 'number',
+
+                /**
+                 * @cfg {Boolean} majorTicks 'true' if the axis has major ticks.
+                 */
+                majorTicks: 'bool',
+
+                /**
+                 * @cfg {Number} majorTickSize The length of the major ticks.
+                 */
+                majorTickSize: 'number',
+
+                /**
+                 * @cfg {Number} length The total length of the axis.
+                 */
+                length: 'number',
+
+                /**
+                 * @private
+                 * @cfg {Number} startGap Axis start determined by the chart inset padding.
+                 */
+                startGap: 'number',
+
+                /**
+                 * @private
+                 * @cfg {Number} endGap Axis end determined by the chart inset padding.
+                 */
+                endGap: 'number',
+
+                /**
+                 * @cfg {Number} dataMin The minimum value of the axis data.
+                 */
+                dataMin: 'number',
+
+                /**
+                 * @cfg {Number} dataMax The maximum value of the axis data.
+                 */
+                dataMax: 'number',
+
+                /**
+                 * @cfg {Number} visibleMin The minimum value that is displayed.
+                 */
+                visibleMin: 'number',
+
+                /**
+                 * @cfg {Number} visibleMax The maximum value that is displayed.
+                 */
+                visibleMax: 'number',
+
+                /**
+                 * @cfg {String} position The position of the axis on the chart.
+                 */
+                position: 'enums(left,right,top,bottom,angular,radial)',
+
+                /**
+                 * @cfg {Number} minStepSize The minimum step size between ticks.
+                 */
+                minStepSize: 'number',
+
+                /**
+                 * @private
+                 * @cfg {Number} estStepSize The estimated step size between ticks.
+                 */
+                estStepSize: 'number',
+
+                /**
+                 * @private
+                 * Unused.
+                 */
+                titleOffset: 'number',
+
+                /**
+                 * @cfg {Number} textPadding The padding around axis labels to determine collision.
+                 */
+                textPadding: 'number',
+
+                /**
+                 * @cfg {Number} min The minimum value of the axis.
+                 */
+                min: 'number',
+
+                /**
+                 * @cfg {Number} max The maximum value of the axis.
+                 */
+                max: 'number',
+
+                /**
+                 * @cfg {Number} centerX The central point of the angular axis on the x-axis.
+                 */
+                centerX: 'number',
+
+                /**
+                 * @cfg {Number} centerX The central point of the angular axis on the y-axis.
+                 */
+                centerY: 'number',
+
+                /**
+                 * @private
+                 * @cfg {Number} radius
+                 * Unused.
+                 */
+                radius: 'number',
+
+                /**
+                 * @cfg {Number} The starting rotation of the angular axis.
+                 */
+                baseRotation: 'number',
+
+                /**
+                 * @private
+                 * Unused.
+                 */
+                data: 'default',
+                
+                /**
+                 * @cfg {Boolean} 'true' if the estimated step size is adjusted by text size.
+                 */
+                enlargeEstStepSizeByText: 'bool'
+            },
+
+            defaults: {
+                grid: false,
+                axisLine: true,
+                minorTicks: false,
+                minorTickSize: 3,
+                majorTicks: true,
+                majorTickSize: 5,
+                length: 0,
+                startGap: 0,
+                endGap: 0,
+                visibleMin: 0,
+                visibleMax: 1,
+                dataMin: 0,
+                dataMax: 1,
+                position: '',
+                minStepSize: 0,
+                estStepSize: 42,
+                min: 0,
+                max: 1,
+                centerX: 0,
+                centerY: 0,
+                radius: 1,
+                baseRotation: 0,
+                data: null,
+                titleOffset: 0,
+                textPadding: 5,
+                scalingCenterY: 0,
+                scalingCenterX: 0,
+                // Override default
+                strokeStyle: 'black',
+                enlargeEstStepSizeByText: false
+            },
+
+            dirtyTriggers: {
+                minorTickSize: 'bbox',
+                majorTickSize: 'bbox',
+                position: 'bbox,layout',
+                axisLine: 'bbox,layout',
+                min: 'layout',
+                max: 'layout',
+                length: 'layout',
+                minStepSize: 'layout',
+                estStepSize: 'layout',
+                data: 'layout',
+                dataMin: 'layout',
+                dataMax: 'layout',
+                visibleMin: 'layout',
+                visibleMax: 'layout',
+                enlargeEstStepSizeByText: 'layout'
+            },
+            updaters: {
+                'layout': function () {
+                    this.doLayout();
+                }
+            }
+        }
+    },
+
+    config: {
+
+        /**
+         * @cfg {Object} label
+         *
+         * The label configuration object for the Axis. This object may include style attributes
+         * like `spacing`, `padding`, `font` that receives a string or number and
+         * returns a new string with the modified values.
+         */
+        label: null,
+
+        /**
+         * @cfg {Object|Ext.chart.axis.layout.Layout} layout The layout configuration used by the axis.
+         */
+        layout: null,
+
+        /**
+         * @cfg {Object|Ext.chart.axis.segmenter.Segmenter} segmenter The method of segmenter used by the axis.
+         */
+        segmenter: null,
+
+        /**
+         * @cfg {Function} renderer Allows direct customisation of rendered axis sprites.
+         */
+        renderer: null,
+
+        /**
+         * @private
+         * @cfg {Object} layoutContext Stores the context after calculating layout.
+         */
+        layoutContext: null,
+
+        /**
+         * @cfg {Ext.chart.axis.Axis} axis The axis represented by the this sprite.
+         */
+        axis: null
+    },
+
+    thickness: 0,
+
+    stepSize: 0,
+
+    getBBox: function () { return null; },
+
+    doLayout: function () {
+        var me = this,
+            attr = me.attr,
+            layout = me.getLayout(),
+            min = attr.dataMin + (attr.dataMax - attr.dataMin) * attr.visibleMin,
+            max = attr.dataMin + (attr.dataMax - attr.dataMin) * attr.visibleMax,
+            context = {
+                attr: attr,
+                segmenter: me.getSegmenter()
+            };
+
+        if (attr.position === 'left' || attr.position === 'right') {
+            attr.translationX = 0;
+            attr.translationY = max * attr.length / (max - min);
+            attr.scalingX = 1;
+            attr.scalingY = -attr.length / (max - min);
+            attr.scalingCenterY = 0;
+            attr.scalingCenterX = 0;
+            me.applyTransformations(true);
+        } else if (attr.position === 'top' || attr.position === 'bottom') {
+            attr.translationX = -min * attr.length / (max - min);
+            attr.translationY = 0;
+            attr.scalingX = attr.length / (max - min);
+            attr.scalingY = 1;
+            attr.scalingCenterY = 0;
+            attr.scalingCenterX = 0;
+            me.applyTransformations(true);
+        }
+
+        if (layout) {
+            layout.calculateLayout(context);
+            me.setLayoutContext(context);
+        }
+    },
+
+    iterate: function (snaps, fn) {
+        var i, position;
+        if (snaps.getLabel) {
+            if (snaps.min < snaps.from) {
+                fn.call(this, snaps.min, snaps.getLabel(snaps.min), -1, snaps);
+            }
+            for (i = 0; i <= snaps.steps; i++) {
+                fn.call(this, snaps.get(i), snaps.getLabel(i), i, snaps);
+            }
+            if (snaps.max > snaps.to) {
+                fn.call(this, snaps.max, snaps.getLabel(snaps.max), snaps.steps + 1, snaps);
+            }
+        } else {
+            if (snaps.min < snaps.from) {
+                fn.call(this, snaps.min, snaps.min, -1, snaps);
+            }
+            for (i = 0; i <= snaps.steps; i++) {
+                position = snaps.get(i);
+                fn.call(this, position, position, i, snaps);
+            }
+            if (snaps.max > snaps.to) {
+                fn.call(this, snaps.max, snaps.max, snaps.steps + 1, snaps);
+            }
+        }
+    },
+
+    renderTicks: function (surface, ctx, layout, clipRegion) {
+        var me = this,
+            attr = me.attr,
+            docked = attr.position,
+            matrix = attr.matrix,
+            halfLineWidth = 0.5 * attr.lineWidth,
+            xx = matrix.getXX(),
+            dx = matrix.getDX(),
+            yy = matrix.getYY(),
+            dy = matrix.getDY(),
+            majorTicks = layout.majorTicks,
+            majorTickSize = attr.majorTickSize,
+            minorTicks = layout.minorTicks,
+            minorTickSize = attr.minorTickSize;
+
+        if (majorTicks) {
+            switch (docked) {
+                case 'right':
+                    me.iterate(majorTicks, function (position, labelText, i) {
+                        position = surface.roundPixel(position * yy + dy) + halfLineWidth;
+                        ctx.moveTo(0, position);
+                        ctx.lineTo(majorTickSize, position);
+                    });
+                    break;
+                case 'left':
+                    me.iterate(majorTicks, function (position, labelText, i) {
+                        position = surface.roundPixel(position * yy + dy) + halfLineWidth;
+                        ctx.moveTo(clipRegion[2] - majorTickSize, position);
+                        ctx.lineTo(clipRegion[2], position);
+                    });
+                    break;
+                case 'bottom':
+                    me.iterate(majorTicks, function (position, labelText, i) {
+                        position = surface.roundPixel(position * xx + dx) - halfLineWidth;
+                        ctx.moveTo(position, 0);
+                        ctx.lineTo(position, majorTickSize);
+                    });
+                    break;
+                case 'top':
+                    me.iterate(majorTicks, function (position, labelText, i) {
+                        position = surface.roundPixel(position * xx + dx) - halfLineWidth;
+                        ctx.moveTo(position, clipRegion[3]);
+                        ctx.lineTo(position, clipRegion[3] - majorTickSize);
+                    });
+                    break;
+                case 'angular':
+                    me.iterate(majorTicks, function (position, labelText, i) {
+                        position = position / (attr.max + 1) * Math.PI * 2 + attr.baseRotation;
+                        ctx.moveTo(
+                            attr.centerX + (attr.length) * Math.cos(position),
+                            attr.centerY + (attr.length) * Math.sin(position)
+                        );
+                        ctx.lineTo(
+                            attr.centerX + (attr.length + majorTickSize) * Math.cos(position),
+                            attr.centerY + (attr.length + majorTickSize) * Math.sin(position)
+                        );
+                    });
+                    break;
+            }
+        }
+    },
+
+    renderLabels: function (surface, ctx, layout, clipRegion) {
+        var me = this,
+            attr = me.attr,
+            halfLineWidth = 0.5 * attr.lineWidth,
+            docked = attr.position,
+            matrix = attr.matrix,
+            textPadding = attr.textPadding,
+            xx = matrix.getXX(),
+            dx = matrix.getDX(),
+            yy = matrix.getYY(),
+            dy = matrix.getDY(),
+            thickness = 0,
+            majorTicks = layout.majorTicks,
+            padding = Math.max(attr.majorTickSize, attr.minorTickSize) + attr.lineWidth,
+            label = this.getLabel(), font,
+            lastLabelText = null,
+            textSize = 0, textCount = 0,
+            segmenter = layout.segmenter,
+            renderer = this.getRenderer(),
+            labelInverseMatrix, lastBBox = null, bbox, fly, text;
+        if (majorTicks && label && !label.attr.hidden) {
+            font = label.attr.font;
+            if (ctx.font !== font) {
+                ctx.font = font;
+            } // This can profoundly improve performance.
+            label.setAttributes({translationX: 0, translationY: 0}, true, true);
+            label.applyTransformations();
+            labelInverseMatrix = label.attr.inverseMatrix.elements.slice(0);
+            switch (docked) {
+                case 'left':
+                    label.setAttributes({
+                        textAlign: 'center',
+                        textBaseline: 'middle',
+                        translationX: surface.roundPixel(clipRegion[2] - padding + dx) - halfLineWidth - me.thickness / 2
+                    }, true, true);
+                    break;
+                case 'right':
+                    label.setAttributes({
+                        textAlign: 'center',
+                        textBaseline: 'middle',
+                        translationX: surface.roundPixel(padding + dx) - halfLineWidth + me.thickness / 2
+                    }, true, true);
+                    break;
+                case 'top':
+                    label.setAttributes({
+                        textAlign: 'center',
+                        textBaseline: 'middle',
+                        translationY: surface.roundPixel(clipRegion[3] - padding) - halfLineWidth - me.thickness / 2
+                    }, true, true);
+                    break;
+                case 'bottom':
+                    label.setAttributes({
+                        textAlign: 'center',
+                        textBaseline: 'middle',
+                        translationY: surface.roundPixel(padding) - halfLineWidth + me.thickness / 2
+                    }, true, true);
+                    break;
+                case 'radial' :
+                    label.setAttributes({
+                        textAlign: 'center',
+                        textBaseline: 'middle',
+                        translationX: attr.centerX
+                    }, true, true);
+                    break;
+                case 'angular':
+                    label.setAttributes({
+                        textAlign: 'center',
+                        textBaseline: 'middle',
+                        translationY: attr.centerY
+                    }, true, true);
+                    break;
+            }
+
+            // TODO: there are better ways to detect collision.
+            if (docked === 'left' || docked === 'right') {
+                me.iterate(majorTicks, function (position, labelText, i) {
+                    if (labelText === undefined) {
+                        return;
+                    }
+                    text = renderer ? renderer.call(this, labelText, layout, lastLabelText) : segmenter.renderer(labelText, layout, lastLabelText);
+                    lastLabelText = labelText;
+                    label.setAttributes({
+                        text: String(text),
+                        translationY: surface.roundPixel(position * yy + dy)
+                    }, true, true);
+                    label.applyTransformations();
+                    thickness = Math.max(thickness, label.getBBox().width + padding);
+                    if (thickness <= me.thickness) {
+                        fly = Ext.draw.Matrix.fly(label.attr.matrix.elements.slice(0));
+                        bbox = fly.prepend.apply(fly, labelInverseMatrix).transformBBox(label.getBBox(true));
+                        if (lastBBox && !Ext.draw.Draw.isBBoxIntersect(bbox, lastBBox, textPadding)) {
+                            return;
+                        }
+                        surface.renderSprite(label);
+                        lastBBox = bbox;
+                        textSize += bbox.height;
+                        textCount++;
+                    }
+                });
+            } else if (docked === 'top' || docked === 'bottom') {
+                me.iterate(majorTicks, function (position, labelText, i) {
+                    if (labelText === undefined) {
+                        return;
+                    }
+                    text = renderer ? renderer.call(this, labelText, layout, lastLabelText) : segmenter.renderer(labelText, layout, lastLabelText);
+                    lastLabelText = labelText;
+                    label.setAttributes({
+                        text: String(text),
+                        translationX: surface.roundPixel(position * xx + dx)
+                    }, true, true);
+                    label.applyTransformations();
+                    thickness = Math.max(thickness, label.getBBox().height + padding);
+                    if (thickness <= me.thickness) {
+                        fly = Ext.draw.Matrix.fly(label.attr.matrix.elements.slice(0));
+                        bbox = fly.prepend.apply(fly, labelInverseMatrix).transformBBox(label.getBBox(true));
+                        if (lastBBox && !Ext.draw.Draw.isBBoxIntersect(bbox, lastBBox, textPadding)) {
+                            return;
+                        }
+                        surface.renderSprite(label);
+                        lastBBox = bbox;
+                        textSize += bbox.width;
+                        textCount++;
+                    }
+                });
+            } else if (docked === 'radial') {
+                me.iterate(majorTicks, function (position, labelText, i) {
+                    if (labelText === undefined) {
+                        return;
+                    }
+                    text = renderer ? renderer.call(this, labelText, layout, lastLabelText) : segmenter.renderer(labelText, layout, lastLabelText);
+                    lastLabelText = labelText;
+                    if (typeof text !== 'undefined') {
+                        label.setAttributes({
+                            text: String(text),
+                            translationY: attr.centerY - surface.roundPixel(position) / attr.max * attr.length
+                        }, true, true);
+                        label.applyTransformations();
+                        bbox = label.attr.matrix.transformBBox(label.getBBox(true));
+                        if (lastBBox && !Ext.draw.Draw.isBBoxIntersect(bbox, lastBBox)) {
+                            return;
+                        }
+                        surface.renderSprite(label);
+                        lastBBox = bbox;
+                        textSize += bbox.width;
+                        textCount++;
+                    }
+                });
+            } else if (docked === 'angular') {
+                me.iterate(majorTicks, function (position, labelText, i) {
+                    if (labelText === undefined) {
+                        return;
+                    }
+                    text = renderer ? renderer.call(this, labelText, layout, lastLabelText) : segmenter.renderer(labelText, layout, lastLabelText);
+                    lastLabelText = labelText;
+
+                    if (typeof text !== 'undefined') {
+                        var angle = position / (attr.max + 1) * Math.PI * 2 + attr.baseRotation;
+                        label.setAttributes({
+                            text: String(text),
+                            translationX: attr.centerX + (attr.length + 10) * Math.cos(angle),
+                            translationY: attr.centerY + (attr.length + 10) * Math.sin(angle)
+                        }, true, true);
+                        label.applyTransformations();
+                        bbox = label.attr.matrix.transformBBox(label.getBBox(true));
+                        if (lastBBox && !Ext.draw.Draw.isBBoxIntersect(bbox, lastBBox)) {
+                            return;
+                        }
+                        surface.renderSprite(label);
+                        lastBBox = bbox;
+                        textSize += bbox.width;
+                        textCount++;
+                    }
+                });
+            }
+
+            if (attr.enlargeEstStepSizeByText && textCount) {
+                textSize /= textCount;
+                textSize += padding;
+                textSize *= 2;
+                if (attr.estStepSize < textSize) {
+                    attr.estStepSize = textSize;
+                }
+            }
+
+            if (Math.abs(me.thickness - (thickness)) > 1) {
+                me.thickness = thickness;
+                attr.bbox.plain.dirty = true;
+                attr.bbox.transform.dirty = true;
+                me.doThicknessChanged();
+                return false;
+            }
+        }
+    },
+
+    renderAxisLine: function (surface, ctx, layout, clipRegion) {
+        var me = this,
+            attr = me.attr,
+            halfWidth = attr.lineWidth * 0.5,
+            docked = attr.position;
+        if (attr.axisLine) {
+            switch (docked) {
+                case 'left':
+                    ctx.moveTo(clipRegion[2] - halfWidth, -attr.endGap);
+                    ctx.lineTo(clipRegion[2] - halfWidth, attr.length + attr.startGap);
+                    break;
+                case 'right':
+                    ctx.moveTo(halfWidth, -attr.endGap);
+                    ctx.lineTo(halfWidth, attr.length + attr.startGap);
+                    break;
+                case 'bottom':
+                    ctx.moveTo(-attr.startGap, halfWidth);
+                    ctx.lineTo(attr.length + attr.endGap, halfWidth);
+                    break;
+                case 'top':
+                    ctx.moveTo(-attr.startGap, clipRegion[3] - halfWidth);
+                    ctx.lineTo(attr.length + attr.endGap, clipRegion[3] - halfWidth);
+                    break;
+                case 'angular':
+                    ctx.moveTo(attr.centerX + attr.length, attr.centerY);
+                    ctx.arc(attr.centerX, attr.centerY, attr.length, 0, Math.PI * 2, true);
+                    break;
+            }
+        }
+    },
+
+    renderGridLines: function (surface, ctx, layout, clipRegion) {
+        var me = this,
+            attr = me.attr,
+            matrix = attr.matrix,
+            xx = matrix.getXX(),
+            yy = matrix.getYY(),
+            dx = matrix.getDX(),
+            dy = matrix.getDY(),
+            position = attr.position,
+            majorTicks = layout.majorTicks,
+            anchor, j, lastAnchor;
+        if (attr.grid) {
+            if (majorTicks) {
+                if (position === 'left' || position === 'right') {
+                    lastAnchor = attr.min * yy + dy;
+                    me.iterate(majorTicks, function (position, labelText, i) {
+                        anchor = position * yy + dy;
+                        me.putMarker('horizontal-' + (i % 2 ? 'odd' : 'even'), {
+                            y: anchor,
+                            height: lastAnchor - anchor
+                        }, j = i, true);
+                        lastAnchor = anchor;
+                    });
+                    j++;
+                    anchor = 0;
+                    me.putMarker('horizontal-' + (j % 2 ? 'odd' : 'even'), {
+                        y: anchor,
+                        height: lastAnchor - anchor
+                    }, j, true);
+                } else if (position === 'top' || position === 'bottom') {
+                    lastAnchor = attr.min * xx + dx;
+                    me.iterate(majorTicks, function (position, labelText, i) {
+                        anchor = position * xx + dx;
+                        me.putMarker('vertical-' + (i % 2 ? 'odd' : 'even'), {
+                            x: anchor,
+                            width: lastAnchor - anchor
+                        }, j = i, true);
+                        lastAnchor = anchor;
+                    });
+                    j++;
+                    anchor = attr.length;
+                    me.putMarker('vertical-' + (j % 2 ? 'odd' : 'even'), {
+                        x: anchor,
+                        width: lastAnchor - anchor
+                    }, j, true);
+                } else if (position === 'radial') {
+                    me.iterate(majorTicks, function (position, labelText, i) {
+                        anchor = position / attr.max * attr.length;
+                        me.putMarker('circular-' + (i % 2 ? 'odd' : 'even'), {
+                            scalingX: anchor,
+                            scalingY: anchor
+                        }, i, true);
+                        lastAnchor = anchor;
+                    });
+                } else if (position === 'angular') {
+                    me.iterate(majorTicks, function (position, labelText, i) {
+                        anchor = position / (attr.max + 1) * Math.PI * 2 + attr.baseRotation;
+                        me.putMarker('radial-' + (i % 2 ? 'odd' : 'even'), {
+                            rotationRads: anchor,
+                            rotationCenterX: 0,
+                            rotationCenterY: 0,
+                            scalingX: attr.length,
+                            scalingY: attr.length
+                        }, i, true);
+                        lastAnchor = anchor;
+                    });
+                }
+            }
+        }
+    },
+
+    doThicknessChanged: function () {
+        var axis = this.getAxis();
+        if (axis) {
+            axis.onThicknessChanged();
+        }
+    },
+
+    render: function (surface, ctx, clipRegion) {
+        var me = this,
+            layout = me.getLayoutContext();
+        if (layout) {
+            if (false === me.renderLabels(surface, ctx, layout, clipRegion)) {
+                return false;
+            }
+            ctx.beginPath();
+            me.renderTicks(surface, ctx, layout, clipRegion);
+            me.renderAxisLine(surface, ctx, layout, clipRegion);
+            me.renderGridLines(surface, ctx, layout, clipRegion);
+            ctx.stroke();
+        }
+    }
+});
+
+/**
+ * @abstract
+ * @class Ext.chart.axis.segmenter.Segmenter
+ * 
+ * Interface for a segmenter in an Axis. A segmenter defines the operations you can do to a specific
+ * data type.
+ * 
+ * See {@link Ext.chart.axis.Axis}.
+ * 
+ */
+Ext.define("Ext.chart.axis.segmenter.Segmenter", {
+
+    config: {
+        /**
+         * @cfg {Ext.chart.axis.Axis} axis The axis that the Segmenter is bound.
+         */
+        axis: null
+    },
+
+    constructor: function (config) {
+        this.initConfig(config);
+    },
+
+    /**
+     * This method formats the value.
+     * 
+     * @param {*} value The value to format.
+     * @param {Object} context Axis layout context.
+     * @return {String}
+     */
+    renderer: function (value, context) {
+        return String(value);
+    },
+    
+    /**
+     * Convert from any data into the target type.
+     * @param {*} value The value to convert from
+     * @return {*} The converted value. 
+     */
+    from: function (value) {
+        return value;
+    },
+
+    /**
+     * Returns the difference between the min and max value based on the given unit scale.
+     * 
+     * @param {*} min The smaller value.
+     * @param {*} max The larger value.
+     * @param {*} unit The unit scale. Unit can be any type.
+     * @return {Number} The number of `unit`s between min and max. It is the minimum n that min + n * unit >= max.
+     */
+    diff: Ext.emptyFn,
+
+    /**
+     * Align value with step of units.
+     * For example, for the date segmenter, if The unit is "Month" and step is 3, the value will be aligned by
+     * seasons.
+     * 
+     * @param {*} value The value to be aligned.
+     * @param {Number} step The step of units.
+     * @param {*} unit The unit.
+     * @return {*} Aligned value.
+     */
+    align: Ext.emptyFn,
+
+    /**
+     * Add `step` `unit`s to the value. 
+     * @param {*} value  The value to be added.
+     * @param {Number} step The step of units. Negative value are allowed.
+     * @param {*} unit The unit.
+     */
+    add: Ext.emptyFn,
+
+    /**
+     * Given a start point and estimated step size of a range, determine the preferred step size.
+     * 
+     * @param {*} start The start point of range.
+     * @param {*} estStepSize The estimated step size.
+     * @return {Object} Return the step size by an object of step x unit.
+     * @return {Number} return.step The step count of units.
+     * @return {*} return.unit The unit.
+     */
+    preferredStep: Ext.emptyFn
+});
+
+/**
+ * @class Ext.chart.axis.segmenter.Names
+ * @extends Ext.chart.axis.segmenter.Segmenter
+ * 
+ * Names data type. Names will be calculated as their indices in the methods in this class.
+ * The `preferredStep` always return `{ unit: 1, step: 1 }` to indicate "show every item".
+ * 
+ */
+Ext.define("Ext.chart.axis.segmenter.Names", {
+    extend: 'Ext.chart.axis.segmenter.Segmenter',
+    alias: 'segmenter.names',
+
+    renderer: function (value, context) {
+        return value;
+    },
+
+    diff: function (min, max, unit) {
+        return Math.floor(max - min);
+    },
+
+    align: function (value, step, unit) {
+        return Math.floor(value);
+    },
+
+
+    add: function (value, step, unit) {
+        return value + step;
+    },
+
+    preferredStep: function (min, estStepSize, minIdx, data) {
+        return {
+            unit: 1,
+            step: 1
+        };
+    }
+});
+
+/**
+ * @class Ext.chart.axis.segmenter.Time
+ * @extends Ext.chart.axis.segmenter.Segmenter
+ * 
+ * Time data type.
+ */
+Ext.define("Ext.chart.axis.segmenter.Time", {
+    extend: 'Ext.chart.axis.segmenter.Segmenter',
+    alias: 'segmenter.time',
+
+    config: {
+        /**
+         * @cfg {Object} step
+         * If specified, the will override the result of {@link #preferredStep}.
+         */
+        step: null
+    },
+
+    renderer: function (value, context) {
+        var ExtDate = Ext.Date;
+        switch (context.majorTicks.unit) {
+            case 'y':
+                return ExtDate.format(value, 'Y');
+            case 'mo':
+                return ExtDate.format(value, 'Y-m');
+            case 'd':
+                return ExtDate.format(value, 'Y-m-d');
+        }
+        return ExtDate.format(value, 'Y-m-d\nH:i:s');
+    },
+
+    from: function (value) {
+        return new Date(value);
+    },
+
+    diff: function (min, max, unit) {
+        var ExtDate = Ext.Date;
+        if (isFinite(min)) {
+            min = new Date(min);
+        }
+        if (isFinite(max)) {
+            max = new Date(max);
+        }
+        return ExtDate.diff(min, max, unit);
+    },
+
+    align: function (date, step, unit) {
+        if (unit === 'd' && step >= 7) {
+            date = Ext.Date.align(date, 'd', step);
+            date.setDate(date.getDate() - date.getDay() + 1);
+            return date;
+        } else {
+            return Ext.Date.align(date, unit, step);
+        }
+    },
+
+    add: function (value, step, unit) {
+        return Ext.Date.add(new Date(value), unit, step);
+    },
+
+    preferredStep: function (min, estStepSize) {
+        if (this.getStep()) {
+            return this.getStep();
+        }
+        var from = new Date(+min),
+            to = new Date(+min + Math.ceil(estStepSize)),
+            ExtDate = Ext.Date,
+            units = [
+                [ExtDate.YEAR, 1, 2, 5, 10, 20, 50, 100, 200, 500],
+                [ExtDate.MONTH, 1, 3, 6],
+                [ExtDate.DAY, 1, 7, 14],
+                [ExtDate.HOUR, 1, 6, 12],
+                [ExtDate.MINUTE, 1, 5, 15, 30],
+                [ExtDate.SECOND, 1, 5, 15, 30],
+                [ExtDate.MILLI, 1, 2, 5, 10, 20, 50, 100, 200, 500]
+            ],
+            result;
+
+        for (var i = 0; i < units.length; i++) {
+            var unit = units[i][0],
+                diff = this.diff(from, to, unit);
+            if (diff > 0) {
+                for (var j = 1; j < units[i].length; j++) {
+                    if (diff <= units[i][j]) {
+                        result = {
+                            unit: unit,
+                            step: units[i][j]
+                        };
+                        break;
+                    }
+                }
+                if (!result) {
+                    i--;
+                    result = {
+                        unit: units[i][0],
+                        step: 1
+                    };
+                }
+                break;
+            }
+        }
+        if (!result) {
+            result = {unit: ExtDate.DAY, step: 1}; // Default step is one Day.
+        }
+        return result;
+    }
+});
+
+/**
+ * @class Ext.chart.axis.segmenter.Numeric
+ * @extends Ext.chart.axis.segmenter.Segmenter
+ * 
+ * Numeric data type.
+ */
+Ext.define("Ext.chart.axis.segmenter.Numeric", {
+    extend: 'Ext.chart.axis.segmenter.Segmenter',
+    alias: 'segmenter.numeric',
+
+    renderer: function (value, context) {
+        return value.toFixed(Math.max(0, context.majorTicks.unit.fixes));
+    },
+
+    diff: function (min, max, unit) {
+        return Math.floor((max - min) / unit.scale);
+    },
+
+    align: function (value, step, unit) {
+        return Math.floor(value / (unit.scale * step)) * unit.scale * step;
+    },
+
+
+    add: function (value, step, unit) {
+        return value + step * (unit.scale);
+    },
+
+    preferredStep: function (min, estStepSize) {
+        var logs = Math.floor(Math.log(estStepSize) * Math.LOG10E),
+            scale = Math.pow(10, logs);
+        estStepSize /= scale;
+        if (estStepSize < 2) {
+            estStepSize = 2;
+        } else if (estStepSize < 5) {
+            estStepSize = 5;
+        } else if (estStepSize < 10) {
+            estStepSize = 10;
+            logs++;
+        }
+        return {
+            unit: { fixes: -logs, scale: scale },
+            step: estStepSize
+        };
+    }
+});
+
+/**
+ * @abstract
+ * @class Ext.chart.axis.layout.Layout
+ * 
+ * Interface used by Axis to process its data into a meaningful layout.
+ */
+Ext.define("Ext.chart.axis.layout.Layout", {
+    config: {
+        /**
+         * @cfg {Ext.chart.axis.Axis} axis The axis that the Layout is bound.
+         */
+        axis: null
+    },
+
+    constructor: function (config) {
+        this.initConfig();
+    },
+
+    /**
+     * Processes the data of the series bound to the axis.
+     * @param series The bound series.
+     */
+    processData: function (series) {
+        var me = this,
+            axis = me.getAxis(),
+            direction = axis.getDirection(),
+            boundSeries = axis.boundSeries,
+            i, ln, item;
+        if (series) {
+            series['coordinate' + direction]();
+        } else {
+            for (i = 0, ln = boundSeries.length; i < ln; i++) {
+                item = boundSeries[i];
+                if (item['get' + direction + 'Axis']() === axis) {
+                    item['coordinate' + direction]();
+                }
+            }
+        }
+    },
+
+    /**
+     * Calculates the position of major ticks for the axis.
+     * @param context
+     */
+    calculateMajorTicks: function (context) {
+        var me = this,
+            attr = context.attr,
+            range = attr.max - attr.min,
+            zoom = range / attr.length * (attr.visibleMax - attr.visibleMin),
+            viewMin = attr.min + range * attr.visibleMin,
+            viewMax = attr.min + range * attr.visibleMax,
+            estStepSize = attr.estStepSize * zoom,
+            out = me.snapEnds(context, attr.min, attr.max, estStepSize);
+        if (out) {
+            me.trimByRange(context, out, viewMin - zoom * (1 + attr.startGap), viewMax + zoom * (1 + attr.endGap));
+            context.majorTicks = out;
+        }
+    },
+
+    /**
+     * Calculates the position of sub ticks for the axis.
+     * @param context
+     */
+    calculateMinorTicks: function (context) {
+        // TODO: Finish Minor ticks.
+    },
+
+    /**
+     * Calculates the position of tick marks for the axis.
+     * @param context
+     * @return {*}
+     */
+    calculateLayout: function (context) {
+        var me = this,
+            attr = context.attr,
+            majorTicks = attr.majorTicks,
+            minorTicks = attr.minorTicks;
+        if (attr.length === 0) {
+            return null;
+        }
+
+        if (majorTicks) {
+            this.calculateMajorTicks(context);
+            if (minorTicks) {
+                this.calculateMinorTicks(context);
+            }
+        }
+    },
+
+    /**
+     * Snaps the data bound to the axis to meaningful tick marks.
+     * @param context
+     * @param min
+     * @param max
+     * @param estStepSize
+     */
+    snapEnds: Ext.emptyFn,
+
+    /**
+     * Trims the layout of the axis by the defined minimum and maximum.
+     * @param context
+     * @param out
+     * @param trimMin
+     * @param trimMax
+     */
+    trimByRange: function (context, out, trimMin, trimMax) {
+        var segmenter = context.segmenter,
+            unit = out.unit,
+            beginIdx = segmenter.diff(out.from, trimMin, unit),
+            endIdx = segmenter.diff(out.from, trimMax, unit),
+            begin = Math.max(0, Math.ceil(beginIdx / out.step)),
+            end = Math.min(out.steps, Math.floor(endIdx / out.step));
+
+        if (end < out.steps) {
+            out.to = segmenter.add(out.from, end * out.step, unit);
+        }
+
+        if (out.max > trimMax) {
+            out.max = out.to;
+        }
+
+        if (out.from < trimMin) {
+            out.from = segmenter.add(out.from, begin * out.step, unit);
+            while (out.from < trimMin) {
+                begin++;
+                out.from = segmenter.add(out.from, out.step, unit);
+            }
+        }
+
+        if (out.min < trimMin) {
+            out.min = out.from;
+        }
+
+        out.steps = end - begin;
+    }
+});
+
+/**
+ * @class Ext.chart.axis.layout.Discrete
+ * @extends Ext.chart.axis.layout.Layout
+ * 
+ * Simple processor for data that cannot be interpolated.
+ */
+Ext.define("Ext.chart.axis.layout.Discrete", {
+    extend: 'Ext.chart.axis.layout.Layout',
+    alias: 'axisLayout.discrete',
+
+    processData: function () {
+        var me = this,
+            axis = me.getAxis(),
+            boundSeries = axis.boundSeries,
+            direction = axis.getDirection(),
+            i, ln, item;
+        this.labels = [];
+        this.labelMap = {};
+        for (i = 0, ln = boundSeries.length; i < ln; i++) {
+            item = boundSeries[i];
+            if (item['get' + direction + 'Axis']() === axis) {
+                item['coordinate' + direction]();
+            }
+        }
+    },
+
+    // @inheritdoc
+    calculateLayout: function (context) {
+        context.data = this.labels;
+        this.callSuper([context]);
+    },
+
+    //@inheritdoc
+    calculateMajorTicks: function (context) {
+        var me = this,
+            attr = context.attr,
+            data = context.data,
+            range = attr.max - attr.min,
+            zoom = range / attr.length * (attr.visibleMax - attr.visibleMin),
+            viewMin = attr.min + range * attr.visibleMin,
+            viewMax = attr.min + range * attr.visibleMax,
+            estStepSize = attr.estStepSize * zoom;
+        
+        var out = me.snapEnds(context, Math.max(0, attr.min), Math.min(attr.max, data.length - 1), estStepSize);
+        if (out) {
+            me.trimByRange(context, out, viewMin - zoom * (1 + attr.startGap), viewMax + zoom * (1 + attr.endGap));
+            context.majorTicks = out;
+        }
+    },
+
+    // @inheritdoc
+    snapEnds: function (context, min, max, estStepSize) {
+        estStepSize = Math.ceil(estStepSize);
+        var steps = Math.floor((max - min) / estStepSize),
+            data = context.data;
+        return {
+            min: min,
+            max: max,
+            from: min,
+            to: steps * estStepSize + min,
+            step: estStepSize,
+            steps: steps,
+            unit: 1,
+            getLabel: function (current) {
+                return data[this.from + this.step * current];
+            },
+            get: function (current) {
+                return this.from + this.step * current;
+            }
+        };
+    },
+
+    // @inheritdoc
+    trimByRange: function (context, out, trimMin, trimMax) {
+        var unit = out.unit,
+            beginIdx = Math.ceil((trimMin - out.from) / unit) * unit,
+            endIdx = Math.floor((trimMax - out.from) / unit) * unit,
+            begin = Math.max(0, Math.ceil(beginIdx / out.step)),
+            end = Math.min(out.steps, Math.floor(endIdx / out.step));
+
+        if (end < out.steps) {
+            out.to = end;
+        }
+
+        if (out.max > trimMax) {
+            out.max = out.to;
+        }
+
+        if (out.from < trimMin) {
+            out.from = out.from + begin * out.step * unit;
+            while (out.from < trimMin) {
+                begin++;
+                out.from += out.step * unit;
+            }
+        }
+
+        if (out.min < trimMin) {
+            out.min = out.from;
+        }
+
+        out.steps = end - begin;
+    },
+
+    getCoordFor: function (value, field, idx, items) {
+        this.labels.push(value);
+        return this.labels.length - 1;
+    }
+});
+
+/**
+ * @class Ext.chart.axis.layout.Continuous
+ * @extends Ext.chart.axis.layout.Layout
+ * 
+ * Processor for axis data that can be interpolated.
+ */
+Ext.define("Ext.chart.axis.layout.Continuous", {
+    extend: 'Ext.chart.axis.layout.Layout',
+    alias: 'axisLayout.continuous',
+    config: {
+        adjustMinimumByMajorUnit: false,
+        adjustMaximumByMajorUnit: false
+    },
+    
+    getCoordFor: function (value, field, idx, items) {
+        return +value;
+    },
+
+    //@inheritdoc
+    snapEnds: function (context, min, max, estStepSize) {
+        var segmenter = context.segmenter,
+            out = context.segmenter.preferredStep(min, estStepSize),
+            unit = out.unit,
+            step = out.step,
+            from = segmenter.align(min, step, unit),
+            steps = segmenter.diff(min, max, unit) + 1;
+        return {
+            min: segmenter.from(min),
+            max: segmenter.from(max),
+            from: from,
+            to: segmenter.add(from, steps * step, unit),
+            step: step,
+            steps: steps,
+            unit: unit,
+            get: function (current) {
+                return segmenter.add(this.from, this.step * current, unit);
+            }
+        };
+    }
+});
+
+/**
+ * @class Ext.chart.axis.layout.CombineDuplicate
+ * @extends Ext.chart.axis.layout.Discrete
+ * 
+ * Discrete processor that combines duplicate data points.
+ */
+Ext.define("Ext.chart.axis.layout.CombineDuplicate", {
+    extend: 'Ext.chart.axis.layout.Discrete',
+    alias: 'axisLayout.combineDuplicate',
+
+    getCoordFor: function (value, field, idx, items) {
+        if (!(value in this.labelMap)) {
+            var result = this.labelMap[value] = this.labels.length;
+            this.labels.push(value);
+            return result;
+        }
+        return this.labelMap[value];
+    }
+
+});
+
+/**
+ * @class Ext.chart.axis.Axis
+ *
+ * Defines axis for charts.
+ *
+ * Using the current model, the type of axis can be easily extended. By default, Sencha Touch provides three different
+ * type of axis:
+ *
+ *  * **Numeric**: the data attached with this axes are considered to be numeric and continuous.
+ *  * **Time**: the data attached with this axes are considered (or get converted into) date/time and they are continuous.
+ *  * **Category**: the data attached with this axes conforms a finite set. They be evenly placed on the axis and displayed in the same form they were provided.
+ *
+ * The behavior of axis can be easily changed by setting different types of axis layout and axis segmenter to the axis.
+ *
+ * Axis layout defines how the data points are places. Using continuous layout, the data points will be distributed by
+ * there numeric value. Using discrete layout the data points will be spaced evenly, Furthermore, if you want to combine
+ * the data points with the duplicate values in a discrete layout, you should use combinedDuplicate layout.
+ *
+ * Segmenter defines the way to segment data range. For example, if you have a Date-type data range from Jan 1, 1997 to
+ * Jan 1, 2017, the segmenter will segement the data range into years, months or days based on the current zooming
+ * level.
+ *
+ * It is possible to write custom axis layouts and segmenters to extends this behavior by simply implement interfaces
+ * {@link Ext.chart.axis.layout.Layout} and {@link Ext.chart.axis.segmenter.Segmenter}.
+ *
+ * Here's an example for the axes part of a chart definition:
+ * An example of axis for a series (in this case for an area chart that has multiple layers of yFields) could be:
+ *
+ *     axes: [{
+ *         type: 'Numeric',
+ *         position: 'left',
+ *         title: 'Number of Hits',
+ *         grid: {
+ *             odd: {
+ *                 opacity: 1,
+ *                 fill: '#ddd',
+ *                 stroke: '#bbb',
+ *                 lineWidth: 1
+ *             }
+ *         },
+ *         minimum: 0
+ *     }, {
+ *         type: 'Category',
+ *         position: 'bottom',
+ *         title: 'Month of the Year',
+ *         grid: true,
+ *         label: {
+ *             rotate: {
+ *                 degrees: 315
+ *             }
+ *         }
+ *     }]
+ *
+ * In this case we use a `Numeric` axis for displaying the values of the Area series and a `Category` axis for displaying the names of
+ * the store elements. The numeric axis is placed on the left of the screen, while the category axis is placed at the bottom of the chart.
+ * Both the category and numeric axes have `grid` set, which means that horizontal and vertical lines will cover the chart background. In the
+ * category axis the labels will be rotated so they can fit the space better.
+ */
+Ext.define('Ext.chart.axis.Axis', {
+    xtype: 'axis',
+
+    mixins: {
+        observable: 'Ext.mixin.Observable'
+    },
+
+    requires: [
+        'Ext.chart.axis.sprite.Axis',
+        'Ext.chart.axis.segmenter.*',
+        'Ext.chart.axis.layout.*'
+    ],
+
+    config: {
+        /**
+         * @cfg {String} position
+         * Where to set the axis. Available options are `left`, `bottom`, `right`, `top`, `radial` and `angular`.
+         */
+        position: 'bottom',
+
+        /**
+         * @cfg {Array} fields
+         * An array containing the names of the record fields which should be mapped along the axis.
+         * This is optional if the binding between series and fields is clear.
+         */
+        fields: [],
+
+        /**
+         * @cfg {Object} label
+         *
+         * The label configuration object for the Axis. This object may include style attributes
+         * like `spacing`, `padding`, `font` that receives a string or number and
+         * returns a new string with the modified values.
+         */
+        label: { x: 0, y: 0, textBaseline: 'middle', textAlign: 'center', fontSize: 12, fontFamily: 'Helvetica' },
+
+        /**
+         * @cfg {Object} grid
+         * The grid configuration object for the Axis style. Can contain `stroke` or `fill` attributes.
+         * Also may contain an `odd` or `even` property in which you only style things on odd or even rows.
+         * For example:
+         *
+         *
+         *     grid {
+         *         odd: {
+         *             stroke: '#555'
+         *         },
+         *         even: {
+         *             stroke: '#ccc'
+         *         }
+         *     }
+         */
+        grid: false,
+
+        /**
+         * @cfg {Function} renderer Allows direct customisation of rendered axis sprites.
+         */
+        renderer: null,
+
+        /**
+         * @protected
+         * @cfg {Ext.chart.AbstractChart} chart The Chart that the Axis is bound.
+         */
+        chart: null,
+
+        /**
+         * @cfg {Object} style
+         * The style for the axis line and ticks.
+         * Refer to the {@link Ext.chart.axis.sprite.Axis}
+         */
+        style: null,
+
+        /**
+         * @cfg {Number} titleMargin
+         * The margin between axis title and axis.
+         */
+        titleMargin: 4,
+
+        /**
+         * @cfg {Object} background
+         * The background config for the axis surface.
+         */
+        background: null,
+
+        /**
+         * @cfg {Number} minimum
+         * The minimum value drawn by the axis. If not set explicitly, the axis
+         * minimum will be calculated automatically.
+         */
+        minimum: NaN,
+
+        /**
+         * @cfg {Number} maximum
+         * The maximum value drawn by the axis. If not set explicitly, the axis
+         * maximum will be calculated automatically.
+         */
+        maximum: NaN,
+
+        /**
+         * @cfg {Number} minZoom
+         * The minimum zooming level for axis.
+         */
+        minZoom: 1,
+
+        /**
+         * @cfg {Number} maxZoom
+         * The maximum zooming level for axis
+         */
+        maxZoom: 10000,
+
+        /**
+         * @cfg {Object|Ext.chart.axis.layout.Layout} layout
+         * The axis layout config. See {@link Ext.chart.axis.layout.Layout}
+         */
+        layout: 'continuous',
+
+        /**
+         * @cfg {Object|Ext.chart.axis.segmenter.Segmenter} segmenter
+         * The segmenter config. See {@link Ext.chart.axis.segmenter.Segmenter}
+         */
+        segmenter: 'numeric',
+
+        /**
+         * @cfg {Boolean} hidden
+         * Indicate whether to hide the axis.
+         * If the axis is hidden, one of the axis line, ticks, labels or the title will be shown and
+         * no margin will be taken.
+         * The coordination mechanism works fine no matter if the axis is hidden.
+         */
+        hidden: false,
+
+        /**
+         * @private
+         * @cfg {Number} majorTickSteps
+         * Will be supported soon.
+         * If `minimum` and `maximum` are specified it forces the number of major ticks to the specified value.
+         */
+        majorTickSteps: false,
+
+        /**
+         * @private
+         * @cfg {Number} [minorTickSteps=0]
+         * Will be supported soon.
+         * The number of small ticks between two major ticks.
+         */
+        minorTickSteps: false,
+
+        /**
+         * @private
+         * @cfg {Boolean} adjustMaximumByMajorUnit
+         * Will be supported soon.
+         */
+        adjustMaximumByMajorUnit: false,
+
+        /**
+         * @private
+         * @cfg {Boolean} adjustMinimumByMajorUnit
+         * Will be supported soon.
+         *
+         */
+        adjustMinimumByMajorUnit: false,
+
+        /**
+         * @cfg {String|Object} title
+         * The title for the Axis.
+         * If given a String, the text style of the title sprite will be set,
+         * otherwise the style will be set.
+         */
+        title: { fontSize: 18, fontFamily: 'Helvetica'},
+
+        /**
+         * @cfg {Number} increment
+         * Given a minimum and maximum bound for the series to be rendered (that can be obtained
+         * automatically or by manually setting `minimum` and `maximum`) tick marks will be added
+         * on each `increment` from the minimum value to the maximum one.
+         */
+        increment: 0.5,
+
+        /**
+         * @private
+         * @cfg {Number} length
+         * Length of the axis position. Equals to the size of inner region on the docking side of this axis.
+         * WARNING: Meant to be set automatically by chart. Do not set it manually.
+         */
+        length: 0,
+
+        /**
+         * @private
+         * @cfg {Array} center
+         * Center of the polar axis.
+         * WARNING: Meant to be set automatically by chart. Do not set it manually.
+         */
+        center: null,
+
+        /**
+         * @private
+         * @cfg {Number} radius
+         * Radius of the polar axis.
+         * WARNING: Meant to be set automatically by chart. Do not set it manually.
+         */
+        radius: null,
+
+        /**
+         * @private
+         * @cfg {Number} rotation
+         * Rotation of the polar axis.
+         * WARNING: Meant to be set automatically by chart. Do not set it manually.
+         */
+        rotation: null,
+
+        /**
+         * @cfg {Boolean} [labelInSpan]
+         * Draws the labels in the middle of the spans.
+         */
+        labelInSpan: null,
+
+        /**
+         * @cfg {Array} visibleRange
+         * Specify the proportion of the axis to be rendered. The series bound to
+         * this axis will be synchronized and transformed.
+         */
+        visibleRange: [0, 1],
+
+        /**
+         * @private
+         * @cfg {Boolean} needHighPrecision
+         */
+        needHighPrecision: false
+    },
+
+    observableType: 'component',
+
+    titleOffset: 0,
+
+    animating: 0,
+
+    prevMin: 0,
+
+    prevMax: 1,
+
+    boundSeries: [],
+
+    sprites: null,
+
+    /**
+     * @private
+     * @property {Array} The full data range of the axis. Should not be set directly, clear it to `null` and use
+     * `getRange` to update.
+     */
+    range: null,
+
+    xValues: [],
+
+    yValues: [],
+
+    applyRotation: function (rotation) {
+        var twoPie = Math.PI * 2;
+        return (rotation % twoPie + Math.PI) % twoPie - Math.PI;
+    },
+
+    updateRotation: function (rotation) {
+        var sprites = this.getSprites(),
+            position = this.getPosition();
+        if (!this.getHidden() && position === 'angular' && sprites[0]) {
+            sprites[0].setAttributes({
+                baseRotation: rotation
+            });
+        }
+    },
+
+    applyTitle: function (title, oldTitle) {
+        var surface;
+
+        if (Ext.isString(title)) {
+            title = { text: title };
+        }
+
+        if (!oldTitle) {
+            oldTitle = Ext.create('sprite.text', title);
+            if ((surface = this.getSurface())) {
+                surface.add(oldTitle);
+            }
+        } else {
+            oldTitle.setAttributes(title);
+        }
+        return oldTitle;
+    },
+
+    constructor: function (config) {
+        var me = this;
+        me.sprites = [];
+        this.labels = [];
+        this.initConfig(config);
+        me.getId();
+        me.mixins.observable.constructor.apply(me, arguments);
+        Ext.ComponentManager.register(me);
+    },
+
+    /**
+     * @private
+     * @return {String}
+     */
+    getAlignment: function () {
+        switch (this.getPosition()) {
+            case 'left':
+            case 'right':
+                return "vertical";
+            case 'top':
+            case 'bottom':
+                return "horizontal";
+            case 'radial':
+                return "radial";
+            case 'angular':
+                return "angular";
+        }
+    },
+
+    /**
+     * @private
+     * @return {String}
+     */
+    getGridAlignment: function () {
+        switch (this.getPosition()) {
+            case 'left':
+            case 'right':
+                return "horizontal";
+            case 'top':
+            case 'bottom':
+                return "vertical";
+            case 'radial':
+                return "circular";
+            case 'angular':
+                return "radial";
+        }
+    },
+
+    /**
+     * @private
+     * Get the surface for drawing the series sprites
+     */
+    getSurface: function () {
+        if (!this.surface) {
+            var chart = this.getChart();
+            if (!chart) {
+                return null;
+            }
+            var surface = this.surface = chart.getSurface(this.getId(), 'axis'),
+                gridSurface = this.gridSurface = chart.getSurface("grid-" + this.getId(), 'grid'),
+                sprites = this.getSprites(),
+                sprite = sprites[0],
+                grid = this.getGrid(),
+                gridAlignment = this.getGridAlignment(),
+                gridSprite;
+            if (grid) {
+                gridSprite = this.gridSpriteEven = new Ext.chart.Markers();
+                gridSprite.setTemplate({xclass: 'grid.' + gridAlignment});
+                if (Ext.isObject(grid)) {
+                    gridSprite.getTemplate().setAttributes(grid);
+                    if (Ext.isObject(grid.even)) {
+                        gridSprite.getTemplate().setAttributes(grid.even);
+                    }
+                }
+                gridSurface.add(gridSprite);
+                sprite.bindMarker(gridAlignment + '-even', gridSprite);
+
+                gridSprite = this.gridSpriteOdd = new Ext.chart.Markers();
+                gridSprite.setTemplate({xclass: 'grid.' + gridAlignment});
+                if (Ext.isObject(grid)) {
+                    gridSprite.getTemplate().setAttributes(grid);
+                    if (Ext.isObject(grid.odd)) {
+                        gridSprite.getTemplate().setAttributes(grid.odd);
+                    }
+                }
+                gridSurface.add(gridSprite);
+                sprite.bindMarker(gridAlignment + '-odd', gridSprite);
+
+                gridSurface.waitFor(surface);
+            }
+        }
+        return this.surface;
+    },
+
+    /**
+     *
+     * Mapping data value into coordinate.
+     *
+     * @param {*} value
+     * @param {String} field
+     * @param {Number} [idx]
+     * @param {Ext.util.MixedCollection} [items]
+     * @return {Number}
+     */
+    getCoordFor: function (value, field, idx, items) {
+        return this.getLayout().getCoordFor(value, field, idx, items);
+    },
+
+    applyPosition: function (pos) {
+        return pos.toLowerCase();
+    },
+
+    applyLabel: function (newText, oldText) {
+        if (!oldText) {
+            oldText = new Ext.draw.sprite.Text({});
+        }
+        oldText.setAttributes(newText);
+        return oldText;
+    },
+
+    applyLayout: function (layout, oldLayout) {
+        // TODO: finish this
+        layout = Ext.factory(layout, null, oldLayout, 'axisLayout');
+        layout.setAxis(this);
+        return layout;
+    },
+
+    applySegmenter: function (segmenter, oldSegmenter) {
+        // TODO: finish this
+        segmenter = Ext.factory(segmenter, null, oldSegmenter, 'segmenter');
+        segmenter.setAxis(this);
+        return segmenter;
+    },
+
+    updateMinimum: function () {
+        this.range = null;
+    },
+
+    updateMaximum: function () {
+        this.range = null;
+    },
+
+    hideLabels: function () {
+        this.getSprites()[0].setDirty(true);
+        this.setLabel({hidden: true});
+    },
+
+    showLabels: function () {
+        this.getSprites()[0].setDirty(true);
+        this.setLabel({hidden: false});
+    },
+
+    /**
+     * @private
+     * Reset the axis to its original state, before any user interaction.
+     *
+     */
+    reset: function () {
+        // TODO: finish this
+    },
+
+    /**
+     * Invokes renderFrame on this axis's surface(s)
+     */
+    renderFrame: function () {
+        this.getSurface().renderFrame();
+    },
+
+    updateChart: function (newChart, oldChart) {
+        var me = this, surface;
+        if (oldChart) {
+            oldChart.un("serieschanged", me.onSeriesChanged, me);
+        }
+        if (newChart) {
+            newChart.on("serieschanged", me.onSeriesChanged, me);
+            if (newChart.getSeries()) {
+                me.onSeriesChanged(newChart);
+            }
+            me.surface = null;
+            surface = me.getSurface();
+            surface.add(me.getSprites());
+            surface.add(me.getTitle());
+        }
+    },
+
+    applyBackground: function (background) {
+        var rect = Ext.ClassManager.getByAlias('sprite.rect');
+        return rect.def.normalize(background);
+    },
+
+    /**
+     * @protected
+     * Invoked when data has changed.
+     */
+    processData: function () {
+        this.getLayout().processData();
+        this.range = null;
+    },
+
+    getDirection: function () {
+        return this.getChart().getDirectionForAxis(this.getPosition());
+    },
+
+    isSide: function () {
+        var position = this.getPosition();
+        return position === 'left' || position === 'right';
+    },
+
+    applyFields: function (fields) {
+        return [].concat(fields);
+    },
+
+    updateFields: function (fields) {
+        this.fieldsMap = {};
+        for (var i = 0; i < fields.length; i++) {
+            this.fieldsMap[fields[i]] = true;
+        }
+    },
+
+    applyVisibleRange: function (visibleRange, oldVisibleRange) {
+        // If it is in reversed order swap them
+        if (visibleRange[0] > visibleRange[1]) {
+            var temp = visibleRange[0];
+            visibleRange[0] = visibleRange[1];
+            visibleRange[0] = temp;
+        }
+        if (visibleRange[1] === visibleRange[0]) {
+            visibleRange[1] += 1 / this.getMaxZoom();
+        }
+        if (visibleRange[1] > visibleRange[0] + 1) {
+            visibleRange[0] = 0;
+            visibleRange[1] = 1;
+        } else if (visibleRange[0] < 0) {
+            visibleRange[1] -= visibleRange[0];
+            visibleRange[0] = 0;
+        } else if (visibleRange[1] > 1) {
+            visibleRange[0] -= visibleRange[1] - 1;
+            visibleRange[1] = 1;
+        }
+
+        if (oldVisibleRange && visibleRange[0] === oldVisibleRange[0] && visibleRange[1] === oldVisibleRange[1]) {
+            return undefined;
+        }
+
+        return visibleRange;
+    },
+
+    updateVisibleRange: function (visibleRange) {
+        this.fireEvent('transformed', this, visibleRange);
+    },
+
+    onSeriesChanged: function (chart) {
+        var me = this,
+            series = chart.getSeries(),
+            getAxisMethod = 'get' + me.getDirection() + 'Axis',
+            boundSeries = [], i, ln = series.length;
+        for (i = 0; i < ln; i++) {
+            if (this === series[i][getAxisMethod]()) {
+                boundSeries.push(series[i]);
+            }
+        }
+
+        me.boundSeries = boundSeries;
+        me.getLayout().processData();
+    },
+
+    applyRange: function (newRange) {
+        if (!newRange) {
+            return this.dataRange.slice(0);
+        } else {
+            return [
+                newRange[0] === null ? this.dataRange[0] : newRange[0],
+                newRange[1] === null ? this.dataRange[1] : newRange[1]
+            ];
+        }
+    },
+
+    /**
+     * Get the range derived from all the bound series.
+     * @return {Array}
+     */
+    getRange: function () {
+        var me = this,
+            getRangeMethod = 'get' + me.getDirection() + 'Range';
+
+        if (me.range) {
+            return me.range;
+        }
+        if (!isNaN(me.getMinimum()) && !isNaN(me.getMaximum())) {
+            return this.range = [me.getMinimum(), me.getMaximum()];
+        }
+        var min = Infinity,
+            max = -Infinity,
+            boundSeries = me.boundSeries,
+            series, i, ln;
+
+        // For each series bound to this axis, ask the series for its min/max values
+        // and use them to find the overall min/max.
+        for (i = 0, ln = boundSeries.length; i < ln; i++) {
+            series = boundSeries[i];
+            var minMax = series[getRangeMethod]();
+
+            if (minMax) {
+                if (minMax[0] < min) {
+                    min = minMax[0];
+                }
+                if (minMax[1] > max) {
+                    max = minMax[1];
+                }
+            }
+        }
+        if (!isFinite(max)) {
+            max = me.prevMax;
+        }
+
+        if (!isFinite(min)) {
+            min = me.prevMin;
+        }
+
+        if (this.getLabelInSpan()) {
+            max += this.getIncrement();
+            min -= this.getIncrement();
+        }
+
+        if (!isNaN(me.getMinimum())) {
+            min = me.getMinimum();
+        } else {
+            me.prevMin = min;
+        }
+
+        if (!isNaN(me.getMaximum())) {
+            max = me.getMaximum();
+        } else {
+            me.prevMax = max;
+        }
+
+        return this.range = [min, max];
+    },
+
+    applyStyle: function (style, oldStyle) {
+        var cls = Ext.ClassManager.getByAlias('sprite.' + this.seriesType);
+        if (cls && cls.def) {
+            style = cls.def.normalize(style);
+        }
+        oldStyle = Ext.apply(oldStyle || {}, style);
+        return oldStyle;
+    },
+
+    updateCenter: function (center) {
+        var sprites = this.getSprites(),
+            axisSprite = sprites[0],
+            centerX = center[0],
+            centerY = center[1];
+        if (axisSprite) {
+            axisSprite.setAttributes({
+                centerX: centerX,
+                centerY: centerY
+            });
+        }
+        if (this.gridSpriteEven) {
+            this.gridSpriteEven.getTemplate().setAttributes({
+                translationX: centerX,
+                translationY: centerY,
+                rotationCenterX: centerX,
+                rotationCenterY: centerY
+            });
+        }
+        if (this.gridSpriteOdd) {
+            this.gridSpriteOdd.getTemplate().setAttributes({
+                translationX: centerX,
+                translationY: centerY,
+                rotationCenterX: centerX,
+                rotationCenterY: centerY
+            });
+        }
+    },
+
+    getSprites: function () {
+        if (!this.getChart()) {
+            return;
+        }
+        var me = this,
+            range = me.getRange(),
+            position = me.getPosition(),
+            chart = me.getChart(),
+            animation = chart.getAnimate(),
+            baseSprite, style,
+            gridAlignment = me.getGridAlignment(),
+            length = me.getLength();
+
+        // If animation is false, then stop animation.
+        if (animation === false) {
+            animation = {
+                duration: 0
+            };
+        }
+        if (range) {
+            style = Ext.applyIf({
+                position: position,
+                axis: me,
+                min: range[0],
+                max: range[1],
+                length: length,
+                grid: me.getGrid(),
+                hidden: me.getHidden(),
+                titleOffset: me.titleOffset,
+                layout: me.getLayout(),
+                segmenter: me.getSegmenter(),
+                label: me.getLabel()
+            }, me.getStyle());
+
+            // If the sprites are not created.
+            if (!me.sprites.length) {
+                baseSprite = new Ext.chart.axis.sprite.Axis(style);
+                baseSprite.fx.setCustomDuration({
+                    baseRotation: 0
+                });
+                baseSprite.fx.on("animationstart", "onAnimationStart", me);
+                baseSprite.fx.on("animationend", "onAnimationEnd", me);
+                me.sprites.push(baseSprite);
+                me.updateTitleSprite();
+            } else {
+                baseSprite = me.sprites[0];
+                baseSprite.fx.setConfig(animation);
+                baseSprite.setAttributes(style);
+                baseSprite.setLayout(me.getLayout());
+                baseSprite.setSegmenter(me.getSegmenter());
+                baseSprite.setLabel(me.getLabel());
+            }
+
+            if (me.getRenderer()) {
+                baseSprite.setRenderer(me.getRenderer());
+            }
+        }
+
+        return me.sprites;
+    },
+
+    updateTitleSprite: function () {
+        if (!this.sprites[0]) {
+            return;
+        }
+        var me = this,
+            thickness = this.sprites[0].thickness,
+            surface = me.getSurface(),
+            title = this.getTitle(),
+            position = me.getPosition(),
+            titleMargin = me.getTitleMargin(),
+            length = me.getLength(),
+            anchor = surface.roundPixel(length / 2);
+
+        if (title) {
+            switch (position) {
+                case 'top':
+                    title.setAttributes({
+                        x: anchor,
+                        y: titleMargin / 2,
+                        textBaseline: 'top',
+                        textAlign: 'center'
+                    }, true, true);
+                    title.applyTransformations();
+                    me.titleOffset = title.getBBox().height + titleMargin;
+                    break;
+                case 'bottom':
+                    title.setAttributes({
+                        x: anchor,
+                        y: thickness + titleMargin,
+                        textBaseline: 'top',
+                        textAlign: 'center'
+                    }, true, true);
+                    title.applyTransformations();
+                    me.titleOffset = title.getBBox().height + titleMargin;
+                    break;
+                case 'left':
+                    title.setAttributes({
+                        x: titleMargin / 2,
+                        y: anchor,
+                        textBaseline: 'top',
+                        textAlign: 'center',
+                        rotationCenterX: titleMargin / 2,
+                        rotationCenterY: anchor,
+                        rotationRads: -Math.PI / 2
+                    }, true, true);
+                    title.applyTransformations();
+                    me.titleOffset = title.getBBox().width + titleMargin;
+                    break;
+                case 'right':
+                    title.setAttributes({
+                        x: thickness - titleMargin / 2,
+                        y: anchor,
+                        textBaseline: 'bottom',
+                        textAlign: 'center',
+                        rotationCenterX: thickness,
+                        rotationCenterY: anchor,
+                        rotationRads: Math.PI / 2
+                    }, true, true);
+                    title.applyTransformations();
+                    me.titleOffset = title.getBBox().width + titleMargin;
+                    break;
+            }
+        }
+    },
+
+    onThicknessChanged: function () {
+        var me = this;
+        me.getChart().onThicknessChanged();
+    },
+
+    getThickness: function () {
+        if (this.getHidden()) {
+            return 0;
+        }
+        return (this.sprites[0] && this.sprites[0].thickness || 1) + this.titleOffset;
+    },
+
+    onAnimationStart: function () {
+        this.animating++;
+        if (this.animating === 1) {
+            this.fireEvent("animationstart");
+        }
+    },
+
+    onAnimationEnd: function () {
+        this.animating--;
+        if (this.animating === 0) {
+            this.fireEvent("animationend");
+        }
+    },
+
+    // Methods used in ComponentQuery and controller
+    getItemId: function () {
+        return this.getId();
+    },
+
+    getAncestorIds: function () {
+        return [this.getChart().getId()];
+    },
+
+    isXType: function (xtype) {
+        return xtype === 'axis';
+    },
+
+    destroy: function () {
+        Ext.ComponentManager.unregister(this);
+        this.callSuper();
+    }
+});
+
+
 /**
  * @private
  */
@@ -45984,6 +59510,127 @@ Ext.define('Ext.dataview.DataView', {
             // Bypassing setter because sometimes we pass the same record (different data)
             container.updateListItem(record, me.getViewItems()[newIndex]);
         }
+    }
+});
+
+/**
+ * @class Ext.chart.Legend
+ * @extends Ext.dataview.DataView
+ * 
+ * A default legend for charts.
+ *
+ *     @example preview
+ *     var chart = new Ext.chart.Chart({
+ *         animate: true,
+ *         store: {
+ *           fields: ['name', 'data1', 'data2', 'data3', 'data4', 'data5'],
+ *           data: [
+ *               {'name':'metric one', 'data1':10, 'data2':12, 'data3':14, 'data4':8, 'data5':13},
+ *               {'name':'metric two', 'data1':7, 'data2':8, 'data3':16, 'data4':10, 'data5':3},
+ *               {'name':'metric three', 'data1':5, 'data2':2, 'data3':14, 'data4':12, 'data5':7},
+ *               {'name':'metric four', 'data1':2, 'data2':14, 'data3':6, 'data4':1, 'data5':23},
+ *               {'name':'metric five', 'data1':27, 'data2':38, 'data3':36, 'data4':13, 'data5':33}
+ *           ]
+ *         },
+ *         legend: {
+ *           position: 'bottom'
+ *         },
+ *         axes: [{
+ *             type: 'numeric',
+ *             position: 'left',
+ *             fields: ['data1'],
+ *             title: {
+ *                 text: 'Sample Values',
+ *                 fontSize: 15
+ *             },
+ *             grid: true,
+ *             minimum: 0
+ *         }, {
+ *             type: 'category',
+ *             position: 'bottom',
+ *             fields: ['name'],
+ *             title: {
+ *                 text: 'Sample Values',
+ *                 fontSize: 15
+ *             }
+ *         }],
+ *         series: [{
+ *             type: 'area',
+ *             title: ['Data1', 'Data2', 'Data3'],
+ *             subStyle: {
+ *                 fill: ['blue', 'green', 'red']
+ *             },
+ *             xField: 'name',
+ *             yField: ['data1', 'data2', 'data3']
+ *         
+ *         }]
+ *     });
+ *     Ext.Viewport.setLayout('fit');
+ *     Ext.Viewport.add(chart);
+ */
+Ext.define("Ext.chart.Legend", {
+    xtype: 'legend',
+    extend: "Ext.dataview.DataView",
+    config: {
+        itemTpl: [
+            "<span class=\"x-legend-item-marker {[values.disabled?\'x-legend-inactive\':\'\']}\" style=\"background:{mark};\"></span>{name}"
+        ],
+        baseCls: 'x-legend',
+        padding: 5,
+        disableSelection: true,
+        inline: true,
+        /**
+         * @cfg {String} position
+         * @deprecated Use `docked` instead.
+         * Delegates to `docked`
+         */
+        position: 'top',
+        horizontalHeight: 48,
+        verticalWidth: 150
+    },
+
+    constructor: function () {
+        this.callSuper(arguments);
+
+        var scroller = this.getScrollable().getScroller(),
+            onDrag = scroller.onDrag;
+        scroller.onDrag = function (e) {
+            e.stopPropagation();
+            onDrag.call(this, e);
+        };
+    },
+
+    doSetDocked: function (docked) {
+        this.callSuper(arguments);
+        if (docked === 'top' || docked === 'bottom') {
+            this.setLayout({type: 'hbox', pack: 'center'});
+            this.setInline(true);
+            // TODO: Remove this when possible
+            this.setWidth(null);
+            this.setHeight(this.getHorizontalHeight());
+            this.setScrollable({direction: 'horizontal' });
+        } else {
+            this.setLayout({pack: 'center'});
+            this.setInline(false);
+            // TODO: Remove this when possible
+            this.setWidth(this.getVerticalWidth());
+            this.setHeight(null);
+            this.setScrollable({direction: 'vertical' });
+        }
+    },
+
+    updatePosition: function (position) {
+        this.setDocked(position);
+    },
+
+    onItemTap: function (container, target, index, e) {
+        this.callSuper(arguments);
+        var me = this,
+            store = me.getStore(),
+            record = store && store.getAt(index);
+        record.beginEdit();
+        record.set('disabled', !record.get('disabled'));
+        record.commit();
     }
 });
 
@@ -56426,6 +70073,5758 @@ Ext.define('Ext.data.Store', {
 });
 
 /**
+ * The Ext.chart package provides the capability to visualize data.
+ * Each chart binds directly to an {@link Ext.data.Store} enabling automatic updates of the chart.
+ * A chart configuration object has some overall styling options as well as an array of axes
+ * and series. A chart instance example could look like:
+ *
+ *     new Ext.chart.CartesianChart({
+ *         width: 800,
+ *         height: 600,
+ *         animate: true,
+ *         store: store1,
+ *         legend: {
+ *             position: 'right'
+ *         },
+ *         axes: [
+ *             // ...some axes options...
+ *         ],
+ *         series: [
+ *             // ...some series options...
+ *         ]
+ *     });
+ *
+ * In this example we set the `width` and `height` of a cartesian chart; We decide whether our series are
+ * animated or not and we select a store to be bound to the chart; We also set the legend to the right part of the
+ * chart.
+ *
+ * You can register certain interactions such as {@link Ext.chart.interactions.PanZoom} on the chart by specify an
+ * array of names or more specific config objects. All the events will be wired automatically.
+ *
+ * You can also listen to `itemXXX` events directly on charts. That case all the contained series will relay this event to the
+ * chart.
+ *
+ * For more information about the axes and series configurations please check the documentation of
+ * each series (Line, Bar, Pie, etc).
+ *
+ */
+
+Ext.define('Ext.chart.AbstractChart', {
+
+    extend: 'Ext.draw.Component',
+
+    requires: [
+        'Ext.chart.series.Series',
+        'Ext.chart.interactions.Abstract',
+        'Ext.chart.axis.Axis',
+        'Ext.data.StoreManager',
+        'Ext.chart.Legend',
+        'Ext.data.Store'
+    ],
+    /**
+     * @event beforerefresh
+     * Fires before a refresh to the chart data is called.  If the `beforerefresh` handler returns
+     * `false` the {@link #refresh} action will be canceled.
+     * @param {Ext.chart.AbstractChart} this
+     */
+
+    /**
+     * @event refresh
+     * Fires after the chart data has been refreshed.
+     * @param {Ext.chart.AbstractChart} this
+     */
+
+    /**
+     * @event redraw
+     * Fires after the chart is redrawn.
+     * @param {Ext.chart.AbstractChart} this
+     */
+
+    /**
+     * @event itemmousemove
+     * Fires when the mouse is moved on a series item.
+     * @param {Ext.chart.series.Series} series
+     * @param {Object} item
+     * @param {Event} event
+     */
+    /**
+     * @event itemmouseup
+     * Fires when a mouseup event occurs on a series item.
+     * @param {Ext.chart.series.Series} series
+     * @param {Object} item
+     * @param {Event} event
+     */
+    /**
+     * @event itemmousedown
+     * Fires when a mousedown event occurs on a series item.
+     * @param {Ext.chart.series.Series} series
+     * @param {Object} item
+     * @param {Event} event
+     */
+    /**
+     * @event itemmouseover
+     * Fires when the mouse enters a series item.
+     * @param {Ext.chart.series.Series} series
+     * @param {Object} item
+     * @param {Event} event
+     */
+    /**
+     * @event itemmouseout
+     * Fires when the mouse exits a series item.
+     * @param {Ext.chart.series.Series} series
+     * @param {Object} item
+     * @param {Event} event
+     */
+    /**
+     * @event itemclick
+     * Fires when a click event occurs on a series item.
+     * @param {Ext.chart.series.Series} series
+     * @param {Object} item
+     * @param {Event} event
+     */
+    /**
+     * @event itemdoubleclick
+     * Fires when a doubleclick event occurs on a series item.
+     * @param {Ext.chart.series.Series} series
+     * @param {Object} item
+     * @param {Event} event
+     */
+    /**
+     * @event itemtap
+     * Fires when a tap event occurs on a series item.
+     * @param {Ext.chart.series.Series} series
+     * @param {Object} item
+     * @param {Event} event
+     */
+    /**
+     * @event itemtapstart
+     * Fires when a tapstart event occurs on a series item.
+     * @param {Ext.chart.series.Series} series
+     * @param {Object} item
+     * @param {Event} event
+     */
+    /**
+     * @event itemtapend
+     * Fires when a tapend event occurs on a series item.
+     * @param {Ext.chart.series.Series} series
+     * @param {Object} item
+     * @param {Event} event
+     */
+    /**
+     * @event itemtapcancel
+     * Fires when a tapcancel event occurs on a series item.
+     * @param {Ext.chart.series.Series} series
+     * @param {Object} item
+     * @param {Event} event
+     */
+    /**
+     * @event itemtaphold
+     * Fires when a taphold event occurs on a series item.
+     * @param {Ext.chart.series.Series} series
+     * @param {Object} item
+     * @param {Event} event
+     */
+    /**
+     * @event itemdoubletap
+     * Fires when a doubletap event occurs on a series item.
+     * @param {Ext.chart.series.Series} series
+     * @param {Object} item
+     * @param {Event} event
+     */
+    /**
+     * @event itemsingletap
+     * Fires when a singletap event occurs on a series item.
+     * @param {Ext.chart.series.Series} series
+     * @param {Object} item
+     * @param {Event} event
+     */
+    /**
+     * @event itemtouchstart
+     * Fires when a touchstart event occurs on a series item.
+     * @param {Ext.chart.series.Series} series
+     * @param {Object} item
+     * @param {Event} event
+     */
+    /**
+     * @event itemtouchmove
+     * Fires when a touchmove event occurs on a series item.
+     * @param {Ext.chart.series.Series} series
+     * @param {Object} item
+     * @param {Event} event
+     */
+    /**
+     * @event itemtouchend
+     * Fires when a touchend event occurs on a series item.
+     * @param {Ext.chart.series.Series} series
+     * @param {Object} item
+     * @param {Event} event
+     */
+    /**
+     * @event itemdragstart
+     * Fires when a dragstart event occurs on a series item.
+     * @param {Ext.chart.series.Series} series
+     * @param {Object} item
+     * @param {Event} event
+     */
+    /**
+     * @event itemdrag
+     * Fires when a drag event occurs on a series item.
+     * @param {Ext.chart.series.Series} series
+     * @param {Object} item
+     * @param {Event} event
+     */
+    /**
+     * @event itemdragend
+     * Fires when a dragend event occurs on a series item.
+     * @param {Ext.chart.series.Series} series
+     * @param {Object} item
+     * @param {Event} event
+     */
+    /**
+     * @event itempinchstart
+     * Fires when a pinchstart event occurs on a series item.
+     * @param {Ext.chart.series.Series} series
+     * @param {Object} item
+     * @param {Event} event
+     */
+    /**
+     * @event itempinch
+     * Fires when a pinch event occurs on a series item.
+     * @param {Ext.chart.series.Series} series
+     * @param {Object} item
+     * @param {Event} event
+     */
+    /**
+     * @event itempinchend
+     * Fires when a pinchend event occurs on a series item.
+     * @param {Ext.chart.series.Series} series
+     * @param {Object} item
+     * @param {Event} event
+     */
+    /**
+     * @event itemswipe
+     * Fires when a swipe event occurs on a series item.
+     * @param {Ext.chart.series.Series} series
+     * @param {Object} item
+     * @param {Event} event
+     */
+
+    /**
+     * @property version Current Version of Touch Charts
+     * @type {String}
+     */
+    version: '2.0.0',
+
+    // @ignore
+    viewBox: false,
+
+    delegationRegex: /^item([a-z]+)$/i,
+
+    domEvents: /click|focus|blur|paste|input|mousemove|mousedown|mouseup|mouseover|mouseout|keyup|keydown|keypress|submit|pinch|pinchstart|pinchend|touchstart|touchend|rotate|rotatestart|rotateend|drag|dragstart|dragend|tap|doubletap|singletap/,
+
+    config: {
+
+        /**
+         * @cfg {Ext.data.Store} store
+         * The store that supplies data to this chart.
+         */
+        store: null,
+
+        /**
+         * @cfg {Boolean/Object} shadow (optional) `true` for the default shadow configuration `{shadowOffsetX: 2, shadowOffsetY: 2, shadowBlur: 3, shadowColor: '#444'}`
+         * or a standard shadow config object to be used for default chart shadows.
+         */
+        shadow: false,
+
+        /**
+         * @cfg {Boolean/Object} animate (optional) `true` for the default animation (easing: 'ease' and duration: 500)
+         * or a standard animation config object to be used for default chart animations.
+         */
+        animate: true,
+
+        /**
+         * @cfg {Ext.chart.series.Series/Array} series
+         * Array of {@link Ext.chart.series.Series Series} instances or config objects. For example:
+         *
+         *     series: [{
+         *         type: 'column',
+         *         axis: 'left',
+         *         listeners: {
+         *             'afterrender': function() {
+         *                 console.log('afterrender');
+         *             }
+         *         },
+         *         xField: 'category',
+         *         yField: 'data1'
+         *     }]
+         */
+        series: [],
+
+        /**
+         * @cfg {Ext.chart.axis.Axis/Array/Object} axes
+         * Array of {@link Ext.chart.axis.Axis Axis} instances or config objects. For example:
+         *
+         *     axes: [{
+         *         type: 'Numeric',
+         *         position: 'left',
+         *         fields: ['data1'],
+         *         title: 'Number of Hits',
+         *         minimum: 0,
+         *         // one minor tick between two major ticks
+         *         minorTickSteps: 1
+         *     }, {
+         *         type: 'Category',
+         *         position: 'bottom',
+         *         fields: ['name'],
+         *         title: 'Month of the Year'
+         *     }]
+         */
+        axes: [],
+
+        /**
+         * @cfg {Ext.chart.Legend/Object} legend
+         */
+        legend: null,
+
+        /**
+         * @cfg {Boolean/Array} colors Array of colors/gradients to override the color of items and legends.
+         */
+        colors: null,
+
+        /**
+         * @cfg {Object|Number} insetPadding The amount of inset padding in pixels for the chart. Inset padding is
+         * the padding from the boundary of the chart to any of its contents.
+         * @cfg {Number} insetPadding.top
+         */
+        insetPadding: {
+            top: 10,
+            left: 10,
+            right: 10,
+            bottom: 10
+        },
+
+        /**
+         * @cfg {Object} innerPadding The amount of inner padding in pixel. Inner padding is the padding from
+         * axis to the series.
+         */
+        innerPadding: {
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0
+        },
+
+        /**
+         * @cfg {Object|Boolean} background (optional) Set the chart background. This can be a gradient object, image, or color.
+         *
+         * For example, if `background` were to be a color we could set the object as
+         *
+         *     background: {
+         *         //color string
+         *         fill: '#ccc'
+         *     }
+         *
+         * You can specify an image by using:
+         *
+         *     background: {
+         *         image: 'http://path.to.image/'
+         *     }
+         *
+         * Also you can specify a gradient by using the gradient object syntax:
+         *
+         *     background: {
+         *         gradient: {
+         *             id: 'gradientId',
+         *             angle: 45,
+         *             stops: {
+         *                 0: {
+         *                     color: '#555'
+         *                 },
+         *                 100: {
+         *                     color: '#ddd'
+         *                 }
+         *             }
+         *         }
+         *     }
+         */
+        background: null,
+
+        /**
+         * @cfg {Array} interactions
+         * Interactions are optional modules that can be plugged in to a chart to allow the user to interact
+         * with the chart and its data in special ways. The `interactions` config takes an Array of Object
+         * configurations, each one corresponding to a particular interaction class identified by a `type` property:
+         *
+         *     new Ext.chart.AbstractChart({
+         *         renderTo: Ext.getBody(),
+         *         width: 800,
+         *         height: 600,
+         *         store: store1,
+         *         axes: [
+         *             // ...some axes options...
+         *         ],
+         *         series: [
+         *             // ...some series options...
+         *         ],
+         *         interactions: [{
+         *             type: 'interactiontype'
+         *             // ...additional configs for the interaction...
+         *         }]
+         *     });
+         *
+         * When adding an interaction which uses only its default configuration (no extra properties other than `type`),
+         * you can alternately specify only the type as a String rather than the full Object:
+         *
+         *     interactions: ['reset', 'rotate']
+         *
+         * The current supported interaction types include:
+         *
+         * - {@link Ext.chart.interactions.PanZoom panzoom} - allows pan and zoom of axes
+         * - {@link Ext.chart.interactions.ItemHighlight itemhighlight} - allows highlighting of series data points
+         * - {@link Ext.chart.interactions.ItemInfo iteminfo} - allows displaying details of a data point in a popup panel
+         * - {@link Ext.chart.interactions.Rotate rotate} - allows rotation of pie and radar series
+         *
+         * See the documentation for each of those interaction classes to see how they can be configured.
+         *
+         * Additional custom interactions can be registered using `'interactions.'` alias prefix.
+         */
+        interactions: [],
+
+        /**
+         * @private
+         * The main region of the chart.
+         */
+        mainRegion: null,
+
+        /**
+         * @private
+         * Override value
+         */
+        autoSize: false,
+
+        /**
+         * @private
+         * Override value
+         */
+        viewBox: false,
+
+        /**
+         * @private
+         * Override value
+         */
+        fitSurface: false,
+
+        /**
+         * @private
+         * Override value
+         */
+        resizeHandler: null,
+
+        /**
+         * @readonly
+         * @cfg {Object} highlightItem
+         * The current highlight item in the chart.
+         * The object must be the one that you get from item events.
+         *
+         * Note that series can also own highlight items.
+         * This notion is separate from this one and should not be used at the same time.
+         */
+        highlightItem: null
+    },
+
+    /**
+     * @private
+     */
+    resizing: 0,
+
+    /**
+     * @private The z-indexes to use for the various surfaces
+     */
+    surfaceZIndexes: {
+        main: 0,
+        grid: 1,
+        series: 2,
+        axis: 3,
+        overlay: 4,
+        events: 5
+    },
+
+    animating: 0,
+
+    applyAnimate: function (newAnimate, oldAnimate) {
+        if (!newAnimate) {
+            newAnimate = {
+                duration: 0
+            };
+        } else if (newAnimate === true) {
+            newAnimate = {
+                easing: 'easeInOut',
+                duration: 500
+            };
+        }
+        if (!oldAnimate) {
+            return newAnimate;
+        } else {
+            oldAnimate = Ext.apply({}, newAnimate, oldAnimate);
+        }
+        return oldAnimate;
+    },
+
+    applyInsetPadding: function (padding, oldPadding) {
+        if (Ext.isNumber(padding)) {
+            return {
+                top: padding,
+                left: padding,
+                right: padding,
+                bottom: padding
+            };
+        } else if (!oldPadding) {
+            return padding;
+        } else {
+            return Ext.apply(oldPadding, padding);
+        }
+    },
+
+    applyInnerPadding: function (padding, oldPadding) {
+        if (Ext.isNumber(padding)) {
+            return {
+                top: padding,
+                left: padding,
+                right: padding,
+                bottom: padding
+            };
+        } else if (!oldPadding) {
+            return padding;
+        } else {
+            return Ext.apply(oldPadding, padding);
+        }
+    },
+
+    scheduleLayout: function () {
+        if (!this.scheduledLayoutId) {
+            this.scheduledLayoutId = Ext.draw.Animator.schedule('doScheduleLayout', this);
+        }
+    },
+
+    doScheduleLayout: function () {
+        this.scheduledLayoutId = null;
+        this.performLayout();
+    },
+
+    getAnimate: function () {
+        if (this.resizing) {
+            return {
+                duration: 0
+            };
+        } else {
+            return this._animate;
+        }
+    },
+
+    constructor: function () {
+        var me = this;
+        me.itemListeners = {};
+        me.surfaceMap = {};
+        me.legendStore = new Ext.data.Store({
+            storeId: this.getId() + '-legendStore',
+            fields: [
+                'id', 'name', 'mark', 'disabled', 'series', 'index'
+            ]
+        });
+        me.callSuper(arguments);
+        me.refreshLegendStore();
+        me.getLegendStore().on('updaterecord', 'onUpdateLegendStore', me);
+    },
+
+    /**
+     * Return the legend store that contains all the legend information. These
+     * information are collected from all the series.
+     * @return {Ext.data.Store} 
+     */
+    getLegendStore: function () {
+        return this.legendStore;
+    },
+
+    refreshLegendStore: function () {
+        if (this.getLegendStore()) {
+            var i, ln,
+                series = this.getSeries(), seriesItem,
+                legendData = [];
+            if (series) {
+                for (i = 0, ln = series.length; i < ln; i++) {
+                    seriesItem = series[i];
+                    if (seriesItem.getShowInLegend()) {
+                        seriesItem.provideLegendInfo(legendData);
+                    }
+                }
+            }
+            this.getLegendStore().setData(legendData);
+        }
+    },
+
+    onUpdateLegendStore: function (store, record) {
+        var series = this.getSeries(), seriesItem;
+        if (record && series) {
+            seriesItem = series.map[record.get('series')];
+            if (seriesItem) {
+                seriesItem.setHiddenByIndex(record.get('index'), record.get('disabled'));
+                this.redraw();
+            }
+        }
+    },
+
+    initialized: function () {
+        var me = this;
+        me.callSuper();
+        me.getSurface('main');
+        me.getSurface('overlay');
+        me.applyStyles();
+    },
+
+    resizeHandler: function (size) {
+        var me = this;
+        me.getSurface('overlay').setRegion([0, 0, size.width, size.height]);
+        me.performLayout();
+    },
+
+    applyMainRegion: function (newRegion, region) {
+        if (!region) {
+            return newRegion;
+        }
+        this.getSeries();
+        this.getAxes();
+        if (newRegion[0] === region[0] &&
+            newRegion[1] === region[1] &&
+            newRegion[2] === region[2] &&
+            newRegion[3] === region[3]) {
+            return region;
+        } else {
+            return newRegion;
+        }
+    },
+
+    getSurface: function (name, type) {
+        name = name || 'main';
+        type = type || name;
+        var me = this,
+            surface = this.callSuper([name]),
+            zIndexes = me.surfaceZIndexes;
+        if (type in zIndexes) {
+            surface.element.setStyle('zIndex', zIndexes[type]);
+        }
+        if (!me.surfaceMap[type]) {
+            me.surfaceMap[type] = [];
+        }
+        surface.type = type;
+        me.surfaceMap[type].push(surface);
+        return surface;
+    },
+
+    updateColors: function (colors) {
+        var series = this.getSeries(),
+            seriesItem;
+        for (var i = 0; i < series.length; i++) {
+            seriesItem = series[i];
+            if (!seriesItem.getColors()) {
+                seriesItem.updateColors(colors);
+            }
+        }
+    },
+
+    applyAxes: function (newAxes, oldAxes) {
+        this.resizing++;
+        try {
+            if (!oldAxes) {
+                oldAxes = [];
+                oldAxes.map = {};
+            }
+            var result = [], i, ln, axis, oldAxis, oldMap = oldAxes.map;
+            result.map = {};
+            newAxes = Ext.Array.from(newAxes, true);
+            for (i = 0, ln = newAxes.length; i < ln; i++) {
+                axis = newAxes[i];
+                if (!axis) {
+                    continue;
+                }
+                axis = Ext.factory(axis, null, oldAxis = oldMap[axis.getId && axis.getId() || axis.id], 'axis');
+                axis.setChart(this);
+                if (axis) {
+                    result.push(axis);
+                    result.map[axis.getId()] = axis;
+                    if (!oldAxis) {
+                        axis.on('animationstart', 'onAnimationStart', this);
+                        axis.on('animationend', 'onAnimationEnd', this);
+                    }
+                }
+            }
+
+            for (i in oldMap) {
+                if (!result.map[oldMap[i]]) {
+                    oldMap[i].destroy();
+                }
+            }
+            return result;
+        } finally {
+            this.resizing--;
+        }
+    },
+
+    updateAxes: function (newAxes) {
+        var i, ln, axis;
+        for (i = 0, ln = newAxes.length; i < ln; i++) {
+            axis = newAxes[i];
+            axis.setChart(this);
+        }
+    },
+
+    applySeries: function (newSeries, oldSeries) {
+        this.resizing++;
+        try {
+            this.getAxes();
+            if (!oldSeries) {
+                oldSeries = [];
+                oldSeries.map = {};
+            }
+            var me = this,
+                result = [],
+                i, ln, series, oldMap = oldSeries.map, oldSeriesItem;
+            result.map = {};
+            newSeries = Ext.Array.from(newSeries, true);
+            for (i = 0, ln = newSeries.length; i < ln; i++) {
+                series = newSeries[i];
+                if (!series) {
+                    continue;
+                }
+                oldSeriesItem = oldSeries.map[series.getId && series.getId() || series.id];
+                if (series instanceof Ext.chart.series.Series) {
+                    if (oldSeriesItem !== series) {
+                        // Replacing
+                        if (oldSeriesItem) {
+                            oldSeriesItem.destroy();
+                        }
+                        me.addItemListenersToSeries(series);
+                    }
+                    series.setChart(this);
+                } else if (Ext.isObject(series)) {
+                    if (oldSeriesItem) {
+                        // Update
+                        oldSeriesItem.setConfig(series);
+                        series = oldSeriesItem;
+                    } else {
+                        if (Ext.isString(series)) {
+                            series = Ext.create(series.xclass || ("series." + series), {chart: this});
+                        } else {
+                            series.chart = this;
+                            series = Ext.create(series.xclass || ("series." + series.type), series);
+                        }
+                        series.on('animationstart', 'onAnimationStart', this);
+                        series.on('animationend', 'onAnimationEnd', this);
+                        me.addItemListenersToSeries(series);
+                    }
+                }
+
+                result.push(series);
+                result.map[series.getId()] = series;
+            }
+
+            for (i in oldMap) {
+                if (!result.map[oldMap[i]]) {
+                    oldMap[i].destroy();
+                }
+            }
+            return result;
+        } finally {
+            this.resizing--;
+        }
+    },
+
+    applyLegend: function (newLegend, oldLegend) {
+        return Ext.factory(newLegend, Ext.chart.Legend, oldLegend);
+    },
+
+    updateLegend: function (legend) {
+        if (legend) {
+            // On create
+            legend.setStore(this.getLegendStore());
+            if (!legend.getDocked()) {
+                legend.setDocked('bottom');
+            }
+            if (this.getParent()) {
+                this.getParent().add(legend);
+            }
+        }
+    },
+
+    setParent: function (parent) {
+        this.callSuper(arguments);
+        if (parent && this.getLegend()) {
+            parent.add(this.getLegend());
+        }
+    },
+
+    updateSeries: function (newSeries, oldSeries) {
+        this.resizing++;
+        try {
+            this.fireEvent('serieschanged', this, newSeries, oldSeries);
+            var i, ln, seriesItem;
+            for (i = 0, ln = newSeries.length; i < ln; i++) {
+                seriesItem = newSeries[i];
+            }
+            this.refreshLegendStore();
+        } finally {
+            this.resizing--;
+        }
+    },
+
+    applyInteractions: function (interations, oldInterations) {
+        if (!oldInterations) {
+            oldInterations = [];
+            oldInterations.map = {};
+        }
+        var me = this,
+            result = [], oldMap = oldInterations.map;
+        result.map = {};
+        interations = Ext.Array.from(interations, true);
+        for (var i = 0, ln = interations.length; i < ln; i++) {
+            var interation = interations[i];
+            if (!interation) {
+                continue;
+            }
+            interation = Ext.factory(interation, null, oldMap[interation.getId && interation.getId() || interation.id], 'interaction');
+            interation.setChart(me);
+            if (interation) {
+                result.push(interation);
+                result.map[interation.getId()] = interation;
+            }
+        }
+
+        for (i in oldMap) {
+            if (!result.map[oldMap[i]]) {
+                oldMap[i].destroy();
+            }
+        }
+        return result;
+    },
+
+    applyStore: function (store) {
+        return Ext.StoreManager.lookup(store);
+    },
+
+    updateStore: function (newStore, oldStore) {
+        var me = this;
+        if (oldStore) {
+            oldStore.un('refresh', 'onRefresh', me, null, 'after');
+            if (oldStore.autoDestroy) {
+                oldStore.destroy();
+            }
+        }
+        if (newStore) {
+            newStore.on('refresh', 'onRefresh', me, null, 'after');
+            me.fireEvent('storechanged', newStore, oldStore);
+            me.onRefresh();
+        }
+    },
+
+    /**
+     * Redraw the chart. If animations are set this will animate the chart too.
+     */
+    redraw: function () {
+        this.fireEvent('redraw');
+    },
+
+    getEventXY: function (e) {
+        e = (e.changedTouches && e.changedTouches[0]) || e.event || e.browserEvent || e;
+        var me = this,
+            xy = me.element.getXY(),
+            region = me.getMainRegion();
+        return [e.pageX - xy[0] - region[0], e.pageY - xy[1] - region[1]];
+    },
+
+    /**
+     * Given an x/y point relative to the chart, find and return the first series item that
+     * matches that point.
+     * @param {Number} x
+     * @param {Number} y
+     * @return {Object} An object with `series` and `item` properties, or `false` if no item found.
+     */
+    getItemForPoint: function (x, y) {
+        var me = this,
+            i = 0,
+            items = me.getSeries(),
+            l = items.length,
+            series, item;
+
+        for (; i < l; i++) {
+            series = items[i];
+            item = series.getItemForPoint(x, y);
+            if (item) {
+                return item;
+            }
+        }
+
+        return null;
+    },
+
+    /**
+     * Given an x/y point relative to the chart, find and return all series items that match that point.
+     * @param {Number} x
+     * @param {Number} y
+     * @return {Array} An array of objects with `series` and `item` properties.
+     */
+    getItemsForPoint: function (x, y) {
+        var me = this,
+            series = me.getSeries(),
+            seriesItem,
+            items = [];
+
+        for (var i = 0; i < series.length; i++) {
+            seriesItem = series[i];
+            var item = seriesItem.getItemForPoint(x, y);
+            if (item) {
+                items.push(item);
+            }
+        }
+
+        return items;
+    },
+
+    /**
+     * @private
+     */
+    delayThicknessChanged: 0,
+
+    /**
+     * @private
+     */
+    thicknessChanged: false,
+
+    /**
+     * Suspend the layout initialized by thickness change
+     */
+    suspendThicknessChanged: function () {
+        this.delayThicknessChanged++;
+    },
+
+    /**
+     * Resume the layout initialized by thickness change
+     */
+    resumeThicknessChanged: function () {
+        this.delayThicknessChanged--;
+        if (this.delayThicknessChanged === 0 && this.thicknessChanged) {
+            this.onThicknessChanged();
+        }
+    },
+
+    onAnimationStart: function () {
+        this.fireEvent("animationstart", this);   
+    },
+
+    onAnimationEnd: function () {
+        this.fireEvent("animationend", this);
+    },
+
+    onThicknessChanged: function () {
+        if (this.delayThicknessChanged === 0) {
+            this.thicknessChanged = false;
+            this.performLayout();
+        } else {
+            this.thicknessChanged = true;
+        }
+    },
+
+    /**
+     * @private
+     */
+    onRefresh: function () {
+        var region = this.getMainRegion(),
+            axes = this.getAxes(),
+            store = this.getStore(),
+            series = this.getSeries();
+        if (!store || !axes || !series || !region) {
+            return;
+        }
+        this.redraw();
+    },
+
+    /**
+     * Changes the data store bound to this chart and refreshes it.
+     * @param {Ext.data.Store} store The store to bind to this chart.
+     */
+    bindStore: function (store) {
+        this.setStore(store);
+    },
+
+    applyHighlightItem: function (newHighlightItem, oldHighlightItem) {
+        if (newHighlightItem === oldHighlightItem) {
+            return;
+        }
+        if (Ext.isObject(newHighlightItem) && Ext.isObject(oldHighlightItem)) {
+            if (newHighlightItem.sprite === oldHighlightItem.sprite &&
+                newHighlightItem.index === oldHighlightItem.index
+                ) {
+                return;
+            }
+        }
+        return newHighlightItem;
+    },
+
+    updateHighlightItem: function (newHighlightItem, oldHighlightItem) {
+        if (oldHighlightItem) {
+            oldHighlightItem.series.setAttributesForItem(oldHighlightItem, {highlighted: false});
+        }
+        if (newHighlightItem) {
+            newHighlightItem.series.setAttributesForItem(newHighlightItem, {highlighted: true});
+        }
+    },
+
+    /**
+     * Reset the chart back to its initial state, before any user interaction.
+     * @param {Boolean} skipRedraw If `true`, redrawing of the chart will be skipped.
+     */
+    reset: function (skipRedraw) {
+        var me = this,
+            i, ln,
+            axes = me.getAxes(), axis,
+            series = me.getSeries(), seriesItem;
+
+        for (i = 0, ln = axes.length; i < ln; i++) {
+            axis = axes[i];
+            if (axis.reset) {
+                axis.reset();
+            }
+        }
+
+        for (i = 0, ln = series.length; i < ln; i++) {
+            seriesItem = series[i];
+            if (seriesItem.reset) {
+                seriesItem.reset();
+            }
+        }
+
+        if (!skipRedraw) {
+            me.redraw();
+        }
+    },
+
+    addItemListenersToSeries: function (series) {
+        for (var name in this.itemListeners) {
+            var listenerMap = this.itemListeners[name], i, ln;
+            for (i = 0, ln = listenerMap.length; i < ln; i++) {
+                series.addListener.apply(series, listenerMap[i]);
+            }
+        }
+    },
+
+    addItemListener: function (name, fn, scope, options, order) {
+        var listenerMap = this.itemListeners[name] || (this.itemListeners[name] = []),
+            series = this.getSeries(), seriesItem,
+            i, ln;
+        listenerMap.push([name, fn, scope, options, order]);
+        if (series) {
+            for (i = 0, ln = series.length; i < ln; i++) {
+                seriesItem = series[i];
+                seriesItem.addListener(name, fn, scope, options, order);
+            }
+        }
+    },
+
+    remoteItemListener: function (name, fn, scope, options, order) {
+        var listenerMap = this.itemListeners[name],
+            series = this.getSeries(), seriesItem,
+            i, ln;
+        if (listenerMap) {
+            for (i = 0, ln = listenerMap.length; i < ln; i++) {
+                if (listenerMap[i].fn === fn) {
+                    listenerMap.splice(i, 1);
+                    if (series) {
+                        for (i = 0, ln = series.length; i < ln; i++) {
+                            seriesItem = series[i];
+                            seriesItem.removeListener(name, fn, scope, options, order);
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+    },
+
+    doAddListener: function (name, fn, scope, options, order) {
+        if (name.match(this.delegationRegex)) {
+            return this.addItemListener(name, fn, scope || this, options, order);
+        } else if (name.match(this.domEvents)) {
+            return this.element.doAddListener.apply(this.element, arguments);
+        } else {
+            return this.callSuper(arguments);
+        }
+    },
+
+    doRemoveListener: function (name, fn, scope, options, order) {
+        if (name.match(this.delegationRegex)) {
+            return this.remoteItemListener(name, fn, scope || this, options, order);
+        } else if (name.match(this.domEvents)) {
+            return this.element.doRemoveListener.apply(this.element, arguments);
+        } else {
+            return this.callSuper(arguments);
+        }
+    },
+
+    onItemRemove: function (item) {
+        this.callSuper(arguments);
+        if (this.surfaceMap) {
+            Ext.Array.remove(this.surfaceMap[item.type], item);
+            if (this.surfaceMap[item.type].length === 0) {
+                delete this.surfaceMap[item.type];
+            }
+        }
+    },
+
+    // @private remove gently.
+    destroy: function () {
+        var me = this,
+            emptyArray = [];
+        me.surfaceMap = null;
+        me.setHighlightItem(null);
+        me.setSeries(emptyArray);
+        me.setAxes(emptyArray);
+        me.setInteractions(emptyArray);
+        me.setStore(null);
+        Ext.Viewport.un('orientationchange', me.redraw, me);
+        this.callSuper(arguments);
+    },
+
+    /* ---------------------------------
+     Methods needed for ComponentQuery
+     ----------------------------------*/
+
+    /**
+     * @private
+     * @param deep
+     * @return {Array}
+     */
+    getRefItems: function (deep) {
+        var me = this,
+            series = me.getSeries(),
+            axes = me.getAxes(),
+            interaction = me.getInteractions(),
+            ans = [], i, ln;
+
+        for (i = 0, ln = series.length; i < ln; i++) {
+            ans.push(series[i]);
+            if (series[i].getRefItems) {
+                ans.push.apply(ans, series[i].getRefItems(deep));
+            }
+        }
+
+        for (i = 0, ln = axes.length; i < ln; i++) {
+            ans.push(axes[i]);
+            if (axes[i].getRefItems) {
+                ans.push.apply(ans, axes[i].getRefItems(deep));
+            }
+        }
+
+        for (i = 0, ln = interaction.length; i < ln; i++) {
+            ans.push(interaction[i]);
+            if (interaction[i].getRefItems) {
+                ans.push.apply(ans, interaction[i].getRefItems(deep));
+            }
+        }
+
+        return ans;
+    }
+});
+
+/**
+ * @class Ext.chart.grid.HorizontalGrid
+ * @extends Ext.draw.sprite.Sprite
+ * 
+ * Horizontal Grid sprite. Used in Cartesian Charts.
+ */
+Ext.define("Ext.chart.grid.HorizontalGrid", {
+    extend: 'Ext.draw.sprite.Sprite',
+    alias: 'grid.horizontal',
+
+    inheritableStatics: {
+        def: {
+            processors: {
+                x: 'number',
+                y: 'number',
+                width: 'number',
+                height: 'number'
+            },
+
+            defaults: {
+                x: 0,
+                y: 0,
+                width: 1,
+                height: 1,
+                strokeStyle: '#DDD'
+            }
+        }
+    },
+
+    render: function (surface, ctx, clipRegion) {
+        var attr = this.attr,
+            x = attr.x,
+            y = surface.roundPixel(attr.y),
+            w = attr.width,
+            h = attr.height,
+            halfLineWidth = ctx.lineWidth * 0.5;
+        ctx.beginPath();
+        ctx.rect(clipRegion[0] - surface.matrix.getDX(), y + halfLineWidth, +clipRegion[2], attr.height);
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.moveTo(clipRegion[0] - surface.matrix.getDX(), y + halfLineWidth);
+        ctx.lineTo(clipRegion[0] + clipRegion[2] - surface.matrix.getDX(), y + halfLineWidth);
+        ctx.stroke();
+    }
+});
+
+/**
+ * @class Ext.chart.grid.VerticalGrid
+ * @extends Ext.draw.sprite.Sprite
+ * 
+ * Vertical Grid sprite. Used in Cartesian Charts.
+ */
+Ext.define("Ext.chart.grid.VerticalGrid", {
+    extend: 'Ext.draw.sprite.Sprite',
+    alias: 'grid.vertical',
+
+    inheritableStatics: {
+        def: {
+            processors: {
+                x: 'number',
+                y: 'number',
+                width: 'number',
+                height: 'number'
+            },
+
+            defaults: {
+                x: 0,
+                y: 0,
+                width: 1,
+                height: 1,
+                strokeStyle: '#DDD'
+            }
+        }
+    },
+
+    render: function (surface, ctx, clipRegion) {
+        var attr = this.attr,
+            x = surface.roundPixel(attr.x),
+            halfLineWidth = ctx.lineWidth * 0.5;
+        ctx.beginPath();
+        ctx.rect(x - halfLineWidth, clipRegion[1] - surface.matrix.getDY(), attr.width, clipRegion[3]);
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.moveTo(x - halfLineWidth, clipRegion[1] - surface.matrix.getDY());
+        ctx.lineTo(x - halfLineWidth, clipRegion[1] + clipRegion[3] - surface.matrix.getDY());
+        ctx.stroke();
+    }
+});
+
+/**
+ * @class Ext.chart.CartesianChart
+ * @extends Ext.chart.AbstractChart
+ *
+ * Represents a chart that uses cartesian coordinates.
+ * A cartesian chart have two directions, X direction and Y direction.
+ * The series and axes are coordinated along these directions.
+ * By default the x direction is horizontal and y direction is vertical,
+ * You can swap the by setting {@link #flipXY} config to `true`.
+ *
+ * Cartesian series often treats x direction an y direction differently.
+ * In most cases, data on x direction are assumed to be monotonically increasing.
+ * Based on this property, cartesian series can be trimmed and summarized properly
+ * to gain a better performance.
+ *
+ * @xtype chart
+ */
+
+Ext.define('Ext.chart.CartesianChart', {
+    extend: 'Ext.chart.AbstractChart',
+    alternateClassName: 'Ext.chart.Chart',
+    requires: ['Ext.chart.grid.HorizontalGrid', 'Ext.chart.grid.VerticalGrid'],
+    config: {
+        /**
+         * @cfg {Boolean} flipXY Flip the direction of X and Y axis.
+         * If flipXY is true, the X axes will be vertical and Y axes will be horizontal.
+         */
+        flipXY: false,
+
+        innerRegion: [0, 0, 1, 1]
+    },
+    xtype: 'chart',
+    alias: 'Ext.chart.Chart',
+
+    getDirectionForAxis: function (position) {
+        var flipXY = this.getFlipXY();
+        if (position === 'left' || position === 'right') {
+            if (flipXY) {
+                return 'X';
+            } else {
+                return 'Y';
+            }
+        } else {
+            if (flipXY) {
+                return 'Y';
+            } else {
+                return 'X';
+            }
+        }
+    },
+
+    /**
+     * Layout the axes and series.
+     */
+    performLayout: function () {
+        try {
+            this.resizing++;
+            this.suspendThicknessChanged();
+            var me = this,
+                axes = me.getAxes(), axis,
+                serieses = me.getSeries(), series,
+                axisSurface, thickness,
+                size = me.element.getSize(),
+                width = size.width,
+                height = size.height,
+                insetPadding = me.getInsetPadding(),
+                innerPadding = me.getInnerPadding(),
+                surface,
+                shrinkBox = {
+                    top: insetPadding.top,
+                    left: insetPadding.left,
+                    right: insetPadding.right,
+                    bottom: insetPadding.bottom
+                },
+                gridSurface,
+                mainRegion, innerWidth, innerHeight,
+                elements, floating, matrix, i, ln,
+                flipXY = me.getFlipXY();
+
+            if (width <= 0 || height <= 0) {
+                return;
+            }
+
+            for (i = 0; i < axes.length; i++) {
+                axis = axes[i];
+                axisSurface = axis.getSurface();
+                floating = axis.getStyle && axis.getStyle() && axis.getStyle().floating;
+                thickness = axis.getThickness();
+                switch (axis.getPosition()) {
+                    case 'top':
+                        axisSurface.setRegion([0, shrinkBox.top, width, thickness]);
+                        break;
+                    case 'bottom':
+                        axisSurface.setRegion([0, height - (shrinkBox.bottom + thickness), width, thickness]);
+                        break;
+                    case 'left':
+                        axisSurface.setRegion([shrinkBox.left, 0, thickness, height]);
+                        break;
+                    case 'right':
+                        axisSurface.setRegion([width - (shrinkBox.right + thickness), 0, thickness, height]);
+                        break;
+                }
+                if (!floating) {
+                    shrinkBox[axis.getPosition()] += thickness;
+                }
+            }
+
+            width -= shrinkBox.left + shrinkBox.right;
+            height -= shrinkBox.top + shrinkBox.bottom;
+
+            mainRegion = [shrinkBox.left, shrinkBox.top, width, height];
+
+            shrinkBox.left += innerPadding.left;
+            shrinkBox.top += innerPadding.top;
+            shrinkBox.right += innerPadding.right;
+            shrinkBox.bottom += innerPadding.bottom;
+
+            innerWidth = width - innerPadding.left - innerPadding.right;
+            innerHeight = height - innerPadding.top - innerPadding.bottom;
+
+            me.setInnerRegion([shrinkBox.left, shrinkBox.top, innerWidth, innerHeight]);
+
+            if (innerWidth <= 0 || innerHeight <= 0) {
+                return;
+            }
+
+            me.setMainRegion(mainRegion);
+            me.getSurface('main').setRegion(mainRegion);
+
+            for (i = 0, ln = me.surfaceMap.grid && me.surfaceMap.grid.length; i < ln; i++) {
+                gridSurface = me.surfaceMap.grid[i];
+                gridSurface.setRegion(mainRegion);
+                gridSurface.matrix.set(1, 0, 0, 1, innerPadding.left, innerPadding.top);
+                gridSurface.matrix.inverse(gridSurface.inverseMatrix);
+            }
+
+            for (i = 0; i < axes.length; i++) {
+                axis = axes[i];
+                axisSurface = axis.getSurface();
+                matrix = axisSurface.matrix;
+                elements = matrix.elements;
+                switch (axis.getPosition()) {
+                    case 'top':
+                    case 'bottom':
+                        elements[4] = shrinkBox.left;
+                        axis.setLength(innerWidth);
+                        break;
+                    case 'left':
+                    case 'right':
+                        elements[5] = shrinkBox.top;
+                        axis.setLength(innerHeight);
+                        break;
+                }
+                axis.updateTitleSprite();
+                matrix.inverse(axisSurface.inverseMatrix);
+            }
+
+            for (i = 0, ln = serieses.length; i < ln; i++) {
+                series = serieses[i];
+                surface = series.getSurface();
+                surface.setRegion(mainRegion);
+                if (flipXY) {
+                    surface.matrix.set(0, -1, 1, 0, innerPadding.left, innerHeight + innerPadding.top);
+                } else {
+                    surface.matrix.set(1, 0, 0, -1, innerPadding.left, innerHeight + innerPadding.top);
+                }
+                surface.matrix.inverse(surface.inverseMatrix);
+                series.getOverlaySurface().setRegion(mainRegion);
+            }
+            me.redraw();
+            me.onPlaceWatermark();
+        } finally {
+            this.resizing--;
+            this.resumeThicknessChanged();
+        }
+    },
+
+    redraw: function () {
+        var me = this,
+            series = me.getSeries(),
+            axes = me.getAxes(),
+            region = me.getMainRegion(),
+            innerWidth, innerHeight,
+            innerPadding = me.getInnerPadding(),
+            left, right, top, bottom, i, j,
+            sprites, xRange, yRange, isSide, attr,
+            axisX, axisY, range, visibleRange,
+            flipXY = me.getFlipXY();
+
+        if (!region) {
+            return;
+        }
+
+        innerWidth = region[2] - innerPadding.left - innerPadding.right;
+        innerHeight = region[3] - innerPadding.top - innerPadding.bottom;
+        for (i = 0; i < series.length; i++) {
+            if ((axisX = series[i].getXAxis())) {
+                visibleRange = axisX.getVisibleRange();
+                xRange = axisX.getRange();
+                xRange = [xRange[0] + (xRange[1] - xRange[0]) * visibleRange[0], xRange[0] + (xRange[1] - xRange[0]) * visibleRange[1]];
+            } else {
+                xRange = series[i].getXRange();
+            }
+
+            if ((axisY = series[i].getYAxis())) {
+                visibleRange = axisY.getVisibleRange();
+                yRange = axisY.getRange();
+                yRange = [yRange[0] + (yRange[1] - yRange[0]) * visibleRange[0], yRange[0] + (yRange[1] - yRange[0]) * visibleRange[1]];
+            } else {
+                yRange = series[i].getYRange();
+            }
+
+            left = xRange[0];
+            right = xRange[1];
+            top = yRange[0];
+            bottom = yRange[1];
+
+            attr = {
+                visibleMinX: xRange[0],
+                visibleMaxX: xRange[1],
+                visibleMinY: yRange[0],
+                visibleMaxY: yRange[1],
+                innerWidth: innerWidth,
+                innerHeight: innerHeight,
+                flipXY: flipXY
+            };
+
+            sprites = series[i].getSprites();
+            for (j = 0; j < sprites.length; j++) {
+                sprites[j].setAttributes(attr, true);
+            }
+        }
+
+        for (i = 0; i < axes.length; i++) {
+            isSide = axes[i].isSide();
+            sprites = axes[i].getSprites();
+            range = axes[i].getRange();
+            visibleRange = axes[i].getVisibleRange();
+            attr = {
+                dataMin: range[0],
+                dataMax: range[1],
+                visibleMin: visibleRange[0],
+                visibleMax: visibleRange[1]
+            };
+            if (isSide) {
+                attr.length = innerHeight;
+                attr.startGap = innerPadding.bottom;
+                attr.endGap = innerPadding.top;
+            } else {
+                attr.length = innerWidth;
+                attr.startGap = innerPadding.left;
+                attr.endGap = innerPadding.right;
+            }
+            for (j = 0; j < sprites.length; j++) {
+                sprites[j].setAttributes(attr, true);
+            }
+        }
+        me.renderFrame();
+        me.callSuper(arguments);
+    },
+
+    onPlaceWatermark: function () {
+        var region0 = this.element.getBox(),
+            region = this.getSurface ? this.getSurface('main').getRegion() : this.getItems().get(0).getRegion();
+        if (region) {
+            this.watermarkElement.setStyle({
+                right: Math.round(region0.width - (region[2] + region[0])) + 'px',
+                bottom: Math.round(region0.height - (region[3] + region[1])) + 'px'
+            });
+        }
+    }
+});
+
+/**
+ * @class Ext.chart.grid.CircularGrid
+ * @extends Ext.draw.sprite.Circle
+ * 
+ * Circular Grid sprite.
+ */
+Ext.define("Ext.chart.grid.CircularGrid", {
+    extend: 'Ext.draw.sprite.Circle',
+    alias: 'grid.circular',
+    
+    inheritableStatics: {
+        def: {
+            defaults: {
+                r: 1,
+                strokeStyle: '#DDD'
+            }
+        }
+    }
+});
+
+/**
+ * @class Ext.chart.grid.RadialGrid
+ * @extends Ext.draw.sprite.Path
+ * 
+ * Radial Grid sprite. Used by Radar to render a series of concentric circles.
+ * Represents the scale of the radar chart on the yField.
+ */
+Ext.define("Ext.chart.grid.RadialGrid", {
+    extend: 'Ext.draw.sprite.Path',
+    alias: 'grid.radial',
+
+    inheritableStatics: {
+        def: {
+            processors: {
+                startRadius: 'number',
+                endRadius: 'number'
+            },
+
+            defaults: {
+                startRadius: 0,
+                endRadius: 1,
+                scalingCenterX: 0,
+                scalingCenterY: 0,
+                strokeStyle: '#DDD'
+            },
+
+            dirtyTriggers: {
+                startRadius: 'path,bbox',
+                endRadius: 'path,bbox'
+            }
+        }
+    },
+
+    render: function () {
+        this.callSuper(arguments);
+    },
+
+    updatePath: function (path, attr) {
+        var startRadius = attr.startRadius,
+            endRadius = attr.endRadius;
+        path.moveTo(startRadius, 0);
+        path.lineTo(endRadius, 0);
+    }
+});
+
+/**
+ * @class Ext.chart.PolarChart
+ * @extends Ext.chart.AbstractChart
+ * 
+ * Creates a chart that uses polar coordinates.
+ */
+Ext.define('Ext.chart.PolarChart', {
+
+    requires: [
+        'Ext.chart.grid.CircularGrid',
+        'Ext.chart.grid.RadialGrid'
+    ],
+
+    extend: 'Ext.chart.AbstractChart',
+    xtype: 'polar',
+
+    config: {
+        /**
+         * @cfg {Array} center Determines the center of the polar chart.
+         * Updated when the chart performs layout.
+         */
+        center: [0, 0],
+        /**
+         * @cfg {Number} radius Determines the radius of the polar chart.
+         * Updated when the chart performs layout.
+         */
+        radius: 0
+    },
+
+    getDirectionForAxis: function (position) {
+        if (position === 'radial') {
+            return 'Y';
+        } else {
+            return 'X';
+        }
+    },
+
+    applyCenter: function (center, oldCenter) {
+        if (oldCenter && center[0] === oldCenter[0] && center[1] === oldCenter[1]) {
+            return;
+        }
+        return [+center[0], +center[1]];
+    },
+
+    updateCenter: function (center) {
+        var me = this,
+            axes = me.getAxes(), axis,
+            series = me.getSeries(), seriesItem,
+            i, ln;
+        for (i = 0, ln = axes.length; i < ln; i++) {
+            axis = axes[i];
+            axis.setCenter(center);
+        }
+
+        for (i = 0, ln = series.length; i < ln; i++) {
+            seriesItem = series[i];
+            seriesItem.setCenter(center);
+        }
+    },
+
+    updateRadius: function (radius) {
+        var me = this,
+            axes = me.getAxes(), axis,
+            series = me.getSeries(), seriesItem,
+            i, ln;
+        for (i = 0, ln = axes.length; i < ln; i++) {
+            axis = axes[i];
+            axis.setMinimum(0);
+            axis.setLength(radius);
+            axis.getSprites();
+        }
+
+        for (i = 0, ln = series.length; i < ln; i++) {
+            seriesItem = series[i];
+            seriesItem.setRadius(radius);
+        }
+    },
+
+    doSetSurfaceRegion: function (surface, region) {
+        var mainRegion = this.getMainRegion();
+        surface.setRegion(region);
+        surface.matrix.set(1, 0, 0, 1, mainRegion[0] - region[0], mainRegion[1] - region[1]);
+        surface.inverseMatrix.set(1, 0, 0, 1, region[0] - mainRegion[0], region[1] - mainRegion[1]);
+    },
+
+    performLayout: function () {
+        try {
+            this.resizing++;
+            var me = this,
+                size = me.element.getSize(),
+                fullRegion = [0, 0, size.width, size.height],
+
+                inset = me.getInsetPadding(),
+                inner = me.getInnerPadding(),
+
+                left = inset.left,
+                top = inset.top,
+                width = size.width - left - inset.right,
+                height = size.height - top - inset.bottom,
+                region = [inset.left, inset.top, width, height],
+
+                innerWidth = width - inner.left - inner.right,
+                innerHeight = height - inner.top - inner.bottom,
+
+                center = [innerWidth * 0.5 + inner.left, innerHeight * 0.5 + inner.top],
+                radius = Math.min(innerWidth, innerHeight) * 0.5,
+                axes = me.getAxes(), axis,
+                series = me.getSeries(), seriesItem,
+                i, ln;
+
+            me.setMainRegion(region);
+
+            for (i = 0, ln = series.length; i < ln; i++) {
+                seriesItem = series[i];
+                me.doSetSurfaceRegion(seriesItem.getSurface(), region);
+                me.doSetSurfaceRegion(seriesItem.getOverlaySurface(), fullRegion);
+            }
+
+            me.doSetSurfaceRegion(me.getSurface(), fullRegion);
+            for (i = 0, ln = me.surfaceMap.grid && me.surfaceMap.grid.length; i < ln; i++) {
+                me.doSetSurfaceRegion(me.surfaceMap.grid[i], fullRegion);
+            }
+            for (i = 0, ln = axes.length; i < ln; i++) {
+                axis = axes[i];
+                me.doSetSurfaceRegion(axis.getSurface(), fullRegion);
+            }
+
+            me.setRadius(radius);
+            me.setCenter(center);
+            me.redraw();
+        } finally {
+            this.resizing--;
+        }
+    },
+
+    getEventXY: function (e) {
+        e = (e.changedTouches && e.changedTouches[0]) || e.event || e.browserEvent || e;
+        var me = this,
+            xy = me.element.getXY(),
+            padding = me.getInsetPadding();
+        return [e.pageX - xy[0] - padding.left, e.pageY - xy[1] - padding.top];
+    },
+
+    redraw: function () {
+        var me = this,
+            axes = me.getAxes(), axis,
+            series = me.getSeries(), seriesItem,
+            i, ln;
+
+        for (i = 0, ln = axes.length; i < ln; i++) {
+            axis = axes[i];
+            axis.getSprites();
+        }
+
+        for (i = 0, ln = series.length; i < ln; i++) {
+            seriesItem = series[i];
+            seriesItem.getSprites();
+        }
+        this.renderFrame();
+    }
+});
+
+/**
+ * @class Ext.chart.SpaceFillingChart
+ * @extends Ext.chart.AbstractChart
+ * 
+ * Creates a chart that fills the entire area of the chart.
+ * e.g. Treemap
+ */
+Ext.define('Ext.chart.SpaceFillingChart', {
+
+    extend: 'Ext.chart.AbstractChart',
+    xtype: 'spacefilling',
+
+    config: {
+
+    },
+
+    performLayout: function () {
+        try {
+            this.resizing++;
+            var me = this,
+                size = me.element.getSize(),
+                series = me.getSeries(), seriesItem,
+                padding = me.getInsetPadding(),
+                width = size.width - padding.left - padding.right,
+                height = size.height - padding.top - padding.bottom,
+                region = [padding.left, padding.top, width, height],
+                i, ln;
+            me.getSurface().setRegion(region);
+            me.setMainRegion(region);
+            for (i = 0, ln = series.length; i < ln; i++) {
+                seriesItem = series[i];
+                seriesItem.getSurface().setRegion(region);
+                seriesItem.setRegion(region);
+            }
+            me.redraw();
+        } finally {
+            this.resizing--;
+        }
+    },
+
+    redraw: function () {
+        var me = this,
+            series = me.getSeries(), seriesItem,
+            i, ln;
+
+        for (i = 0, ln = series.length; i < ln; i++) {
+            seriesItem = series[i];
+            seriesItem.getSprites();
+        }
+        this.renderFrame();
+    }
+});
+
+/**
+ * @class Ext.chart.axis.Category
+ * @extends Ext.chart.axis.Axis
+ *
+ * A type of axis that displays items in categories. This axis is generally used to
+ * display categorical information like names of items, month names, quarters, etc.
+ * but no quantitative values. For that other type of information {@link Ext.chart.axis.Numeric Numeric}
+ * axis are more suitable.
+ *
+ * As with other axis you can set the position of the axis and its title. For example:
+ *
+ *     @example preview
+ *     var chart = new Ext.chart.CartesianChart({
+ *         animate: true,
+ *         innerPadding: { 
+ *             left: 40,
+ *             right: 40,
+ *         },
+ *         store: {
+ *             fields: ['name', 'data1', 'data2', 'data3', 'data4', 'data5'],
+ *             data: [
+ *                 {'name':'metric one', 'data1':10, 'data2':12, 'data3':14, 'data4':8, 'data5':13},
+ *                 {'name':'metric two', 'data1':7, 'data2':8, 'data3':16, 'data4':10, 'data5':3},
+ *                 {'name':'metric three', 'data1':5, 'data2':2, 'data3':14, 'data4':12, 'data5':7},
+ *                 {'name':'metric four', 'data1':2, 'data2':14, 'data3':6, 'data4':1, 'data5':23},
+ *                 {'name':'metric five', 'data1':27, 'data2':38, 'data3':36, 'data4':13, 'data5':33}
+ *             ]
+ *         },
+ *         axes: [{
+ *             type: 'category',
+ *             position: 'bottom',
+ *             fields: ['name'],
+ *             title: {
+ *                 text: 'Sample Values',
+ *                 fontSize: 15
+ *             }
+ *         }],
+ *         series: [{
+ *             type: 'area',
+ *             subStyle: {
+ *                 fill: ['blue', 'green', 'red']
+ *             },
+ *             xField: 'name',
+ *             yField: ['data1', 'data2', 'data3']
+ *         
+ *         }]
+ *     });
+ *     Ext.Viewport.setLayout('fit');
+ *     Ext.Viewport.add(chart);
+ *
+ * In this example with set the category axis to the bottom of the surface, bound the axis to
+ * the `name` property and set as title "Sample Values".
+ */
+
+Ext.define('Ext.chart.axis.Category', {
+    requires: [
+        'Ext.chart.axis.layout.CombineDuplicate',
+        'Ext.chart.axis.segmenter.Names'
+    ],
+    extend: 'Ext.chart.axis.Axis',
+    alias: 'axis.category',
+    type: 'category',
+
+    config: {
+        layout: 'combineDuplicate',
+
+        segmenter: 'names'
+    }
+});
+
+/**
+ * @class Ext.chart.axis.Numeric
+ * @extends Ext.chart.axis.Axis
+ *
+ * An axis to handle numeric values. This axis is used for quantitative data as
+ * opposed to the category axis. You can set minimum and maximum values to the
+ * axis so that the values are bound to that. If no values are set, then the
+ * scale will auto-adjust to the values.
+ *
+ *     @example preview
+ *     var chart = new Ext.chart.CartesianChart({
+ *         animate: true,
+ *         store: {
+ *           fields: ['name', 'data1', 'data2', 'data3', 'data4', 'data5'],
+ *           data: [
+ *               {'name':1, 'data1':10, 'data2':12, 'data3':14, 'data4':8, 'data5':13},
+ *               {'name':2, 'data1':7, 'data2':8, 'data3':16, 'data4':10, 'data5':3},
+ *               {'name':3, 'data1':5, 'data2':2, 'data3':14, 'data4':12, 'data5':7},
+ *               {'name':4, 'data1':2, 'data2':14, 'data3':6, 'data4':1, 'data5':23},
+ *               {'name':5, 'data1':27, 'data2':38, 'data3':36, 'data4':13, 'data5':33}
+ *           ]
+ *         },
+ *         axes: [{
+ *             type: 'numeric',
+ *             grid: true,
+ *             position: 'left',
+ *             fields: ['data1', 'data2', 'data3', 'data4', 'data5'],
+ *             title: 'Sample Values',
+ *             grid: {
+ *                 odd: {
+ *                     opacity: 1,
+ *                     fill: '#ddd',
+ *                     stroke: '#bbb',
+ *                     'lineWidth': 1
+ *                 }
+ *             },
+ *             minimum: 0,
+ *             adjustMinimumByMajorUnit: 0
+ *         }],
+ *         series: [{
+ *             type: 'area',
+ *             subStyle: {
+ *                 fill: ['blue', 'green', 'red']
+ *             },
+ *             xField: 'name',
+ *             yField: ['data1', 'data2', 'data3']
+ *         
+ *         }]
+ *     });
+ *     Ext.Viewport.setLayout('fit');
+ *     Ext.Viewport.add(chart);
+ * In this example we create an axis of Numeric type. We set a minimum value so that
+ * even if all series have values greater than zero, the grid starts at zero. We bind
+ * the axis onto the left part of the surface by setting _position_ to _left_.
+ * We bind three different store fields to this axis by setting _fields_ to an array.
+ * We set the title of the axis to _Number of Hits_ by using the _title_ property.
+ * We use a _grid_ configuration to set odd background rows to a certain style and even rows
+ * to be transparent/ignored.
+ *
+ */
+Ext.define('Ext.chart.axis.Numeric', {
+    extend: 'Ext.chart.axis.Axis',
+    alias: 'axis.numeric',
+    type: 'numeric',
+    requires: ['Ext.chart.axis.layout.Continuous', 'Ext.chart.axis.segmenter.Numeric'],
+    config: {
+        layout: 'continuous',
+
+        segmenter: 'numeric',
+
+        aggregator: 'double'
+    }
+});
+
+/**
+ * @class Ext.chart.axis.Time
+ * @extends Ext.chart.axis.Numeric
+ *
+ * A type of axis whose units are measured in time values. Use this axis
+ * for listing dates that you will want to group or dynamically change.
+ * If you just want to display dates as categories then use the
+ * Category class for axis instead.
+ *
+ *     @example preview
+ *     var chart = new Ext.chart.CartesianChart({
+ *         animate: true,
+ *         store: {
+ *           fields: ['time', 'open', 'high', 'low', 'close'],
+ *           data: [
+ *             {'time':new Date('Jan 1 2010').getTime(), 'open':600, 'high':614, 'low':578, 'close':590},
+ *             {'time':new Date('Jan 2 2010').getTime(), 'open':590, 'high':609, 'low':580, 'close':580},
+ *             {'time':new Date('Jan 3 2010').getTime(), 'open':580, 'high':602, 'low':578, 'close':602},
+ *             {'time':new Date('Jan 4 2010').getTime(), 'open':602, 'high':614, 'low':586, 'close':586},
+ *             {'time':new Date('Jan 5 2010').getTime(), 'open':586, 'high':602, 'low':565, 'close':565}
+ *           ]
+ *         },
+ *         axes: [{
+ *             type: 'numeric',
+ *             position: 'left',
+ *             fields: ['open', 'high', 'low', 'close'],
+ *             title: {
+ *                 text: 'Sample Values',
+ *                 fontSize: 15
+ *             },
+ *             grid: true,
+ *             minimum: 560,
+ *             maximum: 640
+ *         }, {
+ *             type: 'time',
+ *             position: 'bottom',
+ *             fields: ['time'],
+ *             fromDate: new Date('Dec 31 2009'),
+ *             toDate: new Date('Jan 6 2010'),
+ *             title: {
+ *                 text: 'Sample Values',
+ *                 fontSize: 15
+ *             },
+ *             style: {
+ *               axisLine: false
+ *             }
+ *         }],
+ *         series: [{
+ *             type: 'candlestick',
+ *             xField: 'time',
+ *             openField: 'open',
+ *             highField: 'high',
+ *             lowField: 'low',
+ *             closeField: 'close',
+ *             style: {
+ *             ohlcType: 'ohlc',
+ *               dropStyle: {
+ *                 fill: 'rgb(237, 123, 43)',
+ *                 stroke: 'rgb(237, 123, 43)'
+ *               },
+ *               raiseStyle: {
+ *                 fill: 'rgb(55, 153, 19)',
+ *                 stroke: 'rgb(55, 153, 19)'
+ *               }
+ *             },
+ *             aggregator: {
+ *               strategy: 'time'
+ *             }
+ *         }]
+ *     });
+ *     Ext.Viewport.setLayout('fit');
+ *     Ext.Viewport.add(chart);
+ */
+Ext.define('Ext.chart.axis.Time', {
+    extend: 'Ext.chart.axis.Numeric',
+    alias: 'axis.time',
+    type: 'time',
+    requires: ['Ext.chart.axis.layout.Continuous', 'Ext.chart.axis.segmenter.Time', 'Ext.DateExtras'],
+    config: {
+        /**
+         * @cfg {Boolean} calculateByLabelSize
+         * The minimum value drawn by the axis. If not set explicitly, the axis
+         * minimum will be calculated automatically.
+         */
+        calculateByLabelSize: true,
+
+        /**
+         * @cfg {String/Boolean} dateFormat
+         * Indicates the format the date will be rendered on.
+         * For example: 'M d' will render the dates as 'Jan 30', etc.
+         */
+        dateFormat: null,
+
+        /**
+         * @cfg {Date} fromDate The starting date for the time axis.
+         */
+        fromDate: null,
+
+        /**
+         * @cfg {Date} toDate The ending date for the time axis.
+         */
+        toDate: null,
+
+        /**
+         * @cfg {Array} [step=[Ext.Date.DAY, 1]] An array with two components:
+         *
+         * - The unit of the step (Ext.Date.DAY, Ext.Date.MONTH, etc).
+         * - The number of units for the step (1, 2, etc).
+         *
+         */
+        step: [Ext.Date.DAY, 1],
+
+        layout: 'continuous',
+
+        segmenter: 'time',
+
+        aggregator: 'time'
+    },
+
+    updateDateFormat: function (format) {
+        this.setRenderer(function (date) {
+            return Ext.Date.format(new Date(date), format);
+        });
+    },
+
+    updateFromDate: function (date) {
+        this.setMinimum(+date);
+    },
+
+    updateToDate: function (date) {
+        this.setMaximum(+date);
+    },
+
+    getCoordFor: function (value) {
+        if (Ext.isString(value)) {
+            value = new Date(value);
+        }
+        return +value;
+    }
+});
+
+/**
+ * @class Ext.chart.interactions.CrossZoom
+ * @extends Ext.chart.interactions.Abstract
+ *
+ * The CrossZoom interaction allows the user to zoom in on a selected area of the chart.
+ *
+ *     @example preview
+ *     var lineChart = new Ext.chart.CartesianChart({
+ *         interactions: [{
+ *             type: 'crosszoom'
+ *         }],
+ *         animate: true,
+ *         store: {
+ *           fields: ['name', 'data1', 'data2', 'data3', 'data4', 'data5'],
+ *           data: [
+ *               {'name':'metric one', 'data1':10, 'data2':12, 'data3':14, 'data4':8, 'data5':13},
+ *               {'name':'metric two', 'data1':7, 'data2':8, 'data3':16, 'data4':10, 'data5':3},
+ *               {'name':'metric three', 'data1':5, 'data2':2, 'data3':14, 'data4':12, 'data5':7},
+ *               {'name':'metric four', 'data1':2, 'data2':14, 'data3':6, 'data4':1, 'data5':23},
+ *               {'name':'metric five', 'data1':27, 'data2':38, 'data3':36, 'data4':13, 'data5':33}
+ *           ]
+ *         },
+ *         axes: [{
+ *             type: 'numeric',
+ *             position: 'left',
+ *             fields: ['data1'],
+ *             title: {
+ *                 text: 'Sample Values',
+ *                 fontSize: 15
+ *             },
+ *             grid: true,
+ *             minimum: 0
+ *         }, {
+ *             type: 'category',
+ *             position: 'bottom',
+ *             fields: ['name'],
+ *             title: {
+ *                 text: 'Sample Values',
+ *                 fontSize: 15
+ *             }
+ *         }],
+ *         series: [{
+ *             type: 'line',
+ *             highlight: {
+ *                 size: 7,
+ *                 radius: 7
+ *             },
+ *             style: {
+ *                 stroke: 'rgb(143,203,203)'
+ *             },
+ *             xField: 'name',
+ *             yField: 'data1',
+ *             marker: {
+ *                 type: 'path',
+ *                 path: ['M', -2, 0, 0, 2, 2, 0, 0, -2, 'Z'],
+ *                 stroke: 'blue',
+ *                 lineWidth: 0
+ *             }
+ *         }, {
+ *             type: 'line',
+ *             highlight: {
+ *                 size: 7,
+ *                 radius: 7
+ *             },
+ *             fill: true,
+ *             xField: 'name',
+ *             yField: 'data3',
+ *             marker: {
+ *                 type: 'circle',
+ *                 radius: 4,
+ *                 lineWidth: 0
+ *             }
+ *         }]
+ *     });
+ *     Ext.Viewport.setLayout('fit');
+ *     Ext.Viewport.add(lineChart);
+ */
+Ext.define('Ext.chart.interactions.CrossZoom', {
+
+    extend: 'Ext.chart.interactions.Abstract',
+
+    type: 'crosszoom',
+    alias: 'interaction.crosszoom',
+
+    config: {
+        /**
+         * @cfg {Object/Array} axes
+         * Specifies which axes should be made navigable. The config value can take the following formats:
+         *
+         * - An Object whose keys correspond to the {@link Ext.chart.axis.Axis#position position} of each
+         *   axis that should be made navigable. Each key's value can either be an Object with further
+         *   configuration options for each axis or simply `true` for a default set of options.
+         *       {
+         *           type: 'crosszoom',
+         *           axes: {
+         *               left: {
+         *                   maxZoom: 5,
+         *                   allowPan: false
+         *               },
+         *               bottom: true
+         *           }
+         *       }
+         *
+         *   If using the full Object form, the following options can be specified for each axis:
+         *
+         *   - minZoom (Number) A minimum zoom level for the axis. Defaults to `1` which is its natural size.
+         *   - maxZoom (Number) A maximum zoom level for the axis. Defaults to `10`.
+         *   - startZoom (Number) A starting zoom level for the axis. Defaults to `1`.
+         *   - allowZoom (Boolean) Whether zooming is allowed for the axis. Defaults to `true`.
+         *   - allowPan (Boolean) Whether panning is allowed for the axis. Defaults to `true`.
+         *   - startPan (Boolean) A starting panning offset for the axis. Defaults to `0`.
+         *
+         * - An Array of strings, each one corresponding to the {@link Ext.chart.axis.Axis#position position}
+         *   of an axis that should be made navigable. The default options will be used for each named axis.
+         *
+         *       {
+         *           type: 'crosszoom',
+         *           axes: ['left', 'bottom']
+         *       }
+         *
+         * If the `axes` config is not specified, it will default to making all axes navigable with the
+         * default axis options.
+         */
+        axes: true,
+
+        gesture: 'drag',
+
+        undoButton: {}
+    },
+
+    stopAnimationBeforeSync: false,
+
+    constructor: function () {
+        this.callSuper(arguments);
+        this.zoomHistory = [];
+    },
+
+    applyAxes: function (axesConfig) {
+        var result = {};
+        if (axesConfig === true) {
+            return {
+                top: {},
+                right: {},
+                bottom: {},
+                left: {}
+            };
+        } else if (Ext.isArray(axesConfig)) {
+            // array of axis names - translate to full object form
+            result = {};
+            Ext.each(axesConfig, function (axis) {
+                result[axis] = {};
+            });
+        } else if (Ext.isObject(axesConfig)) {
+            Ext.iterate(axesConfig, function (key, val) {
+                // axis name with `true` value -> translate to object
+                if (val === true) {
+                    result[key] = {};
+                } else if (val !== false) {
+                    result[key] = val;
+                }
+            });
+        }
+        return result;
+    },
+
+    applyUndoButton: function (button, oldButton) {
+        var me = this;
+        if (button) {
+            if (oldButton) {
+                oldButton.destroy();
+            }
+            return Ext.create('Ext.Button', Ext.apply({
+                cls: [],
+                iconCls: 'refresh',
+                text: 'Undo Zoom',
+                iconMask: true,
+                disabled: true,
+                handler: function () {
+                    me.undoZoom();
+                }
+            }, button));
+        } else if (oldButton) {
+            oldButton.destroy();
+        }
+    },
+
+    getGestures: function () {
+        var me = this,
+            gestures = {};
+        gestures[me.getGesture()] = 'onGesture';
+        gestures[me.getGesture() + 'start'] = 'onGestureStart';
+        gestures[me.getGesture() + 'end'] = 'onGestureEnd';
+        gestures.doubletap = 'onDoubleTap';
+        return gestures;
+    },
+
+    getSurface: function () {
+        return this.getChart() && this.getChart().getSurface("overlay");
+    },
+
+    onGestureStart: function (e) {
+        var me = this,
+            chart = me.getChart(),
+            region = chart.getInnerRegion(),
+            xy = chart.element.getXY(),
+            x = e.pageX - xy[0],
+            y = e.pageY - xy[1],
+            surface = this.getSurface();
+        if (region[0] < x && x < region[0] + region[2] && region[1] < y && y < region[1] + region[3]) {
+            me.lockEvents(me.getGesture());
+            me.startX = x;
+            me.startY = y;
+            me.selectionRect = surface.add({
+                type: 'rect',
+                globalAlpha: 0.3,
+                fillStyle: 'rgba(80,80,140,0.3)',
+                strokeStyle: 'rgba(80,80,140,1)',
+                lineWidth: 2,
+                x: x,
+                y: y,
+                width: 0,
+                height: 0,
+                zIndex: 1000
+            });
+        }
+    },
+
+    onGesture: function (e) {
+        var me = this;
+        if (me.getLocks()[me.getGesture()] === me) {
+            var chart = me.getChart(),
+                surface = me.getSurface(),
+                region = chart.getInnerRegion(),
+                xy = chart.element.getXY(),
+                x = e.pageX - xy[0],
+                y = e.pageY - xy[1];
+            if (x < region[0]) {
+                x = region[0];
+            } else if (x > region[0] + region[2]) {
+                x = region[0] + region[2];
+            }
+
+            if (y < region[1]) {
+                y = region[1];
+            } else if (y > region[1] + region[3]) {
+                y = region[1] + region[3];
+            }
+            me.selectionRect.setAttributes({
+                width: x - me.startX,
+                height: y - me.startY
+            });
+            if (Math.abs(me.startX - x) < 11 || Math.abs(me.startY - y) < 11) {
+                me.selectionRect.setAttributes({globalAlpha: 0.3});
+            } else {
+                me.selectionRect.setAttributes({globalAlpha: 1});
+            }
+            surface.renderFrame();
+        }
+    },
+
+    onGestureEnd: function (e) {
+        var me = this;
+        if (me.getLocks()[me.getGesture()] === me) {
+            var chart = me.getChart(),
+                surface = me.getSurface(),
+                region = chart.getInnerRegion(),
+                selectionRect = me.selectionRect,
+                xy = chart.element.getXY(),
+                x = e.pageX - xy[0],
+                y = e.pageY - xy[1];
+            if (x < region[0]) {
+                x = region[0];
+            } else if (x > region[0] + region[2]) {
+                x = region[0] + region[2];
+            }
+
+            if (y < region[1]) {
+                y = region[1];
+            } else if (y > region[1] + region[3]) {
+                y = region[1] + region[3];
+            }
+
+            if (Math.abs(me.startX - x) < 11 || Math.abs(me.startY - y) < 11) {
+                surface.remove(me.selectionRect);
+            } else {
+                me.zoomBy([
+                    (Math.min(me.startX, x) - region[0]) / region[2],
+                    1 - (Math.max(me.startY, y) - region[1]) / region[3],
+                    (Math.max(me.startX, x) - region[0]) / region[2],
+                    1 - (Math.min(me.startY, y) - region[1]) / region[3]
+                ]);
+
+                selectionRect.setAttributes({
+                    x: Math.min(me.startX, x),
+                    y: Math.min(me.startY, y),
+                    width: Math.abs(me.startX - x),
+                    height: Math.abs(me.startY - y)
+                });
+
+                selectionRect.fx.setConfig(chart.getAnimate() || {duration: 0});
+                selectionRect.setAttributes({
+                    globalAlpha: 0,
+                    x: region[0],
+                    y: region[1],
+                    width: region[2],
+                    height: region[3]
+                });
+                chart.suspendThicknessChanged();
+                selectionRect.fx.on('animationend', function () {
+                    chart.resumeThicknessChanged();
+                    surface.remove(me.selectionRect);
+                });
+            }
+
+            this.selectionRect = null;
+            surface.renderFrame();
+            me.sync();
+            me.unlockEvents(me.getGesture());
+        }
+    },
+
+    zoomBy: function (region) {
+        var me = this,
+            axisConfigs = me.getAxes(),
+            axes = me.getChart().getAxes(),
+            config,
+            zoomMap = {};
+
+        for (var i = 0; i < axes.length; i++) {
+            var axis = axes[i];
+            config = axisConfigs[axis.getPosition()];
+            if (config && config.allowZoom !== false) {
+                var isSide = axis.isSide(),
+                    oldRange = axis.getVisibleRange();
+                zoomMap[axis.getId()] = oldRange.slice(0);
+                if (!isSide) {
+                    axis.setVisibleRange([
+                        (oldRange[1] - oldRange[0]) * region[0] + oldRange[0],
+                        (oldRange[1] - oldRange[0]) * region[2] + oldRange[0]
+                    ]);
+                } else {
+                    axis.setVisibleRange([
+                        (oldRange[1] - oldRange[0]) * region[1] + oldRange[0],
+                        (oldRange[1] - oldRange[0]) * region[3] + oldRange[0]
+                    ]);
+                }
+            }
+        }
+
+        me.zoomHistory.push(zoomMap);
+        me.getUndoButton().setDisabled(false);
+    },
+
+    undoZoom: function () {
+        var zoomMap = this.zoomHistory.pop(),
+            axes = this.getChart().getAxes();
+        if (zoomMap) {
+            for (var i = 0; i < axes.length; i++) {
+                var axis = axes[i];
+                if (zoomMap[axis.getId()]) {
+                    axis.setVisibleRange(zoomMap[axis.getId()]);
+                }
+            }
+        }
+        this.getUndoButton().setDisabled(this.zoomHistory.length === 0);
+        this.sync();
+    },
+
+    onDoubleTap: function (e) {
+        this.undoZoom();
+    }
+});
+
+/**
+ * @class Ext.chart.interactions.ItemHighlight
+ * @extends Ext.chart.interactions.Abstract
+ * 
+ * The ItemHighlight interaction allows the user to highlight series items in the chart.
+ */
+Ext.define('Ext.chart.interactions.ItemHighlight', {
+
+    extend: 'Ext.chart.interactions.Abstract',
+
+    type: 'itemhighlight',
+    alias: 'interaction.itemhighlight',
+
+    config: {
+        /**
+         * @cfg {String} gesture
+         * Defines the gesture type that should trigger item highlighting.
+         */
+        gesture: 'tap'
+    },
+
+    getGestures: function () {
+        var gestures = {};
+        gestures.itemtap = 'onGesture';
+        gestures.tap = 'onFailedGesture';
+        return gestures;
+    },
+
+    onGesture: function (series, item, e) {
+        e.highlightItem = item;
+    },
+
+    onFailedGesture: function (e) {
+        this.getChart().setHighlightItem(e.highlightItem || null);
+        this.sync();
+    }
+});
+
+/**
+ * The ItemInfo interaction allows displaying detailed information about a series data
+ * point in a popup panel.
+ *
+ * To attach this interaction to a chart, include an entry in the chart's
+ * {@link Ext.chart.AbstractChart#interactions interactions} config with the `iteminfo` type:
+ *
+ *     new Ext.chart.AbstractChart({
+ *         renderTo: Ext.getBody(),
+ *         width: 800,
+ *         height: 600,
+ *         store: store1,
+ *         axes: [ ...some axes options... ],
+ *         series: [ ...some series options... ],
+ *         interactions: [{
+ *             type: 'iteminfo',
+ *             listeners: {
+ *                 show: function(me, item, panel) {
+ *                     panel.setHtml('Stock Price: $' + item.record.get('price'));
+ *                 }
+ *             }
+ *         }]
+ *     });
+ */
+Ext.define('Ext.chart.interactions.ItemInfo', {
+
+    extend: 'Ext.chart.interactions.Abstract',
+
+    type: 'iteminfo',
+    alias: 'interaction.iteminfo',
+
+    /**
+     * @event show
+     * Fires when the info panel is shown.
+     * @param {Ext.chart.interactions.ItemInfo} this The interaction instance
+     * @param {Object} item The item whose info is being displayed
+     * @param {Ext.Panel} panel The panel for displaying the info
+     */
+
+    config: {
+        /**
+         * @cfg {String} gesture
+         * Defines the gesture type that should trigger the item info panel to be displayed.
+         */
+        gesture: 'itemtap',
+
+        /**
+         * @cfg {Object} panel
+         * An optional set of configuration overrides for the {@link Ext.Panel} that gets
+         * displayed. This object will be merged with the default panel configuration.
+         */
+        panel: {
+            modal: true,
+            centered: true,
+            width: 250,
+            height: 300,
+            styleHtmlContent: true,
+            scrollable: 'vertical',
+            hideOnMaskTap: true,
+            fullscreen: false,
+            hidden: true,
+            zIndex: 30,
+            items: [
+                {
+                    docked: 'top',
+                    xtype: 'toolbar',
+                    title: 'Item Detail'
+                }
+            ]
+        }
+    },
+
+    applyPanel: function (panel, oldPanel) {
+        return Ext.factory(panel, 'Ext.Panel', oldPanel);
+    },
+
+    updatePanel: function (panel, oldPanel) {
+        if (panel) {
+            panel.on('hide', "reset", this);
+        }
+        if (oldPanel) {
+            oldPanel.un('hide', "reset", this);
+        }
+    },
+
+    onGesture: function (series, item) {
+        var me = this,
+            panel = me.getPanel();
+        me.item = item;
+        me.fireEvent('show', me, item, panel);
+        Ext.Viewport.add(panel);
+        panel.show('pop');
+        series.setAttributesForItem(item, { highlighted: true });
+        me.sync();
+    },
+
+    reset: function () {
+        var me = this,
+            item = me.item;
+        if (item) {
+            item.series.setAttributesForItem(item, { highlighted: false });
+            delete me.item;
+            me.sync();
+        }
+    }
+});
+
+/**
+ * @private
+ */
+Ext.define('Ext.util.Offset', {
+
+    /* Begin Definitions */
+
+    statics: {
+        fromObject: function(obj) {
+            return new this(obj.x, obj.y);
+        }
+    },
+
+    /* End Definitions */
+
+    constructor: function(x, y) {
+        this.x = (x != null && !isNaN(x)) ? x : 0;
+        this.y = (y != null && !isNaN(y)) ? y : 0;
+
+        return this;
+    },
+
+    copy: function() {
+        return new Ext.util.Offset(this.x, this.y);
+    },
+
+    copyFrom: function(p) {
+        this.x = p.x;
+        this.y = p.y;
+    },
+
+    toString: function() {
+        return "Offset[" + this.x + "," + this.y + "]";
+    },
+
+    equals: function(offset) {
+
+        return (this.x == offset.x && this.y == offset.y);
+    },
+
+    round: function(to) {
+        if (!isNaN(to)) {
+            var factor = Math.pow(10, to);
+            this.x = Math.round(this.x * factor) / factor;
+            this.y = Math.round(this.y * factor) / factor;
+        } else {
+            this.x = Math.round(this.x);
+            this.y = Math.round(this.y);
+        }
+    },
+
+    isZero: function() {
+        return this.x == 0 && this.y == 0;
+    }
+});
+
+/**
+ * Represents a rectangular region and provides a number of utility methods
+ * to compare regions.
+ */
+Ext.define('Ext.util.Region', {
+
+    requires: ['Ext.util.Offset'],
+
+    statics: {
+        /**
+         * @static
+         * Retrieves an Ext.util.Region for a particular element.
+         * @param {String/HTMLElement/Ext.Element} el The element or its ID.
+         * @return {Ext.util.Region} region
+         */
+        getRegion: function(el) {
+            return Ext.fly(el).getPageBox(true);
+        },
+
+        /**
+         * @static
+         * Creates new Region from an object:
+         *
+         *     Ext.util.Region.from({top: 0, right: 5, bottom: 3, left: -1});
+         *     // the above is equivalent to:
+         *     new Ext.util.Region(0, 5, 3, -1);
+         *
+         * @param {Object} o An object with `top`, `right`, `bottom`, and `left` properties.
+         * @param {Number} o.top
+         * @param {Number} o.right
+         * @param {Number} o.bottom
+         * @param {Number} o.left
+         * @return {Ext.util.Region} The region constructed based on the passed object.
+         */
+        from: function(o) {
+            return new this(o.top, o.right, o.bottom, o.left);
+        }
+    },
+
+    /**
+     * Creates new Region.
+     * @param {Number} top Top
+     * @param {Number} right Right
+     * @param {Number} bottom Bottom
+     * @param {Number} left Left
+     */
+    constructor: function(top, right, bottom, left) {
+        var me = this;
+        me.top = top;
+        me[1] = top;
+        me.right = right;
+        me.bottom = bottom;
+        me.left = left;
+        me[0] = left;
+    },
+
+    /**
+     * Checks if this region completely contains the region that is passed in.
+     * @param {Ext.util.Region} region
+     * @return {Boolean}
+     */
+    contains: function(region) {
+        var me = this;
+        return (region.left >= me.left &&
+                region.right <= me.right &&
+                region.top >= me.top &&
+                region.bottom <= me.bottom);
+
+    },
+
+    /**
+     * Checks if this region intersects the region passed in.
+     * @param {Ext.util.Region} region
+     * @return {Ext.util.Region/Boolean} Returns the intersected region or `false` if there is no intersection.
+     */
+    intersect: function(region) {
+        var me = this,
+            t = Math.max(me.top, region.top),
+            r = Math.min(me.right, region.right),
+            b = Math.min(me.bottom, region.bottom),
+            l = Math.max(me.left, region.left);
+
+        if (b > t && r > l) {
+            return new Ext.util.Region(t, r, b, l);
+        }
+        else {
+            return false;
+        }
+    },
+
+    /**
+     * Returns the smallest region that contains the current AND `targetRegion`.
+     * @param {Ext.util.Region} region
+     * @return {Ext.util.Region}
+     */
+    union: function(region) {
+        var me = this,
+            t = Math.min(me.top, region.top),
+            r = Math.max(me.right, region.right),
+            b = Math.max(me.bottom, region.bottom),
+            l = Math.min(me.left, region.left);
+
+        return new Ext.util.Region(t, r, b, l);
+    },
+
+    /**
+     * Modifies the current region to be constrained to the `targetRegion`.
+     * @param {Ext.util.Region} targetRegion
+     * @return {Ext.util.Region} this
+     */
+    constrainTo: function(targetRegion) {
+        var me = this,
+            constrain = Ext.util.Numbers.constrain;
+        me.top = constrain(me.top, targetRegion.top, targetRegion.bottom);
+        me.bottom = constrain(me.bottom, targetRegion.top, targetRegion.bottom);
+        me.left = constrain(me.left, targetRegion.left, targetRegion.right);
+        me.right = constrain(me.right, targetRegion.left, targetRegion.right);
+        return me;
+    },
+
+    /**
+     * Modifies the current region to be adjusted by offsets.
+     * @param {Number} top Top offset
+     * @param {Number} right Right offset
+     * @param {Number} bottom Bottom offset
+     * @param {Number} left Left offset
+     * @return {Ext.util.Region} this
+     * @chainable
+     */
+    adjust: function(top, right, bottom, left) {
+        var me = this;
+        me.top += top;
+        me.left += left;
+        me.right += right;
+        me.bottom += bottom;
+        return me;
+    },
+
+    /**
+     * Get the offset amount of a point outside the region.
+     * @param {String/Object} axis optional.
+     * @param {Ext.util.Point} p The point.
+     * @return {Ext.util.Region}
+     */
+    getOutOfBoundOffset: function(axis, p) {
+        if (!Ext.isObject(axis)) {
+            if (axis == 'x') {
+                return this.getOutOfBoundOffsetX(p);
+            } else {
+                return this.getOutOfBoundOffsetY(p);
+            }
+        } else {
+            var d = new Ext.util.Offset();
+                d.x = this.getOutOfBoundOffsetX(axis.x);
+                d.y = this.getOutOfBoundOffsetY(axis.y);
+            return d;
+        }
+
+    },
+
+    /**
+     * Get the offset amount on the x-axis.
+     * @param {Number} p The offset.
+     * @return {Number}
+     */
+    getOutOfBoundOffsetX: function(p) {
+        if (p <= this.left) {
+            return this.left - p;
+        } else if (p >= this.right) {
+            return this.right - p;
+        }
+
+        return 0;
+    },
+
+    /**
+     * Get the offset amount on the y-axis.
+     * @param {Number} p The offset.
+     * @return {Number}
+     */
+    getOutOfBoundOffsetY: function(p) {
+        if (p <= this.top) {
+            return this.top - p;
+        } else if (p >= this.bottom) {
+            return this.bottom - p;
+        }
+
+        return 0;
+    },
+
+    /**
+     * Check whether the point / offset is out of bounds.
+     * @param {String} axis optional
+     * @param {Ext.util.Point/Number} p The point / offset.
+     * @return {Boolean}
+     */
+    isOutOfBound: function(axis, p) {
+        if (!Ext.isObject(axis)) {
+            if (axis == 'x') {
+                return this.isOutOfBoundX(p);
+            } else {
+                return this.isOutOfBoundY(p);
+            }
+        } else {
+            p = axis;
+            return (this.isOutOfBoundX(p.x) || this.isOutOfBoundY(p.y));
+        }
+    },
+
+    /**
+     * Check whether the offset is out of bound in the x-axis.
+     * @param {Number} p The offset.
+     * @return {Boolean}
+     */
+    isOutOfBoundX: function(p) {
+        return (p < this.left || p > this.right);
+    },
+
+    /**
+     * Check whether the offset is out of bound in the y-axis.
+     * @param {Number} p The offset.
+     * @return {Boolean}
+     */
+    isOutOfBoundY: function(p) {
+        return (p < this.top || p > this.bottom);
+    },
+
+    /*
+     * Restrict a point within the region by a certain factor.
+     * @param {String} axis Optional
+     * @param {Ext.util.Point/Ext.util.Offset/Object} p
+     * @param {Number} factor
+     * @return {Ext.util.Point/Ext.util.Offset/Object/Number}
+     */
+    restrict: function(axis, p, factor) {
+        if (Ext.isObject(axis)) {
+            var newP;
+
+            factor = p;
+            p = axis;
+
+            if (p.copy) {
+                newP = p.copy();
+            }
+            else {
+                newP = {
+                    x: p.x,
+                    y: p.y
+                };
+            }
+
+            newP.x = this.restrictX(p.x, factor);
+            newP.y = this.restrictY(p.y, factor);
+            return newP;
+        } else {
+            if (axis == 'x') {
+                return this.restrictX(p, factor);
+            } else {
+                return this.restrictY(p, factor);
+            }
+        }
+    },
+
+    /*
+     * Restrict an offset within the region by a certain factor, on the x-axis.
+     * @param {Number} p
+     * @param {Number} [factor=1] (optional) The factor.
+     * @return {Number}
+     */
+    restrictX: function(p, factor) {
+        if (!factor) {
+            factor = 1;
+        }
+
+        if (p <= this.left) {
+            p -= (p - this.left) * factor;
+        }
+        else if (p >= this.right) {
+            p -= (p - this.right) * factor;
+        }
+        return p;
+    },
+
+    /*
+     * Restrict an offset within the region by a certain factor, on the y-axis.
+     * @param {Number} p
+     * @param {Number} [factor=1] (optional) The factor.
+     * @return {Number}
+     */
+    restrictY: function(p, factor) {
+        if (!factor) {
+            factor = 1;
+        }
+
+        if (p <= this.top) {
+            p -= (p - this.top) * factor;
+        }
+        else if (p >= this.bottom) {
+            p -= (p - this.bottom) * factor;
+        }
+        return p;
+    },
+
+    /*
+     * Get the width / height of this region.
+     * @return {Object} An object with `width` and `height` properties.
+     * @return {Number} return.width
+     * @return {Number} return.height
+     */
+    getSize: function() {
+        return {
+            width: this.right - this.left,
+            height: this.bottom - this.top
+        };
+    },
+
+    /**
+     * Copy a new instance.
+     * @return {Ext.util.Region}
+     */
+    copy: function() {
+        return new Ext.util.Region(this.top, this.right, this.bottom, this.left);
+    },
+
+    /**
+     * Dump this to an eye-friendly string, great for debugging.
+     * @return {String} For example `Region[0,1,3,2]`.
+     */
+    toString: function() {
+        return "Region[" + this.top + "," + this.right + "," + this.bottom + "," + this.left + "]";
+    },
+
+
+    /**
+     * Translate this region by the given offset amount.
+     * @param {Object} offset
+     * @return {Ext.util.Region} This Region.
+     * @chainable
+     */
+    translateBy: function(offset) {
+        this.left += offset.x;
+        this.right += offset.x;
+        this.top += offset.y;
+        this.bottom += offset.y;
+
+        return this;
+    },
+
+    /**
+     * Round all the properties of this region.
+     * @return {Ext.util.Region} This Region.
+     * @chainable
+     */
+    round: function() {
+        this.top = Math.round(this.top);
+        this.right = Math.round(this.right);
+        this.bottom = Math.round(this.bottom);
+        this.left = Math.round(this.left);
+
+        return this;
+    },
+
+    /**
+     * Check whether this region is equivalent to the given region.
+     * @param {Ext.util.Region} region The region to compare with.
+     * @return {Boolean}
+     */
+    equals: function(region) {
+        return (this.top == region.top && this.right == region.right && this.bottom == region.bottom && this.left == region.left)
+    }
+});
+
+/**
+ * The PanZoom interaction allows the user to navigate the data for one or more chart
+ * axes by panning and/or zooming. Navigation can be limited to particular axes. Zooming is
+ * performed by pinching on the chart or axis area; panning is performed by single-touch dragging.
+ *
+ * For devices which do not support multiple-touch events, zooming can not be done via pinch gestures; in this case the
+ * interaction will allow the user to perform both zooming and panning using the same single-touch drag gesture.
+ * {@link #modeToggleButton} provides a button to indicate and toggle between two modes.
+ *
+ *     @example preview
+ *     var lineChart = new Ext.chart.CartesianChart({
+ *          interactions: [{
+ *             type: 'panzoom',
+ *             zoomOnPanGesture: true
+ *         }],
+ *         animate: true,
+ *         store: {
+ *           fields: ['name', 'data1', 'data2', 'data3', 'data4', 'data5'],
+ *           data: [
+ *               {'name':'metric one', 'data1':10, 'data2':12, 'data3':14, 'data4':8, 'data5':13},
+ *               {'name':'metric two', 'data1':7, 'data2':8, 'data3':16, 'data4':10, 'data5':3},
+ *               {'name':'metric three', 'data1':5, 'data2':2, 'data3':14, 'data4':12, 'data5':7},
+ *               {'name':'metric four', 'data1':2, 'data2':14, 'data3':6, 'data4':1, 'data5':23},
+ *               {'name':'metric five', 'data1':27, 'data2':38, 'data3':36, 'data4':13, 'data5':33}
+ *           ]
+ *         },
+ *         axes: [{
+ *             type: 'numeric',
+ *             position: 'left',
+ *             fields: ['data1'],
+ *             title: {
+ *                 text: 'Sample Values',
+ *                 fontSize: 15
+ *             },
+ *             grid: true,
+ *             minimum: 0
+ *         }, {
+ *             type: 'category',
+ *             position: 'bottom',
+ *             fields: ['name'],
+ *             title: {
+ *                 text: 'Sample Values',
+ *                 fontSize: 15
+ *             }
+ *         }],
+ *         series: [{
+ *             type: 'line',
+ *             highlight: {
+ *                 size: 7,
+ *                 radius: 7
+ *             },
+ *             style: {
+ *                 stroke: 'rgb(143,203,203)'
+ *             },
+ *             xField: 'name',
+ *             yField: 'data1',
+ *             marker: {
+ *                 type: 'path',
+ *                 path: ['M', -2, 0, 0, 2, 2, 0, 0, -2, 'Z'],
+ *                 stroke: 'blue',
+ *                 lineWidth: 0
+ *             }
+ *         }, {
+ *             type: 'line',
+ *             highlight: {
+ *                 size: 7,
+ *                 radius: 7
+ *             },
+ *             fill: true,
+ *             xField: 'name',
+ *             yField: 'data3',
+ *             marker: {
+ *                 type: 'circle',
+ *                 radius: 4,
+ *                 lineWidth: 0
+ *             }
+ *         }]
+ *     });
+ *     Ext.Viewport.setLayout('fit');
+ *     Ext.Viewport.add(lineChart);
+ *
+ * The configuration object for the `panzoom` interaction type should specify which axes
+ * will be made navigable via the `axes` config. See the {@link #axes} config documentation
+ * for details on the allowed formats. If the `axes` config is not specified, it will default
+ * to making all axes navigable with the default axis options.
+ *
+ */
+Ext.define('Ext.chart.interactions.PanZoom', {
+
+    extend: 'Ext.chart.interactions.Abstract',
+
+    type: 'panzoom',
+    alias: 'interaction.panzoom',
+    requires: [
+        'Ext.util.Region',
+        'Ext.draw.Animator'
+    ],
+
+    config: {
+
+        /**
+         * @cfg {Object/Array} axes
+         * Specifies which axes should be made navigable. The config value can take the following formats:
+         *
+         * - An Object whose keys correspond to the {@link Ext.chart.axis.Axis#position position} of each
+         *   axis that should be made navigable. Each key's value can either be an Object with further
+         *   configuration options for each axis or simply `true` for a default set of options.
+         *       {
+         *           type: 'panzoom',
+         *           axes: {
+         *               left: {
+         *                   maxZoom: 5,
+         *                   allowPan: false
+         *               },
+         *               bottom: true
+         *           }
+         *       }
+         *
+         *   If using the full Object form, the following options can be specified for each axis:
+         *
+         *   - minZoom (Number) A minimum zoom level for the axis. Defaults to `1` which is its natural size.
+         *   - maxZoom (Number) A maximum zoom level for the axis. Defaults to `10`.
+         *   - startZoom (Number) A starting zoom level for the axis. Defaults to `1`.
+         *   - allowZoom (Boolean) Whether zooming is allowed for the axis. Defaults to `true`.
+         *   - allowPan (Boolean) Whether panning is allowed for the axis. Defaults to `true`.
+         *   - startPan (Boolean) A starting panning offset for the axis. Defaults to `0`.
+         *
+         * - An Array of strings, each one corresponding to the {@link Ext.chart.axis.Axis#position position}
+         *   of an axis that should be made navigable. The default options will be used for each named axis.
+         *
+         *       {
+         *           type: 'panzoom',
+         *           axes: ['left', 'bottom']
+         *       }
+         *
+         * If the `axes` config is not specified, it will default to making all axes navigable with the
+         * default axis options.
+         */
+        axes: {
+            top: {},
+            right: {},
+            bottom: {},
+            left: {}
+        },
+
+        minZoom: 1,
+
+        maxZoom: 10000,
+
+        /**
+         * @cfg {Boolean} showOverflowArrows
+         * If `true`, arrows will be conditionally shown at either end of each axis to indicate that the
+         * axis is overflowing and can therefore be panned in that direction. Set this to `false` to
+         * prevent the arrows from being displayed.
+         */
+        showOverflowArrows: true,
+
+        /**
+         * @cfg {Object} overflowArrowOptions
+         * A set of optional overrides for the overflow arrow sprites' options. Only relevant when
+         * {@link #showOverflowArrows} is `true`.
+         */
+
+        gesture: 'pinch',
+
+        panGesture: 'drag',
+
+        zoomOnPanGesture: false,
+
+        modeToggleButton: {
+            cls: ['x-panzoom-toggle', 'x-zooming'],
+            iconCls: 'x-panzoom-toggle-icon',
+            iconMask: true
+        },
+
+        hideLabelInGesture: false //Ext.os.is.Android
+    },
+
+    stopAnimationBeforeSync: true,
+
+    applyAxes: function (axesConfig, oldAxesConfig) {
+        return Ext.merge(oldAxesConfig || {}, axesConfig);
+    },
+
+    applyZoomOnPanGesture: function (zoomOnPanGesture) {
+        this.getChart();
+        if (this.isMultiTouch()) {
+            return false;
+        }
+        return zoomOnPanGesture;
+    },
+
+    updateZoomOnPanGesture: function (zoomOnPanGesture) {
+        if (!this.isMultiTouch()) {
+            var button = this.getModeToggleButton(),
+                zoomModeCls = Ext.baseCSSPrefix + 'zooming';
+            if (zoomOnPanGesture) {
+                button.addCls(zoomModeCls);
+                if (!button.config.hideText) {
+                    button.setText('&nbsp;Zoom');
+                }
+            } else {
+                button.removeCls(zoomModeCls);
+                if (!button.config.hideText) {
+                    button.setText('&nbsp;Pan');
+                }
+            }
+        }
+    },
+
+    toggleMode: function () {
+        var me = this;
+        if (!me.isMultiTouch()) {
+            me.setZoomOnPanGesture(!me.getZoomOnPanGesture());
+        }
+    },
+
+    applyModeToggleButton: function (button, oldButton) {
+        var me = this,
+            result = Ext.factory(button, "Ext.Button", oldButton);
+        if (result && !oldButton) {
+            result.setHandler(function () {
+                me.toggleMode();
+            });
+        }
+        return result;
+    },
+
+    getGestures: function () {
+        var me = this,
+            gestures = {};
+        gestures[me.getGesture()] = 'onGesture';
+        gestures[me.getGesture() + 'start'] = 'onGestureStart';
+        gestures[me.getGesture() + 'end'] = 'onGestureEnd';
+        gestures[me.getPanGesture()] = 'onPanGesture';
+        gestures[me.getPanGesture() + 'start'] = 'onPanGestureStart';
+        gestures[me.getPanGesture() + 'end'] = 'onPanGestureEnd';
+        gestures.doubletap = 'onDoubleTap';
+        return gestures;
+    },
+
+    onDoubleTap: function (e) {
+
+    },
+
+    onPanGestureStart: function (e) {
+        if (!e || !e.touches || e.touches.length < 2) { //Limit drags to single touch
+            var me = this,
+                region = me.getChart().getInnerRegion(),
+                xy = me.getChart().element.getXY();
+            me.startX = e.pageX - xy[0] - region[0];
+            me.startY = e.pageY - xy[1] - region[1];
+            me.oldVisibleRanges = null;
+            me.hideLabels();
+            me.getChart().suspendThicknessChanged();
+        }
+    },
+
+    onPanGesture: function (e) {
+        if (!e.touches || e.touches.length < 2) { //Limit drags to single touch
+            var me = this,
+                region = me.getChart().getInnerRegion(),
+                xy = me.getChart().element.getXY();
+            if (me.getZoomOnPanGesture()) {
+                me.transformAxesBy(me.getZoomableAxes(e), 0, 0, (e.pageX - xy[0] - region[0]) / me.startX, me.startY / (e.pageY - xy[1] - region[1]));
+            } else {
+                me.transformAxesBy(me.getPannableAxes(e), e.pageX - xy[0] - region[0] - me.startX, e.pageY - xy[1] - region[1] - me.startY, 1, 1);
+            }
+            me.sync();
+        }
+    },
+
+    onPanGestureEnd: function (e) {
+        var me = this;
+        me.getChart().resumeThicknessChanged();
+        me.showLabels();
+        me.sync();
+    },
+
+    onGestureStart: function (e) {
+        if (e.touches && e.touches.length === 2) {
+            var me = this,
+                xy = me.getChart().element.getXY(),
+                region = me.getChart().getInnerRegion(),
+                x = xy[0] + region[0],
+                y = xy[1] + region[1],
+                newPoints = [e.touches[0].point.x - x, e.touches[0].point.y - y, e.touches[1].point.x - x, e.touches[1].point.y - y],
+                xDistance = Math.max(44, Math.abs(newPoints[2] - newPoints[0])),
+                yDistance = Math.max(44, Math.abs(newPoints[3] - newPoints[1]));
+            me.getChart().suspendThicknessChanged();
+            me.lastZoomDistances = [xDistance, yDistance];
+            me.lastPoints = newPoints;
+            me.oldVisibleRanges = null;
+            me.hideLabels();
+        }
+    },
+
+    onGesture: function (e) {
+        if (e.touches && e.touches.length === 2) {
+            var me = this,
+                region = me.getChart().getInnerRegion(),
+                xy = me.getChart().element.getXY(),
+                x = xy[0] + region[0],
+                y = xy[1] + region[1],
+                abs = Math.abs,
+                lastPoints = me.lastPoints,
+                newPoints = [e.touches[0].point.x - x, e.touches[0].point.y - y, e.touches[1].point.x - x, e.touches[1].point.y - y],
+                xDistance = Math.max(44, abs(newPoints[2] - newPoints[0])),
+                yDistance = Math.max(44, abs(newPoints[3] - newPoints[1])),
+                lastDistances = this.lastZoomDistances || [xDistance, yDistance],
+                zoomX = xDistance / lastDistances[0],
+                zoomY = yDistance / lastDistances[1];
+
+            me.transformAxesBy(me.getZoomableAxes(e),
+                region[2] * (zoomX - 1) / 2 + newPoints[2] - lastPoints[2] * zoomX,
+                region[3] * (zoomY - 1) / 2 + newPoints[3] - lastPoints[3] * zoomY,
+                zoomX,
+                zoomY);
+            me.sync();
+        }
+
+    },
+
+    onGestureEnd: function (e) {
+        var me = this;
+        me.showLabels();
+        me.sync();
+    },
+
+    hideLabels: function () {
+        if (this.getHideLabelInGesture()) {
+            this.eachInteractiveAxes(function (axis) {
+                axis.hideLabels();
+            });
+        }
+    },
+
+    showLabels: function () {
+        if (this.getHideLabelInGesture()) {
+            this.eachInteractiveAxes(function (axis) {
+                axis.showLabels();
+            });
+        }
+    },
+
+    isEventOnAxis: function (e, axis) {
+        // TODO: right now this uses the current event position but really we want to only
+        // use the gesture's start event. Pinch does not give that to us though.
+        var region = axis.getSurface().getRegion();
+        return region[0] <= e.pageX && e.pageX <= region[0] + region[2] && region[1] <= e.pageY && e.pageY <= region[1] + region[3];
+    },
+
+    getPannableAxes: function (e) {
+        var me = this,
+            axisConfigs = me.getAxes(),
+            axes = me.getChart().getAxes(),
+            i, ln = axes.length,
+            result = [], isEventOnAxis = false,
+            config;
+
+        if (e) {
+            for (i = 0; i < ln; i++) {
+                if (this.isEventOnAxis(e, axes[i])) {
+                    isEventOnAxis = true;
+                    break;
+                }
+            }
+        }
+
+        for (i = 0; i < ln; i++) {
+            config = axisConfigs[axes[i].getPosition()];
+            if (config && config.allowPan !== false && (!isEventOnAxis || this.isEventOnAxis(e, axes[i]))) {
+                result.push(axes[i]);
+            }
+        }
+        return result;
+    },
+
+    getZoomableAxes: function (e) {
+        var me = this,
+            axisConfigs = me.getAxes(),
+            axes = me.getChart().getAxes(),
+            result = [],
+            i, ln = axes.length, axis,
+            isEventOnAxis = false, config;
+
+        if (e) {
+            for (i = 0; i < ln; i++) {
+                if (this.isEventOnAxis(e, axes[i])) {
+                    isEventOnAxis = true;
+                    break;
+                }
+            }
+        }
+
+        for (i = 0; i < ln; i++) {
+            axis = axes[i];
+            config = axisConfigs[axis.getPosition()];
+            if (config && config.allowZoom !== false && (!isEventOnAxis || this.isEventOnAxis(e, axis))) {
+                result.push(axis);
+            }
+        }
+        return result;
+    },
+
+    eachInteractiveAxes: function (fn) {
+        var me = this,
+            axisConfigs = me.getAxes(),
+            axes = me.getChart().getAxes();
+        for (var i = 0; i < axes.length; i++) {
+            if (axisConfigs[axes[i].getPosition()]) {
+                if (false === fn.call(this, axes[i])) {
+                    return;
+                }
+            }
+        }
+    },
+
+    transformAxesBy: function (axes, panX, panY, sx, sy) {
+        var region = this.getChart().getInnerRegion(),
+            axesCfg = this.getAxes(), axisCfg,
+            oldVisibleRanges = this.oldVisibleRanges;
+
+        if (!oldVisibleRanges) {
+            this.oldVisibleRanges = oldVisibleRanges = {};
+            this.eachInteractiveAxes(function (axis) {
+                oldVisibleRanges[axis.getId()] = axis.getVisibleRange();
+            });
+        }
+
+        if (!region) {
+            return;
+        }
+        for (var i = 0; i < axes.length; i++) {
+            axisCfg = axesCfg[axes[i].getPosition()];
+            this.transformAxisBy(axes[i], oldVisibleRanges[axes[i].getId()], panX, panY, sx, sy, axisCfg.minZoom, axisCfg.maxZoom);
+        }
+    },
+
+    transformAxisBy: function (axis, oldVisibleRange, panX, panY, sx, sy, minZoom, maxZoom) {
+        var me = this,
+            visibleLength = oldVisibleRange[1] - oldVisibleRange[0],
+            actualMinZoom = axis.config.minZoom || minZoom || me.getMinZoom(),
+            actualMaxZoom = axis.config.maxZoom || maxZoom || me.getMaxZoom(),
+            region = me.getChart().getInnerRegion();
+        if (!region) {
+            return;
+        }
+
+        var isSide = axis.isSide(),
+            length = isSide ? region[3] : region[2],
+            pan = isSide ? -panY : panX;
+        visibleLength /= isSide ? sy : sx;
+        if (visibleLength < 0) {
+            visibleLength = -visibleLength;
+        }
+
+        if (visibleLength * actualMinZoom > 1) {
+            visibleLength = 1;
+        }
+
+        if (visibleLength * actualMaxZoom < 1) {
+            visibleLength = 1 / actualMaxZoom;
+        }
+
+        axis.setVisibleRange([
+            (oldVisibleRange[0] + oldVisibleRange[1] - visibleLength) * 0.5 - pan / length * visibleLength,
+            (oldVisibleRange[0] + oldVisibleRange[1] + visibleLength) * 0.5 - pan / length * visibleLength
+        ]);
+    },
+
+    destroy: function () {
+        this.setModeToggleButton(null);
+        this.callSuper();
+    }
+});
+
+/**
+ * @class Ext.chart.interactions.Rotate
+ * @extends Ext.chart.interactions.Abstract
+ * 
+ * The Rotate interaction allows the user to rotate a polar chart about its central point.
+ *
+ *     @example preview
+ *     var chart = new Ext.chart.PolarChart({
+ *         animate: true,
+ *         interactions: ['rotate'],
+ *         colors: ["#115fa6", "#94ae0a", "#a61120", "#ff8809", "#ffd13e"],
+ *         store: {
+ *           fields: ['name', 'data1', 'data2', 'data3', 'data4', 'data5'],
+ *           data: [
+ *               {'name':'metric one', 'data1':10, 'data2':12, 'data3':14, 'data4':8, 'data5':13},
+ *               {'name':'metric two', 'data1':7, 'data2':8, 'data3':16, 'data4':10, 'data5':3},
+ *               {'name':'metric three', 'data1':5, 'data2':2, 'data3':14, 'data4':12, 'data5':7},
+ *               {'name':'metric four', 'data1':2, 'data2':14, 'data3':6, 'data4':1, 'data5':23},
+ *               {'name':'metric five', 'data1':27, 'data2':38, 'data3':36, 'data4':13, 'data5':33}
+ *           ]
+ *         },
+ *         series: [{
+ *             type: 'pie',
+ *             labelField: 'name',
+ *             xField: 'data3',
+ *             donut: 30
+ *         }]
+ *     });
+ *     Ext.Viewport.setLayout('fit');
+ *     Ext.Viewport.add(chart);
+ */
+Ext.define('Ext.chart.interactions.Rotate', {
+
+    extend: 'Ext.chart.interactions.Abstract',
+
+    type: 'rotate',
+
+    alias: 'interaction.rotate',
+
+    config: {
+        /**
+         * @cfg {String} gesture
+         * Defines the gesture type that will be used to rotate the chart. Currently only
+         * supports `pinch` for two-finger rotation and `drag` for single-finger rotation.
+         */
+        gesture: 'rotate'
+    },
+
+    oldRotations: null,
+
+    getGestures: function () {
+        var gestures = {};
+        gestures.rotate = 'onRotate';
+        gestures.rotateend = 'onRotate';
+        gestures.dragstart = 'onGestureStart';
+        gestures.drag = 'onGesture';
+        gestures.dragend = 'onGesture';
+        return gestures;
+    },
+
+    getAngle: function (e) {
+        var me = this,
+            chart = me.getChart(),
+            xy = chart.getEventXY(e),
+            center = chart.getCenter();
+        return Math.atan2(xy[1] - center[1],
+            xy[0] - center[0]);
+    },
+
+    onGestureStart: function (e) {
+        this.angle = this.getAngle(e);
+        this.oldRotations = {};
+    },
+
+    onGesture: function (e) {
+        var me = this,
+            chart = me.getChart(),
+            angle = this.getAngle(e) - this.angle,
+            axes = chart.getAxes(), axis,
+            series = chart.getSeries(), seriesItem,
+            center = chart.getCenter(),
+            oldRotations = this.oldRotations,
+            oldRotation, i, ln;
+        for (i = 0, ln = axes.length; i < ln; i++) {
+            axis = axes[i];
+            oldRotation = oldRotations[axis.getId()] || (oldRotations[axis.getId()] = axis.getRotation());
+            axis.setRotation(angle + oldRotation);
+        }
+
+        for (i = 0, ln = series.length; i < ln; i++) {
+            seriesItem = series[i];
+            oldRotation = oldRotations[seriesItem.getId()] || (oldRotations[seriesItem.getId()] = seriesItem.getRotation());
+            seriesItem.setRotation(angle + oldRotation);
+        }
+        me.sync();
+    },
+
+    onRotate: function (e) {
+
+    }
+});
+
+/**
+ * @class Ext.chart.interactions.RotatePie3D
+ * @extends Ext.chart.interactions.Rotate
+ *
+ * A special version of the Rotate interaction used by Pie3D Chart.
+ */
+Ext.define('Ext.chart.interactions.RotatePie3D', {
+
+    extend: 'Ext.chart.interactions.Rotate',
+
+    type: 'rotatePie3d',
+
+    alias: 'interaction.rotatePie3d',
+
+    getAngle: function (e) {
+        var me = this,
+            chart = me.getChart(),
+            xy = chart.element.getXY(),
+            region = chart.getMainRegion();
+        return Math.atan2(e.pageY - xy[1] - region[3] * 0.5, e.pageX - xy[0] - region[2] * 0.5);
+    }
+});
+
+/**
+ * @abstract
+ * @class Ext.chart.series.Cartesian
+ * @extends Ext.chart.series.Series
+ *
+ * Common base class for series implementations which plot values using x/y coordinates.
+ *
+ * @constructor
+ */
+Ext.define('Ext.chart.series.Cartesian', {
+    extend: 'Ext.chart.series.Series',
+    config: {
+        /**
+         * The field used to access the x axis value from the items from the data
+         * source.
+         *
+         * @cfg {String} xField
+         */
+        xField: null,
+
+        /**
+         * The field used to access the y-axis value from the items from the data
+         * source.
+         *
+         * @cfg {String} yField
+         */
+        yField: null,
+
+        /**
+         * @cfg {Ext.chart.axis.Axis} xAxis The chart axis bound to the series on the x-axis.
+         */
+        xAxis: null,
+
+        /**
+         * @cfg {Ext.chart.axis.Axis} yAxis The chart axis bound to the series on the y-axis.
+         */
+        yAxis: null
+    },
+
+    directions: ['X', 'Y'],
+    fieldCategoryX: ['X'],
+    fieldCategoryY: ['Y'],
+
+    updateXAxis: function (axis) {
+        axis.processData(this);
+    },
+
+    updateYAxis: function (axis) {
+        axis.processData(this);
+    },
+
+    coordinateX: function () {
+        return this.coordinate('X', 0, 2);
+    },
+
+    coordinateY: function () {
+        return this.coordinate('Y', 1, 2);
+    },
+
+    getItemForPoint: function (x, y) {
+        if (this.getSprites()) {
+            var me = this,
+                sprite = me.getSprites()[0],
+                store = me.getStore(),
+                item;
+
+            if (sprite) {
+                var index = sprite.getIndexNearPoint(x, y);
+                if (index !== -1) {
+                    item = {
+                        series: this,
+                        category: this.getItemInstancing() ? 'items' : 'markers',
+                        index: index,
+                        record: store.getData().items[index],
+                        field: this.getYField(),
+                        sprite: sprite
+                    };
+                    return item;
+                }
+            }
+        }
+    },
+
+    createSprite: function () {
+        var sprite = this.callSuper(),
+            xAxis = this.getXAxis();
+        sprite.setFlipXY(this.getChart().getFlipXY());
+        if (sprite.setAggregator && xAxis && xAxis.getAggregator) {
+            if (xAxis.getAggregator) {
+                sprite.setAggregator({strategy: xAxis.getAggregator()});
+            } else {
+                sprite.setAggregator({});
+            }
+        }
+        return sprite;
+    },
+
+    getSprites: function () {
+        var me = this,
+            chart = this.getChart(),
+            animation = chart && chart.getAnimate(),
+            itemInstancing = me.getItemInstancing(),
+            sprites = me.sprites, sprite;
+
+        if (!chart) {
+            return [];
+        }
+
+        if (!sprites.length) {
+            sprite = me.createSprite();
+        } else {
+            sprite = sprites[0];
+        }
+
+        if (animation) {
+            me.getLabel().getTemplate().fx.setConfig(animation);
+            if (itemInstancing) {
+                sprite.itemsMarker.getTemplate().fx.setConfig(animation);
+            }
+            sprite.fx.setConfig(animation);
+        }
+        return sprites;
+    },
+
+    provideLegendInfo: function (target) {
+        var style = this.getStyle();
+        target.push({
+            name: this.getTitle() || this.getYField() || this.getId(),
+            mark: style.fillStyle || style.strokeStyle || 'black',
+            disabled: false,
+            series: this.getId(),
+            index: 0
+        });
+    },
+
+    getXRange: function () {
+        return [this.dataRange[0], this.dataRange[2]];
+    },
+
+    getYRange: function () {
+        return [this.dataRange[1], this.dataRange[3]];
+    }
+})
+;
+
+/**
+ * @abstract
+ * @extends Ext.chart.series.Cartesian
+ * Abstract class for all the stacked cartesian series including area series
+ * and bar series.
+ */
+Ext.define('Ext.chart.series.StackedCartesian', {
+
+    extend: 'Ext.chart.series.Cartesian',
+
+    config: {
+        /**
+         * @cfg {Boolean}
+         * 'true' to display the series in its stacked configuration.
+         */
+        stacked: true,
+
+        /**
+         * @cfg {Array} hidden
+         */
+        hidden: []
+    },
+
+    animatingSprites: 0,
+
+    updateStacked: function () {
+        this.processData();
+    },
+
+    coordinateY: function () {
+        return this.coordinateStacked('Y', 1, 2);
+    },
+
+    getFields: function (fieldCategory) {
+        var me = this,
+            fields = [], fieldsItem,
+            i, ln;
+        for (i = 0, ln = fieldCategory.length; i < ln; i++) {
+            fieldsItem = me['get' + fieldCategory[i] + 'Field']();
+            if (Ext.isArray(fieldsItem)) {
+                fields.push.apply(fields, fieldsItem);
+            } else {
+                fields.push(fieldsItem);
+            }
+        }
+        return fields;
+    },
+
+    updateLabelOverflowPadding: function (labelOverflowPadding) {
+        this.getLabel().setAttributes({labelOverflowPadding: labelOverflowPadding});
+    },
+
+    getSprites: function () {
+        var me = this,
+            chart = this.getChart(),
+            animation = chart && chart.getAnimate(),
+            fields = me.getFields(me.fieldCategoryY),
+            itemInstancing = me.getItemInstancing(),
+            sprites = me.sprites, sprite,
+            hidden = me.getHidden(),
+            spritesCreated = false,
+            i, length = fields.length;
+
+        if (!chart) {
+            return [];
+        }
+
+        for (i = 0; i < length; i++) {
+            sprite = sprites[i];
+            if (!sprite) {
+                sprite = me.createSprite();
+                if (chart.getFlipXY()) {
+                    sprite.setAttributes({zIndex: i});
+                } else {
+                    sprite.setAttributes({zIndex: -i});
+                }
+                sprite.setField(fields[i]);
+                spritesCreated = true;
+                hidden.push(false);
+                if (itemInstancing) {
+                    sprite.itemsMarker.getTemplate().setAttributes(me.getOverriddenStyleByIndex(i));
+                } else {
+                    sprite.setAttributes(me.getStyleByIndex(i));
+                }
+            }
+            if (animation) {
+                if (itemInstancing) {
+                    sprite.itemsMarker.getTemplate().fx.setConfig(animation);
+                }
+                sprite.fx.setConfig(animation);
+            }
+        }
+
+        if (spritesCreated) {
+            me.updateHidden(hidden);
+        }
+        return sprites;
+    },
+
+    getItemForPoint: function (x, y) {
+        if (this.getSprites()) {
+            var me = this,
+                i, ln, sprite,
+                itemInstancing = me.getItemInstancing(),
+                sprites = me.getSprites(),
+                store = me.getStore(),
+                item;
+
+            for (i = 0, ln = sprites.length; i < ln; i++) {
+                sprite = sprites[i];
+                var index = sprite.getIndexNearPoint(x, y);
+                if (index !== -1) {
+                    item = {
+                        series: me,
+                        index: index,
+                        category: itemInstancing ? 'items' : 'markers',
+                        record: store.getData().items[index],
+                        field: this.getYField()[i],
+                        sprite: sprite
+                    };
+                    return item;
+                }
+            }
+        }
+    },
+
+    provideLegendInfo: function (target) {
+        var sprites = this.getSprites(),
+            title = this.getTitle(),
+            field = this.getYField(),
+            hidden = this.getHidden();
+        for (var i = 0; i < sprites.length; i++) {
+            target.push({
+                name: this.getTitle() ? this.getTitle()[i] : (field && field[i]) || this.getId(),
+                mark: this.getStyleByIndex(i).fillStyle || this.getStyleByIndex(i).strokeStyle || 'black',
+                disabled: hidden[i],
+                series: this.getId(),
+                index: i
+            });
+        }
+    },
+
+    onSpriteAnimationStart: function (sprite) {
+        this.animatingSprites++;
+        if (this.animatingSprites === 1) {
+            this.fireEvent('animationstart');
+        }
+    },
+
+    onSpriteAnimationEnd: function (sprite) {
+        this.animatingSprites--;
+        if (this.animatingSprites === 0) {
+            this.fireEvent('animationend');
+        }
+    }
+});
+
+/**
+ * @class Ext.chart.series.sprite.Cartesian
+ * @extends Ext.draw.sprite.Sprite
+ *
+ * Cartesian sprite.
+ */
+Ext.define("Ext.chart.series.sprite.Cartesian", {
+    extend: 'Ext.draw.sprite.Sprite',
+    mixins: {
+        markerHolder: "Ext.chart.MarkerHolder"
+    },
+    homogeneous: true,
+    ascending: true,
+    inheritableStatics: {
+        def: {
+            processors: {
+                /**
+                 * @cfg {Number} [dataMinX=0] Data minimum on the x-axis.
+                 */
+                dataMinX: 'number',
+
+                /**
+                 * @cfg {Number} [dataMaxX=1] Data maximum on the x-axis.
+                 */
+                dataMaxX: 'number',
+
+                /**
+                 * @cfg {Number} [dataMinY=0] Data minimum on the y-axis.
+                 */
+                dataMinY: 'number',
+
+                /**
+                 * @cfg {Number} [dataMaxY=2] Data maximum on the y-axis.
+                 */
+                dataMaxY: 'number',
+
+                /**
+                 * @cfg {Object} [dataY=null] Data items on the y-axis.
+                 */
+                dataY: 'data',
+
+                /**
+                 * @cfg {Object} [dataX=null] Data items on the x-axis.
+                 */
+                dataX: 'data',
+
+                /**
+                 * @cfg {Object} [labels=null] Labels used in the series.
+                 */
+                labels: 'default',
+
+                /**
+                 * @cfg {Number} [labelOverflowPadding=10] Padding around labels to determine overlap.
+                 */
+                labelOverflowPadding: 'number',
+
+                /**
+                 * @cfg {Boolean} [flipXY=true] 'true' if the series is flipped
+                 */
+                flipXY: 'bool',
+                renderer: 'default',
+
+                // PanZoom information
+                visibleMinX: 'number',
+                visibleMinY: 'number',
+                visibleMaxX: 'number',
+                visibleMaxY: 'number',
+                innerWidth: 'number',
+                innerHeight: 'number'
+            },
+            defaults: {
+                dataY: null,
+                dataX: null,
+                dataMinX: 0,
+                dataMaxX: 1,
+                dataMinY: 0,
+                dataMaxY: 1,
+                labels: null,
+                labelOverflowPadding: 10,
+                flipXY: false,
+                renderer: null,
+                transformFillStroke: false,
+
+                visibleMinX: 0,
+                visibleMinY: 0,
+                visibleMaxX: 1,
+                visibleMaxY: 1,
+                innerWidth: 1,
+                innerHeight: 1
+            },
+            dirtyTriggers: {
+                dataX: 'dataX,bbox',
+                dataY: 'dataY,bbox',
+                dataMinX: 'bbox',
+                dataMaxX: 'bbox',
+                dataMinY: 'bbox',
+                dataMaxY: 'bbox',
+                visibleMinX: 'panzoom',
+                visibleMinY: 'panzoom',
+                visibleMaxX: 'panzoom',
+                visibleMaxY: 'panzoom',
+                innerWidth: 'panzoom',
+                innerHeight: 'panzoom'
+            },
+            updaters: {
+                'dataX': function (attrs) {
+                    this.processDataX();
+                    if (!attrs.dirtyFlags.dataY) {
+                        attrs.dirtyFlags.dataY = [];
+                    }
+                    attrs.dirtyFlags.dataY.push('dataY');
+                },
+
+                'dataY': function () {
+                    this.processDataY();
+                },
+
+                'panzoom': function (attrs) {
+                    var dx = attrs.visibleMaxX - attrs.visibleMinX,
+                        dy = attrs.visibleMaxY - attrs.visibleMinY,
+                        innerWidth = attrs.flipXY ? attrs.innerHeight : attrs.innerWidth,
+                        innerHeight = !attrs.flipXY ? attrs.innerHeight : attrs.innerWidth;
+                    attrs.translationX = -attrs.visibleMinX * innerWidth / dx;
+                    attrs.translationY = -attrs.visibleMinY * innerHeight / dy;
+                    attrs.scalingX = innerWidth / dx;
+                    attrs.scalingY = innerHeight / dy;
+                    attrs.scalingCenterX = 0;
+                    attrs.scalingCenterY = 0;
+                    this.applyTransformations(true);
+                }
+            }
+        }
+    },
+
+    config: {
+        /**
+         * @cfg {Boolean} flipXY 'true' if the series is flipped
+         */
+        flipXY: false,
+
+        /**
+         * @private
+         * @cfg {Object} dataItems Store items that are passed to the renderer.
+         */
+        dataItems: null,
+
+        /**
+         * @cfg {String} field The store field used by the series.
+         */
+        field: null
+    },
+
+    processDataY: Ext.emptyFn,
+
+    processDataX: Ext.emptyFn,
+
+    updatePlainBBox: function (plain) {
+        var attr = this.attr;
+        plain.x = attr.dataMinX;
+        plain.y = attr.dataMinY;
+        plain.width = attr.dataMaxX - attr.dataMinX;
+        plain.height = attr.dataMaxY - attr.dataMinY;
+    },
+
+    /**
+     * Does a binary search of the data on the x-axis using the given key.
+     * @param key
+     * @return {*}
+     */
+    binarySearch: function (key) {
+        var dx = this.attr.dataX,
+            start = 0,
+            end = dx.length;
+        if (key <= dx[0]) {
+            return start;
+        }
+        if (key >= dx[end - 1]) {
+            return end - 1;
+        }
+        while (start + 1 < end) {
+            var mid = (start + end) >> 1,
+                val = dx[mid];
+            if (val === key) {
+                return mid;
+            } else if (val < key) {
+                start = mid;
+            } else {
+                end = mid;
+            }
+        }
+        return start;
+    },
+
+    render: function (surface, ctx, region) {
+        var me = this,
+            flipXY = me.getFlipXY(),
+            attr = me.attr,
+            inverseMatrix = attr.inverseMatrix.clone();
+
+        inverseMatrix.appendMatrix(surface.inverseMatrix);
+
+        if (attr.dataX === null) {
+            return;
+        }
+        if (attr.dataY === null) {
+            return;
+        }
+
+        if (inverseMatrix.getXX() * inverseMatrix.getYX() || inverseMatrix.getXY() * inverseMatrix.getYY()) {
+            console.log('Cartesian Series sprite does not support rotation/sheering');
+            return;
+        }
+
+        var clip = inverseMatrix.transformList([
+            [region[0] - 1, region[3] + 1],
+            [region[0] + region[2] + 1, -1]
+        ]);
+
+        clip = clip[0].concat(clip[1]);
+
+        if (clip[2] < clip[0]) {
+            console.log('Cartesian Series sprite does not supports flipped X.');
+            // TODO: support it
+            return;
+        }
+        me.renderClipped(surface, ctx, clip, region);
+    },
+
+    /**
+     * Render the given visible clip range.
+     * @param surface
+     * @param ctx
+     * @param clip
+     * @param region
+     */
+    renderClipped: Ext.emptyFn,
+
+    /**
+     * Get the nearest item index from point (x, y). -1 as not found.
+     * @param {Number} x
+     * @param {Number} y
+     * @return {Number} The index
+     */
+    getIndexNearPoint: function (x, y) {
+        var sprite = this,
+            mat = sprite.attr.matrix,
+            dataX = sprite.attr.dataX,
+            dataY = sprite.attr.dataY,
+            minX, minY, index = -1,
+            imat = mat.clone().prependMatrix(this.surfaceMatrix).inverse(),
+            center = imat.transformPoint([x, y]),
+            positionLB = imat.transformPoint([x - 22, y - 22]),
+            positionTR = imat.transformPoint([x + 22, y + 22]),
+            left = Math.min(positionLB[0], positionTR[0]),
+            right = Math.max(positionLB[0], positionTR[0]),
+            top = Math.min(positionLB[1], positionTR[1]),
+            bottom = Math.max(positionLB[1], positionTR[1]);
+
+        for (var i = 0; i < dataX.length; i++) {
+            if (left < dataX[i] && dataX[i] < right && top < dataY[i] && dataY[i] < bottom) {
+                if (index === -1 || Math.abs(dataX[i] - center[0]) < minX &&
+                    Math.abs(dataY[i] - center[1]) < minY) {
+                    minX = Math.abs(dataX[i] - center[0]);
+                    minY = Math.abs(dataY[i] - center[1]);
+                    index = i;
+                }
+            }
+        }
+
+        return index;
+    }
+});
+
+/**
+ * @class Ext.chart.series.sprite.StackedCartesian
+ * @extends Ext.chart.series.sprite.Cartesian
+ * 
+ * Stacked cartesian sprite.
+ */
+Ext.define("Ext.chart.series.sprite.StackedCartesian", {
+    extend: 'Ext.chart.series.sprite.Cartesian',
+    inheritableStatics: {
+        def: {
+            processors: {
+                /**
+                 * @private
+                 * @cfg {Number} [groupCount=1] The number of groups in the series.
+                 */
+                groupCount: 'number',
+
+                /**
+                 * @private
+                 * @cfg {Number} [groupOffset=0] The group index of the series sprite.
+                 */
+                groupOffset: 'number',
+
+                /**
+                 * @private
+                 * @cfg {Object} [dataStartY=null] The starting point of the data used in the series.
+                 */
+                dataStartY: 'data'
+            },
+            defaults: {
+                groupCount: 1,
+                groupOffset: 0,
+                dataStartY: null
+            },
+            dirtyTriggers: {
+                dataStartY: 'dataY,bbox'
+            }
+        }
+    },
+
+    //@inheritdoc
+    getIndexNearPoint: function (x, y) {
+        var sprite = this,
+            mat = sprite.attr.matrix,
+            dataX = sprite.attr.dataX,
+            dataY = sprite.attr.dataY,
+            dataStartY = sprite.attr.dataStartY,
+            minX, minY, index = -1,
+            imat = mat.clone().prependMatrix(this.surfaceMatrix).inverse(),
+            center = imat.transformPoint([x, y]),
+            positionLB = imat.transformPoint([x - 22, y - 22]),
+            positionTR = imat.transformPoint([x + 22, y + 22]),
+            dx, dy,
+            left = Math.min(positionLB[0], positionTR[0]),
+            right = Math.max(positionLB[0], positionTR[0]);
+
+        for (var i = 0; i < dataX.length; i++) {
+            if (left <= dataX[i] && dataX[i] <= right && dataStartY[i] <= center[1] && center[1] <= dataY[i]) {
+                dx = Math.abs(dataX[i] - center[0]);
+                dy = Math.max(-Math.min(dataY[i] - center[1], center[1] - dataStartY[i]), 0);
+                if (index === -1 || dx < minX && dy <= minY) {
+                    minX = dx;
+                    minY = dy;
+                    index = i;
+                }
+            }
+        }
+
+        return index;
+    }
+});
+
+/**
+ * @class Ext.chart.series.sprite.Area
+ * @extends Ext.chart.series.sprite.StackedCartesian
+ *
+ * Area series sprite.
+ */
+Ext.define("Ext.chart.series.sprite.Area", {
+    alias: 'sprite.areaSeries',
+    extend: "Ext.chart.series.sprite.StackedCartesian",
+
+    inheritableStatics: {
+        def: {
+            processors: {
+                /**
+                 * @cfg {Boolean} [step=false] 'true' if the area is represented with steps instead of lines.
+                 */
+                step: 'bool'
+            },
+            defaults: {
+                step: false
+            }
+        }
+    },
+
+    renderClipped: function (surface, ctx, clip, clipRegion) {
+        var me = this,
+            attr = me.attr,
+            dataX = attr.dataX,
+            dataY = attr.dataY,
+            dataStartY = attr.dataStartY,
+            matrix = attr.matrix,
+            x, y, i, lastX, lastY,
+            xx = matrix.elements[0],
+            dx = matrix.elements[4],
+            yy = matrix.elements[3],
+            dy = matrix.elements[5],
+            surfaceMatrix = me.surfaceMatrix,
+            markerCfg = {},
+            start = Math.max(0, this.binarySearch(clip[0])),
+            end = Math.min(dataX.length - 1, this.binarySearch(clip[2]) + 1);
+        ctx.beginPath();
+
+        if (attr.step) {
+            lastY = dataY[start] * yy + dy;
+            for (i = start; i <= end; i++) {
+                x = dataX[i] * xx + dx;
+                y = dataY[i] * yy + dy;
+                ctx.lineTo(x, lastY);
+                ctx.lineTo(x, lastY = y);
+            }
+        } else {
+            for (i = start; i <= end; i++) {
+                x = dataX[i] * xx + dx;
+                y = dataY[i] * yy + dy;
+                ctx.lineTo(x, y);
+            }
+        }
+
+        if (dataStartY) {
+            if (attr.step) {
+                lastX = dataX[end] * xx + dx;
+                for (i = end; i >= start; i--) {
+                    x = dataX[i] * xx + dx;
+                    y = dataStartY[i] * yy + dy;
+                    ctx.lineTo(lastX, y);
+                    ctx.lineTo(lastX = x, y);
+                }
+            } else {
+                for (i = end; i >= start; i--) {
+                    x = dataX[i] * xx + dx;
+                    y = dataStartY[i] * yy + dy;
+                    ctx.lineTo(x, y);
+                }
+            }
+        } else {
+            // dataStartY[i] == 0;
+            ctx.lineTo(dataX[end] * xx + dx, y);
+            ctx.lineTo(dataX[end] * xx + dx, dy);
+            ctx.lineTo(dataX[start] * xx + dx, dy);
+            ctx.lineTo(dataX[start] * xx + dx, dataY[i] * yy + dy);
+        }
+        if (attr.transformFillStroke) {
+            attr.matrix.toContext(ctx);
+        }
+        ctx.fill();
+        if (attr.transformFillStroke) {
+            attr.inverseMatrix.toContext(ctx);
+        }
+        ctx.beginPath();
+        if (attr.step) {
+            for (i = start; i <= end; i++) {
+                x = dataX[i] * xx + dx;
+                y = dataY[i] * yy + dy;
+                ctx.lineTo(x, lastY);
+                ctx.lineTo(x, lastY = y);
+                markerCfg.translationX = surfaceMatrix.x(x, y);
+                markerCfg.translationY = surfaceMatrix.y(x, y);
+                me.putMarker("markers", markerCfg, i, !attr.renderer);
+            }
+        } else {
+            for (i = start; i <= end; i++) {
+                x = dataX[i] * xx + dx;
+                y = dataY[i] * yy + dy;
+                ctx.lineTo(x, y);
+                markerCfg.translationX = surfaceMatrix.x(x, y);
+                markerCfg.translationY = surfaceMatrix.y(x, y);
+                me.putMarker("markers", markerCfg, i, !attr.renderer);
+            }
+        }
+
+        if (attr.transformFillStroke) {
+            attr.matrix.toContext(ctx);
+        }
+        ctx.stroke();
+    }
+});
+
+/**
+ * @class Ext.chart.series.Area
+ * @extends Ext.chart.series.StackedCartesian
+ *
+ * Creates an Area Chart.
+ * 
+ *     @example preview
+ *     var chart = new Ext.chart.CartesianChart({
+ *         animate: true,
+ *         store: {
+ *           fields: ['name', 'data1', 'data2', 'data3', 'data4', 'data5'],
+ *           data: [
+ *               {'name':'metric one', 'data1':10, 'data2':12, 'data3':14, 'data4':8, 'data5':13},
+ *               {'name':'metric two', 'data1':7, 'data2':8, 'data3':16, 'data4':10, 'data5':3},
+ *               {'name':'metric three', 'data1':5, 'data2':2, 'data3':14, 'data4':12, 'data5':7},
+ *               {'name':'metric four', 'data1':2, 'data2':14, 'data3':6, 'data4':1, 'data5':23},
+ *               {'name':'metric five', 'data1':27, 'data2':38, 'data3':36, 'data4':13, 'data5':33}
+ *           ]
+ *         },
+ *         axes: [{
+ *             type: 'numeric',
+ *             position: 'left',
+ *             fields: ['data1'],
+ *             title: {
+ *                 text: 'Sample Values',
+ *                 fontSize: 15
+ *             },
+ *             grid: true,
+ *             minimum: 0
+ *         }, {
+ *             type: 'category',
+ *             position: 'bottom',
+ *             fields: ['name'],
+ *             title: {
+ *                 text: 'Sample Values',
+ *                 fontSize: 15
+ *             }
+ *         }],
+ *         series: [{
+ *             type: 'area',
+ *             subStyle: {
+ *                 fill: ['blue', 'green', 'red']
+ *             },
+ *             xField: 'name',
+ *             yField: ['data1', 'data2', 'data3']
+ *         
+ *         }]
+ *     });
+ *     Ext.Viewport.setLayout('fit');
+ *     Ext.Viewport.add(chart);
+ */
+Ext.define('Ext.chart.series.Area', {
+
+    extend: 'Ext.chart.series.StackedCartesian',
+
+    alias: 'series.area',
+    type: 'area',
+    seriesType: 'areaSeries',
+
+    requires: ['Ext.chart.series.sprite.Area']
+});
+
+/**
+ * @class Ext.chart.series.sprite.Bar
+ * @extends Ext.chart.series.sprite.StackedCartesian
+ *
+ * Draws a sprite used in the bar series.
+ */
+Ext.define("Ext.chart.series.sprite.Bar", {
+    alias: 'sprite.barSeries',
+    extend: 'Ext.chart.series.sprite.StackedCartesian',
+
+    inheritableStatics: {
+        def: {
+            processors: {
+                /**
+                 * @cfg {Number} [minBarWidth=2] The minimum bar width.
+                 */
+                minBarWidth: 'number',
+
+                /**
+                 * @cfg {Number} [maxBarWidth=100] The maximum bar width.
+                 */
+                maxBarWidth: 'number',
+
+                /**
+                 * @cfg {Number} [minGapWidth=5] The minimum gap between bars.
+                 */
+                minGapWidth: 'number',
+
+                /**
+                 * @cfg {Number} [radius=0] The degree of rounding for rounded bars.
+                 */
+                radius: 'number',
+
+                /**
+                 * @cfg {Number} [inGroupGapWidth=3] The gap between grouped bars.
+                 */
+                inGroupGapWidth: 'number',
+                renderer: 'default'
+            },
+            defaults: {
+                minBarWidth: 2,
+                maxBarWidth: 100,
+                minGapWidth: 5,
+                inGroupGapWidth: 3,
+                radius: 0,
+                renderer: null
+            }
+        }
+    },
+
+    // TODO: design this more carefully
+    drawLabel: function (text, dataX, dataStartY, dataY, labelId) {
+        var me = this,
+            attr = me.attr,
+            labelCfg = me.labelCfg || (me.labelCfg = {}),
+            surfaceMatrix = me.surfaceMatrix,
+            labelX, labelY,
+            labelOverflowPadding = attr.labelOverflowPadding,
+            halfWidth,
+            labelBox;
+
+        labelBox = this.getMarkerBBox('labels', labelId, true);
+        labelCfg.text = text;
+        if (!labelBox) {
+            me.putMarker('labels', labelCfg, labelId);
+            labelBox = this.getMarkerBBox('labels', labelId, true);
+        }
+        if (!attr.flipXY) {
+            labelCfg.rotationRads = Math.PI * 0.5;
+        } else {
+            labelCfg.rotationRads = 0;
+        }
+        labelCfg.calloutVertical = !attr.flipXY;
+
+        halfWidth = (labelBox.width / 2 + labelOverflowPadding);
+        if (dataStartY > dataY) {
+            halfWidth = -halfWidth;
+        }
+        labelX = dataX;
+        labelY = dataY - halfWidth;
+        labelCfg.x = surfaceMatrix.x(labelX, labelY);
+        labelCfg.y = surfaceMatrix.y(labelX, labelY);
+        labelX = dataX;
+        labelY = dataY + halfWidth;
+        labelCfg.calloutPlaceX = surfaceMatrix.x(labelX, labelY);
+        labelCfg.calloutPlaceY = surfaceMatrix.y(labelX, labelY);
+        labelX = dataX;
+        labelY = dataY;
+        labelCfg.calloutStartX = surfaceMatrix.x(labelX, labelY);
+        labelCfg.calloutStartY = surfaceMatrix.y(labelX, labelY);
+        if (dataStartY > dataY) {
+            halfWidth = -halfWidth;
+        }
+        if (Math.abs(dataY - dataStartY) > halfWidth * 2) {
+            labelCfg.callout = 0;
+        } else {
+            labelCfg.callout = 1;
+        }
+        me.putMarker('labels', labelCfg, labelId);
+    },
+
+    drawBar: function (ctx, surface, clip, left, top, right, bottom, index) {
+        var itemCfg = this.itemCfg || (this.itemCfg = {});
+        itemCfg.x = left;
+        itemCfg.y = top;
+        itemCfg.width = right - left;
+        itemCfg.height = bottom - top;
+        itemCfg.radius = this.attr.radius;
+        if (this.attr.renderer) {
+            this.attr.renderer.call(this, itemCfg, this, index, this.getDataItems().items[index]);
+        }
+        this.putMarker("items", itemCfg, index, !this.attr.renderer);
+    },
+
+    //@inheritdoc
+    renderClipped: function (surface, ctx, clip) {
+        if (this.cleanRedraw) {
+            return;
+        }
+        var me = this,
+            attr = me.attr,
+            dataX = attr.dataX,
+            dataY = attr.dataY,
+            dataText = attr.labels,
+            dataStartY = attr.dataStartY,
+            groupCount = attr.groupCount,
+            groupOffset = attr.groupOffset - (groupCount - 1) * 0.5,
+            inGroupGapWidth = attr.inGroupGapWidth,
+            yLow, yHi,
+            lineWidth = ctx.lineWidth,
+            matrix = attr.matrix,
+            maxBarWidth = matrix.getXX() - attr.minGapWidth,
+            barWidth = surface.roundPixel(Math.max(attr.minBarWidth, (Math.min(maxBarWidth, attr.maxBarWidth) - inGroupGapWidth * (groupCount - 1)) / groupCount)),
+            surfaceMatrix = this.surfaceMatrix,
+            left, right, bottom, top, i, center,
+            halfLineWidth = 0.5 * attr.lineWidth,
+            xx = matrix.elements[0],
+            dx = matrix.elements[4],
+            yy = matrix.elements[3],
+            dy = surface.roundPixel(matrix.elements[5]) - 1,
+            start = Math.max(0, Math.floor(clip[0])),
+            end = Math.min(dataX.length - 1, Math.ceil(clip[2])),
+            drawMarkers = dataText && !!this.getBoundMarker("labels");
+
+        for (i = start; i <= end; i++) {
+            yLow = dataStartY ? dataStartY[i] : 0;
+            yHi = dataY[i];
+
+            center = dataX[i] * xx + dx + groupOffset * (barWidth + inGroupGapWidth);
+            left = surface.roundPixel(center - barWidth / 2) + halfLineWidth;
+            top = surface.roundPixel(yHi * yy + lineWidth + dy);
+            right = surface.roundPixel(center + barWidth / 2) - halfLineWidth;
+            bottom = surface.roundPixel(yLow * yy + lineWidth + dy);
+
+            me.drawBar(ctx, surface, clip, left, top - halfLineWidth, right, bottom - halfLineWidth, i);
+
+            if (drawMarkers && dataText[i]) {
+                this.drawLabel(dataText[i], center, bottom, top, i);
+            }
+            me.putMarker("markers", {
+                translationX: surfaceMatrix.x(center, top),
+                translationY: surfaceMatrix.y(center, top)
+            }, i, true);
+        }
+    }
+});
+
+/**
+ * @class Ext.chart.series.Bar
+ * @extends Ext.chart.series.StackedCartesian
+ * 
+ * Creates a Bar Chart.
+ * 
+ *     @example preview
+ *     var chart = new Ext.chart.Chart({
+ *         store: {
+ *           fields: ['name', 'data1', 'data2', 'data3', 'data4', 'data5'],
+ *           data: [
+ *               {'name':'metric one', 'data1':10, 'data2':12, 'data3':14, 'data4':8, 'data5':13},
+ *               {'name':'metric two', 'data1':7, 'data2':8, 'data3':16, 'data4':10, 'data5':3},
+ *               {'name':'metric three', 'data1':5, 'data2':2, 'data3':14, 'data4':12, 'data5':7},
+ *               {'name':'metric four', 'data1':2, 'data2':14, 'data3':6, 'data4':1, 'data5':23},
+ *               {'name':'metric five', 'data1':27, 'data2':38, 'data3':36, 'data4':13, 'data5':33}
+ *           ]
+ *         },
+ *         axes: [{
+ *             type: 'numeric',
+ *             position: 'left',
+ *             title: {
+ *                 text: 'Sample Values',
+ *                 fontSize: 15
+ *             },
+ *             fields: 'data1'
+ *         }, {
+ *             type: 'category',
+ *             position: 'bottom',
+ *             title: {
+ *                 text: 'Sample Values',
+ *                 fontSize: 15
+ *             },
+ *             fields: 'name'
+ *         }],
+ *         series: [{
+ *             type: 'bar',
+ *             xField: 'name',
+ *             yField: 'data1',
+ *             style: {
+ *               fill: 'blue'
+ *             }
+ *         }]
+ *     });
+ *     Ext.Viewport.setLayout('fit');
+ *     Ext.Viewport.add(chart);
+ */
+Ext.define('Ext.chart.series.Bar', {
+
+    extend: 'Ext.chart.series.StackedCartesian',
+
+    alias: 'series.bar',
+    type: 'bar',
+    seriesType: 'barSeries',
+
+    requires: [
+        'Ext.chart.series.sprite.Bar',
+        'Ext.draw.sprite.Rect'
+    ],
+
+    config: {
+        /**
+         * @private
+         * @cfg {Object} itemInstancing Sprite template used for series.
+         */
+        itemInstancing: {
+            type: 'rect',
+            fx: {
+                customDuration: {
+                    x: 0,
+                    y: 0,
+                    width: 0,
+                    height: 0,
+                    radius: 0
+                }
+            }
+        }
+    },
+
+    updateXAxis: function (axis) {
+        axis.setLabelInSpan(true);
+        this.callSuper(arguments);
+    },
+
+    updateStacked: function (stacked) {
+        var sprites = this.getSprites(),
+            attrs = {}, i, ln = sprites.length;
+
+        if (this.getStacked()) {
+            attrs.groupCount = 1;
+            attrs.groupOffset = 0;
+            for (i = 0; i < ln; i++) {
+                sprites[i].setAttributes(attrs);
+            }
+        } else {
+            attrs.groupCount = this.getYField().length;
+            for (i = 0; i < ln; i++) {
+                attrs.groupOffset = i;
+                sprites[i].setAttributes(attrs);
+            }
+        }
+        this.callSuper(arguments);
+    }
+});
+
+/**
+ * This class we summarize the data and returns it when required.
+ */
+Ext.define("Ext.draw.SegmentTree", {
+
+    config: {
+        strategy: "double"
+    },
+
+    /**
+     * @private
+     * @param result
+     * @param last
+     * @param dataX
+     * @param dataOpen
+     * @param dataHigh
+     * @param dataLow
+     * @param dataClose
+     */
+    "time": function (result, last, dataX, dataOpen, dataHigh, dataLow, dataClose) {
+        var start = 0, lastOffset, lastOffsetEnd,
+            minimum = new Date(dataX[result.startIdx[0]]),
+            maximum = new Date(dataX[result.endIdx[last - 1]]),
+            extDate = Ext.Date,
+            units = [
+                [extDate.MILLI, 1, 'ms1', null],
+                [extDate.MILLI, 2, 'ms2', 'ms1'],
+                [extDate.MILLI, 5, 'ms5', 'ms1'],
+                [extDate.MILLI, 10, 'ms10', 'ms5'],
+                [extDate.MILLI, 50, 'ms50', 'ms10'],
+                [extDate.MILLI, 100, 'ms100', 'ms50'],
+                [extDate.MILLI, 500, 'ms500', 'ms100'],
+                [extDate.SECOND, 1, 's1', 'ms500'],
+                [extDate.SECOND, 10, 's10', 's1'],
+                [extDate.SECOND, 30, 's30', 's10'],
+                [extDate.MINUTE, 1, 'mi1', 's10'],
+                [extDate.MINUTE, 5, 'mi5', 'mi1'],
+                [extDate.MINUTE, 10, 'mi10', 'mi5'],
+                [extDate.MINUTE, 30, 'mi30', 'mi10'],
+                [extDate.HOUR, 1, 'h1', 'mi30'],
+                [extDate.HOUR, 6, 'h6', 'h1'],
+                [extDate.HOUR, 12, 'h12', 'h6'],
+                [extDate.DAY, 1, 'd1', 'h12'],
+                [extDate.DAY, 7, 'd7', 'd1'],
+                [extDate.MONTH, 1, 'mo1', 'd1'],
+                [extDate.MONTH, 3, 'mo3', 'mo1'],
+                [extDate.MONTH, 6, 'mo6', 'mo3'],
+                [extDate.YEAR, 1, 'y1', 'mo3'],
+                [extDate.YEAR, 5, 'y5', 'y1'],
+                [extDate.YEAR, 10, 'y10', 'y5'],
+                [extDate.YEAR, 100, 'y100', 'y10']
+            ], unitIdx, currentUnit,
+            plainStart = start,
+            plainEnd = last,
+            first = false,
+            startIdxs = result.startIdx,
+            endIdxs = result.endIdx,
+            minIdxs = result.minIdx,
+            maxIdxs = result.maxIdx,
+            opens = result.open,
+            closes = result.close,
+            minXs = result.minX,
+            minYs = result.minY,
+            maxXs = result.maxX,
+            maxYs = result.maxY,
+            i, current;
+
+        for (unitIdx = 0; last > start + 1 && unitIdx < units.length; unitIdx++) {
+            minimum = new Date(dataX[startIdxs[0]]);
+            currentUnit = units[unitIdx];
+            minimum = extDate.align(minimum, currentUnit[0], currentUnit[1]);
+            if (extDate.diff(minimum, maximum, currentUnit[0]) > dataX.length * 2 * currentUnit[1]) {
+                continue;
+            }
+            if (currentUnit[3] && result.map['time_' + currentUnit[3]]) {
+                lastOffset = result.map['time_' + currentUnit[3]][0];
+                lastOffsetEnd = result.map['time_' + currentUnit[3]][1];
+            } else {
+                lastOffset = plainStart;
+                lastOffsetEnd = plainEnd;
+            }
+
+            start = last;
+            current = minimum;
+            first = true;
+
+            startIdxs[last] = startIdxs[lastOffset];
+            endIdxs[last] = endIdxs[lastOffset];
+            minIdxs[last] = minIdxs[lastOffset];
+            maxIdxs[last] = maxIdxs[lastOffset];
+            opens[last] = opens[lastOffset];
+            closes[last] = closes[lastOffset];
+            minXs[last] = minXs[lastOffset];
+            minYs[last] = minYs[lastOffset];
+            maxXs[last] = maxXs[lastOffset];
+            maxYs[last] = maxYs[lastOffset];
+            current = Ext.Date.add(current, currentUnit[0], currentUnit[1]);
+
+            for (i = lastOffset + 1; i < lastOffsetEnd; i++) {
+                if (dataX[endIdxs[i]] < +current) {
+                    endIdxs[last] = endIdxs[i];
+                    closes[last] = closes[i];
+                    if (maxYs[i] > maxYs[last]) {
+                        maxYs[last] = maxYs[i];
+                        maxXs[last] = maxXs[i];
+                        maxIdxs[last] = maxIdxs[i];
+                    }
+                    if (minYs[i] < minYs[last]) {
+                        minYs[last] = minYs[i];
+                        minXs[last] = minXs[i];
+                        minIdxs[last] = minIdxs[i];
+                    }
+                } else {
+                    last++;
+                    startIdxs[last] = startIdxs[i];
+                    endIdxs[last] = endIdxs[i];
+                    minIdxs[last] = minIdxs[i];
+                    maxIdxs[last] = maxIdxs[i];
+                    opens[last] = opens[i];
+                    closes[last] = closes[i];
+                    minXs[last] = minXs[i];
+                    minYs[last] = minYs[i];
+                    maxXs[last] = maxXs[i];
+                    maxYs[last] = maxYs[i];
+                    current = Ext.Date.add(current, currentUnit[0], currentUnit[1]);
+                }
+            }
+            if (last > start) {
+                result.map['time_' + currentUnit[2]] = [start, last];
+            }
+        }
+    },
+
+    /**
+     * @private
+     * @param result
+     * @param position
+     * @param dataX
+     * @param dataOpen
+     * @param dataHigh
+     * @param dataLow
+     * @param dataClose
+     */
+    "double": function (result, position, dataX, dataOpen, dataHigh, dataLow, dataClose) {
+        var offset = 0, lastOffset, step = 1,
+            i,
+            startIdx,
+            endIdx,
+            minIdx,
+            maxIdx,
+            open,
+            close,
+            minX,
+            minY,
+            maxX,
+            maxY;
+        while (position > offset + 1) {
+            lastOffset = offset;
+            offset = position;
+            step += step;
+            for (i = lastOffset; i < offset; i += 2) {
+                if (i === offset - 1) {
+                    startIdx = result.startIdx[i];
+                    endIdx = result.endIdx[i];
+                    minIdx = result.minIdx[i];
+                    maxIdx = result.maxIdx[i];
+                    open = result.open[i];
+                    close = result.close[i];
+                    minX = result.minX[i];
+                    minY = result.minY[i];
+                    maxX = result.maxX[i];
+                    maxY = result.maxY[i];
+                } else {
+
+                    startIdx = result.startIdx[i];
+                    endIdx = result.endIdx[i + 1];
+                    open = result.open[i];
+                    close = result.close[i];
+                    if (result.minY[i] <= result.minY[i + 1]) {
+                        minIdx = result.minIdx[i];
+                        minX = result.minX[i];
+                        minY = result.minY[i];
+                    } else {
+                        minIdx = result.minIdx[i + 1];
+                        minX = result.minX[i + 1];
+                        minY = result.minY[i + 1];
+                    }
+                    if (result.maxY[i] >= result.maxY[i + 1]) {
+                        maxIdx = result.maxIdx[i];
+                        maxX = result.maxX[i];
+                        maxY = result.maxY[i];
+                    } else {
+                        maxIdx = result.maxIdx[i + 1];
+                        maxX = result.maxX[i + 1];
+                        maxY = result.maxY[i + 1];
+                    }
+                }
+                result.startIdx[position] = startIdx;
+                result.endIdx[position] = endIdx;
+                result.minIdx[position] = minIdx;
+                result.maxIdx[position] = maxIdx;
+                result.open[position] = open;
+                result.close[position] = close;
+                result.minX[position] = minX;
+                result.minY[position] = minY;
+                result.maxX[position] = maxX;
+                result.maxY[position] = maxY;
+                position++;
+            }
+            result.map['double_' + step] = [offset, position];
+        }
+    },
+
+    /**
+     * @private
+     */
+    "none": Ext.emptyFn,
+
+    /**
+     * @private
+     *
+     * @param dataX
+     * @param dataOpen
+     * @param dataHigh
+     * @param dataLow
+     * @param dataClose
+     * @return {Object}
+     */
+    aggregateData: function (dataX, dataOpen, dataHigh, dataLow, dataClose) {
+        var length = dataX.length,
+            startIdx = [],
+            endIdx = [],
+            minIdx = [],
+            maxIdx = [],
+            open = [],
+            minX = [],
+            minY = [],
+            maxX = [],
+            maxY = [],
+            close = [],
+            result = {
+                startIdx: startIdx,
+                endIdx: endIdx,
+                minIdx: minIdx,
+                maxIdx: maxIdx,
+                open: open,
+                minX: minX,
+                minY: minY,
+                maxX: maxX,
+                maxY: maxY,
+                close: close
+            },
+            i;
+
+        for (i = 0; i < length; i++) {
+            startIdx[i] = i;
+            endIdx[i] = i;
+            minIdx[i] = i;
+            maxIdx[i] = i;
+            open[i] = dataOpen[i];
+            minX[i] = dataX[i];
+            minY[i] = dataLow[i];
+            maxX[i] = dataX[i];
+            maxY[i] = dataHigh[i];
+            close[i] = dataClose[i];
+        }
+
+        result.map = {
+            original: [0, length]
+        };
+        if (length) {
+            this[this.getStrategy()](result, length, dataX, dataOpen, dataHigh, dataLow, dataClose);
+        }
+        return result;
+    },
+
+    /**
+     * @private
+     * @param items
+     * @param start
+     * @param end
+     * @param key
+     * @return {*}
+     */
+    binarySearchMin: function (items, start, end, key) {
+        var dx = this.dataX;
+        if (key <= dx[items.startIdx[0]]) {
+            return start;
+        }
+        if (key >= dx[items.startIdx[end - 1]]) {
+            return end - 1;
+        }
+        while (start + 1 < end) {
+            var mid = (start + end) >> 1,
+                val = dx[items.startIdx[mid]];
+            if (val === key) {
+                return mid;
+            } else if (val < key) {
+                start = mid;
+            } else {
+                end = mid;
+            }
+        }
+        return start;
+    },
+
+    /**
+     * @private
+     * @param items
+     * @param start
+     * @param end
+     * @param key
+     * @return {*}
+     */
+    binarySearchMax: function (items, start, end, key) {
+        var dx = this.dataX;
+        if (key <= dx[items.endIdx[0]]) {
+            return start;
+        }
+        if (key >= dx[items.endIdx[end - 1]]) {
+            return end - 1;
+        }
+        while (start + 1 < end) {
+            var mid = (start + end) >> 1,
+                val = dx[items.endIdx[mid]];
+            if (val === key) {
+                return mid;
+            } else if (val < key) {
+                start = mid;
+            } else {
+                end = mid;
+            }
+        }
+        return end;
+    },
+
+    constructor: function (config) {
+        this.initConfig(config);
+    },
+
+    /**
+     * Sets the data of the segment tree.
+     * @param dataX
+     * @param dataOpen
+     * @param dataHigh
+     * @param dataLow
+     * @param dataClose
+     */
+    setData: function (dataX, dataOpen, dataHigh, dataLow, dataClose) {
+        if (!dataHigh) {
+            dataClose = dataLow = dataHigh = dataOpen;
+        }
+        this.dataX = dataX;
+        this.dataOpen = dataOpen;
+        this.dataHigh = dataHigh;
+        this.dataLow = dataLow;
+        this.dataClose = dataClose;
+        if (dataX.length === dataHigh.length &&
+            dataX.length === dataLow.length) {
+            this.cache = this.aggregateData(dataX, dataOpen, dataHigh, dataLow, dataClose);
+        }
+    },
+
+    /**
+     * Returns the minimum range of data that fits the given range and step size.
+     *
+     * @param {Number} min
+     * @param {Number} max
+     * @param {Number} estStep
+     * @return {Object} The aggregation information.
+     * @return {Number} return.start
+     * @return {Number} return.end
+     * @return {Object} return.data The aggregated data
+     */
+    getAggregation: function (min, max, estStep) {
+        if (!this.cache) {
+            return null;
+        }
+        var minStep = Infinity,
+            range = this.dataX[this.dataX.length - 1] - this.dataX[0],
+            cacheMap = this.cache.map,
+            result = cacheMap.original,
+            name, positions, ln, step, minIdx, maxIdx;
+
+        for (name in cacheMap) {
+            positions = cacheMap[name];
+            ln = positions[1] - positions[0] - 1;
+            step = range / ln;
+            if (estStep <= step && step < minStep) {
+                result = positions;
+                minStep = step;
+            }
+        }
+        minIdx = Math.max(this.binarySearchMin(this.cache, result[0], result[1], min), result[0]);
+        maxIdx = Math.min(this.binarySearchMax(this.cache, result[0], result[1], max) + 1, result[1]);
+        return {
+            data: this.cache,
+            start: minIdx,
+            end: maxIdx
+        };
+    }
+});
+
+/**
+ *
+ */
+Ext.define("Ext.chart.series.sprite.Aggregative", {
+    extend: 'Ext.chart.series.sprite.Cartesian',
+    requires: ['Ext.draw.LimitedCache', 'Ext.draw.SegmentTree'],
+    inheritableStatics: {
+        def: {
+            processors: {
+                /**
+                 * @cfg {Object} [dataHigh=null] Data items representing the high values of the aggregated data.
+                 */
+                dataHigh: 'data',
+
+                /**
+                 * @cfg {Object} [dataLow=null] Data items representing the low values of the aggregated data.
+                 */
+                dataLow: 'data',
+
+                /**
+                 * @cfg {Object} [dataClose=null] Data items representing the closing values of the aggregated data.
+                 */
+                dataClose: 'data'
+            },
+            aliases: {
+                /**
+                 * @cfg {Object} [dataOpen=null] Data items representing the opening values of the aggregated data.
+                 */
+                dataOpen: 'dataY'
+            },
+            defaults: {
+                dataHigh: null,
+                dataLow: null,
+                dataClose: null
+            }
+        }
+    },
+
+    config: {
+        aggregator: {}
+    },
+
+    applyAggregator: function (aggregator, oldAggr) {
+        return Ext.factory(aggregator, Ext.draw.SegmentTree, oldAggr);
+    },
+
+    constructor: function () {
+        this.callSuper(arguments);
+    },
+
+    processDataY: function () {
+        var me = this,
+            attr = me.attr,
+            high = attr.dataHigh,
+            low = attr.dataLow,
+            close = attr.dataClose,
+            open = attr.dataY;
+        me.callSuper(arguments);
+        if (attr.dataX && open && open.length > 0) {
+            if (high) {
+                me.getAggregator().setData(attr.dataX, attr.dataY, high, low, close);
+            } else {
+                me.getAggregator().setData(attr.dataX, attr.dataY);
+            }
+        }
+    },
+
+    getGapWidth: function () {
+        return 1;
+    },
+
+    renderClipped: function (surface, ctx, clip, region) {
+        var me = this,
+            aggregates = me.getAggregator() && me.getAggregator().getAggregation(
+                clip[0],
+                clip[2],
+                (clip[2] - clip[0]) / region[2] * me.getGapWidth()
+            );
+        if (aggregates) {
+            me.dataStart = aggregates.data.startIdx[aggregates.start];
+            me.dataEnd = aggregates.data.endIdx[aggregates.end - 1];
+            
+            me.renderAggregates(aggregates.data, aggregates.start, aggregates.end, surface, ctx, clip, region);
+        }
+    }
+});
+
+/**
+ * @class Ext.chart.series.sprite.CandleStick
+ * @extends Ext.chart.series.sprite.Aggregative
+ * 
+ * CandleStick series sprite.
+ */
+Ext.define("Ext.chart.series.sprite.CandleStick", {
+    alias: 'sprite.candlestickSeries',
+    extend: 'Ext.chart.series.sprite.Aggregative',
+    inheritableStatics: {
+        def: {
+            processors: {
+                raiseStyle: function (n, o) {
+                    return Ext.merge({}, o || {}, n);
+                },
+                dropStyle: function (n, o) {
+                    return Ext.merge({}, o || {}, n);
+                },
+
+                /**
+                 * @cfg {Number} [barWidth=15] The bar width of the candles.
+                 */
+                barWidth: 'number',
+
+                /**
+                 * @cfg {Number} [padding=3] The amount of padding between candles.
+                 */
+                padding: 'number',
+
+                /**
+                 * @cfg {String} [ohlcType='candlestick'] Determines whether candlestick or ohlc is used.
+                 */
+                ohlcType: 'enums(candlestick,ohlc)'
+            },
+            defaults: {
+                raiseStyle: {
+                    strokeStyle: 'green',
+                    fillStyle: 'green'
+                },
+                dropStyle: {
+                    strokeStyle: 'red',
+                    fillStyle: 'red'
+                },
+                planar: false,
+                barWidth: 15,
+                padding: 3,
+                lineJoin: 'miter',
+                miterLimit: 5,
+                ohlcType: 'candlestick'
+            },
+
+            dirtyTriggers: {
+                raiseStyle: 'raiseStyle',
+                dropStyle: 'dropStyle'
+            },
+
+            updaters: {
+                raiseStyle: function () {
+                    this.raiseTemplate && this.raiseTemplate.setAttributes(this.attr.raiseStyle);
+                },
+                dropStyle: function () {
+                    this.dropTemplate && this.dropTemplate.setAttributes(this.attr.dropStyle);
+                }
+            }
+        }
+    },
+
+    "candlestick": function (ctx, open, high, low, close, mid, halfWidth) {
+        var minOC = Math.min(open, close),
+            maxOC = Math.max(open, close);
+        ctx.moveTo(mid, low);
+        ctx.lineTo(mid, maxOC);
+
+        ctx.moveTo(mid + halfWidth, maxOC);
+        ctx.lineTo(mid + halfWidth, minOC);
+        ctx.lineTo(mid - halfWidth, minOC);
+        ctx.lineTo(mid - halfWidth, maxOC);
+        ctx.closePath();
+
+        ctx.moveTo(mid, high);
+        ctx.lineTo(mid, minOC);
+    },
+
+    "ohlc": function (ctx, open, high, low, close, mid, halfWidth) {
+        ctx.moveTo(mid, high);
+        ctx.lineTo(mid, low);
+        ctx.moveTo(mid, open);
+        ctx.lineTo(mid - halfWidth, open);
+        ctx.moveTo(mid, close);
+        ctx.lineTo(mid + halfWidth, close);
+
+    },
+
+    constructor: function () {
+        this.callSuper(arguments);
+        this.raiseTemplate = new Ext.draw.sprite.Rect({parent: this});
+        this.dropTemplate = new Ext.draw.sprite.Rect({parent: this});
+    },
+
+    getGapWidth: function () {
+        var attr = this.attr,
+            barWidth = attr.barWidth,
+            padding = attr.padding;
+        return barWidth + padding;
+    },
+
+    renderAggregates: function (aggregates, start, end, surface, ctx, clip, region) {
+        var me = this,
+            attr = this.attr,
+            dataX = attr.dataX,
+            matrix = attr.matrix,
+            xx = matrix.getXX(),
+            yy = matrix.getYY(),
+            dx = matrix.getDX(),
+            dy = matrix.getDY(),
+            barWidth = attr.barWidth / xx,
+            template,
+            ohlcType = attr.ohlcType,
+            halfWidth = Math.round(barWidth * 0.5 * xx),
+            opens = aggregates.open,
+            highs = aggregates.high,
+            lows = aggregates.low,
+            closes = aggregates.close,
+            maxYs = aggregates.maxY,
+            minYs = aggregates.minY,
+            startIdxs = aggregates.startIdx,
+            open, high, low, close, mid,
+            i,
+            pixelAdjust = attr.lineWidth * surface.devicePixelRatio / 2;
+
+        pixelAdjust -= Math.floor(pixelAdjust);
+        ctx.save();
+        template = this.raiseTemplate;
+        template.useAttributes(ctx);
+        ctx.beginPath();
+        for (i = start; i < end; i++) {
+            if (opens[i] <= closes[i]) {
+                open = Math.round(opens[i] * yy + dy) + pixelAdjust;
+                high = Math.round(maxYs[i] * yy + dy) + pixelAdjust;
+                low = Math.round(minYs[i] * yy + dy) + pixelAdjust;
+                close = Math.round(closes[i] * yy + dy) + pixelAdjust;
+                mid = Math.round(dataX[startIdxs[i]] * xx + dx) + pixelAdjust;
+                me[ohlcType](ctx, open, high, low, close, mid, halfWidth);
+            }
+        }
+        ctx.fillStroke(template.attr);
+        ctx.restore();
+
+        ctx.save();
+        template = this.dropTemplate;
+        template.useAttributes(ctx);
+        ctx.beginPath();
+        for (i = start; i < end; i++) {
+            if (opens[i] > closes[i]) {
+                open = Math.round(opens[i] * yy + dy) + pixelAdjust;
+                high = Math.round(maxYs[i] * yy + dy) + pixelAdjust;
+                low = Math.round(minYs[i] * yy + dy) + pixelAdjust;
+                close = Math.round(closes[i] * yy + dy) + pixelAdjust;
+                mid = Math.round(dataX[startIdxs[i]] * xx + dx) + pixelAdjust;
+                me[ohlcType](ctx, open, high, low, close, mid, halfWidth);
+            }
+        }
+        ctx.fillStroke(template.attr);
+        ctx.restore();
+    }
+});
+
+/**
+ * @class Ext.chart.series.CandleStick
+ * @extends Ext.chart.series.Cartesian
+ * 
+ * Creates a candlestick or OHLC Chart.
+ *
+ *     @example preview
+ *     var chart = new Ext.chart.CartesianChart({
+ *         animate: true,
+ *         store: {
+ *           fields: ['time', 'open', 'high', 'low', 'close'],
+ *           data: [
+ *             {'time':new Date('Jan 1 2010').getTime(), 'open':600, 'high':614, 'low':578, 'close':590},
+ *             {'time':new Date('Jan 2 2010').getTime(), 'open':590, 'high':609, 'low':580, 'close':580},
+ *             {'time':new Date('Jan 3 2010').getTime(), 'open':580, 'high':602, 'low':578, 'close':602},
+ *             {'time':new Date('Jan 4 2010').getTime(), 'open':602, 'high':614, 'low':586, 'close':586},
+ *             {'time':new Date('Jan 5 2010').getTime(), 'open':586, 'high':602, 'low':565, 'close':565}
+ *           ]
+ *         },
+ *         axes: [{
+ *             type: 'numeric',
+ *             position: 'left',
+ *             fields: ['open', 'high', 'low', 'close'],
+ *             title: {
+ *                 text: 'Sample Values',
+ *                 fontSize: 15
+ *             },
+ *             grid: true,
+ *             minimum: 560,
+ *             maximum: 640
+ *         }, {
+ *             type: 'time',
+ *             position: 'bottom',
+ *             fields: ['time'],
+ *             fromDate: new Date('Dec 31 2009'),
+ *             toDate: new Date('Jan 6 2010'),
+ *             title: {
+ *                 text: 'Sample Values',
+ *                 fontSize: 15
+ *             },
+ *             style: {
+ *               axisLine: false
+ *             }
+ *         }],
+ *         series: [{
+ *             type: 'candlestick',
+ *             xField: 'time',
+ *             openField: 'open',
+ *             highField: 'high',
+ *             lowField: 'low',
+ *             closeField: 'close',
+ *             style: {
+ *               dropStyle: {
+ *                 fill: 'rgb(237, 123, 43)',
+ *                 stroke: 'rgb(237, 123, 43)'
+ *               },
+ *               raiseStyle: {
+ *                 fill: 'rgb(55, 153, 19)',
+ *                 stroke: 'rgb(55, 153, 19)'
+ *               }
+ *             },
+ *             aggregator: {
+ *               strategy: 'time'
+ *             }
+ *         }]
+ *     });
+ *     Ext.Viewport.setLayout('fit');
+ *     Ext.Viewport.add(chart);
+ */
+Ext.define("Ext.chart.series.CandleStick", {
+    extend: "Ext.chart.series.Cartesian",
+    requires: ['Ext.chart.series.sprite.CandleStick'],
+    alias: 'series.candlestick',
+    type: 'candlestick',
+    seriesType: 'candlestickSeries',
+    config: {
+        /**
+         * @cfg {String} openField
+         * The store record field name that represents the opening value of the given period.
+         */
+        openField: null,
+        /**
+         * @cfg {String} highField
+         * The store record field name that represents the highest value of the time interval represented.
+         */
+        highField: null,
+        /**
+         * @cfg {String} lowField
+         * The store record field name that represents the lowest value of the time interval represented.
+         */
+        lowField: null,
+        /**
+         * @cfg {String} closeField
+         * The store record field name that represents the closing value of the given period.
+         */
+        closeField: null
+    },
+
+    fieldCategoryY: ['Open', 'High', 'Low', 'Close']
+});
+
+/**
+ * @class Ext.chart.series.Gauge
+ * @extends Ext.chart.series.Series
+ * 
+ * Creates a Gauge Chart.
+ *
+ *     @example preview
+ *     var chart = new Ext.chart.SpaceFillingChart({
+ *         series: [{
+ *             type: 'gauge',
+ *             minimum: 100,
+ *             maximum: 800,
+ *             value: 400,
+ *             donut: 30,
+ *             subStyle: {
+ *               fillStyle: ["#115fa6", "lightgrey"]
+ *             }
+ *         }]
+ *     });
+ *     Ext.Viewport.setLayout('fit');
+ *     Ext.Viewport.add(chart);
+ */
+Ext.define('Ext.chart.series.Gauge', {
+    alias: 'series.gauge',
+    extend: 'Ext.chart.series.Series',
+    type: "gauge",
+    seriesType: 'sector',
+
+    requires: [
+        'Ext.draw.sprite.Sector'
+    ],
+
+    config: {
+        /**
+         * @cfg {String} angleField
+         * @deprecated Use field directly
+         * The store record field name to be used for the gauge angles.
+         * The values bound to this field name must be positive real numbers.
+         */
+        angleField: null,
+
+        /**
+         * @cfg {String} field
+         * The store record field name to be used for the gauge angles.
+         * The values bound to this field name must be positive real numbers.
+         */
+        field: null,
+
+        /**
+         * @cfg {Boolean} needle
+         * Use the Gauge Series as an area series or add a needle to it.
+         */
+        needle: false,
+
+        /**
+         * @cfg {Number} needleLengthRatio
+         * The length ratio between the length of needle and the radius of background section.
+         */
+        needleLengthRatio: 0.8,
+
+        /**
+         * @cfg {Boolean/Number} donut
+         * Use the entire disk or just a fraction of it for the gauge.
+         */
+        donut: 30,
+
+        /**
+         * @cfg {Boolean} showInLegend
+         * Whether to add the gauge chart elements as legend items.
+         */
+        showInLegend: false,
+
+        /**
+         * @cfg {Number} value
+         * Directly sets the displayed value of the gauge.
+         */
+        value: null,
+
+        /**
+         * @cfg {Number} minimum
+         * The minimum value of the gauge.
+         */
+        minimum: 0,
+
+        /**
+         * @cfg {Number} maximum
+         * The maximum value of the gauge.
+         */
+        maximum: 100,
+
+        rotation: 0,
+
+        totalAngle: Math.PI / 2,
+
+        region: [0, 0, 1, 1],
+
+        center: [0.5, 0.75],
+
+        radius: 0.5,
+
+        /**
+         * @cfg {Boolean} wholeDisk Indicates whether to show the whole disk or only the marked part.
+         */
+        wholeDisk: false
+    },
+
+    updateAngleField: function (angleField) {
+        this.setField(angleField);
+    },
+
+    updateRegion: function (region) {
+        var wholeDisk = this.getWholeDisk(),
+            halfTotalAngle = wholeDisk ? Math.PI : this.getTotalAngle() / 2,
+            donut = this.getDonut() / 100,
+            width, height, radius;
+        if (halfTotalAngle <= Math.PI / 2) {
+            width = 2 * Math.sin(halfTotalAngle);
+            height = 1 - donut * Math.cos(halfTotalAngle);
+        } else {
+            width = 2;
+            height = 1 - Math.cos(halfTotalAngle);
+        }
+
+        radius = Math.min(region[2] / width, region[3] / height);
+        this.setRadius(radius);
+        this.setCenter([region[2] / 2, radius + (region[3] - height * radius) / 2]);
+    },
+
+    updateCenter: function (center) {
+        this.setStyle({
+            centerX: center[0],
+            centerY: center[1],
+            rotationCenterX: center[0],
+            rotationCenterY: center[1]
+        });
+        this.doUpdateStyles();
+    },
+
+    updateRotation: function (rotation) {
+        this.setStyle({
+            rotationRads: rotation - (this.getTotalAngle() + Math.PI) / 2
+        });
+        this.doUpdateStyles();
+    },
+
+    updateRadius: function (radius) {
+        var donut = this.getDonut(),
+            needle = this.getNeedle(),
+            needleLengthRatio = needle ? this.getNeedleLengthRatio() : 1;
+        this.setSubStyle({
+            endRho: [radius * needleLengthRatio, radius],
+            startRho: radius / 100 * donut
+        });
+        this.doUpdateStyles();
+    },
+
+    updateDonut: function (donut) {
+        var radius = this.getRadius(),
+            needle = this.getNeedle(),
+            needleLengthRatio = needle ? this.getNeedleLengthRatio() : 1;
+        this.setSubStyle({
+            endRho: [radius * needleLengthRatio, radius],
+            startRho: radius / 100 * donut
+        });
+        this.doUpdateStyles();
+    },
+
+    applyValue: function (value) {
+        return Math.min(this.getMaximum(), Math.max(value, this.getMinimum()));
+    },
+
+    updateValue: function (value) {
+        var needle = this.getNeedle(),
+            pos = (value - this.getMinimum()) / (this.getMaximum() - this.getMinimum()),
+            total = this.getTotalAngle(),
+            angle = pos * total,
+            sprites = this.getSprites();
+
+        if (needle) {
+            sprites[0].setAttributes({
+                startAngle: angle,
+                endAngle: angle
+            });
+        } else {
+            sprites[0].setAttributes({
+                endAngle: angle
+            });
+        }
+        this.doUpdateStyles();
+    },
+
+    processData: function () {
+        var store = this.getStore();
+        if (!store) {
+            return;
+        }
+        var field = this.getField();
+        if (!field) {
+            return;
+        }
+        if (!store.getData().items.length) {
+            return;
+        }
+        this.setValue(store.getData().items[0].get(field));
+    },
+
+    getDefaultSpriteConfig: function () {
+        return {
+            type: 'sector',
+            fx: {
+                customDuration: {
+                    translationX: 0,
+                    translationY: 0,
+                    rotationCenterX: 0,
+                    rotationCenterY: 0,
+                    centerX: 0,
+                    centerY: 0,
+                    startRho: 0,
+                    endRho: 0,
+                    baseRotation: 0
+                }
+            }
+        };
+    },
+
+    getSprites: function () {
+        //initialize store
+        if(!this.getStore() && !Ext.isNumber(this.getValue())) {
+            return null;
+        }
+        var me = this,
+            sprite,
+            animate = this.getChart().getAnimate(),
+            sprites = me.sprites;
+
+        if (sprites && sprites.length) {
+            sprites[0].fx.setConfig(animate);
+            return sprites;
+        }
+
+        // The needle
+        sprite = me.createSprite();
+        sprite.setAttributes({
+            zIndex: 10
+        });
+
+        // The background
+        sprite = me.createSprite();
+        sprite.setAttributes({
+            startAngle: 0,
+            endAngle: me.getTotalAngle()
+        });
+        me.doUpdateStyles();
+        return sprites;
+    }
+});
+
+
+/**
  * @private
  */
 Ext.define('Ext.event.publisher.Publisher', {
@@ -56827,6 +76226,1999 @@ Ext.define('Ext.chart.series.ItemPublisher', {
     }
 }, function () {
 
+});
+
+/**
+ * @class Ext.chart.series.sprite.Line
+ * @extends Ext.chart.series.sprite.Aggregative
+ *
+ * Line series sprite.
+ */
+Ext.define("Ext.chart.series.sprite.Line", {
+    alias: 'sprite.lineSeries',
+    extend: 'Ext.chart.series.sprite.Aggregative',
+
+    inheritableStatics: {
+        def: {
+            processors: {
+                /**
+                 * @cfg {Boolean} [smooth=false] 'true' if the sprite uses line smoothing.
+                 */
+                smooth: 'bool',
+
+                /**
+                 * @cfg {Boolean} [step=false] 'true' if the line uses step.
+                 */
+                step: 'bool',
+                
+                /**
+                 * @cfg {Boolean} [preciseStroke=false] 'true' if the line uses precise stroke.
+                 */
+                preciseStroke: 'bool'
+            },
+
+            defaults: {
+                smooth: false,
+                step: false,
+                preciseStroke: false
+            },
+
+            dirtyTriggers: {
+                dataX: 'dataX,bbox,smooth',
+                dataY: 'dataY,bbox,smooth',
+                smooth: 'smooth'
+            },
+
+            updaters: {
+                "smooth": function (attr) {
+                    if (attr.smooth && attr.dataX && attr.dataY) {
+                        this.smoothX = Ext.draw.Draw.spline(attr.dataX);
+                        this.smoothY = Ext.draw.Draw.spline(attr.dataY);
+                    } else {
+                        delete this.smoothX;
+                        delete this.smoothY;
+                    }
+                }
+            }
+        }
+    },
+
+    list: null,
+
+    updatePlainBBox: function (plain) {
+        var attr = this.attr,
+            ymin = Math.min(0, attr.dataMinY),
+            ymax = Math.max(0, attr.dataMaxY);
+        plain.x = attr.dataMinX;
+        plain.y = ymin;
+        plain.width = attr.dataMaxX - attr.dataMinX;
+        plain.height = ymax - ymin;
+    },
+
+    drawStroke: function (surface, ctx, list) {
+        var attr = this.attr,
+            matrix = attr.matrix,
+            xx = matrix.getXX(),
+            yy = matrix.getYY(),
+            dx = matrix.getDX(),
+            dy = matrix.getDY(),
+            smooth = attr.smooth,
+            step = attr.step,
+            start = list[2],
+            smoothX = this.smoothX,
+            smoothY = this.smoothY,
+            i, j;
+        ctx.beginPath();
+        if (smooth) {
+            ctx.moveTo(smoothX[start * 3] * xx + dx, smoothY[start * 3] * yy + dy);
+            for (i = 0, j = start * 3 + 1; i < list.length - 3; i += 3, j += 3) {
+                ctx.bezierCurveTo(
+                    smoothX[j] * xx + dx, smoothY[j] * yy + dy,
+                    smoothX[j + 1] * xx + dx, smoothY[j + 1] * yy + dy,
+                    list[i + 3], list[i + 4]
+                );
+            }
+        } else if (step) {
+            ctx.moveTo(list[0], list[1]);
+            for (i = 3; i < list.length; i += 3) {
+                ctx.lineTo(list[i], list[i - 2]);
+                ctx.lineTo(list[i], list[i + 1]);
+            }
+        } else {
+            ctx.moveTo(list[0], list[1]);
+            for (i = 3; i < list.length; i += 3) {
+                ctx.lineTo(list[i], list[i + 1]);
+            }
+        }
+    },
+
+    renderAggregates: function (aggregates, start, end, surface, ctx, clip, region) {
+        var me = this,
+            attr = me.attr,
+            dataX = attr.dataX,
+            matrix = attr.matrix,
+            first = true,
+            dataY = attr.dataY,
+            pixel = surface.devicePixelRatio,
+            xx = matrix.getXX(),
+            yy = matrix.getYY(),
+            dx = matrix.getDX(),
+            dy = matrix.getDY(),
+            markerCfg = {},
+            list = this.list || (this.list = []),
+            x, y,
+            minXs = aggregates.minX,
+            maxXs = aggregates.maxX,
+            minYs = aggregates.minY,
+            maxYs = aggregates.maxY,
+            idx = aggregates.startIdx,
+            surfaceMatrix = surface.matrix;
+
+        list.length = 0;
+        for (var i = start; i < end; i++) {
+            var minX = minXs[i],
+                maxX = maxXs[i],
+                minY = minYs[i],
+                maxY = maxYs[i];
+
+            if (minX < maxX) {
+                list.push(minX * xx + dx, minY * yy + dy, idx[i]);
+                list.push(maxX * xx + dx, maxY * yy + dy, idx[i]);
+            } else if (minX > maxX) {
+                list.push(maxX * xx + dx, maxY * yy + dy, idx[i]);
+                list.push(minX * xx + dx, minY * yy + dy, idx[i]);
+            } else {
+                list.push(maxX * xx + dx, maxY * yy + dy, idx[i]);
+            }
+            first = false;
+        }
+
+        if (list.length) {
+            for (i = 0; i < list.length; i += 3) {
+                x = list[i];
+                y = list[i + 1];
+                if (attr.renderer) {
+                    attr.renderer.call(this, markerCfg, this, i, this.getDataItems().items[i]);
+                }
+                markerCfg.translationX = surfaceMatrix.x(x, y);
+                markerCfg.translationY = surfaceMatrix.y(x, y);
+                me.putMarker("markers", markerCfg, list[i + 2], !attr.renderer);
+            }
+            me.drawStroke(surface, ctx, list);
+            ctx.lineTo(dataX[dataX.length - 1] * xx + dx + pixel, dataY[dataY.length - 1] * yy + dy);
+            ctx.lineTo(dataX[dataX.length - 1] * xx + dx + pixel, region[1] - pixel);
+            ctx.lineTo(dataX[0] * xx + dx - pixel, region[1] - pixel);
+            ctx.lineTo(dataX[0] * xx + dx - pixel, dataY[0] * yy + dy);
+            ctx.closePath();
+            if (attr.transformFillStroke) {
+                attr.matrix.toContext(ctx);
+            }
+            if (attr.preciseStroke) {
+                ctx.fill();
+                if (attr.transformFillStroke) {
+                    attr.inverseMatrix.toContext(ctx);
+                }
+                me.drawStroke(surface, ctx, list);
+                if (attr.transformFillStroke) {
+                    attr.matrix.toContext(ctx);
+                }
+                ctx.stroke();
+            } else {
+                // Prevent the reverse transform to fix floating point err.
+                ctx.fillStroke(attr, true);
+            }
+        }
+    }
+});
+
+/**
+ * @class Ext.chart.series.Line
+ * @extends Ext.chart.series.Cartesian
+ *
+ * Creates a Line Chart. A Line Chart is a useful visualization technique to display quantitative information for different
+ * categories or other real values (as opposed to the bar chart), that can show some progression (or regression) in the dataset.
+ * As with all other series, the Line Series must be appended in the *series* Chart array configuration. See the Chart
+ * documentation for more information. A typical configuration object for the line series could be:
+ *
+ *     @example preview
+ *     var lineChart = new Ext.chart.CartesianChart({
+ *         animate: true,
+ *         store: {
+ *           fields: ['name', 'data1', 'data2', 'data3', 'data4', 'data5'],
+ *           data: [
+ *               {'name':'metric one', 'data1':10, 'data2':12, 'data3':14, 'data4':8, 'data5':13},
+ *               {'name':'metric two', 'data1':7, 'data2':8, 'data3':16, 'data4':10, 'data5':3},
+ *               {'name':'metric three', 'data1':5, 'data2':2, 'data3':14, 'data4':12, 'data5':7},
+ *               {'name':'metric four', 'data1':2, 'data2':14, 'data3':6, 'data4':1, 'data5':23},
+ *               {'name':'metric five', 'data1':27, 'data2':38, 'data3':36, 'data4':13, 'data5':33}
+ *           ]
+ *         },
+ *         axes: [{
+ *             type: 'numeric',
+ *             position: 'left',
+ *             fields: ['data1'],
+ *             title: {
+ *                 text: 'Sample Values',
+ *                 fontSize: 15
+ *             },
+ *             grid: true,
+ *             minimum: 0
+ *         }, {
+ *             type: 'category',
+ *             position: 'bottom',
+ *             fields: ['name'],
+ *             title: {
+ *                 text: 'Sample Values',
+ *                 fontSize: 15
+ *             }
+ *         }],
+ *         series: [{
+ *             type: 'line',
+ *             highlight: {
+ *                 size: 7,
+ *                 radius: 7
+ *             },
+ *             style: {
+ *                 stroke: 'rgb(143,203,203)'
+ *             },
+ *             xField: 'name',
+ *             yField: 'data1',
+ *             marker: {
+ *                 type: 'path',
+ *                 path: ['M', -2, 0, 0, 2, 2, 0, 0, -2, 'Z'],
+ *                 stroke: 'blue',
+ *                 lineWidth: 0
+ *             }
+ *         }, {
+ *             type: 'line',
+ *             highlight: {
+ *                 size: 7,
+ *                 radius: 7
+ *             },
+ *             fill: true,
+ *             xField: 'name',
+ *             yField: 'data3',
+ *             marker: {
+ *                 type: 'circle',
+ *                 radius: 4,
+ *                 lineWidth: 0
+ *             }
+ *         }]
+ *     });
+ *     Ext.Viewport.setLayout('fit');
+ *     Ext.Viewport.add(lineChart);
+ *
+ * In this configuration we're adding two series (or lines), one bound to the `data1`
+ * property of the store and the other to `data3`. The type for both configurations is
+ * `line`. The `xField` for both series is the same, the `name` property of the store.
+ * Both line series share the same axis, the left axis. You can set particular marker
+ * configuration by adding properties onto the markerConfig object. Both series have
+ * an object as highlight so that markers animate smoothly to the properties in highlight
+ * when hovered. The second series has `fill = true` which means that the line will also
+ * have an area below it of the same color.
+ *
+ * **Note:** In the series definition remember to explicitly set the axis to bind the
+ * values of the line series to. This can be done by using the `axis` configuration property.
+ */
+Ext.define('Ext.chart.series.Line', {
+    extend: 'Ext.chart.series.Cartesian',
+    alias: 'series.line',
+    type: 'line',
+    seriesType: 'lineSeries',
+
+    requires: [
+        'Ext.chart.series.sprite.Line'
+    ],
+
+    config: {
+        /**
+         * @cfg {Number} selectionTolerance
+         * The offset distance from the cursor position to the line series to trigger events (then used for highlighting series, etc).
+         */
+        selectionTolerance: 20,
+
+        /**
+         * @cfg {Object} style
+         * An object containing styles for the visualization lines. These styles will override the theme styles.
+         * Some options contained within the style object will are described next.
+         */
+
+        /**
+         * @cfg {Boolean/Number} smooth
+         * If set to `true` or a non-zero number, the line will be smoothed/rounded around its points; otherwise
+         * straight line segments will be drawn.
+         *
+         * A numeric value is interpreted as a divisor of the horizontal distance between consecutive points in
+         * the line; larger numbers result in sharper curves while smaller numbers result in smoother curves.
+         *
+         * If set to `true` then a default numeric value of 3 will be used.
+         */
+        smooth: false,
+
+        aggregator: { strategy: 'double' }
+    },
+
+    /**
+     * @private Default numeric smoothing value to be used when `{@link #smooth} = true`.
+     */
+    defaultSmoothness: 3,
+
+    /**
+     * @private Size of the buffer area on either side of the viewport to provide seamless zoom/pan
+     * transforms. Expressed as a multiple of the viewport length, e.g. 1 will make the buffer on
+     * each side equal to the length of the visible axis viewport.
+     */
+    overflowBuffer: 1
+});
+
+/**
+ * Polar series.
+ */
+Ext.define('Ext.chart.series.Polar', {
+
+    extend: 'Ext.chart.series.Series',
+
+    config: {
+        /**
+         * @cfg {Number} rotation
+         * The angle in degrees at which the first polar series item should start.
+         */
+        rotation: 0,
+
+        /**
+         * @cfg {Number} radius
+         * The radius of the polar series. Set to `null` will fit the polar series to the boundary.
+         */
+        radius: null,
+
+        /**
+         * @cfg {Array} center for the polar series.
+         */
+        center: [0, 0],
+
+        /**
+         * @cfg {Number} offsetX
+         * The x-offset of center of the polar series related to the center of the boundary.
+         */
+        offsetX: 0,
+
+        /**
+         * @cfg {Number} offsetY
+         * The y-offset of center of the polar series related to the center of the boundary.
+         */
+        offsetY: 0,
+
+        /**
+         * @cfg {Boolean} showInLegend
+         * Whether to add the series elements as legend items.
+         */
+        showInLegend: true,
+
+        /**
+         * @cfg {String} xField
+         * The store record field name for the labels used in the radar series.
+         */
+        xField: null,
+
+        /**
+         * @cfg {String} yField
+         * The store record field name for the deflection of the graph in the radar series.
+         */
+        yField: null,
+
+        xAxis: null,
+
+        yAxis: null
+    },
+
+    directions: ['X', 'Y'],
+
+    fieldCategoryX: ['X'],
+    fieldCategoryY: ['Y'],
+
+    getDefaultSpriteConfig: function () {
+        return {
+            type: this.seriesType,
+            centerX: 0,
+            centerY: 0,
+            rotationCenterX: 0,
+            rotationCenterY: 0,
+            fx: {
+                customDuration: {
+                    translationX: 0,
+                    translationY: 0,
+                    centerX: 0,
+                    centerY: 0,
+                    startRho: 0,
+                    endRho: 0,
+                    baseRotation: 0,
+                    rotationCenterX: 0,
+                    rotationCenterY: 0,
+                    rotationRads: 0
+                }
+            }
+        };
+    },
+
+    applyRotation: function (rotation) {
+        var twoPie = Math.PI * 2;
+        return (rotation % twoPie + Math.PI) % twoPie - Math.PI;
+    },
+
+    updateRotation: function (rotation) {
+        var sprites = this.getSprites();
+        if (sprites && sprites[0]) {
+            sprites[0].setAttributes({
+                baseRotation: rotation
+            });
+        }
+    }
+});
+
+/**
+ * @class Ext.chart.series.sprite.PieSlice
+ * 
+ * Pie slice sprite.
+ */
+Ext.define("Ext.chart.series.sprite.PieSlice", {
+    alias: 'sprite.pieslice',
+    mixins: {
+        markerHolder: "Ext.chart.MarkerHolder"
+    },
+    extend: "Ext.draw.sprite.Sector",
+
+    inheritableStatics: {
+        def: {
+            processors: {
+                /**
+                 * @cfg {Boolean} [doCallout=true] 'true' if the pie series uses label callouts.
+                 */
+                doCallout: 'bool',
+
+                /**
+                 * @cfg {String} [label=''] Label associated with the Pie sprite.
+                 */
+                label: 'string',
+
+                /**
+                 * @cfg {Number} [labelOverflowPadding=10] Padding around labels to determine overlap. 
+                 */
+                labelOverflowPadding: 'number'
+            },
+            defaults: {
+                doCallout: true,
+                label: '',
+                labelOverflowPadding: 10
+            }
+        }
+    },
+
+    render: function (ctx, surface, clipRegion) {
+        this.callSuper(arguments);
+        if (this.attr.label && this.getBoundMarker('labels')) {
+            this.placeLabel();
+        }
+    },
+
+    placeLabel: function () {
+        var attr = this.attr,
+            startAngle = Math.min(attr.startAngle, attr.endAngle),
+            endAngle = Math.max(attr.startAngle, attr.endAngle),
+            midAngle = (startAngle + endAngle) * 0.5,
+            margin = attr.margin,
+            centerX = attr.centerX,
+            centerY = attr.centerY,
+            startRho = Math.min(attr.startRho, attr.endRho) + margin,
+            endRho = Math.max(attr.startRho, attr.endRho) + margin,
+            midRho = (startRho + endRho) * 0.5,
+            surfaceMatrix = this.surfaceMatrix,
+            labelCfg = this.labelCfg || (this.labelCfg = {}),
+            labelBox, x, y;
+
+        surfaceMatrix.appendMatrix(attr.matrix);
+
+        x = centerX + Math.cos(midAngle) * midRho;
+        y = centerY + Math.sin(midAngle) * midRho;
+        labelCfg.x = surfaceMatrix.x(x, y);
+        labelCfg.y = surfaceMatrix.y(x, y);
+
+        x = centerX + Math.cos(midAngle) * endRho;
+        y = centerY + Math.sin(midAngle) * endRho;
+        labelCfg.calloutStartX = surfaceMatrix.x(x, y);
+        labelCfg.calloutStartY = surfaceMatrix.y(x, y);
+
+        x = centerX + Math.cos(midAngle) * (endRho + 40);
+        y = centerY + Math.sin(midAngle) * (endRho + 40);
+        labelCfg.calloutPlaceX = surfaceMatrix.x(x, y);
+        labelCfg.calloutPlaceY = surfaceMatrix.y(x, y);
+
+        labelCfg.rotationRads = midAngle + Math.atan2(surfaceMatrix.y(1, 0) - surfaceMatrix.y(0, 0), surfaceMatrix.x(1, 0) - surfaceMatrix.x(0, 0));
+        labelCfg.text = attr.label;
+        labelCfg.calloutColor = this.attr.fillStyle;
+        labelCfg.globalAlpha = attr.globalAlpha * attr.fillOpacity;
+
+        this.putMarker('labels', labelCfg, this.attr.attributeId);
+
+        labelBox = this.getMarkerBBox('labels', this.attr.attributeId, true);
+        if (labelBox) {
+            if (attr.doCallout) {
+                this.putMarker('labels', {callout: 1 - +this.sliceContainsLabel(attr, labelBox)}, this.attr.attributeId);
+            } else {
+                this.putMarker('labels', {globalAlpha: +this.sliceContainsLabel(attr, labelBox)}, this.attr.attributeId);
+            }
+        }
+    },
+
+    sliceContainsLabel: function (attr, bbox) {
+        var padding = attr.labelOverflowPadding,
+            middle = (attr.endRho + attr.startRho) / 2,
+            outer = middle + (bbox.width + padding) / 2,
+            inner = middle - (bbox.width + padding) / 2,
+            l1, l2, l3;
+        if (bbox.width + padding * 2 > (attr.endRho - attr.startRho)) {
+            return 0;
+        }
+        l1 = Math.sqrt(attr.endRho * attr.endRho - outer * outer);
+        l2 = Math.sqrt(attr.endRho * attr.endRho - inner * inner);
+        l3 = Math.abs(Math.tan(Math.abs(attr.endAngle - attr.startAngle) / 2)) * inner;
+        if (bbox.height + padding * 2 > Math.min(l1, l2, l3) * 2) {
+            return 0;
+        }
+        return 1;
+    }
+});
+
+/**
+ * @class Ext.chart.series.Pie
+ * @extends Ext.chart.series.Polar
+ *
+ * Creates a Pie Chart. A Pie Chart is a useful visualization technique to display quantitative information for different
+ * categories that also have a meaning as a whole.
+ * As with all other series, the Pie Series must be appended in the *series* Chart array configuration. See the Chart
+ * documentation for more information. A typical configuration object for the pie series could be:
+ *
+ *     @example preview
+ *     var chart = new Ext.chart.PolarChart({
+ *         animate: true,
+ *         interactions: ['rotate'],
+ *         colors: ["#115fa6", "#94ae0a", "#a61120", "#ff8809", "#ffd13e"],
+ *         store: {
+ *           fields: ['name', 'data1', 'data2', 'data3', 'data4', 'data5'],
+ *           data: [
+ *               {'name':'metric one', 'data1':10, 'data2':12, 'data3':14, 'data4':8, 'data5':13},
+ *               {'name':'metric two', 'data1':7, 'data2':8, 'data3':16, 'data4':10, 'data5':3},
+ *               {'name':'metric three', 'data1':5, 'data2':2, 'data3':14, 'data4':12, 'data5':7},
+ *               {'name':'metric four', 'data1':2, 'data2':14, 'data3':6, 'data4':1, 'data5':23},
+ *               {'name':'metric five', 'data1':27, 'data2':38, 'data3':36, 'data4':13, 'data5':33}
+ *           ]
+ *         },
+ *         series: [{
+ *             type: 'pie',
+ *             labelField: 'name',
+ *             xField: 'data3',
+ *             donut: 30
+ *         }]
+ *     });
+ *     Ext.Viewport.setLayout('fit');
+ *     Ext.Viewport.add(chart);
+ *
+ * In this configuration we set `pie` as the type for the series, set an object with specific style properties for highlighting options
+ * (triggered when hovering elements). We also set true to `showInLegend` so all the pie slices can be represented by a legend item.
+ * We set `data1` as the value of the field to determine the angle span for each pie slice. We also set a label configuration object
+ * where we set the field name of the store field to be renderer as text for the label. The labels will also be displayed rotated.
+ * We set `contrast` to `true` to flip the color of the label if it is to similar to the background color. Finally, we set the font family
+ * and size through the `font` parameter.
+ *
+ */
+Ext.define('Ext.chart.series.Pie', {
+    extend: 'Ext.chart.series.Polar',
+    requires: [
+        "Ext.chart.series.sprite.PieSlice"
+    ],
+    type: 'pie',
+    alias: 'series.pie',
+    seriesType: 'pieslice',
+
+    config: {
+        /**
+         * @cfg {String} labelField
+         * The store record field name to be used for the pie slice labels.
+         */
+        labelField: false,
+
+        /**
+         * @cfg {Boolean/Number} donut Whether to set the pie chart as donut chart.
+         * Can be set to a particular percentage to set the radius of the donut chart.
+         */
+        donut: false,
+
+        /**
+         * @cfg {String} field
+         * @deprecated Use xField directly
+         */
+        field: null,
+
+        /**
+         * @cfg {Number} rotation The starting angle of the pie slices.
+         */
+        rotation: 0,
+
+        /**
+         * @cfg {Number} [totalAngle=2*PI] The total angle of the pie series.
+         */
+        totalAngle: Math.PI * 2,
+
+        /**
+         * @cfg {Array} hidden Determines which pie slices are hidden.
+         */
+        hidden: [],
+
+        style: {
+
+        }
+    },
+
+    directions: ['X'],
+
+    setField: function (f) {
+        return this.setXField(f);
+    },
+
+    getField: function () {
+        return this.getXField();
+    },
+
+    updateLabelData: function () {
+        var me = this,
+            store = me.getStore(),
+            items = store.getData().items,
+            sprites = me.getSprites(),
+            labelField = me.getLabelField(),
+            i, ln, labels;
+        if (sprites.length > 0 && labelField) {
+            labels = [];
+            for (i = 0, ln = items.length; i < ln; i++) {
+                labels.push(items[i].get(labelField));
+            }
+            for (i = 0, ln = sprites.length; i < ln; i++) {
+                sprites[i].setAttributes({label: labels[i]});
+            }
+        }
+    },
+
+    coordinateX: function () {
+        var me = this,
+            store = me.getStore(),
+            items = store.getData().items,
+            length = items.length,
+            field = me.getXField(),
+            value, sum = 0,
+            hidden = me.getHidden(),
+            summation = [], i,
+            lastAngle = 0,
+            totalAngle = me.getTotalAngle(),
+            sprites = me.getSprites();
+
+        if (!sprites) {
+            return;
+        }
+
+        for (i = 0; i < length; i++) {
+            value = items[i].get(field);
+            if (!hidden[i]) {
+                sum += value;
+            }
+            summation[i] = sum;
+            if (i >= hidden.length) {
+                hidden[i] = false;
+            }
+        }
+
+        if (sum === 0) {
+            return;
+        }
+        sum = totalAngle / sum;
+        for (i = 0; i < length; i++) {
+            sprites[i].setAttributes({
+                startAngle: lastAngle,
+                endAngle: lastAngle = summation[i] * sum,
+                globalAlpha: 1
+            });
+        }
+        for (; i < me.sprites.length; i++) {
+            sprites[i].setAttributes({
+                startAngle: totalAngle,
+                endAngle: totalAngle,
+                globalAlpha: 0
+            });
+        }
+        me.getChart().refreshLegendStore();
+    },
+
+    updateCenter: function (center) {
+        this.setStyle({
+            translationX: center[0] + this.getOffsetX(),
+            translationY: center[1] + this.getOffsetY()
+        });
+        this.doUpdateStyles();
+    },
+
+    updateRadius: function (radius) {
+        this.setStyle({
+            startRho: radius * this.getDonut() * 0.01, // Percentage
+            endRho: radius
+        });
+        this.doUpdateStyles();
+    },
+
+    updateDonut: function (donut) {
+        var radius = this.getRadius();
+        this.setStyle({
+            startRho: radius * donut * 0.01, // Percentage
+            endRho: radius
+        });
+        this.doUpdateStyles();
+    },
+
+    updateRotation: function (rotation) {
+        this.setStyle({
+            rotationRads: rotation
+        });
+        this.doUpdateStyles();
+    },
+
+    updateTotalAngle: function (totalAngle) {
+        this.processData();
+    },
+
+    getSprites: function () {
+        var me = this,
+            chart = this.getChart(),
+            store = me.getStore();
+        if (!chart || !store) {
+            return[];
+        }
+        me.getColors();
+        me.getSubStyle();
+        var items = store.getData().items,
+            length = items.length,
+            animation = chart && chart.getAnimate(),
+            center = me.getCenter(),
+            offsetX = me.getOffsetX(),
+            offsetY = me.getOffsetY(),
+            sprites = me.sprites, sprite,
+            i, spriteCreated = false;
+
+        for (i = 0; i < length; i++) {
+            sprite = sprites[i];
+            if (!sprite) {
+                sprite = me.createSprite();
+                if (me.getHighlightCfg()) {
+                    sprite.config.highlightCfg = me.getHighlightCfg();
+                    sprite.addModifier('highlight', true);
+                }
+                if (me.getLabelField()) {
+                    me.getLabel().getTemplate().setAttributes({
+                        labelOverflowPadding: this.getLabelOverflowPadding()
+                    });
+                    me.getLabel().getTemplate().fx.setCustomDuration({'callout': 200});
+                    sprite.bindMarker('labels', me.getLabel());
+                }
+                sprite.setAttributes(this.getStyleByIndex(i));
+                spriteCreated = true;
+            }
+            sprite.fx.setConfig(animation);
+        }
+        if (spriteCreated) {
+            me.doUpdateStyles();
+        }
+        return me.sprites;
+    },
+
+    betweenAngle: function (x, a, b) {
+        b -= a;
+        x -= a;
+        x %= Math.PI * 2;
+        b %= Math.PI * 2;
+        x += Math.PI * 2;
+        b += Math.PI * 2;
+        x %= Math.PI * 2;
+        b %= Math.PI * 2;
+        return x < b;
+    },
+
+    getItemForPoint: function (x, y) {
+        var me = this,
+            sprites = me.getSprites();
+        if (sprites) {
+            var center = me.getCenter(),
+                offsetX = me.getOffsetX(),
+                offsetY = me.getOffsetY(),
+                originalX = x - center[0] + offsetX,
+                originalY = y - center[1] + offsetY,
+                store = me.getStore(),
+                donut = me.getDonut(),
+                items = store.getData().items,
+                direction = Math.atan2(originalY, originalX) - me.getRotation(),
+                donutLimit = Math.sqrt(originalX * originalX + originalY * originalY),
+                endRadius = me.getRadius(),
+                startRadius = donut / 100 * endRadius,
+                i, ln, attr;
+
+            for (i = 0, ln = items.length; i < ln; i++) {
+                // Fortunately, the id of items equals the index of it in instances list.
+                attr = sprites[i].attr;
+                if (startRadius + attr.margin <= donutLimit && donutLimit + attr.margin <= endRadius) {
+                    if (this.betweenAngle(direction, attr.startAngle, attr.endAngle)) {
+                        return {
+                            series: this,
+                            sprite: sprites[i],
+                            index: i,
+                            record: items[i],
+                            field: this.getXField()
+                        };
+                    }
+                }
+            }
+        }
+    },
+
+    provideLegendInfo: function (target) {
+        var store = this.getStore();
+        if (store) {
+            var items = store.getData().items,
+                labelField = this.getLabelField(),
+                field = this.getField(),
+                hidden = this.getHidden();
+            for (var i = 0; i < items.length; i++) {
+                target.push({
+                    name: labelField ? String(items[i].get(labelField))  : (field && field[i]) || this.getId(),
+                    mark: this.getStyleByIndex(i).fillStyle || this.getStyleByIndex(i).strokeStyle || 'black',
+                    disabled: hidden[i],
+                    series: this.getId(),
+                    index: i
+                });
+            }
+        }
+    }
+});
+
+
+/**
+ * @class Ext.chart.series.sprite.Pie3DPart
+ * @extends Ext.draw.sprite.Path
+ * 
+ * Pie3D series sprite.
+ */
+Ext.define("Ext.chart.series.sprite.Pie3DPart", {
+    extend: 'Ext.draw.sprite.Path',
+    mixins: {
+        markerHolder: "Ext.chart.MarkerHolder"
+    },
+    alias: 'sprite.pie3dPart',
+    type: 'pie3dPart',
+    inheritableStatics: {
+        def: {
+            processors: {
+                /**
+                 * @cfg {Number} [centerX=0] The central point of the series on the x-axis.
+                 */
+                centerX: "number",
+
+                /**
+                 * @cfg {Number} [centerY=0] The central point of the series on the x-axis.
+                 */
+                centerY: "number",
+
+                /**
+                 * @cfg {Number} [startAngle=0] The starting angle of the polar series.
+                 */
+                startAngle: "number",
+
+                /**
+                 * @cfg {Number} [endAngle=Math.PI] The ending angle of the polar series.
+                 */
+                endAngle: "number",
+
+                /**
+                 * @cfg {Number} [startRho=0] The starting radius of the polar series.
+                 */
+                startRho: "number",
+
+                /**
+                 * @cfg {Number} [endRho=150] The ending radius of the polar series.
+                 */
+                endRho: "number",
+
+                /**
+                 * @cfg {Number} [margin=0] Margin from the center of the pie. Used for donut.
+                 */
+                margin: "number",
+
+                /**
+                 * @cfg {Number} [thickness=0] The thickness of the 3D pie part.
+                 */
+                thickness: "number",
+
+                /**
+                 * @cfg {Number} [thickness=0] The distortion of the 3D pie part.
+                 */
+                distortion: "number",
+
+                /**
+                 * @cfg {Object} [baseColor='white'] The color of the 3D pie part before adding the 3D effect.
+                 */
+                baseColor: "color",
+
+                /**
+                 * @cfg {Number} [baseRotation=0] The starting rotation of the polar series.
+                 */
+                baseRotation: "number",
+
+                /**
+                 * @cfg {String} [part=0] The part of the 3D Pie represented by the sprite.
+                 */
+                part: "enums(top,start,end,inner,outer)"
+            },
+            aliases: {
+                rho: 'endRho'
+            },
+            dirtyTriggers: {
+                centerX: "path,bbox",
+                centerY: "path,bbox",
+                startAngle: "path,partZIndex",
+                endAngle: "path,partZIndex",
+                startRho: "path",
+                endRho: "path,bbox",
+                margin: "path,bbox",
+                thickness: "path",
+                baseRotation: "path,partZIndex",
+                baseColor: 'partZIndex,partColor',
+                part: "path,partZIndex"
+            },
+            defaults: {
+                centerX: 0,
+                centerY: 0,
+                startAngle: 0,
+                endAngle: 0,
+                startRho: 0,
+                endRho: 150,
+                margin: 0,
+                distortion: 1,
+                baseRotation: 0,
+                baseColor: 'white',
+                part: "top"
+            },
+            updaters: {
+                "partColor": function (attrs) {
+                    var color = Ext.draw.Color.fly(attrs.baseColor),
+                        fillStyle;
+                    switch (attrs.part) {
+                        case 'top':
+                            fillStyle = color.toString();
+                            break;
+                        case 'outer':
+                            fillStyle = Ext.create("Ext.draw.gradient.Linear", {
+                                type: 'linear',
+                                stops: [
+                                    {
+                                        offset: 0,
+                                        color: color.createDarker(0.3).toString()
+                                    },
+                                    {
+                                        offset: 0.3,
+                                        color: color.toString()
+                                    },
+                                    {
+                                        offset: 0.8,
+                                        color: color.createLighter(0.2).toString()
+                                    },
+                                    {
+                                        offset: 1,
+                                        color: color.createDarker(0.4).toString()
+                                    }
+                                ]
+                            });
+                            break;
+                        case 'start':
+                            fillStyle = color.createDarker(0.3).toString();
+                            break;
+                        case 'end':
+                            fillStyle = color.createDarker(0.3).toString();
+                            break;
+                        case 'inner':
+                            fillStyle = Ext.create("Ext.draw.gradient.Linear", {
+                                type: 'linear',
+                                stops: [
+                                    {
+                                        offset: 0,
+                                        color: color.createDarker(0.4).toString()
+                                    },
+                                    {
+                                        offset: 0.2,
+                                        color: color.createLighter(0.2).toString()
+                                    },
+                                    {
+                                        offset: 0.7,
+                                        color: color.toString()
+                                    },
+                                    {
+                                        offset: 1,
+                                        color: color.createDarker(0.3).toString()
+                                    }
+                                ]
+                            });
+                            break;
+                    }
+
+                    attrs.fillStyle = fillStyle;
+                    attrs.canvasAttributes.fillStyle = fillStyle;
+                },
+                "partZIndex": function (attrs) {
+                    var rotation = attrs.baseRotation;
+                    switch (attrs.part) {
+                        case 'top':
+                            attrs.zIndex = 5;
+                            break;
+                        case 'outer':
+                            attrs.zIndex = 4;
+                            break;
+                        case 'start':
+                            attrs.zIndex = 1 + Math.sin(attrs.startAngle + rotation);
+                            break;
+                        case 'end':
+                            attrs.zIndex = 1 + Math.sin(attrs.endAngle + rotation);
+                            break;
+                        case 'inner':
+                            attrs.zIndex = 1;
+                            break;
+                    }
+                    attrs.dirtyZIndex = true;
+                }
+            }
+        }
+    },
+
+    updatePlainBBox: function (plain) {
+        var attr = this.attr,
+            rho = attr.part === 'inner' ? attr.startRho : attr.endRho;
+        plain.width = rho * 2;
+        plain.height = rho * attr.distortion * 2 + attr.thickness;
+        plain.x = attr.centerX - rho;
+        plain.y = attr.centerY - rho * attr.distortion;
+    },
+    
+    updateTransformedBBox: function (transform) {
+        return this.updatePlainBBox(transform);
+    },
+    
+    updatePath: function (path) {
+        if (this.attr.endAngle < this.attr.startAngle) {
+            return;
+        }
+        this[this.attr.part + 'Renderer'](path);
+    },
+
+    topRenderer: function (path) {
+        var attr = this.attr,
+            margin = attr.margin,
+            distortion = attr.distortion,
+            centerX = attr.centerX,
+            centerY = attr.centerY,
+            baseRotation = attr.baseRotation,
+            startAngle = attr.startAngle + baseRotation ,
+            endAngle = attr.endAngle + baseRotation ,
+            startRho = attr.startRho,
+            endRho = attr.endRho,
+            midAngle,
+            sinEnd = Math.sin(endAngle),
+            cosEnd = Math.cos(endAngle);
+        midAngle = (startAngle + endAngle) * 0.5;
+        centerX += Math.cos(midAngle) * margin;
+        centerY += Math.sin(midAngle) * margin * distortion;
+        path.ellipse(centerX, centerY, startRho, startRho * distortion, 0, startAngle, endAngle, false);
+        path.lineTo(centerX + cosEnd * endRho, centerY + sinEnd * endRho * distortion);
+        path.ellipse(centerX, centerY, endRho, endRho * distortion, 0, endAngle, startAngle, true);
+        path.closePath();
+    },
+
+    startRenderer: function (path) {
+        var attr = this.attr,
+            margin = attr.margin,
+            centerX = attr.centerX,
+            centerY = attr.centerY,
+            distortion = attr.distortion,
+            baseRotation = attr.baseRotation,
+            startAngle = attr.startAngle + baseRotation ,
+            endAngle = attr.endAngle + baseRotation,
+            thickness = attr.thickness,
+            startRho = attr.startRho,
+            endRho = attr.endRho,
+            sinStart = Math.sin(startAngle),
+            cosStart = Math.cos(startAngle),
+            midAngle;
+        if (cosStart < 0) {
+            midAngle = (startAngle + endAngle) * 0.5;
+            centerX += Math.cos(midAngle) * margin;
+            centerY += Math.sin(midAngle) * margin * distortion;
+            path.moveTo(centerX + cosStart * startRho, centerY + sinStart * startRho * distortion);
+            path.lineTo(centerX + cosStart * endRho, centerY + sinStart * endRho * distortion);
+            path.lineTo(centerX + cosStart * endRho, centerY + sinStart * endRho * distortion + thickness);
+            path.lineTo(centerX + cosStart * startRho, centerY + sinStart * startRho * distortion + thickness);
+            path.closePath();
+        }
+    },
+
+    endRenderer: function (path) {
+        var attr = this.attr,
+            margin = attr.margin,
+            centerX = attr.centerX,
+            centerY = attr.centerY,
+            distortion = attr.distortion,
+            baseRotation = attr.baseRotation,
+            startAngle = attr.startAngle + baseRotation ,
+            endAngle = attr.endAngle + baseRotation,
+            thickness = attr.thickness,
+            startRho = attr.startRho,
+            endRho = attr.endRho,
+            sin = Math.sin(endAngle),
+            cos = Math.cos(endAngle), midAngle;
+        if (cos > 0) {
+            midAngle = (startAngle + endAngle) * 0.5;
+            centerX += Math.cos(midAngle) * margin;
+            centerY += Math.sin(midAngle) * margin * distortion;
+            path.moveTo(centerX + cos * startRho, centerY + sin * startRho * distortion);
+            path.lineTo(centerX + cos * endRho, centerY + sin * endRho * distortion);
+            path.lineTo(centerX + cos * endRho, centerY + sin * endRho * distortion + thickness);
+            path.lineTo(centerX + cos * startRho, centerY + sin * startRho * distortion + thickness);
+            path.closePath();
+        }
+    },
+
+    innerRenderer: function (path) {
+        var attr = this.attr,
+            margin = attr.margin,
+            centerX = attr.centerX,
+            centerY = attr.centerY,
+            distortion = attr.distortion,
+            baseRotation = attr.baseRotation,
+            startAngle = attr.startAngle + baseRotation ,
+            endAngle = attr.endAngle + baseRotation,
+            thickness = attr.thickness,
+            startRho = attr.startRho,
+            sinEnd, cosEnd,
+            tempStart, tempEnd, midAngle;
+        midAngle = (startAngle + endAngle) * 0.5;
+        centerX += Math.cos(midAngle) * margin;
+        centerY += Math.sin(midAngle) * margin * distortion;
+        if (startAngle >= Math.PI * 2) {
+            startAngle -= Math.PI * 2;
+            endAngle -= Math.PI * 2;
+        }
+        if (endAngle > Math.PI && endAngle < Math.PI * 3) {
+            tempStart = startAngle;
+            tempEnd = Math.min(endAngle, Math.PI * 2);
+            sinEnd = Math.sin(tempEnd);
+            cosEnd = Math.cos(tempEnd);
+            path.ellipse(centerX, centerY, startRho, startRho * distortion, 0, tempStart, tempEnd, false);
+            path.lineTo(centerX + cosEnd * startRho, centerY + sinEnd * startRho * distortion + thickness);
+            path.ellipse(centerX, centerY + thickness, startRho, startRho * distortion, 0, tempEnd, tempStart, true);
+            path.closePath();
+        }
+        if (endAngle > Math.PI * 3) {
+            tempStart = Math.PI;
+            tempEnd = endAngle;
+            sinEnd = Math.sin(tempEnd);
+            cosEnd = Math.cos(tempEnd);
+            path.ellipse(centerX, centerY, startRho, startRho * distortion, 0, tempStart, tempEnd, false);
+            path.lineTo(centerX + cosEnd * startRho, centerY + sinEnd * startRho * distortion + thickness);
+            path.ellipse(centerX, centerY + thickness, startRho, startRho * distortion, 0, tempEnd, tempStart, true);
+            path.closePath();
+        }
+    },
+
+    outerRenderer: function (path) {
+        var attr = this.attr,
+            margin = attr.margin,
+            centerX = attr.centerX,
+            centerY = attr.centerY,
+            distortion = attr.distortion,
+            baseRotation = attr.baseRotation,
+            startAngle = attr.startAngle + baseRotation ,
+            endAngle = attr.endAngle + baseRotation,
+            thickness = attr.thickness,
+            endRho = attr.endRho,
+            sinEnd, cosEnd,
+            tempStart, tempEnd, midAngle;
+        midAngle = (startAngle + endAngle) * 0.5;
+        centerX += Math.cos(midAngle) * margin;
+        centerY += Math.sin(midAngle) * margin * distortion;
+
+        if (startAngle >= Math.PI * 2) {
+            startAngle -= Math.PI * 2;
+            endAngle -= Math.PI * 2;
+        }
+
+        if (startAngle < Math.PI) {
+            tempStart = startAngle;
+            tempEnd = Math.min(endAngle, Math.PI);
+            sinEnd = Math.sin(tempEnd);
+            cosEnd = Math.cos(tempEnd);
+            path.ellipse(centerX, centerY, endRho, endRho * distortion, 0, tempStart, tempEnd, false);
+            path.lineTo(centerX + cosEnd * endRho, centerY + sinEnd * endRho * distortion + thickness);
+            path.ellipse(centerX, centerY + thickness, endRho, endRho * distortion, 0, tempEnd, tempStart, true);
+            path.closePath();
+        }
+        if (endAngle > Math.PI * 2) {
+            tempStart = Math.max(startAngle, Math.PI * 2);
+            tempEnd = endAngle;
+            sinEnd = Math.sin(tempEnd);
+            cosEnd = Math.cos(tempEnd);
+            path.ellipse(centerX, centerY, endRho, endRho * distortion, 0, tempStart, tempEnd, false);
+            path.lineTo(centerX + cosEnd * endRho, centerY + sinEnd * endRho * distortion + thickness);
+            path.ellipse(centerX, centerY + thickness, endRho, endRho * distortion, 0, tempEnd, tempStart, true);
+            path.closePath();
+        }
+    }
+});
+
+/**
+ * @class Ext.chart.series.Pie3D
+ * @extends Ext.chart.series.sprite.Polar
+ * 
+ * Creates a 3D Pie Chart.
+ *
+ *     @example preview
+ *     var chart = new Ext.chart.PolarChart({
+ *         animate: true,
+ *         interactions: ['rotate'],
+ *         colors: ["#115fa6", "#94ae0a", "#a61120", "#ff8809", "#ffd13e"],
+ *         store: {
+ *           fields: ['name', 'data1', 'data2', 'data3', 'data4', 'data5'],
+ *           data: [
+ *               {'name':'metric one', 'data1':10, 'data2':12, 'data3':14, 'data4':8, 'data5':13},
+ *               {'name':'metric two', 'data1':7, 'data2':8, 'data3':16, 'data4':10, 'data5':3},
+ *               {'name':'metric three', 'data1':5, 'data2':2, 'data3':14, 'data4':12, 'data5':7},
+ *               {'name':'metric four', 'data1':2, 'data2':14, 'data3':6, 'data4':1, 'data5':23},
+ *               {'name':'metric five', 'data1':27, 'data2':38, 'data3':36, 'data4':13, 'data5':33}
+ *           ]
+ *         },
+ *         series: [{
+ *             type: 'pie3d',
+ *             field: 'data3',
+ *             donut: 30
+ *         }]
+ *     });
+ *     Ext.Viewport.setLayout('fit');
+ *     Ext.Viewport.add(chart);
+ */
+Ext.define('Ext.chart.series.Pie3D', {
+    requires: ['Ext.chart.series.sprite.Pie3DPart'],
+    extend: 'Ext.chart.series.Polar',
+    type: 'pie3d',
+    seriesType: 'pie3d',
+    alias: 'series.pie3d',
+    config: {
+        region: [0, 0, 0, 0],
+        thickness: 35,
+        distortion: 0.5,
+
+        /**
+         * @cfg {String} field (required)
+         * The store record field name to be used for the pie angles.
+         * The values bound to this field name must be positive real numbers.
+         */
+        field: false,
+
+        /**
+         * @private
+         * @cfg {String} lengthField
+         * Not supported.
+         */
+        lengthField: false,
+
+        /**
+         * @cfg {Boolean/Number} donut
+         * Whether to set the pie chart as donut chart.
+         * Can be set to a particular percentage to set the radius
+         * of the donut chart.
+         */
+        donut: false,
+
+        rotation: 0
+    },
+
+    applyRotation: function (rotation) {
+        var twoPie = Math.PI * 2;
+        return (rotation % twoPie + twoPie) % twoPie;
+    },
+
+    updateRotation: function (rotation) {
+        var sprites = this.getSprites(),
+            i, ln;
+        for (i = 0, ln = sprites.length; i < ln; i++) {
+            sprites[i].setAttributes({
+                baseRotation: rotation
+            });
+        }
+    },
+
+    updateColors: function (colorSet) {
+        this.setSubStyle({baseColor: colorSet});
+    },
+    
+    doUpdateStyles: function () {
+        var sprites = this.getSprites(),
+            i = 0, j = 0, ln = sprites && sprites.length;
+        for (; i < ln; i += 5, j++) {
+            sprites[i].setAttributes(this.getStyleByIndex(j));
+            sprites[i + 1].setAttributes(this.getStyleByIndex(j));
+            sprites[i + 2].setAttributes(this.getStyleByIndex(j));
+            sprites[i + 3].setAttributes(this.getStyleByIndex(j));
+            sprites[i + 4].setAttributes(this.getStyleByIndex(j));
+        }
+    },
+
+    processData: function () {
+        var me = this,
+            chart = me.getChart(),
+            animation = chart && chart.getAnimate(),
+            store = me.getStore(),
+            items = store.getData().items,
+            length = items.length,
+            field = me.getField(),
+            value, sum = 0, ratio,
+            summation = [],
+            i,
+            sprites = this.getSprites(),
+            lastAngle;
+
+        for (i = 0; i < length; i++) {
+            value = items[i].get(field);
+            sum += value;
+            summation[i] = sum;
+        }
+        if (sum === 0) {
+            return;
+        }
+        ratio = 2 * Math.PI / sum;
+        for (i = 0; i < length; i++) {
+            summation[i] *= ratio;
+        }
+
+        for (i = 0; i < sprites.length; i++) {
+            sprites[i].fx.setConfig(animation);
+        }
+
+        for (i = 0, lastAngle = 0; i < length; i++) {
+            var commonAttributes = {opacity: 1, startAngle: lastAngle, endAngle: summation[i]};
+            sprites[i * 5].setAttributes(commonAttributes);
+            sprites[i * 5 + 1].setAttributes(commonAttributes);
+            sprites[i * 5 + 2].setAttributes(commonAttributes);
+            sprites[i * 5 + 3].setAttributes(commonAttributes);
+            sprites[i * 5 + 4].setAttributes(commonAttributes);
+            lastAngle = summation[i];
+        }
+    },
+
+    getSprites: function () {
+        var me = this,
+            chart = this.getChart(),
+            surface = me.getSurface(),
+            store = me.getStore();
+        if (!store) {
+            return [];
+        }
+        var items = store.getData().items,
+            length = items.length,
+            animation = chart && chart.getAnimate(),
+            region = chart.getMainRegion() || [0, 0, 1, 1],
+            rotation = me.getRotation(),
+            center = me.getCenter(),
+            offsetX = me.getOffsetX(),
+            offsetY = me.getOffsetY(),
+            radius = Math.min((region[3] - me.getThickness() * 2) / me.getDistortion(), region[2]) / 2,
+            commonAttributes = {
+                centerX: center[0] + offsetX,
+                centerY: center[1] + offsetY - me.getThickness() / 2,
+                endRho: radius,
+                startRho: radius * me.getDonut() / 100,
+                thickness: me.getThickness(),
+                distortion: me.getDistortion()
+            }, sliceAttributes, twoPie = Math.PI * 2,
+            topSprite, startSprite, endSprite, innerSideSprite, outerSideSprite,
+            i;
+
+        for (i = 0; i < length; i++) {
+            sliceAttributes = Ext.apply({}, this.getStyleByIndex(i), commonAttributes);
+            topSprite = me.sprites[i * 5];
+            if (!topSprite) {
+                topSprite = surface.add({
+                    type: 'pie3dPart',
+                    part: 'top',
+                    startAngle: twoPie,
+                    endAngle: twoPie
+                });
+                startSprite = surface.add({
+                    type: 'pie3dPart',
+                    part: 'start',
+                    startAngle: twoPie,
+                    endAngle: twoPie
+                });
+                endSprite = surface.add({
+                    type: 'pie3dPart',
+                    part: 'end',
+                    startAngle: twoPie,
+                    endAngle: twoPie
+                });
+                innerSideSprite = surface.add({
+                    type: 'pie3dPart',
+                    part: 'inner',
+                    startAngle: twoPie,
+                    endAngle: twoPie,
+                    thickness: 0
+                });
+                outerSideSprite = surface.add({
+                    type: 'pie3dPart',
+                    part: 'outer',
+                    startAngle: twoPie,
+                    endAngle: twoPie,
+                    thickness: 0
+                });
+                topSprite.fx.setDurationOn('baseRotation', 0);
+                startSprite.fx.setDurationOn('baseRotation', 0);
+                endSprite.fx.setDurationOn('baseRotation', 0);
+                innerSideSprite.fx.setDurationOn('baseRotation', 0);
+                outerSideSprite.fx.setDurationOn('baseRotation', 0);
+                topSprite.setAttributes(sliceAttributes);
+                startSprite.setAttributes(sliceAttributes);
+                endSprite.setAttributes(sliceAttributes);
+                innerSideSprite.setAttributes(sliceAttributes);
+                outerSideSprite.setAttributes(sliceAttributes);
+                me.sprites.push(topSprite, startSprite, endSprite, innerSideSprite, outerSideSprite);
+            } else {
+                startSprite = me.sprites[i * 5 + 1];
+                endSprite = me.sprites[i * 5 + 2];
+                innerSideSprite = me.sprites[i * 5 + 3];
+                outerSideSprite = me.sprites[i * 5 + 4];
+                if (animation) {
+                    topSprite.fx.setConfig(animation);
+                    startSprite.fx.setConfig(animation);
+                    endSprite.fx.setConfig(animation);
+                    innerSideSprite.fx.setConfig(animation);
+                    outerSideSprite.fx.setConfig(animation);
+                }
+                topSprite.setAttributes(sliceAttributes);
+                startSprite.setAttributes(sliceAttributes);
+                endSprite.setAttributes(sliceAttributes);
+                innerSideSprite.setAttributes(sliceAttributes);
+                outerSideSprite.setAttributes(sliceAttributes);
+            }
+        }
+
+        for (i *= 5; i < me.sprites.length; i++) {
+            me.sprites[i].fx.setConfig(animation);
+            me.sprites[i].setAttributes({
+                opacity: 0,
+                startAngle: twoPie,
+                endAngle: twoPie,
+                baseRotation: rotation
+            });
+        }
+
+        return me.sprites;
+    }
+});
+
+/**
+ * @class Ext.chart.series.sprite.Polar
+ * @extends Ext.draw.sprite.Sprite
+ * 
+ * Polar sprite.
+ */
+Ext.define("Ext.chart.series.sprite.Polar", {
+    mixins: {
+        markerHolder: "Ext.chart.MarkerHolder"
+    },
+    extend: 'Ext.draw.sprite.Sprite',
+    inheritableStatics: {
+        def: {
+            processors: {
+                /**
+                 * @cfg {Number} [dataMinX=0] Data minimum on the x-axis.
+                 */
+                dataMinX: 'number',
+
+                /**
+                 * @cfg {Number} [dataMaxX=1] Data maximum on the x-axis.
+                 */
+                dataMaxX: 'number',
+
+                /**
+                 * @cfg {Number} [dataMinY=0] Data minimum on the y-axis.
+                 */
+                dataMinY: 'number',
+
+                /**
+                 * @cfg {Number} [dataMaxY=2] Data maximum on the y-axis.
+                 */
+                dataMaxY: 'number',
+
+                /**
+                 * @cfg {Object} [dataY=null] Data items on the y-axis.
+                 */
+                dataY: 'data',
+
+                /**
+                 * @cfg {Object} [dataX=null] Data items on the x-axis.
+                 */
+                dataX: 'data',
+
+                /**
+                 * @cfg {Number} [centerX=0] The central point of the series on the x-axis.
+                 */
+                centerX: 'number',
+
+                /**
+                 * @cfg {Number} [centerY=0] The central point of the series on the y-axis.
+                 */
+                centerY: 'number',
+
+                /**
+                 * @cfg {Number} [startAngle=0] The starting angle of the polar series.
+                 */
+                startAngle: "number",
+
+                /**
+                 * @cfg {Number} [endAngle=Math.PI] The ending angle of the polar series.
+                 */
+                endAngle: "number",
+
+                /**
+                 * @cfg {Number} [startRho=0] The starting radius of the polar series.
+                 */
+                startRho: "number",
+
+                /**
+                 * @cfg {Number} [endRho=150] The ending radius of the polar series.
+                 */
+                endRho: "number",
+
+                /**
+                 * @cfg {Number} [baseRotation=0] The starting rotation of the polar series.
+                 */
+                baseRotation: "number",
+
+                /**
+                 * @cfg {Object} [labels=null] Labels used in the series.
+                 */
+                labels: 'default',
+
+                /**
+                 * @cfg {Number} [labelOverflowPadding=10] Padding around labels to determine overlap.
+                 */
+                labelOverflowPadding: 'number'
+            },
+            defaults: {
+                dataY: null,
+                dataX: null,
+                dataMinX: 0,
+                dataMaxX: 1,
+                dataMinY: 0,
+                dataMaxY: 1,
+                centerX: 0,
+                centerY: 0,
+                startAngle: 0,
+                endAngle: Math.PI,
+                startRho: 0,
+                endRho: 150,
+                baseRotation: 0,
+                labels: null,
+                labelOverflowPadding: 10
+            },
+            dirtyTriggers: {
+                dataX: 'bbox',
+                dataY: 'bbox',
+                dataMinX: 'bbox',
+                dataMaxX: 'bbox',
+                dataMinY: 'bbox',
+                dataMaxY: 'bbox',
+                centerX: "bbox",
+                centerY: "bbox",
+                startAngle: "bbox",
+                endAngle: "bbox",
+                startRho: "bbox",
+                endRho: "bbox",
+                baseRotation: "bbox"
+            }
+        }
+    },
+
+    config: {
+        dataItems: null,
+        field: null
+    },
+    
+    updatePlainBBox: function (plain) {
+        var attr = this.attr;
+        plain.x = attr.centerX - attr.endRho;
+        plain.y = attr.centerY + attr.endRho;
+        plain.width = attr.endRho * 2;
+        plain.height = attr.endRho * 2;
+    }
+});
+
+/**
+ * @class Ext.chart.series.sprite.Radar
+ * @extends Ext.chart.series.sprite.Polar
+ * 
+ * Radar series sprite.
+ */
+Ext.define("Ext.chart.series.sprite.Radar", {
+    alias: 'sprite.radar',
+    extend: 'Ext.chart.series.sprite.Polar',
+
+    render: function (surface, ctx) {
+        var me = this,
+            attr = me.attr,
+            centerX = attr.centerX,
+            centerY = attr.centerY,
+            matrix = attr.matrix,
+            minX = attr.dataMinX,
+            maxX = attr.dataMaxX,
+            maxY = attr.dataMaxY,
+            dataX = attr.dataX,
+            dataY = attr.dataY,
+            endRho = attr.endRho,
+            startRho = attr.startRho,
+            baseRotation = attr.baseRotation,
+            i, length = dataX.length,
+            markerCfg = {},
+            surfaceMatrix = me.surfaceMatrix,
+            x, y, r, th;
+        ctx.beginPath();
+        for (i = 0; i < length; i++) {
+            th = (dataX[i] - minX) / (maxX - minX + 1) * 2 * Math.PI + baseRotation;
+            r = dataY[i] / maxY * (endRho - startRho) + startRho;
+            x = matrix.x(centerX + Math.cos(th) * r, centerY + Math.sin(th) * r);
+            y = matrix.y(centerX + Math.cos(th) * r, centerY + Math.sin(th) * r);
+            ctx.lineTo(x, y);
+            markerCfg.translationX = surfaceMatrix.x(x, y);
+            markerCfg.translationY = surfaceMatrix.y(x, y);
+            me.putMarker("markers", markerCfg, i, true);
+        }
+        ctx.closePath();
+        ctx.fillStroke(attr);
+    }
+});
+
+/**
+ * @class Ext.chart.series.Radar
+ * @extends Ext.chart.series.Polar
+ *
+ * Creates a Radar Chart. A Radar Chart is a useful visualization technique for comparing different quantitative values for
+ * a constrained number of categories.
+ * As with all other series, the Radar series must be appended in the *series* Chart array configuration. See the Chart
+ * documentation for more information. A typical configuration object for the radar series could be:
+ *
+ *     @example preview
+ *     var chart = new Ext.chart.PolarChart({
+ *         animate: true,
+ *         interactions: ['rotate'],
+ *         store: {
+ *           fields: ['name', 'data1', 'data2', 'data3', 'data4', 'data5'],
+ *           data: [
+ *               {'name':'metric one', 'data1':10, 'data2':12, 'data3':14, 'data4':8, 'data5':13},
+ *               {'name':'metric two', 'data1':7, 'data2':8, 'data3':16, 'data4':10, 'data5':3},
+ *               {'name':'metric three', 'data1':5, 'data2':2, 'data3':14, 'data4':12, 'data5':7},
+ *               {'name':'metric four', 'data1':2, 'data2':14, 'data3':6, 'data4':1, 'data5':23},
+ *               {'name':'metric five', 'data1':27, 'data2':38, 'data3':36, 'data4':13, 'data5':33}
+ *           ]
+ *         },
+ *         series: [{
+ *             type: 'radar',
+ *             xField: 'name',
+ *             yField: 'data4',
+ *             style: {
+ *               fillStyle: 'rgba(0, 0, 255, 0.1)',
+ *               strokeStyle: 'rgba(0, 0, 0, 0.8)',
+ *               lineWidth: 1
+ *             }
+ *         }],
+ *         axes: [
+ *           {
+ *             type: 'numeric',
+ *             position: 'radial',
+ *             fields: 'data4',
+ *             style: {
+ *                 estStepSize: 10
+ *             },
+ *             grid: true
+ *           },
+ *           {
+ *             type: 'category',
+ *             position: 'angular',
+ *             fields: 'name',
+ *             style: {
+ *                 estStepSize: 1
+ *             },
+ *             grid: true
+ *           }
+ *         ]
+ *     });
+ *     Ext.Viewport.setLayout('fit');
+ *     Ext.Viewport.add(chart);
+ *
+ *
+ */
+Ext.define('Ext.chart.series.Radar', {
+    extend: 'Ext.chart.series.Polar',
+    type: "radar",
+    seriesType: 'radar',
+    alias: 'series.radar',
+    requires: ['Ext.chart.series.Cartesian', 'Ext.chart.series.sprite.Radar'],
+    /**
+     * @cfg {Object} style
+     * An object containing styles for overriding series styles from theming.
+     */
+
+    config: {
+
+    },
+
+    updateAngularAxis: function (axis) {
+        axis.processData(this);
+    },
+
+    updateRadialAxis: function (axis) {
+        axis.processData(this);
+    },
+
+    coordinateX: function () {
+        return this.coordinate('X', 0, 2);
+    },
+
+    coordinateY: function () {
+        return this.coordinate('Y', 1, 2);
+    },
+
+    updateCenter: function (center) {
+        this.setStyle({
+            translationX: center[0] + this.getOffsetX(),
+            translationY: center[1] + this.getOffsetY()
+        });
+        this.doUpdateStyles();
+    },
+
+    updateRadius: function (radius) {
+        this.setStyle({
+            endRho: radius
+        });
+        this.doUpdateStyles();
+    },
+
+    updateRotation: function (rotation) {
+        this.setStyle({
+            rotationRads: rotation
+        });
+        this.doUpdateStyles();
+    },
+
+    updateTotalAngle: function (totalAngle) {
+        this.processData();
+    },
+
+    getItemForPoint: function (x, y) {
+        var me = this,
+            sprite = me.sprites && me.sprites[0],
+            attr = sprite.attr,
+            dataX = attr.dataX,
+            dataY = attr.dataY,
+            centerX = attr.centerX,
+            centerY = attr.centerY,
+            minX = attr.dataMinX,
+            maxX = attr.dataMaxX,
+            maxY = attr.dataMaxY,
+            endRho = attr.endRho,
+            startRho = attr.startRho,
+            baseRotation = attr.baseRotation,
+            i, length = dataX.length,
+            store = me.getStore(),
+            marker = me.getMarker(),
+            item, th, r;
+
+        if (sprite && marker) {
+            for (i = 0; i < length; i++) {
+                th = (dataX[i] - minX) / (maxX - minX + 1) * 2 * Math.PI + baseRotation;
+                r = dataY[i] / maxY * (endRho - startRho) + startRho;
+                if (Math.abs(centerX + Math.cos(th) * r - x) < 22 && Math.abs(centerY + Math.sin(th) * r - y) < 22) {
+                    item = {
+                        series: this,
+                        sprite: sprite,
+                        index: i,
+                        record: store.getData().items[i],
+                        field: store.getFields().items[i]
+                    };
+                    return item;
+                }
+            }
+        }
+        return this.callSuper(arguments);
+    },
+
+    getXRange: function () {
+        return [this.dataRange[0], this.dataRange[2]];
+    },
+
+    getYRange: function () {
+        return [this.dataRange[1], this.dataRange[3]];
+    }
+}, function () {
+    var klass = this;
+    // TODO: [HACK] Steal from cartesian series.
+    klass.prototype.onAxesChanged = Ext.chart.series.Cartesian.prototype.onAxesChanged;
+    klass.prototype.getSprites = Ext.chart.series.Cartesian.prototype.getSprites;
+});
+
+
+/**
+ * @class Ext.chart.series.sprite.Scatter
+ * @extends Ext.chart.series.sprite.Cartesian
+ * 
+ * Scatter series sprite.
+ */
+Ext.define("Ext.chart.series.sprite.Scatter", {
+    alias: 'sprite.scatterSeries',
+    extend: 'Ext.chart.series.sprite.Cartesian',
+    renderClipped: function (surface, ctx, clip, clipRegion) {
+        if (this.cleanRedraw) {
+            return;
+        }
+        var attr = this.attr,
+            dataX = attr.dataX,
+            dataY = attr.dataY,
+            matrix = this.attr.matrix,
+            xx = matrix.getXX(),
+            yy = matrix.getYY(),
+            dx = matrix.getDX(),
+            dy = matrix.getDY(),
+            markerCfg = {},
+            left = clipRegion[0] - xx,
+            right = clipRegion[0] + clipRegion[2] + xx,
+            top = clipRegion[1] - yy,
+            bottom = clipRegion[1] + clipRegion[3] + yy,
+            x, y;
+        for (var i = 0; i < dataX.length; i++) {
+            x = dataX[i];
+            y = dataY[i];
+            x = x * xx + dx;
+            y = y * yy + dy;
+            if (left <= x && x <= right && top <= y && y <= bottom) {
+                if (attr.renderer) {
+                    attr.renderer.call(this, markerCfg, this, i, this.getDataItems().items[i]);
+                }
+                markerCfg.translationX = x;
+                markerCfg.translationY = y;
+                this.putMarker("items", markerCfg, i, !attr.renderer);
+            }
+        }
+    }
+});
+
+/**
+ * @class Ext.chart.series.Scatter
+ * @extends Ext.chart.series.Cartesian
+ *
+ * Creates a Scatter Chart. The scatter plot is useful when trying to display more than two variables in the same visualization.
+ * These variables can be mapped into x, y coordinates and also to an element's radius/size, color, etc.
+ * As with all other series, the Scatter Series must be appended in the *series* Chart array configuration. See the Chart
+ * documentation for more information on creating charts. A typical configuration object for the scatter could be:
+ *
+ *     @example preview
+ *     var chart = new Ext.chart.CartesianChart({
+ *         animate: true,
+ *         store: {
+ *           fields: ['name', 'data1', 'data2', 'data3', 'data4', 'data5'],
+ *           data: [
+ *               {'name':'metric one', 'data1':10, 'data2':12, 'data3':14, 'data4':8, 'data5':13},
+ *               {'name':'metric two', 'data1':7, 'data2':8, 'data3':16, 'data4':10, 'data5':3},
+ *               {'name':'metric three', 'data1':5, 'data2':2, 'data3':14, 'data4':12, 'data5':7},
+ *               {'name':'metric four', 'data1':2, 'data2':14, 'data3':6, 'data4':1, 'data5':23},
+ *               {'name':'metric five', 'data1':27, 'data2':38, 'data3':36, 'data4':13, 'data5':33}
+ *           ]
+ *         },
+ *         axes: [{
+ *             type: 'numeric',
+ *             position: 'left',
+ *             fields: ['data1'],
+ *             title: {
+ *                 text: 'Sample Values',
+ *                 fontSize: 15
+ *             },
+ *             grid: true,
+ *             minimum: 0
+ *         }, {
+ *             type: 'category',
+ *             position: 'bottom',
+ *             fields: ['name'],
+ *             title: {
+ *                 text: 'Sample Values',
+ *                 fontSize: 15
+ *             }
+ *         }],
+ *         series: [{
+ *             type: 'scatter',
+ *             highlight: {
+ *                 size: 7,
+ *                 radius: 7
+ *             },
+ *             fill: true,
+ *             xField: 'name',
+ *             yField: 'data3',
+ *             marker: {
+ *                 type: 'circle',
+ *                 fillStyle: 'blue',
+ *                 radius: 10,
+ *                 lineWidth: 0
+ *             }
+ *         }]
+ *     });
+ *     Ext.Viewport.setLayout('fit');
+ *     Ext.Viewport.add(chart);
+ *
+ * In this configuration we add three different categories of scatter series. Each of them is bound to a different field of the same data store,
+ * `data1`, `data2` and `data3` respectively. All x-fields for the series must be the same field, in this case `name`.
+ * Each scatter series has a different styling configuration for markers, specified by the `marker` object. Finally we set the left axis as
+ * axis to show the current values of the elements.
+ *
+ */
+Ext.define('Ext.chart.series.Scatter', {
+
+    extend: 'Ext.chart.series.Cartesian',
+
+    alias: 'series.scatter',
+
+    type: 'scatter',
+    seriesType: 'scatterSeries',
+
+    requires: [
+        'Ext.chart.series.sprite.Scatter'
+    ],
+
+    config: {
+        itemInstancing: {
+            fx: {
+                customDuration: {
+                    translationX: 0,
+                    translationY: 0
+                }
+            }
+        }
+    },
+
+    applyMarker: function (marker) {
+        this.getItemInstancing();
+        this.setItemInstancing(marker);
+    }
+});
+
+
+Ext.define("Ext.chart.series.sprite.AbstractRadial", {
+    extend: 'Ext.draw.sprite.Sprite',
+    inheritableStatics: {
+        def: {
+            processors: {
+                rotation: 'number',
+                x: 'number',
+                y: 'number'
+            },
+            defaults: {
+                rotation: 0,
+                x: 0,
+                y: 0
+            }
+        }
+    }
 });
 
 /**
@@ -76662,6 +98054,7 @@ Ext.define('App.controller.Login', {
         values.site = server.site;
         App.server = server;
         Ext.Viewport.mask({xtype: 'loadmask', message: 'Be Right Back!'});
+
         window.ExtDirectManagerProvider.setUrl(server.url+'data/appRouter.php');
         if(App.isNative) me.saveServerData(App.server);
         DataProvider.authProcedures.login(values, function(response){
@@ -76812,13 +98205,25 @@ Ext.define('App.controller.Navigation', {
 
     config: {
         control: {
-            patientList: {
+            navPanel:{
+                collapsechange:'onNavPanelCollapseChange'
+            },
+            navPanelCollapseBtn:{
+                tap:'onNavPanelCollapseBtnTap'
+            },
+            patientListNav: {
                 initialize : 'onPatientListInit',
                 select: 'onPatientListSelect',
                 show: 'onPatientListShow'
             },
+            medicalRecordMenu: {
+                select: 'onMedicalRecordMenuSelect'
+            },
             mainPanel: {
                 activeitemchange: 'onMainPanelActiveItemChange'
+            },
+            mainPanelTitleBar:{
+                initialize:'onMainPanelTitleBarInitialize'
             },
             homeBtn: {
                 tap: 'onHomeBtnTap'
@@ -76831,57 +98236,127 @@ Ext.define('App.controller.Navigation', {
         refs: {
             mainTabletView: 'maintabletview',
             mainPhoneView: 'mainphoneview',
+
+            navPanel: 'navpanel',
+            navPanelCollapseBtn: 'button[action=leftNavCollapseBtn]',
+            navPanelTitleBar: 'titlebar[action=leftNavTitleBar]',
+            patientListNav: 'patientlistnav',
+            medicalRecordMenu: 'medicalrecordmenu',
+
             mainPanel: 'container[action=mainPanel]',
-            mainNavBar: 'titlebar[action=mainNavBar]',
-            patientList: 'patientlist',
-            patientSummaryPanel: 'patientSummaryPanel',
+            mainPanelTitleBar: 'titlebar[action=mainTitleBar]',
             homeBtn: 'button[action=home]',
-            backBtn: 'button[action=back]'
+            backBtn: 'button[action=back]',
+
+            patientSummaryPanel: 'patientSummaryPanel'
+
         }
     },
 
     onPatientListInit:function(){
-        var store = this.getPatientList().getStore();
+        var store = this.getPatientListNav().getStore();
         store.getProxy()._extraParams.uid = App.user.id;
-        store.load();
     },
 
     onPatientListShow:function(){
-        this.getPatientList().getStore().load();
+        this.getPatientListNav().getStore().load();
     },
 
-    onPatientListSelect: function(view, model){
-        this.getMainPanel().setActiveItem(1);
-        this.getMainNavBar().setTitle(model.data.name);
-        this.getApplication().getController('App.controller.PatientSummary').loadPatient(model.data.pid);
 
-    },
 
     onMainPanelActiveItemChange:function(card, newActiveItem){
-        var bBtn = this.getBackBtn();
-        var hBtn = this.getHomeBtn();
-        if(newActiveItem.action == 'home'){
-            bBtn.hide();
-            hBtn.hide();
-        }else if(newActiveItem.action == 'pSummary'){
-            bBtn.hide();
-            hBtn.show();
-        }else{
-            bBtn.show();
+        if(newActiveItem){
+            var nav = newActiveItem.config.nav,
+                tier = newActiveItem.config.tier;
+
+            if(nav){
+                this.setNavMenu(nav);
+            }else{
+                say('No nav property found in panel config');
+            }
+            if(tier){
+               this.setBackBtn(tier);
+            }else{
+                say('No tier property found in panel config');
+            }
         }
+
+    },
+
+    setBackBtn:function(tier){
+        tier == 1 ? this.getBackBtn().hide() : this.getBackBtn().show();
     },
 
     onHomeBtnTap:function(){
-        this.getPatientList().deselectAll();
-        this.getMainNavBar().setTitle('Home');
+        this.getPatientListNav().deselectAll();
         this.getMainPanel().setActiveItem(0);
+        this.getMainPanelTitleBar().setTitle('Home');
     },
-
     onBackBtnTap:function(){
         var panel = this.getMainPanel(),
-            prev = panel.items.items.indexOf(panel.getActiveItem()) - 1;
-        panel.setActiveItem(prev);
+            tier = panel.getActiveItem().config.tier;
+
+        if(tier == 2){
+            this.getPatientListNav().deselectAll();
+            panel.setActiveItem(0);
+        }else if(tier == 3){
+            panel.setActiveItem(1);
+        }else if(tier == 4){
+            this.getMedicalRecordMenu().deselectAll();
+            panel.setActiveItem(2);
+        }
+    },
+
+    goToPanel:function(xtype){
+        var mainPanel = this.getMainPanel(),
+            newPanel = mainPanel.query(xtype)[0];
+        mainPanel.setActiveItem(newPanel);
+    },
+
+    /**
+     * Nav Lists Panels selects
+     */
+    onPatientListSelect: function(view, model){
+        App.pid = model.data.pid;
+        this.getMainPanel().setActiveItem(1);
+        this.getMainPanelTitleBar().setTitle(model.data.name);
+        this.getApplication().getController('App.controller.PatientSummary').loadPatient();
+    },
+    onMedicalRecordMenuSelect:function(view, model){
+        this.goToPanel(model.data.action);
+    },
+
+    /**
+     * Nav Collapse functions!!!
+     */
+    onMainPanelTitleBarInitialize:function(comp){
+        comp.element.on('swipe', function(event){
+            this.setNavCollapse(event.direction == 'left')
+        }, this);
+    },
+    setNavCollapse: function(collapse) {
+        var nav = this.getNavPanel(),
+            title = this.getNavPanelTitleBar();
+        this.getNavPanelTitleBar().setTitle(collapse ? '' : 'Patients');
+        nav.collapsed = collapse;
+        collapse ? nav.addCls('collapsed') : nav.removeCls('collapsed');
+        nav.setWidth(collapse ? 85 : 350);
+        nav.fireEvent('collapsechange', collapse, nav, title);
+    },
+    onNavPanelCollapseBtnTap:function(){
+        var collapsed = this.getNavPanel().collapsed;
+        this.setNavCollapse(!collapsed);
+    },
+    onNavPanelCollapseChange:function(collapse){
+        this.getNavPanelCollapseBtn().setWidth(85);
+    },
+    setNavMenu:function(menu){
+        var navPanel = this.getNavPanel(),
+          newMenu = navPanel.query(menu)[0];
+        navPanel.setActiveItem(newMenu);
+        this.setNavCollapse(menu != 'patientlistnav');
     }
+
 });
 
 /**
@@ -76901,37 +98376,33 @@ Ext.define('App.controller.PatientSummary', {
         },
 
         refs: {
-            patientSummaryPanel: 'patientSummaryPanel',
+            patientSummaryPanel: 'patientsummarypanel',
             patientSummaryHeader: 'container[action=patientSummaryHeader]',
-            patientSummaryList: 'patientSummaryPanel > list'
+            patientSummaryList: 'patientsummarypanel > list'
 
         }
     },
 
-    loadPatient:function(pid){
+    loadPatient:function(){
         var panel = this.getPatientSummaryPanel(),
             header = this.getPatientSummaryHeader(),
             list = this.getPatientSummaryList();
-        panel.pid = pid;
-        header.getTpl().overwrite(header.element, {name:'fulano', pid:pid});
+        header.getTpl().overwrite(header.element, {name:'fulano', pid:App.pid});
         list.getStore().load();
     },
 
     onHeaderTap:function(){
-        App.MsgOk('TODO', 'Go To Encounter Area')
+        this.getApplication().getController('App.controller.Navigation').goToPanel('patientrecordpanel');
     },
 
     onHeaderInitialize:function(container){
-        var panel = this.getPatientSummaryPanel();
+        var me = this;
         container.element.on({
-            tap: function(e, node) {
-                App.MsgOk('TODO', 'Go To Encounter PID: ' + panel.pid);
+            tap:function(){
+                me.onHeaderTap();
             }
         });
     }
-
-
-
 
 });
 
@@ -76954,7 +98425,7 @@ Ext.define('App.store.Patients', {
     config: {
         model: 'App.model.Patients',
         pageSize: 20,
-        autoLoad: true,
+        autoLoad: false,
 
         grouper: {
            groupFn: function(record) {
@@ -77086,52 +98557,19 @@ Ext.define('App.view.Login', {
 /**
  * Created with JetBrains PhpStorm.
  * User: ernesto
- * Date: 11/11/12
- * Time: 1:45 PM
- * To change this template use File | Settings | File Templates.
- */
-Ext.define('App.view.PatientList', {
-    extend: 'Ext.List',
-    xtype:'patientlist',
-    requires:[
-        'App.store.Patients',
-        'Ext.plugin.PullRefresh'
-    ],
-    config: {
-        store: Ext.create('App.store.Patients'),
-        limit: 20,
-        grouped     : true,
-        plugins: [
-//            { xclass: 'Ext.plugin.ListPaging' },
-            { xclass: 'Ext.plugin.PullRefresh' }
-        ],
-
-        emptyText: '<p class="no-searches">No Patients found</p>',
-
-        itemTpl: Ext.create('Ext.XTemplate',
-            '<div class="patientList">',
-            '   <img src="{photoSrc}" width="80" height="80"/>',
-            '   <div class="info">',
-            '       <p>{name}</p>',
-            '       <p>#{pid}</p>',
-            '   </div>',
-            '</div>'
-        )
-    }
-});
-
-/**
- * Created with JetBrains PhpStorm.
- * User: ernesto
  * Date: 11/19/12
  * Time: 10:31 PM
  * To change this template use File | Settings | File Templates.
  */
-Ext.define('App.view.Home',{
+Ext.define('App.view.HomePanel',{
     extend:'Ext.Panel',
-    xtype:'homePanel',
+    xtype:'homepanel',
+    nav:'patientlistnav',
     config:{
         action:'home',
+        scrollable:true,
+        nav:'patientlistnav',
+        tier:1,
         html: '<div class="features">' +
             '   <h2>Welcome to GaiaEHR Aire <span class="version">Beta 0.0.1</span></h2>' +
             '   <div class="feature main">' +
@@ -77166,17 +98604,19 @@ Ext.define('App.view.Home',{
  * Time: 10:31 PM
  * To change this template use File | Settings | File Templates.
  */
-Ext.define('App.view.PatientSummary',{
-    extend:'Ext.Panel',
-    xtype:'patientSummaryPanel',
-    config:{
+Ext.define('App.view.PatientSummaryPanel', {
+    extend: 'Ext.Panel',
+    xtype: 'patientsummarypanel',
+    config: {
         layout: 'vbox',
-        scrollable:false,
-        items:[
+        scrollable: false,
+        nav: 'patientlistnav',
+        tier: 2,
+        items: [
             {
-                xtype:'container',
-                action:'patientSummaryHeader',
-                tpl: Ext.create('Ext.XTemplate',
+                xtype: 'container',
+                action: 'patientSummaryHeader',
+                tpl: Ext.create('Ext.XTemplate', '' +
                     '<div class="patientHeader">',
                     '   <div class="left">',
                     '       <img src="http://localhost/gaiaehr/sites/default/patients/{pid}/patientPhotoId.jpg{photoSrc}" width="132" height="132"/>',
@@ -77194,11 +98634,602 @@ Ext.define('App.view.PatientSummary',{
             },
             {
                 xtype: 'list',
-                flex:1,
-                margin:'10 0 0 0',
+                flex: 1,
+                margin: '10 0 0 0',
                 itemTpl: '<div class="contact">{firstName} <strong>{lastName}</strong></div>',
                 store: Ext.create('App.store.Patients'),
                 grouped: true
+            }
+        ]
+    }
+});
+
+/**
+ * Created with JetBrains PhpStorm.
+ * User: ernesto
+ * Date: 11/19/12
+ * Time: 10:31 PM
+ * To change this template use File | Settings | File Templates.
+ */
+Ext.define('App.view.PatientRecordPanel',{
+    extend:'Ext.Panel',
+    xtype:'patientrecordpanel',
+    config:{
+        nav: 'medicalrecordnav',
+        tier: 3,
+        html:'<p>PatientRecordPanel</p>'
+    }
+});
+
+/**
+ * Created with JetBrains PhpStorm.
+ * User: ernesto
+ * Date: 11/19/12
+ * Time: 10:31 PM
+ * To change this template use File | Settings | File Templates.
+ */
+Ext.define('App.view.PatientDemographicsPanel',{
+    extend:'Ext.Panel',
+    xtype:'patientdemographicspanel',
+    config:{
+        nav: 'medicalrecordnav',
+        tier:4,
+        html:'<p>PatientDemographicsPanel</p>'
+    }
+});
+
+/**
+ * Created with JetBrains PhpStorm.
+ * User: ernesto
+ * Date: 11/19/12
+ * Time: 10:31 PM
+ * To change this template use File | Settings | File Templates.
+ */
+Ext.define('App.view.PatientProgressNotesPanel',{
+    extend:'Ext.Panel',
+    xtype:'patientprogressnotespanel',
+    config:{
+        nav: 'medicalrecordnav',
+        tier:4,
+        html:'<p>PatientProgressNotesPanel</p>'
+    }
+});
+
+/**
+ * Created with JetBrains PhpStorm.
+ * User: ernesto
+ * Date: 11/19/12
+ * Time: 10:31 PM
+ * To change this template use File | Settings | File Templates.
+ */
+Ext.define('App.view.PatientChartsPanel', {
+    extend: 'Ext.Panel',
+    xtype: 'patientchartspanel',
+    requires: [
+        'Ext.chart.*'
+    ],
+    config: {
+        scrollable:true,
+        nav: 'medicalrecordnav',
+        tier: 4,
+        layout: {
+            type: 'vbox',
+            align: 'stretch'
+        },
+        defaults: { flex: 1 },
+        items: [
+            {
+                xtype: 'chart',
+                animate: true,
+                store: {
+                    fields: ['date', 'CBP', 'DBP'],
+                    data: [
+                        {'date': new Date('Jan 1 2010').getTime(), 'CBP': 120, 'high': 120, 'low': 80, 'DBP': 80},
+                        {'date': new Date('Jan 2 2010').getTime(), 'CBP': 125, 'high': 125, 'low': 85, 'DBP': 85},
+                        {'date': new Date('Jan 3 2010').getTime(), 'CBP': 119, 'high': 119, 'low': 82, 'DBP': 82}
+                    ]
+                },
+                axes: [
+                    {
+                        type: 'numeric',
+                        position: 'left',
+                        fields: ['CBP', 'DBP'],
+                        title: {
+                            text: 'CBP / DBP',
+                            fontSize: 15
+                        },
+                        grid: true
+                    },
+                    {
+                        type: 'time',
+                        position: 'bottom',
+                        fields: ['date'],
+                        fromDate: new Date('Dec 31 2009'),
+                        toDate: new Date('Jan 6 2010'),
+                        title: {
+                            text: 'Date',
+                            fontSize: 15
+                        },
+                        style: {
+                            axisLine: false
+                        }
+                    }
+                ],
+                series: [
+                    {
+                        type: 'candlestick',
+                        xField: 'date',
+                        openField: 'CBP',
+                        highField: 'CBP',
+                        lowField: 'DBP',
+                        closeField: 'DBP',
+                        style: {
+                            dropStyle: {
+                                fill: 'rgb(237, 123, 43)',
+                                stroke: 'rgb(237, 123, 43)'
+                            },
+                            raiseStyle: {
+                                fill: 'rgb(55, 153, 19)',
+                                stroke: 'rgb(55, 153, 19)'
+                            }
+                        },
+                        aggregator: {
+                            strategy: 'time'
+                        }
+                    }
+                ]
+            },
+            {
+                xtype: 'chart',
+                animate: true,
+                store: {
+                    fields: ['date', 'CBP', 'DBP'],
+                    data: [
+                        {'date': new Date('Jan 1 2010').getTime(), 'CBP': 120, 'high': 120, 'low': 80, 'DBP': 80},
+                        {'date': new Date('Jan 2 2010').getTime(), 'CBP': 125, 'high': 125, 'low': 85, 'DBP': 85},
+                        {'date': new Date('Jan 3 2010').getTime(), 'CBP': 119, 'high': 119, 'low': 82, 'DBP': 82}
+                    ]
+                },
+                axes: [
+                    {
+                        type: 'numeric',
+                        position: 'left',
+                        fields: ['CBP', 'DBP'],
+                        title: {
+                            text: 'CBP / DBP',
+                            fontSize: 15
+                        },
+                        grid: true
+                    },
+                    {
+                        type: 'time',
+                        position: 'bottom',
+                        fields: ['date'],
+                        fromDate: new Date('Dec 31 2009'),
+                        toDate: new Date('Jan 6 2010'),
+                        title: {
+                            text: 'Date',
+                            fontSize: 15
+                        },
+                        style: {
+                            axisLine: false
+                        }
+                    }
+                ],
+                series: [
+                    {
+                        type: 'candlestick',
+                        xField: 'date',
+                        openField: 'CBP',
+                        highField: 'CBP',
+                        lowField: 'DBP',
+                        closeField: 'DBP',
+                        style: {
+                            dropStyle: {
+                                fill: 'rgb(237, 123, 43)',
+                                stroke: 'rgb(237, 123, 43)'
+                            },
+                            raiseStyle: {
+                                fill: 'rgb(55, 153, 19)',
+                                stroke: 'rgb(55, 153, 19)'
+                            }
+                        },
+                        aggregator: {
+                            strategy: 'time'
+                        }
+                    }
+                ]
+            },
+            {
+                xtype: 'chart',
+                animate: true,
+                store: {
+                    fields: ['date', 'CBP', 'DBP'],
+                    data: [
+                        {'date': new Date('Jan 1 2010').getTime(), 'CBP': 120, 'high': 120, 'low': 80, 'DBP': 80},
+                        {'date': new Date('Jan 2 2010').getTime(), 'CBP': 125, 'high': 125, 'low': 85, 'DBP': 85},
+                        {'date': new Date('Jan 3 2010').getTime(), 'CBP': 119, 'high': 119, 'low': 82, 'DBP': 82}
+                    ]
+                },
+                axes: [
+                    {
+                        type: 'numeric',
+                        position: 'left',
+                        fields: ['CBP', 'DBP'],
+                        title: {
+                            text: 'CBP / DBP',
+                            fontSize: 15
+                        },
+                        grid: true
+                    },
+                    {
+                        type: 'time',
+                        position: 'bottom',
+                        fields: ['date'],
+                        fromDate: new Date('Dec 31 2009'),
+                        toDate: new Date('Jan 6 2010'),
+                        title: {
+                            text: 'Date',
+                            fontSize: 15
+                        },
+                        style: {
+                            axisLine: false
+                        }
+                    }
+                ],
+                series: [
+                    {
+                        type: 'candlestick',
+                        xField: 'date',
+                        openField: 'CBP',
+                        highField: 'CBP',
+                        lowField: 'DBP',
+                        closeField: 'DBP',
+                        style: {
+                            dropStyle: {
+                                fill: 'rgb(237, 123, 43)',
+                                stroke: 'rgb(237, 123, 43)'
+                            },
+                            raiseStyle: {
+                                fill: 'rgb(55, 153, 19)',
+                                stroke: 'rgb(55, 153, 19)'
+                            }
+                        },
+                        aggregator: {
+                            strategy: 'time'
+                        }
+                    }
+                ]
+            }
+        ]
+    }
+});
+
+/**
+ * Created with JetBrains PhpStorm.
+ * User: ernesto
+ * Date: 11/19/12
+ * Time: 10:31 PM
+ * To change this template use File | Settings | File Templates.
+ */
+Ext.define('App.view.PatientImagesPanel',{
+    extend:'Ext.Panel',
+    xtype:'patientimagespanel',
+    config:{
+        nav: 'medicalrecordnav',
+        tier:4,
+        html:'<p>PatientImagesPanel</p>'
+    }
+});
+
+/**
+ * Created with JetBrains PhpStorm.
+ * User: ernesto
+ * Date: 11/19/12
+ * Time: 10:31 PM
+ * To change this template use File | Settings | File Templates.
+ */
+Ext.define('App.view.PatientDocumentsPanel',{
+    extend:'Ext.Panel',
+    xtype:'patientdocumentspanel',
+    config:{
+        nav: 'medicalrecordnav',
+        tier:4,
+        html:'<p>PatientDocumentsPanel</p>'
+    }
+});
+
+/**
+ * Created with JetBrains PhpStorm.
+ * User: ernesto
+ * Date: 11/19/12
+ * Time: 10:31 PM
+ * To change this template use File | Settings | File Templates.
+ */
+Ext.define('App.view.PatientLabResultsPanel',{
+    extend:'Ext.Panel',
+    xtype:'patientlabresultspanel',
+    config:{
+        nav: 'medicalrecordnav',
+        tier:4,
+        html: 'PatientLabResultsPanel'
+
+    }
+});
+
+/**
+ * Created with JetBrains PhpStorm.
+ * User: ernesto
+ * Date: 11/19/12
+ * Time: 10:31 PM
+ * To change this template use File | Settings | File Templates.
+ */
+Ext.define('App.view.PatientClinicalOrdersPanel',{
+    extend:'Ext.Panel',
+    xtype:'patientclinicalorderspanel',
+    config:{
+        nav:'medicalrecordnav',
+        tier:4,
+        html:'<p>PatientClinicalOrdersPanel</p>'
+    }
+});
+
+Ext.define('App.view.MainPanel', {
+    extend: 'Ext.Container',
+    xtype: 'mainpanel',
+    requires: [
+        'Ext.navigation.Bar',
+        'App.view.HomePanel',
+        'App.view.PatientSummaryPanel',
+        'App.view.PatientRecordPanel',
+        'App.view.PatientDemographicsPanel',
+        'App.view.PatientProgressNotesPanel',
+        'App.view.PatientChartsPanel',
+        'App.view.PatientImagesPanel',
+        'App.view.PatientDocumentsPanel',
+        'App.view.PatientLabResultsPanel',
+        'App.view.PatientClinicalOrdersPanel'
+    ],
+    config: {
+        scrollable: false,
+        action:'mainPanel',
+        cls:'mainPanel',
+        layout: {
+            type: 'card',
+            animation: {
+                type: 'slide',
+                direction: 'left',
+                duration: 250
+            }
+        },
+        defaults:{ padding:10 },
+        items:[
+            {
+                title:'Home',
+                xtype:'homepanel'
+            },
+            {
+                title:'Patient Summary Panel',
+                xtype:'patientsummarypanel'
+            },
+            {
+                title:'Patient Record Panel',
+                xtype:'patientrecordpanel'
+            },
+            {
+                title:'Patient Demographics Panel',
+                xtype:'patientdemographicspanel'
+            },
+            {
+                title:'Patient Images Panel',
+                xtype:'patientprogressnotespanel'
+            },
+            {
+                title:'Patient Charts Panel',
+                xtype:'patientchartspanel'
+            },
+            {
+                title:'Patient Name',
+                xtype:'patientimagespanel'
+            },
+            {
+                title:'Patient Documents Panel',
+                xtype:'patientdocumentspanel'
+            },
+            {
+                title:'Patient Lab Results',
+                xtype:'patientlabresultspanel'
+            },
+            {
+                title:'Patient Clinical Orders Panel',
+                xtype:'patientclinicalorderspanel'
+            }
+
+        ]
+    }
+});
+
+/**
+ * Created with JetBrains PhpStorm.
+ * User: ernesto
+ * Date: 11/11/12
+ * Time: 1:45 PM
+ * To change this template use File | Settings | File Templates.
+ */
+Ext.define('App.view.PatientListNav', {
+    extend: 'Ext.List',
+    xtype:'patientlistnav',
+    requires:[
+        'App.store.Patients',
+        'Ext.plugin.PullRefresh'
+    ],
+    config: {
+        store: Ext.create('App.store.Patients'),
+        limit: 20,
+        grouped     : true,
+        plugins: [
+            { xclass: 'Ext.plugin.PullRefresh' }
+        ],
+
+        emptyText: '<p class="no-searches">No Patients found</p>',
+
+        itemTpl: Ext.create('Ext.XTemplate',
+            '<div class="patientList">',
+            '   <img src="{photoSrc}" width="80" height="80"/>',
+            '   <div class="info">',
+            '       <p>{name}</p>',
+            '       <p>#{pid}</p>',
+            '   </div>',
+            '</div>'
+        )
+    }
+});
+
+/**
+ * Created with JetBrains PhpStorm.
+ * User: ernesto
+ * Date: 11/11/12
+ * Time: 1:45 PM
+ * To change this template use File | Settings | File Templates.
+ */
+Ext.define('App.view.MedicalRecordMenu', {
+    extend: 'Ext.List',
+    xtype:'medicalrecordmenu',
+    requires:[
+        'App.store.Patients',
+        'Ext.plugin.PullRefresh'
+    ],
+    cls:'MedicalRecordMenu',
+    config: {
+        data: [
+            {
+                text:'Demographics',
+                action:'patientdemographicspanel',
+                cls:''
+            },
+            {
+                text:'Progress Notes',
+                action:'patientprogressnotespanel',
+                cls:''
+            },
+            {
+                text:'Charts',
+                action:'patientchartspanel',
+                cls:''
+            },
+            {
+                text:'Images',
+                action:'patientimagespanel',
+                cls:''
+            },
+            {
+                text:'Documents',
+                action:'patientdocumentspanel',
+                cls:''
+            },
+            {
+                text:'Lab Results',
+                action:'patientlabresultspanel',
+                cls:''
+            },
+            {
+                text:'Clinical Orders',
+                action:'patientclinicalorderspanel',
+                cls:''
+            }
+        ],
+        itemTpl: Ext.create('Ext.XTemplate',
+            '<div class="MedicalRecordMenuList {action}">{text}</div>'
+        )
+    }
+});
+
+/**
+ * Created with JetBrains PhpStorm.
+ * User: ernesto
+ * Date: 11/11/12
+ * Time: 1:45 PM
+ * To change this template use File | Settings | File Templates.
+ */
+Ext.define('App.view.MedicalRecordNav', {
+    extend: 'Ext.Container',
+    xtype:'medicalrecordnav',
+    requires:[
+        'App.view.MedicalRecordMenu'
+    ],
+    cls:'medicalRecordNav',
+    config: {
+        layout:'vbox',
+        items:[
+            {
+                xtype:'container',
+                action:'medicalRecordNavHeader',
+                data:{
+                    pid:'1'
+                },
+                tpl: Ext.create('Ext.XTemplate',
+                    '<div class="medicalRecordNavHeader">',
+                    '   <img src="http://localhost/gaiaehr/sites/default/patients/{pid}/patientPhotoId.jpg{photoSrc}" width="85" height="85"/>',
+                    '</div>'
+                )
+            },
+            {
+                xtype:'medicalrecordmenu',
+                flex:1
+            }
+        ]
+    }
+});
+
+/**
+ * Created with JetBrains PhpStorm.
+ * User: ernesto
+ * Date: 11/11/12
+ * Time: 1:45 PM
+ * To change this template use File | Settings | File Templates.
+ */
+Ext.define('App.view.NavPanel', {
+    extend: 'Ext.Container',
+    xtype:'navpanel',
+    requires:[
+        'Ext.navigation.Bar',
+        'App.view.PatientListNav',
+        'App.view.MedicalRecordNav'
+    ],
+    config: {
+        cls:'leftNav',
+        width:350,
+        collapsed:false,
+        layout: {
+            type: 'card',
+            animation: {
+                type: 'slide',
+                direction: 'left',
+                duration: 250
+            }
+        },
+        items:[
+            {
+                xtype : 'patientlistnav',
+                flex:1
+            },
+            {
+                xtype : 'medicalrecordnav',
+                flex:1
+            },
+            {
+                action: 'leftNavTitleBar',
+                xtype : 'titlebar',
+                docked: 'top',
+                title : 'Patients',
+                items:[
+                    {
+                        align: 'left',
+                        cls:'collapseMenuBtn',
+                        action:'leftNavCollapseBtn',
+                        minWidth:85
+                    }
+                ]
             }
         ]
     }
@@ -77210,9 +99241,8 @@ Ext.define('App.view.MainTabletView', {
 
     requires: [
         'Ext.navigation.Bar',
-        'App.view.PatientList',
-        'App.view.Home',
-        'App.view.PatientSummary'
+        'App.view.MainPanel',
+        'App.view.NavPanel'
     ],
 
     config: {
@@ -77220,64 +99250,14 @@ Ext.define('App.view.MainTabletView', {
         layout: 'fit',
         items: [
             {
-                scrollable: false,
-                action:'mainPanel',
-                cls:'mainPanel',
-                layout: {
-                    type: 'card',
-                    animation: {
-                        type: 'slide',
-                        direction: 'left',
-                        duration: 250
-                    }
-                },
-                defaults:{ padding:10, scrollable:true },
-                items:[
-                    {
-                        title:'Home',
-                        xtype:'homePanel'
-                    },
-                    {
-                        title:'Patient Name',
-                        scrollable:false,
-                        xtype:'patientSummaryPanel'
-                    },
-                    {
-                        title:'Patient Name',
-                        xtype:'panel',
-                        action:'pEncounter',
-                        html:'<h1>Encounter Placeholder'
-                    },
-                    {
-                        title:'Patient Name',
-                        xtype:'panel',
-                        action:'pDocuments',
-                        html:'<h1>Documents Placeholder'
-                    }
-                ]
+                xtype:'mainpanel'
             },
             {
-                xtype:'container',
-                docked: 'left',
-                layout:'vbox',
-                cls:'leftNav',
-                items:[
-                    {
-                        action: 'leftNavBar',
-                        xtype : 'titlebar',
-                        docked: 'top',
-                        title : 'Patients'
-                    },
-                    {
-                        xtype : 'patientlist',
-                        width:350,
-                        flex:1
-                    }
-                ]
-
+                xtype:'navpanel',
+                docked: 'left'
             },
             {
-                action: 'mainNavBar',
+                action: 'mainTitleBar',
                 xtype : 'titlebar',
                 docked: 'top',
                 title : 'Home',
@@ -77306,16 +99286,17 @@ Ext.define('App.view.MainTabletView', {
                     }
                 ]
             }
+
         ]
     }
 });
 
-Ext.define('App.view.MainPhone', {
+Ext.define('App.view.MainPhoneView', {
     extend: 'Ext.Container',
     xtype: 'mainphoneview',
     requires: [
         'Ext.TitleBar',
-        'App.view.PatientList'
+        'App.view.PatientListNav'
 
     ],
 
@@ -77363,12 +99344,14 @@ Ext.application({
         'Ext.plugin.PullRefresh',
         'Ext.carousel.Carousel',
         'App.view.Login',
-        'App.view.MainPhone'
+
+        'App.view.MainTabletView',
+        'App.view.MainPhoneView'
     ],
 
     controllers: ['Main','Login','Navigation','PatientSummary'],
 
-    views: ['Login', 'MainTabletView', 'MainTabletView'],
+    views: ['Login', 'MainTabletView', 'MainPhoneView'],
 
     stores: ['Patients'],
 
@@ -77392,14 +99375,9 @@ Ext.application({
 
     launch: function() {
         var me = this;
-
         App.db = null;
-        App.isNative = (Ext.device.Device.platform == 'Android' || Ext.device.Device.platform == 'iOS');
+        App.isNative = false;
         App.isPhone = Ext.os.deviceType == 'Phone';
-
-        if(App.isNative){
-            App.db = window.openDatabase("Database", "1.0", "Cordova Demo", 200000);
-        }
 
         App.MsgOk = function(title, msg, callback){
             if(App.isNative){
@@ -77426,10 +99404,14 @@ Ext.application({
             }
         };
 
-        App.isPhone = Ext.os.deviceType == 'Phone';
-
         // Destroy the #appLoadingIndicator element
         Ext.fly('appLoadingIndicator').destroy();
+
+        document.addEventListener("deviceready", function(){
+            App.isNative = true;
+            App.db = window.openDatabase("Database", "1.0", "GaiaEHRAireData", 200000);
+            me.getApplication().getController('App.controller.Login').setServerData();
+        }, false);
 
         // Initialize the main view
         Ext.Viewport.add(Ext.create('App.view.Login',{

@@ -9,6 +9,8 @@ Ext.define('App.view.PatientRecordPanel',{
     extend:'Ext.Panel',
     xtype:'patientrecordpanel',
     config:{
+        nav: 'medicalrecordnav',
+        tier: 3,
         html:'<p>PatientRecordPanel</p>'
     }
 });

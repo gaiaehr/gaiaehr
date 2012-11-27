@@ -3,7 +3,7 @@ Ext.define('App.view.MainPhoneView', {
     xtype: 'mainphoneview',
     requires: [
         'Ext.TitleBar',
-        'App.view.PatientList'
+        'App.view.PatientListNav'
 
     ],
 

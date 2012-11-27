@@ -48,14 +48,9 @@ Ext.application({
 
     launch: function() {
         var me = this;
-
         App.db = null;
-        App.isNative = (Ext.device.Device.platform == 'Android' || Ext.device.Device.platform == 'iOS');
+        App.isNative = false;
         App.isPhone = Ext.os.deviceType == 'Phone';
-
-        if(App.isNative){
-            App.db = window.openDatabase("Database", "1.0", "Cordova Demo", 200000);
-        }
 
         App.MsgOk = function(title, msg, callback){
             if(App.isNative){
@@ -84,6 +79,12 @@ Ext.application({
 
         // Destroy the #appLoadingIndicator element
         Ext.fly('appLoadingIndicator').destroy();
+
+        document.addEventListener("deviceready", function(){
+            App.isNative = true;
+            App.db = window.openDatabase("Database", "1.0", "GaiaEHRAireData", 200000);
+            me.getApplication().getController('App.controller.Login').setServerData();
+        }, false);
 
         // Initialize the main view
         Ext.Viewport.add(Ext.create('App.view.Login',{

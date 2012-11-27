@@ -22,31 +22,25 @@ Ext.define('App.controller.PatientSummary', {
         }
     },
 
-    loadPatient:function(pid){
+    loadPatient:function(){
         var panel = this.getPatientSummaryPanel(),
             header = this.getPatientSummaryHeader(),
             list = this.getPatientSummaryList();
-        panel.pid = pid;
-        header.getTpl().overwrite(header.element, {name:'fulano', pid:pid});
+        header.getTpl().overwrite(header.element, {name:'fulano', pid:App.pid});
         list.getStore().load();
     },
 
     onHeaderTap:function(){
-        App.MsgOk('TODO', 'Go To Encounter Area')
+        this.getApplication().getController('App.controller.Navigation').goToPanel('patientrecordpanel');
     },
 
     onHeaderInitialize:function(container){
-        var me = this,
-            panel = me.getPatientSummaryPanel();
+        var me = this;
         container.element.on({
-            tap: function(e, node) {
-                me.getApplication().getController('App.controller.Navigation').setMedicalRecordMenu();
-                //App.MsgOk('TODO', 'Go To Encounter PID: ' + panel.pid);
+            tap:function(){
+                me.onHeaderTap();
             }
         });
     }
-
-
-
 
 });

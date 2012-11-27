@@ -8,8 +8,12 @@
 Ext.define('App.view.HomePanel',{
     extend:'Ext.Panel',
     xtype:'homepanel',
+    nav:'patientlistnav',
     config:{
         action:'home',
+        scrollable:true,
+        nav:'patientlistnav',
+        tier:1,
         html: '<div class="features">' +
             '   <h2>Welcome to GaiaEHR Aire <span class="version">Beta 0.0.1</span></h2>' +
             '   <div class="feature main">' +

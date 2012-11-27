@@ -5,9 +5,9 @@
  * Time: 1:45 PM
  * To change this template use File | Settings | File Templates.
  */
-Ext.define('App.view.PatientList', {
+Ext.define('App.view.PatientListNav', {
     extend: 'Ext.List',
-    xtype:'patientList',
+    xtype:'patientlistnav',
     requires:[
         'App.store.Patients',
         'Ext.plugin.PullRefresh'

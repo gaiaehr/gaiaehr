@@ -35,9 +35,12 @@
      *      }
      */
     "js": [
-        {
-            "path": "touch/sencha-touch-all.js"
-        },
+		{
+		    "path": "touch/sencha-touch-all.js"
+		},
+		{
+		    "path": "dataProviderConfig.js"
+		},
         {
             "path": "app.js",
             "bundle": true,  /* Indicates that all class dependencies are concatenated into this file when build */

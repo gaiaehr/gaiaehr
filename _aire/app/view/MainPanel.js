@@ -8,8 +8,10 @@ Ext.define('App.view.MainPanel', {
         'App.view.PatientRecordPanel',
         'App.view.PatientDemographicsPanel',
         'App.view.PatientProgressNotesPanel',
+        'App.view.PatientChartsPanel',
         'App.view.PatientImagesPanel',
         'App.view.PatientDocumentsPanel',
+        'App.view.PatientLabResultsPanel',
         'App.view.PatientClinicalOrdersPanel'
     ],
     config: {
@@ -47,12 +49,20 @@ Ext.define('App.view.MainPanel', {
                 xtype:'patientprogressnotespanel'
             },
             {
+                title:'Patient Charts Panel',
+                xtype:'patientchartspanel'
+            },
+            {
                 title:'Patient Name',
                 xtype:'patientimagespanel'
             },
             {
                 title:'Patient Documents Panel',
                 xtype:'patientdocumentspanel'
+            },
+            {
+                title:'Patient Lab Results',
+                xtype:'patientlabresultspanel'
             },
             {
                 title:'Patient Clinical Orders Panel',

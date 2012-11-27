@@ -26,7 +26,7 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 if(!isset($_SESSION)) {
-	session_name("GaiaEHR");
+	session_name('GaiaEHR');
 	session_start();
 	session_cache_limiter('private');
 }
@@ -343,11 +343,15 @@ class Medical
 	/***************************************************************************************************************/
 	public function getPatientLabsResults(stdClass $params)
 	{
+		return $this->getPatientLabsResultsByPid($params->parent_id);
+	}
+	public function getPatientLabsResultsByPid($pid)
+	{
 		$records = array();
 		$this->db->setSQL("SELECT pLab.*, pDoc.url AS document_url
 							 FROM patient_labs AS pLab
 						LEFT JOIN patient_documents AS pDoc ON pLab.document_id = pDoc.id
-							WHERE pLab.parent_id = '$params->parent_id'
+							WHERE pLab.parent_id = '$pid'
 						 ORDER BY date DESC");
 		$labs = $this->db->fetchRecords(PDO::FETCH_ASSOC);
 		foreach($labs as $lab) {
@@ -665,6 +669,89 @@ class Medical
 			'totals' => $total,
 			'rows'   => $records
 		);
+	}
+
+
+	public function getPatientsMedicalSummaryGrouped(stdClass $params){
+
+		$records = array();
+		$foo = $this->getAllergiesByPatientID($params->pid);
+		if(!empty($allergies)){
+			foreach($foo AS $row){
+				$record = array(
+					'group' => 'Allergies',
+					'title' => $row['allergy'],
+					'summary' => $row['allergy_type'].' | '.$row['reaction'].' | '.$row['severity'].' | '.$row['location'],
+					'status' => $row['end_date'] == null ? 'Active' : 'Not Active',
+					'date' => $row['begin_date']
+				);
+				$records[] = $record;
+			}
+		}else{
+			$record = array(
+				'group' => 'Allergies',
+				'title' => 'None'
+			);
+			$records[] = $record;
+		}
+		$foo = $this->getPatientSurgeryByPatientID($params->pid);
+		if(!empty($foo)){
+			foreach($foo AS $row){
+				$record = array(
+					'group' => 'Surgeries',
+					'title' => $row['surgery'],
+					'summary' => $row['notes'],
+					'status' => $row['outcome'],
+					'date' => $row['date']
+				);
+				$records[] = $record;
+			}
+		}else{
+			$record = array(
+				'group' => 'Surgeries',
+				'title' => 'None'
+			);
+			$records[] = $record;
+		}
+		$foo = $this->getPatientLabsResultsByPid($params->pid);
+		if(!empty($foo)){
+			foreach($foo AS $row){
+				$record = array(
+					'group' => 'Laboratories',
+					'title' => $row['surgery'],
+					'summary' => $row['notes'],
+					'status' => $row['outcome'],
+					'date' => $row['date']
+				);
+				$records[] = $record;
+			}
+		}else{
+			$record = array(
+				'group' => 'Laboratories',
+				'title' => 'None'
+			);
+			$records[] = $record;
+		}
+		$foo = $this->getPatientImmunizationsByPid($params->pid);
+		if(!empty($foo)){
+			foreach($foo AS $row){
+				$record = array(
+					'group' => 'Immunizations',
+					'title' => $row['immunization_name'],
+					'summary' => $row['note'],
+					'status' => '',
+					'date' => $row['administered_date']
+				);
+				$records[] = $record;
+			}
+		}else{
+			$record = array(
+				'group' => 'Immunizations',
+				'title' => 'None'
+			);
+			$records[] = $record;
+		}
+		return $records;
 	}
 
 	/**

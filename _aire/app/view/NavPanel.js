@@ -10,7 +10,7 @@ Ext.define('App.view.NavPanel', {
     xtype:'navpanel',
     requires:[
         'Ext.navigation.Bar',
-        'App.view.PatientList',
+        'App.view.PatientListNav',
         'App.view.MedicalRecordNav'
     ],
     config: {
@@ -27,11 +27,11 @@ Ext.define('App.view.NavPanel', {
         },
         items:[
             {
-                xtype : 'patientList',
+                xtype : 'patientlistnav',
                 flex:1
             },
             {
-                xtype : 'medicalRecordNav',
+                xtype : 'medicalrecordnav',
                 flex:1
             },
             {
@@ -44,9 +44,7 @@ Ext.define('App.view.NavPanel', {
                         align: 'left',
                         cls:'collapseMenuBtn',
                         action:'leftNavCollapseBtn',
-                        minWidth:85,
-                        width:85,
-                        height:46
+                        minWidth:85
                     }
                 ]
             }

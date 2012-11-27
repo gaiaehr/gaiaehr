@@ -18,7 +18,7 @@ Ext.define('App.controller.Navigation', {
             navPanelCollapseBtn:{
                 tap:'onNavPanelCollapseBtnTap'
             },
-            patientList: {
+            patientListNav: {
                 initialize : 'onPatientListInit',
                 select: 'onPatientListSelect',
                 show: 'onPatientListShow'
@@ -47,8 +47,8 @@ Ext.define('App.controller.Navigation', {
             navPanel: 'navpanel',
             navPanelCollapseBtn: 'button[action=leftNavCollapseBtn]',
             navPanelTitleBar: 'titlebar[action=leftNavTitleBar]',
-            patientList: 'patientList',
-            medicalRecordMenu: 'medicalRecordMenu',
+            patientListNav: 'patientlistnav',
+            medicalRecordMenu: 'medicalrecordmenu',
 
             mainPanel: 'container[action=mainPanel]',
             mainPanelTitleBar: 'titlebar[action=mainTitleBar]',
@@ -61,85 +61,107 @@ Ext.define('App.controller.Navigation', {
     },
 
     onPatientListInit:function(){
-        var store = this.getPatientList().getStore();
+        var store = this.getPatientListNav().getStore();
         store.getProxy()._extraParams.uid = App.user.id;
-//        say(store);
-//        store.load();
     },
 
     onPatientListShow:function(){
-        this.getPatientList().getStore().load();
+        this.getPatientListNav().getStore().load();
     },
 
-    onPatientListSelect: function(view, model){
-        this.getMainPanel().setActiveItem(1);
-        this.getMainPanelTitleBar().setTitle(model.data.name);
-        this.getApplication().getController('App.controller.PatientSummary').loadPatient(model.data.pid);
 
-    },
 
     onMainPanelActiveItemChange:function(card, newActiveItem){
-        var bBtn = this.getBackBtn();
-        var hBtn = this.getHomeBtn();
-        if(newActiveItem.action == 'home'){
-            bBtn.hide();
-            hBtn.hide();
-        }else if(newActiveItem.action == 'pSummary'){
-            bBtn.hide();
-            hBtn.show();
-        }else{
-            bBtn.show();
+        if(newActiveItem){
+            var nav = newActiveItem.config.nav,
+                tier = newActiveItem.config.tier;
+
+            if(nav){
+                this.setNavMenu(nav);
+            }else{
+                say('No nav property found in panel config');
+            }
+            if(tier){
+               this.setBackBtn(tier);
+            }else{
+                say('No tier property found in panel config');
+            }
         }
+
+    },
+
+    setBackBtn:function(tier){
+        tier == 1 ? this.getBackBtn().hide() : this.getBackBtn().show();
     },
 
     onHomeBtnTap:function(){
-        this.getPatientList().deselectAll();
+        this.getPatientListNav().deselectAll();
         this.getMainPanel().setActiveItem(0);
         this.getMainPanelTitleBar().setTitle('Home');
-
     },
-
     onBackBtnTap:function(){
         var panel = this.getMainPanel(),
-            prev = panel.items.items.indexOf(panel.getActiveItem()) - 1;
-        panel.setActiveItem(prev);
+            tier = panel.getActiveItem().config.tier;
+
+        if(tier == 2){
+            this.getPatientListNav().deselectAll();
+            panel.setActiveItem(0);
+        }else if(tier == 3){
+            panel.setActiveItem(1);
+        }else if(tier == 4){
+            this.getMedicalRecordMenu().deselectAll();
+            panel.setActiveItem(2);
+        }
     },
 
+    goToPanel:function(xtype){
+        var mainPanel = this.getMainPanel(),
+            newPanel = mainPanel.query(xtype)[0];
+        mainPanel.setActiveItem(newPanel);
+    },
+
+    /**
+     * Nav Lists Panels selects
+     */
+    onPatientListSelect: function(view, model){
+        App.pid = model.data.pid;
+        this.getMainPanel().setActiveItem(1);
+        this.getMainPanelTitleBar().setTitle(model.data.name);
+        this.getApplication().getController('App.controller.PatientSummary').loadPatient();
+    },
     onMedicalRecordMenuSelect:function(view, model){
-        say(model.data.action + ' Clicked!');
+        this.goToPanel(model.data.action);
     },
 
-    setPatientList:function(){
-        this.getNavPanel().setActiveItem(0)
-    },
-
-    setMedicalRecordMenu:function(){
-        this.setNavCollapse(true);
-        this.getNavPanel().setActiveItem(1);
-    },
-
-    setNavCollapse: function(collapse) {
-        var nav = this.getNavPanel(),
-            title = this.getNavPanelTitleBar();
-        this.getNavPanelTitleBar().setTitle(collapse ? '' : 'Patients');
-        nav.collapsed = collapse;
-        nav.setWidth(collapse ? 85 : 350);
-        nav.fireEvent('collapsechange', collapse, nav, title);
-    },
-
+    /**
+     * Nav Collapse functions!!!
+     */
     onMainPanelTitleBarInitialize:function(comp){
         comp.element.on('swipe', function(event){
             this.setNavCollapse(event.direction == 'left')
         }, this);
     },
-
+    setNavCollapse: function(collapse) {
+        var nav = this.getNavPanel(),
+            title = this.getNavPanelTitleBar();
+        this.getNavPanelTitleBar().setTitle(collapse ? '' : 'Patients');
+        nav.collapsed = collapse;
+        collapse ? nav.addCls('collapsed') : nav.removeCls('collapsed');
+        nav.setWidth(collapse ? 85 : 350);
+        nav.fireEvent('collapsechange', collapse, nav, title);
+    },
     onNavPanelCollapseBtnTap:function(){
         var collapsed = this.getNavPanel().collapsed;
         this.setNavCollapse(!collapsed);
     },
-
     onNavPanelCollapseChange:function(collapse){
         this.getNavPanelCollapseBtn().setWidth(85);
+    },
+    setNavMenu:function(menu){
+        var navPanel = this.getNavPanel(),
+          newMenu = navPanel.query(menu)[0];
+        navPanel.setActiveItem(newMenu);
+        this.setNavCollapse(menu != 'patientlistnav');
     }
 
 });

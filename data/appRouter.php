@@ -40,21 +40,32 @@ if(isset($HTTP_RAW_POST_DATA)){
 		die('Invalid request.');
 	}
 }
+
+if(is_array($data)){
+	$site = $data[0]->server->site;
+	$pvtKey = $data[0]->server->pvtKey;
+	$token = $data[0]->server->token;
+}else{
+	$site = $data->server->site;
+	$pvtKey = $data->server->pvtKey;
+	$token = $data->server->token;
+}
+
 include_once('../registry.php');
-include_once('../sites/'.$data->server->site.'/conf.php');
+include_once('../sites/'.$site.'/conf.php');
 include_once('../dataProvider/Modules.php');
 include_once('../dataProvider/Applications.php');
 include_once('../classes/Sessions.php');
 include_once('config.php');
 $modules = new Modules();
 $app = new Applications();
-$appAccess = $app->hasAccess($data->server->pvtKey);
+$appAccess = $app->hasAccess($pvtKey);
 $API     = array_merge($API, $modules->getEnabledModulesAPI());
 
 
-if(isset($data->server->token)){
+if(isset($token)){
 	$s = new Sessions();
-	$userAccess = $s->setSessionByToken($data->server->token);
+	$userAccess = $s->setSessionByToken($token);
 }
 
 function doRpc($cdata)

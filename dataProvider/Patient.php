@@ -183,7 +183,7 @@ class Patient
 	public function updatePatientDemographicData(stdClass $params)
 	{
 		$data = get_object_vars($params);
-		unset($data['pid']);
+		unset($data['pid'],$data['pic'],$data['age']);
 		foreach($data as $key => $val){
 			if($val == null) unset($data[$key]);
 			if($val === false) $data[$key] = 0;
@@ -253,14 +253,12 @@ class Patient
 	 */
 	public function getPatientDemographicData(stdClass $params)
 	{
-		$pid = $_SESSION['patient']['pid'];
+		$pid = (isset($params->pid) ? $params->pid : $_SESSION['patient']['pid']);
 		$this->db->setSQL("SELECT * FROM patient_demographics WHERE pid = '$pid'");
-		$rows = array();
-		foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row){
-			array_push($rows, $row);
-		}
-		return $rows;
-
+		$p = $this->db->fetchRecord(PDO::FETCH_ASSOC);
+		$p['pic'] = $this->getPatientPhotoSrcIdByPid($p['pid']);
+		$p['age'] = $this->getPatientAgeByDOB($p['DOB']);
+		return $p;
 	}
 
 	/**
@@ -457,7 +455,7 @@ class Patient
 			}
 		}
 		//TODO: ADD THIS TO DEBUG DATE IN THE FUTURE
-		$ageStr .= ' (' . $age['years'] . 'y' . $age['months'] . 'm' . $age['days'] . 'd)';
+		//$ageStr .= ' (' . $age['years'] . 'y' . $age['months'] . 'm' . $age['days'] . 'd)';
 		return array(
 			'DMY' => $age, 'str' => $ageStr
 		);

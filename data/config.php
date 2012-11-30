@@ -60,6 +60,9 @@ $API = array(
 			'getEncounter' => array(
 				'len' => 1
 			),
+			'getEncounterSummary' => array(
+				'len' => 1
+			),
 			'updateEncounter' => array(
 				'len' => 1
 			),

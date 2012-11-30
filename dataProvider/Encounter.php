@@ -182,6 +182,29 @@ class Encounter
 			return array('success' => false, 'error' => "Encounter ID $params->eid not found");
 		}
 	}
+	public function getEncounterSummary(stdClass $params)
+	{
+		$this->setEid($params->eid);
+		$this->db->setSQL("SELECT e.*,
+								  p.fname,
+								  p.mname,
+								  p.lname,
+								  p.DOB,
+								  p.sex
+							 FROM encounters AS e
+					    LEFT JOIN patient_demographics AS p ON e.pid = p.pid
+							WHERE e.eid = '$params->eid'");
+		$e = $this->db->fetchRecord(PDO::FETCH_ASSOC);
+		$e['name'] = Person::fullname($e['fname'],$e['mname'],$e['lname']);
+		$e['pic'] = $this->patient->getPatientPhotoSrcIdByPid($e['pid']);
+		$e['age'] = $this->patient->getPatientAgeByDOB($e['DOB']);
+		$this->addEncounterHistoryEvent('Encounter viewed');
+		if(!empty($e)){
+			return array('success' => true, 'encounter' => $e);
+		} else {
+			return array('success' => false, 'error' => "Encounter ID $params->eid not found");
+		}
+	}
 
 	public function updateEncounterPriority($params)
 	{

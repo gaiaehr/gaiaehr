@@ -26,7 +26,7 @@ Ext.define('App.view.Viewport', {
     currency: globals['gbl_currency_symbol'], // currency used
     activityMonitorInterval: 60, // in seconds - interval to check for mouse and keyboard activity
     activityMonitorMaxInactive: 20, // in minutes - Maximum time application can be inactive (no mouse or keyboard inputt)
-    cronTaskInterval: 20, // in seconds - interval to run me.cronTask (check PHP session, refresh Patient Pool Areas, and PHP Cron Job)
+    cronTaskInterval: 5, // in seconds - interval to run me.cronTask (check PHP session, refresh Patient Pool Areas, and PHP Cron Job)
     // end app settings
     initComponent: function(){
         Ext.tip.QuickTipManager.init();

@@ -597,6 +597,15 @@ $API = array(
 			),
 			'updatePrescriptions' => array(
 				'len' => 1
+			),
+			'getPrescription' => array(
+				'len' => 1
+			),
+			'addNewPrescription' => array(
+				'len' => 1
+			),
+			'updatePrescription' => array(
+				'len' => 1
 			)
 		)
 	),

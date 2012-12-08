@@ -9,6 +9,9 @@ Ext.define('App.model.patient.PatientsPrescriptions', {
 	extend: 'Ext.data.Model',
 	fields: [
 
+		{name: 'id'},
+		{name: 'pid'},
+		{name: 'uid'},
 		{name: 'created_date'},
 		{name: 'note'}
 

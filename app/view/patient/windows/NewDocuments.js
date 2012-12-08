@@ -173,6 +173,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 
 								xtype  : 'grid',
 								margin : 10,
+                                title  : i18n('prescriptions'),
 								store  : me.patientPrescriptionsStore,
 								height : 300,
                                 plugins: [
@@ -213,6 +214,12 @@ Ext.define('App.view.patient.windows.NewDocuments', {
                                 tbar   : [
                                     '->',
                                     {
+                                        text   : i18n('clone_prescription'),
+                                        scope  : me,
+                                        handler: me.onClonePrescriptions
+
+                                    },
+                                    {
                                         text   : i18n('new_prescription'),
                                         scope  : me,
                                         handler: me.onAddNewPrescriptions
@@ -225,11 +232,12 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 
 								xtype  : 'grid',
 								margin : 10,
+                                title  : i18n('medications'),
 								store  : me.patientPrescriptionStore,
 								height : 300,
 								columns: [
 									{
-										header   : i18n('medications'),
+										header   : i18n('name'),
 										flex     : 1,
 										dataIndex: 'medication'
 									},
@@ -460,13 +468,9 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 						],
 						bbar : [
 							'->', {
-								text   : i18n('create'),
+								text   : i18n('create_prescription'),
 								scope  : me,
 								handler: me.onCreateDoctorsNote
-							}, {
-								text   : i18n('cancel'),
-								scope  : me,
-								handler: me.onCancel
 							}
 						]
 					}
@@ -578,6 +582,21 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 		this.close();
 
 	},
+    onClonePrescriptions: function (){
+        say('hello');
+		var records = this.patientPrescriptionStore.data.items,
+			data = [];
+        say(records);
+        for(var i=0; i < records.length; i++ ){
+            data.push(records[i].data);
+        }
+        say('stuck');
+		DocumentHandler.createDocument({medications:data, pid:app.patient.pid, docType:'Rx', documentId:5, eid: app.patient.eid}, function(provider, response){
+			say(response.result);
+		});
+		this.close();
+
+	},
 	onCreateLabs: function (){
 		var records = this.patientsLabsOrdersStore.data.items,
 			data = [];
@@ -600,9 +619,6 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 		});
 		this.close();
 
-	},
-	onCancel: function(){
-			this.close();
 	},
 
 	addMedications: function(){

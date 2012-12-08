@@ -107,10 +107,38 @@ class Prescriptions
 		return $this -> db -> fetchRecords(PDO::FETCH_ASSOC);
 
 	}
+	public function getPrescription(stdClass $params){
+		$prescription_id = $params->prescription_id;
+		$this -> db -> setSQL("SELECT *
+								 FROM patient_medications
+								WHERE prescription_id='$prescription_id'
+							 ORDER BY id DESC");
+		return $this -> db -> fetchRecords(PDO::FETCH_ASSOC);
+
+	}
 
 	public function updatePrescriptions(stdClass $params){
+		$data = get_object_vars($params);
+		unset($data['id']);
+		$sql = $this -> db -> sqlBind($data, "patient_prescriptions", "U", "id='$params->id'");
+		$this -> db -> setSQL($sql);
+		$this -> db -> execLog();
+		return array(
+			'totals' => 1,
+			'rows' => $params
+		);
 
-
+	}
+	public function updatePrescription(stdClass $params){
+		$data = get_object_vars($params);
+		unset($data['type'],$data['id'],$data['prescription_when'],$data['prescription_often'],$data['route'],$data['type'],$data['take_pills'],$data['dose']);
+		$sql = $this -> db -> sqlBind($data, "patient_medications", "U", "id='$params->id'");
+		$this -> db -> setSQL($sql);
+		$this -> db -> execLog();
+		return array(
+			'totals' => 1,
+			'rows' => $params
+		);
 	}
 
 	public function parseDate($date)

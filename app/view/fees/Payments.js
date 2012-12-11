@@ -30,6 +30,7 @@ Ext.define('App.view.fees.Payments',
 
 		/**
 		 * Search Panel Object
+		 * --------------------------------------------------------------------------------------------------------------------------
 		 */
 		me.searchPanel = Ext.create('Ext.panel.Panel',
 		{
@@ -38,6 +39,7 @@ Ext.define('App.view.fees.Payments',
 			items : [
 			{
 				xtype : 'form',
+				itemId : 'searchPanelForm',
 				height : 145,
 				region : 'north',
 				bodyPadding : 10,
@@ -46,10 +48,12 @@ Ext.define('App.view.fees.Payments',
 				items : [
 				{
 					xtype : 'fieldcontainer',
+					itemId : 'fieldcontainerSearchItems',
 					layout : 'hbox',
 					items : [
 					{
 						fieldLabel : i18n('paying_entity'),
+						itemId : 'fieldPayingEntityCombo',
 						xtype : 'mitos.payingentitycombo',
 						labelWidth : 95,
 						width : 230
@@ -58,7 +62,7 @@ Ext.define('App.view.fees.Payments',
 						xtype : 'patienlivetsearch',
 						fieldLabel : i18n('from'),
 						hideLabel : false,
-						itemId : 'patientFrom',
+						itemId : 'fieldPatient',
 						name : 'from',
 						anchor : null,
 						labelWidth : 42,
@@ -68,6 +72,7 @@ Ext.define('App.view.fees.Payments',
 					{
 						xtype : 'textfield',
 						fieldLabel : i18n('no'),
+						itemId : 'fieldPatientNo',
 						name : 'transaction_number',
 						labelWidth : 45,
 						width : 230,
@@ -79,37 +84,24 @@ Ext.define('App.view.fees.Payments',
 				{
 					xtype : 'fieldcontainer',
 					layout : 'hbox',
+					itemId : 'fieldcontainerFacility',
 					items : [
 					{
-						fieldLabel : i18n('payment_method'),
-						xtype : 'mitos.paymentmethodcombo',
-						labelWidth : 95,
-						width : 230
-					},
-					{
 						xtype : 'mitos.billingfacilitiescombo',
+						itemId : 'fieldFacility',
 						fieldLabel : i18n('pay_to'),
-						labelWidth : 42,
-						width : 470,
-						margin : '0 0 0 25'
-					},
-					{
-						xtype : 'mitos.currency',
-						fieldLabel : i18n('amount'),
-						name : 'amount',
-						labelWidth : 45,
-						width : 230,
-						labelAlign : 'right',
-						margin : '0 0 0 25',
-						enableKeyEvents : true
+						labelWidth : 95,
+						width : 470
 					}]
 				},
 				{
 					xtype : 'fieldcontainer',
+					itemId: 'fieldcontainerFromTo',
 					layout : 'hbox',
 					items : [
 					{
 						fieldLabel : i18n('from'),
+						itemId : 'fieldFromDate',
 						xtype : 'datefield',
 						format: globals['date_display_format'],
 						labelWidth : 95,
@@ -118,6 +110,7 @@ Ext.define('App.view.fees.Payments',
 					{
 						fieldLabel : i18n('to'),
 						xtype : 'datefield',
+						itemId : 'fieldToDate',
 						format: globals['date_display_format'],
 						margin : '0 0 0 25',
 						labelWidth : 42,
@@ -127,19 +120,14 @@ Ext.define('App.view.fees.Payments',
 				buttons : [
 				{
 					text : i18n('search'),
+					handler: me.onSearchButton,
 					scope : me
-					// TODO: Create the function to search the patient.
 				}, '-',
 				{
 					text : i18n('reset'),
 					scope : me,
 					handler: me.onFormResetButton
 					// TODO: Create the function event to reset the form.
-				}, '->',
-				{
-					text : i18n('add_payment'),
-					scope : me,
-					handler : me.onAddPaymentClick
 				}]
 			},
 			{
@@ -168,6 +156,7 @@ Ext.define('App.view.fees.Payments',
 
 		/**
 		 * Detail Panel Object
+		 * --------------------------------------------------------------------------------------------------------------------------
 		 */
 		me.detailPanel = Ext.create('Ext.panel.Panel',
 		{
@@ -470,6 +459,22 @@ Ext.define('App.view.fees.Payments',
 		{
 			me.window.show();
 		}
+	},
+	
+	/**
+	 * Search for patients that own money
+	 * This function will pass all the fields to the server side 
+	 * so PHP dataProvider can calculate and do the search against 
+	 * the SQL Server
+	 */
+	onSearchButton: function(btn)
+	{
+		// Declare some variables and the values from the form
+		var	searchForm =  this.searchPanel.getComponent('searchPanelForm'),
+		dateFrom = searchForm.getComponent('fieldcontainerFromTo').getComponent('fieldFromDate').getValue(),
+		dateTo = searchForm.getComponent('fieldcontainerFromTo').getComponent('fieldToDate').getValue();
+		
+		alert(dateFrom);
 	},
 	
 	/**

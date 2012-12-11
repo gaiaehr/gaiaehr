@@ -474,7 +474,20 @@ Ext.define('App.view.fees.Payments',
 		dateFrom = searchForm.getComponent('fieldcontainerFromTo').getComponent('fieldFromDate').getValue(),
 		dateTo = searchForm.getComponent('fieldcontainerFromTo').getComponent('fieldToDate').getValue();
 		
-		alert(dateFrom);
+		// Load the ExtJs dataStore with the new parameters
+		this.encountersPaymentsStore.load(
+		{
+			params :
+			{
+				datefrom : dateFrom,
+				dateto : dateTo,
+				payingEntityCombo : searchForm.getComponent('fieldcontainerSearchItems').getComponent('fieldPayingEntityCombo').getValue(),
+				patientSearch : searchForm.getComponent('fieldcontainerSearchItems').getComponent('fieldPatient').getValue(),
+				patientNo : searchForm.getComponent('fieldcontainerSearchItems').getComponent('fieldPatientNo').getValue(),
+				facility : searchForm.getComponent('fieldcontainerFacility').getComponent('fieldFacility').getValue()
+			}
+		} );
+		//alert(payingEntityCombo);
 	},
 	
 	/**

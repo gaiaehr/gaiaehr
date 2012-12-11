@@ -1117,6 +1117,7 @@ $LANG = array(
 	'120+'									=> '120+',
 	'180+'									=> '180+',
 	'applications'	                        => 'Applications',
-	'private_key'	                        => 'Private Key'
+	'private_key'	                        => 'Private Key',
+	'encounter_icd9'						=> 'ICD9 Encounter'
 );
 ?>

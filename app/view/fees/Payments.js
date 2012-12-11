@@ -330,6 +330,9 @@ Ext.define('App.view.fees.Payments',
 		app.onPaymentEntryWindow();
 	},
 
+	/*
+	 * beforeCptEdit Event
+	 */
 	beforeCptEdit : function(editor, e)
 	{
 		this.addCptFields(editor.editor, e.record.data)
@@ -415,6 +418,9 @@ Ext.define('App.view.fees.Payments',
 		}
 	},
 
+	/*
+	 * Test Data function
+	 */
 	testData : function()
 	{
 		var data = [], i;
@@ -439,6 +445,9 @@ Ext.define('App.view.fees.Payments',
 		return data;
 	},
 
+	/*
+	 * onBtnClick Event
+	 */
 	onBtnClick : function(btn)
 	{
 		var me = this;

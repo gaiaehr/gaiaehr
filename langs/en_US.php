@@ -1118,6 +1118,7 @@ $LANG = array(
 	'180+'									=> '180+',
 	'applications'	                        => 'Applications',
 	'private_key'	                        => 'Private Key',
-	'encounter_icd9'						=> 'ICD9 Encounter'
+	'encounter_icd9'						=> 'ICD9 Encounter',
+	'signed_by'								=> 'Signed by'
 );
 ?>

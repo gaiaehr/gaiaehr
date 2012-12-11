@@ -338,6 +338,10 @@ Ext.define('App.view.fees.Payments',
 		this.addCptFields(editor.editor, e.record.data)
 	},
 
+	/*
+	 * addCptFields
+	 * Add CPT
+	 */
 	addCptFields : function(editor, cpts)
 	{
 

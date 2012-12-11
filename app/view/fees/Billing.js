@@ -379,7 +379,7 @@ Ext.define( 'App.view.fees.Billing',
 								labelAlign : 'right'
 							},
 							{
-								xtype : 'mitos.providerscombo',
+								xtype : 'textfield',
 								name : 'referal_by',
 								fieldLabel : i18n( 'referal_by' ),
 								labelAlign : 'right',

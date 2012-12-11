@@ -2,7 +2,7 @@
  GaiaEHR (Electronic Health Records)
  PaymentEntryWindow.js
  Payment Entry Window
- Copyright (C) 2012 Ernesto J Rodriguez
+ Copyright (C) 2012 certun, Inc.
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by

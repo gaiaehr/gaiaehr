@@ -69,7 +69,7 @@ class Fees
 	 */
 	public function getFilterEncountersBillingData(stdClass $params)
 	{
-		// Declare all the variables that we are gone to use.
+		// Declare all the variables that we are going to use.
 		(string)$whereClause = '';
 		(array)$encounters = '';
 		(int)$total = 0;
@@ -200,6 +200,13 @@ class Fees
 	 */
 	public function getPaymentsBySearch(stdClass $params)
 	{
+		
+		// Declare all the variables that we are going to use.
+		(string)$whereClause = '';
+		(array)$payments = '';
+		(int)$total = 0;
+		(string)$sql = '';
+
 		//TODO: Payment search function
 
 		return array(

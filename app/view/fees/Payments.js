@@ -1,4 +1,4 @@
-/*
+/**
 	GaiaEHR (Electronic Health Records)
 	Payments.js
 	New payments Forms
@@ -436,8 +436,7 @@ Ext.define('App.view.fees.Payments',
 			});
 		}
 		return data;
-	},
-
+	},
 	/**
 	 * onBtnClick Event
 	 */

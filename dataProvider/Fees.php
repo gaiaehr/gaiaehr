@@ -54,10 +54,10 @@ class Fees
 	{
 		// Declare all the variables that we are gone to use
 		// within the class.
-		(object)$this -> db = new dbHelper();
-		(object)$this -> user = new User();
-		(object)$this -> patient = new Patient();
-		(object)$this -> enc = new Encounter();
+		(object)$this->db = new dbHelper();
+		(object)$this->user = new User();
+		(object)$this->patient = new Patient();
+		(object)$this->enc = new Encounter();
 		return;
 	}
 
@@ -76,25 +76,25 @@ class Fees
 		(string)$sql = '';
 
 		// Look between service date
-		if ($params -> datefrom && $params -> dateto)
-			$whereClause .= chr(13) . " AND encounters.service_date BETWEEN '" . substr($params -> datefrom, 0, -9) . " 00:00:00' AND '" . substr($params -> dateto, 0, -9) . " 23:00:00'";
+		if ($params->datefrom && $params->dateto)
+			$whereClause .= chr(13) . " AND encounters.service_date BETWEEN '" . substr($params->datefrom, 0, -9) . " 00:00:00' AND '" . substr($params->dateto, 0, -9) . " 23:00:00'";
 
 		// Look for a specific patient
-		if ($params -> patient)
-			$whereClause .= chr(13) . " AND encounters.pid = '" . $params -> patient . "'";
+		if ($params->patient)
+			$whereClause .= chr(13) . " AND encounters.pid = '" . $params->patient . "'";
 
 		// Look for a specific provider
-		if ($params -> provider && $params -> provider <> 'all')
-			$whereClause .= chr(13) . " AND encounters.provider_uid = '" . $params -> patient . "'";
+		if ($params->provider && $params->provider <> 'all')
+			$whereClause .= chr(13) . " AND encounters.provider_uid = '" . $params->patient . "'";
 
 		// Look for the primary insurance
-		if ($params -> insurance && $params -> insurance <> '1')
-			$whereClause .= chr(13) . " AND patient_demographics.primary_insurance_provider = '" . $params -> insurance . "'";
+		if ($params->insurance && $params->insurance <> '1')
+			$whereClause .= chr(13) . " AND patient_demographics.primary_insurance_provider = '" . $params->insurance . "'";
 
 		// Look for pastDue dates
 		// TODO: Consider the payment on the SQL statement
-		if ($params -> pastDue)
-			$whereClause .= chr(13) . " AND DATEDIFF(NOW(),encounters.service_date) >= " . $params -> pastDue;
+		if ($params->pastDue)
+			$whereClause .= chr(13) . " AND DATEDIFF(NOW(),encounters.service_date) >= " . $params->pastDue;
 
 		// Eliminate the first 6 characters of the where clause
 		// this to eliminate and extra AND from the SQL statement
@@ -129,15 +129,15 @@ class Fees
 				$whereClause
 				ORDER BY
   					encounters.service_date";
-					
-		$this -> db -> setSQL($sql);
+
+		$this->db->setSQL($sql);
 		foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
 		{
 			$row['patientName'] = $row['title'] . ' ' . Person::fullname($row['fname'], $row['mname'], $row['lname']);
 			$encounters[] = $row;
 		}
 		$total = count($encounters);
-		$encounters = array_slice($encounters, $params -> start, $params -> limit);
+		$encounters = array_slice($encounters, $params->start, $params->limit);
 		return array(
 			'totals' => $total,
 			'encounters' => $encounters
@@ -179,7 +179,7 @@ class Fees
 				ORDER BY
   					encounters.service_date";
 
-		$this -> db -> setSQL($sql);
+		$this->db->setSQL($sql);
 
 		foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
 		{
@@ -187,7 +187,7 @@ class Fees
 			$encounters[] = $row;
 		}
 		$total = count($encounters);
-		$encounters = array_slice($encounters, $params -> start, $params -> limit);
+		$encounters = array_slice($encounters, $params->start, $params->limit);
 		return array(
 			'totals' => $total,
 			'encounters' => $encounters
@@ -200,18 +200,46 @@ class Fees
 	 */
 	public function getPaymentsBySearch(stdClass $params)
 	{
-		
+
 		// Declare all the variables that we are going to use.
-		(string)$whereClause = '';
-		(array)$payments = '';
+		(array)$patientPayments = '';
 		(int)$total = 0;
 		(string)$sql = '';
+		
+		// Look between date the payment was created
+		if ($params->datefrom && $params->dateto)
+			$whereClause .= chr(13) . " AND date_created BETWEEN '" . substr($params->datefrom, 0, -9) . " 00:00:00' AND '" . substr($params->dateto, 0, -9) . " 23:00:00'";
+		
+		// Look for the Paying Entity
+		if ($params->payingEntityCombo)
+			$whereClause .= chr(13) . " AND paying_entity = '" . $params->payingEntityCombo . "'";
+			
+		// Look for the Patient
+		if ($params->patientSearch)
+			$whereClause .= chr(13) . " AND paying_entity = '" . $params->payingEntityCombo . "'";
+		
+		// If the whereClause variable is used go ahead and
+		// and add the where command.
+		if ($whereClause)
+			$whereClause = 'WHERE ' . $whereClause;
+		
+		$sql = "SELECT 
+					* 
+				FROM 
+					payment_transactions
+				$whereClause";
 
-		//TODO: Payment search function
+		$this->db->setSQL($sql);
+		foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
+		{
+			$patientPayments[] = $row;
+		}
+		
+		$total = count($patientPayments);
 
 		return array(
-			'totals' => 0,
-			'rows' => array()
+			'totals' => $total,
+			'rows' => $patientPayments
 		);
 	}
 
@@ -221,9 +249,9 @@ class Fees
 	public function addPayment(stdClass $params)
 	{
 		$data = get_object_vars($params);
-		$this -> db -> setSQL($this -> db -> sqlBind($data, "payment_transactions", "I"));
-		$this -> db -> execLog();
-		if ($this -> db -> lastInsertId == 0)
+		$this->db->setSQL($this->db->sqlBind($data, "payment_transactions", "I"));
+		$this->db->execLog();
+		if ($this->db->lastInsertId == 0)
 		{
 			return (array)$success = 'false';
 		}
@@ -238,7 +266,7 @@ class Fees
 	 */
 	public function getPatientBalance(stdClass $params)
 	{
-		return $this -> getPatientBalanceByPid($params -> pid);
+		return $this->getPatientBalanceByPid($params->pid);
 	}
 
 	/**
@@ -249,8 +277,8 @@ class Fees
 		// Declare all the variables that we are gone to use.
 		(array)$balance_total = '';
 
-		$this -> db -> setSQL("SELECT SUM(amount) as balance FROM payment_transactions WHERE payer_id = '$pid'");
-		$balance_total = $this -> db -> fetchRecord();
+		$this->db->setSQL("SELECT SUM(amount) as balance FROM payment_transactions WHERE payer_id = '$pid'");
+		$balance_total = $this->db->fetchRecord();
 
 		return $balance_total['balance'];
 	}

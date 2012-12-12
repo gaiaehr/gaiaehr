@@ -27,16 +27,19 @@
  * @copyright   Gnu Public License (GPLv3)
  *
  */
-if(!isset($_SESSION)){
+if(!isset($_SESSION))
+{
 	session_name('GaiaEHR');
 	session_start();
 	session_cache_limiter('private');
 }
+
 ini_set('max_input_time', '1500');
 ini_set('max_execution_time', '1500');
 $timezone = (isset($_SESSION['site']['timezone']) ? $_SESSION['site']['timezone'] : 'UTC');
 date_default_timezone_set($timezone);
 include_once($_SESSION['root'] . '/classes/Time.php');
+
 class dbHelper
 {
 
@@ -56,6 +59,13 @@ class dbHelper
 	 * @var string
 	 */
 	private $err;
+	
+	/**
+	 * MicroORM related variables
+	 */
+	private $workingTable;
+	private $workingFields;
+	
 
 	/**
 	 * @brief       dbHelper constructor.
@@ -413,4 +423,22 @@ class dbHelper
 		$recordSet = $this->conn->query($this->sql_statement);
 		return $recordSet->rowCount();
 	}
+	
+	/**
+	 * dbHelper MicroORM 
+	 * -----------------
+	 * This new set of method inside the dbHelper will help the exchange of 
+	 * data between the database and the software, witch means that the developer
+	 * will have to mess with the database anymore.
+	 */
+	 public function setField(string $fieldName, string $fieldLenght)
+	 {
+	 	$workingFields[] = array($fieldName, $fieldLenght);
+	 }
+	 
+	 public function setTable(string $tableName)
+	 {
+	 	$workingTable = $tableName;
+	 }
+	 
 }

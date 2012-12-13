@@ -205,24 +205,24 @@ class Fees
 		(array)$patientPayments = '';
 		(int)$total = 0;
 		(string)$sql = '';
-		
+
 		// Look between date the payment was created
 		if ($params->datefrom && $params->dateto)
 			$whereClause .= chr(13) . " AND date_created BETWEEN '" . substr($params->datefrom, 0, -9) . " 00:00:00' AND '" . substr($params->dateto, 0, -9) . " 23:00:00'";
-		
+
 		// Look for the Paying Entity
 		if ($params->payingEntityCombo)
 			$whereClause .= chr(13) . " AND paying_entity = '" . $params->payingEntityCombo . "'";
-			
+
 		// Look for the Patient
 		if ($params->patientSearch)
 			$whereClause .= chr(13) . " AND paying_entity = '" . $params->payingEntityCombo . "'";
-		
+
 		// If the whereClause variable is used go ahead and
 		// and add the where command.
 		if ($whereClause)
 			$whereClause = 'WHERE ' . $whereClause;
-		
+
 		$sql = "SELECT 
 					* 
 				FROM 
@@ -234,7 +234,7 @@ class Fees
 		{
 			$patientPayments[] = $row;
 		}
-		
+
 		$total = count($patientPayments);
 
 		return array(

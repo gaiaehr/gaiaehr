@@ -74,6 +74,7 @@ class Fees
 		(array)$encounters = '';
 		(int)$total = 0;
 		(string)$sql = '';
+		(string)$whereClause = '';
 
 		// Look between service date
 		if ($params->datefrom && $params->dateto)
@@ -205,6 +206,7 @@ class Fees
 		(array)$patientPayments = '';
 		(int)$total = 0;
 		(string)$sql = '';
+		(string)$whereClause = '';
 
 		// Look between date the payment was created
 		if ($params->datefrom && $params->dateto)
@@ -223,13 +225,31 @@ class Fees
 		if ($whereClause)
 			$whereClause = 'WHERE ' . $whereClause;
 
-		$sql = "SELECT 
-					* 
-				FROM 
-					payment_transactions
+		$sql = "SELECT
+					patient_demographics.fname,
+					patient_demographics.mname,
+					patient_demographics.lname,
+					patient_demographics.pid,
+					payments.dtime,
+					payments.encounter,
+					payments.user,
+					payments.method,
+					payments.source,
+					payments.amount1,
+					payments.amount2,
+					payments.posted1,
+					payments.posted2
+				FROM
+					payments
+				INNER JOIN
+					patient_demographics 
+				ON
+					patient_demographics.pid = payments.pid
 				$whereClause";
-
 		$this->db->setSQL($sql);
+		
+		// Loop through the results.
+		// in here you can do calculations or other stuff.
 		foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
 		{
 			$patientPayments[] = $row;
@@ -237,6 +257,7 @@ class Fees
 
 		$total = count($patientPayments);
 
+		// Return the results back to ExtJS.
 		return array(
 			'totals' => $total,
 			'rows' => $patientPayments

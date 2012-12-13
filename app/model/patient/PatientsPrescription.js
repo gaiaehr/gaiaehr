@@ -8,6 +8,9 @@
 Ext.define('App.model.patient.PatientsPrescription', {
 	extend: 'Ext.data.Model',
 	fields: [
+        {name: 'id', type: 'int'},
+        {name: 'eid', type: 'int'},
+        {name: 'prescription_id', type: 'int'},
         {name: 'medication', type: 'string'},
         {name: 'RXCUI', type: 'string'},
         {name: 'dose', type: 'int'},
@@ -20,11 +23,13 @@ Ext.define('App.model.patient.PatientsPrescription', {
 		{name: 'refill', type: 'string'},
 		{name: 'begin_date'},
 		{name: 'end_date'}
-
 	],
 	proxy : {
 		type: 'direct',
-		api : {
-		}
+        api : {
+            read  : Prescriptions.getPrescription,
+            create: Prescriptions.addNewPrescription,
+            update: Prescriptions.updatePrescription
+        }
 	}
 });

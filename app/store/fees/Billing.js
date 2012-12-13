@@ -2,7 +2,7 @@
  GaiaEHR (Electronic Health Records)
  Billing.js
  Billing Store
- Copyright (C) 2012 Ernesto J. Rodriguez
+ Copyright (C) 2012 Certun, Inc.
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by

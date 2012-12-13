@@ -312,7 +312,7 @@ Ext.define( 'App.view.fees.Billing',
 							{
 								xtype : 'textfield',
 								name : 'facility',
-								fieldLabel : i18n( 'facillity' ),
+								fieldLabel : i18n( 'facility' ),
 								labelAlign : 'right',
 								labelWidth : 60,
 								flex : 1

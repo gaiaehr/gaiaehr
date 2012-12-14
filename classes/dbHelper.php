@@ -441,4 +441,10 @@ class dbHelper
 	 	$workingTable = $tableName;
 	 }
 	 
+	 public function executeORM()
+	 {
+	 	(string)$sqlStament = '';
+		$sqlStatement = 'CREATE TABLE';
+	 }
+	 
 }

@@ -457,7 +457,7 @@ Ext.define('App.view.Viewport', {
         // TODO: panels
         me.MainPanel.add(Ext.create('App.view.calendar.Calendar'));
         me.MainPanel.add(Ext.create('App.view.messages.Messages'));
-        me.MainPanel.add(Ext.create('App.view.search.PatientSearch'));
+        //me.MainPanel.add(Ext.create('App.view.search.PatientSearch'));
         me.MainPanel.add(Ext.create('App.view.areas.FloorPlan'));
         /**
          * Patient Area

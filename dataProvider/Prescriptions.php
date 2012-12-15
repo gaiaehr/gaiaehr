@@ -85,7 +85,30 @@ class Prescriptions
 		return $params;
 
 	}
-	public function addNewPrescription(stdClass $params){
+
+	public function clonePrescription($params){
+
+		if(is_array($params)){
+			foreach($params as $row){
+
+				$data = get_object_vars($row);
+				unset($data['type'],$data['id'],$data['prescription_when'],$data['prescription_often'],$data['route'],$data['type'],$data['take_pills'],$data['dose']);
+
+
+				$data['create_date'] = $this->parseDate($data['create_date']);
+				$data['pid']= $_SESSION['patient']['pid'];
+				$this->db->setSQL($this->db->sqlBind($data, 'patient_medications', 'I'));
+				$this->db->execLog();
+
+			}
+		}
+
+		$params->id = $this->db->lastInsertId;
+		return $params;
+	}
+
+	public function addNewPrescription($params){
+
 		$data = get_object_vars($params);
 		unset($data['type'],$data['id'],$data['prescription_when'],$data['prescription_often'],$data['route'],$data['type'],$data['take_pills'],$data['dose']);
 

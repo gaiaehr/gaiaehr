@@ -36,15 +36,12 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 					{
 						title: i18n('new_lab_order'),
 						items: [
-
 							{
-
 								xtype  : 'grid',
 								margin : 10,
 								store  : me.patientsLabsOrdersStore,
 								height : 640,
 								columns: [
-
 									{
 										xtype: 'actioncolumn',
 										width: 20,
@@ -62,9 +59,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 										flex    : 1,
 										dataIndex: 'laboratories'
 									}
-
 								],
-
 								bbar:{
 									xtype     : 'mitos.labstypescombo',
 									margin:5,
@@ -233,6 +228,8 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 								xtype  : 'grid',
 								margin : 10,
                                 title  : i18n('medications'),
+                                disabled: true,
+                                action: 'prescription_grid',
 								store  : me.patientPrescriptionStore,
 								height : 300,
 								columns: [
@@ -255,8 +252,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
                                     clicksToEdit: 1,
                                     listeners   :{
                                         scope   : me,
-                                        edit    : me.onEditPrescription
-
+                                        beforeedit    : me.onEditPrescription
                                     },
                                     formItems   : [
 
@@ -416,6 +412,8 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 									{
 										text   : i18n('add_medication'),
 										scope  : me,
+                                        action : 'add_medication',
+                                        disabled: true,
 										handler: me.onAddNewPrescription
 
 									}
@@ -525,19 +523,48 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 		var grid = btn.up('grid');
 		grid.editingPlugin.cancelEdit();
 
-		this.patientPrescriptionsStore.insert(0,{});
+		this.patientPrescriptionsStore.insert(0,{
+            eid:app.patient.eid
+        });
 		grid.editingPlugin.startEdit(0, 0);
+
+	},
+
+    onClonePrescriptions: function (btn){
+        var grid = btn.up('grid'),
+            bottomGrid = grid.up('panel').up('panel').query('panel[action="prescription_grid"]')[0],
+            obj = bottomGrid.store.data.items;
+
+
+      		grid.editingPlugin.cancelEdit();
+
+      		this.patientPrescriptionsStore.insert(0,{
+                  eid:app.patient.eid
+              });
+      		grid.editingPlugin.startEdit(0, 0);
 
 	},
 
     medicationsOfThePrescription: function(grid,model){
         var me = this,
-            value = model.data.id;
+            value = model.data.id,
+            eid= model.data.eid,
+            addMedication = grid.up('panel').up('panel').query('button[action="add_medication"]')[0],
+            bottomGrid = grid.up('panel').up('panel').query('panel[action="prescription_grid"]')[0];
     me.patientPrescriptionStore.load({
               params:{
                   prescription_id:value
               }
           });
+        if(eid == app.patient.eid){
+            addMedication.setDisabled(false);
+            bottomGrid.setDisabled(false);
+        }else{
+            addMedication.setDisabled(true);
+            bottomGrid.setDisabled(true);
+
+        }
+
     },
 
 	onRemove: function(grid, rowIndex){
@@ -563,26 +590,16 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 		field3.setValue(medication);
 	},
 	onEditPrescription: function(editor,e){
-//		say(editor);
-//		say(e.record.commit());
-
+//        var me = this,
+//            eid = e.record.data.eid;
+//       say(this.up('panel'));
+//        if(eid == app.patient.eid){
+//
+//        }else{
+//
+//        }
 	},
 	onCreatePrescription: function (){
-        say('hello');
-		var records = this.patientPrescriptionStore.data.items,
-			data = [];
-        say(records);
-        for(var i=0; i < records.length; i++ ){
-            data.push(records[i].data);
-        }
-        say('stuck');
-		DocumentHandler.createDocument({medications:data, pid:app.patient.pid, docType:'Rx', documentId:5, eid: app.patient.eid}, function(provider, response){
-			say(response.result);
-		});
-		this.close();
-
-	},
-    onClonePrescriptions: function (){
         say('hello');
 		var records = this.patientPrescriptionStore.data.items,
 			data = [];

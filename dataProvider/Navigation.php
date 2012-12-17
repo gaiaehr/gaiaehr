@@ -53,8 +53,9 @@ class Navigation
 				'text' => $this->i18n['calendar'], 'disabled' => ($this->ACL->hasPermission('access_calendar') ? false : true), 'leaf' => true, 'cls' => 'file', 'iconCls' => 'icoCalendar', 'id' => 'panelCalendar'
 			), array(
 				'text' => $this->i18n['messages'], 'disabled' => ($this->ACL->hasPermission('access_messages') ? false : true), 'leaf' => true, 'cls' => 'file', 'iconCls' => 'mail', 'id' => 'panelMessages'
-			), array(
-				'text' => $this->i18n['patient_search'], 'disabled' => ($this->ACL->hasPermission('access_patient_search') ? false : true), 'leaf' => true, 'cls' => 'file', 'iconCls' => 'searchUsers', 'id' => 'panelPatientSearch'
+		//	)
+		//, array(
+		//		'text' => $this->i18n['patient_search'], 'disabled' => ($this->ACL->hasPermission('access_patient_search') ? false : true), 'leaf' => true, 'cls' => 'file', 'iconCls' => 'searchUsers', 'id' => 'panelPatientSearch'
 			), array(
 				'text' => $this->i18n['area_floor_plan'], 'disabled' => false, 'leaf' => true, 'cls' => 'file', 'iconCls' => 'icoZoneAreas', 'id' => 'panelAreaFloorPlan'
 			), array(

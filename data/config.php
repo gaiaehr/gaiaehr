@@ -464,6 +464,15 @@ $API = array(
 				'len' => 1
 			),
 		)
+	),	'Xrays' => array(
+		'methods' => array(
+			'getXrays' => array(
+				'len' => 1
+			),
+			'getXraysLiveSearch' => array(
+				'len' => 1
+			),
+		)
 	),
 	'Laboratories' => array(
 		'methods' => array(

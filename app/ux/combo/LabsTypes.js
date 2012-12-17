@@ -15,7 +15,7 @@ Ext.define('App.ux.combo.LabsTypes', {
 			proxy : {
 				type       : 'direct',
 				api        : {
-					read: Services.getActiveLaboratoryTypes
+					read: Laboratories.getActiveLaboratoryTypes
 				}
 			}
 		});

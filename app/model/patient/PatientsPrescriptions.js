@@ -11,6 +11,7 @@ Ext.define('App.model.patient.PatientsPrescriptions', {
 
 		{name: 'id'},
 		{name: 'pid'},
+		{name: 'eid'},
 		{name: 'uid'},
 		{name: 'created_date'},
 		{name: 'note'}

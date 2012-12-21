@@ -466,7 +466,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 						],
 						bbar : [
 							'->', {
-								text   : i18n('create_prescription'),
+								text   : i18n('create_doctors_notes'),
 								scope  : me,
 								handler: me.onCreateDoctorsNote
 							}

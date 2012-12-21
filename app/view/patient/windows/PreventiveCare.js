@@ -1,7 +1,7 @@
 /*
  GaiaEHR (Electronic Health Records)
  PreventiveCare.js
- Copyright (C) 2012 Emmanuel J. Carrasquillo
+ Copyright (C) 2012 Omar U. Rodriguez
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -20,8 +20,8 @@ Ext.define('App.view.patient.windows.PreventiveCare', {
 	extend       : 'App.ux.window.Window',
 	title        : i18n('preventive_care_window'),
 	closeAction  : 'hide',
-    height       : 750,
-   	width        : 1200,
+    height       : 550,
+   	width        : 1000,
 	bodyStyle    : 'background-color:#fff',
 	modal        : true,
     layout       : 'fit',

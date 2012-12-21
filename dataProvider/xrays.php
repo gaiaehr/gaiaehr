@@ -44,61 +44,55 @@ class Xrays
 	}
 
 
-
-	public function getXraysLiveSearch(stdClass $params)
-	{
-		$this -> db -> setSQL("SELECT * FROM cvx_codes
-							WHERE cvx_code 	  LIKE '$params->query%'
-							   OR `name` 	  LIKE '$params->query%'
-							   OR description LIKE '$params->query%'");
-		$records = $this -> db -> fetchRecords(PDO::FETCH_ASSOC);
-		$total = count($records);
-		$records = array_slice($records, $params -> start, $params -> limit);
-		return array(
-			'totals' => $total,
-			'rows' => $records
-		);
-	}
+//todo:The Live Search of xrays codes in theory should be the same of the cpt codes but with a certain list of codes only
+//todo:Have to check how to do the live search after filtering the codes
+//	public function getXraysLiveSearch(stdClass $params)
+//	{
+////		$this -> db -> setSQL("SELECT * FROM cvx_codes
+////							WHERE cvx_code 	  LIKE '$params->query%'
+////							   OR `name` 	  LIKE '$params->query%'
+////							   OR description LIKE '$params->query%'");
+////		$records = $this -> db -> fetchRecords(PDO::FETCH_ASSOC);
+////		$total = count($records);
+////		$records = array_slice($records, $params -> start, $params -> limit);
+////		return array(
+////			'totals' => $total,
+////			'rows' => $records
+////		);
+//	}
 //todo:fix this query (working but low performance)
 	public function getXrays()
 	{
 		$this -> db -> setSQL("SELECT *
 								 FROM cpt_codes
-								WHERE code BETWEEN 71010 AND 71111
-								   OR code BETWEEN 70110 AND 70260
-								   OR code BETWEEN 72010 AND 72265
-								   OR code BETWEEN 74000 AND 74022
-								   OR code BETWEEN 76003 AND 76020
-								   OR code BETWEEN 73000 AND 73140
-								   OR code BETWEEN 73510 AND 73660
-								   OR code BETWEEN 74220 AND 74455
-								   OR code BETWEEN 77055 AND 77057
-								   OR code BETWEEN 76700 AND 76881
-								   OR code BETWEEN 93925 AND 93931
-								   OR code BETWEEN 93307 AND 93350
-								   OR code BETWEEN 93015 AND 93018
-								   OR code BETWEEN 74150 AND 74175
-								   OR code BETWEEN 72192 AND 72194
-								   OR code BETWEEN 70450 AND 70492
-								   OR code BETWEEN 73200 AND 73702
-								   OR code BETWEEN 72125 AND 72133
-								   OR code BETWEEN 74181 AND 74185
-								   OR code BETWEEN 72195 AND 72198
-								   OR code BETWEEN 70540 AND 70551
-								   OR code BETWEEN 73218 AND 73723
-								   OR code BETWEEN 72141 AND 72158
-								   OR code BETWEEN 78464 AND 78480
-								   OR code BETWEEN 78300 AND 78315
-								   OR code BETWEEN 78215 AND 78290
-								   OR code BETWEEN 78580 AND 78806
-								   OR code BETWEEN 78195 AND 78195
-								   OR code BETWEEN 19000 AND 19000
+								WHERE code BETWEEN 19000 AND 19000
 								   OR code BETWEEN 19102 AND 19102
-								   OR code BETWEEN 76080 AND 76096
-								   OR code BETWEEN 76942 AND 76942
 								   OR code BETWEEN 32000 AND 32000
+								   OR code BETWEEN 38792 AND 38792
+								   OR code BETWEEN 70110 AND 70260
+								   OR code BETWEEN 70450 AND 70492
+								   OR code BETWEEN 70540 AND 70551
+								   OR code BETWEEN 71010 AND 71111
+								   OR code BETWEEN 72010 AND 72265
+								   OR code BETWEEN 73000 AND 73140
+								   OR code BETWEEN 73200 AND 73723
+								   OR code BETWEEN 74000 AND 74022
+								   OR code BETWEEN 74150 AND 74185
+								   OR code BETWEEN 74220 AND 74455
+								   OR code BETWEEN 76003 AND 76020
+								   OR code BETWEEN 76080 AND 76096
 								   OR code BETWEEN 76360 AND 76360
-								   OR code BETWEEN 38792 AND 38792");
+								   OR code BETWEEN 76700 AND 76881
+								   OR code BETWEEN 76942 AND 76942
+								   OR code BETWEEN 77055 AND 77057
+								   OR code BETWEEN 78195 AND 78195
+								   OR code BETWEEN 78215 AND 78290
+								   OR code BETWEEN 78300 AND 78315
+								   OR code BETWEEN 78464 AND 78480
+								   OR code BETWEEN 78580 AND 78806
+								   OR code BETWEEN 93015 AND 93018
+								   OR code BETWEEN 93307 AND 93350
+								   OR code BETWEEN 93925 AND 93931");
 
 		return $this -> db -> fetchRecords(PDO::FETCH_ASSOC);
 	}

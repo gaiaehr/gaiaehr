@@ -270,7 +270,7 @@ Ext.define('App.view.patient.ItemsToReview', {
         Medical.reviewAllMedicalWindowEncounter(params, function(provider, response){
         });
         if(form.isValid()){
-            Encounter.onReviewAllItemsToReview(values, function(provider, response){
+           Encounter.onReviewAllItemsToReview(values, function(provider, response){
                 if(response.result.success){
                     app.msg('Sweet!', i18n('items_to_review_save_and_review'))
                 }else{

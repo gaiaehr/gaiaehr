@@ -131,6 +131,9 @@ $API = array(
 			),
 			'updateEncounterHCFAOptions' => array(
 				'len' => 1
+			),
+			'onReviewAllItemsToReview' => array(
+				'len' => 1
 			)
 		)
 	),

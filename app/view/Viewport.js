@@ -490,7 +490,7 @@ Ext.define('App.view.Viewport', {
         if(acl['access_practice']) me.MainPanel.add(Ext.create('App.view.administration.Practice'));
         if(acl['access_data_manager']) me.MainPanel.add(Ext.create('App.view.administration.DataManager'));
         if(acl['access_preventive_care']) me.MainPanel.add(Ext.create('App.view.administration.PreventiveCare'));
-        if(acl['access_medications']) me.MainPanel.add(Ext.create('App.view.administration.Medications'));
+//        if(acl['access_medications']) me.MainPanel.add(Ext.create('App.view.administration.Medications'));
         if(acl['access_floor_plans']) me.MainPanel.add(Ext.create('App.view.administration.FloorPlans'));
         if(acl['access_roles']) me.MainPanel.add(Ext.create('App.view.administration.Roles'));
         if(acl['access_layouts']) me.MainPanel.add(Ext.create('App.view.administration.Layout'));

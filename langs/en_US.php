@@ -1118,6 +1118,15 @@ $LANG = array(
 	'180+'									=> '180+',
 	'applications'	                        => 'Applications',
 	'private_key'	                        => 'Private Key',
+	'administered_date'	                    => 'Administered Date',
+	'immunization_id'	                    => 'Immunization Id',
+	'instructions'	                        => 'Instructions',
+	'clone_prescription'	                => 'Clone Prescription',
+	'template'	                            => 'Template',
+	'create_doctors_notes'	                => 'Create Doctors Notes',
+	'prescriptions'	                        => 'Prescriptions',
+	'prescription'	                        => 'Prescription',
+	'add_medication'	                    => 'Add Medication',
 	'encounter_icd9'						=> 'ICD9 Encounter',
 	'signed_by'								=> 'Signed by'
 );

@@ -57,23 +57,23 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                     store:me.clientListStore,
                     columns:[
                         {
-                            text:'Service Date',
+                            text:i18n('service_date'),
                             xtype:'datecolumn',
                             format:'Y-m-d',
                             dataIndex:'start_date'
                         },
                         {
-                            text:'Name',
+                            text:i18n('name'),
                             width:200,
                             dataIndex:'fullname'
                         },
                         {
-                            text:'Address',
+                            text:i18n('address'),
                             flex:1,
                             dataIndex:'fulladdress'
                         },
                         {
-                            text:'Home Phone',
+                            text:i18n('home_phone'),
                             dataIndex:'home_phone'
                         }
                     ]
@@ -136,27 +136,27 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                     store:me.medicationStore,
                     columns:[
                         {
-                            text:'Name',
+                            text:i18n('name'),
                             width:250,
                             dataIndex:'fullname'
                         },
                         {
-                            text:'Medication',
+                            text:i18n('medication'),
                             width:250,
                             dataIndex:'medication'
                         },
                         {
-                            text:'Take',
+                            text:i18n('take'),
                             width:75,
                             dataIndex:'take_pills'
                         },
                         {
-                            text:'Type',
+                            text:i18n('type'),
                             width:150,
                             dataIndex:'type'
                         },
                         {
-                            text:'instructions',
+                            text:i18n('instructions'),
                             flex:1,
                             dataIndex:'instructions'
                         }
@@ -287,26 +287,26 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                     store:me.clinicalStore,
                     columns:[
                         {
-                            text:'Name',
+                            text:i18n('name'),
                             width:200,
                             dataIndex:'fullname'
                         },
                         {
-                            text:'Age',
+                            text:i18n('age'),
                             width:75,
                             dataIndex:'age'
                         },
                         {
-                            text:'Sex',
+                            text:i18n('sex'),
                             dataIndex:'sex'
                         },
                         {
-                            text:'Race',
+                            text:i18n('race'),
                             width:250,
                             dataIndex:'race'
                         },
                         {
-                            text:'Ethnicity',
+                            text:i18n('Ethnicity'),
                             flex:1,
                             dataIndex:'ethnicity'
                         }
@@ -345,21 +345,21 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                     store:me.immunizationReportStore,
                         columns:[
                             {
-                                text:'Name',
+                                text:i18n('name'),
                                 width:200,
                                 dataIndex:'fullname'
                             },
                             {
-                                text:'Immunization Id',
+                                text:i18n('immunization_id'),
                                 dataIndex:'immunization_id'
                             },
                             {
-                                text:'Immunization Name',
+                                text:i18n('immunization_name'),
                                 dataIndex:'immunization_name',
                                 flex:1
                             },
                             {
-                                text:'Administered Date',
+                                text:i18n('administered_date'),
                                 dataIndex:'administered_date',
                                 xtype:'datecolumn',
                                 format:'Y-m-d'
@@ -544,39 +544,39 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                         store:me.appointmentsReportStore,
                             columns:[
                                 {
-                                    text:'Provider',
+                                    text:i18n('provider'),
                                     width:200,
                                     dataIndex:'provider'
                                 },
                                 {
-                                    text:'Patient',
+                                    text:i18n('patient'),
                                     width:200,
                                     dataIndex:'fullname'
                                 },
                                 {
-                                    text:'Date',
+                                    text:i18n('date'),
                                     dataIndex:'start',
                                     xtype:'datecolumn',
                                     format:'Y-m-d'
                                 },
                                 {
-                                    text:'Time',
+                                    text:i18n('time'),
                                     dataIndex:'start_time',
                                     xtype:'datecolumn',
                                     format:'h:i a'
                                 },
                                 {
-                                    text:'Category',
+                                    text:i18n('category'),
                                     dataIndex:'catname',
                                     width:200
                                 },
                                 {
-                                    text:'Facility',
+                                    text:i18n('facility'),
                                     dataIndex:'facility',
                                     width:250
                                 },
                                 {
-                                    text:'Notes',
+                                    text:i18n('notes'),
                                     dataIndex:'notes',
                                     flex:1
                                 }

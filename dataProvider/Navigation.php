@@ -142,11 +142,11 @@ class Navigation
 				'text' => $this->i18n['preventive_care'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelPreventiveCare'
 			);
 		}
-		if($this->ACL->hasPermission('access_medications')){
-			$admin['children'][] = array(
-				'text' => $this->i18n['medications'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelMedications'
-			);
-		}
+//		if($this->ACL->hasPermission('access_medications')){
+//			$admin['children'][] = array(
+//				'text' => $this->i18n['medications'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelMedications'
+//			);
+//		}
 		if($this->ACL->hasPermission('access_floor_plans')){
 			$admin['children'][] = array(
 				'text' => $this->i18n['floor_areas'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelFloorPlans'

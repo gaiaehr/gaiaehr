@@ -13,7 +13,7 @@ Ext.define('App.model.patient.PatientsPrescription', {
         {name: 'prescription_id', type: 'int'},
         {name: 'medication', type: 'string'},
         {name: 'RXCUI', type: 'string'},
-        {name: 'dose', type: 'int'},
+        {name: 'dose'},
 		{name: 'take_pills', type: 'int'},
 		{name: 'type', type: 'string'},
 		{name: 'route', type: 'string'},

@@ -55,23 +55,28 @@ class Prescriptions
 		$this -> db -> setSQL($this -> db -> sqlBind($foo, 'patient_prescriptions', 'I'));
 		$this -> db -> execLog();
 		$prescription_id = $this -> db -> lastInsertId;
-		foreach ($params->medications as $med)
-		{
-			$foo = array();
-			$foo['pid'] = $_SESSION['patient']['pid'];
-			$foo['eid'] = $params -> eid;
-			$foo['prescription_id'] = $prescription_id;
-			$foo['medication'] = $med -> medication;
-			$foo['RXCUI'] = $med -> RXCUI;
-			$foo['DIRECTIONS'] = $med -> take_pills.$med -> type.' '.$med -> route.' '.$med -> prescription_often.' '.$med -> prescription_when;
-			$foo['STRENGTH'] = $med -> dose;
-			$foo['dispense'] = $med -> dispense;
-			$foo['refill'] = $med -> refill;
-			$foo['begin_date'] = $med -> begin_date;
-			$foo['end_date'] = $med -> end_date;
-			$this -> db -> setSQL($this -> db -> sqlBind($foo, 'patient_medications', 'I'));
-			$this -> db -> execLog();
-		}
+//		foreach ($params->medications as $med)
+//		{
+//			$foo = array();
+//			$foo['pid'] = $_SESSION['patient']['pid'];
+//			$foo['eid'] = $params -> eid;
+//			$foo['prescription_id'] = $prescription_id;
+//			$foo['medication'] = $med -> medication;
+//			$foo['RXCUI'] = $med -> RXCUI;
+//			$foo['DIRECTIONS'] = $med -> take_pills.$med -> type.' '.$med -> route.' '.$med -> prescription_often.' '.$med -> prescription_when;
+//			$foo['take_pills'] = $med -> take_pills;
+//			$foo['type'] = $med -> type;
+//			$foo['route'] = $med -> route;
+//			$foo['prescription_often'] = $med -> prescription_often;
+//			$foo['prescription_when'] = $med -> prescription_when;
+//			$foo['STRENGTH'] = $med -> dose;
+//			$foo['dispense'] = $med -> dispense;
+//			$foo['refill'] = $med -> refill;
+//			$foo['begin_date'] = $med -> begin_date;
+//			$foo['end_date'] = $med -> end_date;
+//			$this -> db -> setSQL($this -> db -> sqlBind($foo, 'patient_medications', 'I'));
+//			$this -> db -> execLog();
+//		}
 	}
 
 	public function addNewPrescriptions(stdClass $params){
@@ -92,8 +97,9 @@ class Prescriptions
 			foreach($params as $row){
 
 				$data = get_object_vars($row);
-				unset($data['type'],$data['id'],$data['prescription_when'],$data['prescription_often'],$data['route'],$data['type'],$data['take_pills'],$data['dose']);
-
+				unset($data['type'],$data['id'],$data['dose']);
+				$data['STRENGTH'] = $params->dose;
+				$data['DIRECTIONS'] = $params -> take_pills.$params -> type.' '.$params -> route.' '.$params -> prescription_often.' '.$params -> prescription_when;
 
 				$data['create_date'] = $this->parseDate($data['create_date']);
 				$data['pid']= $_SESSION['patient']['pid'];
@@ -110,9 +116,9 @@ class Prescriptions
 	public function addNewPrescription($params){
 
 		$data = get_object_vars($params);
-		unset($data['type'],$data['id'],$data['prescription_when'],$data['prescription_often'],$data['route'],$data['type'],$data['take_pills'],$data['dose']);
-
-
+		unset($data['type'],$data['id'],$data['dose']);
+		$data['STRENGTH'] = $params->dose;
+		$data['DIRECTIONS'] = $params -> take_pills.$params -> type.' '.$params -> route.' '.$params -> prescription_often.' '.$params -> prescription_when;
 		$data['create_date'] = $this->parseDate($data['create_date']);
 		$data['pid']= $_SESSION['patient']['pid'];
 		$this->db->setSQL($this->db->sqlBind($data, 'patient_medications', 'I'));

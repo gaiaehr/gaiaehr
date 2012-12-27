@@ -151,17 +151,20 @@ class Modules
      * does not exist
      */
     private function setNewModules(){
-        $modules = $this->getActiveModules();
-        foreach($modules AS $m){
-            $name = $m['name'];
-            $this->db->setSQL("SELECT count(*) AS total FROM modules WHERE `name` = '$name'");
-            $rec = $this->db->fetchRecord(PDO::FETCH_ASSOC);
-            if($rec['total'] == 0){
-                $data['name'] = $m['name'];
-                $data['enable'] = 0;
-                $data['installed_version'] = null;
-                $this->db->setSQL($this->db->sqlBind($data, 'modules', 'I'));
-                $this->db->execOnly();
+        foreach (FileManager::scanDir($this->modulesDir) AS $module) {
+            $m = $this->getModuleConfig($module);
+            if ($m['active']) {
+                $name = $m['name'];
+                $this->db->setSQL("SELECT count(*) AS total FROM modules WHERE `name` = '$name'");
+                $rec = $this->db->fetchRecord(PDO::FETCH_ASSOC);
+                if($rec['total'] == 0){
+                    $data['name'] = $m['name'];
+                    $data['enable'] = 0;
+                    $data['installed_version'] = null;
+                    $this->db->setSQL($this->db->sqlBind($data, 'modules', 'I'));
+                    $this->db->execOnly();
+                }
+
             }
         }
         return;

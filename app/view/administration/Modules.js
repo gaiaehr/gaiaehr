@@ -29,7 +29,7 @@ Ext.define('App.view.administration.Modules', {
                 { name: 'title', type: 'string' },
                 { name: 'description', type: 'string' },
                 { name: 'enable', type: 'bool' },
-                { name: 'version', type: 'string' },
+                { name: 'installed_version', type: 'string' },
                 { name: 'key', type: 'string' },
                 { name: 'token', type: 'string' }
             ],
@@ -45,9 +45,8 @@ Ext.define('App.view.administration.Modules', {
             model: 'ModulesModel',
             remoteSort: false
         });
-        // *************************************************************************************
-        // Facility Grid Panel
-        // *************************************************************************************
+
+
         me.grid = Ext.create('Ext.grid.Panel', {
             store: me.store,
             plugins: [
@@ -73,7 +72,7 @@ Ext.define('App.view.administration.Modules', {
                     text: i18n('version'),
                     width: 100,
                     sortable: true,
-                    dataIndex: 'version'
+                    dataIndex: 'installed_version'
                 },
                 {
                     text: i18n('key_if_required'),
@@ -85,7 +84,7 @@ Ext.define('App.view.administration.Modules', {
                     }
                 },
                 {
-                    text: i18n('enable?'),
+                    text: i18n('enabled?'),
                     width: 60,
                     sortable: true,
                     renderer: me.boolRenderer,

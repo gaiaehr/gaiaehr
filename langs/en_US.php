@@ -1129,6 +1129,6 @@ $LANG = array(
 	'add_medication'	                    => 'Add Medication',
 	'encounter_icd9'						=> 'ICD9 Encounter',
 	'signed_by'								=> 'Signed by',
-	'key_if_required)'						=> 'Key (if required)',
-	'enable?'								=> 'Enable?'
+	'key_if_required'						=> 'Key (if required)',
+	'enabled?'								=> 'Enabled?'
 );

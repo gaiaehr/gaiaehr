@@ -136,6 +136,16 @@ class Modules
         return false;
     }
 
+    public function getModuleByName($moduleName){
+        $modules = array();
+        $this->db->setSQL("SELECT * FROM `modules` WHERE `name` = '$moduleName'");
+        foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) AS $m){
+            $foo = $this->getModuleConfig($m['name']);
+            if ($foo['active']) $modules[] = $foo;
+        }
+        return $modules;
+    }
+
     /**
      * this method will insert the new active modules in site database if
      * does not exist
@@ -149,14 +159,13 @@ class Modules
             if($rec['total'] == 0){
                 $data['name'] = $m['name'];
                 $data['enable'] = 0;
-                $data['version'] = $m['version'];
+                $data['installed_version'] = null;
                 $this->db->setSQL($this->db->sqlBind($data, 'modules', 'I'));
                 $this->db->execOnly();
             }
         }
         return;
     }
-
 }
 
 //print '<pre>';

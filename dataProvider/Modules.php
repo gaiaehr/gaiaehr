@@ -160,7 +160,7 @@ class Modules
                 if($rec['total'] == 0){
                     $data['name'] = $m['name'];
                     $data['enable'] = 0;
-                    $data['installed_version'] = null;
+                    $data['installed_version'] = $m['version'];
                     $this->db->setSQL($this->db->sqlBind($data, 'modules', 'I'));
                     $this->db->execOnly();
                 }

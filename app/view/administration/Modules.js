@@ -30,8 +30,8 @@ Ext.define('App.view.administration.Modules', {
                 { name: 'description', type: 'string' },
                 { name: 'enable', type: 'bool' },
                 { name: 'installed_version', type: 'string' },
-                { name: 'key', type: 'string' },
-                { name: 'token', type: 'string' }
+                { name: 'licensekey', type: 'string' },
+                { name: 'localkey', type: 'string' }
             ],
             proxy: {
                 type: 'direct',
@@ -78,7 +78,7 @@ Ext.define('App.view.administration.Modules', {
                     text: i18n('key_if_required'),
                     flex: 1,
                     sortable: true,
-                    dataIndex: 'key',
+                    dataIndex: 'licensekey',
                     editor:{
                         xtype:'textfield'
                     }
@@ -95,7 +95,7 @@ Ext.define('App.view.administration.Modules', {
                 }
             ]
         });
-        me.pageBody = [me.grid];
+        me.pageBody = [ me.grid ];
         me.callParent(arguments);
     },
 

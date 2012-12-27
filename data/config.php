@@ -14,6 +14,9 @@ $API = array(
 			'getDisabledModules' => array(
 				'len' => 0
 			),
+			'getModuleByName' => array(
+				'len' => 0
+			),
 			'updateModule' => array(
 				'len' => 1
 			)

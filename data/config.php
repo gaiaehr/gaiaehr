@@ -15,7 +15,7 @@ $API = array(
 				'len' => 0
 			),
 			'getModuleByName' => array(
-				'len' => 0
+				'len' => 1
 			),
 			'updateModule' => array(
 				'len' => 1

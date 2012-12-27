@@ -38,6 +38,7 @@ class Modules
     {
         $this->modulesDir = $_SESSION['root'] . '/modules/';
         $this->db = new dbHelper();
+        $this->setNewModules();
     }
 
     /**
@@ -62,8 +63,12 @@ class Modules
         $modules = array();
         foreach (FileManager::scanDir($this->modulesDir) AS $module) {
             $foo = $this->getModuleConfig($module);
-            if ($foo['active'])
-                $modules[] = $foo;
+            if ($foo['active']){
+                $name = $foo['name'];
+                $this->db->setSQL("SELECT * FROM `modules` WHERE `name` = '$name'");
+                $rec = $this->db->fetchRecord(PDO::FETCH_ASSOC);
+                $modules[] = array_merge($foo, $rec);
+            }
         }
         return $modules;
     }
@@ -79,7 +84,6 @@ class Modules
         foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) AS $m){
             $foo = $this->getModuleConfig($m['name']);
             if ($foo['active']) $modules[] = $foo;
-
         }
         return $modules;
     }
@@ -100,9 +104,11 @@ class Modules
     }
     public function updateModule($params)
     {
-        $data = get_object_vars($params);
-        unset($data['id'],$data['name']);
-        $this->db->setSQL($this->db->sqlBind($data, 'modules', 'U', array('name' => $params->id)));
+        $data = array();
+        $data['enable'] = $params->enable;
+        $data['key']    = $params->key;
+        $data['token']  = $params->token;
+        $this->db->setSQL($this->db->sqlBind($data, 'modules', 'U', array('id' => $params->id)));
         $this->db->execLog();
         return $params;
     }
@@ -130,11 +136,32 @@ class Modules
         return false;
     }
 
+    /**
+     * this method will insert the new active modules in site database if
+     * does not exist
+     */
+    private function setNewModules(){
+        $modules = $this->getActiveModules();
+        foreach($modules AS $m){
+            $name = $m['name'];
+            $this->db->setSQL("SELECT count(*) AS total FROM modules WHERE `name` = '$name'");
+            $rec = $this->db->fetchRecord(PDO::FETCH_ASSOC);
+            if($rec['total'] == 0){
+                $data['name'] = $m['name'];
+                $data['enable'] = 0;
+                $data['version'] = $m['version'];
+                $this->db->setSQL($this->db->sqlBind($data, 'modules', 'I'));
+                $this->db->execOnly();
+            }
+        }
+        return;
+    }
+
 }
 
 //print '<pre>';
 //$m = new Modules();
-//
+
 //print '****All MODULES***** <br>';
 //print_r($m->getAllModules());
 //print '*****Active MODULES***** <br>';
@@ -143,3 +170,6 @@ class Modules
 //print_r($m->getEnabledModules());
 //print '*****Disabled MODULES***** <br>';
 //print_r($m->getDisabledModules());
+
+//$m->setNewModules();
+//print 'hello';

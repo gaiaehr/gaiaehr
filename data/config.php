@@ -5,11 +5,17 @@ $API = array(
 			'getAllModules' => array(
 				'len' => 0
 			),
+			'getActiveModules' => array(
+				'len' => 0
+			),
 			'getEnabledModules' => array(
 				'len' => 0
 			),
 			'getDisabledModules' => array(
 				'len' => 0
+			),
+			'updateModule' => array(
+				'len' => 1
 			)
 		)
 	),

@@ -166,11 +166,11 @@ class dbHelper
 		$InsertOrUpdate = strtolower($InsertOrUpdate);
 		if ($InsertOrUpdate == 'i')
 		{
-			$sql = 'INSERT INTO ' . $Table;
+			$sql = 'INSERT INTO `' . $Table . '`';
 		}
 		elseif ($InsertOrUpdate == 'u')
 		{
-			$sql = 'UPDATE ' . $Table;
+			$sql = 'UPDATE `' . $Table . '`';
 		}
 		else
 			return "No update or insert command.";
@@ -187,12 +187,12 @@ class dbHelper
 				{
 					if ($value == null || $value === 'null')
 					{
-						$sql .= $key . '=NULL, ';
+						$sql .= '`'.$key.'`' . '=NULL, ';
 					}
 					else
 					{
 						$value = preg_replace('/([0-9]{4}-[0-9]{2}-[0-9]{2})T([0-9]{2}:[0-9]{2}:[0-9]{2})/i', '${1} ${2}', trim($value));
-						$sql .= $key . "='$value', ";
+						$sql .= '`'.$key.'`' . "='$value', ";
 					}
 				}
 				else
@@ -211,12 +211,12 @@ class dbHelper
 				{
 					if ($value == null || $value === 'null')
 					{
-						$sql .= $key . '=NULL, ';
+						$sql .= '`'.$key.'`' . '=NULL, ';
 					}
 					else
 					{
 						$value = preg_replace('/([0-9]{4}-[0-9]{2}-[0-9]{2})T([0-9]{2}:[0-9]{2}:[0-9]{2})/i', '${1} ${2}', trim($value));
-						$sql .= $key . "='$value', ";
+						$sql .= '`'.$key.'`' . "='$value', ";
 					}
 				}
 				else

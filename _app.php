@@ -420,6 +420,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 				'App.view.administration.Lists',
 				'App.view.administration.Log',
 				'App.view.administration.Medications',
+				'App.view.administration.Modules',
 				'App.view.administration.FloorPlans',
 				'App.view.administration.Practice',
 				'App.view.administration.PreventiveCare',

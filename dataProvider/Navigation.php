@@ -186,6 +186,11 @@ class Navigation
 			'text' => $this->i18n['applications'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelApplications'
 		);
 		//}
+		//if($this->ACL->hasPermission('access_documents')){
+		$admin['children'][] = array(
+			'text' => $this->i18n['modules'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelModules'
+		);
+		//}
 		if($this->ACL->hasPermission('access_gloabal_settings') || $this->ACL->hasPermission('access_facilities') || $this->ACL->hasPermission('access_users') || $this->ACL->hasPermission('access_practice') || $this->ACL->hasPermission('access_services') || $this->ACL->hasPermission('access_medications') || $this->ACL->hasPermission('access_floor_plans') || $this->ACL->hasPermission('access_roles') || $this->ACL->hasPermission('access_layouts') || $this->ACL->hasPermission('access_lists') || $this->ACL->hasPermission('access_event_log')) array_push($nav, $admin);
 		// *************************************************************************************
 		// Miscellaneous Folder

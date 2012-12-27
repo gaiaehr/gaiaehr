@@ -1,11 +1,12 @@
 {
-	"name":"Image Base Form",
+	"title":"Image Base Form",
+	"name":"imageforms",
 	"version":"1.0.0",
 	"extjs_version":"4.1.1a",
 	"author":"Ernesto J Rodriguez",
 	"description":"Module to add image forms functionality",
 	"dir":"imageforms",
-	"enable":true,
+	"active":true,
 	"debug":false,
 	"actionsAPI":{
 		"TEst":{

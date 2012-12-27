@@ -18,76 +18,117 @@
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-if (!isset($_SESSION))
-{
-	session_name('GaiaEHR');
-	session_start();
-	session_cache_limiter('private');
+if (!isset($_SESSION)) {
+    session_name('GaiaEHR');
+    session_start();
+    session_cache_limiter('private');
 }
 include_once ($_SESSION['root'] . '/classes/FileManager.php');
+include_once ($_SESSION['root'] . '/classes/dbHelper.php');
 
 class Modules
 {
-	private $modulesDir = 'modules/';
+    /**
+     * @var string
+     */
+    private $modulesDir;
+    private $db;
 
-	function __construct()
-	{
-		$this -> modulesDir = $_SESSION['root'] . '/modules/';
-	}
+    function __construct()
+    {
+        $this->modulesDir = $_SESSION['root'] . '/modules/';
+        $this->db = new dbHelper();
+    }
 
-	public function getAllModules()
-	{
-		$modules = array();
-		foreach (FileManager::scanDir($this->modulesDir) AS $module)
-		{
-			$modules[] = $this -> getModuleConfig($module);
-		}
-		return $modules;
-	}
+    /**
+     * get all modules inside the modules directory
+     * @return array
+     */
+    public function getAllModules()
+    {
+        $modules = array();
+        foreach (FileManager::scanDir($this->modulesDir) AS $module) {
+            $modules[] = $this->getModuleConfig($module);
+        }
+        return $modules;
+    }
 
-	public function getEnabledModules()
-	{
-		$modules = array();
-		foreach (FileManager::scanDir($this->modulesDir) AS $module)
-		{
-			$foo = $this -> getModuleConfig($module);
-			if ($foo['enable'])
-				$modules[] = $foo;
-		}
-		return $modules;
-	}
+    /**
+     * get only modules that are set "active":true in conf.json
+     * @return array
+     */
+    public function getActiveModules()
+    {
+        $modules = array();
+        foreach (FileManager::scanDir($this->modulesDir) AS $module) {
+            $foo = $this->getModuleConfig($module);
+            if ($foo['active'])
+                $modules[] = $foo;
+        }
+        return $modules;
+    }
 
-	public function getDisabledModules()
-	{
-		$modules = array();
-		foreach (FileManager::scanDir($this->modulesDir) AS $module)
-		{
-			$foo = $this -> getModuleConfig($module);
-			if (!$foo['enable'])
-				$modules[] = $foo;
-		}
-		return $modules;
-	}
+    /**
+     * get only site enabled modules
+     * @return array
+     */
+    public function getEnabledModules()
+    {
+        $modules = array();
+        $this->db->setSQL("SELECT * FROM `modules` WHERE `enable` = '1'");
+        foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) AS $m){
+            $foo = $this->getModuleConfig($m['name']);
+            if ($foo['active']) $modules[] = $foo;
 
-	public function getEnabledModulesAPI()
-	{
-		$actions = array();
-		foreach ($this->getEnabledModules() AS $module)
-		{
-			$actions = array_merge($actions, $module['actionsAPI']);
-		}
-		return $actions;
-	}
+        }
+        return $modules;
+    }
 
-	private function getModuleConfig($module)
-	{
-		if (is_dir($this -> modulesDir . $module))
-		{
-			$text = file_get_contents($this -> modulesDir . $module . '/conf.json');
-			return json_decode($text, true);
-		}
-		return false;
-	}
+    /**
+     * get only site disabled modules
+     * @return array
+     */
+    public function getDisabledModules()
+    {
+        $modules = array();
+        $this->db->setSQL("SELECT * FROM `modules` WHERE `enable` = '0'");
+        foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) AS $m){
+            $foo = $this->getModuleConfig($m['name']);
+            if ($foo['active']) $modules[] = $foo;
+        }
+        return $modules;
+    }
+    public function updateModule($params)
+    {
+        $data = get_object_vars($params);
+        unset($data['id'],$data['name']);
+        $this->db->setSQL($this->db->sqlBind($data, 'modules', 'U', array('name' => $params->id)));
+        $this->db->execLog();
+        return $params;
+    }
+
+    public function getEnabledModulesAPI()
+    {
+        $actions = array();
+        foreach ($this->getEnabledModules() AS $module) {
+            $actions = array_merge($actions, $module['actionsAPI']);
+        }
+        return $actions;
+    }
+
+    /**
+     * get modules config data by module name
+     * @param $moduleName
+     * @return bool|mixed
+     */
+    private function getModuleConfig($moduleName)
+    {
+        if (is_dir($this->modulesDir . $moduleName)) {
+            $text = file_get_contents($this->modulesDir . $moduleName . '/conf.json');
+            return json_decode($text, true);
+        }
+        return false;
+    }
 
 }
 
@@ -96,6 +137,8 @@ class Modules
 //
 //print '****All MODULES***** <br>';
 //print_r($m->getAllModules());
+//print '*****Active MODULES***** <br>';
+//print_r($m->getActiveModules());
 //print '*****Enabled MODULES***** <br>';
 //print_r($m->getEnabledModules());
 //print '*****Disabled MODULES***** <br>';

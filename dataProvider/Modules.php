@@ -137,13 +137,14 @@ class Modules
     }
 
     public function getModuleByName($moduleName){
-        $modules = array();
         $this->db->setSQL("SELECT * FROM `modules` WHERE `name` = '$moduleName'");
-        foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) AS $m){
-            $foo = $this->getModuleConfig($m['name']);
-            if ($foo['active']) $modules[] = $foo;
+        $m = $this->db->fetchRecord(PDO::FETCH_ASSOC);
+        $foo = $this->getModuleConfig($m['name']);
+        if ($foo['active']) {
+            return array_merge($m,$foo);
+        }else{
+            return array();
         }
-        return $modules;
     }
 
     /**

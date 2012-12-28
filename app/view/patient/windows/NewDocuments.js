@@ -27,7 +27,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 		 */
 		me.patientPrescriptionsStore = Ext.create('App.store.patient.PatientsPrescriptions');
 		// TODO: rename store
-		me.prescriptionMedicationsStore = Ext.create('App.store.patient.PatientsPrescription');
+		me.prescriptionMedicationsStore = Ext.create('App.store.patient.PatientsPrescriptionMedications');
 		me.patientsLabsOrdersStore = Ext.create('App.store.patient.PatientsLabsOrders');
 
 		me.items = [
@@ -558,10 +558,13 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 	 * @param btn
 	 */
 	onAddNewPrescriptions:function(btn){
-		var grid = btn.up('grid');
+		var me = this,
+			grid = btn.up('grid');
 		grid.editingPlugin.cancelEdit();
 		this.patientPrescriptionsStore.insert(0, {
-			eid:app.patient.eid,
+			pid:me.pid,
+			eid:me.eid,
+			uid:user.id,
 			created_date:new Date()
 		});
 		grid.editingPlugin.startEdit(0, 0);

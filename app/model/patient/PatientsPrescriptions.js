@@ -9,20 +9,20 @@ Ext.define('App.model.patient.PatientsPrescriptions', {
 	extend: 'Ext.data.Model',
 	fields: [
 
-		{name: 'id'},
-		{name: 'pid'},
-		{name: 'eid'},
-		{name: 'uid'},
-		{name: 'created_date'},
-		{name: 'note'}
+		{name: 'id', type:'int'},
+		{name: 'pid', type:'int'},
+		{name: 'eid', type:'int'},
+		{name: 'uid', type:'int'},
+		{name: 'created_date', type:'date', dateFormat:'Y-m-d H:i:s'},
+		{name: 'note', type:'string'}
 
 	],
 	proxy : {
 		type: 'direct',
 		api : {
             read  : Prescriptions.getPrescriptions,
-            create: Prescriptions.addNewPrescriptions,
-            update: Prescriptions.updatePrescriptions
+            create: Prescriptions.addPrescription,
+            update: Prescriptions.updatePrescription
 		}
 	}
 });

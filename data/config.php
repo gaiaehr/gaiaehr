@@ -613,19 +613,19 @@ $API = array(
 			'getPrescriptions' => array(
 				'len' => 1
 			),
-			'addNewPrescriptions' => array(
-				'len' => 1
-			),
-			'updatePrescriptions' => array(
-				'len' => 1
-			),
-			'getPrescription' => array(
-				'len' => 1
-			),
-			'addNewPrescription' => array(
+			'addPrescription' => array(
 				'len' => 1
 			),
 			'updatePrescription' => array(
+				'len' => 1
+			),
+			'getPrescriptionMedications' => array(
+				'len' => 1
+			),
+			'addNPrescriptionMedication' => array(
+				'len' => 1
+			),
+			'updatePrescriptionMedication' => array(
 				'len' => 1
 			)
 		)

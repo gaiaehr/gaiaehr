@@ -5,7 +5,7 @@
  * Date: 2/18/12
  * Time: 11:09 PM
  */
-Ext.define('App.model.patient.PatientsPrescription', {
+Ext.define('App.model.patient.PatientsPrescriptionMedications', {
 	extend: 'Ext.data.Model',
 	fields: [
         {name: 'id', type: 'int'},
@@ -27,9 +27,9 @@ Ext.define('App.model.patient.PatientsPrescription', {
 	proxy : {
 		type: 'direct',
         api : {
-            read  : Prescriptions.getPrescription,
-            create: Prescriptions.addNewPrescription,
-            update: Prescriptions.updatePrescription
+            read  : Prescriptions.getPrescriptionMedications,
+            create: Prescriptions.addPrescriptionMedication,
+            update: Prescriptions.updatePrescriptionMedication
         }
 	}
 });

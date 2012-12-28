@@ -42,14 +42,14 @@ class Rxnorm
 	/**
 	 * @var Patient
 	 */
-	private $patient;
-	private $medications;
+	//private $patient;
+	//private $medications;
 
 	function __construct()
 	{
 		$this->db           = new dbHelper();
-		$this->patient      = new Patient();
-		$this->medications  = new Medications();
+		//$this->patient      = new Patient();
+		//$this->medications  = new Medications();
 		return;
 	}
 

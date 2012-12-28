@@ -245,7 +245,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 								title:i18n('medications'),
 								action:'prescription_grid',
 								store:me.prescriptionMedicationsStore,
-								flex:1,
+								flex:2,
 								margin:5,
 								columns:[
 									{
@@ -462,7 +462,6 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 								xtype:'mitos.templatescombo',
 								fieldLabel:i18n('template'),
 								action:'template',
-								//width: 250,
 								labelWidth:75,
 								margin:'5 5 0 5',
 								enableKeyEvents:true,
@@ -549,9 +548,8 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 			created_uid:app.user.id,
 			eid:app.patient.eid
 		});
-
 		grid.editingPlugin.startEdit(0, 0);
-		say(prescription_id);
+		say('prescription_id ' + prescription_id);
 	},
 
 	/**
@@ -593,10 +591,8 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 			value = record.data.id,
 			eid = record.data.eid,
 			addMedication = grid.up('panel').up('panel').query('button[action="add_medication"]')[0];
-			//bottomGrid = grid.up('panel').up('panel').query('panel[action="prescription_grid"]')[0];
-
-		say('onPrescriptionClick');
-		say(record.data);
+		//bottomGrid = grid.up('panel').up('panel').query('panel[action="prescription_grid"]')[0];
+		me.fireEvent('prescriptiongridclick', grid, record);
 		me.prescriptionMedicationsStore.proxy.extraParams = {prescription_id:value}
 		me.prescriptionMedicationsStore.load();
 		addMedication.setDisabled(eid == app.patient.eid);
@@ -658,12 +654,21 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 	},
 
 	onCreateLabs:function(){
-		var records = this.patientsLabsOrdersStore.data.items,
-			data = [];
+		var me = this,
+			records = me.patientsLabsOrdersStore.data.items,
+			data = [],
+			params;
 		for(var i = 0; i < records.length; i++){
 			data.push(records[i].data);
 		}
-		DocumentHandler.createDocument({labs:data, pid:app.patient.pid, docType:'Orders', documentId:4, eid:app.patient.eid}, function(provider, response){
+		params = {
+			labs:data,
+			pid:me.pid,
+			eid:me.eid,
+			documentId:4,
+			docType:'Orders'
+		};
+		DocumentHandler.createDocument(params, function(provider, response){
 			say(response.result);
 		});
 		this.close();
@@ -711,6 +716,10 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 			doctorsNoteBody = me.query('[action="body"]')[0],
 			template = me.query('[action="template"]')[0];
 		/**
+		 * Fire Event
+		 */
+		me.fireEvent('orderswindowhide', me);
+		/**
 		 * set current patient data to panel
 		 */
 		me.pid = app.patient.pid;
@@ -746,6 +755,10 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 		var me = this;
 		me.pid = null;
 		me.eid = null;
+		/**
+		 * Fire Event
+		 */
+		me.fireEvent('orderswindowhide', me);
 		if(app.currCardCmp.id == 'panelSummary'){
 			app.currCardCmp.patientDocumentsStore.load({params:{pid:this.pid}});
 		}

@@ -622,7 +622,7 @@ $API = array(
 			'getPrescriptionMedications' => array(
 				'len' => 1
 			),
-			'addNPrescriptionMedication' => array(
+			'addPrescriptionMedication' => array(
 				'len' => 1
 			),
 			'updatePrescriptionMedication' => array(

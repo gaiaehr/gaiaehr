@@ -55,49 +55,54 @@ class Rxnorm
 
 	public function getStrengthByRXCUI($RXCUI){
 		$this->db->setSQL("SELECT ATV
-		                   FROM rxnsat
-		                   WHERE RXCUI = '$RXCUI'
-		                   AND  ATN = 'RXN_AVAILABLE_STRENGTH'");
+		                     FROM rxnsat
+		                    WHERE `CODE` = '$RXCUI'
+		                      AND ATN    = 'DST'
+		                      AND SAB    = 'MMSL'");
 		$rec = $this->db->fetchRecord(PDO::FETCH_ASSOC);
 		return $rec['ATV'];
 	}
 	public function getDrugRouteByRXCUI($RXCUI){
 		$this->db->setSQL("SELECT ATV
-		                   FROM rxnsat
-		                   WHERE RXCUI = '$RXCUI'
-		                   AND  ATN = 'DRT'");
+		                     FROM rxnsat
+		                    WHERE `CODE` = '$RXCUI'
+		                      AND ATN    = 'DRT'
+		                      AND SAB    = 'MMSL'");
 		$rec = $this->db->fetchRecord(PDO::FETCH_ASSOC);
 		return $rec['ATV'];
 	}
 	public function getDoseformByRXCUI($RXCUI){
 		$this->db->setSQL("SELECT ATV
-		                   FROM rxnsat
-		                   WHERE RXCUI = '$RXCUI'
-		                   AND  ATN = 'DDF'");
+		                     FROM rxnsat
+		                    WHERE `CODE` = '$RXCUI'
+		                      AND ATN    = 'DDF'
+		                      AND SAB    = 'MMSL'");
 		$rec = $this->db->fetchRecord(PDO::FETCH_ASSOC);
 		return $rec['ATV'];
 	}
 	public function getDoseformAbbreviateByRXCUI($RXCUI){
 		$this->db->setSQL("SELECT ATV
-		                   FROM rxnsat
-		                   WHERE RXCUI = '$RXCUI'
-		                   AND  ATN = 'DDFA'");
+		                     FROM rxnsat
+		                    WHERE `CODE` = '$RXCUI'
+		                      AND ATN    = 'DDFA'
+		                      AND SAB    = 'MMSL'");
 		$rec = $this->db->fetchRecord(PDO::FETCH_ASSOC);
 		return $rec['ATV'];
 	}
 	public function getDatabaseShortNameByRXCUI($RXCUI){
 		$this->db->setSQL("SELECT SAB
-		                   FROM rxnsat
-		                   WHERE RXCUI = '$RXCUI'");
+		                     FROM rxnsat
+		                    WHERE `CODE` = '$RXCUI'
+                              AND SAB    = 'MMSL'");
 		$rec = $this->db->fetchRecord(PDO::FETCH_ASSOC);
 		return $rec['SAB'];
 	}
 
 	public function getMedicationNameByRXCUI($RXCUI){
 		$this->db->setSQL("SELECT STR
-		                   FROM rxnconso
-		                   WHERE RXCUI = '$RXCUI'
-		                   GROUP BY RXCUI");
+		                     FROM rxnconso
+		                    WHERE RXCUI = '$RXCUI'
+		                 GROUP BY RXCUI");
 		$rec = $this->db->fetchRecord(PDO::FETCH_ASSOC);
 		return $rec['STR'];
 	}
@@ -105,17 +110,20 @@ class Rxnorm
 	public function getRXNORMLiveSearch(stdClass $params)
 	{
 		$this->db->setSQL("SELECT *
-   							   FROM  rxnconso
-   							   WHERE RXCUI    	LIKE'$params->query%'
-   							   OR STR         	LIKE'$params->query%'
-   							   GROUP BY RXCUI");
+                             FROM  rxnconso
+                            WHERE (RXCUI LIKE'$params->query%'
+                               OR  RXAUI LIKE'$params->query%'
+                               OR  STR   LIKE'$params->query%')
+                              AND  SAB   = 'MMSL'
+                              AND  TTY   = 'BD'
+                         GROUP BY  RXCUI");
 		$records = $this->db->fetchRecords(PDO::FETCH_ASSOC);
 		foreach($records as $val => $rec){
-			$records[$val]['RXN_AVAILABLE_STRENGTH'] = $this->getStrengthByRXCUI($rec['RXCUI']);
-			$records[$val]['DRT'] = $this->getDrugRouteByRXCUI($rec['RXCUI']);
-			$records[$val]['DDF'] = $this->getDoseformByRXCUI($rec['RXCUI']);
-			$records[$val]['DDFA'] = $this->getDoseformAbbreviateByRXCUI($rec['RXCUI']);
-			$records[$val]['SAB'] = $this->getDatabaseShortNameByRXCUI($rec['RXCUI']);
+			$records[$val]['RXN_AVAILABLE_STRENGTH'] = $this->getStrengthByRXCUI($rec['CODE']);
+			$records[$val]['DRT'] = $this->getDrugRouteByRXCUI($rec['CODE']);
+			$records[$val]['DDF'] = $this->getDoseformByRXCUI($rec['CODE']);
+			$records[$val]['DDFA'] = $this->getDoseformAbbreviateByRXCUI($rec['CODE']);
+			$records[$val]['SAB'] = $this->getDatabaseShortNameByRXCUI($rec['CODE']);
 		}
 		$total   = count($records);
 		$records = array_slice($records, $params->start, $params->limit);

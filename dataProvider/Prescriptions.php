@@ -78,15 +78,37 @@ class Prescriptions
 //		}
     }
 
+    /**
+     * @param stdClass $params
+     * @return array
+     */
+    public function getPrescriptions(stdClass $params)
+    {
+        $this->db->setSQL("SELECT *
+						     FROM patient_prescriptions
+							WHERE pid = '$params->pid'
+						 ORDER BY id DESC");
+        return $this->db->fetchRecords(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * @param stdClass $params
+     * @return stdClass
+     */
     public function addPrescription(stdClass $params)
     {
         $data = get_object_vars($params);
+        unset($data['id']);
         $this->db->setSQL($this->db->sqlBind($data, 'patient_prescriptions', 'I'));
         $this->db->execLog();
         $params->id = $this->db->lastInsertId;
         return $params;
     }
 
+    /**
+     * @param $params
+     * @return array
+     */
     public function clonePrescription($params)
     {
         if(is_array($params)){
@@ -118,32 +140,16 @@ class Prescriptions
      * @param stdClass $params
      * @return array
      */
-    public function getPrescriptions(stdClass $params)
-    {
-        $this->db->setSQL("SELECT *
-						     FROM patient_prescriptions
-							WHERE pid = '$params->pid'
-						 ORDER BY id DESC");
-        return $this->db->fetchRecords(PDO::FETCH_ASSOC);
-
-    }
-
-    /**
-     * @param stdClass $params
-     * @return array
-     */
     public function updatePrescription(stdClass $params)
     {
         $data = get_object_vars($params);
         unset($data['id']);
-        $sql = $this->db->sqlBind($data, 'patient_prescriptions', 'U', array('id' => $params->id));
-        $this->db->setSQL($sql);
+        $this->db->setSQL($this->db->sqlBind($data, 'patient_prescriptions', 'U', array('id' => $params->id)));
         $this->db->execLog();
         return array(
             'totals' => 1,
             'rows' => $params
         );
-
     }
 
     /**
@@ -167,13 +173,10 @@ class Prescriptions
      */
     public function addPrescriptionMedication($params)
     {
-
         $data = get_object_vars($params);
-        unset($data['type'], $data['id'], $data['dose']);
-        $data['STRENGTH'] = $params->dose;
-        $data['DIRECTIONS'] = $params->take_pills . $params->type . ' ' . $params->route . ' ' . $params->prescription_often . ' ' . $params->prescription_when;
-        $data['create_date'] = $this->parseDate($data['create_date']);
-        $data['pid'] = $_SESSION['patient']['pid'];
+        unset($data['id']);
+        //$data['STRENGTH'] = $params->dose;
+        //$data['DIRECTIONS'] = $params->take_pills . $params->type . ' ' . $params->route . ' ' . $params->prescription_often . ' ' . $params->prescription_when;
         $this->db->setSQL($this->db->sqlBind($data, 'patient_medications', 'I'));
         $this->db->execLog();
         $params->id = $this->db->lastInsertId;

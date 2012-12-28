@@ -18,8 +18,10 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 	width:1200,
 	bodyStyle:'background-color:#fff',
 	modal:true,
+
 	pid:null,
 	eid:null,
+
 	initComponent:function(){
 		var me = this;
 		/**
@@ -34,9 +36,9 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 			me.tabPanel = Ext.create('Ext.tab.Panel', {
 				margin:5,
 				items:[
-				/**
-				 * LAB PANEL
-				 */
+					/**
+					 * LAB PANEL
+					 */
 					{
 						title:i18n('new_lab_order'),
 						items:[
@@ -88,9 +90,9 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 							}
 						]
 					},
-				/**
-				 * X-RAY PANEL
-				 */
+					/**
+					 * X-RAY PANEL
+					 */
 					{
 						title:i18n('new_xray_order'),
 						items:[
@@ -158,9 +160,9 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 							}
 						]
 					},
-				/**
-				 * NEW PRESCRIPTION PANEL
-				 */
+					/**
+					 * NEW PRESCRIPTION PANEL
+					 */
 					{
 						title:i18n('new_prescription'),
 						layout:{
@@ -168,9 +170,9 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 							align:'stretch'
 						},
 						items:[
-						/**
-						 * Pharmacies Combo
-						 */
+							/**
+							 * Pharmacies Combo
+							 */
 							{
 								xtype:'mitos.pharmaciescombo',
 								fieldLabel:i18n('pharmacies'),
@@ -179,11 +181,10 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 								margin:'5 5 0 5'
 
 							},
-						/**
-						 * Prescription Grid
-						 */
-							{
-								xtype:'grid',
+							/**
+							 * Prescription Grid
+							 */
+							me.prescriptionsGrid = Ext.widget('grid',{
 								title:i18n('prescriptions'),
 								store:me.patientPrescriptionsStore,
 								flex:1,
@@ -236,12 +237,11 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 									}
 								]
 
-							},
-						/**
-						 * Medication Grid
-						 */
-							{
-								xtype:'grid',
+							}),
+							/**
+							 * Medication Grid
+							 */
+							me.prescriptionMedicationsGrid = Ext.widget('grid',{
 								title:i18n('medications'),
 								action:'prescription_grid',
 								store:me.prescriptionMedicationsStore,
@@ -269,37 +269,41 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 										beforeedit:me.onEditPrescription
 									},
 									formItems:[
-
 										{
-											title:i18n('general'),
 											xtype:'container',
-											layout:'vbox',
+											layout:{
+												type:'vbox',
+												align:'stretch'
+											},
 											items:[
+												{
+													xtype:'rxnormlivetsearch',
+													fieldLabel:i18n('search'),
+													hideLabel:false,
+													action:'medication_id',
+													name:'RXCUI',
+													labelWidth:80,
+													margin:'0 5 0 5',
+													allowBlank:false,
+													listeners:{
+														scope:me,
+														select:me.addPrescription
+													}
+												},
 												{
 													/**
 													 * Line one
 													 */
 													xtype:'fieldcontainer',
 													layout:'hbox',
-													defaults:{ margin:'5 0 5 5' },
+													margin:'0 0 0 0',
+													defaults:{ margin:'5 0 5 5'},
 													items:[
 														{
-															xtype:'rxnormlivetsearch',
-															fieldLabel:i18n('medication'),
-															hideLabel:false,
-															action:'medication_id',
-															name:'RXCUI',
-															width:350,
-															labelWidth:80,
-															allowBlank:false,
-															listeners:{
-																scope:me,
-																select:me.addPrescription
-															}
-														},
-														{
 															xtype:'textfield',
-															hidden:true,
+															fieldLabel:i18n('medication'),
+															width:357,
+															labelWidth:80,
 															name:'medication',
 															action:'medication'
 														},
@@ -310,7 +314,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 															action:'dose',
 															name:'dose',
 															allowBlank:false,
-															width:250
+															width:293
 														}
 													]
 
@@ -321,17 +325,17 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 													 */
 													xtype:'fieldcontainer',
 													layout:'hbox',
-													defaults:{ margin:'5 0 5 3'},
-
+													margin:'0 0 5 5',
+													defaults:{ margin:'0 0 0 5'},
+													fieldLabel:i18n('take'),
+													labelWidth:80,
 													items:[
 														{
 															xtype:'numberfield',
-															fieldLabel:i18n('take'),
-															margin:'5 0 5 5',
 															name:'take_pills',
 															allowBlank:false,
-															width:130,
-															labelWidth:80,
+															margin:0,
+															width:50,
 															value:0,
 															minValue:0
 														},
@@ -341,7 +345,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 															allowBlank:false,
 															hideLabel:true,
 															name:'type',
-															width:120
+															width:130
 														},
 														{
 															xtype:'mitos.prescriptionhowto',
@@ -349,21 +353,20 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 															allowBlank:false,
 															name:'route',
 															hideLabel:true,
-															width:100
+															width:130
 														},
 														{
 															xtype:'mitos.prescriptionoften',
 															name:'prescription_often',
 															allowBlank:false,
-															width:120
+															width:130
 														},
 														{
 															xtype:'mitos.prescriptionwhen',
 															name:'prescription_when',
-															width:100
+															width:110
 														}
 													]
-
 												},
 												{
 													/**
@@ -371,16 +374,17 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 													 */
 													xtype:'fieldcontainer',
 													layout:'hbox',
-													defaults:{ margin:'5 0 5 5'},
+													margin:'0 0 0 5',
+													defaults:{ margin:'0 0 0 5'},
+													fieldLabel:i18n('dispense'),
+													labelWidth:80,
 													items:[
 														{
-
-															fieldLabel:i18n('dispense'),
 															xtype:'numberfield',
 															name:'dispense',
-															width:130,
+															margin:0,
+															width:50,
 															allowBlank:false,
-															labelWidth:80,
 															value:0,
 															minValue:0
 														},
@@ -406,7 +410,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 														{
 															fieldLabel:i18n('end_date'),
 															xtype:'datefield',
-															width:180,
+															width:175,
 															labelWidth:60,
 															format:globals['date_display_format'],
 															name:'end_date'
@@ -432,7 +436,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 									}
 								]
 
-							}
+							})
 
 						],
 						bbar:[
@@ -448,9 +452,9 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 						]
 
 					},
-				/**
-				 * DOCTORS NOTE
-				 */
+					/**
+					 * DOCTORS NOTE
+					 */
 					{
 						title:i18n('new_doctors_note'),
 						layout:{
@@ -539,16 +543,19 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 	 * @param btn
 	 */
 	onAddPrescriptionMedication:function(btn){
-		var grid = btn.up('grid'),
-			prescription_id = btn.up('panel').up('panel').down('grid').getSelectionModel().getLastSelected().data.id;
-		grid.editingPlugin.cancelEdit();
+		var me = this,
+			prescription_id = me.prescriptionsGrid.getSelectionModel().getLastSelected().data.id;
+		me.prescriptionMedicationsGrid.editingPlugin.cancelEdit();
 
-		this.prescriptionMedicationsStore.insert(0, {
+		me.prescriptionMedicationsStore.insert(0, {
+			pid:me.pid,
+			eid:me.eid,
 			prescription_id:prescription_id,
 			created_uid:app.user.id,
-			eid:app.patient.eid
+			begin_date:new Date(),
+			create_date:new Date()
 		});
-		grid.editingPlugin.startEdit(0, 0);
+		me.prescriptionMedicationsGrid.editingPlugin.startEdit(0, 0);
 		say('prescription_id ' + prescription_id);
 	},
 
@@ -564,7 +571,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 		this.patientPrescriptionsStore.insert(0, {
 			pid:me.pid,
 			eid:me.eid,
-			uid:user.id,
+			uid:app.user.id,
 			created_date:new Date()
 		});
 		grid.editingPlugin.startEdit(0, 0);
@@ -590,16 +597,10 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 	 * @param record
 	 */
 	onPrescriptionClick:function(grid, record){
-		var me = this,
-			value = record.data.id,
-			eid = record.data.eid,
-			addMedication = grid.up('panel').up('panel').query('button[action="add_medication"]')[0];
-		//bottomGrid = grid.up('panel').up('panel').query('panel[action="prescription_grid"]')[0];
-		me.fireEvent('prescriptiongridclick', grid, record);
-		me.prescriptionMedicationsStore.proxy.extraParams = {prescription_id:value}
-		me.prescriptionMedicationsStore.load();
-		addMedication.setDisabled(eid == app.patient.eid);
-		//bottomGrid.setDisabled(eid == app.patient.eid);
+		this.fireEvent('prescriptiongridclick', grid, record);
+		this.prescriptionMedicationsStore.proxy.extraParams = {prescription_id:record.data.id};
+		this.prescriptionMedicationsStore.load();
+		this.query('button[action="add_medication"]')[0].setDisabled(record.data.eid != this.eid);
 	},
 
 	/**

@@ -11,23 +11,6 @@
  * GaiaEHR (Electronic Health Records) 2011
  *
  * This are all the Ext.direct methods used in this class
- * @namespace Encounter.getEncounter
- * @namespace Encounter.createEncounter
- * @namespace Encounter.updateEncounter
- * @namespace Encounter.checkOpenEncounters
- * @namespace Encounter.closeEncounter
- * @namespace Encounter.getVitals
- * @namespace Encounter.addVitals
- * @namespace Encounter.saveReviewOfSystem
- * @namespace Encounter.saveReviewOfSystemsChecks
- * @namespace Encounter.saveSOAP
- * @namespace Encounter.saveSpeechDictation
- * @namespace Encounter.updateReviewOfSystemsById
- * @namespace Encounter.updateReviewOfSystemsChecksById
- * @namespace Encounter.updateSoapById
- * @namespace Encounter.updateDictationById
- * @namespace Encounter.getProgressNoteByEid
- * @namespace User.verifyUserPass
  */
 Ext.define('App.view.patient.Encounter', {
     extend:'App.ux.RenderPanel',
@@ -299,239 +282,258 @@ Ext.define('App.view.patient.Encounter', {
          * Encounter Tab Panel and its Panels...
          * @type {*}
          */
-        me.encounterTabPanel = me.centerPanel.add(Ext.create('Ext.tab.Panel', {
-            title:me.renderAdministrative ? i18n('encounter') : false,
-            itemId:'encounter',
-            plain:true,
-            activeItem:0,
-            border:false,
-            defaults:{
-                bodyStyle:'padding:15px',
-                bodyBorder:true,
-                layout:'fit'
-            }
-        }));
-        if(acl['access_patient_vitals']){
-            me.vitalsPanel = me.encounterTabPanel.add(Ext.create('Ext.panel.Panel', {
-                title:i18n('vitals'),
-                action:'encounter',
-                cls:'vitals-panel',
-                bodyPadding:'5 10',
-                overflowY:'auto',
-                frame:true,
-                bodyStyle:'background-color:white',
-                layout:{
-                    type:'hbox',
-                    stretch:true
-                },
-                items:[
-                    {
-                        xtype:'form',
-                        width:313,
-                        margin:0,
-                        border:false,
-                        layout:'anchor',
-                        fieldDefaults:{
-                            msgTarget:'side',
-                            labelAlign:'right'
-                        },
-                        buttons:[
-                            {
-                                text:i18n('reset'),
-                                width:40,
-                                scope:me,
-                                handler:me.resetVitalsForm
-                            },
-                            {
-                                text:i18n('save'),
-                                action:'vitals',
-                                width:40,
-                                scope:me,
-                                handler:me.onEncounterUpdate
-                            },
-                            {
-                                text:i18n('sign'),
-                                width:40,
-                                disabled:true,
-                                action:'signBtn',
-                                scope:me,
-                                handler:me.onVitalsSign
-                            }
-                        ]
-                    },
-                    {
-                        xtype:'vitalsdataview',
-                        flex:1,
-                        autoScroll:true,
-                        listeners:{
-                            scope:me,
-                            itemdblclick:me.onVitalsClick
-                        }
-                    }
-                ],
-                dockedItems:{
-                    xtype:'toolbar',
-                    dock:'top',
-                    items:['->', {
-                        text:i18n('vector_charts'),
-                        iconCls:'icoChart',
-                        scope:me,
-                        handler:me.onChartWindowShow
-                    }]
+        me.encounterTabPanel = me.centerPanel.add(
+            Ext.create('Ext.tab.Panel', {
+                title:me.renderAdministrative ? i18n('encounter') : false,
+                itemId:'encounter',
+                plain:true,
+                activeItem:0,
+                border:false,
+                defaults:{
+                    bodyStyle:'padding:15px',
+                    bodyBorder:true,
+                    layout:'fit'
                 }
-            }));
+            })
+        );
+        if(acl['access_patient_vitals']){
+            me.vitalsPanel = me.encounterTabPanel.add(
+                Ext.create('Ext.panel.Panel', {
+                    title:i18n('vitals'),
+                    action:'encounter',
+                    cls:'vitals-panel',
+                    bodyPadding:'5 10',
+                    overflowY:'auto',
+                    frame:true,
+                    bodyStyle:'background-color:white',
+                    layout:{
+                        type:'hbox',
+                        stretch:true
+                    },
+                    items:[
+                        {
+                            xtype:'form',
+                            width:313,
+                            margin:0,
+                            border:false,
+                            layout:'anchor',
+                            fieldDefaults:{
+                                msgTarget:'side',
+                                labelAlign:'right'
+                            },
+                            buttons:[
+                                {
+                                    text:i18n('reset'),
+                                    width:40,
+                                    scope:me,
+                                    handler:me.resetVitalsForm
+                                },
+                                {
+                                    text:i18n('save'),
+                                    action:'vitals',
+                                    width:40,
+                                    scope:me,
+                                    handler:me.onEncounterUpdate
+                                },
+                                {
+                                    text:i18n('sign'),
+                                    width:40,
+                                    disabled:true,
+                                    action:'signBtn',
+                                    scope:me,
+                                    handler:me.onVitalsSign
+                                }
+                            ]
+                        },
+                        {
+                            xtype:'vitalsdataview',
+                            flex:1,
+                            autoScroll:true,
+                            listeners:{
+                                scope:me,
+                                itemdblclick:me.onVitalsClick
+                            }
+                        }
+                    ],
+                    dockedItems:{
+                        xtype:'toolbar',
+                        dock:'top',
+                        items:['->', {
+                            text:i18n('vector_charts'),
+                            iconCls:'icoChart',
+                            scope:me,
+                            handler:me.onChartWindowShow
+                        }]
+                    }
+                })
+            );
         }
         if(acl['access_review_of_systems']){
-            me.reviewSysPanel = me.encounterTabPanel.add(Ext.create('Ext.form.Panel', {
-                autoScroll:true,
-                action:'encounter',
-                title:i18n('review_of_systems'),
-                frame:true,
-                bodyPadding:5,
-                bodyStyle:'background-color:white',
-                fieldDefaults:{
-                    msgTarget:'side'
-                },
-                plugins: {
-                    ptype:'advanceform',
-                    autoSync:globals['autosave'],
-                    syncAcl:acl['edit_encounters']
-                },
-                buttons:[
-                    {
-                        text:i18n('save'),
-                        iconCls:'save',
-                        action:'reviewOfSystems',
-                        scope:me,
-                        handler:me.onEncounterUpdate
-                    }
-                ]
-            }));
+            me.reviewSysPanel = me.encounterTabPanel.add(
+                Ext.create('Ext.form.Panel', {
+                    autoScroll:true,
+                    action:'encounter',
+                    title:i18n('review_of_systems'),
+                    frame:true,
+                    bodyPadding:5,
+                    bodyStyle:'background-color:white',
+                    fieldDefaults:{
+                        msgTarget:'side'
+                    },
+                    plugins: {
+                        ptype:'advanceform',
+                        autoSync:globals['autosave'],
+                        syncAcl:acl['edit_encounters']
+                    },
+                    buttons:[
+                        {
+                            text:i18n('save'),
+                            iconCls:'save',
+                            action:'reviewOfSystems',
+                            scope:me,
+                            handler:me.onEncounterUpdate
+                        }
+                    ]
+                })
+            );
         }
         if(acl['access_review_of_systems_checks']){
-            me.reviewSysCkPanel = me.encounterTabPanel.add(Ext.create('Ext.form.Panel', {
-                autoScroll:true,
-                action:'encounter',
-                title:i18n('review_of_systems_checks'),
-                frame:true,
-                bodyPadding:5,
-                bodyStyle:'background-color:white',
-                fieldDefaults:{
-                    msgTarget:'side'
-                },
-                plugins: {
-                    ptype:'advanceform',
-                    autoSync:globals['autosave'],
-                    syncAcl:acl['edit_encounters']
-                },
-                buttons:[
-                    {
-                        text:i18n('save'),
-                        iconCls:'save',
-                        action:'reviewOfSystemsChecks',
-                        scope:me,
-                        handler:me.onEncounterUpdate
-                    }
-                ]
-            }));
+            me.reviewSysCkPanel = me.encounterTabPanel.add(
+                Ext.create('Ext.form.Panel', {
+                    autoScroll:true,
+                    action:'encounter',
+                    title:i18n('review_of_systems_checks'),
+                    frame:true,
+                    bodyPadding:5,
+                    bodyStyle:'background-color:white',
+                    fieldDefaults:{
+                        msgTarget:'side'
+                    },
+                    plugins: {
+                        ptype:'advanceform',
+                        autoSync:globals['autosave'],
+                        syncAcl:acl['edit_encounters']
+                    },
+                    buttons:[
+                        {
+                            text:i18n('save'),
+                            iconCls:'save',
+                            action:'reviewOfSystemsChecks',
+                            scope:me,
+                            handler:me.onEncounterUpdate
+                        }
+                    ]
+                })
+            );
         }
         if(acl['access_soap']){
-            me.soapPanel = me.encounterTabPanel.add(Ext.create('Ext.form.Panel', {
-                autoScroll:true,
-                title:i18n('soap'),
-                action:'encounter',
-                frame:true,
-                bodyPadding:5,
-                bodyStyle:'background-color:white',
-                fieldDefaults:{
-                    msgTarget:'side'
-                },
-                plugins: {
-                    ptype:'advanceform',
-                    autoSync:globals['autosave'],
-                    syncAcl:acl['edit_encounters']
-                },
-                buttons:[
-                    {
-                        text:i18n('save'),
-                        iconCls:'save',
-                        action:'soap',
-                        scope:me,
-                        handler:me.onEncounterUpdate
-                    }
-                ],
-                listeners:{
-                    recordloaded:function(form, record){
-
-                        say(record.data.icdxCodes);
-                        me.soapPanel.query('icdsfieldset')[0].loadIcds(record.data.icdxCodes);
+            me.soapPanel = me.encounterTabPanel.add(
+                Ext.create('Ext.form.Panel', {
+                    autoScroll:true,
+                    title:i18n('soap'),
+                    action:'encounter',
+                    frame:true,
+                    bodyPadding:5,
+                    bodyStyle:'background-color:white',
+                    fieldDefaults:{
+                        msgTarget:'side'
                     },
-                    beforesync:function(store, operation){
-                        //me.soapPanel.query('icdsfieldset')[0].loadIcds(record.data.icdxCodes);
+                    plugins: {
+                        ptype:'advanceform',
+                        autoSync:globals['autosave'],
+                        syncAcl:acl['edit_encounters']
+                    },
+                    buttons:[
+                        {
+                            text:i18n('save'),
+                            iconCls:'save',
+                            action:'soap',
+                            scope:me,
+                            handler:me.onEncounterUpdate
+                        }
+                    ],
+                    listeners:{
+                        recordloaded:function(form, record){
+                            say(record.data.icdxCodes);
+                            me.soapPanel.query('icdsfieldset')[0].loadIcds(record.data.icdxCodes);
+                        },
+                        beforesync:function(store, operation){
+                            //me.soapPanel.query('icdsfieldset')[0].loadIcds(record.data.icdxCodes);
+                        }
                     }
-                }
-            }));
+                })
+            );
         }
         if(acl['access_itmes_to_review']){
-            me.itemsToReview = me.encounterTabPanel.add(Ext.create('App.view.patient.ItemsToReview', {
-                title:i18n('items_to_review'),
-                bodyPadding:'7 5 2 5'
-            }));
+            me.itemsToReview = me.encounterTabPanel.add(
+                Ext.create('App.view.patient.ItemsToReview', {
+                    title:i18n('items_to_review'),
+                    bodyPadding:'7 5 2 5'
+                })
+            );
         }
         /**
          * Administravive Tab Panel and its Panels
          * @type {*}
          */
         if(acl['access_enc_hcfa'] || acl['access_enc_cpt'] || acl['access_enc_history']){
-            me.administrativeTabPanel = me.centerPanel.add(Ext.create('Ext.tab.Panel', {
-                title:i18n('administrative'),
-                itemId:'administrative',
-                plain:true,
-                activeItem:0,
-                defaults:{
-                    bodyStyle:'padding:15px',
-                    bodyBorder:true,
-                    layout:'fit'
-                }
-            }));
+            me.administrativeTabPanel = me.centerPanel.add(
+                Ext.create('Ext.tab.Panel', {
+                    title:i18n('administrative'),
+                    itemId:'administrative',
+                    plain:true,
+                    activeItem:0,
+                    defaults:{
+                        bodyStyle:'padding:15px',
+                        bodyBorder:true,
+                        layout:'fit'
+                    }
+                })
+            );
         }
         if(acl['access_enc_hcfa']){
-            me.MiscBillingOptionsPanel = me.administrativeTabPanel.add(Ext.create('App.view.patient.encounter.HealthCareFinancingAdministrationOptions', {
-                autoScroll:true,
-                title:i18n('misc_billing_options_HCFA_1500'),
-                frame:true,
-                bodyPadding:5,
-                bodyStyle:'background-color:white',
-                fieldDefaults:{
-                    msgTarget:'side'
-                },
-                plugins: {
-                    ptype:'advanceform',
-                    autoSync:globals['autosave'],
-                    syncAcl:acl['edit_enc_hcfa']
-                },
-                buttons:[
-                    {
-                        text:i18n('save'),
-                        iconCls:'save',
-                        action:'soap',
-                        scope:me,
-                        handler:me.onEncounterUpdate
-                    }
-                ]
-            }));
+            me.MiscBillingOptionsPanel = me.administrativeTabPanel.add(
+                Ext.create('App.view.patient.encounter.HealthCareFinancingAdministrationOptions', {
+                    autoScroll:true,
+                    title:i18n('misc_billing_options_HCFA_1500'),
+                    frame:true,
+                    bodyPadding:5,
+                    bodyStyle:'background-color:white',
+                    fieldDefaults:{
+                        msgTarget:'side'
+                    },
+                    plugins: {
+                        ptype:'advanceform',
+                        autoSync:globals['autosave'],
+                        syncAcl:acl['edit_enc_hcfa']
+                    },
+                    buttons:[
+                        {
+                            text:i18n('save'),
+                            iconCls:'save',
+                            action:'soap',
+                            scope:me,
+                            handler:me.onEncounterUpdate
+                        }
+                    ]
+                })
+            );
         }
         if(acl['access_enc_cpt']){
-            me.CurrentProceduralTerminology = me.administrativeTabPanel.add(Ext.create('App.view.patient.encounter.CurrentProceduralTerminology', {
-                title:i18n('current_procedural_terminology')
-            }));
+            me.CurrentProceduralTerminology = me.administrativeTabPanel.add(
+                Ext.create('App.view.patient.encounter.CurrentProceduralTerminology', {
+                    title:i18n('current_procedural_terminology')
+                })
+            );
         }
         if(acl['access_enc_history']){
-            me.EncounterEventHistory = me.administrativeTabPanel.add(Ext.create('App.ux.grid.EventHistory', {
-                bodyStyle:0,
-                title:i18n('encounter_history'),
-                store:me.encounterEventHistoryStore
-            }));
+            me.EncounterEventHistory = me.administrativeTabPanel.add(
+                Ext.create('App.ux.grid.EventHistory', {
+                    bodyStyle:0,
+                    title:i18n('encounter_history'),
+                    store:me.encounterEventHistoryStore
+                })
+            );
         }
         /**
          * Progress Note
@@ -585,6 +587,7 @@ Ext.define('App.view.patient.Encounter', {
             ]
 
         });
+        //noinspection JSUnresolvedFunction
         me.panelToolBar = Ext.create('Ext.toolbar.Toolbar', {
             dock:'top',
             defaults:{

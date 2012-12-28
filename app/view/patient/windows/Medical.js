@@ -4,10 +4,6 @@
  * File:
  * Date: 2/15/12
  * Time: 4:30 PM
- *
- * @namespace Immunization.getImmunizationsList
- * @namespace Immunization.getPatientImmunizations
- * @namespace Immunization.addPatientImmunization
  */
 Ext.define('App.view.patient.windows.Medical', {
     extend:'App.ux.window.Window',
@@ -26,6 +22,9 @@ Ext.define('App.view.patient.windows.Medical', {
     pid:null,
     initComponent:function(){
         var me = this;
+        /*****************************************************************************
+         * STORES
+         *****************************************************************************/
         me.patientImmuListStore = Ext.create('App.store.patient.PatientImmunization', {
             groupField:'immunization_name',
             sorters:['immunization_name', 'administered_date'],
@@ -50,13 +49,12 @@ Ext.define('App.view.patient.windows.Medical', {
             autoSync:false
         });
         me.patientSurgeryStore = Ext.create('App.store.patient.Surgery', {
-
-                listeners:{
-                    scope:me,
-                    beforesync:me.setDefaults
-                },
-                autoSync:false
-            });
+            listeners:{
+                scope:me,
+                beforesync:me.setDefaults
+            },
+            autoSync:false
+        });
         me.patientDentalStore = Ext.create('App.store.patient.Dental', {
             listeners:{
                 scope:me,
@@ -72,9 +70,13 @@ Ext.define('App.view.patient.windows.Medical', {
             autoSync:false
         });
         me.labPanelsStore = Ext.create('App.store.patient.LaboratoryTypes', {
-                autoSync:true
-            });
+            autoSync:true
+        });
+
         me.items = [
+            /**
+             * Immunization Panel
+             */
             {
                 xtype:'grid',
                 action:'patientImmuListGrid',
@@ -258,10 +260,10 @@ Ext.define('App.view.patient.windows.Medical', {
                     handler:me.onReviewed
                 }]
             },
+            /**
+             * Allergies Card panel
+             */
             {
-                /**
-                 * Allergies Card panel
-                 */
                 xtype:'grid',
                 action:'patientAllergiesListGrid',
                 store:me.patientAllergiesListStore,
@@ -477,10 +479,11 @@ Ext.define('App.view.patient.windows.Medical', {
                     handler:me.onReviewed
                 }]
             },
+            /**
+             * Active Problem Card panel
+             */
             {
-                /**
-                 * Active Problem Card panel
-                 */
+
 
                 xtype:'grid',
                 action:'patientMedicalListGrid',
@@ -630,10 +633,11 @@ Ext.define('App.view.patient.windows.Medical', {
                     handler:me.onReviewed
                 }]
             },
+            /**
+             * Surgery Card panel
+             */
             {
-                /**
-                 * Surgery Card panel
-                 */
+
 
                 xtype:'grid',
                 action:'patientSurgeryListGrid',
@@ -768,10 +772,11 @@ Ext.define('App.view.patient.windows.Medical', {
                     handler:me.onReviewed
                 }]
             },
+            /**
+             * Dental Card panel
+             */
             {
-                /**
-                 * Dental Card panel
-                 */
+
 
                 xtype:'grid',
                 action:'patientDentalListGrid',
@@ -909,10 +914,11 @@ Ext.define('App.view.patient.windows.Medical', {
                     handler:me.onReviewed
                 }]
             },
+            /**
+             * Medications panel
+             */
             {
-                /**
-                 * Medications panel
-                 */
+
 
                 xtype:'grid',
                 action:'patientMedicationsListGrid',
@@ -1058,10 +1064,11 @@ Ext.define('App.view.patient.windows.Medical', {
                     handler:me.onReviewed
                 }]
             },
+            /**
+             * Lab panel
+             */
             {
-                /**
-                 * Lab panel
-                 */
+
                 xtype:'container',
                 action:'patientLabs',
                 layout:'border',
@@ -1197,6 +1204,10 @@ Ext.define('App.view.patient.windows.Medical', {
                 ]
             }
         ];
+        /**
+         * Docked Items
+         * @type {Array}
+         */
         me.dockedItems = [
             {
                 xtype:'toolbar',
@@ -1282,6 +1293,10 @@ Ext.define('App.view.patient.windows.Medical', {
                 ]
             }
         ];
+        /**
+         * Listeners
+         * @type {{scope: *, show: Function, close: Function}}
+         */
         me.listeners = {
             scope:me,
             show:me.onMedicalWinShow,

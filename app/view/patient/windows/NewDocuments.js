@@ -178,7 +178,6 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 
 							},
 							{
-
 								xtype:'grid',
 								title:i18n('prescriptions'),
 								store:me.patientPrescriptionsStore,
@@ -197,26 +196,23 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 										format:'Y-m-d',
 										width:100,
 										dataIndex:'created_date',
-										name:'created_date',
 										action:'created_date'
-
 									},
 									{
 										header:i18n('notes'),
 										flex:1,
+										dataIndex:'note',
 										editor:{
 											xtype:'textfield'
-										},
-										dataIndex:'note'
+										}
+
 									}
 
 								],
 
 								listeners:{
 									scope:me,
-									beforeedit:me.beforePrescriptionsEdit,
-									itemclick:me.medicationsOfThePrescription
-
+									itemclick:me.onPrescriptionClick
 								},
 
 								tbar:[
@@ -499,8 +495,8 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 		 */
 		me.listeners = {
 			scope:me,
-			show:me.onDocumentsWinShow,
-			hide:me.onDocumentsWinHide
+			show:me.onWinShow,
+			hide:me.onWinHide
 		};
 		me.callParent(arguments);
 	},
@@ -533,7 +529,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 	},
 
 	/**
-	 * Need to fix the component query!
+	 * TODO: Need to fix the component query!
 	 * Adds a medication to the prescription
 	 * @param btn
 	 */
@@ -553,6 +549,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 	},
 
 	/**
+	 * TODO: Need to fix and rename functions
 	 * Adds a prescription to the encounter
 	 * @param btn
 	 */
@@ -560,7 +557,8 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 		var grid = btn.up('grid');
 		grid.editingPlugin.cancelEdit();
 		this.patientPrescriptionsStore.insert(0, {
-			eid:app.patient.eid
+			eid:app.patient.eid,
+			created_date:new Date()
 		});
 		grid.editingPlugin.startEdit(0, 0);
 	},
@@ -579,15 +577,22 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 
 	},
 
-	medicationsOfThePrescription:function(grid, model){
+	/**
+	 * TODO: Need to fix the component query!
+	 * @param grid
+	 * @param record
+	 */
+	onPrescriptionClick:function(grid, record){
 		var me = this,
-			value = model.data.id,
-			eid = model.data.eid,
+			value = record.data.id,
+			eid = record.data.eid,
 			addMedication = grid.up('panel').up('panel').query('button[action="add_medication"]')[0];
 			//bottomGrid = grid.up('panel').up('panel').query('panel[action="prescription_grid"]')[0];
 
-		me.patientPrescriptionStore.load({params:{prescription_id:value}});
+		say('onPrescriptionClick');
+		say(record.data);
 
+		me.patientPrescriptionStore.load({params:{prescription_id:value}});
 		addMedication.setDisabled(eid == app.patient.eid);
 		//bottomGrid.setDisabled(eid == app.patient.eid);
 	},
@@ -599,12 +604,14 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 		grid.editingPlugin.cancelEdit();
 		store.remove(record);
 	},
+
 	onRemoveLabs:function(grid, rowIndex){
 		var me = this,
 			store = grid.getStore(),
 			record = store.getAt(rowIndex);
 		store.remove(record);
 	},
+
 	addPrescription:function(combo, model){
 		var me = this,
 			field = combo.up('fieldcontainer').query('[action="dose"]')[0],
@@ -614,6 +621,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 		field.setValue(strength);
 		field3.setValue(medication);
 	},
+
 	onEditPrescription:function(editor, e){
 		//        var me = this,
 		//            eid = e.record.data.eid;
@@ -624,6 +632,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 		//
 		//        }
 	},
+
 	onCreatePrescription:function(){
 		say('hello');
 		var records = this.patientPrescriptionStore.data.items,
@@ -639,6 +648,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 		this.close();
 
 	},
+
 	onCreateLabs:function(){
 		var records = this.patientsLabsOrdersStore.data.items,
 			data = [];
@@ -651,6 +661,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 		this.close();
 
 	},
+
 	onCreateDoctorsNote:function(bbar){
 		var me = this,
 			htmlEditor = bbar.up('toolbar').up('panel').getComponent('body'),
@@ -666,6 +677,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 	addMedications:function(){
 
 	},
+
 	onAddLabs:function(field, model){
 
 		this.patientsLabsOrdersStore.add({
@@ -673,7 +685,12 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 		});
 		field.reset();
 	},
-	onDocumentsWinShow:function(){
+
+	/**
+	 * This need to be verify!
+	 * On window shows
+	 */
+	onWinShow:function(){
 		var me = this,
 			doctorsNoteBody = me.query('[action="body"]')[0],
 			template = me.query('[action="template"]')[0],
@@ -699,22 +716,14 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 		dock.items.items[2].setVisible(visible);
 		if(!visible) me.cardSwitch('notes');
 	},
-	onDocumentsWinHide:function(){
+
+	/**
+	 * Loads patientDocumentsStore with new documents
+	 */
+	onWinHide:function(){
 		if(app.currCardCmp.id == 'panelSummary'){
 			app.currCardCmp.patientDocumentsStore.load({params:{pid:this.pid}});
 		}
-	},
-
-	beforePrescriptionsEdit:function(editor, e){
-		var form = editor.editor.getForm(),
-			search = form.findField('created_date'),
-			newRecord = e.record.data.created_date == '';
-		search.setVisible(newRecord);
-		if(newRecord){
-			e.record.data.created_date = new Date();
-		}
 	}
-
-
 
 });

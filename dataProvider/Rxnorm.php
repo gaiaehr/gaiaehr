@@ -53,46 +53,46 @@ class Rxnorm
 		return;
 	}
 
-	public function getStrengthByRXCUI($RXCUI){
+	public function getStrengthByCODE($CODE){
 		$this->db->setSQL("SELECT ATV
 		                     FROM rxnsat
-		                    WHERE `CODE` = '$RXCUI'
+		                    WHERE `CODE` = '$CODE'
 		                      AND ATN    = 'DST'
 		                      AND SAB    = 'MMSL'");
 		$rec = $this->db->fetchRecord(PDO::FETCH_ASSOC);
 		return $rec['ATV'];
 	}
-	public function getDrugRouteByRXCUI($RXCUI){
+	public function getDrugRouteByCODE($CODE){
 		$this->db->setSQL("SELECT ATV
 		                     FROM rxnsat
-		                    WHERE `CODE` = '$RXCUI'
+		                    WHERE `CODE` = '$CODE'
 		                      AND ATN    = 'DRT'
 		                      AND SAB    = 'MMSL'");
 		$rec = $this->db->fetchRecord(PDO::FETCH_ASSOC);
 		return $rec['ATV'];
 	}
-	public function getDoseformByRXCUI($RXCUI){
+	public function getDoseformByCODE($CODE){
 		$this->db->setSQL("SELECT ATV
 		                     FROM rxnsat
-		                    WHERE `CODE` = '$RXCUI'
+		                    WHERE `CODE` = '$CODE'
 		                      AND ATN    = 'DDF'
 		                      AND SAB    = 'MMSL'");
 		$rec = $this->db->fetchRecord(PDO::FETCH_ASSOC);
 		return $rec['ATV'];
 	}
-	public function getDoseformAbbreviateByRXCUI($RXCUI){
+	public function getDoseformAbbreviateByCODE($CODE){
 		$this->db->setSQL("SELECT ATV
 		                     FROM rxnsat
-		                    WHERE `CODE` = '$RXCUI'
+		                    WHERE `CODE` = '$CODE'
 		                      AND ATN    = 'DDFA'
 		                      AND SAB    = 'MMSL'");
 		$rec = $this->db->fetchRecord(PDO::FETCH_ASSOC);
 		return $rec['ATV'];
 	}
-	public function getDatabaseShortNameByRXCUI($RXCUI){
+	public function getDatabaseShortNameByCODE($CODE){
 		$this->db->setSQL("SELECT SAB
 		                     FROM rxnsat
-		                    WHERE `CODE` = '$RXCUI'
+		                    WHERE `CODE` = '$CODE'
                               AND SAB    = 'MMSL'");
 		$rec = $this->db->fetchRecord(PDO::FETCH_ASSOC);
 		return $rec['SAB'];
@@ -119,11 +119,11 @@ class Rxnorm
                          GROUP BY  RXCUI");
 		$records = $this->db->fetchRecords(PDO::FETCH_ASSOC);
 		foreach($records as $val => $rec){
-			$records[$val]['RXN_AVAILABLE_STRENGTH'] = $this->getStrengthByRXCUI($rec['CODE']);
-			$records[$val]['DRT'] = $this->getDrugRouteByRXCUI($rec['CODE']);
-			$records[$val]['DDF'] = $this->getDoseformByRXCUI($rec['CODE']);
-			$records[$val]['DDFA'] = $this->getDoseformAbbreviateByRXCUI($rec['CODE']);
-			$records[$val]['SAB'] = $this->getDatabaseShortNameByRXCUI($rec['CODE']);
+			$records[$val]['DST']  = $this->getStrengthByCODE($rec['CODE']);
+			$records[$val]['DRT']  = $this->getDrugRouteByCODE($rec['CODE']);
+			$records[$val]['DDF']  = $this->getDoseformByCODE($rec['CODE']);
+			$records[$val]['DDFA'] = $this->getDoseformAbbreviateByCODE($rec['CODE']);
+			$records[$val]['SAB']  = $this->getDatabaseShortNameByCODE($rec['CODE']);
 		}
 		$total   = count($records);
 		$records = array_slice($records, $params->start, $params->limit);

@@ -30,8 +30,8 @@ if(!isset($_SESSION)) {
 	session_start();
 	session_cache_limiter('private');
 }
-include_once ($_SESSION['root'] . '/dataProvider/Patient.php');
-include_once ($_SESSION['root'] . '/dataProvider/Medications.php');
+//include_once ($_SESSION['root'] . '/dataProvider/Patient.php');
+//include_once ($_SESSION['root'] . '/dataProvider/Medications.php');
 include_once ($_SESSION['root'] . '/classes/dbHelper.php');
 class Rxnorm
 {

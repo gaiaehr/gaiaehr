@@ -31,15 +31,17 @@ Ext.define('App.ux.LiveRXNORMSearch',
 		{
 			extend : 'Ext.data.Model',
 			fields : [
-			{name : 'RXCUI'},
-			{name : 'STR'},
-			{name : 'RXN_AVAILABLE_STRENGTH'},
-			{name : 'DRT'},
-			{name : 'DDF'},
-			{name : 'DDFA'},
-			{name : 'RXN_QUANTITY'},
-			{name : 'SAB'},
-			{name : 'RXAUI'}],
+				{name : 'RXCUI', type:'auto'},
+				{name : 'CODE', type:'auto'},
+				{name : 'STR', type:'auto'},
+				{name : 'DST', type:'auto'},
+				{name : 'DRT', type:'auto'},
+				{name : 'DDF', type:'auto'},
+				{name : 'DDFA', type:'auto'},
+				{name : 'RXN_QUANTITY', type:'auto'},
+				{name : 'SAB', type:'auto'},
+				{name : 'RXAUI', type:'auto'}
+			],
 			proxy :
 			{
 				type : 'direct',

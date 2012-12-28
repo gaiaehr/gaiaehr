@@ -225,12 +225,14 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 									'->',
 									{
 										text:i18n('clone_prescription'),
+										iconCls:'icoAdd',
 										scope:me,
 										handler:me.onClonePrescriptions
 
 									},
 									{
 										text:i18n('new_prescription'),
+										iconCls:'icoAdd',
 										scope:me,
 										handler:me.onAddNewPrescriptions
 
@@ -299,23 +301,21 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 													margin:'0 0 0 0',
 													defaults:{ margin:'5 0 5 5'},
 													items:[
-														{
-															xtype:'textfield',
+														me.prescriptionMedText = Ext.widget('textfield',{
 															fieldLabel:i18n('medication'),
 															width:357,
 															labelWidth:80,
 															name:'medication',
 															action:'medication'
-														},
-														{
-															xtype:'textfield',
+														}),
+														me.prescriptionDoseText = Ext.widget('textfield',{
 															fieldLabel:i18n('dose'),
 															labelWidth:40,
 															action:'dose',
 															name:'dose',
 															allowBlank:false,
 															width:293
-														}
+														})
 													]
 
 												},
@@ -429,6 +429,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 									{
 										text:i18n('add_medication'),
 										scope:me,
+										iconCls:'icoAdd',
 										action:'add_medication',
 										disabled:true,
 										handler:me.onAddPrescriptionMedication
@@ -618,16 +619,12 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 	/**
 	 * TODO: Fix component queries
 	 * @param combo
-	 * @param model
+     * @param record
 	 */
-	addPrescription:function(combo, model){
-		var me = this,
-			field = combo.up('fieldcontainer').query('[action="dose"]')[0],
-			field3 = combo.up('fieldcontainer').query('[action="medication"]')[0],
-			strength = model[0].data.RXN_AVAILABLE_STRENGTH,
-			medication = model[0].data.STR;
-		field.setValue(strength);
-		field3.setValue(medication);
+	addPrescription:function(combo, record){
+		var me = this;
+		me.prescriptionMedText.setValue(record[0].data.STR);
+		me.prescriptionDoseText.setValue(record[0].data.DST);
 	},
 
 	onEditPrescription:function(editor, e){

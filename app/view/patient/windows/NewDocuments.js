@@ -18,9 +18,6 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 	width:1200,
 	bodyStyle:'background-color:#fff',
 	modal:true,
-	defaults:{
-		margin:5
-	},
 	pid:null,
 	eid:null,
 	initComponent:function(){
@@ -29,11 +26,13 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 		 * STORES
 		 */
 		me.patientPrescriptionsStore = Ext.create('App.store.patient.PatientsPrescriptions');
-		me.patientPrescriptionStore = Ext.create('App.store.patient.PatientsPrescription');
+		// TODO: rename store
+		me.prescriptionMedicationsStore = Ext.create('App.store.patient.PatientsPrescription');
 		me.patientsLabsOrdersStore = Ext.create('App.store.patient.PatientsLabsOrders');
 
 		me.items = [
 			me.tabPanel = Ext.create('Ext.tab.Panel', {
+				margin:5,
 				items:[
 				/**
 				 * LAB PANEL
@@ -55,7 +54,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 												icon:'resources/images/icons/delete.png',
 												tooltip:i18n('remove'),
 												scope:me,
-												handler:me.onRemoveLabs
+												handler:me.onLabOrderRemoveClick
 											}
 										]
 									},
@@ -100,7 +99,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 
 								xtype:'grid',
 								margin:5,
-								store:me.patientPrescriptionStore,
+								store:me.prescriptionMedicationsStore,
 								height:640,
 								columns:[
 
@@ -112,7 +111,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 												icon:'resources/images/icons/delete.png',
 												tooltip:i18n('remove'),
 												scope:me,
-												handler:me.onRemove
+												handler:me.onRemoveClick
 											}
 										]
 									},
@@ -169,6 +168,9 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 							align:'stretch'
 						},
 						items:[
+						/**
+						 * Pharmacies Combo
+						 */
 							{
 								xtype:'mitos.pharmaciescombo',
 								fieldLabel:i18n('pharmacies'),
@@ -177,6 +179,9 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 								margin:'5 5 0 5'
 
 							},
+						/**
+						 * Prescription Grid
+						 */
 							{
 								xtype:'grid',
 								title:i18n('prescriptions'),
@@ -232,12 +237,14 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 								]
 
 							},
+						/**
+						 * Medication Grid
+						 */
 							{
-
 								xtype:'grid',
 								title:i18n('medications'),
 								action:'prescription_grid',
-								store:me.patientPrescriptionStore,
+								store:me.prescriptionMedicationsStore,
 								flex:1,
 								margin:5,
 								columns:[
@@ -253,7 +260,6 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 									}
 
 								],
-
 								plugins:Ext.create('App.ux.grid.RowFormEditing', {
 									autoCancel:false,
 									errorSummary:false,
@@ -538,7 +544,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 			prescription_id = btn.up('panel').up('panel').down('grid').getSelectionModel().getLastSelected().data.id;
 		grid.editingPlugin.cancelEdit();
 
-		this.patientPrescriptionStore.insert(0, {
+		this.prescriptionMedicationsStore.insert(0, {
 			prescription_id:prescription_id,
 			created_uid:app.user.id,
 			eid:app.patient.eid
@@ -591,27 +597,29 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 
 		say('onPrescriptionClick');
 		say(record.data);
-
-		me.patientPrescriptionStore.load({params:{prescription_id:value}});
+		me.prescriptionMedicationsStore.proxy.extraParams = {prescription_id:value}
+		me.prescriptionMedicationsStore.load();
 		addMedication.setDisabled(eid == app.patient.eid);
 		//bottomGrid.setDisabled(eid == app.patient.eid);
 	},
 
-	onRemove:function(grid, rowIndex){
-		var me = this,
-			store = grid.getStore(),
+	/**
+	 * OK!
+	 * @param grid
+	 * @param rowIndex
+	 */
+	onRemoveClick:function(grid, rowIndex){
+		var store = grid.getStore(),
 			record = store.getAt(rowIndex);
-		grid.editingPlugin.cancelEdit();
+		if(grid.editingPlugin) grid.editingPlugin.cancelEdit();
 		store.remove(record);
 	},
 
-	onRemoveLabs:function(grid, rowIndex){
-		var me = this,
-			store = grid.getStore(),
-			record = store.getAt(rowIndex);
-		store.remove(record);
-	},
-
+	/**
+	 * TODO: Fix component queries
+	 * @param combo
+	 * @param model
+	 */
 	addPrescription:function(combo, model){
 		var me = this,
 			field = combo.up('fieldcontainer').query('[action="dose"]')[0],
@@ -635,7 +643,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 
 	onCreatePrescription:function(){
 		say('hello');
-		var records = this.patientPrescriptionStore.data.items,
+		var records = this.prescriptionMedicationsStore.data.items,
 			data = [];
 		say(records);
 		for(var i = 0; i < records.length; i++){
@@ -662,16 +670,25 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 
 	},
 
-	onCreateDoctorsNote:function(bbar){
+	/**
+	 * OK!
+	 * On doctors note create
+	 * @param btn
+	 */
+	onCreateDoctorsNote:function(btn){
 		var me = this,
-			htmlEditor = bbar.up('toolbar').up('panel').getComponent('body'),
-			value = htmlEditor.getValue();
-		DocumentHandler.createDocument({DoctorsNote:value, pid:app.patient.pid, docType:'DoctorsNotes', eid:app.patient.eid}, function(provider, response){
+			value = btn.up('toolbar').up('panel').getComponent('body').getValue(),
+			params = {
+				DoctorsNote:value,
+				pid:me.pid,
+				eid:me.eid,
+				docType:'DoctorsNotes'
+			};
 
+		DocumentHandler.createDocument(params, function(provider, response){
 			say(response.result);
+			this.close();
 		});
-		this.close();
-
 	},
 
 	addMedications:function(){
@@ -679,7 +696,6 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 	},
 
 	onAddLabs:function(field, model){
-
 		this.patientsLabsOrdersStore.add({
 			laboratories:model[0].data.loinc_name
 		});
@@ -693,17 +709,23 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 	onWinShow:function(){
 		var me = this,
 			doctorsNoteBody = me.query('[action="body"]')[0],
-			template = me.query('[action="template"]')[0],
-			p = app.patient;
-		me.pid = p.pid;
-		me.setTitle(p.name + (p.readOnly ? ' - <span style="color:red">[' + i18n('read_mode') + ']</span>' : ''));
+			template = me.query('[action="template"]')[0];
+		/**
+		 * set current patient data to panel
+		 */
+		me.pid = app.patient.pid;
+		me.eid = app.patient.eid;
+		/**
+		 * read only stuff
+		 */
+		me.setTitle(app.patient.name + (app.patient.readOnly ? ' - <span style="color:red">[' + i18n('read_mode') + ']</span>' : ''));
 		me.setReadOnly(app.patient.readOnly);
-		me.patientPrescriptionStore.removeAll();
-		me.patientPrescriptionsStore.load({
-			params:{
-				pid:app.patient.pid
-			}
-		});
+		/**
+		 * Prescription stuff
+		 */
+		me.patientPrescriptionsStore.load({params:{pid:app.patient.pid}});
+		me.prescriptionMedicationsStore.proxy.extraParams = {};
+		me.prescriptionMedicationsStore.load();
 
 		me.patientsLabsOrdersStore.removeAll();
 		doctorsNoteBody.reset();
@@ -721,6 +743,9 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 	 * Loads patientDocumentsStore with new documents
 	 */
 	onWinHide:function(){
+		var me = this;
+		me.pid = null;
+		me.eid = null;
 		if(app.currCardCmp.id == 'panelSummary'){
 			app.currCardCmp.patientDocumentsStore.load({params:{pid:this.pid}});
 		}

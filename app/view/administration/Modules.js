@@ -27,6 +27,7 @@ Ext.define('App.view.administration.Modules', {
             fields: [
                 { name: 'id', type: 'int' },
                 { name: 'title', type: 'string' },
+                { name: 'name', type: 'string' },
                 { name: 'description', type: 'string' },
                 { name: 'enable', type: 'bool' },
                 { name: 'installed_version', type: 'string' },

@@ -102,13 +102,13 @@ class Modules
         }
         return $modules;
     }
-    public function updateModule($params)
+    public function updateModule(stdClass $params)
     {
         $data = array();
-        $data['enable'] = $params->enable;
-        $data['key']    = $params->key;
-        $data['token']  = $params->token;
-        $this->db->setSQL($this->db->sqlBind($data, 'modules', 'U', array('id' => $params->id)));
+        if(isset($params->enable))      $data['enable']     = $params->enable;
+        if(isset($params->licensekey))  $data['licensekey'] = $params->licensekey;
+        if(isset($params->localkey))    $data['localkey']   = $params->localkey;
+        $this->db->setSQL($this->db->sqlBind($data, 'modules', 'U', array('name' => $params->name)));
         $this->db->execLog();
         return $params;
     }
@@ -184,5 +184,5 @@ class Modules
 //print '*****Disabled MODULES***** <br>';
 //print_r($m->getDisabledModules());
 
-//$m->setNewModules();
+//print_r($m->getModuleByName('druginteractions'));
 //print 'hello';

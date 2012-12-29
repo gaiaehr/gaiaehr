@@ -64,7 +64,7 @@ class Prescriptions
 //			$foo['RXCUI'] = $med -> RXCUI;
 //			$foo['DIRECTIONS'] = $med -> take_pills.$med -> type.' '.$med -> route.' '.$med -> prescription_often.' '.$med -> prescription_when;
 //			$foo['take_pills'] = $med -> take_pills;
-//			$foo['type'] = $med -> type;
+//			$foo['form'] = $med -> form;
 //			$foo['route'] = $med -> route;
 //			$foo['prescription_often'] = $med -> prescription_often;
 //			$foo['prescription_when'] = $med -> prescription_when;
@@ -114,9 +114,9 @@ class Prescriptions
         if(is_array($params)){
             foreach ($params as $row) {
                 $data = get_object_vars($row);
-                unset($data['type'], $data['id'], $data['dose']);
+                unset($data['form'], $data['id'], $data['dose']);
                 $data['STRENGTH'] = $row->dose;
-                $data['DIRECTIONS'] = $row->take_pills . $row->type . ' ' . $row->route . ' ' . $row->prescription_often . ' ' . $params->prescription_when;
+                $data['DIRECTIONS'] = $row->take_pills . $row->form . ' ' . $row->route . ' ' . $row->prescription_often . ' ' . $params->prescription_when;
                 $data['pid'] = $_SESSION['patient']['pid'];
                 $this->db->setSQL($this->db->sqlBind($data, 'patient_medications', 'I'));
                 $this->db->execLog();
@@ -124,9 +124,9 @@ class Prescriptions
             }
         }else{
             $data = get_object_vars($params);
-            unset($data['type'], $data['id'], $data['dose']);
+            unset($data['form'], $data['id'], $data['dose']);
             $data['STRENGTH'] = $params->dose;
-            $data['DIRECTIONS'] = $params->take_pills . $params->type . ' ' . $params->route . ' ' . $params->prescription_often . ' ' . $params->prescription_when;
+            $data['DIRECTIONS'] = $params->take_pills . $params->form . ' ' . $params->route . ' ' . $params->prescription_often . ' ' . $params->prescription_when;
             $data['pid'] = $_SESSION['patient']['pid'];
             $this->db->setSQL($this->db->sqlBind($data, 'patient_medications', 'I'));
             $this->db->execLog();

@@ -1,3 +1,4 @@
+//noinspection JSUnresolvedFunction
 /**
  * Created by JetBrains PhpStorm.
  * User: Ernesto J. Rodriguez (Certun)
@@ -28,10 +29,9 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 		 * STORES
 		 */
 		me.patientPrescriptionsStore = Ext.create('App.store.patient.PatientsPrescriptions');
-		// TODO: rename store
 		me.prescriptionMedicationsStore = Ext.create('App.store.patient.PatientsPrescriptionMedications');
 		me.patientsLabsOrdersStore = Ext.create('App.store.patient.PatientsLabsOrders');
-
+		//noinspection JSUnresolvedFunction,JSUnresolvedVariable
 		me.items = [
 			me.tabPanel = Ext.create('Ext.tab.Panel', {
 				margin:5,
@@ -142,7 +142,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 									hideLabel:false,
 									listeners:{
 										scope:me,
-										select:me.addMedications
+										select:me.addXRay
 									}
 								}
 
@@ -218,10 +218,11 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 
 								listeners:{
 									scope:me,
+									render:me.onPrescriptionsGridRender,
 									itemclick:me.onPrescriptionClick
 								},
 
-								tbar:[
+								header:[
 									'->',
 									{
 										text:i18n('clone_prescription'),
@@ -234,7 +235,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 										text:i18n('new_prescription'),
 										iconCls:'icoAdd',
 										scope:me,
-										handler:me.onAddNewPrescriptions
+										handler:me.onNewPrescription
 
 									}
 								]
@@ -262,14 +263,14 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 									}
 
 								],
+								listeners:{
+									scope:me,
+									render:me.onPrescriptionMedicationsGridRender
+								},
 								plugins:Ext.create('App.ux.grid.RowFormEditing', {
 									autoCancel:false,
 									errorSummary:false,
 									clicksToEdit:1,
-									listeners:{
-										scope:me,
-										beforeedit:me.onEditPrescription
-									},
 									formItems:[
 										{
 											xtype:'container',
@@ -281,15 +282,13 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 												{
 													xtype:'rxnormlivetsearch',
 													fieldLabel:i18n('search'),
-													hideLabel:false,
-													action:'medication_id',
 													name:'RXCUI',
+													hideLabel:false,
 													labelWidth:80,
 													margin:'0 5 0 5',
-													allowBlank:false,
 													listeners:{
 														scope:me,
-														select:me.addPrescription
+														select:me.onRxnormLiveSearchSelect
 													}
 												},
 												{
@@ -313,7 +312,6 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 															labelWidth:40,
 															action:'dose',
 															name:'dose',
-															allowBlank:false,
 															width:293
 														})
 													]
@@ -339,26 +337,19 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 															value:0,
 															minValue:0
 														},
-														{
+														me.prescriptionMedTypeCmb = Ext.widget('mitos.prescriptiontypes',{
 															xtype:'mitos.prescriptiontypes',
-															fieldLabel:i18n('type'),
-															allowBlank:false,
-															hideLabel:true,
-															name:'type',
+															name:'form',
 															width:130
-														},
+														}),
 														{
 															xtype:'mitos.prescriptionhowto',
-															fieldLabel:i18n('route'),
-															allowBlank:false,
 															name:'route',
-															hideLabel:true,
 															width:130
 														},
 														{
 															xtype:'mitos.prescriptionoften',
 															name:'prescription_often',
-															allowBlank:false,
 															width:130
 														},
 														{
@@ -384,7 +375,6 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 															name:'dispense',
 															margin:0,
 															width:50,
-															allowBlank:false,
 															value:0,
 															minValue:0
 														},
@@ -393,7 +383,6 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 															xtype:'numberfield',
 															name:'refill',
 															labelWidth:35,
-															allowBlank:false,
 															width:140,
 															value:0,
 															minValue:0
@@ -423,29 +412,15 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 
 										}
 									]
-								}),
-								tbar:[
-									'->',
-									{
-										text:i18n('add_medication'),
-										scope:me,
-										iconCls:'icoAdd',
-										action:'add_medication',
-										disabled:true,
-										handler:me.onAddPrescriptionMedication
-
-									}
-								]
-
+								})
 							})
-
 						],
 						bbar:[
 							'->', {
 								text:i18n('create'),
 								scope:me,
 								handler:me.onCreatePrescription
-							}, {
+							},'-',{
 								text:i18n('cancel'),
 								scope:me,
 								handler:me.onCancel
@@ -463,8 +438,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 							align:'stretch'
 						},
 						items:[
-							{
-								xtype:'mitos.templatescombo',
+							me.doctorsNoteTplCombo = Ext.widget('mitos.templatescombo',{
 								fieldLabel:i18n('template'),
 								action:'template',
 								labelWidth:75,
@@ -474,18 +448,15 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 									scope:me,
 									select:me.onTemplateTypeSelect
 								}
-							},
-							{
-
-								xtype:'htmleditor',
+							}),
+							me.doctorsNoteBody = Ext.widget('htmleditor',{
 								name:'body',
 								action:'body',
 								itemId:'body',
 								enableFontSize:false,
 								flex:1,
 								margin:'5 5 8 5'
-
-							}
+							})
 						],
 						bbar:[
 							'->', {
@@ -513,16 +484,6 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 
 	/**
 	 * OK!
-	 * This will set the htmleditor value
-	 * @param combo
-	 * @param record
-	 */
-	onTemplateTypeSelect:function(combo, record){
-		combo.up('panel').getComponent('body').setValue(record[0].data.body);
-	},
-
-	/**
-	 * Not sure why this is necessary!
 	 * @param action
 	 */
 	cardSwitch:function(action){
@@ -539,15 +500,13 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 	},
 
 	/**
-	 * TODO: Need to fix the component query!
+	 * OK!
 	 * Adds a medication to the prescription
-	 * @param btn
 	 */
-	onAddPrescriptionMedication:function(btn){
+	onAddPrescriptionMedication:function(){
 		var me = this,
 			prescription_id = me.prescriptionsGrid.getSelectionModel().getLastSelected().data.id;
 		me.prescriptionMedicationsGrid.editingPlugin.cancelEdit();
-
 		me.prescriptionMedicationsStore.insert(0, {
 			pid:me.pid,
 			eid:me.eid,
@@ -557,51 +516,15 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 			create_date:new Date()
 		});
 		me.prescriptionMedicationsGrid.editingPlugin.startEdit(0, 0);
-		say('prescription_id ' + prescription_id);
 	},
 
 	/**
-	 * TODO: Need to fix and rename functions
-	 * Adds a prescription to the encounter
-	 * @param btn
+	 * TODO: CLONE LOGIC
 	 */
-	onAddNewPrescriptions:function(btn){
-		var me = this,
-			grid = btn.up('grid');
-		grid.editingPlugin.cancelEdit();
-		this.patientPrescriptionsStore.insert(0, {
-			pid:me.pid,
-			eid:me.eid,
-			uid:app.user.id,
-			created_date:new Date()
-		});
-		grid.editingPlugin.startEdit(0, 0);
-	},
+	onClonePrescriptions:function(){
 
-	onClonePrescriptions:function(btn){
-		var grid = btn.up('grid'),
-			bottomGrid = grid.up('panel').up('panel').query('panel[action="prescription_grid"]')[0],
-			obj = bottomGrid.store.data.items;
+		return false;
 
-		grid.editingPlugin.cancelEdit();
-
-		this.patientPrescriptionsStore.insert(0, {
-			eid:app.patient.eid
-		});
-		grid.editingPlugin.startEdit(0, 0);
-
-	},
-
-	/**
-	 * TODO: Need to fix the component query!
-	 * @param grid
-	 * @param record
-	 */
-	onPrescriptionClick:function(grid, record){
-		this.fireEvent('prescriptiongridclick', grid, record);
-		this.prescriptionMedicationsStore.proxy.extraParams = {prescription_id:record.data.id};
-		this.prescriptionMedicationsStore.load();
-		this.query('button[action="add_medication"]')[0].setDisabled(record.data.eid != this.eid);
 	},
 
 	/**
@@ -617,26 +540,193 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 	},
 
 	/**
-	 * TODO: Fix component queries
+	 * OK!
+	 * Adds a prescription to the encounter
+	 * @param btn
+	 */
+	onNewPrescription:function(btn){
+		var me = this,
+			grid = btn.up('grid');
+		grid.editingPlugin.cancelEdit();
+		me.patientPrescriptionsStore.insert(0, {
+			pid:me.pid,
+			eid:me.eid,
+			uid:app.user.id,
+			created_date:new Date()
+		});
+		grid.editingPlugin.startEdit(0, 0);
+	},
+
+	/**
+	 * OK!
 	 * @param combo
      * @param record
 	 */
-	addPrescription:function(combo, record){
-		var me = this;
-		me.prescriptionMedText.setValue(record[0].data.STR);
-		me.prescriptionDoseText.setValue(record[0].data.DST);
+	onRxnormLiveSearchSelect:function(combo, record){
+		var me = this,
+			formEl = combo.up('form').el;
+		combo.reset();
+		formEl.mask('loading_data...');
+		Rxnorm.getMedicationAttributesByCODE(record[0].data.CODE, function(provider, response){
+			formEl.unmask();
+			me.prescriptionMedText.setValue(record[0].data.STR);
+			me.prescriptionDoseText.setValue(response.result.DST);
+			me.prescriptionMedTypeCmb.setValue(response.result.DDF);
+		});
 	},
 
-	onEditPrescription:function(editor, e){
-		//        var me = this,
-		//            eid = e.record.data.eid;
-		//       say(this.up('panel'));
-		//        if(eid == app.patient.eid){
-		//
-		//        }else{
-		//
-		//        }
+	/**
+	 * OK!
+	 * @param grid
+	 * @param record
+	 */
+	onPrescriptionClick:function(grid, record){
+		this.fireEvent('prescriptiongridclick', grid, record);
+		this.prescriptionMedicationsStore.proxy.extraParams = {prescription_id:record.data.id};
+		this.prescriptionMedicationsStore.load();
+		this.addMedicationBtn.setDisabled(record.data.eid != this.eid);
 	},
+
+	/**
+	 * OK!
+	 * This will set the htmleditor value
+	 * @param combo
+	 * @param record
+	 */
+	onTemplateTypeSelect:function(combo, record){
+		combo.up('panel').getComponent('body').setValue(record[0].data.body);
+	},
+
+	/**
+	 * OK!
+	 * On doctors note create
+	 */
+	onCreateDoctorsNote:function(){
+		var me = this,
+			value = me.doctorsNoteBody.getValue(),
+			params = {
+				DoctorsNote:value,
+				pid:me.pid,
+				eid:me.eid,
+				docType:'DoctorsNotes'
+			};
+		DocumentHandler.createDocument(params, function(provider, response){
+			app.msg('Sweet!','Document Created');
+			say(response.result);
+			this.close();
+		});
+	},
+
+	/**
+	 * OK!
+	 * On window shows
+	 */
+	onWinShow:function(){
+		var me = this,
+			dock, visible;
+		/**
+		 * Fire Event
+		 */
+		me.fireEvent('orderswindowhide', me);
+		/**
+		 * set current patient data to panel
+		 */
+		me.pid = app.patient.pid;
+		me.eid = app.patient.eid;
+		/**
+		 * read only stuff
+		 */
+		me.setTitle(app.patient.name + (app.patient.readOnly ? ' - <span style="color:red">[' + i18n('read_mode') + ']</span>' : ''));
+		me.setReadOnly(app.patient.readOnly);
+		/**
+		 * Prescription stuff
+		 */
+		me.patientPrescriptionsStore.load({params:{pid:app.patient.pid}});
+		me.prescriptionMedicationsStore.proxy.extraParams = {};
+		me.prescriptionMedicationsStore.load();
+		/**
+		 * Lab stuff
+		 */
+		me.patientsLabsOrdersStore.removeAll();
+		/**
+		 * Doctors Notes stuff
+		 */
+		me.doctorsNoteBody.reset();
+		me.doctorsNoteTplCombo.reset();
+		/**
+		 * This will hide encounter panels and
+		 * switch to notes panel if eid is null
+		 */
+		dock    = this.tabPanel.getDockedItems()[0];
+		visible = this.eid == null;
+		dock.items.items[0].setVisible(visible);
+		dock.items.items[1].setVisible(visible);
+		dock.items.items[2].setVisible(visible);
+		if(!visible) me.cardSwitch('notes');
+	},
+
+	/**
+	 * OK!
+	 * Loads patientDocumentsStore with new documents
+	 */
+	onWinHide:function(){
+		var me = this;
+		me.pid = null;
+		me.eid = null;
+		/**
+		 * Fire Event
+		 */
+		me.fireEvent('orderswindowhide', me);
+		if(app.currCardCmp.id == 'panelSummary'){
+			app.currCardCmp.patientDocumentsStore.load({params:{pid:this.pid}});
+		}
+	},
+	/**
+	 * OK!
+	 * adds the buttons to the header
+	 */
+	onPrescriptionsGridRender:function(){
+		var me = this;
+		me.prescriptionsGrid.dockedItems.items[0].add(
+			Ext.widget('button',{
+				text:i18n('clone_prescription'),
+				iconCls:'icoAdd',
+				scope:me,
+				margin:'0 5 0 0',
+				handler:me.onClonePrescriptions
+			}),
+			Ext.widget('button',{
+				text:i18n('new_prescription'),
+				iconCls:'icoAdd',
+				scope:me,
+				handler:me.onNewPrescription
+
+			})
+		);
+	},
+	/**
+	 * OK!
+	 * adds the buttons to the header
+	 */
+	onPrescriptionMedicationsGridRender:function(){
+		var me = this;
+		me.prescriptionMedicationsGrid.dockedItems.items[0].add(
+			me.addMedicationBtn = Ext.widget('button',{
+				text:i18n('add_medication'),
+				scope:me,
+				iconCls:'icoAdd',
+				disabled:true,
+				handler:me.onAddPrescriptionMedication
+			})
+		);
+	},
+
+	//******************************************************************************************
+	//******************************************************************************************
+	//******************************************************************************************
+	//******************************************************************************************
+	//******************************************************************************************
+
 
 	onCreatePrescription:function(){
 		say('hello');
@@ -676,28 +766,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 
 	},
 
-	/**
-	 * OK!
-	 * On doctors note create
-	 * @param btn
-	 */
-	onCreateDoctorsNote:function(btn){
-		var me = this,
-			value = btn.up('toolbar').up('panel').getComponent('body').getValue(),
-			params = {
-				DoctorsNote:value,
-				pid:me.pid,
-				eid:me.eid,
-				docType:'DoctorsNotes'
-			};
-
-		DocumentHandler.createDocument(params, function(provider, response){
-			say(response.result);
-			this.close();
-		});
-	},
-
-	addMedications:function(){
+	addXRay:function(){
 
 	},
 
@@ -706,63 +775,5 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 			laboratories:model[0].data.loinc_name
 		});
 		field.reset();
-	},
-
-	/**
-	 * This need to be verify!
-	 * On window shows
-	 */
-	onWinShow:function(){
-		var me = this,
-			doctorsNoteBody = me.query('[action="body"]')[0],
-			template = me.query('[action="template"]')[0];
-		/**
-		 * Fire Event
-		 */
-		me.fireEvent('orderswindowhide', me);
-		/**
-		 * set current patient data to panel
-		 */
-		me.pid = app.patient.pid;
-		me.eid = app.patient.eid;
-		/**
-		 * read only stuff
-		 */
-		me.setTitle(app.patient.name + (app.patient.readOnly ? ' - <span style="color:red">[' + i18n('read_mode') + ']</span>' : ''));
-		me.setReadOnly(app.patient.readOnly);
-		/**
-		 * Prescription stuff
-		 */
-		me.patientPrescriptionsStore.load({params:{pid:app.patient.pid}});
-		me.prescriptionMedicationsStore.proxy.extraParams = {};
-		me.prescriptionMedicationsStore.load();
-
-		me.patientsLabsOrdersStore.removeAll();
-		doctorsNoteBody.reset();
-		template.reset();
-
-		var dock = this.tabPanel.getDockedItems()[0],
-			visible = this.eid != null;
-		dock.items.items[0].setVisible(visible);
-		dock.items.items[1].setVisible(visible);
-		dock.items.items[2].setVisible(visible);
-		if(!visible) me.cardSwitch('notes');
-	},
-
-	/**
-	 * Loads patientDocumentsStore with new documents
-	 */
-	onWinHide:function(){
-		var me = this;
-		me.pid = null;
-		me.eid = null;
-		/**
-		 * Fire Event
-		 */
-		me.fireEvent('orderswindowhide', me);
-		if(app.currCardCmp.id == 'panelSummary'){
-			app.currCardCmp.patientDocumentsStore.load({params:{pid:this.pid}});
-		}
 	}
-
 });

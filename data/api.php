@@ -47,8 +47,8 @@ function getREMOTING_API($API, $moduleDir = false)
 	return json_encode(array(
 		'url' => $url,
 		'type' => 'remoting',
-		'actions' => $actions,
-		'timeout' => 7200000
+		'actions' => $actions
+		//'timeout' => 7200000
 	));
 }
 

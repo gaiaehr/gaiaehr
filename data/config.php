@@ -445,6 +445,9 @@ $API = array(
 		'methods' => array(
 			'getRXNORMLiveSearch' => array(
 				'len' => 1
+			),
+			'getMedicationAttributesByCODE' => array(
+				'len' => 1
 			)
 		)
 	),

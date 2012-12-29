@@ -30,8 +30,7 @@ if(!isset($_SESSION)) {
 	session_start();
 	session_cache_limiter('private');
 }
-//include_once ($_SESSION['root'] . '/dataProvider/Patient.php');
-//include_once ($_SESSION['root'] . '/dataProvider/Medications.php');
+//ini_set('memory_limit', '1024M');
 include_once ($_SESSION['root'] . '/classes/dbHelper.php');
 class Rxnorm
 {
@@ -48,8 +47,6 @@ class Rxnorm
 	function __construct()
 	{
 		$this->db           = new dbHelper();
-		//$this->patient      = new Patient();
-		//$this->medications  = new Medications();
 		return;
 	}
 
@@ -109,32 +106,39 @@ class Rxnorm
 
 	public function getRXNORMLiveSearch(stdClass $params)
 	{
-		$this->db->setSQL("SELECT *
-                             FROM  rxnconso
-                            WHERE (RXCUI LIKE'$params->query%'
-                               OR  RXAUI LIKE'$params->query%'
-                               OR  STR   LIKE'$params->query%')
-                              AND  SAB   = 'MMSL'
-                              AND  TTY   = 'BD'
-                         GROUP BY  RXCUI");
+        $this->db->setSQL("SELECT *
+                             FROM rxnconso
+                            WHERE (SAB = 'MMSL' AND TTY = 'BD')
+                              AND STR LIKE '$params->query%'
+                         GROUP BY RXCUI
+                         LIMIT 100");
 		$records = $this->db->fetchRecords(PDO::FETCH_ASSOC);
-		foreach($records as $val => $rec){
-			$records[$val]['DST']  = $this->getStrengthByCODE($rec['CODE']);
-			$records[$val]['DRT']  = $this->getDrugRouteByCODE($rec['CODE']);
-			$records[$val]['DDF']  = $this->getDoseformByCODE($rec['CODE']);
-			$records[$val]['DDFA'] = $this->getDoseformAbbreviateByCODE($rec['CODE']);
-			$records[$val]['SAB']  = $this->getDatabaseShortNameByCODE($rec['CODE']);
-		}
 		$total   = count($records);
 		$records = array_slice($records, $params->start, $params->limit);
-		return array(
-			'totals' => $total,
-			'rows'   => $records
-		);
+		return array('totals' => $total, 'rows' => $records);
 	}
+
+    public function getMedicationAttributesByCODE($CODE){
+        $this->db->setSQL("
+            SELECT `ATV`, `ATN` FROM rxnsat WHERE `CODE` = '$CODE' AND `ATN` = 'DST' AND `SAB` = 'MMSL'
+            UNION
+            SELECT `ATV`, `ATN` FROM rxnsat WHERE `CODE` = '$CODE' AND `ATN` = 'DRT' AND `SAB` = 'MMSL'
+            UNION
+            SELECT `ATV`, `ATN` FROM rxnsat WHERE `CODE` = '$CODE' AND `ATN` = 'DDF' AND `SAB` = 'MMSL'
+        ");
+        $foo = array();
+            foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) AS $fo){
+                $foo[$fo['ATN']] = $fo['ATV'];
+            };
+        return $foo;
+    }
 }
 
 
 //$e = new Rxnorm();
+//$p = new stdClass();
+//$p->query = 'meta';
+//$p->start = 0;
+//$p->limit = 25;
 //echo '<pre>';
-//print_r($e->getMedicationNameByRXCUI(213269));
+//print_r($e->getRXNORMLiveSearch($p));

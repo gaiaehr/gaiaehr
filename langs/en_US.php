@@ -900,6 +900,7 @@ $LANG = array(
 	'saving_roles'							=> 'Saving Roles, Please wait',
 	'roles_updated'							=> 'Roles have been updated',
 	'loading'								=> 'Loading',
+	'loading...'						    => 'Loading...',
 	'aditional_info'						=> 'Aditional info',
 	'authorized'							=> 'Authorized?',
 	'calendar_q'							=> 'Calendar?',

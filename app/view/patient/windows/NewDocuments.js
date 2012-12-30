@@ -1,4 +1,3 @@
-//noinspection JSUnresolvedFunction
 /**
  * Created by JetBrains PhpStorm.
  * User: Ernesto J. Rodriguez (Certun)
@@ -10,24 +9,20 @@
  * @namespace Immunization.getPatientImmunizations
  * @namespace Immunization.addPatientImmunization
  */
+//noinspection JSUnresolvedFunction
 Ext.define('App.view.patient.windows.NewDocuments', {
 	extend:'App.ux.window.Window',
 	title:i18n('order_window'),
-	layout:'fit',
 	closeAction:'hide',
 	height:750,
 	width:1200,
+	layout:'fit',
 	bodyStyle:'background-color:#fff',
 	modal:true,
-
 	pid:null,
 	eid:null,
-
 	initComponent:function(){
 		var me = this;
-		/**
-		 * STORES
-		 */
 		me.patientPrescriptionsStore = Ext.create('App.store.patient.PatientsPrescriptions');
 		me.prescriptionMedicationsStore = Ext.create('App.store.patient.PatientsPrescriptionMedications');
 		me.patientsLabsOrdersStore = Ext.create('App.store.patient.PatientsLabsOrders');
@@ -228,7 +223,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 							me.prescriptionMedicationsGrid = Ext.widget('grid',{
 								title:i18n('medications'),
 								store:me.prescriptionMedicationsStore,
-								flex:2,
+								flex:1,
 								margin:5,
 								columns:[
 									{
@@ -524,6 +519,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 	},
 
 	/**
+	 * OK!
 	 * Clone Logic
 	 */
 	onClonePrescriptions:function(btn){
@@ -676,8 +672,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 	 * On window shows
 	 */
 	onWinShow:function(){
-		var me = this,
-			dock, visible;
+		var me = this, dock, visible;
 		/**
 		 * Fire Event
 		 */
@@ -736,6 +731,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 			app.currCardCmp.patientDocumentsStore.load({params:{pid:this.pid}});
 		}
 	},
+
 	/**
 	 * OK!
 	 * adds the buttons to the header
@@ -759,6 +755,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 			})
 		);
 	},
+
 	/**
 	 * OK!
 	 * adds the buttons to the header

@@ -541,7 +541,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 			buttons: Ext.Msg.YESNO,
 			icon: Ext.Msg.QUESTION,
 			fn:function(btn){
-				if(btn = 'yes'){
+				if(btn == 'yes'){
 					sm.deselectAll();
 					newData.pid = me.pid;
 					newData.eid = me.eid;

@@ -35,6 +35,9 @@ $API = array(
 			),
 			'liveCodeSearch' => array(
 				'len' => 1
+			),
+			'getICDByEid' => array(
+				'len' => 1
 			)
 		)
 	),

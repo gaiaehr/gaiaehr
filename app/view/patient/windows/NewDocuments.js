@@ -120,7 +120,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 									{
 										header:i18n('medication'),
 										width:100,
-										dataIndex:'medication'
+										dataIndex:'STR'
 									},
 									{
 										header:i18n('dispense'),
@@ -220,33 +220,13 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 									scope:me,
 									render:me.onPrescriptionsGridRender,
 									itemclick:me.onPrescriptionClick
-								},
-
-								header:[
-									'->',
-									{
-										text:i18n('clone_prescription'),
-										iconCls:'icoAdd',
-										scope:me,
-										handler:me.onClonePrescriptions
-
-									},
-									{
-										text:i18n('new_prescription'),
-										iconCls:'icoAdd',
-										scope:me,
-										handler:me.onNewPrescription
-
-									}
-								]
-
+								}
 							}),
 							/**
 							 * Medication Grid
 							 */
 							me.prescriptionMedicationsGrid = Ext.widget('grid',{
 								title:i18n('medications'),
-								action:'prescription_grid',
 								store:me.prescriptionMedicationsStore,
 								flex:2,
 								margin:5,
@@ -254,7 +234,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 									{
 										header:i18n('name'),
 										flex:1,
-										dataIndex:'medication'
+										dataIndex:'STR'
 									},
 									{
 										header:i18n('refill'),
@@ -280,16 +260,31 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 											},
 											items:[
 												{
-													xtype:'rxnormlivetsearch',
+													xtype:'fieldcontainer',
+													layout:'hbox',
+													margin:'0 0 0 5',
 													fieldLabel:i18n('search'),
-													name:'RXCUI',
-													hideLabel:false,
 													labelWidth:80,
-													margin:'0 5 0 5',
-													listeners:{
-														scope:me,
-														select:me.onRxnormLiveSearchSelect
-													}
+													items:[
+														{
+															xtype:'rxnormlivetsearch',
+															width:570,
+															listeners:{
+																scope:me,
+																select:me.onRxnormLiveSearchSelect
+															}
+														}
+													]
+												},
+												{
+													xtype:'textfield',
+													name:'RXCUI',
+													hidden:true
+												},
+												{
+													xtype:'textfield',
+													name:'CODE',
+													hidden:true
 												},
 												{
 													/**
@@ -304,13 +299,11 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 															fieldLabel:i18n('medication'),
 															width:357,
 															labelWidth:80,
-															name:'medication',
-															action:'medication'
+															name:'STR'
 														}),
 														me.prescriptionDoseText = Ext.widget('textfield',{
 															fieldLabel:i18n('dose'),
 															labelWidth:40,
-															action:'dose',
 															name:'dose',
 															width:293
 														})
@@ -366,7 +359,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 													xtype:'fieldcontainer',
 													layout:'hbox',
 													margin:'0 0 0 5',
-													defaults:{ margin:'0 0 0 5'},
+													defaults:{ margin:'0 0 5 5'},
 													fieldLabel:i18n('dispense'),
 													labelWidth:80,
 													items:[
@@ -406,8 +399,20 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 														}
 													]
 
+												},
+												{
+													xtype:'fieldcontainer',
+													layout:'hbox',
+													margin:'0 0 0 5',
+													fieldLabel:i18n('related_dx'),
+													labelWidth:80,
+													items:[
+														me.encounderIcdsCodes = Ext.widget('encountericdscombo',{
+															name:'ICDS',
+															width:570
+														})
+													]
 												}
-
 											]
 
 										}
@@ -519,12 +524,58 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 	},
 
 	/**
-	 * TODO: CLONE LOGIC
+	 * Clone Logic
 	 */
-	onClonePrescriptions:function(){
-
-		return false;
-
+	onClonePrescriptions:function(btn){
+		var me = this,
+			grid = btn.up('grid'),
+			sm = grid.getSelectionModel(),
+			prescriptionStore = grid.getStore(),
+			medicationsStore = me.prescriptionMedicationsStore,
+			data = sm.getLastSelected().data,
+			newDate = new Date(),
+			newData = {};
+		Ext.Msg.show({
+			title:'Wait!',
+			msg: 'Are you sure you want to clone this prescription?',
+			buttons: Ext.Msg.YESNO,
+			icon: Ext.Msg.QUESTION,
+			fn:function(btn){
+				if(btn = 'yes'){
+					sm.deselectAll();
+					newData.pid = me.pid;
+					newData.eid = me.eid;
+					newData.uid = app.user.id;
+					newData.created_date = newDate;
+					newData.note = data.note + ' (cloned from ' + Ext.Date.format(new Date(), 'Y-m-d') + ' )';
+					prescriptionStore.add(newData);
+					prescriptionStore.sync({
+						callback:function(batch, options){
+							var newRecord = options.operations.create[0],
+								newId = newRecord.data.id,
+								oldMedsRecs = medicationsStore.data.items,
+								newMeds = [];
+							for(var i=0; i < oldMedsRecs.length; i++){
+								newMeds.push(oldMedsRecs[i].data);
+							}
+							sm.select(newRecord);
+							medicationsStore.removeAll();
+							medicationsStore.commitChanges();
+							for(var k=0; k < newMeds.length; k++){
+								delete newMeds[k].id;
+								delete newMeds[k].end_date;
+								newMeds[k].eid = me.eid;
+								newMeds[k].begin_date = newDate;
+								newMeds[k].create_date = newDate;
+								newMeds[k].prescription_id = newId;
+								medicationsStore.add(newMeds[k]);
+							}
+							medicationsStore.sync();
+						}
+					});
+				}
+			}
+		});
 	},
 
 	/**
@@ -563,15 +614,18 @@ Ext.define('App.view.patient.windows.NewDocuments', {
      * @param record
 	 */
 	onRxnormLiveSearchSelect:function(combo, record){
-		var me = this,
-			formEl = combo.up('form').el;
+		var formPanel = combo.up('form'),
+			form = formPanel.getForm();
 		combo.reset();
-		formEl.mask('loading_data...');
+		formPanel.el.mask('loading_data...');
 		Rxnorm.getMedicationAttributesByCODE(record[0].data.CODE, function(provider, response){
-			formEl.unmask();
-			me.prescriptionMedText.setValue(record[0].data.STR);
-			me.prescriptionDoseText.setValue(response.result.DST);
-			me.prescriptionMedTypeCmb.setValue(response.result.DDF);
+			formPanel.el.unmask();
+			form.findField('RXCUI').setValue(record[0].data.RXCUI);
+			form.findField('CODE').setValue(record[0].data.CODE);
+			form.findField('STR').setValue(record[0].data.STR);
+			form.findField('route').setValue(response.result.DRT);
+			form.findField('dose').setValue(response.result.DST);
+			form.findField('form').setValue(response.result.DDF);
 		});
 	},
 
@@ -658,10 +712,11 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 		 * switch to notes panel if eid is null
 		 */
 		dock    = this.tabPanel.getDockedItems()[0];
-		visible = this.eid == null;
+		visible = this.eid != null;
 		dock.items.items[0].setVisible(visible);
 		dock.items.items[1].setVisible(visible);
 		dock.items.items[2].setVisible(visible);
+		if(visible) me.encounderIcdsCodes.getStore().load({params:{eid:me.eid}});
 		if(!visible) me.cardSwitch('notes');
 	},
 

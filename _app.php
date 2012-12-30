@@ -302,6 +302,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 				'App.ux.combo.CodesTypes',
 				'App.ux.combo.CVXManufacturers',
 				'App.ux.combo.CVXManufacturersForCvx',
+				'App.ux.combo.EncounterICDS',
 				'App.ux.combo.EncounterPriority',
 				'App.ux.combo.Ethnicity',
 				'App.ux.combo.Facilities',

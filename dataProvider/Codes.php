@@ -215,7 +215,7 @@ class Codes
 						$success = $this->snomed_import($dir);
 					}
 					$this->file->cleanUp();
-					if($success !== false) {
+					if($success != false) {
 						$this->updateTrackerTable($name, $params->codeType, $this->installedRevision, $params->version, $params->date);
 						return array(
 							'success' => $success,
@@ -737,16 +737,16 @@ class Codes
 		return true;
 	}
 
-	private function updateTrackerTable($name, $codeType, $revision, $version, $date, $file_checksum = null)
+	private function updateTrackerTable($name, $codeType, $revision, $version, $date, $file_checksum = '')
 	{
 		$data                     = array();
 		$data['code_type']        = $codeType;
 		$data['imported_date']    = Time::getLocalTime();
 		$data['revision_name']    = $name;
-		$data['revision_date']    = $date;
 		$data['revision_number '] = $revision;
 		$data['revision_version'] = $version;
-		$data['file_checksum']    = $file_checksum;
+        $data['revision_date']    = $date;
+        $data['file_checksum']    = $file_checksum;
 		$this->db->setSQL($this->db->sqlBind($data, 'standardized_tables_track', 'I'));
 		$this->db->execLog();
 		return true;

@@ -109,7 +109,7 @@ class Rxnorm
         $this->db->setSQL("SELECT *
                              FROM rxnconso
                             WHERE (SAB = 'MMSL' AND TTY = 'BD')
-                              AND STR LIKE '$params->query%'
+                              AND STR LIKE '%$params->query%'
                          GROUP BY RXCUI
                          LIMIT 100");
 		$records = $this->db->fetchRecords(PDO::FETCH_ASSOC);

@@ -1133,5 +1133,6 @@ $LANG = array(
 	'key_if_required'						=> 'Key (if required)',
 	'enabled?'								=> 'Enabled?',
     'related_dx'							=> 'Related Dx',
-    'live_styles'							=> 'Live Styles'
+    'live_styles'							=> 'Live Styles',
+    'administered_by'						=> 'Administered by'
 );

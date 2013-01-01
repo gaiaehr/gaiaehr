@@ -36,12 +36,16 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 					 */
 					{
 						title:i18n('new_lab_order'),
+						layout:{
+							type:'vbox',
+							align:'stretch'
+						},
 						items:[
 							{
 								xtype:'grid',
 								margin:5,
 								store:me.patientsLabsOrdersStore,
-								height:640,
+								flex:1,
 								columns:[
 									{
 										xtype:'actioncolumn',
@@ -61,7 +65,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 										dataIndex:'laboratories'
 									}
 								],
-								bbar:{
+								tbar:{
 									xtype:'mitos.labstypescombo',
 									margin:5,
 									fieldLabel:i18n('add'),
@@ -90,6 +94,10 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 					 */
 					{
 						title:i18n('new_xray_order'),
+						layout:{
+							type:'vbox',
+							align:'stretch'
+						},
 						items:[
 
 							{
@@ -129,8 +137,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 									}
 
 								],
-
-								bbar:{
+								tbar:{
 									xtype:'textfield',
 									margin:5,
 									fieldLabel:i18n('add'),
@@ -469,6 +476,16 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 				]
 
 			})
+		];
+
+		me.buttons = [
+			{
+				text:i18n('close'),
+				scope:me,
+				handler:function(){
+					me.close();
+				}
+			}
 		];
 		/**
 		 * windows listeners

@@ -95,7 +95,7 @@ Ext.define('App.ux.LiveImmunizationSearch',
 				//---------------------------------------------------------------------
 				getInnerTpl : function()
 				{
-					return '<div class="search-item"><h3>{cvx_code}: <span style="font-weight: normal">{name}</span></div>';
+					return '<div class="search-item">CVX - {cvx_code}: <span style="font-weight: normal">{name}</span></div>';
 				}
 			},
 			pageSize : 10

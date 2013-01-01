@@ -303,7 +303,7 @@ Ext.define('App.view.patient.windows.Medical', {
                         {
                             title:i18n('general'),
                             xtype:'container',
-                            padding:10,
+                            padding:'0 10',
                             layout:'vbox',
                             items:[
                                 {
@@ -614,7 +614,7 @@ Ext.define('App.view.patient.windows.Medical', {
                                     items:[
                                         {
                                             xtype:'textfield',
-                                            width:250,
+                                            width:510,
                                             labelWidth:70,
                                             fieldLabel:i18n('referred_by'),
                                             name:'referred_by'
@@ -753,7 +753,7 @@ Ext.define('App.view.patient.windows.Medical', {
                                     items:[
                                         {
                                             xtype:'textfield',
-                                            width:260,
+                                            width:510,
                                             labelWidth:70,
                                             fieldLabel:i18n('referred_by'),
                                             name:'referred_by'
@@ -807,103 +807,106 @@ Ext.define('App.view.patient.windows.Medical', {
                     errorSummary:false,
                     clicksToEdit:1,
                     formItems:[
-                        {
-                            title:i18n('general'),
-                            xtype:'container',
-                            padding:10,
-                            layout:'vbox',
-                            items:[
-                                {
-                                    /**
-                                     * Line one
-                                     */
-                                    xtype:'fieldcontainer',
-                                    layout:'hbox',
-                                    defaults:{
-                                        margin:'0 10 0 0'
-                                    },
-                                    items:[
-                                        {
-                                            fieldLabel:i18n('dental'),
-                                            name:'cdt_code',
-                                            hideLabel:false,
-                                            allowBlank:false,
-                                            width:510,
-                                            labelWidth:70,
-                                            xtype:'cdtlivetsearch',
-                                            itemId:'cdt',
-                                            action:'cdt',
-                                            enableKeyEvents:true,
-                                            listeners:{
-                                                scope:me,
-                                                'select':me.onLiveSearchSelect
-                                            }
-                                        },
-                                        {
-                                            xtype:'textfield',
-                                            hidden:true,
-                                            name:'description',
-                                            action:'description'
-                                        },
-                                        {
-                                            fieldLabel:i18n('begin_date'),
-                                            xtype:'datefield',
-                                            width:200,
-                                            labelWidth:80,
-                                            format:'Y-m-d',
-                                            name:'begin_date'
+	                    {
+		                    title:i18n('general'),
+		                    xtype:'container',
+		                    padding:10,
+		                    layout:'vbox',
+		                    items:[
+			                    {
+				                    /**
+				                     * Line one
+				                     */
+				                    xtype:'fieldcontainer',
+				                    layout:'hbox',
+				                    defaults:{
+					                    margin:'0 10 0 0'
+				                    },
+				                    items:[
+					                    {
+						                    fieldLabel:i18n('dental'),
+						                    name:'surgery_id',
+						                    hideLabel:false,
+						                    allowBlank:false,
+						                    width:510,
+						                    labelWidth:70,
+						                    xtype:'cdtlivetsearch',
+						                    itemId:'cdt',
+						                    action:'cdt',
+						                    enableKeyEvents:true,
+						                    listeners:{
+							                    scope:me,
+							                    'select':me.onLiveSearchSelect
+						                    }
+					                    },
+					                    {
+						                    xtype:'textfield',
+						                    hidden:true,
+						                    name:'surgery',
+						                    action:'idField'
+					                    },
+					                    {
+						                    fieldLabel:i18n('date'),
+						                    xtype:'datefield',
+						                    width:200,
+						                    labelWidth:80,
+						                    format:'Y-m-d',
+						                    name:'date'
 
-                                        },
-                                        {
-                                            fieldLabel:i18n('outcome'),
-                                            xtype:'mitos.outcome2combo',
-                                            width:250,
-                                            labelWidth:70,
-                                            name:'outcome'
+					                    }
+				                    ]
 
-                                        }
-                                    ]
+			                    },
+			                    {
+				                    /**
+				                     * Line two
+				                     */
+				                    xtype:'fieldcontainer',
+				                    layout:'hbox',
+				                    defaults:{
+					                    margin:'0 10 0 0'
+				                    },
+				                    items:[
+					                    {
+						                    fieldLabel:i18n('notes'),
+						                    xtype:'textfield',
+						                    width:510,
+						                    labelWidth:70,
+						                    name:'notes'
 
-                                },
-                                {
-                                    /**
-                                     * Line two
-                                     */
-                                    xtype:'fieldcontainer',
-                                    layout:'hbox',
-                                    defaults:{
-                                        margin:'0 10 0 0'
-                                    },
-                                    items:[
-                                        {
-                                            xtype:'textfield',
-                                            width:225,
-                                            labelWidth:70,
-                                            fieldLabel:i18n('referred_by'),
-                                            name:'referred_by'
-                                        },
-                                        {
-                                            fieldLabel:i18n('end_date'),
-                                            xtype:'datefield',
-                                            width:200,
-                                            labelWidth:80,
-                                            format:'Y-m-d',
-                                            name:'end_date'
+					                    },
+					                    {
+						                    fieldLabel:i18n('outcome'),
+						                    xtype:'mitos.outcome2combo',
+						                    width:200,
+						                    labelWidth:80,
+						                    name:'outcome'
 
-                                        },
-                                        {
-                                            fieldLabel:i18n('ocurrence'),
-                                            xtype:'mitos.occurrencecombo',
-                                            width:250,
-                                            labelWidth:70,
-                                            name:'ocurrence'
+					                    }
+				                    ]
 
-                                        }
-                                    ]
-
-                                }
-                            ]
-                        }
+			                    },
+			                    {
+				                    /**
+				                     * Line three
+				                     */
+				                    xtype:'fieldcontainer',
+				                    layout:'hbox',
+				                    defaults:{
+					                    margin:'0 10 0 0'
+				                    },
+				                    items:[
+					                    {
+						                    xtype:'textfield',
+						                    width:510,
+						                    labelWidth:70,
+						                    fieldLabel:i18n('referred_by'),
+						                    name:'referred_by'
+					                    }
+				                    ]
+			                    }
+		                    ]
+	                    }
                     ]
                 }),
                 bbar:['->', {
@@ -1090,7 +1093,8 @@ Ext.define('App.view.patient.windows.Medical', {
                                 action:'labPreviewPanel',
                                 title:i18n('laboratory_preview'),
                                 region:'center',
-                                items:[me.uploadWin = Ext.create('Ext.window.Window', {
+                                items:[
+	                                me.uploadWin = Ext.create('Ext.window.Window', {
                                         draggable:false,
                                         closable:false,
                                         closeAction:'hide',
@@ -1125,18 +1129,14 @@ Ext.define('App.view.patient.windows.Medical', {
                                                 handler:me.onLabUpload
                                             }
                                         ]
-                                    })]
+                                    })
+                                ],
+	                            listeners:{
+		                            scope:me,
+		                            render:me.onLaboratoryPreviewRender
+	                            }
                             }
-                        ],
-                        tbar:['->', {
-                            text:i18n('scan')
-                        }, '-', {
-                            text:i18n('upload'),
-                            disabled:true,
-                            action:'uploadBtn',
-                            scope:me,
-                            handler:me.onLabUploadWind
-                        }]
+                        ]
                     },
                     {
                         xtype:'container',
@@ -1278,6 +1278,17 @@ Ext.define('App.view.patient.windows.Medical', {
                 ]
             }
         ];
+
+	    me.buttons = [
+		    {
+			    text:i18n('close'),
+			    scope:me,
+			    handler:function(){
+				    me.close();
+			    }
+		    }
+	    ];
+
         /**
          * Listeners
          * @type {{scope: *, show: Function, close: Function}}
@@ -1302,66 +1313,73 @@ Ext.define('App.view.patient.windows.Medical', {
             });
         for(var i = 0; i < fields.length; i++){
             formPanel.add({
-                    xtype:'fieldcontainer',
-                    layout:'hbox',
-                    margin:0,
-                    anchor:'100%',
-                    fieldLabel:fields[i].code_text_short || fields[i].loinc_name,
-                    labelWidth:130,
-                    items:[
-                        {
-                            xtype:'textfield',
-                            name:fields[i].loinc_number,
-                            flex:1,
-                            allowBlank:fields[i].required_in_panel != 'R'
-                        },
-                        {
-                            xtype:'mitos.unitscombo',
-                            value:fields[i].default_unit,
-                            name:fields[i].loinc_number + '_unit',
-                            width:90
-                        }
-                    ]
-                });
-        }
-        store.load({
-                params:{
-                    parent_id:model.data.id
-                }
+                xtype:'fieldcontainer',
+                layout:'hbox',
+                margin:0,
+                anchor:'100%',
+                fieldLabel:fields[i].code_text_short || fields[i].loinc_name,
+                labelWidth:130,
+                items:[
+                    {
+                        xtype:'textfield',
+                        name:fields[i].loinc_number,
+                        flex:1,
+                        allowBlank:fields[i].required_in_panel != 'R'
+                    },
+                    {
+                        xtype:'mitos.unitscombo',
+                        value:fields[i].default_unit,
+                        name:fields[i].loinc_number + '_unit',
+                        width:90
+                    }
+                ]
             });
+        }
+        store.load({params:{parent_id:model.data.id}});
     },
+	onLaboratoryPreviewRender:function(panel){
+		var me = this;
+		panel.dockedItems.items[0].add({
+			xtype:'button',
+			text:i18n('upload'),
+			disabled:true,
+			action:'uploadBtn',
+			scope:me,
+			handler:me.onLabUploadWind
+		});
+	},
     onLabPanelSelectionChange:function(model, record){
         this.query('[action="uploadBtn"]')[0].setDisabled(record.length == 0);
     },
     onLabUploadWind:function(){
         var me = this, previewPanel = me.query('[action="labPreviewPanel"]')[0];
         me.uploadWin.show();
-        me.uploadWin.alignTo(previewPanel.el.dom, 'tr-tr', [-5, 30])
+        me.uploadWin.alignTo(previewPanel.el.dom, 'tr-tr', [-5, 35])
     },
     onLabUpload:function(btn){
         var me = this, formPanel = me.uploadWin.down('form'), form = formPanel.getForm(), win = btn.up('window');
         if(form.isValid()){
             formPanel.el.mask(i18n('uploading_laboratory') + '...');
             form.submit({
-                    //waitMsg: i18n('uploading_laboratory') + '...',
-                    params:{
-                        pid:app.patient.pid,
-                        docType:'laboratory',
-                        eid:app.patient.eid
-                    },
-                    success:function(fp, o){
-                        formPanel.el.unmask();
-                        say(o.result);
-                        win.close();
-                        me.getLabDocument(o.result.doc.url);
-                        me.addNewLabResults(o.result.doc.id);
-                    },
-                    failure:function(fp, o){
-                        formPanel.el.unmask();
-                        say(o.result);
-                        win.close();
-                    }
-                });
+                //waitMsg: i18n('uploading_laboratory') + '...',
+                params:{
+                    pid:app.patient.pid,
+                    docType:'laboratory',
+                    eid:app.patient.eid
+                },
+                success:function(fp, o){
+                    formPanel.el.unmask();
+                    say(o.result);
+                    win.close();
+                    me.getLabDocument(o.result.doc.url);
+                    me.addNewLabResults(o.result.doc.id);
+                },
+                failure:function(fp, o){
+                    formPanel.el.unmask();
+                    say(o.result);
+                    win.close();
+                }
+            });
         }
     },
     onLabResultClick:function(view, model){
@@ -1409,17 +1427,17 @@ Ext.define('App.view.patient.windows.Medical', {
                 });
             }else{
                 Ext.Msg.show({
-                        title:'Oops!',
-                        msg:i18n('nothing_to_sign'),
-                        //buttons:Ext.Msg.OKCANCEL,
-                        buttons:Ext.Msg.OK,
-                        icon:Ext.Msg.ERROR,
-                        fn:function(btn){
-                            if(btn == 'ok'){
-                                //me.onLabResultsSign();
-                            }
+                    title:'Oops!',
+                    msg:i18n('nothing_to_sign'),
+                    //buttons:Ext.Msg.OKCANCEL,
+                    buttons:Ext.Msg.OK,
+                    icon:Ext.Msg.ERROR,
+                    fn:function(btn){
+                        if(btn == 'ok'){
+                            //me.onLabResultsSign();
                         }
-                    });
+                    }
+                });
             }
         }
     },
@@ -1427,11 +1445,7 @@ Ext.define('App.view.patient.windows.Medical', {
         var me = this, form = btn.up('form').getForm(), dataView = me.query('[action="lalboratoryresultsdataview"]')[0], store = dataView.store, values = form.getValues(), record = dataView.getSelectionModel().getLastSelected();
         if(form.isValid()){
             Medical.updatePatientLabsResult(values, function(){
-                store.load({
-                        params:{
-                            parent_id:record.data.parent_id
-                        }
-                    });
+                store.load({params:{parent_id:record.data.parent_id}});
                 form.reset();
             });
         }

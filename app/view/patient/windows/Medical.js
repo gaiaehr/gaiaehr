@@ -927,103 +927,118 @@ Ext.define('App.view.patient.windows.Medical', {
                     {
                         header:i18n('medication'),
                         flex:1,
-                        dataIndex:'STR'
+                        dataIndex:'STR',
+	                    editor:{
+		                    xtype:'rxnormlivetsearch',
+		                    listeners:{
+                                scope:me,
+                                select:me.onLiveSearchSelect
+                            }
+	                    }
                     },
                     {
                         xtype:'datecolumn',
                         header:i18n('begin_date'),
                         width:100,
                         format:'Y-m-d',
-                        dataIndex:'begin_date'
+                        dataIndex:'begin_date',
+	                    editor:{
+		                    xtype:'datefield',
+                            format:'Y-m-d'
+	                    }
                     },
                     {
                         xtype:'datecolumn',
                         header:i18n('end_date'),
                         width:100,
                         format:'Y-m-d',
-                        dataIndex:'end_date'
+                        dataIndex:'end_date',
+	                    editor:{
+		                    xtype:'datefield',
+		                    format:'Y-m-d'
+	                    }
                     }
                 ],
-                plugins:Ext.create('App.ux.grid.RowFormEditing', {
+                plugins:Ext.create('Ext.grid.plugin.RowEditing', {
                     autoCancel:false,
                     errorSummary:false,
-                    clicksToEdit:1,
-                    formItems:[
-                        {
-                            title:i18n('general'),
-                            xtype:'container',
-                            padding:10,
-                            layout:'vbox',
-                            items:[
-                                {
-                                    /**
-                                     * Line one
-                                     */
-                                    xtype:'fieldcontainer',
-                                    layout:'hbox',
-                                    defaults:{
-                                        margin:'0 5 0 0'
-                                    },
-                                    items:[
-                                        {
-                                            xtype:'rxnormlivetsearch',
-                                            fieldLabel:i18n('search'),
-                                            hideLabel:false,
-                                            itemId:'medication',
-                                            name:'RXCUI',
-                                            action:'medication_id',
-                                            enableKeyEvents:true,
-                                            width:520,
-                                            labelWidth:70,
-                                            listeners:{
-                                                scope:me,
-                                                select:me.onLiveSearchSelect
-                                            }
-                                        }
-                                    ]
-
-                                },
-	                            {
-		                            /**
-		                             * Line two
-		                             */
-		                            xtype:'fieldcontainer',
-		                            layout:'hbox',
-		                            defaults:{
-			                            margin:0
-		                            },
-		                            items:[
-			                            {
-				                            xtype:'textfield',
-				                            fieldLabel:i18n('medication'),
-				                            name:'STR',
-				                            width:520,
-				                            labelWidth:70,
-				                            action:'medication'
-			                            },
-			                            {
-				                            fieldLabel:i18n('begin_date'),
-				                            xtype:'datefield',
-				                            width:200,
-				                            labelWidth:70,
-				                            format:'Y-m-d',
-				                            name:'begin_date'
-
-			                            },
-			                            {
-				                            fieldLabel:i18n('end_date'),
-				                            xtype:'datefield',
-				                            width:200,
-				                            labelWidth:70,
-				                            format:'Y-m-d',
-				                            name:'end_date'
-			                            }
-		                            ]
-
-	                            }
-                            ]
-                        }
-                    ]
+                    clicksToEdit:2
+//                    formItems:[
+//                        {
+//                            title:i18n('general'),
+//                            xtype:'container',
+//                            padding:10,
+//                            layout:'vbox',
+//                            items:[
+//                                {
+//                                    /**
+//                                     * Line one
+//                                     */
+//                                    xtype:'fieldcontainer',
+//                                    layout:'hbox',
+//                                    defaults:{
+//                                        margin:'0 5 0 0'
+//                                    },
+//                                    items:[
+//                                        {
+//                                            xtype:'rxnormlivetsearch',
+//                                            fieldLabel:i18n('search'),
+//                                            hideLabel:false,
+//                                            itemId:'medication',
+//                                            name:'RXCUI',
+//                                            action:'medication_id',
+//                                            enableKeyEvents:true,
+//                                            width:520,
+//                                            labelWidth:70,
+//                                            listeners:{
+//                                                scope:me,
+//                                                select:me.onLiveSearchSelect
+//                                            }
+//                                        }
+//                                    ]
+//
+//                                },
+//	                            {
+//		                            /**
+//		                             * Line two
+//		                             */
+//		                            xtype:'fieldcontainer',
+//		                            layout:'hbox',
+//		                            defaults:{
+//			                            margin:0
+//		                            },
+//		                            items:[
+//			                            {
+//				                            xtype:'textfield',
+//				                            fieldLabel:i18n('medication'),
+//				                            name:'STR',
+//				                            width:520,
+//				                            labelWidth:70,
+//				                            action:'medication'
+//			                            },
+//			                            {
+//				                            fieldLabel:i18n('begin_date'),
+//				                            xtype:'datefield',
+//				                            width:200,
+//				                            labelWidth:70,
+//				                            format:'Y-m-d',
+//				                            name:'begin_date'
+//
+//			                            },
+//			                            {
+//				                            fieldLabel:i18n('end_date'),
+//				                            xtype:'datefield',
+//				                            width:200,
+//				                            labelWidth:70,
+//				                            format:'Y-m-d',
+//				                            name:'end_date'
+//			                            }
+//		                            ]
+//
+//	                            }
+//                            ]
+//                        }
+//                    ]
                 }),
                 bbar:['->', {
                     text:i18n('reviewed'),
@@ -1256,6 +1271,7 @@ Ext.define('App.view.patient.windows.Medical', {
                     {
                         text:i18n('add_new'),
                         action:'AddRecord',
+	                    iconCls:'icoAdd',
                         scope:me,
                         handler:me.onAddItem
                     }
@@ -1486,10 +1502,10 @@ Ext.define('App.view.patient.windows.Medical', {
             name = model[0].data.surgery;
             field = combo.up('fieldcontainer').query('[action="idField"]')[0];
             field.setValue(name);
-        }else if(combo.action == 'medication_id'){
-            name = model[0].data.STR;
-            field = combo.up('fieldcontainer').query('[action="medication"]')[0];
-            field.setValue(name);
+//        }else if(combo.action == 'medication_id'){
+//            name = model[0].data.STR;
+//            field = combo.up('fieldcontainer').query('[action="medication"]')[0];
+//            field.setValue(name);
         }else if(combo.action == 'cdt'){
             name = model[0].data.text;
             field = combo.up('fieldcontainer').query('[action="description"]')[0];

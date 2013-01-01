@@ -134,7 +134,7 @@ Ext.define('App.view.patient.windows.Medical', {
                                     layout:'hbox',
                                     itemId:'line1',
                                     defaults:{
-                                        margin:'0 10 3 0',
+                                        margin:'0 10 0 0',
                                         xtype:'textfield'
                                     },
                                     items:[
@@ -180,7 +180,7 @@ Ext.define('App.view.patient.windows.Medical', {
                                     xtype:'fieldcontainer',
                                     layout:'hbox',
                                     defaults:{
-                                        margin:'0 10 3 0',
+                                        margin:'0 10 0 0',
                                         xtype:'textfield'
                                     },
                                     items:[
@@ -216,7 +216,7 @@ Ext.define('App.view.patient.windows.Medical', {
                                     xtype:'fieldcontainer',
                                     layout:'hbox',
                                     defaults:{
-                                        margin:'0 10 3 0',
+                                        margin:'0 10 0 0',
                                         xtype:'textfield'
                                     },
                                     items:[
@@ -313,7 +313,7 @@ Ext.define('App.view.patient.windows.Medical', {
                                     xtype:'fieldcontainer',
                                     layout:'hbox',
                                     defaults:{
-                                        margin:'0 10 5 0'
+                                        margin:'0 10 0 0'
                                     },
                                     items:[
                                         {
@@ -360,7 +360,7 @@ Ext.define('App.view.patient.windows.Medical', {
                                     xtype:'fieldcontainer',
                                     layout:'hbox',
                                     defaults:{
-                                        margin:'0 10 5 0'
+                                        margin:'0 10 0 0'
                                     },
                                     items:[
                                         me.allergieType = Ext.create('App.ux.combo.Allergies', {
@@ -454,7 +454,7 @@ Ext.define('App.view.patient.windows.Medical', {
                                     xtype:'fieldcontainer',
                                     layout:'hbox',
                                     defaults:{
-                                        margin:'0 10 5 0'
+                                        margin:'0 10 0 0'
                                     },
                                     items:[
                                         {
@@ -527,7 +527,7 @@ Ext.define('App.view.patient.windows.Medical', {
                                     xtype:'fieldcontainer',
                                     layout:'hbox',
                                     defaults:{
-                                        margin:'0 10 5 0'
+                                        margin:'0 10 0 0'
                                     },
                                     items:[
                                         {
@@ -571,7 +571,7 @@ Ext.define('App.view.patient.windows.Medical', {
                                     xtype:'fieldcontainer',
                                     layout:'hbox',
                                     defaults:{
-                                        margin:'0 10 5 0'
+                                        margin:'0 10 0 0'
                                     },
                                     items:[
                                         {
@@ -609,7 +609,7 @@ Ext.define('App.view.patient.windows.Medical', {
                                     xtype:'fieldcontainer',
                                     layout:'hbox',
                                     defaults:{
-                                        margin:'0 10 5 0'
+                                        margin:'0 10 0 0'
                                     },
                                     items:[
                                         {
@@ -675,7 +675,7 @@ Ext.define('App.view.patient.windows.Medical', {
                                     xtype:'fieldcontainer',
                                     layout:'hbox',
                                     defaults:{
-                                        margin:'0 10 5 0'
+                                        margin:'0 10 0 0'
                                     },
                                     items:[
                                         {
@@ -719,7 +719,7 @@ Ext.define('App.view.patient.windows.Medical', {
                                     xtype:'fieldcontainer',
                                     layout:'hbox',
                                     defaults:{
-                                        margin:'0 10 5 0'
+                                        margin:'0 10 0 0'
                                     },
                                     items:[
                                         {
@@ -748,7 +748,7 @@ Ext.define('App.view.patient.windows.Medical', {
                                     xtype:'fieldcontainer',
                                     layout:'hbox',
                                     defaults:{
-                                        margin:'0 10 5 0'
+                                        margin:'0 10 0 0'
                                     },
                                     items:[
                                         {
@@ -820,7 +820,7 @@ Ext.define('App.view.patient.windows.Medical', {
                                     xtype:'fieldcontainer',
                                     layout:'hbox',
                                     defaults:{
-                                        margin:'0 10 5 0'
+                                        margin:'0 10 0 0'
                                     },
                                     items:[
                                         {
@@ -872,7 +872,7 @@ Ext.define('App.view.patient.windows.Medical', {
                                     xtype:'fieldcontainer',
                                     layout:'hbox',
                                     defaults:{
-                                        margin:'0 10 5 0'
+                                        margin:'0 10 0 0'
                                     },
                                     items:[
                                         {

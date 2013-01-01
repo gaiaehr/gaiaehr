@@ -1132,5 +1132,6 @@ $LANG = array(
 	'signed_by'								=> 'Signed by',
 	'key_if_required'						=> 'Key (if required)',
 	'enabled?'								=> 'Enabled?',
-    'related_dx'							=> 'Related Dx'
+    'related_dx'							=> 'Related Dx',
+    'live_styles'							=> 'Live Styles'
 );

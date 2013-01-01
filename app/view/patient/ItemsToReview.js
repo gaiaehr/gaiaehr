@@ -185,7 +185,7 @@ Ext.define('App.view.patient.ItemsToReview', {
                         {
                             header: i18n('medication'),
                             width: 250,
-                            dataIndex: 'medication'
+                            dataIndex: 'STR'
                         },
                         {
                             xtype: 'datecolumn',
@@ -205,37 +205,39 @@ Ext.define('App.view.patient.ItemsToReview', {
                 }
             ]
         });
+
         me.column4 = Ext.create('Ext.form.Panel', {
-            columnWidth: 0.3333,
+            columnWidth: 0.329,
             border: false,
             items: [
-                {
-                    fieldLabel: i18n('smoking_status'),
-                    xtype: 'mitos.smokingstatuscombo',
-                    labelWidth: 100,
-                    width: 325,
-                    name: 'review_smoke'
+	            {
+		            xtype:'fieldset',
+		            title:i18n('live_styles'),
+		            items:[
+			            {
+				            fieldLabel: i18n('smoking_status'),
+				            xtype: 'mitos.smokingstatuscombo',
+				            labelWidth: 100,
+				            width: 325,
+				            name: 'review_smoke'
+			            },
+			            {
+				            fieldLabel: i18n('alcohol'),
+				            xtype: 'mitos.yesnocombo',
+				            labelWidth: 100,
+				            width: 325,
+				            name: 'review_alcohol'
+			            },
+			            {
+				            fieldLabel: i18n('pregnant'),
+				            xtype: 'mitos.yesnonacombo',
+				            labelWidth: 100,
+				            width: 325,
+				            name: 'review_pregnant'
+			            }
+		            ]
+	            }
 
-
-                },
-                {
-                    fieldLabel: i18n('alcohol'),
-                    xtype: 'mitos.yesnocombo',
-                    labelWidth: 100,
-                    width: 325,
-                    name: 'review_alcohol'
-
-
-                },
-                {
-                    fieldLabel: i18n('pregnant'),
-                    xtype: 'mitos.yesnonacombo',
-                    labelWidth: 100,
-                    width: 325,
-                    name: 'review_pregnant'
-
-
-                }
             ]
         });
         me.items = [ me.column1, me.column2, me.column3 , me.column4 ];

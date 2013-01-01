@@ -168,14 +168,14 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 							/**
 							 * Pharmacies Combo
 							 */
-							{
-								xtype:'mitos.pharmaciescombo',
-								fieldLabel:i18n('pharmacies'),
-								width:250,
-								labelWidth:75,
-								margin:'5 5 0 5'
-
-							},
+//							{
+//								xtype:'mitos.pharmaciescombo',
+//								fieldLabel:i18n('pharmacies'),
+//								width:250,
+//								labelWidth:75,
+//								margin:'5 5 0 5'
+//
+//							},
 							/**
 							 * Prescription Grid
 							 */
@@ -223,7 +223,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 							me.prescriptionMedicationsGrid = Ext.widget('grid',{
 								title:i18n('medications'),
 								store:me.prescriptionMedicationsStore,
-								flex:1,
+								height:325,
 								margin:5,
 								columns:[
 									{

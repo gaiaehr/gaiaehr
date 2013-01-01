@@ -927,7 +927,7 @@ Ext.define('App.view.patient.windows.Medical', {
                     {
                         header:i18n('medication'),
                         flex:1,
-                        dataIndex:'medication'
+                        dataIndex:'STR'
                     },
                     {
                         xtype:'datecolumn',
@@ -962,12 +962,12 @@ Ext.define('App.view.patient.windows.Medical', {
                                     xtype:'fieldcontainer',
                                     layout:'hbox',
                                     defaults:{
-                                        margin:'0 10 5 0'
+                                        margin:'0 5 0 0'
                                     },
                                     items:[
                                         {
                                             xtype:'rxnormlivetsearch',
-                                            fieldLabel:i18n('medication'),
+                                            fieldLabel:i18n('search'),
                                             hideLabel:false,
                                             itemId:'medication',
                                             name:'RXCUI',
@@ -977,81 +977,50 @@ Ext.define('App.view.patient.windows.Medical', {
                                             labelWidth:70,
                                             listeners:{
                                                 scope:me,
-                                                'select':me.onLiveSearchSelect
+                                                select:me.onLiveSearchSelect
                                             }
-                                        },
-                                        {
-                                            xtype:'textfield',
-                                            hidden:true,
-                                            name:'medication',
-                                            action:'medication'
-                                        },
-                                        {
-                                            fieldLabel:i18n('begin_date'),
-                                            xtype:'datefield',
-                                            width:200,
-                                            labelWidth:80,
-                                            format:'Y-m-d',
-                                            name:'begin_date'
-
                                         }
                                     ]
 
                                 },
-                                {
-                                    /**
-                                     * Line two
-                                     */
-                                    xtype:'fieldcontainer',
-                                    layout:'hbox',
-                                    defaults:{
-                                        margin:'0 10 5 0'
-                                    },
-                                    items:[
-                                        {
-                                            fieldLabel:i18n('outcome'),
-                                            xtype:'mitos.outcome2combo',
-                                            width:250,
-                                            labelWidth:70,
-                                            name:'outcome'
-                                        },
-                                        {
-                                            xtype:'textfield',
-                                            width:260,
-                                            fieldLabel:i18n('referred_by'),
-                                            name:'referred_by'
-                                        },
-                                        {
-                                            fieldLabel:i18n('end_date'),
-                                            xtype:'datefield',
-                                            width:200,
-                                            labelWidth:80,
-                                            format:'Y-m-d',
-                                            name:'end_date'
-                                        }
-                                    ]
+	                            {
+		                            /**
+		                             * Line two
+		                             */
+		                            xtype:'fieldcontainer',
+		                            layout:'hbox',
+		                            defaults:{
+			                            margin:0
+		                            },
+		                            items:[
+			                            {
+				                            xtype:'textfield',
+				                            fieldLabel:i18n('medication'),
+				                            name:'STR',
+				                            width:520,
+				                            labelWidth:70,
+				                            action:'medication'
+			                            },
+			                            {
+				                            fieldLabel:i18n('begin_date'),
+				                            xtype:'datefield',
+				                            width:200,
+				                            labelWidth:70,
+				                            format:'Y-m-d',
+				                            name:'begin_date'
 
-                                },
-                                {
-                                    /**
-                                     * Line three
-                                     */
-                                    xtype:'fieldcontainer',
-                                    layout:'hbox',
-                                    defaults:{
-                                        margin:'0 10 5 0'
-                                    },
-                                    items:[
-                                        {
-                                            fieldLabel:i18n('ocurrence'),
-                                            width:250,
-                                            labelWidth:70,
-                                            xtype:'mitos.occurrencecombo',
-                                            name:'ocurrence'
+			                            },
+			                            {
+				                            fieldLabel:i18n('end_date'),
+				                            xtype:'datefield',
+				                            width:200,
+				                            labelWidth:70,
+				                            format:'Y-m-d',
+				                            name:'end_date'
+			                            }
+		                            ]
 
-                                        }
-                                    ]
-                                }
+	                            }
                             ]
                         }
                     ]

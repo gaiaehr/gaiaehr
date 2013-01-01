@@ -296,9 +296,6 @@ class Medical
 	{
 		$data = get_object_vars($params);
 		unset($data['id'], $data['alert']);
-		$data['begin_date']  = $this->parseDate($data['begin_date']);
-		$data['end_date']    = $this->parseDate($data['end_date']);
-		$data['create_date'] = $this->parseDate($data['create_date']);
 		$this->db->setSQL($this->db->sqlBind($data, 'patient_medications', 'I'));
 		$this->db->execLog();
 		$params->id = $this->db->lastInsertId;
@@ -310,9 +307,6 @@ class Medical
 		$data = get_object_vars($params);
 		$id   = $data['id'];
 		unset($data['id'], $data['alert']);
-		$data['begin_date']  = $this->parseDate($data['begin_date']);
-		$data['end_date']    = $this->parseDate($data['end_date']);
-		$data['create_date'] = $this->parseDate($data['create_date']);
 		$this->db->setSQL($this->db->sqlBind($data, "patient_medications", "U", "id='$id'"));
 		$this->db->execLog();
 		return $params;

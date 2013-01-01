@@ -34,13 +34,12 @@ if($mobile->isMobile() || $mDebug){
 	 * This contains SESSION Variables to use in the application
 	 * and mobile_detect class is used to detect mobile browsers.
 	 */
-	include_once ('registry.php');
+	include_once('registry.php');
 	/**
 	 * set the site using the url parameter site, or default if not given
 	 */
 	if(file_exists('sites/' . $site . '/conf.php')){
-		include_once ('sites/' . $site . '/conf.php');
-		$_SESSION['site']['localization'] = (isset($_SESSION['site']['localization']) && ($_SESSION['site']['default_localization'] != $_SESSION['site']['localization'])) ? $_SESSION['site']['localization'] : 'en_US';
+		include_once('sites/' . $site . '/conf.php');
 	} else {
 		$_SESSION['site'] = array('error' => 'Site configuration file not found, Please contact Support Desk. Thanks!');
 	};

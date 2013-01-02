@@ -74,12 +74,13 @@ class CCR
 
 	function createCCR($request)
 	{
+
 		$action = $request['action'];
 		$raw    = $request['raw'];
 
 		$this->pid   = $request['pid'];
-		$this->start = $request['start'];
-		$this->end   = $request['end'];
+//		$this->start = $request['start'];
+//		$this->end   = $request['end'];
 
 
 		//$result = $this->getActorData();
@@ -96,6 +97,7 @@ class CCR
 		$this->createHeader($e_ccr);
 		$e_Body = $this->ccr->createElement('Body');
 		$e_ccr->appendChild($e_Body);
+
 		/**
 		 * Problems
 		 */
@@ -140,6 +142,7 @@ class CCR
 		/**
 		 * Actors
 		 */
+
 		$e_Actors = $this->ccr->createElement('Actors');
 		$this->createActors($e_Actors);
 		$e_ccr->appendChild($e_Actors);
@@ -519,25 +522,25 @@ class CCR
 			$e_Medication->appendChild($e_Product);
 			$e_ProductName = $this->ccr->createElement('ProductName');
 			$e_Product->appendChild($e_ProductName);
-			$e_Text = $this->ccr->createElement('Text', $row['medication']);
+			$e_Text = $this->ccr->createElement('Text', $row['STR']);
 			$e_ProductName->appendChild(clone $e_Text);
 			$e_Code = $this->ccr->createElement('Code');
 			$e_ProductName->appendChild($e_Code);
-			$e_Value = $this->ccr->createElement('Value', 'rxnorm_drugcode ???');
+			$e_Value = $this->ccr->createElement('Value', $row['CODE']);
 			$e_Code->appendChild($e_Value);
 			$e_Value = $this->ccr->createElement('CodingSystem', 'RxNorm');
 			$e_Code->appendChild($e_Value);
 			$e_Strength = $this->ccr->createElement('Strength');
 			$e_Product->appendChild($e_Strength);
-			$e_Value = $this->ccr->createElement('Value', $row['dose_mg']);
+			$e_Value = $this->ccr->createElement('Value', $row['dose']);
 			$e_Strength->appendChild($e_Value);
 			$e_Units = $this->ccr->createElement('Units');
 			$e_Strength->appendChild($e_Units);
-			$e_Unit = $this->ccr->createElement('Unit', $row['title']);
+			$e_Unit = $this->ccr->createElement('Unit',' - ');
 			$e_Units->appendChild($e_Unit);
 			$e_Form = $this->ccr->createElement('Form');
 			$e_Product->appendChild($e_Form);
-			$e_Text = $this->ccr->createElement('Text', $row['type']);
+			$e_Text = $this->ccr->createElement('Text', $row['form']);
 			$e_Form->appendChild($e_Text);
 			$e_Quantity = $this->ccr->createElement('Quantity');
 			$e_Medication->appendChild($e_Quantity);
@@ -545,7 +548,7 @@ class CCR
 			$e_Quantity->appendChild($e_Value);
 			$e_Units = $this->ccr->createElement('Units');
 			$e_Quantity->appendChild($e_Units);
-			$e_Unit = $this->ccr->createElement('Unit', $row['dose_mg']);
+			$e_Unit = $this->ccr->createElement('Unit', ' - ');
 			$e_Units->appendChild($e_Unit);
 			$e_Directions = $this->ccr->createElement('Directions');
 			$e_Medication->appendChild($e_Directions);
@@ -857,80 +860,79 @@ class CCR
 
 	function createActors($e_Actors)
 	{
-		$data = $this->patient->getPatientDemographicDataByPid($this->pid);
-		foreach($data AS $row) {
-			$e_Actor = $this->ccr->createElement('Actor');
-			$e_Actors->appendChild($e_Actor);
-			$e_ActorObjectID = $this->ccr->createElement('ActorObjectID', 'A1234'); // Refer createCCRHeader.php
-			$e_Actor->appendChild($e_ActorObjectID);
-			$e_Person = $this->ccr->createElement('Person');
-			$e_Actor->appendChild($e_Person);
-			$e_Name = $this->ccr->createElement('Name');
-			$e_Person->appendChild($e_Name);
-			$e_CurrentName = $this->ccr->createElement('CurrentName');
-			$e_Name->appendChild($e_CurrentName);
-			$e_Given = $this->ccr->createElement('Given', $row['fname']);
-			$e_CurrentName->appendChild($e_Given);
-			$e_Family = $this->ccr->createElement('Family', $row['lname']);
-			$e_CurrentName->appendChild($e_Family);
-			$e_Suffix = $this->ccr->createElement('Suffix');
-			$e_CurrentName->appendChild($e_Suffix);
-			$e_DateOfBirth = $this->ccr->createElement('DateOfBirth');
-			$e_Person->appendChild($e_DateOfBirth);
-			$dob             = date_create($row['DOB']);
-			$e_ExactDateTime = $this->ccr->createElement('ExactDateTime', $dob->format('Y-m-d\TH:i:s\Z'));
-			$e_DateOfBirth->appendChild($e_ExactDateTime);
-			$e_Gender = $this->ccr->createElement('Gender');
-			$e_Person->appendChild($e_Gender);
-			$e_Text = $this->ccr->createElement('Text', $row['sex']);
-			$e_Gender->appendChild($e_Text);
-			$e_Code = $this->ccr->createElement('Code');
-			$e_Gender->appendChild($e_Code);
-			$e_Value = $this->ccr->createElement('Value');
-			$e_Code->appendChild($e_Value);
-			$e_IDs = $this->ccr->createElement('IDs');
-			$e_Actor->appendChild($e_IDs);
-			$e_Type = $this->ccr->createElement('Type');
-			$e_IDs->appendChild($e_Type);
-			$e_Text = $this->ccr->createElement('Text', 'Patient ID');
-			$e_Type->appendChild($e_Text);
-			$e_ID = $this->ccr->createElement('ID', $row['pid']);
-			$e_IDs->appendChild($e_ID);
-			$e_Source = $this->ccr->createElement('Source');
-			$e_IDs->appendChild($e_Source);
-			$e_SourceActor = $this->ccr->createElement('Actor');
-			$e_Source->appendChild($e_SourceActor);
-			$e_ActorID = $this->ccr->createElement('ActorID', $this->getUuid());
-			$e_SourceActor->appendChild($e_ActorID);
-			// address
-			$e_Address = $this->ccr->createElement('Address');
-			$e_Actor->appendChild($e_Address);
-			$e_Type = $this->ccr->createElement('Type');
-			$e_Address->appendChild($e_Type);
-			$e_Text = $this->ccr->createElement('Text', 'H');
-			$e_Type->appendChild($e_Text);
-			$e_Line1 = $this->ccr->createElement('Line1', $row['address']);
-			$e_Address->appendChild($e_Line1);
-			$e_Line2 = $this->ccr->createElement('Line2');
-			$e_Address->appendChild($e_Line1);
-			$e_City = $this->ccr->createElement('City', $row['city']);
-			$e_Address->appendChild($e_City);
-			$e_State = $this->ccr->createElement('State', $row['state']);
-			$e_Address->appendChild($e_State);
-			$e_PostalCode = $this->ccr->createElement('PostalCode', $row['zipcode']);
-			$e_Address->appendChild($e_PostalCode);
-			$e_Telephone = $this->ccr->createElement('Telephone');
-			$e_Actor->appendChild($e_Telephone);
-			$e_Value = $this->ccr->createElement('Value', $row['home_phone']);
-			$e_Telephone->appendChild($e_Value);
-			$e_Source = $this->ccr->createElement('Source');
-			$e_Actor->appendChild($e_Source);
-			$e_Actor = $this->ccr->createElement('Actor');
-			$e_Source->appendChild($e_Actor);
-			$e_ActorID = $this->ccr->createElement('ActorID', $this->authorID);
-			$e_Actor->appendChild($e_ActorID);
+        $p = $this->patient->getPatientDemographicDataByPid($this->pid);
 
-		}
+        $e_Actor = $this->ccr->createElement('Actor');
+        $e_Actors->appendChild($e_Actor);
+        $e_ActorObjectID = $this->ccr->createElement('ActorObjectID', 'A1234'); // Refer createCCRHeader.php
+        $e_Actor->appendChild($e_ActorObjectID);
+        $e_Person = $this->ccr->createElement('Person');
+        $e_Actor->appendChild($e_Person);
+        $e_Name = $this->ccr->createElement('Name');
+        $e_Person->appendChild($e_Name);
+        $e_CurrentName = $this->ccr->createElement('CurrentName');
+        $e_Name->appendChild($e_CurrentName);
+        $e_Given = $this->ccr->createElement('Given', $p['fname']);
+        $e_CurrentName->appendChild($e_Given);
+        $e_Family = $this->ccr->createElement('Family', $p['lname']);
+        $e_CurrentName->appendChild($e_Family);
+        $e_Suffix = $this->ccr->createElement('Suffix');
+        $e_CurrentName->appendChild($e_Suffix);
+        $e_DateOfBirth = $this->ccr->createElement('DateOfBirth');
+        $e_Person->appendChild($e_DateOfBirth);
+        $dob             = date_create($p['DOB']);
+        $e_ExactDateTime = $this->ccr->createElement('ExactDateTime', $dob->format('Y-m-d\TH:i:s\Z'));
+        $e_DateOfBirth->appendChild($e_ExactDateTime);
+        $e_Gender = $this->ccr->createElement('Gender');
+        $e_Person->appendChild($e_Gender);
+        $e_Text = $this->ccr->createElement('Text', $p['sex']);
+        $e_Gender->appendChild($e_Text);
+        $e_Code = $this->ccr->createElement('Code');
+        $e_Gender->appendChild($e_Code);
+        $e_Value = $this->ccr->createElement('Value');
+        $e_Code->appendChild($e_Value);
+        $e_IDs = $this->ccr->createElement('IDs');
+        $e_Actor->appendChild($e_IDs);
+        $e_Type = $this->ccr->createElement('Type');
+        $e_IDs->appendChild($e_Type);
+        $e_Text = $this->ccr->createElement('Text', 'Patient ID');
+        $e_Type->appendChild($e_Text);
+        $e_ID = $this->ccr->createElement('ID', $p['pid']);
+        $e_IDs->appendChild($e_ID);
+        $e_Source = $this->ccr->createElement('Source');
+        $e_IDs->appendChild($e_Source);
+        $e_SourceActor = $this->ccr->createElement('Actor');
+        $e_Source->appendChild($e_SourceActor);
+        $e_ActorID = $this->ccr->createElement('ActorID', $this->getUuid());
+        $e_SourceActor->appendChild($e_ActorID);
+        // address
+        $e_Address = $this->ccr->createElement('Address');
+        $e_Actor->appendChild($e_Address);
+        $e_Type = $this->ccr->createElement('Type');
+        $e_Address->appendChild($e_Type);
+        $e_Text = $this->ccr->createElement('Text', 'H');
+        $e_Type->appendChild($e_Text);
+        $e_Line1 = $this->ccr->createElement('Line1', $p['address']);
+        $e_Address->appendChild($e_Line1);
+        $e_Line2 = $this->ccr->createElement('Line2');
+        $e_Address->appendChild($e_Line1);
+        $e_City = $this->ccr->createElement('City', $p['city']);
+        $e_Address->appendChild($e_City);
+        $e_State = $this->ccr->createElement('State', $p['state']);
+        $e_Address->appendChild($e_State);
+        $e_PostalCode = $this->ccr->createElement('PostalCode', $p['zipcode']);
+        $e_Address->appendChild($e_PostalCode);
+        $e_Telephone = $this->ccr->createElement('Telephone');
+        $e_Actor->appendChild($e_Telephone);
+        $e_Value = $this->ccr->createElement('Value', $p['home_phone']);
+        $e_Telephone->appendChild($e_Value);
+        $e_Source = $this->ccr->createElement('Source');
+        $e_Actor->appendChild($e_Source);
+        $e_Actor = $this->ccr->createElement('Actor');
+        $e_Source->appendChild($e_Actor);
+        $e_ActorID = $this->ccr->createElement('ActorID', $this->authorID);
+        $e_Actor->appendChild($e_ActorID);
+
 		$informationData = array(
 			'facility' => 'facility',
 			'street' => 'street',
@@ -1112,252 +1114,6 @@ class CCR
 			// 8 bits for "clk_seq_low"
 			mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535) // 48 bits for "node"
 		);
-	}
-
-
-
-
-	function getProcedureData()
-	{
-		global $pid, $set, $start, $end;
-		$sql    = "
-	    SELECT
-	      lists.title as proc_title,
-	      lists.date as `date`,
-	      list_options.title as outcome,
-	      '' as laterality,
-	      '' as body_site,
-	      lists.type as `type`,
-	      lists.diagnosis as `code`,
-	      IF(SUBSTRING(lists.diagnosis,1,LOCATE(':',lists.diagnosis)-1) = 'ICD9','ICD9-CM',SUBSTRING(lists.diagnosis,1,LOCATE(':',lists.diagnosis)-1)) AS coding
-	    FROM
-	      lists
-	      LEFT JOIN issue_encounter
-	        ON issue_encounter.list_id = lists.id
-	      LEFT JOIN form_encounter
-	        ON form_encounter.encounter = issue_encounter.encounter
-	      LEFT JOIN facility
-	        ON form_encounter.facility_id = facility.id
-	      LEFT JOIN users
-	        ON form_encounter.provider_id = users.id
-	      LEFT JOIN list_options
-	        ON lists.outcome = list_options.option_id
-	        AND list_options.list_id = 'outcome'
-	    WHERE lists.type = 'surgery'
-	      AND lists.pid = ?
-	      AND lists.date BETWEEN ? AND ?
-	    UNION
-	    SELECT
-	      pt.name as proc_title,
-	      prs.date as `date`,
-	      '' as outcome,
-	      ptt.laterality as laterality,
-	      ptt.body_site as body_site,
-	      'Lab Order' as `type`,
-	      ptt.standard_code as `code`,
-	      IF(SUBSTRING(ptt.standard_code,1,LOCATE(':',ptt.standard_code)-1) = 'ICD9','ICD9-CM',SUBSTRING(ptt.standard_code,1,LOCATE(':',ptt.standard_code)-1)) AS coding
-	    FROM
-	      procedure_result AS prs
-	      LEFT JOIN procedure_report AS prp
-	        ON prs.procedure_report_id = prp.procedure_report_id
-	      LEFT JOIN procedure_order AS po
-	        ON prp.procedure_order_id = po.procedure_order_id
-	      LEFT JOIN procedure_type AS pt
-	        ON prs.procedure_type_id = pt.procedure_type_id
-	      LEFT JOIN procedure_type AS ptt
-	        ON pt.parent = ptt.procedure_type_id
-	        AND ptt.procedure_type = 'ord'
-	      LEFT JOIN list_options AS lo
-	        ON lo.list_id = 'proc_unit'
-	        AND pt.units = lo.option_id
-	    WHERE po.patient_id = ?
-	    AND prs.date BETWEEN ? AND ?";
-			$result = sqlStatement($sql, array($pid, $start, $end, $pid, $start, $end));
-		return $result;
-	}
-
-	function getProblemData()
-	{
-		# Note we are hard-coding (only allowing) problems that have been coded to ICD9. Would
-		#  be easy to upgrade this to other codesets in future (ICD10,SNOMED) by using already
-		#  existant flags in the code_types table.
-		# Additionally, only using problems that have one diagnosis code set in diagnosis field.
-		#  Note OpenEMR allows multiple codes set per problem, but will limit to showing only
-		#  problems with one diagnostic code set in order to maintain previous behavior
-		#  (this will likely need to be dealt with at some point; ie. support multiple dx codes per problem).
-		global $pid, $set, $start, $end;
-		if($set == "on") {
-			$sql    = "
-	    SELECT fe.encounter, fe.reason, fe.provider_id, u.title, u.fname, u.lname,
-	      fe.facility_id, f.street, f.city, f.state, ie.list_id, l.pid, l.title AS prob_title, l.diagnosis,
-	      l.outcome, l.groupname, l.begdate, l.enddate, l.type, l.comments , l.date
-	    FROM lists AS l
-	    LEFT JOIN issue_encounter AS ie ON ie.list_id = l.id
-	    LEFT JOIN form_encounter AS fe ON fe.encounter = ie.encounter
-	    LEFT JOIN facility AS f ON fe.facility_id = f.id
-	    LEFT JOIN users AS u ON fe.provider_id = u.id
-	    WHERE l.type = 'medical_problem' AND l.pid=? AND l.diagnosis LIKE 'ICD9:%'
-	    AND l.diagnosis NOT LIKE '%;%'
-	    AND l.date BETWEEN ? AND ?";
-			$result = sqlStatement($sql, array($pid, $start, $end));
-		} else {
-			$sql    = "
-	    SELECT fe.encounter, fe.reason, fe.provider_id, u.title, u.fname, u.lname,
-	      fe.facility_id, f.street, f.city, f.state, ie.list_id, l.pid, l.title AS prob_title, l.diagnosis,
-	      l.outcome, l.groupname, l.begdate, l.enddate, l.type, l.comments , l.date
-	    FROM lists AS l
-	    LEFT JOIN issue_encounter AS ie ON ie.list_id = l.id
-	    LEFT JOIN form_encounter AS fe ON fe.encounter = ie.encounter
-	    LEFT JOIN facility AS f ON fe.facility_id = f.id
-	    LEFT JOIN users AS u ON fe.provider_id = u.id
-	    WHERE l.type = 'medical_problem' AND l.pid=? AND l.diagnosis LIKE 'ICD9:%'
-	    AND l.diagnosis NOT LIKE '%;%'";
-			$result = sqlStatement($sql, array($pid));
-		}
-		return $result;
-	}
-
-	function getAlertData()
-	{
-		global $pid, $set, $start, $end;
-		if($set == "on") {
-			$sql    = "
-	    select fe.reason, fe.provider_id, fe.facility_id, fe.encounter,
-	      ie.list_id, l.pid, l.title as alert_title, l.outcome,
-	      l.groupname, l.begdate, l.enddate, l.type, l.diagnosis, l.date ,
-	      l.reaction , l.comments ,
-	        f.street, f.city, f.state, u.title, u.fname, u.lname, cd.code_text
-	    from lists as l
-	    left join issue_encounter as ie
-	    on ie.list_id = l.id
-	    left join form_encounter as fe
-	    on fe.encounter = ie.encounter
-	    left join facility as f
-	    on fe.facility_id = f.id
-	    left join users as u
-	    on fe.provider_id = u.id
-	    left join codes as cd
-	    on cd.code = SUBSTRING(l.diagnosis, LOCATE(':',l.diagnosis)+1)
-	    where l.type = 'allergy' and l.pid=?
-	    AND l.date BETWEEN ? AND ?";
-			$result = sqlStatement($sql, array($pid, $start, $end));
-		} else {
-			$sql    = "
-	    select fe.reason, fe.provider_id, fe.facility_id, fe.encounter,
-	      ie.list_id, l.pid, l.title as alert_title, l.outcome,
-	      l.groupname, l.begdate, l.enddate, l.type, l.diagnosis, l.date ,
-	      l.reaction , l.comments ,
-	        f.street, f.city, f.state, u.title, u.fname, u.lname, cd.code_text
-	    from lists as l
-	    left join issue_encounter as ie
-	    on ie.list_id = l.id
-	    left join form_encounter as fe
-	    on fe.encounter = ie.encounter
-	    left join facility as f
-	    on fe.facility_id = f.id
-	    left join users as u
-	    on fe.provider_id = u.id
-	    left join codes as cd
-	    on cd.code = SUBSTRING(l.diagnosis, LOCATE(':',l.diagnosis)+1)
-	    where l.type = 'allergy' and l.pid=?";
-			$result = sqlStatement($sql, array($pid));
-		}
-		return $result;
-	}
-
-	function getResultData()
-	{
-		global $pid, $set, $start, $end;
-		if($set == "on") {
-			$sql    = "
-	      SELECT
-	        prs.procedure_result_id as `pid`,
-	        pt.name as `name`,
-	        pt.procedure_type_id as `type`,
-	        prs.date as `date`,
-	        concat_ws(' ',prs.result,lo.title) as `result`,
-	        prs.range as `range`,
-	        prs.abnormal as `abnormal`,
-	        prs.comments as `comments`,
-	        ptt.lab_id AS `lab`
-	      FROM
-	        procedure_result AS prs
-	        LEFT JOIN procedure_report AS prp
-	          ON prs.procedure_report_id = prp.procedure_report_id
-	        LEFT JOIN procedure_order AS po
-	          ON prp.procedure_order_id = po.procedure_order_id
-	        LEFT JOIN procedure_type AS pt
-	          ON prs.procedure_type_id = pt.procedure_type_id
-	          LEFT JOIN procedure_type AS ptt
-	          ON pt.parent = ptt.procedure_type_id
-	          AND ptt.procedure_type = 'ord'
-	        LEFT JOIN list_options AS lo
-	          ON lo.list_id = 'proc_unit' AND pt.units = lo.option_id
-	      WHERE po.patient_id=?
-	      AND prs.date BETWEEN ? AND ?";
-			$result = sqlStatement($sql, array($pid, $start, $end));
-		} else {
-			$sql    = "
-	      SELECT
-	        prs.procedure_result_id as `pid`,
-	        pt.name as `name`,
-	        pt.procedure_type_id as `type`,
-	        prs.date as `date`,
-	        concat_ws(' ',prs.result,lo.title) as `result`,
-	        prs.range as `range`,
-	        prs.abnormal as `abnormal`,
-	        prs.comments as `comments`,
-	        ptt.lab_id AS `lab`
-	      FROM
-	        procedure_result AS prs
-	        LEFT JOIN procedure_report AS prp
-	          ON prs.procedure_report_id = prp.procedure_report_id
-	        LEFT JOIN procedure_order AS po
-	          ON prp.procedure_order_id = po.procedure_order_id
-	        LEFT JOIN procedure_type AS pt
-	          ON prs.procedure_type_id = pt.procedure_type_id
-	          LEFT JOIN procedure_type AS ptt
-	          ON pt.parent = ptt.procedure_type_id
-	          AND ptt.procedure_type = 'ord'
-	        LEFT JOIN list_options AS lo
-	          ON lo.list_id = 'proc_unit' AND pt.units = lo.option_id
-	      WHERE po.patient_id=?";
-			$result = sqlStatement($sql, array($pid));
-		}
-		return $result;
-	}
-
-	// patient data
-	function getActorData()
-	{
-		global $pid;
-		$sql       = "
-		select fname, lname, DOB, sex, pid, street, city, state, postal_code, phone_contact
-		from patient_data
-		where pid=?";
-		$result[0] = sqlStatement($sql, array($pid));
-		$sql2      = "
-		SELECT * FROM users AS u LEFT JOIN facility AS f ON u.facility_id = f.id WHERE u.id=?";
-		$result[1] = sqlStatement($sql2, array($_SESSION['authUserID']));
-		$sql3      = "
-	  SELECT
-	    u.*
-	  FROM
-	    procedure_type AS pt
-	    LEFT JOIN procedure_order AS po
-	      ON po.procedure_type_id = pt.procedure_type_id
-	    LEFT JOIN forms AS f
-	      ON f.form_id = po.procedure_order_id
-	    LEFT JOIN list_options AS lo
-	      ON lo.title = f.form_name
-	    LEFT JOIN users AS u
-	    ON pt.lab_id = u.id
-	  WHERE f.pid = ?
-	    AND lo.list_id = 'proc_type'
-	    AND lo.option_id = 'ord'
-	    GROUP BY u.id";
-		$result[2] = sqlStatement($sql3, array($pid));
-		return $result;
 	}
 
 	function getReportFilename()

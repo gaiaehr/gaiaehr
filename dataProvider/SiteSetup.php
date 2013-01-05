@@ -287,10 +287,28 @@ class SiteSetup
 			if(($params->AESkey = ACL::createRandomKey()) !== false){
 				$buffer    = file_get_contents($conf);
 				$search    = array(
-					'%host%', '%user%', '%pass%', '%db%', '%port%', '%key%', '%lang%', '%theme%', '%timezone%'
+					'%host%',
+                    '%user%',
+                    '%pass%',
+                    '%db%',
+                    '%port%',
+                    '%key%',
+                    '%lang%',
+                    '%theme%',
+                    '%timezone%',
+                    '%sitename%'
 				);
 				$replace   = array(
-					$params->dbHost, $params->dbUser, $params->dbPass, $params->dbName, $params->dbPort, $params->AESkey, $params->lang, $params->theme, $params->timezone,
+					$params->dbHost,
+                    $params->dbUser,
+                    $params->dbPass,
+                    $params->dbName,
+                    $params->dbPort,
+                    $params->AESkey,
+                    $params->lang,
+                    $params->theme,
+                    $params->timezone,
+                    $params->siteId
 				);
 				$newConf   = str_replace($search, $replace, $buffer);
 				$siteDir   = "sites/$params->siteId";

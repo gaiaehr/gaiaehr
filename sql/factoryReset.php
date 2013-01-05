@@ -19,7 +19,8 @@ $tables = array(
 	'calendar_events',
 	'encounter_codes_cpt',
 	'encounter_codes_hcpcs',
-	'encounter_codes_icdx',
+    'encounter_hcfa_1500_options',
+    'encounter_codes_icdx',
 	'encounter_history',
 	'patient_demographics',
 	'encounter_dictation',
@@ -54,6 +55,8 @@ $tables = array(
 	'patient_out_chart',
 	'patient_zone',
 	'preventive_care_inactive_patient',
+
+    'payment_transactions',
 
 
 	// codes table

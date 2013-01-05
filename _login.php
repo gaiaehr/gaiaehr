@@ -27,12 +27,12 @@ $site = (isset($_SESSION['site']['dir']) ? $_SESSION['site']['dir'] : false);
         function i18n(key){ return lang[key] || key; }
         function say(a){ console.log(a); }
         Ext.Loader.setConfig({
-                    enabled: true,
-                    disableCaching: true,
-                    paths: {
-                        'App': 'app'
-                    }
-                });
+            enabled: true,
+            disableCaching: true,
+            paths: {
+                'App': 'app'
+            }
+        });
         for(var x = 0; x < App.data.length; x++){
             Ext.direct.Manager.addProvider(App.data[x]);
         }

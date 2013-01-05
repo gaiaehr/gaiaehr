@@ -1239,12 +1239,23 @@ Ext.define('App.view.Viewport', {
     },
 
     resetApp:function(){
-        Ext.Ajax.request({
-            url: 'sql/factoryReset.php',
-            success: function(response){
-                alert(response.responseText);
-            }
-        });
+	    Ext.Msg.show({
+		    title:'WAIT!!! FOR DEBUG ONLY',
+		    msg: 'This will erase all patients and related data. Do you want to continue?',
+		    buttons: Ext.Msg.YESNO,
+		    icon: Ext.Msg.QUESTION,
+		    fn:function(btn){
+				if(btn == 'yes'){
+					Ext.Ajax.request({
+						url: 'sql/factoryReset.php',
+						success: function(response){
+							alert(response.responseText);
+						}
+					});
+				}
+		    }
+	    });
+
     }
 
 });

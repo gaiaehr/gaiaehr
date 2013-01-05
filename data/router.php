@@ -10,8 +10,10 @@ if(!isset($_SESSION)){
 }
 include_once ('../dataProvider/Modules.php');
 require ('config.php');
-$modules = new Modules();
-$API     = array_merge($API, $modules->getEnabledModulesAPI());
+if(isset($_SESSION['install']) && $_SESSION['install'] != true){
+    $modules = new Modules();
+    $API     = array_merge($API, $modules->getEnabledModulesAPI());
+}
 class BogusAction
 {
 	public $action;

@@ -57,6 +57,7 @@ if($mobile->isMobile() || $mDebug){
 		/**
 		 * if mobile go to mobile app, else go to app
 		 */
+        $_SESSION['install'] = false;
 		if(isset($_SESSION['site']['checkInMode']) && $_SESSION['site']['checkInMode']){
 			include_once('checkin/checkin.php');
 		} else {
@@ -69,9 +70,11 @@ if($mobile->isMobile() || $mDebug){
 		 */
 		if($_SESSION['sites']['count'] < 1){
 			unset($_SESSION['site']);
+            $_SESSION['install'] = true;
 			include_once('_install.php');
 		} else {
 			$_SESSION['user']['auth'] = false;
+            $_SESSION['install'] = false;
 			include_once('_login.php');
 		}
 	}

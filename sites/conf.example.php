@@ -4,7 +4,7 @@
  * MySQL Config
  * Database Init Configuration
  */
-$_SESSION['site'] = array();
+//$_SESSION['site'] = array();
 $_SESSION['site']['db']['type'] = 'mysql';
 $_SESSION['site']['db']['host'] = '%host%';
 $_SESSION['site']['db']['port'] = '%port%';

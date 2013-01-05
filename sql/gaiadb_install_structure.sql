@@ -1146,6 +1146,15 @@ CREATE TABLE IF NOT EXISTS `issue_encounter` (
   PRIMARY KEY (`pid`,`list_id`,`encounter`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE IF NOT EXISTS `laboratories` (
+  `id` int(11) NOT NULL DEFAULT '0',
+  `name` varchar(255) DEFAULT NULL,
+  `transmit_method` int(11) NOT NULL DEFAULT '1',
+  `email` varchar(255) DEFAULT NULL,
+  `active` tinyint(1) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 CREATE TABLE IF NOT EXISTS `labs_guidelines` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `code` varchar(250) DEFAULT NULL,

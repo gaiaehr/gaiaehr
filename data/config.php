@@ -525,6 +525,15 @@ $API = array(
 			'updatePharmacy' => array(
 				'len' => 1
 			),
+			'getLaboratories' => array(
+				'len' => 0
+			),
+			'addLaboratory' => array(
+				'len' => 1
+			),
+			'updateLaboratory' => array(
+				'len' => 1
+			),
 			'getInsurances' => array(
 				'len' => 0
 			),

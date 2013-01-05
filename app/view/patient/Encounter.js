@@ -616,17 +616,17 @@ Ext.define('App.view.patient.Encounter', {
                 text:i18n('laboratories') + ' ',
                 action:'laboratories'
             }, '-', {
-                text:i18n('new_lab_order'),
+                text:i18n('lab_orders'),
                 action:'lab',
                 scope:me,
                 handler:me.newDoc
             }, '-', {
-                text:i18n('new_xray_order'),
+                text:i18n('xray_orders'),
                 action:'xRay',
                 scope:me,
                 handler:me.newDoc
             }, '-', {
-                text:i18n('new_prescription'),
+                text:i18n('prescriptions'),
                 action:'prescription',
                 scope:me,
                 handler:me.newDoc

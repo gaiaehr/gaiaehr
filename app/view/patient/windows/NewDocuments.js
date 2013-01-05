@@ -35,7 +35,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 					 * LAB PANEL
 					 */
 					{
-						title:i18n('new_lab_order'),
+						title:i18n('lab_orders'),
 						layout:{
 							type:'vbox',
 							align:'stretch'
@@ -93,7 +93,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 					 * X-RAY PANEL
 					 */
 					{
-						title:i18n('new_xray_order'),
+						title:i18n('xray_orders'),
 						layout:{
 							type:'vbox',
 							align:'stretch'

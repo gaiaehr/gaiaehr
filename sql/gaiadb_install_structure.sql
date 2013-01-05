@@ -1,12 +1,6 @@
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
 
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
-
-
 CREATE TABLE IF NOT EXISTS `acl_permissions` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `perm_key` varchar(100) CHARACTER SET latin1 NOT NULL,
@@ -15,7 +9,7 @@ CREATE TABLE IF NOT EXISTS `acl_permissions` (
   `seq` int(5) NOT NULL COMMENT 'sequence',
   PRIMARY KEY (`id`),
   UNIQUE KEY `permKey` (`perm_key`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=88 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=90 ;
 
 CREATE TABLE IF NOT EXISTS `acl_roles` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -32,7 +26,7 @@ CREATE TABLE IF NOT EXISTS `acl_role_perms` (
   `value` int(5) NOT NULL DEFAULT '0',
   `add_date` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=289 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=296 ;
 
 CREATE TABLE IF NOT EXISTS `acl_user_perms` (
   `id` bigint(20) unsigned zerofill NOT NULL AUTO_INCREMENT,
@@ -63,7 +57,7 @@ CREATE TABLE IF NOT EXISTS `addresses` (
   `foreign_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `foreign_id` (`foreign_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=12 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=14 ;
 
 CREATE TABLE IF NOT EXISTS `allergies` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -72,6 +66,14 @@ CREATE TABLE IF NOT EXISTS `allergies` (
   `allergy_type` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=19 ;
+
+CREATE TABLE IF NOT EXISTS `applications` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `app_name` varchar(255) NOT NULL,
+  `pvt_key` varchar(255) NOT NULL,
+  `active` int(11) DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
 CREATE TABLE IF NOT EXISTS `billing` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -133,6 +135,13 @@ CREATE TABLE IF NOT EXISTS `calendar_events` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
+CREATE TABLE IF NOT EXISTS `cdt_codes` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `code` varchar(10) DEFAULT NULL,
+  `text` text,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 COMMENT='Dental Codes' AUTO_INCREMENT=594 ;
+
 CREATE TABLE IF NOT EXISTS `claims` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `patient_id` int(11) NOT NULL,
@@ -166,7 +175,7 @@ CREATE TABLE IF NOT EXISTS `combo_lists_options` (
   `notes` varchar(255) DEFAULT NULL,
   `active` tinyint(1) DEFAULT '1' COMMENT '1 = active and  0 = deactive',
   PRIMARY KEY (`id`,`list_id`,`option_value`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=706 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=710 ;
 
 CREATE TABLE IF NOT EXISTS `cpt_codes` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -189,35 +198,29 @@ CREATE TABLE IF NOT EXISTS `cpt_icd` (
 
 CREATE TABLE IF NOT EXISTS `cvx_codes` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `code_text` varchar(255) NOT NULL DEFAULT '',
-  `code_text_short` varchar(24) NOT NULL DEFAULT '',
-  `code` varchar(10) NOT NULL DEFAULT '',
-  `code_type` tinyint(2) DEFAULT NULL,
-  `modifier` varchar(5) NOT NULL DEFAULT '',
-  `units` tinyint(3) DEFAULT NULL,
-  `fee` decimal(12,2) DEFAULT NULL,
-  `superbill` varchar(31) NOT NULL DEFAULT '',
-  `related_code` varchar(255) NOT NULL DEFAULT '',
-  `taxrates` varchar(255) NOT NULL DEFAULT '',
-  `cyp_factor` float NOT NULL DEFAULT '0' COMMENT 'quantity representing a years supply',
-  `active` tinyint(1) DEFAULT '1' COMMENT '0 = inactive, 1 = active',
-  `reportable` tinyint(1) DEFAULT '0' COMMENT '0 = non-reportable, 1 = reportable',
-  `sex` varchar(255) CHARACTER SET latin1 COLLATE latin1_bin DEFAULT NULL,
-  `frequency_number` int(11) DEFAULT NULL,
-  `times_to_perform` int(11) DEFAULT NULL,
-  `age_start` int(11) DEFAULT NULL,
-  `age_end` int(11) DEFAULT NULL,
-  `pregnant` smallint(1) DEFAULT NULL,
-  `only_once` tinyint(1) DEFAULT NULL,
-  `medications` varchar(255) CHARACTER SET latin1 COLLATE latin1_bin DEFAULT NULL,
-  `labs` varchar(255) CHARACTER SET latin1 COLLATE latin1_bin DEFAULT NULL,
-  `frequency_time` varchar(255) CHARACTER SET latin1 COLLATE latin1_bin DEFAULT NULL,
-  `active_problems` varchar(255) CHARACTER SET latin1 COLLATE latin1_bin DEFAULT NULL,
+  `cvx_code` int(6) DEFAULT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `note` text,
+  `status` varchar(50) DEFAULT NULL,
+  `update_date` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `code` (`code`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=28778 ;
+  KEY `code` (`description`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=154 ;
 
-DROP TABLE IF EXISTS `documents_templates`;
+CREATE TABLE IF NOT EXISTS `cvx_mvx` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `cdc_product_name` varchar(255) DEFAULT NULL,
+  `description` text,
+  `cvx_code` varchar(255) DEFAULT NULL,
+  `manufacturer` varchar(255) DEFAULT NULL,
+  `mvx_code` varchar(255) DEFAULT NULL,
+  `mvx_status` varchar(255) DEFAULT NULL,
+  `product_name_status` varchar(255) DEFAULT NULL,
+  `update_date` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COMMENT='CVX munufactures' AUTO_INCREMENT=87 ;
+
 CREATE TABLE IF NOT EXISTS `documents_templates` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(255) DEFAULT NULL,
@@ -328,6 +331,36 @@ CREATE TABLE IF NOT EXISTS `emergencies` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
+CREATE TABLE IF NOT EXISTS `encounters` (
+  `eid` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'Encounter ID',
+  `pid` bigint(20) NOT NULL COMMENT 'Patient ID',
+  `open_uid` bigint(20) NOT NULL COMMENT 'User ID who opened the encounter',
+  `provider_uid` bigint(20) DEFAULT NULL COMMENT 'Provider User ID',
+  `supervisor_uid` bigint(20) DEFAULT NULL COMMENT 'Supervisor User ID',
+  `service_date` datetime NOT NULL COMMENT 'Date when the encounter started',
+  `close_date` datetime DEFAULT NULL COMMENT 'Date when the encounter was sign/close',
+  `onset_date` datetime DEFAULT NULL,
+  `priority` varchar(255) DEFAULT NULL,
+  `brief_description` varchar(255) DEFAULT NULL,
+  `visit_category` varchar(255) DEFAULT NULL,
+  `facility` varchar(255) DEFAULT NULL,
+  `billing_facility` varchar(255) DEFAULT NULL,
+  `billing_stage` int(1) DEFAULT NULL COMMENT 'billing stage of this encounter',
+  `followup_time` varchar(255) DEFAULT NULL,
+  `followup_facility` varchar(255) DEFAULT NULL,
+  `review_immunizations` tinyint(1) NOT NULL DEFAULT '0',
+  `review_allergies` tinyint(1) NOT NULL DEFAULT '0',
+  `review_active_problems` tinyint(1) NOT NULL DEFAULT '0',
+  `review_alcohol` varchar(255) DEFAULT NULL,
+  `review_smoke` varchar(255) DEFAULT NULL,
+  `review_pregnant` varchar(255) DEFAULT NULL,
+  `review_surgery` tinyint(1) NOT NULL DEFAULT '0',
+  `review_dental` tinyint(1) NOT NULL DEFAULT '0',
+  `review_medications` tinyint(1) NOT NULL DEFAULT '0',
+  `message` text COMMENT 'message for the visit checkout ',
+  PRIMARY KEY (`eid`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
+
 CREATE TABLE IF NOT EXISTS `encounter_codes_cpt` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `eid` bigint(20) DEFAULT NULL COMMENT 'encounter ID',
@@ -340,7 +373,7 @@ CREATE TABLE IF NOT EXISTS `encounter_codes_cpt` (
   `place_of_service` text,
   `status` int(1) NOT NULL DEFAULT '0' COMMENT 'billing status of this cpt',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
 
 CREATE TABLE IF NOT EXISTS `encounter_codes_hcpcs` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -356,7 +389,18 @@ CREATE TABLE IF NOT EXISTS `encounter_codes_icdx` (
   `code` varchar(255) DEFAULT NULL COMMENT 'code number',
   `code_type` int(11) DEFAULT NULL COMMENT 'CPT4 = 1, ICD9= 2, HCPCS = 3 ',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
+
+CREATE TABLE IF NOT EXISTS `encounter_dictation` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `pid` bigint(20) NOT NULL,
+  `eid` bigint(20) NOT NULL,
+  `uid` bigint(20) NOT NULL,
+  `date` datetime NOT NULL,
+  `dictation` longtext,
+  `additional_notes` longtext,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
 
 CREATE TABLE IF NOT EXISTS `encounter_hcfa_1500_options` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -380,7 +424,7 @@ CREATE TABLE IF NOT EXISTS `encounter_hcfa_1500_options` (
   `replacement_claim` text,
   `notes` text,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=68 ;
 
 CREATE TABLE IF NOT EXISTS `encounter_history` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -389,253 +433,7 @@ CREATE TABLE IF NOT EXISTS `encounter_history` (
   `user` varchar(255) DEFAULT NULL,
   `event` text,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
-
-CREATE TABLE IF NOT EXISTS `facility` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) DEFAULT NULL,
-  `active` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1 if the facility is active and 0 if is inactive',
-  `phone` varchar(30) DEFAULT NULL,
-  `fax` varchar(30) DEFAULT NULL,
-  `street` varchar(255) DEFAULT NULL,
-  `city` varchar(255) DEFAULT NULL,
-  `state` varchar(50) DEFAULT NULL,
-  `postal_code` varchar(11) DEFAULT NULL,
-  `country_code` varchar(10) DEFAULT NULL,
-  `federal_ein` varchar(15) DEFAULT NULL,
-  `service_location` tinyint(1) NOT NULL DEFAULT '1',
-  `billing_location` tinyint(1) NOT NULL DEFAULT '0',
-  `accepts_assignment` tinyint(1) NOT NULL DEFAULT '0',
-  `pos_code` tinyint(4) DEFAULT NULL,
-  `x12_sender_id` varchar(25) DEFAULT NULL,
-  `attn` varchar(65) DEFAULT NULL,
-  `domain_identifier` varchar(60) DEFAULT NULL,
-  `facility_npi` varchar(15) DEFAULT NULL,
-  `tax_id_type` varchar(31) NOT NULL DEFAULT '',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=8 ;
-
-CREATE TABLE IF NOT EXISTS `fee_sheet_options` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `fs_category` varchar(63) DEFAULT NULL,
-  `fs_option` varchar(63) DEFAULT NULL,
-  `fs_codes` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=11 ;
-
-CREATE TABLE IF NOT EXISTS `floor_plans` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `title` varchar(255) DEFAULT NULL,
-  `active` tinyint(1) NOT NULL DEFAULT '1',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
-
-CREATE TABLE IF NOT EXISTS `floor_plans_zones` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `floor_plan_id` bigint(20) NOT NULL,
-  `title` varchar(255) DEFAULT NULL,
-  `type` varchar(255) DEFAULT NULL,
-  `x` int(11) DEFAULT NULL,
-  `y` int(11) DEFAULT NULL,
-  `active` tinyint(1) NOT NULL DEFAULT '1',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=25 ;
-
-CREATE TABLE IF NOT EXISTS `forms_fields` (
-  `id` bigint(11) NOT NULL AUTO_INCREMENT,
-  `form_id` bigint(11) DEFAULT NULL,
-  `xtype` varchar(255) CHARACTER SET latin1 DEFAULT NULL,
-  `item_of` bigint(11) DEFAULT NULL,
-  `pos` int(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_bin AUTO_INCREMENT=1144 ;
-
-CREATE TABLE IF NOT EXISTS `forms_field_options` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `field_id` text COMMENT 'Field ID',
-  `options` text COMMENT 'Field options data stored as JSON string',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1519 ;
-
-CREATE TABLE IF NOT EXISTS `forms_layout` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL COMMENT 'form title',
-  `form_data` varchar(255) NOT NULL COMMENT 'database table saving all the data for this form',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=11 ;
-
-CREATE TABLE IF NOT EXISTS `patient_demographics` (
-  `pid` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'Patient ID',
-  `date_created` datetime NOT NULL COMMENT 'date form saved for the first time',
-  `title` varchar(255) DEFAULT NULL,
-  `fname` varchar(255) DEFAULT NULL,
-  `mname` varchar(255) DEFAULT NULL,
-  `lname` varchar(255) DEFAULT NULL,
-  `sex` varchar(255) DEFAULT NULL,
-  `DOB` date DEFAULT NULL,
-  `marital_status` varchar(255) DEFAULT NULL,
-  `SS` varchar(255) DEFAULT NULL,
-  `pubpid` varchar(255) DEFAULT NULL,
-  `drivers_license` varchar(255) DEFAULT NULL,
-  `address` varchar(255) DEFAULT NULL,
-  `city` varchar(255) DEFAULT NULL,
-  `state` varchar(255) DEFAULT NULL,
-  `country` varchar(255) DEFAULT NULL,
-  `home_phone` varchar(255) DEFAULT NULL,
-  `mobile_phone` varchar(255) DEFAULT NULL,
-  `work_phone` varchar(255) DEFAULT NULL,
-  `email` varchar(255) DEFAULT NULL,
-  `mothers_name` varchar(255) DEFAULT NULL,
-  `guardians_name` varchar(255) DEFAULT NULL,
-  `emer_contact` varchar(255) DEFAULT NULL,
-  `emer_phone` varchar(255) DEFAULT NULL,
-  `provider` varchar(255) DEFAULT NULL,
-  `pharmacy` varchar(255) DEFAULT NULL,
-  `hipaa_notice` varchar(255) DEFAULT NULL,
-  `allow_leave_msg` varchar(255) DEFAULT NULL,
-  `allow_voice_msg` varchar(255) DEFAULT NULL,
-  `allow_mail_msg` varchar(255) DEFAULT NULL,
-  `allow_sms` varchar(255) DEFAULT NULL,
-  `allow_email` varchar(255) DEFAULT NULL,
-  `allow_immunization_registry` varchar(255) DEFAULT NULL,
-  `allow_immunization_info_sharing` varchar(255) DEFAULT NULL,
-  `allow_health_info_exchange` varchar(255) DEFAULT NULL,
-  `allow_patient_web_portal` varchar(255) DEFAULT NULL,
-  `occupation` varchar(255) DEFAULT NULL,
-  `employer_name` varchar(255) DEFAULT NULL,
-  `employer_address` varchar(255) DEFAULT NULL,
-  `employer_city` varchar(255) DEFAULT NULL,
-  `employer_state` varchar(255) DEFAULT NULL,
-  `employer_country` varchar(255) DEFAULT NULL,
-  `employer_postal_code` varchar(255) DEFAULT NULL,
-  `primary_insurance_provider` text,
-  `primary_plan_name` text,
-  `primary_effective_date` text,
-  `primary_subscriber_title` text,
-  `primary_subscriber_fname` text,
-  `primary_subscriber_mname` text,
-  `primary_subscriber_lname` text,
-  `primary_policy_number` text,
-  `primary_group_number` text,
-  `primary_subscriber_street` text,
-  `primary_subscriber_city` text,
-  `primary_subscriber_state` text,
-  `primary_subscriber_country` text,
-  `primary_subscriber_zip_code` text,
-  `primary_subscriber_relationship` text,
-  `primary_subscriber_phone` text,
-  `primary_subscriber_employer` text,
-  `primary_subscriber_employer_city` text,
-  `primary_subscriber_employer_state` text,
-  `primary_subscriber_employer_country` text,
-  `primary_subscriber_employer_zip_code` text,
-  `secondary_insurance_provider` text,
-  `secondary_plan_name` text,
-  `secondary_effective_date` text,
-  `secondary_policy_number` text,
-  `secondary_group_number` text,
-  `secondary_subscriber_city` text,
-  `secondary_subscriber_state` text,
-  `secondary_subscriber_country` text,
-  `secondary_subscriber_zip_code` text,
-  `secondary_subscriber_title` text,
-  `secondary_subscriber_fname` text,
-  `secondary_subscriber_mname` text,
-  `secondary_subscriber_lname` text,
-  `secondary_subscriber_street` text,
-  `secondary_subscriber_relationship` text,
-  `secondary_subscriber_phone` text,
-  `secondary_subscriber_employer` text,
-  `secondary_subscriber_employer_city` text,
-  `secondary_subscriber_employer_state` text,
-  `secondary_subscriber_employer_country` text,
-  `secondary_subscriber_employer_zip_code` text,
-  `tertiary_insurance_provider` text,
-  `tertiary_plan_name` text,
-  `tertiary_effective_date` text,
-  `tertiary_policy_number` text,
-  `tertiary_group_number` text,
-  `tertiary_subscriber_title` text,
-  `tertiary_subscriber_fname` text,
-  `tertiary_subscriber_mname` text,
-  `tertiary_subscriber_lname` text,
-  `tertiary_subscriber_street` text,
-  `tertiary_subscriber_relationship` text,
-  `tertiary_subscriber_state` text,
-  `tertiary_subscriber_country` text,
-  `tertiary_subscriber_phone` text,
-  `tertiary_subscriber_city` text,
-  `tertiary_subscriber_zip_code` text,
-  `tertiary_subscriber_employer` text,
-  `tertiary_subscriber_employer_city` text,
-  `tertiary_subscriber_employer_state` text,
-  `tertiary_subscriber_employer_street` text,
-  `tertiary_subscriber_employer_country` text,
-  `tertiary_subscriber__employer_zip_code` text,
-  `primary_subscriber_employer_street` text,
-  `secondary_subscriber_employer_street` text,
-  `zipcode` text,
-  `race` text,
-  `ethnicity` text,
-  `lenguage` text,
-  PRIMARY KEY (`pid`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COMMENT='Table holds all the Demographics form data for all the patie' AUTO_INCREMENT=2 ;
-
-CREATE TABLE IF NOT EXISTS `encounter_dictation` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `pid` bigint(20) NOT NULL,
-  `eid` bigint(20) NOT NULL,
-  `uid` bigint(20) NOT NULL,
-  `date` datetime NOT NULL,
-  `dictation` longtext,
-  `additional_notes` longtext,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
-
-CREATE TABLE IF NOT EXISTS `form_data_encounter` (
-  `eid` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'Encounter ID',
-  `pid` bigint(20) NOT NULL COMMENT 'Patient ID',
-  `open_uid` bigint(20) NOT NULL COMMENT 'User ID who opened the encounter',
-  `close_uid` bigint(20) DEFAULT NULL COMMENT 'User ID who Closed/Sign the encounter',
-  `prov_uid` bigint(20) DEFAULT NULL COMMENT 'Provider User ID',
-  `sup_uid` bigint(20) DEFAULT NULL COMMENT 'Supervisor User ID',
-  `brief_description` varchar(255) DEFAULT NULL,
-  `visit_category` varchar(255) DEFAULT NULL,
-  `facility` varchar(255) DEFAULT NULL,
-  `billing_facility` varchar(255) DEFAULT NULL,
-  `priority` varchar(255) DEFAULT NULL,
-  `start_date` datetime NOT NULL,
-  `close_date` datetime DEFAULT NULL,
-  `onset_date` datetime DEFAULT NULL,
-  `billing_stage` int(1) DEFAULT NULL COMMENT 'billing stage of this encounter',
-  `followup_time` varchar(255) DEFAULT NULL,
-  `followup_facility` varchar(255) DEFAULT NULL,
-  `review_immunizations` tinyint(1) NOT NULL DEFAULT '0',
-  `review_allergies` tinyint(1) NOT NULL DEFAULT '0',
-  `review_active_problems` tinyint(1) NOT NULL DEFAULT '0',
-  `review_alcohol` varchar(255) DEFAULT NULL,
-  `review_smoke` varchar(255) DEFAULT NULL,
-  `review_pregnant` varchar(255) DEFAULT NULL,
-  `review_surgery` tinyint(1) NOT NULL DEFAULT '0',
-  `review_dental` tinyint(1) NOT NULL DEFAULT '0',
-  `review_medications` tinyint(1) NOT NULL DEFAULT '0',
-  `message` text COMMENT 'message for the visit checkout ',
-  PRIMARY KEY (`eid`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
-
-CREATE TABLE IF NOT EXISTS `form_data_history` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `pid` bigint(20) NOT NULL COMMENT 'Patient ID',
-  `date_created` date NOT NULL COMMENT 'date form saved for the first time',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Table holds all the History data for all the patients' AUTO_INCREMENT=1 ;
-
-CREATE TABLE IF NOT EXISTS `patient_referrals` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `pid` bigint(20) NOT NULL COMMENT 'Patient ID',
-  `date_created` date NOT NULL COMMENT 'date form saved for the first time',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Table holds all the Referrals form data for all the patients' AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=725 ;
 
 CREATE TABLE IF NOT EXISTS `encounter_review_of_systems` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -780,7 +578,7 @@ CREATE TABLE IF NOT EXISTS `encounter_review_of_systems` (
   `brest_discharge` varchar(255) DEFAULT NULL,
   `fem_frequency` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
 
 CREATE TABLE IF NOT EXISTS `encounter_review_of_systems_check` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -897,7 +695,7 @@ CREATE TABLE IF NOT EXISTS `encounter_review_of_systems_check` (
   `scoliosis` text,
   `lupus` text,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
 
 CREATE TABLE IF NOT EXISTS `encounter_soap` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -910,7 +708,7 @@ CREATE TABLE IF NOT EXISTS `encounter_soap` (
   `assessment` longtext,
   `plan` longtext,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
 
 CREATE TABLE IF NOT EXISTS `encounter_vitals` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -941,6 +739,86 @@ CREATE TABLE IF NOT EXISTS `encounter_vitals` (
   `authorized_by` text,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `facility` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL,
+  `active` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1 if the facility is active and 0 if is inactive',
+  `phone` varchar(30) DEFAULT NULL,
+  `fax` varchar(30) DEFAULT NULL,
+  `street` varchar(255) DEFAULT NULL,
+  `city` varchar(255) DEFAULT NULL,
+  `state` varchar(50) DEFAULT NULL,
+  `postal_code` varchar(11) DEFAULT NULL,
+  `country_code` varchar(10) DEFAULT NULL,
+  `federal_ein` varchar(15) DEFAULT NULL,
+  `service_location` tinyint(1) NOT NULL DEFAULT '1',
+  `billing_location` tinyint(1) NOT NULL DEFAULT '0',
+  `accepts_assignment` tinyint(1) NOT NULL DEFAULT '0',
+  `pos_code` tinyint(4) DEFAULT NULL,
+  `x12_sender_id` varchar(25) DEFAULT NULL,
+  `attn` varchar(65) DEFAULT NULL,
+  `domain_identifier` varchar(60) DEFAULT NULL,
+  `facility_npi` varchar(15) DEFAULT NULL,
+  `tax_id_type` varchar(31) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=10 ;
+
+CREATE TABLE IF NOT EXISTS `fee_sheet_options` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `fs_category` varchar(63) DEFAULT NULL,
+  `fs_option` varchar(63) DEFAULT NULL,
+  `fs_codes` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=11 ;
+
+CREATE TABLE IF NOT EXISTS `floor_plans` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) DEFAULT NULL,
+  `active` tinyint(1) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
+
+CREATE TABLE IF NOT EXISTS `floor_plans_zones` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `floor_plan_id` bigint(20) NOT NULL,
+  `title` varchar(255) DEFAULT NULL,
+  `type` varchar(255) DEFAULT NULL,
+  `bg_color` varchar(10) DEFAULT NULL,
+  `border_color` varchar(10) DEFAULT NULL,
+  `scale` varchar(30) DEFAULT NULL,
+  `width` int(11) DEFAULT NULL,
+  `height` int(11) DEFAULT NULL,
+  `x` int(11) DEFAULT NULL,
+  `y` int(11) DEFAULT NULL,
+  `show_priority_color` tinyint(1) DEFAULT '1',
+  `show_patient_preview` tinyint(1) DEFAULT '1',
+  `active` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=43 ;
+
+CREATE TABLE IF NOT EXISTS `forms_fields` (
+  `id` bigint(11) NOT NULL AUTO_INCREMENT,
+  `form_id` bigint(11) DEFAULT NULL,
+  `xtype` varchar(255) CHARACTER SET latin1 DEFAULT NULL,
+  `parentId` bigint(11) DEFAULT NULL,
+  `pos` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_bin AUTO_INCREMENT=1146 ;
+
+CREATE TABLE IF NOT EXISTS `forms_field_options` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `field_id` text COMMENT 'Field ID',
+  `options` text COMMENT 'Field options data stored as JSON string',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1521 ;
+
+CREATE TABLE IF NOT EXISTS `forms_layout` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL COMMENT 'form title',
+  `form_data` varchar(255) NOT NULL COMMENT 'database table saving all the data for this form',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=11 ;
 
 CREATE TABLE IF NOT EXISTS `form_misc_billing_options` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -1032,7 +910,7 @@ CREATE TABLE IF NOT EXISTS `icd9_dx_code` (
   KEY `dx_code` (`dx_code`),
   KEY `formatted_dx_code` (`formatted_dx_code`),
   KEY `active` (`active`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=14568 ;
 
 CREATE TABLE IF NOT EXISTS `icd9_dx_long_code` (
   `dx_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -1041,7 +919,7 @@ CREATE TABLE IF NOT EXISTS `icd9_dx_long_code` (
   `active` tinyint(4) DEFAULT '0',
   `revision` int(11) DEFAULT '0',
   UNIQUE KEY `dx_id` (`dx_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=14568 ;
 
 CREATE TABLE IF NOT EXISTS `icd9_sg_code` (
   `sg_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -1055,7 +933,7 @@ CREATE TABLE IF NOT EXISTS `icd9_sg_code` (
   KEY `sg_code` (`sg_code`),
   KEY `formatted_sg_code` (`formatted_sg_code`),
   KEY `active` (`active`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3879 ;
 
 CREATE TABLE IF NOT EXISTS `icd9_sg_long_code` (
   `sq_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -1064,7 +942,7 @@ CREATE TABLE IF NOT EXISTS `icd9_sg_long_code` (
   `active` tinyint(4) DEFAULT '0',
   `revision` int(11) DEFAULT '0',
   UNIQUE KEY `sq_id` (`sq_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3879 ;
 
 CREATE TABLE IF NOT EXISTS `icd10_dx_order_code` (
   `dx_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -1078,7 +956,7 @@ CREATE TABLE IF NOT EXISTS `icd10_dx_order_code` (
   UNIQUE KEY `dx_id` (`dx_id`),
   KEY `formatted_dx_code` (`formatted_dx_code`),
   KEY `active` (`active`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=79504 ;
 
 CREATE TABLE IF NOT EXISTS `icd10_gem_dx_9_10` (
   `map_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -1088,7 +966,7 @@ CREATE TABLE IF NOT EXISTS `icd10_gem_dx_9_10` (
   `active` tinyint(4) DEFAULT '0',
   `revision` int(11) DEFAULT '0',
   UNIQUE KEY `map_id` (`map_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=23913 ;
 
 CREATE TABLE IF NOT EXISTS `icd10_gem_dx_10_9` (
   `map_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -1098,7 +976,7 @@ CREATE TABLE IF NOT EXISTS `icd10_gem_dx_10_9` (
   `active` tinyint(4) DEFAULT '0',
   `revision` int(11) DEFAULT '0',
   UNIQUE KEY `map_id` (`map_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=78841 ;
 
 CREATE TABLE IF NOT EXISTS `icd10_gem_pcs_9_10` (
   `map_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -1108,7 +986,7 @@ CREATE TABLE IF NOT EXISTS `icd10_gem_pcs_9_10` (
   `active` tinyint(4) DEFAULT '0',
   `revision` int(11) DEFAULT '0',
   UNIQUE KEY `map_id` (`map_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=69363 ;
 
 CREATE TABLE IF NOT EXISTS `icd10_gem_pcs_10_9` (
   `map_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -1118,7 +996,7 @@ CREATE TABLE IF NOT EXISTS `icd10_gem_pcs_10_9` (
   `active` tinyint(4) DEFAULT '0',
   `revision` int(11) DEFAULT '0',
   UNIQUE KEY `map_id` (`map_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=82570 ;
 
 CREATE TABLE IF NOT EXISTS `icd10_pcs_order_code` (
   `pcs_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -1131,7 +1009,7 @@ CREATE TABLE IF NOT EXISTS `icd10_pcs_order_code` (
   UNIQUE KEY `pcs_id` (`pcs_id`),
   KEY `pcs_code` (`pcs_code`),
   KEY `active` (`active`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=72764 ;
 
 CREATE TABLE IF NOT EXISTS `icd10_reimbr_dx_9_10` (
   `map_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -1146,7 +1024,7 @@ CREATE TABLE IF NOT EXISTS `icd10_reimbr_dx_9_10` (
   `active` tinyint(4) DEFAULT '0',
   `revision` int(11) DEFAULT '0',
   UNIQUE KEY `map_id` (`map_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=69834 ;
 
 CREATE TABLE IF NOT EXISTS `icd10_reimbr_pcs_9_10` (
   `map_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -1161,7 +1039,7 @@ CREATE TABLE IF NOT EXISTS `icd10_reimbr_pcs_9_10` (
   `active` tinyint(4) DEFAULT '0',
   `revision` int(11) DEFAULT '0',
   UNIQUE KEY `map_id` (`map_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=71919 ;
 
 CREATE TABLE IF NOT EXISTS `immunizations` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -1337,77 +1215,6 @@ CREATE TABLE IF NOT EXISTS `labs_preventive_care` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=133 ;
 
-CREATE TABLE IF NOT EXISTS `lang_constants` (
-  `cons_id` int(11) NOT NULL AUTO_INCREMENT,
-  `constant_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  UNIQUE KEY `cons_id` (`cons_id`),
-  KEY `constant_name` (`constant_name`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4369 ;
-
-CREATE TABLE IF NOT EXISTS `lang_custom` (
-  `lang_description` varchar(100) NOT NULL DEFAULT '',
-  `lang_code` char(2) NOT NULL DEFAULT '',
-  `constant_name` varchar(255) NOT NULL DEFAULT '',
-  `definition` mediumtext NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
-CREATE TABLE IF NOT EXISTS `lang_definitions` (
-  `def_id` int(11) NOT NULL AUTO_INCREMENT,
-  `cons_id` int(11) NOT NULL DEFAULT '0',
-  `lang_id` int(11) NOT NULL DEFAULT '0',
-  `definition` mediumtext,
-  UNIQUE KEY `def_id` (`def_id`),
-  KEY `cons_id` (`cons_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=40165 ;
-
-CREATE TABLE IF NOT EXISTS `lang_languages` (
-  `lang_id` int(11) NOT NULL AUTO_INCREMENT,
-  `lang_code` char(2) NOT NULL DEFAULT '',
-  `lang_description` varchar(100) DEFAULT NULL,
-  UNIQUE KEY `lang_id` (`lang_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=23 ;
-
-CREATE TABLE IF NOT EXISTS `lists` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `date` datetime DEFAULT NULL,
-  `type` varchar(255) DEFAULT NULL,
-  `title` varchar(255) DEFAULT NULL,
-  `begdate` date DEFAULT NULL,
-  `enddate` date DEFAULT NULL,
-  `returndate` date DEFAULT NULL,
-  `occurrence` int(11) DEFAULT '0',
-  `classification` int(11) DEFAULT '0',
-  `referredby` varchar(255) DEFAULT NULL,
-  `extrainfo` varchar(255) DEFAULT NULL,
-  `diagnosis` varchar(255) DEFAULT NULL,
-  `activity` tinyint(4) DEFAULT NULL,
-  `comments` longtext,
-  `pid` bigint(20) DEFAULT NULL,
-  `user` varchar(255) DEFAULT NULL,
-  `groupname` varchar(255) DEFAULT NULL,
-  `outcome` int(11) NOT NULL DEFAULT '0',
-  `destination` varchar(255) DEFAULT NULL,
-  `reinjury_id` bigint(20) NOT NULL DEFAULT '0',
-  `injury_part` varchar(31) NOT NULL DEFAULT '',
-  `injury_type` varchar(31) NOT NULL DEFAULT '',
-  `injury_grade` varchar(31) NOT NULL DEFAULT '',
-  `reaction` varchar(255) NOT NULL DEFAULT '',
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
-CREATE TABLE IF NOT EXISTS `list_options` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `list_id` varchar(31) NOT NULL DEFAULT '',
-  `option_id` varchar(31) NOT NULL DEFAULT '',
-  `title` varchar(255) NOT NULL DEFAULT '',
-  `seq` int(11) NOT NULL DEFAULT '0',
-  `is_default` tinyint(1) NOT NULL DEFAULT '0',
-  `option_value` float NOT NULL DEFAULT '0',
-  `mapping` varchar(31) NOT NULL DEFAULT '',
-  `notes` varchar(255) NOT NULL DEFAULT '',
-  PRIMARY KEY (`id`,`list_id`,`option_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=547 ;
-
 CREATE TABLE IF NOT EXISTS `log` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `date` datetime DEFAULT NULL,
@@ -1422,7 +1229,7 @@ CREATE TABLE IF NOT EXISTS `log` (
   `crt_user` varchar(255) DEFAULT NULL,
   `ip` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=188 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1720 ;
 
 CREATE TABLE IF NOT EXISTS `medications` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -1463,6 +1270,27 @@ CREATE TABLE IF NOT EXISTS `messages` (
   `note_type` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `modules` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) DEFAULT NULL,
+  `enable` tinyint(1) DEFAULT '0',
+  `installed_version` varchar(25) DEFAULT NULL,
+  `licensekey` varchar(255) DEFAULT NULL,
+  `localkey` longblob,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`name`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=201 ;
+
+CREATE TABLE IF NOT EXISTS `modules_data` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `module_id` int(11) DEFAULT NULL,
+  `version` varchar(50) DEFAULT NULL,
+  `type` varchar(50) DEFAULT NULL,
+  `data` longtext,
+  PRIMARY KEY (`id`),
+  KEY `data` (`data`(767))
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='this table if a convivnient table to store module related data' AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `notes` (
   `id` int(11) NOT NULL DEFAULT '0',
@@ -1524,22 +1352,6 @@ CREATE TABLE IF NOT EXISTS `patients_documents_information` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
-CREATE TABLE IF NOT EXISTS `patients_medications` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `prescription_id` int(11) DEFAULT NULL,
-  `medication` varchar(255) DEFAULT NULL,
-  `route` varchar(255) DEFAULT NULL,
-  `dispense` int(11) DEFAULT NULL,
-  `dose` int(11) DEFAULT NULL,
-  `dose_mg` varchar(255) DEFAULT NULL,
-  `prescription_often` varchar(255) DEFAULT NULL,
-  `prescription_when` varchar(255) DEFAULT NULL,
-  `refill` int(11) DEFAULT NULL,
-  `take_pills` int(11) DEFAULT NULL,
-  `type` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
-
 CREATE TABLE IF NOT EXISTS `patient_account` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `pid` bigint(20) DEFAULT '0',
@@ -1548,6 +1360,25 @@ CREATE TABLE IF NOT EXISTS `patient_account` (
   `date` datetime NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Entity that maintains patient''s account transactions ' AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `patient_active_problems` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `pid` bigint(20) DEFAULT NULL COMMENT 'patient ID',
+  `eid` bigint(20) DEFAULT NULL COMMENT 'encounter ID',
+  `code` varchar(255) DEFAULT NULL,
+  `code_text` varchar(255) DEFAULT NULL,
+  `diagnosis_code` varchar(100) DEFAULT NULL,
+  `begin_date` datetime DEFAULT NULL,
+  `end_date` datetime DEFAULT NULL,
+  `ocurrence` varchar(50) DEFAULT NULL,
+  `referred_by` varchar(50) DEFAULT NULL,
+  `create_date` datetime DEFAULT NULL,
+  `update_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created_uid` bigint(20) DEFAULT NULL COMMENT 'created by User ID',
+  `updated_uid` bigint(20) DEFAULT NULL COMMENT 'updated by User ID',
+  `outcome` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `patient_allergies` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -1566,7 +1397,124 @@ CREATE TABLE IF NOT EXISTS `patient_allergies` (
   `created_uid` bigint(20) DEFAULT NULL COMMENT 'created by User ID',
   `updated_uid` bigint(20) DEFAULT NULL COMMENT 'updated by User ID',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+
+CREATE TABLE IF NOT EXISTS `patient_demographics` (
+  `pid` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'Patient ID',
+  `date_created` datetime NOT NULL COMMENT 'date form saved for the first time',
+  `title` varchar(255) DEFAULT NULL,
+  `fname` varchar(255) DEFAULT NULL,
+  `mname` varchar(255) DEFAULT NULL,
+  `lname` varchar(255) DEFAULT NULL,
+  `sex` varchar(255) DEFAULT NULL,
+  `DOB` date DEFAULT NULL,
+  `marital_status` varchar(255) DEFAULT NULL,
+  `SS` varchar(255) DEFAULT NULL,
+  `pubpid` varchar(255) DEFAULT NULL,
+  `drivers_license` varchar(255) DEFAULT NULL,
+  `address` varchar(255) DEFAULT NULL,
+  `city` varchar(255) DEFAULT NULL,
+  `state` varchar(255) DEFAULT NULL,
+  `country` varchar(255) DEFAULT NULL,
+  `home_phone` varchar(255) DEFAULT NULL,
+  `mobile_phone` varchar(255) DEFAULT NULL,
+  `work_phone` varchar(255) DEFAULT NULL,
+  `email` varchar(255) DEFAULT NULL,
+  `mothers_name` varchar(255) DEFAULT NULL,
+  `guardians_name` varchar(255) DEFAULT NULL,
+  `emer_contact` varchar(255) DEFAULT NULL,
+  `emer_phone` varchar(255) DEFAULT NULL,
+  `provider` varchar(255) DEFAULT NULL,
+  `pharmacy` varchar(255) DEFAULT NULL,
+  `hipaa_notice` varchar(255) DEFAULT NULL,
+  `allow_leave_msg` varchar(255) DEFAULT NULL,
+  `allow_voice_msg` varchar(255) DEFAULT NULL,
+  `allow_mail_msg` varchar(255) DEFAULT NULL,
+  `allow_sms` varchar(255) DEFAULT NULL,
+  `allow_email` varchar(255) DEFAULT NULL,
+  `allow_immunization_registry` varchar(255) DEFAULT NULL,
+  `allow_immunization_info_sharing` varchar(255) DEFAULT NULL,
+  `allow_health_info_exchange` varchar(255) DEFAULT NULL,
+  `allow_patient_web_portal` varchar(255) DEFAULT NULL,
+  `occupation` varchar(255) DEFAULT NULL,
+  `employer_name` varchar(255) DEFAULT NULL,
+  `employer_address` varchar(255) DEFAULT NULL,
+  `employer_city` varchar(255) DEFAULT NULL,
+  `employer_state` varchar(255) DEFAULT NULL,
+  `employer_country` varchar(255) DEFAULT NULL,
+  `employer_postal_code` varchar(255) DEFAULT NULL,
+  `primary_insurance_provider` text,
+  `primary_plan_name` text,
+  `primary_effective_date` text,
+  `primary_subscriber_title` text,
+  `primary_subscriber_fname` text,
+  `primary_subscriber_mname` text,
+  `primary_subscriber_lname` text,
+  `primary_policy_number` text,
+  `primary_group_number` text,
+  `primary_subscriber_street` text,
+  `primary_subscriber_city` text,
+  `primary_subscriber_state` text,
+  `primary_subscriber_country` text,
+  `primary_subscriber_zip_code` text,
+  `primary_subscriber_relationship` text,
+  `primary_subscriber_phone` text,
+  `primary_subscriber_employer` text,
+  `primary_subscriber_employer_city` text,
+  `primary_subscriber_employer_state` text,
+  `primary_subscriber_employer_country` text,
+  `primary_subscriber_employer_zip_code` text,
+  `secondary_insurance_provider` text,
+  `secondary_plan_name` text,
+  `secondary_effective_date` text,
+  `secondary_policy_number` text,
+  `secondary_group_number` text,
+  `secondary_subscriber_city` text,
+  `secondary_subscriber_state` text,
+  `secondary_subscriber_country` text,
+  `secondary_subscriber_zip_code` text,
+  `secondary_subscriber_title` text,
+  `secondary_subscriber_fname` text,
+  `secondary_subscriber_mname` text,
+  `secondary_subscriber_lname` text,
+  `secondary_subscriber_street` text,
+  `secondary_subscriber_relationship` text,
+  `secondary_subscriber_phone` text,
+  `secondary_subscriber_employer` text,
+  `secondary_subscriber_employer_city` text,
+  `secondary_subscriber_employer_state` text,
+  `secondary_subscriber_employer_country` text,
+  `secondary_subscriber_employer_zip_code` text,
+  `tertiary_insurance_provider` text,
+  `tertiary_plan_name` text,
+  `tertiary_effective_date` text,
+  `tertiary_policy_number` text,
+  `tertiary_group_number` text,
+  `tertiary_subscriber_title` text,
+  `tertiary_subscriber_fname` text,
+  `tertiary_subscriber_mname` text,
+  `tertiary_subscriber_lname` text,
+  `tertiary_subscriber_street` text,
+  `tertiary_subscriber_relationship` text,
+  `tertiary_subscriber_state` text,
+  `tertiary_subscriber_country` text,
+  `tertiary_subscriber_phone` text,
+  `tertiary_subscriber_city` text,
+  `tertiary_subscriber_zip_code` text,
+  `tertiary_subscriber_employer` text,
+  `tertiary_subscriber_employer_city` text,
+  `tertiary_subscriber_employer_state` text,
+  `tertiary_subscriber_employer_street` text,
+  `tertiary_subscriber_employer_country` text,
+  `tertiary_subscriber__employer_zip_code` text,
+  `primary_subscriber_employer_street` text,
+  `secondary_subscriber_employer_street` text,
+  `zipcode` text,
+  `race` text,
+  `ethnicity` text,
+  `lenguage` text,
+  PRIMARY KEY (`pid`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COMMENT='Table holds all the Demographics form data for all the patie' AUTO_INCREMENT=4 ;
 
 CREATE TABLE IF NOT EXISTS `patient_dental` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -1621,7 +1569,7 @@ CREATE TABLE IF NOT EXISTS `patient_documents` (
   `note` varchar(255) DEFAULT NULL,
   `title` varchar(255) DEFAULT 'No title',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
 
 CREATE TABLE IF NOT EXISTS `patient_immunizations` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -1641,26 +1589,7 @@ CREATE TABLE IF NOT EXISTS `patient_immunizations` (
   `created_uid` bigint(20) DEFAULT NULL COMMENT 'created by User ID',
   `updated_uid` bigint(20) DEFAULT NULL COMMENT 'updated by User ID',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
-CREATE TABLE IF NOT EXISTS `patient_active_problems` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `pid` bigint(20) DEFAULT NULL COMMENT 'patient ID',
-  `eid` bigint(20) DEFAULT NULL COMMENT 'encounter ID',
-  `code` varchar(255) DEFAULT NULL,
-  `code_text` varchar(255) DEFAULT NULL,
-  `diagnosis_code` varchar(100) DEFAULT NULL,
-  `begin_date` datetime DEFAULT NULL,
-  `end_date` datetime DEFAULT NULL,
-  `ocurrence` varchar(50) DEFAULT NULL,
-  `referred_by` varchar(50) DEFAULT NULL,
-  `create_date` datetime DEFAULT NULL,
-  `update_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `created_uid` bigint(20) DEFAULT NULL COMMENT 'created by User ID',
-  `updated_uid` bigint(20) DEFAULT NULL COMMENT 'updated by User ID',
-  `outcome` varchar(50) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
 
 CREATE TABLE IF NOT EXISTS `patient_labs` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -1687,8 +1616,10 @@ CREATE TABLE IF NOT EXISTS `patient_medications` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `pid` bigint(20) DEFAULT NULL COMMENT 'patient ID',
   `eid` bigint(20) DEFAULT NULL COMMENT 'encounter ID',
-  `medication` varchar(50) DEFAULT NULL,
-  `medication_id` varchar(50) DEFAULT NULL,
+  `STR` varchar(200) DEFAULT NULL,
+  `RXCUI` varchar(50) DEFAULT NULL,
+  `CODE` varchar(50) DEFAULT NULL,
+  `ICDS` varchar(255) DEFAULT NULL,
   `begin_date` datetime DEFAULT NULL,
   `end_date` datetime DEFAULT NULL,
   `ocurrence` varchar(50) DEFAULT NULL,
@@ -1701,15 +1632,15 @@ CREATE TABLE IF NOT EXISTS `patient_medications` (
   `prescription_id` int(11) DEFAULT NULL,
   `route` varchar(255) DEFAULT NULL,
   `dispense` int(11) DEFAULT NULL,
-  `dose` int(11) DEFAULT NULL,
-  `dose_mg` varchar(255) DEFAULT NULL,
+  `dose` varchar(25) DEFAULT NULL,
   `prescription_often` varchar(255) DEFAULT NULL,
   `prescription_when` varchar(255) DEFAULT NULL,
   `refill` int(11) DEFAULT NULL,
   `take_pills` int(11) DEFAULT NULL,
-  `type` varchar(255) DEFAULT NULL,
+  `form` varchar(255) DEFAULT NULL,
+  `codingsystem` varchar(255) NOT NULL DEFAULT 'RXNORM',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=17 ;
 
 CREATE TABLE IF NOT EXISTS `patient_notes` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -1731,7 +1662,7 @@ CREATE TABLE IF NOT EXISTS `patient_orders` (
   `xrays` varchar(255) DEFAULT NULL,
   `note` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
 
 CREATE TABLE IF NOT EXISTS `patient_out_chart` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -1741,7 +1672,7 @@ CREATE TABLE IF NOT EXISTS `patient_out_chart` (
   `chart_in_time` datetime DEFAULT NULL,
   `pool_area_id` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=299 ;
 
 CREATE TABLE IF NOT EXISTS `patient_pools` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -1756,17 +1687,25 @@ CREATE TABLE IF NOT EXISTS `patient_pools` (
   `checkout_timer` time DEFAULT NULL COMMENT 'timer user to automatically checkout from the pool area, and return to the previous pool area ',
   `parent_id` bigint(20) NOT NULL COMMENT 'parent ID = the id of the checkin pool (this will maitain a relation between all pools of that visit)',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
 
 CREATE TABLE IF NOT EXISTS `patient_prescriptions` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `pid` int(11) DEFAULT NULL,
-  `uid` int(11) DEFAULT NULL,
-  `created_date` date DEFAULT NULL,
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `pid` bigint(20) DEFAULT NULL,
+  `eid` bigint(20) DEFAULT NULL,
+  `uid` bigint(20) DEFAULT NULL,
+  `created_date` datetime DEFAULT NULL,
   `note` varchar(255) DEFAULT NULL,
-  `document_id` int(11) DEFAULT NULL,
+  `document_id` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=38 ;
+
+CREATE TABLE IF NOT EXISTS `patient_referrals` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `pid` bigint(20) NOT NULL COMMENT 'Patient ID',
+  `date_created` date NOT NULL COMMENT 'date form saved for the first time',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Table holds all the Referrals form data for all the patients' AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `patient_reminders` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -1834,7 +1773,7 @@ CREATE TABLE IF NOT EXISTS `payment_transactions` (
   `note` varchar(255) DEFAULT NULL,
   `date_created` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Entity that maintains patient''s account transactions ' AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Entity that maintains patient''s account transactions ' AUTO_INCREMENT=3 ;
 
 CREATE TABLE IF NOT EXISTS `pharmacies` (
   `id` int(11) NOT NULL DEFAULT '0',
@@ -1855,7 +1794,7 @@ CREATE TABLE IF NOT EXISTS `phone_numbers` (
   `foreign_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `foreign_id` (`foreign_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=17 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=21 ;
 
 CREATE TABLE IF NOT EXISTS `pnotes` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -2044,7 +1983,7 @@ CREATE TABLE IF NOT EXISTS `rxnatomarchive` (
   KEY `X_RXNATOMARCHIVE_RXAUI` (`RXAUI`),
   KEY `X_RXNATOMARCHIVE_RXCUI` (`RXCUI`),
   KEY `X_RXNATOMARCHIVE_MERGED_TO` (`MERGED_TO_RXCUI`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS `rxnconso` (
   `RXCUI` varchar(8) NOT NULL,
@@ -2065,11 +2004,11 @@ CREATE TABLE IF NOT EXISTS `rxnconso` (
   `SRL` varchar(10) DEFAULT NULL,
   `SUPPRESS` varchar(1) DEFAULT NULL,
   `CVF` varchar(50) DEFAULT NULL,
-  KEY `X_RXNCONSO_STR` (`STR`(767)),
+  KEY `X_RXNCONSO_STR` (`STR`(1000)),
   KEY `X_RXNCONSO_RXCUI` (`RXCUI`),
   KEY `X_RXNCONSO_TTY` (`TTY`),
   KEY `X_RXNCONSO_CODE` (`CODE`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS `rxncui` (
   `cui1` varchar(8) DEFAULT NULL,
@@ -2077,7 +2016,7 @@ CREATE TABLE IF NOT EXISTS `rxncui` (
   `ver_end` varchar(20) DEFAULT NULL,
   `cardinality` varchar(8) DEFAULT NULL,
   `cui2` varchar(8) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS `rxncuichanges` (
   `RXAUI` varchar(8) DEFAULT NULL,
@@ -2087,14 +2026,14 @@ CREATE TABLE IF NOT EXISTS `rxncuichanges` (
   `STR` varchar(3000) DEFAULT NULL,
   `OLD_RXCUI` varchar(8) NOT NULL,
   `NEW_RXCUI` varchar(8) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS `rxndoc` (
   `DOCKEY` varchar(50) NOT NULL,
   `VALUE` varchar(1000) DEFAULT NULL,
   `TYPE` varchar(50) NOT NULL,
   `EXPL` varchar(1000) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS `rxnrel` (
   `RXCUI1` varchar(8) DEFAULT NULL,
@@ -2116,7 +2055,7 @@ CREATE TABLE IF NOT EXISTS `rxnrel` (
   KEY `X_RXNREL_RXCUI1` (`RXCUI1`),
   KEY `X_RXNREL_RXCUI2` (`RXCUI2`),
   KEY `X_RXNREL_RELA` (`RELA`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS `rxnsab` (
   `VCUI` varchar(8) DEFAULT NULL,
@@ -2144,7 +2083,7 @@ CREATE TABLE IF NOT EXISTS `rxnsab` (
   `SABIN` varchar(1) DEFAULT NULL,
   `SSN` varchar(3000) DEFAULT NULL,
   `SCIT` varchar(4000) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS `rxnsat` (
   `RXCUI` varchar(8) DEFAULT NULL,
@@ -2161,9 +2100,9 @@ CREATE TABLE IF NOT EXISTS `rxnsat` (
   `SUPPRESS` varchar(1) DEFAULT NULL,
   `CVF` varchar(50) DEFAULT NULL,
   KEY `X_RXNSAT_RXCUI` (`RXCUI`),
-  KEY `X_RXNSAT_ATV` (`ATV`(767)),
-  KEY `X_RXNSAT_ATN` (`ATN`(767))
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  KEY `X_RXNSAT_ATV` (`ATV`(1000)),
+  KEY `X_RXNSAT_ATN` (`ATN`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS `rxnsty` (
   `RXCUI` varchar(8) NOT NULL,
@@ -2172,7 +2111,7 @@ CREATE TABLE IF NOT EXISTS `rxnsty` (
   `STY` varchar(50) DEFAULT NULL,
   `ATUI` varchar(11) DEFAULT NULL,
   `CVF` varchar(50) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS `sct_concepts` (
   `ConceptId` bigint(20) NOT NULL,
@@ -2211,12 +2150,12 @@ CREATE TABLE IF NOT EXISTS `standardized_tables_track` (
   `code_type` varchar(50) DEFAULT NULL,
   `imported_date` datetime DEFAULT NULL,
   `revision_name` varchar(255) DEFAULT NULL COMMENT 'name of standardized tables such as RXNORM',
-  `revision_number` int(11) DEFAULT NULL,
+  `revision_number` varchar(255) DEFAULT NULL,
   `revision_version` varchar(255) DEFAULT NULL COMMENT 'revision of standardized tables that were imported',
-  `revision_date` datetime DEFAULT NULL COMMENT 'revision of standardized tables that were imported',
-  `file_checksum` varchar(32) DEFAULT NULL,
+  `revision_date` varchar(255) DEFAULT NULL COMMENT 'revision of standardized tables that were imported',
+  `file_checksum` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
 
 CREATE TABLE IF NOT EXISTS `surgeries` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -2279,7 +2218,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `default_warehouse` varchar(31) DEFAULT NULL,
   `irnpool` varchar(31) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=90 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=93 ;
 
 CREATE TABLE IF NOT EXISTS `users_facility` (
   `tablename` varchar(64) NOT NULL,
@@ -2296,7 +2235,7 @@ CREATE TABLE IF NOT EXISTS `users_sessions` (
   `logout` int(11) DEFAULT NULL,
   `last_request` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=374 ;
 
 CREATE TABLE IF NOT EXISTS `user_settings` (
   `setting_user` bigint(20) NOT NULL DEFAULT '0',
@@ -2349,7 +2288,3 @@ CREATE TABLE IF NOT EXISTS `x12_partners` (
   `x12_per06` varchar(80) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

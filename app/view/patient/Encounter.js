@@ -621,7 +621,7 @@ Ext.define('App.view.patient.Encounter', {
                 scope:me,
                 handler:me.newDoc
             }, '-', {
-                text:i18n('xray_orders'),
+                text:i18n('xray_ct_orders'),
                 action:'xRay',
                 scope:me,
                 handler:me.newDoc

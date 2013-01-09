@@ -47,6 +47,7 @@ Ext.define('App.ux.grid.RowFormEditor', {
     bodyPadding: 5,
     padding:'0 0 5 0',
     border: false,
+	saveBtnEnabled:false,
     buttonAlign:'center',
     // Change the hideMode to offsets so that we get accurate measurements when
     // the roweditor is hidden for laying out things like a TriggerField.
@@ -385,8 +386,17 @@ Ext.define('App.ux.grid.RowFormEditor', {
 
     loadRecord: function(record) {
         var me = this,
-            form = me.getForm();
+            form = me.getForm(),
+	        updateBtn = me.query('button[action="update"]')[0],
+	        saveTxt = record.phantom ? 'save' : 'update';
+
         form.loadRecord(record);
+
+	    // change the save btn text to update is the record is a phantom (new)
+	    updateBtn.setText(i18n(saveTxt));
+
+	    if(me.saveBtnEnabled) updateBtn.setDisabled(!me.saveBtnEnabled);
+
         if (form.isValid()) {
             me.hideToolTip();
         } else {

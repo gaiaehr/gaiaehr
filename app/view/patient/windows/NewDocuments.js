@@ -26,33 +26,35 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 		me.patientPrescriptionsStore = Ext.create('App.store.patient.PatientsPrescriptions');
 		me.prescriptionMedicationsStore = Ext.create('App.store.patient.PatientsPrescriptionMedications');
 		me.patientsLabsOrdersStore = Ext.create('App.store.patient.PatientsLabsOrders');
+		me.PatientsXrayCtOrdersStore = Ext.create('App.store.patient.PatientsXrayCtOrders');
 		//noinspection JSUnresolvedFunction,JSUnresolvedVariable
 		me.items = [
 			me.tabPanel = Ext.create('Ext.tab.Panel', {
 				margin:5,
+				plain:true,
 				items:[
 					/**
-					 * LAB PANEL
+					 * LAB ORDERS PANEL
 					 */
 					{
 						title:i18n('lab_orders'),
-						layout:{
-							type:'vbox',
-							align:'stretch'
-						},
+						layout:'fit',
 						items:[
-							{
-								xtype:'grid',
-								margin:5,
+							me.labGrid = Ext.widget('grid',{
+								title:' ',
+								border:false,
 								store:me.patientsLabsOrdersStore,
 								flex:1,
+								viewConfig:{
+									markDirty:false
+								},
 								columns:[
 									{
 										xtype:'actioncolumn',
 										width:20,
 										items:[
 											{
-												icon:'resources/images/icons/delete.png',
+												icon:'resources/images/icons/cross.png',
 												tooltip:i18n('remove'),
 												scope:me,
 												handler:me.onLabOrderRemoveClick
@@ -60,106 +62,637 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 										]
 									},
 									{
-										header:i18n('lab'),
+										header:i18n('date'),
+										xtype: 'datecolumn',
+										format:'Y-m-d H:i a',
+										width:130,
+										dataIndex:'date_created'
+									},
+									{
+										header:i18n('description'),
 										flex:1,
-										dataIndex:'laboratories'
+										dataIndex:'description'
 									}
 								],
-								tbar:{
-									xtype:'mitos.labstypescombo',
-									margin:5,
-									fieldLabel:i18n('add'),
-									hideLabel:false,
-									listeners:{
-										scope:me,
-										select:me.onAddLabs
-									}
-								}
-							}
-						],
-						bbar:[
-							'->', {
-								text:i18n('create'),
-								scope:me,
-								handler:me.onCreateLabs
-							}, {
-								text:i18n('cancel'),
-								scope:me,
-								handler:me.onCancel
-							}
+								listeners:{
+									scope:me,
+									render:me.onLabGridRender,
+									beforeedit:me.beforeLabOrderEdit,
+									validateedit:me.beforeLabOrderValidEdit
+								},
+								plugins:Ext.create('App.ux.grid.RowFormEditing', {
+									autoCancel:false,
+									autoSync: true,
+									errorSummary:false,
+									saveBtnEnabled:true,
+									clicksToEdit:2,
+									formItems:[
+										{
+
+											xtype:'container',
+											layout:{
+												type:'vbox',
+												align:'stretch'
+											},
+											items:[
+												{
+													xtype:'textfield',
+													name:'loincs',
+													hidden:true
+												},
+												{
+													xtype:'grid',
+													frame:true,
+													title:i18n('items'),
+													flex:1,
+													store:Ext.create('Ext.data.ArrayStore', {
+														model: 'App.model.patient.PatientsLabOrderItems'
+													}),
+													columns:[
+														{
+															xtype:'actioncolumn',
+															width:20,
+															items:[
+																{
+																	icon:'resources/images/icons/cross.png',
+																	tooltip:i18n('remove'),
+																	scope:me,
+																	handler:me.onLabOrderItemRemoveClick
+																}
+															]
+														},
+														{
+															header:i18n('loinc'),
+															width:100,
+															dataIndex:'loinc'
+														},
+														{
+															header:i18n('description'),
+															flex:1,
+															dataIndex:'title'
+														}
+													],
+													listeners:{
+														scope:me,
+														render:me.onOrderLabItemsGridRender
+													}
+												}
+											]
+
+										}
+									]
+								})
+							})
 						]
 					},
 					/**
 					 * X-RAY PANEL
 					 */
 					{
-						title:i18n('xray_orders'),
-						layout:{
-							type:'vbox',
-							align:'stretch'
-						},
+						title:i18n('xray_ct_orders'),
+						layout:'fit',
 						items:[
-
-							{
-
-								xtype:'grid',
-								margin:5,
-								store:me.prescriptionMedicationsStore,
-								height:640,
+							me.xGrid = Ext.widget('grid',{
+								title:' ',
+								border:false,
+								store:me.PatientsXrayCtOrdersStore,
+								flex:1,
 								columns:[
-
 									{
 										xtype:'actioncolumn',
 										width:20,
 										items:[
 											{
-												icon:'resources/images/icons/delete.png',
+												icon:'resources/images/icons/cross.png',
 												tooltip:i18n('remove'),
 												scope:me,
-												handler:me.onRemoveClick
+												handler:me.onLabOrderRemoveClick
 											}
 										]
 									},
 									{
-										header:i18n('medication'),
-										width:100,
-										dataIndex:'STR'
+										header:i18n('date'),
+										xtype: 'datecolumn',
+										format:'Y-m-d H:i a',
+										width:130,
+										dataIndex:'date_created'
 									},
 									{
-										header:i18n('dispense'),
-										width:100,
-										dataIndex:'dispense'
-									},
-									{
-										header:i18n('refill'),
+										header:i18n('description'),
 										flex:1,
-										dataIndex:'refill'
+										dataIndex:'description'
 									}
-
 								],
-								tbar:{
-									xtype:'textfield',
-									margin:5,
-									fieldLabel:i18n('add'),
-									hideLabel:false,
-									listeners:{
-										scope:me,
-										select:me.addXRay
-									}
-								}
+								listeners:{
+									scope:me,
+									render:me.onLabGridRender,
+									beforeedit:me.beforeXrayCtEdit,
+									validateedit:me.beforeXrayCtValidEdit
+								},
+								plugins:Ext.create('App.ux.grid.RowFormEditing', {
+									autoCancel:false,
+									autoSync: true,
+									errorSummary:false,
+									saveBtnEnabled:true,
+									clicksToEdit:2,
+									formItems:[
+										{
 
-							}
-						],
-						bbar:[
-							'->', {
-								text:i18n('create'),
-								scope:me,
-								handler:me.Create
-							}, {
-								text:i18n('cancel'),
-								scope:me,
-								handler:me.onCancel
-							}
+											xtype:'tabpanel',
+											plain:true,
+											defaults:{ bodyPadding:10 },
+											items:[
+												{
+													title: i18n('ct_vascular_studies'),
+													layout:'hbox',
+													defaults:{ width:175 },
+													items :[
+														{
+															xtype:'container',
+															layout:'anchor',
+															margin:'0 0 0 5',
+															defaultType:'checkbox',
+															items:[
+																{
+																	boxLabel: 'CTA Abdominal',
+																	name: 'xorder_items',
+																	inputValue: '74175'
+																},
+																{
+																	boxLabel: 'CTA Pelvis',
+																	name: 'xorder_items',
+																	inputValue: '72191'
+																},
+																{
+																	boxLabel: 'CTA Aorta / Iliacs ABD',
+																	name: 'xorder_items',
+																	inputValue: '74175-1'
+																},
+																{
+																	boxLabel: 'CTA Aorta / Iliacs PEL',
+																	name: 'xorder_items',
+																	inputValue: '72191-1'
+																}
+															]
+														},
+														{
+															xtype:'container',
+															layout:'anchor',
+															defaultType:'checkbox',
+															items:[
+																{
+																	boxLabel: 'CTA Brain',
+																	name: 'xorder_items',
+																	inputValue: '70496'
+																},
+																{
+																	boxLabel: 'CTA Carotid',
+																	name: 'xorder_items',
+																	inputValue: '70498'
+																},
+																{
+																	boxLabel: 'CTA Chest',
+																	name: 'xorder_items',
+																	inputValue: '71275'
+																},
+																{
+																	boxLabel: 'CTA Neck',
+																	name: 'xorder_items',
+																	inputValue: '71498'
+																}
+															]
+														},
+														{
+															xtype:'container',
+															layout:'anchor',
+															width:400,
+															defaultType:'checkbox',
+															items:[
+																{
+																	boxLabel: 'CTA Thorax',
+																	name: 'xorder_items',
+																	inputValue: '71275-1'
+																},
+																{
+																	boxLabel: 'CTA Run off Upper Extremity',
+																	name: 'xorder_items',
+																	inputValue: '73206'
+																},
+																{
+																	boxLabel: 'CTA Run off Lower Extremity',
+																	name: 'xorder_items',
+																	inputValue: '73206-1'
+																},
+																{
+																	xtype:'textfield',
+																	fieldLabel: 'Other',
+																	name: 'xorder_items',
+																	width:400,
+																	labelWidth:60
+																}
+															]
+														}
+													]
+												},
+												{
+													title: i18n('ct'),
+													layout:'hbox',
+													defaults:{ width:330 },
+													items :[
+														{
+															xtype:'container',
+															layout:'anchor',
+															defaults:{
+																width:330,
+																labelWidth:140,
+																defaultType:'checkbox',
+																layout: 'hbox'
+															},
+															items:[
+																{
+																	xtype:'fieldcontainer',
+																	fieldLabel: 'CT Abdomen & Pelvis',
+																	defaults:{ margin:'0 5' },
+																	items:[
+																		{
+																			boxLabel: 'W',
+																			name: 'xorder_items',
+																			inputValue: '74177'
+																		},
+																		{
+																			boxLabel: 'WO',
+																			name: 'xorder_items',
+																			inputValue: '74176'
+																		},
+																		{
+																			boxLabel: 'W/WO',
+																			name: 'xorder_items',
+																			inputValue: '74178'
+																		}
+																	]
+																},
+																{
+																	xtype:'fieldcontainer',
+																	fieldLabel: 'CT Abdominal',
+																	defaults:{ margin:'0 5' },
+																	items:[
+																		{
+																			boxLabel: 'W',
+																			name: 'xorder_items',
+																			inputValue: '74160'
+																		},
+																		{
+																			boxLabel: 'WO',
+																			name: 'xorder_items',
+																			inputValue: '74150'
+																		},
+																		{
+																			boxLabel: 'W/WO',
+																			name: 'xorder_items',
+																			inputValue: '74170'
+																		}
+																	]
+																},
+																{
+																	xtype:'fieldcontainer',
+																	fieldLabel: 'CT Pelvis',
+																	defaults:{ margin:'0 5' },
+																	items:[
+																		{
+																			boxLabel: 'W',
+																			name: 'xorder_items',
+																			inputValue: '72193'
+																		},
+																		{
+																			boxLabel: 'WO',
+																			name: 'xorder_items',
+																			inputValue: '72192'
+																		},
+																		{
+																			boxLabel: 'W/WO',
+																			name: 'xorder_items',
+																			inputValue: '72192'
+																		}
+																	]
+																},
+																{
+																	xtype:'fieldcontainer',
+																	fieldLabel: 'CT Cervivcal Spine',
+																	defaults:{ margin:'0 5' },
+																	items:[
+																		{
+																			boxLabel: 'W',
+																			name: 'xorder_items',
+																			inputValue: '72126'
+																		},
+																		{
+																			boxLabel: 'WO',
+																			name: 'xorder_items',
+																			inputValue: '72125'
+																		},
+																		{
+																			boxLabel: 'W/WO',
+																			name: 'xorder_items',
+																			inputValue: '72127'
+																		}
+																	]
+																},
+																{
+																	xtype:'fieldcontainer',
+																	fieldLabel: 'CT Chest',
+																	defaults:{ margin:'0 5' },
+																	items:[
+																		{
+																			boxLabel: 'W',
+																			name: 'xorder_items',
+																			inputValue: '71260'
+																		},
+																		{
+																			boxLabel: 'WO',
+																			name: 'xorder_items',
+																			inputValue: '71250'
+																		},
+																		{
+																			boxLabel: 'W/WO',
+																			name: 'xorder_items',
+																			inputValue: '71270'
+																		}
+																	]
+																},
+																{
+																	xtype:'fieldcontainer',
+																	fieldLabel: 'CT Head/Brain',
+																	defaults:{ margin:'0 5' },
+																	items:[
+																		{
+																			boxLabel: 'W',
+																			name: 'xorder_items',
+																			inputValue: '70460'
+																		},
+																		{
+																			boxLabel: 'WO',
+																			name: 'xorder_items',
+																			inputValue: '70450'
+																		},
+																		{
+																			boxLabel: 'W/WO',
+																			name: 'xorder_items',
+																			inputValue: '70470'
+																		}
+																	]
+																}
+															]
+														},
+														{
+															xtype:'container',
+															layout:'anchor',
+															defaults:{
+																width:330,
+																labelWidth:140,
+																defaultType:'checkbox',
+																layout: 'hbox'
+															},
+															items:[
+																{
+																	xtype:'fieldcontainer',
+																	fieldLabel: 'CT Lower Extremity',
+																	defaults:{ margin:'0 5' },
+																	items:[
+																		{
+																			boxLabel: 'W',
+																			name: 'xorder_items',
+																			inputValue: '73701'
+																		},
+																		{
+																			boxLabel: 'WO',
+																			name: 'xorder_items',
+																			inputValue: '73700'
+																		},
+																		{
+																			boxLabel: 'W/WO',
+																			name: 'xorder_items',
+																			inputValue: '73702'
+																		}
+																	]
+																},
+																{
+																	xtype:'fieldcontainer',
+																	fieldLabel: 'CT Lumbar Spine',
+																	defaults:{ margin:'0 5' },
+																	items:[
+																		{
+																			boxLabel: 'W',
+																			name: 'xorder_items',
+																			inputValue: '72132'
+																		},
+																		{
+																			boxLabel: 'WO',
+																			name: 'xorder_items',
+																			inputValue: '72131'
+																		},
+																		{
+																			boxLabel: 'W/WO',
+																			name: 'xorder_items',
+																			inputValue: '72133'
+																		}
+																	]
+																},
+																{
+																	xtype:'fieldcontainer',
+																	fieldLabel: 'CT Maxillofacial',
+																	defaults:{ margin:'0 5' },
+																	items:[
+																		{
+																			boxLabel: 'W',
+																			name: 'xorder_items',
+																			inputValue: '70487'
+																		},
+																		{
+																			boxLabel: 'WO',
+																			name: 'xorder_items',
+																			inputValue: '70486'
+																		},
+																		{
+																			boxLabel: 'W/WO',
+																			name: 'xorder_items',
+																			inputValue: '70488'
+																		}
+																	]
+																},
+																{
+																	xtype:'fieldcontainer',
+																	fieldLabel: 'CT Neck . Soft Tissue',
+																	defaults:{ margin:'0 5' },
+																	items:[
+																		{
+																			boxLabel: 'W',
+																			name: 'xorder_items',
+																			inputValue: '70491'
+																		},
+																		{
+																			boxLabel: 'WO',
+																			name: 'xorder_items',
+																			inputValue: '70490'
+																		},
+																		{
+																			boxLabel: 'W/WO',
+																			name: 'xorder_items',
+																			inputValue: '70492'
+																		}
+																	]
+																},
+																{
+																	xtype:'fieldcontainer',
+																	fieldLabel: 'CT Orbits',
+																	defaults:{ margin:'0 5' },
+																	items:[
+																		{
+																			boxLabel: 'W',
+																			name: 'xorder_items',
+																			inputValue: '70481'
+																		},
+																		{
+																			boxLabel: 'WO',
+																			name: 'xorder_items',
+																			inputValue: '70480'
+																		},
+																		{
+																			boxLabel: 'W/WO',
+																			name: 'xorder_items',
+																			inputValue: '70482'
+																		}
+																	]
+																},
+																{
+																	xtype:'fieldcontainer',
+																	fieldLabel: 'CT Sinus Parannasel',
+																	defaults:{ margin:'0 5' },
+																	items:[
+																		{
+																			boxLabel: 'W',
+																			name: 'xorder_items',
+																			inputValue: '70487'
+																		},
+																		{
+																			boxLabel: 'WO',
+																			name: 'xorder_items',
+																			inputValue: '70486'
+																		},
+																		{
+																			boxLabel: 'W/WO',
+																			name: 'xorder_items',
+																			inputValue: '70488'
+																		}
+																	]
+																}
+															]
+														},
+														{
+															xtype:'container',
+															layout:'anchor',
+															defaults:{
+																width:330,
+																labelWidth:140,
+																defaultType:'checkbox',
+																layout: 'hbox'
+															},
+															items:[
+																{
+																	xtype:'fieldcontainer',
+																	fieldLabel: 'CT Temporal Bone/AIC',
+																	defaults:{ margin:'0 5' },
+																	items:[
+																		{
+																			boxLabel: 'W',
+																			name: 'xorder_items',
+																			inputValue: '70481'
+																		},
+																		{
+																			boxLabel: 'WO',
+																			name: 'xorder_items',
+																			inputValue: '70483'
+																		},
+																		{
+																			boxLabel: 'W/WO',
+																			name: 'xorder_items',
+																			inputValue: '70482'
+																		}
+																	]
+																},
+																{
+																	xtype:'fieldcontainer',
+																	fieldLabel: 'CT Thoracic Spine',
+																	defaults:{ margin:'0 5' },
+																	items:[
+																		{
+																			boxLabel: 'W',
+																			name: 'xorder_items',
+																			inputValue: '72129'
+																		},
+																		{
+																			boxLabel: 'WO',
+																			name: 'xorder_items',
+																			inputValue: '72128'
+																		},
+																		{
+																			boxLabel: 'W/WO',
+																			name: 'xorder_items',
+																			inputValue: '72130'
+																		}
+																	]
+																},
+																{
+																	xtype:'fieldcontainer',
+																	fieldLabel: 'CT Upper Extremity',
+																	defaults:{ margin:'0 5' },
+																	items:[
+																		{
+																			boxLabel: 'W',
+																			name: 'xorder_items',
+																			inputValue: '73201'
+																		},
+																		{
+																			boxLabel: 'WO',
+																			name: 'xorder_items',
+																			inputValue: '73200'
+																		},
+																		{
+																			boxLabel: 'W/WO',
+																			name: 'xorder_items',
+																			inputValue: '73202'
+																		}
+																	]
+																}
+															]
+														}
+
+													]
+												},
+												{
+													title: i18n('xray'),
+													collapsible: true,
+													defaultType: 'textfield',
+													items :[
+														{
+															fieldLabel: 'Field 1',
+															name: 'field1'
+														}
+													]
+												}
+											]
+
+										},
+										{
+											xtype:'textfield',
+											name:'note',
+											margin:'5 0 0 5',
+											labelWidth:50,
+											fieldLabel:i18n('notes'),
+											width:700
+										}
+									]
+								})
+							})
 						]
 					},
 					/**
@@ -175,14 +708,13 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 							/**
 							 * Pharmacies Combo
 							 */
-//							{
-//								xtype:'mitos.pharmaciescombo',
-//								fieldLabel:i18n('pharmacies'),
-//								width:250,
-//								labelWidth:75,
-//								margin:'5 5 0 5'
-//
-//							},
+							//{
+							//	xtype:'mitos.pharmaciescombo',
+							//	fieldLabel:i18n('pharmacies'),
+							//	width:250,
+							//	labelWidth:75,
+							//	margin:'5 5 0 5'
+							//},
 							/**
 							 * Prescription Grid
 							 */
@@ -713,7 +1245,8 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 		/**
 		 * Lab stuff
 		 */
-		me.patientsLabsOrdersStore.removeAll();
+		me.patientsLabsOrdersStore.load({params:{pid:app.patient.pid}});
+		me.PatientsXrayCtOrdersStore.load({params:{pid:app.patient.pid}});
 		/**
 		 * Doctors Notes stuff
 		 */
@@ -835,14 +1368,108 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 
 	},
 
-	addXRay:function(){
+	beforeXrayCtValidEdit:function(plugin, e){
+		var items = plugin.editor.getForm().getValues().xorder_items,
+			itemsArray = [];
 
+		for(var i=0; i < items.length; i++){
+			if(items[i] != 0) itemsArray.push(items[i]);
+		}
+		e.record.set({order_items:itemsArray.join(',')});
 	},
 
-	onAddLabs:function(field, model){
-		this.patientsLabsOrdersStore.add({
-			laboratories:model[0].data.loinc_name
+	beforeXrayCtEdit:function(plugin, e){
+		var itemsArray = e.record.data.order_items.split(','),
+			form = plugin.editor,
+			checkboxes = form.query('checkbox'),
+			item;
+
+		for(var i=0; i < checkboxes.length; i++){
+
+			checkboxes[i].setValue(Ext.Array.indexOf(itemsArray, checkboxes[i].inputValue) != -1);
+
+
+//
+//			item = form.query('checkbox');
+//			if(item[0]) item[0].setValue(1);
+//			say(itemsArray[i]);
+		}
+	},
+
+	onAddOrder:function(btn){
+		var me = this,
+			grid = btn.up('grid'),
+			store = grid.getStore();
+		grid.editingPlugin.cancelEdit();
+		store.insert(0, {
+			pid:me.pid,
+			uid:app.user.id,
+			date_created:new Date()
 		});
-		field.reset();
+		grid.editingPlugin.startEdit(0, 0);
+	},
+
+	onLabOrderItemRemoveClick:function(grid, rowIndex){
+		var store = grid.getStore(),
+			record = store.getAt(rowIndex);
+		store.remove(record);
+	},
+
+	beforeLabOrderEdit:function(plugin, e){
+		var itemsGrid = plugin.editor.down('grid'),
+			store = itemsGrid.getStore(),
+			data = e.record.data,
+			itemsArray = data.order_items ? data.order_items.split(',') : '',
+			descriptionArray = data.description ? data.description.split(',') : '';
+
+		store.removeAll();
+		for(var i=0; i < itemsArray.length; i++){
+			store.add({loinc:itemsArray[i], title:descriptionArray[i]});
+		}
+	},
+
+	beforeLabOrderValidEdit:function(plugin, e){
+		var editor = plugin.editor,
+			itemsGrid = editor.down('grid'),
+			itemsRecords = itemsGrid.getStore().data.items,
+			itemsArray = [],
+			descriptionArray = [];
+
+		for(var i=0; i < itemsRecords.length; i++){
+			itemsArray.push(itemsRecords[i].data.loinc);
+			descriptionArray.push(itemsRecords[i].data.title);
+		}
+
+		e.record.set({order_items:itemsArray.join(','), description:descriptionArray.join(',')});
+	},
+
+	onOrderLabItemsGridRender:function(grid){
+		var me = this, cmb;
+
+		cmb = Ext.create('App.ux.combo.LabsTypes',{
+			width:300,
+			hideLabel:false,
+			labelWidth:65,
+			fieldLabel:i18n('add_item'),
+			listeners:{
+				scope:me,
+				select:function(cmb, records){
+					grid.getStore().add({loinc:records[0].data.id, title:records[0].data.loinc_name});
+					cmb.reset();
+				}
+			}
+		});
+		grid.dockedItems.items[0].add(cmb);
+	},
+
+	onLabGridRender:function(grid){
+		var me = this;
+		grid.dockedItems.items[0].add({
+			xtype:'button',
+			text:i18n('new_order'),
+			iconCls:'icoAdd',
+			scope:me,
+			handler:me.onAddOrder
+		});
 	}
 });

@@ -18,11 +18,10 @@
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-if (!isset($_SESSION))
-{
-	session_name("GaiaEHR");
-	session_start();
-	session_cache_limiter('private');
+if (!isset($_SESSION)) {
+    session_name("GaiaEHR");
+    session_start();
+    session_cache_limiter('private');
 }
 include_once ($_SESSION['root'] . '/classes/dbHelper.php');
 include_once ($_SESSION['root'] . '/dataProvider/Patient.php');
@@ -34,30 +33,81 @@ include_once ($_SESSION['root'] . '/dataProvider/Documents.php');
 class Orders
 {
 
-	function __construct()
-	{
-		$this -> db = new dbHelper();
-		$this -> user = new User();
-		$this -> patient = new Patient();
-		$this -> services = new Services();
-		$this -> facility = new Facilities();
-		$this -> documents = new Documents();
-		return;
-	}
+    function __construct()
+    {
+        $this->db = new dbHelper();
+        $this->user = new User();
+        $this->patient = new Patient();
+        $this->services = new Services();
+        $this->facility = new Facilities();
+        $this->documents = new Documents();
+        return;
+    }
 
-	public function addOrdersLabs($params)
-	{
+    public function addOrdersLabs($params)
+    {
 
-		foreach ($params->labs as $lab)
-		{
-			$foo = array();
-			$foo['uid'] = $_SESSION['user']['id'];
-			$foo['pid'] = $_SESSION['patient']['pid'];
-			$foo['document_id'] = $params -> document_id;
-			$foo['labs'] = $lab -> laboratories;
-			$this -> db -> setSQL($this -> db -> sqlBind($foo, 'patient_orders', 'I'));
-			$this -> db -> execLog();
-		}
-	}
+        foreach ($params->labs as $lab) {
+            $foo = array();
+            $foo['uid'] = $_SESSION['user']['id'];
+            $foo['pid'] = $_SESSION['patient']['pid'];
+            $foo['document_id'] = $params->document_id;
+            $foo['labs'] = $lab->laboratories;
+            $this->db->setSQL($this->db->sqlBind($foo, 'patient_orders', 'I'));
+            $this->db->execLog();
+        }
+    }
+
+    public function getPatientLabOrders($params)
+    {
+        $this->db->setSQL("SELECT * FROM `patient_orders` WHERE `order_type` = 'lab' AND pid = '$params->pid'");
+        return $this->db->fetchRecords(PDO::FETCH_ASSOC);
+    }
+
+    public function addPatientLabOrder($params)
+    {
+        $data = get_object_vars($params);
+        unset($data['id']);
+        $this->db->setSQL($this->db->sqlBind($data, 'patient_orders', 'I'));
+        $this->db->execLog();
+        $params->id = $this->db->lastInsertId;
+        return $params;
+    }
+
+    public function updatePatientLabOrder($params)
+    {
+        $data = get_object_vars($params);
+        unset($data['id']);
+        $this->db->setSQL($this->db->sqlBind($data, 'patient_orders', 'U', array('id' => $params->id)));
+        $this->db->execLog();
+        return $params;
+    }
+
+
+
+    public function getPatientXrayCtOrders($params)
+    {
+        $this->db->setSQL("SELECT * FROM `patient_orders` WHERE `order_type` = 'img' AND pid = '$params->pid'");
+        return $this->db->fetchRecords(PDO::FETCH_ASSOC);
+    }
+
+    public function addPatientXrayCtOrder($params)
+    {
+        $data = get_object_vars($params);
+        unset($data['id']);
+        $this->db->setSQL($this->db->sqlBind($data, 'patient_orders', 'I'));
+        $this->db->execLog();
+        $params->id = $this->db->lastInsertId;
+        return $params;
+    }
+
+    public function updatePatientXrayCtOrder($params)
+    {
+        $data = get_object_vars($params);
+        unset($data['id']);
+        $this->db->setSQL($this->db->sqlBind($data, 'patient_orders', 'U', array('id' => $params->id)));
+        $this->db->execLog();
+        return $params;
+    }
 
 }

@@ -47,8 +47,8 @@ if(is_array($data)){
 	$token = $data[0]->server->token;
 }else{
 	$site = $data->server->site;
-	$pvtKey = $data->server->pvtKey;
-	$token = $data->server->token;
+    $pvtKey = (isset($data->server->pvtKey)) ? $data->server->pvtKey : '';
+	$token  = (isset($data->server->token))  ? $data->server->token  : '';
 }
 
 include_once('../registry.php');

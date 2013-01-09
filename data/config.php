@@ -25,7 +25,30 @@ $API = array(
 	'Emergency' => array(
 		'methods' => array(
 			'createNewEmergency' => array(
-				'len' => 0)
+				'len' => 0
+            )
+        )
+	),
+	'Orders' => array(
+		'methods' => array(
+			'getPatientLabOrders' => array(
+				'len' => 1
+            ),
+			'addPatientLabOrder' => array(
+				'len' => 1
+            ),
+			'updatePatientLabOrder' => array(
+				'len' => 1
+            ),
+			'getPatientXrayCtOrders' => array(
+				'len' => 1
+            ),
+			'addPatientXrayCtOrder' => array(
+				'len' => 1
+            ),
+			'updatePatientXrayCtOrder' => array(
+				'len' => 1
+            )
 		)
 	),
 	'DiagnosisCodes' => array(

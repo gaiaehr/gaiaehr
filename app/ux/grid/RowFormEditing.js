@@ -72,6 +72,7 @@ Ext.define('App.ux.grid.RowFormEditing', {
 
     editStyle: 'row',
 
+	saveBtnEnabled:false,
     /**
      * @cfg {Boolean} autoSync
      * True to automatically Sync any pending changes during complete edit method.
@@ -302,6 +303,7 @@ Ext.define('App.ux.grid.RowFormEditing', {
             cfg      = {
                 autoCancel: me.autoCancel,
                 errorSummary: me.errorSummary,
+	            saveBtnEnabled: me.disableValidation,
                 fields: headerCt.getGridColumns(),
                 hidden: true,
 

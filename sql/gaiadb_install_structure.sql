@@ -1666,12 +1666,15 @@ CREATE TABLE IF NOT EXISTS `patient_orders` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `pid` int(11) DEFAULT NULL,
   `uid` int(11) DEFAULT NULL,
-  `document_id` int(11) DEFAULT NULL,
-  `labs` varchar(255) DEFAULT NULL,
-  `xrays` varchar(255) DEFAULT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `date_created` datetime DEFAULT NULL,
+  `laboratory_id` bigint(20) DEFAULT NULL COMMENT 'laboratory facility ID',
+  `document_id` int(11) DEFAULT NULL COMMENT 'patient document ID',
+  `order_type` varchar(100) DEFAULT NULL COMMENT 'lab or xray',
+  `order_items` varchar(255) DEFAULT NULL COMMENT 'order LOINCs serialize by comma  ei. 1234-1,4123-1',
   `note` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `patient_out_chart` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,

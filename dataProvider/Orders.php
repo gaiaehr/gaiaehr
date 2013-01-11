@@ -65,6 +65,15 @@ class Orders
         $data = get_object_vars($params);
         unset($data['id'],$data['docUrl']);
         $params->docType = 'Laboratory Order';
+
+        $orderItems = explode(',',$params->order_items);
+        $orderItemsDescriptions = explode(',',$params->description);
+
+        $params->orderItems = array(array('Description', 'Code'));
+        for($i = 0; $i < count($orderItems); ++$i){
+            $params->orderItems[] = array($orderItemsDescriptions[$i],$orderItems[$i]);
+        }
+        $params->templateId = 4;
         $result = $this->doc->createDocument($params);
         if($result['success']){
             $params->docUrl = $result['doc']['url'];
@@ -81,6 +90,15 @@ class Orders
         $data = get_object_vars($params);
         unset($data['id'],$data['docUrl']);
         $params->docType = 'Laboratory Order';
+
+        $orderItems = explode(',',$params->order_items);
+        $orderItemsDescriptions = explode(',',$params->description);
+
+        $params->orderItems = array(array('Description', 'Code'));
+        for($i = 0; $i < count($orderItems); ++$i){
+            $params->orderItems[] = array($orderItemsDescriptions[$i],$orderItems[$i]);
+        }
+        $params->templateId = 4;
         $result = $this->doc->createDocument($params);
         if($result['success']){
             $params->docUrl = $result['doc']['url'];
@@ -107,6 +125,16 @@ class Orders
         $data = get_object_vars($params);
         unset($data['id'],$data['docUrl']);
         $params->docType = 'Radiology Order';
+
+        $orderItems = explode(',',$params->order_items);
+        $orderItemsDescriptions = explode(',',$params->description);
+
+        $params->orderItems = array(array('Description', 'Code'));
+        for($i = 0; $i < count($orderItems); ++$i){
+            $params->orderItems[] = array($orderItemsDescriptions[$i],$orderItems[$i]);
+        }
+
+        $params->templateId = 6;
         $result = $this->doc->createDocument($params);
         if($result['success']){
             $params->docUrl = $result['doc']['url'];
@@ -123,6 +151,16 @@ class Orders
         $data = get_object_vars($params);
         unset($data['id'],$data['docUrl']);
         $params->docType = 'Radiology Order';
+
+        $orderItems = explode(',',$params->order_items);
+        $orderItemsDescriptions = explode(',',$params->description);
+
+        $params->orderItems = array(array('Description', 'Code'));
+        for($i = 0; $i < count($orderItems); ++$i){
+            $params->orderItems[] = array($orderItemsDescriptions[$i],$orderItems[$i]);
+        }
+
+        $params->templateId = 6;
         $result = $this->doc->createDocument($params);
         if($result['success']){
             $params->docUrl = $result['doc']['url'];

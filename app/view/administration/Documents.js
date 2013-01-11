@@ -323,20 +323,20 @@ Ext.define('App.view.administration.Documents',
 				token : '[ENCOUNTER_OBJECTIVE]'
 			},
 			{
-				title : i18n('encounter_assesment'),
-				token : '[ENCOUNTER_ASSESMENT]'
+				title : i18n('encounter_assessment'),
+				token : '[ENCOUNTER_ASSESSMENT]'
 			},
 			{
-				title : i18n('encounter_assesment_list'),
-				token : '[ENCOUNTER_ASSESMENT_LIST]'
+				title : i18n('encounter_assessment_list'),
+				token : '[ENCOUNTER_ASSESSMENT_LIST]'
 			},
 			{
-				title : i18n('encounter_assesment_code_list'),
-				token : '[ENCOUNTER_ASSESMENT_CODE_LIST]'
+				title : i18n('encounter_assessment_code_list'),
+				token : '[ENCOUNTER_ASSESSMENT_CODE_LIST]'
 			},
 			{
-				title : i18n('encounter_assesment_full_list'),
-				token : '[ENCOUNTER_ASSESMENT_FULL_LIST]'
+				title : i18n('encounter_assessment_full_list'),
+				token : '[ENCOUNTER_ASSESSMENT_FULL_LIST]'
 			},
 			{
 				title : i18n('encounter_plan'),

@@ -1540,12 +1540,17 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 
 	beforeXrayCtValidEdit:function(plugin, e){
 		var items = plugin.editor.getForm().getValues().xorder_items,
-			itemsArray = [];
+			itemsArray = [],
+			descriptionArray = [];
 
 		for(var i=0; i < items.length; i++){
-			if(items[i] != 0) itemsArray.push(items[i]);
+			if(items[i] != 0){
+				itemsArray.push(items[i]);
+				var f = plugin.editor.query('[inputValue="'+items[i]+'"]')[0];
+				descriptionArray.push(f.boxLabel ? f.boxLabel : f.fieldLabel);
+			}
 		}
-		e.record.set({order_items:itemsArray.join(',')});
+		e.record.set({order_items:itemsArray.join(','),description:descriptionArray.join(',')});
 	},
 
 	beforeXrayCtEdit:function(plugin, e){

@@ -19,7 +19,7 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 if(!isset($_SESSION)){
-	session_name("GaiaEHR");
+	session_name('GaiaEHR');
 	session_start();
 	session_cache_limiter('private');
 }
@@ -31,7 +31,6 @@ include_once ($_SESSION['root'] . '/dataProvider/Services.php');
 include_once ($_SESSION['root'] . '/dataProvider/Facilities.php');
 include_once ($_SESSION['root'] . '/dataProvider/Documents.php');
 include_once ($_SESSION['root'] . '/dataProvider/Prescriptions.php');
-include_once ($_SESSION['root'] . '/dataProvider/Orders.php');
 include_once ($_SESSION['root'] . '/dataProvider/DoctorsNotes.php');
 class DocumentHandler
 {
@@ -57,7 +56,6 @@ class DocumentHandler
 		$this->facility      = new Facilities();
 		$this->documents     = new Documents();
 		$this->prescriptions = new Prescriptions();
-		$this->orders        = new Orders();
 		$this->doctorsnotes  = new DoctorsNotes();
 		return;
 	}
@@ -69,25 +67,28 @@ class DocumentHandler
 		if(file_exists($path)){
 			$doc['pid']     = $this->pid;
 			$doc['eid']     = $params->eid;
-			$doc['uid']     = $_SESSION['user']['id'];
+			$doc['uid']     = (isset($params->uid) ? $params->uid : $_SESSION['user']['id']);
 			$doc['docType'] = $this->docType;
 			$doc['name']    = $this->fileName;
 			$doc['url']     = $this->getDocumentUrl();
 			$doc['date']    = date('Y-m-d H:i:s');
 			$this->db->setSQL($this->db->sqlBind($doc, 'patient_documents', 'I'));
 			$this->db->execLog();
-			$params->document_id = $doc_id = $this->db->lastInsertId;
+			$params->document_id = $this->db->lastInsertId;
+
+
+
 			if(isset($params->medications)){
 				$this->prescriptions->addDocumentsPatientInfo($params);
 			} elseif(isset($params->labs)) {
-				$this->orders->addOrdersLabs($params);
+				//$this->orders->addOrdersLabs($params);
 			} elseif(isset($params->DoctorsNote)) {
 				$this->doctorsnotes->addDoctorsNotes($params);
 
 			}
 			return array(
 				'success' => true, 'doc' => array(
-					'id' => $doc_id, 'name' => $this->fileName, 'url' => $this->getDocumentUrl(), 'path' => $path
+					'id' => $params->document_id, 'name' => $this->fileName, 'url' => $this->getDocumentUrl(), 'path' => $path
 				)
 			);
 		} else {
@@ -126,7 +127,7 @@ class DocumentHandler
 
 	protected function getDocumentUrl()
 	{
-		return $_SESSION['site']['url'] . '/patients/' . $this->pid . '/' . $this->docType . '/' . $this->fileName;
+		return $_SESSION['site']['url'] . '/patients/' . $this->pid . '/' . strtolower(str_replace(' ', '_', $this->docType)) . '/' . $this->fileName;
 	}
 
 	protected function reNameFile($file)
@@ -158,7 +159,7 @@ class DocumentHandler
 			$this->pid     = (isset($params->pid)) ? $params->pid : $_SESSION['patient']['pid'];
 			$this->docType = (isset($params->docType)) ? $params->docType : 'orphanDocuments';
 		}
-		$path = $_SESSION['site']['path'] . '/patients/' . $this->pid . '/' . $this->docType . '/';
+		$path = $_SESSION['site']['path'] . '/patients/' . $this->pid . '/' . strtolower(str_replace(' ', '_', $this->docType)) . '/';
 		if(is_dir($path) || mkdir($path, 0777, true)){
 			chmod($path, 0777);
 		}

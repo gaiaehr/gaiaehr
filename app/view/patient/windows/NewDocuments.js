@@ -72,6 +72,20 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 										header:i18n('description'),
 										flex:1,
 										dataIndex:'description'
+									},
+									{
+										xtype:'actioncolumn',
+										width:30,
+										items:[
+											{
+												icon: 'resources/images/icons/preview.png',
+												tooltip: i18n('view_document'),
+												handler: me.onDocumentView,
+												getClass:function(){
+													return 'x-grid-icon-padding';
+												}
+											}
+										]
 									}
 								],
 								listeners:{
@@ -181,6 +195,20 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 										header:i18n('description'),
 										flex:1,
 										dataIndex:'description'
+									},
+									{
+										xtype:'actioncolumn',
+										width:30,
+										items:[
+											{
+												icon: 'resources/images/icons/preview.png',
+												tooltip: i18n('view_document'),
+												handler: me.onDocumentView,
+												getClass:function(){
+													return 'x-grid-icon-padding';
+												}
+											}
+										]
 									}
 								],
 								listeners:{
@@ -282,13 +310,6 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 																	boxLabel: 'CTA Run off Lower Extremity',
 																	name: 'xorder_items',
 																	inputValue: '73206-1'
-																},
-																{
-																	xtype:'textfield',
-																	fieldLabel: 'Other',
-																	name: 'xorder_items',
-																	width:400,
-																	labelWidth:60
 																}
 															]
 														}
@@ -665,17 +686,135 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 																}
 															]
 														}
-
 													]
 												},
 												{
 													title: i18n('xray'),
-													collapsible: true,
-													defaultType: 'textfield',
+													layout:'hbox',
+													defaults:{ width:330 },
 													items :[
 														{
-															fieldLabel: 'Field 1',
-															name: 'field1'
+															xtype:'container',
+															layout:'anchor',
+															margin:'0 0 0 5',
+															defaultType:'checkbox',
+															items:[
+																{
+																	boxLabel: 'X-RAY Abdomen Flat And Erect',
+																	name: 'xorder_items',
+																	inputValue: '74020'
+																},
+																{
+																	boxLabel: 'X-RAY Cervical Spine 3 Views',
+																	name: 'xorder_items',
+																	inputValue: '72040'
+																},
+																{
+																	boxLabel: 'X-RAY Cervical Spine 5 Views',
+																	name: 'xorder_items',
+																	inputValue: '72050'
+																},
+																{
+																	boxLabel: 'X-RAY Cervical Spine 7 Views',
+																	name: 'xorder_items',
+																	inputValue: '72052'
+																},
+																{
+																	boxLabel: 'X-RAY Chest PA/LAT',
+																	name: 'xorder_items',
+																	inputValue: '71020'
+																},
+																{
+																	boxLabel: 'X-RAY Kub',
+																	name: 'xorder_items',
+																	inputValue: '74000'
+																},
+																{
+																	boxLabel: 'X-RAY Neck - Soft Tissue',
+																	name: 'xorder_items',
+																	inputValue: '70360'
+																}
+															]
+														},
+														{
+															xtype:'container',
+															layout:'anchor',
+															defaultType:'checkbox',
+															items:[
+																{
+																	boxLabel: 'X-RAY Lumbar 3 Views',
+																	name: 'xorder_items',
+																	inputValue: '72100-3'
+																},
+																{
+																	boxLabel: 'X-RAY Lumbar 5 Views',
+																	name: 'xorder_items',
+																	inputValue: '72100-5'
+																},
+																{
+																	boxLabel: 'X-RAY Lumbar 7 Views',
+																	name: 'xorder_items',
+																	inputValue: '72100-7'
+																},
+																{
+																	boxLabel: 'X-RAY Orbit',
+																	name: 'xorder_items',
+																	inputValue: '70200'
+																},
+																{
+																	boxLabel: 'X-RAY Pelvis 1 View',
+																	name: 'xorder_items',
+																	inputValue: '72170-1'
+																},
+																{
+																	boxLabel: 'X-RAY Pelvis 2 View',
+																	name: 'xorder_items',
+																	inputValue: '72170-2'
+																},
+																{
+																	boxLabel: 'X-RAY Sinus',
+																	name: 'xorder_items',
+																	inputValue: '70220'
+																}
+															]
+														},
+														{
+															xtype:'container',
+															layout:'anchor',
+															width:400,
+															defaultType:'checkbox',
+															items:[
+																{
+																	boxLabel: 'X-RAY Skull 1 View',
+																	name: 'xorder_items',
+																	inputValue: '70250-1'
+																},
+																{
+																	boxLabel: 'X-RAY Skull 2 View',
+																	name: 'xorder_items',
+																	inputValue: '70250-2'
+																},
+																{
+																	boxLabel: 'X-RAY Skull 3 View',
+																	name: 'xorder_items',
+																	inputValue: '70250-3'
+																},
+																{
+																	boxLabel: 'X-RAY Ribs - Unilateral',
+																	name: 'xorder_items',
+																	inputValue: '71101'
+																},
+																{
+																	boxLabel: 'X-RAY Ribs - Bilateral',
+																	name: 'xorder_items',
+																	inputValue: '71111'
+																},
+																{
+																	boxLabel: 'X-RAY Thoracic Spine',
+																	name: 'xorder_items',
+																	inputValue: '72070'
+																}
+															]
 														}
 													]
 												}
@@ -684,11 +823,20 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 										},
 										{
 											xtype:'textfield',
+											fieldLabel: i18n('other'),
+											name: 'other_items',
+											margin:'5 0 0 5',
+											labelWidth:50,
+											anchor:'100%',
+											emptyText:i18n('other_order_item_help_text')
+										},
+										{
+											xtype:'textfield',
+											fieldLabel:i18n('notes'),
 											name:'note',
 											margin:'5 0 0 5',
 											labelWidth:50,
-											fieldLabel:i18n('notes'),
-											width:700
+											anchor:'100%'
 										}
 									]
 								})
@@ -746,6 +894,20 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 											xtype:'textfield'
 										}
 
+									},
+									{
+										xtype:'actioncolumn',
+										width:30,
+										items:[
+											{
+												icon: 'resources/images/icons/preview.png',
+												tooltip: i18n('view_document'),
+												handler: me.onDocumentView,
+												getClass:function(){
+													return 'x-grid-icon-padding';
+												}
+											}
+										]
 									}
 
 								],
@@ -1330,43 +1492,51 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 	//******************************************************************************************
 
 
-	onCreatePrescription:function(){
-		say('hello');
-		var records = this.prescriptionMedicationsStore.data.items,
-			data = [];
-		say(records);
-		for(var i = 0; i < records.length; i++){
-			data.push(records[i].data);
-		}
-		say('stuck');
-		DocumentHandler.createDocument({medications:data, pid:app.patient.pid, docType:'Rx', documentId:5, eid:app.patient.eid}, function(provider, response){
-			say(response.result);
-		});
-		this.close();
+//	onCreatePrescription:function(){
+//		say('hello');
+//		var records = this.prescriptionMedicationsStore.data.items,
+//			data = [];
+//		say(records);
+//		for(var i = 0; i < records.length; i++){
+//			data.push(records[i].data);
+//		}
+//		say('stuck');
+//		DocumentHandler.createDocument({
+//			medications:data,
+//			pid:app.patient.pid,
+//			docType:'Rx',
+//			documentId:5,
+//			eid:app.patient.eid
+//		}, function(provider, response){
+//
+//			say(response.result);
+//
+//		});
+//		this.close();
+//
+//	},
 
-	},
-
-	onCreateLabs:function(){
-		var me = this,
-			records = me.patientsLabsOrdersStore.data.items,
-			data = [],
-			params;
-		for(var i = 0; i < records.length; i++){
-			data.push(records[i].data);
-		}
-		params = {
-			labs:data,
-			pid:me.pid,
-			eid:me.eid,
-			documentId:4,
-			docType:'Orders'
-		};
-		DocumentHandler.createDocument(params, function(provider, response){
-			say(response.result);
-		});
-		this.close();
-
-	},
+//	onCreateLabs:function(){
+//		var me = this,
+//			records = me.patientsLabsOrdersStore.data.items,
+//			data = [],
+//			params;
+//		for(var i = 0; i < records.length; i++){
+//			data.push(records[i].data);
+//		}
+//		params = {
+//			labs:data,
+//			pid:me.pid,
+//			eid:me.eid,
+//			documentId:4,
+//			docType:'Orders'
+//		};
+//		DocumentHandler.createDocument(params, function(provider, response){
+//			say(response.result);
+//		});
+//		this.close();
+//
+//	},
 
 	beforeXrayCtValidEdit:function(plugin, e){
 		var items = plugin.editor.getForm().getValues().xorder_items,
@@ -1426,6 +1596,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 		for(var i=0; i < itemsArray.length; i++){
 			store.add({loinc:itemsArray[i], title:descriptionArray[i]});
 		}
+		plugin.editor.query('button[action="update"]')[0].enable();
 	},
 
 	beforeLabOrderValidEdit:function(plugin, e){
@@ -1471,5 +1642,16 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 			scope:me,
 			handler:me.onAddOrder
 		});
+	},
+
+	onDocumentView:function(grid, rowIndex){
+		var rec = grid.getStore().getAt(rowIndex),
+			src = rec.data.docUrl;
+		if(src != '' && typeof src != 'undefined'){
+			app.onDocumentView(src);
+		}else{
+			app.msg('Oops!','No document created yet', true);
+		}
+
 	}
 });

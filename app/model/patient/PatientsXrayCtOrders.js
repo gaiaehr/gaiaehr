@@ -15,9 +15,10 @@ Ext.define('App.model.patient.PatientsXrayCtOrders', {
         { name: 'date_created', type: 'date', dateFormat:'Y-m-d H:i:s' },
         { name: 'laboratory_id', type: 'int' },
         { name: 'document_id', type: 'int' },
-        { name: 'order_type', type: 'string', defaultValue:'img' },
+        { name: 'order_type', type: 'string', defaultValue:'rad' },
         { name: 'order_items', type: 'string' },
-        { name: 'note', type: 'string' }
+        { name: 'note', type: 'string' },
+		{ name: 'docUrl', type: 'string' }
 	],
 	proxy : {
 		type: 'direct',

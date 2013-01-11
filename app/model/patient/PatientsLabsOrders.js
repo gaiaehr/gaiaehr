@@ -17,7 +17,9 @@ Ext.define('App.model.patient.PatientsLabsOrders', {
         { name: 'document_id', type: 'int' },
         { name: 'order_type', type: 'string', defaultValue:'lab' },
         { name: 'order_items', type: 'auto' },
-        { name: 'note', type: 'string' }
+        { name: 'note', type: 'string' },
+        { name: 'docUrl', type: 'string' }
+
 	],
 	proxy : {
 		type: 'direct',

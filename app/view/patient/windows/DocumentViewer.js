@@ -17,6 +17,7 @@ Ext.define('App.view.patient.windows.DocumentViewer', {
 	width      : 700,
 	closeAction: 'hide',
 	bodyStyle  : 'background-color:#fff',
+	maximizable:true,
 	modal      : true,
 	defaults   : {
 		margin: 5

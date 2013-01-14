@@ -329,7 +329,7 @@ CREATE TABLE IF NOT EXISTS `emergencies` (
   `uid` bigint(20) DEFAULT NULL,
   `date_created` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `encounters` (
   `eid` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'Encounter ID',
@@ -359,7 +359,7 @@ CREATE TABLE IF NOT EXISTS `encounters` (
   `review_medications` tinyint(1) NOT NULL DEFAULT '0',
   `message` text COMMENT 'message for the visit checkout ',
   PRIMARY KEY (`eid`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `encounter_codes_cpt` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -373,7 +373,7 @@ CREATE TABLE IF NOT EXISTS `encounter_codes_cpt` (
   `place_of_service` text,
   `status` int(1) NOT NULL DEFAULT '0' COMMENT 'billing status of this cpt',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `encounter_codes_hcpcs` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -389,7 +389,7 @@ CREATE TABLE IF NOT EXISTS `encounter_codes_icdx` (
   `code` varchar(255) DEFAULT NULL COMMENT 'code number',
   `code_type` int(11) DEFAULT NULL COMMENT 'CPT4 = 1, ICD9= 2, HCPCS = 3 ',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `encounter_dictation` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -400,13 +400,14 @@ CREATE TABLE IF NOT EXISTS `encounter_dictation` (
   `dictation` longtext,
   `additional_notes` longtext,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `encounter_hcfa_1500_options` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `pid` bigint(20) DEFAULT NULL,
   `eid` bigint(20) DEFAULT NULL,
   `uid` bigint(20) DEFAULT NULL,
+  `date` datetime DEFAULT NULL,
   `employment_related` text,
   `auto_accident` text,
   `state` text,
@@ -424,7 +425,7 @@ CREATE TABLE IF NOT EXISTS `encounter_hcfa_1500_options` (
   `replacement_claim` text,
   `notes` text,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=68 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `encounter_history` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -433,7 +434,7 @@ CREATE TABLE IF NOT EXISTS `encounter_history` (
   `user` varchar(255) DEFAULT NULL,
   `event` text,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=725 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `encounter_review_of_systems` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -695,7 +696,7 @@ CREATE TABLE IF NOT EXISTS `encounter_review_of_systems_check` (
   `scoliosis` text,
   `lupus` text,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `encounter_soap` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -708,7 +709,7 @@ CREATE TABLE IF NOT EXISTS `encounter_soap` (
   `assessment` longtext,
   `plan` longtext,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `encounter_vitals` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -1697,9 +1698,9 @@ CREATE TABLE IF NOT EXISTS `patient_pools` (
   `priority` varchar(255) DEFAULT NULL COMMENT 'priority 1 is the highest',
   `in_queue` tinyint(1) DEFAULT '1' COMMENT 'true = patient is in queue, false = the patient it been treated by someone',
   `checkout_timer` time DEFAULT NULL COMMENT 'timer user to automatically checkout from the pool area, and return to the previous pool area ',
-  `parent_id` bigint(20) NOT NULL COMMENT 'parent ID = the id of the checkin pool (this will maitain a relation between all pools of that visit)',
+  `parent_id` bigint(20) DEFAULT NULL COMMENT 'parent ID = the id of the checkin pool (this will maitain a relation between all pools of that visit)',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `patient_prescriptions` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,

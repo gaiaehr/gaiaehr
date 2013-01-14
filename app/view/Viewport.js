@@ -1184,6 +1184,7 @@ Ext.define('App.view.Viewport', {
         });
     },
     beforeAppRender: function(){
+
     },
     getCurrPatient: function(){
         return this.patient.pid;

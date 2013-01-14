@@ -159,21 +159,20 @@ class Patient
 				$data['lname'] .= $data['lname'] . ' ' . $fo . ' ';
 			}
 		}
+		$data['date_created'] = Time::getLocalTime();
+
 		$this->db->setSQL($this->db->sqlBind($data, 'patient_demographics', 'I'));
 		$this->db->execLog();
 		$pid = $this->db->lastInsertId;
-		if(!$this->createPatientDir($pid)){
-			return array(
-				'success' => false, 'error' => 'Patient directory failed'
-			);
-		}
-		$this->createPatientQrCode($pid, $name);
-		$this->createDefaultPhotoId($pid);
-		return array(
-			'success' => true, 'patient' => array(
-				'pid' => $pid, 'fullname' => $name
-			)
-		);
+        if($pid == 0){
+            return array('success' => false, 'error' => 'Unable to get PID for this emergency.');
+        }elseif(!$this->createPatientDir($pid)){
+			return array('success' => false, 'error' => 'Patient directory failed');
+		}else{
+            $this->createPatientQrCode($pid, $name);
+            $this->createDefaultPhotoId($pid);
+            return array('success' => true, 'patient' => array('pid' => $pid, 'fullname' => $name));
+        }
 	}
 
 	/**

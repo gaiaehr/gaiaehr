@@ -224,28 +224,31 @@ class CCR
 		$xmlDom = new DOMDocument();
 		$xmlDom->loadXML($this->ccr->saveXML());
 		$ccr_ccd = new DOMDocument();
-		$ccr_ccd->load($_SESSION['root'] . '/lib/ccr/ccd/ccr_ccd.xsl');
+		$ccr_ccd->load('../lib/ccr/ccd/ccr_ccd.xsl');
+//
 
-		$xslt = new XSLTProcessor();
-		$xslt->importStylesheet($ccr_ccd);
-		$ccd                     = new DOMDocument();
-		$ccd->preserveWhiteSpace = false;
-		$ccd->formatOutput       = true;
-		$ccd->loadXML($xslt->transformToXML($xmlDom));
-		$ccd->save($_SESSION['site']['temp']['path'] . '/ccdDebug.xml');
-		if($raw == 'yes') {
-			// simply send the xml to a textarea (nice debugging tool)
-			echo '<textarea rows="35" cols="500" style="width:100%; height:99%" readonly>';
-			echo $ccd->saveXml();
-			echo '</textarea>';
-			return;
+		if(class_exists('XSLTProcessor')){
+			$xslt = new XSLTProcessor();
+			$xslt->importStylesheet($ccr_ccd);
+			$ccd                     = new DOMDocument();
+			$ccd->preserveWhiteSpace = false;
+			$ccd->formatOutput       = true;
+			$ccd->loadXML($xslt->transformToXML($xmlDom));
+			$ccd->save($_SESSION['site']['temp']['path'] . '/ccdDebug.xml');
+			if($raw == 'yes') {
+				// simply send the xml to a textarea (nice debugging tool)
+				echo '<textarea rows="35" cols="500" style="width:100%; height:99%" readonly>';
+				echo $ccd->saveXml();
+				echo '</textarea>';
+				return;
+			}
+			$ss = new DOMDocument();
+			$ss->load($_SESSION['root'] . '/lib/ccr/stylesheet/cda.xsl');
+			$xslt->importStyleSheet($ss);
+			print $xslt->transformToXML($ccd);
+		}else{
+			print 'PHP Error Class \'XsltProcessor\' not found. <a href="http://php.net/manual/en/xsl.installation.php" target="_blank">[more info]</a>';
 		}
-		$ss = new DOMDocument();
-		$ss->load($_SESSION['root'] . '/lib/ccr/stylesheet/cda.xsl');
-		$xslt->importStyleSheet($ss);
-		$html = $xslt->transformToXML($ccd);
-		echo $html;
-
 	}
 
 	function sourceType($uuid)

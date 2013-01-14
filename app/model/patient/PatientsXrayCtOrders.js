@@ -9,6 +9,7 @@ Ext.define('App.model.patient.PatientsXrayCtOrders', {
 	extend: 'Ext.data.Model',
 	fields: [
         { name: 'id', type: 'int' },
+        { name: 'eid', type: 'int' },
         { name: 'pid', type: 'int' },
         { name: 'uid', type: 'int' },
         { name: 'description', type: 'string' },

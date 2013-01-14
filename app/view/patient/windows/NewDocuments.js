@@ -1578,6 +1578,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 		grid.editingPlugin.cancelEdit();
 		store.insert(0, {
 			pid:me.pid,
+			eid:me.eid,
 			uid:app.user.id,
 			date_created:new Date()
 		});

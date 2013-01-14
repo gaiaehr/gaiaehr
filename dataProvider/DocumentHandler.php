@@ -80,8 +80,6 @@ class DocumentHandler
 
 			if(isset($params->medications)){
 				$this->prescriptions->addDocumentsPatientInfo($params);
-			} elseif(isset($params->labs)) {
-				//$this->orders->addOrdersLabs($params);
 			} elseif(isset($params->DoctorsNote)) {
 				$this->doctorsnotes->addDoctorsNotes($params);
 
@@ -198,9 +196,8 @@ class DocumentHandler
 	{
 		$data                  = get_object_vars($params);
 		$data['update_by_uid'] = $_SESSION['user']['id'];
-		$id                    = $data['id'];
 		unset($data['id']);
-		$this->db->setSQL($this->db->sqlBind($data, "documents_templates", "U", "id='$id'"));
+		$this->db->setSQL($this->db->sqlBind($data, 'documents_templates', 'U', array('id' => $params->id)));
 		$this->db->execLog();
 		return $params;
 

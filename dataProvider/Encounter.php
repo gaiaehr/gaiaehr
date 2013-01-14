@@ -24,6 +24,7 @@ if(!isset($_SESSION)){
 	session_cache_limiter('private');
 }
 include_once ($_SESSION['root'] . '/classes/dbHelper.php');
+include_once ($_SESSION['root'] . '/classes/Time.php');
 include_once ($_SESSION['root'] . '/dataProvider/Patient.php');
 include_once ($_SESSION['root'] . '/dataProvider/User.php');
 include_once ($_SESSION['root'] . '/dataProvider/PoolArea.php');
@@ -141,7 +142,7 @@ class Encounter
 		$this->db->setSQL($sql);
 		$this->db->execLog();
 		$eid     = $this->db->lastInsertId;
-		$default = array('pid' => $params->pid, 'eid' => $eid);
+		$default = array('pid' => $params->pid, 'eid' => $eid, 'uid' => $params->open_uid, 'date' => Time::getLocalTime());
 		$this->db->setSQL($this->db->sqlBind($default, 'encounter_review_of_systems', 'I'));
 		$this->db->execOnly();
 		$this->db->setSQL($this->db->sqlBind($default, 'encounter_review_of_systems_check', 'I'));

@@ -267,12 +267,14 @@ Ext.define('App.view.patient.ItemsToReview', {
         });
     },
     onReviewAll: function(){
-        var me = this, panel = me.down('form'), form = panel.getForm(), values = form.getFieldValues(), params = { eid: app.patient.eid };
+        var me = this,
+            panel = me.down('form'),
+            form = panel.getForm(),
+            values = form.getFieldValues();
+
         values.eid = app.patient.eid;
-        Medical.reviewAllMedicalWindowEncounter(params, function(provider, response){
-        });
         if(form.isValid()){
-           Encounter.onReviewAllItemsToReview(values, function(provider, response){
+            Medical.reviewAllMedicalWindowEncounter(values, function(provider, response){
                 if(response.result.success){
                     app.msg('Sweet!', i18n('items_to_review_save_and_review'))
                 }else{

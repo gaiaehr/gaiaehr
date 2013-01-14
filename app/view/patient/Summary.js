@@ -276,16 +276,16 @@ Ext.define('App.view.patient.Summary', {
                         editor: {
                             xtype: 'textfield'
                         }
-                    },
-                    {
-                        text: i18n('active'),
-                        dataIndex: 'active',
-                        width: 50,
-                        renderer: me.boolRenderer,
-                        editor: {
-                            xtype: 'checkbox'
-                        }
                     }
+//                    {
+//                        text: i18n('active'),
+//                        dataIndex: 'active',
+//                        width: 50,
+//                        renderer: me.boolRenderer,
+//                        editor: {
+//                            xtype: 'checkbox'
+//                        }
+//                    }
                 ],
                 tbar: [
                     {

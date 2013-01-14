@@ -313,6 +313,10 @@ class PoolArea
 
 //$e = new PoolArea();
 //echo '<pre>';
-//print_r($e->getPatientsByPoolAreaAccess());
+//$params           = new stdClass();
+//$params->pid      = 1;
+//$params->priority = 'Immediate';
+//$params->sendTo   = 3;
+//print_r($e->sendPatientToPoolArea($params));
 //print '<br><br>Session ----->>> <br><br>';
 //print_r($_SESSION);

@@ -871,12 +871,12 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 								store:me.patientPrescriptionsStore,
 								flex:1,
 								margin:'5 5 0 5',
-								plugins:[
-									me.edditing = Ext.create('Ext.grid.plugin.RowEditing', {
-										clicksToEdit:2,
-										errorSummary:false
-									})
-								],
+//								plugins:[
+//									me.edditing = Ext.create('Ext.grid.plugin.RowEditing', {
+//										clicksToEdit:2,
+//										errorSummary:false
+//									})
+//								],
 								columns:[
 									{
 										header:i18n('date'),
@@ -915,206 +915,278 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 								listeners:{
 									scope:me,
 									render:me.onPrescriptionsGridRender,
-									itemclick:me.onPrescriptionClick
-								}
-							}),
+									beforeedit:me.onPrescriptionBeforeEdit
+								},
+                                plugins:Ext.create('App.ux.grid.RowFormEditing', {
+                                    autoCancel:false,
+                                    autoSync: true,
+                                    errorSummary:false,
+                                    saveBtnEnabled:true,
+                                    clicksToEdit:1,
+                                    formItems:[
+                                        me.prescriptionMedicationsGrid = Ext.widget('grid',{
+                                            title:i18n('medications'),
+                                            store:me.prescriptionMedicationsStore,
+                                            frame:true,
+                                            columns:[
+                                                {
+                                                    header:i18n('name'),
+                                                    flex:1,
+                                                    dataIndex:'STR',
+                                                    sortable:false,
+                                                    hideable: false
+                                                },
+                                                {
+                                                    header:i18n('dose'),
+                                                    width:75,
+                                                    dataIndex:'dose',
+                                                    sortable:false,
+                                                    hideable: false
+                                                },
+                                                {
+                                                    header:i18n('form'),
+                                                    width:100,
+                                                    dataIndex:'form',
+                                                    sortable:false,
+                                                    hideable: false
+                                                },
+                                                {
+                                                    header:i18n('route'),
+                                                    width:100,
+                                                    dataIndex:'route',
+                                                    sortable:false,
+                                                    hideable: false
+                                                },
+                                                {
+                                                    header:i18n('when'),
+                                                    width:100,
+                                                    dataIndex:'prescription_when',
+                                                    sortable:false,
+                                                    hideable: false
+                                                },
+                                                {
+                                                    header:i18n('often'),
+                                                    width:50,
+                                                    dataIndex:'prescription_often',
+                                                    sortable:false,
+                                                    hideable: false
+                                                },
+                                                {
+                                                    header:i18n('begin_date'),
+                                                    width:100,
+                                                    dataIndex:'begin_date',
+                                                    sortable:false,
+                                                    hideable: false
+                                                },
+                                                {
+                                                    header:i18n('end_date'),
+                                                    width:100,
+                                                    dataIndex:'end_date',
+                                                    sortable:false,
+                                                    hideable: false
+                                                },
+                                                {
+                                                    header:i18n('refill'),
+                                                    width:50,
+                                                    dataIndex:'refill',
+                                                    sortable:false,
+                                                    hideable: false
+                                                },
+                                                {
+                                                    header:i18n('related_dx'),
+                                                    width:100,
+                                                    dataIndex:'ICDS',
+                                                    sortable:false,
+                                                    hideable: false,
+                                                    editor:me.encounderIcdsCodes = Ext.widget('encountericdscombo',{
+                                                        name:'ICDS',
+                                                        width:570
+                                                    })
+                                                }
+
+                                            ],
+                                            listeners:{
+                                                scope:me,
+                                                render:me.onPrescriptionMedicationsGridRender
+                                            },
+                                            plugins:[
+                                                me.edditing = Ext.create('Ext.grid.plugin.RowEditing', {
+                                                    clicksToEdit:2,
+                                                    errorSummary:false
+                                                })
+                                            ]
+//                                            plugins:Ext.create('App.ux.grid.RowFormEditing', {
+//                                                autoCancel:false,
+//                                                errorSummary:false,
+//                                                clicksToEdit:1,
+//                                                formItems:[
+//                                                    {
+//                                                        xtype:'container',
+//                                                        layout:{
+//                                                            type:'vbox',
+//                                                            align:'stretch'
+//                                                        },
+//                                                        items:[
+//                                                            {
+//                                                                xtype:'fieldcontainer',
+//                                                                layout:'hbox',
+//                                                                margin:'0 0 0 5',
+//                                                                fieldLabel:i18n('search'),
+//                                                                labelWidth:80,
+//                                                                items:[
+//
+//                                                                ]
+//                                                            },
+//                                                            {
+//                                                                xtype:'textfield',
+//                                                                name:'RXCUI',
+//                                                                hidden:true
+//                                                            },
+//                                                            {
+//                                                                xtype:'textfield',
+//                                                                name:'CODE',
+//                                                                hidden:true
+//                                                            },
+//                                                            {
+//                                                                /**
+//                                                                 * Line one
+//                                                                 */
+//                                                                xtype:'fieldcontainer',
+//                                                                layout:'hbox',
+//                                                                margin:'0 0 0 0',
+//                                                                defaults:{ margin:'5 0 5 5'},
+//                                                                items:[
+//                                                                    me.prescriptionMedText = Ext.widget('textfield',{
+//                                                                        fieldLabel:i18n('medication'),
+//                                                                        width:357,
+//                                                                        labelWidth:80,
+//                                                                        name:'STR'
+//                                                                    }),
+//                                                                    me.prescriptionDoseText = Ext.widget('textfield',{
+//                                                                        fieldLabel:i18n('dose'),
+//                                                                        labelWidth:40,
+//                                                                        name:'dose',
+//                                                                        width:293
+//                                                                    })
+//                                                                ]
+//
+//                                                            },
+//                                                            {
+//                                                                /**
+//                                                                 * Line two
+//                                                                 */
+//                                                                xtype:'fieldcontainer',
+//                                                                layout:'hbox',
+//                                                                margin:'0 0 5 5',
+//                                                                defaults:{ margin:'0 0 0 5'},
+//                                                                fieldLabel:i18n('take'),
+//                                                                labelWidth:80,
+//                                                                items:[
+//                                                                    {
+//                                                                        xtype:'numberfield',
+//                                                                        name:'take_pills',
+//                                                                        allowBlank:false,
+//                                                                        margin:0,
+//                                                                        width:50,
+//                                                                        value:0,
+//                                                                        minValue:0
+//                                                                    },
+//                                                                    me.prescriptionMedTypeCmb = Ext.widget('mitos.prescriptiontypes',{
+//                                                                        xtype:'mitos.prescriptiontypes',
+//                                                                        name:'form',
+//                                                                        width:130
+//                                                                    }),
+//                                                                    {
+//                                                                        xtype:'mitos.prescriptionhowto',
+//                                                                        name:'route',
+//                                                                        width:130
+//                                                                    },
+//                                                                    {
+//                                                                        xtype:'mitos.prescriptionoften',
+//                                                                        name:'prescription_often',
+//                                                                        width:130
+//                                                                    },
+//                                                                    {
+//                                                                        xtype:'mitos.prescriptionwhen',
+//                                                                        name:'prescription_when',
+//                                                                        width:110
+//                                                                    }
+//                                                                ]
+//                                                            },
+//                                                            {
+//                                                                /**
+//                                                                 * Line three
+//                                                                 */
+//                                                                xtype:'fieldcontainer',
+//                                                                layout:'hbox',
+//                                                                margin:'0 0 0 5',
+//                                                                defaults:{ margin:'0 0 5 5'},
+//                                                                fieldLabel:i18n('dispense'),
+//                                                                labelWidth:80,
+//                                                                items:[
+//                                                                    {
+//                                                                        xtype:'numberfield',
+//                                                                        name:'dispense',
+//                                                                        margin:0,
+//                                                                        width:50,
+//                                                                        value:0,
+//                                                                        minValue:0
+//                                                                    },
+//                                                                    {
+//                                                                        fieldLabel:i18n('refill'),
+//                                                                        xtype:'numberfield',
+//                                                                        name:'refill',
+//                                                                        labelWidth:35,
+//                                                                        width:140,
+//                                                                        value:0,
+//                                                                        minValue:0
+//                                                                    },
+//                                                                    {
+//                                                                        fieldLabel:i18n('begin_date'),
+//                                                                        xtype:'datefield',
+//                                                                        width:190,
+//                                                                        labelWidth:70,
+//                                                                        format:globals['date_display_format'],
+//                                                                        name:'begin_date'
+//
+//                                                                    },
+//                                                                    {
+//                                                                        fieldLabel:i18n('end_date'),
+//                                                                        xtype:'datefield',
+//                                                                        width:175,
+//                                                                        labelWidth:60,
+//                                                                        format:globals['date_display_format'],
+//                                                                        name:'end_date'
+//                                                                    }
+//                                                                ]
+//
+//                                                            },
+//                                                            {
+//                                                                xtype:'fieldcontainer',
+//                                                                layout:'hbox',
+//                                                                margin:'0 0 0 5',
+//                                                                fieldLabel:i18n('related_dx'),
+//                                                                labelWidth:80,
+//                                                                items:[
+//                                                                    me.encounderIcdsCodes = Ext.widget('encountericdscombo',{
+//                                                                        name:'ICDS',
+//                                                                        width:570
+//                                                                    })
+//                                                                ]
+//                                                            }
+//                                                        ]
+//
+//                                                    }
+//                                                ]
+//                                            })
+                                        })
+                                    ]
+                                })
+							})
 							/**
 							 * Medication Grid
 							 */
-							me.prescriptionMedicationsGrid = Ext.widget('grid',{
-								title:i18n('medications'),
-								store:me.prescriptionMedicationsStore,
-								height:325,
-								margin:5,
-								columns:[
-									{
-										header:i18n('name'),
-										flex:1,
-										dataIndex:'STR'
-									},
-									{
-										header:i18n('refill'),
-										width:100,
-										dataIndex:'refill'
-									}
 
-								],
-								listeners:{
-									scope:me,
-									render:me.onPrescriptionMedicationsGridRender
-								},
-								plugins:Ext.create('App.ux.grid.RowFormEditing', {
-									autoCancel:false,
-									errorSummary:false,
-									clicksToEdit:1,
-									formItems:[
-										{
-											xtype:'container',
-											layout:{
-												type:'vbox',
-												align:'stretch'
-											},
-											items:[
-												{
-													xtype:'fieldcontainer',
-													layout:'hbox',
-													margin:'0 0 0 5',
-													fieldLabel:i18n('search'),
-													labelWidth:80,
-													items:[
-														{
-															xtype:'rxnormlivetsearch',
-															width:570,
-															listeners:{
-																scope:me,
-																select:me.onRxnormLiveSearchSelect
-															}
-														}
-													]
-												},
-												{
-													xtype:'textfield',
-													name:'RXCUI',
-													hidden:true
-												},
-												{
-													xtype:'textfield',
-													name:'CODE',
-													hidden:true
-												},
-												{
-													/**
-													 * Line one
-													 */
-													xtype:'fieldcontainer',
-													layout:'hbox',
-													margin:'0 0 0 0',
-													defaults:{ margin:'5 0 5 5'},
-													items:[
-														me.prescriptionMedText = Ext.widget('textfield',{
-															fieldLabel:i18n('medication'),
-															width:357,
-															labelWidth:80,
-															name:'STR'
-														}),
-														me.prescriptionDoseText = Ext.widget('textfield',{
-															fieldLabel:i18n('dose'),
-															labelWidth:40,
-															name:'dose',
-															width:293
-														})
-													]
-
-												},
-												{
-													/**
-													 * Line two
-													 */
-													xtype:'fieldcontainer',
-													layout:'hbox',
-													margin:'0 0 5 5',
-													defaults:{ margin:'0 0 0 5'},
-													fieldLabel:i18n('take'),
-													labelWidth:80,
-													items:[
-														{
-															xtype:'numberfield',
-															name:'take_pills',
-															allowBlank:false,
-															margin:0,
-															width:50,
-															value:0,
-															minValue:0
-														},
-														me.prescriptionMedTypeCmb = Ext.widget('mitos.prescriptiontypes',{
-															xtype:'mitos.prescriptiontypes',
-															name:'form',
-															width:130
-														}),
-														{
-															xtype:'mitos.prescriptionhowto',
-															name:'route',
-															width:130
-														},
-														{
-															xtype:'mitos.prescriptionoften',
-															name:'prescription_often',
-															width:130
-														},
-														{
-															xtype:'mitos.prescriptionwhen',
-															name:'prescription_when',
-															width:110
-														}
-													]
-												},
-												{
-													/**
-													 * Line three
-													 */
-													xtype:'fieldcontainer',
-													layout:'hbox',
-													margin:'0 0 0 5',
-													defaults:{ margin:'0 0 5 5'},
-													fieldLabel:i18n('dispense'),
-													labelWidth:80,
-													items:[
-														{
-															xtype:'numberfield',
-															name:'dispense',
-															margin:0,
-															width:50,
-															value:0,
-															minValue:0
-														},
-														{
-															fieldLabel:i18n('refill'),
-															xtype:'numberfield',
-															name:'refill',
-															labelWidth:35,
-															width:140,
-															value:0,
-															minValue:0
-														},
-														{
-															fieldLabel:i18n('begin_date'),
-															xtype:'datefield',
-															width:190,
-															labelWidth:70,
-															format:globals['date_display_format'],
-															name:'begin_date'
-
-														},
-														{
-															fieldLabel:i18n('end_date'),
-															xtype:'datefield',
-															width:175,
-															labelWidth:60,
-															format:globals['date_display_format'],
-															name:'end_date'
-														}
-													]
-
-												},
-												{
-													xtype:'fieldcontainer',
-													layout:'hbox',
-													margin:'0 0 0 5',
-													fieldLabel:i18n('related_dx'),
-													labelWidth:80,
-													items:[
-														me.encounderIcdsCodes = Ext.widget('encountericdscombo',{
-															name:'ICDS',
-															width:570
-														})
-													]
-												}
-											]
-
-										}
-									]
-								})
-							})
 						],
 						bbar:[
 							'->', {
@@ -1324,28 +1396,28 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 		var formPanel = combo.up('form'),
 			form = formPanel.getForm();
 		combo.reset();
-		formPanel.el.mask('loading_data...');
+		//formPanel.el.mask('loading_data...');
 		Rxnorm.getMedicationAttributesByCODE(record[0].data.CODE, function(provider, response){
 			formPanel.el.unmask();
-			form.findField('RXCUI').setValue(record[0].data.RXCUI);
-			form.findField('CODE').setValue(record[0].data.CODE);
-			form.findField('STR').setValue(record[0].data.STR);
-			form.findField('route').setValue(response.result.DRT);
-			form.findField('dose').setValue(response.result.DST);
-			form.findField('form').setValue(response.result.DDF);
+//			form.findField('RXCUI').setValue(record[0].data.RXCUI);
+//			form.findField('CODE').setValue(record[0].data.CODE);
+//			form.findField('STR').setValue(record[0].data.STR);
+//			form.findField('route').setValue(response.result.DRT);
+//			form.findField('dose').setValue(response.result.DST);
+//			form.findField('form').setValue(response.result.DDF);
 		});
 	},
 
 	/**
 	 * OK!
-	 * @param grid
-	 * @param record
+	 * @param plugin
+	 * @param e
 	 */
-	onPrescriptionClick:function(grid, record){
-		this.fireEvent('prescriptiongridclick', grid, record);
-		this.prescriptionMedicationsStore.proxy.extraParams = {prescription_id:record.data.id};
+	onPrescriptionBeforeEdit:function(plugin, e){
+		this.fireEvent('prescriptiongridclick', e.grid, e.record);
+		this.prescriptionMedicationsStore.proxy.extraParams = {prescription_id: e.record.data.id};
 		this.prescriptionMedicationsStore.load();
-		this.addMedicationBtn.setDisabled(record.data.eid != this.eid);
+		//this.addMedicationBtn.setDisabled(e.record.data.eid != this.eid);
 	},
 
 	/**
@@ -1475,13 +1547,22 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 	onPrescriptionMedicationsGridRender:function(){
 		var me = this;
 		me.prescriptionMedicationsGrid.dockedItems.items[0].add(
-			me.addMedicationBtn = Ext.widget('button',{
-				text:i18n('add_medication'),
-				scope:me,
-				iconCls:'icoAdd',
-				disabled:true,
-				handler:me.onAddPrescriptionMedication
-			})
+//			me.addMedicationBtn = Ext.widget('button',{
+//				text:i18n('add_medication'),
+//				scope:me,
+//				iconCls:'icoAdd',
+//				disabled:true,
+//				handler:me.onAddPrescriptionMedication
+//			}),
+            {
+                xtype:'rxnormlivetsearch',
+                labelField:'Add Medication',
+                width:500,
+                listeners:{
+                    scope:me,
+                    select:me.onRxnormLiveSearchSelect
+                }
+            }
 		);
 	},
 
@@ -1492,51 +1573,6 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 	//******************************************************************************************
 
 
-//	onCreatePrescription:function(){
-//		say('hello');
-//		var records = this.prescriptionMedicationsStore.data.items,
-//			data = [];
-//		say(records);
-//		for(var i = 0; i < records.length; i++){
-//			data.push(records[i].data);
-//		}
-//		say('stuck');
-//		DocumentHandler.createDocument({
-//			medications:data,
-//			pid:app.patient.pid,
-//			docType:'Rx',
-//			documentId:5,
-//			eid:app.patient.eid
-//		}, function(provider, response){
-//
-//			say(response.result);
-//
-//		});
-//		this.close();
-//
-//	},
-
-//	onCreateLabs:function(){
-//		var me = this,
-//			records = me.patientsLabsOrdersStore.data.items,
-//			data = [],
-//			params;
-//		for(var i = 0; i < records.length; i++){
-//			data.push(records[i].data);
-//		}
-//		params = {
-//			labs:data,
-//			pid:me.pid,
-//			eid:me.eid,
-//			documentId:4,
-//			docType:'Orders'
-//		};
-//		DocumentHandler.createDocument(params, function(provider, response){
-//			say(response.result);
-//		});
-//		this.close();
-//
-//	},
 
 	beforeXrayCtValidEdit:function(plugin, e){
 		var items = plugin.editor.getForm().getValues().xorder_items,

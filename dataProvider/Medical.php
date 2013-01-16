@@ -30,10 +30,7 @@ if(!isset($_SESSION)) {
 	session_start();
 	session_cache_limiter('private');
 }
-include_once ($_SESSION['root'] . '/dataProvider/Patient.php');
-include_once ($_SESSION['root'] . '/dataProvider/User.php');
 include_once ($_SESSION['root'] . '/dataProvider/Laboratories.php');
-include_once ($_SESSION['root'] . '/dataProvider/Medications.php');
 include_once ($_SESSION['root'] . '/dataProvider/Rxnorm.php');
 include_once ($_SESSION['root'] . '/classes/dbHelper.php');
 class Medical
@@ -42,25 +39,19 @@ class Medical
 	 * @var dbHelper
 	 */
 	private $db;
-	/**
-	 * @var User
-	 */
-	private $user;
-	/**
-	 * @var Patient
-	 */
-	private $patient;
-	private $laboratories;
-	private $medications;
-	private $rxnorm;
+    /**
+     * @var Laboratories
+     */
+    private $laboratories;
+    /**
+     * @var Rxnorm
+     */
+    private $rxnorm;
 
 	function __construct()
 	{
 		$this->db           = new dbHelper();
-		$this->user         = new User();
-		$this->patient      = new Patient();
 		$this->laboratories = new Laboratories();
-		$this->medications  = new Medications();
 		$this->rxnorm  = new Rxnorm();
 		return;
 	}
@@ -74,7 +65,7 @@ class Medical
 	/*************************************************************************************************************/
 	public function getImmunizationsList()
 	{
-		$sql = "SELECT * FROM codes WHERE code_type='100'";
+		$sql = "SELECT * FROM cvx_codes";
 		$this->db->setSQL($sql);
 		return $this->db->fetchRecords(PDO::FETCH_ASSOC);
 	}

@@ -19,7 +19,7 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 if (!isset($_SESSION)) {
-    session_name("GaiaEHR");
+    session_name('GaiaEHR');
     session_start();
     session_cache_limiter('private');
 }
@@ -36,19 +36,10 @@ class Orders
         return;
     }
 
-//    public function addOrdersLabs($params)
-//    {
-//        foreach ($params->labs as $lab) {
-//            $foo = array();
-//            $foo['uid'] = $_SESSION['user']['id'];
-//            $foo['pid'] = $_SESSION['patient']['pid'];
-//            $foo['document_id'] = $params->document_id;
-//            $foo['labs'] = $lab->laboratories;
-//            $this->db->setSQL($this->db->sqlBind($foo, 'patient_orders', 'I'));
-//            $this->db->execLog();
-//        }
-//    }
-
+    /**
+     * @param $params
+     * @return array
+     */
     public function getPatientLabOrders($params)
     {
         $this->db->setSQL("SELECT patient_orders.*,
@@ -60,6 +51,10 @@ class Orders
         return $this->db->fetchRecords(PDO::FETCH_ASSOC);
     }
 
+    /**
+     * @param $params
+     * @return mixed
+     */
     public function addPatientLabOrder($params)
     {
         $data = get_object_vars($params);
@@ -85,6 +80,10 @@ class Orders
         return $params;
     }
 
+    /**
+     * @param $params
+     * @return mixed
+     */
     public function updatePatientLabOrder($params)
     {
         $data = get_object_vars($params);
@@ -109,6 +108,10 @@ class Orders
         return $params;
     }
 
+    /**
+     * @param $params
+     * @return array
+     */
     public function getPatientXrayCtOrders($params)
     {
         $this->db->setSQL("SELECT patient_orders.*,
@@ -120,6 +123,10 @@ class Orders
         return $this->db->fetchRecords(PDO::FETCH_ASSOC);
     }
 
+    /**
+     * @param $params
+     * @return mixed
+     */
     public function addPatientXrayCtOrder($params)
     {
         $data = get_object_vars($params);
@@ -146,6 +153,10 @@ class Orders
         return $params;
     }
 
+    /**
+     * @param $params
+     * @return mixed
+     */
     public function updatePatientXrayCtOrder($params)
     {
         $data = get_object_vars($params);

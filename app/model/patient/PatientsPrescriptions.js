@@ -14,7 +14,9 @@ Ext.define('App.model.patient.PatientsPrescriptions', {
 		{ name: 'uid', type:'int' },
 		{ name: 'created_date', type:'date', dateFormat:'Y-m-d H:i:s'} ,
 		{ name: 'note', type:'string' },
-		{ name: 'docUrl', type: 'string' }
+		{ name: 'document_id', type: 'int' },
+		{ name: 'docUrl', type: 'string' },
+		{ name: 'medications'}
 	],
 	proxy : {
 		type: 'direct',

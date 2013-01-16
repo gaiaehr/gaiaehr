@@ -26,28 +26,16 @@ Ext.define('App.ux.LiveMedicationSearch',
 	{
 		var me = this;
 
-		Ext.define('liveMedicationsSearchModel',
-		{
+		Ext.define('liveMedicationsSearchModel',{
 			extend : 'Ext.data.Model',
 			fields : [
-			{
-				name : 'id'
-			},
-			{
-				name : 'PROPRIETARYNAME'
-			},
-			{
-				name : 'PRODUCTNDC'
-			},
-			{
-				name : 'NONPROPRIETARYNAME'
-			},
-			{
-				name : 'ACTIVE_NUMERATOR_STRENGTH'
-			},
-			{
-				name : 'ACTIVE_INGRED_UNIT'
-			}],
+				{ name:'id' },
+				{ name:'PROPRIETARYNAME' },
+				{ name:'PRODUCTNDC' },
+				{ name:'NONPROPRIETARYNAME' },
+				{ name:'ACTIVE_NUMERATOR_STRENGTH' },
+				{ name:'ACTIVE_INGRED_UNIT' }
+			],
 			proxy :
 			{
 				type : 'direct',
@@ -63,15 +51,13 @@ Ext.define('App.ux.LiveMedicationSearch',
 			}
 		});
 
-		me.store = Ext.create('Ext.data.Store',
-		{
+		me.store = Ext.create('Ext.data.Store',{
 			model : 'liveMedicationsSearchModel',
 			pageSize : 10,
 			autoLoad : false
 		});
 
-		Ext.apply(this,
-		{
+		Ext.apply(this,{
 			store : me.store,
 			displayField : 'PROPRIETARYNAME',
 			valueField : 'id',
@@ -92,7 +78,7 @@ Ext.define('App.ux.LiveMedicationSearch',
 				}
 			},
 			pageSize : 10
-		}, null);
+		});
 
 		me.callParent();
 	}

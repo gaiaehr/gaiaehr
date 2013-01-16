@@ -300,7 +300,7 @@ $LANG = array(
 	'dose'									=> 'Dose',
 	'dose_mg'								=> 'Dose mg',
 	'take'									=> 'Take',
-	'route'									=> 'route',
+	'route'									=> 'Route',
 	'new_medication'						=> 'New Medication',
 	'new_doctors_note'						=> 'New Doctors Note',
 	'preventive_care_window'				=> 'Preventive Care Window',
@@ -1146,5 +1146,6 @@ $LANG = array(
     'add_item'						        => 'Add Item',
     'new_item'						        => 'New Item',
     'other'						            => 'Other',
-    'other_order_item_help_text'            => 'Use commas (,) if more than one. ei: X-RAY Thoracic Spine, X-RAY Skull 3 View'
+    'other_order_item_help_text'            => 'Use commas (,) if more than one. ei: X-RAY Thoracic Spine, X-RAY Skull 3 View',
+    'form'                                  => 'Form'
 );

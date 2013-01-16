@@ -24,22 +24,12 @@ if(!isset($_SESSION)){
 	session_cache_limiter('private');
 }
 include_once ($_SESSION['root'] . '/classes/dbHelper.php');
-include_once ($_SESSION['root'] . '/dataProvider/Patient.php');
-include_once ($_SESSION['root'] . '/dataProvider/User.php');
-include_once ($_SESSION['root'] . '/dataProvider/Encounter.php');
-include_once ($_SESSION['root'] . '/dataProvider/Services.php');
-include_once ($_SESSION['root'] . '/dataProvider/Facilities.php');
 include_once ($_SESSION['root'] . '/dataProvider/Documents.php');
-include_once ($_SESSION['root'] . '/dataProvider/Prescriptions.php');
 include_once ($_SESSION['root'] . '/dataProvider/DoctorsNotes.php');
 class DocumentHandler
 {
 
 	private $db;
-	private $user;
-	private $patient;
-	private $services;
-	private $facility;
 	private $documents;
 
 	private $pid;
@@ -50,12 +40,7 @@ class DocumentHandler
 	function __construct()
 	{
 		$this->db   = new dbHelper();
-		$this->user = new User();
-		$this->patient       = new Patient();
-		$this->services      = new Services();
-		$this->facility      = new Facilities();
 		$this->documents     = new Documents();
-		$this->prescriptions = new Prescriptions();
 		$this->doctorsnotes  = new DoctorsNotes();
 		return;
 	}
@@ -76,14 +61,10 @@ class DocumentHandler
 			$this->db->execLog();
 			$params->document_id = $this->db->lastInsertId;
 
-
-
-			if(isset($params->medications)){
-				$this->prescriptions->addDocumentsPatientInfo($params);
-			} elseif(isset($params->DoctorsNote)) {
+			if(isset($params->DoctorsNote)) {
 				$this->doctorsnotes->addDoctorsNotes($params);
-
 			}
+
 			return array(
 				'success' => true, 'doc' => array(
 					'id' => $params->document_id, 'name' => $this->fileName, 'url' => $this->getDocumentUrl(), 'path' => $path
@@ -123,9 +104,30 @@ class DocumentHandler
 		}
 	}
 
+    public function deleteDocumentById($id){
+        $path = $this->getDocumentPathById($id);
+        if(unlink($path)){
+            $this->db->setSQL("DELETE FROM patient_documents WHERE id = '$id'");
+            $this->db->execLog();
+            return true;
+        }else{
+            return false;
+
+        }
+
+
+    }
+
 	protected function getDocumentUrl()
 	{
 		return $_SESSION['site']['url'] . '/patients/' . $this->pid . '/' . strtolower(str_replace(' ', '_', $this->docType)) . '/' . $this->fileName;
+	}
+
+	public function getDocumentPathById($id)
+	{
+        $this->db->setSQL("SELECT * FROM patient_documents WHERE id = '$id'");
+        $doc =  $this->db->fetchRecord(PDO::FETCH_ASSOC);
+		return $_SESSION['site']['path'] . '/patients/' . $doc['pid'] . '/' . strtolower(str_replace(' ', '_', $doc['docType'])) . '/' . $doc['name'];
 	}
 
 	protected function reNameFile($file)
@@ -204,3 +206,6 @@ class DocumentHandler
 	}
 
 }
+
+//$d = new DocumentHandler();
+//print $d->deleteDocumentById('76');

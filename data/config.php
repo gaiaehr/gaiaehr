@@ -665,6 +665,9 @@ $API = array(
 			),
 			'updatePrescriptionMedication' => array(
 				'len' => 1
+			),
+			'getSigCodesByQuery' => array(
+				'len' => 1
 			)
 		)
 	),

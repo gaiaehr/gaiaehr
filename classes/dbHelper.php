@@ -546,13 +546,13 @@ class dbHelper
 			$sqlStatement .= 'datemodify DATE NOT NULL,';
 			foreach($workingFields as $fieldItems)
 			{
-				
+				$sqlStatement .= '';
 			}
 		}
 		else 
 		{
-			// do nothing to create the table because is already created.
-			// but check the fields
+			// do nothing to create the table because is already created,
+			// but check the fields maybe one some fields are missing.
 		}
 
 	}

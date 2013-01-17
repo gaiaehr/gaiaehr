@@ -515,11 +515,6 @@ class dbHelper
 	 * will have to mess with the database anymore.
 	 */
 
-	public function setDatabase(string $database)
-	{
-		$workingDatabase = $database;
-	}
-	
 	/*
 	 * MySQL Field Types
 		MySQL supports a number of column types, which may be grouped into three categories: numeric types, date and time types, and string (character) types. This section first gives an overview of the types available. Please refer to the MySQL manuals for more details.
@@ -590,7 +585,12 @@ class dbHelper
 			A set
 			A string object that can have zero or more values, each of which must be chosen from the list of values ‘value1’, ‘value2’, ... A SET can have a maximum of 64 members
 	 */
-
+	 
+	public function setDatabase(string $database)
+	{
+		$workingDatabase = $database;
+	}
+	
 	public function setField(string $fieldName, string $fieldType, string $fieldLengh, string $fieldDecimals, bool $fieldAllowNull, bool $fieldPrimaryKey)
 	{
 		$workingFields[] = array(
@@ -633,7 +633,9 @@ class dbHelper
 				
 				$sqlStatement .= '`' . $fieldItems['name'] . '` ' . $fieldItems['type'] . ' ' . $lengh . $nullable;
 			}
-			$sqlStatement .= ' )';
+			$sqlStatement .= ' PRIMARY KEY (`id`), ';
+			$sqlStatement .= ' UNIQUE KEY `permKey` (`perm_key`) ';
+			$sqlStatement .= ' ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=89 ;';
 		}
 		else 
 		{

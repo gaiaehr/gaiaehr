@@ -187,12 +187,12 @@ class dbHelper
 				{
 					if ($value == null || $value === 'null')
 					{
-						$sql .= '`'.$key.'`' . '=NULL, ';
+						$sql .= '`' . $key . '`' . '=NULL, ';
 					}
 					else
 					{
 						$value = preg_replace('/([0-9]{4}-[0-9]{2}-[0-9]{2})T([0-9]{2}:[0-9]{2}:[0-9]{2})/i', '${1} ${2}', trim($value));
-						$sql .= '`'.$key.'`' . "='$value', ";
+						$sql .= '`' . $key . '`' . "='$value', ";
 					}
 				}
 				else
@@ -211,12 +211,12 @@ class dbHelper
 				{
 					if ($value == null || $value === 'null')
 					{
-						$sql .= '`'.$key.'`' . '=NULL, ';
+						$sql .= '`' . $key . '`' . '=NULL, ';
 					}
 					else
 					{
 						$value = preg_replace('/([0-9]{4}-[0-9]{2}-[0-9]{2})T([0-9]{2}:[0-9]{2}:[0-9]{2})/i', '${1} ${2}', trim($value));
-						$sql .= '`'.$key.'`' . "='$value', ";
+						$sql .= '`' . $key . '`' . "='$value', ";
 					}
 				}
 				else
@@ -517,75 +517,114 @@ class dbHelper
 
 	/*
 	 * MySQL Field Types
-		MySQL supports a number of column types, which may be grouped into three categories: numeric types, date and time types, and string (character) types. This section first gives an overview of the types available. Please refer to the MySQL manuals for more details.
-		TINYINT
-			A very small integer
-			The signed range is –128 to 127. The unsigned range is 0 to 255.
-		SMALLINT
-			A small integer
-			The signed range is –32768 to 32767. The unsigned range is 0 to 65535
-		MEDIUMINT
-			A medium-size integer
-			The signed range is –8388608 to 8388607. The unsigned range is 0 to 16777215
-		INT or INTEGER
-			A normal-size integer
-			The signed range is –2147483648 to 2147483647. The unsigned range is 0 to 4294967295
-		BIGINT
-			A large integer
-			The signed range is –9223372036854775808 to 9223372036854775807. The unsigned range is 0 to 18446744073709551615
-		FLOAT
-			A small (single-precision) floating-point number. Cannot be unsigned
-			Ranges are –3.402823466E+38 to –1.175494351E-38, 0 and 1.175494351E-38 to 3.402823466E+38. If the number of Decimals is not set or <= 24 it is a single-precision floating point number
-		DOUBLE,
-		DOUBLE PRECISION,
-		REAL
-			A normal-size (double-precision) floating-point number. Cannot be unsigned
-			Ranges are -1.7976931348623157E+308 to -2.2250738585072014E-308, 0 and 2.2250738585072014E-308 to 1.7976931348623157E+308. If the number of Decimals is not set or 25 <= Decimals <= 53 stands for a double-precision floating point number
-		DECIMAL,
-		NUMERIC
-			An unpacked floating-point number. Cannot be unsigned
-			Behaves like a CHAR column: “unpacked” means the number is stored as a string, using one character for each digit of the value. The decimal point, and, for negative numbers, the ‘-‘ sign is not counted in Length. If Decimals is 0, values will have no decimal point or fractional part. The maximum range of DECIMAL values is the same as for DOUBLE, but the actual range for a given DECIMAL column may be constrained by the choice of Length and Decimals. If Decimals is left out it’s set to 0. If Length is left out it’s set to 10. Note that in MySQL 3.22 the Length includes the sign and the decimal point
-		DATE
-			A date
-			The supported range is ‘1000-01-01’ to ‘9999-12-31’. MySQL displays DATE values in ‘YYYY-MM-DD’ format
-		DATETIME
-			A date and time combination
-			The supported range is ‘1000-01-01 00:00:00’ to ‘9999-12-31 23:59:59’. MySQL displays DATETIME values in ‘YYYY-MM-DD HH:MM:SS’ format
-		TIMESTAMP
-			A timestamp
-			The range is ‘1970-01-01 00:00:00’ to sometime in the year 2037. MySQL displays TIMESTAMP values in YYYYMMDDHHMMSS, YYMMDDHHMMSS, YYYYMMDD or YYMMDD format, depending on whether M is 14 (or missing), 12, 8 or 6, but allows you to assign values to TIMESTAMP columns using either strings or numbers. A TIMESTAMP column is useful for recording the date and time of an INSERT or UPDATE operation because it is automatically set to the date and time of the most recent operation if you don’t give it a value yourself
-		TIME
-			A time
-			The range is ‘-838:59:59’ to ‘838:59:59’. MySQL displays TIME values in ‘HH:MM:SS’ format, but allows you to assign values to TIME columns using either strings or numbers
-		YEAR
-			A year in 2- or 4- digit formats (default is 4-digit)
-			The allowable values are 1901 to 2155, and 0000 in the 4 year format and 1970-2069 if you use the 2 digit format (70-69). MySQL displays YEAR values in YYYY format, but allows you to assign values to YEAR columns using either strings or numbers. (The YEAR type is new in MySQL 3.22.)
-		CHAR
-			A fixed-length string that is always right-padded with spaces to the specified length when stored
-			The range of Length is 1 to 255 characters. Trailing spaces are removed when the value is retrieved. CHAR values are sorted and compared in case-insensitive fashion according to the default character set unless the BINARY keyword is given
-		VARCHAR
-			A variable-length string. Note: Trailing spaces are removed when the value is stored (this differs from the ANSI SQL specification)
-			The range of Length is 1 to 255 characters. VARCHAR values are sorted and compared in case-insensitive fashion unless the BINARY keyword is given
-		TINYBLOB,
-		TINYTEXT
-			A BLOB or TEXT column with a maximum length of 255 (2^8 - 1) characters
-		BLOB,
-		TEXT
-			A BLOB or TEXT column with a maximum length of 65535 (2^16 - 1) characters
-		MEDIUMBLOB,
-		MEDIUMTEXT
-			A BLOB or TEXT column with a maximum length of 16777215 (2^24 - 1) characters
-		LONGBLOB,
-		LONGTEXT
-			A BLOB or TEXT column with a maximum length of 4294967295 (2^32 - 1) characters
-		ENUM
-			An enumeration
-			A string object that can have only one value, chosen from the list of values ‘value1’, ‘value2’, ..., or NULL. An ENUM can have a maximum of 65535 distinct values.
-		SET
-			A set
-			A string object that can have zero or more values, each of which must be chosen from the list of values ‘value1’, ‘value2’, ... A SET can have a maximum of 64 members
+	 MySQL supports a number of column types, which may be grouped into three
+	categories: numeric types, date and time types, and string (character) types.
+	This section first gives an overview of the types available. Please refer to the
+	MySQL manuals for more details.
+	 TINYINT
+	 A very small integer
+	 The signed range is –128 to 127. The unsigned range is 0 to 255.
+	 SMALLINT
+	 A small integer
+	 The signed range is –32768 to 32767. The unsigned range is 0 to 65535
+	 MEDIUMINT
+	 A medium-size integer
+	 The signed range is –8388608 to 8388607. The unsigned range is 0 to 16777215
+	 INT or INTEGER
+	 A normal-size integer
+	 The signed range is –2147483648 to 2147483647. The unsigned range is 0 to
+	4294967295
+	 BIGINT
+	 A large integer
+	 The signed range is –9223372036854775808 to 9223372036854775807. The unsigned
+	range is 0 to 18446744073709551615
+	 FLOAT
+	 A small (single-precision) floating-point number. Cannot be unsigned
+	 Ranges are –3.402823466E+38 to –1.175494351E-38, 0 and 1.175494351E-38 to
+	3.402823466E+38. If the number of Decimals is not set or <= 24 it is a
+	single-precision floating point number
+	 DOUBLE,
+	 DOUBLE PRECISION,
+	 REAL
+	 A normal-size (double-precision) floating-point number. Cannot be unsigned
+	 Ranges are -1.7976931348623157E+308 to -2.2250738585072014E-308, 0 and
+	2.2250738585072014E-308 to 1.7976931348623157E+308. If the number of Decimals is
+	not set or 25 <= Decimals <= 53 stands for a double-precision floating point
+	number
+	 DECIMAL,
+	 NUMERIC
+	 An unpacked floating-point number. Cannot be unsigned
+	 Behaves like a CHAR column: “unpacked” means the number is stored as a string,
+	using one character for each digit of the value. The decimal point, and, for
+	negative numbers, the ‘-‘ sign is not counted in Length. If Decimals is 0, values
+	will have no decimal point or fractional part. The maximum range of DECIMAL
+	values is the same as for DOUBLE, but the actual range for a given DECIMAL column
+	may be constrained by the choice of Length and Decimals. If Decimals is left out
+	it’s set to 0. If Length is left out it’s set to 10. Note that in MySQL 3.22 the
+	Length includes the sign and the decimal point
+	 DATE
+	 A date
+	 The supported range is ‘1000-01-01’ to ‘9999-12-31’. MySQL displays DATE values
+	in ‘YYYY-MM-DD’ format
+	 DATETIME
+	 A date and time combination
+	 The supported range is ‘1000-01-01 00:00:00’ to ‘9999-12-31 23:59:59’. MySQL
+	displays DATETIME values in ‘YYYY-MM-DD HH:MM:SS’ format
+	 TIMESTAMP
+	 A timestamp
+	 The range is ‘1970-01-01 00:00:00’ to sometime in the year 2037. MySQL displays
+	TIMESTAMP values in YYYYMMDDHHMMSS, YYMMDDHHMMSS, YYYYMMDD or YYMMDD format,
+	depending on whether M is 14 (or missing), 12, 8 or 6, but allows you to assign
+	values to TIMESTAMP columns using either strings or numbers. A TIMESTAMP column
+	is useful for recording the date and time of an INSERT or UPDATE operation
+	because it is automatically set to the date and time of the most recent operation
+	if you don’t give it a value yourself
+	 TIME
+	 A time
+	 The range is ‘-838:59:59’ to ‘838:59:59’. MySQL displays TIME values in
+	‘HH:MM:SS’ format, but allows you to assign values to TIME columns using either
+	strings or numbers
+	 YEAR
+	 A year in 2- or 4- digit formats (default is 4-digit)
+	 The allowable values are 1901 to 2155, and 0000 in the 4 year format and
+	1970-2069 if you use the 2 digit format (70-69). MySQL displays YEAR values in
+	YYYY format, but allows you to assign values to YEAR columns using either strings
+	or numbers. (The YEAR type is new in MySQL 3.22.)
+	 CHAR
+	 A fixed-length string that is always right-padded with spaces to the specified
+	length when stored
+	 The range of Length is 1 to 255 characters. Trailing spaces are removed when the
+	value is retrieved. CHAR values are sorted and compared in case-insensitive
+	fashion according to the default character set unless the BINARY keyword is given
+	 VARCHAR
+	 A variable-length string. Note: Trailing spaces are removed when the value is
+	stored (this differs from the ANSI SQL specification)
+	 The range of Length is 1 to 255 characters. VARCHAR values are sorted and
+	compared in case-insensitive fashion unless the BINARY keyword is given
+	 TINYBLOB,
+	 TINYTEXT
+	 A BLOB or TEXT column with a maximum length of 255 (2^8 - 1) characters
+	 BLOB,
+	 TEXT
+	 A BLOB or TEXT column with a maximum length of 65535 (2^16 - 1) characters
+	 MEDIUMBLOB,
+	 MEDIUMTEXT
+	 A BLOB or TEXT column with a maximum length of 16777215 (2^24 - 1) characters
+	 LONGBLOB,
+	 LONGTEXT
+	 A BLOB or TEXT column with a maximum length of 4294967295 (2^32 - 1) characters
+	 ENUM
+	 An enumeration
+	 A string object that can have only one value, chosen from the list of values
+	‘value1’, ‘value2’, ..., or NULL. An ENUM can have a maximum of 65535 distinct
+	values.
+	 SET
+	 A set
+	 A string object that can have zero or more values, each of which must be chosen
+	from the list of values ‘value1’, ‘value2’, ... A SET can have a maximum of 64
+	members
 	 */
-	 
+
 	/**
 	 * setDatabase
 	 */
@@ -593,7 +632,7 @@ class dbHelper
 	{
 		$this->workingDatabase = $database;
 	}
-	
+
 	/**
 	 * setField
 	 */
@@ -617,70 +656,130 @@ class dbHelper
 	{
 		$this->workingTable = $tableName;
 	}
-	
+
 	/**
 	 * createField
 	 */
 	private function createField($fieldName, $fieldType, $fieldLengh, $fieldDecimals, $fieldAllowNull, $fieldPrimaryKey)
 	{
 		$sqlStatement = 'ALTER TABLE ' . $this->workingTable . 'ADD ';
-		$sqlStatement .= $fieldName . ' ' . $fieldType . '(' . $fieldLengh . ')' . ($fieldAllowNull? ' NULL ' : ' NOT NULL ') . ';';
-		$this->conn->exec( $sqlStatement );
+		$sqlStatement .= $fieldName . ' ' . $fieldType . '(' . $fieldLengh . ')' . ($fieldAllowNull ? ' NULL ' : ' NOT NULL ') . ';';
+		$this->conn->exec($sqlStatement);
 	}
-	
+
 	/**
 	 * modifyField
 	 */
 	private function modifyField($fieldName, $fieldType, $fieldLengh, $fieldDecimals, $fieldAllowNull, $fieldPrimaryKey)
 	{
 		$sqlStatement = 'ALTER TABLE ' . $this->workingTable . 'MODIFY ';
-		$sqlStatement .= $fieldName . ' ' . $fieldType . '(' . $fieldLengh . ')' . ($fieldAllowNull? ' NULL ' : ' NOT NULL ') . ';';
-		$this->conn->exec( $sqlStatement );
+		$sqlStatement .= $fieldName . ' ' . $fieldType . '(' . $fieldLengh . ')' . ($fieldAllowNull ? ' NULL ' : ' NOT NULL ') . ';';
+		$this->conn->exec($sqlStatement);
 	}
 	
+	/**
+	 * renameField
+	 */
+	public function renameField($oldName, $newName)
+	{
+		$sqlStatement = 'ALTER TABLE ' . $this->workingTable . ' CHANGE COLUMN ' . $oldName . ' ' . $newName . ';';
+		$this->conn->exec($sqlStatement);		
+	}
+	
+	/**
+	 * renameTable
+	 */
+	public function renameTable($oldName, $newName)
+	{
+		$sqlStatement = 'ALTER TABLE ' . $oldName . ' RENAME TO ' . $newName . ';';
+		$this->conn->exec($sqlStatement);
+	}
+	
+	/**
+	 * createTable
+	 */
+	private function createTable($tableName)
+	{
+		// these are mandatory fields for all tables.
+		$sqlStatement = 'CREATE TABLE IF NOT EXISTS ' . $tableName . '( ';
+		$sqlStatement .= 'id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,';
+		$sqlStatement .= 'datecreate DATE NOT NULL,';
+		$sqlStatement .= 'datemodify DATE NOT NULL,';
+		$sqlStatement .= ' PRIMARY KEY (`id`), ';
+		$sqlStatement .= ' UNIQUE KEY `permKey` (`perm_key`) ';
+		$sqlStatement .= ' ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;';
+		$this->conn->exec($sqlStatement);
+	}
+	
+	/**
+	 * dropTable
+	 */
+	public function dropTable()
+	{
+		$sqlStatement = 'DROP TABLE IF EXISTS ' . $this->workingTable . ';';
+		$this->conn->exec($sqlStatement);
+	}
+
 	/**
 	 * dropField
 	 */
 	private function dropField($fieldName)
 	{
-		$sqlStatement = 'ALTER TABLE ' . $this->workingTable . 'DROP COLUMN ' . $fieldName;
-		$this->conn->exec( $sqlStatement );
+		$sqlStatement = 'ALTER TABLE ' . $this->workingTable . 'DROP COLUMN ' . $fieldName . ';';
+		$this->conn->exec($sqlStatement);
 	}
-	
-	public function ormTest()
-	{
-		$recordSet = $this->conn->query('SHOW columns FROM ' . $this->workingTable);
-		$fieldsRecords = $recordSet->fetchAll(PDO::FETCH_ASSOC);
-		
-		// check is the returned results are actually an array
-		if( is_array($fieldsRecords) )
-		{
-			// browse the results
-			foreach($fieldsRecords as $field)
-			{
-				// check for the same properties of the field
-				$foundField = 0;
-				foreach($this->workingFields as $compareField)
-				{
-					if( $field['Field'] == $compareField['name'] &&
-						$field['Type'] == strtolower($compareField['type']) . '(' . $compareField['lengh'] . ')' &&
-						$field['Null'] == ($compareField['allownull'] ? 'YES' : 'NO') &&
-						$field['Key'] == ($compareField['primarykey'] ? 'PRI' : '') ) 
-						{
-							$testField = $field;
-							$foundField = 1;
-						}
-				} 
-				echo "<pre>";
-				print_r( $testField );
-				print_r( $foundField );
-				echo "</pre>";
 
-			}
-		}
-		else
+	public function executeORM_Test()
+	{
+		error_reporting(E_ERROR | E_WARNING | E_PARSE);
+		
+		$recordSet = $this->conn->query('SHOW columns FROM ' . $this->workingTable);
+		$error = $this->conn->errorInfo();
+		
+		// Table does not exist and needs to be created
+		if( $error[1] == 1146) 
 		{
-			echo 'Table does not exist';	
+			echo $this->workingTable . ' -> Table does not exist';
+		}
+		else 
+		{
+			
+			$fieldsRecords = $recordSet->fetchAll(PDO::FETCH_ASSOC);
+			
+			// check is the returned results are actually an array
+			if ( is_array($fieldsRecords) )
+			{
+				// browse the workingFields array
+				foreach ($this->workingFields as $compareField)
+				{
+					// if field is found compare it's properties.
+					$key = $this->recursiveArraySearch($compareField['name'], $fieldsRecords);
+					if ( is_numeric( $key ) )
+					{
+						if ($fieldsRecords[$key]['Type'] == strtolower($compareField['type']) . '(' . $compareField['lengh'] . ')' && 
+							$fieldsRecords[$key]['Null'] == ($compareField['allownull'] ? 'YES' : 'NO') && 
+							$fieldsRecords[$key]['Key'] == ($compareField['primarykey'] ? 'PRI' : ''))
+						{
+							echo "<pre>";
+							print_r($fieldsRecords[$key]['Field'] . ' -> There are equal.');
+							echo "</pre>";
+						}
+						else
+						{
+							echo "<pre>";
+							print_r($fieldsRecords[$key]['Field'] . ' -> There are not equal.');
+							echo "</pre>";
+						}
+					}
+					else
+					{
+						echo "<pre>";
+						print_r($compareField['name'] . ' -> Does not exist in table.');
+						echo "</pre>";
+					}
+				}
+			}
+		
 		}
 	}
 
@@ -690,36 +789,53 @@ class dbHelper
 		(string)$lengh = '';
 		(array)$fieldItems = '';
 		(string)$nullable = '';
-		
+
 		// check for the table existence is the table does not exist create it.
-		if( !$this->conn->exec('SELECT * FROM ' . $this->workingTable) )
+		if (!$this->conn->exec('SELECT * FROM ' . $this->workingTable))
 		{
 			// these are mandatory fields for all tables.
 			$sqlStatement = 'CREATE TABLE IF NOT EXISTS ' . $workingTable . '( ';
 			$sqlStatement .= 'id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,';
 			$sqlStatement .= 'datecreate DATE NOT NULL,';
 			$sqlStatement .= 'datemodify DATE NOT NULL,';
-			foreach($workingFields as $fieldItems)
+			foreach ($workingFields as $fieldItems)
 			{
 				$nullable = ($fieldItems['allownull'] ? ' NULL ' : ' NOT NULL ');
 
-				if($fieldItems['type'] == 'INT') $lengh = '(' . $fieldItems['lengh'] . ')';
-				if($fieldItems['type'] == 'TINYINT') $lengh = '(' . $fieldItems['lengh'] . ')';
-				if($fieldItems['type'] == 'VARCHAR') $lengh = '(' . $fieldItems['lengh'] . ')';
-				if($fieldItems['type'] == 'BIGINT') $lengh = '(' . $fieldItems['lengh'] . ')';
-				
+				if ($fieldItems['type'] == 'INT')
+					$lengh = '(' . $fieldItems['lengh'] . ')';
+				if ($fieldItems['type'] == 'TINYINT')
+					$lengh = '(' . $fieldItems['lengh'] . ')';
+				if ($fieldItems['type'] == 'VARCHAR')
+					$lengh = '(' . $fieldItems['lengh'] . ')';
+				if ($fieldItems['type'] == 'BIGINT')
+					$lengh = '(' . $fieldItems['lengh'] . ')';
+
 				$sqlStatement .= '`' . $fieldItems['name'] . '` ' . $fieldItems['type'] . ' ' . $lengh . $nullable;
 			}
 			$sqlStatement .= ' PRIMARY KEY (`id`), ';
 			$sqlStatement .= ' UNIQUE KEY `permKey` (`perm_key`) ';
-			$sqlStatement .= ' ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=89 ;';
+			$sqlStatement .= ' ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;';
 		}
-		else 
+		else
 		{
 			// do nothing to create the table because is already created,
 			// but check the fields maybe one some fields are missing.
 		}
 
+	}
+
+	private function recursiveArraySearch($needle, $haystack)
+	{
+		foreach ($haystack as $key => $value)
+		{
+			$current_key = $key;
+			if ($needle === $value OR (is_array($value) && $this->recursiveArraySearch($needle, $value) !== false))
+			{
+				return $current_key;
+			}
+		}
+		return false;
 	}
 
 }

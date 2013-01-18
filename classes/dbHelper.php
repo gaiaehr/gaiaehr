@@ -586,11 +586,17 @@ class dbHelper
 			A string object that can have zero or more values, each of which must be chosen from the list of values ‘value1’, ‘value2’, ... A SET can have a maximum of 64 members
 	 */
 	 
+	/**
+	 * setDatabase
+	 */
 	public function setDatabase($database)
 	{
 		$this->workingDatabase = $database;
 	}
 	
+	/**
+	 * setField
+	 */
 	public function setField($fieldName, $fieldType, $fieldLengh, $fieldDecimals, $fieldAllowNull, $fieldPrimaryKey)
 	{
 		$newField = array(
@@ -604,11 +610,17 @@ class dbHelper
 		$this->workingFields[] = $newField;
 	}
 
+	/**
+	 * setTable
+	 */
 	public function setTable($tableName)
 	{
 		$this->workingTable = $tableName;
 	}
 	
+	/**
+	 * createField
+	 */
 	private function createField($fieldName, $fieldType, $fieldLengh, $fieldDecimals, $fieldAllowNull, $fieldPrimaryKey)
 	{
 		$sqlStatement = 'ALTER TABLE ' . $this->workingTable . 'ADD ';
@@ -616,6 +628,19 @@ class dbHelper
 		$this->conn->exec( $sqlStatement );
 	}
 	
+	/**
+	 * modifyField
+	 */
+	private function modifyField($fieldName, $fieldType, $fieldLengh, $fieldDecimals, $fieldAllowNull, $fieldPrimaryKey)
+	{
+		$sqlStatement = 'ALTER TABLE ' . $this->workingTable . 'MODIFY ';
+		$sqlStatement .= $fieldName . ' ' . $fieldType . '(' . $fieldLengh . ')' . ($fieldAllowNull? ' NULL ' : ' NOT NULL ') . ';';
+		$this->conn->exec( $sqlStatement );
+	}
+	
+	/**
+	 * dropField
+	 */
 	private function dropField($fieldName)
 	{
 		$sqlStatement = 'ALTER TABLE ' . $this->workingTable . 'DROP COLUMN ' . $fieldName;

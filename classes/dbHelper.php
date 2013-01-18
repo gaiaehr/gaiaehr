@@ -586,14 +586,14 @@ class dbHelper
 			A string object that can have zero or more values, each of which must be chosen from the list of values ‘value1’, ‘value2’, ... A SET can have a maximum of 64 members
 	 */
 	 
-	public function setDatabase(string $database)
+	public function setDatabase($database)
 	{
-		$workingDatabase = $database;
+		$this->workingDatabase = $database;
 	}
 	
-	public function setField(string $fieldName, string $fieldType, string $fieldLengh, string $fieldDecimals, bool $fieldAllowNull, bool $fieldPrimaryKey)
+	public function setField($fieldName, $fieldType, $fieldLengh, $fieldDecimals, $fieldAllowNull, $fieldPrimaryKey)
 	{
-		$workingFields[] = array(
+		$newField = array(
 			'name' => $fieldName,
 			'type' => strtoupper($fieldType),
 			'lengh' => $fieldLengh,
@@ -601,11 +601,62 @@ class dbHelper
 			'allownull' => $fieldAllowNull,
 			'primarykey' => $fieldPrimaryKey
 		);
+		$this->workingFields[] = $newField;
 	}
 
-	public function setTable(string $tableName)
+	public function setTable($tableName)
 	{
-		$workingTable = $tableName;
+		$this->workingTable = $tableName;
+	}
+	
+	private function createField($fieldName, $fieldType, $fieldLengh, $fieldDecimals, $fieldAllowNull, $fieldPrimaryKey)
+	{
+		$sqlStatement = 'ALTER TABLE ' . $this->workingTable . 'ADD ';
+		$sqlStatement .= $fieldName . ' ' . $fieldType . '(' . $fieldLengh . ')' . ($fieldAllowNull? ' NULL ' : ' NOT NULL ') . ';';
+		$this->conn->exec( $sqlStatement );
+	}
+	
+	private function dropField($fieldName)
+	{
+		$sqlStatement = 'ALTER TABLE ' . $this->workingTable . 'DROP COLUMN ' . $fieldName;
+		$this->conn->exec( $sqlStatement );
+	}
+	
+	public function ormTest()
+	{
+		$recordSet = $this->conn->query('SHOW columns FROM ' . $this->workingTable);
+		$fieldsRecords = $recordSet->fetchAll(PDO::FETCH_ASSOC);
+		
+		// check is the returned results are actually an array
+		if( is_array($fieldsRecords) )
+		{
+			// browse the results
+			foreach($fieldsRecords as $field)
+			{
+				// check for the same properties of the field
+				$foundField = 0;
+				foreach($this->workingFields as $compareField)
+				{
+					if( $field['Field'] == $compareField['name'] &&
+						$field['Type'] == strtolower($compareField['type']) . '(' . $compareField['lengh'] . ')' &&
+						$field['Null'] == ($compareField['allownull'] ? 'YES' : 'NO') &&
+						$field['Key'] == ($compareField['primarykey'] ? 'PRI' : '') ) 
+						{
+							$testField = $field;
+							$foundField = 1;
+						}
+				} 
+				echo "<pre>";
+				print_r( $testField );
+				print_r( $foundField );
+				echo "</pre>";
+
+			}
+		}
+		else
+		{
+			echo 'Table does not exist';	
+		}
 	}
 
 	public function executeORM()
@@ -616,7 +667,7 @@ class dbHelper
 		(string)$nullable = '';
 		
 		// check for the table existence is the table does not exist create it.
-		if( !$this->conn->exec('SELECT * FROM ' . $workingTable) )
+		if( !$this->conn->exec('SELECT * FROM ' . $this->workingTable) )
 		{
 			// these are mandatory fields for all tables.
 			$sqlStatement = 'CREATE TABLE IF NOT EXISTS ' . $workingTable . '( ';
@@ -628,6 +679,7 @@ class dbHelper
 				$nullable = ($fieldItems['allownull'] ? ' NULL ' : ' NOT NULL ');
 
 				if($fieldItems['type'] == 'INT') $lengh = '(' . $fieldItems['lengh'] . ')';
+				if($fieldItems['type'] == 'TINYINT') $lengh = '(' . $fieldItems['lengh'] . ')';
 				if($fieldItems['type'] == 'VARCHAR') $lengh = '(' . $fieldItems['lengh'] . ')';
 				if($fieldItems['type'] == 'BIGINT') $lengh = '(' . $fieldItems['lengh'] . ')';
 				

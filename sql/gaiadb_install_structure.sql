@@ -57,7 +57,7 @@ CREATE TABLE IF NOT EXISTS `addresses` (
   `foreign_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `foreign_id` (`foreign_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=14 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=18 ;
 
 CREATE TABLE IF NOT EXISTS `allergies` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -175,7 +175,7 @@ CREATE TABLE IF NOT EXISTS `combo_lists_options` (
   `notes` varchar(255) DEFAULT NULL,
   `active` tinyint(1) DEFAULT '1' COMMENT '1 = active and  0 = deactive',
   PRIMARY KEY (`id`,`list_id`,`option_value`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=710 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=721 ;
 
 CREATE TABLE IF NOT EXISTS `cpt_codes` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -329,7 +329,7 @@ CREATE TABLE IF NOT EXISTS `emergencies` (
   `uid` bigint(20) DEFAULT NULL,
   `date_created` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `encounters` (
   `eid` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'Encounter ID',
@@ -359,7 +359,7 @@ CREATE TABLE IF NOT EXISTS `encounters` (
   `review_medications` tinyint(1) NOT NULL DEFAULT '0',
   `message` text COMMENT 'message for the visit checkout ',
   PRIMARY KEY (`eid`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `encounter_codes_cpt` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -373,7 +373,7 @@ CREATE TABLE IF NOT EXISTS `encounter_codes_cpt` (
   `place_of_service` text,
   `status` int(1) NOT NULL DEFAULT '0' COMMENT 'billing status of this cpt',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `encounter_codes_hcpcs` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -389,7 +389,7 @@ CREATE TABLE IF NOT EXISTS `encounter_codes_icdx` (
   `code` varchar(255) DEFAULT NULL COMMENT 'code number',
   `code_type` int(11) DEFAULT NULL COMMENT 'CPT4 = 1, ICD9= 2, HCPCS = 3 ',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `encounter_dictation` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -400,14 +400,13 @@ CREATE TABLE IF NOT EXISTS `encounter_dictation` (
   `dictation` longtext,
   `additional_notes` longtext,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `encounter_hcfa_1500_options` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `pid` bigint(20) DEFAULT NULL,
   `eid` bigint(20) DEFAULT NULL,
   `uid` bigint(20) DEFAULT NULL,
-  `date` datetime DEFAULT NULL,
   `employment_related` text,
   `auto_accident` text,
   `state` text,
@@ -425,7 +424,7 @@ CREATE TABLE IF NOT EXISTS `encounter_hcfa_1500_options` (
   `replacement_claim` text,
   `notes` text,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `encounter_history` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -434,7 +433,7 @@ CREATE TABLE IF NOT EXISTS `encounter_history` (
   `user` varchar(255) DEFAULT NULL,
   `event` text,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `encounter_review_of_systems` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -579,7 +578,7 @@ CREATE TABLE IF NOT EXISTS `encounter_review_of_systems` (
   `brest_discharge` varchar(255) DEFAULT NULL,
   `fem_frequency` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `encounter_review_of_systems_check` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -696,7 +695,7 @@ CREATE TABLE IF NOT EXISTS `encounter_review_of_systems_check` (
   `scoliosis` text,
   `lupus` text,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `encounter_soap` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -709,7 +708,7 @@ CREATE TABLE IF NOT EXISTS `encounter_soap` (
   `assessment` longtext,
   `plan` longtext,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `encounter_vitals` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -911,7 +910,7 @@ CREATE TABLE IF NOT EXISTS `icd9_dx_code` (
   KEY `dx_code` (`dx_code`),
   KEY `formatted_dx_code` (`formatted_dx_code`),
   KEY `active` (`active`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=14568 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `icd9_dx_long_code` (
   `dx_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -920,7 +919,7 @@ CREATE TABLE IF NOT EXISTS `icd9_dx_long_code` (
   `active` tinyint(4) DEFAULT '0',
   `revision` int(11) DEFAULT '0',
   UNIQUE KEY `dx_id` (`dx_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=14568 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `icd9_sg_code` (
   `sg_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -934,7 +933,7 @@ CREATE TABLE IF NOT EXISTS `icd9_sg_code` (
   KEY `sg_code` (`sg_code`),
   KEY `formatted_sg_code` (`formatted_sg_code`),
   KEY `active` (`active`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3879 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `icd9_sg_long_code` (
   `sq_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -943,7 +942,7 @@ CREATE TABLE IF NOT EXISTS `icd9_sg_long_code` (
   `active` tinyint(4) DEFAULT '0',
   `revision` int(11) DEFAULT '0',
   UNIQUE KEY `sq_id` (`sq_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3879 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `icd10_dx_order_code` (
   `dx_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -957,7 +956,7 @@ CREATE TABLE IF NOT EXISTS `icd10_dx_order_code` (
   UNIQUE KEY `dx_id` (`dx_id`),
   KEY `formatted_dx_code` (`formatted_dx_code`),
   KEY `active` (`active`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=79504 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `icd10_gem_dx_9_10` (
   `map_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -967,7 +966,7 @@ CREATE TABLE IF NOT EXISTS `icd10_gem_dx_9_10` (
   `active` tinyint(4) DEFAULT '0',
   `revision` int(11) DEFAULT '0',
   UNIQUE KEY `map_id` (`map_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=23913 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `icd10_gem_dx_10_9` (
   `map_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -977,7 +976,7 @@ CREATE TABLE IF NOT EXISTS `icd10_gem_dx_10_9` (
   `active` tinyint(4) DEFAULT '0',
   `revision` int(11) DEFAULT '0',
   UNIQUE KEY `map_id` (`map_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=78841 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `icd10_gem_pcs_9_10` (
   `map_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -987,7 +986,7 @@ CREATE TABLE IF NOT EXISTS `icd10_gem_pcs_9_10` (
   `active` tinyint(4) DEFAULT '0',
   `revision` int(11) DEFAULT '0',
   UNIQUE KEY `map_id` (`map_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=69363 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `icd10_gem_pcs_10_9` (
   `map_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -997,7 +996,7 @@ CREATE TABLE IF NOT EXISTS `icd10_gem_pcs_10_9` (
   `active` tinyint(4) DEFAULT '0',
   `revision` int(11) DEFAULT '0',
   UNIQUE KEY `map_id` (`map_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=82570 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `icd10_pcs_order_code` (
   `pcs_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -1010,7 +1009,7 @@ CREATE TABLE IF NOT EXISTS `icd10_pcs_order_code` (
   UNIQUE KEY `pcs_id` (`pcs_id`),
   KEY `pcs_code` (`pcs_code`),
   KEY `active` (`active`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=72764 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `icd10_reimbr_dx_9_10` (
   `map_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -1025,7 +1024,7 @@ CREATE TABLE IF NOT EXISTS `icd10_reimbr_dx_9_10` (
   `active` tinyint(4) DEFAULT '0',
   `revision` int(11) DEFAULT '0',
   UNIQUE KEY `map_id` (`map_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=69834 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `icd10_reimbr_pcs_9_10` (
   `map_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -1040,7 +1039,7 @@ CREATE TABLE IF NOT EXISTS `icd10_reimbr_pcs_9_10` (
   `active` tinyint(4) DEFAULT '0',
   `revision` int(11) DEFAULT '0',
   UNIQUE KEY `map_id` (`map_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=71919 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `immunizations` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -1239,7 +1238,7 @@ CREATE TABLE IF NOT EXISTS `log` (
   `crt_user` varchar(255) DEFAULT NULL,
   `ip` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1720 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
 
 CREATE TABLE IF NOT EXISTS `medications` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -1407,7 +1406,7 @@ CREATE TABLE IF NOT EXISTS `patient_allergies` (
   `created_uid` bigint(20) DEFAULT NULL COMMENT 'created by User ID',
   `updated_uid` bigint(20) DEFAULT NULL COMMENT 'updated by User ID',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `patient_demographics` (
   `pid` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'Patient ID',
@@ -1524,7 +1523,7 @@ CREATE TABLE IF NOT EXISTS `patient_demographics` (
   `ethnicity` text,
   `lenguage` text,
   PRIMARY KEY (`pid`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COMMENT='Table holds all the Demographics form data for all the patie' AUTO_INCREMENT=4 ;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Table holds all the Demographics form data for all the patie' AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `patient_dental` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -1579,7 +1578,7 @@ CREATE TABLE IF NOT EXISTS `patient_documents` (
   `note` varchar(255) DEFAULT NULL,
   `title` varchar(255) DEFAULT 'No title',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `patient_immunizations` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -1599,7 +1598,7 @@ CREATE TABLE IF NOT EXISTS `patient_immunizations` (
   `created_uid` bigint(20) DEFAULT NULL COMMENT 'created by User ID',
   `updated_uid` bigint(20) DEFAULT NULL COMMENT 'updated by User ID',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `patient_labs` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -1650,7 +1649,7 @@ CREATE TABLE IF NOT EXISTS `patient_medications` (
   `form` varchar(255) DEFAULT NULL,
   `codingsystem` varchar(255) NOT NULL DEFAULT 'RXNORM',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=17 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `patient_notes` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -1670,12 +1669,12 @@ CREATE TABLE IF NOT EXISTS `patient_orders` (
   `description` varchar(255) DEFAULT NULL,
   `date_created` datetime DEFAULT NULL,
   `laboratory_id` bigint(20) DEFAULT NULL COMMENT 'laboratory facility ID',
-  `document_id` int(11) DEFAULT NULL COMMENT 'patient document ID',
+  `document_id` int(11) DEFAULT NULL COMMENT 'patien document ID',
   `order_type` varchar(100) DEFAULT NULL COMMENT 'lab or xray',
   `order_items` varchar(255) DEFAULT NULL COMMENT 'order LOINCs serialize by comma  ei. 1234-1,4123-1',
   `note` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `patient_out_chart` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -1685,7 +1684,7 @@ CREATE TABLE IF NOT EXISTS `patient_out_chart` (
   `chart_in_time` datetime DEFAULT NULL,
   `pool_area_id` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=299 ;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `patient_pools` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -1698,9 +1697,9 @@ CREATE TABLE IF NOT EXISTS `patient_pools` (
   `priority` varchar(255) DEFAULT NULL COMMENT 'priority 1 is the highest',
   `in_queue` tinyint(1) DEFAULT '1' COMMENT 'true = patient is in queue, false = the patient it been treated by someone',
   `checkout_timer` time DEFAULT NULL COMMENT 'timer user to automatically checkout from the pool area, and return to the previous pool area ',
-  `parent_id` bigint(20) DEFAULT NULL COMMENT 'parent ID = the id of the checkin pool (this will maitain a relation between all pools of that visit)',
+  `parent_id` bigint(20) NOT NULL COMMENT 'parent ID = the id of the checkin pool (this will maitain a relation between all pools of that visit)',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `patient_prescriptions` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -1711,7 +1710,7 @@ CREATE TABLE IF NOT EXISTS `patient_prescriptions` (
   `note` varchar(255) DEFAULT NULL,
   `document_id` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=38 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `patient_referrals` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -1786,7 +1785,7 @@ CREATE TABLE IF NOT EXISTS `payment_transactions` (
   `note` varchar(255) DEFAULT NULL,
   `date_created` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Entity that maintains patient''s account transactions ' AUTO_INCREMENT=3 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Entity that maintains patient''s account transactions ' AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `pharmacies` (
   `id` int(11) NOT NULL DEFAULT '0',
@@ -1807,7 +1806,7 @@ CREATE TABLE IF NOT EXISTS `phone_numbers` (
   `foreign_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `foreign_id` (`foreign_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=21 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=29 ;
 
 CREATE TABLE IF NOT EXISTS `pnotes` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -2168,7 +2167,7 @@ CREATE TABLE IF NOT EXISTS `standardized_tables_track` (
   `revision_date` varchar(255) DEFAULT NULL COMMENT 'revision of standardized tables that were imported',
   `file_checksum` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `surgeries` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -2248,7 +2247,7 @@ CREATE TABLE IF NOT EXISTS `users_sessions` (
   `logout` int(11) DEFAULT NULL,
   `last_request` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=374 ;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `user_settings` (
   `setting_user` bigint(20) NOT NULL DEFAULT '0',

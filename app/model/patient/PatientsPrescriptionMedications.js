@@ -27,13 +27,5 @@ Ext.define('App.model.patient.PatientsPrescriptionMedications', {
 		{name: 'create_date', type:'date', dateFormat:'Y-m-d H:i:s'},
 		{name: 'begin_date', type:'date', dateFormat:'Y-m-d H:i:s'},
 		{name: 'end_date', type:'date', dateFormat:'Y-m-d H:i:s'}
-	],
-	proxy : {
-		type: 'direct',
-        api : {
-            read  : Prescriptions.getPrescriptionMedications,
-            create: Prescriptions.addPrescriptionMedication,
-            update: Prescriptions.updatePrescriptionMedication
-        }
-	}
+	]
 });

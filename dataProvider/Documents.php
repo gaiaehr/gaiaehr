@@ -85,43 +85,10 @@ class Documents
         $this->preventiveCare = new PreventiveCare();
         $this->fees = new Fees();
         $this->i18n = new i18nRouter();
-
         $this->pdf = new DocumentPDF('P', 'mm', 'A4', true, 'UTF-8', false);
-        //$this->dompdf = new DOMPDF();
         return;
     }
 
-    public function createSuperBillDoc(stdClass $params)
-    {
-        return;
-    }
-
-    /**
-     * @param stdClass $params
-     * @return mixed
-     */
-    public function createOrder(stdClass $params)
-    {
-        return;
-    }
-
-    /**
-     * @param stdClass $params
-     * @return mixed
-     */
-    public function createReferral(stdClass $params)
-    {
-        return;
-    }
-
-    /**
-     * @param stdClass $params
-     * @return mixed
-     */
-    public function createDrNotes(stdClass $params)
-    {
-        return;
-    }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public function getArrayWithTokensNeededByDocumentID($id)
@@ -154,7 +121,7 @@ class Documents
         $data = get_object_vars($params);
         $id = $data['id'];
         unset($data['id'], $data['date']);
-        $this->db->setSQL($this->db->sqlBind($data, "patient_documents", "U", "id='$id'"));
+        $this->db->setSQL($this->db->sqlBind($data, 'patient_documents', 'U', array('id' => $id)));
         $this->db->execLog();
         return $params;
     }
@@ -589,25 +556,6 @@ class Documents
         return $allNeededInfo;
     }
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    private function tokensForPrescriptions($params, $tokens, $allNeededInfo)
-    {
-        $html = '';
-        foreach($params->medications as $med) {
-            $html .= "<p>$med->medication $med->dose<br>
-                    Instruction: $med->take_pills $med->type $med->by $med->prescription_often $med->prescription_when<br>
-                    Dispense: $med->dispense  Refill: $med->refill</p>";
-        }
-        foreach($tokens as $index => $tok) {
-            if($allNeededInfo[$index] == '' || $allNeededInfo[$index] == null) {
-                if($tok == '[MEDICATIONS_LIST]') {
-                    $allNeededInfo[$index] = $html;
-                }
-            }
-        }
-        return $allNeededInfo;
-    }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -631,10 +579,12 @@ class Documents
         $this->pdf->SetMargins(15, 27, 15);
         $this->pdf->SetHeaderMargin(5);
         $this->pdf->SetFooterMargin(10);
-        $this->pdf->SetFontSize(12);
+        $this->pdf->SetFontSize(8);
         $this->pdf->SetAutoPageBreak(true, 25);
         $this->pdf->setFontSubsetting(true);
         $this->pdf->AddPage();
+
+        $this->pdf->SetY(30); // margin after header line
 
         if (isset($params->DoctorsNote)) {
             $body = $params->DoctorsNote;
@@ -656,18 +606,12 @@ class Documents
                 $this->pdf->Image($_SESSION['site']['path'] . '/patients/' . $pid . '/' . 'patientPhotoId.jpg', 150, 55, 35, 35, 'jpg', 'www.gaiaehr.org', '', true, 150, '', false, false, 1, false, false, false);
             }
         }
-        ///////////////////////RX PART /////////////////////////////////////
-        if (isset($params->medications)) {
-            $allNeededInfo = $this->tokensForPrescriptions($params, $tokens, $allNeededInfo);
-        } ///////////////////////LABS PART /////////////////////////////////////
-        elseif (isset($params->orderItems)){
-            $allNeededInfo = $this->parseTokensForOrders($params, $tokens, $allNeededInfo);
-        } ///////////////////////XRAYS PART /////////////////////////////////////
-        elseif (isset($params->xrays)) {
-            $allNeededInfo = $this->tokensForXrays($params, $tokens, $allNeededInfo);
-        }
-        $html = str_replace($tokens, $allNeededInfo, $body);
 
+        if (isset($params->orderItems)){
+            $allNeededInfo = $this->parseTokensForOrders($params, $tokens, $allNeededInfo);
+        }
+
+        $html = str_replace($tokens, $allNeededInfo, $body);
         $this->pdf->writeHTML((isset($params->DoctorsNote)) ? $html : $html['body']);
         $this->pdf->Output($path, 'F');
         $this->pdf->Close();
@@ -694,16 +638,16 @@ class Documents
         $table = '<table width="100%" border="0" cellspacing="0" cellpadding="2">';
         $th = array_shift($rows);
         $table .= '<tr>';
-            foreach($th As $cell){
-                $table .= '<th style="background-color:#CCCCCC; border-bottom:1px solid #000000">';
+            foreach($th AS $cell){
+                $table .= '<th style="background-color:#5CB8E6; border-bottom:1px solid #000000">';
                 $table .= $cell;
                 $table .= '</th>';
             }
         $table .= '</tr>';
-        foreach($rows AS $row){
+        foreach($rows AS $rowIndex => $row){
             $table .= '<tr>';
-                foreach($row As $cell){
-                    $table .= '<td>';
+                foreach($row AS $cell){
+                    $table .= ($rowIndex / 2) != 0 ? '<td style="background-color:#f6f6f6">' : '<td>';
                     $table .= $cell;
                     $table .= '</td>';
                 }
@@ -719,7 +663,7 @@ class Documents
 //$params = new stdClass();
 //$params->pid = 1;
 //$params->eid = 0;
-//$params->templateId = 4;
+//$params->templateId = 5;
 //$params->orderItems = array(
 //    array('Description', 'Code'),
 //    array('Description', '2423'),

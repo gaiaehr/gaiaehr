@@ -727,10 +727,10 @@ class dbHelper
 	private function dropField($fieldName)
 	{
 		// check if the field contains data.
-		$sqlStatement = 'SELECT ' . $fieldName . ' FROM ' . $this->workingTable . ';';
+		$sqlStatement = 'SELECT ' . $fieldName . ' FROM ' . $this->workingTable . ' LIMIT 1;';
 		$recordSet = $this->conn->query($sqlStatement);
 		$fieldsRecords = $recordSet->fetchAll(PDO::FETCH_ASSOC);
-		if ( !count($fieldsRecords) )
+		if ( count($fieldsRecords) <= 0 )
 		{
 			// drop the field
 			$sqlStatement = (string)'ALTER TABLE ' . $this->workingTable . ' DROP COLUMN ' . $fieldName . ';';

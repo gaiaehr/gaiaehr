@@ -715,7 +715,7 @@ class dbHelper
 	{
 		// these are mandatory fields for all tables.
 		$sqlStatement = (string)'CREATE TABLE IF NOT EXISTS ' . $tableName . '( ';
-		$sqlStatement .= (string)'id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY';
+		$sqlStatement .= (string)'id BIGINT(20) NOT NULL AUTO_INCREMENT PRIMARY KEY';
 		$sqlStatement .= (string)' ) AUTO_INCREMENT=1;';
 		$this->conn->exec($sqlStatement);
 	}
@@ -734,7 +734,7 @@ class dbHelper
 	 */
 	private function dropField($fieldName)
 	{
-		$sqlStatement = (string)'ALTER TABLE ' . $this->workingTable . 'DROP COLUMN ' . $fieldName . ';';
+		$sqlStatement = (string)'ALTER TABLE ' . $this->workingTable . ' DROP COLUMN ' . $fieldName . ';';
 		$this->conn->exec($sqlStatement);
 	}
 
@@ -757,7 +757,9 @@ class dbHelper
 		}
 		else 
 		{
-			$this->setField('id', 'BIGINT', NULL, false, true);
+			// these are default fields by the orm.
+			$this->setField('id', 'BIGINT', 20, false, true);
+			
 			$fieldsRecords = $recordSet->fetchAll(PDO::FETCH_ASSOC);
 			
 			// check is the returned results are actually an array
@@ -779,7 +781,8 @@ class dbHelper
 						}
 						else
 						{
-							// Modify the column because there are not equal.
+							// Modify the column because there are not equal
+							// and execute the orm again.
 							$this->modifyField($compareField['name'], $compareField['type'], $compareField['lengh'], $compareField['allownull'], $compareField['primarykey']);
 							$this->executeORM();
 							return;
@@ -794,7 +797,7 @@ class dbHelper
 				// routine to drop fields
 				foreach ($fieldsRecords as $dropField)
 				{
-					if( !$this->recursiveArraySearch($dropField['Field'], $this->workingFields) ) $this->dropField($dropField['Field']);
+					if( !is_numeric($this->recursiveArraySearch($dropField['Field'], $this->workingFields)) ) $this->dropField($dropField['Field']);
 				}
 			}
 		}

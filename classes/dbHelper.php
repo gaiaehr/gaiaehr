@@ -626,22 +626,14 @@ class dbHelper
 	 */
 
 	/**
-	 * setDatabase
-	 */
-	public function setDatabase($database)
-	{
-		$this->workingDatabase = (string)$database;
-	}
-
-	/**
 	 * setField
 	 */
-	public function setField($fieldName, $fieldType, $fieldLengh, $fieldAllowNull, $fieldPrimaryKey)
+	public function setField($fieldName, $fieldType, $fieldLength, $fieldAllowNull, $fieldPrimaryKey)
 	{
 		$newField = array(
 			'name' => $fieldName,
 			'type' => strtoupper($fieldType),
-			'lengh' => $fieldLengh,
+			'length' => $fieldLength,
 			'allownull' => $fieldAllowNull,
 			'primarykey' => $fieldPrimaryKey
 		);
@@ -659,12 +651,12 @@ class dbHelper
 	/**
 	 * createField
 	 */
-	private function createField($fieldName, $fieldType, $fieldLengh, $fieldAllowNull, $fieldPrimaryKey)
+	private function createField($fieldName, $fieldType, $fieldLength, $fieldAllowNull, $fieldPrimaryKey)
 	{
 		$sqlStatement = (string)'ALTER TABLE ' . $this->workingTable . ' ADD ';
 		if(strtoupper($fieldType) != 'BIGINT')
 		{
-			$sqlStatement .= (string)$fieldName . ' ' . $fieldType . '(' . $fieldLengh . ')' . ($fieldAllowNull ? ' NULL ' : ' NOT NULL ') . ';';
+			$sqlStatement .= (string)$fieldName . ' ' . $fieldType . '(' . $fieldLength . ')' . ($fieldAllowNull ? ' NULL ' : ' NOT NULL ') . ';';
 		} 
 		else
 		{
@@ -676,12 +668,12 @@ class dbHelper
 	/**
 	 * modifyField
 	 */
-	private function modifyField($fieldName, $fieldType, $fieldLengh, $fieldAllowNull, $fieldPrimaryKey)
+	private function modifyField($fieldName, $fieldType, $fieldLength, $fieldAllowNull, $fieldPrimaryKey)
 	{
 		$sqlStatement = (string)'ALTER TABLE ' . $this->workingTable . ' MODIFY ';
 		if(strtoupper($fieldType) != 'BIGINT')
 		{
-			$sqlStatement .= (string)$fieldName . ' ' . $fieldType . '(' . $fieldLengh . ')' . ($fieldAllowNull ? ' NULL ' : ' NOT NULL ') . ';';
+			$sqlStatement .= (string)$fieldName . ' ' . $fieldType . '(' . $fieldLength . ')' . ($fieldAllowNull ? ' NULL ' : ' NOT NULL ') . ';';
 		} 
 		else
 		{
@@ -780,10 +772,10 @@ class dbHelper
 					$key = $this->recursiveArraySearch($compareField['name'], $fieldsRecords);
 					if ( is_numeric( $key ) )
 					{
-						if ($fieldsRecords[$key]['Type'] == strtolower($compareField['type']) . '(' . $compareField['lengh'] . ')' && 
+						if ($fieldsRecords[$key]['Type'] == strtolower($compareField['type']) . '(' . $compareField['length'] . ')' && 
 							$fieldsRecords[$key]['Null'] == ($compareField['allownull'] ? 'YES' : 'NO') && 
 							$fieldsRecords[$key]['Key'] == ($compareField['primarykey'] ? 'PRI' : '') &&
-							$compareField['lengh'] == filter_var($fieldsRecords[$key]['Type'], FILTER_SANITIZE_NUMBER_INT))
+							$compareField['length'] == filter_var($fieldsRecords[$key]['Type'], FILTER_SANITIZE_NUMBER_INT))
 						{
 							// This state the routine will do nothing.
 						}
@@ -791,7 +783,7 @@ class dbHelper
 						{
 							// Modify the column because there are not equal
 							// and execute the orm again.
-							$this->modifyField($compareField['name'], $compareField['type'], $compareField['lengh'], $compareField['allownull'], $compareField['primarykey']);
+							$this->modifyField($compareField['name'], $compareField['type'], $compareField['length'], $compareField['allownull'], $compareField['primarykey']);
 							$this->executeORM();
 							return;
 						}
@@ -799,7 +791,7 @@ class dbHelper
 					else
 					{
 						// Create the field
-						$this->createField($compareField['name'], $compareField['type'], $compareField['lengh'], $compareField['allownull'], $compareField['primarykey']);
+						$this->createField($compareField['name'], $compareField['type'], $compareField['length'], $compareField['allownull'], $compareField['primarykey']);
 					}
 				}
 				// routine to drop fields

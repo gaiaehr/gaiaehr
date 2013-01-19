@@ -87,7 +87,7 @@ Ext.define('App.ux.LiveSurgeriesSearch',
 				}
 			},
 			pageSize : 10
-		}, null);
+		});
 
 		me.callParent();
 	}

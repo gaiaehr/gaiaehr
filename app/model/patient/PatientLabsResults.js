@@ -27,9 +27,6 @@ Ext.define('App.model.patient.PatientLabsResults', {
 			create: Medical.addPatientLabsResult,
 			update: Medical.updatePatientLabsResult,
 			destroy: Medical.deletePatientLabsResult
-		},
-		reader     : {
-			type: 'json'
 		}
 	}
 });

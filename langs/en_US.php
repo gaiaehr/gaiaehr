@@ -1147,5 +1147,10 @@ $LANG = array(
     'new_item'						        => 'New Item',
     'other'						            => 'Other',
     'other_order_item_help_text'            => 'Use commas (,) if more than one. ei: X-RAY Thoracic Spine, X-RAY Skull 3 View',
-    'form'                                  => 'Form'
+    'form'                                  => 'Form',
+    'templates'                             => 'Templates',
+    'snippets'                              => 'Snippets',
+    'complete_snippet'                      => 'Complete Snippet',
+    'done'                                  => 'Done',
+    'ok'                                    => 'Ok'
 );

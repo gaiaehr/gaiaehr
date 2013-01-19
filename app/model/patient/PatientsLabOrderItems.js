@@ -12,12 +12,4 @@ Ext.define('App.model.patient.PatientsLabOrderItems', {
         { name: 'loinc', type: 'string' },
         { name: 'title', type: 'string' }
 	]
-//	proxy : {
-//		type: 'direct',
-//		api : {
-//			read:Orders.getPatientOrderItems,
-//			create:Orders.addPatientOrderItems,
-//			destroy:Orders.removePatientOrderItems
-//		}
-//	}
 });

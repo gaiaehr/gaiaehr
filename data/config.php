@@ -29,6 +29,13 @@ $API = array(
             )
         )
 	),
+	'Snippets' => array(
+		'methods' => array(
+			'getSoapSnippetsByCategory' => array(
+				'len' => 1
+            )
+        )
+	),
 	'Orders' => array(
 		'methods' => array(
 			'getPatientLabOrders' => array(

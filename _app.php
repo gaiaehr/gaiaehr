@@ -23,7 +23,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 				settings = {},
 				globals = {},
 				ext = 'extjs-4.1.1a',
-				version = '0.0.5.170',
+				version = '0.0.6.176',
 				requires;
 		</script>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -150,6 +150,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 				'App.model.patient.QRCptCodes',
 				'App.model.patient.DismissedAlerts',
 				'App.model.patient.Reminders',
+                'App.model.patient.SOAP',
 				'App.model.patient.Surgery',
 				'App.model.patient.VectorGraph',
 				'App.model.patient.VisitPayment',
@@ -366,6 +367,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 				'App.view.patient.windows.DocumentViewer',
 				'App.view.patient.windows.NewEncounter',
 				'App.view.patient.windows.ArrivalLog',
+				'App.view.patient.windows.EncounterCheckOut',
 				/*
 				 * Load the patient related panels
 				 */
@@ -398,6 +400,8 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 				'App.view.patient.encounter.CurrentProceduralTerminology',
 				'App.view.patient.encounter.HealthCareFinancingAdministrationOptions',
 				'App.view.patient.encounter.ICDs',
+                'App.view.patient.encounter.SOAP',
+
 				'App.view.patient.ItemsToReview',
 				'App.view.patient.EncounterDocumentsGrid',
 				'App.view.patient.encounter.ICDs',
@@ -477,7 +481,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
                 if(isDevelopment === null && window.location.protocol === 'file:'){
                     isDevelopment = true;
                 }
-                if(isDevelopment){
+                if(isDevelopment || !isDevelopment){
                     say('Loading GaiaEHR Classes (Development)');
                     //				var jsb3Buffer = '"files": [';
                     document.write('<script type="text/javascript" charset="UTF-8" src="app/view/calendar/ExtensibleAll.js?_v' + version + '"><\/script>');

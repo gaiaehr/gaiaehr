@@ -13,7 +13,6 @@ $db = new dbHelper();
 
 $db->setTable('AAA_facility');
 
-$db->setField('id', 'INT', 11, false, true);
 $db->setField('active', 'TINYINT', 1, false, false);
 $db->setField('phone', 'VARCHAR', 30, true, false);
 $db->setField('fax', 'VARCHAR', 30, true, false);
@@ -32,7 +31,7 @@ $db->setField('attn', 'VARCHAR', 65, true, false);
 $db->setField('domain_identifier', 'VARCHAR', 60, true, false);
 $db->setField('facility_npi', 'VARCHAR', 15, true, false);
 $db->setField('tax_id_type', 'VARCHAR', 31, false, false);
-$db->setField('diarrea', 'VARCHAR', 31, true, false);
+//$db->setField('diarrea', 'VARCHAR', 31, true, false);
 
 $db->executeORM();
  

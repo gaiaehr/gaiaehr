@@ -636,13 +636,12 @@ class dbHelper
 	/**
 	 * setField
 	 */
-	public function setField($fieldName, $fieldType, $fieldLengh, $fieldDecimals, $fieldAllowNull, $fieldPrimaryKey)
+	public function setField($fieldName, $fieldType, $fieldLengh, $fieldAllowNull, $fieldPrimaryKey)
 	{
-		$newField = array(
+		(array)$newField = array(
 			'name' => $fieldName,
 			'type' => strtoupper($fieldType),
 			'lengh' => $fieldLengh,
-			'decimals' => $fieldDecimals,
 			'allownull' => $fieldAllowNull,
 			'primarykey' => $fieldPrimaryKey
 		);
@@ -660,9 +659,9 @@ class dbHelper
 	/**
 	 * createField
 	 */
-	private function createField($fieldName, $fieldType, $fieldLengh, $fieldDecimals, $fieldAllowNull, $fieldPrimaryKey)
+	private function createField($fieldName, $fieldType, $fieldLengh, $fieldAllowNull, $fieldPrimaryKey)
 	{
-		$sqlStatement = 'ALTER TABLE ' . $this->workingTable . 'ADD ';
+		(string)$sqlStatement = 'ALTER TABLE ' . $this->workingTable . ' ADD ';
 		$sqlStatement .= $fieldName . ' ' . $fieldType . '(' . $fieldLengh . ')' . ($fieldAllowNull ? ' NULL ' : ' NOT NULL ') . ';';
 		$this->conn->exec($sqlStatement);
 	}
@@ -670,9 +669,9 @@ class dbHelper
 	/**
 	 * modifyField
 	 */
-	private function modifyField($fieldName, $fieldType, $fieldLengh, $fieldDecimals, $fieldAllowNull, $fieldPrimaryKey)
+	private function modifyField($fieldName, $fieldType, $fieldLengh, $fieldAllowNull, $fieldPrimaryKey)
 	{
-		$sqlStatement = 'ALTER TABLE ' . $this->workingTable . 'MODIFY ';
+		(string)$sqlStatement = 'ALTER TABLE ' . $this->workingTable . ' MODIFY ';
 		$sqlStatement .= $fieldName . ' ' . $fieldType . '(' . $fieldLengh . ')' . ($fieldAllowNull ? ' NULL ' : ' NOT NULL ') . ';';
 		$this->conn->exec($sqlStatement);
 	}
@@ -682,7 +681,7 @@ class dbHelper
 	 */
 	public function renameField($oldName, $newName)
 	{
-		$sqlStatement = 'ALTER TABLE ' . $this->workingTable . ' CHANGE COLUMN ' . $oldName . ' ' . $newName . ';';
+		(string)$sqlStatement = 'ALTER TABLE ' . $this->workingTable . ' CHANGE COLUMN ' . $oldName . ' ' . $newName . ';';
 		$this->conn->exec($sqlStatement);		
 	}
 	
@@ -691,7 +690,7 @@ class dbHelper
 	 */
 	public function renameTable($oldName, $newName)
 	{
-		$sqlStatement = 'ALTER TABLE ' . $oldName . ' RENAME TO ' . $newName . ';';
+		(string)$sqlStatement = 'ALTER TABLE ' . $oldName . ' RENAME TO ' . $newName . ';';
 		$this->conn->exec($sqlStatement);
 	}
 	
@@ -701,22 +700,20 @@ class dbHelper
 	private function createTable($tableName)
 	{
 		// these are mandatory fields for all tables.
-		$sqlStatement = 'CREATE TABLE IF NOT EXISTS ' . $tableName . '( ';
+		(string)$sqlStatement = 'CREATE TABLE IF NOT EXISTS ' . $tableName . '( ';
 		$sqlStatement .= 'id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,';
 		$sqlStatement .= 'datecreate DATE NOT NULL,';
-		$sqlStatement .= 'datemodify DATE NOT NULL,';
-		$sqlStatement .= ' PRIMARY KEY (`id`), ';
-		$sqlStatement .= ' UNIQUE KEY `permKey` (`perm_key`) ';
-		$sqlStatement .= ' ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;';
+		$sqlStatement .= 'datemodify DATE NOT NULL';
+		$sqlStatement .= ' ) AUTO_INCREMENT=1;';
 		$this->conn->exec($sqlStatement);
 	}
-	
+
 	/**
 	 * dropTable
 	 */
 	public function dropTable()
 	{
-		$sqlStatement = 'DROP TABLE IF EXISTS ' . $this->workingTable . ';';
+		(string)$sqlStatement = 'DROP TABLE IF EXISTS ' . $this->workingTable . ';';
 		$this->conn->exec($sqlStatement);
 	}
 
@@ -725,26 +722,30 @@ class dbHelper
 	 */
 	private function dropField($fieldName)
 	{
-		$sqlStatement = 'ALTER TABLE ' . $this->workingTable . 'DROP COLUMN ' . $fieldName . ';';
+		(string)$sqlStatement = 'ALTER TABLE ' . $this->workingTable . 'DROP COLUMN ' . $fieldName . ';';
 		$this->conn->exec($sqlStatement);
 	}
 
-	public function executeORM_Test()
+	/**
+	 * executeORM
+	 * The main brain of the microORM.
+	 */
+	public function executeORM()
 	{
-		error_reporting(E_ERROR | E_WARNING | E_PARSE);
 		
-		$recordSet = $this->conn->query('SHOW columns FROM ' . $this->workingTable);
-		$error = $this->conn->errorInfo();
+		(object)$recordSet = $this->conn->query('SHOW columns FROM ' . $this->workingTable);
+		(array)$error = $this->conn->errorInfo();
 		
 		// Table does not exist and needs to be created
 		if( $error[1] == 1146) 
 		{
-			echo $this->workingTable . ' -> Table does not exist';
+			$this->createTable($this->workingTable);
+			$this->executeORM();
+			return;
 		}
 		else 
 		{
-			
-			$fieldsRecords = $recordSet->fetchAll(PDO::FETCH_ASSOC);
+			(array)$fieldsRecords = $recordSet->fetchAll(PDO::FETCH_ASSOC);
 			
 			// check is the returned results are actually an array
 			if ( is_array($fieldsRecords) )
@@ -753,76 +754,32 @@ class dbHelper
 				foreach ($this->workingFields as $compareField)
 				{
 					// if field is found compare it's properties.
-					$key = $this->recursiveArraySearch($compareField['name'], $fieldsRecords);
+					(int)$key = $this->recursiveArraySearch($compareField['name'], $fieldsRecords);
 					if ( is_numeric( $key ) )
 					{
 						if ($fieldsRecords[$key]['Type'] == strtolower($compareField['type']) . '(' . $compareField['lengh'] . ')' && 
 							$fieldsRecords[$key]['Null'] == ($compareField['allownull'] ? 'YES' : 'NO') && 
-							$fieldsRecords[$key]['Key'] == ($compareField['primarykey'] ? 'PRI' : ''))
+							$fieldsRecords[$key]['Key'] == ($compareField['primarykey'] ? 'PRI' : '') &&
+							$compareField['lengh'] == filter_var($fieldsRecords[$key]['Type'], FILTER_SANITIZE_NUMBER_INT))
 						{
-							echo "<pre>";
-							print_r($fieldsRecords[$key]['Field'] . ' -> There are equal.');
-							echo "</pre>";
+							// This state the routine will do nothing.
 						}
 						else
 						{
-							echo "<pre>";
-							print_r($fieldsRecords[$key]['Field'] . ' -> There are not equal.');
-							echo "</pre>";
+							// Modify the column because there are not equal.
+							$this->modifyField($compareField['name'], $compareField['type'], $compareField['lengh'], $compareField['allownull'], $compareField['primarykey']);
+							$this->executeORM();
+							return;
 						}
 					}
 					else
 					{
-						echo "<pre>";
-						print_r($compareField['name'] . ' -> Does not exist in table.');
-						echo "</pre>";
+						// Create the table and then run the orm again.
+						$this->createField($compareField['name'], $compareField['type'], $compareField['lengh'], $compareField['allownull'], $compareField['primarykey']);
 					}
 				}
 			}
-		
 		}
-	}
-
-	public function executeORM()
-	{
-		(string)$sqlStament = '';
-		(string)$lengh = '';
-		(array)$fieldItems = '';
-		(string)$nullable = '';
-
-		// check for the table existence is the table does not exist create it.
-		if (!$this->conn->exec('SELECT * FROM ' . $this->workingTable))
-		{
-			// these are mandatory fields for all tables.
-			$sqlStatement = 'CREATE TABLE IF NOT EXISTS ' . $workingTable . '( ';
-			$sqlStatement .= 'id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,';
-			$sqlStatement .= 'datecreate DATE NOT NULL,';
-			$sqlStatement .= 'datemodify DATE NOT NULL,';
-			foreach ($workingFields as $fieldItems)
-			{
-				$nullable = ($fieldItems['allownull'] ? ' NULL ' : ' NOT NULL ');
-
-				if ($fieldItems['type'] == 'INT')
-					$lengh = '(' . $fieldItems['lengh'] . ')';
-				if ($fieldItems['type'] == 'TINYINT')
-					$lengh = '(' . $fieldItems['lengh'] . ')';
-				if ($fieldItems['type'] == 'VARCHAR')
-					$lengh = '(' . $fieldItems['lengh'] . ')';
-				if ($fieldItems['type'] == 'BIGINT')
-					$lengh = '(' . $fieldItems['lengh'] . ')';
-
-				$sqlStatement .= '`' . $fieldItems['name'] . '` ' . $fieldItems['type'] . ' ' . $lengh . $nullable;
-			}
-			$sqlStatement .= ' PRIMARY KEY (`id`), ';
-			$sqlStatement .= ' UNIQUE KEY `permKey` (`perm_key`) ';
-			$sqlStatement .= ' ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;';
-		}
-		else
-		{
-			// do nothing to create the table because is already created,
-			// but check the fields maybe one some fields are missing.
-		}
-
 	}
 
 	private function recursiveArraySearch($needle, $haystack)

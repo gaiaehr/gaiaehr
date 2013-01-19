@@ -734,8 +734,16 @@ class dbHelper
 	 */
 	private function dropField($fieldName)
 	{
-		$sqlStatement = (string)'ALTER TABLE ' . $this->workingTable . ' DROP COLUMN ' . $fieldName . ';';
-		$this->conn->exec($sqlStatement);
+		// check if the field contains data.
+		$sqlStatement = 'SELECT ' . $fieldName . ' FROM ' . $this->workingTable . ';';
+		$recordSet = $this->conn->query($sqlStatement);
+		$fieldsRecords = $recordSet->fetchAll(PDO::FETCH_ASSOC);
+		if ( !count($fieldsRecords) )
+		{
+			// drop the field
+			$sqlStatement = (string)'ALTER TABLE ' . $this->workingTable . ' DROP COLUMN ' . $fieldName . ';';
+			$this->conn->exec($sqlStatement);
+		}
 	}
 
 	/**

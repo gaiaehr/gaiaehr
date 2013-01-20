@@ -16,8 +16,10 @@ Ext.define('App.view.patient.encounter.SOAP', {
 		Ext.define('snippetTreeModel', {
 			extend: 'Ext.data.Model',
 			fields: [
+				{ name: 'id', type: 'string' },
 				{ name: 'text', type: 'string' },
 				{ name: 'index', type: 'int' },
+				{ name: 'leaf', type: 'bool' },
 				{ name: 'category', type: 'string' }
 			],
 			proxy : {
@@ -31,7 +33,7 @@ Ext.define('App.view.patient.encounter.SOAP', {
 			}
 		});
 
-		me.tplStore =  Ext.create('Ext.data.TreeStore', {
+		me.snippetStore = Ext.create('Ext.data.TreeStore',{
 			model:'snippetTreeModel'
 		});
 
@@ -45,7 +47,7 @@ Ext.define('App.view.patient.encounter.SOAP', {
 			hideHeaders:true,
 			useArrows: true,
 			rootVisible: false,
-			store: me.tplStore,
+			store: me.snippetStore,
 			singleExpand: true,
 			columns: [
 				{
@@ -98,8 +100,6 @@ Ext.define('App.view.patient.encounter.SOAP', {
 			plugins:[
 				Ext.create('App.ux.grid.RowFormEditing',{
 					clicksToMoveEditor:1,
-					autoSync:true,
-//					autoCancel:false,
 					enabled:false,
 					enableRemove:true,
 					formItems:[
@@ -127,6 +127,7 @@ Ext.define('App.view.patient.encounter.SOAP', {
 				beforeedit:me.onSnippetBeforeEdit,
 				canceledit:me.onSnippetCancelEdit,
 				beforeremove:me.onSnippetBeforeRemove,
+				remove:me.onSnippetRemove,
 				edit:me.onSnippetEdit
 			}
 		});
@@ -216,7 +217,6 @@ Ext.define('App.view.patient.encounter.SOAP', {
 			listeners:{
 				scope:me,
 				recordloaded:me.formRecordLoaded
-				//beforesync:me.formRBeforeSync
 			}
 		});
 
@@ -278,9 +278,8 @@ Ext.define('App.view.patient.encounter.SOAP', {
 	onFieldFocus:function(field){
 		this.snippets.setTitle(Ext.String.capitalize(field.name) +' '+ i18n('templates'));
 		this.snippets.expand(false);
-		if(this.snippets.action != field.name) this.tplStore.load({params:{category:field.name}});
+		if(this.snippets.action != field.name) this.snippetStore.load({params:{category:field.name}});
 		this.snippets.action = field.name;
-		say(this.tplStore);
 	},
 
 	snippetTextRenderer:function(v, meta, record){
@@ -311,7 +310,6 @@ Ext.define('App.view.patient.encounter.SOAP', {
 				Ext.Function.defer(function(){
 					textArea.selectText(PhIndex, PhIndex+2)
 				}, 300);
-
 			}
 		}else{
 			record.expand();
@@ -330,7 +328,6 @@ Ext.define('App.view.patient.encounter.SOAP', {
 		field.setValue(me.closeSentence(value) + ' ' + me.closeSentence(text));
 		me.phWindow.close();
 		textArea.reset();
-
 	},
 
 	onPhWindowCancel:function(btn){
@@ -338,9 +335,7 @@ Ext.define('App.view.patient.encounter.SOAP', {
 	},
 
 	onPhTextAreaKey:function(field, e){
-		if (e.getKey() == e.ENTER) {
-			this.onPhWindowSubmit();
-		}
+		if (e.getKey() == e.ENTER) this.onPhWindowSubmit();
 	},
 
 	/**
@@ -359,24 +354,13 @@ Ext.define('App.view.patient.encounter.SOAP', {
 		grid.editingPlugin.startEdit(rowIndex,0);
 	},
 
-	onSnippetBtnAdd:function(grid, rowIndex, colIndex, actionItem, event, record, row){
-		var me = this, rec;
-		me.origScope.snippets.editingPlugin.cancelEdit();
-		say(record);
-		rec = me.origScope.tplStore.getNodeById(record.data.id).appendChild({
-			text:'New Sippet',
-			parentId:record.data.id,
-			leaf:true
-		});
-		me.origScope.tplStore.sync({
+	onSnippetRemove:function(editor, store, record){
+		var me = this;
+		store.sync({
 			callback:function(){
-				me.origScope.msg('Sweet!', 'Record Added');
-				me.origScope.snippets.editingPlugin.enabled = true;
-				me.origScope.snippets.editingPlugin.startEdit(rec.data.index,0);
+				me.msg('Sweet!','Record removed.');
 			}
 		});
-
-
 	},
 
 	onSnippetBeforeRemove:function(editor, store, record){
@@ -390,7 +374,7 @@ Ext.define('App.view.patient.encounter.SOAP', {
 	},
 
 	onSnippetEdit:function(plugin){
-		this.tplStore.sync();
+		this.snippetStore.sync();
 		plugin.enabled = false;
 	},
 
@@ -404,43 +388,49 @@ Ext.define('App.view.patient.encounter.SOAP', {
 
 	onSnippetDrop:function(node, data, overModel){
 		var me = this, pos = 10;
-
 		for(var i = 0; i < overModel.parentNode.childNodes.length; i++){
 			overModel.parentNode.childNodes[i].set({pos:pos});
 			pos = pos + 10;
 		}
+		me.snippetStore.sync();
+	},
 
-		me.tplStore.sync({
-			success:function(batch){
-				say(batch);
-			},
-			failure:function(batch){
-				Ext.Msg.alert('Oops!', batch.proxy.reader.rawData.error);
-
+	onSnippetBtnAdd:function(grid, rowIndex, colIndex, actionItem, event, record){
+		var me = this, rec;
+		me.origScope.snippets.editingPlugin.cancelEdit();
+		rec = me.origScope.snippetStore.getNodeById(record.data.id).appendChild({
+			text:'New Snippet',
+			parentId:record.data.id,
+			leaf:true
+		});
+		me.origScope.snippetStore.sync({
+			callback:function(batch){
+				rec.set({id:batch.proxy.reader.rawData.id});
+				rec.commit();
+				me.origScope.msg('Sweet!', 'Record Added');
+				me.origScope.snippets.editingPlugin.enabled = true;
+				me.origScope.snippets.editingPlugin.startEdit(rec,0);
 			}
 		});
 	},
 
 	onAddSnippetCategory:function(){
 		var me = this, rec;
-
-		say(me.tplStore.getRootNode());
-
 		me.snippets.editingPlugin.cancelEdit();
-		rec = me.tplStore.getRootNode().appendChild({
+		rec = me.snippetStore.getRootNode().appendChild({
 			text:'New Category',
 			parentId:'root',
 			leaf:false,
 			category:me.snippets.action
 		});
-		me.tplStore.sync({
-			callback:function(){
+		me.snippetStore.sync({
+			callback:function(batch){
+				rec.set({id:batch.proxy.reader.rawData.id});
+				rec.commit();
 				me.msg('Sweet!', 'Record Added');
-//				me.snippets.editingPlugin.enabled = true;
-//				me.snippets.editingPlugin.startEdit(rec.data.index,0);
+				me.snippets.editingPlugin.enabled = true;
+				me.snippets.editingPlugin.startEdit(rec,0);
 			}
 		});
-
 	}
-
 });

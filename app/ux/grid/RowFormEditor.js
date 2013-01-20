@@ -519,6 +519,7 @@ Ext.define('App.ux.grid.RowFormEditor', {
 					    }else{
 						    store.remove(record);
 					    }
+					    view.panel.fireEvent('remove', me, store, record);
 					    me.hide();
 					    form.clearInvalid();
 					    form.reset();

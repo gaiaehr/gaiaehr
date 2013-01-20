@@ -33,6 +33,15 @@ $API = array(
 		'methods' => array(
 			'getSoapSnippetsByCategory' => array(
 				'len' => 1
+            ),
+			'addSoapSnippets' => array(
+				'len' => 1
+            ),
+			'updateSoapSnippets' => array(
+				'len' => 1
+            ),
+			'deleteSoapSnippets' => array(
+				'len' => 1
             )
         )
 	),

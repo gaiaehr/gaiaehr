@@ -338,7 +338,7 @@ Ext.define('App.view.patient.Encounter', {
         me.rightPanel = Ext.create('Ext.tab.Panel', {
             title:i18n('encounter_progress_note'),
             margin:'0 0 0 2',
-            width:500,
+            width:400,
             collapsible:true,
             animCollapse:true,
             collapsed:true,

@@ -13,31 +13,34 @@ Ext.define('App.view.patient.encounter.SOAP', {
 	initComponent:function () {
 		var me = this;
 
-//		Ext.define('TemplatesSOAP', {
-//			extend: 'Ext.data.Model',
-//			fields: [
-//				{name: 'text', type: 'string'},
-//				{name: 'template',  type: 'string'}
-//			],
-//
-//		});
-
-		me.tplStore =  Ext.create('Ext.data.TreeStore', {
+		Ext.define('snippetTreeModel', {
+			extend: 'Ext.data.Model',
+			fields: [
+				{ name: 'text', type: 'string' },
+				{ name: 'index', type: 'int' },
+				{ name: 'category', type: 'string' }
+			],
 			proxy : {
 				type: 'direct',
 				api : {
-					read: Snippets.getSoapSnippetsByCategory
+					read: Snippets.getSoapSnippetsByCategory,
+					create: Snippets.addSoapSnippets,
+					update: Snippets.updateSoapSnippets,
+					destroy: Snippets.deleteSoapSnippets
 				}
 			}
 		});
 
+		me.tplStore =  Ext.create('Ext.data.TreeStore', {
+			model:'snippetTreeModel'
+		});
 
-		me.templates = Ext.create('Ext.tree.Panel', {
+		me.snippets = Ext.create('Ext.tree.Panel', {
 			title:i18n('snippets'),
 			collapsible:true,
 			collapsed:true,
 			split:true,
-			width:250,
+			width:300,
 			region:'west',
 			hideHeaders:true,
 			useArrows: true,
@@ -53,8 +56,26 @@ Ext.define('App.view.patient.encounter.SOAP', {
 					renderer:me.snippetTextRenderer
 				},
 				{
-					text: 'Edit',
-					width: 40,
+					text: i18n('add'),
+					width: 25,
+					menuDisabled: true,
+					xtype: 'actioncolumn',
+					tooltip: i18n('add_snippet'),
+					align: 'center',
+					icon: 'resources/images/icons/add.gif',
+					scope:me,
+					handler: me.onSnippetBtnAdd,
+					getClass: function(value, metadata, record){
+						if(!record.data.leaf){
+							return 'x-grid-center-icon';
+						}else{
+							return 'x-hide-display';
+						}
+					}
+				},
+				{
+					text: i18n('edit'),
+					width: 25,
 					menuDisabled: true,
 					xtype: 'actioncolumn',
 					tooltip: 'Edit task',
@@ -63,12 +84,24 @@ Ext.define('App.view.patient.encounter.SOAP', {
 					handler: me.onSnippetBtnEdit
 				}
 			],
+			viewConfig: {
+				plugins: {
+					ptype: 'treeviewdragdrop',
+					expandDelay:500,
+					dragText: i18n('drag_and_drop_reorganize')
+				},
+				listeners: {
+					scope: me,
+					drop: me.onSnippetDrop
+				}
+			},
 			plugins:[
 				Ext.create('App.ux.grid.RowFormEditing',{
 					clicksToMoveEditor:1,
-//					autoSync:false,
+					autoSync:true,
 //					autoCancel:false,
 					enabled:false,
+					enableRemove:true,
 					formItems:[
 						{
 							xtype:'textarea',
@@ -79,11 +112,21 @@ Ext.define('App.view.patient.encounter.SOAP', {
 					]
 				})
 			],
+			buttons:[
+				{
+					text:i18n('add_category'),
+					flex:1,
+					scope:me,
+					handler:me.onAddSnippetCategory
+				}
+			],
 			listeners:{
 				scope:me,
+				itemclick:me.onSnippetClick,
 				itemdblclick:me.onSnippetDblClick,
 				beforeedit:me.onSnippetBeforeEdit,
 				canceledit:me.onSnippetCancelEdit,
+				beforeremove:me.onSnippetBeforeRemove,
 				edit:me.onSnippetEdit
 			}
 		});
@@ -190,28 +233,41 @@ Ext.define('App.view.patient.encounter.SOAP', {
 					width:500,
 					height:150,
 					margin:0,
-					grow:true
+					grow:true,
+					enableKeyEvents:true,
+					listeners:{
+						scope:me,
+						specialkey:me.onPhTextAreaKey
+					}
 				}
 			],
 			buttons:[
 				{
-					text:i18n('done')
+					xtype:'tbtext',
+					text:i18n('shift_enter_submit')
+				},
+				'->',
+				{
+					text:i18n('submit'),
+					scope:me,
+					handler:me.onPhWindowSubmit
 				},
 				{
-					text:i18n('cancel')
+					text:i18n('cancel'),
+					handler:me.onPhWindowCancel
 				}
 			]
 		});
 
 		Ext.apply(me,{
-			items: [ me.templates, me.form ]
+			items: [ me.snippets, me.form ]
 		});
 
 		me.callParent();
 	},
 
 	onSoapSave:function(btn){
-		this.templates.collapse(false);
+		this.snippets.collapse(false);
 		this.enc.onEncounterUpdate(btn)
 	},
 
@@ -220,10 +276,11 @@ Ext.define('App.view.patient.encounter.SOAP', {
 	},
 
 	onFieldFocus:function(field){
-		this.templates.setTitle(Ext.String.capitalize(field.name) +' '+ i18n('templates'));
-		this.templates.expand(false);
-		if(this.templates.action != field.name) this.tplStore.load();
-		this.templates.action = field.name;
+		this.snippets.setTitle(Ext.String.capitalize(field.name) +' '+ i18n('templates'));
+		this.snippets.expand(false);
+		if(this.snippets.action != field.name) this.tplStore.load({params:{category:field.name}});
+		this.snippets.action = field.name;
+		say(this.tplStore);
 	},
 
 	snippetTextRenderer:function(v, meta, record){
@@ -231,28 +288,60 @@ Ext.define('App.view.patient.encounter.SOAP', {
 		return '<span '+toolTip+'>'+v+'</span>'
 	},
 
+	onSnippetClick:function(view, record){
+		if(!record.data.leaf) record.expand();
+	},
+
 	onSnippetDblClick:function(view, record){
-		var me = this,
-			form = me.form.getForm(),
-			action = view.panel.action,
-			field = form.findField(action),
-			text = record.data.text,
-			value = field.getValue(),
-			PhIndex = text.indexOf('??'),
-			textArea = me.phWindow.down('textarea');
+		if(record.data.leaf){
+			var me = this,
+				form = me.form.getForm(),
+				action = view.panel.action,
+				field = form.findField(action),
+				text = record.data.text,
+				value = field.getValue(),
+				PhIndex = text.indexOf('??'),
+				textArea = me.phWindow.down('textarea');
 
-		if(PhIndex == -1){
-			field.setValue(me.closeSentence(value) + ' ' + me.closeSentence(text));
+			if(PhIndex == -1){
+				field.setValue(me.closeSentence(value) + ' ' + me.closeSentence(text));
+			}else{
+				me.phWindow.show();
+				textArea.setValue(text);
+				Ext.Function.defer(function(){
+					textArea.selectText(PhIndex, PhIndex+2)
+				}, 300);
+
+			}
 		}else{
-			me.phWindow.show();
-			textArea.setValue(text);
-			Ext.Function.defer(function(){
-				textArea.selectText(PhIndex, PhIndex+2)
-			}, 300);
-
+			record.expand();
 		}
 	},
 
+	onPhWindowSubmit:function(){
+		var me = this,
+			textArea = me.phWindow.down('textarea'),
+			form = me.form.getForm(),
+			action = me.snippets.action,
+			field = form.findField(action),
+			value = field.getValue(),
+			text = textArea.getValue();
+
+		field.setValue(me.closeSentence(value) + ' ' + me.closeSentence(text));
+		me.phWindow.close();
+		textArea.reset();
+
+	},
+
+	onPhWindowCancel:function(btn){
+		btn.up('window').close();
+	},
+
+	onPhTextAreaKey:function(field, e){
+		if (e.getKey() == e.ENTER) {
+			this.onPhWindowSubmit();
+		}
+	},
 
 	/**
 	 * This will add a period to the end of the sentence if last character is not a . ? or
@@ -270,7 +359,38 @@ Ext.define('App.view.patient.encounter.SOAP', {
 		grid.editingPlugin.startEdit(rowIndex,0);
 	},
 
+	onSnippetBtnAdd:function(grid, rowIndex, colIndex, actionItem, event, record, row){
+		var me = this, rec;
+		me.origScope.snippets.editingPlugin.cancelEdit();
+		say(record);
+		rec = me.origScope.tplStore.getNodeById(record.data.id).appendChild({
+			text:'New Sippet',
+			parentId:record.data.id,
+			leaf:true
+		});
+		me.origScope.tplStore.sync({
+			callback:function(){
+				me.origScope.msg('Sweet!', 'Record Added');
+				me.origScope.snippets.editingPlugin.enabled = true;
+				me.origScope.snippets.editingPlugin.startEdit(rec.data.index,0);
+			}
+		});
+
+
+	},
+
+	onSnippetBeforeRemove:function(editor, store, record){
+		var me = this;
+		if(record.childNodes[0]){
+			me.msg('Oops!','Unable to remove category "'+record.data.text+'". Please delete snippets first.', true);
+			return false;
+		}else{
+			return true;
+		}
+	},
+
 	onSnippetEdit:function(plugin){
+		this.tplStore.sync();
 		plugin.enabled = false;
 	},
 
@@ -280,6 +400,47 @@ Ext.define('App.view.patient.encounter.SOAP', {
 
 	onSnippetCancelEdit:function(plugin){
 		plugin.enabled = false;
+	},
+
+	onSnippetDrop:function(node, data, overModel){
+		var me = this, pos = 10;
+
+		for(var i = 0; i < overModel.parentNode.childNodes.length; i++){
+			overModel.parentNode.childNodes[i].set({pos:pos});
+			pos = pos + 10;
+		}
+
+		me.tplStore.sync({
+			success:function(batch){
+				say(batch);
+			},
+			failure:function(batch){
+				Ext.Msg.alert('Oops!', batch.proxy.reader.rawData.error);
+
+			}
+		});
+	},
+
+	onAddSnippetCategory:function(){
+		var me = this, rec;
+
+		say(me.tplStore.getRootNode());
+
+		me.snippets.editingPlugin.cancelEdit();
+		rec = me.tplStore.getRootNode().appendChild({
+			text:'New Category',
+			parentId:'root',
+			leaf:false,
+			category:me.snippets.action
+		});
+		me.tplStore.sync({
+			callback:function(){
+				me.msg('Sweet!', 'Record Added');
+//				me.snippets.editingPlugin.enabled = true;
+//				me.snippets.editingPlugin.startEdit(rec.data.index,0);
+			}
+		});
+
 	}
 
 });

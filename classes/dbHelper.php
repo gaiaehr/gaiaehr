@@ -653,7 +653,7 @@ class dbHelper
 	 */
 	private function createField($fieldName, $fieldType, $fieldLength, $fieldAllowNull, $fieldPrimaryKey)
 	{
-		$sqlStatement = (string)'ALTER TABLE ' . $this->workingTable . ' ADD ';
+		$sqlStatement = (string)'ALTER TABLE' . $this->workingTable . ' ADD ';
 		if(strtoupper($fieldType) != 'BIGINT')
 		{
 			$sqlStatement .= (string)$fieldName . ' ' . $fieldType . '(' . $fieldLength . ')' . ($fieldAllowNull ? ' NULL ' : ' NOT NULL ') . ';';

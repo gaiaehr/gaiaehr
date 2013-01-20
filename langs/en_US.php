@@ -1152,5 +1152,9 @@ $LANG = array(
     'snippets'                              => 'Snippets',
     'complete_snippet'                      => 'Complete Snippet',
     'done'                                  => 'Done',
-    'ok'                                    => 'Ok'
+    'ok'                                    => 'Ok',
+    'submit'                                => 'Submit',
+    'shift_enter_submit'                    => 'Shift + Enter to Submit',
+    'add_category'                          => 'Add Category',
+    'add_snippet'                           => 'Add Snippet'
 );

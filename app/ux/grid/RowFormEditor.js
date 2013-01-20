@@ -52,7 +52,7 @@ Ext.define('App.ux.grid.RowFormEditor', {
     // Change the hideMode to offsets so that we get accurate measurements when
     // the roweditor is hidden for laying out things like a TriggerField.
     hideMode: 'offsets',
-
+	style:'background-color:#E0E0E0',
     initComponent: function() {
         var me = this,
             form, plugin;
@@ -505,23 +505,34 @@ Ext.define('App.ux.grid.RowFormEditor', {
             view = me.context.view,
             store = me.context.store,
             record = view.getSelectionModel().getLastSelected();
-
-        Ext.Msg.show({
-            title:'WAIT!!!',
-            msg: 'Are you sure you want to remove this record?',
-            buttons: Ext.Msg.YESNO,
-            icon: Ext.Msg.QUESTION,
-            scope:me,
-            fn: function(btn){
-                if (btn == 'yes'){
-                    store.remove(record);
-                    me.hide();
-                    form.clearInvalid();
-                    form.reset();
-                    me.editingPlugin.fireEvent('afterremove', me.context);
-                }
-            }
-        });
+	    if(view.panel.fireEvent('beforeremove', me, store, record)){
+		    Ext.Msg.show({
+			    title:'WAIT!!!',
+			    msg: 'Are you sure you want to remove this record?',
+			    buttons: Ext.Msg.YESNO,
+			    icon: Ext.Msg.QUESTION,
+			    scope:me,
+			    fn: function(btn){
+				    if (btn == 'yes'){
+					    if(record.parentNode){
+						    record.parentNode.removeChild(record);
+					    }else{
+						    store.remove(record);
+					    }
+					    me.hide();
+					    form.clearInvalid();
+					    form.reset();
+					    if(me.editingPlugin.autoSync){
+						    store.sync({
+							    callback:function(){
+								    me.fireEvent('sync', me, me.context);
+							    }
+						    });
+					    }
+				    }
+			    }
+		    });
+	    }
     },
 
     onShow: function() {

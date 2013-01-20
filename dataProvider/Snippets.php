@@ -14,69 +14,69 @@ if(!isset($_SESSION)){
 include_once ($_SESSION['root'] . '/classes/dbHelper.php');
 class Snippets {
 
+    private $db;
+
+    function __construct(){
+
+        $this->db = new dbHelper();
+//        $this->db->setTable('soap_snippets');
+//        $this->db->setField('parentId', 'VARCHAR', 20, true, false);
+//        $this->db->setField('text', 'TEXT', 1000, true, false);
+//        $this->db->setField('index', 'INT', 11, true, false);
+//        $this->db->setField('category', 'VARCHAR', 50, true, false);
+//        $this->db->setField('leaf', 'TINYINT', 1, true, false);
+//        $this->db->executeORM();
+    }
+
     public function getSoapSnippetsByCategory($params){
+        if(isset($params->category)){
+            $this->db->setSQL("SELECT * FROM soap_snippets WHERE parentId = 'root' AND category = '$params->category'");
+        }else{
+            $this->db->setSQL("SELECT * FROM soap_snippets WHERE parentId = '$params->id'");
+        }
+        return $this->db->fetchRecords();
+    }
 
-        $foo = array(
-            array(
-                'text' => 'Normal Tests',
-                'iconCls' => 'task-folder',
-                'leaf' => false,
-                'expanded' => true,
-                'children' => array(
-                    array(
-                        'text' => 'Start an online fundraiser for out-of-pocket medical expenses today! Covering medical bills is a scary prospect with or without health insurance.',
-                        'iconCls' => 'task',
-                        'leaf' => true
-                    ),
-                    array(
-                        'text' => 'Bizcommunity.com - Daily Medical news .... News for medical professionals.',
-                        'iconCls' => 'task',
-                        'leaf' => true
-                    ),
-                    array(
-                        'text' => 'The leading source for trustworthy and timely health and medical',
-                        'iconCls' => 'task',
-                        'leaf' => true
-                    ),
-                    array(
-                        'text' => 'The medical decision-making (MDM) process involves analysis',
-                        'iconCls' => 'task',
-                        'leaf' => true
-                    )
-                )
-            ),
-            array(
-                'text' => 'Questions Test',
-                'iconCls' => 'task-folder',
-                'leaf' => false,
-                'children' => array(
-                    array(
-                        'text' => 'This tool has the ?? to query other search engines, also provides',
-                        'iconCls' => 'task',
-                        'leaf' => true
-                    ),
-                    array(
-                        'text' => 'Medical Humanities is a leading international journal that reflects ??',
-                        'iconCls' => 'task',
-                        'leaf' => true
-                    ),
-                    array(
-                        'text' => '?? Years',
-                        'iconCls' => 'task',
-                        'leaf' => true
-                    ),
-                    array(
-                        'text' => 'Color ??',
-                        'iconCls' => 'task',
-                        'leaf' => true
-                    )
+    public function addSoapSnippets($params){
+        if(is_array($params)){
+            foreach($params AS $index => $row){
+                $data = get_object_vars($row);
+                unset($data['id']);
+                $this->db->setSQL($this->db->sqlBind($data, 'soap_snippets', 'I'));
+                $this->db->execLog();
+                $params[$index]->id = $this->db->lastInsertId;
+            }
+        }else{
+            $data = get_object_vars($params);
+            unset($data['id']);
+            $this->db->setSQL($this->db->sqlBind($data, 'soap_snippets', 'I'));
+            $this->db->execLog();
+            $params->id = $this->db->lastInsertId;
+        }
+        return $params;
+    }
 
-                )
-            )
-        );
+    public function updateSoapSnippets($params){
+        if(is_array($params)){
+            foreach($params AS $row){
+                $data = get_object_vars($row);
+                unset($data['id']);
+                $this->db->setSQL($this->db->sqlBind($data, 'soap_snippets', 'U', array('id' => $row->id)));
+                $this->db->execLog();
+            }
+        }else{
+            $data = get_object_vars($params);
+            unset($data['id']);
+            $this->db->setSQL($this->db->sqlBind($data, 'soap_snippets', 'U', array('id' => $params->id)));
+            $this->db->execLog();
+        }
+        return $params;
+    }
 
-        return $foo;
-
+    public function deleteSoapSnippets($params){
+        $this->db->setSQL("DELETE FROM soap_snippets WHERE id = '$params->id'");
+        $this->db->execLog();
+        return $params;
     }
 }
 

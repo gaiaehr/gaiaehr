@@ -72,6 +72,9 @@ Ext.define('App.ux.grid.RowFormEditing', {
 
     editStyle: 'row',
 
+	enableRemove:false,
+
+
 	saveBtnEnabled:false,
     /**
      * @cfg {Boolean} autoSync

@@ -111,6 +111,7 @@ Ext.define('App.ux.form.AdvanceForm', {
             }else{
                 fields[i].on('select', this.setFieldCondition, this);
             }
+	        fields[i].on('change', this.setFieldCondition, this);
         }
     },
     /**

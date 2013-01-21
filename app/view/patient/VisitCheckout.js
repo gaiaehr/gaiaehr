@@ -15,9 +15,9 @@ Ext.define('App.view.patient.VisitCheckout', {
     uses: ['App.ux.GridPanel'],
     initComponent: function(){
         var me = this;
-        me.serviceStore = Ext.create('Ext.data.Store', {
-            model: 'App.model.patient.CptCodes'
-        });
+
+        me.serviceStore = Ext.create('App.store.patient.CptCodes');
+
         me.pageBody = Ext.create('Ext.panel.Panel', {
             itemId: 'visitpayment',
             defaults: {

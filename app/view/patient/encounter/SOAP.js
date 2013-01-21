@@ -7,6 +7,7 @@
  */
 Ext.define('App.view.patient.encounter.SOAP', {
 	extend:'Ext.panel.Panel',
+	action:['patient.encounter.soap'],
 	title:i18n('soap'),
 	layout:'border',
 	frame:true,

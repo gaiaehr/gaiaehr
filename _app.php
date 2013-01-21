@@ -535,16 +535,20 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 			 * Sencha ExtJS OnReady Event
 			 * When all the JS code is loaded execute the entire code once.
 			 */
-            Ext.onReady(function(){
-                /**
-                 * lets create the Application Viewport (render the application),
-                 * and store the application viewport instance in "app".
-                 * @type {*}
-                 */
-                CronJob.run(function(){
-                    say('Loading GaiaEHR');
-                    app = Ext.create('App.view.Viewport');
-                });
+            Ext.application({
+                name        : 'App',
+                models      : [ ],
+                stores      : [ ],
+                views       : [ ],
+                controllers : [
+                    'patient.encounter.SOAP'
+                ],
+                launch: function() {
+                    CronJob.run(function(){
+                        say('Loading GaiaEHR');
+                        app = Ext.create('App.view.Viewport');
+                    });
+                }
             });
 		</script>
 	</body>

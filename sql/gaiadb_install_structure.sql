@@ -375,14 +375,6 @@ CREATE TABLE IF NOT EXISTS `encounter_codes_cpt` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
-CREATE TABLE IF NOT EXISTS `encounter_codes_hcpcs` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `eid` bigint(20) DEFAULT NULL COMMENT 'encounter ID',
-  `code` varchar(255) DEFAULT NULL COMMENT 'code number',
-  `code_type` int(11) DEFAULT NULL COMMENT 'CPT4 = 1, ICD9= 2, HCPCS = 3 ',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
-
 CREATE TABLE IF NOT EXISTS `encounter_codes_icdx` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `eid` bigint(20) DEFAULT NULL COMMENT 'encounter ID',

@@ -22,8 +22,7 @@ Ext.define('App.view.patient.encounter.CurrentProceduralTerminology', {
 
         me.referenceCptStore = Ext.create('App.store.patient.QRCptCodes');
 
-        me.encounterCptStore = Ext.create('Ext.data.Store', {
-            model:'App.model.patient.CptCodes',
+        me.encounterCptStore = Ext.create('App.store.patient.CptCodes', {
             autoSync:true,
             listeners:{
                 scope:me,

@@ -375,14 +375,6 @@ CREATE TABLE IF NOT EXISTS `encounter_codes_cpt` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
-CREATE TABLE IF NOT EXISTS `encounter_codes_hcpcs` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `eid` bigint(20) DEFAULT NULL COMMENT 'encounter ID',
-  `code` varchar(255) DEFAULT NULL COMMENT 'code number',
-  `code_type` int(11) DEFAULT NULL COMMENT 'CPT4 = 1, ICD9= 2, HCPCS = 3 ',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
-
 CREATE TABLE IF NOT EXISTS `encounter_codes_icdx` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `eid` bigint(20) DEFAULT NULL COMMENT 'encounter ID',
@@ -2156,6 +2148,16 @@ CREATE TABLE IF NOT EXISTS `sct_relationships` (
   `RelationshipGroup` int(11) NOT NULL,
   PRIMARY KEY (`RelationshipId`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+CREATE TABLE IF NOT EXISTS `soap_snippets` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `parentId` varchar(20) COLLATE utf8_bin DEFAULT NULL,
+  `index` int(11) DEFAULT NULL,
+  `text` text COLLATE utf8_bin,
+  `category` varchar(50) COLLATE utf8_bin DEFAULT NULL,
+  `leaf` tinyint(1) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 CREATE TABLE IF NOT EXISTS `standardized_tables_track` (
   `id` int(11) NOT NULL AUTO_INCREMENT,

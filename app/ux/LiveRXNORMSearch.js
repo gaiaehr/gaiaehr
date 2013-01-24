@@ -86,7 +86,7 @@ Ext.define('App.ux.LiveRXNORMSearch',
 				}
 			},
 			pageSize : 10
-		}, null);
+		});
 
 		me.callParent();
 	}

@@ -42,21 +42,21 @@ Ext.define('App.view.areas.PatientPoolDropZone', {
         getPoolAreas: function(){
             var me = this, panel = me.getPageBody().down('container'), areas;
             me.stores = [];
+
             PoolArea.getActivePoolAreas(function(provider, response){
                 areas = response.result;
                 for(var i = 0; i < areas.length; i++){
-                    var store = Ext.create('Ext.data.Store', {
-                            model: 'App.model.areas.PoolDropAreas',
-                            proxy: {
-                                type: 'direct',
-                                api: {
-                                    read: PoolArea.getPoolAreaPatients
-                                },
-                                extraParams: {
-                                    area_id: areas[i].id
-                                }
+                    var store = Ext.create('App.store.areas.PoolDropAreas',{
+                        proxy: {
+                            type: 'direct',
+                            api: {
+                                read: PoolArea.getPoolAreaPatients
+                            },
+                            extraParams: {
+                                area_id: areas[i].id
                             }
-                        });
+                        }
+                    });
                     me.stores.push(store);
                     panel.add({
                             xtype: 'grid',

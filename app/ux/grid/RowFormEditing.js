@@ -72,6 +72,9 @@ Ext.define('App.ux.grid.RowFormEditing', {
 
     editStyle: 'row',
 
+	enableRemove:false,
+
+
 	saveBtnEnabled:false,
     /**
      * @cfg {Boolean} autoSync
@@ -358,7 +361,7 @@ Ext.define('App.ux.grid.RowFormEditing', {
     moveEditorByClick: function() {
         var me = this;
         if (me.editing) {
-            me.superclass.startEditByClick.apply(me, arguments);
+            me.superclass.onCellClick.apply(me, arguments);
         }
     },
 

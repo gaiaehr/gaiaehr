@@ -42,218 +42,15 @@ Ext.define('App.view.patient.Encounter', {
             }
         });
         me.encounterEventHistoryStore = Ext.create('App.store.patient.EncounterEventHistory');
-        me.EncounterOrdersStore = Ext.create('App.store.patient.EncounterCPTsICDs');
-        if(acl['access_encounter_checkout']){
-            me.checkoutAlertArea = Ext.create('App.store.patient.CheckoutAlertArea');
-        }
 
         /**
          * Encounter Checkout window
          * @type {*}
          */
         if(acl['access_encounter_checkout']){
-            me.checkoutWindow = Ext.create('Ext.window.Window', {
-                title:i18n('checkout_and_signing'),
-                closeAction:'hide',
-                modal:true,
-                layout:'border',
-                width:1000,
-                height:660,
-                bodyPadding:5,
-                items:[
-                    {
-                        xtype:'grid',
-                        title:i18n('services_diagnostics'),
-                        region:'center',
-                        store:me.EncounterOrdersStore,
-                        columns:[
-                            {
-                                header:i18n('code'),
-                                width:60,
-                                dataIndex:'code'
-                            },
-                            {
-                                header:i18n('description'),
-                                flex:1,
-                                dataIndex:'code_text'
-                            },
-                            {
-                                header:i18n('type'),
-                                flex:1,
-                                dataIndex:'type'
-                            }
-                        ]
-                    },
-                    me.documentsimplegrid = Ext.create('App.view.patient.EncounterDocumentsGrid', {
-                        title:i18n('documents'),
-                        region:'east',
-                        width:485
-                    }),
-                    {
-                        xtype:'form',
-                        title:i18n('additional_info'),
-                        region:'south',
-                        split:true,
-                        height:245,
-                        layout:'column',
-                        defaults:{
-                            xtype:'fieldset',
-                            padding:8
-                        },
-                        items:[
-                            {
-                                xtype:'fieldcontainer',
-                                columnWidth:.5,
-                                defaults:{
-                                    xtype:'fieldset',
-                                    padding:8
-                                },
-                                items:[
-                                    {
-                                        xtype:'fieldset',
-                                        margin:'5 1 5 5',
-                                        padding:8,
-                                        columnWidth:.5,
-                                        height:115,
-                                        title:i18n('messages_notes_and_reminders'),
-                                        items:[
-                                            {
-                                                xtype:'textfield',
-                                                name:'message',
-                                                fieldLabel:i18n('message'),
-                                                anchor:'100%'
-                                            },
-                                            {
-                                                xtype:'textfield',
-                                                name:'reminder',
-                                                fieldLabel:i18n('reminder'),
-                                                anchor:'100%'
-                                            },
-                                            {
-                                                xtype:'textfield',
-                                                grow:true,
-                                                name:'note',
-                                                fieldLabel:i18n('note'),
-                                                anchor:'100%'
-                                            }
-                                        ]
-                                    },
-                                    {
-                                        title:'Follow Up',
-                                        margin:'5 1 5 5',
-                                        defaults:{
-                                            anchor:'100%'
-                                        },
-                                        items:[
-                                            {
-                                                xtype:'mitos.followupcombo',
-                                                fieldLabel:i18n('time_interval'),
-                                                name:'followup_time'
-                                            },
-                                            {
-                                                fieldLabel:i18n('facility'),
-                                                xtype:'mitos.activefacilitiescombo',
-                                                name:'followup_facility'
-                                            }
-                                        ]
-                                    }
-                                ]
-                            },
-                            {
-                                xtype:'fieldset',
-                                margin:5,
-                                padding:8,
-                                columnWidth:.5,
-                                layout:'fit',
-                                height:208,
-                                title:i18n('warnings_alerts'),
-                                items:[
-                                    {
-                                        xtype:'grid',
-                                        hideHeaders:true,
-                                        store:me.checkoutAlertArea,
-                                        border:false,
-                                        rowLines:false,
-                                        header:false,
-                                        viewConfig:{
-                                            stripeRows:false,
-                                            disableSelection:true
-                                        },
-                                        columns:[
-                                            {
-                                                dataIndex:'alertType',
-                                                width:30,
-                                                renderer:me.alertIconRenderer
-                                            },
-                                            {
-                                                dataIndex:'alert',
-                                                flex:1
-                                            }
-                                        ]
-                                    }
-                                ]
-                            }
-                        ]
-                    }
-                ],
-                buttons:[
-                    {
-                        text:i18n('co_sign'),
-                        action:'encounter',
-                        scope:me,
-                        handler:me.coSignEncounter
-                    },
-                    {
-                        text:i18n('sign'),
-                        action:'encounter',
-                        scope:me,
-                        handler:me.signEncounter
-                    },
-                    {
-                        text:i18n('cancel'),
-                        handler:me.cancelCheckout
-
-                    }
-                ],
-                listeners:{
-                    scope:me,
-                    show:function(){
-                        me.EncounterOrdersStore.load({
-                            params:{
-                                eid:app.patient.eid
-                            }
-                        });
-                        if(acl['access_encounter_checkout']){
-                            me.checkoutAlertArea.load({
-                                params:{
-                                    eid:app.patient.eid
-                                }
-                            });
-                        }
-                        me.documentsimplegrid.loadDocs(me.eid);
-                    }
-                }
-
-            });
+	        me.checkoutWindow = Ext.create('App.view.patient.windows.EncounterCheckOut',{enc:me});
         }
-        //        me.speechDicPanel = Ext.create('Ext.form.Panel', {
-        //            autoScroll   : true,
-        //            title        : 'Speech Dictation',
-        //            action       : 'encounter',
-        //            frame        : true,
-        //            bodyPadding  : 5,
-        //            bodyStyle    : 'background-color:white',
-        //            fieldDefaults: { msgTarget: 'side' },
-        //            buttons      : [
-        //                {
-        //                    text   : 'Save',
-        //                    iconCls: 'save',
-        //                    action : 'speechDictation',
-        //                    scope  : me,
-        //                    handler: me.onEncounterUpdate
-        //                }
-        //            ]
-        //        });
+
         if(me.renderAdministrative){
             me.centerPanel = Ext.create('Ext.tab.Panel', {
                 region:'center',
@@ -428,39 +225,9 @@ Ext.define('App.view.patient.Encounter', {
         }
         if(acl['access_soap']){
             me.soapPanel = me.encounterTabPanel.add(
-                Ext.create('Ext.form.Panel', {
-                    autoScroll:true,
-                    title:i18n('soap'),
-                    action:'encounter',
-                    frame:true,
-                    bodyPadding:5,
-                    bodyStyle:'background-color:white',
-                    fieldDefaults:{
-                        msgTarget:'side'
-                    },
-                    plugins: {
-                        ptype:'advanceform',
-                        autoSync:globals['autosave'],
-                        syncAcl:acl['edit_encounters']
-                    },
-                    buttons:[
-                        {
-                            text:i18n('save'),
-                            iconCls:'save',
-                            action:'soap',
-                            scope:me,
-                            handler:me.onEncounterUpdate
-                        }
-                    ],
-                    listeners:{
-                        recordloaded:function(form, record){
-                            say(record.data.icdxCodes);
-                            me.soapPanel.query('icdsfieldset')[0].loadIcds(record.data.icdxCodes);
-                        },
-                        beforesync:function(store, operation){
-                            //me.soapPanel.query('icdsfieldset')[0].loadIcds(record.data.icdxCodes);
-                        }
-                    }
+                Ext.create('App.view.patient.encounter.SOAP', {
+	                bodyStyle:'padding:0',
+	                enc:me
                 })
             );
         }
@@ -571,7 +338,7 @@ Ext.define('App.view.patient.Encounter', {
         me.rightPanel = Ext.create('Ext.tab.Panel', {
             title:i18n('encounter_progress_note'),
             margin:'0 0 0 2',
-            width:500,
+            width:400,
             collapsible:true,
             animCollapse:true,
             collapsed:true,
@@ -691,21 +458,16 @@ Ext.define('App.view.patient.Encounter', {
      * CheckOut Functions
      */
     onCheckout:function(){
-        var me = this, win = me.checkoutWindow, patient = me.getCurrPatient();
-        win.setTitle(patient.name + ' #' + patient.pid + ' - ' + Ext.Date.format(me.currEncounterStartDate, 'F j, Y, g:i:s a') + ' (' + i18n('checkout') + ')');
-        win.show();
+        var title = app.patient.name + ' #' + app.patient.pid + ' - ' + Ext.Date.format(this.currEncounterStartDate, 'F j, Y, g:i:s a') + ' (' + i18n('checkout') + ')';
+
+	    this.checkoutWindow.pid = app.patient.pid;
+	    this.checkoutWindow.eid = app.patient.eid;
+
+	    this.checkoutWindow.setTitle(title);
+	    this.checkoutWindow.show();
     },
-    coSignEncounter:function(){
-    },
-    signEncounter:function(){
-        this.closeEncounter();
-        this.checkoutWindow.close();
-    },
-    cancelCheckout:function(btn){
-        var win = btn.up('window'), form = win.down('form').getForm();
-        win.close();
-        form.reset();
-    },
+
+
     /**
      * Sends the data to the server to be saved.
      * This function needs the button action to determine
@@ -897,7 +659,7 @@ Ext.define('App.view.patient.Encounter', {
                 if(me.soapPanel){
                     store = record[0].soap();
                     store.on('write',me.updateProgressNote, me);
-                    me.soapPanel.getForm().loadRecord(store.getAt(0));
+                    me.soapPanel.down('form').getForm().loadRecord(store.getAt(0));
                     //me.soapPanel.query('icdsfieldset')[0].loadIcds(store.getAt(0).data.icdxCodes);
                 }
                 if(me.MiscBillingOptionsPanel){
@@ -1029,14 +791,7 @@ Ext.define('App.view.patient.Encounter', {
     //*********  *****    *****    ******* **************************************************************//
     //***************************************************************************************************//
     //***************************************************************************************************//
-    alertIconRenderer:function(v){
-        if(v == 1){
-            return '<img src="resources/images/icons/icoLessImportant.png" />'
-        }else if(v == 2){
-            return '<img src="resources/images/icons/icoImportant.png" />'
-        }
-        return v;
-    },
+
     /**
      * Start the timerTask
      */
@@ -1266,51 +1021,32 @@ Ext.define('App.view.patient.Encounter', {
         /**
          * Get 'SOAP' Form and define the Model using the form fields
          */
-        if(me.soapPanel){
-            me.getFormItems(me.soapPanel, 6, function(){
-                var formFields = me.soapPanel.getForm().getFields(), modelFields = new defaultFields;
-                for(var i = 0; i < formFields.items.length; i++){
-                    modelFields.push({
-                        name:formFields.items[i].name,
-                        type:'auto'
-                    });
-                }
-                Ext.define('App.model.patient.SOAP', {
-                    extend:'Ext.data.Model',
-                    fields:modelFields,
-                    proxy:{
-                        type:'direct',
-                        api:{
-                            update:Encounter.updateSoapById
-                        }
-                    },
-                    belongsTo:{
-                        model:'App.model.patient.Encounter',
-                        foreignKey:'eid'
-                    }
-                });
-            });
-        }
-        /**
-         * Get 'Speech Dictation' Form and define the Model using the form fields
-         */
-        //        this.getFormItems(me.speechDicPanel, 'Speech Dictation', function() {
-        //            var formFields = me.speechDicPanel.getForm().getFields(), modelFields = new defaultFields;
-        //            for(var i = 0; i < formFields.items.length; i++) {
-        //                modelFields.push({name: formFields.items[i].name, type: 'auto'});
-        //            }
-        //            Ext.define('App.model.patient.SpeechDictation', {
-        //                extend   : 'Ext.data.Model',
-        //                fields   : modelFields,
-        //                proxy    : {
-        //                    type: 'direct',
-        //                    api : {
-        //                        update: Encounter.updateDictationById
-        //                    }
-        //                },
-        //                belongsTo: { model: 'App.model.patient.Encounter', foreignKey: 'eid' }
-        //            });
-        //        });
+//        if(me.soapPanel){
+//            me.getFormItems(me.soapPanel.down('form'), 6, function(){
+//                var formFields = me.soapPanel.down('form').getForm().getFields(),
+//	                modelFields = [];
+//                for(var i = 0; i < formFields.items.length; i++){
+//                    modelFields.push({
+//                        name:formFields.items[i].name,
+//                        type:'auto'
+//                    });
+//                }
+//                Ext.define('App.model.patient.SOAP', {
+//                    extend:'Ext.data.Model',
+//                    fields:modelFields,
+//                    proxy:{
+//                        type:'direct',
+//                        api:{
+//                            update:Encounter.updateSoapById
+//                        }
+//                    },
+//                    belongsTo:{
+//                        model:'App.model.patient.Encounter',
+//                        foreignKey:'eid'
+//                    }
+//                });
+//            });
+//        }
         /**
          * Get 'Review of Systems Check' Form and define the Model using the form fields
          */
@@ -1344,10 +1080,10 @@ Ext.define('App.view.patient.Encounter', {
     getButtonsToDisable:function(){
         var me = this, buttons = [];
         if(me.ButtonsToDisable == null){
-            if(me.vitalsPanel)    buttons.concat(buttons, me.vitalsPanel.query('button'));
+            if(me.vitalsPanel) buttons.concat(buttons, me.vitalsPanel.query('button'));
             if(me.reviewSysPanel) buttons.concat(buttons, me.reviewSysPanel.query('button'));
             if(me.reviewSysCkPanel) buttons.concat(buttons, me.reviewSysCkPanel.query('button'));
-            if(me.soapPanel) buttons.concat(buttons, me.soapPanel.query('button'));
+            if(me.soapPanel) buttons.concat(buttons, me.soapPanel.down('form').query('button'));
             if(me.MiscBillingOptionsPanel) buttons.concat(buttons, me.MiscBillingOptionsPanel.query('button'));
             if(me.CurrentProceduralTerminology) buttons.concat(buttons, me.CurrentProceduralTerminology.query('button'));
             if(me.EncounterEventHistory) buttons.concat(buttons, me.EncounterEventHistory.query('button'));

@@ -95,7 +95,7 @@ Ext.define('App.ux.LivePatientSearch',
 				}
 			},
 			pageSize : 10
-		}, null);
+		});
 
 		me.callParent();
 	}

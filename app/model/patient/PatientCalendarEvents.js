@@ -29,9 +29,6 @@ Ext.define('App.model.patient.PatientCalendarEvents', {
 		type       : 'direct',
 		api        : {
 			read: Calendar.getPatientFutureEvents
-		},
-		reader     : {
-			type: 'json'
 		}
 	}
 });

@@ -659,21 +659,63 @@ class dbHelper
 		$sqlStatement = (string)'ALTER TABLE ' . $this->workingTable . ' ADD ';
 		switch($newField['TYPE'])
 		{
-			case 'INT':
-				$sqlStatement .= (string)$newField['NAME'] . ' ' . $newField['TYPE'] . '(' . $newField['LENGTH'] . ')' . ($newField['NOTNULL'] ? ' NULL ' : ' NOT NULL ') .  ($newField['PRIMARY'] ? ' PRIMARY KEY ' : ' ') . 'COMMENT `' . $newField['COMMENT'] . '`;';
+			case 'BIT'; case 'BINARY'; case 'VARBINARY':
+				$sqlStatement .= (string)$newField['NAME'] . ' ' . 
+				$newField['TYPE'] . '(' . $newField['LENGTH'] . ')' . 
+				'COMMENT `' . $newField['COMMENT'] . '`;';
+			break;
+				
+			case 'INT'; case 'TINYINT'; case 'MEDIUMINT'; case 'INTEGER'; case 'BIGINT':
+				$sqlStatement .= (string)$newField['NAME'] . ' ' . 
+				$newField['TYPE'] . '(' . $newField['LENGTH'] . ')' . 
+				($newField['NOTNULL'] ? ' NULL ' : ' NOT NULL ') .  
+				($newField['PRIMARY'] ? ' PRIMARY KEY ' : ' ') . 
+				'COMMENT `' . $newField['COMMENT'] . '`;';
 			break;
 			
-			case 'TINYINT':
-				$sqlStatement .= (string)$newField['NAME'] . ' ' . $newField['TYPE'] . '(' . $newField['LENGTH'] . ')' . ($newField['NOTNULL'] ? ' NULL ' : ' NOT NULL ') .  ($newField['PRIMARY'] ? ' PRIMARY KEY ' : ' ') . 'COMMENT `' . $newField['COMMENT'] . '`;';
+			case 'REAL'; case 'DOUBLE'; case 'FLOAT'; case 'DECIMAL'; case 'NUMERIC':
+				$sqlStatement .= (string)$newField['NAME'] . ' ' . 
+				$newField['TYPE'] . '(' . $newField['LENGTH'] . ', ' . $newField['DECIMALS'] .')' . 
+				($newField['NOTNULL'] ? ' NULL ' : ' NOT NULL ') .  
+				($newField['PRIMARY'] ? ' PRIMARY KEY ' : ' ') . 
+				'COMMENT `' . $newField['COMMENT'] . '`;';
 			break;
-		}
-		if(strtoupper($newField['TYPE']) != 'BIGINT')
-		{
-			$sqlStatement .= (string)$fieldName . ' ' . $fieldType . '(' . $fieldLength . ')' . ($fieldAllowNull ? ' NULL ' : ' NOT NULL ') . ';';
-		} 
-		else
-		{
-			$sqlStatement .= (string)$fieldName . ' ' . $fieldType . ($fieldAllowNull ? ' NULL ' : ' NOT NULL ') . ';';	
+			
+			case 'DATE'; case 'TIME'; case 'TIMESTAMP'; case 'DATETIME'; case 'YEAR';
+				$sqlStatement .= (string)$newField['NAME'] . ' ' . 
+				$newField['TYPE'] .  
+				($newField['NOTNULL'] ? ' NULL ' : ' NOT NULL ') .  
+				($newField['PRIMARY'] ? ' PRIMARY KEY ' : ' ') . 
+				'COMMENT `' . $newField['COMMENT'] . '`;';
+			break;
+			
+			case 'CHAR'; case 'VARCHAR'; case 'TINYTEXT '; case 'TEXT '; case 'MEDIUMTEXT'; case 'LONGTEXT';
+				$sqlStatement .= (string)$newField['NAME'] . ' ' . 
+				$newField['TYPE'] . '(' . $newField['LENGTH'] . ')' . 
+				'CHARACTER SET ' . $newField['CHARACTER_SET'] . ' ' .
+				'COLLATE ' . $newField['COLLATE'] . ' ' .
+				($newField['NOTNULL'] ? ' NULL ' : ' NOT NULL ') .  
+				($newField['PRIMARY'] ? ' PRIMARY KEY ' : ' ') . 
+				'COMMENT `' . $newField['COMMENT'] . '`;';
+			break;
+			
+			case 'TINYBLOB'; case 'BLOB'; case 'MEDIUMBLOB'; case 'LONGBLOB':
+				$sqlStatement .= (string)$newField['NAME'] . ' ' . 
+				$newField['TYPE'] . ' ' . 
+				'COMMENT `' . $newField['COMMENT'] . '`;';
+			break;
+			
+			default:
+				$sqlStatement .= (string)$newField['NAME'] . ' ' . 
+				$newField['TYPE'] . '(' . $newField['LENGTH'] . ')' . 
+				($newField['NOTNULL'] ? ' NULL ' : ' NOT NULL ') . 
+				($newField['PRIMARY'] ? ' PRIMARY KEY ' : ' ') . 
+				'COMMENT `' . $newField['COMMENT'] . '`;';
+			break;
+			
+			case '':
+				
+			break;
 		}
 		$this->conn->exec($sqlStatement);
 	}

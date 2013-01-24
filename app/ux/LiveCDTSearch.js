@@ -18,74 +18,61 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 Ext.define('App.ux.LiveCDTSearch',
-{
-	extend : 'Ext.form.ComboBox',
-	alias : 'widget.cdtlivetsearch',
-	hideLabel : true,
-
-	initComponent : function()
 	{
-		var me = this;
+		extend:'Ext.form.ComboBox',
+		alias:'widget.cdtlivetsearch',
+		hideLabel:true,
 
-		Ext.define('liveCDTSearchModel',
-		{
-			extend : 'Ext.data.Model',
-			fields : [
-			{
-				name : 'id'
-			},
-			{
-				name : 'code'
-			},
-			{
-				name : 'text'
-			}],
-			proxy :
-			{
-				type : 'direct',
-				api :
+		initComponent:function(){
+			var me = this;
+
+			Ext.define('liveCDTSearchModel',
 				{
-					read : Medical.getCDTLiveSearch
+					extend:'Ext.data.Model',
+					fields:[
+						{ name:'id' },
+						{ name:'code' },
+						{ name:'text' }
+					],
+					proxy:{
+						type:'direct',
+						api:{
+							read:Medical.getCDTLiveSearch
+						},
+						reader:{
+							totalProperty:'totals',
+							root:'rows'
+						}
+					}
+				});
+
+			me.store = Ext.create('Ext.data.Store',{
+				model:'liveCDTSearchModel',
+				pageSize:10,
+				autoLoad:false
+			});
+
+			Ext.apply(this,	{
+				store:me.store,
+				displayField:'text',
+				valueField:'code',
+				emptyText:i18n('search_for_a_CDT') + '...',
+				typeAhead:false,
+				hideTrigger:true,
+				minChars:1,
+				listConfig:{
+					loadingText:i18n('searching') + '...',
+					//emptyText	: 'No matching posts found.',
+					//---------------------------------------------------------------------
+					// Custom rendering template for each item
+					//---------------------------------------------------------------------
+					getInnerTpl:function(){
+						return '<div class="search-item"><h3>{code}<span style="font-weight: normal"> ({text}) </span></h3></div>';
+					}
 				},
-				reader :
-				{
-					totalProperty : 'totals',
-					root : 'rows'
-				}
-			}
-		});
+				pageSize:10
+			});
 
-		me.store = Ext.create('Ext.data.Store',
-		{
-			model : 'liveCDTSearchModel',
-			pageSize : 10,
-			autoLoad : false
-		});
-
-		Ext.apply(this,
-		{
-			store : me.store,
-			displayField : 'text',
-			valueField : 'code',
-			emptyText : i18n('search_for_a_CDT') + '...',
-			typeAhead : false,
-            hideTrigger : true,
-			minChars : 1,
-			listConfig :
-			{
-				loadingText : i18n('searching') + '...',
-				//emptyText	: 'No matching posts found.',
-				//---------------------------------------------------------------------
-				// Custom rendering template for each item
-				//---------------------------------------------------------------------
-				getInnerTpl : function()
-				{
-					return '<div class="search-item"><h3>{code}<span style="font-weight: normal"> ({text}) </span></h3></div>';
-				}
-			},
-			pageSize : 10
-		}, null);
-
-		me.callParent();
-	}
-}); 
+			me.callParent();
+		}
+	});

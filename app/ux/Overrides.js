@@ -48,7 +48,7 @@ Ext.override(Ext.grid.plugin.Editing, {
         var me = this;
         me.editing = false;
         me.fireEvent('canceledit', me, me.context);
-        me.grid.store.rejectChanges();
+	    if(me.grid.store.rejectChanges) me.grid.store.rejectChanges();
     }
 });
 Ext.override(Ext.grid.RowEditor, {

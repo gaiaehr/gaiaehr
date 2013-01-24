@@ -151,7 +151,7 @@ class Encounter
 		$this->db->execOnly();
 		$this->db->setSQL($this->db->sqlBind($default, 'encounter_dictation', 'I'));
 		$this->db->execOnly();
-		$this->db->setSQL($this->db->sqlBind($default, 'encounter_hcfa_1500_options', 'I'));
+		$this->db->setSQL($this->db->sqlBind($default, 'encounter_1500_options', 'I'));
 		$this->db->execOnly();
 		$params->eid = intval($eid);
 		$this->poolArea->updateCurrentPatientPoolAreaByPid(array('eid' => $params->eid, 'priority' => $params->priority), $params->pid);
@@ -389,7 +389,7 @@ class Encounter
 		unset($data['id'], $data['icdxCodes']);
 		$this->db->setSQL($this->db->sqlBind($data, 'encounter_soap', 'U', "id='" . $params->id . "'"));
 		$this->db->execLog();
-		$this->db->setSQL("DELETE FROM encounter_codes_icdx WHERE eid = '$params->eid'");
+		$this->db->setSQL("DELETE FROM encounter_dx WHERE eid = '$params->eid'");
 		$this->db->execOnly();
 		$this->updateEncounterIcdxCodes($params);
 		$this->addEncounterHistoryEvent('SOAP updated');
@@ -437,11 +437,6 @@ class Encounter
 			$fo['type'] = 'CPT';
 			$records[]  = $fo;
 		}
-		$foo = $this->services->getHCPCByEid($eid);
-		foreach($foo['rows'] as $fo){
-			$fo['type'] = 'HCPC';
-			$records[]  = $fo;
-		}
 		return $records;
 	}
 
@@ -462,13 +457,13 @@ class Encounter
 			foreach($params->icdxCodes as $icdcCode){
 				$icdc['eid']  = $params->eid;
 				$icdc['code'] = trim($icdcCode);
-				$this->db->setSQL($this->db->sqlBind($icdc, 'encounter_codes_icdx', 'I'));
+				$this->db->setSQL($this->db->sqlBind($icdc, 'encounter_dx', 'I'));
 				$this->db->execOnly();
 			}
 		} else {
 			$icdc['eid']  = $params->eid;
 			$icdc['code'] = trim($params->icdxCodes);
-			$this->db->setSQL($this->db->sqlBind($icdc, 'encounter_codes_icdx', 'I'));
+			$this->db->setSQL($this->db->sqlBind($icdc, 'encounter_dx', 'I'));
 			$this->db->execOnly();
 		}
 		return $params;
@@ -808,7 +803,7 @@ class Encounter
 	{
 		$data = get_object_vars($params);
 		unset($data['eid']);
-		$this->db->setSQL($this->db->sqlBind($data, 'encounter_hcfa_1500_options', 'U', array('eid' => $params->eid)));
+		$this->db->setSQL($this->db->sqlBind($data, 'encounter_1500_options', 'U', array('eid' => $params->eid)));
 		$this->db->execLog();
 		return array('success' => true);
 	}
@@ -817,14 +812,14 @@ class Encounter
 	{
 		$data = get_object_vars($params);
 		unset($data['eid']);
-		$this->db->setSQL($this->db->sqlBind($data, 'encounter_hcfa_1500_options', 'U', array('eid' => $params->eid)));
+		$this->db->setSQL($this->db->sqlBind($data, 'encounter_1500_options', 'U', array('eid' => $params->eid)));
 		$this->db->execLog();
 		return array('success' => true);
 	}
 
 	public function getEncounterHCFAOptionsByEid($eid)
 	{
-		$this->db->setSQL("SELECT * FROM encounter_hcfa_1500_options WHERE eid = '$eid'");
+		$this->db->setSQL("SELECT * FROM encounter_1500_options WHERE eid = '$eid'");
 		return $this->db->fetchRecords(PDO::FETCH_ASSOC);
 	}
 

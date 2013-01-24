@@ -623,6 +623,7 @@ Ext.define('App.view.Viewport', {
         this.NewDocumentsWindow.show();
         this.NewDocumentsWindow.cardSwitch(action);
     },
+
     onWebCamComplete: function(msg){
         var panel = this.getActivePanel();
         if(panel.id == 'panelSummary'){
@@ -630,19 +631,22 @@ Ext.define('App.view.Viewport', {
         }
         this.msg('Sweet!', i18n('patient_image_saved'));
     },
-    onPatientLog: function(){
+
+	onPatientLog: function(){
         if(this.patientArrivalLog){
             this.patientArrivalLog.show();
         }else{
             this.patientArrivalLog = Ext.create('App.view.patient.windows.ArrivalLog').show();
         }
     },
+
     /*
      * Show the Payment Entry window dialog.
      */
     onPaymentEntryWindow: function(){
         this.PaymentEntryWindow.show();
     },
+
     /*
      * Show the new patient form panel.
      */
@@ -650,7 +654,8 @@ Ext.define('App.view.Viewport', {
         var me = this;
         me.navigateTo('panelNewPatient');
     },
-    createEmergency: function(){
+
+	createEmergency: function(){
         var me = this, emergency;
         Ext.Msg.show({
             title: i18n('wait') + '!!!',
@@ -662,7 +667,6 @@ Ext.define('App.view.Viewport', {
                     Emergency.createNewEmergency(function(provider, response){
                         emergency = response.result.emergency;
                         if(response.result.success){
-                            say(emergency);
                             me.setPatient(emergency.pid, emergency.eid, function(){
                                 me.openEncounter(emergency.eid);
                             });
@@ -673,6 +677,7 @@ Ext.define('App.view.Viewport', {
             }
         });
     },
+
     /*
      * Show the Create New Encounter panel.
      */
@@ -684,7 +689,8 @@ Ext.define('App.view.Viewport', {
             me.accessDenied();
         }
     },
-    openPatientSummary: function(){
+
+	openPatientSummary: function(){
         var me = this;
         if(me.currCardCmp == Ext.getCmp('panelSummary')){
             me.currCardCmp.onActive();
@@ -692,11 +698,13 @@ Ext.define('App.view.Viewport', {
             me.navigateTo('panelSummary');
         }
     },
-    stowPatientRecord: function(){
+
+	stowPatientRecord: function(){
         this.unsetPatient();
         this.navigateTo('panelDashboard');
     },
-    openEncounter: function(eid){
+
+	openEncounter: function(eid){
         var me = this;
         if(acl['access_encounters']){
             app.patient.eid = eid;

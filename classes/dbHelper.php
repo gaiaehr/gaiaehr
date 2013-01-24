@@ -628,15 +628,10 @@ class dbHelper
 	/**
 	 * setField
 	 */
-	public function setField($fieldName, $fieldType, $fieldLength, $fieldAllowNull, $fieldPrimaryKey)
+	public function setField($fieldProperties)
 	{
-		$newField = array(
-			'name' => $fieldName,
-			'type' => strtoupper($fieldType),
-			'length' => $fieldLength,
-			'allownull' => $fieldAllowNull,
-			'primarykey' => $fieldPrimaryKey
-		);
+		// if the value of $fieldProperties is not an array, it will assume that is JSON.
+		if( !is_array($fieldProperties) ) $newField = json_decode($fieldJSON, true);
 		$this->workingFields[] = $newField;
 	}
 
@@ -647,14 +642,32 @@ class dbHelper
 	{
 		$this->workingTable = (string)$tableName;
 	}
+	
+	public function createDatabase($databaseName)
+	{
+		
+	}
 
 	/**
 	 * createField
 	 */
-	private function createField($fieldName, $fieldType, $fieldLength, $fieldAllowNull, $fieldPrimaryKey)
+	private function createField($fieldProperties)
 	{
-		$sqlStatement = (string)'ALTER TABLE' . $this->workingTable . ' ADD ';
-		if(strtoupper($fieldType) != 'BIGINT')
+		// if the value of $fieldProperties is not an array, it will assume that is JSON.
+        if( !is_array($fieldProperties) ) $newField = json_decode($fieldJSON, true);
+		
+		$sqlStatement = (string)'ALTER TABLE ' . $this->workingTable . ' ADD ';
+		switch($newField['TYPE'])
+		{
+			case 'INT':
+				$sqlStatement .= (string)$newField['NAME'] . ' ' . $newField['TYPE'] . '(' . $newField['LENGTH'] . ')' . ($newField['NOTNULL'] ? ' NULL ' : ' NOT NULL ') .  ($newField['PRIMARY'] ? ' PRIMARY KEY ' : ' ') . 'COMMENT `' . $newField['COMMENT'] . '`;';
+			break;
+			
+			case 'TINYINT':
+				$sqlStatement .= (string)$newField['NAME'] . ' ' . $newField['TYPE'] . '(' . $newField['LENGTH'] . ')' . ($newField['NOTNULL'] ? ' NULL ' : ' NOT NULL ') .  ($newField['PRIMARY'] ? ' PRIMARY KEY ' : ' ') . 'COMMENT `' . $newField['COMMENT'] . '`;';
+			break;
+		}
+		if(strtoupper($newField['TYPE']) != 'BIGINT')
 		{
 			$sqlStatement .= (string)$fieldName . ' ' . $fieldType . '(' . $fieldLength . ')' . ($fieldAllowNull ? ' NULL ' : ' NOT NULL ') . ';';
 		} 
@@ -668,16 +681,19 @@ class dbHelper
 	/**
 	 * modifyField
 	 */
-	private function modifyField($fieldName, $fieldType, $fieldLength, $fieldAllowNull, $fieldPrimaryKey)
+	private function modifyField($fieldProperties)
 	{
+		// if the value of $fieldProperties is not an array, it will assume that is JSON.
+        if( !is_array($fieldProperties) ) $modifyField = json_decode($fieldJSON, true);
+		
 		$sqlStatement = (string)'ALTER TABLE ' . $this->workingTable . ' MODIFY ';
-		if(strtoupper($fieldType) != 'BIGINT')
+		if(strtoupper($modifyField['TYPE']) != 'BIGINT')
 		{
-			$sqlStatement .= (string)$fieldName . ' ' . $fieldType . '(' . $fieldLength . ')' . ($fieldAllowNull ? ' NULL ' : ' NOT NULL ') . ';';
+			$sqlStatement .= (string)$modifyField['NAME'] . ' ' . $modifyField['TYPE'] . '(' . $modifyField['LENGTH'] . ')' . ($modifyField['NOTNULL'] ? ' NULL ' : ' NOT NULL ') . ';';
 		} 
 		else
 		{
-			$sqlStatement .= (string)$fieldName . ' ' . $fieldType . ($fieldAllowNull ? ' NULL ' : ' NOT NULL ') . ';';	
+			$sqlStatement .= (string)$modifyField['NAME'] . ' ' . $modifyField['TYPE'] . ($modifyField['NOTNULL'] ? ' NULL ' : ' NOT NULL ') . ';';	
 		}
 		$this->conn->exec($sqlStatement);
 	}
@@ -707,8 +723,8 @@ class dbHelper
 	{
 		// these are mandatory fields for all tables.
 		$sqlStatement = (string)'CREATE TABLE IF NOT EXISTS ' . $tableName . '( ';
-		$sqlStatement .= (string)'id BIGINT(20) NOT NULL AUTO_INCREMENT PRIMARY KEY';
-		$sqlStatement .= (string)' ) AUTO_INCREMENT=1;';
+		$sqlStatement .= 'id BIGINT(20) NOT NULL AUTO_INCREMENT PRIMARY KEY';
+		$sqlStatement .= ' ) AUTO_INCREMENT=1;';
 		$this->conn->exec($sqlStatement);
 	}
 
@@ -727,13 +743,13 @@ class dbHelper
 	private function dropField($fieldName)
 	{
 		// check if the field contains data.
-		$sqlStatement = 'SELECT ' . $fieldName . ' FROM ' . $this->workingTable . ' LIMIT 1;';
-		$recordSet = $this->conn->query($sqlStatement);
-		$fieldsRecords = $recordSet->fetchAll(PDO::FETCH_ASSOC);
+		$sqlStatement = (string)'SELECT ' . $fieldName . ' FROM ' . $this->workingTable . ' LIMIT 1;';
+		$recordSet = (object)$this->conn->query($sqlStatement);
+		$fieldsRecords = (array)$recordSet->fetchAll(PDO::FETCH_ASSOC);
 		if ( count($fieldsRecords) <= 0 )
 		{
 			// drop the field
-			$sqlStatement = (string)'ALTER TABLE ' . $this->workingTable . ' DROP COLUMN ' . $fieldName . ';';
+			$sqlStatement = 'ALTER TABLE ' . $this->workingTable . ' DROP COLUMN ' . $fieldName . ';';
 			$this->conn->exec($sqlStatement);
 		}
 	}
@@ -769,13 +785,13 @@ class dbHelper
 				foreach ($this->workingFields as $compareField)
 				{
 					// if field is found compare it's properties.
-					$key = $this->recursiveArraySearch($compareField['name'], $fieldsRecords);
+					$key = $this->recursiveArraySearch($compareField['NAME'], $fieldsRecords);
 					if ( is_numeric( $key ) )
 					{
-						if ($fieldsRecords[$key]['Type'] == strtolower($compareField['type']) . '(' . $compareField['length'] . ')' && 
-							$fieldsRecords[$key]['Null'] == ($compareField['allownull'] ? 'YES' : 'NO') && 
-							$fieldsRecords[$key]['Key'] == ($compareField['primarykey'] ? 'PRI' : '') &&
-							$compareField['length'] == filter_var($fieldsRecords[$key]['Type'], FILTER_SANITIZE_NUMBER_INT))
+						if ($fieldsRecords[$key]['Type'] == strtolower($compareField['TYPE']) . '(' . $compareField['LENGTH'] . ')' && 
+							$fieldsRecords[$key]['Null'] == ($compareField['NOTNULL'] ? 'YES' : 'NO') && 
+							$fieldsRecords[$key]['Key'] == ($compareField['PRIMARY'] ? 'PRI' : '') &&
+							$compareField['LENGTH'] == filter_var($fieldsRecords[$key]['Type'], FILTER_SANITIZE_NUMBER_INT))
 						{
 							// This state the routine will do nothing.
 						}
@@ -783,7 +799,7 @@ class dbHelper
 						{
 							// Modify the column because there are not equal
 							// and execute the orm again.
-							$this->modifyField($compareField['name'], $compareField['type'], $compareField['length'], $compareField['allownull'], $compareField['primarykey']);
+							$this->modifyField($compareField['NAME'], $compareField['TYPE'], $compareField['LENGTH'], $compareField['NOTNULL'], $compareField['PRIMARY']);
 							$this->executeORM();
 							return;
 						}
@@ -791,7 +807,7 @@ class dbHelper
 					else
 					{
 						// Create the field
-						$this->createField($compareField['name'], $compareField['type'], $compareField['length'], $compareField['allownull'], $compareField['primarykey']);
+						$this->createField($compareField['NAME'], $compareField['TYPE'], $compareField['LENGTH'], $compareField['NOTNULL'], $compareField['PRIMARY']);
 					}
 				}
 				// routine to drop fields

@@ -17,10 +17,9 @@ include_once($_SESSION['root'].'/classes/dbHelper.php');
 $db = new dbHelper();
 $tables = array(
 	'calendar_events',
-	'encounter_codes_cpt',
-	'encounter_codes_hcpcs',
-    'encounter_hcfa_1500_options',
-    'encounter_codes_icdx',
+	'encounter_services',
+    'encounter_1500_options',
+    'encounter_dx',
 	'encounter_history',
 	'patient_demographics',
 	'encounter_dictation',

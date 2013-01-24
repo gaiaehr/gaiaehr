@@ -214,7 +214,7 @@ class DataManager
                 unset($data[$key]);
             }
         }
-        $this->db->setSQL($this->db->sqlBind($data, 'encounter_codes_cpt', 'I'));
+        $this->db->setSQL($this->db->sqlBind($data, 'encounter_services', 'I'));
         $this->db->execLog();
         $params->id = $this->db->lastInsertId;
         return array(
@@ -228,7 +228,7 @@ class DataManager
         $data = get_object_vars($params);
         unset($data['id'], $data['eid'], $data['code'], $data['code_text'], $data['code_text_medium']);
         $params->id = intval($params->id);
-        $this->db->setSQL($this->db->sqlBind($data, 'encounter_codes_cpt', 'U', "id='$params->id'"));
+        $this->db->setSQL($this->db->sqlBind($data, 'encounter_services', 'U', "id='$params->id'"));
         $this->db->execLog();
         return array(
             'totals' => 1,
@@ -238,10 +238,10 @@ class DataManager
 
     public function deleteCptCode(stdClass $params)
     {
-        $this->db->setSQL("SELECT status FROM encounter_codes_cpt WHERE id = '$params->id'");
+        $this->db->setSQL("SELECT status FROM encounter_services WHERE id = '$params->id'");
         $cpt = $this->db->fetchRecord();
         if ($cpt['status'] == 0) {
-            $this->db->setSQL("DELETE FROM encounter_codes_cpt WHERE id ='$params->id'");
+            $this->db->setSQL("DELETE FROM encounter_services WHERE id ='$params->id'");
             $this->db->execLog();
         }
         return array(
@@ -259,7 +259,7 @@ class DataManager
         $this->db->setSQL("SELECT DISTINCT cpt.code, cpt.code_text
                              FROM cpt_codes AS cpt
                        RIGHT JOIN cpt_icd AS ci ON ci.cpt = cpt.code
-                        LEFT JOIN encounter_codes_icdx AS eci ON eci.code = ci.icd
+                        LEFT JOIN encounter_dx AS eci ON eci.code = ci.icd
                             WHERE eci.eid = '$eid'");
         $records = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row) {
@@ -280,7 +280,7 @@ class DataManager
     public function getCptByEid($eid)
     {
         $this->db->setSQL("SELECT DISTINCT ecc.*, cpt.code, cpt.code_text, cpt.code_text_medium, cpt.code_text_short
-                             FROM encounter_codes_cpt AS ecc
+                             FROM encounter_services AS ecc
                         LEFT JOIN cpt_codes AS cpt ON ecc.code = cpt.code
                             WHERE ecc.eid = '$eid' ORDER BY ecc.id ASC");
         $records = $this->db->fetchRecords(PDO::FETCH_ASSOC);
@@ -297,7 +297,7 @@ class DataManager
     public function getCptUsedByPid($pid)
     {
         $this->db->setSQL("SELECT DISTINCT cpt.code, cpt.code_text, cpt.code_text_medium, cpt.code_text_short
-                             FROM encounter_codes_cpt AS ecc
+                             FROM encounter_services AS ecc
                         LEFT JOIN cpt_codes AS cpt ON ecc.code = cpt.code
                         LEFT JOIN encounters AS e ON ecc.eid = e.eid
                             WHERE e.pid = '$pid'
@@ -315,7 +315,7 @@ class DataManager
     public function getCptUsedByClinic()
     {
         $this->db->setSQL("SELECT DISTINCT cpt.code, cpt.code_text, cpt.code_text_medium, cpt.code_text_short
-                             FROM encounter_codes_cpt AS ecc
+                             FROM encounter_services AS ecc
                         LEFT JOIN cpt_codes AS cpt ON ecc.code = cpt.code
                          ORDER BY cpt.code DESC");
         $records = $this->db->fetchRecords(PDO::FETCH_ASSOC);

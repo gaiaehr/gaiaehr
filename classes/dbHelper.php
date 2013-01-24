@@ -645,7 +645,8 @@ class dbHelper
 	
 	public function createDatabase($databaseName)
 	{
-		
+		$sqlStatement = (string)'CREATE DATABASE IF NOT EXISTS ' . $databaseName;
+		$this->conn->exec($sqlStatement);
 	}
 
 	/**
@@ -725,13 +726,61 @@ class dbHelper
         if( !is_array($fieldProperties) ) $modifyField = json_decode($fieldJSON, true);
 		
 		$sqlStatement = (string)'ALTER TABLE ' . $this->workingTable . ' MODIFY ';
-		if(strtoupper($modifyField['TYPE']) != 'BIGINT')
+		switch($newField['TYPE'])
 		{
-			$sqlStatement .= (string)$modifyField['NAME'] . ' ' . $modifyField['TYPE'] . '(' . $modifyField['LENGTH'] . ')' . ($modifyField['NOTNULL'] ? ' NULL ' : ' NOT NULL ') . ';';
-		} 
-		else
-		{
-			$sqlStatement .= (string)$modifyField['NAME'] . ' ' . $modifyField['TYPE'] . ($modifyField['NOTNULL'] ? ' NULL ' : ' NOT NULL ') . ';';	
+			case 'BIT'; case 'BINARY'; case 'VARBINARY':
+				$sqlStatement .= (string)$newField['NAME'] . ' ' . 
+				$newField['TYPE'] . '(' . $newField['LENGTH'] . ')' . 
+				'COMMENT `' . $newField['COMMENT'] . '`;';
+			break;
+				
+			case 'INT'; case 'TINYINT'; case 'MEDIUMINT'; case 'INTEGER'; case 'BIGINT':
+				$sqlStatement .= (string)$newField['NAME'] . ' ' . 
+				$newField['TYPE'] . '(' . $newField['LENGTH'] . ')' . 
+				($newField['NOTNULL'] ? ' NULL ' : ' NOT NULL ') .  
+				($newField['PRIMARY'] ? ' PRIMARY KEY ' : ' ') . 
+				'COMMENT `' . $newField['COMMENT'] . '`;';
+			break;
+			
+			case 'REAL'; case 'DOUBLE'; case 'FLOAT'; case 'DECIMAL'; case 'NUMERIC':
+				$sqlStatement .= (string)$newField['NAME'] . ' ' . 
+				$newField['TYPE'] . '(' . $newField['LENGTH'] . ', ' . $newField['DECIMALS'] .')' . 
+				($newField['NOTNULL'] ? ' NULL ' : ' NOT NULL ') .  
+				($newField['PRIMARY'] ? ' PRIMARY KEY ' : ' ') . 
+				'COMMENT `' . $newField['COMMENT'] . '`;';
+			break;
+			
+			case 'DATE'; case 'TIME'; case 'TIMESTAMP'; case 'DATETIME'; case 'YEAR';
+				$sqlStatement .= (string)$newField['NAME'] . ' ' . 
+				$newField['TYPE'] .  
+				($newField['NOTNULL'] ? ' NULL ' : ' NOT NULL ') .  
+				($newField['PRIMARY'] ? ' PRIMARY KEY ' : ' ') . 
+				'COMMENT `' . $newField['COMMENT'] . '`;';
+			break;
+			
+			case 'CHAR'; case 'VARCHAR'; case 'TINYTEXT '; case 'TEXT '; case 'MEDIUMTEXT'; case 'LONGTEXT';
+				$sqlStatement .= (string)$newField['NAME'] . ' ' . 
+				$newField['TYPE'] . '(' . $newField['LENGTH'] . ')' . 
+				'CHARACTER SET ' . $newField['CHARACTER_SET'] . ' ' .
+				'COLLATE ' . $newField['COLLATE'] . ' ' .
+				($newField['NOTNULL'] ? ' NULL ' : ' NOT NULL ') .  
+				($newField['PRIMARY'] ? ' PRIMARY KEY ' : ' ') . 
+				'COMMENT `' . $newField['COMMENT'] . '`;';
+			break;
+			
+			case 'TINYBLOB'; case 'BLOB'; case 'MEDIUMBLOB'; case 'LONGBLOB':
+				$sqlStatement .= (string)$newField['NAME'] . ' ' . 
+				$newField['TYPE'] . ' ' . 
+				'COMMENT `' . $newField['COMMENT'] . '`;';
+			break;
+			
+			default:
+				$sqlStatement .= (string)$newField['NAME'] . ' ' . 
+				$newField['TYPE'] . '(' . $newField['LENGTH'] . ')' . 
+				($newField['NOTNULL'] ? ' NULL ' : ' NOT NULL ') . 
+				($newField['PRIMARY'] ? ' PRIMARY KEY ' : ' ') . 
+				'COMMENT `' . $newField['COMMENT'] . '`;';
+			break;
 		}
 		$this->conn->exec($sqlStatement);
 	}

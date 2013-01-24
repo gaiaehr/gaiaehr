@@ -712,10 +712,6 @@ class dbHelper
 				($newField['PRIMARY'] ? ' PRIMARY KEY ' : ' ') . 
 				'COMMENT `' . $newField['COMMENT'] . '`;';
 			break;
-			
-			case '':
-				
-			break;
 		}
 		$this->conn->exec($sqlStatement);
 	}

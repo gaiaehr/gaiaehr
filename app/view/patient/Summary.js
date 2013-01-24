@@ -207,8 +207,11 @@ Ext.define('App.view.patient.Summary', {
                 title: i18n('demographics'),
                 action: 'demoFormPanel',
                 itemId: 'demoFormPanel',
-                autoScroll: true,
                 border: false,
+	            layout:{
+		            type:'vbox',
+		            align:'stretch'
+	            },
                 dockedItems: [
                     {
                         xtype: 'toolbar',

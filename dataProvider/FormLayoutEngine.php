@@ -1,6 +1,6 @@
 <?php
 if(!isset($_SESSION)) {
-	session_name("GaiaEHR");
+	session_name('GaiaEHR');
 	session_start();
 	session_cache_limiter('private');
 }
@@ -55,7 +55,7 @@ class FormLayoutEngine
 	 * @author      Ernesto J. Rodriguez (Certun) <erodriguez@certun.com>
 	 * @version     Vega 1.0
 	 *
-	 * @param       stdClass $params With the form Tirle or Form ID
+	 * @param       stdClass $params With the form Title or Form ID
 	 * @internal    $params->formToRender Holds the Title or ID of the form to render
 	 * @return      string String of javascript array
 	 */
@@ -188,12 +188,25 @@ class FormLayoutEngine
 		 * <p>Then replace remaining double quotes for single quotes <-- not required but...
 		 * we do it because GaiaEHR user single quotes to define strings.</p>
 		 */
-		$rawStr     = json_encode($items);
+		$rawStr = json_encode($items);
 
 		if($params->formToRender == 'Demographics' || $params->formToRender == 1){
-			$rawStr2     = json_encode($items2);
-			$rawStr = "Ext.create('Ext.container.Container',{layout:{type:'vbox',align:'stretch'},items:[Ext.create('Ext.tab.Panel',{border:false,height:240,defaults:{autoScroll:true},items:$rawStr}),";
-			$rawStr .= "Ext.create('Ext.tab.Panel',{height:390,border:false,flex:1,defaults:{autoScroll:true},action:'insurances',items:$rawStr2})]})";
+			$rawStr2 = json_encode($items2);
+			$rawStr = "[
+			    Ext.widget('tabpanel',{
+                    border:false,
+                    height:240,
+                    defaults:{autoScroll:true},
+                    items:$rawStr
+                }),
+                Ext.widget('tabpanel',{
+                    border:false,
+                    flex:1,
+                    defaults:{autoScroll:true},
+                    action:'insurances',
+                    items:$rawStr2
+                })
+            ]";
 		}
 
 

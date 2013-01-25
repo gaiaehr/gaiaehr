@@ -16186,7 +16186,7 @@ Ext.define('App.ux.LiveCPTSearch',
 				type : 'direct',
 				api :
 				{
-					read : ServiceCodes.liveCodeSearch
+					read : Services.liveCodeSearch
 				},
 				reader :
 				{

@@ -38,9 +38,9 @@
  */
 if (!isset($_SESSION))
 {
-	session_name('GaiaEHR');
-	session_start();
-	session_cache_limiter('private');
+    session_name('GaiaEHR');
+    session_start();
+    session_cache_limiter('private');
 }
 
 ini_set('max_input_time', '1500');

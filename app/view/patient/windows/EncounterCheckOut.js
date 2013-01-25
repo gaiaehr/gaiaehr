@@ -21,38 +21,143 @@ Ext.define('App.view.patient.windows.EncounterCheckOut', {
 	initComponent:function(){
 		var me = this;
 
-		me.EncounterOrdersStore = Ext.create('App.store.patient.EncounterCPTsICDs');
+		me.encounterCPTsICDsStore = Ext.create('App.store.patient.EncounterCPTsICDs');
 		me.checkoutAlertArea = Ext.create('App.store.patient.CheckoutAlertArea');
 
 		Ext.apply(me,{
 			items:[
-				{
-					xtype:'grid',
+				me.servicesesGrid = Ext.widget('treepanel',{
 					title:i18n('services_diagnostics'),
+					rootVisible: false,
 					region:'center',
-					store:me.EncounterOrdersStore,
+					flex:2,
+					store:me.encounterCPTsICDsStore,
+					plugins:[
+						{
+							ptype: 'treeviewdragdrop'
+						}
+					],
+					enableColumnMove:false,
+					enableColumnHide:false,
+					sortableColumns:false,
+					useArrows:true,
 					columns:[
 						{
-							header:i18n('code'),
-							width:60,
-							dataIndex:'code'
+							xtype:'actioncolumn',
+							width:20,
+							items:[
+								{
+									icon:'resources/images/icons/delete.png',
+									tooltip:i18n('remove'),
+									scope:me,
+									handler:me.onRemoveService,
+									getClass: function(value, metadata, record){
+										if(!record.data.leaf){
+											return 'x-grid-center-icon';
+										}else{
+											return 'x-hide-display';
+										}
+									}
+								}
+							]
+						},
+						{
+							xtype: 'treecolumn',
+							text:i18n('code'),
+							width: 120,
+							dataIndex: 'code'
 						},
 						{
 							header:i18n('description'),
 							flex:1,
-							dataIndex:'code_text'
-						},
-						{
-							header:i18n('type'),
-							flex:1,
-							dataIndex:'type'
+							dataIndex:'code_text_medium'
 						}
+					],
+					dockedItems:[
+						me.onQuickServiceToolbar = Ext.widget('toolbar',{
+							dock:'left',
+							items:[
+								{
+									xtype: 'buttongroup',
+									title: i18n('new_patient'),
+									flex: 1,
+									columns: 1,
+									defaults: {
+										scale: 'small',
+										padding:4,
+										width:110,
+										scope:me,
+										handler:me.onQuickService
+									},
+									items: [
+										{
+											text: 'Brief',
+											action:'99201'
+										},
+										{
+											text: 'Limited',
+											action:'99202'
+										},
+										{
+											text: 'Detailed',
+											action:'99203'
+										},
+										{
+											text: 'Extended',
+											action:'99204'
+										},
+										{
+											text: 'Comprehensive',
+											action:'99205'
+										}
+									]
+								},{
+									xtype: 'buttongroup',
+									title: i18n('established_patient'),
+									flex: 1,
+									columns: 1,
+									defaults: {
+										scale: 'small',
+										padding:4,
+										width:110,
+										scope:me,
+										handler:me.onQuickService
+									},
+									items: [
+										{
+											text: 'Brief',
+											action:'99211'
+										},
+										{
+											text: 'Limited',
+											action:'99212'
+										},
+										{
+											text: 'Detailed',
+											action:'99213'
+										},
+										{
+											text: 'Extended',
+											action:'99214'
+										},
+										{
+											text: 'Comprehensive',
+											action:'99215'
+										}
+									]
+								}
+							],
+							listeners:{
+								scope:me,
+								beforerender:me.onQuickServiceBeforeRender
+							}
+						})
 					]
-				},
+				}),
 				me.documentsimplegrid = Ext.create('App.view.patient.EncounterDocumentsGrid', {
 					title:i18n('documents'),
 					region:'east',
-					width:485
+					flex:1
 				}),
 				{
 					xtype:'form',
@@ -192,6 +297,48 @@ Ext.define('App.view.patient.windows.EncounterCheckOut', {
 
 	},
 
+	onQuickService:function(btn){
+		var root = this.encounterCPTsICDsStore.getRootNode(), rec, children;
+
+		delete btn.data.id;
+		btn.data.pid = this.pid;
+		btn.data.eid = this.eid;
+		btn.data.iconCls = 'icoDotGrey';
+
+		rec = root.appendChild(btn.data);
+		this.encounterCPTsICDsStore.sync({
+			callback:function(batch){
+				rec.set({id:batch.proxy.reader.rawData.id});
+				rec.commit();
+
+				children = batch.proxy.reader.rawData.dx_children;
+				for(var i=0; i < children.length; i++){
+					var child = children[i];
+					child.code_text_medium = child.short_desc;
+					child.leaf = true;
+					child.iconCls = 'icoDotYellow';
+					rec.appendChild(child);
+				}
+				rec.expand();
+			}
+		});
+
+	},
+
+	onQuickServiceBeforeRender:function(toolbar){
+		Services.getQuickAccessCheckOutServices(function(provider, response){
+			var services = response.result;
+			for(var i=0; i < services.length; i++){
+				toolbar.query('button[action="'+services[i].code+'"]')[0].data = services[i];
+			}
+		})
+	},
+
+	onRemoveService:function(grid, rowIndex, colIndex, item, e, record){
+		say(record);
+		this.encounterCPTsICDsStore.getRootNode().removeChild(record);
+	},
+
 	coSignEncounter:function(){
 
 	},
@@ -208,7 +355,11 @@ Ext.define('App.view.patient.windows.EncounterCheckOut', {
 
 	onWindowShow:function(){
 		var me = this;
-		me.EncounterOrdersStore.load({params:{eid:app.patient.eid}});
+
+		me.pid = me.enc.pid;
+		me.eid = me.enc.eid;
+
+		me.encounterCPTsICDsStore.load({params:{eid:me.eid}});
 		if(acl['access_encounter_checkout']) me.checkoutAlertArea.load({params:{eid:app.patient.eid}});
 		me.documentsimplegrid.loadDocs(app.patient.eid);
 	},

@@ -151,7 +151,7 @@ class Encounter
 		$this->db->execOnly();
 		$this->db->setSQL($this->db->sqlBind($default, 'encounter_dictation', 'I'));
 		$this->db->execOnly();
-		$this->db->setSQL($this->db->sqlBind($default, 'encounter_hcfa_1500_options', 'I'));
+		$this->db->setSQL($this->db->sqlBind($default, 'encounter_1500_options', 'I'));
 		$this->db->execOnly();
 		$params->eid = intval($eid);
 		$this->poolArea->updateCurrentPatientPoolAreaByPid(array('eid' => $params->eid, 'priority' => $params->priority), $params->pid);
@@ -389,7 +389,7 @@ class Encounter
 		unset($data['id'], $data['icdxCodes']);
 		$this->db->setSQL($this->db->sqlBind($data, 'encounter_soap', 'U', "id='" . $params->id . "'"));
 		$this->db->execLog();
-		$this->db->setSQL("DELETE FROM encounter_codes_icdx WHERE eid = '$params->eid'");
+		$this->db->setSQL("DELETE FROM encounter_dx WHERE eid = '$params->eid'");
 		$this->db->execOnly();
 		$this->updateEncounterIcdxCodes($params);
 		$this->addEncounterHistoryEvent('SOAP updated');
@@ -437,13 +437,78 @@ class Encounter
 			$fo['type'] = 'CPT';
 			$records[]  = $fo;
 		}
-		$foo = $this->services->getHCPCByEid($eid);
-		foreach($foo['rows'] as $fo){
-			$fo['type'] = 'HCPC';
-			$records[]  = $fo;
-		}
 		return $records;
 	}
+
+    //***********************************************************************************************
+    //***********************************************************************************************
+    //***********************************************************************************************
+    //***********************************************************************************************
+    //***********************************************************************************************
+    public function getEncounterCptDxTree($params){
+
+        $services = $this->services->getCptByEid($params->eid);
+        foreach($services['rows'] AS $index => $row){
+            $dx_children = array();
+            $foo = explode(',',$row['dx_pointers']);
+            foreach($foo AS $fo){
+                $dx = array();
+                $f = $this->diagnosis->getICDDataByCode($fo);
+                $dx['code'] = $f['code'];
+                $dx['code_text_medium'] = $f['short_desc'];
+                $dx['leaf'] = true;
+                $dx['iconCls'] = 'icoDotYellow';
+                $dx_children[] = $dx;
+            }
+            $services['rows'][$index]['iconCls'] = 'icoDotGrey';
+            $services['rows'][$index]['expanded'] = true;
+            $services['rows'][$index]['children'] = $dx_children;
+        }
+
+
+
+
+        return $services['rows'];
+    }
+    public function addEncounterCptDxTree($params){
+
+        $dx_pointers = array();
+        $dx_children = array();
+        foreach($this->diagnosis->getICDByEid($params->eid) AS $dx){
+            $dx_children[] = $dx;
+            $dx_pointers[] = $dx['code'];
+        }
+        $service = new stdClass();
+        $service->pid = $params->pid;
+        $service->eid = $params->eid;
+        $service->code = $params->code;
+        $service->dx_pointers = implode(',',$dx_pointers);
+        $newService = $this->services->addCptCode($service);
+        $params->id = $newService['rows']->id;
+        $params->dx_children = $dx_children;
+        return $params;
+    }
+    public function updateEncounterCptDxTree($params){
+
+
+
+
+
+        return $params;
+    }
+    public function removeEncounterCptDxTree($params){
+
+
+
+
+
+        return $params;
+    }
+    //***********************************************************************************************
+    //***********************************************************************************************
+    //***********************************************************************************************
+    //***********************************************************************************************
+    //***********************************************************************************************
 
 	/**
 	 * @param $eid
@@ -462,13 +527,13 @@ class Encounter
 			foreach($params->icdxCodes as $icdcCode){
 				$icdc['eid']  = $params->eid;
 				$icdc['code'] = trim($icdcCode);
-				$this->db->setSQL($this->db->sqlBind($icdc, 'encounter_codes_icdx', 'I'));
+				$this->db->setSQL($this->db->sqlBind($icdc, 'encounter_dx', 'I'));
 				$this->db->execOnly();
 			}
 		} else {
 			$icdc['eid']  = $params->eid;
 			$icdc['code'] = trim($params->icdxCodes);
-			$this->db->setSQL($this->db->sqlBind($icdc, 'encounter_codes_icdx', 'I'));
+			$this->db->setSQL($this->db->sqlBind($icdc, 'encounter_dx', 'I'));
 			$this->db->execOnly();
 		}
 		return $params;
@@ -808,7 +873,7 @@ class Encounter
 	{
 		$data = get_object_vars($params);
 		unset($data['eid']);
-		$this->db->setSQL($this->db->sqlBind($data, 'encounter_hcfa_1500_options', 'U', array('eid' => $params->eid)));
+		$this->db->setSQL($this->db->sqlBind($data, 'encounter_1500_options', 'U', array('eid' => $params->eid)));
 		$this->db->execLog();
 		return array('success' => true);
 	}
@@ -817,14 +882,14 @@ class Encounter
 	{
 		$data = get_object_vars($params);
 		unset($data['eid']);
-		$this->db->setSQL($this->db->sqlBind($data, 'encounter_hcfa_1500_options', 'U', array('eid' => $params->eid)));
+		$this->db->setSQL($this->db->sqlBind($data, 'encounter_1500_options', 'U', array('eid' => $params->eid)));
 		$this->db->execLog();
 		return array('success' => true);
 	}
 
 	public function getEncounterHCFAOptionsByEid($eid)
 	{
-		$this->db->setSQL("SELECT * FROM encounter_hcfa_1500_options WHERE eid = '$eid'");
+		$this->db->setSQL("SELECT * FROM encounter_1500_options WHERE eid = '$eid'");
 		return $this->db->fetchRecords(PDO::FETCH_ASSOC);
 	}
 
@@ -832,10 +897,10 @@ class Encounter
 
 //
 //$params = new stdClass();
-//$params->eid = 1;
+//$params->eid = 3;
 ////$params->date = '2012-06-25 10:48:00';
 //
 //$e = new Encounter();
 //echo '<pre>';
-//print_r($e->getEncounter($params));
-//print_r($e->getSoapHistoryByPid(1));
+//print_r($e->addEncounterCptDxTree($params));
+////print_r($e->getSoapHistoryByPid(1));

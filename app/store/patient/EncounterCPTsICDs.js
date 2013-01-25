@@ -6,7 +6,7 @@
  * Time: 11:11 PM
  */
 Ext.define('App.store.patient.EncounterCPTsICDs', {
-	extend: 'Ext.data.Store',
+	extend: 'Ext.data.TreeStore',
 	model     : 'App.model.patient.EncounterCPTsICDs',
 	remoteSort: false,
 	autoLoad  : false

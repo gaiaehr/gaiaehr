@@ -361,7 +361,7 @@ CREATE TABLE IF NOT EXISTS `encounters` (
   PRIMARY KEY (`eid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
-CREATE TABLE IF NOT EXISTS `encounter_codes_cpt` (
+CREATE TABLE IF NOT EXISTS `encounter_services` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `eid` bigint(20) DEFAULT NULL COMMENT 'encounter ID',
   `code` varchar(255) DEFAULT NULL COMMENT 'code number',
@@ -375,7 +375,7 @@ CREATE TABLE IF NOT EXISTS `encounter_codes_cpt` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
-CREATE TABLE IF NOT EXISTS `encounter_codes_icdx` (
+CREATE TABLE IF NOT EXISTS `encounter_dx` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `eid` bigint(20) DEFAULT NULL COMMENT 'encounter ID',
   `code` varchar(255) DEFAULT NULL COMMENT 'code number',
@@ -394,7 +394,7 @@ CREATE TABLE IF NOT EXISTS `encounter_dictation` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
-CREATE TABLE IF NOT EXISTS `encounter_hcfa_1500_options` (
+CREATE TABLE IF NOT EXISTS `encounter_1500_options` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `pid` bigint(20) DEFAULT NULL,
   `eid` bigint(20) DEFAULT NULL,

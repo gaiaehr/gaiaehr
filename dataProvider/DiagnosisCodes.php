@@ -236,7 +236,7 @@ class DiagnosisCodes
     {
         $records = array();
         $this->db->setSQL("SELECT code
-							 FROM encounter_codes_icdx
+							 FROM encounter_dx
 							WHERE eid = '$eid'
                             ORDER BY id ASC");
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) AS $foo) {
@@ -249,7 +249,7 @@ class DiagnosisCodes
     {
         $records = array();
         $this->db->setSQL("SELECT code
-							 FROM encounter_codes_icdx
+							 FROM encounter_dx
 							WHERE pid = '$pid'
                             ORDER BY id ASC");
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) AS $foo) {

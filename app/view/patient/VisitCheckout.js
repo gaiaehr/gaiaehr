@@ -448,15 +448,6 @@ Ext.define('App.view.patient.VisitCheckout', {
 	 * place inside this function all the functions you want
 	 * to call every this panel becomes active
 	 */
-
-	onShow:function(a,b,c){
-		say(a);
-		say(b);
-		say(c);
-		this.callParent();
-
-	},
-
 	onActive:function(callback){
 		var me = this;
 		if(me.checkIfCurrPatient()){

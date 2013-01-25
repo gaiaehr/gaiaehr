@@ -8,6 +8,7 @@
 Ext.define('App.model.patient.EncounterCPTsICDs', {
 	extend : 'Ext.data.Model',
 	fields : [
+		{ name: 'id', type:'string' },
 		{ name: 'pid', type:'int' },
 		{ name: 'eid', type:'int' },
 		{ name: 'code', type:'string' },

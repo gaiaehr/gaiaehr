@@ -964,6 +964,7 @@ class dbHelper
 	 */
 	private function columnsProperties($field)
 	{
+        $sqlStatement = '';
 		switch($field['TYPE'])
 		{
 			case 'BIT'; case 'BINARY'; case 'VARBINARY':

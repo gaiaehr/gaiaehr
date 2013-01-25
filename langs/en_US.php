@@ -1159,5 +1159,6 @@ $LANG = array(
     'add_category'                          => 'Add Category',
     'add_snippet'                           => 'Add Snippet',
     'service'                               => 'Service',
+    'added'                                 => 'Added',
     'copay'                                 => 'Co-Pay'
 );

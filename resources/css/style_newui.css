@@ -55,6 +55,18 @@
 	white-space: normal !important;
 }
 
+.icoDotGreen {
+	background-image: url(../images/icons/icoDotGreen.png) !important;
+}
+.icoDotYellow {
+	background-image: url(../images/icons/icoDotYellow.png) !important;
+}
+.icoDotGrey {
+	background-image: url(../images/icons/icoDotGrey.png) !important;
+}
+.icoDotRed {
+	background-image: url(../images/icons/icoDotRed.png) !important;
+}
 .addService {
 	background-image: url(../images/icons/service_ico.png) !important;
 }

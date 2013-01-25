@@ -15,6 +15,7 @@ $LANG = array(
     'messages'          					=> 'Messages',
     'patient_search'    					=> 'Patient Search',
     'new_patient'       					=> 'New Patient',
+    'established_patient'                   => 'Established Patient',
     'patient_summary'   					=> 'Patient Summary',
     'visits_history'    					=> 'Visits History',
     'encounter'								=> 'Encounter',

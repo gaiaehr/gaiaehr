@@ -440,6 +440,76 @@ class Encounter
 		return $records;
 	}
 
+    //***********************************************************************************************
+    //***********************************************************************************************
+    //***********************************************************************************************
+    //***********************************************************************************************
+    //***********************************************************************************************
+    public function getEncounterCptDxTree($params){
+
+        $services = $this->services->getCptByEid($params->eid);
+        foreach($services['rows'] AS $index => $row){
+            $dx_children = array();
+            $foo = explode(',',$row['dx_pointers']);
+            foreach($foo AS $fo){
+                $dx = array();
+                $f = $this->diagnosis->getICDDataByCode($fo);
+                $dx['code'] = $f['code'];
+                $dx['code_text_medium'] = $f['short_desc'];
+                $dx['leaf'] = true;
+                $dx['iconCls'] = 'icoDotYellow';
+                $dx_children[] = $dx;
+            }
+            $services['rows'][$index]['iconCls'] = 'icoDotGrey';
+            $services['rows'][$index]['expanded'] = true;
+            $services['rows'][$index]['children'] = $dx_children;
+        }
+
+
+
+
+        return $services['rows'];
+    }
+    public function addEncounterCptDxTree($params){
+
+        $dx_pointers = array();
+        $dx_children = array();
+        foreach($this->diagnosis->getICDByEid($params->eid) AS $dx){
+            $dx_children[] = $dx;
+            $dx_pointers[] = $dx['code'];
+        }
+        $service = new stdClass();
+        $service->pid = $params->pid;
+        $service->eid = $params->eid;
+        $service->code = $params->code;
+        $service->dx_pointers = implode(',',$dx_pointers);
+        $newService = $this->services->addCptCode($service);
+        $params->id = $newService['rows']->id;
+        $params->dx_children = $dx_children;
+        return $params;
+    }
+    public function updateEncounterCptDxTree($params){
+
+
+
+
+
+        return $params;
+    }
+    public function removeEncounterCptDxTree($params){
+
+
+
+
+
+        return $params;
+    }
+    //***********************************************************************************************
+    //***********************************************************************************************
+    //***********************************************************************************************
+    //***********************************************************************************************
+    //***********************************************************************************************
+
 	/**
 	 * @param $eid
 	 * @return array
@@ -827,10 +897,10 @@ class Encounter
 
 //
 //$params = new stdClass();
-//$params->eid = 1;
+//$params->eid = 3;
 ////$params->date = '2012-06-25 10:48:00';
 //
 //$e = new Encounter();
 //echo '<pre>';
-//print_r($e->getEncounter($params));
-//print_r($e->getSoapHistoryByPid(1));
+//print_r($e->addEncounterCptDxTree($params));
+////print_r($e->getSoapHistoryByPid(1));

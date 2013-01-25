@@ -162,6 +162,18 @@ $API = array(
 			'getEncounterCodes' => array(
 				'len' => 1
 			),
+			'getEncounterCptDxTree' => array(
+				'len' => 1
+			),
+			'addEncounterCptDxTree' => array(
+				'len' => 1
+			),
+			'updateEncounterCptDxTree' => array(
+				'len' => 1
+			),
+			'removeEncounterCptDxTree' => array(
+				'len' => 1
+			),
 			'checkoutAlerts' => array(
 				'len' => 1
 			),
@@ -472,13 +484,6 @@ $API = array(
 				'len' => 1
 			),
 			'updateAddress' => array(
-				'len' => 1
-			)
-		)
-	),
-	'ServiceCodes' => array(
-		'methods' => array(
-			'liveCodeSearch' => array(
 				'len' => 1
 			)
 		)
@@ -819,6 +824,9 @@ $API = array(
 				'len' => 1
 			),
 			'getActiveLaboratoryTypes' => array(
+				'len' => 0
+			),
+			'getQuickAccessCheckOutServices' => array(
 				'len' => 0
 			)
 		)

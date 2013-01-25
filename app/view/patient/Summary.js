@@ -27,8 +27,8 @@ Ext.define('App.view.patient.Summary', {
         align: 'stretch'
     },
     requires: [
-               'Ext.XTemplate',
-               'Ext.ux.IFrame'
+	   'Ext.XTemplate',
+	   'Ext.ux.IFrame'
 	],
     pid: null,
     demographicsData: null,
@@ -42,7 +42,8 @@ Ext.define('App.view.patient.Summary', {
         me.stores.push(me.patientDentalStore = Ext.create('App.store.patient.Dental'));
         me.stores.push(me.patientMedicationsStore = Ext.create('App.store.patient.Medications'));
         me.stores.push(me.patientCalendarEventsStore = Ext.create('App.store.patient.PatientCalendarEvents'));
-        me.pageBody = [me.tabPanel = Ext.create('Ext.tab.Panel', {
+        me.pageBody = [
+	        me.tabPanel = Ext.widget('tabpanel',{
                 flex: 1,
                 margin: '3 0 0 0',
                 bodyPadding: 0,
@@ -50,156 +51,158 @@ Ext.define('App.view.patient.Summary', {
                 border: false,
                 plain: true,
                 itemId: 'centerPanel'
-            }), {
-            xtype: 'panel',
-            width: 250,
-            bodyPadding: 0,
-            frame: false,
-            border: false,
-            bodyBorder: true,
-            margin: '0 0 0 5',
-            defaults: {
-                layout: 'fit',
-                margin: '5 5 0 5'
-            },
-            listeners: {
-                scope: me,
-                render: me.rightColRender
-            },
-            items: [
-                {
-                    xtype: 'grid',
-                    title: i18n('active_medications'),
-                    itemId: 'MedicationsPanel',
-                    hideHeaders: true,
-                    store: me.patientMedicationsStore,
-                    columns: [
-                        {
-                            header: i18n('name'),
-                            dataIndex: 'medication',
-                            flex: 1
-                        },
-                        {
-                            text: i18n('alert'),
-                            width: 55,
-                            dataIndex: 'alert',
-                            renderer: me.boolRenderer
-                        }
-                    ]
-                },
-                {
-                    xtype: 'grid',
-                    title: i18n('immunizations'),
-                    itemId: 'ImmuPanel',
-                    hideHeaders: true,
-                    store: me.immuCheckListStore,
-                    region: 'center',
-                    columns: [
-                        {
+            }),
+	        {
+	            xtype: 'panel',
+	            width: 250,
+	            bodyPadding: 0,
+	            frame: false,
+	            border: false,
+	            bodyBorder: true,
+	            margin: '0 0 0 5',
+	            defaults: {
+	                layout: 'fit',
+	                margin: '5 5 0 5'
+	            },
+	            listeners: {
+	                scope: me,
+	                render: me.rightColRender
+	            },
+	            items: [
+	                {
+	                    xtype: 'grid',
+	                    title: i18n('active_medications'),
+	                    itemId: 'MedicationsPanel',
+	                    hideHeaders: true,
+	                    store: me.patientMedicationsStore,
+	                    columns: [
+	                        {
+	                            header: i18n('name'),
+	                            dataIndex: 'STR',
+	                            flex: 1
+	                        },
+	                        {
+	                            text: i18n('alert'),
+	                            width: 55,
+	                            dataIndex: 'alert',
+	                            renderer: me.boolRenderer
+	                        }
+	                    ]
+	                },
+	                {
+	                    xtype: 'grid',
+	                    title: i18n('immunizations'),
+	                    itemId: 'ImmuPanel',
+	                    hideHeaders: true,
+	                    store: me.immuCheckListStore,
+	                    region: 'center',
+	                    columns: [
+	                        {
 
-                            header: i18n('name'),
-                            dataIndex: 'immunization_name',
-                            flex: 1
-                        },
-                        {
-                            text: i18n('alert'),
-                            width: 55,
-                            dataIndex: 'alert',
-                            renderer: me.alertRenderer
-                        }
-                    ]
-                },
-                {
-                    xtype: 'grid',
-                    title: i18n('allergies'),
-                    itemId: 'AllergiesPanel',
-                    hideHeaders: true,
-                    store: me.patientAllergiesListStore,
-                    region: 'center',
-                    columns: [
-                        {
-                            header: i18n('name'),
-                            dataIndex: 'allergy',
-                            flex: 1
-                        },
-                        {
-                            text: i18n('alert'),
-                            width: 55,
-                            dataIndex: 'alert',
-                            renderer: me.boolRenderer
-                        }
-                    ]
-                },
-                {
-                    xtype: 'grid',
-                    title: i18n('active_problems'),
-                    itemId: 'IssuesPanel',
-                    hideHeaders: true,
-                    store: me.patientMedicalIssuesStore,
-                    columns: [
-                        {
+	                            header: i18n('name'),
+	                            dataIndex: 'immunization_name',
+	                            flex: 1
+	                        },
+	                        {
+	                            text: i18n('alert'),
+	                            width: 55,
+	                            dataIndex: 'alert',
+	                            renderer: me.alertRenderer
+	                        }
+	                    ]
+	                },
+	                {
+	                    xtype: 'grid',
+	                    title: i18n('allergies'),
+	                    itemId: 'AllergiesPanel',
+	                    hideHeaders: true,
+	                    store: me.patientAllergiesListStore,
+	                    region: 'center',
+	                    columns: [
+	                        {
+	                            header: i18n('name'),
+	                            dataIndex: 'allergy',
+	                            flex: 1
+	                        },
+	                        {
+	                            text: i18n('alert'),
+	                            width: 55,
+	                            dataIndex: 'alert',
+	                            renderer: me.boolRenderer
+	                        }
+	                    ]
+	                },
+	                {
+	                    xtype: 'grid',
+	                    title: i18n('active_problems'),
+	                    itemId: 'IssuesPanel',
+	                    hideHeaders: true,
+	                    store: me.patientMedicalIssuesStore,
+	                    columns: [
+	                        {
 
-                            header: i18n('name'),
-                            dataIndex: 'code',
-                            flex: 1
-                        },
-                        {
-                            text: i18n('alert'),
-                            width: 55,
-                            dataIndex: 'alert',
-                            renderer: me.boolRenderer
-                        }
-                    ]
+	                            header: i18n('name'),
+	                            dataIndex: 'code',
+	                            flex: 1
+	                        },
+	                        {
+	                            text: i18n('alert'),
+	                            width: 55,
+	                            dataIndex: 'alert',
+	                            renderer: me.boolRenderer
+	                        }
+	                    ]
 
-                },
-                {
-                    xtype: 'grid',
-                    title: i18n('dental'),
-                    itemId: 'DentalPanel',
-                    hideHeaders: true,
-                    store: me.patientDentalStore,
-                    columns: [
-                        {
+	                },
+	                {
+	                    xtype: 'grid',
+	                    title: i18n('dental'),
+	                    itemId: 'DentalPanel',
+	                    hideHeaders: true,
+	                    store: me.patientDentalStore,
+	                    columns: [
+	                        {
 
-                            header: i18n('name'),
-                            dataIndex: 'description',
-                            flex: 1
+	                            header: i18n('name'),
+	                            dataIndex: 'description',
+	                            flex: 1
 
-                        }
-                    ]
+	                        }
+	                    ]
 
-                },
-                {
-                    xtype: 'grid',
-                    title: i18n('surgeries'),
-                    itemId: 'SurgeryPanel',
-                    hideHeaders: true,
-                    store: me.patientSurgeryStore,
-                    columns: [
-                        {
-                            dataIndex: 'surgery',
-                            flex: 1
-                        }
-                    ]
-                },
-                {
-                    xtype: 'grid',
-                    title: i18n('appointments'),
-                    itemId: 'AppointmentsPanel',
-                    hideHeaders: true,
-                    disableSelection: true,
-                    store: me.patientCalendarEventsStore,
-                    columns: [
-                        {
-                            xtype: 'datecolumn',
-                            format: 'F j, Y, g:i a',
-                            dataIndex: 'start',
-                            flex: 1
-                        }
-                    ]
-                }
-            ]
-        }];
+	                },
+	                {
+	                    xtype: 'grid',
+	                    title: i18n('surgeries'),
+	                    itemId: 'SurgeryPanel',
+	                    hideHeaders: true,
+	                    store: me.patientSurgeryStore,
+	                    columns: [
+	                        {
+	                            dataIndex: 'surgery',
+	                            flex: 1
+	                        }
+	                    ]
+	                },
+	                {
+	                    xtype: 'grid',
+	                    title: i18n('appointments'),
+	                    itemId: 'AppointmentsPanel',
+	                    hideHeaders: true,
+	                    disableSelection: true,
+	                    store: me.patientCalendarEventsStore,
+	                    columns: [
+	                        {
+	                            xtype: 'datecolumn',
+	                            format: 'F j, Y, g:i a',
+	                            dataIndex: 'start',
+	                            flex: 1
+	                        }
+	                    ]
+	                }
+	            ]
+            }
+        ];
         if(acl['access_demographics']){
             me.stores.push(me.patientAlertsStore = Ext.create('App.store.patient.MeaningfulUseAlert'));
             me.tabPanel.add({
@@ -924,7 +927,8 @@ Ext.define('App.view.patient.Summary', {
                     primaryInsurancePanel = insurancePanel.items.items[0];
                     secondaryInsurancePanel = insurancePanel.items.items[1];
                     tertiaryInsurancePanel = insurancePanel.items.items[2];
-                    whoPanel.insert(0, Ext.create('Ext.panel.Panel', {
+                    whoPanel.insert(0,
+	                    Ext.create('Ext.panel.Panel', {
                             action: 'patientImgs',
                             layout: 'hbox',
                             style: 'float:right',
@@ -949,8 +953,10 @@ Ext.define('App.view.patient.Summary', {
                                     window.printQRCode(app.patient.pid);
                                 }
                             }, '-']
-                        }));
-                    primaryInsurancePanel.insert(0, Ext.create('Ext.panel.Panel', {
+                        })
+                    );
+                    primaryInsurancePanel.insert(0,
+	                    Ext.create('Ext.panel.Panel', {
                             style: 'float:right',
                             height: 182,
                             width: 255,
@@ -1000,8 +1006,10 @@ Ext.define('App.view.patient.Summary', {
                                 scope: me,
                                 handler: me.uploadInsurance
                             }, '-']
-                        }));
-                    secondaryInsurancePanel.insert(0, Ext.create('Ext.panel.Panel', {
+                        })
+                    );
+                    secondaryInsurancePanel.insert(0,
+	                    Ext.create('Ext.panel.Panel', {
                             style: 'float:right',
                             height: 182,
                             width: 255,
@@ -1051,8 +1059,10 @@ Ext.define('App.view.patient.Summary', {
                                 scope: me,
                                 handler: me.uploadInsurance
                             }, '-']
-                        }));
-                    tertiaryInsurancePanel.insert(0, Ext.create('Ext.panel.Panel', {
+                        })
+                    );
+                    tertiaryInsurancePanel.insert(0,
+	                    Ext.create('Ext.panel.Panel', {
                             style: 'float:right',
                             height: 182,
                             width: 255,
@@ -1102,7 +1112,8 @@ Ext.define('App.view.patient.Summary', {
                                 action: 'tertiaryInsurance',
                                 handler: me.uploadInsurance
                             }, '-']
-                        }));
+                        })
+                    );
                 }
             });
         }

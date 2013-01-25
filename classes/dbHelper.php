@@ -631,8 +631,15 @@ class dbHelper
 	public function setField($fieldProperties)
 	{
 		// if the value of $fieldProperties is not an array, it will assume that is JSON.
-		if( !is_array($fieldProperties) ) $newField = json_decode($fieldJSON, true);
-		$this->workingFields[] = $newField;
+		if( !is_array($fieldProperties) ) 
+		{
+			$newField = json_decode($fieldProperties, true);
+			$this->workingFields[] = $newField;
+		}
+		else 
+		{
+			$this->workingFields[] = $fieldProperties;
+		}
 	}
 
 	/**
@@ -643,9 +650,21 @@ class dbHelper
 		$this->workingTable = (string)$tableName;
 	}
 	
+	/**
+	 * createDatabase
+	 */
 	public function createDatabase($databaseName)
 	{
 		$sqlStatement = (string)'CREATE DATABASE IF NOT EXISTS ' . $databaseName;
+		$this->conn->exec($sqlStatement);
+	}
+	
+	/**
+	 * dropDatabase
+	 */
+	public function dropDatabase($databaseName)
+	{
+		$sqlStatement = (string)'DROP DATABASE IF NOT EXISTS ' . $databaseName;
 		$this->conn->exec($sqlStatement);
 	}
 
@@ -655,65 +674,17 @@ class dbHelper
 	private function createField($fieldProperties)
 	{
 		// if the value of $fieldProperties is not an array, it will assume that is JSON.
-        if( !is_array($fieldProperties) ) $newField = json_decode($fieldJSON, true);
-		
-		$sqlStatement = (string)'ALTER TABLE ' . $this->workingTable . ' ADD ';
-		switch($newField['TYPE'])
-		{
-			case 'BIT'; case 'BINARY'; case 'VARBINARY':
-				$sqlStatement .= (string)$newField['NAME'] . ' ' . 
-				$newField['TYPE'] . '(' . $newField['LENGTH'] . ')' . 
-				'COMMENT `' . $newField['COMMENT'] . '`;';
-			break;
-				
-			case 'INT'; case 'TINYINT'; case 'MEDIUMINT'; case 'INTEGER'; case 'BIGINT':
-				$sqlStatement .= (string)$newField['NAME'] . ' ' . 
-				$newField['TYPE'] . '(' . $newField['LENGTH'] . ')' . 
-				($newField['NOTNULL'] ? ' NULL ' : ' NOT NULL ') .  
-				($newField['PRIMARY'] ? ' PRIMARY KEY ' : ' ') . 
-				'COMMENT `' . $newField['COMMENT'] . '`;';
-			break;
-			
-			case 'REAL'; case 'DOUBLE'; case 'FLOAT'; case 'DECIMAL'; case 'NUMERIC':
-				$sqlStatement .= (string)$newField['NAME'] . ' ' . 
-				$newField['TYPE'] . '(' . $newField['LENGTH'] . ', ' . $newField['DECIMALS'] .')' . 
-				($newField['NOTNULL'] ? ' NULL ' : ' NOT NULL ') .  
-				($newField['PRIMARY'] ? ' PRIMARY KEY ' : ' ') . 
-				'COMMENT `' . $newField['COMMENT'] . '`;';
-			break;
-			
-			case 'DATE'; case 'TIME'; case 'TIMESTAMP'; case 'DATETIME'; case 'YEAR';
-				$sqlStatement .= (string)$newField['NAME'] . ' ' . 
-				$newField['TYPE'] .  
-				($newField['NOTNULL'] ? ' NULL ' : ' NOT NULL ') .  
-				($newField['PRIMARY'] ? ' PRIMARY KEY ' : ' ') . 
-				'COMMENT `' . $newField['COMMENT'] . '`;';
-			break;
-			
-			case 'CHAR'; case 'VARCHAR'; case 'TINYTEXT '; case 'TEXT '; case 'MEDIUMTEXT'; case 'LONGTEXT';
-				$sqlStatement .= (string)$newField['NAME'] . ' ' . 
-				$newField['TYPE'] . '(' . $newField['LENGTH'] . ')' . 
-				'CHARACTER SET ' . $newField['CHARACTER_SET'] . ' ' .
-				'COLLATE ' . $newField['COLLATE'] . ' ' .
-				($newField['NOTNULL'] ? ' NULL ' : ' NOT NULL ') .  
-				($newField['PRIMARY'] ? ' PRIMARY KEY ' : ' ') . 
-				'COMMENT `' . $newField['COMMENT'] . '`;';
-			break;
-			
-			case 'TINYBLOB'; case 'BLOB'; case 'MEDIUMBLOB'; case 'LONGBLOB':
-				$sqlStatement .= (string)$newField['NAME'] . ' ' . 
-				$newField['TYPE'] . ' ' . 
-				'COMMENT `' . $newField['COMMENT'] . '`;';
-			break;
-			
-			default:
-				$sqlStatement .= (string)$newField['NAME'] . ' ' . 
-				$newField['TYPE'] . '(' . $newField['LENGTH'] . ')' . 
-				($newField['NOTNULL'] ? ' NULL ' : ' NOT NULL ') . 
-				($newField['PRIMARY'] ? ' PRIMARY KEY ' : ' ') . 
-				'COMMENT `' . $newField['COMMENT'] . '`;';
-			break;
+        if( !is_array($fieldProperties) ) 
+        {
+        	$field = (array)json_decode($fieldProperties, true);
 		}
+		else 
+		{
+			$field = (array)$fieldProperties;
+		}
+
+		$sqlStatement = (string)'ALTER TABLE ' . $this->workingTable . ' ADD ';
+		$sqlStatement .= (string)$this->columnsProperties($field);
 		$this->conn->exec($sqlStatement);
 	}
 
@@ -722,67 +693,30 @@ class dbHelper
 	 */
 	private function modifyField($fieldProperties)
 	{
-		// if the value of $fieldProperties is not an array, it will assume that is JSON.
-        if( !is_array($fieldProperties) ) $modifyField = json_decode($fieldJSON, true);
-		
-		$sqlStatement = (string)'ALTER TABLE ' . $this->workingTable . ' MODIFY ';
-		switch($newField['TYPE'])
+		try
 		{
-			case 'BIT'; case 'BINARY'; case 'VARBINARY':
-				$sqlStatement .= (string)$newField['NAME'] . ' ' . 
-				$newField['TYPE'] . '(' . $newField['LENGTH'] . ')' . 
-				'COMMENT `' . $newField['COMMENT'] . '`;';
-			break;
-				
-			case 'INT'; case 'TINYINT'; case 'MEDIUMINT'; case 'INTEGER'; case 'BIGINT':
-				$sqlStatement .= (string)$newField['NAME'] . ' ' . 
-				$newField['TYPE'] . '(' . $newField['LENGTH'] . ')' . 
-				($newField['NOTNULL'] ? ' NULL ' : ' NOT NULL ') .  
-				($newField['PRIMARY'] ? ' PRIMARY KEY ' : ' ') . 
-				'COMMENT `' . $newField['COMMENT'] . '`;';
-			break;
+			// if the value of $fieldProperties is not an array, it will assume that is JSON.
+	        if( !is_array($fieldProperties) ) 
+	        {
+	        	$field = json_decode($fieldProperties, true);
+			}
+			else 
+			{
+				$field = $fieldProperties;
+			}
 			
-			case 'REAL'; case 'DOUBLE'; case 'FLOAT'; case 'DECIMAL'; case 'NUMERIC':
-				$sqlStatement .= (string)$newField['NAME'] . ' ' . 
-				$newField['TYPE'] . '(' . $newField['LENGTH'] . ', ' . $newField['DECIMALS'] .')' . 
-				($newField['NOTNULL'] ? ' NULL ' : ' NOT NULL ') .  
-				($newField['PRIMARY'] ? ' PRIMARY KEY ' : ' ') . 
-				'COMMENT `' . $newField['COMMENT'] . '`;';
-			break;
-			
-			case 'DATE'; case 'TIME'; case 'TIMESTAMP'; case 'DATETIME'; case 'YEAR';
-				$sqlStatement .= (string)$newField['NAME'] . ' ' . 
-				$newField['TYPE'] .  
-				($newField['NOTNULL'] ? ' NULL ' : ' NOT NULL ') .  
-				($newField['PRIMARY'] ? ' PRIMARY KEY ' : ' ') . 
-				'COMMENT `' . $newField['COMMENT'] . '`;';
-			break;
-			
-			case 'CHAR'; case 'VARCHAR'; case 'TINYTEXT '; case 'TEXT '; case 'MEDIUMTEXT'; case 'LONGTEXT';
-				$sqlStatement .= (string)$newField['NAME'] . ' ' . 
-				$newField['TYPE'] . '(' . $newField['LENGTH'] . ')' . 
-				'CHARACTER SET ' . $newField['CHARACTER_SET'] . ' ' .
-				'COLLATE ' . $newField['COLLATE'] . ' ' .
-				($newField['NOTNULL'] ? ' NULL ' : ' NOT NULL ') .  
-				($newField['PRIMARY'] ? ' PRIMARY KEY ' : ' ') . 
-				'COMMENT `' . $newField['COMMENT'] . '`;';
-			break;
-			
-			case 'TINYBLOB'; case 'BLOB'; case 'MEDIUMBLOB'; case 'LONGBLOB':
-				$sqlStatement .= (string)$newField['NAME'] . ' ' . 
-				$newField['TYPE'] . ' ' . 
-				'COMMENT `' . $newField['COMMENT'] . '`;';
-			break;
-			
-			default:
-				$sqlStatement .= (string)$newField['NAME'] . ' ' . 
-				$newField['TYPE'] . '(' . $newField['LENGTH'] . ')' . 
-				($newField['NOTNULL'] ? ' NULL ' : ' NOT NULL ') . 
-				($newField['PRIMARY'] ? ' PRIMARY KEY ' : ' ') . 
-				'COMMENT `' . $newField['COMMENT'] . '`;';
-			break;
+			$sqlStatement = (string)'ALTER TABLE ' . $this->workingTable . ' MODIFY ';
+			$sqlStatement .= (string)$this->columnsProperties($field);
+			$this->conn->exec($sqlStatement);
+			$error = (array)$this->conn->errorInfo();
+			if($error[0] != 00000) throw new Exception($error);
+			return true;
 		}
-		$this->conn->exec($sqlStatement);
+		catch(Exception $e)
+		{
+			error_log('dbHelper - error on modifyField method: ' . $error[2] . "\n");
+			return false;
+		}
 	}
 	
 	/**
@@ -847,9 +781,8 @@ class dbHelper
 	 */
 	public function executeORM()
 	{
-		
 		$recordSet = $this->conn->query('SHOW columns FROM ' . $this->workingTable);
-		$error = $this->conn->errorInfo();
+		$error = (array)$this->conn->errorInfo();
 		
 		// Table does not exist and needs to be created
 		if( $error[1] == 1146) 
@@ -858,11 +791,10 @@ class dbHelper
 			$this->executeORM();
 			return;
 		}
-		else 
+		elseif($error[0] == 00000)
 		{
 			// these are default fields by the orm.
-			$this->setField('id', 'BIGINT', 20, false, true);
-			
+			$this->setField('{"NAME":"id", "TYPE":"BIGINT", "LENGTH":20, "NULL":false, "PRIMARY":true, "DEFAULT":"", "COMMENT":"", "AUTO_INCREMENT":true}');
 			$fieldsRecords = $recordSet->fetchAll(PDO::FETCH_ASSOC);
 			
 			// check is the returned results are actually an array
@@ -871,30 +803,66 @@ class dbHelper
 				// browse the workingFields array
 				foreach ($this->workingFields as $compareField)
 				{
+					
 					// if field is found compare it's properties.
 					$key = $this->recursiveArraySearch($compareField['NAME'], $fieldsRecords);
 					if ( is_numeric( $key ) )
 					{
-						if ($fieldsRecords[$key]['Type'] == strtolower($compareField['TYPE']) . '(' . $compareField['LENGTH'] . ')' && 
-							$fieldsRecords[$key]['Null'] == ($compareField['NOTNULL'] ? 'YES' : 'NO') && 
-							$fieldsRecords[$key]['Key'] == ($compareField['PRIMARY'] ? 'PRI' : '') &&
-							$compareField['LENGTH'] == filter_var($fieldsRecords[$key]['Type'], FILTER_SANITIZE_NUMBER_INT))
+						
+						$changes = false;
+						if($compareField['TYPE'] != strtoupper( substr($fieldsRecords[$key]['Type'], 0, strlen(strstr($fieldsRecords[$key]['Type'], '(', true)) ) ) ) 
 						{
-							// This state the routine will do nothing.
+							$changes = true;
 						}
-						else
+						if( $fieldsRecords[$key]['Null'] != ($compareField['NULL'] ? 'YES' : 'NO') ) 
 						{
+							$changes = true;
+						}
+						if( $fieldsRecords[$key]['Key'] != ($compareField['PRIMARY'] ? 'PRI' : '') ) 
+						{
+							$changes = true;
+						}
+						if( filter_var($fieldsRecords[$key]['Type'], FILTER_SANITIZE_NUMBER_INT) != $compareField['LENGTH']) 
+						{
+							$changes = true;
+						}
+						if( $fieldsRecords[$key]['Default'] != $compareField['DEFAULT']) 
+						{
+							$changes = true;
+						}
+
+						if ( $changes )
+						{
+						
 							// Modify the column because there are not equal
 							// and execute the orm again.
-							$this->modifyField($compareField['NAME'], $compareField['TYPE'], $compareField['LENGTH'], $compareField['NOTNULL'], $compareField['PRIMARY']);
-							$this->executeORM();
+							$renderArray = array(
+								'NAME' => $compareField['NAME'], 
+								'TYPE' => $compareField['TYPE'], 
+								'LENGTH' => $compareField['LENGTH'], 
+								'NULL' => $compareField['NULL'],
+								'PRIMARY' => $compareField['PRIMARY'],
+								'DEFAULT' => $compareField['DEFAULT'],
+								'COMMENT' => $compareField['COMMENT'],
+								'AUTO_INCREMENT' => $compareField['AUTO_INCREMENT']);
+							if($this->modifyField($renderArray)) $this->executeORM();
 							return;
 						}
+
 					}
 					else
 					{
 						// Create the field
-						$this->createField($compareField['NAME'], $compareField['TYPE'], $compareField['LENGTH'], $compareField['NOTNULL'], $compareField['PRIMARY']);
+						$renderArray = array(
+							'NAME' => $compareField['NAME'], 
+							'TYPE' => $compareField['TYPE'], 
+							'LENGTH' => $compareField['LENGTH'], 
+							'NULL' => $compareField['NULL'],
+							'PRIMARY' => $compareField['PRIMARY'],
+							'DEFAULT' => $compareField['DEFAULT'],
+							'COMMENT' => $compareField['COMMENT'],
+							'AUTO_INCREMENT' => $compareField['AUTO_INCREMENT']);
+						$this->createField($renderArray);
 					}
 				}
 				// routine to drop fields
@@ -917,6 +885,76 @@ class dbHelper
 			}
 		}
 		return false;
+	}
+	
+	/**
+	 *  columnsProperties
+	 * Renders the columns properties by the array
+	 */
+	private function columnsProperties($field)
+	{
+		switch($field['TYPE'])
+		{
+			case 'BIT'; case 'BINARY'; case 'VARBINARY':
+				$sqlStatement .= (string)$field['NAME'] . ' ' . 
+				$field['TYPE'] . '(' . $field['LENGTH'] . ')' . 
+				'COMMENT "' . $field['COMMENT'] . '";';
+			break;
+				
+			case 'INT'; case 'TINYINT'; case 'MEDIUMINT'; case 'INTEGER'; case 'BIGINT':
+				$sqlStatement .= (string)$field['NAME'] . ' ' . 
+				$field['TYPE'] . '(' . $field['LENGTH'] . ')' . 
+				($field['NULL'] ? ' NULL ' : ' NOT NULL ') .
+				($field['PRIMARY'] ? ' PRIMARY KEY ' : '') .
+				'DEFAULT' . ($field['DEFAULT'] ? ' "'.$field['DEFAULT'].'" ' : ' NULL ') .
+				'COMMENT "' . $field['COMMENT'] . '";';
+			break;
+			
+			case 'REAL'; case 'DOUBLE'; case 'FLOAT'; case 'DECIMAL'; case 'NUMERIC':
+				$sqlStatement .= (string)$field['NAME'] . ' ' . 
+				$field['TYPE'] . '(' . $field['LENGTH'] . ', ' . $field['DECIMALS'] .')' . 
+				($field['NULL'] ? ' NULL ' : ' NOT NULL ') .
+				($field['PRIMARY'] ? ' PRIMARY KEY ' : '') .
+				'DEFAULT' . ($field['DEFAULT'] ? ' "'.$field['DEFAULT'].'" ' : ' NULL ') .
+				'COMMENT "' . $field['COMMENT'] . '";';
+			break;
+			
+			case 'DATE'; case 'TIME'; case 'TIMESTAMP'; case 'DATETIME'; case 'YEAR';
+				$sqlStatement .= (string)$field['NAME'] . ' ' . 
+				$field['TYPE'] .  
+				($field['NULL'] ? ' NULL ' : ' NOT NULL ') .  
+				($field['PRIMARY'] ? ' PRIMARY KEY ' : '') .
+				'DEFAULT' . ($field['DEFAULT'] ? ' "'.$field['DEFAULT'].'" ' : ' NULL ') . 
+				'COMMENT "' . $field['COMMENT'] . '";';
+			break;
+			
+			case 'CHAR'; case 'VARCHAR'; case 'TINYTEXT '; case 'TEXT '; case 'MEDIUMTEXT'; case 'LONGTEXT';
+				$sqlStatement .= (string)$field['NAME'] . ' ' . 
+				$field['TYPE'] . '(' . $field['LENGTH'] . ')' . 
+				'CHARACTER SET ' . $field['CHARACTER_SET'] . ' ' .
+				'COLLATE ' . $field['COLLATE'] . ' ' .
+				($field['NULL'] ? ' NULL ' : ' NOT NULL ') .  
+				($field['PRIMARY'] ? ' PRIMARY KEY ' : '') .
+				'DEFAULT' . ($field['DEFAULT'] ? ' "'.$field['DEFAULT'].'" ' : ' NULL ') . 
+				'COMMENT "' . $field['COMMENT'] . '";';
+			break;
+			
+			case 'TINYBLOB'; case 'BLOB'; case 'MEDIUMBLOB'; case 'LONGBLOB':
+				$sqlStatement .= (string)$field['NAME'] . ' ' . 
+				$field['TYPE'] . ' ' . 
+				'COMMENT "' . $field['COMMENT'] . '";';
+			break;
+			
+			default:
+				$sqlStatement .= (string)$field['NAME'] . ' ' . 
+				$field['TYPE'] . '(' . $field['LENGTH'] . ')' . 
+				($field['NULL'] ? ' NULL ' : ' NOT NULL ') . 
+				($field['PRIMARY'] ? ' PRIMARY KEY ' : '') .
+				'DEFAULT' . ($field['DEFAULT'] ? ' "'.$field['DEFAULT'].'" ' : ' NULL ') .
+				'COMMENT "' . $field['COMMENT'] . '";';
+			break;
+		}
+		return $sqlStatement;
 	}
 
 }

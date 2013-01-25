@@ -664,7 +664,7 @@ class dbHelper
 		catch(PDOException $err)
 		{
 			error_log('dbHelper - error on createDatabase method: ' . $err->getMessage() );
-			return false;
+			return $err->getCode() . ' - ' . $err->getMessage();
 		}
 	}
 	
@@ -682,7 +682,7 @@ class dbHelper
 		catch(PDOException $err)
 		{
 			error_log('dbHelper - error on dropDatabase method: ' . $err->getMessage() );
-			return false;
+			return $err->getCode() . ' - ' . $err->getMessage();
 		}
 	}
 
@@ -711,7 +711,7 @@ class dbHelper
 		catch(PDOException $err)
 		{
 			error_log('dbHelper - error on createField method: ' . $err->getMessage() );
-			return false;
+			return $err->getCode() . ' - ' . $err->getMessage();
 		}
 	}
 
@@ -741,7 +741,7 @@ class dbHelper
 		catch(PDOException $err)
 		{
 			error_log('dbHelper - error on modifyField method: ' . $err->getMessage() );
-			return false;
+			return $err->getCode() . ' - ' . $err->getMessage();
 		}
 	}
 	
@@ -759,7 +759,7 @@ class dbHelper
 		catch(PDOException $err)
 		{
 			error_log('dbHelper - error on renameField method: ' . $err->getMessage() );
-			return false;
+			return $err->getCode() . ' - ' . $err->getMessage();
 		}
 	}
 	
@@ -777,7 +777,7 @@ class dbHelper
 		catch(PDOException $err)
 		{
 			error_log('dbHelper - error on renameTable method: ' . $err->getMessage() );
-			return false;
+			return $err->getCode() . ' - ' . $err->getMessage();
 		}
 	}
 	
@@ -798,7 +798,7 @@ class dbHelper
 		catch(PDOException $err)
 		{
 			error_log('dbHelper - error on createTable method: ' . $err->getMessage() );
-			return false;
+			return $err->getCode() . ' - ' . $err->getMessage();
 		}
 	}
 
@@ -816,7 +816,7 @@ class dbHelper
 		catch(PDOException $err)
 		{
 			error_log('dbHelper - error on dropTable method: ' . $err->getMessage() );
-			return false;
+			return $err->getCode() . ' - ' . $err->getMessage();
 		}
 	}
 
@@ -842,7 +842,7 @@ class dbHelper
 		catch(PDOException $err)
 		{
 			error_log('dbHelper - error on dropField method: ' . $err->getMessage() );
-			return false;
+			return $err->getCode() . ' - ' . $err->getMessage();
 		}
 	}
 

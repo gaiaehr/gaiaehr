@@ -298,19 +298,21 @@ Ext.define('App.view.patient.windows.EncounterCheckOut', {
 	},
 
 	onQuickService:function(btn){
-		var root = this.encounterCPTsICDsStore.getRootNode(), rec, children;
+		var me = this,
+			root = me.encounterCPTsICDsStore.getRootNode(),
+			rec,
+			children;
 
 		delete btn.data.id;
-		btn.data.pid = this.pid;
-		btn.data.eid = this.eid;
+		btn.data.pid = me.pid;
+		btn.data.eid = me.eid;
 		btn.data.iconCls = 'icoDotGrey';
 
 		rec = root.appendChild(btn.data);
-		this.encounterCPTsICDsStore.sync({
+		me.encounterCPTsICDsStore.sync({
 			callback:function(batch){
 				rec.set({id:batch.proxy.reader.rawData.id});
 				rec.commit();
-
 				children = batch.proxy.reader.rawData.dx_children;
 				for(var i=0; i < children.length; i++){
 					var child = children[i];
@@ -320,14 +322,17 @@ Ext.define('App.view.patient.windows.EncounterCheckOut', {
 					rec.appendChild(child);
 				}
 				rec.expand();
+				me.msg('Sweet!', '"' + batch.proxy.reader.rawData.code_text_medium + '" ' + i18n('added'));
+
 			}
 		});
 
 	},
 
 	onQuickServiceBeforeRender:function(toolbar){
+		var services;
 		Services.getQuickAccessCheckOutServices(function(provider, response){
-			var services = response.result;
+			services = response.result;
 			for(var i=0; i < services.length; i++){
 				toolbar.query('button[action="'+services[i].code+'"]')[0].data = services[i];
 			}
@@ -335,8 +340,13 @@ Ext.define('App.view.patient.windows.EncounterCheckOut', {
 	},
 
 	onRemoveService:function(grid, rowIndex, colIndex, item, e, record){
-		say(record);
-		this.encounterCPTsICDsStore.getRootNode().removeChild(record);
+		var me = this;
+		me.encounterCPTsICDsStore.getRootNode().removeChild(record);
+		me.encounterCPTsICDsStore.sync({
+			callback:function(){
+				me.msg('Sweet!', i18n('record_removed'));
+			}
+		});
 	},
 
 	coSignEncounter:function(){

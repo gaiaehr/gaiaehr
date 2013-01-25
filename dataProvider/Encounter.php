@@ -445,8 +445,8 @@ class Encounter
     //***********************************************************************************************
     //***********************************************************************************************
     //***********************************************************************************************
-    public function getEncounterCptDxTree($params){
-
+    public function getEncounterCptDxTree($params)
+    {
         $services = $this->services->getCptByEid($params->eid);
         foreach($services['rows'] AS $index => $row){
             $dx_children = array();
@@ -464,14 +464,10 @@ class Encounter
             $services['rows'][$index]['expanded'] = true;
             $services['rows'][$index]['children'] = $dx_children;
         }
-
-
-
-
         return $services['rows'];
     }
-    public function addEncounterCptDxTree($params){
-
+    public function addEncounterCptDxTree($params)
+    {
         $dx_pointers = array();
         $dx_children = array();
         foreach($this->diagnosis->getICDByEid($params->eid) AS $dx){
@@ -490,18 +486,11 @@ class Encounter
     }
     public function updateEncounterCptDxTree($params){
 
-
-
-
-
         return $params;
     }
-    public function removeEncounterCptDxTree($params){
-
-
-
-
-
+    public function removeEncounterCptDxTree($params)
+    {
+        $this->services->deleteCptCode($params);
         return $params;
     }
     //***********************************************************************************************

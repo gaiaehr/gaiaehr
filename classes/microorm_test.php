@@ -13,9 +13,9 @@ $db = new dbHelper();
 
 $db->setTable('AAA_facility');
 
-//{"TYPE":"INT","LENGTH":30,"NOTNULL":false,"PRIMARY":false,"DEFAULT":""}
 
-$db->setField('{"NAME":"active", "TYPE":"INT", "LENGTH":30, "NOTNULL":true, "PRIMARY":false, "DEFAULT":"", "COMMENT":"", "AUTO_INCREMENT":false}');
+$db->setField('{"NAME":"active", "TYPE":"INT", "LENGTH":30, "NULL":true, "PRIMARY":false, "DEFAULT":"", "COMMENT":"This facility is active", "AUTO_INCREMENT":false}');
+//$db->setField(array('NAME' => 'active', 'TYPE' => 'INT', 'LENGTH' => 30, 'NULL' => true, 'PRIMARY' => false, 'DEFAULT' => '', 'COMMENT' => 'This facility is active', 'AUTO_INCREMENT' => false));
 //$db->setField('phone', 'VARCHAR', 30, true, false);
 //$db->setField('fax', 'VARCHAR', 30, true, false);
 //$db->setField('street', 'VARCHAR', 255, true, false);

@@ -698,23 +698,21 @@ class dbHelper
 			// if the value of $fieldProperties is not an array, it will assume that is JSON.
 	        if( !is_array($fieldProperties) ) 
 	        {
-	        	$field = json_decode($fieldProperties, true);
+	        	$field = (array)json_decode($fieldProperties, true);
 			}
 			else 
 			{
-				$field = $fieldProperties;
+				$field = (array)$fieldProperties;
 			}
 			
 			$sqlStatement = (string)'ALTER TABLE ' . $this->workingTable . ' MODIFY ';
 			$sqlStatement .= (string)$this->columnsProperties($field);
 			$this->conn->exec($sqlStatement);
-			$error = (array)$this->conn->errorInfo();
-			if($error[0] != 00000) throw new Exception($error);
 			return true;
 		}
-		catch(Exception $e)
+		catch(PDOException $err)
 		{
-			error_log('dbHelper - error on modifyField method: ' . $error[2] . "\n");
+			error_log('dbHelper - error on modifyField method: ' . $err->getMessage() . "\n");
 			return false;
 		}
 	}
@@ -724,8 +722,16 @@ class dbHelper
 	 */
 	public function renameField($oldName, $newName)
 	{
-		$sqlStatement = (string)'ALTER TABLE ' . $this->workingTable . ' CHANGE COLUMN ' . $oldName . ' ' . $newName . ';';
-		$this->conn->exec($sqlStatement);		
+		try
+		{
+			$sqlStatement = (string)'ALTER TABLE ' . $this->workingTable . ' CHANGE COLUMN ' . $oldName . ' ' . $newName . ';';
+			$this->conn->exec($sqlStatement);
+		}
+		catch(PDOException $err)
+		{
+			error_log('dbHelper - error on renameField method: ' . $err->getMessage() . "\n");
+			return false;
+		}		
 	}
 	
 	/**

@@ -655,8 +655,17 @@ class dbHelper
 	 */
 	public function createDatabase($databaseName)
 	{
-		$sqlStatement = (string)'CREATE DATABASE IF NOT EXISTS ' . $databaseName;
-		$this->conn->exec($sqlStatement);
+		try
+		{
+			$this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			$sqlStatement = (string)'CREATE DATABASE IF NOT EXISTS ' . $databaseName;
+			$this->conn->exec($sqlStatement);
+		}
+		catch(PDOException $err)
+		{
+			error_log('dbHelper - error on createDatabase method: ' . $err->getMessage() );
+			return false;
+		}
 	}
 	
 	/**
@@ -664,8 +673,17 @@ class dbHelper
 	 */
 	public function dropDatabase($databaseName)
 	{
-		$sqlStatement = (string)'DROP DATABASE IF NOT EXISTS ' . $databaseName;
-		$this->conn->exec($sqlStatement);
+		try
+		{
+			$this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			$sqlStatement = (string)'DROP DATABASE IF NOT EXISTS ' . $databaseName;
+			$this->conn->exec($sqlStatement);
+		}
+		catch(PDOException $err)
+		{
+			error_log('dbHelper - error on dropDatabase method: ' . $err->getMessage() );
+			return false;
+		}
 	}
 
 	/**
@@ -673,19 +691,28 @@ class dbHelper
 	 */
 	private function createField($fieldProperties)
 	{
-		// if the value of $fieldProperties is not an array, it will assume that is JSON.
-        if( !is_array($fieldProperties) ) 
-        {
-        	$field = (array)json_decode($fieldProperties, true);
-		}
-		else 
+		try
 		{
-			$field = (array)$fieldProperties;
+			// if the value of $fieldProperties is not an array, it will assume that is JSON.
+	        if( !is_array($fieldProperties) ) 
+	        {
+	        	$field = (array)json_decode($fieldProperties, true);
+			}
+			else 
+			{
+				$field = (array)$fieldProperties;
+			}
+			
+			$this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			$sqlStatement = (string)'ALTER TABLE ' . $this->workingTable . ' ADD ';
+			$sqlStatement .= (string)$this->columnsProperties($field);
+			$this->conn->exec($sqlStatement);
 		}
-
-		$sqlStatement = (string)'ALTER TABLE ' . $this->workingTable . ' ADD ';
-		$sqlStatement .= (string)$this->columnsProperties($field);
-		$this->conn->exec($sqlStatement);
+		catch(PDOException $err)
+		{
+			error_log('dbHelper - error on createField method: ' . $err->getMessage() );
+			return false;
+		}
 	}
 
 	/**
@@ -705,6 +732,7 @@ class dbHelper
 				$field = (array)$fieldProperties;
 			}
 			
+			$this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			$sqlStatement = (string)'ALTER TABLE ' . $this->workingTable . ' MODIFY ';
 			$sqlStatement .= (string)$this->columnsProperties($field);
 			$this->conn->exec($sqlStatement);
@@ -712,7 +740,7 @@ class dbHelper
 		}
 		catch(PDOException $err)
 		{
-			error_log('dbHelper - error on modifyField method: ' . $err->getMessage() . "\n");
+			error_log('dbHelper - error on modifyField method: ' . $err->getMessage() );
 			return false;
 		}
 	}
@@ -724,14 +752,15 @@ class dbHelper
 	{
 		try
 		{
+			$this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			$sqlStatement = (string)'ALTER TABLE ' . $this->workingTable . ' CHANGE COLUMN ' . $oldName . ' ' . $newName . ';';
 			$this->conn->exec($sqlStatement);
 		}
 		catch(PDOException $err)
 		{
-			error_log('dbHelper - error on renameField method: ' . $err->getMessage() . "\n");
+			error_log('dbHelper - error on renameField method: ' . $err->getMessage() );
 			return false;
-		}		
+		}
 	}
 	
 	/**
@@ -739,8 +768,17 @@ class dbHelper
 	 */
 	public function renameTable($oldName, $newName)
 	{
-		$sqlStatement = (string)'ALTER TABLE ' . $oldName . ' RENAME TO ' . $newName . ';';
-		$this->conn->exec($sqlStatement);
+		try
+		{
+			$this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			$sqlStatement = (string)'ALTER TABLE ' . $oldName . ' RENAME TO ' . $newName . ';';
+			$this->conn->exec($sqlStatement);
+		}
+		catch(PDOException $err)
+		{
+			error_log('dbHelper - error on renameTable method: ' . $err->getMessage() );
+			return false;
+		}
 	}
 	
 	/**
@@ -749,10 +787,19 @@ class dbHelper
 	private function createTable($tableName)
 	{
 		// these are mandatory fields for all tables.
-		$sqlStatement = (string)'CREATE TABLE IF NOT EXISTS ' . $tableName . '( ';
-		$sqlStatement .= 'id BIGINT(20) NOT NULL AUTO_INCREMENT PRIMARY KEY';
-		$sqlStatement .= ' ) AUTO_INCREMENT=1;';
-		$this->conn->exec($sqlStatement);
+		try
+		{
+			$this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			$sqlStatement = (string)'CREATE TABLE IF NOT EXISTS ' . $tableName . '( ';
+			$sqlStatement .= 'id BIGINT(20) NOT NULL AUTO_INCREMENT PRIMARY KEY';
+			$sqlStatement .= ' ) AUTO_INCREMENT=1;';
+			$this->conn->exec($sqlStatement);
+		}
+		catch(PDOException $err)
+		{
+			error_log('dbHelper - error on createTable method: ' . $err->getMessage() );
+			return false;
+		}
 	}
 
 	/**
@@ -760,8 +807,17 @@ class dbHelper
 	 */
 	public function dropTable()
 	{
-		$sqlStatement = (string)'DROP TABLE IF EXISTS ' . $this->workingTable . ';';
-		$this->conn->exec($sqlStatement);
+		try
+		{
+			$this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			$sqlStatement = (string)'DROP TABLE IF EXISTS ' . $this->workingTable . ';';
+			$this->conn->exec($sqlStatement);
+		}
+		catch(PDOException $err)
+		{
+			error_log('dbHelper - error on dropTable method: ' . $err->getMessage() );
+			return false;
+		}
 	}
 
 	/**
@@ -770,14 +826,23 @@ class dbHelper
 	private function dropField($fieldName)
 	{
 		// check if the field contains data.
-		$sqlStatement = (string)'SELECT ' . $fieldName . ' FROM ' . $this->workingTable . ' LIMIT 1;';
-		$recordSet = (object)$this->conn->query($sqlStatement);
-		$fieldsRecords = (array)$recordSet->fetchAll(PDO::FETCH_ASSOC);
-		if ( count($fieldsRecords) <= 0 )
+		try
 		{
-			// drop the field
-			$sqlStatement = 'ALTER TABLE ' . $this->workingTable . ' DROP COLUMN ' . $fieldName . ';';
-			$this->conn->exec($sqlStatement);
+			$this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			$sqlStatement = (string)'SELECT ' . $fieldName . ' FROM ' . $this->workingTable . ' LIMIT 1;';
+			$recordSet = (object)$this->conn->query($sqlStatement);
+			$fieldsRecords = (array)$recordSet->fetchAll(PDO::FETCH_ASSOC);
+			if ( count($fieldsRecords) <= 0 )
+			{
+				// drop the field
+				$sqlStatement = 'ALTER TABLE ' . $this->workingTable . ' DROP COLUMN ' . $fieldName . ';';
+				$this->conn->exec($sqlStatement);
+			}
+		}
+		catch(PDOException $err)
+		{
+			error_log('dbHelper - error on dropField method: ' . $err->getMessage() );
+			return false;
 		}
 	}
 

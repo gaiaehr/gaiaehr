@@ -21,7 +21,7 @@ Ext.define('App.model.patient.EncounterCPTsICDs', {
 		api: {
 			read: Encounter.getEncounterCptDxTree,
 			create: Encounter.addEncounterCptDxTree,
-			update: Encounter.updateEncounterCptDxTree,
+//			update: Encounter.updateEncounterCptDxTree,
 			destroy: Encounter.removeEncounterCptDxTree
 		}
 	}

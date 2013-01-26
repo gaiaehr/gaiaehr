@@ -283,6 +283,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 				'App.ux.form.fields.Checkbox',
 				'App.ux.form.fields.ColorPicker',
 				'App.ux.form.fields.Currency',
+				'App.ux.form.fields.CustomTrigger',
 				'App.ux.form.fields.DateTime',
 				'App.ux.form.AdvanceForm',
 				'App.ux.form.Panel',

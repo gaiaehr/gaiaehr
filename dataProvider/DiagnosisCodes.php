@@ -232,28 +232,38 @@ class DiagnosisCodes
         return $record['last_revision'];
     }
 
-    public function getICDByEid($eid)
+    public function getICDByEid($eid, $onlyCode = false)
     {
         $records = array();
-        $this->db->setSQL("SELECT code
+        $this->db->setSQL("SELECT *
 							 FROM encounter_dx
-							WHERE eid = '$eid'
+							WHERE eid = '$eid' AND active = '1'
                             ORDER BY id ASC");
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) AS $foo) {
-            $records[] = $this->getICDDataByCode($foo['code']);
+            if($onlyCode){
+                $records[] = $foo['code'];
+            }else{
+                $dx = $this->getICDDataByCode($foo['code']);
+                $records[] = array_merge($dx, $foo);
+            }
         }
         return $records;
     }
 
-    public function getICDByPid($pid)
+    public function getICDByPid($pid, $onlyCode = false)
     {
         $records = array();
-        $this->db->setSQL("SELECT code
+        $this->db->setSQL("SELECT *
 							 FROM encounter_dx
 							WHERE pid = '$pid'
                             ORDER BY id ASC");
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) AS $foo) {
-            $records[] = $this->getICDDataByCode($foo['code']);
+            if($onlyCode){
+                $records[] = $foo['code'];
+            }else{
+                $dx = $this->getICDDataByCode($foo['code']);
+                $records[] = array_merge($dx, $foo);
+            }
         }
         return $records;
     }

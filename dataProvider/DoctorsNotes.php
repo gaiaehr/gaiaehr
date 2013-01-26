@@ -18,11 +18,10 @@
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-if (!isset($_SESSION))
-{
-	session_name("GaiaEHR");
-	session_start();
-	session_cache_limiter('private');
+if (!isset($_SESSION)) {
+    session_name("GaiaEHR");
+    session_start();
+    session_cache_limiter('private');
 }
 include_once ($_SESSION['root'] . '/classes/dbHelper.php');
 include_once ($_SESSION['root'] . '/dataProvider/Patient.php');
@@ -34,27 +33,27 @@ include_once ($_SESSION['root'] . '/dataProvider/Documents.php');
 class DoctorsNotes
 {
 
-	function __construct()
-	{
-		$this -> db = new dbHelper();
-		$this -> user = new User();
-		$this -> patient = new Patient();
-		$this -> services = new Services();
-		$this -> facility = new Facilities();
-		$this -> documents = new Documents();
-		return;
-	}
+    function __construct()
+    {
+        $this->db = new dbHelper();
+        $this->user = new User();
+        $this->patient = new Patient();
+        $this->services = new Services();
+        $this->facility = new Facilities();
+        $this->documents = new Documents();
+        return;
+    }
 
-	public function addDoctorsNotes($params)
-	{
-		$foo = array();
-		$foo['uid'] = $_SESSION['user']['id'];
-		$foo['pid'] = $_SESSION['patient']['pid'];
-		$foo['document_id'] = $params -> document_id;
-		$foo['doctors_notes'] = $params -> DoctorsNote;
-		$this -> db -> setSQL($this -> db -> sqlBind($foo, 'patient_doctors_notes', 'I'));
-		$this -> db -> execLog();
+    public function addDoctorsNotes($params)
+    {
+        $foo = array();
+        $foo['uid'] = $_SESSION['user']['id'];
+        $foo['pid'] = $_SESSION['patient']['pid'];
+        $foo['document_id'] = $params->document_id;
+        $foo['doctors_notes'] = $params->DoctorsNote;
+        $this->db->setSQL($this->db->sqlBind($foo, 'patient_doctors_notes', 'I'));
+        $this->db->execLog();
 
-	}
+    }
 
 }

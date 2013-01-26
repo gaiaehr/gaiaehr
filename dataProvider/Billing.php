@@ -66,11 +66,8 @@ class Billing
 
 
     function getInvoiceItemsByEid($eid){
-
         $services = $this->services->getCptByEid($eid);
-        $immunizations = $this->immunizations->getImmunizationsByEid($eid);
-
-        return array_merge($services, $immunizations);
+        return $services;
     }
 
 

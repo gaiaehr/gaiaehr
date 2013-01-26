@@ -363,7 +363,9 @@ CREATE TABLE IF NOT EXISTS `encounters` (
 
 CREATE TABLE IF NOT EXISTS `encounter_services` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `pid` bigint(20) DEFAULT NULL,
   `eid` bigint(20) DEFAULT NULL COMMENT 'encounter ID',
+  `uid` bigint(20) DEFAULT NULL,
   `code` varchar(255) DEFAULT NULL COMMENT 'code number',
   `charge` varchar(255) DEFAULT NULL,
   `days_of_units` text,
@@ -371,22 +373,27 @@ CREATE TABLE IF NOT EXISTS `encounter_services` (
   `essdt_plan` text,
   `modifiers` text,
   `place_of_service` text,
+  `last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `status` int(1) NOT NULL DEFAULT '0' COMMENT 'billing status of this cpt',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `encounter_dx` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `pid` bigint(20) DEFAULT NULL,
   `eid` bigint(20) DEFAULT NULL COMMENT 'encounter ID',
-  `code` varchar(255) DEFAULT NULL COMMENT 'code number',
-  `code_type` int(11) DEFAULT NULL COMMENT 'CPT4 = 1, ICD9= 2, HCPCS = 3 ',
+  `uid` bigint(20) DEFAULT NULL,
+  `code` varchar(25) DEFAULT NULL COMMENT 'code number',
+  `code_type` varchar(10) DEFAULT NULL COMMENT 'CPT4 = 1, ICD9= 2, HCPCS = 3 ',
+  `last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `active` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `encounter_dictation` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `pid` bigint(20) NOT NULL,
-  `eid` bigint(20) NOT NULL,
+  `eid` bigint(20) DEFAULT NULL COMMENT 'encounter ID',
   `uid` bigint(20) NOT NULL,
   `date` datetime NOT NULL,
   `dictation` longtext,
@@ -397,7 +404,7 @@ CREATE TABLE IF NOT EXISTS `encounter_dictation` (
 CREATE TABLE IF NOT EXISTS `encounter_1500_options` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `pid` bigint(20) DEFAULT NULL,
-  `eid` bigint(20) DEFAULT NULL,
+  `eid` bigint(20) DEFAULT NULL COMMENT 'encounter ID',
   `uid` bigint(20) DEFAULT NULL,
   `employment_related` text,
   `auto_accident` text,

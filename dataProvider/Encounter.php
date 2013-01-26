@@ -348,7 +348,7 @@ class Encounter
 	{
 		$this->db->setSQL("SELECT * FROM encounter_soap WHERE eid = '$eid' ORDER BY date DESC");
 		$soap              = $this->db->fetchRecord(PDO::FETCH_ASSOC);
-		$soap['icdxCodes'] = $this->diagnosis->getICDByEid($eid);
+		$soap['icdxCodes'] = $this->diagnosis->getICDByEid($eid, true);
 		return $soap;
 	}
 
@@ -368,7 +368,7 @@ class Encounter
 		foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) AS $row){
 			$row['service_date'] = date($_SESSION['global_settings']['date_time_display_format'], strtotime($row['service_date']));
 			$icds              = '';
-			foreach($this->diagnosis->getICDByEid($params->eid) as $code){
+			foreach($this->diagnosis->getICDByEid($params->eid, true) as $code){
 				$icds .= '<li><span style="font-weight:bold; text-decoration:none">' . $code['code'] . '</span> - ' . $code['long_desc'] . '</li>';
 			}
 			$row['assessment'] .= '<ul  class="ProgressNote-ul">' . $icds . '</ul>';
@@ -426,7 +426,7 @@ class Encounter
 	public function getEncounterCodesByEid($eid)
 	{
 		$records = array();
-		foreach($this->diagnosis->getICDByEid($eid) as $fo){
+		foreach($this->diagnosis->getICDByEid($eid, true) as $fo){
 			$fo['type'] = 'ICD';
 			$records[]  = $fo;
 		}
@@ -468,7 +468,7 @@ class Encounter
     {
         $dx_pointers = array();
         $dx_children = array();
-        foreach($this->diagnosis->getICDByEid($params->eid) AS $dx){
+        foreach($this->diagnosis->getICDByEid($params->eid, true) AS $dx){
             $dx_children[] = $dx;
             $dx_pointers[] = $dx['code'];
         }
@@ -510,7 +510,7 @@ class Encounter
     public function getEncounterIcdxCodes(stdClass $params)
     {
         $this->setEid($params->eid);
-        return $this->diagnosis->getICDByEid($params->eid);
+        return $this->diagnosis->getICDByEid($params->eid, true);
     }
 
 	public function updateEncounterIcdxCodes(stdClass $params)
@@ -520,7 +520,7 @@ class Encounter
         // if $params->icdxCodes is a string explode it by (,)
         $newEncDxCodes =  is_string($params->icdxCodes) ? explode(',',$params->icdxCodes) : $params->icdxCodes;
         // get encounter Dx
-        $encDxCodes = $this->getEncounterIcdxCodes($params);
+        $encDxCodes = $this->diagnosis->getICDByEid($params->eid);
 
         // loop for each encounter Dx
         foreach($encDxCodes AS $encCode){
@@ -565,7 +565,7 @@ class Encounter
             $this->db->execOnly();
         }
 
-        $params->icdxCodes = $this->getEncounterIcdxCodes($params);
+        $params->icdxCodes = $this->diagnosis->getICDByEid($params->eid, true);
 
 		return $params;
 	}
@@ -683,7 +683,7 @@ class Encounter
 		 * Add SOAP to progress note
 		 */
 		$icdxs = '';
-		foreach($this->diagnosis->getICDByEid($eid) as $code){
+		foreach($this->diagnosis->getICDByEid($eid, true) as $code){
 			$icdxs .= '<li><span style="font-weight:bold; text-decoration:none">' . $code['code'] . '</span> - ' . $code['long_desc'] . '</li>';
 		}
 		//$icdxs = substr($icdxs, 0, -2);

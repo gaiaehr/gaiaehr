@@ -60,6 +60,13 @@ class Billing
 
 
 
+	public function createInvoice(stdClass $params){
+
+
+
+
+
+	}
 
 
 

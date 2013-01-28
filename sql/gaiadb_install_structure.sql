@@ -75,6 +75,32 @@ CREATE TABLE IF NOT EXISTS `applications` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
+CREATE TABLE IF NOT EXISTS `ar_session` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `pid` bigint(20) DEFAULT NULL,
+  `eid` bigint(20) DEFAULT NULL,
+  `uid` bigint(20) DEFAULT NULL,
+  `open_time` datetime DEFAULT NULL,
+  `close_time` datetime DEFAULT NULL,
+  `last_update` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='accounts receivable sessions' AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `ar_session_activity` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `sid` bigint(20) NOT NULL,
+  `uid` bigint(20) DEFAULT NULL,
+  `date` datetime DEFAULT NULL,
+  `code` varchar(10) DEFAULT NULL,
+  `payer_id` bigint(20) DEFAULT NULL,
+  `payer_type` bigint(20) DEFAULT NULL COMMENT 'patient = 0, ins 1 = 1, ins 2 =2, ins 3 = 3',
+  `pay_method` varchar(20) DEFAULT NULL COMMENT 'cash, check, eletronic, eob',
+  `pay_amount` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `adjustment_amount` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `note` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='accounts receivable sessions activity' AUTO_INCREMENT=1 ;
+
 CREATE TABLE IF NOT EXISTS `billing` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `date` datetime DEFAULT NULL,

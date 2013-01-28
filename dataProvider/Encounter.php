@@ -420,22 +420,12 @@ class Encounter
 
 	public function getEncounterCodes($params)
 	{
-		return $this->getEncounterCodesByEid($params->eid);
+		return $this->getEncounterServiceCodesByEid($params->eid);
 	}
 
-	public function getEncounterCodesByEid($eid)
+	public function getEncounterServiceCodesByEid($eid)
 	{
-		$records = array();
-		foreach($this->diagnosis->getICDByEid($eid, true) as $fo){
-			$fo['type'] = 'ICD';
-			$records[]  = $fo;
-		}
-		$foo = $this->services->getCptByEid($eid);
-		foreach($foo['rows'] as $fo){
-			$fo['type'] = 'CPT';
-			$records[]  = $fo;
-		}
-		return $records;
+		return $this->services->getCptByEid($eid);
 	}
 
     //***********************************************************************************************

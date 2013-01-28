@@ -24,8 +24,7 @@ if (!isset($_SESSION)) {
     session_cache_limiter('private');
 }
 include_once ($_SESSION['root'] . '/classes/dbHelper.php');
-include_once ($_SESSION['root'] . '/dataProvider/Encounter.php');
-include_once ($_SESSION['root'] . '/dataProvider/Immunizations.php');
+include_once ($_SESSION['root'] . '/dataProvider/AccountReceivable.php');
 
 /**
  * @brief       Billing Class.
@@ -43,38 +42,14 @@ class Billing
      */
     private $db;
     /**
-     * @var Services
+     * @var AccountReceivable
      */
-    private $services;
-    /**
-     * @var Immunizations
-     */
-    private $immunizations;
+    private $ar;
 
     function __construct()
     {
         $this->db = new dbHelper();
-        $this->services = new Services();
-        $this->immunizations = new Immunizations();
-    }
-
-
-
-	public function createInvoice(stdClass $params){
-
-
-
-
-
-	}
-
-
-
-
-
-    function getInvoiceItemsByEid($eid){
-        $services = $this->services->getCptByEid($eid);
-        return $services;
+        $this->ar = new AccountReceivable();
     }
 
 

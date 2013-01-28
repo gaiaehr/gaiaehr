@@ -56,27 +56,15 @@ class AccountReceivable
 
     public function getArSessionBalanceByEid($eid)
     {
+        $sid = $this->getArSidByEid($eid);
         $services = $this->services->getCptByEid($eid);
-        $activities = $this->getArActivityByEid($eid);
+        $activities = $this->getArActivitiesBySid($sid);
 
 
         print_r($services);
         print_r($activities);
 
 
-    }
-
-    /**
-     * @param $eid
-     * @return array
-     */
-    public function getArActivityByEid($eid)
-    {
-        $this->db->setSQL("SELECT arsa.*
-                             FROM ar_session_activity AS arsa
-                        LEFT JOIN ar_session AS ars ON ars.id = arsa.sid
-                            WHERE ars.eid = '$eid'");
-        return $this->db->fetchRecords(PDO::FETCH_ASSOC);
     }
 
     /**

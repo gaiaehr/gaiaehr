@@ -52,18 +52,24 @@ class AccountReceivable
     {
         $this->db = new dbHelper();
         $this->services = new Services();
+		
+		// microORM in action
+		$this->db->setTable('ar_session');
+		$this->db->setField(array( 'NAME' => 'pid', 'TYPE' => 'BIGINT', 'LENGTH' => 20, 'NULL' => true, 'DEFAULT' => '' ) );
+		$this->db->setField(array( 'NAME' => 'eid', 'TYPE' => 'BIGINT', 'LENGTH' => 20, 'NULL' => true, 'DEFAULT' => '' ) );
+		$this->db->setField(array( 'NAME' => 'uid', 'TYPE' => 'BIGINT', 'LENGTH' => 20, 'NULL' => true, 'DEFAULT' => '' ) );
+		$this->db->setField(array( 'NAME' => 'open_time', 'TYPE' => 'DATETIME', 'NULL' => true, 'DEFAULT' => '' ) );
+		$this->db->setField(array( 'NAME' => 'close_time', 'TYPE' => 'DATETIME', 'NULL' => true, 'DEFAULT' => '' ) );
+		$this->db->setField(array( 'NAME' => 'last_update', 'TYPE' => 'TIMESTAMP', 'NULL' => true, 'DEFAULT' => '' ) );
+		$this->db->executeORM();
     }
 
     public function getArSessionBalanceByEid($eid)
     {
         $services = $this->services->getCptByEid($eid);
         $activities = $this->getArActivityByEid($eid);
-
-
         print_r($services);
         print_r($activities);
-
-
     }
 
     /**

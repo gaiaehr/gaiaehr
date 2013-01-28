@@ -993,7 +993,7 @@ class dbHelper
 				($field['DEFAULT'] ? 'DEFAULT "'.$field['DEFAULT'].'" ' : ' DEFAULT NULL ') .
 				($field['COMMENT'] ? 'COMMENT "' . $field['COMMENT'] . '"' : '') . ';';
 			break;
-			//ALTER TABLE `gaiaehr`.`soap_snippets` ADD COLUMN `index` INT(11) NULL DEFAULT NULL  AFTER `category` ;
+
 			case 'DATE'; case 'TIME'; case 'TIMESTAMP'; case 'DATETIME'; case 'YEAR';
 				$sqlStatement .= (string)'`' . $field['NAME'] . '` ' .
 				$field['TYPE'] .  

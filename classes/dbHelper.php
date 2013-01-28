@@ -899,15 +899,14 @@ class dbHelper
 						if(!strstr($fieldsRecords[$key]['Type'], strtolower($compareField['TYPE']))) $changes = true;
 						if( $fieldsRecords[$key]['Null'] != ($compareField['NULL'] ? 'YES' : 'NO') ) $changes = true; 
 						if( $fieldsRecords[$key]['Key'] != ($compareField['PRIMARY'] ? 'PRI' : '') ) $changes = true; 
-						if( filter_var($fieldsRecords[$key]['Type'], FILTER_SANITIZE_NUMBER_INT) != $compareField['LENGTH']) 
+						if(!filter_var($fieldsRecords[$key]['Type'], FILTER_SANITIZE_NUMBER_INT))
 						{
-							$changes = true;
+							if( filter_var($fieldsRecords[$key]['Type'], FILTER_SANITIZE_NUMBER_INT) != $compareField['LENGTH']) $changes = true; 
 						}
 						if( $fieldsRecords[$key]['Default'] != $compareField['DEFAULT']) $changes = true;
 
 						if ( $changes )
 						{
-							flush();
 							// Modify the column because there are not equal
 							// and execute the orm again.
 							$renderArray = array(

@@ -708,7 +708,7 @@ class dbHelper
 			}
 			
 			$this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-			$sqlStatement = (string)'ALTER TABLE ' . $this->workingTable . ' ADD ';
+			$sqlStatement = (string)'ALTER TABLE `' . $this->workingTable . '` ADD COLUMN ';
 			$sqlStatement .= (string)$this->columnsProperties($field);
 			$this->conn->exec($sqlStatement);
 			return true;
@@ -738,7 +738,7 @@ class dbHelper
 			}
 			
 			$this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-			$sqlStatement = (string)'ALTER TABLE ' . $this->workingTable . ' MODIFY ';
+			$sqlStatement = (string)'ALTER TABLE `' . $this->workingTable . '` MODIFY COLUMN ';
 			$sqlStatement .= (string)$this->columnsProperties($field);
 			$this->conn->exec($sqlStatement);
 			return true;
@@ -758,7 +758,7 @@ class dbHelper
 		try
 		{
 			$this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-			$sqlStatement = (string)'ALTER TABLE ' . $this->workingTable . ' CHANGE COLUMN ' . $oldName . ' ' . $newName . ';';
+			$sqlStatement = (string)'ALTER TABLE `' . $this->workingTable . '` CHANGE COLUMN `' . $oldName . '` `' . $newName . '`;';
 			$this->conn->exec($sqlStatement);
 			return true;
 		}
@@ -777,7 +777,7 @@ class dbHelper
 		try
 		{
 			$this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-			$sqlStatement = (string)'ALTER TABLE ' . $oldName . ' RENAME TO ' . $newName . ';';
+			$sqlStatement = (string)'ALTER TABLE `' . $oldName . '` RENAME TO `' . $newName . '`;';
 			$this->conn->exec($sqlStatement);
 			return true;
 		}
@@ -844,7 +844,7 @@ class dbHelper
 			if ( count($fieldsRecords) <= 0 )
 			{
 				// drop the field
-				$sqlStatement = 'ALTER TABLE ' . $this->workingTable . ' DROP COLUMN ' . $fieldName . ';';
+				$sqlStatement = 'ALTER TABLE `' . $this->workingTable . '` DROP COLUMN `' . $fieldName . '`;';
 				$this->conn->exec($sqlStatement);
 			}
 			return true;
@@ -914,7 +914,7 @@ class dbHelper
 								'DEFAULT' => $compareField['DEFAULT'],
 								'COMMENT' => $compareField['COMMENT'],
 								'AUTO_INCREMENT' => $compareField['AUTO_INCREMENT']);
-							//if(!is_string($this->modifyField($renderArray))) $this->executeORM();
+							if(!is_string($this->modifyField($renderArray))) $this->executeORM();
 							return;
 						}
 
@@ -966,60 +966,60 @@ class dbHelper
 		switch($field['TYPE'])
 		{
 			case 'BIT'; case 'BINARY'; case 'VARBINARY':
-				$sqlStatement .= (string)$field['NAME'] . ' ' . 
+				$sqlStatement .= (string)'`' . $field['NAME'] . '` ' . 
 				$field['TYPE'] . '(' . $field['LENGTH'] . ')' . 
 				($field['COMMENT'] ? 'COMMENT "' . $field['COMMENT'] . '"' : '') . ';';
 			break;
 				
 			case 'INT'; case 'TINYINT'; case 'MEDIUMINT'; case 'INTEGER'; case 'BIGINT':
-				$sqlStatement .= (string)$field['NAME'] . ' ' . 
+				$sqlStatement .= (string)'`' . $field['NAME'] . '` ' .
 				$field['TYPE'] . '(' . $field['LENGTH'] . ')' . 
 				($field['NULL'] ? ' NULL ' : ' NOT NULL ') .
-				($field['PRIMARY'] ? ' PRIMARY KEY ' : '') .
-				($field['DEFAULT'] ? ' DEFAULT "'.$field['DEFAULT'].'" ' : ' DEFAULT NULL ') .
+				($field['PRIMARY'] ? 'PRIMARY KEY ' : '') .
+				($field['DEFAULT'] != '' ? 'DEFAULT "'.$field['DEFAULT'].'" ' : ' DEFAULT NULL ') .
 				($field['COMMENT'] ? 'COMMENT "' . $field['COMMENT'] . '"' : '') . ';';
 			break;
 			
 			case 'REAL'; case 'DOUBLE'; case 'FLOAT'; case 'DECIMAL'; case 'NUMERIC':
-				$sqlStatement .= (string)$field['NAME'] . ' ' . 
+				$sqlStatement .= (string)'`' . $field['NAME'] . '` ' .
 				$field['TYPE'] . '(' . $field['LENGTH'] . ', ' . $field['DECIMALS'] .')' . 
 				($field['NULL'] ? ' NULL ' : ' NOT NULL ') .
-				($field['PRIMARY'] ? ' PRIMARY KEY ' : '') .
-				($field['DEFAULT'] ? ' DEFAULT "'.$field['DEFAULT'].'" ' : ' DEFAULT NULL ') .
+				($field['PRIMARY'] ? 'PRIMARY KEY ' : '') .
+				($field['DEFAULT'] ? 'DEFAULT "'.$field['DEFAULT'].'" ' : ' DEFAULT NULL ') .
 				($field['COMMENT'] ? 'COMMENT "' . $field['COMMENT'] . '"' : '') . ';';
 			break;
-			
+			//ALTER TABLE `gaiaehr`.`soap_snippets` ADD COLUMN `index` INT(11) NULL DEFAULT NULL  AFTER `category` ;
 			case 'DATE'; case 'TIME'; case 'TIMESTAMP'; case 'DATETIME'; case 'YEAR';
-				$sqlStatement .= (string)$field['NAME'] . ' ' . 
+				$sqlStatement .= (string)'`' . $field['NAME'] . '` ' .
 				$field['TYPE'] .  
 				($field['NULL'] ? ' NULL ' : ' NOT NULL ') .  
-				($field['PRIMARY'] ? ' PRIMARY KEY ' : '') .
-				($field['DEFAULT'] ? ' DEFAULT "'.$field['DEFAULT'].'" ' : ' DEFAULT NULL ') .
+				($field['PRIMARY'] ? 'PRIMARY KEY ' : '') .
+				($field['DEFAULT'] ? 'DEFAULT "'.$field['DEFAULT'].'" ' : ' DEFAULT NULL ') .
 				($field['COMMENT'] ? 'COMMENT "' . $field['COMMENT'] . '"' : '') . ';';
 			break;
 			
 			case 'CHAR'; case 'VARCHAR':
-				$sqlStatement .= (string)$field['NAME'] . ' ' . 
+				$sqlStatement .= (string)'`' . $field['NAME'] . '` ' .
 				$field['TYPE'] . '(' . $field['LENGTH'] . ')' .
 				($field['CHARACTER_SET'] ? ' CHARACTER SET ' . $field['CHARACTER_SET'] . ' ' : ' ') . 
 				($field['NULL'] ? ' NULL ' : ' NOT NULL ') .  
-				($field['PRIMARY'] ? ' PRIMARY KEY ' : '') .
-				($field['DEFAULT'] ? ' DEFAULT "'.$field['DEFAULT'].'" ' : ' DEFAULT NULL ') .
+				($field['PRIMARY'] ? 'PRIMARY KEY ' : '') .
+				($field['DEFAULT'] ? 'DEFAULT "'.$field['DEFAULT'].'" ' : ' DEFAULT NULL ') .
 				($field['COMMENT'] ? 'COMMENT "' . $field['COMMENT'] . '"' : '') . ';';
 			break;
 			
 			case 'TINYBLOB'; case 'BLOB'; case 'MEDIUMBLOB'; case 'LONGBLOB'; case 'TINYTEXT'; case 'TEXT'; case 'MEDIUMTEXT'; case 'LONGTEXT':
-				$sqlStatement .= (string)$field['NAME'] . ' ' . 
+				$sqlStatement .= (string)'`' . $field['NAME'] . '` ' .
 				$field['TYPE'] . ' ' . 
 				($field['COMMENT'] ? 'COMMENT "' . $field['COMMENT'] . '"' : '') . ';';
 			break;
 			
 			default:
-				$sqlStatement .= (string)$field['NAME'] . ' ' . 
+				$sqlStatement .= (string)'`' . $field['NAME'] . '` ' .
 				$field['TYPE'] . '(' . $field['LENGTH'] . ')' . 
 				($field['NULL'] ? ' NULL ' : ' NOT NULL ') . 
-				($field['PRIMARY'] ? ' PRIMARY KEY ' : '') .
-				($field['DEFAULT'] ? ' DEFAULT "'.$field['DEFAULT'].'" ' : ' DEFAULT NULL ') .
+				($field['PRIMARY'] ? 'PRIMARY KEY ' : '') .
+				($field['DEFAULT'] ? 'DEFAULT "'.$field['DEFAULT'].'" ' : ' DEFAULT NULL ') .
 				($field['COMMENT'] ? 'COMMENT "' . $field['COMMENT'] . '"' : '') . ';';
 			break;
 		}

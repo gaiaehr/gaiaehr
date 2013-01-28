@@ -26,7 +26,6 @@ $db->setTable('soap_snippets');
             array(
                 'NAME' => 'text',
                 'TYPE' => 'TEXT',
-                'LENGTH' => 1000,
                 'NULL' => true,
                 'DEFAULT' => ''
             )

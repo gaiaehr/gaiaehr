@@ -720,7 +720,7 @@ class dbHelper
 		}
 		catch(PDOException $err)
 		{
-			error_log('dbHelper - error on createField method: ' . $err->getMessage() . ' ' . $sqlStatement);
+			error_log('dbHelper - error on createField method: ' . $err->getMessage() );
 			return $err->getCode() . ' - ' . $err->getMessage();
 		}
 	}
@@ -945,6 +945,11 @@ class dbHelper
 				}
 			}
 		}
+
+		//clear the variables
+		unset($this->workingTable);
+		unset($this->workingFields);
+		return true;
 	}
 
 	private function recursiveArraySearch($needle, $haystack)
@@ -980,7 +985,7 @@ class dbHelper
 				$field['TYPE'] . '(' . $field['LENGTH'] . ')' . 
 				($field['NULL'] ? ' NULL ' : ' NOT NULL ') .
 				($field['PRIMARY'] ? 'PRIMARY KEY ' : '') .
-				($field['DEFAULT'] != '' ? 'DEFAULT "'.$field['DEFAULT'].'" ' : ' DEFAULT NULL ') .
+				($field['DEFAULT'] ? 'DEFAULT "'.$field['DEFAULT'].'" ' : ' ') .
 				($field['COMMENT'] ? 'COMMENT "' . $field['COMMENT'] . '"' : '') . ';';
 			break;
 			
@@ -989,7 +994,7 @@ class dbHelper
 				$field['TYPE'] . '(' . $field['LENGTH'] . ', ' . $field['DECIMALS'] .')' . 
 				($field['NULL'] ? ' NULL ' : ' NOT NULL ') .
 				($field['PRIMARY'] ? 'PRIMARY KEY ' : '') .
-				($field['DEFAULT'] ? 'DEFAULT "'.$field['DEFAULT'].'" ' : ' DEFAULT NULL ') .
+				($field['DEFAULT'] ? 'DEFAULT "'.$field['DEFAULT'].'" ' : ' ') .
 				($field['COMMENT'] ? 'COMMENT "' . $field['COMMENT'] . '"' : '') . ';';
 			break;
 
@@ -998,7 +1003,7 @@ class dbHelper
 				$field['TYPE'] .  
 				($field['NULL'] ? ' NULL ' : ' NOT NULL ') .  
 				($field['PRIMARY'] ? 'PRIMARY KEY ' : '') .
-				($field['DEFAULT'] ? 'DEFAULT "'.$field['DEFAULT'].'" ' : ' DEFAULT NULL ') .
+				($field['DEFAULT'] ? 'DEFAULT "'.$field['DEFAULT'].'" ' : ' ') .
 				($field['COMMENT'] ? 'COMMENT "' . $field['COMMENT'] . '"' : '') . ';';
 			break;
 			
@@ -1008,7 +1013,7 @@ class dbHelper
 				($field['CHARACTER_SET'] ? ' CHARACTER SET ' . $field['CHARACTER_SET'] . ' ' : ' ') . 
 				($field['NULL'] ? ' NULL ' : ' NOT NULL ') .  
 				($field['PRIMARY'] ? 'PRIMARY KEY ' : '') .
-				($field['DEFAULT'] ? 'DEFAULT "'.$field['DEFAULT'].'" ' : ' DEFAULT NULL ') .
+				($field['DEFAULT'] ? 'DEFAULT "'.$field['DEFAULT'].'" ' : ' ') .
 				($field['COMMENT'] ? 'COMMENT "' . $field['COMMENT'] . '"' : '') . ';';
 			break;
 			
@@ -1023,7 +1028,7 @@ class dbHelper
 				$field['TYPE'] . '(' . $field['LENGTH'] . ')' . 
 				($field['NULL'] ? ' NULL ' : ' NOT NULL ') . 
 				($field['PRIMARY'] ? 'PRIMARY KEY ' : '') .
-				($field['DEFAULT'] ? 'DEFAULT "'.$field['DEFAULT'].'" ' : ' DEFAULT NULL ') .
+				($field['DEFAULT'] ? 'DEFAULT "'.$field['DEFAULT'].'" ' : ' ') .
 				($field['COMMENT'] ? 'COMMENT "' . $field['COMMENT'] . '"' : '') . ';';
 			break;
 		}

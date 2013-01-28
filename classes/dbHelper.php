@@ -634,12 +634,13 @@ class dbHelper
 		if( !is_array($fieldProperties) ) 
 		{
 			$newField = json_decode($fieldProperties, true);
-			$this->workingFields[] = $newField;
+			$this->workingFields[] = (array)$newField;
 		}
 		else 
 		{
-			$this->workingFields[] = $fieldProperties;
+			$this->workingFields[] = (array)$fieldProperties;
 		}
+		return true;
 	}
 
 	/**
@@ -648,6 +649,7 @@ class dbHelper
 	public function setTable($tableName)
 	{
 		$this->workingTable = (string)$tableName;
+		return true;
 	}
 	
 	/**
@@ -660,6 +662,7 @@ class dbHelper
 			$this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			$sqlStatement = (string)'CREATE DATABASE IF NOT EXISTS ' . $databaseName;
 			$this->conn->exec($sqlStatement);
+			return true;
 		}
 		catch(PDOException $err)
 		{
@@ -678,6 +681,7 @@ class dbHelper
 			$this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			$sqlStatement = (string)'DROP DATABASE IF NOT EXISTS ' . $databaseName;
 			$this->conn->exec($sqlStatement);
+			return true;
 		}
 		catch(PDOException $err)
 		{
@@ -707,10 +711,11 @@ class dbHelper
 			$sqlStatement = (string)'ALTER TABLE ' . $this->workingTable . ' ADD ';
 			$sqlStatement .= (string)$this->columnsProperties($field);
 			$this->conn->exec($sqlStatement);
+			return true;
 		}
 		catch(PDOException $err)
 		{
-			error_log('dbHelper - error on createField method: ' . $err->getMessage() );
+			error_log('dbHelper - error on createField method: ' . $err->getMessage() . ' ' . $sqlStatement);
 			return $err->getCode() . ' - ' . $err->getMessage();
 		}
 	}
@@ -740,7 +745,7 @@ class dbHelper
 		}
 		catch(PDOException $err)
 		{
-			error_log('dbHelper - error on modifyField method: ' . $err->getMessage() );
+			error_log('dbHelper - error on modifyField method: ' . $err->getMessage());
 			return $err->getCode() . ' - ' . $err->getMessage();
 		}
 	}
@@ -755,6 +760,7 @@ class dbHelper
 			$this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			$sqlStatement = (string)'ALTER TABLE ' . $this->workingTable . ' CHANGE COLUMN ' . $oldName . ' ' . $newName . ';';
 			$this->conn->exec($sqlStatement);
+			return true;
 		}
 		catch(PDOException $err)
 		{
@@ -773,6 +779,7 @@ class dbHelper
 			$this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			$sqlStatement = (string)'ALTER TABLE ' . $oldName . ' RENAME TO ' . $newName . ';';
 			$this->conn->exec($sqlStatement);
+			return true;
 		}
 		catch(PDOException $err)
 		{
@@ -794,10 +801,11 @@ class dbHelper
 			$sqlStatement .= 'id BIGINT(20) NOT NULL AUTO_INCREMENT PRIMARY KEY';
 			$sqlStatement .= ' ) AUTO_INCREMENT=1;';
 			$this->conn->exec($sqlStatement);
+			return true;
 		}
 		catch(PDOException $err)
 		{
-			error_log('dbHelper - error on createTable method: ' . $err->getMessage() );
+			error_log('dbHelper - error on createTable method: ' . $err->getMessage());
 			return $err->getCode() . ' - ' . $err->getMessage();
 		}
 	}
@@ -812,6 +820,7 @@ class dbHelper
 			$this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			$sqlStatement = (string)'DROP TABLE IF EXISTS ' . $this->workingTable . ';';
 			$this->conn->exec($sqlStatement);
+			return true;
 		}
 		catch(PDOException $err)
 		{
@@ -838,6 +847,7 @@ class dbHelper
 				$sqlStatement = 'ALTER TABLE ' . $this->workingTable . ' DROP COLUMN ' . $fieldName . ';';
 				$this->conn->exec($sqlStatement);
 			}
+			return true;
 		}
 		catch(PDOException $err)
 		{
@@ -858,8 +868,7 @@ class dbHelper
 		// Table does not exist and needs to be created
 		if( $error[1] == 1146) 
 		{
-			$this->createTable($this->workingTable);
-			$this->executeORM();
+			if( !is_string($this->createTable($this->workingTable)) ) $this->executeORM();
 			return;
 		}
 		elseif($error[0] == 00000)
@@ -881,30 +890,19 @@ class dbHelper
 					{
 						
 						$changes = false;
-						if($compareField['TYPE'] != strtoupper( substr($fieldsRecords[$key]['Type'], 0, strlen(strstr($fieldsRecords[$key]['Type'], '(', true)) ) ) ) 
-						{
-							$changes = true;
-						}
-						if( $fieldsRecords[$key]['Null'] != ($compareField['NULL'] ? 'YES' : 'NO') ) 
-						{
-							$changes = true;
-						}
-						if( $fieldsRecords[$key]['Key'] != ($compareField['PRIMARY'] ? 'PRI' : '') ) 
-						{
-							$changes = true;
-						}
+					
+						if(!strstr($fieldsRecords[$key]['Type'], strtolower($compareField['TYPE']))) $changes = true;
+						if( $fieldsRecords[$key]['Null'] != ($compareField['NULL'] ? 'YES' : 'NO') ) $changes = true; 
+						if( $fieldsRecords[$key]['Key'] != ($compareField['PRIMARY'] ? 'PRI' : '') ) $changes = true; 
 						if( filter_var($fieldsRecords[$key]['Type'], FILTER_SANITIZE_NUMBER_INT) != $compareField['LENGTH']) 
 						{
 							$changes = true;
 						}
-						if( $fieldsRecords[$key]['Default'] != $compareField['DEFAULT']) 
-						{
-							$changes = true;
-						}
+						if( $fieldsRecords[$key]['Default'] != $compareField['DEFAULT']) $changes = true;
 
 						if ( $changes )
 						{
-						
+							flush();
 							// Modify the column because there are not equal
 							// and execute the orm again.
 							$renderArray = array(
@@ -916,7 +914,7 @@ class dbHelper
 								'DEFAULT' => $compareField['DEFAULT'],
 								'COMMENT' => $compareField['COMMENT'],
 								'AUTO_INCREMENT' => $compareField['AUTO_INCREMENT']);
-							if($this->modifyField($renderArray)) $this->executeORM();
+							//if(!is_string($this->modifyField($renderArray))) $this->executeORM();
 							return;
 						}
 
@@ -970,7 +968,7 @@ class dbHelper
 			case 'BIT'; case 'BINARY'; case 'VARBINARY':
 				$sqlStatement .= (string)$field['NAME'] . ' ' . 
 				$field['TYPE'] . '(' . $field['LENGTH'] . ')' . 
-				'COMMENT "' . $field['COMMENT'] . '";';
+				($field['COMMENT'] ? 'COMMENT "' . $field['COMMENT'] . '"' : '') . ';';
 			break;
 				
 			case 'INT'; case 'TINYINT'; case 'MEDIUMINT'; case 'INTEGER'; case 'BIGINT':
@@ -978,8 +976,8 @@ class dbHelper
 				$field['TYPE'] . '(' . $field['LENGTH'] . ')' . 
 				($field['NULL'] ? ' NULL ' : ' NOT NULL ') .
 				($field['PRIMARY'] ? ' PRIMARY KEY ' : '') .
-				'DEFAULT' . ($field['DEFAULT'] ? ' "'.$field['DEFAULT'].'" ' : ' NULL ') .
-				'COMMENT "' . $field['COMMENT'] . '";';
+				($field['DEFAULT'] ? ' DEFAULT "'.$field['DEFAULT'].'" ' : ' DEFAULT NULL ') .
+				($field['COMMENT'] ? 'COMMENT "' . $field['COMMENT'] . '"' : '') . ';';
 			break;
 			
 			case 'REAL'; case 'DOUBLE'; case 'FLOAT'; case 'DECIMAL'; case 'NUMERIC':
@@ -987,8 +985,8 @@ class dbHelper
 				$field['TYPE'] . '(' . $field['LENGTH'] . ', ' . $field['DECIMALS'] .')' . 
 				($field['NULL'] ? ' NULL ' : ' NOT NULL ') .
 				($field['PRIMARY'] ? ' PRIMARY KEY ' : '') .
-				'DEFAULT' . ($field['DEFAULT'] ? ' "'.$field['DEFAULT'].'" ' : ' NULL ') .
-				'COMMENT "' . $field['COMMENT'] . '";';
+				($field['DEFAULT'] ? ' DEFAULT "'.$field['DEFAULT'].'" ' : ' DEFAULT NULL ') .
+				($field['COMMENT'] ? 'COMMENT "' . $field['COMMENT'] . '"' : '') . ';';
 			break;
 			
 			case 'DATE'; case 'TIME'; case 'TIMESTAMP'; case 'DATETIME'; case 'YEAR';
@@ -996,25 +994,24 @@ class dbHelper
 				$field['TYPE'] .  
 				($field['NULL'] ? ' NULL ' : ' NOT NULL ') .  
 				($field['PRIMARY'] ? ' PRIMARY KEY ' : '') .
-				'DEFAULT' . ($field['DEFAULT'] ? ' "'.$field['DEFAULT'].'" ' : ' NULL ') . 
-				'COMMENT "' . $field['COMMENT'] . '";';
+				($field['DEFAULT'] ? ' DEFAULT "'.$field['DEFAULT'].'" ' : ' DEFAULT NULL ') .
+				($field['COMMENT'] ? 'COMMENT "' . $field['COMMENT'] . '"' : '') . ';';
 			break;
 			
-			case 'CHAR'; case 'VARCHAR'; case 'TINYTEXT '; case 'TEXT '; case 'MEDIUMTEXT'; case 'LONGTEXT';
+			case 'CHAR'; case 'VARCHAR':
 				$sqlStatement .= (string)$field['NAME'] . ' ' . 
-				$field['TYPE'] . '(' . $field['LENGTH'] . ')' . 
-				'CHARACTER SET ' . $field['CHARACTER_SET'] . ' ' .
-				'COLLATE ' . $field['COLLATE'] . ' ' .
+				$field['TYPE'] . '(' . $field['LENGTH'] . ')' .
+				($field['CHARACTER_SET'] ? ' CHARACTER SET ' . $field['CHARACTER_SET'] . ' ' : ' ') . 
 				($field['NULL'] ? ' NULL ' : ' NOT NULL ') .  
 				($field['PRIMARY'] ? ' PRIMARY KEY ' : '') .
-				'DEFAULT' . ($field['DEFAULT'] ? ' "'.$field['DEFAULT'].'" ' : ' NULL ') . 
-				'COMMENT "' . $field['COMMENT'] . '";';
+				($field['DEFAULT'] ? ' DEFAULT "'.$field['DEFAULT'].'" ' : ' DEFAULT NULL ') .
+				($field['COMMENT'] ? 'COMMENT "' . $field['COMMENT'] . '"' : '') . ';';
 			break;
 			
-			case 'TINYBLOB'; case 'BLOB'; case 'MEDIUMBLOB'; case 'LONGBLOB':
+			case 'TINYBLOB'; case 'BLOB'; case 'MEDIUMBLOB'; case 'LONGBLOB'; case 'TINYTEXT'; case 'TEXT'; case 'MEDIUMTEXT'; case 'LONGTEXT':
 				$sqlStatement .= (string)$field['NAME'] . ' ' . 
 				$field['TYPE'] . ' ' . 
-				'COMMENT "' . $field['COMMENT'] . '";';
+				($field['COMMENT'] ? 'COMMENT "' . $field['COMMENT'] . '"' : '') . ';';
 			break;
 			
 			default:
@@ -1022,8 +1019,8 @@ class dbHelper
 				$field['TYPE'] . '(' . $field['LENGTH'] . ')' . 
 				($field['NULL'] ? ' NULL ' : ' NOT NULL ') . 
 				($field['PRIMARY'] ? ' PRIMARY KEY ' : '') .
-				'DEFAULT' . ($field['DEFAULT'] ? ' "'.$field['DEFAULT'].'" ' : ' NULL ') .
-				'COMMENT "' . $field['COMMENT'] . '";';
+				($field['DEFAULT'] ? ' DEFAULT "'.$field['DEFAULT'].'" ' : ' DEFAULT NULL ') .
+				($field['COMMENT'] ? 'COMMENT "' . $field['COMMENT'] . '"' : '') . ';';
 			break;
 		}
 		return $sqlStatement;

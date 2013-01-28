@@ -11,6 +11,7 @@ Ext.define('App.model.patient.PatientImmunization', {
 		{name: 'id', type: 'int'},
 		{name: 'pid', type: 'int'},
 		{name: 'eid', type: 'int'},
+		{name: 'uid', type: 'int'},
 		{name: 'created_uid', type: 'int'},
 		{name: 'updated_uid', type: 'int'},
 		{name: 'immunization_name', type: 'string'},

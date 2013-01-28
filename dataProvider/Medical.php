@@ -32,6 +32,9 @@ if(!isset($_SESSION)) {
 }
 include_once ($_SESSION['root'] . '/dataProvider/Laboratories.php');
 include_once ($_SESSION['root'] . '/dataProvider/Rxnorm.php');
+include_once ($_SESSION['root'] . '/dataProvider/Services.php');
+include_once ($_SESSION['root'] . '/dataProvider/DiagnosisCodes.php');
+include_once ($_SESSION['root'] . '/dataProvider/Immunizations.php');
 include_once ($_SESSION['root'] . '/classes/dbHelper.php');
 class Medical
 {
@@ -47,12 +50,21 @@ class Medical
      * @var Rxnorm
      */
     private $rxnorm;
+    /**
+     * @var DiagnosisCodes
+     */
+    private $diagnosis;
+
+
 
 	function __construct()
 	{
-		$this->db           = new dbHelper();
+		$this->db = new dbHelper();
 		$this->laboratories = new Laboratories();
-		$this->rxnorm  = new Rxnorm();
+		$this->rxnorm = new Rxnorm();
+		$this->services = new Services();
+        $this->diagnosis = new DiagnosisCodes();
+        $this->immunizations = new Immunizations();
 		return;
 	}
 
@@ -86,6 +98,21 @@ class Medical
 		$this->db->setSQL($this->db->sqlBind($data, 'patient_immunizations', 'I'));
 		$this->db->execLog();
 		$params->id = $this->db->lastInsertId;
+
+        if(isset($params->eid) && $params->eid > 0){
+            $service = new stdClass();
+            $service->pid = $params->pid;
+            $service->eid = $params->eid;
+            $service->uid = $params->uid;
+            $service->code = $this->immunizations->getCptByCvx($params->immunization_id);
+            $dx_pointers = array();
+            foreach($this->diagnosis->getICDByEid($params->eid, true) AS $dx){
+                $dx_children[] = $dx;
+                $dx_pointers[] = $dx['code'];
+            }
+            $service->dx_pointers = implode(',',$dx_pointers);
+            $this->services->addCptCode($service);
+        }
 		return $params;
 
 	}

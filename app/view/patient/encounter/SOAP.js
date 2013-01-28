@@ -189,7 +189,9 @@ Ext.define('App.view.patient.encounter.SOAP', {
 								focus:me.onFieldFocus
 							}
 						}),
-						me.dxField = Ext.widget('icdsfieldset')
+						me.dxField = Ext.widget('icdsfieldset',{
+							name:'icdxCodes'
+						})
 					]
 				},
 				{

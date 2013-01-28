@@ -1527,17 +1527,26 @@ Ext.define('App.view.patient.windows.Medical', {
         }
     },
     onAddItem:function(){
-        var me = this, grid = this.getLayout().getActiveItem(), store = grid.store, params;
-        grid.editingPlugin.cancelEdit();
-        store.insert(0, {
-                created_uid:app.user.id,
-                pid:app.patient.pid,
-                create_date:new Date(),
-                eid:app.patient.eid,
-                begin_date:new Date()
+        var me = this,
+	        grid = this.getLayout().getActiveItem(),
+	        store = grid.store,
+	        params;
 
-            });
-        grid.editingPlugin.startEdit(0, 0);
+	    grid.editingPlugin.cancelEdit();
+
+	    store.insert(0, {
+            created_uid:app.user.id,
+
+            uid:app.user.id,
+            pid:app.patient.pid,
+	        eid:app.patient.eid,
+
+	        create_date:new Date(),
+            begin_date:new Date()
+
+        });
+	    grid.editingPlugin.startEdit(0, 0);
+
         if(app.patient.eid != null){
             if(grid.action == 'patientImmuListGrid'){
                 params = {
@@ -1573,6 +1582,7 @@ Ext.define('App.view.patient.windows.Medical', {
             Medical.reviewMedicalWindowEncounter(params);
         }
     },
+
     hideall:function(skinCombo, localCombo, abdominalCombo, systemicCombo){
         skinCombo.hide(true);
         skinCombo.setDisabled(true);
@@ -1587,6 +1597,7 @@ Ext.define('App.view.patient.windows.Medical', {
         systemicCombo.setDisabled(true);
         systemicCombo.reset();
     },
+
     onLocationSelect:function(combo, record){
         var me = this,
             skinCombo = me.allergiesSkin,
@@ -1609,10 +1620,12 @@ Ext.define('App.view.patient.windows.Medical', {
             systemicCombo.setDisabled(false);
         }
     },
+
     disableFieldLogic:function(field, newValue){
         field.setDisabled((newValue == '' || newValue == null));
     },
-    onAllergyTypeSelect:function(combo, record){
+
+	onAllergyTypeSelect:function(combo, record){
         var me = this;
         me.allergieMedication.hide(true);
         me.allergieMedication.setDisabled(true);
@@ -1644,6 +1657,7 @@ Ext.define('App.view.patient.windows.Medical', {
         }
 
     },
+
     setDefaults:function(options){
         var data;
         if(options.update){
@@ -1653,7 +1667,8 @@ Ext.define('App.view.patient.windows.Medical', {
 
         }
     },
-    cardSwitch:function(btn){
+
+	cardSwitch:function(btn){
         var me = this, layout = me.getLayout(), addBtn = me.down('toolbar').query('[action="AddRecord"]')[0], p = app.patient, title;
         me.pid = p.pid;
         addBtn.show();
@@ -1682,9 +1697,11 @@ Ext.define('App.view.patient.windows.Medical', {
         }
         me.setTitle(p.name + ' (' + title + ') ' + (p.readOnly ? '-  <span style="color:red">[Read Mode]</span>' : ''));
     },
-    onMedicalWinShow:function(){
+
+	onMedicalWinShow:function(){
         var me = this, reviewBts = me.query('button[action="review"]'), p = app.patient;
         me.pid = p.pid;
+        me.eid = p.eid;
         me.setTitle(p.name + (p.readOnly ? ' <span style="color:red">[' + i18n('read_mode') + ']</span>' : ''));
         me.setReadOnly(app.patient.readOnly);
         for(var i = 0; i < reviewBts.length; i++){
@@ -1722,7 +1739,8 @@ Ext.define('App.view.patient.windows.Medical', {
                 }
             });
     },
-    onMedicalWinClose:function(){
+
+	onMedicalWinClose:function(){
         if(app.currCardCmp.id == 'panelSummary'){
             app.currCardCmp.loadStores();
         }

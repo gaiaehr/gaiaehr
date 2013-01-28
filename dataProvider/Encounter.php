@@ -348,7 +348,7 @@ class Encounter
 	{
 		$this->db->setSQL("SELECT * FROM encounter_soap WHERE eid = '$eid' ORDER BY date DESC");
 		$soap              = $this->db->fetchRecord(PDO::FETCH_ASSOC);
-		$soap['icdxCodes'] = $this->diagnosis->getICDByEid($eid);
+		$soap['icdxCodes'] = $this->diagnosis->getICDByEid($eid, true);
 		return $soap;
 	}
 
@@ -368,7 +368,7 @@ class Encounter
 		foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) AS $row){
 			$row['service_date'] = date($_SESSION['global_settings']['date_time_display_format'], strtotime($row['service_date']));
 			$icds              = '';
-			foreach($this->diagnosis->getICDByEid($params->eid) as $code){
+			foreach($this->diagnosis->getICDByEid($params->eid, true) as $code){
 				$icds .= '<li><span style="font-weight:bold; text-decoration:none">' . $code['code'] . '</span> - ' . $code['long_desc'] . '</li>';
 			}
 			$row['assessment'] .= '<ul  class="ProgressNote-ul">' . $icds . '</ul>';
@@ -389,8 +389,6 @@ class Encounter
 		unset($data['id'], $data['icdxCodes']);
 		$this->db->setSQL($this->db->sqlBind($data, 'encounter_soap', 'U', "id='" . $params->id . "'"));
 		$this->db->execLog();
-		$this->db->setSQL("DELETE FROM encounter_dx WHERE eid = '$params->eid'");
-		$this->db->execOnly();
 		$this->updateEncounterIcdxCodes($params);
 		$this->addEncounterHistoryEvent('SOAP updated');
 		return $params;
@@ -422,22 +420,12 @@ class Encounter
 
 	public function getEncounterCodes($params)
 	{
-		return $this->getEncounterCodesByEid($params->eid);
+		return $this->getEncounterServiceCodesByEid($params->eid);
 	}
 
-	public function getEncounterCodesByEid($eid)
+	public function getEncounterServiceCodesByEid($eid)
 	{
-		$records = array();
-		foreach($this->diagnosis->getICDByEid($eid) as $fo){
-			$fo['type'] = 'ICD';
-			$records[]  = $fo;
-		}
-		$foo = $this->services->getCptByEid($eid);
-		foreach($foo['rows'] as $fo){
-			$fo['type'] = 'CPT';
-			$records[]  = $fo;
-		}
-		return $records;
+		return $this->services->getCptByEid($eid);
 	}
 
     //***********************************************************************************************
@@ -470,7 +458,7 @@ class Encounter
     {
         $dx_pointers = array();
         $dx_children = array();
-        foreach($this->diagnosis->getICDByEid($params->eid) AS $dx){
+        foreach($this->diagnosis->getICDByEid($params->eid, true) AS $dx){
             $dx_children[] = $dx;
             $dx_pointers[] = $dx['code'];
         }
@@ -509,30 +497,79 @@ class Encounter
 		return $this->db->fetchRecord(PDO::FETCH_ASSOC);
 	}
 
+    public function getEncounterIcdxCodes(stdClass $params)
+    {
+        $this->setEid($params->eid);
+        return $this->diagnosis->getICDByEid($params->eid, true);
+    }
+
 	public function updateEncounterIcdxCodes(stdClass $params)
 	{
 		$this->setEid($params->eid);
-		if(!is_string($params->icdxCodes)){
-			foreach($params->icdxCodes as $icdcCode){
-				$icdc['eid']  = $params->eid;
-				$icdc['code'] = trim($icdcCode);
-				$this->db->setSQL($this->db->sqlBind($icdc, 'encounter_dx', 'I'));
-				$this->db->execOnly();
-			}
-		} else {
-			$icdc['eid']  = $params->eid;
-			$icdc['code'] = trim($params->icdxCodes);
-			$this->db->setSQL($this->db->sqlBind($icdc, 'encounter_dx', 'I'));
-			$this->db->execOnly();
-		}
+
+        // if $params->icdxCodes is a string explode it by (,)
+        $newEncDxCodes =  is_string($params->icdxCodes) ? explode(',',$params->icdxCodes) : $params->icdxCodes;
+        // get encounter Dx
+        $encDxCodes = $this->diagnosis->getICDByEid($params->eid);
+
+        // loop for each encounter Dx
+        foreach($encDxCodes AS $encCode){
+
+            // search for encounter Dx code inside icdxCodes array
+            $key = array_search($encCode['code'], $newEncDxCodes);
+
+            // if Dx found in icdxCodes array
+            if($key !== false){
+
+                // if encounter Dx is inactive set back to active
+                if($encCode['active'] == false){
+                    $dx = array();
+                    $dx['uid']  = $params->uid;
+                    $dx['code'] = trim($encCode['code']);
+                    $dx['active'] = '1';
+                    $this->db->setSQL($this->db->sqlBind($dx, 'encounter_dx', 'U', array('id' => $encCode['id'])));
+                }
+
+                // remove updated Dx code from $newEncDxCodes
+                unset($newEncDxCodes[$key]);
+
+            // if not found the set Dx active to 0
+            }else{
+                $dx = array();
+                $dx['active'] = '0';
+                $this->db->setSQL($this->db->sqlBind($dx, 'encounter_dx', 'U', array('id' => $encCode['id'])));
+            }
+
+            // exe the sql
+            $this->db->execOnly();
+        }
+
+        // insert the new encounter codes remaining
+        foreach($newEncDxCodes AS $newEncDxCode){
+            $dx = array();
+            $dx['pid']  = $params->pid;
+            $dx['eid']  = $params->eid;
+            $dx['uid']  = $params->uid;
+            $dx['code'] = trim($newEncDxCode);
+            $this->db->setSQL($this->db->sqlBind($dx, 'encounter_dx', 'I'));
+            $this->db->execOnly();
+        }
+
+        $params->icdxCodes = $this->diagnosis->getICDByEid($params->eid, true);
+
 		return $params;
 	}
 
-	public function getEncounterIcdxCodes(stdClass $params)
-	{
-		$this->setEid($params->eid);
-		return $this->diagnosis->getICDByEid($params->eid);
-	}
+    public function isEncounterDxCodeDByEid($code, $eid){
+        $this->db->setSQL("SELECT * FROM encounter_dx WHERE code = '$code' AND eid = '$eid'");
+        $dx = $this->db->fetchRecord(PDO::FETCH_ASSOC);
+        if(!empty($dx)){
+            return $dx;
+        }else{
+            return false;
+        }
+    }
+
 
 	/**
 	 * @param stdClass $params
@@ -636,7 +673,7 @@ class Encounter
 		 * Add SOAP to progress note
 		 */
 		$icdxs = '';
-		foreach($this->diagnosis->getICDByEid($eid) as $code){
+		foreach($this->diagnosis->getICDByEid($eid, true) as $code){
 			$icdxs .= '<li><span style="font-weight:bold; text-decoration:none">' . $code['code'] . '</span> - ' . $code['long_desc'] . '</li>';
 		}
 		//$icdxs = substr($icdxs, 0, -2);
@@ -884,12 +921,14 @@ class Encounter
 
 }
 
-//
+
 //$params = new stdClass();
+//$params->pid = 3;
 //$params->eid = 3;
-////$params->date = '2012-06-25 10:48:00';
+//$params->uid = 85;
+//$params->icdxCodes = array('401.9','V22.0','250.90');
 //
 //$e = new Encounter();
 //echo '<pre>';
-//print_r($e->addEncounterCptDxTree($params));
-////print_r($e->getSoapHistoryByPid(1));
+//$e->updateEncounterIcdxCodes($params);
+//print_r($e->getSoapHistoryByPid(1));

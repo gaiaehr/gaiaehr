@@ -79,70 +79,71 @@ Ext.define('App.view.patient.windows.EncounterCheckOut', {
 							items:[
 								{
 									xtype: 'buttongroup',
-									title: i18n('new_patient'),
-									flex: 1,
-									columns: 1,
-									defaults: {
-										scale: 'small',
-										padding:4,
-										width:110,
-										scope:me,
-										handler:me.onQuickService
-									},
-									items: [
-										{
-											text: 'Brief',
-											action:'99201'
-										},
-										{
-											text: 'Limited',
-											action:'99202'
-										},
-										{
-											text: 'Detailed',
-											action:'99203'
-										},
-										{
-											text: 'Extended',
-											action:'99204'
-										},
-										{
-											text: 'Comprehensive',
-											action:'99205'
-										}
-									]
-								},{
-									xtype: 'buttongroup',
 									title: i18n('established_patient'),
 									flex: 1,
 									columns: 1,
 									defaults: {
 										scale: 'small',
 										padding:4,
-										width:110,
+										width:130,
 										scope:me,
 										handler:me.onQuickService
 									},
 									items: [
 										{
-											text: 'Brief',
+											text: 'Brief (5m)',
 											action:'99211'
 										},
 										{
-											text: 'Limited',
+											text: 'Limited (10m)',
 											action:'99212'
 										},
 										{
-											text: 'Detailed',
+											text: 'Detailed (15m)',
 											action:'99213'
 										},
 										{
-											text: 'Extended',
+											text: 'Extended (25m)',
 											action:'99214'
 										},
 										{
-											text: 'Comprehensive',
+											text: 'Comprehensive (40m)',
 											action:'99215'
+										}
+									]
+								},
+								{
+									xtype: 'buttongroup',
+									title: i18n('new_patient'),
+									flex: 1,
+									columns: 1,
+									defaults: {
+										scale: 'small',
+										padding:4,
+										width:130,
+										scope:me,
+										handler:me.onQuickService
+									},
+									items: [
+										{
+											text: 'Brief (10m)',
+											action:'99201'
+										},
+										{
+											text: 'Limited (20m)',
+											action:'99202'
+										},
+										{
+											text: 'Detailed (30m)',
+											action:'99203'
+										},
+										{
+											text: 'Extended (45m)',
+											action:'99204'
+										},
+										{
+											text: 'Comprehensive (60m)',
+											action:'99205'
 										}
 									]
 								}

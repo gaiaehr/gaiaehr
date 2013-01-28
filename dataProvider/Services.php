@@ -203,7 +203,8 @@ class Services
         );
     }
 
-    public function getQuickAccessCheckOutServices(){
+    public function getQuickAccessCheckOutServices()
+    {
         $this->db->setSQL("SELECT *
                              FROM cpt_codes
                             WHERE code = '99201'
@@ -242,12 +243,9 @@ class Services
         /*
          * define $code_table
          */
-        if ($params -> code_type == 'cpt')
-        {
+        if ($params->code_type == 'cpt') {
             $code_table = 'cpt_codes';
-        }
-        else
-        {
+        } else {
             $code_table = 'hcpcs_codes';
         }
         /**
@@ -261,7 +259,7 @@ class Services
          *      [3] => 'head skin '
          * )
          */
-        $Str = explode(',', $params -> query);
+        $Str = explode(',', $params->query);
         /**
          * get the las value and trim white spaces
          * $queryStr = 'head skin'
@@ -302,9 +300,8 @@ class Services
         /**
          * loop for every word in $queries
          */
-        foreach ($queries as $query)
-        {
-            $this -> db -> setSQL("SELECT *
+        foreach ($queries as $query) {
+            $this->db->setSQL("SELECT *
                                  FROM $code_table
                                 WHERE (code_text      LIKE '%$query%'
                                    OR code            LIKE '$query%')
@@ -312,22 +309,18 @@ class Services
             /**
              * loop for each sql record as $row
              */
-            foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
-            {
+            foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row) {
                 /**
                  * if the id of the IDC9 code is in $idHaystack increase its ['weight'] by 1
                  */
-                if (array_key_exists($row['id'], $idHaystack))
-                {
+                if (array_key_exists($row['id'], $idHaystack)) {
                     $records[$row['id']]['weight']++;
                     /**
                      * else add the code ID to $idHaystack
                      * then add ['weight'] with a value of 1
                      * finally add the $row to $records
                      */
-                }
-                else
-                {
+                } else {
                     $idHaystack[$row['id']] = true;
                     $row['weight'] = 1;
                     $records[$row['id']] = $row;
@@ -336,12 +329,9 @@ class Services
         }
         function cmp($a, $b)
         {
-            if ($a['weight'] === $b['weight'])
-            {
+            if ($a['weight'] === $b['weight']) {
                 return 0;
-            }
-            else
-            {
+            } else {
                 return $a['weight'] < $b['weight'] ? 1 : -1;
                 // reverse order
             }
@@ -349,7 +339,7 @@ class Services
 
         usort($records, 'cmp');
         $total = count($records);
-        $records = array_slice($records, $params -> start, $params -> limit);
+        $records = array_slice($records, $params->start, $params->limit);
         return array(
             'totals' => $total,
             'rows' => $records

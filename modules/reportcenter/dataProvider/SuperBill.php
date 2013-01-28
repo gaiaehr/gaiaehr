@@ -6,11 +6,10 @@
  * Time: 12:24 PM
  * To change this template use File | Settings | File Templates.
  */
-if (!isset($_SESSION))
-{
-	session_name('GaiaEHR');
-	session_start();
-	session_cache_limiter('private');
+if (!isset($_SESSION)) {
+    session_name('GaiaEHR');
+    session_start();
+    session_cache_limiter('private');
 }
 include_once ('Reports.php');
 include_once ($_SESSION['root'] . '/classes/dbHelper.php');
@@ -22,51 +21,50 @@ include_once ($_SESSION['root'] . '/dataProvider/i18nRouter.php');
 
 class SuperBill extends Reports
 {
-	private $db;
-	private $user;
-	private $patient;
-	private $fees;
-	private $encounter;
+    private $db;
+    private $user;
+    private $patient;
+    private $fees;
+    private $encounter;
 
-	/*
-	 * The first thing all classes do, the construct.
-	 */
-	function __construct()
-	{
-		parent::__construct();
-		$this -> db = new dbHelper();
-		$this -> user = new User();
-		$this -> patient = new Patient();
-		$this -> fees = new Fees();
-		$this -> encounter = new Encounter();
-		return;
-	}
+    /*
+     * The first thing all classes do, the construct.
+     */
+    function __construct()
+    {
+        parent::__construct();
+        $this->db = new dbHelper();
+        $this->user = new User();
+        $this->patient = new Patient();
+        $this->fees = new Fees();
+        $this->encounter = new Encounter();
+        return;
+    }
 
-	public function CreateSuperBill(stdClass $params)
-	{
-		$params -> to = ($params -> to == '') ? date('Y-m-d') : $params -> to;
-		$html = "<br><h1>Super Bill ($params->from - $params->to )</h1>";
-		foreach ($this->encounter->getEncounterByDateFromToAndPatient($params->from,$params->to,$params->pid) AS $eData)
-		{
-			$html .= $this -> htmlSuperBill($eData);
-			$html .= $this -> addCodes($eData['eid'], $eData['start_date'], $eData['prov_uid']);
-		}
-		ob_end_clean();
+    public function CreateSuperBill(stdClass $params)
+    {
+        $params->to = ($params->to == '') ? date('Y-m-d') : $params->to;
+        $html = "<br><h1>Super Bill ($params->from - $params->to )</h1>";
+        foreach ($this->encounter->getEncounterByDateFromToAndPatient($params->from, $params->to, $params->pid) AS $eData) {
+            $html .= $this->htmlSuperBill($eData);
+            $html .= $this->addCodes($eData['eid'], $eData['start_date'], $eData['prov_uid']);
+        }
+        ob_end_clean();
 
-		$Url = $this -> ReportBuilder($html);
-		return array(
-			'success' => true,
-			'html' => $html,
-			'url' => $Url
-		);
-	}
+        $Url = $this->ReportBuilder($html);
+        return array(
+            'success' => true,
+            'html' => $html,
+            'url' => $Url
+        );
+    }
 
-	public function addCodes($eid, $date, $provider)
-	{
-		$codes = $this -> encounter -> getEncounterCodesByEid($eid);
+    public function addCodes($eid, $date, $provider)
+    {
+        $codes = $this->encounter->getEncounterServiceCodesByEid($eid);
 
-		$html = '';
-		$html .= "<table  border=\"0\" width=\"100%\">
+        $html = '';
+        $html .= "<table  border=\"0\" width=\"100%\">
             <tr>
                <th colspan=\"4\" style=\"font-weight: bold;\">" . i18nRouter::t("billing_information") . "</th>
             </tr>
@@ -76,24 +74,23 @@ class SuperBill extends Reports
 	           <td>" . i18nRouter::t("code") . "</td>
 	           <td>" . i18nRouter::t("fee") . "</td>
             </tr>";
-		foreach ($codes as $code)
-		{
-			$html .= "<tr>
+        foreach ($codes as $code) {
+            $html .= "<tr>
 					<td>" . $date . "</td>
 					<td>" . $provider . "</td>
 					<td>" . $code['type'] . ': ' . $code['code'] . "</td>
 					<td>" . $code['charge'] . "</td>
 				</tr>";
-		}
-		$html .= "<hr></table>";
+        }
+        $html .= "<hr></table>";
 
-		return $html;
-	}
+        return $html;
+    }
 
-	public function htmlSuperBill($params)
-	{
-		$html = '';
-		$html .= "<table border=\"0\" width=\"100%\" >
+    public function htmlSuperBill($params)
+    {
+        $html = '';
+        $html .= "<table border=\"0\" width=\"100%\" >
                  <tr>
                     <th colspan=\"3\" style=\"font-weight: bold;\">" . i18nRouter::t("patient") . "</th>
                  </tr>
@@ -115,7 +112,7 @@ class SuperBill extends Reports
                  </tr>
                  <tr><td>
                  </td></tr>" . '</table>';
-		$html .= "<table  border=\"0\" width=\"100%\">
+        $html .= "<table  border=\"0\" width=\"100%\">
                  <tr>
                     <th colspan=\"3\" style=\"font-weight: bold;\">" . i18nRouter::t("insurance_data") . " (" . i18nRouter::t("primary") . ")</th>
                  </tr>
@@ -138,9 +135,8 @@ class SuperBill extends Reports
                     <td>" . i18nRouter::t("policy_number") . ': ' . $params['primary_policy_number'] . '<br>' . "</td>
                  </tr>
                  <tr>";
-		if ($params['secondary_insurance_provider'] != '')
-		{
-			$html .= "<table  border=\"0\" width=\"100%\">
+        if ($params['secondary_insurance_provider'] != '') {
+            $html .= "<table  border=\"0\" width=\"100%\">
                  <tr>
                     <th colspan=\"3\" style=\"font-weight: bold;\">" . i18nRouter::t("insurance_data") . " (" . i18nRouter::t("secondary") . ")</th>
                  </tr>
@@ -162,11 +158,11 @@ class SuperBill extends Reports
                  <tr>
                     <td>" . i18nRouter::t("policy_number") . ': ' . $params['secondary_policy_number'] . '<br>' . "</td>
                  </tr>
-                 <tr>"; ;
-		}
-		if ($params['tertiary_insurance_provider'] != '')
-		{
-			$html .= "<table  border=\"0\" width=\"100%\">
+                 <tr>";
+            ;
+        }
+        if ($params['tertiary_insurance_provider'] != '') {
+            $html .= "<table  border=\"0\" width=\"100%\">
                 <tr>
                    <th colspan=\"3\" style=\"font-weight: bold;\">" . i18nRouter::t("insurance_data") . " (" . i18nRouter::t("tertiary") . ")</th>
                 </tr>
@@ -188,10 +184,10 @@ class SuperBill extends Reports
                 <tr>
                    <td>" . i18nRouter::t("policy_number") . ': ' . $params['tertiary_policy_number'] . '<br>' . "</td>
                 </tr>";
-		}
-		$html .= "</table>";
-		return $html;
-	}
+        }
+        $html .= "</table>";
+        return $html;
+    }
 
 }
 

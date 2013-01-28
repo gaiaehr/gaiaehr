@@ -103,15 +103,18 @@ Ext.define('App.ux.form.AdvanceForm', {
             if(fields[i].xtype == 'textfield' || fields[i].xtype == 'textareafield'){
                 fields[i].enableKeyEvents = true;
                 fields[i].on('keyup', this.setFieldCondition, this);
+	            fields[i].on('change', this.setFieldCondition, this);
             }else if(fields[i].xtype == 'radiofield' || fields[i].xtype == 'mitos.checkbox' || fields[i].xtype == 'checkbox'){
                 fields[i].scope = this;
                 fields[i].handler = this.setFieldCondition;
+	            fields[i].on('change', this.setFieldCondition, this);
             }else if(fields[i].xtype == 'datefield'){
                 fields[i].on('select', this.setFieldCondition, this);
+	            fields[i].on('change', this.setFieldCondition, this);
             }else{
                 fields[i].on('select', this.setFieldCondition, this);
             }
-	        fields[i].on('change', this.setFieldCondition, this);
+
         }
     },
     /**

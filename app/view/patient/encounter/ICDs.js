@@ -17,37 +17,6 @@ Ext.define('App.view.patient.encounter.ICDs', {
     initComponent:function () {
         var me = this;
 
-        Ext.define('Ext.ux.CustomTrigger', {
-            extend: 'Ext.form.field.Trigger',
-            alias: 'widget.customtrigger',
-            hideLabel    : true,
-            triggerTip: i18n('click_to_clear_selection'),
-            qtip: i18n('clearable_combo_box'),
-            trigger1Class:'x-form-select-trigger',
-            trigger2Class:'x-form-clear-trigger',
-
-            onTriggerClick: function() {
-                this.destroy();
-                if(me.autoFormSync) me.syncFormStore();
-            },
-
-            onRender:function (ct, position) {
-                this.callParent(arguments);
-                var id = this.getId();
-                this.triggerConfig = {
-                    tag:'div', cls:'x-form-twin-triggers', style:'display:block;', cn:[
-                        {tag:"img", style:Ext.isIE ? 'margin-left:0;height:21px' : '', src:Ext.BLANK_IMAGE_URL, id:"trigger2" + id, name:"trigger2" + id, cls:"x-form-trigger " + this.trigger2Class}
-                    ]};
-                this.triggerEl.replaceWith(this.triggerConfig);
-                this.triggerEl.on('mouseup', function () {
-                        this.onTriggerClick()
-                    },
-                    this);
-                var trigger2 = Ext.get("trigger2" + id);
-                trigger2.addClsOnOver('x-form-trigger-over');
-            }
-        });
-
         me.items = [
             {
                 xtype:'liveicdxsearch',
@@ -69,15 +38,8 @@ Ext.define('App.view.patient.encounter.ICDs', {
                 //manageOverflow:1
             }
         ];
-        me.callParent(arguments);
-    },
 
-    syncFormStore:function(){
-        var form = this.up('form').getForm(),
-            record = form.getRecord(),
-            store = record.store;
-        record.set(form.getValues());
-        store.sync();
+        me.callParent(arguments);
     },
 
     onLiveIcdSelect:function(field, model){
@@ -88,27 +50,29 @@ Ext.define('App.view.patient.encounter.ICDs', {
 
 
     removeIcds:function(){
-        this.getIcdContainer().removeAll();
+        this.getIcdContainer().removeAll(false);
     },
 
     loadIcds:function(records){
-        var me = this,
-            field = me.getIcdLiveSearch();
+        var me = this;
         me.removeIcds();
-        for(var i=0; i < records.length; i++){
+		me.loading = true;
+	    for(var i=0; i < records.length; i++){
             me.addIcd(records[i].code, records[i].long_desc);
         }
-        field.reset();
+	    me.loading = false;
+	    me.getIcdLiveSearch().reset();
     },
 
     addIcd:function(code, toolTip){
-        this.getIcdContainer().add({
+	    var me = this;
+	    me.getIcdContainer().add({
             xtype:'customtrigger',
             value:code,
             width:100,
             style:'float:left',
             margin:'0 5 0 0',
-            name:'icdxCodes',
+            name:me.name,
             listeners:{
                 afterrender:function(btn){
                     Ext.create('Ext.tip.ToolTip', {
@@ -116,10 +80,21 @@ Ext.define('App.view.patient.encounter.ICDs', {
                         html: toolTip
                     });
                     btn.setEditable(false);
-                }
+                },
+	            destroy:function(){
+		            if(me.autoFormSync && !me.loading) me.syncFormStore();
+	            }
             }
         });
     },
+
+	syncFormStore:function(){
+		var form = this.up('form').getForm(),
+			record = form.getRecord(),
+			store = record.store;
+		record.set(form.getValues());
+		store.sync();
+	},
 
     getIcdContainer:function(){
         return this.getComponent('idcsContainer');

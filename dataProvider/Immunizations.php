@@ -125,9 +125,10 @@ class Immunizations
     public function getImmunizationLiveSearch(stdClass $params)
     {
         $this->db->setSQL("SELECT * FROM cvx_codes
-							WHERE cvx_code 	  LIKE '$params->query%'
+							WHERE (cvx_code   LIKE '$params->query%'
 							   OR `name` 	  LIKE '$params->query%'
-							   OR description LIKE '%$params->query%'");
+							   OR description LIKE '%$params->query%')
+							  AND (status = '1' OR status = 'Active')");
         $records = $this->db->fetchRecords(PDO::FETCH_ASSOC);
         $total = count($records);
         $records = array_slice($records, $params->start, $params->limit);
@@ -149,10 +150,23 @@ class Immunizations
         return $this->db->fetchRecords(PDO::FETCH_ASSOC);
     }
 
+    public function getImmunizationsByEid($eid)
+    {
+        $this->db->setSQL("SELECT * FROM patient_immunizations WHERE eid='$eid'");
+        return $this->db->fetchRecords(PDO::FETCH_ASSOC);
+    }
+
+    public function getCptByCvx($cvx){
+        $this->db->setSQL("SELECT cpt FROM cvx_cpt WHERE cvx = '$cvx' AND (active = '1' OR active = 'Active')");
+        $rec = $this->db->fetchRecord(PDO::FETCH_ASSOC);
+        return $rec['cpt'];
+    }
+
 }
 
 //print '<pre>';
 //$i = new Immunizations();
 //////print $i->importCVXCodes();
 ////print_r($i->updateCVXCodes());
-//print_r($i->updateMVXCodes());
+//print_r($i->getCptByCvx(141));
+//print 'jumm';

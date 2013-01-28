@@ -232,28 +232,44 @@ class DiagnosisCodes
         return $record['last_revision'];
     }
 
-    public function getICDByEid($eid)
+    public function getICDByEid($eid, $active = null)
     {
+        if($active == null){
+            $activex = '';
+        }elseif($active){
+            $activex = 'AND active = \'1\'';
+        }else{
+            $activex = 'AND active = \'0\'';
+        }
         $records = array();
-        $this->db->setSQL("SELECT code
+        $this->db->setSQL("SELECT *
 							 FROM encounter_dx
-							WHERE eid = '$eid'
+							WHERE eid = '$eid' $activex
                             ORDER BY id ASC");
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) AS $foo) {
-            $records[] = $this->getICDDataByCode($foo['code']);
+            $dx = $this->getICDDataByCode($foo['code']);
+            $records[] = array_merge($dx, $foo);
         }
         return $records;
     }
 
-    public function getICDByPid($pid)
+    public function getICDByPid($pid, $active = false)
     {
+        if($active == null){
+            $activex = '';
+        }elseif($active){
+            $activex = 'AND active = \'1\'';
+        }else{
+            $activex = 'AND active = \'0\'';
+        }
         $records = array();
-        $this->db->setSQL("SELECT code
+        $this->db->setSQL("SELECT *
 							 FROM encounter_dx
-							WHERE pid = '$pid'
+							WHERE pid = '$pid' $activex
                             ORDER BY id ASC");
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) AS $foo) {
-            $records[] = $this->getICDDataByCode($foo['code']);
+            $dx = $this->getICDDataByCode($foo['code']);
+            $records[] = array_merge($dx, $foo);
         }
         return $records;
     }

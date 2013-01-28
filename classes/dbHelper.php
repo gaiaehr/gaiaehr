@@ -324,7 +324,12 @@ class dbHelper
 		{
 			$this->lastInsertId = $this->conn->lastInsertId();
 		}
-		return $this->conn->errorInfo();
+        $err = $this->conn->errorInfo();
+        if($err[2]){
+            return $this->conn->errorInfo();
+        }else{
+            return $this->lastInsertId;
+        }
 	}
 
 	/**

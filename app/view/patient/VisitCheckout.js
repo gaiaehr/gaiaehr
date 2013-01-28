@@ -36,11 +36,11 @@ Ext.define('App.view.patient.VisitCheckout', {
 						align:'stretch'
 					},
 					items:[
-						me.invoicePanel = Ext.widget('panel', {
-							title:i18n('copay_payment'),
+						me.invoicePanel = Ext.widget('panel',{
+							title:i18n('services_charges'),
 							border:true,
 							frame:true,
-							bodyPadding:5,
+							//bodyPadding:5,
 							bodyBorder:true,
 							bodyStyle:'background-color:#fff',
 							margin:'5 5 0 5',
@@ -74,19 +74,21 @@ Ext.define('App.view.patient.VisitCheckout', {
 												},
 												{
 													header:i18n('item'),
-													flex:1,
 													dataIndex:'code_text',
+													flex:1,
 													editor:{
 														xtype:'livecptsearch',
 														allowBlank:false
 													}
 												},
 												{
-													header:i18n('paid'),
-													xtype:'actioncolumn',
-													dataIndex:'charge',
-													width:35
-
+													header:i18n('ins?'),
+													dataIndex:'ins',
+													width:35,
+													editor:{
+														xtype:'checkbox'
+													},
+													renderer:me.boolRenderer
 												},
 												{
 													header:i18n('charge'),
@@ -104,24 +106,6 @@ Ext.define('App.view.patient.VisitCheckout', {
 													clicksToEdit:2
 												})
 											]
-//											tbar:[
-//												'->',
-//												{
-//													xtype:'button',
-//													text:i18n('add_service'),
-//													iconCls:'icoAdd',
-//													scope:me,
-//													handler:me.onNewService
-//												},
-//												'-',
-//												{
-//													xtype:'button',
-//													text:i18n('add_copay'),
-//													iconCls:'icoAdd',
-//													scope:me,
-//													handler:me.onAddCoPay
-//												}
-//											]
 										})
 									]
 								}),
@@ -224,7 +208,7 @@ Ext.define('App.view.patient.VisitCheckout', {
 									text:i18n('save'),
 									scope:me,
 									handler:me.onCheckoutSaveNotes
-								},
+								}
 							]
 						}),
 						me.followUp = Ext.widget('form', {
@@ -298,11 +282,11 @@ Ext.define('App.view.patient.VisitCheckout', {
 	},
 
 	onNewService:function(btn){
-		this.invoiceGrid.getStore().add({code_text:' ', charge:'20.00'});
+		this.invoiceGrid.getStore().add({code_text:' ', charge:'20.00', ins:false});
 	},
 
 	onAddCoPay:function(btn){
-		this.invoiceGrid.getStore().add({code_text:'Co-Pay', charge:'00.00'});
+		this.invoiceGrid.getStore().add({code_text:'Co-Pay', charge:'00.00', ins:false});
 	},
 
 	onAddService:function(){

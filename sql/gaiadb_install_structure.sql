@@ -438,8 +438,9 @@ CREATE TABLE IF NOT EXISTS `encounter_dictation` (
 CREATE TABLE IF NOT EXISTS `encounter_1500_options` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `pid` bigint(20) DEFAULT NULL,
-  `eid` bigint(20) DEFAULT NULL COMMENT 'encounter ID',
+  `eid` bigint(20) DEFAULT NULL,
   `uid` bigint(20) DEFAULT NULL,
+  `date` datetime DEFAULT NULL,
   `employment_related` text,
   `auto_accident` text,
   `state` text,
@@ -457,7 +458,7 @@ CREATE TABLE IF NOT EXISTS `encounter_1500_options` (
   `replacement_claim` text,
   `notes` text,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `encounter_history` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,

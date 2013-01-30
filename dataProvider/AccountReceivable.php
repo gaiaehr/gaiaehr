@@ -23,9 +23,9 @@ if (!isset($_SESSION)) {
     session_start();
     session_cache_limiter('private');
 }
+include_once ($_SESSION['root'] . '/classes/Time.php');
 include_once ($_SESSION['root'] . '/classes/dbHelper.php');
 include_once ($_SESSION['root'] . '/dataProvider/Services.php');
-include_once ($_SESSION['root'] . '/dataProvider/Immunizations.php');
 
 /**
  * @brief       Billing Class.
@@ -45,25 +45,69 @@ class AccountReceivable
     /**
      * @var Services
      */
-    private $services;
+    protected $services;
+    /**
+     * @var
+     */
+    private $sid = null;
 
 
+    /**
+     * __construct
+     */
     function __construct()
     {
         $this->db = new dbHelper();
         $this->services = new Services();
     }
 
-    public function getArSessionBalanceByEid($eid)
-    {
-        $sid = $this->getArSidByEid($eid);
-        $services = $this->services->getCptByEid($eid);
-        $activities = $this->getArActivitiesBySid($sid);
+    /**
+     * This method will find the AR sid for the encounter
+     * if not found will create one
+     * @param stdClass $params
+     */
+    function setSid(stdClass $params){
+        if($this->sid == null){
+            $this->sid = $this->getArSidByEid($params->eid);
+            if($this->sid === false){
+                $this->sid = $this->openArSession($params->pid,$params->eid,$params->uid);
+            }
+        }
+    }
+
+    /**
+     *
+     * @param stdClass $params required params: $params->pid, $params->eid, $params->uid
+     * @return array
+     */
+    public function getArInvoice(stdClass $params){
+        $this->setSid($params);
+
+        $invoice = array();
+
+        $services = $this->services->getCptByEid($params->eid);
+        $activities = $this->getArActivitiesBySid($this->sid);
 
 
-        print_r($services);
-        print_r($activities);
 
+        foreach($services['rows'] AS $service){
+            $row['id'] = $service['id'];
+            $row['code'] = $service['code'];
+            $row['code_text_medium'] = $service['code_text_medium'];
+
+            $row['ins'] = ($params->payer_type == 0 ? 0 : 1 );
+            $row['charge'] = ($service['status'] == 0 ? '24.25' : $service['charge']);
+
+            $invoice[] = $row;
+        }
+
+
+//        print_r($services);
+//
+        return $invoice;
+    }
+
+    public function getPatientInsuranceCoPay($pid){
 
     }
 
@@ -84,7 +128,12 @@ class AccountReceivable
     public function getArSidByEid($eid){
         $this->db->setSQL("SELECT id FROM ar_session WHERE eid = '$eid'");
         $rec = $this->db->fetchRecord(PDO::FETCH_ASSOC);
-        return $rec['id'];
+        if(!empty($rec)){
+            return $rec['id'];
+        }else{
+            return false;
+        }
+
     }
 
     /**
@@ -99,6 +148,7 @@ class AccountReceivable
         $data['pid'] = $pid;
         $data['eid'] = $eid;
         $data['uid'] = $uid;
+        $data['open_time'] = Time::getLocalTime();
         $this->db->setSQL($this->db->sqlBind($data, 'ar_session', 'I'));
         return $this->db->execOnly();
     }
@@ -126,16 +176,18 @@ class AccountReceivable
         $this->db->setSQL($this->db->sqlBind($data, 'ar_session', 'U', array('id' => $sid)));
         return $this->db->execOnly();
     }
+
+    public function getPrimarySecondaryInsuranceByPid($pid){
+        // TODO: birthday rule
+    }
 }
 
 //
 //$params = new stdClass();
-//$params->filter = 2;
-//$params->pid = '7';
-//$params->eid = '1';
-//$params->start = 0;
-//$params->limit = 25;
+//$params->pid = 2;
+//$params->eid = 2;
+//$params->uid = 85;
 //
-$t = new AccountReceivable();
-print '<pre>';
-$t->getArSessionBalanceByEid(3);
+//$t = new AccountReceivable();
+//print '<pre>';
+//print_r($t->getArInvoice($params));

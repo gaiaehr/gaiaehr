@@ -296,7 +296,8 @@ $API = array(
 				'len' => 1
 			)
 		)
-	), /**
+	),
+    /**
 	 * Fees Functions
 	 */
 	'Fees' => array(
@@ -314,6 +315,16 @@ $API = array(
 				'len' => 1
 			),
 			'getPaymentsBySearch' => array(
+				'len' => 1
+			)
+		)
+	),
+    /**
+	 * Billing Functions
+	 */
+	'Billing' => array(
+		'methods' => array(
+			'getVisitInvoice' => array(
 				'len' => 1
 			)
 		)

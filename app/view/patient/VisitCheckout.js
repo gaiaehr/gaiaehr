@@ -14,7 +14,7 @@ Ext.define('App.view.patient.VisitCheckout', {
 	initComponent:function(){
 		var me = this;
 
-		me.serviceStore = Ext.create('App.store.patient.CptCodes');
+		me.VisitChargesStore = Ext.create('App.store.billing.VisitInvoice');
 
 		me.pageBody = Ext.create('Ext.panel.Panel', {
 			itemId:'visitpayment',
@@ -55,7 +55,7 @@ Ext.define('App.view.patient.VisitCheckout', {
 											border:false,
 											flex:1,
 											maxHeight:220,
-											store:me.serviceStore,
+											store:me.VisitChargesStore,
 											enableColumnMove:false,
 											enableColumnHide:false,
 											sortableColumns:false,
@@ -74,7 +74,7 @@ Ext.define('App.view.patient.VisitCheckout', {
 												},
 												{
 													header:i18n('item'),
-													dataIndex:'code_text',
+													dataIndex:'code_text_medium',
 													flex:1,
 													editor:{
 														xtype:'livecptsearch',
@@ -295,7 +295,7 @@ Ext.define('App.view.patient.VisitCheckout', {
 
 	onRemoveService:function(grid, rowIndex){
 		var me = this, totalField = me.query('[action="totalField"]')[0], totalVal = totalField.getValue(), rec = grid.getStore().getAt(rowIndex), newVal;
-		me.serviceStore.remove(rec);
+		me.VisitChargesStore.remove(rec);
 		newVal = totalVal - rec.data.charge;
 		totalField.setValue(newVal);
 	},
@@ -420,10 +420,18 @@ Ext.define('App.view.patient.VisitCheckout', {
 		}
 	},
 
-	setPanel:function(eid){
-		this.eid = eid || null;
-		this.docsGrid.loadDocs(eid);
-		this.getVisitOtherInfo();
+	setPanel:function(){
+		var me = this;
+		me.docsGrid.loadDocs(me.eid);
+		me.getVisitOtherInfo();
+
+		me.VisitChargesStore.load({
+			params:{
+				pid:me.pid,
+				eid:me.eid,
+				uid:me.uid
+			}
+		})
 	},
 
 	/**
@@ -434,8 +442,12 @@ Ext.define('App.view.patient.VisitCheckout', {
 	 */
 	onActive:function(callback){
 		var me = this;
-		if(me.checkIfCurrPatient()){
+		if(app.patient.pid && app.patient.eid){
+			me.pid = app.patient.pid;
+			me.eid = app.patient.eid;
+			me.uid = app.user.id;
 			me.updateTitle(app.patient.name + ' - #' + app.patient.pid + ' (' + i18n('visit_checkout') + ')');
+			me.setPanel();
 			callback(true);
 		}else{
 			callback(false);

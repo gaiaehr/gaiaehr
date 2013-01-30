@@ -234,6 +234,14 @@ CREATE TABLE IF NOT EXISTS `cvx_codes` (
   KEY `code` (`description`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=154 ;
 
+CREATE TABLE IF NOT EXISTS `cvx_cpt` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `cvx` varchar(25) DEFAULT NULL,
+  `cpt` varchar(25) DEFAULT NULL,
+  `active` varchar(10) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=103 ;
+
 CREATE TABLE IF NOT EXISTS `cvx_mvx` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `cdc_product_name` varchar(255) DEFAULT NULL,
@@ -430,8 +438,9 @@ CREATE TABLE IF NOT EXISTS `encounter_dictation` (
 CREATE TABLE IF NOT EXISTS `encounter_1500_options` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `pid` bigint(20) DEFAULT NULL,
-  `eid` bigint(20) DEFAULT NULL COMMENT 'encounter ID',
+  `eid` bigint(20) DEFAULT NULL,
   `uid` bigint(20) DEFAULT NULL,
+  `date` datetime DEFAULT NULL,
   `employment_related` text,
   `auto_accident` text,
   `state` text,
@@ -449,7 +458,7 @@ CREATE TABLE IF NOT EXISTS `encounter_1500_options` (
   `replacement_claim` text,
   `notes` text,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `encounter_history` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -1624,6 +1633,40 @@ CREATE TABLE IF NOT EXISTS `patient_immunizations` (
   `updated_uid` bigint(20) DEFAULT NULL COMMENT 'updated by User ID',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `patient_insurances` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `pid` bigint(20) NOT NULL,
+  `uid` bigint(20) NOT NULL,
+  `last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `provider` varchar(100) DEFAULT NULL,
+  `planName` varchar(100) DEFAULT NULL,
+  `effectiveDate` varchar(15) DEFAULT NULL,
+  `policyNumber` varchar(50) DEFAULT NULL,
+  `groupNumber` varchar(50) DEFAULT NULL,
+  `subscriberTitle` varchar(100) DEFAULT NULL,
+  `subscriberGivenName` varchar(100) DEFAULT NULL,
+  `subscriberMiddleName` varchar(100) DEFAULT NULL,
+  `subscriberSurname` varchar(100) DEFAULT NULL,
+  `subscriberStreet` varchar(255) DEFAULT NULL,
+  `subscriberRelationship` varchar(100) DEFAULT NULL,
+  `subscriberCity` varchar(50) DEFAULT NULL,
+  `subscriberState` varchar(50) DEFAULT NULL,
+  `subscriberCountry` varchar(50) DEFAULT NULL,
+  `subscriberPostalCode` varchar(10) DEFAULT NULL,
+  `subscriberPhone` varchar(15) DEFAULT NULL,
+  `subscriberEmployer` varchar(100) DEFAULT NULL,
+  `subscriberEmployerStreet` varchar(100) DEFAULT NULL,
+  `subscriberEmployerCity` varchar(100) DEFAULT NULL,
+  `subscriberEmployerState` varchar(100) DEFAULT NULL,
+  `subscriberEmployerCountry` varchar(100) DEFAULT NULL,
+  `subscriberEmployerPostalCode` varchar(25) DEFAULT NULL,
+  `subscriberDob` varchar(20) DEFAULT NULL,
+  `subscriberSS` varchar(20) DEFAULT NULL,
+  `copay` decimal(10,2) NOT NULL,
+  `type` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `patient_labs` (
   `id` int(11) NOT NULL AUTO_INCREMENT,

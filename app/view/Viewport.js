@@ -719,11 +719,7 @@ Ext.define('App.view.Viewport', {
     },
     checkOutPatient: function(eid){
         var me = this;
-        me.navigateTo('panelVisitCheckout', function(success){
-            if(success){
-                me.currCardCmp.setPanel(eid);
-            }
-        });
+        me.navigateTo('panelVisitCheckout');
     },
     chargePatient: function(){
         this.navigateTo('panelVisitPayment');
@@ -738,8 +734,12 @@ Ext.define('App.view.Viewport', {
         this.navigateTo('panelAreaFloorPlan');
     },
     navigateTo: function(id, callback){
-        var tree = this.navColumn.down('treepanel'), treeStore = tree.getStore(), sm = tree.getSelectionModel(), node = treeStore.getNodeById(id);
-        sm.select(node);
+        var tree = this.navColumn.down('treepanel'),
+	        treeStore = tree.getStore(),
+	        sm = tree.getSelectionModel(),
+	        node = treeStore.getNodeById(id);
+
+	    sm.select(node);
         if(typeof callback == 'function'){
             callback(true);
         }

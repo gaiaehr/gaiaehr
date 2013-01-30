@@ -52,7 +52,14 @@ class Billing
         $this->ar = new AccountReceivable();
     }
 
+    /**
+     * @param stdClass $params required params: $params->pid, $params->eid, $params->uid
+     * @return array
+     */
+    public function getVisitInvoice(stdClass $params){
 
+        return $this->ar->getArInvoice($params);
+    }
 
 
 }

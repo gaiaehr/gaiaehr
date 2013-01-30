@@ -115,6 +115,9 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
                 'App.model.administration.PreventiveCareLabs',
                 'App.model.administration.Services',
                 'App.model.miscellaneous.OfficeNotes',
+
+                'App.model.billing.VisitInvoice',
+
                 'App.model.fees.Billing',
                 'App.model.fees.Checkout',
                 'App.model.fees.EncountersPayments',
@@ -187,6 +190,9 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
                 'App.store.administration.Services',
                 'App.store.administration.ActiveProblems',
                 'App.store.miscellaneous.OfficeNotes',
+
+                'App.store.billing.VisitInvoice',
+
                 'App.store.fees.Billing',
                 'App.store.fees.Checkout',
                 'App.store.fees.EncountersPayments',

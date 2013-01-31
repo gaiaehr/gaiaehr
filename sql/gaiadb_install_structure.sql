@@ -1968,12 +1968,13 @@ CREATE TABLE IF NOT EXISTS `preventive_care_inactive_patient` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `prices` (
-  `pr_id` varchar(11) NOT NULL DEFAULT '',
-  `pr_selector` varchar(255) NOT NULL DEFAULT '' COMMENT 'template selector for drugs, empty for codes',
-  `pr_level` varchar(31) NOT NULL DEFAULT '',
-  `pr_price` decimal(12,2) NOT NULL DEFAULT '0.00' COMMENT 'price in local currency',
-  PRIMARY KEY (`pr_id`,`pr_selector`,`pr_level`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `code` varchar(25) DEFAULT NULL,
+  `codeType` int(10) DEFAULT NULL,
+  `insuranceCompanyId` bigint(20) DEFAULT NULL,
+  `price` decimal(19,2) NOT NULL DEFAULT '0.00' COMMENT 'price in local currency',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `procedure_order` (
   `procedure_order_id` bigint(20) NOT NULL AUTO_INCREMENT,

@@ -144,6 +144,17 @@ class ExternalDataUpdate
                             );
                             array_push($revisions, $temp_date);
                         }
+                    }elseif($this->codeType == 'HCPCS') {
+                        if(preg_match("/([0-9]{2})anweb.zip/", $file, $matches)) {
+                            $temp_date = array(
+                                'date'     => '20'.$matches[1].'-01-01',
+                                'version'  => '20'.$matches[1],
+                                'path'     => $file,
+                                'basename' => basename($file),
+                                'codeType' => $this->codeType
+                            );
+                            array_push($revisions, $temp_date);
+                        }
                     }
                 }
             }
@@ -209,6 +220,8 @@ class ExternalDataUpdate
                         $success = $this->rxnorm_import($dir);
                     } elseif ($params->codeType == 'SNOMED') {
                         $success = $this->snomed_import($dir);
+                    } elseif ($params->codeType == 'HCPCS') {
+                        $success = $this->hcpcs_import($dir);
                     }
                     $this->file->cleanUp();
                     if ($success !== false) {
@@ -242,6 +255,167 @@ class ExternalDataUpdate
                 'error' => $this->error
             );
         }
+    }
+
+    public function hcpcs_import($dir)
+    {
+        $dir = str_replace('\\', '/', $dir . '/');
+        $fields = array(
+            array(
+                'name' => 'HCPCS_CD',
+                'pos' => 1,
+                'len' => 5
+            ),
+            array(
+                'name' => 'HCPCS_LONG_DESC_TXT',
+                'pos' => 12,
+                'len' => 80,
+            ),
+            array(
+                'name' => 'HCPCS_SHRT_DESC_TXT',
+                'pos' => 92,
+                'len' => 28,
+            ),
+            array(
+                'name' => 'HCPCS_PRCNG_IND_CD',
+                'pos' => 120,
+                'len' => 2,
+            ),
+            array(
+                'name' => 'HCPCS_MLTPL_PRCNG_IND_CD',
+                'pos' => 128,
+                'len' => 1,
+            ),
+            array(
+                'name' => 'HCPCS_CIM_RFRNC_SECT_NUM',
+                'pos' => 129,
+                'len' => 6,
+            ),
+            array(
+                'name' => 'HCPCS_MCM_RFRNC_SECT_NUM',
+                'pos' => 147,
+                'len' => 8,
+            ),
+            array(
+                'name' => 'HCPCS_STATUTE_NUM',
+                'pos' => 171,
+                'len' => 10,
+            ),
+            array(
+                'name' => 'HCPCS_LAB_CRTFCTN_CD',
+                'pos' => 181,
+                'len' => 3,
+            ),
+            array(
+                'name' => 'HCPCS_XREF_CD',
+                'pos' => 205,
+                'len' => 5,
+            ),
+            array(
+                'name' => 'HCPCS_CVRG_CD',
+                'pos' => 230,
+                'len' => 1,
+            ),
+            array(
+                'name' => 'HCPCS_ASC_PMT_GRP_CD',
+                'pos' => 231,
+                'len' => 2,
+            ),
+            array(
+                'name' => 'HCPCS_ASC_PMT_GRP_EFCTV_DT',
+                'pos' => 233,
+                'len' => 8,
+            ),
+            array(
+                'name' => 'HCPCS_MOG_PMT_GRP_CD',
+                'pos' => 241,
+                'len' => 3,
+            ),
+            array(
+                'name' => 'HCPCS_MOG_PMT_PLCY_IND_CD',
+                'pos' => 244,
+                'len' => 1,
+            ),
+            array(
+                'name' => 'HCPCS_MOG_PMT_GRP_EFCTV_DT',
+                'pos' => 245,
+                'len' => 8,
+            ),
+            array(
+                'name' => 'HCPCS_PRCSG_NOTE_NUM',
+                'pos' => 253,
+                'len' => 4,
+            ),
+            array(
+                'name' => 'HCPCS_BETOS_CD',
+                'pos' => 257,
+                'len' => 3,
+            ),
+            array(
+                'name' => 'HCPCS_TYPE_SRVC_CD',
+                'pos' => 261,
+                'len' => 1,
+            ),
+            array(
+                'name' => 'HCPCS_ANSTHSA_BASE_UNIT_QTY',
+                'pos' => 266,
+                'len' => 3
+            ),
+            array(
+                'name' => 'HCPCS_CD_ADD_DT',
+                'pos' => 269,
+                'len' => 8
+            ),
+            array(
+                'name' => 'HCPCS_ACTN_EFCTV_DT',
+                'pos' => 277,
+                'len' => 8
+            ),
+            array(
+                'name' => 'HCPCS_TRMNTN_DT',
+                'pos' => 285,
+                'len' => 8
+            ),
+            array(
+                'name' => 'HCPCS_ACTN_CD',
+                'pos' => 293,
+                'len' => 1
+            )
+        );
+        if(is_dir($dir) && $handle = opendir($dir)) {
+            while (false !== ($filename = readdir($handle))) {
+                if(preg_match("/HCPC([0-9]{4})_A-N.txt/",$filename)){
+                    $file_handle = fopen($dir.$filename, "r");
+                    $buff = array();
+                    $count = 0;
+                    $this->db->setSQL('TRUNCATE TABLE `hcpcs_codes`');
+                    $this->db->execOnly();
+                    while (!feof($file_handle)) {
+                        $line = fgets($file_handle);
+                        $foo = array();
+                        foreach($fields As $field){
+                            $foo[$field['name']] = trim(substr($line,$field['pos'] - 1 ,$field['len']));
+                        }
+                        if($count == 0){
+                            $buff = $foo;
+                        }elseif($buff['HCPCS_CD'] != $foo['HCPCS_CD']){
+                            $this->db->setSQL($this->db->sqlBind($buff,'hcpcs_codes','I'));
+                            $this->db->execOnly();
+                            $buff = $foo;
+                        }else{
+                            $buff['HCPCS_LONG_DESC_TXT'] = $buff['HCPCS_LONG_DESC_TXT'] . ' ' . $foo['HCPCS_LONG_DESC_TXT'];
+                        }
+                        $count++;
+                    }
+                    fclose($file_handle);
+                }
+            }
+            return true;
+        }else{
+            $this->error = 'Unable to open '. $dir;
+            return false;
+        }
+
     }
 
     public function icd_import($dir, $type)
@@ -763,6 +937,7 @@ class ExternalDataUpdate
         $codes[] = array('data' => $this->getCurrentCodeInfoByCodeType('ICD10'));
         $codes[] = array('data' => $this->getCurrentCodeInfoByCodeType('RXNORM'));
         $codes[] = array('data' => $this->getCurrentCodeInfoByCodeType('SNOMED'));
+        $codes[] = array('data' => $this->getCurrentCodeInfoByCodeType('HCPCS'));
         return $codes;
     }
 
@@ -807,11 +982,11 @@ class ExternalDataUpdate
 }
 
 //
-//$f = new Codes();
+//$f = new ExternalDataUpdate();
 //print '<pre>';
 //$params = new stdClass();
-//$params->codeType = 'ICD9';
-//$params->version = 30;
-//$params->basename = 'cmsv30_master_descriptions.zip';
-//$params->path = '/var/www/gaiaehr/contrib/icd9/cmsv30_master_descriptions.zip';
-//print_r($f->updateCodes($params));
+//$params->codeType = 'HCPCS';
+//$params->version = 2013;
+//$params->basename = '13anweb.zip';
+//$params->path = 'C:\inetpub\wwwroot\gaiaehr\contrib\hcpcs\13anweb.zip';
+//$f->updateCodes($params);

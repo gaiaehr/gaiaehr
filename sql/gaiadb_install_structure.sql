@@ -915,22 +915,33 @@ CREATE TABLE IF NOT EXISTS `groups` (
 
 CREATE TABLE IF NOT EXISTS `hcpcs_codes` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `code_text` varchar(255) NOT NULL DEFAULT '',
-  `code_text_short` varchar(24) NOT NULL DEFAULT '',
-  `code` varchar(10) NOT NULL DEFAULT '',
-  `code_type` tinyint(2) DEFAULT NULL,
-  `modifier` varchar(5) NOT NULL DEFAULT '',
-  `units` tinyint(3) DEFAULT NULL,
-  `fee` decimal(12,2) DEFAULT NULL,
-  `superbill` varchar(31) NOT NULL DEFAULT '',
-  `related_code` varchar(255) NOT NULL DEFAULT '',
-  `taxrates` varchar(255) NOT NULL DEFAULT '',
-  `cyp_factor` float NOT NULL DEFAULT '0' COMMENT 'quantity representing a years supply',
+  `HCPCS_CD` varchar(5) DEFAULT NULL,
+  `HCPCS_LONG_DESC_TXT` varchar(255) DEFAULT NULL,
+  `HCPCS_SHRT_DESC_TXT` varchar(30) DEFAULT NULL,
+  `HCPCS_PRCNG_IND_CD` varchar(2) DEFAULT NULL,
+  `HCPCS_MLTPL_PRCNG_IND_CD` varchar(1) DEFAULT NULL,
+  `HCPCS_CIM_RFRNC_SECT_NUM` varchar(6) DEFAULT NULL,
+  `HCPCS_MCM_RFRNC_SECT_NUM` varchar(8) DEFAULT NULL,
+  `HCPCS_STATUTE_NUM` varchar(10) DEFAULT NULL,
+  `HCPCS_LAB_CRTFCTN_CD` int(10) DEFAULT NULL,
+  `HCPCS_XREF_CD` int(5) DEFAULT NULL,
+  `HCPCS_CVRG_CD` int(1) DEFAULT NULL,
+  `HCPCS_ASC_PMT_GRP_CD` varchar(2) DEFAULT NULL,
+  `HCPCS_ASC_PMT_GRP_EFCTV_DT` varchar(8) DEFAULT NULL,
+  `HCPCS_MOG_PMT_GRP_CD` varchar(3) DEFAULT NULL,
+  `HCPCS_MOG_PMT_PLCY_IND_CD` varchar(1) DEFAULT NULL,
+  `HCPCS_MOG_PMT_GRP_EFCTV_DT` varchar(8) DEFAULT NULL,
+  `HCPCS_PRCSG_NOTE_NUM` varchar(4) DEFAULT NULL,
+  `HCPCS_BETOS_CD` varchar(3) DEFAULT NULL,
+  `HCPCS_TYPE_SRVC_CD` varchar(1) DEFAULT NULL,
+  `HCPCS_ANSTHSA_BASE_UNIT_QTY` varchar(3) DEFAULT NULL,
+  `HCPCS_CD_ADD_DT` varchar(8) DEFAULT NULL,
+  `HCPCS_ACTN_EFCTV_DT` varchar(8) DEFAULT NULL,
+  `HCPCS_TRMNTN_DT` varchar(8) DEFAULT NULL,
+  `HCPCS_ACTN_CD` varchar(1) DEFAULT NULL,
   `active` tinyint(1) DEFAULT '1' COMMENT '0 = inactive, 1 = active',
-  `reportable` tinyint(1) DEFAULT '0' COMMENT '0 = non-reportable, 1 = reportable',
-  PRIMARY KEY (`id`),
-  KEY `code` (`code`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `icd9_dx_code` (
   `dx_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,

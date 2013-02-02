@@ -26,7 +26,7 @@ if(!isset($_SESSION)) {
 $_SESSION['site']['flops'] = 0;
 include_once ($_SESSION['root'] . '/classes/dbHelper.php');
 include_once ($_SESSION['root'] . '/classes/Time.php');
-include_once ($_SESSION['root'] . '/dataProvider/FileManager.php');
+include_once ($_SESSION['root'] . '/classes/FileManager.php');
 set_time_limit(0);
 ini_set('memory_limit', '512M');
 class Codes
@@ -34,7 +34,6 @@ class Codes
 	private $db;
 	private $codeType;
 	private $installedRevision;
-	private $zippedCodes;
 	private $error = false;
 
 	function __construct()
@@ -142,6 +141,18 @@ class Codes
 							$temp_date = array(
 								'date'     => $matches[1] . '-01-01',
 								'version'  => $matches[1],
+								'path'     => $file,
+								'basename' => basename($file),
+								'codeType' => $this->codeType
+							);
+							array_push($revisions, $temp_date);
+						}
+					}
+					elseif($this->codeType == 'HCPCS') {
+						if(preg_match("/([0-9]{2})anweb.zip/", $file, $matches)) {
+							$temp_date = array(
+								'date'     => '20'.$matches[1].'-01-01',
+								'version'  => '20'.$matches[1],
 								'path'     => $file,
 								'basename' => basename($file),
 								'codeType' => $this->codeType
@@ -764,6 +775,7 @@ class Codes
 		$codes[] = array('data' => $this->getCurrentCodeInfoByCodeType('ICD10'));
 		$codes[] = array('data' => $this->getCurrentCodeInfoByCodeType('RXNORM'));
 		$codes[] = array('data' => $this->getCurrentCodeInfoByCodeType('SNOMED'));
+		$codes[] = array('data' => $this->getCurrentCodeInfoByCodeType('HCPCS'));
 		return $codes;
 	}
 
@@ -812,8 +824,8 @@ class Codes
 //$f = new Codes();
 //print '<pre>';
 //$params = new stdClass();
-//$params->codeType = 'ICD9';
+//$params->codeType = 'HCPCS';
 //$params->version = 30;
 //$params->basename = 'cmsv30_master_descriptions.zip';
 //$params->path = '/var/www/gaiaehr/contrib/icd9/cmsv30_master_descriptions.zip';
-//print_r($f->updateCodes($params));
+//print_r($f->getCodeFiles($params));

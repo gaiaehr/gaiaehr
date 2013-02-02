@@ -18,6 +18,16 @@
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+ 
+error_reporting(E_ALL);
+session_name('GaiaEHR');
+session_start();
+session_cache_limiter('private');
+define('_GaiaEXEC', 1);
+
+include_once('../registry.php');
+include_once('../sites/default/conf.php');
+
 if(!isset($_SESSION)){
 	session_name('GaiaEHR');
 	session_start();
@@ -26,6 +36,8 @@ if(!isset($_SESSION)){
 include_once ($_SESSION['root'] . '/dataProvider/Person.php');
 include_once ($_SESSION['root'] . '/classes/AES.php');
 include_once ($_SESSION['root'] . '/classes/dbHelper.php');
+include_once ($_SESSION['root'] . '/classes/rb.php');
+
 class User
 {
 
@@ -33,6 +45,7 @@ class User
 	 * @var dbHelper
 	 */
 	private $db;
+
 	/**
 	 * @var
 	 */
@@ -40,7 +53,10 @@ class User
 
 	function __construct()
 	{
-		$this->db = new dbHelper();
+        R::setup('mysql:host=' . (string)$_SESSION['site']['db']['host'] .
+            ';dbname=' . (string)$_SESSION['site']['db']['database'],
+            (string)$_SESSION['site']['db']['username'],
+            (string)$_SESSION['site']['db']['password']);
 		return;
 	}
 
@@ -59,11 +75,8 @@ class User
 
 	public function getCurrentUserTitleLastName()
 	{
-		$id = $this->getCurrentUserId();
-		$this->db->setSQL("SELECT title, lname FROM users WHERE id = '$id'");
-		$foo = $this->db->fetchRecord();
-		$foo = $foo['title'] . ' ' . $foo['lname'];
-		return $foo;
+        $users = R::load('users', $this->getCurrentUserId());
+		return $users->title . ' ' . $users->lname;
 	}
 
 	/**
@@ -72,14 +85,14 @@ class User
 	 */
 	public function getUsers(stdClass $params)
 	{
-		$this->db->setSQL("SELECT u.*, r.role_id
+        $records = (array)R::getAll( 'SELECT u.*, r.role_id
                              FROM users AS u
                         LEFT JOIN acl_user_roles AS r ON r.user_id = u.id
-                            WHERE u.authorized = 1 OR u.username != ''
+                            WHERE u.authorized = 1 OR u.username != ""
                          ORDER BY u.username
-                            LIMIT $params->start,$params->limit");
-		$rows = array();
-		foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row){
+                            LIMIT :start,:records',
+            array(':start'=>$params->start, ':records'=>$params->limit) );
+		foreach($records as $row){
 			$row['fullname'] = Person::fullname($row['fname'], $row['mname'], $row['lname']);
 			unset($row['password'], $row['pwd_history1'], $row['pwd_history2']);
 			array_push($rows, $row);
@@ -89,33 +102,39 @@ class User
 
 	public function getUserNameById($id)
 	{
-		$this->db->setSQL("SELECT title, lname FROM users WHERE id = '$id'");
-		$user     = $this->db->fetchRecord();
-		$userName = $user['title'] . ' ' . $user['lname'];
-		return $userName;
+        // like LINQ
+        $user = R::$f->begin()
+        	->select('title, lname')->from('users')
+            ->where(' id = ? ')->put($id)->get('row');
+		return $user['title'] . ' ' . $user['lname'];
 	}
 
 	public function getUserFullNameById($id)
 	{
-		$this->db->setSQL("SELECT title, fname, mname, lname FROM users WHERE id = '$id'");
-		$user     = $this->db->fetchRecord();
-		$userName = Person::fullname($user['fname'], $user['mname'], $user['lname']);
-		return $userName;
+        // like LINQ
+        $user = R::$f->begin()
+            ->select('title, fname, mname, lname')->from('users')
+            ->where(' id = ? ')->put($id)->get('row');
+		return Person::fullname($user['fname'], $user['mname'], $user['lname']);
 	}
 
 	public function getCurrentUserData()
 	{
+		// like LINQ
 		$id = $this->getCurrentUserId();
-		$this->db->setSQL("SELECT * FROM users WHERE id = '$id'");
-		$user = $this->db->fetchRecord();
+        $user = R::$f->begin()
+            ->select('*')->from('users')
+            ->where(' id = ? ')->put($id)->get('row');
 		return $user;
 	}
 
 	public function getCurrentUserBasicData()
 	{
+		// like LINQ
 		$id = $this->getCurrentUserId();
-		$this->db->setSQL("SELECT id, title, fname, mname, lname FROM users WHERE id = '$id'");
-		$user = $this->db->fetchRecord();
+        $user = R::$f->begin()
+            ->select('id, title, fname, mname, lname')->from('users')
+            ->where(' id = ? ')->put($id)->get('row');
 		return $user;
 	}
 
@@ -278,5 +297,5 @@ class User
 
 }
 
-//$u = new User();
-//print_r($u->getUserByUsername('demo'));
+$u = new User();
+print_r( $u->getUserNameById(2) );

@@ -43,9 +43,10 @@ class DiagnosisCodes
             $query = $query->query;
         }
         /**
-         * get last code revision
+         * get last icd9 code revision
          */
-        $revision = $this->getLastRevisionByCodeType('ICD10');
+        $revision = $this->getLastRevisionByCodeType('ICD9');
+
         $records = array();
         /**
          * ICD9
@@ -89,6 +90,10 @@ class DiagnosisCodes
                         	   OR formatted_sg_code	LIKE '$query%')
                          ORDER BY formatted_sg_code ASC");
         $records = array_merge($records, $this->db->fetchRecords(PDO::FETCH_ASSOC));
+        /**
+         *  get last icd10 code revision
+         */
+        $revision = $this->getLastRevisionByCodeType('ICD10');
         /**
          * ICD10 DX
          */
@@ -309,8 +314,8 @@ class DiagnosisCodes
 //$f = new DiagnosisCodes();
 //print '<pre>';
 //$params = new stdClass();
-//$params->codeType = 'ICD9';
-//$params->query = '0';
+////$params->codeType = 'ICD9';
+//$params->query = '205';
 //$params->start = 0;
 //$params->limit = 25;
 //print_r($f->ICDCodeSearch($params));

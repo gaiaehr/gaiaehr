@@ -1649,7 +1649,7 @@ CREATE TABLE IF NOT EXISTS `patient_insurances` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `pid` bigint(20) NOT NULL,
   `uid` bigint(20) NOT NULL,
-  `last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `lastUpdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `provider` varchar(100) DEFAULT NULL,
   `planName` varchar(100) DEFAULT NULL,
   `effectiveDate` varchar(15) DEFAULT NULL,
@@ -1675,7 +1675,7 @@ CREATE TABLE IF NOT EXISTS `patient_insurances` (
   `subscriberDob` varchar(20) DEFAULT NULL,
   `subscriberSS` varchar(20) DEFAULT NULL,
   `copay` decimal(10,2) NOT NULL,
-  `type` tinyint(1) NOT NULL DEFAULT '0',
+  `type` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0 = inactive, 1 = primary/secondary, 2 = supplemental/tertiary',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 

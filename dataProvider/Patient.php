@@ -679,9 +679,47 @@ class Patient
 		return $params;
 	}
 
+
+    //**************************************************************************************************
+    // Insurance
+    //**************************************************************************************************
+    public function getPatientPrimaryInsuranceByPid($pid)
+    {
+        $this->db->setSQL("SELECT * FROM patient_insurances WHERE pid = '$pid' AND type = '1' ORDER BY subscriberDob ASC");
+        $rec = $this->db->fetchRecord(PDO::FETCH_ASSOC);
+        if(!empty($rec)){
+            return $rec;
+        }else{
+            return false;
+        }
+    }
+
+    public function getPatientSecondaryInsuranceByPid($pid)
+    {
+        $this->db->setSQL("SELECT * FROM patient_insurances WHERE pid = '$pid' AND type = '1' ORDER BY subscriberDob DESC");
+        $rec = $this->db->fetchRecord(PDO::FETCH_ASSOC);
+        if(!empty($rec)){
+            return $rec;
+        }else{
+            return false;
+        }
+    }
+
+    public function getPatientTertiaryInsuranceByPid($pid)
+    {
+        $this->db->setSQL("SELECT * FROM patient_insurances WHERE pid = '$pid' AND type = '2' ORDER BY subscriberDob DESC");
+        $rec = $this->db->fetchRecord(PDO::FETCH_ASSOC);
+        if(!empty($rec)){
+            return $rec;
+        }else{
+            return false;
+        }
+    }
+
+
 }
 
 //$p = new Patient();
-//echo '<pre>';
-//print_r($p->getPatientAppointmentsByPid(1));
+//print '<pre>';
+//print_r($p->getPatientTertiaryInsuranceByPid(1));
 //print $p->getPatientAppointmentsByPid(1);

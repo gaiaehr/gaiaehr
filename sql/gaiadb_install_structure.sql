@@ -1,6 +1,40 @@
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
 
+CREATE TABLE IF NOT EXISTS `acc_gl_accounts` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `acc_name` varchar(150) NOT NULL,
+  `acc_number` varchar(50) NOT NULL,
+  `acc_type` varchar(25) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `acc_gl_journal_entries` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `sid` bigint(20) NOT NULL,
+  `uid` bigint(20) DEFAULT NULL,
+  `date` datetime DEFAULT NULL,
+  `code` varchar(10) DEFAULT NULL,
+  `payer_id` bigint(20) DEFAULT NULL,
+  `payer_type` bigint(20) DEFAULT NULL COMMENT 'patient = 0, ins 1 = 1, ins 2 =2, ins 3 = 3',
+  `pay_method` varchar(20) DEFAULT NULL COMMENT 'cash, check, eletronic, eob',
+  `pay_amount` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `adjustment_amount` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `note` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='accounts receivable sessions activity' AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `acc_gl_sessions` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `pid` bigint(20) DEFAULT NULL,
+  `eid` bigint(20) DEFAULT NULL,
+  `uid` bigint(20) DEFAULT NULL,
+  `open_time` datetime DEFAULT NULL,
+  `close_time` datetime DEFAULT NULL,
+  `last_update` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COMMENT='accounts receivable sessions' AUTO_INCREMENT=2 ;
+
 CREATE TABLE IF NOT EXISTS `acl_permissions` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `perm_key` varchar(100) CHARACTER SET latin1 NOT NULL,
@@ -74,32 +108,6 @@ CREATE TABLE IF NOT EXISTS `applications` (
   `active` int(11) DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
-
-CREATE TABLE IF NOT EXISTS `ar_session` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `pid` bigint(20) DEFAULT NULL,
-  `eid` bigint(20) DEFAULT NULL,
-  `uid` bigint(20) DEFAULT NULL,
-  `open_time` datetime DEFAULT NULL,
-  `close_time` datetime DEFAULT NULL,
-  `last_update` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='accounts receivable sessions' AUTO_INCREMENT=1 ;
-
-CREATE TABLE IF NOT EXISTS `ar_session_activity` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `sid` bigint(20) NOT NULL,
-  `uid` bigint(20) DEFAULT NULL,
-  `date` datetime DEFAULT NULL,
-  `code` varchar(10) DEFAULT NULL,
-  `payer_id` bigint(20) DEFAULT NULL,
-  `payer_type` bigint(20) DEFAULT NULL COMMENT 'patient = 0, ins 1 = 1, ins 2 =2, ins 3 = 3',
-  `pay_method` varchar(20) DEFAULT NULL COMMENT 'cash, check, eletronic, eob',
-  `pay_amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `adjustment_amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `note` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='accounts receivable sessions activity' AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `billing` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -190,7 +198,7 @@ CREATE TABLE IF NOT EXISTS `combo_lists` (
   `title` varchar(255) NOT NULL DEFAULT '',
   `active` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1 = active and 0 = deactive',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=96 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=97 ;
 
 CREATE TABLE IF NOT EXISTS `combo_lists_options` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -201,7 +209,7 @@ CREATE TABLE IF NOT EXISTS `combo_lists_options` (
   `notes` varchar(255) DEFAULT NULL,
   `active` tinyint(1) DEFAULT '1' COMMENT '1 = active and  0 = deactive',
   PRIMARY KEY (`id`,`list_id`,`option_value`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=721 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=728 ;
 
 CREATE TABLE IF NOT EXISTS `cpt_codes` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -395,46 +403,6 @@ CREATE TABLE IF NOT EXISTS `encounters` (
   PRIMARY KEY (`eid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
-CREATE TABLE IF NOT EXISTS `encounter_services` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `pid` bigint(20) DEFAULT NULL,
-  `eid` bigint(20) DEFAULT NULL COMMENT 'encounter ID',
-  `uid` bigint(20) DEFAULT NULL,
-  `code` varchar(255) DEFAULT NULL COMMENT 'code number',
-  `charge` varchar(255) DEFAULT NULL,
-  `days_of_units` text,
-  `emergency` tinyint(1) NOT NULL DEFAULT '0',
-  `essdt_plan` text,
-  `modifiers` text,
-  `place_of_service` text,
-  `last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `status` int(1) NOT NULL DEFAULT '0' COMMENT 'billing status of this cpt',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
-
-CREATE TABLE IF NOT EXISTS `encounter_dx` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `pid` bigint(20) DEFAULT NULL,
-  `eid` bigint(20) DEFAULT NULL COMMENT 'encounter ID',
-  `uid` bigint(20) DEFAULT NULL,
-  `code` varchar(25) DEFAULT NULL COMMENT 'code number',
-  `code_type` varchar(10) DEFAULT NULL COMMENT 'CPT4 = 1, ICD9= 2, HCPCS = 3 ',
-  `last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `active` tinyint(1) NOT NULL DEFAULT '1',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
-
-CREATE TABLE IF NOT EXISTS `encounter_dictation` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `pid` bigint(20) NOT NULL,
-  `eid` bigint(20) DEFAULT NULL COMMENT 'encounter ID',
-  `uid` bigint(20) NOT NULL,
-  `date` datetime NOT NULL,
-  `dictation` longtext,
-  `additional_notes` longtext,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
 CREATE TABLE IF NOT EXISTS `encounter_1500_options` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `pid` bigint(20) DEFAULT NULL,
@@ -458,7 +426,30 @@ CREATE TABLE IF NOT EXISTS `encounter_1500_options` (
   `replacement_claim` text,
   `notes` text,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `encounter_dictation` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `pid` bigint(20) NOT NULL,
+  `eid` bigint(20) DEFAULT NULL COMMENT 'encounter ID',
+  `uid` bigint(20) NOT NULL,
+  `date` datetime NOT NULL,
+  `dictation` longtext,
+  `additional_notes` longtext,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `encounter_dx` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `pid` bigint(20) DEFAULT NULL,
+  `eid` bigint(20) DEFAULT NULL COMMENT 'encounter ID',
+  `uid` bigint(20) DEFAULT NULL,
+  `code` varchar(25) DEFAULT NULL COMMENT 'code number',
+  `code_type` varchar(10) DEFAULT NULL COMMENT 'CPT4 = 1, ICD9= 2, HCPCS = 3 ',
+  `last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `active` tinyint(1) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `encounter_history` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -731,6 +722,24 @@ CREATE TABLE IF NOT EXISTS `encounter_review_of_systems_check` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
+CREATE TABLE IF NOT EXISTS `encounter_services` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `pid` bigint(20) DEFAULT NULL,
+  `eid` bigint(20) DEFAULT NULL COMMENT 'encounter ID',
+  `uid` bigint(20) DEFAULT NULL,
+  `code` varchar(255) DEFAULT NULL COMMENT 'code number',
+  `dx_pointers` varchar(255) DEFAULT NULL,
+  `charge` varchar(255) DEFAULT NULL,
+  `days_of_units` text,
+  `emergency` tinyint(1) NOT NULL DEFAULT '0',
+  `essdt_plan` text,
+  `modifiers` text,
+  `place_of_service` text,
+  `last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `status` int(1) NOT NULL DEFAULT '0' COMMENT 'billing status of this cpt',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
 CREATE TABLE IF NOT EXISTS `encounter_soap` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `pid` bigint(20) DEFAULT '0',
@@ -838,21 +847,21 @@ CREATE TABLE IF NOT EXISTS `forms_fields` (
   `parentId` bigint(11) DEFAULT NULL,
   `pos` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_bin AUTO_INCREMENT=1146 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_bin AUTO_INCREMENT=1181 ;
 
 CREATE TABLE IF NOT EXISTS `forms_field_options` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `field_id` text COMMENT 'Field ID',
   `options` text COMMENT 'Field options data stored as JSON string',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1521 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1556 ;
 
 CREATE TABLE IF NOT EXISTS `forms_layout` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL COMMENT 'form title',
   `form_data` varchar(255) NOT NULL COMMENT 'database table saving all the data for this form',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=11 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=12 ;
 
 CREATE TABLE IF NOT EXISTS `form_misc_billing_options` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -941,7 +950,7 @@ CREATE TABLE IF NOT EXISTS `hcpcs_codes` (
   `HCPCS_ACTN_CD` varchar(1) DEFAULT NULL,
   `active` tinyint(1) DEFAULT '1' COMMENT '0 = inactive, 1 = active',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `icd9_dx_code` (
   `dx_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -1334,7 +1343,7 @@ CREATE TABLE IF NOT EXISTS `modules` (
   `localkey` longblob,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=201 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=203 ;
 
 CREATE TABLE IF NOT EXISTS `modules_data` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -1649,7 +1658,7 @@ CREATE TABLE IF NOT EXISTS `patient_insurances` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `pid` bigint(20) NOT NULL,
   `uid` bigint(20) NOT NULL,
-  `last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `lastUpdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `provider` varchar(100) DEFAULT NULL,
   `planName` varchar(100) DEFAULT NULL,
   `effectiveDate` varchar(15) DEFAULT NULL,
@@ -1672,12 +1681,12 @@ CREATE TABLE IF NOT EXISTS `patient_insurances` (
   `subscriberEmployerState` varchar(100) DEFAULT NULL,
   `subscriberEmployerCountry` varchar(100) DEFAULT NULL,
   `subscriberEmployerPostalCode` varchar(25) DEFAULT NULL,
-  `subscriberDob` varchar(20) DEFAULT NULL,
+  `subscriberDob` date DEFAULT NULL,
   `subscriberSS` varchar(20) DEFAULT NULL,
   `copay` decimal(10,2) NOT NULL,
-  `type` tinyint(1) NOT NULL DEFAULT '0',
+  `type` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0 = inactive, 1 = primary/secondary, 2 = supplemental/tertiary',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
 
 CREATE TABLE IF NOT EXISTS `patient_labs` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -2245,7 +2254,7 @@ CREATE TABLE IF NOT EXISTS `soap_snippets` (
   `category` varchar(50) COLLATE utf8_bin DEFAULT NULL,
   `leaf` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `standardized_tables_track` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -2320,7 +2329,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `default_warehouse` varchar(31) DEFAULT NULL,
   `irnpool` varchar(31) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=93 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=94 ;
 
 CREATE TABLE IF NOT EXISTS `users_facility` (
   `tablename` varchar(64) NOT NULL,

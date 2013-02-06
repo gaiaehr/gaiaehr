@@ -58,7 +58,7 @@ class Billing
      */
     public function getVisitInvoice(stdClass $params){
 
-        return $this->ar->getArInvoice($params);
+        return $this->ar->getArVisitCheckoutCharges($params);
     }
 
 

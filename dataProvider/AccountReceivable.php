@@ -27,6 +27,7 @@ include_once ($_SESSION['root'] . '/classes/Time.php');
 include_once ($_SESSION['root'] . '/classes/dbHelper.php');
 include_once ($_SESSION['root'] . '/classes/rb.php');
 include_once ($_SESSION['root'] . '/dataProvider/Services.php');
+include_once ($_SESSION['root'] . '/dataProvider/Patient.php');
 
 /**
  * @brief       Billing Class.
@@ -52,6 +53,7 @@ class AccountReceivable
      */
     private $sid = null;
 
+    private $patient;
 
     /**
      * __construct
@@ -69,6 +71,7 @@ class AccountReceivable
 		$this->db->executeORM();
 		
         $this->services = new Services();
+        $this->patient = new Patient();
     }
 
     public function getArSessionBalanceByEid($eid)
@@ -97,15 +100,19 @@ class AccountReceivable
      * @param stdClass $params required params: $params->pid, $params->eid, $params->uid
      * @return array
      */
+<<<<<<< HEAD
     public function getArInvoice(stdClass $params)
     {
+=======
+    public function getArVisitCheckoutCharges(stdClass $params){
+>>>>>>> aab33f35a64a4c1d1fa8fbccda9715cb0543f4bf
         $this->setSid($params);
-
         $invoice = array();
 
-        $services = $this->services->getCptByEid($params->eid);
+        $insurance = $this->patient->getPatientPrimaryInsuranceByPid($params->pid);
         $activities = $this->getArActivitiesBySid($this->sid);
 
+<<<<<<< HEAD
         foreach($services['rows'] AS $service){
             $row['id'] = $service['id'];
             $row['code'] = $service['code'];
@@ -117,6 +124,26 @@ class AccountReceivable
             $invoice[] = $row;
         }
 
+=======
+        // if insurance, add copay
+        if($insurance !== false){
+            $invoice[] = array(
+                'code' => 'COPAY',
+                'code_text_medium' => 'COPAY',
+                'charge' => $insurance['copay'],
+            );
+        // else,
+        }else{
+            $services = $this->services->getCptByEid($params->eid);
+            foreach($services['rows'] AS $service){
+                $row['id'] = $service['id'];
+                $row['code'] = $service['code'];
+                $row['code_text_medium'] = $service['code_text_medium'];
+                $row['charge'] = ($service['status'] == 0 ? '00.00' : $service['charge']);
+                $invoice[] = $row;
+            }
+        }
+>>>>>>> aab33f35a64a4c1d1fa8fbccda9715cb0543f4bf
         return $invoice;
     }
 

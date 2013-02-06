@@ -40,113 +40,185 @@ Ext.define('App.view.patient.VisitCheckout', {
 							title:i18n('services_charges'),
 							border:true,
 							frame:true,
-							//bodyPadding:5,
 							bodyBorder:true,
 							bodyStyle:'background-color:#fff',
 							margin:'5 5 0 5',
 							flex:2,
+                            layout:{
+                                type:'vbox',
+                                align:'stretch'
+                            },
 							items:[
-								me.invoiceContainer = Ext.widget('container', {
-									itemId:'serviceContainer',
-									layout:'anchor',
-									items:[
-										me.invoiceGrid = Ext.widget('grid', {
-											frame:false,
-											border:false,
-											flex:1,
-											maxHeight:220,
-											store:me.VisitChargesStore,
-											enableColumnMove:false,
-											enableColumnHide:false,
-											sortableColumns:false,
-											columns:[
-												{
-													xtype:'actioncolumn',
-													width:20,
-													items:[
-														{
-															icon:'resources/images/icons/delete.png',
-															tooltip:i18n('remove'),
-															scope:me,
-															handler:me.onRemoveService
-														}
-													]
-												},
-												{
-													header:i18n('item'),
-													dataIndex:'code_text_medium',
-													flex:1,
-													editor:{
-														xtype:'livecptsearch',
-														allowBlank:false
-													}
-												},
-												{
-													header:i18n('ins?'),
-													dataIndex:'ins',
-													width:35,
-													editor:{
-														xtype:'checkbox'
-													},
-													renderer:me.boolRenderer
-												},
-												{
-													header:i18n('charge'),
-													width:95,
-													dataIndex:'charge',
-													editor:{
-														xtype:'textfield',
-														allowBlank:false
-													},
-													renderer:me.currencyRenderer
-												}
-											],
-											plugins:[
-												Ext.create('Ext.grid.plugin.CellEditing', {
-													clicksToEdit:2
-												})
-											]
-										})
-									]
-								}),
-								{
-									xtype:'container',
-									style:'float:right',
-									width:208,
-									defaults:{
-										labelWidth:108,
-										labelAlign:'right',
-										action:'receipt',
-										width:208,
-										margin:'1 0'
-									},
-									items:[
-										{
-											fieldLabel:i18n('total'),
-											xtype:'mitos.currency',
-											action:'totalField'
-										},
-										{
-											fieldLabel:i18n('amount_due'),
-											xtype:'mitos.currency'
-										},
-										{
-											fieldLabel:i18n('payment_amount'),
-											xtype:'mitos.currency'
-										},
-										{
-											fieldLabel:i18n('balance'),
-											xtype:'mitos.currency'
-										}
-									]
-								}
+                                {
+                                    xtype:'container',
+                                    flex:1,
+                                    autoScroll:true,
+                                    items:[
+                                        me.invoiceGrid = Ext.widget('grid', {
+                                            frame:false,
+                                            border:false,
+                                            store:me.VisitChargesStore,
+                                            enableColumnMove:false,
+                                            enableColumnHide:false,
+                                            sortableColumns:false,
+                                            columns:[
+                                                {
+                                                    xtype:'actioncolumn',
+                                                    width:20,
+                                                    items:[
+                                                        {
+                                                            icon:'resources/images/icons/delete.png',
+                                                            tooltip:i18n('remove'),
+                                                            scope:me,
+                                                            handler:me.onRemoveService
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    header:i18n('item'),
+                                                    dataIndex:'code_text_medium',
+                                                    flex:1,
+                                                    editor:{
+                                                        xtype:'livecptsearch',
+                                                        allowBlank:false
+                                                    }
+                                                },
+                                                {
+                                                    header:i18n('charge'),
+                                                    width:80,
+                                                    dataIndex:'charge',
+                                                    align:'right',
+                                                    editor:{
+                                                        xtype:'textfield',
+                                                        allowBlank:false
+                                                    },
+                                                    renderer:me.currencyRenderer
+                                                }
+                                            ],
+                                            plugins:[
+                                                Ext.create('Ext.grid.plugin.CellEditing', {
+                                                    clicksToEdit:2
+                                                })
+                                            ]
+                                        }),
+                                        {
+                                            xtype:'container',
+                                            border:false,
+                                            padding:1,
+                                            height:200,
+                                            items:[
+                                                {
+                                                    xtype:'container',
+                                                    style:'float:right',
+                                                    layout:'anchor',
+                                                    width:150,
+                                                    items:[
+                                                        me.subtotal = Ext.widget('mitos.currency',{
+                                                            fieldLabel:i18n('subtotal'),
+                                                            labelWidth:70,
+                                                            anchor:'100%',
+                                                            labelAlign:'right',
+                                                            margin:'1 0'
+                                                        }),
+                                                        me.tax = Ext.widget('mitos.percent',{
+                                                            fieldLabel:i18n('tax'),
+                                                            labelWidth:70,
+                                                            anchor:'100%',
+                                                            labelAlign:'right',
+                                                            margin:'1 0'
+                                                        }),
+                                                        // -----------------------------------
+                                                        me.total = Ext.widget('mitos.currency',{
+                                                            fieldLabel:i18n('total'),
+                                                            labelWidth:70,
+                                                            anchor:'100%',
+                                                            labelAlign:'right',
+                                                            cls:'charges_total',
+                                                            margin:'2 0 1 0'
+                                                        }),
+                                                        me.balance = Ext.widget('mitos.currency',{
+                                                            fieldLabel:i18n('balance'),
+                                                            labelWidth:70,
+                                                            anchor:'100%',
+                                                            labelAlign:'right',
+                                                            cls:'charges_balance',
+                                                            margin:'2 0 1 0'
+                                                        })
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    xtype:'form',
+                                    height:135,
+                                    border: false,
+                                    items:[
+                                        {
+                                            xtype:'fieldset',
+                                            layout:'column',
+                                            margin:'5 10',
+                                            title:i18n('payment'),
+                                            items:[
+                                                {
+                                                    xtype:'textarea',
+                                                    anchor:'100%',
+                                                    name:'notes',
+                                                    columnWidth:.5,
+                                                    height:85,
+                                                    emptyText:i18n('additional_billing_notes')
+
+                                                },
+                                                {
+                                                    xtype:'container',
+                                                    layout:'anchor',
+                                                    columnWidth:.5,
+                                                    margin:'0 0 0 15',
+                                                    items:[
+                                                        {
+                                                            fieldLabel: i18n('payment_method'),
+                                                            xtype: 'mitos.paymentmethodcombo',
+                                                            labelWidth: 100,
+                                                            name: 'method',
+                                                            anchor:'100%'
+                                                        },
+                                                        {
+                                                            fieldLabel: i18n('reference_#'),
+                                                            xtype: 'textfield',
+                                                            labelWidth: 100,
+                                                            name: 'reference',
+                                                            anchor:'100%'
+                                                        },
+                                                        me.amount = Ext.widget('mitos.currency',{
+                                                            fieldLabel: i18n('amount'),
+                                                            xtype: 'mitos.currency',
+                                                            labelWidth: 100,
+                                                            name: 'amount',
+                                                            anchor:'100%'
+                                                        })
+                                                    ]
+                                                }
+
+                                            ]
+                                        }
+
+                                    ]
+                                }
 							],
 							buttons:[
 								'->',
 								{
+									text:i18n('save_and_print'),
+									scope:me,
+                                    action:'saveprint',
+									handler:me.onInvoiceSave
+								},
+								{
 									text:i18n('save'),
 									scope:me,
-									handler:me.onCheckoutSave
+                                    action:'save',
+									handler:me.onInvoiceSave
 								}
 							],
 							listeners:{
@@ -270,14 +342,14 @@ Ext.define('App.view.patient.VisitCheckout', {
 				margin:'0 5 0 0',
 				scope:me,
 				handler:me.onAddCoPay
-			},
-			{
-				xtype:'button',
-				text:i18n('payment'),
-				iconCls:'icoAdd',
-				scope:me,
-				handler:me.onAddPaymentClick
 			}
+//			{
+//				xtype:'button',
+//				text:i18n('payment'),
+//				iconCls:'icoAdd',
+//				scope:me,
+//				handler:me.onAddPaymentClick
+//			}
 		)
 	},
 
@@ -299,6 +371,10 @@ Ext.define('App.view.patient.VisitCheckout', {
 		newVal = totalVal - rec.data.charge;
 		totalField.setValue(newVal);
 	},
+
+    onInvoiceSave:function(btn){
+
+    },
 
 	cancelPrint:function(btn){
 		var win = btn.up('window');
@@ -420,8 +496,12 @@ Ext.define('App.view.patient.VisitCheckout', {
 		}
 	},
 
+    calculatePercent:function(percent, value){
+        return 100 * ( percent / value );
+    },
+
 	setPanel:function(){
-		var me = this;
+		var me = this, subtotal = 0.00, total, tax = 6.00, balance = 0.00;
 		me.docsGrid.loadDocs(me.eid);
 		me.getVisitOtherInfo();
 
@@ -430,9 +510,36 @@ Ext.define('App.view.patient.VisitCheckout', {
 				pid:me.pid,
 				eid:me.eid,
 				uid:me.uid
-			}
+			},
+            callback:function(records, operation, success){
+
+                for(var i=0; i < records.length; i++){
+                    subtotal = eval(subtotal) + eval(records[i].data.charge);
+                }
+
+                me.subtotal.setValue(subtotal);
+                me.tax.setValue(tax);
+                me.amount.setValue(subtotal + (subtotal * tax / 100));
+                me.updateTotalBalance();
+
+            }
 		})
 	},
+
+    updateTotalBalance:function(){
+
+        say(this.tax.getValue());
+
+        var me = this,
+            total    = me.total.getValue(),
+            subtotal = me.subtotal.getValue(),
+            tax      = me.tax.getValue(),
+            amount   = me.amount.getValue(),
+            newTotal = subtotal + (subtotal * tax / 100);
+
+        me.total.setValue(newTotal);
+        me.balance.setValue(newTotal - amount);
+    },
 
 	/**
 	 * This function is called from Viewport.js when

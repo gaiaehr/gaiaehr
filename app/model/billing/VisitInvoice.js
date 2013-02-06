@@ -11,8 +11,9 @@ Ext.define('App.model.billing.VisitInvoice', {
         {name: 'id', type:'int'},
         {name: 'code', type: 'string'},
         {name: 'code_text_medium', type: 'string'},
-        {name: 'ins', type: 'bool'},
-	    {name: 'charge', type: 'string'},
+	    {name: 'charge', type: 'float', convert:function(v){
+            return parseFloat(v).toFixed(2);
+        }},
 	    {name: 'payer_type', type: 'int', defaultValue:0}
     ],
     proxy : {

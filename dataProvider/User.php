@@ -266,6 +266,7 @@ class User
 		$aes  = new AES($_SESSION['site']['AESkey']);
 		$pass = $aes->encrypt($pass);
 		$uid  = $_SESSION['user']['id'];
+		
 		$this->db->setSQL("SELECT username FROM users WHERE id = '$uid' AND password = '$pass' AND authorized = '1' LIMIT 1");
 		$count = $this->db->rowCount();
 		return ($count != 0) ? 1 : 2;

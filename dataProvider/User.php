@@ -18,15 +18,6 @@
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
-error_reporting(E_ALL);
-session_name('GaiaEHR');
-session_start();
-session_cache_limiter('private');
-define('_GaiaEXEC', 1);
-
-include_once('../registry.php');
-include_once('../sites/default/conf.php');
 
 if(!isset($_SESSION)){
 	session_name('GaiaEHR');
@@ -57,6 +48,7 @@ class User
             ';dbname=' . (string)$_SESSION['site']['db']['database'],
             (string)$_SESSION['site']['db']['username'],
             (string)$_SESSION['site']['db']['password']);
+		$this->db = new dbHelper();
 		return;
 	}
 
@@ -298,5 +290,5 @@ class User
 
 }
 
-$u = new User();
-print_r( $u->getUserNameById(2) );
+//$u = new User();
+//print_r( $u->getUserNameById(2) );

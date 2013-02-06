@@ -20,6 +20,10 @@
 
 Ext.define('App.ux.AbstractPanel', {
 
+    calculatePercent:function(percent, value){
+        return 100 * ( percent / value );
+    },
+
 	setReadOnly:function(readOnly){
 		var forms = this.query('form');
 

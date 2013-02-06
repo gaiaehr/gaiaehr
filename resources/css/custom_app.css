@@ -8,6 +8,15 @@
 	src: url('../fonts/OpenSans-CondLight.ttf');
 }
 
+.charges_total,
+.charges_balance {
+    border-top:solid 2px #999999;
+}
+.charges_total td,
+.charges_balance td {
+    line-height: 22px;
+}
+
 .zoneSummaryContainer {
 	padding: 5px;
 	background-color: white;;

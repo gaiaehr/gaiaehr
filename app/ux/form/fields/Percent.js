@@ -17,20 +17,20 @@
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-Ext.define('App.ux.form.fields.Currency',{
+Ext.define('App.ux.form.fields.Percent',{
     extend: 'Ext.form.field.Number', //Extending the NumberField
-    alias: 'widget.mitos.currency', //Defining the xtype,
-    currencySymbol: globals['gbl_currency_symbol'],
-    useThousandSeparator: true,
+    alias: 'widget.mitos.percent', //Defining the xtype,
+    currencySymbol: '%',
+    useThousandSeparator: false,
     thousandSeparator: ',',
     alwaysDisplayDecimals: true,
     fieldStyle: 'text-align: right;',
     hideTrigger: true,
 
     initComponent: function () {
-        if(this.useThousandSeparator && this.decimalSeparator == ',' && this.thousandSeparator == ','){
+        if (this.useThousandSeparator && this.decimalSeparator == ',' && this.thousandSeparator == ','){
             this.thousandSeparator = '.';
-        }else if (this.allowDecimals && this.thousandSeparator == '.' && this.decimalSeparator == '.'){
+        }else if(this.allowDecimals && this.thousandSeparator == '.' && this.decimalSeparator == '.'){
             this.decimalSeparator = ',';
         }
         this.callParent(arguments);
@@ -43,7 +43,7 @@ Ext.define('App.ux.form.fields.Currency',{
     },
 
     getFormattedValue: function (value) {
-        if(Ext.isEmpty(value) || !this.hasFormat()){
+        if (Ext.isEmpty(value) || !this.hasFormat()){
             return value;
         }else{
             var neg = null;
@@ -51,7 +51,7 @@ Ext.define('App.ux.form.fields.Currency',{
             value = ( neg = value < 0) ? value * -1 : value;
             value = this.allowDecimals && this.alwaysDisplayDecimals ? value.toFixed(this.decimalPrecision) : value;
 
-            if(this.useThousandSeparator) {
+            if (this.useThousandSeparator) {
                 if(this.useThousandSeparator && Ext.isEmpty(this.thousandSeparator)){
                     throw ('NumberFormatException: invalid thousandSeparator, property must has a valid character.');
                 }
@@ -77,7 +77,7 @@ Ext.define('App.ux.form.fields.Currency',{
                 value = whole + (ps[1] ? this.decimalSeparator + ps[1] : '');
             }
 
-            return Ext.String.format('{0}{1}{2}', ( neg ? '-' : ''), (Ext.isEmpty(this.currencySymbol) ? '' : this.currencySymbol), value);
+            return Ext.String.format('{0}{1}{2}', (neg ? '-' : ''), value, (Ext.isEmpty(this.currencySymbol) ? '' : this.currencySymbol));
         }
     },
     /**
@@ -92,10 +92,10 @@ Ext.define('App.ux.form.fields.Currency',{
      * @param {Object} value
      */
     removeFormat: function (value) {
-        if (Ext.isEmpty(value) || !this.hasFormat())
+        if (Ext.isEmpty(value) || !this.hasFormat()){
             return value;
-        else {
-			value = value.toString().replace(this.currencySymbol, '');
+        }else{
+            value = value.toString().replace(this.currencySymbol, '');
 
             value = this.useThousandSeparator ? value.replace(new RegExp('[' + this.thousandSeparator + ']', 'g'), '') : value;
 

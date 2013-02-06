@@ -1785,9 +1785,9 @@ CREATE TABLE IF NOT EXISTS `patient_pools` (
   `priority` varchar(255) DEFAULT NULL COMMENT 'priority 1 is the highest',
   `in_queue` tinyint(1) DEFAULT '1' COMMENT 'true = patient is in queue, false = the patient it been treated by someone',
   `checkout_timer` time DEFAULT NULL COMMENT 'timer user to automatically checkout from the pool area, and return to the previous pool area ',
-  `parent_id` bigint(20) NOT NULL COMMENT 'parent ID = the id of the checkin pool (this will maitain a relation between all pools of that visit)',
+  `parent_id` bigint(20) DEFAULT NULL COMMENT 'parent ID = the id of the checkin pool (this will maitain a relation between all pools of that visit)',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `patient_prescriptions` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,

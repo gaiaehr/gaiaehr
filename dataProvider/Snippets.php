@@ -18,52 +18,6 @@ class Snippets {
 
     function __construct(){
         $this->db = new dbHelper();
-        $this->db->setTable('soap_snippets');
-        $this->db->setField(
-            array(
-                'NAME' => 'parentId',
-                'TYPE' => 'VARCHAR',
-                'LENGTH' => 30,
-                'NULL' => true,
-                'DEFAULT' => ''
-            )
-        );
-        $this->db->setField(
-            array(
-                'NAME' => 'text',
-                'TYPE' => 'TEXT',
-                'NULL' => true,
-                'DEFAULT' => ''
-            )
-        );
-        $this->db->setField(
-            array(
-                'NAME' => 'index',
-                'TYPE' => 'INT',
-                'LENGTH' => 11,
-                'NULL' => true,
-                'DEFAULT' => ''
-            )
-        );
-        $this->db->setField(
-            array(
-                'NAME' => 'category',
-                'TYPE' => 'VARCHAR',
-                'LENGTH' => 50,
-                'NULL' => true,
-                'DEFAULT' => ''
-            )
-        );
-        $this->db->setField(
-            array(
-                'NAME' => 'leaf',
-                'TYPE' => 'TINYINT',
-                'LENGTH' => 1,
-                'NULL' => true,
-                'DEFAULT' => ''
-            )
-        );
-        $this->db->executeORM();
     }
 
     public function getSoapSnippetsByCategory($params){

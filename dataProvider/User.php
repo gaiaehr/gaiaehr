@@ -139,10 +139,7 @@ class User
 			unset($data['password']);
 			$role['role_id'] = $data['role_id'];
 			unset($data['id'], $data['role_id'], $data['fullname']);
-			if($data['taxonomy'] == '')
-			{
-				unset($data['taxonomy']);
-			}
+			if($data['taxonomy'] == '') unset($data['taxonomy']);
 			foreach($data as $key => $val)
 			{
 				if($val == null || $val == '')
@@ -150,6 +147,7 @@ class User
 					unset($data[$key]);
 				}
 			}
+			
 			$sql = $this->db->sqlBind($data, 'users', 'I');
 			$this->db->setSQL($sql);
 			$this->db->execLog();
@@ -165,7 +163,9 @@ class User
 			$this->db->setSQL($sql);
 			$this->db->execLog();
 			return $params;
-		}else{
+		}
+		else
+		{
 			return array('success' => false, 'error' => "Username \"$params->username\" exist, please try a different username");
 		}
 	}
@@ -272,10 +272,8 @@ class User
 		$aes  = new AES($_SESSION['site']['AESkey']);
 		$pass = $aes->encrypt($pass);
 		$uid  = $_SESSION['user']['id'];
-		
-		$this->db->setSQL("SELECT username FROM users WHERE id = '$uid' AND password = '$pass' AND authorized = '1' LIMIT 1");
-		$count = $this->db->rowCount();
-		return ($count != 0) ? 1 : 2;
+		$total = R::count('users', ' id = :id AND password = :password AND authorized = :authorized ', array( ':id' => $uid, ':password' => $pass, ':authorized' => '1' ) );
+		return ($total != 0) ? 1 : 2;
 	}
 
 	public function getProviders()

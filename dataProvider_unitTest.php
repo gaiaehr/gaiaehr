@@ -59,4 +59,7 @@ echo '<br>';
 // -- 6
 print_r( $u->getCurrentUserBasicData() );
 echo '<br>';
+// -- 7
+print_r( $u->verifyUserPass('pass') );
+
 echo '</pre>';

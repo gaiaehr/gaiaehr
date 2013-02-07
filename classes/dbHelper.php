@@ -106,7 +106,7 @@ class dbHelper
 				));
 				
 				// Connect using RedBeanPHP :)
-				R::setup('mysql:host=' . (string)$host . ';dbname=' . (string)$dbName, (string)$dbName,	(string)$dbPass);
+				R::setup('mysql:host=' . $host . ';port=' . $port . ';dbname=' . $dbName, $dbUser, $dbPass);
 			}
 			catch(PDOException $e)
 			{

@@ -63,8 +63,15 @@ class User
 
 	public function getCurrentUserTitleLastName()
 	{
-        $users = (object)R::load('users', $this->getCurrentUserId());
-		return $users->title . ' ' . $users->lname;
+		try
+		{
+        	$users = (object)R::load('users', $this->getCurrentUserId());
+			return $users->title . ' ' . $users->lname;
+		}
+		catch(Exception $e)
+		{
+			return array('success' => false, 'error' => "Error occured getting your current user name.");
+		}
 	}
 
 	/**
@@ -74,58 +81,93 @@ class User
 	public function getUsers(stdClass $params)
 	{
 		$rows = array();
-        $records = (array)R::getAll( 'SELECT u.*, r.role_id
-                             FROM users AS u
-                        LEFT JOIN acl_user_roles AS r ON r.user_id = u.id
-                            WHERE u.authorized = 1 OR u.username != ""
-                         ORDER BY u.username
-                            LIMIT :start,:records',
-            array(':start'=>$params->start, ':records'=>$params->limit) );
-		foreach($records as $row)
+		try
 		{
-			$row['fullname'] = Person::fullname($row['fname'], $row['mname'], $row['lname']);
-			unset($row['password'], $row['pwd_history1'], $row['pwd_history2']);
-			array_push($rows, $row);
+	        $records = (array)R::getAll( 'SELECT u.*, r.role_id
+	                             FROM users AS u
+	                        LEFT JOIN acl_user_roles AS r ON r.user_id = u.id
+	                            WHERE u.authorized = 1 OR u.username != ""
+	                         ORDER BY u.username
+	                            LIMIT :start,:records',
+	            array(':start'=>$params->start, ':records'=>$params->limit) );
+			foreach($records as $row)
+			{
+				$row['fullname'] = Person::fullname($row['fname'], $row['mname'], $row['lname']);
+				unset($row['password'], $row['pwd_history1'], $row['pwd_history2']);
+				array_push($rows, $row);
+			}
+			return $rows;
 		}
-		return $rows;
+		catch(Exception $e)
+		{
+			return array('success' => false, 'error' => "Error occured getting users list.");
+		}
 	}
 
 	public function getUserNameById($id)
 	{
         // like LINQ
-        $user = R::$f->begin()
-        	->select('title, lname')->from('users')
-            ->where(' id = ? ')->put($id)->get('row');
-		return $user['title'] . ' ' . $user['lname'];
+        try
+        {
+	        $user = R::$f->begin()
+	        	->select('title, lname')->from('users')
+	            ->where(' id = ? ')->put($id)->get('row');
+			return $user['title'] . ' ' . $user['lname'];
+		}
+		catch(Exception $e)
+		{
+			return array('success' => false, 'error' => "Error occured getting user name.");
+		}
 	}
 
 	public function getUserFullNameById($id)
 	{
         // like LINQ
-        $user = R::$f->begin()
-            ->select('title, fname, mname, lname')->from('users')
-            ->where(' id = ? ')->put($id)->get('row');
-		return Person::fullname($user['fname'], $user['mname'], $user['lname']);
+        try
+        {
+	        $user = R::$f->begin()
+	            ->select('title, fname, mname, lname')->from('users')
+	            ->where(' id = ? ')->put($id)->get('row');
+			return Person::fullname($user['fname'], $user['mname'], $user['lname']);
+		}
+		catch(Exception $e)
+		{
+			return array('success' => false, 'error' => "Error occured getting full user name.");
+		}
 	}
 
 	public function getCurrentUserData()
 	{
 		// like LINQ
-		$id = $this->getCurrentUserId();
-        $user = R::$f->begin()
-            ->select('*')->from('users')
-            ->where(' id = ? ')->put($id)->get('row');
-		return $user;
+		try
+		{
+			$id = $this->getCurrentUserId();
+	        $user = R::$f->begin()
+	            ->select('*')->from('users')
+	            ->where(' id = ? ')->put($id)->get('row');
+			return $user;
+		}
+		catch(Exception $e)
+		{
+			return array('success' => false, 'error' => "Error occured getting user data.");
+		}
 	}
 
 	public function getCurrentUserBasicData()
 	{
 		// like LINQ
-		$id = $this->getCurrentUserId();
-        $user = R::$f->begin()
-            ->select('id, title, fname, mname, lname')->from('users')
-            ->where(' id = ? ')->put($id)->get('row');
-		return $user;
+		try
+		{
+			$id = $this->getCurrentUserId();
+	        $user = R::$f->begin()
+	            ->select('id, title, fname, mname, lname')->from('users')
+	            ->where(' id = ? ')->put($id)->get('row');
+			return $user;
+		}
+		catch(Exception $e)
+		{
+			return array('success' => false, 'error' => "Error occured getting user basic data.");
+		}
 	}
 
 	/**
@@ -176,32 +218,43 @@ class User
 	 */
 	public function updateUser(stdClass $params)
 	{
-		$data             = get_object_vars($params);
-		$params->password = '';
-		$this->user_id   = $data['id'];
-		$role['role_id'] = $data['role_id'];
-		unset($data['id'], $data['role_id'], $data['fullname']);
-		if($data['password'] != '')
+		try
 		{
-			$this->changePassword($data['password']);
+			$data             = get_object_vars($params);
+			$params->password = '';
+			$this->user_id   = $data['id'];
+			$role['role_id'] = $data['role_id'];
+			unset($data['id'], $data['role_id'], $data['fullname']);
+			if($data['password'] != '') $this->changePassword($data['password']);
+			unset($data['password']);
+			$sql = $this->db->sqlBind($role, 'acl_user_roles', 'U', array('user_id' => $this->user_id));
+			$this->db->setSQL($sql);
+			$this->db->execLog();
+			$sql = $this->db->sqlBind($data, 'users', 'U', array('id' => $this->user_id));
+			$this->db->setSQL($sql);
+			$this->db->execLog();
+			return $params;
 		}
-		unset($data['password']);
-		$sql = $this->db->sqlBind($role, 'acl_user_roles', 'U', array('user_id' => $this->user_id));
-		$this->db->setSQL($sql);
-		$this->db->execLog();
-		$sql = $this->db->sqlBind($data, 'users', 'U', array('id' => $this->user_id));
-		$this->db->setSQL($sql);
-		$this->db->execLog();
-		return $params;
+		catch(Exception $e)
+		{
+			return array('success' => false, 'error' => "Error occured updating user data.");
+		}
 
 	}
 
 	public function usernameExist($username)
 	{
-        $user = R::$f->begin()
-            ->select('count(id)')->from('users')
-            ->where(' username = ? ')->put($username)->get('row');
-		return $user['count(id)'] >= 1;
+		try
+		{
+	        $user = R::$f->begin()
+	            ->select('count(id)')->from('users')
+	            ->where(' username = ? ')->put($username)->get('row');
+			return $user['count(id)'] >= 1;
+		}
+		catch(Exception $e)
+		{
+			return array('success' => false, 'error' => "Error occured check the username.");
+		}
 	}
 
 	/**
@@ -288,11 +341,18 @@ class User
 
 	public function verifyUserPass($pass)
 	{
-		$aes  = new AES($_SESSION['site']['AESkey']);
-		$pass = $aes->encrypt($pass);
-		$uid  = $_SESSION['user']['id'];
-		$total = R::count('users', ' id = :id AND password = :password AND authorized = :authorized ', array( ':id' => $uid, ':password' => $pass, ':authorized' => '1' ) );
-		return ($total != 0) ? 1 : 2;
+		try
+		{
+			$aes  = new AES($_SESSION['site']['AESkey']);
+			$pass = $aes->encrypt($pass);
+			$uid  = $_SESSION['user']['id'];
+			$total = R::count('users', ' id = :id AND password = :password AND authorized = :authorized ', array( ':id' => $uid, ':password' => $pass, ':authorized' => '1' ) );
+			return ($total != 0) ? 1 : 2;
+		}
+		catch(Exception $e)
+		{
+			return array('success' => false, 'error' => "Error occured verifing the user password.");
+		}
 	}
 
 	public function getProviders()
@@ -314,10 +374,17 @@ class User
 
 	public function getUserRolesByCurrentUserOrUserId($uid = null)
 	{
-		$uid = ($uid == null) ? $_SESSION['user']['id'] : $uid;
-		return R::$f->begin()
-					->select('*')->from('acl_user_roles')
-					->where(' user_id = ? ')->put($uid)->get('row');
+		try
+		{
+			$uid = ($uid == null) ? $_SESSION['user']['id'] : $uid;
+			return R::$f->begin()
+						->select('*')->from('acl_user_roles')
+						->where(' user_id = ? ')->put($uid)->get('row');
+		}
+		catch(Exception $e)
+		{
+			return array('success' => false, 'error' => "Error occured getting current user roles.");
+		}
 	}
 
 }

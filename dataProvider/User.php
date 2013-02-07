@@ -19,7 +19,8 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-if(!isset($_SESSION)){
+if (!isset($_SESSION))
+{
 	session_name('GaiaEHR');
 	session_start();
 	session_cache_limiter('private');
@@ -65,12 +66,12 @@ class User
 	{
 		try
 		{
-        	$users = (object)R::load('users', $this->getCurrentUserId());
+			$users = (object)R::load('users', $this->getCurrentUserId());
 			return $users->title . ' ' . $users->lname;
 		}
 		catch(Exception $e)
 		{
-			return array('success' => false, 'error' => "Error occured getting your current user name.");
+			return $e;
 		}
 	}
 
@@ -83,14 +84,16 @@ class User
 		$rows = array();
 		try
 		{
-	        $records = (array)R::getAll( 'SELECT u.*, r.role_id
+			$records = (array)R::getAll('SELECT u.*, r.role_id
 	                             FROM users AS u
 	                        LEFT JOIN acl_user_roles AS r ON r.user_id = u.id
 	                            WHERE u.authorized = 1 OR u.username != ""
 	                         ORDER BY u.username
-	                            LIMIT :start,:records',
-	            array(':start'=>$params->start, ':records'=>$params->limit) );
-			foreach($records as $row)
+	                            LIMIT :start,:records', array(
+				':start' => $params->start,
+				':records' => $params->limit
+			));
+			foreach ($records as $row)
 			{
 				$row['fullname'] = Person::fullname($row['fname'], $row['mname'], $row['lname']);
 				unset($row['password'], $row['pwd_history1'], $row['pwd_history2']);
@@ -100,39 +103,35 @@ class User
 		}
 		catch(Exception $e)
 		{
-			return array('success' => false, 'error' => "Error occured getting users list.");
+			return $e;
 		}
 	}
 
 	public function getUserNameById($id)
 	{
-        // like LINQ
-        try
-        {
-	        $user = R::$f->begin()
-	        	->select('title, lname')->from('users')
-	            ->where(' id = ? ')->put($id)->get('row');
+		// like LINQ
+		try
+		{
+			$user = R::$f->begin()->select('title, lname')->from('users')->where(' id = ? ')->put($id)->get('row');
 			return $user['title'] . ' ' . $user['lname'];
 		}
 		catch(Exception $e)
 		{
-			return array('success' => false, 'error' => "Error occured getting user name.");
+			return $e;
 		}
 	}
 
 	public function getUserFullNameById($id)
 	{
-        // like LINQ
-        try
-        {
-	        $user = R::$f->begin()
-	            ->select('title, fname, mname, lname')->from('users')
-	            ->where(' id = ? ')->put($id)->get('row');
+		// like LINQ
+		try
+		{
+			$user = R::$f->begin()->select('title, fname, mname, lname')->from('users')->where(' id = ? ')->put($id)->get('row');
 			return Person::fullname($user['fname'], $user['mname'], $user['lname']);
 		}
 		catch(Exception $e)
 		{
-			return array('success' => false, 'error' => "Error occured getting full user name.");
+			return $e;
 		}
 	}
 
@@ -142,14 +141,12 @@ class User
 		try
 		{
 			$id = $this->getCurrentUserId();
-	        $user = R::$f->begin()
-	            ->select('*')->from('users')
-	            ->where(' id = ? ')->put($id)->get('row');
+			$user = R::$f->begin()->select('*')->from('users')->where(' id = ? ')->put($id)->get('row');
 			return $user;
 		}
 		catch(Exception $e)
 		{
-			return array('success' => false, 'error' => "Error occured getting user data.");
+			return $e;
 		}
 	}
 
@@ -159,14 +156,12 @@ class User
 		try
 		{
 			$id = $this->getCurrentUserId();
-	        $user = R::$f->begin()
-	            ->select('id, title, fname, mname, lname')->from('users')
-	            ->where(' id = ? ')->put($id)->get('row');
+			$user = R::$f->begin()->select('id, title, fname, mname, lname')->from('users')->where(' id = ? ')->put($id)->get('row');
 			return $user;
 		}
 		catch(Exception $e)
 		{
-			return array('success' => false, 'error' => "Error occured getting user basic data.");
+			return $e;
 		}
 	}
 
@@ -176,39 +171,41 @@ class User
 	 */
 	public function addUser(stdClass $params)
 	{
-		if(!$this->usernameExist($params->username)){
+		if (!$this->usernameExist($params->username))
+		{
 			$data = get_object_vars($params);
 			unset($data['password']);
 			$role['role_id'] = $data['role_id'];
 			unset($data['id'], $data['role_id'], $data['fullname']);
-			if($data['taxonomy'] == '') unset($data['taxonomy']);
-			foreach($data as $key => $val)
+			if ($data['taxonomy'] == '')
+				unset($data['taxonomy']);
+			foreach ($data as $key => $val)
 			{
-				if($val == null || $val == '')
+				if ($val == null || $val == '')
 				{
 					unset($data[$key]);
 				}
 			}
-			
+
 			$sql = $this->db->sqlBind($data, 'users', 'I');
 			$this->db->setSQL($sql);
 			$this->db->execLog();
 			$params->id = $this->user_id = $this->db->lastInsertId;
 			$params->fullname = Person::fullname($params->fname, $params->mname, $params->lname);
-			if($params->password != '')
+			if ($params->password != '')
 			{
 				$this->changePassword($params->password);
 			}
 			$params->password = '';
 			$role['user_id'] = $params->id;
-			$sql             = $this->db->sqlBind($role, 'acl_user_roles', 'I');
+			$sql = $this->db->sqlBind($role, 'acl_user_roles', 'I');
 			$this->db->setSQL($sql);
 			$this->db->execLog();
 			return $params;
 		}
 		else
 		{
-			return array('success' => false, 'error' => "Username \"$params->username\" exist, please try a different username");
+			return $e;
 		}
 	}
 
@@ -220,12 +217,13 @@ class User
 	{
 		try
 		{
-			$data             = get_object_vars($params);
+			$data = get_object_vars($params);
 			$params->password = '';
-			$this->user_id   = $data['id'];
+			$this->user_id = $data['id'];
 			$role['role_id'] = $data['role_id'];
 			unset($data['id'], $data['role_id'], $data['fullname']);
-			if($data['password'] != '') $this->changePassword($data['password']);
+			if ($data['password'] != '')
+				$this->changePassword($data['password']);
 			unset($data['password']);
 			$sql = $this->db->sqlBind($role, 'acl_user_roles', 'U', array('user_id' => $this->user_id));
 			$this->db->setSQL($sql);
@@ -237,7 +235,7 @@ class User
 		}
 		catch(Exception $e)
 		{
-			return array('success' => false, 'error' => "Error occured updating user data.");
+			return $e;
 		}
 
 	}
@@ -246,14 +244,12 @@ class User
 	{
 		try
 		{
-	        $user = R::$f->begin()
-	            ->select('count(id)')->from('users')
-	            ->where(' username = ? ')->put($username)->get('row');
+			$user = R::$f->begin()->select('count(id)')->from('users')->where(' username = ? ')->put($username)->get('row');
 			return $user['count(id)'] >= 1;
 		}
 		catch(Exception $e)
 		{
-			return array('success' => false, 'error' => "Error occured check the username.");
+			return $e;
 		}
 	}
 
@@ -263,19 +259,17 @@ class User
 	 */
 	public function checkPasswordHistory(stdClass $params)
 	{
-		$aes           = $this->getAES();
+		$aes = $this->getAES();
 		$this->user_id = $params->id;
-		$aesPwd        = $aes->encrypt($params->password);
-		
-        $pwds = R::$f->begin()
-            ->select('password, pwd_history1, pwd_history2')->from('users')
-            ->where(' id = ? ')->put($this->user_id)->get('row');
-		
-		if($pwds['password'] == $aesPwd || $pwds['pwd_history1'] == $aesPwd || $pwds['pwd_history2'] == $aesPwd)
+		$aesPwd = $aes->encrypt($params->password);
+
+		$pwds = R::$f->begin()->select('password, pwd_history1, pwd_history2')->from('users')->where(' id = ? ')->put($this->user_id)->get('row');
+
+		if ($pwds['password'] == $aesPwd || $pwds['pwd_history1'] == $aesPwd || $pwds['pwd_history2'] == $aesPwd)
 		{
 			return array('error' => true);
-		} 
-		else 
+		}
+		else
 		{
 			return array('error' => false);
 		}
@@ -287,13 +281,11 @@ class User
 	 */
 	public function changePassword($newpassword)
 	{
-		$aes    = $this->getAES();
+		$aes = $this->getAES();
 		$aesPwd = $aes->encrypt($newpassword);
-		
-        $pwds = R::$f->begin()
-            ->select('password, pwd_history1')->from('users')
-            ->where(' id = ? ')->put($this->user_id)->get('row');
-		
+
+		$pwds = R::$f->begin()->select('password, pwd_history1')->from('users')->where(' id = ? ')->put($this->user_id)->get('row');
+
 		R::begin();
 		try
 		{
@@ -305,10 +297,10 @@ class User
 			R::commit();
 			return array('success' => true);
 		}
-		catch(Exception $e) 
+		catch(Exception $e)
 		{
 			R::rollback();
-			return array('success' => false);
+			return $e;
 		}
 	}
 
@@ -324,7 +316,7 @@ class User
 		unset($data['id']);
 
 		R::begin();
-		$user = R::load('users',$params->id);
+		$user = R::load('users', $params->id);
 		try
 		{
 			$user = $data;
@@ -332,10 +324,10 @@ class User
 			R::commit();
 			return array('success' => true);
 		}
-		catch(Exception $e) 
+		catch(Exception $e)
 		{
 			R::rollback();
-			return array('success' => false);
+			return $e;
 		}
 	}
 
@@ -343,15 +335,19 @@ class User
 	{
 		try
 		{
-			$aes  = new AES($_SESSION['site']['AESkey']);
+			$aes = new AES($_SESSION['site']['AESkey']);
 			$pass = $aes->encrypt($pass);
-			$uid  = $_SESSION['user']['id'];
-			$total = R::count('users', ' id = :id AND password = :password AND authorized = :authorized ', array( ':id' => $uid, ':password' => $pass, ':authorized' => '1' ) );
+			$uid = $_SESSION['user']['id'];
+			$total = R::count('users', ' id = :id AND password = :password AND authorized = :authorized ', array(
+				':id' => $uid,
+				':password' => $pass,
+				':authorized' => '1'
+			));
 			return ($total != 0) ? 1 : 2;
 		}
 		catch(Exception $e)
 		{
-			return array('success' => false, 'error' => "Error occured verifing the user password.");
+			return $e;
 		}
 	}
 
@@ -361,13 +357,15 @@ class User
                 FROM acl_user_roles AS acl
                 LEFT JOIN users AS u ON u.id = acl.user_id
                 WHERE acl.role_id = '2'");
-		$records   = array();
+		$records = array();
 		$records[] = array(
-			'name' => 'All', 'id' => 'all'
+			'name' => 'All',
+			'id' => 'all'
 		);
-		foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) As $row){
+		foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) As $row)
+		{
 			$row['name'] = $this->getUserNameById($row['id']);
-			$records[]   = $row;
+			$records[] = $row;
 		}
 		return $records;
 	}
@@ -377,13 +375,11 @@ class User
 		try
 		{
 			$uid = ($uid == null) ? $_SESSION['user']['id'] : $uid;
-			return R::$f->begin()
-						->select('*')->from('acl_user_roles')
-						->where(' user_id = ? ')->put($uid)->get('row');
+			return R::$f->begin()->select('*')->from('acl_user_roles')->where(' user_id = ? ')->put($uid)->get('row');
 		}
 		catch(Exception $e)
 		{
-			return array('success' => false, 'error' => "Error occured getting current user roles.");
+			return $e;
 		}
 	}
 

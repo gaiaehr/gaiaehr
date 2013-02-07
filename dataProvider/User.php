@@ -208,7 +208,7 @@ class User
 	 * @param stdClass $params
 	 * @return array
 	 */
-	public function chechPasswordHistory(stdClass $params)
+	public function checkPasswordHistory(stdClass $params)
 	{
 		$aes           = $this->getAES();
 		$this->user_id = $params->id;

@@ -6,11 +6,13 @@
  * Time: 2:19 PM
  * To change this template use File | Settings | File Templates.
  */
-if(!isset($_SESSION)){
+if(!isset($_SESSION))
+{
 	session_name('GaiaEHR');
 	session_start();
 	session_cache_limiter('private');
 }
+
 class Crypt
 {
 	public static function encrypt($text)

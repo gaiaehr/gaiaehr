@@ -26,6 +26,7 @@ if(!isset($_SESSION)){
 include_once ($_SESSION['root'] . '/classes/Sessions.php');
 include_once ($_SESSION['root'] . '/classes/Crypt.php');
 include_once ($_SESSION['root'] . '/dataProvider/Patient.php');
+
 class authProcedures
 {
 
@@ -42,6 +43,7 @@ class authProcedures
 	 */
 	public function login(stdClass $params)
 	{
+		error_reporting(E_ALL);
 		//-------------------------------------------
 		// Check that the username do not pass
 		// the maximum limit of the field.

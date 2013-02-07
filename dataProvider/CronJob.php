@@ -34,6 +34,7 @@ class CronJob
 		/**
 		 * only run cron if delay time has expired
 		 */
+		 error_reporting(-1);
 		if ((time() - $_SESSION['cron']['time']) > $_SESSION['cron']['delay'] || $_SESSION['inactive']['start'])
 		{
 			/**
@@ -41,7 +42,7 @@ class CronJob
 			 */
 			$s = new Sessions();
 			$p = new Patient();
-
+		
 			foreach ($s->logoutInactiveUsers() as $user)
 			{
 				$p -> patientChartInByUserId($user['uid']);

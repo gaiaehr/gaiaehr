@@ -1132,7 +1132,7 @@ $API = array(
 			'updateUser' => array(
 				'len' => 1
 			),
-			'chechPasswordHistory' => array(
+			'checkPasswordHistory' => array(
 				'len' => 1
 			),
 			'changeMyPassword' => array(

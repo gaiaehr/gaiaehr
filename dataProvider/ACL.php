@@ -52,39 +52,6 @@ class ACL
 	public function __construct($uid = null)
 	{
 		$this->conn       = new dbHelper();
-		$this->db->setTable('acl_roles');
-		$this->db->setField(array( 'NAME' => 'role_name', 'TYPE' => 'VARCHAR', 'LENGTH' => 20, 'NULL' => false, 'DEFAULT' => '' ) );
-		$this->db->setField(array( 'NAME' => 'role_key', 'TYPE' => 'VARCHAR', 'LENGTH' => 40, 'NULL' => false, 'DEFAULT' => '' ) );
-		$this->db->setField(array( 'NAME' => 'seq', 'TYPE' => 'VARCHAR', 'LENGTH' => 5, 'NULL' => false, 'DEFAULT' => '' ) );
-		$this->db->executeORM();
-		
-		$this->db->setTable('acl_permissions');
-		$this->db->setField(array( 'NAME' => 'perm_key', 'TYPE' => 'VARCHAR', 'LENGTH' => 100, 'NULL' => false, 'DEFAULT' => '' ) );
-		$this->db->setField(array( 'NAME' => 'perm_name', 'TYPE' => 'VARCHAR', 'LENGTH' => 100, 'NULL' => false, 'DEFAULT' => '' ) );
-		$this->db->setField(array( 'NAME' => 'perm_cat', 'TYPE' => 'VARCHAR', 'LENGTH' => 100, 'NULL' => false, 'DEFAULT' => '' ) );
-		$this->db->setField(array( 'NAME' => 'seq', 'TYPE' => 'VARCHAR', 'LENGTH' => 5, 'NULL' => false, 'DEFAULT' => '' ) );
-		$this->db->executeORM();
-		
-		$this->db->setTable('acl_role_perms');
-		$this->db->setField(array( 'NAME' => 'role_key', 'TYPE' => 'VARCHAR', 'LENGTH' => 50, 'NULL' => false, 'DEFAULT' => '' ) );
-		$this->db->setField(array( 'NAME' => 'perm_key', 'TYPE' => 'VARCHAR', 'LENGTH' => 50, 'NULL' => false, 'DEFAULT' => '' ) );
-		$this->db->setField(array( 'NAME' => 'value', 'TYPE' => 'INT', 'LENGTH' => 5, 'NULL' => false, 'DEFAULT' => '' ) );
-		$this->db->setField(array( 'NAME' => 'add_date', 'TYPE' => 'DATETIME', 'NULL' => false, 'DEFAULT' => '' ) );
-		$this->db->executeORM();
-		
-		$this->db->setTable('acl_user_roles');
-		$this->db->setField(array( 'NAME' => 'user_id', 'TYPE' => 'BIGINT', 'LENGTH' => 20, 'NULL' => false, 'DEFAULT' => '' ) );
-		$this->db->setField(array( 'NAME' => 'role_id', 'TYPE' => 'BIGINT', 'LENGTH' => 20, 'NULL' => false, 'DEFAULT' => '' ) );
-		$this->db->setField(array( 'NAME' => 'add_date', 'TYPE' => 'TIMESTAMP', 'NULL' => false, 'DEFAULT' => 'CURRENT_TIMESTAMP' ) );
-		$this->db->executeORM();
-		
-		$this->db->setTable('acl_user_perms');
-		$this->db->setField(array( 'NAME' => 'user_id', 'TYPE' => 'BIGINT', 'LENGTH' => 20, 'NULL' => false, 'DEFAULT' => '' ) );
-		$this->db->setField(array( 'NAME' => 'perm_key', 'TYPE' => 'VARCHAR', 'LENGTH' => 50, 'NULL' => false, 'DEFAULT' => '' ) );
-		$this->db->setField(array( 'NAME' => 'value', 'TYPE' => 'TINYINT', 'LENGTH' => 1, 'NULL' => false, 'DEFAULT' => '' ) );
-		$this->db->setField(array( 'NAME' => 'add_date', 'TYPE' => 'TIMESTAMP', 'NULL' => false, 'DEFAULT' => 'CURRENT_TIMESTAMP' ) );
-		$this->db->executeORM();
-		
 		$this->user_id    = ($uid == null) ? $_SESSION['user']['id'] : $uid;
 		$this->user_roles = $this->getUserRoles();
 		$this->buildACL();

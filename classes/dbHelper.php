@@ -70,12 +70,6 @@ class dbHelper
 	 */
 	private $err;
 
-	/**
-	 * MicroORM related variables
-	 */
-	private $workingTable;
-	private $workingFields;
-	private $workingDatabase;
 
 	/**
 	 * @brief       dbHelper constructor.
@@ -89,7 +83,7 @@ class dbHelper
 	 */
 	function __construct()
 	{
-		error_reporting(0);
+		//error_reporting(0);
 		if (isset($_SESSION['site']['db']))
 		{
 			$host = (string)$_SESSION['site']['db']['host'];

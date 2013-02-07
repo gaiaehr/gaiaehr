@@ -164,12 +164,17 @@ class SiteSetup
 		// check if ZipArchive is enable
 		$status = (class_exists('ZipArchive') ? 'Ok' : 'Fail');
 		$row[]  = array(
-			'msg' => 'PHP  class ZipArchive', 'status' => $status
+			'msg' => 'PHP class ZipArchive', 'status' => $status
 		);
 		// check if ZipArchive is enable
 		$status = (function_exists('curl_version') ? 'Ok' : 'Fail');
 		$row[]  = array(
-			'msg' => 'PHP  Curl installed', 'status' => $status
+			'msg' => 'PHP Curl installed', 'status' => $status
+		);
+		// check for mcrypt is installed in PHP
+		$status = (function_exists('mcrypt_encrypt') ? 'Ok' : 'Fail');
+		$row[]  = array(
+			'msg' => 'PHP MCrypt installed', 'status' => $status
 		);
 		return $row;
 	}

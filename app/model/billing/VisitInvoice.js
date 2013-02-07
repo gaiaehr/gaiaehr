@@ -19,7 +19,7 @@ Ext.define('App.model.billing.VisitInvoice', {
     proxy : {
         type  : 'direct',
         api   : {
-            read: Billing.getVisitInvoice
+            read: AccBilling.getVisitServicesCharges
         }
     }
 });

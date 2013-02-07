@@ -36,7 +36,7 @@ include_once ($_SESSION['root'] . '/dataProvider/Immunizations.php');
  * @copyright   Gnu Public License (GPLv3)
  *
  */
-class AccountPayable
+class AccAccountPayable
 {
     /**
      * @var dbHelper

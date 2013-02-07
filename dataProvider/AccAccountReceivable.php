@@ -37,7 +37,7 @@ include_once ($_SESSION['root'] . '/dataProvider/Patient.php');
  * @copyright   Gnu Public License (GPLv3)
  *
  */
-class AccountReceivable
+class AccAccountReceivable
 {
     /**
      * @var dbHelper
@@ -51,9 +51,10 @@ class AccountReceivable
      * @var
      */
     private $sid = null;
-
+    /**
+     * @var Patient
+     */
     private $patient;
-
     /**
      * __construct
      */
@@ -78,40 +79,9 @@ class AccountReceivable
         }
     }
 
-    /**
-     *
-     * @param stdClass $params required params: $params->pid, $params->eid, $params->uid
-     * @return array
-     */
-    public function getArVisitCheckoutCharges(stdClass $params){
-        $this->setSid($params);
-        $invoice = array();
 
-        $insurance = $this->patient->getPatientPrimaryInsuranceByPid($params->pid);
-        $activities = $this->getArActivitiesBySid($this->sid);
-
-        // if insurance, add copay
-        if($insurance !== false){
-            $invoice[] = array(
-                'code' => 'COPAY',
-                'code_text_medium' => 'COPAY',
-                'charge' => $insurance['copay'],
-            );
-        // else,
-        }else{
-            $services = $this->services->getCptByEid($params->eid);
-            foreach($services['rows'] AS $service){
-                $row['id'] = $service['id'];
-                $row['code'] = $service['code'];
-                $row['code_text_medium'] = $service['code_text_medium'];
-                $row['charge'] = ($service['status'] == 0 ? '00.00' : $service['charge']);
-                $invoice[] = $row;
-            }
-        }
-        return $invoice;
-    }
-
-    public function getPatientInsuranceCoPay($pid){
+    public function getPatientInsuranceCoPay($pid)
+    {
 
     }
 
@@ -129,7 +99,8 @@ class AccountReceivable
      * @param $eid
      * @return mixed
      */
-    public function getArSidByEid($eid){
+    public function getArSidByEid($eid)
+    {
         $this->db->setSQL("SELECT id FROM ar_session WHERE eid = '$eid'");
         $rec = $this->db->fetchRecord(PDO::FETCH_ASSOC);
         if(!empty($rec)){
@@ -181,9 +152,6 @@ class AccountReceivable
         return $this->db->execOnly();
     }
 
-    public function getPrimarySecondaryInsuranceByPid($pid){
-        // TODO: birthday rule
-    }
 }
 
 //

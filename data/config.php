@@ -1,5 +1,16 @@
 <?php
 $API = array(
+    /**
+     * Accounting Billing Functions
+     */
+    'AccBilling' => array(
+        'methods' => array(
+            'getVisitServicesCharges' => array(
+                'len' => 1
+            )
+        )
+    ),
+
 	'Modules' => array(
 		'methods' => array(
 			'getAllModules' => array(
@@ -22,6 +33,7 @@ $API = array(
 			)
 		)
 	),
+
 	'Emergency' => array(
 		'methods' => array(
 			'createNewEmergency' => array(
@@ -29,6 +41,7 @@ $API = array(
             )
         )
 	),
+
 	'Snippets' => array(
 		'methods' => array(
 			'getSoapSnippetsByCategory' => array(
@@ -45,6 +58,7 @@ $API = array(
             )
         )
 	),
+
 	'Orders' => array(
 		'methods' => array(
 			'getPatientLabOrders' => array(
@@ -67,6 +81,7 @@ $API = array(
             )
 		)
 	),
+
 	'DiagnosisCodes' => array(
 		'methods' => array(
 			'ICDCodeSearch' => array(
@@ -80,6 +95,7 @@ $API = array(
 			)
 		)
 	),
+
 	'ExternalDataUpdate' => array(
 		'methods' => array(
 			'updateCodesWithUploadFile' => array(
@@ -315,16 +331,6 @@ $API = array(
 				'len' => 1
 			),
 			'getPaymentsBySearch' => array(
-				'len' => 1
-			)
-		)
-	),
-    /**
-	 * Billing Functions
-	 */
-	'Billing' => array(
-		'methods' => array(
-			'getVisitInvoice' => array(
 				'len' => 1
 			)
 		)

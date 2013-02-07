@@ -241,14 +241,22 @@ class User
             ->select('password, pwd_history1')->from('users')
             ->where(' id = ? ')->put($this->user_id)->get('row');
 		
-		$user = R::load('users', $this->user_id);
-		$user->password = $aesPwd;
-		$user->pwd_history1 = $pwds['password'];
-		$user->pwd_history2 = $pwds['pwd_history1'];
-		$id = R::store($user);
-		
-		return;
-
+		R::begin();
+		try
+		{
+			$user = R::load('users', $this->user_id);
+			$user->password = $aesPwd;
+			$user->pwd_history1 = $pwds['password'];
+			$user->pwd_history2 = $pwds['pwd_history1'];
+			$id = R::store($user);
+			R::commit();
+			return array('success' => true);
+		}
+		catch(Exception $e) 
+		{
+			R::rollback();
+			return array('success' => false);
+		}
 	}
 
 	public function changeMyPassword(stdClass $params)
@@ -261,10 +269,21 @@ class User
 	{
 		$data = get_object_vars($params);
 		unset($data['id']);
+
+		R::begin();
 		$user = R::load('users',$params->id);
-		$user = $data;
-		R::store($user);
-		return array('success' => true);
+		try
+		{
+			$user = $data;
+			R::store($user);
+			R::commit();
+			return array('success' => true);
+		}
+		catch(Exception $e) 
+		{
+			R::rollback();
+			return array('success' => false);
+		}
 	}
 
 	public function verifyUserPass($pass)

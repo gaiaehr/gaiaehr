@@ -18,12 +18,20 @@
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+ 
+session_name('GaiaEHR');
+session_start();
+session_cache_limiter('private');
+define('_GaiaEXEC', 1);
+
 
 if(!isset($_SESSION)){
 	session_name('GaiaEHR');
 	session_start();
 	session_cache_limiter('private');
 }
+include_once ('../registry.php');
+include_once ('../sites/default/conf.php');
 include_once ($_SESSION['root'] . '/dataProvider/Person.php');
 include_once ($_SESSION['root'] . '/classes/AES.php');
 include_once ($_SESSION['root'] . '/classes/dbHelper.php');
@@ -47,7 +55,7 @@ class User
         R::setup('mysql:host=' . (string)$_SESSION['site']['db']['host'] .
             ';dbname=' . (string)$_SESSION['site']['db']['database'],
             (string)$_SESSION['site']['db']['username'],
-            (string)$_SESSION['site']['db']['password']);
+           (string)$_SESSION['site']['db']['password']);
 		$this->db = new dbHelper();
 		return;
 	}
@@ -141,11 +149,14 @@ class User
 			unset($data['password']);
 			$role['role_id'] = $data['role_id'];
 			unset($data['id'], $data['role_id'], $data['fullname']);
-			if($data['taxonomy'] == ''){
+			if($data['taxonomy'] == '')
+			{
 				unset($data['taxonomy']);
 			}
-			foreach($data as $key => $val){
-				if($val == null || $val == ''){
+			foreach($data as $key => $val)
+			{
+				if($val == null || $val == '')
+				{
 					unset($data[$key]);
 				}
 			}
@@ -154,7 +165,8 @@ class User
 			$this->db->execLog();
 			$params->id = $this->user_id = $this->db->lastInsertId;
 			$params->fullname = Person::fullname($params->fname, $params->mname, $params->lname);
-			if($params->password != ''){
+			if($params->password != '')
+			{
 				$this->changePassword($params->password);
 			}
 			$params->password = '';
@@ -179,7 +191,8 @@ class User
 		$this->user_id   = $data['id'];
 		$role['role_id'] = $data['role_id'];
 		unset($data['id'], $data['role_id'], $data['fullname']);
-		if($data['password'] != ''){
+		if($data['password'] != '')
+		{
 			$this->changePassword($data['password']);
 		}
 		unset($data['password']);
@@ -193,9 +206,11 @@ class User
 
 	}
 
-	public function usernameExist($username){
-		$this->db->setSQL("SELECT count(id) FROM users WHERE username = '$username'");
-		$user = $this->db->fetchRecord();
+	public function usernameExist($username)
+	{
+        $user = R::$f->begin()
+            ->select('count(id)')->from('users')
+            ->where(' username = ? ')->put($username)->get('row');
 		return $user['count(id)'] >= 1;
 	}
 
@@ -208,11 +223,17 @@ class User
 		$aes           = $this->getAES();
 		$this->user_id = $params->id;
 		$aesPwd        = $aes->encrypt($params->password);
-		$this->db->setSQL("SELECT password, pwd_history1, pwd_history2  FROM users WHERE id='" . $this->user_id . "'");
-		$pwds = $this->db->fetchRecord();
-		if($pwds['password'] == $aesPwd || $pwds['pwd_history1'] == $aesPwd || $pwds['pwd_history2'] == $aesPwd){
+		
+        $pwds = R::$f->begin()
+            ->select('password, pwd_history1, pwd_history2')->from('users')
+            ->where(' id = ? ')->put($this->user_id)->get('row');
+		
+		if($pwds['password'] == $aesPwd || $pwds['pwd_history1'] == $aesPwd || $pwds['pwd_history2'] == $aesPwd)
+		{
 			return array('error' => true);
-		} else {
+		} 
+		else 
+		{
 			return array('error' => false);
 		}
 	}
@@ -225,14 +246,24 @@ class User
 	{
 		$aes    = $this->getAES();
 		$aesPwd = $aes->encrypt($newpassword);
-		$this->db->setSQL("SELECT password, pwd_history1 FROM users WHERE id='$this->user_id'");
-		$pwds                = $this->db->fetchRecord();
+		
+        $pwds = R::$f->begin()
+            ->select('password, pwd_history1')->from('users')
+            ->where(' id = ? ')->put($this->user_id)->get('row');
+		
 		$row['password']     = $aesPwd;
 		$row['pwd_history1'] = $pwds['password'];
 		$row['pwd_history2'] = $pwds['pwd_history1'];
-		$sql                 = $this->db->sqlBind($row, 'users', 'U', array('id' => $this->user_id));
-		$this->db->setSQL($sql);
-		$this->db->execLog();
+		
+		$user = R::load('users', $this->user_id);
+		$user->password = $aesPwd;
+		$user->pwd_history1 = $pwds['password'];
+		$user->pwd_history2 = $pwds['pwd_history1'];
+		$id = R::store($user);
+		
+		//$sql                 = $this->db->sqlBind($row, 'users', 'U', array('id' => $this->user_id));
+		//$this->db->setSQL($sql);
+		//$this->db->execLog();
 		return;
 
 	}
@@ -284,11 +315,12 @@ class User
 	public function getUserRolesByCurrentUserOrUserId($uid = null)
 	{
 		$uid = ($uid == null) ? $_SESSION['user']['id'] : $uid;
-		$this->db->setSQL("SELECT * FROM acl_user_roles WHERE user_id = '$uid'");
-		return $this->db->fetchRecords(PDO::FETCH_ASSOC);
+		return R::$f->begin()
+					->select('*')->from('acl_user_roles')
+					->where(' user_id = ? ')->put($uid)->get('row');
 	}
 
 }
 
-//$u = new User();
-//print_r( $u->getUserNameById(2) );
+$u = new User();
+print_r( $u->usernameExist('admin') );

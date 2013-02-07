@@ -18,24 +18,16 @@
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
-session_name('GaiaEHR');
-session_start();
-session_cache_limiter('private');
-define('_GaiaEXEC', 1);
-
 
 if(!isset($_SESSION)){
 	session_name('GaiaEHR');
 	session_start();
 	session_cache_limiter('private');
 }
-include_once ('../registry.php');
-include_once ('../sites/default/conf.php');
+
 include_once ($_SESSION['root'] . '/dataProvider/Person.php');
 include_once ($_SESSION['root'] . '/classes/AES.php');
 include_once ($_SESSION['root'] . '/classes/dbHelper.php');
-include_once ($_SESSION['root'] . '/classes/rb.php');
 
 class User
 {
@@ -52,10 +44,6 @@ class User
 
 	function __construct()
 	{
-        R::setup('mysql:host=' . (string)$_SESSION['site']['db']['host'] .
-            ';dbname=' . (string)$_SESSION['site']['db']['database'],
-            (string)$_SESSION['site']['db']['username'],
-           (string)$_SESSION['site']['db']['password']);
 		$this->db = new dbHelper();
 		return;
 	}
@@ -75,7 +63,7 @@ class User
 
 	public function getCurrentUserTitleLastName()
 	{
-        $users = R::load('users', $this->getCurrentUserId());
+        $users = (object)R::load('users', $this->getCurrentUserId());
 		return $users->title . ' ' . $users->lname;
 	}
 
@@ -85,6 +73,7 @@ class User
 	 */
 	public function getUsers(stdClass $params)
 	{
+		$rows = array();
         $records = (array)R::getAll( 'SELECT u.*, r.role_id
                              FROM users AS u
                         LEFT JOIN acl_user_roles AS r ON r.user_id = u.id
@@ -92,7 +81,8 @@ class User
                          ORDER BY u.username
                             LIMIT :start,:records',
             array(':start'=>$params->start, ':records'=>$params->limit) );
-		foreach($records as $row){
+		foreach($records as $row)
+		{
 			$row['fullname'] = Person::fullname($row['fname'], $row['mname'], $row['lname']);
 			unset($row['password'], $row['pwd_history1'], $row['pwd_history2']);
 			array_push($rows, $row);
@@ -251,19 +241,12 @@ class User
             ->select('password, pwd_history1')->from('users')
             ->where(' id = ? ')->put($this->user_id)->get('row');
 		
-		$row['password']     = $aesPwd;
-		$row['pwd_history1'] = $pwds['password'];
-		$row['pwd_history2'] = $pwds['pwd_history1'];
-		
 		$user = R::load('users', $this->user_id);
 		$user->password = $aesPwd;
 		$user->pwd_history1 = $pwds['password'];
 		$user->pwd_history2 = $pwds['pwd_history1'];
 		$id = R::store($user);
 		
-		//$sql                 = $this->db->sqlBind($row, 'users', 'U', array('id' => $this->user_id));
-		//$this->db->setSQL($sql);
-		//$this->db->execLog();
 		return;
 
 	}
@@ -278,9 +261,9 @@ class User
 	{
 		$data = get_object_vars($params);
 		unset($data['id']);
-		$sql = $this->db->sqlBind($data, 'users', 'U', array('id' => $params->id));
-		$this->db->setSQL($sql);
-		$this->db->execLog();
+		$user = R::load('users',$params->id);
+		$user = $data;
+		R::store($user);
 		return array('success' => true);
 	}
 
@@ -321,6 +304,3 @@ class User
 	}
 
 }
-
-$u = new User();
-print_r( $u->usernameExist('admin') );

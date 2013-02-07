@@ -48,6 +48,7 @@ ini_set('max_execution_time', '1500');
 $timezone = (isset($_SESSION['site']['timezone']) ? $_SESSION['site']['timezone'] : 'UTC');
 date_default_timezone_set($timezone);
 include_once ($_SESSION['root'] . '/classes/Time.php');
+include_once ($_SESSION['root'] . '/classes/rb.php');
 
 class dbHelper
 {
@@ -98,10 +99,17 @@ class dbHelper
 			$dbPass = (string)$_SESSION['site']['db']['password'];
 			try
 			{
+				// Connect using regular PDO GaiaEHR Database Abstraction layer.
 				$this->conn = new PDO('mysql:host=' . $host . ';port=' . $port . ';dbname=' . $dbName, $dbUser, $dbPass, array(
 					PDO::MYSQL_ATTR_LOCAL_INFILE => 1,
 					PDO::ATTR_PERSISTENT => true
 				));
+				
+				// Connect using RedBeanPHP
+				R::setup('mysql:host=' . (string)$_SESSION['site']['db']['host'] .
+						';dbname=' . (string)$_SESSION['site']['db']['database'],
+						(string)$_SESSION['site']['db']['username'],
+						(string)$_SESSION['site']['db']['password']);
 			}
 			catch(PDOException $e)
 			{

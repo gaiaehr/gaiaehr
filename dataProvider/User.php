@@ -220,17 +220,19 @@ class User
 			$data = get_object_vars($params);
 			$params->password = '';
 			$this->user_id = $data['id'];
+			
+			$aclUserRolesUpdate = R::load('acl_user_roles', $this->user_id);
 			$role['role_id'] = $data['role_id'];
 			unset($data['id'], $data['role_id'], $data['fullname']);
-			if ($data['password'] != '')
-				$this->changePassword($data['password']);
+			if ($data['password'] != '') $this->changePassword($data['password']);
 			unset($data['password']);
-			$sql = $this->db->sqlBind($role, 'acl_user_roles', 'U', array('user_id' => $this->user_id));
-			$this->db->setSQL($sql);
-			$this->db->execLog();
-			$sql = $this->db->sqlBind($data, 'users', 'U', array('id' => $this->user_id));
-			$this->db->setSQL($sql);
-			$this->db->execLog();
+			$aclUserRolesUpdate->role_id = $data['role_id'];
+			R::store($aclUserRolesUpdate);
+			
+			$userUpdate = R::load('users', $this->user_id);
+			$userUpdate = (object)$data;
+			R::store($userUpdate);
+
 			return $params;
 		}
 		catch(Exception $e)

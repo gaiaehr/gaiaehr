@@ -64,10 +64,8 @@ class RB{
 	 * @var PDO
 	 */
 	public $conn;
-	/**
-	 * @var string
-	 */
-	static public $R = false;
+
+	public static $init = false;
 
 	/**
 	 * @brief       dbHelper constructor.
@@ -90,8 +88,10 @@ class RB{
 			$dbPass = (string)$_SESSION['site']['db']['password'];
 			try
 			{
-				self::$R = R::setup('mysql:host=' . $host . ';port=' . $port . ';dbname=' . $dbName, $dbUser, $dbPass);
-			}
+				R::setup('mysql:host=' . $host . ';port=' . $port . ';dbname=' . $dbName, $dbUser, $dbPass);
+                print 'Init...<br>';
+                self::$init = true;
+            }
 			catch(PDOException $e)
 			{
 
@@ -100,10 +100,11 @@ class RB{
 	}
 
     public static function find($table){
-        self::init();
+        if(self::$init === false) self::init();
 
-        print '<pre>';
-        print_r(self::$R);
+        print_r(R::$adapter->exec("SELECT * FROM floor_plans"));
+        print '<br>';
+        print_r(R::$adapter->get("SELECT * FROM floor_plans"));
 
         return $table;
 
@@ -111,5 +112,7 @@ class RB{
 
 }
 
+print '<pre>';
+RB::find('hello 1, ');
 
-RB::find('hello');
+RB::find('hello 2 ');

@@ -67,7 +67,7 @@ class RB{
 	/**
 	 * @var string
 	 */
-	private $R = false;
+	static public $R = false;
 
 	/**
 	 * @brief       dbHelper constructor.
@@ -102,6 +102,7 @@ class RB{
     public static function find($table){
         self::init();
 
+        print '<pre>';
         print_r(self::$R);
 
         return $table;
@@ -110,3 +111,5 @@ class RB{
 
 }
 
+
+RB::find('hello');

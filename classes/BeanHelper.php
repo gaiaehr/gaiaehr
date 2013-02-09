@@ -100,11 +100,20 @@ class RB{
 	}
 
     public static function find($table){
-        if(self::$init === false) self::init();
+    if(self::$init === false) self::init();
 
+
+        print 'exec()...<br>';
         print_r(R::$adapter->exec("SELECT * FROM floor_plans"));
         print '<br>';
+        print 'get()...<br>';
         print_r(R::$adapter->get("SELECT * FROM floor_plans"));
+        print 'getRow()...<br>';
+        print_r(R::$adapter->getRow("SELECT * FROM floor_plans"));
+
+
+
+
 
         return $table;
 
@@ -114,5 +123,10 @@ class RB{
 
 print '<pre>';
 RB::find('hello 1, ');
-
+print '<br>';
+print '<br>';
+print '<br>';
+print 'Making sure the init() does\'t run again...<br>';
+print '<br>';
+print '<br>';
 RB::find('hello 2 ');

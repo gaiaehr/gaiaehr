@@ -142,19 +142,9 @@ class SiteSetup
 			'msg' => 'get_magic_quotes_gpc off/disabled', 'status' => $status
 		);
 		// try chmod sites folder and check chmod after that
-		// Added extra check for directory mod
-		$rootDirectory = (array)explode('/', getcwd() );
-		$permissions = fileperms( $rootDirectory[0] . '/' . $rootDirectory[1] . '/' . $rootDirectory[2] . '/' . $rootDirectory[3] . '/sites' );
-		if($permissions != 0755)
-		{
-			$status = (chmod( $rootDirectory[0] . '/' . $rootDirectory[1] . '/' . $rootDirectory[2] . '/' . $rootDirectory[3] . '/sites', 0755) ? 'Ok' : 'Fail');
-		}
-		else
-		{
-			$status = 'Ok';
-		}
+		$status = (chmod('sites', 0755) ? 'Ok' : 'Fail');
 		$row[]  = array(
-			'msg' => 'Sites own by Web Server', 'status' => $status
+			'msg' => 'Sites dir writable by Web Server', 'status' => $status
 		);
 		// check if safe_mode is off
 		$status = (!ini_get('safe_mode') ? 'Ok' : 'Fail');

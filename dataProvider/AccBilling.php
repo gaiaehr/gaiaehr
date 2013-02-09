@@ -92,11 +92,22 @@ class AccBilling
     }
 
 
+    /**
+     * @param stdClass $params
+     *
+     * $params->pid int
+     * $params->uid int
+     * $params->date date
+     * $params->notes string
+     * $params->services array
+     *
+     */
+    public function createVisitServicesChargesReceipt(stdClass $params)
+    {
 
 
-    //******************************************************************************
-    //***   CASH    ****************************************************************
-    //******************************************************************************
+
+    }
 
 
 

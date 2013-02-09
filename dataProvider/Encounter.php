@@ -435,24 +435,29 @@ class Encounter
     //***********************************************************************************************
     public function getEncounterCptDxTree($params)
     {
-        $services = $this->services->getCptByEid($params->eid);
-        foreach($services['rows'] AS $index => $row){
-            $dx_children = array();
-            $foo = explode(',',$row['dx_pointers']);
-            foreach($foo AS $fo){
-                $dx = array();
-                $f = $this->diagnosis->getICDDataByCode($fo);
-                $dx['code'] = $f['code'];
-                $dx['code_text_medium'] = $f['short_desc'];
-                $dx['leaf'] = true;
-                $dx['iconCls'] = 'icoDotYellow';
-                $dx_children[] = $dx;
+        if(isset($params->eid)){
+            $services = $this->services->getCptByEid($params->eid);
+            foreach($services['rows'] AS $index => $row){
+                $dx_children = array();
+                $foo = explode(',',$row['dx_pointers']);
+                foreach($foo AS $fo){
+                    $dx = array();
+                    $f = $this->diagnosis->getICDDataByCode($fo);
+                    $dx['code'] = $f['code'];
+                    $dx['code_text_medium'] = $f['short_desc'];
+                    $dx['leaf'] = true;
+                    $dx['iconCls'] = 'icoDotYellow';
+                    $dx_children[] = $dx;
+                }
+                $services['rows'][$index]['iconCls'] = 'icoDotGrey';
+                $services['rows'][$index]['expanded'] = true;
+                $services['rows'][$index]['children'] = $dx_children;
             }
-            $services['rows'][$index]['iconCls'] = 'icoDotGrey';
-            $services['rows'][$index]['expanded'] = true;
-            $services['rows'][$index]['children'] = $dx_children;
+            return $services['rows'];
+        }else{
+            return;
         }
-        return $services['rows'];
+
     }
     public function addEncounterCptDxTree($params)
     {
@@ -499,8 +504,12 @@ class Encounter
 
     public function getEncounterIcdxCodes(stdClass $params)
     {
-        $this->setEid($params->eid);
-        return $this->diagnosis->getICDByEid($params->eid, true);
+        if(isset($params->eid)){
+            $this->setEid($params->eid);
+            return $this->diagnosis->getICDByEid($params->eid, true);
+        }else{
+            return;
+        }
     }
 
 	public function updateEncounterIcdxCodes(stdClass $params)

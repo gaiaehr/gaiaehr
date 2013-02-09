@@ -17,6 +17,7 @@ Ext.define('App.view.patient.NewPatient', {
 	extend       : 'App.ux.RenderPanel',
 	id           : 'panelNewPatient',
 	pageTitle    : i18n('patient_entry_form'),
+	pageLayout   : { type:'vbox', align:'stretch' },
 	uses         : [ 'App.ux.PhotoIdWindow' ],
 	initComponent: function() {
 
@@ -27,10 +28,51 @@ Ext.define('App.view.patient.NewPatient', {
 
 		me.form = Ext.create('Ext.form.Panel', {
 			title        : me.formTitle,
-			bodyStyle    : 'padding: 5px',
 			layout       : 'anchor',
-			fieldDefaults: { msgTarget: 'side' },
-			buttons: [
+			fieldDefaults: { msgTarget: 'side' }
+		});
+
+        me.insPanel = Ext.widget('tabpanel',{
+            flex:1,
+            defaults:{
+                autoScroll:true,
+                padding:10
+            },
+            items:[
+                me.ins1 = Ext.widget('form',{
+                    title:i18n('first_insurance'),
+                    border:false,
+                    bodyBorder:false
+                }),
+                me.ins2 = Ext.widget('form',{
+                    title:i18n('second_insurance'),
+                    border:false,
+                    bodyBorder:false
+                }),
+                me.ins3 = Ext.widget('form',{
+                    title:i18n('supplemental_insurance'),
+                    border:false,
+                    bodyBorder:false
+                })
+            ]
+        });
+
+		me.pageBody = [ me.form, me.insPanel ];
+
+        me.listeners = {
+            beforerender:me.beforePanelRender
+        };
+
+		me.callParent(arguments);
+
+
+        me.getPageBody().addDocked({
+            xtype: 'toolbar',
+            dock: 'bottom',
+            ui: 'footer',
+            defaults: {minWidth: 100},
+            items: [
+                '->',
                 {
                     text   : i18n('reset'),
                     handler: function(){
@@ -44,15 +86,7 @@ Ext.define('App.view.patient.NewPatient', {
                     handler: me.onNewPatientSave
                 }
             ]
-
-		});
-		me.pageBody = [ me.form ];
-
-        me.listeners = {
-            beforerender:me.beforePanelRender
-        };
-
-		me.callParent(arguments);
+        })
 	},
 
 	onNewPatientSave: function() {
@@ -93,13 +127,26 @@ Ext.define('App.view.patient.NewPatient', {
 
     beforePanelRender:function(){
         var me = this;
+
+
+
         me.getFormItems(this.form, this.formToRender, function(formPanel, items){
-            var primary = formPanel.getForm().findField('primary_subscriber_relationship');
-            primary.on('select', me.copyData, me);
-            var secondary = formPanel.getForm().findField('secondary_subscriber_relationship');
-            secondary.on('select', me.copyData, me);
-            var tertiary = formPanel.getForm().findField('tertiary_subscriber_relationship');
-            tertiary.on('select', me.copyData, me);
+//            var primary = formPanel.getForm().findField('primary_subscriber_relationship');
+//            primary.on('select', me.copyData, me);
+//            var secondary = formPanel.getForm().findField('secondary_subscriber_relationship');
+//            secondary.on('select', me.copyData, me);
+//            var tertiary = formPanel.getForm().findField('tertiary_subscriber_relationship');
+//            tertiary.on('select', me.copyData, me);
+        });
+
+        me.getFormItems(me.ins1, 11, function(formPanel, items){
+
+        });
+        me.getFormItems(me.ins2, 11, function(formPanel, items){
+
+        });
+        me.getFormItems(me.ins3, 11, function(formPanel, items){
+
         });
     },
 

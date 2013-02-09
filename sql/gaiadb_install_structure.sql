@@ -1,39 +1,663 @@
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
 
-CREATE TABLE IF NOT EXISTS `acc_gl_accounts` (
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+
+
+CREATE TABLE IF NOT EXISTS `account_account` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `acc_name` varchar(150) NOT NULL,
-  `acc_number` varchar(50) NOT NULL,
-  `acc_type` varchar(25) NOT NULL,
-  PRIMARY KEY (`id`)
+  `parent_left` int(11) DEFAULT NULL,
+  `parent_right` int(11) DEFAULT NULL,
+  `create_uid` int(11) DEFAULT NULL,
+  `create_date` datetime DEFAULT NULL,
+  `write_date` datetime DEFAULT NULL,
+  `write_uid` int(11) DEFAULT NULL,
+  `code` varchar(64) NOT NULL,
+  `reconcile` tinyint(4) DEFAULT NULL,
+  `currency_id` int(11) DEFAULT NULL,
+  `user_type` int(11) NOT NULL,
+  `active` tinyint(4) DEFAULT NULL,
+  `name` varchar(256) NOT NULL,
+  `level` int(11) DEFAULT NULL,
+  `company_id` int(11) NOT NULL,
+  `shortcut` varchar(12) DEFAULT NULL,
+  `note` longtext,
+  `parent_id` int(11) DEFAULT NULL,
+  `currency_mode` longtext NOT NULL,
+  `type` longtext NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `account_account_code_company_uniq` (`code`,`company_id`),
+  KEY `account_account_active_index` (`active`),
+  KEY `account_account_code_index` (`code`),
+  KEY `account_account_name_index` (`name`(255)),
+  KEY `account_account_parent_left_index` (`parent_left`),
+  KEY `account_account_parent_right_index` (`parent_right`),
+  KEY `account_account_company_id_fkey` (`company_id`),
+  KEY `account_account_create_uid_fkey` (`create_uid`),
+  KEY `account_account_currency_id_fkey` (`currency_id`),
+  KEY `account_account_parent_id_fkey` (`parent_id`),
+  KEY `account_account_user_type_fkey` (`user_type`),
+  KEY `account_account_write_uid_fkey` (`write_uid`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=27 ;
+
+CREATE TABLE IF NOT EXISTS `account_account_consol_rel` (
+  `child_id` int(11) NOT NULL,
+  `parent_id` int(11) NOT NULL,
+  UNIQUE KEY `account_account_consol_rel_child_id_parent_id_key` (`child_id`,`parent_id`),
+  KEY `account_account_consol_rel_child_id_index` (`child_id`),
+  KEY `account_account_consol_rel_parent_id_index` (`parent_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `account_account_tax_default_rel` (
+  `account_id` int(11) NOT NULL,
+  `tax_id` int(11) NOT NULL,
+  UNIQUE KEY `account_account_tax_default_rel_account_id_tax_id_key` (`account_id`,`tax_id`),
+  KEY `account_account_tax_default_rel_account_id_index` (`account_id`),
+  KEY `account_account_tax_default_rel_tax_id_index` (`tax_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `account_account_template` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `create_uid` int(11) DEFAULT NULL,
+  `create_date` datetime DEFAULT NULL,
+  `write_date` datetime DEFAULT NULL,
+  `write_uid` int(11) DEFAULT NULL,
+  `note` longtext,
+  `code` varchar(64) NOT NULL,
+  `reconcile` tinyint(4) DEFAULT NULL,
+  `user_type` int(11) NOT NULL,
+  `shortcut` varchar(12) DEFAULT NULL,
+  `currency_id` int(11) DEFAULT NULL,
+  `parent_id` int(11) DEFAULT NULL,
+  `nocreate` tinyint(4) DEFAULT NULL,
+  `type` longtext NOT NULL,
+  `chart_template_id` int(11) DEFAULT NULL,
+  `name` varchar(256) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `account_account_template_code_index` (`code`),
+  KEY `account_account_template_name_index` (`name`(255)),
+  KEY `account_account_template_chart_template_id_fkey` (`chart_template_id`),
+  KEY `account_account_template_create_uid_fkey` (`create_uid`),
+  KEY `account_account_template_currency_id_fkey` (`currency_id`),
+  KEY `account_account_template_parent_id_fkey` (`parent_id`),
+  KEY `account_account_template_user_type_fkey` (`user_type`),
+  KEY `account_account_template_write_uid_fkey` (`write_uid`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=25 ;
+
+CREATE TABLE IF NOT EXISTS `account_account_template_tax_rel` (
+  `account_id` int(11) NOT NULL,
+  `tax_id` int(11) NOT NULL,
+  UNIQUE KEY `account_account_template_tax_rel_account_id_tax_id_key` (`account_id`,`tax_id`),
+  KEY `account_account_template_tax_rel_account_id_index` (`account_id`),
+  KEY `account_account_template_tax_rel_tax_id_index` (`tax_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `account_account_type` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `create_uid` int(11) DEFAULT NULL,
+  `create_date` datetime DEFAULT NULL,
+  `write_date` datetime DEFAULT NULL,
+  `write_uid` int(11) DEFAULT NULL,
+  `close_method` longtext NOT NULL,
+  `note` longtext,
+  `code` varchar(32) NOT NULL,
+  `name` varchar(64) NOT NULL,
+  `report_type` longtext NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `account_account_type_code_index` (`code`),
+  KEY `account_account_type_create_uid_fkey` (`create_uid`),
+  KEY `account_account_type_write_uid_fkey` (`write_uid`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=17 ;
+
+CREATE TABLE IF NOT EXISTS `account_account_type_rel` (
+  `journal_id` int(11) NOT NULL,
+  `account_id` int(11) NOT NULL,
+  UNIQUE KEY `account_account_type_rel_journal_id_account_id_key` (`journal_id`,`account_id`),
+  KEY `account_account_type_rel_account_id_index` (`account_id`),
+  KEY `account_account_type_rel_journal_id_index` (`journal_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `account_general_journal` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `create_uid` int(11) DEFAULT NULL,
+  `create_date` datetime DEFAULT NULL,
+  `write_date` datetime DEFAULT NULL,
+  `write_uid` int(11) DEFAULT NULL,
+  `chart_account_id` int(11) NOT NULL,
+  `date_from` date DEFAULT NULL,
+  `period_to` int(11) DEFAULT NULL,
+  `filter` longtext NOT NULL,
+  `period_from` int(11) DEFAULT NULL,
+  `fiscalyear_id` int(11) DEFAULT NULL,
+  `date_to` date DEFAULT NULL,
+  `amount_currency` tinyint(4) DEFAULT NULL,
+  `target_move` longtext NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `account_general_journal_chart_account_id_fkey` (`chart_account_id`),
+  KEY `account_general_journal_create_uid_fkey` (`create_uid`),
+  KEY `account_general_journal_fiscalyear_id_fkey` (`fiscalyear_id`),
+  KEY `account_general_journal_period_from_fkey` (`period_from`),
+  KEY `account_general_journal_period_to_fkey` (`period_to`),
+  KEY `account_general_journal_write_uid_fkey` (`write_uid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
-CREATE TABLE IF NOT EXISTS `acc_gl_journal_entries` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `sid` bigint(20) NOT NULL,
-  `uid` bigint(20) DEFAULT NULL,
-  `date` datetime DEFAULT NULL,
-  `code` varchar(10) DEFAULT NULL,
-  `payer_id` bigint(20) DEFAULT NULL,
-  `payer_type` bigint(20) DEFAULT NULL COMMENT 'patient = 0, ins 1 = 1, ins 2 =2, ins 3 = 3',
-  `pay_method` varchar(20) DEFAULT NULL COMMENT 'cash, check, eletronic, eob',
-  `pay_amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `adjustment_amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `note` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='accounts receivable sessions activity' AUTO_INCREMENT=1 ;
+CREATE TABLE IF NOT EXISTS `account_general_journal_journal_rel` (
+  `account_id` int(11) NOT NULL,
+  `journal_id` int(11) NOT NULL,
+  UNIQUE KEY `account_general_journal_journal_rel_account_id_journal_id_key` (`account_id`,`journal_id`),
+  KEY `account_general_journal_journal_rel_account_id_index` (`account_id`),
+  KEY `account_general_journal_journal_rel_journal_id_index` (`journal_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS `acc_gl_sessions` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `pid` bigint(20) DEFAULT NULL,
-  `eid` bigint(20) DEFAULT NULL,
-  `uid` bigint(20) DEFAULT NULL,
-  `open_time` datetime DEFAULT NULL,
-  `close_time` datetime DEFAULT NULL,
-  `last_update` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COMMENT='accounts receivable sessions' AUTO_INCREMENT=2 ;
+CREATE TABLE IF NOT EXISTS `account_invoice` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `create_uid` int(11) DEFAULT NULL,
+  `create_date` datetime DEFAULT NULL,
+  `write_date` datetime DEFAULT NULL,
+  `write_uid` int(11) DEFAULT NULL,
+  `origin` varchar(64) DEFAULT NULL,
+  `date_due` date DEFAULT NULL,
+  `check_total` decimal(10,0) DEFAULT NULL,
+  `reference` varchar(64) DEFAULT NULL,
+  `supplier_invoice_number` varchar(64) DEFAULT NULL,
+  `number` varchar(64) DEFAULT NULL,
+  `account_id` int(11) NOT NULL,
+  `company_id` int(11) NOT NULL,
+  `currency_id` int(11) NOT NULL,
+  `partner_id` int(11) NOT NULL,
+  `fiscal_position` int(11) DEFAULT NULL,
+  `user_id` int(11) DEFAULT NULL,
+  `partner_bank_id` int(11) DEFAULT NULL,
+  `payment_term` int(11) DEFAULT NULL,
+  `reference_type` longtext NOT NULL,
+  `journal_id` int(11) NOT NULL,
+  `amount_tax` decimal(10,0) DEFAULT NULL,
+  `state` longtext,
+  `type` longtext,
+  `internal_number` varchar(32) DEFAULT NULL,
+  `reconciled` tinyint(4) DEFAULT NULL,
+  `residual` decimal(10,0) DEFAULT NULL,
+  `move_name` varchar(64) DEFAULT NULL,
+  `date_invoice` date DEFAULT NULL,
+  `period_id` int(11) DEFAULT NULL,
+  `amount_untaxed` decimal(10,0) DEFAULT NULL,
+  `move_id` int(11) DEFAULT NULL,
+  `amount_total` decimal(10,0) DEFAULT NULL,
+  `name` varchar(64) DEFAULT NULL,
+  `comment` longtext,
+  `sent` tinyint(4) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `account_invoice_number_uniq` (`number`,`company_id`,`journal_id`,`type`(255)),
+  KEY `account_invoice_date_due_index` (`date_due`),
+  KEY `account_invoice_date_invoice_index` (`date_invoice`),
+  KEY `account_invoice_move_id_index` (`move_id`),
+  KEY `account_invoice_name_index` (`name`),
+  KEY `account_invoice_state_index` (`state`(255)),
+  KEY `account_invoice_type_index` (`type`(255)),
+  KEY `account_invoice_account_id_fkey` (`account_id`),
+  KEY `account_invoice_company_id_fkey` (`company_id`),
+  KEY `account_invoice_create_uid_fkey` (`create_uid`),
+  KEY `account_invoice_currency_id_fkey` (`currency_id`),
+  KEY `account_invoice_fiscal_position_fkey` (`fiscal_position`),
+  KEY `account_invoice_journal_id_fkey` (`journal_id`),
+  KEY `account_invoice_partner_bank_id_fkey` (`partner_bank_id`),
+  KEY `account_invoice_partner_id_fkey` (`partner_id`),
+  KEY `account_invoice_payment_term_fkey` (`payment_term`),
+  KEY `account_invoice_period_id_fkey` (`period_id`),
+  KEY `account_invoice_user_id_fkey` (`user_id`),
+  KEY `account_invoice_write_uid_fkey` (`write_uid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `account_invoice_cancel` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `create_uid` int(11) DEFAULT NULL,
+  `create_date` datetime DEFAULT NULL,
+  `write_date` datetime DEFAULT NULL,
+  `write_uid` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `account_invoice_cancel_create_uid_fkey` (`create_uid`),
+  KEY `account_invoice_cancel_write_uid_fkey` (`write_uid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `account_invoice_confirm` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `create_uid` int(11) DEFAULT NULL,
+  `create_date` datetime DEFAULT NULL,
+  `write_date` datetime DEFAULT NULL,
+  `write_uid` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `account_invoice_confirm_create_uid_fkey` (`create_uid`),
+  KEY `account_invoice_confirm_write_uid_fkey` (`write_uid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `account_invoice_line` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `create_uid` int(11) DEFAULT NULL,
+  `create_date` datetime DEFAULT NULL,
+  `write_date` datetime DEFAULT NULL,
+  `write_uid` int(11) DEFAULT NULL,
+  `origin` varchar(256) DEFAULT NULL,
+  `uos_id` int(11) DEFAULT NULL,
+  `account_id` int(11) NOT NULL,
+  `name` longtext NOT NULL,
+  `sequence` int(11) DEFAULT NULL,
+  `invoice_id` int(11) DEFAULT NULL,
+  `price_unit` decimal(10,0) NOT NULL,
+  `price_subtotal` decimal(10,0) DEFAULT NULL,
+  `company_id` int(11) DEFAULT NULL,
+  `discount` decimal(10,0) DEFAULT NULL,
+  `account_analytic_id` int(11) DEFAULT NULL,
+  `quantity` decimal(10,0) NOT NULL,
+  `partner_id` int(11) DEFAULT NULL,
+  `product_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `account_invoice_line_invoice_id_index` (`invoice_id`),
+  KEY `account_invoice_line_product_id_index` (`product_id`),
+  KEY `account_invoice_line_uos_id_index` (`uos_id`),
+  KEY `account_invoice_line_account_analytic_id_fkey` (`account_analytic_id`),
+  KEY `account_invoice_line_account_id_fkey` (`account_id`),
+  KEY `account_invoice_line_create_uid_fkey` (`create_uid`),
+  KEY `account_invoice_line_write_uid_fkey` (`write_uid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `account_invoice_line_tax` (
+  `invoice_line_id` int(11) NOT NULL,
+  `tax_id` int(11) NOT NULL,
+  UNIQUE KEY `account_invoice_line_tax_invoice_line_id_tax_id_key` (`invoice_line_id`,`tax_id`),
+  KEY `account_invoice_line_tax_invoice_line_id_index` (`invoice_line_id`),
+  KEY `account_invoice_line_tax_tax_id_index` (`tax_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `account_invoice_refund` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `create_uid` int(11) DEFAULT NULL,
+  `create_date` datetime DEFAULT NULL,
+  `write_date` datetime DEFAULT NULL,
+  `write_uid` int(11) DEFAULT NULL,
+  `date` date DEFAULT NULL,
+  `journal_id` int(11) DEFAULT NULL,
+  `filter_refund` longtext NOT NULL,
+  `description` varchar(128) NOT NULL,
+  `period` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `account_invoice_refund_create_uid_fkey` (`create_uid`),
+  KEY `account_invoice_refund_journal_id_fkey` (`journal_id`),
+  KEY `account_invoice_refund_period_fkey` (`period`),
+  KEY `account_invoice_refund_write_uid_fkey` (`write_uid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `account_invoice_tax` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `create_uid` int(11) DEFAULT NULL,
+  `create_date` datetime DEFAULT NULL,
+  `write_date` datetime DEFAULT NULL,
+  `write_uid` int(11) DEFAULT NULL,
+  `tax_amount` decimal(10,0) DEFAULT NULL,
+  `account_id` int(11) NOT NULL,
+  `sequence` int(11) DEFAULT NULL,
+  `invoice_id` int(11) DEFAULT NULL,
+  `manual` tinyint(4) DEFAULT NULL,
+  `company_id` int(11) DEFAULT NULL,
+  `base_amount` decimal(10,0) DEFAULT NULL,
+  `amount` decimal(10,0) DEFAULT NULL,
+  `base` decimal(10,0) DEFAULT NULL,
+  `tax_code_id` int(11) DEFAULT NULL,
+  `account_analytic_id` int(11) DEFAULT NULL,
+  `base_code_id` int(11) DEFAULT NULL,
+  `name` varchar(64) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `account_invoice_tax_invoice_id_index` (`invoice_id`),
+  KEY `account_invoice_tax_account_analytic_id_fkey` (`account_analytic_id`),
+  KEY `account_invoice_tax_account_id_fkey` (`account_id`),
+  KEY `account_invoice_tax_base_code_id_fkey` (`base_code_id`),
+  KEY `account_invoice_tax_create_uid_fkey` (`create_uid`),
+  KEY `account_invoice_tax_tax_code_id_fkey` (`tax_code_id`),
+  KEY `account_invoice_tax_write_uid_fkey` (`write_uid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `account_journal` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `create_uid` int(11) DEFAULT NULL,
+  `create_date` datetime DEFAULT NULL,
+  `write_date` datetime DEFAULT NULL,
+  `write_uid` int(11) DEFAULT NULL,
+  `default_debit_account_id` int(11) DEFAULT NULL,
+  `code` varchar(5) NOT NULL,
+  `default_credit_account_id` int(11) DEFAULT NULL,
+  `loss_account_id` int(11) DEFAULT NULL,
+  `currency` int(11) DEFAULT NULL,
+  `internal_account_id` int(11) DEFAULT NULL,
+  `allow_date` tinyint(4) DEFAULT NULL,
+  `sequence_id` int(11) NOT NULL,
+  `update_posted` tinyint(4) DEFAULT NULL,
+  `user_id` int(11) DEFAULT NULL,
+  `name` varchar(64) NOT NULL,
+  `cash_control` tinyint(4) DEFAULT NULL,
+  `centralisation` tinyint(4) DEFAULT NULL,
+  `group_invoice_lines` tinyint(4) DEFAULT NULL,
+  `with_last_closing_balance` tinyint(4) DEFAULT NULL,
+  `company_id` int(11) NOT NULL,
+  `analytic_journal_id` int(11) DEFAULT NULL,
+  `profit_account_id` int(11) DEFAULT NULL,
+  `entry_posted` tinyint(4) DEFAULT NULL,
+  `type` varchar(32) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `account_journal_code_company_uniq` (`code`,`company_id`),
+  UNIQUE KEY `account_journal_name_company_uniq` (`name`,`company_id`),
+  KEY `account_journal_company_id_index` (`company_id`),
+  KEY `account_journal_internal_account_id_index` (`internal_account_id`),
+  KEY `account_journal_analytic_journal_id_fkey` (`analytic_journal_id`),
+  KEY `account_journal_create_uid_fkey` (`create_uid`),
+  KEY `account_journal_currency_fkey` (`currency`),
+  KEY `account_journal_default_credit_account_id_fkey` (`default_credit_account_id`),
+  KEY `account_journal_default_debit_account_id_fkey` (`default_debit_account_id`),
+  KEY `account_journal_loss_account_id_fkey` (`loss_account_id`),
+  KEY `account_journal_profit_account_id_fkey` (`profit_account_id`),
+  KEY `account_journal_sequence_id_fkey` (`sequence_id`),
+  KEY `account_journal_user_id_fkey` (`user_id`),
+  KEY `account_journal_write_uid_fkey` (`write_uid`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=9 ;
+
+CREATE TABLE IF NOT EXISTS `account_journal_accounting_report_rel` (
+  `accounting_report_id` int(11) NOT NULL,
+  `account_journal_id` int(11) NOT NULL,
+  UNIQUE KEY `account_journal_accounting_re_accounting_report_id_account__key` (`accounting_report_id`,`account_journal_id`),
+  KEY `account_journal_accounting_report_rel_account_journal_id_index` (`account_journal_id`),
+  KEY `account_journal_accounting_report_rel_accounting_report_id_inde` (`accounting_report_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `account_journal_account_vat_declaration_rel` (
+  `account_vat_declaration_id` int(11) NOT NULL,
+  `account_journal_id` int(11) NOT NULL,
+  UNIQUE KEY `account_journal_account_vat_d_account_vat_declaration_id_ac_key` (`account_vat_declaration_id`,`account_journal_id`),
+  KEY `account_journal_account_vat_declaration_rel_account_journal_id_` (`account_journal_id`),
+  KEY `account_journal_account_vat_declaration_rel_account_vat_declara` (`account_vat_declaration_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `account_journal_cashbox_line` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `create_uid` int(11) DEFAULT NULL,
+  `create_date` datetime DEFAULT NULL,
+  `write_date` datetime DEFAULT NULL,
+  `write_uid` int(11) DEFAULT NULL,
+  `journal_id` int(11) NOT NULL,
+  `pieces` decimal(10,0) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `account_journal_cashbox_line_journal_id_index` (`journal_id`),
+  KEY `account_journal_cashbox_line_create_uid_fkey` (`create_uid`),
+  KEY `account_journal_cashbox_line_write_uid_fkey` (`write_uid`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=121 ;
+
+CREATE TABLE IF NOT EXISTS `account_journal_group_rel` (
+  `journal_id` int(11) NOT NULL,
+  `group_id` int(11) NOT NULL,
+  UNIQUE KEY `account_journal_group_rel_journal_id_group_id_key` (`journal_id`,`group_id`),
+  KEY `account_journal_group_rel_group_id_index` (`group_id`),
+  KEY `account_journal_group_rel_journal_id_index` (`journal_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `account_journal_period` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `create_uid` int(11) DEFAULT NULL,
+  `create_date` datetime DEFAULT NULL,
+  `write_date` datetime DEFAULT NULL,
+  `write_uid` int(11) DEFAULT NULL,
+  `name` varchar(64) NOT NULL,
+  `state` longtext NOT NULL,
+  `company_id` int(11) DEFAULT NULL,
+  `journal_id` int(11) NOT NULL,
+  `period_id` int(11) NOT NULL,
+  `active` tinyint(4) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `account_journal_period_create_uid_fkey` (`create_uid`),
+  KEY `account_journal_period_journal_id_fkey` (`journal_id`),
+  KEY `account_journal_period_period_id_fkey` (`period_id`),
+  KEY `account_journal_period_write_uid_fkey` (`write_uid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `account_journal_select` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `create_uid` int(11) DEFAULT NULL,
+  `create_date` datetime DEFAULT NULL,
+  `write_date` datetime DEFAULT NULL,
+  `write_uid` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `account_journal_select_create_uid_fkey` (`create_uid`),
+  KEY `account_journal_select_write_uid_fkey` (`write_uid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `account_journal_type_rel` (
+  `journal_id` int(11) NOT NULL,
+  `type_id` int(11) NOT NULL,
+  UNIQUE KEY `account_journal_type_rel_journal_id_type_id_key` (`journal_id`,`type_id`),
+  KEY `account_journal_type_rel_journal_id_index` (`journal_id`),
+  KEY `account_journal_type_rel_type_id_index` (`type_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `account_model` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `create_uid` int(11) DEFAULT NULL,
+  `create_date` datetime DEFAULT NULL,
+  `write_date` datetime DEFAULT NULL,
+  `write_uid` int(11) DEFAULT NULL,
+  `journal_id` int(11) NOT NULL,
+  `company_id` int(11) DEFAULT NULL,
+  `name` varchar(64) NOT NULL,
+  `legend` longtext,
+  PRIMARY KEY (`id`),
+  KEY `account_model_create_uid_fkey` (`create_uid`),
+  KEY `account_model_journal_id_fkey` (`journal_id`),
+  KEY `account_model_write_uid_fkey` (`write_uid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `account_model_line` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `create_uid` int(11) DEFAULT NULL,
+  `create_date` datetime DEFAULT NULL,
+  `write_date` datetime DEFAULT NULL,
+  `write_uid` int(11) DEFAULT NULL,
+  `analytic_account_id` int(11) DEFAULT NULL,
+  `model_id` int(11) NOT NULL,
+  `account_id` int(11) NOT NULL,
+  `sequence` int(11) NOT NULL,
+  `currency_id` int(11) DEFAULT NULL,
+  `credit` decimal(10,0) DEFAULT NULL,
+  `date_maturity` longtext,
+  `debit` decimal(10,0) DEFAULT NULL,
+  `amount_currency` double DEFAULT NULL,
+  `quantity` decimal(10,0) DEFAULT NULL,
+  `partner_id` int(11) DEFAULT NULL,
+  `name` varchar(64) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `account_model_line_model_id_index` (`model_id`),
+  KEY `account_model_line_account_id_fkey` (`account_id`),
+  KEY `account_model_line_analytic_account_id_fkey` (`analytic_account_id`),
+  KEY `account_model_line_create_uid_fkey` (`create_uid`),
+  KEY `account_model_line_currency_id_fkey` (`currency_id`),
+  KEY `account_model_line_partner_id_fkey` (`partner_id`),
+  KEY `account_model_line_write_uid_fkey` (`write_uid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `account_move` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `create_uid` int(11) DEFAULT NULL,
+  `create_date` datetime DEFAULT NULL,
+  `write_date` datetime DEFAULT NULL,
+  `write_uid` int(11) DEFAULT NULL,
+  `name` varchar(64) NOT NULL,
+  `state` longtext NOT NULL,
+  `ref` varchar(64) DEFAULT NULL,
+  `company_id` int(11) DEFAULT NULL,
+  `journal_id` int(11) NOT NULL,
+  `period_id` int(11) NOT NULL,
+  `narration` longtext,
+  `date` date NOT NULL,
+  `balance` decimal(10,0) DEFAULT NULL,
+  `partner_id` int(11) DEFAULT NULL,
+  `to_check` tinyint(4) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `account_move_date_index` (`date`),
+  KEY `account_move_create_uid_fkey` (`create_uid`),
+  KEY `account_move_journal_id_fkey` (`journal_id`),
+  KEY `account_move_period_id_fkey` (`period_id`),
+  KEY `account_move_write_uid_fkey` (`write_uid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `account_move_bank_reconcile` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `create_uid` int(11) DEFAULT NULL,
+  `create_date` datetime DEFAULT NULL,
+  `write_date` datetime DEFAULT NULL,
+  `write_uid` int(11) DEFAULT NULL,
+  `journal_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `account_move_bank_reconcile_create_uid_fkey` (`create_uid`),
+  KEY `account_move_bank_reconcile_journal_id_fkey` (`journal_id`),
+  KEY `account_move_bank_reconcile_write_uid_fkey` (`write_uid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `account_move_line` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `create_uid` int(11) DEFAULT NULL,
+  `create_date` datetime DEFAULT NULL,
+  `write_date` datetime DEFAULT NULL,
+  `write_uid` int(11) DEFAULT NULL,
+  `statement_id` int(11) DEFAULT NULL,
+  `journal_id` int(11) NOT NULL,
+  `currency_id` int(11) DEFAULT NULL,
+  `date_maturity` date DEFAULT NULL,
+  `partner_id` int(11) DEFAULT NULL,
+  `reconcile_partial_id` int(11) DEFAULT NULL,
+  `analytic_account_id` int(11) DEFAULT NULL,
+  `credit` decimal(10,0) DEFAULT NULL,
+  `centralisation` varchar(8) DEFAULT NULL,
+  `company_id` int(11) DEFAULT NULL,
+  `tax_code_id` int(11) DEFAULT NULL,
+  `state` longtext,
+  `debit` decimal(10,0) DEFAULT NULL,
+  `blocked` tinyint(4) DEFAULT NULL,
+  `ref` varchar(64) DEFAULT NULL,
+  `account_id` int(11) NOT NULL,
+  `period_id` int(11) NOT NULL,
+  `date_created` date DEFAULT NULL,
+  `date` date NOT NULL,
+  `move_id` int(11) NOT NULL,
+  `name` varchar(64) NOT NULL,
+  `reconcile_id` int(11) DEFAULT NULL,
+  `tax_amount` decimal(10,0) DEFAULT NULL,
+  `product_id` int(11) DEFAULT NULL,
+  `account_tax_id` int(11) DEFAULT NULL,
+  `product_uom_id` int(11) DEFAULT NULL,
+  `amount_currency` decimal(10,0) DEFAULT NULL,
+  `quantity` decimal(10,0) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `account_move_line_account_id_index` (`account_id`),
+  KEY `account_move_line_date_created_index` (`date_created`),
+  KEY `account_move_line_date_index` (`date`),
+  KEY `account_move_line_date_maturity_index` (`date_maturity`),
+  KEY `account_move_line_journal_id_index` (`journal_id`),
+  KEY `account_move_line_journal_id_period_id_index` (`journal_id`,`period_id`),
+  KEY `account_move_line_move_id_index` (`move_id`),
+  KEY `account_move_line_partner_id_index` (`partner_id`),
+  KEY `account_move_line_period_id_index` (`period_id`),
+  KEY `account_move_line_reconcile_id_index` (`reconcile_id`),
+  KEY `account_move_line_reconcile_partial_id_index` (`reconcile_partial_id`),
+  KEY `account_move_line_statement_id_index` (`statement_id`),
+  KEY `account_move_line_tax_amount_index` (`tax_amount`),
+  KEY `account_move_line_account_tax_id_fkey` (`account_tax_id`),
+  KEY `account_move_line_analytic_account_id_fkey` (`analytic_account_id`),
+  KEY `account_move_line_create_uid_fkey` (`create_uid`),
+  KEY `account_move_line_currency_id_fkey` (`currency_id`),
+  KEY `account_move_line_product_id_fkey` (`product_id`),
+  KEY `account_move_line_product_uom_id_fkey` (`product_uom_id`),
+  KEY `account_move_line_tax_code_id_fkey` (`tax_code_id`),
+  KEY `account_move_line_write_uid_fkey` (`write_uid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `account_move_line_reconcile` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `create_uid` int(11) DEFAULT NULL,
+  `create_date` datetime DEFAULT NULL,
+  `write_date` datetime DEFAULT NULL,
+  `write_uid` int(11) DEFAULT NULL,
+  `trans_nbr` int(11) DEFAULT NULL,
+  `credit` decimal(10,0) DEFAULT NULL,
+  `writeoff` decimal(10,0) DEFAULT NULL,
+  `debit` decimal(10,0) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `account_move_line_reconcile_create_uid_fkey` (`create_uid`),
+  KEY `account_move_line_reconcile_write_uid_fkey` (`write_uid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `account_move_line_reconcile_select` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `create_uid` int(11) DEFAULT NULL,
+  `create_date` datetime DEFAULT NULL,
+  `write_date` datetime DEFAULT NULL,
+  `write_uid` int(11) DEFAULT NULL,
+  `account_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `account_move_line_reconcile_select_account_id_fkey` (`account_id`),
+  KEY `account_move_line_reconcile_select_create_uid_fkey` (`create_uid`),
+  KEY `account_move_line_reconcile_select_write_uid_fkey` (`write_uid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `account_move_line_reconcile_writeoff` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `create_uid` int(11) DEFAULT NULL,
+  `create_date` datetime DEFAULT NULL,
+  `write_date` datetime DEFAULT NULL,
+  `write_uid` int(11) DEFAULT NULL,
+  `comment` varchar(64) NOT NULL,
+  `analytic_id` int(11) DEFAULT NULL,
+  `writeoff_acc_id` int(11) NOT NULL,
+  `journal_id` int(11) NOT NULL,
+  `date_p` date DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `account_move_line_reconcile_writeoff_analytic_id_fkey` (`analytic_id`),
+  KEY `account_move_line_reconcile_writeoff_create_uid_fkey` (`create_uid`),
+  KEY `account_move_line_reconcile_writeoff_journal_id_fkey` (`journal_id`),
+  KEY `account_move_line_reconcile_writeoff_write_uid_fkey` (`write_uid`),
+  KEY `account_move_line_reconcile_writeoff_writeoff_acc_id_fkey` (`writeoff_acc_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `account_move_line_relation` (
+  `move_id` int(11) NOT NULL,
+  `line_id` int(11) NOT NULL,
+  UNIQUE KEY `account_move_line_relation_move_id_line_id_key` (`move_id`,`line_id`),
+  KEY `account_move_line_relation_line_id_index` (`line_id`),
+  KEY `account_move_line_relation_move_id_index` (`move_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='account_statement_from_invoice_lines AND account_move_line';
+
+CREATE TABLE IF NOT EXISTS `account_move_line_unreconcile_select` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `create_uid` int(11) DEFAULT NULL,
+  `create_date` datetime DEFAULT NULL,
+  `write_date` datetime DEFAULT NULL,
+  `write_uid` int(11) DEFAULT NULL,
+  `account_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `account_move_line_unreconcile_select_account_id_fkey` (`account_id`),
+  KEY `account_move_line_unreconcile_select_create_uid_fkey` (`create_uid`),
+  KEY `account_move_line_unreconcile_select_write_uid_fkey` (`write_uid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `account_move_reconcile` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `create_uid` int(11) DEFAULT NULL,
+  `create_date` datetime DEFAULT NULL,
+  `write_date` datetime DEFAULT NULL,
+  `write_uid` int(11) DEFAULT NULL,
+  `name` varchar(64) NOT NULL,
+  `opening_reconciliation` tinyint(4) DEFAULT NULL,
+  `type` varchar(16) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `account_move_reconcile_create_uid_fkey` (`create_uid`),
+  KEY `account_move_reconcile_write_uid_fkey` (`write_uid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `acl_permissions` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -1123,7 +1747,7 @@ CREATE TABLE IF NOT EXISTS `immunizations` (
   `active_problems` varchar(255) CHARACTER SET latin1 COLLATE latin1_bin DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `code` (`code`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=28778 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `immunizations_relations` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -1131,7 +1755,7 @@ CREATE TABLE IF NOT EXISTS `immunizations_relations` (
   `foreign_id` bigint(20) DEFAULT NULL,
   `code_type` varchar(255) DEFAULT NULL COMMENT 'medication,active problem or labs',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=23 ;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `insurance_companies` (
   `id` int(11) NOT NULL DEFAULT '0',
@@ -1178,7 +1802,7 @@ CREATE TABLE IF NOT EXISTS `insurance_data` (
   `accept_assignment` varchar(5) NOT NULL DEFAULT 'TRUE',
   PRIMARY KEY (`id`),
   UNIQUE KEY `pid_type_date` (`pid`,`type`,`date`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=7 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `insurance_numbers` (
   `id` int(11) NOT NULL DEFAULT '0',
@@ -1218,7 +1842,7 @@ CREATE TABLE IF NOT EXISTS `labs_guidelines` (
   `preventive_care_id` int(11) DEFAULT NULL,
   `value_name` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=12 ;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `labs_loinc` (
   `LOINC_NUM` varchar(255) NOT NULL,
@@ -1292,7 +1916,7 @@ CREATE TABLE IF NOT EXISTS `log` (
   `crt_user` varchar(255) DEFAULT NULL,
   `ip` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `medications` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -1314,7 +1938,7 @@ CREATE TABLE IF NOT EXISTS `medications` (
   `PHARM_CLASSES` text,
   `DEASCHEDULE` text,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=48886 ;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `messages` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -1506,72 +2130,6 @@ CREATE TABLE IF NOT EXISTS `patient_demographics` (
   `employer_state` varchar(255) DEFAULT NULL,
   `employer_country` varchar(255) DEFAULT NULL,
   `employer_postal_code` varchar(255) DEFAULT NULL,
-  `primary_insurance_provider` text,
-  `primary_plan_name` text,
-  `primary_effective_date` text,
-  `primary_subscriber_title` text,
-  `primary_subscriber_fname` text,
-  `primary_subscriber_mname` text,
-  `primary_subscriber_lname` text,
-  `primary_policy_number` text,
-  `primary_group_number` text,
-  `primary_subscriber_street` text,
-  `primary_subscriber_city` text,
-  `primary_subscriber_state` text,
-  `primary_subscriber_country` text,
-  `primary_subscriber_zip_code` text,
-  `primary_subscriber_relationship` text,
-  `primary_subscriber_phone` text,
-  `primary_subscriber_employer` text,
-  `primary_subscriber_employer_city` text,
-  `primary_subscriber_employer_state` text,
-  `primary_subscriber_employer_country` text,
-  `primary_subscriber_employer_zip_code` text,
-  `secondary_insurance_provider` text,
-  `secondary_plan_name` text,
-  `secondary_effective_date` text,
-  `secondary_policy_number` text,
-  `secondary_group_number` text,
-  `secondary_subscriber_city` text,
-  `secondary_subscriber_state` text,
-  `secondary_subscriber_country` text,
-  `secondary_subscriber_zip_code` text,
-  `secondary_subscriber_title` text,
-  `secondary_subscriber_fname` text,
-  `secondary_subscriber_mname` text,
-  `secondary_subscriber_lname` text,
-  `secondary_subscriber_street` text,
-  `secondary_subscriber_relationship` text,
-  `secondary_subscriber_phone` text,
-  `secondary_subscriber_employer` text,
-  `secondary_subscriber_employer_city` text,
-  `secondary_subscriber_employer_state` text,
-  `secondary_subscriber_employer_country` text,
-  `secondary_subscriber_employer_zip_code` text,
-  `tertiary_insurance_provider` text,
-  `tertiary_plan_name` text,
-  `tertiary_effective_date` text,
-  `tertiary_policy_number` text,
-  `tertiary_group_number` text,
-  `tertiary_subscriber_title` text,
-  `tertiary_subscriber_fname` text,
-  `tertiary_subscriber_mname` text,
-  `tertiary_subscriber_lname` text,
-  `tertiary_subscriber_street` text,
-  `tertiary_subscriber_relationship` text,
-  `tertiary_subscriber_state` text,
-  `tertiary_subscriber_country` text,
-  `tertiary_subscriber_phone` text,
-  `tertiary_subscriber_city` text,
-  `tertiary_subscriber_zip_code` text,
-  `tertiary_subscriber_employer` text,
-  `tertiary_subscriber_employer_city` text,
-  `tertiary_subscriber_employer_state` text,
-  `tertiary_subscriber_employer_street` text,
-  `tertiary_subscriber_employer_country` text,
-  `tertiary_subscriber__employer_zip_code` text,
-  `primary_subscriber_employer_street` text,
-  `secondary_subscriber_employer_street` text,
   `zipcode` text,
   `race` text,
   `ethnicity` text,
@@ -1779,6 +2337,7 @@ CREATE TABLE IF NOT EXISTS `patient_pools` (
   `pid` bigint(20) DEFAULT NULL,
   `uid` bigint(20) DEFAULT NULL COMMENT 'user id that is treating the patient',
   `eid` bigint(20) DEFAULT NULL,
+  `date` datetime DEFAULT NULL,
   `time_in` datetime DEFAULT NULL COMMENT 'checkin time',
   `time_out` datetime DEFAULT NULL COMMENT 'checkout time',
   `area_id` int(11) DEFAULT NULL COMMENT 'pool area id',
@@ -1787,7 +2346,7 @@ CREATE TABLE IF NOT EXISTS `patient_pools` (
   `checkout_timer` time DEFAULT NULL COMMENT 'timer user to automatically checkout from the pool area, and return to the previous pool area ',
   `parent_id` bigint(20) DEFAULT NULL COMMENT 'parent ID = the id of the checkin pool (this will maitain a relation between all pools of that visit)',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `patient_prescriptions` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -2399,3 +2958,7 @@ CREATE TABLE IF NOT EXISTS `x12_partners` (
   `x12_per06` varchar(80) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

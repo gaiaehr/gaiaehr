@@ -48,21 +48,21 @@ class CronJob
 				$p -> patientChartInByUserId($user['uid']);
 			}
 
-			/**
-			 * set cron start to false reset cron time to current time
-			 */
-			$_SESSION['inactive']['start'] = false;
-			$_SESSION['cron']['time'] = time();
-			return array(
-				'success' => true,
-				'ran' => true
-			);
-		}
-		return array(
-			'success' => true,
-			'ran' => false
-		);
-	}
+            /**
+             * set cron start to false reset cron time to current time
+             */
+            $_SESSION['inactive']['start'] = false;
+            $_SESSION['cron']['time'] = time();
+            return array(
+                'success' => true,
+                'ran' => true
+            );
+        }
+        return array(
+            'success' => true,
+            'ran' => false
+        );
+    }
 
 }
 

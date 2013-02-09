@@ -235,53 +235,55 @@ class PoolArea
 	 */
 	public function getPatientsByPoolAreaAccess($params)
 	{
-		$uid = (is_object($params)) ? $params->uid : $params;
-		$this->acl = new ACL($uid);
-		$patients = array();
-		if($this->acl->hasPermission('use_pool_areas')){
-			if($this->acl->hasPermission('access_poolcheckin')){
-				foreach($this->getPatientsByPoolAreaId(1, 1) as $p){
-					$p['shortName']   = Person::ellipsis($p['name'], 20);
-					$p['poolArea']    = 'Check In';
-					$p['photoSrc']    = $this->patient->getPatientPhotoSrcIdByPid($p['pid']);
-					$p['floorPlanId'] = $this->getFloorPlanIdByPoolAreaId(1);
-					$z                = $this->getPatientCurrentZoneInfoByPid($p['pid']);
-					$patients[]       = (empty($z)) ? $p : array_merge($p, $z);
-				}
-			}
-			if($this->acl->hasPermission('access_pooltriage')){
-				foreach($this->getPatientsByPoolAreaId(2, 1) as $p){
-					$p['shortName']   = Person::ellipsis($p['name'], 20);
-					$p['poolArea']    = 'Triage';
-					$p['photoSrc']    = $this->patient->getPatientPhotoSrcIdByPid($p['pid']);
-					$p['floorPlanId'] = $this->getFloorPlanIdByPoolAreaId(2);
-					$z                = $this->getPatientCurrentZoneInfoByPid($p['pid']);
-					$patients[]       = (empty($z)) ? $p : array_merge($p, $z);
-				}
-			}
-			if($this->acl->hasPermission('access_poolphysician')){
-				foreach($this->getPatientsByPoolAreaId(3, 1) as $p){
-					$p['shortName']   = Person::ellipsis($p['name'], 20);
-					$p['poolArea']    = 'Physician';
-					$p['photoSrc']    = $this->patient->getPatientPhotoSrcIdByPid($p['pid']);
-					$p['floorPlanId'] = $this->getFloorPlanIdByPoolAreaId(3);
-					$z                = $this->getPatientCurrentZoneInfoByPid($p['pid']);
-					$patients[]       = (empty($z)) ? $p : array_merge($p, $z);
-				}
-			}
-			if($this->acl->hasPermission('access_poolcheckout')){
-				foreach($this->getPatientsByPoolAreaId(4, 1) as $p){
-					$p['shortName']   = Person::ellipsis($p['name'], 20);
-					$p['poolArea']    = 'Check Out';
-					$p['photoSrc']    = $this->patient->getPatientPhotoSrcIdByPid($p['pid']);
-					$p['floorPlanId'] = $this->getFloorPlanIdByPoolAreaId(4);
-					$z                = $this->getPatientCurrentZoneInfoByPid($p['pid']);
-					$patients[]       = (empty($z)) ? $p : array_merge($p, $z);
-				}
-			}
-		}
-		$patients = array_slice($patients, 0, 6);
-		return $patients;
+        if(isset($params->uid) || !is_object($params)){
+            $uid = (is_object($params)) ? $params->uid : $params;
+            $this->acl = new ACL($uid);
+            $patients = array();
+            if($this->acl->hasPermission('use_pool_areas')){
+                if($this->acl->hasPermission('access_poolcheckin')){
+                    foreach($this->getPatientsByPoolAreaId(1, 1) as $p){
+                        $p['shortName']   = Person::ellipsis($p['name'], 20);
+                        $p['poolArea']    = 'Check In';
+                        $p['photoSrc']    = $this->patient->getPatientPhotoSrcIdByPid($p['pid']);
+                        $p['floorPlanId'] = $this->getFloorPlanIdByPoolAreaId(1);
+                        $z                = $this->getPatientCurrentZoneInfoByPid($p['pid']);
+                        $patients[]       = (empty($z)) ? $p : array_merge($p, $z);
+                    }
+                }
+                if($this->acl->hasPermission('access_pooltriage')){
+                    foreach($this->getPatientsByPoolAreaId(2, 1) as $p){
+                        $p['shortName']   = Person::ellipsis($p['name'], 20);
+                        $p['poolArea']    = 'Triage';
+                        $p['photoSrc']    = $this->patient->getPatientPhotoSrcIdByPid($p['pid']);
+                        $p['floorPlanId'] = $this->getFloorPlanIdByPoolAreaId(2);
+                        $z                = $this->getPatientCurrentZoneInfoByPid($p['pid']);
+                        $patients[]       = (empty($z)) ? $p : array_merge($p, $z);
+                    }
+                }
+                if($this->acl->hasPermission('access_poolphysician')){
+                    foreach($this->getPatientsByPoolAreaId(3, 1) as $p){
+                        $p['shortName']   = Person::ellipsis($p['name'], 20);
+                        $p['poolArea']    = 'Physician';
+                        $p['photoSrc']    = $this->patient->getPatientPhotoSrcIdByPid($p['pid']);
+                        $p['floorPlanId'] = $this->getFloorPlanIdByPoolAreaId(3);
+                        $z                = $this->getPatientCurrentZoneInfoByPid($p['pid']);
+                        $patients[]       = (empty($z)) ? $p : array_merge($p, $z);
+                    }
+                }
+                if($this->acl->hasPermission('access_poolcheckout')){
+                    foreach($this->getPatientsByPoolAreaId(4, 1) as $p){
+                        $p['shortName']   = Person::ellipsis($p['name'], 20);
+                        $p['poolArea']    = 'Check Out';
+                        $p['photoSrc']    = $this->patient->getPatientPhotoSrcIdByPid($p['pid']);
+                        $p['floorPlanId'] = $this->getFloorPlanIdByPoolAreaId(4);
+                        $z                = $this->getPatientCurrentZoneInfoByPid($p['pid']);
+                        $patients[]       = (empty($z)) ? $p : array_merge($p, $z);
+                    }
+                }
+            }
+            $patients = array_slice($patients, 0, 6);
+            return $patients;
+        }
 	}
 
 	public function getAreaTitleById($id)

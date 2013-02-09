@@ -27,38 +27,37 @@ Ext.define('App.ux.RenderPanel', {
 	pageLayout   : 'fit',
 	pageBody     : [],
 	pageTitle    : '',
+	pagePadding  : null,
 	initComponent: function() {
 		var me = this;
 		Ext.apply(me, {
 			items: [
-				{
+				me.mainHeader = Ext.widget('container',{
 					cls   : 'RenderPanel-header',
 					itemId: 'RenderPanel-header',
-					xtype : 'container',
 					region: 'north',
 					layout: 'fit',
 					height: 33,
 					html  : '<div class="panel_title">' + me.pageTitle + '</div>'
 
-				},
+				}),
 				{
 					cls    : 'RenderPanel-body-container',
                     itemId : 'RenderPanel-body-container',
 					xtype  : 'container',
 					region : 'center',
 					layout : 'fit',
-					padding: 5,
+					padding: this.pagePadding == null ? 5 : this.pagePadding,
 					items  : [
-						{
+						me.mainBoddy = Ext.widget('panel',{
 							cls     : 'RenderPanel-body',
-							xtype   : 'panel',
 							frame   : true,
 							layout  : this.pageLayout,
 							border  : false,
                             itemId  : 'pageLayout',
 							defaults: {frame: false, border: false, autoScroll: true},
 							items   : me.pageBody
-						}
+						})
 					]
 				}
 			]
@@ -80,7 +79,7 @@ Ext.define('App.ux.RenderPanel', {
         return this.getComponent('RenderPanel-body-container');
     },
     getPageBody:function(){
-        return this.getPageBodyContainer().down('panel');
+        return this.mainBoddy;
     }
 
 });

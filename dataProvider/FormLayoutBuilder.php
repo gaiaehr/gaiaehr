@@ -350,7 +350,7 @@ class FormLayoutBuilder {
     private function filedInUsed(){
         $this->db->setSQL("SELECT $this->col FROM $this->form_data_table");
         $ret = $this->db->fetchRecords(PDO::FETCH_ASSOC);
-        if($ret[0]){
+        if(isset($ret[0])){
             return true;
         }else{
             return false;
@@ -440,7 +440,7 @@ class FormLayoutBuilder {
             $foo = json_decode($fo['options'],true);
 
 
-            $row['name']  =  $foo['title'].$foo['fieldLabel'].' ('.$parentField['xtype'].')';
+            $row['name']  =  (isset($foo['title']) ? $foo['title'] : $foo['fieldLabel']).' ('.$parentField['xtype'].')';
             $row['value'] =  $parentField['id'];
             array_push($parentFields, $row);
         }
@@ -466,7 +466,7 @@ class FormLayoutBuilder {
                     unset($item['children']);
                     if($item['xtype'] != 'fieldset' && $item['xtype'] != 'fieldcontainer') $item['leaf'] = true;
                 }else{
-                    if($item['collapsed']== 0){
+                    if(isset($item['collapsed']) && $item['collapsed']== 0){
                         $item['expanded'] = true;
                     }else{
                         $item['expanded'] = false;
@@ -495,7 +495,7 @@ class FormLayoutBuilder {
                 unset($item['children']);
                 if($item['xtype'] != 'fieldset' && $item['xtype'] != 'fieldcontainer') $item['leaf'] = true;
             }else{
-                if($item['collapsed'] == 0){
+                if(isset($item['collapsed']) && $item['collapsed']== 0){
                     $item['expanded'] = true;
                 }else{
                     $item['expanded'] = false;

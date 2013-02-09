@@ -134,11 +134,11 @@ class FormLayoutEngine
 				$item['border'] = false;
 				$item['bodyBorder'] = false;
 				$item['bodyPadding'] = 10;
-				if($item['title'] == 'Primary Insurance' || $item['title'] == 'Secondary Insurance' || $item['title'] == 'Tertiary Insurance' ){
-					array_push($items2, $item);
-				}else{
+//				if($item['title'] == 'Primary Insurance' || $item['title'] == 'Secondary Insurance' || $item['title'] == 'Tertiary Insurance' ){
+//					array_push($items2, $item);
+//				}else{
 					array_push($items, $item);
-				}
+//				}
 			}else{
 				array_push($items, $item);
 			}
@@ -191,23 +191,10 @@ class FormLayoutEngine
 		$rawStr = json_encode($items);
 
 		if($params->formToRender == 'Demographics' || $params->formToRender == 1){
-			$rawStr2 = json_encode($items2);
-			$rawStr = "[
-			    Ext.widget('tabpanel',{
-                    border:false,
-                    height:240,
-                    defaults:{autoScroll:true},
-                    items:$rawStr
-                }),
-                Ext.widget('tabpanel',{
-                    border:false,
-                    flex:1,
-                    defaults:{autoScroll:true},
-                    action:'insurances',
-                    items:$rawStr2
-                })
-            ]";
-		}
+//			$rawStr2 = json_encode($items2);
+			$rawStr  = "Ext.widget('tabpanel',{border:false,height:240,defaults:{autoScroll:true},items:$rawStr})";
+//            $rawStr .= "Ext.widget('tabpanel',{border:false,flex:1,defaults:{autoScroll:true},action:'insurances',items:$rawStr2})]";
+        }
 
 
 		$regex      = '("\w*?":|"Ext\.create|\)"\})';

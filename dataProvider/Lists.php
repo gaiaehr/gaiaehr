@@ -32,13 +32,14 @@ class Lists extends dbHelper
 	 */
 	public function getOptions(stdClass $params)
 	{
-		$this->setSQL("SELECT o.*
+        if(isset($params->list_id)){
+            $this->setSQL("SELECT o.*
                          FROM combo_lists_options AS o
                     LEFT JOIN combo_lists AS l ON l.id = o.list_id
                         WHERE l.id = '$params->list_id'
                      ORDER BY o.seq");
-		return $this->fetchRecords(PDO::FETCH_ASSOC);
-
+            return $this->fetchRecords(PDO::FETCH_ASSOC);
+        }
 	}
 
 	/**

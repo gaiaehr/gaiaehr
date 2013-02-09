@@ -47,23 +47,12 @@ ini_set('max_input_time', '1500');
 ini_set('max_execution_time', '1500');
 $timezone = (isset($_SESSION['site']['timezone']) ? $_SESSION['site']['timezone'] : 'UTC');
 date_default_timezone_set($timezone);
+
 include_once ($_SESSION['root'] . '/classes/Time.php');
 include_once ($_SESSION['root'] . '/classes/rb.php');
 
-class RB{
-
-	/**
-	 * @var
-	 */
-	public $sql_statement;
-	/**
-	 * @var
-	 */
-	public $lastInsertId;
-	/**
-	 * @var PDO
-	 */
-	public $conn;
+class RB
+{
 
 	public static $init = false;
 
@@ -81,8 +70,8 @@ class RB{
 	{
 		if (isset($_SESSION['site']['db']))
 		{
-			$host = (string)$_SESSION['site']['db']['host'];
-			$port = (int)$_SESSION['site']['db']['port'];
+			$host   = (string)$_SESSION['site']['db']['host'];
+			$port   = (int)$_SESSION['site']['db']['port'];
 			$dbName = (string)$_SESSION['site']['db']['database'];
 			$dbUser = (string)$_SESSION['site']['db']['username'];
 			$dbPass = (string)$_SESSION['site']['db']['password'];
@@ -99,9 +88,10 @@ class RB{
 		}
 	}
 
-    public static function find($table){
-    if(self::$init === false) self::init();
+    public static function find($table)
+    {
 
+        if(self::$init === false) self::init();
 
         print 'exec()...<br>';
         print_r(R::$adapter->exec("SELECT * FROM floor_plans"));
@@ -110,10 +100,6 @@ class RB{
         print_r(R::$adapter->get("SELECT * FROM floor_plans"));
         print 'getRow()...<br>';
         print_r(R::$adapter->getRow("SELECT * FROM floor_plans"));
-
-
-
-
 
         return $table;
 

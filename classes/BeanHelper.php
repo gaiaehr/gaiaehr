@@ -43,12 +43,12 @@ if (!isset($_SESSION))
     session_cache_limiter('private');
 }
 
-//ini_set('max_input_time', '1500');
-//ini_set('max_execution_time', '1500');
-//$timezone = (isset($_SESSION['site']['timezone']) ? $_SESSION['site']['timezone'] : 'UTC');
-//date_default_timezone_set($timezone);
-//include_once ($_SESSION['root'] . '/classes/Time.php');
-//include_once ($_SESSION['root'] . '/classes/rb.php');
+ini_set('max_input_time', '1500');
+ini_set('max_execution_time', '1500');
+$timezone = (isset($_SESSION['site']['timezone']) ? $_SESSION['site']['timezone'] : 'UTC');
+date_default_timezone_set($timezone);
+include_once ($_SESSION['root'] . '/classes/Time.php');
+include_once ($_SESSION['root'] . '/classes/rb.php');
 
 class RB{
 
@@ -67,7 +67,7 @@ class RB{
 	/**
 	 * @var string
 	 */
-	private $err;
+	private $R = false;
 
 	/**
 	 * @brief       dbHelper constructor.
@@ -81,7 +81,6 @@ class RB{
 	 */
 	static function init()
 	{
-		//error_reporting(0);
 		if (isset($_SESSION['site']['db']))
 		{
 			$host = (string)$_SESSION['site']['db']['host'];
@@ -91,7 +90,7 @@ class RB{
 			$dbPass = (string)$_SESSION['site']['db']['password'];
 			try
 			{
-				R::setup('mysql:host=' . $host . ';port=' . $port . ';dbname=' . $dbName, $dbUser, $dbPass);
+				self::$R = R::setup('mysql:host=' . $host . ';port=' . $port . ';dbname=' . $dbName, $dbUser, $dbPass);
 			}
 			catch(PDOException $e)
 			{
@@ -102,6 +101,9 @@ class RB{
 
     public static function find($table){
         self::init();
+
+        print_r(self::$R);
+
         return $table;
 
     }

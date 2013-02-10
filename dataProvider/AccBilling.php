@@ -103,15 +103,16 @@ class AccBilling
      * $params->services    array
      * $params->payment     array
      *
+     * @return \stdClass
      */
-    public function createVisitServicesVoucher(stdClass $params)
+    public function setVisitServicesVoucher(stdClass $params)
     {
 
 
         $vid = $this->av->createVoucher(null,null,null);
 
 
-
+        return $params;
 
 
     }

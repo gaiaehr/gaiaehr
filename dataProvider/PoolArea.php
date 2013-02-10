@@ -235,8 +235,15 @@ class PoolArea
 	 */
 	public function getPatientsByPoolAreaAccess($params)
 	{
-        if(isset($params->uid) || !is_object($params)){
-            $uid = (is_object($params)) ? $params->uid : $params;
+        if(is_object($params) && isset($params->uid)){
+            $uid = $params->uid;
+        }elseif(is_string($params)){
+            $uid = $params;
+        }else{
+            $uid = $_SESSION['user']['id'];
+        }
+
+        if(is_string($params) || !isset($params->uid)){
             $this->acl = new ACL($uid);
             $patients = array();
             if($this->acl->hasPermission('use_pool_areas')){

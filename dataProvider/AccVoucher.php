@@ -12,24 +12,23 @@ if(!isset($_SESSION)){
  * To change this template use File | Settings | File Templates.
  */
 include_once ($_SESSION['root'] . '/classes/dbHelper.php');
-class AccJournal {
+class AccVoucher {
 
     /**
      * @var dbHelper
      */
     private $db;
 
-
     function __construct()
     {
         $this->db = new dbHelper();
     }
 
-    public function createJournal(){
+    public function createVoucher($pid, $ref, $services){
 
     }
 
-    public function createJournalEntryByJournalId(){
+    public function createVoucherLines($lines){
 
     }
 
@@ -38,13 +37,15 @@ class AccJournal {
      * GETTERS!
      */
 
-
-    public function getJournal(){
-
-    }
-
-    public function getJournalEntriesByRef(){
+    public function getVoucherById($id){
 
     }
 
+    public function getVoucherByRef($ref){
+
+    }
+
+    public function getVoucherLinesByVoucherId($vid){
+
+    }
 }

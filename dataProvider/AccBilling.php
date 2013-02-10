@@ -24,7 +24,7 @@ if (!isset($_SESSION)) {
     session_cache_limiter('private');
 }
 include_once ($_SESSION['root'] . '/classes/dbHelper.php');
-include_once ($_SESSION['root'] . '/dataProvider/AccAccountReceivable.php');
+include_once ($_SESSION['root'] . '/dataProvider/AccVoucher.php');
 include_once ($_SESSION['root'] . '/dataProvider/Services.php');
 include_once ($_SESSION['root'] . '/dataProvider/Patient.php');
 
@@ -46,7 +46,7 @@ class AccBilling
     /**
      * @var AccountReceivable
      */
-    private $ar;
+    private $av;
     /**
      * @var Services
      */
@@ -59,7 +59,8 @@ class AccBilling
     function __construct()
     {
         $this->db = new dbHelper();
-        $this->ar = new AccAccountReceivable();
+        $this->av = new AccVoucher();
+
         $this->services = new Services();
         $this->patient = new Patient();
     }
@@ -95,15 +96,21 @@ class AccBilling
     /**
      * @param stdClass $params
      *
-     * $params->pid int
-     * $params->uid int
-     * $params->date date
-     * $params->notes string
-     * $params->services array
+     * $params->pid         int
+     * $params->uid         int
+     * $params->date        date
+     * $params->notes       string
+     * $params->services    array
+     * $params->payment     array
      *
      */
-    public function createVisitServicesChargesReceipt(stdClass $params)
+    public function createVisitServicesVoucher(stdClass $params)
     {
+
+
+        $vid = $this->av->createVoucher(null,null,null);
+
+
 
 
 

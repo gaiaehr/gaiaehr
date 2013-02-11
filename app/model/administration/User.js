@@ -18,113 +18,34 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define( 'App.model.administration.User',
-{
-	extend : 'Ext.data.Model',
-	fields : [
-	{
-		name : 'id',
-		type : 'int'
-	},
-	{
-		name : 'username',
-		type : 'string'
-	},
-	{
-		name : 'password',
-		type : 'auto'
-	},
-	{
-		name : 'authorized',
-		type : 'bool'
-	},
-	{
-		name : 'active',
-		type : 'bool'
-	},
-	{
-		name : 'info',
-		type : 'string'
-	},
-	{
-		name : 'source',
-		type : 'int'
-	},
-	{
-		name : 'fname',
-		type : 'string'
-	},
-	{
-		name : 'mname',
-		type : 'string'
-	},
-	{
-		name : 'lname',
-		type : 'string'
-	},
-	{
-		name : 'fullname',
-		type : 'string'
-	},
-	{
-		name : 'federaltaxid',
-		type : 'string'
-	},
-	{
-		name : 'federaldrugid',
-		type : 'string'
-	},
-	{
-		name : 'upin',
-		type : 'string'
-	},
-	{
-		name : 'facility_id',
-		type : 'int'
-	},
-	{
-		name : 'see_auth',
-		type : 'bool'
-	},
-	{
-		name : 'active',
-		type : 'bool'
-	},
-	{
-		name : 'npi',
-		type : 'string'
-	},
-	{
-		name : 'title',
-		type : 'string'
-	},
-	{
-		name : 'specialty',
-		type : 'string'
-	},
-	{
-		name : 'cal_ui',
-		type : 'string'
-	},
-	{
-		name : 'taxonomy',
-		type : 'string'
-	},
-	{
-		name : 'calendar',
-		type : 'bool'
-	},
-	{
-		name : 'abook_type',
-		type : 'string'
-	},
-	{
-		name : 'default_warehouse',
-		type : 'string'
-	},
-	{
-		name : 'role_id',
-		type : 'int'
-	}]
-
-} );
+Ext.define('App.model.administration.User', {
+    extend: 'Ext.data.Model',
+    fields: [
+        {name: 'id',               type: 'int'},
+        {name: 'username',         type: 'string'},
+        {name: 'password',         type: 'auto'},
+        {name: 'authorized',       type: 'bool'},
+        {name: 'active',           type: 'bool'},
+        {name: 'info',             type: 'string'},
+        {name: 'source',           type: 'int'},
+        {name: 'fname',            type: 'string'},
+        {name: 'mname',            type: 'string'},
+        {name: 'lname',            type: 'string'},
+        {name: 'fullname',         type: 'string'},
+        {name: 'federaltaxid',     type: 'string'},
+        {name: 'federaldrugid',    type: 'string'},
+        {name: 'upin',             type: 'string'},
+        {name: 'facility_id',      type: 'int'},
+        {name: 'see_auth',         type: 'bool'},
+        {name: 'active',           type: 'bool'},
+        {name: 'npi',              type: 'string'},
+        {name: 'title',            type: 'string'},
+        {name: 'specialty',        type: 'string'},
+        {name: 'cal_ui',           type: 'string'},
+        {name: 'taxonomy',         type: 'string'},
+        {name: 'calendar',         type: 'bool'},
+        {name: 'abook_type',       type: 'string'},
+        {name: 'default_warehouse',type: 'string'},
+        {name: 'role_id',          type: 'int'}
+    ]
+});

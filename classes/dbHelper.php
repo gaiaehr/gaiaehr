@@ -48,7 +48,7 @@ ini_set('max_execution_time', '1500');
 $timezone = (isset($_SESSION['site']['timezone']) ? $_SESSION['site']['timezone'] : 'UTC');
 date_default_timezone_set($timezone);
 include_once ($_SESSION['root'] . '/classes/Time.php');
-include_once ($_SESSION['root'] . '/classes/rb.php');
+include_once ($_SESSION['root'] . '/classes/idiorm/idiorm.php');
 
 class dbHelper
 {
@@ -99,8 +99,6 @@ class dbHelper
 					PDO::ATTR_PERSISTENT => true
 				));
 				
-				// Connect using RedBeanPHP :)
-				R::setup('mysql:host=' . $host . ';port=' . $port . ';dbname=' . $dbName, $dbUser, $dbPass);
 			}
 			catch(PDOException $e)
 			{

@@ -46,6 +46,7 @@ class User
 	function __construct()
 	{
 		$this->db = new dbHelper();
+		$this->db->getSenchaModel('app/model/administration/User');
 		return;
 	}
 

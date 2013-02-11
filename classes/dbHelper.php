@@ -70,6 +70,9 @@ class dbHelper
 	 */
 	private $err;
 	
+	/**
+	 * Thiw would be a Sencha Model parsed by getSenchaModel
+	 */
 	public $Model;
 
 

@@ -48,7 +48,6 @@ ini_set('max_execution_time', '1500');
 $timezone = (isset($_SESSION['site']['timezone']) ? $_SESSION['site']['timezone'] : 'UTC');
 date_default_timezone_set($timezone);
 include_once ($_SESSION['root'] . '/classes/Time.php');
-include_once ($_SESSION['root'] . '/classes/rd.php');
 
 class dbHelper
 {
@@ -71,7 +70,7 @@ class dbHelper
 	private $err;
 	
 	/**
-	 * Thiw would be a Sencha Model parsed by getSenchaModel
+	 * This would be a Sencha Model parsed by getSenchaModel method
 	 */
 	public $Model;
 
@@ -103,9 +102,6 @@ class dbHelper
 					PDO::MYSQL_ATTR_LOCAL_INFILE => 1,
 					PDO::ATTR_PERSISTENT => true
 				));
-				
-				R::setup('mysql:host=' . $host . ';port=' . $port . ';dbname=' . $dbName, $dbUser, $dbPass);
-				
 			}
 			catch(PDOException $e)
 			{
@@ -526,15 +522,17 @@ class dbHelper
 	 * @return:	An array of the fields of a table
 	 * 
 	 */
-	function getSenchaModel($fileModel)
+	public function getSenchaModel($fileModel)
 	{
 		// Getting Sencha model as a namespace
+		$fileModel = str_replace('App', 'app', $fileModel);
+		$fileModel = str_replace('.', '/', $fileModel);
 		$senchaModel = file_get_contents($_SESSION['root'] . '/' . $fileModel . '.js');
 		
-		// Stracting the necesary end-points
+		// Extracting the necessary end-points
 		preg_match("/fields:(.*?)]/si", $senchaModel, $matches, PREG_OFFSET_CAPTURE, 3);
 		
-		// Removing all the unnecesarry characters.
+		// Removing all the unnecessary characters.
 		$subject = str_replace(' ', '', $matches[1][0]);
 		$subject = str_replace(chr(13), '', $subject);
 		$subject = str_replace(chr(10), '', $subject);
@@ -546,8 +544,8 @@ class dbHelper
 		$subject = str_replace('dateFormat', '"dateFormat"', $subject);
 		$subject = '{"items": [' . $subject . ']}';
 		
-		// Decoding the model
-		$this->Model = json_decode($subject, true);
+		// Return the decoded model of Sencha 
+		$this->Model = (array)json_decode($subject, true);
 	}
 	
 	

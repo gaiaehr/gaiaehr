@@ -18,18 +18,15 @@
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 if (!isset($_SESSION))
 {
 	session_name('GaiaEHR');
 	session_start();
 	session_cache_limiter('private');
 }
-
 include_once ($_SESSION['root'] . '/dataProvider/Person.php');
 include_once ($_SESSION['root'] . '/classes/AES.php');
 include_once ($_SESSION['root'] . '/classes/dbHelper.php');
-
 class User
 {
 
@@ -37,7 +34,6 @@ class User
 	 * @var dbHelper
 	 */
 	private $db;
-
 	/**
 	 * @var
 	 */
@@ -64,15 +60,11 @@ class User
 
 	public function getCurrentUserTitleLastName()
 	{
-		try
-		{
-			$users = (object)R::load('users', $this->getCurrentUserId());
-			return $users->title . ' ' . $users->lname;
-		}
-		catch(Exception $e)
-		{
-			return $e;
-		}
+		$id = $this->getCurrentUserId();
+		$this->db->setSQL("SELECT title, lname FROM users WHERE id = '$id'");
+		$foo = $this->db->fetchRecord();
+		$foo = $foo['title'] . ' ' . $foo['lname'];
+		return $foo;
 	}
 
 	/**
@@ -81,88 +73,52 @@ class User
 	 */
 	public function getUsers(stdClass $params)
 	{
+		$this->db->setSQL("SELECT u.*, r.role_id
+                             FROM users AS u
+                        LEFT JOIN acl_user_roles AS r ON r.user_id = u.id
+                            WHERE u.authorized = 1 OR u.username != ''
+                         ORDER BY u.username
+                            LIMIT $params->start,$params->limit");
 		$rows = array();
-		try
+		foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
 		{
-			$records = (array)R::getAll('SELECT u.*, r.role_id
-	                             FROM users AS u
-	                        LEFT JOIN acl_user_roles AS r ON r.user_id = u.id
-	                            WHERE u.authorized = 1 OR u.username != ""
-	                         ORDER BY u.username
-	                            LIMIT :start,:records', array(
-				':start' => $params->start,
-				':records' => $params->limit
-			));
-			foreach ($records as $row)
-			{
-				$row['fullname'] = Person::fullname($row['fname'], $row['mname'], $row['lname']);
-				unset($row['password'], $row['pwd_history1'], $row['pwd_history2']);
-				array_push($rows, $row);
-			}
-			return $rows;
+			$row['fullname'] = Person::fullname($row['fname'], $row['mname'], $row['lname']);
+			unset($row['password'], $row['pwd_history1'], $row['pwd_history2']);
+			array_push($rows, $row);
 		}
-		catch(Exception $e)
-		{
-			return $e;
-		}
+		return $rows;
 	}
 
 	public function getUserNameById($id)
 	{
-		// like LINQ
-		try
-		{
-			$user = R::$f->begin()->select('title, lname')->from('users')->where(' id = ? ')->put($id)->get('row');
-			return $user['title'] . ' ' . $user['lname'];
-		}
-		catch(Exception $e)
-		{
-			return $e;
-		}
+		$this->db->setSQL("SELECT title, lname FROM users WHERE id = '$id'");
+		$user = $this->db->fetchRecord();
+		$userName = $user['title'] . ' ' . $user['lname'];
+		return $userName;
 	}
 
 	public function getUserFullNameById($id)
 	{
-		// like LINQ
-		try
-		{
-			$user = R::$f->begin()->select('title, fname, mname, lname')->from('users')->where(' id = ? ')->put($id)->get('row');
-			return Person::fullname($user['fname'], $user['mname'], $user['lname']);
-		}
-		catch(Exception $e)
-		{
-			return $e;
-		}
+		$this->db->setSQL("SELECT title, fname, mname, lname FROM users WHERE id = '$id'");
+		$user = $this->db->fetchRecord();
+		$userName = Person::fullname($user['fname'], $user['mname'], $user['lname']);
+		return $userName;
 	}
 
 	public function getCurrentUserData()
 	{
-		// like LINQ
-		try
-		{
-			$id = $this->getCurrentUserId();
-			$user = R::$f->begin()->select('*')->from('users')->where(' id = ? ')->put($id)->get('row');
-			return $user;
-		}
-		catch(Exception $e)
-		{
-			return $e;
-		}
+		$id = $this->getCurrentUserId();
+		$this->db->setSQL("SELECT * FROM users WHERE id = '$id'");
+		$user = $this->db->fetchRecord();
+		return $user;
 	}
 
 	public function getCurrentUserBasicData()
 	{
-		// like LINQ
-		try
-		{
-			$id = $this->getCurrentUserId();
-			$user = R::$f->begin()->select('id, title, fname, mname, lname')->from('users')->where(' id = ? ')->put($id)->get('row');
-			return $user;
-		}
-		catch(Exception $e)
-		{
-			return $e;
-		}
+		$id = $this->getCurrentUserId();
+		$this->db->setSQL("SELECT id, title, fname, mname, lname FROM users WHERE id = '$id'");
+		$user = $this->db->fetchRecord();
+		return $user;
 	}
 
 	/**
@@ -178,7 +134,9 @@ class User
 			$role['role_id'] = $data['role_id'];
 			unset($data['id'], $data['role_id'], $data['fullname']);
 			if ($data['taxonomy'] == '')
+			{
 				unset($data['taxonomy']);
+			}
 			foreach ($data as $key => $val)
 			{
 				if ($val == null || $val == '')
@@ -186,7 +144,6 @@ class User
 					unset($data[$key]);
 				}
 			}
-
 			$sql = $this->db->sqlBind($data, 'users', 'I');
 			$this->db->setSQL($sql);
 			$this->db->execLog();
@@ -205,7 +162,10 @@ class User
 		}
 		else
 		{
-			return $e;
+			return array(
+				'success' => false,
+				'error' => "Username \"$params->username\" exist, please try a different username"
+			);
 		}
 	}
 
@@ -215,58 +175,44 @@ class User
 	 */
 	public function updateUser(stdClass $params)
 	{
-		try
+		$data = get_object_vars($params);
+		$params->password = '';
+		$this->user_id = $data['id'];
+		$role['role_id'] = $data['role_id'];
+		unset($data['id'], $data['role_id'], $data['fullname']);
+		if ($data['password'] != '')
 		{
-			$data = get_object_vars($params);
-			$params->password = '';
-			$this->user_id = $data['id'];
-			
-			$aclUserRolesUpdate = R::load('acl_user_roles', $this->user_id);
-			$role['role_id'] = $data['role_id'];
-			unset($data['id'], $data['role_id'], $data['fullname']);
-			if ($data['password'] != '') $this->changePassword($data['password']);
-			unset($data['password']);
-			$aclUserRolesUpdate->role_id = $data['role_id'];
-			R::store($aclUserRolesUpdate);
-			
-			$userUpdate = R::load('users', $this->user_id);
-			$userUpdate = (object)$data;
-			R::store($userUpdate);
-
-			return $params;
+			$this->changePassword($data['password']);
 		}
-		catch(Exception $e)
-		{
-			return $e;
-		}
+		unset($data['password']);
+		$sql = $this->db->sqlBind($role, 'acl_user_roles', 'U', array('user_id' => $this->user_id));
+		$this->db->setSQL($sql);
+		$this->db->execLog();
+		$sql = $this->db->sqlBind($data, 'users', 'U', array('id' => $this->user_id));
+		$this->db->setSQL($sql);
+		$this->db->execLog();
+		return $params;
 
 	}
 
 	public function usernameExist($username)
 	{
-		try
-		{
-			$user = R::$f->begin()->select('count(id)')->from('users')->where(' username = ? ')->put($username)->get('row');
-			return $user['count(id)'] >= 1;
-		}
-		catch(Exception $e)
-		{
-			return $e;
-		}
+		$this->db->setSQL("SELECT count(id) FROM users WHERE username = '$username'");
+		$user = $this->db->fetchRecord();
+		return $user['count(id)'] >= 1;
 	}
 
 	/**
 	 * @param stdClass $params
 	 * @return array
 	 */
-	public function checkPasswordHistory(stdClass $params)
+	public function chechPasswordHistory(stdClass $params)
 	{
 		$aes = $this->getAES();
 		$this->user_id = $params->id;
 		$aesPwd = $aes->encrypt($params->password);
-
-		$pwds = R::$f->begin()->select('password, pwd_history1, pwd_history2')->from('users')->where(' id = ? ')->put($this->user_id)->get('row');
-
+		$this->db->setSQL("SELECT password, pwd_history1, pwd_history2  FROM users WHERE id='" . $this->user_id . "'");
+		$pwds = $this->db->fetchRecord();
 		if ($pwds['password'] == $aesPwd || $pwds['pwd_history1'] == $aesPwd || $pwds['pwd_history2'] == $aesPwd)
 		{
 			return array('error' => true);
@@ -285,25 +231,16 @@ class User
 	{
 		$aes = $this->getAES();
 		$aesPwd = $aes->encrypt($newpassword);
+		$this->db->setSQL("SELECT password, pwd_history1 FROM users WHERE id='$this->user_id'");
+		$pwds = $this->db->fetchRecord();
+		$row['password'] = $aesPwd;
+		$row['pwd_history1'] = $pwds['password'];
+		$row['pwd_history2'] = $pwds['pwd_history1'];
+		$sql = $this->db->sqlBind($row, 'users', 'U', array('id' => $this->user_id));
+		$this->db->setSQL($sql);
+		$this->db->execLog();
+		return;
 
-		$pwds = R::$f->begin()->select('password, pwd_history1')->from('users')->where(' id = ? ')->put($this->user_id)->get('row');
-
-		R::begin();
-		try
-		{
-			$user = R::load('users', $this->user_id);
-			$user->password = $aesPwd;
-			$user->pwd_history1 = $pwds['password'];
-			$user->pwd_history2 = $pwds['pwd_history1'];
-			$id = R::store($user);
-			R::commit();
-			return array('success' => true);
-		}
-		catch(Exception $e)
-		{
-			R::rollback();
-			return $e;
-		}
 	}
 
 	public function changeMyPassword(stdClass $params)
@@ -316,80 +253,49 @@ class User
 	{
 		$data = get_object_vars($params);
 		unset($data['id']);
-
-		R::begin();
-		$user = R::load('users', $params->id);
-		try
-		{
-			$user = $data;
-			R::store($user);
-			R::commit();
-			return array('success' => true);
-		}
-		catch(Exception $e)
-		{
-			R::rollback();
-			return $e;
-		}
+		$sql = $this->db->sqlBind($data, 'users', 'U', array('id' => $params->id));
+		$this->db->setSQL($sql);
+		$this->db->execLog();
+		return array('success' => true);
 	}
 
 	public function verifyUserPass($pass)
 	{
-		try
-		{
-			$aes = new AES($_SESSION['site']['AESkey']);
-			$pass = $aes->encrypt($pass);
-			$uid = $_SESSION['user']['id'];
-			$total = R::count('users', ' id = :id AND password = :password AND authorized = :authorized ', array(
-				':id' => $uid,
-				':password' => $pass,
-				':authorized' => '1'
-			));
-			return ($total != 0) ? 1 : 2;
-		}
-		catch(Exception $e)
-		{
-			return $e;
-		}
+		$aes = new AES($_SESSION['site']['AESkey']);
+		$pass = $aes->encrypt($pass);
+		$uid = $_SESSION['user']['id'];
+		$this->db->setSQL("SELECT username FROM users WHERE id = '$uid' AND password = '$pass' AND authorized = '1' LIMIT 1");
+		$count = $this->db->rowCount();
+		return ($count != 0) ? 1 : 2;
 	}
 
 	public function getProviders()
 	{
-		try
+		$this->db->setSQL("SELECT u.id, u.fname, u.lname, u.mname
+                FROM acl_user_roles AS acl
+                LEFT JOIN users AS u ON u.id = acl.user_id
+                WHERE acl.role_id = '2'");
+		$records = array();
+		$records[] = array(
+			'name' => 'All',
+			'id' => 'all'
+		);
+		foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) As $row)
 		{
-			$records = (array)R::getAll("SELECT u.id, u.fname, u.lname, u.mname
-										FROM acl_user_roles AS acl
-										LEFT JOIN users AS u ON u.id = acl.user_id
-										WHERE acl.role_id = '2'");
-			$records = array();
-			$records[] = array(
-				'name' => 'All',
-				'id' => 'all'
-			);
-			foreach ($records As $row)
-			{
-				$row['name'] = $this->getUserNameById($row['id']);
-				$records[] = $row;
-			}
-			return $records;
+			$row['name'] = $this->getUserNameById($row['id']);
+			$records[] = $row;
 		}
-		catch(Exception $e)
-		{
-			return $e;
-		}
+		return $records;
 	}
 
 	public function getUserRolesByCurrentUserOrUserId($uid = null)
 	{
-		try
-		{
-			$uid = ($uid == null) ? $_SESSION['user']['id'] : $uid;
-			return R::$f->begin()->select('*')->from('acl_user_roles')->where(' user_id = ? ')->put($uid)->get('row');
-		}
-		catch(Exception $e)
-		{
-			return $e;
-		}
+		$uid = ($uid == null) ? $_SESSION['user']['id'] : $uid;
+		$this->db->setSQL("SELECT * FROM acl_user_roles WHERE user_id = '$uid'");
+		return $this->db->fetchRecords(PDO::FETCH_ASSOC);
 	}
 
 }
+
+//$u = new User();
+//print_r($u->getUserByUsername('demo'));

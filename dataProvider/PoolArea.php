@@ -285,9 +285,9 @@ class PoolArea
                     $patients[]       = (empty($z)) ? $p : array_merge($p, $z);
                 }
             }
+            $patients = array_slice($patients, 0, 6);
+            return $patients;
         }
-        $patients = array_slice($patients, 0, 6);
-        return $patients;
 	}
 
 	public function getAreaTitleById($id)

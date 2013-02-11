@@ -372,9 +372,39 @@ Ext.define('App.view.patient.VisitCheckout', {
 		totalField.setValue(newVal);
 	},
 
+    //***************************************************************
+    //***************************************************************
+    //***************************************************************
+
     onInvoiceSave:function(btn){
 
+        say(this.VisitChargesStore);
+
+        var me = this,
+            params = {},
+            print = btn.action == 'saveprint',
+            services = me.VisitChargesStore.getRecords();
+
+        params.pid = me.pid;
+        params.eid = me.eid;
+        params.services = services;
+
+
+
+        AccBiliing.setVisitServicesVoucher(params, function(provider, respose){
+
+            say(respose.result);
+
+            say(print);
+
+        });
+
+
+
+
     },
+
+
 
 	cancelPrint:function(btn){
 		var win = btn.up('window');

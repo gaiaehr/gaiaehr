@@ -21,14 +21,14 @@
 Ext.define('App.model.administration.User', {
     extend: 'Ext.data.Model',
     fields: [
-        {name: 'id',               type: 'int'},
-        {name: 'username',         type: 'string'},
-        {name: 'password',         type: 'auto'},
-        {name: 'authorized',       type: 'bool'},
-        {name: 'active',           type: 'bool'},
+        {name: 'id',               type: 'int',     dataType: 'int', primary: true, ai: true}, // these should be defaults for IDs
+        {name: 'username',         type: 'string',  dataType: 'varchar', len: 25, allowNull: false},
+        {name: 'password',         type: 'string',  dataType: 'blob', allowNull: false},
+        {name: 'authorized',       type: 'bool',    dataType: 'tinyint', len:1, defaultValue:0},
+        {name: 'active',           type: 'bool'},   //default values for 'bool' = dataType: 'tinyint', len:1, defaultValue:0
         {name: 'info',             type: 'string'},
         {name: 'source',           type: 'int'},
-        {name: 'fname',            type: 'string'},
+        {name: 'fname',            type: 'string'}, //default values for string = dataType: 'varchar', len: 255, allowNull: true, defaultValue:null
         {name: 'mname',            type: 'string'},
         {name: 'lname',            type: 'string'},
         {name: 'fullname',         type: 'string'},

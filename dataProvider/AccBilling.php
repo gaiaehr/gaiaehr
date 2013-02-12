@@ -69,7 +69,7 @@ class AccBilling
      * @param stdClass $params required params: $params->pid, $params->eid, $params->uid
      * @return array
      */
-    public function getVisitServicesCharges(stdClass $params)
+    public function getVisitVoucherLines(stdClass $params)
     {
         $invoice = array();
         $insurance = $this->patient->getPatientPrimaryInsuranceByPid($params->pid);
@@ -83,9 +83,9 @@ class AccBilling
             $services = $this->services->getCptByEid($params->eid);
             foreach($services['rows'] AS $service){
                 $row['id'] = $service['id'];
-                $row['code'] = $service['code'];
-                $row['code_text_medium'] = $service['code_text_medium'];
-                $row['charge'] = ($service['status'] == 0 ? '00.00' : $service['charge']);
+                $row['SKU'] = $service['code'];
+                $row['description'] = $service['code_text_medium'];
+                $row['price'] = ($service['status'] == 0 ? '00.00' : $service['charge']);
                 $invoice[] = $row;
             }
         }

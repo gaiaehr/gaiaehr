@@ -522,7 +522,7 @@ class dbHelper
 	 * @return:	An array of the fields of a table
 	 * 
 	 */
-	public function getSenchaModel($fileModel)
+	private function getSenchaModel($fileModel)
 	{
 		// Getting Sencha model as a namespace
 		$fileModel = str_replace('App', 'app', $fileModel);
@@ -548,7 +548,11 @@ class dbHelper
 		$this->Model = (array)json_decode($subject, true);
 	}
 	
-	
+	public function SechaModel($fileModel)
+	{
+		$this->getSenchaModel($fileModel);
+		
+	}
 	
 
 }

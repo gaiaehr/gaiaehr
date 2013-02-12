@@ -105,7 +105,7 @@ class AccBilling
      *
      * @return \stdClass
      */
-    public function setVisitServicesVoucher(stdClass $params)
+    public function setVisitVoucher(stdClass $params)
     {
 
 

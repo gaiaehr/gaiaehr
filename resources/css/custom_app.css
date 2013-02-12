@@ -7,7 +7,9 @@
 	font-family: 'OpenSans-CondLight';
 	src: url('../fonts/OpenSans-CondLight.ttf');
 }
-
+.paid {
+    background: url("../images/paid.png") no-repeat center transparent !important;
+}
 .charges_total,
 .charges_balance {
     border-top:solid 2px #999999;

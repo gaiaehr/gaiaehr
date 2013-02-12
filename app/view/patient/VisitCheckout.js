@@ -113,21 +113,6 @@ Ext.define('App.view.patient.VisitCheckout', {
                                                     layout:'anchor',
                                                     width:150,
                                                     items:[
-                                                        me.subtotal = Ext.widget('mitos.currency',{
-                                                            fieldLabel:i18n('subtotal'),
-                                                            labelWidth:70,
-                                                            anchor:'100%',
-                                                            labelAlign:'right',
-                                                            margin:'1 0'
-                                                        }),
-                                                        me.tax = Ext.widget('mitos.percent',{
-                                                            fieldLabel:i18n('tax'),
-                                                            labelWidth:70,
-                                                            anchor:'100%',
-                                                            labelAlign:'right',
-                                                            margin:'1 0'
-                                                        }),
-                                                        // -----------------------------------
                                                         me.total = Ext.widget('mitos.currency',{
                                                             fieldLabel:i18n('total'),
                                                             labelWidth:70,
@@ -135,6 +120,13 @@ Ext.define('App.view.patient.VisitCheckout', {
                                                             labelAlign:'right',
                                                             cls:'charges_total',
                                                             margin:'2 0 1 0'
+                                                        }),
+                                                        me.paid = Ext.widget('mitos.currency',{
+                                                            fieldLabel:i18n('paid'),
+                                                            labelWidth:70,
+                                                            anchor:'100%',
+                                                            labelAlign:'right',
+                                                            margin:'1 0'
                                                         }),
                                                         me.balance = Ext.widget('mitos.currency',{
                                                             fieldLabel:i18n('balance'),
@@ -161,7 +153,7 @@ Ext.define('App.view.patient.VisitCheckout', {
                                             margin:'5 10',
                                             title:i18n('payment'),
                                             items:[
-                                                {
+                                                me.billingNotes = Ext.widget('textarea',{
                                                     xtype:'textarea',
                                                     anchor:'100%',
                                                     name:'notes',
@@ -169,27 +161,25 @@ Ext.define('App.view.patient.VisitCheckout', {
                                                     height:85,
                                                     emptyText:i18n('additional_billing_notes')
 
-                                                },
+                                                }),
                                                 {
                                                     xtype:'container',
                                                     layout:'anchor',
                                                     columnWidth:.5,
                                                     margin:'0 0 0 15',
                                                     items:[
-                                                        {
+                                                        me.method = Ext.widget('mitos.paymentmethodcombo',{
                                                             fieldLabel: i18n('payment_method'),
-                                                            xtype: 'mitos.paymentmethodcombo',
                                                             labelWidth: 100,
                                                             name: 'method',
                                                             anchor:'100%'
-                                                        },
-                                                        {
+                                                        }),
+                                                        me.ref = Ext.widget('textfield',{
                                                             fieldLabel: i18n('reference_#'),
-                                                            xtype: 'textfield',
                                                             labelWidth: 100,
                                                             name: 'reference',
                                                             anchor:'100%'
-                                                        },
+                                                        }),
                                                         me.amount = Ext.widget('mitos.currency',{
                                                             fieldLabel: i18n('amount'),
                                                             xtype: 'mitos.currency',
@@ -199,7 +189,6 @@ Ext.define('App.view.patient.VisitCheckout', {
                                                         })
                                                     ]
                                                 }
-
                                             ]
                                         }
 
@@ -366,10 +355,10 @@ Ext.define('App.view.patient.VisitCheckout', {
 	},
 
 	onRemoveService:function(grid, rowIndex){
-		var me = this, totalField = me.query('[action="totalField"]')[0], totalVal = totalField.getValue(), rec = grid.getStore().getAt(rowIndex), newVal;
-		me.VisitChargesStore.remove(rec);
-		newVal = totalVal - rec.data.charge;
-		totalField.setValue(newVal);
+		var me = this,
+            record = grid.getStore().getAt(rowIndex);
+		me.VisitChargesStore.remove(record);
+		me.updateTotalBalance();
 	},
 
     //***************************************************************
@@ -378,29 +367,32 @@ Ext.define('App.view.patient.VisitCheckout', {
 
     onInvoiceSave:function(btn){
 
-        say(this.VisitChargesStore);
-
         var me = this,
             params = {},
             print = btn.action == 'saveprint',
-            services = me.VisitChargesStore.getRecords();
+            servicesRec = me.VisitChargesStore.data.items,
+            lines = [];
+
+        for(var i=0; i < servicesRec.length; i++){
+            lines.push(servicesRec[i].data);
+        }
 
         params.pid = me.pid;
         params.eid = me.eid;
-        params.services = services;
+        params.lines = lines;
+        params.payment = {
+            amount: me.amount.getValue(),
+            method: me.method.getValue(),
+            notes: me.billingNotes.getValue(),
+            ref: me.ref.getValue()
+        };
 
+        AccBilling.setVisitVoucher(params, function(provider, response){
 
-
-        AccBiliing.setVisitServicesVoucher(params, function(provider, respose){
-
-            say(respose.result);
-
+            say(response.result);
             say(print);
 
         });
-
-
-
 
     },
 
@@ -531,10 +523,9 @@ Ext.define('App.view.patient.VisitCheckout', {
     },
 
 	setPanel:function(){
-		var me = this, subtotal = 0.00, total, tax = 6.00, balance = 0.00;
+		var me = this;
 		me.docsGrid.loadDocs(me.eid);
 		me.getVisitOtherInfo();
-
 		me.VisitChargesStore.load({
 			params:{
 				pid:me.pid,
@@ -542,33 +533,36 @@ Ext.define('App.view.patient.VisitCheckout', {
 				uid:me.uid
 			},
             callback:function(records, operation, success){
-
-                for(var i=0; i < records.length; i++){
-                    subtotal = eval(subtotal) + eval(records[i].data.charge);
-                }
-
-                me.subtotal.setValue(subtotal);
-                me.tax.setValue(tax);
-                me.amount.setValue(subtotal + (subtotal * tax / 100));
+                me.paid.setValue(0.00);
                 me.updateTotalBalance();
-
             }
 		})
 	},
 
     updateTotalBalance:function(){
-
-        say(this.tax.getValue());
-
         var me = this,
-            total    = me.total.getValue(),
-            subtotal = me.subtotal.getValue(),
-            tax      = me.tax.getValue(),
             amount   = me.amount.getValue(),
-            newTotal = subtotal + (subtotal * tax / 100);
+            paid   = me.paid.getValue(),
+            records = this.VisitChargesStore.data.items,
+            form = me.invoicePanel.down('form'),
+            total = 0.00, balance;
 
-        me.total.setValue(newTotal);
-        me.balance.setValue(newTotal - amount);
+        for(var i=0; i < records.length; i++){
+            total = eval(total) + eval(records[i].data.charge);
+        }
+
+        me.total.setValue(total);
+        balance = total - paid;
+        me.balance.setValue(balance);
+
+        if(balance == 0.00){
+            form.addBodyCls('paid');
+            form.down('fieldset').setVisible(false);
+        }else{
+            form.removeBodyCls('paid');
+            form.down('fieldset').setVisible(true);
+        }
+
     },
 
 	/**

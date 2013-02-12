@@ -7,6 +7,9 @@ $API = array(
         'methods' => array(
             'getVisitServicesCharges' => array(
                 'len' => 1
+            ),
+            'setVisitVoucher' => array(
+                'len' => 1
             )
         )
     ),

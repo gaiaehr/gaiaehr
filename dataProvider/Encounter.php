@@ -263,7 +263,7 @@ class Encounter
 		$rows = array();
 		foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row){
 			$row['height_in']     = intval($row['height_in']);
-			$row['height_cn']     = intval($row['height_cn']);
+			$row['height_cm']     = intval($row['height_cm']);
 			$row['administer_by'] = $this->user->getUserNameById($row['uid']);
 			$row['authorized_by'] = $this->user->getUserNameById($row['auth_uid']);
 			array_push($rows, $row);
@@ -634,6 +634,10 @@ class Encounter
 	{
 		$this->db->setSQL("SELECT * FROM encounters WHERE eid = '$eid'");
 		$encounter                 = $this->db->fetchRecord(PDO::FETCH_ASSOC);
+
+        $soap['objective'] = '';
+        $soap['assessment'] = '';
+
 		$encounter['service_date']   = date('F j, Y, g:i a', strtotime($encounter['service_date']));
 		$encounter['patient_name'] = $this->patient->getPatientFullNameByPid($encounter['pid']);
 		$encounter['open_by']      = $this->user->getUserNameById($encounter['open_uid']);

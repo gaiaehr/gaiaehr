@@ -18,113 +18,34 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define( 'App.model.administration.User',
-{
-	extend : 'Ext.data.Model',
-	fields : [
-	{
-		name : 'id',
-		type : 'int'
-	},
-	{
-		name : 'username',
-		type : 'string'
-	},
-	{
-		name : 'password',
-		type : 'auto'
-	},
-	{
-		name : 'authorized',
-		type : 'bool'
-	},
-	{
-		name : 'active',
-		type : 'bool'
-	},
-	{
-		name : 'info',
-		type : 'string'
-	},
-	{
-		name : 'source',
-		type : 'int'
-	},
-	{
-		name : 'fname',
-		type : 'string'
-	},
-	{
-		name : 'mname',
-		type : 'string'
-	},
-	{
-		name : 'lname',
-		type : 'string'
-	},
-	{
-		name : 'fullname',
-		type : 'string'
-	},
-	{
-		name : 'federaltaxid',
-		type : 'string'
-	},
-	{
-		name : 'federaldrugid',
-		type : 'string'
-	},
-	{
-		name : 'upin',
-		type : 'string'
-	},
-	{
-		name : 'facility_id',
-		type : 'int'
-	},
-	{
-		name : 'see_auth',
-		type : 'bool'
-	},
-	{
-		name : 'active',
-		type : 'bool'
-	},
-	{
-		name : 'npi',
-		type : 'string'
-	},
-	{
-		name : 'title',
-		type : 'string'
-	},
-	{
-		name : 'specialty',
-		type : 'string'
-	},
-	{
-		name : 'cal_ui',
-		type : 'string'
-	},
-	{
-		name : 'taxonomy',
-		type : 'string'
-	},
-	{
-		name : 'calendar',
-		type : 'bool'
-	},
-	{
-		name : 'abook_type',
-		type : 'string'
-	},
-	{
-		name : 'default_warehouse',
-		type : 'string'
-	},
-	{
-		name : 'role_id',
-		type : 'int'
-	}]
-
-} );
+Ext.define('App.model.administration.User', {
+    extend: 'Ext.data.Model',
+    fields: [
+        {name: 'id',               type: 'int',     dataType: 'int', primary: true, ai: true}, // these should be defaults for IDs
+        {name: 'username',         type: 'string',  dataType: 'varchar', len: 25, allowNull: false},
+        {name: 'password',         type: 'string',  dataType: 'blob', allowNull: false},
+        {name: 'authorized',       type: 'bool',    dataType: 'tinyint', len:1, defaultValue:0},
+        {name: 'active',           type: 'bool'},   //default values for 'bool' = dataType: 'tinyint', len:1, defaultValue:0
+        {name: 'info',             type: 'string'},
+        {name: 'source',           type: 'int'},
+        {name: 'fname',            type: 'string'}, //default values for string = dataType: 'varchar', len: 255, allowNull: true, defaultValue:null
+        {name: 'mname',            type: 'string'},
+        {name: 'lname',            type: 'string'},
+        {name: 'fullname',         type: 'string'},
+        {name: 'federaltaxid',     type: 'string'},
+        {name: 'federaldrugid',    type: 'string'},
+        {name: 'upin',             type: 'string'},
+        {name: 'facility_id',      type: 'int'},
+        {name: 'see_auth',         type: 'bool'},
+        {name: 'active',           type: 'bool'},
+        {name: 'npi',              type: 'string'},
+        {name: 'title',            type: 'string'},
+        {name: 'specialty',        type: 'string'},
+        {name: 'cal_ui',           type: 'string'},
+        {name: 'taxonomy',         type: 'string'},
+        {name: 'calendar',         type: 'bool'},
+        {name: 'abook_type',       type: 'string'},
+        {name: 'default_warehouse',type: 'string'},
+        {name: 'role_id',          type: 'int'}
+    ]
+});

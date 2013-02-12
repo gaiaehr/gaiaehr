@@ -22,6 +22,7 @@ Ext.define('App.model.patient.Encounter', {
 		{name: 'close_date', type: 'date', dateFormat:'Y-m-d H:i:s'},
 		{name: 'onset_date', type: 'date', dateFormat:'Y-m-d H:i:s'}
 	],
+    idProperty: 'eid',
 	proxy  : {
 		type       : 'direct',
 		api        : {
@@ -35,11 +36,18 @@ Ext.define('App.model.patient.Encounter', {
 		}
 	},
     hasMany: [
-        {model: 'App.model.patient.Vitals', name: 'vitals', primaryKey: 'eid'},
-        {model: 'App.model.patient.ReviewOfSystems', name: 'reviewofsystems', primaryKey: 'eid'},
-        {model: 'App.model.patient.ReviewOfSystemsCheck', name: 'reviewofsystemschecks', primaryKey: 'eid'},
-        {model: 'App.model.patient.SOAP', name: 'soap', primaryKey: 'eid'},
-        {model: 'App.model.patient.SpeechDictation', name: 'speechdictation', primaryKey: 'eid'},
-        {model: 'App.model.patient.HCFAOptions', name: 'hcfaoptions', primaryKey: 'eid'}
+        {model: 'App.model.patient.Vitals',                 name: 'vitals', primaryKey: 'id', foreignKey: 'eid'},
+        {model: 'App.model.patient.ReviewOfSystems',        name: 'reviewofsystems', foreignKey: 'eid'},
+        {model: 'App.model.patient.ReviewOfSystemsCheck',   name: 'reviewofsystemschecks', foreignKey: 'eid'},
+        {model: 'App.model.patient.SOAP',                   name: 'soap', foreignKey: 'eid'},
+        {model: 'App.model.patient.SpeechDictation',        name: 'speechdictation', foreignKey: 'eid'},
+        {model: 'App.model.patient.HCFAOptions',            name: 'hcfaoptions', foreignKey: 'eid'}
     ]
+//    associations: [
+//        {type: 'hasOne',  model: 'App.model.patient.ReviewOfSystems', foreignKey: 'eid', getterName:'getReviewofsystems'},
+//        {type: 'hasOne',  model: 'App.model.patient.ReviewOfSystemsCheck', getterName:'getReviewofsystemschecks'},
+//        {type: 'hasOne',  model: 'App.model.patient.SOAP', foreignKey: 'eid', getterName:'getSoap'},
+//        {type: 'hasOne',  model: 'App.model.patient.SpeechDictation', foreignKey: 'eid', getterName:'getSpeechdictation'},
+//        {type: 'hasOne',  model: 'App.model.patient.HCFAOptions', foreignKey: 'eid', getterName:'getHcfaoptions'}
+//    ]
 });

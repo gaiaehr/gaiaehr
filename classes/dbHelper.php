@@ -523,7 +523,7 @@ class dbHelper
 	 * This method will create the table and fields if does not exist in the database
 	 * also this is the brain of the micro ORM.
 	 */
-	public function SechaModel($fileModel)
+	public function SenchaModel($fileModel)
 	{
 		
 		// get the the model of the table from the sencha .js file
@@ -550,17 +550,18 @@ class dbHelper
 				// modify the table columns if is not equal to the Sencha Model
 				foreach($records as $columns)
 				{
-					$change = false;
+					$change = 'false';
 					foreach($this->Model as $SenchaModel)
 					{
+						// if the field is found, start the comparison
 						if($SenchaModel['name'] == $columns['Field'])
 						{
-							// found the field, start the comparison
-							if(!strripos($SenchaModel['dataType'], $columns['Type'])) $change = 'true';
+							if(strripos($columns['Type'], $SenchaModel['dataType']) === false) $change = 'true'; // Type
+							if($columns['Null'] == ( isset($SenchaModel['allowNull']) ? ($SenchaModel['allowNull'] ? 'NO' : 'YES') : 'YES' ) ) $change = 'true'; // NULL
+
 						}
 					}
 				}
-				echo $change;
 			}
 			
 		}
@@ -651,11 +652,11 @@ class dbHelper
 	 */
 	private function __createAllColumns($paramaters = array())
 	{
-		foreach($paramaters['fields'] as $items)
+		foreach($paramaters as $items)
 		{
 			try
 			{
-				if($items['store']) $this->conn->exec('ALTER TABLE '.$this->Table.' ADD '.$items['name'].' '.$this->__renderColumnSyntax($items) . ';');
+				if($items['store']=='true') $this->conn->exec('ALTER TABLE '.$this->Table.' ADD '.$items['name'].' '.$this->__renderColumnSyntax($items) . ';');
 			}
 			catch(PDOException $e)
 			{
@@ -740,7 +741,7 @@ class dbHelper
 	 */
 	private function __renderColumnSyntax($column = array())
 	{
-		if(array_key_exists('dataType', $column)) 
+		if(isset($column['dataType'])) 
 		{
 			$columnType = strtoupper($column['dataType']);
 		}
@@ -752,39 +753,39 @@ class dbHelper
 		{
 			case 'BIT'; case 'TINYINT'; case 'SMALLINT'; case 'MEDIUMINT'; case 'INT'; case 'INTEGER'; case 'BIGINT':
 				return $columnType.
-				( array_key_exists('len', $column) ? ($column['len'] ? '('.$column['len'].') ' : '') : '').
-				( array_key_exists('defaultValue', $column) ? (is_numeric($column['defaultValue']) && is_string($column['defaultValue']) ? "DEFAULT '".$column['defaultValue']."' " : '') : '').
-				( array_key_exists('allowNull', $column) ? ($column['allowNull'] ? '' : 'NOT NULL ') : '' ).
-				( array_key_exists('autoIncrement', $column) ? ($column['autoIncrement'] ? 'AUTO_INCREMENT ' : '') : '' ).
-				( array_key_exists('primaryKey', $column) ? ($column['primaryKey'] ? 'PRIMARY KEY ' : '') : '' );
+				( isset($column['len']) ? ($column['len'] ? '('.$column['len'].') ' : '') : '').
+				( isset($column['defaultValue']) ? (is_numeric($column['defaultValue']) && is_string($column['defaultValue']) ? "DEFAULT '".$column['defaultValue']."' " : '') : '').
+				( isset($column['allowNull']) ? ($column['allowNull'] ? 'NOT NULL ' : '') : '' ).
+				( isset($column['autoIncrement']) ? ($column['autoIncrement'] ? 'AUTO_INCREMENT ' : '') : '' ).
+				( isset($column['primaryKey']) ? ($column['primaryKey'] ? 'PRIMARY KEY ' : '') : '' );
 				break;
 			case 'REAL'; case 'DOUBLE'; case 'FLOAT'; case 'DECIMAL'; case 'NUMERIC':
 				return $columnType.
-				(array_key_exists('len', $column) ? ($column['len'] ? '('.$column['len'].')' : '(10,2)') : '').
-				( array_key_exists('defaultValue', $column) ? (is_numeric($column['defaultValue']) && is_string($column['defaultValue']) ? "DEFAULT '".$column['defaultValue']."' " : '') : '').
-				( array_key_exists('allowNull', $column) ? ($column['allowNull'] ? '' : 'NOT NULL ') : '' ).
-				( array_key_exists('autoIncrement', $column) ? ($column['autoIncrement'] ? 'AUTO_INCREMENT ' : '') : '' ).
-				( array_key_exists('primaryKey', $column) ? ($column['primaryKey'] ? 'PRIMARY KEY ' : '') : '' );
+				( isset($column['len']) ? ($column['len'] ? '('.$column['len'].')' : '(10,2)') : '(10,2)').
+				( isset($column['defaultValue']) ? (is_numeric($column['defaultValue']) && is_string($column['defaultValue']) ? "DEFAULT '".$column['defaultValue']."' " : '') : '').
+				( isset($column['allowNull']) ? ($column['allowNull'] ? 'NOT NULL ' : '') : '' ).
+				( isset($column['autoIncrement']) ? ($column['autoIncrement'] ? 'AUTO_INCREMENT ' : '') : '' ).
+				( isset($column['primaryKey']) ? ($column['primaryKey'] ? 'PRIMARY KEY ' : '') : '' );
 				break;
 			case 'DATE'; case 'TIME'; case 'TIMESTAMP'; case 'DATETIME'; case 'YEAR':
 				return $columnType.' '.
-				( array_key_exists('defaultValue', $column) ? (is_numeric($column['defaultValue']) && is_string($column['defaultValue']) ? "DEFAULT '".$column['defaultValue']."' " : '') : '').
-				( array_key_exists('allowNull', $column) ? ($column['allowNull'] ? '' : 'NOT NULL ') : '' );
+				( isset($column['defaultValue']) ? (is_numeric($column['defaultValue']) && is_string($column['defaultValue']) ? "DEFAULT '".$column['defaultValue']."' " : '') : '').
+				( isset($column['allowNull']) ? ($column['allowNull'] ? 'NOT NULL ' : '') : '' );
 				break;
 			case 'CHAR'; case 'VARCHAR':
 				return $columnType.' '.
-				( array_key_exists('len', $column) ? ($column['len'] ? '('.$column['len'].') ' : '') : '').
-				( array_key_exists('defaultValue', $column) ? (is_numeric($column['defaultValue']) && is_string($column['defaultValue']) ? "DEFAULT '".$column['defaultValue']."' " : '') : '').
-				( array_key_exists('allowNull', $column) ? ($column['allowNull'] ? '' : 'NOT NULL ') : '' );
+				( isset($column['len']) ? ($column['len'] ? '('.$column['len'].') ' : '(255)') : '(255)').
+				( isset($column['defaultValue']) ? (is_numeric($column['defaultValue']) && is_string($column['defaultValue']) ? "DEFAULT '".$column['defaultValue']."' " : '') : '').
+				( isset($column['allowNull']) ? ($column['allowNull'] ? 'NOT NULL ' : '') : '' );
 				break;
 			case 'BINARY'; case 'VARBINARY':
 				return $columnType.' '.
-				( array_key_exists('len', $column) ? ($column['len'] ? '('.$column['len'].') ' : '') : '').
-				( array_key_exists('allowNull', $column) ? ($column['allowNull'] ? '' : 'NOT NULL ') : '' );
+				( isset($column['len']) ? ($column['len'] ? '('.$column['len'].') ' : '') : '').
+				( isset($column['allowNull']) ? ($column['allowNull'] ? '' : 'NOT NULL ') : '' );
 				break;
 			case 'TINYBLOB'; case 'BLOB'; case 'MEDIUMBLOB'; case 'LONGBLOB'; case 'TINYTEXT'; case 'TEXT'; case 'MEDIUMTEXT'; case 'LONGTEXT':
 				return $columnType.' '.
-				( array_key_exists('allowNull', $column) ? ($column['allowNull'] ? '' : 'NOT NULL ') : '' );
+				( isset($column['allowNull']) ? ($column['allowNull'] ? 'NOT NULL ' : '') : '' );
 				break;
 		}
 		return true;

@@ -73,6 +73,7 @@ class dbHelper
 	 * This would be a Sencha Model parsed by getSenchaModel method
 	 */
 	public $Model;
+	public $Table;
 
 
 	/**
@@ -320,10 +321,7 @@ class dbHelper
 	public function execOnly($setLastInsertId = true)
 	{
 		$this->conn->query($this->sql_statement);
-		if ($setLastInsertId)
-		{
-			$this->lastInsertId = $this->conn->lastInsertId();
-		}
+		if ($setLastInsertId) $this->lastInsertId = $this->conn->lastInsertId();
         $err = $this->conn->errorInfo();
         if($err[2]){
             return $this->conn->errorInfo();
@@ -512,25 +510,72 @@ class dbHelper
 		return $recordSet->rowCount();
 	}
 	
+	
 	/**
-	 * @brief	Sencha Model
+	 * Begin of the GaiaEHR microORM
+	 * This would be a complete set of methods to manage the database
+	 * creation and data exchange.
 	 * 
-	 * @details	Get the model of a Sencha file
-	 * 
-	 * @example: getSenchaModel('app/model/patients/Dental');
-	 * 
-	 * @return:	An array of the fields of a table
-	 * 
+	 * In the future this will replace the entire old class methods. 
 	 */
-	private function getSenchaModel($fileModel)
+	
+	/**
+	 * SechaModel method: 
+	 * This method will create the table and fields if does not exist in the database
+	 * also this is the brain of the micro ORM.
+	 */
+	public function SechaModel($fileModel)
+	{
+		
+		// get the the model of the table from the sencha .js file
+		$this->__getSenchaModel($fileModel);
+		
+		// verify the existence of the table if it does not exist create it
+		$recordSet = (object)$this->conn->query("SHOW TABLES LIKE '".$this->Table."'");
+		if( $recordSet->fetch(PDO::FETCH_ASSOC) ) $this->__createTable($this->Table);
+		
+		// get the table column information
+		unset($recordSet);
+		$recordSet = (object)$this->conn->query("SHOW FULL COLUMNS IN " . $this->Table);
+		
+		// check if the table has columns, if not create them.
+		if(count($recordSet->fetch(PDO::FETCH_ASSOC)) == 0) $this->__createColumns($this->Model);
+		
+		// Verify changes in the table 
+		// modify the table columns if is not equal to the Sencha Model
+		
+		foreach($recordSet->fetch(PDO::FETCH_ASSOC) as $columns)
+		{
+			//if(!$columns['Fields']) // create the column 
+		}
+		
+	}
+	
+	/**
+	 * __getSenchaModel:
+	 * This method is used by SechaModel method to get all the table and column
+	 * information inside the Sencha Model .js file 
+	 */
+	private function __getSenchaModel($fileModel)
 	{
 		// Getting Sencha model as a namespace
 		$fileModel = str_replace('App', 'app', $fileModel);
 		$fileModel = str_replace('.', '/', $fileModel);
-		$senchaModel = file_get_contents($_SESSION['root'] . '/' . $fileModel . '.js');
+		$senchaModel = (string)file_get_contents($_SESSION['root'] . '/' . $fileModel . '.js');
+
+		// strip comments from the code
+		$senchaModel = preg_replace('~#[^\r\n]*~', '', $senchaModel);
+		$senchaModel = preg_replace('~//[^\r\n]*~', '', $senchaModel);
+		$senchaModel = preg_replace('~/\*.*?\*/~s', '', $senchaModel);
 		
-		// Extracting the necessary end-points
-		preg_match("/fields:(.*?)]/si", $senchaModel, $matches, PREG_OFFSET_CAPTURE, 3);
+		// get the table from the model
+		preg_match("/table(.*?),/si", $senchaModel, $matches, PREG_OFFSET_CAPTURE, 3);
+		preg_match("/[a-zA-Z_]+/", $matches[1][0], $matches, PREG_OFFSET_CAPTURE, 3);
+		$this->__setTable( $matches[0][0] );
+		
+		// Extracting the necessary end-points for the fields
+		unset($matches);
+		preg_match("/fields(.*?)]/si", $senchaModel, $matches, PREG_OFFSET_CAPTURE, 3);
 		
 		// Removing all the unnecessary characters.
 		$subject = str_replace(' ', '', $matches[1][0]);
@@ -538,21 +583,183 @@ class dbHelper
 		$subject = str_replace(chr(10), '', $subject);
 		$subject = str_replace(chr(9), '', $subject);
 		$subject = str_replace('[', '', $subject);
-		$subject = str_replace("'", '"', $subject);
-		$subject = str_replace('name', '"name"', $subject);
-		$subject = str_replace('type', '"type"', $subject);
-		$subject = str_replace('dateFormat', '"dateFormat"', $subject);
-		$subject = '{"items": [' . $subject . ']}';
+		$subject = str_replace("'", '', $subject);
+		$subject = substr($subject, 1);
+		
+		// match any word on the string
+		$subject = preg_replace('/[a-zA-Z_]+/', '"$0"', $subject);
+		
+		//compose a valid json string.
+		$subject = '{"fields": [' . $subject . ']}';
 		
 		// Return the decoded model of Sencha 
 		$this->Model = (array)json_decode($subject, true);
 	}
 	
-	public function SechaModel($fileModel)
+	/**
+	 * __createTable:
+	 * Method to create a table if does not exist
+	 */
+	 private function __createTable()
+	 {
+	 	try
+	 	{
+	 		$this->conn->beginTransaction();
+		 	$sql = 'CREATE TABLE IF NOT EXISTS ' . $this->Table;
+			$this->conn->prepare($sql);
+			$this->conn->commit();
+			return true;
+		}
+		catch(PDOException $e)
+		{
+			$this->conn->rollBack();
+			return $e;
+		}
+	 }
+	 
+	 /**
+	  * __setTable:
+	  * This will populate the Table class variable
+	  */
+	 private function __setTable($table)
+	 {
+	 	$this->Table = $table;
+	 }
+	
+	/**
+	 * __createColumn:
+	 * This method will create the column inside the table of the database
+	 * method used by SechaModel method
+	 */
+	private function __createAllColumns($paramaters = array())
 	{
-		$this->getSenchaModel($fileModel);
-		
+		foreach($paramaters['fields'] as $items)
+		{
+			try
+			{
+				if($items['store']) $this->conn->exec('ALTER TABLE '.$this->Table.' ADD '.$items['name'].' '.$this->__renderColumnSyntax($items) . ';');
+			}
+			catch(PDOException $e)
+			{
+				$this->conn->rollBack();
+				return $e;
+			}
+		}
 	}
 	
-
+	/**
+	 * __createColumn:
+	 * Method that will create the column into the table
+	 */
+	private function __createColumn($paramaters = array())
+	{
+		try
+		{
+			$this->conn->exec('ALTER TABLE '.$this->Table.' ADD '.$paramaters['name'].' '.$this->__renderColumnSyntax($paramaters) . ';');
+		}
+		catch(PDOException $e)
+		{
+			$this->conn->rollBack();
+			return $e;
+		}		
+	}
+	
+	/**
+	 * __modifyColumn:
+	 * Method to modify the column properties
+	 */
+	private function __modifyColumn($column)
+	{
+		try
+		{
+			$this->conn->exec('ALTER TABLE '.$this->Table.' MODIFY '.$items['name'].' '.$this->__renderColumnSyntax($items) . ';');
+		}
+		catch(PDOException $e)
+		{
+			$this->conn->rollBack();
+			return $e;
+		}
+	}
+	
+	/**
+	 * __createDatabase
+	 * Method that will create a database
+	 */
+	private function __createDatabase($databaseName)
+	{
+		try
+		{
+			$this->conn->exec('CREATE DATABASE IF NOT EXISTS '.$databaseName.';');
+		}
+		catch(PDOException $e)
+		{
+			$this->conn->rollBack();
+			return $e;
+		}
+	}
+	
+	/**
+	 * __dropColumn:
+	 * Method to drop column in a table
+	 */
+	private function __dropColumn($column)
+	{
+		try
+		{
+			$this->conn->exec('ALTER TABLE '.$this->Table.' DROP COLUMN '.$items['name'].';');
+		}
+		catch(PDOException $e)
+		{
+			$this->conn->rollBack();
+			return $e;
+		}
+	}
+	
+	/**
+	 * __renderColumnSyntax:
+	 * Method that will render the correct syntax for the addition or modification
+	 * of a column.
+	 */
+	private function __renderColumnSyntax($column = array())
+	{
+		$columnType = strtoupper($column['dataType']);
+		switch ($columnType)
+		{
+			case 'BIT'; case 'TINYINT'; case 'SMALLINT'; case 'MEDIUMINT'; case 'INT'; case 'INTEGER'; case 'BIGINT':
+				return $columnType.'('.$column['len'].') '.
+				($column['defaultValue'] ? "DEFAULT '".$column['defaultValue']."' " : '').
+				($column['allowNull'] ? '' : 'NOT NULL ').
+				($column['autoIncrement'] ? 'AUTO_INCREMENT ' : '').
+				($column['primaryKey'] ? 'PRIMARY KEY ' : '');
+				break;
+			case 'REAL'; case 'DOUBLE'; case 'FLOAT'; case 'DECIMAL'; case 'NUMERIC':
+				return $columnType.'('.
+				($column['len']?$column['len']:'10,2').') '.
+				($column['defaultValue'] ? "DEFAULT '".$column['defaultValue']."' " : '').
+				($column['allowNull'] ? '' : 'NOT NULL ').
+				($column['autoIncrement'] ? ' AUTO_INCREMENT' : '').
+				($column['primaryKey'] ? ' PRIMARY KEY' : '');
+				break;
+			case 'DATE'; case 'TIME'; case 'TIMESTAMP'; case 'DATETIME'; case 'YEAR':
+				return $columnType.' '.
+				($column['defaultValue'] ? "DEFAULT '".$column['defaultValue']."' " : '').
+				($column['allowNull'] ? '' : 'NOT NULL ');
+				break;
+			case 'CHAR'; case 'VARCHAR':
+				return $columnType.'('.$column['len'].') '.
+				($column['defaultValue'] ? "DEFAULT '".$column['defaultValue']."' " : '').
+				($column['allowNull'] ? '' : 'NOT NULL ');
+				break;
+			case 'BINARY'; case 'VARBINARY':
+				return $columnType.'('.$column['len'].') '.
+				($column['allowNull'] ? '' : 'NOT NULL ');
+				break;
+			case 'TINYBLOB'; case 'BLOB'; case 'MEDIUMBLOB'; case 'LONGBLOB'; case 'TINYTEXT'; case 'TEXT'; case 'MEDIUMTEXT'; case 'LONGTEXT':
+				return $columnType.' '.
+				($column['allowNull'] ? '' : 'NOT NULL ');
+				break;
+		}
+	}
+	
+	
 }

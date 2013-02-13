@@ -105,58 +105,103 @@ Ext.define( 'App.model.administration.User',
 		name : 'federaltaxid',
 		type : 'string',
 		dataType : 'varchar',
-		len: 255
+		len: 255,
+		store: true
 	},
 	{
 		name : 'federaldrugid',
-		type : 'string'
+		type : 'string',
+		dataType : 'varchar',
+		len: 255,
+		store: true
 	},
 	{
 		name : 'upin',
-		type : 'string'
+		type : 'string',
+		dataType : 'varchar',
+		len: 255,
+		store: true
+	},
+	{
+		name : 'facility',
+		type : 'string',
+		dataType : 'varchar',
+		len: 255,
+		store: true
 	},
 	{
 		name : 'facility_id',
-		type : 'int'
+		type : 'int',
+		dataType : 'int',
+		len: 11,
+		store: true
 	},
 	{
 		name : 'see_auth',
-		type : 'bool'
+		type : 'bool',
+		dataType : 'tynyint',
+		len: 1,
+		store: true
 	},
 	{
 		name : 'npi',
-		type : 'string'
+		type : 'string',
+		dataType : 'varchar',
+		len: 15,
+		store: true
 	},
 	{
 		name : 'title',
-		type : 'string'
+		type : 'string',
+		dataType : 'varchar',
+		len: 30,
+		store: true
 	},
 	{
 		name : 'specialty',
-		type : 'string'
+		type : 'string',
+		dataType : 'varchar',
+		len: 255,
+		store: true
 	},
 	{
 		name : 'cal_ui',
-		type : 'string'
+		type : 'string',
+		dataType : 'tynyint',
+		len: 4,
+		store: true
 	},
 	{
 		name : 'taxonomy',
-		type : 'string'
+		type : 'string',
+		dataType : 'varchar',
+		len: 30,
+		store: true
 	},
 	{
 		name : 'calendar',
-		type : 'bool'
+		type : 'bool',
+		dataType : 'tynyint',
+		len: 1,
+		store: true
 	},
 	{
 		name : 'abook_type',
-		type : 'string'
+		type : 'string',
+		dataType : 'varchar',
+		len: 31,
+		store: true
 	},
 	{
 		name : 'default_warehouse',
-		type : 'string'
+		type : 'string',
+		dataType : 'varchar',
+		len: 31,
+		store: true
 	},
 	{
 		name : 'role_id',
-		type : 'int'
+		type : 'int',
+		store: false
 	}]
 } );

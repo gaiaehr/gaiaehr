@@ -42,6 +42,7 @@ class User
 	function __construct()
 	{
 		$this->db = new dbHelper();
+		
 		return;
 	}
 

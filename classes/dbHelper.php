@@ -88,7 +88,6 @@ class dbHelper
 	 */
 	function __construct()
 	{
-		//error_reporting(0);
 		if (isset($_SESSION['site']['db']))
 		{
 			$host = (string)$_SESSION['site']['db']['host'];
@@ -530,25 +529,46 @@ class dbHelper
 		// get the the model of the table from the sencha .js file
 		$this->__getSenchaModel($fileModel);
 		
-		// verify the existence of the table if it does not exist create it
-		$recordSet = (object)$this->conn->query("SHOW TABLES LIKE '".$this->Table."'");
-		if( $recordSet->fetch(PDO::FETCH_ASSOC) ) $this->__createTable($this->Table);
-		
-		// get the table column information
-		unset($recordSet);
-		$recordSet = (object)$this->conn->query("SHOW FULL COLUMNS IN " . $this->Table);
-		
-		// check if the table has columns, if not create them.
-		if(count($recordSet->fetch(PDO::FETCH_ASSOC)) == 0) $this->__createColumns($this->Model);
-		
-		// Verify changes in the table 
-		// modify the table columns if is not equal to the Sencha Model
-		
-		foreach($recordSet->fetch(PDO::FETCH_ASSOC) as $columns)
+		try
 		{
-			//if(!$columns['Fields']) // create the column 
-		}
 		
+			// verify the existence of the table if it does not exist create it
+			$recordSet = $this->conn->query("SHOW TABLES LIKE '".$this->Table."';");
+			if( $recordSet->fetch(PDO::FETCH_ASSOC) ) $this->__createTable($this->Table);
+			
+			// get the table column information and
+			// check if the table has columns, if not create them.
+			$recordSet = $this->conn->query("SHOW COLUMNS IN " . $this->Table . ";");
+			$records = $recordSet->fetchAll(PDO::FETCH_ASSOC);
+			if( count($records) <= 1 ) 
+			{
+				$this->__createAllColumns($this->Model);
+			}
+			else
+			{
+				// Verify changes in the table 
+				// modify the table columns if is not equal to the Sencha Model
+				foreach($records as $columns)
+				{
+					$change = false;
+					foreach($this->Model as $SenchaModel)
+					{
+						if($SenchaModel['name'] == $columns['Field'])
+						{
+							// found the field, start the comparison
+							if(!strripos($SenchaModel['dataType'], $columns['Type'])) $change = 'true';
+						}
+					}
+				}
+				echo $change;
+			}
+			
+		}
+		catch(PDOException $e)
+		{
+			error_log('dbHelper SenchaPHP microORM: ' . $e->getMessage() );
+			return $e;
+		}
 	}
 	
 	/**
@@ -576,7 +596,7 @@ class dbHelper
 		// Extracting the necessary end-points for the fields
 		unset($matches);
 		preg_match("/fields(.*?)]/si", $senchaModel, $matches, PREG_OFFSET_CAPTURE, 3);
-		
+
 		// Removing all the unnecessary characters.
 		$subject = str_replace(' ', '', $matches[1][0]);
 		$subject = str_replace(chr(13), '', $subject);
@@ -587,13 +607,14 @@ class dbHelper
 		$subject = substr($subject, 1);
 		
 		// match any word on the string
-		$subject = preg_replace('/[a-zA-Z_]+/', '"$0"', $subject);
+		$subject = preg_replace('/[a-zA-Z0-9_]+/', '"$0"', $subject);
 		
 		//compose a valid json string.
 		$subject = '{"fields": [' . $subject . ']}';
-		
-		// Return the decoded model of Sencha 
-		$this->Model = (array)json_decode($subject, true);
+				
+		// Return the decoded model of Sencha
+		$model = (array)json_decode($subject, true);
+		$this->Model = $model['fields'];
 	}
 	
 	/**
@@ -604,15 +625,12 @@ class dbHelper
 	 {
 	 	try
 	 	{
-	 		$this->conn->beginTransaction();
-		 	$sql = 'CREATE TABLE IF NOT EXISTS ' . $this->Table;
-			$this->conn->prepare($sql);
-			$this->conn->commit();
+			$this->conn->exec('CREATE TABLE IF NOT EXISTS ' . $this->Table . ' (id BIGINT(20) NOT NULL AUTO_INCREMENT PRIMARY KEY);');
 			return true;
 		}
 		catch(PDOException $e)
 		{
-			$this->conn->rollBack();
+			error_log('dbHelper SenchaPHP microORM: ' . $e->getMessage() );
 			return $e;
 		}
 	 }
@@ -641,7 +659,7 @@ class dbHelper
 			}
 			catch(PDOException $e)
 			{
-				$this->conn->rollBack();
+				error_log('dbHelper SenchaPHP microORM: ' . $e->getMessage() );
 				return $e;
 			}
 		}
@@ -659,7 +677,7 @@ class dbHelper
 		}
 		catch(PDOException $e)
 		{
-			$this->conn->rollBack();
+			error_log('dbHelper SenchaPHP microORM: ' . $e->getMessage() );
 			return $e;
 		}		
 	}
@@ -676,7 +694,7 @@ class dbHelper
 		}
 		catch(PDOException $e)
 		{
-			$this->conn->rollBack();
+			error_log('dbHelper SenchaPHP microORM: ' . $e->getMessage() );
 			return $e;
 		}
 	}
@@ -693,7 +711,7 @@ class dbHelper
 		}
 		catch(PDOException $e)
 		{
-			$this->conn->rollBack();
+			error_log('dbHelper SenchaPHP microORM: ' . $e->getMessage() );
 			return $e;
 		}
 	}
@@ -710,7 +728,7 @@ class dbHelper
 		}
 		catch(PDOException $e)
 		{
-			$this->conn->rollBack();
+			error_log('dbHelper SenchaPHP microORM: ' . $e->getMessage() );
 			return $e;
 		}
 	}
@@ -722,43 +740,54 @@ class dbHelper
 	 */
 	private function __renderColumnSyntax($column = array())
 	{
-		$columnType = strtoupper($column['dataType']);
+		if(array_key_exists('dataType', $column)) 
+		{
+			$columnType = strtoupper($column['dataType']);
+		}
+		else
+		{
+			return false;
+		}
 		switch ($columnType)
 		{
 			case 'BIT'; case 'TINYINT'; case 'SMALLINT'; case 'MEDIUMINT'; case 'INT'; case 'INTEGER'; case 'BIGINT':
-				return $columnType.'('.$column['len'].') '.
-				($column['defaultValue'] ? "DEFAULT '".$column['defaultValue']."' " : '').
-				($column['allowNull'] ? '' : 'NOT NULL ').
-				($column['autoIncrement'] ? 'AUTO_INCREMENT ' : '').
-				($column['primaryKey'] ? 'PRIMARY KEY ' : '');
+				return $columnType.
+				( array_key_exists('len', $column) ? ($column['len'] ? '('.$column['len'].') ' : '') : '').
+				( array_key_exists('defaultValue', $column) ? (is_numeric($column['defaultValue']) && is_string($column['defaultValue']) ? "DEFAULT '".$column['defaultValue']."' " : '') : '').
+				( array_key_exists('allowNull', $column) ? ($column['allowNull'] ? '' : 'NOT NULL ') : '' ).
+				( array_key_exists('autoIncrement', $column) ? ($column['autoIncrement'] ? 'AUTO_INCREMENT ' : '') : '' ).
+				( array_key_exists('primaryKey', $column) ? ($column['primaryKey'] ? 'PRIMARY KEY ' : '') : '' );
 				break;
 			case 'REAL'; case 'DOUBLE'; case 'FLOAT'; case 'DECIMAL'; case 'NUMERIC':
-				return $columnType.'('.
-				($column['len']?$column['len']:'10,2').') '.
-				($column['defaultValue'] ? "DEFAULT '".$column['defaultValue']."' " : '').
-				($column['allowNull'] ? '' : 'NOT NULL ').
-				($column['autoIncrement'] ? ' AUTO_INCREMENT' : '').
-				($column['primaryKey'] ? ' PRIMARY KEY' : '');
+				return $columnType.
+				(array_key_exists('len', $column) ? ($column['len'] ? '('.$column['len'].')' : '(10,2)') : '').
+				( array_key_exists('defaultValue', $column) ? (is_numeric($column['defaultValue']) && is_string($column['defaultValue']) ? "DEFAULT '".$column['defaultValue']."' " : '') : '').
+				( array_key_exists('allowNull', $column) ? ($column['allowNull'] ? '' : 'NOT NULL ') : '' ).
+				( array_key_exists('autoIncrement', $column) ? ($column['autoIncrement'] ? 'AUTO_INCREMENT ' : '') : '' ).
+				( array_key_exists('primaryKey', $column) ? ($column['primaryKey'] ? 'PRIMARY KEY ' : '') : '' );
 				break;
 			case 'DATE'; case 'TIME'; case 'TIMESTAMP'; case 'DATETIME'; case 'YEAR':
 				return $columnType.' '.
-				($column['defaultValue'] ? "DEFAULT '".$column['defaultValue']."' " : '').
-				($column['allowNull'] ? '' : 'NOT NULL ');
+				( array_key_exists('defaultValue', $column) ? (is_numeric($column['defaultValue']) && is_string($column['defaultValue']) ? "DEFAULT '".$column['defaultValue']."' " : '') : '').
+				( array_key_exists('allowNull', $column) ? ($column['allowNull'] ? '' : 'NOT NULL ') : '' );
 				break;
 			case 'CHAR'; case 'VARCHAR':
-				return $columnType.'('.$column['len'].') '.
-				($column['defaultValue'] ? "DEFAULT '".$column['defaultValue']."' " : '').
-				($column['allowNull'] ? '' : 'NOT NULL ');
+				return $columnType.' '.
+				( array_key_exists('len', $column) ? ($column['len'] ? '('.$column['len'].') ' : '') : '').
+				( array_key_exists('defaultValue', $column) ? (is_numeric($column['defaultValue']) && is_string($column['defaultValue']) ? "DEFAULT '".$column['defaultValue']."' " : '') : '').
+				( array_key_exists('allowNull', $column) ? ($column['allowNull'] ? '' : 'NOT NULL ') : '' );
 				break;
 			case 'BINARY'; case 'VARBINARY':
-				return $columnType.'('.$column['len'].') '.
-				($column['allowNull'] ? '' : 'NOT NULL ');
+				return $columnType.' '.
+				( array_key_exists('len', $column) ? ($column['len'] ? '('.$column['len'].') ' : '') : '').
+				( array_key_exists('allowNull', $column) ? ($column['allowNull'] ? '' : 'NOT NULL ') : '' );
 				break;
 			case 'TINYBLOB'; case 'BLOB'; case 'MEDIUMBLOB'; case 'LONGBLOB'; case 'TINYTEXT'; case 'TEXT'; case 'MEDIUMTEXT'; case 'LONGTEXT':
 				return $columnType.' '.
-				($column['allowNull'] ? '' : 'NOT NULL ');
+				( array_key_exists('allowNull', $column) ? ($column['allowNull'] ? '' : 'NOT NULL ') : '' );
 				break;
 		}
+		return true;
 	}
 	
 	

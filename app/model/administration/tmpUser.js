@@ -18,10 +18,10 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define( 'App.model.administration.User',
+Ext.define( 'App.model.administration.tmpUser',
 {
 	extend : 'Ext.data.Model',
-	table: 'users',
+	table: 'tmpusers',
 	fields : [
 	{
 		name : 'id',
@@ -30,7 +30,7 @@ Ext.define( 'App.model.administration.User',
 		len: 20,
 		primaryKey : true,
 		autoIncrement : true,
-		allowNull : true,
+		allowNull : false,
 		store: true
 	},
 	{
@@ -59,19 +59,20 @@ Ext.define( 'App.model.administration.User',
 	{
 		name : 'active',
 		type : 'bool',
-		dataType : 'tynyint',
+		dataType : 'tinyint',
+		len : 1,
 		store: true
 	}, 
 	{
 		name : 'info',
-		type : 'string'
-		dataType: 'longtex',
+		type : 'string',
+		dataType: 'longtext',
 		store: true
 	},
 	{
 		name : 'source',
 		type : 'int',
-		dataType : 'tynyint',
+		dataType : 'tinyint',
 		len: 4,
 		store: true
 	},
@@ -99,64 +100,129 @@ Ext.define( 'App.model.administration.User',
 	{
 		name : 'fullname',
 		type : 'string',
+		dataType : 'varchar',
 		store: false
 	},
 	{
 		name : 'federaltaxid',
 		type : 'string',
 		dataType : 'varchar',
-		len: 255
+		len: 255,
+		store: true
 	},
 	{
 		name : 'federaldrugid',
-		type : 'string'
+		type : 'string',
+		dataType : 'varchar',
+		len: 255,
+		store: true
 	},
 	{
 		name : 'upin',
-		type : 'string'
+		type : 'string',
+		dataType : 'varchar',
+		len: 255,
+		store: true
+	},
+	{
+		name : 'facility',
+		type : 'string',
+		dataType : 'varchar',
+		len: 255,
+		store: true
 	},
 	{
 		name : 'facility_id',
-		type : 'int'
+		type : 'int',
+		dataType : 'int',
+		len: 11,
+		store: true
 	},
 	{
 		name : 'see_auth',
-		type : 'bool'
+		type : 'bool',
+		dataType : 'tinyint',
+		len: 1,
+		store: true
 	},
 	{
 		name : 'npi',
-		type : 'string'
+		type : 'string',
+		dataType : 'varchar',
+		len: 15,
+		store: true
 	},
 	{
 		name : 'title',
-		type : 'string'
+		type : 'string',
+		dataType : 'varchar',
+		len: 30,
+		store: true
 	},
 	{
 		name : 'specialty',
-		type : 'string'
+		type : 'string',
+		dataType : 'varchar',
+		len: 255,
+		store: true
 	},
 	{
 		name : 'cal_ui',
-		type : 'string'
+		type : 'string',
+		dataType : 'tinyint',
+		len: 4,
+		store: true
 	},
 	{
 		name : 'taxonomy',
-		type : 'string'
+		type : 'string',
+		dataType : 'varchar',
+		len: 30,
+		store: true
 	},
 	{
 		name : 'calendar',
-		type : 'bool'
+		type : 'bool',
+		dataType : 'tinyint',
+		len: 1,
+		store: true
 	},
 	{
 		name : 'abook_type',
-		type : 'string'
+		type : 'string',
+		dataType : 'varchar',
+		len: 31,
+		store: true
 	},
 	{
+		name : 'pwd_expiration_date',
+		type : 'string',
+		dataType : 'longtext',
+		store: true
+	},
+	{
+		name : 'pwd_history1',
+		type : 'string',
+		dataType : 'longtext',
+		store: true
+	},
+	{
+		name : 'pwd_history2',
+		type : 'string',
+		dataType : 'longtext',
+		store: true
+	},	
+	{
 		name : 'default_warehouse',
-		type : 'string'
+		type : 'string',
+		dataType : 'varchar',
+		len: 31,
+		store: true
 	},
 	{
 		name : 'role_id',
-		type : 'int'
+		type : 'int',
+		dataType : 'int',
+		store: false
 	}]
 } );

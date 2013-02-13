@@ -11,7 +11,6 @@ Ext.define('App.model.billing.VisitVoucherLine', {
         {name: 'id',                    type: 'int'},
         {name: 'voucher_id',            type: 'int', comment:'Voucher'},
         {name: 'account_id',            type: 'int', comment:'Account'},
-        {name: 'patient_id',            type: 'int', comment:'Patient'},
 	    {name: 'move_line_id',          type: 'int', comment:'Journal Item'},
 //        {name: 'company_id',            type: 'int', comment:'Company (Not Used)'},
 //        {name: 'account_analytic_id',   type: 'int', comment:'Analytic Account (Not Used)'},

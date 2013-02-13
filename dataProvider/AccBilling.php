@@ -65,10 +65,11 @@ class AccBilling
         $this->patient = new Patient();
     }
 
-    /**
-     * @param stdClass $params required params: $params->pid, $params->eid, $params->uid
-     * @return array
-     */
+    public function getVisitVoucher(stdClass $params)
+    {
+
+        return $invoice;
+    }
     public function getVisitVoucherLines(stdClass $params)
     {
         $invoice = array();

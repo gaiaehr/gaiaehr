@@ -6,9 +6,9 @@
  * Time: 11:11 PM
  */
 
-Ext.define('App.store.billing.VisitInvoice', {
+Ext.define('App.store.billing.VisitInvoiceLine', {
 	extend: 'Ext.data.Store',
-	model     : 'App.model.billing.VisitInvoice',
+	model     : 'App.model.billing.VisitInvoiceLine',
     remoteSort: false,
 	autoLoad  : false
 });

@@ -14,7 +14,7 @@ Ext.define('App.view.patient.VisitCheckout', {
 	initComponent:function(){
 		var me = this;
 
-		me.VisitChargesStore = Ext.create('App.store.billing.VisitInvoice');
+		me.VisitVoucherStore = Ext.create('App.store.billing.VisitVoucher');
 
 		me.pageBody = Ext.create('Ext.panel.Panel', {
 			itemId:'visitpayment',
@@ -57,7 +57,7 @@ Ext.define('App.view.patient.VisitCheckout', {
                                         me.invoiceGrid = Ext.widget('grid', {
                                             frame:false,
                                             border:false,
-                                            store:me.VisitChargesStore,
+                                            store:me.VisitVoucherStore,
                                             enableColumnMove:false,
                                             enableColumnHide:false,
                                             sortableColumns:false,
@@ -357,7 +357,7 @@ Ext.define('App.view.patient.VisitCheckout', {
 	onRemoveService:function(grid, rowIndex){
 		var me = this,
             record = grid.getStore().getAt(rowIndex);
-		me.VisitChargesStore.remove(record);
+		me.VisitVoucherStore.remove(record);
 		me.updateTotalBalance();
 	},
 
@@ -370,7 +370,7 @@ Ext.define('App.view.patient.VisitCheckout', {
         var me = this,
             params = {},
             print = btn.action == 'saveprint',
-            servicesRec = me.VisitChargesStore.data.items,
+            servicesRec = me.VisitVoucherStore.data.items,
             lines = [];
 
         for(var i=0; i < servicesRec.length; i++){
@@ -526,15 +526,17 @@ Ext.define('App.view.patient.VisitCheckout', {
 		var me = this;
 		me.docsGrid.loadDocs(me.eid);
 		me.getVisitOtherInfo();
-		me.VisitChargesStore.load({
+		me.VisitVoucherStore.load({
 			params:{
 				pid:me.pid,
 				eid:me.eid,
 				uid:me.uid
 			},
             callback:function(records, operation, success){
-                me.paid.setValue(0.00);
-                me.updateTotalBalance();
+
+	            say(records[0])
+//                me.paid.setValue(0.00);
+//                me.updateTotalBalance();
             }
 		})
 	},
@@ -543,7 +545,7 @@ Ext.define('App.view.patient.VisitCheckout', {
         var me = this,
             amount   = me.amount.getValue(),
             paid   = me.paid.getValue(),
-            records = this.VisitChargesStore.data.items,
+            records = this.VisitVoucherStore.data.items,
             form = me.invoicePanel.down('form'),
             total = 0.00, balance;
 

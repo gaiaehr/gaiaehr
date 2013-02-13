@@ -526,6 +526,7 @@ Ext.define('App.view.patient.VisitCheckout', {
 		var me = this;
 		me.docsGrid.loadDocs(me.eid);
 		me.getVisitOtherInfo();
+
 		me.VisitVoucherStore.load({
 			params:{
 				pid:me.pid,
@@ -534,7 +535,7 @@ Ext.define('App.view.patient.VisitCheckout', {
 			},
             callback:function(records, operation, success){
 
-	            say(records[0])
+	            say(records[0]);
 //                me.paid.setValue(0.00);
 //                me.updateTotalBalance();
             }

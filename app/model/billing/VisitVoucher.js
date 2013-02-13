@@ -32,7 +32,7 @@ Ext.define('App.model.billing.VisitVoucher', {
 		{name: 'notes',                     type: 'string', mapping:'narration',  comment:'Notes'},
 		{name: 'status',                    type: 'string', mapping:'state',      comment:'Status'},
 //		{name: 'memo',                      type: 'string', mapping:'name', comment:'Memo (Not Used)'},
-//		{name: 'type',                      type: 'string', comment:'Default Type (Not Used)'},
+		{name: 'type',                      type: 'string', comment:'visit/product/office'},
 //		{name: 'payment_option',            type: 'string', comment:'Payment Difference (Not Used)'},
 //		{name: 'payNow',                    type: 'string', comment:'Payment (Not Used)'},
 

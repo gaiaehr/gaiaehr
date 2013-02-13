@@ -5,7 +5,10 @@ $API = array(
      */
     'AccBilling' => array(
         'methods' => array(
-            'getVisitServicesCharges' => array(
+            'getVisitVoucherLines' => array(
+                'len' => 1
+            ),
+            'setVisitVoucher' => array(
                 'len' => 1
             )
         )

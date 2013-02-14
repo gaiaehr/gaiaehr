@@ -74,6 +74,10 @@ class dbHelper
 	 */
 	public $Model;
 	public $Table;
+	private $__id;
+	private $__total;
+	private $__freeze;
+	public $currentRecord;
 
 
 	/**
@@ -518,6 +522,273 @@ class dbHelper
 	 * 
 	 * In the future this will replace the entire old class methods. 
 	 */
+	 
+	 /**
+	  * __ormSetup:
+	  * This function will open a connection to the MySQL
+	  * Server. Also check if the database exist
+	  * if does not exists create the database.
+	  */
+	 private function __ormSetup()
+	 {
+		// Connect using regular PDO GaiaEHR Database Abstraction layer.
+		// but make only a connection, not to the database.
+		$host = (string)$_SESSION['site']['db']['host'];
+		$port = (int)$_SESSION['site']['db']['port'];
+		$dbName = (string)$_SESSION['site']['db']['database'];
+		$dbUser = (string)$_SESSION['site']['db']['username'];
+		$dbPass = (string)$_SESSION['site']['db']['password'];
+		try
+		{
+			$this->conn = new PDO('mysql:host='.$host.';port='.$port.';charset=UTF-8', $dbUser, $dbPass, array(
+				PDO::MYSQL_ATTR_LOCAL_INFILE => 1,
+				PDO::ATTR_PERSISTENT => true
+			));
+			$this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			// check if the database exist.
+			$recordSet = $this->conn->query('SHOW DATABASES LIKE '.$dbName.';');
+			$database = $recordSet->fetchAll(PDO::FETCH_ASSOC);
+			if(count($database) <= 0) $this->__createDatabase($dbName);
+			$this->conn->query('USE '.$dbName.';');
+			return true;
+		}
+		catch(PDOException $e)
+		{
+			error_log('dbHelper SenchaPHP microORM: ' . $e->getMessage() );
+			return $e;
+		}
+	 }
+
+	/**
+	 * store: (part of CRUD)
+	 * Create & Update
+	 * store the record as array into the working table
+	 */
+	public function store($record = array())
+	{
+		try
+		{
+			// update a record
+			if($record['id'])
+			{
+				$storeField = (string)'';
+				foreach($record as $key => $value) ($key=='id' ? $storeField .= '' : $storeField .= $key."='".$value."'");
+				$sql = (string)'UPDATE '.$this->Table.' SET '.$storeField . " WHERE id='".$record['id']."';";
+				$this->conn->query($sql);
+				$this->__auditLog($sql);
+				$this->__id = $record['id'];
+			}
+			// create a record
+			else
+			{
+				$fields = (string)'';
+				$values = (string)'';
+				foreach($record as $key => $value) 
+				{
+					$fields .= $key.', ';
+					$values .= "'".$value."', ";
+				}
+				$sql = (string)'INSERT INTO '.$this->Table.' ('.$fields.') VALUES ('.$values.');';
+				$this->conn->query($sql);
+				$this->__auditLog($sql);
+				$this->__id = $this->conn->lastInsertId();
+			}
+			return true;
+		}
+		catch(PDOException $e)
+		{
+			error_log('dbHelper SenchaPHP microORM: ' . $e->getMessage() );
+			return $e;
+		}
+	}
+	
+	/**
+	 * trash: (part of CRUD)
+	 * Delete
+	 * will delete the record indicated by an id
+	 */
+	public function trash($record = array())
+	{
+		try
+		{
+			$this->conn->query("DELETE FROM ".$this->Table."WHERE id='".$record['id']."';");
+			$this->__total = (int)count($records)-1;
+			if($this->__id == $record['id']) unset($this->__id);
+			return true;
+		}
+		catch(PDOException $e)
+		{
+			error_log('dbHelper SenchaPHP microORM: ' . $e->getMessage() );
+			return $e;
+		}
+	}
+
+	/**
+	 * load: (part of CRUD)
+	 * Read
+	 * Load all records, load one record if a ID is passed,
+	 * load all records with some columns determined by an array,
+	 * load one record with some columns determined by an array, or any combination.  
+	 */
+	public function load($id = NULL, $columns = array())
+	{
+		try
+		{
+			$selectedColumns = (string)'';
+			if(count($columns)) $selectedColumns = implode(', '.$this->Table.'.', $columns);
+			$recordSet = $this->conn->query("SELECT ".($selectedColumns ? $this->Table.".".$selectedColumns : '*')." FROM ".$this->Table.($id ? " WHERE ".$this->Table.".id='".$id."'" : "").";");
+			$records = (array)$recordSet->fetchAll(PDO::FETCH_ASSOC);
+			$this->__total = (int)count($records);
+			return $records;
+		}
+		catch(PDOException $e)
+		{
+			error_log('dbHelper SenchaPHP microORM: ' . $e->getMessage() );
+			return $e;
+		}
+	}
+	
+	/**
+	 * __auditLog:
+	 * Every store has to be logged into the database.
+	 * Also generate the table if does not exist.
+	 */
+	private function __auditLog($sqlStatement = '')
+	{
+		// generate the appropriate event log comment 
+		$record = array();
+		$eventLog = (string)"Event triggered but never defined.";
+		if (stristr($sqlStatement, 'INSERT')) $eventLog = 'Record insertion';
+		if (stristr($sqlStatement, 'DELETE')) $eventLog = 'Record deletion';
+		if (stristr($sqlStatement, 'UPDATE')) $eventLog = 'Record update';
+
+		$data['date'] = Time::getLocalTime('Y-m-d H:i:s');
+		$data['event'] = $eventLog;
+		$data['comments'] = $this->sql_statement;
+		$data['user'] = $_SESSION['user']['name'];
+		$data['checksum'] = crc32($this->sql_statement);
+		$data['facility'] = $_SESSION['site']['dir'];
+		$data['patient_id'] = $_SESSION['patient']['pid'];
+		$data['ip'] = $_SESSION['server']['REMOTE_ADDR'];
+		
+		try
+		{
+			//check if the table exist
+			$recordSet = $this->conn->query("SHOW TABLES LIKE '".$this->Table."';");
+			if( $recordSet->fetch(PDO::FETCH_ASSOC) ) $this->__createTable('log');
+			unset($recordSet);
+			
+			//check for the available fields
+			$recordSet = $this->conn->query("SHOW COLUMNS IN " . $this->Table . ";");
+			$tableColumns = $recordSet->fetchAll(PDO::FETCH_ASSOC);
+			unset($recordSet);
+				
+			// check if the table has columns, if not create them.
+			// we start with 1 because the microORM always create the id.
+			if( count($tableColumns) <= 0 ) $this->__logModel();
+			
+			// insert the event log
+			$fields = (string)'';
+			$values = (string)'';
+			foreach($data as $key => $value) 
+			{
+				$fields .= $key.', ';
+				$values .= "'".$value."', ";
+			}
+			$this->conn->query('INSERT INTO log ('.$fields.') VALUES ('.$values.');');
+			return $this->conn->lastInsertId();
+		}
+		catch(PDOException $e)
+		{
+			error_log('dbHelper SenchaPHP microORM: ' . $e->getMessage() );
+			return $e;
+		}
+	}
+
+	/**
+	 * __logModel:
+	 * Method to create the log table columns
+	 */
+	private function __logModel()
+	{
+		try
+		{
+			$sql = "CREATE TABLE IF NOT EXISTS `log` (
+						`id` bigint(20) NOT NULL AUTO_INCREMENT,
+						`date` datetime DEFAULT NULL,
+						`event` varchar(255) DEFAULT NULL,
+						`user` varchar(255) DEFAULT NULL,
+						`facility` varchar(255) NOT NULL,
+						`comments` longtext,
+						`user_notes` longtext,
+						`patient_id` bigint(20) DEFAULT NULL,
+						`success` tinyint(1) DEFAULT '1',
+						`checksum` longtext,
+						`crt_user` varchar(255) DEFAULT NULL,
+						`ip` varchar(50) DEFAULT NULL,
+						PRIMARY KEY (`id`)
+					) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
+			$this->conn->query($sql);
+			return true;
+		}
+		catch(PDOException $e)
+		{
+			error_log('dbHelper SenchaPHP microORM: ' . $e->getMessage() );
+			return $e;
+		}
+	}
+	
+	/**
+	 * getLastId:
+	 * Get the last insert ID of an insert
+	 * this is automatically updated by the store method
+	 */
+	public function getLastId()
+	{
+		return (int)$this->__id;
+	}
+	
+	/**
+	 * getTotal:
+	 * Get the total records in a select statement
+	 * this is automatically updated by the load method
+	 */
+	public function getTotal()
+	{
+		return (int)$this->__total;
+	}
+	
+	/**
+	 * __leftJoin:
+	 * A left join returns all the records in the “left” table (T1) whether they 
+	 * have a match in the right table or not. If, however, they do have a match 
+	 * in the right table – give me the “matching” data from the right table as well. 
+	 * If not – fill in the holes with null.
+	 */
+	private function __leftJoin()
+	{
+		return (string)' LEFT JOIN ' . $this->relateTable .' ON ('.$this->Table.'.id = '.$this->relateTable.'.id ';
+	}
+	
+	/**
+	 * __innerJoin:
+	 * An inner join only returns those records that have “matches” in both tables. 
+	 * So for every record returned in T1 – you will also get the record linked by 
+	 * the foreign key in T2. In programming logic – think in terms of AND.
+	 */
+	private function __innerJoin()
+	{
+		return (string)' INNER JOIN ' . $this->relateTable .' ON ('.$this->Table.'.id = '.$this->relateTable.'.id ';
+	}
+	
+	/**
+	 * freeze:
+	 * freeze the database and tables alteration by the SenchaPHP microORM
+	 */
+	public function freeze($onoff = false)
+	{
+		$this->$__freeze = $onoff;
+	}
 	
 	/**
 	 * SechaModel method: 
@@ -528,6 +799,8 @@ class dbHelper
 	{
 		// get the the model of the table from the sencha .js file
 		$this->__getSenchaModel($fileModel);
+		// skip this entire routine if freeze option is true
+		if($this->$__freeze) return true;
 		try
 		{
 		
@@ -658,6 +931,18 @@ class dbHelper
 		$model = (array)json_decode($subject, true);
 		$this->Model = $model['fields'];
 	}
+
+	/**
+	 * __setSenchaModel:
+	 * Set the Sencha Model by an object
+	 * Useful to pass the model via an object, instead of using the .js file
+	 * it can be constructed dynamically.
+	 * TODO: Finish me!
+	 */
+	private function __setSenchaModel($senchaModelObject)
+	{
+		
+	}
 	
 	/**
 	 * __createTable:
@@ -745,7 +1030,7 @@ class dbHelper
 	 * __createDatabase
 	 * Method that will create a database
 	 */
-	private function __createDatabase($databaseName)
+	public function createDatabase($databaseName)
 	{
 		try
 		{
@@ -786,25 +1071,25 @@ class dbHelper
 		{
 			$columnType = strtoupper($column['dataType']);
 		}
-		elseif(!isset($column['dataType']) && $column['type'] == 'string' )
+		elseif($column['type'] == 'string' )
 		{
 			$columnType = 'VARCHAR';
 		}
-		elseif(!isset($column['dataType']) && $column['type'] == 'int')
+		elseif($column['type'] == 'int')
 		{
 			$columnType = 'INT';
 			$column['len'] = 11;
 		}
-		elseif(!isset($column['dataType']) && $column['type'] == 'bool' && $column['type'] == 'boolean')
+		elseif($column['type'] == 'bool' || $column['type'] == 'boolean')
 		{
 			$columnType = 'TINYINT';
 			$column['len'] = 1;
 		}
-		elseif(!isset($column['dataType']) && $column['type'] == 'date')
+		elseif($column['type'] == 'date')
 		{
 			$columnType = 'DATE';
 		}
-		elseif(!isset($column['dataType']) && $column['type'] == 'float')
+		elseif($column['type'] == 'float')
 		{
 			$columnType = 'FLOAT';
 		}

@@ -611,7 +611,9 @@ class dbHelper
 	{
 		try
 		{
-			$this->conn->query("DELETE FROM ".$this->Table."WHERE id='".$record['id']."';");
+			$sql = "DELETE FROM ".$this->Table."WHERE id='".$record['id']."';";
+			$this->conn->query($sql);
+			$this->__auditLog($sql);
 			$this->__total = (int)count($records)-1;
 			if($this->__id == $record['id']) unset($this->__id);
 			return true;
@@ -662,14 +664,15 @@ class dbHelper
 		if (stristr($sqlStatement, 'DELETE')) $eventLog = 'Record deletion';
 		if (stristr($sqlStatement, 'UPDATE')) $eventLog = 'Record update';
 
-		$data['date'] = Time::getLocalTime('Y-m-d H:i:s');
-		$data['event'] = $eventLog;
-		$data['comments'] = $this->sql_statement;
-		$data['user'] = $_SESSION['user']['name'];
-		$data['checksum'] = crc32($this->sql_statement);
-		$data['facility'] = $_SESSION['site']['dir'];
-		$data['patient_id'] = $_SESSION['patient']['pid'];
-		$data['ip'] = $_SESSION['server']['REMOTE_ADDR'];
+		// allocate the event data
+		$eventData['date'] = Time::getLocalTime('Y-m-d H:i:s');
+		$eventData['event'] = $eventLog;
+		$eventData['comments'] = $sqlStatement;
+		$eventData['user'] = $_SESSION['user']['name'];
+		$eventData['checksum'] = crc32($sqlStatement);
+		$eventData['facility'] = $_SESSION['site']['dir'];
+		$eventData['patient_id'] = $_SESSION['patient']['pid'];
+		$eventData['ip'] = $_SESSION['server']['REMOTE_ADDR'];
 		
 		try
 		{
@@ -690,7 +693,7 @@ class dbHelper
 			// insert the event log
 			$fields = (string)'';
 			$values = (string)'';
-			foreach($data as $key => $value) 
+			foreach($eventData as $key => $value) 
 			{
 				$fields .= $key.', ';
 				$values .= "'".$value."', ";

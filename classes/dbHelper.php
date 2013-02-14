@@ -76,7 +76,7 @@ class dbHelper
 	public $Table;
 	private $__id;
 	private $__total;
-	private $__freeze;
+	private $__freeze = (bool)false;
 	public $currentRecord;
 
 
@@ -981,17 +981,13 @@ class dbHelper
 	 */
 	private function __createAllColumns($paramaters = array())
 	{
-		foreach($paramaters as $column)
+		try
 		{
-			try
-			{
-				$this->__createColumn($column);
-			}
-			catch(PDOException $e)
-			{
-				error_log('dbHelper SenchaPHP microORM: ' . $e->getMessage() );
-				return $e;
-			}
+			foreach($paramaters as $column) $this->__createColumn($column);
+		catch(PDOException $e)
+		{
+			error_log('dbHelper SenchaPHP microORM: ' . $e->getMessage() );
+			return $e;
 		}
 	}
 	
@@ -1070,6 +1066,8 @@ class dbHelper
 	 */
 	private function __renderColumnSyntax($column = array())
 	{
+		// parse some properties the Sencha model.
+		$$columnType = (string)'';
 		if(isset($column['dataType'])) 
 		{
 			$columnType = strtoupper($column['dataType']);
@@ -1100,6 +1098,8 @@ class dbHelper
 		{
 			return false;
 		}
+		
+		// render the rest of the sql statement
 		switch ($columnType)
 		{
 			case 'BIT'; case 'TINYINT'; case 'SMALLINT'; case 'MEDIUMINT'; case 'INT'; case 'INTEGER'; case 'BIGINT':

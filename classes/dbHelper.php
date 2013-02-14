@@ -786,25 +786,25 @@ class dbHelper
 		{
 			$columnType = strtoupper($column['dataType']);
 		}
-		elseif(!isset($column['dataType']) && $column['type'] == 'string' )
+		elseif($column['type'] == 'string' )
 		{
 			$columnType = 'VARCHAR';
 		}
-		elseif(!isset($column['dataType']) && $column['type'] == 'int')
+		elseif($column['type'] == 'int')
 		{
 			$columnType = 'INT';
 			$column['len'] = 11;
 		}
-		elseif(!isset($column['dataType']) && $column['type'] == 'bool' && $column['type'] == 'boolean')
+		elseif($column['type'] == 'bool' || $column['type'] == 'boolean')
 		{
 			$columnType = 'TINYINT';
 			$column['len'] = 1;
 		}
-		elseif(!isset($column['dataType']) && $column['type'] == 'date')
+		elseif($column['type'] == 'date')
 		{
 			$columnType = 'DATE';
 		}
-		elseif(!isset($column['dataType']) && $column['type'] == 'float')
+		elseif($column['type'] == 'float')
 		{
 			$columnType = 'FLOAT';
 		}

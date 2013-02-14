@@ -76,6 +76,7 @@ class dbHelper
 	public $Table;
 	private $__id;
 	private $__total;
+	private $__freeze;
 	public $currentRecord;
 
 
@@ -572,22 +573,24 @@ class dbHelper
 			{
 				$storeField = (string)'';
 				foreach($record as $key => $value) ($key=='id' ? $storeField .= '' : $storeField .= $key."='".$value."'");
-				$this->conn->query('UPDATE '.$this->Table.' SET '.$storeField . " WHERE id='".$record['id']."';");
+				$sql = (string)'UPDATE '.$this->Table.' SET '.$storeField . " WHERE id='".$record['id']."';";
+				$this->conn->query($sql);
+				$this->__auditLog($sql);
 				$this->__id = $record['id'];
 			}
 			// create a record
 			else
 			{
-				$fields = (string)'(';
-				$values = (string)'(';
+				$fields = (string)'';
+				$values = (string)'';
 				foreach($record as $key => $value) 
 				{
 					$fields .= $key.', ';
 					$values .= "'".$value."', ";
 				}
-				$fields .= ')';
-				$values .= ')';
-				$this->conn->query('INSERT INTO '.$this->Table.' '.$fields.' VALUES '.$values.';');
+				$sql = (string)'INSERT INTO '.$this->Table.' ('.$fields.') VALUES ('.$values.');';
+				$this->conn->query($sql);
+				$this->__auditLog($sql);
 				$this->__id = $this->conn->lastInsertId();
 			}
 			return true;
@@ -646,6 +649,96 @@ class dbHelper
 	}
 	
 	/**
+	 * __auditLog:
+	 * Every store has to be logged into the database.
+	 * Also generate the table if does not exist.
+	 */
+	private function __auditLog($sqlStatement = '')
+	{
+		// generate the appropriate event log comment 
+		$record = array();
+		$eventLog = (string)"Event triggered but never defined.";
+		if (stristr($sqlStatement, 'INSERT')) $eventLog = 'Record insertion';
+		if (stristr($sqlStatement, 'DELETE')) $eventLog = 'Record deletion';
+		if (stristr($sqlStatement, 'UPDATE')) $eventLog = 'Record update';
+
+		$data['date'] = Time::getLocalTime('Y-m-d H:i:s');
+		$data['event'] = $eventLog;
+		$data['comments'] = $this->sql_statement;
+		$data['user'] = $_SESSION['user']['name'];
+		$data['checksum'] = crc32($this->sql_statement);
+		$data['facility'] = $_SESSION['site']['dir'];
+		$data['patient_id'] = $_SESSION['patient']['pid'];
+		$data['ip'] = $_SESSION['server']['REMOTE_ADDR'];
+		
+		try
+		{
+			//check if the table exist
+			$recordSet = $this->conn->query("SHOW TABLES LIKE '".$this->Table."';");
+			if( $recordSet->fetch(PDO::FETCH_ASSOC) ) $this->__createTable('log');
+			unset($recordSet);
+			
+			//check for the available fields
+			$recordSet = $this->conn->query("SHOW COLUMNS IN " . $this->Table . ";");
+			$tableColumns = $recordSet->fetchAll(PDO::FETCH_ASSOC);
+			unset($recordSet);
+				
+			// check if the table has columns, if not create them.
+			// we start with 1 because the microORM always create the id.
+			if( count($tableColumns) <= 0 ) $this->__logModel();
+			
+			// insert the event log
+			$fields = (string)'';
+			$values = (string)'';
+			foreach($data as $key => $value) 
+			{
+				$fields .= $key.', ';
+				$values .= "'".$value."', ";
+			}
+			$this->conn->query('INSERT INTO log ('.$fields.') VALUES ('.$values.');');
+			return $this->conn->lastInsertId();
+		}
+		catch(PDOException $e)
+		{
+			error_log('dbHelper SenchaPHP microORM: ' . $e->getMessage() );
+			return $e;
+		}
+	}
+
+	/**
+	 * __logModel:
+	 * Method to create the log table columns
+	 */
+	private function __logModel()
+	{
+		try
+		{
+			$sql = "CREATE TABLE IF NOT EXISTS `log` (
+						`id` bigint(20) NOT NULL AUTO_INCREMENT,
+						`date` datetime DEFAULT NULL,
+						`event` varchar(255) DEFAULT NULL,
+						`user` varchar(255) DEFAULT NULL,
+						`facility` varchar(255) NOT NULL,
+						`comments` longtext,
+						`user_notes` longtext,
+						`patient_id` bigint(20) DEFAULT NULL,
+						`success` tinyint(1) DEFAULT '1',
+						`checksum` longtext,
+						`crt_user` varchar(255) DEFAULT NULL,
+						`ip` varchar(50) DEFAULT NULL,
+						PRIMARY KEY (`id`)
+					) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
+			$this->conn->query($sql);
+			return true;
+		}
+		catch(PDOException $e)
+		{
+			error_log('dbHelper SenchaPHP microORM: ' . $e->getMessage() );
+			return $e;
+		}
+	}
+	
+	/**
 	 * getLastId:
 	 * Get the last insert ID of an insert
 	 * this is automatically updated by the store method
@@ -689,6 +782,15 @@ class dbHelper
 	}
 	
 	/**
+	 * freeze:
+	 * freeze the database and tables alteration by the SenchaPHP microORM
+	 */
+	public function freeze($onoff = false)
+	{
+		$this->$__freeze = $onoff;
+	}
+	
+	/**
 	 * SechaModel method: 
 	 * This method will create the table and fields if does not exist in the database
 	 * also this is the brain of the micro ORM.
@@ -697,6 +799,8 @@ class dbHelper
 	{
 		// get the the model of the table from the sencha .js file
 		$this->__getSenchaModel($fileModel);
+		// skip this entire routine if freeze option is true
+		if($this->$__freeze) return true;
 		try
 		{
 		

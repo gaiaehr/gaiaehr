@@ -536,31 +536,73 @@ class dbHelper
 			$recordSet = $this->conn->query("SHOW TABLES LIKE '".$this->Table."';");
 			if( $recordSet->fetch(PDO::FETCH_ASSOC) ) $this->__createTable($this->Table);
 			
+			// Remove from the model those fields that are not meant to be stored
+			// on the database.
+			$workingModel = (array)$this->Model;
+			foreach($workingModel as $key => $SenchaModel) if($SenchaModel['store'] == 'false') unset($workingModel[$key]);
+			
 			// get the table column information and
-			// check if the table has columns, if not create them.
 			$recordSet = $this->conn->query("SHOW COLUMNS IN " . $this->Table . ";");
-			$records = $recordSet->fetchAll(PDO::FETCH_ASSOC);
-			if( count($records) <= 1 ) 
+			$tableColumns = $recordSet->fetchAll(PDO::FETCH_ASSOC);
+			
+			// check if the table has columns, if not create them.
+			// we start with 1 because the microORM always create the id.
+			if( count($tableColumns) <= 1 ) 
 			{
-				$this->__createAllColumns($this->Model);
+				$this->__createAllColumns($workingModel);
+				return true;
 			}
+			// Also check if there is difference between the model and the 
+			// database table in terms of number of fields.
+			elseif(count($workingModel) != count($tableColumns))
+			{
+				foreach($tableColumns as $column)
+				{
+					if( !in_array($column['name'], $workingModel) ) echo 'DELETED FROM THE SENCHA MODEL: ' . $column['name'] . '<br>';
+				}
+			}
+			// if everything else passes check for differences in the columns.
 			else
 			{
 				// Verify changes in the table 
 				// modify the table columns if is not equal to the Sencha Model
-				foreach($records as $columns)
+				foreach($tableColumns as $column)
 				{
 					$change = 'false';
-					foreach($this->Model as $SenchaModel)
+					foreach($workingModel as $SenchaModel)
 					{
 						// if the field is found, start the comparison
-						if($SenchaModel['name'] == $columns['Field'])
+						if($SenchaModel['name'] == $column['Field'])
 						{
-							if(strripos($columns['Type'], $SenchaModel['dataType']) === false) $change = 'true'; // Type
-							if($columns['Null'] == ( isset($SenchaModel['allowNull']) ? ($SenchaModel['allowNull'] ? 'NO' : 'YES') : 'YES' ) ) $change = 'true'; // NULL
-
+							// check for changes on the field type is a obligatory
+							if(strripos($column['Type'], $SenchaModel['dataType']) === false) $change = 'true'; // Type 
+							
+							// check if there changes on the allowNull property, 
+							// but first check if it's used on the sencha model
+							if(isset($SenchaModel['allowNull'])) if( $column['Null'] == ($SenchaModel['allowNull'] ? 'YES' : 'NO') ) $change = 'true'; // NULL
+							
+							// check the length of the field, 
+							// but first check if it's used on the sencha model.
+							if(isset($SenchaModel['len'])) if($SenchaModel['len'] != filter_var($column['Type'], FILTER_SANITIZE_NUMBER_INT)) $change = 'true'; // Length
+							
+							// check if the default value is changed on the model,
+							// but first check if it's used on the sencha model
+							if(isset($SenchaModel['defaultValue'])) if($column['Default'] != $SenchaModel['defaultValue']) $change = 'true'; // Default value
+							
+							// check if the primary key is changed on the model,
+							// but first check if the primary key is used on the sencha model.
+							if(isset($SenchaModel['primaryKey'])) if($column['Key'] != ($SenchaModel['primaryKey'] ? 'PRI' : '') ) $change = 'true'; // Primary key
+							
+							// check if the auto increment is changed on the model,
+							// but first check if the auto incroment is used on the sencha model.
+							if(isset($SenchaModel['autoIncrement'])) if($column['Extra'] != ($SenchaModel['autoIncrement'] ? 'auto_increment' : '') ) $change = 'true'; // auto increment
+							
+							// Modify the column on the database							
+							if($change == 'true') $this->__modifyColumn($SenchaModel);
+							
 						}
 					}
+
 				}
 			}
 			
@@ -656,7 +698,7 @@ class dbHelper
 		{
 			try
 			{
-				if($items['store']=='true') $this->conn->exec('ALTER TABLE '.$this->Table.' ADD '.$items['name'].' '.$this->__renderColumnSyntax($items) . ';');
+				$this->conn->exec('ALTER TABLE '.$this->Table.' ADD '.$items['name'].' '.$this->__renderColumnSyntax($items) . ';');
 			}
 			catch(PDOException $e)
 			{
@@ -670,11 +712,11 @@ class dbHelper
 	 * __createColumn:
 	 * Method that will create the column into the table
 	 */
-	private function __createColumn($paramaters = array())
+	private function __createColumn($SingleParamaters = array())
 	{
 		try
 		{
-			$this->conn->exec('ALTER TABLE '.$this->Table.' ADD '.$paramaters['name'].' '.$this->__renderColumnSyntax($paramaters) . ';');
+			$this->conn->exec('ALTER TABLE '.$this->Table.' ADD '.$SingleParamaters['name'].' '.$this->__renderColumnSyntax($SingleParamaters) . ';');
 		}
 		catch(PDOException $e)
 		{
@@ -687,11 +729,11 @@ class dbHelper
 	 * __modifyColumn:
 	 * Method to modify the column properties
 	 */
-	private function __modifyColumn($column)
+	private function __modifyColumn($SingleParamaters = array())
 	{
 		try
 		{
-			$this->conn->exec('ALTER TABLE '.$this->Table.' MODIFY '.$items['name'].' '.$this->__renderColumnSyntax($items) . ';');
+			$this->conn->exec('ALTER TABLE '.$this->Table.' MODIFY '.$SingleParamaters['name'].' '.$this->__renderColumnSyntax($SingleParamaters) . ';');
 		}
 		catch(PDOException $e)
 		{
@@ -725,7 +767,7 @@ class dbHelper
 	{
 		try
 		{
-			$this->conn->exec('ALTER TABLE '.$this->Table.' DROP COLUMN '.$items['name'].';');
+			$this->conn->exec('ALTER TABLE '.$this->Table.' DROP COLUMN '.$column['name'].';');
 		}
 		catch(PDOException $e)
 		{

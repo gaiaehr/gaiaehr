@@ -526,10 +526,8 @@ class dbHelper
 	 */
 	public function SenchaModel($fileModel)
 	{
-		
 		// get the the model of the table from the sencha .js file
 		$this->__getSenchaModel($fileModel);
-		
 		try
 		{
 		
@@ -787,6 +785,28 @@ class dbHelper
 		if(isset($column['dataType'])) 
 		{
 			$columnType = strtoupper($column['dataType']);
+		}
+		elseif(!isset($column['dataType']) && $column['type'] == 'string' )
+		{
+			$columnType = 'VARCHAR';
+		}
+		elseif(!isset($column['dataType']) && $column['type'] == 'int')
+		{
+			$columnType = 'INT';
+			$column['len'] = 11;
+		}
+		elseif(!isset($column['dataType']) && $column['type'] == 'bool' && $column['type'] == 'boolean')
+		{
+			$columnType = 'TINYINT';
+			$column['len'] = 1;
+		}
+		elseif(!isset($column['dataType']) && $column['type'] == 'date')
+		{
+			$columnType = 'DATE';
+		}
+		elseif(!isset($column['dataType']) && $column['type'] == 'float')
+		{
+			$columnType = 'FLOAT';
 		}
 		else
 		{

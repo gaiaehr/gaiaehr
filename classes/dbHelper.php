@@ -559,7 +559,7 @@ class dbHelper
 	 }
 
 	/**
-	 * store: (part of the CRUD)
+	 * store: (part of CRUD)
 	 * Create & Update
 	 * store the record as array into the working table
 	 */
@@ -600,7 +600,7 @@ class dbHelper
 	}
 	
 	/**
-	 * trash: (part of the CRUD)
+	 * trash: (part of CRUD)
 	 * Delete
 	 * will delete the record indicated by an id
 	 */
@@ -621,7 +621,7 @@ class dbHelper
 	}
 
 	/**
-	 * load: (part of the CRUD)
+	 * load: (part of CRUD)
 	 * Read
 	 * Load all records, load one record if a ID is passed,
 	 * load all records with some columns determined by an array,
@@ -645,19 +645,47 @@ class dbHelper
 		}
 	}
 	
+	/**
+	 * getLastId:
+	 * Get the last insert ID of an insert
+	 * this is automatically updated by the store method
+	 */
 	public function getLastId()
 	{
 		return (int)$this->__id;
 	}
 	
+	/**
+	 * getTotal:
+	 * Get the total records in a select statement
+	 * this is automatically updated by the load method
+	 */
 	public function getTotal()
 	{
 		return (int)$this->__total;
 	}
 	
+	/**
+	 * __leftJoin:
+	 * A left join returns all the records in the “left” table (T1) whether they 
+	 * have a match in the right table or not. If, however, they do have a match 
+	 * in the right table – give me the “matching” data from the right table as well. 
+	 * If not – fill in the holes with null.
+	 */
 	private function __leftJoin()
 	{
 		return (string)' LEFT JOIN ' . $this->relateTable .' ON ('.$this->Table.'.id = '.$this->relateTable.'.id ';
+	}
+	
+	/**
+	 * __innerJoin:
+	 * An inner join only returns those records that have “matches” in both tables. 
+	 * So for every record returned in T1 – you will also get the record linked by 
+	 * the foreign key in T2. In programming logic – think in terms of AND.
+	 */
+	private function __innerJoin()
+	{
+		return (string)' INNER JOIN ' . $this->relateTable .' ON ('.$this->Table.'.id = '.$this->relateTable.'.id ';
 	}
 	
 	/**

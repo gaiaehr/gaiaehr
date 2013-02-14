@@ -224,12 +224,5 @@ Ext.define( 'App.model.administration.tmpUser',
 		type : 'int',
 		dataType : 'int',
 		store: false
-	}],
-	relation: [
-	{
-		senchaModel: 'refresh',
-		join: 'leftjoin',
-		from: 'id',
-		to: 'id'
 	}]
 } );

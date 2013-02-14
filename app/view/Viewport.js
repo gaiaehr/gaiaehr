@@ -1240,7 +1240,7 @@ Ext.define('App.view.Viewport', {
             icon = Ext.Msg.INFO
         }
         Ext.Msg.show({
-            title: 'Oops!',
+            //title: 'Oops!',
             msg: msg,
             buttons: Ext.Msg.OK,
             icon: icon

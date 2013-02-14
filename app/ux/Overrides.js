@@ -54,14 +54,19 @@ Ext.override(Ext.data.reader.Reader, {
 			say(reader);
 			say(response);
 			say(error);
-			Ext.Msg.show({
-				title:'Exception!',
-				msg:'<p><span style="font-weight:bold">'+ response.message +'</span></p><hr>' +
-					'<p>'+ response.where.replace(/\n/g,'<br>') +'</p>',
-				styleHtmlContent:true,
-				buttons:Ext.Msg.OK,
-				icon: Ext.Msg.ERROR
-			});
+			app.alert(
+				'<p><span style="font-weight:bold">'+ response.message +'</span></p><hr>' +
+				'<p>'+ response.where.replace(/\n/g,'<br>') +'</p>',
+				'error'
+			);
+//			Ext.Msg.show({
+//				title:'Exception!',
+//				msg:'<p><span style="font-weight:bold">'+ response.message +'</span></p><hr>' +
+//					'<p>'+ response.where.replace(/\n/g,'<br>') +'</p>',
+//				styleHtmlContent:true,
+//				buttons:Ext.Msg.OK,
+//				icon: Ext.Msg.ERROR
+//			});
 		});
 	}
 });

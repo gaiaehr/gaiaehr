@@ -88,14 +88,11 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
             Ext.direct.Manager.addProvider(App.data[x]);
         }
         Ext.direct.Manager.on('exception', function(e){
-	        Ext.Msg.show({
-		        title:'Exception!',
-		        msg:'<p><span style="font-weight:bold">'+ e.message +'</span></p><hr>' +
-			        '<p>'+ e.where.replace(/\n/g,'<br>') +'</p>',
-		        styleHtmlContent:true,
-		        buttons:Ext.Msg.OK,
-		        icon: Ext.Msg.ERROR
-	        });
+	        app.alert(
+		        '<p><span style="font-weight:bold">'+ e.message +'</span></p><hr>' +
+		        '<p>'+ e.where.replace(/\n/g,'<br>') +'</p>',
+		        'error'
+	        );
         });
 			requires = [
 				'Ext.ux.LiveSearchGridPanel',

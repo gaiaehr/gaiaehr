@@ -15,7 +15,7 @@ include_once ($_SESSION['root'] . '/classes/dbHelper.php');
 
 $db = new dbHelper();
 
-$db->SechaModel('App.model.administration.tmpUser');
+$db->SenchaModel('App.model.administration.tmpUser');
 //echo '<pre>';
 //print_r($db->Model);
 //echo '</pre>';

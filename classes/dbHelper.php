@@ -102,6 +102,7 @@ class dbHelper
 					PDO::MYSQL_ATTR_LOCAL_INFILE => 1,
 					PDO::ATTR_PERSISTENT => true
 				));
+				$this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			}
 			catch(PDOException $e)
 			{
@@ -523,7 +524,7 @@ class dbHelper
 	 * This method will create the table and fields if does not exist in the database
 	 * also this is the brain of the micro ORM.
 	 */
-	public function SechaModel($fileModel)
+	public function SenchaModel($fileModel)
 	{
 		
 		// get the the model of the table from the sencha .js file
@@ -536,31 +537,74 @@ class dbHelper
 			$recordSet = $this->conn->query("SHOW TABLES LIKE '".$this->Table."';");
 			if( $recordSet->fetch(PDO::FETCH_ASSOC) ) $this->__createTable($this->Table);
 			
+			// Remove from the model those fields that are not meant to be stored
+			// on the database.
+			$workingModel = (array)$this->Model;
+			foreach($workingModel as $key => $SenchaModel) if($SenchaModel['store'] == 'false') unset($workingModel[$key]);
+			
 			// get the table column information and
-			// check if the table has columns, if not create them.
 			$recordSet = $this->conn->query("SHOW COLUMNS IN " . $this->Table . ";");
-			$records = $recordSet->fetchAll(PDO::FETCH_ASSOC);
-			if( count($records) <= 1 ) 
+			$tableColumns = $recordSet->fetchAll(PDO::FETCH_ASSOC);
+			
+			// check if the table has columns, if not create them.
+			// we start with 1 because the microORM always create the id.
+			if( count($tableColumns) <= 1 ) 
 			{
-				$this->__createAllColumns($this->Model);
+				$this->__createAllColumns($workingModel);
+				return true;
 			}
+			// Also check if there is difference between the model and the 
+			// database table in terms of number of fields.
+			elseif(count($workingModel) != count($tableColumns))
+			{
+				// remove columns from the table
+				foreach($tableColumns as $column) if( !is_numeric($this->__recursiveArraySearch($column['Field'], $workingModel)) ) $this->__dropColumn($column['Field']);
+				// add columns to the table
+				foreach($workingModel as $column) if( !is_numeric($this->__recursiveArraySearch($column['name'], $tableColumns)) ) $this->__createColumn($column);
+			}
+			// if everything else passes check for differences in the columns.
 			else
 			{
 				// Verify changes in the table 
 				// modify the table columns if is not equal to the Sencha Model
-				foreach($records as $columns)
+				foreach($tableColumns as $column)
 				{
-					$change = false;
-					foreach($this->Model as $SenchaModel)
+					$change = 'false';
+					foreach($workingModel as $SenchaModel)
 					{
-						if($SenchaModel['name'] == $columns['Field'])
+						// if the field is found, start the comparison
+						if($SenchaModel['name'] == $column['Field'])
 						{
-							// found the field, start the comparison
-							if(!strripos($SenchaModel['dataType'], $columns['Type'])) $change = 'true';
+							// check for changes on the field type is a obligatory
+							if(strripos($column['Type'], $SenchaModel['dataType']) === false) $change = 'true'; // Type 
+							
+							// check if there changes on the allowNull property, 
+							// but first check if it's used on the sencha model
+							if(isset($SenchaModel['allowNull'])) if( $column['Null'] == ($SenchaModel['allowNull'] ? 'YES' : 'NO') ) $change = 'true'; // NULL
+							
+							// check the length of the field, 
+							// but first check if it's used on the sencha model.
+							if(isset($SenchaModel['len'])) if($SenchaModel['len'] != filter_var($column['Type'], FILTER_SANITIZE_NUMBER_INT)) $change = 'true'; // Length
+							
+							// check if the default value is changed on the model,
+							// but first check if it's used on the sencha model
+							if(isset($SenchaModel['defaultValue'])) if($column['Default'] != $SenchaModel['defaultValue']) $change = 'true'; // Default value
+							
+							// check if the primary key is changed on the model,
+							// but first check if the primary key is used on the sencha model.
+							if(isset($SenchaModel['primaryKey'])) if($column['Key'] != ($SenchaModel['primaryKey'] ? 'PRI' : '') ) $change = 'true'; // Primary key
+							
+							// check if the auto increment is changed on the model,
+							// but first check if the auto incroment is used on the sencha model.
+							if(isset($SenchaModel['autoIncrement'])) if($column['Extra'] != ($SenchaModel['autoIncrement'] ? 'auto_increment' : '') ) $change = 'true'; // auto increment
+							
+							// Modify the column on the database							
+							if($change == 'true') $this->__modifyColumn($SenchaModel);
+							
 						}
 					}
+
 				}
-				echo $change;
 			}
 			
 		}
@@ -625,7 +669,7 @@ class dbHelper
 	 {
 	 	try
 	 	{
-			$this->conn->exec('CREATE TABLE IF NOT EXISTS ' . $this->Table . ' (id BIGINT(20) NOT NULL AUTO_INCREMENT PRIMARY KEY);');
+			$this->conn->query('CREATE TABLE IF NOT EXISTS ' . $this->Table . ' (id BIGINT(20) NOT NULL AUTO_INCREMENT PRIMARY KEY);');
 			return true;
 		}
 		catch(PDOException $e)
@@ -651,11 +695,11 @@ class dbHelper
 	 */
 	private function __createAllColumns($paramaters = array())
 	{
-		foreach($paramaters['fields'] as $items)
+		foreach($paramaters as $column)
 		{
 			try
 			{
-				if($items['store']) $this->conn->exec('ALTER TABLE '.$this->Table.' ADD '.$items['name'].' '.$this->__renderColumnSyntax($items) . ';');
+				$this->__createColumn($column);
 			}
 			catch(PDOException $e)
 			{
@@ -669,11 +713,11 @@ class dbHelper
 	 * __createColumn:
 	 * Method that will create the column into the table
 	 */
-	private function __createColumn($paramaters = array())
+	private function __createColumn($column = array())
 	{
 		try
 		{
-			$this->conn->exec('ALTER TABLE '.$this->Table.' ADD '.$paramaters['name'].' '.$this->__renderColumnSyntax($paramaters) . ';');
+			$this->conn->query('ALTER TABLE '.$this->Table.' ADD '.$column['name'].' '.$this->__renderColumnSyntax($column) . ';');
 		}
 		catch(PDOException $e)
 		{
@@ -686,11 +730,11 @@ class dbHelper
 	 * __modifyColumn:
 	 * Method to modify the column properties
 	 */
-	private function __modifyColumn($column)
+	private function __modifyColumn($SingleParamaters = array())
 	{
 		try
 		{
-			$this->conn->exec('ALTER TABLE '.$this->Table.' MODIFY '.$items['name'].' '.$this->__renderColumnSyntax($items) . ';');
+			$this->conn->query('ALTER TABLE '.$this->Table.' MODIFY '.$SingleParamaters['name'].' '.$this->__renderColumnSyntax($SingleParamaters) . ';');
 		}
 		catch(PDOException $e)
 		{
@@ -707,7 +751,7 @@ class dbHelper
 	{
 		try
 		{
-			$this->conn->exec('CREATE DATABASE IF NOT EXISTS '.$databaseName.';');
+			$this->conn->query('CREATE DATABASE IF NOT EXISTS '.$databaseName.';');
 		}
 		catch(PDOException $e)
 		{
@@ -724,7 +768,7 @@ class dbHelper
 	{
 		try
 		{
-			$this->conn->exec('ALTER TABLE '.$this->Table.' DROP COLUMN '.$items['name'].';');
+			$this->conn->query("ALTER TABLE ".$this->Table." DROP COLUMN `".$column."`;");
 		}
 		catch(PDOException $e)
 		{
@@ -740,7 +784,7 @@ class dbHelper
 	 */
 	private function __renderColumnSyntax($column = array())
 	{
-		if(array_key_exists('dataType', $column)) 
+		if(isset($column['dataType'])) 
 		{
 			$columnType = strtoupper($column['dataType']);
 		}
@@ -752,43 +796,56 @@ class dbHelper
 		{
 			case 'BIT'; case 'TINYINT'; case 'SMALLINT'; case 'MEDIUMINT'; case 'INT'; case 'INTEGER'; case 'BIGINT':
 				return $columnType.
-				( array_key_exists('len', $column) ? ($column['len'] ? '('.$column['len'].') ' : '') : '').
-				( array_key_exists('defaultValue', $column) ? (is_numeric($column['defaultValue']) && is_string($column['defaultValue']) ? "DEFAULT '".$column['defaultValue']."' " : '') : '').
-				( array_key_exists('allowNull', $column) ? ($column['allowNull'] ? '' : 'NOT NULL ') : '' ).
-				( array_key_exists('autoIncrement', $column) ? ($column['autoIncrement'] ? 'AUTO_INCREMENT ' : '') : '' ).
-				( array_key_exists('primaryKey', $column) ? ($column['primaryKey'] ? 'PRIMARY KEY ' : '') : '' );
+				( isset($column['len']) ? ($column['len'] ? '('.$column['len'].') ' : '') : '').
+				( isset($column['defaultValue']) ? (is_numeric($column['defaultValue']) && is_string($column['defaultValue']) ? "DEFAULT '".$column['defaultValue']."' " : '') : '').
+				( isset($column['allowNull']) ? ($column['allowNull'] ? 'NOT NULL ' : '') : '' ).
+				( isset($column['autoIncrement']) ? ($column['autoIncrement'] ? 'AUTO_INCREMENT ' : '') : '' ).
+				( isset($column['primaryKey']) ? ($column['primaryKey'] ? 'PRIMARY KEY ' : '') : '' );
 				break;
 			case 'REAL'; case 'DOUBLE'; case 'FLOAT'; case 'DECIMAL'; case 'NUMERIC':
 				return $columnType.
-				(array_key_exists('len', $column) ? ($column['len'] ? '('.$column['len'].')' : '(10,2)') : '').
-				( array_key_exists('defaultValue', $column) ? (is_numeric($column['defaultValue']) && is_string($column['defaultValue']) ? "DEFAULT '".$column['defaultValue']."' " : '') : '').
-				( array_key_exists('allowNull', $column) ? ($column['allowNull'] ? '' : 'NOT NULL ') : '' ).
-				( array_key_exists('autoIncrement', $column) ? ($column['autoIncrement'] ? 'AUTO_INCREMENT ' : '') : '' ).
-				( array_key_exists('primaryKey', $column) ? ($column['primaryKey'] ? 'PRIMARY KEY ' : '') : '' );
+				( isset($column['len']) ? ($column['len'] ? '('.$column['len'].')' : '(10,2)') : '(10,2)').
+				( isset($column['defaultValue']) ? (is_numeric($column['defaultValue']) && is_string($column['defaultValue']) ? "DEFAULT '".$column['defaultValue']."' " : '') : '').
+				( isset($column['allowNull']) ? ($column['allowNull'] ? 'NOT NULL ' : '') : '' ).
+				( isset($column['autoIncrement']) ? ($column['autoIncrement'] ? 'AUTO_INCREMENT ' : '') : '' ).
+				( isset($column['primaryKey']) ? ($column['primaryKey'] ? 'PRIMARY KEY ' : '') : '' );
 				break;
 			case 'DATE'; case 'TIME'; case 'TIMESTAMP'; case 'DATETIME'; case 'YEAR':
 				return $columnType.' '.
-				( array_key_exists('defaultValue', $column) ? (is_numeric($column['defaultValue']) && is_string($column['defaultValue']) ? "DEFAULT '".$column['defaultValue']."' " : '') : '').
-				( array_key_exists('allowNull', $column) ? ($column['allowNull'] ? '' : 'NOT NULL ') : '' );
+				( isset($column['defaultValue']) ? (is_numeric($column['defaultValue']) && is_string($column['defaultValue']) ? "DEFAULT '".$column['defaultValue']."' " : '') : '').
+				( isset($column['allowNull']) ? ($column['allowNull'] ? 'NOT NULL ' : '') : '' );
 				break;
 			case 'CHAR'; case 'VARCHAR':
 				return $columnType.' '.
-				( array_key_exists('len', $column) ? ($column['len'] ? '('.$column['len'].') ' : '') : '').
-				( array_key_exists('defaultValue', $column) ? (is_numeric($column['defaultValue']) && is_string($column['defaultValue']) ? "DEFAULT '".$column['defaultValue']."' " : '') : '').
-				( array_key_exists('allowNull', $column) ? ($column['allowNull'] ? '' : 'NOT NULL ') : '' );
+				( isset($column['len']) ? ($column['len'] ? '('.$column['len'].') ' : '(255)') : '(255)').
+				( isset($column['defaultValue']) ? (is_numeric($column['defaultValue']) && is_string($column['defaultValue']) ? "DEFAULT '".$column['defaultValue']."' " : '') : '').
+				( isset($column['allowNull']) ? ($column['allowNull'] ? 'NOT NULL ' : '') : '' );
 				break;
 			case 'BINARY'; case 'VARBINARY':
 				return $columnType.' '.
-				( array_key_exists('len', $column) ? ($column['len'] ? '('.$column['len'].') ' : '') : '').
-				( array_key_exists('allowNull', $column) ? ($column['allowNull'] ? '' : 'NOT NULL ') : '' );
+				( isset($column['len']) ? ($column['len'] ? '('.$column['len'].') ' : '') : '').
+				( isset($column['allowNull']) ? ($column['allowNull'] ? '' : 'NOT NULL ') : '' );
 				break;
 			case 'TINYBLOB'; case 'BLOB'; case 'MEDIUMBLOB'; case 'LONGBLOB'; case 'TINYTEXT'; case 'TEXT'; case 'MEDIUMTEXT'; case 'LONGTEXT':
 				return $columnType.' '.
-				( array_key_exists('allowNull', $column) ? ($column['allowNull'] ? '' : 'NOT NULL ') : '' );
+				( isset($column['allowNull']) ? ($column['allowNull'] ? 'NOT NULL ' : '') : '' );
 				break;
 		}
 		return true;
 	}
 	
+	/**
+	 * __recursive_array_search:
+	 * An recursive array search method
+	 */
+	private function __recursiveArraySearch($needle,$haystack) 
+	{
+	    foreach($haystack as $key=>$value) 
+	    {
+	        $current_key=$key;
+	        if($needle===$value OR (is_array($value) && $this->__recursiveArraySearch($needle,$value) !== false)) return $current_key;
+	    }
+	    return false;
+	}
 	
 }

@@ -74,6 +74,8 @@ class dbHelper
 	 */
 	public $Model;
 	public $Table;
+	public $__id;
+	public $__total;
 
 
 	/**
@@ -556,7 +558,45 @@ class dbHelper
 	 }
 
 	/**
-	 * load:
+	 * store: (part of the CRUD)
+	 * Create
+	 * store the record as array into the working table
+	 */
+	public function store($id = NULL, $columns = array())
+	{
+		try
+		{
+			$selectedColumns = (string)'';
+			//...
+		}
+		catch(PDOException $e)
+		{
+			error_log('dbHelper SenchaPHP microORM: ' . $e->getMessage() );
+			return $e;
+		}
+	}
+	
+	/**
+	 * trash: (part of the CRUD)
+	 * Delete
+	 * will delete the record indicated by an id
+	 */
+	public function trash($id = NULL)
+	{
+		try
+		{
+			//...	
+		}
+		catch(PDOException $e)
+		{
+			error_log('dbHelper SenchaPHP microORM: ' . $e->getMessage() );
+			return $e;
+		}
+	}
+
+	/**
+	 * load: (part of the CRUD)
+	 * Read & Update
 	 * Load all records, load one record if a ID is passed,
 	 * load all records with some columns determined by an array,
 	 * load one record with some columns determined by an array, or any combination.  
@@ -568,7 +608,9 @@ class dbHelper
 			$selectedColumns = (string)'';
 			if(count($columns)) $selectedColumns = implode(', '.$this->Table.'.', $columns);
 			$recordSet = $this->conn->query("SELECT ".($selectedColumns ? $this->Table.".".$selectedColumns : '*')." FROM ".$this->Table.($id ? " WHERE ".$this->Table.".id='".$id."'" : "").";");
-			return $recordSet->fetchAll(PDO::FETCH_ASSOC);
+			$records = (array)$recordSet->fetchAll(PDO::FETCH_ASSOC);
+			$this->__total = (int)count($records);
+			return $records;
 		}
 		catch(PDOException $e)
 		{
@@ -577,9 +619,19 @@ class dbHelper
 		}
 	}
 	
+	public function getLastId()
+	{
+		return (int)$this->__id;
+	}
+	
+	public function getTotal()
+	{
+		return (int)$this->__total;
+	}
+	
 	private function __leftJoin()
 	{
-		return ' LEFT JOIN ' . $this->relateTable .' ON ('.$this->Table.'.id = '.$this->relateTable.'.id ';
+		return (string)' LEFT JOIN ' . $this->relateTable .' ON ('.$this->Table.'.id = '.$this->relateTable.'.id ';
 	}
 	
 	/**

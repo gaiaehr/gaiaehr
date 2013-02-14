@@ -74,8 +74,9 @@ class dbHelper
 	 */
 	public $Model;
 	public $Table;
-	public $__id;
-	public $__total;
+	private $__id;
+	private $__total;
+	public $currentRecord;
 
 
 	/**
@@ -559,15 +560,37 @@ class dbHelper
 
 	/**
 	 * store: (part of the CRUD)
-	 * Create
+	 * Create & Update
 	 * store the record as array into the working table
 	 */
-	public function store($id = NULL, $columns = array())
+	public function store($record = array())
 	{
 		try
 		{
-			$selectedColumns = (string)'';
-			//...
+			// update a record
+			if($record['id'])
+			{
+				$storeField = (string)'';
+				foreach($record as $key => $value) ($key=='id' ? $storeField .= '' : $storeField .= $key."='".$value."'");
+				$this->conn->query('UPDATE '.$this->Table.' SET '.$storeField . " WHERE id='".$record['id']."';");
+				$this->__id = $record['id'];
+			}
+			// create a record
+			else
+			{
+				$fields = (string)'(';
+				$values = (string)'(';
+				foreach($record as $key => $value) 
+				{
+					$fields .= $key.', ';
+					$values .= "'".$value."', ";
+				}
+				$fields .= ')';
+				$values .= ')';
+				$this->conn->query('INSERT INTO '.$this->Table.' '.$fields.' VALUES '.$values.';');
+				$this->__id = $this->conn->lastInsertId();
+			}
+			return true;
 		}
 		catch(PDOException $e)
 		{
@@ -581,11 +604,14 @@ class dbHelper
 	 * Delete
 	 * will delete the record indicated by an id
 	 */
-	public function trash($id = NULL)
+	public function trash($record = array())
 	{
 		try
 		{
-			//...	
+			$this->conn->query("DELETE FROM ".$this->Table."WHERE id='".$record['id']."';");
+			$this->__total = (int)count($records)-1;
+			if($this->__id == $record['id']) unset($this->__id);
+			return true;
 		}
 		catch(PDOException $e)
 		{
@@ -596,7 +622,7 @@ class dbHelper
 
 	/**
 	 * load: (part of the CRUD)
-	 * Read & Update
+	 * Read
 	 * Load all records, load one record if a ID is passed,
 	 * load all records with some columns determined by an array,
 	 * load one record with some columns determined by an array, or any combination.  

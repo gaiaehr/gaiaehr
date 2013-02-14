@@ -18,6 +18,8 @@ class AccVoucher extends AccBilling {
     function __construct()
     {
 	    parent::__construct();
+	    $this->db->SenchaModel('App.model.account.Voucher');
+	    $this->db->SenchaModel('App.model.account.VoucherLine');
     }
 
 	/**

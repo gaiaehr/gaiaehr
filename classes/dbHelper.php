@@ -518,6 +518,69 @@ class dbHelper
 	 * 
 	 * In the future this will replace the entire old class methods. 
 	 */
+	 
+	 /**
+	  * __ormSetup:
+	  * This function will open a connection to the MySQL
+	  * Server. Also check if the database exist
+	  * if does not exists create the database.
+	  */
+	 private function __ormSetup()
+	 {
+		// Connect using regular PDO GaiaEHR Database Abstraction layer.
+		// but make only a connection, not to the database.
+		$host = (string)$_SESSION['site']['db']['host'];
+		$port = (int)$_SESSION['site']['db']['port'];
+		$dbName = (string)$_SESSION['site']['db']['database'];
+		$dbUser = (string)$_SESSION['site']['db']['username'];
+		$dbPass = (string)$_SESSION['site']['db']['password'];
+		try
+		{
+			$this->conn = new PDO('mysql:host='.$host.';port='.$port.';charset=UTF-8', $dbUser, $dbPass, array(
+				PDO::MYSQL_ATTR_LOCAL_INFILE => 1,
+				PDO::ATTR_PERSISTENT => true
+			));
+			$this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			// check if the database exist.
+			$recordSet = $this->conn->query('SHOW DATABASES LIKE '.$dbName.';');
+			$database = $recordSet->fetchAll(PDO::FETCH_ASSOC);
+			if(count($database) <= 0) $this->__createDatabase($dbName);
+			$this->conn->query('USE '.$dbName.';');
+			return true;
+		}
+		catch(PDOException $e)
+		{
+			error_log('dbHelper SenchaPHP microORM: ' . $e->getMessage() );
+			return $e;
+		}
+	 }
+
+	/**
+	 * load:
+	 * Load all records, load one record if a ID is passed,
+	 * load all records with some columns determined by an array,
+	 * load one record with some columns determined by an array, or any combination.  
+	 */
+	public function load($id = NULL, $columns = array())
+	{
+		try
+		{
+			$selectedColumns = (string)'';
+			if(count($columns)) $selectedColumns = implode(', '.$this->Table.'.', $columns);
+			$recordSet = $this->conn->query("SELECT ".($selectedColumns ? $this->Table.".".$selectedColumns : '*')." FROM ".$this->Table.($id ? " WHERE ".$this->Table.".id='".$id."'" : "").";");
+			return $recordSet->fetchAll(PDO::FETCH_ASSOC);
+		}
+		catch(PDOException $e)
+		{
+			error_log('dbHelper SenchaPHP microORM: ' . $e->getMessage() );
+			return $e;
+		}
+	}
+	
+	private function __leftJoin()
+	{
+		return ' LEFT JOIN ' . $this->relateTable .' ON ('.$this->Table.'.id = '.$this->relateTable.'.id ';
+	}
 	
 	/**
 	 * SechaModel method: 
@@ -658,6 +721,18 @@ class dbHelper
 		$model = (array)json_decode($subject, true);
 		$this->Model = $model['fields'];
 	}
+
+	/**
+	 * __setSenchaModel:
+	 * Set the Sencha Model by an object
+	 * Useful to pass the model via an object, instead of using the .js file
+	 * it can be constructed dynamically.
+	 * TODO: Finish me!
+	 */
+	private function __setSenchaModel($senchaModelObject)
+	{
+		
+	}
 	
 	/**
 	 * __createTable:
@@ -745,7 +820,7 @@ class dbHelper
 	 * __createDatabase
 	 * Method that will create a database
 	 */
-	private function __createDatabase($databaseName)
+	public function createDatabase($databaseName)
 	{
 		try
 		{

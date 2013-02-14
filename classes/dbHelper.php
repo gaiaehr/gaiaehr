@@ -984,6 +984,7 @@ class dbHelper
 		try
 		{
 			foreach($paramaters as $column) $this->__createColumn($column);
+		}
 		catch(PDOException $e)
 		{
 			error_log('dbHelper SenchaPHP microORM: ' . $e->getMessage() );

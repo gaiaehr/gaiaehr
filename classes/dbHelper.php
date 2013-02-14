@@ -76,7 +76,7 @@ class dbHelper
 	public $Table;
 	private $__id;
 	private $__total;
-	private $__freeze = (bool)false;
+	private $__freeze = false;
 	public $currentRecord;
 
 

@@ -116,8 +116,8 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
                 'App.model.administration.Services',
                 'App.model.miscellaneous.OfficeNotes',
 
-                'App.model.billing.VisitVoucherLine',
-                'App.model.billing.VisitVoucher',
+                'App.model.account.VoucherLine',
+                'App.model.account.Voucher',
 
                 'App.model.fees.Billing',
                 'App.model.fees.Checkout',
@@ -192,8 +192,8 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
                 'App.store.administration.ActiveProblems',
                 'App.store.miscellaneous.OfficeNotes',
 
-				'App.store.billing.VisitVoucherLine',
-                'App.store.billing.VisitVoucher',
+				'App.store.account.VoucherLine',
+                'App.store.account.Voucher',
 
 				'App.store.fees.Billing',
                 'App.store.fees.Checkout',

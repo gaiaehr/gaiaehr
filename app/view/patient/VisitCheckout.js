@@ -14,7 +14,7 @@ Ext.define('App.view.patient.VisitCheckout', {
 	initComponent:function(){
 		var me = this;
 
-		me.VisitVoucherStore = Ext.create('App.store.billing.VisitVoucher');
+		me.VisitVoucherStore = Ext.create('App.store.account.Voucher');
 
 		me.pageBody = Ext.create('Ext.panel.Panel', {
 			itemId:'visitpayment',
@@ -76,7 +76,7 @@ Ext.define('App.view.patient.VisitCheckout', {
                                                 },
                                                 {
                                                     header:i18n('item'),
-                                                    dataIndex:'code_text_medium',
+                                                    dataIndex:'name',
                                                     flex:1,
                                                     editor:{
                                                         xtype:'livecptsearch',
@@ -84,9 +84,16 @@ Ext.define('App.view.patient.VisitCheckout', {
                                                     }
                                                 },
                                                 {
+                                                    header:i18n('price'),
+                                                    width:80,
+                                                    dataIndex:'amountOriginal',
+                                                    align:'right',
+                                                    renderer:me.currencyRenderer
+                                                },
+                                                {
                                                     header:i18n('charge'),
                                                     width:80,
-                                                    dataIndex:'charge',
+                                                    dataIndex:'amount',
                                                     align:'right',
                                                     editor:{
                                                         xtype:'textfield',
@@ -529,13 +536,25 @@ Ext.define('App.view.patient.VisitCheckout', {
 
 		me.VisitVoucherStore.load({
 			params:{
-				pid:me.pid,
-				eid:me.eid,
-				uid:me.uid
+				eid: me.eid,
+				pid: me.pid,
+				type: 'visit'
 			},
             callback:function(records, operation, success){
+	            var voucher = records[0];
+				if(voucher){
+					say(voucher.voucherlines().load({
+						callback:function(){
+							say('hello');
+						}
+					}));
 
-	            say(records[0]);
+
+				}else{
+
+				}
+
+
 //                me.paid.setValue(0.00);
 //                me.updateTotalBalance();
             }

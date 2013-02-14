@@ -64,7 +64,7 @@ Ext.define( 'App.model.administration.User',
 	}, 
 	{
 		name : 'info',
-		type : 'string'
+		type : 'string',
 		dataType: 'longtex',
 		store: true
 	},

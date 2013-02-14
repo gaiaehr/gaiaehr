@@ -17,6 +17,55 @@
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+Ext.override(Ext.data.reader.Reader, {
+	/**
+	 * Creates new Reader.
+	 * @param {Object} config (optional) Config object.
+	 */
+	constructor: function(config) {
+		var me = this;
+
+		me.mixins.observable.constructor.call(me, config);
+		me.fieldCount = 0;
+		me.model = Ext.ModelManager.getModel(me.model);
+		me.accessExpressionFn = Ext.Function.bind(me.createFieldAccessExpression, me);
+
+		// Extractors can only be calculated if the fields MixedCollection has been set.
+		// A Model may only complete its setup (set the prototype properties) after asynchronous loading
+		// which would mean that there may be no "fields"
+		// If this happens, the load callback will call proxy.setModel which calls reader.setModel which
+		// triggers buildExtractors.
+		if (me.model && me.model.prototype.fields) {
+			me.buildExtractors();
+		}
+
+		this.addEvents(
+			/**
+			 * @event
+			 * Fires when the reader receives improperly encoded data from the server
+			 * @param {Ext.data.reader.Reader} reader A reference to this reader
+			 * @param {XMLHttpRequest} response The XMLHttpRequest response object
+			 * @param {Ext.data.ResultSet} error The error object
+			 */
+			'exception'
+		);
+
+		this.on('exception', function(reader, response, error){
+			say(reader);
+			say(response);
+			say(error);
+			Ext.Msg.show({
+				title:'Exception!',
+				msg:'<p><span style="font-weight:bold">'+ response.message +'</span></p><hr>' +
+					'<p>'+ response.where.replace(/\n/g,'<br>') +'</p>',
+				styleHtmlContent:true,
+				buttons:Ext.Msg.OK,
+				icon: Ext.Msg.ERROR
+			});
+		});
+	}
+});
+
 //Ext.override(Ext.grid.RowEditor, {
 //	loadRecord: function(record) {
 //		var me = this,

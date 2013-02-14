@@ -6,9 +6,9 @@
  * Time: 11:11 PM
  */
 
-Ext.define('App.store.billing.VisitVoucher', {
+Ext.define('App.store.account.Voucher', {
 	extend: 'Ext.data.Store',
-	model     : 'App.model.billing.VisitVoucher',
+	model     : 'App.model.account.Voucher',
     remoteSort: false,
 	autoLoad  : false
 });

@@ -36,7 +36,7 @@ class Sessions
 		$data['sid']           = session_id();
 		$data['uid']           = $_SESSION['user']['id'];
 		$data['login']         = $date;
-		$data['last_request	'] = $date;
+		$data['last_request']  = $date;
 		$this->db->setSQL($this->db->sqlBind($data, 'users_sessions', 'I'));
 		$this->db->execLog();
 		$_SESSION['session_id'] = $this->db->lastInsertId;
@@ -66,7 +66,7 @@ class Sessions
 	public function updateSession()
 	{
 		$_SESSION['inactive']['timeout'] = time();
-		$data['last_request	']        = $_SESSION['inactive']['timeout'];
+		$data['last_request'] = $_SESSION['inactive']['timeout'];
 		$this->db->setSQL($this->db->sqlBind($data, 'users_sessions', 'U', array('id' => $_SESSION['session_id'])));
 		$this->db->execOnly();
 		return true;

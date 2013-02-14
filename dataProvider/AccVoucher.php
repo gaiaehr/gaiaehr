@@ -11,41 +11,60 @@ if(!isset($_SESSION)){
  * Time: 10:20 PM
  * To change this template use File | Settings | File Templates.
  */
-include_once ($_SESSION['root'] . '/classes/dbHelper.php');
-class AccVoucher {
+include_once ($_SESSION['root'] . '/dataProvider/AccBilling.php');
+class AccVoucher extends AccBilling {
 
-    /**
-     * @var dbHelper
-     */
-    private $db;
 
     function __construct()
     {
-        $this->db = new dbHelper();
+	    parent::__construct();
+	    $this->db->SenchaModel('App.model.account.Voucher');
+	    $this->db->SenchaModel('App.model.account.VoucherLine');
     }
 
-    public function createVoucher($pid, $ref, $services){
+	/**
+	 * Voucher
+	 */
+	public function getVoucher($params){
 
+		if($params->type == 'visit'){
+
+			$params->voucherlines = $this->getVisitVoucherLines($params);
+		}
+
+		return array();
+    }
+    public function createVoucher($params){
+
+	    return $params;
+    }
+    public function updateVoucher($params){
+
+	    return $params;
+    }
+    public function destroyVoucher($params){
+
+	    return $params;
     }
 
-    public function createVoucherLines($lines){
 
+	/**
+	 * Voucher Lines
+	 */
+    public function getVoucherLines($params){
+
+	    return $params;
     }
+    public function createVoucherLine($params){
 
-
-    /**
-     * GETTERS!
-     */
-
-    public function getVoucherById($id){
-
+	    return $params;
     }
+    public function updateVoucherLine($params){
 
-    public function getVoucherByRef($ref){
-
+	    return $params;
     }
+    public function destroyVoucherLine($params){
 
-    public function getVoucherLinesByVoucherId($vid){
-
+	    return $params;
     }
 }

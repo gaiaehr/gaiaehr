@@ -3,12 +3,37 @@ $API = array(
     /**
      * Accounting Billing Functions
      */
+    'AccVoucher' => array(
+        'methods' => array(
+            'getVoucher' => array(
+                'len' => 1
+            ),
+            'addVoucher' => array(
+                'len' => 1
+            ),
+            'updateVoucher' => array(
+                'len' => 1
+            ),
+            'destroyVoucher' => array(
+                'len' => 1
+            ),
+            'getVoucherLines' => array(
+                'len' => 1
+            ),
+            'addVoucherLine' => array(
+                'len' => 1
+            ),
+            'updateVoucherLine' => array(
+                'len' => 1
+            ),
+            'destroyVoucherLine' => array(
+                'len' => 1
+            )
+        )
+    ),
     'AccBilling' => array(
         'methods' => array(
             'getVisitVoucherLines' => array(
-                'len' => 1
-            ),
-            'setVisitVoucher' => array(
                 'len' => 1
             )
         )

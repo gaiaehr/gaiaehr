@@ -24,7 +24,6 @@ if (!isset($_SESSION)) {
     session_cache_limiter('private');
 }
 include_once ($_SESSION['root'] . '/classes/dbHelper.php');
-include_once ($_SESSION['root'] . '/dataProvider/AccVoucher.php');
 include_once ($_SESSION['root'] . '/dataProvider/Services.php');
 include_once ($_SESSION['root'] . '/dataProvider/Patient.php');
 
@@ -42,85 +41,46 @@ class AccBilling
     /**
      * @var dbHelper
      */
-    private $db;
-    /**
-     * @var AccountReceivable
-     */
-    private $av;
+    protected $db;
     /**
      * @var Services
      */
-    private $services;
+	protected $services;
     /**
      * @var Patient
      */
-    private $patient;
+	protected $patient;
 
     function __construct()
     {
         $this->db = new dbHelper();
-        $this->av = new AccVoucher();
-
         $this->services = new Services();
         $this->patient = new Patient();
     }
 
-    public function getVisitVoucher(stdClass $params)
-    {
-
-        return $invoice;
-    }
-    public function getVisitVoucherLines(stdClass $params)
+	protected function getVisitVoucherLines(stdClass $params)
     {
         $invoice = array();
         $insurance = $this->patient->getPatientPrimaryInsuranceByPid($params->pid);
         if($insurance !== false){
             $invoice[] = array(
                 'code' => 'COPAY',
-                'code_text_medium' => 'COPAY',
-                'charge' => $insurance['copay'],
+                'name' => 'COPAY',
+                'amountOriginal' => $insurance['copay'],
+                'amount' => $insurance['copay'],
             );
         }else{
             $services = $this->services->getCptByEid($params->eid);
             foreach($services['rows'] AS $service){
-                $row['id'] = $service['id'];
-                $row['SKU'] = $service['code'];
-                $row['description'] = $service['code_text_medium'];
-                $row['price'] = ($service['status'] == 0 ? '00.00' : $service['charge']);
+                $row['code'] = $service['code'];
+                $row['name'] = $service['code_text_medium'];
+                $row['amountOriginal'] = ($service['status'] == 0 ? '00.00' : $service['charge']);
+                $row['amount'] = $row['amountOriginal'];
                 $invoice[] = $row;
             }
         }
         return $invoice;
     }
-
-
-    /**
-     * @param stdClass $params
-     *
-     * $params->pid         int
-     * $params->uid         int
-     * $params->date        date
-     * $params->notes       string
-     * $params->services    array
-     * $params->payment     array
-     *
-     * @return \stdClass
-     */
-    public function setVisitVoucher(stdClass $params)
-    {
-
-
-        $vid = $this->av->createVoucher(null,null,null);
-
-
-        return $params;
-
-
-    }
-
-
-
-
 
 }
 

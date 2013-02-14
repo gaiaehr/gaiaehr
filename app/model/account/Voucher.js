@@ -5,7 +5,7 @@
  * Date: 2/18/12
  * Time: 11:09 PM
  */
-Ext.define('App.model.billing.VisitVoucher', {
+Ext.define('App.model.account.Voucher', {
 	extend: 'Ext.data.Model',
 	fields: [
 		{name: 'id',                        type: 'int'},
@@ -32,22 +32,26 @@ Ext.define('App.model.billing.VisitVoucher', {
 		{name: 'notes',                     type: 'string', mapping:'narration',  comment:'Notes'},
 		{name: 'status',                    type: 'string', mapping:'state',      comment:'Status'},
 //		{name: 'memo',                      type: 'string', mapping:'name', comment:'Memo (Not Used)'},
-//		{name: 'type',                      type: 'string', comment:'Default Type (Not Used)'},
+		{name: 'type',                      type: 'string', comment:'visit/product/office'},
 //		{name: 'payment_option',            type: 'string', comment:'Payment Difference (Not Used)'},
 //		{name: 'payNow',                    type: 'string', comment:'Payment (Not Used)'},
 
 		{name: 'amount',                    type: 'float', defaultValue:0.00, comment:'Total Amount'}
 //		{name: 'taxAmount',                 type: 'float', comment:'Tax Amount'},
 //		{name: 'paymentRate',               type: 'float', comment:'Exchange Rate (Not Used)'}
+//		{name: 'voucherlines',              type: 'auto', store:false} // use to get voucherlines in same call
 
 	],
 	proxy: {
 		type: 'direct',
 		api: {
-			read: AccBilling.getVisitVoucher
+			read: AccVoucher.getVoucher,
+			create: AccVoucher.addVoucher,
+			update: AccVoucher.updateVoucher,
+			destroy: AccVoucher.destroyVoucher
 		}
 	},
 	hasMany: [
-		{model: 'App.model.billing.VisitInvoiceLine', name: 'VisitInvoiceLine.js'}
+		{model: 'App.model.account.VoucherLine', name: 'voucherlines', foreignKey: 'voucherId'}
 	]
 });

@@ -90,15 +90,13 @@ Ext.define( 'App.model.administration.tmpUser',
 		len: 255,
 		store: true
 	},
-/*
 	{
 		name : 'lname',
 		type : 'string',
 		dataType : 'varchar',
 		len: 255,
 		store: true
-	},*/
-
+	},
 	{
 		name : 'fullname',
 		type : 'string',

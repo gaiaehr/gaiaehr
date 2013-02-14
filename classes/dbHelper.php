@@ -102,6 +102,7 @@ class dbHelper
 					PDO::MYSQL_ATTR_LOCAL_INFILE => 1,
 					PDO::ATTR_PERSISTENT => true
 				));
+				$this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			}
 			catch(PDOException $e)
 			{
@@ -556,10 +557,10 @@ class dbHelper
 			// database table in terms of number of fields.
 			elseif(count($workingModel) != count($tableColumns))
 			{
-				foreach($tableColumns as $column)
-				{
-					if( !in_array($column['name'], $workingModel) ) echo 'DELETED FROM THE SENCHA MODEL: ' . $column['name'] . '<br>';
-				}
+				// remove columns from the table
+				foreach($tableColumns as $column) if( !is_numeric($this->__recursiveArraySearch($column['Field'], $workingModel)) ) $this->__dropColumn($column['Field']);
+				// add columns to the table
+				foreach($workingModel as $column) if( !is_numeric($this->__recursiveArraySearch($column['name'], $tableColumns)) ) $this->__createColumn($column);
 			}
 			// if everything else passes check for differences in the columns.
 			else
@@ -668,7 +669,7 @@ class dbHelper
 	 {
 	 	try
 	 	{
-			$this->conn->exec('CREATE TABLE IF NOT EXISTS ' . $this->Table . ' (id BIGINT(20) NOT NULL AUTO_INCREMENT PRIMARY KEY);');
+			$this->conn->query('CREATE TABLE IF NOT EXISTS ' . $this->Table . ' (id BIGINT(20) NOT NULL AUTO_INCREMENT PRIMARY KEY);');
 			return true;
 		}
 		catch(PDOException $e)
@@ -694,11 +695,11 @@ class dbHelper
 	 */
 	private function __createAllColumns($paramaters = array())
 	{
-		foreach($paramaters as $items)
+		foreach($paramaters as $column)
 		{
 			try
 			{
-				$this->conn->exec('ALTER TABLE '.$this->Table.' ADD '.$items['name'].' '.$this->__renderColumnSyntax($items) . ';');
+				$this->__createColumn($column);
 			}
 			catch(PDOException $e)
 			{
@@ -712,11 +713,11 @@ class dbHelper
 	 * __createColumn:
 	 * Method that will create the column into the table
 	 */
-	private function __createColumn($SingleParamaters = array())
+	private function __createColumn($column = array())
 	{
 		try
 		{
-			$this->conn->exec('ALTER TABLE '.$this->Table.' ADD '.$SingleParamaters['name'].' '.$this->__renderColumnSyntax($SingleParamaters) . ';');
+			$this->conn->query('ALTER TABLE '.$this->Table.' ADD '.$column['name'].' '.$this->__renderColumnSyntax($column) . ';');
 		}
 		catch(PDOException $e)
 		{
@@ -733,7 +734,7 @@ class dbHelper
 	{
 		try
 		{
-			$this->conn->exec('ALTER TABLE '.$this->Table.' MODIFY '.$SingleParamaters['name'].' '.$this->__renderColumnSyntax($SingleParamaters) . ';');
+			$this->conn->query('ALTER TABLE '.$this->Table.' MODIFY '.$SingleParamaters['name'].' '.$this->__renderColumnSyntax($SingleParamaters) . ';');
 		}
 		catch(PDOException $e)
 		{
@@ -750,7 +751,7 @@ class dbHelper
 	{
 		try
 		{
-			$this->conn->exec('CREATE DATABASE IF NOT EXISTS '.$databaseName.';');
+			$this->conn->query('CREATE DATABASE IF NOT EXISTS '.$databaseName.';');
 		}
 		catch(PDOException $e)
 		{
@@ -767,7 +768,7 @@ class dbHelper
 	{
 		try
 		{
-			$this->conn->exec('ALTER TABLE '.$this->Table.' DROP COLUMN '.$column['name'].';');
+			$this->conn->query("ALTER TABLE ".$this->Table." DROP COLUMN `".$column."`;");
 		}
 		catch(PDOException $e)
 		{
@@ -833,5 +834,18 @@ class dbHelper
 		return true;
 	}
 	
+	/**
+	 * __recursive_array_search:
+	 * An recursive array search method
+	 */
+	private function __recursiveArraySearch($needle,$haystack) 
+	{
+	    foreach($haystack as $key=>$value) 
+	    {
+	        $current_key=$key;
+	        if($needle===$value OR (is_array($value) && $this->__recursiveArraySearch($needle,$value) !== false)) return $current_key;
+	    }
+	    return false;
+	}
 	
 }

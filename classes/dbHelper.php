@@ -905,11 +905,16 @@ class dbHelper
 			$fileModel = str_replace('App', 'app', $fileModel);
 			$fileModel = str_replace('.', '/', $fileModel);
 			$senchaModel = (string)file_get_contents($_SESSION['root'] . '/' . $fileModel . '.js');
-
-			$senchaModel =  preg_replace("(((/\*(.|\n)*\*/|//(.*))|Ext.define(.*) |\);)|(\"| |)proxy(.|\n)*},)", '', $senchaModel); //clean coments and Ext.define funtion
+			// clean comments and un necessary Ext.define functions
+			$senchaModel =  preg_replace("(((/\*(.|\n)*\*/|//(.*))|Ext.define(.*) *|\);)|(\"| |)proxy(.|\n)*},)", '', $senchaModel);
+			// wrap with double quotes to all the properties
 			$senchaModel =  preg_replace("/(,|{|\t|\n|\r|  )( |)(\w*):/", "$1$2\"$3\":", $senchaModel);
+			// wrap with double quotes float numbers
 			$senchaModel =  preg_replace("/([0-9]+\.[0-9]+)/", "\"$1\"", $senchaModel);
+			// replace single quotes for double quotes
+			// TODO: refine this to make sure doesn't replace apostrophes used in comments. example: don't
 			$senchaModel =  preg_replace("(')", '"', $senchaModel);
+			// json string => php array
 			$model = (array)json_decode($senchaModel, true);
 			
 			// get the table from the model

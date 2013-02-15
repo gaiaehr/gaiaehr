@@ -50,13 +50,11 @@ Ext.override(Ext.data.reader.Reader, {
 			'exception'
 		);
 
-		this.on('exception', function(reader, response, error){
-			say(reader);
-			say(response);
-			say(error);
+		this.on('exception', function(r, e){
+			say(r);
 			app.alert(
-				'<p><span style="font-weight:bold">'+ response.message +'</span></p><hr>' +
-				'<p>'+ response.where.replace(/\n/g,'<br>') +'</p>',
+				'<p><span style="font-weight:bold">'+ (e.where != 'undefined' ? e.message : e.message.replace(/\n/g,''))  +'</span></p><hr>' +
+					'<p>'+ (typeof e.where != 'undefined' ? e.where.replace(/\n/g,'<br>') : e.data) +'</p>',
 				'error'
 			);
 //			Ext.Msg.show({

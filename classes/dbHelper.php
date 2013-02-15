@@ -801,7 +801,7 @@ class dbHelper
 	public function SenchaModel($fileModel)
 	{
 		// skip this entire routine if freeze option is true
-		if($this->__freeze) return false;
+		if($this->__freeze) return true;
 		try
 		{
 			// get the the model of the table from the sencha .js file
@@ -817,8 +817,11 @@ class dbHelper
 			foreach($workingModel as $key => $SenchaModel) if(isset($SenchaModel['store']) && $SenchaModel['store'] == 'false') unset($workingModel[$key]);
 			
 			// get the table column information
-			$recordSet = $this->conn->query("SHOW COLUMNS IN " . $this->Table . ";");
+			$recordSet = $this->conn->query("SHOW FULL COLUMNS IN " . $this->Table . ";");
 			$tableColumns = $recordSet->fetchAll(PDO::FETCH_ASSOC);
+			
+			// delete the id from the workingModel.
+			unset($workingModel[$this->__recursiveArraySearch('id', $workingModel)]);
 			
 			// check if the table has columns, if not create them.
 			// we start with 1 because the microORM always create the id.
@@ -829,7 +832,7 @@ class dbHelper
 			}
 			// Also check if there is difference between the model and the 
 			// database table in terms of number of fields.
-			elseif(count($workingModel) != count($tableColumns))
+			elseif(count($workingModel) != (count($tableColumns)-1))
 			{
 				// remove columns from the table
 				foreach($tableColumns as $column) if( !is_numeric($this->__recursiveArraySearch($column['Field'], $workingModel)) ) $this->__dropColumn($column['Field']);
@@ -849,10 +852,13 @@ class dbHelper
 						// if the field is found, start the comparison
 						if($SenchaModel['name'] == $column['Field'])
 						{
-							// check for changes on the field type is a obligatory thing
+							// the following code will check if there is a dataType property if not, take the type instead 
+							// on the model and parse it too.
 							$modelDataType = (isset($SenchaModel['dataType']) ? $SenchaModel['dataType'] : $SenchaModel['type']);
 							if($modelDataType == 'string') $modelDataType = 'varchar';
 							if($modelDataType == 'bool' && $modelDataType == 'boolean') $modelDataType = 'tinyint';
+							
+							// check for changes on the field type is a obligatory thing
 							if(strripos($column['Type'], $modelDataType) === false) $change = 'true'; // Type 
 							
 							// check if there changes on the allowNull property, 
@@ -872,12 +878,15 @@ class dbHelper
 							if(isset($SenchaModel['primaryKey'])) if($column['Key'] != ($SenchaModel['primaryKey'] ? 'PRI' : '') ) $change = 'true'; // Primary key
 							
 							// check if the auto increment is changed on the model,
-							// but first check if the auto incroment is used on the sencha model.
+							// but first check if the auto increment is used on the sencha model.
 							if(isset($SenchaModel['autoIncrement'])) if($column['Extra'] != ($SenchaModel['autoIncrement'] ? 'auto_increment' : '') ) $change = 'true'; // auto increment
+							
+							// check if the comment is changed on the model,
+							// but first check if the comment is used on the sencha model.
+							if(isset($SenchaModel['comment'])) if($column['Comment'] != $SenchaModel['comment']) $change = 'true';
 							
 							// Modify the column on the database							
 							if($change == 'true') $this->__modifyColumn($SenchaModel);
-							
 						}
 					}
 				}
@@ -905,14 +914,15 @@ class dbHelper
 			$senchaModel = (string)file_get_contents($_SESSION['root'] . '/' . $fileModel . '.js');
 
 			// clean comments and unnecessary Ext.define functions
-			$senchaModel =  preg_replace("((/\*(.|\n)*?\*/|//(.*))|([ ](?=(?:[^\'\"]|\'[^\'\"]*\')*$)|\t|\n|\r))", '', $senchaModel);
-			$senchaModel =  preg_replace("(Ext.define\('[A-Za-z0-9.]*',|\);|\"|proxy(.|\n)*},)", '', $senchaModel); //clean coments
+			$senchaModel = preg_replace("((/\*(.|\n)*?\*/|//(.*))|([ ](?=(?:[^\'\"]|\'[^\'\"]*\')*$)|\t|\n|\r))", '', $senchaModel);
+			$senchaModel = preg_replace("(Ext.define\('[A-Za-z0-9.]*',|\);|\"|proxy(.|\n)*},)", '', $senchaModel); //clean coments
 			// wrap with double quotes to all the properties
-			$senchaModel =  preg_replace('/(,|\{)(\w*):/', "$1\"$2\":", $senchaModel);
-
-			echo '<pre>';
-			print_r($senchaModel);
-			echo '</pre>';
+			$senchaModel = preg_replace('/(,|\{)(\w*):/', "$1\"$2\":", $senchaModel);
+			// wrap with double quotes float numbers
+			$senchaModel = preg_replace("/([0-9]+\.[0-9]+)/", "\"$1\"", $senchaModel);
+			// replace single quotes for double quotes
+			// TODO: refine this to make sure doesn't replace apostrophes used in comments. example: don't
+			$senchaModel = preg_replace("(')", '"', $senchaModel);
 			
 			$model = (array)json_decode($senchaModel, true);
 			if(!count($model)) throw new Exception("Ops something when wrong converting it to a array.");
@@ -1077,12 +1087,12 @@ class dbHelper
 		elseif($column['type'] == 'int')
 		{
 			$columnType = 'INT';
-			$column['len'] = 11;
+			$column['len'] = (isset($column['len']) ? $column['len'] : 11);
 		}
 		elseif($column['type'] == 'bool' || $column['type'] == 'boolean')
 		{
 			$columnType = 'TINYINT';
-			$column['len'] = 1;
+			$column['len'] = (isset($column['len']) ? $column['len'] : 1);
 		}
 		elseif($column['type'] == 'date')
 		{
@@ -1104,6 +1114,7 @@ class dbHelper
 				return $columnType.
 				( isset($column['len']) ? ($column['len'] ? '('.$column['len'].') ' : '') : '').
 				( isset($column['defaultValue']) ? (is_numeric($column['defaultValue']) && is_string($column['defaultValue']) ? "DEFAULT '".$column['defaultValue']."' " : '') : '').
+				( isset($column['comment']) ? ($column['comment'] ? "COMMENT '".$column['comment']."' " : '') : '' ).
 				( isset($column['allowNull']) ? ($column['allowNull'] ? 'NOT NULL ' : '') : '' ).
 				( isset($column['autoIncrement']) ? ($column['autoIncrement'] ? 'AUTO_INCREMENT ' : '') : '' ).
 				( isset($column['primaryKey']) ? ($column['primaryKey'] ? 'PRIMARY KEY ' : '') : '' );
@@ -1112,6 +1123,7 @@ class dbHelper
 				return $columnType.
 				( isset($column['len']) ? ($column['len'] ? '('.$column['len'].')' : '(10,2)') : '(10,2)').
 				( isset($column['defaultValue']) ? (is_numeric($column['defaultValue']) && is_string($column['defaultValue']) ? "DEFAULT '".$column['defaultValue']."' " : '') : '').
+				( isset($column['comment']) ? ($column['comment'] ? "COMMENT '".$column['comment']."' " : '') : '' ).
 				( isset($column['allowNull']) ? ($column['allowNull'] ? 'NOT NULL ' : '') : '' ).
 				( isset($column['autoIncrement']) ? ($column['autoIncrement'] ? 'AUTO_INCREMENT ' : '') : '' ).
 				( isset($column['primaryKey']) ? ($column['primaryKey'] ? 'PRIMARY KEY ' : '') : '' );
@@ -1119,22 +1131,26 @@ class dbHelper
 			case 'DATE'; case 'TIME'; case 'TIMESTAMP'; case 'DATETIME'; case 'YEAR':
 				return $columnType.' '.
 				( isset($column['defaultValue']) ? (is_numeric($column['defaultValue']) && is_string($column['defaultValue']) ? "DEFAULT '".$column['defaultValue']."' " : '') : '').
+				( isset($column['comment']) ? ($column['comment'] ? "COMMENT '".$column['comment']."' " : '') : '' ).
 				( isset($column['allowNull']) ? ($column['allowNull'] ? 'NOT NULL ' : '') : '' );
 				break;
 			case 'CHAR'; case 'VARCHAR':
 				return $columnType.' '.
 				( isset($column['len']) ? ($column['len'] ? '('.$column['len'].') ' : '(255)') : '(255)').
 				( isset($column['defaultValue']) ? (is_numeric($column['defaultValue']) && is_string($column['defaultValue']) ? "DEFAULT '".$column['defaultValue']."' " : '') : '').
+				( isset($column['comment']) ? ($column['comment'] ? "COMMENT '".$column['comment']."' " : '') : '' ).
 				( isset($column['allowNull']) ? ($column['allowNull'] ? 'NOT NULL ' : '') : '' );
 				break;
 			case 'BINARY'; case 'VARBINARY':
 				return $columnType.' '.
 				( isset($column['len']) ? ($column['len'] ? '('.$column['len'].') ' : '') : '').
-				( isset($column['allowNull']) ? ($column['allowNull'] ? '' : 'NOT NULL ') : '' );
+				( isset($column['allowNull']) ? ($column['allowNull'] ? '' : 'NOT NULL ') : '' ).
+				( isset($column['comment']) ? ($column['comment'] ? "COMMENT '".$column['comment']."'" : '') : '' );
 				break;
 			case 'TINYBLOB'; case 'BLOB'; case 'MEDIUMBLOB'; case 'LONGBLOB'; case 'TINYTEXT'; case 'TEXT'; case 'MEDIUMTEXT'; case 'LONGTEXT':
 				return $columnType.' '.
-				( isset($column['allowNull']) ? ($column['allowNull'] ? 'NOT NULL ' : '') : '' );
+				( isset($column['allowNull']) ? ($column['allowNull'] ? 'NOT NULL ' : '') : '' ).
+				( isset($column['comment']) ? ($column['comment'] ? "COMMENT '".$column['comment']."'" : '') : '' );
 				break;
 		}
 		return true;

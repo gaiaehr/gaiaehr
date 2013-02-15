@@ -10,8 +10,8 @@ Ext.define('App.model.account.Voucher', {
 	table: 'accvoucher',
 	fields: [
 		{name: 'id',                        type: 'int'},
-		{name: 'dateDue',                   type: 'date', dateFormat:'Y-m-d H:i:s', comment:'Date'},
-		{name: 'date',                      type: 'date', dateFormat:'Y-m-d H:i:s', comment:'Due Date'},
+		{name: 'dateDue',                   type: 'date', dateFormat:'Y-m-d H:i:s', comment:'Due Date'},
+		{name: 'date',                      type: 'date', dateFormat:'Y-m-d H:i:s', comment:'Date'},
 		{name: 'encounterId',               type: 'int', comment:'Encounter'},
 		{name: 'accountId',                 type: 'int', comment:'Account'},
 		{name: 'journalId',                 type: 'int', comment:'Journal'},

@@ -66,3 +66,5 @@ print '<br>';
 print '<br>';
 $text =  preg_replace("(')", '"', $text);
 print '4) '.$text;
+print '<pre>';
+print_r(json_decode($text, true));

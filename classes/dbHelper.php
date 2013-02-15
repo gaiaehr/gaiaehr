@@ -750,7 +750,7 @@ class dbHelper
 	 */
 	private function __leftJoin()
 	{
-		return (string)' LEFT JOIN ' . $this->relateTable .' ON ('.$this->Table.'.id = '.$this->relateTable.'.id ';
+		return (string)' LEFT JOIN ' . $this->relateTable .' ON ('.$this->Table.'.id = '.$this->relateTable.'.id) ';
 	}
 	
 	/**
@@ -761,7 +761,7 @@ class dbHelper
 	 */
 	private function __innerJoin()
 	{
-		return (string)' INNER JOIN ' . $this->relateTable .' ON ('.$this->Table.'.id = '.$this->relateTable.'.id ';
+		return (string)' INNER JOIN ' . $this->relateTable .' ON ('.$this->Table.'.id = '.$this->relateTable.'.id) ';
 	}
 	
 	/**

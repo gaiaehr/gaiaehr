@@ -880,10 +880,8 @@ class dbHelper
 							
 						}
 					}
-
 				}
 			}
-			
 		}
 		catch(PDOException $e)
 		{
@@ -916,8 +914,9 @@ class dbHelper
 			// replace single quotes for double quotes
 			// TODO: refine this to make sure doesn't replace apostrophes used in comments. example: don't
 			$senchaModel =  preg_replace("(')", '"', $senchaModel);
-			// json string => php array
+			
 			$model = (array)json_decode($senchaModel, true);
+			if(!count($model)) throw new Exception("Ops something when wrong converting it to a array.");
 			
 			// get the table from the model
 			if(!isset($model['table'])) throw new Exception("Table property is not defined on Sencha Model. 'table:'");

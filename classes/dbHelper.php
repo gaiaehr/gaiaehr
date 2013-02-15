@@ -898,37 +898,46 @@ class dbHelper
 		$fileModel = str_replace('.', '/', $fileModel);
 		$senchaModel = (string)file_get_contents($_SESSION['root'] . '/' . $fileModel . '.js');
 
-		// strip comments from the code
-		$senchaModel = preg_replace('~#[^\r\n]*~', '', $senchaModel);
-		$senchaModel = preg_replace('~//[^\r\n]*~', '', $senchaModel);
-		$senchaModel = preg_replace('~/\*.*?\*/~s', '', $senchaModel);
-		
-		// get the table from the model
-		preg_match("/table(.*?),/si", $senchaModel, $matches, PREG_OFFSET_CAPTURE, 3);
-		preg_match("/[a-zA-Z_]+/", $matches[1][0], $matches, PREG_OFFSET_CAPTURE, 3);
-		$this->__setTable( $matches[0][0] );
-		
-		// Extracting the necessary end-points for the fields
-		unset($matches);
-		preg_match("/fields(.*?)]/si", $senchaModel, $matches, PREG_OFFSET_CAPTURE, 3);
 
-		// Removing all the unnecessary characters.
-		$subject = str_replace(' ', '', $matches[1][0]);
-		$subject = str_replace(chr(13), '', $subject);
-		$subject = str_replace(chr(10), '', $subject);
-		$subject = str_replace(chr(9), '', $subject);
-		$subject = str_replace('[', '', $subject);
-		$subject = str_replace("'", '', $subject);
-		$subject = substr($subject, 1);
-		
-		// match any word on the string
-		$subject = preg_replace('/[a-zA-Z0-9_]+/', '"$0"', $subject);
-		
-		//compose a valid json string.
-		$subject = '{"fields": [' . $subject . ']}';
-				
-		// Return the decoded model of Sencha
-		$model = (array)json_decode($subject, true);
+//		// strip comments from the code
+//		$senchaModel = preg_replace("(/\*(.|\n)*\*/|//(.*))", '', $senchaModel);
+//		$senchaModel = preg_replace('~//[^\r\n]*~', '', $senchaModel);
+//		$senchaModel = preg_replace('~/\*.*?\*/~s', '', $senchaModel);
+//		print $senchaModel;
+//		// get the table from the model
+//		preg_match("/table(.*?),/si", $senchaModel, $matches, PREG_OFFSET_CAPTURE, 3);
+//		preg_match("/[a-zA-Z_]+/", $matches[1][0], $matches, PREG_OFFSET_CAPTURE, 3);
+//		$this->__setTable( $matches[0][0] );
+//
+//		// Extracting the necessary end-points for the fields
+//		unset($matches);
+//		preg_match("/fields(.*?)]/si", $senchaModel, $matches, PREG_OFFSET_CAPTURE, 3);
+//
+//		// Removing all the unnecessary characters.
+//		$subject = str_replace(' ', '', $matches[1][0]);
+//		$subject = str_replace(chr(13), '', $subject);
+//		$subject = str_replace(chr(10), '', $subject);
+//		$subject = str_replace(chr(9), '', $subject);
+//		$subject = str_replace('[', '', $subject);
+//		$subject = str_replace("'", '', $subject);
+//		$subject = substr($subject, 1);
+//
+//		// match any word on the string
+//		$subject = preg_replace('/[a-zA-Z0-9_]+/', '"$0"', $subject);
+//
+//		//compose a valid json string.
+//		$subject = '{"fields": [' . $subject . ']}';
+//
+//		// Return the decoded model of Sencha
+//
+//		print_r((array)json_decode($subject, true));
+
+		$senchaModel =  preg_replace("(((/\*(.|\n)*\*/|//(.*))|Ext.define(.*) |\);)|(\"| |)proxy(.|\n)*},)", '', $senchaModel); //clean coments and Ext.define funtion
+		$senchaModel =  preg_replace("/(,|{|\t|\n|\r|  )( |)(\w*):/", "$1$2\"$3\":", $senchaModel);
+		$senchaModel =  preg_replace("/([0-9]+\.[0-9]+)/", "\"$1\"", $senchaModel);
+		$senchaModel =  preg_replace("(')", '"', $senchaModel);
+		$model = (array)json_decode($senchaModel, true);
+
 		$this->Model = $model['fields'];
 	}
 

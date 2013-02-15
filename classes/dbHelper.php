@@ -901,51 +901,18 @@ class dbHelper
 	{
 		try
 		{
-			// Getting Sencha model as a namespace
-			$fileModel = str_replace('App', 'app', $fileModel);
-			$fileModel = str_replace('.', '/', $fileModel);
-			$senchaModel = (string)file_get_contents($_SESSION['root'] . '/' . $fileModel . '.js');
-		
-			// strip comments from the code
-			$senchaModel = preg_replace("(/\*(.|\n)*\*/|//(.*))", '', $senchaModel);
-					
-			// get the table from the model
-			preg_match("/table(.*?),/si", $senchaModel, $matches, PREG_OFFSET_CAPTURE, 3);
-			if(!isset($matches[0][0])) throw new Exception("Table property is not defined on Sencha Model. 'table:'");
-			preg_match("/[a-zA-Z_]+/", $matches[1][0], $matches, PREG_OFFSET_CAPTURE, 3);
-			$this->__setTable( $matches[0][0] );
-	
-					
-			// Extracting the necessary end-points for the fields
-			unset($matches);
-			preg_match("/fields(.*?)]/si", $senchaModel, $matches, PREG_OFFSET_CAPTURE, 3);
-		
-			// Removing all the unnecessary characters.
-			$subject = str_replace(' ', '', $matches[1][0]);
-			$subject = str_replace(chr(13), '', $subject);
-			$subject = str_replace(chr(10), '', $subject);
-			$subject = str_replace(chr(9), '', $subject);
-			$subject = substr($subject, 1);
-			$subject = str_replace('[', '', $subject);
-			$subject = str_replace("'", '"', $subject);
-			
-			// match any word on the string
-			$subject = preg_replace("/(,|{)( |)(\w*):/", "$1$2\"$3\":", $subject);
+			$senchaModel =  preg_replace("(((/\*(.|\n)*\*/|//(.*))|Ext.define(.*) |\);)|(\"| |)proxy(.|\n)*},)", '', $senchaModel); //clean coments and Ext.define funtion
+			$senchaModel =  preg_replace("/(,|{|\t|\n|\r|  )( |)(\w*):/", "$1$2\"$3\":", $senchaModel);
+			$senchaModel =  preg_replace("/([0-9]+\.[0-9]+)/", "\"$1\"", $senchaModel);
+			$senchaModel =  preg_replace("(')", '"', $senchaModel);
+			$model = (array)json_decode($senchaModel, true);
 
-			//compose a valid json string.
-			$subject = '{"fields": [' . $subject . ']}';
-			print_r($subject);
-										
-			// Return the decoded model of Sencha
-			$model = (array)json_decode($subject, true);
-			if(!isset($model['fields'])) throw new Exception("Something is wrong with the conversion of the sencha model.");
 			$this->Model = $model['fields'];
 			return true;
-		}
+		} 
 		catch(Exception $e)
 		{
-			error_log('dbHelper SenchaPHP microORM: ' . $e->getMessage() );
-			return false;
+			
 		}
 	}
 

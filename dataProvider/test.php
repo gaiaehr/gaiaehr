@@ -8,264 +8,73 @@ $text = <<<EOF
  * Date: 2/18/12
  * Time: 11:09 PM
  */
-Ext.define('App.model.account.VoucherLine', {
-    extend: 'Ext.data.Model',
-	table: 'accvoucherline',
-    fields: [
-        {name: 'id',                    type: 'int'},
-        {name: 'voucherId',             type: 'int', comment: 'Voucher'},
-        {name: 'accountId',             type: 'int', comment: 'Account'},
-	    {name: 'moveLineId',            type: 'int', comment: 'Journal Item'},
-//      {name: 'companyId',             type: 'int', comment:'Company (Not Used)'},
-//      {name: 'accountAnalyticId',     type: 'int', comment:'Analytic Account (Not Used)'},
+Ext.define('App.model.account.Voucher', {
+	extend: 'Ext.data.Model',
+	table: 'accvoucher',
+	fields: [
+		{name: 'id',                        type: 'int'},
+		{name: 'dateDue',                   type: 'date', dateFormat:'Y-m-d H:i:s', comment:'Date'},
+		{name: 'date',                      type: 'date', dateFormat:'Y-m-d H:i:s', comment:'Due Date'},
+		{name: 'encounterId',               type: 'int', comment:'Encounter'},
+		{name: 'accountId',                 type: 'int', comment:'Account'},
+		{name: 'journalId',                 type: 'int', comment:'Journal'},
+		{name: 'moveId',                    type: 'int', comment:'Account Entry'},
+		{name: 'taxId',                     type: 'int', comment:'Tax ID'},
+//		{name: 'companyId',                 type: 'int', comment:'Company'},
+//		{name: 'partnerId',                 type: 'int', comment:'Partner'},
+//		{name: 'paymentRateCurrencyId',     type: 'int', comment:'Payment Rate Currency (Not Used)'},
+//		{name: 'writeOffAccId',             type: 'int', comment:'Write-Off Analytic Acc (Not Used)'},
+//		{name: 'analyticId',                type: 'int', comment:'Write-Off Analytic Acc (Not Used)'},
 
-	    {name: 'reconcile',             type: 'bool', defaultValue: false, comment: 'Full Reconcile'},
+		{name: 'active',                    type: 'bool', defaultValue:true, comment:'Active?'},
+//		{name: 'preLine',                   type: 'bool', comment:'Previous Payments? (Not Used)'},
+//		{name: 'isMultiCurrency',           type: 'bool', defaultValue:false, comment:'(Not Used)'},
 
-	    {name: 'code',                  type: 'string', comment: 'COPAY/CPT/HCPCS/SKU codes'},
-        {name: 'name',                  type: 'string', comment: 'Description'},
-	    {name: 'type',                  type: 'string', comment: 'debit/credit'},
+		{name: 'comment',                   type: 'string', comment:'Comment'},
+		{name: 'reference',                 type: 'string', comment:'Ref'},
+		{name: 'number',                    type: 'string', comment:'Number'},
+		{name: 'notes',                     type: 'string', mapping:'narration',  comment:'Notes'},
+		{name: 'status',                    type: 'string', mapping:'state',      comment:'Status'},
+//		{name: 'memo',                      type: 'string', mapping:'name', comment:'Memo (Not Used)'},
+		{name: 'type',                      type: 'string', comment:'visit/product/office'},
+//		{name: 'payment_option',            type: 'string', comment:'Payment Difference (Not Used)'},
+//		{name: 'payNow',                    type: 'string', comment:'Payment (Not Used)'},
 
-	    {name: 'amountUnreconciled',    type: 'float', comment: 'Open Balance'},
-	    {name: 'amountUntax',           type: 'float', comment: 'Untax Amount'},
-	    {name: 'amountOriginal',        type: 'float', comment: 'Default Amount'},
-	    {name: 'amount',                type: 'float', comment: 'Amount'}
-    ],/**
- GaiaEHR (Electronic Health Records)
- User.js
- User Model
- Copyright (C) 2012 Certun, inc.
+		{name: 'amount',                    type: 'float', defaultValue:0.00, comment:'Total Amount'}
+//		{name: 'taxAmount',                 type: 'float', comment:'Tax Amount'},
+//		{name: 'paymentRate',               type: 'float', comment:'Exchange Rate (Not Used)'}
+//		{name: 'voucherlines',              type: 'auto', store:false} // use to get voucherlines in same call
 
- This program is free software: you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation, either version 3 of the License, or
- (at your option) any later version.
-
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-
-Ext.define( 'App.model.administration.tmpUser',
-{
-	extend : 'Ext.data.Model',
-	table: 'tmpusers',
-	fields : [
-	{
-		name : 'id',
-		type : 'int',
-		dataType : 'bigint',
-		len: 20,
-		primaryKey : true,
-		autoIncrement : true,
-		allowNull : false,
-		store: true
+	],
+	proxy: {
+		type: 'direct',
+		api: {
+			read: AccVoucher.getVoucher,
+			create: AccVoucher.addVoucher,
+			update: AccVoucher.updateVoucher,
+			destroy: AccVoucher.destroyVoucher
+		}
 	},
-	{
-		name : 'username',
-		type : 'string',
-		dataType : 'varchar',
-		len : 25,
-		allowNull : false,
-		store: true
-	},
-	{
-		name : 'password',
-		type : 'string',
-		dataType : 'blob',
-		allowNull : false,
-		store: true
-	},
-	{
-		name : 'authorized',
-		type : 'bool',
-		dataType : 'tinyint',
-		len : 1,
-		defaultValue : 0,
-		store: true
-	},
-	{
-		name : 'active',
-		type : 'bool',
-		dataType : 'tinyint',
-		len : 1,
-		store: true
-	},
-	{
-		name : 'info',
-		type : 'string',
-		dataType: 'longtext',
-		store: true
-	},
-	{
-		name : 'source',
-		type : 'int',
-		dataType : 'tinyint',
-		len: 4,
-		store: true
-	},
-	{
-		name : 'fname',
-		type : 'string',
-		dataType : 'varchar',
-		len: 255,
-		store: true
-	},
-	{
-		name : 'mname',
-		type : 'string',
-		dataType : 'varchar',
-		len: 255,
-		store: true
-	},
-	{
-		name : 'lname',
-		type : 'string',
-		dataType : 'varchar',
-		len: 255,
-		store: true
-	},
-	{
-		name : 'fullname',
-		type : 'string',
-		dataType : 'varchar',
-		store: false
-	},
-	{
-		name : 'federaltaxid',
-		type : 'string',
-		dataType : 'varchar',
-		len: 255,
-		store: true
-	},
-	{
-		name : 'federaldrugid',
-		type : 'string',
-		dataType : 'varchar',
-		len: 255,
-		store: true
-	},
-	{
-		name : 'upin',
-		type : 'string',
-		dataType : 'varchar',
-		len: 255,
-		store: true
-	},
-	{
-		name : 'facility',
-		type : 'string',
-		dataType : 'varchar',
-		len: 255,
-		store: true
-	},
-	{
-		name : 'facility_id',
-		type : 'int',
-		dataType : 'int',
-		len: 11,
-		store: true
-	},
-	{
-		name : 'see_auth',
-		type : 'bool',
-		dataType : 'tinyint',
-		len: 1,
-		store: true
-	},
-	{
-		name : 'npi',
-		type : 'string',
-		dataType : 'varchar',
-		len: 15,
-		store: true
-	},
-	{
-		name : 'title',
-		type : 'string',
-		dataType : 'varchar',
-		len: 30,
-		store: true
-	},
-	{
-		name : 'specialty',
-		type : 'string',
-		dataType : 'varchar',
-		len: 255,
-		store: true
-	},
-	{
-		name : 'cal_ui',
-		type : 'string',
-		dataType : 'tinyint',
-		len: 4,
-		store: true
-	},
-	{
-		name : 'taxonomy',
-		type : 'string',
-		dataType : 'varchar',
-		len: 30,
-		store: true
-	},
-	{
-		name : 'calendar',
-		type : 'bool',
-		dataType : 'tinyint',
-		len: 1,
-		store: true
-	},
-	{
-		name : 'abook_type',
-		type : 'string',
-		dataType : 'varchar',
-		len: 31,
-		store: true
-	},
-	{
-		name : 'pwd_expiration_date',
-		type : 'string',
-		dataType : 'longtext',
-		store: true
-	},
-	{
-		name : 'pwd_history1',
-		type : 'string',
-		dataType : 'longtext',
-		store: true
-	},
-	{
-		name : 'pwd_history2',
-		type : 'string',
-		dataType : 'longtext',
-		store: true
-	},
-	{
-		name : 'default_warehouse',
-		type : 'string',
-		dataType : 'varchar',
-		len: 31,
-		store: true
-	},
-	{
-		name : 'role_id',
-		type : 'int',
-		dataType : 'int',
-		store: false
-	}]
-} );
+	hasMany: [
+		{model: 'App.model.account.VoucherLine', name: 'voucherlines', foreignKey: 'voucherId'}
+	]
+});
 
 EOF;
 
-
-$text =  preg_replace("(((/\*(.|\n)*\*/|//(.*))|Ext.define(.*) *|\);)|(\"| |)proxy(.|\n)*},)", '', $text); //clean coments
+$text =  preg_replace("((/\*(.|\n)*?\*/|//(.*))|([ ](?=(?:[^\'\"]|\'[^\'\"]*\')*$)|\t|\n|\r))", '', $text); //clean coments
 print '1) '.$text;
 print '<br>';
 print '<br>';
-$text =  preg_replace("/(,|{|\t|\n|\r|  )( |)(\w*):/", "$1$2\"$3\":", $text);
+//$text =  preg_replace("([ ](?=(?:[^\'\"]|\'[^\'\"]*\')*$)|\t|\n|\r)", '', $text); //clean coments
+//print '1) '.$text;
+//print '<br>';
+//print '<br>';
+$text =  preg_replace("(Ext.define\('[A-Za-z0-9.]*',|\);|\"|proxy(.|\n)*},)", '', $text); //clean coments
+print '1) '.$text;
+print '<br>';
+print '<br>';
+$text =  preg_replace("/(,|\{)(\w*):/", "$1\"$2\":", $text);
 print '2) '.$text;
 print '<br>';
 print '<br>';

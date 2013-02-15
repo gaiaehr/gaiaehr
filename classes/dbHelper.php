@@ -92,27 +92,7 @@ class dbHelper
 	 */
 	function __construct()
 	{
-		if (isset($_SESSION['site']['db']))
-		{
-			$host = (string)$_SESSION['site']['db']['host'];
-			$port = (int)$_SESSION['site']['db']['port'];
-			$dbName = (string)$_SESSION['site']['db']['database'];
-			$dbUser = (string)$_SESSION['site']['db']['username'];
-			$dbPass = (string)$_SESSION['site']['db']['password'];
-			try
-			{
-				// Connect using regular PDO GaiaEHR Database Abstraction layer.
-				$this->conn = new PDO('mysql:host=' . $host . ';port=' . $port . ';dbname=' . $dbName, $dbUser, $dbPass, array(
-					PDO::MYSQL_ATTR_LOCAL_INFILE => 1,
-					PDO::ATTR_PERSISTENT => true
-				));
-				$this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-			}
-			catch(PDOException $e)
-			{
-				$this->err = $e->getMessage();
-			}
-		}
+		if (isset($_SESSION['site']['db'])) $this->__ormSetup();
 	}
 
 	/**
@@ -546,7 +526,7 @@ class dbHelper
 			));
 			$this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			// check if the database exist.
-			$recordSet = $this->conn->query('SHOW DATABASES LIKE '.$dbName.';');
+			$recordSet = $this->conn->query("SHOW DATABASES LIKE '".$dbName."';");
 			$database = $recordSet->fetchAll(PDO::FETCH_ASSOC);
 			if(count($database) <= 0) $this->__createDatabase($dbName);
 			$this->conn->query('USE '.$dbName.';');

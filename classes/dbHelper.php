@@ -901,18 +901,29 @@ class dbHelper
 	{
 		try
 		{
+			// Getting Sencha model as a namespace
+			$fileModel = str_replace('App', 'app', $fileModel);
+			$fileModel = str_replace('.', '/', $fileModel);
+			$senchaModel = (string)file_get_contents($_SESSION['root'] . '/' . $fileModel . '.js');
+
 			$senchaModel =  preg_replace("(((/\*(.|\n)*\*/|//(.*))|Ext.define(.*) |\);)|(\"| |)proxy(.|\n)*},)", '', $senchaModel); //clean coments and Ext.define funtion
 			$senchaModel =  preg_replace("/(,|{|\t|\n|\r|  )( |)(\w*):/", "$1$2\"$3\":", $senchaModel);
 			$senchaModel =  preg_replace("/([0-9]+\.[0-9]+)/", "\"$1\"", $senchaModel);
 			$senchaModel =  preg_replace("(')", '"', $senchaModel);
 			$model = (array)json_decode($senchaModel, true);
+			
+			// get the table from the model
+			if(!isset($model['table'])) throw new Exception("Table property is not defined on Sencha Model. 'table:'");
+			$this->__setTable( $model['table'] );
 
+			if(!isset($model['fields'])) throw new Exception("Fields property is not defined on Sencha Model. 'fields:'");
 			$this->Model = $model['fields'];
 			return true;
-		} 
+		}
 		catch(Exception $e)
 		{
-			
+			error_log('dbHelper SenchaPHP microORM: ' . $e->getMessage() );
+			return false;
 		}
 	}
 

@@ -21,7 +21,7 @@
 Ext.define( 'App.model.administration.tmpUser',
 {
 	extend : 'Ext.data.Model',
-	table: 'tmpusers',
+	/*table: 'tmpusers',*/
 	fields : [
 	{
 		name : 'id',

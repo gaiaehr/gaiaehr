@@ -790,7 +790,7 @@ class dbHelper
 	 */
 	public function freeze($onoff = false)
 	{
-		$this->$__freeze = $onoff;
+		$this->__freeze = $onoff;
 	}
 	
 	/**
@@ -800,23 +800,23 @@ class dbHelper
 	 */
 	public function SenchaModel($fileModel)
 	{
-		// get the the model of the table from the sencha .js file
-		$this->__getSenchaModel($fileModel);
 		// skip this entire routine if freeze option is true
-		if($this->$__freeze) return true;
+		if($this->__freeze) return false;
 		try
 		{
+			// get the the model of the table from the sencha .js file
+			if(!$this->__getSenchaModel($fileModel)) return false;
 		
 			// verify the existence of the table if it does not exist create it
 			$recordSet = $this->conn->query("SHOW TABLES LIKE '".$this->Table."';");
-			if( $recordSet->fetch(PDO::FETCH_ASSOC) ) $this->__createTable($this->Table);
+			if( isset($recordSet) ) $this->__createTable($this->Table);
 			
 			// Remove from the model those fields that are not meant to be stored
 			// on the database.
 			$workingModel = (array)$this->Model;
-			foreach($workingModel as $key => $SenchaModel) if($SenchaModel['store'] == 'false') unset($workingModel[$key]);
+			foreach($workingModel as $key => $SenchaModel) if(isset($SenchaModel['store']) && $SenchaModel['store'] == 'false') unset($workingModel[$key]);
 			
-			// get the table column information and
+			// get the table column information
 			$recordSet = $this->conn->query("SHOW COLUMNS IN " . $this->Table . ";");
 			$tableColumns = $recordSet->fetchAll(PDO::FETCH_ASSOC);
 			
@@ -849,8 +849,11 @@ class dbHelper
 						// if the field is found, start the comparison
 						if($SenchaModel['name'] == $column['Field'])
 						{
-							// check for changes on the field type is a obligatory
-							if(strripos($column['Type'], $SenchaModel['dataType']) === false) $change = 'true'; // Type 
+							// check for changes on the field type is a obligatory thing
+							$modelDataType = (isset($SenchaModel['dataType']) ? $SenchaModel['dataType'] : $SenchaModel['type']);
+							if($modelDataType == 'string') $modelDataType = 'varchar';
+							if($modelDataType == 'bool' && $modelDataType == 'boolean') $modelDataType = 'tinyint';
+							if(strripos($column['Type'], $modelDataType) === false) $change = 'true'; // Type 
 							
 							// check if there changes on the allowNull property, 
 							// but first check if it's used on the sencha model
@@ -896,43 +899,54 @@ class dbHelper
 	 */
 	private function __getSenchaModel($fileModel)
 	{
-		// Getting Sencha model as a namespace
-		$fileModel = str_replace('App', 'app', $fileModel);
-		$fileModel = str_replace('.', '/', $fileModel);
-		$senchaModel = (string)file_get_contents($_SESSION['root'] . '/' . $fileModel . '.js');
+		try
+		{
+			// Getting Sencha model as a namespace
+			$fileModel = str_replace('App', 'app', $fileModel);
+			$fileModel = str_replace('.', '/', $fileModel);
+			$senchaModel = (string)file_get_contents($_SESSION['root'] . '/' . $fileModel . '.js');
+		
+			// strip comments from the code
+			$senchaModel = preg_replace("(/\*(.|\n)*\*/|//(.*))", '', $senchaModel);
+					
+			// get the table from the model
+			preg_match("/table(.*?),/si", $senchaModel, $matches, PREG_OFFSET_CAPTURE, 3);
+			if(!isset($matches[0][0])) throw new Exception("Table property is not defined on Sencha Model. 'table:'");
+			preg_match("/[a-zA-Z_]+/", $matches[1][0], $matches, PREG_OFFSET_CAPTURE, 3);
+			$this->__setTable( $matches[0][0] );
+	
+					
+			// Extracting the necessary end-points for the fields
+			unset($matches);
+			preg_match("/fields(.*?)]/si", $senchaModel, $matches, PREG_OFFSET_CAPTURE, 3);
+		
+			// Removing all the unnecessary characters.
+			$subject = str_replace(' ', '', $matches[1][0]);
+			$subject = str_replace(chr(13), '', $subject);
+			$subject = str_replace(chr(10), '', $subject);
+			$subject = str_replace(chr(9), '', $subject);
+			$subject = substr($subject, 1);
+			$subject = str_replace('[', '', $subject);
+			$subject = str_replace("'", '"', $subject);
+			
+			// match any word on the string
+			$subject = preg_replace("/(,|{)( |)(\w*):/", "$1$2\"$3\":", $subject);
 
-		// strip comments from the code
-		$senchaModel = preg_replace('~#[^\r\n]*~', '', $senchaModel);
-		$senchaModel = preg_replace('~//[^\r\n]*~', '', $senchaModel);
-		$senchaModel = preg_replace('~/\*.*?\*/~s', '', $senchaModel);
-		
-		// get the table from the model
-		preg_match("/table(.*?),/si", $senchaModel, $matches, PREG_OFFSET_CAPTURE, 3);
-		preg_match("/[a-zA-Z_]+/", $matches[1][0], $matches, PREG_OFFSET_CAPTURE, 3);
-		$this->__setTable( $matches[0][0] );
-		
-		// Extracting the necessary end-points for the fields
-		unset($matches);
-		preg_match("/fields(.*?)]/si", $senchaModel, $matches, PREG_OFFSET_CAPTURE, 3);
-
-		// Removing all the unnecessary characters.
-		$subject = str_replace(' ', '', $matches[1][0]);
-		$subject = str_replace(chr(13), '', $subject);
-		$subject = str_replace(chr(10), '', $subject);
-		$subject = str_replace(chr(9), '', $subject);
-		$subject = str_replace('[', '', $subject);
-		$subject = str_replace("'", '', $subject);
-		$subject = substr($subject, 1);
-		
-		// match any word on the string
-		$subject = preg_replace('/[a-zA-Z0-9_]+/', '"$0"', $subject);
-		
-		//compose a valid json string.
-		$subject = '{"fields": [' . $subject . ']}';
-				
-		// Return the decoded model of Sencha
-		$model = (array)json_decode($subject, true);
-		$this->Model = $model['fields'];
+			//compose a valid json string.
+			$subject = '{"fields": [' . $subject . ']}';
+			print_r($subject);
+										
+			// Return the decoded model of Sencha
+			$model = (array)json_decode($subject, true);
+			if(!isset($model['fields'])) throw new Exception("Something is wrong with the conversion of the sencha model.");
+			$this->Model = $model['fields'];
+			return true;
+		}
+		catch(Exception $e)
+		{
+			error_log('dbHelper SenchaPHP microORM: ' . $e->getMessage() );
+			return false;
+		}
 	}
 
 	/**
@@ -1068,7 +1082,7 @@ class dbHelper
 	private function __renderColumnSyntax($column = array())
 	{
 		// parse some properties the Sencha model.
-		$$columnType = (string)'';
+		$columnType = (string)'';
 		if(isset($column['dataType'])) 
 		{
 			$columnType = strtoupper($column['dataType']);

@@ -28,7 +28,7 @@ Ext.define('App.model.account.Voucher', {
 //		{name: 'isMultiCurrency',           type: 'bool', defaultValue:false, comment:'(Not Used)'},
 
 		{name: 'comment',                   type: 'string', comment:'Comment'},
-		{name: 'reference',                 type: 'string', comment:'Ref #'},
+		{name: 'reference',                 type: 'string', comment:'Ref'},
 		{name: 'number',                    type: 'string', comment:'Number'},
 		{name: 'notes',                     type: 'string', mapping:'narration',  comment:'Notes'},
 		{name: 'status',                    type: 'string', mapping:'state',      comment:'Status'},

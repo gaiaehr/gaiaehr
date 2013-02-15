@@ -7,6 +7,7 @@
  */
 Ext.define('App.model.account.Voucher', {
 	extend: 'Ext.data.Model',
+	table: 'accvoucher',
 	fields: [
 		{name: 'id',                        type: 'int'},
 		{name: 'dateDue',                   type: 'date', dateFormat:'Y-m-d H:i:s', comment:'Date'},

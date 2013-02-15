@@ -7,6 +7,7 @@
  */
 Ext.define('App.model.account.VoucherLine', {
     extend: 'Ext.data.Model',
+	table: 'accvoucherline',
     fields: [
         {name: 'id',                    type: 'int'},
         {name: 'voucherId',             type: 'int', comment: 'Voucher'},

@@ -906,8 +906,7 @@ class dbHelper
 			$fileModel = str_replace('.', '/', $fileModel);
 			$senchaModel = (string)file_get_contents($_SESSION['root'] . '/' . $fileModel . '.js');
 
-			//clean comments and Ext.define function
-			$senchaModel =  preg_replace("(((/\*(.|\n)*\*/|//(.*))|Ext.define(.*) |\);)|(\"| |)proxy(.|\n)*},)", '', $senchaModel);
+			$senchaModel =  preg_replace("(((/\*(.|\n)*\*/|//(.*))|Ext.define(.*) |\);)|(\"| |)proxy(.|\n)*},)", '', $senchaModel); //clean coments and Ext.define funtion
 			$senchaModel =  preg_replace("/(,|{|\t|\n|\r|  )( |)(\w*):/", "$1$2\"$3\":", $senchaModel);
 			$senchaModel =  preg_replace("/([0-9]+\.[0-9]+)/", "\"$1\"", $senchaModel);
 			$senchaModel =  preg_replace("(')", '"', $senchaModel);
@@ -1006,11 +1005,11 @@ class dbHelper
 	 * __modifyColumn:
 	 * Method to modify the column properties
 	 */
-	private function __modifyColumn($SingleParamater = array())
+	private function __modifyColumn($SingleParamaters = array())
 	{
 		try
 		{
-			$this->conn->query('ALTER TABLE '.$this->Table.' MODIFY '.$SingleParamater['name'].' '.$this->__renderColumnSyntax($SingleParamater) . ';');
+			$this->conn->query('ALTER TABLE '.$this->Table.' MODIFY '.$SingleParamaters['name'].' '.$this->__renderColumnSyntax($SingleParamaters) . ';');
 		}
 		catch(PDOException $e)
 		{

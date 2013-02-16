@@ -536,7 +536,7 @@ class dbHelper
 		}
 		catch(PDOException $e)
 		{
-			error_log('dbHelper SenchaPHP microORM: ' . $e->getMessage() );
+			$this->__errorProcess($e);
 			return $e;
 		}
 	 }
@@ -574,7 +574,7 @@ class dbHelper
 		}
 		catch(PDOException $e)
 		{
-			error_log('dbHelper SenchaPHP microORM: ' . $e->getMessage() );
+			$this->__errorProcess($e);
 			return $e;
 		}
 	}
@@ -597,7 +597,7 @@ class dbHelper
 		}
 		catch(PDOException $e)
 		{
-			error_log('dbHelper SenchaPHP microORM: ' . $e->getMessage() );
+			$this->__errorProcess($e);
 			return $e;
 		}
 	}
@@ -622,7 +622,7 @@ class dbHelper
 		}
 		catch(PDOException $e)
 		{
-			error_log('dbHelper SenchaPHP microORM: ' . $e->getMessage() );
+			$this->__errorProcess($e);
 			return $e;
 		}
 	}
@@ -671,7 +671,7 @@ class dbHelper
 		}
 		catch(PDOException $e)
 		{
-			error_log('dbHelper SenchaPHP microORM: ' . $e->getMessage() );
+			$this->__errorProcess($e);
 			return $e;
 		}
 	}
@@ -703,7 +703,7 @@ class dbHelper
 		}
 		catch(PDOException $e)
 		{
-			error_log('dbHelper SenchaPHP microORM: ' . $e->getMessage() );
+			$this->__errorProcess($e);
 			return $e;
 		}
 	}
@@ -861,7 +861,7 @@ class dbHelper
 		}
 		catch(PDOException $e)
 		{
-			error_log('dbHelper SenchaPHP microORM: ' . $e->getMessage() );
+			$this->__errorProcess($e);
 			return $e;
 		}
 	}
@@ -905,7 +905,7 @@ class dbHelper
 		}
 		catch(Exception $e)
 		{
-			error_log('dbHelper SenchaPHP microORM: ' . $e->getMessage() );
+			$this->__errorProcess($e);
 			return false;
 		}
 	}
@@ -950,7 +950,7 @@ class dbHelper
 		}
 		catch(Exception $e)
 		{
-			error_log('dbHelper SenchaPHP microORM: ' . $e->getMessage() );
+			$this->__errorProcess($e);
 			return false;
 		}
 	}
@@ -980,7 +980,7 @@ class dbHelper
 		}
 		catch(PDOException $e)
 		{
-			error_log('dbHelper SenchaPHP microORM: ' . $e->getMessage() );
+			$this->__errorProcess($e);
 			return $e;
 		}
 	 }
@@ -1007,7 +1007,7 @@ class dbHelper
 		}
 		catch(PDOException $e)
 		{
-			error_log('dbHelper SenchaPHP microORM: ' . $e->getMessage() );
+			$this->__errorProcess($e);
 			return $e;
 		}
 	}
@@ -1024,7 +1024,7 @@ class dbHelper
 		}
 		catch(PDOException $e)
 		{
-			error_log('dbHelper SenchaPHP microORM: ' . $e->getMessage() );
+			$this->__errorProcess($e);
 			return $e;
 		}		
 	}
@@ -1041,7 +1041,7 @@ class dbHelper
 		}
 		catch(PDOException $e)
 		{
-			error_log('dbHelper SenchaPHP microORM: ' . $e->getMessage() );
+			$this->__errorProcess($e);
 			return $e;
 		}
 	}
@@ -1058,7 +1058,7 @@ class dbHelper
 		}
 		catch(PDOException $e)
 		{
-			error_log('dbHelper SenchaPHP microORM: ' . $e->getMessage() );
+			$this->__errorProcess($e);
 			return $e;
 		}
 	}
@@ -1075,7 +1075,7 @@ class dbHelper
 		}
 		catch(PDOException $e)
 		{
-			error_log('dbHelper SenchaPHP microORM: ' . $e->getMessage() );
+			$this->__errorProcess($e);
 			return $e;
 		}
 	}
@@ -1182,6 +1182,18 @@ class dbHelper
 	        if($needle===$value OR (is_array($value) && $this->__recursiveArraySearch($needle,$value) !== false)) return $current_key;
 	    }
 	    return false;
+	}
+	
+	/**
+	 * __errorProcess:
+	 * Handle the error of an exception
+	 * TODO: It could be more elaborated and handle other things.
+	 * for example log to our own LOG file.
+	 */
+	private function __errorProcess($errorException)
+	{
+		error_log('dbHelper SenchaPHP microORM: ' . $errorException->getMessage() );
+		return true;
 	}
 	
 }

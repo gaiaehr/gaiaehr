@@ -551,7 +551,7 @@ class dbHelper
 		try
 		{
 			// update a record
-			if($record['id'])
+			if(isset($record['id']))
 			{
 				$storeField = (string)'';
 				foreach($record as $key => $value) ($key=='id' ? $storeField .= '' : $storeField .= $key."='".$value."'");
@@ -698,7 +698,7 @@ class dbHelper
 	{
 		try
 		{
-			$sql = "CREATE TABLE IF NOT EXISTS `log` (
+			$this->conn->query("CREATE TABLE IF NOT EXISTS `log` (
 						`id` bigint(20) NOT NULL AUTO_INCREMENT,
 						`date` datetime DEFAULT NULL,
 						`event` varchar(255) DEFAULT NULL,
@@ -712,8 +712,7 @@ class dbHelper
 						`crt_user` varchar(255) DEFAULT NULL,
 						`ip` varchar(50) DEFAULT NULL,
 						PRIMARY KEY (`id`)
-					) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
-			$this->conn->query($sql);
+					) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;");
 			return true;
 		}
 		catch(PDOException $e)
@@ -1102,7 +1101,8 @@ class dbHelper
 	 */
 	private function __renderColumnSyntax($column = array())
 	{
-		// parse some properties the Sencha model.
+		// parse some properties on Sencha model.
+		// and do the defaults if properties are not set.
 		$columnType = (string)'';
 		if(isset($column['dataType'])) 
 		{

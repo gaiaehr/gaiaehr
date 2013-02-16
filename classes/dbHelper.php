@@ -102,8 +102,7 @@ class dbHelper
 		}
 		catch(Exception $e)
 		{
-			$this->__errorProcess($e);
-			return false;
+			return $this->__errorProcess($e);;
 		}
 	}
 
@@ -188,7 +187,7 @@ class dbHelper
 					}
 					else
 					{
-						$value = preg_replace('/([0-9]{4}-[0-9]{2}-[0-9]{2})T([0-9]{2}:[0-9]{2}:[0-9]{2})/i', '${1} ${2}', trim($value));
+					$value = preg_replace('/([0-9]{4}-[0-9]{2}-[0-9]{2})T([0-9]{2}:[0-9]{2}:[0-9]{2})/i', '${1} ${2}', trim($value));
 						$sql .= '`' . $key . '`' . "='$value', ";
 					}
 				}
@@ -508,7 +507,8 @@ class dbHelper
 	
 	
 	/**
-	 * Begin of the GaiaEHR microORM
+	 * SenchaPHP microORM v0.0.1
+	 * Begin of the SenchaPHP microORM
 	 * This would be a complete set of methods to manage the database
 	 * creation and data exchange.
 	 * 
@@ -546,8 +546,7 @@ class dbHelper
 		}
 		catch(PDOException $e)
 		{
-			$this->__errorProcess($e);
-			return $e;
+			return $this->__errorProcess($e);
 		}
 	 }
 
@@ -584,8 +583,7 @@ class dbHelper
 		}
 		catch(PDOException $e)
 		{
-			$this->__errorProcess($e);
-			return $e;
+			return $this->__errorProcess($e);
 		}
 	}
 	
@@ -607,8 +605,7 @@ class dbHelper
 		}
 		catch(PDOException $e)
 		{
-			$this->__errorProcess($e);
-			return $e;
+			return $this->__errorProcess($e);
 		}
 	}
 
@@ -632,8 +629,7 @@ class dbHelper
 		}
 		catch(PDOException $e)
 		{
-			$this->__errorProcess($e);
-			return $e;
+			return $this->__errorProcess($e);
 		}
 	}
 	
@@ -681,8 +677,7 @@ class dbHelper
 		}
 		catch(PDOException $e)
 		{
-			$this->__errorProcess($e);
-			return $e;
+			return $this->__errorProcess($e);
 		}
 	}
 
@@ -713,8 +708,7 @@ class dbHelper
 		}
 		catch(PDOException $e)
 		{
-			$this->__errorProcess($e);
-			return $e;
+			return $this->__errorProcess($e);
 		}
 	}
 	
@@ -871,8 +865,7 @@ class dbHelper
 		}
 		catch(PDOException $e)
 		{
-			$this->__errorProcess($e);
-			return $e;
+			return $this->__errorProcess($e);
 		}
 	}
 	
@@ -915,8 +908,7 @@ class dbHelper
 		}
 		catch(Exception $e)
 		{
-			$this->__errorProcess($e);
-			return false;
+			return $this->__errorProcess($e);
 		}
 	}
 
@@ -960,8 +952,7 @@ class dbHelper
 		}
 		catch(Exception $e)
 		{
-			$this->__errorProcess($e);
-			return false;
+			return $this->__errorProcess($e);
 		}
 	}
 
@@ -990,8 +981,7 @@ class dbHelper
 		}
 		catch(PDOException $e)
 		{
-			$this->__errorProcess($e);
-			return $e;
+			return $this->__errorProcess($e);
 		}
 	 }
 	 
@@ -1017,8 +1007,7 @@ class dbHelper
 		}
 		catch(PDOException $e)
 		{
-			$this->__errorProcess($e);
-			return $e;
+			return $this->__errorProcess($e);
 		}
 	}
 	
@@ -1034,8 +1023,7 @@ class dbHelper
 		}
 		catch(PDOException $e)
 		{
-			$this->__errorProcess($e);
-			return $e;
+			return $this->__errorProcess($e);
 		}		
 	}
 	
@@ -1051,8 +1039,7 @@ class dbHelper
 		}
 		catch(PDOException $e)
 		{
-			$this->__errorProcess($e);
-			return $e;
+			return $this->__errorProcess($e);
 		}
 	}
 	
@@ -1068,8 +1055,7 @@ class dbHelper
 		}
 		catch(PDOException $e)
 		{
-			$this->__errorProcess($e);
-			return $e;
+			return $this->__errorProcess($e);
 		}
 	}
 	
@@ -1085,8 +1071,7 @@ class dbHelper
 		}
 		catch(PDOException $e)
 		{
-			$this->__errorProcess($e);
-			return $e;
+			return $this->__errorProcess($e);
 		}
 	}
 	
@@ -1203,7 +1188,7 @@ class dbHelper
 	private function __errorProcess($errorException)
 	{
 		error_log('dbHelper SenchaPHP microORM: ' . $errorException->getMessage() );
-		return true;
+		return $errorException;
 	}
 	
 }

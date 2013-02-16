@@ -94,7 +94,22 @@ class dbHelper
 	 */
 	function __construct()
 	{
-		if (isset($_SESSION['site']['db'])) $this->__ormSetup();
+		try
+		{
+			if (isset($_SESSION['site']['db'])) 
+			{
+				$this->__ormSetup();
+			}
+			else
+			{
+				throw new Exception('The SESSION variable site:db is not set.');	
+			}
+		}
+		catch(Exception $e)
+		{
+			$this->__errorProcess($e);
+			return false;
+		}
 	}
 
 	/**
@@ -892,7 +907,7 @@ class dbHelper
 			$senchaModel = preg_replace("(')", '"', $senchaModel);
 			
 			$model = (array)json_decode($senchaModel, true);
-			if(!count($model)) throw new Exception("Ops something when wrong converting it to a array.");
+			if(!count($model)) throw new Exception("Ops something when wrong converting it to an array.");
 			
 			// get the table from the model
 			if(!isset($model['table'])) throw new Exception("Table property is not defined on Sencha Model. 'table:'");
@@ -1188,7 +1203,7 @@ class dbHelper
 	 * __errorProcess:
 	 * Handle the error of an exception
 	 * TODO: It could be more elaborated and handle other things.
-	 * for example log to our own LOG file.
+	 * for example log file for GaiaEHR.
 	 */
 	private function __errorProcess($errorException)
 	{

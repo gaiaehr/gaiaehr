@@ -563,13 +563,8 @@ class dbHelper
 			// create a record
 			else
 			{
-				$fields = (string)'';
-				$values = (string)'';
-				foreach($record as $key => $value) 
-				{
-					$fields .= $key.', ';
-					$values .= "'".$value."', ";
-				}
+				$fields = (string)implode(', ', array_keys($record));
+				$values = (string)implode(', ', array_values($record));
 				$sql = (string)'INSERT INTO '.$this->Table.' ('.$fields.') VALUES ('.$values.');';
 				$this->conn->query($sql);
 				$this->__auditLog($sql);
@@ -665,21 +660,12 @@ class dbHelper
 			
 			//check for the available fields
 			$recordSet = $this->conn->query("SHOW COLUMNS IN " . $this->Table . ";");
-			$tableColumns = $recordSet->fetchAll(PDO::FETCH_ASSOC);
+			if( $recordSet->fetchAll(PDO::FETCH_ASSOC) ) $this->__logModel();
 			unset($recordSet);
 				
-			// check if the table has columns, if not create them.
-			// we start with 1 because the microORM always create the id.
-			if( count($tableColumns) <= 0 ) $this->__logModel();
-			
 			// insert the event log
-			$fields = (string)'';
-			$values = (string)'';
-			foreach($eventData as $key => $value) 
-			{
-				$fields .= $key.', ';
-				$values .= "'".$value."', ";
-			}
+			$fields = (string)implode(', ', array_keys($eventData));
+			$values = (string)implode(', ', array_values($eventData));
 			$this->conn->query('INSERT INTO log ('.$fields.') VALUES ('.$values.');');
 			return $this->conn->lastInsertId();
 		}

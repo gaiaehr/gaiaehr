@@ -72,12 +72,14 @@ class dbHelper
 	/**
 	 * This would be a Sencha Model parsed by getSenchaModel method
 	 */
-	public $Model;
+	public $Fields;
 	public $Table;
+	public $Relation;
 	private $__id;
 	private $__total;
 	private $__freeze = false;
 	public $currentRecord;
+	private $__senchaModel;
 
 
 	/**
@@ -793,7 +795,7 @@ class dbHelper
 			
 			// Remove from the model those fields that are not meant to be stored
 			// on the database.
-			$workingModel = (array)$this->Model;
+			$workingModel = (array)$this->Fields;
 			foreach($workingModel as $key => $SenchaModel) if(isset($SenchaModel['store']) && $SenchaModel['store'] == 'false') unset($workingModel[$key]);
 			
 			// get the table column information
@@ -912,7 +914,53 @@ class dbHelper
 			$this->__setTable( $model['table'] );
 
 			if(!isset($model['fields'])) throw new Exception("Fields property is not defined on Sencha Model. 'fields:'");
-			$this->Model = $model['fields'];
+			$this->Fields = $model['fields'];
+			$this->__senchaModel = $model;
+			return true;
+		}
+		catch(Exception $e)
+		{
+			error_log('dbHelper SenchaPHP microORM: ' . $e->getMessage() );
+			return false;
+		}
+	}
+
+	/**
+	 * __getRelationFromModel:
+	 * Method to get the relation from the model if has any
+	 */
+	private function __getRelationFromModel()
+	{
+		try
+		{
+			// first check if the sencha model object has some value
+			$this->Relation = 'none';
+			if(isset($this->__senchaModel)) throw new Exception("Sencha Model is not configured.");
+			
+			// check if the model has the associations property 
+			if(isset($this->__senchaModel['associations']))
+			{
+				$this->Relation = 'associations';
+			}
+			
+			// check if the model has the associations property 
+			if(isset($this->__senchaModel['hasOne']))
+			{
+				$this->Relation = 'hasOne';
+			}
+			
+			// check if the model has the associations property 
+			if(isset($this->__senchaModel['hasMany']))
+			{
+				$this->Relation = 'hasMany';
+			}
+			
+			// check if the model has the associations property 
+			if(isset($this->__senchaModel['belongsTo']))
+			{
+				$this->Relation = 'belongsTo';
+			}
+			
 			return true;
 		}
 		catch(Exception $e)

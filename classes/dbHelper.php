@@ -96,14 +96,9 @@ class dbHelper
 	{
 		try
 		{
-			if (isset($_SESSION['site']['db'])) 
-			{
-				$this->__ormSetup();
-			}
-			else
-			{
-				throw new Exception('The SESSION variable site:db is not set.');	
-			}
+			if (isset($_SESSION['site']['db'])): $this->__ormSetup();
+			else: throw new Exception('The SESSION variable site:db is not set.');
+			endif;
 		}
 		catch(Exception $e)
 		{

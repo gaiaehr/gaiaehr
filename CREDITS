@@ -1,10 +1,17 @@
 GaiaEHR Creators:
-- Gino Rivera Falú (Lead Developer, GaiaEHR.org Maintainer)
-- Ernesto Rodriguez (Lead Developer, GaiaEHR.com Maintainer)
+- Gino Rivera Falú (Lead Developer, GaiaEHR.org Maintainer, SenchaPHP microORM designer)
+- Ernesto Rodriguez (Lead Developer, GaiaEHR.com Maintainer, SenchaPHP microORM designer)
 - Sencha ExtJS (GUI Framework)
-- Gabor de Mooij (RedBeanPHP ORM)
 
-At first this was a Fork from OpenEMR:
+A little bit of history of GaiaEHR:
+At first we forked OpenEMR and then tried to adapt Sencha ExtJS to OpenEMR, Sencha ExtJS 
+been a UI framework to speed up development of the project, but the time passed and we 
+decided to make ourselves a community driven EHR where everyone can contribute and share 
+ideas, well that’s how it got started, very simple motivation indeed. 
+
+Launching our BETA release  is a big step forward to the medical industry innovation, 
+taking the Open Source ideal as our guide.
+
 Thanks very much to Matt Stack for creating the 
 OpenEMR project and continuing to contribute to it over all these years.
 

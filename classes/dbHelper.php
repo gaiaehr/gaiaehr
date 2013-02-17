@@ -102,7 +102,7 @@ class dbHelper
 		}
 		catch(Exception $e)
 		{
-			return $this->__errorProcess($e);;
+			$this->__errorProcess($e);;
 		}
 	}
 
@@ -885,7 +885,7 @@ class dbHelper
 
 			// clean comments and unnecessary Ext.define functions
 			$senchaModel = preg_replace("((/\*(.|\n)*?\*/|//(.*))|([ ](?=(?:[^\'\"]|\'[^\'\"]*\')*$)|\t|\n|\r))", '', $senchaModel);
-			$senchaModel = preg_replace("(Ext.define\('[A-Za-z0-9.]*',|\);|\"|proxy(.|\n)*},)", '', $senchaModel); //clean coments
+			$senchaModel = preg_replace("(Ext.define\('[A-Za-z0-9.]*',|\);|\"|proxy(.|\n)*},)", '', $senchaModel); 
 			// wrap with double quotes to all the properties
 			$senchaModel = preg_replace('/(,|\{)(\w*):/', "$1\"$2\":", $senchaModel);
 			// wrap with double quotes float numbers

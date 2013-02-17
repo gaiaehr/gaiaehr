@@ -1,16 +1,14 @@
 <?php
-
+/**
+* Matcha::connect microORM v0.0.1
+* This would be a complete set of methods to manage the database
+* creation and data exchange.
+* 
+* In the future this will replace the entire old class methods. 
+*/
 
 class Matcha
 {
-	/**
-	 * SenchaPHP microORM v0.0.1
-	 * Begin of the SenchaPHP microORM
-	 * This would be a complete set of methods to manage the database
-	 * creation and data exchange.
-	 * 
-	 * In the future this will replace the entire old class methods. 
-	 */
 	 
 	/**
 	 * This would be a Sencha Model parsed by getSenchaModel method
@@ -24,10 +22,7 @@ class Matcha
 	private $__conn;
 	 
 	 /**
-	  * __ormSetup:
-	  * This function will open a connection to the MySQL
-	  * Server. Also check if the database exist
-	  * if does not exists create the database.
+	  * connect:
 	  */
 	 public function connect($databaseObject)
 	 {
@@ -132,7 +127,7 @@ class Matcha
 		if (stristr($sqlStatement, 'UPDATE')) $eventLog = 'Record update';
 
 		// allocate the event data
-		$eventData['date'] = Time::getLocalTime('Y-m-d H:i:s');
+		$eventData['date'] = date('Y-m-d H:i:s', time());
 		$eventData['event'] = $eventLog;
 		$eventData['comments'] = $sqlStatement;
 		$eventData['user'] = $_SESSION['user']['name'];

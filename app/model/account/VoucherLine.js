@@ -21,7 +21,7 @@ Ext.define('App.model.account.VoucherLine', {
 //			name: 'onVoucherLineDelete',
 //			time: 'after',
 //			event: 'delete',
-//			definition:'UPDATE accvoucher SET `status` = \'changed\' WHERE id = {voucherId}'
+//			definition:'UPDATE accvoucher SET `status` = \'changed\' WHERE id = {voucherId} AND date = [new Date()]'
 //		},
 //		{
 //			name: 'onVoucherLineInsert',

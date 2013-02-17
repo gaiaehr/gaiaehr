@@ -30,7 +30,7 @@ Ext.define('App.model.account.VoucherLine', {
 			name: 'onVoucherDelete',
 			time: 'after',
 			event: 'delete',
-			definition:'UPDATE accvoucher SET `status` = \'changed\' WHERE `id` = {voucherId}'
+			definition:'UPDATE accvoucher SET `status` = \'changed\' WHERE `id` = {voucherId} AND date = [date(\'Y-m-d\')]'
 		}
 	],
     fields: [
@@ -97,4 +97,18 @@ print '<br>';
 $text =  preg_replace("(')", '"', $text);
 print '4) '.$text;
 print '<pre>';
-print_r(json_decode($text, true));
+$text = json_decode($text, true);
+
+
+preg_match_all("(\[.*\])", $text['triggers'][1]['definition'], $matches);
+
+foreach($matches as $codes){
+	foreach($codes as $code){
+		$code = preg_replace("(\[|\])", '',$code);
+
+		print eval('print \'Testing PHP code in model: date = \'.'.$code.';');
+	}
+}
+
+print '<br>';
+print_r($text);

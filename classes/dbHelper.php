@@ -895,7 +895,7 @@ class dbHelper
 			$senchaModel = preg_replace("(')", '"', $senchaModel);
 			
 			$model = (array)json_decode($senchaModel, true);
-			if(!count($model)) throw new Exception("Ops something when wrong converting it to an array.");
+			if(!count($model)) throw new Exception("Ops something whent wrong converting it to an array.");
 			
 			// get the table from the model
 			if(!isset($model['table'])) throw new Exception("Table property is not defined on Sencha Model. 'table:'");

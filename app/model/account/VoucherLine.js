@@ -16,6 +16,20 @@ Ext.define('App.model.account.VoucherLine', {
 //		collate:'utf8_bin',
 //		comment:'Voucher / Receipt'
 //	},
+//	triggers:[
+//		{
+//			name: 'onVoucherLineDelete',
+//			time: 'after',
+//			event: 'delete',
+//			definition:'UPDATE accvoucher SET `status` = \'changed\' WHERE id = {voucherId}'
+//		},
+//		{
+//			name: 'onVoucherLineInsert',
+//			time: 'AFTER',
+//			event: 'INSERT',
+//			definition:'UPDATE accvoucher SET `status` = \'changed\' WHERE id = {voucherId}'
+//		}
+//	],
     fields: [
         {name: 'id',                    type: 'int'},
         {name: 'voucherId',             type: 'int', comment: 'Voucher'},

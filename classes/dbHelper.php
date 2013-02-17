@@ -72,15 +72,12 @@ class dbHelper
 	/**
 	 * This would be a Sencha Model parsed by getSenchaModel method
 	 */
-	public $Fields;
-	public $Table;
 	public $Relation;
+	public $currentRecord;
 	private $__id;
 	private $__total;
 	private $__freeze = false;
-	public $currentRecord;
 	private $__senchaModel;
-
 
 	/**
 	 * @brief       dbHelper constructor.
@@ -564,7 +561,7 @@ class dbHelper
 			{
 				$storeField = (string)'';
 				foreach($record as $key => $value) ($key=='id' ? $storeField .= '' : $storeField .= $key."='".$value."'");
-				$sql = (string)'UPDATE '.$this->Table.' SET '.$storeField . " WHERE id='".$record['id']."';";
+				$sql = (string)'UPDATE '.$this->__senchaModel['table'].' SET '.$storeField . " WHERE id='".$record['id']."';";
 				$this->conn->query($sql);
 				$this->__auditLog($sql);
 				$this->__id = $record['id'];
@@ -574,7 +571,7 @@ class dbHelper
 			{
 				$fields = (string)implode(', ', array_keys($record));
 				$values = (string)implode(', ', array_values($record));
-				$sql = (string)'INSERT INTO '.$this->Table.' ('.$fields.') VALUES ('.$values.');';
+				$sql = (string)'INSERT INTO '.$this->__senchaModel['table'].' ('.$fields.') VALUES ('.$values.');';
 				$this->conn->query($sql);
 				$this->__auditLog($sql);
 				$this->__id = $this->conn->lastInsertId();
@@ -596,7 +593,7 @@ class dbHelper
 	{
 		try
 		{
-			$sql = "DELETE FROM ".$this->Table."WHERE id='".$record['id']."';";
+			$sql = "DELETE FROM ".$this->__senchaModel['table']."WHERE id='".$record['id']."';";
 			$this->conn->query($sql);
 			$this->__auditLog($sql);
 			$this->__total = (int)count($records)-1;
@@ -621,8 +618,8 @@ class dbHelper
 		try
 		{
 			$selectedColumns = (string)'';
-			if(count($columns)) $selectedColumns = implode(', '.$this->Table.'.', $columns);
-			$recordSet = $this->conn->query("SELECT ".($selectedColumns ? $this->Table.".".$selectedColumns : '*')." FROM ".$this->Table.($id ? " WHERE ".$this->Table.".id='".$id."'" : "").";");
+			if(count($columns)) $selectedColumns = implode(', '.$this->__senchaModel['table'].'.', $columns);
+			$recordSet = $this->conn->query("SELECT ".($selectedColumns ? $this->__senchaModel['table'].".".$selectedColumns : '*')." FROM ".$this->__senchaModel['table'].($id ? " WHERE ".$this->__senchaModel['table'].".id='".$id."'" : "").";");
 			$records = (array)$recordSet->fetchAll(PDO::FETCH_ASSOC);
 			$this->__total = (int)count($records);
 			return $records;
@@ -660,12 +657,12 @@ class dbHelper
 		try
 		{
 			//check if the table exist
-			$recordSet = $this->conn->query("SHOW TABLES LIKE '".$this->Table."';");
+			$recordSet = $this->conn->query("SHOW TABLES LIKE '".$this->__senchaModel['table']."';");
 			if( $recordSet->fetch(PDO::FETCH_ASSOC) ) $this->__createTable('log');
 			unset($recordSet);
 			
 			//check for the available fields
-			$recordSet = $this->conn->query("SHOW COLUMNS IN " . $this->Table . ";");
+			$recordSet = $this->conn->query("SHOW COLUMNS IN ".$this->__senchaModel['table'].";");
 			if( $recordSet->fetchAll(PDO::FETCH_ASSOC) ) $this->__logModel();
 			unset($recordSet);
 				
@@ -739,9 +736,9 @@ class dbHelper
 	 * in the right table – give me the “matching” data from the right table as well. 
 	 * If not – fill in the holes with null.
 	 */
-	private function __leftJoin()
+	private function __leftJoin($joinParameters = array())
 	{
-		return (string)' LEFT JOIN ' . $this->relateTable .' ON ('.$this->Table.'.id = '.$this->relateTable.'.id) ';
+		return (string)' LEFT JOIN ' . $joinParameters['relateTable'].' ON ('.$this->__senchaModel['table'].'.'.$joinParameters['fromId'].' = '.$joinParameters['relateTable'].'.'.$joinParameters['toId'].') ';
 	}
 	
 	/**
@@ -750,9 +747,9 @@ class dbHelper
 	 * So for every record returned in T1 – you will also get the record linked by 
 	 * the foreign key in T2. In programming logic – think in terms of AND.
 	 */
-	private function __innerJoin()
+	private function __innerJoin($joinParameters = array())
 	{
-		return (string)' INNER JOIN ' . $this->relateTable .' ON ('.$this->Table.'.id = '.$this->relateTable.'.id) ';
+		return (string)' INNER JOIN ' . $joinParameters['relateTable'].' ON ('.$this->__senchaModel['table'].'.'.$joinParameters['fromId'].' = '.$joinParameters['relateTable'].'.'.$joinParameters['toId'].') ';
 	}
 	
 	/**
@@ -776,23 +773,23 @@ class dbHelper
 		try
 		{
 			// get the the model of the table from the sencha .js file
-			if(!$this->__getSenchaModel($fileModel)) return false;
+			$this->__senchaModel = $this->__getSenchaModel($fileModel);
+			if(!$this->__senchaModel['fields']) return false;
 		
 			// verify the existence of the table if it does not exist create it
-			$recordSet = $this->conn->query("SHOW TABLES LIKE '".$this->Table."';");
-			if( isset($recordSet) ) $this->__createTable($this->Table);
+			$recordSet = $this->conn->query("SHOW TABLES LIKE '".$this->__senchaModel['table']."';");
+			if( isset($recordSet) ) $this->__createTable($this->__senchaModel['table']);
 			
 			// Remove from the model those fields that are not meant to be stored
-			// on the database.
-			$workingModel = (array)$this->Fields;
+			// on the database and remove the id from the workingModel.
+			$workingModel = (array)$this->__senchaModel['fields'];
 			foreach($workingModel as $key => $SenchaModel) if(isset($SenchaModel['store']) && $SenchaModel['store'] == 'false') unset($workingModel[$key]);
-			
-			// get the table column information
-			$recordSet = $this->conn->query("SHOW FULL COLUMNS IN " . $this->Table . ";");
-			$tableColumns = $recordSet->fetchAll(PDO::FETCH_ASSOC);
-			
-			// delete the id from the workingModel.
 			unset($workingModel[$this->__recursiveArraySearch('id', $workingModel)]);
+			
+			// get the table column information and remove the id column
+			$recordSet = $this->conn->query("SHOW FULL COLUMNS IN ".$this->__senchaModel['table'].";");
+			$tableColumns = $recordSet->fetchAll(PDO::FETCH_ASSOC);
+			unset($tableColumns[$this->__recursiveArraySearch('id', $tableColumns)]);
 			
 			// check if the table has columns, if not create them.
 			// we start with 1 because the microORM always create the id.
@@ -803,7 +800,7 @@ class dbHelper
 			}
 			// Also check if there is difference between the model and the 
 			// database table in terms of number of fields.
-			elseif(count($workingModel) != (count($tableColumns)-1))
+			elseif(count($workingModel) != (count($tableColumns)))
 			{
 				// remove columns from the table
 				foreach($tableColumns as $column) if( !is_numeric($this->__recursiveArraySearch($column['Field'], $workingModel)) ) $this->__dropColumn($column['Field']);
@@ -882,7 +879,7 @@ class dbHelper
 			$fileModel = str_replace('App', 'app', $fileModel);
 			$fileModel = str_replace('.', '/', $fileModel);
 			$senchaModel = (string)file_get_contents($_SESSION['root'] . '/' . $fileModel . '.js');
-
+			
 			// clean comments and unnecessary Ext.define functions
 			$senchaModel = preg_replace("((/\*(.|\n)*?\*/|//(.*))|([ ](?=(?:[^\'\"]|\'[^\'\"]*\')*$)|\t|\n|\r))", '', $senchaModel);
 			$senchaModel = preg_replace("(Ext.define\('[A-Za-z0-9.]*',|\);|\"|proxy(.|\n)*},)", '', $senchaModel); 
@@ -899,12 +896,9 @@ class dbHelper
 			
 			// get the table from the model
 			if(!isset($model['table'])) throw new Exception("Table property is not defined on Sencha Model. 'table:'");
-			$this->__setTable( $model['table'] );
 
 			if(!isset($model['fields'])) throw new Exception("Fields property is not defined on Sencha Model. 'fields:'");
-			$this->Fields = $model['fields'];
-			$this->__senchaModel = $model;
-			return true;
+			return $model;
 		}
 		catch(Exception $e)
 		{
@@ -928,6 +922,9 @@ class dbHelper
 			if(isset($this->__senchaModel['associations']))
 			{
 				$this->Relation = 'associations';
+				// load all the models.
+				foreach($this->__senchaModel['associations'] as $relation) $this->SenchaModel($this->__senchaModel['associations']);
+				$this->RelationStatement = $this->__leftJoin(array());
 			}
 			
 			// check if the model has the associations property 
@@ -976,7 +973,7 @@ class dbHelper
 	 {
 	 	try
 	 	{
-			$this->conn->query('CREATE TABLE IF NOT EXISTS ' . $this->Table . ' (id BIGINT(20) NOT NULL AUTO_INCREMENT PRIMARY KEY);');
+			$this->conn->query('CREATE TABLE IF NOT EXISTS '.$this->__senchaModel['table'].' (id BIGINT(20) NOT NULL AUTO_INCREMENT PRIMARY KEY);');
 			return true;
 		}
 		catch(PDOException $e)
@@ -985,15 +982,6 @@ class dbHelper
 		}
 	 }
 	 
-	 /**
-	  * __setTable:
-	  * This will populate the Table class variable
-	  */
-	 private function __setTable($table)
-	 {
-	 	$this->Table = $table;
-	 }
-	
 	/**
 	 * __createColumn:
 	 * This method will create the column inside the table of the database
@@ -1019,7 +1007,7 @@ class dbHelper
 	{
 		try
 		{
-			$this->conn->query('ALTER TABLE '.$this->Table.' ADD '.$column['name'].' '.$this->__renderColumnSyntax($column) . ';');
+			$this->conn->query('ALTER TABLE '.$this->__senchaModel['table'].' ADD '.$column['name'].' '.$this->__renderColumnSyntax($column) . ';');
 		}
 		catch(PDOException $e)
 		{
@@ -1035,7 +1023,7 @@ class dbHelper
 	{
 		try
 		{
-			$this->conn->query('ALTER TABLE '.$this->Table.' MODIFY '.$SingleParamater['name'].' '.$this->__renderColumnSyntax($SingleParamater) . ';');
+			$this->conn->query('ALTER TABLE '.$this->__senchaModel['table'].' MODIFY '.$SingleParamater['name'].' '.$this->__renderColumnSyntax($SingleParamater) . ';');
 		}
 		catch(PDOException $e)
 		{
@@ -1067,7 +1055,7 @@ class dbHelper
 	{
 		try
 		{
-			$this->conn->query("ALTER TABLE ".$this->Table." DROP COLUMN `".$column."`;");
+			$this->conn->query("ALTER TABLE ".$this->__senchaModel['table']." DROP COLUMN `".$column."`;");
 		}
 		catch(PDOException $e)
 		{

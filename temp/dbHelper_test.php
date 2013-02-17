@@ -15,8 +15,7 @@ include_once ($_SESSION['root'] . '/classes/dbHelper.php');
 
 $db = new dbHelper();
 
-$db->SenchaModel('App.model.account.Voucher');
-$db->SenchaModel('App.model.account.VoucherLine');
+$db->SenchaModel('App.model.administration.tmpUser');
 
 //echo '<pre>';
 //print_r($db->load(1, array('lname', 'fname', 'mname')));

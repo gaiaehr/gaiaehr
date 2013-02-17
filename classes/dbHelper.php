@@ -783,8 +783,8 @@ class dbHelper
 			// Remove from the model those fields that are not meant to be stored
 			// on the database and remove the id from the workingModel.
 			$workingModel = (array)$this->__senchaModel['fields'];
-			foreach($workingModel as $key => $SenchaModel) if(isset($SenchaModel['store']) && $SenchaModel['store'] == 'false') unset($workingModel[$key]);
 			unset($workingModel[$this->__recursiveArraySearch('id', $workingModel)]);
+			foreach($workingModel as $key => $SenchaModel) if(isset($SenchaModel['store']) && $SenchaModel['store'] == false) unset($workingModel[$key]); 
 			
 			// get the table column information and remove the id column
 			$recordSet = $this->conn->query("SHOW FULL COLUMNS IN ".$this->__senchaModel['table'].";");

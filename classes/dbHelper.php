@@ -84,12 +84,13 @@ class dbHelper
 	function __construct()
 	{
 		// this is done to be compatible with the old methods
-		$this->conn = Matcha::setup(array(
+		$this->conn = Matcha::connect(array(
 			'host'=>(string)$_SESSION['site']['db']['host'],
 			'port'=>(int)$_SESSION['site']['db']['port'],
 			'name'=>(string)$_SESSION['site']['db']['database'],
 			'user'=>(string)$_SESSION['site']['db']['username'],
-			'pass'=>(string)$_SESSION['site']['db']['password']
+			'pass'=>(string)$_SESSION['site']['db']['password'],
+			'root'=>(string)$_SESSION['root']
 		));
 	}
 

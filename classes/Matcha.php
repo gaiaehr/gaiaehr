@@ -13,20 +13,31 @@ class Matcha
 	/**
 	 * This would be a Sencha Model parsed by getSenchaModel method
 	 */
-	public $Relation;
-	public $currentRecord;
-	private $__id;
-	private $__total;
-	private $__freeze = false;
-	private $__senchaModel;
-	private $__conn;
+	public static $Relation;
+	public static $currentRecord;
+	private static $__id;
+	private static $__total;
+	private static $__freeze = false;
+	private static $__senchaModel;
+	private static $__conn;
+	private static $__root;
 	 
 	 /**
 	  * connect:
 	  */
-	 public function connect($databaseObject)
+	 static public function connect($databaseObject, $rootPath, $senchaModel)
 	 {
-		$this->__conn = $databaseObject;
+	 	try
+	 	{
+	 		if(!isset($databaseObject) && !isset($senchaModel)) throw new Exception('Matcha::connect databaseObject or senchaModel is not set.');
+	 		self::$__conn = $databaseObject;
+			self::$__root = $rootPath;
+			self::SenchaModel($senchaModel);
+		}
+		catch(PDOException $e)
+		{
+			return self::__errorProcess($e);
+		}
 	 }
 
 	/**
@@ -34,7 +45,7 @@ class Matcha
 	 * Create & Update
 	 * store the record as array into the working table
 	 */
-	public function store($record = array())
+	static public function store($record = array())
 	{
 		try
 		{
@@ -43,26 +54,26 @@ class Matcha
 			{
 				$storeField = (string)'';
 				foreach($record as $key => $value) ($key=='id' ? $storeField .= '' : $storeField .= $key."='".$value."'");
-				$sql = (string)'UPDATE '.$this->__senchaModel['table'].' SET '.$storeField . " WHERE id='".$record['id']."';";
-				$this->__conn->query($sql);
-				$this->__auditLog($sql);
-				$this->__id = $record['id'];
+				$sql = (string)'UPDATE '.self::$__senchaModel['table'].' SET '.$storeField . " WHERE id='".$record['id']."';";
+				self::$__conn->query($sql);
+				self::__auditLog($sql);
+				self::$__id = $record['id'];
 			}
 			// create a record
 			else
 			{
 				$fields = (string)implode(', ', array_keys($record));
 				$values = (string)implode(', ', array_values($record));
-				$sql = (string)'INSERT INTO '.$this->__senchaModel['table'].' ('.$fields.') VALUES ('.$values.');';
-				$this->__conn->query($sql);
-				$this->__auditLog($sql);
-				$this->__id = $this->__conn->lastInsertId();
+				$sql = (string)'INSERT INTO '.self::$__senchaModel['table'].' ('.$fields.') VALUES ('.$values.');';
+				self::$__conn->query($sql);
+				self::__auditLog($sql);
+				self::$__id = $__conn->lastInsertId();
 			}
 			return true;
 		}
 		catch(PDOException $e)
 		{
-			return $this->__errorProcess($e);
+			return self::__errorProcess($e);
 		}
 	}
 	
@@ -71,44 +82,46 @@ class Matcha
 	 * Delete
 	 * will delete the record indicated by an id
 	 */
-	public function trash($record = array())
+	static public function trash($record = array())
 	{
 		try
 		{
-			$sql = "DELETE FROM ".$this->__senchaModel['table']."WHERE id='".$record['id']."';";
-			$this->__conn->query($sql);
-			$this->__auditLog($sql);
-			$this->__total = (int)count($records)-1;
-			if($this->__id == $record['id']) unset($this->__id);
-			return true;
+			$sql = "DELETE FROM ".self::$__senchaModel['table']."WHERE id='".$record['id']."';";
+			self::$__conn->query($sql);
+			self::__auditLog($sql);
+			self::$__total = (int)count($records)-1;
+			if(self::$__id == $record['id']) unset(self::$__id);
+			return true; // success
 		}
 		catch(PDOException $e)
 		{
-			return $this->__errorProcess($e);
+			return self::__errorProcess($e);
 		}
 	}
 
 	/**
-	 * load: (part of CRUD)
-	 * Read
+	 * function load($id = NULL, $columns = array()) (part of CRUD)
+	 * Read from table
 	 * Load all records, load one record if a ID is passed,
 	 * load all records with some columns determined by an array,
 	 * load one record with some columns determined by an array, or any combination.  
 	 */
-	public function load($id = NULL, $columns = array())
+	static public function load($id = NULL, $columns = array())
 	{
 		try
 		{
 			$selectedColumns = (string)'';
-			if(count($columns)) $selectedColumns = implode(', '.$this->__senchaModel['table'].'.', $columns);
-			$recordSet = $this->__conn->query("SELECT ".($selectedColumns ? $this->__senchaModel['table'].".".$selectedColumns : '*')." FROM ".$this->__senchaModel['table'].($id ? " WHERE ".$this->__senchaModel['table'].".id='".$id."'" : "").";");
+			if(count($columns)) $selectedColumns = implode(', '.self::$__senchaModel['table'].'.', $columns);
+			$recordSet = self::$__conn->query("SELECT ".($selectedColumns ? self::$__senchaModel['table'].".".$selectedColumns : '*').
+				" FROM ".self::$__senchaModel['table'].
+				($id ? " WHERE ".self::$__senchaModel['table'].".id='".$id."'" : "").";");
 			$records = (array)$recordSet->fetchAll(PDO::FETCH_ASSOC);
-			$this->__total = (int)count($records);
+			self::$__total = (int)count($records);
 			return $records;
 		}
 		catch(PDOException $e)
 		{
-			return $this->__errorProcess($e);
+			return self::__errorProcess($e);
 		}
 	}
 	
@@ -117,7 +130,7 @@ class Matcha
 	 * Every store has to be logged into the database.
 	 * Also generate the table if does not exist.
 	 */
-	private function __auditLog($sqlStatement = '')
+	static private function __auditLog($sqlStatement = '')
 	{
 		// generate the appropriate event log comment 
 		$record = array();
@@ -139,24 +152,24 @@ class Matcha
 		try
 		{
 			//check if the table exist
-			$recordSet = $this->__conn->query("SHOW TABLES LIKE '".$this->__senchaModel['table']."';");
-			if( $recordSet->fetch(PDO::FETCH_ASSOC) ) $this->__createTable('log');
+			$recordSet = self::$__conn->query("SHOW TABLES LIKE '".self::$__senchaModel['table']."';");
+			if( $recordSet->fetch(PDO::FETCH_ASSOC) ) self::__createTable('log');
 			unset($recordSet);
 			
 			//check for the available fields
-			$recordSet = $this->__conn->query("SHOW COLUMNS IN ".$this->__senchaModel['table'].";");
-			if( $recordSet->fetchAll(PDO::FETCH_ASSOC) ) $this->__logModel();
+			$recordSet = self::$__conn->query("SHOW COLUMNS IN ".self::$__senchaModel['table'].";");
+			if( $recordSet->fetchAll(PDO::FETCH_ASSOC) ) self::__logModel();
 			unset($recordSet);
 				
 			// insert the event log
 			$fields = (string)implode(', ', array_keys($eventData));
 			$values = (string)implode(', ', array_values($eventData));
-			$this->__conn->query('INSERT INTO log ('.$fields.') VALUES ('.$values.');');
-			return $this->__conn->lastInsertId();
+			self::$__conn->query('INSERT INTO log ('.$fields.') VALUES ('.$values.');');
+			return self::$__conn->lastInsertId();
 		}
 		catch(PDOException $e)
 		{
-			return $this->__errorProcess($e);
+			return self::__errorProcess($e);
 		}
 	}
 
@@ -164,11 +177,11 @@ class Matcha
 	 * __logModel:
 	 * Method to create the log table columns
 	 */
-	private function __logModel()
+	static private function __logModel()
 	{
 		try
 		{
-			$this->__conn->query("CREATE TABLE IF NOT EXISTS `log` (
+			self::$__conn->query("CREATE TABLE IF NOT EXISTS `log` (
 						`id` bigint(20) NOT NULL AUTO_INCREMENT,
 						`date` datetime DEFAULT NULL,
 						`event` varchar(255) DEFAULT NULL,
@@ -187,7 +200,7 @@ class Matcha
 		}
 		catch(PDOException $e)
 		{
-			return $this->__errorProcess($e);
+			return self::__errorProcess($e);
 		}
 	}
 	
@@ -196,9 +209,9 @@ class Matcha
 	 * Get the last insert ID of an insert
 	 * this is automatically updated by the store method
 	 */
-	public function getLastId()
+	static public function getLastId()
 	{
-		return (int)$this->__id;
+		return (int)self::$__id;
 	}
 	
 	/**
@@ -206,18 +219,18 @@ class Matcha
 	 * Get the total records in a select statement
 	 * this is automatically updated by the load method
 	 */
-	public function getTotal()
+	static public function getTotal()
 	{
-		return (int)$this->__total;
+		return (int)self::$__total;
 	}
 	
 	/**
 	 * freeze:
 	 * freeze the database and tables alteration by the SenchaPHP microORM
 	 */
-	public function freeze($onoff = false)
+	static public function freeze($onoff = false)
 	{
-		$this->__freeze = $onoff;
+		self::$__freeze = $onoff;
 	}
 	
 	/**
@@ -225,36 +238,36 @@ class Matcha
 	 * This method will create the table and fields if does not exist in the database
 	 * also this is the brain of the micro ORM.
 	 */
-	public function SenchaModel($fileModel)
+	static public function SenchaModel($fileModel)
 	{
 		// skip this entire routine if freeze option is true
-		if($this->__freeze) return true;
+		if(self::$__freeze) return true;
 		try
 		{
 			// get the the model of the table from the sencha .js file
-			$this->__senchaModel = $this->__getSenchaModel($fileModel);
-			if(!$this->__senchaModel['fields']) return false;
+			self::$__senchaModel = self::__getSenchaModel($fileModel);
+			if(!self::$__senchaModel['fields']) return false;
 		
 			// verify the existence of the table if it does not exist create it
-			$recordSet = $this->__conn->query("SHOW TABLES LIKE '".$this->__senchaModel['table']."';");
-			if( isset($recordSet) ) $this->__createTable($this->__senchaModel['table']);
+			$recordSet = self::$__conn->query("SHOW TABLES LIKE '".self::$__senchaModel['table']."';");
+			if( isset($recordSet) ) self::__createTable(self::$__senchaModel['table']);
 			
 			// Remove from the model those fields that are not meant to be stored
 			// on the database and remove the id from the workingModel.
-			$workingModel = (array)$this->__senchaModel['fields'];
-			unset($workingModel[$this->__recursiveArraySearch('id', $workingModel)]);
+			$workingModel = (array)self::$__senchaModel['fields'];
+			unset($workingModel[self::__recursiveArraySearch('id', $workingModel)]);
 			foreach($workingModel as $key => $SenchaModel) if(isset($SenchaModel['store']) && $SenchaModel['store'] == false) unset($workingModel[$key]); 
 			
 			// get the table column information and remove the id column
-			$recordSet = $this->__conn->query("SHOW FULL COLUMNS IN ".$this->__senchaModel['table'].";");
+			$recordSet = self::$__conn->query("SHOW FULL COLUMNS IN ".self::$__senchaModel['table'].";");
 			$tableColumns = $recordSet->fetchAll(PDO::FETCH_ASSOC);
-			unset($tableColumns[$this->__recursiveArraySearch('id', $tableColumns)]);
+			unset($tableColumns[self::__recursiveArraySearch('id', $tableColumns)]);
 			
 			// check if the table has columns, if not create them.
 			// we start with 1 because the microORM always create the id.
 			if( count($tableColumns) <= 1 ) 
 			{
-				$this->__createAllColumns($workingModel);
+				self::__createAllColumns($workingModel);
 				return true;
 			}
 			// Also check if there is difference between the model and the 
@@ -262,9 +275,9 @@ class Matcha
 			elseif(count($workingModel) != (count($tableColumns)))
 			{
 				// remove columns from the table
-				foreach($tableColumns as $column) if( !is_numeric($this->__recursiveArraySearch($column['Field'], $workingModel)) ) $this->__dropColumn($column['Field']);
+				foreach($tableColumns as $column) if( !is_numeric(self::__recursiveArraySearch($column['Field'], $workingModel)) ) self::__dropColumn($column['Field']);
 				// add columns to the table
-				foreach($workingModel as $column) if( !is_numeric($this->__recursiveArraySearch($column['name'], $tableColumns)) ) $this->__createColumn($column);
+				foreach($workingModel as $column) if( !is_numeric(self::__recursiveArraySearch($column['name'], $tableColumns)) ) self::__createColumn($column);
 			}
 			// if everything else passes check for differences in the columns.
 			else
@@ -313,7 +326,7 @@ class Matcha
 							if(isset($SenchaModel['comment'])) if($column['Comment'] != $SenchaModel['comment']) $change = 'true';
 							
 							// Modify the column on the database							
-							if($change == 'true') $this->__modifyColumn($SenchaModel);
+							if($change == 'true') self::__modifyColumn($SenchaModel);
 						}
 					}
 				}
@@ -321,7 +334,7 @@ class Matcha
 		}
 		catch(PDOException $e)
 		{
-			return $this->__errorProcess($e);
+			return self::__errorProcess($e);
 		}
 	}
 	
@@ -330,14 +343,14 @@ class Matcha
 	 * This method is used by SechaModel method to get all the table and column
 	 * information inside the Sencha Model .js file 
 	 */
-	private function __getSenchaModel($fileModel)
+	static private function __getSenchaModel($fileModel)
 	{
 		try
 		{
 			// Getting Sencha model as a namespace
 			$fileModel = str_replace('App', 'app', $fileModel);
 			$fileModel = str_replace('.', '/', $fileModel);
-			$senchaModel = (string)file_get_contents($_SESSION['root'] . '/' . $fileModel . '.js');
+			$senchaModel = (string)file_get_contents(self::$__root . '/' . $fileModel . '.js');
 			
 			// clean comments and unnecessary Ext.define functions
 			$senchaModel = preg_replace("((/\*(.|\n)*?\*/|//(.*))|([ ](?=(?:[^\'\"]|\'[^\'\"]*\')*$)|\t|\n|\r))", '', $senchaModel);
@@ -361,7 +374,7 @@ class Matcha
 		}
 		catch(Exception $e)
 		{
-			return $this->__errorProcess($e);
+			return self::__errorProcess($e);
 		}
 	}
 
@@ -369,60 +382,60 @@ class Matcha
 	 * __getRelationFromModel:
 	 * Method to get the relation from the model if has any
 	 */
-	private function __getRelationFromModel()
+	static private function __getRelationFromModel()
 	{
 		try
 		{
 			// first check if the sencha model object has some value
-			$this->Relation = 'none';
-			if(isset($this->__senchaModel)) throw new Exception("Sencha Model is not configured.");
+			self::$Relation = 'none';
+			if(isset(self::$__senchaModel)) throw new Exception("Sencha Model is not configured.");
 			
 			// check if the model has the associations property 
-			if(isset($this->__senchaModel['associations']))
+			if(isset(self::$__senchaModel['associations']))
 			{
-				$this->Relation = 'associations';
+				self::$Relation = 'associations';
 				// load all the models.
-				foreach($this->__senchaModel['associations'] as $relation)
+				foreach(self::$__senchaModel['associations'] as $relation)
 				{ 
-					$this->SenchaModel($this->__senchaModel['associations']);
-					$this->RelationStatement[] = $this->__leftJoin(
+					self::SenchaModel(self::$__senchaModel['associations']);
+					self::$RelationStatement[] = self::__leftJoin(
 					array(
-						'fromId'=>(isset($this->__senchaModel['associations']['primaryKey']) ? $this->__senchaModel['associations']['foreignKey'] : 'id'),
-						'toId'=>$this->__senchaModel['associations']['foreignKey']
+						'fromId'=>(isset(self::$__senchaModel['associations']['primaryKey']) ? self::$__senchaModel['associations']['foreignKey'] : 'id'),
+						'toId'=>self::$__senchaModel['associations']['foreignKey']
 					));
 				}
 			}
 			
 			// check if the model has the associations property 
-			if(isset($this->__senchaModel['hasOne']))
+			if(isset(self::$__senchaModel['hasOne']))
 			{
-				$this->Relation = 'hasOne';
-				$this->RelationStatement[] = $this->__leftJoin(
+				self::$Relation = 'hasOne';
+				self::$RelationStatement[] = self::__leftJoin(
 				array(
-					'fromId'=>(isset($this->__senchaModel['associations']['primaryKey']) ? $this->__senchaModel['associations']['foreignKey'] : 'id'),
-					'toId'=>$this->__senchaModel['associations']['foreignKey']
+					'fromId'=>(isset(self::$__senchaModel['associations']['primaryKey']) ? self::$__senchaModel['associations']['foreignKey'] : 'id'),
+					'toId'=>self::$__senchaModel['associations']['foreignKey']
 				));
 			}
 			
 			// check if the model has the associations property 
-			if(isset($this->__senchaModel['hasMany']))
+			if(isset(self::$__senchaModel['hasMany']))
 			{
-				$this->Relation = 'hasMany';
-				$this->RelationStatement[] = $this->__leftJoin(
+				self::$Relation = 'hasMany';
+				self::$RelationStatement[] = self::__leftJoin(
 				array(
-					'fromId'=>(isset($this->__senchaModel['associations']['primaryKey']) ? $this->__senchaModel['associations']['foreignKey'] : 'id'),
-					'toId'=>$this->__senchaModel['associations']['foreignKey']
+					'fromId'=>(isset(self::$__senchaModel['associations']['primaryKey']) ? self::$__senchaModel['associations']['foreignKey'] : 'id'),
+					'toId'=>self::$__senchaModel['associations']['foreignKey']
 				));
 			}
 			
 			// check if the model has the associations property 
-			if(isset($this->__senchaModel['belongsTo']))
+			if(isset(self::$__senchaModel['belongsTo']))
 			{
-				$this->Relation = 'belongsTo';
-				$this->RelationStatement[] = $this->__leftJoin(
+				self::$Relation = 'belongsTo';
+				self::$RelationStatement[] = self::__leftJoin(
 				array(
-					'fromId'=>(isset($this->__senchaModel['associations']['primaryKey']) ? $this->__senchaModel['associations']['foreignKey'] : 'id'),
-					'toId'=>$this->__senchaModel['associations']['foreignKey']
+					'fromId'=>(isset(self::$__senchaModel['associations']['primaryKey']) ? self::$__senchaModel['associations']['foreignKey'] : 'id'),
+					'toId'=>self::$__senchaModel['associations']['foreignKey']
 				));
 			}
 			
@@ -430,7 +443,7 @@ class Matcha
 		}
 		catch(Exception $e)
 		{
-			return $this->__errorProcess($e);
+			return self::__errorProcess($e);
 		}
 	}
 
@@ -441,9 +454,9 @@ class Matcha
 	 * in the right table – give me the “matching” data from the right table as well. 
 	 * If not – fill in the holes with null.
 	 */
-	private function __leftJoin($joinParameters = array())
+	static private function __leftJoin($joinParameters = array())
 	{
-		return (string)' LEFT JOIN ' . $joinParameters['relateTable'].' ON ('.$this->__senchaModel['table'].'.'.$joinParameters['fromId'].' = '.$joinParameters['relateTable'].'.'.$joinParameters['toId'].') ';
+		return (string)' LEFT JOIN ' . $joinParameters['relateTable'].' ON ('.self::$__senchaModel['table'].'.'.$joinParameters['fromId'].' = '.$joinParameters['relateTable'].'.'.$joinParameters['toId'].') ';
 	}
 	
 	/**
@@ -452,9 +465,9 @@ class Matcha
 	 * So for every record returned in T1 – you will also get the record linked by 
 	 * the foreign key in T2. In programming logic – think in terms of AND.
 	 */
-	private function __innerJoin($joinParameters = array())
+	static private function __innerJoin($joinParameters = array())
 	{
-		return (string)' INNER JOIN ' . $joinParameters['relateTable'].' ON ('.$this->__senchaModel['table'].'.'.$joinParameters['fromId'].' = '.$joinParameters['relateTable'].'.'.$joinParameters['toId'].') ';
+		return (string)' INNER JOIN ' . $joinParameters['relateTable'].' ON ('.self::$__senchaModel['table'].'.'.$joinParameters['fromId'].' = '.$joinParameters['relateTable'].'.'.$joinParameters['toId'].') ';
 	}
 
 	/**
@@ -464,7 +477,7 @@ class Matcha
 	 * it can be constructed dynamically.
 	 * TODO: Finish me!
 	 */
-	private function __setSenchaModel($senchaModelObject)
+	static private function __setSenchaModel($senchaModelObject)
 	{
 		
 	}
@@ -473,16 +486,16 @@ class Matcha
 	 * __createTable:
 	 * Method to create a table if does not exist
 	 */
-	 private function __createTable()
+	 static private function __createTable()
 	 {
 	 	try
 	 	{
-			$this->__conn->query('CREATE TABLE IF NOT EXISTS '.$this->__senchaModel['table'].' (id BIGINT(20) NOT NULL AUTO_INCREMENT PRIMARY KEY);');
+			self::$__conn->query('CREATE TABLE IF NOT EXISTS '.self::$__senchaModel['table'].' (id BIGINT(20) NOT NULL AUTO_INCREMENT PRIMARY KEY);');
 			return true;
 		}
 		catch(PDOException $e)
 		{
-			return $this->__errorProcess($e);
+			return self::__errorProcess($e);
 		}
 	 }
 	 
@@ -491,15 +504,15 @@ class Matcha
 	 * This method will create the column inside the table of the database
 	 * method used by SechaModel method
 	 */
-	private function __createAllColumns($paramaters = array())
+	static private function __createAllColumns($paramaters = array())
 	{
 		try
 		{
-			foreach($paramaters as $column) $this->__createColumn($column);
+			foreach($paramaters as $column) self::__createColumn($column);
 		}
 		catch(PDOException $e)
 		{
-			return $this->__errorProcess($e);
+			return self::__errorProcess($e);
 		}
 	}
 	
@@ -507,15 +520,15 @@ class Matcha
 	 * __createColumn:
 	 * Method that will create the column into the table
 	 */
-	private function __createColumn($column = array())
+	static private function __createColumn($column = array())
 	{
 		try
 		{
-			$this->__conn->query('ALTER TABLE '.$this->__senchaModel['table'].' ADD '.$column['name'].' '.$this->__renderColumnSyntax($column) . ';');
+			self::$__conn->query('ALTER TABLE '.self::$__senchaModel['table'].' ADD '.$column['name'].' '.self::__renderColumnSyntax($column) . ';');
 		}
 		catch(PDOException $e)
 		{
-			return $this->__errorProcess($e);
+			return self::__errorProcess($e);
 		}		
 	}
 	
@@ -523,15 +536,15 @@ class Matcha
 	 * __modifyColumn:
 	 * Method to modify the column properties
 	 */
-	private function __modifyColumn($SingleParamater = array())
+	static private function __modifyColumn($SingleParamater = array())
 	{
 		try
 		{
-			$this->__conn->query('ALTER TABLE '.$this->__senchaModel['table'].' MODIFY '.$SingleParamater['name'].' '.$this->__renderColumnSyntax($SingleParamater) . ';');
+			self::$__conn->query('ALTER TABLE '.self::$__senchaModel['table'].' MODIFY '.$SingleParamater['name'].' '.self::__renderColumnSyntax($SingleParamater) . ';');
 		}
 		catch(PDOException $e)
 		{
-			return $this->__errorProcess($e);
+			return self::__errorProcess($e);
 		}
 	}
 	
@@ -539,15 +552,15 @@ class Matcha
 	 * __createDatabase
 	 * Method that will create a database
 	 */
-	public function createDatabase($databaseName)
+	static public function createDatabase($databaseName)
 	{
 		try
 		{
-			$this->__conn->query('CREATE DATABASE IF NOT EXISTS '.$databaseName.';');
+			self::$__conn->query('CREATE DATABASE IF NOT EXISTS '.$databaseName.';');
 		}
 		catch(PDOException $e)
 		{
-			return $this->__errorProcess($e);
+			return self::__errorProcess($e);
 		}
 	}
 	
@@ -555,15 +568,15 @@ class Matcha
 	 * __dropColumn:
 	 * Method to drop column in a table
 	 */
-	private function __dropColumn($column)
+	static private function __dropColumn($column)
 	{
 		try
 		{
-			$this->__conn->query("ALTER TABLE ".$this->__senchaModel['table']." DROP COLUMN `".$column."`;");
+			self::$__conn->query("ALTER TABLE ".self::$__senchaModel['table']." DROP COLUMN `".$column."`;");
 		}
 		catch(PDOException $e)
 		{
-			return $this->__errorProcess($e);
+			return self::__errorProcess($e);
 		}
 	}
 	
@@ -572,7 +585,7 @@ class Matcha
 	 * Method that will render the correct syntax for the addition or modification
 	 * of a column.
 	 */
-	private function __renderColumnSyntax($column = array())
+	static private function __renderColumnSyntax($column = array())
 	{
 		// parse some properties on Sencha model.
 		// and do the defaults if properties are not set.
@@ -661,12 +674,12 @@ class Matcha
 	 * __recursive_array_search:
 	 * An recursive array search method
 	 */
-	private function __recursiveArraySearch($needle,$haystack) 
+	static private function __recursiveArraySearch($needle,$haystack) 
 	{
 	    foreach($haystack as $key=>$value) 
 	    {
 	        $current_key=$key;
-	        if($needle===$value OR (is_array($value) && $this->__recursiveArraySearch($needle,$value) !== false)) return $current_key;
+	        if($needle===$value OR (is_array($value) && self::__recursiveArraySearch($needle,$value) !== false)) return $current_key;
 	    }
 	    return false;
 	}
@@ -677,9 +690,9 @@ class Matcha
 	 * TODO: It could be more elaborated and handle other things.
 	 * for example log file for GaiaEHR.
 	 */
-	private function __errorProcess($errorException)
+	static private function __errorProcess($errorException)
 	{
-		error_log('Matcha::connect microORM: ' . $errorException->getMessage() );
+		error_log('self::connect microORM: ' . $errorException->getMessage() );
 		return $errorException;
 	}
 }

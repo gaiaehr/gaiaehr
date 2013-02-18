@@ -1,4 +1,4 @@
-Welcome to [GaiaEHR](http://www.gaiaehr.org/)
+![Alt text](http://gaiaehr.org/wp-content/uploads/2012/10/gaiaehr_white_100px1.png)
 =====================
 
 [GaiaEHR](http://www.gaiaehr.org/) is a Open source Web-Based Software for:

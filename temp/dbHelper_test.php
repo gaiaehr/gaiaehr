@@ -15,7 +15,7 @@ include_once ($_SESSION['root'] . '/classes/dbHelper.php');
 
 $db = new dbHelper();
 		
-$tmpUser = Matcha::connect('App.model.administration.tmpUser');
+$tmpUser = Matcha::setSenchaModel('App.model.administration.tmpUser');
 
 echo '<pre>';
 print_r($tmpUser->load());

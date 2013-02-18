@@ -1,21 +1,21 @@
 <?php
 /**
  * Matcha::connect microORM v0.0.1
- * This class will help Sencha ExtJS and PHP developers deliver fast and powerful application fast and easy to develop.
+ * This set of classes will help Sencha ExtJS and PHP developers deliver fast and powerful application fast and easy to develop.
  * If Sencha ExtJS is a GUI Framework of the future, think Matcha micrORM as the bridge between the Client-Server
  * GAP. 
  * 
  * Matcha will read and parse a Sencha Model .js file and then connect to the database and produce a compatible database-table
  * from your model. Also will provide the basic functions for the CRUD. If you are familiar with Sencha ExtJS, and know 
  * about Sencha Models, you will need this PHP Class. You can use it in any way you want, in MVC like pattern, your own pattern, 
- * or just playing simple. It's compatible with all your coding stile. 
+ * or just playing simple. It's compatible with all your coding style. 
  * 
- * Taking some ideas from diferent microORM's and full featured ORM's we bring you this super Class. 
+ * Taking some ideas from diferent microORM's and full featured ORM's we bring you this cool Class. 
  * 
  * History:
  * Born in the fields of GaiaEHR we needed a way to develop the application more faster, Gino Rivera suggested the use of an
- * microORM for fast development, and the development began. We tried to use some already developed and well known ORM on the 
- * space of PHP, but none satisfied our purposes. So Gino Rivera sugested the development of our own microORM (a long way to run).
+ * microORM for fast development and the development began. We tried to use some already developed and well known ORM's on the 
+ * space of PHP, but none satisfied our needs. So Gino Rivera sugested the development of our own microORM (a long way to run).
  * 
  * But despite the long run, it returned to be more logical to get ideas from the well known ORM's and how Sensha manage their models
  * so this is the result. 
@@ -25,6 +25,7 @@
 
 include_once('MatchaAudit.php');
 include_once('MatchaCUP.php');
+include_once('MatchaErrorHandler.php');
 
 class Matcha
 {
@@ -43,7 +44,7 @@ class Matcha
 	public static $__audit;
 	
 	
-	static public function setup($databaseParameters = array())
+	static public function connect($databaseParameters = array())
 	{
 		try
 		{		
@@ -51,17 +52,19 @@ class Matcha
 			if(!isset($databaseParameters['host']) && 
 				!isset($databaseParameters['name']) &&
 				!isset($databaseParameters['user']) && 
-				!isset($databaseParameters['pass'])) 
-				throw new Exception('These parameters are obligatory: Host, Name, User, Pass. Come on!');
+				!isset($databaseParameters['pass']) &&
+				!isset($databaseParameters['root'])) 
+				throw new Exception('These parameters are obligatory: host=database ip or hostname, name=database name, user=database username, pass=database password, root=root path of you application.');
 				
 			// Connect using regular PDO Matcha::setup Abstraction layer.
 			// but make only a connection, not to the database.
 			// and then the database
-			$host = (string)$databaseParameters['Host'];
-			$port = (int)(isset($databaseParameters['Port']) ? $databaseParameters['Port'] : '3306');
-			$dbName = (string)$databaseParameters['Name'];
-			$dbUser = (string)$databaseParameters['User'];
-			$dbPass = (string)$databaseParameters['Pass'];
+			self::$__root = $databaseParameters['root'];
+			$host = (string)$databaseParameters['host'];
+			$port = (int)(isset($databaseParameters['port']) ? $databaseParameters['port'] : '3306');
+			$dbName = (string)$databaseParameters['name'];
+			$dbUser = (string)$databaseParameters['user'];
+			$dbPass = (string)$databaseParameters['pass'];
 			self::$__conn = new PDO('mysql:host='.$host.';port='.$port.';', $dbUser, $dbPass, array(
 				PDO::MYSQL_ATTR_LOCAL_INFILE => 1,
 				PDO::ATTR_PERSISTENT => true
@@ -70,11 +73,11 @@ class Matcha
 			// check if the database exist.
 			self::__createDatabase($dbName);
 			self::$__conn->query('USE '.$dbName.';');
-			return $__conn;
+			return self::$__conn;
 		}
 		catch(Exception $e)
 		{
-			return self::__errorProcess($e);
+			return MatchaErrorHandler::__errorProcess($e);
 		}
 	}
 	 
@@ -83,17 +86,19 @@ class Matcha
 	  * The first thing to do, to begin using Matcha
 	  * This will load the Sencha Model to Matcha and do it's magic.
 	  */
-	 static public function connect($senchaModel = array())
+	 static public function setSenchaModel($senchaModel = array())
 	 {
 	 	try
 	 	{
-	 		self::__SenchaModel($senchaModel);
-			$matcha = new MatchaCUP();
-			return $matcha;
+	 		if(self::__SenchaModel($senchaModel))
+			{
+				$matcha = new MatchaCUP();
+				return $matcha;
+			}
 		}
 		catch(Exception $e)
 		{
-			return self::__errorProcess($e);
+			return MatchaErrorHandler::__errorProcess($e);
 		}
 	 }
 
@@ -229,10 +234,12 @@ class Matcha
 					}
 				}
 			}
+			return true;
 		}
 		catch(PDOException $e)
 		{
-			return self::__errorProcess($e);
+			MatchaErrorHandler::__errorProcess($e);
+			return false;
 		}
 	}
 	
@@ -248,8 +255,8 @@ class Matcha
 			// Getting Sencha model as a namespace
 			$fileModel = (string)str_replace('App', 'app', $fileModel);
 			$fileModel = str_replace('.', '/', $fileModel);
-			$senchaModel = (string)file_get_contents(self::$__root . '/' . $fileModel . '.js');
-			if(!$senchaModel) throw new Exception('Could not open the file.');
+			if(!file_exists(self::$__root.'/'.$fileModel.'.js')) throw new Exception('Sencha Model file does not exist.');
+			$senchaModel = (string)file_get_contents(self::$__root.'/'.$fileModel.'.js');
 			
 			// clean comments and unnecessary Ext.define functions
 			$senchaModel = preg_replace("((/\*(.|\n)*?\*/|//(.*))|([ ](?=(?:[^\'\"]|\'[^\'\"]*\')*$)|\t|\n|\r))", '', $senchaModel);
@@ -273,7 +280,7 @@ class Matcha
 		}
 		catch(Exception $e)
 		{
-			self::__errorProcess($e);
+			MatchaErrorHandler::__errorProcess($e);
 			return false;
 		}
 	}
@@ -343,7 +350,7 @@ class Matcha
 		}
 		catch(Exception $e)
 		{
-			return self::__errorProcess($e);
+			return MatchaErrorHandler::__errorProcess($e);
 		}
 	}
 
@@ -395,7 +402,7 @@ class Matcha
 		}
 		catch(PDOException $e)
 		{
-			return self::__errorProcess($e);
+			return MatchaErrorHandler::__errorProcess($e);
 		}
 	 }
 	 
@@ -412,7 +419,7 @@ class Matcha
 		}
 		catch(PDOException $e)
 		{
-			return self::__errorProcess($e);
+			return MatchaErrorHandler::__errorProcess($e);
 		}
 	}
 	
@@ -428,7 +435,7 @@ class Matcha
 		}
 		catch(PDOException $e)
 		{
-			return self::__errorProcess($e);
+			return MatchaErrorHandler::__errorProcess($e);
 		}		
 	}
 	
@@ -444,7 +451,7 @@ class Matcha
 		}
 		catch(PDOException $e)
 		{
-			return self::__errorProcess($e);
+			return MatchaErrorHandler::__errorProcess($e);
 		}
 	}
 	
@@ -461,7 +468,7 @@ class Matcha
 		}
 		catch(PDOException $e)
 		{
-			return self::__errorProcess($e);
+			return MatchaErrorHandler::__errorProcess($e);
 		}
 	}
 	
@@ -477,7 +484,7 @@ class Matcha
 		}
 		catch(PDOException $e)
 		{
-			return self::__errorProcess($e);
+			return MatchaErrorHandler::__errorProcess($e);
 		}
 	}
 	
@@ -585,15 +592,4 @@ class Matcha
 	    return false;
 	}
 	
-	/**
-	 * function __errorProcess($errorException):
-	 * Handle the error of an exception
-	 * TODO: It could be more elaborated and handle other things.
-	 * for example log file for GaiaEHR.
-	 */
-	static private function __errorProcess($errorException)
-	{
-		error_log('Matcha::connect microORM: ' . $errorException->getMessage() );
-		return $errorException;
-	}
 }

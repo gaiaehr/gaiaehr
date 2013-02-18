@@ -45,23 +45,23 @@ class Matcha
 	
 	static public function setup($databaseParameters = array())
 	{
-		// check for properties first.
-		if(!isset($databaseParameters['Host']) && 
-			!isset($databaseParameters['Name']) &&
-			!isset($databaseParameters['User']) && 
-			!isset($databaseParameters['Pass'])) 
-			throw new Exception('These parameters are obligatory: Host, Name, User, Pass. Come on!');
-			
-		// Connect using regular PDO Matcha::setup Abstraction layer.
-		// but make only a connection, not to the database.
-		// and then the database
-		$host = (string)$databaseParameters['Host'];
-		$port = (int)(isset($databaseParameters['Port']) ? $databaseParameters['Port'] : '3306');
-		$dbName = (string)$databaseParameters['Name'];
-		$dbUser = (string)$databaseParameters['User'];
-		$dbPass = (string)$databaseParameters['Pass'];
 		try
-		{
+		{		
+			// check for properties first.
+			if(!isset($databaseParameters['host']) && 
+				!isset($databaseParameters['name']) &&
+				!isset($databaseParameters['user']) && 
+				!isset($databaseParameters['pass'])) 
+				throw new Exception('These parameters are obligatory: Host, Name, User, Pass. Come on!');
+				
+			// Connect using regular PDO Matcha::setup Abstraction layer.
+			// but make only a connection, not to the database.
+			// and then the database
+			$host = (string)$databaseParameters['Host'];
+			$port = (int)(isset($databaseParameters['Port']) ? $databaseParameters['Port'] : '3306');
+			$dbName = (string)$databaseParameters['Name'];
+			$dbUser = (string)$databaseParameters['User'];
+			$dbPass = (string)$databaseParameters['Pass'];
 			self::$__conn = new PDO('mysql:host='.$host.';port='.$port.';', $dbUser, $dbPass, array(
 				PDO::MYSQL_ATTR_LOCAL_INFILE => 1,
 				PDO::ATTR_PERSISTENT => true
@@ -144,7 +144,7 @@ class Matcha
 		{
 			// get the the model of the table from the sencha .js file
 			self::$__senchaModel = self::__getSenchaModel($fileModel);
-			if(!self::$__senchaModel['fields']) return false;
+			if(!self::$__senchaModel['fields']) throw new Exception('There are no fields set.');
 		
 			// verify the existence of the table if it does not exist create it
 			$recordSet = self::$__conn->query("SHOW TABLES LIKE '".self::$__senchaModel['table']."';");
@@ -249,6 +249,7 @@ class Matcha
 			$fileModel = (string)str_replace('App', 'app', $fileModel);
 			$fileModel = str_replace('.', '/', $fileModel);
 			$senchaModel = (string)file_get_contents(self::$__root . '/' . $fileModel . '.js');
+			if(!$senchaModel) throw new Exception('Could not open the file.');
 			
 			// clean comments and unnecessary Ext.define functions
 			$senchaModel = preg_replace("((/\*(.|\n)*?\*/|//(.*))|([ ](?=(?:[^\'\"]|\'[^\'\"]*\')*$)|\t|\n|\r))", '', $senchaModel);
@@ -272,7 +273,8 @@ class Matcha
 		}
 		catch(Exception $e)
 		{
-			return self::__errorProcess($e);
+			self::__errorProcess($e);
+			return false;
 		}
 	}
 
@@ -591,7 +593,7 @@ class Matcha
 	 */
 	static private function __errorProcess($errorException)
 	{
-		error_log('self::connect microORM: ' . $errorException->getMessage() );
+		error_log('Matcha::connect microORM: ' . $errorException->getMessage() );
 		return $errorException;
 	}
 }

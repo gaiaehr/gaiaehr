@@ -25,6 +25,7 @@
 
 include_once('MatchaAudit.php');
 include_once('MatchaCUP.php');
+include_once('MatchaErrorHandler.php');
 
 class Matcha
 {
@@ -57,11 +58,11 @@ class Matcha
 			// Connect using regular PDO Matcha::setup Abstraction layer.
 			// but make only a connection, not to the database.
 			// and then the database
-			$host = (string)$databaseParameters['Host'];
-			$port = (int)(isset($databaseParameters['Port']) ? $databaseParameters['Port'] : '3306');
-			$dbName = (string)$databaseParameters['Name'];
-			$dbUser = (string)$databaseParameters['User'];
-			$dbPass = (string)$databaseParameters['Pass'];
+			$host = (string)$databaseParameters['host'];
+			$port = (int)(isset($databaseParameters['port']) ? $databaseParameters['port'] : '3306');
+			$dbName = (string)$databaseParameters['name'];
+			$dbUser = (string)$databaseParameters['user'];
+			$dbPass = (string)$databaseParameters['pass'];
 			self::$__conn = new PDO('mysql:host='.$host.';port='.$port.';', $dbUser, $dbPass, array(
 				PDO::MYSQL_ATTR_LOCAL_INFILE => 1,
 				PDO::ATTR_PERSISTENT => true
@@ -70,11 +71,11 @@ class Matcha
 			// check if the database exist.
 			self::__createDatabase($dbName);
 			self::$__conn->query('USE '.$dbName.';');
-			return $__conn;
+			return self::$__conn;
 		}
 		catch(Exception $e)
 		{
-			return self::__errorProcess($e);
+			return MatchaErrorHandler::__errorProcess($e);
 		}
 	}
 	 
@@ -87,13 +88,15 @@ class Matcha
 	 {
 	 	try
 	 	{
-	 		self::__SenchaModel($senchaModel);
-			$matcha = new MatchaCUP();
-			return $matcha;
+	 		if(self::__SenchaModel($senchaModel))
+			{
+				$matcha = new MatchaCUP();
+				return $matcha;
+			}
 		}
 		catch(Exception $e)
 		{
-			return self::__errorProcess($e);
+			return MatchaErrorHandler::__errorProcess($e);
 		}
 	 }
 
@@ -229,10 +232,12 @@ class Matcha
 					}
 				}
 			}
+			return true;
 		}
 		catch(PDOException $e)
 		{
-			return self::__errorProcess($e);
+			MatchaErrorHandler::__errorProcess($e);
+			return false;
 		}
 	}
 	
@@ -248,8 +253,8 @@ class Matcha
 			// Getting Sencha model as a namespace
 			$fileModel = (string)str_replace('App', 'app', $fileModel);
 			$fileModel = str_replace('.', '/', $fileModel);
+			if(!file_exists($fileModel)) throw new Exception('File does not exist.');
 			$senchaModel = (string)file_get_contents(self::$__root . '/' . $fileModel . '.js');
-			if(!$senchaModel) throw new Exception('Could not open the file.');
 			
 			// clean comments and unnecessary Ext.define functions
 			$senchaModel = preg_replace("((/\*(.|\n)*?\*/|//(.*))|([ ](?=(?:[^\'\"]|\'[^\'\"]*\')*$)|\t|\n|\r))", '', $senchaModel);
@@ -273,7 +278,7 @@ class Matcha
 		}
 		catch(Exception $e)
 		{
-			self::__errorProcess($e);
+			MatchaErrorHandler::__errorProcess($e);
 			return false;
 		}
 	}
@@ -343,7 +348,7 @@ class Matcha
 		}
 		catch(Exception $e)
 		{
-			return self::__errorProcess($e);
+			return MatchaErrorHandler::__errorProcess($e);
 		}
 	}
 
@@ -395,7 +400,7 @@ class Matcha
 		}
 		catch(PDOException $e)
 		{
-			return self::__errorProcess($e);
+			return MatchaErrorHandler::__errorProcess($e);
 		}
 	 }
 	 
@@ -412,7 +417,7 @@ class Matcha
 		}
 		catch(PDOException $e)
 		{
-			return self::__errorProcess($e);
+			return MatchaErrorHandler::__errorProcess($e);
 		}
 	}
 	
@@ -428,7 +433,7 @@ class Matcha
 		}
 		catch(PDOException $e)
 		{
-			return self::__errorProcess($e);
+			return MatchaErrorHandler::__errorProcess($e);
 		}		
 	}
 	
@@ -444,7 +449,7 @@ class Matcha
 		}
 		catch(PDOException $e)
 		{
-			return self::__errorProcess($e);
+			return MatchaErrorHandler::__errorProcess($e);
 		}
 	}
 	
@@ -461,7 +466,7 @@ class Matcha
 		}
 		catch(PDOException $e)
 		{
-			return self::__errorProcess($e);
+			return MatchaErrorHandler::__errorProcess($e);
 		}
 	}
 	
@@ -477,7 +482,7 @@ class Matcha
 		}
 		catch(PDOException $e)
 		{
-			return self::__errorProcess($e);
+			return MatchaErrorHandler::__errorProcess($e);
 		}
 	}
 	
@@ -585,15 +590,4 @@ class Matcha
 	    return false;
 	}
 	
-	/**
-	 * function __errorProcess($errorException):
-	 * Handle the error of an exception
-	 * TODO: It could be more elaborated and handle other things.
-	 * for example log file for GaiaEHR.
-	 */
-	static private function __errorProcess($errorException)
-	{
-		error_log('Matcha::connect microORM: ' . $errorException->getMessage() );
-		return $errorException;
-	}
 }

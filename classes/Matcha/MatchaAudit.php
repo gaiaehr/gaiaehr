@@ -70,7 +70,7 @@ class MatchaAudit extends Matcha
 		}
 		catch(PDOException $e)
 		{
-			return self::__errorProcess($e);
+			return MatchaErrorHandler::__errorProcess($e);
 		}
 	}
 
@@ -101,7 +101,7 @@ class MatchaAudit extends Matcha
 		}
 		catch(PDOException $e)
 		{
-			return self::__errorProcess($e);
+			return MatchaErrorHandler::__errorProcess($e);
 		}
 	}
 }

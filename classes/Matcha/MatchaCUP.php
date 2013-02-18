@@ -130,12 +130,21 @@ class MatchaCUP
 		}
 	}
 
-
+	/**
+	 * This method will set the model array as an object within MatchaCUP scope
+	 * @param $model
+	 */
 	static public function setModel($model){
 		self::$model = self::ArrayToObject($model);
 		self::$table = self::$model->table->name;
 	}
 
+	/**
+	 * convert Array to Object recursively
+	 * @param array $array
+	 * @param stdClass $parent
+	 * @return stdClass
+	 */
 	static private function ArrayToObject(array $array, stdClass $parent = null) {
 		if ($parent === null) {
 			$parent = new stdClass;
@@ -150,6 +159,11 @@ class MatchaCUP
 		return $parent;
 	}
 
+	/**
+	 * This method will parse the where array and return the SQL string
+	 * @param $array
+	 * @return string
+	 */
 	static private function parseWhereArray($array){
 		$whereStr = '';
 		$prevArray = false;

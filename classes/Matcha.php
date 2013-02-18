@@ -17,8 +17,8 @@ class Matcha
 	/**
 	 * This would be a Sencha Model parsed by getSenchaModel method
 	 */
-	public public $Relation;
-	public public $currentRecord;
+	public static $Relation;
+	public static $currentRecord;
 	public static $__id;
 	public static $__total;
 	public static $__freeze = false;

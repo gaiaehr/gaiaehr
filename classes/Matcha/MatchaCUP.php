@@ -1,7 +1,7 @@
 <?php
 /**
  * Matcha::connect microORM v0.0.1
- * This class will help Sencha ExtJS and PHP developers deliver fast and powerful application fast and easy to develop.
+ * This set of classes will help Sencha ExtJS and PHP developers deliver fast and powerful application fast and easy to develop.
  * If Sencha ExtJS is a GUI Framework of the future, think Matcha micrORM as the bridge between the Client-Server
  * GAP. 
  * 

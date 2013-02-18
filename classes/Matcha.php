@@ -1,11 +1,26 @@
 <?php
 /**
-* Matcha::connect microORM v0.0.1
-* This would be a complete set of methods to manage the database
-* creation and data exchange.
-* 
-* In the future this will replace the entire old class methods. 
-*/
+ * Matcha::connect microORM v0.0.1
+ * This class will help Sencha ExtJS and PHP developers deliver fast and powerful application fast and easy to develop.
+ * If Sencha ExtJS is a GUI Framework of the future, think Matcha micrORM as the bridge between the Client-Server
+ * GAP. 
+ * 
+ * Matcha will read and parse a Sencha Model .js file and then connect to the database and produce a compatible database-table
+ * from your model. Also will provide the basic functions for the CRUD. If you are familiar with Sencha ExtJS, and know 
+ * about Sencha Models, you will need this PHP Class. You can use it in any way you want, in MVC like pattern, your own pattern, 
+ * or just playing simple. It's compatible with all your coding stile. 
+ * 
+ * Taking some ideas from diferent microORM's and full featured ORM's we bring you this super Class. 
+ * 
+ * History:
+ * Born in the fields of GaiaEHR we needed a way to develop the application more faster, Gino Rivera suggested the use of an
+ * microORM for fast development, and the development began. We tried to use some already developed and well known ORM on the 
+ * space of PHP, but none satisfied our purposes. So Gino Rivera sugested the development of our own microORM (a long way to run).
+ * 
+ * But despite the long run, it returned to be more logical to get ideas from the well known ORM's and how Sensha manage their models
+ * so this is the result. 
+ *  
+ */
 
 
 //
@@ -26,20 +41,53 @@ class Matcha
 	public static $__conn;
 	public static $__root;
 	public static $__audit;
+	
+	
+	static public function setup($databaseParameters = array())
+	{
+		// check for properties first.
+		if(!isset($databaseParameters['Host']) && 
+			!isset($databaseParameters['Name']) &&
+			!isset($databaseParameters['User']) && 
+			!isset($databaseParameters['Pass'])) 
+			throw new Exception('These parameters are obligatory: Host, Name, User, Pass. Come on!');
+			
+		// Connect using regular PDO Matcha::setup Abstraction layer.
+		// but make only a connection, not to the database.
+		// and then the database
+		$host = (string)$databaseParameters['Host'];
+		$port = (int)(isset($databaseParameters['Port']) ? $databaseParameters['Port'] : '3306');
+		$dbName = (string)$databaseParameters['Name'];
+		$dbUser = (string)$databaseParameters['User'];
+		$dbPass = (string)$databaseParameters['Pass'];
+		try
+		{
+			self::$__conn = new PDO('mysql:host='.$host.';port='.$port.';', $dbUser, $dbPass, array(
+				PDO::MYSQL_ATTR_LOCAL_INFILE => 1,
+				PDO::ATTR_PERSISTENT => true
+			));
+			self::$__conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			// check if the database exist.
+			self::__createDatabase($dbName);
+			self::$__conn->query('USE '.$dbName.';');
+			return $__conn;
+		}
+		catch(Exception $e)
+		{
+			return self::__errorProcess($e);
+		}
+	}
 	 
 	 /**
 	  * function connect($databaseObject, $rootPath, $senchaModel)
 	  * The first thing to do, to begin using Matcha
 	  * This will load the Sencha Model to Matcha and do it's magic.
 	  */
-	 static public function connect($databaseObject, $rootPath = NULL, $senchaModel = array())
+	 static public function connect($senchaModel = array())
 	 {
 	 	try
 	 	{
-	 		if(!is_object($databaseObject) && !isset($rootPath) && !is_array($senchaModel)) throw new Exception('Matcha::connect databaseObject, rootPath or senchaModel is not set.');
-	 		self::$__conn = $databaseObject;
-			self::$__root = $rootPath;
-			self::__SenchaModel($senchaModel);
+	 		self::__SenchaModel($senchaModel);
 			$matcha = new MatchaCRUD();
 			return $matcha;
 		}
@@ -75,12 +123,12 @@ class Matcha
 	 */
 	static public function freeze($onoff = false)
 	{
-		self::$__freeze = $onoff;
+		self::$__freeze = (bool)$onoff;
 	}
 	
 	static public function audit($onoff = true)
 	{
-		self::$__audit = $onoff;
+		self::$__audit = (bool)$onoff;
 	}
 	
 	/**
@@ -198,7 +246,7 @@ class Matcha
 		try
 		{
 			// Getting Sencha model as a namespace
-			$fileModel = str_replace('App', 'app', $fileModel);
+			$fileModel = (string)str_replace('App', 'app', $fileModel);
 			$fileModel = str_replace('.', '/', $fileModel);
 			$senchaModel = (string)file_get_contents(self::$__root . '/' . $fileModel . '.js');
 			
@@ -403,7 +451,7 @@ class Matcha
 	 * Method that will create a database, but will create it if
 	 * it does not exist.
 	 */
-	static public function createDatabase($databaseName)
+	static private function __createDatabase($databaseName)
 	{
 		try
 		{
@@ -687,7 +735,7 @@ class MatchaCRUD extends Matcha
 	{
 		try
 		{
-			$sql = "DELETE FROM ".Matcha::$__senchaModel['table']."WHERE id='".$record['id']."';";
+			$sql = (string)"DELETE FROM ".Matcha::$__senchaModel['table']."WHERE id='".$record['id']."';";
 			Matcha::$__conn->query($sql);
 			MatchaAudit::__auditLog($sql);
 			Matcha::$__total = (int)count($records)-1;

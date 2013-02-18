@@ -11,12 +11,11 @@ if (!isset($_SESSION))
 include_once('../registry.php');
 include_once('../sites/default/conf.php');
 include_once ($_SESSION['root'] . '/classes/dbHelper.php');
-include_once ($_SESSION['root'] . '/classes/Matcha.php');
 
 
 $db = new dbHelper();
-
-$tmpUser = Matcha::connect($db->conn, $_SESSION['root'], 'App.model.administration.tmpUser');
+		
+$tmpUser = Matcha::connect('App.model.administration.tmpUser');
 
 echo '<pre>';
 print_r($tmpUser->load());

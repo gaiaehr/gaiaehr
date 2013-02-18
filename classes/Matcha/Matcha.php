@@ -256,7 +256,7 @@ class Matcha
 			$fileModel = (string)str_replace('App.', '', $fileModel);
 			$fileModel = str_replace('.', '/', $fileModel);
 			if(!file_exists(self::$__app.'/'.$fileModel.'.js')) throw new Exception('Sencha Model file does not exist.');
-			$senchaModel = (string)file_get_contents(self::$__root.'/'.$fileModel.'.js');
+			$senchaModel = (string)file_get_contents(self::$__app.'/'.$fileModel.'.js');
 			
 			// clean comments and unnecessary Ext.define functions
 			$senchaModel = preg_replace("((/\*(.|\n)*?\*/|//(.*))|([ ](?=(?:[^\'\"]|\'[^\'\"]*\')*$)|\t|\n|\r))", '', $senchaModel);

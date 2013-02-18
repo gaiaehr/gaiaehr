@@ -22,8 +22,62 @@
  *  
  */
  
-class MatchaCUP extends Matcha
+class MatchaCUP
 {
+	/**
+	 * @var db connection
+	 */
+	public static $conn;
+
+	/**
+	 * @var array Model array
+	 */
+	public static $model;
+
+	/**
+	 * function load($id = NULL, $columns = array()) (part of CRUD)
+	 * Read from table
+	 * Load all records, load one record if a ID is passed,
+	 * load all records with some columns determined by an array,
+	 * load one record with some columns determined by an array, or any combination.
+	 */
+	static public function load($where = null, $columns = null)
+	{
+		try
+		{
+			// columns
+			if($columns == null){
+				$columnsx = '*';
+			}elseif(is_array($columns)){
+				$columnsx = '`'.implode('`,`',$columns).'`';
+			}else{
+				$columnsx = $columns;
+			}
+			// where
+			if(is_integer($where)){
+				$wherex = "`id`='$where'";
+			}elseif(is_array($where)){
+				$wherex = self::parseWhereArray($where);
+			}else{
+				$wherex = $where;
+			}
+
+			if($wherex != '') $wherex = 'WHERE '.$wherex;
+
+			// table
+			$table = self::$model->table->name;
+			// sql build
+			$sql = "SELECT $columnsx FROM `$table` $wherex";
+			print $sql;
+
+		}
+		catch(PDOException $e)
+		{
+//			return Matcha::__errorProcess($e);
+		}
+	}
+
+
 	/**
 	 * function store($record = array()): (part of CRUD)
 	 * Create & Update
@@ -36,28 +90,28 @@ class MatchaCUP extends Matcha
 			// update a record
 			if(isset($record['id']))
 			{
-				$storeField = (string)'';
-				foreach($record as $key => $value) ($key=='id' ? $storeField .= '' : $storeField .= $key."='".$value."'");
-				$sql = (string)'UPDATE '.Matcha::$__senchaModel['table'].' SET '.$storeField . " WHERE id='".$record['id']."';";
-				Matcha::$__conn->query($sql);
-				MatchaAudit::__auditLog($sql);
-				Matcha::$__id = $record['id'];
+//				$storeField = (string)'';
+//				foreach($record as $key => $value) ($key=='id' ? $storeField .= '' : $storeField .= $key."='".$value."'");
+//				$sql = (string)'UPDATE '.Matcha::$__senchaModel['table'].' SET '.$storeField . " WHERE id='".$record['id']."';";
+//				Matcha::$__conn->query($sql);
+//				MatchaAudit::__auditLog($sql);
+//				Matcha::$__id = $record['id'];
 			}
 			// create a record
 			else
 			{
-				$fields = (string)implode(', ', array_keys($record));
-				$values = (string)implode(', ', array_values($record));
-				$sql = (string)'INSERT INTO '.Matcha::$__senchaModel['table'].' ('.$fields.') VALUES ('.$values.');';
-				Matcha::$__conn->query($sql);
-				MatchaAudit::__auditLog($sql);
-				Matcha::$__id = $__conn->lastInsertId();
+//				$fields = (string)implode(', ', array_keys($record));
+//				$values = (string)implode(', ', array_values($record));
+//				$sql = (string)'INSERT INTO '.Matcha::$__senchaModel['table'].' ('.$fields.') VALUES ('.$values.');';
+//				Matcha::$__conn->query($sql);
+//				MatchaAudit::__auditLog($sql);
+//				Matcha::$__id = $__conn->lastInsertId();
 			}
 			return true;
 		}
 		catch(PDOException $e)
 		{
-			return Matcha::__errorProcess($e);
+//			return Matcha::__errorProcess($e);
 		}
 	}
 	
@@ -70,42 +124,123 @@ class MatchaCUP extends Matcha
 	{
 		try
 		{
-			$sql = (string)"DELETE FROM ".Matcha::$__senchaModel['table']."WHERE id='".$record['id']."';";
-			Matcha::$__conn->query($sql);
-			MatchaAudit::__auditLog($sql);
-			Matcha::$__total = (int)count($records)-1;
-			if(Matcha::$__id == $record['id']) unset(self::$__id);
-			return true; // success
+//			$sql = (string)"DELETE FROM ".Matcha::$__senchaModel['table']."WHERE id='".$record['id']."';";
+//			Matcha::$__conn->query($sql);
+//			MatchaAudit::__auditLog($sql);
+//			Matcha::$__total = (int)count($records)-1;
+//			if(Matcha::$__id == $record['id']) unset(self::$__id);
+//			return true; // success
 		}
 		catch(PDOException $e)
 		{
-			return Matcha::__errorProcess($e);
+//			return Matcha::__errorProcess($e);
 		}
 	}
 
-	/**
-	 * function load($id = NULL, $columns = array()) (part of CRUD)
-	 * Read from table
-	 * Load all records, load one record if a ID is passed,
-	 * load all records with some columns determined by an array,
-	 * load one record with some columns determined by an array, or any combination.  
-	 */
-	static public function load($id = NULL, $columns = array())
-	{
-		try
-		{
-			$selectedColumns = (string)'';
-			if(count($columns)) $selectedColumns = implode(', '.Matcha::$__senchaModel['table'].'.', $columns);
-			$recordSet = Matcha::$__conn->query("SELECT ".($selectedColumns ? Matcha::$__senchaModel['table'].".".$selectedColumns : '*').
-				" FROM ".Matcha::$__senchaModel['table'].
-				($id ? " WHERE ".Matcha::$__senchaModel['table'].".id='".$id."'" : "").";");
-			$records = (array)$recordSet->fetchAll(PDO::FETCH_ASSOC);
-			Matcha::$__total = (int)count($records);
-			return $records;
-		}
-		catch(PDOException $e)
-		{
-			return Matcha::__errorProcess($e);
-		}
+
+	static public function setModel($model){
+		self::$model = self::ArrayToObject($model);
 	}
+
+	static private function ArrayToObject(array $array, stdClass $parent = null) {
+		if ($parent === null) {
+			$parent = new stdClass;
+		}
+		foreach ($array as $key => $val) {
+			if (is_array($val)) {
+				$parent->$key = self::ArrayToObject($val, new stdClass);
+			} else {
+				$parent->$key = $val;
+			}
+		}
+		return $parent;
+	}
+
+	static private function parseWhereArray($array){
+		$whereStr = '';
+		$prevArray = false;
+		foreach($array as $key => $val){
+			if(is_string($key)){
+				if($prevArray) $whereStr .= 'AND ';
+				$whereStr .= "`$key`='$val' ";
+				$prevArray = true;
+			}elseif(is_array($val)){
+				if($prevArray) $whereStr .= 'AND ';
+				$whereStr .= '('.self::parseWhereArray($val).')';
+				$prevArray = true;
+			}else{
+				$whereStr .= $val.' ';
+				$prevArray = false;
+			}
+		}
+		return $whereStr;
+	}
+
 }
+print '<pre>';
+$t = new MatchaCUP();
+$t->setModel(Array(
+	'extend' => 'Ext.data.Model',
+	'table' => Array(
+		'name' => 'accvoucher',
+		'engine' => 'InnoDB',
+		'autoIncrement' => 1,
+		'charset' => 'utf8',
+		'collate' => 'utf8_bin',
+		'comment' => 'Voucher / Receipt'
+	),
+	'fields' => Array(
+		Array(
+			'name' => 'id',
+			'type' => 'int'
+		),
+		Array(
+			'name' => 'voucherId',
+			'type' => 'int',
+			'comment' => 'Voucher'
+		),
+		Array(
+			'name' => 'accountId',
+			'type' => 'int',
+			'comment' => 'Account'
+		)
+	),
+	'associations' => Array(
+		Array(
+			'type' => 'belongsTo',
+			'model' => 'App.model.account.Voucher',
+			'foreignKey' => 'voucherId',
+			'setterName' => 'setVoucher',
+			'getterName' => 'getVoucher'
+		)
+	)
+));
+$t->setConn($t->db->conn);
+
+$t::load();    						                // fetch all
+print '<br>';
+print '<br>';
+$t::load(5);    						            // fetch all columns where id = 5
+print '<br>';
+print '<br>';
+$t::load(5,array('id','name'));    			        // fetch id and name where id = 5
+print '<br>';
+print '<br>';
+$t::load(array('voucherId'=>3));    			    // fetch all columns where voucherId = 5
+print '<br>';
+print '<br>';
+$t::load(array('voucherId'=>3),array('id','name'));	// fetch id and name where voucherId = 5
+print '<br>';
+print '<br>';
+$t::load('col = 4, sdsdi=5',array('id','name'));	// fetch id and name where voucherId = 5
+print '<br>';
+print '<br>';
+$t::load(array('voucherId'=>3, 'OR', 'userId'=>7),array('id','name'));	// fetch id and name where voucherId = 5
+
+
+//
+//print '<br>';
+//print_r($t::$model->table->name);
+
+
+//	SELECT `id`,`name` FROM `accvoucher` WHERE `voucherId`='3' AND `userId`='7' OR (`hello`='4' AND `hello2`='5' )

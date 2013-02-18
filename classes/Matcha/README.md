@@ -1,5 +1,4 @@
 ![Alt text](/press/matcha-connect.png)
-Welcome to [Matcha::connect](http://www.matchaconnect.com/)
 =====================
 
 [Matcha::Connect](http://www.matchaconnect.com/) is a Open source microORM for Sencha in PHP:

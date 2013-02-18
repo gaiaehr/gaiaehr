@@ -40,7 +40,7 @@ class Matcha
 	public static $__freeze = false;
 	public static $__senchaModel;
 	public static $__conn;
-	public static $__root;
+	public static $__app;
 	public static $__audit;
 	
 	
@@ -54,12 +54,12 @@ class Matcha
 				!isset($databaseParameters['user']) && 
 				!isset($databaseParameters['pass']) &&
 				!isset($databaseParameters['root'])) 
-				throw new Exception('These parameters are obligatory: host=database ip or hostname, name=database name, user=database username, pass=database password, root=root path of you application.');
+				throw new Exception('These parameters are obligatory: host=database ip or hostname, name=database name, user=database username, pass=database password, app=path of your sencha application.');
 				
 			// Connect using regular PDO Matcha::setup Abstraction layer.
 			// but make only a connection, not to the database.
 			// and then the database
-			self::$__root = $databaseParameters['root'];
+			self::$__app = $databaseParameters['app'];
 			$host = (string)$databaseParameters['host'];
 			$port = (int)(isset($databaseParameters['port']) ? $databaseParameters['port'] : '3306');
 			$dbName = (string)$databaseParameters['name'];
@@ -253,9 +253,9 @@ class Matcha
 		try
 		{
 			// Getting Sencha model as a namespace
-			$fileModel = (string)str_replace('App', 'app', $fileModel);
+			$fileModel = (string)str_replace('App.', '', $fileModel);
 			$fileModel = str_replace('.', '/', $fileModel);
-			if(!file_exists(self::$__root.'/'.$fileModel.'.js')) throw new Exception('Sencha Model file does not exist.');
+			if(!file_exists(self::$__app.'/'.$fileModel.'.js')) throw new Exception('Sencha Model file does not exist.');
 			$senchaModel = (string)file_get_contents(self::$__root.'/'.$fileModel.'.js');
 			
 			// clean comments and unnecessary Ext.define functions

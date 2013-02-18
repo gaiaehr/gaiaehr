@@ -25,6 +25,7 @@ class Matcha
 	public static $__senchaModel;
 	public static $__conn;
 	public static $__root;
+	public static $__audit;
 	 
 	 /**
 	  * function connect($databaseObject, $rootPath, $senchaModel)
@@ -75,6 +76,11 @@ class Matcha
 	static public function freeze($onoff = false)
 	{
 		self::$__freeze = $onoff;
+	}
+	
+	static public function audit($onoff = true)
+	{
+		self::$__audit = $onoff;
 	}
 	
 	/**
@@ -394,7 +400,8 @@ class Matcha
 	
 	/**
 	 * function createDatabase($databaseName):
-	 * Method that will create a database
+	 * Method that will create a database, but will create it if
+	 * it does not exist.
 	 */
 	static public function createDatabase($databaseName)
 	{
@@ -553,6 +560,8 @@ class MatchaAudit extends Matcha
 	 */
 	static public function __auditLog($sqlStatement = '')
 	{
+		// if the $__audit is true run the procedure if not skip it
+		if(!Matcha::$__audit) return true;
 		// generate the appropriate event log comment 
 		$record = array();
 		$eventLog = (string)"Event triggered but never defined.";
@@ -598,7 +607,7 @@ class MatchaAudit extends Matcha
 	 * function __logModel():
 	 * Method to create the log table columns
 	 */
-	static public function __logModel()
+	static private function __logModel()
 	{
 		try
 		{

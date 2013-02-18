@@ -49,6 +49,7 @@ $timezone = (isset($_SESSION['site']['timezone']) ? $_SESSION['site']['timezone'
 date_default_timezone_set($timezone);
 
 include_once ($_SESSION['root'] . '/classes/Time.php');
+include_once ($_SESSION['root'] . '/classes/Matcha.php');
 
 class dbHelper
 {
@@ -82,31 +83,14 @@ class dbHelper
 	 */
 	function __construct()
 	{
-		// Connect using regular PDO GaiaEHR Database Abstraction layer.
-		// but make only a connection, not to the database.
-		$host = (string)$_SESSION['site']['db']['host'];
-		$port = (int)$_SESSION['site']['db']['port'];
-		$dbName = (string)$_SESSION['site']['db']['database'];
-		$dbUser = (string)$_SESSION['site']['db']['username'];
-		$dbPass = (string)$_SESSION['site']['db']['password'];
-		try
-		{
-			$this->conn = new PDO('mysql:host='.$host.';port='.$port.';charset=UTF-8', $dbUser, $dbPass, array(
-				PDO::MYSQL_ATTR_LOCAL_INFILE => 1,
-				PDO::ATTR_PERSISTENT => true
-			));
-			$this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-			// check if the database exist.
-			$recordSet = $this->conn->query("SHOW DATABASES LIKE '".$dbName."';");
-			$database = $recordSet->fetchAll(PDO::FETCH_ASSOC);
-			$this->conn->query('CREATE DATABASE IF NOT EXISTS '.$dbName.';');
-			$this->conn->query('USE '.$dbName.';');
-			return true;
-		}
-		catch(PDOException $e)
-		{
-			return $e;
-		}
+		// this is done to be compatible with the old methods
+		$this->conn = Matcha::setup(array(
+			'Host'=>$_SESSION['host'],
+			'Port'=>$_SESSION['port'],
+			'Name'=>$_SESSION['name'],
+			'User'=>$_SESSION['user'],
+			'Pass'=>$_SESSION['pass']
+		));
 	}
 
 	/**

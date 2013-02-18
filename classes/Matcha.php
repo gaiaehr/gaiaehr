@@ -27,102 +27,23 @@ class Matcha
 	  * The first thing to do, to begin using Matcha
 	  * This will load the Sencha Model to Matcha and do it's magic.
 	  */
-	 static public function connect($databaseObject, $rootPath, $senchaModel)
+	 static public function connect($databaseObject, $rootPath = NULL, $senchaModel = array())
 	 {
 	 	try
 	 	{
-	 		if(!isset($databaseObject) && !isset($senchaModel)) throw new Exception('Matcha::connect databaseObject or senchaModel is not set.');
+	 		if(!is_object($databaseObject) && !isset($rootPath) && !is_array($senchaModel)) throw new Exception('Matcha::connect databaseObject, rootPath or senchaModel is not set.');
 	 		self::$__conn = $databaseObject;
 			self::$__root = $rootPath;
-			self::SenchaModel($senchaModel);
+			self::__SenchaModel($senchaModel);
 			$matcha = new MatchaCRUD();
 			return $matcha;
 		}
-		catch(PDOException $e)
+		catch(Exception $e)
 		{
 			return self::__errorProcess($e);
 		}
 	 }
 
-	/**
-	 * function __auditLog($sqlStatement = ''):
-	 * Every store has to be logged into the database.
-	 * Also generate the table if does not exist.
-	 */
-	static private function __auditLog($sqlStatement = '')
-	{
-		// generate the appropriate event log comment 
-		$record = array();
-		$eventLog = (string)"Event triggered but never defined.";
-		if (stristr($sqlStatement, 'INSERT')) $eventLog = 'Record insertion';
-		if (stristr($sqlStatement, 'DELETE')) $eventLog = 'Record deletion';
-		if (stristr($sqlStatement, 'UPDATE')) $eventLog = 'Record update';
-
-		// allocate the event data
-		$eventData['date'] = date('Y-m-d H:i:s', time());
-		$eventData['event'] = $eventLog;
-		$eventData['comments'] = $sqlStatement;
-		$eventData['user'] = $_SESSION['user']['name'];
-		$eventData['checksum'] = crc32($sqlStatement);
-		$eventData['facility'] = $_SESSION['site']['dir'];
-		$eventData['patient_id'] = $_SESSION['patient']['pid'];
-		$eventData['ip'] = $_SESSION['server']['REMOTE_ADDR'];
-		
-		try
-		{
-			//check if the table exist
-			$recordSet = self::$__conn->query("SHOW TABLES LIKE '".self::$__senchaModel['table']."';");
-			if( $recordSet->fetch(PDO::FETCH_ASSOC) ) self::__createTable('log');
-			unset($recordSet);
-			
-			//check for the available fields
-			$recordSet = self::$__conn->query("SHOW COLUMNS IN ".self::$__senchaModel['table'].";");
-			if( $recordSet->fetchAll(PDO::FETCH_ASSOC) ) self::__logModel();
-			unset($recordSet);
-				
-			// insert the event log
-			$fields = (string)implode(', ', array_keys($eventData));
-			$values = (string)implode(', ', array_values($eventData));
-			self::$__conn->query('INSERT INTO log ('.$fields.') VALUES ('.$values.');');
-			return self::$__conn->lastInsertId();
-		}
-		catch(PDOException $e)
-		{
-			return self::__errorProcess($e);
-		}
-	}
-
-	/**
-	 * function __logModel():
-	 * Method to create the log table columns
-	 */
-	static private function __logModel()
-	{
-		try
-		{
-			self::$__conn->query("CREATE TABLE IF NOT EXISTS `log` (
-						`id` bigint(20) NOT NULL AUTO_INCREMENT,
-						`date` datetime DEFAULT NULL,
-						`event` varchar(255) DEFAULT NULL,
-						`user` varchar(255) DEFAULT NULL,
-						`facility` varchar(255) NOT NULL,
-						`comments` longtext,
-						`user_notes` longtext,
-						`patient_id` bigint(20) DEFAULT NULL,
-						`success` tinyint(1) DEFAULT '1',
-						`checksum` longtext,
-						`crt_user` varchar(255) DEFAULT NULL,
-						`ip` varchar(50) DEFAULT NULL,
-						PRIMARY KEY (`id`)
-					) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;");
-			return true;
-		}
-		catch(PDOException $e)
-		{
-			return self::__errorProcess($e);
-		}
-	}
-	
 	/**
 	 * function getLastId():
 	 * Get the last insert ID of an insert
@@ -157,7 +78,7 @@ class Matcha
 	 * This method will create the table and fields if does not exist in the database
 	 * also this is the brain of the micro ORM.
 	 */
-	static public function SenchaModel($fileModel)
+	static private function __SenchaModel($fileModel)
 	{
 		// skip this entire routine if freeze option is true
 		if(self::$__freeze) return true;
@@ -616,6 +537,88 @@ class Matcha
 	}
 }
 
+class MatchaAudit extends Matcha
+{
+	/**
+	 * function __auditLog($sqlStatement = ''):
+	 * Every store has to be logged into the database.
+	 * Also generate the table if does not exist.
+	 */
+	static public function __auditLog($sqlStatement = '')
+	{
+		// generate the appropriate event log comment 
+		$record = array();
+		$eventLog = (string)"Event triggered but never defined.";
+		if (stristr($sqlStatement, 'INSERT')) $eventLog = 'Record insertion';
+		if (stristr($sqlStatement, 'DELETE')) $eventLog = 'Record deletion';
+		if (stristr($sqlStatement, 'UPDATE')) $eventLog = 'Record update';
+
+		// allocate the event data
+		$eventData['date'] = date('Y-m-d H:i:s', time());
+		$eventData['event'] = $eventLog;
+		$eventData['comments'] = $sqlStatement;
+		$eventData['user'] = $_SESSION['user']['name'];
+		$eventData['checksum'] = crc32($sqlStatement);
+		$eventData['facility'] = $_SESSION['site']['dir'];
+		$eventData['patient_id'] = $_SESSION['patient']['pid'];
+		$eventData['ip'] = $_SESSION['server']['REMOTE_ADDR'];
+		
+		try
+		{
+			//check if the table exist
+			$recordSet = self::$__conn->query("SHOW TABLES LIKE '".self::$__senchaModel['table']."';");
+			if( $recordSet->fetch(PDO::FETCH_ASSOC) ) self::__createTable('log');
+			unset($recordSet);
+			
+			//check for the available fields
+			$recordSet = self::$__conn->query("SHOW COLUMNS IN ".self::$__senchaModel['table'].";");
+			if( $recordSet->fetchAll(PDO::FETCH_ASSOC) ) self::__logModel();
+			unset($recordSet);
+				
+			// insert the event log
+			$fields = (string)implode(', ', array_keys($eventData));
+			$values = (string)implode(', ', array_values($eventData));
+			self::$__conn->query('INSERT INTO log ('.$fields.') VALUES ('.$values.');');
+			return self::$__conn->lastInsertId();
+		}
+		catch(PDOException $e)
+		{
+			return self::__errorProcess($e);
+		}
+	}
+
+	/**
+	 * function __logModel():
+	 * Method to create the log table columns
+	 */
+	static public function __logModel()
+	{
+		try
+		{
+			self::$__conn->query("CREATE TABLE IF NOT EXISTS `log` (
+						`id` bigint(20) NOT NULL AUTO_INCREMENT,
+						`date` datetime DEFAULT NULL,
+						`event` varchar(255) DEFAULT NULL,
+						`user` varchar(255) DEFAULT NULL,
+						`facility` varchar(255) NOT NULL,
+						`comments` longtext,
+						`user_notes` longtext,
+						`patient_id` bigint(20) DEFAULT NULL,
+						`success` tinyint(1) DEFAULT '1',
+						`checksum` longtext,
+						`crt_user` varchar(255) DEFAULT NULL,
+						`ip` varchar(50) DEFAULT NULL,
+						PRIMARY KEY (`id`)
+					) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;");
+			return true;
+		}
+		catch(PDOException $e)
+		{
+			return self::__errorProcess($e);
+		}
+	}
+}
+
 class MatchaCRUD extends Matcha
 {
 	/**
@@ -634,7 +637,7 @@ class MatchaCRUD extends Matcha
 				foreach($record as $key => $value) ($key=='id' ? $storeField .= '' : $storeField .= $key."='".$value."'");
 				$sql = (string)'UPDATE '.Matcha::$__senchaModel['table'].' SET '.$storeField . " WHERE id='".$record['id']."';";
 				Matcha::$__conn->query($sql);
-				Matcha::__auditLog($sql);
+				MatchaAudit::__auditLog($sql);
 				Matcha::$__id = $record['id'];
 			}
 			// create a record
@@ -644,7 +647,7 @@ class MatchaCRUD extends Matcha
 				$values = (string)implode(', ', array_values($record));
 				$sql = (string)'INSERT INTO '.Matcha::$__senchaModel['table'].' ('.$fields.') VALUES ('.$values.');';
 				Matcha::$__conn->query($sql);
-				Matcha::__auditLog($sql);
+				MatchaAudit::__auditLog($sql);
 				Matcha::$__id = $__conn->lastInsertId();
 			}
 			return true;
@@ -666,7 +669,7 @@ class MatchaCRUD extends Matcha
 		{
 			$sql = "DELETE FROM ".Matcha::$__senchaModel['table']."WHERE id='".$record['id']."';";
 			Matcha::$__conn->query($sql);
-			Matcha::__auditLog($sql);
+			MatchaAudit::__auditLog($sql);
 			Matcha::$__total = (int)count($records)-1;
 			if(Matcha::$__id == $record['id']) unset(self::$__id);
 			return true; // success

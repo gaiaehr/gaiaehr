@@ -1,3 +1,4 @@
+![Alt text](/press/matcha-connect.png)
 Welcome to [Matcha::connect](http://www.matchaconnect.com/)
 =====================
 

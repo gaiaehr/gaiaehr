@@ -18,6 +18,11 @@ Ext.define('App.model.account.Voucher', {
 //	},
 	fields: [
 		{name: 'id',                        type: 'int'},
+		{name: 'createUid',                 type: 'int'},
+		{name: 'createDate',                type: 'date', dateFormat:'Y-m-d H:i:s'},
+		{name: 'writeUid',                  type: 'int'},
+		{name: 'writeDate',                 type: 'date', dateFormat:'Y-m-d H:i:s'},
+
 		{name: 'dateDue',                   type: 'date', dateFormat:'Y-m-d H:i:s', comment:'Due Date'},
 		{name: 'date',                      type: 'date', dateFormat:'Y-m-d H:i:s', comment:'Date'},
 		{name: 'encounterId',               type: 'int', comment:'Encounter'},

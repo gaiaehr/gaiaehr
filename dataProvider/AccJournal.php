@@ -11,18 +11,13 @@ if(!isset($_SESSION)){
  * Time: 10:20 PM
  * To change this template use File | Settings | File Templates.
  */
-include_once ($_SESSION['root'] . '/classes/dbHelper.php');
-class AccJournal {
-
-    /**
-     * @var dbHelper
-     */
-    private $db;
+include_once ($_SESSION['root'] . '/dataProvider/AccAccount.php');
+class AccJournal extends AccAccount {
 
 
     function __construct()
     {
-        $this->db = new dbHelper();
+        parent::__construct();
     }
 
     public function createJournal(){

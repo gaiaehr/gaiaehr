@@ -36,7 +36,7 @@ include_once ($_SESSION['root'] . '/dataProvider/Patient.php');
  * @copyright   Gnu Public License (GPLv3)
  *
  */
-class AccBilling
+class AccAccount
 {
     /**
      * @var dbHelper
@@ -54,11 +54,14 @@ class AccBilling
     function __construct()
     {
         $this->db = new dbHelper();
+	    $this->db->SenchaModel('App.model.account.Account');
+	    $this->db->SenchaModel('App.model.account.AccountType');
+
         $this->services = new Services();
         $this->patient = new Patient();
     }
 
-	protected function getVisitVoucherLines(stdClass $params)
+	protected function getVisitCheckOutCharges(stdClass $params)
     {
         $invoice = array();
         $insurance = $this->patient->getPatientPrimaryInsuranceByPid($params->pid);

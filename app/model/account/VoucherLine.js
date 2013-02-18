@@ -32,6 +32,11 @@ Ext.define('App.model.account.VoucherLine', {
 //	],
     fields: [
         {name: 'id',                    type: 'int'},
+	    {name: 'createUid',             type: 'int'},
+	    {name: 'createDate',            type: 'date', dateFormat:'Y-m-d H:i:s'},
+	    {name: 'writeUid',              type: 'int'},
+	    {name: 'writeDate',             type: 'date', dateFormat:'Y-m-d H:i:s'},
+
         {name: 'voucherId',             type: 'int', comment: 'Voucher'},
         {name: 'accountId',             type: 'int', comment: 'Account'},
 	    {name: 'moveLineId',            type: 'int', comment: 'Journal Item'},

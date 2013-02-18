@@ -31,9 +31,9 @@ $API = array(
             )
         )
     ),
-    'AccBilling' => array(
+    'AccAccount' => array(
         'methods' => array(
-            'getVisitVoucherLines' => array(
+            'getVisitCheckOutCharges' => array(
                 'len' => 1
             )
         )

@@ -29,6 +29,7 @@ class MatchaCUP
 	 * @var array Model array
 	 */
 	public static $model;
+	public static $table;
 	public static $rowsAffected;
 	public static $lastInsertId;
 
@@ -69,7 +70,7 @@ class MatchaCUP
 		}
 		catch(PDOException $e)
 		{
-			return $e->getMessage();
+			return Matcha::__errorProcess($e);
 		}
 	}
 
@@ -84,7 +85,7 @@ class MatchaCUP
 		try
 		{
 			$record = (is_object($record) ? get_object_vars($record) : $record);
-			$table = self::$model->table->name;
+			$table = self::$table;
 			// create a record
 			if(!isset($record['id']))
 			{
@@ -92,8 +93,7 @@ class MatchaCUP
 				$columns = '(`'.implode('`,`',$columns).'`)';
 				$values  = array_values($record);
 				$values  = '(\''.implode('\',\'',$values).'\')';
-				$sql = "INSERT INTO `$table` $columns VALUES $values";
-				self::$rowsAffected = Matcha::$__conn->exec($sql);
+				self::$rowsAffected = Matcha::$__conn->exec("INSERT INTO `$table` $columns VALUES $values");
 				self::$lastInsertId = Matcha::$__conn->lastInsertId();
 			}
 			// update a record
@@ -104,14 +104,13 @@ class MatchaCUP
 				unset($record['id']);
 				foreach($record as $key => $val) $values[] = "`$key`='$val'";
 				$values = implode(',',$values);
-				$sql = "UPDATE `$table` SET $values WHERE id='$id'";
-				self::$rowsAffected = Matcha::$__conn->exec($sql);
+				self::$rowsAffected = Matcha::$__conn->exec("UPDATE `$table` SET $values WHERE id='$id'");
 			}
-			return true;
+			return self::$rowsAffected;
 		}
 		catch(PDOException $e)
 		{
-			return $e->getMessage();
+			return Matcha::__errorProcess($e);
 		}
 	}
 	
@@ -120,26 +119,26 @@ class MatchaCUP
 	 * Delete
 	 * will delete the record indicated by an id
 	 */
-	static public function trash($record = array())
+	static public function trash($record)
 	{
 		try
 		{
-//			$sql = (string)"DELETE FROM ".Matcha::$__senchaModel['table']."WHERE id='".$record['id']."';";
-//			Matcha::$__conn->query($sql);
-//			MatchaAudit::__auditLog($sql);
-//			Matcha::$__total = (int)count($records)-1;
-//			if(Matcha::$__id == $record['id']) unset(self::$__id);
-//			return true; // success
+			$record = (is_object($record) ? get_object_vars($record) : $record);
+			$id = $record['id'];
+			$table = self::$table;
+			self::$rowsAffected = Matcha::$__conn->exec("DELETE FROM $table WHERE id='$id'");
+			return self::$rowsAffected;
 		}
 		catch(PDOException $e)
 		{
-//			return Matcha::__errorProcess($e);
+			return Matcha::__errorProcess($e);
 		}
 	}
 
 
 	static public function setModel($model){
 		self::$model = self::ArrayToObject($model);
+		self::$table = self::$model->table->name;
 	}
 
 	static private function ArrayToObject(array $array, stdClass $parent = null) {

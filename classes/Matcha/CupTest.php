@@ -85,10 +85,9 @@ print '<br>';
 print $t::$rowsAffected;
 print '<br>';
 print $t::$lastInsertId;
-
-
-
+print '<br>';
 print_r($t::load(5)->fetch());    					// fetch all
+print '<br>';
 print_r($t::load(5)->fetchAll());    				// fetch all
 //print '<br>';
 //print '<br>';

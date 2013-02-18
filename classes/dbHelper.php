@@ -49,7 +49,7 @@ $timezone = (isset($_SESSION['site']['timezone']) ? $_SESSION['site']['timezone'
 date_default_timezone_set($timezone);
 
 include_once ($_SESSION['root'] . '/classes/Time.php');
-include_once ($_SESSION['root'] . '/classes/Matcha.php');
+include_once ($_SESSION['root'] . '/classes/Matcha/Matcha.php');
 
 class dbHelper
 {
@@ -85,11 +85,11 @@ class dbHelper
 	{
 		// this is done to be compatible with the old methods
 		$this->conn = Matcha::setup(array(
-			'Host'=>$_SESSION['host'],
-			'Port'=>$_SESSION['port'],
-			'Name'=>$_SESSION['name'],
-			'User'=>$_SESSION['user'],
-			'Pass'=>$_SESSION['pass']
+			'host'=>(string)$_SESSION['site']['db']['host'],
+			'port'=>(int)$_SESSION['site']['db']['port'],
+			'name'=>(string)$_SESSION['site']['db']['database'],
+			'user'=>(string)$_SESSION['site']['db']['username'],
+			'pass'=>(string)$_SESSION['site']['db']['password']
 		));
 	}
 

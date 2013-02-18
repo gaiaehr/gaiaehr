@@ -23,9 +23,9 @@
  */
 
 
-//
-//--- Matcha Class --------------------------------------------------------------------------------------------------------------
-//
+include_once('MatchaAudit.php');
+include_once('MatchaCUP.php');
+
 class Matcha
 {
 	 
@@ -45,23 +45,23 @@ class Matcha
 	
 	static public function setup($databaseParameters = array())
 	{
-		// check for properties first.
-		if(!isset($databaseParameters['Host']) && 
-			!isset($databaseParameters['Name']) &&
-			!isset($databaseParameters['User']) && 
-			!isset($databaseParameters['Pass'])) 
-			throw new Exception('These parameters are obligatory: Host, Name, User, Pass. Come on!');
-			
-		// Connect using regular PDO Matcha::setup Abstraction layer.
-		// but make only a connection, not to the database.
-		// and then the database
-		$host = (string)$databaseParameters['Host'];
-		$port = (int)(isset($databaseParameters['Port']) ? $databaseParameters['Port'] : '3306');
-		$dbName = (string)$databaseParameters['Name'];
-		$dbUser = (string)$databaseParameters['User'];
-		$dbPass = (string)$databaseParameters['Pass'];
 		try
-		{
+		{		
+			// check for properties first.
+			if(!isset($databaseParameters['host']) && 
+				!isset($databaseParameters['name']) &&
+				!isset($databaseParameters['user']) && 
+				!isset($databaseParameters['pass'])) 
+				throw new Exception('These parameters are obligatory: Host, Name, User, Pass. Come on!');
+				
+			// Connect using regular PDO Matcha::setup Abstraction layer.
+			// but make only a connection, not to the database.
+			// and then the database
+			$host = (string)$databaseParameters['Host'];
+			$port = (int)(isset($databaseParameters['Port']) ? $databaseParameters['Port'] : '3306');
+			$dbName = (string)$databaseParameters['Name'];
+			$dbUser = (string)$databaseParameters['User'];
+			$dbPass = (string)$databaseParameters['Pass'];
 			self::$__conn = new PDO('mysql:host='.$host.';port='.$port.';', $dbUser, $dbPass, array(
 				PDO::MYSQL_ATTR_LOCAL_INFILE => 1,
 				PDO::ATTR_PERSISTENT => true
@@ -88,7 +88,7 @@ class Matcha
 	 	try
 	 	{
 	 		self::__SenchaModel($senchaModel);
-			$matcha = new MatchaCRUD();
+			$matcha = new MatchaCUP();
 			return $matcha;
 		}
 		catch(Exception $e)
@@ -144,7 +144,7 @@ class Matcha
 		{
 			// get the the model of the table from the sencha .js file
 			self::$__senchaModel = self::__getSenchaModel($fileModel);
-			if(!self::$__senchaModel['fields']) return false;
+			if(!self::$__senchaModel['fields']) throw new Exception('There are no fields set.');
 		
 			// verify the existence of the table if it does not exist create it
 			$recordSet = self::$__conn->query("SHOW TABLES LIKE '".self::$__senchaModel['table']."';");
@@ -249,6 +249,7 @@ class Matcha
 			$fileModel = (string)str_replace('App', 'app', $fileModel);
 			$fileModel = str_replace('.', '/', $fileModel);
 			$senchaModel = (string)file_get_contents(self::$__root . '/' . $fileModel . '.js');
+			if(!$senchaModel) throw new Exception('Could not open the file.');
 			
 			// clean comments and unnecessary Ext.define functions
 			$senchaModel = preg_replace("((/\*(.|\n)*?\*/|//(.*))|([ ](?=(?:[^\'\"]|\'[^\'\"]*\')*$)|\t|\n|\r))", '', $senchaModel);
@@ -272,7 +273,8 @@ class Matcha
 		}
 		catch(Exception $e)
 		{
-			return self::__errorProcess($e);
+			self::__errorProcess($e);
+			return false;
 		}
 	}
 
@@ -591,186 +593,7 @@ class Matcha
 	 */
 	static private function __errorProcess($errorException)
 	{
-		error_log('self::connect microORM: ' . $errorException->getMessage() );
+		error_log('Matcha::connect microORM: ' . $errorException->getMessage() );
 		return $errorException;
-	}
-}
-
-//
-//--- MatchaAudit Class --------------------------------------------------------------------------------------------------------------
-//
-class MatchaAudit extends Matcha
-{
-	/**
-	 * function __auditLog($sqlStatement = ''):
-	 * Every store has to be logged into the database.
-	 * Also generate the table if does not exist.
-	 */
-	static public function __auditLog($sqlStatement = '')
-	{
-		// if the $__audit is true run the procedure if not skip it
-		if(!Matcha::$__audit) return true;
-		// generate the appropriate event log comment 
-		$record = array();
-		$eventLog = (string)"Event triggered but never defined.";
-		if (stristr($sqlStatement, 'INSERT')) $eventLog = 'Record insertion';
-		if (stristr($sqlStatement, 'DELETE')) $eventLog = 'Record deletion';
-		if (stristr($sqlStatement, 'UPDATE')) $eventLog = 'Record update';
-
-		// allocate the event data
-		$eventData['date'] = date('Y-m-d H:i:s', time());
-		$eventData['event'] = $eventLog;
-		$eventData['comments'] = $sqlStatement;
-		$eventData['user'] = $_SESSION['user']['name'];
-		$eventData['checksum'] = crc32($sqlStatement);
-		$eventData['facility'] = $_SESSION['site']['dir'];
-		$eventData['patient_id'] = $_SESSION['patient']['pid'];
-		$eventData['ip'] = $_SESSION['server']['REMOTE_ADDR'];
-		
-		try
-		{
-			//check if the table exist
-			$recordSet = self::$__conn->query("SHOW TABLES LIKE '".self::$__senchaModel['table']."';");
-			if( $recordSet->fetch(PDO::FETCH_ASSOC) ) self::__createTable('log');
-			unset($recordSet);
-			
-			//check for the available fields
-			$recordSet = self::$__conn->query("SHOW COLUMNS IN ".self::$__senchaModel['table'].";");
-			if( $recordSet->fetchAll(PDO::FETCH_ASSOC) ) self::__logModel();
-			unset($recordSet);
-				
-			// insert the event log
-			$fields = (string)implode(', ', array_keys($eventData));
-			$values = (string)implode(', ', array_values($eventData));
-			self::$__conn->query('INSERT INTO log ('.$fields.') VALUES ('.$values.');');
-			return self::$__conn->lastInsertId();
-		}
-		catch(PDOException $e)
-		{
-			return self::__errorProcess($e);
-		}
-	}
-
-	/**
-	 * function __logModel():
-	 * Method to create the log table columns
-	 */
-	static private function __logModel()
-	{
-		try
-		{
-			self::$__conn->query("CREATE TABLE IF NOT EXISTS `log` (
-						`id` bigint(20) NOT NULL AUTO_INCREMENT,
-						`date` datetime DEFAULT NULL,
-						`event` varchar(255) DEFAULT NULL,
-						`user` varchar(255) DEFAULT NULL,
-						`facility` varchar(255) NOT NULL,
-						`comments` longtext,
-						`user_notes` longtext,
-						`patient_id` bigint(20) DEFAULT NULL,
-						`success` tinyint(1) DEFAULT '1',
-						`checksum` longtext,
-						`crt_user` varchar(255) DEFAULT NULL,
-						`ip` varchar(50) DEFAULT NULL,
-						PRIMARY KEY (`id`)
-					) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;");
-			return true;
-		}
-		catch(PDOException $e)
-		{
-			return self::__errorProcess($e);
-		}
-	}
-}
-
-
-//
-//--- MatchaCRUD Class --------------------------------------------------------------------------------------------------------------
-//
-class MatchaCRUD extends Matcha
-{
-	/**
-	 * function store($record = array()): (part of CRUD)
-	 * Create & Update
-	 * store the record as array into the working table
-	 */
-	static public function store($record = array())
-	{
-		try
-		{
-			// update a record
-			if(isset($record['id']))
-			{
-				$storeField = (string)'';
-				foreach($record as $key => $value) ($key=='id' ? $storeField .= '' : $storeField .= $key."='".$value."'");
-				$sql = (string)'UPDATE '.Matcha::$__senchaModel['table'].' SET '.$storeField . " WHERE id='".$record['id']."';";
-				Matcha::$__conn->query($sql);
-				MatchaAudit::__auditLog($sql);
-				Matcha::$__id = $record['id'];
-			}
-			// create a record
-			else
-			{
-				$fields = (string)implode(', ', array_keys($record));
-				$values = (string)implode(', ', array_values($record));
-				$sql = (string)'INSERT INTO '.Matcha::$__senchaModel['table'].' ('.$fields.') VALUES ('.$values.');';
-				Matcha::$__conn->query($sql);
-				MatchaAudit::__auditLog($sql);
-				Matcha::$__id = $__conn->lastInsertId();
-			}
-			return true;
-		}
-		catch(PDOException $e)
-		{
-			return Matcha::__errorProcess($e);
-		}
-	}
-	
-	/**
-	 * function trash($record = array()): (part of CRUD)
-	 * Delete
-	 * will delete the record indicated by an id
-	 */
-	static public function trash($record = array())
-	{
-		try
-		{
-			$sql = (string)"DELETE FROM ".Matcha::$__senchaModel['table']."WHERE id='".$record['id']."';";
-			Matcha::$__conn->query($sql);
-			MatchaAudit::__auditLog($sql);
-			Matcha::$__total = (int)count($records)-1;
-			if(Matcha::$__id == $record['id']) unset(self::$__id);
-			return true; // success
-		}
-		catch(PDOException $e)
-		{
-			return Matcha::__errorProcess($e);
-		}
-	}
-
-	/**
-	 * function load($id = NULL, $columns = array()) (part of CRUD)
-	 * Read from table
-	 * Load all records, load one record if a ID is passed,
-	 * load all records with some columns determined by an array,
-	 * load one record with some columns determined by an array, or any combination.  
-	 */
-	static public function load($id = NULL, $columns = array())
-	{
-		try
-		{
-			$selectedColumns = (string)'';
-			if(count($columns)) $selectedColumns = implode(', '.Matcha::$__senchaModel['table'].'.', $columns);
-			$recordSet = Matcha::$__conn->query("SELECT ".($selectedColumns ? Matcha::$__senchaModel['table'].".".$selectedColumns : '*').
-				" FROM ".Matcha::$__senchaModel['table'].
-				($id ? " WHERE ".Matcha::$__senchaModel['table'].".id='".$id."'" : "").";");
-			$records = (array)$recordSet->fetchAll(PDO::FETCH_ASSOC);
-			Matcha::$__total = (int)count($records);
-			return $records;
-		}
-		catch(PDOException $e)
-		{
-			return Matcha::__errorProcess($e);
-		}
 	}
 }

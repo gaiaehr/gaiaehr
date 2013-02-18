@@ -15,15 +15,17 @@ class Matcha
 	 */
 	public static $Relation;
 	public static $currentRecord;
-	private static $__id;
-	private static $__total;
-	private static $__freeze = false;
-	private static $__senchaModel;
-	private static $__conn;
-	private static $__root;
+	public static $__id;
+	public static $__total;
+	public static $__freeze = false;
+	public static $__senchaModel;
+	public static $__conn;
+	public static $__root;
 	 
 	 /**
-	  * connect:
+	  * function connect($databaseObject, $rootPath, $senchaModel)
+	  * The first thing to do, to begin using Matcha
+	  * This will load the Sencha Model to Matcha and do it's magic.
 	  */
 	 static public function connect($databaseObject, $rootPath, $senchaModel)
 	 {
@@ -33,6 +35,8 @@ class Matcha
 	 		self::$__conn = $databaseObject;
 			self::$__root = $rootPath;
 			self::SenchaModel($senchaModel);
+			$matcha = new MatchaCRUD();
+			return $matcha;
 		}
 		catch(PDOException $e)
 		{
@@ -41,92 +45,7 @@ class Matcha
 	 }
 
 	/**
-	 * store: (part of CRUD)
-	 * Create & Update
-	 * store the record as array into the working table
-	 */
-	static public function store($record = array())
-	{
-		try
-		{
-			// update a record
-			if(isset($record['id']))
-			{
-				$storeField = (string)'';
-				foreach($record as $key => $value) ($key=='id' ? $storeField .= '' : $storeField .= $key."='".$value."'");
-				$sql = (string)'UPDATE '.self::$__senchaModel['table'].' SET '.$storeField . " WHERE id='".$record['id']."';";
-				self::$__conn->query($sql);
-				self::__auditLog($sql);
-				self::$__id = $record['id'];
-			}
-			// create a record
-			else
-			{
-				$fields = (string)implode(', ', array_keys($record));
-				$values = (string)implode(', ', array_values($record));
-				$sql = (string)'INSERT INTO '.self::$__senchaModel['table'].' ('.$fields.') VALUES ('.$values.');';
-				self::$__conn->query($sql);
-				self::__auditLog($sql);
-				self::$__id = $__conn->lastInsertId();
-			}
-			return true;
-		}
-		catch(PDOException $e)
-		{
-			return self::__errorProcess($e);
-		}
-	}
-	
-	/**
-	 * trash: (part of CRUD)
-	 * Delete
-	 * will delete the record indicated by an id
-	 */
-	static public function trash($record = array())
-	{
-		try
-		{
-			$sql = "DELETE FROM ".self::$__senchaModel['table']."WHERE id='".$record['id']."';";
-			self::$__conn->query($sql);
-			self::__auditLog($sql);
-			self::$__total = (int)count($records)-1;
-			if(self::$__id == $record['id']) unset(self::$__id);
-			return true; // success
-		}
-		catch(PDOException $e)
-		{
-			return self::__errorProcess($e);
-		}
-	}
-
-	/**
-	 * function load($id = NULL, $columns = array()) (part of CRUD)
-	 * Read from table
-	 * Load all records, load one record if a ID is passed,
-	 * load all records with some columns determined by an array,
-	 * load one record with some columns determined by an array, or any combination.  
-	 */
-	static public function load($id = NULL, $columns = array())
-	{
-		try
-		{
-			$selectedColumns = (string)'';
-			if(count($columns)) $selectedColumns = implode(', '.self::$__senchaModel['table'].'.', $columns);
-			$recordSet = self::$__conn->query("SELECT ".($selectedColumns ? self::$__senchaModel['table'].".".$selectedColumns : '*').
-				" FROM ".self::$__senchaModel['table'].
-				($id ? " WHERE ".self::$__senchaModel['table'].".id='".$id."'" : "").";");
-			$records = (array)$recordSet->fetchAll(PDO::FETCH_ASSOC);
-			self::$__total = (int)count($records);
-			return $records;
-		}
-		catch(PDOException $e)
-		{
-			return self::__errorProcess($e);
-		}
-	}
-	
-	/**
-	 * __auditLog:
+	 * function __auditLog($sqlStatement = ''):
 	 * Every store has to be logged into the database.
 	 * Also generate the table if does not exist.
 	 */
@@ -174,7 +93,7 @@ class Matcha
 	}
 
 	/**
-	 * __logModel:
+	 * function __logModel():
 	 * Method to create the log table columns
 	 */
 	static private function __logModel()
@@ -205,7 +124,7 @@ class Matcha
 	}
 	
 	/**
-	 * getLastId:
+	 * function getLastId():
 	 * Get the last insert ID of an insert
 	 * this is automatically updated by the store method
 	 */
@@ -225,8 +144,8 @@ class Matcha
 	}
 	
 	/**
-	 * freeze:
-	 * freeze the database and tables alteration by the SenchaPHP microORM
+	 * freeze($onoff = false):
+	 * freeze the database and tables alteration by the Matcha microORM
 	 */
 	static public function freeze($onoff = false)
 	{
@@ -234,7 +153,7 @@ class Matcha
 	}
 	
 	/**
-	 * SechaModel method: 
+	 * function SenchaModel($fileModel): 
 	 * This method will create the table and fields if does not exist in the database
 	 * also this is the brain of the micro ORM.
 	 */
@@ -339,7 +258,7 @@ class Matcha
 	}
 	
 	/**
-	 * __getSenchaModel:
+	 * __getSenchaModel($fileModel):
 	 * This method is used by SechaModel method to get all the table and column
 	 * information inside the Sencha Model .js file 
 	 */
@@ -379,7 +298,7 @@ class Matcha
 	}
 
 	/**
-	 * __getRelationFromModel:
+	 * function __getRelationFromModel():
 	 * Method to get the relation from the model if has any
 	 */
 	static private function __getRelationFromModel()
@@ -448,7 +367,7 @@ class Matcha
 	}
 
 	/**
-	 * __leftJoin:
+	 * function __leftJoin($joinParameters = array()):
 	 * A left join returns all the records in the “left” table (T1) whether they 
 	 * have a match in the right table or not. If, however, they do have a match 
 	 * in the right table – give me the “matching” data from the right table as well. 
@@ -460,7 +379,7 @@ class Matcha
 	}
 	
 	/**
-	 * __innerJoin:
+	 * function __innerJoin($joinParameters = array()):
 	 * An inner join only returns those records that have “matches” in both tables. 
 	 * So for every record returned in T1 – you will also get the record linked by 
 	 * the foreign key in T2. In programming logic – think in terms of AND.
@@ -471,7 +390,7 @@ class Matcha
 	}
 
 	/**
-	 * __setSenchaModel:
+	 * function __setSenchaModel($senchaModelObject):
 	 * Set the Sencha Model by an object
 	 * Useful to pass the model via an object, instead of using the .js file
 	 * it can be constructed dynamically.
@@ -483,7 +402,7 @@ class Matcha
 	}
 	
 	/**
-	 * __createTable:
+	 * function __createTable():
 	 * Method to create a table if does not exist
 	 */
 	 static private function __createTable()
@@ -500,7 +419,7 @@ class Matcha
 	 }
 	 
 	/**
-	 * __createColumn:
+	 * function __createAllColumns($paramaters = array()):
 	 * This method will create the column inside the table of the database
 	 * method used by SechaModel method
 	 */
@@ -517,7 +436,7 @@ class Matcha
 	}
 	
 	/**
-	 * __createColumn:
+	 * function __createColumn($column = array()):
 	 * Method that will create the column into the table
 	 */
 	static private function __createColumn($column = array())
@@ -533,7 +452,7 @@ class Matcha
 	}
 	
 	/**
-	 * __modifyColumn:
+	 * function __modifyColumn($SingleParamater = array()):
 	 * Method to modify the column properties
 	 */
 	static private function __modifyColumn($SingleParamater = array())
@@ -549,7 +468,7 @@ class Matcha
 	}
 	
 	/**
-	 * __createDatabase
+	 * function createDatabase($databaseName):
 	 * Method that will create a database
 	 */
 	static public function createDatabase($databaseName)
@@ -565,7 +484,7 @@ class Matcha
 	}
 	
 	/**
-	 * __dropColumn:
+	 * function __dropColumn($column):
 	 * Method to drop column in a table
 	 */
 	static private function __dropColumn($column)
@@ -581,7 +500,7 @@ class Matcha
 	}
 	
 	/**
-	 * __renderColumnSyntax:
+	 * function __renderColumnSyntax($column = array()):
 	 * Method that will render the correct syntax for the addition or modification
 	 * of a column.
 	 */
@@ -671,7 +590,7 @@ class Matcha
 	}
 	
 	/**
-	 * __recursive_array_search:
+	 * __recursiveArraySearch($needle,$haystack):
 	 * An recursive array search method
 	 */
 	static private function __recursiveArraySearch($needle,$haystack) 
@@ -685,7 +604,7 @@ class Matcha
 	}
 	
 	/**
-	 * __errorProcess:
+	 * function __errorProcess($errorException):
 	 * Handle the error of an exception
 	 * TODO: It could be more elaborated and handle other things.
 	 * for example log file for GaiaEHR.
@@ -694,5 +613,93 @@ class Matcha
 	{
 		error_log('self::connect microORM: ' . $errorException->getMessage() );
 		return $errorException;
+	}
+}
+
+class MatchaCRUD extends Matcha
+{
+	/**
+	 * function store($record = array()): (part of CRUD)
+	 * Create & Update
+	 * store the record as array into the working table
+	 */
+	static public function store($record = array())
+	{
+		try
+		{
+			// update a record
+			if(isset($record['id']))
+			{
+				$storeField = (string)'';
+				foreach($record as $key => $value) ($key=='id' ? $storeField .= '' : $storeField .= $key."='".$value."'");
+				$sql = (string)'UPDATE '.Matcha::$__senchaModel['table'].' SET '.$storeField . " WHERE id='".$record['id']."';";
+				Matcha::$__conn->query($sql);
+				Matcha::__auditLog($sql);
+				Matcha::$__id = $record['id'];
+			}
+			// create a record
+			else
+			{
+				$fields = (string)implode(', ', array_keys($record));
+				$values = (string)implode(', ', array_values($record));
+				$sql = (string)'INSERT INTO '.Matcha::$__senchaModel['table'].' ('.$fields.') VALUES ('.$values.');';
+				Matcha::$__conn->query($sql);
+				Matcha::__auditLog($sql);
+				Matcha::$__id = $__conn->lastInsertId();
+			}
+			return true;
+		}
+		catch(PDOException $e)
+		{
+			return Matcha::__errorProcess($e);
+		}
+	}
+	
+	/**
+	 * function trash($record = array()): (part of CRUD)
+	 * Delete
+	 * will delete the record indicated by an id
+	 */
+	static public function trash($record = array())
+	{
+		try
+		{
+			$sql = "DELETE FROM ".Matcha::$__senchaModel['table']."WHERE id='".$record['id']."';";
+			Matcha::$__conn->query($sql);
+			Matcha::__auditLog($sql);
+			Matcha::$__total = (int)count($records)-1;
+			if(Matcha::$__id == $record['id']) unset(self::$__id);
+			return true; // success
+		}
+		catch(PDOException $e)
+		{
+			return Matcha::__errorProcess($e);
+		}
+	}
+
+	/**
+	 * function load($id = NULL, $columns = array()) (part of CRUD)
+	 * Read from table
+	 * Load all records, load one record if a ID is passed,
+	 * load all records with some columns determined by an array,
+	 * load one record with some columns determined by an array, or any combination.  
+	 */
+	static public function load($id = NULL, $columns = array())
+	{
+		try
+		{
+			$selectedColumns = (string)'';
+			if(count($columns)) $selectedColumns = implode(', '.Matcha::$__senchaModel['table'].'.', $columns);
+			$recordSet = Matcha::$__conn->query("SELECT ".($selectedColumns ? Matcha::$__senchaModel['table'].".".$selectedColumns : '*').
+				" FROM ".Matcha::$__senchaModel['table'].
+				($id ? " WHERE ".Matcha::$__senchaModel['table'].".id='".$id."'" : "").";");
+			$records = (array)$recordSet->fetchAll(PDO::FETCH_ASSOC);
+			Matcha::$__total = (int)count($records);
+			return $records;
+		}
+		catch(PDOException $e)
+		{
+			return Matcha::__errorProcess($e);
+		}
 	}
 }

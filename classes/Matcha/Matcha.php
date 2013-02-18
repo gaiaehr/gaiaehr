@@ -26,7 +26,6 @@
 include_once('MatchaAudit.php');
 include_once('MatchaCUP.php');
 include_once('MatchaErrorHandler.php');
-
 class Matcha
 {
 	 
@@ -70,6 +69,7 @@ class Matcha
 				PDO::ATTR_PERSISTENT => true
 			));
 			self::$__conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			self::$__conn->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 			// check if the database exist.
 			self::__createDatabase($dbName);
 			self::$__conn->query('USE '.$dbName.';');
@@ -90,9 +90,11 @@ class Matcha
 	 {
 	 	try
 	 	{
-	 		if(self::__SenchaModel($senchaModel))
+			$model = self::__SenchaModel($senchaModel);
+	 		if($model)
 			{
 				$matcha = new MatchaCUP();
+				$matcha->setModel($model);
 				return $matcha;
 			}
 		}

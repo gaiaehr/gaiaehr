@@ -21,18 +21,17 @@
  * so this is the result. 
  *  
  */
- 
+include_once('Matcha.php');
+
 class MatchaCUP
 {
-	/**
-	 * @var db connection
-	 */
-	public static $conn;
-
 	/**
 	 * @var array Model array
 	 */
 	public static $model;
+	public static $rowsAffected;
+	public static $lastInsertId;
+
 
 	/**
 	 * function load($id = NULL, $columns = array()) (part of CRUD)
@@ -61,19 +60,16 @@ class MatchaCUP
 			}else{
 				$wherex = $where;
 			}
-
-			if($wherex != '') $wherex = 'WHERE '.$wherex;
-
+			if($where != null) $wherex = 'WHERE '.$wherex;
 			// table
 			$table = self::$model->table->name;
 			// sql build
 			$sql = "SELECT $columnsx FROM `$table` $wherex";
-			print $sql;
-
+			return Matcha::$__conn->query($sql);
 		}
 		catch(PDOException $e)
 		{
-//			return Matcha::__errorProcess($e);
+			return $e->getMessage();
 		}
 	}
 
@@ -83,35 +79,39 @@ class MatchaCUP
 	 * Create & Update
 	 * store the record as array into the working table
 	 */
-	static public function store($record = array())
+	static public function store($record)
 	{
 		try
 		{
-			// update a record
-			if(isset($record['id']))
-			{
-//				$storeField = (string)'';
-//				foreach($record as $key => $value) ($key=='id' ? $storeField .= '' : $storeField .= $key."='".$value."'");
-//				$sql = (string)'UPDATE '.Matcha::$__senchaModel['table'].' SET '.$storeField . " WHERE id='".$record['id']."';";
-//				Matcha::$__conn->query($sql);
-//				MatchaAudit::__auditLog($sql);
-//				Matcha::$__id = $record['id'];
-			}
+			$record = (is_object($record) ? get_object_vars($record) : $record);
+			$table = self::$model->table->name;
 			// create a record
+			if(!isset($record['id']))
+			{
+				$columns = array_keys($record);
+				$columns = '(`'.implode('`,`',$columns).'`)';
+				$values  = array_values($record);
+				$values  = '(\''.implode('\',\'',$values).'\')';
+				$sql = "INSERT INTO `$table` $columns VALUES $values";
+				self::$rowsAffected = Matcha::$__conn->exec($sql);
+				self::$lastInsertId = Matcha::$__conn->lastInsertId();
+			}
+			// update a record
 			else
 			{
-//				$fields = (string)implode(', ', array_keys($record));
-//				$values = (string)implode(', ', array_values($record));
-//				$sql = (string)'INSERT INTO '.Matcha::$__senchaModel['table'].' ('.$fields.') VALUES ('.$values.');';
-//				Matcha::$__conn->query($sql);
-//				MatchaAudit::__auditLog($sql);
-//				Matcha::$__id = $__conn->lastInsertId();
+				$values = array();
+				$id = $record['id'];
+				unset($record['id']);
+				foreach($record as $key => $val) $values[] = "`$key`='$val'";
+				$values = implode(',',$values);
+				$sql = "UPDATE `$table` SET $values WHERE id='$id'";
+				self::$rowsAffected = Matcha::$__conn->exec($sql);
 			}
 			return true;
 		}
 		catch(PDOException $e)
 		{
-//			return Matcha::__errorProcess($e);
+			return $e->getMessage();
 		}
 	}
 	
@@ -177,70 +177,3 @@ class MatchaCUP
 	}
 
 }
-print '<pre>';
-$t = new MatchaCUP();
-$t->setModel(Array(
-	'extend' => 'Ext.data.Model',
-	'table' => Array(
-		'name' => 'accvoucher',
-		'engine' => 'InnoDB',
-		'autoIncrement' => 1,
-		'charset' => 'utf8',
-		'collate' => 'utf8_bin',
-		'comment' => 'Voucher / Receipt'
-	),
-	'fields' => Array(
-		Array(
-			'name' => 'id',
-			'type' => 'int'
-		),
-		Array(
-			'name' => 'voucherId',
-			'type' => 'int',
-			'comment' => 'Voucher'
-		),
-		Array(
-			'name' => 'accountId',
-			'type' => 'int',
-			'comment' => 'Account'
-		)
-	),
-	'associations' => Array(
-		Array(
-			'type' => 'belongsTo',
-			'model' => 'App.model.account.Voucher',
-			'foreignKey' => 'voucherId',
-			'setterName' => 'setVoucher',
-			'getterName' => 'getVoucher'
-		)
-	)
-));
-$t->setConn($t->db->conn);
-
-$t::load();    						                // fetch all
-print '<br>';
-print '<br>';
-$t::load(5);    						            // fetch all columns where id = 5
-print '<br>';
-print '<br>';
-$t::load(5,array('id','name'));    			        // fetch id and name where id = 5
-print '<br>';
-print '<br>';
-$t::load(array('voucherId'=>3));    			    // fetch all columns where voucherId = 5
-print '<br>';
-print '<br>';
-$t::load(array('voucherId'=>3),array('id','name'));	// fetch id and name where voucherId = 5
-print '<br>';
-print '<br>';
-$t::load('col = 4, sdsdi=5',array('id','name'));	// fetch id and name where voucherId = 5
-print '<br>';
-print '<br>';
-$t::load(array('voucherId'=>3, 'OR', 'userId'=>7),array('id','name'));	// fetch id and name where voucherId = 5
-
-
-//
-//print '<br>';
-//print_r($t::$model->table->name);
-
-
-//	SELECT `id`,`name` FROM `accvoucher` WHERE `voucherId`='3' AND `userId`='7' OR (`hello`='4' AND `hello2`='5' )

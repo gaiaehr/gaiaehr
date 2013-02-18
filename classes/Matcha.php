@@ -7,14 +7,18 @@
 * In the future this will replace the entire old class methods. 
 */
 
+
+//
+//--- Matcha Class --------------------------------------------------------------------------------------------------------------
+//
 class Matcha
 {
 	 
 	/**
 	 * This would be a Sencha Model parsed by getSenchaModel method
 	 */
-	public static $Relation;
-	public static $currentRecord;
+	public public $Relation;
+	public public $currentRecord;
 	public static $__id;
 	public static $__total;
 	public static $__freeze = false;
@@ -537,6 +541,9 @@ class Matcha
 	}
 }
 
+//
+//--- MatchaAudit Class --------------------------------------------------------------------------------------------------------------
+//
 class MatchaAudit extends Matcha
 {
 	/**
@@ -619,6 +626,10 @@ class MatchaAudit extends Matcha
 	}
 }
 
+
+//
+//--- MatchaCRUD Class --------------------------------------------------------------------------------------------------------------
+//
 class MatchaCRUD extends Matcha
 {
 	/**

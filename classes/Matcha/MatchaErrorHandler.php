@@ -30,7 +30,7 @@ class MatchaErrorHandler extends Matcha
 	 * TODO: It could be more elaborated and handle other things.
 	 * for example log file for GaiaEHR.
 	 */
-	static private function __errorProcess($errorException)
+	static public function __errorProcess($errorException)
 	{
 		error_log('Matcha::connect microORM: ' . $errorException->getMessage() );
 		return $errorException;

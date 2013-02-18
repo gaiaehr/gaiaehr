@@ -255,8 +255,8 @@ class Matcha
 			// Getting Sencha model as a namespace
 			$fileModel = (string)str_replace('App', 'app', $fileModel);
 			$fileModel = str_replace('.', '/', $fileModel);
-			if(!file_exists($fileModel)) throw new Exception('Sencha Model file does not exist.');
-			$senchaModel = (string)file_get_contents(self::$__root . '/' . $fileModel . '.js');
+			if(!file_exists(self::$__root.'/'.$fileModel.'.js')) throw new Exception('Sencha Model file does not exist.');
+			$senchaModel = (string)file_get_contents(self::$__root.'/'.$fileModel.'.js');
 			
 			// clean comments and unnecessary Ext.define functions
 			$senchaModel = preg_replace("((/\*(.|\n)*?\*/|//(.*))|([ ](?=(?:[^\'\"]|\'[^\'\"]*\')*$)|\t|\n|\r))", '', $senchaModel);

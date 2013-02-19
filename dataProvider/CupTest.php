@@ -21,8 +21,8 @@
  * so this is the result.
  *
  */
-include_once('Matcha.php');
-include_once('MatchaCUP.php');
+include_once('../classes/Matcha/Matcha.php');
+include_once('../classes/Matcha/MatchaCUP.php');
 
 //print '<pre>';
 class CupTest{
@@ -93,7 +93,15 @@ class CupTest{
 		//print '<br>';
 		//print $t::$lastInsertId;
 //		print '<br>';
-//		print_r($t::load($params)->fetch());    					// fetch all
+
+		return $t::load($params)->all();    		        // fetch all
+		return $t::load($params)->one();    		        // fetch one
+		return $t::load($params)->limit(null, 4);    		// fetch all LIMIT 4
+		return $t::load($params)->limit(5, 25);    		    // fetch all LIMIT 5,30 (start 4, limit 25)
+		return $t::load($params)->rowCount();    		    // row counts
+		return $t::load($params)->columnCount();    		// row counts
+
+
 //		print '<br>';
 //		print_r($t::load(5)->fetchAll());    				// fetch all
 		//print '<br>';

@@ -334,6 +334,46 @@ Ext.define('App.view.Viewport', {
             handler: me.goToFloorPlans,
             tooltip: i18n('floor_plans')
         });
+
+	    Ext.define('User', {
+		    extend: 'Ext.data.Model',
+		    fields: [
+			    {name: 'id', type: 'int'},
+			    {name: 'comment',  type: 'string'},
+			    {name: 'accountId',   type: 'int'},
+			    {name: 'encounterId',  type: 'int'}
+		    ]
+	    });
+
+	    // MATCHA TEST!!!!!!!!!!
+	    me.myStore = Ext.create('Ext.data.Store', {
+		    model: 'User',
+		    proxy: {
+			    type: 'direct',
+			    api:{
+				    read: CupTest.cuptest
+			    }
+		    },
+		    remoteFilter:true,
+		    remoteGroup:true,
+		    remoteSort:true,
+		    autoLoad: false
+	    });
+        me.Header.add({
+            xtype: 'button',
+            scale: 'large',
+            style: 'float:right',
+            margin: '0 0 0 3',
+            cls: 'headerLargeBtn',
+            padding: 0,
+            iconCls: 'icoZoneAreasBig',
+            scope: me,
+            handler: function(){
+	            me.myStore.load();
+            },
+            tooltip: i18n('TEST!')
+        });
+
         /**
          * The panel definition for the the TreeMenu & the support button
          */

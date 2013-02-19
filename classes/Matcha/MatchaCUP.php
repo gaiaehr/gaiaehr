@@ -25,15 +25,23 @@ include_once('Matcha.php');
 
 class MatchaCUP
 {
+	private static $instance = false;
 	/**
 	 * @var array Model array
 	 */
 	public static $model;
 	public static $table;
+	public static $nolimitsql = '';
+	public static $sql = '';
 	public static $rowsAffected;
 	public static $lastInsertId;
 
-
+	static private function thisCUP(){
+		if(self::$instance === false){
+			self::$instance = new MatchaCUP;
+		}
+		return self::$instance;
+	}
 	/**
 	 * function load($id = NULL, $columns = array()) (part of CRUD)
 	 * Read from table
@@ -45,32 +53,138 @@ class MatchaCUP
 	{
 		try
 		{
-			// columns
-			if($columns == null){
-				$columnsx = '*';
-			}elseif(is_array($columns)){
-				$columnsx = '`'.implode('`,`',$columns).'`';
-			}else{
-				$columnsx = $columns;
-			}
-			// where
-			if(is_integer($where)){
-				$wherex = "`id`='$where'";
-			}elseif(is_array($where)){
-				$wherex = self::parseWhereArray($where);
-			}else{
-				$wherex = $where;
-			}
-			if($where != null) $wherex = 'WHERE '.$wherex;
-			// table
+			self::$sql = '';
 			$table = self::$model->table->name;
-			// sql build
-			$sql = "SELECT $columnsx FROM `$table` $wherex";
-			return Matcha::$__conn->query($sql);
+			if(!is_object($where)){
+				// columns
+				if($columns == null){
+					$columnsx = '*';
+				}elseif(is_array($columns)){
+					$columnsx = '`'.implode('`,`',$columns).'`';
+				}else{
+					$columnsx = $columns;
+				}
+				// where
+				if(is_integer($where)){
+					$wherex = "`id`='$where'";
+				}elseif(is_array($where)){
+					$wherex = self::parseWhereArray($where);
+				}else{
+					$wherex = $where;
+				}
+				if($where != null) $wherex = 'WHERE '.$wherex;
+				// sql build
+				self::$sql = "SELECT $columnsx FROM `$table` $wherex";
+			}else{
+				// limits
+				$limits = '';
+				if(isset($where->limit) || isset($where->start)){
+					$limits = array();
+					if(isset($where->start)) $limits[] = $where->start;
+					if(isset($where->limit)) $limits[] = $where->limit;
+					$limits = 'LIMIT '.implode(',', $limits);
+				}
+
+				// sort
+				$sortx = '';
+				if(isset($where->sort)){
+					$sortx = array();
+					foreach($where->sort as $sort){
+						$sort = get_object_vars($sort);
+						$sortx[] = implode(' ',$sort);
+					}
+					$sortx = 'ORDER BY '.implode(', ',$sortx);
+				}
+				// group
+				$groupx = '';
+				if(isset($where->group)){
+					$property = $where->group[0]->property;
+					$direction = $where->group[0]->direction;
+					$groupx = "GROUP BY $property $direction";
+				}
+				// filter/where
+				$wherex = '';
+				if(isset($where->filter)){
+					$wherex = array();
+					foreach($where->filter as $foo){
+						$wherex[] = "`$foo->property`='$foo->value'";
+					}
+					$wherex = 'WHERE '.implode(' AND ',$wherex);
+				}
+				self::$nolimitsql = "SELECT * FROM `$table` $groupx $wherex $sortx";
+				self::$sql = "SELECT * FROM `$table` $groupx $wherex $sortx $limits";
+			}
+			return self::thisCUP();
 		}
 		catch(PDOException $e)
 		{
-			return Matcha::__errorProcess($e);
+			return MatchaErrorHandler::__errorProcess($e);
+		}
+	}
+
+	public static function all(){
+		try{
+			return Matcha::$__conn->query(self::$sql)->fetchAll();
+		}
+		catch(PDOException $e)
+		{
+			return MatchaErrorHandler::__errorProcess($e);
+		}
+	}
+
+	public function one(){
+		try{
+			return Matcha::$__conn->query(self::$sql)->fetch();
+		}
+		catch(PDOException $e)
+		{
+			return MatchaErrorHandler::__errorProcess($e);
+		}
+	}
+
+	public function column(){
+		try{
+			return Matcha::$__conn->query(self::$sql)->fetchColumn();
+		}
+		catch(PDOException $e)
+		{
+			return MatchaErrorHandler::__errorProcess($e);
+		}
+	}
+
+	public function rowCount(){
+		try{
+			return Matcha::$__conn->query(self::$sql)->rowCount();
+		}
+		catch(PDOException $e)
+		{
+			return MatchaErrorHandler::__errorProcess($e);
+		}
+	}
+
+	public function columnCount(){
+		try{
+			return Matcha::$__conn->query(self::$sql)->columnCount();
+		}
+		catch(PDOException $e)
+		{
+			return MatchaErrorHandler::__errorProcess($e);
+		}
+	}
+
+	public function limit($start = null, $limit = 25){
+		try{
+			self::$sql = preg_replace("(LIMIT[ 0-9,]*)",'',self::$sql);
+			if($start == null){
+				self::$sql = self::$sql." LIMIT $limit";
+			}else{
+				self::$sql = self::$sql." LIMIT $start, $limit";
+			}
+			return Matcha::$__conn->query(self::$sql)->fetchAll();
+		}
+		catch(PDOException $e)
+		{
+			return MatchaErrorHandler::__errorProcess($e);
 		}
 	}
 
@@ -110,7 +224,7 @@ class MatchaCUP
 		}
 		catch(PDOException $e)
 		{
-			return Matcha::__errorProcess($e);
+			return MatchaErrorHandler::__errorProcess($e);
 		}
 	}
 	
@@ -131,7 +245,7 @@ class MatchaCUP
 		}
 		catch(PDOException $e)
 		{
-			return Matcha::__errorProcess($e);
+			return MatchaErrorHandler::__errorProcess($e);
 		}
 	}
 

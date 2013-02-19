@@ -31,6 +31,13 @@ $API = array(
             )
         )
     ),
+    'CupTest' => array(
+        'methods' => array(
+            'cuptest' => array(
+                'len' => 1
+            )
+        )
+    ),
     'AccAccount' => array(
         'methods' => array(
             'getVisitCheckOutCharges' => array(

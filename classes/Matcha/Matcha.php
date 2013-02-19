@@ -84,12 +84,11 @@ class Matcha
 	 {
 	 	try
 	 	{
-			$model = self::__SenchaModel($senchaModel);
-	 		if($model)
+	 		if(self::__SenchaModel($senchaModel))
 			{
-				$matcha = new MatchaCUP();
-				$matcha->setModel($model);
-				return $matcha;
+				$MatchaCUP = new MatchaCUP;
+				$MatchaCUP->setModel(self::$__senchaModel);
+				return $MatchaCUP;
 			}
 		}
 		catch(Exception $e)
@@ -252,7 +251,6 @@ class Matcha
 			$fileModel = str_replace('.', '/', $fileModel);
 			if(!file_exists(self::$__app.'/'.$fileModel.'.js')) throw new Exception('Sencha Model file does not exist.');
 			$senchaModel = (string)file_get_contents(self::$__app.'/'.$fileModel.'.js');
-			
 			// clean comments and unnecessary Ext.define functions
 			$senchaModel = preg_replace("((/\*(.|\n)*?\*/|//(.*))|([ ](?=(?:[^\'\"]|\'[^\'\"]*\')*$)|\t|\n|\r))", '', $senchaModel);
 			$senchaModel = preg_replace("(Ext.define\('[A-Za-z0-9.]*',|\);|\"|proxy(.|\n)*},)", '', $senchaModel); 
@@ -263,7 +261,7 @@ class Matcha
 			// replace single quotes for double quotes
 			// TODO: refine this to make sure doesn't replace apostrophes used in comments. example: don't
 			$senchaModel = preg_replace("(')", '"', $senchaModel);
-			
+
 			$model = (array)json_decode($senchaModel, true);
 			if(!count($model)) throw new Exception("Something whent wrong converting it to an array, a bad lolo.");
 			

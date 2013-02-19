@@ -14,7 +14,9 @@ Ext.define('App.view.patient.VisitCheckout', {
 	initComponent:function(){
 		var me = this;
 
-		me.VisitVoucherStore = Ext.create('App.store.account.Voucher');
+		me.VisitVoucherStore = Ext.create('App.store.account.Voucher',{
+			remoteFilter:true
+		});
 
 		me.pageBody = Ext.create('Ext.panel.Panel', {
 			itemId:'visitpayment',
@@ -534,20 +536,26 @@ Ext.define('App.view.patient.VisitCheckout', {
 		me.docsGrid.loadDocs(me.eid);
 		me.getVisitOtherInfo();
 
+		say(me.eid);
 		me.VisitVoucherStore.load({
-			params:{
-				eid: me.eid,
-				pid: me.pid,
-				type: 'visit'
-			},
+			filters:[
+				{
+					property:'encounterId',
+					value : me.eid
+				},
+				{
+					property: 'type',
+					value: 'visit'
+				}
+			],
             callback:function(records, operation, success){
 	            var voucher = records[0];
 				if(voucher){
-					say(voucher.voucherlines().load({
-						callback:function(){
-							say('hello');
-						}
-					}));
+//					say(voucher.voucherlines().load({
+//						callback:function(){
+//							say('hello');
+//						}
+//					}));
 
 
 				}else{

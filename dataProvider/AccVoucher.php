@@ -14,20 +14,21 @@ if(!isset($_SESSION)){
 include_once ($_SESSION['root'] . '/dataProvider/AccAccount.php');
 class AccVoucher extends AccAccount {
 
+	private $voucher;
+	private $voucherLine;
 
     function __construct()
     {
 	    parent::__construct();
-	    $this->db->SenchaModel('App.model.account.Voucher');
-	    $this->db->SenchaModel('App.model.account.VoucherLine');
+	    $this->voucher      = Matcha::setSenchaModel('App.model.account.Voucher');
+	    $this->voucherLine  = Matcha::setSenchaModel('App.model.account.VoucherLine');
     }
 
 	/**
 	 * Voucher
 	 */
 	public function getVoucher($params){
-		$this->db->setSQL("SELECT * FROM `accvoucher` WHERE eid = '$params->eid'");
-		return $this->db->fetchRecords(PDO::FETCH_ASSOC);
+		return $this->voucher->load($params)->one();
     }
     public function createVoucher($params){
 	    $data = get_object_vars($params);

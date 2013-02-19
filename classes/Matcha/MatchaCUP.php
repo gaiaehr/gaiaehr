@@ -16,27 +16,21 @@
   * You should have received a copy of the GNU General Public License
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-include_once('Matcha.php');
+//include_once('Matcha.php');
 
 class MatchaCUP
 {
-	private static $instance = false;
 	/**
 	 * @var array Model array
 	 */
-	public static $model;
-	public static $table;
-	public static $nolimitsql = '';
-	public static $sql = '';
-	public static $rowsAffected;
-	public static $lastInsertId;
+	private $model;
+	private $table;
+	private $nolimitsql = '';
+	private $sql = '';
 
-	static private function thisCUP(){
-		if(self::$instance === false){
-			self::$instance = new MatchaCUP;
-		}
-		return self::$instance;
-	}
+	public $rowsAffected;
+	public $lastInsertId;
+
 	/**
 	 * function load($id = NULL, $columns = array()) (part of CRUD)
 	 * Read from table
@@ -44,12 +38,11 @@ class MatchaCUP
 	 * load all records with some columns determined by an array,
 	 * load one record with some columns determined by an array, or any combination.
 	 */
-	static public function load($where = null, $columns = null)
+	public function load($where = null, $columns = null)
 	{
 		try
 		{
-			self::$sql = '';
-			$table = self::$model->table->name;
+			$this->sql = '';
 			if(!is_object($where)){
 				// columns
 				if($columns == null){
@@ -69,7 +62,7 @@ class MatchaCUP
 				}
 				if($where != null) $wherex = 'WHERE '.$wherex;
 				// sql build
-				self::$sql = "SELECT $columnsx FROM `$table` $wherex";
+				$this->sql = "SELECT $columnsx FROM `".$this->model->table."` $wherex";
 			}else{
 				// limits
 				$limits = '';
@@ -106,10 +99,10 @@ class MatchaCUP
 					}
 					$wherex = 'WHERE '.implode(' AND ',$wherex);
 				}
-				self::$nolimitsql = "SELECT * FROM `$table` $groupx $wherex $sortx";
-				self::$sql = "SELECT * FROM `$table` $groupx $wherex $sortx $limits";
+				$this->nolimitsql = "SELECT * FROM `".$this->model->table."` $groupx $wherex $sortx";
+				$this->sql = "SELECT * FROM `".$this->model->table."` $groupx $wherex $sortx $limits";
 			}
-			return self::thisCUP();
+			return $this;
 		}
 		catch(PDOException $e)
 		{
@@ -117,9 +110,9 @@ class MatchaCUP
 		}
 	}
 
-	public static function all(){
+	public function all(){
 		try{
-			return Matcha::$__conn->query(self::$sql)->fetchAll();
+			return Matcha::$__conn->query($this->sql)->fetchAll();
 		}
 		catch(PDOException $e)
 		{
@@ -129,7 +122,7 @@ class MatchaCUP
 
 	public function one(){
 		try{
-			return Matcha::$__conn->query(self::$sql)->fetch();
+			return Matcha::$__conn->query($this->sql)->fetch();
 		}
 		catch(PDOException $e)
 		{
@@ -139,7 +132,7 @@ class MatchaCUP
 
 	public function column(){
 		try{
-			return Matcha::$__conn->query(self::$sql)->fetchColumn();
+			return Matcha::$__conn->query($this->sql)->fetchColumn();
 		}
 		catch(PDOException $e)
 		{
@@ -149,7 +142,7 @@ class MatchaCUP
 
 	public function rowCount(){
 		try{
-			return Matcha::$__conn->query(self::$sql)->rowCount();
+			return Matcha::$__conn->query($this->sql)->rowCount();
 		}
 		catch(PDOException $e)
 		{
@@ -159,7 +152,7 @@ class MatchaCUP
 
 	public function columnCount(){
 		try{
-			return Matcha::$__conn->query(self::$sql)->columnCount();
+			return Matcha::$__conn->query($this->sql)->columnCount();
 		}
 		catch(PDOException $e)
 		{
@@ -169,13 +162,13 @@ class MatchaCUP
 
 	public function limit($start = null, $limit = 25){
 		try{
-			self::$sql = preg_replace("(LIMIT[ 0-9,]*)",'',self::$sql);
+			$this->sql = preg_replace("(LIMIT[ 0-9,]*)",'',$this->sql);
 			if($start == null){
-				self::$sql = self::$sql." LIMIT $limit";
+				$this->sql = $this->sql." LIMIT $limit";
 			}else{
-				self::$sql = self::$sql." LIMIT $start, $limit";
+				$this->sql = $this->sql." LIMIT $start, $limit";
 			}
-			return Matcha::$__conn->query(self::$sql)->fetchAll();
+			return Matcha::$__conn->query($this->sql)->fetchAll();
 		}
 		catch(PDOException $e)
 		{
@@ -189,33 +182,47 @@ class MatchaCUP
 	 * Create & Update
 	 * store the record as array into the working table
 	 */
-	static public function store($record)
+	public function store($record)
 	{
 		try
 		{
-			$record = (is_object($record) ? get_object_vars($record) : $record);
-			$table = self::$table;
-			// create a record
-			if(!isset($record['id']))
+			$data = (is_object($record) ? get_object_vars($record) : $record);
+			// create record
+			if(!isset($data['id']) || (isset($data['id']) && $data['id'] == 0))
 			{
-				$columns = array_keys($record);
+				$columns = array_keys($data);
 				$columns = '(`'.implode('`,`',$columns).'`)';
-				$values  = array_values($record);
+				$values  = array_values($data);
 				$values  = '(\''.implode('\',\'',$values).'\')';
-				self::$rowsAffected = Matcha::$__conn->exec("INSERT INTO `$table` $columns VALUES $values");
-				self::$lastInsertId = Matcha::$__conn->lastInsertId();
+				$this->rowsAffected = Matcha::$__conn->exec("INSERT INTO `".$this->model->table."` $columns VALUES $values");
+				$this->lastInsertId = Matcha::$__conn->lastInsertId();
+				$record['id'] = $this->lastInsertId;
 			}
 			// update a record
 			else
 			{
 				$values = array();
-				$id = $record['id'];
-				unset($record['id']);
-				foreach($record as $key => $val) $values[] = "`$key`='$val'";
+				$id = $data['id'];
+				unset($data['id']);
+				foreach($data as $key => $val) $values[] = "`$key`='$val'";
 				$values = implode(',',$values);
-				self::$rowsAffected = Matcha::$__conn->exec("UPDATE `$table` SET $values WHERE id='$id'");
+				$this->rowsAffected = Matcha::$__conn->exec("UPDATE `".$this->model->table."` SET $values WHERE id='$id'");
 			}
-			return self::$rowsAffected;
+			try
+			{
+				if($this->rowsAffected > 0)
+				{
+					return $record;
+				}
+				else
+				{
+					throw new Exception('No Record stored or modified');
+				}
+			}
+			catch(ErrorException $e)
+			{
+				return MatchaErrorHandler::__errorProcess($e);
+			}
 		}
 		catch(PDOException $e)
 		{
@@ -228,15 +235,15 @@ class MatchaCUP
 	 * Delete
 	 * will delete the record indicated by an id
 	 */
-	static public function trash($record)
+	public function trash($record)
 	{
 		try
 		{
 			$record = (is_object($record) ? get_object_vars($record) : $record);
 			$id = $record['id'];
-			$table = self::$table;
-			self::$rowsAffected = Matcha::$__conn->exec("DELETE FROM $table WHERE id='$id'");
-			return self::$rowsAffected;
+			$table = $this->table;
+			$this->rowsAffected = Matcha::$__conn->exec("DELETE FROM ".$this->model->table." WHERE id='$id'");
+			return $this->rowsAffected;
 		}
 		catch(PDOException $e)
 		{
@@ -247,10 +254,12 @@ class MatchaCUP
 	/**
 	 * This method will set the model array as an object within MatchaCUP scope
 	 * @param $model
+	 * @return bool|\MatchaCUP
 	 */
-	static public function setModel($model){
-		self::$model = self::ArrayToObject($model);
-		self::$table = self::$model->table->name;
+	public function setModel($model){
+		$this->model = $this->ArrayToObject($model);
+		$this->table = $this->model->table;
+//		$this->table = $this->model->table->name;
 	}
 
 	/**
@@ -259,13 +268,13 @@ class MatchaCUP
 	 * @param stdClass $parent
 	 * @return stdClass
 	 */
-	static private function ArrayToObject(array $array, stdClass $parent = null) {
+	private function ArrayToObject(array $array, stdClass $parent = null) {
 		if ($parent === null) {
 			$parent = new stdClass;
 		}
 		foreach ($array as $key => $val) {
 			if (is_array($val)) {
-				$parent->$key = self::ArrayToObject($val, new stdClass);
+				$parent->$key = $this->ArrayToObject($val, new stdClass);
 			} else {
 				$parent->$key = $val;
 			}
@@ -278,7 +287,7 @@ class MatchaCUP
 	 * @param $array
 	 * @return string
 	 */
-	static private function parseWhereArray($array){
+	private function parseWhereArray($array){
 		$whereStr = '';
 		$prevArray = false;
 		foreach($array as $key => $val){

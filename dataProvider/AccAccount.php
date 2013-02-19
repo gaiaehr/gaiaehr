@@ -50,15 +50,24 @@ class AccAccount
      * @var Patient
      */
 	protected $patient;
+	/**
+	 * @var MatchaCUP
+	 */
+	protected $acount;
+	/**
+	 * @var MatchaCUP
+	 */
+	protected $acountType;
+
 
     function __construct()
     {
-        $this->db = new dbHelper();
-	    $this->db->SenchaModel('App.model.account.Account');
-	    $this->db->SenchaModel('App.model.account.AccountType');
+        $this->db   = new dbHelper();
+	    $this->acount     = Matcha::setSenchaModel('App.model.account.Account');
+	    $this->acountType = Matcha::setSenchaModel('App.model.account.AccountType');
 
         $this->services = new Services();
-        $this->patient = new Patient();
+        $this->patient  = new Patient();
     }
 
 	protected function getVisitCheckOutCharges(stdClass $params)

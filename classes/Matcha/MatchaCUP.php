@@ -54,7 +54,9 @@ class MatchaCUP
     * $users->load(5, array('name','last'))->all();             = SELECT name, last FROM users WHERE id = 5
     * $users->load(array('name'=>'joe'))->all();                = SELECT * FROM users WHERE name = joe
     * $users->load(array('name'=>'joe'), array('id'))->all();   = SELECT id FROM users WHERE name = joe
-	*
+	* OR
+	* $users->load($params)->all()  $params = to object || array sent by sencha store
+    *
 	* @param null $where
 	* @param null $columns
 	* @return MatchaCUP

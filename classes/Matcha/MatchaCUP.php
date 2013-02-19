@@ -44,7 +44,7 @@ class MatchaCUP
 	public $lastInsertId;
 
    /**
-	* method to set PDO statement.
+	* Method to set PDO statement.
 	* if first argument is an object, then the method will
 	* handle the request using sencha standards. If not then
 	* here are few examples.
@@ -221,9 +221,11 @@ class MatchaCUP
 	}
 
 	/**
-	 * function save ($record = array()): (part of CRUD)
-	 * Create & Update
+	 * function save($record): (part of CRUD) Create & Update
 	 * store the record as array into the working table
+	 * @param $record
+	 * @return object
+	 * @throws Exception
 	 */
 	public function save($record)
 	{
@@ -297,11 +299,12 @@ class MatchaCUP
 			return MatchaErrorHandler::__errorProcess($e);
 		}
 	}
-	
+
 	/**
-	 * function trash($record = array()): (part of CRUD)
-	 * Delete
+	 * function destroy($record): (part of CRUD) delete
 	 * will delete the record indicated by an id
+	 * @param $record
+	 * @return mixed
 	 */
 	public function destroy($record)
 	{

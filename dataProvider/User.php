@@ -136,7 +136,7 @@ class User
 			unset($data['password']);
 			$role['role_id'] = $data['role_id'];
 			unset($data['id'], $data['role_id'], $data['fullname']);
-			if ($data['taxonomy'] == '')
+			if (isset($data['taxonomy']) && $data['taxonomy'] == '')
 			{
 				unset($data['taxonomy']);
 			}

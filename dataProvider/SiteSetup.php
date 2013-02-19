@@ -351,6 +351,7 @@ class SiteSetup
 		$userParams             = new stdClass();
 		$userParams->title      = 'Mr.';
 		$userParams->fname      = 'Administrator';
+		$userParams->mname      = '';
 		$userParams->lname      = 'Administrator';
 		$userParams->username   = $params->adminUsername;
 		$userParams->password   = $params->adminPassword;

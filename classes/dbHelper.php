@@ -82,15 +82,17 @@ class dbHelper
 	 */
 	function __construct()
 	{
-		// this is done to be compatible with the old methods
-		$this->conn = Matcha::connect(array(
-			'host'=>(string)$_SESSION['site']['db']['host'],
-			'port'=>(int)$_SESSION['site']['db']['port'],
-			'name'=>(string)$_SESSION['site']['db']['database'],
-			'user'=>(string)$_SESSION['site']['db']['username'],
-			'pass'=>(string)$_SESSION['site']['db']['password'],
-			'app'=>(string)$_SESSION['root'].'/app'
-		));
+        // this is done to be compatible with the old methods
+        if(isset($_SESSION['site']) && isset($_SESSION['site']['db'])){
+            $this->conn = Matcha::connect(array(
+                'host'=>(string)$_SESSION['site']['db']['host'],
+                'port'=>(int)$_SESSION['site']['db']['port'],
+                'name'=>(string)$_SESSION['site']['db']['database'],
+                'user'=>(string)$_SESSION['site']['db']['username'],
+                'pass'=>(string)$_SESSION['site']['db']['password'],
+                'app'=>(string)$_SESSION['root'].'/app'
+            ));
+        }
 	}
 
 	/**
@@ -351,13 +353,13 @@ class dbHelper
 			/**
 			 * Using the same, internal functions.
 			 */
-			$data['date'] = Time::getLocalTime('Y-m-d H:i:s');
-			$data['event'] = $eventLog;
-			$data['comments'] = $this->sql_statement;
-			$data['user'] = $_SESSION['user']['name'];
-			$data['checksum'] = crc32($this->sql_statement);
-			$data['facility'] = $_SESSION['site']['dir'];
-			$data['patient_id'] = $_SESSION['patient']['pid'];
+			$data['date']       = Time::getLocalTime('Y-m-d H:i:s');
+			$data['event']      = $eventLog;
+			$data['comments']   = $this->sql_statement;
+			$data['user']       = (isset($_SESSION['user']) ? $_SESSION['user']['name'] : 'System');
+			$data['checksum']   = crc32($this->sql_statement);
+			$data['facility']   = $_SESSION['site']['dir'];
+			$data['patient_id'] = (isset($_SESSION['patient']) ? $_SESSION['patient']['pid'] : '0');
 			$data['ip'] = $_SESSION['server']['REMOTE_ADDR'];
 			$sqlStatement = $this->sqlBind($data, 'log', 'I');
 			$this->setSQL($sqlStatement);

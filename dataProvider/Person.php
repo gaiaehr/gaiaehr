@@ -36,7 +36,7 @@ class Person
 	 */
 	public static function fullname($fname, $mname, $lname)
 	{
-		if ($_SESSION['global_settings'] && $_SESSION['global_settings']['fullname'])
+		if (isset($_SESSION['global_settings']) && $_SESSION['global_settings']['fullname'])
 		{
 			switch($_SESSION['global_settings']['fullname'])
 			{

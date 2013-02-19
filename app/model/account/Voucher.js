@@ -29,7 +29,7 @@ Ext.define('App.model.account.Voucher', {
 		{name: 'accountId',                 type: 'int', comment:'Account'},
 		{name: 'journalId',                 type: 'int', comment:'Journal'},
 		{name: 'moveId',                    type: 'int', comment:'Account Entry'},
-		{name: 'taxId',                     type: 'int', comment:'Tax ID'},
+//		{name: 'taxId',                     type: 'int', comment:'Tax ID'},
 //		{name: 'companyId',                 type: 'int', comment:'Company'},
 //		{name: 'partnerId',                 type: 'int', comment:'Partner'},
 //		{name: 'paymentRateCurrencyId',     type: 'int', comment:'Payment Rate Currency (Not Used)'},

@@ -70,7 +70,7 @@ class AccAccount
         $this->patient  = new Patient();
     }
 
-	protected function getVisitCheckOutCharges(stdClass $params)
+	public function getVisitCheckOutCharges(stdClass $params)
     {
         $invoice = array();
         $insurance = $this->patient->getPatientPrimaryInsuranceByPid($params->pid);

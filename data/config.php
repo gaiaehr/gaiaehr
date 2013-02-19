@@ -28,7 +28,11 @@ $API = array(
             ),
             'destroyVoucherLine' => array(
                 'len' => 1
-            )
+            ),
+	        'getVisitCheckOutCharges' => array(
+		        'len' => 1
+	        )
+
         )
     ),
     'CupTest' => array(
@@ -40,9 +44,7 @@ $API = array(
     ),
     'AccAccount' => array(
         'methods' => array(
-            'getVisitCheckOutCharges' => array(
-                'len' => 1
-            )
+
         )
     ),
 

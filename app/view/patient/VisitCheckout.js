@@ -59,7 +59,6 @@ Ext.define('App.view.patient.VisitCheckout', {
                                         me.invoiceGrid = Ext.widget('grid', {
                                             frame:false,
                                             border:false,
-                                            store:me.VisitVoucherStore,
                                             enableColumnMove:false,
                                             enableColumnHide:false,
                                             sortableColumns:false,
@@ -72,7 +71,7 @@ Ext.define('App.view.patient.VisitCheckout', {
                                                             icon:'resources/images/icons/delete.png',
                                                             tooltip:i18n('remove'),
                                                             scope:me,
-                                                            handler:me.onRemoveService
+                                                            handler:me.onRemoveCharge
                                                         }
                                                     ]
                                                 },
@@ -363,10 +362,11 @@ Ext.define('App.view.patient.VisitCheckout', {
 		var totalField = this.query('[action="totalField"]')[0];
 	},
 
-	onRemoveService:function(grid, rowIndex){
+	onRemoveCharge:function(grid, rowIndex){
 		var me = this,
-            record = grid.getStore().getAt(rowIndex);
-		me.VisitVoucherStore.remove(record);
+			store = grid.getStore(),
+            record = store.getAt(rowIndex);
+		store.remove(record);
 		me.updateTotalBalance();
 	},
 
@@ -398,8 +398,7 @@ Ext.define('App.view.patient.VisitCheckout', {
 
         AccBilling.setVisitVoucher(params, function(provider, response){
 
-            say(response.result);
-            say(print);
+
 
         });
 
@@ -535,8 +534,6 @@ Ext.define('App.view.patient.VisitCheckout', {
 		var me = this;
 		me.docsGrid.loadDocs(me.eid);
 		me.getVisitOtherInfo();
-
-		say(me.eid);
 		me.VisitVoucherStore.load({
 			filters:[
 				{
@@ -551,20 +548,35 @@ Ext.define('App.view.patient.VisitCheckout', {
             callback:function(records, operation, success){
 	            var voucher = records[0];
 				if(voucher){
-//					say(voucher.voucherlines().load({
-//						callback:function(){
-//							say('hello');
-//						}
-//					}));
-
-
+					voucher.voucherlines().load({
+						callback:function(){
+							say('hello');
+						}
+					});
 				}else{
+					AccVoucher.getVisitCheckOutCharges({pid:me.pid,eid:me.eid},function(provicer,response){
+						var charges = response.result;
+						if(charges.length > 0){
+							var rec = me.VisitVoucherStore.add({
+									encounterId:me.eid,
+									date:new Date(),
+									type:'visit'
+								}),
+								store = rec[0].voucherlines();
 
+							me.invoiceGrid.reconfigure(store);
+							for(var i=0; i < charges.length; i++){
+								store.add(charges[i]);
+							}
+
+			                me.paid.setValue(0.00);
+                            me.updateTotalBalance();
+						}
+					});
 				}
 
 
-//                me.paid.setValue(0.00);
-//                me.updateTotalBalance();
+
             }
 		})
 	},
@@ -573,27 +585,32 @@ Ext.define('App.view.patient.VisitCheckout', {
         var me = this,
             amount   = me.amount.getValue(),
             paid   = me.paid.getValue(),
-            records = this.VisitVoucherStore.data.items,
+            records = me.invoiceGrid.getStore().data.items,
             form = me.invoicePanel.down('form'),
             total = 0.00, balance;
 
         for(var i=0; i < records.length; i++){
-            total = eval(total) + eval(records[i].data.charge);
+            total = eval(total) + eval(records[i].data.amount);
         }
 
+		say(total);
         me.total.setValue(total);
         balance = total - paid;
         me.balance.setValue(balance);
-
-        if(balance == 0.00){
-            form.addBodyCls('paid');
-            form.down('fieldset').setVisible(false);
-        }else{
-            form.removeBodyCls('paid');
-            form.down('fieldset').setVisible(true);
-        }
+        me.setPaid(balance == 0.00 && records.length > 0);
 
     },
+
+	setPaid:function(paid){
+		var form = this.invoicePanel.down('form');
+		if(paid){
+			form.addBodyCls('paid');
+			form.down('fieldset').setVisible(false);
+		}else{
+			form.removeBodyCls('paid');
+			form.down('fieldset').setVisible(true);
+		}
+	},
 
 	/**
 	 * This function is called from Viewport.js when

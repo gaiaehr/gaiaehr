@@ -44,7 +44,7 @@ class MatchaCUP
 	public $lastInsertId;
 
    /**
-	* method to set PDO statement.
+	* Method to set PDO statement.
 	* if first argument is an object, then the method will
 	* handle the request using sencha standards. If not then
 	* here are few examples.
@@ -221,35 +221,62 @@ class MatchaCUP
 	}
 
 	/**
-	 * function store($record = array()): (part of CRUD)
-	 * Create & Update
+	 * function save($record): (part of CRUD) Create & Update
 	 * store the record as array into the working table
+	 * @param $record
+	 * @return object
+	 * @throws Exception
 	 */
-	public function store($record)
+	public function save($record)
 	{
 		try
 		{
-			$data = (is_object($record) ? get_object_vars($record) : $record);
-			// create record
-			if(!isset($data['id']) || (isset($data['id']) && $data['id'] == 0))
-			{
-				$columns = array_keys($data);
-				$columns = '(`'.implode('`,`',$columns).'`)';
-				$values  = array_values($data);
-				$values  = '(\''.implode('\',\'',$values).'\')';
-				$this->rowsAffected = Matcha::$__conn->exec("INSERT INTO `".$this->model->table->name."` $columns VALUES $values");
-				$this->lastInsertId = Matcha::$__conn->lastInsertId();
-				$record['id'] = $this->lastInsertId;
-			}
-			// update a record
-			else
-			{
-				$values = array();
-				$id = $data['id'];
-				unset($data['id']);
-				foreach($data as $key => $val) $values[] = "`$key`='$val'";
-				$values = implode(',',$values);
-				$this->rowsAffected = Matcha::$__conn->exec("UPDATE `".$this->model->table->name."` SET $values WHERE id='$id'");
+			if(is_object($record)){
+				$data = get_object_vars($record);
+				// create record
+				if(!isset($data['id']) || (isset($data['id']) && $data['id'] == 0))
+				{
+					$columns = array_keys($data);
+					$columns = '(`'.implode('`,`',$columns).'`)';
+					$values  = array_values($data);
+					$values  = '(\''.implode('\',\'',$values).'\')';
+					$this->rowsAffected = Matcha::$__conn->exec("INSERT INTO `".$this->model->table->name."` $columns VALUES $values");
+					$record->id = $this->lastInsertId = Matcha::$__conn->lastInsertId();
+				}
+				// update a record
+				else
+				{
+					$values = array();
+					$id = $data['id'];
+					unset($data['id']);
+					foreach($data as $key => $val) $values[] = "`$key`='$val'";
+					$values = implode(',',$values);
+					$this->rowsAffected = Matcha::$__conn->exec("UPDATE `".$this->model->table->name."` SET $values WHERE id='$id'");
+				}
+			}else{
+				foreach($record as $index => $rec){
+					$data = get_object_vars($rec);
+					// create record
+					if(!isset($data['id']) || (isset($data['id']) && $data['id'] == 0))
+					{
+						$columns = array_keys($data);
+						$columns = '(`'.implode('`,`',$columns).'`)';
+						$values  = array_values($data);
+						$values  = '(\''.implode('\',\'',$values).'\')';
+						$this->rowsAffected = Matcha::$__conn->exec("INSERT INTO `".$this->model->table->name."` $columns VALUES $values");
+						$record[$index]->id = $this->lastInsertId = Matcha::$__conn->lastInsertId();
+					}
+					// update a record
+					else
+					{
+						$values = array();
+						$id = $data['id'];
+						unset($data['id']);
+						foreach($data as $key => $val) $values[] = "`$key`='$val'";
+						$values = implode(',',$values);
+						$this->rowsAffected = Matcha::$__conn->exec("UPDATE `".$this->model->table->name."` SET $values WHERE id='$id'");
+					}
+				}
 			}
 			try
 			{
@@ -272,19 +299,24 @@ class MatchaCUP
 			return MatchaErrorHandler::__errorProcess($e);
 		}
 	}
-	
+
 	/**
-	 * function trash($record = array()): (part of CRUD)
-	 * Delete
+	 * function destroy($record): (part of CRUD) delete
 	 * will delete the record indicated by an id
+	 * @param $record
+	 * @return mixed
 	 */
-	public function trash($record)
+	public function destroy($record)
 	{
 		try
 		{
-			$record = (is_object($record) ? get_object_vars($record) : $record);
-			$id = $record['id'];
-			$this->rowsAffected = Matcha::$__conn->exec("DELETE FROM ".$this->model->table->name." WHERE id='$id'");
+			if(is_object($record)){
+				$this->rowsAffected = Matcha::$__conn->exec("DELETE FROM ".$this->model->table->name." WHERE id='$record->id'");
+			}else{
+				foreach($record as $rec){
+					$this->rowsAffected = Matcha::$__conn->exec("DELETE FROM ".$this->model->table->name." WHERE id='$rec->id'");
+				}
+			}
 			return $this->rowsAffected;
 		}
 		catch(PDOException $e)

@@ -221,11 +221,11 @@ class MatchaCUP
 	}
 
 	/**
-	 * function store($record = array()): (part of CRUD)
+	 * function save ($record = array()): (part of CRUD)
 	 * Create & Update
 	 * store the record as array into the working table
 	 */
-	public function store($record)
+	public function save($record)
 	{
 		try
 		{
@@ -303,7 +303,7 @@ class MatchaCUP
 	 * Delete
 	 * will delete the record indicated by an id
 	 */
-	public function trash($record)
+	public function destroy($record)
 	{
 		try
 		{

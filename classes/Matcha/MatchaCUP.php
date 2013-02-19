@@ -16,28 +16,49 @@
   * You should have received a copy of the GNU General Public License
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-//include_once('Matcha.php');
-
 class MatchaCUP
 {
 	/**
 	 * @var array Model array
 	 */
 	private $model;
+	/**
+	 * @var
+	 */
 	private $table;
+	/**
+	 * @var string
+	 */
 	private $nolimitsql = '';
+	/**
+	 * @var string
+	 */
 	private $sql = '';
-
+	/**
+	 * @var
+	 */
 	public $rowsAffected;
+	/**
+	 * @var
+	 */
 	public $lastInsertId;
 
-	/**
-	 * function load($id = NULL, $columns = array()) (part of CRUD)
-	 * Read from table
-	 * Load all records, load one record if a ID is passed,
-	 * load all records with some columns determined by an array,
-	 * load one record with some columns determined by an array, or any combination.
-	 */
+   /**
+	* method to set PDO statement.
+	* if first argument is an object, then the method will
+	* handle the request using sencha standards. If not then
+	* here are few examples.
+	*
+    * $users->load()->all();                                    = SELECT * FROM users WHERE id = 5
+    * $users->load(5)->all();                                   = SELECT * FROM users WHERE id = 5
+    * $users->load(5, array('name','last'))->all();             = SELECT name, last FROM users WHERE id = 5
+    * $users->load(array('name'=>'joe'))->all();                = SELECT * FROM users WHERE name = joe
+    * $users->load(array('name'=>'joe'), array('id'))->all();   = SELECT id FROM users WHERE name = joe
+	*
+	* @param null $where
+	* @param null $columns
+	* @return MatchaCUP
+	*/
 	public function load($where = null, $columns = null)
 	{
 		try
@@ -110,6 +131,10 @@ class MatchaCUP
 		}
 	}
 
+	/**
+	 * returns multiple rows of records
+	 * @return mixed
+	 */
 	public function all(){
 		try{
 			return Matcha::$__conn->query($this->sql)->fetchAll();
@@ -120,6 +145,10 @@ class MatchaCUP
 		}
 	}
 
+	/**
+	 * returns one record
+	 * @return mixed
+	 */
 	public function one(){
 		try{
 			return Matcha::$__conn->query($this->sql)->fetch();
@@ -130,6 +159,9 @@ class MatchaCUP
 		}
 	}
 
+	/**
+	 * @return mixed
+	 */
 	public function column(){
 		try{
 			return Matcha::$__conn->query($this->sql)->fetchColumn();
@@ -140,6 +172,9 @@ class MatchaCUP
 		}
 	}
 
+	/**
+	 * @return mixed
+	 */
 	public function rowCount(){
 		try{
 			return Matcha::$__conn->query($this->sql)->rowCount();
@@ -150,6 +185,9 @@ class MatchaCUP
 		}
 	}
 
+	/**
+	 * @return mixed
+	 */
 	public function columnCount(){
 		try{
 			return Matcha::$__conn->query($this->sql)->columnCount();
@@ -160,6 +198,12 @@ class MatchaCUP
 		}
 	}
 
+	/**
+	 * LIMIT method
+	 * @param null $start
+	 * @param int $limit
+	 * @return mixed
+	 */
 	public function limit($start = null, $limit = 25){
 		try{
 			$this->sql = preg_replace("(LIMIT[ 0-9,]*)",'',$this->sql);
@@ -175,7 +219,6 @@ class MatchaCUP
 			return MatchaErrorHandler::__errorProcess($e);
 		}
 	}
-
 
 	/**
 	 * function store($record = array()): (part of CRUD)
@@ -241,7 +284,6 @@ class MatchaCUP
 		{
 			$record = (is_object($record) ? get_object_vars($record) : $record);
 			$id = $record['id'];
-			$table = $this->table;
 			$this->rowsAffected = Matcha::$__conn->exec("DELETE FROM ".$this->model->table." WHERE id='$id'");
 			return $this->rowsAffected;
 		}
@@ -306,5 +348,4 @@ class MatchaCUP
 		}
 		return $whereStr;
 	}
-
 }

@@ -46,7 +46,7 @@ class Matcha
 				!isset($databaseParameters['name']) &&
 				!isset($databaseParameters['user']) && 
 				!isset($databaseParameters['pass']) &&
-				!isset($databaseParameters['root'])) 
+				!isset($databaseParameters['app'])) 
 				throw new Exception('These parameters are obligatory: host="database ip or hostname", name="database name", user="database username", pass="database password", app="path of your sencha application"');
 				
 			// Connect using regular PDO Matcha::setup Abstraction layer.
@@ -247,9 +247,6 @@ class Matcha
 		try
 		{
 			// Getting Sencha model as a namespace
-//			$fileModel = (string)str_replace('App.', '', $fileModel);
-//			$fileModel = str_replace('.', '/', $fileModel);
-//			if(!file_exists(self::$__app.'/'.$fileModel.'.js')) throw new Exception('Sencha Model file does not exist.');
 			$senchaModel = self::__getFileContent($fileModel);
 			// clean comments and unnecessary Ext.define functions
 			$senchaModel = preg_replace("((/\*(.|\n)*?\*/|//(.*))|([ ](?=(?:[^\'\"]|\'[^\'\"]*\')*$)|\t|\n|\r))", '', $senchaModel);
@@ -279,11 +276,20 @@ class Matcha
 		}
 	}
 
-	static private function __getFileContent($file, $type = 'js'){
-		$file = (string)str_replace('App.', '', $file);
-		$file = str_replace('.', '/', $file);
-		if(!file_exists(self::$__app.'/'.$file.'.'.$type)) throw new Exception('Sencha file "'.self::$__app.'/'.$file.'.'.$type.'" not found.');
-		return (string)file_get_contents(self::$__app.'/'.$file.'.'.$type);
+	static private function __getFileContent($file, $type = 'js')
+	{
+		try
+		{
+			$file = (string)str_replace('App.', '', $file);
+			$file = str_replace('.', '/', $file);
+			if(!file_exists(self::$__app.'/'.$file.'.'.$type)) throw new Exception('Sencha file "'.self::$__app.'/'.$file.'.'.$type.'" not found.');
+			return (string)file_get_contents(self::$__app.'/'.$file.'.'.$type);
+		}
+		catch(Exception $e)
+		{
+			MatchaErrorHandler::__errorProcess($e);
+			return false;
+		}
 	}
 
 	static public function __setSenchaModelData($fileData){

@@ -322,8 +322,7 @@ class MatchaCUP
 						$values = array();
 						$id = $data['id'];
 						unset($data['id']);
-						foreach ($data as $key => $val)
-							$values[] = "`$key`='$val'";
+						foreach ($data as $key => $val) $values[] = "`$key`='$val'";
 						$values = implode(',', $values);
 						$this->rowsAffected = Matcha::$__conn->exec("UPDATE `" . $this->model->table->name . "` SET $values WHERE id='$id'");
 					}

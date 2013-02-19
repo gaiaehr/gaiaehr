@@ -91,7 +91,7 @@ class dbHelper
 			'name'=>(string)$_SESSION['site']['db']['database'],
 			'user'=>(string)$_SESSION['site']['db']['username'],
 			'pass'=>(string)$_SESSION['site']['db']['password'],
-			'root'=>(string)$_SESSION['root']
+			'app'=>(string)$_SESSION['root'].'/app'
 		));
 	}
 

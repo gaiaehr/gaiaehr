@@ -1,27 +1,21 @@
 <?php
-/**
- * Matcha::connect microORM v0.0.1
- * This set of classes will help Sencha ExtJS and PHP developers deliver fast and powerful application fast and easy to develop.
- * If Sencha ExtJS is a GUI Framework of the future, think Matcha micrORM as the bridge between the Client-Server
- * GAP. 
- * 
- * Matcha will read and parse a Sencha Model .js file and then connect to the database and produce a compatible database-table
- * from your model. Also will provide the basic functions for the CRUD. If you are familiar with Sencha ExtJS, and know 
- * about Sencha Models, you will need this PHP Class. You can use it in any way you want, in MVC like pattern, your own pattern, 
- * or just playing simple. It's compatible with all your coding style. 
- * 
- * Taking some ideas from diferent microORM's and full featured ORM's we bring you this cool Class. 
- * 
- * History:
- * Born in the fields of GaiaEHR we needed a way to develop the application more faster, Gino Rivera suggested the use of an
- * microORM for fast development and the development began. We tried to use some already developed and well known ORM's on the 
- * space of PHP, but none satisfied our needs. So Gino Rivera sugested the development of our own microORM (a long way to run).
- * 
- * But despite the long run, it returned to be more logical to get ideas from the well known ORM's and how Sensha manage their models
- * so this is the result. 
- *  
+ /**
+  * Matcha::connect (Main Class)
+  * Matcha.php
+  * 
+  * This program is free software: you can redistribute it and/or modify
+  * it under the terms of the GNU General Public License as published by
+  * the Free Software Foundation, either version 3 of the License, or
+  * (at your option) any later version.
+  * 
+  * This program is distributed in the hope that it will be useful,
+  * but WITHOUT ANY WARRANTY; without even the implied warranty of
+  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  * GNU General Public License for more details.
+  * 
+  * You should have received a copy of the GNU General Public License
+  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 
 include_once('MatchaAudit.php');
 include_once('MatchaCUP.php');
@@ -39,7 +33,7 @@ class Matcha
 	public static $__freeze = false;
 	public static $__senchaModel;
 	public static $__conn;
-	public static $__root;
+	public static $__app;
 	public static $__audit;
 	
 	
@@ -53,12 +47,12 @@ class Matcha
 				!isset($databaseParameters['user']) && 
 				!isset($databaseParameters['pass']) &&
 				!isset($databaseParameters['root'])) 
-				throw new Exception('These parameters are obligatory: host=database ip or hostname, name=database name, user=database username, pass=database password, root=root path of you application.');
+				throw new Exception('These parameters are obligatory: host="database ip or hostname", name="database name", user="database username", pass="database password", app="path of your sencha application"');
 				
 			// Connect using regular PDO Matcha::setup Abstraction layer.
 			// but make only a connection, not to the database.
 			// and then the database
-			self::$__root = $databaseParameters['root'];
+			self::$__app = $databaseParameters['app'];
 			$host = (string)$databaseParameters['host'];
 			$port = (int)(isset($databaseParameters['port']) ? $databaseParameters['port'] : '3306');
 			$dbName = (string)$databaseParameters['name'];
@@ -158,10 +152,10 @@ class Matcha
 			if( isset($recordSet) ) self::__createTable(self::$__senchaModel['table']);
 			
 			// Remove from the model those fields that are not meant to be stored
-			// on the database and remove the id from the workingModel.
+			// on the database-table and remove the id from the workingModel.
 			$workingModel = (array)self::$__senchaModel['fields'];
 			unset($workingModel[self::__recursiveArraySearch('id', $workingModel)]);
-			foreach($workingModel as $key => $SenchaModel) if(isset($SenchaModel['store']) && $SenchaModel['store'] == false) unset($workingModel[$key]); 
+			foreach($workingModel as $key => $SenchaModel) if(isset($SenchaModel['store']) && $SenchaModel['store'] === false) unset($workingModel[$key]); 
 			
 			// get the table column information and remove the id column
 			$recordSet = self::$__conn->query("SHOW FULL COLUMNS IN ".self::$__senchaModel['table'].";");
@@ -184,10 +178,9 @@ class Matcha
 				// add columns to the table
 				foreach($workingModel as $column) if( !is_numeric(self::__recursiveArraySearch($column['name'], $tableColumns)) ) self::__createColumn($column);
 			}
-			// if everything else passes check for differences in the columns.
+			// if everything else passes, check for differences in the columns.
 			else
 			{
-				// Verify changes in the table 
 				// modify the table columns if is not equal to the Sencha Model
 				foreach($tableColumns as $column)
 				{
@@ -255,10 +248,10 @@ class Matcha
 		try
 		{
 			// Getting Sencha model as a namespace
-			$fileModel = (string)str_replace('App', 'app', $fileModel);
+			$fileModel = (string)str_replace('App.', '', $fileModel);
 			$fileModel = str_replace('.', '/', $fileModel);
-			if(!file_exists(self::$__root.'/'.$fileModel.'.js')) throw new Exception('Sencha Model file does not exist.');
-			$senchaModel = (string)file_get_contents(self::$__root.'/'.$fileModel.'.js');
+			if(!file_exists(self::$__app.'/'.$fileModel.'.js')) throw new Exception('Sencha Model file does not exist.');
+			$senchaModel = (string)file_get_contents(self::$__app.'/'.$fileModel.'.js');
 			
 			// clean comments and unnecessary Ext.define functions
 			$senchaModel = preg_replace("((/\*(.|\n)*?\*/|//(.*))|([ ](?=(?:[^\'\"]|\'[^\'\"]*\')*$)|\t|\n|\r))", '', $senchaModel);
@@ -272,11 +265,12 @@ class Matcha
 			$senchaModel = preg_replace("(')", '"', $senchaModel);
 			
 			$model = (array)json_decode($senchaModel, true);
-			if(!count($model)) throw new Exception("Ops something whent wrong converting it to an array.");
+			if(!count($model)) throw new Exception("Something whent wrong converting it to an array, a bad lolo.");
 			
-			// get the table from the model
+			// check if there are a defined table from the model
 			if(!isset($model['table'])) throw new Exception("Table property is not defined on Sencha Model. 'table:'");
-
+			
+			// check if there are a defined fields from the model
 			if(!isset($model['fields'])) throw new Exception("Fields property is not defined on Sencha Model. 'fields:'");
 			return $model;
 		}
@@ -289,7 +283,8 @@ class Matcha
 
 	/**
 	 * function __getRelationFromModel():
-	 * Method to get the relation from the model if has any
+	 * Method to get the relation from the model if has any.
+	 * TODO: This method have to be removed because Sencha manages relations on JavaScript.
 	 */
 	static private function __getRelationFromModel()
 	{
@@ -362,6 +357,7 @@ class Matcha
 	 * have a match in the right table or not. If, however, they do have a match 
 	 * in the right table – give me the “matching” data from the right table as well. 
 	 * If not – fill in the holes with null.
+	 * TODO: This method have to be removed because Sencha manages relations on JavaScript.
 	 */
 	static private function __leftJoin($joinParameters = array())
 	{
@@ -373,6 +369,7 @@ class Matcha
 	 * An inner join only returns those records that have “matches” in both tables. 
 	 * So for every record returned in T1 – you will also get the record linked by 
 	 * the foreign key in T2. In programming logic – think in terms of AND.
+	 * TODO: This method have to be removed because Sencha manages relations on JavaScript.
 	 */
 	static private function __innerJoin($joinParameters = array())
 	{
@@ -393,7 +390,7 @@ class Matcha
 	
 	/**
 	 * function __createTable():
-	 * Method to create a table if does not exist
+	 * Method to create a table if does not exist with a BIGINT as id
 	 */
 	 static private function __createTable()
 	 {
@@ -410,7 +407,7 @@ class Matcha
 	 
 	/**
 	 * function __createAllColumns($paramaters = array()):
-	 * This method will create the column inside the table of the database
+	 * This method will create all the columns inside the table of the database
 	 * method used by SechaModel method
 	 */
 	static private function __createAllColumns($paramaters = array())
@@ -427,7 +424,7 @@ class Matcha
 	
 	/**
 	 * function __createColumn($column = array()):
-	 * Method that will create the column into the table
+	 * Method that will create a single column into the table
 	 */
 	static private function __createColumn($column = array())
 	{
@@ -443,7 +440,7 @@ class Matcha
 	
 	/**
 	 * function __modifyColumn($SingleParamater = array()):
-	 * Method to modify the column properties
+	 * Method to modify a single column properties
 	 */
 	static private function __modifyColumn($SingleParamater = array())
 	{
@@ -500,36 +497,18 @@ class Matcha
 		// parse some properties on Sencha model.
 		// and do the defaults if properties are not set.
 		$columnType = (string)'';
-		if(isset($column['dataType'])) 
-		{
-			$columnType = strtoupper($column['dataType']);
-		}
-		elseif($column['type'] == 'string' )
-		{
-			$columnType = 'VARCHAR';
-		}
-		elseif($column['type'] == 'int')
-		{
+		if(isset($column['dataType'])): $columnType = strtoupper($column['dataType']);
+		elseif($column['type'] == 'string' ): $columnType = 'VARCHAR';
+		elseif($column['type'] == 'int'): 
 			$columnType = 'INT';
 			$column['len'] = (isset($column['len']) ? $column['len'] : 11);
-		}
-		elseif($column['type'] == 'bool' || $column['type'] == 'boolean')
-		{
+		elseif($column['type'] == 'bool' || $column['type'] == 'boolean'):
 			$columnType = 'TINYINT';
 			$column['len'] = (isset($column['len']) ? $column['len'] : 1);
-		}
-		elseif($column['type'] == 'date')
-		{
-			$columnType = 'DATE';
-		}
-		elseif($column['type'] == 'float')
-		{
-			$columnType = 'FLOAT';
-		}
-		else
-		{
-			return false;
-		}
+		elseif($column['type'] == 'date'): $columnType = 'DATE';
+		elseif($column['type'] == 'float'): $columnType = 'FLOAT';
+		else: return false;
+		endif;
 		
 		// render the rest of the sql statement
 		switch ($columnType)

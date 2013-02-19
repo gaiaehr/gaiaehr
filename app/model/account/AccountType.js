@@ -14,7 +14,7 @@ Ext.define('App.model.account.AccountType', {
 		charset:'utf8',
 		collate:'utf8_bin',
 		comment:'Account',
-		data:'data/accaccount.json'
+		data:'App.data.account.AccountType'
 	},
 	fields: [
 		{name: 'id',                type: 'int'},

@@ -247,10 +247,10 @@ class Matcha
 		try
 		{
 			// Getting Sencha model as a namespace
-			$fileModel = (string)str_replace('App.', '', $fileModel);
-			$fileModel = str_replace('.', '/', $fileModel);
-			if(!file_exists(self::$__app.'/'.$fileModel.'.js')) throw new Exception('Sencha Model file does not exist.');
-			$senchaModel = (string)file_get_contents(self::$__app.'/'.$fileModel.'.js');
+//			$fileModel = (string)str_replace('App.', '', $fileModel);
+//			$fileModel = str_replace('.', '/', $fileModel);
+//			if(!file_exists(self::$__app.'/'.$fileModel.'.js')) throw new Exception('Sencha Model file does not exist.');
+			$senchaModel = self::__getFileContent($fileModel);
 			// clean comments and unnecessary Ext.define functions
 			$senchaModel = preg_replace("((/\*(.|\n)*?\*/|//(.*))|([ ](?=(?:[^\'\"]|\'[^\'\"]*\')*$)|\t|\n|\r))", '', $senchaModel);
 			$senchaModel = preg_replace("(Ext.define\('[A-Za-z0-9.]*',|\);|\"|proxy(.|\n)*},)", '', $senchaModel); 
@@ -276,6 +276,33 @@ class Matcha
 		{
 			MatchaErrorHandler::__errorProcess($e);
 			return false;
+		}
+	}
+
+	static private function __getFileContent($file, $type = 'js'){
+		$file = (string)str_replace('App.', '', $file);
+		$file = str_replace('.', '/', $file);
+		if(!file_exists(self::$__app.'/'.$file.'.'.$type)) throw new Exception('Sencha file "'.self::$__app.'/'.$file.'.'.$type.'" not found.');
+		return (string)file_get_contents(self::$__app.'/'.$file.'.'.$type);
+	}
+
+	static public function __setSenchaModelData($fileData){
+		try
+		{
+			$dataArray = json_decode(self::__getFileContent($fileData, 'json'), true);
+			foreach($dataArray as $data){
+				$columns = array_keys($data);
+				$columns = '(`'.implode('`,`',$columns).'`)';
+				$values  = array_values($data);
+				foreach($values as $index => $val) if($val == null) $values[$index] = 'NULL';
+				$values  = '(\''.implode('\',\'',$values).'\')';
+				Matcha::$__conn->query(str_replace("'NULL'",'NULL',"INSERT INTO `".self::$__senchaModel['table']['name']."` $columns VALUES $values"));
+			}
+			return true;
+		}
+		catch(PDOException $e)
+		{
+			return MatchaErrorHandler::__errorProcess($e);
 		}
 	}
 
@@ -390,18 +417,25 @@ class Matcha
 	 * function __createTable():
 	 * Method to create a table if does not exist with a BIGINT as id
 	 */
-	 static private function __createTable()
-	 {
-	 	try
-	 	{
-			self::$__conn->query('CREATE TABLE IF NOT EXISTS '.self::$__senchaModel['table']['name'].' (id BIGINT(20) NOT NULL AUTO_INCREMENT PRIMARY KEY);');
+	static private function __createTable()
+	{
+	    try
+	    {
+			self::$__conn->exec('CREATE TABLE IF NOT EXISTS '.self::$__senchaModel['table']['name'].' (id BIGINT(20) NOT NULL AUTO_INCREMENT PRIMARY KEY);');
+		    /**
+		     * insert data only if table is empty and $__senchaModel['table']['data'] exist
+		     */
+		    $rec = self::$__conn->prepare('SELECT * FROM '.self::$__senchaModel['table']['name']);
+		    if($rec->rowCount() == 0 && isset(self::$__senchaModel['table']['data'])){
+				self::__setSenchaModelData(self::$__senchaModel['table']['data']);
+			}
 			return true;
 		}
 		catch(PDOException $e)
 		{
 			return MatchaErrorHandler::__errorProcess($e);
 		}
-	 }
+	}
 	 
 	/**
 	 * function __createAllColumns($paramaters = array()):
@@ -503,7 +537,7 @@ class Matcha
 		elseif($column['type'] == 'bool' || $column['type'] == 'boolean'):
 			$columnType = 'TINYINT';
 			$column['len'] = (isset($column['len']) ? $column['len'] : 1);
-		elseif($column['type'] == 'date'): $columnType = 'DATE';
+		elseif($column['type'] == 'date'): $columnType = 'DATETIME';
 		elseif($column['type'] == 'float'): $columnType = 'FLOAT';
 		else: return false;
 		endif;

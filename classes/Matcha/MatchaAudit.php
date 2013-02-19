@@ -54,7 +54,7 @@ class MatchaAudit extends Matcha
 			
 			//check for the available fields
 			$recordSet = self::$__conn->query("SHOW COLUMNS IN ".self::$__senchaModel['table'].";");
-			if( $recordSet->fetchAll(PDO::FETCH_ASSOC) ) self::__logModel();
+			if( $recordSet->fetchAll(PDO::FETCH_ASSOC) ) self::__createLogModel();
 			unset($recordSet);
 				
 			// insert the event log
@@ -73,7 +73,7 @@ class MatchaAudit extends Matcha
 	 * function __logModel():
 	 * Method to create the log table columns
 	 */
-	static private function __logModel()
+	static private function __createLogModel()
 	{
 		try
 		{

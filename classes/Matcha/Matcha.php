@@ -147,8 +147,8 @@ class Matcha
 			if(!self::$__senchaModel['fields']) throw new Exception('There are no fields set.');
 		
 			// verify the existence of the table if it does not exist create it
-			$recordSet = self::$__conn->query("SHOW TABLES LIKE '".self::$__senchaModel['table']."';");
-			if( isset($recordSet) ) self::__createTable(self::$__senchaModel['table']);
+			$recordSet = self::$__conn->query("SHOW TABLES LIKE '".self::$__senchaModel['table']['name']."';");
+			if(isset($recordSet)) self::__createTable(self::$__senchaModel['table']['name']);
 			
 			// Remove from the model those fields that are not meant to be stored
 			// on the database-table and remove the id from the workingModel.
@@ -157,7 +157,7 @@ class Matcha
 			foreach($workingModel as $key => $SenchaModel) if(isset($SenchaModel['store']) && $SenchaModel['store'] === false) unset($workingModel[$key]); 
 			
 			// get the table column information and remove the id column
-			$recordSet = self::$__conn->query("SHOW FULL COLUMNS IN ".self::$__senchaModel['table'].";");
+			$recordSet = self::$__conn->query("SHOW FULL COLUMNS IN ".self::$__senchaModel['table']['name'].";");
 			$tableColumns = $recordSet->fetchAll(PDO::FETCH_ASSOC);
 			unset($tableColumns[self::__recursiveArraySearch('id', $tableColumns)]);
 			
@@ -359,7 +359,7 @@ class Matcha
 	 */
 	static private function __leftJoin($joinParameters = array())
 	{
-		return (string)' LEFT JOIN ' . $joinParameters['relateTable'].' ON ('.self::$__senchaModel['table'].'.'.$joinParameters['fromId'].' = '.$joinParameters['relateTable'].'.'.$joinParameters['toId'].') ';
+		return (string)' LEFT JOIN ' . $joinParameters['relateTable'].' ON ('.self::$__senchaModel['table']['name'].'.'.$joinParameters['fromId'].' = '.$joinParameters['relateTable'].'.'.$joinParameters['toId'].') ';
 	}
 	
 	/**
@@ -371,7 +371,7 @@ class Matcha
 	 */
 	static private function __innerJoin($joinParameters = array())
 	{
-		return (string)' INNER JOIN ' . $joinParameters['relateTable'].' ON ('.self::$__senchaModel['table'].'.'.$joinParameters['fromId'].' = '.$joinParameters['relateTable'].'.'.$joinParameters['toId'].') ';
+		return (string)' INNER JOIN ' . $joinParameters['relateTable'].' ON ('.self::$__senchaModel['table']['name'].'.'.$joinParameters['fromId'].' = '.$joinParameters['relateTable'].'.'.$joinParameters['toId'].') ';
 	}
 
 	/**
@@ -394,7 +394,7 @@ class Matcha
 	 {
 	 	try
 	 	{
-			self::$__conn->query('CREATE TABLE IF NOT EXISTS '.self::$__senchaModel['table'].' (id BIGINT(20) NOT NULL AUTO_INCREMENT PRIMARY KEY);');
+			self::$__conn->query('CREATE TABLE IF NOT EXISTS '.self::$__senchaModel['table']['name'].' (id BIGINT(20) NOT NULL AUTO_INCREMENT PRIMARY KEY);');
 			return true;
 		}
 		catch(PDOException $e)
@@ -428,7 +428,7 @@ class Matcha
 	{
 		try
 		{
-			self::$__conn->query('ALTER TABLE '.self::$__senchaModel['table'].' ADD '.$column['name'].' '.self::__renderColumnSyntax($column) . ';');
+			self::$__conn->query('ALTER TABLE '.self::$__senchaModel['table']['name'].' ADD '.$column['name'].' '.self::__renderColumnSyntax($column) . ';');
 		}
 		catch(PDOException $e)
 		{
@@ -444,7 +444,7 @@ class Matcha
 	{
 		try
 		{
-			self::$__conn->query('ALTER TABLE '.self::$__senchaModel['table'].' MODIFY '.$SingleParamater['name'].' '.self::__renderColumnSyntax($SingleParamater) . ';');
+			self::$__conn->query('ALTER TABLE '.self::$__senchaModel['table']['name'].' MODIFY '.$SingleParamater['name'].' '.self::__renderColumnSyntax($SingleParamater) . ';');
 		}
 		catch(PDOException $e)
 		{
@@ -477,7 +477,7 @@ class Matcha
 	{
 		try
 		{
-			self::$__conn->query("ALTER TABLE ".self::$__senchaModel['table']." DROP COLUMN `".$column."`;");
+			self::$__conn->query("ALTER TABLE ".self::$__senchaModel['table']['name']." DROP COLUMN `".$column."`;");
 		}
 		catch(PDOException $e)
 		{

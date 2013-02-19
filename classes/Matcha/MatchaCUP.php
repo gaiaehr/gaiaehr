@@ -83,7 +83,7 @@ class MatchaCUP
 				}
 				if($where != null) $wherex = 'WHERE '.$wherex;
 				// sql build
-				$this->sql = "SELECT $columnsx FROM `".$this->model->table."` $wherex";
+				$this->sql = "SELECT $columnsx FROM `".$this->model->table->name."` $wherex";
 			}else{
 				// limits
 				$limits = '';
@@ -120,8 +120,8 @@ class MatchaCUP
 					}
 					$wherex = 'WHERE '.implode(' AND ',$wherex);
 				}
-				$this->nolimitsql = "SELECT * FROM `".$this->model->table."` $groupx $wherex $sortx";
-				$this->sql = "SELECT * FROM `".$this->model->table."` $groupx $wherex $sortx $limits";
+				$this->nolimitsql = "SELECT * FROM `".$this->model->table->name."` $groupx $wherex $sortx";
+				$this->sql = "SELECT * FROM `".$this->model->table->name."` $groupx $wherex $sortx $limits";
 			}
 			return $this;
 		}
@@ -237,7 +237,7 @@ class MatchaCUP
 				$columns = '(`'.implode('`,`',$columns).'`)';
 				$values  = array_values($data);
 				$values  = '(\''.implode('\',\'',$values).'\')';
-				$this->rowsAffected = Matcha::$__conn->exec("INSERT INTO `".$this->model->table."` $columns VALUES $values");
+				$this->rowsAffected = Matcha::$__conn->exec("INSERT INTO `".$this->model->table->name."` $columns VALUES $values");
 				$this->lastInsertId = Matcha::$__conn->lastInsertId();
 				$record['id'] = $this->lastInsertId;
 			}
@@ -249,7 +249,7 @@ class MatchaCUP
 				unset($data['id']);
 				foreach($data as $key => $val) $values[] = "`$key`='$val'";
 				$values = implode(',',$values);
-				$this->rowsAffected = Matcha::$__conn->exec("UPDATE `".$this->model->table."` SET $values WHERE id='$id'");
+				$this->rowsAffected = Matcha::$__conn->exec("UPDATE `".$this->model->table->name."` SET $values WHERE id='$id'");
 			}
 			try
 			{
@@ -284,7 +284,7 @@ class MatchaCUP
 		{
 			$record = (is_object($record) ? get_object_vars($record) : $record);
 			$id = $record['id'];
-			$this->rowsAffected = Matcha::$__conn->exec("DELETE FROM ".$this->model->table." WHERE id='$id'");
+			$this->rowsAffected = Matcha::$__conn->exec("DELETE FROM ".$this->model->table->name." WHERE id='$id'");
 			return $this->rowsAffected;
 		}
 		catch(PDOException $e)
@@ -300,8 +300,7 @@ class MatchaCUP
 	 */
 	public function setModel($model){
 		$this->model = $this->ArrayToObject($model);
-		$this->table = $this->model->table;
-//		$this->table = $this->model->table->name;
+		$this->table = $this->model->table->name;
 	}
 
 	/**

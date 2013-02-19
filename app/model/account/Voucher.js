@@ -7,15 +7,14 @@
  */
 Ext.define('App.model.account.Voucher', {
 	extend: 'Ext.data.Model',
-	table: 'accvoucher',
-//	table: {
-//		name:'accvoucher',
-//		engine:'InnoDB',
-//		autoIncrement:1,
-//		charset:'utf8',
-//		collate:'utf8_bin',
-//		comment:'Voucher / Receipt'
-//	},
+	table: {
+		name:'accvoucher',
+		engine:'InnoDB',
+		autoIncrement:1,
+		charset:'utf8',
+		collate:'utf8_bin',
+		comment:'Voucher / Receipt'
+	},
 	fields: [
 		{name: 'id',                        type: 'int'},
 		{name: 'createUid',                 type: 'int'},

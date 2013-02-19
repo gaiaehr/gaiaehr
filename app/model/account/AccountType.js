@@ -7,15 +7,15 @@
  */
 Ext.define('App.model.account.AccountType', {
 	extend: 'Ext.data.Model',
-	table: 'accaccount',
-//	table: {
-//		name:'accaccount',
-//		engine:'InnoDB',
-//		autoIncrement:1,
-//		charset:'utf8',
-//		collate:'utf8_bin',
-//		comment:'Account'
-//	},
+	table: {
+		name:'accaccount',
+		engine:'InnoDB',
+		autoIncrement:1,
+		charset:'utf8',
+		collate:'utf8_bin',
+		comment:'Account',
+		data:'data/accaccount.json'
+	},
 	fields: [
 		{name: 'id',                type: 'int'},
 		{name: 'createUid',         type: 'int'},

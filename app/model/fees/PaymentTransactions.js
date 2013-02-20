@@ -20,6 +20,14 @@
 Ext.define('App.model.fees.PaymentTransactions',
 {
 	extend : 'Ext.data.Model',
+	table: {
+		name:'paymenttransactions',
+		engine:'InnoDB',
+		autoIncrement:1,
+		charset:'utf8',
+		collate:'utf8_bin',
+		comment:'Payment Transactions'
+	},
 	fields : [],
 	proxy :
 	{

@@ -20,6 +20,7 @@
 include_once('MatchaAudit.php');
 include_once('MatchaCUP.php');
 include_once('MatchaErrorHandler.php');
+
 class Matcha
 {
 	 
@@ -36,7 +37,6 @@ class Matcha
 	public static $__app;
 	public static $__audit;
 	
-	
 	static public function connect($databaseParameters = array())
 	{
 		try
@@ -49,7 +49,7 @@ class Matcha
 				!isset($databaseParameters['app'])) 
 				throw new Exception('These parameters are obligatory: host="database ip or hostname", name="database name", user="database username", pass="database password", app="path of your sencha application"');
 				
-			// Connect using regular PDO Matcha::setup Abstraction layer.
+			// Connect using regular PDO Matcha::connect Abstraction layer.
 			// but make only a connection, not to the database.
 			// and then the database
 			self::$__app = $databaseParameters['app'];
@@ -126,6 +126,11 @@ class Matcha
 		self::$__freeze = (bool)$onoff;
 	}
 	
+	/**
+	 * function audit($onoff = true):
+	 * Method to enable the audit log process.
+	 * This will write a log every time it INSERT, UPDATE, DELETE a record.
+	 */
 	static public function audit($onoff = true)
 	{
 		self::$__audit = (bool)$onoff;
@@ -276,6 +281,11 @@ class Matcha
 		}
 	}
 
+	/**
+	 * function __getFileContent($file, $type = 'js'):
+	 * Load a Sencha Model from .js file
+	 * 
+	 */
 	static private function __getFileContent($file, $type = 'js')
 	{
 		try
@@ -598,7 +608,7 @@ class Matcha
 	}
 	
 	/**
-	 * __recursiveArraySearch($needle,$haystack):
+	 * function __recursiveArraySearch($needle,$haystack):
 	 * An recursive array search method
 	 */
 	static private function __recursiveArraySearch($needle,$haystack) 

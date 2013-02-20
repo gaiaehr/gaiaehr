@@ -398,10 +398,7 @@ class MatchaCUP
 	 */
 	private function ArrayToObject(array $array, stdClass $parent = null)
 	{
-		if ($parent === null)
-		{
-			$parent = new stdClass;
-		}
+		if ($parent === null) $parent = new stdClass;
 		foreach ($array as $key => $val)
 		{
 			if (is_array($val))

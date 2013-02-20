@@ -349,8 +349,9 @@ class Matcha
 					// run the SQL in normal fashion
 					if(class_exists('MatchaThreads'))
 					{
-						MatchaThreads::injectSQLThread($columns.$valuesEncapsulation.';');
-						MatchaThreads::start();
+						$thread = new MatchaThreads();
+						$thread->run($columns.$valuesEncapsulation.';');
+						$thread->start();
 					}
 					else 
 					{

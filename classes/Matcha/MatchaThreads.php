@@ -26,7 +26,7 @@ class MatchaThreads extends Thread
 	 * Method to send BIG SQL injections to the database
 	 * think of it throw and forget injection
 	 */
-	public function injectSQLThread($sqlStatement)
+	public function run($sqlStatement)
 	{
 		try
 		{

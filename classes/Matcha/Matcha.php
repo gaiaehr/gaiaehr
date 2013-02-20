@@ -20,6 +20,7 @@
 include_once('MatchaAudit.php');
 include_once('MatchaCUP.php');
 include_once('MatchaErrorHandler.php');
+include_once('MatchaInject.php');
 
 class Matcha
 {
@@ -37,6 +38,10 @@ class Matcha
 	public static $__app;
 	public static $__audit;
 	
+	/**
+	 * function connect($databaseParameters = array()):
+	 * Method that make the connection to the database
+	 */
 	static public function connect($databaseParameters = array())
 	{
 		try
@@ -287,7 +292,6 @@ class Matcha
 	/**
 	 * function __getFileContent($file, $type = 'js'):
 	 * Load a Sencha Model from .js file
-	 * 
 	 */
 	static private function __getFileContent($file, $type = 'js')
 	{
@@ -305,11 +309,17 @@ class Matcha
 		}
 	}
 
-	static public function __setSenchaModelData($fileData){
+	/**
+	 * function __setSenchaModelData($fileData):
+	 * Method to grab data and insert it into the table.
+	 */
+	static public function __setSenchaModelData($fileData)
+	{
 		try
 		{
 			$dataArray = json_decode(self::__getFileContent($fileData, 'json'), true);
-			foreach($dataArray as $data){
+			foreach($dataArray as $data)
+			{
 				$columns = array_keys($data);
 				$columns = '(`'.implode('`,`',$columns).'`)';
 				$values  = array_values($data);
@@ -321,76 +331,6 @@ class Matcha
 			return true;
 		}
 		catch(PDOException $e)
-		{
-			return MatchaErrorHandler::__errorProcess($e);
-		}
-	}
-
-	/**
-	 * function __getRelationFromModel():
-	 * Method to get the relation from the model if has any.
-	 * TODO: This method have to be removed because Sencha manages relations on JavaScript.
-	 */
-	static private function __getRelationFromModel()
-	{
-		try
-		{
-			// first check if the sencha model object has some value
-			self::$Relation = 'none';
-			if(isset(self::$__senchaModel)) throw new Exception("Sencha Model is not configured.");
-			
-			// check if the model has the associations property 
-			if(isset(self::$__senchaModel['associations']))
-			{
-				self::$Relation = 'associations';
-				// load all the models.
-				foreach(self::$__senchaModel['associations'] as $relation)
-				{ 
-					self::SenchaModel(self::$__senchaModel['associations']);
-					self::$RelationStatement[] = self::__leftJoin(
-					array(
-						'fromId'=>(isset(self::$__senchaModel['associations']['primaryKey']) ? self::$__senchaModel['associations']['foreignKey'] : 'id'),
-						'toId'=>self::$__senchaModel['associations']['foreignKey']
-					));
-				}
-			}
-			
-			// check if the model has the associations property 
-			if(isset(self::$__senchaModel['hasOne']))
-			{
-				self::$Relation = 'hasOne';
-				self::$RelationStatement[] = self::__leftJoin(
-				array(
-					'fromId'=>(isset(self::$__senchaModel['associations']['primaryKey']) ? self::$__senchaModel['associations']['foreignKey'] : 'id'),
-					'toId'=>self::$__senchaModel['associations']['foreignKey']
-				));
-			}
-			
-			// check if the model has the associations property 
-			if(isset(self::$__senchaModel['hasMany']))
-			{
-				self::$Relation = 'hasMany';
-				self::$RelationStatement[] = self::__leftJoin(
-				array(
-					'fromId'=>(isset(self::$__senchaModel['associations']['primaryKey']) ? self::$__senchaModel['associations']['foreignKey'] : 'id'),
-					'toId'=>self::$__senchaModel['associations']['foreignKey']
-				));
-			}
-			
-			// check if the model has the associations property 
-			if(isset(self::$__senchaModel['belongsTo']))
-			{
-				self::$Relation = 'belongsTo';
-				self::$RelationStatement[] = self::__leftJoin(
-				array(
-					'fromId'=>(isset(self::$__senchaModel['associations']['primaryKey']) ? self::$__senchaModel['associations']['foreignKey'] : 'id'),
-					'toId'=>self::$__senchaModel['associations']['foreignKey']
-				));
-			}
-			
-			return true;
-		}
-		catch(Exception $e)
 		{
 			return MatchaErrorHandler::__errorProcess($e);
 		}

@@ -7,6 +7,14 @@
  */
 Ext.define('App.model.patient.CptCodes', {
     extend: 'Ext.data.Model',
+	table: {
+		name:'cptcodes',
+		engine:'InnoDB',
+		autoIncrement:1,
+		charset:'utf8',
+		collate:'utf8_bin',
+		comment:'CPT Codes'
+	},
     fields: [
         {name: 'id', type:'int'},
         {name: 'eid', type:'int'},

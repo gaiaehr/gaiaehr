@@ -7,6 +7,14 @@
  */
 Ext.define('App.model.patient.Immunization', {
 	extend: 'Ext.data.Model',
+	table: {
+		name:'immunization',
+		engine:'InnoDB',
+		autoIncrement:1,
+		charset:'utf8',
+		collate:'utf8_bin',
+		comment:'Immunization'
+	},
 	fields: [
         {name: 'id', type: 'int'},
         {name: 'code', type: 'int'},

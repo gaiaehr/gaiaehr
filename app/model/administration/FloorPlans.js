@@ -9,6 +9,14 @@
 
 Ext.define('App.model.administration.FloorPlans', {
 	extend: 'Ext.data.Model',
+	table: {
+		name:'floorplans',
+		engine:'InnoDB',
+		autoIncrement:1,
+		charset:'utf8',
+		collate:'utf8_bin',
+		comment:'Floor Plans'
+	},
 	fields: [
 		{name: 'id', type: 'int'},
 		{name: 'title', type: 'string'}

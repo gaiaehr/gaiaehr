@@ -334,16 +334,6 @@ Ext.define('App.view.Viewport', {
             handler: me.goToFloorPlans,
             tooltip: i18n('floor_plans')
         });
-
-	    Ext.define('User', {
-		    extend: 'Ext.data.Model',
-		    fields: [
-			    {name: 'id', type: 'int'},
-			    {name: 'comment',  type: 'string'},
-			    {name: 'accountId',   type: 'int'},
-			    {name: 'encounterId',  type: 'int'}
-		    ]
-	    });
         /**
          * The panel definition for the the TreeMenu & the support button
          */

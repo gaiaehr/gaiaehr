@@ -314,6 +314,7 @@ class Matcha
 	 * Method to grab data and insert it into the table.
 	 * it uses pcntl_fork to do batches of 500 records at the same
 	 * time.
+	 * TODO: Needs more work.
 	 */
 	static public function __setSenchaModelData($fileData)
 	{

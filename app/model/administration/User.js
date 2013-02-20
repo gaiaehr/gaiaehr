@@ -21,7 +21,15 @@
 Ext.define( 'App.model.administration.User',
 {
 	extend : 'Ext.data.Model',
-	table: 'users',
+	table: {
+		name:'users',
+		engine:'InnoDB',
+		autoIncrement:1,
+		charset:'utf8',
+		collate:'utf8_bin',
+		comment:'Account',
+		data:'App.data.account.Account'
+	},
 	fields : [
 	{
 		name : 'id',

@@ -20,6 +20,7 @@
 include_once('MatchaAudit.php');
 include_once('MatchaCUP.php');
 include_once('MatchaErrorHandler.php');
+
 class Matcha
 {
 	 
@@ -36,7 +37,6 @@ class Matcha
 	public static $__app;
 	public static $__audit;
 	
-	
 	static public function connect($databaseParameters = array())
 	{
 		try
@@ -46,10 +46,10 @@ class Matcha
 				!isset($databaseParameters['name']) &&
 				!isset($databaseParameters['user']) && 
 				!isset($databaseParameters['pass']) &&
-				!isset($databaseParameters['root'])) 
+				!isset($databaseParameters['app'])) 
 				throw new Exception('These parameters are obligatory: host="database ip or hostname", name="database name", user="database username", pass="database password", app="path of your sencha application"');
 				
-			// Connect using regular PDO Matcha::setup Abstraction layer.
+			// Connect using regular PDO Matcha::connect Abstraction layer.
 			// but make only a connection, not to the database.
 			// and then the database
 			self::$__app = $databaseParameters['app'];
@@ -126,6 +126,11 @@ class Matcha
 		self::$__freeze = (bool)$onoff;
 	}
 	
+	/**
+	 * function audit($onoff = true):
+	 * Method to enable the audit log process.
+	 * This will write a log every time it INSERT, UPDATE, DELETE a record.
+	 */
 	static public function audit($onoff = true)
 	{
 		self::$__audit = (bool)$onoff;
@@ -247,9 +252,6 @@ class Matcha
 		try
 		{
 			// Getting Sencha model as a namespace
-//			$fileModel = (string)str_replace('App.', '', $fileModel);
-//			$fileModel = str_replace('.', '/', $fileModel);
-//			if(!file_exists(self::$__app.'/'.$fileModel.'.js')) throw new Exception('Sencha Model file does not exist.');
 			$senchaModel = self::__getFileContent($fileModel);
 			// clean comments and unnecessary Ext.define functions
 			$senchaModel = preg_replace("((/\*(.|\n)*?\*/|//(.*))|([ ](?=(?:[^\'\"]|\'[^\'\"]*\')*$)|\t|\n|\r))", '', $senchaModel);
@@ -279,11 +281,25 @@ class Matcha
 		}
 	}
 
-	static private function __getFileContent($file, $type = 'js'){
-		$file = (string)str_replace('App.', '', $file);
-		$file = str_replace('.', '/', $file);
-		if(!file_exists(self::$__app.'/'.$file.'.'.$type)) throw new Exception('Sencha file "'.self::$__app.'/'.$file.'.'.$type.'" not found.');
-		return (string)file_get_contents(self::$__app.'/'.$file.'.'.$type);
+	/**
+	 * function __getFileContent($file, $type = 'js'):
+	 * Load a Sencha Model from .js file
+	 * 
+	 */
+	static private function __getFileContent($file, $type = 'js')
+	{
+		try
+		{
+			$file = (string)str_replace('App.', '', $file);
+			$file = str_replace('.', '/', $file);
+			if(!file_exists(self::$__app.'/'.$file.'.'.$type)) throw new Exception('Sencha file "'.self::$__app.'/'.$file.'.'.$type.'" not found.');
+			return (string)file_get_contents(self::$__app.'/'.$file.'.'.$type);
+		}
+		catch(Exception $e)
+		{
+			MatchaErrorHandler::__errorProcess($e);
+			return false;
+		}
 	}
 
 	static public function __setSenchaModelData($fileData){
@@ -421,12 +437,11 @@ class Matcha
 	{
 	    try
 	    {
-			self::$__conn->exec('CREATE TABLE IF NOT EXISTS '.self::$__senchaModel['table']['name'].' (id BIGINT(20) NOT NULL AUTO_INCREMENT PRIMARY KEY);');
-		    /**
-		     * insert data only if table is empty and $__senchaModel['table']['data'] exist
-		     */
+			self::$__conn->exec('CREATE TABLE IF NOT EXISTS '.self::$__senchaModel['table']['name'].' (id BIGINT(20) NOT NULL AUTO_INCREMENT PRIMARY KEY) '.self::__renderTableOptions().';');
+		    // insert data only if table is empty and $__senchaModel['table']['data'] exist
 		    $rec = self::$__conn->prepare('SELECT * FROM '.self::$__senchaModel['table']['name']);
-		    if($rec->rowCount() == 0 && isset(self::$__senchaModel['table']['data'])){
+		    if($rec->rowCount() == 0 && isset(self::$__senchaModel['table']['data']))
+		    {
 				self::__setSenchaModelData(self::$__senchaModel['table']['data']);
 			}
 			return true;
@@ -435,6 +450,21 @@ class Matcha
 		{
 			return MatchaErrorHandler::__errorProcess($e);
 		}
+	}
+	
+	/**
+	 * function __renderTableOptions():
+	 * Render and return a well formed Table Options for the creating table.
+	 */
+	static private function __renderTableOptions()
+	{
+		$tableOptions = (string)'';
+		if( isset(self::$__senchaModel['table']['InnoDB']) ) $tableOptions .= 'ENGINE = '.self::$__senchaModel['table']['InnoDB'].' ';
+		if( isset(self::$__senchaModel['table']['autoIncrement']) ) $tableOptions .= 'AUTO_INCREMENT = '.self::$__senchaModel['table']['autoIncrement'].' ';
+		if( isset(self::$__senchaModel['table']['charset']) ) $tableOptions .= 'CHARACTER SET = '.self::$__senchaModel['table']['charset'].' ';
+		if( isset(self::$__senchaModel['table']['collate']) ) $tableOptions .= 'COLLATE = '.self::$__senchaModel['table']['collate'].' ';
+		if( isset(self::$__senchaModel['table']['comment']) ) $tableOptions .= "COMMENT = '".self::$__senchaModel['table']['comment']."' ";
+		return $tableOptions;
 	}
 	 
 	/**
@@ -592,7 +622,7 @@ class Matcha
 	}
 	
 	/**
-	 * __recursiveArraySearch($needle,$haystack):
+	 * function __recursiveArraySearch($needle,$haystack):
 	 * An recursive array search method
 	 */
 	static private function __recursiveArraySearch($needle,$haystack) 

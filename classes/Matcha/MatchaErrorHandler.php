@@ -30,7 +30,11 @@ class MatchaErrorHandler extends Matcha
 	 */
 	static public function __errorProcess($errorException)
 	{
-		error_log('Matcha::connect: ' . $errorException->getMessage() );
+		// TODO: A switch to output a formatted HTML for the trace.
+		//echo '<pre>';
+		//print_r($errorException->getTrace());
+		//echo '</pre>';
+		error_log('Matcha::connect: '.$errorException->getMessage() );
 		return $errorException;
 	}
 

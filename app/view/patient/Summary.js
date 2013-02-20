@@ -206,15 +206,45 @@ Ext.define('App.view.patient.Summary', {
         if(acl['access_demographics']){
             me.stores.push(me.patientAlertsStore = Ext.create('App.store.patient.MeaningfulUseAlert'));
             me.tabPanel.add({
-                xtype: 'form',
-                title: i18n('demographics'),
-                action: 'demoFormPanel',
-                itemId: 'demoFormPanel',
-                border: false,
+	            xtype:'panel',
+	            title: i18n('demographics'),
 	            layout:{
 		            type:'vbox',
 		            align:'stretch'
 	            },
+	            items:[
+		            me.demoForm = Ext.widget('form',{
+			            action: 'demoFormPanel',
+			            itemId: 'demoFormPanel',
+			            type:'anchor',
+			            border: false,
+			            fieldDefaults: { msgTarget: 'side' }
+		            }),
+		            me.insPanel = Ext.widget('tabpanel',{
+			            flex:1,
+			            defaults:{
+				            autoScroll:true,
+				            padding:10
+			            },
+			            items:[
+				            me.ins1 = Ext.widget('form',{
+					            title:i18n('first_insurance'),
+					            border:false,
+					            bodyBorder:false
+				            }),
+				            me.ins2 = Ext.widget('form',{
+					            title:i18n('second_insurance'),
+					            border:false,
+					            bodyBorder:false
+				            }),
+				            me.ins3 = Ext.widget('form',{
+					            title:i18n('supplemental_insurance'),
+					            border:false,
+					            bodyBorder:false
+				            })
+			            ]
+		            })
+	            ],
                 dockedItems: [
                     {
                         xtype: 'toolbar',
@@ -919,203 +949,216 @@ Ext.define('App.view.patient.Summary', {
     },
     beforePanelRender: function(){
         if(acl['access_demographics']){
-            var me = this, demoFormPanel = me.query('[action="demoFormPanel"]')[0], whoPanel, insurancePanel, primaryInsurancePanel, secondaryInsurancePanel, tertiaryInsurancePanel;
-            this.getFormItems(demoFormPanel, 1, function(success){
+            var me = this,
+	            demoFormPanel = me.query('[action="demoFormPanel"]')[0],
+	            whoPanel;
+            me.getFormItems(me.demoForm, 1, function(success){
                 if(success){
-                    whoPanel = demoFormPanel.query('panel[title="Who"]')[0];
-//                    insurancePanel = demoFormPanel.query('panel[action="insurances"]')[0];
-//                    primaryInsurancePanel = insurancePanel.items.items[0];
-//                    secondaryInsurancePanel = insurancePanel.items.items[1];
-//                    tertiaryInsurancePanel = insurancePanel.items.items[2];
-//                    whoPanel.insert(0,
-//	                    Ext.create('Ext.panel.Panel', {
-//                            action: 'patientImgs',
-//                            layout: 'hbox',
-//                            style: 'float:right',
-//                            bodyPadding: 5,
-//                            height: 160,
-//                            width: 255,
-//                            items: [me.patientImg = Ext.create('Ext.container.Container', {
-//                                    html: '<img src="resources/images/icons/patientPhotoId.jpg" height="119" width="119" />',
-//                                    margin: '0 5 0 0'
-//                                }), me.patientQRcode = Ext.create('Ext.container.Container', {
-//                                    html: '<img src="resources/images/icons/patientDataQrCode.png" height="119" width="119" />',
-//                                    margin: 0
-//                                })],
-//                            bbar: ['-', {
-//                                text: i18n('take_picture'),
-//                                scope: me,
-//                                handler: me.getPhotoIdWindow
-//                            }, '-', '->', '-', {
-//                                text: i18n('print_qrcode'),
-//                                scope: me,
-//                                handler: function(){
-//                                    window.printQRCode(app.patient.pid);
-//                                }
-//                            }, '-']
-//                        })
-//                    );
-//                    primaryInsurancePanel.insert(0,
-//	                    Ext.create('Ext.panel.Panel', {
-//                            style: 'float:right',
-//                            height: 182,
-//                            width: 255,
-//                            items: [me.primaryInsuranceImg = Ext.create('Ext.container.Container', {
-//                                    html: '<img src="resources/images/icons/no_card.jpg" height="154" width="254" />'
-//                                }), me.primaryInsuranceImgUpload = Ext.create('Ext.window.Window', {
-//                                    draggable: false,
-//                                    closable: false,
-//                                    closeAction: 'hide',
-//                                    items: [
-//                                        {
-//                                            xtype: 'form',
-//                                            bodyPadding: 10,
-//                                            width: 310,
-//                                            items: [
-//                                                {
-//                                                    xtype: 'filefield',
-//                                                    name: 'filePath',
-//                                                    buttonText: i18n('select_a_file') + '...',
-//                                                    anchor: '100%'
-//                                                }
-//                                            ],
-//                                            //   url: 'dataProvider/DocumentHandler.php'
-//                                            api: {
-//                                                submit: DocumentHandler.uploadDocument
-//                                            }
-//                                        }
-//                                    ],
-//                                    buttons: [
-//                                        {
-//                                            text: i18n('cancel'),
-//                                            handler: function(btn){
-//                                                btn.up('window').close();
-//                                            }
-//                                        },
-//                                        {
-//                                            text: i18n('upload'),
-//                                            scope: me,
-//                                            action: 'Primary Insurance',
-//                                            handler: me.onInsuranceUpload
-//                                        }
-//                                    ]
-//                                })],
-//                            bbar: ['->', '-', {
-//                                text: i18n('upload'),
-//                                action: 'primaryInsurance',
-//                                scope: me,
-//                                handler: me.uploadInsurance
-//                            }, '-']
-//                        })
-//                    );
-//                    secondaryInsurancePanel.insert(0,
-//	                    Ext.create('Ext.panel.Panel', {
-//                            style: 'float:right',
-//                            height: 182,
-//                            width: 255,
-//                            items: [me.secondaryInsuranceImg = Ext.create('Ext.container.Container', {
-//                                    html: '<img src="resources/images/icons/no_card.jpg" height="154" width="254" />'
-//                                }), me.secondaryInsuranceImgUpload = Ext.create('Ext.window.Window', {
-//                                    draggable: false,
-//                                    closable: false,
-//                                    closeAction: 'hide',
-//                                    items: [
-//                                        {
-//                                            xtype: 'form',
-//                                            bodyPadding: 10,
-//                                            width: 310,
-//                                            items: [
-//                                                {
-//                                                    xtype: 'filefield',
-//                                                    name: 'filePath',
-//                                                    buttonText: i18n('select_a_file') + '...',
-//                                                    anchor: '100%'
-//                                                }
-//                                            ],
-//                                            //   url: 'dataProvider/DocumentHandler.php'
-//                                            api: {
-//                                                submit: DocumentHandler.uploadDocument
-//                                            }
-//                                        }
-//                                    ],
-//                                    buttons: [
-//                                        {
-//                                            text: i18n('cancel'),
-//                                            handler: function(btn){
-//                                                btn.up('window').close();
-//                                            }
-//                                        },
-//                                        {
-//                                            text: i18n('upload'),
-//                                            scope: me,
-//                                            action: 'Secondary Insurance',
-//                                            handler: me.onInsuranceUpload
-//                                        }
-//                                    ]
-//                                })],
-//                            bbar: ['->', '-', {
-//                                text: i18n('upload'),
-//                                action: 'secondaryInsurance',
-//                                scope: me,
-//                                handler: me.uploadInsurance
-//                            }, '-']
-//                        })
-//                    );
-//                    tertiaryInsurancePanel.insert(0,
-//	                    Ext.create('Ext.panel.Panel', {
-//                            style: 'float:right',
-//                            height: 182,
-//                            width: 255,
-//                            items: [me.tertiaryInsuranceImg = Ext.create('Ext.container.Container', {
-//                                    html: '<img src="resources/images/icons/no_card.jpg" height="154" width="254" />'
-//                                }), me.tertiaryInsuranceImgUpload = Ext.create('Ext.window.Window', {
-//                                    draggable: false,
-//                                    closable: false,
-//                                    closeAction: 'hide',
-//                                    items: [
-//                                        {
-//                                            xtype: 'form',
-//                                            bodyPadding: 10,
-//                                            width: 310,
-//                                            items: [
-//                                                {
-//                                                    xtype: 'filefield',
-//                                                    name: 'filePath',
-//                                                    buttonText: i18n('select_a_file') + '...',
-//                                                    anchor: '100%'
-//                                                }
-//                                            ],
-//                                            //   url: 'dataProvider/DocumentHandler.php'
-//                                            api: {
-//                                                submit: DocumentHandler.uploadDocument
-//                                            }
-//                                        }
-//                                    ],
-//                                    buttons: [
-//                                        {
-//                                            text: i18n('cancel'),
-//                                            handler: function(btn){
-//                                                btn.up('window').close();
-//                                            }
-//                                        },
-//                                        {
-//                                            text: i18n('upload'),
-//                                            scope: me,
-//                                            action: 'Tertiary Insurance',
-//                                            handler: me.onInsuranceUpload
-//                                        }
-//                                    ]
-//                                })],
-//                            bbar: ['->', '-', {
-//                                text: 'Upload',
-//                                scope: me,
-//                                action: 'tertiaryInsurance',
-//                                handler: me.uploadInsurance
-//                            }, '-']
-//                        })
-//                    );
+	                whoPanel = me.demoForm.query('tabpanel')[0].items.items[0];
+	                whoPanel.insert(0,
+		                Ext.create('Ext.panel.Panel', {
+			                action: 'patientImgs',
+			                layout: 'hbox',
+			                style: 'float:right',
+			                bodyPadding: 5,
+			                height: 160,
+			                width: 255,
+			                items: [me.patientImg = Ext.create('Ext.container.Container', {
+				                html: '<img src="resources/images/icons/patientPhotoId.jpg" height="119" width="119" />',
+				                margin: '0 5 0 0'
+			                }), me.patientQRcode = Ext.create('Ext.container.Container', {
+				                html: '<img src="resources/images/icons/patientDataQrCode.png" height="119" width="119" />',
+				                margin: 0
+			                })],
+			                bbar: ['-', {
+				                text: i18n('take_picture'),
+				                scope: me,
+				                handler: me.getPhotoIdWindow
+			                }, '-', '->', '-', {
+				                text: i18n('print_qrcode'),
+				                scope: me,
+				                handler: function(){
+					                window.printQRCode(app.patient.pid);
+				                }
+			                }, '-']
+		                })
+	                );
+
+	                //	                me.getFormItems(me.demoForm, 1, function(formPanel, items){
+////			            var primary = formPanel.getForm().findField('primary_subscriber_relationship');
+////			            primary.on('select', me.copyData, me);
+////			            var secondary = formPanel.getForm().findField('secondary_subscriber_relationship');
+////			            secondary.on('select', me.copyData, me);
+////			            var tertiary = formPanel.getForm().findField('tertiary_subscriber_relationship');
+////			            tertiary.on('select', me.copyData, me);
+//	                });
                 }
             });
+	        me.getFormItems(me.ins1, 11, function(formPanel, items){
+		        formPanel.insert(0,
+			        Ext.widget('panel', {
+				        style: 'float:right',
+				        height: 182,
+				        width: 255,
+				        items: [me.primaryInsuranceImg = Ext.create('Ext.container.Container', {
+					        html: '<img src="resources/images/icons/no_card.jpg" height="154" width="254" />'
+				        }), me.primaryInsuranceImgUpload = Ext.create('Ext.window.Window', {
+					        draggable: false,
+					        closable: false,
+					        closeAction: 'hide',
+					        items: [
+						        {
+							        xtype: 'form',
+							        bodyPadding: 10,
+							        width: 310,
+							        items: [
+								        {
+									        xtype: 'filefield',
+									        name: 'filePath',
+									        buttonText: i18n('select_a_file') + '...',
+									        anchor: '100%'
+								        }
+							        ],
+							        //   url: 'dataProvider/DocumentHandler.php'
+							        api: {
+								        submit: DocumentHandler.uploadDocument
+							        }
+						        }
+					        ],
+					        buttons: [
+						        {
+							        text: i18n('cancel'),
+							        handler: function(btn){
+								        btn.up('window').close();
+							        }
+						        },
+						        {
+							        text: i18n('upload'),
+							        scope: me,
+							        action: 'Primary Insurance',
+							        handler: me.onInsuranceUpload
+						        }
+					        ]
+				        })],
+				        bbar: ['->', '-', {
+					        text: i18n('upload'),
+					        action: 'primaryInsurance',
+					        scope: me,
+					        handler: me.uploadInsurance
+				        }, '-']
+			        })
+		        );
+	        });
+	        me.getFormItems(me.ins2, 11, function(formPanel, items){
+		        formPanel.insert(0,
+                    Ext.widget('panel',{
+                        style: 'float:right',
+                        height: 182,
+                        width: 255,
+                        items: [me.secondaryInsuranceImg = Ext.create('Ext.container.Container', {
+                                html: '<img src="resources/images/icons/no_card.jpg" height="154" width="254" />'
+                            }), me.secondaryInsuranceImgUpload = Ext.create('Ext.window.Window', {
+                                draggable: false,
+                                closable: false,
+                                closeAction: 'hide',
+                                items: [
+                                    {
+                                        xtype: 'form',
+                                        bodyPadding: 10,
+                                        width: 310,
+                                        items: [
+                                            {
+                                                xtype: 'filefield',
+                                                name: 'filePath',
+                                                buttonText: i18n('select_a_file') + '...',
+                                                anchor: '100%'
+                                            }
+                                        ],
+                                        //   url: 'dataProvider/DocumentHandler.php'
+                                        api: {
+                                            submit: DocumentHandler.uploadDocument
+                                        }
+                                    }
+                                ],
+                                buttons: [
+                                    {
+                                        text: i18n('cancel'),
+                                        handler: function(btn){
+                                            btn.up('window').close();
+                                        }
+                                    },
+                                    {
+                                        text: i18n('upload'),
+                                        scope: me,
+                                        action: 'Secondary Insurance',
+                                        handler: me.onInsuranceUpload
+                                    }
+                                ]
+                            })],
+                        bbar: ['->', '-', {
+                            text: i18n('upload'),
+                            action: 'secondaryInsurance',
+                            scope: me,
+                            handler: me.uploadInsurance
+                        }, '-']
+                    })
+                );
+	        });
+	        me.getFormItems(me.ins3, 11, function(formPanel, items){
+		        formPanel.insert(0,
+                    Ext.widget('panel', {
+                        style: 'float:right',
+                        height: 182,
+                        width: 255,
+                        items: [me.tertiaryInsuranceImg = Ext.create('Ext.container.Container', {
+                                html: '<img src="resources/images/icons/no_card.jpg" height="154" width="254" />'
+                            }), me.tertiaryInsuranceImgUpload = Ext.create('Ext.window.Window', {
+                                draggable: false,
+                                closable: false,
+                                closeAction: 'hide',
+                                items: [
+                                    {
+                                        xtype: 'form',
+                                        bodyPadding: 10,
+                                        width: 310,
+                                        items: [
+                                            {
+                                                xtype: 'filefield',
+                                                name: 'filePath',
+                                                buttonText: i18n('select_a_file') + '...',
+                                                anchor: '100%'
+                                            }
+                                        ],
+                                        //   url: 'dataProvider/DocumentHandler.php'
+                                        api: {
+                                            submit: DocumentHandler.uploadDocument
+                                        }
+                                    }
+                                ],
+                                buttons: [
+                                    {
+                                        text: i18n('cancel'),
+                                        handler: function(btn){
+                                            btn.up('window').close();
+                                        }
+                                    },
+                                    {
+                                        text: i18n('upload'),
+                                        scope: me,
+                                        action: 'Tertiary Insurance',
+                                        handler: me.onInsuranceUpload
+                                    }
+                                ]
+                            })],
+                        bbar: ['->', '-', {
+                            text: 'Upload',
+                            scope: me,
+                            action: 'tertiaryInsurance',
+                            handler: me.uploadInsurance
+                        }, '-']
+                    })
+                );
+	        });
         }
     },
     uploadInsurance: function(btn){
@@ -1316,18 +1359,18 @@ Ext.define('App.view.patient.Summary', {
              * including all the images (insurance cards, patient img, and QRcode)
              */
             if(acl['access_demographics']){
-                demographicsPanel = me.tabPanel.getComponent('demoFormPanel');
-                demographicsPanel.getForm().reset();
-                me.getFormData(demographicsPanel, function(form){
+                var form = me.demoForm;
+	            form.getForm().reset();
+                me.getFormData(form, function(form){
                     me.readOnlyFields(form.getFields());
                 });
                 me.getPatientImgs();
                 me.verifyPatientRequiredInfo();
-                Patient.getPatientInsurancesCardsUrlByPid(me.pid, function(isurance){
+                Patient.getPatientInsurancesCardsUrlByPid(me.pid, function(insurance){
                     var noCard = 'resources/images/icons/no_card.jpg',
-                        Ins1 = isurance.Primary.url ? isurance.Primary.url : noCard,
-                        Ins2 = isurance.Secondary.url ? isurance.Secondary.url : noCard,
-                        Ins3 = isurance.Tertiary.url ? isurance.Tertiary.url : noCard;
+                        Ins1 = insurance.Primary.url ? insurance.Primary.url : noCard,
+                        Ins2 = insurance.Secondary.url ? insurance.Secondary.url : noCard,
+                        Ins3 = insurance.Tertiary.url ? insurance.Tertiary.url : noCard;
                     me.primaryInsuranceImg.update('<img src="'+Ins1+'" height="154" width="254" />');
                     me.secondaryInsuranceImg.update('<img src="'+Ins2+'" height="154" width="254" />');
                     me.tertiaryInsuranceImg.update('<img src="'+Ins3+'" height="154" width="254" />');

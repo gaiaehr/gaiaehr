@@ -21,16 +21,18 @@
 class MatchaThreads extends Thread
 {
 	
+	public $sqlStatement = (string)'';
+	
 	/**
 	 * function injectSQLThread($sqlStatement):
 	 * Method to send BIG SQL injections to the database
 	 * think of it throw and forget injection
 	 */
-	public function run($sqlStatement)
+	public function run()
 	{
 		try
 		{
-			Matcha::$__conn->query($sqlStatement);
+			Matcha::$__conn->query($this->sqlStatement);
 		}
 		catch(PDOException $e)
 		{

@@ -350,7 +350,7 @@ class Matcha
 					if(class_exists('MatchaThreads'))
 					{
 						$thread = new MatchaThreads();
-						$thread->run($columns.$valuesEncapsulation.';');
+						$thread->sqlStatement = $columns.$valuesEncapsulation.';';
 						$thread->start();
 					}
 					else 

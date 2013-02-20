@@ -21,6 +21,9 @@ include_once('MatchaAudit.php');
 include_once('MatchaCUP.php');
 include_once('MatchaErrorHandler.php');
 
+// Include the Matcha Threads if the PHP Thread class exists
+if(class_exists('Thread')) include_once('MatchaThreads.php');
+
 class Matcha
 {
 	 
@@ -342,21 +345,16 @@ class Matcha
 				$valuesEncapsulation  .= '(\''.implode('\',\'',$values).'\')';
 				if( $rowCount == 500 || $key == end(array_keys($dataArray)))
 				{
-					$pid = pcntl_fork();
-					if ($pid == -1) 
+					// check if Threads PHP Class exists if does not exist 
+					// run the SQL in normal fashion
+					if(class_exists('MatchaThreads'))
 					{
-						throw new Exception("Could not fork the proccess.");
-					} 
-					else if ($pid) 
-					{
-						// we are the parent
-						//Protect against Zombie children
-						pcntl_wait($status);
-					} 
+						MatchaThreads::injectSQLThread($columns.$valuesEncapsulation.';');
+						MatchaThreads::start();
+					}
 					else 
 					{
 						Matcha::$__conn->query($columns.$valuesEncapsulation.';');
-						exit($rowCount);
 					}
 					$valuesEncapsulation = '';
 					$rowCount = 0;
@@ -369,7 +367,7 @@ class Matcha
 			}
 			return true;
 		}
-		catch(PDOException $e)
+		catch(Exception $e)
 		{
 			return MatchaErrorHandler::__errorProcess($e);
 		}

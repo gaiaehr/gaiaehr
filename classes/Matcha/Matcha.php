@@ -20,7 +20,6 @@
 include_once('MatchaAudit.php');
 include_once('MatchaCUP.php');
 include_once('MatchaErrorHandler.php');
-include_once('MatchaInject.php');
 
 class Matcha
 {
@@ -174,6 +173,9 @@ class Matcha
 			$tableColumns = $recordSet->fetchAll(PDO::FETCH_ASSOC);
 			unset($tableColumns[self::__recursiveArraySearch('id', $tableColumns)]);
 			
+			echo '<pre>';
+			print_r($workingModel);
+			echo '</pre>';
 			// check if the table has columns, if not create them.
 			// we start with 1 because the microORM always create the id.
 			if( count($tableColumns) <= 1 ) 

@@ -173,9 +173,9 @@ class Matcha
 			$tableColumns = $recordSet->fetchAll(PDO::FETCH_ASSOC);
 			unset($tableColumns[self::__recursiveArraySearch('id', $tableColumns)]);
 			
-			echo '<pre>';
-			print_r($workingModel);
-			echo '</pre>';
+			//foreach($tableColumns as $column) $columnsTableNames[] = $column['Field'];
+			//foreach($workingModel as $column) $columnsSenchaNames[] = $column['name'];
+			
 			// check if the table has columns, if not create them.
 			// we start with 1 because the microORM always create the id.
 			if( count($tableColumns) <= 1 ) 

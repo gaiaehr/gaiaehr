@@ -21,7 +21,14 @@
 Ext.define( 'App.model.administration.tmpUser',
 {
 	extend : 'Ext.data.Model',
-	table: 'tmpusers',
+	table: {
+		name:'tmpusers',
+		engine:'InnoDB',
+		autoIncrement:1,
+		charset:'utf8',
+		collate:'utf8_bin',
+		comment:'User accounts'
+	},
 	fields : [
 	{
 		name : 'id',

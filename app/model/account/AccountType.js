@@ -8,7 +8,7 @@
 Ext.define('App.model.account.AccountType', {
 	extend: 'Ext.data.Model',
 	table: {
-		name:'accaccount',
+		name:'accaccounttype',
 		engine:'InnoDB',
 		autoIncrement:1,
 		charset:'utf8',

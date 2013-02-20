@@ -131,7 +131,7 @@ class FormLayoutBuilder {
         $field              = array();
 	    $field['xtype']     = $data['xtype'];
         $field['form_id']   = intval($data['form_id']);
-	    $field['parentId']  = $data['parentId'];
+	    $field['parentId']  = ($data['parentId'] != 'NaN' ?  $data['parentId'] : 0);
         $field['pos']       = intval($data['pos']);
 
         $this->db->setSQL($this->db->sqlBind($field, 'forms_fields', 'U', array('id' => $params->id)));

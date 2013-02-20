@@ -127,9 +127,6 @@ Ext.define('App.view.patient.NewPatient', {
 
     beforePanelRender:function(){
         var me = this;
-
-
-
         me.getFormItems(this.form, this.formToRender, function(formPanel, items){
 //            var primary = formPanel.getForm().findField('primary_subscriber_relationship');
 //            primary.on('select', me.copyData, me);

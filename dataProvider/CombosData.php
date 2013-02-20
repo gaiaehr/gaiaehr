@@ -48,29 +48,32 @@ class CombosData
 	 */
 	public function getOptionsByListId(stdClass $params)
 	{
-		if(is_numeric($params->list_id)){
-			$this->db->setSQL("SELECT o.option_name,
+		if(isset($params->list_id)){
+			if(is_numeric($params->list_id)){
+				$this->db->setSQL("SELECT o.option_name,
 		                              o.option_value
 		                         FROM combo_lists_options AS o
 		                    LEFT JOIN combo_lists AS l ON l.id = o.list_id
 		                        WHERE l.id = '$params->list_id'
 		                     ORDER BY o.seq");
-			return $this->db->fetchRecords(PDO::FETCH_ASSOC);
-		} else {
-			if($params->list_id == 'activePharmacies'){
-				return $this->getActivePharmacies();
-			} elseif($params->list_id == 'activeProviders') {
-				return $this->getActiveProviders();
-			} elseif($params->list_id == 'activeFacilities') {
-				return $this->getActiveFacilities();
-			} elseif($params->list_id == 'billingFacilities') {
-				return $this->getBillingFacilities();
-			} elseif($params->list_id == 'activeInsurances') {
-				return $this->getActiveInsurances();
+				return $this->db->fetchRecords(PDO::FETCH_ASSOC);
 			} else {
-				return false;
+				if($params->list_id == 'activePharmacies'){
+					return $this->getActivePharmacies();
+				} elseif($params->list_id == 'activeProviders') {
+					return $this->getActiveProviders();
+				} elseif($params->list_id == 'activeFacilities') {
+					return $this->getActiveFacilities();
+				} elseif($params->list_id == 'billingFacilities') {
+					return $this->getBillingFacilities();
+				} elseif($params->list_id == 'activeInsurances') {
+					return $this->getActiveInsurances();
+				} else {
+					return false;
+				}
 			}
 		}
+
 	}
 
 	public function getTimeZoneList()

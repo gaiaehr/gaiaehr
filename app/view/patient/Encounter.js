@@ -995,7 +995,8 @@ Ext.define('App.view.patient.Encounter', {
          */
         if(me.reviewSysPanel){
             me.getFormItems(me.reviewSysPanel, 8, function(){
-                var formFields = me.reviewSysPanel.getForm().getFields(), modelFields = new defaultFields;
+                var formFields = me.reviewSysPanel.getForm().getFields(),
+	                modelFields = new defaultFields;
                 for(var i = 0; i < formFields.items.length; i++){
                     modelFields.push({
                         name:formFields.items[i].name,

@@ -312,21 +312,51 @@ class Matcha
 	/**
 	 * function __setSenchaModelData($fileData):
 	 * Method to grab data and insert it into the table.
+	 * it uses pcntl_fork to do batches of 500 records at the same
+	 * time.
 	 */
 	static public function __setSenchaModelData($fileData)
 	{
 		try
 		{
 			$dataArray = json_decode(self::__getFileContent($fileData, 'json'), true);
-			foreach($dataArray as $data)
+			if(!count($dataArray)) throw new Exception("Something whent wrong converting it to an array, a bad lolo.");
+			$table = (string)(is_array(self::$__senchaModel['table']) ? self::$__senchaModel['table']['name'] : self::$__senchaModel['table']);
+			$columns = 'INSERT INTO `'.$table.'` (`'.implode('`,`', array_keys($dataArray[0]) ).'`) VALUES ';
+			
+			$rowCount = (int)0;
+			$valuesEncapsulation = (string)'';
+			foreach($dataArray as $key => $data)
 			{
-				$columns = array_keys($data);
-				$columns = '(`'.implode('`,`',$columns).'`)';
 				$values  = array_values($data);
 				foreach($values as $index => $val) if($val == null) $values[$index] = 'NULL';
-				$values  = '(\''.implode('\',\'',$values).'\')';
-				$table = (string)(is_array(self::$__senchaModel['table']) ? self::$__senchaModel['table']['name'] : self::$__senchaModel['table']);
-				Matcha::$__conn->query(str_replace("'NULL'",'NULL',"INSERT INTO `".$table."` $columns VALUES $values"));
+				$valuesEncapsulation  .= '(\''.implode('\',\'',$values).'\')';
+				if( $rowCount == 500 || $key == end(array_keys($dataArray)))
+				{
+					$pid = pcntl_fork();
+					if ($pid == -1) 
+					{
+						throw new Exception("Could not fork the proccess.");
+					} 
+					else if ($pid) 
+					{
+						// we are the parent
+						//Protect against Zombie children
+						pcntl_wait($status);
+					} 
+					else 
+					{
+						Matcha::$__conn->query($columns.$valuesEncapsulation.';');
+						exit($rowCount);
+					}
+					$valuesEncapsulation = '';
+					$rowCount = 0;
+				}
+				else 
+				{
+					$valuesEncapsulation .= ', ';
+					$rowCount++;
+				}
 			}
 			return true;
 		}

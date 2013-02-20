@@ -166,6 +166,11 @@ class SiteSetup
 		$row[]  = array(
 			'msg' => 'PHP MCrypt installed', 'status' => $status
 		);
+		// check for mcrypt is installed in PHP
+		$status = (function_exists('pcntl_fork') ? 'Ok' : 'Fail');
+		$row[]  = array(
+			'msg' => 'PHP Process Control (pcntl_fork) must be installed', 'status' => $status
+		);
 		return $row;
 	}
 

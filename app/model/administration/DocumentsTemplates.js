@@ -9,6 +9,14 @@
 
 Ext.define('App.model.administration.DocumentsTemplates', {
 	extend: 'Ext.data.Model',
+	table: {
+		name:'documentstemplates',
+		engine:'InnoDB',
+		autoIncrement:1,
+		charset:'utf8',
+		collate:'utf8_bin',
+		comment:'Documents Templates'
+	},
 	fields: [
 		{name: 'id', type:'int' },
         {name: 'title', type:'string' },

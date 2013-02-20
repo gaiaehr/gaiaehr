@@ -8,6 +8,14 @@
 
 Ext.define('App.model.patient.Dental', {
 	extend: 'Ext.data.Model',
+	table: {
+		name:'dental',
+		engine:'InnoDB',
+		autoIncrement:1,
+		charset:'utf8',
+		collate:'utf8_bin',
+		comment:'Dental data'
+	},
 	fields: [
 		{name: 'id', type: 'int'},
 		{name: 'eid', type: 'int'},

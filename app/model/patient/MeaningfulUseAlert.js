@@ -8,6 +8,14 @@
 
 Ext.define('App.model.patient.MeaningfulUseAlert', {
 	extend: 'Ext.data.Model',
+	table: {
+		name:'meaningfulusealert',
+		engine:'InnoDB',
+		autoIncrement:1,
+		charset:'utf8',
+		collate:'utf8_bin',
+		comment:'Meaningful Use Alert'
+	},
 	fields: [
 
 		{name: 'name', type: 'string'},

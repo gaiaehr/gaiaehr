@@ -7,6 +7,14 @@
  */
 Ext.define('App.model.patient.EncounterCPTsICDs', {
 	extend : 'Ext.data.Model',
+	table: {
+		name:'encountercptsicds',
+		engine:'InnoDB',
+		autoIncrement:1,
+		charset:'utf8',
+		collate:'utf8_bin',
+		comment:'Encounter CPTs and ICDs Data'
+	},
 	fields : [
 		{ name: 'id', type:'string' },
 		{ name: 'pid', type:'int' },

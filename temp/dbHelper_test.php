@@ -15,11 +15,11 @@ include_once ($_SESSION['root'] . '/classes/dbHelper.php');
 
 $db = new dbHelper();
 		
-$tmpUser = Matcha::setSenchaModel('App.model.administration.tmpUser');
+//$VoucherType = Matcha::setSenchaModel('App.model.account.VoucherType');
+
 
 echo '<pre>';
-print_r($tmpUser->load());
-print_r($tmpUser->getTotal());
+print_r(Matcha::__setSenchaModelData('App.data.account.AccountType'));
 echo '</pre>';
 
 //$db->SenchaModel('App.model.administration.tmpUser');

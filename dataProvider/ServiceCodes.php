@@ -39,9 +39,8 @@ class ServiceCodes
 
 	function __construct()
 	{
-		$this -> db = new dbHelper();
+		$this->db = new dbHelper();
 		return;
-
 	}
 
 	/**
@@ -53,21 +52,21 @@ class ServiceCodes
 	 */
 	public function getCptCodes(stdClass $params)
 	{
-		if ($params -> filter === 0)
+		if ($params->filter === 0)
 		{
-			$record = $this -> getCptRelatedByEidIcds($params -> eid);
+			$record = $this->getCptRelatedByEidIcds($params->eid);
 		}
-		elseif ($params -> filter === 1)
+		elseif ($params->filter === 1)
 		{
-			$record = $this -> getCptUsedByPid($params -> pid);
+			$record = $this->getCptUsedByPid($params->pid);
 		}
-		elseif ($params -> filter === 2)
+		elseif ($params->filter === 2)
 		{
-			$record = $this -> getCptUsedByClinic($params -> pid);
+			$record = $this->getCptUsedByClinic($params->pid);
 		}
 		else
 		{
-			$record = $this -> getCptByEid($params -> eid);
+			$record = $this->getCptByEid($params->eid);
 		}
 		return $record;
 	}
@@ -83,9 +82,9 @@ class ServiceCodes
 				unset($data[$key]);
 			}
 		}
-		$this -> db -> setSQL($this -> db -> sqlBind($data, 'encounter_services', 'I'));
-		$this -> db -> execLog();
-		$params -> id = $this -> db -> lastInsertId;
+		$this->db->setSQL($this->db->sqlBind($data, 'encounter_services', 'I'));
+		$this->db->execLog();
+		$params->id = $this->db->lastInsertId;
 		return array(
 			'totals' => 1,
 			'rows' => $params
@@ -96,9 +95,9 @@ class ServiceCodes
 	{
 		$data = get_object_vars($params);
 		unset($data['id'], $data['eid'], $data['code'], $data['code_text'], $data['code_text_medium']);
-		$params -> id = intval($params -> id);
-		$this -> db -> setSQL($this -> db -> sqlBind($data, 'encounter_services', 'U', "id='$params->id'"));
-		$this -> db -> execLog();
+		$params->id = intval($params->id);
+		$this->db->setSQL($this->db->sqlBind($data, 'encounter_services', 'U', "id='$params->id'"));
+		$this->db->execLog();
 		return array(
 			'totals' => 1,
 			'rows' => $params
@@ -107,12 +106,12 @@ class ServiceCodes
 
 	public function deleteCptCode(stdClass $params)
 	{
-		$this -> db -> setSQL("SELECT status FROM encounter_services WHERE id = '$params->id'");
-		$cpt = $this -> db -> fetchRecord();
+		$this->db->setSQL("SELECT status FROM encounter_services WHERE id = '$params->id'");
+		$cpt = $this->db->fetchRecord();
 		if ($cpt['status'] == 0)
 		{
-			$this -> db -> setSQL("DELETE FROM encounter_services WHERE id ='$params->id'");
-			$this -> db -> execLog();
+			$this->db->setSQL("DELETE FROM encounter_services WHERE id ='$params->id'");
+			$this->db->execLog();
 		}
 		return array(
 			'totals' => 1,
@@ -126,7 +125,7 @@ class ServiceCodes
 	 */
 	public function getCptRelatedByEidIcds($eid)
 	{
-		$this -> db -> setSQL("SELECT DISTINCT cpt.code, cpt.code_text
+		$this->db->setSQL("SELECT DISTINCT cpt.code, cpt.code_text
                              FROM cpt_codes as cpt
                        RIGHT JOIN cpt_icd as ci ON ci.cpt = cpt.code
                         LEFT JOIN encounter_dx as eci ON eci.code = ci.icd
@@ -151,11 +150,11 @@ class ServiceCodes
 	 */
 	public function getCptByEid($eid)
 	{
-		$this -> db -> setSQL("SELECT DISTINCT ecc.*, cpt.code, cpt.code_text, cpt.code_text_medium, cpt.code_text_short
+		$this->db->setSQL("SELECT DISTINCT ecc.*, cpt.code, cpt.code_text, cpt.code_text_medium, cpt.code_text_short
                              FROM encounter_services AS ecc
                         left JOIN cpt_codes AS cpt ON ecc.code = cpt.code
                             WHERE ecc.eid = '$eid' ORDER BY ecc.id ASC");
-		$records = $this -> db -> fetchRecords(PDO::FETCH_ASSOC);
+		$records = $this->db->fetchRecords(PDO::FETCH_ASSOC);
 		return array(
 			'totals' => count($records),
 			'rows' => $records
@@ -168,13 +167,13 @@ class ServiceCodes
 	 */
 	public function getCptUsedByPid($pid)
 	{
-		$this -> db -> setSQL("SELECT DISTINCT cpt.code, cpt.code_text, cpt.code_text_medium, cpt.code_text_short
+		$this->db->setSQL("SELECT DISTINCT cpt.code, cpt.code_text, cpt.code_text_medium, cpt.code_text_short
                              FROM encounter_services AS ecc
                         left JOIN cpt_codes AS cpt ON ecc.code = cpt.code
                         LEFT JOIN encounters AS e ON ecc.eid = e.eid
                             WHERE e.pid = '$pid'
                          ORDER BY e.service_date DESC");
-		$records = $this -> db -> fetchRecords(PDO::FETCH_ASSOC);
+		$records = $this->db->fetchRecords(PDO::FETCH_ASSOC);
 		return array(
 			'totals' => count($records),
 			'rows' => $records
@@ -186,11 +185,11 @@ class ServiceCodes
 	 */
 	public function getCptUsedByClinic()
 	{
-		$this -> db -> setSQL("SELECT DISTINCT cpt.code, cpt.code_text, cpt.code_text_medium, cpt.code_text_short
+		$this->db->setSQL("SELECT DISTINCT cpt.code, cpt.code_text, cpt.code_text_medium, cpt.code_text_short
                              FROM encounter_services AS ecc
                         left JOIN cpt_codes AS cpt ON ecc.code = cpt.code
                          ORDER BY cpt.code DESC");
-		$records = $this -> db -> fetchRecords(PDO::FETCH_ASSOC);
+		$records = $this->db->fetchRecords(PDO::FETCH_ASSOC);
 		return array(
 			'totals' => count($records),
 			'rows' => $records
@@ -202,7 +201,7 @@ class ServiceCodes
 		/*
 		 * define $code_table
 		 */
-		if ($params -> code_type == 'cpt')
+		if ($params->code_type == 'cpt')
 		{
 			$code_table = 'cpt_codes';
 		}
@@ -221,7 +220,7 @@ class ServiceCodes
 		 *      [3] => 'head skin '
 		 * )
 		 */
-		$Str = explode(',', $params -> query);
+		$Str = explode(',', $params->query);
 		/**
 		 * get the las value and trim white spaces
 		 * $queryStr = 'head skin'
@@ -264,7 +263,7 @@ class ServiceCodes
 		 */
 		foreach ($queries as $query)
 		{
-			$this -> db -> setSQL("SELECT *
+			$this->db->setSQL("SELECT *
                                  FROM $code_table
                                 WHERE (code_text      LIKE '%$query%'
                                    OR code            LIKE '$query%')
@@ -309,7 +308,7 @@ class ServiceCodes
 
 		usort($records, 'cmp');
 		$total = count($records);
-		$records = array_slice($records, $params -> start, $params -> limit);
+		$records = array_slice($records, $params->start, $params->limit);
 		return array(
 			'totals' => $total,
 			'rows' => $records

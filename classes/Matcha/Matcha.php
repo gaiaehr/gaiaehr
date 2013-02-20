@@ -20,6 +20,7 @@
 include_once('MatchaAudit.php');
 include_once('MatchaCUP.php');
 include_once('MatchaErrorHandler.php');
+include_once('MatchaInject.php');
 
 class Matcha
 {
@@ -37,6 +38,10 @@ class Matcha
 	public static $__app;
 	public static $__audit;
 	
+	/**
+	 * function connect($databaseParameters = array()):
+	 * Method that make the connection to the database
+	 */
 	static public function connect($databaseParameters = array())
 	{
 		try
@@ -287,7 +292,6 @@ class Matcha
 	/**
 	 * function __getFileContent($file, $type = 'js'):
 	 * Load a Sencha Model from .js file
-	 * 
 	 */
 	static private function __getFileContent($file, $type = 'js')
 	{
@@ -305,92 +309,59 @@ class Matcha
 		}
 	}
 
-	static public function __setSenchaModelData($fileData){
+	/**
+	 * function __setSenchaModelData($fileData):
+	 * Method to grab data and insert it into the table.
+	 * it uses pcntl_fork to do batches of 500 records at the same
+	 * time.
+	 * TODO: Needs more work.
+	 */
+	static public function __setSenchaModelData($fileData)
+	{
 		try
 		{
 			$dataArray = json_decode(self::__getFileContent($fileData, 'json'), true);
-			foreach($dataArray as $data){
-				$columns = array_keys($data);
-				$columns = '(`'.implode('`,`',$columns).'`)';
+			if(!count($dataArray)) throw new Exception("Something whent wrong converting it to an array, a bad lolo.");
+			$table = (string)(is_array(self::$__senchaModel['table']) ? self::$__senchaModel['table']['name'] : self::$__senchaModel['table']);
+			$columns = 'INSERT INTO `'.$table.'` (`'.implode('`,`', array_keys($dataArray[0]) ).'`) VALUES ';
+			
+			$rowCount = (int)0;
+			$valuesEncapsulation = (string)'';
+			foreach($dataArray as $key => $data)
+			{
 				$values  = array_values($data);
 				foreach($values as $index => $val) if($val == null) $values[$index] = 'NULL';
-				$values  = '(\''.implode('\',\'',$values).'\')';
-				$table = (string)(is_array(self::$__senchaModel['table']) ? self::$__senchaModel['table']['name'] : self::$__senchaModel['table']);
-				Matcha::$__conn->query(str_replace("'NULL'",'NULL',"INSERT INTO `".$table."` $columns VALUES $values"));
+				$valuesEncapsulation  .= '(\''.implode('\',\'',$values).'\')';
+				if( $rowCount == 500 || $key == end(array_keys($dataArray)))
+				{
+					$pid = pcntl_fork();
+					if ($pid == -1) 
+					{
+						throw new Exception("Could not fork the proccess.");
+					} 
+					else if ($pid) 
+					{
+						// we are the parent
+						//Protect against Zombie children
+						pcntl_wait($status);
+					} 
+					else 
+					{
+						Matcha::$__conn->query($columns.$valuesEncapsulation.';');
+						exit($rowCount);
+					}
+					$valuesEncapsulation = '';
+					$rowCount = 0;
+				}
+				else 
+				{
+					$valuesEncapsulation .= ', ';
+					$rowCount++;
+				}
 			}
 			return true;
 		}
 		catch(PDOException $e)
-		{
-			return MatchaErrorHandler::__errorProcess($e);
-		}
-	}
-
-	/**
-	 * function __getRelationFromModel():
-	 * Method to get the relation from the model if has any.
-	 * TODO: This method have to be removed because Sencha manages relations on JavaScript.
-	 */
-	static private function __getRelationFromModel()
-	{
-		try
-		{
-			// first check if the sencha model object has some value
-			self::$Relation = 'none';
-			if(isset(self::$__senchaModel)) throw new Exception("Sencha Model is not configured.");
-			
-			// check if the model has the associations property 
-			if(isset(self::$__senchaModel['associations']))
-			{
-				self::$Relation = 'associations';
-				// load all the models.
-				foreach(self::$__senchaModel['associations'] as $relation)
-				{ 
-					self::SenchaModel(self::$__senchaModel['associations']);
-					self::$RelationStatement[] = self::__leftJoin(
-					array(
-						'fromId'=>(isset(self::$__senchaModel['associations']['primaryKey']) ? self::$__senchaModel['associations']['foreignKey'] : 'id'),
-						'toId'=>self::$__senchaModel['associations']['foreignKey']
-					));
-				}
-			}
-			
-			// check if the model has the associations property 
-			if(isset(self::$__senchaModel['hasOne']))
-			{
-				self::$Relation = 'hasOne';
-				self::$RelationStatement[] = self::__leftJoin(
-				array(
-					'fromId'=>(isset(self::$__senchaModel['associations']['primaryKey']) ? self::$__senchaModel['associations']['foreignKey'] : 'id'),
-					'toId'=>self::$__senchaModel['associations']['foreignKey']
-				));
-			}
-			
-			// check if the model has the associations property 
-			if(isset(self::$__senchaModel['hasMany']))
-			{
-				self::$Relation = 'hasMany';
-				self::$RelationStatement[] = self::__leftJoin(
-				array(
-					'fromId'=>(isset(self::$__senchaModel['associations']['primaryKey']) ? self::$__senchaModel['associations']['foreignKey'] : 'id'),
-					'toId'=>self::$__senchaModel['associations']['foreignKey']
-				));
-			}
-			
-			// check if the model has the associations property 
-			if(isset(self::$__senchaModel['belongsTo']))
-			{
-				self::$Relation = 'belongsTo';
-				self::$RelationStatement[] = self::__leftJoin(
-				array(
-					'fromId'=>(isset(self::$__senchaModel['associations']['primaryKey']) ? self::$__senchaModel['associations']['foreignKey'] : 'id'),
-					'toId'=>self::$__senchaModel['associations']['foreignKey']
-				));
-			}
-			
-			return true;
-		}
-		catch(Exception $e)
 		{
 			return MatchaErrorHandler::__errorProcess($e);
 		}

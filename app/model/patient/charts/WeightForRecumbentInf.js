@@ -7,6 +7,14 @@
  */
 Ext.define('App.model.patient.charts.WeightForRecumbentInf', {
 	extend   : 'Ext.data.Model',
+	table: {
+		name:'weightforrecumbentinf',
+		engine:'InnoDB',
+		autoIncrement:1,
+		charset:'utf8',
+		collate:'utf8_bin',
+		comment:'Weight For Recumbent Information'
+	},
 	fields   : [
 		{name: 'age', type: 'float'},
 		{name: 'PP', type: 'float'},

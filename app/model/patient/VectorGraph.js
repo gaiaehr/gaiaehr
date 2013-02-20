@@ -7,6 +7,14 @@
  */
 Ext.define('App.model.patient.VectorGraph', {
 	extend   : 'Ext.data.Model',
+	table: {
+		name:'vectorgraph',
+		engine:'InnoDB',
+		autoIncrement:1,
+		charset:'utf8',
+		collate:'utf8_bin',
+		comment:'Vector Graphics'
+	},
 	fields   : [
 		{name: 'age_mos', type: 'float'},
 		{name: 'height', type: 'float'},

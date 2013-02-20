@@ -7,6 +7,14 @@
  */
 Ext.define('App.model.patient.PatientLabsResults', {
 	extend   : 'Ext.data.Model',
+	table: {
+		name:'patientlabsresults',
+		engine:'InnoDB',
+		autoIncrement:1,
+		charset:'utf8',
+		collate:'utf8_bin',
+		comment:'Patient Labs Results'
+	},
 	fields   : [
 		{name: 'id', type: 'int'},
 		{name: 'pid', type: 'int'},

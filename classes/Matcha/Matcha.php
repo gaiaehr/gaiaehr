@@ -21,6 +21,9 @@ include_once('MatchaAudit.php');
 include_once('MatchaCUP.php');
 include_once('MatchaErrorHandler.php');
 
+// Include the Matcha Threads if the PHP Thread class exists
+if(class_exists('Thread')) include_once('MatchaThreads.php');
+
 class Matcha
 {
 	 
@@ -172,9 +175,14 @@ class Matcha
 			$recordSet = self::$__conn->query("SHOW FULL COLUMNS IN ".$table.";");
 			$tableColumns = $recordSet->fetchAll(PDO::FETCH_ASSOC);
 			unset($tableColumns[self::__recursiveArraySearch('id', $tableColumns)]);
+
+			// get all the column names of each model			
+			foreach($tableColumns as $column) $columnsTableNames[] = $column['Field'];
+			foreach($workingModel as $column) $columnsSenchaNames[] = $column['name'];
 			
-			//foreach($tableColumns as $column) $columnsTableNames[] = $column['Field'];
-			//foreach($workingModel as $column) $columnsSenchaNames[] = $column['name'];
+			// get all the column that are not present in the database-table
+			$diferentCreateColumns = array_diff($columnsSenchaNames, $columnsTableNames);
+			$diferentDropColumns = array_diff($columnsTableNames, $columnsSenchaNames);
 			
 			// check if the table has columns, if not create them.
 			// we start with 1 because the microORM always create the id.
@@ -183,14 +191,15 @@ class Matcha
 				self::__createAllColumns($workingModel);
 				return true;
 			}
-			// Also check if there is difference between the model and the 
-			// database table in terms of number of fields.
-			elseif(count($workingModel) != (count($tableColumns)))
+			// Verify that all the columns does not have difference 
+			// between field names
+			elseif( count($diferentCreateColumns) != 0 && count($diferentDropColumns) != 0)
 			{
-				// remove columns from the table
-				foreach($tableColumns as $column) if( !is_numeric(self::__recursiveArraySearch($column['Field'], $workingModel)) ) self::__dropColumn($column['Field']);
 				// add columns to the table
-				foreach($workingModel as $column) if( !is_numeric(self::__recursiveArraySearch($column['name'], $tableColumns)) ) self::__createColumn($column);
+				foreach($diferentCreateColumns as $key => $column) self::__createColumn($workingModel[self::__recursiveArraySearch($colum[$key], $workingModel)]);
+				// remove columns from the table
+				foreach($diferentDropColumns as $key => $column) self::__dropColumn( $column[$key] );
+				
 			}
 			// if everything else passes, check for differences in the columns.
 			else
@@ -336,21 +345,16 @@ class Matcha
 				$valuesEncapsulation  .= '(\''.implode('\',\'',$values).'\')';
 				if( $rowCount == 500 || $key == end(array_keys($dataArray)))
 				{
-					$pid = pcntl_fork();
-					if ($pid == -1) 
+					// check if Threads PHP Class exists if does not exist 
+					// run the SQL in normal fashion
+					if(class_exists('MatchaThreads'))
 					{
-						throw new Exception("Could not fork the proccess.");
-					} 
-					else if ($pid) 
-					{
-						// we are the parent
-						//Protect against Zombie children
-						pcntl_wait($status);
-					} 
+						MatchaThreads::injectSQLThread($columns.$valuesEncapsulation.';');
+						MatchaThreads::start();
+					}
 					else 
 					{
 						Matcha::$__conn->query($columns.$valuesEncapsulation.';');
-						exit($rowCount);
 					}
 					$valuesEncapsulation = '';
 					$rowCount = 0;
@@ -363,7 +367,7 @@ class Matcha
 			}
 			return true;
 		}
-		catch(PDOException $e)
+		catch(Exception $e)
 		{
 			return MatchaErrorHandler::__errorProcess($e);
 		}

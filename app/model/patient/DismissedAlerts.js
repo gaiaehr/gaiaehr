@@ -10,7 +10,7 @@ Ext.define('App.model.patient.DismissedAlerts', {
 	extend: 'Ext.data.Model',
 	fields: [
 		{name: 'id', type: 'int'},
-		{name: 'date', type: 'date', dateFormat: 'c'},
+		{name: 'date', type: 'date', dateFormat: 'Y-m-d H:i:s'},
 		{name: 'preventive_care_id', type: 'int'},
 		{name: 'reason', type: 'string'},
 		{name: 'observation', type: 'string'},

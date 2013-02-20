@@ -10,7 +10,7 @@ Ext.define('App.model.miscellaneous.OfficeNotes', {
 	extend: 'Ext.data.Model',
     fields: [
         {name: 'id', type: 'int'},
-        {name: 'date', type: 'date', dateFormat: 'c'},
+        {name: 'date', type: 'date', dateFormat: 'Y-m-d H:i:s'},
         {name: 'body', type: 'string'},
         {name: 'user', type: 'string'},
         {name: 'facility_id', type: 'string'},

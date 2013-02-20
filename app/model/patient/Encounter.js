@@ -36,12 +36,13 @@ Ext.define('App.model.patient.Encounter', {
 		}
 	},
     hasMany: [
-        {model: 'App.model.patient.Vitals',                 name: 'vitals', primaryKey: 'id', foreignKey: 'eid'},
-        {model: 'App.model.patient.ReviewOfSystems',        name: 'reviewofsystems', foreignKey: 'eid'},
-        {model: 'App.model.patient.ReviewOfSystemsCheck',   name: 'reviewofsystemschecks', foreignKey: 'eid'},
-        {model: 'App.model.patient.SOAP',                   name: 'soap', foreignKey: 'eid'},
-        {model: 'App.model.patient.SpeechDictation',        name: 'speechdictation', foreignKey: 'eid'},
-        {model: 'App.model.patient.HCFAOptions',            name: 'hcfaoptions', foreignKey: 'eid'}
+	    // model,                                           name of association,            ID of owner model, foreignKey of association
+        {model: 'App.model.patient.Vitals',                 name: 'vitals',                 primaryKey: 'eid', foreignKey: 'eid'},
+        {model: 'App.model.patient.ReviewOfSystems',        name: 'reviewofsystems',        primaryKey: 'eid', foreignKey: 'eid'},
+        {model: 'App.model.patient.ReviewOfSystemsCheck',   name: 'reviewofsystemschecks',  primaryKey: 'eid', foreignKey: 'eid'},
+        {model: 'App.model.patient.SOAP',                   name: 'soap',                   primaryKey: 'eid', foreignKey: 'eid'},
+        {model: 'App.model.patient.SpeechDictation',        name: 'speechdictation',        primaryKey: 'eid', foreignKey: 'eid'},
+        {model: 'App.model.patient.HCFAOptions',            name: 'hcfaoptions',            primaryKey: 'eid', foreignKey: 'eid'}
     ]
 //    associations: [
 //        {type: 'hasOne',  model: 'App.model.patient.ReviewOfSystems', foreignKey: 'eid', getterName:'getReviewofsystems'},

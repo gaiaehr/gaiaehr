@@ -113,8 +113,7 @@ class VectorGraph
 			{
 				$curve['age'] = $curve['age_mos'];
 			}
-			if ($curve['PP'] == null)
-				unset($curve['PP']);
+			if (isset($curve['PP']) && $curve['PP'] == null) unset($curve['PP']);
 			unset($curve['age_mos']);
 			$graph[] = $curve;
 		}

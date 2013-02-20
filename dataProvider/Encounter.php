@@ -281,7 +281,7 @@ class Encounter
 		$rows = array();
 		foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row){
 			$row['height_in']     = intval($row['height_in']);
-			$row['height_cn']     = intval($row['height_cn']);
+			$row['height_cm']     = intval($row['height_cm']);
 			$row['administer_by'] = $this->user->getUserNameById($row['uid']);
 			$row['authorized_by'] = $this->user->getUserNameById($row['auth_uid']);
 			array_push($rows, $row);
@@ -401,7 +401,7 @@ class Encounter
 	public function getReviewOfSystemsChecksByEid($eid)
 	{
 		$this->db->setSQL("SELECT * FROM encounter_review_of_systems_check WHERE eid = '$eid' ORDER BY date DESC");
-		return $this->db->fetchRecords(PDO::FETCH_ASSOC);
+		return $this->db->fetchRecord(PDO::FETCH_ASSOC);
 	}
 
 	/**
@@ -671,7 +671,7 @@ class Encounter
 		 */
 		$rosck = $this->getReviewOfSystemsChecksByEid($eid);
 		$foo   = array();
-		foreach($rosck[0] as $key => $value){
+		foreach($rosck as $key => $value){
 			if($key != 'id' && $key != 'pid' && $key != 'eid' && $key != 'uid' && $key != 'date'){
 				if($value != null && $value != 'null' && $value != '0' || $value != 0){
 					$value = ($value == 1 || $value == '1') ? 'Yes' : 'No';
@@ -929,7 +929,7 @@ class Encounter
 	public function getEncounterHCFAOptionsByEid($eid)
 	{
 		$this->db->setSQL("SELECT * FROM encounter_1500_options WHERE eid = '$eid'");
-		return $this->db->fetchRecords(PDO::FETCH_ASSOC);
+		return $this->db->fetchRecord(PDO::FETCH_ASSOC);
 	}
 
 }

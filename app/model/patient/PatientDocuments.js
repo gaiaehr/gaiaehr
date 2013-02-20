@@ -16,7 +16,7 @@ Ext.define('App.model.patient.PatientDocuments', {
         {name: 'uid', type: 'int'},
         {name: 'docType', type: 'string'},
         {name: 'name', type: 'string'},
-        {name: 'date', type: 'date', dateFormat: 'c'},
+        {name: 'date', type: 'date', dateFormat: 'Y-m-d H:i:s'},
         {name: 'url', type: 'string'},
         {name: 'note', type: 'string'},
         {name: 'title', type: 'string'}

@@ -16,7 +16,6 @@
  *  - Option to choose left / right for the reset button position
  */
 /*global Ext : false, */
-
 Ext.define('App.ux.RatingField', {
 	extend: 'Ext.form.field.Number',
 	alias: 'widget.ratingField',
@@ -129,8 +128,8 @@ Ext.define('App.ux.RatingField', {
 				}
 				title = tempVal[0].title;
 			} else {
-				title = val
-			};
+				title = val;
+			}
 			me.stars.push({
 				key: val,
 				title: title,
@@ -144,6 +143,7 @@ Ext.define('App.ux.RatingField', {
 		me.starClsHover = me.starCls + '-hover';
 		me.starClsFocus = me.starCls + '-focus';
 		me.callParent();
+
 	},
 	setValue: function (val) {
 		var me = this;
@@ -275,7 +275,8 @@ Ext.define('App.ux.RatingField', {
 	},
 	reset: function (ev, t) {
 		if (this.isReactive()) {
-			this.setValue(this.emptyText);
+			this.setValue(0);
+			this.fireEvent('click', this, 0);
 		}
 	},
 
@@ -283,9 +284,11 @@ Ext.define('App.ux.RatingField', {
 		return !this.readOnly && !this.disabled
 	},
 	onStarClick: function (e, t) {
-		var me = this;
-		if (me.isReactive()) {
-			me.setValue(me.values[me.stars.indexOf(t)]);
+		var me = this, val;
+		if (me.isReactive()){
+			val = me.values[me.stars.indexOf(t)];
+			me.setValue(val);
+			me.fireEvent('click', me, val);
 		}
 	},
 	onStarOver: function (e, t) {

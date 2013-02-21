@@ -48,7 +48,13 @@ Ext.define('App.ux.RenderPanel', {
 						}),
 						me.pageRankingDiv = Ext.widget('ratingField',{
 							style:'float:left',
-							hidden:true
+							hidden:true,
+							listeners:{
+								scope:me,
+								click:function(field,val){
+									alert(val);
+								}
+							}
 						}),
 						me.pageTimerDiv = Ext.widget('container',{
 							style:'float:right'

@@ -38,20 +38,34 @@ class Patient
 	 * @var User
 	 */
 	private $user;
+	/**
+	 * @var
+	 */
+	private $patient = null;
 
 	/**
 	 * @var PoolArea
 	 */
 	//private $poolArea;
-	function __construct()
+	function __construct($pid = null)
 	{
 		$this->db   = new dbHelper();
 		$this->user = new User();
 		$this->acl  = new ACL();
-		//$this->poolArea = new PoolArea();
+		$this->setPatient($pid);
 		return;
 	}
 
+	/**
+	 * @param $pid
+	 * @return mixed
+	 */
+	protected function setPatient($pid)
+	{
+		if($pid != null && ($this->patient == null || $this->patient != $pid)){
+			$this->patient = $this->getPatientDemographicDataByPid($pid);
+		}
+	}
 	/**
 	 * @return mixed
 	 */
@@ -68,11 +82,12 @@ class Patient
 	public function currPatientSet(stdClass $params)
 	{
 		include_once ($_SESSION['root'] . '/dataProvider/PoolArea.php');
+		$this->setPatient($params->pid);
 		$poolArea                    = new PoolArea();
-		$_SESSION['patient']['pid']  = $params->pid;
-		$_SESSION['patient']['name'] = $this->getPatientFullNameByPid($params->pid);
-		$p                           = $this->isPatientChartOutByPid($params->pid);
-		$area                        = $poolArea->getCurrentPatientPoolAreaByPid($params->pid);
+		$_SESSION['patient']['pid']  = $this->patient['pid'];
+		$_SESSION['patient']['name'] = $this->getPatientFullName();
+		$p                           = $this->isPatientChartOutByPid($this->patient['pid']);
+		$area                        = $poolArea->getCurrentPatientPoolAreaByPid($this->patient['pid']);
 		if($p === false || (is_array($p) && $p['uid'] == $_SESSION['user']['id'])){
 			$this->patientChartOutByPid($params->pid, $area['area_id']);
 			$_SESSION['patient']['readOnly'] = false;
@@ -83,12 +98,13 @@ class Patient
 			'patient'     => array(
 				'pid' => $params->pid,
 				'name' => $_SESSION['patient']['name'],
-				'pic' => $this->getPatientPhotoSrcIdByPid($params->pid),
-				'sex' => $this->getPatientSexByPid($params->pid),
-				'dob' => $dob = $this->getPatientDOBByPid($params->pid),
-				'age' => $this->getPatientAgeByDOB($dob),
+				'pic' => $this->getPatientPhotoSrcId(),
+				'sex' => $this->getPatientSex(),
+				'dob' => $dob = $this->getPatientDOB(),
+				'age' => $this->getPatientAge(),
 				'area' => ($p === false ? null : $poolArea->getAreaTitleById($p['pool_area_id'])),
 				'priority' => (empty($area) ? null : $area['priority']),
+				'ranking' => (isset($this->patient['ranking']) ? $this->patient['ranking'] : '0')
 			),
 			'readOnly' => $_SESSION['patient']['readOnly'],
 			'overrideReadOnly' => $this->acl->hasPermission('override_readonly'),
@@ -108,9 +124,19 @@ class Patient
 		return;
 	}
 
-	public function isCurrPatientOnReadMode()
+
+	/**
+	 * @param $pid
+	 * @return array
+	 */
+	public function getPatientDemographicDataByPid($pid)
 	{
-		return $_SESSION['patient']['readOnly'];
+		$this->db->setSQL("SELECT * FROM patient_demographics WHERE pid = '$pid'");
+		$patient = $this->db->fetchRecord(PDO::FETCH_ASSOC);
+		$patient['pic'] = $this->getPatientPhotoSrcIdByPid($patient['pid']);
+		$patient['name'] = Person::fullname($patient['fname'],$patient['mname'],$patient['lname']);
+		$patient['age'] = $this->getPatientAgeByDOB($patient['DOB']);
+		return $patient;
 	}
 
 	public function createNewPatient(stdClass $params)
@@ -195,6 +221,19 @@ class Patient
 		return $params;
 	}
 
+	public function isCurrPatientOnReadMode()
+	{
+		return $_SESSION['patient']['readOnly'];
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getPatientFullName()
+	{
+		return Person::fullname($this->patient['fname'], $this->patient['mname'], $this->patient['lname']);
+	}
+
 	/**
 	 * @param $pid
 	 * @return string
@@ -258,21 +297,6 @@ class Patient
 		$p['pic'] = $this->getPatientPhotoSrcIdByPid($p['pid']);
 		$p['age'] = $this->getPatientAgeByDOB($p['DOB']);
 		return $p;
-	}
-
-	/**
-	 * @param $pid
-	 * @return array
-	 */
-	public function getPatientDemographicDataByPid($pid)
-	{
-		$this->db->setSQL("SELECT * FROM patient_demographics WHERE pid = '$pid'");
-		$patient = $this->db->fetchRecord(PDO::FETCH_ASSOC);
-		$patient['pic'] = $this->getPatientPhotoSrcIdByPid($patient['pid']);
-		$patient['name'] = Person::fullname($patient['fname'],$patient['mname'],$patient['lname']);
-		$patient['age'] = $this->getPatientAgeByDOB($patient['DOB']);
-		return $patient;
-
 	}
 
 	private function createPatientDir($pid)
@@ -419,6 +443,11 @@ class Patient
 		return $p['DOB'];
 	}
 
+	public function getPatientDOB()
+	{
+		return $this->patient['DOB'];
+	}
+
 	public function getPatientDOBByPid($pid)
 	{
 		$this->db->setSQL("SELECT DOB
@@ -426,6 +455,35 @@ class Patient
                            WHERE pid ='$pid'");
 		$patient = $this->db->fetchRecord(PDO::FETCH_ASSOC);
 		return $patient['DOB'];
+	}
+
+	/**
+	 * @internal param $birthday
+	 * @return array
+	 */
+	public function getPatientAge()
+	{
+		$today         = new DateTime(date('Y-m-d'));
+		$t             = new DateTime(date($this->patient['DOB']));
+		$age['days']   = $t->diff($today)->d;
+		$age['months'] = $t->diff($today)->m;
+		$age['years']  = $t->diff($today)->y;
+		if($age['years'] >= 2){
+			$ageStr = $age['years'] . ' yr(s)';
+		} else {
+			if($age['years'] >= 1){
+				$ageStr = 12 + $age['months'] . ' mo(s)';
+			} else {
+				if($age['months'] >= 1){
+					$ageStr = $age['months'] . ' mo(s) and ' . $age['days'] . ' day(s)';
+				} else {
+					$ageStr = $age['days'] . ' day(s)';
+				}
+			}
+		}
+		return array(
+			'DMY' => $age, 'str' => $ageStr
+		);
 	}
 
 	/**
@@ -465,6 +523,14 @@ class Patient
 		$this->db->setSQL("SELECT DOB FROM patient_demographics WHERE pid ='$pid'");
 		$p = $this->db->fetchRecord(PDO::FETCH_ASSOC);
 		return $this->getPatientAgeByDOB($p['DOB']);
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getPatientSex()
+	{
+		return $this->patient['sex'];
 	}
 
 	/**
@@ -602,6 +668,11 @@ class Patient
 		$this->db->setSQL($this->db->sqlBind($data, 'patient_reminders', 'I'));
 		$this->db->execLog();
 		return;
+	}
+
+	public function getPatientPhotoSrcId()
+	{
+		return $_SESSION['site']['url'] . '/patients/' . $this->patient['pid'] . '/patientPhotoId.jpg';
 	}
 
 	public function getPatientPhotoSrcIdByPid($pid = null)

@@ -14,8 +14,9 @@ include_once ($_SESSION['root'] . '/classes/dbHelper.php');
 
 
 $db = new dbHelper();
-		
-//$VoucherLine = Matcha::setSenchaModel('App.model.account.VoucherLine');
+
+//$User = Matcha::setSenchaModel('App.model.administration.User');
+
 MatchaAudit::defineLogModel(array(
     array('name'=>'date', 'type'=>'date'),
     array('name'=>'event','type'=>'string'),
@@ -25,6 +26,17 @@ MatchaAudit::defineLogModel(array(
     array('name'=>'facility', 'type'=>'string'),
     array('name'=>'patient_id', 'type'=>'int'),
     array('name'=>'ip', 'type'=>'string')
+));
+MatchaAudit::audit();
+echo MatchaAudit::auditSaveLog(array(
+    'date'=>'2012-02-21 24:00:00',
+    'event'=>'Awaesome!',
+    'comments'=>'Super duper awesome',
+    'user'=>'Gino Rivera',
+    'checksum'=>'AKJHSAKJH234234324',
+    'facility'=>'Gino Clinic',
+    'patient_id'=>'4',
+    'ip'=>'192.168.5.103'
 ));
 
 echo '<pre>';

@@ -66,19 +66,19 @@ Ext.define( 'App.model.administration.User',
 	{
 		name : 'active',
 		type : 'bool',
-		dataType : 'tynyint',
+		dataType : 'tinyint',
 		store: true
-	}, 
+	},
 	{
 		name : 'info',
 		type : 'string',
-		dataType: 'longtex',
+		dataType: 'longtext',
 		store: true
 	},
 	{
 		name : 'source',
 		type : 'int',
-		dataType : 'tynyint',
+		dataType : 'tinyint',
 		len: 4,
 		store: true
 	},

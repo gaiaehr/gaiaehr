@@ -45,8 +45,8 @@ try{
 		$confFile = "../sites/$siteId/conf.php";
 		if(file_exists($confFile)){
 			include_once($confFile);
-			include_once('../classes/dbHelper.php');
-			$db = new dbHelper();
+			include_once('../classes/MatchaHelper.php');
+			$db = new MatchaHelper();
 			if(appHasAccess($pvtKey)){
 				$actionFile = "../dataProvider/$action.php";
 				if(file_exists($actionFile)){

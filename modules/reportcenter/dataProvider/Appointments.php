@@ -13,7 +13,7 @@ if (!isset($_SESSION))
 	session_cache_limiter('private');
 }
 include_once ('Reports.php');
-include_once ($_SESSION['root'] . '/classes/dbHelper.php');
+include_once ($_SESSION['root'] . '/classes/MatchaHelper.php');
 include_once ($_SESSION['root'] . '/dataProvider/Patient.php');
 include_once ($_SESSION['root'] . '/dataProvider/User.php');
 include_once ($_SESSION['root'] . '/dataProvider/Facilities.php');
@@ -34,7 +34,7 @@ class Appointments extends Reports
 	function __construct()
 	{
 		parent::__construct();
-		$this -> db = new dbHelper();
+		$this -> db = new MatchaHelper();
 		$this -> user = new User();
 		$this -> patient = new Patient();
 		$this -> encounter = new Encounter();

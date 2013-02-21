@@ -28,7 +28,7 @@ if (!isset($_SESSION))
 	session_cache_limiter('private');
 }
 
-include_once ($_SESSION['root'] . '/classes/dbHelper.php');
+include_once ($_SESSION['root'] . '/classes/MatchaHelper.php');
 include_once ($_SESSION['root'] . '/dataProvider/Patient.php');
 include_once ($_SESSION['root'] . '/dataProvider/User.php');
 include_once ($_SESSION['root'] . '/dataProvider/Encounter.php');
@@ -36,7 +36,7 @@ include_once ($_SESSION['root'] . '/dataProvider/Encounter.php');
 class Fees
 {
 	/**
-	 * @var dbHelper
+	 * @var MatchaHelper
 	 */
 	private $db;
 	/**
@@ -54,7 +54,7 @@ class Fees
 	{
 		// Declare all the variables that we are gone to use
 		// within the class.
-		(object)$this->db = new dbHelper();
+		(object)$this->db = new MatchaHelper();
 		(object)$this->user = new User();
 		(object)$this->patient = new Patient();
 		(object)$this->enc = new Encounter();

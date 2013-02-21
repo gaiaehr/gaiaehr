@@ -24,7 +24,7 @@ if (!isset($_SESSION))
 	session_start();
 	session_cache_limiter('private');
 }
-include_once ($_SESSION['root'] . '/classes/dbHelper.php');
+include_once ($_SESSION['root'] . '/classes/MatchaHelper.php');
 /**
  * @brief     log class
  * @details   This class wil handle all the log logic
@@ -33,10 +33,10 @@ include_once ($_SESSION['root'] . '/classes/dbHelper.php');
  * @version   Vega 1.0
  * @copyright Gnu Public License (GPLv3)
  *
- * @todo      move all the log stuff from dbHelper to this class
+ * @todo      move all the log stuff from MatchaHelper to this class
  *
  */
-class Logs extends dbHelper
+class Logs extends MatchaHelper
 {
 
 	/**

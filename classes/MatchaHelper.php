@@ -50,7 +50,8 @@ date_default_timezone_set($timezone);
 
 include_once ($_SESSION['root'] . '/classes/Time.php');
 include_once ($_SESSION['root'] . '/classes/Matcha/Matcha.php');
-class dbHelper
+
+class MatchaHelper extends Matcha
 {
 
 	/**
@@ -71,7 +72,7 @@ class dbHelper
 	private $err;
 	
 	/**
-	 * @brief       dbHelper constructor.
+	 * @brief       MatchaHelper constructor.
 	 * @details     This method starts the connection with mysql server using
 	 * $_SESSION values
 	 *              during the login process.

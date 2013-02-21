@@ -31,11 +31,11 @@ if(!isset($_SESSION)) {
 	session_cache_limiter('private');
 }
 //ini_set('memory_limit', '1024M');
-include_once ($_SESSION['root'] . '/classes/dbHelper.php');
+include_once ($_SESSION['root'] . '/classes/MatchaHelper.php');
 class Rxnorm
 {
 	/**
-	 * @var dbHelper
+	 * @var MatchaHelper
 	 */
 	private $db;
 	/**
@@ -46,7 +46,7 @@ class Rxnorm
 
 	function __construct()
 	{
-		$this->db           = new dbHelper();
+		$this->db           = new MatchaHelper();
 		return;
 	}
 

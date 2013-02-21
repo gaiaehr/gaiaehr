@@ -1,25 +1,26 @@
 <?php
- /**
-  * Matcha::connect (Main Class)
-  * Matcha.php
-  * 
-  * This program is free software: you can redistribute it and/or modify
-  * it under the terms of the GNU General Public License as published by
-  * the Free Software Foundation, either version 3 of the License, or
-  * (at your option) any later version.
-  * 
-  * This program is distributed in the hope that it will be useful,
-  * but WITHOUT ANY WARRANTY; without even the implied warranty of
-  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  * GNU General Public License for more details.
-  * 
-  * You should have received a copy of the GNU General Public License
-  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+/**
+ * Matcha::connect (MatchaCUP Class)
+ * Matcha.php
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 include_once('MatchaAudit.php');
 include_once('MatchaCUP.php');
 include_once('MatchaErrorHandler.php');
+include_once('MatchaCreateModel.php');
 
 // Include the Matcha Threads if the PHP Thread class exists
 if(class_exists('Thread')) include_once('MatchaThreads.php');
@@ -427,6 +428,7 @@ class Matcha
 		try
 		{
 			foreach($parameters as $column) self::__createColumn($column);
+            return true;
 		}
 		catch(PDOException $e)
 		{
@@ -462,6 +464,7 @@ class Matcha
 		{
             if(!$table) $table = (string)(is_array(self::$__senchaModel['table']) ? self::$__senchaModel['table']['name'] : self::$__senchaModel['table']);
             if(self::__rendercolumnsyntax($column) == true) self::$__conn->query('ALTER TABLE '.$table.' MODIFY '.$column['name'].' '.self::__renderColumnSyntax($column).';');
+            return true;
 		}
 		catch(PDOException $e)
 		{
@@ -479,6 +482,7 @@ class Matcha
 		try
 		{
 			self::$__conn->query('CREATE DATABASE IF NOT EXISTS '.$databaseName.';');
+            return true;
 		}
 		catch(PDOException $e)
 		{
@@ -496,6 +500,7 @@ class Matcha
 		{
 			if(!$table) $table = (string)(is_array(self::$__senchaModel['table']) ? self::$__senchaModel['table']['name'] : self::$__senchaModel['table']);
 			self::$__conn->query("ALTER TABLE ".$table." DROP COLUMN `".$column."`;");
+            return true;
 		}
 		catch(PDOException $e)
 		{
@@ -576,7 +581,6 @@ class Matcha
                     throw new Exception('No data type is defined.');
                     break;
             }
-            return true;
         }
         catch(Exception $e)
         {

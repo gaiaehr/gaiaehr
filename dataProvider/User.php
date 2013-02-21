@@ -27,13 +27,13 @@ if (!isset($_SESSION))
 
 include_once ($_SESSION['root'] . '/dataProvider/Person.php');
 include_once ($_SESSION['root'] . '/classes/AES.php');
-include_once ($_SESSION['root'] . '/classes/dbHelper.php');
+include_once ($_SESSION['root'] . '/classes/MatchaHelper.php');
 
 class User
 {
 
 	/**
-	 * @var dbHelper
+	 * @var MatchaHelper
 	 */
 	private $db;
 	/**
@@ -43,7 +43,7 @@ class User
 
 	function __construct()
 	{
-		$this->db = new dbHelper();
+		$this->db = new MatchaHelper();
 		
 		return;
 	}

@@ -24,10 +24,10 @@ if (!isset($_SESSION))
 	session_start();
 	session_cache_limiter('private');
 }
-include_once ($_SESSION['root'] . '/classes/dbHelper.php');
+include_once ($_SESSION['root'] . '/classes/MatchaHelper.php');
 include_once ($_SESSION['root'] . '/classes/Time.php');
 include_once ($_SESSION['root'] . '/dataProvider/Person.php');
-class Messages extends dbHelper
+class Messages extends MatchaHelper
 {
 
 	/**

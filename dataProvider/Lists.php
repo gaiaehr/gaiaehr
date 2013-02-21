@@ -23,8 +23,8 @@ if(!isset($_SESSION)){
 	session_start();
 	session_cache_limiter('private');
 }
-include_once ($_SESSION['root'] . '/classes/dbHelper.php');
-class Lists extends dbHelper
+include_once ($_SESSION['root'] . '/classes/MatchaHelper.php');
+class Lists extends MatchaHelper
 {
 	/**
 	 * @param stdClass $params

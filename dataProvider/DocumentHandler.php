@@ -23,7 +23,7 @@ if(!isset($_SESSION)){
 	session_start();
 	session_cache_limiter('private');
 }
-include_once ($_SESSION['root'] . '/classes/dbHelper.php');
+include_once ($_SESSION['root'] . '/classes/MatchaHelper.php');
 include_once ($_SESSION['root'] . '/dataProvider/Documents.php');
 include_once ($_SESSION['root'] . '/dataProvider/DoctorsNotes.php');
 class DocumentHandler
@@ -39,7 +39,7 @@ class DocumentHandler
 
 	function __construct()
 	{
-		$this->db   = new dbHelper();
+		$this->db   = new MatchaHelper();
 		$this->documents     = new Documents();
 		$this->doctorsnotes  = new DoctorsNotes();
 		return;

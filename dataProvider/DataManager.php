@@ -23,7 +23,7 @@ if (!isset($_SESSION)) {
     session_start();
     session_cache_limiter('private');
 }
-include_once ($_SESSION['root'] . '/classes/dbHelper.php');
+include_once ($_SESSION['root'] . '/classes/MatchaHelper.php');
 include_once ($_SESSION['root'] . '/dataProvider/Laboratories.php');
 include_once ($_SESSION['root'] . '/dataProvider/Immunizations.php');
 include_once ($_SESSION['root'] . '/dataProvider/Services.php');
@@ -39,7 +39,7 @@ include_once ($_SESSION['root'] . '/dataProvider/Services.php');
 class DataManager
 {
     /**
-     * @var dbHelper
+     * @var MatchaHelper
      */
     private $db;
 
@@ -49,7 +49,7 @@ class DataManager
 
     function __construct()
     {
-        $this->db = new dbHelper();
+        $this->db = new MatchaHelper();
         $this->labs = new Laboratories();
         $this->immu = new Immunizations();
         $this->serv = new Services();

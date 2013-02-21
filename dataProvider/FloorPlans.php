@@ -28,12 +28,12 @@ include_once ($_SESSION['root'] . '/dataProvider/User.php');
 include_once ($_SESSION['root'] . '/dataProvider/ACL.php');
 include_once ($_SESSION['root'] . '/dataProvider/PoolArea.php');
 include_once ($_SESSION['root'] . '/dataProvider/Services.php');
-include_once ($_SESSION['root'] . '/classes/dbHelper.php');
+include_once ($_SESSION['root'] . '/classes/MatchaHelper.php');
 include_once ($_SESSION['root'] . '/classes/Time.php');
 class FloorPlans
 {
 	/**
-	 * @var dbHelper
+	 * @var MatchaHelper
 	 */
 	private $db;
 	/**
@@ -53,7 +53,7 @@ class FloorPlans
 
 	function __construct()
 	{
-		$this->db       = new dbHelper();
+		$this->db       = new MatchaHelper();
 		$this->user     = new User();
 		$this->acl      = new ACL();
 		$this->patient  = new Patient();

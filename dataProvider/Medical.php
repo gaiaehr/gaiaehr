@@ -35,11 +35,11 @@ include_once ($_SESSION['root'] . '/dataProvider/Rxnorm.php');
 include_once ($_SESSION['root'] . '/dataProvider/Services.php');
 include_once ($_SESSION['root'] . '/dataProvider/DiagnosisCodes.php');
 include_once ($_SESSION['root'] . '/dataProvider/Immunizations.php');
-include_once ($_SESSION['root'] . '/classes/dbHelper.php');
+include_once ($_SESSION['root'] . '/classes/MatchaHelper.php');
 class Medical
 {
 	/**
-	 * @var dbHelper
+	 * @var MatchaHelper
 	 */
 	private $db;
     /**
@@ -59,7 +59,7 @@ class Medical
 
 	function __construct()
 	{
-		$this->db = new dbHelper();
+		$this->db = new MatchaHelper();
 		$this->laboratories = new Laboratories();
 		$this->rxnorm = new Rxnorm();
 		$this->services = new Services();

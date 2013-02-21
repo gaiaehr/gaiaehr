@@ -95,12 +95,12 @@ class authProcedures
 		chdir($_SESSION['root']);
 		include_once ('registry.php');
 		include_once ('classes/AES.php');
-		include_once ('classes/dbHelper.php');
+		include_once ('classes/MatchaHelper.php');
 		$fileConf = 'sites/' . $params->site . '/conf.php';
 		if(file_exists($fileConf)){
 			/** @noinspection PhpIncludeInspection */
 			include_once ($fileConf);
-			$db  = new dbHelper();
+			$db  = new MatchaHelper();
 			$err = $db->getError();
 			if(!is_array($err)){
 				return array(

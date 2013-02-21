@@ -25,9 +25,9 @@ if (!isset($_SESSION))
 	session_cache_limiter('private');
 }
 
-include_once ($_SESSION['root'] . '/classes/dbHelper.php');
+include_once ($_SESSION['root'] . '/classes/MatchaHelper.php');
 
-class Globals extends dbHelper
+class Globals extends MatchaHelper
 {
 	
 	/**
@@ -35,7 +35,7 @@ class Globals extends dbHelper
 	 */
 	public static function getGlobals()
 	{
-		$conn = new dbHelper();
+		$conn = new MatchaHelper();
 		$conn -> setSQL("SELECT gl_name, gl_index, gl_value FROM globals");
 		$rows = array();
 		foreach ($conn->fetchRecords() as $row)
@@ -81,7 +81,7 @@ class Globals extends dbHelper
 	 */
 	public static function setGlobals()
 	{
-		$conn = new dbHelper();
+		$conn = new MatchaHelper();
 		$conn -> setSQL("SELECT gl_name, gl_value FROM globals");
 		foreach ($conn->fetchRecords(PDO::FETCH_ASSOC) as $setting)
 		{

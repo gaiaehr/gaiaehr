@@ -7,35 +7,85 @@
 	font-family: 'OpenSans-CondLight';
 	src: url('../fonts/OpenSans-CondLight.ttf');
 }
-.starOn {
-    background-image:	url("../images/starOn.png");
-    margin 			:	2px 2px;
-    width			:	16px;
-    height			:	16px;
-    display			:	inline-block;
-    float			:	left;
+.x-form-rating .ux-rating-star, .x-form-rating .ux-rating-reset {
+    float: left;
+    width: 17px;
+    height: 15px;
+    text-indent: -999em;
+    cursor: pointer;
+    display: block;
+    background: transparent;
+    overflow: hidden;
 }
-
-.starOff {
-    background-image:	url("../images/starOff.png");
-    margin 			:	2px 2px;
-    width			:	16px;
-    height			:	16px;
-    display			:	inline-block;
-    float			:	left;
+/* line 22, ../../scss/form/rating.scss */
+.x-form-rating .ux-rating-star {
+    background: transparent!important;
+    overflow: hidden !important;
 }
-
-.starHiddenClearMode {
-    clear 			: 	left;
+/* line 26, ../../scss/form/rating.scss */
+.x-form-rating .ux-rating-reset, .x-form-rating .ux-rating-reset a {
+    background: url("../images/icons/delete.gif") no-repeat 0 0px;
 }
-
-.starReset {
-    background-image:   url("../images/starReset.png");
-    margin          :   2px 2px;
-    width           :   16px;
-    height          :   16px;
-    display         :   inline-block;
-    float           :   left;
+/* line 29, ../../scss/form/rating.scss */
+.x-form-rating .ux-rating-star, .x-form-rating .ux-rating-star a {
+    background: url("../images/icons/star.png") no-repeat 0 0px;
+}
+/* line 32, ../../scss/form/rating.scss */
+.x-form-rating .ux-rating-star a, .x-form-rating .ux-rating-reset a {
+    display: block;
+    width: 16px;
+    height: 100%;
+    background-position: 0 0px;
+}
+/* line 38, ../../scss/form/rating.scss */
+.x-form-rating .ux-rating-star-on a {
+    background-position: 0 -16px !important;
+}
+/* line 41, ../../scss/form/rating.scss */
+.x-form-rating .ux-rating-star-focus .ux-rating-star-on a {
+    background-position: 0 -32px !important;
+}
+/* line 44, ../../scss/form/rating.scss */
+.x-form-rating .ux-rating-star-hover a {
+    background-position: 0 -32px;
+}
+/* line 47, ../../scss/form/rating.scss */
+.x-form-rating .ux-rating-reset-hover {
+    background-position: 0 -16px !important;
+}
+/* line 50, ../../scss/form/rating.scss */
+.x-form-rating .ux-rating-star-disabled a {
+    cursor: default !important;
+}
+/* line 54, ../../scss/form/rating.scss */
+.x-form-rating .x-item-disabled .ux-rating-star, .x-form-rating .x-form-readonly .ux-rating-star {
+    opacity: 0.6;
+    cursor: auto;
+}
+/* line 58, ../../scss/form/rating.scss */
+.x-form-rating .x-item-disabled .ux-rating-reset, .x-form-rating .x-form-readonly .ux-rating-reset {
+    display: none;
+}
+/* line 62, ../../scss/form/rating.scss */
+.x-form-rating .ext-ie .ux-rating-clearfix {
+    zoom: 1;
+}
+/* line 65, ../../scss/form/rating.scss */
+.x-form-rating .ux-rating-clearfix:after {
+    content: ".";
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
+}
+/* line 72, ../../scss/form/rating.scss */
+.x-form-rating .x-form-invalid-icon {
+    background-position-y: 1px;
+}
+/* line 75, ../../scss/form/rating.scss */
+.x-form-rating .ux-rating-container {
+    height: 22px;
+    padding-top: 2px;
 }
 .paid {
     background: url("../images/paid.png") no-repeat center transparent !important;

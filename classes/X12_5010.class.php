@@ -51,7 +51,7 @@ class x12_5010
 	 */
 	function __construct()
 	{
-		$this -> $dataBase = new MatchaHelper();
+		$this->dataBase = new MatchaHelper();
 		return;
 	}
 
@@ -60,10 +60,10 @@ class x12_5010
 	 * -- Health Care Claim (The the clinic or doctor sending the claim to the
 	 * insurance)
 	 */
-	public static function Generate837()
+	public function Generate837()
 	{
-		$this -> $data837 = 'ISA';
-		$this -> $data837 .= '*';
+		$this->data837 = 'ISA';
+		$this->data837 .= '*';
 	}
 
 	/*

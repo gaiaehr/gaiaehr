@@ -304,7 +304,7 @@ Ext.define('App.view.patient.windows.EncounterCheckOut', {
 			rec,
 			children;
 
-		delete btn.data.id;
+		if(btn.data.id) delete btn.data.id;
 		btn.data.pid = me.pid;
 		btn.data.eid = me.eid;
 		btn.data.iconCls = 'icoDotGrey';

@@ -443,11 +443,14 @@ class Encounter
                 foreach($foo AS $fo){
                     $dx = array();
                     $f = $this->diagnosis->getICDDataByCode($fo);
-                    $dx['code'] = $f['code'];
-                    $dx['code_text_medium'] = $f['short_desc'];
-                    $dx['leaf'] = true;
-                    $dx['iconCls'] = 'icoDotYellow';
-                    $dx_children[] = $dx;
+					if(!empty($f)){
+						$dx['code'] = $f['code'];
+						$dx['code_text_medium'] = $f['short_desc'];
+						$dx['leaf'] = true;
+						$dx['iconCls'] = 'icoDotYellow';
+						$dx_children[] = $dx;
+					}
+
                 }
                 $services['rows'][$index]['iconCls'] = 'icoDotGrey';
                 $services['rows'][$index]['expanded'] = true;

@@ -7,6 +7,36 @@
 	font-family: 'OpenSans-CondLight';
 	src: url('../fonts/OpenSans-CondLight.ttf');
 }
+.starOn {
+    background-image:	url("../images/starOn.png");
+    margin 			:	2px 2px;
+    width			:	16px;
+    height			:	16px;
+    display			:	inline-block;
+    float			:	left;
+}
+
+.starOff {
+    background-image:	url("../images/starOff.png");
+    margin 			:	2px 2px;
+    width			:	16px;
+    height			:	16px;
+    display			:	inline-block;
+    float			:	left;
+}
+
+.starHiddenClearMode {
+    clear 			: 	left;
+}
+
+.starReset {
+    background-image:   url("../images/starReset.png");
+    margin          :   2px 2px;
+    width           :   16px;
+    height          :   16px;
+    display         :   inline-block;
+    float           :   left;
+}
 .paid {
     background: url("../images/paid.png") no-repeat center transparent !important;
 }

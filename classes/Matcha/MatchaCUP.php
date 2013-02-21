@@ -67,7 +67,7 @@ class MatchaCUP
 	 * @param null $columns
 	 * @return MatchaCUP
 	 */
-	public function load($where = null, $columns = null)
+	public function load($where = NULL, $columns = NULL)
 	{
 		try
 		{
@@ -244,7 +244,7 @@ class MatchaCUP
 	 * @param int $limit
 	 * @return mixed
 	 */
-	public function limit($start = null, $limit = 25)
+	public function limit($start = NULL, $limit = 25)
 	{
 		try
 		{
@@ -396,7 +396,7 @@ class MatchaCUP
 	 * @param stdClass $parent
 	 * @return stdClass
 	 */
-	private function ArrayToObject(array $array, stdClass $parent = null)
+	private function ArrayToObject(array $array, stdClass $parent = NULL)
 	{
 		if ($parent === null) $parent = new stdClass;
 		foreach ($array as $key => $val)

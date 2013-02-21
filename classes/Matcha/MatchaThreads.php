@@ -21,7 +21,7 @@
 class MatchaThreads extends Thread
 {
 	
-	public $sqlStatement = (string)'';
+	public $sqlStatement = '';
 	
 	/**
 	 * function injectSQLThread($sqlStatement):
@@ -39,6 +39,7 @@ class MatchaThreads extends Thread
 			MatchaErrorHandler::__errorProcess($e);
 			return false;
 		}
-	}	
+	}
+
 }
  

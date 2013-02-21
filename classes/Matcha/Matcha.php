@@ -196,7 +196,7 @@ class Matcha
 			elseif( count($diferentCreateColumns) != 0 && count($diferentDropColumns) != 0)
 			{
 				// add columns to the table
-				foreach($diferentCreateColumns as $key => $column) self::__createColumn($workingModel[self::__recursiveArraySearch($colum[$key], $workingModel)]);
+				foreach($diferentCreateColumns as $key => $column) self::__createColumn($workingModel[self::__recursiveArraySearch($column[$key], $workingModel)]);
 				// remove columns from the table
 				foreach($diferentDropColumns as $key => $column) self::__dropColumn( $column[$key] );
 				

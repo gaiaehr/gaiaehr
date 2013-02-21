@@ -77,21 +77,21 @@ class MatchaAudit extends Matcha
 	{
 		try
 		{
-			self::$__conn->query("CREATE TABLE IF NOT EXISTS `log` (
-						`id` bigint(20) NOT NULL AUTO_INCREMENT,
-						`date` datetime DEFAULT NULL,
-						`event` varchar(255) DEFAULT NULL,
-						`user` varchar(255) DEFAULT NULL,
-						`facility` varchar(255) NOT NULL,
-						`comments` longtext,
-						`user_notes` longtext,
-						`patient_id` bigint(20) DEFAULT NULL,
-						`success` tinyint(1) DEFAULT '1',
-						`checksum` longtext,
-						`crt_user` varchar(255) DEFAULT NULL,
-						`ip` varchar(50) DEFAULT NULL,
+			self::$__conn->query("CREATE TABLE IF NOT EXISTS 'log' (
+						'id' bigint(20) NOT NULL AUTO_INCREMENT,
+						'date' datetime DEFAULT NULL,
+						'event' varchar(255) DEFAULT NULL,
+						'user' varchar(255) DEFAULT NULL,
+						'facility' varchar(255) NOT NULL,
+						'comments' longtext,
+						'user_notes' longtext,
+						'patient_id' bigint(20) DEFAULT NULL,
+						'success' tinyint(1) DEFAULT '1',
+						'checksum' longtext,
+						'crt_user' varchar(255) DEFAULT NULL,
+						'ip' varchar(50) DEFAULT NULL,
 						PRIMARY KEY (`id`)
-					) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;");
+					) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
 			return true;
 		}
 		catch(PDOException $e)

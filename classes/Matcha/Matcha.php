@@ -380,7 +380,7 @@ class Matcha
 	 * also if the sencha model has an array on the table go ahead and
 	 * proccess the table options. 
 	 */
-	static private function __createTable()
+	static function __createTable()
 	{
 	    try
 	    {

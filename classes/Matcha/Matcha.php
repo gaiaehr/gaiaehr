@@ -427,6 +427,7 @@ class Matcha
 		try
 		{
 			foreach($parameters as $column) self::__createColumn($column);
+            return true;
 		}
 		catch(PDOException $e)
 		{
@@ -462,6 +463,7 @@ class Matcha
 		{
             if(!$table) $table = (string)(is_array(self::$__senchaModel['table']) ? self::$__senchaModel['table']['name'] : self::$__senchaModel['table']);
             if(self::__rendercolumnsyntax($column) == true) self::$__conn->query('ALTER TABLE '.$table.' MODIFY '.$column['name'].' '.self::__renderColumnSyntax($column).';');
+            return true;
 		}
 		catch(PDOException $e)
 		{
@@ -479,6 +481,7 @@ class Matcha
 		try
 		{
 			self::$__conn->query('CREATE DATABASE IF NOT EXISTS '.$databaseName.';');
+            return true;
 		}
 		catch(PDOException $e)
 		{
@@ -496,6 +499,7 @@ class Matcha
 		{
 			if(!$table) $table = (string)(is_array(self::$__senchaModel['table']) ? self::$__senchaModel['table']['name'] : self::$__senchaModel['table']);
 			self::$__conn->query("ALTER TABLE ".$table." DROP COLUMN `".$column."`;");
+            return true;
 		}
 		catch(PDOException $e)
 		{
@@ -576,7 +580,6 @@ class Matcha
                     throw new Exception('No data type is defined.');
                     break;
             }
-            return true;
         }
         catch(Exception $e)
         {

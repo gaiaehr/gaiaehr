@@ -148,6 +148,26 @@ Ext.define('App.view.patient.encounter.SOAP', {
 				syncAcl:acl['edit_encounters']
 			},
 			items:[
+//				{
+//					xtype:'fieldset',
+//					title:i18n('review_of_system'),
+//					height:120,
+//					items:[
+//						{
+//							xtype:'customtrigger',
+//							value:'LOC: Yes',
+//							width:100,
+//							style:'float:left',
+//							margin:'0 5 0 0',
+//							name:me.name,
+//							listeners:{
+////								destroy:function(){
+////									if(me.autoFormSync && !me.loading) me.syncFormStore();
+////								}
+//							}
+//						}
+//					]
+//				},
 				{
 					xtype:'fieldset',
 					title:i18n('subjective'),
@@ -175,6 +195,42 @@ Ext.define('App.view.patient.encounter.SOAP', {
 								focus:me.onFieldFocus
 							}
 						})
+					]
+				},
+				{
+					xtype:'grid',
+					frame:true,
+					name:'procedures',
+					columns:[
+						{
+							text:i18n('code')
+						},
+						{
+							text:i18n('description'),
+							flex:1
+						}
+					],
+					dockedItems:[
+						{
+							xtype:'toolbar',
+							items:[
+								{
+									xtype:'tbtext',
+									text:i18n('procedures')
+								},
+								'->',
+								{
+									text:i18n('add')
+								}
+							],
+							listeners:{
+								scope:me,
+								render:function(toolbar){
+									toolbar.container.on('click', me.onFieldFocus, me);
+								}
+							}
+						}
+
 					]
 				},
 				{
@@ -279,7 +335,8 @@ Ext.define('App.view.patient.encounter.SOAP', {
 	},
 
 	onFieldFocus:function(field){
-		this.snippets.setTitle(Ext.String.capitalize(field.name) +' '+ i18n('templates'));
+		if(typeof field.name == 'undefined') field.name = 'procedure';
+		this.snippets.setTitle(i18n(field.name) +' '+ i18n('templates'));
 		this.snippets.expand(false);
 		if(this.snippets.action != field.name) this.snippetStore.load({params:{category:field.name}});
 		this.snippets.action = field.name;

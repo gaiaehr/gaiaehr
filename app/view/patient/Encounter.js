@@ -337,8 +337,9 @@ Ext.define('App.view.patient.Encounter', {
         });
         me.rightPanel = Ext.create('Ext.tab.Panel', {
             title:i18n('encounter_progress_note'),
-            margin:'0 0 0 2',
             width:400,
+	        region:'east',
+	        split:true,
             collapsible:true,
             animCollapse:true,
             collapsed:true,
@@ -347,7 +348,7 @@ Ext.define('App.view.patient.Encounter', {
                 collapse:me.progressNoteCollapseExpand,
                 expand:me.progressNoteCollapseExpand
             },
-            region:'east',
+
             items:[
                 me.progressNote,
                 me.progressHistory
@@ -636,7 +637,7 @@ Ext.define('App.view.patient.Encounter', {
                 }else{
                     if(me.stopTimer()){
                         var timer = me.timer(data.service_date, data.close_date), patient = app.patient;
-                        me.updateTitle(patient.name + ' #' + patient.pid + ' - ' + patient.age.str + ' - ' + Ext.Date.format(me.currEncounterStartDate, 'F j, Y, g:i:s a') + ' (' + i18n('closed_encounter') + ')', app.patient.readOnly, timer);
+                        me.updateTitle(patient.name + ' #' + patient.pid + ' - ' + patient.age.str + ' - ' + Ext.Date.format(me.currEncounterStartDate, 'F j, Y, g:i:s a') + ' (' + i18n('closed_encounter') + ')', app.patient.readOnly, timer,true);
                         me.setButtonsDisabled(me.getButtonsToDisable(), true);
                     }
                 }
@@ -811,7 +812,7 @@ Ext.define('App.view.patient.Encounter', {
      */
     encounterTimer:function(){
         var me = this, timer = me.timer(me.currEncounterStartDate, new Date());
-        me.updateTitle(app.patient.name + ' #' + app.patient.pid + ' - ' + app.patient.age.str + ' - ' + Ext.Date.format(me.currEncounterStartDate, 'F j, Y, g:i:s a') + ' (' + i18n('opened_encounter') + ')', app.patient.readOnly, timer);
+        me.updateTitle(app.patient.name + ' #' + app.patient.pid + ' - ' + app.patient.age.str + ' - ' + Ext.Date.format(me.currEncounterStartDate, 'F j, Y, g:i:s a') + ' (' + i18n('opened_encounter') + ')', app.patient.readOnly, timer,true);
     },
     /**
      * This function use the "start time" and "stop time"
@@ -1114,7 +1115,7 @@ Ext.define('App.view.patient.Encounter', {
     onActive:function(callback){
         var me = this, patient = app.patient;
         if(patient.pid && patient.eid){
-            me.updateTitle(patient.name + ' (' + i18n('visits') + ')', patient.readOnly, null);
+            me.updateTitle(patient.name + ' (' + i18n('visits') + ')', patient.readOnly, null, true);
             me.setReadOnly(patient.readOnly);
             callback(true);
         }else{

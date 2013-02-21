@@ -99,6 +99,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 				'Ext.ux.LiveSearchGridPanel',
 				'Ext.ux.SlidingPager',
 				'Ext.ux.PreviewPlugin',
+				'App.ux.RatingField',
 				'App.ux.grid.GridToHtml',
 				'App.ux.grid.Printer',
 				/**

@@ -36,10 +36,25 @@ Ext.define('App.ux.RenderPanel', {
 					cls   : 'RenderPanel-header',
 					itemId: 'RenderPanel-header',
 					region: 'north',
-					layout: 'fit',
 					height: 33,
-					html  : '<div class="panel_title">' + me.pageTitle + '</div>'
+					items  : [
+						me.pageTitleDiv = Ext.widget('container',{
+							cls:'panel_title',
+							style:'float:left',
+							html:me.pageTitle
+						}),
+						me.pageReadOnlyDiv = Ext.widget('container',{
+							style:'float:left'
+						}),
+						me.pageRankingDiv = Ext.widget('ratingField',{
+							style:'float:left',
+							hidden:true
+						}),
+						me.pageTimerDiv = Ext.widget('container',{
+							style:'float:right'
+						})
 
+					]
 				}),
 				{
 					cls    : 'RenderPanel-body-container',
@@ -62,14 +77,25 @@ Ext.define('App.ux.RenderPanel', {
 				}
 			]
 		}, this);
+
 		me.callParent(arguments);
 	},
 
-	updateTitle: function(pageTitle, readOnly, timer) {
-		
-		var readOnlyDiv = '<div class="readOnly">' + i18n('read_only') + '</div>',
-			timerDiv = '<span class="timer">' + timer + '</span>';
-		this.getComponent('RenderPanel-header').update('<div class="panel_title">' + pageTitle + '</div>' + (readOnly ? readOnlyDiv : '') + (timer ?  timerDiv : ''));
+
+	updateTitle: function(pageTitle, readOnly, timer, ranking) {
+
+		this.pageTitleDiv.update(pageTitle);
+		this.pageReadOnlyDiv.update(readOnly ? i18n('read_only') : '');
+		this.pageRankingDiv.setVisible(ranking ? ranking : false);
+		this.pageTimerDiv.update(timer);
+
+//		var readOnlyDiv = '<div class="readOnly">' + i18n('read_only') + '</div>',
+//			timerDiv = '<span class="timer">' + timer + '</span>',
+//		this.getComponent('RenderPanel-header').update('<div class="panel_title">' + pageTitle + '</div>' +
+//			(readOnly ? readOnlyDiv : '') +
+////			(ranking ? rankingCmp)
+//			(timer ?  timerDiv : '')
+//		);
 	},
 
     getPageHeader:function(){

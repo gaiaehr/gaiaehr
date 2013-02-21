@@ -16,10 +16,19 @@ include_once ($_SESSION['root'] . '/classes/dbHelper.php');
 $db = new dbHelper();
 		
 //$VoucherLine = Matcha::setSenchaModel('App.model.account.VoucherLine');
-
+MatchaAudit::defineLogModel(array(
+    array('name'=>'date', 'type'=>'date'),
+    array('name'=>'event','type'=>'string'),
+    array('name'=>'comments', 'type'=>'string'),
+    array('name'=>'user', 'type'=>'string'),
+    array('name'=>'checksum', 'type'=>'string'),
+    array('name'=>'facility', 'type'=>'string'),
+    array('name'=>'patient_id', 'type'=>'int'),
+    array('name'=>'ip', 'type'=>'string')
+));
 
 echo '<pre>';
-print_r(Matcha::__setSenchaModelData('App.data.account.AccountType'));
+//print_r(Matcha::__setSenchaModelData('App.data.account.AccountType'));
 echo '</pre>';
 
 //$db->SenchaModel('App.model.administration.tmpUser');

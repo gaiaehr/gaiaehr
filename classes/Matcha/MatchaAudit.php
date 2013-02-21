@@ -19,17 +19,21 @@
  
 class MatchaAudit extends Matcha
 {
+
+    public $logModel;
+    public static $__audit;
+
 	/**
-	 * function __auditLog($sqlStatement = ''):
+	 * __auditLog($arrayToInsert = array()):
 	 * Every store has to be logged into the database.
 	 * Also generate the table if does not exist.
 	 */
-	static public function __auditLog($sqlStatement = '')
+	static protected function __auditLog($arrayToInsert = array())
 	{
 		// if the $__audit is true run the procedure if not skip it
 		if(!Matcha::$__audit) return true;
-		// generate the appropriate event log comment 
-		$record = array();
+
+		// generate the appropriate event log comment
 		$eventLog = (string)"Event triggered but never defined.";
 		if (stristr($sqlStatement, 'INSERT')) $eventLog = 'Record insertion';
 		if (stristr($sqlStatement, 'DELETE')) $eventLog = 'Record deletion';
@@ -48,14 +52,30 @@ class MatchaAudit extends Matcha
 		try
 		{
 			//check if the table exist
-			$recordSet = self::$__conn->query("SHOW TABLES LIKE '".self::$__senchaModel['table']."';");
+			$recordSet = self::$__conn->query("SHOW TABLES LIKE 'log';");
 			if( $recordSet->fetch(PDO::FETCH_ASSOC) ) self::__createTable('log');
 			unset($recordSet);
-			
-			//check for the available fields
-			$recordSet = self::$__conn->query("SHOW COLUMNS IN ".self::$__senchaModel['table'].";");
-			if( $recordSet->fetchAll(PDO::FETCH_ASSOC) ) self::__createLogModel();
-			unset($recordSet);
+
+            // get the table column information and remove the id column
+            // from the log table
+            $recordSet = self::$__conn->query("SHOW FULL COLUMNS IN log;");
+            $tableColumns = $recordSet->fetchAll(PDO::FETCH_ASSOC);
+            unset($tableColumns[self::__recursiveArraySearch('id', $tableColumns)]);
+
+            // prepare the columns from the table and passed array for comparison
+            foreach($tableColumns as $column) $columnsTableNames[] = $column['Field'];
+            foreach($arrayToInsert as $column) $columnsLogModelNames[] = $column[0];
+
+            // get all the column that are not present in the database-table
+            $differentCreateColumns = array_diff($columnsLogModelNames, $columnsTableNames);
+            $differentDropColumns = array_diff($columnsTableNames, $columnsLogModelNames);
+            if( count($differentCreateColumns) != 0 && count($differentDropColumns) != 0)
+			{
+                // add columns to the table
+                foreach($differentCreateColumns as $key => $column) self::__createColumn($column, $workingModel)]);
+                // remove columns from the table
+                foreach($differentDropColumns as $key => $column) self::__dropColumn( $column[$key], 'log' );
+            }
 				
 			// insert the event log
 			$fields = (string)implode(', ', array_keys($eventData));
@@ -69,34 +89,19 @@ class MatchaAudit extends Matcha
 		}
 	}
 
-	/**
-	 * function __logModel():
-	 * Method to create the log table columns
-	 */
-	static private function __createLogModel()
-	{
-		try
-		{
-			self::$__conn->query("CREATE TABLE IF NOT EXISTS `log` (
-						`id` bigint(20) NOT NULL AUTO_INCREMENT,
-						`date` datetime DEFAULT NULL,
-						`event` varchar(255) DEFAULT NULL,
-						`user` varchar(255) DEFAULT NULL,
-						`facility` varchar(255) NOT NULL,
-						`comments` longtext,
-						`user_notes` longtext,
-						`patient_id` bigint(20) DEFAULT NULL,
-						`success` tinyint(1) DEFAULT '1',
-						`checksum` longtext,
-						`crt_user` varchar(255) DEFAULT NULL,
-						`ip` varchar(50) DEFAULT NULL,
-						PRIMARY KEY (`id`)
-					) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;");
-			return true;
-		}
-		catch(PDOException $e)
-		{
-			return MatchaErrorHandler::__errorProcess($e);
-		}
-	}
+    /**
+     * function audit($onoff = true):
+     * Method to enable the audit log process.
+     * This will write a log every time it INSERT, UPDATE, DELETE a record.
+     */
+    static public function audit($onoff = true)
+    {
+        self::$__audit = (bool)$onoff;
+    }
+
+    static public function defineLogModel($logModelArray)
+    {
+        self::$logModel = $logModelArray;
+        return true;
+    }
 }

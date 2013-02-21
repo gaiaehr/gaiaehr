@@ -63,10 +63,6 @@ class MatchaHelper extends Matcha
 	 */
 	public $lastInsertId;
 	/**
-	 * @var PDO
-	 */
-	public $conn;
-	/**
 	 * @var string
 	 */
 	private $err;
@@ -85,7 +81,7 @@ class MatchaHelper extends Matcha
 	{
         // this is done to be compatible with the old methods
         if(isset($_SESSION['site']) && isset($_SESSION['site']['db'])){
-            $this->conn = Matcha::connect(array(
+            self::connect(array(
                 'host'=>(string)$_SESSION['site']['db']['host'],
                 'port'=>(int)$_SESSION['site']['db']['port'],
                 'name'=>(string)$_SESSION['site']['db']['database'],
@@ -305,11 +301,11 @@ class MatchaHelper extends Matcha
 	 */
 	public function execOnly($setLastInsertId = true)
 	{
-		$this->conn->query($this->sql_statement);
-		if ($setLastInsertId) $this->lastInsertId = $this->conn->lastInsertId();
-        $err = $this->conn->errorInfo();
+		self::$__conn->query($this->sql_statement);
+		if ($setLastInsertId) $this->lastInsertId = self::$__conn->lastInsertId();
+        $err = self::$__conn->errorInfo();
         if($err[2]){
-            return $this->conn->errorInfo();
+            return self::$__conn->errorInfo();
         }else{
             return $this->lastInsertId;
         }
@@ -336,10 +332,10 @@ class MatchaHelper extends Matcha
 		/**
 		 * Execute the sql statement
 		 */
-		$this->conn->query($this->sql_statement);
+        self::$__conn->query($this->sql_statement);
 		if (stristr($this->sql_statement, 'INSERT') || stristr($this->sql_statement, 'DELETE') || stristr($this->sql_statement, 'UPDATE') || stristr($this->sql_statement, 'LOAD') || stristr($this->sql_statement, 'ALTER'))
 		{
-			$this->lastInsertId = $this->conn->lastInsertId();
+			$this->lastInsertId = self::$__conn->lastInsertId();
 			$eventLog = "Event triggered but never defined.";
 			if (stristr($this->sql_statement, 'INSERT'))
 				$eventLog = 'Record insertion';
@@ -367,7 +363,7 @@ class MatchaHelper extends Matcha
 			$this->execOnly(false);
 
 		}
-		return $this->conn->errorInfo();
+		return self::$__conn->errorInfo();
 	}
 
 	/**
@@ -390,7 +386,7 @@ class MatchaHelper extends Matcha
 		$sqlStatement = $this->sqlBind($data, 'log', 'I');
 		$this->setSQL($sqlStatement);
 		$this->fetchRecords();
-		return $this->conn->errorInfo();
+		return self::$__conn->errorInfo();
 	}
 
 	/**
@@ -405,8 +401,8 @@ class MatchaHelper extends Matcha
 	function fetchRecord()
 	{
 		// Get all the records
-		$recordSet = $this->conn->query($this->sql_statement);
-		$err = $this->conn->errorInfo();
+		$recordSet = self::$__conn->query($this->sql_statement);
+		$err = self::$__conn->errorInfo();
 		if (!$err[2])
 		{
 			return $recordSet->fetch(PDO::FETCH_ASSOC);
@@ -436,12 +432,12 @@ class MatchaHelper extends Matcha
 	 */
 	public function fetchRecords($fetchStyle = PDO::FETCH_BOTH)
 	{
-		$recordSet = $this->conn->query($this->sql_statement);
+		$recordSet = self::$__conn->query($this->sql_statement);
 		if (stristr($this->sql_statement, 'SELECT'))
 		{
-			$this->lastInsertId = $this->conn->lastInsertId();
+			$this->lastInsertId = self::$__conn->lastInsertId();
 		}
-		$err = $this->conn->errorInfo();
+		$err = self::$__conn->errorInfo();
 		if (!$err[2])
 		{
 			return $recordSet->fetchAll($fetchStyle);
@@ -467,7 +463,7 @@ class MatchaHelper extends Matcha
 	{
 		if (!$this->err)
 		{
-			return $this->conn->errorInfo();
+			return self::$__conn->errorInfo();
 		}
 		else
 		{
@@ -491,7 +487,7 @@ class MatchaHelper extends Matcha
 	 */
 	function rowCount()
 	{
-		$recordSet = $this->conn->query($this->sql_statement);
+		$recordSet = self::$__conn->query($this->sql_statement);
 		return $recordSet->rowCount();
 	}
 	

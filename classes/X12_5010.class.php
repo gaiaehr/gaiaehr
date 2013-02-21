@@ -28,7 +28,7 @@ $_SESSION['site']['flops'] = 0;
 /*
  * Invoke the Database Class Library
  */
-include_once ($_SESSION['site']['root'] . '/classes/dbHelper.php');
+include_once ($_SESSION['site']['root'] . '/classes/MatchaHelper.php');
 
 class x12_5010
 {
@@ -51,7 +51,7 @@ class x12_5010
 	 */
 	function __construct()
 	{
-		$this -> $dataBase = new dbHelper();
+		$this -> $dataBase = new MatchaHelper();
 		return;
 	}
 

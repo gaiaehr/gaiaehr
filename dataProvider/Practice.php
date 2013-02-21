@@ -23,7 +23,7 @@ if (!isset($_SESSION)) {
     session_start();
     session_cache_limiter('private');
 }
-include_once ($_SESSION['root'] . '/classes/dbHelper.php');
+include_once ($_SESSION['root'] . '/classes/MatchaHelper.php');
 /**
  * @brief       Brief Description
  * @details     Detail Description ...
@@ -32,7 +32,7 @@ include_once ($_SESSION['root'] . '/classes/dbHelper.php');
  * @version     Vega 1.0
  * @copyright   Gnu Public License(GPLv3)
  */
-class Practice extends dbHelper
+class Practice extends MatchaHelper
 {
     /**
      * Pharmacies stuff

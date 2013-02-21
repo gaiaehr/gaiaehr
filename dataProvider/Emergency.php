@@ -23,7 +23,7 @@ if(!isset($_SESSION)){
 	session_start();
 	session_cache_limiter('private');
 }
-include_once ($_SESSION['root'] . '/classes/dbHelper.php');
+include_once ($_SESSION['root'] . '/classes/MatchaHelper.php');
 include_once ($_SESSION['root'] . '/dataProvider/Patient.php');
 include_once ($_SESSION['root'] . '/dataProvider/User.php');
 include_once ($_SESSION['root'] . '/dataProvider/Services.php');
@@ -34,7 +34,7 @@ include_once ($_SESSION['root'] . '/dataProvider/PreventiveCare.php');
 class Emergency
 {
 	/**
-	 * @var dbHelper
+	 * @var MatchaHelper
 	 */
 	private $db;
 	/**
@@ -73,7 +73,7 @@ class Emergency
 
 	function __construct()
 	{
-		$this->db             = new dbHelper();
+		$this->db             = new MatchaHelper();
 		$this->user           = new User();
 		$this->patient        = new Patient();
 		$this->services       = new Services();

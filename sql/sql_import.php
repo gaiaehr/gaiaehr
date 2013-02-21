@@ -11,10 +11,10 @@ if(!isset($_SESSION)){
     session_start();
     session_cache_limiter('private');
 }
-include_once($_SESSION['root'].'/classes/dbHelper.php');
+include_once($_SESSION['root'].'/classes/MatchaHelper.php');
 
 echo '<pre>';
-$db = new dbHelper();
+$db = new MatchaHelper();
 $file_handle = fopen("HCPC2013_A-N.csv", "r");
 
 $rows = array();

@@ -24,7 +24,7 @@ if (!isset($_SESSION)) {
     session_cache_limiter('private');
 }
 include_once ($_SESSION['root'] . '/classes/FileManager.php');
-include_once ($_SESSION['root'] . '/classes/dbHelper.php');
+include_once ($_SESSION['root'] . '/classes/MatchaHelper.php');
 
 class Modules
 {
@@ -37,7 +37,7 @@ class Modules
     function __construct()
     {
         $this->modulesDir = $_SESSION['root'] . '/modules/';
-        $this->db = new dbHelper();
+        $this->db = new MatchaHelper();
         $this->setNewModules();
     }
 

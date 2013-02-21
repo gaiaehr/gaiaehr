@@ -23,7 +23,7 @@ if(!isset($_SESSION)){
 	session_start();
 	session_cache_limiter('private');
 }
-include_once ($_SESSION['root'] . '/classes/dbHelper.php');
+include_once ($_SESSION['root'] . '/classes/MatchaHelper.php');
 class ACL
 {
 
@@ -40,7 +40,7 @@ class ACL
 	 */
 	private $user_roles = array();
 	/**
-	 * @var dbHelper
+	 * @var MatchaHelper
 	 */
 	protected $conn;
 
@@ -51,7 +51,7 @@ class ACL
 	 */
 	public function __construct($uid = null)
 	{
-		$this->conn       = new dbHelper();
+		$this->conn       = new MatchaHelper();
 		$this->user_id    = ($uid == null) ? $_SESSION['user']['id'] : $uid;
 		$this->user_roles = $this->getUserRoles();
 		$this->buildACL();

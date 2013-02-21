@@ -23,7 +23,7 @@ if (!isset($_SESSION)) {
     session_start();
     session_cache_limiter('private');
 }
-include_once ($_SESSION['root'] . '/classes/dbHelper.php');
+include_once ($_SESSION['root'] . '/classes/MatchaHelper.php');
 include_once ($_SESSION['root'] . '/classes/XMLParser.class.php');
 /**
  * Created by JetBrains PhpStorm.
@@ -39,7 +39,7 @@ class Immunizations
 
     function __construct()
     {
-        $this->db = new dbHelper();
+        $this->db = new MatchaHelper();
         return;
     }
 

@@ -24,7 +24,7 @@ if(!isset($_SESSION)) {
 	session_cache_limiter('private');
 }
 $_SESSION['site']['flops'] = 0;
-include_once ($_SESSION['root'] . '/classes/dbHelper.php');
+include_once ($_SESSION['root'] . '/classes/MatchaHelper.php');
 include_once ($_SESSION['root'] . '/classes/Time.php');
 include_once ($_SESSION['root'] . '/classes/FileManager.php');
 set_time_limit(0);
@@ -38,7 +38,7 @@ class Codes
 
 	function __construct()
 	{
-		$this->db   = new dbHelper();
+		$this->db   = new MatchaHelper();
 		$this->file = new FileManager();
 		return;
 	}

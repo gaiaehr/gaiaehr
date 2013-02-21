@@ -24,8 +24,8 @@ if (!isset($_SESSION))
 	session_start();
 	session_cache_limiter('private');
 }
-include_once ($_SESSION['root'] . '/classes/dbHelper.php');
-class OfficeNotes extends dbHelper
+include_once ($_SESSION['root'] . '/classes/MatchaHelper.php');
+class OfficeNotes extends MatchaHelper
 {
 
 	public function getOfficeNotes(stdClass $params)

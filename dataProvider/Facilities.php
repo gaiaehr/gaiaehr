@@ -25,19 +25,19 @@ if (!isset($_SESSION))
 	session_cache_limiter('private');
 }
 $_SESSION['site']['flops'] = 0;
-include_once ($_SESSION['root'] . '/classes/dbHelper.php');
+include_once ($_SESSION['root'] . '/classes/MatchaHelper.php');
 class Facilities
 {
 	/**
-	 * @var dbHelper
+	 * @var MatchaHelper
 	 */
 	private $db;
 	/**
-	 * Creates the dbHelper instance
+	 * Creates the MatchaHelper instance
 	 */
 	function __construct()
 	{
-		$this -> db = new dbHelper();
+		$this -> db = new MatchaHelper();
 		return;
 	}
 

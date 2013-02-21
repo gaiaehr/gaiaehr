@@ -23,7 +23,7 @@ if (!isset($_SESSION)) {
     session_start();
     session_cache_limiter('private');
 }
-include_once ($_SESSION['root'] . '/classes/dbHelper.php');
+include_once ($_SESSION['root'] . '/classes/MatchaHelper.php');
 /**
  * @brief       Services Class.
  * @details     This class will handle all services
@@ -36,13 +36,13 @@ include_once ($_SESSION['root'] . '/classes/dbHelper.php');
 class Services
 {
     /**
-     * @var dbHelper
+     * @var MatchaHelper
      */
     private $db;
 
     function __construct()
     {
-        return $this->db = new dbHelper();
+        return $this->db = new MatchaHelper();
     }
 
     /**

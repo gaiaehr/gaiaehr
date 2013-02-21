@@ -23,7 +23,7 @@ if (!isset($_SESSION)) {
     session_start();
     session_cache_limiter('private');
 }
-include_once ($_SESSION['root'] . '/classes/dbHelper.php');
+include_once ($_SESSION['root'] . '/classes/MatchaHelper.php');
 include_once ($_SESSION['root'] . '/dataProvider/DocumentHandler.php');
 
 class Orders
@@ -31,7 +31,7 @@ class Orders
 
     function __construct()
     {
-        $this->db = new dbHelper();
+        $this->db = new MatchaHelper();
         $this->doc = new DocumentHandler();
         return;
     }

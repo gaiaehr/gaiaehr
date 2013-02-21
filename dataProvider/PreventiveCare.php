@@ -24,7 +24,7 @@ if (!isset($_SESSION))
 	session_start();
 	session_cache_limiter('private');
 }
-include_once ($_SESSION['root'] . '/classes/dbHelper.php');
+include_once ($_SESSION['root'] . '/classes/MatchaHelper.php');
 include_once ($_SESSION['root'] . '/dataProvider/Patient.php');
 /**
  * @brief       Services Class.
@@ -39,7 +39,7 @@ include_once ($_SESSION['root'] . '/dataProvider/Patient.php');
 class PreventiveCare
 {
 	/**
-	 * @var dbHelper
+	 * @var MatchaHelper
 	 */
 	private $db;
 
@@ -50,7 +50,7 @@ class PreventiveCare
 
 	function __construct()
 	{
-		$this -> db = new dbHelper();
+		$this -> db = new MatchaHelper();
 		$this -> patient = new Patient();
 	}
 

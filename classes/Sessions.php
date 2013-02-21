@@ -11,22 +11,22 @@ if(!isset($_SESSION)){
 	session_start();
 	session_cache_limiter('private');
 }
-include_once ($_SESSION['root'] . '/classes/dbHelper.php');
+include_once ($_SESSION['root'] . '/classes/MatchaHelper.php');
 include_once ($_SESSION['root'] . '/classes/Crypt.php');
 
 class Sessions
 {
 	/**
-	 * @var dbHelper
+	 * @var MatchaHelper
 	 */
 	private $db;
 
 	/**
-	 * Creates the dbHelper instance
+	 * Creates the MatchaHelper instance
 	 */
 	function __construct()
 	{
-		$this->db = new dbHelper();
+		$this->db = new MatchaHelper();
 		return;
 	}
 

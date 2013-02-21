@@ -53,7 +53,6 @@ $_SESSION['dir']['ext']         = 'extjs-4.1.1';
 $_SESSION['dir']['touch']       = 'sencha-touch-2.0.1';
 $_SESSION['dir']['ext_cal']     = 'extensible-1.5.1';
 $_SESSION['dir']['AES']         = 'phpAES';
-$_SESSION['dir']['adoHelper']   = 'dbHelper';
 $_SESSION['dir']['ext_classes'] = 'classes/ext';
 
 // patient

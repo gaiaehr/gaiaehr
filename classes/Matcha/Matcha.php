@@ -336,8 +336,8 @@ class Matcha
 			$table = (string)(is_array(self::$__senchaModel['table']) ? self::$__senchaModel['table']['name'] : self::$__senchaModel['table']);
 			$columns = 'INSERT INTO `'.$table.'` (`'.implode('`,`', array_keys($dataArray[0]) ).'`) VALUES ';
 			
-			$rowCount = (int)0;
-			$valuesEncapsulation = (string)'';
+			$rowCount = 0;
+			$valuesEncapsulation = '';
 			foreach($dataArray as $key => $data)
 			{
 				$values  = array_values($data);

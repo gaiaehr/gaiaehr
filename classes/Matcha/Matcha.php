@@ -165,6 +165,9 @@ class Matcha
 			$tableColumns = $recordSet->fetchAll(PDO::FETCH_ASSOC);
 			unset($tableColumns[self::__recursiveArraySearch('id', $tableColumns)]);
 
+            $columnsTableNames = array();
+            $columnsSenchaNames = array();
+
 			// get all the column names of each model			
 			foreach($tableColumns as $column) $columnsTableNames[] = $column['Field'];
 			foreach($workingModel as $column) $columnsSenchaNames[] = $column['name'];
@@ -172,23 +175,21 @@ class Matcha
 			// get all the column that are not present in the database-table
 			$differentCreateColumns = array_diff($columnsSenchaNames, $columnsTableNames);
 			$differentDropColumns = array_diff($columnsTableNames, $columnsSenchaNames);
-			
+
 			// check if the table has columns, if not create them.
-			// we start with 1 because the microORM always create the id.
-			if( count($tableColumns) <= 1 ) 
+			if( count($tableColumns) <= 1 )
 			{
 				self::__createAllColumns($workingModel);
 				return true;
 			}
 			// Verify that all the columns does not have difference 
 			// between field names
-			elseif( count($differentCreateColumns) != 0 && count($differentDropColumns) != 0)
+			elseif( count($differentCreateColumns) || count($differentDropColumns) )
 			{
 				// add columns to the table
-				foreach($differentCreateColumns as $key => $column) self::__createColumn($workingModel[self::__recursiveArraySearch($column[$key], $workingModel)]);
+				foreach($differentCreateColumns as $column) self::__createColumn($workingModel[self::__recursiveArraySearch($column, $workingModel)]);
 				// remove columns from the table
-				foreach($differentDropColumns as $key => $column) self::__dropColumn( $column[$key] );
-				
+				foreach($differentDropColumns as $column) self::__dropColumn( $column );
 			}
 			// if everything else passes, check for differences in the columns.
 			else
@@ -384,7 +385,7 @@ class Matcha
 			self::$__conn->exec('CREATE TABLE IF NOT EXISTS '.$table.' (id BIGINT(20) NOT NULL AUTO_INCREMENT PRIMARY KEY) '.self::__renderTableOptions().';');
 		    
 			// if $__senchaModel['table']['data'] is set and there is data upload the data to the table. 
-		    if(is_array(self::$__senchaModel['table']['data']))
+		    if(isset(self::$__senchaModel['table']['data']))
 			{
 			    $rec = self::$__conn->prepare('SELECT * FROM '.$table);
 			    if($rec->rowCount() == 0 && isset(self::$__senchaModel['table']['data']))
@@ -421,11 +422,11 @@ class Matcha
 	 * This method will create all the columns inside the table of the database
 	 * method used by SechaModel method
 	 */
-	static protected function __createAllColumns($paramaters = array())
+	static protected function __createAllColumns($parameters = array())
 	{
 		try
 		{
-			foreach($paramaters as $column) self::__createColumn($column);
+			foreach($parameters as $column) self::__createColumn($column);
 		}
 		catch(PDOException $e)
 		{
@@ -442,7 +443,8 @@ class Matcha
 		try
 		{
             if(!$table) $table = (string)(is_array(self::$__senchaModel['table']) ? self::$__senchaModel['table']['name'] : self::$__senchaModel['table']);
-			self::$__conn->query('alter table '.$table.' add '.$column['name'].' '.self::__rendercolumnsyntax($column) . ';');
+			if(self::__rendercolumnsyntax($column) == true) self::$__conn->query('alter table '.$table.' add '.$column['name'].' '.self::__rendercolumnsyntax($column).';');
+            return true;
 		}
 		catch(PDOException $e)
 		{
@@ -459,7 +461,7 @@ class Matcha
 		try
 		{
             if(!$table) $table = (string)(is_array(self::$__senchaModel['table']) ? self::$__senchaModel['table']['name'] : self::$__senchaModel['table']);
-			self::$__conn->query('ALTER TABLE '.$table.' MODIFY '.$column['name'].' '.self::__renderColumnSyntax($column) . ';');
+            if(self::__rendercolumnsyntax($column) == true) self::$__conn->query('ALTER TABLE '.$table.' MODIFY '.$column['name'].' '.self::__renderColumnSyntax($column).';');
 		}
 		catch(PDOException $e)
 		{
@@ -508,69 +510,79 @@ class Matcha
 	 */
 	static protected function __renderColumnSyntax($column = array())
 	{
-		// parse some properties on Sencha model.
-		// and do the defaults if properties are not set.
-		$columnType = (string)'';
-		if(isset($column['dataType'])): $columnType = strtoupper($column['dataType']);
-		elseif($column['type'] == 'string' ): $columnType = 'VARCHAR';
-		elseif($column['type'] == 'int'): 
-			$columnType = 'INT';
-			$column['len'] = (isset($column['len']) ? $column['len'] : 11);
-		elseif($column['type'] == 'bool' || $column['type'] == 'boolean'):
-			$columnType = 'TINYINT';
-			$column['len'] = (isset($column['len']) ? $column['len'] : 1);
-		elseif($column['type'] == 'date'): $columnType = 'DATETIME';
-		elseif($column['type'] == 'float'): $columnType = 'FLOAT';
-		else: return false;
-		endif;
-		
-		// render the rest of the sql statement
-		switch ($columnType)
-		{
-			case 'BIT'; case 'TINYINT'; case 'SMALLINT'; case 'MEDIUMINT'; case 'INT'; case 'INTEGER'; case 'BIGINT':
-				return $columnType.
-				( isset($column['len']) ? ($column['len'] ? '('.$column['len'].') ' : '') : '').
-				( isset($column['defaultValue']) ? (is_numeric($column['defaultValue']) && is_string($column['defaultValue']) ? "DEFAULT '".$column['defaultValue']."' " : '') : '').
-				( isset($column['comment']) ? ($column['comment'] ? "COMMENT '".$column['comment']."' " : '') : '' ).
-				( isset($column['allowNull']) ? ($column['allowNull'] ? 'NOT NULL ' : '') : '' ).
-				( isset($column['autoIncrement']) ? ($column['autoIncrement'] ? 'AUTO_INCREMENT ' : '') : '' ).
-				( isset($column['primaryKey']) ? ($column['primaryKey'] ? 'PRIMARY KEY ' : '') : '' );
-				break;
-			case 'REAL'; case 'DOUBLE'; case 'FLOAT'; case 'DECIMAL'; case 'NUMERIC':
-				return $columnType.
-				( isset($column['len']) ? ($column['len'] ? '('.$column['len'].')' : '(10,2)') : '(10,2)').
-				( isset($column['defaultValue']) ? (is_numeric($column['defaultValue']) && is_string($column['defaultValue']) ? "DEFAULT '".$column['defaultValue']."' " : '') : '').
-				( isset($column['comment']) ? ($column['comment'] ? "COMMENT '".$column['comment']."' " : '') : '' ).
-				( isset($column['allowNull']) ? ($column['allowNull'] ? 'NOT NULL ' : '') : '' ).
-				( isset($column['autoIncrement']) ? ($column['autoIncrement'] ? 'AUTO_INCREMENT ' : '') : '' ).
-				( isset($column['primaryKey']) ? ($column['primaryKey'] ? 'PRIMARY KEY ' : '') : '' );
-				break;
-			case 'DATE'; case 'TIME'; case 'TIMESTAMP'; case 'DATETIME'; case 'YEAR':
-				return $columnType.' '.
-				( isset($column['defaultValue']) ? (is_numeric($column['defaultValue']) && is_string($column['defaultValue']) ? "DEFAULT '".$column['defaultValue']."' " : '') : '').
-				( isset($column['comment']) ? ($column['comment'] ? "COMMENT '".$column['comment']."' " : '') : '' ).
-				( isset($column['allowNull']) ? ($column['allowNull'] ? 'NOT NULL ' : '') : '' );
-				break;
-			case 'CHAR'; case 'VARCHAR':
-				return $columnType.' '.
-				( isset($column['len']) ? ($column['len'] ? '('.$column['len'].') ' : '(255)') : '(255)').
-				( isset($column['defaultValue']) ? (is_numeric($column['defaultValue']) && is_string($column['defaultValue']) ? "DEFAULT '".$column['defaultValue']."' " : '') : '').
-				( isset($column['comment']) ? ($column['comment'] ? "COMMENT '".$column['comment']."' " : '') : '' ).
-				( isset($column['allowNull']) ? ($column['allowNull'] ? 'NOT NULL ' : '') : '' );
-				break;
-			case 'BINARY'; case 'VARBINARY':
-				return $columnType.' '.
-				( isset($column['len']) ? ($column['len'] ? '('.$column['len'].') ' : '') : '').
-				( isset($column['allowNull']) ? ($column['allowNull'] ? '' : 'NOT NULL ') : '' ).
-				( isset($column['comment']) ? ($column['comment'] ? "COMMENT '".$column['comment']."'" : '') : '' );
-				break;
-			case 'TINYBLOB'; case 'BLOB'; case 'MEDIUMBLOB'; case 'LONGBLOB'; case 'TINYTEXT'; case 'TEXT'; case 'MEDIUMTEXT'; case 'LONGTEXT':
-				return $columnType.' '.
-				( isset($column['allowNull']) ? ($column['allowNull'] ? 'NOT NULL ' : '') : '' ).
-				( isset($column['comment']) ? ($column['comment'] ? "COMMENT '".$column['comment']."'" : '') : '' );
-				break;
-		}
-		return true;
+        try
+        {
+            // parse some properties on Sencha model.
+            // and do the defaults if properties are not set.
+            if(isset($column['dataType'])): $columnType = (string)strtoupper($column['dataType']);
+            elseif($column['type'] == 'string' ): $columnType = (string)'VARCHAR';
+            elseif($column['type'] == 'int'):
+                $columnType = (string)'INT';
+                $column['len'] = (isset($column['len']) ? $column['len'] : 11);
+            elseif($column['type'] == 'bool' || $column['type'] == 'boolean'):
+                $columnType = (string)'TINYINT';
+                $column['len'] = (isset($column['len']) ? $column['len'] : 1);
+            elseif($column['type'] == 'date'): $columnType = (string)'DATETIME';
+            elseif($column['type'] == 'float'): $columnType = (string)'FLOAT';
+            else: return false;
+            endif;
+
+            // render the rest of the sql statement
+            switch ($columnType)
+            {
+                case 'BIT'; case 'TINYINT'; case 'SMALLINT'; case 'MEDIUMINT'; case 'INT'; case 'INTEGER'; case 'BIGINT':
+                    return $columnType.
+                    ( isset($column['len']) ? ($column['len'] ? '('.$column['len'].') ' : '') : '').
+                    ( isset($column['defaultValue']) ? (is_numeric($column['defaultValue']) && is_string($column['defaultValue']) ? "DEFAULT '".$column['defaultValue']."' " : '') : '').
+                    ( isset($column['comment']) ? ($column['comment'] ? "COMMENT '".$column['comment']."' " : '') : '' ).
+                    ( isset($column['allowNull']) ? ($column['allowNull'] ? 'NOT NULL ' : '') : '' ).
+                    ( isset($column['autoIncrement']) ? ($column['autoIncrement'] ? 'AUTO_INCREMENT ' : '') : '' ).
+                    ( isset($column['primaryKey']) ? ($column['primaryKey'] ? 'PRIMARY KEY ' : '') : '' );
+                    break;
+                case 'REAL'; case 'DOUBLE'; case 'FLOAT'; case 'DECIMAL'; case 'NUMERIC':
+                    return $columnType.
+                    ( isset($column['len']) ? ($column['len'] ? '('.$column['len'].')' : '(10,2)') : '(10,2)').
+                    ( isset($column['defaultValue']) ? (is_numeric($column['defaultValue']) && is_string($column['defaultValue']) ? "DEFAULT '".$column['defaultValue']."' " : '') : '').
+                    ( isset($column['comment']) ? ($column['comment'] ? "COMMENT '".$column['comment']."' " : '') : '' ).
+                    ( isset($column['allowNull']) ? ($column['allowNull'] ? 'NOT NULL ' : '') : '' ).
+                    ( isset($column['autoIncrement']) ? ($column['autoIncrement'] ? 'AUTO_INCREMENT ' : '') : '' ).
+                    ( isset($column['primaryKey']) ? ($column['primaryKey'] ? 'PRIMARY KEY ' : '') : '' );
+                    break;
+                case 'DATE'; case 'TIME'; case 'TIMESTAMP'; case 'DATETIME'; case 'YEAR':
+                    return $columnType.' '.
+                    ( isset($column['defaultValue']) ? (is_numeric($column['defaultValue']) && is_string($column['defaultValue']) ? "DEFAULT '".$column['defaultValue']."' " : '') : '').
+                    ( isset($column['comment']) ? ($column['comment'] ? "COMMENT '".$column['comment']."' " : '') : '' ).
+                    ( isset($column['allowNull']) ? ($column['allowNull'] ? 'NOT NULL ' : '') : '' );
+                    break;
+                case 'CHAR'; case 'VARCHAR':
+                    return $columnType.' '.
+                    ( isset($column['len']) ? ($column['len'] ? '('.$column['len'].') ' : '(255)') : '(255)').
+                    ( isset($column['defaultValue']) ? (is_numeric($column['defaultValue']) && is_string($column['defaultValue']) ? "DEFAULT '".$column['defaultValue']."' " : '') : '').
+                    ( isset($column['comment']) ? ($column['comment'] ? "COMMENT '".$column['comment']."' " : '') : '' ).
+                    ( isset($column['allowNull']) ? ($column['allowNull'] ? 'NOT NULL ' : '') : '' );
+                    break;
+                case 'BINARY'; case 'VARBINARY':
+                    return $columnType.' '.
+                    ( isset($column['len']) ? ($column['len'] ? '('.$column['len'].') ' : '') : '').
+                    ( isset($column['allowNull']) ? ($column['allowNull'] ? '' : 'NOT NULL ') : '' ).
+                    ( isset($column['comment']) ? ($column['comment'] ? "COMMENT '".$column['comment']."'" : '') : '' );
+                    break;
+                case 'TINYBLOB'; case 'BLOB'; case 'MEDIUMBLOB'; case 'LONGBLOB'; case 'TINYTEXT'; case 'TEXT'; case 'MEDIUMTEXT'; case 'LONGTEXT':
+                    return $columnType.' '.
+                    ( isset($column['allowNull']) ? ($column['allowNull'] ? 'NOT NULL ' : '') : '' ).
+                    ( isset($column['comment']) ? ($column['comment'] ? "COMMENT '".$column['comment']."'" : '') : '' );
+                    break;
+                default:
+                    throw new Exception('No data type is defined.');
+                    break;
+            }
+            return true;
+        }
+        catch(Exception $e)
+        {
+            MatchaErrorHandler::__errorProcess($e);
+            return false;
+        }
 	}
 	
 	/**

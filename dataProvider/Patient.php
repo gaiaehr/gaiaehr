@@ -57,16 +57,6 @@ class Patient
 	}
 
 	/**
-	 * @param $pid
-	 * @return mixed
-	 */
-	protected function setPatient($pid)
-	{
-		if($pid != null && ($this->patient == null || $this->patient != $pid)){
-			$this->patient = $this->getPatientDemographicDataByPid($pid);
-		}
-	}
-	/**
 	 * @return mixed
 	 */
 	protected function getCurrPid()
@@ -75,28 +65,31 @@ class Patient
 	}
 
 	/**
-	 * @param \stdClass $params
+	 * @param $pid
 	 * @internal param $pid
 	 * @return mixed
 	 */
-	public function currPatientSet(stdClass $params)
+	public function getPatientSetDataByPid($pid)
 	{
+		// stow char of previous patient
+		if(isset($_SESSION['patient']) && $_SESSION['patient']['pid'] != null){
+			$this->patientChartInByPid($_SESSION['patient']['pid']);
+		}
 		include_once ($_SESSION['root'] . '/dataProvider/PoolArea.php');
-		$this->setPatient($params->pid);
+		$this->setPatient($pid);
+
 		$poolArea                    = new PoolArea();
-		$_SESSION['patient']['pid']  = $this->patient['pid'];
-		$_SESSION['patient']['name'] = $this->getPatientFullName();
 		$p                           = $this->isPatientChartOutByPid($this->patient['pid']);
 		$area                        = $poolArea->getCurrentPatientPoolAreaByPid($this->patient['pid']);
 		if($p === false || (is_array($p) && $p['uid'] == $_SESSION['user']['id'])){
-			$this->patientChartOutByPid($params->pid, $area['area_id']);
+			$this->patientChartOutByPid($this->patient['pid'], $area['area_id']);
 			$_SESSION['patient']['readOnly'] = false;
 		} else {
 			$_SESSION['patient']['readOnly'] = true;
 		}
 		return array(
-			'patient'     => array(
-				'pid' => $params->pid,
+			'patient' => array(
+				'pid' => $this->patient['pid'],
 				'name' => $_SESSION['patient']['name'],
 				'pic' => $this->getPatientPhotoSrcId(),
 				'sex' => $this->getPatientSex(),
@@ -104,7 +97,7 @@ class Patient
 				'age' => $this->getPatientAge(),
 				'area' => ($p === false ? null : $poolArea->getAreaTitleById($p['pool_area_id'])),
 				'priority' => (empty($area) ? null : $area['priority']),
-				'ranking' => (isset($this->patient['ranking']) ? $this->patient['ranking'] : '0')
+				'rating' => (isset($this->patient['rating']) ? $this->patient['rating'] : 0)
 			),
 			'readOnly' => $_SESSION['patient']['readOnly'],
 			'overrideReadOnly' => $this->acl->hasPermission('override_readonly'),
@@ -114,16 +107,39 @@ class Patient
 	}
 
 	/**
+	 * @param $pid
 	 * @return mixed
 	 */
-	public function currPatientUnset()
+	protected function setPatient($pid)
 	{
-		$this->patientChartInByPid($_SESSION['patient']['pid']);
+		if($pid != null && ($this->patient == null || $this->patient != $pid)){
+			$this->patient = $this->getPatientDemographicDataByPid($pid);
+			$_SESSION['patient']['pid']  = $this->patient['pid'];
+			$_SESSION['patient']['name'] = $this->getPatientFullName();
+		}
+	}
+
+	/**
+	 * @param $pid
+	 * @return mixed
+	 */
+	public function unsetPatient($pid)
+	{
+		if($pid != null){
+			$this->patientChartInByPid($pid);
+		}
 		$_SESSION['patient']['pid']  = null;
 		$_SESSION['patient']['name'] = null;
 		return;
 	}
 
+	public function setPatientRating(stdClass $params){
+		$data = get_object_vars($params);
+		unset($data['pid']);
+		$this->db->setSQL($this->db->sqlBind($data, 'patient_demographics', 'U', array('pid' => $params->pid)));
+		$this->db->execLog();
+		return;
+	}
 
 	/**
 	 * @param $pid
@@ -216,7 +232,6 @@ class Patient
 		}
 		$this->db->setSQL($this->db->sqlBind($data, 'patient_demographics', 'U', array('pid' => $params->pid)));
 		$this->db->execLog();
-		$faullname = $params->fname . ' ' . $params->mname . ' ' . $params->lname;
 		$this->createPatientQrCode($params->pid, Person::fullname($params->fname, $params->mname, $params->lname));
 		return $params;
 	}

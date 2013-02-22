@@ -148,7 +148,7 @@ Ext.define('App.ux.RatingField', {
 	setValue: function (val) {
 		var me = this;
 		me.callParent(arguments);
-		me.afterSetValue(val);
+		me.afterSetValue(eval(val));
 	},
 	afterSetValue: function (val) {
 		var me = this;
@@ -248,7 +248,7 @@ Ext.define('App.ux.RatingField', {
 		if (me.canReset) {
 			me.resetEl.visibilityMode = Ext.Element.DISPLAY;
 			me.resetEl.hover(function () {
-				if (me.isReactive()) {
+				if (me.isReactive() && me.getValue() > 0) {
 					Ext.fly(this).addCls('ux-rating-reset-hover');
 				}
 			}, function () {
@@ -274,7 +274,7 @@ Ext.define('App.ux.RatingField', {
 		me.setValue(me.value)
 	},
 	reset: function (ev, t) {
-		if (this.isReactive()) {
+		if (this.isReactive() && this.getValue() > 0) {
 			this.setValue(0);
 			this.fireEvent('click', this, 0);
 		}

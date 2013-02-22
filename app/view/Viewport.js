@@ -700,7 +700,7 @@ Ext.define('App.view.Viewport', {
     },
 
 	stowPatientRecord: function(){
-        this.unsetPatient();
+        this.unsetPatient(null, true);
         this.navigateTo('panelDashboard');
     },
 
@@ -808,7 +808,7 @@ Ext.define('App.view.Viewport', {
     setPatient: function(pid, eid, callback){
         var me = this;
         me.unsetPatient(function(){
-            Patient.currPatientSet({pid: pid}, function(provider, response){
+            Patient.getPatientSetDataByPid(pid, function(provider, response){
                 var data = response.result, msg1, msg2;
                 if(data.readOnly){
                     msg1 = data.user + ' ' + i18n('is_currently_working_with') + ' "' + data.patient.name + '" ' + i18n('in') + ' "' + data.area + '" ' + i18n('area') + '.<br>' + i18n('override_read_mode_will_remove_the_patient_from_previous_user') + '.<br>' + i18n('do_you_would_like_to_override_read_mode');
@@ -835,8 +835,11 @@ Ext.define('App.view.Viewport', {
                         age: data.patient.age,
                         eid: eid,
                         priority: data.patient.priority,
-                        readOnly: readOnly
+                        readOnly: readOnly,
+	                    rating: data.patient.rating
                     };
+	                var panels = me.MainPanel.items.items;
+	                for(var i=0; i<panels.length; i++) if(panels[i].pageRankingDiv) panels[i].pageRankingDiv.setValue(me.patient.rating);
                     me.patientButtonSet(me.patient);
                     if(me.patientSummaryBtn) me.patientSummaryBtn.enable();
                     if(me.patientOpenVisitsBtn) me.patientOpenVisitsBtn.enable();
@@ -846,37 +849,39 @@ Ext.define('App.view.Viewport', {
                     if(me.patientCheckOutBtn) me.patientCheckOutBtn.enable();
                     if(typeof callback == 'function') callback(me.patient);
                 }
-            });
+            },true);
         });
     },
-    unsetPatient: function(callback){
+    unsetPatient: function(callback, sendRequest){
         var me = this;
-        Patient.currPatientUnset(function(){
-            me.currEncounterId = null;
-            me.patient = {
-                pid: null,
-                name: null,
-                pic: null,
-                sex: null,
-                dob: null,
-                age: null,
-                eid: null,
-                priority: null,
-                readOnly: false
-            };
-            me.patientButtonRemoveCls();
-            if(typeof callback == 'function'){
-                callback(true);
-            }else{
-                if(me.patientCreateEncounterBtn) me.patientCreateEncounterBtn.disable();
-                if(me.patientSummaryBtn) me.patientSummaryBtn.disable();
-                if(me.patientOpenVisitsBtn) me.patientOpenVisitsBtn.disable();
-                if(me.patientCloseCurrEncounterBtn) me.patientCloseCurrEncounterBtn.disable();
-                if(me.patientChargeBtn) me.patientChargeBtn.disable();
-                if(me.patientCheckOutBtn) me.patientCheckOutBtn.disable();
-                me.patientButtonSet();
-            }
-        });
+	    if(sendRequest) Patient.unsetPatient(me.patient.pid);
+	    me.currEncounterId = null;
+	    me.patient = {
+		    pid: null,
+		    name: null,
+		    pic: null,
+		    sex: null,
+		    dob: null,
+		    age: null,
+		    eid: null,
+		    priority: null,
+		    readOnly: false,
+		    rating: null
+	    };
+	    me.patientButtonRemoveCls();
+	    if(typeof callback == 'function'){
+		    callback(true);
+	    }else{
+		    var panels = me.MainPanel.items.items;
+		    for(var i=0; i<panels.length; i++) if(panels[i].pageRankingDiv) panels[i].pageRankingDiv.setValue(0);
+		    if(me.patientCreateEncounterBtn) me.patientCreateEncounterBtn.disable();
+		    if(me.patientSummaryBtn) me.patientSummaryBtn.disable();
+		    if(me.patientOpenVisitsBtn) me.patientOpenVisitsBtn.disable();
+		    if(me.patientCloseCurrEncounterBtn) me.patientCloseCurrEncounterBtn.disable();
+		    if(me.patientChargeBtn) me.patientChargeBtn.disable();
+		    if(me.patientCheckOutBtn) me.patientCheckOutBtn.disable();
+		    me.patientButtonSet();
+	    }
     },
     patientButtonSet: function(data){
         var me = this,

@@ -52,7 +52,9 @@ Ext.define('App.ux.RenderPanel', {
 							listeners:{
 								scope:me,
 								click:function(field,val){
-									alert(val);
+									Patient.setPatientRating({pid:app.patient.pid,rating:val}, function(){
+										app.msg('Sweet!', i18n('record_saved'))
+									});
 								}
 							}
 						}),

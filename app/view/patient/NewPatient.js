@@ -184,7 +184,7 @@ Ext.define('App.view.patient.NewPatient', {
 		this.confirmationWin(function(btn) {
 			if(btn == 'yes') {
                 //me.form.getForm().reset();
-				app.unsetPatient();
+				app.unsetPatient(null, true);
 				callback(true);
 			} else {
 				callback(false);

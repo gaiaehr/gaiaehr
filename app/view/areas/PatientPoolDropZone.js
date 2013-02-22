@@ -35,7 +35,7 @@ Ext.define('App.view.areas.PatientPoolDropZone', {
                 sendTo: this.panel.action
             };
             PoolArea.sendPatientToPoolArea(params, function(){
-                app.unsetPatient();
+                app.unsetPatient(null, true);
                 Ext.getCmp('panelPoolArea').reloadStores();
             });
         },

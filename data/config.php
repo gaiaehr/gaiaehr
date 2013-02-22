@@ -1096,11 +1096,11 @@ $API = array(
 			'patientLiveSearch' => array(
 				'len' => 1
 			),
-			'currPatientSet' => array(
+			'getPatientSetDataByPid' => array(
 				'len' => 1
 			),
-			'currPatientUnset' => array(
-				'len' => 0
+			'unsetPatient' => array(
+				'len' => 1
 			),
 			'getPatientDemographicData' => array(
 				'len' => 1
@@ -1148,6 +1148,9 @@ $API = array(
 				'len' => 1
 			),
 			'updatePatientNotes' => array(
+				'len' => 1
+			),
+			'setPatientRating' => array(
 				'len' => 1
 			)
 		)

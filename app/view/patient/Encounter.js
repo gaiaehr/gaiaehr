@@ -812,7 +812,11 @@ Ext.define('App.view.patient.Encounter', {
      */
     encounterTimer:function(){
         var me = this, timer = me.timer(me.currEncounterStartDate, new Date());
-        me.updateTitle(app.patient.name + ' #' + app.patient.pid + ' - ' + app.patient.age.str + ' - ' + Ext.Date.format(me.currEncounterStartDate, 'F j, Y, g:i:s a') + ' (' + i18n('opened_encounter') + ')', app.patient.readOnly, timer,true);
+	    if(app.patient.pid != null){
+		    me.updateTitle(app.patient.name + ' #' + app.patient.pid + ' - ' + app.patient.age.str + ' - ' + Ext.Date.format(me.currEncounterStartDate, 'F j, Y, g:i:s a') + ' (' + i18n('opened_encounter') + ')', app.patient.readOnly, timer,true);
+	    }else{
+		    me.stopTimer();
+	    }
     },
     /**
      * This function use the "start time" and "stop time"

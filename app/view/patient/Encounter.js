@@ -627,13 +627,11 @@ Ext.define('App.view.patient.Encounter', {
     openEncounter:function(eid){
         var me = this, vitals, store;
         me.resetTabs();
-        me.eid = app.patient.eid = eid;
         me.encounterStore.getProxy().extraParams.eid = me.eid;
         me.encounterStore.load({
             scope:me,
             callback:function(record){
                 var data = record[0].data;
-                me.pid = data.pid;
                 me.currEncounterStartDate = data.service_date;
                 if(!data.close_date){
                     me.startTimer();
@@ -669,25 +667,21 @@ Ext.define('App.view.patient.Encounter', {
                 }
                 if(me.MiscBillingOptionsPanel){
                     store = record[0].hcfaoptions();
-                    //store.on('write',me.updateProgressNote, me);
                     me.MiscBillingOptionsPanel.getForm().loadRecord(store.getAt(0));
-//                    say('MiscBillingOptionsPanel');
-//                    say(store);
-//                    say(me.MiscBillingOptionsPanel.getForm());
-//                    say(store.getAt(0));
                 }
                 //me.speechDicPanel.getForm().loadRecord(record[0].speechdictation().getAt(0));
-                me.encounterEventHistoryStore.load({params:{eid:eid}});
-                if(me.CurrentProceduralTerminology){
-                    me.CurrentProceduralTerminology.encounterCptStoreLoad(me.pid, eid, function(){
-                        me.CurrentProceduralTerminology.setDefaultQRCptCodes();
-                    });
-                }
+
                 me.priorityCombo.setValue(data.priority);
-                if(app.PreventiveCareWindow) app.PreventiveCareWindow.loadPatientPreventiveCare();
-                if(me.progressHistory) me.getProgressNotesHistory();
             }
         });
+	    me.encounterEventHistoryStore.load({params:{eid:me.eid}});
+	    if(me.CurrentProceduralTerminology){
+		    me.CurrentProceduralTerminology.encounterCptStoreLoad(me.pid, me.eid, function(){
+			    me.CurrentProceduralTerminology.setDefaultQRCptCodes();
+		    });
+	    }
+	    if(me.progressHistory) me.getProgressNotesHistory();
+	    if(app.PreventiveCareWindow) app.PreventiveCareWindow.loadPatientPreventiveCare();
     },
     /**
      * Function to close the encounter..
@@ -1123,6 +1117,8 @@ Ext.define('App.view.patient.Encounter', {
     onActive:function(callback){
         var me = this, patient = app.patient;
         if(patient.pid && patient.eid){
+	        me.pid = patient.pid;
+	        me.eid = patient.eid;
             me.updateTitle(patient.name + ' (' + i18n('visits') + ')', patient.readOnly, null, true);
             me.setReadOnly(patient.readOnly);
             callback(true);

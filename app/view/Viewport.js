@@ -710,7 +710,7 @@ Ext.define('App.view.Viewport', {
             app.patient.eid = eid;
             me.navigateTo('panelEncounter', function(success){
                 if(success){
-                    me.currCardCmp.openEncounter(eid);
+                    me.currCardCmp.openEncounter();
                 }
             });
         }else{

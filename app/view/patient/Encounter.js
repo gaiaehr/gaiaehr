@@ -17,7 +17,11 @@ Ext.define('App.view.patient.Encounter', {
     id:'panelEncounter',
     pageTitle:i18n('encounter'),
     pageLayout:'border',
-    requires:['App.store.patient.Encounter', 'App.store.patient.Vitals'],
+    requires:[
+        'App.store.patient.Encounter',
+        'App.store.patient.Vitals'
+    ],
+    showRating:true,
     pid:null,
     eid:null,
     currEncounterStartDate:null,

@@ -30,6 +30,7 @@ Ext.define('App.view.patient.Summary', {
 	   'Ext.XTemplate',
 	   'Ext.ux.IFrame'
 	],
+    showRating:true,
     pid: null,
     demographicsData: null,
     initComponent: function(){

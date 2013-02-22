@@ -11,6 +11,7 @@ Ext.define('App.view.patient.VisitCheckout', {
 	extend:'App.ux.RenderPanel',
 	id:'panelVisitCheckout',
 	pageTitle:'Visit Checkout',
+    showRating:true,
 	initComponent:function(){
 		var me = this;
 

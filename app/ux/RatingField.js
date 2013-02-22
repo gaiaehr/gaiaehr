@@ -210,7 +210,7 @@ Ext.define('App.ux.RatingField', {
 	afterRender: function (ct, position) {
 		var me = this,
 			rightPos = me.resetPosition == 'right',
-			cancel = '<div class="reset-el ' + me.ratingClassReset + '" style="margin-' + (rightPos ? 'left' : 'right') + ':5px;"></div>';
+			cancel = '<div class="reset-el ' + me.ratingClassReset + '" title="reset" style="margin-' + (rightPos ? 'left' : 'right') + ':5px;"></div>';
 
 		me.callParent();
 		var tpl = new Ext.XTemplate(
@@ -247,15 +247,18 @@ Ext.define('App.ux.RatingField', {
 		});
 		if (me.canReset) {
 			me.resetEl.visibilityMode = Ext.Element.DISPLAY;
-			me.resetEl.hover(function () {
-				if (me.isReactive() && me.getValue() > 0) {
-					Ext.fly(this).addCls('ux-rating-reset-hover');
-				}
-			}, function () {
-				if (me.isReactive()) {
-					Ext.fly(this).removeCls('ux-rating-reset-hover');
-				}
-			});
+			me.resetEl.hover(
+                function () {
+                    if (me.isReactive() && me.getValue() > 0) {
+                        Ext.fly(this).addCls('ux-rating-reset-hover');
+                    }
+			    },
+                function () {
+                    if (me.isReactive()) {
+                        Ext.fly(this).removeCls('ux-rating-reset-hover');
+                    }
+			    }
+            );
 
 			me.resetEl.on('click', me.reset, me);
 		}

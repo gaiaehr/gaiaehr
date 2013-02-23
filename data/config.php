@@ -1090,6 +1090,12 @@ $API = array(
 	 */
 	'Patient' => array(
 		'methods' => array(
+			'getPatients' => array(
+				'len' => 1
+			),
+			'savePatient' => array(
+				'len' => 1
+			),
 			'createNewPatient' => array(
 				'len' => 1
 			),

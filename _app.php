@@ -145,10 +145,12 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
                 'App.model.patient.Immunization',
                 'App.model.patient.ImmunizationCheck',
                 'App.model.patient.LaboratoryTypes',
+                'App.model.patient.Insurance',
                 'App.model.patient.MeaningfulUseAlert',
                 'App.model.patient.MedicalIssues',
                 'App.model.patient.Medications',
                 'App.model.patient.Notes',
+                'App.model.patient.Patient',
                 'App.model.patient.PatientArrivalLog',
                 'App.model.patient.PatientCalendarEvents',
                 'App.model.patient.PatientDocuments',
@@ -225,6 +227,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
                 'App.store.patient.MedicalIssues',
                 'App.store.patient.Medications',
                 'App.store.patient.Notes',
+                'App.store.patient.Patient',
                 'App.store.patient.PatientArrivalLog',
                 'App.store.patient.PatientCalendarEvents',
                 'App.store.patient.PatientDocuments',
@@ -418,6 +421,8 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 				/*
 				 * Load the patient related panels
 				 */
+				'App.view.patient.Patient',
+
 				'App.view.patient.encounter.CurrentProceduralTerminology',
 				'App.view.patient.encounter.HealthCareFinancingAdministrationOptions',
 				'App.view.patient.encounter.ICDs',

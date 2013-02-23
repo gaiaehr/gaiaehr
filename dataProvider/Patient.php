@@ -70,10 +70,10 @@ class Patient
 	 * MATCHA CUPs
 	 */
 	private function setPatientModel(){
-		if($this->p == null) $this->p = Matcha::setSenchaModel('App.model.patient.Patient');
+		if($this->p == null) $this->p = MatchaModel::setSenchaModel('App.model.patient.Patient');
 	}
 	private function setInsuranceModels(){
-		if($this->i == null) $this->i = Matcha::setSenchaModel('App.model.patient.Insurance');
+		if($this->i == null) $this->i = MatchaModel::setSenchaModel('App.model.patient.Insurance');
 	}
 
 	/**

@@ -17,7 +17,7 @@ Ext.define('App.view.patient.Visits', {
 		'App.ux.GridPanel',
 		'Ext.ux.PreviewPlugin'
 	],
-
+    showRating:true,
 	initComponent: function() {
 		var me = this;
 

@@ -13,6 +13,7 @@ Ext.define('App.view.patient.ItemsToReview', {
     bodyPadding: 5,
     bodyBorder: true,
     bodyStyle: 'background-color:white',
+    showRating:true,
     eid: null,
     initComponent: function(){
         var me = this;

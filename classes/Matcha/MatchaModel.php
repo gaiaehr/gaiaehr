@@ -116,27 +116,33 @@ class MatchaCreateModel extends Matcha
 
                             // check if there changes on the allowNull property,
                             // but first check if it's used on the sencha model
-                            if(isset($SenchaModel['allowNull'])) if( $column['Null'] == ($SenchaModel['allowNull'] ? 'YES' : 'NO') ) $change = 'true'; // NULL
+                            if(isset($SenchaModel['allowNull']))
+                                if( $column['Null'] == ($SenchaModel['allowNull'] ? 'YES' : 'NO') ) $change = 'true'; // NULL
 
                             // check the length of the field,
                             // but first check if it's used on the sencha model.
-                            if(isset($SenchaModel['len'])) if($SenchaModel['len'] != filter_var($column['Type'], FILTER_SANITIZE_NUMBER_INT)) $change = 'true'; // Length
+                            if(isset($SenchaModel['len']))
+                                if($SenchaModel['len'] != filter_var($column['Type'], FILTER_SANITIZE_NUMBER_INT)) $change = 'true'; // Length
 
                             // check if the default value is changed on the model,
                             // but first check if it's used on the sencha model
-                            if(isset($SenchaModel['defaultValue'])) if($column['Default'] != $SenchaModel['defaultValue']) $change = 'true'; // Default value
+                            if(isset($SenchaModel['defaultValue']))
+                                if($column['Default'] != $SenchaModel['defaultValue']) $change = 'true'; // Default value
 
                             // check if the primary key is changed on the model,
                             // but first check if the primary key is used on the sencha model.
-                            if(isset($SenchaModel['primaryKey'])) if($column['Key'] != ($SenchaModel['primaryKey'] ? 'PRI' : '') ) $change = 'true'; // Primary key
+                            if(isset($SenchaModel['primaryKey']))
+                                if($column['Key'] != ($SenchaModel['primaryKey'] ? 'PRI' : '') ) $change = 'true'; // Primary key
 
                             // check if the auto increment is changed on the model,
                             // but first check if the auto increment is used on the sencha model.
-                            if(isset($SenchaModel['autoIncrement'])) if($column['Extra'] != ($SenchaModel['autoIncrement'] ? 'auto_increment' : '') ) $change = 'true'; // auto increment
+                            if(isset($SenchaModel['autoIncrement']))
+                                if($column['Extra'] != ($SenchaModel['autoIncrement'] ? 'auto_increment' : '') ) $change = 'true'; // auto increment
 
                             // check if the comment is changed on the model,
                             // but first check if the comment is used on the sencha model.
-                            if(isset($SenchaModel['comment'])) if($column['Comment'] != $SenchaModel['comment']) $change = 'true';
+                            if(isset($SenchaModel['comment']))
+                                if($column['Comment'] != $SenchaModel['comment']) $change = 'true';
 
                             // Modify the column on the database
                             if($change == 'true') self::__modifyColumn($SenchaModel);
@@ -215,7 +221,7 @@ class MatchaCreateModel extends Matcha
     /**
      * function __setSenchaModelData($fileData):
      * Method to grab data and insert it into the table.
-     * it uses pcntl_fork to do batches of 500 records at the same
+     * it uses MatchaThread to do batches of 500 records at the same
      * time.
      * TODO: Needs more work.
      */
@@ -290,7 +296,7 @@ class MatchaCreateModel extends Matcha
 
     /**
      * function __createModelFile($fileSenchaModel, $databaseTable = NULL):
-     * Method to create the Sencha Model .js file.
+     * Method to create the Sencha Model .js file into the filesystem
      * @param $fileSenchaModel
      * @param null $databaseTable
      * @return bool
@@ -364,6 +370,7 @@ class MatchaCreateModel extends Matcha
     private function __renderSenchaFieldSyntax($tableColumn)
     {
         $SenchaField = '';
+        preg_match('/.*\(/', $tableColumn['Type'], $matches, PREG_OFFSET_CAPTURE, 3);
         switch($tableColumn['Type'])
         {
             case 'BIT'; case 'TINYINT'; case 'SMALLINT'; case 'MEDIUMINT'; case 'INT'; case 'INTEGER'; case 'BIGINT':

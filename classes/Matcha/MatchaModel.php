@@ -229,7 +229,7 @@ class MatchaModel extends Matcha
         try
         {
             $dataArray = json_decode(self::__getFileContent($fileData, 'json'), true);
-            if(!count($dataArray)) throw new Exception("Something whent wrong converting it to an array, a bad lolo.");
+            if(!count($dataArray)) throw new Exception("Something went wrong converting it to an array, a bad lolo.");
             $table = (string)(is_array(self::$__senchaModel['table']) ? self::$__senchaModel['table']['name'] : self::$__senchaModel['table']);
             $columns = 'INSERT INTO `'.$table.'` (`'.implode('`,`', array_keys($dataArray[0]) ).'`) VALUES ';
 
@@ -272,7 +272,7 @@ class MatchaModel extends Matcha
     }
 
     /**
-     * function connect($databaseObject, $rootPath, $senchaModel)
+     * function setSenchaModel($senchaModel = array()):
      * The first thing to do, to begin using Matcha
      * This will load the Sencha Model to Matcha and do it's magic.
      */
@@ -337,6 +337,21 @@ class MatchaModel extends Matcha
             MatchaErrorHandler::__errorProcess($e);
             return false;
         }
+    }
+
+    private function __RemoveSenchaColumn($Model, $field, $forceRemove = false)
+    {
+
+    }
+
+    private function __createSenchaColumn($Model, $field)
+    {
+
+    }
+
+    private function __ranameSenchaColumn($model, $field)
+    {
+
     }
 
     /**

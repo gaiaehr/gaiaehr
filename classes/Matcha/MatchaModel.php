@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-class MatchaCreateModel extends Matcha
+class MatchaModel extends Matcha
 {
 
     /**
@@ -367,11 +367,10 @@ class MatchaCreateModel extends Matcha
      * function __renderSenchaFieldSyntax($tableColumn):
      * Method to render the syntax for the Sencha Model fields
      */
-    private function __renderSenchaFieldSyntax($tableColumn)
+    public function __renderSenchaFieldSyntax($tableColumn)
     {
         $SenchaField = '';
-        preg_match('/.*\(/', $tableColumn['Type'], $matches, PREG_OFFSET_CAPTURE, 3);
-        switch($tableColumn['Type'])
+        switch( strtoupper(strstr($tableColumn['Type'], '(', true)) )
         {
             case 'BIT'; case 'TINYINT'; case 'SMALLINT'; case 'MEDIUMINT'; case 'INT'; case 'INTEGER'; case 'BIGINT':
                 $SenchaType = 'int';

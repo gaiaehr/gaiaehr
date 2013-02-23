@@ -317,26 +317,6 @@ class Patient
 
 
 
-
-	/**
-	 * @param stdClass $params
-	 * @return array
-	 */
-	public function updatePatientDemographicData(stdClass $params)
-	{
-		$data = get_object_vars($params);
-		unset($data['pid'],$data['pic'],$data['age']);
-		foreach($data as $key => $val){
-			if($val == null) unset($data[$key]);
-			if($val === false) $data[$key] = 0;
-			if($val === true) $data[$key] = 1;
-		}
-		$this->db->setSQL($this->db->sqlBind($data, 'patient', 'U', array('pid' => $params->pid)));
-		$this->db->execLog();
-		$this->createPatientQrCode($params->pid, Person::fullname($params->fname, $params->mname, $params->lname));
-		return $params;
-	}
-
 	public function isCurrPatientOnReadMode()
 	{
 		return $_SESSION['patient']['readOnly'];

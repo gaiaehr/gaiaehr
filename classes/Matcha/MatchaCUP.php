@@ -395,7 +395,6 @@ class MatchaCUP
 		$columns = '(`' . implode('`,`', $columns) . '`)';
 		$values = '(\'' . implode('\',\'', $values) . '\')';
 		$sql = "INSERT INTO `" . $this->model->table->name . "` $columns VALUES $values";
-		print $sql;
 		return str_replace("'NULL'",'NULL',$sql);
 	}
 
@@ -410,7 +409,6 @@ class MatchaCUP
 		}
 		$sets = implode(',', $sets);
 		$sql = "UPDATE `" . $this->model->table->name . "` SET $sets WHERE $this->primaryKey = '$id'";
-
 		return str_replace("'NULL'",'NULL',$sql);
 	}
 

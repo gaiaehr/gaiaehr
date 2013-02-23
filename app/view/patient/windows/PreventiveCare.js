@@ -202,6 +202,7 @@ Ext.define('App.view.patient.windows.PreventiveCare', {
                 pid: app.patient.pid
             },
             callback:function(records, operation, success){
+	            say(records);
                 if(records.length > 0){
                     me.show();
                     return true;

@@ -34,7 +34,7 @@ $tables = array(
 	'emergencies',
 
 	// patient tables
-	'patients',
+	'patient',
 	'patient_allergies',
 	'patient_disclosures',
 	'patient_immunizations',

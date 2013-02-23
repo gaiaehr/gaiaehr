@@ -43,6 +43,17 @@ class Patient
 	 */
 	private $patient = null;
 
+
+
+	/**
+	 * @var MatchaCUP
+	 */
+	private $p = null;
+	/**
+	 * @var MatchaCUP
+	 */
+	private $i = null;
+
 	/**
 	 * @var PoolArea
 	 */
@@ -54,6 +65,48 @@ class Patient
 		$this->acl  = new ACL();
 		$this->setPatient($pid);
 		return;
+	}
+	/**
+	 * MATCHA CUPs
+	 */
+	private function setPatientModel(){
+		if($this->p == null) $this->p = MatchaModel::setSenchaModel('App.model.patient.Patient');
+	}
+	private function setInsuranceModels(){
+		if($this->i == null) $this->i = MatchaModel::setSenchaModel('App.model.patient.Insurance');
+	}
+	/**
+	 * @param stdClass $params
+	 * @return mixed
+	 */
+	public function getPatients(stdClass $params){
+		$this->setPatientModel();
+		return $this->p->load($params)->all();
+	}
+	/**
+	 * @param stdClass $params
+	 * @return mixed
+	 */
+	public function savePatient(stdClass $params){
+		$this->setPatientModel();
+		return $this->p->save($params);
+	}
+
+	/**
+	 * @param stdClass $params
+	 * @return mixed
+	 */
+	public function getInsurances(stdClass $params){
+		$this->setInsuranceModels();
+		return $this->i->load($params)->all();
+	}
+	/**
+	 * @param stdClass $params
+	 * @return mixed
+	 */
+	public function saveInsurance(stdClass $params){
+		$this->setInsuranceModels();
+		return $this->i->save($params);
 	}
 
 	/**

@@ -27,7 +27,7 @@ class MatchaModel extends Matcha
     /**
      *
      */
-    private static $tableId;
+    public static $tableId;
 
     /**
      * function MatchaRouter():
@@ -67,13 +67,13 @@ class MatchaModel extends Matcha
             $workingModel = (array)self::$__senchaModel['fields'];
 
             // if id property is not set in sencha model look for propertyId.
-            if($workingModel[MatchaUtils::__recursiveArraySearch(self::$tableId, $workingModel)] === false) unset($workingModel[self::__recursiveArraySearch(self::$tableId, $workingModel)]);
+            if($workingModel[MatchaUtils::__recursiveArraySearch(self::$tableId, $workingModel)] === false) unset($workingModel[MatchaUtils::__recursiveArraySearch(self::$tableId, $workingModel)]);
             foreach($workingModel as $key => $SenchaModel) if(isset($SenchaModel['store']) && $SenchaModel['store'] === false) unset($workingModel[$key]);
 
             // get the table column information and remove the id column
             $recordSet = self::$__conn->query("SHOW FULL COLUMNS IN ".$table.";");
             $tableColumns = $recordSet->fetchAll(PDO::FETCH_ASSOC);
-            unset($tableColumns[self::__recursiveArraySearch(self::$tableId, $tableColumns)]);
+            unset($tableColumns[MatchaUtils::__recursiveArraySearch(self::$tableId, $tableColumns)]);
 
             $columnsTableNames = array();
             $columnsSenchaNames = array();
@@ -97,7 +97,7 @@ class MatchaModel extends Matcha
             elseif( count($differentCreateColumns) || count($differentDropColumns) )
             {
                 // add columns to the table
-                foreach($differentCreateColumns as $column) self::__createColumn($workingModel[self::__recursiveArraySearch($column, $workingModel)]);
+                foreach($differentCreateColumns as $column) self::__createColumn($workingModel[MatchaUtils::__recursiveArraySearch($column, $workingModel)]);
                 // remove columns from the table
                 foreach($differentDropColumns as $column) self::__dropColumn( $column );
             }
@@ -412,5 +412,44 @@ class MatchaModel extends Matcha
         $SenchaField .= MatchaUtils::t(1)."{name: '".$tableColumn['Field']."', type: '".$SenchaType."'},";
         return $SenchaField;
     }
+
+	/**
+	 *
+	 * @param $fieldName
+	 * @param $model
+	 * @return mixed
+	 */
+	static public function __getFieldType($fieldName, $model){
+		$fields = (is_object($model)? MatchaUtils::__objectToArray($model->fields): $model['fields']);
+		$index = MatchaUtils::__recursiveArraySearch($fieldName, $fields);
+		return $fields[$index]['type'];
+	}
+
+	/**
+	 *
+	 * @param $fields array || object of fields names example array('id','username','passwors')
+	 * @param $model array || object of the model
+	 * @return array
+	 */
+	static public function __getFieldsProperties($fields, $model){
+		$arr = array();
+		$fields = (is_object($fields)? MatchaUtils::__objectToArray($fields): $fields);
+		$modelFields = (is_object($model)? MatchaUtils::__objectToArray($model->fields): $model['fields']);
+		foreach($fields as $field){
+			$index = MatchaUtils::__recursiveArraySearch($field, $modelFields);
+			if($index !== false) $arr[] = $modelFields[$index];
+		}
+		return $arr;
+	}
+
+	static public function __getTablePrimaryKey($table){
+		$rec = self::$__conn->query("SHOW INDEX FROM $table");
+		return $rec->fetch(PDO::FETCH_ASSOC);
+	}
+
+	static public function __getTablePrimaryKeyColumnName($table){
+		$rec = self::__getTablePrimaryKey($table);
+		return $rec['Column_name'];
+	}
 
 }

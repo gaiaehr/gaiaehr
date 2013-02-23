@@ -27,6 +27,10 @@ class MatchaCUP
 	 */
 	private $table;
 	/**
+	 * @var
+	 */
+	private $primaryKey;
+	/**
 	 * @var string
 	 */
 	private $nolimitsql = '';
@@ -274,75 +278,31 @@ class MatchaCUP
 	 */
 	public function save($record)
 	{
-		try
-		{
-			if (is_object($record))
-			{
+		try{
+			if (is_object($record)){
 				$data = get_object_vars($record);
 				// create record
-				if (!isset($data['id']) || (isset($data['id']) && $data['id'] == 0))
-				{
-					$columns = array_keys($data);
-					$columns = '(`' . implode('`,`', $columns) . '`)';
-					$values = array_values($data);
-					$values = '(\'' . implode('\',\'', $values) . '\')';
-					$this->rowsAffected = Matcha::$__conn->exec("INSERT INTO `" . $this->model->table->name . "` $columns VALUES $values");
-					$record->id = $this->lastInsertId = Matcha::$__conn->lastInsertId();
+				if (!isset($data[$this->primaryKey]) || (isset($data[$this->primaryKey]) && $data[$this->primaryKey] == 0)){
+					$this->rowsAffected = Matcha::$__conn->exec($this->buildInsetSqlStatement($data));
+					$record->pid = $this->lastInsertId = Matcha::$__conn->lastInsertId();
+				}else{
+					// update a record
+					$this->rowsAffected = Matcha::$__conn->exec($this->buildUpdateSqlStatement($data));
 				}
-				// update a record
-				else
-				{
-					$values = array();
-					$id = $data['id'];
-					unset($data['id']);
-					foreach ($data as $key => $val)
-						$values[] = "`$key`='$val'";
-					$values = implode(',', $values);
-					$this->rowsAffected = Matcha::$__conn->exec("UPDATE `" . $this->model->table->name . "` SET $values WHERE id='$id'");
-				}
-			}
-			else
-			{
-				foreach ($record as $index => $rec)
-				{
+			}else{
+				foreach ($record as $index => $rec){
 					$data = get_object_vars($rec);
 					// create record
-					if (!isset($data['id']) || (isset($data['id']) && $data['id'] == 0))
-					{
-						$columns = array_keys($data);
-						$columns = '(`' . implode('`,`', $columns) . '`)';
-						$values = array_values($data);
-						$values = '(\'' . implode('\',\'', $values) . '\')';
-						$this->rowsAffected = Matcha::$__conn->exec("INSERT INTO `" . $this->model->table->name . "` $columns VALUES $values");
+					if (!isset($data[$this->primaryKey]) || (isset($data[$this->primaryKey]) && $data[$this->primaryKey] == 0)){
+						$this->rowsAffected = Matcha::$__conn->exec($this->buildInsetSqlStatement($data));
 						$record[$index]->id = $this->lastInsertId = Matcha::$__conn->lastInsertId();
-					}
-					// update a record
-					else
-					{
-						$values = array();
-						$id = $data['id'];
-						unset($data['id']);
-						foreach ($data as $key => $val) $values[] = "`$key`='$val'";
-						$values = implode(',', $values);
-						$this->rowsAffected = Matcha::$__conn->exec("UPDATE `" . $this->model->table->name . "` SET $values WHERE id='$id'");
+					}else{
+						// update a record
+						$this->rowsAffected = Matcha::$__conn->exec($this->buildUpdateSqlStatement($data));
 					}
 				}
 			}
-			try
-			{
-				if ($this->rowsAffected > 0)
-				{
-					return $record;
-				}
-				else
-				{
-					throw new Exception('No Record stored or modified');
-				}
-			}
-			catch(ErrorException $e)
-			{
-				return MatchaErrorHandler::__errorProcess($e);
-			}
+			return $record;
 		}
 		catch(PDOException $e)
 		{
@@ -362,13 +322,15 @@ class MatchaCUP
 		{
 			if (is_object($record))
 			{
-				$this->rowsAffected = Matcha::$__conn->exec("DELETE FROM " . $this->model->table->name . " WHERE id='$record->id'");
+				$record = get_object_vars($record);
+				$this->rowsAffected = Matcha::$__conn->exec("DELETE FROM " . $this->model->table->name . " WHERE $this->primarykey = '".$record[$this->primarykey]."'");
 			}
 			else
 			{
 				foreach ($record as $rec)
 				{
-					$this->rowsAffected = Matcha::$__conn->exec("DELETE FROM " . $this->model->table->name . " WHERE id='$rec->id'");
+					$rec = get_object_vars($rec);
+					$this->rowsAffected = Matcha::$__conn->exec("DELETE FROM " . $this->model->table->name . " WHERE $this->primarykey ='".$rec[$this->primarykey]."'");
 				}
 			}
 			return $this->rowsAffected;
@@ -386,31 +348,9 @@ class MatchaCUP
 	 */
 	public function setModel($model)
 	{
-		$this->model = $this->ArrayToObject($model);
-		$this->table = $this->model->table->name;
-	}
-
-	/**
-	 * convert Array to Object recursively
-	 * @param array $array
-	 * @param stdClass $parent
-	 * @return stdClass
-	 */
-	private function ArrayToObject(array $array, stdClass $parent = NULL)
-	{
-		if ($parent === null) $parent = new stdClass;
-		foreach ($array as $key => $val)
-		{
-			if (is_array($val))
-			{
-				$parent->$key = $this->ArrayToObject($val, new stdClass);
-			}
-			else
-			{
-				$parent->$key = $val;
-			}
-		}
-		return $parent;
+		$this->model = MatchaUtils::__arrayToObject($model);
+		$this->table = (is_string($this->model->table) ? $this->model->table : $this->model->table->name);
+		$this->primaryKey = MatchaModel::__getTablePrimaryKeyColumnName($this->table);
 	}
 
 	/**
@@ -446,5 +386,51 @@ class MatchaCUP
 		}
 		return $whereStr;
 	}
+
+	private function buildInsetSqlStatement($data){
+		$data = $this->parseValues($data);
+
+		$columns = array_keys($data);
+		$values = array_values($data);
+		$columns = '(`' . implode('`,`', $columns) . '`)';
+		$values = '(\'' . implode('\',\'', $values) . '\')';
+
+		return "INSERT INTO `" . $this->model->table->name . "` $columns VALUES $values";
+	}
+
+	private function buildUpdateSqlStatement($data){
+		$id = $data[$this->primaryKey];
+		unset($data[$this->primaryKey]);
+
+		$sets = array();
+		$data = $this->parseValues($data);
+		foreach ($data as $key => $val){
+			$sets[] = "`$key`='$val'";
+		}
+		$sets = implode(',', $sets);
+		return "UPDATE `" . $this->model->table->name . "` SET $sets WHERE $this->primaryKey = '$id'";
+	}
+
+	private function parseValues($data){
+		$columns = array_keys($data);
+		$values = array_values($data);
+		$properties = (array) MatchaModel::__getFieldsProperties($columns, $this->model);
+
+		foreach($values as $index => $foo){
+			$type = $properties[$index]['type'];
+			if($type == 'bool'){
+				if($foo === true){
+					$values[$index] = 1;
+				}elseif($foo === false){
+					$values[$index] = 0;
+				}
+			}elseif($type == 'date'){
+				$values[$index]  = ($foo == '' ? '0000-00-00' : $values[$index]);
+			}
+		}
+
+		return array_combine($columns,$values);
+	}
+
 
 }

@@ -101,14 +101,14 @@ Ext.define('App.view.patient.Patient', {
 	        record = form.getRecord(),
 	        values = form.getValues();
 
+	    say(values);
+
         record.set(values);
         record.save({
             scope: me,
             callback: function(record){
-
-	            say(record);
-
-	            app.setPatient(me.pid, null);
+	            say(record.data);
+	            app.setPatient(record.data.pid, null);
                 if(!me.newPatient){
 	                me.getPatientImgs();
 	                me.verifyPatientRequiredInfo();
@@ -499,7 +499,13 @@ Ext.define('App.view.patient.Patient', {
 	},
 
 	loadNew:function(){
-		var user = Ext.create('App.model.patient.Patient');
+		var user = Ext.create('App.model.patient.Patient',{
+			'create_uid':app.user.id,
+			'write_uid':app.user.id,
+			'create_date':new Date(),
+			'update_date':new Date(),
+			'DOB':'000-00-00 00:00:00'
+		});
 		this.demoForm.getForm().loadRecord(user);
 	},
 

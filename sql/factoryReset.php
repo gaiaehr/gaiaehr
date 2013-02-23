@@ -17,23 +17,24 @@ include_once($_SESSION['root'].'/classes/MatchaHelper.php');
 $db = new MatchaHelper();
 $tables = array(
 	'calendar_events',
+
+	'encounters',
 	'encounter_services',
     'encounter_1500_options',
     'encounter_dx',
 	'encounter_history',
-	'patient_demographics',
 	'encounter_dictation',
-	'encounters',
 	'encounter_review_of_systems',
 	'encounter_review_of_systems_check',
 	'encounter_soap',
 	'encounter_vitals',
+
 	'messages',
 	'users_sessions',
 	'emergencies',
 
-
 	// patient tables
+	'patients',
 	'patient_allergies',
 	'patient_disclosures',
 	'patient_immunizations',

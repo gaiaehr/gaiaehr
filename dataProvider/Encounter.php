@@ -193,7 +193,7 @@ class Encounter
 								  p.DOB,
 								  p.sex
 							 FROM encounters AS e
-					    LEFT JOIN patient_demographics AS p ON e.pid = p.pid
+					    LEFT JOIN patient AS p ON e.pid = p.pid
 							WHERE e.eid = '$params->eid'");
 		$e = $this->db->fetchRecord(PDO::FETCH_ASSOC);
 		$e['name'] = Person::fullname($e['fname'],$e['mname'],$e['lname']);
@@ -890,9 +890,9 @@ class Encounter
 		$sql = " SELECT encounters.pid,
 	                    encounters.eid,
 	                    encounters.service_date,
-	                    patient_demographics.*
+	                    patient.*
 	               FROM encounters
-	          LEFT JOIN patient_demographics ON encounters.pid = patient_demographics.pid
+	          LEFT JOIN patient ON encounters.pid = patient.pid
 	              WHERE encounters.service_date BETWEEN '$from 00:00:00' AND '$to 23:59:59'";
 		if(isset($pid) && $pid != ''){
 			$sql .= " AND encounters.pid = '$pid'";

@@ -116,7 +116,7 @@ class Emergency
 			 * update patient first name to EMERGENCY- encounter id
 			 */
 			$data['fname'] = 'EMER-' . $this->emergencyId;
-			$this->db->setSQL($this->db->sqlBind($data, 'patient_demographics', 'U', array('pid' => $this->pid)));
+			$this->db->setSQL($this->db->sqlBind($data, 'patient', 'U', array('pid' => $this->pid)));
 			$this->db->execOnly();
 			return array(
 				'success' => true, 'emergency' => array(

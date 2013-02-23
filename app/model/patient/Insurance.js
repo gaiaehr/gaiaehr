@@ -10,7 +10,7 @@ Ext.define('App.model.patient.Insurance', {
 		{name: 'createUid',                     type: 'int',comment:'create user ID'},
 		{name: 'writeUid',                      type: 'int',comment:'update user ID'},
 		{name: 'createDate',                    type: 'date',dateFormat:'Y-m-d H:i:s', comment:'create date'},
-		{name: 'writeDate',                     type: 'date',dateFormat:'Y-m-d H:i:s', comment:'last update date'},
+		{name: 'updateDate',                    type: 'date',dateFormat:'Y-m-d H:i:s', comment:'last update date'},
         {name: 'provider',                      type: 'string',comment:'provider'},
         {name: 'planName',                      type: 'string',comment:'plan name'},
         {name: 'effectiveDate',                 type: 'string',comment:'affective date'},

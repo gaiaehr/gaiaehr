@@ -85,7 +85,7 @@ class Clinical extends Reports
 
 
 		$sql = " SELECT *
-	               FROM patient_demographics
+	               FROM patient
 	              WHERE date_created BETWEEN '$from 00:00:00' AND '$to 23:59:59'";
 		if (isset($sex) && ($sex != '' && $sex != 'Both'))
 			$sql .= " AND sex = '$sex'";

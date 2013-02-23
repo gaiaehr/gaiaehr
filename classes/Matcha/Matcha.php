@@ -128,7 +128,7 @@ class Matcha
             {
 	    	    $table = (string)(is_array(MatchaModel::$__senchaModel['table']) ? MatchaModel::$__senchaModel['table']['name'] : MatchaModel::$__senchaModel['table']);
             }
-			self::$__conn->exec('CREATE TABLE IF NOT EXISTS '.$table.' (id BIGINT(20) NOT NULL AUTO_INCREMENT PRIMARY KEY) '.self::__renderTableOptions().';');
+			self::$__conn->exec('CREATE TABLE IF NOT EXISTS '.$table.' ('.MatchaModel::$tableId.' BIGINT(20) NOT NULL AUTO_INCREMENT PRIMARY KEY) '.self::__renderTableOptions().';');
 		    
 			// if $__senchaModel['table']['data'] is set and there is data upload the data to the table. 
 		    if(isset(MatchaModel::$__senchaModel['table']['data']))

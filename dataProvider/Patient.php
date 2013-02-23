@@ -67,7 +67,7 @@ class Patient
 		return;
 	}
 	/**
-	 * MATCHA CUPs
+	 * MATCHA CUPs (Sencha Models)
 	 */
 	private function setPatientModel(){
 		if($this->p == null) $this->p = MatchaModel::setSenchaModel('App.model.patient.Patient');
@@ -89,7 +89,21 @@ class Patient
 	 */
 	public function savePatient(stdClass $params){
 		$this->setPatientModel();
-		return $this->p->save($params);
+
+		$patient = $this->p->save($params);
+
+		$patient->fullname = Person::fullname($patient->fname, $patient->mname, $patient->lname);
+
+		if(!$this->createPatientDir($patient->pid)){
+			return array(
+				'success' => false, 'error' => 'Patient directory failed'
+			);
+		};
+
+		$this->createPatientQrCode($patient->pid, $patient->fullname);
+		$this->createDefaultPhotoId($patient->pid);
+
+		return $patient;
 	}
 
 	/**
@@ -108,6 +122,15 @@ class Patient
 		$this->setInsuranceModels();
 		return $this->i->save($params);
 	}
+
+
+
+
+
+
+
+
+
 
 	/**
 	 * @return mixed
@@ -189,7 +212,7 @@ class Patient
 	public function setPatientRating(stdClass $params){
 		$data = get_object_vars($params);
 		unset($data['pid']);
-		$this->db->setSQL($this->db->sqlBind($data, 'patient_demographics', 'U', array('pid' => $params->pid)));
+		$this->db->setSQL($this->db->sqlBind($data, 'patient', 'U', array('pid' => $params->pid)));
 		$this->db->execLog();
 		return;
 	}
@@ -200,7 +223,7 @@ class Patient
 	 */
 	public function getPatientDemographicDataByPid($pid)
 	{
-		$this->db->setSQL("SELECT * FROM patient_demographics WHERE pid = '$pid'");
+		$this->db->setSQL("SELECT * FROM patient WHERE pid = '$pid'");
 		$patient = $this->db->fetchRecord(PDO::FETCH_ASSOC);
 		$patient['pic'] = $this->getPatientPhotoSrcIdByPid($patient['pid']);
 		$patient['name'] = Person::fullname($patient['fname'],$patient['mname'],$patient['lname']);
@@ -216,11 +239,11 @@ class Patient
 			if($val === false) $data[$key] = 0;
 			if($val === true) $data[$key] = 1;
 		}
-		$this->db->setSQL($this->db->sqlBind($data, 'patient_demographics', 'I'));
+		$this->db->setSQL($this->db->sqlBind($data, 'patient', 'I'));
 		$this->db->execLog();
 		$pid = $this->db->lastInsertId;
 		$this->db->setSQL("SELECT pid, fname, mname, lname
-                     FROM patient_demographics
+                     FROM patient
                     WHERE pid = '$pid'");
 		$patient             = $this->db->fetchRecord(PDO::FETCH_ASSOC);
 		$patient['fullname'] = Person::fullname($patient['fname'], $patient['mname'], $patient['lname']);
@@ -256,7 +279,7 @@ class Patient
 		}
 		$data['date_created'] = Time::getLocalTime();
 
-		$this->db->setSQL($this->db->sqlBind($data, 'patient_demographics', 'I'));
+		$this->db->setSQL($this->db->sqlBind($data, 'patient', 'I'));
 		$this->db->execLog();
 		$pid = $this->db->lastInsertId;
         if($pid == 0){
@@ -283,7 +306,7 @@ class Patient
 			if($val === false) $data[$key] = 0;
 			if($val === true) $data[$key] = 1;
 		}
-		$this->db->setSQL($this->db->sqlBind($data, 'patient_demographics', 'U', array('pid' => $params->pid)));
+		$this->db->setSQL($this->db->sqlBind($data, 'patient', 'U', array('pid' => $params->pid)));
 		$this->db->execLog();
 		$this->createPatientQrCode($params->pid, Person::fullname($params->fname, $params->mname, $params->lname));
 		return $params;
@@ -308,7 +331,7 @@ class Patient
 	 */
 	public function getPatientFullNameByPid($pid)
 	{
-		$this->db->setSQL("SELECT fname,mname,lname FROM patient_demographics WHERE pid = '$pid'");
+		$this->db->setSQL("SELECT fname,mname,lname FROM patient WHERE pid = '$pid'");
 		$p = $this->db->fetchRecord();
 		return Person::fullname($p['fname'], $p['mname'], $p['lname']);
 	}
@@ -319,7 +342,7 @@ class Patient
 	 */
 	public function getPatientFullAddressByPid($pid)
 	{
-		$this->db->setSQL("SELECT address,city,state,zipcode FROM patient_demographics WHERE pid = '$pid'");
+		$this->db->setSQL("SELECT address,city,state,zipcode FROM patient WHERE pid = '$pid'");
 		$p = $this->db->fetchRecord();
 		return Person::fulladdress($p['address'], null, $p['city'], $p['state'], $p['zipcode']);
 	}
@@ -334,7 +357,7 @@ class Patient
 	public function patientLiveSearch(stdClass $params)
 	{
 		$this->db->setSQL("SELECT pid,pubpid,fname,lname,mname,DOB,SS
-                             FROM patient_demographics
+                             FROM patient
                             WHERE fname LIKE '$params->query%'
                                OR lname LIKE '$params->query%'
                                OR mname LIKE '$params->query%'
@@ -360,7 +383,7 @@ class Patient
 	public function getPatientDemographicData(stdClass $params)
 	{
 		$pid = (isset($params->pid) ? $params->pid : $_SESSION['patient']['pid']);
-		$this->db->setSQL("SELECT * FROM patient_demographics WHERE pid = '$pid'");
+		$this->db->setSQL("SELECT * FROM patient WHERE pid = '$pid'");
 		$p = $this->db->fetchRecord(PDO::FETCH_ASSOC);
 		$p['pic'] = $this->getPatientPhotoSrcIdByPid($p['pid']);
 		$p['age'] = $this->getPatientAgeByDOB($p['DOB']);
@@ -402,7 +425,7 @@ class Patient
 
 	public function getPatientAddressById($pid)
 	{
-		$this->db->setSQL("SELECT * FROM patient_demographics WHERE pid = '$pid'");
+		$this->db->setSQL("SELECT * FROM patient WHERE pid = '$pid'");
 		$p       = $this->db->fetchRecord();
 		$address = $p['address'] . ' <br>' . $p['city'] . ',  ' . $p['state'] . ' ' . $p['country'];
 		return $address;
@@ -411,7 +434,7 @@ class Patient
 	public function getPatientArrivalLogWarningByPid($pid)
 	{
 		$this->db->setSQL("SELECT pid
-							 FROM patient_demographics
+							 FROM patient
 							WHERE pid = '$pid'
 							  AND (sex IS NULL
 							  OR DOB IS NULL)");
@@ -506,7 +529,7 @@ class Patient
 	///////////////////////////////////////////////////////
 	public function getDOBByPid($pid)
 	{
-		$this->db->setSQL("SELECT DOB FROM patient_demographics WHERE pid = '$pid'");
+		$this->db->setSQL("SELECT DOB FROM patient WHERE pid = '$pid'");
 		$p = $this->db->fetchRecord();
 		return $p['DOB'];
 	}
@@ -519,7 +542,7 @@ class Patient
 	public function getPatientDOBByPid($pid)
 	{
 		$this->db->setSQL("SELECT DOB
-                           FROM patient_demographics
+                           FROM patient
                            WHERE pid ='$pid'");
 		$patient = $this->db->fetchRecord(PDO::FETCH_ASSOC);
 		return $patient['DOB'];
@@ -588,7 +611,7 @@ class Patient
 
 	public function getPatientAgeByPid($pid)
 	{
-		$this->db->setSQL("SELECT DOB FROM patient_demographics WHERE pid ='$pid'");
+		$this->db->setSQL("SELECT DOB FROM patient WHERE pid ='$pid'");
 		$p = $this->db->fetchRecord(PDO::FETCH_ASSOC);
 		return $this->getPatientAgeByDOB($p['DOB']);
 	}
@@ -608,7 +631,7 @@ class Patient
 	public function getPatientSexByPid($pid)
 	{
 		$this->db->setSQL("SELECT sex
-                           FROM patient_demographics
+                           FROM patient
                            WHERE pid ='$pid'");
 		$p = $this->db->fetchRecord(PDO::FETCH_ASSOC);
 		return $p['sex'];
@@ -702,7 +725,7 @@ class Patient
                                   lname,
                                   sex,
                                   DOB
-                           FROM patient_demographics
+                           FROM patient
                            WHERE pid = '$params->pid'");
 		$patientdata = $this->db->fetchRecord(PDO::FETCH_ASSOC);
 		foreach($patientdata as $key => $val){

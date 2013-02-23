@@ -90,7 +90,7 @@ class Fees
 
 		// Look for the primary insurance
 		if ($params->insurance && $params->insurance <> '1')
-			$whereClause .= chr(13) . " AND patient_demographics.primary_insurance_provider = '" . $params->insurance . "'";
+			$whereClause .= chr(13) . " AND patient.primary_insurance_provider = '" . $params->insurance . "'";
 
 		// Look for pastDue dates
 		// TODO: Consider the payment on the SQL statement
@@ -110,23 +110,23 @@ class Fees
 					encounters.eid,
 					encounters.pid,
 					If(encounters.provider_uid Is Null, 'None', encounters.provider_uid) As encounterProviderUid,
-					If(patient_demographics.provider Is Null, 'None', patient_demographics.provider) As primaryProviderUid,
+					If(patient.provider Is Null, 'None', patient.provider) As primaryProviderUid,
 					encounters.service_date,
 					encounters.billing_stage,
-					patient_demographics.primary_insurance_provider,
-					patient_demographics.title,
-					patient_demographics.fname,
-					patient_demographics.mname,
-					patient_demographics.lname,
+					patient.primary_insurance_provider,
+					patient.title,
+					patient.fname,
+					patient.mname,
+					patient.lname,
 					encounters.close_date,
 					encounters.supervisor_uid,
 					encounters.provider_uid,
 					encounters.open_uid
 				FROM
-					encounters 
+					encounters
 				LEFT JOIN
-					patient_demographics 
-				ON patient_demographics.pid = encounters.pid
+					patient
+				ON patient.pid = encounters.pid
 				$whereClause
 				ORDER BY
   					encounters.service_date";
@@ -160,23 +160,23 @@ class Fees
 					encounters.eid,
 					encounters.pid,
 					If(encounters.provider_uid Is Null, 'None', encounters.provider_uid) As encounterProviderUid,
-					If(patient_demographics.provider Is Null, 'None', patient_demographics.provider) As primaryProviderUid,
+					If(patient.provider Is Null, 'None', patient.provider) As primaryProviderUid,
 					encounters.service_date,
 					encounters.billing_stage,
-					patient_demographics.primary_insurance_provider,
-					patient_demographics.title,
-					patient_demographics.fname,
-					patient_demographics.mname,
-					patient_demographics.lname,
+					patient.primary_insurance_provider,
+					patient.title,
+					patient.fname,
+					patient.mname,
+					patient.lname,
 					encounters.close_date,
 					encounters.supervisor_uid,
 					encounters.provider_uid,
 					encounters.open_uid
 				FROM
-					encounters 
+					encounters
 				LEFT JOIN
-					patient_demographics 
-				ON patient_demographics.pid = encounters.pid
+					patient
+				ON patient.pid = encounters.pid
 				ORDER BY
   					encounters.service_date";
 
@@ -226,10 +226,10 @@ class Fees
 			$whereClause = 'WHERE ' . $whereClause;
 
 		$sql = "SELECT
-					patient_demographics.fname,
-					patient_demographics.mname,
-					patient_demographics.lname,
-					patient_demographics.pid,
+					patient.fname,
+					patient.mname,
+					patient.lname,
+					patient.pid,
 					payments.dtime,
 					payments.encounter,
 					payments.user,
@@ -242,9 +242,9 @@ class Fees
 				FROM
 					payments
 				INNER JOIN
-					patient_demographics 
+					patient
 				ON
-					patient_demographics.pid = payments.pid
+					patient.pid = payments.pid
 				$whereClause";
 		$this->db->setSQL($sql);
 		

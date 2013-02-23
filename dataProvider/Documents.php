@@ -111,7 +111,7 @@ class Documents
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public function getAllPatientData($pid)
     {
-        $this->db->setSQL("SELECT * FROM patient_demographics WHERE pid = '$pid'");
+        $this->db->setSQL("SELECT * FROM patient WHERE pid = '$pid'");
         return $this->db->fetchRecord(PDO::FETCH_ASSOC);
     }
 

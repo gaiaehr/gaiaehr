@@ -1,20 +1,21 @@
 Ext.define('App.model.patient.Patient', {
 	extend: 'Ext.data.Model',
 	table: {
-		name:'patients',
+		name:'patient',
 		comment:'Patients/Demographics'
 	},
 	fields: [
         {name: 'pid',                               type: 'int',    comment:'patient ID'},
 		{name: 'create_uid',                        type: 'int',    comment:'create user ID'},
 		{name: 'write_uid',                         type: 'int',    comment:'update user ID'},
-		{name: 'create_date',                       type: 'date',   dateFormat:'Y-m-d H:i:s', comment:'create date'},
-		{name: 'write_date',                        type: 'date',   dateFormat:'Y-m-d H:i:s', comment:'last update date'},
+		{name: 'create_date',                       type: 'date',   comment:'create date', dateFormat:'Y-m-d H:i:s'},
+		{name: 'update_date',                       type: 'date',   comment:'last update date', dateFormat:'Y-m-d H:i:s'},
         {name: 'title',                             type: 'string', comment:'Title Mr. Sr.'},
         {name: 'fname',                             type: 'string', comment:'first name'},
         {name: 'mname',                             type: 'string', comment:'middle name'},
         {name: 'lname',                             type: 'string', comment:'last name'},
         {name: 'sex',                               type: 'string', comment:'sex'},
+        {name: 'DOB',                               type: 'date',   comment:'day of birth', dateFormat:'Y-m-d', defaultValue:'0000-00-00'},
         {name: 'marital_status',                    type: 'string', comment:'marital status'},
         {name: 'SS',                                type: 'string', comment:'social security'},
         {name: 'pubpid',                            type: 'string', comment:'external/reference id'},

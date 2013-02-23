@@ -15,7 +15,7 @@ include_once ($_SESSION['root'] . '/classes/MatchaHelper.php');
 
 $db = new MatchaHelper();
 
-echo MatchaModel::__renderSenchaFieldSyntax(array('Type'=>'DOUBLE(10,2)'));
+//echo MatchaModel::__renderSenchaFieldSyntax(array('Type'=>'DOUBLE(10,2)'));
 
 //MatchaAudit::defineLogModel(array(
 //    array('name'=>'date', 'type'=>'date'),
@@ -41,7 +41,7 @@ echo MatchaModel::__renderSenchaFieldSyntax(array('Type'=>'DOUBLE(10,2)'));
 //));
 
 echo '<pre>';
-//print_r(Matcha::__setSenchaModelData('App.data.account.AccountType'));
+print_r(Matcha::setSenchaModel('App.data.account.AccountType'));
 echo '</pre>';
 
 //$db->SenchaModel('App.model.administration.tmpUser');

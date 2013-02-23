@@ -26,7 +26,7 @@ class MatchaModel extends Matcha
 
     /**
      * function MatchaRouter():
-     * Method to serve as router.
+     * Method to serve as a router.
      */
     public function MatchaRouter()
     {
@@ -58,7 +58,9 @@ class MatchaModel extends Matcha
             // Remove from the model those fields that are not meant to be stored
             // on the database-table and remove the id from the workingModel.
             $workingModel = (array)self::$__senchaModel['fields'];
-            unset($workingModel[self::__recursiveArraySearch('id', $workingModel)]);
+
+            // if id property is not set in sencha model look for propertyId.
+            if($workingModel[MatchaUtils::__recursiveArraySearch('id', $workingModel)] === false) unset($workingModel[self::__recursiveArraySearch('id', $workingModel)]);
             foreach($workingModel as $key => $SenchaModel) if(isset($SenchaModel['store']) && $SenchaModel['store'] === false) unset($workingModel[$key]);
 
             // get the table column information and remove the id column

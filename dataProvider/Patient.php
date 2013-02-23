@@ -75,7 +75,6 @@ class Patient
 	private function setInsuranceModels(){
 		if($this->i == null) $this->i = MatchaModel::setSenchaModel('App.model.patient.Insurance');
 	}
-
 	/**
 	 * @param stdClass $params
 	 * @return mixed
@@ -91,6 +90,23 @@ class Patient
 	public function savePatient(stdClass $params){
 		$this->setPatientModel();
 		return $this->p->save($params);
+	}
+
+	/**
+	 * @param stdClass $params
+	 * @return mixed
+	 */
+	public function getInsurances(stdClass $params){
+		$this->setInsuranceModels();
+		return $this->i->load($params)->all();
+	}
+	/**
+	 * @param stdClass $params
+	 * @return mixed
+	 */
+	public function saveInsurance(stdClass $params){
+		$this->setInsuranceModels();
+		return $this->i->save($params);
 	}
 
 	/**

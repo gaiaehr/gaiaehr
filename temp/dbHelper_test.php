@@ -41,7 +41,7 @@ $db = new MatchaHelper();
 //));
 
 echo '<pre>';
-print_r(Matcha::setSenchaModel('App.data.account.AccountType'));
+print_r(MatchaModel::setSenchaModel('App.model.patient.Patient'));
 echo '</pre>';
 
 //$db->SenchaModel('App.model.administration.tmpUser');

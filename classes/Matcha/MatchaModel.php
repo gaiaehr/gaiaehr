@@ -25,6 +25,11 @@ class MatchaModel extends Matcha
     public static $__senchaModel;
 
     /**
+     *
+     */
+    private static $tableId;
+
+    /**
      * function MatchaRouter():
      * Method to serve as a router.
      */
@@ -48,6 +53,8 @@ class MatchaModel extends Matcha
             self::$__senchaModel = self::__getSenchaModel($fileModel);
             if(!self::$__senchaModel['fields']) throw new Exception('There are no fields set.');
 
+            self::$tableId = isset(self::$__senchaModel['idProperty']) ? self::$__senchaModel['idProperty'] : 'id';
+
             // check if the table property is an array, if not get back the array is a table string.
             $table = (string)(is_array(self::$__senchaModel['table']) ? self::$__senchaModel['table']['name'] : self::$__senchaModel['table']);
 
@@ -60,13 +67,13 @@ class MatchaModel extends Matcha
             $workingModel = (array)self::$__senchaModel['fields'];
 
             // if id property is not set in sencha model look for propertyId.
-            if($workingModel[MatchaUtils::__recursiveArraySearch('id', $workingModel)] === false) unset($workingModel[self::__recursiveArraySearch('id', $workingModel)]);
+            if($workingModel[MatchaUtils::__recursiveArraySearch(self::$tableId, $workingModel)] === false) unset($workingModel[self::__recursiveArraySearch(self::$tableId, $workingModel)]);
             foreach($workingModel as $key => $SenchaModel) if(isset($SenchaModel['store']) && $SenchaModel['store'] === false) unset($workingModel[$key]);
 
             // get the table column information and remove the id column
             $recordSet = self::$__conn->query("SHOW FULL COLUMNS IN ".$table.";");
             $tableColumns = $recordSet->fetchAll(PDO::FETCH_ASSOC);
-            unset($tableColumns[self::__recursiveArraySearch('id', $tableColumns)]);
+            unset($tableColumns[self::__recursiveArraySearch(self::$tableId, $tableColumns)]);
 
             $columnsTableNames = array();
             $columnsSenchaNames = array();

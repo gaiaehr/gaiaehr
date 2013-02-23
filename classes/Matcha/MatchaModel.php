@@ -319,12 +319,12 @@ class MatchaModel extends Matcha
 
             // compose the Sencha Model .js for the first time
             $jsSenchaModel = (string)"Ext.define('".$fileSenchaModel."', {" . chr(13);
-            $jsSenchaModel .= self::t(1)."extend: 'Ext.data.Model'," . chr(13);
-            $jsSenchaModel .= self::t(1)."table: { name:'$databaseTable' },".chr(13);
-            $jsSenchaModel .= self::t(1)."fields: [" . chr(13);
-            $jsSenchaModel .= self::t(1)."{name: 'id', type: 'int'}".chr(13);
+            $jsSenchaModel .= MatchaUtils::t(1)."extend: 'Ext.data.Model'," . chr(13);
+            $jsSenchaModel .= MatchaUtils::t(1)."table: { name:'$databaseTable' },".chr(13);
+            $jsSenchaModel .= MatchaUtils::t(1)."fields: [" . chr(13);
+            $jsSenchaModel .= MatchaUtils::t(1)."{name: 'id', type: 'int'}".chr(13);
             // TODO: Write the rest of the sencha fields here.
-            $jsSenchaModel .= self::t(1)."]" . chr(13);
+            $jsSenchaModel .= MatchaUtils::t(1)."]" . chr(13);
             $jsSenchaModel .= '});' . chr(13);
 
             // create the Sencha Model .js file for the first time
@@ -354,7 +354,7 @@ class MatchaModel extends Matcha
             $recordSet = self::$__conn->query("SHOW FULL COLUMNS IN ".$databaseTable.";");
             $tableColumns = $recordSet->fetchAll(PDO::FETCH_ASSOC);
             $fields = '';
-            foreach($tableColumns as $column) $fields .= self::t(2).self::__renderSenchaFieldSyntax($column).chr(13);
+            foreach($tableColumns as $column) $fields .= MatchaUtils::t(2).self::__renderSenchaFieldSyntax($column).chr(13);
         }
         catch(PDOException $e)
         {
@@ -385,21 +385,8 @@ class MatchaModel extends Matcha
                 $SenchaType = 'string';
                 break;
         }
-        $SenchaField .= self::t(1)."{name: '".$tableColumn['Field']."', type: '".$SenchaType."'},";
+        $SenchaField .= MatchaUtils::t(1)."{name: '".$tableColumn['Field']."', type: '".$SenchaType."'},";
         return $SenchaField;
-    }
-
-    /**
-     * function t($times = NULL):
-     * Method to product TAB characters
-     * @param null $times
-     * @return string
-     */
-    private function t($times = NULL)
-    {
-        $tabs = '';
-        for ($i = 1; $i <= $times; $i++) $tabs .= chr(9);
-        return $tabs;
     }
 
 }

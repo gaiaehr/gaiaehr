@@ -20,6 +20,7 @@ include_once('MatchaAudit.php');
 include_once('MatchaCUP.php');
 include_once('MatchaErrorHandler.php');
 include_once('MatchaModel.php');
+include_once('MatchaUtils.php');
 
 // Include the Matcha Threads if the PHP Thread class exists
 if(class_exists('Thread')) include_once('MatchaThreads.php');
@@ -331,20 +332,6 @@ class Matcha
             MatchaErrorHandler::__errorProcess($e);
             return false;
         }
-	}
-	
-	/**
-	 * function __recursiveArraySearch($needle,$haystack):
-	 * An recursive array search method
-	 */
-	static protected function __recursiveArraySearch($needle,$haystack)
-	{
-	    foreach($haystack as $key=>$value) 
-	    {
-	        $current_key=$key;
-	        if($needle===$value OR (is_array($value) && self::__recursiveArraySearch($needle,$value) !== false)) return $current_key;
-	    }
-	    return false;
 	}
 	
 }

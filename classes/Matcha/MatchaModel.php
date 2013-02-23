@@ -324,6 +324,7 @@ class MatchaModel extends Matcha
             $jsSenchaModel .= self::t(1)."table: { name:'$databaseTable' },".chr(13);
             $jsSenchaModel .= self::t(1)."fields: [" . chr(13);
             $jsSenchaModel .= self::t(1)."{name: 'id', type: 'int'}".chr(13);
+            // TODO: Write the rest of the sencha fields here.
             $jsSenchaModel .= self::t(1)."]" . chr(13);
             $jsSenchaModel .= '});' . chr(13);
 

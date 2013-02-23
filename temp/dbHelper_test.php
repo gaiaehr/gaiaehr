@@ -15,7 +15,7 @@ include_once ($_SESSION['root'] . '/classes/MatchaHelper.php');
 
 $db = new MatchaHelper();
 
-MatchaModel::CreateModelFile('App.model.test.Reverse');
+echo MatchaModel::__renderSenchaFieldSyntax(array('Type'=>'DOUBLE(10,2)'));
 
 //MatchaAudit::defineLogModel(array(
 //    array('name'=>'date', 'type'=>'date'),

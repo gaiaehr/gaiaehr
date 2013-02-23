@@ -20,6 +20,7 @@ include_once('MatchaAudit.php');
 include_once('MatchaCUP.php');
 include_once('MatchaErrorHandler.php');
 include_once('MatchaModel.php');
+include_once('MatchaUtils.php');
 
 // Include the Matcha Threads if the PHP Thread class exists
 if(class_exists('Thread')) include_once('MatchaThreads.php');
@@ -125,17 +126,17 @@ class Matcha
             }
             else
             {
-	    	    $table = (string)(is_array(self::$__senchaModel['table']) ? self::$__senchaModel['table']['name'] : self::$__senchaModel['table']);
+	    	    $table = (string)(is_array(MatchaModel::$__senchaModel['table']) ? MatchaModel::$__senchaModel['table']['name'] : MatchaModel::$__senchaModel['table']);
             }
 			self::$__conn->exec('CREATE TABLE IF NOT EXISTS '.$table.' (id BIGINT(20) NOT NULL AUTO_INCREMENT PRIMARY KEY) '.self::__renderTableOptions().';');
 		    
 			// if $__senchaModel['table']['data'] is set and there is data upload the data to the table. 
-		    if(isset(self::$__senchaModel['table']['data']))
+		    if(isset(MatchaModel::$__senchaModel['table']['data']))
 			{
 			    $rec = self::$__conn->prepare('SELECT * FROM '.$table);
-			    if($rec->rowCount() == 0 && isset(self::$__senchaModel['table']['data']))
+			    if($rec->rowCount() == 0 && isset(MatchaModel::$__senchaModel['table']['data']))
 			    {
-					self::__setSenchaModelData(self::$__senchaModel['table']['data']);
+					self::__setSenchaModelData(MatchaModel::$__senchaModel['table']['data']);
 				}
 			}
 			return true;
@@ -153,12 +154,12 @@ class Matcha
 	static protected function __renderTableOptions()
 	{
 		$tableOptions = (string)'';
-		if(!is_array(self::$__senchaModel['table'])) return false;
-		if( isset(self::$__senchaModel['table']['InnoDB']) ) $tableOptions .= 'ENGINE = '.self::$__senchaModel['table']['InnoDB'].' ';
-		if( isset(self::$__senchaModel['table']['autoIncrement']) ) $tableOptions .= 'AUTO_INCREMENT = '.self::$__senchaModel['table']['autoIncrement'].' ';
-		if( isset(self::$__senchaModel['table']['charset']) ) $tableOptions .= 'CHARACTER SET = '.self::$__senchaModel['table']['charset'].' ';
-		if( isset(self::$__senchaModel['table']['collate']) ) $tableOptions .= 'COLLATE = '.self::$__senchaModel['table']['collate'].' ';
-		if( isset(self::$__senchaModel['table']['comment']) ) $tableOptions .= "COMMENT = '".self::$__senchaModel['table']['comment']."' ";
+		if(!is_array(MatchaModel::$__senchaModel['table'])) return false;
+		if( isset(MatchaModel::$__senchaModel['table']['InnoDB']) ) $tableOptions .= 'ENGINE = '.MatchaModel::$__senchaModel['table']['InnoDB'].' ';
+		if( isset(MatchaModel::$__senchaModel['table']['autoIncrement']) ) $tableOptions .= 'AUTO_INCREMENT = '.MatchaModel::$__senchaModel['table']['autoIncrement'].' ';
+		if( isset(MatchaModel::$__senchaModel['table']['charset']) ) $tableOptions .= 'CHARACTER SET = '.MatchaModel::$__senchaModel['table']['charset'].' ';
+		if( isset(MatchaModel::$__senchaModel['table']['collate']) ) $tableOptions .= 'COLLATE = '.MatchaModel::$__senchaModel['table']['collate'].' ';
+		if( isset(MatchaModel::$__senchaModel['table']['comment']) ) $tableOptions .= "COMMENT = '".MatchaModel::$__senchaModel['table']['comment']."' ";
 		return $tableOptions;
 	}
 	 
@@ -188,7 +189,7 @@ class Matcha
 	{
 		try
 		{
-            if(!$table) $table = (string)(is_array(self::$__senchaModel['table']) ? self::$__senchaModel['table']['name'] : self::$__senchaModel['table']);
+            if(!$table) $table = (string)(is_array(MatchaModel::$__senchaModel['table']) ? MatchaModel::$__senchaModel['table']['name'] : MatchaModel::$__senchaModel['table']);
 			if(self::__rendercolumnsyntax($column) == true) self::$__conn->query('alter table '.$table.' add '.$column['name'].' '.self::__rendercolumnsyntax($column).';');
             return true;
 		}
@@ -206,7 +207,7 @@ class Matcha
 	{
 		try
 		{
-            if(!$table) $table = (string)(is_array(self::$__senchaModel['table']) ? self::$__senchaModel['table']['name'] : self::$__senchaModel['table']);
+            if(!$table) $table = (string)(is_array(MatchaModel::$__senchaModel['table']) ? MatchaModel::$__senchaModel ['table']['name'] : MatchaModel::$__senchaModel['table']);
             if(self::__rendercolumnsyntax($column) == true) self::$__conn->query('ALTER TABLE '.$table.' MODIFY '.$column['name'].' '.self::__renderColumnSyntax($column).';');
             return true;
 		}
@@ -242,7 +243,7 @@ class Matcha
 	{
 		try
 		{
-			if(!$table) $table = (string)(is_array(self::$__senchaModel['table']) ? self::$__senchaModel['table']['name'] : self::$__senchaModel['table']);
+			if(!$table) $table = (string)(is_array(MatchaModel::$__senchaModel['table']) ? MatchaModel::$__senchaModel['table']['name'] : MatchaModel::$__senchaModel['table']);
 			self::$__conn->query("ALTER TABLE ".$table." DROP COLUMN `".$column."`;");
             return true;
 		}
@@ -331,20 +332,6 @@ class Matcha
             MatchaErrorHandler::__errorProcess($e);
             return false;
         }
-	}
-	
-	/**
-	 * function __recursiveArraySearch($needle,$haystack):
-	 * An recursive array search method
-	 */
-	static protected function __recursiveArraySearch($needle,$haystack)
-	{
-	    foreach($haystack as $key=>$value) 
-	    {
-	        $current_key=$key;
-	        if($needle===$value OR (is_array($value) && self::__recursiveArraySearch($needle,$value) !== false)) return $current_key;
-	    }
-	    return false;
 	}
 	
 }

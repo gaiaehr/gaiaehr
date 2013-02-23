@@ -229,7 +229,7 @@ class MatchaModel extends Matcha
         try
         {
             $dataArray = json_decode(self::__getFileContent($fileData, 'json'), true);
-            if(!count($dataArray)) throw new Exception("Something whent wrong converting it to an array, a bad lolo.");
+            if(!count($dataArray)) throw new Exception("Something went wrong converting it to an array, a bad lolo.");
             $table = (string)(is_array(self::$__senchaModel['table']) ? self::$__senchaModel['table']['name'] : self::$__senchaModel['table']);
             $columns = 'INSERT INTO `'.$table.'` (`'.implode('`,`', array_keys($dataArray[0]) ).'`) VALUES ';
 
@@ -272,7 +272,7 @@ class MatchaModel extends Matcha
     }
 
     /**
-     * function connect($databaseObject, $rootPath, $senchaModel)
+     * function setSenchaModel($senchaModel = array()):
      * The first thing to do, to begin using Matcha
      * This will load the Sencha Model to Matcha and do it's magic.
      */
@@ -319,12 +319,12 @@ class MatchaModel extends Matcha
 
             // compose the Sencha Model .js for the first time
             $jsSenchaModel = (string)"Ext.define('".$fileSenchaModel."', {" . chr(13);
-            $jsSenchaModel .= self::t(1)."extend: 'Ext.data.Model'," . chr(13);
-            $jsSenchaModel .= self::t(1)."table: { name:'$databaseTable' },".chr(13);
-            $jsSenchaModel .= self::t(1)."fields: [" . chr(13);
-            $jsSenchaModel .= self::t(1)."{name: 'id', type: 'int'}".chr(13);
+            $jsSenchaModel .= MatchaUtils::t(1)."extend: 'Ext.data.Model'," . chr(13);
+            $jsSenchaModel .= MatchaUtils::t(1)."table: { name:'$databaseTable' },".chr(13);
+            $jsSenchaModel .= MatchaUtils::t(1)."fields: [" . chr(13);
+            $jsSenchaModel .= MatchaUtils::t(1)."{name: 'id', type: 'int'}".chr(13);
             // TODO: Write the rest of the sencha fields here.
-            $jsSenchaModel .= self::t(1)."]" . chr(13);
+            $jsSenchaModel .= MatchaUtils::t(1)."]" . chr(13);
             $jsSenchaModel .= '});' . chr(13);
 
             // create the Sencha Model .js file for the first time
@@ -337,6 +337,21 @@ class MatchaModel extends Matcha
             MatchaErrorHandler::__errorProcess($e);
             return false;
         }
+    }
+
+    private function __RemoveSenchaColumn($Model, $field, $forceRemove = false)
+    {
+
+    }
+
+    private function __createSenchaColumn($Model, $field)
+    {
+
+    }
+
+    private function __ranameSenchaColumn($model, $field)
+    {
+
     }
 
     /**
@@ -354,7 +369,7 @@ class MatchaModel extends Matcha
             $recordSet = self::$__conn->query("SHOW FULL COLUMNS IN ".$databaseTable.";");
             $tableColumns = $recordSet->fetchAll(PDO::FETCH_ASSOC);
             $fields = '';
-            foreach($tableColumns as $column) $fields .= self::t(2).self::__renderSenchaFieldSyntax($column).chr(13);
+            foreach($tableColumns as $column) $fields .= MatchaUtils::t(2).self::__renderSenchaFieldSyntax($column).chr(13);
         }
         catch(PDOException $e)
         {
@@ -385,21 +400,8 @@ class MatchaModel extends Matcha
                 $SenchaType = 'string';
                 break;
         }
-        $SenchaField .= self::t(1)."{name: '".$tableColumn['Field']."', type: '".$SenchaType."'},";
+        $SenchaField .= MatchaUtils::t(1)."{name: '".$tableColumn['Field']."', type: '".$SenchaType."'},";
         return $SenchaField;
-    }
-
-    /**
-     * function t($times = NULL):
-     * Method to product TAB characters
-     * @param null $times
-     * @return string
-     */
-    private function t($times = NULL)
-    {
-        $tabs = '';
-        for ($i = 1; $i <= $times; $i++) $tabs .= chr(9);
-        return $tabs;
     }
 
 }

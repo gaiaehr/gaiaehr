@@ -27,6 +27,7 @@ echo MatchaModel::__renderSenchaFieldSyntax(array('Type'=>'DOUBLE(10,2)'));
 //    array('name'=>'patient_id', 'type'=>'int'),
 //    array('name'=>'ip', 'type'=>'string')
 //));
+
 //MatchaAudit::audit();
 //echo MatchaAudit::auditSaveLog(array(
 //    'date'=>'2012-02-21 24:00:00',

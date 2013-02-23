@@ -15,7 +15,7 @@ include_once ($_SESSION['root'] . '/classes/MatchaHelper.php');
 
 $db = new MatchaHelper();
 
-MatchaCreateModel::CreateModelFile('App.model.test.Reverse');
+MatchaModel::CreateModelFile('App.model.test.Reverse');
 
 //MatchaAudit::defineLogModel(array(
 //    array('name'=>'date', 'type'=>'date'),

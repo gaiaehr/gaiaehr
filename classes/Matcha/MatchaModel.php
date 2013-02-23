@@ -21,6 +21,11 @@ class MatchaCreateModel extends Matcha
 {
 
     /**
+     * Variables needed by MatchaModel
+     */
+    public static $__senchaModel;
+
+    /**
      * function MatchaRouter():
      * Method to serve as router.
      */

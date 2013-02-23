@@ -36,7 +36,6 @@ class Matcha
 	public static $__id;
 	public static $__total;
 	public static $__freeze = false;
-	public static $__senchaModel;
 	public static $__conn;
 	public static $__app;
 	

@@ -628,6 +628,7 @@ Ext.define('App.view.patient.Encounter', {
         var me = this, vitals, store;
         me.resetTabs();
         me.encounterStore.getProxy().extraParams.eid = me.eid;
+	    me.el.mask(i18n('loading...'))
         me.encounterStore.load({
             scope:me,
             callback:function(record){
@@ -672,6 +673,7 @@ Ext.define('App.view.patient.Encounter', {
                 //me.speechDicPanel.getForm().loadRecord(record[0].speechdictation().getAt(0));
 
                 me.priorityCombo.setValue(data.priority);
+	            me.el.unmask();
             }
         });
 	    me.encounterEventHistoryStore.load({params:{eid:me.eid}});

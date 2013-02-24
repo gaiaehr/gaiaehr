@@ -287,6 +287,7 @@ class Patient
 	 * @return object
 	 */
 	public function setPatientRating(stdClass $params){
+		$this->setPatientModel();
 		return $this->p->save($params);
 	}
 

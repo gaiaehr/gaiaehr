@@ -465,7 +465,7 @@ Ext.define('App.view.Viewport', {
         me.MainPanel.add(Ext.create('App.view.patient.NewPatient'));
         me.MainPanel.add(Ext.create('App.view.patient.Summary'));
         me.MainPanel.add(Ext.create('App.view.patient.Visits'));
-        me.MainPanel.add(Ext.create('App.view.patient.Encounter'));
+        me.Encounter = me.MainPanel.add(Ext.create('App.view.patient.Encounter'));
         me.MainPanel.add(Ext.create('App.view.patient.VisitCheckout'));
         /**
          * Fees Area
@@ -1148,7 +1148,12 @@ Ext.define('App.view.Viewport', {
                 say('drop record');
                 say(data.patientData);
                 app.MainPanel.el.unmask();
-                me.setPatient(data.patientData.pid, data.patientData.eid, function(){
+
+	            if(data.patientData.eid && acl['access_encounters']){
+		            me.Encounter.el.mask(i18n('loading...'))
+	            }
+
+	            me.setPatient(data.patientData.pid, data.patientData.eid, function(){
                     /**
                      * if encounter id is set and pool area is check out....  go to Patient Checkout panel
                      */

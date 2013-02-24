@@ -626,9 +626,10 @@ Ext.define('App.view.patient.Encounter', {
      */
     openEncounter:function(eid){
         var me = this, vitals, store;
+	    me.el.mask(i18n('loading...'));
         me.resetTabs();
         me.encounterStore.getProxy().extraParams.eid = me.eid;
-	    me.el.mask(i18n('loading...'))
+
         me.encounterStore.load({
             scope:me,
             callback:function(record){

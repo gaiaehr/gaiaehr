@@ -41,12 +41,84 @@ class User
 	 */
 	private $user_id;
 
+	private $user;
+	/**
+	 * @var MatchaCUP
+	 */
+	private $u = null;
+
 	function __construct()
 	{
 		$this->db = new MatchaHelper();
-		
 		return;
 	}
+
+//	/**
+//	 * Set User Model id not set
+//	 */
+//	private function setUserModel(){
+//		if($this->u == null) $this->u = MatchaModel::setSenchaModel('App.model.administration.User');
+//	}
+//
+//	/**
+//	 * @param stdClass $params
+//	 * @return mixed
+//	 */
+//	public function getUsers(stdClass $params){
+//		$this->setUserModel();
+//		return $this->u->load($params)->all();
+//	}
+//
+//	/**
+//	 * @param stdClass $params
+//	 * @return mixed
+//	 */
+//	public function getUser(stdClass $params){
+//		$this->setUserModel();
+//		return $this->u->load($params)->one();
+//	}
+//
+//	/**
+//	 * @param stdClass $params
+//	 * @return mixed
+//	 */
+//	public function saveUser($params){
+//		$this->setUserModel();
+//		return $this->u->save($params);
+//	}
+//
+//	/**
+//	 * @param $uid
+//	 */
+//	public function setUserByUid($uid){
+//		$this->setUserModel();
+//		$this->user = $this->u->load($uid)->one();
+//	}
+//
+//	/**
+//	 * @param $params
+//	 */
+//	public function setUser($params){
+//		$this->setUserModel();
+//		$this->user = $this->u->load($params)->one();
+//	}
+//
+//	/**
+//	 * @param $username
+//	 * @return bool
+//	 */
+//	public function usernameExist($username){
+//		$this->setUserModel();
+//		$u = $this->u->load(array('username' => $username))->one();
+//		return empty($u);
+//	}
+
+
+
+
+
+
+
 
 	/**
 	 * @return AES
@@ -56,6 +128,9 @@ class User
 		return new AES($_SESSION['site']['AESkey']);
 	}
 
+	/**
+	 * @return mixed
+	 */
 	public function getCurrentUserId()
 	{
 		return $_SESSION['user']['id'];
@@ -198,12 +273,7 @@ class User
 
 	}
 
-	public function usernameExist($username)
-	{
-		$this->db->setSQL("SELECT count(id) FROM users WHERE username = '$username'");
-		$user = $this->db->fetchRecord();
-		return $user['count(id)'] >= 1;
-	}
+
 
 	/**
 	 * @param stdClass $params

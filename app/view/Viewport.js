@@ -453,20 +453,19 @@ Ext.define('App.view.Viewport', {
         /**
          * General Area
          */
-        me.MainPanel.add(Ext.create('App.view.dashboard.Dashboard'));
-        // TODO: panels
-        me.MainPanel.add(Ext.create('App.view.calendar.Calendar'));
-        me.MainPanel.add(Ext.create('App.view.messages.Messages'));
-        //me.MainPanel.add(Ext.create('App.view.search.PatientSearch'));
-        me.MainPanel.add(Ext.create('App.view.areas.FloorPlan'));
+        me.Dashboard     = me.MainPanel.add(Ext.create('App.view.dashboard.Dashboard'));
+        me.Calendar      = me.MainPanel.add(Ext.create('App.view.calendar.Calendar'));
+        me.Messages      = me.MainPanel.add(Ext.create('App.view.messages.Messages'));
+//        me.PatientSearch = me.MainPanel.add(Ext.create('App.view.search.PatientSearch'));
+        me.FloorPlan     = me.MainPanel.add(Ext.create('App.view.areas.FloorPlan'));
         /**
          * Patient Area
          */
-        me.MainPanel.add(Ext.create('App.view.patient.NewPatient'));
-        me.MainPanel.add(Ext.create('App.view.patient.Summary'));
-        me.MainPanel.add(Ext.create('App.view.patient.Visits'));
-        me.Encounter = me.MainPanel.add(Ext.create('App.view.patient.Encounter'));
-        me.MainPanel.add(Ext.create('App.view.patient.VisitCheckout'));
+        me.NewPatient    = me.MainPanel.add(Ext.create('App.view.patient.NewPatient'));
+	    me.Summary       = me.MainPanel.add(Ext.create('App.view.patient.Summary'));
+        me.Visits        = me.MainPanel.add(Ext.create('App.view.patient.Visits'));
+        me.Encounter     = me.MainPanel.add(Ext.create('App.view.patient.Encounter'));
+        me.VisitCheckout = me.MainPanel.add(Ext.create('App.view.patient.VisitCheckout'));
         /**
          * Fees Area
          */
@@ -483,19 +482,19 @@ Ext.define('App.view.Viewport', {
         me.ppdz = me.MainPanel.add(Ext.create('App.view.areas.PatientPoolDropZone'));
 
 
-        if(acl['access_gloabal_settings']) me.MainPanel.add(Ext.create('App.view.administration.Globals'));
-        if(acl['access_facilities']) me.MainPanel.add(Ext.create('App.view.administration.Facilities'));
-        if(acl['access_users']) me.MainPanel.add(Ext.create('App.view.administration.Users'));
-        if(acl['access_practice']) me.MainPanel.add(Ext.create('App.view.administration.Practice'));
-        if(acl['access_data_manager']) me.MainPanel.add(Ext.create('App.view.administration.DataManager'));
-        if(acl['access_preventive_care']) me.MainPanel.add(Ext.create('App.view.administration.PreventiveCare'));
-//        if(acl['access_medications']) me.MainPanel.add(Ext.create('App.view.administration.Medications'));
-        if(acl['access_floor_plans']) me.MainPanel.add(Ext.create('App.view.administration.FloorPlans'));
-        if(acl['access_roles']) me.MainPanel.add(Ext.create('App.view.administration.Roles'));
-        if(acl['access_layouts']) me.MainPanel.add(Ext.create('App.view.administration.Layout'));
-        if(acl['access_lists']) me.MainPanel.add(Ext.create('App.view.administration.Lists'));
-        if(acl['access_event_log']) me.MainPanel.add(Ext.create('App.view.administration.Log'));
-        if(acl['access_documents']) me.MainPanel.add(Ext.create('App.view.administration.Documents'));
+        if(acl['access_gloabal_settings'])  me.MainPanel.add(Ext.create('App.view.administration.Globals'));
+        if(acl['access_facilities'])        me.MainPanel.add(Ext.create('App.view.administration.Facilities'));
+        if(acl['access_users'])             me.MainPanel.add(Ext.create('App.view.administration.Users'));
+        if(acl['access_practice'])          me.MainPanel.add(Ext.create('App.view.administration.Practice'));
+        if(acl['access_data_manager'])      me.MainPanel.add(Ext.create('App.view.administration.DataManager'));
+        if(acl['access_preventive_care'])   me.MainPanel.add(Ext.create('App.view.administration.PreventiveCare'));
+//        if(acl['access_medications'])       me.MainPanel.add(Ext.create('App.view.administration.Medications'));
+        if(acl['access_floor_plans'])       me.MainPanel.add(Ext.create('App.view.administration.FloorPlans'));
+        if(acl['access_roles'])             me.MainPanel.add(Ext.create('App.view.administration.Roles'));
+        if(acl['access_layouts'])           me.MainPanel.add(Ext.create('App.view.administration.Layout'));
+        if(acl['access_lists'])             me.MainPanel.add(Ext.create('App.view.administration.Lists'));
+        if(acl['access_event_log'])         me.MainPanel.add(Ext.create('App.view.administration.Log'));
+        if(acl['access_documents'])         me.MainPanel.add(Ext.create('App.view.administration.Documents'));
 
         me.MainPanel.add(Ext.create('App.view.administration.ExternalDataLoads'));
         me.MainPanel.add(Ext.create('App.view.administration.Applications'));
@@ -627,7 +626,7 @@ Ext.define('App.view.Viewport', {
     onWebCamComplete: function(msg){
         var panel = this.getActivePanel();
         if(panel.id == 'panelSummary'){
-            panel.completePhotoId();
+            panel.demographics.completePhotoId();
         }
         this.msg('Sweet!', i18n('patient_image_saved'));
     },
@@ -1141,33 +1140,33 @@ Ext.define('App.view.Viewport', {
         var me = this;
         panel.dropZone = Ext.create('Ext.dd.DropZone', panel.getEl(), {
             ddGroup: 'patient',
+
             notifyOver: function(dd, e, data){
                 return Ext.dd.DropZone.prototype.dropAllowed;
             },
+
             notifyDrop: function(dd, e, data){
                 say('drop record');
                 say(data.patientData);
                 app.MainPanel.el.unmask();
 
-	            if(data.patientData.eid && acl['access_encounters']){
-		            me.Encounter.el.mask(i18n('loading...'))
+	            if(data.patientData.eid && data.patientData.poolArea == 'Check Out'){
+		            me.VisitCheckout.el.mask(i18n('loading...'));
+	            }else if(data.patientData.eid && acl['access_encounters']){
+		            me.Encounter.el.mask(i18n('loading...'));
+	            }else if(data.patientData.floorPlanId == null || data.patientData.floorPlanId == 0){
+		            me.Summary.el.mask(i18n('loading...'));
 	            }
 
 	            me.setPatient(data.patientData.pid, data.patientData.eid, function(){
-                    /**
-                     * if encounter id is set and pool area is check out....  go to Patient Checkout panel
-                     */
+                    // if encounter id is set and pool area is check out....  go to Patient Checkout panel
                     if(data.patientData.eid && data.patientData.poolArea == 'Check Out'){
                         me.checkOutPatient(data.patientData.eid);
-                        /**
-                         * if encounter id is set and and user has access to encounter area... go to Encounter panel
-                         * and open the encounter
-                         */
+                    // if encounter id is set and and user has access to encounter area... go to Encounter panel
+                    // and open the encounter
                     }else if(data.patientData.eid && acl['access_encounters']){
                         me.openEncounter(data.patientData.eid);
-                        /**
-                         * else go to patient summary
-                         */
+                    // else go to patient summary
                     }else if(data.patientData.floorPlanId == null || data.patientData.floorPlanId == 0){
                         me.openPatientSummary();
                     }

@@ -87,7 +87,7 @@ class Patient
 	 * @param stdClass $params
 	 * @return mixed
 	 */
-	public function savePatient(stdClass $params){
+	public function savePatient($params){
 		$this->setPatientModel();
 		$this->patient = $this->p->save($params);
 		$this->patient['fullname'] = Person::fullname($this->patient['fname'], $this->patient['mname'], $this->patient['lname']);
@@ -108,7 +108,7 @@ class Patient
 	 * @param stdClass $params
 	 * @return mixed
 	 */
-	public function saveInsurance(stdClass $params){
+	public function saveInsurance($params){
 		$this->setInsuranceModels();
 		return $this->i->save($params);
 	}
@@ -177,6 +177,7 @@ class Patient
 			foreach($foo as $fo){
 				$params->lname .= $params->lname . ' ' . $fo . ' ';
 			}
+			$params->lname = trim($params->lname);
 		}
 		$params->create_uid = $_SESSION['user']['id'];
 		$params->create_uid = $_SESSION['user']['id'];

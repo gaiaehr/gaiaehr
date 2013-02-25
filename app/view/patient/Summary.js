@@ -35,6 +35,7 @@ Ext.define('App.view.patient.Summary', {
     demographicsData: null,
     initComponent: function(){
         var me = this;
+
         me.stores = [];
         me.stores.push(me.immuCheckListStore = Ext.create('App.store.patient.ImmunizationCheck'));
         me.stores.push(me.patientAllergiesListStore = Ext.create('App.store.patient.Allergies'));
@@ -43,6 +44,7 @@ Ext.define('App.view.patient.Summary', {
         me.stores.push(me.patientDentalStore = Ext.create('App.store.patient.Dental'));
         me.stores.push(me.patientMedicationsStore = Ext.create('App.store.patient.Medications'));
         me.stores.push(me.patientCalendarEventsStore = Ext.create('App.store.patient.PatientCalendarEvents'));
+
         me.pageBody = [
 	        me.tabPanel = Ext.widget('tabpanel',{
                 flex: 1,
@@ -170,7 +172,6 @@ Ext.define('App.view.patient.Summary', {
 
 	                        }
 	                    ]
-
 	                },
 	                {
 	                    xtype: 'grid',
@@ -205,74 +206,19 @@ Ext.define('App.view.patient.Summary', {
             }
         ];
         if(acl['access_demographics']){
-            me.stores.push(me.patientAlertsStore = Ext.create('App.store.patient.MeaningfulUseAlert'));
-            me.tabPanel.add({
-	            xtype:'panel',
-	            title: i18n('demographics'),
-	            layout:{
-		            type:'vbox',
-		            align:'stretch'
-	            },
-	            items:[
-		            me.demoForm = Ext.widget('form',{
-			            action: 'demoFormPanel',
-			            itemId: 'demoFormPanel',
-			            type:'anchor',
-			            border: false,
-			            fieldDefaults: { msgTarget: 'side' }
-		            }),
-		            me.insPanel = Ext.widget('tabpanel',{
-			            flex:1,
-			            defaults:{
-				            autoScroll:true,
-				            padding:10
-			            },
-			            items:[
-				            me.ins1 = Ext.widget('form',{
-					            title:i18n('first_insurance'),
-					            border:false,
-					            bodyBorder:false
-				            }),
-				            me.ins2 = Ext.widget('form',{
-					            title:i18n('second_insurance'),
-					            border:false,
-					            bodyBorder:false
-				            }),
-				            me.ins3 = Ext.widget('form',{
-					            title:i18n('supplemental_insurance'),
-					            border:false,
-					            bodyBorder:false
-				            })
-			            ]
-		            })
-	            ],
-                dockedItems: [
-                    {
-                        xtype: 'toolbar',
-                        dock: 'bottom',
-                        items: ['->', {
-                            xtype: 'button',
-                            action: 'readOnly',
-                            text: i18n('save'),
-                            minWidth: 75,
-                            scope: me,
-                            handler: me.formSave
-                        }, '-', {
-                            xtype: 'button',
-                            text: i18n('cancel'),
-                            action: 'readOnly',
-                            minWidth: 75,
-                            scope: me,
-                            handler: me.formCancel
-                        }]
-                    }
-                ]
-            });
+            me.tabPanel.add(
+	            me.demographics = Ext.create('App.view.patient.Patient',{
+		            newPatient:false,
+		            title:i18n('demographics')
+	            })
+            );
         }
         if(acl['access_patient_disclosures']){
-            me.stores.push(me.patientDisclosuresStore = Ext.create('App.store.patient.Disclosures', {
-                autoSync: false
-            }));
+            me.stores.push(
+	            me.patientDisclosuresStore = Ext.create('App.store.patient.Disclosures', {
+                    autoSync: false
+                })
+            );
             me.tabPanel.add({
                 xtype: 'grid',
                 title: i18n('disclosures'),
@@ -328,15 +274,18 @@ Ext.define('App.view.patient.Summary', {
                     {
                         text: i18n('disclosure'),
                         iconCls: 'icoAdd',
-                        handler: me.addDisclosure
+	                    action:'disclosure',
+                        handler: me.onAddNew
                     }
                 ]
             });
         }
         if(acl['access_patient_notes']){
-            me.stores.push(me.patientNotesStore = Ext.create('App.store.patient.Notes', {
-                autoSync: false
-            }));
+            me.stores.push(
+	            me.patientNotesStore = Ext.create('App.store.patient.Notes', {
+                    autoSync: false
+                })
+            );
             me.tabPanel.add({
                 title: i18n('notes'),
                 itemId: 'notesPanel',
@@ -381,7 +330,8 @@ Ext.define('App.view.patient.Summary', {
                     {
                         text: i18n('add_note'),
                         iconCls: 'icoAdd',
-                        handler: me.addNote
+	                    action:'note',
+                        handler: me.onAddNew
                     }
                 ]
             });
@@ -434,7 +384,8 @@ Ext.define('App.view.patient.Summary', {
                     {
                         text: i18n('add_reminder'),
                         iconCls: 'icoAdd',
-                        handler: me.addReminder
+	                    action:'reminder',
+                        handler: me.onAddNew
                     }
                 ]
             })
@@ -591,9 +542,11 @@ Ext.define('App.view.patient.Summary', {
             })
         }
         if(acl['access_patient_preventive_care_alerts']){
-            me.stores.push(me.patientsDismissedAlerts = Ext.create('App.store.patient.DismissedAlerts', {
-                //listeners
-            }));
+            me.stores.push(
+	            me.patientsDismissedAlerts = Ext.create('App.store.patient.DismissedAlerts', {
+                    //listeners
+                })
+            );
             me.tabPanel.add({
                 title: i18n('dismissed_preventive_care_alerts'),
                 xtype: 'grid',
@@ -810,521 +763,171 @@ Ext.define('App.view.patient.Summary', {
              });
         //}
 
-        me.listeners = {
-            scope: me,
-            render: me.beforePanelRender
-        };
         me.callParent();
     },
-    addDisclosure: function(btn){
-        var me = this, grid = btn.up('grid'), store = grid.store;
-        grid.plugins[0].cancelEdit();
-        store.insert(0, {
-                date: new Date(),
-                pid: app.patient.pid,
-                active: 1
-            });
-        grid.plugins[0].startEdit(0, 0);
-    },
-    addNote: function(btn){
-        var me = this, grid = btn.up('grid'), store = grid.store;
-        grid.plugins[0].cancelEdit();
-        store.insert(0, {
-                date: new Date(),
-                pid: app.patient.pid,
-                uid: app.user.id,
-                eid: app.patient.eid
-            });
-        grid.plugins[0].startEdit(0, 0);
-    },
-    addReminder: function(btn){
-        var me = this, grid = btn.up('grid'), store = grid.store;
-        grid.plugins[0].cancelEdit();
-        store.insert(0, {
-                date: new Date(),
-                pid: app.patient.pid,
-                uid: app.user.id,
-                eid: app.patient.eid
-            });
-        grid.plugins[0].startEdit(0, 0);
-    },
+
+	onAddNew:function(btn){
+		var grid = btn.up('grid'),
+			store = grid.store,
+			record;
+
+		if(btn.action == 'disclosure'){
+			record = {
+				date: new Date(),
+				pid: app.patient.pid,
+				active: 1
+			};
+		}else if(btn.action == 'note' || btn.action == 'reminder'){
+			record = {
+				date: new Date(),
+				pid: app.patient.pid,
+				uid: app.user.id,
+				eid: app.patient.eid
+			}
+		}
+
+		grid.plugins[0].cancelEdit();
+		store.insert(0,record);
+		grid.plugins[0].startEdit(0, 0);
+	},
+
     onDocumentView: function(grid, rowIndex){
         var rec = grid.getStore().getAt(rowIndex), src = rec.data.url;
         app.onDocumentView(src);
     },
+
     uploadADocument: function(){
         var me = this, previewPanel = me.query('[action="upload"]')[0];
         me.uploadWin.show();
         me.uploadWin.alignTo(previewPanel.el.dom, 'tr-tr', [-5, 30])
     },
+
     onDocUpload: function(btn){
-        var me = this, form = me.uploadWin.down('form').getForm(), win = btn.up('window');
+        var me = this,
+	        form = me.uploadWin.down('form').getForm(),
+	        win = btn.up('window');
+
         if(form.isValid()){
             form.submit({
-                    waitMsg: i18n('uploading_document') + '...',
-                    params: {
-                        pid: me.pid,
-                        docType: 'UploadDoc'
-                    },
-                    success: function(fp, o){
-                        win.close();
-                        me.patientDocumentsStore.load({
-                                params: {
-                                    pid: me.pid
-                                }
-                            });
-                    },
-                    failure: function(fp, o){
-                        //say(o.result.error);
-                    }
-                });
-        }
-    },
-    formSave: function(btn){
-        var me = this, form = btn.up('form').getForm(), record = form.getRecord(), values = form.getValues();
-        values.pid = me.pid;
-        record.set(values);
-        record.store.save({
-                scope: me,
-                callback: function(){
-                    app.setPatient(me.pid, null);
-                    me.getPatientImgs();
-                    me.verifyPatientRequiredInfo();
-                    me.readOnlyFields(form.getFields());
-                    me.msg('Sweet!', i18n('record_saved'))
+                waitMsg: i18n('uploading_document') + '...',
+                params: {
+	                pid: me.pid,
+	                docType: 'UploadDoc'
+                },
+                success: function(fp, o){
+                    win.close();
+                    me.patientDocumentsStore.load({params:{pid: me.pid}});
                 }
             });
+        }
     },
-    formCancel: function(btn){
-        var form = btn.up('form').getForm(), record = form.getRecord();
-        form.loadRecord(record);
-    },
+
+
     newDoc: function(btn){
         app.onNewDocumentsWin(btn.action)
     },
-    getFormData: function(formpanel, callback){
-        var me = this, rFn, uFn;
-        if(formpanel.itemId == 'demoFormPanel'){
-            rFn = Patient.getPatientDemographicData;
-            uFn = Patient.updatePatientDemographicData;
-        }
-        var formFields = formpanel.getForm().getFields().items, modelFields = [
-            {
-                name: 'pid',
-                type: 'int'
-            }
-        ];
-        for(var i = 0; i < formFields.length; i++){
-            if(formFields[i].xtype == 'mitos.datetime'){
-                modelFields.push({
-                        name: formFields[i].name,
-                        type: 'date',
-                        dateFormat: 'Y-m-d H:i:s'
-                    });
-            }else{
-                modelFields.push({
-                        name: formFields[i].name
-                    });
-            }
-        }
-        var model = Ext.define(formpanel.itemId + 'Model', {
-                extend: 'Ext.data.Model',
-                fields: modelFields,
-                proxy: {
-                    type: 'direct',
-                    api: {
-                        read: rFn,
-                        update: uFn
-                    }
-                }
-            });
-        var store = Ext.create('Ext.data.Store', {
-                model: model
-            });
-        store.load({
-                scope: me,
-                callback: function(records){
-                    callback(formpanel.getForm().loadRecord(records[0]));
-                }
-            });
-    },
-    beforePanelRender: function(){
-        if(acl['access_demographics']){
-            var me = this,
-	            demoFormPanel = me.query('[action="demoFormPanel"]')[0],
-	            whoPanel;
-            me.getFormItems(me.demoForm, 1, function(success){
-                if(success){
-	                whoPanel = me.demoForm.query('tabpanel')[0].items.items[0];
-	                whoPanel.insert(0,
-		                Ext.create('Ext.panel.Panel', {
-			                action: 'patientImgs',
-			                layout: 'hbox',
-			                style: 'float:right',
-			                bodyPadding: 5,
-			                height: 160,
-			                width: 255,
-			                items: [me.patientImg = Ext.create('Ext.container.Container', {
-				                html: '<img src="resources/images/icons/patientPhotoId.jpg" height="119" width="119" />',
-				                margin: '0 5 0 0'
-			                }), me.patientQRcode = Ext.create('Ext.container.Container', {
-				                html: '<img src="resources/images/icons/patientDataQrCode.png" height="119" width="119" />',
-				                margin: 0
-			                })],
-			                bbar: ['-', {
-				                text: i18n('take_picture'),
-				                scope: me,
-				                handler: me.getPhotoIdWindow
-			                }, '-', '->', '-', {
-				                text: i18n('print_qrcode'),
-				                scope: me,
-				                handler: function(){
-					                window.printQRCode(app.patient.pid);
-				                }
-			                }, '-']
-		                })
-	                );
 
-	                //	                me.getFormItems(me.demoForm, 1, function(formPanel, items){
-////			            var primary = formPanel.getForm().findField('primary_subscriber_relationship');
-////			            primary.on('select', me.copyData, me);
-////			            var secondary = formPanel.getForm().findField('secondary_subscriber_relationship');
-////			            secondary.on('select', me.copyData, me);
-////			            var tertiary = formPanel.getForm().findField('tertiary_subscriber_relationship');
-////			            tertiary.on('select', me.copyData, me);
-//	                });
-                }
-            });
-	        me.getFormItems(me.ins1, 11, function(formPanel, items){
-		        formPanel.insert(0,
-			        Ext.widget('panel', {
-				        style: 'float:right',
-				        height: 182,
-				        width: 255,
-				        items: [me.primaryInsuranceImg = Ext.create('Ext.container.Container', {
-					        html: '<img src="resources/images/icons/no_card.jpg" height="154" width="254" />'
-				        }), me.primaryInsuranceImgUpload = Ext.create('Ext.window.Window', {
-					        draggable: false,
-					        closable: false,
-					        closeAction: 'hide',
-					        items: [
-						        {
-							        xtype: 'form',
-							        bodyPadding: 10,
-							        width: 310,
-							        items: [
-								        {
-									        xtype: 'filefield',
-									        name: 'filePath',
-									        buttonText: i18n('select_a_file') + '...',
-									        anchor: '100%'
-								        }
-							        ],
-							        //   url: 'dataProvider/DocumentHandler.php'
-							        api: {
-								        submit: DocumentHandler.uploadDocument
-							        }
-						        }
-					        ],
-					        buttons: [
-						        {
-							        text: i18n('cancel'),
-							        handler: function(btn){
-								        btn.up('window').close();
-							        }
-						        },
-						        {
-							        text: i18n('upload'),
-							        scope: me,
-							        action: 'Primary Insurance',
-							        handler: me.onInsuranceUpload
-						        }
-					        ]
-				        })],
-				        bbar: ['->', '-', {
-					        text: i18n('upload'),
-					        action: 'primaryInsurance',
-					        scope: me,
-					        handler: me.uploadInsurance
-				        }, '-']
-			        })
-		        );
-	        });
-	        me.getFormItems(me.ins2, 11, function(formPanel, items){
-		        formPanel.insert(0,
-                    Ext.widget('panel',{
-                        style: 'float:right',
-                        height: 182,
-                        width: 255,
-                        items: [me.secondaryInsuranceImg = Ext.create('Ext.container.Container', {
-                                html: '<img src="resources/images/icons/no_card.jpg" height="154" width="254" />'
-                            }), me.secondaryInsuranceImgUpload = Ext.create('Ext.window.Window', {
-                                draggable: false,
-                                closable: false,
-                                closeAction: 'hide',
-                                items: [
-                                    {
-                                        xtype: 'form',
-                                        bodyPadding: 10,
-                                        width: 310,
-                                        items: [
-                                            {
-                                                xtype: 'filefield',
-                                                name: 'filePath',
-                                                buttonText: i18n('select_a_file') + '...',
-                                                anchor: '100%'
-                                            }
-                                        ],
-                                        //   url: 'dataProvider/DocumentHandler.php'
-                                        api: {
-                                            submit: DocumentHandler.uploadDocument
-                                        }
-                                    }
-                                ],
-                                buttons: [
-                                    {
-                                        text: i18n('cancel'),
-                                        handler: function(btn){
-                                            btn.up('window').close();
-                                        }
-                                    },
-                                    {
-                                        text: i18n('upload'),
-                                        scope: me,
-                                        action: 'Secondary Insurance',
-                                        handler: me.onInsuranceUpload
-                                    }
-                                ]
-                            })],
-                        bbar: ['->', '-', {
-                            text: i18n('upload'),
-                            action: 'secondaryInsurance',
-                            scope: me,
-                            handler: me.uploadInsurance
-                        }, '-']
-                    })
-                );
-	        });
-	        me.getFormItems(me.ins3, 11, function(formPanel, items){
-		        formPanel.insert(0,
-                    Ext.widget('panel', {
-                        style: 'float:right',
-                        height: 182,
-                        width: 255,
-                        items: [me.tertiaryInsuranceImg = Ext.create('Ext.container.Container', {
-                                html: '<img src="resources/images/icons/no_card.jpg" height="154" width="254" />'
-                            }), me.tertiaryInsuranceImgUpload = Ext.create('Ext.window.Window', {
-                                draggable: false,
-                                closable: false,
-                                closeAction: 'hide',
-                                items: [
-                                    {
-                                        xtype: 'form',
-                                        bodyPadding: 10,
-                                        width: 310,
-                                        items: [
-                                            {
-                                                xtype: 'filefield',
-                                                name: 'filePath',
-                                                buttonText: i18n('select_a_file') + '...',
-                                                anchor: '100%'
-                                            }
-                                        ],
-                                        //   url: 'dataProvider/DocumentHandler.php'
-                                        api: {
-                                            submit: DocumentHandler.uploadDocument
-                                        }
-                                    }
-                                ],
-                                buttons: [
-                                    {
-                                        text: i18n('cancel'),
-                                        handler: function(btn){
-                                            btn.up('window').close();
-                                        }
-                                    },
-                                    {
-                                        text: i18n('upload'),
-                                        scope: me,
-                                        action: 'Tertiary Insurance',
-                                        handler: me.onInsuranceUpload
-                                    }
-                                ]
-                            })],
-                        bbar: ['->', '-', {
-                            text: 'Upload',
-                            scope: me,
-                            action: 'tertiaryInsurance',
-                            handler: me.uploadInsurance
-                        }, '-']
-                    })
-                );
-	        });
-        }
-    },
-    uploadInsurance: function(btn){
-        var me = this, ImgContainer = btn.up('panel').down('container'), action = btn.action;
-        if(action == 'primaryInsurance'){
-            me.primaryInsuranceImgUpload.show();
-            me.primaryInsuranceImgUpload.alignTo(me.primaryInsuranceImg.el.dom, 'br-br', [0, 0]);
-        }else if(action == 'secondaryInsurance'){
-            me.secondaryInsuranceImgUpload.show();
-            me.secondaryInsuranceImgUpload.alignTo(me.secondaryInsuranceImg.el.dom, 'br-br', [0, 0]);
-        }
-        if(action == 'tertiaryInsurance'){
-            me.tertiaryInsuranceImgUpload.show();
-            me.tertiaryInsuranceImgUpload.alignTo(me.tertiaryInsuranceImg.el.dom, 'br-br', [0, 0]);
-        }
-    },
     rightColRender: function(panel){
         var me = this;
-        panel.getComponent('ImmuPanel').header.add({
+        panel.getComponent('ImmuPanel').header.add(
+	        {
                 xtype: 'button',
                 text: i18n('details'),
                 action: 'immunization',
                 scope: me,
                 handler: me.medicalWin
 
-            });
-        panel.getComponent('MedicationsPanel').header.add({
+            }
+        );
+        panel.getComponent('MedicationsPanel').header.add(
+	        {
                 xtype: 'button',
                 text: i18n('details'),
                 action: 'medications',
                 scope: me,
                 handler: me.medicalWin
 
-            });
-        panel.getComponent('AllergiesPanel').header.add({
+            }
+        );
+        panel.getComponent('AllergiesPanel').header.add(
+	        {
                 xtype: 'button',
                 text: i18n('details'),
                 action: 'allergies',
                 scope: me,
                 handler: me.medicalWin
-            });
-        panel.getComponent('IssuesPanel').header.add({
+            }
+        );
+        panel.getComponent('IssuesPanel').header.add(
+	        {
                 xtype: 'button',
                 text: i18n('details'),
                 action: 'issues',
                 scope: me,
                 handler: me.medicalWin
-            });
-        panel.getComponent('DentalPanel').header.add({
+            }
+        );
+        panel.getComponent('DentalPanel').header.add(
+	        {
                 xtype: 'button',
                 text: i18n('details'),
                 action: 'dental',
                 scope: me,
                 handler: me.medicalWin
-            });
-        panel.getComponent('SurgeryPanel').header.add({
+            }
+        );
+        panel.getComponent('SurgeryPanel').header.add(
+	        {
                 xtype: 'button',
                 text: i18n('details'),
                 action: 'surgery',
                 scope: me,
                 handler: me.medicalWin
-            });
-        this.doLayout();
+            }
+        );
     },
     medicalWin: function(btn){
         app.onMedicalWin(btn);
     },
-    getPatientImgs: function(){
-        var me = this, number = Ext.Number.randomInt(1, 1000);
-        me.patientImg.update('<img src="' + settings.site_url + '/patients/' + me.pid + '/patientPhotoId.jpg?' + number + '" height="119" width="119" />');
-        me.patientQRcode.update('<a ondblclick="printQRCode(app.patient.pid)"><img src="' + settings.site_url + '/patients/' + me.pid + '/patientDataQrCode.png?' + number + '" height="119" width="119" title="Print QRCode" /></a>');
-    },
-    getPhotoIdWindow: function(){
-        var me = this;
-        me.PhotoIdWindow = Ext.create('App.ux.PhotoIdWindow', {
-                title: i18n('patient_photo_id'),
-                loadMask: true,
-                modal: true
-            }).show();
-    },
-    completePhotoId: function(){
-        this.PhotoIdWindow.close();
-        this.getPatientImgs();
-    },
-    onInsuranceUpload: function(btn){
-        var me = this, action = btn.action, win = btn.up('window'), form, imgCt;
-        if(action == 'Primary Insurance'){
-            form = me.primaryInsuranceImgUpload.down('form').getForm();
-            imgCt = me.primaryInsuranceImg;
-        }else if(action == 'Secondary Insurance'){
-            form = me.secondaryInsuranceImgUpload.down('form').getForm();
-            imgCt = me.secondaryInsuranceImg;
-        }
-        if(action == 'Tertiary Insurance'){
-            form = me.tertiaryInsuranceImgUpload.down('form').getForm();
-            imgCt = me.tertiaryInsuranceImg;
-        }
-        if(form.isValid()){
-            form.submit({
-                    waitMsg: i18n('uploading_insurance') + '...',
-                    params: {
-                        pid: app.patient.pid,
-                        docType: action
-                    },
-                    success: function(fp, o){
-                        say(o.result.doc);
-                        win.close();
-                        imgCt.update('<img src="' + o.result.doc.url + '" height="154" width="254" />');
-                    },
-                    failure: function(fp, o){
-                        say(o.result.error);
-                        win.close();
-                    }
-                });
-        }
-    },
+
+
     /**
      * verify the patient required info and add a yellow background if empty
      */
     verifyPatientRequiredInfo: function(){
         var me = this, formPanel = me.query('[action="demoFormPanel"]')[0], field;
         me.patientAlertsStore.load({
-                scope: me,
-                params: {
-                    pid: me.pid
-                },
-                callback: function(records, operation, success){
-                    for(var i = 0; i < records.length; i++){
-                        field = formPanel.getForm().findField(records[i].data.name);
-                        if(records[i].data.val){
-                            field.removeCls('x-field-yellow');
-                        }else{
-                            field.addCls('x-field-yellow');
-                        }
+            scope: me,
+            params: {
+                pid: me.pid
+            },
+            callback: function(records, operation, success){
+                for(var i = 0; i < records.length; i++){
+                    field = formPanel.getForm().findField(records[i].data.name);
+                    if(records[i].data.val){
+                        field.removeCls('x-field-yellow');
+                    }else{
+                        field.addCls('x-field-yellow');
                     }
                 }
-            });
-    },
-    /**
-     * allow to edit the field if the filed has no data
-     * @param fields
-     */
-    readOnlyFields: function(fields){
-        for(var i = 0; i < fields.items.length; i++){
-            var f = fields.items[i], v = f.getValue(), n = f.name;
-            if(n == 'SS' || n == 'DOB' || n == 'sex'){
-                if(v == null || v == ''){
-                    f.setReadOnly(false);
-                }else{
-                    f.setReadOnly(true);
-                }
             }
-        }
+        });
     },
+
     /**
      * load all the stores in the summaryStores array
      */
     loadStores: function(){
         var me = this;
         for(var i = 0; i < me.stores.length; i++){
-            me.stores[i].load({
-                    params: {
-                        pid: me.pid
-                    }
-                });
+	        me.stores[i].load({
+                params: {
+                    pid: me.pid
+                },
+		        callback:function(){
+			        me.el.unmask();
+		        }
+            });
         }
     },
     /**
@@ -1334,8 +937,11 @@ Ext.define('App.view.patient.Summary', {
      * to call every this panel becomes active
      */
     onActive: function(callback){
-        var me = this, billingPanel, demographicsPanel;
+        var me = this,
+	        billingPanel;
+
         if(me.checkIfCurrPatient()){
+	        me.el.mask(i18n('loading...'))
             /**
              * convenient way to refer to current pid within this panel
              * @type {*}
@@ -1355,38 +961,22 @@ Ext.define('App.view.patient.Summary', {
              */
             me.setReadOnly(app.patient.readOnly);
             me.setButtonsDisabled(me.query('button[action="readOnly"]'));
-            /**
-             * get all the demographic data if user has access.
-             * including all the images (insurance cards, patient img, and QRcode)
-             */
-            if(acl['access_demographics']){
-                var form = me.demoForm;
-	            form.getForm().reset();
-                me.getFormData(form, function(form){
-                    me.readOnlyFields(form.getFields());
-                });
-                me.getPatientImgs();
-                me.verifyPatientRequiredInfo();
-                Patient.getPatientInsurancesCardsUrlByPid(me.pid, function(insurance){
-                    var noCard = 'resources/images/icons/no_card.jpg',
-                        Ins1 = insurance.Primary.url ? insurance.Primary.url : noCard,
-                        Ins2 = insurance.Secondary.url ? insurance.Secondary.url : noCard,
-                        Ins3 = insurance.Tertiary.url ? insurance.Tertiary.url : noCard;
-                    me.primaryInsuranceImg.update('<img src="'+Ins1+'" height="154" width="254" />');
-                    me.secondaryInsuranceImg.update('<img src="'+Ins2+'" height="154" width="254" />');
-                    me.tertiaryInsuranceImg.update('<img src="'+Ins3+'" height="154" width="254" />');
-                });
-            }
+
+            if(acl['access_demographics']) me.demographics.loadPatient(me.pid);
+
             /**
              * get billing info if user has access
              */
             if(acl['access_patient_billing']){
                 billingPanel = me.tabPanel.getComponent('balancePanel');
-                Fees.getPatientBalance({
+                Fees.getPatientBalance(
+	                {
                         pid: me.pid
-                    }, function(balance){
+                    },
+	                function(balance){
                         billingPanel.update(i18n('account_balance') + ': $' + balance);
-                    });
+                    }
+                );
             }
             /**
              * reset tab panel to the first tap
@@ -1396,8 +986,8 @@ Ext.define('App.view.patient.Summary', {
              * load all the stores
              */
             me.loadStores();
-            if(( typeof callback) == 'function')
-                callback(true);
+
+            if(typeof callback == 'function') callback(true);
         }else{
             callback(false);
             me.pid = null;

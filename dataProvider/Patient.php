@@ -87,25 +87,15 @@ class Patient
 	 * @param stdClass $params
 	 * @return mixed
 	 */
-	public function savePatient(stdClass $params){
+	public function savePatient($params){
 		$this->setPatientModel();
-
-		$patient = $this->p->save($params);
-
-		$patient->fullname = Person::fullname($patient->fname, $patient->mname, $patient->lname);
-
-		if(!$this->createPatientDir($patient->pid)){
-			return array(
-				'success' => false, 'error' => 'Patient directory failed'
-			);
-		};
-
-		$this->createPatientQrCode($patient->pid, $patient->fullname);
-		$this->createDefaultPhotoId($patient->pid);
-
-		return $patient;
+		$this->patient = $this->p->save($params);
+		$this->patient['fullname'] = Person::fullname($this->patient['fname'], $this->patient['mname'], $this->patient['lname']);
+		$this->createPatientDir($this->patient['pid']);
+		$this->createPatientQrCode($this->patient['pid'], $this->patient['pid']);
+		$this->createDefaultPhotoId($this->patient['pid']);
+		return $this->patient;
 	}
-
 	/**
 	 * @param stdClass $params
 	 * @return mixed
@@ -118,28 +108,92 @@ class Patient
 	 * @param stdClass $params
 	 * @return mixed
 	 */
-	public function saveInsurance(stdClass $params){
+	public function saveInsurance($params){
 		$this->setInsuranceModels();
 		return $this->i->save($params);
 	}
-
-
-
-
-
-
-
-
-
-
 	/**
+	 * @param $pid
 	 * @return mixed
 	 */
-	protected function getCurrPid()
+	protected function setPatient($pid)
 	{
-		return $_SESSION['patient']['pid'];
-	}
+		if($pid != null && ($this->patient == null || $this->patient != $pid)){
+			$this->setPatientModel();
+			$this->patient = $this->p->load($pid)->one();
+			$this->patient['pic'] = $this->getPatientPhotoSrc($this->patient['pid']);
+			$this->patient['age'] = $this->getPatientAge();
 
+			$_SESSION['patient']['pid']  = $this->patient['pid'];
+			$_SESSION['patient']['name'] = $this->getPatientFullName();
+		}
+	}
+	/**
+	 * @param $pid
+	 * @return mixed
+	 */
+	public function unsetPatient($pid)
+	{
+		if($pid != null) $this->patientChartInByPid($pid);
+		$_SESSION['patient']['pid']  = null;
+		$_SESSION['patient']['name'] = null;
+		return;
+	}
+	/**
+	 * @param $pid
+	 * @return array
+	 */
+	public function getPatientDemographicDataByPid($pid)
+	{
+		$this->setPatient($pid);
+		return $this->patient;
+	}
+	/**
+	 * @param stdClass $params
+	 * @return array
+	 */
+	public function getPatientDemographicData(stdClass $params)
+	{
+		$pid = (isset($params->pid) ? $params->pid : $_SESSION['patient']['pid']);
+		return $this->setPatient($pid);
+	}
+	/**
+	 * @param $name
+	 * @return array
+	 */
+	public function createNewPatientOnlyName($name)
+	{
+		$params = new stdClass();
+		$foo = explode(' ', $name);
+		$params->fname = trim($foo[0]);
+		$params->mname = '';
+		$params->lname = '';
+		if(count($foo) == 2){
+			$params->lname = trim($foo[1]);
+		}elseif(count($foo) >= 3) {
+			$params->mname = (isset($foo[1])) ? trim($foo[1]) : '';
+			unset($foo[0], $foo[1]);
+			$params->lname = '';
+			foreach($foo as $fo){
+				$params->lname .= $params->lname . ' ' . $fo . ' ';
+			}
+			$params->lname = trim($params->lname);
+		}
+		$params->create_uid = $_SESSION['user']['id'];
+		$params->create_uid = $_SESSION['user']['id'];
+		$params->create_date = Time::getLocalTime();
+		$params->update_date = Time::getLocalTime();
+		$patient = $this->savePatient($params);
+		return array('success' => true, 'patient' => array('pid' => $patient['pid'], 'fullname' => $patient['fullname']));
+	}
+	/**
+	 * @param stdClass $params
+	 * @return mixed
+	 */
+	public function createNewPatient(stdClass $params)
+	{
+		return $this->savePatient($params);
+	}
 	/**
 	 * @param $pid
 	 * @internal param $pid
@@ -153,21 +207,23 @@ class Patient
 		}
 		include_once ($_SESSION['root'] . '/dataProvider/PoolArea.php');
 		$this->setPatient($pid);
+		$poolArea   = new PoolArea();
 
-		$poolArea                    = new PoolArea();
-		$p                           = $this->isPatientChartOutByPid($this->patient['pid']);
-		$area                        = $poolArea->getCurrentPatientPoolAreaByPid($this->patient['pid']);
+		$p          = $this->isPatientChartOutByPid($this->patient['pid']);
+		$area       = $poolArea->getCurrentPatientPoolAreaByPid($this->patient['pid']);
+
 		if($p === false || (is_array($p) && $p['uid'] == $_SESSION['user']['id'])){
 			$this->patientChartOutByPid($this->patient['pid'], $area['area_id']);
 			$_SESSION['patient']['readOnly'] = false;
-		} else {
+		}else{
 			$_SESSION['patient']['readOnly'] = true;
 		}
+
 		return array(
 			'patient' => array(
 				'pid' => $this->patient['pid'],
 				'name' => $_SESSION['patient']['name'],
-				'pic' => $this->getPatientPhotoSrcId(),
+				'pic' => $this->getPatientPhotoSrc(),
 				'sex' => $this->getPatientSex(),
 				'dob' => $dob = $this->getPatientDOB(),
 				'age' => $this->getPatientAge(),
@@ -181,136 +237,87 @@ class Patient
 			'area' => ($p === false ? null : $poolArea->getAreaTitleById($p['pool_area_id']))
 		);
 	}
-
 	/**
-	 * @param $pid
-	 * @return mixed
-	 */
-	protected function setPatient($pid)
-	{
-		if($pid != null && ($this->patient == null || $this->patient != $pid)){
-			$this->patient = $this->getPatientDemographicDataByPid($pid);
-			$_SESSION['patient']['pid']  = $this->patient['pid'];
-			$_SESSION['patient']['name'] = $this->getPatientFullName();
-		}
-	}
-
-	/**
-	 * @param $pid
-	 * @return mixed
-	 */
-	public function unsetPatient($pid)
-	{
-		if($pid != null){
-			$this->patientChartInByPid($pid);
-		}
-		$_SESSION['patient']['pid']  = null;
-		$_SESSION['patient']['name'] = null;
-		return;
-	}
-
-	public function setPatientRating(stdClass $params){
-		$data = get_object_vars($params);
-		unset($data['pid']);
-		$this->db->setSQL($this->db->sqlBind($data, 'patient', 'U', array('pid' => $params->pid)));
-		$this->db->execLog();
-		return;
-	}
-
-	/**
-	 * @param $pid
 	 * @return array
 	 */
-	public function getPatientDemographicDataByPid($pid)
+	public function getPatientAge()
 	{
-		$this->db->setSQL("SELECT * FROM patient WHERE pid = '$pid'");
-		$patient = $this->db->fetchRecord(PDO::FETCH_ASSOC);
-		$patient['pic'] = $this->getPatientPhotoSrcIdByPid($patient['pid']);
-		$patient['name'] = Person::fullname($patient['fname'],$patient['mname'],$patient['lname']);
-		$patient['age'] = $this->getPatientAgeByDOB($patient['DOB']);
-		return $patient;
+		return $this->getPatientAgeByDOB($this->patient['DOB']);
 	}
-
-	public function createNewPatient(stdClass $params)
+	/**
+	 * @param $dob
+	 * @internal param $birthday
+	 * @return array
+	 */
+	public function getPatientAgeByDOB($dob)
 	{
-		$data = get_object_vars($params);
-		foreach($data as $key => $val){
-			if($val == null) unset($data[$key]);
-			if($val === false) $data[$key] = 0;
-			if($val === true) $data[$key] = 1;
-		}
-		$this->db->setSQL($this->db->sqlBind($data, 'patient', 'I'));
-		$this->db->execLog();
-		$pid = $this->db->lastInsertId;
-		$this->db->setSQL("SELECT pid, fname, mname, lname
-                     FROM patient
-                    WHERE pid = '$pid'");
-		$patient             = $this->db->fetchRecord(PDO::FETCH_ASSOC);
-		$patient['fullname'] = Person::fullname($patient['fname'], $patient['mname'], $patient['lname']);
-		if(!$this->createPatientDir($pid)){
+		if($this->patient['DOB'] != '0000-00-00 00:00:00'){
+			$today         = new DateTime(date('Y-m-d'));
+			$t             = new DateTime(date($dob));
+			$age['days']   = $t->diff($today)->d;
+			$age['months'] = $t->diff($today)->m;
+			$age['years']  = $t->diff($today)->y;
+			if($age['years'] >= 2){
+				$ageStr = $age['years'] . ' yr(s)';
+			}else{
+				if($age['years'] >= 1){
+					$ageStr = 12 + $age['months'] . ' mo(s)';
+				}else{
+					if($age['months'] >= 1){
+						$ageStr = $age['months'] . ' mo(s) and ' . $age['days'] . ' day(s)';
+					}else{
+						$ageStr = $age['days'] . ' day(s)';
+					}
+				}
+			}
 			return array(
-				'success' => false, 'error' => 'Patient directory failed'
+				'DMY' => $age, 'str' => $ageStr
+			);
+		}else{
+			return array(
+				'DMY' => array(
+					'years'=>0,
+					'months'=>0,
+					'days'=>0
+				), 'str' => '<span style="color:red">Age</span>'
 			);
 		}
-		;
-		$this->createPatientQrCode($pid, $patient['fullname']);
-		$this->createDefaultPhotoId($pid);
-		return array(
-			'success' => true, 'patient' => array(
-				'pid' => $pid, 'fullname' => $patient['fullname']
-			)
-		);
 	}
-
-	public function createNewPatientOnlyName($name)
-	{
-		$data          = array();
-		$foo           = explode(' ', $name);
-		$data['fname'] = trim($foo[0]);
-		if(count($foo) == 2){
-			$data['lname'] = trim($foo[1]);
-		} elseif(count($foo) >= 3) {
-			$data['mname'] = (isset($foo[1])) ? trim($foo[1]) : '';
-			unset($foo[0], $foo[1]);
-			$data['lname'] = '';
-			foreach($foo as $fo){
-				$data['lname'] .= $data['lname'] . ' ' . $fo . ' ';
-			}
-		}
-		$data['date_created'] = Time::getLocalTime();
-
-		$this->db->setSQL($this->db->sqlBind($data, 'patient', 'I'));
-		$this->db->execLog();
-		$pid = $this->db->lastInsertId;
-        if($pid == 0){
-            return array('success' => false, 'error' => 'Unable to get PID for this emergency.');
-        }elseif(!$this->createPatientDir($pid)){
-			return array('success' => false, 'error' => 'Patient directory failed');
-		}else{
-            $this->createPatientQrCode($pid, $name);
-            $this->createDefaultPhotoId($pid);
-            return array('success' => true, 'patient' => array('pid' => $pid, 'fullname' => $name));
-        }
-	}
-
 	/**
 	 * @param stdClass $params
-	 * @return array
+	 * @return object
 	 */
-	public function updatePatientDemographicData(stdClass $params)
-	{
-		$data = get_object_vars($params);
-		unset($data['pid'],$data['pic'],$data['age']);
-		foreach($data as $key => $val){
-			if($val == null) unset($data[$key]);
-			if($val === false) $data[$key] = 0;
-			if($val === true) $data[$key] = 1;
-		}
-		$this->db->setSQL($this->db->sqlBind($data, 'patient', 'U', array('pid' => $params->pid)));
-		$this->db->execLog();
-		$this->createPatientQrCode($params->pid, Person::fullname($params->fname, $params->mname, $params->lname));
-		return $params;
+	public function setPatientRating(stdClass $params){
+		$this->setPatientModel();
+		return $this->p->save($params);
 	}
+
+	public function createPatientQrCode($pid, $fullname)
+	{
+		//set it to writable location, a place for temp generated PNG files
+		$path         = $_SESSION['site']['path'] . '/patients/' . $pid;
+		$data         = '{"name":"' . $fullname . '","pid":' . $pid . ',"ehr": "GaiaEHR"}';
+		$PNG_TEMP_DIR = $path;
+		include ($_SESSION['root'] . '/lib/phpqrcode/qrlib.php');
+		$filename = $PNG_TEMP_DIR . '/patientDataQrCode.png';
+		QRcode::png($data, $filename, 'Q', 2, 2);
+	}
+
+
+	/**
+	 * @return mixed
+	 */
+	protected function getCurrPid()
+	{
+		return $_SESSION['patient']['pid'];
+	}
+
+
+
+
+
+
+
 
 	public function isCurrPatientOnReadMode()
 	{
@@ -376,19 +383,7 @@ class Patient
 		);
 	}
 
-	/**
-	 * @param stdClass $params
-	 * @return array
-	 */
-	public function getPatientDemographicData(stdClass $params)
-	{
-		$pid = (isset($params->pid) ? $params->pid : $_SESSION['patient']['pid']);
-		$this->db->setSQL("SELECT * FROM patient WHERE pid = '$pid'");
-		$p = $this->db->fetchRecord(PDO::FETCH_ASSOC);
-		$p['pic'] = $this->getPatientPhotoSrcIdByPid($p['pid']);
-		$p['age'] = $this->getPatientAgeByDOB($p['DOB']);
-		return $p;
-	}
+
 
 	private function createPatientDir($pid)
 	{
@@ -405,16 +400,7 @@ class Patient
 		}
 	}
 
-	public function createPatientQrCode($pid, $fullname)
-	{
-		//set it to writable location, a place for temp generated PNG files
-		$path         = $_SESSION['site']['path'] . '/patients/' . $pid;
-		$data         = '{"name":"' . $fullname . '","pid":' . $pid . ',"ehr": "GaiaEHR"}';
-		$PNG_TEMP_DIR = $path;
-		include ($_SESSION['root'] . '/lib/phpqrcode/qrlib.php');
-		$filename = $PNG_TEMP_DIR . '/patientDataQrCode.png';
-		QRcode::png($data, $filename, 'Q', 2, 2);
-	}
+
 
 	public function createDefaultPhotoId($pid)
 	{
@@ -548,66 +534,7 @@ class Patient
 		return $patient['DOB'];
 	}
 
-	/**
-	 * @internal param $birthday
-	 * @return array
-	 */
-	public function getPatientAge()
-	{
-		$today         = new DateTime(date('Y-m-d'));
-		$t             = new DateTime(date($this->patient['DOB']));
-		$age['days']   = $t->diff($today)->d;
-		$age['months'] = $t->diff($today)->m;
-		$age['years']  = $t->diff($today)->y;
-		if($age['years'] >= 2){
-			$ageStr = $age['years'] . ' yr(s)';
-		} else {
-			if($age['years'] >= 1){
-				$ageStr = 12 + $age['months'] . ' mo(s)';
-			} else {
-				if($age['months'] >= 1){
-					$ageStr = $age['months'] . ' mo(s) and ' . $age['days'] . ' day(s)';
-				} else {
-					$ageStr = $age['days'] . ' day(s)';
-				}
-			}
-		}
-		return array(
-			'DMY' => $age, 'str' => $ageStr
-		);
-	}
 
-	/**
-	 * @param $dob
-	 * @internal param $birthday
-	 * @return array
-	 */
-	public function getPatientAgeByDOB($dob)
-	{
-		$today         = new DateTime(date("Y-m-d"));
-		$t             = new DateTime(date($dob));
-		$age['days']   = $t->diff($today)->d;
-		$age['months'] = $t->diff($today)->m;
-		$age['years']  = $t->diff($today)->y;
-		if($age['years'] >= 2){
-			$ageStr = $age['years'] . ' yr(s)';
-		} else {
-			if($age['years'] >= 1){
-				$ageStr = 12 + $age['months'] . ' mo(s)';
-			} else {
-				if($age['months'] >= 1){
-					$ageStr = $age['months'] . ' mo(s) and ' . $age['days'] . ' day(s)';
-				} else {
-					$ageStr = $age['days'] . ' day(s)';
-				}
-			}
-		}
-		//TODO: ADD THIS TO DEBUG DATE IN THE FUTURE
-		//$ageStr .= ' (' . $age['years'] . 'y' . $age['months'] . 'm' . $age['days'] . 'd)';
-		return array(
-			'DMY' => $age, 'str' => $ageStr
-		);
-	}
 
 	public function getPatientAgeByPid($pid)
 	{
@@ -761,7 +688,7 @@ class Patient
 		return;
 	}
 
-	public function getPatientPhotoSrcId()
+	public function getPatientPhotoSrc()
 	{
 		return $_SESSION['site']['url'] . '/patients/' . $this->patient['pid'] . '/patientPhotoId.jpg';
 	}

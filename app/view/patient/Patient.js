@@ -24,7 +24,7 @@ Ext.define('App.view.patient.Patient', {
 		type:'vbox',
 		align:'stretch'
 	},
-
+	alias:'widget.patientdeomgraphics',
 	newPatient:true,
     pid: null,
 
@@ -32,6 +32,7 @@ Ext.define('App.view.patient.Patient', {
         var me = this;
 
 	    me.store = Ext.create('App.store.patient.Patient');
+	    me.patientAlertsStore = Ext.create('App.store.patient.MeaningfulUseAlert');
 
 		Ext.apply(me,{
 			items:[
@@ -95,35 +96,6 @@ Ext.define('App.view.patient.Patient', {
 	    me.callParent(arguments);
     },
 
-    formSave: function(){
-        var me = this,
-	        form = me.demoForm.getForm(),
-	        record = form.getRecord(),
-	        values = form.getValues();
-
-	    say(values);
-
-        record.set(values);
-        record.save({
-            scope: me,
-            callback: function(record){
-	            say(record.data);
-	            app.setPatient(record.data.pid, null);
-                if(!me.newPatient){
-	                me.getPatientImgs();
-	                me.verifyPatientRequiredInfo();
-	                me.readOnlyFields(form.getFields());
-                }
-                me.msg('Sweet!', i18n('record_saved'))
-            }
-        });
-    },
-
-    formCancel: function(btn){
-        var form = btn.up('form').getForm(), record = form.getRecord();
-        form.loadRecord(record);
-    },
-
     beforePanelRender: function(){
         var me = this,
             whoPanel;
@@ -178,46 +150,48 @@ Ext.define('App.view.patient.Patient', {
 				        style: 'float:right',
 				        height: 182,
 				        width: 255,
-				        items: [me.primaryInsuranceImg = Ext.create('Ext.container.Container', {
-					        html: '<img src="resources/images/icons/no_card.jpg" height="154" width="254" />'
-				        }), me.primaryInsuranceImgUpload = Ext.create('Ext.window.Window', {
-					        draggable: false,
-					        closable: false,
-					        closeAction: 'hide',
-					        items: [
-						        {
-							        xtype: 'form',
-							        bodyPadding: 10,
-							        width: 310,
-							        items: [
-								        {
-									        xtype: 'filefield',
-									        name: 'filePath',
-									        buttonText: i18n('select_a_file') + '...',
-									        anchor: '100%'
+				        items: [
+					        me.primaryInsuranceImg = Ext.create('Ext.container.Container', {
+					            html: '<img src="resources/images/icons/no_card.jpg" height="154" width="254" />'
+				            }),
+					        me.primaryInsuranceImgUpload = Ext.create('Ext.window.Window', {
+						        draggable: false,
+						        closable: false,
+						        closeAction: 'hide',
+						        items: [
+							        {
+								        xtype: 'form',
+								        bodyPadding: 10,
+								        width: 310,
+								        items: [
+									        {
+										        xtype: 'filefield',
+										        name: 'filePath',
+										        buttonText: i18n('select_a_file') + '...',
+										        anchor: '100%'
+									        }
+								        ],
+								        api: {
+									        submit: DocumentHandler.uploadDocument
 								        }
-							        ],
-							        //   url: 'dataProvider/DocumentHandler.php'
-							        api: {
-								        submit: DocumentHandler.uploadDocument
 							        }
-						        }
-					        ],
-					        buttons: [
-						        {
-							        text: i18n('cancel'),
-							        handler: function(btn){
-								        btn.up('window').close();
+						        ],
+						        buttons: [
+							        {
+								        text: i18n('cancel'),
+								        handler: function(btn){
+									        btn.up('window').close();
+								        }
+							        },
+							        {
+								        text: i18n('upload'),
+								        scope: me,
+								        action: 'Primary Insurance',
+								        handler: me.onInsuranceUpload
 							        }
-						        },
-						        {
-							        text: i18n('upload'),
-							        scope: me,
-							        action: 'Primary Insurance',
-							        handler: me.onInsuranceUpload
-						        }
-					        ]
-				        })],
+						        ]
+					        })
+				        ],
 				        bbar: ['->', '-', {
 					        text: i18n('upload'),
 					        action: 'primaryInsurance',
@@ -237,46 +211,48 @@ Ext.define('App.view.patient.Patient', {
 				        style: 'float:right',
 				        height: 182,
 				        width: 255,
-				        items: [me.secondaryInsuranceImg = Ext.create('Ext.container.Container', {
-					        html: '<img src="resources/images/icons/no_card.jpg" height="154" width="254" />'
-				        }), me.secondaryInsuranceImgUpload = Ext.create('Ext.window.Window', {
-					        draggable: false,
-					        closable: false,
-					        closeAction: 'hide',
-					        items: [
-						        {
-							        xtype: 'form',
-							        bodyPadding: 10,
-							        width: 310,
-							        items: [
-								        {
-									        xtype: 'filefield',
-									        name: 'filePath',
-									        buttonText: i18n('select_a_file') + '...',
-									        anchor: '100%'
+				        items: [
+					        me.secondaryInsuranceImg = Ext.create('Ext.container.Container', {
+						        html: '<img src="resources/images/icons/no_card.jpg" height="154" width="254" />'
+					        }),
+					        me.secondaryInsuranceImgUpload = Ext.create('Ext.window.Window', {
+						        draggable: false,
+						        closable: false,
+						        closeAction: 'hide',
+						        items: [
+							        {
+								        xtype: 'form',
+								        bodyPadding: 10,
+								        width: 310,
+								        items: [
+									        {
+										        xtype: 'filefield',
+										        name: 'filePath',
+										        buttonText: i18n('select_a_file') + '...',
+										        anchor: '100%'
+									        }
+								        ],
+								        api: {
+									        submit: DocumentHandler.uploadDocument
 								        }
-							        ],
-							        //   url: 'dataProvider/DocumentHandler.php'
-							        api: {
-								        submit: DocumentHandler.uploadDocument
 							        }
-						        }
-					        ],
-					        buttons: [
-						        {
-							        text: i18n('cancel'),
-							        handler: function(btn){
-								        btn.up('window').close();
+						        ],
+						        buttons: [
+							        {
+								        text: i18n('cancel'),
+								        handler: function(btn){
+									        btn.up('window').close();
+								        }
+							        },
+							        {
+								        text: i18n('upload'),
+								        scope: me,
+								        action: 'Secondary Insurance',
+								        handler: me.onInsuranceUpload
 							        }
-						        },
-						        {
-							        text: i18n('upload'),
-							        scope: me,
-							        action: 'Secondary Insurance',
-							        handler: me.onInsuranceUpload
-						        }
-					        ]
-				        })],
+						        ]
+					        })
+				        ],
 				        bbar: ['->', '-', {
 					        text: i18n('upload'),
 					        action: 'secondaryInsurance',
@@ -335,7 +311,8 @@ Ext.define('App.view.patient.Patient', {
 								        handler: me.onInsuranceUpload
 							        }
 						        ]
-					        })],
+					        })
+				        ],
 				        bbar: ['->', '-', {
 					        text: 'Upload',
 					        scope: me,
@@ -454,16 +431,16 @@ Ext.define('App.view.patient.Patient', {
      * @param fields
      */
     readOnlyFields: function(fields){
-        for(var i = 0; i < fields.items.length; i++){
-            var f = fields.items[i], v = f.getValue(), n = f.name;
-            if(n == 'SS' || n == 'DOB' || n == 'sex'){
-                if(v == null || v == ''){
-                    f.setReadOnly(false);
-                }else{
-                    f.setReadOnly(true);
-                }
-            }
-        }
+//        for(var i = 0; i < fields.items.length; i++){
+//            var f = fields.items[i], v = f.getValue(), n = f.name;
+//            if(n == 'SS' || n == 'DOB' || n == 'sex'){
+//                if(v == null || v == ''){
+//                    f.setReadOnly(false);
+//                }else{
+//                    f.setReadOnly(true);
+//                }
+//            }
+//        }
     },
 
 	copyData:function(combo, records){
@@ -498,40 +475,106 @@ Ext.define('App.view.patient.Patient', {
 		}
 	},
 
+
+	formSave: function(){
+		var me = this,
+			form = me.demoForm.getForm(),
+			record = form.getRecord(),
+			values = form.getValues();
+
+		say(values);
+
+		record.set(values);
+		record.save({
+			scope: me,
+			callback: function(record){
+
+				app.setPatient(record.data.pid, null);
+
+				if(!me.newPatient){
+					me.getPatientImgs();
+					me.verifyPatientRequiredInfo();
+					me.readOnlyFields(form.getFields());
+				}
+
+				var insurances = record.insuranceStore.data.items;
+
+				for(var i=0; i < insurances.length; i++){
+					insurances[i].set({pid:record.data.pid});
+				}
+
+				record.insuranceStore.sync();
+				me.msg('Sweet!', i18n('record_saved'))
+			}
+		});
+	},
+
+	formCancel: function(btn){
+		var form = btn.up('form').getForm(), record = form.getRecord();
+		form.loadRecord(record);
+	},
+
 	loadNew:function(){
-		var user = Ext.create('App.model.patient.Patient',{
+		var patient = Ext.create('App.model.patient.Patient',{
 			'create_uid':app.user.id,
 			'write_uid':app.user.id,
 			'create_date':new Date(),
 			'update_date':new Date(),
 			'DOB':'000-00-00 00:00:00'
-		});
-		this.demoForm.getForm().loadRecord(user);
+		}),	store;
+
+		store = patient.insurance();
+
+		for(var i=0; i < 3; i++){
+			this.insPanel.items.items[i].getForm().loadRecord(
+				store.add({
+					'create_uid':app.user.id,
+					'write_uid':app.user.id,
+					'create_date':new Date(),
+					'update_date':new Date(),
+					'type': (i == 2 ? 'supplemental':'main')
+				})
+			);
+		}
+
+		say(store);
+
+		this.demoForm.getForm().loadRecord(patient);
 	},
 
-	loadRecord:function(record){
-		var me = this;
+	loadPatient:function(pid){
+		var me = this,
+			form = me.demoForm.getForm();
 
-		var form = me.demoForm.getForm();
+		me.pid = pid;
 
-		form.reset();
-		form.loadRecord(record);
+		me.store.load({
+			filters:[
+				{
+					property:'pid',
+					value:me.pid
+				}
+			],
+			callback:function(record){
+				form.reset();
+				form.loadRecord(record[0]);
 
-		me.setReadOnly(app.patient.readOnly);
-		me.setButtonsDisabled(me.query('button[action="readOnly"]'));
+				me.setReadOnly(app.patient.readOnly);
+				me.setButtonsDisabled(me.query('button[action="readOnly"]'));
 
-		me.getPatientImgs();
-		me.verifyPatientRequiredInfo();
+				me.getPatientImgs();
+				me.verifyPatientRequiredInfo();
 
-		Patient.getPatientInsurancesCardsUrlByPid(me.pid, function(insurance){
-			var noCard = 'resources/images/icons/no_card.jpg',
-				Ins1 = insurance.Primary.url ? insurance.Primary.url : noCard,
-				Ins2 = insurance.Secondary.url ? insurance.Secondary.url : noCard,
-				Ins3 = insurance.Tertiary.url ? insurance.Tertiary.url : noCard;
-			me.primaryInsuranceImg.update('<img src="'+Ins1+'" height="154" width="254" />');
-			me.secondaryInsuranceImg.update('<img src="'+Ins2+'" height="154" width="254" />');
-			me.tertiaryInsuranceImg.update('<img src="'+Ins3+'" height="154" width="254" />');
-		});
+				Patient.getPatientInsurancesCardsUrlByPid(me.pid, function(insurance){
+					var noCard = 'resources/images/icons/no_card.jpg',
+						Ins1 = insurance.Primary.url ? insurance.Primary.url : noCard,
+						Ins2 = insurance.Secondary.url ? insurance.Secondary.url : noCard,
+						Ins3 = insurance.Tertiary.url ? insurance.Tertiary.url : noCard;
+					me.primaryInsuranceImg.update('<img src="'+Ins1+'" height="154" width="254" />');
+					me.secondaryInsuranceImg.update('<img src="'+Ins2+'" height="154" width="254" />');
+					me.tertiaryInsuranceImg.update('<img src="'+Ins3+'" height="154" width="254" />');
+				});
+			}
+		})
 	}
-
 });

@@ -92,9 +92,9 @@ class MatchaCUP
 					$columnsx = $columns;
 				}
 				// where
-				if (is_integer($where))
+				if (is_numeric($where))
 				{
-					$wherex = "`id`='$where'";
+					$wherex = "`$this->primaryKey`='$where'";
 				}
 				elseif (is_array($where))
 				{
@@ -107,7 +107,7 @@ class MatchaCUP
 				if ($where != null)
 					$wherex = 'WHERE ' . $wherex;
 				// sql build
-				$this->sql = "SELECT $columnsx FROM `" . $this->model->table->name . "` $wherex";
+				$this->sql = "SELECT $columnsx FROM `" . $this->table . "` $wherex";
 			}
 			else
 			{
@@ -154,8 +154,8 @@ class MatchaCUP
 					}
 					$wherex = 'WHERE ' . implode(' AND ', $wherex);
 				}
-				$this->nolimitsql = "SELECT * FROM `" . $this->model->table->name . "` $groupx $wherex $sortx";
-				$this->sql = "SELECT * FROM `" . $this->model->table->name . "` $groupx $wherex $sortx $limits";
+				$this->nolimitsql = "SELECT * FROM `" . $this->table . "` $groupx $wherex $sortx";
+				$this->sql = "SELECT * FROM `" . $this->table . "` $groupx $wherex $sortx $limits";
 			}
 			return $this;
 		}
@@ -302,7 +302,7 @@ class MatchaCUP
 					}
 				}
 			}
-			return $record;
+			return (is_object($record) ? MatchaUtils::__objectToArray($record) : $record);
 		}
 		catch(PDOException $e)
 		{
@@ -394,8 +394,8 @@ class MatchaCUP
 		$values = array_values($data);
 		$columns = '(`' . implode('`,`', $columns) . '`)';
 		$values = '(\'' . implode('\',\'', $values) . '\')';
-
-		return "INSERT INTO `" . $this->model->table->name . "` $columns VALUES $values";
+		$sql = "INSERT INTO `" . $this->model->table->name . "` $columns VALUES $values";
+		return str_replace("'NULL'",'NULL',$sql);
 	}
 
 	private function buildUpdateSqlStatement($data){
@@ -408,7 +408,8 @@ class MatchaCUP
 			$sets[] = "`$key`='$val'";
 		}
 		$sets = implode(',', $sets);
-		return "UPDATE `" . $this->model->table->name . "` SET $sets WHERE $this->primaryKey = '$id'";
+		$sql = "UPDATE `" . $this->model->table->name . "` SET $sets WHERE $this->primaryKey = '$id'";
+		return str_replace("'NULL'",'NULL',$sql);
 	}
 
 	private function parseValues($data){
@@ -425,7 +426,7 @@ class MatchaCUP
 					$values[$index] = 0;
 				}
 			}elseif($type == 'date'){
-				$values[$index]  = ($foo == '' ? '0000-00-00' : $values[$index]);
+				$values[$index] = ($foo == '' ? 'NULL' : $values[$index]);
 			}
 		}
 

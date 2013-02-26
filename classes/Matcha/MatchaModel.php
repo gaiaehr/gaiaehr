@@ -49,11 +49,14 @@ class MatchaModel extends Matcha
         if(self::$__freeze) return true;
         try
         {
+	        self::$__senchaModel = array();
             // get the the model of the table from the sencha .js file
             self::$__senchaModel = self::__getSenchaModel($fileModel);
             if(!self::$__senchaModel['fields']) throw new Exception('There are no fields set.');
 
             self::$tableId = isset(self::$__senchaModel['idProperty']) ? self::$__senchaModel['idProperty'] : 'id';
+
+//	        print_r(self::$__senchaModel['table']['name'].' : '.self::$tableId);
 
             // check if the table property is an array, if not get back the array is a table string.
             $table = (string)(is_array(self::$__senchaModel['table']) ? self::$__senchaModel['table']['name'] : self::$__senchaModel['table']);
@@ -172,15 +175,18 @@ class MatchaModel extends Matcha
      * This method is used by SechaModel method to get all the table and column
      * information inside the Sencha Model .js file
      */
-    static protected function __getSenchaModel($fileModel)
+    static public function __getSenchaModel($fileModel)
     {
         try
         {
             // Getting Sencha model as a namespace
             $senchaModel = self::__getFileContent($fileModel);
-            // clean comments and unnecessary Ext.define functions
+	        // add quotes to proxy Ext.Direct functions
+	        $senchaModel = preg_replace("/([\t ])(read|create|update|destroy)[:]( |\t)((\w|\.)*)/", "$1$2$3:'$4'", $senchaModel);
+	        // clean comments and unnecessary Ext.define functions
+	        $senchaModel = preg_replace("(Ext.define\('[A-Za-z0-9.]*',|\);|\")", '', $senchaModel);
+	        // clean comments and unnecessary Ext.define functions
             $senchaModel = preg_replace("((/\*(.|\n)*?\*/|//(.*))|([ ](?=(?:[^\'\"]|\'[^\'\"]*\')*$)|\t|\n|\r))", '', $senchaModel);
-            $senchaModel = preg_replace("(Ext.define\('[A-Za-z0-9.]*',|\);|\"|proxy(.|\n)*},)", '', $senchaModel);
             // wrap with double quotes to all the properties
             $senchaModel = preg_replace('/(,|\{)(\w*):/', "$1\"$2\":", $senchaModel);
             // wrap with double quotes float numbers
@@ -188,16 +194,16 @@ class MatchaModel extends Matcha
             // replace single quotes for double quotes
             // TODO: refine this to make sure doesn't replace apostrophes used in comments. example: don't
             $senchaModel = preg_replace("(')", '"', $senchaModel);
-
             $model = (array)json_decode($senchaModel, true);
-            if(!count($model)) throw new Exception("Something whent wrong converting it to an array, a bad lolo.");
+            if(!count($model)) throw new Exception("Something whent wrong converting it to an array, a bad lolo.... $senchaModel");
 
             // check if there are a defined table from the model
             if(!isset($model['table'])) throw new Exception("Table property is not defined on Sencha Model. 'table:'");
 
             // check if there are a defined fields from the model
             if(!isset($model['fields'])) throw new Exception("Fields property is not defined on Sencha Model. 'fields:'");
-            return $model;
+
+	        return $model;
         }
         catch(Exception $e)
         {

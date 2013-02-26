@@ -18,8 +18,7 @@
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-if (!isset($_SESSION))
-{
+if(!isset($_SESSION)){
 	session_name('GaiaEHR');
 	session_start();
 	session_cache_limiter('private');
@@ -50,8 +49,8 @@ class PreventiveCare
 
 	function __construct()
 	{
-		$this -> db = new MatchaHelper();
-		$this -> patient = new Patient();
+		$this->db = new MatchaHelper();
+		$this->patient = new Patient();
 	}
 
 	/******************************************************************************************************************/
@@ -68,11 +67,11 @@ class PreventiveCare
 	{
 		$records = array();
 
-		$this -> db -> setSQL("SELECT * FROM preventive_care_guidelines WHERE category_id = '$params->category_id'");
-		$records = $this -> db -> fetchRecords(PDO::FETCH_CLASS);
+		$this->db->setSQL("SELECT * FROM preventive_care_guidelines WHERE category_id = '$params->category_id'");
+		$records = $this->db->fetchRecords(PDO::FETCH_CLASS);
 
 		$total = count($records);
-		$records = array_slice($records, $params -> start, $params -> limit);
+		$records = array_slice($records, $params->start, $params->limit);
 		return array(
 			'totals' => $total,
 			'rows' => $records
@@ -89,9 +88,9 @@ class PreventiveCare
 	{
 		$data = get_object_vars($params);
 		unset($data['id']);
-		$this -> db -> setSQL($this -> db -> sqlBind($data, 'preventive_care_guidelines', 'I'));
-		$this -> db -> execLog();
-		$params -> id = $this -> db -> lastInsertId;
+		$this->db->setSQL($this->db->sqlBind($data, 'preventive_care_guidelines', 'I'));
+		$this->db->execLog();
+		$params->id = $this->db->lastInsertId;
 		return $params;
 	}
 
@@ -104,8 +103,8 @@ class PreventiveCare
 	{
 		$data = get_object_vars($params);
 		unset($data['id']);
-		$this -> db -> setSQL($this -> db -> sqlBind($data, 'preventive_care_guidelines', 'U', "id='$params->id'"));
-		$this -> db -> execLog();
+		$this->db->setSQL($this->db->sqlBind($data, 'preventive_care_guidelines', 'U', "id='$params->id'"));
+		$this->db->execLog();
 		return $params;
 	}
 
@@ -117,14 +116,12 @@ class PreventiveCare
 	public function getGuideLineActiveProblems(stdClass $params)
 	{
 		$active_problems = array();
-		$foo = explode(';', $this -> getCodes($params -> id, 'active_problems'));
-		if ($foo[0])
-		{
-			foreach ($foo as $fo)
-			{
-				$this -> db -> setSQL("SELECT code, code_text FROM codes_icds WHERE code = '$fo' AND code IS NOT NULL");
-				$problem = $this -> db -> fetchRecord(PDO::FETCH_ASSOC);
-				$problem['guideline_id'] = $params -> id;
+		$foo = explode(';', $this->getCodes($params->id, 'active_problems'));
+		if($foo[0]){
+			foreach($foo as $fo){
+				$this->db->setSQL("SELECT code, code_text FROM codes_icds WHERE code = '$fo' AND code IS NOT NULL");
+				$problem = $this->db->fetchRecord(PDO::FETCH_ASSOC);
+				$problem['guideline_id'] = $params->id;
 				$active_problems[] = $problem;
 			}
 		}
@@ -137,16 +134,12 @@ class PreventiveCare
 	 */
 	public function addGuideLineActiveProblems($params)
 	{
-		if (is_array($params))
-		{
-			foreach ($params as $p)
-			{
-				$this -> addCode($p -> guideline_id, $p -> code, 'active_problems');
+		if(is_array($params)){
+			foreach($params as $p){
+				$this->addCode($p->guideline_id, $p->code, 'active_problems');
 			}
-		}
-		else
-		{
-			$this -> addCode($params -> guideline_id, $params -> code, 'active_problems');
+		} else{
+			$this->addCode($params->guideline_id, $params->code, 'active_problems');
 		}
 		return $params;
 	}
@@ -157,16 +150,12 @@ class PreventiveCare
 	 */
 	public function removeGuideLineActiveProblems($params)
 	{
-		if (is_array($params))
-		{
-			foreach ($params as $p)
-			{
-				$this -> removeCode($p -> guideline_id, $p -> code, 'active_problems');
+		if(is_array($params)){
+			foreach($params as $p){
+				$this->removeCode($p->guideline_id, $p->code, 'active_problems');
 			}
-		}
-		else
-		{
-			$this -> removeCode($params -> guideline_id, $params -> code, 'active_problems');
+		} else{
+			$this->removeCode($params->guideline_id, $params->code, 'active_problems');
 		}
 		return $params;
 	}
@@ -179,17 +168,15 @@ class PreventiveCare
 	public function getGuideLineMedications(stdClass $params)
 	{
 		$medications = array();
-		$foo = explode(';', $this -> getCodes($params -> id, 'medications'));
-		if ($foo[0])
-		{
-			foreach ($foo AS $fo)
-			{
-				$this -> db -> setSQL("SELECT RXCUI AS code,
+		$foo = explode(';', $this->getCodes($params->id, 'medications'));
+		if($foo[0]){
+			foreach($foo AS $fo){
+				$this->db->setSQL("SELECT RXCUI AS code,
 										  STR AS code_text
 								     FROM rxnconso
 								    WHERE id = '$fo'");
-				$medication = $this -> db -> fetchRecord(PDO::FETCH_CLASS);
-				$medication['guideline_id'] = $params -> id;
+				$medication = $this->db->fetchRecord(PDO::FETCH_CLASS);
+				$medication['guideline_id'] = $params->id;
 				$medications[] = $medication;
 			}
 		}
@@ -202,16 +189,12 @@ class PreventiveCare
 	 */
 	public function addGuideLineMedications($params)
 	{
-		if (is_array($params))
-		{
-			foreach ($params as $p)
-			{
-				$this -> addCode($p -> guideline_id, $p -> code, 'medications');
+		if(is_array($params)){
+			foreach($params as $p){
+				$this->addCode($p->guideline_id, $p->code, 'medications');
 			}
-		}
-		else
-		{
-			$this -> addCode($params -> guideline_id, $params -> code, 'medications');
+		} else{
+			$this->addCode($params->guideline_id, $params->code, 'medications');
 		}
 		return $params;
 	}
@@ -219,51 +202,43 @@ class PreventiveCare
 	public function addGuideLineLabs($params)
 	{
 
-		if (is_array($params))
-		{
-			foreach ($params as $p)
-			{
+		if(is_array($params)){
+			foreach($params as $p){
 				$data = get_object_vars($p);
 				unset($data['id']);
-				$this -> db -> setSQL($this -> db -> sqlBind($data, 'labs_guidelines', 'I'));
-				$this -> db -> execLog();
+				$this->db->setSQL($this->db->sqlBind($data, 'labs_guidelines', 'I'));
+				$this->db->execLog();
 			}
-		}
-		else
-		{
+		} else{
 			$data = get_object_vars($params);
 			unset($data['id']);
-			$this -> db -> setSQL($this -> db -> sqlBind($data, 'labs_guidelines', 'I'));
-			$this -> db -> execLog();
+			$this->db->setSQL($this->db->sqlBind($data, 'labs_guidelines', 'I'));
+			$this->db->execLog();
 		}
 		return $params;
 	}
 
 	public function getGuideLineLabs(stdClass $params)
 	{
-		$this -> db -> setSQL("SELECT * FROM labs_guidelines WHERE preventive_care_id='$params->id'");
-		return $this -> db -> fetchRecords(PDO::FETCH_ASSOC);
+		$this->db->setSQL("SELECT * FROM labs_guidelines WHERE preventive_care_id='$params->id'");
+		return $this->db->fetchRecords(PDO::FETCH_ASSOC);
 	}
 
 	public function removeGuideLineLabs($params)
 	{
 
-		if (is_array($params))
-		{
-			foreach ($params as $p)
-			{
+		if(is_array($params)){
+			foreach($params as $p){
 				$data = get_object_vars($p);
 				$id = $data['id'];
-				$this -> db -> setSQL("DELETE FROM labs_guidelines WHERE id = '$id'");
-				$this -> db -> execLog();
+				$this->db->setSQL("DELETE FROM labs_guidelines WHERE id = '$id'");
+				$this->db->execLog();
 			}
-		}
-		else
-		{
+		} else{
 			$data = get_object_vars($params);
 			$id = $data['id'];
-			$this -> db -> setSQL("DELETE FROM labs_guidelines WHERE id = '$id'");
-			$this -> db -> execLog();
+			$this->db->setSQL("DELETE FROM labs_guidelines WHERE id = '$id'");
+			$this->db->execLog();
 		}
 		return $params;
 
@@ -272,24 +247,20 @@ class PreventiveCare
 	public function updateGuideLineLabs($params)
 	{
 
-		if (is_array($params))
-		{
-			foreach ($params as $p)
-			{
+		if(is_array($params)){
+			foreach($params as $p){
 				$data = get_object_vars($p);
 				$id = $data['id'];
 				unset($data['id']);
-				$this -> db -> setSQL($this -> db -> sqlBind($data, "labs_guidelines", "U", "id='$id'"));
-				$this -> db -> execLog();
+				$this->db->setSQL($this->db->sqlBind($data, "labs_guidelines", "U", "id='$id'"));
+				$this->db->execLog();
 			}
-		}
-		else
-		{
+		} else{
 			$data = get_object_vars($params);
 			$id = $data['id'];
 			unset($data['id']);
-			$this -> db -> setSQL($this -> db -> sqlBind($data, "labs_guidelines", "U", "id='$id'"));
-			$this -> db -> execLog();
+			$this->db->setSQL($this->db->sqlBind($data, "labs_guidelines", "U", "id='$id'"));
+			$this->db->execLog();
 
 		}
 		return $params;
@@ -301,16 +272,12 @@ class PreventiveCare
 	 */
 	public function removeGuideLineMedications($params)
 	{
-		if (is_array($params))
-		{
-			foreach ($params as $p)
-			{
-				$this -> removeCode($p -> guideline_id, $p -> code, 'medications');
+		if(is_array($params)){
+			foreach($params as $p){
+				$this->removeCode($p->guideline_id, $p->code, 'medications');
 			}
-		}
-		else
-		{
-			$this -> removeCode($params -> guideline_id, $params -> code, 'medications');
+		} else{
+			$this->removeCode($params->guideline_id, $params->code, 'medications');
 		}
 		return $params;
 	}
@@ -327,8 +294,8 @@ class PreventiveCare
 	 */
 	private function getCodes($id, $codeColumn)
 	{
-		$this -> db -> setSQL("SELECT $codeColumn FROM preventive_care_guidelines WHERE id = '$id' AND $codeColumn IS NOT NULL");
-		$foo = $this -> db -> fetchRecord(PDO::FETCH_CLASS);
+		$this->db->setSQL("SELECT $codeColumn FROM preventive_care_guidelines WHERE id = '$id' AND $codeColumn IS NOT NULL");
+		$foo = $this->db->fetchRecord(PDO::FETCH_CLASS);
 		return $foo[$codeColumn];
 	}
 
@@ -340,21 +307,18 @@ class PreventiveCare
 	 */
 	private function removeCode($id, $code, $codeColumn)
 	{
-		$codes = explode(';', $this -> getCodes($id, $codeColumn));
+		$codes = explode(';', $this->getCodes($id, $codeColumn));
 		$key = array_search($code, $codes);
-		if ($key !== false)
+		if($key !== false)
 			unset($codes[$key]);
-		if (!empty($codes))
-		{
+		if(!empty($codes)){
 			$codes = implode(';', $codes);
 			$data[$codeColumn] = $codes;
-		}
-		else
-		{
+		} else{
 			$data[$codeColumn] = null;
 		}
-		$this -> db -> setSQL($this -> db -> sqlBind($data, 'preventive_care_guidelines', 'U', "id='$id'"));
-		$this -> db -> execLog();
+		$this->db->setSQL($this->db->sqlBind($data, 'preventive_care_guidelines', 'U', "id='$id'"));
+		$this->db->execLog();
 		return;
 	}
 
@@ -366,35 +330,29 @@ class PreventiveCare
 	 */
 	private function addCode($id, $code, $codeColumn)
 	{
-		$codes = explode(';', $this -> getCodes($id, $codeColumn));
-		if (!$codes[0])
-		{
+		$codes = explode(';', $this->getCodes($id, $codeColumn));
+		if(!$codes[0]){
 			$data[$codeColumn] = $code;
-		}
-		else
-		{
+		} else{
 			$codes[] = $code;
 			$codes = implode(';', $codes);
 			$data[$codeColumn] = $codes;
 		}
-		$this -> db -> setSQL($this -> db -> sqlBind($data, 'preventive_care_guidelines', 'U', "id='$id'"));
-		$this -> db -> execLog();
+		$this->db->setSQL($this->db->sqlBind($data, 'preventive_care_guidelines', 'U', "id='$id'"));
+		$this->db->execLog();
 		return;
 	}
 
 	public function checkAge($pid, $immu_id)
 	{
 
-		$DOB = $this -> patient -> getPatientDOBByPid($pid);
-		$age = $this -> patient -> getPatientAgeByDOB($DOB);
-		$range = $this -> getPreventiveCareAgeRangeById($immu_id);
+		$DOB = $this->patient->getPatientDOBByPid($pid);
+		$age = $this->patient->getPatientAgeByDOB($DOB);
+		$range = $this->getPreventiveCareAgeRangeById($immu_id);
 
-		if ($age['DMY']['years'] >= $range['age_start'] && $age['DMY']['years'] <= $range['age_end'])
-		{
+		if($age['DMY']['years'] >= $range['age_start'] && $age['DMY']['years'] <= $range['age_end']){
 			return true;
-		}
-		else
-		{
+		} else{
 			return false;
 		}
 	}
@@ -402,42 +360,32 @@ class PreventiveCare
 	public function checkSex($pid, $immu_id)
 	{
 
-		$pSex = $this -> patient -> getPatientSexByPid($pid);
+		$pSex = $this->patient->getPatientSexByPid($pid);
 
-		$iSex = $this -> getPreventiveCareSexById($immu_id);
+		$iSex = $this->getPreventiveCareSexById($immu_id);
 
-		if ($iSex == $pSex)
-		{
+		if($iSex == $pSex){
 			return true;
-		}
-		else
-		if ($iSex == 'Both' || $iSex == 0)
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
+		} else
+			if($iSex == 'Both' || $iSex == 0){
+				return true;
+			} else{
+				return false;
+			}
 	}
 
 	public function checkPregnant($pid, $immu_id)
 	{
 
-		$ppreg = $this -> patient -> getPatientPregnantStatusByPid($pid);
-		$ipreg = $this -> getPreventiveCarePregnantById($immu_id);
+		$ppreg = $this->patient->getPatientPregnantStatusByPid($pid);
+		$ipreg = $this->getPreventiveCarePregnantById($immu_id);
 
-		if ($ppreg == 1 && $ipreg == 1)
-		{
+		if($ppreg == 1 && $ipreg == 1){
 			return true;
-		}
-		elseif ($ppreg == 1 && $ipreg == 0)
-		{
+		} elseif($ppreg == 1 && $ipreg == 0){
 
 			return true;
-		}
-		else
-		{
+		} else{
 			return false;
 		}
 
@@ -446,14 +394,11 @@ class PreventiveCare
 	public function checkProblem($pid, $preventiveId)
 	{
 
-		$check = $this -> checkMedicationProblemLabs($pid, $preventiveId, 'patient_active_problems', 'active_problems', 'code');
-		if ($check)
-		{
+		$check = $this->checkMedicationProblemLabs($pid, $preventiveId, 'patient_active_problems', 'active_problems', 'code');
+		if($check){
 			return true;
 
-		}
-		else
-		{
+		} else{
 			return false;
 		}
 
@@ -462,14 +407,11 @@ class PreventiveCare
 	public function checkMedications($pid, $preventiveId)
 	{
 
-		$check = $this -> checkMedicationProblemLabs($pid, $preventiveId, 'patient_medications', 'medications', 'RXCUI');
-		if ($check)
-		{
+		$check = $this->checkMedicationProblemLabs($pid, $preventiveId, 'patient_medications', 'medications', 'RXCUI');
+		if($check){
 			return true;
 
-		}
-		else
-		{
+		} else{
 			return false;
 		}
 
@@ -478,28 +420,22 @@ class PreventiveCare
 	public function checkMedicationProblemLabs($pid, $preventiveId, $tablexx, $column, $columnName)
 	{
 
-		$preventiveProblems = $this -> getPreventiveCareActiveProblemsById($preventiveId);
+		$preventiveProblems = $this->getPreventiveCareActiveProblemsById($preventiveId);
 		$preventiveProblems = explode(';', $preventiveProblems[$column]);
-		$patientProblems = $this -> patient -> getPatientActiveProblemsById($pid, $tablexx, $columnName);
+		$patientProblems = $this->patient->getPatientActiveProblemsById($pid, $tablexx, $columnName);
 		$checking = array();
 		$size = sizeof($preventiveProblems);
-		foreach ($preventiveProblems as $prob)
-		{
-			foreach ($patientProblems as $patient)
-			{
-				if ($prob == $patient[$columnName])
-				{
+		foreach($preventiveProblems as $prob){
+			foreach($patientProblems as $patient){
+				if($prob == $patient[$columnName]){
 					$checking[$patient[$columnName]] = true;
 
 				}
 			}
 		}
-		if ($size == sizeof($checking) || $preventiveProblems[0] == '')
-		{
+		if($size == sizeof($checking) || $preventiveProblems[0] == ''){
 			return true;
-		}
-		else
-		{
+		} else{
 
 			return false;
 		}
@@ -508,64 +444,56 @@ class PreventiveCare
 
 	public function getPreventiveCarePregnantById($id)
 	{
-		$this -> db -> setSQL("SELECT pregnant
+		$this->db->setSQL("SELECT pregnant
                            FROM preventive_care_guidelines
                            WHERE id='$id'");
-		$u = $this -> db -> fetchRecord(PDO::FETCH_ASSOC);
+		$u = $this->db->fetchRecord(PDO::FETCH_ASSOC);
 		return $u['pregnant'];
 	}
 
 	public function getPreventiveCareSexById($id)
 	{
-		$this -> db -> setSQL("SELECT sex
+		$this->db->setSQL("SELECT sex
                            FROM preventive_care_guidelines
                            WHERE id='$id'");
-		$u = $this -> db -> fetchRecord(PDO::FETCH_ASSOC);
+		$u = $this->db->fetchRecord(PDO::FETCH_ASSOC);
 
-		if ($u['sex'] == 1)
-		{
+		if($u['sex'] == 1){
 			$sex = 'Male';
-		}
-		else
-		if ($u['sex'] == 2)
-		{
-			$sex = 'Female';
-		}
-		else
-		{
-			$sex = 'Both';
-		}
+		} else
+			if($u['sex'] == 2){
+				$sex = 'Female';
+			} else{
+				$sex = 'Both';
+			}
 
 		return $sex;
 	}
 
 	public function getPreventiveCareActiveProblemsById($id)
 	{
-		$this -> db -> setSQL("SELECT *
+		$this->db->setSQL("SELECT *
                            FROM preventive_care_guidelines
                            WHERE id='$id'");
-		return $this -> db -> fetchRecord(PDO::FETCH_ASSOC);
+		return $this->db->fetchRecord(PDO::FETCH_ASSOC);
 
 	}
 
 	public function getPreventiveCareAgeRangeById($id)
 	{
-		$this -> db -> setSQL("SELECT age_start,
+		$this->db->setSQL("SELECT age_start,
                                   age_end
                            FROM preventive_care_guidelines
                            WHERE id='$id'");
-		return $this -> db -> fetchRecord(PDO::FETCH_ASSOC);
+		return $this->db->fetchRecord(PDO::FETCH_ASSOC);
 	}
 
 	public function activePreventiveCareAlert($params)
 	{
-		$alerts = $this -> getPreventiveCareCheck($params);
-		if (sizeof($alerts) >= '0' && $alerts[0] != '')
-		{
+		$alerts = $this->getPreventiveCareCheck($params);
+		if(sizeof($alerts) >= '0' && $alerts[0] != ''){
 			return array('success' => true);
-		}
-		else
-		{
+		} else{
 			return array('success' => false);
 		}
 	}
@@ -573,71 +501,62 @@ class PreventiveCare
 	public function checkForDismiss($pid)
 	{
 
-		$this -> db -> setSQL("SELECT *
+		$this->db->setSQL("SELECT *
                            FROM preventive_care_inactive_patient
                            WHERE pid='$pid'
                            AND dismiss='1'");
-		return $this -> db -> fetchRecords(PDO::FETCH_ASSOC);
+		return $this->db->fetchRecords(PDO::FETCH_ASSOC);
 
 	}
 
 	public function getPreventiveCareCheck(stdClass $params)
 	{
 
-		$this -> db -> setSQL("SELECT * FROM preventive_care_guidelines");
+		$this->db->setSQL("SELECT * FROM preventive_care_guidelines");
 		$patientAlerts = array();
 
-		foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $rec)
-		{
+		foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) as $rec){
 
-			$rec['alert'] = (($this -> checkAge($params -> pid, $rec['id']) && $this -> checkSex($params -> pid, $rec['id']) && $this -> checkProblem($params -> pid, $rec['id']) && $this -> checkMedications($params -> pid, $rec['id'])) || $this -> checkPregnant($params -> pid, $rec['id'])) ? true : false;
+			$rec['alert'] = (
+				(
+					$this->checkAge($params->pid, $rec['id']) &&
+					$this->checkSex($params->pid, $rec['id']) &&
+					$this->checkProblem($params->pid, $rec['id']) &&
+					$this->checkMedications($params->pid, $rec['id'])
+				) ||
+					$this->checkPregnant($params->pid, $rec['id'])
+			) ? true : false;
 
-			if ($rec['category_id'] == 3)
-			{
+			if($rec['category_id'] == 3){
 				$rec['type'] = 'Immunizations';
-			}
-			else
-			if ($rec['category_id'] == 4)
-			{
+
+			}elseif($rec['category_id'] == 4){
 				$rec['type'] = 'Laboratory Test';
-			}
-			else
-			if ($rec['category_id'] == 1516)
-			{
+
+			}elseif($rec['category_id'] == 1516){
 				$rec['type'] = 'Diagnostic Test';
-			}
-			else
-			if ($rec['category_id'] == 1517)
-			{
+
+			}elseif($rec['category_id'] == 1517){
 				$rec['type'] = 'Disease Management';
-			}
-			else
-			if ($rec['category_id'] == 1518)
-			{
+
+			}elseif($rec['category_id'] == 1518){
 				$rec['type'] = 'Pedriatic Vaccines';
-			}
-			else
-			{
+
+			}else{
 				$rec['type'] = 'Uncategorized';
 			}
 
-			//            && $this->checkPregnant($params->pid, $rec['id'])
-			if ($rec['alert'] && $rec['active'])
-			{
+			if($rec['alert'] && $rec['active']){
 				$patientAlerts[] = $rec;
-
 			}
 		}
 
-		$patientDismissedAlerts = $this -> checkForDismiss($params -> pid);
+		$patientDismissedAlerts = $this->checkForDismiss($params->pid);
 
 		$count = 0;
-		foreach ($patientAlerts as $patientAlert)
-		{
-			foreach ($patientDismissedAlerts as $patientDismissedAlert)
-			{
-				if ($patientDismissedAlert['preventive_care_id'] == $patientAlert['id'])
-				{
+		foreach($patientAlerts as $patientAlert){
+			foreach($patientDismissedAlerts as $patientDismissedAlert){
+				if($patientDismissedAlert['preventive_care_id'] == $patientAlert['id']){
 					unset($patientAlerts[$count]);
 				}
 			}
@@ -653,30 +572,27 @@ class PreventiveCare
 		$data = get_object_vars($params);
 		$preventivecareid = $data['id'];
 		$pid = $_SESSION['patient']['pid'];
-		$this -> db -> setSQL("SELECT *
+		$this->db->setSQL("SELECT *
                            FROM preventive_care_inactive_patient
                            WHERE pid='$pid'
                            AND preventive_care_id ='$preventivecareid' ");
-		$u = $this -> db -> fetchRecord(PDO::FETCH_ASSOC);
+		$u = $this->db->fetchRecord(PDO::FETCH_ASSOC);
 
-		if ($u[0] == ' ' || $u == null)
-		{
+		if($u[0] == ' ' || $u == null){
 
 			unset($data['description'], $data['type'], $data['alert']);
 			$data['preventive_care_id'] = $data['id'];
 			$data['pid'] = $_SESSION['patient']['pid'];
 			$data['uid'] = $_SESSION['user']['id'];
 			unset($data['id']);
-			$this -> db -> setSQL($this -> db -> sqlBind($data, 'preventive_care_inactive_patient', 'I'));
-			$this -> db -> execLog();
-			$params -> id = $this -> db -> lastInsertId;
+			$this->db->setSQL($this->db->sqlBind($data, 'preventive_care_inactive_patient', 'I'));
+			$this->db->execLog();
+			$params->id = $this->db->lastInsertId;
 			return array(
 				'totals' => 1,
 				'rows' => $params
 			);
-		}
-		else
-		{
+		} else{
 
 			$id = $u['id'];
 			unset($data['description'], $data['type'], $data['alert']);
@@ -684,8 +600,8 @@ class PreventiveCare
 			$data['pid'] = $_SESSION['patient']['pid'];
 			$data['uid'] = $_SESSION['user']['id'];
 			unset($data['id']);
-			$this -> db -> setSQL($this -> db -> sqlBind($data, 'preventive_care_inactive_patient', 'U', "id='$id'"));
-			$this -> db -> execLog();
+			$this->db->setSQL($this->db->sqlBind($data, 'preventive_care_inactive_patient', 'U', "id='$id'"));
+			$this->db->execLog();
 			return array(
 				'totals' => 1,
 				'rows' => $params
@@ -696,42 +612,42 @@ class PreventiveCare
 
 	public function getPreventiveCareDismissPatientByEncounterID($eid)
 	{
-		$this -> db -> setSQL("SELECT pcip.*, pcg.description
+		$this->db->setSQL("SELECT pcip.*, pcg.description
                            FROM preventive_care_inactive_patient AS pcip
                            LEFT JOIN preventive_care_guidelines AS pcg ON pcg.id = pcip.preventive_care_id
                            WHERE pcip.eid='$eid'");
-		return $this -> db -> fetchRecords(PDO::FETCH_ASSOC);
+		return $this->db->fetchRecords(PDO::FETCH_ASSOC);
 
 	}
 
 	public function getpreventiveCareById($id)
 	{
-		$this -> db -> setSQL("SELECT * FROM preventive_care_guidelines WHERE id = '$id'");
-		return $this -> db -> fetchRecord();
+		$this->db->setSQL("SELECT * FROM preventive_care_guidelines WHERE id = '$id'");
+		return $this->db->fetchRecord();
 	}
 
 	public function getPreventiveCareDismissedAlertsByPid(stdClass $params)
 	{
-		$this -> db -> setSQL("SELECT pcig.id,
+		$this->db->setSQL("SELECT pcig.id,
                                   pcig.preventive_care_id,
                                   pcig.reason,
                                   pcig.dismiss,
                                   pcig.date,
                                   pcig.observation,
                                   pcg.description
-                           FROM preventive_care_inactive_patient as pcig
-                           LEFT JOIN preventive_care_guidelines  as pcg on pcig.preventive_care_id = pcg.id
+                           FROM preventive_care_inactive_patient AS pcig
+                           LEFT JOIN preventive_care_guidelines  AS pcg ON pcig.preventive_care_id = pcg.id
                            WHERE pcig.pid = '$params->pid'
                            AND  pcig.dismiss = 1");
-		return $this -> db -> fetchRecords();
+		return $this->db->fetchRecords();
 	}
 
 	public function updatePreventiveCareDismissedAlertsByPid(stdClass $params)
 	{
 		$data = get_object_vars($params);
 		unset($data['id'], $data['description']);
-		$this -> db -> setSQL($this -> db -> sqlBind($data, 'preventive_care_inactive_patient', 'U', array('id' => $params -> id)));
-		$this -> db -> execLog();
+		$this->db->setSQL($this->db->sqlBind($data, 'preventive_care_inactive_patient', 'U', array('id' => $params->id)));
+		$this->db->execLog();
 		return $params;
 	}
 

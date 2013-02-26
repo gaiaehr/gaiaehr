@@ -1096,6 +1096,12 @@ $API = array(
 			'savePatient' => array(
 				'len' => 1
 			),
+			'getInsurances' => array(
+				'len' => 1
+			),
+			'saveInsurance' => array(
+				'len' => 1
+			),
 			'createNewPatient' => array(
 				'len' => 1
 			),

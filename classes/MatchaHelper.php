@@ -493,3 +493,8 @@ class MatchaHelper extends Matcha
 	
 	
 }
+
+//print'<pre>';
+//$db = new MatchaHelper();
+//print_r(MatchaModel::setSenchaModel('App.model.patient.Insurance'));
+//print_r(MatchaModel::setSenchaModel('App.model.patient.Patient'));

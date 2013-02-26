@@ -69,7 +69,7 @@ Ext.define('App.model.patient.Patient', {
 	hasMany: [
 		{
 			model: 'App.model.patient.Insurance',
-			name: 'insurances',
+			name: 'insurance',
 			primaryKey: 'pid',
 			foreignKey: 'pid'
 		}

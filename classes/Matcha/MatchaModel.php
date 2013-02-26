@@ -451,12 +451,26 @@ class MatchaModel extends Matcha
 		return $arr;
 	}
 
-	static public function __getTablePrimaryKey($table){
+    /**
+     * function __getTablePrimaryKey($table):
+     * Method to get the primary key from the database-table
+     * @param $table
+     * @return mixed
+     */
+    static public function __getTablePrimaryKey($table)
+    {
 		$rec = self::$__conn->query("SHOW INDEX FROM $table");
 		return $rec->fetch(PDO::FETCH_ASSOC);
 	}
 
-	static public function __getTablePrimaryKeyColumnName($table){
+    /**
+     * function __getTablePrimaryKeyColumnName($table):
+     * Method to return the name of the primary key.
+     * @param $table
+     * @return mixed
+     */
+    static public function __getTablePrimaryKeyColumnName($table)
+    {
 		$rec = self::__getTablePrimaryKey($table);
 		return $rec['Column_name'];
 	}

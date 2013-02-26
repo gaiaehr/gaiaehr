@@ -35,25 +35,32 @@ class MatchaModel extends Matcha
      */
     public function matchaCreateModel($fileSenchaModel, $databaseTable = NULL, $columns = array())
     {
-        try
-        {
-            // first create the Sencha Model file.
-            if( self::__createModelFile($fileSenchaModel, $databaseTable, $columns) ) return false;
+        // first create the Sencha Model file.
+        if( self::__createModelFile($fileSenchaModel, $databaseTable, $columns) ) return false;
 
-            // if the sencha model file was created successfully go ahead and create the database-table from
-            // the sencha model file.
-            if(self::__SenchaModel($fileSenchaModel)) return false;
+        // if the sencha model file was created successfully go ahead and create the database-table from
+        // the sencha model file.
+        if(self::__SenchaModel($fileSenchaModel)) return false;
 
-            // finally if all was a success return true.
-            // If any errors the private functions called above will generate
-            // the debug information needed.
-            return true;
-        }
-        catch(Exception $e)
-        {
-            MatchaErrorHandler::__errorProcess($e);
-            return false;
-        }
+        // finally if all was a success return true.
+        // If any errors the private functions called above will generate
+        // the debug information needed.
+        return true;
+    }
+
+    public function addFieldsToModel($fileSenchaModel, $columns = array())
+    {
+
+    }
+
+    public function removeFieldsToModel($fileSenchaModel, $columns = array())
+    {
+
+    }
+
+    public function modifyFieldsToModel($fileSenchaModel, $columns = array())
+    {
+
     }
 
     /**

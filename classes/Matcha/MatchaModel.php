@@ -33,11 +33,20 @@ class MatchaModel extends Matcha
      * function matchaCreateModel($fileSenchaModel, $databaseTable = NULL, $column = array()):
      * Method to serve as a router, this will create the dynamic Sencha model.
      */
-    public function matchaCreateModel($fileSenchaModel, $databaseTable = NULL, $column = array())
+    public function matchaCreateModel($fileSenchaModel, $databaseTable = NULL, $columns = array())
     {
         try
         {
+            // first create the Sencha Model file.
+            if( self::__createModelFile($fileSenchaModel, $databaseTable, $columns) ) return false;
 
+            // if the sencha model file was created successfully go ahead and create the database-table from
+            // the sencha model file.
+            if(self::__SenchaModel($fileSenchaModel)) return false;
+
+            // finally if all was a success return true.
+            // If any errors the private functions called above will generate
+            // the debug information needed.
             return true;
         }
         catch(Exception $e)
@@ -202,7 +211,7 @@ class MatchaModel extends Matcha
             // TODO: refine this to make sure doesn't replace apostrophes used in comments. example: don't
             $senchaModel = preg_replace("(')", '"', $senchaModel);
             $model = (array)json_decode($senchaModel, true);
-            if(!count($model)) throw new Exception("Something whent wrong converting it to an array, a bad lolo.... $senchaModel");
+            if(!count($model)) throw new Exception("Something went wrong converting it to an array, a bad lolo.... $senchaModel");
 
             // check if there are a defined table from the model
             if(!isset($model['table'])) throw new Exception("Table property is not defined on Sencha Model. 'table:'");
@@ -320,10 +329,11 @@ class MatchaModel extends Matcha
      * Method to create the Sencha Model .js file into the filesystem
      * @param $fileSenchaModel
      * @param null $databaseTable
-     * @return bool
+     * @param array $columns
      * @throws Exception
+     * @return bool
      */
-    private function __createModelFile($fileSenchaModel, $databaseTable = NULL)
+    private function __createModelFile($fileSenchaModel, $databaseTable = NULL, $columns = array())
     {
         try
         {
@@ -344,8 +354,9 @@ class MatchaModel extends Matcha
             $jsSenchaModel .= MatchaUtils::t(1)."extend: 'Ext.data.Model'," . chr(13);
             $jsSenchaModel .= MatchaUtils::t(1)."table: { name:'$databaseTable' },".chr(13);
             $jsSenchaModel .= MatchaUtils::t(1)."fields: [" . chr(13);
-            $jsSenchaModel .= MatchaUtils::t(1)."{name: 'id', type: 'int', comment: 'Primary Key'}".chr(13);
-            // TODO: Write the rest of the sencha fields here.
+            $jsSenchaModel .= MatchaUtils::t(1)."{name: 'id', type: 'int', comment: 'Primary Key'},".chr(13);
+            foreach($columns as $column) $jsSenchaModel .= MatchaUtils::t(1)."{name: '".$column['name']."', type: '".$column['type']."', comment: '".$column['comment']."'},";
+            $jsSenchaModel = substr($jsSenchaModel, 0, -1);
             $jsSenchaModel .= MatchaUtils::t(1)."]" . chr(13);
             $jsSenchaModel .= '});' . chr(13);
 

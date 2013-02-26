@@ -359,9 +359,10 @@ class MatchaModel extends Matcha
             {
                 $jsSenchaModel .= MatchaUtils::t(1)."{";
                 foreach($column as $columnKey => $columnValue) $jsSenchaModel .= $columnKey.": '".$columnValue."',";
+                $jsSenchaModel = substr($jsSenchaModel, 0, -1);
                 $jsSenchaModel .= "},".chr(13);
             }
-            $jsSenchaModel = substr($jsSenchaModel, 0, -1);
+            $jsSenchaModel = substr($jsSenchaModel, 0, -2);
             $jsSenchaModel .= MatchaUtils::t(1)."]" . chr(13);
             $jsSenchaModel .= '});' . chr(13);
 

@@ -252,7 +252,30 @@ class Matcha
 			return MatchaErrorHandler::__errorProcess($e);
 		}
 	}
-	
+
+    /**
+     * function __renameColumn($oldColumn, $newColumn, $table = NULL):
+     * Rename a column with new passed column name
+     * @param $oldColumn
+     * @param $newColumn
+     * @param null $table
+     * @internal param array $column
+     * @return bool
+     */
+    static protected function __renameColumn($oldColumn, $newColumn, $table = NULL)
+    {
+        try
+        {
+            if(!$table) $table = (string)(is_array(MatchaModel::$__senchaModel['table']) ? MatchaModel::$__senchaModel['table']['name'] : MatchaModel::$__senchaModel['table']);
+            self::$__conn->query("ALTER TABLE ".$table." CHANGE COLUMN ".$oldColumn." ".$newColumn.";");
+            return true;
+        }
+        catch(PDOException $e)
+        {
+            return MatchaErrorHandler::__errorProcess($e);
+        }
+    }
+
 	/**
 	 * function __renderColumnSyntax($column = array()):
 	 * Method that will render the correct syntax for the addition or modification

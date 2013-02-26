@@ -331,7 +331,7 @@ class MatchaModel extends Matcha
             $jsSenchaModel .= MatchaUtils::t(1)."extend: 'Ext.data.Model'," . chr(13);
             $jsSenchaModel .= MatchaUtils::t(1)."table: { name:'$databaseTable' },".chr(13);
             $jsSenchaModel .= MatchaUtils::t(1)."fields: [" . chr(13);
-            $jsSenchaModel .= MatchaUtils::t(1)."{name: 'id', type: 'int'}".chr(13);
+            $jsSenchaModel .= MatchaUtils::t(1)."{name: 'id', type: 'int', comment: 'Primary Key'}".chr(13);
             // TODO: Write the rest of the sencha fields here.
             $jsSenchaModel .= MatchaUtils::t(1)."]" . chr(13);
             $jsSenchaModel .= '});' . chr(13);
@@ -346,21 +346,6 @@ class MatchaModel extends Matcha
             MatchaErrorHandler::__errorProcess($e);
             return false;
         }
-    }
-
-    private function __RemoveSenchaColumn($Model, $field, $forceRemove = false)
-    {
-
-    }
-
-    private function __createSenchaColumn($Model, $field)
-    {
-
-    }
-
-    private function __ranameSenchaColumn($model, $field)
-    {
-
     }
 
     /**
@@ -420,7 +405,7 @@ class MatchaModel extends Matcha
 	 * @return mixed
 	 */
 	static public function __getFieldType($fieldName, $model){
-		$fields = (is_object($model)? MatchaUtils::__objectToArray($model->fields): $model['fields']);
+		$fields = (is_object($model) ? MatchaUtils::__objectToArray($model->fields) : $model['fields']);
 		$index = MatchaUtils::__recursiveArraySearch($fieldName, $fields);
 		return $fields[$index]['type'];
 	}

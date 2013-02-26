@@ -355,7 +355,12 @@ class MatchaModel extends Matcha
             $jsSenchaModel .= MatchaUtils::t(1)."table: { name:'$databaseTable' },".chr(13);
             $jsSenchaModel .= MatchaUtils::t(1)."fields: [" . chr(13);
             $jsSenchaModel .= MatchaUtils::t(1)."{name: 'id', type: 'int', comment: 'Primary Key'},".chr(13);
-            foreach($columns as $column) $jsSenchaModel .= MatchaUtils::t(1)."{name: '".$column['name']."', type: '".$column['type']."', comment: '".$column['comment']."'},";
+            foreach($columns as $column)
+            {
+                $jsSenchaModel .= MatchaUtils::t(1)."{";
+                foreach($column as $columnKey => $columnValue) $jsSenchaModel .= $columnKey.": '".$columnValue."',";
+                $jsSenchaModel .= "},".chr(13);
+            }
             $jsSenchaModel = substr($jsSenchaModel, 0, -1);
             $jsSenchaModel .= MatchaUtils::t(1)."]" . chr(13);
             $jsSenchaModel .= '});' . chr(13);

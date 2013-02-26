@@ -30,12 +30,21 @@ class MatchaModel extends Matcha
     public static $tableId;
 
     /**
-     * function MatchaRouter():
-     * Method to serve as a router.
+     * function matchaCreateModel($fileSenchaModel, $databaseTable = NULL, $column = array()):
+     * Method to serve as a router, this will create the dynamic Sencha model.
      */
-    public function MatchaRouter()
+    public function matchaCreateModel($fileSenchaModel, $databaseTable = NULL, $column = array())
     {
+        try
+        {
 
+            return true;
+        }
+        catch(Exception $e)
+        {
+            MatchaErrorHandler::__errorProcess($e);
+            return false;
+        }
     }
 
     /**
@@ -55,8 +64,6 @@ class MatchaModel extends Matcha
             if(!self::$__senchaModel['fields']) throw new Exception('There are no fields set.');
 
             self::$tableId = isset(self::$__senchaModel['idProperty']) ? self::$__senchaModel['idProperty'] : 'id';
-
-//	        print_r(self::$__senchaModel['table']['name'].' : '.self::$tableId);
 
             // check if the table property is an array, if not get back the array is a table string.
             $table = (string)(is_array(self::$__senchaModel['table']) ? self::$__senchaModel['table']['name'] : self::$__senchaModel['table']);
@@ -153,7 +160,7 @@ class MatchaModel extends Matcha
                             // check if the comment is changed on the model,
                             // but first check if the comment is used on the sencha model.
                             if(isset($SenchaModel['comment']))
-                                if($column['Comment'] != $SenchaModel['comment']) $change = 'true';
+                                if($column['Comment'] != $SenchaModel['comment']) $change = 'true'; // Comment
 
                             // Modify the column on the database
                             if($change == 'true') self::__modifyColumn($SenchaModel);

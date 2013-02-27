@@ -55,7 +55,12 @@ class MatchaModel extends Matcha
 
     public function removeFieldsToModel($fileSenchaModel, $columns = array())
     {
+        //if(!count($columns) || $column) return false;
+        $tmpModel = (array)self::__getSenchaModel($fileSenchaModel);
 
+        echo '<pre>';
+        print_r($tmpModel);
+        echo '</pre>';
     }
 
     public function modifyFieldsToModel($fileSenchaModel, $columns = array())
@@ -203,11 +208,12 @@ class MatchaModel extends Matcha
         try
         {
             // Getting Sencha model as a namespace
-            $senchaModel = self::__getFileContent($fileModel);
+            $senchaModel = (string)self::__getFileContent($fileModel);
+            // get the actual Sencha Model.
+            preg_match('/Ext\.define\([a-zA-Z0-9\',. ]+(?P<extmodel>.+)\);/si', $senchaModel, $match);
+            $senchaModel = $match['extmodel'];
 	        // add quotes to proxy Ext.Direct functions
 	        $senchaModel = preg_replace("/([\t ])(read|create|update|destroy)[:]( |\t)((\w|\.)*)/", "$1$2$3:'$4'", $senchaModel);
-	        // clean comments and unnecessary Ext.define functions
-	        $senchaModel = preg_replace("(Ext.define\('[A-Za-z0-9.]*',|\);|\")", '', $senchaModel);
 	        // clean comments and unnecessary Ext.define functions
             $senchaModel = preg_replace("((/\*(.|\n)*?\*/|//(.*))|([ ](?=(?:[^\'\"]|\'[^\'\"]*\')*$)|\t|\n|\r))", '', $senchaModel);
             // wrap with double quotes to all the properties
@@ -217,6 +223,7 @@ class MatchaModel extends Matcha
             // replace single quotes for double quotes
             // TODO: refine this to make sure doesn't replace apostrophes used in comments. example: don't
             $senchaModel = preg_replace("(')", '"', $senchaModel);
+
             $model = (array)json_decode($senchaModel, true);
             if(!count($model)) throw new Exception("Something went wrong converting it to an array, a bad lolo.... $senchaModel");
 

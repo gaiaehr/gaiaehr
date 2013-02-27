@@ -278,25 +278,36 @@ class MatchaCUP
 	 */
 	public function save($record)
 	{
-		try{
-			if (is_object($record)){
+		try
+        {
+			if (is_object($record))
+            {
 				$data = get_object_vars($record);
 				// create record
-				if (!isset($data[$this->primaryKey]) || (isset($data[$this->primaryKey]) && $data[$this->primaryKey] == 0)){
+				if (!isset($data[$this->primaryKey]) || (isset($data[$this->primaryKey]) && $data[$this->primaryKey] == 0))
+                {
 					$this->rowsAffected = Matcha::$__conn->exec($this->buildInsetSqlStatement($data));
 					$record->pid = $this->lastInsertId = Matcha::$__conn->lastInsertId();
-				}else{
+				}
+                else
+                {
 					// update a record
 					$this->rowsAffected = Matcha::$__conn->exec($this->buildUpdateSqlStatement($data));
 				}
-			}else{
-				foreach ($record as $index => $rec){
+			}
+            else
+            {
+				foreach ($record as $index => $rec)
+                {
 					$data = get_object_vars($rec);
 					// create record
-					if (!isset($data[$this->primaryKey]) || (isset($data[$this->primaryKey]) && $data[$this->primaryKey] == 0)){
+					if (!isset($data[$this->primaryKey]) || (isset($data[$this->primaryKey]) && $data[$this->primaryKey] == 0))
+                    {
 						$this->rowsAffected = Matcha::$__conn->exec($this->buildInsetSqlStatement($data));
 						$record[$index]->id = $this->lastInsertId = Matcha::$__conn->lastInsertId();
-					}else{
+					}
+                    else
+                    {
 						// update a record
 						$this->rowsAffected = Matcha::$__conn->exec($this->buildUpdateSqlStatement($data));
 					}
@@ -387,7 +398,8 @@ class MatchaCUP
 		return $whereStr;
 	}
 
-	private function buildInsetSqlStatement($data){
+	private function buildInsetSqlStatement($data)
+    {
 		$data = $this->parseValues($data);
 
 		$columns = array_keys($data);
@@ -398,34 +410,41 @@ class MatchaCUP
 		return str_replace("'NULL'",'NULL',$sql);
 	}
 
-	private function buildUpdateSqlStatement($data){
+	private function buildUpdateSqlStatement($data)
+    {
 		$id = $data[$this->primaryKey];
 		unset($data[$this->primaryKey]);
 
 		$sets = array();
 		$data = $this->parseValues($data);
-		foreach ($data as $key => $val){
-			$sets[] = "`$key`='$val'";
-		}
+		foreach ($data as $key => $val)	$sets[] = "`$key`='$val'";
 		$sets = implode(',', $sets);
 		$sql = "UPDATE `" . $this->model->table->name . "` SET $sets WHERE $this->primaryKey = '$id'";
 		return str_replace("'NULL'",'NULL',$sql);
 	}
 
-	private function parseValues($data){
+	private function parseValues($data)
+    {
 		$columns = array_keys($data);
 		$values = array_values($data);
 		$properties = (array) MatchaModel::__getFieldsProperties($columns, $this->model);
 
-		foreach($values as $index => $foo){
+		foreach($values as $index => $foo)
+        {
 			$type = $properties[$index]['type'];
-			if($type == 'bool'){
-				if($foo === true){
+			if($type == 'bool')
+            {
+				if($foo === true)
+                {
 					$values[$index] = 1;
-				}elseif($foo === false){
+				}
+                elseif($foo === false)
+                {
 					$values[$index] = 0;
 				}
-			}elseif($type == 'date'){
+			}
+            elseif($type == 'date')
+            {
 				$values[$index] = ($foo == '' ? 'NULL' : $values[$index]);
 			}
 		}

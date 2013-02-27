@@ -114,7 +114,7 @@ class Matcha
 	 * function __createTable():
 	 * Method to create a table if does not exist with a BIGINT as id
 	 * also if the sencha model has an array on the table go ahead and
-	 * proccess the table options. 
+	 * process the table options.
 	 */
 	static protected function __createTable($forcedTable = NULL)
 	{
@@ -170,15 +170,8 @@ class Matcha
 	 */
 	static protected function __createAllColumns($parameters = array())
 	{
-		try
-		{
-			foreach($parameters as $column) self::__createColumn($column);
-            return true;
-		}
-		catch(PDOException $e)
-		{
-			return MatchaErrorHandler::__errorProcess($e);
-		}
+    	foreach($parameters as $column) if(!self::__createColumn($column)) return false;
+        return true;
 	}
 	
 	/**
@@ -195,7 +188,8 @@ class Matcha
 		}
 		catch(PDOException $e)
 		{
-			return MatchaErrorHandler::__errorProcess($e);
+            MatchaErrorHandler::__errorProcess($e);
+			return false;
 		}		
 	}
 	

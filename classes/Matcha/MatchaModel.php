@@ -102,7 +102,7 @@ class MatchaModel extends Matcha
      */
     public function modifyFieldsToModel($fileSenchaModel, $modifyColumns = array())
     {
-        if(!count($removeColumns)) return false;
+        if(!count($modifyColumns)) return false;
         $tmpModel = (array)self::__getSenchaModel($fileSenchaModel);
 
         // navigate through the fields of the $removeColumns

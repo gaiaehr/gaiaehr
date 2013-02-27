@@ -194,7 +194,7 @@ class Matcha
 	}
 	
 	/**
-	 * function __modifyColumn($SingleParamater = array()):
+	 * function __modifyColumn($column = array(), $table = NULL):
 	 * Method to modify a single column properties
 	 */
 	static protected function __modifyColumn($column = array(), $table = NULL)

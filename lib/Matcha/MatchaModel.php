@@ -266,8 +266,9 @@ class MatchaModel extends Matcha
             // get the actual Sencha Model.
             preg_match('/Ext\.define\([a-zA-Z0-9\',. ]+(?P<extmodel>.+)\);/si', $senchaModel, $match);
             $senchaModel = $match['extmodel'];
+            $senchaModel = str_replace(' ', '', $senchaModel);
 	        // add quotes to proxy Ext.Direct functions
-	        $senchaModel = preg_replace("/([\t ])(read|create|update|destroy)[:]( |\t)((\w|\.)*)/", "$1$2$3:'$4'", $senchaModel);
+	        $senchaModel = preg_replace("/([\t ])(read|create|update|destroy)[:](|\t)((\w|\.)*)/", "$1$2$3:'$4'", $senchaModel);
 	        // clean comments and unnecessary Ext.define functions
             $senchaModel = preg_replace("((/\*(.|\n)*?\*/|//(.*))|([ ](?=(?:[^\'\"]|\'[^\'\"]*\')*$)|\t|\n|\r))", '', $senchaModel);
             // wrap with double quotes to all the properties

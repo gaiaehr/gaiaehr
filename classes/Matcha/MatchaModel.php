@@ -48,24 +48,78 @@ class MatchaModel extends Matcha
         return true;
     }
 
-    public function addFieldsToModel($fileSenchaModel, $columns = array())
+    /**
+     * function addFieldsToModel($fileSenchaModel, $addColumns = array()):
+     * Method to add fields to the sencha model.
+     * @param $fileSenchaModel
+     * @param array $addColumns
+     * @return bool
+     */
+    public function addFieldsToModel($fileSenchaModel, $addColumns = array())
     {
-
-    }
-
-    public function removeFieldsToModel($fileSenchaModel, $columns = array())
-    {
-        //if(!count($columns) || $column) return false;
+        if(!count($addColumns)) return false;
         $tmpModel = (array)self::__getSenchaModel($fileSenchaModel);
 
-        echo '<pre>';
-        print_r($tmpModel);
-        echo '</pre>';
+        // add the new fields to the Sencha Model
+        foreach($addColumns as $column) array_push($tmpModel['fields'], $column);
+
+        // re-create the Sencha Model file.
+        self::__createModelFile($fileSenchaModel, $tmpModel['table'], $tmpModel['fields']);
+        return true;
     }
 
-    public function modifyFieldsToModel($fileSenchaModel, $columns = array())
+    /**
+     * function removeFieldsToModel($fileSenchaModel, $removeColumns = array()):
+     * Method to remove columns to the model
+     * @param $fileSenchaModel
+     * @param array $removeColumns
+     * @return bool
+     */
+    public function removeFieldsToModel($fileSenchaModel, $removeColumns = array())
     {
+        if(!count($removeColumns)) return false;
+        $tmpModel = (array)self::__getSenchaModel($fileSenchaModel);
 
+        // navigate through the fields of the $removeColumns
+        // and remove the field.
+        foreach($removeColumns as $column)
+        {
+            $foundKey = MatchaUtils::__recursiveArraySearch($column, $tmpModel['fields']);
+            if($foundKey !== false) unset($tmpModel['fields'][$foundKey]);
+        }
+
+        // re-create the Sencha Model file.
+        self::__createModelFile($fileSenchaModel, $tmpModel['table'], $tmpModel['fields']);
+        return true;
+    }
+
+    /**
+     * function modifyFieldsToModel($fileSenchaModel, $modifyColumns = array()):
+     * Method to modify field in the Sencha Model
+     * @param $fileSenchaModel
+     * @param array $modifyColumns
+     * @return bool
+     */
+    public function modifyFieldsToModel($fileSenchaModel, $modifyColumns = array())
+    {
+        if(!count($removeColumns)) return false;
+        $tmpModel = (array)self::__getSenchaModel($fileSenchaModel);
+
+        // navigate through the fields of the $removeColumns
+        // and remove the field and then re-insert the modified one
+        foreach($modifyColumns as $column)
+        {
+            $foundKey = MatchaUtils::__recursiveArraySearch($column, $tmpModel['fields']);
+            if($foundKey !== false)
+            {
+                unset($tmpModel['fields'][$foundKey]);
+                array_push($tmpModel['fields'], $column);
+            }
+        }
+
+        // re-create the Sencha Model file.
+        self::__createModelFile($fileSenchaModel, $tmpModel['table'], $tmpModel['fields']);
+        return true;
     }
 
     /**

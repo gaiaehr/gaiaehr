@@ -24,7 +24,7 @@ class MatchaUtils
         foreach($haystack as $key=>$value)
         {
             $current_key=$key;
-            if($needle===$value OR (is_array($value) && self::__recursiveArraySearch($needle,$value) !== false)) return $current_key;
+            if($needle===$value OR (is_array($value) && MatchaUtils::__recursiveArraySearch($needle,$value) !== false)) return $current_key;
         }
         return false;
     }

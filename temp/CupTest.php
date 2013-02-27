@@ -21,8 +21,8 @@
  * so this is the result.
  *
  */
-include_once('../classes/Matcha.php');
-include_once('../classes/matchacup.php');
+include_once('../lib/Matcha.php');
+include_once('../lib/matchacup.php');
 
 //print '<pre>';
 class CupTest{

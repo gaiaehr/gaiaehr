@@ -475,7 +475,6 @@ class MatchaModel extends Matcha
             $jsSenchaModel .= preg_replace('/"(?P<key>.+?)":/', '$1:', json_encode($senchaModelArray, JSON_PRETTY_PRINT));
             $jsSenchaModel .= ');'.chr(13);
             $jsSenchaModel = str_replace('"', "'", $jsSenchaModel);
-            $jsSenchaModel = preg_replace("/([\t ])(read|create|update|destroy)[:](|\t)((\w|\.)*)/", "$1$2$3:'$4'", $jsSenchaModel);
 
             // ro-do the Sencha Model .js file
             $file = self::$__app.'/'.strtolower(str_replace('.', '/', $modelDir) ).'/'.$dirLastKey.'.js';

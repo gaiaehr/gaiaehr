@@ -18,22 +18,19 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.store.administration.User', {
-    model: 'App.model.administration.User',
+Ext.define('App.store.administration.Applications', {
+    model: 'App.model.administration.Applications',
     extend: 'Ext.data.Store',
     proxy: {
         type: 'direct',
         api: {
-            read: User.getUsers,
-            create: User.addUser,
-            update: User.updateUser
-        },
-        reader: {
-            totalProperty: 'totals',
-            root: 'rows'
+            read: Applications.getApplications,
+            create: Applications.addApplication,
+            update: Applications.updateApplication,
+            destroy: Applications.deleteApplication
         }
     },
     autoSync: true,
     remoteSort: true,
     autoLoad: false
-}); 
+});

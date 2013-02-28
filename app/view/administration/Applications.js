@@ -1,7 +1,8 @@
 /*
  GaiaEHR (Electronic Health Records)
- Facilities.js
- Copyright (C) 2012 Ernesto Rodriguez
+ Services.js
+ Store
+ Copyright (C) 2013 (Certun)
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -16,36 +17,21 @@
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 Ext.define('App.view.administration.Applications', {
     extend: 'App.ux.RenderPanel',
     id: 'panelApplications',
     pageTitle: i18n('applications'),
     initComponent: function(){
         var me = this;
-        Ext.define('ApplicationsModel', {
-            extend: 'Ext.data.Model',
-            fields: [
-                { name: 'id', type: 'int' },
-                { name: 'app_name', type: 'string' },
-                { name: 'pvt_key', type: 'string' },
-                { name: 'active', type: 'bool' }
-            ],
-            proxy: {
-                type: 'direct',
-                api: {
-                    read: Applications.getApplications,
-                    create: Applications.addApplication,
-                    update: Applications.updateApplication,
-                    destroy: Applications.deleteApplication
-                }
-            }
-        });
-        me.store = Ext.create('Ext.data.Store', {
-            model: 'ApplicationsModel',
-            remoteSort: false
-        });
+
         // *************************************************************************************
-        // Facility Grid Panel
+        // Application Store
+        // *************************************************************************************
+        me.store = Ext.create('App.store.administration.Applications');
+
+        // *************************************************************************************
+        // Application Grid Panel
         // *************************************************************************************
         me.grid = Ext.create('Ext.grid.Panel', {
             store: me.store,

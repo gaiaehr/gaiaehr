@@ -479,9 +479,9 @@ class MatchaModel extends Matcha
             // ro-do the Sencha Model .js file
             $file = self::$__app.'/'.strtolower(str_replace('.', '/', $modelDir) ).'/'.$dirLastKey.'.js';
             $fileObject = fopen($file,'w+');
-            if(!fwrite($fileObject,$jsSenchaModel,strlen($jsSenchaModel))) throw new Exception('Could not create the Sencha Model file.');;
+            if(!fwrite($fileObject,$jsSenchaModel,strlen($jsSenchaModel))) throw new Exception('Could not create the Sencha Model file.');
             fclose($fileObject);
-            chmod($file,775);
+            if(!chmod($file,775)) throw new Exception('Could not chmod the Sencha Model file.');
             return true;
         }
         catch(Exception $e)

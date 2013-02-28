@@ -64,7 +64,7 @@ class MatchaModel extends Matcha
         foreach($addColumns as $column) array_push($tmpModel['fields'], $column);
 
         // re-create the Sencha Model file.
-        self::__createModelFile($fileSenchaModel, $tmpModel['table'], $tmpModel['fields']);
+        self::__arrayToSenchaModel($fileSenchaModel, $tmpModel);
         return true;
     }
 
@@ -89,7 +89,7 @@ class MatchaModel extends Matcha
         }
 
         // re-create the Sencha Model file.
-        self::__createModelFile($fileSenchaModel, $tmpModel['table'], $tmpModel['fields']);
+        self::__arrayToSenchaModel($fileSenchaModel, $tmpModel);
         return true;
     }
 
@@ -118,7 +118,7 @@ class MatchaModel extends Matcha
         }
 
         // re-create the Sencha Model file.
-        self::__createModelFile($fileSenchaModel, $tmpModel['table'], $tmpModel['fields']);
+        self::__arrayToSenchaModel($fileSenchaModel, $tmpModel);
         return true;
     }
 
@@ -419,7 +419,10 @@ class MatchaModel extends Matcha
             }
 
             // compose the Sencha Model .js for the first time
-            $jsSenchaModel = (string)"Ext.define('".$fileSenchaModel."', {" . chr(13);
+            $jsSenchaModel = (string)'// Created dynamically by Matcha::connect';
+            $jsSenchaModel .= '// Create date: '.date('Y-m-d H:i:s');
+            $jsSenchaModel .= chr(13);
+            $jsSenchaModel .= "Ext.define('".$fileSenchaModel."', {" . chr(13);
             $jsSenchaModel .= MatchaUtils::t(1)."extend: 'Ext.data.Model'," . chr(13);
             $jsSenchaModel .= MatchaUtils::t(1)."table: { name:'$databaseTable' },".chr(13);
             $jsSenchaModel .= MatchaUtils::t(1)."fields: [" . chr(13);
@@ -438,6 +441,46 @@ class MatchaModel extends Matcha
             // create the Sencha Model .js file for the first time
             $file = self::$__app.'/'.strtolower(str_replace('.', '/', $modelDir) ).'/'.$dirLastKey.'.js';
             if(!file_put_contents($file, $jsSenchaModel)) throw new Exception('Could not create the Sencha Model file.');
+            return true;
+        }
+        catch(Exception $e)
+        {
+            MatchaErrorHandler::__errorProcess($e);
+            return false;
+        }
+    }
+
+    /**
+     * function __arrayToSenchaModel($fileSenchaModel, $senchaModelArray = array()):
+     * Method to convert the array of the Sencha Model to a valid Sencha Model .js file
+     * @param $fileSenchaModel
+     * @param array $senchaModelArray
+     * @return bool
+     * @throws Exception
+     */
+    private function __arrayToSenchaModel($fileSenchaModel, $senchaModelArray = array())
+    {
+        try
+        {
+            // compose the directory structure
+            $dirLastKey = array_pop(explode('.', $fileSenchaModel));
+            $modelDir = str_replace('.'.$dirLastKey, '', $fileSenchaModel);
+            $modelDir = str_replace('App.', '', $modelDir);
+
+            // compose the Sencha Model .js
+            $jsSenchaModel = (string)'// Created dynamically by Matcha::connect'.chr(13);
+            $jsSenchaModel .= '// Create date: '.date('Y-m-d H:i:s').chr(13);
+            $jsSenchaModel .= chr(13);
+            $jsSenchaModel .= "Ext.define('".$fileSenchaModel."',".chr(13);
+            $jsSenchaModel .= preg_replace('/"(?P<key>.+?)":/', '$1:', json_encode($senchaModelArray, JSON_PRETTY_PRINT));
+            $jsSenchaModel .= ');'.chr(13);
+            $jsSenchaModel = str_replace('"', "'", $jsSenchaModel);
+
+            // ro-do the Sencha Model .js file
+            $file = self::$__app.'/'.strtolower(str_replace('.', '/', $modelDir) ).'/'.$dirLastKey.'.js';
+            $fileObject = fopen($file,'w+');
+            if(!fwrite($fileObject,$jsSenchaModel,strlen($jsSenchaModel))) throw new Exception('Could not create the Sencha Model file.');;
+            fclose($fileObject);
             return true;
         }
         catch(Exception $e)

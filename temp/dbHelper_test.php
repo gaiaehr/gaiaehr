@@ -40,9 +40,9 @@ $db = new MatchaHelper();
 //    'ip'=>'192.168.5.103'
 //));
 
-//echo '<pre>';
-MatchaModel::addFieldsToModel('App.model.administration.User', array(array('name'=>'gino', 'type'=>'string')));
-//echo '</pre>';
+echo '<pre>';
+MatchaModel::addFieldsToModel('App.model.administration.testMedications', array(array('name'=>'test', 'type'=>'string')));
+echo '</pre>';
 
 //$db->SenchaModel('App.model.administration.tmpUser');
 

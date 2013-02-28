@@ -262,29 +262,28 @@ class MatchaModel extends Matcha
         try
         {
             // Getting Sencha model as a namespace
-            $senchaModel = (string)self::__getFileContent($fileModel);
+            $jsSenchaModel = (string)self::__getFileContent($fileModel);
             // get the actual Sencha Model.
-            preg_match('/Ext\.define\([a-zA-Z0-9\',. ]+(?P<extmodel>.+)\);/si', $senchaModel, $match);
-            $senchaModel = $match['extmodel'];
-            $senchaModel = str_replace(' ', '', $senchaModel);
+            preg_match('/Ext\.define\([a-zA-Z0-9\',. ]+(?P<extmodel>.+)\);/si', $jsSenchaModel, $match);
+            $jsSenchaModel = $match['extmodel'];
+            $jsSenchaModel = str_replace(' ', '', $jsSenchaModel);
 	        // add quotes to proxy Ext.Direct functions
-	        $senchaModel = preg_replace("/([\t ])(read|create|update|destroy)[:](|\t)((\w|\.)*)/", "$1$2$3:'$4'", $senchaModel);
+
+            $jsSenchaModel = preg_replace("/([\t ])(read|create|update|destroy)[:](|\t)((\w|\.)*)/", "$1$2$3:'$4'", $jsSenchaModel);
 	        // clean comments and unnecessary Ext.define functions
-            $senchaModel = preg_replace("((/\*(.|\n)*?\*/|//(.*))|([ ](?=(?:[^\'\"]|\'[^\'\"]*\')*$)|\t|\n|\r))", '', $senchaModel);
+            $jsSenchaModel = preg_replace("((/\*(.|\n)*?\*/|//(.*))|([ ](?=(?:[^\'\"]|\'[^\'\"]*\')*$)|\t|\n|\r))", '', $jsSenchaModel);
             // wrap with double quotes to all the properties
-            $senchaModel = preg_replace('/(,|\{)(\w*):/', "$1\"$2\":", $senchaModel);
+            $jsSenchaModel = preg_replace('/(,|\{)(\w*):/', "$1\"$2\":", $jsSenchaModel);
             // wrap with double quotes float numbers
-            $senchaModel = preg_replace("/([0-9]+\.[0-9]+)/", "\"$1\"", $senchaModel);
+            $jsSenchaModel = preg_replace("/([0-9]+\.[0-9]+)/", "\"$1\"", $jsSenchaModel);
             // replace single quotes for double quotes
             // TODO: refine this to make sure doesn't replace apostrophes used in comments. example: don't
-            $senchaModel = preg_replace("(')", '"', $senchaModel);
+            $jsSenchaModel = preg_replace("(')", '"', $jsSenchaModel);
 
-            $model = (array)json_decode($senchaModel, true);
-            if(!count($model)) throw new Exception("Something went wrong converting it to an array, a bad lolo.... $senchaModel");
-
+            $model = (array)json_decode($jsSenchaModel, true);
+            if(!count($model)) throw new Exception("Something went wrong converting it to an array:".json_last_error());
             // check if there are a defined table from the model
             if(!isset($model['table'])) throw new Exception("Table property is not defined on Sencha Model. 'table:'");
-
             // check if there are a defined fields from the model
             if(!isset($model['fields'])) throw new Exception("Fields property is not defined on Sencha Model. 'fields:'");
 
@@ -475,6 +474,10 @@ class MatchaModel extends Matcha
             $jsSenchaModel .= preg_replace('/"(?P<key>.+?)":/', '$1:', json_encode($senchaModelArray, JSON_PRETTY_PRINT));
             $jsSenchaModel .= ');'.chr(13);
             $jsSenchaModel = str_replace('"', "'", $jsSenchaModel);
+            $jsSenchaModel = preg_replace('/(?P<f>read)[\t :]+\'(?P<m>.+?)\'/i', "$1: $2", $jsSenchaModel);
+            $jsSenchaModel = preg_replace('/(?P<f>create)[\t :]+\'(?P<m>.+?)\'/i', "$1: $2", $jsSenchaModel);
+            $jsSenchaModel = preg_replace('/(?P<f>update)[\t :]+\'(?P<m>.+?)\'/i', "$1: $2", $jsSenchaModel);
+            $jsSenchaModel = preg_replace('/(?P<f>destroy)[\t :]+\'(?P<m>.+?)\'/i', "$1: $2", $jsSenchaModel);
 
             // ro-do the Sencha Model .js file
             $file = self::$__app.'/'.strtolower(str_replace('.', '/', $modelDir) ).'/'.$dirLastKey.'.js';

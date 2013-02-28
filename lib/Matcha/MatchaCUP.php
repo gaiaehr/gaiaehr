@@ -19,33 +19,15 @@
 class MatchaCUP
 {
 	/**
-	 * @var array Model array
+	 * Variables that MatchaCUP uses.
 	 */
 	private $model;
-	/**
-	 * @var
-	 */
 	private $table;
-	/**
-	 * @var
-	 */
 	private $primaryKey;
-	/**
-	 * @var string
-	 */
 	private $nolimitsql = '';
-	/**
-	 * @var string
-	 */
 	private $sql = '';
-	/**
-	 * @var
-	 */
 	public $rowsAffected;
-	/**
-	 * @var
-	 */
-	public $lastInsertId;
+	public $lastInsertId; // There is already a lastInsertId in Matcha::Class
 
 	/**
 	 * Method to set PDO statement.
@@ -198,6 +180,7 @@ class MatchaCUP
 	}
 
 	/**
+     * return an specific column
 	 * @return mixed
 	 */
 	public function column()
@@ -398,7 +381,13 @@ class MatchaCUP
 		return $whereStr;
 	}
 
-	private function buildInsetSqlStatement($data)
+    /**
+     * function buildInsetSqlStatement($data):
+     * Method to build the insert sql statement
+     * @param $data
+     * @return mixed
+     */
+    private function buildInsetSqlStatement($data)
     {
 		$data = $this->parseValues($data);
 
@@ -410,7 +399,13 @@ class MatchaCUP
 		return str_replace("'NULL'",'NULL',$sql);
 	}
 
-	private function buildUpdateSqlStatement($data)
+    /**
+     * function buildUpdateSqlStatement($data):
+     * Method to build the update sql statement
+     * @param $data
+     * @return mixed
+     */
+    private function buildUpdateSqlStatement($data)
     {
 		$id = $data[$this->primaryKey];
 		unset($data[$this->primaryKey]);
@@ -423,7 +418,13 @@ class MatchaCUP
 		return str_replace("'NULL'",'NULL',$sql);
 	}
 
-	private function parseValues($data)
+    /**
+     * function parseValues($data):
+     * Parse the data and if some values met the type correct them.
+     * @param $data
+     * @return array
+     */
+    private function parseValues($data)
     {
 		$columns = array_keys($data);
 		$values = array_values($data);

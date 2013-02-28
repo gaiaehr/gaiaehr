@@ -75,7 +75,7 @@ class MatchaModel extends Matcha
      * @param array $removeColumns
      * @return bool
      */
-    public function removeFieldsToModel($fileSenchaModel, $removeColumns = array())
+    public function removeFieldsFromModel($fileSenchaModel, $removeColumns = array())
     {
         if(!count($removeColumns)) return false;
         $tmpModel = (array)self::__getSenchaModel($fileSenchaModel);
@@ -100,7 +100,7 @@ class MatchaModel extends Matcha
      * @param array $modifyColumns
      * @return bool
      */
-    public function modifyFieldsToModel($fileSenchaModel, $modifyColumns = array())
+    public function modifyFieldsFromModel($fileSenchaModel, $modifyColumns = array())
     {
         if(!count($modifyColumns)) return false;
         $tmpModel = (array)self::__getSenchaModel($fileSenchaModel);

@@ -1,13 +1,21 @@
-//******************************************************************************
-// Users.ejs.php
-// Description: Users Screen
-// v0.0.4
-//
-// Author: Ernesto J Rodriguez
-// Modified: n/a
-//
-// GaiaEHR (Eletronic Health Records) 2011
-//******************************************************************************
+/**
+ GaiaEHR (Electronic Health Records)
+ Copyright (C) 2013 Certun
+
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 Ext.define('App.view.miscellaneous.Websearch',
 {
 	extend : 'App.ux.RenderPanel',
@@ -23,50 +31,9 @@ Ext.define('App.view.miscellaneous.Websearch',
 		var rec;
 		if (!Ext.ModelManager.isRegistered('webSearch'))
 		{
-			Ext.define("webSearch",
-			{
-				extend : 'Ext.data.Model',
-				fields : [
-				{
-					name : 'title',
-					type : 'string'
-				},
-				{
-					name : 'source',
-					type : 'string'
-				},
-				{
-					name : 'FullSummary',
-					type : 'string'
-				},
-				{
-					name : 'snippet',
-					type : 'string'
-				}]
-			});
+            page.store = Ext.create('App.store.miscellaneous.webSearch');
 		}
-		page.store = Ext.create('Ext.data.Store',
-		{
-			pageSize : 15,
-			model : 'webSearch',
-			proxy :
-			{
-				type : 'ajax',
-				url : 'app/miscellaneous/websearch/data_read.ejs.php',
-				noCache : false,
-				startParam : 'retstart',
-				limitParam : 'retmax',
-				pageParam : 'file',
-				reader :
-				{
-					type : 'json',
-					root : 'row',
-					totalProperty : 'totals',
-					idProperty : 'id'
-				}
-			}
-			//autoLoad:true
-		});
+
 		page.searchPanel = Ext.create('Ext.panel.Panel',
 		{
 			region : 'north',

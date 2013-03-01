@@ -1,7 +1,7 @@
 /*
  GaiaEHR (Electronic Health Records)
  Facilities.js
- Copyright (C) 2012 Ernesto Rodriguez
+ Copyright (C) 201 Certun
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -23,104 +23,12 @@ Ext.define('App.view.administration.Facilities', {
     uses: ['App.ux.GridPanel', 'App.ux.window.Window'],
     initComponent: function(){
         var me = this;
-        Ext.define('facilityModel', {
-            extend: 'Ext.data.Model',
-            fields: [
-                {
-                    name: 'id',
-                    type: 'int'
-                },
-                {
-                    name: 'name',
-                    type: 'string'
-                },
-                {
-                    name: 'active',
-                    type: 'bool'
-                },
-                {
-                    name: 'phone',
-                    type: 'string'
-                },
-                {
-                    name: 'fax',
-                    type: 'string'
-                },
-                {
-                    name: 'street',
-                    type: 'string'
-                },
-                {
-                    name: 'city',
-                    type: 'string'
-                },
-                {
-                    name: 'state',
-                    type: 'string'
-                },
-                {
-                    name: 'postal_code',
-                    type: 'string'
-                },
-                {
-                    name: 'country_code',
-                    type: 'string'
-                },
-                {
-                    name: 'federal_ein',
-                    type: 'string'
-                },
-                {
-                    name: 'service_location',
-                    type: 'bool'
-                },
-                {
-                    name: 'billing_location',
-                    type: 'bool'
-                },
-                {
-                    name: 'accepts_assignment',
-                    type: 'bool'
-                },
-                {
-                    name: 'pos_code',
-                    type: 'string'
-                },
-                {
-                    name: 'x12_sender_id',
-                    type: 'string'
-                },
-                {
-                    name: 'attn',
-                    type: 'string'
-                },
-                {
-                    name: 'domain_identifier',
-                    type: 'string'
-                },
-                {
-                    name: 'facility_npi',
-                    type: 'string'
-                },
-                {
-                    name: 'tax_id_type',
-                    type: 'string'
-                }
-            ],
-            proxy: {
-                type: 'direct',
-                api: {
-                    read: Facilities.getFacilities,
-                    create: Facilities.addFacility,
-                    update: Facilities.updateFacility,
-                    destroy: Facilities.deleteFacility
-                }
-            }
-        });
-        me.FacilityStore = Ext.create('Ext.data.Store', {
-            model: 'facilityModel',
-            remoteSort: true
-        });
+
+        // *************************************************************************************
+        // Facilities Stores
+        // *************************************************************************************
+        me.FacilityStore = Ext.create('App.store.administration.Facility');
+
         // *************************************************************************************
         // Facility Grid Panel
         // *************************************************************************************

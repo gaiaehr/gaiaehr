@@ -33,48 +33,8 @@ Ext.define('App.view.administration.Practice', {
 		/**
 		 * Laboratories Model and Store
 		 */
-		Ext.define('LaboratoriesGridModel', {
-			extend:'Ext.data.Model',
-			fields:[
-				{ name:'id', type:'int' },
-				{ name:'name', type:'string' },
-				{ name:'transmit_method', type:'string' },
-				{ name:'email', type:'string' },
-				{ name:'address_id', type:'int' },
-				{ name:'line1', type:'string' },
-				{ name:'line2', type:'string' },
-				{ name:'city', type:'string' },
-				{ name:'state', type:'string' },
-				{ name:'zip', type:'string' },
-				{ name:'plus_four', type:'string' },
-				{ name:'country', type:'string' },
-				{ name:'address_full', type:'string' },
-				{ name:'phone_id', type:'int' },
-				{ name:'phone_country_code', type:'string' },
-				{ name:'phone_area_code', type:'string' },
-				{ name:'phone_prefix', type:'string' },
-				{ name:'phone_number', type:'string' },
-				{ name:'phone_full', type:'string' },
-				{ name:'fax_id', type:'int' },
-				{ name:'fax_area_code', type:'string' },
-				{ name:'fax_prefix', type:'string' },
-				{ name:'fax_number', type:'string' },
-				{ name:'fax_full', type:'string' },
-				{ name:'active', type:'bool' }
-			],
-			proxy:{
-				type:'direct',
-				api:{
-					read:Practice.getLaboratories,
-					create:Practice.addLaboratory,
-					update:Practice.updateLaboratory
-				}
-			}
-		});
-		me.laboratoryStore = Ext.create('Ext.data.Store', {
-			model:'LaboratoriesGridModel',
-			remoteSort:false
-		});
+		me.laboratoryStore = Ext.create('App.store.administration.LaboratoriesGridModel');
+
 		// *************************************************************************************
 		// Insurance Record Structure
 		// *************************************************************************************

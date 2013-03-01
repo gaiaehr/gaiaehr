@@ -1,4 +1,4 @@
-/*
+/**
  GaiaEHR (Electronic Health Records)
  Login.js
  Logon page
@@ -32,28 +32,6 @@ Ext.define('App.view.login.Login',
 		me.showSite = false;
 
 		me.siteError = window.site === false || window.site === '';
-
-		Ext.define('SitesModel',
-		{
-			extend : 'Ext.data.Model',
-			fields : [
-			{
-				name : 'site_id',
-				type : 'int'
-			},
-			{
-				name : 'site',
-				type : 'string'
-			}],
-			proxy :
-			{
-				type : 'direct',
-				api :
-				{
-					read : authProcedures.getSites
-				}
-			}
-		});
 
 		/**
 		 * The Copyright Notice Window
@@ -169,11 +147,7 @@ Ext.define('App.view.login.Login',
 
 		if (me.showSite)
 		{
-			me.storeSites = Ext.create('Ext.data.Store',
-			{
-				model : 'SitesModel',
-				autoLoad : false
-			});
+			me.storeSites = Ext.create('App.store.login.SitesModel');
 			me.formLogin.insert(3,
 			{
 				xtype : 'combobox',

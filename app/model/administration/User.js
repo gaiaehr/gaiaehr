@@ -37,8 +37,9 @@ Ext.define( 'App.model.administration.User',
 		len: 20,
 		primaryKey : true,
 		autoIncrement : true,
-		allowNull : true,
-		store: true
+		allowNull : false,
+		store: true,
+        comment: 'Users ID'
 	},
 	{
 		name : 'username',
@@ -46,62 +47,77 @@ Ext.define( 'App.model.administration.User',
 		dataType : 'varchar',
 		len : 25,
 		allowNull : false,
-		store: true
+		store: true,
+        comment: 'Username'
 	},
 	{
 		name : 'password',
 		type : 'string',
 		dataType : 'blob',
 		allowNull : false,
-		store: true
+		store: true,
+        comment: 'User Password'
 	},
 	{
 		name : 'authorized',
 		type : 'bool',
 		dataType : 'tinyint',
+        allowNull : true,
 		len : 1,
 		defaultValue : 0,
-		store: true
+		store: true,
+        comment: 'User is authorized'
 	},
 	{
 		name : 'active',
 		type : 'bool',
-		dataType : 'tinyint',
-		store: true
+		store: true,
+        comment: 'User is active'
 	},
 	{
 		name : 'info',
 		type : 'string',
 		dataType: 'longtext',
-		store: true
+        len: 255,
+        allowNull : true,
+		store: true,
+        comment: 'Information'
 	},
 	{
 		name : 'source',
 		type : 'int',
 		dataType : 'tinyint',
+        allowNull : true,
 		len: 4,
-		store: true
+		store: true,
+        comment: 'Source'
 	},
 	{
 		name : 'fname',
 		type : 'string',
 		dataType : 'varchar',
 		len: 255,
-		store: true
+        allowNull : true,
+		store: true,
+        comment: 'First person name'
 	}, 
 	{
 		name : 'mname',
 		type : 'string',
 		dataType : 'varchar',
+        allowNull : true,
 		len: 255,
-		store: true
+		store: true,
+        comment: 'Middle person name'
 	},
 	{
 		name : 'lname',
 		type : 'string',
 		dataType : 'varchar',
+        allowNull : true,
 		len: 255,
-		store: true
+		store: true,
+        comment: 'Last person name'
 	},
 	{
 		name : 'fullname',
@@ -112,58 +128,78 @@ Ext.define( 'App.model.administration.User',
 		name : 'federaltaxid',
 		type : 'string',
 		dataType : 'varchar',
-		len: 255
+        allowNull : true,
+		len: 255,
+        comment: 'Federal TAX Id'
 	},
+    {
+        name: 'email',
+        type: 'string',
+        comment: 'User Email Address'
+    },
 	{
 		name : 'federaldrugid',
-		type : 'string'
+		type : 'string',
+        comment: 'Federal DRUG Id'
 	},
 	{
 		name : 'upin',
-		type : 'string'
+		type : 'string',
+        comment: 'UPIN'
 	},
 	{
 		name : 'facility_id',
-		type : 'int'
+		type : 'int',
+        comment: 'Facility ID'
 	},
 	{
 		name : 'see_auth',
-		type : 'bool'
+		type : 'bool',
+        comment: 'See Authorization'
 	},
 	{
 		name : 'npi',
-		type : 'string'
+		type : 'string',
+        comment: 'NPI'
 	},
 	{
 		name : 'title',
-		type : 'string'
+		type : 'string',
+        comment: 'Title'
 	},
 	{
 		name : 'specialty',
-		type : 'string'
+		type : 'string',
+        comment: 'Speciality'
 	},
 	{
 		name : 'cal_ui',
-		type : 'string'
+		type : 'string',
+        comment: 'CAL UI'
 	},
 	{
 		name : 'taxonomy',
-		type : 'string'
+		type : 'string',
+        comment: 'Taxonomy'
 	},
 	{
 		name : 'calendar',
-		type : 'bool'
+		type : 'bool',
+        comment: 'Calendar'
 	},
 	{
 		name : 'abook_type',
-		type : 'string'
+		type : 'string',
+        comment: 'Address Book Type'
 	},
 	{
 		name : 'default_warehouse',
-		type : 'string'
+		type : 'string',
+        comment: 'Default Warehouse'
 	},
 	{
 		name : 'role_id',
-		type : 'int'
+		type : 'int',
+        comment: 'Role ID'
 	}]
 } );

@@ -183,7 +183,7 @@ class Matcha
 		try
 		{
             if(!$table) $table = (string)(is_array(MatchaModel::$__senchaModel['table']) ? MatchaModel::$__senchaModel['table']['name'] : MatchaModel::$__senchaModel['table']);
-			if(self::__rendercolumnsyntax($column) == true) self::$__conn->query('alter table '.$table.' add '.$column['name'].' '.self::__rendercolumnsyntax($column).';');
+			if(self::__rendercolumnsyntax($column) == true) self::$__conn->query('ALTER TABLE '.$table.' ADD '.$column['name'].' '.self::__rendercolumnsyntax($column).';');
             return true;
 		}
 		catch(PDOException $e)
@@ -281,18 +281,38 @@ class Matcha
         {
             // parse some properties on Sencha model.
             // and do the defaults if properties are not set.
-            if(isset($column['dataType'])): $columnType = (string)strtoupper($column['dataType']);
-            elseif($column['type'] == 'string' ): $columnType = (string)'VARCHAR';
-            elseif($column['type'] == 'int'):
+            if(isset($column['dataType']))
+            {
+                $columnType = (string)strtoupper($column['dataType']);
+                $errorComment = 'If dataType property is used you have to use the rest of the properties.';
+                if(!isset($column['allowNull'])) throw new Exception('In column '.$column['name'].' - '.$errorComment);
+            }
+            elseif($column['type'] == 'string' )
+            {
+                $columnType = (string)'VARCHAR';
+            }
+            elseif($column['type'] == 'int')
+            {
                 $columnType = (string)'INT';
                 $column['len'] = (isset($column['len']) ? $column['len'] : 11);
-            elseif($column['type'] == 'bool' || $column['type'] == 'boolean'):
+            }
+            elseif($column['type'] == 'bool' || $column['type'] == 'boolean')
+            {
                 $columnType = (string)'TINYINT';
                 $column['len'] = (isset($column['len']) ? $column['len'] : 1);
-            elseif($column['type'] == 'date'): $columnType = (string)'DATETIME';
-            elseif($column['type'] == 'float'): $columnType = (string)'FLOAT';
-            else: return false;
-            endif;
+            }
+            elseif($column['type'] == 'date')
+            {
+                $columnType = (string)'DATETIME';
+            }
+            elseif($column['type'] == 'float')
+            {
+                $columnType = (string)'FLOAT';
+            }
+            else
+            {
+                return false;
+            }
 
             // render the rest of the sql statement
             switch ($columnType)

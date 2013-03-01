@@ -52,7 +52,7 @@ class SiteSetup
 			$success = $this->rootDatabaseConn($params->dbHost, $params->dbPort, $params->rootUser, $params->rootPass);
 			if($success && $this->conn->query("USE $params->dbName") !== false){
 				return array(
-					'success' => false, 'error' => 'Database name in used. Please, use a different Database name'
+					'success' => false, 'error' => 'Database name is used. Please, use a different Database name'
 				);
 			}
 		} else {
@@ -364,20 +364,17 @@ class SiteSetup
 
 	public function loadCode($code)
 	{
-		//print $code;
 		include_once ('dataProvider/ExternalDataUpdate.php');
 		$codes            = new ExternalDataUpdate();
 		$params           = new stdClass();
 		$params->codeType = $code;
 		$foo              = $codes->getCodeFiles($params);
-		//		print_r($foo);
 		$params           = new stdClass();
 		$params->codeType = $foo[0]['codeType'];
 		$params->version  = $foo[0]['version'];
 		$params->path     = $foo[0]['path'];
 		$params->date     = $foo[0]['date'];
 		$params->basename = $foo[0]['basename'];
-		//		print_r($params);
 		return $codes->updateCodes($params);
 	}
 

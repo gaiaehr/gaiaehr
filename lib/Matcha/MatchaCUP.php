@@ -58,6 +58,7 @@ class MatchaCUP
 		try
 		{
 			$this->sql = '';
+            // If the where is an object
 			if (!is_object($where))
 			{
 				// columns
@@ -98,10 +99,8 @@ class MatchaCUP
 				if (isset($where->limit) || isset($where->start))
 				{
 					$limits = array();
-					if (isset($where->start))
-						$limits[] = $where->start;
-					if (isset($where->limit))
-						$limits[] = $where->limit;
+					if (isset($where->start)) $limits[] = $where->start;
+					if (isset($where->limit)) $limits[] = $where->limit;
 					$limits = 'LIMIT ' . implode(',', $limits);
 				}
 
@@ -261,6 +260,9 @@ class MatchaCUP
 	 */
 	public function save($record)
 	{
+        echo '<pre>';
+        print_r($record);
+        echo '<pre>';
 		try
         {
 			if (is_object($record))

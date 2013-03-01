@@ -127,7 +127,7 @@ class MatchaModel extends Matcha
      * This method will create the table and fields if does not exist in the database
      * also this is the brain of the micro ORM.
      */
-    static protected function __SenchaModel($fileModel)
+    static public function __SenchaModel($fileModel)
     {
         // skip this entire routine if freeze option is true
         if(self::$__freeze) return true;
@@ -170,6 +170,11 @@ class MatchaModel extends Matcha
             // get all the column that are not present in the database-table
             $differentCreateColumns = array_diff($columnsSenchaNames, $columnsTableNames);
             $differentDropColumns = array_diff($columnsTableNames, $columnsSenchaNames);
+
+            // unset the id field from both arrays
+            unset($differentCreateColumns[MatchaUtils::__recursiveArraySearch('id', $differentCreateColumns)]);
+            unset($differentCreateColumns[MatchaUtils::__recursiveArraySearch('id', $differentCreateColumns)]);
+            unset($workingModel[MatchaUtils::__recursiveArraySearch('id', $workingModel)]);
 
             // check if the table has columns, if not create them.
             if( count($tableColumns) <= 1 )
@@ -598,3 +603,4 @@ class MatchaModel extends Matcha
 	}
 
 }
+

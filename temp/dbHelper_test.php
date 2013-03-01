@@ -15,6 +15,8 @@ include_once ($_SESSION['root'] . '/classes/MatchaHelper.php');
 
 $db = new MatchaHelper();
 
+MatchaModel::__SenchaModel('App.model.administration.User');
+
 //echo MatchaModel::__renderSenchaFieldSyntax(array('Type'=>'DOUBLE(10,2)'));
 
 //MatchaAudit::defineLogModel(array(
@@ -40,9 +42,9 @@ $db = new MatchaHelper();
 //    'ip'=>'192.168.5.103'
 //));
 
-echo '<pre>';
-MatchaModel::addFieldsToModel('App.model.administration.testMedications', array(array('name'=>'test', 'type'=>'string')));
-echo '</pre>';
+//echo '<pre>';
+//MatchaModel::addFieldsToModel('App.model.administration.testMedications', array(array('name'=>'test', 'type'=>'string')));
+//echo '</pre>';
 
 //$db->SenchaModel('App.model.administration.tmpUser');
 

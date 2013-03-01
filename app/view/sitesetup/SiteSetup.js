@@ -560,7 +560,7 @@ Ext.define('App.view.sitesetup.SiteSetup',
 														fieldLabel:'Default TimeZone',
 														name:'timezone',
 														allowBlank:false,
-														width:300,
+														width:350,
 														plugins:[
 															{
 																ptype:'helpicon',

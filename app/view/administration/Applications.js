@@ -1,8 +1,8 @@
-/*
+/**
  GaiaEHR (Electronic Health Records)
  Services.js
  Store
- Copyright (C) 2013 (Certun)
+ Copyright (C) 2013 Certun
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by

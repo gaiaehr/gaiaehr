@@ -26,33 +26,14 @@ Ext.define('App.view.administration.Lists', {
         var me = this;
         me.currList = null;
         me.currTask = null;
+
+        // *************************************************************************************
+        // List Data Stores
+        // *************************************************************************************
         /**
          * Options Store
          */
-        Ext.define('ListOptionsModel', {
-            extend: 'Ext.data.Model',
-            fields: [
-                {name: 'id',type: 'int'},
-                {name: 'list_id',type: 'string'},
-                {name: 'option_value',type: 'string'},
-                {name: 'option_name',type: 'string'},
-                {name: 'seq',type: 'string'},
-                {name: 'notes',type: 'string'},
-                {name: 'active',type: 'bool'}
-            ],
-            proxy: {
-               type: 'direct',
-               api: {
-                   read: Lists.getOptions,
-                   create: Lists.addOption,
-                   update: Lists.updateOption
-               }
-           }
-        });
-        me.optionsStore = Ext.create('Ext.data.Store', {
-            model: 'ListOptionsModel',
-            autoLoad: false
-        });
+        me.optionsStore = Ext.create('App.store.administration.ListOptionsModel');
 
         Ext.define('ListsGridModel', {
             extend: 'Ext.data.Model',

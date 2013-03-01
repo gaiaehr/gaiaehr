@@ -34,29 +34,7 @@ Ext.define('App.view.administration.Lists', {
          * Options Store
          */
         me.optionsStore = Ext.create('App.store.administration.ListOptionsModel');
-
-        Ext.define('ListsGridModel', {
-            extend: 'Ext.data.Model',
-            fields: [
-                {name: 'id',type: 'int'},
-                {name: 'title',type: 'string'},
-                {name: 'active',type: 'bool'},
-                {name: 'in_use',type: 'bool'}
-            ],
-            proxy: {
-                type: 'direct',
-                api: {
-                    read: Lists.getLists,
-                    create: Lists.addList,
-                    update: Lists.updateList,
-                    destroy: Lists.deleteList
-                }
-            }
-        });
-        me.listsStore = Ext.create('Ext.data.Store', {
-            model: 'ListsGridModel',
-            autoLoad: false
-        });
+        me.listsStore = Ext.create('App.store.administration.ListsGridModel');
         /**
          * RowEditor Classes
          */

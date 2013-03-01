@@ -48,24 +48,7 @@ Ext.define('App.view.administration.Layout', {
          * This are the select lists available to use for comboboxes
          * this lists can be created an modified at "Lists" administration panel.
          */
-        Ext.define('formlistoptionsModel', {
-            extend: 'Ext.data.Model',
-            fields: [
-                { name: 'option_name', type: 'string' },
-                { name: 'option_value', type: 'string' }
-            ]
-
-        });
-        me.selectListoptionsStore = Ext.create('Ext.data.Store', {
-            model: 'formlistoptionsModel',
-            proxy: {
-                type: 'direct',
-                api: {
-                    read: CombosData.getOptionsByListId
-                }
-            },
-            autoLoad: false
-        });
+        me.selectListoptionsStore = Ext.create('App.store.administration.FormListOptionsModel');
         /**
          * This grid only available if the field is a Combobox
          */

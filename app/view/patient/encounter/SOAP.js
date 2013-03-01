@@ -1,10 +1,23 @@
-/**
- * Created with IntelliJ IDEA.
- * User: ernesto
- * Date: 1/17/13
- * Time: 8:34 PM
- * To change this template use File | Settings | File Templates.
+/*
+ GaiaEHR (Electronic Health Records)
+ Services.js
+ Store
+ Copyright (C) 2013 (Certun)
+
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 Ext.define('App.view.patient.encounter.SOAP', {
 	extend:'Ext.panel.Panel',
 	action:['patient.encounter.soap'],
@@ -14,29 +27,7 @@ Ext.define('App.view.patient.encounter.SOAP', {
 	initComponent:function () {
 		var me = this;
 
-		Ext.define('snippetTreeModel', {
-			extend: 'Ext.data.Model',
-			fields: [
-				{ name: 'id', type: 'string' },
-				{ name: 'text', type: 'string' },
-				{ name: 'index', type: 'int' },
-				{ name: 'leaf', type: 'bool' },
-				{ name: 'category', type: 'string' }
-			],
-			proxy : {
-				type: 'direct',
-				api : {
-					read: Snippets.getSoapSnippetsByCategory,
-					create: Snippets.addSoapSnippets,
-					update: Snippets.updateSoapSnippets,
-					destroy: Snippets.deleteSoapSnippets
-				}
-			}
-		});
-
-		me.snippetStore = Ext.create('Ext.data.TreeStore',{
-			model:'snippetTreeModel'
-		});
+		me.snippetStore = Ext.create('App.store.patient.encounter.snippetTreeModel');
 
 		me.snippets = Ext.create('Ext.tree.Panel', {
 			title:i18n('snippets'),

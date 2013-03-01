@@ -16,19 +16,16 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.store.miscellaneous.AddressBookModel', {
-    model: 'App.model.miscellaneous.AddressBookModel',
-    extend: 'Ext.data.Store',
-    proxy: {
-        type: 'direct',
-        api: {
-            read: AddressBook.getAddresses,
-            create: AddressBook.addContact,
-            update: AddressBook.updateAddress
-        },
-        reader: {
-            totalProperty: 'totals',
-            root: 'rows'
+Ext.define('App.store.miscellaneous.UsersModel', {
+    model     : 'App.model.miscellaneous.UsersModel',
+    extend    : 'Ext.data.Store',
+    proxy :
+    {
+        type : 'direct',
+        api :
+        {
+            read : User.getCurrentUserData,
+            update : User.getCurrentUserData
         }
     }
 });

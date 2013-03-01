@@ -1,7 +1,7 @@
 /*
  GaiaEHR (Electronic Health Records)
  Layout.js
- Copyright (C) 2012 Ernesto Rodriguez
+ Copyright (C) 2013 Certun
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -26,64 +26,12 @@ Ext.define('App.view.administration.Layout', {
         var me = this;
         me.currForm = null;
         me.currField = null;
+
         // *************************************************************************************
         // Form Fields TreeGrid Store
         // *************************************************************************************
-        Ext.define('layoutTreeModel', {
-            extend: 'Ext.data.Model',
-            fields: [
-                { name: 'id', type: 'int' },
-                { name: 'parentId', type: 'string' },
-                { name: 'text', type: 'string' },
-                { name: 'pos', type: 'int' },
-                { name: 'xtype', type: 'string' },
-                { name: 'form_id', type: 'int' },
-                { name: 'title', type: 'string' },
-                { name: 'fieldLabel', type: 'string' },
-                { name: 'emptyText', type: 'string' },
-                { name: 'labelWidth', type: 'string' },
-                { name: 'hideLabel', type: 'string' },
-                { name: 'layout', type: 'string' },
-                { name: 'width', type: 'string' },
-                { name: 'height', type: 'string' },
-                { name: 'anchor', type: 'string' },
-                { name: 'margin', type: 'string' },
-                { name: 'flex', type: 'string' },
-                { name: 'collapsible', type: 'string' },
-                { name: 'checkboxToggle', type: 'string' },
-                { name: 'collapsed', type: 'string' },
-                { name: 'inputValue', type: 'string' },
-                { name: 'allowBlank', type: 'string' },
-                { name: 'value', type: 'string' },
-                { name: 'maxValue', type: 'string' },
-                { name: 'minValue', type: 'string' },
-                { name: 'boxLabel', type: 'string' },
-                { name: 'grow', type: 'string' },
-                { name: 'growMin', type: 'string' },
-                { name: 'growMax', type: 'string' },
-                { name: 'increment', type: 'string' },
-                { name: 'name', type: 'string' },
-                { name: 'list_id', type: 'string' },
-                { name: 'sort', type: 'auto' }
-            ],
-            proxy: {
-                type: 'direct',
-                api: {
-                    read: FormLayoutBuilder.getFormFieldsTree,
-                    create: FormLayoutBuilder.createFormField,
-                    update: FormLayoutBuilder.updateFormField,
-                    destroy: FormLayoutBuilder.removeFormField
-                }
-            }
-        });
-        /**
-         * form fields list (center grid)
-         */
-        me.fieldsGridStore = Ext.create('Ext.data.TreeStore', {
-            model: 'layoutTreeModel',
-            folderSort: false,
-            autoLoad: false
-        });
+        me.fieldsGridStore = Ext.create('App.store.administration.LayoutTreeModel');
+
         /**
          * Xtype Combobox store
          */
@@ -105,6 +53,7 @@ Ext.define('App.view.administration.Layout', {
             model: 'XtypesComboModel',
             autoLoad: true
         });
+
         /**
          * Forms grid store (left grid)
          */

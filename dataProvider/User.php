@@ -103,15 +103,16 @@ class User
 //		$this->user = $this->u->load($params)->one();
 //	}
 //
-//	/**
-//	 * @param $username
-//	 * @return bool
-//	 */
-//	public function usernameExist($username){
-//		$this->setUserModel();
-//		$u = $this->u->load(array('username' => $username))->one();
-//		return empty($u);
-//	}
+
+/**
+ * @param $username
+ * @return bool
+ */
+public function usernameExist($username){
+	$this->setUserModel();
+	$u = $this->u->load(array('username' => $username))->one();
+	return empty($u);
+}
 
 
 

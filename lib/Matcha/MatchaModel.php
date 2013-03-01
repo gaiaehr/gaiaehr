@@ -163,7 +163,7 @@ class MatchaModel extends Matcha
             $columnsTableNames = array();
             $columnsSenchaNames = array();
 
-            // get all the column names of each model
+            // get all the column names of each model (Sencha and Database-table)
             foreach($tableColumns as $column) $columnsTableNames[] = $column['Field'];
             foreach($workingModel as $column) $columnsSenchaNames[] = $column['name'];
 

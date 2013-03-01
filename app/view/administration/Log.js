@@ -1,7 +1,7 @@
-/*
+/**
  GaiaEHR (Electronic Health Records)
  Log.js
- Copyright (C) 2012 Ernesto Rodriguez
+ Copyright (C) 2013 Certun
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -16,6 +16,7 @@
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 Ext.define('App.view.administration.Log',
 {
 	extend : 'App.ux.RenderPanel',
@@ -26,75 +27,10 @@ Ext.define('App.view.administration.Log',
 	{
 		var me = this;
 
-		Ext.define('LogsModel',
-		{
-			extend : 'Ext.data.Model',
-			fields : [
-			{
-				name : 'id',
-				type : 'int'
-			},
-			{
-				name : 'date',
-				type : 'string'
-			},
-			{
-				name : 'event',
-				type : 'auto'
-			},
-			{
-				name : 'user',
-				type : 'string'
-			},
-			{
-				name : 'facility',
-				type : 'string'
-			},
-			{
-				name : 'comments',
-				type : 'string'
-			},
-			{
-				name : 'user_notes',
-				type : 'string'
-			},
-			{
-				name : 'patient_id',
-				type : 'string'
-			},
-			{
-				name : 'success',
-				type : 'int'
-			},
-			{
-				name : 'checksum',
-				type : 'string'
-			},
-			{
-				name : 'crt_user',
-				type : 'string'
-			}]
-
-		});
-
-		me.logStore = Ext.create('Ext.data.Store',
-		{
-			model : 'LogsModel',
-			proxy :
-			{
-				type : 'direct',
-				api :
-				{
-					read : Logs.getLogs
-				},
-				reader :
-				{
-					totalProperty : 'totals',
-					root : 'rows'
-				}
-			},
-			autoLoad : false
-		});
+        // *************************************************************************************
+        // Log Data Store
+        // *************************************************************************************
+		me.logStore = Ext.create('App.store.administration.LogsModel');
 
 		// *************************************************************************************
 		// Create the GridPanel

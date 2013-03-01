@@ -1,8 +1,6 @@
-/*
+/**
  GaiaEHR (Electronic Health Records)
- Messages.js
- Messages Panel
- Copyright (C) 2012 Ernesto Rodriguez
+ Copyright (C) 2013 Certun
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -17,6 +15,7 @@
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 Ext.define('App.view.messages.Messages',
 {
 	extend : 'App.ux.RenderPanel',
@@ -32,94 +31,11 @@ Ext.define('App.view.messages.Messages',
 	{
 
 		var me = this;
+
 		/**
 		 * Message Store
 		 */
-		Ext.define('MessagesModel',
-		{
-			extend : 'Ext.data.Model',
-			fields : [
-			{
-				name : 'id',
-				type : 'int'
-			},
-			{
-				name : 'date',
-				type : 'string'
-			},
-			{
-				name : 'body',
-				type : 'string'
-			},
-			{
-				name : 'pid',
-				type : 'string'
-			},
-			{
-				name : 'patient_name',
-				type : 'string'
-			},
-			{
-				name : 'from_user',
-				type : 'string'
-			},
-			{
-				name : 'to_user',
-				type : 'string'
-			},
-			{
-				name : 'subject',
-				type : 'string'
-			},
-			{
-				name : 'facility_id',
-				type : 'string'
-			},
-			{
-				name : 'authorized',
-				type : 'string'
-			},
-			{
-				name : 'to_id',
-				type : 'string'
-			},
-			{
-				name : 'from_id',
-				type : 'string'
-			},
-			{
-				name : 'message_status',
-				type : 'string'
-			},
-			{
-				name : 'note_type',
-				type : 'string'
-			}]
-
-		});
-
-		me.storeMsgs = Ext.create('Ext.data.Store',
-		{
-			model : 'MessagesModel',
-			proxy :
-			{
-				type : 'direct',
-				api :
-				{
-					read : Messages.getMessages,
-					create : Messages.sendNewMessage,
-					update : Messages.replyMessage,
-					destroy : Messages.deleteMessage
-				},
-				reader :
-				{
-					type : 'json',
-					root : 'messages',
-					totalProperty : 'totals'
-				}
-			},
-			autoLoad : false
-		});
+		me.storeMsgs = Ext.create('App.store.messages.MessagesModel');
 
 		/**
 		 * Message GridPanel

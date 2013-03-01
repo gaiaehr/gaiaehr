@@ -1,7 +1,5 @@
 /**
  GaiaEHR (Electronic Health Records)
- Login.js
- Logon page
  Copyright (C) 2013 Certun
 
  This program is free software: you can redistribute it and/or modify
@@ -18,13 +16,25 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.store.login.SitesModel', {
-    model: 'App.model.login.SitesModel',
+Ext.define('App.store.messages.MessagesModel', {
+    model: 'App.model.messages.MessagesModel',
     extend: 'Ext.data.Store',
-    proxy: {
-        type: 'direct',
-        api: {
-            read: authProcedures.getSites
+    proxy :
+    {
+        type : 'direct',
+        api :
+        {
+            read : Messages.getMessages,
+            create : Messages.sendNewMessage,
+            update : Messages.replyMessage,
+            destroy : Messages.deleteMessage
+        },
+        reader :
+        {
+            type : 'json',
+            root : 'messages',
+            totalProperty : 'totals'
         }
-    }
+    },
+    autoLoad : false
 });

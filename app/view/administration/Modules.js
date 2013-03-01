@@ -1,7 +1,7 @@
-/*
+/**
  GaiaEHR (Electronic Health Records)
  Facilities.js
- Copyright (C) 2012 Ernesto Rodriguez
+ Copyright (C) 2013 Certun
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -16,37 +16,18 @@
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 Ext.define('App.view.administration.Modules', {
     extend: 'App.ux.RenderPanel',
     id: 'panelModules',
     pageTitle: i18n('modules'),
     initComponent: function(){
         var me = this;
-        Ext.define('ModulesModel', {
-            extend: 'Ext.data.Model',
-            fields: [
-                { name: 'id', type: 'int' },
-                { name: 'title', type: 'string' },
-                { name: 'name', type: 'string' },
-                { name: 'description', type: 'string' },
-                { name: 'enable', type: 'bool' },
-                { name: 'installed_version', type: 'string' },
-                { name: 'licensekey', type: 'string' },
-                { name: 'localkey', type: 'string' }
-            ],
-            proxy: {
-                type: 'direct',
-                api: {
-                    read: Modules.getActiveModules,
-                    update: Modules.updateModule
-                }
-            }
-        });
-        me.store = Ext.create('Ext.data.Store', {
-            model: 'ModulesModel',
-            remoteSort: false
-        });
 
+        // *************************************************************************************
+        // Module Data Store
+        // *************************************************************************************
+        me.store = Ext.create('App.store.administration.ModulesModel');
 
         me.grid = Ext.create('Ext.grid.Panel', {
             store: me.store,

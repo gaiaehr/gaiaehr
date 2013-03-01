@@ -17,12 +17,14 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.store.administration.Medications',
-{
-	model : 'App.model.administration.Medications',
-	extend : 'Ext.data.Store',
-	autoLoad : false,
-	autoSync : true,
-	remoteSort : true
-
-}); 
+Ext.define('App.store.administration.ModulesModel', {
+    model: 'App.model.administration.ModulesModel',
+    extend: 'Ext.data.Store',
+    proxy: {
+        type: 'direct',
+        api: {
+            read: Modules.getActiveModules,
+            update: Modules.updateModule
+        }
+    }
+});

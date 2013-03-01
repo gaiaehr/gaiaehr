@@ -35,24 +35,7 @@ Ext.define('App.view.administration.Layout', {
         /**
          * Xtype Combobox store
          */
-        Ext.define('XtypesComboModel', {
-            extend: 'Ext.data.Model',
-            fields: [
-                { name: 'id', type: 'string' },
-                { name: 'name', type: 'string' },
-                { name: 'value', type: 'string' }
-            ],
-            proxy: {
-                type: 'direct',
-                api: {
-                    read: CombosData.getFiledXtypes
-                }
-            }
-        });
-        me.fieldXTypesStore = Ext.create('Ext.data.Store', {
-            model: 'XtypesComboModel',
-            autoLoad: true
-        });
+        me.fieldXTypesStore = Ext.create('App.store.administration.XtypesComboModel');
 
         /**
          * Forms grid store (left grid)

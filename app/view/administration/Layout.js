@@ -31,32 +31,14 @@ Ext.define('App.view.administration.Layout', {
         // Form Fields TreeGrid Store
         // *************************************************************************************
         me.fieldsGridStore = Ext.create('App.store.administration.LayoutTreeModel');
-
         /**
          * Xtype Combobox store
          */
         me.fieldXTypesStore = Ext.create('App.store.administration.XtypesComboModel');
-
         /**
          * Forms grid store (left grid)
          */
-        Ext.define('FormsListModel', {
-            extend: 'Ext.data.Model',
-            fields: [
-                { name: 'id', type: 'string' },
-                { name: 'name', type: 'string' }
-            ],
-            proxy: {
-                type: 'direct',
-                api: {
-                    read: FormLayoutBuilder.getForms
-                }
-            }
-        });
-        me.formsGridStore = Ext.create('Ext.data.Store', {
-            model: 'FormsListModel',
-            autoLoad: true
-        });
+        me.formsGridStore = Ext.create('App.store.administration.FormsListModel');
         /**
          * Field available on this form as parent items (fieldset / fieldcontainer )
          * use to get the "Child of" combobox data

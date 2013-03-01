@@ -19,6 +19,14 @@
 
 Ext.define('App.model.administration.ParentFieldsModel', {
     extend: 'Ext.data.Model',
+    table: {
+        name:'parentfields',
+        engine:'InnoDB',
+        autoIncrement:1,
+        charset:'utf8',
+        collate:'utf8_bin',
+        comment:'Account'
+    },
     fields: [
         { name: 'name', type: 'string' },
         { name: 'value', type: 'string' }

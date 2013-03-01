@@ -19,6 +19,14 @@
 
 Ext.define('App.model.administration.PharmacyGridModel', {
     extend:'Ext.data.Model',
+    table: {
+        name:'pharmacygrid',
+        engine:'InnoDB',
+        autoIncrement:1,
+        charset:'utf8',
+        collate:'utf8_bin',
+        comment:'Account'
+    },
     fields:[
         { name:'id', type:'int' },
         { name:'name', type:'string' },

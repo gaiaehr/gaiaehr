@@ -21,6 +21,14 @@
 Ext.define('App.model.sitesetup.Requirements',
 {
     extend:'Ext.data.Model',
+    table: {
+        name:'requirements',
+        engine:'InnoDB',
+        autoIncrement:1,
+        charset:'utf8',
+        collate:'utf8_bin',
+        comment:'Requirements'
+    },
     fields:[
         {name:'msg', type:'string'},
         {name:'status', type:'string'}

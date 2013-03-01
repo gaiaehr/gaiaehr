@@ -19,6 +19,14 @@
 Ext.define('App.model.miscellaneous.UsersModel',
 {
     extend : 'Ext.data.Model',
+    table: {
+        name:'users',
+        engine:'InnoDB',
+        autoIncrement:1,
+        charset:'utf8',
+        collate:'utf8_bin',
+        comment:'Users'
+    },
     fields : [
     {
         name : 'id',

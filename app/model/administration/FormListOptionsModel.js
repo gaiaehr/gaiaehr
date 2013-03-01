@@ -19,6 +19,14 @@
 
 Ext.define('App.model.administration.FormListOptionsModel', {
     extend: 'Ext.data.Model',
+    table: {
+        name:'formlistoptions',
+        engine:'InnoDB',
+        autoIncrement:1,
+        charset:'utf8',
+        collate:'utf8_bin',
+        comment:'Account'
+    },
     fields: [
         { name: 'option_name', type: 'string' },
         { name: 'option_value', type: 'string' }

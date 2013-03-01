@@ -20,6 +20,14 @@
 
 Ext.define('App.model.patient.encounter.snippetTreeModel', {
     extend: 'Ext.data.Model',
+    table: {
+        name:'snippettree',
+        engine:'InnoDB',
+        autoIncrement:1,
+        charset:'utf8',
+        collate:'utf8_bin',
+        comment:'Snippet Tree'
+    },
     fields: [
         { name: 'id', type: 'string' },
         { name: 'text', type: 'string' },

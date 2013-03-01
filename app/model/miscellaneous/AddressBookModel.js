@@ -20,6 +20,14 @@
 
 Ext.define('App.model.miscellaneous.AddressBookModel', {
     extend: 'Ext.data.Model',
+    table: {
+        name:'addressbook',
+        engine:'InnoDB',
+        autoIncrement:1,
+        charset:'utf8',
+        collate:'utf8_bin',
+        comment:'Address Book'
+    },
     fields: [
         {
             name: 'id',

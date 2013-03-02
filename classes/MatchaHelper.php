@@ -1,41 +1,22 @@
 <?php
 /**
- * @brief       Database Helper Class.
- * @details     A PDO helper for GaiaEHR, contains custom function to manage the
- * database
- *              in GaiaEHR. PDO is new in PHP v5.
- *
- *              The PHP Data Objects (PDO) extension defines a lightweight,
- *              consistent interface for accessing databases in PHP.
- *              Each database driver that implements the PDO interface can expose
- * database-specific
- *              features as regular extension functions. Note that you cannot
- * perform any database
- *              functions using the PDO extension by itself;
- *              you must use a database-specific PDO driver to access a database
- * server.
- *
- *              PDO provides a data-access abstraction layer, which means that,
- *              regardless of which database you're using, you use the same
- * functions to issue queries
- *              and fetch data. PDO does not provide a database abstraction; it
- * does not rewrite
- *              SQL or emulate missing features.
- *              You should use a full-blown abstraction layer if you need that
- * facility.
- *
- *              PDO ships with PHP 5.1, and is available as a PECL extension for
- * PHP 5.0;
- *              PDO requires the new OO features in the core of PHP 5, and so
- * will not
- *              run with earlier versions of PHP.
- *
- * @author      Gino Rivera (Certun) <grivera@certun.com>
- * @author      Ernesto J. Rodriguez (Certun) <erodriguez@certun.com>
- * @version     Vega 1.2
- * @copyright   Gnu Public License (GPLv3)
- *
+GaiaEHR (Electronic Health Records)
+Copyright (C) 2013 Certun, inc.
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 if (!isset($_SESSION))
 {
     session_name('GaiaEHR');

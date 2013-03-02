@@ -58,7 +58,6 @@ class MatchaCUP
 		try
 		{
 			$this->sql = '';
-            // If the where is an object
 			if (!is_object($where))
 			{
 				// columns

@@ -1,7 +1,6 @@
-/*
+/**
  GaiaEHR (Electronic Health Records)
- Facilities.js
- Copyright (C) 201 Certun
+ Copyright (C) 2013 Certun, inc.
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -16,6 +15,7 @@
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 Ext.define('App.model.administration.Facility', {
     extend: 'Ext.data.Model',
     extend: 'Ext.data.Model',

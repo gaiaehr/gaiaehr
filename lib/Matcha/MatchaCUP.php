@@ -35,19 +35,13 @@ class MatchaCUP
 	 * handle the request using sencha standards. If not then
 	 * here are few examples.
 	 *
-	 * $users->load()->all();                                    = SELECT * FROM
-	 * users WHERE id = 5
-	 * $users->load(5)->all();                                   = SELECT * FROM
-	 * users WHERE id = 5
-	 * $users->load(5, array('name','last'))->all();             = SELECT name, last
-	 * FROM users WHERE id = 5
-	 * $users->load(array('name'=>'joe'))->all();                = SELECT * FROM
-	 * users WHERE name = joe
-	 * $users->load(array('name'=>'joe'), array('id'))->all();   = SELECT id FROM
-	 * users WHERE name = joe
+	 * $users->load()->all();                                    = SELECT * FROM users WHERE id = 5
+	 * $users->load(5)->all();                                   = SELECT * FROM users WHERE id = 5
+	 * $users->load(5, array('name','last'))->all();             = SELECT name, last FROM users WHERE id = 5
+	 * $users->load(array('name'=>'joe'))->all();                = SELECT * FROM users WHERE name = joe
+	 * $users->load(array('name'=>'joe'), array('id'))->all();   = SELECT id FROM users WHERE name = joe
 	 * OR
-	 * $users->load($params)->all()  $params = to object || array sent by sencha
-	 * store
+	 * $users->load($params)->all()  $params = to object || array sent by sencha store
 	 *
 	 * @param null $where
 	 * @param null $columns
@@ -134,8 +128,8 @@ class MatchaCUP
 					}
 					$wherex = 'WHERE ' . implode(' AND ', $wherex);
 				}
-				$this->nolimitsql = "SELECT * FROM `" . $this->table . "` $groupx $wherex $sortx";
-				$this->sql = "SELECT * FROM `" . $this->table . "` $groupx $wherex $sortx $limits";
+				$this->nolimitsql   = "SELECT * FROM `" . $this->table . "` $groupx $wherex $sortx";
+				$this->sql          = "SELECT * FROM `" . $this->table . "` $groupx $wherex $sortx $limits";
 			}
 			return $this;
 		}
@@ -259,9 +253,9 @@ class MatchaCUP
 	 */
 	public function save($record)
 	{
-        echo '<pre>';
-        print_r($record);
-        echo '<pre>';
+//        echo '<pre>';
+//        print_r($record);
+//        echo '<pre>';
 		try
         {
 			if (is_object($record))

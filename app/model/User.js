@@ -43,8 +43,8 @@ Ext.define('App.model.User',{
 		{name: 'shortname',         type: 'string', comment:'title and last name', store: false},
 		{name: 'pin',               type: 'string', comment:'pin number'},
 		{name: 'npi',               type: 'string', comment:'National Provider Identifier'},
-		{name: 'federaltaxid',      type: 'string', comment:'federal tax id'},
-		{name: 'federaldrugid',     type: 'string', comment:'federal grug id'},
+		{name: 'fedtaxid',          type: 'string', comment:'federal tax id'},
+		{name: 'feddrugid',         type: 'string', comment:'federal drug id'},
 
 		{name: 'notes',             type: 'string', comment:'notes'},
 		{name: 'specialty',         type: 'string', comment:'specialty'},
@@ -54,7 +54,7 @@ Ext.define('App.model.User',{
 		{name: 'facility_id',       type: 'int',    comment:'default facility'},
 		{name: 'role_id',           type: 'int',    comment:'acl_user_roles relation'},
 
-		{name: 'calendar',          type: 'bool',   comment:'has calendar 0=no 1=yes'},
+		{name: 'calendar',          type: 'bool',   comment:'has calendar? 0=no 1=yes'},
 		{name: 'authorized',        type: 'bool'},
 		{name: 'active',            type: 'bool'}
 	],

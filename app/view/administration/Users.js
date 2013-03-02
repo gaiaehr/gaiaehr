@@ -20,24 +20,18 @@ Ext.define('App.view.administration.Users', {
     extend: 'App.ux.RenderPanel',
     id: 'panelUsers',
     pageTitle: i18n('users'),
-    uses: ['App.ux.GridPanel'],
+
     initComponent: function(){
         var me = this;
+
         me.store = Ext.create('App.store.administration.User');
         me.userStore = Ext.create('App.store.administration.User');
-        function authCk(val){
-            if(val == '1'){
-                return '<img src="resources/images/icons/yes.gif" />';
-            }else if(val == '0'){
-                return '<img src="resources/images/icons/no.gif" />';
-            }
-            return val;
-        }
+
 
         // *************************************************************************************
         // Create the GridPanel
         // *************************************************************************************
-        me.userGrid = Ext.create('App.ux.GridPanel', {
+        me.userGrid = Ext.create('Ext.grid.Panel', {
             store: me.userStore,
             columns: [
                 {
@@ -68,19 +62,19 @@ Ext.define('App.view.administration.Users', {
                     text: i18n('active'),
                     sortable: true,
                     dataIndex: 'active',
-                    renderer: authCk
+                    renderer: me.boolRenderer
                 },
                 {
                     text: i18n('authorized'),
                     sortable: true,
                     dataIndex: 'authorized',
-                    renderer: authCk
+                    renderer: me.boolRenderer
                 },
                 {
                     text: i18n('calendar_q'),
                     sortable: true,
                     dataIndex: 'calendar',
-                    renderer: authCk
+                    renderer: me.boolRenderer
                 }
             ],
             listeners: {

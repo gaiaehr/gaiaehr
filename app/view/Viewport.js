@@ -479,6 +479,7 @@ Ext.define('App.view.Viewport', {
         me.MainPanel.add(Ext.create('App.view.miscellaneous.MySettings'));
         me.MainPanel.add(Ext.create('App.view.miscellaneous.OfficeNotes'));
         me.MainPanel.add(Ext.create('App.view.miscellaneous.Websearch'));
+
         me.ppdz = me.MainPanel.add(Ext.create('App.view.areas.PatientPoolDropZone'));
 
 
@@ -1253,7 +1254,8 @@ Ext.define('App.view.Viewport', {
             //title: 'Oops!',
             msg: msg,
             buttons: Ext.Msg.OK,
-            icon: icon
+            icon: icon,
+            width:800
         });
     },
 

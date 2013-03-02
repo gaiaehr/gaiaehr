@@ -18,7 +18,7 @@
 
 Ext.define('App.store.administration.LayoutTreeModel', {
     model: 'App.model.administration.LayoutTreeModel',
-    extend: 'Ext.data.Store',
+    extend: 'Ext.data.TreeStore',
     proxy: {
         type: 'direct',
         api: {

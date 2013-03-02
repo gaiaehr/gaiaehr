@@ -16,16 +16,16 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.store.patient.encounter.snippetTreeModel', {
-    model: 'App.model.patient.encounter.snippetTreeModel',
-    extend: 'Ext.data.Store',
+Ext.define('App.store.patient.encounter.snippetTree', {
+    model: 'App.model.patient.encounter.snippetTree',
+    extend: 'Ext.data.TreeStore',
     proxy : {
-        type: 'direct',
+    type: 'direct',
         api : {
-            read: Snippets.getSoapSnippetsByCategory,
+        read: Snippets.getSoapSnippetsByCategory,
             create: Snippets.addSoapSnippets,
             update: Snippets.updateSoapSnippets,
             destroy: Snippets.deleteSoapSnippets
-        }
     }
+}
 });

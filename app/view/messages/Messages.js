@@ -26,7 +26,11 @@ Ext.define('App.view.messages.Messages',
 	{
 		split : true
 	},
-	uses : ['App.ux.GridPanel', 'App.ux.LivePatientSearch', 'App.ux.combo.MsgStatus', 'App.ux.combo.MsgNoteType', 'App.ux.combo.Users'],
+	uses : [
+        'App.ux.LivePatientSearch',
+        'App.ux.combo.MsgStatus',
+        'App.ux.combo.MsgNoteType',
+        'App.ux.combo.Users'],
 	initComponent : function()
 	{
 
@@ -40,7 +44,7 @@ Ext.define('App.view.messages.Messages',
 		/**
 		 * Message GridPanel
 		 */
-		me.msgGrid = Ext.create('App.ux.GridPanel',
+		me.msgGrid = Ext.create('Ext.grid.Panel',
 		{
 			store : me.storeMsgs,
 			region : 'center',
@@ -338,12 +342,12 @@ Ext.define('App.view.messages.Messages',
 	{
 		var form = this.msgForm;
 		form.getForm().reset();
-		var model = Ext.ModelManager.getModel('MessagesModel'), newModel = Ext.ModelManager.create(
-		{
-			message_status : i18n('new'),
-			note_type : i18n('unassigned')
-		}, model);
-		form.getForm().loadRecord(newModel);
+        form.getForm().loadRecord(
+            Ext.create('App.store.messages.MessagesModel',{
+                message_status : i18n('new'),
+                note_type : i18n('unassigned')
+		    })
+        );
 		this.action('new');
 	},
 	/**

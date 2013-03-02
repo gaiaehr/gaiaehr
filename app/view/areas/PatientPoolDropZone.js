@@ -33,11 +33,12 @@ Ext.define('App.view.areas.PatientPoolDropZone', {
                         align: 'stretch'
                     }
                 });
-            me.listeners = {
-                beforerender: me.getPoolAreas
-            };
+//            me.listeners = {
+//                beforerender: me.getPoolAreas
+//            };
             me.callParent(arguments);
         },
+
         onPatientDrop: function(node, data, overModel, dropPosition, eOpts){
             var name = (data.records[0].data) ? data.records[0].data.name : data.records[0].name, pid = (data.records[0].data) ? data.records[0].data.pid : data.records[0].pid, params;
             app.msg('Sweet!', name + ' ' + i18n('sent_to') + ' ' + this.panel.title);
@@ -50,6 +51,7 @@ Ext.define('App.view.areas.PatientPoolDropZone', {
                 Ext.getCmp('panelPoolArea').reloadStores();
             });
         },
+
         getPoolAreas: function(){
             var me = this, panel = me.getPageBody().down('container'), areas;
             me.stores = [];

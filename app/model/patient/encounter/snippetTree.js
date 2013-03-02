@@ -16,22 +16,19 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.model.patient.encounter.snippetTreeModel', {
+Ext.define('App.model.patient.encounter.snippetTree', {
     extend: 'Ext.data.Model',
     table: {
-        name:'snippettree',
-        engine:'InnoDB',
-        autoIncrement:1,
-        charset:'utf8',
-        collate:'utf8_bin',
+        name:'soap_snippets',
         comment:'Snippet Tree'
     },
-    fields: [
-        { name: 'id', type: 'string' },
-        { name: 'text', type: 'string' },
-        { name: 'index', type: 'int' },
-        { name: 'leaf', type: 'bool' },
-        { name: 'category', type: 'string' }
+    fields:[
+        {name: 'id',       type: 'string'},
+        {name: 'parentId', type: 'string'},
+        {name: 'index',    type: 'int'},
+        {name: 'text',     type: 'string'},
+        {name: 'category', type: 'string'},
+        {name: 'leaf',     type: 'bool'}
     ],
     proxy : {
         type: 'direct',

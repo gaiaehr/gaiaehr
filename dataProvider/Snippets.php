@@ -25,64 +25,54 @@ if(!isset($_SESSION)){
 include_once ($_SESSION['root'] . '/classes/MatchaHelper.php');
 class Snippets {
 
+    /**
+     * @var MatchaHelper
+     */
     private $db;
+    /**
+     * @var MatchaCup
+     */
+    private $s = null;
 
     function __construct(){
         $this->db = new MatchaHelper();
     }
 
+    private function setSnippetModel(){
+        if($this->s == null) $this->s = MatchaModel::setSenchaModel('App.model.patient.encounter.snippetTree');
+    }
+
     public function getSoapSnippetsByCategory($params){
+        $this->setSnippetModel();
+
         if(isset($params->category)){
-            $this->db->setSQL("SELECT * FROM soap_snippets WHERE parentId = 'root' AND category = '$params->category'");
+            $snippets = $this->s->load(array('parentId'=>'root', 'category'=>$params->category))->all();
         }else{
-            $this->db->setSQL("SELECT * FROM soap_snippets WHERE parentId = '$params->id'");
+            $snippets = $this->s->load(array('parentId'=>$params->id))->all();
         }
-        return $this->db->fetchRecords();
+
+        return $snippets;
     }
 
     public function addSoapSnippets($params){
-        if(is_array($params)){
-            foreach($params AS $index => $row){
-                $data = get_object_vars($row);
-                unset($data['id']);
-                $this->db->setSQL($this->db->sqlBind($data, 'soap_snippets', 'I'));
-                $this->db->execLog();
-                $params[$index]->id = $this->db->lastInsertId;
-            }
-        }else{
-            $data = get_object_vars($params);
-            unset($data['id']);
-            $this->db->setSQL($this->db->sqlBind($data, 'soap_snippets', 'I'));
-            $this->db->execLog();
-            $params->id = $this->db->lastInsertId;
-        }
-        return $params;
+        $this->setSnippetModel();
+        return $this->s->save($params);
     }
 
     public function updateSoapSnippets($params){
-        if(is_array($params)){
-            foreach($params AS $row){
-                $data = get_object_vars($row);
-                unset($data['id']);
-                $this->db->setSQL($this->db->sqlBind($data, 'soap_snippets', 'U', array('id' => $row->id)));
-                $this->db->execLog();
-            }
-        }else{
-            $data = get_object_vars($params);
-            unset($data['id']);
-            $this->db->setSQL($this->db->sqlBind($data, 'soap_snippets', 'U', array('id' => $params->id)));
-            $this->db->execLog();
-        }
-        return $params;
+        $this->setSnippetModel();
+        return $this->s->save($params);
     }
 
     public function deleteSoapSnippets($params){
-        $this->db->setSQL("DELETE FROM soap_snippets WHERE id = '$params->id'");
-        $this->db->execLog();
-        return $params;
+        $this->setSnippetModel();
+        return $this->s->destroy($params);
     }
 }
 
-//$t = new Templates();
+//$t = new Snippets();
+//$params = new stdClass();
+//$params->parentId = 'root';
+//$params->category = 'objective';
 //print '<pre>';
-//print_r($t->getSoapTemplatesByCategory(''));
+//print_r($t->getSoapSnippetsByCategory($params));

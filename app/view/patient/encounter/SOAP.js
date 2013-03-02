@@ -25,7 +25,7 @@ Ext.define('App.view.patient.encounter.SOAP', {
 	initComponent:function () {
 		var me = this;
 
-		me.snippetStore = Ext.create('App.store.patient.encounter.snippetTreeModel');
+		me.snippetStore = Ext.create('App.store.patient.encounter.snippetTree');
 
 		me.snippets = Ext.create('Ext.tree.Panel', {
 			title:i18n('snippets'),

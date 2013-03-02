@@ -133,6 +133,9 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
                 'App.model.fees.EncountersPayments',
                 'App.model.fees.PaymentTransactions',
                 'App.model.navigation.Navigation',
+
+                'App.model.patient.encounter.snippetTree',
+
                 'App.model.patient.Allergies',
                 'App.model.patient.CheckoutAlertArea',
                 'App.model.patient.CptCodes',
@@ -211,6 +214,9 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
                 'App.store.fees.EncountersPayments',
                 'App.store.fees.PaymentTransactions',
                 'App.store.navigation.Navigation',
+
+                'App.store.patient.encounter.snippetTree',
+
                 'App.store.patient.Allergies',
                 'App.store.patient.CheckoutAlertArea',
                 'App.store.patient.CptCodes',

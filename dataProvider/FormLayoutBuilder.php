@@ -1,19 +1,22 @@
 <?php
-/* 
- * layoutEngine.class.php
- * 
- * @DESCRIPTION@: This class object will create dynamic ExtJS v4 form, previously created or edited
- * from the Layout Form Editor. Gathering all it's data and parameters from the layout_options table. 
- * Most of the structural database table was originally created by OpenEMR developers.
- * 
- * What this class will not do: This class will not create the entire Screen Panel for you, this
- * will only create the form object with the fields names & dataStores configured on the layout_options table.
- * 
- * version: 0.1.0
- * author: GI Technologies, 2011
- * modified: Ernesto J Rodriguez
- * 
+/**
+GaiaEHR (Electronic Health Records)
+Copyright (C) 2013 Certun, inc.
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 if(!isset($_SESSION)){
     session_name ("GaiaEHR" );
     session_start();

@@ -1,21 +1,21 @@
-/*
- * -----------------------------------------------------------------------------------------------------------
- * brief: Viewport.js (CORE)
- * -----------------------------------------------------------------------------------------------------------
- * Description: This are the viewport, the absolute panel of GaiaEHR application
- * this will manage all the panels on the application, this file should not
- * be modified unless you know what you doing :-)
- *
- * Third-party companies: If you want to add a extra app's, widgets, modules, or another other improvement
- * to the application you should create it using the documentation on How To Create (Modules, PlugIns, and Widgets)
- * All other things are going to the CORE of the application.
- *
- * Remember this is a BETA software, all the structure are subject to change.
- * When the software are more mature, we will maintain the API and CORE for a LTS version (Long Term Support).
- *
- * Enjoy the application!
- *
+/**
+ GaiaEHR (Electronic Health Records)
+ Copyright (C) 2013 Certun, inc.
+
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 Ext.define('App.view.Viewport', {
     extend: 'Ext.Viewport',
     // app settings

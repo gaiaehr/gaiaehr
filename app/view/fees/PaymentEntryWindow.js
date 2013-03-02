@@ -1,8 +1,6 @@
-/*
+/**
  GaiaEHR (Electronic Health Records)
- PaymentEntryWindow.js
- Payment Entry Window
- Copyright (C) 2012 certun, Inc.
+ Copyright (C) 2013 Certun, inc.
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -17,6 +15,7 @@
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 Ext.define('App.view.fees.PaymentEntryWindow', {
     extend: 'Ext.window.Window',
     title: i18n('add_new_payment'),

@@ -480,8 +480,6 @@ Ext.define('App.view.patient.Patient', {
 			record = form.getRecord(),
 			values = form.getValues();
 
-		say(values);
-
 		record.set(values);
 		record.save({
 			scope: me,
@@ -495,10 +493,20 @@ Ext.define('App.view.patient.Patient', {
 					me.readOnlyFields(form.getFields());
 				}
 
-				var insurances = record.insuranceStore.data.items;
+				var insurances = record.insurance().data.items;
 
 				for(var i=0; i < insurances.length; i++){
-					insurances[i].set({pid:record.data.pid});
+
+                    if(i == 0){
+                        values = me.ins1.getForm().getValues();
+                    }else if(i == 1){
+                        values = me.ins2.getForm().getValues();
+                    }else if(i == 2){
+                        values = me.ins3.getForm().getValues();
+                    }
+
+                    values.pid = record.data.pid;
+					insurances[i].set(values);
 				}
 
 				record.insuranceStore.sync();
@@ -555,6 +563,7 @@ Ext.define('App.view.patient.Patient', {
 			],
 			callback:function(record){
 				form.reset();
+                say(record[0]);
 				form.loadRecord(record[0]);
 
 				me.setReadOnly(app.patient.readOnly);

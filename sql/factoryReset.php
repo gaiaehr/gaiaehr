@@ -55,6 +55,7 @@ $tables = array(
 	'patient_out_chart',
 	'patient_zone',
 	'preventive_care_inactive_patient',
+    'patient_insurances',
 
     'payment_transactions',
 

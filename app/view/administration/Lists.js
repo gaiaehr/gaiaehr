@@ -34,7 +34,7 @@ Ext.define('App.view.administration.Lists', {
          * Options Store
          */
         me.optionsStore = Ext.create('App.store.administration.ListOptions');
-        me.listsStore = Ext.create('App.store.administration.ListsGridModel');
+        me.listsStore = Ext.create('App.store.administration.ListOptions');
         /**
          * RowEditor Classes
          */
@@ -232,7 +232,7 @@ Ext.define('App.view.administration.Lists', {
     onNewOption: function(){
         var me = this, m;
         me.optionsRowEditing.cancelEdit();
-        m = Ext.create('ListOptionsModel', {
+        m = Ext.create('ListOptions', {
             list_id: me.currList
         });
         me.optionsStore.insert(0, m);

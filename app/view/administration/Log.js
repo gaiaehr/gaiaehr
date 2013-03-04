@@ -29,7 +29,7 @@ Ext.define('App.view.administration.Log',
         // *************************************************************************************
         // Log Data Store
         // *************************************************************************************
-		me.logStore = Ext.create('App.store.administration.LogsModel');
+		me.logStore = Ext.create('App.store.administration.Logs');
 
 		// *************************************************************************************
 		// Create the GridPanel

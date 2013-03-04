@@ -16,8 +16,8 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.store.administration.LogsModel', {
-    model: 'App.model.administration.LogsModel',
+Ext.define('App.store.administration.Logs', {
+    model: 'App.model.administration.Logs',
     extend: 'Ext.data.Store',
     proxy :
     {

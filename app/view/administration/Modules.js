@@ -26,7 +26,7 @@ Ext.define('App.view.administration.Modules', {
         // *************************************************************************************
         // Module Data Store
         // *************************************************************************************
-        me.store = Ext.create('App.store.administration.ModulesModel');
+        me.store = Ext.create('App.store.administration.Modules');
 
         me.grid = Ext.create('Ext.grid.Panel', {
             store: me.store,

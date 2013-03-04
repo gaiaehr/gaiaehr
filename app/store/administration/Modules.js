@@ -16,8 +16,8 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.store.administration.ModulesModel', {
-    model: 'App.model.administration.ModulesModel',
+Ext.define('App.store.administration.Modules', {
+    model: 'App.model.administration.Modules',
     extend: 'Ext.data.Store',
     proxy: {
         type: 'direct',

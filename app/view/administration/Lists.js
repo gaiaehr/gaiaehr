@@ -211,7 +211,7 @@ Ext.define('App.view.administration.Lists', {
     onNewList: function(){
         var me = this, m;
         me.listsRowEditing.cancelEdit();
-        me.listsStore.insert(0, Ext.create('ListsGridModel'));
+        me.listsStore.insert(0, Ext.create('ListsGrid'));
         me.listsRowEditing.startEdit(0, 0);
     },
     /**

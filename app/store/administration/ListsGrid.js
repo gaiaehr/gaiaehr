@@ -16,22 +16,9 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.model.administration.ListsGridModel', {
-    extend: 'Ext.data.Model',
-    table: {
-        name:'listsgrid',
-        engine:'InnoDB',
-        autoIncrement:1,
-        charset:'utf8',
-        collate:'utf8_bin',
-        comment:'Account'
-    },
-    fields: [
-        {name: 'id',type: 'int'},
-        {name: 'title',type: 'string'},
-        {name: 'active',type: 'bool'},
-        {name: 'in_use',type: 'bool'}
-    ],
+Ext.define('App.store.administration.ListsGrid', {
+    model: 'App.model.administration.ListsGrid',
+    extend: 'Ext.data.Store',
     proxy: {
         type: 'direct',
         api: {

@@ -27,7 +27,7 @@ Ext.define('App.view.dashboard.panel.OnotesPortlet', {
         // *************************************************************************************
         // Office Notes Portlet Data Store
         // *************************************************************************************
-		me.store = Ext.create('App.store.dashboard.panel.OfficeNotesPortletModel');
+		me.store = Ext.create('App.store.dashboard.panel.OfficeNotesPortlet');
 
 		Ext.apply(this, {
 			height     : this.height,

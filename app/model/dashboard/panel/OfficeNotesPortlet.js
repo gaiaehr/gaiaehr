@@ -16,9 +16,24 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.store.dashboard.panel.OfficeNotesPortletModel', {
-    model: 'App.model.dashboard.panel.OfficeNotesPortletModel',
-    extend: 'Ext.data.Store',
+Ext.define('App.model.dashboard.panel.OfficeNotesPortlet', {
+    extend: 'Ext.data.Model',
+    table: {
+        name:'officenotesportlet',
+        engine:'InnoDB',
+        autoIncrement:1,
+        charset:'utf8',
+        collate:'utf8_bin',
+        comment:'Account'
+    },
+    fields: [
+        {name: 'id', type: 'int'},
+        {name: 'date', type: 'date', dateFormat: 'c'},
+        {name: 'body', type: 'string'},
+        {name: 'user', type: 'string'},
+        {name: 'facility_id', type: 'string'},
+        {name: 'activity', type: 'string'}
+    ],
     proxy : {
         type: 'direct',
         api : {

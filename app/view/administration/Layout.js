@@ -48,7 +48,7 @@ Ext.define('App.view.administration.Layout', {
          * This are the select lists available to use for comboboxes
          * this lists can be created an modified at "Lists" administration panel.
          */
-        me.selectListoptionsStore = Ext.create('App.store.administration.FormListOptionsModel');
+        me.selectListoptionsStore = Ext.create('App.store.administration.FormListOptions');
         /**
          * This grid only available if the field is a Combobox
          */

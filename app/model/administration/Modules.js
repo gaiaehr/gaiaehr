@@ -16,7 +16,7 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.model.administration.ModulesModel', {
+Ext.define('App.model.administration.Modules', {
     extend: 'Ext.data.Model',
     table: {
         name:'modules',

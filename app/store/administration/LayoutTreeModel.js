@@ -16,8 +16,8 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.store.administration.LayoutTreeModel', {
-    model: 'App.model.administration.LayoutTreeModel',
+Ext.define('App.store.administration.LayoutTree', {
+    model: 'App.model.administration.LayoutTree',
     extend: 'Ext.data.TreeStore',
     proxy: {
         type: 'direct',

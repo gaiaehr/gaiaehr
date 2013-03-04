@@ -30,7 +30,7 @@ Ext.define('App.view.administration.Layout', {
         // *************************************************************************************
         // Form Fields TreeGrid Store
         // *************************************************************************************
-        me.fieldsGridStore = Ext.create('App.store.administration.LayoutTreeModel');
+        me.fieldsGridStore = Ext.create('App.store.administration.LayoutTree');
         /**
          * Xtype Combobox store
          */
@@ -637,7 +637,7 @@ Ext.define('App.view.administration.Layout', {
             selection = me.fieldsGrid.getSelectionModel();
         selection.deselectAll();
         form.reset();
-        var model = Ext.ModelManager.getModel('layoutTreeModel'),
+        var model = Ext.ModelManager.getModel('LayoutTree'),
             newModel = Ext.ModelManager.create({
                 form_id: me.currForm
             }, model);
@@ -653,7 +653,7 @@ Ext.define('App.view.administration.Layout', {
         var formPanel = this.fieldForm, form = formPanel.getForm(), row = this.fieldsGrid.getSelectionModel();
         row.deselectAll();
         form.reset();
-        var model = Ext.ModelManager.getModel('layoutTreeModel'), newModel = Ext.ModelManager.create({
+        var model = Ext.ModelManager.getModel('LayoutTree'), newModel = Ext.ModelManager.create({
                 form_id: this.currForm,
                 parentId: this.currField
             }, model);

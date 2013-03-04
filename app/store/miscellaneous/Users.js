@@ -16,8 +16,8 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.store.miscellaneous.UsersModel', {
-    model     : 'App.model.miscellaneous.UsersModel',
+Ext.define('App.store.miscellaneous.Users', {
+    model     : 'App.model.miscellaneous.Users',
     extend    : 'Ext.data.Store',
     proxy :
     {

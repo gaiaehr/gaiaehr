@@ -29,7 +29,7 @@ Ext.define('App.view.miscellaneous.MyAccount',
         // *************************************************************************************
         // My Account Data Store
         // *************************************************************************************
-		me.store = Ext.create('App.store.miscellaneous.UsersModel');
+		me.store = Ext.create('App.store.miscellaneous.Users');
 
 		// *************************************************************************************
 		// User Settings Form

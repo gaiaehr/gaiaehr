@@ -16,7 +16,7 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.model.miscellaneous.UsersModel',
+Ext.define('App.model.miscellaneous.Users',
 {
     extend : 'Ext.data.Model',
     table: {

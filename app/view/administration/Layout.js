@@ -38,7 +38,7 @@ Ext.define('App.view.administration.Layout', {
         /**
          * Forms grid store (left grid)
          */
-        me.formsGridStore = Ext.create('App.store.administration.FormsListModel');
+        me.formsGridStore = Ext.create('App.store.administration.FormsList');
         /**
          * Field available on this form as parent items (fieldset / fieldcontainer )
          * use to get the "Child of" combobox data

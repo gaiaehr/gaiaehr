@@ -16,8 +16,8 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.store.administration.FormsListModel', {
-    model: 'App.model.administration.FormsListModel',
+Ext.define('App.store.administration.FormsList', {
+    model: 'App.model.administration.FormsList',
     extend: 'Ext.data.Store',
     proxy: {
         type: 'direct',

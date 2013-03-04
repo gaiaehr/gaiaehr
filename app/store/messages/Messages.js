@@ -16,8 +16,8 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.store.messages.MessagesModel', {
-    model: 'App.model.messages.MessagesModel',
+Ext.define('App.store.messages.Messages', {
+    model: 'App.model.messages.Messages',
     extend: 'Ext.data.Store',
     proxy :
     {

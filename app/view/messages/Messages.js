@@ -39,7 +39,7 @@ Ext.define('App.view.messages.Messages',
 		/**
 		 * Message Store
 		 */
-		me.storeMsgs = Ext.create('App.store.messages.MessagesModel');
+		me.storeMsgs = Ext.create('App.store.messages.Messages');
 
 		/**
 		 * Message GridPanel
@@ -343,7 +343,7 @@ Ext.define('App.view.messages.Messages',
 		var form = this.msgForm;
 		form.getForm().reset();
         form.getForm().loadRecord(
-            Ext.create('App.store.messages.MessagesModel',{
+            Ext.create('App.store.messages.Messages',{
                 message_status : i18n('new'),
                 note_type : i18n('unassigned')
 		    })

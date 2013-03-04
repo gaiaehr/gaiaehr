@@ -16,7 +16,7 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.model.miscellaneous.AddressBookModel', {
+Ext.define('App.model.miscellaneous.AddressBook', {
     extend: 'Ext.data.Model',
     table: {
         name:'addressbook',

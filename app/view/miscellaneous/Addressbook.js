@@ -27,7 +27,7 @@ Ext.define('App.view.miscellaneous.Addressbook', {
         /**
          * Addresses Store
          */
-        me.store = Ext.create('App.store.miscellaneous.AddressBookModel');
+        me.store = Ext.create('App.store.miscellaneous.AddressBook');
 
         /**
          * Window and form

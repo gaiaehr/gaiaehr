@@ -29,7 +29,7 @@ Ext.define('App.view.administration.Practice', {
         // *************************************************************************************
 		me.pharmacyStore = Ext.create('App.store.administration.PharmacyGridModel');
 		me.laboratoryStore = Ext.create('App.store.administration.LaboratoriesGridModel');
-		me.insuranceStore = Ext.create('App.store.administration.InsuranceGridModel');
+		me.insuranceStore = Ext.create('App.store.administration.InsuranceGrid');
 
 		// *************************************************************************************
 		// Insurance Numbers Record Structure
@@ -568,7 +568,7 @@ Ext.define('App.view.administration.Practice', {
 				}
 			]
 		});
-		me.insuranceGrid = Ext.create('Ext.grid.Panel', {
+		me.InsuranceGrid = Ext.create('Ext.grid.Panel', {
 			title:i18n('insurance_companies'),
 			store:me.insuranceStore,
 			border:false,
@@ -814,7 +814,7 @@ Ext.define('App.view.administration.Practice', {
 				{
 					text:i18n('add_new_insurance'),
 					iconCls:'save',
-					action:'insuranceGridModel',
+					action:'InsuranceGrid',
 					scope:me,
 					handler:me.onNewRec
 				}
@@ -882,7 +882,7 @@ Ext.define('App.view.administration.Practice', {
 			items:[
 				me.pharmacyGrid,
 				me.laboratoryGrid,
-				me.insuranceGrid,
+				me.InsuranceGrid,
 //				me.InsuranceNumbersGrid,
 				me.x12ParnersGrid, {
 					title:i18n('hl7_viewer'),

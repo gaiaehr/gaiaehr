@@ -16,8 +16,8 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.store.administration.InsuranceGridModel', {
-    model: 'App.model.administration.InsuranceGridModel',
+Ext.define('App.store.administration.InsuranceGrid', {
+    model: 'App.model.administration.InsuranceGrid',
     extend: 'Ext.data.Store',
     proxy:{
         type:'direct',

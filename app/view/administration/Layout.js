@@ -43,7 +43,7 @@ Ext.define('App.view.administration.Layout', {
          * Field available on this form as parent items (fieldset / fieldcontainer )
          * use to get the "Child of" combobox data
          */
-        me.parentFieldsStore = Ext.create('App.store.administration.ParentFieldsModel');
+        me.parentFieldsStore = Ext.create('App.store.administration.ParentFields');
         /**
          * This are the select lists available to use for comboboxes
          * this lists can be created an modified at "Lists" administration panel.

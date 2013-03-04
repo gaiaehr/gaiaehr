@@ -16,24 +16,14 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.model.administration.ParentFieldsModel', {
-    extend: 'Ext.data.Model',
-    table: {
-        name:'parentfields',
-        engine:'InnoDB',
-        autoIncrement:1,
-        charset:'utf8',
-        collate:'utf8_bin',
-        comment:'Account'
-    },
-    fields: [
-        { name: 'name', type: 'string' },
-        { name: 'value', type: 'string' }
-    ],
+Ext.define('App.store.administration.ParentFields', {
+    model: 'App.model.administration.ParentFields',
+    extend: 'Ext.data.Store',
     proxy: {
         type: 'direct',
         api: {
             read: FormLayoutBuilder.getParentFields
         }
-    }
+    },
+    autoLoad: false
 });

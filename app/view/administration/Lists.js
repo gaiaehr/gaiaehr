@@ -33,7 +33,7 @@ Ext.define('App.view.administration.Lists', {
         /**
          * Options Store
          */
-        me.optionsStore = Ext.create('App.store.administration.ListOptionsModel');
+        me.optionsStore = Ext.create('App.store.administration.ListOptions');
         me.listsStore = Ext.create('App.store.administration.ListsGridModel');
         /**
          * RowEditor Classes

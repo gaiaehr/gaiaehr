@@ -16,25 +16,9 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.model.administration.ListOptionsModel', {
-    extend: 'Ext.data.Model',
-    table: {
-        name:'listoptions',
-        engine:'InnoDB',
-        autoIncrement:1,
-        charset:'utf8',
-        collate:'utf8_bin',
-        comment:'Account'
-    },
-    fields: [
-        {name: 'id',type: 'int'},
-        {name: 'list_id',type: 'string'},
-        {name: 'option_value',type: 'string'},
-        {name: 'option_name',type: 'string'},
-        {name: 'seq',type: 'string'},
-        {name: 'notes',type: 'string'},
-        {name: 'active',type: 'bool'}
-    ],
+Ext.define('App.store.administration.ListOptions', {
+    model: 'App.model.administration.ListOptions',
+    extend: 'Ext.data.Store',
     proxy: {
         type: 'direct',
         api: {

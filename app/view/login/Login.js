@@ -145,7 +145,7 @@ Ext.define('App.view.login.Login',
 
 		if (me.showSite)
 		{
-			me.storeSites = Ext.create('App.store.login.SitesModel');
+			me.storeSites = Ext.create('App.store.login.Sites');
 			me.formLogin.insert(3,
 			{
 				xtype : 'combobox',

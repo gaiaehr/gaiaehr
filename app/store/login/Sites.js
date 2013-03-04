@@ -16,27 +16,9 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.model.login.SitesModel',
-{
-    extend: 'Ext.data.Model',
-    table: {
-        name:'sites',
-        engine:'InnoDB',
-        autoIncrement:1,
-        charset:'utf8',
-        collate:'utf8_bin',
-        comment:'Account'
-    },
-    fields: [
-    {
-        name: 'site_id',
-        type: 'int'
-    },
-    {
-        name: 'site',
-        type: 'string'
-    }
-    ],
+Ext.define('App.store.login.Sites', {
+    model: 'App.model.login.Sites',
+    extend: 'Ext.data.Store',
     proxy: {
         type: 'direct',
         api: {

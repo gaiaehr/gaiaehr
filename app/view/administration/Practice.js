@@ -28,7 +28,7 @@ Ext.define('App.view.administration.Practice', {
 		// Practice Model and Store
         // *************************************************************************************
 		me.pharmacyStore = Ext.create('App.store.administration.PharmacyGridModel');
-		me.laboratoryStore = Ext.create('App.store.administration.LaboratoriesGridModel');
+		me.laboratoryStore = Ext.create('App.store.administration.LaboratoriesGrid');
 		me.insuranceStore = Ext.create('App.store.administration.InsuranceGrid');
 
 		// *************************************************************************************

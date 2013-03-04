@@ -16,7 +16,7 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.model.administration.LaboratoriesGridModel', {
+Ext.define('App.model.administration.LaboratoriesGrid', {
     extend:'Ext.data.Model',
     table: {
         name:'laboratoriesgrid',

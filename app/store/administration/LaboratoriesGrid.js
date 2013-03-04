@@ -16,8 +16,8 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.store.administration.LaboratoriesGridModel', {
-    model: 'App.model.administration.LaboratoriesGridModel',
+Ext.define('App.store.administration.LaboratoriesGrid', {
+    model: 'App.model.administration.LaboratoriesGrid',
     extend: 'Ext.data.Store',
     proxy:{
         type:'direct',

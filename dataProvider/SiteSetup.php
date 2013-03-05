@@ -106,7 +106,7 @@ class SiteSetup
 	 * Make a connection to the database: rootDatabaseConn
 	 * We use PDO to make the connection, PDO is a internal library of PHP that make
 	 * connections
-	 * to any databasem please refer to MatchaHelper.php to learn more about PHP PDO.
+	 * to any database please refer to MatchaHelper.php to learn more about PHP PDO.
 	 */
 	public function rootDatabaseConn($host, $port, $rootUser, $rootPass)
 	{
@@ -357,7 +357,7 @@ class SiteSetup
 		$userParams->authorized = 1;
 		$userParams->active     = 1;
 		$userParams->role_id    = 1;
-		$u->addUser($userParams);
+        $u->addUser($userParams);
 		return array('success' => true);
 	}
 

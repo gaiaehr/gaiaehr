@@ -211,7 +211,7 @@ CREATE TABLE IF NOT EXISTS `cdt_codes` (
   `code` varchar(10) DEFAULT NULL,
   `text` text,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 COMMENT='Dental Codes' AUTO_INCREMENT=594 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COMMENT='Dental Codes' AUTO_INCREMENT=594 ;
 
 CREATE TABLE IF NOT EXISTS `claims` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -1001,7 +1001,7 @@ CREATE TABLE IF NOT EXISTS `icd9_dx_code` (
   KEY `dx_code` (`dx_code`),
   KEY `formatted_dx_code` (`formatted_dx_code`),
   KEY `active` (`active`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `icd9_dx_long_code` (
   `dx_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -1010,7 +1010,7 @@ CREATE TABLE IF NOT EXISTS `icd9_dx_long_code` (
   `active` tinyint(4) DEFAULT '0',
   `revision` int(11) DEFAULT '0',
   UNIQUE KEY `dx_id` (`dx_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `icd9_sg_code` (
   `sg_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -1024,7 +1024,7 @@ CREATE TABLE IF NOT EXISTS `icd9_sg_code` (
   KEY `sg_code` (`sg_code`),
   KEY `formatted_sg_code` (`formatted_sg_code`),
   KEY `active` (`active`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `icd9_sg_long_code` (
   `sq_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -1033,7 +1033,7 @@ CREATE TABLE IF NOT EXISTS `icd9_sg_long_code` (
   `active` tinyint(4) DEFAULT '0',
   `revision` int(11) DEFAULT '0',
   UNIQUE KEY `sq_id` (`sq_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `icd10_dx_order_code` (
   `dx_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -1047,7 +1047,7 @@ CREATE TABLE IF NOT EXISTS `icd10_dx_order_code` (
   UNIQUE KEY `dx_id` (`dx_id`),
   KEY `formatted_dx_code` (`formatted_dx_code`),
   KEY `active` (`active`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `icd10_gem_dx_9_10` (
   `map_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -1057,7 +1057,7 @@ CREATE TABLE IF NOT EXISTS `icd10_gem_dx_9_10` (
   `active` tinyint(4) DEFAULT '0',
   `revision` int(11) DEFAULT '0',
   UNIQUE KEY `map_id` (`map_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `icd10_gem_dx_10_9` (
   `map_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -1067,7 +1067,7 @@ CREATE TABLE IF NOT EXISTS `icd10_gem_dx_10_9` (
   `active` tinyint(4) DEFAULT '0',
   `revision` int(11) DEFAULT '0',
   UNIQUE KEY `map_id` (`map_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `icd10_gem_pcs_9_10` (
   `map_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -1077,7 +1077,7 @@ CREATE TABLE IF NOT EXISTS `icd10_gem_pcs_9_10` (
   `active` tinyint(4) DEFAULT '0',
   `revision` int(11) DEFAULT '0',
   UNIQUE KEY `map_id` (`map_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `icd10_gem_pcs_10_9` (
   `map_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -1087,7 +1087,7 @@ CREATE TABLE IF NOT EXISTS `icd10_gem_pcs_10_9` (
   `active` tinyint(4) DEFAULT '0',
   `revision` int(11) DEFAULT '0',
   UNIQUE KEY `map_id` (`map_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `icd10_pcs_order_code` (
   `pcs_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -1100,7 +1100,7 @@ CREATE TABLE IF NOT EXISTS `icd10_pcs_order_code` (
   UNIQUE KEY `pcs_id` (`pcs_id`),
   KEY `pcs_code` (`pcs_code`),
   KEY `active` (`active`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `icd10_reimbr_dx_9_10` (
   `map_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -1115,7 +1115,7 @@ CREATE TABLE IF NOT EXISTS `icd10_reimbr_dx_9_10` (
   `active` tinyint(4) DEFAULT '0',
   `revision` int(11) DEFAULT '0',
   UNIQUE KEY `map_id` (`map_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `icd10_reimbr_pcs_9_10` (
   `map_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -1130,7 +1130,7 @@ CREATE TABLE IF NOT EXISTS `icd10_reimbr_pcs_9_10` (
   `active` tinyint(4) DEFAULT '0',
   `revision` int(11) DEFAULT '0',
   UNIQUE KEY `map_id` (`map_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `immunizations` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -1380,7 +1380,7 @@ CREATE TABLE IF NOT EXISTS `modules` (
   `localkey` longblob,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=203 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=203 ;
 
 CREATE TABLE IF NOT EXISTS `modules_data` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -2006,7 +2006,7 @@ CREATE TABLE IF NOT EXISTS `rxnatomarchive` (
   KEY `X_RXNATOMARCHIVE_RXAUI` (`RXAUI`),
   KEY `X_RXNATOMARCHIVE_RXCUI` (`RXCUI`),
   KEY `X_RXNATOMARCHIVE_MERGED_TO` (`MERGED_TO_RXCUI`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS `rxnconso` (
   `RXCUI` varchar(8) NOT NULL,
@@ -2031,7 +2031,7 @@ CREATE TABLE IF NOT EXISTS `rxnconso` (
   KEY `X_RXNCONSO_RXCUI` (`RXCUI`),
   KEY `X_RXNCONSO_TTY` (`TTY`),
   KEY `X_RXNCONSO_CODE` (`CODE`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS `rxncui` (
   `cui1` varchar(8) DEFAULT NULL,
@@ -2039,7 +2039,7 @@ CREATE TABLE IF NOT EXISTS `rxncui` (
   `ver_end` varchar(20) DEFAULT NULL,
   `cardinality` varchar(8) DEFAULT NULL,
   `cui2` varchar(8) DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS `rxncuichanges` (
   `RXAUI` varchar(8) DEFAULT NULL,
@@ -2049,14 +2049,14 @@ CREATE TABLE IF NOT EXISTS `rxncuichanges` (
   `STR` varchar(3000) DEFAULT NULL,
   `OLD_RXCUI` varchar(8) NOT NULL,
   `NEW_RXCUI` varchar(8) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS `rxndoc` (
   `DOCKEY` varchar(50) NOT NULL,
   `VALUE` varchar(1000) DEFAULT NULL,
   `TYPE` varchar(50) NOT NULL,
   `EXPL` varchar(1000) DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS `rxnrel` (
   `RXCUI1` varchar(8) DEFAULT NULL,
@@ -2078,7 +2078,7 @@ CREATE TABLE IF NOT EXISTS `rxnrel` (
   KEY `X_RXNREL_RXCUI1` (`RXCUI1`),
   KEY `X_RXNREL_RXCUI2` (`RXCUI2`),
   KEY `X_RXNREL_RELA` (`RELA`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS `rxnsab` (
   `VCUI` varchar(8) DEFAULT NULL,
@@ -2106,7 +2106,7 @@ CREATE TABLE IF NOT EXISTS `rxnsab` (
   `SABIN` varchar(1) DEFAULT NULL,
   `SSN` varchar(3000) DEFAULT NULL,
   `SCIT` varchar(4000) DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS `rxnsat` (
   `RXCUI` varchar(8) DEFAULT NULL,
@@ -2125,7 +2125,7 @@ CREATE TABLE IF NOT EXISTS `rxnsat` (
   KEY `X_RXNSAT_RXCUI` (`RXCUI`),
   KEY `X_RXNSAT_ATV` (`ATV`(1000)),
   KEY `X_RXNSAT_ATN` (`ATN`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS `rxnsty` (
   `RXCUI` varchar(8) NOT NULL,
@@ -2134,7 +2134,7 @@ CREATE TABLE IF NOT EXISTS `rxnsty` (
   `STY` varchar(50) DEFAULT NULL,
   `ATUI` varchar(11) DEFAULT NULL,
   `CVF` varchar(50) DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS `sct_concepts` (
   `ConceptId` bigint(20) NOT NULL,
@@ -2144,7 +2144,7 @@ CREATE TABLE IF NOT EXISTS `sct_concepts` (
   `SNOMEDID` varchar(8) NOT NULL,
   `IsPrimitive` tinyint(1) NOT NULL,
   PRIMARY KEY (`ConceptId`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS `sct_descriptions` (
   `DescriptionId` bigint(20) NOT NULL,
@@ -2155,7 +2155,7 @@ CREATE TABLE IF NOT EXISTS `sct_descriptions` (
   `DescriptionType` int(11) NOT NULL,
   `LanguageCode` varchar(8) NOT NULL,
   PRIMARY KEY (`DescriptionId`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS `sct_relationships` (
   `RelationshipId` bigint(20) NOT NULL,
@@ -2166,7 +2166,7 @@ CREATE TABLE IF NOT EXISTS `sct_relationships` (
   `Refinability` int(11) NOT NULL,
   `RelationshipGroup` int(11) NOT NULL,
   PRIMARY KEY (`RelationshipId`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS `soap_snippets` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -2188,7 +2188,7 @@ CREATE TABLE IF NOT EXISTS `standardized_tables_track` (
   `revision_date` varchar(255) DEFAULT NULL COMMENT 'revision of standardized tables that were imported',
   `file_checksum` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `surgeries` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,

@@ -45,16 +45,10 @@ class User
     function __construct()
     {
         $this->db = new MatchaHelper();
+        $this->User = MatchaModel::setSenchaModel('App.model.administration.User');
         return;
     }
 
-    //	/**
-    //	 * Set User Model id not set
-    //	 */
-    private function setUserModel()
-    {
-    	if($this->User == null) $this->User = MatchaModel::setSenchaModel('App.model.administration.User');
-    }
     //
     //	/**
     //	 * @param stdClass $params
@@ -106,9 +100,8 @@ class User
      */
     public function usernameExist($username)
     {
-        $this->setUserModel();
-        $u = $this->User->load(array('username' => $username))->one();
-        return empty($u);
+        $userResult = $this->User->load( array('username' => $username) )->one();
+        return is_array($userResult);
     }
 
     /**
@@ -221,10 +214,7 @@ class User
             $params->id = $this->user_id = $this->db->lastInsertId;
 
             $params->fullname = Person::fullname($params->fname, $params->mname, $params->lname);
-            if ($params->password != '')
-            {
-                $this->changePassword($params->password);
-            }
+            if ($params->password != '') $this->changePassword($params->password);
             $params->password = '';
             $role['user_id'] = $params->id;
             $sql = $this->db->sqlBind($role, 'acl_user_roles', 'I');
@@ -234,7 +224,6 @@ class User
         }
         else
         {
-            error_log('Hi error');
             return array('success' => false, 'error' => "Username \"$params->username\" exist, please try a different username");
         }
     }

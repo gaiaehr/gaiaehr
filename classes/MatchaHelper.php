@@ -334,7 +334,7 @@ class MatchaHelper extends Matcha
 			$data['date']       = Time::getLocalTime('Y-m-d H:i:s');
 			$data['event']      = $eventLog;
 			$data['comments']   = $this->sql_statement;
-			$data['user']       = (isset($_SESSION['user']) ? $_SESSION['user']['name'] : 'System');
+			$data['user']       = (isset($_SESSION['user']) ? $_SESSION['user'] : 'System');
 			$data['checksum']   = crc32($this->sql_statement);
 			$data['facility']   = $_SESSION['site']['dir'];
 			$data['patient_id'] = (isset($_SESSION['patient']) ? $_SESSION['patient']['pid'] : '0');

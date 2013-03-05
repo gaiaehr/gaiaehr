@@ -56,6 +56,22 @@ Ext.define( 'App.model.administration.User',
 		store: true,
         comment: 'User Password'
 	},
+    {
+        name: 'pwd_history1',
+        type : 'string',
+        dataType : 'blob',
+        allowNull : false,
+        store: true,
+        comment: 'User Password History 1'
+    },
+    {
+        name: 'pwd_history2',
+        type : 'string',
+        dataType : 'blob',
+        allowNull : false,
+        store: true,
+        comment: 'User Password History 2'
+    },
 	{
 		name : 'authorized',
 		type : 'bool',

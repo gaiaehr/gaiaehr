@@ -1,19 +1,19 @@
 /**
- GaiaEHR (Electronic Health Records)
- Copyright (C) 2013 Certun, inc.
-
- This program is free software: you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation, either version 3 of the License, or
- (at your option) any later version.
-
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * GaiaEHR (Electronic Health Records)
+ * Copyright (C) 2013 Certun, inc.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 Ext.define('App.view.administration.Lists', {
@@ -21,40 +21,32 @@ Ext.define('App.view.administration.Lists', {
     id: 'panelLists',
     pageTitle: i18n('select_list_options'),
     pageLayout: 'border',
-    uses: ['App.ux.GridPanel', 'App.ux.form.Panel', 'Ext.grid.plugin.RowEditing'],
+    uses: [
+        'App.ux.GridPanel',
+        'App.ux.form.Panel',
+        'Ext.grid.plugin.RowEditing'
+    ],
     initComponent: function(){
         var me = this;
+
         me.currList = null;
         me.currTask = null;
-
-        // *************************************************************************************
-        // List Data Stores
-        // *************************************************************************************
         /**
-         * Options Store
+         * Store
          */
+        me.listsStore = Ext.create('App.store.administration.Lists');
         me.optionsStore = Ext.create('App.store.administration.ListOptions');
-        me.listsStore = Ext.create('App.store.administration.ListOptions');
+
         /**
          * RowEditor Classes
          */
         me.optionsRowEditing = Ext.create('Ext.grid.plugin.RowEditing', {
             autoCancel: false,
             errorSummary: false
-//            listeners: {
-//                scope: me,
-//                afteredit: me.afterEdit,
-//                canceledit: me.onCancelEdit
-//            }
         });
         me.listsRowEditing = Ext.create('Ext.grid.plugin.RowEditing', {
             autoCancel: false,
             errorSummary: false
-//            listeners: {
-//                scope: me,
-//                //afteredit: me.afterEdit,
-//                //canceledit: me.onCancelEdit
-//            }
         });
         /**
          * Lists Grid
@@ -124,6 +116,7 @@ Ext.define('App.view.administration.Lists', {
                 }
             ]
         });
+
         /**
          * Options Grid
          */
@@ -315,8 +308,8 @@ Ext.define('App.view.administration.Lists', {
      */
     onActive: function(callback){
         var me = this;
-        this.listsStore.load();
-        this.optionsStore.load();
+        me.listsStore.load();
+        me.optionsStore.load();
         callback(true);
     }
 });

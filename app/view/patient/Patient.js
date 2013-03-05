@@ -1,19 +1,19 @@
 /**
- GaiaEHR (Electronic Health Records)
- Copyright (C) 2013 Certun, inc.
-
- This program is free software: you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation, either version 3 of the License, or
- (at your option) any later version.
-
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * GaiaEHR (Electronic Health Records)
+ * Copyright (C) 2013 Certun, inc.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 Ext.define('App.view.patient.Patient', {
@@ -481,6 +481,7 @@ Ext.define('App.view.patient.Patient', {
 			values = form.getValues();
 
 		record.set(values);
+
 		record.save({
 			scope: me,
 			callback: function(record){
@@ -563,7 +564,6 @@ Ext.define('App.view.patient.Patient', {
 			],
 			callback:function(record){
 				form.reset();
-                say(record[0]);
 				form.loadRecord(record[0]);
 
 				me.setReadOnly(app.patient.readOnly);
@@ -571,6 +571,19 @@ Ext.define('App.view.patient.Patient', {
 
 				me.getPatientImgs();
 				me.verifyPatientRequiredInfo();
+
+                record[0].insurance().load({
+                    filters:[
+                        {
+                            property:'pid',
+                            value:me.pid
+                        }
+                    ],
+                    callback:function(records){
+                        say(records);
+                    }
+                });
+
 
 				Patient.getPatientInsurancesCardsUrlByPid(me.pid, function(insurance){
 					var noCard = 'resources/images/icons/no_card.jpg',

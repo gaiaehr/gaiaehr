@@ -16,9 +16,18 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.store.administration.ListsGrid', {
-    model: 'App.model.administration.ListsGrid',
-    extend: 'Ext.data.Store',
+Ext.define('App.model.administration.Lists', {
+    extend: 'Ext.data.Model',
+    table: {
+        name:'listsgrid',
+        comment:'Combo Lists'
+    },
+    fields: [
+        {name: 'id',type: 'int'},
+        {name: 'title',type: 'string'},
+        {name: 'active',type: 'bool'},
+        {name: 'in_use',type: 'bool'}
+    ],
     proxy: {
         type: 'direct',
         api: {

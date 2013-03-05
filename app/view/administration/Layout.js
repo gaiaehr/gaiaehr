@@ -21,9 +21,10 @@ Ext.define('App.view.administration.Layout', {
     id: 'panelLayout',
     pageTitle: i18n('layout_form_editor'),
     pageLayout: 'border',
-    uses: ['App.ux.GridPanel'],
+//    require: ['App.model.administration.LayoutTree'],
     initComponent: function(){
         var me = this;
+
         me.currForm = null;
         me.currField = null;
 
@@ -484,7 +485,7 @@ Ext.define('App.view.administration.Layout', {
          * the user will not have the options to create
          * forms, just to modified the fields of existing forms.
          */
-        me.formsGrid = Ext.create('App.ux.GridPanel', {
+        me.formsGrid = Ext.create('Ext.grid.Panel', {
             title: i18n('form_list'),
             region: 'west',
             store: me.formsGridStore,
@@ -637,12 +638,13 @@ Ext.define('App.view.administration.Layout', {
             selection = me.fieldsGrid.getSelectionModel();
         selection.deselectAll();
         form.reset();
-        var model = Ext.ModelManager.getModel('LayoutTree'),
-            newModel = Ext.ModelManager.create({
-                form_id: me.currForm
-            }, model);
+
         formPanel.el.unmask();
-        form.loadRecord(newModel);
+        form.loadRecord(
+            Ext.create('App.model.administration.LayoutTree',{
+                form_id: me.currForm
+            })
+        );
     },
     /**
      *
@@ -650,15 +652,21 @@ Ext.define('App.view.administration.Layout', {
      * This is the easy way to add a child to a fieldset or fieldcontainer.
      */
     onAddChild: function(){
-        var formPanel = this.fieldForm, form = formPanel.getForm(), row = this.fieldsGrid.getSelectionModel();
+        var me = this,
+            formPanel = me.fieldForm,
+            form = formPanel.getForm(),
+            row = me.fieldsGrid.getSelectionModel();
+
         row.deselectAll();
         form.reset();
-        var model = Ext.ModelManager.getModel('LayoutTree'), newModel = Ext.ModelManager.create({
-                form_id: this.currForm,
-                parentId: this.currField
-            }, model);
+
         formPanel.el.unmask();
-        form.loadRecord(newModel);
+        form.loadRecord(
+            Ext.create('App.model.administration.LayoutTree',{
+                form_id: me.currForm,
+                parentId: me.currField
+            })
+        );
     },
     /**
      *
@@ -670,15 +678,20 @@ Ext.define('App.view.administration.Layout', {
      * @param record
      */
     onFieldsGridClick: function(grid, record){
-        var formPanel = this.fieldForm, form = formPanel.getForm();
+        var me = this,
+            formPanel = me.fieldForm,
+            form = formPanel.getForm();
+
         say(record);
         form.loadRecord(record);
-        this.currField = record.data.id;
+        me.currField = record.data.id;
+
         if(record.data.xtype == 'fieldset' || record.data.xtype == 'fieldcontainer'){
-            this.formContainer.down('toolbar').getComponent('addChild').enable();
+            me.formContainer.down('toolbar').getComponent('addChild').enable();
         }else{
-            this.formContainer.down('toolbar').getComponent('addChild').disable();
+            me.formContainer.down('toolbar').getComponent('addChild').disable();
         }
+
         formPanel.el.unmask();
     },
     /**
@@ -687,11 +700,13 @@ Ext.define('App.view.administration.Layout', {
      * @param record
      */
     onFormGridItemClick: function(DataView, record){
-        this.currForm = record.get('id');
-        this.fieldsGrid.setTitle(i18n('field_editor') + ' (' + record.get('name') + ')');
-        this.loadFieldsGrid();
-        this.onFormReset();
-        this.fieldForm.el.mask(i18n('or_select_a_field_to_update'));
+        var me = this;
+
+        me.currForm = record.get('id');
+        me.fieldsGrid.setTitle(i18n('field_editor') + ' (' + record.get('name') + ')');
+        me.loadFieldsGrid();
+        me.onFormReset();
+        me.fieldForm.el.mask(i18n('or_select_a_field_to_update'));
     },
     /**
      *
@@ -702,7 +717,9 @@ Ext.define('App.view.administration.Layout', {
      * @param value
      */
     onSelectListSelect: function(combo, value){
-        this.selectListoptionsStore.load({
+        var me = this;
+
+        me.selectListoptionsStore.load({
             params: {
                 list_id: value
             }
@@ -726,6 +743,7 @@ Ext.define('App.view.administration.Layout', {
      */
     onXtypeChange: function(combo, value){
         var me = this;
+
         if(value == 'combobox'){
             me.selectListGrid.setTitle(i18n('select_list_options'));
             me.selectListGrid.expand();
@@ -845,14 +863,20 @@ Ext.define('App.view.administration.Layout', {
      *  parentFieldsStore is use to create the child of select list
      */
     loadFieldsGrid: function(){
-        var me = this, row = me.formsGrid.getSelectionModel();
+        var me = this,
+            row = me.formsGrid.getSelectionModel();
+
         if(me.currForm === null) row.select(0);
+
         me.currForm = row.getLastSelected().data.id;
+
+
         me.fieldsGridStore.load({
             params: {
                 currForm: me.currForm
             }
         });
+
         me.loadCurrFormParentField();
         me.previewFormRender();
         me.fieldsGrid.doLayout()
@@ -870,14 +894,26 @@ Ext.define('App.view.administration.Layout', {
      */
     onActive: function(callback){
         var me = this;
-        me.onFormReset();
-        me.fieldForm.el.mask(i18n('or_select_a_field_to_update'));
-        me.selectListoptionsStore.load({
-            callback: function(){
-                me.loadFieldsGrid();
-            }
-        });
-        //me.loadFieldsGrid();
+
+        if(me.currForm === null){
+
+            me.formsGridStore.load({
+                callback:function(records){
+                    me.onFormReset();
+                    me.fieldForm.el.mask(i18n('or_select_a_field_to_update'));
+                    me.selectListoptionsStore.load({
+                        callback: function(){
+                            me.loadFieldsGrid();
+                        }
+                    });
+                }
+            });
+
+
+
+            //me.loadFieldsGrid();
+        }
+
         callback(true);
     }
 }); 

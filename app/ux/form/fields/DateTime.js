@@ -1,16 +1,25 @@
 /**
- * Created by JetBrains PhpStorm.
- * User: Ernesto J. Rodriguez (Certun)
- * File:
- * Date: 1/22/12
- * Time: 11:46 AM
- */
-/**
+ * GaiaEHR (Electronic Health Records)
+ * Copyright (C) 2013 Certun, inc.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * @class Ext.ux.form.field.DateTime
  * @extends Ext.form.FieldContainer
  * @author atian25 (http://www.sencha.com/forum/member.php?51682-atian25)
  * @author ontho (http://www.sencha.com/forum/member.php?285806-ontho)
  * @author jakob.ketterl (http://www.sencha.com/forum/member.php?25102-jakob.ketterl)
+ *
  */
 Ext.define('App.ux.form.fields.DateTime', {
 	extend: 'Ext.form.FieldContainer',
@@ -75,6 +84,7 @@ Ext.define('App.ux.form.fields.DateTime', {
 		me.dateField = Ext.create('Ext.form.field.Date', Ext.apply({
 			format     : me.dateFormat,
 			flex       : 1,
+            emptyText  : i18n('date'),
 			submitValue: false
 		}, me.dateConfig, null));
 		me.items.push(me.dateField);
@@ -82,6 +92,7 @@ Ext.define('App.ux.form.fields.DateTime', {
 		me.timeField = Ext.create('Ext.form.field.Time', Ext.apply({
 			format     : me.timeFormat,
 			flex       : 1,
+            emptyText  : i18n('time'),
 			submitValue: false
 		}, me.timeConfig, null));
 		me.items.push(me.timeField);

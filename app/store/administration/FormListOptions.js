@@ -19,11 +19,5 @@
 Ext.define('App.store.administration.FormListOptions', {
     model: 'App.model.administration.FormListOptions',
     extend: 'Ext.data.Store',
-    proxy: {
-        type: 'direct',
-        api: {
-            read: CombosData.getOptionsByListId
-        }
-    },
     autoLoad: false
 });

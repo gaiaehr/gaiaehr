@@ -19,16 +19,6 @@
 Ext.define('App.store.administration.LayoutTree', {
     model: 'App.model.administration.LayoutTree',
     extend: 'Ext.data.TreeStore',
-    proxy: {
-        type: 'direct',
-        api: {
-            read: FormLayoutBuilder.getFormFieldsTree,
-            create: FormLayoutBuilder.createFormField,
-            update: FormLayoutBuilder.updateFormField,
-            destroy: FormLayoutBuilder.removeFormField
-        }
-    },
-    autoSync: true,
-    remoteSort: true,
+    folderSort: false,
     autoLoad: false
 });

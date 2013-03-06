@@ -16,7 +16,7 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.model.administration.PharmacyGridModel', {
+Ext.define('App.model.administration.PharmacyGrid', {
     extend:'Ext.data.Model',
     table: {
         name:'pharmacygrid',
@@ -24,7 +24,7 @@ Ext.define('App.model.administration.PharmacyGridModel', {
         autoIncrement:1,
         charset:'utf8',
         collate:'utf8_bin',
-        comment:'Account'
+        comment:'Pharmacy Grid'
     },
     fields:[
         { name:'id', type:'int' },

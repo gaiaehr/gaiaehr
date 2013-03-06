@@ -20,6 +20,10 @@ Ext.define('App.model.patient.Insurance', {
 	extend: 'Ext.data.Model',
 	table: {
 		name:'patient_insurances',
+        engine:'InnoDB',
+        autoIncrement:1,
+        charset:'utf8',
+        collate:'utf8_bin',
 		comment:'Patient Insurances'
 	},
 	fields: [

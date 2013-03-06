@@ -24,7 +24,7 @@ Ext.define('App.model.administration.InsuranceGrid', {
         autoIncrement:1,
         charset:'utf8',
         collate:'utf8_bin',
-        comment:'Account'
+        comment:'Insurance Grid'
     },
     fields:[
         { name:'id', type:'int' },

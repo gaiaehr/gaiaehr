@@ -24,7 +24,7 @@ Ext.define('App.model.administration.Modules', {
         autoIncrement:1,
         charset:'utf8',
         collate:'utf8_bin',
-        comment:'Account'
+        comment:'Modules'
     },
     fields: [
         { name: 'id', type: 'int' },

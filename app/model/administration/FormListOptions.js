@@ -20,7 +20,7 @@ Ext.define('App.model.administration.FormListOptions', {
     extend: 'Ext.data.Model',
     table: {
         name:'formlistoptions',
-        comment:'Account'
+        comment:'Form List Options'
     },
     fields: [
         { name: 'option_name', type: 'string' },

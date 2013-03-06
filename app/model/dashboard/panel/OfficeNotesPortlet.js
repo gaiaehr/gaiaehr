@@ -24,7 +24,7 @@ Ext.define('App.model.dashboard.panel.OfficeNotesPortlet', {
         autoIncrement:1,
         charset:'utf8',
         collate:'utf8_bin',
-        comment:'Account'
+        comment:'Office Notes Porlet'
     },
     fields: [
         {name: 'id', type: 'int'},

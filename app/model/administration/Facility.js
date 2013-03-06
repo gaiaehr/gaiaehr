@@ -18,23 +18,24 @@
 
 Ext.define('App.model.administration.Facility', {
     extend: 'Ext.data.Model',
-    extend: 'Ext.data.Model',
     table: {
         name:'facility',
         engine:'InnoDB',
         autoIncrement:1,
         charset:'utf8',
         collate:'utf8_bin',
-        comment:'Account'
+        comment:'Facility'
     },
     fields: [
         {
             name: 'id',
-            type: 'int'
+            type: 'int',
+            dataType: 'bigint'
         },
         {
             name: 'name',
-            type: 'string'
+            type: 'string',
+            comment: 'Facility Name'
         },
         {
             name: 'active',

@@ -20,7 +20,7 @@ Ext.define('App.model.administration.LayoutTree', {
     extend: 'Ext.data.Model',
     table: {
         name:'layouttree',
-        comment:'Account'
+        comment:'Layout Tree'
     },
     fields: [
         {name: 'id',               type: 'string'},

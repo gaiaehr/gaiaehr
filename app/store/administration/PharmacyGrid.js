@@ -16,8 +16,8 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.store.administration.PharmacyGridModel', {
-    model: 'App.model.administration.PharmacyGridModel',
+Ext.define('App.store.administration.PharmacyGrid', {
+    model: 'App.model.administration.PharmacyGrid',
     extend: 'Ext.data.Store',
     proxy:{
         type:'direct',

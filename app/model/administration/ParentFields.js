@@ -24,7 +24,7 @@ Ext.define('App.model.administration.ParentFields', {
         autoIncrement:1,
         charset:'utf8',
         collate:'utf8_bin',
-        comment:'Account'
+        comment:'Parent Fields'
     },
     fields: [
         { name: 'name', type: 'string' },

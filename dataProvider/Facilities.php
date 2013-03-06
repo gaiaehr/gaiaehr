@@ -31,12 +31,16 @@ class Facilities
 	 * @var MatchaHelper
 	 */
 	private $db;
+
+    private $Facilities = null;
+
 	/**
 	 * Creates the MatchaHelper instance
 	 */
 	function __construct()
 	{
 		$this -> db = new MatchaHelper();
+        $this->Facilities = MatchaModel::setSenchaModel('App.model.administration.Facility');
 		return;
 	}
 
@@ -46,38 +50,13 @@ class Facilities
 	 */
 	public function getFacilities(stdClass $params)
 	{
-
-		if (isset($params -> active))
-		{
-			$wherex = 'active = ' . $params -> active;
-		}
-		else
-		{
-			$wherex = 'active = 1';
-		}
-		if (isset($params -> sort))
-		{
-			$orderx = $params -> sort[0] -> property . ' ' . $params -> sort[0] -> direction;
-		}
-		else
-		{
-			$orderx = 'name';
-		}
-		$sql = "SELECT * FROM facility WHERE $wherex ORDER BY $orderx LIMIT $params->start,$params->limit";
-		$this -> db -> setSQL($sql);
 		$rows = array();
-		foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
+		foreach ($this->Facilities->load( array('active'=>($params->active?$params->active:1)) )->all() as $row)
 		{
-
-			if (strlen($row['pos_code']) <= 1)
-			{
-				$row['pos_code'] = '0' . $row['pos_code'];
-			}
+			if (strlen($row['pos_code']) <= 1) $row['pos_code'] = '0' . $row['pos_code'];
 			array_push($rows, $row);
 		}
-
 		return $rows;
-
 	}
 
 	/**
@@ -86,18 +65,10 @@ class Facilities
 	 */
 	public function addFacility(stdClass $params)
 	{
-
 		$data = get_object_vars($params);
 		unset($data['id']);
-		foreach ($data AS $key => $val)
-		{
-			if ($val == '')
-				unset($data[$key]);
-		}
-		$sql = $this -> db -> sqlBind($data, 'facility', 'I');
-		$this -> db -> setSQL($sql);
-		$this -> db -> execLog();
-		$params -> id = $this -> db -> lastInsertId;
+		foreach ($data AS $key => $val) if ($val == '') unset($data[$key]);
+        $params->id = $this->Facilities->save($data)['pid'];
 		return $params;
 	}
 
@@ -108,15 +79,12 @@ class Facilities
 	public function updateFacility(stdClass $params)
 	{
 		$data = get_object_vars($params);
-		unset($data['id']);
-		$sql = $this -> db -> sqlBind($data, 'facility', 'U', array('id' => $params -> id));
-		$this -> db -> setSQL($sql);
-		$this -> db -> execLog();
+        $params->id = $this->Facilities->save($data)['pid'];
 		return $params;
 	}
 
 	/**
-	 * Not in used. For Now you can only set the Facility "inactive"
+	 * Not in use. For Now you can only set the Facility "inactive"
 	 *
 	 * @param stdClass $params
 	 * @return stdClass
@@ -133,33 +101,23 @@ class Facilities
 
 	public function getFacilityInfo($fid)
 	{
-
-		$this -> db -> setSQL("SELECT name, phone, street, city, state, postal_code
-                        	 FROM facility
-                            WHERE id = '$fid'");
-		$i = $this -> db -> fetchRecord(PDO::FETCH_ASSOC);
-		$facilityInfo = 'Facility: ' . $i['name'] . ' ' . $i['phone'] . ' ' . $i['street'] . ' ' . $i['city'] . ' ' . $i['state'] . ' ' . $i['postal_code'];
-
-		return $facilityInfo;
+        $resultRecord = $this->Facilities->load( array('id'=>$fid), array('name', 'phone', 'street', 'city', 'state', 'postal_code') )->one();
+		return 'Facility: ' . $resultRecord['name'] . ' ' . $resultRecord['phone'] . ' ' . $resultRecord['street'] . ' ' . $resultRecord['city'] . ' ' . $resultRecord['state'] . ' ' . $resultRecord['postal_code'];
 	}
 
 	public function getActiveFacilities()
 	{
-		$this -> db -> setSQL("SELECT * FROM facility WHERE active = '1'");
-		return $this -> db -> fetchRecord(PDO::FETCH_ASSOC);
+		return $this->Facilities->load( array('active'=>'1') )->one();
 	}
 
 	public function getActiveFacilitiesById($facilityId)
 	{
-		$this -> db -> setSQL("SELECT * FROM facility WHERE active = '1' AND id='$facilityId'");
-		return $this -> db -> fetchRecord(PDO::FETCH_ASSOC);
+        return $this->Facilities->load( array('active'=>'1', 'id'=>$facilityId) )->one();
 	}
 
 	public function getBillingFacilities()
 	{
-		$this -> db -> setSQL("SELECT * FROM facility WHERE active = '1' AND billing_location = '1'");
-		return $this -> db -> fetchRecord(PDO::FETCH_ASSOC);
-
+        return $this->Facilities->load( array('active'=>'1', 'billing_location'=>'1') )->one();
 	}
 
 }

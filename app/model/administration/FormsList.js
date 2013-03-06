@@ -24,7 +24,7 @@ Ext.define('App.model.administration.FormsList', {
         autoIncrement:1,
         charset:'utf8',
         collate:'utf8_bin',
-        comment:'Account'
+        comment:'Form List'
     },
     fields: [
         { name: 'id', type: 'string' },

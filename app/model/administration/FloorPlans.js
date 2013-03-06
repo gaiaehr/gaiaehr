@@ -27,7 +27,7 @@ Ext.define('App.model.administration.FloorPlans', {
 		comment:'Floor Plans'
 	},
 	fields: [
-		{name: 'id', type: 'int'},
+		{name: 'id', type: 'int', dataType: 'bigint', len: 20, primaryKey : true, autoIncrement : true, allowNull : false, store: true, comment: 'Floor Plans ID'},
 		{name: 'title', type: 'string'}
 	],
     proxy :

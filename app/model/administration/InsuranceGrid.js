@@ -27,7 +27,7 @@ Ext.define('App.model.administration.InsuranceGrid', {
         comment:'Insurance Grid'
     },
     fields:[
-        { name:'id', type:'int' },
+        { name:'id', type:'int', dataType: 'bigint', len: 20, primaryKey : true, autoIncrement : true, allowNull : false, store: true, comment: 'Insurance Grid ID'},
         { name:'name', type:'string' },
         { name:'attn', type:'string' },
         { name:'cms_id', type:'string' },

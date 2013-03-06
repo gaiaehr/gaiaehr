@@ -27,7 +27,7 @@ Ext.define('App.model.administration.FloorPlanZones', {
 		comment:'Floor Plan Zones'
 	},
 	fields: [
-		{name: 'id', type: 'int'},
+		{name: 'id', type: 'int', dataType: 'bigint', len: 20, primaryKey : true, autoIncrement : true, allowNull : false, store: true, comment: 'Floor Plan Zones ID'},
 		{name: 'floor_plan_id', type: 'int'},
 		{name: 'title', type: 'string'},
 		{name: 'type', type: 'string'},

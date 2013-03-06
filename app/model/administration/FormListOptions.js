@@ -23,6 +23,7 @@ Ext.define('App.model.administration.FormListOptions', {
         comment:'Form List Options'
     },
     fields: [
+        { name: 'id', type: 'int', dataType: 'bigint', len: 20, primaryKey : true, autoIncrement : true, allowNull : false, store: true, comment: 'Form List Options ID'},
         { name: 'option_name', type: 'string' },
         { name: 'option_value', type: 'string' }
     ],

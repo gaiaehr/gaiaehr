@@ -27,7 +27,7 @@ Ext.define('App.model.administration.DocumentsTemplates', {
 		comment:'Documents Templates'
 	},
 	fields: [
-		{name: 'id', type:'int' },
+		{name: 'id', type:'int', dataType: 'bigint', len: 20, primaryKey : true, autoIncrement : true, allowNull : false, store: true, comment: 'Documentation Templates ID'},
         {name: 'title', type:'string' },
 		{name: 'body', type:'string' },
 		{name: 'template_type', type:'string' },

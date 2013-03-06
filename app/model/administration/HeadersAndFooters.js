@@ -27,7 +27,7 @@ Ext.define('App.model.administration.HeadersAndFooters', {
 		comment:'Headers And Footers'
 	},
 	fields: [
-		{name: 'id', type:'int' },
+		{name: 'id', type:'int', dataType: 'bigint', len: 20, primaryKey : true, autoIncrement : true, allowNull : false, store: true, comment: 'Headers and Footers ID'},
         {name: 'title', type:'string' },
         {name: 'template_type', type:'string' },
 		{name: 'body', type:'string' },

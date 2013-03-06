@@ -27,7 +27,7 @@ Ext.define('App.model.administration.LabObservations', {
 		comment:'Laboratory Observations'
 	},
 	fields: [
-		{name: 'id' },
+		{name: 'id', type: 'int', dataType: 'bigint', len: 20, primaryKey : true, autoIncrement : true, allowNull : false, store: true, comment: 'Laboratory Observations ID'},
         {name: 'code_text_short' },
 		{name: 'parent_id' },
 		{name: 'parent_loinc' },

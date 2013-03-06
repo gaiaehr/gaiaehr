@@ -27,6 +27,7 @@ Ext.define('App.model.administration.ExternalDataLoads', {
 		comment:'External Data Loads'
 	},
 	fields: [
+        {name: 'id', type: 'int', dataType: 'bigint', len: 20, primaryKey : true, autoIncrement : true, allowNull : false, store: true, comment: 'External Data Loads ID'},
 		{name: 'date' },
         {name: 'version' },
 		{name: 'path' },

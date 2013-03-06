@@ -27,7 +27,7 @@ Ext.define('App.model.administration.LaboratoriesGrid', {
         comment:'Laboratories Grid'
     },
     fields:[
-        { name:'id', type:'int' },
+        { name:'id', type:'int', dataType: 'bigint', len: 20, primaryKey : true, autoIncrement : true, allowNull : false, store: true, comment: 'Laboratory Grid ID'},
         { name:'name', type:'string' },
         { name:'transmit_method', type:'string' },
         { name:'email', type:'string' },

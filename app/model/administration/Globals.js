@@ -29,6 +29,17 @@ Ext.define('App.model.administration.Globals',
         },
         fields: [
             {
+                name: 'id',
+                type: 'int',
+                dataType: 'bigint',
+                len: 20,
+                primaryKey : true,
+                autoIncrement : true,
+                allowNull : false,
+                store: true,
+                comment: 'Global Settings ID'
+            },
+            {
                 name: 'fullname',
                 type: 'string'
             },

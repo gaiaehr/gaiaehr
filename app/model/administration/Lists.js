@@ -23,7 +23,7 @@ Ext.define('App.model.administration.Lists', {
         comment:'Combo Lists'
     },
     fields: [
-        {name: 'id',type: 'int'},
+        {name: 'id',type: 'int', dataType: 'bigint', len: 20, primaryKey : true, autoIncrement : true, allowNull : false, store: true, comment: 'Combo List ID'},
         {name: 'title',type: 'string'},
         {name: 'active',type: 'bool'},
         {name: 'in_use',type: 'bool'}

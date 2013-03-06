@@ -27,7 +27,7 @@ Ext.define('App.model.administration.Applications', {
         comment:'Applications'
     },
     fields: [
-        { name: 'id', type: 'int' },
+        { name: 'id', type: 'int', dataType: 'bigint', len: 20, primaryKey : true, autoIncrement : true, allowNull : false, store: true, comment: 'Applications ID'},
         { name: 'app_name', type: 'string' },
         { name: 'pvt_key', type: 'string' },
         { name: 'active', type: 'bool' }

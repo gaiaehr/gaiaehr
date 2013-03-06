@@ -27,6 +27,7 @@ Ext.define('App.model.administration.ActiveProblems', {
 		comment:'Active Problems'
 	},
 	fields: [
+        {name: 'id', type:'int', dataType: 'bigint', len: 20, primaryKey : true, autoIncrement : true, allowNull : false, store: true, comment: 'Active Problems ID'},
 		{name: 'code_text' },
 		{name: 'code' }
 	]

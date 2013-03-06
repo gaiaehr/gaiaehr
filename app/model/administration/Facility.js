@@ -30,7 +30,13 @@ Ext.define('App.model.administration.Facility', {
         {
             name: 'id',
             type: 'int',
-            dataType: 'bigint'
+            dataType: 'bigint',
+            len: 20,
+            primaryKey : true,
+            autoIncrement : true,
+            allowNull : false,
+            store: true,
+            comment: 'Facility ID'
         },
         {
             name: 'name',

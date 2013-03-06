@@ -29,7 +29,14 @@ Ext.define('App.model.miscellaneous.AddressBook', {
     fields: [
         {
             name: 'id',
-            type: 'int'
+            type: 'int',
+            dataType: 'bigint',
+            len: 20,
+            primaryKey : true,
+            autoIncrement : true,
+            allowNull : false,
+            store: true,
+            comment: 'Address Book ID'
         },
         {
             name: 'username',

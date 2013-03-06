@@ -29,6 +29,17 @@ Ext.define("App.model.miscellaneous.webSearch",
     },
     fields : [
     {
+        name: 'id',
+        type: 'int',
+        dataType: 'bigint',
+        len: 20,
+        primaryKey : true,
+        autoIncrement : true,
+        allowNull : false,
+        store: true,
+        comment: 'Web Search ID'
+    },
+    {
         name : 'title',
         type : 'string'
     },

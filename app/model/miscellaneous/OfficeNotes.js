@@ -27,7 +27,7 @@ Ext.define('App.model.miscellaneous.OfficeNotes', {
 		comment:'Office Notes'
 	},
     fields: [
-        {name: 'id', type: 'int'},
+        {name: 'id', type: 'int', dataType: 'bigint', len: 20, primaryKey : true, autoIncrement : true, allowNull : false, store: true, comment: 'Office Notes ID'},
         {name: 'date', type: 'date', dateFormat: 'Y-m-d H:i:s'},
         {name: 'body', type: 'string'},
         {name: 'user', type: 'string'},

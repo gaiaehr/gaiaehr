@@ -30,7 +30,14 @@ Ext.define('App.model.fees.Checkout',
 	fields : [
 	{
 		name : 'id',
-		type : 'int'
+		type : 'int',
+        dataType: 'bigint',
+        len: 20,
+        primaryKey : true,
+        autoIncrement : true,
+        allowNull : false,
+        store: true,
+        comment: 'Checkout ID'},
 	},
 	{
 		name : 'time',

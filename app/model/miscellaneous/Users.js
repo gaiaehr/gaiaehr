@@ -30,7 +30,14 @@ Ext.define('App.model.miscellaneous.Users',
     fields : [
     {
         name : 'id',
-        type : 'int'
+        type : 'int',
+        dataType: 'bigint',
+        len: 20,
+        primaryKey : true,
+        autoIncrement : true,
+        allowNull : false,
+        store: true,
+        comment: 'Users ID'
     },
     {
         name : 'title',

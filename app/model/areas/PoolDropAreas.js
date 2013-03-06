@@ -27,6 +27,7 @@ Ext.define('App.model.areas.PoolDropAreas', {
 		comment:'Pool Drop Areas'
 	},
 	fields   : [
+        {name: 'id', type: 'int', dataType: 'bigint', len: 20, primaryKey : true, autoIncrement : true, allowNull : false, store: true, comment: 'Pool Drop Areas ID'},
 		{name: 'name', type: 'string'},
 		{name: 'pid', type: 'int'},
 		{name: 'pic', type: 'string'}

@@ -30,7 +30,14 @@ Ext.define('App.model.fees.EncountersPayments',
 	fields : [
 	{
 		name : 'id',
-		type : 'int'
+		type : 'int',
+        dataType: 'bigint',
+        len: 20,
+        primaryKey : true,
+        autoIncrement : true,
+        allowNull : false,
+        store: true,
+        comment: 'Encounter Payments ID'
 	},
 	{
 		name : 'paying_entity',

@@ -27,7 +27,7 @@ Ext.define('App.model.areas.PoolArea', {
 		comment:'Pool Area'
 	},
 	fields   : [
-		{name: 'pid', type: 'int'},
+		{name: 'pid', type: 'int', dataType: 'bigint', len: 20, primaryKey : true, autoIncrement : true, allowNull : false, store: true, comment: 'Pool Areas ID'},
 		{name: 'eid', type: 'int'},
 		{name: 'name', type: 'string'},
 		{name: 'shortName', type: 'string'},

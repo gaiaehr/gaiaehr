@@ -39,7 +39,7 @@ class Facilities
 	 */
 	function __construct()
 	{
-		$this -> db = new MatchaHelper();
+		$this->db = new MatchaHelper();
         $this->Facilities = MatchaModel::setSenchaModel('App.model.administration.Facility');
 		return;
 	}
@@ -93,9 +93,9 @@ class Facilities
 	{
 		$data['active'] = 0;
 		unset($data['id']);
-		$sql = $this -> db -> sqlBind($data, 'facility', 'U', array('id' => $params -> id));
-		$this -> db -> setSQL($sql);
-		$this -> db -> execLog();
+		$sql = $this->db->sqlBind($data, 'facility', 'U', array('id' => $params->id));
+		$this->db->setSQL($sql);
+		$this->db->execLog();
 		return $params;
 	}
 

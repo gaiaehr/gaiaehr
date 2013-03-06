@@ -27,7 +27,7 @@ Ext.define('App.view.administration.Practice', {
         // *************************************************************************************
 		// Practice Model and Store
         // *************************************************************************************
-		me.pharmacyStore = Ext.create('App.store.administration.PharmacyGridModel');
+		me.pharmacyStore = Ext.create('App.store.administration.PharmacyGrid');
 		me.laboratoryStore = Ext.create('App.store.administration.LaboratoriesGrid');
 		me.insuranceStore = Ext.create('App.store.administration.InsuranceGrid');
 
@@ -315,7 +315,7 @@ Ext.define('App.view.administration.Practice', {
 				{
 					text:i18n('add_new_pharmacy'),
 					iconCls:'save',
-					action:'pharmacyGridModel',
+					action:'pharmacyGrid',
 					scope:me,
 					handler:me.onNewRec
 				}
@@ -562,7 +562,7 @@ Ext.define('App.view.administration.Practice', {
 				{
 					text:i18n('add_new_laboratory'),
 					iconCls:'save',
-					action:'pharmacyGridModel',
+					action:'pharmacyGrid',
 					scope:me,
 					handler:me.onNewRec
 				}

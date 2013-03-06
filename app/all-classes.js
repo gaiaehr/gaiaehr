@@ -42188,7 +42188,7 @@ Ext.define('App.view.administration.Practice', {
         /**
          * Pharmacy Model and Store
          */
-        Ext.define('pharmacyGridModel', {
+        Ext.define('pharmacyGrid', {
             extend: 'Ext.data.Model',
             fields: [
                 {
@@ -42306,7 +42306,7 @@ Ext.define('App.view.administration.Practice', {
             }
         });
         me.pharmacyStore = Ext.create('Ext.data.Store', {
-            model: 'pharmacyGridModel',
+            model: 'pharmacyGrid',
             remoteSort: false
         });
         // *************************************************************************************
@@ -42925,7 +42925,7 @@ Ext.define('App.view.administration.Practice', {
                 {
                     text: i18n('add_new_pharmacy'),
                     iconCls: 'save',
-                    action: 'pharmacyGridModel',
+                    action: 'pharmacyGrid',
                     scope: me,
                     handler: me.onNewRec
                 }

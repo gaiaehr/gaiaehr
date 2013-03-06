@@ -253,45 +253,23 @@ class MatchaCUP
 	 */
 	public function save($record)
 	{
-//        echo '<pre>';
-//        print_r($record);
-//        echo '<pre>';
 		try
         {
-			if (is_object($record))
+            if(!is_object($record)) $record = (object)$record;
+            $data = get_object_vars($record);
+
+			// create record
+			if (!isset($data[$this->primaryKey]) || (isset($data[$this->primaryKey]) && $data[$this->primaryKey] == 0))
             {
-				$data = get_object_vars($record);
-				// create record
-				if (!isset($data[$this->primaryKey]) || (isset($data[$this->primaryKey]) && $data[$this->primaryKey] == 0))
-                {
-					$this->rowsAffected = Matcha::$__conn->exec($this->buildInsetSqlStatement($data));
-					$record->pid = $this->lastInsertId = Matcha::$__conn->lastInsertId();
-				}
-                else
-                {
-					// update a record
-					$this->rowsAffected = Matcha::$__conn->exec($this->buildUpdateSqlStatement($data));
-				}
+        		$this->rowsAffected = Matcha::$__conn->exec($this->buildInsetSqlStatement($data));
+				$record->pid = $this->lastInsertId = Matcha::$__conn->lastInsertId();
 			}
             else
             {
-				foreach ($record as $index => $rec)
-                {
-					$data = get_object_vars($rec);
-					// create record
-					if (!isset($data[$this->primaryKey]) || (isset($data[$this->primaryKey]) && $data[$this->primaryKey] == 0))
-                    {
-						$this->rowsAffected = Matcha::$__conn->exec($this->buildInsetSqlStatement($data));
-						$record[$index]->id = $this->lastInsertId = Matcha::$__conn->lastInsertId();
-					}
-                    else
-                    {
-						// update a record
-						$this->rowsAffected = Matcha::$__conn->exec($this->buildUpdateSqlStatement($data));
-					}
-				}
-			}
-			return (is_object($record) ? MatchaUtils::__objectToArray($record) : $record);
+				// update a record
+				$this->rowsAffected = Matcha::$__conn->exec($this->buildUpdateSqlStatement($data));
+		    }
+			return MatchaUtils::__objectToArray($record);
 		}
 		catch(PDOException $e)
 		{

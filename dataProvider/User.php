@@ -207,16 +207,12 @@ class User
                 }
             }
 
-            $sql = $this->db->sqlBind($data, 'users', 'I');
-            $this->db->setSQL($sql);
-            $this->db->execLog();
-
-            $params->id = $this->user_id = $this->db->lastInsertId;
+            $this->user_id = $this->User->save($data)['pid'];
 
             $params->fullname = Person::fullname($params->fname, $params->mname, $params->lname);
             if ($params->password != '') $this->changePassword($params->password);
             $params->password = '';
-            $role['user_id'] = $params->id;
+            $role['user_id'] = $this->user_id;
             $sql = $this->db->sqlBind($role, 'acl_user_roles', 'I');
             $this->db->setSQL($sql);
             $this->db->execLog();

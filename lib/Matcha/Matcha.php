@@ -171,7 +171,7 @@ class Matcha
 	{
 		$tableOptions = (string)'';
 		if(!is_array(MatchaModel::$__senchaModel['table'])) return false;
-		if(isset(MatchaModel::$__senchaModel['table']['InnoDB'])) $tableOptions .= 'ENGINE = '.MatchaModel::$__senchaModel['table']['InnoDB'].' ';
+		if(isset(MatchaModel::$__senchaModel['table']['engine'])) $tableOptions .= 'ENGINE = '.MatchaModel::$__senchaModel['table']['engine'].' ';
 		if(isset(MatchaModel::$__senchaModel['table']['autoIncrement'])) $tableOptions .= 'AUTO_INCREMENT = '.MatchaModel::$__senchaModel['table']['autoIncrement'].' ';
 		if(isset(MatchaModel::$__senchaModel['table']['charset'])) $tableOptions .= 'CHARACTER SET = '.MatchaModel::$__senchaModel['table']['charset'].' ';
 		if(isset(MatchaModel::$__senchaModel['table']['collate'])) $tableOptions .= 'COLLATE = '.MatchaModel::$__senchaModel['table']['collate'].' ';

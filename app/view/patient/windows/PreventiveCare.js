@@ -1,19 +1,19 @@
 /**
- GaiaEHR (Electronic Health Records)
- Copyright (C) 2013 Certun, inc.
-
- This program is free software: you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation, either version 3 of the License, or
- (at your option) any later version.
-
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * GaiaEHR (Electronic Health Records)
+ * Copyright (C) 2013 Certun, inc.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 Ext.define('App.view.patient.windows.PreventiveCare', {
@@ -168,14 +168,15 @@ Ext.define('App.view.patient.windows.PreventiveCare', {
 		this.callParent(arguments);
 
 	},
-	onChangeOption: function(field,newValue){
-		var me=this,
-			reason=field.up('form').query('[action="reason"]')[0],
-			date=field.up('form').query('[action="date"]')[0],
-			eid=field.up('form').query('[action="eid"]')[0],
-			observation=field.up('form').query('[action="observation"]')[0];
-		eid.setValue(app.patient.eid);
-		if(newValue){
+	onChangeOption: function(field, newValue){
+		var reason = field.up('form').query('[action="reason"]')[0],
+			date = field.up('form').query('[action="date"]')[0],
+			eid = field.up('form').query('[action="eid"]')[0],
+			observation = field.up('form').query('[action="observation"]')[0];
+
+        eid.setValue(app.patient.eid);
+
+        if(newValue){
 			reason.setDisabled(false);
 			date.setDisabled(false);
 			observation.setDisabled(false);
@@ -189,9 +190,6 @@ Ext.define('App.view.patient.windows.PreventiveCare', {
 			date.setDisabled(true);
 			observation.setDisabled(true);
 		}
-
-
-
 	},
 
     loadPatientPreventiveCare:function(){
@@ -202,7 +200,6 @@ Ext.define('App.view.patient.windows.PreventiveCare', {
                 pid: app.patient.pid
             },
             callback:function(records, operation, success){
-	            say(records);
                 if(records.length > 0){
                     me.show();
                     return true;

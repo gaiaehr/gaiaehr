@@ -27,11 +27,10 @@ $_SESSION['site']['flops'] = 0;
 include_once ($_SESSION['root'] . '/classes/MatchaHelper.php');
 class Facilities
 {
-	/**
-	 * @var MatchaHelper
-	 */
-	private $db;
 
+    /**
+     * @var Database Object
+     */
     private $Facilities = null;
 
 	/**
@@ -39,7 +38,6 @@ class Facilities
 	 */
 	function __construct()
 	{
-		$this->db = new MatchaHelper();
         $this->Facilities = MatchaModel::setSenchaModel('App.model.administration.Facility');
 		return;
 	}
@@ -51,7 +49,7 @@ class Facilities
 	public function getFacilities(stdClass $params)
 	{
 		$rows = array();
-		foreach ($this->Facilities->load( array('active'=>($params->active?$params->active:1)) )->all() as $row)
+		foreach ($this->Facilities->load( array('active'=>($params->active ? $params->active : 1)) )->all() as $row)
 		{
 			if (strlen($row['pos_code']) <= 1) $row['pos_code'] = '0' . $row['pos_code'];
 			array_push($rows, $row);
@@ -91,12 +89,7 @@ class Facilities
 	 */
 	public function deleteFacility(stdClass $params)
 	{
-		$data['active'] = 0;
-		unset($data['id']);
-		$sql = $this->db->sqlBind($data, 'facility', 'U', array('id' => $params->id));
-		$this->db->setSQL($sql);
-		$this->db->execLog();
-		return $params;
+		return $this->Facilities->destroy($params);
 	}
 
 	public function getFacilityInfo($fid)

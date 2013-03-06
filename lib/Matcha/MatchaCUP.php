@@ -250,6 +250,7 @@ class MatchaCUP
 	 * @param $record
 	 * @return object
 	 * @throws Exception
+     * TODO: make use the Audit class if the developer enables it.
 	 */
 	public function save($record)
 	{

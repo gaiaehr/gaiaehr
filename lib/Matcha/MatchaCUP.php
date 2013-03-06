@@ -287,19 +287,9 @@ class MatchaCUP
 	{
 		try
 		{
-			if (is_object($record))
-			{
-				$record = get_object_vars($record);
-				$this->rowsAffected = Matcha::$__conn->exec("DELETE FROM " . $this->model->table->name . " WHERE $this->primarykey = '".$record[$this->primarykey]."'");
-			}
-			else
-			{
-				foreach ($record as $rec)
-				{
-					$rec = get_object_vars($rec);
-					$this->rowsAffected = Matcha::$__conn->exec("DELETE FROM " . $this->model->table->name . " WHERE $this->primarykey ='".$rec[$this->primarykey]."'");
-				}
-			}
+			if (!is_object($record)) $record = (object)$record;
+			$record = get_object_vars($record);
+			$this->rowsAffected = Matcha::$__conn->exec("DELETE FROM " . $this->model->table->name . " WHERE $this->primarykey = '".$record[$this->primarykey]."'");
 			return $this->rowsAffected;
 		}
 		catch(PDOException $e)

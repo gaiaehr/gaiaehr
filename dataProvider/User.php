@@ -41,11 +41,13 @@ class User
     private $user_id;
 
     private $User = null;
+    private $AclUserRoles = null;
 
     function __construct()
     {
         $this->db = new MatchaHelper();
         $this->User = MatchaModel::setSenchaModel('App.model.administration.User');
+        $this->AclUserRoles = MatchaModel::setSenchaModel('App.model.administration.AclUserRoles');
         return;
     }
 
@@ -122,11 +124,8 @@ class User
 
     public function getCurrentUserTitleLastName()
     {
-        $id = $this->getCurrentUserId();
-        $this->db->setSQL("SELECT title, lname FROM users WHERE id = '$id'");
-        $foo = $this->db->fetchRecord();
-        $foo = $foo['title'] . ' ' . $foo['lname'];
-        return $foo;
+        $userResult = $this->User->load( array('id' => $this->getCurrentUserId()), array('title', 'lname') )->one();
+        return $userResult['title'] . ' ' . $userResult['lname'];
     }
 
     /**
@@ -153,34 +152,28 @@ class User
 
     public function getUserNameById($id)
     {
-        $this->db->setSQL("SELECT title, lname FROM users WHERE id = '$id'");
-        $user = $this->db->fetchRecord();
-        $userName = $user['title'] . ' ' . $user['lname'];
+        $userResult = $this->User->load( array('id' => $id) )->one();
+        $userName = $userResult['title'] . ' ' . $userResult['lname'];
         return $userName;
     }
 
     public function getUserFullNameById($id)
     {
-        $this->db->setSQL("SELECT title, fname, mname, lname FROM users WHERE id = '$id'");
-        $user = $this->db->fetchRecord();
-        $userName = Person::fullname($user['fname'], $user['mname'], $user['lname']);
+        $userResult = $this->User->load( array('id' => $id) )->one();
+        $userName = Person::fullname($userResult['fname'], $userResult['mname'], $userResult['lname']);
         return $userName;
     }
 
     public function getCurrentUserData()
     {
-        $id = $this->getCurrentUserId();
-        $this->db->setSQL("SELECT * FROM users WHERE id = '$id'");
-        $user = $this->db->fetchRecord();
-        return $user;
+        $userResult = $this->User->load( array('id' => $this->getCurrentUserId()) )->one();
+        return $userResult;
     }
 
     public function getCurrentUserBasicData()
     {
-        $id = $this->getCurrentUserId();
-        $this->db->setSQL("SELECT id, title, fname, mname, lname FROM users WHERE id = '$id'");
-        $user = $this->db->fetchRecord();
-        return $user;
+        $userResult = $this->User->load( array('id' => $this->getCurrentUserId()), array('id', 'title', 'fname', 'mname', 'lname') )->one();
+        return $userResult;
     }
 
     /**
@@ -311,10 +304,8 @@ class User
     public function verifyUserPass($pass)
     {
         $aes = new AES($_SESSION['site']['AESkey']);
-        $pass = $aes->encrypt($pass);
-        $uid = $_SESSION['user']['id'];
-        $this->db->setSQL("SELECT username FROM users WHERE id = '$uid' AND password = '$pass' AND authorized = '1' LIMIT 1");
-        $count = $this->db->rowCount();
+        $userResult = $this->User->load( array('id' => $_SESSION['user']['id'], 'password' => $aes->encrypt($pass), 'authorized'=>'1'), array('username') )->one();
+        $count = count($userResult);
         return ($count != 0) ? 1 : 2;
     }
 
@@ -337,8 +328,7 @@ class User
     public function getUserRolesByCurrentUserOrUserId($uid = null)
     {
         $uid = ($uid == null) ? $_SESSION['user']['id'] : $uid;
-        $this->db->setSQL("SELECT * FROM acl_user_roles WHERE user_id = '$uid'");
-        return $this->db->fetchRecords(PDO::FETCH_ASSOC);
+        return $this->User->load( array('id' => $uid))->one();
     }
 
 }

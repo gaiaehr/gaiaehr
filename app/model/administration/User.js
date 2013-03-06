@@ -215,5 +215,13 @@ Ext.define( 'App.model.administration.User',
 		name : 'role_id',
 		type : 'int',
         comment: 'Role ID'
-	}]
+	}],
+    associations: [
+    {
+        type: 'hasOne',
+        model: 'App.model.administration.AclUserRoles',
+        primaryKey: 'role_id',
+        foreignKey: 'id'
+    }
+    ]
 } );

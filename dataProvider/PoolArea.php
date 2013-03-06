@@ -51,12 +51,15 @@ class PoolArea
 	 */
 	private $acl;
 
+    private $PoolArea;
+
 	function __construct()
 	{
 		$this->db       = new MatchaHelper();
 		$this->user     = new User();
 		$this->patient  = new Patient();
 		$this->services = new Services();
+        //$this->PoolArea = MatchaModel::setSenchaModel('App.model.areas.PoolArea');
 		return;
 	}
 

@@ -85,16 +85,18 @@ Ext.define('App.ux.form.fields.DateTime', {
 			format     : me.dateFormat,
 			flex       : 1,
             emptyText  : i18n('date'),
+            margin     : 0,
 			submitValue: false
-		}, me.dateConfig, null));
+		}, me.dateConfig));
 		me.items.push(me.dateField);
 
 		me.timeField = Ext.create('Ext.form.field.Time', Ext.apply({
 			format     : me.timeFormat,
 			flex       : 1,
             emptyText  : i18n('time'),
+            margin     : 0,
 			submitValue: false
-		}, me.timeConfig, null));
+		}, me.timeConfig));
 		me.items.push(me.timeField);
 
 		for(var i = 0; i < me.items.length; i++) {

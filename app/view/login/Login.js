@@ -290,7 +290,7 @@ Ext.define('App.view.login.Login',
 					Ext.Msg.show(
 					{
 						title : 'Oops!',
-						msg : response.result.error,
+						msg : response.result.message,
 						buttons : Ext.Msg.OK,
 						icon : Ext.Msg.ERROR
 					});

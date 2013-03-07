@@ -27,6 +27,7 @@ Ext.define('App.model.patient.Encounter', {
 		comment:'Encounter Data'
 	},
 	fields : [
+        {name: 'id', type: 'int', dataType: 'bigint', len: 20, primaryKey : true, autoIncrement : true, allowNull : false, store: true, comment: 'Encounter ID'},
 		{name: 'eid', type: 'int'},
 		{name: 'pid', type: 'int'},
 		{name: 'open_uid', type: 'int'},

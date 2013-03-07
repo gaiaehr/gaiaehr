@@ -23,7 +23,7 @@ Ext.define('App.model.User',{
 		comment: 'User accounts'
 	},
 	fields: [
-		{name: 'id',                type: 'int'},
+        {name: 'id', type: 'int', dataType: 'bigint', len: 20, primaryKey : true, autoIncrement : true, allowNull : false, store: true, comment: 'User Account ID'},
 
 		{name: 'create_uid',        type: 'int',    comment:'create user ID'},
 		{name: 'write_uid',         type: 'int',    comment:'update user ID'},

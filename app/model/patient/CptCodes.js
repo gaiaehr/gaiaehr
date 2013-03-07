@@ -27,7 +27,7 @@ Ext.define('App.model.patient.CptCodes', {
 		comment:'CPT Codes'
 	},
     fields: [
-        {name: 'id', type:'int'},
+        {name: 'id', type: 'int', dataType: 'bigint', len: 20, primaryKey : true, autoIncrement : true, allowNull : false, store: true, comment: 'CPY Code ID'},
         {name: 'eid', type:'int'},
         {name: 'code', type: 'string'},
         {name: 'code_text', type: 'string'},

@@ -27,7 +27,7 @@ Ext.define('App.model.patient.PreventiveCare', {
 		comment:'Preventive Care'
 	},
 	fields: [
-		{name: 'id', type: 'int'},
+        {name: 'id', type: 'int', dataType: 'bigint', len: 20, primaryKey : true, autoIncrement : true, allowNull : false, store: true, comment: 'Preventive Care ID'},
 		{name: 'pid', type: 'int'},
 		{name: 'eid', type: 'int'},
 		{name: 'uid', type: 'int'},

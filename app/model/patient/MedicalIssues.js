@@ -27,8 +27,7 @@ Ext.define('App.model.patient.MedicalIssues', {
 		comment:'Medical Issues'
 	},
 	fields: [
-
-		{name: 'id', type: 'int'},
+        {name: 'id', type: 'int', dataType: 'bigint', len: 20, primaryKey : true, autoIncrement : true, allowNull : false, store: true, comment: 'Medical Issues ID'},
 		{name: 'eid', type: 'int'},
 		{name: 'pid', type: 'int'},
 		{name: 'created_uid', type: 'int'},

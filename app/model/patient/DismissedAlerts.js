@@ -27,7 +27,7 @@ Ext.define('App.model.patient.DismissedAlerts', {
 		comment:'Dismissed Alerts'
 	},
 	fields: [
-		{name: 'id', type: 'int'},
+        {name: 'id', type: 'int', dataType: 'bigint', len: 20, primaryKey : true, autoIncrement : true, allowNull : false, store: true, comment: 'Dismissed Alerts ID'},
 		{name: 'date', type: 'date', dateFormat: 'Y-m-d H:i:s'},
 		{name: 'preventive_care_id', type: 'int'},
 		{name: 'reason', type: 'string'},

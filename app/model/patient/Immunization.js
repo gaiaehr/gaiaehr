@@ -27,10 +27,9 @@ Ext.define('App.model.patient.Immunization', {
 		comment:'Immunization'
 	},
 	fields: [
-        {name: 'id', type: 'int'},
+        {name: 'id', type: 'int', dataType: 'bigint', len: 20, primaryKey : true, autoIncrement : true, allowNull : false, store: true, comment: 'Immunization ID'},
         {name: 'code', type: 'int'},
 		{name: 'code_text', type: 'string'}
-
 	],
 	proxy : {
 		type: 'direct',

@@ -27,7 +27,7 @@ Ext.define('App.model.patient.ImmunizationCheck', {
 		comment:'Immunization Check'
 	},
 	fields: [
-        {name: 'id', type: 'int'},
+        {name: 'id', type: 'int', dataType: 'bigint', len: 20, primaryKey : true, autoIncrement : true, allowNull : false, store: true, comment: 'Immunization Check ID'},
         {name: 'pid', type: 'int'},
         {name: 'immunization_id', type: 'int'},
 		{name: 'immunization_name', type: 'string'},

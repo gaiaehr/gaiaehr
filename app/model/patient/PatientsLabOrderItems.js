@@ -26,15 +26,8 @@ Ext.define('App.model.patient.PatientsLabOrderItems', {
 		collate:'utf8_bin',
 		comment:'Patients Lab Order Items'
 	},
-	table: {
-		name:'patientslaborderitems',
-		engine:'InnoDB',
-		autoIncrement:1,
-		charset:'utf8',
-		collate:'utf8_bin',
-		comment:'Patients Lab Order Items'
-	},
 	fields: [
+        {name: 'id', type: 'int', dataType: 'bigint', len: 20, primaryKey : true, autoIncrement : true, allowNull : false, store: true, comment: 'Patient Lab Order ID'},
         { name: 'id', type: 'int' },
         { name: 'loinc', type: 'string' },
         { name: 'title', type: 'string' }

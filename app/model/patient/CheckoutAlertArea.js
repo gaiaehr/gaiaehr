@@ -27,6 +27,7 @@ Ext.define('App.model.patient.CheckoutAlertArea', {
 		comment:'Checkout Alert Area'
 	},
 	fields: [
+        {name: 'id', type: 'int', dataType: 'bigint', len: 20, primaryKey : true, autoIncrement : true, allowNull : false, store: true, comment: 'Checkout Alert ID'},
         {name: 'alert', type: 'string'},
         {name: 'alertType', type: 'int'}
 

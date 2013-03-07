@@ -27,8 +27,7 @@ Ext.define('App.model.patient.PatientDocuments', {
 		comment:'Patient Documents Storage'
 	},
 	fields: [
-
-        {name: 'id', type: 'int'},
+        {name: 'id', type: 'int', dataType: 'bigint', len: 20, primaryKey : true, autoIncrement : true, allowNull : false, store: true, comment: 'Patient Documents Storage ID'},
         {name: 'pid', type: 'int'},
         {name: 'eid', type: 'int'},
         {name: 'uid', type: 'int'},

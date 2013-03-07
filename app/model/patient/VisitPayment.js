@@ -27,7 +27,7 @@ Ext.define('App.model.patient.VisitPayment', {
 		comment:'Visit Payment'
 	},
 	fields: [
-        {name: 'id', type: 'int'},
+        {name: 'id', type: 'int', dataType: 'bigint', len: 20, primaryKey : true, autoIncrement : true, allowNull : false, store: true, comment: 'Visit Payment ID'},
         {name: 'no', type: 'int'},
         {name: 'date', type: 'date', dateFormat:'Y-m-d H:i:s'},
         {name: 'facility', type: 'string'},

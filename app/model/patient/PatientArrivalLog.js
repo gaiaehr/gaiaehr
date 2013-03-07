@@ -27,7 +27,7 @@ Ext.define('App.model.patient.PatientArrivalLog', {
 		comment:'Patient Arrival Log'
 	},
 	fields: [
-        {name: 'id', type: 'int'},
+        {name: 'id', type: 'int', dataType: 'bigint', len: 20, primaryKey : true, autoIncrement : true, allowNull : false, store: true, comment: 'Patient Arrival Log ID'},
         {name: 'area_id', type: 'int'},
         {name: 'pid', type: 'int'},
 		{name: 'time', type: 'string'},

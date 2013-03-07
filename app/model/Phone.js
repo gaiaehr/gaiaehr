@@ -23,7 +23,7 @@ Ext.define('App.model.administration.Phone',{
 		comment: 'User/Contacts phones'
 	},
 	fields: [
-		{name: 'id',                type: 'int'},
+        {name: 'id', type: 'int', dataType: 'bigint', len: 20, primaryKey : true, autoIncrement : true, allowNull : false, store: true, comment: 'User Contact Phone ID'},
 		{name: 'create_uid',        type: 'int',    comment:'create user ID'},
 		{name: 'write_uid',         type: 'int',    comment:'update user ID'},
 		{name: 'create_date',       type: 'date',   comment:'create date', dateFormat:'Y-m-d H:i:s'},

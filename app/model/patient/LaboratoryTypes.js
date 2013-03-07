@@ -27,8 +27,7 @@ Ext.define('App.model.patient.LaboratoryTypes', {
 		comment:'Laboratory Types'
 	},
 	fields: [
-
-		{name: 'id', type: 'int'},
+        {name: 'id', type: 'int', dataType: 'bigint', len: 20, primaryKey : true, autoIncrement : true, allowNull : false, store: true, comment: 'Laboratory Types ID'},
 		{name: 'label', type: 'string'},
 		{name: 'fields' }
 

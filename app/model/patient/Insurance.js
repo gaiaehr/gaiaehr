@@ -27,7 +27,7 @@ Ext.define('App.model.patient.Insurance', {
 		comment:'Patient Insurances'
 	},
 	fields: [
-        {name: 'id',                            type: 'int', comment:'ID'},
+        {name: 'id', type: 'int', dataType: 'bigint', len: 20, primaryKey : true, autoIncrement : true, allowNull : false, store: true, comment: 'Insurance ID'},
         {name: 'pid',                           type: 'int', comment:'Patient ID'},
 		{name: 'createUid',                     type: 'int', comment:'create user ID'},
 		{name: 'writeUid',                      type: 'int', comment:'update user ID'},

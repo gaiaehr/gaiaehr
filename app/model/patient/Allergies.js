@@ -27,7 +27,7 @@ Ext.define('App.model.patient.Allergies', {
 		comment:'Patient Allergies'
 	},
 	fields: [
-		{name: 'id', type: 'int'},
+		{name: 'id', type: 'int', dataType: 'bigint', len: 20, primaryKey : true, autoIncrement : true, allowNull : false, store: true, comment: 'Patient Allergies ID'},
 		{name: 'eid', type: 'int'},
 		{name: 'pid', type: 'int'},
 		{name: 'created_uid', type: 'int'},

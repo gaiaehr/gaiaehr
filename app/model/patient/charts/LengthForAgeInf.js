@@ -27,7 +27,7 @@ Ext.define('App.model.patient.charts.LengthForAgeInf', {
 		comment:'Length For Age Information'
 	},
 	fields   : [
-        {name: 'id', type: 'int', dataType: 'bigint', len: 20, primaryKey : true, autoIncrement : true, allowNull : false, store: true, comment: 'Services ID'},
+        {name: 'id', type: 'int', dataType: 'bigint', len: 20, primaryKey : true, autoIncrement : true, allowNull : false, store: true, comment: 'Length For Age Information ID'},
 		{name: 'age', type: 'float'},
 		{name: 'PP', type: 'float'},
 		{name: 'P3', type: 'float'},

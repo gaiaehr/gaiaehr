@@ -27,7 +27,7 @@ Ext.define('App.model.patient.charts.WeightForAge', {
 		comment:'Weight For Age'
 	},
 	fields   : [
-        {name: 'id', type: 'int', dataType: 'bigint', len: 20, primaryKey : true, autoIncrement : true, allowNull : false, store: true, comment: 'Services ID'},
+        {name: 'id', type: 'int', dataType: 'bigint', len: 20, primaryKey : true, autoIncrement : true, allowNull : false, store: true, comment: 'Weight For Age ID'},
 		{name: 'age', type: 'float'},
 		{name: 'PP', type: 'float'},
 		{name: 'P3', type: 'float'},

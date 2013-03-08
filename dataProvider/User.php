@@ -136,7 +136,7 @@ class User
     public function getUsers(stdClass $params)
     {
         $this->db->setSQL("SELECT u.*, r.role_id
-                             FROM user AS u
+                             FROM users AS u
                         LEFT JOIN acl_user_roles AS r ON r.user_id = u.id
                             WHERE u.authorized = 1 OR u.username != ''
                          ORDER BY u.username
@@ -235,7 +235,7 @@ class User
         $sql = $this->db->sqlBind($role, 'acl_user_roles', 'U', array('user_id' => $this->user['id']));
         $this->db->setSQL($sql);
         $this->db->execLog();
-        $sql = $this->db->sqlBind($data, 'user', 'U', array('id' => $this->user['id']));
+        $sql = $this->db->sqlBind($data, 'users', 'U', array('id' => $this->user['id']));
         $this->db->setSQL($sql);
         $this->db->execLog();
         return $params;
@@ -252,7 +252,7 @@ class User
         $aes = $this->getAES();
         $this->user['id'] = $params->id;
         $aesPwd = $aes->encrypt($params->password);
-        $this->db->setSQL("SELECT password, pwd_history1, pwd_history2  FROM user WHERE id='" . $this->user['id'] . "'");
+        $this->db->setSQL("SELECT password, pwd_history1, pwd_history2  FROM users WHERE id='" . $this->user['id'] . "'");
         $pwds = $this->db->fetchRecord();
         if ($pwds['password'] == $aesPwd || $pwds['pwd_history1'] == $aesPwd || $pwds['pwd_history2'] == $aesPwd)
         {
@@ -273,13 +273,13 @@ class User
         $aes = $this->getAES();
         $aesPwd = $aes->encrypt($newpassword);
 	    $id = $this->user['id'];
-        $this->db->setSQL("SELECT password, pwd_history1 FROM user WHERE id = '$id'");
+        $this->db->setSQL("SELECT password, pwd_history1 FROM users WHERE id = '$id'");
         $pwds = $this->db->fetchRecord(PDO::FETCH_ASSOC);
 
 	    $row['password'] = $aesPwd;
         $row['pwd_history1'] = $pwds['password'];
         $row['pwd_history2'] = $pwds['pwd_history1'];
-        $sql = $this->db->sqlBind($row, 'user', 'U', array('id' => $this->user['id']));
+        $sql = $this->db->sqlBind($row, 'users', 'U', array('id' => $this->user['id']));
 
         $this->db->setSQL($sql);
         $this->db->execOnly();
@@ -297,7 +297,7 @@ class User
     {
         $data = get_object_vars($params);
         unset($data['id']);
-        $sql = $this->db->sqlBind($data, 'user', 'U', array('id' => $params->id));
+        $sql = $this->db->sqlBind($data, 'users', 'U', array('id' => $params->id));
         $this->db->setSQL($sql);
         $this->db->execLog();
         return array('success' => true);
@@ -315,7 +315,7 @@ class User
     {
         $this->db->setSQL("SELECT u.id, u.fname, u.lname, u.mname
                 FROM acl_user_roles AS acl
-                LEFT JOIN user AS u ON u.id = acl.user_id
+                LEFT JOIN users AS u ON u.id = acl.user_id
                 WHERE acl.role_id = '2'");
         $records = array();
         $records[] = array('name' => 'All', 'id' => 'all');

@@ -125,7 +125,7 @@ class authProcedures
 		// Username & password match
 		//-------------------------------------------
 		$db->setSQL("SELECT id, username, title, fname, mname, lname, email, password
-                         FROM user
+                         FROM users
         		        WHERE username   = '$params->authUser'
         		          AND authorized = '1'
         		        LIMIT 1");

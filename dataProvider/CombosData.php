@@ -101,8 +101,8 @@ class CombosData
 
 	public function getActiveProviders()
 	{
-		$this->db->setSQL("SELECT user.id AS option_value, CONCAT_WS(' ', user.title, user.lname) as option_name
-							 FROM user
+		$this->db->setSQL("SELECT users.id AS option_value, CONCAT_WS(' ', users.title, users.lname) as option_name
+							 FROM users
 							WHERE active = '1' AND authorized = '1' AND (npi IS NOT NULL AND npi != '')
 					     ORDER BY option_name ASC");
 		return $this->db->fetchRecords(PDO::FETCH_ASSOC);
@@ -124,7 +124,7 @@ class CombosData
 	{
 		include_once ('Person.php');
 		$sql = "SELECT id, title, fname, mname, lname
-                  FROM user
+                  FROM users
                  WHERE username != '' AND active = 1
               ORDER BY lname, fname";
 		$this->db->setSQL($sql);

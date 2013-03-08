@@ -19,7 +19,7 @@
 Ext.define('App.model.administration.User',{
 	extend : 'Ext.data.Model',
 	table: {
-		name: 'user',
+		name: 'users',
 		comment: 'User accounts'
 	},
 	fields: [

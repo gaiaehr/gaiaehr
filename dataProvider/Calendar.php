@@ -51,7 +51,7 @@ class Calendar
 	public function getCalendars()
 	{
 		$color = -4;
-		$sql = ("SELECT * FROM users WHERE calendar = '1' AND authorized = '1' AND active = '1' ORDER BY username");
+		$sql = ("SELECT * FROM user WHERE calendar = '1' AND authorized = '1' AND active = '1' ORDER BY username");
 		$this -> db -> setSQL($sql);
 		$rows = array();
 		foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)

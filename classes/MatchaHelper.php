@@ -117,6 +117,7 @@ class MatchaHelper extends Matcha
 	 */
 	public function sqlBind($BindFieldsArray, $Table, $InsertOrUpdate = 'I', $Where = null)
 	{
+//		print '<pre>';
 		if (isset($BindFieldsArray['__utma']))
 			unset($BindFieldsArray['__utma']);
 		if (isset($BindFieldsArray['__utmz']))
@@ -141,10 +142,13 @@ class MatchaHelper extends Matcha
 		 * Step 2 -  Create the SET clause
 		 */
 		$sql .= ' SET ';
+
+//		print_r($BindFieldsArray);
+
 		foreach ($BindFieldsArray as $key => $value)
 		{
-			$value = addslashes($value);
-			if (isset($Where) && is_array($Where))
+			$value = (is_string($value) ? addslashes($value) : $value);
+			if (is_array($Where))
 			{
 				if (!array_key_exists($key, $Where))
 				{
@@ -170,25 +174,25 @@ class MatchaHelper extends Matcha
 			{
 				// TODO: remove this... after new version (above) is implemented throughout the
 				// application
-				if ($Where <> ($key . "='$value'") && $Where <> ($key . '=' . $value) && $Where <> ($key . '="' . $value . '"'))
-				{
+//				if ($Where <> ($key . "='$value'") && $Where <> ($key . '=' . $value) && $Where <> ($key . '="' . $value . '"'))
+//				{
 					if ($value == null || $value === 'null')
 					{
 						$sql .= '`' . $key . '`' . '=NULL, ';
 					}
 					else
 					{
-						$value = preg_replace('/([0-9]{4}-[0-9]{2}-[0-9]{2})T([0-9]{2}:[0-9]{2}:[0-9]{2})/i', '${1} ${2}', trim($value));
+//						$value = preg_replace('/([0-9]{4}-[0-9]{2}-[0-9]{2})T([0-9]{2}:[0-9]{2}:[0-9]{2})/i', '${1} ${2}', trim($value));
 						$sql .= '`' . $key . '`' . "='$value', ";
 					}
-				}
-				else
-				{
-					return array(
-						'success' => false,
-						'error' => 'Where value can not be updated. please make sure to unset it from the array'
-					);
-				}
+//				}
+//				else
+//				{
+//					return array(
+//						'success' => false,
+//						'error' => 'Where value can not be updated. please make sure to unset it from the array'
+//					);
+//				}
 			}
 
 		}
@@ -334,7 +338,7 @@ class MatchaHelper extends Matcha
 			$data['date']       = Time::getLocalTime('Y-m-d H:i:s');
 			$data['event']      = $eventLog;
 			$data['comments']   = $this->sql_statement;
-			$data['user']       = (isset($_SESSION['user']) ? $_SESSION['user'] : 'System');
+			$data['user']       = ((isset($_SESSION['user']) && isset($_SESSION['user']['id'])) ? $_SESSION['user']['id'] : 'System');
 			$data['checksum']   = crc32($this->sql_statement);
 			$data['facility']   = $_SESSION['site']['dir'];
 			$data['patient_id'] = (isset($_SESSION['patient']) ? $_SESSION['patient']['pid'] : '0');

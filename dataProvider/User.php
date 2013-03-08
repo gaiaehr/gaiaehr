@@ -39,6 +39,7 @@ class User
      * @var
      */
     private $user_id;
+    private $user;
 
     private $User = null;
     private $AclUserRoles = null;
@@ -135,7 +136,7 @@ class User
     public function getUsers(stdClass $params)
     {
         $this->db->setSQL("SELECT u.*, r.role_id
-                             FROM users AS u
+                             FROM user AS u
                         LEFT JOIN acl_user_roles AS r ON r.user_id = u.id
                             WHERE u.authorized = 1 OR u.username != ''
                          ORDER BY u.username
@@ -184,32 +185,30 @@ class User
     {
         if (!$this->usernameExist($params->username))
         {
-            $data = get_object_vars($params);
-            unset($data['password']);
-            $role['role_id'] = $data['role_id'];
-            unset($data['id'], $data['role_id'], $data['fullname']);
-            if (isset($data['taxonomy']) && $data['taxonomy'] == '')
-            {
-                unset($data['taxonomy']);
-            }
-            foreach ($data as $key => $val)
-            {
-                if ($val == null || $val == '')
-                {
-                    unset($data[$key]);
-                }
-            }
 
-            $this->user_id = $this->User->save($data)['pid'];
+
+
+	        unset($params->fullname);
+	        if (isset($params->taxonomy) && $params->taxonomy == '') unset($params->taxonomy);
+
+	        $password = $params->password;
+	        unset($params->password);
+
+
+            $this->user = $this->User->save($params);
 
             $params->fullname = Person::fullname($params->fname, $params->mname, $params->lname);
-            if ($params->password != '') $this->changePassword($params->password);
+            $this->changePassword($password);
             $params->password = '';
-            $role['user_id'] = $this->user_id;
+
+	        $role['role_id'] = $params->role_id;
+	        $role['user_id'] = $this->user['id'];
             $sql = $this->db->sqlBind($role, 'acl_user_roles', 'I');
             $this->db->setSQL($sql);
             $this->db->execLog();
-            return $params;
+
+
+	        return $params;
         }
         else
         {
@@ -225,7 +224,7 @@ class User
     {
         $data = get_object_vars($params);
         $params->password = '';
-        $this->user_id = $data['id'];
+        $this->user['id'] = $data['id'];
         $role['role_id'] = $data['role_id'];
         unset($data['id'], $data['role_id'], $data['fullname']);
         if ($data['password'] != '')
@@ -233,10 +232,10 @@ class User
             $this->changePassword($data['password']);
         }
         unset($data['password']);
-        $sql = $this->db->sqlBind($role, 'acl_user_roles', 'U', array('user_id' => $this->user_id));
+        $sql = $this->db->sqlBind($role, 'acl_user_roles', 'U', array('user_id' => $this->user['id']));
         $this->db->setSQL($sql);
         $this->db->execLog();
-        $sql = $this->db->sqlBind($data, 'users', 'U', array('id' => $this->user_id));
+        $sql = $this->db->sqlBind($data, 'user', 'U', array('id' => $this->user['id']));
         $this->db->setSQL($sql);
         $this->db->execLog();
         return $params;
@@ -251,9 +250,9 @@ class User
     public function chechPasswordHistory(stdClass $params)
     {
         $aes = $this->getAES();
-        $this->user_id = $params->id;
+        $this->user['id'] = $params->id;
         $aesPwd = $aes->encrypt($params->password);
-        $this->db->setSQL("SELECT password, pwd_history1, pwd_history2  FROM users WHERE id='" . $this->user_id . "'");
+        $this->db->setSQL("SELECT password, pwd_history1, pwd_history2  FROM user WHERE id='" . $this->user['id'] . "'");
         $pwds = $this->db->fetchRecord();
         if ($pwds['password'] == $aesPwd || $pwds['pwd_history1'] == $aesPwd || $pwds['pwd_history2'] == $aesPwd)
         {
@@ -273,21 +272,24 @@ class User
     {
         $aes = $this->getAES();
         $aesPwd = $aes->encrypt($newpassword);
-        $this->db->setSQL("SELECT password, pwd_history1 FROM users WHERE id='$this->user_id'");
-        $pwds = $this->db->fetchRecord();
-        $row['password'] = $aesPwd;
+	    $id = $this->user['id'];
+        $this->db->setSQL("SELECT password, pwd_history1 FROM user WHERE id = '$id'");
+        $pwds = $this->db->fetchRecord(PDO::FETCH_ASSOC);
+
+	    $row['password'] = $aesPwd;
         $row['pwd_history1'] = $pwds['password'];
         $row['pwd_history2'] = $pwds['pwd_history1'];
-        $sql = $this->db->sqlBind($row, 'users', 'U', array('id' => $this->user_id));
+        $sql = $this->db->sqlBind($row, 'user', 'U', array('id' => $this->user['id']));
+
         $this->db->setSQL($sql);
-        $this->db->execLog();
+        $this->db->execOnly();
         return;
 
     }
 
     public function changeMyPassword(stdClass $params)
     {
-        $this->user_id = $params->id;
+        $this->user['id'] = $params->id;
         return array('success' => true);
     }
 
@@ -295,7 +297,7 @@ class User
     {
         $data = get_object_vars($params);
         unset($data['id']);
-        $sql = $this->db->sqlBind($data, 'users', 'U', array('id' => $params->id));
+        $sql = $this->db->sqlBind($data, 'user', 'U', array('id' => $params->id));
         $this->db->setSQL($sql);
         $this->db->execLog();
         return array('success' => true);
@@ -313,7 +315,7 @@ class User
     {
         $this->db->setSQL("SELECT u.id, u.fname, u.lname, u.mname
                 FROM acl_user_roles AS acl
-                LEFT JOIN users AS u ON u.id = acl.user_id
+                LEFT JOIN user AS u ON u.id = acl.user_id
                 WHERE acl.role_id = '2'");
         $records = array();
         $records[] = array('name' => 'All', 'id' => 'all');

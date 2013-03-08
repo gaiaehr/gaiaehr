@@ -172,7 +172,7 @@ class MatchaCUP
 	}
 
 	/**
-     * return an specific column
+	 * return an specific column
 	 * @return mixed
 	 */
 	public function column()
@@ -244,36 +244,51 @@ class MatchaCUP
 		}
 	}
 
-    /**
-     * function save($record): (part of CRUD) Create & Update
-     * store the record as array into the working table
-     * @param $records
-     * @internal param $record
-     * @return object
-     */
-	public function save($records)
+	/**
+	 * function save($record): (part of CRUD) Create & Update
+	 * store the record as array into the working table
+	 * @param $record
+	 * @return object
+	 * @throws Exception
+	 */
+	public function save($record)
 	{
 		try
-        {
-            // does not matter if there is just one record or many records
-            // a foreach should do the trick, if sencha return one record
-            // it will loop just one time.
-            if(is_object($records)) $records = (array)$records;
-            foreach($records as $record)
-            {
-                // create record
-                if (!isset($record[$this->primaryKey]) || (isset($record[$this->primaryKey]) && $record[$this->primaryKey] == 0))
-                {
-                    $this->rowsAffected = Matcha::$__conn->exec($this->buildInsetSqlStatement($record));
-                    $record[]['pid'] = $this->lastInsertId = Matcha::$__conn->lastInsertId();
-                }
-                else
-                {
-                    // update a record
-                    $this->rowsAffected = Matcha::$__conn->exec($this->buildUpdateSqlStatement($record));
-                }
-            }
-			return $record;
+		{
+			if (is_object($record))
+			{
+				$data = get_object_vars($record);
+				// create record
+				if (!isset($data[$this->primaryKey]) || (isset($data[$this->primaryKey]) && $data[$this->primaryKey] == 0))
+				{
+					$this->rowsAffected = Matcha::$__conn->exec($this->buildInsetSqlStatement($data));
+					$record->id = $this->lastInsertId = Matcha::$__conn->lastInsertId();
+				}
+				else
+				{
+					// update a record
+					$this->rowsAffected = Matcha::$__conn->exec($this->buildUpdateSqlStatement($data));
+				}
+			}
+			else
+			{
+				foreach ($record as $index => $rec)
+				{
+					$data = get_object_vars($rec);
+					// create record
+					if (!isset($data[$this->primaryKey]) || (isset($data[$this->primaryKey]) && $data[$this->primaryKey] == 0))
+					{
+						$this->rowsAffected = Matcha::$__conn->exec($this->buildInsetSqlStatement($data));
+						$record[$index]->id = $this->lastInsertId = Matcha::$__conn->lastInsertId();
+					}
+					else
+					{
+						// update a record
+						$this->rowsAffected = Matcha::$__conn->exec($this->buildUpdateSqlStatement($data));
+					}
+				}
+			}
+			return (is_object($record) ? MatchaUtils::__objectToArray($record) : $record);
 		}
 		catch(PDOException $e)
 		{
@@ -281,22 +296,29 @@ class MatchaCUP
 		}
 	}
 
-    /**
-     * function destroy($record): (part of CRUD) delete
-     * will delete the record indicated by an id
-     * @param $records
-     * @internal param $record
-     * @return mixed
-     */
-	public function destroy($records)
+	/**
+	 * function destroy($record): (part of CRUD) delete
+	 * will delete the record indicated by an id
+	 * @param $record
+	 * @return mixed
+	 */
+	public function destroy($record)
 	{
 		try
 		{
-			if (is_object($records)) $records = (array)$records;
-			foreach($records as $record)
-            {
-			    $this->rowsAffected = Matcha::$__conn->exec("DELETE FROM " . $this->model->table->name . " WHERE $this->primarykey = '".$record[$this->primarykey]."'");
-            }
+			if (is_object($record))
+			{
+				$record = get_object_vars($record);
+				$this->rowsAffected = Matcha::$__conn->exec("DELETE FROM " . $this->model->table->name . " WHERE $this->primarykey = '".$record[$this->primarykey]."'");
+			}
+			else
+			{
+				foreach ($record as $rec)
+				{
+					$rec = get_object_vars($rec);
+					$this->rowsAffected = Matcha::$__conn->exec("DELETE FROM " . $this->model->table->name . " WHERE $this->primarykey ='".$rec[$this->primarykey]."'");
+				}
+			}
 			return $this->rowsAffected;
 		}
 		catch(PDOException $e)
@@ -351,14 +373,14 @@ class MatchaCUP
 		return $whereStr;
 	}
 
-    /**
-     * function buildInsetSqlStatement($data):
-     * Method to build the insert sql statement
-     * @param $data
-     * @return mixed
-     */
-    private function buildInsetSqlStatement($data)
-    {
+	/**
+	 * function buildInsetSqlStatement($data):
+	 * Method to build the insert sql statement
+	 * @param $data
+	 * @return mixed
+	 */
+	private function buildInsetSqlStatement($data)
+	{
 		$data = $this->parseValues($data);
 
 		$columns = array_keys($data);
@@ -369,14 +391,14 @@ class MatchaCUP
 		return str_replace("'NULL'",'NULL',$sql);
 	}
 
-    /**
-     * function buildUpdateSqlStatement($data):
-     * Method to build the update sql statement
-     * @param $data
-     * @return mixed
-     */
-    private function buildUpdateSqlStatement($data)
-    {
+	/**
+	 * function buildUpdateSqlStatement($data):
+	 * Method to build the update sql statement
+	 * @param $data
+	 * @return mixed
+	 */
+	private function buildUpdateSqlStatement($data)
+	{
 		$id = $data[$this->primaryKey];
 		unset($data[$this->primaryKey]);
 
@@ -388,34 +410,34 @@ class MatchaCUP
 		return str_replace("'NULL'",'NULL',$sql);
 	}
 
-    /**
-     * function parseValues($data):
-     * Parse the data and if some values met the type correct them.
-     * @param $data
-     * @return array
-     */
-    private function parseValues($data)
-    {
+	/**
+	 * function parseValues($data):
+	 * Parse the data and if some values met the type correct them.
+	 * @param $data
+	 * @return array
+	 */
+	private function parseValues($data)
+	{
 		$columns = array_keys($data);
 		$values = array_values($data);
 		$properties = (array) MatchaModel::__getFieldsProperties($columns, $this->model);
 
 		foreach($values as $index => $foo)
-        {
+		{
 			$type = $properties[$index]['type'];
 			if($type == 'bool')
-            {
+			{
 				if($foo === true)
-                {
+				{
 					$values[$index] = 1;
 				}
-                elseif($foo === false)
-                {
+				elseif($foo === false)
+				{
 					$values[$index] = 0;
 				}
 			}
-            elseif($type == 'date')
-            {
+			elseif($type == 'date')
+			{
 				$values[$index] = ($foo == '' ? 'NULL' : $values[$index]);
 			}
 		}

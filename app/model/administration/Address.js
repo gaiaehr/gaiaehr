@@ -28,5 +28,6 @@ Ext.define('App.model.administration.Address',{
 		{name: 'write_uid',         type: 'int',    comment:'update user ID'},
 		{name: 'create_date',       type: 'date',   comment:'create date', dateFormat:'Y-m-d H:i:s'},
 		{name: 'update_date',       type: 'date',   comment:'last update date', dateFormat:'Y-m-d H:i:s'},
+
 	]
 });

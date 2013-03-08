@@ -37,7 +37,7 @@ Ext.define('App.model.fees.Checkout',
         autoIncrement : true,
         allowNull : false,
         store: true,
-        comment: 'Checkout ID'},
+        comment: 'Checkout ID'
 	},
 	{
 		name : 'time',

@@ -300,8 +300,6 @@ class Matcha
             if(isset($column['dataType']))
             {
                 $columnType = (string)strtoupper($column['dataType']);
-                $errorComment = 'If dataType property is used you have to use the rest of the properties.';
-                if(!isset($column['allowNull'])) throw new Exception('In column '.$column['name'].' - '.$errorComment);
             }
             elseif($column['type'] == 'string' )
             {

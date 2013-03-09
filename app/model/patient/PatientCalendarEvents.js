@@ -20,10 +20,6 @@ Ext.define('App.model.patient.PatientCalendarEvents', {
 	extend   : 'Ext.data.Model',
 	table: {
 		name:'patientcalendarevents',
-		engine:'InnoDB',
-		autoIncrement:1,
-		charset:'utf8',
-		collate:'utf8_bin',
 		comment:'Patient Calendar Events'
 	},
 	fields   : [

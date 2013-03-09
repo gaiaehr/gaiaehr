@@ -20,10 +20,6 @@ Ext.define('App.model.patient.SOAP', {
 	extend:'Ext.data.Model',
 	table: {
 		name:'soap',
-		engine:'InnoDB',
-		autoIncrement:1,
-		charset:'utf8',
-		collate:'utf8_bin',
 		comment:'SOAP Data'
 	},
 	fields:[

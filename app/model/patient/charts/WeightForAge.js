@@ -20,10 +20,6 @@ Ext.define('App.model.patient.charts.WeightForAge', {
 	extend   : 'Ext.data.Model',
 	table: {
 		name:'weightforage',
-		engine:'InnoDB',
-		autoIncrement:1,
-		charset:'utf8',
-		collate:'utf8_bin',
 		comment:'Weight For Age'
 	},
 	fields   : [

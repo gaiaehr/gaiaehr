@@ -20,11 +20,7 @@ Ext.define('App.model.patient.Notes', {
 	extend: 'Ext.data.Model',
 	table: {
 		name:'notes',
-		engine:'InnoDB',
-		autoIncrement:1,
-		charset:'utf8',
-		collate:'utf8_bin',
-		comment:'Notes'
+		comment:'Office Notes'
 	},
 	fields: [
         {name: 'id', type: 'int', dataType: 'bigint', len: 20, primaryKey : true, autoIncrement : true, allowNull : false, store: true, comment: 'Notes ID'},

@@ -20,10 +20,6 @@ Ext.define('App.model.patient.CheckoutAlertArea', {
 	extend: 'Ext.data.Model',
 	table: {
 		name:'checkoutalertarea',
-		engine:'InnoDB',
-		autoIncrement:1,
-		charset:'utf8',
-		collate:'utf8_bin',
 		comment:'Checkout Alert Area'
 	},
 	fields: [

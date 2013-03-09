@@ -20,10 +20,6 @@ Ext.define('App.model.patient.QRCptCodes', {
     extend: 'Ext.data.Model',
 	table: {
 		name:'qrcptcodes',
-		engine:'InnoDB',
-		autoIncrement:1,
-		charset:'utf8',
-		collate:'utf8_bin',
 		comment:'QR CPT Codes'
 	},
     fields: [

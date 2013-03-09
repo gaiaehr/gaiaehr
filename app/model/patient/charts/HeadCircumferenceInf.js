@@ -20,10 +20,6 @@ Ext.define('App.model.patient.charts.HeadCircumferenceInf', {
 	extend   : 'Ext.data.Model',
 	table: {
 		name:'headcircumferenceinf',
-		engine:'InnoDB',
-		autoIncrement:1,
-		charset:'utf8',
-		collate:'utf8_bin',
 		comment:'Head Circumference Information'
 	},
 	fields   : [

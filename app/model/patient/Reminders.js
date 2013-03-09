@@ -20,10 +20,6 @@ Ext.define('App.model.patient.Reminders', {
 	extend: 'Ext.data.Model',
 	table: {
 		name:'reminders',
-		engine:'InnoDB',
-		autoIncrement:1,
-		charset:'utf8',
-		collate:'utf8_bin',
 		comment:'Reminders Data'
 	},
 	fields: [

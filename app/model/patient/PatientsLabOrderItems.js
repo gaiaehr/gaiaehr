@@ -20,10 +20,6 @@ Ext.define('App.model.patient.PatientsLabOrderItems', {
 	extend: 'Ext.data.Model',
 	table: {
 		name:'patientslaborderitems',
-		engine:'InnoDB',
-		autoIncrement:1,
-		charset:'utf8',
-		collate:'utf8_bin',
 		comment:'Patients Lab Order Items'
 	},
 	fields: [

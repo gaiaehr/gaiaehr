@@ -20,10 +20,6 @@ Ext.define('App.model.patient.Allergies', {
 	extend: 'Ext.data.Model',
 	table: {
 		name:'allergies',
-		engine:'InnoDB',
-		autoIncrement:1,
-		charset:'utf8',
-		collate:'utf8_bin',
 		comment:'Patient Allergies'
 	},
 	fields: [

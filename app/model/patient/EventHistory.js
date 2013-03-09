@@ -20,10 +20,6 @@ Ext.define('App.model.patient.EventHistory', {
 	extend: 'Ext.data.Model',
 	table: {
 		name:'eventhistory',
-		engine:'InnoDB',
-		autoIncrement:1,
-		charset:'utf8',
-		collate:'utf8_bin',
 		comment:'Event History'
 	},
 	fields: [

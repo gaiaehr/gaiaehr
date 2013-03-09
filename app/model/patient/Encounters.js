@@ -20,16 +20,11 @@ Ext.define('App.model.patient.Encounters', {
 	extend : 'Ext.data.Model',
 	table: {
 		name:'encounters',
-		engine:'InnoDB',
-		autoIncrement:1,
-		charset:'utf8',
-		collate:'utf8_bin',
 		comment:'Encounters Data'
 	},
 	fields : [
-        {name: 'id', type: 'int', dataType: 'bigint', len: 20, primaryKey : true, autoIncrement : true, allowNull : false, store: true, comment: 'Encounters ID'},
-		{name: 'eid', type: 'int'},
-		{name: 'pid', type: 'int'},
+		{name: 'eid', type: 'int', comment: 'Encounter ID'},
+		{name: 'pid', type: 'int', comment: 'Patient ID'},
 		{name: 'open_uid', type: 'string'},
 		{name: 'close_uid', type: 'string'},
 		{name: 'brief_description', type: 'string'},
@@ -41,6 +36,7 @@ Ext.define('App.model.patient.Encounters', {
 		{name: 'close_date', type: 'date', dateFormat:'Y-m-d H:i:s'},
 		{name: 'onset_date', type: 'date', dateFormat:'Y-m-d H:i:s'}
 	],
+	idProperty:'eid',
 	proxy  : {
 		type       : 'direct',
 		api        : {

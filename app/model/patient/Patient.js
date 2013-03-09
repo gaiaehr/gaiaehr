@@ -20,14 +20,9 @@ Ext.define('App.model.patient.Patient', {
 	extend: 'Ext.data.Model',
 	table: {
 		name:'patient',
-//        engine:'InnoDB',
-//        autoIncrement:1,
-//        charset:'utf8',
-//        collate:'utf8_bin',
 		comment:'Patients/Demographics'
 	},
 	fields: [
-//        {name: 'id', type: 'int', dataType: 'bigint', len: 20, primaryKey : true, autoIncrement : true, allowNull : false, store: true, comment: 'Patient ID'},
         {name: 'pid',                               type: 'int',    comment:'patient ID'},
 		{name: 'create_uid',                        type: 'int',    comment:'create user ID'},
 		{name: 'write_uid',                         type: 'int',    comment:'update user ID'},

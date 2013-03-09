@@ -327,7 +327,7 @@ class MatchaModel extends Matcha
      * time.
      * TODO: Needs more work.
      */
-    static protected function __setSenchaModelData($fileData)
+    static public function __setSenchaModelData($fileData)
     {
         try
         {

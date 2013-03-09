@@ -152,7 +152,7 @@ class Matcha
 			    if($rec->rowCount() == 0 && isset(MatchaModel::$__senchaModel['table']['data']))
 			    {
                     // TODO: CHECK THIS!!!!!
-					self::__setSenchaModelData(MatchaModel::$__senchaModel['table']['data']);
+				    MatchaModel::__setSenchaModelData(MatchaModel::$__senchaModel['table']['data']);
 				}
 			}
 			return true;

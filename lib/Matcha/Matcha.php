@@ -145,13 +145,11 @@ class Matcha
             }
 			self::$__conn->exec('CREATE TABLE IF NOT EXISTS '.$table.' ('.MatchaModel::$tableId.' BIGINT(20) NOT NULL AUTO_INCREMENT PRIMARY KEY) '.self::__renderTableOptions().';');
 		    
-			// if $__senchaModel['table']['data'] is set and there is data upload the data to the table. 
 		    if(isset(MatchaModel::$__senchaModel['table']['data']))
 			{
 			    $rec = self::$__conn->prepare('SELECT * FROM '.$table);
 			    if($rec->rowCount() == 0 && isset(MatchaModel::$__senchaModel['table']['data']))
 			    {
-                    // TODO: CHECK THIS!!!!!
 				    MatchaModel::__setSenchaModelData(MatchaModel::$__senchaModel['table']['data']);
 				}
 			}
@@ -166,16 +164,39 @@ class Matcha
 	/**
 	 * function __renderTableOptions():
 	 * Render and return a well formed Table Options for the creating table.
+     * some default properties of the table are:
+     * engine: InnoDB
+     * charset: utf8
+     * collate: utf8_bin
 	 */
 	static protected function __renderTableOptions()
 	{
 		$tableOptions = (string)'';
 		if(!is_array(MatchaModel::$__senchaModel['table'])) return false;
-		if(isset(MatchaModel::$__senchaModel['table']['engine'])) $tableOptions .= 'ENGINE = '.MatchaModel::$__senchaModel['table']['engine'].' ';
+
+        // set the engine of the table, if it is not set go and set it for InnoDB
+		if(isset(MatchaModel::$__senchaModel['table']['ENGINE'])):$tableOptions .= 'ENGINE = '.MatchaModel::$__senchaModel['table']['engine'].' ';
+        else:$tableOptions .= 'ENGINE = InnoDB ';
+        endif;
+
+        // set the auto_increment, if is not set don't set it.
 		if(isset(MatchaModel::$__senchaModel['table']['autoIncrement'])) $tableOptions .= 'AUTO_INCREMENT = '.MatchaModel::$__senchaModel['table']['autoIncrement'].' ';
-		if(isset(MatchaModel::$__senchaModel['table']['charset'])) $tableOptions .= 'CHARACTER SET = '.MatchaModel::$__senchaModel['table']['charset'].' ';
-		if(isset(MatchaModel::$__senchaModel['table']['collate'])) $tableOptions .= 'COLLATE = '.MatchaModel::$__senchaModel['table']['collate'].' ';
+
+        // set character set of the table, if is not set the default
+        // would be UTF-8
+		if(isset(MatchaModel::$__senchaModel['table']['charset'])): $tableOptions .= 'CHARACTER SET = '.MatchaModel::$__senchaModel['table']['charset'].' ';
+        else: $tableOptions .= 'CHARACTER SET = utf8 ';
+        endif;
+
+        // set the collate of the table, if is not set the default
+        // would be utf8_bin
+		if(isset(MatchaModel::$__senchaModel['table']['collate'])): $tableOptions .= 'COLLATE = '.MatchaModel::$__senchaModel['table']['collate'].' ';
+        else: $tableOptions .= 'COLLATE = utf8_bin ';
+        endif;
+
+        // set the comment for a table, if it is not set don't set it.
 		if(isset(MatchaModel::$__senchaModel['table']['comment'])) $tableOptions .= "COMMENT = '".MatchaModel::$__senchaModel['table']['comment']."' ";
+
 		return $tableOptions;
 	}
 	 

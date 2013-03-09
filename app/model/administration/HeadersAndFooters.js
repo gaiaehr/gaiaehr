@@ -20,10 +20,6 @@ Ext.define('App.model.administration.HeadersAndFooters', {
 	extend: 'Ext.data.Model',
 	table: {
 		name:'headersandfooters',
-		engine:'InnoDB',
-		autoIncrement:1,
-		charset:'utf8',
-		collate:'utf8_bin',
 		comment:'Headers And Footers'
 	},
 	fields: [

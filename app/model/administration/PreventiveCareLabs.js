@@ -20,10 +20,6 @@ Ext.define('App.model.administration.PreventiveCareLabs', {
 	extend: 'Ext.data.Model',
 	table: {
 		name:'preventivecarelabs',
-		engine:'InnoDB',
-		autoIncrement:1,
-		charset:'utf8',
-		collate:'utf8_bin',
 		comment:'Preventive Care Labs'
 	},	
 	fields: [

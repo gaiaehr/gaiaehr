@@ -20,10 +20,6 @@ Ext.define('App.model.administration.ActiveProblems', {
 	extend: 'Ext.data.Model',
 	table: {
 		name:'activeproblems',
-		engine:'InnoDB',
-		autoIncrement:1,
-		charset:'utf8',
-		collate:'utf8_bin',
 		comment:'Active Problems'
 	},
 	fields: [

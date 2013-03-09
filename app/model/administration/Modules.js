@@ -20,10 +20,6 @@ Ext.define('App.model.administration.Modules', {
     extend: 'Ext.data.Model',
     table: {
         name:'modules',
-        engine:'InnoDB',
-        autoIncrement:1,
-        charset:'utf8',
-        collate:'utf8_bin',
         comment:'Modules'
     },
     fields: [

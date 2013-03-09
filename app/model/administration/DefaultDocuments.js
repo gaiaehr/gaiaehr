@@ -20,10 +20,6 @@ Ext.define('App.model.administration.DefaultDocuments', {
 	extend: 'Ext.data.Model',
 	table: {
 		name:'defaultdocuments',
-		engine:'InnoDB',
-		autoIncrement:1,
-		charset:'utf8',
-		collate:'utf8_bin',
 		comment:'Default Documents'
 	},
 	fields: [

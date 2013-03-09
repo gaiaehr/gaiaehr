@@ -20,10 +20,6 @@ Ext.define('App.model.administration.FormsList', {
     extend: 'Ext.data.Model',
     table: {
         name:'formslist',
-        engine:'InnoDB',
-        autoIncrement:1,
-        charset:'utf8',
-        collate:'utf8_bin',
         comment:'Form List'
     },
     fields: [

@@ -20,10 +20,6 @@ Ext.define('App.model.administration.LaboratoriesGrid', {
     extend:'Ext.data.Model',
     table: {
         name:'laboratoriesgrid',
-        engine:'InnoDB',
-        autoIncrement:1,
-        charset:'utf8',
-        collate:'utf8_bin',
         comment:'Laboratories Grid'
     },
     fields:[

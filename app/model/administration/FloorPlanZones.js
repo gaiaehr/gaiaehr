@@ -20,10 +20,6 @@ Ext.define('App.model.administration.FloorPlanZones', {
 	extend: 'Ext.data.Model',
 	table: {
 		name:'floorplanzones',
-		engine:'InnoDB',
-		autoIncrement:1,
-		charset:'utf8',
-		collate:'utf8_bin',
 		comment:'Floor Plan Zones'
 	},
 	fields: [

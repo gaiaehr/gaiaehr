@@ -20,10 +20,6 @@ Ext.define('App.model.administration.ExternalDataLoads', {
 	extend: 'Ext.data.Model',
 	table: {
 		name:'externaldataloads',
-		engine:'InnoDB',
-		autoIncrement:1,
-		charset:'utf8',
-		collate:'utf8_bin',
 		comment:'External Data Loads'
 	},
 	fields: [

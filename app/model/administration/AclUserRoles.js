@@ -21,10 +21,6 @@ Ext.define( 'App.model.administration.AclUserRoles',
     extend : 'Ext.data.Model',
     table: {
         name:'acluserroles',
-        engine:'InnoDB',
-        autoIncrement:1,
-        charset:'utf8',
-        collate:'utf8_bin',
         comment:'Access List User Roles'
     },
     fields : [

@@ -21,10 +21,6 @@ Ext.define('App.model.administration.Globals',
         extend: 'Ext.data.Model',
         table: {
             name:'globals',
-            engine:'InnoDB',
-            autoIncrement:1,
-            charset:'utf8',
-            collate:'utf8_bin',
             comment:'Global Settings'
         },
         fields: [

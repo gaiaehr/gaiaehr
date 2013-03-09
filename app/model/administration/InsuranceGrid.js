@@ -20,10 +20,6 @@ Ext.define('App.model.administration.InsuranceGrid', {
     extend:'Ext.data.Model',
     table: {
         name:'insurancegrid',
-        engine:'InnoDB',
-        autoIncrement:1,
-        charset:'utf8',
-        collate:'utf8_bin',
         comment:'Insurance Grid'
     },
     fields:[

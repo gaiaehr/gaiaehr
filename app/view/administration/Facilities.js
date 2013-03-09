@@ -211,10 +211,17 @@ Ext.define('App.view.administration.Facilities', {
     },
     filterFacilitiesby: function(btn){
         this.updateTitle(i18n('Facilities') + ' (' + Ext.String.capitalize(btn.action) + ')');
-        this.FacilityStore.proxy.extraParams = {
-            active: btn.action == 'active' ? 1 : 0
-        };
-        this.FacilityStore.load();
+//        this.FacilityStore.proxy.extraParams = {
+//            active: btn.action == 'active' ? 1 : 0
+//        };
+        this.FacilityStore.load({
+            filters:[
+                {
+                    property:'active',
+                    value:btn.action == 'active' ? 1 : 0
+                }
+            ]
+        });
     },
     addFacility: function(){
         var me = this, grid = me.FacilityGrid, store = grid.store;

@@ -49,7 +49,7 @@ class Facilities
 	public function getFacilities(stdClass $params)
 	{
 		$rows = array();
-		foreach ($this->Facilities->load( array('active'=>($params->active ? $params->active : 1)) )->all() as $row)
+		foreach ($this->Facilities->load($params)->all() as $row)
 		{
 			if (strlen($row['pos_code']) <= 1) $row['pos_code'] = '0' . $row['pos_code'];
 			array_push($rows, $row);

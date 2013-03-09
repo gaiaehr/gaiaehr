@@ -570,7 +570,8 @@ class MatchaModel extends Matcha
 		$arr = array();
 		$fields = (is_object($fields)? MatchaUtils::__objectToArray($fields): $fields);
 		$modelFields = (is_object($model)? MatchaUtils::__objectToArray($model->fields): $model['fields']);
-		foreach($fields as $field){
+		foreach($fields as $field)
+        {
 			$index = MatchaUtils::__recursiveArraySearch($field, $modelFields);
 			if($index !== false) $arr[] = $modelFields[$index];
 		}

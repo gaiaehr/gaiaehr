@@ -20,10 +20,6 @@ Ext.define('App.model.dashboard.panel.OfficeNotesPortlet', {
     extend: 'Ext.data.Model',
     table: {
         name:'officenotesportlet',
-        engine:'InnoDB',
-        autoIncrement:1,
-        charset:'utf8',
-        collate:'utf8_bin',
         comment:'Office Notes Porlet'
     },
     fields: [

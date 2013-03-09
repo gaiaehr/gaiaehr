@@ -33,9 +33,9 @@ Ext.define('App.view.areas.PatientPoolDropZone', {
                         align: 'stretch'
                     }
                 });
-//            me.listeners = {
-//                beforerender: me.getPoolAreas
-//            };
+            me.listeners = {
+                beforerender: me.getPoolAreas
+            };
             me.callParent(arguments);
         },
 
@@ -53,7 +53,9 @@ Ext.define('App.view.areas.PatientPoolDropZone', {
         },
 
         getPoolAreas: function(){
-            var me = this, panel = me.getPageBody().down('container'), areas;
+            var me = this,
+	            panel = me.getPageBody().down('container'),
+	            areas;
             me.stores = [];
 
             PoolArea.getActivePoolAreas(function(provider, response){
@@ -72,40 +74,40 @@ Ext.define('App.view.areas.PatientPoolDropZone', {
                     });
                     me.stores.push(store);
                     panel.add({
-                            xtype: 'grid',
-                            title: areas[i].title,
-                            action: areas[i].id,
-                            store: store,
-                            floorPlanId: areas[i].floor_plan_id,
-                            columns: [
-                                {
-                                    header: i18n('record') + ' #',
-                                    width: 100,
-                                    dataIndex: 'pid'
-                                },
-                                {
-                                    header: i18n('patient_name'),
-                                    flex: 1,
-                                    dataIndex: 'name'
-                                }
-                            ],
-                            viewConfig: {
-                                loadMask: false,
-                                plugins: {
-                                    ptype: 'gridviewdragdrop',
-                                    dragGroup: 'patientPoolAreas',
-                                    dropGroup: 'patientPoolAreas'
-                                },
-                                listeners: {
-                                    //scope:me,
-                                    drop: me.onPatientDrop
-                                }
+                        xtype: 'grid',
+                        title: areas[i].title,
+                        action: areas[i].id,
+                        store: store,
+                        floorPlanId: areas[i].floor_plan_id,
+                        columns: [
+                            {
+                                header: i18n('record') + ' #',
+                                width: 100,
+                                dataIndex: 'pid'
+                            },
+                            {
+                                header: i18n('patient_name'),
+                                flex: 1,
+                                dataIndex: 'name'
+                            }
+                        ],
+                        viewConfig: {
+                            loadMask: false,
+                            plugins: {
+                                ptype: 'gridviewdragdrop',
+                                dragGroup: 'patientPoolAreas',
+                                dropGroup: 'patientPoolAreas'
                             },
                             listeners: {
-                                scope: me,
-                                itemdblclick: me.onPatientDblClick
+                                //scope:me,
+                                drop: me.onPatientDrop
                             }
-                        })
+                        },
+                        listeners: {
+                            scope: me,
+                            itemdblclick: me.onPatientDblClick
+                        }
+                    })
                 }
             });
         },

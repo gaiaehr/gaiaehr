@@ -20,14 +20,10 @@ Ext.define('App.model.areas.PoolDropAreas', {
 	extend   : 'Ext.data.Model',
 	table: {
 		name:'pooldropareas',
-		engine:'InnoDB',
-		autoIncrement:1,
-		charset:'utf8',
-		collate:'utf8_bin',
 		comment:'Pool Drop Areas'
 	},
 	fields   : [
-        {name: 'id', type: 'int', dataType: 'bigint', len: 20, primaryKey : true, autoIncrement : true, allowNull : false, store: true, comment: 'Pool Drop Areas ID'},
+        {name: 'id', type: 'int', comment: 'Pool Drop Areas ID'},
 		{name: 'name', type: 'string'},
 		{name: 'pid', type: 'int'},
 		{name: 'pic', type: 'string'}

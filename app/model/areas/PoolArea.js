@@ -20,14 +20,10 @@ Ext.define('App.model.areas.PoolArea', {
 	extend   : 'Ext.data.Model',
 	table: {
 		name:'poolarea',
-		engine:'InnoDB',
-		autoIncrement:1,
-		charset:'utf8',
-		collate:'utf8_bin',
 		comment:'Pool Area'
 	},
 	fields   : [
-		{name: 'pid', type: 'int', dataType: 'bigint', len: 20, primaryKey : true, autoIncrement : true, allowNull : false, store: true, comment: 'Pool Areas ID'},
+		{name: 'pid', type: 'int', comment: 'Pool Areas ID'},
 		{name: 'eid', type: 'int'},
 		{name: 'name', type: 'string'},
 		{name: 'shortName', type: 'string'},
@@ -37,7 +33,7 @@ Ext.define('App.model.areas.PoolArea', {
 		{name: 'zoneId', type: 'int'},
 		{name: 'patientZoneId', type: 'int'},
 		{name: 'priority', type: 'string'},
-		{name: 'rank',  type:'int', }
+		{name: 'rank',  type:'int'}
 	],
 	proxy    : {
 		type       : 'direct',

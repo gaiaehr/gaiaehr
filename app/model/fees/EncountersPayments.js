@@ -21,10 +21,6 @@ Ext.define('App.model.fees.EncountersPayments',
 	extend : 'Ext.data.Model',
 	table: {
 		name:'encounterspayments',
-		engine:'InnoDB',
-		autoIncrement:1,
-		charset:'utf8',
-		collate:'utf8_bin',
 		comment:'Encounters Payments'
 	},
 	fields : [

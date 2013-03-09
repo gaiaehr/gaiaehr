@@ -21,10 +21,6 @@ Ext.define('App.model.login.Sites',
     extend: 'Ext.data.Model',
     table: {
         name:'sites',
-        engine:'InnoDB',
-        autoIncrement:1,
-        charset:'utf8',
-        collate:'utf8_bin',
         comment:'Sites'
     },
     fields: [

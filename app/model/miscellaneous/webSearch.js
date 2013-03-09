@@ -21,10 +21,6 @@ Ext.define("App.model.miscellaneous.webSearch",
     extend : 'Ext.data.Model',
     table: {
         name:'websearch',
-        engine:'InnoDB',
-        autoIncrement:1,
-        charset:'utf8',
-        collate:'utf8_bin',
         comment:'Web Search'
     },
     fields : [

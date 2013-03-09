@@ -20,10 +20,6 @@ Ext.define('App.model.miscellaneous.OfficeNotes', {
 	extend: 'Ext.data.Model',
 	table: {
 		name:'officenotes',
-		engine:'InnoDB',
-		autoIncrement:1,
-		charset:'utf8',
-		collate:'utf8_bin',
 		comment:'Office Notes'
 	},
     fields: [

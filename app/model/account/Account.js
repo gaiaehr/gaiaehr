@@ -20,10 +20,6 @@ Ext.define('App.model.account.Account', {
 	extend: 'Ext.data.Model',
 	table: {
 		name:'accaccount',
-		engine:'InnoDB',
-		autoIncrement:1,
-		charset:'utf8',
-		collate:'utf8_bin',
 		comment:'Account',
 		data:'App.data.account.Account'
 	},

@@ -1445,13 +1445,6 @@ CREATE TABLE IF NOT EXISTS `onotes` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=19 ;
 
-CREATE TABLE IF NOT EXISTS `patients_documents_information` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `pid` int(11) DEFAULT NULL,
-  `uid` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
-
 CREATE TABLE IF NOT EXISTS `patient_account` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `pid` bigint(20) DEFAULT '0',

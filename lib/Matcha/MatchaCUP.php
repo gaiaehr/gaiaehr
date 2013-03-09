@@ -262,33 +262,37 @@ class MatchaCUP
 				if (!isset($data[$this->primaryKey]) || (isset($data[$this->primaryKey]) && $data[$this->primaryKey] == 0))
 				{
 					$this->rowsAffected = Matcha::$__conn->exec($this->buildInsetSqlStatement($data));
-					$record->id = $this->lastInsertId = Matcha::$__conn->lastInsertId();
+					$data[$this->primaryKey] = $this->lastInsertId = Matcha::$__conn->lastInsertId();
+					return $data;
 				}
 				else
 				{
 					// update a record
 					$this->rowsAffected = Matcha::$__conn->exec($this->buildUpdateSqlStatement($data));
+					return $data;
 				}
 			}
 			else
 			{
-				foreach ($record as $index => $rec)
+				$records = array();
+				foreach ($record as $rec)
 				{
 					$data = get_object_vars($rec);
 					// create record
 					if (!isset($data[$this->primaryKey]) || (isset($data[$this->primaryKey]) && $data[$this->primaryKey] == 0))
 					{
 						$this->rowsAffected = Matcha::$__conn->exec($this->buildInsetSqlStatement($data));
-						$record[$index]->id = $this->lastInsertId = Matcha::$__conn->lastInsertId();
+						$data[$this->primaryKey] = $this->lastInsertId = Matcha::$__conn->lastInsertId();
 					}
 					else
 					{
 						// update a record
 						$this->rowsAffected = Matcha::$__conn->exec($this->buildUpdateSqlStatement($data));
 					}
+					$return[] = $data;
 				}
+				return $records;
 			}
-			return (is_object($record) ? MatchaUtils::__objectToArray($record) : $record);
 		}
 		catch(PDOException $e)
 		{

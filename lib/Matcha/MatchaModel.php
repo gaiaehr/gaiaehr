@@ -672,9 +672,9 @@ class MatchaModel extends Matcha
         try
         {
             if(!isset($senchaModel['triggers'])) return true;
-            $change = false;
             foreach($senchaModel['triggers'] as $senchaTrigger)
             {
+                $change = false;
                 $databaseTriggers = self::$__conn->query("SHOW TRIGGERS LIKE '".$senchaModel['table']['name']."';");
                 foreach($databaseTriggers as $databaseTrigger)
                 {
@@ -684,11 +684,11 @@ class MatchaModel extends Matcha
                         if(strtolower($databaseTrigger['Timing']) != strtolower($senchaTrigger['time'])) $change = true;
                         if(strtolower($databaseTrigger['Statement']) != strtolower($senchaTrigger['definition'])) $change = true;
                     }
-                    if($change)
-                    {
-                        self::__destroyTrigger($senchaModel['table']['name'], $senchaTrigger['name']);
-                        self::__createTrigger($senchaModel['table']['name'], $senchaTrigger);
-                    }
+                }
+                if($change)
+                {
+                    self::__destroyTrigger($senchaModel['table']['name'], $senchaTrigger['name']);
+                    self::__createTrigger($senchaModel['table']['name'], $senchaTrigger);
                 }
             }
             return true;

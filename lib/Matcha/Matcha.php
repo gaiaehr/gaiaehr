@@ -269,7 +269,7 @@ class Matcha
 	}
 	
 	/**
-	 * function __dropColumn($column):
+	 * function __dropColumn($column, $table = NULL):
 	 * Method to drop column in a table
 	 */
 	static protected function __dropColumn($column, $table = NULL)
@@ -407,5 +407,5 @@ class Matcha
             return false;
         }
 	}
-	
+
 }

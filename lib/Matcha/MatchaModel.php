@@ -602,5 +602,27 @@ class MatchaModel extends Matcha
 		return $rec['Column_name'];
 	}
 
+    /**
+     * function __createTriggers():
+     * Method to create the triggers from sencha model
+     */
+    private function __createTriggers()
+    {
+        try
+        {
+            foreach(self::$__senchaModel['triggers'] as $trigger)
+            {
+                $insert = 'delimiter //'.chr(13);
+                $insert .= 'CREATE TRIGGER '.$trigger['name'].' '.$trigger['time'].' INSERT ON '.MatchaCUP::$table. ' '.$trigger['definition'].chr(13);
+                $insert .= 'delimiter ;'.chr(13);
+                self::$__conn->query($insert);
+            }
+        }
+        catch(PDOException $e)
+        {
+            return MatchaErrorHandler::__errorProcess($e);
+        }
+    }
+
 }
 

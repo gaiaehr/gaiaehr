@@ -603,20 +603,95 @@ class MatchaModel extends Matcha
 	}
 
     /**
-     * function __createTriggers():
+     * function __createAllTriggers($senchaModel, $table):
      * Method to create the triggers from sencha model
      */
-    private function __createTriggers()
+    private function __createAllTriggers($senchaModel, $table)
     {
         try
         {
-            foreach(self::$__senchaModel['triggers'] as $trigger)
+            if(!isset($senchaModel['triggers'])) return true;
+            foreach($senchaModel['triggers'] as $trigger) self::__createTrigger($table, $trigger);
+            return true;
+        }
+        catch(PDOException $e)
+        {
+            return MatchaErrorHandler::__errorProcess($e);
+        }
+    }
+
+    /**
+     * function __createTriggers($senchaModel, $table):
+     * Method to create the triggers from sencha model
+     */
+    private function __createTrigger($table, $trigger)
+    {
+        try
+        {
+            $insert = 'delimiter //'.chr(13);
+            $insert .= 'CREATE TRIGGER '.$trigger['name'].' '.$trigger['time'].' '.$trigger['event'].' ON '.$table. ' '.$trigger['definition'].'//'.chr(13);
+            $insert .= 'delimiter ;'.chr(13);
+            self::$__conn->query($insert);
+            return true;
+        }
+        catch(PDOException $e)
+        {
+            return MatchaErrorHandler::__errorProcess($e);
+        }
+    }
+
+    /**
+     * function __destroyTrigger($table, $triggerName):
+     * Method will drop a trigger in a given table and trigger name.
+     * @param $table
+     * @param $triggerName
+     * @return bool
+     */
+    private function __destroyTrigger($table, $triggerName)
+    {
+        try
+        {
+            $dropTrigger = 'DROP TRIGGER IF EXISTS '.$table.'.'.$triggerName.';'.chr(13);
+            self::$__conn->query($dropTrigger);
+            return true;
+        }
+        catch(PDOException $e)
+        {
+            return MatchaErrorHandler::__errorProcess($e);
+        }
+    }
+
+    /**
+     * function __diffTriggers($senchaModel):
+     * Method to make changes on the trigger, if the trigger is different
+     * @param $senchaModel
+     * @return bool
+     */
+    private function __diffTriggers($senchaModel)
+    {
+        try
+        {
+            if(!isset($senchaModel['triggers'])) return true;
+            $change = false;
+            foreach($senchaModel['triggers'] as $senchaTrigger)
             {
-                $insert = 'delimiter //'.chr(13);
-                $insert .= 'CREATE TRIGGER '.$trigger['name'].' '.$trigger['time'].' INSERT ON '.MatchaCUP::$table. ' '.$trigger['definition'].chr(13);
-                $insert .= 'delimiter ;'.chr(13);
-                self::$__conn->query($insert);
+                $databaseTriggers = self::$__conn->query("SHOW TRIGGERS LIKE '".$senchaModel['table']['name']."';");
+                foreach($databaseTriggers as $databaseTrigger)
+                {
+                    if(strtolower($databaseTrigger['Trigger']) == strtolower($senchaTrigger['name']))
+                    {
+                        if(strtolower($databaseTrigger['Event']) != strtolower($senchaTrigger['event'])) $change = true;
+                        if(strtolower($databaseTrigger['Timing']) != strtolower($senchaTrigger['time'])) $change = true;
+                        if(strtolower($databaseTrigger['Statement']) != strtolower($senchaTrigger['definition'])) $change = true;
+                    }
+                    if($change)
+                    {
+                        self::__destroyTrigger($senchaModel['table']['name'], $senchaTrigger['name']);
+                        self::__createTrigger($senchaModel['table']['name'], $senchaTrigger);
+                    }
+                }
             }
+            return true;
         }
         catch(PDOException $e)
         {

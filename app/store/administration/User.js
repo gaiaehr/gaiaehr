@@ -31,7 +31,6 @@ Ext.define('App.store.administration.User', {
             root: 'rows'
         }
     },
-    autoSync: true,
     remoteSort: true,
     autoLoad: false
 }); 

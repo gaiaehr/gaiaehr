@@ -178,7 +178,8 @@ class MatchaModel extends Matcha
         try
         {
             // Getting Sencha model as a namespace
-            $jsSenchaModel = (string)self::__getFileContent($fileModel);
+            $jsSenchaModel = self::__getFileContent($fileModel);
+            if(!$jsSenchaModel) throw new Exception("Error opening the Sencha model file.");
             // get the actual Sencha Model.
             preg_match('/Ext\.define\([a-zA-Z0-9\',. ]+(?P<extmodel>.+)\);/si', $jsSenchaModel, $match);
             $jsSenchaModel = $match['extmodel'];
@@ -220,8 +221,8 @@ class MatchaModel extends Matcha
         {
             $file = (string)str_replace('App.', '', $file);
             $file = str_replace('.', '/', $file);
-            if(!file_exists(self::$__app.'/'.$file.'.'.$type)) throw new Exception('Sencha file "'.self::$__app.'/'.$file.'.'.$type.'" not found.');
-            return (string)file_get_contents(self::$__app.'/'.$file.'.'.$type);
+            if(!@file_exists(self::$__app.'/'.$file.'.'.$type)) throw new Exception('Sencha file "'.self::$__app.'/'.$file.'.'.$type.'" not found.');
+            return (string)@file_get_contents(self::$__app.'/'.$file.'.'.$type);
         }
         catch(Exception $e)
         {
@@ -325,9 +326,9 @@ class MatchaModel extends Matcha
             $modelDir = str_replace('App.', '', $modelDir);
 
             // check if the directory does not exist, if not create it.
-            if(!opendir( self::$__app.'/'.strtolower(str_replace('.', '/', $modelDir) ) ))
+            if(!@opendir( self::$__app.'/'.strtolower(str_replace('.', '/', $modelDir) ) ))
             {
-                $result = mkdir(self::$__app.'/'.strtolower(str_replace('.', '/', $modelDir) ), 0775, true );
+                $result = @mkdir(self::$__app.'/'.strtolower(str_replace('.', '/', $modelDir) ), 0775, true );
                 if( !$result ) throw new Exception('Could not create the directory.');
             }
 
@@ -353,7 +354,7 @@ class MatchaModel extends Matcha
 
             // create the Sencha Model .js file for the first time
             $file = self::$__app.'/'.strtolower(str_replace('.', '/', $modelDir) ).'/'.$dirLastKey.'.js';
-            if(!file_put_contents($file, $jsSenchaModel)) throw new Exception('Could not create the Sencha Model file.');
+            if(!@file_put_contents($file, $jsSenchaModel)) throw new Exception('Could not create the Sencha Model file.');
             return true;
         }
         catch(Exception $e)
@@ -391,11 +392,12 @@ class MatchaModel extends Matcha
     public static function addFieldsToModel($senchaProperties = array())
     {
         if(empty($senchaProperties)) return false;
-        $tmpModel = (array)self::__getSenchaModel($senchaProperties['model']);
+        $tmpModel = self::__getSenchaModel($senchaProperties['model']);
+        if(!$tmpModel) return false;
         // add the new fields to the Sencha Model
-        foreach($senchaProperties['field'] as $column) array_push($tmpModel['fields'], $column);
+        array_push($tmpModel['fields'], $senchaProperties['field']);
         // re-create the Sencha Model file.
-        self::__arrayToSenchaModel($senchaProperties['model'], $tmpModel);
+        if(!self::__arrayToSenchaModel($senchaProperties['model'], $tmpModel)) return false;
         // check the database table
         self::__SenchaModel($senchaProperties['model']);
         return true;
@@ -410,16 +412,14 @@ class MatchaModel extends Matcha
     public static function removeFieldsFromModel($senchaProperties = array())
     {
         if(empty($senchaProperties)) return false;
-        $tmpModel = (array)self::__getSenchaModel($senchaProperties['model']);
+        $tmpModel = self::__getSenchaModel($senchaProperties['model']);
+        if(!$tmpModel) return false;
         // navigate through the fields of the $removeColumns
         // and remove the field.
-        foreach($senchaProperties['field'] as $column)
-        {
-            $foundKey = MatchaUtils::__recursiveArraySearch($column, $tmpModel['fields']);
-            if($foundKey !== false) unset($tmpModel['fields'][$foundKey]);
-        }
+        $foundKey = MatchaUtils::__recursiveArraySearch($senchaProperties['field'], $tmpModel['fields']);
+        if($foundKey !== false) unset($tmpModel['fields'][$foundKey]);
         // re-create the Sencha Model file.
-        self::__arrayToSenchaModel($senchaProperties['model'], $tmpModel);
+        if(!self::__arrayToSenchaModel($senchaProperties['model'], $tmpModel)) return false;
         // check the database table
         self::__SenchaModel($senchaProperties['model']);
         return true;
@@ -433,26 +433,21 @@ class MatchaModel extends Matcha
      */
     public static function modifyFieldsFromModel($senchaProperties = array())
     {
-        if(!count($senchaProperties)) return false;
-        foreach($senchaProperties as $property)
+        if(empty($senchaProperties)) return false;
+        $tmpModel = self::__getSenchaModel($senchaProperties['model']);
+        if(!$tmpModel) return false;
+        // navigate through the fields of the $removeColumns
+        // and remove the field and then re-insert the modified one
+        $foundKey = MatchaUtils::__recursiveArraySearch($senchaProperties['field'], $tmpModel['fields']);
+        if($foundKey !== false)
         {
-            $tmpModel = (array)self::__getSenchaModel($property['model']);
-            // navigate through the fields of the $removeColumns
-            // and remove the field and then re-insert the modified one
-            foreach($senchaProperties['field'] as $column)
-            {
-                $foundKey = MatchaUtils::__recursiveArraySearch($column, $tmpModel['fields']);
-                if($foundKey !== false)
-                {
-                    unset($tmpModel['fields'][$foundKey]);
-                    array_push($tmpModel['fields'], $column);
-                }
-            }
-            // re-create the Sencha Model file.
-            self::__arrayToSenchaModel($property['model'], $tmpModel);
-            // check the database table
-            self::__SenchaModel($property['model']);
+            unset($tmpModel['fields'][$foundKey]);
+            array_push($tmpModel['fields'], $senchaProperties['field']);
         }
+        // re-create the Sencha Model file.
+        if(!self::__arrayToSenchaModel($senchaProperties['model'], $tmpModel)) return false;
+        // check the database table
+        self::__SenchaModel($senchaProperties['model']);
         return true;
     }
 
@@ -469,8 +464,8 @@ class MatchaModel extends Matcha
         try
         {
             // compose the directory structure
-	        $foo = explode('.', $fileSenchaModel);
-            $dirLastKey = array_pop($foo);
+	        $fileSenchaExploded = explode('.', $fileSenchaModel);
+            $dirLastKey = array_pop($fileSenchaExploded);
             $modelDir = str_replace('.'.$dirLastKey, '', $fileSenchaModel);
             $modelDir = str_replace('App.', '', $modelDir);
 
@@ -489,10 +484,11 @@ class MatchaModel extends Matcha
 
             // ro-do the Sencha Model .js file
             $file = self::$__app.'/'.strtolower(str_replace('.', '/', $modelDir) ).'/'.$dirLastKey.'.js';
-            $fileObject = fopen($file,'w+');
-            if(!fwrite($fileObject,$jsSenchaModel,strlen($jsSenchaModel))) throw new Exception('Could not create the Sencha Model file.');
-            fclose($fileObject);
-            if(!chmod($file,775)) throw new Exception('Could not chmod the Sencha Model file.');
+            $fileObject = @fopen($file,'w+');
+            if(!$fileObject) throw new Exception('Could not create or open the Sencha Model file.');
+            if(!@fwrite($fileObject,$jsSenchaModel,strlen($jsSenchaModel))) throw new Exception('Could not write the Sencha Model file.');
+            @fclose($fileObject);
+            if(!@chmod($file,775)) throw new Exception('Could not chmod the Sencha Model file.');
             return true;
         }
         catch(Exception $e)

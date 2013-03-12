@@ -15,7 +15,16 @@ include_once ($_SESSION['root'] . '/classes/MatchaHelper.php');
 
 $db = new MatchaHelper();
 
-MatchaModel::__SenchaModel('App.model.administration.User');
+$array = array(
+    'model' => "App.model.patient.Patient",
+    'field' => array(
+        'name' => 'test',
+        'type' => 'string'
+    )
+);
+MatchaModel::addFieldsToModel($array);
+
+//MatchaModel::__SenchaModel('App.model.administration.User');
 
 //echo MatchaModel::__renderSenchaFieldSyntax(array('Type'=>'DOUBLE(10,2)'));
 

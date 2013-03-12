@@ -30,99 +30,6 @@ class MatchaModel extends Matcha
     public static $tableId;
 
     /**
-     * function matchaCreateModel($fileSenchaModel, $databaseTable = NULL, $column = array()):
-     * Method to serve as a router, this will create the dynamic Sencha model.
-     */
-    public function matchaCreateModel($fileSenchaModel, $databaseTable = NULL, $columns = array())
-    {
-        // first create the Sencha Model file.
-        if( self::__createModelFile($fileSenchaModel, $databaseTable, $columns) ) return false;
-
-        // if the sencha model file was created successfully go ahead and create the database-table from
-        // the sencha model file.
-        if(self::__SenchaModel($fileSenchaModel)) return false;
-
-        // finally if all was a success return true.
-        // If any errors the private functions called above will generate
-        // the debug information needed.
-        return true;
-    }
-
-    /**
-     * function addFieldsToModel($fileSenchaModel, $addColumns = array()):
-     * Method to add fields to the sencha model.
-     * @param $fileSenchaModel
-     * @param array $addColumns
-     * @return bool
-     */
-    public function addFieldsToModel($fileSenchaModel, $addColumns = array())
-    {
-        if(!count($addColumns)) return false;
-        $tmpModel = (array)self::__getSenchaModel($fileSenchaModel);
-
-        // add the new fields to the Sencha Model
-        foreach($addColumns as $column) array_push($tmpModel['fields'], $column);
-
-        // re-create the Sencha Model file.
-        self::__arrayToSenchaModel($fileSenchaModel, $tmpModel);
-        return true;
-    }
-
-    /**
-     * function removeFieldsToModel($fileSenchaModel, $removeColumns = array()):
-     * Method to remove columns to the model
-     * @param $fileSenchaModel
-     * @param array $removeColumns
-     * @return bool
-     */
-    public function removeFieldsFromModel($fileSenchaModel, $removeColumns = array())
-    {
-        if(!count($removeColumns)) return false;
-        $tmpModel = (array)self::__getSenchaModel($fileSenchaModel);
-
-        // navigate through the fields of the $removeColumns
-        // and remove the field.
-        foreach($removeColumns as $column)
-        {
-            $foundKey = MatchaUtils::__recursiveArraySearch($column, $tmpModel['fields']);
-            if($foundKey !== false) unset($tmpModel['fields'][$foundKey]);
-        }
-
-        // re-create the Sencha Model file.
-        self::__arrayToSenchaModel($fileSenchaModel, $tmpModel);
-        return true;
-    }
-
-    /**
-     * function modifyFieldsToModel($fileSenchaModel, $modifyColumns = array()):
-     * Method to modify field in the Sencha Model
-     * @param $fileSenchaModel
-     * @param array $modifyColumns
-     * @return bool
-     */
-    public function modifyFieldsFromModel($fileSenchaModel, $modifyColumns = array())
-    {
-        if(!count($modifyColumns)) return false;
-        $tmpModel = (array)self::__getSenchaModel($fileSenchaModel);
-
-        // navigate through the fields of the $removeColumns
-        // and remove the field and then re-insert the modified one
-        foreach($modifyColumns as $column)
-        {
-            $foundKey = MatchaUtils::__recursiveArraySearch($column, $tmpModel['fields']);
-            if($foundKey !== false)
-            {
-                unset($tmpModel['fields'][$foundKey]);
-                array_push($tmpModel['fields'], $column);
-            }
-        }
-
-        // re-create the Sencha Model file.
-        self::__arrayToSenchaModel($fileSenchaModel, $tmpModel);
-        return true;
-    }
-
-    /**
      * function SenchaModel($fileModel):
      * This method will create the table and fields if does not exist in the database
      * also this is the brain of the micro ORM.
@@ -457,6 +364,99 @@ class MatchaModel extends Matcha
     }
 
     /**
+     * function matchaCreateModel($fileSenchaModel, $databaseTable = NULL, $column = array()):
+     * Method to serve as a router, this will create the dynamic Sencha model.
+     */
+    public function matchaCreateModel($fileSenchaModel, $databaseTable = NULL, $columns = array())
+    {
+        // first create the Sencha Model file.
+        if( self::__createModelFile($fileSenchaModel, $databaseTable, $columns) ) return false;
+
+        // if the sencha model file was created successfully go ahead and create the database-table from
+        // the sencha model file.
+        if( self::__SenchaModel($fileSenchaModel) ) return false;
+
+        // finally if all was a success return true.
+        // If any errors the private functions called above will generate
+        // the debug information needed.
+        return true;
+    }
+
+    /**
+     * function addFieldsToModel($fileSenchaModel, $addColumns = array()):
+     * Method to add fields to the sencha model.
+     * @param array $senshaProperties
+     * @return bool
+     */
+    public function addFieldsToModel($senshaProperties = array())
+    {
+        if(!count($senshaProperties)) return false;
+        foreach($senshaProperties as $property)
+        {
+            $tmpModel = (array)self::__getSenchaModel($property['model']);
+            // add the new fields to the Sencha Model
+            foreach($senshaProperties['field'] as $column) array_push($tmpModel['fields'], $column);
+            // re-create the Sencha Model file.
+            self::__arrayToSenchaModel($property['model'], $tmpModel);
+        }
+        return true;
+    }
+
+    /**
+     * function removeFieldsToModel($fileSenchaModel, $removeColumns = array()):
+     * Method to remove columns to the model
+     * @param array $senshaProperties
+     * @return bool
+     */
+    public function removeFieldsFromModel($senshaProperties = array())
+    {
+        if(!count($senshaProperties)) return false;
+        foreach($senshaProperties as $property)
+        {
+            $tmpModel = (array)self::__getSenchaModel($property['model']);
+            // navigate through the fields of the $removeColumns
+            // and remove the field.
+            foreach($senshaProperties['field'] as $column)
+            {
+                $foundKey = MatchaUtils::__recursiveArraySearch($column, $tmpModel['fields']);
+                if($foundKey !== false) unset($tmpModel['fields'][$foundKey]);
+            }
+            // re-create the Sencha Model file.
+            self::__arrayToSenchaModel($property['model'], $tmpModel);
+        }
+        return true;
+    }
+
+    /**
+     * function modifyFieldsToModel($fileSenchaModel, $modifyColumns = array()):
+     * Method to modify field in the Sencha Model
+     * @param array $senshaProperties
+     * @return bool
+     */
+    public function modifyFieldsFromModel($senshaProperties = array())
+    {
+        if(!count($senshaProperties)) return false;
+        foreach($senshaProperties as $property)
+        {
+            $tmpModel = (array)self::__getSenchaModel($property['model']);
+            // navigate through the fields of the $removeColumns
+            // and remove the field and then re-insert the modified one
+            foreach($senshaProperties['field'] as $column)
+            {
+                $foundKey = MatchaUtils::__recursiveArraySearch($column, $tmpModel['fields']);
+                if($foundKey !== false)
+                {
+                    unset($tmpModel['fields'][$foundKey]);
+                    array_push($tmpModel['fields'], $column);
+                }
+            }
+            // re-create the Sencha Model file.
+            self::__arrayToSenchaModel($property['model'], $tmpModel);
+        }
+        return true;
+    }
+
+    /**
      * function __arrayToSenchaModel($fileSenchaModel, $senchaModelArray = array()):
      * Method to convert the array of the Sencha Model to a valid Sencha Model .js file
      * @param $fileSenchaModel
@@ -500,6 +500,8 @@ class MatchaModel extends Matcha
             return false;
         }
     }
+
+
 
     /**
      * function __createModelTable($fileSenchaModel, $databaseTable = NULL):

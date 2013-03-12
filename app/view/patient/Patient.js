@@ -524,7 +524,7 @@ Ext.define('App.view.patient.Patient', {
 	loadNew:function(){
 		var patient = Ext.create('App.model.patient.Patient',{
 			'create_uid':app.user.id,
-			'write_uid':app.user.id,
+			'update_uid':app.user.id,
 			'create_date':new Date(),
 			'update_date':new Date(),
 			'DOB':'000-00-00 00:00:00'
@@ -536,7 +536,7 @@ Ext.define('App.view.patient.Patient', {
 			this.insPanel.items.items[i].getForm().loadRecord(
 				store.add({
 					'create_uid':app.user.id,
-					'write_uid':app.user.id,
+					'update_uid':app.user.id,
 					'create_date':new Date(),
 					'update_date':new Date(),
 					'type': (i == 2 ? 'supplemental':'main')

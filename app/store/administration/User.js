@@ -12,25 +12,12 @@
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  GNU General Public License for more details.
 
- You should have received a copy of the GNU General Public License
+ You should have received a copy of the GNU General Public  License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 Ext.define('App.store.administration.User', {
     model: 'App.model.administration.User',
     extend: 'Ext.data.Store',
-    proxy: {
-        type: 'direct',
-        api: {
-            read: User.getUsers,
-            create: User.addUser,
-            update: User.updateUser
-        },
-        reader: {
-            totalProperty: 'totals',
-            root: 'rows'
-        }
-    },
-    remoteSort: true,
     autoLoad: false
 }); 

@@ -247,15 +247,20 @@ class MatchaCUP
 	/**
 	 * function save($record): (part of CRUD) Create & Update
 	 * store the record as array into the working table
-	 * @param $record
+	 * @param array|object $record
+	 * @param array $where
 	 * @return object
-	 * @throws Exception
 	 */
-	public function save($record)
+	public function save($record, $where = array())
 	{
 		try
 		{
-			if (is_object($record))
+			if(!empty($where))
+			{
+				$data = get_object_vars($record);
+				$this->rowsAffected = Matcha::$__conn->exec($this->buildUpdateSqlStatement($data, $where));
+			}
+			elseif(is_object($record))
 			{
 				$data = get_object_vars($record);
 				// create record
@@ -391,7 +396,7 @@ class MatchaCUP
 		$values = array_values($data);
 		$columns = '(`' . implode('`,`', $columns) . '`)';
 		$values = '(\'' . implode('\',\'', $values) . '\')';
-		$sql = "INSERT INTO `" . $this->model->table->name . "` $columns VALUES $values";
+		$sql = "INSERT INTO `" . $this->table . "` $columns VALUES $values";
 		return str_replace("'NULL'",'NULL',$sql);
 	}
 
@@ -399,18 +404,25 @@ class MatchaCUP
 	 * function buildUpdateSqlStatement($data):
 	 * Method to build the update sql statement
 	 * @param $data
+	 * @param array $where
 	 * @return mixed
 	 */
-	private function buildUpdateSqlStatement($data)
+	private function buildUpdateSqlStatement($data, $where = array())
 	{
-		$id = $data[$this->primaryKey];
+		if(!empty($where)){
+			$primaryKey      = array_keys($where)[0];
+			$primaryKeyValue = array_values($where)[0];
+		}else{
+			$primaryKey      = $this->primaryKey;
+			$primaryKeyValue = $data[$this->primaryKey];;
+		}
 		unset($data[$this->primaryKey]);
 
 		$sets = array();
 		$data = $this->parseValues($data);
-		foreach ($data as $key => $val)	$sets[] = "`$key`='$val'";
+		foreach ($data as $key => $val) $sets[] = "`$key`='$val'";
 		$sets = implode(',', $sets);
-		$sql = "UPDATE `" . $this->model->table->name . "` SET $sets WHERE $this->primaryKey = '$id'";
+		$sql = "UPDATE `" . $this->table . "` SET $sets WHERE $primaryKey = '$primaryKeyValue'";
 		return str_replace("'NULL'",'NULL',$sql);
 	}
 
@@ -428,21 +440,25 @@ class MatchaCUP
 
 		foreach($values as $index => $foo)
 		{
-			$type = $properties[$index]['type'];
-			if($type == 'bool')
-			{
-				if($foo === true)
+			if(!isset($properties[$index]['store']) || (isset($properties[$index]['store']) && $properties[$index]['store'] != false)){
+				$type = $properties[$index]['type'];
+				if($type == 'bool')
 				{
-					$values[$index] = 1;
+					if($foo === true)
+					{
+						$values[$index] = 1;
+					}
+					elseif($foo === false)
+					{
+						$values[$index] = 0;
+					}
 				}
-				elseif($foo === false)
+				elseif($type == 'date')
 				{
-					$values[$index] = 0;
+					$values[$index] = ($foo == '' ? 'NULL' : $values[$index]);
 				}
-			}
-			elseif($type == 'date')
-			{
-				$values[$index] = ($foo == '' ? 'NULL' : $values[$index]);
+			}else{
+				unset($columns[$index], $values[$index]);
 			}
 		}
 

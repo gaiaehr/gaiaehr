@@ -410,8 +410,17 @@ Ext.define('App.view.administration.Users', {
 		    rec;
 
 		me.formEditing.cancelEdit();
-        rec = me.userStore.add({});
-	    me.formEditing.startEdit(rec);
+        rec = me.userStore.insert(0,{
+	        create_date: new Date(),
+	        update_date: new Date(),
+	        create_uid: app.user.id,
+	        update_uid: app.user.id,
+	        active: 1,
+	        authorized: 0,
+	        calendar: 0
+        });
+		say(rec);
+	    me.formEditing.startEdit(0,0);
     },
 
     /**

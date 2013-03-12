@@ -20,35 +20,24 @@ Ext.define( 'App.model.administration.AclUserRoles',
 {
     extend : 'Ext.data.Model',
     table: {
-        name:'acluserroles',
+        name:'acl_user_roles',
         comment:'Access List User Roles'
     },
     fields : [
     {
         name : 'id',
         type : 'int',
-        dataType : 'bigint',
-        len: 20,
-        primaryKey : true,
-        autoIncrement : true,
-        allowNull : false,
-        store: true,
         comment: 'Access Control List ID'
     },
     {
         name : 'role_id',
         type : 'int',
-        dataType : 'bigint',
-        len: 20,
-        store: true,
         comment: 'Role ID'
     },
     {
         name : 'add_date',
         type : 'date',
         dataType : 'timestamp',
-        allowNull : false,
-        store: true,
         defaultValue: 'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP',
         comment: 'Added UNIX TimeStamp'
     }]

@@ -2261,13 +2261,13 @@ Extensible.calendar.data.EventMappings = {
 		name      : 'StartDate',
 		mapping   : 'start',
 		type      : 'date',
-		dateFormat: 'c'
+		dateFormat: 'Y-m-d H:i:s'
 	},
 	EndDate        : {
 		name      : 'EndDate',
 		mapping   : 'end',
 		type      : 'date',
-		dateFormat: 'c'
+		dateFormat: 'Y-m-d H:i:s'
 	},
 	Location       : {
 		name   : 'Location',
@@ -9925,7 +9925,7 @@ Ext.define('Extensible.calendar.view.DayBody', {
              * operation is carried out. This is a cancelable event, so returning false from a handler will
              * cancel the resize operation.
              * @param {Extensible.calendar.view.DayBody} this
-             * @param {Extensible.calendar.data.EventModel} rec The original {@link
+             * @param {Extensible.calendar.data.EventModel} rec The original {@link Extensible.calendar.data.EventModel}
              * Extensible.calendar.data.EventModel record} for the event that was resized
              * @param {Object} data An object containing the new start and end dates that will be set into the
              * event record if the event is not canceled. Format of the object is: {StartDate: [date], EndDate: [date]}
@@ -9937,7 +9937,7 @@ Ext.define('Extensible.calendar.view.DayBody', {
              * complete. If you need to cancel the resize operation you should handle the {@link #beforeeventresize}
              * event and return false from your handler function.
              * @param {Extensible.calendar.view.DayBody} this
-             * @param {Extensible.calendar.data.EventModel} rec The {@link Extensible.calendar.data.EventModel
+             * @param {Extensible.calendar.data.EventModel} rec The {@link Extensible.calendar.data.EventModel}
              * record} for the event that was resized containing the updated start and end dates
              */
             eventresize: true,

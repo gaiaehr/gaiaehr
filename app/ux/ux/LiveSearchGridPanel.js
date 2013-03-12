@@ -90,13 +90,15 @@ Ext.define('Ext.ux.LiveSearchGridPanel', {
                 margin: '0 0 0 4px',
                 handler: me.regExpToggle,
                 scope: me                
-            }, i18n('regular_expression'), {
-                xtype: 'checkbox',
-                hideLabel: true,
-                margin: '0 0 0 4px',
-                handler: me.caseSensitiveToggle,
-                scope: me
-            }, i18n('case_sensitive')];
+            }, i18n('regular_expression')
+//	        {
+//                xtype: 'checkbox',
+//                hideLabel: true,
+//                margin: '0 0 0 4px',
+//                handler: me.caseSensitiveToggle,
+//                scope: me
+//            }, i18n('case_sensitive')
+			];
 
         me.bbar = Ext.create('Ext.ux.StatusBar', {
             defaultText: me.defaultStatusText,

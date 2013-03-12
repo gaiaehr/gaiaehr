@@ -383,65 +383,69 @@ class MatchaModel extends Matcha
     }
 
     /**
-     * function addFieldsToModel($fileSenchaModel, $addColumns = array()):
+     * function addFieldsToModel($senchaProperties = array()):
      * Method to add fields to the sencha model.
-     * @param array $senshaProperties
+     * @param array $senchaProperties
      * @return bool
      */
-    public function addFieldsToModel($senshaProperties = array())
+    public function addFieldsToModel($senchaProperties = array())
     {
-        if(!count($senshaProperties)) return false;
-        foreach($senshaProperties as $property)
+        if(!count($senchaProperties)) return false;
+        foreach($senchaProperties as $property)
         {
             $tmpModel = (array)self::__getSenchaModel($property['model']);
             // add the new fields to the Sencha Model
-            foreach($senshaProperties['field'] as $column) array_push($tmpModel['fields'], $column);
+            foreach($senchaProperties['field'] as $column) array_push($tmpModel['fields'], $column);
             // re-create the Sencha Model file.
             self::__arrayToSenchaModel($property['model'], $tmpModel);
+            // check the database table
+            self::__SenchaModel($property['model']);
         }
         return true;
     }
 
     /**
-     * function removeFieldsToModel($fileSenchaModel, $removeColumns = array()):
+     * function removeFieldsFromModel($senchaProperties = array()):
      * Method to remove columns to the model
-     * @param array $senshaProperties
+     * @param array $senchaProperties
      * @return bool
      */
-    public function removeFieldsFromModel($senshaProperties = array())
+    public function removeFieldsFromModel($senchaProperties = array())
     {
-        if(!count($senshaProperties)) return false;
-        foreach($senshaProperties as $property)
+        if(!count($senchaProperties)) return false;
+        foreach($senchaProperties as $property)
         {
             $tmpModel = (array)self::__getSenchaModel($property['model']);
             // navigate through the fields of the $removeColumns
             // and remove the field.
-            foreach($senshaProperties['field'] as $column)
+            foreach($senchaProperties['field'] as $column)
             {
                 $foundKey = MatchaUtils::__recursiveArraySearch($column, $tmpModel['fields']);
                 if($foundKey !== false) unset($tmpModel['fields'][$foundKey]);
             }
             // re-create the Sencha Model file.
             self::__arrayToSenchaModel($property['model'], $tmpModel);
+            // check the database table
+            self::__SenchaModel($property['model']);
         }
         return true;
     }
 
     /**
-     * function modifyFieldsToModel($fileSenchaModel, $modifyColumns = array()):
+     * function modifyFieldsFromModel($senchaProperties = array()):
      * Method to modify field in the Sencha Model
-     * @param array $senshaProperties
+     * @param array $senchaProperties
      * @return bool
      */
-    public function modifyFieldsFromModel($senshaProperties = array())
+    public function modifyFieldsFromModel($senchaProperties = array())
     {
-        if(!count($senshaProperties)) return false;
-        foreach($senshaProperties as $property)
+        if(!count($senchaProperties)) return false;
+        foreach($senchaProperties as $property)
         {
             $tmpModel = (array)self::__getSenchaModel($property['model']);
             // navigate through the fields of the $removeColumns
             // and remove the field and then re-insert the modified one
-            foreach($senshaProperties['field'] as $column)
+            foreach($senchaProperties['field'] as $column)
             {
                 $foundKey = MatchaUtils::__recursiveArraySearch($column, $tmpModel['fields']);
                 if($foundKey !== false)
@@ -452,6 +456,8 @@ class MatchaModel extends Matcha
             }
             // re-create the Sencha Model file.
             self::__arrayToSenchaModel($property['model'], $tmpModel);
+            // check the database table
+            self::__SenchaModel($property['model']);
         }
         return true;
     }

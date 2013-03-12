@@ -230,6 +230,17 @@ class FormLayoutBuilder {
      */
     private function addColumn($conf)
     {
+
+//	    $array = array(
+//		    'model' => 'App.model.patient.Patient',
+//	        'field' => array(
+//			    'name' => 'fieldname',
+//			    'type' => 'fieldtype'
+//		    )
+//	    );
+//	    MatchaModel::AddFieldModel($array);
+
+
         $this->db->setSQL("ALTER TABLE $this->form_data_table ADD $this->col $conf");
         $this->db->execOnly();
         if(!$this->fieldHasColumn()) {
@@ -251,6 +262,16 @@ class FormLayoutBuilder {
      */
     private function dropColumn()
     {
+
+//	    $array = array(
+//		    'model' => 'App.model.patient.Patient',
+//		    'field' => array(
+//			    'name' => 'fieldname'
+//		    )
+//	    );
+//	    MatchaModel::removeFieldModel($array);
+
+
         $this->db->setSQL("ALTER TABLE $this->form_data_table DROP $this->col");
         $this->db->execOnly();
         if($this->fieldHasColumn()) {

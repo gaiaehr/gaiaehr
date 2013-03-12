@@ -23,15 +23,15 @@ Ext.define('App.model.administration.User',{
 		comment: 'User accounts'
 	},
 	fields: [
-        {name: 'id', type: 'int', dataType: 'bigint', len: 20, primaryKey : true, autoIncrement : true, allowNull : false, store: true, comment: 'User Account ID'},
+        {name: 'id',                type: 'int',    comment: 'User Account ID'},
 
 		{name: 'create_uid',        type: 'int',    comment: 'create user ID'},
-		{name: 'write_uid',         type: 'int',    comment: 'update user ID'},
+		{name: 'update_uid',        type: 'int',    comment: 'update user ID'},
 		{name: 'create_date',       type: 'date',   comment: 'create date',         dateFormat:'Y-m-d H:i:s'},
 		{name: 'update_date',       type: 'date',   comment: 'last update date',    dateFormat:'Y-m-d H:i:s'},
 
 		{name: 'username',          type: 'string', comment: 'username'},
-		{name: 'password',          type: 'string', comment: 'password',                          dataType: 'blob'},
+		{name: 'password',          type: 'string', comment: 'password',  dataType: 'blob'},
 		{name: 'pwd_history1',      type: 'string', comment: 'first password history backwards',  dataType: 'blob'},
 		{name: 'pwd_history2',      type: 'string', comment: 'second password history backwards', dataType: 'blob'},
 
@@ -59,6 +59,14 @@ Ext.define('App.model.administration.User',{
 		{name: 'authorized',        type: 'bool'},
 		{name: 'active',            type: 'bool'}
 	],
+	proxy: {
+		type: 'direct',
+		api: {
+			read: User.getUsers,
+			create: User.addUser,
+			update: User.updateUser
+		}
+	},
 	hasMany: [
 		{
 			model: 'App.model.Phones',

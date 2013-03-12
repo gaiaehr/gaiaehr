@@ -102,9 +102,9 @@ class ACL
 	{
 		$roles = array();
 		$this->conn->setSQL("SELECT ar.role_key
-                               FROM acl_user_roles AS aur
-                          LEFT JOIN acl_roles AS ar ON aur.role_id = ar.id
-                              WHERE aur.user_id = '$this->user_id'");
+                               FROM users AS u
+                          LEFT JOIN acl_roles AS ar ON u.role_id = ar.id
+                              WHERE u.id = '$this->user_id'");
 		foreach($this->conn->fetchRecords(PDO::FETCH_ASSOC) AS $role){
 			$roles[] = $role['role_key'];
 		}

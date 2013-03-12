@@ -64,7 +64,7 @@ class Modules
             $foo = $this->getModuleConfig($module);
             if ($foo['active']){
                 $name = $foo['name'];
-                $this->db->setSQL("SELECT * FROM `modules` WHERE `name` = '$name'");
+                $this->db->setSQL("SELECT * FROM `modules` WHERE name = '$name'");
                 $rec = $this->db->fetchRecord(PDO::FETCH_ASSOC);
                 $modules[] = array_merge($foo, $rec);
             }
@@ -79,10 +79,12 @@ class Modules
     public function getEnabledModules()
     {
         $modules = array();
-        $this->db->setSQL("SELECT * FROM `modules` WHERE `enable` = '1'");
+        $this->db->setSQL("SELECT * FROM `modules` WHERE enable = 1");
         foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) AS $m){
-            $foo = $this->getModuleConfig($m['name']);
-            if ($foo['active']) $modules[] = $foo;
+	        if(isset($m['name'])){
+		        $foo = $this->getModuleConfig($m['name']);
+		        if ($foo['active']) $modules[] = $foo;
+	        }
         }
         return $modules;
     }
@@ -94,7 +96,7 @@ class Modules
     public function getDisabledModules()
     {
         $modules = array();
-        $this->db->setSQL("SELECT * FROM `modules` WHERE `enable` = '0'");
+        $this->db->setSQL("SELECT * FROM `modules` WHERE enable = 0");
         foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) AS $m){
             $foo = $this->getModuleConfig($m['name']);
             if ($foo['active']) $modules[] = $foo;
@@ -156,9 +158,9 @@ class Modules
             $ModuleConfig = $this->getModuleConfig($module);
             if ($ModuleConfig['active'])
             {
-                $this->db->setSQL("SELECT count(*) AS total FROM modules WHERE `name` = '".$ModuleConfig['name']."'");
+                $this->db->setSQL("SELECT * FROM modules WHERE `name` = '".$ModuleConfig['name']."'");
                 $moduleRecord = $this->db->fetchRecord(PDO::FETCH_ASSOC);
-                if($moduleRecord['total'] <= 0)
+                if(empty($moduleRecord))
                 {
                     $data['name'] = $ModuleConfig['name'];
                     $data['enable'] = 0;

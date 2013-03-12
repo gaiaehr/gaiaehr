@@ -161,12 +161,7 @@ Ext.define('App.ux.grid.RowFormEditing', {
      *
      *       if (e.rowIdx == myTargetRow) {
      *         e.cancel = true;
-     *         e.record.data[e.field] = e.value;
-     *       }
-     *     });
-     *
-     * @param {Ext.grid.plugin.Editing} editor
-     * @param {Object} e An edit event with the following properties:
+     *         e.record.data[e.field]
      *
      * - grid - The grid this editor is on
      * - view - The grid view

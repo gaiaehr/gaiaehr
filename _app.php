@@ -76,6 +76,18 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
                     'Extensible': 'lib/extensible-1.5.1/src'
                 }
             });
+
+			for(var x = 0; x < App.data.length; x++){
+				Ext.direct.Manager.addProvider(App.data[x]);
+			}
+			Ext.direct.Manager.on('exception', function(e, o){
+				say(e);
+				app.alert(
+					'<p><span style="font-weight:bold">'+ (e.where != 'undefined' ? e.message : e.message.replace(/\n/g,''))  +'</span></p><hr>' +
+						'<p>'+ (typeof e.where != 'undefined' ? e.where.replace(/\n/g,'<br>') : e.data) +'</p>',
+					'error'
+				);
+			});
 		</script>
 		<script type="text/javascript" src="lib/webcam_control/swfobject.js"></script>
 		<script type="text/javascript" src="lib/jpegcam/htdocs/webcam.js"></script>
@@ -83,18 +95,6 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 		<script type="text/javascript" src="app/ux/VTypes.js"></script>
 
 		<script type="text/javascript">
-
-        for(var x = 0; x < App.data.length; x++){
-            Ext.direct.Manager.addProvider(App.data[x]);
-        }
-        Ext.direct.Manager.on('exception', function(e, o){
-	        say(e);
-	        app.alert(
-		        '<p><span style="font-weight:bold">'+ (e.where != 'undefined' ? e.message : e.message.replace(/\n/g,''))  +'</span></p><hr>' +
-		        '<p>'+ (typeof e.where != 'undefined' ? e.where.replace(/\n/g,'<br>') : e.data) +'</p>',
-		        'error'
-	        );
-        });
 			requires = [
 				'Ext.ux.LiveSearchGridPanel',
 				'Ext.ux.SlidingPager',

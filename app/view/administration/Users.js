@@ -24,13 +24,10 @@ Ext.define('App.view.administration.Users', {
     initComponent: function(){
         var me = this;
 
-        me.store = Ext.create('App.store.administration.User');
-        me.userStore = Ext.create('App.store.administration.User');
+        me.userStore = Ext.create('App.store.administration.User',{
+            autoSync:false
+        });
 
-
-        // *************************************************************************************
-        // Create the GridPanel
-        // *************************************************************************************
         me.userGrid = Ext.create('Ext.grid.Panel', {
             store: me.userStore,
             columns: [
@@ -38,7 +35,7 @@ Ext.define('App.view.administration.Users', {
                     text: 'id',
                     sortable: false,
                     dataIndex: 'id',
-                    hidden: true
+	                width: 25
                 },
                 {
                     width: 100,
@@ -77,12 +74,317 @@ Ext.define('App.view.administration.Users', {
                     renderer: me.boolRenderer
                 }
             ],
-            listeners: {
-                scope: me,
-                itemdblclick: function(view, record){
-                    me.onItemdblclick(me.userStore, record, i18n('edit_user'));
-                }
-            },
+	        plugins:[
+		        me.formEditing = Ext.create('App.ux.grid.RowFormEditing',{
+			        clicksToEdit:1,
+			        formItems:[
+				        {
+					        xtype: 'fieldcontainer',
+					        defaults: {
+						        hideLabel: true
+					        },
+					        layout: {
+						        type: 'hbox',
+						        defaultMargins: {
+							        top: 0,
+							        right: 5,
+							        bottom: 0,
+							        left: 0
+						        }
+					        },
+					        msgTarget: 'under',
+					        items: [
+						        {
+							        width: 100,
+							        xtype: 'displayfield',
+							        value: i18n('username') + ': '
+						        },
+						        {
+							        width: 180,
+							        xtype: 'textfield',
+							        name: 'username',
+							        allowBlank: false,
+							        validateOnBlur:true,
+							        vtype:'usernameField'
+						        },
+						        {
+							        width: 100,
+							        xtype: 'displayfield',
+							        value: i18n('password') + ': '
+						        },
+						        {
+							        width: 175,
+							        xtype: 'textfield',
+							        name: 'password',
+							        inputType: 'password'
+						        }
+					        ]
+				        },
+				        {
+					        xtype: 'fieldcontainer',
+					        defaults: {
+						        hideLabel: true
+					        },
+					        layout: {
+						        type: 'hbox',
+						        defaultMargins: {
+							        top: 0,
+							        right: 5,
+							        bottom: 0,
+							        left: 0
+						        }
+					        },
+					        msgTarget: 'under',
+					        items: [
+						        {
+							        width: 100,
+							        xtype: 'displayfield',
+							        value: i18n('first_middle_last')
+						        },
+						        {
+							        width: 50,
+							        xtype: 'mitos.titlescombo',
+							        name: 'title'
+						        },
+						        {
+							        width: 150,
+							        xtype: 'textfield',
+							        name: 'fname',
+							        allowBlank: false
+						        },
+						        {
+							        width: 100,
+							        xtype: 'textfield',
+							        name: 'mname'
+						        },
+						        {
+							        width: 150,
+							        xtype: 'textfield',
+							        name: 'lname'
+						        }
+					        ]
+				        },
+				        {
+					        xtype: 'fieldcontainer',
+					        msgTarget: 'under',
+					        layout: {
+						        type: 'hbox',
+						        defaultMargins: {
+							        top: 0,
+							        right: 5,
+							        bottom: 0,
+							        left: 0
+						        }
+					        },
+					        items: [
+						        {
+							        width: 150,
+							        xtype: 'mitos.checkbox',
+							        fieldLabel: i18n('active'),
+							        name: 'active'
+						        },
+						        {
+							        width: 150,
+							        xtype: 'mitos.checkbox',
+							        fieldLabel: i18n('authorized'),
+							        name: 'authorized'
+						        },
+						        {
+							        width: 150,
+							        xtype: 'mitos.checkbox',
+							        fieldLabel: i18n('calendar_q'),
+							        name: 'calendar'
+						        }
+					        ]
+				        },
+				        {
+					        xtype: 'fieldcontainer',
+					        defaults: {
+						        hideLabel: true
+					        },
+					        layout: {
+						        type: 'hbox',
+						        defaultMargins: {
+							        top: 0,
+							        right: 5,
+							        bottom: 0,
+							        left: 0
+						        }
+					        },
+					        msgTarget: 'under',
+					        items: [
+						        {
+							        width: 100,
+							        xtype: 'displayfield',
+							        value: i18n('default_facility') + ': '
+						        },
+						        {
+							        width: 180,
+							        xtype: 'mitos.facilitiescombo',
+							        name: 'facility_id'
+						        },
+						        {
+							        width: 100,
+							        xtype: 'displayfield',
+							        value: i18n('authorizations') + ': '
+						        },
+						        {
+							        width: 175,
+							        xtype: 'mitos.authorizationscombo',
+							        name: 'see_auth'
+						        }
+					        ]
+				        },
+				        {
+					        xtype: 'fieldcontainer',
+					        defaults: {
+						        hideLabel: true
+					        },
+					        layout: {
+						        type: 'hbox',
+						        defaultMargins: {
+							        top: 0,
+							        right: 5,
+							        bottom: 0,
+							        left: 0
+						        }
+					        },
+					        items: [
+						        {
+							        width: 100,
+							        xtype: 'displayfield',
+							        value: i18n('access_control') + ': '
+						        },
+						        {
+							        width: 180,
+							        xtype: 'mitos.rolescombo',
+							        name: 'role_id',
+							        allowBlank: false
+						        },
+						        // not implemented yet
+						        {
+							        width: 100,
+							        xtype: 'displayfield',
+							        value: i18n('taxonomy') + ': '
+						        },
+						        {
+							        width: 175,
+							        xtype: 'textfield',
+							        name: 'taxonomy'
+						        }
+					        ]
+				        },
+				        {
+					        xtype: 'fieldcontainer',
+					        defaults: {
+						        hideLabel: true
+					        },
+					        layout: {
+						        type: 'hbox',
+						        defaultMargins: {
+							        top: 0,
+							        right: 5,
+							        bottom: 0,
+							        left: 0
+						        }
+					        },
+					        items: [
+						        {
+							        width: 100,
+							        xtype: 'displayfield',
+							        value: i18n('federal_tax_id') + ': '
+						        },
+						        {
+							        width: 180,
+							        xtype: 'textfield',
+							        name: 'federaltaxid'
+						        },
+						        {
+							        width: 100,
+							        xtype: 'displayfield',
+							        value: i18n('fed_drug_id') + ': '
+						        },
+						        {
+							        width: 175,
+							        xtype: 'textfield',
+							        name: 'federaldrugid'
+						        }
+					        ]
+				        },
+				        {
+					        xtype: 'fieldcontainer',
+					        defaults: {
+						        hideLabel: true
+					        },
+					        layout: {
+						        type: 'hbox',
+						        defaultMargins: {
+							        top: 0,
+							        right: 5,
+							        bottom: 0,
+							        left: 0
+						        }
+					        },
+					        items: [
+						        {
+							        width: 100,
+							        xtype: 'displayfield',
+							        value: i18n('upin') + ': '
+						        },
+						        {
+							        width: 180,
+							        xtype: 'textfield',
+							        name: 'upin'
+						        },
+						        {
+							        width: 100,
+							        xtype: 'displayfield',
+							        value: i18n('npi') + ': '
+						        },
+						        {
+							        width: 175,
+							        xtype: 'textfield',
+							        name: 'npi'
+						        }
+					        ]
+				        },
+				        {
+					        xtype: 'fieldcontainer',
+					        defaults: {
+						        hideLabel: true
+					        },
+					        layout: {
+						        type: 'hbox',
+						        defaultMargins: {
+							        top: 0,
+							        right: 5,
+							        bottom: 0,
+							        left: 0
+						        }
+					        },
+					        items: [
+						        {
+							        width: 100,
+							        xtype: 'displayfield',
+							        value: i18n('job_description') + ': '
+						        },
+						        {
+							        width: 465,
+							        xtype: 'textfield',
+							        name: 'specialty'
+						        }
+					        ]
+				        },
+				        {
+					        width: 570,
+					        height: 50,
+					        xtype: 'textfield',
+					        name: 'info',
+					        emptyText: i18n('additional_info')
+				        }
+			        ]
+		        })
+	        ],
             dockedItems: [
                 {
                     xtype: 'toolbar',
@@ -92,374 +394,35 @@ Ext.define('App.view.administration.Users', {
                             xtype: 'button',
                             text: i18n('add_new_user'),
                             iconCls: 'save',
-                            handler: function(){
-                                var form = me.win.down('form');
-                                me.onNew(form, 'UserModel', i18n('add_new_user'));
-                            }
+	                        scope:me,
+                            handler: me.onNewUser
                         }
                     ]
                 }
             ]
         });
-        // *************************************************************************************
-        // Window User Form
-        // *************************************************************************************
-        me.win = Ext.create('App.ux.window.Window', {
-            width: 600,
-            items: [
-                {
-                    xtype: 'mitos.form',
-                    fieldDefaults: {
-                        msgTarget: 'side',
-                        labelWidth: 100
-                    },
-                    defaultType: 'textfield',
-                    //hideLabels      : true,
-                    defaults: {
-                        labelWidth: 89,
-                        anchor: '100%',
-                        layout: {
-                            type: 'hbox',
-                            defaultMargins: {
-                                top: 0,
-                                right: 5,
-                                bottom: 0,
-                                left: 0
-                            }
-                        }
-                    },
-                    items: [
-                        {
-                            xtype: 'textfield',
-                            hidden: true,
-                            name: 'id'
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: i18n('username') + ': '
-                                },
-                                {
-                                    width: 100,
-                                    xtype: 'textfield',
-                                    name: 'username',
-                                    allowBlank: false
-                                },
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: i18n('password') + ': '
-                                },
-                                {
-                                    width: 105,
-                                    xtype: 'textfield',
-                                    name: 'password',
-                                    inputType: 'password'
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: i18n('first_middle_last')
-                                },
-                                {
-                                    width: 50,
-                                    xtype: 'mitos.titlescombo',
-                                    name: 'title'
-                                },
-                                {
-                                    width: 80,
-                                    xtype: 'textfield',
-                                    name: 'fname',
-                                    allowBlank: false
-                                },
-                                {
-                                    width: 65,
-                                    xtype: 'textfield',
-                                    name: 'mname'
-                                },
-                                {
-                                    width: 105,
-                                    xtype: 'textfield',
-                                    name: 'lname'
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 150,
-                                    xtype: 'mitos.checkbox',
-                                    fieldLabel: i18n('active'),
-                                    name: 'active'
-                                },
-                                {
-                                    width: 150,
-                                    xtype: 'mitos.checkbox',
-                                    fieldLabel: i18n('authorized'),
-                                    name: 'authorized'
-                                },
-                                {
-                                    width: 150,
-                                    xtype: 'mitos.checkbox',
-                                    fieldLabel: i18n('calendar_q'),
-                                    name: 'calendar'
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: i18n('default_facility') + ': '
-                                },
-                                {
-                                    width: 100,
-                                    xtype: 'mitos.facilitiescombo',
-                                    name: 'facility_id'
-                                },
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: i18n('authorizations') + ': '
-                                },
-                                {
-                                    width: 105,
-                                    xtype: 'mitos.authorizationscombo',
-                                    name: 'see_auth'
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            items: [
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: i18n('access_control') + ': '
-                                },
-                                {
-                                    width: 100,
-                                    xtype: 'mitos.rolescombo',
-                                    name: 'role_id',
-                                    allowBlank: false
-                                },
-                                // not implemented yet
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: i18n('taxonomy') + ': '
-                                },
-                                {
-                                    width: 105,
-                                    xtype: 'textfield',
-                                    name: 'taxonomy'
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            items: [
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: i18n('federal_tax_id') + ': '
-                                },
-                                {
-                                    width: 100,
-                                    xtype: 'textfield',
-                                    name: 'federaltaxid'
-                                },
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: i18n('fed_drug_id') + ': '
-                                },
-                                {
-                                    width: 105,
-                                    xtype: 'textfield',
-                                    name: 'federaldrugid'
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            items: [
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: i18n('upin') + ': '
-                                },
-                                {
-                                    width: 100,
-                                    xtype: 'textfield',
-                                    name: 'upin'
-                                },
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: i18n('npi') + ': '
-                                },
-                                {
-                                    width: 105,
-                                    xtype: 'textfield',
-                                    name: 'npi'
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            items: [
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: i18n('job_description') + ': '
-                                },
-                                {
-                                    width: 315,
-                                    xtype: 'textfield',
-                                    name: 'specialty'
-                                }
-                            ]
-                        },
-                        {
-                            width: 410,
-                            height: 50,
-                            xtype: 'textfield',
-                            name: 'info',
-                            emptyText: i18n('additional_info')
-                        }
-                    ]
-                }
-            ],
-            buttons: [
-                {
-                    text: i18n('save'),
-                    cls: 'winSave',
-                    handler: function(){
-                        var form = me.win.down('form').getForm();
-                        if(form.isValid()){
-                            me.onUserSave(form, me.userStore);
-                        }
-                    }
-                },
-                '-',
-                {
-                    text: i18n('cancel'),
-                    scope: me,
-                    handler: function(btn){
-                        btn.up('window').close();
-                    }
-                }
-            ],
-            listeners: {
-                scope: me,
-                close: function(){
-                    me.action('close');
-                }
-            }
-        });
-        // END WINDOW
-        me.pageBody = [me.userGrid];
+
+        me.pageBody = [ me.userGrid ];
         me.callParent(arguments);
-    }, // end of initComponent
-    onNew: function(form, model, title){
-        this.setForm(form, title);
-        form.getForm().reset();
-        var newModel = Ext.ModelManager.create({
-            }, model);
-        form.getForm().loadRecord(newModel);
-        this.action('new');
-        this.win.show();
+
     },
-    onUserSave: function(form, store){
-        var me = this, password = form.findField('password').getValue(), id = form.findField('id').getValue();
-        if(password != ''){
-            User.chechPasswordHistory({
-                    password: password,
-                    id: id
-                }, function(provider, response){
-                    if(response.result.error){
-                        Ext.Msg.alert('Opps!', i18n('password_currently_used'));
-                    }else{
-                        me.saveUser(form, store);
-                    }
-                });
-        }else{
-            me.saveUser(form, store);
-        }
-    },
-    saveUser: function(form, store){
-        var me = this, record = form.getRecord(), values = form.getValues(), storeIndex = store.indexOf(record);
-        if(storeIndex == -1){
-            store.add(values);
-        }else{
-            record.set(values);
-        }
-        store.sync({
-            success:function(){
-                me.win.close();
-            },
-            failure:function(){
-                store.load();
-                me.msg('Opps!', i18n('username_exist_alert'), true);
-            }
+
+	onNewUser: function(){
+	    var me = this;
+
+		me.formEditing.cancelEdit();
+        me.userStore.insert(0,{
+	        create_date: new Date(),
+	        update_date: new Date(),
+	        create_uid: app.user.id,
+	        update_uid: app.user.id,
+	        active: 1,
+	        authorized: 0,
+	        calendar: 0
         });
+	    me.formEditing.startEdit(0,0);
     },
-    onItemdblclick: function(store, record, title){
-        var form = this.win.down('form');
-        this.setForm(form, title);
-        form.getForm().loadRecord(record);
-        this.action('old');
-        this.win.show();
-    },
-    setForm: function(form, title){
-        form.up('window').setTitle(title);
-    },
-    openWin: function(){
-        this.win.show();
-    },
-    action: function(action){
-        var win = this.win, form = win.down('form');
-        if(action == 'close'){
-            form.getForm().reset();
-        }
-    },
+
     /**
      * This function is called from Viewport.js when
      * this panel is selected in the navigation panel.
@@ -471,4 +434,3 @@ Ext.define('App.view.administration.Users', {
         callback(true);
     }
 });
-//ens UserPage class

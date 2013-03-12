@@ -281,7 +281,8 @@ class MatchaModel extends Matcha
         }
         catch(Exception $e)
         {
-            return MatchaErrorHandler::__errorProcess($e);
+            MatchaErrorHandler::__errorProcess($e);
+            return false;
         }
     }
 
@@ -303,7 +304,8 @@ class MatchaModel extends Matcha
         }
         catch(Exception $e)
         {
-            return MatchaErrorHandler::__errorProcess($e);
+            MatchaErrorHandler::__errorProcess($e);
+            return false;
         }
     }
 
@@ -618,7 +620,8 @@ class MatchaModel extends Matcha
         }
         catch(PDOException $e)
         {
-            return MatchaErrorHandler::__errorProcess($e);
+            MatchaErrorHandler::__errorProcess($e);
+            return false;
         }
     }
 
@@ -638,7 +641,8 @@ class MatchaModel extends Matcha
         }
         catch(PDOException $e)
         {
-            return MatchaErrorHandler::__errorProcess($e);
+            MatchaErrorHandler::__errorProcess($e);
+            return false;
         }
     }
 
@@ -659,7 +663,8 @@ class MatchaModel extends Matcha
         }
         catch(PDOException $e)
         {
-            return MatchaErrorHandler::__errorProcess($e);
+            MatchaErrorHandler::__errorProcess($e);
+            return false;
         }
     }
 
@@ -720,7 +725,8 @@ class MatchaModel extends Matcha
         }
         catch(PDOException $e)
         {
-            return MatchaErrorHandler::__errorProcess($e);
+            MatchaErrorHandler::__errorProcess($e);
+            return false;
         }
     }
 

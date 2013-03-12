@@ -17,8 +17,7 @@
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-Ext.apply(Ext.form.VTypes,
-{
+Ext.apply(Ext.form.VTypes,{
 
 	// ---------------------------------------
 	// Validate Empty fields, empty field not allowed
@@ -159,6 +158,78 @@ Ext.apply(Ext.form.VTypes,
 		var regexObj = /[A-Za-z][A-Za-z0-9_]*/;
 		return val.match(regexObj);
 	},
-	mysqlFieldText : i18n('vtype_mysqlField')
+	mysqlFieldText : i18n('vtype_mysqlField'),
 
-}); 
+	// ---------------------------------------
+	// Validate for a correct MySQL field
+	// compliance.
+	// NO SPACES, NO INVALID CHARACTERS
+	// ---------------------------------------
+	usernameField: function(val, field)
+	{
+		var username = val,
+			record = field.up('form').getForm().getRecord();
+		if(record.data.username != username){
+			User.usernameExist({username:val}, function(provider, response){
+				say('valid? '+ !response.result);
+				if(response.result){
+					setusernamevalidtrue();
+				}else{
+					setusernamevalidfalse();
+				}
+			});
+			say(true);
+			return true;
+		}else{
+			return true;
+		}
+	},
+	usernameFieldText: i18n('username_exist')
+
+});
+
+function setusernamevalidfalse() {
+	Ext.apply(Ext.form.field.VTypes, {
+		usernameField : function(val, field) {
+			var username = val,
+				record = field.up('form').getForm().getRecord();
+			if(record.data.username != username){
+				User.usernameExist({username:val}, function(provider, response){
+					say('valid? '+ !response.result);
+					if(!response.result){
+						setusernamevalidtrue();
+					}else{
+						setusernamevalidfalse();
+					}
+				});
+				say(false);
+				return false;
+			}else{
+				return true;
+			}
+		}
+	});
+}
+
+function setusernamevalidtrue() {
+	Ext.apply(Ext.form.field.VTypes, {
+		usernameField : function(val, field) {
+			var username = val,
+				record = field.up('form').getForm().getRecord();
+			if(record.data.username != username){
+				User.usernameExist({username:val}, function(provider, response){
+					say('valid? '+ !response.result);
+					if(!response.result){
+						setusernamevalidtrue();
+					}else{
+						setusernamevalidfalse();
+					}
+				});
+				say(true);
+				return true;
+			}else{
+				return true;
+			}
+		}
+	});
+}

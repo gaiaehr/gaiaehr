@@ -1219,6 +1219,9 @@ $API = array(
 			),
 			'getCurrentUserBasicData' => array(
 				'len' => 0
+			),
+			'usernameExist' => array(
+				'len' => 1
 			)
 		)
 	),

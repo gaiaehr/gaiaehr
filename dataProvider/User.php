@@ -100,12 +100,12 @@ class User
 
 
     /**
-     * @param $username
+     * @param $params
      * @return bool
      */
-    public function usernameExist($username)
+    public function usernameExist($params)
     {
-        $user = $this->u->load(array('username' => $username))->one();
+        $user = $this->u->load(array('username' => $params->username))->one();
         return !empty($user);
     }
 

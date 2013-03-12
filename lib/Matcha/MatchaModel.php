@@ -401,7 +401,7 @@ class MatchaModel extends Matcha
         // re-create the Sencha Model file.
         if(!self::__arrayToSenchaModel($senchaProperties['model'], $tmpModel)) return false;
         // check the database table
-        self::__SenchaModel($senchaProperties['model']);
+        if(!self::__SenchaModel($senchaProperties['model'])) return false;
         return true;
     }
 
@@ -423,7 +423,7 @@ class MatchaModel extends Matcha
         // re-create the Sencha Model file.
         if(!self::__arrayToSenchaModel($senchaProperties['model'], $tmpModel)) return false;
         // check the database table
-        self::__SenchaModel($senchaProperties['model']);
+        if(!self::__SenchaModel($senchaProperties['model'])) return false;
         return true;
     }
 
@@ -449,7 +449,7 @@ class MatchaModel extends Matcha
         // re-create the Sencha Model file.
         if(!self::__arrayToSenchaModel($senchaProperties['model'], $tmpModel)) return false;
         // check the database table
-        self::__SenchaModel($senchaProperties['model']);
+        if(!self::__SenchaModel($senchaProperties['model'])) return false;
         return true;
     }
 

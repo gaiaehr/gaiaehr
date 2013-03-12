@@ -248,6 +248,10 @@ class MatchaModel extends Matcha
                     }
                 }
             }
+
+            // deal with the database triggers
+
+
             return true;
         }
         catch(PDOException $e)
@@ -672,23 +676,46 @@ class MatchaModel extends Matcha
         try
         {
             if(!isset($senchaModel['triggers'])) return true;
-            foreach($senchaModel['triggers'] as $senchaTrigger)
+
+            $databaseTriggers = self::$__conn->query("SHOW TRIGGERS LIKE '".$senchaModel['table']['name']."';");
+
+            // get all the triggers names of each model (Sencha and Database-table)
+            foreach($databaseTriggers as $trigger) $tableTrigger[] = $trigger['Trigger'];
+            foreach($senchaModel['triggers'] as $trigger) $senchaTrigger[] = $trigger['name'];
+
+            // get all the triggers that are not present in the database-table and sencha model
+            $differentCreateTrigger = array_diff($senchaTrigger, $tableTrigger);
+            $differentDropTrigger = array_diff($tableTrigger, $senchaTrigger);
+
+            if( count($tableTrigger) <= 1 )
             {
-                $change = false;
-                $databaseTriggers = self::$__conn->query("SHOW TRIGGERS LIKE '".$senchaModel['table']['name']."';");
-                foreach($databaseTriggers as $databaseTrigger)
+                self::__createAllTriggers($senchaModel, $senchaModel['table']['name']);
+                return true;
+            }
+            elseif( count($differentCreateTrigger) || count($differentDropTrigger) )
+            {
+                foreach($differentCreateTrigger as $trigger) self::__createTrigger($senchaModel['table']['name'], $trigger);
+                foreach($differentDropTrigger as $trigger) self::__destroyTrigger( $senchaModel['table']['name'], $trigger['Trigger'] );
+            }
+            else
+            {
+                foreach($senchaModel['triggers'] as $senchaTrigger)
                 {
-                    if(strtolower($databaseTrigger['Trigger']) == strtolower($senchaTrigger['name']))
+                    $change = false;
+                    foreach($databaseTriggers as $databaseTrigger)
                     {
-                        if(strtolower($databaseTrigger['Event']) != strtolower($senchaTrigger['event'])) $change = true;
-                        if(strtolower($databaseTrigger['Timing']) != strtolower($senchaTrigger['time'])) $change = true;
-                        if(strtolower($databaseTrigger['Statement']) != strtolower($senchaTrigger['definition'])) $change = true;
+                        if(strtolower($databaseTrigger['Trigger']) == strtolower($senchaTrigger['name']))
+                        {
+                            if(strtolower($databaseTrigger['Event']) != strtolower($senchaTrigger['event'])) $change = true;
+                            if(strtolower($databaseTrigger['Timing']) != strtolower($senchaTrigger['time'])) $change = true;
+                            if(strtolower($databaseTrigger['Statement']) != strtolower($senchaTrigger['definition'])) $change = true;
+                            if($change)
+                            {
+                                self::__destroyTrigger( $senchaModel['table']['name'], $databaseTrigger['Trigger'] );
+                                self::__createTrigger($senchaModel['table']['name'], $senchaTrigger);
+                            }
+                        }
                     }
-                }
-                if($change)
-                {
-                    self::__destroyTrigger($senchaModel['table']['name'], $senchaTrigger['name']);
-                    self::__createTrigger($senchaModel['table']['name'], $senchaTrigger);
                 }
             }
             return true;

@@ -28,7 +28,11 @@ class FormLayoutBuilder {
     /**
      * @var
      */
-    private $form_data_table;
+    private $table;
+	/**
+	 * @var
+	 */
+	private $model;
     /**
      * @var
      */
@@ -51,9 +55,12 @@ class FormLayoutBuilder {
     public function createFormField(stdClass $params){
 
         $data = get_object_vars($params);
-        $this->getFormDataTable($data['form_id']);
+
+        $this->getFormTable($data['form_id']);
+        $this->getFormModel($data['form_id']);
         $this->col  = $data['name'];
-        $container  = false;
+
+	    $container  = false;
         /**
          * lets defines what is a container for later use.
          */
@@ -75,7 +82,7 @@ class FormLayoutBuilder {
             if(!$container){
 
                 if(!$this->fieldHasColumn()){
-                    $this->addColumn('TEXT');
+                    $this->addFieldModel();
                 }
             }
             /**
@@ -129,8 +136,14 @@ class FormLayoutBuilder {
      */
     public function updateField(stdClass $params)
     {
+
+
         $data               = get_object_vars($params);
         $data               = $this->sanitizedData($data);
+
+	    $this->getFormTable($data['form_id']);
+	    $this->getFormModel($data['form_id']);
+
         $field              = array();
 	    $field['xtype']     = $data['xtype'];
         $field['form_id']   = intval($data['form_id']);
@@ -166,8 +179,11 @@ class FormLayoutBuilder {
     public function removeFormField(stdClass $params)
     {
         $data = get_object_vars($params);
-        $this->getFormDataTable($data['form_id']);
-        $this->col = $data['name'];
+
+	    $this->getFormTable($data['form_id']);
+	    $this->getFormModel($data['form_id']);
+
+	    $this->col = $data['name'];
         $container = false;
         /**
          * lets defines what is a container for later use.
@@ -204,7 +220,7 @@ class FormLayoutBuilder {
          * column for this field
          */
         if(!$container && !$this->fieldHasBrother()){
-            $this->dropColumn();
+            $this->removeFieldModel();
         }
         /**
          * remove field and field options
@@ -225,29 +241,28 @@ class FormLayoutBuilder {
      * @version     Vega 1.0
      * @copyright   Gnu Public License (GPLv3)
      *
-     * @param       $conf
      * @return      mixed
      */
-    private function addColumn($conf)
+    private function addFieldModel()
     {
 
-//	    $array = array(
-//		    'model' => 'App.model.patient.Patient',
-//	        'field' => array(
-//			    'name' => 'fieldname',
-//			    'type' => 'fieldtype'
-//		    )
-//	    );
-//	    MatchaModel::AddFieldModel($array);
+        $array = array(
+		    'model' => "$this->model",
+	        'field' => array(
+			    'name' => "$this->col",
+			    'type' => 'string'
+		    )
+	    );
+	    MatchaModel::addFieldsToModel($array);
 
+//        $this->db->setSQL("ALTER TABLE $this->table ADD $this->col $conf");
+//        $this->db->execOnly();
+//        if(!$this->fieldHasColumn()) {
+//	        return false;
+//        }else{
+//	        return true;
+//        }
 
-        $this->db->setSQL("ALTER TABLE $this->form_data_table ADD $this->col $conf");
-        $this->db->execOnly();
-        if(!$this->fieldHasColumn()) {
-	        return false;
-        }else{
-	        return true;
-        }
     }
 
     /**
@@ -260,25 +275,25 @@ class FormLayoutBuilder {
      *
      * @return      mixed
      */
-    private function dropColumn()
+    private function removeFieldModel()
     {
 
-//	    $array = array(
-//		    'model' => 'App.model.patient.Patient',
-//		    'field' => array(
-//			    'name' => 'fieldname'
-//		    )
-//	    );
-//	    MatchaModel::removeFieldModel($array);
+	    $array = array(
+		    'model' => "$this->model",
+		    'field' => array(
+			    'name' => "$this->col"
+		    )
+	    );
+	    MatchaModel::removeFieldsFromModel($array);
 
+//        $this->db->setSQL("ALTER TABLE $this->table DROP $this->col");
+//        $this->db->execOnly();
+//        if($this->fieldHasColumn()) {
+//	        return false;
+//        }else{
+//	        return true;
+//        }
 
-        $this->db->setSQL("ALTER TABLE $this->form_data_table DROP $this->col");
-        $this->db->execOnly();
-        if($this->fieldHasColumn()) {
-	        return false;
-        }else{
-	        return true;
-        }
     }
 
 	/**
@@ -319,10 +334,17 @@ class FormLayoutBuilder {
      * @param $form_id
      * @return mixed
      */
-    private function getFormDataTable($form_id){
+    private function getFormTable($form_id){
         $this->db->setSQL("SELECT form_data FROM forms_layout WHERE id = '$form_id'");
         $form_data_table = $this->db->fetchRecord();
-        $this->form_data_table = $form_data_table['form_data'];
+        $this->table = $form_data_table['form_data'];
+        return;
+    }
+
+    private function getFormModel($form_id){
+        $this->db->setSQL("SELECT model FROM forms_layout WHERE id = '$form_id'");
+        $model= $this->db->fetchRecord();
+        $this->model = $model['model'];
         return;
     }
 
@@ -330,7 +352,7 @@ class FormLayoutBuilder {
      * @return bool
      */
     private function fieldHasColumn(){
-        $this->db->setSQL("SELECT * FROM information_schema.COLUMNS WHERE TABLE_NAME = '$this->form_data_table' AND COLUMN_NAME = '$this->col'");
+        $this->db->setSQL("SELECT * FROM information_schema.COLUMNS WHERE TABLE_NAME = '$this->table' AND COLUMN_NAME = '$this->col'");
         $ret = $this->db->fetchRecords(PDO::FETCH_ASSOC);
         if(isset($ret[0]['COLUMN_NAME'])) {
             return true;
@@ -372,7 +394,7 @@ class FormLayoutBuilder {
      * @return bool
      */
     private function filedInUsed(){
-        $this->db->setSQL("SELECT $this->col FROM $this->form_data_table");
+        $this->db->setSQL("SELECT $this->col FROM $this->table");
         $ret = $this->db->fetchRecords(PDO::FETCH_ASSOC);
         if(isset($ret[0])){
             return true;

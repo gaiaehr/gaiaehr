@@ -388,7 +388,7 @@ class MatchaModel extends Matcha
      * @param array $senchaProperties
      * @return bool
      */
-    public function addFieldsToModel($senchaProperties = array())
+    public static function addFieldsToModel($senchaProperties = array())
     {
         if(!count($senchaProperties)) return false;
         foreach($senchaProperties as $property)
@@ -410,7 +410,7 @@ class MatchaModel extends Matcha
      * @param array $senchaProperties
      * @return bool
      */
-    public function removeFieldsFromModel($senchaProperties = array())
+    public static function removeFieldsFromModel($senchaProperties = array())
     {
         if(!count($senchaProperties)) return false;
         foreach($senchaProperties as $property)
@@ -437,7 +437,7 @@ class MatchaModel extends Matcha
      * @param array $senchaProperties
      * @return bool
      */
-    public function modifyFieldsFromModel($senchaProperties = array())
+    public static function modifyFieldsFromModel($senchaProperties = array())
     {
         if(!count($senchaProperties)) return false;
         foreach($senchaProperties as $property)

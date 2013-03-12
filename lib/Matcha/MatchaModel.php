@@ -488,7 +488,7 @@ class MatchaModel extends Matcha
             if(!$fileObject) throw new Exception('Could not create or open the Sencha Model file.');
             if(!@fwrite($fileObject,$jsSenchaModel,strlen($jsSenchaModel))) throw new Exception('Could not write the Sencha Model file.');
             @fclose($fileObject);
-            if(!@chmod($file,775)) throw new Exception('Could not chmod the Sencha Model file.');
+            if(!@chmod($file,0775)) throw new Exception('Could not chmod the Sencha Model file.');
             return true;
         }
         catch(Exception $e)

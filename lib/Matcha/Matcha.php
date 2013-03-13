@@ -21,6 +21,7 @@ include_once('MatchaCUP.php');
 include_once('MatchaErrorHandler.php');
 include_once('MatchaModel.php');
 include_once('MatchaUtils.php');
+include_once('MatchaMemory.php');
 
 // Include the Matcha Threads if the PHP Thread class exists
 if(class_exists('Thread')) include_once('MatchaThreads.php');

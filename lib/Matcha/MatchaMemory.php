@@ -16,3 +16,169 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+class MatchaMemory extends Matcha
+{
+
+    /**
+     * function __createMemoryModel():
+     * Method to create the HEAP(memory) table this will hold the Sencha Model
+     * metadata. This will speed up the model read times and, also will
+     * hold a already parsed version of the sencha model.
+     * @return bool
+     */
+    public static function __createMemoryModel()
+    {
+        try
+        {
+            // set the heap to 16MB
+            $setHeap = 'SET max_heap_table_size = 1024*1024*16;';
+
+            // create the table in memory
+            $sql = 'CREATE TABLE IF NOT EXISTS `senchamodel` (
+                        `id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                        `model` VARCHAR(50),
+                        `modelData` VARCHAR(6000),
+                        `modelLastChange` TIMESTAMP NULL
+                    ) ENGINE = MEMORY;';
+            self::$__conn->query($setHeap);
+            self::$__conn->query($sql);
+            return true;
+        }
+        catch(PDOException $e)
+        {
+            MatchaErrorHandler::__errorProcess($e);
+            return false;
+        }
+    }
+
+    /**
+     * function __checkMemoryModel():
+     * Method to check if the Sencha Memory Table exists if not create the
+     * memory table.
+     */
+    public static function __checkMemoryModel()
+    {
+        try
+        {
+            $recordSet = self::$__conn->query("SHOW TABLES LIKE 'senchamodel';")->fetch();
+            if(!is_array($recordSet)) self::__createMemoryModel();
+        }
+        catch(PDOException $e)
+        {
+            MatchaErrorHandler::__errorProcess($e);
+            return false;
+        }
+    }
+
+    /**
+     * function __storeSenchaModel($senchaModelName = NULL, $senchaModelArray = array()):
+     * Method to store the already parsed Sencha Model into server side memory using
+     * MySQL HEAP(Memory) table
+     * @param null $senchaModelName
+     * @param array $senchaModelArray
+     * @return bool
+     */
+    public static function __storeSenchaModel($senchaModelName = NULL, $senchaModelArray = array())
+    {
+        try
+        {
+            self::__checkMemoryModel();
+            self::__destroySenchaMemoryModel($senchaModelName);
+            $sql = "INSERT INTO `senchamodel` (model, modelData, modelLastChange) VALUES ('".$senchaModelName."', '".serialize($senchaModelArray)."', FROM_UNIXTIME(".MatchaModel::__getFileModifyDate($senchaModelName)."))";
+            self::$__conn->query($sql);
+            return true;
+        }
+        catch(PDOException $e)
+        {
+            MatchaErrorHandler::__errorProcess($e);
+            return false;
+        }
+    }
+
+    /**
+     * function __getModelFromMemory($senchaModel = NULL):
+     * Method to get the sencha model from the server side memory(HEAP)
+     * and return a Array.
+     * @param null $senchaModel
+     * @return bool|mixed
+     */
+    public static function __getModelFromMemory($senchaModel = NULL)
+    {
+        try
+        {
+            self::__checkMemoryModel();
+            $model = self::$__conn->query("SELECT * FROM senchamodel WHERE model='".$senchaModel."';")->fetch();
+            if(is_array($model)) return unserialize($model['modelData']); else return false;
+        }
+        catch(PDOException $e)
+        {
+            MatchaErrorHandler::__errorProcess($e);
+            return false;
+        }
+    }
+
+    /**
+     * function __getModelLastChange($senchaModel = NULL):
+     * Method to get the last modified date in Unix TIMESTAMP format
+     * @param null $senchaModel
+     * @return bool
+     */
+    public static function __getSenchaModelLastChange($senchaModel = NULL)
+    {
+        try
+        {
+            self::__checkMemoryModel();
+            $model = self::$__conn->query("SELECT * FROM senchamodel WHERE model='".$senchaModel."';")->fetch();
+            if(is_array($model)) return strtotime($model['modelLastChange']); else return false;
+        }
+        catch(PDOException $e)
+        {
+            MatchaErrorHandler::__errorProcess($e);
+            return false;
+        }
+    }
+
+
+    /**
+     * function __isModelInMemory($senchaModel = NULL):
+     * Method to check if a sencha model is loaded into memory.
+     * @param null $senchaModel
+     * @return bool
+     */
+    public static function __isModelInMemory($senchaModel = NULL)
+    {
+        try
+        {
+            self::__checkMemoryModel();
+            $model = self::$__conn->query("SELECT * FROM senchamodel WHERE model='".$senchaModel."';")->fetch();
+            if(is_array($model)) return true; else return false;
+        }
+        catch(PDOException $e)
+        {
+            MatchaErrorHandler::__errorProcess($e);
+            return false;
+        }
+    }
+
+    /**
+     * function __destroySenchaMemoryModel($senchaModel = NULL):
+     * Method to delete a sencha model stored in memory.
+     * @param null $senchaModel
+     * @return bool
+     */
+    public static function __destroySenchaMemoryModel($senchaModel = NULL)
+    {
+        try
+        {
+            self::__checkMemoryModel();
+            self::$__conn->query("DELETE FROM senchamodel WHERE model='".$senchaModel."';");
+            return true;
+        }
+        catch(PDOException $e)
+        {
+            MatchaErrorHandler::__errorProcess($e);
+            return false;
+        }
+    }
+
+}

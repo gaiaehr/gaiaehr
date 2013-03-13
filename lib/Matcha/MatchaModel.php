@@ -83,6 +83,9 @@ class MatchaModel extends Matcha
             unset($differentCreateColumns[MatchaUtils::__recursiveArraySearch('id', $differentCreateColumns)]);
             unset($workingModel[MatchaUtils::__recursiveArraySearch('id', $workingModel)]);
 
+            // deal with the sencha triggers
+            self::__diffTriggers(self::$__senchaModel);
+
             // check if the table has columns, if not create them.
             if( count($tableColumns) <= 1 )
             {
@@ -155,9 +158,6 @@ class MatchaModel extends Matcha
                     }
                 }
             }
-
-            // deal with the database triggers
-
 
             return true;
         }
@@ -528,7 +528,7 @@ class MatchaModel extends Matcha
 
     /**
      * function __renderSenchaFieldSyntax($tableColumn):
-     * Method to render the syntax for the Sencha Model fields
+     * Method to render and return the syntax for the Sencha Model fields
      */
     public function __renderSenchaFieldSyntax($tableColumn)
     {
@@ -553,12 +553,14 @@ class MatchaModel extends Matcha
     }
 
 	/**
-	 *
+	 * function __getFieldType($fieldName, $model):
+     * Method to do a lookup in the model to look for the field type.
 	 * @param $fieldName
 	 * @param $model
 	 * @return mixed
 	 */
-	static public function __getFieldType($fieldName, $model){
+	static public function __getFieldType($fieldName, $model)
+    {
 		$fields = (is_object($model) ? MatchaUtils::__objectToArray($model->fields) : $model['fields']);
 		$index = MatchaUtils::__recursiveArraySearch($fieldName, $fields);
 		return $fields[$index]['type'];
@@ -610,7 +612,7 @@ class MatchaModel extends Matcha
      * function __createAllTriggers($senchaModel, $table):
      * Method to create the triggers from sencha model
      */
-    private function __createAllTriggers($senchaModel, $table)
+    static private function __createAllTriggers($senchaModel, $table)
     {
         try
         {
@@ -629,13 +631,14 @@ class MatchaModel extends Matcha
      * function __createTriggers($senchaModel, $table):
      * Method to create the triggers from sencha model
      */
-    private function __createTrigger($table, $trigger)
+    static private function __createTrigger($table, $trigger)
     {
         try
         {
-            $insert = 'delimiter //'.chr(13);
-            $insert .= 'CREATE TRIGGER '.$trigger['name'].' '.$trigger['time'].' '.$trigger['event'].' ON '.$table. ' '.$trigger['definition'].'//'.chr(13);
-            $insert .= 'delimiter ;'.chr(13);
+            $insert = 'DELIMITER $$ '.chr(13);
+            $insert .= 'CREATE TRIGGER '.$trigger['name'].' '.$trigger['time'].' '.$trigger['event'].' ON '.$table. ' '.$trigger['definition'].'; $$ '.chr(13);
+            $insert .= 'DELIMITER ;'.chr(13);
+            echo $insert.'<br>';
             self::$__conn->query($insert);
             return true;
         }
@@ -653,7 +656,7 @@ class MatchaModel extends Matcha
      * @param $triggerName
      * @return bool
      */
-    private function __destroyTrigger($table, $triggerName)
+    static private function __destroyTrigger($table, $triggerName)
     {
         try
         {
@@ -674,15 +677,16 @@ class MatchaModel extends Matcha
      * @param $senchaModel
      * @return bool
      */
-    private function __diffTriggers($senchaModel)
+    static private function __diffTriggers($senchaModel)
     {
         try
         {
-            if(!isset($senchaModel['triggers'])) return true;
+            if(empty($senchaModel['triggers'])) return false;
 
             $databaseTriggers = self::$__conn->query("SHOW TRIGGERS LIKE '".$senchaModel['table']['name']."';");
-
             // get all the triggers names of each model (Sencha and Database-table)
+            $tableTrigger = array();
+            $senchaTrigger = array();
             foreach($databaseTriggers as $trigger) $tableTrigger[] = $trigger['Trigger'];
             foreach($senchaModel['triggers'] as $trigger) $senchaTrigger[] = $trigger['name'];
 
@@ -731,4 +735,3 @@ class MatchaModel extends Matcha
     }
 
 }
-

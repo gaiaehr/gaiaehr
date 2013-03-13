@@ -638,7 +638,6 @@ class MatchaModel extends Matcha
             $insert = 'DELIMITER $$ '.chr(13);
             $insert .= 'CREATE TRIGGER '.$trigger['name'].' '.$trigger['time'].' '.$trigger['event'].' ON '.$table. ' '.$trigger['definition'].'; $$ '.chr(13);
             $insert .= 'DELIMITER ;'.chr(13);
-            echo $insert.'<br>';
             self::$__conn->query($insert);
             return true;
         }

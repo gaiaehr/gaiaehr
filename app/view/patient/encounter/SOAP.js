@@ -29,8 +29,8 @@ Ext.define('App.view.patient.encounter.SOAP', {
 
 		me.snippets = Ext.create('Ext.tree.Panel', {
 			title:i18n('snippets'),
-			collapsible:true,
-			collapsed:true,
+//			collapsible:true,
+//			collapsed:true,
 			split:true,
 			width:300,
 			region:'west',
@@ -126,7 +126,7 @@ Ext.define('App.view.patient.encounter.SOAP', {
 			autoScroll:true,
 			action:'encounter',
 			bodyStyle:'background-color:white',
-			bodyPadding:5,
+			//bodyPadding:5,
 			region:'center',
 			fieldDefaults:{
 				msgTarget:'side'
@@ -137,6 +137,32 @@ Ext.define('App.view.patient.encounter.SOAP', {
 				syncAcl:acl['edit_encounters']
 			},
 			items:[
+				me.pWin = Ext.widget('window',{
+					title:i18n('procedure'),
+					maximized:true,
+					closable:false,
+					constrain:true,
+					closeAction:'hide',
+					layout:'fit',
+					items:[
+						{
+							xtype:'form'
+						}
+					],
+					buttons:[
+						{
+							text:i18n('cancel'),
+							scope:me,
+							handler:me.pWindowCancel
+						},
+						{
+							text:i18n('save'),
+							scope:me,
+							handler:me.pWinSave
+						}
+					]
+
+				}),
 //				{
 //					xtype:'fieldset',
 //					title:i18n('review_of_system'),
@@ -160,6 +186,7 @@ Ext.define('App.view.patient.encounter.SOAP', {
 				{
 					xtype:'fieldset',
 					title:i18n('subjective'),
+					margin:5,
 					items:[
 						me.sField = Ext.widget('textarea',{
 							name:'subjective',
@@ -175,6 +202,7 @@ Ext.define('App.view.patient.encounter.SOAP', {
 				{
 					xtype:'fieldset',
 					title:i18n('objective'),
+					margin:5,
 					items:[
 						me.oField = Ext.widget('textarea',{
 							name:'objective',
@@ -186,19 +214,42 @@ Ext.define('App.view.patient.encounter.SOAP', {
 						})
 					]
 				},
-				{
-					xtype:'grid',
+				me.pGrid = Ext.widget('grid',{
 					frame:true,
 					name:'procedures',
+					margin:5,
+					store: Ext.create('Ext.data.Store', {
+						storeId:'simpsonsStore',
+						fields:['code', 'description', 'text'],
+						data:{'items':[
+							{ 'code': '25468', "description":"lisa@simpsons.com", "text":"ddddddddd" },
+							{ 'code': '48575', "description":"bart@simpsons.com", "text":"aaaaaaaaa" },
+							{ 'code': '95874', "description":"home@simpsons.com", "text":"ggggggggg" },
+							{ 'code': '36547', "description":"marg@simpsons.com", "text":"nnnnnnnnn" }
+						]},
+						proxy: {
+							type: 'memory',
+							reader: {
+								type: 'json',
+								root: 'items'
+							}
+						}
+					}),
 					columns:[
 						{
-							text:i18n('code')
+							text:i18n('code'),
+							dataIndex:'code'
 						},
 						{
 							text:i18n('description'),
+							dataIndex:'description',
 							flex:1
 						}
 					],
+					listeners:{
+						scope:me,
+						itemdblclick:me.onProcedureDbClick
+					},
 					dockedItems:[
 						{
 							xtype:'toolbar',
@@ -221,10 +272,11 @@ Ext.define('App.view.patient.encounter.SOAP', {
 						}
 
 					]
-				},
+				}),
 				{
 					xtype:'fieldset',
 					title:i18n('assessment'),
+					margin:5,
 					items:[
 						me.aField = Ext.widget('textarea',{
 							name:'assessment',
@@ -242,6 +294,7 @@ Ext.define('App.view.patient.encounter.SOAP', {
 				{
 					xtype:'fieldset',
 					title:i18n('plan'),
+					margin:5,
 					items:[
 						me.pField = Ext.widget('textarea',{
 							name:'plan',
@@ -314,8 +367,24 @@ Ext.define('App.view.patient.encounter.SOAP', {
 		me.callParent();
 	},
 
+	pWindowCancel:function(){
+		this.pWin.hide(this.pGrid.el);
+		this.pWin.setTitle(i18n('procedure'));
+	},
+
+	pWindowSave:function(){
+
+	},
+
+	onProcedureDbClick:function(view, record){
+		say(view);
+		say(record);
+		this.pWin.setTitle('[' + record.data.code + '] ' + record.data.description);
+		this.pWin.show(this.pGrid.el);
+	},
+
 	onSoapSave:function(btn){
-		this.snippets.collapse(false);
+//		this.snippets.collapse(false);
 		this.enc.onEncounterUpdate(btn)
 	},
 
@@ -326,7 +395,7 @@ Ext.define('App.view.patient.encounter.SOAP', {
 	onFieldFocus:function(field){
 		if(typeof field.name == 'undefined') field.name = 'procedure';
 		this.snippets.setTitle(i18n(field.name) +' '+ i18n('templates'));
-		this.snippets.expand(false);
+//		this.snippets.expand(false);
 		if(this.snippets.action != field.name) this.snippetStore.load({params:{category:field.name}});
 		this.snippets.action = field.name;
 	},

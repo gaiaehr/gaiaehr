@@ -1,20 +1,20 @@
 <?php
 /**
-GaiaEHR (Electronic Health Records)
-Copyright (C) 2013 Certun, inc.
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * GaiaEHR (Electronic Health Records)
+ * Copyright (C) 2013 Certun, inc.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 if(!isset($_SESSION)) {
@@ -83,17 +83,16 @@ class FormLayoutEngine
 		 * define $items as an array to push all the $item into.
 		 */
 		$items = array();
-		$items2 = array();
 		/**
 		 * get the form parent fields
 		 */
 		$this->db->setSQL("Select ff.*
-                         FROM forms_fields AS ff
-                    LEFT JOIN forms_layout AS fl
-                           ON ff.form_id = fl.id
-                        WHERE (fl.name = '$params->formToRender' OR fl.id = '$params->formToRender')
-                          AND (ff.parentId IS NULL OR ff.parentId = 'NaN')
-                     ORDER BY pos ASC, ff.id ASC");
+                         FROM `forms_fields` AS ff
+                    LEFT JOIN `forms_layout` AS fl
+                           ON ff.`form_id` = fl.`id`
+                        WHERE (fl.`name` = '$params->formToRender' OR fl.`id` = '$params->formToRender')
+                          AND ff.`parentId` = 'root'
+                     ORDER BY ff.`index` ASC, ff.`id` ASC");
 		/**
 		 * for each parent item lets get all the options and children items
 		 */
@@ -227,17 +226,17 @@ class FormLayoutEngine
 	}
 
 	/**
-	 * @param $parent
+	 * @param $parentId
 	 * @return array
 	 *
 	 * Here we use the parent id to get the child items and it options
 	 * using basically the same logic of getFields() function and returning
 	 * an array of child items
 	 */
-	function getChildItems($parent)
+	function getChildItems($parentId)
 	{
 		$items = array();
-		$this->db->setSQL("Select * FROM forms_fields WHERE parentId = '$parent' ORDER BY pos ASC");
+		$this->db->setSQL("Select * FROM `forms_fields` WHERE `parentId` = '$parentId' ORDER BY `index` ASC, `id` ASC");
 		foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) as $item) {
 			$opts = $this->getItemsOptions($item['id']);
 			foreach($opts as $opt => $val) {
@@ -259,7 +258,7 @@ class FormLayoutEngine
 			 */
 			$item['items'] = $this->getChildItems($item['id']);
 			if($item['items'] == null) unset($item['items']);
-			unset($item['id'], $item['form_id'], $item['parentId'], $item['pos']);
+			unset($item['id'], $item['form_id'], $item['parentId']);
 			array_push($items, $item);
 		}
 		return $items;
@@ -272,7 +271,7 @@ class FormLayoutEngine
 	function getItemsOptions($item_id)
 	{
 		$foo = array();
-		$this->db->setSQL("Select options FROM forms_field_options WHERE field_id = '$item_id'");
+		$this->db->setSQL("Select `options` FROM `forms_field_options` WHERE `field_id` = '$item_id'");
 		$options = $this->db->fetchRecord();
 		$options = json_decode($options['options'], true);
 		foreach($options as $option => $value) {

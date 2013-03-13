@@ -1,20 +1,20 @@
 <?php
 /**
-GaiaEHR (Electronic Health Records)
-Copyright (C) 2013 Certun, inc.
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * GaiaEHR (Electronic Health Records)
+ * Copyright (C) 2013 Certun, inc.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 if(!isset($_SESSION)){
@@ -36,7 +36,7 @@ class FormLayoutBuilder {
     /**
      * @var
      */
-    private $col;
+    private $name;
     /**
      * @var MatchaHelper
      */
@@ -48,84 +48,159 @@ class FormLayoutBuilder {
         $this->db = new MatchaHelper();
         return;
     }
-    /**
-     * @param stdClass $params
-     * @return array
-     */
+
+	/**
+	 * @param stdClass $params
+	 * @throws Exception
+	 * @return array
+	 */
     public function createFormField(stdClass $params){
 
-        $data = get_object_vars($params);
+		try{
+			$data = get_object_vars($params);
+			$this->getFormTable($data['form_id']);
+			$this->getFormModel($data['form_id']);
+			$this->name  = $data['name'];
 
-        $this->getFormTable($data['form_id']);
-        $this->getFormModel($data['form_id']);
-        $this->col  = $data['name'];
+			$container  = false;
+			/**
+			 * lets defines what is a container for later use.
+			 */
+			if( $data['xtype'] == 'fieldcontainer' || $data['xtype'] == 'fieldset' ) $container = true;
+			/**
+			 * if getFieldDataCol returns true, means there is a column in the
+			 * current database form table. in that case we need to return that
+			 * error letting the user know there is a duplicated field or duplicated
+			 * name property. The user has 2 options, verify the form to make sure
+			 * the the field is not getting duplicated or change the name property
+			 * to save the field data inside another column.
+			 */
+			if($this->fieldHasColumn() && $data['xtype'] != 'radiofield') {
+				throw new Exception("Field '$this->name' exist, please verify the form or change the Field 'name' preoperty");
+			}else{
+				/**
+				 * since now we know the column doesn't exist, lets create one for the new field
+				 */
+				if(!$container && !$this->fieldHasColumn()){
+					if(!$this->addFieldModel()) throw new Exception("Unable to modified '$this->model' sencha model");
+				}
+				/**
+				 * sanitized Data check the data array and if
+				 * the value is empty delete it form the array
+				 * then check the value and if is equal to "on"
+				 * set it to true, and "off" set it to false
+				 */
+				$data = $this->sanitizedData($data);
+				/**
+				 * if not xtype fieldcontainer and fieldset the add some
+				 * default values.
+				 */
+				$data = $this->setDefaults($data);
+				/**
+				 * now lets start creating the field in the database
+				 */
+				$field              = array();
+				$field['xtype']     = $data['xtype'];
+				$field['form_id']   = intval($data['form_id']);
+				$field['parentId']  = $data['parentId'];
+				$field['index']     = $data['index'];
 
-	    $container  = false;
-        /**
-         * lets defines what is a container for later use.
-         */
-        if( $data['xtype'] == 'fieldcontainer' || $data['xtype'] == 'fieldset' ) $container = true;
-        /**
-         * if getFieldDataCol returns true, means there is a column in the
-         * current database form table. in that case we need to return that
-         * error letting the user know there is a duplicated field or duplicated
-         * name property. The user has 2 options, verify the form to make sure
-         * the the field is not getting duplicated or change the name property
-         * to save the field data inside another column.
-         */
-        if($this->fieldHasColumn() && $data['xtype'] != 'radiofield') {
-            return array('success' => false, 'error'=> 'Field \"'.$this->col.'\" exist, please verify the form or change the Field \"name\" preoperty');
-        }else{
-            /**
-             * since now we know the column doesn't exist, lets create one for the new field
-             */
-            if(!$container){
+				unset($data['id'],$data['xtype'],$data['form_id'],$data['parentId'],$data['index'],$data['leaf']);
+				/**
+				 * Exec the new field sql statement and store the its ID
+				 * in $field_id to then store its options
+				 */
+				$this->db->setSQL($this->db->sqlBind($field, 'forms_fields', 'I'));
+				$this->db->execLog();
+				$params->id = $this->db->lastInsertId;
+				/**
+				 * take each option and insert it in the forms_field_options
+				 * table using $field_id
+				 */
+				if($params->id != 0){
+					$this->setFieldOptions($data, $params->id, true);
+				}else{
+					throw new Exception("Unable to save '$this->name' field");
+				}
 
-                if(!$this->fieldHasColumn()){
-                    $this->addFieldModel();
-                }
-            }
-            /**
-             * sanitized Data check the data array and if
-             * the value is empty delete it form the array
-             * then check the value and if is equal to "on"
-             * set it to true, and "off" set it to false
-             */
-            $data = $this->sanitizedData($data);
-            /**
-             * if not xtype fieldcontainer and fieldset the add some
-             * default values.
-             */
-            $data = $this->setDefaults($data);
-            /**
-             * now lets start creating the field in the database
-             */
-            $field              = array();
-            $field['form_id']   = $data['form_id'];
-            $field['xtype']     = $data['xtype'];
+				return $params;
+			}
+		}catch(Exception $e){
+			return $e;
+		}
 
-	        $field              = array();
-		    $field['xtype']     = $data['xtype'];
-	        $field['form_id']   = intval($data['form_id']);
-	        $field['parentId']  = $data['parentId'];
-	        $field['pos']       = intval($data['pos']);
 
-	        unset($data['id'],$data['xtype'],$data['form_id'],$data['parentId'],$data['pos'],$data['leaf']);
-            /**
-             * Exec the new field sql statement and store the its ID
-             * in $field_id to then store its options
-             */
-            $this->db->setSQL($this->db->sqlBind($field, 'forms_fields', 'I'));
-            $this->db->execLog();
-	        $params->id = $this->db->lastInsertId;
-            /**
-             * take each option and insert it in the forms_field_options
-             * table using $field_id
-             */
-            $this->setFieldOptions($data, $params->id, true);
-            return $params;
-        }
     }
+
+	/**
+	 * This function will delete the field and print success is no
+	 * error were found along the way.
+	 *
+	 * @param stdClass $params
+	 * @throws Exception
+	 * @return array
+	 */
+	public function removeFormField(stdClass $params)
+	{
+		try{
+			$data = get_object_vars($params);
+
+			$this->getFormTable($data['form_id']);
+			$this->getFormModel($data['form_id']);
+
+			$this->name = $data['name'];
+			$container = false;
+			/**
+			 * lets defines what is a container for later use.
+			 */
+			if( $data['xtype'] == 'fieldcontainer' || $data['xtype'] == 'fieldset' ) $container = true;
+			/**
+			 * check for all kind ao error combination and exit the
+			 * script if error found. If not, then continue.
+			 */
+			if($container){
+				/**
+				 * for fieldcontainers and fieldsets lets make sure the
+				 * field does NOT have child items
+				 */
+				if($this->fieldHasChild($data['id'])){
+					throw new Exception('This field has one or more child field(s). Please, remove or moved the child fields before removing this field.');
+				}
+			}else{
+				/**
+				 * for all other fields lats check that the item has a
+				 * column in the database and that the column is empty
+				 * the user can NOT delete field with data in it.
+				 */
+				if(!$this->fieldHasColumn()) {
+					throw new Exception('This field does NOT have a column in the database.<br> This is very odd... please cotact Technical Support for help');
+				}else{
+					if($this->filedInUsed()){
+						throw new Exception('Can NOT delete this field. This field already has data store in the database.');
+					}
+				}
+			}
+			/**
+			 * If the field is NOT a container the remove database
+			 * column for this field
+			 */
+			if(!$container && !$this->fieldHasBrother()){
+				if(!$this->removeFieldModel()) throw new Exception("Unable to modified '$this->model' sencha model");
+			}
+			/**
+			 * remove field and field options
+			 */
+			$id = $data['id'];
+			$this->db->setSQL("DELETE FROM `forms_fields` WHERE `id` ='$id'");
+			$this->db->execOnly();
+			$this->db->setSQL("DELETE FROM `forms_field_options` WHERE field_id='$id'");
+			$this->db->execOnly();
+			return array('success' => true);
+		}catch (Exception $e){
+			return $e;
+		}
+
+	}
 
     /**
      * This function will update the fields and print
@@ -134,29 +209,31 @@ class FormLayoutBuilder {
      * @param stdClass $params
      * @return array
      */
-    public function updateField(stdClass $params)
+    public function updateField($params)
     {
+		try{
+			$data               = get_object_vars($params);
+			$data               = $this->sanitizedData($data);
 
+			$this->getFormTable($data['form_id']);
+			$this->getFormModel($data['form_id']);
 
-        $data               = get_object_vars($params);
-        $data               = $this->sanitizedData($data);
+			$field              = array();
+			$field['xtype']     = $data['xtype'];
+			$field['form_id']   = intval($data['form_id']);
+			$field['parentId']  = $data['parentId'];
+			$field['index']     = $data['index'];
 
-	    $this->getFormTable($data['form_id']);
-	    $this->getFormModel($data['form_id']);
+			$this->db->setSQL($this->db->sqlBind($field, 'forms_fields', 'U', array('id' => $params->id)));
+			$this->db->execLog();
 
-        $field              = array();
-	    $field['xtype']     = $data['xtype'];
-        $field['form_id']   = intval($data['form_id']);
-	    $field['parentId']  = ($data['parentId'] != 'NaN' ?  $data['parentId'] : 0);
-        $field['pos']       = intval($data['pos']);
+			unset($data['id'],$data['xtype'],$data['form_id'],$data['parentId'],$data['index'],$data['leaf']);
 
-        $this->db->setSQL($this->db->sqlBind($field, 'forms_fields', 'U', array('id' => $params->id)));
-        $this->db->execLog();
-
-	    unset($data['id'],$data['xtype'],$data['form_id'],$data['parentId'],$data['pos'],$data['leaf']);
-
-        $this->setFieldOptions($data, $params->id);
-        return array('success' => true);
+			$this->setFieldOptions($data, $params->id);
+			return array('success' => true);
+		}catch (Exception $e){
+			return $e;
+		}
     }
 
 	public function updateFormField($params){
@@ -169,69 +246,7 @@ class FormLayoutBuilder {
 		}
 		return $params;
 	}
-    /**
-     * This function will delete the field and print success is no
-     * error were found along the way.
-     *
-     * @param stdClass $params
-     * @return array
-     */
-    public function removeFormField(stdClass $params)
-    {
-        $data = get_object_vars($params);
 
-	    $this->getFormTable($data['form_id']);
-	    $this->getFormModel($data['form_id']);
-
-	    $this->col = $data['name'];
-        $container = false;
-        /**
-         * lets defines what is a container for later use.
-         */
-        if( $data['xtype'] == 'fieldcontainer' || $data['xtype'] == 'fieldset' ) $container = true;
-        /**
-         * check for all kind ao error combination and exit the
-         * script if error found. If not, then continue.
-         */
-        if($container){
-            /**
-             * for fieldcontainers and fieldsets lets make sure the
-             * field does NOT have child items
-             */
-            if($this->fieldHasChild($data['id'])){
-                return array('success' => false, 'error' => 'This field has one or more child field(s). Please, remove or moved the child fields before removing this field.');
-            }
-        }else{
-            /**
-             * for all other fields lats check that the item has a
-             * column in the database and that the column is empty
-             * the user can NOT delete field with data in it.
-             */
-            if(!$this->fieldHasColumn()) {
-	            return array('success' => false, 'error' => 'This field does NOT have a column in the database.<br> This is very odd... please cotact Technical Support for help');
-            }else{
-                if($this->filedInUsed()){
-	                return array('success' => false, 'error' => 'Can NOT delete this field. This field already has data store in the database.');
-                }
-            }
-        }
-        /**
-         * If the field is NOT a container the remove database
-         * column for this field
-         */
-        if(!$container && !$this->fieldHasBrother()){
-            $this->removeFieldModel();
-        }
-        /**
-         * remove field and field options
-         */
-        $id = $data['id'];
-        $this->db->setSQL("DELETE FROM forms_fields WHERE id='$id'");
-        $this->db->execOnly();
-        $this->db->setSQL("DELETE FROM forms_field_options WHERE field_id='$id'");
-        $this->db->execOnly();
-        return array('success' => true);
-    }
 
     /**
      * @brief       Add a column to the form data table
@@ -245,24 +260,14 @@ class FormLayoutBuilder {
      */
     private function addFieldModel()
     {
-
         $array = array(
 		    'model' => "$this->model",
 	        'field' => array(
-			    'name' => "$this->col",
+			    'name' => "$this->name",
 			    'type' => 'string'
 		    )
 	    );
-	    MatchaModel::addFieldsToModel($array);
-
-//        $this->db->setSQL("ALTER TABLE $this->table ADD $this->col $conf");
-//        $this->db->execOnly();
-//        if(!$this->fieldHasColumn()) {
-//	        return false;
-//        }else{
-//	        return true;
-//        }
-
+	    return MatchaModel::addFieldsToModel($array);
     }
 
     /**
@@ -277,16 +282,15 @@ class FormLayoutBuilder {
      */
     private function removeFieldModel()
     {
-
 	    $array = array(
 		    'model' => "$this->model",
 		    'field' => array(
-			    'name' => "$this->col"
+			    'name' => "$this->name"
 		    )
 	    );
-	    MatchaModel::removeFieldsFromModel($array);
+	    return MatchaModel::removeFieldsFromModel($array);
 
-//        $this->db->setSQL("ALTER TABLE $this->table DROP $this->col");
+//        $this->db->setSQL("ALTER TABLE $this->table DROP $this->name");
 //        $this->db->execOnly();
 //        if($this->fieldHasColumn()) {
 //	        return false;
@@ -335,14 +339,14 @@ class FormLayoutBuilder {
      * @return mixed
      */
     private function getFormTable($form_id){
-        $this->db->setSQL("SELECT form_data FROM forms_layout WHERE id = '$form_id'");
+        $this->db->setSQL("SELECT `form_data` FROM `forms_layout` WHERE `id` = '$form_id'");
         $form_data_table = $this->db->fetchRecord();
         $this->table = $form_data_table['form_data'];
         return;
     }
 
     private function getFormModel($form_id){
-        $this->db->setSQL("SELECT model FROM forms_layout WHERE id = '$form_id'");
+        $this->db->setSQL("SELECT `model` FROM `forms_layout` WHERE `id` = '$form_id'");
         $model= $this->db->fetchRecord();
         $this->model = $model['model'];
         return;
@@ -352,7 +356,7 @@ class FormLayoutBuilder {
      * @return bool
      */
     private function fieldHasColumn(){
-        $this->db->setSQL("SELECT * FROM information_schema.COLUMNS WHERE TABLE_NAME = '$this->table' AND COLUMN_NAME = '$this->col'");
+        $this->db->setSQL("SELECT * FROM information_schema.COLUMNS WHERE TABLE_NAME = '$this->table' AND COLUMN_NAME = '$this->name'");
         $ret = $this->db->fetchRecords(PDO::FETCH_ASSOC);
         if(isset($ret[0]['COLUMN_NAME'])) {
             return true;
@@ -366,7 +370,7 @@ class FormLayoutBuilder {
      * @return bool
      */
     private function fieldHasChild($id){
-        $this->db->setSQL("SELECT id FROM forms_fields WHERE parentId ='$id'");
+        $this->db->setSQL("SELECT `id` FROM `forms_fields` WHERE `parentId` ='$id'");
         $this->db->fetchRecords(PDO::FETCH_ASSOC);
         $count = $this->db->rowCount();
         if($count >= 1 ) {
@@ -380,7 +384,7 @@ class FormLayoutBuilder {
      * @return bool
      */
     private function fieldHasBrother(){
-        $this->db->setSQL("SELECT id FROM forms_field_options WHERE options LIKE '%\"name\":\"$this->col%\"'");
+        $this->db->setSQL("SELECT `id` FROM `forms_field_options` WHERE options LIKE '%\"name\":\"$this->name%\"'");
         $this->db->fetchRecords(PDO::FETCH_ASSOC);
         $count = $this->db->rowCount();
         if($count >= 2 ) {
@@ -394,7 +398,7 @@ class FormLayoutBuilder {
      * @return bool
      */
     private function filedInUsed(){
-        $this->db->setSQL("SELECT $this->col FROM $this->table");
+        $this->db->setSQL("SELECT $this->name FROM $this->table");
         $ret = $this->db->fetchRecords(PDO::FETCH_ASSOC);
         if(isset($ret[0])){
             return true;
@@ -409,17 +413,10 @@ class FormLayoutBuilder {
      */
     private function sanitizedData($data){
         foreach($data as $option => $val){
-            if($val == '' || $val == null) unset($data[$option]);
-            if($option == 'hideLabel' || $option == 'checkboxToggle' || $option == 'collapsed' || $option == 'collapsible'){
-                if($val == 0){
-                    $data[$option] = false;
-                }else{
-                    $data[$option] = true;
-                }
 
-            }
+            if($val === '' || $val === null) unset($data[$option]);
 
-	        if($option == 'allowBlank'){
+	        if($option === 'allowBlank'){
 		        if($val){
 			        $data[$option] = false;
 		        }else{
@@ -427,37 +424,20 @@ class FormLayoutBuilder {
 		        }
 	        }
 
-            if($val == 'on'){
-                $data[$option] = 'true';
-            }elseif($val == 'off'){
-                $data[$option] = 'false';
+            if($val === 'on'){
+                $data[$option] = true;
+            }elseif($val === 'off'){
+                $data[$option] = false;
             }
         }
         return $data;
     }
 
     /**
-     * This function is call after every sql statement and
-     * will print the success callback with the errors found
-     * then, stop the script.
-     *
-     * @param $err
-     * @return mixed
-     */
-    private function checkError($err){
-        if($err[2]){
-            print '{"success":false,"error":"'.$err[2].'"}';
-            exit;
-        }else{
-            return;
-        }
-    }
-
-    /**
      * @return array
      */
     public function getForms(){
-        $this->db->setSQL("SELECT * FROM forms_layout");
+        $this->db->setSQL("SELECT * FROM `forms_layout`");
         $rows = array();
         foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row){
             array_push($rows, $row);
@@ -471,17 +451,17 @@ class FormLayoutBuilder {
      */
     public function getParentFields(stdClass $params){
         $this->db->setSQL("Select ff.id, ff.xtype
-                         FROM forms_fields AS ff
-                    LEFT JOIN forms_layout AS fl
+                         FROM `forms_fields` AS ff
+                    LEFT JOIN `forms_layout` AS fl
                            ON fl.id = ff.form_id
-                        WHERE (fl.name  = '$params->currForm' OR fl.id    = '$params->currForm')
-                          AND (ff.xtype = 'fieldcontainer'    OR ff.xtype = 'fieldset')
-                     ORDER BY ff.pos");
+                        WHERE (fl.`name`  = '$params->currForm' OR fl.`id`    = '$params->currForm')
+                          AND (ff.`xtype` = 'fieldcontainer'    OR ff.`xtype` = 'fieldset')
+                     ORDER BY ff.`index`");
         $parentFields = array();
-        array_push($parentFields, array('name' => 'Root', 'value' => 'NaN'));
+        array_push($parentFields, array('name' => 'Root', 'value' => 'root'));
         foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) as $parentField){
             $id = $parentField['id'];
-            $this->db->setSQL("SELECT options FROM forms_field_options WHERE field_id = '$id'");
+            $this->db->setSQL("SELECT `options` FROM `forms_field_options` WHERE `field_id` = '$id'");
             $fo = $this->db->fetchRecord();
             $foo = json_decode($fo['options'],true);
 
@@ -500,7 +480,7 @@ class FormLayoutBuilder {
     public function getFormFieldsTree(stdClass $params){
         $fields = array();
         if(isset($params->currForm)){
-            $this->db->setSQL("Select * FROM forms_fields WHERE form_id = '$params->currForm' AND (parentId IS NULL OR parentId = 'NaN') ORDER BY pos ASC, id ASC");
+            $this->db->setSQL("Select * FROM `forms_fields` WHERE `form_id` = '$params->currForm' AND `parentId` = 'root' ORDER BY `index` ASC, `id` ASC");
             $results = $this->db->fetchRecords(PDO::FETCH_ASSOC);
             foreach($results as $item){
                 $opts = $this->getItemsOptions($item['id']);
@@ -525,12 +505,12 @@ class FormLayoutBuilder {
     }
 
     /**
-     * @param $parent
+     * @param $parentId
      * @return array
      */
-    private function getChildItems($parent){
+    private function getChildItems($parentId){
         $items = array();
-        $this->db->setSQL("Select * FROM forms_fields WHERE parentId = '$parent' ORDER BY pos ASC");
+        $this->db->setSQL("Select * FROM `forms_fields` WHERE `parentId` = '$parentId' ORDER BY `index` ASC, `id` ASC");
         foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) as $item){
             $opts = $this->getItemsOptions($item['id']);
             foreach($opts as $opt => $val){
@@ -558,7 +538,7 @@ class FormLayoutBuilder {
      */
     private function getItemsOptions($item_id){
         $foo = array();
-        $this->db->setSQL("Select options FROM forms_field_options WHERE field_id = '$item_id'");
+        $this->db->setSQL("Select `options` FROM `forms_field_options` WHERE `field_id` = '$item_id'");
         $options = $this->db->fetchRecord();
         $options = json_decode($options['options'],true);
         foreach($options as $option => $value){
@@ -574,14 +554,14 @@ class FormLayoutBuilder {
 
 	/* for manually remove all allowBlank form any table */
 	public function removeAllowBlank($table){
-		$this->db->setSQL("Select id, options FROM $table");
+		$this->db->setSQL("Select `id`, `options` FROM $table");
 		foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row){
 			$options = json_decode($row['options'],true);
 			if(isset($options['allowBlank'])){
 				unset($options['allowBlank']);
 				$id = $row['id'];
 				$data['options'] = json_encode($options);
-				$this->db->setSQL($this->db->sqlBind($data, $table, 'U', "id='$id'"));
+				$this->db->setSQL($this->db->sqlBind($data, $table, 'U', array('id' =>$id)));
 				$this->db->execOnly();
 			}
 		}

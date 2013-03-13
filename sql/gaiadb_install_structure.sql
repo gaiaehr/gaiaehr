@@ -881,17 +881,17 @@ CREATE TABLE IF NOT EXISTS `forms_fields` (
   `id` bigint(11) NOT NULL AUTO_INCREMENT,
   `form_id` bigint(11) DEFAULT NULL,
   `xtype` varchar(255) CHARACTER SET latin1 DEFAULT NULL,
-  `parentId` bigint(11) DEFAULT NULL,
-  `pos` int(11) NOT NULL DEFAULT '0',
+  `parentId` varchar(11) COLLATE latin1_bin DEFAULT NULL,
+  `index` int(11) DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_bin AUTO_INCREMENT=1181 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_bin ;
 
 CREATE TABLE IF NOT EXISTS `forms_field_options` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `field_id` text COMMENT 'Field ID',
   `options` text COMMENT 'Field options data stored as JSON string',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1556 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 ;
 
 CREATE TABLE IF NOT EXISTS `forms_layout` (
   `id` int(11) NOT NULL AUTO_INCREMENT,

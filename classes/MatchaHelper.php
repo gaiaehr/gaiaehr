@@ -72,6 +72,7 @@ class MatchaHelper extends Matcha
                 'app'=>(string)$_SESSION['root'].'/app'
             ));
         }
+
         // Enable the audit feature in Matcha::connect
         MatchaAudit::audit(true);
         $eventLogDefinition = array(

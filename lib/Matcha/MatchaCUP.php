@@ -272,7 +272,7 @@ class MatchaCUP
                     $sql = $this->buildInsetSqlStatement($data);
 					$this->rowsAffected = Matcha::$__conn->exec($sql);
 					$data[$this->primaryKey] = $this->lastInsertId = Matcha::$__conn->lastInsertId();
-                    if(method_exists(MatchaAudit::$hookClass, MatchaAudit::$hookMethod))
+                    if(method_exists(MatchaAudit::$hookClass, MatchaAudit::$hookMethod) && MatchaAudit::$__audit)
                         call_user_func_array(array(MatchaAudit::$hookClass, MatchaAudit::$hookMethod), array(array('insertId'=>$this->lastInsertId, 'crc32'=>crc32($sql), 'event'=>'INSERT', 'sql'=>addslashes($sql))));
 					return $data;
 				}
@@ -281,7 +281,7 @@ class MatchaCUP
 					// update a record
                     $sql = $this->buildUpdateSqlStatement($data);
 					$this->rowsAffected = Matcha::$__conn->exec($sql);
-                    if(method_exists(MatchaAudit::$hookClass, MatchaAudit::$hookMethod))
+                    if(method_exists(MatchaAudit::$hookClass, MatchaAudit::$hookMethod) && MatchaAudit::$__audit)
                         call_user_func_array(array(MatchaAudit::$hookClass, MatchaAudit::$hookMethod), array(array('crc32'=>crc32($sql), 'event'=>'UPDATE', 'sql'=>addslashes($sql))));
 					return $data;
 				}
@@ -298,7 +298,7 @@ class MatchaCUP
                         $sql = $this->buildInsetSqlStatement($data);
 						$this->rowsAffected = Matcha::$__conn->exec($sql);
 						$data[$this->primaryKey] = $this->lastInsertId = Matcha::$__conn->lastInsertId();
-                        if(method_exists(MatchaAudit::$hookClass, MatchaAudit::$hookMethod))
+                        if(method_exists(MatchaAudit::$hookClass, MatchaAudit::$hookMethod) && MatchaAudit::$__audit)
                             call_user_func_array(array(MatchaAudit::$hookClass, MatchaAudit::$hookMethod), array(array('insertId'=>$this->lastInsertId, 'crc32'=>crc32($sql), 'event'=>'INSERT', 'sql'=>addslashes($sql))));
 					}
 					else
@@ -306,7 +306,7 @@ class MatchaCUP
 						// update a record
                         $sql = $this->buildUpdateSqlStatement($data);
 						$this->rowsAffected = Matcha::$__conn->exec($sql);
-                        if(method_exists(MatchaAudit::$hookClass, MatchaAudit::$hookMethod))
+                        if(method_exists(MatchaAudit::$hookClass, MatchaAudit::$hookMethod) && MatchaAudit::$__audit)
                             call_user_func_array(array(MatchaAudit::$hookClass, MatchaAudit::$hookMethod), array(array('crc32'=>crc32($sql), 'event'=>'UPDATE', 'sql'=>addslashes($sql))));
 					}
 					$return[] = $data;
@@ -335,7 +335,7 @@ class MatchaCUP
 				$record = get_object_vars($record);
                 $sql = "DELETE FROM " . $this->model->table->name . " WHERE $this->primarykey = '".$record[$this->primarykey]."'";
 				$this->rowsAffected = Matcha::$__conn->exec($sql);
-                if(method_exists(MatchaAudit::$hookClass, MatchaAudit::$hookMethod))
+                if(method_exists(MatchaAudit::$hookClass, MatchaAudit::$hookMethod) && MatchaAudit::$__audit)
                     call_user_func_array(array(MatchaAudit::$hookClass, MatchaAudit::$hookMethod), array(array('crc32'=>crc32($sql), 'event'=>'DELETE', 'sql'=>addslashes($sql))));
 			}
 			else
@@ -345,7 +345,7 @@ class MatchaCUP
 					$rec = get_object_vars($rec);
                     $sql = "DELETE FROM " . $this->model->table->name . " WHERE $this->primarykey ='".$rec[$this->primarykey]."'";
 					$this->rowsAffected = Matcha::$__conn->exec($sql);
-                    if(method_exists(MatchaAudit::$hookClass, MatchaAudit::$hookMethod))
+                    if(method_exists(MatchaAudit::$hookClass, MatchaAudit::$hookMethod) && MatchaAudit::$__audit)
                         call_user_func_array(array(MatchaAudit::$hookClass, MatchaAudit::$hookMethod), array(array('crc32'=>crc32($sql), 'event'=>'DELETE', 'sql'=>addslashes($sql))));
 				}
 			}

@@ -93,7 +93,8 @@ class Matcha
 		}
 		catch(Exception $e)
 		{
-			return MatchaErrorHandler::__errorProcess($e);
+            MatchaErrorHandler::__errorProcess($e);
+            return false;
 		}
 	}
 	 
@@ -158,7 +159,8 @@ class Matcha
 		}
 		catch(PDOException $e)
 		{
-			return MatchaErrorHandler::__errorProcess($e);
+            MatchaErrorHandler::__errorProcess($e);
+            return false;
 		}
 	}
 	
@@ -247,7 +249,8 @@ class Matcha
 		}
 		catch(PDOException $e)
 		{
-			return MatchaErrorHandler::__errorProcess($e);
+            MatchaErrorHandler::__errorProcess($e);
+            return false;
 		}
 	}
 	
@@ -265,7 +268,8 @@ class Matcha
 		}
 		catch(PDOException $e)
 		{
-			return MatchaErrorHandler::__errorProcess($e);
+            MatchaErrorHandler::__errorProcess($e);
+            return false;
 		}
 	}
 	
@@ -283,7 +287,8 @@ class Matcha
 		}
 		catch(PDOException $e)
 		{
-			return MatchaErrorHandler::__errorProcess($e);
+            MatchaErrorHandler::__errorProcess($e);
+            return false;
 		}
 	}
 
@@ -306,7 +311,8 @@ class Matcha
         }
         catch(PDOException $e)
         {
-            return MatchaErrorHandler::__errorProcess($e);
+            MatchaErrorHandler::__errorProcess($e);
+            return false;
         }
     }
 

@@ -122,7 +122,7 @@ class MatchaAudit extends Matcha
             if( count($differentCreateColumns) || count($differentDropColumns) )
             {
                 // create columns on the database
-                foreach($differentCreateColumns as $key => $column) self::__createColumn($logModelArray[$key], 'eventlog');
+                foreach($differentCreateColumns as $key => $column) self::__createColumn($logModelArray[$key], self::$hookTable);
                 // remove columns from the table
                 foreach($differentDropColumns as $column) self::__dropColumn( $column, self::$hookTable );
             }

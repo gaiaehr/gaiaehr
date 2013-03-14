@@ -74,8 +74,7 @@ class MatchaHelper extends Matcha
         }
 
         // Enable the audit feature in Matcha::connect
-        MatchaAudit::audit(true);
-        $eventLogDefinition = array(
+        MatchaAudit::audit(array(
             array('name' => 'date', 'type' => 'date'),
             array('name' => 'event','type' => 'string'),
             array('name' => 'comments', 'type' => 'string'),
@@ -84,11 +83,7 @@ class MatchaHelper extends Matcha
             array('name' => 'facility', 'type' => 'int'),
             array('name' => 'patient_id', 'type' => 'int'),
             array('name' => 'ip', 'type' => 'string')
-        );
-        MatchaModel::$tableId = 'id';
-        MatchaAudit::defineLogModel($eventLogDefinition);
-        MatchaAudit::defineDatabaseTable('log');
-        MatchaAudit::setHookMethodCall('MatchaHelper', 'storeAudit');
+        ), 'storeAudit');
 
 	}
 

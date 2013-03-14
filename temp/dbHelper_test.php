@@ -15,7 +15,6 @@ include_once ($_SESSION['root'] . '/classes/MatchaHelper.php');
 
 $db = new MatchaHelper();
 
-MatchaAudit::setHookMethodCall('MatchaHelper', 'storeAudit');
 $Facilities = MatchaModel::setSenchaModel('App.model.administration.Facility');
 $data = (object)array(
     'name' => 'Test',

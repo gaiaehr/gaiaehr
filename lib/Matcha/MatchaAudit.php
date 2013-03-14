@@ -56,37 +56,14 @@ class MatchaAudit extends Matcha
      * Method to enable the audit log process.
      * This will write a log every time it INSERT, UPDATE, DELETE a record.
      */
-    static public function audit($onoff = TRUE)
+    static public function audit($logModelArray = array(), $methodCall = NULL, $idColumn = 'id', $logTable = 'log', $classCall = NULL)
     {
-        self::$__audit = $onoff;
-        return self::$__audit;
-    }
-
-    /**
-     * function setHookMethodCall($method = NULL):
-     * Method to set the method to call when MatchaCUP->save or MatchaCUP->destroy
-     * is executed.
-     * @param null $class
-     * @param null $method
-     * @return bool
-     */
-    static public function setHookMethodCall($class = NULL, $method = NULL)
-    {
-        self::$hookClass = $class;
-        self::$hookMethod = $method;
-        return true;
-    }
-
-    /**
-     * function setHookDatabaseTable($databaseTable = NULL):
-     * Method to set the event log database-table.
-     * @param null $databaseTable
-     * @return bool
-     */
-    static public function defineDatabaseTable($databaseTable = NULL)
-    {
-        self::$hookTable = $databaseTable;
-        return true;
+        self::$__audit = true;
+        self::$hookTable = $logTable;
+        MatchaModel::$tableId = $idColumn;
+        if($classCall == NULL) self::$hookClass = get_called_class(); else self::$hookClass = $classCall;
+        self::$hookMethod = $methodCall;
+        self::defineLogModel($logModelArray);
     }
 
     /**

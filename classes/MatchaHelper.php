@@ -118,7 +118,6 @@ class MatchaHelper extends Matcha
             'event' => $saveParams['event'],
             'comments' => $saveParams['sql'],
             'checksum' => $saveParams['crc32'],
-
         );
         MatchaAudit::auditSaveLog();
     }

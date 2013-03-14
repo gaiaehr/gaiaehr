@@ -40,7 +40,6 @@ class MatchaAudit extends Matcha
 			// insert the event log
 			$fields = "`".(string)implode("`, `", array_keys(self::$eventLogData))."`";
 			$values = "'".(string)implode("', '", array_values(self::$eventLogData))."'";
-            echo 'INSERT INTO eventlog ('.$fields.') VALUES ('.$values.');';
 			self::$__conn->query('INSERT INTO eventlog ('.$fields.') VALUES ('.$values.');');
 			return self::$__conn->lastInsertId();
 		}

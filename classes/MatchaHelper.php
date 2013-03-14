@@ -87,6 +87,7 @@ class MatchaHelper extends Matcha
         );
         MatchaModel::$tableId = 'id';
         MatchaAudit::defineLogModel($eventLogDefinition);
+        MatchaAudit::defineDatabaseTable('log');
         MatchaAudit::setHookMethodCall('MatchaHelper', 'storeAudit');
 
 	}

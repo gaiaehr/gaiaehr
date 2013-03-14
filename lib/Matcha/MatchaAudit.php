@@ -25,6 +25,7 @@ class MatchaAudit extends Matcha
     public static $eventLogData = array();
     public static $hookClass = NULL;
     public static $hookMethod = NULL;
+    public static $hookTable = NULL;
 
 	/**
 	 * function auditSaveLog($arrayToInsert = array()):
@@ -40,7 +41,7 @@ class MatchaAudit extends Matcha
 			// insert the event log
 			$fields = "`".(string)implode("`, `", array_keys(self::$eventLogData))."`";
 			$values = "'".(string)implode("', '", array_values(self::$eventLogData))."'";
-			self::$__conn->query('INSERT INTO eventlog ('.$fields.') VALUES ('.$values.');');
+			self::$__conn->query('INSERT INTO '.self::$hookTable.' ('.$fields.') VALUES ('.$values.');');
 			return self::$__conn->lastInsertId();
 		}
 		catch(PDOException $e)
@@ -77,6 +78,18 @@ class MatchaAudit extends Matcha
     }
 
     /**
+     * function setHookDatabaseTable($databaseTable = NULL):
+     * Method to set the event log database-table.
+     * @param null $databaseTable
+     * @return bool
+     */
+    static public function defineDatabaseTable($databaseTable = NULL)
+    {
+        self::$hookTable = $databaseTable;
+        return true;
+    }
+
+    /**
      * function defineLogModel($logModelArray):
      * Method to define the audit log structure all data and definition will be saved in LOG table.
      * @param $logModelArray
@@ -87,13 +100,13 @@ class MatchaAudit extends Matcha
         try
         {
             //check if the table exist
-            $recordSet = self::$__conn->query("SHOW TABLES LIKE 'eventlog';");
-            if( isset($recordSet) ) self::__createTable('eventlog');
+            $recordSet = self::$__conn->query("SHOW TABLES LIKE '".self::$hookTable."';");
+            if( isset($recordSet) ) self::__createTable(self::$hookTable);
             unset($recordSet);
 
             // get the table column information and remove the id column
             // from the log table
-            $tableColumns = self::$__conn->query("SHOW FULL COLUMNS IN eventlog;")->fetchAll();
+            $tableColumns = self::$__conn->query("SHOW FULL COLUMNS IN ".self::$hookTable.";")->fetchAll();
             unset($tableColumns[MatchaUtils::__recursiveArraySearch('id', $tableColumns)]);
 
             // prepare the columns from the table and passed array for comparison
@@ -111,7 +124,7 @@ class MatchaAudit extends Matcha
                 // create columns on the database
                 foreach($differentCreateColumns as $key => $column) self::__createColumn($logModelArray[$key], 'eventlog');
                 // remove columns from the table
-                foreach($differentDropColumns as $column) self::__dropColumn( $column, 'eventlog' );
+                foreach($differentDropColumns as $column) self::__dropColumn( $column, self::$hookTable );
             }
             return true;
         }

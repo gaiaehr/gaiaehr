@@ -443,8 +443,8 @@ class MatchaCUP
 	private function buildUpdateSqlStatement($data, $where = array())
 	{
 		if(!empty($where)){
-			$primaryKey      = array_keys($where)[0];
-			$primaryKeyValue = array_values($where)[0];
+			$primaryKey      = current(array_keys($where));
+			$primaryKeyValue = current(array_values($where));
 		}else{
 			$primaryKey      = $this->primaryKey;
 			$primaryKeyValue = $data[$this->primaryKey];;

@@ -31,6 +31,10 @@ done.
 This class is the brain of the bi-directional microORM, this creates both models. The database table and columns
 and also creates Sencha Model (.js) files dynamically.
 
+##MatchaMemory Class:
+This class stores parsed Sencha Model into the server memory to speed things up. It can be used for other memory
+storing purposes.
+
 ##History:
 Taking some ideas from different microORM's and full featured ORM's we bring you this cool Class.
 Born in the fields of GaiaEHR we needed a way to develop the application more faster, 

@@ -540,8 +540,6 @@ class MatchaModel extends Matcha
         }
     }
 
-
-
     /**
      * function __createModelTable($fileSenchaModel, $databaseTable = NULL):
      * Method to create the model on the table.

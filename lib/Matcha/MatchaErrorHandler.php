@@ -17,6 +17,8 @@
  */
 
 require_once(dirname(__FILE__).'/plugins/FirePHPCore-0.3.2/lib/FirePHPCore/FirePHP.class.php');
+require_once(dirname(__FILE__).'/plugins/ChromePHP/ChromePhp.php');
+require_once(dirname(__FILE__).'/plugins/BrowserDetect/Browser.php');
 
 class MatchaErrorHandler extends Matcha
 {
@@ -29,18 +31,30 @@ class MatchaErrorHandler extends Matcha
 	 * TODO: It could be more elaborated and handle other things.
 	 * for example log file for GaiaEHR.
 	 */
-	static public function __errorProcess($errorException, $__firePHP = true)
+	static public function __errorProcess($errorException, $__browserDebug = true)
 	{
 		// TODO: A switch to output a formatted HTML for the trace.
         $trace = $errorException->getTrace();
         $errorOutput = 'Matcha::connect: ('.$trace[0]['class'].') '.$errorException->getMessage();
 		error_log($errorOutput);
 
-        // FirePHP - Plugin
-        if($__firePHP)
+        // Browser Debug Feature - Plugin
+        $browserClass = new Browser();
+        $browserName = $browserClass->getBrowser();
+        if($__browserDebug)
         {
-            $firephp = FirePHP::getInstance(true);
-            $firephp->log($errorOutput, 'Matcha::connect');
+            // Fire up FirePHP
+            if($browserName == Browser::BROWSER_FIREFOX)
+            {
+                $debugphp = FirePHP::getInstance(true);
+                $debugphp->log($errorOutput, 'Matcha::connect');
+            }
+            // Fire up ChromePHP
+            if($browserName == Browser::BROWSER_CHROME)
+            {
+                ChromePhp::log($errorOutput);
+            }
+
         }
 
 		return $errorException;

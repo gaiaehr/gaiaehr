@@ -47,8 +47,10 @@ class Snippets {
 
         if(isset($params->category)){
             $snippets = $this->s->load(array('parentId'=>'root', 'category'=>$params->category))->all();
-        }else{
+        }elseif(isset($params->id)){
             $snippets = $this->s->load(array('parentId'=>$params->id))->all();
+        }else{
+	        $snippets = array();
         }
 
         return $snippets;

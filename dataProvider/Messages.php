@@ -30,18 +30,8 @@ class Messages extends MatchaHelper
 	private $p = null;
 	private $u = null;
 
-	/**
-	 * MATCHA CUPs (Sencha Models)
-	 */
-	private function setPatientModel()
-	{
+	function __construct(){
 		if($this->p == null) $this->p = MatchaModel::setSenchaModel('App.model.patient.Patient');
-	}
-	/**
-	 * MATCHA CUPs (Sencha Models)
-	 */
-	private function setUserModel()
-	{
 		if($this->u == null) $this->u = MatchaModel::setSenchaModel('App.model.administration.User');
 	}
 
@@ -51,8 +41,6 @@ class Messages extends MatchaHelper
 	 */
 	public function getMessages(stdClass $params)
 	{
-		$this->setPatientModel();
-		$this->setUserModel();
 
 		$uid = $_SESSION['user']['id'];
 

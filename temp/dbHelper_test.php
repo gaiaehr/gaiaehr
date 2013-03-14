@@ -15,15 +15,21 @@ include_once ($_SESSION['root'] . '/classes/MatchaHelper.php');
 
 $db = new MatchaHelper();
 
-$Facilities = MatchaModel::setSenchaModel('App.model.administration.Facility');
-$data = (object)array(
-    'name' => 'Test',
-    'active' => true,
-    'phone' => '787-360-3150',
-    'fax' => '787-360-3150',
-    'street' => 'Meaow'
-);
-$Facilities->save($data);
+$firephp = FirePHP::getInstance(true);
+
+$var = array('i'=>10, 'j'=>20);
+
+$firephp->log($var, 'Iterators');
+
+//$Facilities = MatchaModel::setSenchaModel('App.model.administration.Facility');
+//$data = (object)array(
+//    'name' => 'Test',
+//    'active' => true,
+//    'phone' => '787-360-3150',
+//    'fax' => '787-360-3150',
+//    'street' => 'Meaow'
+//);
+//$Facilities->save($data);
 
 //$array = array(
 //    'model' => "App.model.patient.Patient",

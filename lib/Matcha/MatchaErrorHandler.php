@@ -15,23 +15,34 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
+require_once(dirname(__FILE__).'/plugins/FirePHPCore-0.3.2/lib/FirePHPCore/FirePHP.class.php');
+
 class MatchaErrorHandler extends Matcha
 {
 	
 	public $__logFile;
-	
+
 	/**
 	 * function __errorProcess($errorException):
 	 * Handle the error of an exception
 	 * TODO: It could be more elaborated and handle other things.
 	 * for example log file for GaiaEHR.
 	 */
-	static public function __errorProcess($errorException)
+	static public function __errorProcess($errorException, $__firePHP = true)
 	{
 		// TODO: A switch to output a formatted HTML for the trace.
         $trace = $errorException->getTrace();
-		error_log('Matcha::connect: ('.$trace[0]['class'].') '.$errorException->getMessage() );
+        $errorOutput = 'Matcha::connect: ('.$trace[0]['class'].') '.$errorException->getMessage();
+		error_log($errorOutput);
+
+        // FirePHP - Plugin
+        if($__firePHP)
+        {
+            $firephp = FirePHP::getInstance(true);
+            $firephp->log($errorOutput, 'Matcha::connect');
+        }
+
 		return $errorException;
 	}
 
@@ -42,6 +53,6 @@ class MatchaErrorHandler extends Matcha
 	 */
 	static public function __errorLogFile($file = NULL)
 	{
-		$__logFile = $file;
+		self::$__logFile = $file;
 	}
 }

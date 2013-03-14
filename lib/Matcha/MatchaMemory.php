@@ -84,7 +84,9 @@ class MatchaMemory extends Matcha
         {
             self::__checkMemoryModel();
             self::__destroySenchaMemoryModel($senchaModelName);
-            $sql = "INSERT INTO `senchamodel` (model, modelData, modelLastChange) VALUES ('".$senchaModelName."', '".serialize($senchaModelArray)."', FROM_UNIXTIME(".MatchaModel::__getFileModifyDate($senchaModelName)."))";
+            $sql = "INSERT INTO `senchamodel` (model, modelData, modelLastChange)
+            VALUES ('$senchaModelName', '".serialize($senchaModelArray)."',
+            FROM_UNIXTIME(".MatchaModel::__getFileModifyDate($senchaModelName)."))";
             self::$__conn->query($sql);
             return true;
         }
@@ -107,7 +109,7 @@ class MatchaMemory extends Matcha
         try
         {
             self::__checkMemoryModel();
-            $model = self::$__conn->query("SELECT * FROM senchamodel WHERE model='".$senchaModel."';")->fetch();
+            $model = self::$__conn->query("SELECT * FROM senchamodel WHERE model='$senchaModel';")->fetch();
             if(is_array($model)) return unserialize($model['modelData']); else return false;
         }
         catch(PDOException $e)
@@ -128,7 +130,7 @@ class MatchaMemory extends Matcha
         try
         {
             self::__checkMemoryModel();
-            $model = self::$__conn->query("SELECT * FROM senchamodel WHERE model='".$senchaModel."';")->fetch();
+            $model = self::$__conn->query("SELECT * FROM senchamodel WHERE model='$senchaModel';")->fetch();
             if(is_array($model)) return strtotime($model['modelLastChange']); else return false;
         }
         catch(PDOException $e)
@@ -150,7 +152,7 @@ class MatchaMemory extends Matcha
         try
         {
             self::__checkMemoryModel();
-            $model = self::$__conn->query("SELECT * FROM senchamodel WHERE model='".$senchaModel."';")->fetch();
+            $model = self::$__conn->query("SELECT * FROM senchamodel WHERE model='$senchaModel';")->fetch();
             if(is_array($model)) return true; else return false;
         }
         catch(PDOException $e)
@@ -171,7 +173,7 @@ class MatchaMemory extends Matcha
         try
         {
             self::__checkMemoryModel();
-            self::$__conn->query("DELETE FROM senchamodel WHERE model='".$senchaModel."';");
+            self::$__conn->query("DELETE FROM senchamodel WHERE model='$senchaModel';");
             return true;
         }
         catch(PDOException $e)

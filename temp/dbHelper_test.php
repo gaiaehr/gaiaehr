@@ -15,6 +15,17 @@ include_once ($_SESSION['root'] . '/classes/MatchaHelper.php');
 
 $db = new MatchaHelper();
 
+MatchaAudit::setHookMethodCall('MatchaHelper', 'storeAudit');
+$Facilities = MatchaModel::setSenchaModel('App.model.administration.Facility');
+$data = (object)array(
+    'name' => 'Test',
+    'active' => true,
+    'phone' => '787-360-3150',
+    'fax' => '787-360-3150',
+    'street' => 'Meaow'
+);
+$Facilities->save($data);
+
 //$array = array(
 //    'model' => "App.model.patient.Patient",
 //    'field' => array(
@@ -24,7 +35,7 @@ $db = new MatchaHelper();
 //);
 //MatchaModel::addFieldsToModel($array);
 
-MatchaModel::__SenchaModel('App.model.account.VoucherLine');
+//MatchaModel::__SenchaModel('App.model.account.VoucherLine');
 
 //echo MatchaModel::__renderSenchaFieldSyntax(array('Type'=>'DOUBLE(10,2)'));
 

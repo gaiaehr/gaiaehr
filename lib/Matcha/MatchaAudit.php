@@ -22,27 +22,32 @@ class MatchaAudit extends Matcha
      * MatchaAudit public and private variables
      */
     public static $__audit = false;
+    public static $eventLogData = array();
+    public static $hookClass = NULL;
+    public static $hookMethod = NULL;
 
 	/**
-	 * __auditLog($arrayToInsert = array()):
+	 * function auditSaveLog($arrayToInsert = array()):
 	 * Every store has to be logged into the database.
 	 * Also generate the table if does not exist.
 	 */
-	static public function auditSaveLog($arrayToInsert = array())
+	static public function auditSaveLog()
 	{
 		// if the $__audit is true run the procedure if not skip it
 		if(!self::$__audit) return false;
 		try
 		{
 			// insert the event log
-			$fields = "`".(string)implode("`, `", array_keys($arrayToInsert))."`";
-			$values = "'".(string)implode("', '", array_values($arrayToInsert))."'";
-			self::$__conn->query('INSERT INTO log ('.$fields.') VALUES ('.$values.');');
+			$fields = "`".(string)implode("`, `", array_keys(self::$eventLogData))."`";
+			$values = "'".(string)implode("', '", array_values(self::$eventLogData))."'";
+            echo 'INSERT INTO eventlog ('.$fields.') VALUES ('.$values.');';
+			self::$__conn->query('INSERT INTO eventlog ('.$fields.') VALUES ('.$values.');');
 			return self::$__conn->lastInsertId();
 		}
 		catch(PDOException $e)
 		{
-			return MatchaErrorHandler::__errorProcess($e);
+            MatchaErrorHandler::__errorProcess($e);
+			return false;
 		}
 	}
 
@@ -54,6 +59,22 @@ class MatchaAudit extends Matcha
     static public function audit($onoff = TRUE)
     {
         self::$__audit = $onoff;
+        return self::$__audit;
+    }
+
+    /**
+     * function setHookMethodCall($method = NULL):
+     * Method to set the method to call when MatchaCUP->save or MatchaCUP->destroy
+     * is executed.
+     * @param null $class
+     * @param null $method
+     * @return bool
+     */
+    static public function setHookMethodCall($class = NULL, $method = NULL)
+    {
+        self::$hookClass = $class;
+        self::$hookMethod = $method;
+        return true;
     }
 
     /**
@@ -67,15 +88,14 @@ class MatchaAudit extends Matcha
         try
         {
             //check if the table exist
-            $recordSet = self::$__conn->query("SHOW TABLES LIKE 'log';");
-            if( isset($recordSet) ) self::__createTable('log');
+            $recordSet = self::$__conn->query("SHOW TABLES LIKE 'eventlog';");
+            if( isset($recordSet) ) self::__createTable('eventlog');
             unset($recordSet);
 
             // get the table column information and remove the id column
             // from the log table
-            $recordSet = self::$__conn->query("SHOW FULL COLUMNS IN log;");
-            $tableColumns = $recordSet->fetchAll(PDO::FETCH_ASSOC);
-            unset($tableColumns[self::__recursiveArraySearch('id', $tableColumns)]);
+            $tableColumns = self::$__conn->query("SHOW FULL COLUMNS IN eventlog;")->fetchAll();
+            unset($tableColumns[MatchaUtils::__recursiveArraySearch('id', $tableColumns)]);
 
             // prepare the columns from the table and passed array for comparison
             $columnsTableNames = array();
@@ -90,15 +110,16 @@ class MatchaAudit extends Matcha
             if( count($differentCreateColumns) || count($differentDropColumns) )
             {
                 // create columns on the database
-                foreach($differentCreateColumns as $key => $column) self::__createColumn($logModelArray[$key], 'log');
+                foreach($differentCreateColumns as $key => $column) self::__createColumn($logModelArray[$key], 'eventlog');
                 // remove columns from the table
-                foreach($differentDropColumns as $column) self::__dropColumn( $column, 'log' );
+                foreach($differentDropColumns as $column) self::__dropColumn( $column, 'eventlog' );
             }
             return true;
         }
         catch(PDOException $e)
         {
-            return MatchaErrorHandler::__errorProcess($e);
+            MatchaErrorHandler::__errorProcess($e);
+            return false;
         }
     }
 }

@@ -60,7 +60,8 @@ class MatchaHelper extends Matcha
 	 */
 	function __construct()
 	{
-        // this is done to be compatible with the old methods
+        // Connect to the database
+        // This is compatible with the old methods
         if(isset($_SESSION['site']) && isset($_SESSION['site']['db'])){
             self::connect(array(
                 'host'=>(string)$_SESSION['site']['db']['host'],
@@ -71,7 +72,54 @@ class MatchaHelper extends Matcha
                 'app'=>(string)$_SESSION['root'].'/app'
             ));
         }
+        // Enable the audit feature in Matcha::connect
+        MatchaAudit::audit(true);
+        $eventLogDefinition = array(
+            array('name' => 'date', 'type' => 'date'),
+            array('name' => 'event','type' => 'string'),
+            array('name' => 'comments', 'type' => 'string'),
+            array('name' => 'user', 'type' => 'int'),
+            array('name' => 'checksum', 'type' => 'string'),
+            array('name' => 'facility', 'type' => 'int'),
+            array('name' => 'patient_id', 'type' => 'int'),
+            array('name' => 'ip', 'type' => 'string')
+        );
+        MatchaModel::$tableId = 'id';
+        MatchaAudit::defineLogModel($eventLogDefinition);
+        MatchaAudit::setHookMethodCall('MatchaHelper', 'storeAudit');
+
 	}
+
+    /**
+     * function storeAudit($saveParams = array()):
+     * This method is (optional) will be called automatically by MatchaCUP
+     * to store the event log into the database.
+     *
+     * Basically when MatchaCUP->save or MatchaCUP->destroy is used it will look
+     * for this method and execute it and pass all the SQL statement and
+     * other parameters into a array to this method. Here you can execute the MatchaAudit
+     * class to save the event log or anything you want.
+     *
+     * The method should be established PUBLIC STATIC, this way it will not take more
+     * memory.
+     *
+     */
+    public static function storeAudit($saveParams = array())
+    {
+        // Prepare the data for MatchaAudit
+        MatchaAudit::$eventLogData = array(
+            'date' => Time::getLocalTime('Y-m-d H:i:s'),
+            'user' => ((isset($_SESSION['user']) && isset($_SESSION['user']['id'])) ? $_SESSION['user']['id'] : 'System'),
+            'facility' => $_SESSION['site']['dir'],
+            'patient_id' => (isset($_SESSION['patient']) ? $_SESSION['patient']['pid'] : '0'),
+            'ip' => $_SESSION['server']['REMOTE_ADDR'],
+            'event' => $saveParams['event'],
+            'comments' => $saveParams['sql'],
+            'checksum' => $saveParams['crc32'],
+
+        );
+        MatchaAudit::auditSaveLog();
+    }
 
 	/**
 	 * @brief       Set the SQL Statement.

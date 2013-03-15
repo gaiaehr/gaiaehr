@@ -17,8 +17,6 @@ $db = new MatchaHelper();
 
 echo MatchaUtils::Carbon()->now();
 
-
-
 //$firephp = FirePHP::getInstance(true);
 //$var = array('i'=>10, 'j'=>20);
 //$firephp->log($var, 'Iterators');

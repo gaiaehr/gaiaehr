@@ -43,8 +43,8 @@ class MatchaErrorHandler extends Matcha
         $browserName = $browserClass->getBrowser();
         if($__browserDebug)
         {
-            if($browserName == Browser::BROWSER_FIREFOX) FirePHP::getInstance(true)->log($errorOutput, 'Matcha::connect');
-            if($browserName == Browser::BROWSER_CHROME) ChromePhp::log($errorOutput);
+            if($browserName == Browser::BROWSER_FIREFOX) FirePHP::getInstance(true)->log($errorOutput, 'FirePHP -> ');
+            if($browserName == Browser::BROWSER_CHROME) ChromePhp::log('ChromePHP -> '.$errorOutput);
         }
 
 		return $errorException;

@@ -100,12 +100,12 @@ class User
 
 
     /**
-     * @param $params
+     * @param $username
      * @return bool
      */
-    public function usernameExist($params)
+    public function usernameExist($username)
     {
-        $user = $this->u->load(array('username' => $params->username))->one();
+        $user = $this->u->load(array('username' => $username))->one();
         return !empty($user);
     }
 
@@ -127,7 +127,7 @@ class User
 
     public function getCurrentUserTitleLastName()
     {
-        $userResult = $this->u->load(array('id' => $this->getCurrentUserId()), array('title', 'lname'))->one();
+        $userResult = $this->u->load($this->getCurrentUserId(), array('title', 'lname'))->one();
         return $userResult['title'] . ' ' . $userResult['lname'];
     }
 
@@ -149,7 +149,7 @@ class User
 
     public function getUserNameById($id)
     {
-        $userResult = $this->u->load( array('id' => $id) )->one();
+        $userResult = $this->u->load($id)->one();
         $userName = $userResult['title'] . ' ' . $userResult['lname'];
         return $userName;
     }
@@ -169,33 +169,38 @@ class User
 
     public function getCurrentUserBasicData()
     {
-        $userResult = $this->u->load($this->getCurrentUserId(), array('id', 'title', 'fname', 'mname', 'lname') )->one();
+        $userResult = $this->u->load($this->getCurrentUserId(), array('id', 'title', 'fname', 'mname', 'lname'))->one();
         return $userResult;
     }
 
     /**
      * @param stdClass $params
+     * @throws Exception
      * @return stdClass
      */
     public function addUser(stdClass $params)
     {
-        if (!$this->usernameExist($params->username))
-        {
-	        unset($params->fullname);
-	        if (isset($params->taxonomy) && $params->taxonomy == '') unset($params->taxonomy);
-	        $password = $params->password;
-	        // unset passwords, this will be handle later
-	        unset($params->password, $params->pwd_history1, $params->pwd_history2);
-            $this->user = $this->u->save($params);
+        try{
+            if(!$this->usernameExist($params->username))
+            {
+                unset($params->fullname);
+                if (isset($params->taxonomy) && $params->taxonomy == '') unset($params->taxonomy);
+                $password = $params->password;
+                // unset passwords, this will be handle later
+                unset($params->password, $params->pwd_history1, $params->pwd_history2);
+                $this->user = $this->u->save($params);
 
-            $params->fullname = Person::fullname($params->fname, $params->mname, $params->lname);
-            $this->changePassword($password);
-            $params->password = '';
-	        return $params;
-        }
-        else
-        {
-            return array('success' => false, 'error' => "Username \"$params->username\" exist, please try a different username");
+                $params->fullname = Person::fullname($params->fname, $params->mname, $params->lname);
+                $this->changePassword($password);
+                $params->password = '';
+                return $params;
+            }
+            else
+            {
+                throw new Exception("Username \"$params->username\" exist, please try a different username");
+            }
+        }catch (Exception $e){
+            return $e;
         }
     }
 

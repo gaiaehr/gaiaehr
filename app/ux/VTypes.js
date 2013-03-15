@@ -170,7 +170,7 @@ Ext.apply(Ext.form.VTypes,{
 		var username = val,
 			record = field.up('form').getForm().getRecord();
 		if(record.data.username != username){
-			User.usernameExist({username:val}, function(provider, response){
+			User.usernameExist(username, function(provider, response){
 				if(response.result){
 					setusernamevalidtrue();
 				}else{
@@ -186,13 +186,14 @@ Ext.apply(Ext.form.VTypes,{
 
 });
 
-function setusernamevalidfalse() {
+function setusernamevalidfalse()
+{
 	Ext.apply(Ext.form.field.VTypes, {
 		usernameField : function(val, field) {
 			var username = val,
 				record = field.up('form').getForm().getRecord();
 			if(record.data.username != username){
-				User.usernameExist({username:val}, function(provider, response){
+				User.usernameExist(username, function(provider, response){
 					if(!response.result){
 						setusernamevalidtrue();
 					}else{
@@ -207,13 +208,14 @@ function setusernamevalidfalse() {
 	});
 }
 
-function setusernamevalidtrue() {
+function setusernamevalidtrue()
+{
 	Ext.apply(Ext.form.field.VTypes, {
 		usernameField : function(val, field) {
 			var username = val,
 				record = field.up('form').getForm().getRecord();
 			if(record.data.username != username){
-				User.usernameExist({username:val}, function(provider, response){
+				User.usernameExist(username, function(provider, response){
 					if(!response.result){
 						setusernamevalidtrue();
 					}else{

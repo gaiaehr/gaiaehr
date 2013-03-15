@@ -37,18 +37,18 @@ class MatchaModel extends Matcha
     static public function __SenchaModel($fileModel)
     {
         // skip this entire routine if freeze option is true
-        if(self::$__freeze) return true;
+        //if(self::$__freeze) return true;
         try
         {
 	        self::$__senchaModel = array();
 
-            // get the the model of the table from the sencha .js file
-            self::$__senchaModel = self::__getSenchaModel($fileModel);
-            if(!self::$__senchaModel['fields']) return false;
-
             // check the difference in dates, if there are equal do not run the rest
             // of the procedure, just return true
             if(self::__getFileModifyDate($fileModel) == MatchaMemory::__getSenchaModelLastChange($fileModel)) return true;
+
+            // get the the model of the table from the sencha .js file
+            self::$__senchaModel = self::__getSenchaModel($fileModel);
+            if(!self::$__senchaModel['fields']) return false;
 
             self::$tableId = isset(self::$__senchaModel['idProperty']) ? self::$__senchaModel['idProperty'] : 'id';
 

@@ -15,13 +15,14 @@ include_once ($_SESSION['root'] . '/classes/MatchaHelper.php');
 
 $db = new MatchaHelper();
 
-echo MatchaUtils::Carbon()->now();
+//echo MatchaUtils::Carbon()->now();
 
 //$firephp = FirePHP::getInstance(true);
 //$var = array('i'=>10, 'j'=>20);
 //$firephp->log($var, 'Iterators');
 
-//$Facilities = MatchaModel::setSenchaModel('App.model.administration.Facility');
+$Patient = MatchaModel::setSenchaModel('App.model.patient.Patient');
+
 //$data = (object)array(
 //    'name' => 'Test',
 //    'active' => true,

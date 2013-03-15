@@ -76,6 +76,8 @@ class MatchaAudit extends Matcha
     {
         try
         {
+            if(!is_object(self::$__conn)) return false;
+
             //check if the table exist
             $recordSet = self::$__conn->query("SHOW TABLES LIKE '".self::$hookTable."';");
             if( isset($recordSet) ) self::__createTable(self::$hookTable);

@@ -42,8 +42,7 @@ class MatchaModel extends Matcha
         {
 	        self::$__senchaModel = array();
 
-            // check the difference in dates, if there are equal do not run the rest
-            // of the procedure, just return true
+            // check the difference in dates, if there are equal go ahead and load the model from memory
             if(self::__getFileModifyDate($fileModel) == MatchaMemory::__getSenchaModelLastChange($fileModel))
             {
                 self::$__senchaModel = MatchaMemory::__getModelFromMemory($fileModel);

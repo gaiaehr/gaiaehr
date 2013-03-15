@@ -16,10 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-require_once(dirname(__FILE__).'/plugins/FirePHPCore-0.3.2/lib/FirePHPCore/FirePHP.class.php');
-require_once(dirname(__FILE__).'/plugins/ChromePHP/ChromePhp.php');
-require_once(dirname(__FILE__).'/plugins/BrowserDetect/Browser.php');
-
 class MatchaErrorHandler extends Matcha
 {
 	

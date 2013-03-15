@@ -16,6 +16,9 @@ Layer, also covers the creation of databases, tables and columns.
 ##MatchaAudit Class:
 A extra feature if you want that Matcha records every injection to the database
 this includes INSERTS, UPDATE and ALTER. Perfect to Medic and Accounting applications.
+Recently we integrated some goodies:
+ - Browser detection to fire up FirePHP or ChromePHP
+
 
 ##MatchaCUP Class:
 The precious tea, this class will handle all your CRUD (Create, Read, Update and Delete) to your database

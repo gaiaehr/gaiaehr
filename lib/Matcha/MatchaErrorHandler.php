@@ -35,16 +35,25 @@ class MatchaErrorHandler extends Matcha
 	{
 		// TODO: A switch to output a formatted HTML for the trace.
         $trace = $errorException->getTrace();
-        $errorOutput = 'Matcha::connect: ('.$trace[0]['class'].') '.$errorException->getMessage();
-		error_log($errorOutput);
+		error_log('Matcha::connect: ('.$trace[0]['class'].') '.$errorException->getMessage());
 
         // Browser Debug Feature - Plugin
         $browserClass = new Browser();
         $browserName = $browserClass->getBrowser();
         if($__browserDebug)
         {
-            if($browserName == Browser::BROWSER_FIREFOX) FirePHP::getInstance(true)->log($errorOutput, 'FirePHP -> ');
-            if($browserName == Browser::BROWSER_CHROME) ChromePhp::log('ChromePHP -> '.$errorOutput);
+            $trace = $errorException->getTrace();
+            $constructErrorMessage = 'Exception: "';
+            $constructErrorMessage .= $errorException->getMessage();
+            $constructErrorMessage .= '" @ ';
+            if($trace[0]['class'] != '') {
+                $constructErrorMessage .= $trace[0]['class'];
+                $constructErrorMessage .= '->';
+            }
+            $constructErrorMessage .= $trace[0]['function'];
+            $constructErrorMessage .= '();';
+            if($browserName == Browser::BROWSER_FIREFOX) FirePHP::getInstance(true)->log($constructErrorMessage, 'FirePHP -> ');
+            if($browserName == Browser::BROWSER_CHROME) ChromePhp::log('ChromePHP -> '.$constructErrorMessage);
         }
 
 		return $errorException;

@@ -24,7 +24,7 @@ include_once('MatchaUtils.php');
 include_once('MatchaMemory.php');
 
 // External Plugins
-require_once('plugins/FirePHPCore-0.3.2/lib/FirePHPCore/FirePHP.class.php');
+require_once('plugins/FirePHPCore-0.3.2/FirePHP.class.php');
 require_once('plugins/ChromePHP/ChromePhp.php');
 require_once('plugins/BrowserDetect/Browser.php');
 require_once('plugins/Carbon/Carbon.php');

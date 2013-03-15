@@ -1,4 +1,4 @@
-GaiaEHR Creators:
+##GaiaEHR Creators:
 - Gino Rivera Falú (Lead Developer, GaiaEHR.org Maintainer, Matcha::connect microORM designer)
 - Ernesto Rodriguez (Lead Developer, GaiaEHR.com Maintainer, Matcha::connect microORM designer)
 - Omar Rodriguez (Developer)
@@ -8,8 +8,12 @@ GaiaEHR Creators:
 - Dominik Dzienia (PHP implementation of QR Code 2-D barcode generator)
 - Marcio (Webcam to Canvas JavaScript API 0.2)
 - Sencha ExtJS (GUI Framework)
+- Christoph Dorn (Creator of FirePHP Core)
+- Michael Day (Creator of FirePHP Core)
+- Craig Campbell (Creator of ChromePHP)
+- Chris Schuld (Creator of Client Browser Detect and Client Operating System Detect)
 
-A little bit of history of GaiaEHR:
+##A little bit of history of GaiaEHR:
 At first we forked OpenEMR and then tried to adapt Sencha ExtJS to OpenEMR, Sencha ExtJS 
 been a UI framework to speed up development of the project, but the time passed and we 
 decided to make ourselves a community driven EHR where everyone can contribute and share 
@@ -17,19 +21,3 @@ ideas, well that’s how it got started, very simple motivation indeed.
 
 Launching our BETA release  is a big step forward to the medical industry innovation, 
 taking the Open Source ideal as our guide.
-
-Thanks very much to Matt Stack for creating the 
-OpenEMR project and continuing to contribute to it over all these years.
-
-Thanks to Synitech Corporation for taking OpenEMR this far.
-
-Great thanks to Fred Trotter and the FreeB team, 
-medical billing is never fun and Fred deserves a lot of credit for making our live easier!
-
-Many thanks to Greg MacLelan for the number to text converter, 
-sure glad we didn't have to code that from scratch!
-
-This project has been greatly improved by incorporating 
-elements of the following other projects:
-
-R&OS PDF		http://www.ros.co.nz/pdf

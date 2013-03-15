@@ -16,7 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-class MatchaUtils
+use Carbon\Carbon;
+
+class MatchaUtils extends Matcha
 {
     /**
      * function t($times = NULL):
@@ -29,6 +31,51 @@ class MatchaUtils
         $tabs = '';
         for ($i = 1; $i <= $times; $i++) $tabs .= chr(9);
         return $tabs;
+    }
+
+    /**
+     * function Carbon():
+     * Method to enable the use of Carbon class Plugin
+     * @return Carbon\Carbon
+     */
+    static public function Carbon()
+    {
+        return new Carbon();
+    }
+
+    /**
+     * function BrowserOS():
+     * Method to enable the use of BrowserDetect class Plugin
+     * The class will also detect the client operating system.
+     * @return Browser
+     */
+    static public function BrowserOS()
+    {
+        return new Browser();
+    }
+
+    /**
+     * function ChromePHP():
+     * Method to enable the use of ChromePHP class Plugin
+     * This class is used by MatchaErrorHandler, but you can use it
+     * to send console messages to Chrome Web Browser.
+     * @return mixed
+     */
+    static public function ChromePHP()
+    {
+        return ChromePhp()->getInstance();
+    }
+
+    /**
+     * function FirePHP():
+     * Method to enable the use of FirePHP class Plugin
+     * This class is used by MatchaErrorHandler, but you can use it
+     * to send console messages to (Firefox Browser) FirePHP Plugin
+     * @return FirePHP
+     */
+    static public function FirePHP()
+    {
+        return new FirePHP();
     }
 
     /**

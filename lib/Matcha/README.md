@@ -16,6 +16,9 @@ Layer, also covers the creation of databases, tables and columns.
 ##MatchaAudit Class:
 A extra feature if you want that Matcha records every injection to the database
 this includes INSERTS, UPDATE and ALTER. Perfect to Medic and Accounting applications.
+Recently we integrated some goodies:
+ - Browser detection to fire up FirePHP or ChromePHP
+
 
 ##MatchaCUP Class:
 The precious tea, this class will handle all your CRUD (Create, Read, Update and Delete) to your database
@@ -30,6 +33,10 @@ done.
 ##MatchaModel Class:
 This class is the brain of the bi-directional microORM, this creates both models. The database table and columns
 and also creates Sencha Model (.js) files dynamically.
+
+##MatchaMemory Class:
+This class stores parsed Sencha Model into the server memory to speed things up. It can be used for other memory
+storing purposes.
 
 ##History:
 Taking some ideas from different microORM's and full featured ORM's we bring you this cool Class.

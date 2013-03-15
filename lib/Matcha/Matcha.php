@@ -23,6 +23,12 @@ include_once('MatchaModel.php');
 include_once('MatchaUtils.php');
 include_once('MatchaMemory.php');
 
+// External Plugins
+require_once(dirname(__FILE__).'/plugins/FirePHPCore-0.3.2/lib/FirePHPCore/FirePHP.class.php');
+require_once(dirname(__FILE__).'/plugins/ChromePHP/ChromePhp.php');
+require_once(dirname(__FILE__).'/plugins/BrowserDetect/Browser.php');
+require_once(dirname(__FILE__).'/plugins/Carbon/Carbon/Carbon.php');
+
 // Include the Matcha Threads if the PHP Thread class exists
 if(class_exists('Thread')) include_once('MatchaThreads.php');
 
@@ -93,7 +99,8 @@ class Matcha
 		}
 		catch(Exception $e)
 		{
-			return MatchaErrorHandler::__errorProcess($e);
+            MatchaErrorHandler::__errorProcess($e);
+            return false;
 		}
 	}
 	 
@@ -158,7 +165,8 @@ class Matcha
 		}
 		catch(PDOException $e)
 		{
-			return MatchaErrorHandler::__errorProcess($e);
+            MatchaErrorHandler::__errorProcess($e);
+            return false;
 		}
 	}
 	
@@ -247,7 +255,8 @@ class Matcha
 		}
 		catch(PDOException $e)
 		{
-			return MatchaErrorHandler::__errorProcess($e);
+            MatchaErrorHandler::__errorProcess($e);
+            return false;
 		}
 	}
 	
@@ -265,7 +274,8 @@ class Matcha
 		}
 		catch(PDOException $e)
 		{
-			return MatchaErrorHandler::__errorProcess($e);
+            MatchaErrorHandler::__errorProcess($e);
+            return false;
 		}
 	}
 	
@@ -283,7 +293,8 @@ class Matcha
 		}
 		catch(PDOException $e)
 		{
-			return MatchaErrorHandler::__errorProcess($e);
+            MatchaErrorHandler::__errorProcess($e);
+            return false;
 		}
 	}
 
@@ -306,7 +317,8 @@ class Matcha
         }
         catch(PDOException $e)
         {
-            return MatchaErrorHandler::__errorProcess($e);
+            MatchaErrorHandler::__errorProcess($e);
+            return false;
         }
     }
 

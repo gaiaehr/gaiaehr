@@ -23,20 +23,28 @@ if (!isset($_SESSION)) {
     session_cache_limiter('private');
 }
 include_once ($_SESSION['root'] . '/classes/MatchaHelper.php');
-/**
- * @brief       Brief Description
- * @details     Detail Description ...
- *
- * @author      Ernesto J . Rodriguez(Certun) < erodriguez@certun . com >
- * @version     Vega 1.0
- * @copyright   Gnu Public License(GPLv3)
- */
+
 class Practice extends MatchaHelper
 {
+
     /**
-     * Pharmacies stuff
-     * @return array
+     * Data Object
      */
+    private $Pharmacy = NULL;
+    private $Address = NULL;
+    private $Laboratory = NULL;
+
+    public function __construct()
+    {
+        $this->Pharmacy = MatchaModel::setSenchaModel('App.model.Pharmacy');
+        $this->Address = MatchaModel::setSenchaModel('App.model.administration.Address');
+        $this->Laboratory = MatchaModel::setSenchaModel('App.model.administration.LaboratoryGrid');
+        return;
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+    // Main Sencha Model Getter and Setters
+    //------------------------------------------------------------------------------------------------------------------
     public function getPharmacies()
     {
         $rows = array();

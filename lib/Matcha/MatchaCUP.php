@@ -267,8 +267,7 @@ class MatchaCUP
 			{
 				$data = get_object_vars($record);
 				// create record
-				if (!isset($data[$this->primaryKey]) || (isset($data[$this->primaryKey]) && $data[$this->primaryKey] == 0))
-				{
+				if (!isset($data[$this->primaryKey]) || (isset($data[$this->primaryKey]) && ($data[$this->primaryKey] == 0 || $data[$this->primaryKey] == ''))){
                     $sql = $this->buildInsetSqlStatement($data);
 					$this->rowsAffected = Matcha::$__conn->exec($sql);
 					$data[$this->primaryKey] = $this->lastInsertId = Matcha::$__conn->lastInsertId();
@@ -293,7 +292,7 @@ class MatchaCUP
 				{
 					$data = get_object_vars($rec);
 					// create record
-					if (!isset($data[$this->primaryKey]) || (isset($data[$this->primaryKey]) && $data[$this->primaryKey] == 0))
+					if (!isset($data[$this->primaryKey]) || (isset($data[$this->primaryKey]) && ($data[$this->primaryKey] == 0 || $data[$this->primaryKey] == '')))
 					{
                         $sql = $this->buildInsetSqlStatement($data);
 						$this->rowsAffected = Matcha::$__conn->exec($sql);
@@ -424,7 +423,7 @@ class MatchaCUP
 	private function buildInsetSqlStatement($data)
 	{
 		$data = $this->parseValues($data);
-
+		unset($data[$this->primaryKey]);
 		$columns = array_keys($data);
 		$values = array_values($data);
 		$columns = '(`' . implode('`,`', $columns) . '`)';
@@ -450,7 +449,6 @@ class MatchaCUP
 			$primaryKeyValue = $data[$this->primaryKey];;
 		}
 		unset($data[$this->primaryKey]);
-
 		$sets = array();
 		$data = $this->parseValues($data);
 		foreach ($data as $key => $val) $sets[] = "`$key`='$val'";

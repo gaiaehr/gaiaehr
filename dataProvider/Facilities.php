@@ -23,30 +23,28 @@ if (!isset($_SESSION))
 	session_start();
 	session_cache_limiter('private');
 }
+
 $_SESSION['site']['flops'] = 0;
 include_once ($_SESSION['root'] . '/classes/MatchaHelper.php');
+
 class Facilities
 {
 
     /**
-     * @var Database Object
+     * Data Object
      */
     private $Facilities = null;
 
-	/**
-	 * Creates the MatchaHelper instance
-	 */
 	function __construct()
 	{
         $this->Facilities = MatchaModel::setSenchaModel('App.model.administration.Facility');
 		return;
 	}
 
-	/**
-	 * @param stdClass $params
-	 * @return array
-	 */
-	public function getFacilities(stdClass $params)
+    //------------------------------------------------------------------------------------------------------------------
+    // Main Sencha Model Getter and Setters
+    //------------------------------------------------------------------------------------------------------------------
+    public function getFacilities(stdClass $params)
 	{
 		$rows = array();
 		foreach ($this->Facilities->load($params)->all() as $row)
@@ -57,10 +55,6 @@ class Facilities
 		return $rows;
 	}
 
-	/**
-	 * @param stdClass $params
-	 * @return stdClass
-	 */
 	public function addFacility(stdClass $params)
 	{
 		$data = get_object_vars($params);
@@ -70,10 +64,6 @@ class Facilities
 		return $params;
 	}
 
-	/**
-	 * @param stdClass $params
-	 * @return stdClass
-	 */
 	public function updateFacility(stdClass $params)
 	{
 		$data = get_object_vars($params);
@@ -81,21 +71,21 @@ class Facilities
 		return $params;
 	}
 
-	/**
-	 * Not in use. For Now you can only set the Facility "inactive"
-	 *
-	 * @param stdClass $params
-	 * @return stdClass
-	 */
 	public function deleteFacility(stdClass $params)
 	{
 		return $this->Facilities->destroy($params);
 	}
 
+
+    //------------------------------------------------------------------------------------------------------------------
+    // Extra methods
+    // This methods are used by the view to gather extra data from the store or the model
+    //------------------------------------------------------------------------------------------------------------------
 	public function getFacilityInfo($fid)
 	{
-        $resultRecord = $this->Facilities->load( array('id'=>$fid), array('name', 'phone', 'street', 'city', 'state', 'postal_code') )->one();
-		return 'Facility: ' . $resultRecord['name'] . ' ' . $resultRecord['phone'] . ' ' . $resultRecord['street'] . ' ' . $resultRecord['city'] . ' ' . $resultRecord['state'] . ' ' . $resultRecord['postal_code'];
+        $resultRecord = $this->Facilities->load( array('id'=>$fid), array('name','phone','street','city','state','postal_code') )->one();
+		return 'Facility: '.$resultRecord['name'].' '.$resultRecord['phone'].' '.$resultRecord['street'].' '.
+            $resultRecord['city'].' '.$resultRecord['state'].' '.$resultRecord['postal_code'];
 	}
 
 	public function getActiveFacilities()

@@ -27,12 +27,6 @@ if (!isset($_SESSION))
 class Person
 {
 
-	/**
-	 * @param $fname
-	 * @param $mname
-	 * @param $lname
-	 * @return string
-	 */
 	public static function fullname($fname, $mname, $lname)
 	{
 		if (isset($_SESSION['global_settings']) && $_SESSION['global_settings']['fullname'])
@@ -55,7 +49,6 @@ class Person
 			$fullname = $lname . ', ' . $fname . ' ' . $mname;
 		}
 		$fullname = ($fullname == ',  ') ? '' : $fullname;
-
 		return $fullname;
 	}
 
@@ -70,7 +63,6 @@ class Person
 		{
 			$street = $street;
 		}
-
 		if ($streetb != NULL || $streetb != "")
 		{
 			$streetb = $streetb . "<br>";
@@ -79,7 +71,6 @@ class Person
 		{
 			$streetb = $streetb;
 		}
-
 		if ($city != NULL || $city != "")
 		{
 			$city = $city . ", ";
@@ -88,9 +79,7 @@ class Person
 		{
 			$city = $city;
 		}
-
 		return $street . $streetb . $city . ' ' . $state . ' ' . $zip;
-
 	}
 
 	public static function ellipsis($text, $max = 100, $append = '&hellip;')
@@ -99,7 +88,6 @@ class Person
 			return $text;
 		$out = substr($text, 0, $max);
 		return $out . $append;
-		//return preg_replace('/\w+$/','',$out).$append;
 	}
 
 }

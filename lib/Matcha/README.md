@@ -14,17 +14,16 @@ Class that manage connections between MySQL and Sencha, PHP will be the Business
 Layer, also covers the creation of databases, tables and columns.
 
 ##MatchaAudit Class:
-A extra feature if you want that Matcha records every injection to the database
-this includes INSERTS, UPDATE and ALTER. Perfect to Medic and Accounting applications.
-Recently we integrated some goodies:
- - Browser detection to fire up FirePHP or ChromePHP
-
+A extra feature if you want that Matcha saves every injection to the database
+this includes INSERTS, UPDATE and ALTER. Perfect for Medical and Accounting applications.
 
 ##MatchaCUP Class:
 The precious tea, this class will handle all your CRUD (Create, Read, Update and Delete) to your database
 
 ##MatchaErrorHandler Class:
 The Error Exception class, all Matcha classes will throw their errors in this class.
+Recently we integrated some goodies:
+ - Browser detection to fire up FirePHP or ChromePHP
 
 ##MatchaThread Class:
 If you want Matcha be multi-thread this is the class to use, careful some compilation to the PHP language has to be
@@ -37,6 +36,14 @@ and also creates Sencha Model (.js) files dynamically.
 ##MatchaMemory Class:
 This class stores parsed Sencha Model into the server memory to speed things up. It can be used for other memory
 storing purposes.
+
+##MatchaUtils Class:
+This class holds several methods to speed up your application, it also support plugins.
+Plugin included:
+* Browser Detect
+* Carbon (Date & Time) methods
+* FirePHP (Better debug in AJAX applications)
+* ChromePHP (Better debug in AJAX applications)
 
 ##History:
 Taking some ideas from different microORM's and full featured ORM's we bring you this cool Class.

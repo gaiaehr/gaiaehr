@@ -45,8 +45,8 @@ class MatchaModel extends Matcha
         {
 	        self::$__senchaModel = array();
 
-            // check the difference in dates, if there are equal go ahead and load the model from memory
-            // and quit the procedure
+            // check the difference in dates of the Sencha model file and the stored Sencha model on the server memory,
+            // if there are equal go ahead and load the model from memory and quit the procedure
             if(self::__getFileModifyDate($fileModel) == MatchaMemory::__getSenchaModelLastChange($fileModel))
             {
                 self::$__senchaModel = MatchaMemory::__getModelFromMemory($fileModel);
@@ -76,8 +76,7 @@ class MatchaModel extends Matcha
             foreach($workingModel as $key => $SenchaModel) if(isset($SenchaModel['store']) && $SenchaModel['store'] === false) unset($workingModel[$key]);
 
             // get the table column information and remove the id column
-            $recordSet = self::$__conn->query("SHOW FULL COLUMNS IN ".$table.";");
-            $tableColumns = $recordSet->fetchAll(PDO::FETCH_ASSOC);
+            $tableColumns = self::$__conn->query("SHOW FULL COLUMNS IN ".$table.";")->fetchAll(PDO::FETCH_ASSOC);
             unset($tableColumns[MatchaUtils::__recursiveArraySearch(self::$tableId, $tableColumns)]);
 
             $columnsTableNames = array();

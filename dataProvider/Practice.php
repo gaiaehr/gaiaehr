@@ -22,6 +22,7 @@ if (!isset($_SESSION)) {
     session_start();
     session_cache_limiter('private');
 }
+
 include_once ($_SESSION['root'] . '/classes/MatchaHelper.php');
 
 class Practice extends MatchaHelper
@@ -32,44 +33,30 @@ class Practice extends MatchaHelper
      */
     private $Pharmacy = NULL;
     private $Address = NULL;
+    private $Phone = NULL;
     private $Laboratory = NULL;
+    private $Insurance = NULL;
 
     public function __construct()
     {
         $this->Pharmacy = MatchaModel::setSenchaModel('App.model.Pharmacy');
         $this->Address = MatchaModel::setSenchaModel('App.model.administration.Address');
+        $this->Phone = MatchaModel::setSenchaModel('App.model.administration.Phone');
         $this->Laboratory = MatchaModel::setSenchaModel('App.model.administration.LaboratoryGrid');
+        $this->Insurance = MatchaModel::setSenchaModel('App.model.administration.InsuranceGrid');
         return;
     }
 
     //------------------------------------------------------------------------------------------------------------------
-    // Main Sencha Model Getter and Setters
+    // Main Sencha Model Getters and Setters
     //------------------------------------------------------------------------------------------------------------------
     public function getPharmacies()
     {
         $rows = array();
-        $this->setSQL("SELECT p.id AS id,
-                              p.name,
-                              p.transmit_method,
-                              p.email,
-                              p.active,
-                              a.id AS address_id,
-                              a.line1,
-                              a.line2,
-                              a.city,
-                              a.state,
-                              a.zip,
-                              a.plus_four,
-                              a.country,
-                              a.foreign_id AS address_foreign_id
-                         FROM pharmacies AS p
-                    LEFT JOIN addresses AS a ON p.id = a.foreign_id
-                     ORDER BY p.name DESC");
-        foreach($this->fetchRecords(PDO::FETCH_ASSOC) as $row) {
-            $this->setSQL("SELECT * FROM phone_numbers WHERE phone_numbers.foreign_id =" . $row['id'] . "");
-            $row = $this->getPhones($row);
-            $row['address_full'] = $row['line1'] . ' ' . $row['line2'] . ' ' . $row['city'] . ',' . $row['state'] . ' ' . $row['zip'] . '-' . $row['plus_four'] . ' ' . $row['country'];
-            array_push($rows, $row);
+        foreach($this->Pharmacy->load()->all() as $row)
+        {
+            $row['address_full'] = $row['line1'].' '.$row['line2'].' '.$row['city'].','.$row['state'].' '.$row['zip'].'-'.$row['plus_four'].' '.$row['country'];
+            array_push($rows, $this->Phone->load(array('foreign_id'=>$row['id']))->one());
         }
         return $rows;
     }
@@ -279,7 +266,6 @@ class Practice extends MatchaHelper
      */
     public function getInsuranceNumbers(stdClass $params)
     {
-
         return $params;
     }
 
@@ -290,7 +276,6 @@ class Practice extends MatchaHelper
      */
     public function getX12Partners(stdClass $params)
     {
-
         return $params;
     }
 

@@ -32,6 +32,7 @@ done.
 ##MatchaModel Class:
 This class is the brain of the bi-directional microORM, this creates both models. The database table and columns
 and also creates Sencha Model (.js) files dynamically.
+
 [MatchaModel Documentation](documentation/MatchaModel.md)
 
 ##MatchaMemory Class:

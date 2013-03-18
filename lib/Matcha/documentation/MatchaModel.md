@@ -11,7 +11,7 @@ require_once('/Matcha/Matcha.php');
 private $User = NULL;
 
 //dataProvider for Sencha
-class Data extends MatchaHelper
+class UserData extends Matcha
 {
     public function __construct()
     {
@@ -36,7 +36,7 @@ require_once('/Matcha/Matcha.php');
 private $User = NULL;
 
 //dataProvider for Sencha
-class Data extends MatchaHelper
+class UserData extends Matcha
 {
     public function __construct()
     {

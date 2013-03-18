@@ -47,7 +47,7 @@ Plugin included:
 * FirePHP (Better debug in AJAX applications)
 * ChromePHP (Better debug in AJAX applications)
 
-[MatchaModel Documentation](documentation/MatchaUtils.md)
+[MatchaUtils Documentation](documentation/MatchaUtils.md)
 
 ##History:
 Taking some ideas from different microORM's and full featured ORM's we bring you this cool Class.

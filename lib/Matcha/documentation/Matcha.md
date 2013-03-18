@@ -7,6 +7,10 @@ It's the first class to call, all other classes depend upon it. It has all the n
 - MySQL
 
 ```php
+// MySQL Connection Settings
+
+require_once('/Matcha/Matcha.php');
+
 class MatchaHelper extends Matcha
 {
     function __contruct()
@@ -21,4 +25,5 @@ class MatchaHelper extends Matcha
         ));
     }
 }
+
 ```

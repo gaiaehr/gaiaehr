@@ -24,6 +24,9 @@ The code will read a Sencha (.js) model file and parse it, and will create the d
 if does not exist and their columns if does not exist, all this in one call. Also will store a serialized structure of
 the table on the database (Memory Store). This way will be much faster to access it another time.
 
+The model "App.model.administration.User" is located in "[root]/App/model/administration/User.js", Why this? because we
+want it to keep like Sencha does that's the reason.
+
 But keep in mind, if you are using Sencha with Direct, you better use a condition to check if the variable is already
 set. Like the following code:
 

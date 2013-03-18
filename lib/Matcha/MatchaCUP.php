@@ -139,6 +139,11 @@ class MatchaCUP
 		}
 	}
 
+    /**
+     * function nextId()
+     * Method to get the next ID from a table
+     * @return mixed
+     */
     public function nextId()
     {
         try
@@ -372,7 +377,7 @@ class MatchaCUP
     public function callBackMethod($dataInjectArray = array())
     {
         if(method_exists(MatchaAudit::$hookClass, MatchaAudit::$hookMethod) && MatchaAudit::$__audit)
-            call_user_func_array(array(MatchaAudit::$hookClass, MatchaAudit::$hookMethod), array(array('crc32'=>crc32($sql), 'event'=>'DELETE', 'sql'=>addslashes($sql))));
+            call_user_func_array(array(MatchaAudit::$hookClass, MatchaAudit::$hookMethod), $dataInjectArray);
     }
 
 	/**

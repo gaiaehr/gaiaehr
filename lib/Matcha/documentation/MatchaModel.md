@@ -4,6 +4,55 @@
 ##MatchaModel Class Documentation
 Handles the Sencha Models (files or dynnamic)
 
+Example Sencha Model (.js) file:
+```javascript
+Ext.define('App.model.administration.User',{
+	extend : 'Ext.data.Model',
+	table: {
+		name: 'users',
+		comment: 'User accounts'
+	},
+	fields: [
+        {name: 'id',                type: 'int',    comment: 'User Account ID'},
+
+		{name: 'create_uid',        type: 'int',    comment: 'create user ID'},
+		{name: 'update_uid',        type: 'int',    comment: 'update user ID'},
+		{name: 'create_date',       type: 'date',   comment: 'create date',         dateFormat:'Y-m-d H:i:s'},
+		{name: 'update_date',       type: 'date',   comment: 'last update date',    dateFormat:'Y-m-d H:i:s'},
+
+		{name: 'username',          type: 'string', comment: 'username'},
+		{name: 'password',          type: 'string', comment: 'password',  dataType: 'blob'},
+
+		{name: 'fname',             type: 'string', comment: 'first name'},
+		{name: 'mname',             type: 'string', comment: 'middle name'},
+		{name: 'lname',             type: 'string', comment: 'last name'},
+
+		{name: 'email',             type: 'string', comment: 'email'},
+	],
+	proxy: {
+		type: 'direct',
+		api: {
+			read: User.getUsers,
+			create: User.addUser,
+			update: User.updateUser
+		}
+	},
+	hasMany: [
+		{
+			model: 'App.model.Phones',
+			name: 'phones',
+			primaryKey: 'id',
+			foreignKey: 'use_id'
+		},
+		{
+			model: 'App.model.Address',
+			name: 'address',
+			primaryKey: 'id',
+			foreignKey: 'use_id'
+		}
+	]
+});
+```
 
 ```php
 require_once('/Matcha/Matcha.php');

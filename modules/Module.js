@@ -68,7 +68,6 @@ Ext.define('Modules.Module',
 
         },
 
-
         getModuleData:function(name){
             var me = this;
             Modules.getModuleByName(name, function(provider, response){

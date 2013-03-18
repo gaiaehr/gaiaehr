@@ -39,9 +39,7 @@ class Practice extends MatchaHelper
 
     public function __construct()
     {
-        $this->Pharmacy = MatchaModel::setSenchaModel('App.model.Pharmacy');
         $this->Address = MatchaModel::setSenchaModel('App.model.administration.Address');
-        $this->Phone = MatchaModel::setSenchaModel('App.model.administration.Phone');
         $this->Laboratory = MatchaModel::setSenchaModel('App.model.administration.LaboratoryGrid');
         $this->Insurance = MatchaModel::setSenchaModel('App.model.administration.InsuranceGrid');
         return;
@@ -52,6 +50,10 @@ class Practice extends MatchaHelper
     //------------------------------------------------------------------------------------------------------------------
     public function getPharmacies()
     {
+        if($this->Pharmacy == NULL) $this->Pharmacy = MatchaModel::setSenchaModel('App.model.Pharmacy');
+        if($this->Phone == NULL) $this->Phone = MatchaModel::setSenchaModel('App.model.administration.Phone');
+
+        $this->Phone = MatchaModel::setSenchaModel('App.model.administration.Phone');
         $rows = array();
         foreach($this->Pharmacy->load()->all() as $row)
         {
@@ -67,7 +69,10 @@ class Practice extends MatchaHelper
      */
     public function addPharmacy(stdClass $params)
     {
-        $params->id = $this->getNextPharmacyInsuranceId();
+        if($this->Pharmacy == NULL) $this->Pharmacy = MatchaModel::setSenchaModel('App.model.Pharmacy');
+        if($this->Insurance == NULL) $this->Insurance = MatchaModel::setSenchaModel('App.model.administration.InsuranceGrid');
+
+        $params->id = $this->Insurance()->nextId();
         $data = get_object_vars($params);
         $row['id'] = $data['id'];
         $row['name'] = $data['name'];
@@ -175,8 +180,6 @@ class Practice extends MatchaHelper
         $params = $this->updatePhones($params);
         return $params;
     }
-
-
 
     /**
      * Insurance stuff

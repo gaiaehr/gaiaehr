@@ -1,4 +1,4 @@
-![Alt text](/press/matcha-connect.png)
+![Match::connect](../press/matcha-connect.png)
 =====================
 
 ##MatchaCUP Class Documentation

@@ -21,7 +21,7 @@ $db = new MatchaHelper();
 //$var = array('i'=>10, 'j'=>20);
 //$firephp->log($var, 'Iterators');
 
-$Patient = MatchaModel::setSenchaModel('App.model.patient.Patient');
+$Patient = MatchaModel::setSenchaModel('App.model.administration.User');
 
 //$data = (object)array(
 //    'name' => 'Test',

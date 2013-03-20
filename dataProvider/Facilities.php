@@ -37,7 +37,7 @@ class Facilities
 
 	function __construct()
 	{
-        $this->Facilities = MatchaModel::setSenchaModel('App.model.administration.Facility');
+        if($this->Facilities == NULL) $this->Facilities = MatchaModel::setSenchaModel('App.model.administration.Facility');
 		return;
 	}
 
@@ -67,7 +67,8 @@ class Facilities
 	public function updateFacility(stdClass $params)
 	{
 		$data = get_object_vars($params);
-        $params->id = $this->Facilities->save($data)['pid'];
+        $tmpVar = $this->Facilities->save($data);
+        $params->id = $tmpVar['pid'];
 		return $params;
 	}
 

@@ -12,7 +12,6 @@ include_once('../registry.php');
 include_once('../sites/default/conf.php');
 include_once ($_SESSION['root'] . '/classes/MatchaHelper.php');
 
-
 $db = new MatchaHelper();
 
 //echo MatchaUtils::Carbon()->now();
@@ -21,7 +20,8 @@ $db = new MatchaHelper();
 //$var = array('i'=>10, 'j'=>20);
 //$firephp->log($var, 'Iterators');
 
-$Patient = MatchaModel::setSenchaModel('App.model.administration.User');
+$User = MatchaModel::setSenchaModel('App.model.administration.User');
+echo $User->nextId();
 
 //$data = (object)array(
 //    'name' => 'Test',

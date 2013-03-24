@@ -209,11 +209,10 @@ Ext.define('App.view.administration.Facilities', {
         me.pageBody = [me.FacilityGrid];
         me.callParent(arguments);
     },
+
     filterFacilitiesby: function(btn){
         this.updateTitle(i18n('Facilities') + ' (' + Ext.String.capitalize(btn.action) + ')');
-//        this.FacilityStore.proxy.extraParams = {
-//            active: btn.action == 'active' ? 1 : 0
-//        };
+
         this.FacilityStore.load({
             filters:[
                 {
@@ -223,9 +222,13 @@ Ext.define('App.view.administration.Facilities', {
             ]
         });
     },
+
     addFacility: function(){
-        var me = this, grid = me.FacilityGrid, store = grid.store;
-        grid.editingPlugin.cancelEdit();
+        var me = this,
+	        grid = me.FacilityGrid,
+	        store = grid.store;
+
+	    grid.editingPlugin.cancelEdit();
         store.insert(0, {
             active: 1,
             service_location: 1,
@@ -235,6 +238,7 @@ Ext.define('App.view.administration.Facilities', {
         });
         grid.editingPlugin.startEdit(0, 0);
     },
+
     /**
      * This function is called from Viewport.js when
      * this panel is selected in the navigation panel.

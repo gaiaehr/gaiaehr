@@ -57,17 +57,14 @@ class Facilities
 
 	public function addFacility(stdClass $params)
 	{
-		$data = get_object_vars($params);
-		unset($data['id']);
-		foreach ($data AS $key => $val) if ($val == '') unset($data[$key]);
-        $params->id = $this->Facilities->save($data)['pid'];
+        $facility = $this->Facilities->save($params);
+		$params->id = $facility['id'];
 		return $params;
 	}
 
 	public function updateFacility(stdClass $params)
 	{
-		$data = get_object_vars($params);
-        $params->id = $this->Facilities->save($data)['pid'];
+		$this->Facilities->save($params);
 		return $params;
 	}
 

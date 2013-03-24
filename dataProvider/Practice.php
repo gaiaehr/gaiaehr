@@ -41,7 +41,7 @@ class Practice extends MatchaHelper
     {
         $this->Address = MatchaModel::setSenchaModel('App.model.administration.Address');
         $this->Laboratory = MatchaModel::setSenchaModel('App.model.administration.LaboratoryGrid');
-        $this->Insurance = MatchaModel::setSenchaModel('App.model.administration.InsuranceGrid');
+        $this->Insurance = MatchaModel::setSenchaModel('App.model.administration.Insurance');
         return;
     }
 
@@ -70,7 +70,7 @@ class Practice extends MatchaHelper
     public function addPharmacy(stdClass $params)
     {
         if($this->Pharmacy == NULL) $this->Pharmacy = MatchaModel::setSenchaModel('App.model.Pharmacy');
-        if($this->Insurance == NULL) $this->Insurance = MatchaModel::setSenchaModel('App.model.administration.InsuranceGrid');
+        if($this->Insurance == NULL) $this->Insurance = MatchaModel::setSenchaModel('App.model.administration.Insurance');
 
         $params->id = $this->Insurance()->nextId();
         $data = get_object_vars($params);

@@ -16,14 +16,14 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.model.administration.LaboratoriesGrid', {
+Ext.define('App.model.administration.Pharmacies', {
     extend:'Ext.data.Model',
     table: {
-        name:'laboratoriesgrid',
-        comment:'Laboratories Grid'
+        name:'pharmacygrid',
+        comment:'Pharmacy Grid'
     },
     fields:[
-        { name:'id', type:'int', dataType: 'bigint', len: 20, primaryKey : true, autoIncrement : true, allowNull : false, store: true, comment: 'Laboratory Grid ID'},
+        { name:'id', type:'int' },
         { name:'name', type:'string' },
         { name:'transmit_method', type:'string' },
         { name:'email', type:'string' },
@@ -52,9 +52,9 @@ Ext.define('App.model.administration.LaboratoriesGrid', {
     proxy:{
         type:'direct',
         api:{
-            read:Practice.getLaboratories,
-            create:Practice.addLaboratory,
-            update:Practice.updateLaboratory
+            read:Practice.getPharmacies,
+            create:Practice.addPharmacy,
+            update:Practice.updatePharmacy
         }
     }
 });

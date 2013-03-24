@@ -16,17 +16,21 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.model.administration.PharmacyGrid', {
+Ext.define('App.model.administration.Insurance', {
     extend:'Ext.data.Model',
     table: {
-        name:'pharmacygrid',
-        comment:'Pharmacy Grid'
+        name:'insurancegrid',
+        comment:'Insurance Grid'
     },
     fields:[
-        { name:'id', type:'int' },
+        { name:'id', type:'int', comment: 'Insurance ID'},
         { name:'name', type:'string' },
-        { name:'transmit_method', type:'string' },
-        { name:'email', type:'string' },
+        { name:'attn', type:'string' },
+        { name:'cms_id', type:'string' },
+        { name:'freeb_type', type:'string' },
+        { name:'x12_receiver_id', type:'string' },
+        { name:'x12_default_partner_id', type:'string' },
+        { name:'alt_cms_id', type:'string' },
         { name:'address_id', type:'int' },
         { name:'line1', type:'string' },
         { name:'line2', type:'string' },
@@ -43,6 +47,7 @@ Ext.define('App.model.administration.PharmacyGrid', {
         { name:'phone_number', type:'string' },
         { name:'phone_full', type:'string' },
         { name:'fax_id', type:'int' },
+        { name:'fax_country_code', type:'string' },
         { name:'fax_area_code', type:'string' },
         { name:'fax_prefix', type:'string' },
         { name:'fax_number', type:'string' },
@@ -52,9 +57,9 @@ Ext.define('App.model.administration.PharmacyGrid', {
     proxy:{
         type:'direct',
         api:{
-            read:Practice.getPharmacies,
-            create:Practice.addPharmacy,
-            update:Practice.updatePharmacy
+            read:Practice.getInsurances,
+            create:Practice.addInsurance,
+            update:Practice.updateInsurance
         }
     }
 });

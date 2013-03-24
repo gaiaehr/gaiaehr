@@ -20,16 +20,20 @@ Ext.define('App.view.administration.Practice', {
 	extend:'App.ux.RenderPanel',
 	id:'panelPractice',
 	pageTitle:i18n('practice_settings'),
-	uses:['App.ux.combo.Titles', 'App.ux.combo.TransmitMethod', 'App.ux.combo.InsurancePayerType'],
+	uses:[
+		'App.ux.combo.Titles',
+		'App.ux.combo.TransmitMethod',
+		'App.ux.combo.InsurancePayerType'
+	],
 	initComponent:function(){
 		var me = this;
 
         // *************************************************************************************
 		// Practice Model and Store
         // *************************************************************************************
-		me.pharmacyStore = Ext.create('App.store.administration.PharmacyGrid');
-		me.laboratoryStore = Ext.create('App.store.administration.LaboratoriesGrid');
-		me.insuranceStore = Ext.create('App.store.administration.InsuranceGrid');
+		me.pharmacyStore = Ext.create('App.store.administration.Pharmacies');
+		me.laboratoryStore = Ext.create('App.store.administration.Laboratories');
+		me.insuranceStore = Ext.create('App.store.administration.Insurance');
 
 		// *************************************************************************************
 		// Insurance Numbers Record Structure

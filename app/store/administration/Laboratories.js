@@ -16,15 +16,15 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.store.administration.PharmacyGrid', {
-    model: 'App.model.administration.PharmacyGrid',
+Ext.define('App.store.administration.Laboratories', {
+    model: 'App.model.administration.Laboratories',
     extend: 'Ext.data.Store',
     proxy:{
         type:'direct',
         api:{
-            read:Practice.getPharmacies,
-            create:Practice.addPharmacy,
-            update:Practice.updatePharmacy
+            read:Practice.getLaboratories,
+            create:Practice.addLaboratory,
+            update:Practice.updateLaboratory
         }
     }
 });

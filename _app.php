@@ -1,14 +1,31 @@
 <?php
-/* Main Screen Application
+/**
+ * GaiaEHR (Electronic Health Records)
+ * Copyright (C) 2013 Certun, inc.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+/**
+ * Main Screen Application
  *
  * Description: This is the main application file, all the global
- * vars are defined here inluding "var app" witch refers to
- * the applciation Viewport.
+ * vars are defined here including "var app" witch refers to
+ * the application Viewport.
  *
- * version 1.0.0
- * revision: N/A
- * author: GI Technologies, 2011
- * modified: Ernesto J Rodriguez (Certun)
+ * @version 1.0.0
+ * @author GI Technologies, 2011
+ * @author Ernesto J Rodriguez (Certun)
  *
  * @namespace App.data.REMOTING_API
  */
@@ -122,9 +139,9 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
                 'App.model.administration.Globals',
                 'App.model.administration.HeadersAndFooters',
                 'App.model.administration.ImmunizationRelations',
-                'App.model.administration.InsuranceGrid',
+                'App.model.administration.Insurance',
                 'App.model.administration.LabObservations',
-                'App.model.administration.LaboratoriesGrid',
+                'App.model.administration.Laboratories',
                 'App.model.administration.LayoutTree',
                 'App.model.administration.ListOptions',
                 'App.model.administration.Lists',
@@ -132,7 +149,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
                 'App.model.administration.Medications',
                 'App.model.administration.Modules',
                 'App.model.administration.ParentFields',
-                'App.model.administration.PharmacyGrid',
+                'App.model.administration.Pharmacies',
                 'App.model.administration.PreventiveCare',
                 'App.model.administration.PreventiveCareActiveProblems',
                 'App.model.administration.PreventiveCareLabs',
@@ -220,9 +237,9 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
                 'App.store.administration.Globals',
                 'App.store.administration.HeadersAndFooters',
                 'App.store.administration.ImmunizationRelations',
-                'App.store.administration.InsuranceGrid',
+                'App.store.administration.Insurance',
                 'App.store.administration.LabObservations',
-                'App.store.administration.LaboratoriesGrid',
+                'App.store.administration.Laboratories',
                 'App.store.administration.LayoutTree',
                 'App.store.administration.ListOptions',
                 'App.store.administration.Lists',
@@ -230,7 +247,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
                 'App.store.administration.Medications',
                 'App.store.administration.Modules',
                 'App.store.administration.ParentFields',
-                'App.store.administration.PharmacyGrid',
+                'App.store.administration.Pharmacies',
                 'App.store.administration.PreventiveCare',
                 'App.store.administration.PreventiveCareActiveProblems',
                 'App.store.administration.PreventiveCareLabs',

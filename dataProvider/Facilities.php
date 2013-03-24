@@ -17,27 +17,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-if (!isset($_SESSION))
-{
+if (!isset($_SESSION)){
 	session_name('GaiaEHR');
 	session_start();
 	session_cache_limiter('private');
 }
 
-$_SESSION['site']['flops'] = 0;
 include_once ($_SESSION['root'] . '/classes/MatchaHelper.php');
 
 class Facilities
 {
 
     /**
-     * Data Object
+     * MatchaCup
      */
-    private $Facilities = null;
+    private $f = null;
 
 	function __construct()
 	{
-        $this->Facilities = MatchaModel::setSenchaModel('App.model.administration.Facility');
+        $this->f = MatchaModel::setSenchaModel('App.model.administration.Facility');
 		return;
 	}
 
@@ -47,7 +45,7 @@ class Facilities
     public function getFacilities(stdClass $params)
 	{
 		$rows = array();
-		foreach ($this->Facilities->load($params)->all() as $row)
+		foreach ($this->f->load($params)->all() as $row)
 		{
 			if (strlen($row['pos_code']) <= 1) $row['pos_code'] = '0' . $row['pos_code'];
 			array_push($rows, $row);
@@ -57,20 +55,20 @@ class Facilities
 
 	public function addFacility(stdClass $params)
 	{
-        $facility = $this->Facilities->save($params);
+        $facility = $this->f->save($params);
 		$params->id = $facility['id'];
 		return $params;
 	}
 
 	public function updateFacility(stdClass $params)
 	{
-		$this->Facilities->save($params);
+		$this->f->save($params);
 		return $params;
 	}
 
 	public function deleteFacility(stdClass $params)
 	{
-		return $this->Facilities->destroy($params);
+		return $this->f->destroy($params);
 	}
 
 
@@ -80,24 +78,24 @@ class Facilities
     //------------------------------------------------------------------------------------------------------------------
 	public function getFacilityInfo($fid)
 	{
-        $resultRecord = $this->Facilities->load( array('id'=>$fid), array('name','phone','street','city','state','postal_code') )->one();
+        $resultRecord = $this->f->load( array('id'=>$fid), array('name','phone','street','city','state','postal_code') )->one();
 		return 'Facility: '.$resultRecord['name'].' '.$resultRecord['phone'].' '.$resultRecord['street'].' '.
             $resultRecord['city'].' '.$resultRecord['state'].' '.$resultRecord['postal_code'];
 	}
 
 	public function getActiveFacilities()
 	{
-		return $this->Facilities->load( array('active'=>'1') )->one();
+		return $this->f->load( array('active'=>'1') )->one();
 	}
 
 	public function getActiveFacilitiesById($facilityId)
 	{
-        return $this->Facilities->load( array('active'=>'1', 'id'=>$facilityId) )->one();
+        return $this->f->load( array('active'=>'1', 'id'=>$facilityId) )->one();
 	}
 
 	public function getBillingFacilities()
 	{
-        return $this->Facilities->load( array('active'=>'1', 'billing_location'=>'1') )->one();
+        return $this->f->load( array('active'=>'1', 'billing_location'=>'1') )->one();
 	}
 
 }

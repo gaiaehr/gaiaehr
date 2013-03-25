@@ -51,7 +51,7 @@ Ext.define('App.model.patient.Insurance', {
         {name: 'subscriberEmployerState',       type: 'string', comment:'subscriber employer state'},
         {name: 'subscriberEmployerCountry',     type: 'string', comment:'subscriber employer country'},
         {name: 'subscriberEmployerPostalCode',  type: 'string', comment:'subscriber employer postal code'},
-        {name: 'subscriberDob',                 type: 'string', comment:'subscriber date of birth'},
+        {name: 'subscriberDob',                 type: 'date',   comment:'subscriber date of birth'},
         {name: 'subscriberSS',                  type: 'string', comment:'subscriber social security'},
         {name: 'copay',                         type: 'string', comment:'default copay'},
         {name: 'type',                          type: 'string', comment:'main supplemental'},

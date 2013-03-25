@@ -130,8 +130,7 @@ class authProcedures
         		          AND authorized = '1'
         		        LIMIT 1");
 		$user = $db->fetchRecord();
-//        print '<pre>';
-//        print_r($user);
+
 		if(empty($user) || $params->authPass != $aes->decrypt($user['password'])){
 			return array(
 				'success' => false, 'type' => 'error', 'message' => 'The username or password you provided is invalid.'

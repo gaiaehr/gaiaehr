@@ -45,13 +45,13 @@ class ACL
 
 	/**
 	 * @internal param string $user_id
-	 * @param null $uid
+	 * @param null|string $uid
 	 * @internal param null $user_id
 	 */
-	public function __construct($uid = null)
+	public function __construct($uid = '')
 	{
 		$this->conn       = new MatchaHelper();
-		$this->user_id    = ($uid == null) ? $_SESSION['user']['id'] : $uid;
+		$this->user_id    = (!is_numeric($uid)) ? $_SESSION['user']['id'] : $uid;
 		$this->user_roles = $this->getUserRoles();
 		$this->buildACL();
 	}
@@ -106,7 +106,7 @@ class ACL
                           LEFT JOIN acl_roles AS ar ON u.role_id = ar.id
                               WHERE u.id = '$this->user_id'");
 		foreach($this->conn->fetchRecords(PDO::FETCH_ASSOC) AS $role){
-			$roles[] = $role['role_key'];
+			$roles[] = (string) $role['role_key'];
 		}
 		return $roles;
 	}

@@ -18,7 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 if (!isset($_SESSION)) {
-    session_name("GaiaEHR");
+    session_name('GaiaEHR');
     session_start();
     session_cache_limiter('private');
 }
@@ -40,7 +40,7 @@ class Practice extends MatchaHelper
     public function __construct()
     {
         $this->Address = MatchaModel::setSenchaModel('App.model.administration.Address');
-        $this->Laboratory = MatchaModel::setSenchaModel('App.model.administration.LaboratoryGrid');
+        $this->Laboratory = MatchaModel::setSenchaModel('App.model.administration.Laboratories');
         $this->Insurance = MatchaModel::setSenchaModel('App.model.administration.Insurance');
         return;
     }

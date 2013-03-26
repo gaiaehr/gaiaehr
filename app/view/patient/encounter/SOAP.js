@@ -303,6 +303,7 @@ Ext.define('App.view.patient.encounter.SOAP', {
 				{
 					text:i18n('save'),
 					iconCls:'save',
+					action:'soapSave',
 					scope:me,
 					handler:me.onSoapSave
 				}
@@ -378,6 +379,7 @@ Ext.define('App.view.patient.encounter.SOAP', {
 	onProcedureCancel:function(){
 		this.procedureStore.rejectChanges();
 		this.pWin.hide(this.pGrid.el);
+		this.query('button[action=soapSave]')[0].enable();
 		this.pWin.setTitle(i18n('procedure'));
 	},
 
@@ -391,6 +393,7 @@ Ext.define('App.view.patient.encounter.SOAP', {
 
 		this.procedureStore.sync();
 		this.pWin.hide(this.pGrid.el);
+		this.query('button[action=soapSave]')[0].enable();
 		this.pWin.setTitle(i18n('procedure'));
 	},
 
@@ -399,10 +402,8 @@ Ext.define('App.view.patient.encounter.SOAP', {
 		me.callParent();
 
 		if(me.eid != app.patient.eid){
-
 			me.pid = app.patient.pid;
 			me.eid = app.patient.eid;
-
 			me.procedureStore.load({
 				filters:[
 					{
@@ -412,7 +413,6 @@ Ext.define('App.view.patient.encounter.SOAP', {
 				]
 			});
 		}
-
 	},
 
 	procedureEdit:function(view, record){
@@ -424,6 +424,7 @@ Ext.define('App.view.patient.encounter.SOAP', {
 
 		this.pForm.getForm().loadRecord(record);
 		this.pWin.show(this.pGrid.el);
+		this.query('button[action=soapSave]')[0].disable();
 	},
 
 	onSoapSave:function(btn){

@@ -53,6 +53,19 @@ $API = array(
 
         )
     ),
+    'Procedures' => array(
+        'methods' => array(
+            'loadProcedures' => array(
+                'len' => 1
+            ),
+            'saveProcedure' => array(
+                'len' => 1
+            ),
+            'destroyProcedure' => array(
+                'len' => 1
+            )
+        )
+    ),
     'CupTest' => array(
         'methods' => array(
             'cuptest' => array(

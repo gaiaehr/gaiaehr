@@ -170,6 +170,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
                 'App.model.navigation.Navigation',
 
                 'App.model.patient.encounter.snippetTree',
+				'App.model.patient.encounter.Procedures',
 
                 'App.model.patient.Allergies',
                 'App.model.patient.CheckoutAlertArea',
@@ -268,6 +269,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
                 'App.store.navigation.Navigation',
 
                 'App.store.patient.encounter.snippetTree',
+				'App.store.patient.encounter.Procedures',
 
                 'App.store.patient.Allergies',
                 'App.store.patient.CheckoutAlertArea',

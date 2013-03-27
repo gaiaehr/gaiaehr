@@ -169,7 +169,7 @@ Ext.define('App.view.patient.encounter.SOAP', {
 								},
 								{
 									xtype:'textfield',
-									name:'code_text',
+									name:'code_text'
 								},
 								{
 									xtype:'textareafield',

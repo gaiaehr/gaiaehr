@@ -159,11 +159,17 @@ Ext.define('App.view.patient.encounter.SOAP', {
 							items:[
 								{
 									xtype:'livecptsearch',
-									name:'code'
+									name:'code',
+									displayField:'code',
+									valueField:'code',
+									listeners:{
+										scope:me,
+										select:me.onProcedureSelect
+									}
 								},
 								{
 									xtype:'textfield',
-									name:'code_text'
+									name:'code_text',
 								},
 								{
 									xtype:'textareafield',
@@ -358,6 +364,13 @@ Ext.define('App.view.patient.encounter.SOAP', {
 		});
 
 		me.callParent();
+	},
+
+	onProcedureSelect:function(cmb, values){
+		var me = this,
+			form = me.pForm.getForm();
+
+		form.findField('code_text').setValue(values[0].data.code_text)
 	},
 
 	onProcedureAdd:function(){

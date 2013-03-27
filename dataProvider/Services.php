@@ -258,12 +258,12 @@ class Services
          *      [3] => 'head skin '
          * )
          */
-        $Str = explode(',', $params->query);
+        $Str = array_values(explode(',', $params->query));
         /**
          * get the las value and trim white spaces
          * $queryStr = 'head skin'
          */
-        $queryStr = trim(end(array_values($Str)));
+        $queryStr = trim(end($Str));
         /**
          * break the $queryStr into an array usin white spaces
          * $queries = array(

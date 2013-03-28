@@ -39,9 +39,6 @@ class Practice extends MatchaHelper
 
     public function __construct()
     {
-        $this->Address = MatchaModel::setSenchaModel('App.model.administration.Address');
-        $this->Laboratory = MatchaModel::setSenchaModel('App.model.administration.Laboratories');
-        $this->Insurance = MatchaModel::setSenchaModel('App.model.administration.Insurance');
         return;
     }
 
@@ -63,10 +60,6 @@ class Practice extends MatchaHelper
         return $rows;
     }
 
-    /**
-     * @param stdClass $params
-     * @return stdClass
-     */
     public function addPharmacy(stdClass $params)
     {
         if($this->Pharmacy == NULL) $this->Pharmacy = MatchaModel::setSenchaModel('App.model.Pharmacy');
@@ -88,12 +81,9 @@ class Practice extends MatchaHelper
         return $params;
     }
 
-    /**
-     * @param stdClass $params
-     * @return stdClass
-     */
     public function updatePharmacy(stdClass $params)
     {
+        if($this->Pharmacy == NULL) $this->Pharmacy = MatchaModel::setSenchaModel('App.model.Pharmacy');
         $data = get_object_vars($params);
         $row['name'] = $data['name'];
         $row['transmit_method'] = $data['transmit_method'];
@@ -107,12 +97,10 @@ class Practice extends MatchaHelper
         return $params;
     }
 
-    /**
-     * Laboratories stuff
-     * @return array
-     */
     public function getLaboratories()
     {
+        if($this->Laboratory == NULL) $this->Laboratory = MatchaModel::setSenchaModel('App.model.administration.Laboratories');
+        if($this->Phone == NULL) $this->Phone = MatchaModel::setSenchaModel('App.model.administration.Phone');
         $rows = array();
         $this->setSQL("SELECT p.id AS id,
                               p.name,
@@ -140,12 +128,10 @@ class Practice extends MatchaHelper
         return $rows;
     }
 
-    /**
-     * @param stdClass $params
-     * @return stdClass
-     */
     public function addLaboratory(stdClass $params)
     {
+        if($this->Laboratory == NULL) $this->Laboratory = MatchaModel::setSenchaModel('App.model.administration.Laboratories');
+
         $params->id = $this->getNextPharmacyInsuranceId();
         $data = get_object_vars($params);
         $row['id'] = $data['id'];
@@ -162,12 +148,10 @@ class Practice extends MatchaHelper
         return $params;
     }
 
-    /**
-     * @param stdClass $params
-     * @return stdClass
-     */
     public function updateLaboratory(stdClass $params)
     {
+        if($this->Laboratory == NULL) $this->Laboratory = MatchaModel::setSenchaModel('App.model.administration.Laboratories');
+
         $data = get_object_vars($params);
         $row['name'] = $data['name'];
         $row['transmit_method'] = $data['transmit_method'];
@@ -181,12 +165,9 @@ class Practice extends MatchaHelper
         return $params;
     }
 
-    /**
-     * Insurance stuff
-     * @return array
-     */
     public function getInsurances()
     {
+        if($this->Insurance == NULL) $this->Insurance = MatchaModel::setSenchaModel('App.model.administration.Insurance');
         $rows = array();
         $this->setSQL("SELECT i.id AS id,
                               i.name,
@@ -218,12 +199,9 @@ class Practice extends MatchaHelper
         return $rows;
     }
 
-    /**
-     * @param stdClass $params
-     * @return stdClass
-     */
     public function addInsurance(stdClass $params)
     {
+        if($this->Insurance == NULL) $this->Insurance = MatchaModel::setSenchaModel('App.model.administration.Insurance');
         $params->id = $this->getNextPharmacyInsuranceId();
         $data = get_object_vars($params);
         $row['id'] = $data['id'];
@@ -245,6 +223,7 @@ class Practice extends MatchaHelper
 
     public function updateInsurance(stdClass $params)
     {
+        if($this->Insurance == NULL) $this->Insurance = MatchaModel::setSenchaModel('App.model.administration.Insurance');
         $data = get_object_vars($params);
         $row['name'] = $data['name'];
         $row['attn'] = $data['attn'];
@@ -262,33 +241,19 @@ class Practice extends MatchaHelper
         return $params;
     }
 
-    /**
-     * Insurance Numbers stuff
-     * @param stdClass $params
-     * @return stdClass
-     */
     public function getInsuranceNumbers(stdClass $params)
     {
         return $params;
     }
 
-    /**
-     * X12 Partners stuff
-     * @param stdClass $params
-     * @return stdClass
-     */
     public function getX12Partners(stdClass $params)
     {
         return $params;
     }
 
-    /**
-     * @param $params
-     * @internal param $data
-     * @return mixed
-     */
     private function addAddress($params)
     {
+        if($this->Address == NULL) $this->Address = MatchaModel::setSenchaModel('App.model.administration.Address');
         $data = get_object_vars($params);
         $arow['line1'] = $data['line1'];
         $arow['line2'] = $data['line2'];
@@ -305,13 +270,9 @@ class Practice extends MatchaHelper
         return $params;
     }
 
-    /**
-     * @param $params
-     * @internal param $data
-     * @return mixed
-     */
     private function updateAddress($params)
     {
+        if($this->Address == NULL) $this->Address = MatchaModel::setSenchaModel('App.model.administration.Address');
         $data = get_object_vars($params);
         $arow['line1'] = $data['line1'];
         $arow['line2'] = $data['line2'];
@@ -327,12 +288,9 @@ class Practice extends MatchaHelper
         return $params;
     }
 
-    /**
-     * @param $row
-     * @return array
-     */
     private function getPhones($row)
     {
+        if($this->Phone == NULL) $this->Phone = MatchaModel::setSenchaModel('App.model.administration.Phone');
         $this->setSQL("SELECT * FROM phone_numbers WHERE phone_numbers.foreign_id =" . $row['id'] . "");
         foreach ($this->fetchRecords(PDO::FETCH_ASSOC) as $phoneRow) {
             switch ($phoneRow['type']) {
@@ -357,13 +315,9 @@ class Practice extends MatchaHelper
         return $row;
     }
 
-    /**
-     * @param $params
-     * @internal param $data
-     * @return mixed
-     */
     private function addPhones($params)
     {
+        if($this->Phone == NULL) $this->Phone = MatchaModel::setSenchaModel('App.model.administration.Phone');
         $data = get_object_vars($params);
         $prow['country_code'] = $data['phone_country_code'];
         $prow['area_code'] = $data['phone_area_code'];
@@ -392,6 +346,7 @@ class Practice extends MatchaHelper
 
     private function updatePhones($params)
     {
+        if($this->Phone == NULL) $this->Phone = MatchaModel::setSenchaModel('App.model.administration.Phone');
         $data = get_object_vars($params);
 
         $prow['country_code'] = $data['phone_country_code'];
@@ -422,9 +377,6 @@ class Practice extends MatchaHelper
         return $params;
     }
 
-    /**
-     * @return mixed
-     */
     private function getNextPharmacyInsuranceId()
     {
         $this->setSQL("SELECT MAX(id) AS maxid FROM pharmacies");

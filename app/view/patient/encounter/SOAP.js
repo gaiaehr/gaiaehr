@@ -22,10 +22,15 @@ Ext.define('App.view.patient.encounter.SOAP', {
 	title:i18n('soap'),
 	layout:'border',
 	frame:true,
+
+	pid: null,
+	eid: null,
+
 	initComponent:function () {
 		var me = this;
 
 		me.snippetStore = Ext.create('App.store.patient.encounter.snippetTree');
+		me.procedureStore = Ext.create('App.store.patient.encounter.Procedures');
 
 		me.snippets = Ext.create('Ext.tree.Panel', {
 			title:i18n('snippets'),
@@ -145,44 +150,49 @@ Ext.define('App.view.patient.encounter.SOAP', {
 					closeAction:'hide',
 					layout:'fit',
 					items:[
-						{
-							xtype:'form'
-						}
+						me.pForm = Ext.widget('form',{
+							bodyPadding:10,
+							layout:{
+								type:'vbox',
+								align:'stretch'
+							},
+							items:[
+								{
+									xtype:'livecptsearch',
+									name:'code',
+									displayField:'code',
+									valueField:'code',
+									listeners:{
+										scope:me,
+										select:me.onProcedureSelect
+									}
+								},
+								{
+									xtype:'textfield',
+									name:'code_text'
+								},
+								{
+									xtype:'textareafield',
+									name:'observation',
+									flex:1
+								}
+							]
+						})
 					],
 					buttons:[
 						{
 							text:i18n('cancel'),
 							scope:me,
-							handler:me.pWindowCancel
+							handler:me.onProcedureCancel
 						},
 						{
 							text:i18n('save'),
 							scope:me,
-							handler:me.pWinSave
+							handler:me.onProcedureSave
 						}
 					]
 
 				}),
-//				{
-//					xtype:'fieldset',
-//					title:i18n('review_of_system'),
-//					height:120,
-//					items:[
-//						{
-//							xtype:'customtrigger',
-//							value:'LOC: Yes',
-//							width:100,
-//							style:'float:left',
-//							margin:'0 5 0 0',
-//							name:me.name,
-//							listeners:{
-////								destroy:function(){
-////									if(me.autoFormSync && !me.loading) me.syncFormStore();
-////								}
-//							}
-//						}
-//					]
-//				},
 				{
 					xtype:'fieldset',
 					title:i18n('subjective'),
@@ -217,24 +227,9 @@ Ext.define('App.view.patient.encounter.SOAP', {
 				me.pGrid = Ext.widget('grid',{
 					frame:true,
 					name:'procedures',
+					emptyText:i18n('no_procedures'),
 					margin:5,
-					store: Ext.create('Ext.data.Store', {
-						storeId:'simpsonsStore',
-						fields:['code', 'description', 'text'],
-						data:{'items':[
-							{ 'code': '25468', "description":"lisa@simpsons.com", "text":"ddddddddd" },
-							{ 'code': '48575', "description":"bart@simpsons.com", "text":"aaaaaaaaa" },
-							{ 'code': '95874', "description":"home@simpsons.com", "text":"ggggggggg" },
-							{ 'code': '36547', "description":"marg@simpsons.com", "text":"nnnnnnnnn" }
-						]},
-						proxy: {
-							type: 'memory',
-							reader: {
-								type: 'json',
-								root: 'items'
-							}
-						}
-					}),
+					store: me.procedureStore,
 					columns:[
 						{
 							text:i18n('code'),
@@ -242,13 +237,13 @@ Ext.define('App.view.patient.encounter.SOAP', {
 						},
 						{
 							text:i18n('description'),
-							dataIndex:'description',
+							dataIndex:'code_text',
 							flex:1
 						}
 					],
 					listeners:{
 						scope:me,
-						itemdblclick:me.onProcedureDbClick
+						itemdblclick:me.procedureEdit
 					},
 					dockedItems:[
 						{
@@ -260,7 +255,10 @@ Ext.define('App.view.patient.encounter.SOAP', {
 								},
 								'->',
 								{
-									text:i18n('add')
+									text:i18n('new_procedure'),
+									scope:me,
+									handler:me.onProcedureAdd,
+									iconCls:'icoAdd'
 								}
 							],
 							listeners:{
@@ -311,6 +309,7 @@ Ext.define('App.view.patient.encounter.SOAP', {
 				{
 					text:i18n('save'),
 					iconCls:'save',
+					action:'soapSave',
 					scope:me,
 					handler:me.onSoapSave
 				}
@@ -367,20 +366,78 @@ Ext.define('App.view.patient.encounter.SOAP', {
 		me.callParent();
 	},
 
-	pWindowCancel:function(){
+	onProcedureSelect:function(cmb, values){
+		var me = this,
+			form = me.pForm.getForm();
+
+		form.findField('code_text').setValue(values[0].data.code_text)
+	},
+
+	onProcedureAdd:function(){
+		var me = this,
+			rec;
+		rec = Ext.create('App.model.patient.encounter.Procedures',{
+			pid:me.pid,
+			eid:me.eid,
+			create_uid:app.user.id,
+			update_uid:app.user.id,
+			create_date:new Date(),
+			update_date: new Date()
+		});
+
+		me.procedureStore.add(rec);
+		me.procedureEdit(null, rec);
+	},
+
+	onProcedureCancel:function(){
+		this.procedureStore.rejectChanges();
 		this.pWin.hide(this.pGrid.el);
+		this.query('button[action=soapSave]')[0].enable();
 		this.pWin.setTitle(i18n('procedure'));
 	},
 
-	pWindowSave:function(){
+	onProcedureSave:function(){
+		var me = this,
+			form = me.pForm.getForm(),
+			record = form.getRecord(),
+			values = form.getValues();
 
+		record.set(values);
+
+		this.procedureStore.sync();
+		this.pWin.hide(this.pGrid.el);
+		this.query('button[action=soapSave]')[0].enable();
+		this.pWin.setTitle(i18n('procedure'));
 	},
 
-	onProcedureDbClick:function(view, record){
-		say(view);
-		say(record);
-		this.pWin.setTitle('[' + record.data.code + '] ' + record.data.description);
+	onShow:function(){
+		var me = this;
+		me.callParent();
+
+		if(me.eid != app.patient.eid){
+			me.pid = app.patient.pid;
+			me.eid = app.patient.eid;
+			me.procedureStore.load({
+				filters:[
+					{
+						property: 'eid',
+						value: me.eid
+					}
+				]
+			});
+		}
+	},
+
+	procedureEdit:function(view, record){
+		if(record.data.code_text != '' || record.data.code != ''){
+			this.pWin.setTitle('[' + record.data.code + '] ' + record.data.code_text);
+		}else{
+			this.pWin.setTitle(i18n('new_procedure'));
+		}
+
+		this.pForm.getForm().loadRecord(record);
 		this.pWin.show(this.pGrid.el);
+		this.query('button[action=soapSave]')[0].disable();
 	},
 
 	onSoapSave:function(btn){
@@ -467,7 +524,7 @@ Ext.define('App.view.patient.encounter.SOAP', {
 		return ((c == '.' || c == '!' || c == '?') ? v : v + '.');
 	},
 
-	onSnippetBtnEdit: function(grid, rowIndex, colIndex, actionItem, event, record, row) {
+	onSnippetBtnEdit: function(grid, rowIndex) {
 		grid.editingPlugin.enabled = true;
 		grid.editingPlugin.startEdit(rowIndex,0);
 	},

@@ -29,9 +29,9 @@ Ext.define('App.view.dashboard.panel.OnotesPortlet', {
         // *************************************************************************************
 		me.store = Ext.create('App.store.dashboard.panel.OfficeNotesPortlet');
 
-		Ext.apply(this, {
-			height     : this.height,
-			store      : this.store,
+		Ext.apply(me,{
+			height     : me.height,
+			store      : me.store,
 			stripeRows : true,
 			columnLines: true,
 			columns    : [
@@ -48,8 +48,9 @@ Ext.define('App.view.dashboard.panel.OnotesPortlet', {
 					flex     : 1
 				}
 			]
-		}, null);
+		});
 
-		this.callParent(arguments);
+		me.store.load();
+		me.callParent(arguments);
 	}
 });

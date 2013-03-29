@@ -60,8 +60,6 @@ class CCR
 		$this->patientID = $this->getUuid();
 		$this->sourceID  = $this->getUuid();
 		$this->gaiaID    = $this->getUuid();
-
-
 		$this->patient   = new Patient();
 		$this->medical   = new Medical();
 

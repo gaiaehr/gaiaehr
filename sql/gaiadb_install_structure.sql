@@ -1353,24 +1353,6 @@ CREATE TABLE IF NOT EXISTS `medications` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
-CREATE TABLE IF NOT EXISTS `messages` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `to_id` bigint(20) NOT NULL COMMENT 'user ID receiving the message',
-  `from_id` bigint(20) NOT NULL COMMENT 'user ID sending the message',
-  `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `body` longtext,
-  `pid` bigint(20) DEFAULT NULL,
-  `facility_id` int(11) DEFAULT NULL,
-  `authorized` tinyint(4) DEFAULT NULL,
-  `deleted` tinyint(4) DEFAULT '0' COMMENT 'flag indicates note is deleted',
-  `to_deleted` tinyint(1) NOT NULL DEFAULT '0',
-  `from_deleted` tinyint(1) NOT NULL DEFAULT '0',
-  `message_status` varchar(20) NOT NULL DEFAULT 'New',
-  `subject` varchar(254) DEFAULT NULL,
-  `note_type` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
 CREATE TABLE IF NOT EXISTS `modules` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(100) DEFAULT NULL,

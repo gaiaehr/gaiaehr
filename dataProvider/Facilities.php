@@ -63,7 +63,6 @@ class Facilities
 		return $this->Facilities->destroy($params);
 	}
 
-
     //------------------------------------------------------------------------------------------------------------------
     // Extra methods
     // This methods are used by the view to gather extra data from the store or the model

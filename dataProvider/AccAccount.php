@@ -34,21 +34,14 @@ class AccAccount
      * @var Patient
      */
 	protected $patient;
-	/**
-	 * @var MatchaCUP
-	 */
-	protected $acount;
-	/**
-	 * @var MatchaCUP
-	 */
-	protected $acountType;
 
+	protected $account = NULL;
+	protected $accountType = NULL;
 
     function __construct()
     {
-        $this->db   = new MatchaHelper();
-	    $this->acount     = Matcha::setSenchaModel('App.model.account.Account');
-	    $this->acountType = Matcha::setSenchaModel('App.model.account.AccountType');
+        if($this->acount == NULL) $this->account = Matcha::setSenchaModel('App.model.account.Account');
+	    if($this->acountType == NULL) $this->accountType = Matcha::setSenchaModel('App.model.account.AccountType');
 
         $this->services = new Services();
         $this->patient  = new Patient();

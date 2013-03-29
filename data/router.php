@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+require_once ('../classes/MatchaHelper.php');
 include_once ('../dataProvider/Modules.php');
 require ('config.php');
 
@@ -116,12 +117,10 @@ function doRpc($cdata)
 		);
 		if (isset($cdata->module))
 		{
-            require_once ('../classes/MatchaHelper.php');
 			require_once ("../modules/$cdata->module/dataProvider/$action.php");
 		}
 		else
 		{
-            require_once ('../classes/MatchaHelper.php');
 			require_once ("../dataProvider/$action.php");
 		}
 		$o = new $action();

@@ -42,9 +42,9 @@ class AccAccount
     {
         if($this->acount == NULL) $this->account = Matcha::setSenchaModel('App.model.account.Account');
 	    if($this->acountType == NULL) $this->accountType = Matcha::setSenchaModel('App.model.account.AccountType');
-
         $this->services = new Services();
         $this->patient  = new Patient();
+        return;
     }
 
 	public function getVisitCheckOutCharges(stdClass $params)

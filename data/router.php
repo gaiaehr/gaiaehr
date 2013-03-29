@@ -41,8 +41,7 @@ if (isset($HTTP_RAW_POST_DATA))
 {
 	header('Content-Type: text/javascript');
 	$data = json_decode($HTTP_RAW_POST_DATA);
-	if (isset($_REQUEST['module']))
-		$data->module = $_REQUEST['module'];
+	if (isset($_REQUEST['module'])) $data->module = $_REQUEST['module'];
 }
 else
 {
@@ -69,6 +68,7 @@ else
 		die('Invalid request.');
 	}
 }
+
 function doRpc($cdata)
 {
 	global $API;

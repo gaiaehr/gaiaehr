@@ -17,16 +17,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-if(!isset($_SESSION)){
-    session_name('GaiaEHR');
-    session_start();
-    session_cache_limiter('private');
-}
-include_once ($_SESSION['root'] . '/classes/MatchaHelper.php');
 include_once ($_SESSION['root'] . '/dataProvider/Person.php');
 include_once ($_SESSION['root'] . '/classes/Time.php');
 include_once ($_SESSION['root'] . '/dataProvider/User.php');
 include_once ($_SESSION['root'] . '/dataProvider/ACL.php');
+
 class Patient
 {
     /**

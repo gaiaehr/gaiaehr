@@ -17,13 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-if (!isset($_SESSION)) {
-    session_name("GaiaEHR");
-    session_start();
-    session_cache_limiter('private');
-}
-include_once ($_SESSION['root'] . '/classes/MatchaHelper.php');
 include_once ($_SESSION['root'] . '/dataProvider/DocumentHandler.php');
+
 class Prescriptions
 {
     function __construct()

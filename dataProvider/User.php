@@ -17,16 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-if (!isset($_SESSION))
-{
-    session_name('GaiaEHR');
-    session_start();
-    session_cache_limiter('private');
-}
-
 include_once ($_SESSION['root'] . '/dataProvider/Person.php');
 include_once ($_SESSION['root'] . '/classes/AES.php');
-include_once ($_SESSION['root'] . '/classes/MatchaHelper.php');
 
 class User
 {

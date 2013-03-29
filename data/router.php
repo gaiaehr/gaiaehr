@@ -17,19 +17,15 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-if (!isset($_SESSION))
-{
-	session_name('GaiaEHR');
-	session_start();
-	session_cache_limiter('private');
-}
 include_once ('../dataProvider/Modules.php');
 require ('config.php');
+
 if (isset($_SESSION['install']) && $_SESSION['install'] != true)
 {
 	$modules = new Modules();
 	$API = array_merge($API, $modules->getEnabledModulesAPI());
 }
+
 class BogusAction
 {
 	public $action;
@@ -120,10 +116,12 @@ function doRpc($cdata)
 		);
 		if (isset($cdata->module))
 		{
+            require_once ('../classes/MatchaHelper.php');
 			require_once ("../modules/$cdata->module/dataProvider/$action.php");
 		}
 		else
 		{
+            require_once ('../classes/MatchaHelper.php');
 			require_once ("../dataProvider/$action.php");
 		}
 		$o = new $action();

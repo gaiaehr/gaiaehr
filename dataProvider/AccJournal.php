@@ -17,19 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-if(!isset($_SESSION)){
-    session_name('GaiaEHR');
-    session_start();
-    session_cache_limiter('private');
-}
-/**
- * Created by IntelliJ IDEA.
- * User: ernesto
- * Date: 2/8/13
- * Time: 10:20 PM
- * To change this template use File | Settings | File Templates.
- */
 include_once ($_SESSION['root'] . '/dataProvider/AccAccount.php');
+
 class AccJournal extends AccAccount {
 
 

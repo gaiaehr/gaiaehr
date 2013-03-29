@@ -17,28 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-if(!isset($_SESSION)) {
-	session_name('GaiaEHR');
-	session_start();
-	session_cache_limiter('private');
-}
-include_once($_SESSION['root'] . '/classes/MatchaHelper.php');
 include_once($_SESSION['root'] . '/dataProvider/CombosData.php');
-/**
- * @brief       Form Layout Engine
- * @details     This class will create dynamic ExtJS v4 form items array,
- *              previously created or edited from the Layout Form Editor.
- *              Gathering all it's data and parameters from the layout_options table.
- *
- *              What this class will not do: This class will not create the
- *              entire Screen Panel for you, this will only create the form
- *              items array with the fields names & dataStores configured on
- *              the layout_options table.
- *
- * @author      Ernesto J. Rodriguez (Certun) <erodriguez@certun.com>
- * @version     Vega 1.0
- * @copyright   Gnu Public License (GPLv3)
- */
+
 class FormLayoutEngine
 {
 	/**

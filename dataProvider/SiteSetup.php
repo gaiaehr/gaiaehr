@@ -17,21 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-if(!isset($_SESSION)){
-	session_name('GaiaEHR');
-	session_start();
-	session_cache_limiter('private');
-}
 include_once ($_SESSION['root'] . '/classes/FileManager.php');
 include_once ($_SESSION['root'] . '/dataProvider/ACL.php');
-/*
- * Set some PHP internal variables to override internal variables
- */
-set_time_limit(0);
-ini_set('memory_limit', '512M');
-/*
- * SiteSetup class
- */
+
 class SiteSetup
 {
 	private $conn;

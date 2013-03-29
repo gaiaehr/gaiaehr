@@ -17,22 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-if(!isset($_SESSION)){
-	session_name('GaiaEHR');
-	session_start();
-	session_cache_limiter('private');
-}
-include_once ($_SESSION['root'] . '/classes/MatchaHelper.php');
 include_once ($_SESSION['root'] . '/dataProvider/Patient.php');
-/**
- * @brief       Services Class.
- * @details     This class will handle all services
- *
- * @author      Ernesto J. Rodriguez (Certun) <erodriguez@certun.com>
- * @version     Vega 1.0
- * @copyright   Gnu Public License (GPLv3)
- *
- */
 
 class PreventiveCare
 {

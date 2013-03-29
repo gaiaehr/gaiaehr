@@ -30,12 +30,6 @@
  *
  */
  
-if(!isset($_SESSION)) {
-	session_name('GaiaEHR');
-	session_start();
-	session_cache_limiter('private');
-}
-include_once ($_SESSION['root'] . '/classes/MatchaHelper.php');
 include_once ($_SESSION['root'] . '/dataProvider/Patient.php');
 include_once ($_SESSION['root'] . '/dataProvider/User.php');
 include_once ($_SESSION['root'] . '/dataProvider/PoolArea.php');
@@ -43,6 +37,7 @@ include_once ($_SESSION['root'] . '/dataProvider/Medical.php');
 include_once ($_SESSION['root'] . '/dataProvider/PreventiveCare.php');
 include_once ($_SESSION['root'] . '/dataProvider/Services.php');
 include_once ($_SESSION['root'] . '/dataProvider/DiagnosisCodes.php');
+
 class CCR
 {
 	private $ccr;

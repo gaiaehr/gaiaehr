@@ -17,20 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-if (!isset($_SESSION)) {
-    session_name('GaiaEHR');
-    session_start();
-    session_cache_limiter('private');
-}
-include_once ($_SESSION['root'] . '/classes/MatchaHelper.php');
 include_once ($_SESSION['root'] . '/classes/XMLParser.class.php');
-/**
- * Created by JetBrains PhpStorm.
- * User: Plushy
- * Date: 8/19/12
- * Time: 10:12 AM
- * To change this template use File | Settings | File Templates.
- */
 
 class Immunizations
 {

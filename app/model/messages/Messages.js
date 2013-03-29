@@ -37,54 +37,67 @@ Ext.define('App.model.messages.Messages',
     },
     {
         name : 'date',
-        type : 'string'
+        type : 'string',
+        comment: 'Date of message'
     },
     {
         name : 'body',
-        type : 'string'
+        type : 'string',
+        comment: 'Message'
     },
     {
         name : 'pid',
-        type : 'string'
+        type : 'string',
+        comment: 'Patient ID'
     },
     {
         name : 'patient_name',
-        type : 'string'
+        type : 'string',
+        messgae: 'Patient Name'
     },
     {
         name : 'from_user',
-        type : 'string'
+        type : 'string',
+        comment: 'Message is from user'
     },
     {
         name : 'to_user',
-        type : 'string'
+        type : 'string',
+        comment: 'Message to user'
     },
     {
         name : 'subject',
-        type : 'string'
+        type : 'string',
+        comment: 'Subject of the message'
     },
     {
         name : 'facility_id',
-        type : 'string'
+        type : 'string',
+        comment: 'Facility'
     },
     {
         name : 'authorized',
-        type : 'string'
+        type : 'string',
+        comment: 'Authorized?'
     },
     {
         name : 'to_id',
-        type : 'string'
+        type : 'string',
+        comment: 'To'
     },
     {
         name : 'from_id',
-        type : 'string'
+        type : 'string',
+        comment: 'From'
     },
     {
         name : 'message_status',
-        type : 'string'
+        type : 'string',
+        comment: 'Message Status'
     },
     {
         name : 'note_type',
-        type : 'string'
+        type : 'string',
+        comment: 'Message Type'
     }]
 });

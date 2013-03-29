@@ -21,13 +21,13 @@ class Facilities
 {
 
     /**
-     * MatchaCup
+     * Data Object
      */
-    private $f = null;
+    private $Facilities = null;
 
 	function __construct()
 	{
-        $this->f = MatchaModel::setSenchaModel('App.model.administration.Facility');
+        if($this->Facilities == NULL) $this->Facilities = MatchaModel::setSenchaModel('App.model.administration.Facility');
 		return;
 	}
 
@@ -37,7 +37,7 @@ class Facilities
     public function getFacilities(stdClass $params)
 	{
 		$rows = array();
-		foreach ($this->f->load($params)->all() as $row)
+		foreach ($this->Facilities->load($params)->all() as $row)
 		{
 			if (strlen($row['pos_code']) <= 1) $row['pos_code'] = '0' . $row['pos_code'];
 			array_push($rows, $row);
@@ -47,20 +47,20 @@ class Facilities
 
 	public function addFacility(stdClass $params)
 	{
-        $facility = $this->f->save($params);
+        $facility = $this->Facilities->save($params);
 		$params->id = $facility['id'];
 		return $params;
 	}
 
 	public function updateFacility(stdClass $params)
 	{
-		$this->f->save($params);
+		$this->Facilities->save($params);
 		return $params;
 	}
 
 	public function deleteFacility(stdClass $params)
 	{
-		return $this->f->destroy($params);
+		return $this->Facilities->destroy($params);
 	}
 
 
@@ -70,19 +70,19 @@ class Facilities
     //------------------------------------------------------------------------------------------------------------------
 	public function getFacilityInfo($fid)
 	{
-        $resultRecord = $this->f->load( array('id'=>$fid), array('name','phone','street','city','state','postal_code') )->one();
+        $resultRecord = $this->Facilities->load( array('id'=>$fid), array('name','phone','street','city','state','postal_code') )->one();
 		return 'Facility: '.$resultRecord['name'].' '.$resultRecord['phone'].' '.$resultRecord['street'].' '.
             $resultRecord['city'].' '.$resultRecord['state'].' '.$resultRecord['postal_code'];
 	}
 
 	public function getActiveFacilities()
 	{
-		return $this->f->load( array('active'=>'1') )->one();
+		return $this->Facilities->load( array('active'=>'1') )->one();
 	}
 
 	public function getActiveFacilitiesById($facilityId)
 	{
-        return $this->f->load( array('active'=>'1', 'id'=>$facilityId) )->one();
+        return $this->Facilities->load( array('active'=>'1', 'id'=>$facilityId) )->one();
 	}
 
 	public function getBillingFacilities()

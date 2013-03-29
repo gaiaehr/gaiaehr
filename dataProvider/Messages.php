@@ -22,75 +22,44 @@ include_once ($_SESSION['root'] . '/dataProvider/Person.php');
 
 class Messages extends MatchaHelper
 {
-	private $p = null;
-	private $u = null;
+    /**
+     * Data Objects
+     */
+    private $Patient = null;
+	private $User = null;
+    private $Messages = null;
 
-	function __construct(){
-		if($this->p == null) $this->p = MatchaModel::setSenchaModel('App.model.patient.Patient');
-		if($this->u == null) $this->u = MatchaModel::setSenchaModel('App.model.administration.User');
-	}
-
-	/**
-	 * @param stdClass $params
-	 * @return array
-	 */
+    //------------------------------------------------------------------------------------------------------------------
+    // Main Sencha Model Getter and Setters
+    //------------------------------------------------------------------------------------------------------------------
 	public function getMessages(stdClass $params)
 	{
-
+        $messages = array();
+        if($this->Patient == null) $this->Patient = MatchaModel::setSenchaModel('App.model.patient.Patient');
+        if($this->User == null) $this->User = MatchaModel::setSenchaModel('App.model.administration.User');
+        if($this->Messages == null) $this->Messages = MatchaModel::setSenchaModel('App.model.messages.Messages');
 		$uid = $_SESSION['user']['id'];
-
-		if(isset($params->get)){
-			if($params->get == 'inbox'){
-				$wherex = "messages.to_deleted = '0' AND users.id = '$uid'";
-			} elseif($params->get == 'sent'){
-				$wherex = "messages.from_deleted = '0' AND messages.from_id = '$uid'";
-			} elseif($params->get == 'trash'){
-				$wherex = "messages.to_deleted = '1' OR messages.from_deleted = '1' AND users.id = '$uid'";
-			}
-		} else{
-			$wherex = "messages.to_deleted = '0' AND users.id = '$uid'";
-		}
-
-		$this->setSQL("SELECT messages.* ,
-                              users.title AS user_title,
-                              users.fname AS user_fname,
-                              users.mname AS user_mname,
-                              users.lname AS user_lname,
-                              patient.fname AS patient_fname,
-                              patient.mname AS patient_mname,
-                              patient.lname AS patient_lname
-                         FROM messages
-              LEFT OUTER JOIN patient ON messages.pid = patient.pid
-              LEFT OUTER JOIN users ON messages.to_id = users.id
-                        WHERE $wherex
-                     ORDER BY messages.date
-                        LIMIT $params->start, $params->limit");
-		$messages = array();
-		foreach($this->fetchRecords(PDO::FETCH_ASSOC) as $row){
-			$row['patient_name'] = Person::fullname($row['patient_fname'], $row['patient_mname'], $row['patient_lname']);
-
-			$id = $row['from_id'];
-			$this->setSQL("SELECT title, fname, mname, lname FROM users WHERE id ='$id' ");
-			$record = $this->fetchRecord();
-
-			$row['from_user'] = $record['user_title'] . ' ' . Person::fullname($record['fname'], $record['mname'], $record['lname']);
-			$row['to_user'] = $row['user_title'] . ' ' . Person::fullname($row['user_fname'], $row['user_mname'], $row['user_lname']);
+        if(isset($params->get))
+        {
+            if($params->get == 'inbox') $Where = array('to_deleted'=>0, 'id'=>$uid);
+            if($params->get == 'sent') $Where = array('from_deleted'=>0, 'from_id'=>$uid);
+            if($params->get == 'trash') $Where = array('to_deleted'=>'1', 'id'=>$uid, 'from_deleted'=>'1');
+        }
+		foreach($this->Messages->load($Where)->all() as $row)
+        {
+            $UserTo = $this->User->load(array('id'=>$row['to_id']))->one();
+            $row['to_user'] = $UserTo['user_title'] . ' ' . Person::fullname($UserTo['fname'], $UserTo['mname'], $UserTo['lname']);
+            $Patient = $this->Patient->load(array('pid'=>$row['pid']))->one();
+			$row['patient_name'] = Person::fullname($Patient['fname'], $Patient['mname'], $Patient['lname']);
+            $UserFrom = $this->User->load(array('id'=>$row['from_id']))->one();
+			$row['from_user'] = $UserFrom['user_title'] . ' ' . Person::fullname($UserFrom['fname'], $UserFrom['mname'], $UserFrom['lname']);
 			array_push($messages, $row);
 		}
-		$total = count($messages);
-		return array(
-			'totals' => $total,
-			'messages' => $messages
-		);
 	}
 
-	/**
-	 * @param stdClass $params
-	 * @return array|stdClass
-	 */
 	public function sendNewMessage(stdClass $params)
 	{
-
+        if($this->Messages == null) $this->Messages = MatchaModel::setSenchaModel('App.model.messages.Messages');
 		$t = Time::getLocalTime('l jS \of F Y h:i:s A');
 		$row['body'] = 'On ' . $t . ' - <spam style="font-weight:bold">' . $_SESSION['user']['name'] . '</spam> - Wrote:<br><br>' . $params->body;
 		$row['pid'] = $params->pid;
@@ -101,24 +70,12 @@ class Messages extends MatchaHelper
 		$row['message_status'] = $params->message_status;
 		$row['subject'] = $params->subject;
 		$row['note_type'] = $params->note_type;
-		$sql = $this->sqlBind($row, 'messages', 'I');
-		$this->setSQL($sql);
-		$ret = $this->execLog();
-		if($ret[2]){
-			return array('success' => false);
-		} else{
-			return array('success' => true);
-		}
-
+        $this->Messages->save($row);
 	}
 
-	/**
-	 * @param stdClass $params
-	 * @return array|stdClass
-	 */
 	public function replyMessage(stdClass $params)
 	{
-
+        if($this->Messages == null) $this->Messages = MatchaModel::setSenchaModel('App.model.messages.Messages');
 		$t = Time::getLocalTime('l jS \of F Y h:i:s A');
 		$row['body'] = 'On ' . $t . ' - <spam style="font-weight:bold">' . $_SESSION['user']['name'] . '</spam> - Wrote:<br><br>' . $params->body . '<br><br>';
 		$row['from_id'] = $_SESSION['user']['id'];
@@ -128,64 +85,30 @@ class Messages extends MatchaHelper
 		$row['note_type'] = $params->note_type;
 		$row['to_deleted'] = 0;
 		$row['from_deleted'] = 0;
-
-		$sql = $this->sqlBind($row, 'messages', 'U', array('id' => $params->id));
-		$this->setSQL($sql);
-		$ret = $this->execLog();
-
-		if($ret[2]){
-			return array('success' => false);
-		} else{
-			return array('success' => true);
-		}
+        $row['id'] = $params->id;
+        $this->Messages->save($row);
 	}
 
-	/**
-	 * @param stdClass $params
-	 * @return array
-	 */
 	public function deleteMessage(stdClass $params)
 	{
-		$id = $params->id;
-		$currUser = $_SESSION['user']['id'];
-
-		$this->setSQL("SELECT to_id, from_id FROM messages WHERE id = '$id'");
-		$record = $this->fetchRecord();
-
-		if($record['to_id'] == $currUser){
-			$sql = "UPDATE messages SET to_deleted = '1' WHERE id='$id'";
-		} elseif($record['from_id'] == $currUser){
-			$sql = "UPDATE messages SET from_deleted = '1' WHERE id='$id'";
+        if($this->Messages == null) $this->Messages = MatchaModel::setSenchaModel('App.model.messages.Messages');
+        $row['id'] = $params->id;
+        $Message = $this->Messages->load(array('id'=>$params->id), array('to_id', 'from_id'))->one();
+		if($Message['to_id'] == $_SESSION['user']['id'])
+        {
+            $row['to_deleted'] = 1;
 		}
-
-		$this->setSQL($sql);
-		$ret = $this->execLog();
-
-		if($ret[2]){
-			return array('success' => false);
-		} else{
-			return array('success' => true);
+        elseif($Message['from_id'] == $_SESSION['user']['id'])
+        {
+            $row['from_deleted'] = 1;
 		}
+        $this->Messages->save($row);
 	}
 
-	/**
-	 * @param stdClass $params
-	 * @return array
-	 */
 	public function updateMessage(stdClass $params)
 	{
-
-		$row[$params->col] = $params->val;
-
-		$sql = $this->sqlBind($row, 'messages', 'U', array('id' => $params->id));
-		$this->setSQL($sql);
-		$ret = $this->execLog();
-		if($ret[2]){
-			return array('success' => false);
-		} else{
-			return array('success' => true);
-		}
-
+        if($this->Messages == null) $this->Messages = MatchaModel::setSenchaModel('App.model.messages.Messages');
+        $this->Messages->save($params);
 	}
 
 }

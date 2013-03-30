@@ -1173,5 +1173,6 @@ $LANG = array(
     'add_snippet'                           => 'Add Snippet',
     'service'                               => 'Service',
     'added'                                 => 'Added',
-    'copay'                                 => 'Co-Pay'
+    'copay'                                 => 'Co-Pay',
+    'add_new_laboratory'                    => 'Add New Laboratory'
 );

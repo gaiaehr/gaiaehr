@@ -20,55 +20,52 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 class Snippets {
 
     /**
-     * @var MatchaHelper
+     * Data Object
      */
-    private $db;
-    /**
-     * @var MatchaCup
-     */
-    private $s = null;
+    private $Snippet = null;
 
-    function __construct(){
-        $this->db = new MatchaHelper();
+    //------------------------------------------------------------------------------------------------------------------
+    // Main Sencha Model Getter and Setters
+    //------------------------------------------------------------------------------------------------------------------
+    private function setSnippetModel()
+    {
+        if($this->Snippet == null) $this->Snippet = MatchaModel::setSenchaModel('App.model.patient.encounter.snippetTree');
     }
 
-    private function setSnippetModel(){
-        if($this->s == null) $this->s = MatchaModel::setSenchaModel('App.model.patient.encounter.snippetTree');
-    }
-
-    public function getSoapSnippetsByCategory($params){
+    public function getSoapSnippetsByCategory($params)
+    {
         $this->setSnippetModel();
 
-        if(isset($params->category)){
-            $snippets = $this->s->load(array('parentId'=>'root', 'category'=>$params->category))->all();
-        }elseif(isset($params->id)){
-            $snippets = $this->s->load(array('parentId'=>$params->id))->all();
-        }else{
+        if(isset($params->category))
+        {
+            $snippets = $this->Snippet->load(array('parentId'=>'root', 'category'=>$params->category))->all();
+        }
+        elseif(isset($params->id))
+        {
+            $snippets = $this->Snippet->load(array('parentId'=>$params->id))->all();
+        }
+        else
+        {
 	        $snippets = array();
         }
-
         return $snippets;
     }
 
-    public function addSoapSnippets($params){
+    public function addSoapSnippets($params)
+    {
         $this->setSnippetModel();
-        return $this->s->save($params);
+        return $this->Snippet->save($params);
     }
 
-    public function updateSoapSnippets($params){
+    public function updateSoapSnippets($params)
+    {
         $this->setSnippetModel();
-        return $this->s->save($params);
+        return $this->Snippet->save($params);
     }
 
-    public function deleteSoapSnippets($params){
+    public function deleteSoapSnippets($params)
+    {
         $this->setSnippetModel();
-        return $this->s->destroy($params);
+        return $this->Snippet->destroy($params);
     }
 }
-
-//$t = new Snippets();
-//$params = new stdClass();
-//$params->parentId = 'root';
-//$params->category = 'objective';
-//print '<pre>';
-//print_r($t->getSoapSnippetsByCategory($params));

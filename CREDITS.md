@@ -13,6 +13,16 @@
 - Craig Campbell (Creator of ChromePHP)
 - Chris Schuld (Creator of Client Browser Detect and Client Operating System Detect)
 
+##GaiaEHR Translation Team:
+- mgrvnwald (Marco Oliver Grunwald)
+- demank (Sukma Budi)
+- EnricoNicoletto (Enrico Nicoletto)
+- shubhra
+- bestenit
+
+##Thanks:
+Thanks for all the hard word you are making for this project.
+
 ##A little bit of history of GaiaEHR:
 At first we forked OpenEMR and then tried to adapt Sencha ExtJS to OpenEMR, Sencha ExtJS 
 been a UI framework to speed up development of the project, but the time passed and we 

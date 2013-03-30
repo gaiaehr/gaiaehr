@@ -1417,16 +1417,6 @@ CREATE TABLE IF NOT EXISTS `notification_settings` (
   PRIMARY KEY (`SettingsId`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
 
-CREATE TABLE IF NOT EXISTS `onotes` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `date` datetime NOT NULL,
-  `body` longtext,
-  `user` varchar(255) DEFAULT NULL,
-  `facility_id` bigint(20) DEFAULT NULL,
-  `activity` tinyint(4) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=19 ;
-
 CREATE TABLE IF NOT EXISTS `patient_account` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `pid` bigint(20) DEFAULT '0',

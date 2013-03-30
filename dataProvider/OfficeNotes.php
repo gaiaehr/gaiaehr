@@ -19,41 +19,38 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 class OfficeNotes extends MatchaHelper
 {
+    /**
+     * Data Object
+     */
+    private $OfficeNotes = NULL;
 
-	public function getOfficeNotes(stdClass $params)
+    function __construct()
+    {
+        if($this->OfficeNotes = NULL) $this->OfficeNotes = MatchaModel::setSenchaModel('App.model.administration.OfficeNotes');
+        return;
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+    // Main Sencha Model Getter and Setters
+    //------------------------------------------------------------------------------------------------------------------
+    public function getOfficeNotes(stdClass $params)
 	{
-		$wherex = (isset($params -> show)) ? 'WHERE activity = 1' : '';
-		$this -> setSQL("SELECT * FROM onotes $wherex ORDER BY date DESC LIMIT $params->start, $params->limit");
-		$rows = array();
-		foreach ($this->fetchRecords(PDO::FETCH_ASSOC) as $row)
-		{
-			array_push($rows, $row);
-		}
-		return $rows;
+        $Where = (isset($params -> show)) ? array('activity'=>1) : '';
+		return $this->OfficeNotes->load($Where);
 	}
 
 	public function addOfficeNotes(stdClass $params)
 	{
-
-		$params -> user = $_SESSION['user']['name'];
-		$params -> date = date('Y-m-d H:i:s');
-		$params -> activity = 1;
-
-		$data = get_object_vars($params);
-		$sql = $this -> sqlBind($data, 'onotes', 'I');
-		$this -> setSQL($sql);
-		$this -> execLog();
-
+		$params->user = $_SESSION['user']['name'];
+		$params->date = date('Y-m-d H:i:s');
+		$params->activity = 1;
+        $this->OfficeNotes->save($params);
 		return $params;
 	}
 
 	public function updateOfficeNotes(stdClass $params)
 	{
-		$data = get_object_vars($params);
-		$sql = $this -> sqlBind($data, 'onotes', 'U', 'id="' . $params -> id . '"');
-		$this -> setSQL($sql);
-		$this -> execLog();
-
+        $this->OfficeNotes->save($params);
 		return $params;
 	}
 

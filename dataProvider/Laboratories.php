@@ -21,12 +21,15 @@ class Laboratories
 {
 	private $db;
 
-	function __construct()
+    function __construct()
 	{
 		$this -> db = new MatchaHelper();
 		return;
 	}
 
+    //------------------------------------------------------------------------------------------------------------------
+    // Main Sencha Model Getter and Setters
+    //------------------------------------------------------------------------------------------------------------------
 	public function getAllLabs(stdClass $params)
 	{
 		$sort = isset($params -> sort) ? $params -> sort[0] -> property . ' ' . $params -> sort[0] -> direction : 'sequence ASC';

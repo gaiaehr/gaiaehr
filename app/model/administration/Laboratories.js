@@ -19,7 +19,7 @@
 Ext.define('App.model.administration.Laboratories', {
     extend:'Ext.data.Model',
     table: {
-        name:'laboratoriesgrid',
+        name:'laboratories',
         comment:'Laboratories Grid'
     },
     fields:[

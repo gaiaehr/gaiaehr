@@ -1,4 +1,4 @@
-##GaiaEHR Creators:
+##GaiaEHR Developer Team:
 - Gino Rivera Falú (Lead Developer, GaiaEHR.org Maintainer, Matcha::connect microORM designer)
 - Ernesto Rodriguez (Lead Developer, GaiaEHR.com Maintainer, Matcha::connect microORM designer)
 - Omar Rodriguez (Developer)

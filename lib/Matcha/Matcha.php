@@ -82,7 +82,7 @@ class Matcha
 			// and then the database
 			self::$__app = $databaseParameters['app'];
 			$host = (string)(isset($databaseParameters['host']) ? $databaseParameters['host'] : 'localhost');
-			$port = (int)(isset($databaseParameters['port'])    ? $databaseParameters['port'] : '3306');
+			$port = (int)(isset($databaseParameters['port']) ? $databaseParameters['port'] : '3306');
 			$dbName = (string)$databaseParameters['name'];
 			$dbUser = (string)$databaseParameters['user'];
 			$dbPass = (string)$databaseParameters['pass'];
@@ -322,7 +322,43 @@ class Matcha
         }
     }
 
-	/**
+    /**
+     * function __getTableSize($databaseName = NULL, $databaseTable = NULL, $measure = 'MEGABYTES'):
+     * Method to get the size of a table, you can choose the measure 'BYTES', 'MEGABYTES', 'GIGABYTES'.
+     * @param null $databaseName
+     * @param null $databaseTable
+     * @param string $measure = 'BYTES', 'MEGABYTES', 'GIGABYTES'
+     * @return bool
+     * @throws Exception
+     */
+    static protected function __getTableSize($databaseName = NULL, $databaseTable = NULL, $measure = 'MEGABYTES')
+    {
+        try
+        {
+            switch($measure)
+            {
+                case 'BYTES':
+                    $Calculation = '';
+                    break;
+                case 'MEGABYTES':
+                    $Calculation = '/power(1024,1)';
+                    break;
+                case 'GIGABYTES':
+                    $Calculation = '/power(1024,2)';
+                    break;
+            }
+            if($databaseName == NULL ||  $databaseTable== NULL) throw new Exception('No database or table name provided."');
+            $size = self::$__conn->query("SELECT (data_length+index_length)$Calculation tablesize FROM information_schema.tables WHERE table_schema='$databaseName' and table_name='$databaseTable';");
+            return $size['tablesize'];
+        }
+        catch(PDOException $e)
+        {
+            MatchaErrorHandler::__errorProcess($e);
+            return false;
+        }
+    }
+
+    /**
 	 * function __renderColumnSyntax($column = array()):
 	 * Method that will render the correct syntax for the addition or modification
 	 * of a column.

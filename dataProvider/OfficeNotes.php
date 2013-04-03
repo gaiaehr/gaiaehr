@@ -26,7 +26,7 @@ class OfficeNotes extends MatchaHelper
 
     function __construct()
     {
-        if($this->OfficeNotes = NULL) $this->OfficeNotes = MatchaModel::setSenchaModel('App.model.administration.OfficeNotes');
+        if($this->OfficeNotes = NULL) $this->OfficeNotes = MatchaModel::setSenchaModel('App.model.miscellaneous.OfficeNotes');
         return;
     }
 
@@ -36,7 +36,7 @@ class OfficeNotes extends MatchaHelper
     public function getOfficeNotes(stdClass $params)
 	{
         $Where = (isset($params -> show)) ? array('activity'=>1) : '';
-		return $this->OfficeNotes->load($Where);
+		return $this->OfficeNotes->load($Where)->all();
 	}
 
 	public function addOfficeNotes(stdClass $params)

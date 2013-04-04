@@ -28,6 +28,7 @@ require_once('plugins/FirePHPCore-0.3.2/FirePHP.class.php');
 require_once('plugins/ChromePHP/ChromePhp.php');
 require_once('plugins/BrowserDetect/Browser.php');
 require_once('plugins/Carbon/Carbon.php');
+require_once('plugins/PHPMailer/class.phpmailer.php');
 
 // Include the Matcha Threads if the PHP Thread class exists
 if(class_exists('Thread')) include_once('MatchaThreads.php');

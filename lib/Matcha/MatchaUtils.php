@@ -33,6 +33,11 @@ class MatchaUtils extends Matcha
         return $tabs;
     }
 
+    static public function PHPMailer()
+    {
+        return new PHPMailer();
+    }
+
     /**
      * function Carbon():
      * Method to enable the use of Carbon class Plugin

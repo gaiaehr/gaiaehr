@@ -6,3 +6,4 @@ lib/dompdf_0-6-0_beta3/lib/fonts/log.htmregistry.php
 registry.php
 /.settings
 /*.iml
+/*.stackdump

@@ -20,7 +20,8 @@ Ext.define('App.model.administration.FormFieldOptions', {
     extend: 'Ext.data.Model',
     table: {
         name:'forms_field_options',
-        comment:'Form Field Options'
+        comment:'Form Field Options',
+        data:'App.data.administration.FormFieldOptions'
     },
     fields: [
         { name: 'id', type: 'int', dataType: 'bigint', len: 20, primaryKey : true, autoIncrement : true, allowNull : false, store: true, comment: 'Form Field Options ID'},

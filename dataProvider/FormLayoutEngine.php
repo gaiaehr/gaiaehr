@@ -30,6 +30,10 @@ class FormLayoutEngine
 	 */
 	private $cb;
 
+	private $o = null;
+	private $cl = null;
+	private $clo = null;
+
 	/**
 	 * Creates the MatchaHelper instance
 	 */
@@ -38,6 +42,16 @@ class FormLayoutEngine
 		$this->db = new MatchaHelper();
 		$this->cb = new CombosData();
 		return;
+	}
+
+	private function setFieldOptionModel(){
+		if($this->o == null) $this->o = MatchaModel::setSenchaModel('App.model.administration.FormFieldOptions');
+	}
+	private function setComboListModel(){
+		if($this->cl == null) $this->cl = MatchaModel::setSenchaModel('App.model.administration.ComboList');
+	}
+	private function setComboListOptionsModel(){
+		if($this->clo == null) $this->clo = MatchaModel::setSenchaModel('App.model.administration.ComboListOptions');
 	}
 
 	/**
@@ -59,6 +73,9 @@ class FormLayoutEngine
 	 */
 	function getFields(stdClass $params)
 	{
+		$this->setComboListModel();
+		$this->setComboListOptionsModel();
+		$this->setFieldOptionModel();
 		/**
 		 * define $items as an array to push all the $item into.
 		 */

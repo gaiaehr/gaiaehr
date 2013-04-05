@@ -44,6 +44,8 @@ class Messages extends MatchaHelper
             if($params->get == 'inbox') $Where = array('to_deleted'=>0, 'id'=>$uid);
             if($params->get == 'sent') $Where = array('from_deleted'=>0, 'from_id'=>$uid);
             if($params->get == 'trash') $Where = array('to_deleted'=>'1', 'id'=>$uid, 'from_deleted'=>'1');
+        }else{
+	        $Where = array();
         }
 		foreach($this->Messages->load($Where)->all() as $row)
         {

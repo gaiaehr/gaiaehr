@@ -86,7 +86,7 @@ class Facilities
 
 	public function getBillingFacilities()
 	{
-        return $this->f->load( array('active'=>'1', 'billing_location'=>'1') )->one();
+        return $this->Facilities->load( array('active'=>'1', 'billing_location'=>'1') )->one();
 	}
 
 }

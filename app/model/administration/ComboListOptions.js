@@ -20,7 +20,8 @@ Ext.define('App.model.administration.ComboListOption', {
     extend: 'Ext.data.Model',
     table: {
         name:'combo_lists_options',
-        comment:'Combo List Options'
+        comment:'Combo List Options',
+        data:'App.data.administration.ComboListOption'
     },
     fields: [
         {name: 'id',type: 'int', dataType: 'bigint', len: 20, primaryKey : true, autoIncrement : true, allowNull : false, store: true, comment: 'List Options ID'},

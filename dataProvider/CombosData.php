@@ -27,42 +27,58 @@ class CombosData
 	 */
 	private $db;
 
-	/**
-	 * Creates the MatchaHelper instance
-	 */
+    /**
+     * Data Object
+     */
+    private $CLO = NULL;
+    private $FFO = NULL;
+    private $P = NULL;
+    private $I = NULL;
+    private $U = NULL;
+    private $CL = NULL;
+
 	function __construct()
 	{
 		$this->db = new MatchaHelper();
 		return;
 	}
 
-	/**
-	 * @param stdClass $params
-	 * @return array|bool
-	 */
+    //------------------------------------------------------------------------------------------------------------------
+    // Main Sencha Model Getter and Setters
+    //------------------------------------------------------------------------------------------------------------------
 	public function getOptionsByListId(stdClass $params)
 	{
-		if(isset($params->list_id)){
-			if(is_numeric($params->list_id)){
-				$this->db->setSQL("SELECT o.option_name,
-		                              o.option_value
-		                         FROM combo_lists_options AS o
-		                    LEFT JOIN combo_lists AS l ON l.id = o.list_id
-		                        WHERE l.id = '$params->list_id'
-		                     ORDER BY o.seq");
-				return $this->db->fetchRecords(PDO::FETCH_ASSOC);
-			} else {
-				if($params->list_id == 'activePharmacies'){
+        if($this->CLO == NULL) $this->CLO = MatchaModel::setSenchaModel('App.model.administration.ComboListOptions');
+		if(isset($params->list_id))
+        {
+			if(is_numeric($params->list_id))
+            {
+                return $this->CLO->load(array('list_id'=>$params->list_id))->all();
+			}
+            else
+            {
+				if($params->list_id == 'activePharmacies')
+                {
 					return $this->getActivePharmacies();
-				} elseif($params->list_id == 'activeProviders') {
+				}
+                elseif($params->list_id == 'activeProviders')
+                {
 					return $this->getActiveProviders();
-				} elseif($params->list_id == 'activeFacilities') {
+				}
+                elseif($params->list_id == 'activeFacilities')
+                {
 					return $this->getActiveFacilities();
-				} elseif($params->list_id == 'billingFacilities') {
+				}
+                elseif($params->list_id == 'billingFacilities')
+                {
 					return $this->getBillingFacilities();
-				} elseif($params->list_id == 'activeInsurances') {
+				}
+                elseif($params->list_id == 'activeInsurances')
+                {
 					return $this->getActiveInsurances();
-				} else {
+				}
+                else
+                {
 					return false;
 				}
 			}
@@ -73,25 +89,21 @@ class CombosData
 	public function getTimeZoneList()
 	{
 		$locations = array();
-		$zones     = timezone_identifiers_list();
-		foreach($zones as $zone){
-			$locations[] = array(
-				'value' => $zone, 'name' => str_replace('_', ' ', $zone)
-			);
-		}
+		$zones = timezone_identifiers_list();
+		foreach($zones as $zone) $locations[] = array( 'value' => $zone, 'name' => str_replace('_', ' ', $zone) );
 		return $locations;
 	}
 
 	public function getActivePharmacies()
 	{
-		$this->db->setSQL("SELECT p.id AS option_value, p.name AS option_name FROM pharmacies AS p WHERE active = '1' ORDER BY p.name DESC");
-		return $this->db->fetchRecords(PDO::FETCH_ASSOC);
+        if($this->P == NULL) $this->P = MatchaModel::setSenchaModel('App.model.administration.Pharmacies');
+		return $this->P->load(array('active'=>'1'))->all();
 	}
 
 	public function getActiveInsurances()
 	{
-		$this->db->setSQL("SELECT ic.id AS option_value, ic.name AS option_name FROM insurance_companies AS ic WHERE active = '1' ORDER BY ic.name DESC");
-		return $this->db->fetchRecords(PDO::FETCH_ASSOC);
+        if($this->I == NULL) $this->I = MatchaModel::setSenchaModel('App.model.administration.InsuranceCompany');
+		return $this->I->load(array('active'=>'1'))->all();
 	}
 
 	public function getActiveProviders()
@@ -118,13 +130,10 @@ class CombosData
 	public function getUsers()
 	{
 		include_once ('Person.php');
-		$sql = "SELECT id, title, fname, mname, lname
-                  FROM users
-                 WHERE username != '' AND active = 1
-              ORDER BY lname, fname";
-		$this->db->setSQL($sql);
+        if($this->U == NULL) $this->U = MatchaModel::setSenchaModel('App.model.administration.User');
 		$rows = array();
-		foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row){
+		foreach($this->U->load(array('active'=>1), array('id', 'title', 'fname', 'mname', 'lname'))->all() as $row)
+        {
 			$row['name'] = $row['title'] . ' ' . Person::fullname($row['fname'], $row['mname'], $row['lname']);
 			unset($row['title'], $row['fname'], $row['mname'], $row['lname']);
 			array_push($rows, $row);
@@ -134,26 +143,14 @@ class CombosData
 
 	public function getLists()
 	{
-		$this->db->setSQL("SELECT id, title  FROM combo_lists ORDER BY title");
-		$records = $this->db->fetchRecords(PDO::FETCH_ASSOC);
-		/**
-		 * manually add all system combos that are not stored combo_lists table
-		 */
-		$records[] = array(
-			'id' => 'activePharmacies', 'title' => 'Active Pharmacies'
-		);
-		$records[] = array(
-			'id' => 'activeProviders', 'title' => 'Active Providers'
-		);
-		$records[] = array(
-			'id' => 'activeInsurances', 'title' => 'Active Insurances'
-		);
-		$records[] = array(
-			'id' => 'activeFacilities', 'title' => 'Active Facilities'
-		);
-		$records[] = array(
-			'id' => 'billingFacilities', 'title' => 'Billing Facilities'
-		);
+        if($this->CL == NULL) $this->CL = MatchaModel::setSenchaModel('App.model.administration.ComboList');
+        $records = $this->CL->load()->all();
+	    // manually add all system combos that are not stored combo_lists table
+		$records[] = array( 'id' => 'activePharmacies', 'title' => 'Active Pharmacies' );
+		$records[] = array( 'id' => 'activeProviders', 'title' => 'Active Providers' );
+		$records[] = array( 'id' => 'activeInsurances', 'title' => 'Active Insurances' );
+		$records[] = array( 'id' => 'activeFacilities', 'title' => 'Active Facilities' );
+		$records[] = array( 'id' => 'billingFacilities', 'title' => 'Billing Facilities' );
 		return $records;
 	}
 
@@ -597,7 +594,3 @@ class CombosData
 	}
 
 }
-
-//$c = new CombosData();
-//print '<pre>';
-//print_r($c->getAvailableLanguages());

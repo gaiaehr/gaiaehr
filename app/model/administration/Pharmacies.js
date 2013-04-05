@@ -19,8 +19,8 @@
 Ext.define('App.model.administration.Pharmacies', {
     extend:'Ext.data.Model',
     table: {
-        name:'pharmacygrid',
-        comment:'Pharmacy Grid'
+        name:'pharmacies',
+        comment:'Pharmacies'
     },
     fields:[
         { name:'id', type:'int' },

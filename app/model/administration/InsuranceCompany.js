@@ -16,11 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.model.administration.Insurance', {
+Ext.define('App.model.administration.InsuranceCompany', {
     extend:'Ext.data.Model',
     table: {
-        name:'insurancegrid',
-        comment:'Insurance Grid'
+        name:'insurance_companies',
+        comment:'Insurance Companies'
     },
     fields:[
         { name:'id', type:'int', comment: 'Insurance ID'},

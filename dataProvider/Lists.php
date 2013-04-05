@@ -19,48 +19,41 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 class Lists extends MatchaHelper
 {
-	/**
-	 * @param stdClass $params
-	 * @return array
-	 */
+
+    /**
+     * Data Objects
+     */
+    private $ComboList = NULL;
+    private $ComboListOptions = NULL;
+
+
+    //------------------------------------------------------------------------------------------------------------------
+    // Main Sencha Model Getter and Setters
+    //------------------------------------------------------------------------------------------------------------------
 	public function getOptions(stdClass $params)
 	{
-        if(isset($params->list_id)){
-            $this->setSQL("SELECT o.*
-                         FROM combo_lists_options AS o
-                    LEFT JOIN combo_lists AS l ON l.id = o.list_id
-                        WHERE l.id = '$params->list_id'
-                     ORDER BY o.seq");
-            return $this->fetchRecords(PDO::FETCH_ASSOC);
-        }
+        $rows = array();
+        if($this->ComboListOptions == NULL) $this->ComboListOptions = MatchaModel::setSenchaModel('App.model.administration.ComboListOptions');
+        foreach($this->ComboListOptions->load(array('list_id'=>$params->list_id))->all() as $Options) array_push($rows, $Options);
+        return $rows;
 	}
 
-	/**
-	 * @param stdClass $params
-	 * @return stdClass
-	 */
 	public function addOption(stdClass $params)
 	{
+        if($this->ComboListOptions == NULL) $this->ComboListOptions = MatchaModel::setSenchaModel('App.model.administration.ComboListOptions');
 		$data = get_object_vars($params);
 		unset($data['id'], $data['seq']);
-		$sql = $this->sqlBind($data, 'combo_lists_options', 'I');
-		$this->setSQL($sql);
-		$this->execLog();
-		$params->id = $this->lastInsertId;
+        $this->ComboListOptions->save($data);
+        $params->id = $this->ComboListOptions->lastInsertId();
 		return $params;
 	}
 
-	/**
-	 * @param stdClass $params
-	 * @return stdClass
-	 */
 	public function updateOption(stdClass $params)
 	{
+        if($this->ComboListOptions == NULL) $this->ComboListOptions = MatchaModel::setSenchaModel('App.model.administration.ComboListOptions');
 		$data = get_object_vars($params);
 		unset($data['id']);
-		$sql = $this->sqlBind($data, 'combo_lists_options', 'U', array('id' => $params->id));
-		$this->setSQL($sql);
-		$this->execLog();
+        $this->ComboListOptions->save($data);
 		return $params;
 	}
 

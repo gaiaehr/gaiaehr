@@ -37,8 +37,6 @@ class Patient
      */
     private $patient = null;
 
-
-
     /**
      * @var MatchaCUP
      */
@@ -305,13 +303,6 @@ class Patient
     {
         return $_SESSION['patient']['pid'];
     }
-
-
-
-
-
-
-
 
     public function isCurrPatientOnReadMode()
     {

@@ -230,24 +230,6 @@ CREATE TABLE IF NOT EXISTS `claims` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
-CREATE TABLE IF NOT EXISTS `combo_lists` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `title` varchar(255) NOT NULL DEFAULT '',
-  `active` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1 = active and 0 = deactive',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=97 ;
-
-CREATE TABLE IF NOT EXISTS `combo_lists_options` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `list_id` varchar(31) NOT NULL DEFAULT '',
-  `option_value` varchar(31) NOT NULL DEFAULT '' COMMENT 'Value',
-  `option_name` varchar(255) NOT NULL DEFAULT '' COMMENT 'Name or Title',
-  `seq` int(11) DEFAULT '0',
-  `notes` varchar(255) DEFAULT NULL,
-  `active` tinyint(1) DEFAULT '1' COMMENT '1 = active and  0 = deactive',
-  PRIMARY KEY (`id`,`list_id`,`option_value`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=728 ;
-
 CREATE TABLE IF NOT EXISTS `cpt_codes` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `ConceptID` bigint(20) NOT NULL,
@@ -885,13 +867,6 @@ CREATE TABLE IF NOT EXISTS `forms_fields` (
   `index` int(11) DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_bin ;
-
-CREATE TABLE IF NOT EXISTS `forms_field_options` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `field_id` text COMMENT 'Field ID',
-  `options` text COMMENT 'Field options data stored as JSON string',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 ;
 
 CREATE TABLE IF NOT EXISTS `forms_layout` (
   `id` int(11) NOT NULL AUTO_INCREMENT,

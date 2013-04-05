@@ -22,6 +22,9 @@ include_once ($_SESSION['root'] . '/dataProvider/ACL.php');
 
 class SiteSetup
 {
+	/**
+	 * @var PDO
+	 */
 	private $conn;
 	private $err;
 
@@ -332,20 +335,20 @@ class SiteSetup
 
 	public function createSiteAdmin($params)
 	{
-		include_once ('sites/' . $params->siteId . '/conf.php');
-		include_once ('dataProvider/User.php');
-		$u                      = new User();
-		$userParams             = new stdClass();
-		$userParams->title      = 'Mr.';
-		$userParams->fname      = 'Administrator';
-		$userParams->mname      = '';
-		$userParams->lname      = 'Administrator';
-		$userParams->username   = $params->adminUsername;
-		$userParams->password   = $params->adminPassword;
-		$userParams->authorized = 1;
-		$userParams->active     = 1;
-		$userParams->role_id    = 1;
-        $u->addUser($userParams);
+		include_once('sites/' . $params->siteId . '/conf.php');
+		include_once('dataProvider/User.php');
+		$u                 = new User();
+		$admin             = new stdClass();
+		$admin->title      = 'Mr.';
+		$admin->fname      = 'Administrator';
+		$admin->mname      = '';
+		$admin->lname      = 'Administrator';
+		$admin->username   = $params->adminUsername;
+		$admin->password   = $params->adminPassword;
+		$admin->authorized = 1;
+		$admin->active     = 1;
+		$admin->role_id    = 1;
+        $u->addUser($admin);
 		return array('success' => true);
 	}
 

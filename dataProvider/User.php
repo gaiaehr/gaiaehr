@@ -23,19 +23,24 @@ include_once ($_SESSION['root'] . '/classes/AES.php');
 class User
 {
 
-
-    /**
-     * Data Object
-     */
-    private $User = NULL;
-    private $UserCache;
-    private $db;
+	/**
+	 * @var bool|MatchaCUP|null
+	 */
+	private $u = NULL;
+	/**
+	 * @var
+	 */
+	private $user;
+	/**
+	 * @var MatchaHelper
+	 */
+	private $db;
 
 
     function __construct()
     {
         $this->db = new MatchaHelper();
-        $this->User = MatchaModel::setSenchaModel('App.model.administration.User');
+	    $this->u = MatchaModel::setSenchaModel('App.model.administration.User');
         return;
     }
 
@@ -44,13 +49,13 @@ class User
     //------------------------------------------------------------------------------------------------------------------
     public function saveUser($params)
     {
-        return $this->User->save($params);
+        return $this->u->save($params);
     }
 
     public function getUsers(stdClass $params)
     {
         $rows = array();
-        foreach ($this->User->load($params)->all() as $row)
+        foreach ($this->u->load($params)->all() as $row)
         {
             $row['fullname'] = Person::fullname($row['fname'], $row['mname'], $row['lname']);
             unset($row['password'], $row['pwd_history1'], $row['pwd_history2']);
@@ -70,7 +75,7 @@ class User
                 $password = $params->password;
                 // unset passwords, this will be handle later
                 unset($params->password, $params->pwd_history1, $params->pwd_history2);
-                $this->user = $this->User->save($params);
+                $this->user = $this->u->save($params);
 
                 $params->fullname = Person::fullname($params->fname, $params->mname, $params->lname);
                 $this->changePassword($password);
@@ -92,7 +97,7 @@ class User
     {
         $password = $params->password;
         unset($params->password, $params->pwd_history1, $params->pwd_history2);
-        $this->UserCache = $this->User->save($params);
+        $this->user = $this->u->save($params);
         if($password) $this->changePassword($password);
         return $params;
     }
@@ -103,17 +108,17 @@ class User
     //------------------------------------------------------------------------------------------------------------------
     public function setUserByUid($uid)
     {
-        $this->UserCache = $this->User->load($uid)->one();
+        $this->user = $this->u->load($uid)->one();
     }
 
     public function setUser($params)
     {
-        $this->UserCache = $this->User->load($params)->one();
+        $this->user = $this->u->load($params)->one();
     }
 
     public function usernameExist($username)
     {
-        $user = $this->User->load(array('username' => $username))->one();
+        $user = $this->u->load(array('username' => $username))->one();
         return !empty($user);
     }
 
@@ -129,33 +134,33 @@ class User
 
     public function getCurrentUserTitleLastName()
     {
-        $userResult = $this->User->load($this->getCurrentUserId(), array('title', 'lname'))->one();
+        $userResult = $this->u->load($this->getCurrentUserId(), array('title', 'lname'))->one();
         return $userResult['title'] . ' ' . $userResult['lname'];
     }
 
     public function getUserNameById($id)
     {
-        $userResult = $this->User->load($id)->one();
+        $userResult = $this->u->load($id)->one();
         $userName = $userResult['title'] . ' ' . $userResult['lname'];
         return $userName;
     }
 
     public function getUserFullNameById($id)
     {
-        $userResult = $this->User->load($id)->one();
+        $userResult = $this->u->load($id)->one();
         $userName = Person::fullname($userResult['fname'], $userResult['mname'], $userResult['lname']);
         return $userName;
     }
 
     public function getCurrentUserData()
     {
-        $userResult = $this->User->load($this->getCurrentUserId())->one();
+        $userResult = $this->u->load($this->getCurrentUserId())->one();
         return $userResult;
     }
 
     public function getCurrentUserBasicData()
     {
-        $userResult = $this->User->load($this->getCurrentUserId(), array('id', 'title', 'fname', 'mname', 'lname'))->one();
+        $userResult = $this->u->load($this->getCurrentUserId(), array('id', 'title', 'fname', 'mname', 'lname'))->one();
         return $userResult;
     }
 
@@ -181,7 +186,7 @@ class User
         $aes = $this->getAES();
         $aesPwd = $aes->encrypt($newpassword);
 
-        $id = $this->UserCache['id'];
+        $id = $this->user['id'];
         $this->db->setSQL("SELECT password, pwd_history1 FROM users WHERE id = '$id'");
         $pwds = $this->db->fetchRecord(PDO::FETCH_ASSOC);
 
@@ -190,13 +195,13 @@ class User
         $params->password = $aesPwd;
         $params->pwd_history1 = $pwds['password'];
         $params->pwd_history2 = $pwds['pwd_history1'];
-        $this->User->save($params);
+        $this->u->save($params);
         return;
     }
 
     public function changeMyPassword(stdClass $params)
     {
-        $this->UserCache['id'] = $params->id;
+        $this->user['id'] = $params->id;
         return array('success' => true);
     }
 
@@ -204,16 +209,16 @@ class User
     {
         $data  = new $params;
         unset($data->password, $data->pwd_history1, $data->pwd_history2);
-        $this->UserCache = $this->User->save($data);
+        $this->user = $this->u->save($data);
         if($params->password != '') $this->changePassword($params->password);
-        $this->User->save($params);
+        $this->u->save($params);
         return array('success' => true);
     }
 
     public function verifyUserPass($pass)
     {
         $aes = new AES($_SESSION['site']['AESkey']);
-        $userResult = $this->User->load( array('id' => $_SESSION['user']['id'], 'password' => $aes->encrypt($pass), 'authorized'=>'1'), array('username') )->one();
+        $userResult = $this->u->load( array('id' => $_SESSION['user']['id'], 'password' => $aes->encrypt($pass), 'authorized'=>'1'), array('username') )->one();
         $count = count($userResult);
         return ($count != 0) ? 1 : 2;
     }
@@ -222,7 +227,7 @@ class User
     {
         $records = array();
         $records[] = array('name' => 'All', 'id' => 'all');
-        foreach($this->User->load(array('role_id' => 2))->all() As $row)
+        foreach($this->u->load(array('role_id' => 2))->all() As $row)
         {
             $row['name'] = $this->getUserNameById($row['id']);
             $records[] = $row;
@@ -233,7 +238,7 @@ class User
     public function getUserRolesByCurrentUserOrUserId($uid = null)
     {
         $uid = ($uid == null) ? $_SESSION['user']['id'] : $uid;
-        return $this->User->load($uid)->one();
+        return $this->u->load($uid)->one();
     }
 
 }

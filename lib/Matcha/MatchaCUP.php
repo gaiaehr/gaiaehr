@@ -29,7 +29,46 @@ class MatchaCUP
 	public $rowsAffected;
 	public $lastInsertId; // There is already a lastInsertId in Matcha::Class
 
-	/**
+    /**
+     * function sql($sql = NULL):
+     * Method to pass SQL statement without sqlBuilding process
+     * this is not the preferred way, but sometimes you need to do it.
+     */
+    public function sql($sql = NULL)
+    {
+        try
+        {
+            if($sql == NULL) throw new Exception("Error the SQL statement is not set.");
+            return $this->sql = $sql;
+        }
+        catch(Exception $e)
+        {
+            MatchaErrorHandler::__errorProcess($e);
+            return false;
+        }
+    }
+
+    /**
+     * Method to build a a SQL statement using tru MatchaCUP objects.
+     * this is the preferred way to build complex SQL statements that will
+     * use MatchaCUP objects
+     */
+    public function buildSQL($sqlArray = NULL)
+    {
+        try
+        {
+            if($sqlArray == NULL || !is_array($sqlArray)) throw new Exception("Error the argument passed are empty, null or is not an array.");
+
+
+        }
+        catch(Exception $e)
+        {
+            MatchaErrorHandler::__errorProcess($e);
+            return false;
+        }
+    }
+
+    /**
 	 * Method to set PDO statement.
 	 * if first argument is an object, then the method will
 	 * handle the request using sencha standards. If not then

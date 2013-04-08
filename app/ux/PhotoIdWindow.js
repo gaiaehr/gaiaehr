@@ -37,7 +37,7 @@ Ext.define('App.ux.PhotoIdWindow',
 		// play shutter click sound
 		window.webcam.set_hook('onComplete', 'onWebCamComplete');
 
-		Ext.apply(this,
+		Ext.apply(me,
 		{
 			html : window.webcam.get_html(320, 320),
 			buttons : [
@@ -54,7 +54,7 @@ Ext.define('App.ux.PhotoIdWindow',
 					this.close();
 				}
 			}]
-		}, null);
+		});
 		me.callParent(arguments);
 	},
 

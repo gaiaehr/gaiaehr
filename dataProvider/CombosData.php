@@ -108,6 +108,11 @@ class CombosData
 
 	public function getActiveProviders()
 	{
+        if($this->U == NULL) $this->U = MatchaModel::setSenchaModel('App.model.administration.User');
+        $argumentSQL['SELECT'] = array("users.id AS option_value', 'CONCAT_WS(' ', users.title, users.lname) as option_name");
+        $argumentSQL['WHERE'] = array("active = '1' AND authorized = '1' AND (npi IS NOT NULL AND npi != '')");
+        $argumentSQL['ORDER'] = array("option_name ASC");
+        $this->U->buildSQL($argumentSQL)->all();
 		$this->db->setSQL("SELECT users.id AS option_value, CONCAT_WS(' ', users.title, users.lname) as option_name
 							 FROM users
 							WHERE active = '1' AND authorized = '1' AND (npi IS NOT NULL AND npi != '')

@@ -16,19 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-/**
- * Main Screen Application
- *
- * Description: This is the main application file, all the global
- * vars are defined here including "var app" witch refers to
- * the application Viewport.
- *
- * @version 1.0.0
- * @author GI Technologies, 2011
- * @author Ernesto J Rodriguez (Certun)
- *
- * @namespace App.data.REMOTING_API
- */
+
 if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 ?>
 <html>

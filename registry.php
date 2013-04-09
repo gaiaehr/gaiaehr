@@ -1,19 +1,23 @@
 <?php
-if(!defined('_GaiaEXEC')) die('No direct access allowed.');
-//if(!defined('_GaiaEXEC')) die('No direct access allowed.');
-/* The GaiaEHR Registry File, this will containt all the global variables
- * used by GaiaEHR, putting here variable is a security risk please consider
- * first putting here variables that are not sesible to the database.
- * 
- * version 0.0.1
- * revision: N/A
- * author: GI Technologies, 2011
+/**
+ * GaiaEHR
  *
- * Read the SITES directory first
- * To get the conf.php
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- * this returns the current folder and defined it as a root.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+if(!defined('_GaiaEXEC')) die('No direct access allowed.');
+
 $sites    = array();
 $confs    = array();
 $dir = (file_exists('sites/') ? 'sites/' : '../sites/');
@@ -33,6 +37,7 @@ if($handle = opendir($dir))
 // general
 $_SESSION['root'] = str_replace('\\', '/', dirname(__FILE__));
 $_SESSION['url']   = 'http://' . $_SERVER['HTTP_HOST'].'/'.basename(dirname(__FILE__));
+
 // sites values
 $_SESSION['sites']['sites'] = $sites;
 $_SESSION['sites']['count'] = count($sites);;

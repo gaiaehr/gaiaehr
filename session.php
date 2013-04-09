@@ -1,7 +1,7 @@
 <?php
 /**
  * This file is just use for debugging
- * access this file from yoou browser to see
+ * access this file from your browser to see
  * all session array and values
  */
 session_name ( 'GaiaEHR' );

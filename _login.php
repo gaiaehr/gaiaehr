@@ -1,11 +1,21 @@
 <?php
-/* Logon Screen Window
- * Description: Obviously the Logon Window. I think every WebApp has one.
- * 
- * author: GI Technologies, 2011
- * Version 0.0.3
- * Revision: N/A
+/**
+ * GaiaEHR
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 if(!defined('_GaiaEXEC')) die('No direct access allowed.');
 $lang = (isset($_SESSION['site']['localization']) ? $_SESSION['site']['localization'] : 'en_US');
 $site = (isset($_SESSION['site']['dir']) ? $_SESSION['site']['dir'] : false);

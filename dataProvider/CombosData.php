@@ -33,6 +33,7 @@ class CombosData
     private $CLO = NULL;
     private $FFO = NULL;
     private $P = NULL;
+    private $F = NULL;
     private $I = NULL;
     private $U = NULL;
     private $CL = NULL;
@@ -109,25 +110,25 @@ class CombosData
 	public function getActiveProviders()
 	{
         if($this->U == NULL) $this->U = MatchaModel::setSenchaModel('App.model.administration.User');
-        $argumentSQL['SELECT'] = array("users.id AS option_value', 'CONCAT_WS(' ', users.title, users.lname) as option_name");
+        $argumentSQL['SELECT'] = array("users.id AS option_value, CONCAT_WS(' ', users.title, users.lname) as option_name");
         $argumentSQL['WHERE'] = array("active = '1' AND authorized = '1' AND (npi IS NOT NULL AND npi != '')");
         $argumentSQL['ORDER'] = array("option_name ASC");
-        $this->U->buildSQL($argumentSQL)->all();
-		$this->db->setSQL("SELECT users.id AS option_value, CONCAT_WS(' ', users.title, users.lname) as option_name
-							 FROM users
-							WHERE active = '1' AND authorized = '1' AND (npi IS NOT NULL AND npi != '')
-					     ORDER BY option_name ASC");
-		return $this->db->fetchRecords(PDO::FETCH_ASSOC);
+		return $this->U->buildSQL($argumentSQL)->all();
 	}
 
 	public function getActiveFacilities()
 	{
+        if($this->F == NULL) $this->F = MatchaModel::setSenchaModel('App.model.administration.Facility');
+        $argumentSQL['SELECT'] = array("id AS option_value, `name` AS option_name");
+        $argumentSQL['WHERE'] = array("active = '1'");
 		$this->db->setSQL("SELECT id AS option_value, `name` AS option_name FROM facility WHERE active = '1'");
+        $this->F->buildSQL($argumentSQL)->all();
 		return $this->db->fetchRecords(PDO::FETCH_ASSOC);
 	}
 
 	public function getBillingFacilities()
 	{
+        if($this->F == NULL) $this->F = MatchaModel::setSenchaModel('App.model.administration.Facility');
 		$this->db->setSQL("SELECT id AS option_value, `name` AS option_name FROM facility WHERE active = '1' AND billing_location = '1'");
 		return $this->db->fetchRecords(PDO::FETCH_ASSOC);
 	}
@@ -161,6 +162,7 @@ class CombosData
 
 	public function getFacilities()
 	{
+        if($this->F == NULL) $this->F = MatchaModel::setSenchaModel('App.model.administration.Facility');
 		$this->db->setSQL("SELECT id, name FROM facility WHERE service_location != 0 ORDER BY name");
 		return $this->db->fetchRecords(PDO::FETCH_ASSOC);
 	}

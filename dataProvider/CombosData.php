@@ -121,16 +121,15 @@ class CombosData
         if($this->F == NULL) $this->F = MatchaModel::setSenchaModel('App.model.administration.Facility');
         $argumentSQL['SELECT'] = array("id AS option_value, `name` AS option_name");
         $argumentSQL['WHERE'] = array("active = '1'");
-		$this->db->setSQL("SELECT id AS option_value, `name` AS option_name FROM facility WHERE active = '1'");
-        $this->F->buildSQL($argumentSQL)->all();
-		return $this->db->fetchRecords(PDO::FETCH_ASSOC);
+		return $this->F->buildSQL($argumentSQL)->all();
 	}
 
 	public function getBillingFacilities()
 	{
         if($this->F == NULL) $this->F = MatchaModel::setSenchaModel('App.model.administration.Facility');
-		$this->db->setSQL("SELECT id AS option_value, `name` AS option_name FROM facility WHERE active = '1' AND billing_location = '1'");
-		return $this->db->fetchRecords(PDO::FETCH_ASSOC);
+        $argumentSQL['SELECT'] = array("id AS option_value, `name` AS option_name");
+        $argumentSQL['WHERE'] = array("active = '1' AND billing_location = '1'");
+        return $this->F->buildSQL($argumentSQL)->all();
 	}
 
 	public function getUsers()
@@ -163,14 +162,16 @@ class CombosData
 	public function getFacilities()
 	{
         if($this->F == NULL) $this->F = MatchaModel::setSenchaModel('App.model.administration.Facility');
-		$this->db->setSQL("SELECT id, name FROM facility WHERE service_location != 0 ORDER BY name");
-		return $this->db->fetchRecords(PDO::FETCH_ASSOC);
+        $argumentSQL['SELECT'] = array("id, name");
+        $argumentSQL['WHERE'] = array("service_location != 0");
+        $argumentSQL['ORDER'] = array("name");
+        return $this->F->buildSQL($argumentSQL)->all();
 	}
 
 	public function getRoles()
 	{
-		$this->db->setSQL("SELECT id, role_name FROM acl_roles ORDER BY role_name");
-		return $this->db->fetchRecords(PDO::FETCH_ASSOC);
+        if($this->F == NULL) $this->F = MatchaModel::setSenchaModel('App.model.administration.AclRoles');
+        return $this->F->load()->all();
 	}
 
 	public function getCodeTypes()

@@ -122,14 +122,6 @@ CREATE TABLE IF NOT EXISTS `addresses` (
   KEY `foreign_id` (`foreign_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=18 ;
 
-CREATE TABLE IF NOT EXISTS `allergies` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `summary` varchar(255) DEFAULT NULL,
-  `allergy_name` varchar(255) DEFAULT NULL,
-  `allergy_type` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=19 ;
-
 CREATE TABLE IF NOT EXISTS `applications` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `app_name` varchar(255) NOT NULL,

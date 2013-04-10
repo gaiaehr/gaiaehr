@@ -20,7 +20,8 @@ Ext.define('App.model.patient.Allergies', {
 	extend: 'Ext.data.Model',
 	table: {
 		name:'allergies',
-		comment:'Patient Allergies'
+		comment:'Patient Allergies',
+        data: 'App.data.patient.Allergies'
 	},
 	fields: [
 		{name: 'id', type: 'int', dataType: 'bigint', len: 20, primaryKey : true, autoIncrement : true, allowNull : false, store: true, comment: 'Patient Allergies ID'},

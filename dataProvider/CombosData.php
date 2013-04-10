@@ -38,6 +38,7 @@ class CombosData
     private $I = NULL;
     private $U = NULL;
     private $CL = NULL;
+    private $A = NULL;
 
 	function __construct()
 	{
@@ -560,10 +561,8 @@ class CombosData
 
 	public function getAllergiesByType(stdClass $params)
 	{
-		$this->db->setSQL("SELECT *
-                           	 FROM allergies
-                            WHERE allergy_type = '$params->allergy_type'");
-		return $this->db->fetchRecords(PDO::FETCH_ASSOC);
+        if($this->A == NULL) $this->A = MatchaModel::setSenchaModel('App.model.patient.Allergies');
+        return  $this->A->load(array('allergy_type'=>$params->allergy_type))->all();
 	}
 
 	public function getAllergieTypes()

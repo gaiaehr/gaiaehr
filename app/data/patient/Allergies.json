@@ -1,0 +1,110 @@
+[
+    {
+        "id": 1,
+        "summary": "Milk, cream, butter, cheese, yogurt, ice cream, gelato.",
+        "allergy_name": "Dairy",
+        "allergy_type": "Food"
+    },
+    {
+        "id": 2,
+        "summary": "Egg",
+        "allergy_name": "Egg",
+        "allergy_type": "Food"
+    },
+    {
+        "id": 3,
+        "summary": "Peanut, nut",
+        "allergy_name": "Peanut ",
+        "allergy_type": "Food"
+    },
+    {
+        "id": 4,
+        "summary": "Almond, cashew, chestnuts, coconut, hazelnut, macadamia, pistachio, walnut",
+        "allergy_name": "Other Nuts  ",
+        "allergy_type": "Food"
+    },
+    {
+        "id": 5,
+        "summary": "Fish, roe, fish eggs",
+        "allergy_name": "Seafood",
+        "allergy_type": "Food"
+    },
+    {
+        "id": 6,
+        "summary": "Crab, lobster, shrimp, crawfish, clam, mussel, octopus, oyster, snail, squid, scallop",
+        "allergy_name": "Shellfish ",
+        "allergy_type": "Food"
+    },
+    {
+        "id": 7,
+        "summary": "Soy",
+        "allergy_name": "Soy",
+        "allergy_type": "Food"
+    },
+    {
+        "id": 8,
+        "summary": "Gluten, couscous, durum, semolina",
+        "allergy_name": "Wheat  ",
+        "allergy_type": "Food"
+    },
+    {
+        "id": 9,
+        "summary": "Melons, bananas, cucumbers, ragweed poll",
+        "allergy_name": "Melons, bananas, cucumbers (ragweed pollen) ",
+        "allergy_type": "Food"
+    },
+    {
+        "id": 10,
+        "summary": "Yeast, baker yeast",
+        "allergy_name": "Baker’s Yeast  ",
+        "allergy_type": "Food"
+    },
+    {
+        "id": 11,
+        "summary": "Dust (inhaled)",
+        "allergy_name": "Dust ",
+        "allergy_type": "Environmental"
+    },
+    {
+        "id": 12,
+        "summary": "Pollen (inhaled)",
+        "allergy_name": "Pollen ",
+        "allergy_type": "Environmental"
+    },
+    {
+        "id": 13,
+        "summary": "Dust mites (contact)",
+        "allergy_name": "Dust Mites ",
+        "allergy_type": "Environmental"
+    },
+    {
+        "id": 14,
+        "summary": "Dander (contact) ",
+        "allergy_name": "Animal Dander ",
+        "allergy_type": "Environmental"
+    },
+    {
+        "id": 15,
+        "summary": "Insect wings (contact) ",
+        "allergy_name": "Insect Stings ",
+        "allergy_type": "Environmental"
+    },
+    {
+        "id": 16,
+        "summary": "Latex, vinyl (contact) ",
+        "allergy_name": "Latex ",
+        "allergy_type": "Environmental"
+    },
+    {
+        "id": 17,
+        "summary": "Nickel (contact) ",
+        "allergy_name": "Nickel",
+        "allergy_type": "Environmental"
+    },
+    {
+        "id": 18,
+        "summary": "Mold (inhaled)",
+        "allergy_name": "Mold",
+        "allergy_type": "Environmental"
+    }
+]

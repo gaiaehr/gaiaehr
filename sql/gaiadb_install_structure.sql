@@ -82,14 +82,6 @@ CREATE TABLE IF NOT EXISTS `acl_permissions` (
   UNIQUE KEY `permKey` (`perm_key`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=90 ;
 
-CREATE TABLE IF NOT EXISTS `acl_roles` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `role_name` varchar(20) CHARACTER SET latin1 NOT NULL,
-  `role_key` varchar(40) NOT NULL,
-  `seq` int(5) NOT NULL COMMENT 'Sequence',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6 ;
-
 CREATE TABLE IF NOT EXISTS `acl_role_perms` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `role_key` varchar(50) NOT NULL,

@@ -39,6 +39,7 @@ class CombosData
     private $U = NULL;
     private $CL = NULL;
     private $A = NULL;
+    private $DT = NULL;
 
 	function __construct()
 	{
@@ -565,21 +566,18 @@ class CombosData
         return  $this->A->load(array('allergy_type'=>$params->allergy_type))->all();
 	}
 
-	public function getAllergieTypes()
+	public function getAllergyTypes()
 	{
-		$this->db->setSQL("SELECT DISTINCT allergy_type
-                           	 FROM allergies");
-		$records   = $this->db->fetchRecords(PDO::FETCH_ASSOC);
+        if($this->A == NULL) $this->A = MatchaModel::setSenchaModel('App.model.patient.Allergies');
+		$records = $this->A->load()->all();
 		$records[] = array('allergy_type' => 'Drug');
 		return $records;
 	}
 
 	public function getTemplatesTypes()
 	{
-		$this->db->setSQL("SELECT DISTINCT title, body
-                           	 FROM documents_templates
-                           	 WHERE template_type ='documenttemplate'");
-		$records   = $this->db->fetchRecords(PDO::FETCH_ASSOC);
+        if($this->DT == NULL) $this->DT = MatchaModel::setSenchaModel('App.model.patient.DocumentTemplates');
+		$records = $this->DT->load(array('template_type'=>'documenttemplate'))->all();
 		$records[] = array('title' => 'Empty');
 		return $records;
 	}

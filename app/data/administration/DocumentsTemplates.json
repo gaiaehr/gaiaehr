@@ -1,0 +1,101 @@
+[
+    {
+        "id": 1,
+        "title": "Return to work",
+        "template_type": "documenttemplate",
+        "body": "Certificate to return to work<br><br>Patient Information:<br><br>Name: [PATIENT_FULL_NAME]&nbsp;&nbsp;&nbsp;&nbsp; Age: [PATIENT_AGE]&nbsp;&nbsp;&nbsp;&nbsp; Date: [CURRENT_DATE]<br>Address: [PATIENT_ADDRESS], [PATIENT_CITY] [PATIENT_STATE]&nbsp; [PATIENT_COUNTRY]<br><br>Has been under care of: [PHYSICIAN_LAST_NAME]<br>From: [FROM_DATE]&nbsp;&nbsp;&nbsp;&nbsp; To:[TO_DATE]<br><br>Return to work on: [RETURN_DATE]<br><br>[Body]<br><br>For more information, please call<br>[CLINIC_PHONE_NUMBER]<br><br><br><br>",
+        "date": "2012-05-14 12:34:51",
+        "created_by_uid": null,
+        "update_by_uid": 85
+    },
+    {
+        "id": 2,
+        "title": "Return to school",
+        "template_type": "documenttemplate",
+        "body": "Certificate to return to school<br><br>Patient Information:<br><br>Name: [PATIENT_FULL_NAME]&nbsp;&nbsp;&nbsp;&nbsp; Age: [PATIENT_AGE]&nbsp;&nbsp;&nbsp;&nbsp; Date: [CURRENT_DATE]<br>Address: [PATIENT_ADDRESS], [PATIENT_CITY] [PATIENT_STATE]&nbsp; [PATIENT_COUNTRY]<br><br>Has been under care of: [PHYSICIAN_LAST_NAME]<br>From: [FROM_DATE]&nbsp;&nbsp;&nbsp;&nbsp; To:[TO_DATE]<br><br>Return to school on: [RETURN_DATE]<br><br>[Body]<br><br>For more information, please call<br>[CLINIC_PHONE_NUMBER]<br><br>&nbsp;<br>",
+        "date": "2012-05-14 12:36:08",
+        "created_by_uid": null,
+        "update_by_uid": 85
+    },
+    {
+        "id": 3,
+        "title": "Encounter Report",
+        "template_type": "defaulttemplate",
+        "body": "Name: [PATIENT_FULL_NAME]&nbsp; ID:[PATIENT_ID]<br>Encounter Date: [ENCOUNTER_DATE]<br>Birth date: [PATIENT_BIRTHDATE]<br>Age: [PATIENT_AGE]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [PATIENT_PICTURE]<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>Vitals<br>Height:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [PATIENT_HEIGHT]<br>Weight:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [PATIENT_WEIGHT]<br>Temperature:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [PATIENT_TEMPERATURE]<br>Blood Pressure:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [PATIENT_BLOOD_PREASURE]<br>Respiration:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [PATIENT_RESPIRATORY_RATE]<br>Pulse:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [PATIENT_PULSE]<br>BMI:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [PATIENT_BMI]<br><br>Subjective:<br>[ENCOUNTER_SUBJECTIVE]<br><br>Objective:<br>[ENCOUNTER_OBJECTIVE]<br><br>Assessment:<br>[ENCOUNTER_ASSESMENT]<br><br>Plan:<br>[ENCOUNTER_PLAN]<br><br>Medications:<br>[ENCOUNTER_MEDICATIONS]<br><br>Follow Up:<br>[ENCOUNTER_FOLLOW_UP]<br><br>Services:<br>[ENCOUNTER_SERVICES]<br><br>Signature:<br>[ENCOUNTER_SIGNATURE]<br><br><br>",
+        "date": "2012-05-14 12:46:22",
+        "created_by_uid": null,
+        "update_by_uid": 85
+    },
+    {
+        "id": 4,
+        "title": "Lab Orders",
+        "template_type": "defaulttemplate",
+        "body": "Patient Information:<br>Name: [PATIENT_FULL_NAME]&nbsp;&nbsp;&nbsp;&nbsp; ID: [PATIENT_ID]&nbsp;&nbsp;&nbsp;&nbsp; Age: [PATIENT_AGE]&nbsp; &nbsp;<br>Address: [PATIENT_ADDRESS], [PATIENT_CITY] [PATIENT_STATE]&nbsp; [PATIENT_COUNTRY]<br>Date: [CURRENT_DATE]<br><br>Lab Orders<br><br>[ORDER_ITEMS]<br><br>Provider: [CURRENT_USER_FULL_NAME]<br><br>",
+        "date": "2012-05-14 12:47:12",
+        "created_by_uid": null,
+        "update_by_uid": 85
+    },
+    {
+        "id": 5,
+        "title": "Rx  Orders",
+        "template_type": "defaulttemplate",
+        "body": "<h1>Rx</h1>Patient Information:<br>Name: [PATIENT_FULL_NAME]&nbsp;&nbsp;&nbsp;&nbsp; ID: [PATIENT_ID]&nbsp;&nbsp;&nbsp;&nbsp; Age: [PATIENT_AGE]&nbsp;&nbsp; <br>Address: [PATIENT_ADDRESS], [PATIENT_CITY] [PATIENT_STATE]&nbsp; [PATIENT_COUNTRY]<br>Date: [CURRENT_DATE]<br><br><br>[ORDER_ITEMS]<br><br><br>Provider: [CURRENT_USER_FULL_NAME]<br><br><br>",
+        "date": "2012-05-14 12:48:41",
+        "created_by_uid": null,
+        "update_by_uid": 85
+    },
+    {
+        "id": 6,
+        "title": "X-Ray Orders",
+        "template_type": "defaulttemplate",
+        "body": "Patient Information:<br>Name: [PATIENT_FULL_NAME]&nbsp;&nbsp;&nbsp;&nbsp; ID: [PATIENT_ID]&nbsp;&nbsp;&nbsp;&nbsp; Age: [PATIENT_AGE]&nbsp;&nbsp; <br>Address: [PATIENT_ADDRESS], [PATIENT_CITY] [PATIENT_STATE]&nbsp; [PATIENT_COUNTRY]<br>Date: [CURRENT_DATE]<br><br>Dx: [CURRENT_ENCOUNTER_ASSESSMENT_CODE_LIST]<br>X-Rays Orders<br><br>[ORDER_ITEMS]<br><br>Provider: [CURRENT_USER_FULL_NAME]<br><br><br>",
+        "date": "2012-05-14 12:54:33",
+        "created_by_uid": 85,
+        "update_by_uid": 85
+    },
+    {
+        "id": 7,
+        "title": "Doctor\'s Note",
+        "template_type": "documenttemplate",
+        "body": "Doctor\'s Note<br>Patient Information:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br><br>[PATIENT_PICTURE]<br><br>Name: [PATIENT_FULL_NAME]&nbsp;&nbsp;&nbsp;&nbsp; Age: [PATIENT_AGE]&nbsp;&nbsp;&nbsp;&nbsp; Date: [CURRENT_DATE]<br>Address: [PATIENT_ADDRESS], [PATIENT_CITY] [PATIENT_STATE]&nbsp; [PATIENT_COUNTRY]<br><br><br>[Body]<br><br>For more information, please call<br>[CLINIC_PHONE_NUMBER]<br><br><br>",
+        "date": "2012-05-29 13:47:22",
+        "created_by_uid": 85,
+        "update_by_uid": 85
+    },
+    {
+        "id": 8,
+        "title": "Footer Classic",
+        "template_type": "headerorfootertemplate",
+        "body": "TTteawdeaD<br>",
+        "date": "2012-05-29 14:45:31",
+        "created_by_uid": 85,
+        "update_by_uid": 85
+    },
+    {
+        "id": 9,
+        "title": "Header Classic",
+        "template_type": "headerorfootertemplate",
+        "body": "qweqweqwe<br>",
+        "date": "2012-05-29 14:46:53",
+        "created_by_uid": 85,
+        "update_by_uid": 85
+    },
+    {
+        "id": 10,
+        "title": "Referrals",
+        "template_type": "documenttemplate",
+        "body": null,
+        "date": "2012-06-06 10:25:43",
+        "created_by_uid": 85,
+        "update_by_uid": 85
+    },
+    {
+        "id": 11,
+        "title": "testDOC",
+        "template_type": "documenttemplate",
+        "body": "Name: [PATIENT_FULL_NAME]&nbsp; ID:[PATIENT_ID]<br>Encounter Date: [ENCOUNTER_DATE_START]<br>Birth date: [PATIENT_BIRTHDATE]<br>Age: [PATIENT_AGE]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [PATIENT_PICTURE]<br>Vitals<br>Height:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ENCOUNTER_HEIGHT_IN]<br>Weight:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ENCOUNTER_WEIGHT_LBS]<br>Temperature:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ENCOUNTER_TEMP_FAHRENHEIT]<br>Blood Pressure:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ENCOUNTER_BP_SYSTOLIC]/[ENCOUNTER_BP_DIASTOLIC]<br>Respiration:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ENCOUNTER_RESPIRATION]<br>Pulse:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ENCOUNTER_PULSE]<br>BMI:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ENCOUNTER_BMI]<br>BMI Status:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ENCOUNTER_BMI_STATUS]<br>Subjective:<br>[ENCOUNTER_SUBJECTIVE]<br>Objective:<br>[ENCOUNTER_OBJECTIVE]<br>Assessment:<br>[ENCOUNTER_ASSESMENT]<br>Plan:<br>[ENCOUNTER_PLAN]<br><br><br>",
+        "date": "2012-07-04 19:41:23",
+        "created_by_uid": 85,
+        "update_by_uid": 85
+    }
+]

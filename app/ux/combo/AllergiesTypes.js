@@ -12,7 +12,7 @@ Ext.define('App.ux.combo.AllergiesTypes', {
 			proxy : {
 				type       : 'direct',
 				api        : {
-					read: CombosData.getAllergieTypes
+					read: CombosData.getAllergyTypes
 				}
 			}
 		});

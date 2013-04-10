@@ -19,9 +19,8 @@
 Ext.define('App.model.patient.Allergies', {
 	extend: 'Ext.data.Model',
 	table: {
-		name:'allergies',
-		comment:'Patient Allergies',
-        data: 'App.data.patient.Allergies'
+		name:'patient_allergies',
+		comment:'Patient Allergies'
 	},
 	fields: [
 		{name: 'id', type: 'int', dataType: 'bigint', len: 20, primaryKey : true, autoIncrement : true, allowNull : false, store: true, comment: 'Patient Allergies ID'},
@@ -30,7 +29,9 @@ Ext.define('App.model.patient.Allergies', {
 		{name: 'created_uid', type: 'int'},
 		{name: 'updated_uid', type: 'int'},
 		{name: 'create_date', type: 'date', dateFormat: 'Y-m-d H:i:s'},
+        {name: 'update_date', type: 'date', dateFormat: 'Y-m-d H:i:s', default: 'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'},
 		{name: 'allergy_type', type: 'string'},
+        {name: 'location', type: 'string'},
 		{name: 'allergy', type: 'string'},
 		{name: 'allergy1', type: 'string'},
 		{name: 'allergy2', type: 'string'},

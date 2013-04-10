@@ -568,7 +568,7 @@ class CombosData
 
 	public function getAllergyTypes()
 	{
-        if($this->A == NULL) $this->A = MatchaModel::setSenchaModel('App.model.patient.Allergies');
+        if($this->A == NULL) $this->A = MatchaModel::setSenchaModel('App.model.administration.Allergies');
 		$records = $this->A->load()->all();
 		$records[] = array('allergy_type' => 'Drug');
 		return $records;

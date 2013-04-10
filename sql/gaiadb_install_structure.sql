@@ -263,17 +263,6 @@ CREATE TABLE IF NOT EXISTS `cvx_mvx` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COMMENT='CVX munufactures' AUTO_INCREMENT=87 ;
 
-CREATE TABLE IF NOT EXISTS `documents_templates` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `title` varchar(255) DEFAULT NULL,
-  `template_type` varchar(255) DEFAULT NULL COMMENT '1= documents 2= headers and footers',
-  `body` text,
-  `date` datetime DEFAULT NULL,
-  `created_by_uid` bigint(20) DEFAULT NULL,
-  `update_by_uid` bigint(20) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=12 ;
-
 CREATE TABLE IF NOT EXISTS `drugs` (
   `drug_id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL DEFAULT '',
@@ -814,13 +803,6 @@ CREATE TABLE IF NOT EXISTS `fee_sheet_options` (
   `fs_codes` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=11 ;
-
-CREATE TABLE IF NOT EXISTS `floor_plans` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `title` varchar(255) DEFAULT NULL,
-  `active` tinyint(1) NOT NULL DEFAULT '1',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
 
 CREATE TABLE IF NOT EXISTS `floor_plans_zones` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,

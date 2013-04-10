@@ -576,7 +576,7 @@ class CombosData
 
 	public function getTemplatesTypes()
 	{
-        if($this->DT == NULL) $this->DT = MatchaModel::setSenchaModel('App.model.patient.DocumentTemplates');
+        if($this->DT == NULL) $this->DT = MatchaModel::setSenchaModel('App.model.administration.DocumentsTemplates');
 		$records = $this->DT->load(array('template_type'=>'documenttemplate'))->all();
 		$records[] = array('title' => 'Empty');
 		return $records;

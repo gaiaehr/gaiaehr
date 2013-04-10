@@ -61,17 +61,20 @@ class MatchaCUP
             if(empty($sqlArray['SELECT'])) throw new Exception("Error the select statement is mandatory.");
             $SQLStatement = 'SELECT '.$sqlArray['SELECT'].chr(13);
             $SQLStatement .= 'FROM '.$this->table.chr(13);
-            if(count($sqlArray['LEFTJOIN']) > 1)
+            if(!empty($sqlArray['LEFTJOIN']))
             {
-                foreach($sqlArray['LEFTJOIN'] as $LJoin) $SQLStatement .= 'LEFT JOIN '.$LJoin.chr(13);
+                if(count($sqlArray['LEFTJOIN']) > 1)
+                {
+                    foreach($sqlArray['LEFTJOIN'] as $LJoin) $SQLStatement .= 'LEFT JOIN '.$LJoin.chr(13);
+                }
+                else
+                {
+                    $SQLStatement .= 'LEFT JOIN '.$sqlArray['LEFTJOIN'].chr(13);
+                }
             }
-            else
-            {
-                $SQLStatement .= 'LEFT JOIN '.$sqlArray['LEFTJOIN'].chr(13);
-            }
-            $SQLStatement .= 'WHERE '.$sqlArray['WHERE'].chr(13);
-            $SQLStatement .= 'HAVING '.$sqlArray['HAVING'].chr(13);
-            $SQLStatement .= 'ORDER BY '.$sqlArray['ORDER'].chr(13);
+            $SQLStatement .= (!empty($sqlArray['WHERE']) ? 'WHERE '.$sqlArray['WHERE'].chr(13) : '');
+            $SQLStatement .= (!empty($sqlArray['HAVING']) ? 'HAVING '.$sqlArray['HAVING'].chr(13) : '');
+            $SQLStatement .= (!empty($sqlArray['ORDER']) ? 'ORDER BY '.$sqlArray['ORDER'].chr(13) : '');
             $this->sql = $SQLStatement;
             return $this;
         }

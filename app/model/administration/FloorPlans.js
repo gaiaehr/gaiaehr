@@ -38,5 +38,5 @@ Ext.define('App.model.administration.FloorPlans', {
    			update : FloorPlans.updateFloorPlan,
    			destroy : FloorPlans.removeFloorPlan
    		}
-   	},
+   	}
 });

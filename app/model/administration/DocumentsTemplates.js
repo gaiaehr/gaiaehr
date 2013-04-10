@@ -29,6 +29,5 @@ Ext.define('App.model.administration.DocumentsTemplates', {
 		{name: 'body', type:'string' },
 		{name: 'template_type', type:'string' },
 		{name: 'date', type:'date', dateFormat:'Y-m-d H:i:s' }
-
 	]
 });

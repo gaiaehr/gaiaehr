@@ -1,0 +1,17 @@
+[
+    {
+        "id": 1,
+        "title": "Emergency Example",
+        "active": 1
+    },
+    {
+        "id": 2,
+        "title": "Clinic Example",
+        "active": 1
+    },
+    {
+        "id": 3,
+        "title": "Clinic Example 2",
+        "active": 1
+    }
+]

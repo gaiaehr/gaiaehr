@@ -19,12 +19,14 @@
 Ext.define('App.model.administration.FloorPlans', {
 	extend: 'Ext.data.Model',
 	table: {
-		name:'floorplans',
-		comment:'Floor Plans'
+		name:'floor_plans',
+		comment:'Floor Plans',
+        data: 'App.data.administration.FloorPlans'
 	},
 	fields: [
 		{name: 'id', type: 'int', dataType: 'bigint', len: 20, primaryKey : true, autoIncrement : true, allowNull : false, store: true, comment: 'Floor Plans ID'},
-		{name: 'title', type: 'string'}
+		{name: 'title', type: 'string', comment:'Floor Title'},
+        {name: 'active', type: 'bool', comment: 'Active Floor Plan?'}
 	],
     proxy :
    	{

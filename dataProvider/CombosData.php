@@ -34,6 +34,7 @@ class CombosData
     private $CC = NULL;
     private $P = NULL;
     private $F = NULL;
+    private $FP = NULL;
     private $I = NULL;
     private $U = NULL;
     private $CL = NULL;
@@ -110,25 +111,25 @@ class CombosData
 	public function getActiveProviders()
 	{
         if($this->U == NULL) $this->U = MatchaModel::setSenchaModel('App.model.administration.User');
-        $argumentSQL['SELECT'] = array("users.id AS option_value, CONCAT_WS(' ', users.title, users.lname) as option_name");
-        $argumentSQL['WHERE'] = array("active = '1' AND authorized = '1' AND (npi IS NOT NULL AND npi != '')");
-        $argumentSQL['ORDER'] = array("option_name ASC");
+        $argumentSQL['SELECT'] = "users.id AS option_value, CONCAT_WS(' ', users.title, users.lname) as option_name";
+        $argumentSQL['WHERE'] = "active = '1' AND authorized = '1' AND (npi IS NOT NULL AND npi != '')";
+        $argumentSQL['ORDER'] = "option_name ASC";
 		return $this->U->buildSQL($argumentSQL)->all();
 	}
 
 	public function getActiveFacilities()
 	{
         if($this->F == NULL) $this->F = MatchaModel::setSenchaModel('App.model.administration.Facility');
-        $argumentSQL['SELECT'] = array("id AS option_value, `name` AS option_name");
-        $argumentSQL['WHERE'] = array("active = '1'");
+        $argumentSQL['SELECT'] = "id AS option_value, `name` AS option_name";
+        $argumentSQL['WHERE'] = "active = '1'";
 		return $this->F->buildSQL($argumentSQL)->all();
 	}
 
 	public function getBillingFacilities()
 	{
         if($this->F == NULL) $this->F = MatchaModel::setSenchaModel('App.model.administration.Facility');
-        $argumentSQL['SELECT'] = array("id AS option_value, `name` AS option_name");
-        $argumentSQL['WHERE'] = array("active = '1' AND billing_location = '1'");
+        $argumentSQL['SELECT'] = "id AS option_value, `name` AS option_name";
+        $argumentSQL['WHERE'] = "active = '1' AND billing_location = '1'";
         return $this->F->buildSQL($argumentSQL)->all();
 	}
 
@@ -162,9 +163,9 @@ class CombosData
 	public function getFacilities()
 	{
         if($this->F == NULL) $this->F = MatchaModel::setSenchaModel('App.model.administration.Facility');
-        $argumentSQL['SELECT'] = array("id, name");
-        $argumentSQL['WHERE'] = array("service_location != 0");
-        $argumentSQL['ORDER'] = array("name");
+        $argumentSQL['SELECT'] = "id, name";
+        $argumentSQL['WHERE'] = "service_location != 0";
+        $argumentSQL['ORDER'] = "name";
         return $this->F->buildSQL($argumentSQL)->all();
 	}
 
@@ -182,8 +183,8 @@ class CombosData
 
 	public function getFloorPlanAreas()
 	{
-		$this->db->setSQL("SELECT id, title FROM floor_plans WHERE active = '1' ORDER BY title");
-		return $this->db->fetchRecords(PDO::FETCH_ASSOC);
+        if($this->FP == NULL) $this->FP = MatchaModel::setSenchaModel('App.model.administration.FloorPlans');
+        return $this->FP->load(array("active"=>"1"), array('id', 'title'))->all();
 	}
 
 	public function getAuthorizations()

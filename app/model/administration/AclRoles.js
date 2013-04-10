@@ -21,7 +21,8 @@ Ext.define( 'App.model.administration.AclRoles',
     extend : 'Ext.data.Model',
     table: {
         name:'acl_roles',
-        comment:'Access Control List Roles'
+        comment:'Access Control List Roles',
+        data:'App.data.administration.AclRoles'
     },
     fields : [
         {

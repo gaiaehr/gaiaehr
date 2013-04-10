@@ -168,17 +168,6 @@ CREATE TABLE IF NOT EXISTS `billing` (
   KEY `pid` (`pid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
-CREATE TABLE IF NOT EXISTS `calendar_categories` (
-  `catid` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `catname` varchar(100) DEFAULT NULL,
-  `catcolor` varchar(50) DEFAULT NULL,
-  `catdesc` text,
-  `duration` bigint(20) NOT NULL DEFAULT '0',
-  `cattype` int(11) NOT NULL COMMENT 'Used in grouping categories',
-  PRIMARY KEY (`catid`),
-  KEY `basic_cat` (`catname`,`catcolor`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=12 ;
-
 CREATE TABLE IF NOT EXISTS `calendar_events` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL COMMENT 'User Id ',

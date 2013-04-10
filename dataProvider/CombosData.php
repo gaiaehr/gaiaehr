@@ -31,7 +31,7 @@ class CombosData
      * Data Object
      */
     private $CLO = NULL;
-    private $FFO = NULL;
+    private $CC = NULL;
     private $P = NULL;
     private $F = NULL;
     private $I = NULL;
@@ -174,16 +174,10 @@ class CombosData
         return $this->F->load()->all();
 	}
 
-	public function getCodeTypes()
-	{
-		$this->db->setSQL("SELECT ct_key, ct_id FROM code_types ORDER BY ct_seq");
-		return $this->db->fetchRecords(PDO::FETCH_ASSOC);
-	}
-
 	public function getCalendarCategories()
 	{
-		$this->db->setSQL("SELECT catid, catname FROM calendar_categories ORDER BY cattype, catname");
-		return $this->db->fetchRecords(PDO::FETCH_ASSOC);
+        if($this->CC == NULL) $this->CC = MatchaModel::setSenchaModel('App.model.administration.CalendarCategory');
+        return $this->CC->load()->all();
 	}
 
 	public function getFloorPlanAreas()

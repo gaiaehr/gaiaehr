@@ -17,7 +17,7 @@
  */
 
 Ext.define('App.store.administration.Insurance', {
-    model: 'App.model.administration.Insurance',
+    model: 'App.model.administration.InsuranceCompany',
     extend: 'Ext.data.Store',
     proxy:{
         type:'direct',

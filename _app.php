@@ -127,7 +127,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
                 'App.model.administration.Globals',
                 'App.model.administration.HeadersAndFooters',
                 'App.model.administration.ImmunizationRelations',
-                'App.model.administration.Insurance',
+                'App.model.administration.InsuranceCompany',
                 'App.model.administration.LabObservations',
                 'App.model.administration.Laboratories',
                 'App.model.administration.LayoutTree',

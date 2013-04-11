@@ -72,25 +72,6 @@ CREATE TABLE IF NOT EXISTS `accvoucherline` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
-CREATE TABLE IF NOT EXISTS `acl_permissions` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `perm_key` varchar(100) CHARACTER SET latin1 NOT NULL,
-  `perm_name` varchar(100) CHARACTER SET latin1 NOT NULL,
-  `perm_cat` varchar(100) CHARACTER SET latin1 NOT NULL,
-  `seq` int(5) NOT NULL COMMENT 'sequence',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `permKey` (`perm_key`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=90 ;
-
-CREATE TABLE IF NOT EXISTS `acl_role_perms` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `role_key` varchar(50) NOT NULL,
-  `perm_key` varchar(50) NOT NULL,
-  `value` int(5) NOT NULL DEFAULT '0',
-  `add_date` datetime NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=296 ;
-
 CREATE TABLE IF NOT EXISTS `acl_user_perms` (
   `id` bigint(20) unsigned zerofill NOT NULL AUTO_INCREMENT,
   `user_id` bigint(20) NOT NULL,
@@ -99,14 +80,6 @@ CREATE TABLE IF NOT EXISTS `acl_user_perms` (
   `add_date` datetime NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
-CREATE TABLE IF NOT EXISTS `acl_user_roles` (
-  `user_id` bigint(20) NOT NULL,
-  `role_id` bigint(20) NOT NULL,
-  `add_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  KEY `user_id` (`user_id`),
-  KEY `role_id` (`role_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `addresses` (
   `id` int(11) NOT NULL AUTO_INCREMENT,

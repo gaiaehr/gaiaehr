@@ -186,7 +186,8 @@ class ACL
 	{
         if($this->AUP == NULL) $this->AUP = MatchaModel::setSenchaModel('App.model.administration.AclUserPermissions');
 		$perms = array();
-		foreach($this->AUP->load(array('user_id'=>$this->user_id))->all() as $row){
+		foreach($this->AUP->load(array('user_id'=>$this->user_id))->all() as $row)
+        {
 			$pK = strtolower($row['perm_key']);
 			if($pK == '') continue;
 			if($row['value'] == '1')
@@ -210,10 +211,7 @@ class ACL
 	 */
 	private function userHasRole($role_id)
 	{
-		foreach($this->user_roles as $k => $v)
-        {
-			if(floatval($v) === floatval($role_id)) return true;
-		}
+		foreach($this->user_roles as $k => $v) if(floatval($v) === floatval($role_id)) return true;
 		return false;
 	}
 
@@ -268,15 +266,9 @@ class ACL
 			$AESkey = $AESkey . $tmp;
 			$i++;
 		}
-		if(strlen($AESkey) == 32)
-        {
-			return $AESkey;
-		}
-        else
-        {
-			return false;
-		}
-
+		if(strlen($AESkey) == 32): return $AESkey;
+        else: return false;
+        endif;
 	}
 
 }

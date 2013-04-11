@@ -24,21 +24,27 @@ header('Content-Type: text/javascript');
 // This is a straight forward code.
 // Suggestions the foreach can be replaced by LINQ.
 $actions = array();
-foreach ($API as $aname=>&$a) {
+foreach ($API as $aname=>&$a)
+{
 	$methods = array();
-	foreach ($a['methods'] as $mname=>&$m) {
-	    if (isset($m['len'])) {
+	foreach ($a['methods'] as $mname=>&$m)
+    {
+	    if (isset($m['len']))
+        {
 		    $md = array(
 			    'name'=>$mname,
 			    'len'=>$m['len']
 		    );
-		} else {
+		}
+        else
+        {
 		    $md = array(
 		        'name'=>$mname,
 		        'params'=>$m['params']
 		    );
 		}
-		if (isset($m['formHandler']) && $m['formHandler']) {
+		if (isset($m['formHandler']) && $m['formHandler'])
+        {
 			$md['formHandler'] = true;
 		}
 		$methods[] = $md;

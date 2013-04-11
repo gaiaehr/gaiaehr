@@ -33,23 +33,26 @@ if(isset($_SESSION['install']) && $_SESSION['install'] != true){
 function getREMOTING_API($API, $moduleDir = false)
 {
     $actions = array();
-    foreach ($API as $aname => &$a) {
+    foreach ($API as $aname => &$a)
+    {
         $methods = array();
-        foreach ($a['methods'] as $mname => &$m) {
-            if (isset($m['len'])) {
+        foreach ($a['methods'] as $mname => &$m)
+        {
+            if (isset($m['len']))
+            {
                 $md = array(
                     'name' => $mname,
                     'len' => $m['len']
                 );
-            } else {
+            }
+            else
+            {
                 $md = array(
                     'name' => $mname,
                     'params' => $m['params']
                 );
             }
-            if (isset($m['formHandler']) && $m['formHandler']) {
-                $md['formHandler'] = true;
-            }
+            if (isset($m['formHandler']) && $m['formHandler']) $md['formHandler'] = true;
             $methods[] = $md;
         }
         $actions[$aname] = $methods;

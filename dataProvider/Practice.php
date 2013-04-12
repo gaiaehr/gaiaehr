@@ -128,7 +128,7 @@ class Practice extends MatchaHelper
 
     public function getInsurances()
     {
-        if($this->Insurance == NULL) $this->Insurance = MatchaModel::setSenchaModel('App.model.administration.Insurance');
+        if($this->Insurance == NULL) $this->Insurance = MatchaModel::setSenchaModel('App.model.administration.InsuranceCompany');
         if($this->Address == NULL) $this->Address = MatchaModel::setSenchaModel('App.model.administration.Address');
         $rows = array();
         foreach($this->Insurance->load()->all() as $row)
@@ -144,7 +144,7 @@ class Practice extends MatchaHelper
 
     public function addInsurance(stdClass $params)
     {
-        if($this->Insurance == NULL) $this->Insurance = MatchaModel::setSenchaModel('App.model.administration.Insurance');
+        if($this->Insurance == NULL) $this->Insurance = MatchaModel::setSenchaModel('App.model.administration.InsuranceCompany');
         $params->id = $this->getNextPharmacyInsuranceId();
         $data = get_object_vars($params);
         $row['id'] = $data['id'];
@@ -164,7 +164,7 @@ class Practice extends MatchaHelper
 
     public function updateInsurance(stdClass $params)
     {
-        if($this->Insurance == NULL) $this->Insurance = MatchaModel::setSenchaModel('App.model.administration.Insurance');
+        if($this->Insurance == NULL) $this->Insurance = MatchaModel::setSenchaModel('App.model.administration.InsuranceCompany');
         $data = get_object_vars($params);
         $row['name'] = $data['name'];
         $row['attn'] = $data['attn'];
@@ -301,7 +301,7 @@ class Practice extends MatchaHelper
     {
         if($this->Pharmacy == NULL) $this->Pharmacy = MatchaModel::setSenchaModel('App.model.Pharmacy');
         if($this->Laboratory == NULL) $this->Laboratory = MatchaModel::setSenchaModel('App.model.administration.Laboratories');
-        if($this->Insurance == NULL) $this->Insurance = MatchaModel::setSenchaModel('App.model.administration.Insurance');
+        if($this->Insurance == NULL) $this->Insurance = MatchaModel::setSenchaModel('App.model.administration.InsuranceCompany');
         $prec = $this->Pharmacy->nextId();
         $lrec = $this->Laboratory->nextId();
         $irec = $this->Insurance->nextId();
@@ -309,11 +309,3 @@ class Practice extends MatchaHelper
     }
 
 }
-
-//$params = new stdClass();
-//$params->name= 'test';
-//$params->transmit_method = 'test';
-//$params->email = 'test';
-//$params->active  = 'test';
-//$p = new Practice();
-//print $p->addPharmacy($params);

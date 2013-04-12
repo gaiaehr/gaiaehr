@@ -148,7 +148,21 @@ class ACL
 	{
         if($this->ARP == NULL) $this->ARP = MatchaModel::setSenchaModel('App.model.administration.AclRolePermissions');
 		$perms = array();
-		foreach($this->ARP->load($this->user_roles)->all() as $row)
+        if(is_array($this->user_roles))
+        {
+            $fo = implode("','", $this->user_roles);
+            $sqlStatement['SELECT'] = "*";
+            $sqlStatement['WHERE'] = "role_key IN ('$fo')";
+            $sqlStatement['ORDER'] = "id ASC";
+        }
+        else
+        {
+            $fo = $this->user_roles;
+            $sqlStatement['SELECT'] = "*";
+            $sqlStatement['WHERE'] = "role_key = '$fo'";
+            $sqlStatement['ORDER'] = "id ASC";
+        }
+		foreach($this->ARP->buildSQL($sqlStatement)->all() as $row)
         {
 			$pK = $pK = strtolower($row['perm_key']);
 			if($pK == '') continue;

@@ -54,6 +54,10 @@ class ACL
 		$this->buildACL();
 	}
 
+    //------------------------------------------------------------------------------------------------------------------
+    // Main Sencha Model Getter and Setters
+    //------------------------------------------------------------------------------------------------------------------
+
 	/**
 	 * @internal param string $format
 	 * @return array
@@ -106,6 +110,11 @@ class ACL
 		foreach($this->U->buildSQL($sqlStatement)->all() AS $role) $roles[] = (string) $role['role_key'];
 		return $roles;
 	}
+
+    //------------------------------------------------------------------------------------------------------------------
+    // Extra methods
+    // This methods are used by the view to gather extra data from the store or the model
+    //------------------------------------------------------------------------------------------------------------------
 
 	private function buildACL()
 	{
@@ -166,14 +175,7 @@ class ACL
         {
 			$pK = $pK = strtolower($row['perm_key']);
 			if($pK == '') continue;
-			if($row['value'] == '1')
-            {
-				$hP = true;
-			}
-            else
-            {
-				$hP = false;
-			}
+			if($row['value'] == '1') $hP = true; else $hP = false;
 			$perms[$pK] = array(
 				'perm' => $pK, 'inheritted' => true, 'value' => $hP, 'Name' => $this->getPermNameByPermKey($row['perm_key']), 'id' => $row['id']
 			);
@@ -193,14 +195,7 @@ class ACL
         {
 			$pK = strtolower($row['perm_key']);
 			if($pK == '') continue;
-			if($row['value'] == '1')
-            {
-				$hP = true;
-			}
-            else
-            {
-				$hP = false;
-			}
+			if($row['value'] == '1') $hP = true; else $hP = false;
 			$perms[$pK] = array(
 				'perm' => $pK, 'inheritted' => false, 'value' => $hP, 'Name' => $this->getPermNameByPermKey($row['perm_key']), 'id' => $row['id']
 			);

@@ -19,96 +19,79 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 class Laboratories
 {
-	private $db;
+    /**
+     * Data Objects
+     */
+    private $LO = NULL;
 
     function __construct()
-	{
-		$this -> db = new MatchaHelper();
-		return;
-	}
+    {
+        if($this->LO == NULL) $this->LO = MatchaModel::setSenchaModel('App.model.administration.LabObservations');
+        return;
+    }
 
     //------------------------------------------------------------------------------------------------------------------
     // Main Sencha Model Getter and Setters
     //------------------------------------------------------------------------------------------------------------------
-	public function getAllLabs(stdClass $params)
-	{
-		$sort = isset($params -> sort) ? $params -> sort[0] -> property . ' ' . $params -> sort[0] -> direction : 'sequence ASC';
-		$this -> db -> setSQL("SELECT lp.id,
-								  lp.parent_id,
-								  lp.parent_loinc,
-								  lp.sequence,
-								  lp.default_unit,
-								  loinc.SHORTNAME AS code_text_short,
-								  lp.parent_name AS code_text,
-								  lp.loinc_number AS code,
-								  lp.active
-						     FROM labs_panels AS lp
-						     LEFT JOIN labs_loinc AS loinc on loinc.LOINC_NUM = lp.parent_loinc
-						    WHERE parent_name LIKE '%$params->query%'
-					          AND id = parent_id
-					     ORDER BY $sort");
-		return $this -> db -> fetchRecords(PDO::FETCH_CLASS);
-	}
+    public function getAllLabs(stdClass $params)
+    {
+        $sort = isset($params->sort) ? $params->sort[0]->property . ' ' . $params->sort[0]->direction : 'sequence ASC';
+        $sqlStatement['SELECT'] = "id, parent_id, parent_loinc, sequence, default_unit, shortname AS code_text_short, parent_name AS code_text, number AS code, active";
+        $sqlStatement['LEFTJOIN'] = "labs_loinc on loinc_num = parent_loinc";
+        $sqlStatement['WHERE'] = "parent_name LIKE '%$params->query%' AND id = parent_id";
+        $sqlStatement['ORDER'] = $sort;
+        return $this->LO->buildSQL($sqlStatement)->all();
+    }
 
-	/**
-	 * @param stdClass $params
-	 * @return array
-	 */
-	public function getLabObservations(stdClass $params)
-	{
-		return $this -> getLabObservationFieldsByParentId($params -> selectedId);
-	}
+    /**
+     * @param stdClass $params
+     * @return array
+     */
+    public function getLabObservations(stdClass $params)
+    {
+        return $this->getLabObservationFieldsByParentId($params->selectedId);
+    }
 
-	/**
-	 * @param stdClass $params
-	 * @return stdClass
-	 */
-	public function updateLabObservation(stdClass $params)
-	{
-		$data = get_object_vars($params);
-		unset($data['id']);
-		//		foreach($data as $key => $val){
-		//			if($val == null || $val == '') unset($data[$key]);
-		//		}
-		$this -> db -> setSQL($this -> db -> sqlBind($data, 'labs_panels', 'U', "id='$params->id'"));
-		$this -> db -> execLog();
-		return $params;
-	}
+    /**
+     * @param stdClass $params
+     * @return stdClass
+     */
+    public function updateLabObservation(stdClass $params)
+    {
+        $data = get_object_vars($params);
+        unset($data['id']);
+        $this->LO->save($data);
+        return $params;
+    }
 
-	public function getActiveLaboratoryTypes()
-	{
-		$records = array();
-		$this -> db -> setSQL("SELECT id, code_text_short, parent_name, loinc_name
-						     FROM labs_panels
-						    WHERE id = parent_id
-						      AND active = '1'
-					     ORDER BY parent_name ASC");
-		$rows = $this -> db -> fetchRecords(PDO::FETCH_CLASS);
-		foreach ($rows as $row)
-		{
-			$row -> label = ($row -> code_text_short == '' || $row -> code_text_short == null) ? $row -> parent_name : $row -> code_text_short;
-			$row -> fields = $this -> getLabObservationFieldsByParentId($row -> id);
-			$records[] = $row;
-		}
-		return $records;
-	}
+    public function getActiveLaboratoryTypes()
+    {
+        $records = array();
+        $sqlStatement['SELECT'] = "id, code_text_short, parent_name, loinc_name";
+        $sqlStatement['WHERE'] = "id = parent_id AND active = '1'";
+        $sqlStatement['ORDER'] = "parent_name ASC";
+        foreach ($this->buildSQL($sqlStatement)->all() as $row)
+        {
+            $row->label = ($row->code_text_short == '' || $row->code_text_short == null) ? $row->parent_name : $row->code_text_short;
+            $row->fields = $this->getLabObservationFieldsByParentId($row->id);
+            $records[] = $row;
+        }
+        return $records;
+    }
 
-	public function getLabObservationFieldsByParentId($id)
-	{
-		$records = array();
-		$this -> db -> setSQL("SELECT lp.*,
-								  loinc.SUBMITTED_UNITS
-							 FROM labs_panels AS lp
-						LEFT JOIN labs_loinc AS loinc ON lp.loinc_number = loinc.LOINC_NUM
-							WHERE parent_id = '$id'
-							  AND parent_id != id
-						ORDER BY sequence");
-		foreach ($this->db->fetchRecords(PDO::FETCH_CLASS) as $row)
-		{
-			$row -> default_unit = ($row -> default_unit == null || $row -> default_unit == '') ? $row -> SUBMITTED_UNITS : $row -> default_unit;
-			$records[] = $row;
-		}
-		return $records;
-	}
+    public function getLabObservationFieldsByParentId($id)
+    {
+        $records = array();
+        $sqlStatement['SELECT'] = "*, labs_loinc.submited_units";
+        $sqlStatement['LEFTJOIN'] = "labs_loinc ON labs_panels.loinc_number = labs_loinc.loinc_num";
+        $sqlStatement['WHERE'] = "parent_id = '$id' AND parent_id != id";
+        $sqlStatement['ORDER'] = "sequence";
+        foreach ($this->buildSQL($sqlStatement)->all() as $row)
+        {
+            $row->default_unit = ($row->default_unit == null || $row->default_unit == '') ? $row->SUBMITTED_UNITS : $row->default_unit;
+            $records[] = $row;
+        }
+        return $records;
+    }
 
 }

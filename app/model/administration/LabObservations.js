@@ -19,23 +19,23 @@
 Ext.define('App.model.administration.LabObservations', {
 	extend: 'Ext.data.Model',
 	table: {
-		name:'labobservations',
+		name:'labs_panels',
 		comment:'Laboratory Observations'
 	},
 	fields: [
 		{name: 'id', type: 'int', dataType: 'bigint', len: 20, primaryKey : true, autoIncrement : true, allowNull : false, store: true, comment: 'Laboratory Observations ID'},
-        {name: 'code_text_short' },
-		{name: 'parent_id' },
-		{name: 'parent_loinc' },
-		{name: 'parent_name' },
-		{name: 'sequence' },
-		{name: 'loinc_number' },
-		{name: 'loinc_name' },
-		{name: 'default_unit' },
-		{name: 'range_start' },
-		{name: 'range_end' },
-		{name: 'required_in_panel' },
-		{name: 'description' },
+        {name: 'code_text_short', type: 'string' },
+		{name: 'parent_id', type: 'int', dataType: 'bigint' },
+		{name: 'parent_loinc', type: 'string', dataType: 'text' },
+		{name: 'parent_name', type: 'string', dataType: 'text'  },
+		{name: 'sequence', type: 'string', dataType: 'text' },
+		{name: 'loinc_number', type: 'string', dataType: 'text' },
+		{name: 'loinc_name', type: 'string', dataType: 'text' },
+		{name: 'default_unit', type: 'string' },
+		{name: 'range_start', type: 'string' },
+		{name: 'range_end', type: 'string' },
+		{name: 'required_in_panel', type: 'string', dataType: 'text' },
+		{name: 'description', type: 'string', dataType: 'text' },
 		{name: 'active', type:'bool' }
 	]
 });

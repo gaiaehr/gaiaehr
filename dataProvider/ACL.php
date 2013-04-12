@@ -101,8 +101,8 @@ class ACL
         if($this->U == NULL) $this->U = MatchaModel::setSenchaModel('App.model.administration.User');
         if($this->AR == NULL) $this->AR = MatchaModel::setSenchaModel('App.model.administration.AclRoles');
         $sqlStatement['SELECT'] = "role_key";
-        $sqlStatement['LEFTJOIN'] = "acl_roles ON role_id = id";
-        $sqlStatement['WHERE'] = "id='".$this->user_id."'";
+        $sqlStatement['LEFTJOIN'] = "acl_roles ON role_id = acl_roles.id";
+        $sqlStatement['WHERE'] = "acl_roles.id='".$this->user_id."'";
 		foreach($this->U->buildSQL($sqlStatement)->all() AS $role) $roles[] = (string) $role['role_key'];
 		return $roles;
 	}
@@ -146,20 +146,9 @@ class ACL
 	 */
 	private function getRolePerms()
 	{
-        if($this->ARP == NULL) $this->ARP = MatchaModel::setSenchaModel('App.model.administration.AclRolesPermissions');
-		if(is_array($this->user_roles))
-        {
-			$fo      = implode("','", $this->user_roles);
-			$roleSQL = "SELECT * FROM acl_role_perms WHERE role_key IN ('$fo') ORDER BY id ASC";
-		}
-        else
-        {
-			$fo      = $this->user_roles;
-			$roleSQL = "SELECT * FROM acl_role_perms WHERE role_key = '$fo' ORDER BY id ASC";
-		}
-		$this->conn->setSQL($roleSQL);
+        if($this->ARP == NULL) $this->ARP = MatchaModel::setSenchaModel('App.model.administration.AclRolePermissions');
 		$perms = array();
-		foreach($this->conn->fetchRecords(PDO::FETCH_ASSOC) as $row)
+		foreach($this->ARP->load($this->user_roles)->all() as $row)
         {
 			$pK = $pK = strtolower($row['perm_key']);
 			if($pK == '') continue;

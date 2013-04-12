@@ -212,7 +212,8 @@ class MatchaModel extends Matcha
             $jsSenchaModel = preg_replace("(')", '"', $jsSenchaModel);
 
             $model = (array)json_decode($jsSenchaModel, true);
-            if(!count($model)) throw new Exception("Something went wrong converting it to an array:".json_last_error());
+            if(!count($model)) throw new Exception("Something went wrong converting it to an array. Model('$fileModel'). JSON Error: " . self::__JSONErrorTranslate(json_last_error()));
+
             // check if there are a defined table from the model
             if(!isset($model['table'])) throw new Exception("Table property is not defined on Sencha Model. 'table:'");
             // check if there are a defined fields from the model
@@ -225,6 +226,40 @@ class MatchaModel extends Matcha
         {
             MatchaErrorHandler::__errorProcess($e);
             return false;
+        }
+    }
+
+    /**
+     * function __JSONErrorTranslate($jsonError)
+     * Method to translate the JSON last error into a human readable string.
+     * @param $jsonError
+     * @return string
+     */
+    static public function __JSONErrorTranslate($jsonError)
+    {
+        switch ($jsonError)
+        {
+            case JSON_ERROR_NONE:
+                return ' - No errors';
+                break;
+            case JSON_ERROR_DEPTH:
+                return ' - Maximum stack depth exceeded';
+                break;
+            case JSON_ERROR_STATE_MISMATCH:
+                return ' - Underflow or the modes mismatch';
+                break;
+            case JSON_ERROR_CTRL_CHAR:
+                return ' - Unexpected control character found';
+                break;
+            case JSON_ERROR_SYNTAX:
+                return ' - Syntax error, malformed JSON';
+                break;
+            case JSON_ERROR_UTF8:
+                return ' - Malformed UTF-8 characters, possibly incorrectly encoded';
+                break;
+            default:
+                return ' - Unknown error';
+                break;
         }
     }
 

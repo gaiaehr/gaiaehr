@@ -19,15 +19,45 @@
 class MatchaCUP
 {
 	/**
-	 * Variables that MatchaCUP uses.
+	 * @var array
 	 */
 	private $model;
+	/**
+	 * @var string
+	 */
 	private $table;
+	/**
+	 * @var string
+	 */
 	private $primaryKey;
+	/**
+	 * @var string
+	 */
 	private $nolimitsql = '';
+	/**
+	 * @var string
+	 */
 	private $sql = '';
+	/**
+	 * @var array
+	 */
+	private $record;
+	/**
+	 * @var int
+	 */
 	public $rowsAffected;
+	/**
+	 * @var int
+	 */
 	public $lastInsertId; // There is already a lastInsertId in Matcha::Class
+	/**
+	 * @var array|bool array of encrypted fields or bool false
+	 */
+	public $encryptedFields = false;
+	/**
+	 * @var array|bool
+	 */
+	public $phantomFields = false;
 
     /**
      * function sql($sql = NULL):
@@ -157,13 +187,17 @@ class MatchaCUP
 				$sortx = '';
 				if (isset($where->sort))
 				{
-					$sortx = array();
+					$sortArray = array();
 					foreach ($where->sort as $sort)
 					{
-						$sort = get_object_vars($sort);
-						$sortx[] = implode(' ', $sort);
+						if(isset($sort->property) && !in_array($sort->property, $this->phantomFields)){
+							$sort = get_object_vars($sort);
+							$sortArray[] = implode(' ', $sort);
+						}
 					}
-					$sortx = 'ORDER BY ' . implode(', ', $sortx);
+					if(!empty($sortArray)){
+						$sortx = 'ORDER BY ' . implode(', ', $sortArray);
+					}
 				}
 				// group
 				$groupx = '';
@@ -175,14 +209,17 @@ class MatchaCUP
 				}
 				// filter/where
 				$wherex = '';
-				if (isset($where->filter))
+				if (isset($where->filter) && isset($where->filter[0]->property))
 				{
-					$wherex = array();
+					$whereArray = array();
 					foreach ($where->filter as $foo)
 					{
-						$wherex[] = "`$foo->property`='$foo->value'";
+						if(isset($foo->value) && isset($foo->property)){
+							$operator = isset($foo->operator)? $foo->operator : '=';
+							$whereArray[] = "`$foo->property` $operator '$foo->value'";
+						}
 					}
-					$wherex = 'WHERE ' . implode(' AND ', $wherex);
+					if(count($whereArray) > 0) $wherex = 'WHERE ' . implode(' AND ', $whereArray);
 				}
 				$this->nolimitsql   = "SELECT * FROM `" . $this->table . "` $groupx $wherex $sortx";
 				$this->sql          = "SELECT * FROM `" . $this->table . "` $groupx $wherex $sortx $limits";
@@ -204,8 +241,8 @@ class MatchaCUP
     {
         try
         {
-            $id = Matcha::$__conn->query('SELECT MAX('.$this->primaryKey.') AS lastID FROM '.$this->table.';')->fetch();
-            return $id['lastID']+1;
+            $r = Matcha::$__conn->query("SELECT MAX($this->primaryKey) AS lastID FROM $this->table")->fetch();
+            return $r['lastID']+1;
         }
         catch(PDOException $e)
         {
@@ -221,7 +258,10 @@ class MatchaCUP
 	{
 		try
 		{
-			return Matcha::$__conn->query($this->sql)->fetchAll();
+			$this->record = Matcha::$__conn->query($this->sql)->fetchAll();
+			$this->dataDecryptWalk();
+			$this->builtRoot();
+			return $this->record;
 		}
 		catch(PDOException $e)
 		{
@@ -237,7 +277,10 @@ class MatchaCUP
 	{
 		try
 		{
-			return Matcha::$__conn->query($this->sql)->fetch();
+			$this->record = Matcha::$__conn->query($this->sql)->fetch();
+			$this->dataDecryptWalk();
+			$this->builtRoot();
+			return $this->record;
 		}
 		catch(PDOException $e)
 		{
@@ -310,7 +353,9 @@ class MatchaCUP
 			{
 				$this->sql = $this->sql . " LIMIT $start, $limit";
 			}
-			return Matcha::$__conn->query($this->sql)->fetchAll();
+			$this->record =  Matcha::$__conn->query($this->sql)->fetchAll();
+			$this->dataDecryptWalk();
+			return $this->record;
 		}
 		catch(PDOException $e)
 		{
@@ -335,6 +380,7 @@ class MatchaCUP
                 $sql = $this->buildUpdateSqlStatement($data, $where);
 				$this->rowsAffected = Matcha::$__conn->exec($sql);
                 self::callBackMethod(array(array('crc32'=>crc32($sql), 'event'=>'UPDATE', 'sql'=>addslashes($sql))));
+				return $data;
 			}
 			elseif(is_object($record))
 			{
@@ -401,7 +447,7 @@ class MatchaCUP
 			if (is_object($record))
 			{
 				$record = get_object_vars($record);
-                $sql = "DELETE FROM " . $this->model->table->name . " WHERE $this->primarykey = '".$record[$this->primarykey]."'";
+                $sql = "DELETE FROM " . $this->table . " WHERE $this->primaryKey = '".$record[$this->primaryKey]."'";
 				$this->rowsAffected = Matcha::$__conn->exec($sql);
                 self::callBackMethod( array(array('crc32'=>crc32($sql), 'event'=>'DELETE', 'sql'=>addslashes($sql))));
 			}
@@ -410,7 +456,7 @@ class MatchaCUP
 				foreach ($record as $rec)
 				{
 					$rec = get_object_vars($rec);
-                    $sql = "DELETE FROM " . $this->model->table->name . " WHERE $this->primarykey ='".$rec[$this->primarykey]."'";
+                    $sql = "DELETE FROM " . $this->table . " WHERE $this->primaryKey ='".$rec[$this->primaryKey]."'";
 					$this->rowsAffected = Matcha::$__conn->exec($sql);
                     self::callBackMethod( array(array('crc32'=>crc32($sql), 'event'=>'DELETE', 'sql'=>addslashes($sql))));
 				}
@@ -444,9 +490,11 @@ class MatchaCUP
 	 */
 	public function setModel($model)
 	{
-		$this->model = MatchaUtils::__arrayToObject($model);
+		$this->model = (is_array($model) ? MatchaUtils::__arrayToObject($model) : $model);
 		$this->table = (is_string($this->model->table) ? $this->model->table : $this->model->table->name);
 		$this->primaryKey = MatchaModel::__getTablePrimaryKeyColumnName($this->table);
+		$this->encryptedFields = MatchaModel::__getEncryptedFields($this->model);
+		$this->phantomFields = MatchaModel::__getPhantomFields($this->model);
 	}
 
 	/**
@@ -542,20 +590,25 @@ class MatchaCUP
 		{
 			if(!isset($properties[$index]['store']) || (isset($properties[$index]['store']) && $properties[$index]['store'] != false)){
 				$type = $properties[$index]['type'];
-				if($type == 'bool')
-				{
-					if($foo === true)
+
+				if(isset($properties[$index]['encrypt']) && $properties[$index]['encrypt']){
+					$values[$index] = $this->dataEncrypt($values[$index]);
+				}else{
+					if($type == 'bool')
 					{
-						$values[$index] = 1;
+						if($foo === true)
+						{
+							$values[$index] = 1;
+						}
+						elseif($foo === false)
+						{
+							$values[$index] = 0;
+						}
 					}
-					elseif($foo === false)
+					elseif($type == 'date')
 					{
-						$values[$index] = 0;
+						$values[$index] = ($foo == '' ? 'NULL' : $values[$index]);
 					}
-				}
-				elseif($type == 'date')
-				{
-					$values[$index] = ($foo == '' ? 'NULL' : $values[$index]);
 				}
 			}else{
 				unset($columns[$index], $values[$index]);
@@ -564,5 +617,46 @@ class MatchaCUP
 		return array_combine($columns,$values);
 	}
 
+	/**
+	 * @param $item
+	 * @return string
+	 */
+	private function dataEncrypt($item){
+		return MatchaUtils::__encrypt($item);
+	}
 
+	/**
+	 * @param $item
+	 * @param $key
+	 * @param $encryptedFields
+	 */
+	private function dataDecrypt(&$item, $key, $encryptedFields){
+		if(in_array($key, $encryptedFields)){
+			$item = MatchaUtils::__decrypt($item);
+		}
+	}
+
+	/**
+	 *
+	 */
+	private function dataDecryptWalk(){
+		if(is_array($this->encryptedFields)) array_walk_recursive($this->record, 'self::dataDecrypt', $this->encryptedFields);
+	}
+
+	/**
+	 * 
+	 */
+	private function builtRoot(){
+		if(isset($this->model->proxy) && isset($this->model->proxy->reader) && isset($this->model->proxy->reader->root)){
+			$record = array();
+			$total = Matcha::$__conn->query($this->nolimitsql)->rowCount();
+			if(isset($this->model->proxy->reader->totalProperty)){
+				$record[$this->model->proxy->reader->totalProperty] = $total;
+			}else{
+				$record['total'] = $total;
+			}
+			$record[$this->model->proxy->reader->root] = $this->record;
+			$this->record = $record;
+		}
+	}
 }

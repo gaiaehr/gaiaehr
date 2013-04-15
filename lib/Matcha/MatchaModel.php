@@ -658,6 +658,32 @@ class MatchaModel extends Matcha
 		return $arr;
 	}
 
+	static public function __getPhantomFields($model){
+		$arr = array();
+		$fields = (is_object($model)? MatchaUtils::__objectToArray($model->fields): $model['fields']);
+		foreach($fields as $field)
+		{
+			if(isset($field['store']) && !$field['store']) $arr[] = $field['name'];
+		}
+		$arr = (empty($arr) ? false : $arr);
+		return $arr;
+	}
+
+	/**
+	 * @param $model
+	 * @return array|bool
+	 */
+	static public function __getEncryptedFields($model){
+		$arr = array();
+		$fields = (is_object($model)? MatchaUtils::__objectToArray($model->fields): $model['fields']);
+		foreach($fields as $field)
+		{
+			if(isset($field['encrypt']) && $field['encrypt']) $arr[] = $field['name'];
+		}
+		$arr = (empty($arr) ? false : $arr);
+		return $arr;
+	}
+
     /**
      * function __getTablePrimaryKey($table):
      * Method to get the primary key from the database-table

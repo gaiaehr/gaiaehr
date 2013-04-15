@@ -98,6 +98,7 @@ class MatchaUtils extends Matcha
 
 	static public function __objectToArray($obj) {
 		$_arr = is_object($obj) ? get_object_vars($obj) : $obj;
+		$arr = array();
 		foreach ($_arr as $key => $val) {
 			$val = (is_array($val) || is_object($val)) ? self::__objectToArray($val) : $val;
 			$arr[$key] = $val;
@@ -123,4 +124,21 @@ class MatchaUtils extends Matcha
 		}
 		return $parent;
 	}
+
+	static public function __encrypt($text){
+		$iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB);
+		$iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
+		$cryptText = mcrypt_encrypt(MCRYPT_RIJNDAEL_256, Matcha::$__secretKey, $text, MCRYPT_MODE_ECB, $iv);
+		return $cryptText;
+	}
+
+	static public function __decrypt($text){
+		$iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB);
+		$iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
+		$deCryptText = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, Matcha::$__secretKey, $text, MCRYPT_MODE_ECB, $iv);
+		return trim($deCryptText);
+	}
 }
+//print $pass = MatchaUtils::__encrypt("pass");
+//print '<br>';
+//print MatchaUtils::__decrypt($pass);

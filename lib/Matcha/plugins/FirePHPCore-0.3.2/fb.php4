@@ -43,7 +43,7 @@
  * @package     FirePHPCore
  */
 
-require_once dirname(__FILE__).'/FirePHP.class.php4';
+require_once dirname(__FILE__) . '/FirePHP.class.php4';
 
 /**
  * Sends the given data to the FirePHP Firefox Extension.

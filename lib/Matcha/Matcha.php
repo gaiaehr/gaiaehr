@@ -54,7 +54,11 @@ class Matcha
      * @var string
      */
     public static $__app;
-	
+	/**
+	 * @var string
+	 */
+	public static $__secretKey = 'CryptSecretKey';
+
 	/**
 	 * function connect($databaseParameters = array()):
 	 * Method that make the connection to the database
@@ -89,6 +93,8 @@ class Matcha
 			// check if the database exist.
 			self::__createDatabase($dbName);
 			self::$__conn->query('USE '.$dbName.';');
+			// set the encryption secret key if provided
+			if(isset($databaseParameters['key'])) self::$__secretKey = $databaseParameters['key'];
 			return self::$__conn;
 		}
 		catch(Exception $e)
@@ -431,7 +437,7 @@ class Matcha
                     break;
                 case 'BINARY'; case 'VARBINARY':
                     return $columnType.' '.
-                    (isset($column['len']) ? ($column['len'] ? '('.$column['len'].') ' : '') : '').
+                    (isset($column['len']) ? ($column['len'] ? '('.$column['len'].') ' : '(1000)') : '(1000)').
                     (isset($column['allowNull']) ? ($column['allowNull'] ? '' : 'NOT NULL ') : '').
                     (isset($column['comment']) ? ($column['comment'] ? "COMMENT '".$column['comment']."'" : '') : '');
                     break;

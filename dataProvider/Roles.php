@@ -22,7 +22,11 @@ include_once ($_SESSION['root'] . '/dataProvider/ACL.php');
 class Roles extends ACL
 {
 
-	/**
+    /**
+     * Data Objects
+     */
+
+    /**
 	 *
 	 * @return mixed
 	 */
@@ -104,10 +108,8 @@ class Roles extends ACL
 	 */
 	public function getRolesData()
 	{
-		$this -> conn -> setSQL("SELECT role_key, perm_key, value FROM acl_role_perms");
-		$rows = array();
-
-		foreach ($this->conn->fetchRecords(PDO::FETCH_ASSOC) as $row)
+        if($this->ARP == NULL) $this->ARP = MatchaModel::setSenchaModel('App.model.administration.AclRolePermissions');
+		foreach ($this->ARP->load()->all() as $row)
 		{
 			$rows[$row['perm_key'] . '_' . $row['role_key']] = $row['value'];
 		}
@@ -120,9 +122,7 @@ class Roles extends ACL
 	 */
 	public function saveRolesData(stdClass $params)
 	{
-
 		$data = get_object_vars($params);
-
 		function parse_boolean($val)
 		{
 			return $val;
@@ -166,32 +166,12 @@ class Roles extends ACL
 	 */
 	private function saveRolePerm($roleKey, $permKey, $val)
 	{
-
-		$this -> conn -> setSQL("SELECT id
-	                           FROM acl_role_perms
-	                          WHERE role_key = '$roleKey'
-	                            AND perm_key = '$permKey'");
-		$fo = $this -> conn -> fetchRecord();
-
+        if($this->ARP == NULL) $this->ARP = MatchaModel::setSenchaModel('App.model.administration.AclRolePermissions');
 		$data = array();
-		if ($fo['id'] != null)
-		{
-			$data['value'] = $val;
-			$this -> conn -> setSQL($this -> conn -> sqlBind($data, 'acl_role_perms', 'U', array(
-				'role_key' => $roleKey,
-				'perm_key' => $permKey
-			)));
-			$this -> conn -> execOnly();
-		}
-		else
-		{
-			$data['role_key'] = $roleKey;
-			$data['perm_key'] = $permKey;
-			$data['value'] = $val;
-			$sql = $this -> conn -> sqlBind($data, 'acl_role_perms', 'I');
-			$this -> conn -> setSQL($sql);
-			$this -> conn -> execOnly();
-		}
+		$data['value'] = $val;
+        $data['role_key'] = $roleKey;
+        $data['perm_key'] = $permKey;
+        $this->ARP->save($data);
 	}
 
 }

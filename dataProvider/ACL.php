@@ -39,7 +39,7 @@ class ACL
     private $AR = NULL;
     private $AP = NULL;
     private $U = NULL;
-    private $ARP = NULL;
+    public $ARP = NULL;
     private $AUP = NULL;
 
     /**

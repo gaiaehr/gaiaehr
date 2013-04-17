@@ -58,6 +58,10 @@ class MatchaCUP
 	 * @var array|bool
 	 */
 	public $phantomFields = false;
+	/**
+	 * @var bool
+	 */
+	private $isSenchaRequest = true;
 
     /**
      * function sql($sql = NULL):
@@ -135,11 +139,13 @@ class MatchaCUP
 	 */
 	public function load($where = NULL, $columns = NULL)
 	{
+
 		try
 		{
 			$this->sql = '';
 			if (!is_object($where))
 			{
+				$this->isSenchaRequest = false;
 				// columns
 				if ($columns == null)
 				{
@@ -156,6 +162,7 @@ class MatchaCUP
 				// where
 				if (is_numeric($where))
 				{
+					$where = $this->ifDataEncrypt($this->primaryKey,$where);
 					$wherex = "`$this->primaryKey`='$where'";
 				}
 				elseif (is_array($where))
@@ -173,6 +180,7 @@ class MatchaCUP
 			}
 			else
 			{
+				$this->isSenchaRequest = true;
 				// limits
 				$limits = '';
 				if (isset($where->limit) || isset($where->start))
@@ -376,6 +384,7 @@ class MatchaCUP
 		{
 			if(!empty($where))
 			{
+				$this->isSenchaRequest = false;
 				$data = get_object_vars($record);
                 $sql = $this->buildUpdateSqlStatement($data, $where);
 				$this->rowsAffected = Matcha::$__conn->exec($sql);
@@ -384,6 +393,7 @@ class MatchaCUP
 			}
 			elseif(is_object($record))
 			{
+				$this->isSenchaRequest = true;
 				$data = get_object_vars($record);
 				// create record
 				if (!isset($data[$this->primaryKey]) || (isset($data[$this->primaryKey]) && ($data[$this->primaryKey] == 0 || $data[$this->primaryKey] == ''))){
@@ -404,6 +414,7 @@ class MatchaCUP
 			}
 			else
 			{
+				$this->isSenchaRequest = true;
 				$records = array();
 				foreach ($record as $rec)
 				{
@@ -511,8 +522,8 @@ class MatchaCUP
 		{
 			if (is_string($key))
 			{
-				if ($prevArray)
-					$whereStr .= 'AND ';
+				if ($prevArray) $whereStr .= 'AND ';
+				$val = $this->ifDataEncrypt($key,$val);
 				$whereStr .= "`$key`='$val' ";
 				$prevArray = true;
 			}
@@ -618,11 +629,23 @@ class MatchaCUP
 	}
 
 	/**
-	 * @param $item
+	 * @param $value
 	 * @return string
 	 */
-	private function dataEncrypt($item){
-		return MatchaUtils::__encrypt($item);
+	private function dataEncrypt($value){
+		return MatchaUtils::__encrypt($value);
+	}
+
+	/**
+	 * @param $key
+	 * @param $value
+	 * @return string
+	 */
+	private function ifDataEncrypt($key, $value){
+		if(is_array($this->encryptedFields) && in_array($key,$this->encryptedFields)){
+			$value = MatchaUtils::__encrypt($value);
+		}
+		return $value;
 	}
 
 	/**
@@ -640,14 +663,21 @@ class MatchaCUP
 	 *
 	 */
 	private function dataDecryptWalk(){
-		if(is_array($this->encryptedFields)) array_walk_recursive($this->record, 'self::dataDecrypt', $this->encryptedFields);
+		if(is_array($this->record) && is_array($this->encryptedFields)){
+			array_walk_recursive($this->record, 'self::dataDecrypt', $this->encryptedFields);
+		}
 	}
 
 	/**
 	 * 
 	 */
 	private function builtRoot(){
-		if(isset($this->model->proxy) && isset($this->model->proxy->reader) && isset($this->model->proxy->reader->root)){
+		if(
+			$this->isSenchaRequest &&
+			isset($this->model->proxy) &&
+			isset($this->model->proxy->reader) &&
+			isset($this->model->proxy->reader->root)
+		){
 			$record = array();
 			$total = Matcha::$__conn->query($this->nolimitsql)->rowCount();
 			if(isset($this->model->proxy->reader->totalProperty)){
@@ -658,5 +688,6 @@ class MatchaCUP
 			$record[$this->model->proxy->reader->root] = $this->record;
 			$this->record = $record;
 		}
+
 	}
 }

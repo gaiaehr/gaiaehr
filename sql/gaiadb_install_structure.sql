@@ -855,6 +855,7 @@ CREATE TABLE IF NOT EXISTS `globals` (
   PRIMARY KEY (`gl_name`,`gl_index`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+
 CREATE TABLE IF NOT EXISTS `groups` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `name` longtext,

@@ -104,10 +104,17 @@ class ACL
 		$roles = array();
         if($this->U == NULL) $this->U = MatchaModel::setSenchaModel('App.model.administration.User');
         if($this->AR == NULL) $this->AR = MatchaModel::setSenchaModel('App.model.administration.AclRoles');
-        $sqlStatement['SELECT'] = "role_key";
-        $sqlStatement['LEFTJOIN'] = "acl_roles ON role_id = acl_roles.id";
-        $sqlStatement['WHERE'] = "acl_roles.id='".$this->user_id."'";
-		foreach($this->U->buildSQL($sqlStatement)->all() AS $role) $roles[] = (string) $role['role_key'];
+
+        $sqlStatement['SELECT'] = "acl_roles.role_key";
+        $sqlStatement['LEFTJOIN'] = "acl_roles ON users.role_id = acl_roles.id";
+        $sqlStatement['WHERE'] = "users.id ='$this->user_id'";
+
+        $rolesRec = $this->U->buildSQL($sqlStatement)->all();
+        if($rolesRec !== false){
+            foreach($rolesRec AS $role) {
+                $roles[] = (string) $role['role_key'];
+            }
+        }
 		return $roles;
 	}
 

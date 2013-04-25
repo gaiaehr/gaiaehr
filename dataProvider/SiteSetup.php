@@ -156,6 +156,11 @@ class SiteSetup
 		$row[]  = array(
 			'msg' => 'PHP MCrypt installed', 'status' => $status
 		);
+        // check if PDO object exists
+        $status = (function_exists('PDO') ? 'Ok' : 'Fail');
+        $row[]  = array(
+            'msg' => 'PDO installed', 'status' => $status
+        );
 		return $row;
 	}
 

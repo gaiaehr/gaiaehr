@@ -42,7 +42,6 @@ if(!isset($_SESSION['site']['error']) && (isset($_SESSION['user']) && $_SESSION[
 {
 	include_once($_SESSION['root'] . '/dataProvider/ACL.php');
 	include_once($_SESSION['root'] . '/dataProvider/User.php');
-	include_once($_SESSION['root'] . '/dataProvider/Globals.php');
 
 	$acl = new ACL();
 	$perms = array();

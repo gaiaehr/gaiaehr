@@ -330,7 +330,8 @@ class MatchaModel extends Matcha
                 $values  = array_values($data);
                 foreach($values as $index => $val) if($val == null) $values[$index] = 'NULL';
                 $valuesEncapsulation  .= '(\''.implode('\',\'',$values).'\')';
-                if( $rowCount == 500 || $key == end(array_keys($dataArray)))
+                $dataArrayKeys = array_keys($dataArray);
+                if( $rowCount == 500 || $key == end($dataArrayKeys))
                 {
                     // check if Threads PHP Class exists if does not exist
                     // run the SQL in normal fashion

@@ -16,31 +16,33 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define( 'App.model.administration.AclRoles',
-{
-    extend : 'Ext.data.Model',
+Ext.define('App.model.administration.AclRoles', {
+    extend: 'Ext.data.Model',
     table: {
-        name:'acl_roles',
-        comment:'Access Control List Roles',
+        name: 'acl_roles',
+        comment: 'Access Control List Roles',
         data:'App.data.administration.AclRoles'
     },
-    fields : [
+    fields: [
         {
-            name: 'id', type:'int', dataType: 'bigint', len: 20, primaryKey : true, autoIncrement : true, allowNull : false, store: true, comment: 'ACL Roles ID'
+            name: 'id',
+            type: 'int',
+            comment: 'ACL Roles ID'
         },
         {
-            name : 'role_name',
-            type : 'string',
+            name: 'role_name',
+            type: 'string',
             comment: 'Role Name'
         },
         {
-            name : 'role_key',
-            type : 'string',
+            name: 'role_key',
+            type: 'string',
             comment: 'Role Key'
         },
         {
-            name : 'seq',
-            type : 'int',
+            name: 'seq',
+            type: 'int',
             comment: 'Sequence Order'
-        }]
+        }
+    ]
 });

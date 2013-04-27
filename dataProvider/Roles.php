@@ -23,10 +23,6 @@ class Roles extends ACL
 {
 
     /**
-     * Data Objects
-     */
-
-    /**
 	 *
 	 * @return mixed
 	 */

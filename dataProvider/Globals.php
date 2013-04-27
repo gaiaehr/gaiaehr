@@ -20,6 +20,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 class Globals extends MatchaHelper
 {
 
+    /**
+     * @var bool|MatchaCUP
+     */
+    private static $g = null;
+
+    private static function setGlobalModel(){
+        if(self::$g == null) self::$g = MatchaModel::setSenchaModel('App.model.administration.Globals');
+    }
+
 	/**
 	 * @return array
 	 */
@@ -71,9 +80,11 @@ class Globals extends MatchaHelper
 	 */
 	public static function setGlobals()
 	{
-		$conn = new MatchaHelper();
-		$conn -> setSQL("SELECT gl_name, gl_value FROM globals");
-		foreach ($conn->fetchRecords(PDO::FETCH_ASSOC) as $setting)
+//		$conn = new MatchaHelper();
+//		$conn -> setSQL("SELECT gl_name, gl_value FROM globals");
+        self::setGlobalModel();
+
+		foreach (self::$g->load()->all() as $setting)
 		{
 			$_SESSION['global_settings'][$setting['gl_name']] = $setting['gl_value'];
 		}

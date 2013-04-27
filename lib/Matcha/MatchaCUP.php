@@ -125,7 +125,7 @@ class MatchaCUP
 	 * handle the request using sencha standards. If not then
 	 * here are few examples.
 	 *
-	 * $users->load()->all();                                    = SELECT * FROM users WHERE id = 5
+	 * $users->load()->all();                                    = SELECT * FROM users
 	 * $users->load(5)->all();                                   = SELECT * FROM users WHERE id = 5
 	 * $users->load(5, array('name','last'))->all();             = SELECT name, last FROM users WHERE id = 5
 	 * $users->load(array('name'=>'joe'))->all();                = SELECT * FROM users WHERE name = joe

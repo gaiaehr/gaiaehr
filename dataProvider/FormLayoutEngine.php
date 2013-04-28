@@ -16,14 +16,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-//if (!isset($_SESSION))
-//{
+//include_once ('../classes/MatchaHelper.php');
+//
+//if(!isset($_SESSION)){
 //	session_name('GaiaEHR');
 //	session_start();
 //	session_cache_limiter('private');
 //}
-//include_once ($_SESSION['root'] . '/classes/MatchaHelper.php');
-include_once($_SESSION['root'] . '/dataProvider/CombosData.php');
+include_once($_SESSION['root'] . '../dataProvider/CombosData.php');
 
 class FormLayoutEngine
 {
@@ -293,25 +293,25 @@ class FormLayoutEngine
 	{
 		$this->setModels();
 		$foo = array();
-//		$options = $this->o->load(array('field_id'=>$item_id))->one();
-//		$options = json_decode($options['options'], true);
-//		foreach($options as $option => $value) {
-//			$foo[$option] = $value;
-//
-//			if($value == 'temp_f' ||
-//				$value == 'temp_c' ||
-//				$value == 'weight_lbs' ||
-//				$value == 'weight_kg' ||
-//				$value == 'height_cm' ||
-//				$value == 'height_in' ||
-//				$value == 'head_circumference_cm' ||
-//				$value == 'head_circumference_in' ||
-//				$value == 'waist_circumference_cm' ||
-//				$value == 'waist_circumference_in'
-//			){
-//				$foo['enableKeyEvents'] = true;
-//			}
-//		}
+		$options = $this->o->load(array('field_id'=>$item_id))->one();
+		$options = json_decode($options['options'], true);
+		foreach($options as $option => $value) {
+			$foo[$option] = $value;
+
+			if($value == 'temp_f' ||
+				$value == 'temp_c' ||
+				$value == 'weight_lbs' ||
+				$value == 'weight_kg' ||
+				$value == 'height_cm' ||
+				$value == 'height_in' ||
+				$value == 'head_circumference_cm' ||
+				$value == 'head_circumference_in' ||
+				$value == 'waist_circumference_cm' ||
+				$value == 'waist_circumference_in'
+			){
+				$foo['enableKeyEvents'] = true;
+			}
+		}
 		return $foo;
 	}
 
@@ -353,9 +353,9 @@ class FormLayoutEngine
 		return $item;
 	}
 }
-echo '<pre>';
-$params = new stdClass;
-$params->formToRender = '8';
-$f = new FormLayoutEngine();
-//print_r($f->getFields($params));
-print_r($f->getStore(126));
+//echo '<pre>';
+//$params = new stdClass;
+//$params->formToRender = '8';
+//$f = new FormLayoutEngine();
+////print_r($f->getFields($params));
+//print_r($f->getStore(126));

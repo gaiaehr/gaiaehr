@@ -61,8 +61,8 @@ class ACL
 	{
 		$this->user_id    = (!is_numeric($uid)) ? $_SESSION['user']['id'] : $uid;
 		$this->setModels();
-//		$this->user_roles = $this->getUserRoles();
-//		$this->buildACL();
+		$this->user_roles = $this->getUserRoles();
+		$this->buildACL();
 	}
 
 	public function setModels(){

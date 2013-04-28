@@ -96,13 +96,27 @@ class CombosData
 	public function getActivePharmacies()
 	{
         if($this->P == NULL) $this->P = MatchaModel::setSenchaModel('App.model.administration.Pharmacies');
-		return $this->P->load(array('active'=>'1'))->all();
+		$options = array();
+		foreach($this->P->load(array('active'=>'1'))->all() as $option){
+			$options[] = array(
+				'option_name' => $option['name'],
+				'option_value'=> $option['id']
+			);
+		}
+		return $options;
 	}
 
 	public function getActiveInsurances()
 	{
         if($this->I == NULL) $this->I = MatchaModel::setSenchaModel('App.model.administration.InsuranceCompany');
-		return $this->I->load(array('active'=>'1'))->all();
+		$options = array();
+		foreach($this->I->load(array('active'=>'1'))->all() as $option){
+			$options[] = array(
+				'option_name' => $option['name'],
+				'option_value'=> $option['id']
+			);
+		}
+		return $options;
 	}
 
 	public function getActiveProviders()

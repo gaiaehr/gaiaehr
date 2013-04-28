@@ -23,7 +23,7 @@ Ext.define('App.model.administration.Modules', {
         comment:'Modules'
     },
     fields: [
-        { name: 'id', type: 'int', dataType: 'bigint', len: 20, primaryKey : true, autoIncrement : true, allowNull : false, store: true, comment: 'Modules ID'},
+        { name: 'id', type: 'int', comment: 'Modules ID'},
         { name: 'title', type: 'string' },
         { name: 'name', type: 'string' },
         { name: 'description', type: 'string' },

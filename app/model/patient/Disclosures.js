@@ -23,7 +23,7 @@ Ext.define('App.model.patient.Disclosures', {
 		comment:'Disclosures'
 	},
 	fields: [
-        {name: 'id', type: 'int', dataType: 'bigint', len: 20, primaryKey : true, autoIncrement : true, allowNull : false, store: true, comment: 'Disclosures ID'},
+        {name: 'id', type: 'int', comment: 'Disclosures ID'},
         {name: 'eid', type: 'int'},
         {name: 'pid', type: 'int'},
         {name: 'uid', type: 'int'},

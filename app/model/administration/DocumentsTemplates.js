@@ -19,15 +19,32 @@
 Ext.define('App.model.administration.DocumentsTemplates', {
 	extend: 'Ext.data.Model',
 	table: {
-		name:'documentstemplates',
-		comment:'Documents Templates',
-        data: 'App.data.administration.DocumentTemplates'
+		name: 'documentstemplates',
+		comment: 'Documents Templates',
+		data: 'App.data.administration.DocumentTemplates'
 	},
 	fields: [
-		{name: 'id', type:'int', dataType: 'bigint', len: 20, primaryKey : true, autoIncrement : true, allowNull : false, store: true, comment: 'Documentation Templates ID'},
-        {name: 'title', type:'string' },
-		{name: 'body', type:'string' },
-		{name: 'template_type', type:'string' },
-		{name: 'date', type:'date', dateFormat:'Y-m-d H:i:s' }
+		{
+			name: 'id',
+			type: 'int',
+			comment: 'Documentation Templates ID'
+		},
+		{
+			name: 'title',
+			type: 'string'
+		},
+		{
+			name: 'body',
+			type: 'string'
+		},
+		{
+			name: 'template_type',
+			type: 'string'
+		},
+		{
+			name: 'date',
+			type: 'date',
+			dateFormat: 'Y-m-d H:i:s'
+		}
 	]
 });

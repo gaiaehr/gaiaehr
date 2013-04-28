@@ -23,7 +23,7 @@ Ext.define('App.model.patient.charts.StatureForAge', {
 		comment:'Stature For Age'
 	},
 	fields   : [
-        {name: 'id', type: 'int', dataType: 'bigint', len: 20, primaryKey : true, autoIncrement : true, allowNull : false, store: true, comment: 'Stature For Age ID'},
+        {name: 'id', type: 'int', comment: 'Stature For Age ID'},
 		{name: 'age', type: 'float'},
 		{name: 'PP', type: 'float'},
 		{name: 'P3', type: 'float'},

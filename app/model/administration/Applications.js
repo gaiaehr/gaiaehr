@@ -17,15 +17,28 @@
  */
 
 Ext.define('App.model.administration.Applications', {
-    extend: 'Ext.data.Model',
-    table: {
-        name:'applications',
-        comment:'Applications'
-    },
-    fields: [
-        { name: 'id', type: 'int', dataType: 'bigint', len: 20, primaryKey : true, autoIncrement : true, allowNull : false, store: true, comment: 'Applications ID'},
-        { name: 'app_name', type: 'string' },
-        { name: 'pvt_key', type: 'string' },
-        { name: 'active', type: 'bool' }
-    ]
+	extend: 'Ext.data.Model',
+	table: {
+		name: 'applications',
+		comment: 'Applications'
+	},
+	fields: [
+		{
+			name: 'id',
+			type: 'int',
+			comment: 'Applications ID'
+		},
+		{
+			name: 'app_name',
+			type: 'string'
+		},
+		{
+			name: 'pvt_key',
+			type: 'string'
+		},
+		{
+			name: 'active',
+			type: 'bool'
+		}
+	]
 });

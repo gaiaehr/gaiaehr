@@ -16,32 +16,25 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.model.administration.DocumentToken',
-{
-    extend: 'Ext.data.Model',
-    table: {
-        name:'documenttoken',
-        comment:'Document Tokens'
-    },
-    fields: [
-        {
-            name: 'id',
-            type: 'int',
-            dataType: 'bigint',
-            len: 20,
-            primaryKey : true,
-            autoIncrement : true,
-            allowNull : false,
-            store: true,
-            comment: 'Documentation Token ID'
-        },
-        {
-            name: 'title',
-            type: 'string'
-        },
-        {
-            name: 'token',
-            type: 'string'
-        }
-    ]
+Ext.define('App.model.administration.DocumentToken', {
+	extend: 'Ext.data.Model',
+	table: {
+		name: 'documenttoken',
+		comment: 'Document Tokens'
+	},
+	fields: [
+		{
+			name: 'id',
+			type: 'int',
+			comment: 'Documentation Token ID'
+		},
+		{
+			name: 'title',
+			type: 'string'
+		},
+		{
+			name: 'token',
+			type: 'string'
+		}
+	]
 });

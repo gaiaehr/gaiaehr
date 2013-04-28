@@ -23,7 +23,7 @@ Ext.define('App.model.dashboard.panel.OfficeNotesPortlet', {
         comment:'Office Notes Porlet'
     },
     fields: [
-        {name: 'id', type: 'int', dataType: 'bigint', len: 20, primaryKey : true, autoIncrement : true, allowNull : false, store: true, comment: 'Office Notes ID'},
+        {name: 'id', type: 'int', comment: 'Office Notes ID'},
         {name: 'date', type: 'date', dateFormat: 'c'},
         {name: 'body', type: 'string'},
         {name: 'user', type: 'string'},

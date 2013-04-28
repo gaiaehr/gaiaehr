@@ -23,7 +23,7 @@ Ext.define('App.model.patient.SOAP', {
 		comment:'SOAP Data'
 	},
 	fields:[
-        {name: 'id', type: 'int', dataType: 'bigint', len: 20, primaryKey : true, autoIncrement : true, allowNull : false, store: true, comment: 'SOAP ID'},
+        {name: 'id', type: 'int', comment: 'SOAP ID'},
 		{ name:'pid', type:'int' },
 		{ name:'eid', type:'int' },
 		{ name:'uid', type:'int' },

@@ -23,7 +23,7 @@ Ext.define('App.model.patient.Notes', {
 		comment:'Office Notes'
 	},
 	fields: [
-        {name: 'id', type: 'int', dataType: 'bigint', len: 20, primaryKey : true, autoIncrement : true, allowNull : false, store: true, comment: 'Notes ID'},
+        {name: 'id', type: 'int', comment: 'Notes ID'},
         {name: 'eid', type: 'int'},
         {name: 'pid', type: 'int'},
         {name: 'uid', type: 'int'},

@@ -23,7 +23,7 @@ Ext.define('App.model.patient.PatientsLabOrderItems', {
 		comment:'Patients Lab Order Items'
 	},
 	fields: [
-        {name: 'id', type: 'int', dataType: 'bigint', len: 20, primaryKey : true, autoIncrement : true, allowNull : false, store: true, comment: 'Patient Lab Order ID'},
+        {name: 'id', type: 'int', comment: 'Patient Lab Order ID'},
         { name: 'id', type: 'int' },
         { name: 'loinc', type: 'string' },
         { name: 'title', type: 'string' }

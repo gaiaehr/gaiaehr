@@ -23,7 +23,7 @@ Ext.define('App.model.patient.Reminders', {
 		comment:'Reminders Data'
 	},
 	fields: [
-        {name: 'id', type: 'int', dataType: 'bigint', len: 20, primaryKey : true, autoIncrement : true, allowNull : false, store: true, comment: 'Reminder ID'},
+        {name: 'id', type: 'int', comment: 'Reminder ID'},
 		{name: 'eid', type: 'int'},
 		{name: 'pid', type: 'int'},
 		{name: 'uid', type: 'int'},

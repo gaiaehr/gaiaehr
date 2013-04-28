@@ -15,6 +15,7 @@ Ext.define('App.ux.combo.CalendarCategories', {
 				{name: 'catid', type: 'int'},
 				{name: 'catname', type: 'string'}
 			],
+			idProperty: 'catid',
 			proxy : {
 				type: 'direct',
 				api : {

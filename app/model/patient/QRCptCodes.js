@@ -23,7 +23,7 @@ Ext.define('App.model.patient.QRCptCodes', {
 		comment:'QR CPT Codes'
 	},
     fields: [
-        {name: 'id', type: 'int', dataType: 'bigint', len: 20, primaryKey : true, autoIncrement : true, allowNull : false, store: true, comment: 'QR CPT Code ID'},
+        {name: 'id', type: 'int', comment: 'QR CPT Code ID'},
         {name: 'eid', type:'int'},
         {name: 'code', type: 'string'},
         {name: 'code_text', type: 'string'},

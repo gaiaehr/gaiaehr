@@ -23,7 +23,7 @@ Ext.define('App.model.administration.Medications', {
 		comment:'Medications'
 	},
 	fields: [
-		{name: 'id', type: 'int', dataType: 'bigint', len: 20, primaryKey : true, autoIncrement : true, allowNull : false, store: true, comment: 'Medications ID'},
+		{name: 'id', type: 'int', comment: 'Medications ID'},
 		{name: 'PRODUCTNDC' },
 		{name: 'PROPRIETARYNAME' },
 		{name: 'NONPROPRIETARYNAME' },

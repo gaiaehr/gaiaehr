@@ -23,7 +23,7 @@ Ext.define('App.model.patient.PatientsXrayCtOrders', {
 		comment:'Patients XrayCt Orders'
 	},
 	fields: [
-        {name: 'id', type: 'int', dataType: 'bigint', len: 20, primaryKey : true, autoIncrement : true, allowNull : false, store: true, comment: 'Patients XrayCt Orders ID'},
+        {name: 'id', type: 'int', comment: 'Patients XrayCt Orders ID'},
         { name: 'eid', type: 'int' },
         { name: 'pid', type: 'int' },
         { name: 'uid', type: 'int' },

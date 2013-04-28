@@ -24,7 +24,7 @@ Ext.define('App.model.sitesetup.Requirements',
         comment:'Requirements'
     },
     fields:[
-        {name: 'id', type: 'int', dataType: 'bigint', len: 20, primaryKey : true, autoIncrement : true, allowNull : false, store: true, comment: 'Requirements ID'},
+        {name: 'id', type: 'int', comment: 'Requirements ID'},
         {name:'msg', type:'string'},
         {name:'status', type:'string'}
     ]

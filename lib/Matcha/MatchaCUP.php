@@ -82,12 +82,15 @@ class MatchaCUP
         }
     }
 
-    /**
-     * Method to build a a SQL statement using tru MatchaCUP objects.
-     * this is the preferred way to build complex SQL statements that will
-     * use MatchaCUP objects
-     */
-    public function buildSQL($sqlArray = NULL)
+	/**
+	 * Method to build a a SQL statement using tru MatchaCUP objects.
+	 * this is the preferred way to build complex SQL statements that will
+	 * use MatchaCUP objects
+	 *
+	 * @param null $sqlArray
+	 * @return MatchaCUP
+	 */
+	public function buildSQL($sqlArray = NULL)
     {
         try
         {

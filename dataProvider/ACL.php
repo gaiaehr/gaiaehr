@@ -16,7 +16,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 class ACL
 {
 
@@ -32,15 +31,26 @@ class ACL
 	 * @var array
 	 */
 	private $user_roles = array();
-
-    /**
-     * Data Object
-     */
-    private $AR = NULL;
-    private $AP = NULL;
-    private $U = NULL;
-    public $ARP = NULL;
-    private $AUP = NULL;
+	/**
+	 * @var MatchaCup
+	 */
+	private $U = null;
+	/**
+	 * @var MatchaCup
+	 */
+	private $AR = null;
+	/**
+	 * @var MatchaCup
+	 */
+    private $AP = null;
+	/**
+	 * @var MatchaCup
+	 */
+    public  $ARP = null;
+	/**
+	 * @var MatchaCup
+	 */
+    private $AUP = null;
 
     /**
 	 * @internal param string $user_id
@@ -50,8 +60,17 @@ class ACL
 	public function __construct($uid = '')
 	{
 		$this->user_id    = (!is_numeric($uid)) ? $_SESSION['user']['id'] : $uid;
-		$this->user_roles = $this->getUserRoles();
-		$this->buildACL();
+		$this->setModels();
+//		$this->user_roles = $this->getUserRoles();
+//		$this->buildACL();
+	}
+
+	public function setModels(){
+		if($this->U == null) $this->U = MatchaModel::setSenchaModel('App.model.administration.User');
+		if($this->AR == null) $this->AR = MatchaModel::setSenchaModel('App.model.administration.AclRoles');
+		if($this->AP == null) $this->AP = MatchaModel::setSenchaModel('App.model.administration.AclPermissions');
+		if($this->ARP == null) $this->ARP = MatchaModel::setSenchaModel('App.model.administration.AclRolePermissions');
+		if($this->AUP == null) $this->AUP = MatchaModel::setSenchaModel('App.model.administration.AclUserPermissions');
 	}
 
     //------------------------------------------------------------------------------------------------------------------
@@ -64,7 +83,6 @@ class ACL
 	 */
 	public function getAllRoles()
 	{
-        if($this->AR == NULL) $this->AR = MatchaModel::setSenchaModel('App.model.administration.AclRoles');
 		return array( 'totals' => $this->AR->load()->rowCount(), 'row' => $this->AR->load()->all() );
 	}
 
@@ -74,7 +92,6 @@ class ACL
 	 */
 	public function getAllPermissions($format = 'ids')
 	{
-        if($this->AP == NULL) $this->AP = MatchaModel::setSenchaModel('App.model.administration.AclPermissions');
 		$format = strtolower($format);
 		$resp = array();
 		foreach($this->AP->load()->all() as $row)
@@ -102,8 +119,6 @@ class ACL
 	private function getUserRoles()
 	{
 		$roles = array();
-        if($this->U == NULL) $this->U = MatchaModel::setSenchaModel('App.model.administration.User');
-        if($this->AR == NULL) $this->AR = MatchaModel::setSenchaModel('App.model.administration.AclRoles');
 
         $sqlStatement['SELECT'] = "acl_roles.role_key";
         $sqlStatement['LEFTJOIN'] = "acl_roles ON users.role_id = acl_roles.id";
@@ -140,7 +155,6 @@ class ACL
 	 */
 	private function getPermNameByPermKey($perm_Key)
 	{
-        if($this->AP == NULL) $this->AP = MatchaModel::setSenchaModel('App.model.administration.AclPermissions');
         $row = $this->AP->load(array('perm_key'=>$perm_Key))->one();
 		return $row['perm_name'];
 	}
@@ -151,7 +165,6 @@ class ACL
 	 */
 	private function getRoleNameByRoleKey($role_key)
 	{
-        if($this->AR == NULL) $this->AR = MatchaModel::setSenchaModel('App.model.administration.AclRoles');
         $row = $this->AR->load(array('role_key'=>$role_key))->one();
 		return $row['role_name'];
 	}
@@ -162,7 +175,6 @@ class ACL
 	 */
 	private function getRolePerms()
 	{
-        if($this->ARP == NULL) $this->ARP = MatchaModel::setSenchaModel('App.model.administration.AclRolePermissions');
 		$perms = array();
         if(is_array($this->user_roles))
         {
@@ -196,7 +208,6 @@ class ACL
 	 */
 	public function getUserPerms()
 	{
-        if($this->AUP == NULL) $this->AUP = MatchaModel::setSenchaModel('App.model.administration.AclUserPermissions');
 		$perms = array();
 		foreach($this->AUP->load(array('user_id'=>$this->user_id))->all() as $row)
         {

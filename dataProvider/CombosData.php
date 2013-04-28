@@ -46,6 +46,7 @@ class CombosData
     //------------------------------------------------------------------------------------------------------------------
 	public function getOptionsByListId(stdClass $params)
 	{
+		if($this->CL == NULL) $this->CL = MatchaModel::setSenchaModel('App.model.administration.ComboList');
         if($this->CLO == NULL) $this->CLO = MatchaModel::setSenchaModel('App.model.administration.ComboListOptions');
 		if(isset($params->list_id))
         {

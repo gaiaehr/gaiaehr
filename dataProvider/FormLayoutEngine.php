@@ -16,7 +16,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
+//if (!isset($_SESSION))
+//{
+//	session_name('GaiaEHR');
+//	session_start();
+//	session_cache_limiter('private');
+//}
+//include_once ($_SESSION['root'] . '/classes/MatchaHelper.php');
 include_once($_SESSION['root'] . '/dataProvider/CombosData.php');
 
 class FormLayoutEngine
@@ -29,9 +35,17 @@ class FormLayoutEngine
 	 * @var MatchaHelper
 	 */
 	private $cb;
-
+	/**
+	 * @var MatchaCup
+	 */
 	private $o = null;
+	/**
+	 * @var MatchaCup
+	 */
 	private $cl = null;
+	/**
+	 * @var MatchaCup
+	 */
 	private $clo = null;
 
 	/**
@@ -39,9 +53,15 @@ class FormLayoutEngine
 	 */
 	function __construct()
 	{
+		$this->setModels();
 		$this->db = new MatchaHelper();
 		$this->cb = new CombosData();
 		return;
+	}
+	private function setModels(){
+		$this->setComboListModel();
+		$this->setComboListOptionsModel();
+		$this->setFieldOptionModel();
 	}
 
 	private function setFieldOptionModel(){
@@ -73,9 +93,7 @@ class FormLayoutEngine
 	 */
 	function getFields(stdClass $params)
 	{
-		$this->setComboListModel();
-		$this->setComboListOptionsModel();
-		$this->setFieldOptionModel();
+		$this->setModels();
 		/**
 		 * define $items as an array to push all the $item into.
 		 */
@@ -232,13 +250,17 @@ class FormLayoutEngine
 	 */
 	function getChildItems($parentId)
 	{
+		$this->setModels();
 		$items = array();
 		$this->db->setSQL("Select * FROM `forms_fields` WHERE `parentId` = '$parentId' ORDER BY `index` ASC, `id` ASC");
+
 		foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) as $item) {
 			$opts = $this->getItemsOptions($item['id']);
+
 			foreach($opts as $opt => $val) {
 				$item[$opt] = $val;
 			}
+
 			/**
 			 * If the item is a combo box lets create a store...
 			 */
@@ -258,6 +280,8 @@ class FormLayoutEngine
 			unset($item['id'], $item['form_id'], $item['parentId']);
 			array_push($items, $item);
 		}
+
+
 		return $items;
 	}
 
@@ -267,26 +291,27 @@ class FormLayoutEngine
 		 */
 	function getItemsOptions($item_id)
 	{
+		$this->setModels();
 		$foo = array();
-		$this->db->setSQL("Select `options` FROM `forms_field_options` WHERE `field_id` = '$item_id'");
-		$options = $this->db->fetchRecord();
-		$options = json_decode($options['options'], true);
-		foreach($options as $option => $value) {
-			$foo[$option] = $value;
-			if($value == 'temp_f' ||
-				$value == 'temp_c' ||
-				$value == 'weight_lbs' ||
-				$value == 'weight_kg' ||
-				$value == 'height_cm' ||
-				$value == 'height_in' ||
-				$value == 'head_circumference_cm' ||
-				$value == 'head_circumference_in' ||
-				$value == 'waist_circumference_cm' ||
-				$value == 'waist_circumference_in'
-			) {
-				$foo['enableKeyEvents'] = true;
-			}
-		}
+//		$options = $this->o->load(array('field_id'=>$item_id))->one();
+//		$options = json_decode($options['options'], true);
+//		foreach($options as $option => $value) {
+//			$foo[$option] = $value;
+//
+//			if($value == 'temp_f' ||
+//				$value == 'temp_c' ||
+//				$value == 'weight_lbs' ||
+//				$value == 'weight_kg' ||
+//				$value == 'height_cm' ||
+//				$value == 'height_in' ||
+//				$value == 'head_circumference_cm' ||
+//				$value == 'head_circumference_in' ||
+//				$value == 'waist_circumference_cm' ||
+//				$value == 'waist_circumference_in'
+//			){
+//				$foo['enableKeyEvents'] = true;
+//			}
+//		}
 		return $foo;
 	}
 
@@ -328,9 +353,9 @@ class FormLayoutEngine
 		return $item;
 	}
 }
-//echo '<pre>';
-//$params = new stdClass;
-//$params->formToRender = '8';
-//$f = new FormLayoutEngine();
+echo '<pre>';
+$params = new stdClass;
+$params->formToRender = '8';
+$f = new FormLayoutEngine();
 //print_r($f->getFields($params));
-////print_r($f->getItemsOptions(342));
+print_r($f->getStore(126));

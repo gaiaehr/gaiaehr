@@ -37,7 +37,7 @@ class MatchaCUP
 	/**
 	 * @var string
 	 */
-	private $sql = '';
+	public $sql = '';
 	/**
 	 * @var array
 	 */

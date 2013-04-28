@@ -72,6 +72,33 @@ CREATE TABLE IF NOT EXISTS `accvoucherline` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
+CREATE TABLE IF NOT EXISTS `acl_permissions` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `perm_key` varchar(255) DEFAULT NULL COMMENT 'Permission Key',
+  `perm_name` varchar(255) DEFAULT NULL COMMENT 'Permission Name',
+  `perm_cat` varchar(255) DEFAULT NULL COMMENT 'Permission Category',
+  `seq` int(11) DEFAULT NULL COMMENT 'Sequence Order',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `permKey` (`perm_key`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=90 ;
+
+CREATE TABLE IF NOT EXISTS `acl_roles` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `role_name` varchar(255) DEFAULT NULL COMMENT 'Role Name',
+  `role_key` varchar(255) DEFAULT NULL COMMENT 'Role Key',
+  `seq` int(11) DEFAULT NULL COMMENT 'Sequence Order',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6 ;
+
+CREATE TABLE IF NOT EXISTS `acl_role_perms` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `role_key` varchar(255) DEFAULT NULL COMMENT 'Role Key',
+  `perm_key` varchar(255) DEFAULT NULL COMMENT 'Permission Key',
+  `value` int(11) DEFAULT NULL COMMENT 'Value',
+  `add_date` datetime DEFAULT NULL COMMENT 'Date Added',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=296 ;
+
 CREATE TABLE IF NOT EXISTS `acl_user_perms` (
   `id` bigint(20) unsigned zerofill NOT NULL AUTO_INCREMENT,
   `user_id` bigint(20) NOT NULL,
@@ -79,6 +106,16 @@ CREATE TABLE IF NOT EXISTS `acl_user_perms` (
   `value` tinyint(1) NOT NULL DEFAULT '0',
   `add_date` datetime NOT NULL,
   PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `acl_user_roles` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `user_id` bigint(20) NOT NULL,
+  `role_id` bigint(20) NOT NULL,
+  `add_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`),
+  KEY `role_id` (`role_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `addresses` (
@@ -94,6 +131,14 @@ CREATE TABLE IF NOT EXISTS `addresses` (
   PRIMARY KEY (`id`),
   KEY `foreign_id` (`foreign_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=18 ;
+
+CREATE TABLE IF NOT EXISTS `allergies` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `summary` varchar(255) DEFAULT NULL,
+  `allergy_name` varchar(255) DEFAULT NULL,
+  `allergy_type` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=19 ;
 
 CREATE TABLE IF NOT EXISTS `applications` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -132,6 +177,17 @@ CREATE TABLE IF NOT EXISTS `billing` (
   PRIMARY KEY (`id`),
   KEY `pid` (`pid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `calendar_categories` (
+  `catid` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `catname` varchar(100) DEFAULT NULL,
+  `catcolor` varchar(50) DEFAULT NULL,
+  `catdesc` text,
+  `duration` bigint(20) NOT NULL DEFAULT '0',
+  `cattype` int(11) NOT NULL COMMENT 'Used in grouping categories',
+  PRIMARY KEY (`catid`),
+  KEY `basic_cat` (`catname`,`catcolor`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=12 ;
 
 CREATE TABLE IF NOT EXISTS `calendar_events` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -175,6 +231,24 @@ CREATE TABLE IF NOT EXISTS `claims` (
   `x12_partner_id` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `combo_lists` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) NOT NULL DEFAULT '',
+  `active` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1 = active and 0 = deactive',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=97 ;
+
+CREATE TABLE IF NOT EXISTS `combo_lists_options` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `list_id` varchar(31) NOT NULL DEFAULT '',
+  `option_value` varchar(31) NOT NULL DEFAULT '' COMMENT 'Value',
+  `option_name` varchar(255) NOT NULL DEFAULT '' COMMENT 'Name or Title',
+  `seq` int(11) DEFAULT '0',
+  `notes` varchar(255) DEFAULT NULL,
+  `active` tinyint(1) DEFAULT '1' COMMENT '1 = active and  0 = deactive',
+  PRIMARY KEY (`id`,`list_id`,`option_value`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=728 ;
 
 CREATE TABLE IF NOT EXISTS `cpt_codes` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -227,6 +301,17 @@ CREATE TABLE IF NOT EXISTS `cvx_mvx` (
   `update_date` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COMMENT='CVX munufactures' AUTO_INCREMENT=87 ;
+
+CREATE TABLE IF NOT EXISTS `documents_templates` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) DEFAULT NULL,
+  `template_type` varchar(255) DEFAULT NULL COMMENT '1= documents 2= headers and footers',
+  `body` text,
+  `date` datetime DEFAULT NULL,
+  `created_by_uid` bigint(20) DEFAULT NULL,
+  `update_by_uid` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=12 ;
 
 CREATE TABLE IF NOT EXISTS `drugs` (
   `drug_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -769,6 +854,13 @@ CREATE TABLE IF NOT EXISTS `fee_sheet_options` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=11 ;
 
+CREATE TABLE IF NOT EXISTS `floor_plans` (
+`id` bigint(20) NOT NULL AUTO_INCREMENT,
+`title` varchar(255) DEFAULT NULL,
+`active` tinyint(1) NOT NULL DEFAULT '1',
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
+
 CREATE TABLE IF NOT EXISTS `floor_plans_zones` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `floor_plan_id` bigint(20) NOT NULL,
@@ -795,6 +887,13 @@ CREATE TABLE IF NOT EXISTS `forms_fields` (
   `index` int(11) DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_bin ;
+
+CREATE TABLE IF NOT EXISTS `forms_field_options` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `field_id` text COMMENT 'Field ID',
+  `options` text COMMENT 'Field options data stored as JSON string',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 ;
 
 CREATE TABLE IF NOT EXISTS `forms_layout` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -849,11 +948,13 @@ CREATE TABLE IF NOT EXISTS `geo_zone_reference` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=84 ;
 
 CREATE TABLE IF NOT EXISTS `globals` (
-  `gl_name` varchar(63) NOT NULL,
-  `gl_index` int(11) NOT NULL DEFAULT '0',
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `gl_name` varchar(255) NOT NULL,
+  `gl_index` bigint(20) NOT NULL DEFAULT '0',
   `gl_value` varchar(255) NOT NULL DEFAULT '',
-  PRIMARY KEY (`gl_name`,`gl_index`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  PRIMARY KEY (`id`),
+  KEY `gl_name` (`gl_name`,`gl_index`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=117 ;
 
 
 CREATE TABLE IF NOT EXISTS `groups` (

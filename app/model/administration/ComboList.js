@@ -17,15 +17,27 @@
  */
 
 Ext.define('App.model.administration.ComboList', {
-    extend: 'Ext.data.Model',
-    table: {
-        name:'combo_lists',
-        comment:'Combo List',
-        data:'App.data.administration.ComboList'
-    },
-    fields: [
-        {name: 'id',type: 'int', dataType: 'bigint', len: 20, primaryKey : true, autoIncrement : true, allowNull : false, store: true, comment: 'List Options ID'},
-        {name: 'title', type: 'string', comment: 'Title of the combo'},
-        {name: 'active',type: 'bool', comment: 'Active?'}
-    ]
+	extend: 'Ext.data.Model',
+	table: {
+		name: 'combo_lists',
+		comment: 'Combo List',
+		data: 'App.data.administration.ComboList'
+	},
+	fields: [
+		{
+			name: 'id',
+			type: 'int',
+			comment: 'List Options ID'
+		},
+		{
+			name: 'title',
+			type: 'string',
+			comment: 'Title of the combo'
+		},
+		{
+			name: 'active',
+			type: 'bool',
+			comment: 'Active?'
+		}
+	]
 });

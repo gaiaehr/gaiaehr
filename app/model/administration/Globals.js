@@ -21,8 +21,7 @@ Ext.define('App.model.administration.Globals',
         extend: 'Ext.data.Model',
         table: {
             name:'globals',
-            comment:'Global Settings',
-            data:'App.data.administration.Globals'
+            comment:'Global Settings'
         },
         fields: [
             {
@@ -42,7 +41,7 @@ Ext.define('App.model.administration.Globals',
             },
             {
                 name: 'gl_index',
-                type: 'string',
+                type: 'int',
                 comment: 'Global Setting Index'
             }
         ]

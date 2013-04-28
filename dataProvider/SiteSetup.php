@@ -68,8 +68,8 @@ class SiteSetup
 	{
 		$stm = $this->conn->query("SELECT @@global.max_allowed_packet AS size");
 		$pkg = $stm->fetch(PDO::FETCH_ASSOC);
-		if($pkg['size'] < 52428800){
-			$this->conn->exec("SET @@global.max_allowed_packet = 524288000");
+		if($pkg['size'] < 52428800000){
+			$this->conn->exec("SET @@global.max_allowed_packet = 52428800000");
 			$error = $this->conn->errorInfo();
 			if(isset($error[2])){
 				return false;
@@ -140,6 +140,11 @@ class SiteSetup
 		$status = (!ini_get('safe_mode') ? 'Ok' : 'Fail');
 		$row[]  = array(
 			'msg' => 'PHP safe mode off', 'status' => $status
+		);
+		// check if PDO
+		$status = (class_exists('PDO') ? 'Ok' : 'Fail');
+		$row[]  = array(
+			'msg' => 'PHP class PDO', 'status' => $status
 		);
 		// check if ZipArchive is enable
 		$status = (class_exists('ZipArchive') ? 'Ok' : 'Fail');

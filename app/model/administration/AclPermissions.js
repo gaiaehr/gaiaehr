@@ -16,17 +16,17 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define( 'App.model.administration.AclPermissions',
-{
+Ext.define( 'App.model.administration.AclPermissions',{
     extend : 'Ext.data.Model',
     table: {
         name:'acl_permissions',
-        comment:'Access Control List Roles',
-        data:'App.data.administration.AclPermissions'
+        comment:'Access Control List Roles'
     },
     fields : [
         {
-            name: 'id', type:'int', dataType: 'bigint', len: 20, primaryKey : true, autoIncrement : true, allowNull : false, store: true, comment: 'ACL Roles ID'
+            name: 'id',
+	        type: 'int',
+	        comment: 'ACL Roles ID'
         },
         {
             name : 'perm_key',
@@ -47,5 +47,6 @@ Ext.define( 'App.model.administration.AclPermissions',
             name : 'seq',
             type : 'int',
             comment: 'Sequence Order'
-        }]
+        }
+    ]
 });

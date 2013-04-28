@@ -21,15 +21,24 @@ class Globals extends MatchaHelper
 {
 
 	/**
+	 * @var bool|MatchaCUP
+	 */
+	private static $g = null;
+
+	private static function setGlobalModel()
+	{
+		if(self::$g == null) self::$g = MatchaModel::setSenchaModel('App.model.administration.Globals');
+	}
+
+	/**
 	 * @return array
 	 */
 	public static function getGlobals()
 	{
 		$conn = new MatchaHelper();
-		$conn -> setSQL("SELECT gl_name, gl_index, gl_value FROM globals");
+		$conn->setSQL("SELECT gl_name, gl_index, gl_value FROM globals");
 		$rows = array();
-		foreach ($conn->fetchRecords() as $row)
-		{
+		foreach($conn->fetchRecords() as $row){
 			$rows[$row[0]] = $row[2];
 		}
 		return $rows;
@@ -44,23 +53,19 @@ class Globals extends MatchaHelper
 
 		$data = get_object_vars($params);
 
-		foreach ($data as $key => $value)
-		{
-			if (is_int($value))
-			{
+		foreach($data as $key => $value){
+			if(is_int($value)){
 				$rec = trim($value);
-			}
-			else
-			{
+			} else{
 				$rec = $value;
 			}
-			$this -> setSQL("UPDATE globals
+			$this->setSQL("UPDATE globals
                 SET   gl_value ='" . $rec . "'" . "
                 WHERE gl_name  ='" . $key . "'");
-			$this -> execLog();
+			$this->execLog();
 		}
 
-		$this -> setGlobals();
+		$this->setGlobals();
 
 		return $params;
 	}
@@ -71,10 +76,10 @@ class Globals extends MatchaHelper
 	 */
 	public static function setGlobals()
 	{
-		$conn = new MatchaHelper();
-		$conn -> setSQL("SELECT gl_name, gl_value FROM globals");
-		foreach ($conn->fetchRecords(PDO::FETCH_ASSOC) as $setting)
-		{
+//		$conn = new MatchaHelper();
+//		$conn -> setSQL("SELECT gl_name, gl_value FROM globals");
+		self::setGlobalModel();
+		foreach(self::$g->load()->all() as $setting){
 			$_SESSION['global_settings'][$setting['gl_name']] = $setting['gl_value'];
 		}
 		$_SESSION['global_settings']['timezone_offset'] = -14400;

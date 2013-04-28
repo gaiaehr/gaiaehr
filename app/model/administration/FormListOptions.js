@@ -17,20 +17,30 @@
  */
 
 Ext.define('App.model.administration.FormListOptions', {
-    extend: 'Ext.data.Model',
-    table: {
-        name:'formlistoptions',
-        comment:'Form List Options'
-    },
-    fields: [
-        { name: 'id', type: 'int', dataType: 'bigint', len: 20, primaryKey : true, autoIncrement : true, allowNull : false, store: true, comment: 'Form List Options ID'},
-        { name: 'option_name', type: 'string' },
-        { name: 'option_value', type: 'string' }
-    ],
-    proxy: {
-        type: 'direct',
-        api: {
-            read: CombosData.getOptionsByListId
-        }
-    }
+	extend: 'Ext.data.Model',
+	table: {
+		name: 'formlistoptions',
+		comment: 'Form List Options'
+	},
+	fields: [
+		{
+			name: 'id',
+			type: 'int',
+			comment: 'Form List Options ID'
+		},
+		{
+			name: 'option_name',
+			type: 'string'
+		},
+		{
+			name: 'option_value',
+			type: 'string'
+		}
+	],
+	proxy: {
+		type: 'direct',
+		api: {
+			read: CombosData.getOptionsByListId
+		}
+	}
 });

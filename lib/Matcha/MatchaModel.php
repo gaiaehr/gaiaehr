@@ -101,6 +101,7 @@ class MatchaModel extends Matcha
             if( count($tableColumns) <= 1 )
             {
                 self::__createAllColumns($workingModel);
+	            self::__dumpDefaultData($table);
                 return true;
             }
             // Verify that all the columns does not have difference

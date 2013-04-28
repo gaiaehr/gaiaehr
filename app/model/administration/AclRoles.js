@@ -17,32 +17,31 @@
  */
 
 Ext.define('App.model.administration.AclRoles', {
-    extend: 'Ext.data.Model',
-    table: {
-        name: 'acl_roles',
-        comment: 'Access Control List Roles',
-        data:'App.data.administration.AclRoles'
-    },
-    fields: [
-        {
-            name: 'id',
-            type: 'int',
-            comment: 'ACL Roles ID'
-        },
-        {
-            name: 'role_name',
-            type: 'string',
-            comment: 'Role Name'
-        },
-        {
-            name: 'role_key',
-            type: 'string',
-            comment: 'Role Key'
-        },
-        {
-            name: 'seq',
-            type: 'int',
-            comment: 'Sequence Order'
-        }
-    ]
+	extend: 'Ext.data.Model',
+	table: {
+		name: 'acl_roles',
+		comment: 'Access Control List Roles'
+	},
+	fields: [
+		{
+			name: 'id',
+			type: 'int',
+			comment: 'ACL Roles ID'
+		},
+		{
+			name: 'role_name',
+			type: 'string',
+			comment: 'Role Name'
+		},
+		{
+			name: 'role_key',
+			type: 'string',
+			comment: 'Role Key'
+		},
+		{
+			name: 'seq',
+			type: 'int',
+			comment: 'Sequence Order'
+		}
+	]
 });

@@ -16,37 +16,38 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define( 'App.model.administration.AclRolePermissions',
-{
-    extend : 'Ext.data.Model',
-    table: {
-        name:'acl_role_perms',
-        comment:'Access Control List Role Permissions',
-        data:'App.data.administration.AclRolePermissions'
-    },
-    fields : [
-        {
-            name: 'id', type:'int', dataType: 'bigint', len: 20, primaryKey : true, autoIncrement : true, allowNull : false, store: true, comment: 'ACL Roles ID'
-        },
-        {
-            name : 'role_key',
-            type : 'string',
-            comment: 'Role Key'
-        },
-        {
-            name : 'perm_key',
-            type : 'string',
-            comment: 'Permission Key'
-        },
-        {
-            name: 'value',
-            type: 'int',
-            comment: 'Value'
-        },
-        {
-            name : 'add_date',
-            type : 'date',
-            comment: 'Date Added',
-            dateFormat: 'Y-m-d H:i:s'
-        }]
+Ext.define('App.model.administration.AclRolePermissions',{
+	extend: 'Ext.data.Model',
+	table: {
+		name: 'acl_role_perms',
+		comment: 'Access Control List Role Permissions'
+	},
+	fields: [
+		{
+			name: 'id',
+			type: 'int',
+			comment: 'ACL Roles ID'
+		},
+		{
+			name: 'role_key',
+			type: 'string',
+			comment: 'Role Key'
+		},
+		{
+			name: 'perm_key',
+			type: 'string',
+			comment: 'Permission Key'
+		},
+		{
+			name: 'value',
+			type: 'int',
+			comment: 'Value'
+		},
+		{
+			name: 'add_date',
+			type: 'date',
+			comment: 'Date Added',
+			dateFormat: 'Y-m-d H:i:s'
+		}
+	]
 });

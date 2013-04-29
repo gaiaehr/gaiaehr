@@ -23,7 +23,7 @@
 //	session_start();
 //	session_cache_limiter('private');
 //}
-include_once($_SESSION['root'] . '../dataProvider/CombosData.php');
+include_once($_SESSION['root'] . '/dataProvider/CombosData.php');
 
 class FormLayoutEngine
 {

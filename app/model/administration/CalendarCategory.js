@@ -16,44 +16,46 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define( 'App.model.administration.CalendarCategory',
-{
-    extend : 'Ext.data.Model',
-    table: {
-        name:'acl_roles',
-        comment:'Calendar Category',
-        data:'App.data.administration.CalendarCategory'
-    },
-    fields : [
-        {
-            name: 'catid', type:'int', dataType: 'bigint', len: 20, primaryKey : true, autoIncrement : true, allowNull : false, store: true, comment: 'ACL Roles ID'
-        },
-        {
-            name : 'catname',
-            type : 'string',
-            comment: 'Category Name'
-        },
-        {
-            name : 'catcolor',
-            type : 'string',
-            comment: 'Category Color'
-        },
-        {
-            name : 'catdesc',
-            type : 'string',
-            dataType: 'text',
-            comment: 'Category Description'
-        },
-        {
-            name : 'duration',
-            type : 'int',
-            dataType: 'bigint',
-            comment: 'Category Duration'
-        },
-        {
-            name : 'cattype',
-            type : 'int',
-            comment: 'Category Type'
-        }],
-    idProperty: 'catid'
+Ext.define('App.model.administration.CalendarCategory', {
+	extend: 'Ext.data.Model',
+	table: {
+		name: 'calendar_categories',
+		comment: 'Calendar Category',
+		data: 'App.data.administration.CalendarCategory'
+	},
+	fields: [
+		{
+			name: 'catid',
+			type: 'int',
+			comment: 'ACL Roles ID'
+		},
+		{
+			name: 'catname',
+			type: 'string',
+			comment: 'Category Name'
+		},
+		{
+			name: 'catcolor',
+			type: 'string',
+			comment: 'Category Color'
+		},
+		{
+			name: 'catdesc',
+			type: 'string',
+			dataType: 'text',
+			comment: 'Category Description'
+		},
+		{
+			name: 'duration',
+			type: 'int',
+			dataType: 'bigint',
+			comment: 'Category Duration'
+		},
+		{
+			name: 'cattype',
+			type: 'int',
+			comment: 'Category Type'
+		}
+	],
+	idProperty: 'catid'
 });

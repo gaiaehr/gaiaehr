@@ -23,7 +23,7 @@ Ext.define('App.model.patient.charts.BMIForAge', {
 		comment:'BMI For Age'
 	},
 	fields   : [
-        {name: 'id', type: 'int', dataType: 'bigint', len: 20, primaryKey : true, autoIncrement : true, allowNull : false, store: true, comment: 'BMI For Age ID'},
+        {name: 'id', type: 'int', comment: 'BMI For Age ID'},
 		{name: 'age', type: 'float'},
 		{name: 'PP', type: 'float'},
 		{name: 'P3', type: 'float'},

@@ -19,24 +19,34 @@
 Ext.define('App.model.administration.FloorPlans', {
 	extend: 'Ext.data.Model',
 	table: {
-		name:'floor_plans',
-		comment:'Floor Plans',
-        data: 'App.data.administration.FloorPlans'
+		name: 'floor_plans',
+		comment: 'Floor Plans',
+		data: 'App.data.administration.FloorPlans'
 	},
 	fields: [
-		{name: 'id', type: 'int', dataType: 'bigint', len: 20, primaryKey : true, autoIncrement : true, allowNull : false, store: true, comment: 'Floor Plans ID'},
-		{name: 'title', type: 'string', comment:'Floor Title'},
-        {name: 'active', type: 'bool', comment: 'Active Floor Plan?'}
+		{
+			name: 'id',
+			type: 'int',
+			comment: 'Floor Plans ID'
+		},
+		{
+			name: 'title',
+			type: 'string',
+			comment: 'Floor Title'
+		},
+		{
+			name: 'active',
+			type: 'bool',
+			comment: 'Active Floor Plan?'
+		}
 	],
-    proxy :
-   	{
-   		type : 'direct',
-   		api :
-   		{
-   			read : FloorPlans.getFloorPlans,
-   			create : FloorPlans.createFloorPlan,
-   			update : FloorPlans.updateFloorPlan,
-   			destroy : FloorPlans.removeFloorPlan
-   		}
-   	}
+	proxy: {
+		type: 'direct',
+		api: {
+			read: FloorPlans.getFloorPlans,
+			create: FloorPlans.createFloorPlan,
+			update: FloorPlans.updateFloorPlan,
+			destroy: FloorPlans.removeFloorPlan
+		}
+	}
 });

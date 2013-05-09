@@ -16,29 +16,29 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define( 'App.model.administration.AclUserRoles',{
-    extend : 'Ext.data.Model',
-    table: {
-        name:'acl_user_roles',
-        comment:'Access List User Roles'
-    },
-    fields: [
-	    {
-	        name: 'id',
-	        type: 'int',
-	        comment: 'Access Control List ID'
-	    },
-	    {
-	        name: 'role_id',
-	        type: 'int',
-	        comment: 'Role ID'
-	    },
-	    {
-	        name: 'add_date',
-	        type: 'date',
-	        dataType: 'timestamp',
-	        defaultValue: 'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP',
-	        comment: 'Added UNIX TimeStamp'
-	    }
-    ]
+Ext.define('App.model.administration.AclUserRoles', {
+	extend: 'Ext.data.Model',
+	table: {
+		name: 'acl_user_roles',
+		comment: 'Access List User Roles'
+	},
+	fields: [
+		{
+			name: 'id',
+			type: 'int',
+			comment: 'Access Control List ID'
+		},
+		{
+			name: 'role_id',
+			type: 'int',
+			comment: 'Role ID'
+		},
+		{
+			name: 'add_date',
+			type: 'date',
+			dataType: 'timestamp',
+			defaultValue: 'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP',
+			comment: 'Added UNIX TimeStamp'
+		}
+	]
 });

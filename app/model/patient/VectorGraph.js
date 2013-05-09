@@ -23,7 +23,7 @@ Ext.define('App.model.patient.VectorGraph', {
 		comment:'Vector Graphics'
 	},
 	fields   : [
-        {name: 'id', type: 'int', dataType: 'bigint', len: 20, primaryKey : true, autoIncrement : true, allowNull : false, store: true, comment: 'Vector Graphics ID'},
+        {name: 'id', type: 'int', comment: 'Vector Graphics ID'},
 		{name: 'age_mos', type: 'float'},
 		{name: 'height', type: 'float'},
 		{name: 'PP', type: 'float'},

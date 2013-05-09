@@ -23,7 +23,7 @@ Ext.define('App.model.patient.MeaningfulUseAlert', {
 		comment:'Meaningful Use Alert'
 	},
 	fields: [
-        {name: 'id', type: 'int', dataType: 'bigint', len: 20, primaryKey : true, autoIncrement : true, allowNull : false, store: true, comment: 'Meaningful Use Alert ID'},
+        {name: 'id', type: 'int', comment: 'Meaningful Use Alert ID'},
 		{name: 'name', type: 'string'},
 		{name: 'val', type: 'bool'}
 	],

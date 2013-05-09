@@ -19,13 +19,23 @@
 Ext.define('App.model.administration.ActiveProblems', {
 	extend: 'Ext.data.Model',
 	table: {
-		name:'activeproblems',
-		comment:'Active Problems'
+		name: 'activeproblems',
+		comment: 'Active Problems'
 	},
 	fields: [
-        {name: 'id', type:'int', dataType: 'bigint', len: 20, primaryKey : true, autoIncrement : true, allowNull : false, store: true, comment: 'Active Problems ID'},
-		{name: 'code_text' },
-		{name: 'code' }
+		{
+			name: 'id',
+			type: 'int',
+			comment: 'Active Problems ID'
+		},
+		{
+			name: 'code_text',
+			type: 'string'
+		},
+		{
+			name: 'code',
+			type: 'string'
+		}
 	]
 
 });

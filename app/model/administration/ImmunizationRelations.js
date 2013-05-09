@@ -23,7 +23,7 @@ Ext.define('App.model.administration.ImmunizationRelations', {
 		comment:'Immunization Relations'
 	},
 	fields: [
-		{name: 'id', type: 'int', dataType: 'bigint', len: 20, primaryKey : true, autoIncrement : true, allowNull : false, store: true, comment: 'Immunization Relations ID'},
+		{name: 'id', type: 'int', comment: 'Immunization Relations ID'},
 		{name: 'immunization_id', type: 'int'},
 		{name: 'foreign_id', type: 'int'},
 		{name: 'code' },

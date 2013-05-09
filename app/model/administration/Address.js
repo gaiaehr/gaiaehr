@@ -16,17 +16,39 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.model.administration.Address',{
-	extend : 'Ext.data.Model',
+Ext.define('App.model.administration.Address', {
+	extend: 'Ext.data.Model',
 	table: {
 		name: 'address',
 		comment: 'Users/Contacts addresses'
 	},
 	fields: [
-        {name: 'id', type: 'int', dataType: 'bigint', len: 20, primaryKey : true, autoIncrement : true, allowNull : false, store: true, comment: 'User/Contact address ID'},
-		{name: 'create_uid', type: 'int',    comment:'create user ID'},
-		{name: 'write_uid', type: 'int',    comment:'update user ID'},
-		{name: 'create_date', type: 'date',   comment:'create date', dateFormat:'Y-m-d H:i:s'},
-		{name: 'update_date', type: 'date',   comment:'last update date', dateFormat:'Y-m-d H:i:s'}
+		{
+			name: 'id',
+			type: 'int',
+			comment: 'User/Contact address ID'
+		},
+		{
+			name: 'create_uid',
+			type: 'int',
+			comment: 'create user ID'
+		},
+		{
+			name: 'write_uid',
+			type: 'int',
+			comment: 'update user ID'
+		},
+		{
+			name: 'create_date',
+			type: 'date',
+			comment: 'create date',
+			dateFormat: 'Y-m-d H:i:s'
+		},
+		{
+			name: 'update_date',
+			type: 'date',
+			comment: 'last update date',
+			dateFormat: 'Y-m-d H:i:s'
+		}
 	]
 });

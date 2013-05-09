@@ -23,7 +23,7 @@ Ext.define('App.model.patient.PatientLabsResults', {
 		comment:'Patient Labs Results'
 	},
 	fields   : [
-        {name: 'id', type: 'int', dataType: 'bigint', len: 20, primaryKey : true, autoIncrement : true, allowNull : false, store: true, comment: 'Patient Labs Results ID'},
+        {name: 'id', type: 'int', comment: 'Patient Labs Results ID'},
 		{name: 'pid', type: 'int'},
 		{name: 'uid', type: 'int'},
 		{name: 'auth_uid', type: 'int'},

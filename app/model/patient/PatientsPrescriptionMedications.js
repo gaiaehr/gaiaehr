@@ -23,7 +23,7 @@ Ext.define('App.model.patient.PatientsPrescriptionMedications', {
 		comment:'Patients Prescription Medications'
 	},
 	fields: [
-        {name: 'id', type: 'int', dataType: 'bigint', len: 20, primaryKey : true, autoIncrement : true, allowNull : false, store: true, comment: 'Patients Prescrption ID'},
+        {name: 'id', type: 'int', comment: 'Patients Prescrption ID'},
         {name: 'pid', type: 'int'},
         {name: 'eid', type: 'int'},
         {name: 'prescription_id', type: 'int'},

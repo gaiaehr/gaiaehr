@@ -16,7 +16,7 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.model.administration.AclRolePermissions',{
+Ext.define('App.model.administration.AclRolePermissions', {
 	extend: 'Ext.data.Model',
 	table: {
 		name: 'acl_role_perms',

@@ -23,7 +23,7 @@ Ext.define('App.model.patient.charts.HeadCircumferenceInf', {
 		comment:'Head Circumference Information'
 	},
 	fields   : [
-        {name: 'id', type: 'int', dataType: 'bigint', len: 20, primaryKey : true, autoIncrement : true, allowNull : false, store: true, comment: 'Head Circumference Information ID'},
+        {name: 'id', type: 'int', comment: 'Head Circumference Information ID'},
 		{name: 'age', type: 'float'},
 		{name: 'PP', type: 'float'},
 		{name: 'P3', type: 'float'},

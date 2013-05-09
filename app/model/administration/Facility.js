@@ -17,108 +17,102 @@
  */
 
 Ext.define('App.model.administration.Facility', {
-    extend: 'Ext.data.Model',
-    table: {
-        name:'facility',
-        comment:'Facility'
-    },
-    fields: [
-        {
-            name: 'id',
-            type: 'int',
-            dataType: 'bigint',
-            len: 20,
-            primaryKey : true,
-            autoIncrement : true,
-            allowNull : false,
-            store: true,
-            comment: 'Facility ID'
-        },
-        {
-            name: 'name',
-            type: 'string',
-            comment: 'Facility Name'
-        },
-        {
-            name: 'active',
-            type: 'bool'
-        },
-        {
-            name: 'phone',
-            type: 'string'
-        },
-        {
-            name: 'fax',
-            type: 'string'
-        },
-        {
-            name: 'street',
-            type: 'string'
-        },
-        {
-            name: 'city',
-            type: 'string'
-        },
-        {
-            name: 'state',
-            type: 'string'
-        },
-        {
-            name: 'postal_code',
-            type: 'string'
-        },
-        {
-            name: 'country_code',
-            type: 'string'
-        },
-        {
-            name: 'federal_ein',
-            type: 'string'
-        },
-        {
-            name: 'service_location',
-            type: 'bool'
-        },
-        {
-            name: 'billing_location',
-            type: 'bool'
-        },
-        {
-            name: 'accepts_assignment',
-            type: 'bool'
-        },
-        {
-            name: 'pos_code',
-            type: 'string'
-        },
-        {
-            name: 'x12_sender_id',
-            type: 'string'
-        },
-        {
-            name: 'attn',
-            type: 'string'
-        },
-        {
-            name: 'domain_identifier',
-            type: 'string'
-        },
-        {
-            name: 'facility_npi',
-            type: 'string'
-        },
-        {
-            name: 'tax_id_type',
-            type: 'string'
-        }
-    ],
-    proxy: {
-        type: 'direct',
-        api: {
-            read: Facilities.getFacilities,
-            create: Facilities.addFacility,
-            update: Facilities.updateFacility,
-            destroy: Facilities.deleteFacility
-        }
-    }
+	extend: 'Ext.data.Model',
+	table: {
+		name: 'facility',
+		comment: 'Facility'
+	},
+	fields: [
+		{
+			name: 'id',
+			type: 'int',
+			comment: 'Facility ID'
+		},
+		{
+			name: 'name',
+			type: 'string',
+			comment: 'Facility Name'
+		},
+		{
+			name: 'active',
+			type: 'bool'
+		},
+		{
+			name: 'phone',
+			type: 'string'
+		},
+		{
+			name: 'fax',
+			type: 'string'
+		},
+		{
+			name: 'street',
+			type: 'string'
+		},
+		{
+			name: 'city',
+			type: 'string'
+		},
+		{
+			name: 'state',
+			type: 'string'
+		},
+		{
+			name: 'postal_code',
+			type: 'string'
+		},
+		{
+			name: 'country_code',
+			type: 'string'
+		},
+		{
+			name: 'federal_ein',
+			type: 'string'
+		},
+		{
+			name: 'service_location',
+			type: 'bool'
+		},
+		{
+			name: 'billing_location',
+			type: 'bool'
+		},
+		{
+			name: 'accepts_assignment',
+			type: 'bool'
+		},
+		{
+			name: 'pos_code',
+			type: 'string'
+		},
+		{
+			name: 'x12_sender_id',
+			type: 'string'
+		},
+		{
+			name: 'attn',
+			type: 'string'
+		},
+		{
+			name: 'domain_identifier',
+			type: 'string'
+		},
+		{
+			name: 'facility_npi',
+			type: 'string'
+		},
+		{
+			name: 'tax_id_type',
+			type: 'string'
+		}
+	],
+	proxy: {
+		type: 'direct',
+		api: {
+			read: Facilities.getFacilities,
+			create: Facilities.addFacility,
+			update: Facilities.updateFacility,
+			destroy: Facilities.deleteFacility
+		}
+	}
 });

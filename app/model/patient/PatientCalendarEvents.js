@@ -23,7 +23,7 @@ Ext.define('App.model.patient.PatientCalendarEvents', {
 		comment:'Patient Calendar Events'
 	},
 	fields   : [
-        {name: 'id', type: 'int', dataType: 'bigint', len: 20, primaryKey : true, autoIncrement : true, allowNull : false, store: true, comment: 'Patient Calendar Event ID'},
+        {name: 'id', type: 'int', comment: 'Patient Calendar Event ID'},
 		{name: 'user_id', type: 'int'},
 		{name: 'category', type: 'int'},
 		{name: 'facility', type: 'int'},

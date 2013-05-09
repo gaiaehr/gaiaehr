@@ -23,7 +23,7 @@ Ext.define('App.model.administration.ListOptions', {
         comment:'List Options'
     },
     fields: [
-        {name: 'id',type: 'int', dataType: 'bigint', len: 20, primaryKey : true, autoIncrement : true, allowNull : false, store: true, comment: 'List Options ID'},
+        {name: 'id',type: 'int', comment: 'List Options ID'},
         {name: 'list_id',type: 'string'},
         {name: 'option_value',type: 'string'},
         {name: 'option_name',type: 'string'},

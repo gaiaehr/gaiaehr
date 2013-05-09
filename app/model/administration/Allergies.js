@@ -17,16 +17,30 @@
  */
 
 Ext.define('App.model.administration.Allergies', {
-    extend: 'Ext.data.Model',
-    table: {
-        name:'allergies',
-        comment:'Allergies',
-        data: 'App.data.administration.Allergies'
-    },
-    fields: [
-        {name: 'id', type: 'int', dataType: 'bigint', len: 20, primaryKey : true, autoIncrement : true, allowNull : false, store: true, comment: 'Allergies ID'},
-        {name: 'summary', type: 'string', comment: 'Allegy Summary'},
-        {name: 'allergy_name', type: 'string', comment: 'Allergy Name'},
-        {name: 'allergy_type', type: 'Allergy Type'}
-    ]
+	extend: 'Ext.data.Model',
+	table: {
+		name: 'allergies',
+		comment: 'Allergies',
+		data: 'App.data.administration.Allergies'
+	},
+	fields: [
+		{
+			name: 'id',
+			type: 'int',
+			comment: 'Allergies ID'
+		},
+		{
+			name: 'summary',
+			type: 'string',
+			comment: 'Allegy Summary'
+		},
+		{
+			name: 'allergy_name',
+			type: 'string',
+			comment: 'Allergy Name'},
+		{
+			name: 'allergy_type',
+			type: 'Allergy Type'
+		}
+	]
 });

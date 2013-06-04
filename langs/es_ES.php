@@ -513,7 +513,7 @@ $LANG = array(
     'short_name'							=> 'Nombre corto',
     'long_name'								=> 'Nombre largo',
     'show_inactive_codes_only'				=> 'Mostrar solo códigos inactivos',
-    'ops_laboratories'						=> 'Lo sentimos, no se puede agregar laboratorios. Los datos de laboratorio son pre-cargado con <br> identificadores lógicos de observación Nombres y Códigos (LOINC) visita MedlinePlus <a href="http://loinc.org/" loinc.org target="_blank"> </ a> para obtener más información.',
+    'ops_laboratories'						=> 'Lo sentimos, no se puede agregar laboratorios. Los datos de laboratorio son pre-cargado con <br> identificadores lógicos de observación Nombres y Códigos (LOINC) visita MedlinePlus <a href="http://loinc.org/" loinc.org target="_blank"> </a> para obtener más información.',
     'patient_full_name'						=> 'Nombre completo del paciente',
     'patient_mothers_maiden_name'			=> 'Nombre de soltera de la madre del paciente',
     'patient_last_name'						=> 'Apellido del paciente',

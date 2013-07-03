@@ -16,7 +16,7 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define( 'App.view.fees.Billing',
+Ext.define('App.view.fees.Billing',
 {
 	extend : 'App.ux.RenderPanel',
 	id : 'panelBilling',

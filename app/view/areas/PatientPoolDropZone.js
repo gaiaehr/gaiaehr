@@ -127,6 +127,6 @@ Ext.define('App.view.areas.PatientPoolDropZone', {
         },
         onActive: function(callback){
             this.reloadStores();
-            callback(true);
+	        if(typeof callback == 'function') callback(true);
         }
     });

@@ -1,21 +1,20 @@
 /**
- GaiaEHR (Electronic Health Records)
- Copyright (C) 2013 Certun, inc.
-
- This program is free software: you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation, either version 3 of the License, or
- (at your option) any later version.
-
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * GaiaEHR (Electronic Health Records)
+ * Copyright (C) 2013 Certun, inc.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 Ext.define('App.view.patient.Encounter', {
     extend:'App.ux.RenderPanel',
     id:'panelEncounter',
@@ -632,7 +631,7 @@ Ext.define('App.view.patient.Encounter', {
         var me = this, vitals, store;
 	    me.el.mask(i18n('loading...'));
         me.resetTabs();
-        me.encounterStore.getProxy().extraParams.eid = me.eid;
+        me.encounterStore.getProxy().extraParams.eid = me.eid = eid || app.patient.eid;
 
         me.encounterStore.load({
             scope:me,
@@ -1108,17 +1107,20 @@ Ext.define('App.view.patient.Encounter', {
         }
         return me.ButtonsToDisable;
     },
-    resetTabs:function(){
+
+	resetTabs:function(){
         var me = this;
         if(me.renderAdministrative) me.centerPanel.setActiveTab(0);
         if(me.encounterTabPanel) me.encounterTabPanel.setActiveTab(0);
         if(me.administrativeTabPanel) me.administrativeTabPanel.setActiveTab(0);
         if(me.rightPanel) me.rightPanel.setActiveTab(0);
     },
-    onDocumentView:function(grid, rowIndex){
+
+	onDocumentView:function(grid, rowIndex){
         var rec = grid.getStore().getAt(rowIndex), src = rec.data.url;
         app.onDocumentView(src);
     },
+
     /**
      * This function is called from Viewport.js when
      * this panel is selected in the navigation panel.

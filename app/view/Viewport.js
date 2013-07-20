@@ -712,7 +712,7 @@ Ext.define('App.view.Viewport', {
             me.navigateTo('App.view.patient.Encounter', function(success){
                 if(success){
 	                Ext.Function.defer(function() {
-		                me.getPanelByCls('App.view.patient.Encounter').openEncounter();
+		                me.getPanelByCls('App.view.patient.Encounter').openEncounter(eid);
 	                }, 100);
 
                 }

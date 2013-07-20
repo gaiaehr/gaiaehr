@@ -1752,8 +1752,8 @@ Ext.define('App.view.patient.windows.Medical', {
     },
 
 	onMedicalWinClose:function(){
-        if(app.currCardCmp.id == 'panelSummary'){
-            app.currCardCmp.loadStores();
+	    if(app.getActivePanel().$className == 'App.view.patient.Summary'){
+            app.getActivePanel().loadStores();
         }
     }
 });

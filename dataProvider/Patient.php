@@ -566,7 +566,7 @@ class Patient
         $this->db->setSQL("SELECT $columnName FROM $tablexx WHERE pid ='$pid'");
         $records = array();
         foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) as $rec){
-            if($rec['end_date'] != null || $rec['end_date'] != '0000-00-00 00:00:00'){
+            if(!isset($rec['end_date']) || $rec['end_date'] != null || $rec['end_date'] != '0000-00-00 00:00:00'){
                 $records[] = $rec;
             }
         }

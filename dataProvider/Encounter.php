@@ -771,7 +771,7 @@ class Encounter
 		if(!empty($activeProblems)){
 			$lis = '';
 			foreach($activeProblems as $foo){
-				$lis .= '<li>Immunization name: ' . $foo['immunization_name'] . '<br>';
+				$lis .= '<li>Immunization name: ' . $foo['diagnosis_code'] . '<br>';
 				//			    $lis .= 'Immunization ID: ' .$foo['immunization_id'].'<br>';
 				//			    $lis .= 'Administered By: '.$foo['administered_by'].' </li>';
 			}

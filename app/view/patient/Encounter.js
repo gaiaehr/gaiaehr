@@ -639,16 +639,18 @@ Ext.define('App.view.patient.Encounter', {
             callback:function(record){
                 var data = record[0].data;
                 me.currEncounterStartDate = data.service_date;
-                if(!data.close_date){
+
+	            if(!data.close_date){
                     me.startTimer();
                     me.setButtonsDisabled(me.getButtonsToDisable());
                 }else{
                     if(me.stopTimer()){
                         var timer = me.timer(data.service_date, data.close_date), patient = app.patient;
-                        me.updateTitle(patient.name + ' #' + patient.pid + ' - ' + patient.age.str + ' - ' + Ext.Date.format(me.currEncounterStartDate, 'F j, Y, g:i:s a') + ' (' + i18n('closed_encounter') + ')', app.patient.readOnly, timer,true);
+                        me.updateTitle(patient.name + ' #' + patient.pid + ' - ' + patient.age.str + ' - ' + Ext.Date.format(me.currEncounterStartDate, 'F j, Y, g:i:s a') + ' (' + i18n('closed_encounter') + ')', app.patient.readOnly, timer);
                         me.setButtonsDisabled(me.getButtonsToDisable(), true);
                     }
                 }
+
                 if(me.vitalsPanel){
                     vitals = me.vitalsPanel.down('vitalsdataview');
                     me.resetVitalsForm();
@@ -782,8 +784,10 @@ Ext.define('App.view.patient.Encounter', {
         }
     },
     resetVitalsForm:function(){
-        var me = this, form = me.vitalsPanel.down('form').getForm(), model = Ext.ModelManager.getModel('App.model.patient.Vitals'), newModel = Ext.ModelManager.create({
-        }, model);
+        var me = this,
+	        form = me.vitalsPanel.down('form').getForm(),
+	        newModel = Ext.create('App.model.patient.Vitals');
+
         me.vitalsPanel.query('button[action="signBtn"]')[0].setDisabled(true);
         form.loadRecord(newModel);
     },
@@ -818,7 +822,7 @@ Ext.define('App.view.patient.Encounter', {
     encounterTimer:function(){
         var me = this, timer = me.timer(me.currEncounterStartDate, new Date());
 	    if(app.patient.pid != null){
-		    me.updateTitle(app.patient.name + ' #' + app.patient.pid + ' - ' + app.patient.age.str + ' - ' + Ext.Date.format(me.currEncounterStartDate, 'F j, Y, g:i:s a') + ' (' + i18n('opened_encounter') + ')', app.patient.readOnly, timer,true);
+		    me.updateTitle(app.patient.name + ' #' + app.patient.pid + ' - ' + app.patient.age.str + ' - ' + Ext.Date.format(me.currEncounterStartDate, 'F j, Y, g:i:s a') + ' (' + i18n('opened_encounter') + ')', app.patient.readOnly, timer);
 	    }else{
 		    me.stopTimer();
 	    }
@@ -1126,7 +1130,7 @@ Ext.define('App.view.patient.Encounter', {
         if(patient.pid && patient.eid){
 	        me.pid = patient.pid;
 	        me.eid = patient.eid;
-            me.updateTitle(patient.name + ' (' + i18n('visits') + ')', patient.readOnly, null, true);
+            me.updateTitle(patient.name + ' (' + i18n('visits') + ')', patient.readOnly, null);
             me.setReadOnly(patient.readOnly);
             callback(true);
         }else{

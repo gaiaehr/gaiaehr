@@ -785,7 +785,9 @@ Ext.define('App.view.Viewport', {
 			            me[ref] = me.MainPanel.add(Ext.create(cls));
 			            me[ref].onActive(function(success){
 				            me.MainPanel.el.unmask();
-				            if(success) layout.setActiveItem(me[ref]);
+				            if(success){
+					            layout.setActiveItem(me[ref]);
+				            }
 			            });
 		            }, 100);
 	            } else {
@@ -796,6 +798,7 @@ Ext.define('App.view.Viewport', {
 		            });
 	            }
 
+
 //              layout.setActiveItem(card);
 	            // if onActive success = false... go back
 //	            me[ref].onActive(function(success){
@@ -804,7 +807,6 @@ Ext.define('App.view.Viewport', {
             }
         }
     },
-
 
 	getPanelByCls:function(cls){
 		var me = this,
@@ -1229,6 +1231,8 @@ Ext.define('App.view.Viewport', {
                     // if encounter id is set and and user has access to encounter area... go to Encounter panel
                     // and open the encounter
                     }else if(data.patientData.eid && acl['access_encounters']){
+
+	                    say('openEncounter');
                         me.openEncounter(data.patientData.eid);
                     // else go to patient summary
                     }else if(data.patientData.floorPlanId == null || data.patientData.floorPlanId == 0){
@@ -1318,8 +1322,9 @@ Ext.define('App.view.Viewport', {
             msg: msg,
             buttons: Ext.Msg.OK,
             icon: icon,
-           // width:800,
-            maxWidth:1200
+//           width:900
+	        minWidth :700,
+            maxWidth:1000
         });
     },
 

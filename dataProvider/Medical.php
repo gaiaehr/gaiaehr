@@ -513,7 +513,7 @@ class Medical
 		$this->db->setSQL("SELECT * FROM patient_surgery WHERE pid='$pid'");
 		$records = array();
 		foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) as $rec) {
-			$rec['alert'] = ($rec['end_date'] == null || $rec['end_date'] == '0000-00-00 00:00:00') ? 1 : 0;
+			$rec['alert'] = (!isset($rec['end_date']) || $rec['end_date'] == '0000-00-00 00:00:00') ? 1 : 0;
 			$records[]    = $rec;
 		}
 		return $records;

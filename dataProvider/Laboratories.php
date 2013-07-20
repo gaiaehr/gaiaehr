@@ -70,7 +70,7 @@ class Laboratories
         $sqlStatement['SELECT'] = "id, code_text_short, parent_name, loinc_name";
         $sqlStatement['WHERE'] = "id = parent_id AND active = '1'";
         $sqlStatement['ORDER'] = "parent_name ASC";
-        foreach ($this->buildSQL($sqlStatement)->all() as $row)
+        foreach ($this->LO->buildSQL($sqlStatement)->all() as $row)
         {
             $row->label = ($row->code_text_short == '' || $row->code_text_short == null) ? $row->parent_name : $row->code_text_short;
             $row->fields = $this->getLabObservationFieldsByParentId($row->id);
@@ -86,7 +86,7 @@ class Laboratories
         $sqlStatement['LEFTJOIN'] = "labs_loinc ON labs_panels.loinc_number = labs_loinc.loinc_num";
         $sqlStatement['WHERE'] = "parent_id = '$id' AND parent_id != id";
         $sqlStatement['ORDER'] = "sequence";
-        foreach ($this->buildSQL($sqlStatement)->all() as $row)
+        foreach ($this->LO->buildSQL($sqlStatement)->all() as $row)
         {
             $row->default_unit = ($row->default_unit == null || $row->default_unit == '') ? $row->SUBMITTED_UNITS : $row->default_unit;
             $records[] = $row;

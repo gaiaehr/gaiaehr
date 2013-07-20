@@ -1355,8 +1355,8 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 		 * Fire Event
 		 */
 		me.fireEvent('orderswindowhide', me);
-		if(app.currCardCmp.id == 'panelSummary'){
-			app.currCardCmp.patientDocumentsStore.load({params:{pid:this.pid}});
+		if(app.getActivePanel().$className == 'App.view.patient.Summary'){
+			app.getActivePanel().loadStores();
 		}
 	},
 

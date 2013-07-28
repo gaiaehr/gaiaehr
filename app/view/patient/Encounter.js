@@ -775,7 +775,7 @@ Ext.define('App.view.patient.Encounter', {
         }else{
             Ext.Msg.show({
                 title:'Oops!',
-                msg:i18n('this_column_can_not_be_modified_because_it_has_been_signed_by') + ' ' + record.data.auth_uid,
+                msg:i18n('this_column_can_not_be_modified_because_it_has_been_signed_by') + ' ' + record.data.authorized_by,
                 buttons:Ext.Msg.OK,
                 icon:Ext.Msg.WARNING,
                 animateTarget:e

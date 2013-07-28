@@ -16,13 +16,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-//include_once ('../classes/MatchaHelper.php');
+
 //
 //if(!isset($_SESSION)){
 //	session_name('GaiaEHR');
 //	session_start();
 //	session_cache_limiter('private');
 //}
+//include_once ('../classes/MatchaHelper.php');
 include_once($_SESSION['root'] . '/dataProvider/CombosData.php');
 
 class FormLayoutEngine

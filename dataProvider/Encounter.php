@@ -322,14 +322,13 @@ class Encounter
 	public function updateVitals(stdClass $params)
 	{
 		$this->setEid($params->eid);
-		$params->date = $this->parseDate($params->date);
-		$data         = get_object_vars($params);
+		$data  = get_object_vars($params);
 		unset($data['date'], $data['administer_by'], $data['authorized_by'], $data['id'], $data['bp_diastolic_normal'], $data['bp_systolic_normal']);
 		$sql = $this->db->sqlBind($data, 'encounter_vitals', 'U', array('id' => $params->id));
 		$this->db->setSQL($sql);
 		$this->db->execLog();
-		$params->administer_by = $this->user->getUserNameById($params->uid);
-		$params->authorized_by = $this->user->getUserNameById($params->auth_uid);
+		$params->administer_by = $params->uid != 0 ? $this->user->getUserNameById($params->uid) : '';
+		$params->authorized_by = $params->auth_uid != 0 ? $this->user->getUserNameById($params->auth_uid) : '';
 		return $params;
 	}
 

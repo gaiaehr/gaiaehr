@@ -1032,7 +1032,7 @@ Ext.define('App.view.Viewport', {
                 }
             }
         });
-        this.ppdz.reloadStores();
+	    me['Nav_App_view_areas_PatientPoolDropZone'].reloadStores();
     },
     cancelAutoLogout: function(){
         var me = this;

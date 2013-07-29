@@ -1,21 +1,20 @@
 /**
- GaiaEHR (Electronic Health Records)
- Copyright (C) 2013 Certun, inc.
-
- This program is free software: you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation, either version 3 of the License, or
- (at your option) any later version.
-
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * GaiaEHR (Electronic Health Records)
+ * Copyright (C) 2013 Certun, inc.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 Ext.define('App.view.patient.Encounter', {
     extend:'App.ux.RenderPanel',
     id:'panelEncounter',
@@ -26,6 +25,7 @@ Ext.define('App.view.patient.Encounter', {
         'App.store.patient.Vitals'
     ],
     showRating:true,
+	convercionMethod: 'english',
     pid:null,
     eid:null,
     currEncounterStartDate:null,
@@ -520,7 +520,10 @@ Ext.define('App.view.patient.Encounter', {
                     app.accessDenied();
                 }
             }else if(SaveBtn.action == 'vitals'){
-                var VFields = form.getFields().items, VFieldsCount = VFields.length, emptyCount = 0;
+                var VFields = form.getFields().items,
+	                VFieldsCount = VFields.length,
+	                emptyCount = 0;
+
                 for(var i = 0; i < VFields.length; i++){
                     if(VFields[i].xtype != 'mitos.datetime'){
                         if(VFields[i].value == ''){
@@ -528,6 +531,7 @@ Ext.define('App.view.patient.Encounter', {
                         }
                     }
                 }
+
                 if((VFieldsCount - 3) > emptyCount){
                     if(acl['add_vitals']){
                         store = me.encounterStore.getAt(0).vitals();
@@ -552,7 +556,7 @@ Ext.define('App.view.patient.Encounter', {
                         app.accessDenied();
                     }
                 }else{
-                    me.msg('Oops!', i18n('vitals_form_is_epmty'))
+                    me.msg('Oops!', i18n('vitals_form_is_epmty'), true)
                 }
             }else{
                 if(acl['edit_encounters']){
@@ -573,6 +577,7 @@ Ext.define('App.view.patient.Encounter', {
             }
         }
     },
+
     onVitalsSign:function(){
         var me = this, form = me.vitalsPanel.down('form').getForm(), store = me.encounterStore.getAt(0).vitals(), record = form.getRecord();
         if(form.isValid()){
@@ -630,25 +635,34 @@ Ext.define('App.view.patient.Encounter', {
      */
     openEncounter:function(eid){
         var me = this, vitals, store;
-	    me.el.mask(i18n('loading...'));
+	    me.el.mask(i18n('loading...') + ' ' +  i18n('encounter') + ' - ' + eid );
         me.resetTabs();
-        me.encounterStore.getProxy().extraParams.eid = me.eid;
+
+	    // add eid as extra params to encounter store
+	    // and set 'eid' globally for convenient use
+        me.encounterStore.getProxy().extraParams.eid = me.eid = eid;
 
         me.encounterStore.load({
             scope:me,
             callback:function(record){
                 var data = record[0].data;
+
+				// set pid globally for convenient use
+	            me.pid = data.pid;
+
                 me.currEncounterStartDate = data.service_date;
-                if(!data.close_date){
+
+	            if(!data.close_date){
                     me.startTimer();
                     me.setButtonsDisabled(me.getButtonsToDisable());
                 }else{
                     if(me.stopTimer()){
                         var timer = me.timer(data.service_date, data.close_date), patient = app.patient;
-                        me.updateTitle(patient.name + ' #' + patient.pid + ' - ' + patient.age.str + ' - ' + Ext.Date.format(me.currEncounterStartDate, 'F j, Y, g:i:s a') + ' (' + i18n('closed_encounter') + ')', app.patient.readOnly, timer,true);
+                        me.updateTitle(patient.name + ' #' + patient.pid + ' - ' + patient.age.str + ' - ' + Ext.Date.format(me.currEncounterStartDate, 'F j, Y, g:i:s a') + ' (' + i18n('closed_encounter') + ')', app.patient.readOnly, timer);
                         me.setButtonsDisabled(me.getButtonsToDisable(), true);
                     }
                 }
+
                 if(me.vitalsPanel){
                     vitals = me.vitalsPanel.down('vitalsdataview');
                     me.resetVitalsForm();
@@ -774,7 +788,7 @@ Ext.define('App.view.patient.Encounter', {
         }else{
             Ext.Msg.show({
                 title:'Oops!',
-                msg:i18n('this_column_can_not_be_modified_because_it_has_been_signed_by') + ' ' + record.data.auth_uid,
+                msg:i18n('this_column_can_not_be_modified_because_it_has_been_signed_by') + ' ' + record.data.authorized_by,
                 buttons:Ext.Msg.OK,
                 icon:Ext.Msg.WARNING,
                 animateTarget:e
@@ -782,8 +796,10 @@ Ext.define('App.view.patient.Encounter', {
         }
     },
     resetVitalsForm:function(){
-        var me = this, form = me.vitalsPanel.down('form').getForm(), model = Ext.ModelManager.getModel('App.model.patient.Vitals'), newModel = Ext.ModelManager.create({
-        }, model);
+        var me = this,
+	        form = me.vitalsPanel.down('form').getForm(),
+	        newModel = Ext.create('App.model.patient.Vitals');
+
         me.vitalsPanel.query('button[action="signBtn"]')[0].setDisabled(true);
         form.loadRecord(newModel);
     },
@@ -818,7 +834,7 @@ Ext.define('App.view.patient.Encounter', {
     encounterTimer:function(){
         var me = this, timer = me.timer(me.currEncounterStartDate, new Date());
 	    if(app.patient.pid != null){
-		    me.updateTitle(app.patient.name + ' #' + app.patient.pid + ' - ' + app.patient.age.str + ' - ' + Ext.Date.format(me.currEncounterStartDate, 'F j, Y, g:i:s a') + ' (' + i18n('opened_encounter') + ')', app.patient.readOnly, timer,true);
+		    me.updateTitle(app.patient.name + ' #' + app.patient.pid + ' - ' + app.patient.age.str + ' - ' + Ext.Date.format(me.currEncounterStartDate, 'F j, Y, g:i:s a') + ' (' + i18n('opened_encounter') + ')', app.patient.readOnly, timer);
 	    }else{
 		    me.stopTimer();
 	    }
@@ -879,7 +895,14 @@ Ext.define('App.view.patient.Encounter', {
      * @param e
      */
     lbskg:function(field, e){
-        var v = field.getValue(), weight = v / 2.2, res = Ext.util.Format.round(weight, 1);
+	    var v = field.getValue().split('/'),
+		    lbs = v[0] || 0,
+		    oz = v[1] || 0,
+	        kg = 0,
+		    res;
+		    if(lbs > 0) kg =  kg + (lbs / 2.2046);
+		    if(oz > 0) kg =  kg + (oz / 35.274);
+	        res = Ext.util.Format.round(kg, 1);
         if(e.getKey() != e.TAB){
             field.up('form').getForm().findField('weight_kg').setValue(res);
         }
@@ -890,7 +913,9 @@ Ext.define('App.view.patient.Encounter', {
      * @param e
      */
     kglbs:function(field, e){
-        var v = field.getValue(), weight = v * 2.2, res = Ext.util.Format.round(weight, 1);
+	    var v = field.getValue(),
+	        weight = v * 2.2046,
+	        res = Ext.util.Format.round(weight, 1);
         if(e.getKey() != e.TAB){
             field.up('form').getForm().findField('weight_lbs').setValue(res);
         }
@@ -901,7 +926,9 @@ Ext.define('App.view.patient.Encounter', {
      * @param e
      */
     incm:function(field, e){
-        var v = field.getValue(), weight = v * 2.54, res = Ext.util.Format.round(weight, 1);
+        var v = field.getValue(),
+	        weight = v * 2.54,
+	        res = Math.floor(weight);
         if(e.getKey() != e.TAB){
             if(field.name == 'head_circumference_in'){
                 field.up('form').getForm().findField('head_circumference_cm').setValue(res);
@@ -918,7 +945,9 @@ Ext.define('App.view.patient.Encounter', {
      * @param e
      */
     cmin:function(field, e){
-        var v = field.getValue(), weight = v * 0.39, res = Ext.util.Format.round(weight, 1);
+        var v = field.getValue(),
+	        weight = v / 2.54,
+	        res = Ext.util.Format.round(weight, 0);
         if(e.getKey() != e.TAB){
             if(field.name == 'head_circumference_cm'){
                 field.up('form').getForm().findField('head_circumference_in').setValue(res);
@@ -930,9 +959,24 @@ Ext.define('App.view.patient.Encounter', {
         }
     },
     bmi:function(field){
-        var form = field.up('form').getForm(), weight = form.findField('weight_kg').getValue(), height = form.findField('height_cm').getValue(), bmi, status;
+        var form = field.up('form').getForm(),
+	        weight,
+	        height,
+	        bmi,
+	        status;
+	    if(this.convercionMethod == 'english'){
+		    weight = form.findField('weight_lbs').getValue().split('/')[0];
+		    height = form.findField('height_in').getValue();
+	    }else{
+		    weight = form.findField('weight_kg').getValue();
+		    height = form.findField('height_cm').getValue();
+	    }
         if(weight > 0 && height > 0){
-            bmi = weight / (height / 100 * height / 100);
+	        if(this.convercionMethod == 'english'){
+		        bmi = weight / (height * height) * 703;
+	        }else{
+		        bmi = weight / ((height/100) * (height/100));
+	        }
             if(bmi < 15){
                 status = i18n('very_severely_underweight')
             }else if(bmi >= 15 && bmi < 16){
@@ -950,7 +994,8 @@ Ext.define('App.view.patient.Encounter', {
             }else if(bmi >= 40){
                 status = i18n('obese_class_3')
             }
-            field.up('form').getForm().findField('bmi').setValue(Ext.util.Format.number(bmi, '0.00'));
+            field.up('form').getForm().findField('bmi').setValue(Ext.util.Format.round(bmi, 1));
+//            field.up('form').getForm().findField('bmi').setValue(bmi);
             field.up('form').getForm().findField('bmi_status').setValue(status);
         }
     },
@@ -1104,17 +1149,20 @@ Ext.define('App.view.patient.Encounter', {
         }
         return me.ButtonsToDisable;
     },
-    resetTabs:function(){
+
+	resetTabs:function(){
         var me = this;
         if(me.renderAdministrative) me.centerPanel.setActiveTab(0);
         if(me.encounterTabPanel) me.encounterTabPanel.setActiveTab(0);
         if(me.administrativeTabPanel) me.administrativeTabPanel.setActiveTab(0);
         if(me.rightPanel) me.rightPanel.setActiveTab(0);
     },
-    onDocumentView:function(grid, rowIndex){
+
+	onDocumentView:function(grid, rowIndex){
         var rec = grid.getStore().getAt(rowIndex), src = rec.data.url;
         app.onDocumentView(src);
     },
+
     /**
      * This function is called from Viewport.js when
      * this panel is selected in the navigation panel.
@@ -1122,11 +1170,13 @@ Ext.define('App.view.patient.Encounter', {
      * to call every this panel becomes active
      */
     onActive:function(callback){
-        var me = this, patient = app.patient;
+        var me = this,
+	        patient = app.patient;
+
         if(patient.pid && patient.eid){
-	        me.pid = patient.pid;
-	        me.eid = patient.eid;
-            me.updateTitle(patient.name + ' (' + i18n('visits') + ')', patient.readOnly, null, true);
+//	        me.pid = patient.pid;
+//	        me.eid = patient.eid;
+            me.updateTitle(patient.name + ' (' + i18n('visits') + ')', patient.readOnly, null);
             me.setReadOnly(patient.readOnly);
             callback(true);
         }else{

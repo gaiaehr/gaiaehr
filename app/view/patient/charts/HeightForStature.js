@@ -52,17 +52,17 @@ Ext.define('App.view.patient.charts.HeightForStature',
 						stroke : '#bbb',
 						'stroke-width' : 0.5
 					}
-				}
-				//minimum : 7,
-				//maximum : 31
+				},
+				minimum : 7,
+				maximum : 31
 			},
 			{
 				title : i18n('length_cm'),
 				type : 'Numeric',
 				position : 'bottom',
-				fields : ['height']
-				//minimum : 77,
-				//maximum : 121.5
+				fields : ['height'],
+				minimum : 77,
+				maximum : 121.5
 			}],
 			series : [
 			{

@@ -258,8 +258,8 @@ class Encounter
 		foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row){
 			$row['height_in']     = intval($row['height_in']);
 			$row['height_cm']     = intval($row['height_cm']);
-			$row['administer_by'] = $this->user->getUserNameById($row['uid']);
-			$row['authorized_by'] = $this->user->getUserNameById($row['auth_uid']);
+			$row['administer_by'] = $row['uid'] != null ? $this->user->getUserNameById($row['uid']) : '';
+			$row['authorized_by'] = $row['auth_uid'] != null ? $this->user->getUserNameById($row['auth_uid']) : '';
 			array_push($rows, $row);
 		}
 		return $rows;
@@ -276,8 +276,8 @@ class Encounter
 		foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row){
 			$row['height_in']     = intval($row['height_in']);
 			$row['height_cm']     = intval($row['height_cm']);
-			$row['administer_by'] = $this->user->getUserNameById($row['uid']);
-			$row['authorized_by'] = $this->user->getUserNameById($row['auth_uid']);
+			$row['administer_by'] = $row['uid'] != null ? $this->user->getUserNameById($row['uid']) : '';
+			$row['authorized_by'] = $row['auth_uid'] != null ? $this->user->getUserNameById($row['auth_uid']) : '';
 			array_push($rows, $row);
 		}
 		return $rows;
@@ -322,14 +322,13 @@ class Encounter
 	public function updateVitals(stdClass $params)
 	{
 		$this->setEid($params->eid);
-		$params->date = $this->parseDate($params->date);
-		$data         = get_object_vars($params);
+		$data  = get_object_vars($params);
 		unset($data['date'], $data['administer_by'], $data['authorized_by'], $data['id'], $data['bp_diastolic_normal'], $data['bp_systolic_normal']);
 		$sql = $this->db->sqlBind($data, 'encounter_vitals', 'U', array('id' => $params->id));
 		$this->db->setSQL($sql);
 		$this->db->execLog();
-		$params->administer_by = $this->user->getUserNameById($params->uid);
-		$params->authorized_by = $this->user->getUserNameById($params->auth_uid);
+		$params->administer_by = $params->uid != 0 ? $this->user->getUserNameById($params->uid) : '';
+		$params->authorized_by = $params->auth_uid != 0 ? $this->user->getUserNameById($params->auth_uid) : '';
 		return $params;
 	}
 
@@ -771,7 +770,7 @@ class Encounter
 		if(!empty($activeProblems)){
 			$lis = '';
 			foreach($activeProblems as $foo){
-				$lis .= '<li>Immunization name: ' . $foo['immunization_name'] . '<br>';
+				$lis .= '<li>Immunization name: ' . $foo['diagnosis_code'] . '<br>';
 				//			    $lis .= 'Immunization ID: ' .$foo['immunization_id'].'<br>';
 				//			    $lis .= 'Administered By: '.$foo['administered_by'].' </li>';
 			}

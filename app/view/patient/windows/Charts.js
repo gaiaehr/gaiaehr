@@ -170,6 +170,13 @@ Ext.define('App.view.patient.windows.Charts', {
             }),
 
             me.WeightForStature = Ext.create('App.view.patient.charts.HeightForStature', {
+////	            title   : i18n('weight_for_age_2_20_years'),
+////	            xTitle  : i18n('weight_kg'),
+////	            yTitle  : i18n('age_years'),
+//	            xMinimum: 7,
+//	            xMaximum: 30,
+//	            yMinimum: 76,
+//	            yMaximum: 122,
                 store: me.WeightForStatureStore
             }),
 
@@ -197,7 +204,7 @@ Ext.define('App.view.patient.windows.Charts', {
 
             me.BMIForAge = Ext.create('App.view.patient.charts.HeadCircumference', {
                 title   : i18n('bmi_for_age_2_20_years'),
-                xTitle  : i18n('bmi_kg'),
+                xTitle  : i18n('bmi'),
                 yTitle  : i18n('age_years'),
                 xMinimum: 10,
                 xMaximum: 35,
@@ -216,16 +223,23 @@ Ext.define('App.view.patient.windows.Charts', {
     },
 
     onWinShow: function() {
-        var me = this, layout = me.getLayout(), btns = me.down('toolbar').items.items, btn;
+        var me = this,
+	        layout = me.getLayout(),
+	        btns = me.down('toolbar').items.items,
+	        btn;
         layout.setActiveItem(0);
-        me.vitalsStore.load({params: {pid: app.patient.pid}});
+
+	    me.vitalsStore.load({params: {pid: app.patient.pid}});
+
         for(var i = 0; i < btns.length; i++) {
             btn = btns[i];
             if(btn.type == 'button' && (
                 btn.action == 'WeightForAgeInf' || btn.action == 'LengthForAgeInf' || btn.action == 'WeightForRecumbentInf' || btn.action == 'HeadCircumferenceInf')) {
                 btn.setVisible(app.patient.age.DMY.years < 2);
+	            btns[i + 1].setVisible(app.patient.age.DMY.years < 2);
             } else if(btn.type == 'button') {
                 btn.setVisible(app.patient.age.DMY.years >= 2);
+	            btns[i + 1].setVisible(app.patient.age.DMY.years >= 2);
             }
         }
     },

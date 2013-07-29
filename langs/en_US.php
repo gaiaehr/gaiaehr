@@ -249,7 +249,7 @@ $LANG = array(
     'stature_for_age_2_20_years'			=> 'Stature For Age ( 2 - 20 years )',
     'stature_cm'							=> 'Stature (cm)',
     'bmi_for_age_2_20_years'				=> 'BMI For Age ( 2 - 20 years )',
-    'bmi_kg'								=> 'BMI (kg)',
+    'bmi'								    => 'BMI',
     'documents_viewer_window'				=> 'Documents Viewer Window',
     'medical_window'						=> 'Medical Window',
     'immunization'							=> 'Immunization',
@@ -1174,5 +1174,7 @@ $LANG = array(
     'service'                               => 'Service',
     'added'                                 => 'Added',
     'copay'                                 => 'Co-Pay',
-    'add_new_laboratory'                    => 'Add New Laboratory'
+    'add_new_laboratory'                    => 'Add New Laboratory',
+    'n/a'                                   => 'N/A',
+    'smoke_history'                         => 'Smoke History'
 );

@@ -26,6 +26,7 @@ Ext.define('App.view.patient.ItemsToReview', {
     bodyStyle: 'background-color:white',
     showRating:true,
     eid: null,
+	autoScroll: true,
     initComponent: function(){
         var me = this;
         me.patientImmuListStore = Ext.create('App.store.patient.PatientImmunization');
@@ -219,7 +220,7 @@ Ext.define('App.view.patient.ItemsToReview', {
         });
 
         me.column4 = Ext.create('Ext.form.Panel', {
-            columnWidth: 0.329,
+            columnWidth: 0.662,
             border: false,
             items: [
 	            {
@@ -227,11 +228,33 @@ Ext.define('App.view.patient.ItemsToReview', {
 		            title:i18n('live_styles'),
 		            items:[
 			            {
-				            fieldLabel: i18n('smoking_status'),
-				            xtype: 'mitos.smokingstatuscombo',
-				            labelWidth: 100,
-				            width: 325,
-				            name: 'review_smoke'
+				            xtype:'fieldcontainer',
+				            layout:'hbox',
+				            items:[
+					            {
+						            fieldLabel: i18n('smoking_status'),
+						            xtype: 'mitos.smokingstatuscombo',
+						            labelWidth: 100,
+						            width: 325,
+						            name: 'review_smoke'
+					            },
+					            {
+						            xtype: 'mitos.smokingstatuscombo',
+						            fieldLabel: i18n('smoke_history'),
+						            name: 'last_history_smoke',
+						            labelWidth: 85,
+						            margin: '0 5',
+						            width: 325,
+						            submitValue:false
+					            },
+					            {
+						            xtype: 'displayfield',
+						            labelWidth: 40,
+						            fieldLabel: i18n('date'),
+						            name: 'last_history_smoke_date',
+						            submitValue:false
+					            }
+				            ]
 			            },
 			            {
 				            fieldLabel: i18n('alcohol'),
@@ -267,7 +290,8 @@ Ext.define('App.view.patient.ItemsToReview', {
         me.callParent(arguments);
     },
     storesLoad: function(){
-        var me = this;
+        var me = this,
+	        form = me.column4.getForm();
         me.patientImmuListStore.load({params: {pid: app.patient.pid}});
         me.patientAllergiesListStore.load({params: {pid: app.patient.pid}});
         me.patientMedicalIssuesStore.load({params: {pid: app.patient.pid}});
@@ -275,7 +299,9 @@ Ext.define('App.view.patient.ItemsToReview', {
         me.patientDentalStore.load({params: {pid: app.patient.pid}});
         me.patientMedicationsStore.load({params: {pid: app.patient.pid}});
         Medical.getEncounterReviewByEid(app.patient.eid, function(provider, response){
-            me.column4.getForm().setValues(response.result);
+	        if(response.result.last_history_smoke_date == '') response.result.last_history_smoke_date = i18n('n/a');
+            form.setValues(response.result);
+	        form.findField('last_history_smoke').setReadOnly(true);
         });
     },
     onReviewAll: function(){

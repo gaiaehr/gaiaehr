@@ -277,14 +277,14 @@ Ext.define('App.view.Viewport', {
                     text: i18n('my_account'),
                     iconCls: 'icoArrowRight',
                     handler: function(){
-                        me.navigateTo('panelMyAccount');
+                        me.navigateTo('App.view.miscellaneous.MyAccount');
                     }
                 },
                 {
                     text: i18n('my_settings'),
                     iconCls: 'icoArrowRight',
                     handler: function(){
-                        me.navigateTo('panelMySettings');
+                        me.navigateTo('App.view.miscellaneous.MySettings');
                     }
                 },
                 {
@@ -453,53 +453,53 @@ Ext.define('App.view.Viewport', {
         /**
          * General Area
          */
-        me.Dashboard     = me.MainPanel.add(Ext.create('App.view.dashboard.Dashboard'));
-        me.Calendar      = me.MainPanel.add(Ext.create('App.view.calendar.Calendar'));
-        me.Messages      = me.MainPanel.add(Ext.create('App.view.messages.Messages'));
+        me['Nav_App_view_dashboard_Dashboard'] = me.MainPanel.add(Ext.create('App.view.dashboard.Dashboard'));
+//        me.Calendar      = me.MainPanel.add(Ext.create('App.view.calendar.Calendar'));
+//        me.Messages      = me.MainPanel.add(Ext.create('App.view.messages.Messages'));
 //        me.PatientSearch = me.MainPanel.add(Ext.create('App.view.search.PatientSearch'));
-        me.FloorPlan     = me.MainPanel.add(Ext.create('App.view.areas.FloorPlan'));
+        me['Nav_App_view_areas_FloorPlan'] = me.MainPanel.add(Ext.create('App.view.areas.FloorPlan'));
         /**
          * Patient Area
          */
-        me.NewPatient    = me.MainPanel.add(Ext.create('App.view.patient.NewPatient'));
-	    me.Summary       = me.MainPanel.add(Ext.create('App.view.patient.Summary'));
-        me.Visits        = me.MainPanel.add(Ext.create('App.view.patient.Visits'));
-        me.Encounter     = me.MainPanel.add(Ext.create('App.view.patient.Encounter'));
-        me.VisitCheckout = me.MainPanel.add(Ext.create('App.view.patient.VisitCheckout'));
-        /**
-         * Fees Area
-         */
-        me.MainPanel.add(Ext.create('App.view.fees.Billing'));
-        me.MainPanel.add(Ext.create('App.view.fees.Payments'));
-        /**
-         * Miscellaneous
-         */
-        me.MainPanel.add(Ext.create('App.view.miscellaneous.Addressbook'));
-        me.MainPanel.add(Ext.create('App.view.miscellaneous.MyAccount'));
-        me.MainPanel.add(Ext.create('App.view.miscellaneous.MySettings'));
-        me.MainPanel.add(Ext.create('App.view.miscellaneous.OfficeNotes'));
-        me.MainPanel.add(Ext.create('App.view.miscellaneous.Websearch'));
-
-        me.ppdz = me.MainPanel.add(Ext.create('App.view.areas.PatientPoolDropZone'));
-
-
-        if(acl['access_gloabal_settings'])  me.MainPanel.add(Ext.create('App.view.administration.Globals'));
-        if(acl['access_facilities'])        me.MainPanel.add(Ext.create('App.view.administration.Facilities'));
-        if(acl['access_users'])             me.MainPanel.add(Ext.create('App.view.administration.Users'));
-        if(acl['access_practice'])          me.MainPanel.add(Ext.create('App.view.administration.Practice'));
-        if(acl['access_data_manager'])      me.MainPanel.add(Ext.create('App.view.administration.DataManager'));
-        if(acl['access_preventive_care'])   me.MainPanel.add(Ext.create('App.view.administration.PreventiveCare'));
-//        if(acl['access_medications'])       me.MainPanel.add(Ext.create('App.view.administration.Medications'));
-        if(acl['access_floor_plans'])       me.MainPanel.add(Ext.create('App.view.administration.FloorPlans'));
-        if(acl['access_roles'])             me.MainPanel.add(Ext.create('App.view.administration.Roles'));
-        if(acl['access_layouts'])           me.MainPanel.add(Ext.create('App.view.administration.Layout'));
-        if(acl['access_lists'])             me.MainPanel.add(Ext.create('App.view.administration.Lists'));
-        if(acl['access_event_log'])         me.MainPanel.add(Ext.create('App.view.administration.Log'));
-        if(acl['access_documents'])         me.MainPanel.add(Ext.create('App.view.administration.Documents'));
-
-        me.MainPanel.add(Ext.create('App.view.administration.ExternalDataLoads'));
-        me.MainPanel.add(Ext.create('App.view.administration.Applications'));
-        me.MainPanel.add(Ext.create('App.view.administration.Modules'));
+//        me.NewPatient    = me.MainPanel.add(Ext.create('App.view.patient.NewPatient'));
+//	    me.Summary       = me.MainPanel.add(Ext.create('App.view.patient.Summary'));
+//        me.Visits        = me.MainPanel.add(Ext.create('App.view.patient.Visits'));
+//	    me['Nav_App_view_patient_Encounter'] = me.MainPanel.add(Ext.create('App.view.patient.Encounter'));
+//        me.VisitCheckout = me.MainPanel.add(Ext.create('App.view.patient.VisitCheckout'));
+//        /**
+//         * Fees Area
+//         */
+//        me.MainPanel.add(Ext.create('App.view.fees.Billing'));
+//        me.MainPanel.add(Ext.create('App.view.fees.Payments'));
+//        /**
+//         * Miscellaneous
+//         */
+//        me.MainPanel.add(Ext.create('App.view.miscellaneous.Addressbook'));
+//        me.MainPanel.add(Ext.create('App.view.miscellaneous.MyAccount'));
+//        me.MainPanel.add(Ext.create('App.view.miscellaneous.MySettings'));
+//        me.MainPanel.add(Ext.create('App.view.miscellaneous.OfficeNotes'));
+//        me.MainPanel.add(Ext.create('App.view.miscellaneous.Websearch'));
+//
+        me['Nav_App_view_areas_PatientPoolDropZone'] = me.MainPanel.add(Ext.create('App.view.areas.PatientPoolDropZone'));
+//
+//
+//        if(acl['access_gloabal_settings'])  me.MainPanel.add(Ext.create('App.view.administration.Globals'));
+//        if(acl['access_facilities'])        me.MainPanel.add(Ext.create('App.view.administration.Facilities'));
+//        if(acl['access_users'])             me.MainPanel.add(Ext.create('App.view.administration.Users'));
+//        if(acl['access_practice'])          me.MainPanel.add(Ext.create('App.view.administration.Practice'));
+//        if(acl['access_data_manager'])      me.MainPanel.add(Ext.create('App.view.administration.DataManager'));
+//        if(acl['access_preventive_care'])   me.MainPanel.add(Ext.create('App.view.administration.PreventiveCare'));
+////        if(acl['access_medications'])       me.MainPanel.add(Ext.create('App.view.administration.Medications'));
+//        if(acl['access_floor_plans'])       me.MainPanel.add(Ext.create('App.view.administration.FloorPlans'));
+//        if(acl['access_roles'])             me.MainPanel.add(Ext.create('App.view.administration.Roles'));
+//        if(acl['access_layouts'])           me.MainPanel.add(Ext.create('App.view.administration.Layout'));
+//        if(acl['access_lists'])             me.MainPanel.add(Ext.create('App.view.administration.Lists'));
+//        if(acl['access_event_log'])         me.MainPanel.add(Ext.create('App.view.administration.Log'));
+//        if(acl['access_documents'])         me.MainPanel.add(Ext.create('App.view.administration.Documents'));
+//
+//        me.MainPanel.add(Ext.create('App.view.administration.ExternalDataLoads'));
+//        me.MainPanel.add(Ext.create('App.view.administration.Applications'));
+//        me.MainPanel.add(Ext.create('App.view.administration.Modules'));
         /**
          * Footer Panel
          */
@@ -652,7 +652,7 @@ Ext.define('App.view.Viewport', {
      */
     newPatient: function(){
         var me = this;
-        me.navigateTo('panelNewPatient');
+        me.navigateTo('App.view.patient.NewPatient');
     },
 
 	createEmergency: function(){
@@ -693,84 +693,144 @@ Ext.define('App.view.Viewport', {
 
 	openPatientSummary: function(){
         var me = this;
-        if(me.currCardCmp == Ext.getCmp('panelSummary')){
-            me.currCardCmp.onActive();
-        }else{
-            me.navigateTo('panelSummary');
-        }
+
+        me.navigateTo('App.view.patient.Summary', function(success){
+
+        });
+
     },
 
 	stowPatientRecord: function(){
         this.unsetPatient(null, true);
-        this.navigateTo('panelDashboard');
+        this.navigateTo('App.view.dashboard.Dashboard');
     },
 
 	openEncounter: function(eid){
         var me = this;
         if(acl['access_encounters']){
             app.patient.eid = eid;
-            me.navigateTo('panelEncounter', function(success){
+            me.navigateTo('App.view.patient.Encounter', function(success){
                 if(success){
-                    me.currCardCmp.openEncounter();
+	                Ext.Function.defer(function() {
+		                me.getPanelByCls('App.view.patient.Encounter').openEncounter(eid);
+	                }, 100);
+
                 }
             });
         }else{
             me.accessDenied();
         }
     },
-    checkOutPatient: function(eid){
+
+	checkOutPatient: function(eid){
         var me = this;
-        me.navigateTo('panelVisitCheckout');
+        me.navigateTo('App.view.patient.VisitCheckout');
     },
-    chargePatient: function(){
+
+	chargePatient: function(){
         this.navigateTo('panelVisitPayment');
     },
-    openPatientVisits: function(){
-        this.navigateTo('panelVisits');
+
+	openPatientVisits: function(){
+        this.navigateTo('App.view.patient.Visits');
     },
-    goToPoolAreas: function(){
-        this.navigateTo('panelPoolArea');
+
+	goToPoolAreas: function(){
+        this.navigateTo('App.view.areas.PatientPoolDropZone');
     },
-    goToFloorPlans: function(){
-        this.navigateTo('panelAreaFloorPlan');
+
+	goToFloorPlans: function(){
+        this.navigateTo('App.view.areas.FloorPlan');
     },
-    navigateTo: function(id, callback){
+
+    navigateTo: function(cls, callback){
         var tree = this.navColumn.down('treepanel'),
 	        treeStore = tree.getStore(),
 	        sm = tree.getSelectionModel(),
-	        node = treeStore.getNodeById(id);
+	        node = treeStore.getNodeById(cls);
 
 	    sm.select(node);
         if(typeof callback == 'function'){
             callback(true);
         }
     },
+
     navigateToDefault: function(){
-        this.navigateTo('panelDashboard');
+        this.navigateTo('App.view.dashboard.Dashboard');
     },
-    afterNavigationLoad: function(){
+
+	afterNavigationLoad: function(){
         this.fullMode ? this.navColumn.expand() : this.navColumn.collapse();
         this.navigateToDefault();
         this.removeAppMask();
         this.setTask(true);
     },
-    onNavigationNodeSelected: function(model, selected){
+
+	onNavigationNodeSelected: function(model, selected){
         var me = this;
         if(0 < selected.length){
             if(selected[0].data.leaf){
-                var tree = me.navColumn.down('treepanel'), sm = tree.getSelectionModel(), card = selected[0].data.id, layout = me.MainPanel.getLayout(), cardCmp = Ext.getCmp(card);
-                me.currCardCmp = cardCmp;
-                layout.setActiveItem(card);
-                cardCmp.onActive(function(success){
-                    (success) ? me.lastCardNode = sm.getLastSelected() : me.goBack();
-                });
+                var cls = selected[0].data.id,
+	                ref = me.getNavRefByClass(cls),
+	                layout = me.MainPanel.getLayout();
+
+//	            cardCmp = Ext.getCmp(card);
+//	            me.currCardCmp = layout.getActiveItem();
+//	            say(ref);
+//	            say(me[ref]);
+
+	            if (typeof me[ref] == 'undefined') {
+		            me.MainPanel.el.mask('Loading...');
+		            Ext.Function.defer(function() {
+			            me[ref] = me.MainPanel.add(Ext.create(cls));
+			            me[ref].onActive(function(success){
+				            me.MainPanel.el.unmask();
+				            if(success){
+					            layout.setActiveItem(me[ref]);
+				            }
+			            });
+		            }, 100);
+	            } else {
+		            if (me[ref].isDestroyed) me[ref].render();
+		            me[ref].onActive(function(success){
+			            me.MainPanel.el.unmask();
+			            if(success) layout.setActiveItem(me[ref]);
+		            });
+	            }
+
+
+//              layout.setActiveItem(card);
+	            // if onActive success = false... go back
+//	            me[ref].onActive(function(success){
+//                    (success) ? me.lastCardNode = sm.getLastSelected() : me.goBack();
+//                });
             }
         }
     },
+
+	getPanelByCls:function(cls){
+		var me = this,
+			ref = me.getNavRefByClass(cls);
+		if (typeof me[ref] == 'undefined') {
+			return me[ref] = me.MainPanel.add(Ext.create(cls));
+		}else{
+			return me[ref];
+		}
+	},
+
+	getNavRefByClass: function(cls) {
+		return 'Nav_' + cls.replace(/\./g, '_');
+	},
+
+	getClassByNavRef: function(ref) {
+		return ref.replace(/_/g, '.').replace('Nav.', '');
+	},
+
     goBack: function(){
         var tree = this.navColumn.down('treepanel'), sm = tree.getSelectionModel();
         sm.select(this.lastCardNode);
     },
+
     navCollapsed: function(){
         var me = this, navView = me.patientPoolArea, foot = me.Footer, footView;
         if(foot){
@@ -781,7 +841,8 @@ Ext.define('App.view.Viewport', {
         me.navColumn.isCollapsed = true;
         navView.hide();
     },
-    navExpanded: function(){
+
+	navExpanded: function(){
         var me = this, navView = me.patientPoolArea, foot = me.Footer, footView;
         if(foot){
             footView = foot.down('dataview');
@@ -971,7 +1032,7 @@ Ext.define('App.view.Viewport', {
                 }
             }
         });
-        this.ppdz.reloadStores();
+	    me['Nav_App_view_areas_PatientPoolDropZone'].reloadStores();
     },
     cancelAutoLogout: function(){
         var me = this;
@@ -1044,7 +1105,9 @@ Ext.define('App.view.Viewport', {
                 if(app.patient.pid){
                     var sourceEl = app.patientBtn.el.dom, d;
 //                    if(app.currCardCmp != app.ppdz){
-//                        app.MainPanel.getLayout().setActiveItem(app.ppdz);
+                        app.MainPanel.getLayout().setActiveItem(
+	                        app.getPanelByCls('App.view.areas.PatientPoolDropZone')
+                        ).onActive();
 //                    }
                     app.navColumn.down('treepanel').getSelectionModel().deselectAll();
                     if(sourceEl){
@@ -1068,9 +1131,11 @@ Ext.define('App.view.Viewport', {
                 return this.dragData.repairXY;
             },
             onStartDrag:function(){
-                if(app.currCardCmp != app.ppdz){
-                    app.MainPanel.getLayout().setActiveItem(app.ppdz);
-                }
+//                if(app.currCardCmp != app.ppdz){
+	                app.MainPanel.getLayout().setActiveItem(
+		                app.getPanelByCls('App.view.areas.PatientPoolDropZone')
+	                ).onActive();
+//                }
             }
         });
     },
@@ -1086,10 +1151,10 @@ Ext.define('App.view.Viewport', {
                 if(this.newGroupReset){
                     var sourceEl = e.getTarget(panel.itemSelector, 10), patientData = panel.getRecord(sourceEl).data;
                     this.removeFromGroup(this.ddGroup);
-                    say('drag record:');
-                    say(patientData);
+//                    say('drag record:');
+//                    say(patientData);
                     if(patientData.floorPlanId != 0 && patientData.patientZoneId == 0){
-                        app.navigateTo('panelAreaFloorPlan');
+                        app.navigateTo('App.view.areas.FloorPlan');
                         this.ddGroup = 'patientPoolAreas';
                     }else{
                         this.ddGroup = 'patient';
@@ -1152,11 +1217,11 @@ Ext.define('App.view.Viewport', {
                 app.MainPanel.el.unmask();
 
 	            if(data.patientData.eid && data.patientData.poolArea == 'Check Out'){
-		            me.VisitCheckout.el.mask(i18n('loading...'));
+//		            me.VisitCheckout.el.mask(i18n('loading...'));
 	            }else if(data.patientData.eid && acl['access_encounters']){
-		            me.Encounter.el.mask(i18n('loading...'));
+//		            me.Encounter.el.mask(i18n('loading...'));
 	            }else if(data.patientData.floorPlanId == null || data.patientData.floorPlanId == 0){
-		            me.Summary.el.mask(i18n('loading...'));
+//		            me.Summary.el.mask(i18n('loading...'));
 	            }
 
 	            me.setPatient(data.patientData.pid, data.patientData.eid, function(){
@@ -1166,6 +1231,8 @@ Ext.define('App.view.Viewport', {
                     // if encounter id is set and and user has access to encounter area... go to Encounter panel
                     // and open the encounter
                     }else if(data.patientData.eid && acl['access_encounters']){
+
+	                    say('openEncounter');
                         me.openEncounter(data.patientData.eid);
                     // else go to patient summary
                     }else if(data.patientData.floorPlanId == null || data.patientData.floorPlanId == 0){
@@ -1255,8 +1322,9 @@ Ext.define('App.view.Viewport', {
             msg: msg,
             buttons: Ext.Msg.OK,
             icon: icon,
-           // width:800,
-            maxWidth:1200
+//           width:900
+	        minWidth :700,
+            maxWidth:1000
         });
     },
 

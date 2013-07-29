@@ -513,7 +513,7 @@ class Medical
 		$this->db->setSQL("SELECT * FROM patient_surgery WHERE pid='$pid'");
 		$records = array();
 		foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) as $rec) {
-			$rec['alert'] = ($rec['end_date'] == null || $rec['end_date'] == '0000-00-00 00:00:00') ? 1 : 0;
+			$rec['alert'] = (!isset($rec['end_date']) || $rec['end_date'] == '0000-00-00 00:00:00') ? 1 : 0;
 			$records[]    = $rec;
 		}
 		return $records;
@@ -594,12 +594,14 @@ class Medical
 
 	public function getEncounterReviewByEid($eid)
 	{
-		$this->db->setSQL("SELECT review_alcohol,
-                                      review_smoke,
-                                      review_pregnant
-                            	 FROM encounters
-                            	WHERE eid = '$eid'");
-		return $this->db->fetchRecord();
+		$this->db->setSQL("SELECT pid, review_alcohol, review_smoke, review_pregnant FROM encounters WHERE eid = '$eid'");
+		$rec = $this->db->fetchRecord();
+		$this->db->setSQL("SELECT review_smoke, service_date FROM encounters WHERE pid = '{$rec['pid']}' ORDER BY service_date DESC LIMIT 1");
+		$smoke = $this->db->fetchRecord();
+		$hasHistory = $smoke !== false && isset($smoke['review_smoke']);
+		$rec['last_history_smoke'] = $hasHistory ? $smoke['review_smoke'] : '';
+		$rec['last_history_smoke_date'] = $hasHistory ? $smoke['service_date'] : '';
+		return $rec;
 	}
 
 	/**

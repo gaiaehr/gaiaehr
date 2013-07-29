@@ -551,7 +551,7 @@ Ext.define('App.view.patient.Encounter', {
                         app.accessDenied();
                     }
                 }else{
-                    me.msg('Oops!', i18n('vitals_form_is_epmty'))
+                    me.msg('Oops!', i18n('vitals_form_is_epmty'), true)
                 }
             }else{
                 if(acl['edit_encounters']){
@@ -882,7 +882,14 @@ Ext.define('App.view.patient.Encounter', {
      * @param e
      */
     lbskg:function(field, e){
-        var v = field.getValue(), weight = v / 2.2, res = Ext.util.Format.round(weight, 1);
+	    var v = field.getValue().split('/'),
+		    lbs = v[0] || 0,
+		    oz = v[1] || 0,
+	        kg = 0,
+		    res;
+		    if(lbs > 0) kg =  kg + (lbs / 2.2046);
+		    if(oz > 0) kg =  kg + (oz / 35.274);
+	        res = Ext.util.Format.round(kg, 1);
         if(e.getKey() != e.TAB){
             field.up('form').getForm().findField('weight_kg').setValue(res);
         }
@@ -893,7 +900,9 @@ Ext.define('App.view.patient.Encounter', {
      * @param e
      */
     kglbs:function(field, e){
-        var v = field.getValue(), weight = v * 2.2, res = Ext.util.Format.round(weight, 1);
+	    var v = field.getValue(),
+	        weight = v * 2.2046,
+	        res = Ext.util.Format.round(weight, 1);
         if(e.getKey() != e.TAB){
             field.up('form').getForm().findField('weight_lbs').setValue(res);
         }
@@ -904,7 +913,9 @@ Ext.define('App.view.patient.Encounter', {
      * @param e
      */
     incm:function(field, e){
-        var v = field.getValue(), weight = v * 2.54, res = Ext.util.Format.round(weight, 1);
+        var v = field.getValue(),
+	        weight = v * 2.54,
+	        res = Math.floor(weight);
         if(e.getKey() != e.TAB){
             if(field.name == 'head_circumference_in'){
                 field.up('form').getForm().findField('head_circumference_cm').setValue(res);
@@ -921,7 +932,9 @@ Ext.define('App.view.patient.Encounter', {
      * @param e
      */
     cmin:function(field, e){
-        var v = field.getValue(), weight = v * 0.39, res = Ext.util.Format.round(weight, 1);
+        var v = field.getValue(),
+	        weight = v / 2.54,
+	        res = Ext.util.Format.round(weight, 0);
         if(e.getKey() != e.TAB){
             if(field.name == 'head_circumference_cm'){
                 field.up('form').getForm().findField('head_circumference_in').setValue(res);

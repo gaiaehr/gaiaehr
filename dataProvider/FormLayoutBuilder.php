@@ -75,7 +75,7 @@ class FormLayoutBuilder {
 				/**
 				 * since now we know the column doesn't exist, lets create one for the new field
 				 */
-				if(!$container && !$this->fieldHasColumn()){
+				if((!$container && !$this->fieldHasColumn()) || $data['xtype'] != 'displayfield'){
 					if(!$this->addFieldModel()) throw new Exception("Unable to modified '$this->model' sencha model");
 				}
 				/**

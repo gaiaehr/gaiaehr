@@ -258,8 +258,8 @@ class Encounter
 		foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row){
 			$row['height_in']     = intval($row['height_in']);
 			$row['height_cm']     = intval($row['height_cm']);
-			$row['administer_by'] = $this->user->getUserNameById($row['uid']);
-			$row['authorized_by'] = $this->user->getUserNameById($row['auth_uid']);
+			$row['administer_by'] = $row['uid'] != null ? $this->user->getUserNameById($row['uid']) : '';
+			$row['authorized_by'] = $row['auth_uid'] != null ? $this->user->getUserNameById($row['auth_uid']) : '';
 			array_push($rows, $row);
 		}
 		return $rows;
@@ -276,8 +276,8 @@ class Encounter
 		foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row){
 			$row['height_in']     = intval($row['height_in']);
 			$row['height_cm']     = intval($row['height_cm']);
-			$row['administer_by'] = $this->user->getUserNameById($row['uid']);
-			$row['authorized_by'] = $this->user->getUserNameById($row['auth_uid']);
+			$row['administer_by'] = $row['uid'] != null ? $this->user->getUserNameById($row['uid']) : '';
+			$row['authorized_by'] = $row['auth_uid'] != null ? $this->user->getUserNameById($row['auth_uid']) : '';
 			array_push($rows, $row);
 		}
 		return $rows;

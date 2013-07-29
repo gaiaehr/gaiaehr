@@ -520,7 +520,10 @@ Ext.define('App.view.patient.Encounter', {
                     app.accessDenied();
                 }
             }else if(SaveBtn.action == 'vitals'){
-                var VFields = form.getFields().items, VFieldsCount = VFields.length, emptyCount = 0;
+                var VFields = form.getFields().items,
+	                VFieldsCount = VFields.length,
+	                emptyCount = 0;
+
                 for(var i = 0; i < VFields.length; i++){
                     if(VFields[i].xtype != 'mitos.datetime'){
                         if(VFields[i].value == ''){
@@ -528,6 +531,7 @@ Ext.define('App.view.patient.Encounter', {
                         }
                     }
                 }
+
                 if((VFieldsCount - 3) > emptyCount){
                     if(acl['add_vitals']){
                         store = me.encounterStore.getAt(0).vitals();
@@ -573,6 +577,7 @@ Ext.define('App.view.patient.Encounter', {
             }
         }
     },
+
     onVitalsSign:function(){
         var me = this, form = me.vitalsPanel.down('form').getForm(), store = me.encounterStore.getAt(0).vitals(), record = form.getRecord();
         if(form.isValid()){
@@ -630,14 +635,21 @@ Ext.define('App.view.patient.Encounter', {
      */
     openEncounter:function(eid){
         var me = this, vitals, store;
-	    me.el.mask(i18n('loading...'));
+	    me.el.mask(i18n('loading...') + ' ' +  i18n('encounter') + ' - ' + eid );
         me.resetTabs();
-        me.encounterStore.getProxy().extraParams.eid = me.eid = eid || app.patient.eid;
+
+	    // add eid as extra params to encounter store
+	    // and set 'eid' globally for convenient use
+        me.encounterStore.getProxy().extraParams.eid = me.eid = eid;
 
         me.encounterStore.load({
             scope:me,
             callback:function(record){
                 var data = record[0].data;
+
+				// set pid globally for convenient use
+	            me.pid = data.pid;
+
                 me.currEncounterStartDate = data.service_date;
 
 	            if(!data.close_date){
@@ -1158,10 +1170,12 @@ Ext.define('App.view.patient.Encounter', {
      * to call every this panel becomes active
      */
     onActive:function(callback){
-        var me = this, patient = app.patient;
+        var me = this,
+	        patient = app.patient;
+
         if(patient.pid && patient.eid){
-	        me.pid = patient.pid;
-	        me.eid = patient.eid;
+//	        me.pid = patient.pid;
+//	        me.eid = patient.eid;
             me.updateTitle(patient.name + ' (' + i18n('visits') + ')', patient.readOnly, null);
             me.setReadOnly(patient.readOnly);
             callback(true);

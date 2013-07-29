@@ -886,19 +886,20 @@ CREATE TABLE IF NOT EXISTS `forms_fields` (
   `parentId` varchar(11) COLLATE latin1_bin DEFAULT NULL,
   `index` int(11) DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_bin ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_bin AUTO_INCREMENT=1182 ;
 
 CREATE TABLE IF NOT EXISTS `forms_field_options` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `field_id` text COMMENT 'Field ID',
-  `options` text COMMENT 'Field options data stored as JSON string',
+  `options` text COMMENT 'Field Options JSON Format',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1557 ;
 
 CREATE TABLE IF NOT EXISTS `forms_layout` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL COMMENT 'form title',
   `form_data` varchar(255) NOT NULL COMMENT 'database table saving all the data for this form',
+  `model` varchar(200) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=12 ;
 

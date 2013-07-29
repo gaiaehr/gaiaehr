@@ -25,6 +25,7 @@ Ext.define('App.view.patient.Encounter', {
         'App.store.patient.Vitals'
     ],
     showRating:true,
+	convercionMethod: 'english',
     pid:null,
     eid:null,
     currEncounterStartDate:null,
@@ -946,9 +947,24 @@ Ext.define('App.view.patient.Encounter', {
         }
     },
     bmi:function(field){
-        var form = field.up('form').getForm(), weight = form.findField('weight_kg').getValue(), height = form.findField('height_cm').getValue(), bmi, status;
+        var form = field.up('form').getForm(),
+	        weight,
+	        height,
+	        bmi,
+	        status;
+	    if(this.convercionMethod == 'english'){
+		    weight = form.findField('weight_lbs').getValue().split('/')[0];
+		    height = form.findField('height_in').getValue();
+	    }else{
+		    weight = form.findField('weight_kg').getValue();
+		    height = form.findField('height_cm').getValue();
+	    }
         if(weight > 0 && height > 0){
-            bmi = weight / (height / 100 * height / 100);
+	        if(this.convercionMethod == 'english'){
+		        bmi = weight / (height * height) * 703;
+	        }else{
+		        bmi = weight / ((height/100) * (height/100));
+	        }
             if(bmi < 15){
                 status = i18n('very_severely_underweight')
             }else if(bmi >= 15 && bmi < 16){
@@ -966,7 +982,8 @@ Ext.define('App.view.patient.Encounter', {
             }else if(bmi >= 40){
                 status = i18n('obese_class_3')
             }
-            field.up('form').getForm().findField('bmi').setValue(Ext.util.Format.number(bmi, '0.00'));
+            field.up('form').getForm().findField('bmi').setValue(Ext.util.Format.round(bmi, 1));
+//            field.up('form').getForm().findField('bmi').setValue(bmi);
             field.up('form').getForm().findField('bmi_status').setValue(status);
         }
     },

@@ -594,12 +594,14 @@ class Medical
 
 	public function getEncounterReviewByEid($eid)
 	{
-		$this->db->setSQL("SELECT review_alcohol,
-                                      review_smoke,
-                                      review_pregnant
-                            	 FROM encounters
-                            	WHERE eid = '$eid'");
-		return $this->db->fetchRecord();
+		$this->db->setSQL("SELECT pid, review_alcohol, review_smoke, review_pregnant FROM encounters WHERE eid = '$eid'");
+		$rec = $this->db->fetchRecord();
+		$this->db->setSQL("SELECT review_smoke, service_date FROM encounters WHERE pid = '{$rec['pid']}' ORDER BY service_date DESC LIMIT 1");
+		$smoke = $this->db->fetchRecord();
+		$hasHistory = $smoke !== false && isset($smoke['review_smoke']);
+		$rec['last_history_smoke'] = $hasHistory ? $smoke['review_smoke'] : '';
+		$rec['last_history_smoke_date'] = $hasHistory ? $smoke['service_date'] : '';
+		return $rec;
 	}
 
 	/**

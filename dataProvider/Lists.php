@@ -34,7 +34,9 @@ class Lists extends MatchaHelper
 	{
         $rows = array();
         if($this->ComboListOptions == NULL) $this->ComboListOptions = MatchaModel::setSenchaModel('App.model.administration.ComboListOptions');
-        foreach($this->ComboListOptions->load(array('list_id'=>$params->list_id))->all() as $Options) array_push($rows, $Options);
+		if(isset($params->list_id)){
+			foreach($this->ComboListOptions->load(array('list_id'=>$params->list_id))->all() as $Options) array_push($rows, $Options);
+		}
         return $rows;
 	}
 

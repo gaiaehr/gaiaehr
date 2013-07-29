@@ -1174,5 +1174,7 @@ $LANG = array(
     'service'                               => 'Service',
     'added'                                 => 'Added',
     'copay'                                 => 'Co-Pay',
-    'add_new_laboratory'                    => 'Add New Laboratory'
+    'add_new_laboratory'                    => 'Add New Laboratory',
+    'n/a'                                   => 'N/A',
+    'smoke_history'                         => 'Smoke History'
 );

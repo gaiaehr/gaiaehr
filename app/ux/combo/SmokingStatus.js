@@ -1,6 +1,7 @@
 Ext.define('App.ux.combo.SmokingStatus', {
 	extend       : 'Ext.form.ComboBox',
 	alias        : 'widget.mitos.smokingstatuscombo',
+	editable     : false,
 	initComponent: function() {
 		var me = this;
 
@@ -27,13 +28,12 @@ Ext.define('App.ux.combo.SmokingStatus', {
 		});
 
 		Ext.apply(this, {
-			editable    : false,
 			queryMode   : 'local',
 			displayField: 'option_name',
 			valueField  : 'option_value',
 			emptyText   : i18n('select'),
 			store       : me.store
-		}, null);
+		});
 		me.callParent(arguments);
 	}
 });

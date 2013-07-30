@@ -46,28 +46,40 @@ Ext.define('App.view.administration.Log',
 			},
 			{
 				width : 120,
-				text : 'Date',
+				text : i18n('date_created'),
 				sortable : true,
-				dataIndex : 'date'
+				dataIndex : 'created'
 			},
 			{
 				width : 160,
-				text : 'User',
+				text : i18n('user'),
 				sortable : true,
 				dataIndex : 'user'
 			},
 			{
 				width : 100,
-				text : 'Event',
+				text : i18n('event'),
 				sortable : true,
 				dataIndex : 'event'
 			},
 			{
-				flex : 1,
-				text : 'Activity',
+				flex : 120,
+				text : i18n('modify'),
 				sortable : true,
-				dataIndex : 'comments'
-			}],
+				dataIndex : 'modify'
+			},
+            {
+                flex : 120,
+                text : i18n('access'),
+                sortable : true,
+                dataIndex : 'access'
+            },
+            {
+                flex : 120,
+                text : i18n('deleted'),
+                sortable : true,
+                dataIndex : 'deleted'
+            }],
 			listeners :
 			{
 				scope : this,

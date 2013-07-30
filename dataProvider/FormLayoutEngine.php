@@ -69,10 +69,10 @@ class FormLayoutEngine
 		if($this->o == null) $this->o = MatchaModel::setSenchaModel('App.model.administration.FormFieldOptions');
 	}
 	private function setComboListModel(){
-		if($this->cl == null) $this->cl = MatchaModel::setSenchaModel('App.model.administration.ComboList');
+		if($this->cl == null) $this->cl = MatchaModel::setSenchaModel('App.model.administration.Lists');
 	}
 	private function setComboListOptionsModel(){
-		if($this->clo == null) $this->clo = MatchaModel::setSenchaModel('App.model.administration.ComboListOptions');
+		if($this->clo == null) $this->clo = MatchaModel::setSenchaModel('App.model.administration.ListOptions');
 	}
 
 	/**

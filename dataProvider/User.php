@@ -71,14 +71,18 @@ class User
             if(!$this->usernameExist($params->username))
             {
                 unset($params->fullname);
+
                 if (isset($params->taxonomy) && $params->taxonomy == '') unset($params->taxonomy);
-                $password = $params->password;
-                // unset passwords, this will be handle later
-                unset($params->password, $params->pwd_history1, $params->pwd_history2);
+
+	            // handle passwords
+	            $aes = $this->getAES();
+	            $params->password = $aes->encrypt($params->password);
+                unset($params->pwd_history1, $params->pwd_history2);
+	            // save new user
                 $this->user = $this->u->save($params);
+
 	            unset($this->user['password'], $this->user['pwd_history1'], $this->user['pwd_history2']);
 	            $this->user['fullname'] = Person::fullname($params->fname, $params->mname, $params->lname);
-                $this->changePassword($password);
 	            $this->user['password'] = '';
                 return $this->user;
             }

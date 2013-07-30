@@ -17,26 +17,53 @@
  */
 
 Ext.define('App.model.administration.ListOptions', {
-    extend: 'Ext.data.Model',
-    table: {
-        name:'listoptions',
-        comment:'List Options'
-    },
-    fields: [
-        {name: 'id',type: 'int', comment: 'List Options ID'},
-        {name: 'list_id',type: 'string'},
-        {name: 'option_value',type: 'string'},
-        {name: 'option_name',type: 'string'},
-        {name: 'seq',type: 'string'},
-        {name: 'notes',type: 'string'},
-        {name: 'active',type: 'bool'}
-    ],
-    proxy: {
-        type: 'direct',
-        api: {
-            read: Lists.getOptions,
-            create: Lists.addOption,
-            update: Lists.updateOption
-        }
-    }
+	extend: 'Ext.data.Model',
+	table: {
+		name: 'combo_lists_options',
+		comment: 'Combo List Options'
+	},
+	fields: [
+		{
+			name: 'id',
+			type: 'int',
+			comment: 'List Options ID'
+		},
+		{
+			name: 'list_id',
+			type: 'string',
+			comment: 'List ID'
+		},
+		{
+			name: 'option_value',
+			type: 'string',
+			comment: 'Value'
+		},
+		{
+			name: 'option_name',
+			type: 'string',
+			comment: 'Name'
+		},
+		{
+			name: 'seq',
+			type: 'int',
+			comment: 'SEQ'},
+		{
+			name: 'notes',
+			type: 'string',
+			comment: 'Notes'
+		},
+		{
+			name: 'active',
+			type: 'bool',
+			comment: 'Active?'
+		}
+	],
+	proxy: {
+		type: 'direct',
+		api: {
+			read: Lists.getOptions,
+			create: Lists.addOption,
+			update: Lists.updateOption
+		}
+	}
 });

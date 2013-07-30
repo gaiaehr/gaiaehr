@@ -46,8 +46,8 @@ class CombosData
     //------------------------------------------------------------------------------------------------------------------
 	public function getOptionsByListId(stdClass $params)
 	{
-		if($this->CL == NULL) $this->CL = MatchaModel::setSenchaModel('App.model.administration.ComboList');
-        if($this->CLO == NULL) $this->CLO = MatchaModel::setSenchaModel('App.model.administration.ComboListOptions');
+		if($this->CL == NULL) $this->CL = MatchaModel::setSenchaModel('App.model.administration.Lists');
+        if($this->CLO == NULL) $this->CLO = MatchaModel::setSenchaModel('App.model.administration.ListOptions');
 		if(isset($params->list_id))
         {
 			if(is_numeric($params->list_id))
@@ -160,7 +160,7 @@ class CombosData
 
 	public function getLists()
 	{
-        if($this->CL == NULL) $this->CL = MatchaModel::setSenchaModel('App.model.administration.ComboList');
+        if($this->CL == NULL) $this->CL = MatchaModel::setSenchaModel('App.model.administration.Lists');
         $records = $this->CL->load()->all();
 	    // manually add all system combos that are not stored combo_lists table
 		$records[] = array( 'id' => 'activePharmacies', 'title' => 'Active Pharmacies' );

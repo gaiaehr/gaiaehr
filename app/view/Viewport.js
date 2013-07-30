@@ -695,7 +695,12 @@ Ext.define('App.view.Viewport', {
         var me = this;
 
         me.navigateTo('App.view.patient.Summary', function(success){
+	        if(success){
+		        Ext.Function.defer(function() {
+			        me.getPanelByCls('App.view.patient.Summary').onActive();
+		        }, 100);
 
+	        }
         });
 
     },
@@ -863,6 +868,7 @@ Ext.define('App.view.Viewport', {
         var me = this, post = selection[0];
         if(post){
             me.setPatient(post.get('pid'), null, function(){
+	            combo.reset();
                 me.openPatientSummary();
             });
         }

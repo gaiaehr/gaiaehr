@@ -76,11 +76,11 @@ class User
                 // unset passwords, this will be handle later
                 unset($params->password, $params->pwd_history1, $params->pwd_history2);
                 $this->user = $this->u->save($params);
-
-                $params->fullname = Person::fullname($params->fname, $params->mname, $params->lname);
+	            unset($this->user['password'], $this->user['pwd_history1'], $this->user['pwd_history2']);
+	            $this->user['fullname'] = Person::fullname($params->fname, $params->mname, $params->lname);
                 $this->changePassword($password);
-                $params->password = '';
-                return $params;
+	            $this->user['password'] = '';
+                return $this->user;
             }
             else
             {

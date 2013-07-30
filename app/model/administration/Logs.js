@@ -20,8 +20,8 @@ Ext.define('App.model.administration.Logs',
 {
     extend: 'Ext.data.Model',
     table: {
-        name:'logs',
-        comment:'Event Logs'
+        name:'audit',
+        comment:'Audit Logs'
     },
     fields: [
         {
@@ -33,43 +33,52 @@ Ext.define('App.model.administration.Logs',
             autoIncrement : true,
             allowNull : false,
             store: true,
-            comment: 'Event Logs ID'
+            comment: 'Audit Log ID'
         },
         {
-            name: 'date',
-            type: 'string'
+            name: 'created',
+            type: 'date',
+            comment: 'Created record date'
+        },
+        {
+            name: 'modify',
+            type: 'date',
+            comment: 'Modify record date'
+        },
+        {
+            name: 'deleted',
+            type: 'date',
+            comment: 'Delete or Hide record date'
+        },
+        {
+            name: 'access',
+            type: 'date',
+            comment: 'Access record date'
         },
         {
             name: 'event',
-            type: 'auto'
-        },
-        {
-            name: 'user',
-            type: 'string'
+            type: 'auto',
+            comment: 'Event description'
         },
         {
             name: 'facility',
-            type: 'string'
-        },
-        {
-            name: 'comments',
-            type: 'string'
-        },
-        {
-            name: 'user_notes',
-            type: 'string'
+            type: 'string',
+            comment: 'Witch facility'
         },
         {
             name: 'patient_id',
-            type: 'string'
+            type: 'string',
+            comment: 'Patient ID'
         },
         {
-            name: 'success',
-            type: 'int'
+            name: 'user_id',
+            type: 'int',
+            comment: 'User ID'
         },
         {
             name: 'checksum',
-            type: 'string'
+            type: 'string',
+            comment: 'Checksum of SQL statement'
         },
         {
             name: 'crt_user',

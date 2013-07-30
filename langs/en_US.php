@@ -407,7 +407,6 @@ $LANG = array(
 	'head_circumference_cm'					=> 'Head Circumference cm',
 	'waist_circumference_in'				=> 'Waist Circumference in',
 	'waist_circumference_cm'				=> 'Waist Circumference cm',
-	'bmi'									=> 'BMI',
 	'bmi_status'							=> 'BMI Status',
 	'other_notes'							=> 'Other Notes',
 	'administer'							=> 'Administer',

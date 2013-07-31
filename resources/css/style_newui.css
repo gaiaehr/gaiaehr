@@ -8,6 +8,9 @@
 .icoUnlocked {
 	background-image: url(../images/icons/unlocked.png) !important;
 }
+.icoUnlocked32 {
+	background-image: url(../images/icons/unlocked32.png) !important;
+}
 .icoLogout {
 	background-image: url(../images/icons/logout.png) !important;
 }

@@ -267,7 +267,7 @@ Ext.define('App.view.Viewport', {
             xtype: 'button',
             text: me.user.title + ' ' + me.user.lname,
             scale: 'large',
-            iconCls: 'icoDoctor',
+            iconCls: isEmerAccess ? 'icoUnlocked32' : 'icoDoctor',
             iconAlign: 'left',
             cls: 'drButton',
             style: 'float:right',
@@ -708,9 +708,13 @@ Ext.define('App.view.Viewport', {
 	},
 
 	doEmergencyAccess:function(){
-
-		say('Break!');
-
+		ACL.emergencyAccess(app.user.id, function(success){
+			if(success){
+				window.location = './';
+				return;
+			}
+			Ext.Msg.alert(i18n('oops'), i18n('emergency_access_error'));
+		});
 	},
 
 	//*****************************************************************

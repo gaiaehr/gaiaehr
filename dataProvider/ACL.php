@@ -52,6 +52,12 @@ class ACL
 	 */
     private $AUP = null;
 
+	/**
+	 * true if emergency access is enable
+	 * @var bool
+	 */
+	private $emerAccess = false;
+
     /**
 	 * @internal param string $user_id
 	 * @param null|string $uid
@@ -59,9 +65,10 @@ class ACL
 	 */
 	public function __construct($uid = '')
 	{
-		$this->user_id    = (!is_numeric($uid)) ? $_SESSION['user']['id'] : $uid;
+		$this->user_id = (!is_numeric($uid)) ? $_SESSION['user']['id'] : $uid;
 		$this->setModels();
 		$this->user_roles = $this->getUserRoles();
+		$this->emerAccess = $this->isEmergencyAccess();
 		$this->buildACL();
 	}
 
@@ -119,11 +126,9 @@ class ACL
 	private function getUserRoles()
 	{
 		$roles = array();
-
         $sqlStatement['SELECT'] = "acl_roles.role_key";
         $sqlStatement['LEFTJOIN'] = "acl_roles ON users.role_id = acl_roles.id";
         $sqlStatement['WHERE'] = "users.id ='$this->user_id'";
-
         $rolesRec = $this->U->buildSQL($sqlStatement)->all();
         if($rolesRec !== false){
             foreach($rolesRec AS $role) {
@@ -141,8 +146,7 @@ class ACL
 	private function buildACL()
 	{
 		//first, get the rules for the user's role
-		if(count($this->user_roles) > 0)
-        {
+		if(count($this->user_roles) > 0){
 			$this->perms = array_merge($this->perms, $this->getRolePerms($this->user_roles));
 		}
 		//then, get the individual user permissions
@@ -190,13 +194,26 @@ class ACL
             $sqlStatement['WHERE'] = "role_key = '$fo'";
             $sqlStatement['ORDER'] = "id ASC";
         }
+		if($this->emerAccess) $emerPerms = $this->getEmergencyAccessPerms();
 		foreach($this->ARP->buildSQL($sqlStatement)->all() as $row)
         {
 			$pK = $pK = strtolower($row['perm_key']);
 			if($pK == '') continue;
-			if($row['value'] == '1') $hP = true; else $hP = false;
+			if($row['value'] == '1'){
+				$hP = true;
+			}else{
+				if($this->emerAccess && isset($emerPerms[$row['perm_key']]) && $emerPerms[$row['perm_key']]){
+					$hP = true;
+				} else {
+					$hP = false;
+				}
+			}
 			$perms[$pK] = array(
-				'perm' => $pK, 'inheritted' => true, 'value' => $hP, 'Name' => $this->getPermNameByPermKey($row['perm_key']), 'id' => $row['id']
+				'perm' => $pK,
+				'inheritted' => true,
+				'value' => $hP,
+				'Name' => $this->getPermNameByPermKey($row['perm_key']),
+				'id' => $row['id']
 			);
 		}
 		return $perms;
@@ -209,13 +226,26 @@ class ACL
 	public function getUserPerms()
 	{
 		$perms = array();
+		if($this->emerAccess) $emerPerms = $this->getEmergencyAccessPerms();
 		foreach($this->AUP->load(array('user_id'=>$this->user_id))->all() as $row)
         {
 			$pK = strtolower($row['perm_key']);
 			if($pK == '') continue;
-			if($row['value'] == '1') $hP = true; else $hP = false;
-			$perms[$pK] = array(
-				'perm' => $pK, 'inheritted' => false, 'value' => $hP, 'Name' => $this->getPermNameByPermKey($row['perm_key']), 'id' => $row['id']
+	        if($row['value'] == '1'){
+		        $hP = true;
+	        }else{
+		        if($this->emerAccess && isset($emerPerms[$row['perm_key']]) && $emerPerms[$row['perm_key']]){
+			        $hP = true;
+		        } else {
+			        $hP = false;
+		        }
+	        }
+	        $perms[$pK] = array(
+				'perm' => $pK,
+				'inheritted' => false,
+				'value' => $hP,
+				'Name' => $this->getPermNameByPermKey($row['perm_key']),
+				'id' => $row['id']
 			);
 		}
 		return $perms;
@@ -287,4 +317,39 @@ class ACL
         endif;
 	}
 
+	public function getEmergencyAccessPerms(){
+		$perms = array();
+		$sqlStatement['SELECT'] = "*";
+		$sqlStatement['WHERE'] = "role_key = 'emergencyaccess'";
+		$sqlStatement['ORDER'] = "id ASC";
+		foreach($this->ARP->buildSQL($sqlStatement)->all() as $row)
+		{
+			$pK = strtolower($row['perm_key']);
+			if($pK == '' || !$row['value']) continue;
+			if($row['value'] == '1') $hP = true; else $hP = false;
+			$perms[$pK] = $hP;
+		}
+		return $perms;
+	}
+
+	public function emergencyAccess($uid){
+		if(!isset($_SESSION['user']) && !isset($_SESSION['user']['token'])) return false;
+		include_once ($_SESSION['root'] . '/classes/Crypt.php');
+		$foo = json_decode(Crypt::decrypt($_SESSION['user']['token']), true);
+		if($foo['uid'] != $uid) return false;
+		if(!$this->hasPermission('emergency_access')) return false;
+		$_SESSION['user']['emergencyAccess'] = true;
+		return $_SESSION['user']['emergencyAccess'];
+	}
+
+
+	public function isEmergencyAccess(){
+		if(	is_numeric($this->user_id) &&
+			isset($_SESSION['user']) &&
+			isset($_SESSION['user']['auth']) &&
+			isset($_SESSION['user']['emergencyAccess']) &&
+			$_SESSION['user']['auth'] &&
+			$_SESSION['user']['emergencyAccess']) return true;
+		return false;
+	}
 }

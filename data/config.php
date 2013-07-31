@@ -1368,6 +1368,9 @@ $API = array(
 			),
 			'hasPermission' => array(
 				'len' => 1
+			),
+			'emergencyAccess' => array(
+				'len' => 1
 			)
 		)
 	),

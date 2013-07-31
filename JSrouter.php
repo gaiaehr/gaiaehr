@@ -16,8 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-if(!isset($_SESSION))
-{
+if(!isset($_SESSION)){
 	session_name('GaiaEHR');
 	session_start();
 	session_cache_limiter('private');
@@ -36,6 +35,7 @@ $global = Globals::getGlobals();
 $global['root'] = $_SESSION['root'];
 $global['url']  = $_SESSION['url'];
 $global['site']  = $_SESSION['site']['dir'];
+
 print 'globals = '. json_encode( $global ).';';
 
 if(!isset($_SESSION['site']['error']) && (isset($_SESSION['user']) && $_SESSION['user']['auth'] == true))
@@ -64,3 +64,11 @@ if(!isset($_SESSION['site']['error']) && (isset($_SESSION['user']) && $_SESSION[
 	print 'user = '. json_encode($userData).';';
 	print 'settings.site_url = "'. $_SESSION['site']['url'] .'";';
 }
+
+// check if is emergency access....
+if(isset($_SESSION['user']) && isset($_SESSION['user']['emergencyAccess']) && $_SESSION['user']['emergencyAccess']){
+	$isEmerAccess = 1;
+}else{
+	$isEmerAccess = 0;
+}
+print 'isEmerAccess = '.$isEmerAccess.';';

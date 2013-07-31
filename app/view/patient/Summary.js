@@ -939,7 +939,7 @@ Ext.define('App.view.patient.Summary', {
 	        billingPanel;
 
         if(me.checkIfCurrPatient()){
-	        me.el.mask(i18n('loading...'))
+	        me.el.mask(i18n('loading...'));
             /**
              * convenient way to refer to current pid within this panel
              * @type {*}

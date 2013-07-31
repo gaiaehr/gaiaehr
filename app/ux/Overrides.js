@@ -309,9 +309,9 @@ Ext.override(Ext.container.Container, {
     },
     boolRenderer: function(val){
         if(val == '1' || val == true || val == 'true'){
-            return '<img style="padding-left: 13px" src="resources/images/icons/yes.gif" />';
+            return '<div style="margin-left:auto; margin-right:auto; width:16"><img src="resources/images/icons/yes.gif" /></div>';
         }else if(val == '0' || val == false || val == 'false'){
-            return '<img style="padding-left: 13px" src="resources/images/icons/no.gif" />';
+            return '<div style="margin-left:auto; margin-right:auto; width:16"><img src="resources/images/icons/no.gif" /></div>';
         }
         return val;
     },

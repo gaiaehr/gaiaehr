@@ -431,15 +431,10 @@ class MatchaHelper extends Matcha
 	{
 		// Get all the records
 		$recordSet = self::$__conn->query($this->sql_statement);
-		$err = self::$__conn->errorInfo();
-		if (!$err[2])
-		{
-			return $recordSet->fetch(PDO::FETCH_ASSOC);
-		}
-		else
-		{
-			return $err;
-		}
+		$record =  $recordSet->fetch(PDO::FETCH_ASSOC);
+		$err = $recordSet->errorInfo();
+		if ($err[2]) return $err;
+		return $record;
 
 	}
 
@@ -466,15 +461,10 @@ class MatchaHelper extends Matcha
 		{
 			$this->lastInsertId = self::$__conn->lastInsertId();
 		}
-		$err = self::$__conn->errorInfo();
-		if (!$err[2])
-		{
-			return $recordSet->fetchAll($fetchStyle);
-		}
-		else
-		{
-			return $err;
-		}
+		$records = $recordSet->fetchAll($fetchStyle);
+		$err = $recordSet->errorInfo();
+		if ($err[2]) return $err;
+		return $records;
 	}
 
 	/**

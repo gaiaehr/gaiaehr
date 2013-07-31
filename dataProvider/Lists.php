@@ -33,7 +33,7 @@ class Lists extends MatchaHelper
 	public function getOptions(stdClass $params)
 	{
         $rows = array();
-        if($this->ComboListOptions == NULL) $this->ComboListOptions = MatchaModel::setSenchaModel('App.model.administration.ComboListOptions');
+        if($this->ComboListOptions == NULL) $this->ComboListOptions = MatchaModel::setSenchaModel('App.model.administration.ListOptions');
 		if(isset($params->list_id)){
 			foreach($this->ComboListOptions->load(array('list_id'=>$params->list_id))->all() as $Options) array_push($rows, $Options);
 		}
@@ -42,21 +42,14 @@ class Lists extends MatchaHelper
 
 	public function addOption(stdClass $params)
 	{
-        if($this->ComboListOptions == NULL) $this->ComboListOptions = MatchaModel::setSenchaModel('App.model.administration.ComboListOptions');
-		$data = get_object_vars($params);
-		unset($data['id'], $data['seq']);
-        $this->ComboListOptions->save($data);
-        $params->id = $this->ComboListOptions->lastInsertId();
-		return $params;
+        if($this->ComboListOptions == NULL) $this->ComboListOptions = MatchaModel::setSenchaModel('App.model.administration.ListOptions');
+		return $this->ComboListOptions->save($params);
 	}
 
 	public function updateOption(stdClass $params)
 	{
-        if($this->ComboListOptions == NULL) $this->ComboListOptions = MatchaModel::setSenchaModel('App.model.administration.ComboListOptions');
-		$data = get_object_vars($params);
-		unset($data['id']);
-        $this->ComboListOptions->save($data);
-		return $params;
+        if($this->ComboListOptions == NULL) $this->ComboListOptions = MatchaModel::setSenchaModel('App.model.administration.ListOptions');
+		return $this->ComboListOptions->save($params);
 	}
 
 	public function deleteOption(stdClass $params)
@@ -70,7 +63,7 @@ class Lists extends MatchaHelper
     //------------------------------------------------------------------------------------------------------------------
 	public function sortOptions(stdClass $params)
 	{
-        if($this->ComboListOptions == NULL) $this->ComboListOptions = MatchaModel::setSenchaModel('App.model.administration.ComboListOptions');
+        if($this->ComboListOptions == NULL) $this->ComboListOptions = MatchaModel::setSenchaModel('App.model.administration.ListOptions');
 		$data = get_object_vars($params);
 		$pos  = 10;
 		foreach($data['fields'] as $field)
@@ -82,12 +75,12 @@ class Lists extends MatchaHelper
 		return array('success' => true);
 	}
 
-	public function getLists()
+	public function getLists($params)
 	{
-        if($this->ComboList == NULL) $this->ComboList = MatchaModel::setSenchaModel('App.model.administration.ComboList');
+        if($this->ComboList == NULL) $this->ComboList = MatchaModel::setSenchaModel('App.model.administration.Lists');
         if($this->FormFieldOptions == NULL) $this->FormFieldOptions = MatchaModel::setSenchaModel('App.model.administration.FormFieldOptions');
 		$Combos = array();
-		foreach($this->ComboList->load()->all() as $Combo)
+		foreach($this->ComboList->load($params)->all() as $Combo)
         {
 			$Combo['in_use'] = 0;
 			foreach($this->FormFieldOptions->load()->all() as $Field)
@@ -102,28 +95,21 @@ class Lists extends MatchaHelper
 
 	public function addList(stdClass $params)
 	{
-        if($this->ComboList == NULL) $this->ComboList = MatchaModel::setSenchaModel('App.model.administration.ComboList');
-		$data = get_object_vars($params);
-		unset($data['id'], $data['in_use']);
-        $this->ComboList->save($data);
-        $params->id = $this->ComboList->lastInsertId();
-		return $params;
+        if($this->ComboList == NULL) $this->ComboList = MatchaModel::setSenchaModel('App.model.administration.Lists');
+		return $this->ComboList->save($params);
 	}
 
 	public function updateList(stdClass $params)
 	{
-        if($this->ComboList == NULL) $this->ComboList = MatchaModel::setSenchaModel('App.model.administration.ComboList');
-		$data = get_object_vars($params);
-		unset($data['id'], $data['in_use']);
-        $this->ComboList->save($data);
-		return $params;
+        if($this->ComboList == NULL) $this->ComboList = MatchaModel::setSenchaModel('App.model.administration.Lists');
+		return $this->ComboList->save($params);
 	}
 
 	public function deleteList(stdClass $params)
 	{
         if($this->FormFieldOptions == NULL) $this->FormFieldOptions = MatchaModel::setSenchaModel('App.model.administration.FormFieldOptions');
-        if($this->ComboList == NULL) $this->ComboList = MatchaModel::setSenchaModel('App.model.administration.ComboList');
-        if($this->ComboListOptions == NULL) $this->ComboListOptions = MatchaModel::setSenchaModel('App.model.administration.ComboListOptions');
+        if($this->ComboList == NULL) $this->ComboList = MatchaModel::setSenchaModel('App.model.administration.Lists');
+        if($this->ComboListOptions == NULL) $this->ComboListOptions = MatchaModel::setSenchaModel('App.model.administration.ListOptions');
 		if($this->FormFieldOptions->load(array('oname'=>'list_id', 'ovalue'=>$params->id))->rowCount() == 0)
         {
             $this->ComboListOptions->destroy($params);

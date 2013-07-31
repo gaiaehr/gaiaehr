@@ -22,7 +22,6 @@ Ext.define('App.view.administration.Lists', {
     pageTitle: i18n('select_list_options'),
     pageLayout: 'border',
     uses: [
-        'App.ux.GridPanel',
         'App.ux.form.Panel',
         'Ext.grid.plugin.RowEditing'
     ],
@@ -51,7 +50,7 @@ Ext.define('App.view.administration.Lists', {
         /**
          * Lists Grid
          */
-        me.listsGrid = Ext.create('App.ux.GridPanel', {
+        me.listsGrid = Ext.create('Ext.grid.Panel', {
             store: me.listsStore,
             itemId: 'listsGrid',
             plugins: [me.listsRowEditing],
@@ -120,7 +119,7 @@ Ext.define('App.view.administration.Lists', {
         /**
          * Options Grid
          */
-        me.optionsGrid = Ext.create('App.ux.GridPanel', {
+        me.optionsGrid = Ext.create('Ext.grid.Panel', {
             store: me.optionsStore,
             itemId: 'optionsGrid',
             plugins: [me.optionsRowEditing],
@@ -225,7 +224,7 @@ Ext.define('App.view.administration.Lists', {
     onNewOption: function(){
         var me = this, m;
         me.optionsRowEditing.cancelEdit();
-        m = Ext.create('ListOptions', {
+        m = Ext.create('App.model.administration.ListOptions', {
             list_id: me.currList
         });
         me.optionsStore.insert(0, m);

@@ -69,11 +69,11 @@ class MatchaModel extends Matcha
 
             // Remove from the model those fields that are not meant to be stored
             // on the database-table and remove the id from the workingModel.
-            $workingModel = (array)self::$__senchaModel['fields'];
+            $workingModelFields = (array)self::$__senchaModel['fields'];
 
             // if id property is not set in sencha model look for propertyId.
-            if($workingModel[MatchaUtils::__recursiveArraySearch(self::$tableId, $workingModel)] === false) unset($workingModel[MatchaUtils::__recursiveArraySearch(self::$tableId, $workingModel)]);
-            foreach($workingModel as $key => $SenchaModel) if(isset($SenchaModel['store']) && $SenchaModel['store'] === false) unset($workingModel[$key]);
+            if($workingModelFields[MatchaUtils::__recursiveArraySearch(self::$tableId, $workingModelFields)] === false) unset($workingModelFields[MatchaUtils::__recursiveArraySearch(self::$tableId, $workingModelFields)]);
+            foreach($workingModelFields as $key => $SenchaModel) if(isset($SenchaModel['store']) && $SenchaModel['store'] === false) unset($workingModelFields[$key]);
 
             // get the table column information and remove the id column
             $tableColumns = self::$__conn->query("SHOW FULL COLUMNS IN ".$table.";")->fetchAll(PDO::FETCH_ASSOC);
@@ -84,7 +84,7 @@ class MatchaModel extends Matcha
 
             // get all the column names of each model (Sencha and Database-table)
             foreach($tableColumns as $column) $columnsTableNames[] = $column['Field'];
-            foreach($workingModel as $column) $columnsSenchaNames[] = $column['name'];
+            foreach($workingModelFields as $column) $columnsSenchaNames[] = $column['name'];
 
             // get all the column that are not present in the database-table
             $differentCreateColumns = array_diff($columnsSenchaNames, $columnsTableNames);
@@ -92,7 +92,7 @@ class MatchaModel extends Matcha
 
             // unset the id field from both arrays
             unset($differentCreateColumns[MatchaUtils::__recursiveArraySearch('id', $differentCreateColumns)]);
-            unset($workingModel[MatchaUtils::__recursiveArraySearch('id', $workingModel)]);
+            unset($workingModelFields[MatchaUtils::__recursiveArraySearch('id', $workingModelFields)]);
 
             // deal with the sencha triggers
             self::__diffTriggers(self::$__senchaModel);
@@ -100,8 +100,7 @@ class MatchaModel extends Matcha
             // check if the table has columns, if not create them.
             if( count($tableColumns) <= 1 )
             {
-                self::__createAllColumns($workingModel);
-	            self::__dumpDefaultData($table);
+                self::__createAllColumns($workingModelFields);
                 return true;
             }
             // Verify that all the columns does not have difference
@@ -109,7 +108,7 @@ class MatchaModel extends Matcha
             elseif( count($differentCreateColumns) || count($differentDropColumns) )
             {
                 // add columns to the table
-                foreach($differentCreateColumns as $column) self::__createColumn($workingModel[MatchaUtils::__recursiveArraySearch($column, $workingModel)]);
+                foreach($differentCreateColumns as $column) self::__createColumn($workingModelFields[MatchaUtils::__recursiveArraySearch($column, $workingModelFields)]);
                 // remove columns from the table
                 foreach($differentDropColumns as $column) self::__dropColumn( $column );
             }
@@ -120,7 +119,7 @@ class MatchaModel extends Matcha
                 foreach($tableColumns as $column)
                 {
                     $change = 'false';
-                    foreach($workingModel as $SenchaModel)
+                    foreach($workingModelFields as $SenchaModel)
                     {
                         // if the field is found, start the comparison
                         if($SenchaModel['name'] == $column['Field'])
@@ -331,8 +330,7 @@ class MatchaModel extends Matcha
                 $values  = array_values($data);
                 foreach($values as $index => $val) if($val == null) $values[$index] = 'NULL';
                 $valuesEncapsulation  .= '(\''.implode('\',\'',$values).'\')';
-                $dataArrayKeys = array_keys($dataArray);
-                if( $rowCount == 500 || $key == end($dataArrayKeys))
+                if( $rowCount == 500 || $key == end(array_keys($dataArray)))
                 {
                     // check if Threads PHP Class exists if does not exist
                     // run the SQL in normal fashion
@@ -628,6 +626,16 @@ class MatchaModel extends Matcha
         return $SenchaField;
     }
 
+	static public function __getFields($model){
+		$arr = array();
+		$fields = (is_object($model)? MatchaUtils::__objectToArray($model->fields): $model['fields']);
+		foreach($fields as $field)
+		{
+			$arr[] = $field['name'];
+		}
+		return $arr;
+	}
+
 	/**
 	 * function __getFieldType($fieldName, $model):
      * Method to do a lookup in the model to look for the field type.
@@ -666,6 +674,17 @@ class MatchaModel extends Matcha
 		foreach($fields as $field)
 		{
 			if(isset($field['store']) && !$field['store']) $arr[] = $field['name'];
+		}
+		$arr = (empty($arr) ? false : $arr);
+		return $arr;
+	}
+
+	static public function __getArrayFields($model){
+		$arr = array();
+		$fields = (is_object($model)? MatchaUtils::__objectToArray($model->fields): $model['fields']);
+		foreach($fields as $field)
+		{
+			if(isset($field['type']) && strtolower($field['type']) == 'array') $arr[] = $field['name'];
 		}
 		$arr = (empty($arr) ? false : $arr);
 		return $arr;

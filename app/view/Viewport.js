@@ -263,11 +263,11 @@ Ext.define('App.view.Viewport', {
             handler: me.createEmergency,
             tooltip: i18n('create_new_emergency')
         });
-        me.Header.add({
+        me.userSplitBtn = me.Header.add({
             xtype: 'button',
             text: me.user.title + ' ' + me.user.lname,
             scale: 'large',
-            iconCls: 'icoDoctor',
+            iconCls: isEmerAccess ? 'icoUnlocked32' : 'icoDoctor',
             iconAlign: 'left',
             cls: 'drButton',
             style: 'float:right',
@@ -275,26 +275,37 @@ Ext.define('App.view.Viewport', {
             menu: [
                 {
                     text: i18n('my_account'),
-                    iconCls: 'icoArrowRight',
+                    iconCls: 'icoUser',
                     handler: function(){
                         me.navigateTo('App.view.miscellaneous.MyAccount');
                     }
                 },
                 {
                     text: i18n('my_settings'),
-                    iconCls: 'icoArrowRight',
+                    iconCls: 'icoSettings',
                     handler: function(){
                         me.navigateTo('App.view.miscellaneous.MySettings');
                     }
                 },
                 {
                     text: i18n('logout'),
-                    iconCls: 'icoArrowRight',
+                    iconCls: 'icoLogout',
                     scope: me,
                     handler: me.appLogout
                 }
             ]
         });
+
+	    if(acl['emergency_access']){
+		    me.userSplitBtn.menu.insert(0,{
+			    text:i18n('emergency_access'),
+			    cls: 'emergency',
+			    iconCls:'icoUnlocked',
+			    scope:me,
+			    handler:me.onEmergencyAccessClick
+		    });
+	    }
+
         me.Header.add({
             xtype: 'button',
             scale: 'large',
@@ -655,6 +666,10 @@ Ext.define('App.view.Viewport', {
         me.navigateTo('App.view.patient.NewPatient');
     },
 
+	//*****************************************************************
+	//** EMERGENCY STUFF **********************************************
+	//*****************************************************************
+
 	createEmergency: function(){
         var me = this, emergency;
         Ext.Msg.show({
@@ -679,9 +694,35 @@ Ext.define('App.view.Viewport', {
         });
     },
 
-    /*
-     * Show the Create New Encounter panel.
-     */
+	onEmergencyAccessClick:function(){
+		var me = this;
+		Ext.Msg.show({
+			title:i18n('wait'),
+			msg: i18n('emergency_access_question') + '<br>' + i18n('emergency_access_disclaimer'),
+			buttons: Ext.Msg.YESNO,
+			icon: Ext.Msg.QUESTION,
+			fn: function(btn){
+				if(btn == 'yes') me.doEmergencyAccess();
+			}
+		});
+	},
+
+	doEmergencyAccess:function(){
+		ACL.emergencyAccess(app.user.id, function(success){
+			if(success){
+				window.location = './';
+				return;
+			}
+			Ext.Msg.alert(i18n('oops'), i18n('emergency_access_error'));
+		});
+	},
+
+	//*****************************************************************
+
+
+	/*
+	 * Show the Create New Encounter panel.
+	 */
     createNewEncounter: function(){
         var me = this;
         if(acl['access_encounters'] && acl['add_encounters']){
@@ -695,7 +736,12 @@ Ext.define('App.view.Viewport', {
         var me = this;
 
         me.navigateTo('App.view.patient.Summary', function(success){
+	        if(success){
+		        Ext.Function.defer(function() {
+			        me.getPanelByCls('App.view.patient.Summary').onActive();
+		        }, 100);
 
+	        }
         });
 
     },
@@ -863,6 +909,7 @@ Ext.define('App.view.Viewport', {
         var me = this, post = selection[0];
         if(post){
             me.setPatient(post.get('pid'), null, function(){
+	            combo.reset();
                 me.openPatientSummary();
             });
         }
@@ -1012,11 +1059,12 @@ Ext.define('App.view.Viewport', {
         this.initializePatientPoolDragZone(btn)
     },
     getPatientsInPoolArea: function(){
-        var me = this, poolArea = me.patientPoolArea, height = 35;
-        this.patientPoolStore.load({
-            extraPrams:{
-                uid:me.user.id
-            },
+        var me = this,
+	        poolArea = me.patientPoolArea,
+	        height = 35;
+
+	    this.patientPoolStore.load({
+            extraPrams:{ uid:me.user.id },
             callback: function(records){
                 if(records.length >= 1){
                     for(var i = 0; i < records.length; i++){

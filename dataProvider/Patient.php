@@ -630,7 +630,7 @@ class Patient
     public function getMeaningfulUserAlertByPid(stdClass $params)
     {
         $record = array();
-        $this->db->setSQL("SELECT lenguage,
+        $this->db->setSQL("SELECT `language`,
                                   race,
                                   ethnicity,
                                   fname,

@@ -918,6 +918,7 @@ $LANG = array(
 	'permission'							=> 'Permission',
 	'front_office'							=> 'Front Office',
 	'auditors'								=> 'Auditors',
+	'auditor'								=> 'Auditor',
 	'clinician'								=> 'Clinician',
 	'physician'								=> 'Physician',
 	'administrator'							=> 'Administrator',
@@ -1180,5 +1181,8 @@ $LANG = array(
     'copay'                                 => 'Co-Pay',
     'add_new_laboratory'                    => 'Add New Laboratory',
     'n/a'                                   => 'N/A',
-    'smoke_history'                         => 'Smoke History'
+    'smoke_history'                         => 'Smoke History',
+    'emergency_access'                      => 'Emergency Access',
+    'emergency_access_question'             => 'Are you sure you want to break the control lock (emergency access)?',
+    'emergency_access_disclaimer'           => 'Emergency access will assign you the "emergency access" permissions and make an event log entry of you access'
 );

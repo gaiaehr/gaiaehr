@@ -19,12 +19,11 @@
 Ext.define('App.store.administration.ListOptions', {
     model: 'App.model.administration.ListOptions',
     extend: 'Ext.data.Store',
-    proxy: {
-        type: 'direct',
-        api: {
-            read: Lists.getOptions,
-            create: Lists.addOption,
-            update: Lists.updateOption
-        }
-    }
+	pageSize:300,
+	sorters: [
+		{
+			property: 'option_name',
+			direction: 'ASC'
+		}
+	]
 });

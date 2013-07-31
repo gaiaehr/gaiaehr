@@ -19,13 +19,11 @@
 Ext.define('App.store.administration.Lists', {
     model: 'App.model.administration.Lists',
     extend: 'Ext.data.Store',
-    proxy: {
-        type: 'direct',
-        api: {
-            read: Lists.getLists,
-            create: Lists.addList,
-            update: Lists.updateList,
-            destroy: Lists.deleteList
-        }
-    }
+	pageSize:300,
+	sorters: [
+		{
+			property: 'title',
+			direction: 'ASC'
+		}
+	]
 });

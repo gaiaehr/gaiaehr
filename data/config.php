@@ -1344,7 +1344,10 @@ $API = array(
 	 */
 	'Roles' => array(
 		'methods' => array(
-			'getRoleForm' => array(
+			'getRolePerms' => array(
+				'len' => 0
+			),
+			'updateRolePerm' => array(
 				'len' => 1
 			),
 			'getRolesData' => array(
@@ -1364,6 +1367,9 @@ $API = array(
 				'len' => 0
 			),
 			'hasPermission' => array(
+				'len' => 1
+			),
+			'emergencyAccess' => array(
 				'len' => 1
 			)
 		)

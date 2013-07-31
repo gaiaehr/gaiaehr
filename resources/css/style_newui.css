@@ -5,6 +5,21 @@
  * New Styles
  * by GI Technologies, 2011
  *============================================================*/
+.icoUnlocked {
+	background-image: url(../images/icons/unlocked.png) !important;
+}
+.icoUnlocked32 {
+	background-image: url(../images/icons/unlocked32.png) !important;
+}
+.icoLogout {
+	background-image: url(../images/icons/logout.png) !important;
+}
+.icoUser {
+	background-image: url(../images/icons/user.png) !important;
+}
+.icoSettings {
+	background-image: url(../images/icons/settings.png) !important;
+}
 .icon-print {
 	background-image: url(../images/icons/printer.png) !important;
 }

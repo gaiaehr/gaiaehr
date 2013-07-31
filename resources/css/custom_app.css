@@ -7,6 +7,12 @@
 	font-family: 'OpenSans-CondLight';
 	src: url('../fonts/OpenSans-CondLight.ttf');
 }
+.emergency .x-menu-item-text {
+    color: red !important;
+}
+.headerAlignCenter{
+    text-align: center;
+}
 .x-form-rating .ux-rating-star, .x-form-rating .ux-rating-reset {
     float: left;
     width: 17px;

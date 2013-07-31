@@ -218,8 +218,10 @@ class PoolArea
 							  AND pp.in_queue = '$in_queue'");
 		$records = array();
 		foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) as $patient){
-			$patient['name'] = ($patient['eid'] != null ? '*' : '') . $this->patient->getPatientFullNameByPid($patient['pid']);
-			$records[]       = $patient;
+			if(isset($patient['pid'])){
+				$patient['name'] = ($patient['eid'] != null ? '*' : '') . $this->patient->getPatientFullNameByPid($patient['pid']);
+				$records[]       = $patient;
+			}
 		}
 		return $records;
 	}

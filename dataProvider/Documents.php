@@ -166,7 +166,7 @@ class Documents
             '[PATIENT_EMPLOYEER]' => $patientData['employer_name'],
             '[PATIENT_RACE]' => $patientData['race'],
             '[PATIENT_ETHNICITY]' => $patientData['ethnicity'],
-            '[PATIENT_LENGUAGE]' => $patientData['lenguage'],
+            '[PATIENT_LENGUAGE]' => $patientData['language'],
             '[PATIENT_REFERRAL]' => $patientData['referral'],
             // /////////////////////////////////////
             '[PATIENT_REFERRAL_DATE]' => $patientData['referral_date'],

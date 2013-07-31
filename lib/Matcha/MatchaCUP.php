@@ -19,7 +19,7 @@
 class MatchaCUP
 {
 	/**
-	 * @var array
+	 * @var array|object
 	 */
 	private $model;
 	/**
@@ -51,6 +51,10 @@ class MatchaCUP
 	 */
 	public $lastInsertId; // There is already a lastInsertId in Matcha::Class
 	/**
+	 * @var array
+	 */
+	public $fields = array();
+	/**
 	 * @var array|bool array of encrypted fields or bool false
 	 */
 	public $encryptedFields = false;
@@ -58,6 +62,10 @@ class MatchaCUP
 	 * @var array|bool
 	 */
 	public $phantomFields = false;
+	/**
+	 * @var array|bool
+	 */
+	public $arrayFields = false;
 	/**
 	 * @var bool
 	 */
@@ -67,13 +75,22 @@ class MatchaCUP
      * function sql($sql = NULL):
      * Method to pass SQL statement without sqlBuilding process
      * this is not the preferred way, but sometimes you need to do it.
+     *
+     * @param null $sql
+     * @return MatchaCUP
      */
     public function sql($sql = NULL)
     {
         try
         {
-            if($sql == NULL) throw new Exception("Error the SQL statement is not set.");
-            return $this->sql = $sql;
+            $this->isSenchaRequest = false;
+
+            if($sql == NULL){
+                throw new Exception("Error the SQL statement is not set.");
+            }else{
+                $this->sql = $sql;
+            }
+            return $this;
         }
         catch(Exception $e)
         {
@@ -82,15 +99,19 @@ class MatchaCUP
         }
     }
 
-	/**
-	 * Method to build a a SQL statement using tru MatchaCUP objects.
-	 * this is the preferred way to build complex SQL statements that will
-	 * use MatchaCUP objects
-	 *
-	 * @param null $sqlArray
-	 * @return MatchaCUP
-	 */
-	public function buildSQL($sqlArray = NULL)
+	public function exec(){
+		$statement = Matcha::$__conn->prepare($this->sql);
+		$result  = $statement->execute();
+		$statement->closeCursor();
+		return $result;
+	}
+
+    /**
+     * Method to build a a SQL statement using tru MatchaCUP objects.
+     * this is the preferred way to build complex SQL statements that will
+     * use MatchaCUP objects
+     */
+    public function buildSQL($sqlArray = NULL)
     {
         try
         {
@@ -128,7 +149,7 @@ class MatchaCUP
 	 * handle the request using sencha standards. If not then
 	 * here are few examples.
 	 *
-	 * $users->load()->all();                                    = SELECT * FROM users
+	 * $users->load()->all();                                    = SELECT * FROM users WHERE id = 5
 	 * $users->load(5)->all();                                   = SELECT * FROM users WHERE id = 5
 	 * $users->load(5, array('name','last'))->all();             = SELECT name, last FROM users WHERE id = 5
 	 * $users->load(array('name'=>'joe'))->all();                = SELECT * FROM users WHERE name = joe
@@ -177,7 +198,7 @@ class MatchaCUP
 					$wherex = $where;
 				}
 				if ($where != null)
-					$wherex = 'WHERE ' . $wherex;
+					$wherex = ' WHERE ' . $wherex;
 				// sql build
 				$this->sql = "SELECT $columnsx FROM `" . $this->table . "` $wherex";
 			}
@@ -191,7 +212,7 @@ class MatchaCUP
 					$limits = array();
 					if (isset($where->start)) $limits[] = $where->start;
 					if (isset($where->limit)) $limits[] = $where->limit;
-					$limits = 'LIMIT ' . implode(',', $limits);
+					$limits = ' LIMIT ' . implode(',', $limits);
 				}
 
 				// sort
@@ -200,14 +221,14 @@ class MatchaCUP
 				{
 					$sortArray = array();
 					foreach ($where->sort as $sort)
-					{
-						if(isset($sort->property) && !in_array($sort->property, $this->phantomFields)){
-							$sort = get_object_vars($sort);
-							$sortArray[] = implode(' ', $sort);
+						{
+						if(isset($sort->property) && (!is_array($this->phantomFields) || (is_array($this->phantomFields) && in_array($sort->property, $this->phantomFields)))){
+							$sortDirection = (isset($sort->direction) ? $sort->direction : '');
+							$sortArray[] = $sort->property.' '.$sortDirection;
 						}
 					}
 					if(!empty($sortArray)){
-						$sortx = 'ORDER BY ' . implode(', ', $sortArray);
+						$sortx = ' ORDER BY ' . implode(', ', $sortArray);
 					}
 				}
 				// group
@@ -215,12 +236,17 @@ class MatchaCUP
 				if (isset($where->group))
 				{
 					$property = $where->group[0]->property;
-					$direction = $where->group[0]->direction;
-					$groupx = "GROUP BY $property $direction";
+					$direction = isset($where->group[0]->direction) ? $where->group[0]->direction : '';
+					$groupx = " GROUP BY `$property` $direction";
 				}
 				// filter/where
 				$wherex = '';
-				if (isset($where->filter) && isset($where->filter[0]->property))
+
+                if(isset($where->{$this->primaryKey}))
+                {
+                    $wherex = ' WHERE '.$this->primaryKey.' = \''.$where->{$this->primaryKey}.'\'';
+                }
+                elseif(isset($where->filter) && isset($where->filter[0]->property))
 				{
 					$whereArray = array();
 					foreach ($where->filter as $foo)
@@ -232,8 +258,8 @@ class MatchaCUP
 					}
 					if(count($whereArray) > 0) $wherex = 'WHERE ' . implode(' AND ', $whereArray);
 				}
-				$this->nolimitsql   = "SELECT * FROM `" . $this->table . "` $groupx $wherex $sortx";
-				$this->sql          = "SELECT * FROM `" . $this->table . "` $groupx $wherex $sortx $limits";
+				$this->nolimitsql   = "SELECT * FROM `" . $this->table . "` $wherex $groupx $sortx";
+				$this->sql          = "SELECT * FROM `" . $this->table . "` $wherex $groupx $sortx $limits";
 			}
 			return $this;
 		}
@@ -267,10 +293,12 @@ class MatchaCUP
 	 */
 	public function all()
 	{
+//		return $this->sql;
 		try
 		{
 			$this->record = Matcha::$__conn->query($this->sql)->fetchAll();
 			$this->dataDecryptWalk();
+			$this->dataUnSerializeWalk();
 			$this->builtRoot();
 			return $this->record;
 		}
@@ -286,10 +314,12 @@ class MatchaCUP
 	 */
 	public function one()
 	{
+//		return $this->sql;
 		try
 		{
 			$this->record = Matcha::$__conn->query($this->sql)->fetch();
 			$this->dataDecryptWalk();
+			$this->dataUnSerializeWalk();
 			$this->builtRoot();
 			return $this->record;
 		}
@@ -366,6 +396,7 @@ class MatchaCUP
 			}
 			$this->record =  Matcha::$__conn->query($this->sql)->fetchAll();
 			$this->dataDecryptWalk();
+			$this->dataUnSerializeWalk();
 			return $this->record;
 		}
 		catch(PDOException $e)
@@ -379,7 +410,7 @@ class MatchaCUP
 	 * store the record as array into the working table
 	 * @param array|object $record
 	 * @param array $where
-	 * @return object
+	 * @return array
 	 */
 	public function save($record, $where = array())
 	{
@@ -392,8 +423,9 @@ class MatchaCUP
                 $sql = $this->buildUpdateSqlStatement($data, $where);
 				$this->rowsAffected = Matcha::$__conn->exec($sql);
                 self::callBackMethod(array(array('crc32'=>crc32($sql), 'event'=>'UPDATE', 'sql'=>addslashes($sql))));
-				return $data;
+				$this->record = $data;
 			}
+			// single record object
 			elseif(is_object($record))
 			{
 				$this->isSenchaRequest = true;
@@ -404,7 +436,7 @@ class MatchaCUP
 					$this->rowsAffected = Matcha::$__conn->exec($sql);
 					$data[$this->primaryKey] = $this->lastInsertId = Matcha::$__conn->lastInsertId();
                     self::callBackMethod(array(array('insertId'=>$this->lastInsertId, 'crc32'=>crc32($sql), 'event'=>'INSERT', 'sql'=>addslashes($sql))));
-					return $data;
+					$this->record = $data;
 				}
 				else
 				{
@@ -412,9 +444,10 @@ class MatchaCUP
                     $sql = $this->buildUpdateSqlStatement($data);
 					$this->rowsAffected = Matcha::$__conn->exec($sql);
                     self::callBackMethod(array(array('crc32'=>crc32($sql), 'event'=>'UPDATE', 'sql'=>addslashes($sql))));
-					return $data;
+					$this->record = $data;
 				}
 			}
+			// array of records objects
 			else
 			{
 				$this->isSenchaRequest = true;
@@ -437,10 +470,15 @@ class MatchaCUP
 						$this->rowsAffected = Matcha::$__conn->exec($sql);
                         self::callBackMethod(array(array('crc32'=>crc32($sql), 'event'=>'UPDATE', 'sql'=>addslashes($sql))));
 					}
-					$return[] = $data;
+					$records[] = $data;
 				}
-				return $records;
+
+				$this->record = $records;
 			}
+
+			$this->builtRoot();
+			return $this->record;
+
 		}
 		catch(PDOException $e)
 		{
@@ -483,6 +521,42 @@ class MatchaCUP
 		}
 	}
 
+	/**
+	 * @param $params
+	 * @return MatchaCUP
+	 */
+	public function search($params){
+
+		$sql = "SELECT * FROM `$this->table` ";
+
+		$filter = '';
+
+		if (isset($params->filter) && isset($params->filter[0]->property))
+		{
+			$whereArray = array();
+			foreach ($params->filter as $foo)
+			{
+				if(isset($params->query) && isset($foo->property)){
+					$operator = isset($foo->operator)? $foo->operator : ' LIKE ';
+					$whereArray[] = "`$foo->property` $operator '$params->query%'";
+				}
+			}
+			if(count($whereArray) > 0) $filter = 'WHERE ' . implode(' OR ', $whereArray);
+		}
+		$this->nolimitsql = $sql . $filter;
+		$limits = '';
+		if (isset($params->limit) || isset($params->start))
+		{
+			$limits = array();
+			if (isset($params->start)) $limits[] = $params->start;
+			if (isset($params->limit)) $limits[] = $params->limit;
+			$limits = 'LIMIT ' . implode(',', $limits);
+		}
+
+		$this->sql = $this->nolimitsql . $limits;
+		return $this;
+	}
+
     /**
      * function callBackMethod($dataInjectArray = array()):
      * Method to do the callback function, and also inject the event data
@@ -505,10 +579,22 @@ class MatchaCUP
 	public function setModel($model)
 	{
 		$this->model = (is_array($model) ? MatchaUtils::__arrayToObject($model) : $model);
-		$this->table = (is_string($this->model->table) ? $this->model->table : $this->model->table->name);
+
+        if(isset($this->model->table)){
+            if(is_string($this->model->table)){
+                $this->table = $this->model->table;
+            }else{
+                $this->table = $this->model->table->name;
+            }
+        }else{
+            $this->table = false;
+        }
+
 		$this->primaryKey = MatchaModel::__getTablePrimaryKeyColumnName($this->table);
+		$this->fields = MatchaModel::__getFields($this->model);
 		$this->encryptedFields = MatchaModel::__getEncryptedFields($this->model);
 		$this->phantomFields = MatchaModel::__getPhantomFields($this->model);
+		$this->arrayFields = MatchaModel::__getArrayFields($this->model);
 	}
 
 	/**
@@ -599,6 +685,9 @@ class MatchaCUP
 	{
 		$columns = array_keys($data);
 		$values = array_values($data);
+
+		foreach($columns as $index=>$column) if(!in_array($column,$this->fields)) unset($columns[$index],$values[$index]);
+
 		$properties = (array) MatchaModel::__getFieldsProperties($columns, $this->model);
 		foreach($values as $index => $foo)
 		{
@@ -618,10 +707,17 @@ class MatchaCUP
 						{
 							$values[$index] = 0;
 						}
-					}
-					elseif($type == 'date')
+//					}
+//					elseif($type == 'int')
+//					{
+//						$values[$index] = ($foo == '' || $foo == false ? 'NULL' : $values[$index]);
+					}elseif($type == 'date')
 					{
 						$values[$index] = ($foo == '' ? 'NULL' : $values[$index]);
+					}
+					elseif($type == 'array')
+					{
+						$values[$index] = ($foo == '' ? 'NULL' : serialize($values[$index]));
 					}
 				}
 			}else{
@@ -671,6 +767,19 @@ class MatchaCUP
 		}
 	}
 
+
+	private function dataUnSerialize(&$item, $key, $arrayFields){
+		if(in_array($key, $arrayFields)){
+			$item = unserialize($item);
+		}
+	}
+
+	private function dataUnSerializeWalk(){
+		if(is_array($this->record) && is_array($this->arrayFields)){
+			array_walk_recursive($this->record, 'self::dataUnSerialize', $this->arrayFields);
+		}
+	}
+
 	/**
 	 * 
 	 */
@@ -682,12 +791,16 @@ class MatchaCUP
 			isset($this->model->proxy->reader->root)
 		){
 			$record = array();
-			$total = Matcha::$__conn->query($this->nolimitsql)->rowCount();
-			if(isset($this->model->proxy->reader->totalProperty)){
-				$record[$this->model->proxy->reader->totalProperty] = $total;
-			}else{
-				$record['total'] = $total;
+			$total = ($this->nolimitsql != '' ? Matcha::$__conn->query($this->nolimitsql)->rowCount() : false);
+
+			if($total !== false){
+				if(isset($this->model->proxy->reader->totalProperty)){
+					$record[$this->model->proxy->reader->totalProperty] = $total;
+				}else{
+					$record['total'] = $total;
+				}
 			}
+
 			$record[$this->model->proxy->reader->root] = $this->record;
 			$this->record = $record;
 		}

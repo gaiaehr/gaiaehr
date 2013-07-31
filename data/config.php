@@ -1344,7 +1344,10 @@ $API = array(
 	 */
 	'Roles' => array(
 		'methods' => array(
-			'getRoleForm' => array(
+			'getRolePerms' => array(
+				'len' => 0
+			),
+			'updateRolePerm' => array(
 				'len' => 1
 			),
 			'getRolesData' => array(

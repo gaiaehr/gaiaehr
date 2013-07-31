@@ -18,34 +18,100 @@
 
 Ext.define('App.view.administration.Roles', {
     extend: 'App.ux.RenderPanel',
-    id: 'panelRoles',
     pageTitle: i18n('roles_and_permissions'),
-    pageLayout: {
-        type: 'vbox',
-        align: 'stretch'
-    },
+
     initComponent: function(){
         var me = this;
         //******************************************************************************
         // Roles Store
         //******************************************************************************
-        me.header = Ext.create('Ext.container.Container', {
-            height: 30,
-            html: '<div class="roleHeader">' + '<span class="perm">' + i18n('permission') + '</span>' + '<span class="role">' + i18n('front_office') + '</span>' + '<span class="role">' + i18n('auditors') + '</span>' + '<span class="role">' + i18n('clinician') + '</span>' + '<span class="role">' + i18n('physician') + '</span>' + '<span class="role">' + i18n('administrator') + '</span>' + '</div>'
-        });
-        me.form = Ext.create('Ext.form.Panel', {
-            flex: 1,
-            frame: true,
+
+        me.grid = Ext.create('Ext.grid.Panel', {
             bodyStyle: 'background-color:white',
-            bodyPadding: 10,
-            items: [
-                {
-                    xtype: 'fieldcontainer',
-                    defaultType: 'mitos.checkbox',
-                    layout: 'hbox'
-                }
+	        store: Ext.create('App.store.administration.RolePerms'),
+            columns: [
+	            {
+		            text:i18n('permission'),
+		            dataIndex: 'perm_name',
+		            locked: true,
+		            width:300
+	            },
+	            {
+		            text:i18n('front_office'),
+		            dataIndex: 'role-front_office',
+		            editor: { xtype:'checkbox' },
+		            renderer: this.boolRenderer,
+		            cls: 'headerAlignCenter',
+		            width:120
+	            },
+	            {
+		            text:i18n('auditor'),
+		            dataIndex: 'role-auditor',
+		            editor: { xtype:'checkbox' },
+		            renderer: this.boolRenderer,
+		            cls: 'headerAlignCenter',
+		            width:120
+	            },
+	            {
+		            text:i18n('clinician'),
+		            dataIndex: 'role-clinician',
+		            editor: { xtype:'checkbox' },
+		            renderer: this.boolRenderer,
+		            cls: 'headerAlignCenter',
+		            width:120
+	            },
+	            {
+		            text:i18n('physician'),
+		            dataIndex: 'role-physician',
+		            editor: { xtype:'checkbox' },
+		            renderer: this.boolRenderer,
+		            cls: 'headerAlignCenter',
+		            width:120
+	            },
+	            {
+		            text:i18n('emergency_access'),
+		            dataIndex: 'role-emergencyaccess',
+		            editor: { xtype:'checkbox' },
+		            renderer: this.boolRenderer,
+		            cls: 'headerAlignCenter',
+		            width:120
+	            },
+	            {
+		            text:i18n('administrator'),
+		            dataIndex: 'role-administrator',
+		            editor: { xtype:'checkbox' },
+		            renderer: this.boolRenderer,
+		            cls: 'headerAlignCenter',
+		            width:120
+	            },
+	            {
+		            flex:1
+	            }
             ],
+	        features: [
+		        {
+			        ftype:'grouping',
+			        groupHeaderTpl: i18n('category')+': {name}'
+		        }
+	        ],
+	        plugins: [
+		        me.editingPlugin = Ext.create('Ext.grid.plugin.RowEditing', {
+			        clicksToEdit: 1,
+			        listeners:{
+				        beforeedit:function(context, e){
+					        return e.field != 'perm_name';
+				        }
+			        }
+		        })
+	        ],
             buttons: [
+                {
+                    text: i18n('cancel'),
+//                    iconCls: 'cancel',
+                    margin: '0 20 0 0',
+                    scope: me,
+                    handler: me.onRolesCancel
+                },
                 {
                     text: i18n('save'),
                     iconCls: 'save',
@@ -55,9 +121,43 @@ Ext.define('App.view.administration.Roles', {
                 }
             ]
         });
-        me.pageBody = [me.header, me.form];
+
+        me.pageBody = [me.grid];
+	    me.pageBbuttons = [
+		    {
+			    text: i18n('cancel'),
+			    iconCls: 'cancel',
+			    margin: '0 20 0 0',
+			    scope: me,
+			    handler: me.onRolesCancel
+		    },
+		    {
+			    text: i18n('save'),
+			    iconCls: 'save',
+			    margin: '0 20 0 0',
+			    scope: me,
+			    handler: me.onRolesSave
+		    }
+	    ];
+
         me.callParent(arguments);
     },
+
+	onRolesCancel: function(){
+        var me = this, form = me.form.getForm(), values = form.getValues(), record = form.getRecord(), changedValues;
+        if(record.set(values) !== null){
+            me.form.el.mask(i18n('saving_roles') + '...');
+            changedValues = record.getChanges();
+            Roles.saveRolesData(changedValues, function(provider, response){
+                if(response.result){
+                    me.form.el.unmask();
+                    me.msg('Sweet!', i18n('roles_updated'));
+                    record.commit();
+                }
+            });
+        }
+    },
+
     onRolesSave: function(){
         var me = this, form = me.form.getForm(), values = form.getValues(), record = form.getRecord(), changedValues;
         if(record.set(values) !== null){
@@ -72,37 +172,7 @@ Ext.define('App.view.administration.Roles', {
             });
         }
     },
-    getFormData: function(){
-        var me = this, form = me.form, formFields = form.getForm().getFields(), modelFields = [], model;
-        for(var i = 0; i < formFields.items.length; i++){
-            modelFields.push({
-                name: formFields.items[i].name,
-                type: 'bool'
-            });
-        }
-        model = Ext.define(form.itemId + 'Model', {
-            extend: 'Ext.data.Model',
-            fields: modelFields,
-            proxy: {
-                type: 'direct',
-                api: {
-                    read: Roles.getRolesData
-                }
-            }
-        });
-        me.store = Ext.create('Ext.data.Store', {
-            model: model
-        });
-        me.store.load({
-            scope: this,
-            callback: function(records, operation, success){
-                if(success){
-                    form.getForm().loadRecord(records[0]);
-                    form.el.unmask();
-                }
-            }
-        });
-    },
+
     /**
      * This function is called from Viewport.js when
      * this panel is selected in the navigation panel.
@@ -110,13 +180,11 @@ Ext.define('App.view.administration.Roles', {
      * to call every this panel becomes active
      */
     onActive: function(callback){
-        var me = this, form = me.form;
-        form.el.mask(i18n('loading') + '...');
-        form.removeAll();
-        Roles.getRoleForm(null, function(provider, response){
-            form.add(eval(response.result));
-            me.getFormData();
-        });
-        callback(true);
+        var me = this;
+//        form.el.mask(i18n('loading') + '...');
+
+		me.grid.store.load();
+
+	    callback(true);
     }
 });

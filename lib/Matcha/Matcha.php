@@ -16,15 +16,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-include_once('MatchaAudit.php');
-include_once('MatchaCUP.php');
-include_once('MatchaErrorHandler.php');
-include_once('MatchaModel.php');
-include_once('MatchaUtils.php');
-include_once('MatchaMemory.php');
+define('MATCHA_ROOT', dirname(__FILE__).DIRECTORY_SEPARATOR);
+include_once(MATCHA_ROOT.'MatchaAudit.php');
+include_once(MATCHA_ROOT.'MatchaCUP.php');
+include_once(MATCHA_ROOT.'MatchaErrorHandler.php');
+include_once(MATCHA_ROOT.'MatchaModel.php');
+include_once(MATCHA_ROOT.'MatchaUtils.php');
+include_once(MATCHA_ROOT.'MatchaMemory.php');
 
 // Include the Matcha Threads if the PHP Thread class exists
-if(class_exists('Thread')) include_once('MatchaThreads.php');
+if(class_exists('Thread')) include_once(MATCHA_ROOT.'MatchaThreads.php');
 
 class Matcha
 {
@@ -153,26 +154,21 @@ class Matcha
             }
 			self::$__conn->exec('CREATE TABLE IF NOT EXISTS '.$table.' ('.MatchaModel::$tableId.' BIGINT(20) NOT NULL AUTO_INCREMENT PRIMARY KEY) '.self::__renderTableOptions().';');
 		    
+		    if(isset(MatchaModel::$__senchaModel['table']['data']))
+			{
+			    $rec = self::$__conn->prepare('SELECT * FROM '.$table);
+				$rec->execute();
+			    if($rec->rowCount() == 0 && isset(MatchaModel::$__senchaModel['table']['data']))
+			    {
+				    MatchaModel::__setSenchaModelData(MatchaModel::$__senchaModel['table']['data']);
+				}
+			}
 			return true;
 		}
 		catch(PDOException $e)
 		{
             MatchaErrorHandler::__errorProcess($e);
             return false;
-		}
-	}
-
-	static protected function __dumpDefaultData($table){
-
-		if(isset(MatchaModel::$__senchaModel['table']['data']))
-		{
-			$rec = self::$__conn->prepare('SELECT * FROM '.$table);
-			$rec->execute();
-			if($rec->rowCount() == 0 && isset(MatchaModel::$__senchaModel['table']['data']))
-			{
-				MatchaModel::__setSenchaModelData(MatchaModel::$__senchaModel['table']['data']);
-			}
-			return true;
 		}
 	}
 	
@@ -208,7 +204,7 @@ class Matcha
         // set the collate of the table, if is not set the default
         // would be utf8_bin
 		if(isset(MatchaModel::$__senchaModel['table']['collate'])): $tableOptions .= 'COLLATE = '.MatchaModel::$__senchaModel['table']['collate'].' ';
-        else: $tableOptions .= 'COLLATE = utf8_bin ';
+        else: $tableOptions .= 'COLLATE = utf8_general_ci ';
         endif;
 
         // set the comment for a table, if it is not set don't set it.
@@ -401,6 +397,10 @@ class Matcha
             {
                 $columnType = (string)'FLOAT';
             }
+            elseif($column['type'] == 'array')
+            {
+                $columnType = (string)'TEXT';
+            }
             else
             {
                 return false;
@@ -412,7 +412,7 @@ class Matcha
                 case 'BIT'; case 'TINYINT'; case 'SMALLINT'; case 'MEDIUMINT'; case 'INT'; case 'INTEGER'; case 'BIGINT':
                     return $columnType.
                     (isset($column['len']) ? ($column['len'] ? '('.$column['len'].') ' : '') : '').
-                    (isset($column['defaultValue']) ? (is_numeric($column['defaultValue']) && is_string($column['defaultValue']) ? "DEFAULT '".$column['defaultValue']."' " : '') : '').
+                    (isset($column['defaultValue']) ? (is_numeric($column['defaultValue']) && is_string((string)$column['defaultValue']) ? "DEFAULT '".$column['defaultValue']."' " : '') : '').
                     (isset($column['comment']) ? ($column['comment'] ? "COMMENT '".$column['comment']."' " : '') : '').
                     (isset($column['allowNull']) ? ($column['allowNull'] ? 'NOT NULL ' : '') : '').
                     (isset($column['autoIncrement']) ? ($column['autoIncrement'] ? 'AUTO_INCREMENT ' : '') : '').

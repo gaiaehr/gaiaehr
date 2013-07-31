@@ -1,4 +1,8 @@
-// Created dynamically by Matcha::connect// Create date: 2013-03-12 17:53:28Ext.define('App.model.patient.Patient',{
+// Created dynamically by Matcha::connect
+// Create date: 2013-03-12 17:53:28
+
+Ext.define('App.model.patient.Patient',
+{
     extend: 'Ext.data.Model',
     table: {
         name: 'patient',
@@ -175,7 +179,7 @@
             comment: 'ethnicity'
         },
         {
-            name: 'lenguage',
+            name: 'language',
             type: 'string',
             comment: 'language'
         },
@@ -285,4 +289,4 @@
             foreignKey: 'pid'
         }
     ]
-});
+});

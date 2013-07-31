@@ -1,157 +1,130 @@
 <?php
 /**
-GaiaEHR (Electronic Health Records)
-Copyright (C) 2013 Certun, inc.
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * GaiaEHR (Electronic Health Records)
+ * Copyright (C) 2013 Certun, inc.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-include_once ($_SESSION['root'] . '/dataProvider/ACL.php');
-
-class Roles extends ACL
+class Roles
 {
-
-    /**
-	 *
-	 * @return mixed
+	/**
+	 * @var MatchaCup|bool
 	 */
-	public function getRoleForm()
-	{
-		$items = array();
-		$perms = array();
-		$roles = $this -> getAllRoles();
-		$categories = array(
-			'General',
-			'Calendar',
-			'Patients',
-			'Encounters',
-			'Demographics',
-			'Documents',
-			'ePrescription',
-			'Administrators',
-			'Pool Areas',
-			'Miscellaneous'
-		);
-		foreach ($this->getAllPermissions('full') as $perm)
-		{
-			array_push($perms, $perm);
-		}
-		foreach ($categories as $cat)
-		{
-			$item = array();
-			$item['xtype'] = 'fieldset';
-			$item['title'] = $cat;
-			$item['layout'] = 'anchor';
-			$item['labelWidth'] = 100;
-			$item['defaults'] = array(
-				'xtype' => 'fieldcontainer',
-				'defaultType' => 'mitos.checkbox',
-				'layout' => 'hbox',
-				'defaults' => array('padding' => '0 100 0 0'),
-				'labelWidth' => 200
-			);
-			$item['items'] = array();
-			foreach ($perms as $perm)
-			{
-				$row = null;
-				if (strtolower($perm['Cat']) == strtolower($item['title']))
-				{
-					$row['fieldLabel'] = $perm['Name'];
-					$checkboxes = array();
-					foreach ($roles['row'] as $role)
-					{
-						//TODO:  for development...  false : false
-						$disable = false;
-						//(strtolower($role['role_name']) == 'administrator')? false : false;
-						$checkbox = array(
-							'name' => strtolower($perm['Key']) . '_' . strtolower(str_replace(' ', '_', $role['role_name'])),
-							'disabled' => $disable
-						);
-						array_push($checkboxes, $checkbox);
-					}
+	private $ar;
+	/**
+	 * @var MatchaCup|bool
+	 */
+	private $ap;
+	/**
+	 * @var MatchaCup|bool
+	 */
+	private $arp;
 
-					$row['items'] = $checkboxes;
-					array_push($item['items'], $row);
-				}
-			}
-			array_push($items, $item);
-		}
-		$rawStr = json_encode($items);
-		$regex = '("\w*?":|"Ext\.create|\)"\})';
-		$cleanItems = array();
-		preg_match_all($regex, $rawStr, $rawItems);
-		foreach ($rawItems[0] as $item)
-		{
-			array_push($cleanItems, str_replace('"', '', $item));
-		}
-		$itemsJsArray = str_replace('"', '\'', str_replace($rawItems[0], $cleanItems, $rawStr));
-		return $itemsJsArray;
+	function __construct(){
+		$this->ar = MatchaModel::setSenchaModel('App.model.administration.AclRoles');
+		$this->ap = MatchaModel::setSenchaModel('App.model.administration.AclPermissions');
+		$this->arp = MatchaModel::setSenchaModel('App.model.administration.AclRolePermissions');
 	}
 
 	/**
-	 * @return array
+	 *
+	 * @return mixed
 	 */
-	public function getRolesData()
+	public function getRolePerms()
 	{
-        if($this->ARP == NULL) $this->ARP = MatchaModel::setSenchaModel('App.model.administration.AclRolePermissions');
-		foreach ($this->ARP->load()->all() as $row)
-		{
-			$rows[$row['perm_key'] . '_' . $row['role_key']] = $row['value'];
+		$perms = $this->ap->load()->all();
+		$roles = $this->ar->load()->all();
+		$data = array();
+//		$first = true;
+		foreach($perms as $perm){
+			$values = $this->getPermRolesValues($perm['perm_key']);
+			$row = array(
+				'id' => $perm['id'],
+				'perm_name' => $perm['perm_name'],
+				'perm_key' => $perm['perm_key'],
+				'perm_cat' => $perm['perm_cat'],
+
+			);
+			foreach($roles as $role){
+				$dataIndex = 'role-'.$role['role_key'];
+//				$fields[] = array(
+//					'name' => $dataIndex,
+//					'type' => 'bool'
+//				);
+//				if($first){
+//					$columns[] = array(
+//						'text' => $role['role_name'],
+//						'dataIndex' => $dataIndex
+//					);
+//				}
+
+				$row[$dataIndex] = isset($values[$role['role_key']]) ? $values[$role['role_key']] : 0;
+			}
+//			$first = false;
+			$data[] = $row;
 		}
-		return $rows;
+		return array(
+//			'fields' => $fields,
+//			'columns' => $columns,
+			'data' => $data
+		);
 	}
 
 	/**
 	 * @param stdClass $params
-	 * @return string
+	 * @return array
 	 */
-	public function saveRolesData(stdClass $params)
+	public function updateRolePerm($params)
 	{
-		$data = get_object_vars($params);
-		function parse_boolean($val)
-		{
-			return $val;
+		if($this->arp == null) $this->arp = MatchaModel::setSenchaModel('App.model.administration.AclRolePermissions');
+		if(is_array($params)){
+			foreach($params as $param){
+				$this->saveRolePerm('front_office', $param->perm_key, $param->{'role-front_office'});
+				$this->saveRolePerm('auditor', $param->perm_key, $param->{'role-auditor'});
+				$this->saveRolePerm('clinician', $param->perm_key, $param->{'role-clinician'});
+				$this->saveRolePerm('physician', $param->perm_key, $param->{'role-physician'});
+				$this->saveRolePerm('administrator', $param->perm_key, $param->{'role-administrator'});
+				$this->saveRolePerm('emergencyaccess', $param->perm_key, $param->{'role-emergencyaccess'});
+			}
+			return $params;
 		}
+		$this->saveRolePerm('front_office', $params->perm_key, $params->{'role-front_office'});
+		$this->saveRolePerm('auditor', $params->perm_key, $params->{'role-auditor'});
+		$this->saveRolePerm('clinician', $params->perm_key, $params->{'role-clinician'});
+		$this->saveRolePerm('physician', $params->perm_key, $params->{'role-physician'});
+		$this->saveRolePerm('administrator', $params->perm_key, $params->{'role-administrator'});
+		$this->saveRolePerm('emergencyaccess', $params->perm_key, $params->{'role-emergencyaccess'});
+		return $params;
+	}
 
-		foreach ($data as $key => $val)
-		{
-			$val = parse_boolean($val);
-			if (!strpos($key, '_front_office') === false)
-			{
-				$this -> saveRolePerm('front_office', str_replace('_front_office', '', $key), $val);
-			}
-			elseif (!strpos($key, '_auditor') === false)
-			{
-				$this -> saveRolePerm('auditor', str_replace('_auditor', '', $key), $val);
-			}
-			elseif (!strpos($key, '_clinician') === false)
-			{
-				$this -> saveRolePerm('clinician', str_replace('_clinician', '', $key), $val);
-			}
-			elseif (!strpos($key, '_physician') === false)
-			{
-				$this -> saveRolePerm('physician', str_replace('_physician', '', $key), $val);
-			}
-			elseif (!strpos($key, '_administrator') === false)
-			{
-				$this -> saveRolePerm('administrator', str_replace('_administrator', '', $key), $val);
-			}
+
+
+	/**
+	 * @param $permKey
+	 * @return array
+	 */
+	protected function getPermRolesValues($permKey){
+		$perms = $this->arp->buildSQL(array(
+			'SELECT' => "*",
+			'WHERE' => "perm_key = '$permKey'"
+		))->all();
+		$data = array();
+		foreach($perms as $perm){
+			$data[$perm['role_key']] = $perm['value'];
 		}
-
-		$this -> conn -> execEvent('User Roles Updated values are: ' . json_encode($data));
-
-		return array('success' => true);
+		return $data;
 	}
 
 	/**
@@ -162,12 +135,22 @@ class Roles extends ACL
 	 */
 	private function saveRolePerm($roleKey, $permKey, $val)
 	{
-        if($this->ARP == NULL) $this->ARP = MatchaModel::setSenchaModel('App.model.administration.AclRolePermissions');
-		$data = array();
-		$data['value'] = $val;
-        $data['role_key'] = $roleKey;
-        $data['perm_key'] = $permKey;
-        $this->ARP->save($data);
+		$perm = $this->arp->load(array('role_key' => $roleKey, 'perm_key' => $permKey))->one();
+		if($perm !== false){
+			$perm['value'] = $val;
+			$this->arp->save((object) $perm);
+		}
+		else{
+			$perm = new stdClass();
+			$perm->role_key = $roleKey;
+			$perm->perm_key = $permKey;
+			$perm->value = $val;
+			$this->arp->save((object) $perm);
+		}
 	}
-
 }
+
+//
+//$r = new Roles();
+//print '<pre>';
+//print_r($r->getRoleGrid());

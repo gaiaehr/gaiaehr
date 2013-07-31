@@ -88,16 +88,16 @@ CREATE TABLE IF NOT EXISTS `acl_roles` (
   `role_key` varchar(255) DEFAULT NULL COMMENT 'Role Key',
   `seq` int(11) DEFAULT NULL COMMENT 'Sequence Order',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=7 ;
 
 CREATE TABLE IF NOT EXISTS `acl_role_perms` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `role_key` varchar(255) DEFAULT NULL COMMENT 'Role Key',
   `perm_key` varchar(255) DEFAULT NULL COMMENT 'Permission Key',
-  `value` int(11) DEFAULT NULL COMMENT 'Value',
+  `value` tinyint(1) DEFAULT NULL COMMENT 'Value',
   `add_date` datetime DEFAULT NULL COMMENT 'Date Added',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=296 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=316 ;
 
 CREATE TABLE IF NOT EXISTS `acl_user_perms` (
   `id` bigint(20) unsigned zerofill NOT NULL AUTO_INCREMENT,
@@ -234,21 +234,21 @@ CREATE TABLE IF NOT EXISTS `claims` (
 
 CREATE TABLE IF NOT EXISTS `combo_lists` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `title` varchar(255) NOT NULL DEFAULT '',
-  `active` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1 = active and 0 = deactive',
+  `title` varchar(255) DEFAULT NULL COMMENT 'Title of the combo',
+  `active` tinyint(1) DEFAULT NULL COMMENT 'Active?',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=97 ;
 
 CREATE TABLE IF NOT EXISTS `combo_lists_options` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `list_id` varchar(31) NOT NULL DEFAULT '',
-  `option_value` varchar(31) NOT NULL DEFAULT '' COMMENT 'Value',
-  `option_name` varchar(255) NOT NULL DEFAULT '' COMMENT 'Name or Title',
-  `seq` int(11) DEFAULT '0',
-  `notes` varchar(255) DEFAULT NULL,
-  `active` tinyint(1) DEFAULT '1' COMMENT '1 = active and  0 = deactive',
+  `list_id` varchar(255) NOT NULL DEFAULT '' COMMENT 'List ID',
+  `option_value` varchar(255) NOT NULL DEFAULT '' COMMENT 'Value',
+  `option_name` varchar(255) DEFAULT NULL COMMENT 'Name',
+  `seq` int(11) DEFAULT NULL COMMENT 'SEQ',
+  `notes` varchar(255) DEFAULT NULL COMMENT 'Notes',
+  `active` tinyint(1) DEFAULT NULL COMMENT 'Active?',
   PRIMARY KEY (`id`,`list_id`,`option_value`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=728 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=729 ;
 
 CREATE TABLE IF NOT EXISTS `cpt_codes` (
   `id` int(11) NOT NULL AUTO_INCREMENT,

@@ -40,7 +40,7 @@ Ext.define('App.model.administration.AclRolePermissions', {
 		},
 		{
 			name: 'value',
-			type: 'int',
+			type: 'bool',
 			comment: 'Value'
 		},
 		{

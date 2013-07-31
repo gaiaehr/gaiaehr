@@ -27,6 +27,7 @@ Ext.define('App.ux.RenderPanel', {
 	pageLayout   : 'fit',
 	pageBody     : [],
 	pageTitle    : '',
+	pageButtons  : null,
 	pagePadding  : null,
     showRating   : false,
 	initComponent: function() {
@@ -54,7 +55,8 @@ Ext.define('App.ux.RenderPanel', {
 							border  : false,
                             itemId  : 'pageLayout',
 							defaults: {frame: false, border: false, autoScroll: true},
-							items   : me.pageBody
+							items   : me.pageBody,
+							buttons : me.pageButtons
 						})
 					]
 				}

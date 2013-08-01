@@ -73,6 +73,11 @@ class Patient
      */
     public function getPatients(stdClass $params){
         $this->setPatientModel();
+        // Audit Log
+        // Added by: Gino Rivera
+        // Web Jul 31 2013
+        // GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+        $this->db->AuditLog('Patient viewed');
         return $this->p->load($params)->all();
     }
     /**
@@ -86,6 +91,11 @@ class Patient
         $this->createPatientDir($this->patient['pid']);
         $this->createPatientQrCode($this->patient['pid'], $this->patient['pid']);
         $this->createDefaultPhotoId($this->patient['pid']);
+        // Audit Log
+        // Added by: Gino Rivera
+        // Web Jul 31 2013
+        // GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+        $this->db->AuditLog('Patient updated');
         return $this->patient;
     }
     /**
@@ -184,6 +194,11 @@ class Patient
      */
     public function createNewPatient(stdClass $params)
     {
+        // Audit Log
+        // Added by: Gino Rivera
+        // Web Jul 31 2013
+        // GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+        $this->db->AuditLog('Patient added');
         return $this->savePatient($params);
     }
     /**

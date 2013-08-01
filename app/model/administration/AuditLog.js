@@ -64,6 +64,12 @@ Ext.define('App.model.administration.AuditLog',
             name: 'user',
             type: 'string',
             comment: 'Username'
+        },
+        {
+            name: 'date',
+            type: 'date',
+            dateFormat:'Y-m-d H:i:s',
+            comment: 'Date of the event'
         }
     ]
 });

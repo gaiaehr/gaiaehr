@@ -47,6 +47,8 @@ class MatchaHelper extends Matcha
 	 * @var string
 	 */
 	private $err;
+
+    private $AuditLog;
 	
 	/**
 	 * @brief       MatchaHelper constructor.
@@ -74,16 +76,8 @@ class MatchaHelper extends Matcha
         }
 
         // Enable the audit feature in Matcha::connect
-        MatchaAudit::audit(array(
-            array('name' => 'eid', 'type' => 'int'),
-            array('name' => 'date','type' => 'date'),
-            array('name' => 'user', 'type' => 'string'),
-            array('name' => 'user_id', 'type' => 'int'),
-            array('name' => 'event', 'type' => 'string'),
-            array('name' => 'patient_id', 'type' => 'int'),
-            array('name' => 'facility', 'type' => 'string')
-        ), NULL, 'id', 'encounter_history');
-
+        // GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+        if($this->AuditLog == NULL) $this->AuditLog = MatchaModel::setSenchaModel('App.model.administration.AuditLog');
 	}
 
     /**
@@ -93,9 +87,9 @@ class MatchaHelper extends Matcha
      * Added by: Gino Rivera Falu
      * Web Jul 31 2013
      */
-    public static function AuditLog($eventText)
+    public function AuditLog($eventText)
     {
-        MatchaAudit::$eventLogData = array(
+        $auditLog = (object) array(
             'date' => Time::getLocalTime('Y-m-d H:i:s'),
             'eid' => (isset($_SESSION['encounter']) ? $_SESSION['encounter']['id'] : '0'),
             'user' => ((isset($_SESSION['user']) && isset($_SESSION['user']['name'])) ? $_SESSION['user']['name'] : 'System'),
@@ -104,7 +98,7 @@ class MatchaHelper extends Matcha
             'patient_id' => (isset($_SESSION['patient']) ? $_SESSION['patient']['pid'] : '0'),
             'event' => $eventText
         );
-        MatchaAudit::auditSaveLog();
+        $this->AuditLog->save($auditLog);
     }
 
     /**

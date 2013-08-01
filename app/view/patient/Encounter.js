@@ -49,7 +49,7 @@ Ext.define('App.view.patient.Encounter', {
                 datachanged:me.updateProgressNote
             }
         });
-        me.encounterEventHistoryStore = Ext.create('App.store.patient.EncounterEventHistory');
+        me.encounterEventHistoryStore = Ext.create('App.store.administration.AuditLog');
 
         /**
          * Encounter Checkout window
@@ -570,7 +570,7 @@ Ext.define('App.view.patient.Encounter', {
                             me.msg('Sweet!', i18n('encounter_updated'));
                         }
                     });
-                    me.encounterEventHistoryStore.load({params:{eid:app.patient.eid}});
+                    me.encounterEventHistoryStore.load({filters:[{property:'eid',value:me.eid}]});
                 }else{
                     app.accessDenied();
                 }
@@ -695,7 +695,7 @@ Ext.define('App.view.patient.Encounter', {
 	            me.el.unmask();
             }
         });
-	    me.encounterEventHistoryStore.load({params:{eid:me.eid}});
+	    me.encounterEventHistoryStore.load({filters:[{property:'eid',value:me.eid}]});
 	    if(me.CurrentProceduralTerminology){
 		    me.CurrentProceduralTerminology.encounterCptStoreLoad(me.pid, me.eid, function(){
 			    me.CurrentProceduralTerminology.setDefaultQRCptCodes();

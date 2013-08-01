@@ -65,6 +65,8 @@ class Encounter
 	 */
 	private $diagnosis;
 
+    private $EncounterHistory;
+
 	function __construct()
 	{
 		$this->db             = new MatchaHelper();
@@ -889,8 +891,10 @@ class Encounter
 
 	public function getEncounterEventHistory($params)
 	{
-		$this->db->setSQL("SELECT * FROM encounter_history WHERE eid = '$params->eid' ORDER BY `date` DESC");
-		return $this->db->fetchRecords(PDO::FETCH_ASSOC);
+        $this->EncounterHistory = MatchaModel::setSenchaModel('App.model.administration.AuditLog');
+        return $this->EncounterHistory->load($params)->all();
+		//$this->db->setSQL("SELECT * FROM encounter_history WHERE eid = '$params->eid' ORDER BY `date` DESC");
+		//return $this->db->fetchRecords(PDO::FETCH_ASSOC);
 	}
 
 	public function checkoutAlerts(stdClass $params)

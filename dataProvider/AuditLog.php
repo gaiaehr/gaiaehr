@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-class Logs extends MatchaHelper
+class AuditLog extends MatchaHelper
 {
 
     /**
@@ -27,7 +27,7 @@ class Logs extends MatchaHelper
 
     function __construct()
     {
-        if($this->Log == NULL) $this->Log = MatchaModel::setSenchaModel('App.model.administration.Logs');
+        if($this->Log == NULL) $this->Log = MatchaModel::setSenchaModel('App.model.administration.AuditLog');
         return;
     }
 

@@ -29,7 +29,7 @@ Ext.define('App.view.administration.Log',
         // *************************************************************************************
         // Log Data Store
         // *************************************************************************************
-		me.logStore = Ext.create('App.store.administration.Logs');
+		me.logStore = Ext.create('App.store.administration.AuditLog');
 
 		// *************************************************************************************
 		// Create the GridPanel
@@ -48,38 +48,21 @@ Ext.define('App.view.administration.Log',
 				width : 120,
 				text : i18n('date_created'),
 				sortable : true,
-				dataIndex : 'created'
+				dataIndex : 'date',
+                renderer: Ext.util.Format.dateRenderer('Y-m-d g:i:s a')
 			},
 			{
-				width : 160,
+				width : 180,
 				text : i18n('user'),
 				sortable : true,
 				dataIndex : 'user'
 			},
 			{
-				width : 100,
+				flex: 1,
 				text : i18n('event'),
 				sortable : true,
 				dataIndex : 'event'
-			},
-			{
-				flex : 120,
-				text : i18n('modify'),
-				sortable : true,
-				dataIndex : 'modify'
-			},
-            {
-                flex : 120,
-                text : i18n('access'),
-                sortable : true,
-                dataIndex : 'access'
-            },
-            {
-                flex : 120,
-                text : i18n('deleted'),
-                sortable : true,
-                dataIndex : 'deleted'
-            }],
+			}],
 			listeners :
 			{
 				scope : this,
@@ -167,34 +150,9 @@ Ext.define('App.view.administration.Log',
 					name : 'facility'
 				},
 				{
-					fieldLabel : i18n('comments'),
-					xtype : 'displayfield',
-					name : 'comments'
-				},
-				{
-					fieldLabel : i18n('user_notes'),
-					xtype : 'displayfield',
-					name : 'user_notes'
-				},
-				{
 					fieldLabel : i18n('patient_id'),
 					xtype : 'displayfield',
 					name : 'patient_id'
-				},
-				{
-					fieldLabel : i18n('success'),
-					xtype : 'displayfield',
-					name : 'success'
-				},
-				{
-					fieldLabel : i18n('check_sum'),
-					xtype : 'displayfield',
-					name : 'checksum'
-				},
-				{
-					fieldLabel : i18n('crt_user'),
-					xtype : 'displayfield',
-					name : 'crt_user'
 				}]
 			}],
 			buttons : [

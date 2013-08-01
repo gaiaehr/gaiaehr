@@ -116,6 +116,12 @@ class Documents
         unset($data['id'], $data['date']);
         $this->db->setSQL($this->db->sqlBind($data, 'patient_documents', 'U', array('id' => $id)));
         $this->db->execLog();
+        /**
+         * Audit Log
+         * Added by: Gino Rivera
+         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+         */
+        $this->db->AuditLog('Patient document updated');
         return $params;
     }
 

@@ -38,6 +38,12 @@ class Services
         $sort = (isset($params->sort[0]) ? 'ORDER BY ' . $params->sort[0]->property . ' ' . $params->sort[0]->direction : '');
         $params->active = (isset($params->active) ? $params->active : 1);
         $this->db->setSQL("SELECT * FROM cpt_codes WHERE active = '$params->active' $sort");
+        /**
+         * Audit Log
+         * Added by: Gino Rivera
+         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+         */
+        $this->db->AuditLog('CPT codes list viewed');
         return $this->db->fetchRecords(PDO::FETCH_ASSOC);
     }
 
@@ -64,6 +70,13 @@ class Services
         } else {
             $record = $this->getCptByEid($params->eid);
         }
+        /**
+         * Audit Log
+         * Added by: Gino Rivera
+         * Web Jul 31 2013
+         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+         */
+        $this->db->AuditLog('CPT codes viewed');
         return $record;
     }
 
@@ -79,6 +92,13 @@ class Services
         $this->db->setSQL($this->db->sqlBind($data, 'encounter_services', 'I'));
         $this->db->execLog();
         $params->id = $this->db->lastInsertId;
+        /**
+         * Audit Log
+         * Added by: Gino Rivera
+         * Web Jul 31 2013
+         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+         */
+        $this->db->AuditLog('CPT code added');
         return array(
             'totals' => 1,
             'rows' => $params
@@ -92,6 +112,13 @@ class Services
         $params->id = intval($params->id);
         $this->db->setSQL($this->db->sqlBind($data, 'encounter_services', 'U', "id='$params->id'"));
         $this->db->execLog();
+        /**
+         * Audit Log
+         * Added by: Gino Rivera
+         * Web Jul 31 2013
+         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+         */
+        $this->db->AuditLog('CPT code updated');
         return array(
             'totals' => 1,
             'rows' => $params
@@ -106,6 +133,13 @@ class Services
             $this->db->setSQL("DELETE FROM encounter_services WHERE id ='$params->id'");
             $this->db->execLog();
         }
+        /**
+         * Audit Log
+         * Added by: Gino Rivera
+         * Web Jul 31 2013
+         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+         */
+        $this->db->AuditLog('CPT code updated');
         return array(
             'totals' => 1,
             'rows' => $params

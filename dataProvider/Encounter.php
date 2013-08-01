@@ -339,6 +339,12 @@ class Encounter
 		$pid    = (isset($params->pid)) ? $params->pid : $_SESSION['patient']['pid'];
 		$vitals = $this->getVitalsByPid($pid);
 		if(count($vitals) >= 1){
+            /**
+             * Audit Log
+             * Added by: Gino Rivera
+             * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+             */
+            $this->db->AuditLog('Encounter vitals viewed');
 			return $vitals;
 		} else {
 			return array();
@@ -384,6 +390,12 @@ class Encounter
 		$this->db->execLog();
 		$params->administer_by = $params->uid != 0 ? $this->user->getUserNameById($params->uid) : '';
 		$params->authorized_by = $params->auth_uid != 0 ? $this->user->getUserNameById($params->auth_uid) : '';
+        /**
+         * Audit Log
+         * Added by: Gino Rivera
+         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+         */
+        $this->db->AuditLog('Encounter vitals created');
 		return $params;
 	}
 
@@ -512,6 +524,12 @@ class Encounter
                 $services['rows'][$index]['expanded'] = true;
                 $services['rows'][$index]['children'] = $dx_children;
             }
+            /**
+             * Audit Log
+             * Added by: Gino Rivera
+             * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+             */
+            $this->db->AuditLog('Encounter CPT viewed');
             return $services['rows'];
         }else{
             return;
@@ -534,15 +552,32 @@ class Encounter
         $newService = $this->services->addCptCode($service);
         $params->id = $newService['rows']->id;
         $params->dx_children = $dx_children;
+        /**
+         * Audit Log
+         * Added by: Gino Rivera
+         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+         */
+        $this->db->AuditLog('Encounter CPT code created');
         return $params;
     }
     public function updateEncounterCptDxTree($params){
-
+        /**
+         * Audit Log
+         * Added by: Gino Rivera
+         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+         */
+        $this->db->AuditLog('Encounter CPT code updated');
         return $params;
     }
     public function removeEncounterCptDxTree($params)
     {
         $this->services->deleteCptCode($params);
+        /**
+         * Audit Log
+         * Added by: Gino Rivera
+         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+         */
+        $this->db->AuditLog('Encounter CPT code deleted');
         return $params;
     }
     //***********************************************************************************************
@@ -923,6 +958,13 @@ class Encounter
 			$foo['alertType'] = 1;
 			$alerts[]         = $foo;
 		}
+        /**
+         * Audit Log
+         * Added by: Gino Rivera
+         * Web Jul 31 2013
+         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+         */
+        $this->db->AuditLog('Patient checkout alerts viewed');
 		//TODO: vitals check
 		return $alerts;
 	}

@@ -71,5 +71,13 @@ Ext.define('App.model.administration.AuditLog',
             dateFormat:'Y-m-d H:i:s',
             comment: 'Date of the event'
         }
+    ],
+    hasMany: [
+        {
+            model: 'App.model.patient.Patient',
+            name: 'patient',
+            primaryKey: 'patient_id',
+            foreignKey: 'pid'
+        }
     ]
 });

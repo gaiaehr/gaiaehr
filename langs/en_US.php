@@ -1184,5 +1184,6 @@ $LANG = array(
     'smoke_history'                         => 'Smoke History',
     'emergency_access'                      => 'Emergency Access',
     'emergency_access_question'             => 'Are you sure you want to break the control lock (emergency access)?',
-    'emergency_access_disclaimer'           => 'Emergency access will assign you the "emergency access" permissions and make an event log entry of you access'
+    'emergency_access_disclaimer'           => 'Emergency access will assign you the "emergency access" permissions and make an event log entry of you access',
+    'patient_record_id'                     => 'Patient Record ID'
 );

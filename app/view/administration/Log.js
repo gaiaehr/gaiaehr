@@ -57,6 +57,12 @@ Ext.define('App.view.administration.Log',
 				sortable : true,
 				dataIndex : 'user'
 			},
+            {
+                width : 200,
+                text : i18n('patient_record_id'),
+                sortable : true,
+                dataIndex : 'patient_id'
+            },
 			{
 				flex: 1,
 				text : i18n('event'),
@@ -150,7 +156,7 @@ Ext.define('App.view.administration.Log',
 					name : 'facility'
 				},
 				{
-					fieldLabel : i18n('patient_id'),
+					fieldLabel : i18n('patient_record_id'),
 					xtype : 'displayfield',
 					name : 'patient_id'
 				}]

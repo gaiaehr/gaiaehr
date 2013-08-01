@@ -16,7 +16,7 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.model.administration.Logs',
+Ext.define('App.model.administration.AuditLog',
 {
     extend: 'Ext.data.Model',
     table: {

@@ -640,8 +640,8 @@ class ExternalDataUpdate
                         // now lets replace the '#REVISION#' placeholder for the next revision
                         // and execute the $run_sql with the new codes
                         $run_sql = str_replace('#REVISION#', $next_rev, $run_sql);
-                        $this->db->conn->exec($run_sql);
-                        //						$stmt->execute();
+                        $this->db->exec($run_sql);
+                        //$stmt->execute();
                         $this->installedRevision = $next_rev;
 
                         //print_r($this->db->conn->errorInfo());
@@ -770,14 +770,14 @@ class ExternalDataUpdate
         $file_array = explode(';', $file_load);
         foreach ($file_array as $val) {
             if (trim($val) != '') {
-                $stmt = $this->db->conn->prepare($val);
+                $stmt = $this->db->conn()->prepare($val);
                 $stmt->execute();
             }
         }
         $indexes_array = explode(';', $indexes_load);
         foreach ($indexes_array as $val1) {
             if (trim($val1) != '') {
-                $stmt = $this->db->conn->prepare($val1);
+                $stmt = $this->db->conn()->prepare($val1);
                 $stmt->execute();
             }
         }
@@ -789,7 +789,7 @@ class ExternalDataUpdate
                 if (strpos($val, $file_name) !== false) {
                     $val1 = str_replace($file_name, $replacement, $val);
                     if (trim($val1) != '') {
-                        $this->db->conn->exec($val1);
+                        $this->db->conn()->exec($val1);
 
                     }
                 }
@@ -844,7 +844,7 @@ class ExternalDataUpdate
         // snomed_capture.inc file
         foreach ($table_array_for_snomed as $val) {
             if (trim($val) != '') {
-                $stmt = $this->db->conn->prepare($val);
+                $stmt = $this->db->conn()->prepare($val);
                 $stmt->execute();
             }
         }
@@ -885,7 +885,7 @@ class ExternalDataUpdate
                                     ), $load_script);
                                 }
                                 if (isset($new_str)) {
-                                    $this->db->conn->exec($new_str);
+                                    $this->db->conn()->exec($new_str);
                                     //$stmt->execute();
                                 }
                             }

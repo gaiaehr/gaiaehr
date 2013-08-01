@@ -20,7 +20,7 @@ Ext.define('App.model.administration.AuditLog',
 {
     extend: 'Ext.data.Model',
     table: {
-        name:'audit',
+        name:'audit_log',
         comment:'Audit Logs'
     },
     fields: [
@@ -36,28 +36,13 @@ Ext.define('App.model.administration.AuditLog',
             comment: 'Audit Log ID'
         },
         {
-            name: 'created',
-            type: 'date',
-            comment: 'Created record date'
-        },
-        {
-            name: 'modify',
-            type: 'date',
-            comment: 'Modify record date'
-        },
-        {
-            name: 'deleted',
-            type: 'date',
-            comment: 'Delete or Hide record date'
-        },
-        {
-            name: 'access',
-            type: 'date',
-            comment: 'Access record date'
+            name: 'eid',
+            type: 'int',
+            comment: 'Encounter ID'
         },
         {
             name: 'event',
-            type: 'auto',
+            type: 'string',
             comment: 'Event description'
         },
         {
@@ -67,7 +52,7 @@ Ext.define('App.model.administration.AuditLog',
         },
         {
             name: 'patient_id',
-            type: 'string',
+            type: 'int',
             comment: 'Patient ID'
         },
         {
@@ -76,13 +61,9 @@ Ext.define('App.model.administration.AuditLog',
             comment: 'User ID'
         },
         {
-            name: 'checksum',
+            name: 'user',
             type: 'string',
-            comment: 'Checksum of SQL statement'
-        },
-        {
-            name: 'crt_user',
-            type: 'string'
+            comment: 'Username'
         }
     ]
 });

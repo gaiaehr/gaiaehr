@@ -145,10 +145,6 @@ Ext.define('App.model.patient.Vitals',
             name: 'bp_diastolic_normal',
             type: 'int',
             defaultValue: 80
-        },
-        {
-            name: 'administer_by',
-            type: 'string'
         }
     ],
     proxy: {

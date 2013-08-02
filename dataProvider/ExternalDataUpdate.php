@@ -774,6 +774,7 @@ class ExternalDataUpdate
                 $stmt->execute();
             }
         }
+
         $indexes_array = explode(';', $indexes_load);
         foreach ($indexes_array as $val1) {
             if (trim($val1) != '') {

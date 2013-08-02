@@ -52,7 +52,7 @@ class DiagnosisCodes
 								  long_desc,
 								  long_desc 		AS code_text,
 								  short_desc,
-								  'ICD9-DX'			AS code_type
+								  'ICD9'			AS code_type
 						     FROM icd9_dx_code
                         	WHERE active = '1'
                         	  AND revision = '$revision'
@@ -73,7 +73,7 @@ class DiagnosisCodes
 								  long_desc,
 								  long_desc 		AS code_text,
 								  short_desc,
-                                  'ICD9-SG'			AS code_type
+                                  'ICD9'			AS code_type
 							 FROM icd9_sg_code
                         	WHERE active = '1'
                         	  AND revision = '$revision'
@@ -98,7 +98,7 @@ class DiagnosisCodes
 								  long_desc,
 								  long_desc 		AS code_text,
 								  short_desc,
-								  'ICD10-DX'		AS code_type
+								  'ICD10'		AS code_type
 							 FROM icd10_dx_order_code
                         	WHERE active = '1'
                         	  AND revision = '$revision'
@@ -109,24 +109,24 @@ class DiagnosisCodes
                          ORDER BY formatted_dx_code ASC");
         $records = array_merge($records, $this->db->fetchRecords(PDO::FETCH_ASSOC));
         /**
-         * ICD10 PCS
+         * ICD10 PCS Procedures
          */
-        $this->db->setSQL("SELECT pcs_id 			AS id,
-								  pcs_code,
-								  pcs_code			AS code,
-								  pcs_code			AS xcode,
-								  long_desc,
-								  long_desc 		AS code_text,
-								  short_desc,
-								  'ICD10-PCS'		AS code_type
-							 FROM icd10_pcs_order_code
-                        	WHERE active = '1'
-                        	  AND revision = '$revision'
-                        	  AND (short_desc 		LIKE '%$query%'
-                        	   OR long_desc 		LIKE '$query%'
-                        	   OR pcs_code 			LIKE '$query%')
-                         ORDER BY pcs_code ASC");
-        $records = array_merge($records, $this->db->fetchRecords(PDO::FETCH_ASSOC));
+//        $this->db->setSQL("SELECT pcs_id 			AS id,
+//								  pcs_code,
+//								  pcs_code			AS code,
+//								  pcs_code			AS xcode,
+//								  long_desc,
+//								  long_desc 		AS code_text,
+//								  short_desc,
+//								  'ICD10-PCS'		AS code_type
+//							 FROM icd10_pcs_order_code
+//                        	WHERE active = '1'
+//                        	  AND revision = '$revision'
+//                        	  AND (short_desc 		LIKE '%$query%'
+//                        	   OR long_desc 		LIKE '$query%'
+//                        	   OR pcs_code 			LIKE '$query%')
+//                         ORDER BY pcs_code ASC");
+//        $records = array_merge($records, $this->db->fetchRecords(PDO::FETCH_ASSOC));
 
         if (is_object($query)) {
             $total = count($records);

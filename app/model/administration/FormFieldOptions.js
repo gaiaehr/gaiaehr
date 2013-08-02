@@ -32,7 +32,6 @@ Ext.define('App.model.administration.FormFieldOptions', {
 		{
 			name: 'field_id',
 			type: 'string',
-			dataType: 'text',
 			comment: 'Field ID'
 		},
 		{

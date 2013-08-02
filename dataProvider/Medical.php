@@ -203,7 +203,7 @@ class Medical
 	public function addMedicalIssues(stdClass $params)
 	{
 		$data = get_object_vars($params);
-		unset($data['id'], $data['alert']);
+		unset($data['id'], $data['active']);
 		$data['begin_date']  = $this->parseDate($data['begin_date']);
 		$data['end_date']    = $this->parseDate($data['end_date']);
 		$data['create_date'] = $this->parseDate($data['create_date']);
@@ -217,7 +217,7 @@ class Medical
 	{
 		$data = get_object_vars($params);
 		$id   = $data['id'];
-		unset($data['id'], $data['alert']);
+		unset($data['id'], $data['active']);
 		$data['begin_date']  = $this->parseDate($data['begin_date']);
 		$data['end_date']    = $this->parseDate($data['end_date']);
 		$data['create_date'] = $this->parseDate($data['create_date']);
@@ -236,7 +236,7 @@ class Medical
 	public function addPatientSurgery(stdClass $params)
 	{
 		$data = get_object_vars($params);
-		unset($data['id'], $data['alert']);
+		unset($data['id'], $data['active']);
 		$data['date']        = $this->parseDate($data['date']);
 		$data['create_date'] = $this->parseDate($data['create_date']);
 		$this->db->setSQL($this->db->sqlBind($data, 'patient_surgery', 'I'));
@@ -249,7 +249,7 @@ class Medical
 	{
 		$data = get_object_vars($params);
 		$id   = $data['id'];
-		unset($data['id'], $data['alert']);
+		unset($data['id'], $data['active']);
 		$data['date']        = $this->parseDate($data['date']);
 		$data['create_date'] = $this->parseDate($data['create_date']);
 		$this->db->setSQL($this->db->sqlBind($data, "patient_surgery", "U", "id='$id'"));
@@ -267,7 +267,7 @@ class Medical
 	public function addPatientDental(stdClass $params)
 	{
 		$data = get_object_vars($params);
-		unset($data['id'], $data['alert']);
+		unset($data['id'], $data['active']);
 		$data['begin_date']  = $this->parseDate($data['begin_date']);
 		$data['end_date']    = $this->parseDate($data['end_date']);
 		$data['create_date'] = $this->parseDate($data['create_date']);
@@ -281,7 +281,7 @@ class Medical
 	{
 		$data = get_object_vars($params);
 		$id   = $data['id'];
-		unset($data['id'], $data['alert']);
+		unset($data['id'], $data['active']);
 		$data['begin_date']  = $this->parseDate($data['begin_date']);
 		$data['end_date']    = $this->parseDate($data['end_date']);
 		$data['create_date'] = $this->parseDate($data['create_date']);
@@ -300,7 +300,7 @@ class Medical
 	public function addPatientMedications(stdClass $params)
 	{
 		$data = get_object_vars($params);
-		unset($data['id'], $data['alert']);
+		unset($data['id'], $data['active']);
 		$this->db->setSQL($this->db->sqlBind($data, 'patient_medications', 'I'));
 		$this->db->execLog();
 		$params->id = $this->db->lastInsertId;
@@ -311,7 +311,7 @@ class Medical
 	{
 		$data = get_object_vars($params);
 		$id   = $data['id'];
-		unset($data['id'], $data['alert']);
+		unset($data['id'], $data['active']);
 		$this->db->setSQL($this->db->sqlBind($data, "patient_medications", "U", "id='$id'"));
 		$this->db->execLog();
 		return $params;
@@ -319,25 +319,25 @@ class Medical
 	}
 
 	/*************************************************************************************************************/
-	public function getMedicationLiveSearch(stdClass $params)
-	{
-		$this->db->setSQL("SELECT id,
-								  PROPRIETARYNAME,
-								  PRODUCTNDC,
-								  NONPROPRIETARYNAME,
-								  ACTIVE_NUMERATOR_STRENGTH,
-								  ACTIVE_INGRED_UNIT
-                           	 FROM medications
-                            WHERE PROPRIETARYNAME LIKE '$params->query%'
-                               OR NONPROPRIETARYNAME LIKE '$params->query%'");
-		$records = $this->db->fetchRecords(PDO::FETCH_ASSOC);
-		$total   = count($records);
-		$records = array_slice($records, $params->start, $params->limit);
-		return array(
-			'totals' => $total,
-			'rows'   => $records
-		);
-	}
+//	public function getMedicationLiveSearch(stdClass $params)
+//	{
+//		$this->db->setSQL("SELECT id,
+//								  PROPRIETARYNAME,
+//								  PRODUCTNDC,
+//								  NONPROPRIETARYNAME,
+//								  ACTIVE_NUMERATOR_STRENGTH,
+//								  ACTIVE_INGRED_UNIT
+//                           	 FROM medications
+//                            WHERE PROPRIETARYNAME LIKE '$params->query%'
+//                               OR NONPROPRIETARYNAME LIKE '$params->query%'");
+//		$records = $this->db->fetchRecords(PDO::FETCH_ASSOC);
+//		$total   = count($records);
+//		$records = array_slice($records, $params->start, $params->limit);
+//		return array(
+//			'totals' => $total,
+//			'rows'   => $records
+//		);
+//	}
 
 	/***************************************************************************************************************/
 	public function getPatientLabsResults(stdClass $params)

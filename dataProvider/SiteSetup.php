@@ -148,7 +148,7 @@ class SiteSetup
 		);
 		// check if ZipArchive is enable
 //		$status = (function_exists("gzcompress") ? 'Ok' : 'Fail');
-		$status = 'Ok';
+		$status = (function_exists("gzcompress") ? 'Ok' : 'Fail');
 		$row[]  = array(
 			'msg' => 'PHP class zlib', 'status' => $status
 		);

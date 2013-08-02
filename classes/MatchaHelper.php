@@ -149,6 +149,14 @@ class MatchaHelper extends Matcha
 		$this->sql_statement = $sql;
 	}
 
+	public function exec($sql){
+		return self::$__conn->exec($sql);
+	}
+
+	public function conn(){
+		return self::$__conn;
+	}
+
 	/**
 	 * @brief       SQL Bind.
 	 * @details     This method is used to INSERT and UPDATE the database.

@@ -19,13 +19,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 class Laboratories
 {
-    /**
-     * Data Objects
-     */
-    private $LO = NULL;
+	/**
+	 * @var MatchaCUP
+	 */
+	private $LO = NULL;
 
     function __construct()
     {
+	    $this->db = new MatchaHelper();
         if($this->LO == NULL) $this->LO = MatchaModel::setSenchaModel('App.model.administration.LabObservations');
         return;
     }

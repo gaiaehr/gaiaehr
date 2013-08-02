@@ -139,7 +139,7 @@ class MatchaCUP
         catch(Exception $e)
         {
             MatchaErrorHandler::__errorProcess($e);
-            return false;
+            return $this;
         }
     }
 

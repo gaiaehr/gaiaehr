@@ -31,16 +31,7 @@ Ext.define('App.view.administration.Log',
         // Log Data Store
         // *************************************************************************************
 		me.logStore = Ext.create('App.store.administration.AuditLog');
-        me.patient = {
-            name: null,
-            pid: null,
-            pic: null,
-            sex: null,
-            dob: null,
-            age: null,
-            eid: null,
-            readOnly: false
-        };
+        me.patient = { pid: null };
 
 		// *************************************************************************************
 		// Create the GridPanel
@@ -129,10 +120,7 @@ Ext.define('App.view.administration.Log',
                     fieldStyle: me.fullMode ? 'width:300' : 'width:250',
                     listeners: {
                         scope: me,
-                        select: me.liveSearchSelect,
-                        blur: function(combo){
-                            combo.reset();
-                        }
+                        select: me.liveSearchSelect
                     }
                 },
                 {
@@ -166,7 +154,13 @@ Ext.define('App.view.administration.Log',
                     xtype: 'button',
                     text : i18n('reset'),
                     listeners: {
-                        click: function(){ me.logStore.load(); }
+                        click: function()
+                        {
+                            this.up('toolbar').query('datefield[name=from]')[0].setRawValue('');
+                            this.up('toolbar').query('datefield[name=to]')[0].setValue(new Date());
+                            this.up('toolbar').query('patienlivetsearch')[0].reset();
+                            me.logStore.load();
+                        }
                     }
                 }]
 			})

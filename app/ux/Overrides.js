@@ -17,6 +17,95 @@
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+Ext.override(Ext.data.proxy.Server, {
+    // remoteGroup default to true
+    remoteGroup: true,
+    encodeFilters: function(filters) {
+        var min = [],
+            length = filters.length,
+            i = 0;
+
+        for (; i < length; i++) {
+            min[i] = {
+                property: filters[i].property,
+                operator: filters[i].operator,
+                value   : filters[i].value
+            };
+        }
+        return this.applyEncoding(min);
+    },
+    getParams: function(operation) {
+        var me = this,
+            params = {},
+            isDef = Ext.isDefined,
+            groupers = operation.groupers,
+            sorters = operation.sorters,
+            filters = operation.filters,
+            page = operation.page,
+            start = operation.start,
+            limit = operation.limit,
+            simpleSortMode = me.simpleSortMode,
+            simpleGroupMode = me.simpleGroupMode,
+            pageParam = me.pageParam,
+            startParam = me.startParam,
+            limitParam = me.limitParam,
+            groupParam = me.groupParam,
+            groupDirectionParam = me.groupDirectionParam,
+            sortParam = me.sortParam,
+            filterParam = me.filterParam,
+            directionParam = me.directionParam,
+            hasGroups, index;
+
+        if (pageParam && isDef(page)) {
+            params[pageParam] = page;
+        }
+
+        if (startParam && isDef(start)) {
+            params[startParam] = start;
+        }
+
+        if (limitParam && isDef(limit)) {
+            params[limitParam] = limit;
+        }
+
+        // me.remoteGroup added at the end to force remoteGroupe property
+        hasGroups = groupParam && groupers && groupers.length > 0 && me.remoteGroup;
+        if (hasGroups) {
+            // Grouper is a subclass of sorter, so we can just use the sorter method
+            if (simpleGroupMode) {
+                params[groupParam] = groupers[0].property;
+                params[groupDirectionParam] = groupers[0].direction || 'ASC';
+            } else {
+                params[groupParam] = me.encodeSorters(groupers);
+            }
+        }
+
+        if (sortParam && sorters && sorters.length > 0) {
+            if (simpleSortMode) {
+                index = 0;
+                // Group will be included in sorters, so grab the next one
+                if (sorters.length > 1 && hasGroups) {
+                    index = 1;
+                }
+                params[sortParam] = sorters[index].property;
+                params[directionParam] = sorters[index].direction;
+            } else {
+                params[sortParam] = me.encodeSorters(sorters);
+            }
+
+        }
+
+        if (filterParam && filters && filters.length > 0) {
+            params[filterParam] = me.encodeFilters(filters);
+        }
+
+        return params;
+    }
+});
+
+
+
+
 Ext.override(Ext.data.reader.Reader, {
 	/**
 	 * Creates new Reader.

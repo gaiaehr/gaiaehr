@@ -31,7 +31,16 @@ Ext.define('App.view.administration.Log',
         // Log Data Store
         // *************************************************************************************
 		me.logStore = Ext.create('App.store.administration.AuditLog');
-
+        me.patient = {
+            name: null,
+            pid: null,
+            pic: null,
+            sex: null,
+            dob: null,
+            age: null,
+            eid: null,
+            readOnly: false
+        };
 
 		// *************************************************************************************
 		// Create the GridPanel
@@ -99,18 +108,18 @@ Ext.define('App.view.administration.Log',
 				},
                 {
                     xtype: 'datefield',
+                    name: 'from',
                     labelWidth : 30,
                     width: 150,
                     fieldLabel: i18n('from'),
-                    name: 'from_date',
                     format: 'Y-m-d'
                 },
                 {
                     xtype: 'datefield',
+                    name: 'to',
                     labelWidth : 30,
                     width: 150,
                     fieldLabel: i18n('to'),
-                    name: 'to_date',
                     format: 'Y-m-d',
                     value: new Date()  // defaults to today
                 },
@@ -128,7 +137,37 @@ Ext.define('App.view.administration.Log',
                 },
                 {
                     xtype: 'button',
-                    text : i18n('filter')
+                    text : i18n('filter'),
+                    listeners: {
+                        click: function(){
+                            me.logStore.load({
+                                filters:[
+                                {
+                                    property:'patient_id',
+                                    value: me.patient.pid
+                                },
+                                {
+                                    property: 'date',
+                                    operator: '>=',
+                                    value: this.up('toolbar').query('datefield[name=from]')[0].getRawValue()
+
+                                },
+                                {
+                                    property:'date',
+                                    operator: '<=',
+                                    value: this.up('toolbar').query('datefield[name=to]')[0].getRawValue()
+                                }
+                                ]
+                            });
+                        }
+                    }
+                },
+                {
+                    xtype: 'button',
+                    text : i18n('reset'),
+                    listeners: {
+                        click: function(){ me.logStore.load(); }
+                    }
                 }]
 			})
 		});
@@ -259,81 +298,7 @@ Ext.define('App.view.administration.Log',
 
     setPatient: function(pid, eid, callback){
         var me = this;
-        me.unsetPatient(function(){
-            Patient.getPatientSetDataByPid(pid, function(provider, response){
-                var data = response.result, msg1, msg2;
-                if(data.readOnly){
-                    msg1 = data.user + ' ' + i18n('is_currently_working_with') + ' "' + data.patient.name + '" ' + i18n('in') + ' "' + data.area + '" ' + i18n('area') + '.<br>' + i18n('override_read_mode_will_remove_the_patient_from_previous_user') + '.<br>' + i18n('do_you_would_like_to_override_read_mode');
-                    msg2 = data.user + ' ' + i18n('is_currently_working_with') + ' "' + data.patient.name + '" ' + i18n('in') + ' "' + data.area + '" ' + i18n('area') + '.<br>';
-                    Ext.Msg.show({
-                        title: i18n('wait') + '!!!',
-                        msg: data.overrideReadOnly ? msg1 : msg2,
-                        buttons: data.overrideReadOnly ? Ext.Msg.YESNO : Ext.Msg.OK,
-                        icon: Ext.MessageBox.WARNING,
-                        fn: function(btn){
-                            continueSettingPatient(btn != 'yes');
-                        }
-                    });
-                }else{
-                    continueSettingPatient(false);
-                }
-                function continueSettingPatient(readOnly){
-                    me.patient = {
-                        pid: data.patient.pid,
-                        name: data.patient.name,
-                        pic: data.patient.pic,
-                        sex: data.patient.sex,
-                        dob: data.patient.dob,
-                        age: data.patient.age,
-                        eid: eid,
-                        priority: data.patient.priority,
-                        readOnly: readOnly,
-                        rating: data.patient.rating
-                    };
-                    var panels = me.MainPanel.items.items;
-                    for(var i=0; i<panels.length; i++) if(panels[i].pageRankingDiv) panels[i].pageRankingDiv.setValue(me.patient.rating);
-                    me.patientButtonSet(me.patient);
-                    if(me.patientSummaryBtn) me.patientSummaryBtn.enable();
-                    if(me.patientOpenVisitsBtn) me.patientOpenVisitsBtn.enable();
-                    if(me.patientCreateEncounterBtn) me.patientCreateEncounterBtn.enable();
-                    if(me.patientCloseCurrEncounterBtn) me.patientCloseCurrEncounterBtn.enable();
-                    if(me.patientChargeBtn) me.patientChargeBtn.enable();
-                    if(me.patientCheckOutBtn) me.patientCheckOutBtn.enable();
-                    if(typeof callback == 'function') callback(me.patient);
-                }
-            },true);
-        });
-    },
-
-    unsetPatient: function(callback, sendRequest){
-        var me = this;
-        if(sendRequest) Patient.unsetPatient(me.patient.pid);
-        me.currEncounterId = null;
-        me.patient = {
-            pid: null,
-            name: null,
-            pic: null,
-            sex: null,
-            dob: null,
-            age: null,
-            eid: null,
-            priority: null,
-            readOnly: false,
-            rating: null
-        };
-        me.patientButtonRemoveCls();
-        if(typeof callback == 'function'){
-            callback(true);
-        }else{
-            var panels = me.MainPanel.items.items;
-            for(var i=0; i<panels.length; i++) if(panels[i].pageRankingDiv) panels[i].pageRankingDiv.setValue(0);
-            if(me.patientCreateEncounterBtn) me.patientCreateEncounterBtn.disable();
-            if(me.patientSummaryBtn) me.patientSummaryBtn.disable();
-            if(me.patientOpenVisitsBtn) me.patientOpenVisitsBtn.disable();
-            if(me.patientCloseCurrEncounterBtn) me.patientCloseCurrEncounterBtn.disable();
-            if(me.patientChargeBtn) me.patientChargeBtn.disable();
-            if(me.patientCheckOutBtn) me.patientCheckOutBtn.disable();
-            me.patientButtonSet();
-        }
+        me.patient = { pid: pid };
     }
+
 }); 

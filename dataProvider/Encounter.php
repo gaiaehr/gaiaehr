@@ -65,6 +65,8 @@ class Encounter
 	 */
 	private $diagnosis;
 
+    private $EncounterHistory;
+
 	function __construct()
 	{
 		$this->db             = new MatchaHelper();
@@ -81,6 +83,13 @@ class Encounter
 	private function setEid($eid)
 	{
 		$this->eid = $eid;
+        /**
+         * This is a temporary variable to comfort the certification needed by GaiaEHR
+         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+         * Added by: Gino Rivera Falu
+         * Web Jul 31 2013
+         */
+        $_SESSION['encounter']['id'] = $eid; // Added by Gino Rivera
 	}
 
 	/**
@@ -150,7 +159,15 @@ class Encounter
 		$params->eid = intval($eid);
 		$this->poolArea->updateCurrentPatientPoolAreaByPid(array('eid' => $params->eid, 'priority' => $params->priority), $params->pid);
 		$this->setEid($params->eid);
-		$this->addEncounterHistoryEvent('New Encounter Created');
+
+		//$this->addEncounterHistoryEvent('New Encounter Created');
+
+        // Audit Log
+        // Added by: Gino Rivera
+        // Web Jul 31 2013
+        // GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+        $this->db->AuditLog('New encounter created');
+
 		return array('success' => true, 'encounter' => $params);
 	}
 
@@ -170,13 +187,22 @@ class Encounter
 		$encounter['soap']                  = $this->getSoapByEid($params->eid);
 		//$encounter['speechdictation']       = $this->getDictationByEid($params->eid);
 		$encounter['hcfaoptions'] = $this->getEncounterHCFAOptionsByEid($params->eid);
-		$this->addEncounterHistoryEvent('Encounter viewed');
-		if(!empty($encounter)){
+
+        //$this->addEncounterHistoryEvent('Encounter viewed');
+
+		if(!empty($encounter))
+        {
+            // Audit Log
+            // Added by: Gino Rivera
+            // Web Jul 31 2013
+            // GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+            $this->db->AuditLog('Encounter viewed');
 			return array('success' => true, 'encounter' => $encounter);
 		} else {
 			return array('success' => false, 'error' => "Encounter ID $params->eid not found");
 		}
 	}
+
 	public function getEncounterSummary(stdClass $params)
 	{
 		$this->setEid($params->eid);
@@ -193,8 +219,16 @@ class Encounter
 		$e['name'] = Person::fullname($e['fname'],$e['mname'],$e['lname']);
 		$e['pic'] = $this->patient->getPatientPhotoSrcIdByPid($e['pid']);
 		$e['age'] = $this->patient->getPatientAgeByDOB($e['DOB']);
-		$this->addEncounterHistoryEvent('Encounter viewed');
-		if(!empty($e)){
+
+		//$this->addEncounterHistoryEvent('Encounter viewed');
+
+		if(!empty($e))
+        {
+            // Audit Log
+            // Added by: Gino Rivera
+            // Web Jul 31 2013
+            // GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+            $this->db->AuditLog('Encounter viewed');
 			return array('success' => true, 'encounter' => $e);
 		} else {
 			return array('success' => false, 'error' => "Encounter ID $params->eid not found");
@@ -207,7 +241,12 @@ class Encounter
 		$this->db->setSQL($this->db->sqlBind($data, 'encounters', 'U', array('eid' => $params->eid)));
 		$this->db->execLog();
 		$this->poolArea->updateCurrentPatientPoolAreaByPid(array('eid' => $params->eid, 'priority' => $params->priority), $params->pid);
-	}
+        // Audit Log
+        // Added by: Gino Rivera
+        // Web Jul 31 2013
+        // GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+        $this->db->AuditLog('Encounter priority updated');
+    }
 
 	/**
 	 * @param stdClass $params
@@ -238,7 +277,15 @@ class Encounter
 			}
 			$this->db->setSQL($this->db->sqlBind($data, 'encounters', 'U', array('eid' => $params->eid)));
 			$this->db->execLog();
-			$this->addEncounterHistoryEvent('Encounter Closed');
+
+            //$this->addEncounterHistoryEvent('Encounter Closed');
+
+            // Audit Log
+            // Added by: Gino Rivera
+            // Web Jul 31 2013
+            // GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+            $this->db->AuditLog('Encounter closed');
+
 			return array('success' => true, 'data' => $data);
 		} else {
 			return array('success' => false);
@@ -292,6 +339,12 @@ class Encounter
 		$pid    = (isset($params->pid)) ? $params->pid : $_SESSION['patient']['pid'];
 		$vitals = $this->getVitalsByPid($pid);
 		if(count($vitals) >= 1){
+            /**
+             * Audit Log
+             * Added by: Gino Rivera
+             * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+             */
+            $this->db->AuditLog('Encounter vitals viewed');
 			return $vitals;
 		} else {
 			return array();
@@ -311,7 +364,15 @@ class Encounter
 		$this->db->execLog();
 		$params->id            = $this->db->lastInsertId;
 		$params->administer_by = $this->user->getUserNameById($params->uid);
-		$this->addEncounterHistoryEvent('Vitals added');
+
+		//$this->addEncounterHistoryEvent('Vitals added');
+
+        // Audit Log
+        // Added by: Gino Rivera
+        // Web Jul 31 2013
+        // GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+        $this->db->AuditLog('Encounter vitals added');
+
 		return $params;
 	}
 
@@ -329,6 +390,12 @@ class Encounter
 		$this->db->execLog();
 		$params->administer_by = $params->uid != 0 ? $this->user->getUserNameById($params->uid) : '';
 		$params->authorized_by = $params->auth_uid != 0 ? $this->user->getUserNameById($params->auth_uid) : '';
+        /**
+         * Audit Log
+         * Added by: Gino Rivera
+         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+         */
+        $this->db->AuditLog('Encounter vitals created');
 		return $params;
 	}
 
@@ -383,7 +450,15 @@ class Encounter
 		$this->db->setSQL($this->db->sqlBind($data, 'encounter_soap', 'U', "id='" . $params->id . "'"));
 		$this->db->execLog();
 		$this->updateEncounterIcdxCodes($params);
-		$this->addEncounterHistoryEvent('SOAP updated');
+
+        //$this->addEncounterHistoryEvent('SOAP updated');
+
+        // Audit Log
+        // Added by: Gino Rivera
+        // Web Jul 31 2013
+        // GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+        $this->db->AuditLog('Encounter SOAP updated');
+
 		return $params;
 	}
 
@@ -449,6 +524,12 @@ class Encounter
                 $services['rows'][$index]['expanded'] = true;
                 $services['rows'][$index]['children'] = $dx_children;
             }
+            /**
+             * Audit Log
+             * Added by: Gino Rivera
+             * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+             */
+            $this->db->AuditLog('Encounter CPT viewed');
             return $services['rows'];
         }else{
             return;
@@ -471,15 +552,32 @@ class Encounter
         $newService = $this->services->addCptCode($service);
         $params->id = $newService['rows']->id;
         $params->dx_children = $dx_children;
+        /**
+         * Audit Log
+         * Added by: Gino Rivera
+         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+         */
+        $this->db->AuditLog('Encounter CPT code created');
         return $params;
     }
     public function updateEncounterCptDxTree($params){
-
+        /**
+         * Audit Log
+         * Added by: Gino Rivera
+         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+         */
+        $this->db->AuditLog('Encounter CPT code updated');
         return $params;
     }
     public function removeEncounterCptDxTree($params)
     {
         $this->services->deleteCptCode($params);
+        /**
+         * Audit Log
+         * Added by: Gino Rivera
+         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+         */
+        $this->db->AuditLog('Encounter CPT code deleted');
         return $params;
     }
     //***********************************************************************************************
@@ -587,7 +685,15 @@ class Encounter
 		unset($data['id']);
 		$this->db->setSQL($this->db->sqlBind($data, 'encounter_review_of_systems_check', 'U', "id='" . $params->id . "'"));
 		$this->db->execLog();
-		$this->addEncounterHistoryEvent('Review of System Checks updated');
+
+		//$this->addEncounterHistoryEvent('Review of System Checks updated');
+
+        // Audit Log
+        // Added by: Gino Rivera
+        // Web Jul 31 2013
+        // GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+        $this->db->AuditLog('Encounter review of system checks updated');
+
 		return $params;
 	}
 
@@ -602,7 +708,15 @@ class Encounter
 		unset($data['id']);
 		$this->db->setSQL($this->db->sqlBind($data, 'encounter_review_of_systems', 'U', "id='" . $params->id . "'"));
 		$this->db->execLog();
-		$this->addEncounterHistoryEvent('Review of System updated');
+
+		//$this->addEncounterHistoryEvent('Review of System updated');
+
+        // Audit Log
+        // Added by: Gino Rivera
+        // Web Jul 31 2013
+        // GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+        $this->db->AuditLog('Encounter review of system updated');
+
 		return $params;
 	}
 
@@ -617,7 +731,15 @@ class Encounter
 		unset($data['id']);
 		$this->db->setSQL($this->db->sqlBind($data, 'encounter_dictation', 'U', "id='" . $params->id . "'"));
 		$this->db->execLog();
-		$this->addEncounterHistoryEvent('Speech Dictation updated');
+
+		//$this->addEncounterHistoryEvent('Speech Dictation updated');
+
+        // Audit Log
+        // Added by: Gino Rivera
+        // Web Jul 31 2013
+        // GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+        $this->db->AuditLog('Encounter speech dictation updated');
+
 		return $params;
 	}
 
@@ -812,8 +934,10 @@ class Encounter
 
 	public function getEncounterEventHistory($params)
 	{
-		$this->db->setSQL("SELECT * FROM encounter_history WHERE eid = '$params->eid' ORDER BY `date` DESC");
-		return $this->db->fetchRecords(PDO::FETCH_ASSOC);
+        $this->EncounterHistory = MatchaModel::setSenchaModel('App.model.administration.AuditLog');
+        return $this->EncounterHistory->load($params)->all();
+		//$this->db->setSQL("SELECT * FROM encounter_history WHERE eid = '$params->eid' ORDER BY `date` DESC");
+		//return $this->db->fetchRecords(PDO::FETCH_ASSOC);
 	}
 
 	public function checkoutAlerts(stdClass $params)
@@ -842,6 +966,13 @@ class Encounter
 			$foo['alertType'] = 1;
 			$alerts[]         = $foo;
 		}
+        /**
+         * Audit Log
+         * Added by: Gino Rivera
+         * Web Jul 31 2013
+         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+         */
+        $this->db->AuditLog('Patient checkout alerts viewed');
 		//TODO: vitals check
 		return $alerts;
 	}

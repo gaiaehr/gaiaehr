@@ -20,8 +20,27 @@ $db = new MatchaHelper();
 //$var = array('i'=>10, 'j'=>20);
 //$firephp->log($var, 'Iterators');
 
-$User = MatchaModel::setSenchaModel('App.model.administration.User');
-echo $User->nextId();
+// Enable the audit feature in Matcha::connect
+MatchaAudit::audit(array(
+    array('name' => 'eid', 'type' => 'int'),
+    array('name' => 'date','type' => 'date'),
+    array('name' => 'user', 'type' => 'string'),
+    array('name' => 'user_id', 'type' => 'int'),
+    array('name' => 'event', 'type' => 'string'),
+    array('name' => 'patient_id', 'type' => 'int'),
+    array('name' => 'facility_id', 'type' => 'int')
+), NULL, 'id', 'encounter_history');
+
+MatchaAudit::$eventLogData = array(
+    'date' => Time::getLocalTime('Y-m-d H:i:s'),
+    'eid' => 1,
+    'user' => 'Mr. Gino Rivera',
+    'facility_id' => 2,
+    'patient_id' => 0,
+    'event' => 'Immunisation View'
+);
+MatchaAudit::auditSaveLog();
+
 
 //$data = (object)array(
 //    'name' => 'Test',

@@ -1377,7 +1377,7 @@ $API = array(
 	/**
 	 * Navigation Function
 	 */
-	'Logs' => array(
+	'AuditLog' => array(
 		'methods' => array(
 			'getLogs' => array(
 				'len' => 1

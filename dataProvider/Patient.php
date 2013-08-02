@@ -73,6 +73,11 @@ class Patient
      */
     public function getPatients(stdClass $params){
         $this->setPatientModel();
+        // Audit Log
+        // Added by: Gino Rivera
+        // Web Jul 31 2013
+        // GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+        $this->db->AuditLog('Patient viewed');
         return $this->p->load($params)->all();
     }
     /**
@@ -86,6 +91,11 @@ class Patient
         $this->createPatientDir($this->patient['pid']);
         $this->createPatientQrCode($this->patient['pid'], $this->patient['pid']);
         $this->createDefaultPhotoId($this->patient['pid']);
+        // Audit Log
+        // Added by: Gino Rivera
+        // Web Jul 31 2013
+        // GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+        $this->db->AuditLog('Patient updated');
         return $this->patient;
     }
     /**
@@ -94,6 +104,12 @@ class Patient
      */
     public function getInsurances(stdClass $params){
         $this->setInsuranceModels();
+        /**
+         * Audit Log
+         * Added by: Gino Rivera
+         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+         */
+        $this->db->AuditLog('Patient insurance viewed');
         return $this->i->load($params)->all();
     }
     /**
@@ -102,6 +118,12 @@ class Patient
      */
     public function saveInsurance($params){
         $this->setInsuranceModels();
+        /**
+         * Audit Log
+         * Added by: Gino Rivera
+         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+         */
+        $this->db->AuditLog('Patient insurance updated');
         return $this->i->save($params);
     }
     /**
@@ -184,6 +206,11 @@ class Patient
      */
     public function createNewPatient(stdClass $params)
     {
+        // Audit Log
+        // Added by: Gino Rivera
+        // Web Jul 31 2013
+        // GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+        $this->db->AuditLog('Patient added');
         return $this->savePatient($params);
     }
     /**
@@ -345,6 +372,7 @@ class Patient
      * @internal param $start
      * @internal param $limit
      * @return array
+     * @TODO: The search must be case-insensitive
      */
     public function patientLiveSearch(stdClass $params)
     {
@@ -384,8 +412,6 @@ class Patient
             return true;
         }
     }
-
-
 
     public function createDefaultPhotoId($pid)
     {
@@ -441,6 +467,12 @@ class Patient
         $this->db->execLog();
         $params->id        = $this->db->lastInsertId;
         $params->user_name = $this->user->getUserNameById($params->uid);
+        /**
+         * Audit Log
+         * Added by: Gino Rivera
+         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+         */
+        $this->db->AuditLog('Patient notes created');
         return $params;
     }
 
@@ -453,6 +485,12 @@ class Patient
         $this->db->execLog();
         $params->id        = $this->db->lastInsertId;
         $params->user_name = $this->user->getUserNameById($params->uid);
+        /**
+         * Audit Log
+         * Added by: Gino Rivera
+         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+         */
+        $this->db->AuditLog('Patient reminder created');
         return $params;
     }
 
@@ -462,6 +500,12 @@ class Patient
         unset($data['id'], $data['user_name']);
         $this->db->setSQL($this->db->sqlBind($data, 'patient_notes', 'U', array('id' => $params->id)));
         $this->db->execLog();
+        /**
+         * Audit Log
+         * Added by: Gino Rivera
+         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+         */
+        $this->db->AuditLog('Patient notes updated');
         return $params;
     }
 
@@ -471,6 +515,12 @@ class Patient
         unset($data['id'], $data['user_name']);
         $this->db->setSQL($this->db->sqlBind($data, 'patient_reminders', 'U', array('id' => $params->id)));
         $this->db->execLog();
+        /**
+         * Audit Log
+         * Added by: Gino Rivera
+         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+         */
+        $this->db->AuditLog('Patient reminder updated');
         return $params;
 
     }
@@ -483,6 +533,12 @@ class Patient
             $row['user_name'] = $this->user->getUserNameById($row['uid']);
             $reminders[]      = $row;
         }
+        /**
+         * Audit Log
+         * Added by: Gino Rivera
+         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+         */
+        $this->db->AuditLog('Patient notes viewed');
         return $reminders;
     }
 
@@ -494,6 +550,12 @@ class Patient
             $row['user_name'] = $this->user->getUserNameById($row['uid']);
             $reminders[]      = $row;
         }
+        /**
+         * Audit Log
+         * Added by: Gino Rivera
+         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+         */
+        $this->db->AuditLog('Patient reminder list viewed');
         return $reminders;
     }
 
@@ -589,6 +651,12 @@ class Patient
                 $records[]        = $row;
             }
         }
+        /**
+         * Audit Log
+         * Added by: Gino Rivera
+         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+         */
+        $this->db->AuditLog('Patient documents viewed');
         return $records;
     }
 
@@ -646,6 +714,12 @@ class Patient
                 'name' => $key, 'val' => $val
             );
         }
+        /**
+         * Audit Log
+         * Added by: Gino Rivera
+         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+         */
+        $this->db->AuditLog('Meaningful Use Alert viewed');
         return $record;
     }
 
@@ -730,6 +804,13 @@ class Patient
     public function getPatientDisclosures(stdClass $params)
     {
         $this->db->setSQL("SELECT * FROM patient_disclosures WHERE pid = '$params->pid'");
+        /**
+         * Audit Log
+         * Added by: Gino Rivera
+         * Web Jul 31 2013
+         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+         */
+        $this->db->AuditLog('Patient disclosure viewed');
         return $this->db->fetchRecords();
     }
 
@@ -741,6 +822,13 @@ class Patient
         $this->db->setSQL($this->db->sqlBind($data, 'patient_disclosures', 'I'));
         $this->db->execLog();
         $params->id = $this->db->lastInsertId;
+        /**
+         * Audit Log
+         * Added by: Gino Rivera
+         * Web Jul 31 2013
+         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+         */
+        $this->db->AuditLog('Patient disclosure created');
         return $params;
     }
 
@@ -750,6 +838,13 @@ class Patient
         unset($data['id']);
         $this->db->setSQL($this->db->sqlBind($data, 'patient_disclosures', 'U', array('id' => $params->id)));
         $this->db->execLog();
+        /**
+         * Audit Log
+         * Added by: Gino Rivera
+         * Web Jul 31 2013
+         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+         */
+        $this->db->AuditLog('Patient disclosure updated');
         return $params;
     }
 

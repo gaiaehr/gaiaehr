@@ -25,11 +25,13 @@ Ext.define('App.view.administration.Log',
 	initComponent : function()
 	{
 		var me = this;
+        me.fullMode = window.innerWidth >= me.minWidthToFullMode;
 
         // *************************************************************************************
         // Log Data Store
         // *************************************************************************************
-		me.logStore = Ext.create('App.store.administration.Logs');
+		me.logStore = Ext.create('App.store.administration.AuditLog');
+        me.patient = { pid: null };
 
 		// *************************************************************************************
 		// Create the GridPanel
@@ -46,27 +48,28 @@ Ext.define('App.view.administration.Log',
 			},
 			{
 				width : 120,
-				text : 'Date',
+				text : i18n('date_created'),
 				sortable : true,
-				dataIndex : 'date'
+				dataIndex : 'date',
+                renderer: Ext.util.Format.dateRenderer('Y-m-d g:i:s a')
 			},
 			{
-				width : 160,
-				text : 'User',
+				width : 180,
+				text : i18n('user'),
 				sortable : true,
 				dataIndex : 'user'
 			},
+            {
+                width : 200,
+                text : i18n('patient_record_id'),
+                sortable : true,
+                dataIndex : 'patient_id'
+            },
 			{
-				width : 100,
-				text : 'Event',
+				flex: 1,
+				text : i18n('event'),
 				sortable : true,
 				dataIndex : 'event'
-			},
-			{
-				flex : 1,
-				text : 'Activity',
-				sortable : true,
-				dataIndex : 'comments'
 			}],
 			listeners :
 			{
@@ -93,7 +96,73 @@ Ext.define('App.view.administration.Log',
 					{
 						me.winLog.show();
 					}
-				}]
+				},
+                {
+                    xtype: 'datefield',
+                    name: 'from',
+                    labelWidth : 30,
+                    width: 150,
+                    fieldLabel: i18n('from'),
+                    format: 'Y-m-d'
+                },
+                {
+                    xtype: 'datefield',
+                    name: 'to',
+                    labelWidth : 30,
+                    width: 150,
+                    fieldLabel: i18n('to'),
+                    format: 'Y-m-d',
+                    value: new Date()  // defaults to today
+                },
+                {
+                    xtype: 'patienlivetsearch',
+                    emptyText: i18n('patient_live_search') + '...',
+                    fieldStyle: me.fullMode ? 'width:300' : 'width:250',
+                    listeners: {
+                        scope: me,
+                        select: me.liveSearchSelect
+                    }
+                },
+                {
+                    xtype: 'button',
+                    text : i18n('filter'),
+                    listeners: {
+                        click: function(){
+                            me.logStore.load({
+                                filters:[
+                                {
+                                    property:'patient_id',
+                                    value: me.patient.pid
+                                },
+                                {
+                                    property: 'date',
+                                    operator: '>=',
+                                    value: this.up('toolbar').query('datefield[name=from]')[0].getRawValue()
+
+                                },
+                                {
+                                    property:'date',
+                                    operator: '<=',
+                                    value: this.up('toolbar').query('datefield[name=to]')[0].getRawValue()
+                                }
+                                ]
+                            });
+                        }
+                    }
+                },
+                {
+                    xtype: 'button',
+                    text : i18n('reset'),
+                    listeners: {
+                        click: function()
+                        {
+                            this.up('toolbar').query('datefield[name=from]')[0].setRawValue('');
+                            this.up('toolbar').query('datefield[name=to]')[0].setValue(new Date());
+                            this.up('toolbar').query('patienlivetsearch')[0].reset();
+                            me.logStore.load();
+                        }
+                    }
+                }]
 			})
 		});
 
@@ -155,34 +224,9 @@ Ext.define('App.view.administration.Log',
 					name : 'facility'
 				},
 				{
-					fieldLabel : i18n('comments'),
-					xtype : 'displayfield',
-					name : 'comments'
-				},
-				{
-					fieldLabel : i18n('user_notes'),
-					xtype : 'displayfield',
-					name : 'user_notes'
-				},
-				{
-					fieldLabel : i18n('patient_id'),
+					fieldLabel : i18n('patient_record_id'),
 					xtype : 'displayfield',
 					name : 'patient_id'
-				},
-				{
-					fieldLabel : i18n('success'),
-					xtype : 'displayfield',
-					name : 'success'
-				},
-				{
-					fieldLabel : i18n('check_sum'),
-					xtype : 'displayfield',
-					name : 'checksum'
-				},
-				{
-					fieldLabel : i18n('crt_user'),
-					xtype : 'displayfield',
-					name : 'crt_user'
 				}]
 			}],
 			buttons : [
@@ -220,5 +264,35 @@ Ext.define('App.view.administration.Log',
 	{
 		this.logStore.load();
 		callback(true);
-	}
+	},
+
+    liveSearchSelect: function(combo, selection){
+        var me = this, post = selection[0];
+        if(post){
+            me.setPatient(post.get('pid'), null, function(){
+                combo.reset();
+                me.openPatientSummary();
+            });
+        }
+    },
+
+    openPatientSummary: function(){
+        var me = this;
+
+        me.navigateTo('App.view.patient.Summary', function(success){
+            if(success){
+                Ext.Function.defer(function() {
+                    me.getPanelByCls('App.view.patient.Summary').onActive();
+                }, 100);
+
+            }
+        });
+
+    },
+
+    setPatient: function(pid, eid, callback){
+        var me = this;
+        me.patient = { pid: pid };
+    }
+
 }); 

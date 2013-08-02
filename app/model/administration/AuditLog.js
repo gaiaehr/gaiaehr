@@ -16,12 +16,12 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.model.administration.Logs',
+Ext.define('App.model.administration.AuditLog',
 {
     extend: 'Ext.data.Model',
     table: {
-        name:'logs',
-        comment:'Event Logs'
+        name:'audit_log',
+        comment:'Audit Logs'
     },
     fields: [
         {
@@ -33,47 +33,51 @@ Ext.define('App.model.administration.Logs',
             autoIncrement : true,
             allowNull : false,
             store: true,
-            comment: 'Event Logs ID'
+            comment: 'Audit Log ID'
         },
         {
-            name: 'date',
-            type: 'string'
+            name: 'eid',
+            type: 'int',
+            comment: 'Encounter ID'
         },
         {
             name: 'event',
-            type: 'auto'
-        },
-        {
-            name: 'user',
-            type: 'string'
+            type: 'string',
+            comment: 'Event description'
         },
         {
             name: 'facility',
-            type: 'string'
-        },
-        {
-            name: 'comments',
-            type: 'string'
-        },
-        {
-            name: 'user_notes',
-            type: 'string'
+            type: 'string',
+            comment: 'Witch facility'
         },
         {
             name: 'patient_id',
-            type: 'string'
+            type: 'int',
+            comment: 'Patient ID'
         },
         {
-            name: 'success',
-            type: 'int'
+            name: 'user_id',
+            type: 'int',
+            comment: 'User ID'
         },
         {
-            name: 'checksum',
-            type: 'string'
+            name: 'user',
+            type: 'string',
+            comment: 'Username'
         },
         {
-            name: 'crt_user',
-            type: 'string'
+            name: 'date',
+            type: 'date',
+            dateFormat:'Y-m-d H:i:s',
+            comment: 'Date of the event'
+        }
+    ],
+    hasMany: [
+        {
+            model: 'App.model.patient.Patient',
+            name: 'patient',
+            primaryKey: 'patient_id',
+            foreignKey: 'pid'
         }
     ]
 });

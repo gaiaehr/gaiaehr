@@ -16,15 +16,21 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.store.patient.EncounterEventHistory', {
-	extend: 'Ext.data.Store',
-	model     : 'App.model.patient.EventHistory',
-    proxy : {
-        type: 'direct',
-        api : {
-            read  : Encounter.getEncounterEventHistory
+Ext.define('App.store.administration.AuditLog', {
+    model: 'App.model.administration.AuditLog',
+    extend: 'Ext.data.Store',
+    proxy :
+    {
+        type : 'direct',
+        api :
+        {
+            read : AuditLog.getLogs
+        },
+        reader :
+        {
+            totalProperty : 'totals',
+            root : 'rows'
         }
     },
-    autoLoad:false
+    autoLoad : false
 });
-

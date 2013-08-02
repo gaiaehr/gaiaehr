@@ -19,25 +19,83 @@
 Ext.define('App.model.patient.MedicalIssues', {
 	extend: 'Ext.data.Model',
 	table: {
-		name:'medicalissues',
-		comment:'Medical Issues'
+		name:'patient_active_problems',
+		comment:'Active Problems'
 	},
 	fields: [
-        {name: 'id', type: 'int', comment: 'Medical Issues ID'},
-		{name: 'eid', type: 'int'},
-		{name: 'pid', type: 'int'},
-		{name: 'created_uid', type: 'int'},
-		{name: 'updated_uid', type: 'int'},
-		{name: 'create_date', type: 'date', dateFormat: 'Y-m-d H:i:s'},
-		{name: 'code', type: 'string'},
-		{name: 'code_text', type: 'string'},
-		{name: 'begin_date', type: 'date', dateFormat: 'Y-m-d H:i:s'},
-		{name: 'end_date', type: 'date', dateFormat: 'Y-m-d H:i:s'},
-		{name: 'ocurrence', type: 'string'},
-		{name: 'referred_by', type: 'string'},
-		{name: 'outcome', type: 'string'},
-        {name: 'alert', type: 'bool'}
-
+        {
+	        name: 'id',
+	        type: 'int',
+	        comment: 'Medical Issues ID'
+        },
+		{
+			name: 'pid',
+			type: 'int'
+		},
+		{
+			name: 'eid',
+			type: 'int'
+		},
+		{
+			name: 'code',
+			type: 'string'
+		},
+		{
+			name: 'code_text',
+			type: 'string'
+		},
+		{
+			name: 'code_type',
+			type: 'string'
+		},
+		{
+			name: 'begin_date',
+			type: 'date',
+			dateFormat: 'Y-m-d H:i:s'
+		},
+		{
+			name: 'end_date',
+			type: 'date',
+			dateFormat: 'Y-m-d H:i:s'
+		},
+		{
+			name: 'occurrence',
+			type: 'string'
+		},
+		{
+			name: 'referred_by',
+			type: 'string'
+		},
+		{
+			name: 'outcome',
+			type: 'string'
+		},
+		{
+			name: 'active',
+			type: 'bool',
+			store: false,
+			convert: function(v, record){
+				return record.data.end_date == '' || record.data.end_date == null
+			}
+		},
+		{
+			name: 'created_uid',
+			type: 'int'
+		},
+		{
+			name: 'updated_uid',
+			type: 'int'
+		},
+		{
+			name: 'create_date',
+			type: 'date',
+			dateFormat: 'Y-m-d H:i:s'
+		},
+		{
+			name: 'update_date',
+			type: 'date',
+			dateFormat: 'Y-m-d H:i:s'
+		}
 	],
 	proxy : {
 		type: 'direct',

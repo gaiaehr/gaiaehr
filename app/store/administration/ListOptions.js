@@ -20,9 +20,10 @@ Ext.define('App.store.administration.ListOptions', {
     model: 'App.model.administration.ListOptions',
     extend: 'Ext.data.Store',
 	pageSize:300,
+	remoteSort: true,
 	sorters: [
 		{
-			property: 'option_name',
+			property: 'seq',
 			direction: 'ASC'
 		}
 	]

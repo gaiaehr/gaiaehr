@@ -22,7 +22,8 @@ Ext.define('App.ux.LiveRXNORMSearch',
 	extend : 'Ext.form.ComboBox',
 	alias : 'widget.rxnormlivetsearch',
 	hideLabel : true,
-
+	displayField : 'STR',
+	valueField : 'RXCUI',
 	initComponent : function()
 	{
 		var me = this;
@@ -67,8 +68,6 @@ Ext.define('App.ux.LiveRXNORMSearch',
 		Ext.apply(this,
 		{
 			store : me.store,
-			displayField : 'STR',
-			valueField : 'RXCUI',
 			emptyText : i18n('search') + '...',
 			typeAhead : false,
             hideTrigger : true,

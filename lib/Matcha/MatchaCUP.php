@@ -139,7 +139,7 @@ class MatchaCUP
         catch(Exception $e)
         {
             MatchaErrorHandler::__errorProcess($e);
-            return false;
+            return $this;
         }
     }
 
@@ -373,6 +373,25 @@ class MatchaCUP
 		{
 			return MatchaErrorHandler::__errorProcess($e);
 		}
+	}
+
+
+	public function sort($params){
+		if (isset($params->sort))
+		{
+			$sortArray = array();
+			foreach ($params->sort as $sort)
+			{
+				if(isset($sort->property) && (!is_array($this->phantomFields) || (is_array($this->phantomFields) && in_array($sort->property, $this->phantomFields)))){
+					$sortDirection = (isset($sort->direction) ? $sort->direction : '');
+					$sortArray[] = $sort->property.' '.$sortDirection;
+				}
+			}
+			if(!empty($sortArray)){
+				 $this->sql = $this->sql . ' ORDER BY ' . implode(', ', $sortArray);
+			}
+		}
+		return $this;
 	}
 
 	/**

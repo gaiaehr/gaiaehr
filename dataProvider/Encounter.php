@@ -832,9 +832,11 @@ class Encounter
 		if(!empty($medications)){
 			$lis = '';
 			foreach($medications as $foo){
-				$lis .= '<li>' . $foo['medication'] . ' ' . $foo['dose'] . ' ' . $foo['dose_mg'] . '<br>';
-				$lis .= 'Instruction: ' . $foo['take_pills'] . ' ' . $foo['type'] . ' ' . $foo['by'] . ' ' . $foo['prescription_often'] . ' ' . $foo['prescription_when'] . '<br>';
-				$lis .= 'Dispense: ' . $foo['dispense'] . '  Refill: ' . $foo['refill'] . ' </li>';
+//				print_r($foo);
+
+				$lis .= '<li>' . $foo['STR'] . '</li>';
+//				$lis .= 'Instruction: ' . $foo['take_pills'] . ' ' . $foo['type'] . ' ' . $foo['by'] . ' ' . $foo['prescription_often'] . ' ' . $foo['prescription_when'] . '<br>';
+//				$lis .= 'Dispense: ' . $foo['dispense'] . '  Refill: ' . $foo['refill'] . ' </li>';
 			}
 			$ExtraData .= '<p>Medications:</p>';
 			$ExtraData .= '<ul class="ProgressNote-ul">' . $lis . '</ul>';
@@ -877,6 +879,8 @@ class Encounter
 			$ExtraData .= '<p>Surgeries:</p>';
 			$ExtraData .= '<ul class="ProgressNote-ul">' . $lis . '</ul>';
 		}
+
+
 		$dental = $this->medical->getPatientDentalByEncounterID($eid);
 		if(!empty($dental)){
 			$lis = '';
@@ -888,17 +892,21 @@ class Encounter
 			$ExtraData .= '<p>Dental:</p>';
 			$ExtraData .= '<ul class="ProgressNote-ul">' . $lis . '</ul>';
 		}
+
+		/**
+		 * Active Problems found in this Encounter
+		 */
 		$activeProblems = $this->medical->getMedicalIssuesByEncounterID($eid);
 		if(!empty($activeProblems)){
 			$lis = '';
 			foreach($activeProblems as $foo){
-				$lis .= '<li>Immunization name: ' . $foo['diagnosis_code'] . '<br>';
-				//			    $lis .= 'Immunization ID: ' .$foo['immunization_id'].'<br>';
-				//			    $lis .= 'Administered By: '.$foo['administered_by'].' </li>';
+				$lis .= '<li>[' .$foo['code'] . '] - '.$foo['code_text'] . ' </li>';
 			}
 			$ExtraData .= '<p>Active Problems:</p>';
 			$ExtraData .= '<ul class="ProgressNote-ul">' . $lis . '</ul>';
 		}
+
+
 		$preventiveCare = $this->preventiveCare->getPreventiveCareDismissPatientByEncounterID($eid);
 		if(!empty($preventiveCare)){
 			$lis = '';

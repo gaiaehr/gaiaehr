@@ -29,6 +29,10 @@ Ext.define('App.ux.LiveICDXSearch',
 		qtip:i18n('clearable_combo_box'),
 		trigger1Class:'x-form-select-trigger',
 		trigger2Class:'x-form-clear-trigger',
+
+		displayField:'code_text', // this should be code
+		valueField:'code',
+
 		initComponent:function(){
 			var me = this;
 
@@ -61,8 +65,7 @@ Ext.define('App.ux.LiveICDXSearch',
 
 			Ext.apply(this,{
 				store:me.store,
-				displayField:'code_text',
-				valueField:'code',
+
 				emptyText:me.emptyText,
 				typeAhead:true,
 				minChars:1,

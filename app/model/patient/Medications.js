@@ -19,34 +19,111 @@
 Ext.define('App.model.patient.Medications', {
 	extend: 'Ext.data.Model',
 	table: {
-		name:'medications',
-		comment:'Medications'
+		name:'patient_medications',
+		comment:'Patient Medications'
 	},
 	fields: [
-        {name: 'id', type: 'int', comment: 'Medications ID'},
-		{name: 'pid', type: 'int'},
-		{name: 'eid', type: 'int'},
-		{name: 'prescription_id', type: 'int'},
-		{name: 'STR', type: 'string'},
-		{name: 'CODE', type: 'string'},
-		{name: 'RXCUI', type: 'string'},
-		{name: 'ICDS', type: 'string'},
-		{name: 'dose', type: 'string'},
-		{name: 'take_pills', type: 'int'},
-		{name: 'form', type: 'string'},
-		{name: 'route', type: 'string'},
-		{name: 'prescription_often', type: 'string'},
-		{name: 'prescription_when', type: 'string'},
-		{name: 'dispense', type: 'string'},
-		{name: 'refill', type: 'string'},
-		{name: 'create_date', type:'date', dateFormat:'Y-m-d H:i:s'},
-		{name: 'begin_date', type:'date', dateFormat:'Y-m-d H:i:s'},
-		{name: 'end_date', type:'date', dateFormat:'Y-m-d H:i:s'},
+        {
+	        name: 'id',
+	        type: 'int',
+	        comment: 'Medications ID'
+        },
+		{
+			name: 'pid',
+			type: 'int'
+		},
+		{
+			name: 'eid',
+			type: 'int'
+		},
+		{
+			name: 'prescription_id',
+			type: 'int'
+		},
+		{
+			name: 'STR',
+			type: 'string'
+		},
+		{
+			name: 'CODE',
+			type: 'string'
+		},
+		{
+			name: 'RXCUI',
+			type: 'string'
+		},
+		{
+			name: 'ICDS',
+			type: 'string'
+		},
+		{
+			name: 'dose',
+			type: 'string'
+		},
+		{
+			name: 'take_pills',
+			type: 'int'
+		},
+		{
+			name: 'form',
+			type: 'string'
+		},
+		{
+			name: 'route',
+			type: 'string'
+		},
+		{
+			name: 'prescription_often',
+			type: 'string'
+		},
+		{
+			name: 'prescription_when',
+			type: 'string'
+		},
+		{
+			name: 'dispense',
+			type: 'string'
+		},
+		{
+			name: 'refill',
+			type: 'string'
+		},
+		{
+			name: 'create_date',
+			type:'date',
+			dateFormat:'Y-m-d H:i:s'
+		},
+		{
+			name: 'begin_date',
+			type:'date',
+			dateFormat:'Y-m-d H:i:s'
+		},
+		{
+			name: 'end_date',
+			type:'date',
+			dateFormat:'Y-m-d H:i:s'
+		},
 
-		{name: 'outcome', type: 'string'},
-		{name: 'alert', type: 'bool'},
-		{name: 'ocurrence', type: 'string'},
-		{name: 'referred_by', type: 'string'},
+		{
+			name: 'outcome',
+			type: 'string'
+		},
+		{
+			name: 'ocurrence',
+			type: 'string'
+		},
+		{
+			name: 'referred_by',
+			type: 'string'
+		},
+		{
+			name: 'active',
+			type: 'bool',
+			store: false,
+			convert: function(v, record){
+				return record.data.end_date == null;
+			}
+		}
 
 
 	],

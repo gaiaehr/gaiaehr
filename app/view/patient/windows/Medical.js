@@ -59,20 +59,20 @@ Ext.define('App.view.patient.windows.Medical', {
             },
             autoSync:false
         });
-        me.patientSurgeryStore = Ext.create('App.store.patient.Surgery', {
-            listeners:{
-                scope:me,
-                beforesync:me.setDefaults
-            },
-            autoSync:false
-        });
-        me.patientDentalStore = Ext.create('App.store.patient.Dental', {
-            listeners:{
-                scope:me,
-                beforesync:me.setDefaults
-            },
-            autoSync:false
-        });
+//        me.patientSurgeryStore = Ext.create('App.store.patient.Surgery', {
+//            listeners:{
+//                scope:me,
+//                beforesync:me.setDefaults
+//            },
+//            autoSync:false
+//        });
+//        me.patientDentalStore = Ext.create('App.store.patient.Dental', {
+//            listeners:{
+//                scope:me,
+//                beforesync:me.setDefaults
+//            },
+//            autoSync:false
+//        });
         me.patientMedicationsStore = Ext.create('App.store.patient.Medications', {
             listeners:{
                 scope:me,
@@ -386,7 +386,8 @@ Ext.define('App.view.patient.windows.Medical', {
                                                 scope:me,
                                                 change:me.disableFieldLogic
                                             }
-                                        }), me.allergieMedication = Ext.create('App.ux.LiveRXNORMSearch', {
+                                        }),
+	                                    me.allergieMedication = Ext.create('App.ux.LiveRXNORMSearch', {
                                             fieldLabel:i18n('allergy'),
                                             hideLabel:false,
                                             name:'allergy2',
@@ -411,7 +412,8 @@ Ext.define('App.view.patient.windows.Medical', {
                                                 change:me.disableFieldLogic
                                             }
 
-                                        }), me.allergiesLocal = Ext.create('App.ux.combo.AllergiesLocal', {
+                                        }),
+	                                    me.allergiesLocal = Ext.create('App.ux.combo.AllergiesLocal', {
                                             xtype:'mitos.allergieslocalcombo',
                                             fieldLabel:i18n('reaction'),
                                             name:'reaction2',
@@ -424,7 +426,8 @@ Ext.define('App.view.patient.windows.Medical', {
                                                 change:me.disableFieldLogic
                                             }
 
-                                        }),  me.allergiesSkin = Ext.create('App.ux.combo.AllergiesSkin', {
+                                        }),
+	                                    me.allergiesSkin = Ext.create('App.ux.combo.AllergiesSkin', {
                                             xtype:'mitos.allergiesskincombo',
                                             fieldLabel:i18n('reaction'),
                                             name:'reaction3',
@@ -437,7 +440,8 @@ Ext.define('App.view.patient.windows.Medical', {
                                                 change:me.disableFieldLogic
                                             }
 
-                                        }), me.allergiesSystemic = Ext.create('App.ux.combo.AllergiesSystemic', {
+                                        }),
+	                                    me.allergiesSystemic = Ext.create('App.ux.combo.AllergiesSystemic', {
                                             xtype:'mitos.allergiessystemiccombo',
                                             fieldLabel:i18n('reaction'),
                                             name:'reaction4',
@@ -450,7 +454,8 @@ Ext.define('App.view.patient.windows.Medical', {
                                                 change:me.disableFieldLogic
                                             }
 
-                                        }), {
+                                        }),
+	                                    {
                                             fieldLabel:i18n('end_date'),
                                             xtype:'datefield',
                                             format:'Y-m-d',
@@ -507,7 +512,7 @@ Ext.define('App.view.patient.windows.Medical', {
                     },
                     {
                         xtype:'datecolumn',
-                        header:i18n('begin_date'),
+                        header:i18n('date_diagnosed'),
                         width:100,
                         format:'Y-m-d',
                         dataIndex:'begin_date'
@@ -518,6 +523,12 @@ Ext.define('App.view.patient.windows.Medical', {
                         width:100,
                         format:'Y-m-d',
                         dataIndex:'end_date'
+                    },
+                    {
+                        header:i18n('active?'),
+                        width:60,
+                        dataIndex:'active',
+	                    renderer:me.boolRenderer
                     }
                 ],
                 plugins:Ext.create('App.ux.grid.RowFormEditing', {
@@ -526,11 +537,27 @@ Ext.define('App.view.patient.windows.Medical', {
                     clicksToEdit:1,
                     formItems:[
                         {
-                            title:i18n('general'),
                             xtype:'container',
                             padding:10,
                             layout:'vbox',
                             items:[
+	                            {
+		                            xtype:'liveicdxsearch',
+		                            fieldLabel:i18n('search'),
+		                            name:'code',
+		                            hideLabel:false,
+		                            itemId:'actiiveproblems',
+		                            action:'actiiveproblems',
+		                            enableKeyEvents:true,
+		                            displayField:'code',
+		                            valueField:'code',
+		                            width:720,
+		                            labelWidth:70,
+		                            listeners:{
+			                            scope:me,
+			                            select:me.onLiveSearchSelect
+		                            }
+	                            },
                                 {
                                     /**
                                      * Line one
@@ -542,34 +569,20 @@ Ext.define('App.view.patient.windows.Medical', {
                                     },
                                     items:[
                                         {
-                                            xtype:'liveicdxsearch',
-                                            fieldLabel:i18n('problem'),
-                                            name:'code',
-                                            allowBlank:false,
-                                            hideLabel:false,
-                                            itemId:'medicalissues',
-                                            action:'medicalissues',
-                                            enableKeyEvents:true,
-                                            width:510,
-                                            labelWidth:70,
-                                            listeners:{
-                                                scope:me,
-                                                'select':me.onLiveSearchSelect
-                                            }
-                                        },
-                                        {
-                                            xtype:'textfield',
-                                            hidden:true,
+	                                        xtype:'textfield',
+	                                        fieldLabel:i18n('problem'),
+	                                        width:510,
+	                                        labelWidth:70,
+	                                        allowBlank:false,
                                             name:'code_text',
                                             action:'code_text'
                                         },
                                         {
-                                            fieldLabel:i18n('begin_date'),
-                                            xtype:'datefield',
+                                            fieldLabel:i18n('code_type'),
+                                            xtype:'textfield',
                                             width:200,
-                                            labelWidth:80,
-                                            format:'Y-m-d',
-                                            name:'begin_date'
+                                            labelWidth:100,
+                                            name:'code_type'
 
                                         }
                                     ]
@@ -586,11 +599,11 @@ Ext.define('App.view.patient.windows.Medical', {
                                     },
                                     items:[
                                         {
-                                            fieldLabel:i18n('ocurrence'),
+                                            fieldLabel:i18n('occurrence'),
                                             width:250,
                                             labelWidth:70,
                                             xtype:'mitos.occurrencecombo',
-                                            name:'ocurrence'
+                                            name:'occurrence'
 
                                         },
                                         {
@@ -601,15 +614,16 @@ Ext.define('App.view.patient.windows.Medical', {
                                             name:'outcome'
 
                                         },
-                                        {
-                                            fieldLabel:i18n('end_date'),
-                                            xtype:'datefield',
-                                            width:200,
-                                            labelWidth:80,
-                                            format:'Y-m-d',
-                                            name:'end_date'
 
-                                        }
+	                                    {
+		                                    fieldLabel:i18n('date_diagnosed'),
+		                                    xtype:'datefield',
+		                                    width:200,
+		                                    labelWidth:100,
+		                                    format:'Y-m-d',
+		                                    name:'begin_date'
+
+	                                    }
                                     ]
 
                                 },
@@ -629,7 +643,16 @@ Ext.define('App.view.patient.windows.Medical', {
                                             labelWidth:70,
                                             fieldLabel:i18n('referred_by'),
                                             name:'referred_by'
-                                        }
+                                        },
+	                                    {
+		                                    fieldLabel:i18n('end_date'),
+		                                    xtype:'datefield',
+		                                    width:200,
+		                                    labelWidth:100,
+		                                    format:'Y-m-d',
+		                                    name:'end_date'
+
+	                                    }
                                     ]
                                 }
                             ]
@@ -647,336 +670,31 @@ Ext.define('App.view.patient.windows.Medical', {
             /**
              * Surgery Card panel
              */
-            {
-
-
-                xtype:'grid',
-                action:'patientSurgeryListGrid',
-                store:me.patientSurgeryStore,
-                columns:[
-                    {
-                        header:i18n('surgery'),
-                        width:100,
-                        flex:1,
-                        dataIndex:'surgery'
-                    },
-                    {
-                        xtype:'datecolumn',
-                        header:i18n('date'),
-                        width:100,
-                        format:'Y-m-d',
-                        dataIndex:'date'
-                    }
-                ],
-                plugins:Ext.create('App.ux.grid.RowFormEditing', {
-                    autoCancel:false,
-                    errorSummary:false,
-                    clicksToEdit:1,
-                    formItems:[
-                        {
-                            title:i18n('general'),
-                            xtype:'container',
-                            padding:10,
-                            layout:'vbox',
-                            items:[
-                                {
-                                    /**
-                                     * Line one
-                                     */
-                                    xtype:'fieldcontainer',
-                                    layout:'hbox',
-                                    defaults:{
-                                        margin:'0 10 0 0'
-                                    },
-                                    items:[
-                                        {
-                                            fieldLabel:i18n('surgery'),
-                                            name:'surgery_id',
-                                            hideLabel:false,
-                                            allowBlank:false,
-                                            width:510,
-                                            labelWidth:70,
-                                            xtype:'surgerieslivetsearch',
-                                            itemId:'surgery',
-                                            action:'surgery',
-                                            enableKeyEvents:true,
-                                            listeners:{
-                                                scope:me,
-                                                'select':me.onLiveSearchSelect
-                                            }
-                                        },
-                                        {
-                                            xtype:'textfield',
-                                            hidden:true,
-                                            name:'surgery',
-                                            action:'idField'
-                                        },
-                                        {
-                                            fieldLabel:i18n('date'),
-                                            xtype:'datefield',
-                                            width:200,
-                                            labelWidth:80,
-                                            format:'Y-m-d',
-                                            name:'date'
-
-                                        }
-                                    ]
-
-                                },
-                                {
-                                    /**
-                                     * Line two
-                                     */
-                                    xtype:'fieldcontainer',
-                                    layout:'hbox',
-                                    defaults:{
-                                        margin:'0 10 0 0'
-                                    },
-                                    items:[
-                                        {
-                                            fieldLabel:i18n('notes'),
-                                            xtype:'textfield',
-                                            width:510,
-                                            labelWidth:70,
-                                            name:'notes'
-
-                                        },
-                                        {
-                                            fieldLabel:i18n('outcome'),
-                                            xtype:'mitos.outcome2combo',
-                                            width:200,
-                                            labelWidth:80,
-                                            name:'outcome'
-
-                                        }
-                                    ]
-
-                                },
-                                {
-                                    /**
-                                     * Line three
-                                     */
-                                    xtype:'fieldcontainer',
-                                    layout:'hbox',
-                                    defaults:{
-                                        margin:'0 10 0 0'
-                                    },
-                                    items:[
-                                        {
-                                            xtype:'textfield',
-                                            width:510,
-                                            labelWidth:70,
-                                            fieldLabel:i18n('referred_by'),
-                                            name:'referred_by'
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                    ]
-                }),
-                bbar:['->', {
-                    text:i18n('reviewed'),
-                    action:'review',
-                    itemId:'review_surgery',
-                    scope:me,
-                    handler:me.onReviewed
-                }]
-            },
-            /**
-             * Dental Card panel
-             */
-            {
-
-
-                xtype:'grid',
-                action:'patientDentalListGrid',
-                store:me.patientDentalStore,
-                columns:[
-                    {
-                        header:i18n('dental'),
-                        width:990,
-                        dataIndex:'description'
-                    },
-                    {
-                        xtype:'datecolumn',
-                        header:i18n('begin_date'),
-                        width:100,
-                        format:'Y-m-d',
-                        dataIndex:'begin_date'
-                    },
-                    {
-                        xtype:'datecolumn',
-                        header:i18n('end_date'),
-                        flex:1,
-                        format:'Y-m-d',
-                        dataIndex:'end_date'
-                    }
-                ],
-                plugins:Ext.create('App.ux.grid.RowFormEditing', {
-                    autoCancel:false,
-                    errorSummary:false,
-                    clicksToEdit:1,
-                    formItems:[
-	                    {
-		                    title:i18n('general'),
-		                    xtype:'container',
-		                    padding:10,
-		                    layout:'vbox',
-		                    items:[
-			                    {
-				                    /**
-				                     * Line one
-				                     */
-				                    xtype:'fieldcontainer',
-				                    layout:'hbox',
-				                    defaults:{
-					                    margin:'0 10 0 0'
-				                    },
-				                    items:[
-					                    {
-						                    fieldLabel:i18n('dental'),
-						                    name:'surgery_id',
-						                    hideLabel:false,
-						                    allowBlank:false,
-						                    width:510,
-						                    labelWidth:70,
-						                    xtype:'cdtlivetsearch',
-						                    itemId:'cdt',
-						                    action:'cdt',
-						                    enableKeyEvents:true,
-						                    listeners:{
-							                    scope:me,
-							                    'select':me.onLiveSearchSelect
-						                    }
-					                    },
-					                    {
-						                    xtype:'textfield',
-						                    hidden:true,
-						                    name:'surgery',
-						                    action:'idField'
-					                    },
-					                    {
-						                    fieldLabel:i18n('date'),
-						                    xtype:'datefield',
-						                    width:200,
-						                    labelWidth:80,
-						                    format:'Y-m-d',
-						                    name:'date'
-
-					                    }
-				                    ]
-
-			                    },
-			                    {
-				                    /**
-				                     * Line two
-				                     */
-				                    xtype:'fieldcontainer',
-				                    layout:'hbox',
-				                    defaults:{
-					                    margin:'0 10 0 0'
-				                    },
-				                    items:[
-					                    {
-						                    fieldLabel:i18n('notes'),
-						                    xtype:'textfield',
-						                    width:510,
-						                    labelWidth:70,
-						                    name:'notes'
-
-					                    },
-					                    {
-						                    fieldLabel:i18n('outcome'),
-						                    xtype:'mitos.outcome2combo',
-						                    width:200,
-						                    labelWidth:80,
-						                    name:'outcome'
-
-					                    }
-				                    ]
-
-			                    },
-			                    {
-				                    /**
-				                     * Line three
-				                     */
-				                    xtype:'fieldcontainer',
-				                    layout:'hbox',
-				                    defaults:{
-					                    margin:'0 10 0 0'
-				                    },
-				                    items:[
-					                    {
-						                    xtype:'textfield',
-						                    width:510,
-						                    labelWidth:70,
-						                    fieldLabel:i18n('referred_by'),
-						                    name:'referred_by'
-					                    }
-				                    ]
-			                    }
-		                    ]
-	                    }
-                    ]
-                }),
-                bbar:['->', {
-                    text:i18n('reviewed'),
-                    action:'review',
-                    itemId:'review_dental',
-                    scope:me,
-                    handler:me.onReviewed
-                }]
-            },
-            /**
-             * Medications panel
-             */
-            {
-
-
-                xtype:'grid',
-                action:'patientMedicationsListGrid',
-                store:me.patientMedicationsStore,
-                columns:[
-                    {
-                        header:i18n('medication'),
-                        flex:1,
-                        dataIndex:'STR',
-	                    editor:{
-		                    xtype:'rxnormlivetsearch',
-		                    listeners:{
-                                scope:me,
-                                select:me.onLiveSearchSelect
-                            }
-	                    }
-                    },
-                    {
-                        xtype:'datecolumn',
-                        header:i18n('begin_date'),
-                        width:100,
-                        format:'Y-m-d',
-                        dataIndex:'begin_date',
-	                    editor:{
-		                    xtype:'datefield',
-                            format:'Y-m-d'
-	                    }
-                    },
-                    {
-                        xtype:'datecolumn',
-                        header:i18n('end_date'),
-                        width:100,
-                        format:'Y-m-d',
-                        dataIndex:'end_date',
-	                    editor:{
-		                    xtype:'datefield',
-		                    format:'Y-m-d'
-	                    }
-                    }
-                ],
-                plugins:Ext.create('Ext.grid.plugin.RowEditing', {
-                    autoCancel:false,
-                    errorSummary:false,
-                    clicksToEdit:2
+//            {
+//
+//
+//                xtype:'grid',
+//                action:'patientSurgeryListGrid',
+//                store:me.patientSurgeryStore,
+//                columns:[
+//                    {
+//                        header:i18n('surgery'),
+//                        width:100,
+//                        flex:1,
+//                        dataIndex:'surgery'
+//                    },
+//                    {
+//                        xtype:'datecolumn',
+//                        header:i18n('date'),
+//                        width:100,
+//                        format:'Y-m-d',
+//                        dataIndex:'date'
+//                    }
+//                ],
+//                plugins: Ext.create('App.ux.grid.RowFormEditing', {
+//                    autoCancel:false,
+//                    errorSummary:false,
+//                    clicksToEdit:1,
 //                    formItems:[
 //                        {
 //                            title:i18n('general'),
@@ -991,68 +709,342 @@ Ext.define('App.view.patient.windows.Medical', {
 //                                    xtype:'fieldcontainer',
 //                                    layout:'hbox',
 //                                    defaults:{
-//                                        margin:'0 5 0 0'
+//                                        margin:'0 10 0 0'
 //                                    },
 //                                    items:[
 //                                        {
-//                                            xtype:'rxnormlivetsearch',
-//                                            fieldLabel:i18n('search'),
+//                                            fieldLabel:i18n('surgery'),
+//                                            name:'surgery_id',
 //                                            hideLabel:false,
-//                                            itemId:'medication',
-//                                            name:'RXCUI',
-//                                            action:'medication_id',
-//                                            enableKeyEvents:true,
-//                                            width:520,
+//                                            allowBlank:false,
+//                                            width:510,
 //                                            labelWidth:70,
+//                                            xtype:'surgerieslivetsearch',
+//                                            itemId:'surgery',
+//                                            action:'surgery',
+//                                            enableKeyEvents:true,
 //                                            listeners:{
 //                                                scope:me,
-//                                                select:me.onLiveSearchSelect
+//                                                'select':me.onLiveSearchSelect
 //                                            }
+//                                        },
+//                                        {
+//                                            xtype:'textfield',
+//                                            hidden:true,
+//                                            name:'surgery',
+//                                            action:'idField'
+//                                        },
+//                                        {
+//                                            fieldLabel:i18n('date'),
+//                                            xtype:'datefield',
+//                                            width:200,
+//                                            labelWidth:80,
+//                                            format:'Y-m-d',
+//                                            name:'date'
+//
 //                                        }
 //                                    ]
 //
 //                                },
-//	                            {
-//		                            /**
-//		                             * Line two
-//		                             */
-//		                            xtype:'fieldcontainer',
-//		                            layout:'hbox',
-//		                            defaults:{
-//			                            margin:0
-//		                            },
-//		                            items:[
-//			                            {
-//				                            xtype:'textfield',
-//				                            fieldLabel:i18n('medication'),
-//				                            name:'STR',
-//				                            width:520,
-//				                            labelWidth:70,
-//				                            action:'medication'
-//			                            },
-//			                            {
-//				                            fieldLabel:i18n('begin_date'),
-//				                            xtype:'datefield',
-//				                            width:200,
-//				                            labelWidth:70,
-//				                            format:'Y-m-d',
-//				                            name:'begin_date'
+//                                {
+//                                    /**
+//                                     * Line two
+//                                     */
+//                                    xtype:'fieldcontainer',
+//                                    layout:'hbox',
+//                                    defaults:{
+//                                        margin:'0 10 0 0'
+//                                    },
+//                                    items:[
+//                                        {
+//                                            fieldLabel:i18n('notes'),
+//                                            xtype:'textfield',
+//                                            width:510,
+//                                            labelWidth:70,
+//                                            name:'notes'
 //
-//			                            },
-//			                            {
-//				                            fieldLabel:i18n('end_date'),
-//				                            xtype:'datefield',
-//				                            width:200,
-//				                            labelWidth:70,
-//				                            format:'Y-m-d',
-//				                            name:'end_date'
-//			                            }
-//		                            ]
+//                                        },
+//                                        {
+//                                            fieldLabel:i18n('outcome'),
+//                                            xtype:'mitos.outcome2combo',
+//                                            width:200,
+//                                            labelWidth:80,
+//                                            name:'outcome'
 //
-//	                            }
+//                                        }
+//                                    ]
+//
+//                                },
+//                                {
+//                                    /**
+//                                     * Line three
+//                                     */
+//                                    xtype:'fieldcontainer',
+//                                    layout:'hbox',
+//                                    defaults:{
+//                                        margin:'0 10 0 0'
+//                                    },
+//                                    items:[
+//                                        {
+//                                            xtype:'textfield',
+//                                            width:510,
+//                                            labelWidth:70,
+//                                            fieldLabel:i18n('referred_by'),
+//                                            name:'referred_by'
+//                                        }
+//                                    ]
+//                                }
 //                            ]
 //                        }
 //                    ]
+//                }),
+//                bbar:['->', {
+//                    text:i18n('reviewed'),
+//                    action:'review',
+//                    itemId:'review_surgery',
+//                    scope:me,
+//                    handler:me.onReviewed
+//                }]
+//            },
+            /**
+             * Dental Card panel
+             */
+//            {
+//
+//
+//                xtype:'grid',
+//                action:'patientDentalListGrid',
+//                store:me.patientDentalStore,
+//                columns:[
+//                    {
+//                        header:i18n('dental'),
+//                        width:990,
+//                        dataIndex:'description'
+//                    },
+//                    {
+//                        xtype:'datecolumn',
+//                        header:i18n('begin_date'),
+//                        width:100,
+//                        format:'Y-m-d',
+//                        dataIndex:'begin_date'
+//                    },
+//                    {
+//                        xtype:'datecolumn',
+//                        header:i18n('end_date'),
+//                        flex:1,
+//                        format:'Y-m-d',
+//                        dataIndex:'end_date'
+//                    }
+//                ],
+//                plugins:Ext.create('App.ux.grid.RowFormEditing', {
+//                    autoCancel:false,
+//                    errorSummary:false,
+//                    clicksToEdit:1,
+//                    formItems:[
+//	                    {
+//		                    title:i18n('general'),
+//		                    xtype:'container',
+//		                    padding:10,
+//		                    layout:'vbox',
+//		                    items:[
+//			                    {
+//				                    /**
+//				                     * Line one
+//				                     */
+//				                    xtype:'fieldcontainer',
+//				                    layout:'hbox',
+//				                    defaults:{
+//					                    margin:'0 10 0 0'
+//				                    },
+//				                    items:[
+//					                    {
+//						                    fieldLabel:i18n('dental'),
+//						                    name:'surgery_id',
+//						                    hideLabel:false,
+//						                    allowBlank:false,
+//						                    width:510,
+//						                    labelWidth:70,
+//						                    xtype:'cdtlivetsearch',
+//						                    itemId:'cdt',
+//						                    action:'cdt',
+//						                    enableKeyEvents:true,
+//						                    listeners:{
+//							                    scope:me,
+//							                    'select':me.onLiveSearchSelect
+//						                    }
+//					                    },
+//					                    {
+//						                    xtype:'textfield',
+//						                    hidden:true,
+//						                    name:'surgery',
+//						                    action:'idField'
+//					                    },
+//					                    {
+//						                    fieldLabel:i18n('date'),
+//						                    xtype:'datefield',
+//						                    width:200,
+//						                    labelWidth:80,
+//						                    format:'Y-m-d',
+//						                    name:'date'
+//
+//					                    }
+//				                    ]
+//
+//			                    },
+//			                    {
+//				                    /**
+//				                     * Line two
+//				                     */
+//				                    xtype:'fieldcontainer',
+//				                    layout:'hbox',
+//				                    defaults:{
+//					                    margin:'0 10 0 0'
+//				                    },
+//				                    items:[
+//					                    {
+//						                    fieldLabel:i18n('notes'),
+//						                    xtype:'textfield',
+//						                    width:510,
+//						                    labelWidth:70,
+//						                    name:'notes'
+//
+//					                    },
+//					                    {
+//						                    fieldLabel:i18n('outcome'),
+//						                    xtype:'mitos.outcome2combo',
+//						                    width:200,
+//						                    labelWidth:80,
+//						                    name:'outcome'
+//
+//					                    }
+//				                    ]
+//
+//			                    },
+//			                    {
+//				                    /**
+//				                     * Line three
+//				                     */
+//				                    xtype:'fieldcontainer',
+//				                    layout:'hbox',
+//				                    defaults:{
+//					                    margin:'0 10 0 0'
+//				                    },
+//				                    items:[
+//					                    {
+//						                    xtype:'textfield',
+//						                    width:510,
+//						                    labelWidth:70,
+//						                    fieldLabel:i18n('referred_by'),
+//						                    name:'referred_by'
+//					                    }
+//				                    ]
+//			                    }
+//		                    ]
+//	                    }
+//                    ]
+//                }),
+//                bbar:['->', {
+//                    text:i18n('reviewed'),
+//                    action:'review',
+//                    itemId:'review_dental',
+//                    scope:me,
+//                    handler:me.onReviewed
+//                }]
+//            },
+            /**
+             * Medications panel
+             */
+            {
+
+
+                xtype:'grid',
+                action:'patientMedicationsListGrid',
+                store:me.patientMedicationsStore,
+                columns:[
+	                {
+		                header:i18n('medication'),
+		                flex:1,
+		                dataIndex:'STR',
+		                editor:{
+			                xtype:'rxnormlivetsearch',
+			                displayField : 'STR',
+			                valueField : 'STR',
+			                action: 'medication',
+			                listeners:{
+				                scope:me,
+				                select:me.onLiveSearchSelect
+			                }
+		                }
+	                },
+	                {
+		                header:i18n('dose'),
+		                width:125,
+		                dataIndex:'dose',
+		                sortable:false,
+		                hideable: false,
+		                editor:{
+			                xtype:'textfield'
+		                }
+	                },
+	                {
+		                header:i18n('route'),
+		                width:100,
+		                dataIndex:'route',
+		                sortable:false,
+		                hideable: false,
+		                editor:{
+			                xtype:'mitos.prescriptionhowto'
+		                }
+	                },
+	                {
+		                header:i18n('form'),
+		                width:125,
+		                dataIndex:'form',
+		                sortable:false,
+		                hideable: false,
+		                editor:{
+			                xtype:'mitos.prescriptiontypes'
+		                }
+	                },
+	                {
+		                header:i18n('instructions'),
+		                width:200,
+		                dataIndex:'prescription_when',
+		                sortable:false,
+		                hideable: false,
+		                editor:Ext.widget('livesigssearch')
+	                },
+	                {
+		                xtype:'datecolumn',
+		                format:globals['date_display_format'],
+		                header:i18n('begin_date'),
+		                width:100,
+		                dataIndex:'begin_date',
+		                sortable:false,
+		                hideable: false
+	                },
+	                {
+		                header:i18n('end_date'),
+		                width:100,
+		                dataIndex:'end_date',
+		                sortable:false,
+		                hideable: false,
+		                editor:{
+			                xtype:'datefield',
+			                format:globals['date_display_format']
+		                }
+	                },
+	                {
+		                header:i18n('active?'),
+		                width:60,
+		                dataIndex:'active',
+		                renderer:me.boolRenderer
+	                }
+                ],
+                plugins:Ext.create('Ext.grid.plugin.RowEditing', {
+                    autoCancel:false,
+                    errorSummary:false,
+                    clicksToEdit:2
                 }),
                 bbar:['->', {
                     text:i18n('reviewed'),
@@ -1239,26 +1231,26 @@ Ext.define('App.view.patient.windows.Medical', {
                         handler:me.cardSwitch
                     },
                     '-',
-                    {
-                        text:i18n('surgeries'),
-                        enableToggle:true,
-                        toggleGroup:'medicalWin',
-                        itemId:'surgery',
-                        action:'surgery',
-                        scope:me,
-                        handler:me.cardSwitch
-                    },
-                    '-',
-                    {
-                        text:i18n('dental'),
-                        enableToggle:true,
-                        toggleGroup:'medicalWin',
-                        itemId:'dental',
-                        action:'dental',
-                        scope:me,
-                        handler:me.cardSwitch
-                    },
-                    '-',
+//                    {
+//                        text:i18n('surgeries'),
+//                        enableToggle:true,
+//                        toggleGroup:'medicalWin',
+//                        itemId:'surgery',
+//                        action:'surgery',
+//                        scope:me,
+//                        handler:me.cardSwitch
+//                    },
+//                    '-',
+//                    {
+//                        text:i18n('dental'),
+//                        enableToggle:true,
+//                        toggleGroup:'medicalWin',
+//                        itemId:'dental',
+//                        action:'dental',
+//                        scope:me,
+//                        handler:me.cardSwitch
+//                    },
+//                    '-',
                     {
                         text:i18n('medications'),
                         enableToggle:true,
@@ -1512,31 +1504,54 @@ Ext.define('App.view.patient.windows.Medical', {
             e.record.data.administered_date = dt;
         }
     },
+	
     //*********************************************************
-    onLiveSearchSelect:function(combo, model){
-        var me = this, field, field2, name;
+    onLiveSearchSelect:function(combo, record){
+        var me = this,
+	        xform = combo.up('form').getForm(),
+	        field,
+	        name;
+	    
         if(combo.action == 'immunization_id'){
-            name = model[0].data.name;
+            name = record[0].data.name;
             field = combo.up('fieldcontainer').getComponent('immunization_name');
             field.setValue(name);
-            me.CvxMvxCombo.store.load({params:{cvx_code:model[0].data.cvx_code}})
-        }else if(combo.action == 'medicalissues'){
-            field = combo.up('fieldcontainer').query('[action="code_text"]')[0];
-            field.setValue(model[0].data.code_text);
-        }else if(combo.action == 'surgery'){
-            name = model[0].data.surgery;
-            field = combo.up('fieldcontainer').query('[action="idField"]')[0];
-            field.setValue(name);
-//        }else if(combo.action == 'medication_id'){
-//            name = model[0].data.STR;
-//            field = combo.up('fieldcontainer').query('[action="medication"]')[0];
+            me.CvxMvxCombo.store.load({params:{cvx_code:record[0].data.cvx_code}})
+	        
+        }else if(combo.action == 'actiiveproblems'){
+	        xform.findField('code_text').setValue(record[0].data.code_text);
+	        xform.findField('code_type').setValue(record[0].data.code_type);
+
+//        }else if(combo.action == 'surgery'){
+//            name = record[0].data.surgery;
+//            field = combo.up('fieldcontainer').query('[action="idField"]')[0];
 //            field.setValue(name);
+
+        }else if(combo.action == 'medication'){
+
+	        say(record[0].data);
+
+
+	        Rxnorm.getMedicationAttributesByCODE(record[0].data.CODE, function(provider, response){
+		        xform.setValues({
+			        RXCUI:record[0].data.RXCUI,
+			        CODE:record[0].data.CODE,
+			        STR:record[0].data.STR.split(',')[0],
+			        route:response.result.DRT,
+			        dose:response.result.DST,
+			        form:response.result.DDF
+		        });
+	        });
+
+
         }else if(combo.action == 'cdt'){
-            name = model[0].data.text;
+            name = record[0].data.text;
             field = combo.up('fieldcontainer').query('[action="description"]')[0];
             field.setValue(name);
         }
+
     },
+
     onAddItem:function(){
         var me = this,
 	        grid = this.getLayout().getActiveItem(),
@@ -1680,10 +1695,16 @@ Ext.define('App.view.patient.windows.Medical', {
     },
 
 	cardSwitch:function(btn){
-        var me = this, layout = me.getLayout(), addBtn = me.down('toolbar').query('[action="AddRecord"]')[0], p = app.patient, title;
-        me.pid = p.pid;
+        var me = this,
+	        layout = me.getLayout(),
+	        addBtn = me.down('toolbar').query('[action="AddRecord"]')[0],
+	        p = app.patient,
+	        title;
+
+		me.pid = p.pid;
         addBtn.show();
-        if(btn.action == 'immunization'){
+
+		if(btn.action == 'immunization'){
             layout.setActiveItem(0);
             title = 'Immunizations';
         }else if(btn.action == 'allergies'){
@@ -1691,18 +1712,18 @@ Ext.define('App.view.patient.windows.Medical', {
             title = 'Allergies';
         }else if(btn.action == 'issues'){
             layout.setActiveItem(2);
-            title = 'Medical Issues';
-        }else if(btn.action == 'surgery'){
-            layout.setActiveItem(3);
-            title = 'Surgeries';
-        }else if(btn.action == 'dental'){
-            layout.setActiveItem(4);
-            title = 'Dentals';
+            title = 'Active Problems';
+//        }else if(btn.action == 'surgery'){
+//            layout.setActiveItem(3);
+//            title = 'Surgeries';
+//        }else if(btn.action == 'dental'){
+//            layout.setActiveItem(4);
+//            title = 'Dentals';
         }else if(btn.action == 'medications'){
-            layout.setActiveItem(5);
+            layout.setActiveItem(3);
             title = 'Medications';
         }else if(btn.action == 'laboratories'){
-            layout.setActiveItem(6);
+            layout.setActiveItem(4);
             title = 'Laboratories';
             addBtn.hide();
         }
@@ -1734,16 +1755,16 @@ Ext.define('App.view.patient.windows.Medical', {
                     pid:app.patient.pid
                 }
             });
-        me.patientSurgeryStore.load({
-                params:{
-                    pid:app.patient.pid
-                }
-            });
-        me.patientDentalStore.load({
-                params:{
-                    pid:app.patient.pid
-                }
-            });
+//        me.patientSurgeryStore.load({
+//                params:{
+//                    pid:app.patient.pid
+//                }
+//            });
+//        me.patientDentalStore.load({
+//                params:{
+//                    pid:app.patient.pid
+//                }
+//            });
         me.patientMedicationsStore.load({
                 params:{
                     pid:app.patient.pid

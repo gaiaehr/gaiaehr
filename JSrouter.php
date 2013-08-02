@@ -26,6 +26,16 @@ include_once($_SESSION['root'] . '/dataProvider/i18nRouter.php');
 include_once($_SESSION['root'] . '/dataProvider/Globals.php');
 header('Content-Type: text/javascript');
 
+
+// check if is emergency access....
+if(isset($_SESSION['user']) && isset($_SESSION['user']['emergencyAccess']) && $_SESSION['user']['emergencyAccess']){
+	$isEmerAccess = 1;
+}else{
+	$isEmerAccess = 0;
+}
+print 'isEmerAccess = '.$isEmerAccess.';';
+
+
 // Output the translation selected by the user.
 $i18n = i18nRouter::getTranslation();
 print 'lang = '. json_encode( $i18n ).';';
@@ -65,10 +75,3 @@ if(!isset($_SESSION['site']['error']) && (isset($_SESSION['user']) && $_SESSION[
 	print 'settings.site_url = "'. $_SESSION['site']['url'] .'";';
 }
 
-// check if is emergency access....
-if(isset($_SESSION['user']) && isset($_SESSION['user']['emergencyAccess']) && $_SESSION['user']['emergencyAccess']){
-	$isEmerAccess = 1;
-}else{
-	$isEmerAccess = 0;
-}
-print 'isEmerAccess = '.$isEmerAccess.';';

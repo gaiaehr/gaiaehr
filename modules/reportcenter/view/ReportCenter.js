@@ -170,6 +170,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                     ]
                 });
             });
+
             me.ClinicalReport = me.addReportByCategory(me.patientCategory, i18n('clinical'), function(btn) {
                 if(!me.clinicalStore) me.clinicalStore = Ext.create('Modules.reportcenter.store.Clinical');
                 me.goToReportPanelAndSetPanel({
@@ -257,7 +258,6 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                                     layout  : 'hbox',
                                     defaults: { margin: '0 10 0 0' },
                                     items   : [
-
                                         {
                                             xtype     : 'datefield',
                                             fieldLabel: i18n('date_to'),
@@ -272,19 +272,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                                             width     :140,
                                             minValue  : 0
 
-                                        }/*,
-                                        {
-                                            xtype     : 'liveicdxsearch',
-                                            fieldLabel: i18n('problem_dx'),
-                                            name      : 'icd',
-                                            hideLabel : false,
-                                            action    : 'icd',
-                                            width     : 225,
-                                            labelWidth: 70
-
-                                        }*/
-
-
+                                        }
                                     ]
                                 }
                             ]
@@ -320,6 +308,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                     ]
                 });
             });
+
             me.ImmunizationReport = me.addReportByCategory(me.patientCategory, i18n('immunization_registry'), function(btn) {
                 if(!me.immunizationReportStore) me.immunizationReportStore = Ext.create('Modules.reportcenter.store.ImmunizationsReport');
                 me.goToReportPanelAndSetPanel({
@@ -637,14 +626,6 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
         goToReportPanelAndSetPanel: function(config) {
             var panel = app.MainPanel.getLayout().setActiveItem('panelReportPanel');
             panel.setReportPanel(config);
-
-
-
-//            formPanel.setTitle(config.title);
-//            formPanel.action = config.action;
-//            formPanel.reportFn = config.fn;
-//            formPanel.removeAll();
-//            formPanel.add(config.items);
         },
 
         /**

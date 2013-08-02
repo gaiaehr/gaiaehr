@@ -39,7 +39,7 @@ Ext.define('Modules.reportcenter.Main',
 			leaf : true,
 			cls : 'file',
 			iconCls : 'icoReport',
-			id : 'panelReportCenter'
+			id : 'Modules.reportcenter.view.ReportCenter'
 		});
 		me.callParent();
 	}

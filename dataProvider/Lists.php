@@ -32,12 +32,8 @@ class Lists extends MatchaHelper
     //------------------------------------------------------------------------------------------------------------------
 	public function getOptions(stdClass $params)
 	{
-        $rows = array();
         if($this->ComboListOptions == NULL) $this->ComboListOptions = MatchaModel::setSenchaModel('App.model.administration.ListOptions');
-		if(isset($params->list_id)){
-			foreach($this->ComboListOptions->load(array('list_id'=>$params->list_id))->all() as $Options) array_push($rows, $Options);
-		}
-        return $rows;
+        return isset($params->list_id) ? $this->ComboListOptions->load(array('list_id'=>$params->list_id))->sort($params)->all() : array();
 	}
 
 	public function addOption(stdClass $params)
@@ -68,8 +64,10 @@ class Lists extends MatchaHelper
 		$pos  = 10;
 		foreach($data['fields'] as $field)
         {
-			$row['seq'] = $pos;
-            $this->ComboListOptions->save($row, array('id'=>$field) );
+	        $data = new stdClass();
+	        $data->id = $field;
+	        $data->seq = $pos;
+            $this->ComboListOptions->save($data);
 			$pos = $pos + 10;
 		}
 		return array('success' => true);

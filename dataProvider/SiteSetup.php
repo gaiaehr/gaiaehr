@@ -69,7 +69,7 @@ class SiteSetup
 	{
 		$stm = $this->conn->query("SELECT @@global.max_allowed_packet AS size");
 		$pkg = $stm->fetch(PDO::FETCH_ASSOC);
-		if($pkg['size'] < 52428800000){
+		if($pkg['size'] < 209715200){
 			$this->conn->exec("SET @@global.max_allowed_packet = 52428800000");
 			$error = $this->conn->errorInfo();
 			if(isset($error[2])){

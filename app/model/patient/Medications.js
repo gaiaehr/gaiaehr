@@ -109,10 +109,6 @@ Ext.define('App.model.patient.Medications', {
 			type: 'string'
 		},
 		{
-			name: 'alert',
-			type: 'bool'
-		},
-		{
 			name: 'ocurrence',
 			type: 'string'
 		},

@@ -50,7 +50,7 @@ class SiteSetup
 		}
 		if($success){
 			$maxAllowPacket  = $this->setMaxAllowedPacket();
-			if($this->setMaxAllowedPacket() !== false){
+			if($maxAllowPacket !== false){
 				return array(
 					'success' => false, 'error' => 'Could not set the MySQL <strong>max_allowed_packet</strong> variable.<br>GaiaEHR requires to set max_allowed_packet to 50M or more.<br>Please check my.cnf or my.ini, also you can install GaiaEHR using MySQL root user<br>max_allowed_packet = '.$maxAllowPacket
 				);

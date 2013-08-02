@@ -49,9 +49,10 @@ class SiteSetup
 			$success = $this->databaseConn($params->dbHost, $params->dbPort, $params->dbName, $params->dbUser, $params->dbPass);
 		}
 		if($success){
-			if($this->setMaxAllowedPacket() === false){
+			$maxAllowPacket  = $this->setMaxAllowedPacket();
+			if($this->setMaxAllowedPacket() !== false){
 				return array(
-					'success' => false, 'error' => 'Could not set the MySQL <strong>max_allowed_packet</strong> variable.<br>GaiaEHR requires to set max_allowed_packet to 50M or more.<br>Please check my.cnf or my.ini, also you can install GaiaEHR using MySQL root user'
+					'success' => false, 'error' => 'Could not set the MySQL <strong>max_allowed_packet</strong> variable.<br>GaiaEHR requires to set max_allowed_packet to 50M or more.<br>Please check my.cnf or my.ini, also you can install GaiaEHR using MySQL root user<br>max_allowed_packet = '.$maxAllowPacket
 				);
 			}
 			return array(
@@ -72,7 +73,7 @@ class SiteSetup
 			$this->conn->exec("SET @@global.max_allowed_packet = 52428800000");
 			$error = $this->conn->errorInfo();
 			if(isset($error[2])){
-				return false;
+				return $pkg['size'];
 			} else {
 				return true;
 			}

@@ -147,9 +147,9 @@ class SiteSetup
 			'msg' => 'PHP class PDO', 'status' => $status
 		);
 		// check if ZipArchive is enable
-		$status = (class_exists('ZipArchive') ? 'Ok' : 'Fail');
+		$status = (function_exists("gzcompress") ? 'Ok' : 'Fail');
 		$row[]  = array(
-			'msg' => 'PHP class ZipArchive', 'status' => $status
+			'msg' => 'PHP class zlib', 'status' => $status
 		);
 		// check if ZipArchive is enable
 		$status = (function_exists('curl_version') ? 'Ok' : 'Fail');

@@ -394,6 +394,16 @@ class MatchaCUP
 		return $this;
 	}
 
+	public function group($params){
+		if (isset($params->group))
+		{
+			$property = $params->group[0]->property;
+			$direction = isset($params->group[0]->direction) ? $params->group[0]->direction : '';
+			$this->sql = $this->sql . " GROUP BY `$property` $direction";
+		}
+		return $this;
+	}
+
 	/**
 	 * LIMIT method
 	 * @param null $start

@@ -80,7 +80,7 @@ Ext.define('App.model.patient.Allergies', {
 	        type: 'bool',
 	        store: false,
 	        convert: function(v, record){
-				return record.data.end_date == '';
+				return record.data.end_date == '' || record.data.end_date == null;
 	        }
         },
 		{

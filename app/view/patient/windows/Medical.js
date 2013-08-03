@@ -310,6 +310,10 @@ Ext.define('App.view.patient.windows.Medical', {
                     autoCancel:false,
                     errorSummary:false,
                     clicksToEdit:1,
+	                listeners:{
+		                scope:me,
+		                beforeedit:me.beforeAllergyEdit
+	                },
                     formItems:[
                         {
                             title:i18n('general'),
@@ -1452,7 +1456,12 @@ Ext.define('App.view.patient.windows.Medical', {
             e.record.data.administered_date = dt;
         }
     },
-	
+
+
+	beforeAllergyEdit:function(editor, e){
+		this.allergieMedication.setValue(e.record.data.allergy);
+	},
+
     //*********************************************************
     onLiveSearchSelect:function(combo, record){
         var me = this,

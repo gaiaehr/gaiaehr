@@ -2,8 +2,7 @@
 require_once('APIBaseClass.php');
 // SOAP/REST ... implementing REST with SOAP style method selection. Enjoy! Only supports XML for now.
 // use _apiHelper($query path) instead of _request  for quick json support.
-class rxNormApi extends APIBaseClass
-{
+class rxNormApi extends APIBaseClass {
 	// would like to some day implement this in SOAP...
 	public static $api_url = 'http://rxnav.nlm.nih.gov/REST';
 
@@ -22,7 +21,7 @@ class rxNormApi extends APIBaseClass
 	public function __construct($url = null)
 	{
 		$this->output_type = 'xml';
-		parent::new_request(($url ? $url : self::$api_url));
+		parent::new_request($url ? $url : self::$api_url);
 		//	self::discover_api();
 	}
 
@@ -48,7 +47,7 @@ class rxNormApi extends APIBaseClass
 		$this->rxcui = $rxcui;
 	}
 
-	public function _request($path, $method, $data = null)
+	public function _request($path, $method, $data = null, $headers=false)
 	{
 		if($this->output_type == 'json') {
 			return parent::_request($path, $method, $data, "Accept:application/json");

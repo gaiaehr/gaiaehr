@@ -251,9 +251,18 @@ class MatchaCUP
 					$whereArray = array();
 					foreach ($where->filter as $foo)
 					{
-						if(isset($foo->value) && isset($foo->property)){
-							$operator = isset($foo->operator)? $foo->operator : '=';
-							$whereArray[] = "`$foo->property` $operator '$foo->value'";
+						if(isset($foo->property)){
+							if($foo->value == null){
+								if(isset($foo->operator)){
+									$operator = $foo->operator == '=' ? ' IS ' : ' IS NOT';
+								}else{
+									$operator = 'IS';
+								}
+								$whereArray[] = "`$foo->property` $operator NULL";
+							}else{
+								$operator = isset($foo->operator)? $foo->operator : '=';
+								$whereArray[] = "`$foo->property` $operator '$foo->value'";
+							}
 						}
 					}
 					if(count($whereArray) > 0) $wherex = 'WHERE ' . implode(' AND ', $whereArray);
@@ -261,7 +270,10 @@ class MatchaCUP
 				$this->nolimitsql   = "SELECT * FROM `" . $this->table . "` $wherex $groupx $sortx";
 				$this->sql          = "SELECT * FROM `" . $this->table . "` $wherex $groupx $sortx $limits";
 			}
+
 			return $this;
+
+
 		}
 		catch(PDOException $e)
 		{

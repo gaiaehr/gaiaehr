@@ -42,11 +42,18 @@ class Medical
      */
     private $diagnosis;
 
+	/**
+	 * @var bool|MatchaCUP
+	 */
+	private $a;
 
 
 	function __construct()
 	{
 		$this->db = new MatchaHelper();
+
+		$this->a = MatchaModel::setSenchaModel('App.model.patient.Allergies');
+
 		$this->laboratories = new Laboratories();
 		$this->rxnorm = new Rxnorm();
 		$this->services = new Services();
@@ -157,35 +164,6 @@ class Medical
 
 	public function addPatientAllergies(stdClass $params)
 	{
-		$data = get_object_vars($params);
-		unset($data['id'], $data['allergy_name'], $data['alert'], $data['allergy1'], $data['allergy2'], $data['reaction1'], $data['reaction2'], $data['reaction3'], $data['reaction4']);
-		if($params->allergy1 != '') {
-			$data['allergy'] = $params->allergy1;
-		} elseif($params->allergy2 != '') {
-			$name               = $this->rxnorm->getMedicationNameByRXCUI($params->allergy2);
-			$data['allergy']    = $name;
-			$data['allergy_id'] = $params->allergy2;
-		}
-		$params->allergy = $data['allergy'];
-		if($params->reaction1 != '') {
-			$data['reaction'] = $params->reaction1;
-		} elseif($params->reaction2 != '') {
-			$data['reaction'] = $params->reaction2;
-		}
-		elseif($params->reaction3 != '') {
-			$data['reaction'] = $params->reaction3;
-		}
-		elseif($params->reaction4 != '') {
-			$data['reaction'] = $params->reaction4;
-		}
-		$params->reaction    = $data['reaction'];
-		$data['begin_date']  = $this->parseDate($data['begin_date']);
-		$data['end_date']    = $this->parseDate($data['end_date']);
-		$data['create_date'] = $this->parseDate($data['create_date']);
-		$this->db->setSQL($this->db->sqlBind($data, 'patient_allergies', 'I'));
-		$this->db->execLog();
-		$params->id = $this->db->lastInsertId;
-		$params->alert = ($params->end_date == null || $params->end_date == '0000-00-00 00:00:00' || $params->end_date == '') ? 1 : 0;
         /**
          * Audit Log
          * Added by: Gino Rivera
@@ -193,40 +171,11 @@ class Medical
          * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
          */
         $this->db->AuditLog('Patient Allergy added');
-		return $params;
+		return $this->a->save($params);
 	}
 
 	public function updatePatientAllergies(stdClass $params)
 	{
-		$data = get_object_vars($params);
-		$id   = $data['id'];
-		unset($data['id'], $data['allergy_name'], $data['alert'], $data['allergy1'], $data['allergy2'], $data['reaction1'], $data['reaction2'], $data['reaction3'], $data['reaction4']);
-		if($params->allergy1 != '') {
-			$data['allergy'] = $params->allergy1;
-		} elseif($params->allergy2 != '') {
-			$name               = $this->rxnorm->getMedicationNameByRXCUI($params->allergy2);
-			$data['allergy']    = $name;
-			$data['allergy_id'] = $params->allergy2;
-		}
-		$params->allergy = $data['allergy'];
-		if($params->reaction1 != '') {
-			$data['reaction'] = $params->reaction1;
-		} elseif($params->reaction2 != '') {
-			$data['reaction'] = $params->reaction2;
-		}
-		elseif($params->reaction3 != '') {
-			$data['reaction'] = $params->reaction3;
-		}
-		elseif($params->reaction4 != '') {
-			$data['reaction'] = $params->reaction4;
-		}
-		$params->reaction    = $data['reaction'];
-		$data['begin_date']  = $this->parseDate($data['begin_date']);
-		$data['end_date']    = $this->parseDate($data['end_date']);
-		$data['create_date'] = $this->parseDate($data['create_date']);
-		$this->db->setSQL($this->db->sqlBind($data, "patient_allergies", "U", "id='$id'"));
-		$this->db->execLog();
-		$params->alert = ($params->end_date == null || $params->end_date == '0000-00-00 00:00:00' || $params->end_date == '') ? 1 : 0;
         /**
          * Audit Log
          * Added by: Gino Rivera
@@ -234,8 +183,7 @@ class Medical
          * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
          */
         $this->db->AuditLog('Patient allergy updated');
-		return $params;
-
+		return $this->a->save($params);
 	}
 
 	/*************************************************************************************************************/

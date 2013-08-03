@@ -302,7 +302,7 @@ Ext.define('App.view.patient.windows.Medical', {
                     {
                         text:i18n('active'),
                         width:55,
-                        dataIndex:'alert',
+                        dataIndex:'active',
                         renderer:me.boolRenderer
                     }
                 ],
@@ -338,29 +338,40 @@ Ext.define('App.view.patient.windows.Medical', {
                                             enableKeyEvents:true,
                                             listeners:{
                                                 scope:me,
-                                                'select':me.onAllergyTypeSelect
+                                                change:me.onAllergyTypeCahnge
                                             }
                                         },
-                                        {
-                                            xtype:'mitos.allergieslocationcombo',
-                                            fieldLabel:i18n('location'),
-                                            name:'location',
-                                            action:'location',
-                                            width:225,
-                                            labelWidth:70,
-                                            listeners:{
-                                                scope:me,
-                                                'select':me.onLocationSelect
-                                            }
+	                                    me.allergieType = Ext.create('App.ux.combo.Allergies', {
+		                                    fieldLabel:i18n('allergy'),
+		                                    action:'allergie_name',
+		                                    name:'allergy',
+		                                    enableKeyEvents:true,
+		                                    disabled:true,
+		                                    width:550,
+		                                    labelWidth:70
+	                                    }),
+	                                    me.allergieMedication = Ext.widget('rxnormallergylivetsearch', {
+		                                    fieldLabel:i18n('allergy'),
+		                                    hideLabel:false,
+		                                    action:'allergy',
+		                                    name:'allergy',
+		                                    hidden:true,
+		                                    disabled:true,
+		                                    enableKeyEvents:true,
+		                                    width:550,
+		                                    labelWidth:70,
+		                                    listeners:{
+			                                    scope:me,
+			                                    select:me.onLiveSearchSelect
+		                                    }
+	                                    }),
+	                                    {
+		                                    fieldLabel:i18n('begin_date'),
+		                                    xtype:'datefield',
+		                                    format:'Y-m-d',
+		                                    name:'begin_date'
 
-                                        },
-                                        {
-                                            fieldLabel:i18n('begin_date'),
-                                            xtype:'datefield',
-                                            format:'Y-m-d',
-                                            name:'begin_date'
-
-                                        }
+	                                    }
                                     ]
 
                                 },
@@ -374,113 +385,39 @@ Ext.define('App.view.patient.windows.Medical', {
                                         margin:'0 10 0 0'
                                     },
                                     items:[
-                                        me.allergieType = Ext.create('App.ux.combo.Allergies', {
-                                            fieldLabel:i18n('allergy'),
-                                            action:'allergie_name',
-                                            name:'allergy1',
-                                            enableKeyEvents:true,
-                                            disabled:true,
-                                            width:225,
-                                            labelWidth:70,
-                                            listeners:{
-                                                scope:me,
-                                                change:me.disableFieldLogic
-                                            }
-                                        }),
-	                                    me.allergieMedication = Ext.create('App.ux.LiveRXNORMSearch', {
-                                            fieldLabel:i18n('allergy'),
-                                            hideLabel:false,
-                                            name:'allergy2',
-                                            hidden:true,
-                                            disabled:true,
-                                            enableKeyEvents:true,
-                                            width:550,
-                                            labelWidth:70,
-                                            listeners:{
-                                                scope:me,
-                                                change:me.disableFieldLogic
-                                            }
-                                        }), me.allergiesAbdominal = Ext.create('App.ux.combo.AllergiesAbdominal', {
-                                            xtype:'mitos.allergiesabdominalcombo',
-                                            fieldLabel:i18n('reaction'),
-                                            name:'reaction1',
-                                            disabled:true,
-                                            width:225,
-                                            labelWidth:70,
-                                            listeners:{
-                                                scope:me,
-                                                change:me.disableFieldLogic
-                                            }
-
-                                        }),
-	                                    me.allergiesLocal = Ext.create('App.ux.combo.AllergiesLocal', {
-                                            xtype:'mitos.allergieslocalcombo',
-                                            fieldLabel:i18n('reaction'),
-                                            name:'reaction2',
-                                            hidden:true,
-                                            disabled:true,
-                                            width:225,
-                                            labelWidth:70,
-                                            listeners:{
-                                                scope:me,
-                                                change:me.disableFieldLogic
-                                            }
-
-                                        }),
-	                                    me.allergiesSkin = Ext.create('App.ux.combo.AllergiesSkin', {
-                                            xtype:'mitos.allergiesskincombo',
-                                            fieldLabel:i18n('reaction'),
-                                            name:'reaction3',
-                                            hidden:true,
-                                            disabled:true,
-                                            width:225,
-                                            labelWidth:70,
-                                            listeners:{
-                                                scope:me,
-                                                change:me.disableFieldLogic
-                                            }
-
-                                        }),
-	                                    me.allergiesSystemic = Ext.create('App.ux.combo.AllergiesSystemic', {
-                                            xtype:'mitos.allergiessystemiccombo',
-                                            fieldLabel:i18n('reaction'),
-                                            name:'reaction4',
-                                            hidden:true,
-                                            disabled:true,
-                                            width:225,
-                                            labelWidth:70,
-                                            listeners:{
-                                                scope:me,
-                                                change:me.disableFieldLogic
-                                            }
-
-                                        }),
 	                                    {
-                                            fieldLabel:i18n('end_date'),
-                                            xtype:'datefield',
-                                            format:'Y-m-d',
-                                            name:'end_date'
-                                        }]
+		                                    xtype:'mitos.allergieslocationcombo',
+		                                    fieldLabel:i18n('location'),
+		                                    name:'location',
+		                                    action:'location',
+		                                    width:225,
+		                                    labelWidth:70,
+		                                    listeners:{
+			                                    scope:me,
+			                                    select:me.onLocationSelect
+		                                    }
 
-                                },
-                                {
-                                    /**
-                                     * Line three
-                                     */
-                                    xtype:'fieldcontainer',
-                                    layout:'hbox',
-                                    defaults:{
-                                        margin:'0 10 0 0'
-                                    },
-                                    items:[
-                                        {
-                                            xtype:'mitos.allergiesseveritycombo',
-                                            fieldLabel:i18n('severity'),
-                                            name:'severity',
-                                            width:225,
-                                            labelWidth:70
-
-                                        }
+	                                    },
+	                                    me.allergiesReaction = Ext.create('App.ux.combo.AllergiesAbdominal', {
+		                                    xtype:'mitos.allergiesabdominalcombo',
+		                                    fieldLabel:i18n('reaction'),
+		                                    name:'reaction',
+		                                    width:315,
+		                                    labelWidth:70
+	                                    }),
+	                                    {
+		                                    xtype:'mitos.allergiesseveritycombo',
+		                                    fieldLabel:i18n('severity'),
+		                                    name:'severity',
+		                                    width:225,
+		                                    labelWidth:70
+	                                    },
+	                                    {
+		                                    fieldLabel:i18n('end_date'),
+		                                    xtype:'datefield',
+		                                    format:'Y-m-d',
+		                                    name:'end_date'
+	                                    }
                                     ]
                                 }
                             ]
@@ -499,8 +436,6 @@ Ext.define('App.view.patient.windows.Medical', {
              * Active Problem Card panel
              */
             {
-
-
                 xtype:'grid',
                 action:'patientMedicalListGrid',
                 store:me.patientMedicalIssuesStore,
@@ -1340,6 +1275,7 @@ Ext.define('App.view.patient.windows.Medical', {
         }
         store.load({params:{parent_id:model.data.id}});
     },
+
 	onLaboratoryPreviewRender:function(panel){
 		var me = this;
 		panel.dockedItems.items[0].add({
@@ -1351,14 +1287,17 @@ Ext.define('App.view.patient.windows.Medical', {
 			handler:me.onLabUploadWind
 		});
 	},
+
     onLabPanelSelectionChange:function(model, record){
         this.query('[action="uploadBtn"]')[0].setDisabled(record.length == 0);
     },
+
     onLabUploadWind:function(){
         var me = this, previewPanel = me.query('[action="labPreviewPanel"]')[0];
         me.uploadWin.show();
         me.uploadWin.alignTo(previewPanel.el.dom, 'tr-tr', [-5, 35])
     },
+
     onLabUpload:function(btn){
         var me = this, formPanel = me.uploadWin.down('form'), form = formPanel.getForm(), win = btn.up('window');
         if(form.isValid()){
@@ -1385,6 +1324,7 @@ Ext.define('App.view.patient.windows.Medical', {
             });
         }
     },
+
     onLabResultClick:function(view, model){
         var me = this, form = me.query('[action="patientLabs"]')[0].down('form').getForm();
         if(me.currDocUrl != model.data.document_url){
@@ -1395,6 +1335,7 @@ Ext.define('App.view.patient.windows.Medical', {
             me.currDocUrl = model.data.document_url;
         }
     },
+
     onLabResultsSign:function(){
         var me = this, form = me.query('[action="patientLabs"]')[0].down('form').getForm(), dataView = me.query('[action="lalboratoryresultsdataview"]')[0], store = dataView.store, values = form.getValues(), record = dataView.getSelectionModel().getLastSelected();
         if(form.isValid()){
@@ -1444,6 +1385,7 @@ Ext.define('App.view.patient.windows.Medical', {
             }
         }
     },
+
     onLabResultsSave:function(btn){
         var me = this, form = btn.up('form').getForm(), dataView = me.query('[action="lalboratoryresultsdataview"]')[0], store = dataView.store, values = form.getValues(), record = dataView.getSelectionModel().getLastSelected();
         if(form.isValid()){
@@ -1453,6 +1395,7 @@ Ext.define('App.view.patient.windows.Medical', {
             });
         }
     },
+
     addNewLabResults:function(docId){
         var me = this, dataView = me.query('[action="lalboratoryresultsdataview"]')[0], store = dataView.store, params = {
             parent_id:me.currLabPanelId,
@@ -1460,12 +1403,13 @@ Ext.define('App.view.patient.windows.Medical', {
         };
         Medical.addPatientLabsResult(params, function(provider, response){
             store.load({
-                    params:{
-                        parent_id:me.currLabPanelId
-                    }
-                });
+                params:{
+                    parent_id:me.currLabPanelId
+                }
+            });
         });
     },
+
     onReviewed:function(btn){
         var me = this, BtnId = btn.itemId, params = {
             eid:app.patient.eid,
@@ -1475,10 +1419,12 @@ Ext.define('App.view.patient.windows.Medical', {
             me.msg('Sweet!', i18n('succefully_reviewed'));
         });
     },
+
     onLabResultsReset:function(btn){
         var form = btn.up('form').getForm();
         form.reset();
     },
+
     getLabDocument:function(src){
         var panel = this.query('[action="labPreviewPanel"]')[0];
         panel.remove(this.doc);
@@ -1486,10 +1432,12 @@ Ext.define('App.view.patient.windows.Medical', {
                 src:src
             }));
     },
+
     removeLabDocument:function(src){
         var panel = this.query('[action="labPreviewPanel"]')[0];
         panel.remove(this.doc);
     },
+
     beforeImmunizationEdit:function(editor, e){
         var form = editor.editor.getForm(),
             search = form.findField('immunization_id'),
@@ -1517,21 +1465,18 @@ Ext.define('App.view.patient.windows.Medical', {
             field = combo.up('fieldcontainer').getComponent('immunization_name');
             field.setValue(name);
             me.CvxMvxCombo.store.load({params:{cvx_code:record[0].data.cvx_code}})
-	        
+
+        }else if(combo.action == 'allergy'){
+	        xform.getRecord().set({allergy_code:record[0].data.RXCUI});
         }else if(combo.action == 'actiiveproblems'){
 	        xform.findField('code_text').setValue(record[0].data.code_text);
 	        xform.findField('code_type').setValue(record[0].data.code_type);
-
 //        }else if(combo.action == 'surgery'){
 //            name = record[0].data.surgery;
 //            field = combo.up('fieldcontainer').query('[action="idField"]')[0];
 //            field.setValue(name);
 
         }else if(combo.action == 'medication'){
-
-	        say(record[0].data);
-
-
 	        Rxnorm.getMedicationAttributesByCODE(record[0].data.CODE, function(provider, response){
 		        xform.setValues({
 			        RXCUI:record[0].data.RXCUI,
@@ -1542,8 +1487,6 @@ Ext.define('App.view.patient.windows.Medical', {
 			        form:response.result.DDF
 		        });
 	        });
-
-
         }else if(combo.action == 'cdt'){
             name = record[0].data.text;
             field = combo.up('fieldcontainer').query('[action="description"]')[0];
@@ -1609,78 +1552,36 @@ Ext.define('App.view.patient.windows.Medical', {
         }
     },
 
-    hideall:function(skinCombo, localCombo, abdominalCombo, systemicCombo){
-        skinCombo.hide(true);
-        skinCombo.setDisabled(true);
-        skinCombo.reset();
-        localCombo.hide(true);
-        localCombo.setDisabled(true);
-        localCombo.reset();
-        abdominalCombo.hide(true);
-        abdominalCombo.setDisabled(true);
-        abdominalCombo.reset();
-        systemicCombo.hide(true);
-        systemicCombo.setDisabled(true);
-        systemicCombo.reset();
-    },
-
     onLocationSelect:function(combo, record){
         var me = this,
-            skinCombo = me.allergiesSkin,
-            localCombo = me.allergiesLocal,
-            abdominalCombo = me.allergiesAbdominal,
-            systemicCombo = me.allergiesSystemic,
+	        list,
             value = combo.getValue();
-        me.hideall(skinCombo, localCombo, abdominalCombo, systemicCombo);
+
         if(value == 'Skin'){
-            skinCombo.show(true);
-            skinCombo.setDisabled(false);
+			list = 80;
+	        me.allergiesReaction.getStore().load();
         }else if(value == 'Local'){
-            localCombo.show(true);
-            localCombo.setDisabled(false);
+	        list = 81;
         }else if(value == 'Abdominal'){
-            abdominalCombo.show(true);
-            abdominalCombo.setDisabled(false);
+	        list = 82;
         }else if(value == 'Systemic / Anaphylactic'){
-            systemicCombo.show(true);
-            systemicCombo.setDisabled(false);
+	        list = 83;
         }
+
+	    me.allergiesReaction.getStore().load({params:{list_id:list}});
     },
 
-    disableFieldLogic:function(field, newValue){
-        field.setDisabled((newValue == '' || newValue == null));
-    },
+	onAllergyTypeCahnge:function(combo){
+        var me = this,
+	        type = combo.getValue(),
+	        isDrug = type == 'Drug';
 
-	onAllergyTypeSelect:function(combo, record){
-        var me = this;
-        me.allergieMedication.hide(true);
-        me.allergieMedication.setDisabled(true);
-        me.allergieMedication.reset();
-        me.allergieType.hide(true);
-        me.allergieType.setDisabled(true);
-        me.allergieType.reset();
-        if(record[0].data.allergy_type == 'Drug'){
-            me.allergieMedication.show(true);
-            me.allergieMedication.setDisabled(false);
-        }else if(record[0].data.allergy_type == 'Food'){
-            me.allergieType.reset();
-            me.allergieType.show(true);
-            me.allergieType.setDisabled(false);
-            me.allergieType.store.load({
-                params:{
-                    allergy_type:record[0].data.allergy_type
-                }
-            })
-        }else if(record[0].data.allergy_type == 'Environmental'){
-            me.allergieType.reset();
-            me.allergieType.show(true);
-            me.allergieType.setDisabled(false);
-            me.allergieType.store.load({
-                params:{
-                    allergy_type:record[0].data.allergy_type
-                }
-            })
-        }
+		me.allergieMedication.setVisible(isDrug);
+		me.allergieMedication.setDisabled(!isDrug);
+		me.allergieType.setVisible(!isDrug);
+		me.allergieType.setDisabled(isDrug);
+
+		if(!isDrug) me.allergieType.store.load({params:{allergy_type:type}})
 
     },
 
@@ -1741,20 +1642,20 @@ Ext.define('App.view.patient.windows.Medical', {
         }
         me.labPanelsStore.load();
         me.patientImmuListStore.load({
-                params:{
-                    pid:app.patient.pid
-                }
-            });
+            params:{
+                pid:app.patient.pid
+            }
+        });
         me.patientAllergiesListStore.load({
-                params:{
-                    pid:app.patient.pid
-                }
-            });
+            params:{
+                pid:app.patient.pid
+            }
+        });
         me.patientMedicalIssuesStore.load({
-                params:{
-                    pid:app.patient.pid
-                }
-            });
+            params:{
+                pid:app.patient.pid
+            }
+        });
 //        me.patientSurgeryStore.load({
 //                params:{
 //                    pid:app.patient.pid
@@ -1766,10 +1667,10 @@ Ext.define('App.view.patient.windows.Medical', {
 //                }
 //            });
         me.patientMedicationsStore.load({
-                params:{
-                    pid:app.patient.pid
-                }
-            });
+            params:{
+                pid:app.patient.pid
+            }
+        });
     },
 
 	onMedicalWinClose:function(){

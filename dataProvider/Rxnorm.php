@@ -102,6 +102,18 @@ class Rxnorm
 		$records = array_slice($records, $params->start, $params->limit);
 		return array('totals' => $total, 'rows' => $records);
 	}
+	public function getRXNORMAllergyLiveSearch(stdClass $params)
+	{
+        $this->db->setSQL("SELECT * FROM rxnconso WHERE TTY = 'IN' AND SAB = 'RXNORM' AND STR LIKE '$params->query%' GROUP BY RXCUI LIMIT 100");
+		$records = $this->db->fetchRecords(PDO::FETCH_ASSOC);
+		$total   = count($records);
+		if($total == 0){
+			$this->db->setSQL("SELECT * FROM rxnconso WHERE TTY = 'PT' AND STR LIKE '$params->query%' GROUP BY RXCUI LIMIT 100");
+			$records = $this->db->fetchRecords(PDO::FETCH_ASSOC);
+		}
+		$records = array_slice($records, $params->start, $params->limit);
+		return array('totals' => $total, 'rows' => $records);
+	}
 
     public function getMedicationAttributesByCODE($CODE){
         $this->db->setSQL("
@@ -117,6 +129,25 @@ class Rxnorm
             };
         return $foo;
     }
+
+
+	public function IndexActiveIngredients(){
+
+		$this->db->setSQL('TRUNCATE TABLE rxnconsoindex');
+		$this->db->execOnly();
+
+		$this->db->setSQL("SELECT id, STR FROM rxnconso WHERE TTY = 'IN' AND SAB = 'RXNORM' GROUP BY RXCUI");
+		$records = $this->db->fetchRecords(PDO::FETCH_ASSOC);
+
+		foreach($records As $record){
+			$this->db->setSQL("INSERT INTO rxnconsoindex (`rxnid`, `STR`) VALUES ('{$record['id']}', '{$record['STR']}')");
+			$this->db->execOnly();
+
+		}
+
+
+
+	}
 }
 
 

@@ -571,14 +571,21 @@ class CombosData
 
 	public function getAllergiesByType(stdClass $params)
 	{
-        if($this->A == NULL) $this->A = MatchaModel::setSenchaModel('App.model.patient.Allergies');
+        if($this->A == NULL) $this->A = MatchaModel::setSenchaModel('App.model.administration.Allergies');
+
+
+
         return  $this->A->load(array('allergy_type'=>$params->allergy_type))->all();
 	}
 
 	public function getAllergyTypes()
 	{
         if($this->A == NULL) $this->A = MatchaModel::setSenchaModel('App.model.administration.Allergies');
-		$records = $this->A->load()->all();
+		$params = new stdClass();
+		$params->group = array();
+		$params->group[0] = new stdClass();
+		$params->group[0]->property = 'allergy_type';
+		$records = $this->A->load($params)->all();
 		$records[] = array('allergy_type' => 'Drug');
 		return $records;
 	}

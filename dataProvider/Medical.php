@@ -159,7 +159,7 @@ class Medical
          * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
          */
         $this->db->AuditLog('Patient Allergies viewed');
-		return $this->getAllergiesByPatientID($params->pid);
+		return $this->a->load($params)->all();
 	}
 
 	public function addPatientAllergies(stdClass $params)

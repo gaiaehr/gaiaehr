@@ -428,13 +428,22 @@ Ext.define('App.view.patient.windows.Medical', {
                         }
                     ]
                 }),
-                bbar:['->', {
-                    text:i18n('reviewed'),
-                    action:'review',
-                    itemId:'review_allergies',
-                    scope:me,
-                    handler:me.onReviewed
-                }]
+                bbar:[
+	                {
+		                text:i18n('only_active'),
+		                enableToggle:true,
+		                scope:me,
+		                toggleHandler:me.onOnlyActiveToggle
+	                },
+	                '->',
+	                {
+	                    text:i18n('reviewed'),
+	                    action:'review',
+	                    itemId:'review_allergies',
+	                    scope:me,
+	                    handler:me.onReviewed
+	                }
+                ]
             },
             /**
              * Active Problem Card panel
@@ -1243,6 +1252,36 @@ Ext.define('App.view.patient.windows.Medical', {
         me.callParent(arguments);
     },
     //*******************************************************
+
+	onOnlyActiveToggle:function(btn, pressed){
+		var me = this,
+			store = btn.up('grid').getStore();
+
+		if(pressed){
+			store.load({
+				filters:[
+					{
+						property:'pid',
+						value:me.pid
+					},
+					{
+						property:'end_date',
+						value:null
+					}
+				]
+			})
+		}else{
+			store.load({
+				filters:[
+					{
+						property:'pid',
+						value:me.pid
+					}
+				]
+			})
+		}
+	},
+
     onLabPanelSelected:function(grid, model){
         var me = this, formPanel = me.query('[action="patientLabs"]')[0].down('form'), dataView = me.query('[action="lalboratoryresultsdataview"]')[0], store = dataView.store, fields = model.data.fields;
         me.currLabPanelId = model.data.id;
@@ -1655,11 +1694,18 @@ Ext.define('App.view.patient.windows.Medical', {
                 pid:app.patient.pid
             }
         });
+
+
         me.patientAllergiesListStore.load({
-            params:{
-                pid:app.patient.pid
-            }
+            filters:[
+	            {
+		            property:'pid',
+		            value:app.patient.pid
+	            }
+            ]
         });
+
+
         me.patientMedicalIssuesStore.load({
             params:{
                 pid:app.patient.pid

@@ -922,6 +922,12 @@ Ext.define('App.view.patient.Summary', {
                 params: {
                     pid: me.pid
                 },
+		        filters:[
+			        {
+				        property: 'pid',
+				        value: me.pid
+			        }
+		        ],
 		        callback:function(){
 			        me.el.unmask();
 		        }

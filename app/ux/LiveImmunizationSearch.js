@@ -22,7 +22,8 @@ Ext.define('App.ux.LiveImmunizationSearch',
 		extend:'Ext.form.ComboBox',
 		alias:'widget.immunizationlivesearch',
 		hideLabel:true,
-
+		displayField:'name',
+		valueField:'cvx_code',
 		initComponent:function(){
 			var me = this;
 
@@ -56,8 +57,6 @@ Ext.define('App.ux.LiveImmunizationSearch',
 
 			Ext.apply(this,{
 				store:me.store,
-				displayField:'name',
-				valueField:'cvx_code',
 				emptyText:i18n('search_for_a_immunizations') + '...',
 				typeAhead:true,
 				minChars:1,

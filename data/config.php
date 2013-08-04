@@ -599,7 +599,7 @@ $API = array(
 			),
 			'updateMedications' => array(
 				'len' => 1
-			),
+			)
 		)
 	),
 	'Immunizations' => array(
@@ -613,6 +613,9 @@ $API = array(
 			'getImmunizationLiveSearch' => array(
 				'len' => 1
 			),
+			'sendVXU' => array(
+				'len' => 1
+			)
 		)
 	),	'Xrays' => array(
 		'methods' => array(
@@ -621,7 +624,7 @@ $API = array(
 			),
 			'getXraysLiveSearch' => array(
 				'len' => 1
-			),
+			)
 		)
 	),
 	'Laboratories' => array(

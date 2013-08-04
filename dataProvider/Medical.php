@@ -46,6 +46,10 @@ class Medical
 	 * @var bool|MatchaCUP
 	 */
 	private $a;
+	/**
+	 * @var bool|MatchaCUP
+	 */
+	private $i;
 
 
 	function __construct()
@@ -53,6 +57,7 @@ class Medical
 		$this->db = new MatchaHelper();
 
 		$this->a = MatchaModel::setSenchaModel('App.model.patient.Allergies');
+		$this->i = MatchaModel::setSenchaModel('App.model.patient.PatientImmunization');
 
 		$this->laboratories = new Laboratories();
 		$this->rxnorm = new Rxnorm();
@@ -69,6 +74,10 @@ class Medical
 	 * @return mixed
 	 */
 	/*************************************************************************************************************/
+
+	/**
+	 * @return array
+	 */
 	public function getImmunizationsList()
 	{
 		$sql = "SELECT * FROM cvx_codes";
@@ -82,35 +91,35 @@ class Medical
 		return $this->db->fetchRecords(PDO::FETCH_ASSOC);
 	}
 
+	/**
+	 * @param stdClass $params
+	 * @return array
+	 */
 	public function getPatientImmunizations(stdClass $params)
 	{
-		$immunizations = $this->getPatientImmunizationsByPid($params->pid);
         /**
          * Audit Log
          * Added by: Gino Rivera
          * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
          */
         $this->db->AuditLog('Patient immunization list viewed');
-		return $immunizations;
+		return $this->getPatientImmunizationsByPid($params->pid);
 	}
 
+	/**
+	 * @param stdClass $params
+	 * @return array
+	 */
 	public function addPatientImmunization(stdClass $params)
 	{
-		$data = get_object_vars($params);
-		unset($data['id'], $data['alert']);
-		$data['administered_date'] = $this->parseDate($data['administered_date']);
-		$data['education_date']    = $this->parseDate($data['education_date']);
-		$data['create_date']       = $this->parseDate($data['create_date']);
-		$this->db->setSQL($this->db->sqlBind($data, 'patient_immunizations', 'I'));
-		$this->db->execLog();
-		$params->id = $this->db->lastInsertId;
-
-        if(isset($params->eid) && $params->eid > 0){
+		$immunization = $this->i->save($params);
+		// add service
+        if($immunization !== false && isset($params->eid) && $params->eid > 0){
             $service = new stdClass();
             $service->pid = $params->pid;
             $service->eid = $params->eid;
             $service->uid = $params->uid;
-            $service->code = $this->immunizations->getCptByCvx($params->immunization_id);
+            $service->code = $this->immunizations->getCptByCvx($params->code);
             $dx_pointers = array();
             foreach($this->diagnosis->getICDByEid($params->eid, true) AS $dx){
                 $dx_children[] = $dx;
@@ -125,27 +134,23 @@ class Medical
          * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
          */
         $this->db->AuditLog('Patient immunization created');
-		return $params;
+		return $immunization;
 
 	}
 
+	/**
+	 * @param stdClass $params
+	 * @return array
+	 */
 	public function updatePatientImmunization(stdClass $params)
 	{
-		$data = get_object_vars($params);
-		$id   = $data['id'];
-		unset($data['id'], $data['alert']);
-		$data['administered_date'] = $this->parseDate($data['administered_date']);
-		$data['education_date']    = $this->parseDate($data['education_date']);
-		$data['create_date']       = $this->parseDate($data['create_date']);
-		$this->db->setSQL($this->db->sqlBind($data, 'patient_immunizations', 'U', array('id' => $id)));
-		$this->db->execLog();
         /**
          * Audit Log
          * Added by: Gino Rivera
          * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
          */
         $this->db->AuditLog('Patient immunization updated');
-		return $params;
+		return $this->i->save($params);
 
 	}
 
@@ -238,107 +243,107 @@ class Medical
 	}
 
 	/*************************************************************************************************************/
-	public function getPatientSurgery(stdClass $params)
-	{
-        /**
-         * Audit Log
-         * Added by: Gino Rivera
-         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-         */
-        $this->db->AuditLog('Patient surgery list viewed');
-		return $this->getPatientSurgeryByPatientID($params->pid);
-	}
-
-	public function addPatientSurgery(stdClass $params)
-	{
-		$data = get_object_vars($params);
-		unset($data['id'], $data['active']);
-		$data['date']        = $this->parseDate($data['date']);
-		$data['create_date'] = $this->parseDate($data['create_date']);
-		$this->db->setSQL($this->db->sqlBind($data, 'patient_surgery', 'I'));
-		$this->db->execLog();
-		$params->id = $this->db->lastInsertId;
-        /**
-         * Audit Log
-         * Added by: Gino Rivera
-         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-         */
-        $this->db->AuditLog('Patient surgery created');
-		return $params;
-	}
-
-	public function updatePatientSurgery(stdClass $params)
-	{
-		$data = get_object_vars($params);
-		$id   = $data['id'];
-		unset($data['id'], $data['active']);
-		$data['date']        = $this->parseDate($data['date']);
-		$data['create_date'] = $this->parseDate($data['create_date']);
-		$this->db->setSQL($this->db->sqlBind($data, "patient_surgery", "U", "id='$id'"));
-		$this->db->execLog();
-        /**
-         * Audit Log
-         * Added by: Gino Rivera
-         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-         */
-        $this->db->AuditLog('Patient surgery updated');
-		return $params;
-
-	}
+//	public function getPatientSurgery(stdClass $params)
+//	{
+//        /**
+//         * Audit Log
+//         * Added by: Gino Rivera
+//         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+//         */
+//        $this->db->AuditLog('Patient surgery list viewed');
+//		return $this->getPatientSurgeryByPatientID($params->pid);
+//	}
+//
+//	public function addPatientSurgery(stdClass $params)
+//	{
+//		$data = get_object_vars($params);
+//		unset($data['id'], $data['active']);
+//		$data['date']        = $this->parseDate($data['date']);
+//		$data['create_date'] = $this->parseDate($data['create_date']);
+//		$this->db->setSQL($this->db->sqlBind($data, 'patient_surgery', 'I'));
+//		$this->db->execLog();
+//		$params->id = $this->db->lastInsertId;
+//        /**
+//         * Audit Log
+//         * Added by: Gino Rivera
+//         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+//         */
+//        $this->db->AuditLog('Patient surgery created');
+//		return $params;
+//	}
+//
+//	public function updatePatientSurgery(stdClass $params)
+//	{
+//		$data = get_object_vars($params);
+//		$id   = $data['id'];
+//		unset($data['id'], $data['active']);
+//		$data['date']        = $this->parseDate($data['date']);
+//		$data['create_date'] = $this->parseDate($data['create_date']);
+//		$this->db->setSQL($this->db->sqlBind($data, "patient_surgery", "U", "id='$id'"));
+//		$this->db->execLog();
+//        /**
+//         * Audit Log
+//         * Added by: Gino Rivera
+//         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+//         */
+//        $this->db->AuditLog('Patient surgery updated');
+//		return $params;
+//
+//	}
 
 	/*************************************************************************************************************/
-	public function getPatientDental(stdClass $params)
-	{
-        /**
-         * Audit Log
-         * Added by: Gino Rivera
-         * Web Jul 31 2013
-         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-         */
-        $this->db->AuditLog('Patient dental viewed');
-		return $this->getPatientDentalByPatientID($params->pid);
-	}
-
-	public function addPatientDental(stdClass $params)
-	{
-		$data = get_object_vars($params);
-		unset($data['id'], $data['active']);
-		$data['begin_date']  = $this->parseDate($data['begin_date']);
-		$data['end_date']    = $this->parseDate($data['end_date']);
-		$data['create_date'] = $this->parseDate($data['create_date']);
-		$this->db->setSQL($this->db->sqlBind($data, 'patient_dental', 'I'));
-		$this->db->execLog();
-		$params->id = $this->db->lastInsertId;
-        /**
-         * Audit Log
-         * Added by: Gino Rivera
-         * Web Jul 31 2013
-         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-         */
-        $this->db->AuditLog('Patient dental created');
-		return $params;
-	}
-
-	public function updatePatientDental(stdClass $params)
-	{
-		$data = get_object_vars($params);
-		$id   = $data['id'];
-		unset($data['id'], $data['active']);
-		$data['begin_date']  = $this->parseDate($data['begin_date']);
-		$data['end_date']    = $this->parseDate($data['end_date']);
-		$data['create_date'] = $this->parseDate($data['create_date']);
-		$this->db->setSQL($this->db->sqlBind($data, "patient_dental", "U", "id='$id'"));
-		$this->db->execLog();
-        /**
-         * Audit Log
-         * Added by: Gino Rivera
-         * Web Jul 31 2013
-         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-         */
-        $this->db->AuditLog('Patient dental updated');
-		return $params;
-
-	}
+//	public function getPatientDental(stdClass $params)
+//	{
+//        /**
+//         * Audit Log
+//         * Added by: Gino Rivera
+//         * Web Jul 31 2013
+//         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+//         */
+//        $this->db->AuditLog('Patient dental viewed');
+//		return $this->getPatientDentalByPatientID($params->pid);
+//	}
+//
+//	public function addPatientDental(stdClass $params)
+//	{
+//		$data = get_object_vars($params);
+//		unset($data['id'], $data['active']);
+//		$data['begin_date']  = $this->parseDate($data['begin_date']);
+//		$data['end_date']    = $this->parseDate($data['end_date']);
+//		$data['create_date'] = $this->parseDate($data['create_date']);
+//		$this->db->setSQL($this->db->sqlBind($data, 'patient_dental', 'I'));
+//		$this->db->execLog();
+//		$params->id = $this->db->lastInsertId;
+//        /**
+//         * Audit Log
+//         * Added by: Gino Rivera
+//         * Web Jul 31 2013
+//         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+//         */
+//        $this->db->AuditLog('Patient dental created');
+//		return $params;
+//	}
+//
+//	public function updatePatientDental(stdClass $params)
+//	{
+//		$data = get_object_vars($params);
+//		$id   = $data['id'];
+//		unset($data['id'], $data['active']);
+//		$data['begin_date']  = $this->parseDate($data['begin_date']);
+//		$data['end_date']    = $this->parseDate($data['end_date']);
+//		$data['create_date'] = $this->parseDate($data['create_date']);
+//		$this->db->setSQL($this->db->sqlBind($data, "patient_dental", "U", "id='$id'"));
+//		$this->db->execLog();
+//        /**
+//         * Audit Log
+//         * Added by: Gino Rivera
+//         * Web Jul 31 2013
+//         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+//         */
+//        $this->db->AuditLog('Patient dental updated');
+//		return $params;
+//
+//	}
 
 	/*************************************************************************************************************/
 	public function getPatientMedications(stdClass $params)
@@ -525,14 +530,18 @@ class Medical
 	 */
 	public function getPatientImmunizationsByPid($pid)
 	{
-		$this->db->setSQL("SELECT * FROM patient_immunizations WHERE pid='$pid'");
+		$params = new stdClass();
+		$params->filter = array();
+		$params->filter[0] = new stdClass();
+		$params->filter[0]->property = 'pid';
+		$params->filter[0]->value = $pid;
         /**
          * Audit Log
          * Added by: Gino Rivera
          * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
          */
         $this->db->AuditLog('Patient immunization list viewed');
-		return $this->db->fetchRecords(PDO::FETCH_ASSOC);
+		return $this->i->load($params)->all();
 	}
 
 	/**

@@ -38,8 +38,8 @@ Ext.define('App.view.patient.Summary', {
         me.stores.push(me.immuCheckListStore = Ext.create('App.store.patient.ImmunizationCheck'));
         me.stores.push(me.patientAllergiesListStore = Ext.create('App.store.patient.Allergies'));
         me.stores.push(me.patientMedicalIssuesStore = Ext.create('App.store.patient.MedicalIssues'));
-        me.stores.push(me.patientSurgeryStore = Ext.create('App.store.patient.Surgery'));
-        me.stores.push(me.patientDentalStore = Ext.create('App.store.patient.Dental'));
+//        me.stores.push(me.patientSurgeryStore = Ext.create('App.store.patient.Surgery'));
+//        me.stores.push(me.patientDentalStore = Ext.create('App.store.patient.Dental'));
         me.stores.push(me.patientMedicationsStore = Ext.create('App.store.patient.Medications'));
         me.stores.push(me.patientCalendarEventsStore = Ext.create('App.store.patient.PatientCalendarEvents'));
 
@@ -101,7 +101,7 @@ Ext.define('App.view.patient.Summary', {
 	                        {
 
 	                            header: i18n('name'),
-	                            dataIndex: 'immunization_name',
+	                            dataIndex: 'vaccine_name',
 	                            flex: 1
 	                        },
 	                        {
@@ -155,35 +155,35 @@ Ext.define('App.view.patient.Summary', {
 	                    ]
 
 	                },
-	                {
-	                    xtype: 'grid',
-	                    title: i18n('dental'),
-	                    itemId: 'DentalPanel',
-	                    hideHeaders: true,
-	                    store: me.patientDentalStore,
-	                    columns: [
-	                        {
-
-	                            header: i18n('name'),
-	                            dataIndex: 'description',
-	                            flex: 1
-
-	                        }
-	                    ]
-	                },
-	                {
-	                    xtype: 'grid',
-	                    title: i18n('surgeries'),
-	                    itemId: 'SurgeryPanel',
-	                    hideHeaders: true,
-	                    store: me.patientSurgeryStore,
-	                    columns: [
-	                        {
-	                            dataIndex: 'surgery',
-	                            flex: 1
-	                        }
-	                    ]
-	                },
+//	                {
+//	                    xtype: 'grid',
+//	                    title: i18n('dental'),
+//	                    itemId: 'DentalPanel',
+//	                    hideHeaders: true,
+//	                    store: me.patientDentalStore,
+//	                    columns: [
+//	                        {
+//
+//	                            header: i18n('name'),
+//	                            dataIndex: 'description',
+//	                            flex: 1
+//
+//	                        }
+//	                    ]
+//	                },
+//	                {
+//	                    xtype: 'grid',
+//	                    title: i18n('surgeries'),
+//	                    itemId: 'SurgeryPanel',
+//	                    hideHeaders: true,
+//	                    store: me.patientSurgeryStore,
+//	                    columns: [
+//	                        {
+//	                            dataIndex: 'surgery',
+//	                            flex: 1
+//	                        }
+//	                    ]
+//	                },
 	                {
 	                    xtype: 'grid',
 	                    title: i18n('appointments'),
@@ -865,24 +865,24 @@ Ext.define('App.view.patient.Summary', {
                 handler: me.medicalWin
             }
         );
-        panel.getComponent('DentalPanel').header.add(
-	        {
-                xtype: 'button',
-                text: i18n('details'),
-                action: 'dental',
-                scope: me,
-                handler: me.medicalWin
-            }
-        );
-        panel.getComponent('SurgeryPanel').header.add(
-	        {
-                xtype: 'button',
-                text: i18n('details'),
-                action: 'surgery',
-                scope: me,
-                handler: me.medicalWin
-            }
-        );
+//        panel.getComponent('DentalPanel').header.add(
+//	        {
+//                xtype: 'button',
+//                text: i18n('details'),
+//                action: 'dental',
+//                scope: me,
+//                handler: me.medicalWin
+//            }
+//        );
+//        panel.getComponent('SurgeryPanel').header.add(
+//	        {
+//                xtype: 'button',
+//                text: i18n('details'),
+//                action: 'surgery',
+//                scope: me,
+//                handler: me.medicalWin
+//            }
+//        );
     },
     medicalWin: function(btn){
         app.onMedicalWin(btn);

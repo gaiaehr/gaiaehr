@@ -845,11 +845,11 @@ class Encounter
 		if(!empty($immunizations)){
 			$lis = '';
 			foreach($immunizations as $foo){
-				$lis .= '<li>Immunization name: ' . $foo['immunization_name'] . '<br>';
-				$lis .= 'Immunization ID: ' . $foo['immunization_id'] . '<br>';
+				$lis .= '<li>Vaccine name: ' . $foo['vaccine_name'] . '<br>';
+				$lis .= 'Vaccine ID: ('.$foo['code_type'].')' . $foo['code'] . '<br>';
 				$lis .= 'Manufacturer: ' . $foo['manufacturer'] . '<br>';
 				$lis .= 'Lot Number: ' . $foo['lot_number'] . '<br>';
-				$lis .= 'Dosis: ' . $foo['dosis'] . '<br>';
+				$lis .= 'Dose: ' . $foo['administer_amount'] . ' ' . $foo['administer_units'] .'<br>';
 				$lis .= 'Administered By: ' . $foo['administered_by'] . ' </li>';
 			}
 			$ExtraData .= '<p>Immunizations:</p>';
@@ -868,30 +868,30 @@ class Encounter
 			$ExtraData .= '<p>Allergies:</p>';
 			$ExtraData .= '<ul class="ProgressNote-ul">' . $lis . '</ul>';
 		}
-		$surgeries = $this->medical->getPatientSurgeryByEncounterID($eid);
-		if(!empty($surgeries)){
-			$lis = '';
-			foreach($surgeries as $foo){
-				//			    $lis .= '<li>Immunization name: '.$foo['immunization_name'].'<br>';
-				//			    $lis .= 'Immunization ID: ' .$foo['immunization_id'].'<br>';
-				//			    $lis .= 'Administered By: '.$foo['administered_by'].' </li>';
-			}
-			$ExtraData .= '<p>Surgeries:</p>';
-			$ExtraData .= '<ul class="ProgressNote-ul">' . $lis . '</ul>';
-		}
 
+//		$surgeries = $this->medical->getPatientSurgeryByEncounterID($eid);
+//		if(!empty($surgeries)){
+//			$lis = '';
+//			foreach($surgeries as $foo){
+//				//			    $lis .= '<li>Immunization name: '.$foo['immunization_name'].'<br>';
+//				//			    $lis .= 'Immunization ID: ' .$foo['immunization_id'].'<br>';
+//				//			    $lis .= 'Administered By: '.$foo['administered_by'].' </li>';
+//			}
+//			$ExtraData .= '<p>Surgeries:</p>';
+//			$ExtraData .= '<ul class="ProgressNote-ul">' . $lis . '</ul>';
+//		}
 
-		$dental = $this->medical->getPatientDentalByEncounterID($eid);
-		if(!empty($dental)){
-			$lis = '';
-			foreach($dental as $foo){
-				//			    $lis .= '<li>Immunization name: '.$foo['immunization_name'].'<br>';
-				//			    $lis .= 'Immunization ID: ' .$foo['immunization_id'].'<br>';
-				//			    $lis .= 'Administered By: '.$foo['administered_by'].' </li>';
-			}
-			$ExtraData .= '<p>Dental:</p>';
-			$ExtraData .= '<ul class="ProgressNote-ul">' . $lis . '</ul>';
-		}
+//		$dental = $this->medical->getPatientDentalByEncounterID($eid);
+//		if(!empty($dental)){
+//			$lis = '';
+//			foreach($dental as $foo){
+//				//			    $lis .= '<li>Immunization name: '.$foo['immunization_name'].'<br>';
+//				//			    $lis .= 'Immunization ID: ' .$foo['immunization_id'].'<br>';
+//				//			    $lis .= 'Administered By: '.$foo['administered_by'].' </li>';
+//			}
+//			$ExtraData .= '<p>Dental:</p>';
+//			$ExtraData .= '<ul class="ProgressNote-ul">' . $lis . '</ul>';
+//		}
 
 		/**
 		 * Active Problems found in this Encounter

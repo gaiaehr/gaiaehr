@@ -371,7 +371,7 @@ Ext.define('App.ux.grid.RowFormEditor', {
         return false;
     },
 
-    setFields: function(column) {
+    setFields: function() {
         var me = this,
             form = me.getForm(),
             fields = form.getFields().items,
@@ -422,13 +422,12 @@ Ext.define('App.ux.grid.RowFormEditor', {
 
     beforeEdit: function() {
         var me = this;
-
         me.getGridStores();
-
         if (me.isVisible() && !me.autoCancel && me.isDirty()) {
             me.showToolTip();
             return false;
         }
+	    return true;
     },
 
     /**
@@ -436,7 +435,7 @@ Ext.define('App.ux.grid.RowFormEditor', {
      * @param {Ext.data.Model} record The Store data record which backs the row to be edited.
      * @param {Ext.data.Model} columnHeader The Column object defining the column to be edited.
      */
-    startEdit: function(record, columnHeader) {
+    startEdit: function(record) {
         var me = this,
             grid = me.editingPlugin.grid,
             view = grid.getView(),
@@ -451,6 +450,8 @@ Ext.define('App.ux.grid.RowFormEditor', {
 
         // Reload the record data
         me.loadRecord(record);
+
+	    say(me);
 
         if (!me.isVisible()) {
             me.show();

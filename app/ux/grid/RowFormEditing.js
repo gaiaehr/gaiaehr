@@ -202,20 +202,19 @@ Ext.define('App.ux.grid.RowFormEditing', {
     /**
      * Starts editing the specified record, using the specified Column definition to define which field is being edited.
      * @param {Ext.data.Model} record The Store data record which backs the row to be edited.
-     * @param {Ext.data.Model} columnHeader The Column object defining the column to be edited. @override
      */
-    startEdit: function(record, columnHeader) {
+    startEdit: function(record) {
         var me = this,
             editor = me.getEditor();
-
-        if (me.callParent(arguments) === false) {
+	    if (me.callParent(arguments) === false) {
             return false;
         }
 
         // Fire off our editor
         if (editor.beforeEdit() !== false) {
-            editor.startEdit(me.context.record, me.context.column);
+            editor.startEdit(me.context.record);
         }
+	    return true;
     },
 
     // private
@@ -282,7 +281,6 @@ Ext.define('App.ux.grid.RowFormEditing', {
     // private
     getEditor: function() {
         var me = this;
-
         if (!me.editor) {
             me.editor = me.initEditor();
         }
@@ -291,34 +289,38 @@ Ext.define('App.ux.grid.RowFormEditing', {
 
     // private
     initEditor: function() {
-        var me       = this,
-            grid     = me.grid,
-            view     = me.view,
-            headerCt = grid.headerCt,
-            btns     = ['saveBtnText', 'cancelBtnText', 'errorsText', 'dirtyText'],
-            b,
-            bLen     = btns.length,
-            cfg      = {
-                autoCancel: me.autoCancel,
-                errorSummary: me.errorSummary,
-	            saveBtnEnabled: me.disableValidation,
-                fields: headerCt.getGridColumns(),
-                hidden: true,
+	    if(this.view.el){
+		    var me       = this,
+			    grid     = me.grid,
+			    view     = me.view,
+			    headerCt = grid.headerCt,
+			    btns     = ['saveBtnText', 'cancelBtnText', 'errorsText', 'dirtyText'],
+			    b,
+			    bLen     = btns.length,
+			    cfg      = {
+				    autoCancel: me.autoCancel,
+				    errorSummary: me.errorSummary,
+				    saveBtnEnabled: me.disableValidation,
+				    fields: headerCt.getGridColumns(),
+				    hidden: true,
 
-                // keep a reference..
-                editingPlugin: me,
-                renderTo: view.el
-            },
-            item;
+				    // keep a reference..
+				    editingPlugin: me,
+				    renderTo: view.el
+			    },
+			    item;
 
-        for (b = 0; b < bLen; b++) {
-            item = btns[b];
+		    for (b = 0; b < bLen; b++) {
+			    item = btns[b];
 
-            if (Ext.isDefined(me[item])) {
-                cfg[item] = me[item];
-            }
-        }
-        return Ext.create('App.ux.grid.RowFormEditor', cfg);
+			    if (Ext.isDefined(me[item])) {
+				    cfg[item] = me[item];
+			    }
+		    }
+
+		    return Ext.create('App.ux.grid.RowFormEditor', cfg);
+	    }
+
     },
 
     // private

@@ -45,6 +45,10 @@ class Medical
 	/**
 	 * @var bool|MatchaCUP
 	 */
+	private $p;
+	/**
+	 * @var bool|MatchaCUP
+	 */
 	private $a;
 	/**
 	 * @var bool|MatchaCUP
@@ -56,6 +60,7 @@ class Medical
 	{
 		$this->db = new MatchaHelper();
 
+		$this->p = MatchaModel::setSenchaModel('App.model.patient.Patient');
 		$this->a = MatchaModel::setSenchaModel('App.model.patient.Allergies');
 		$this->i = MatchaModel::setSenchaModel('App.model.patient.PatientImmunization');
 
@@ -862,6 +867,61 @@ class Medical
 		return $records;
 	}
 
+
+
+	public function sendVXU($params){
+		$p = new stdClass();
+		$p->filters = array();
+		$p->filters[0] = new stdClass();
+		$p->filters[0]->property = 'pid';
+		$p->filters[0]->value = $params->pid;
+
+		$data = array();
+		$data['to'] = $params->to;
+		$data['patient'] = $this->p->load($p)->one();
+		$data['immunizations'] = array();
+
+		foreach($params->immunizations As $i){
+			$data['immunizations'][] = $this->i->load($i)->one();
+		}
+
+		return $this->xml_encode($data, 'cvx');
+
+	}
+
+	function xml_encode($value, $tag = "root") {
+		if( !is_array($value)
+			&& !is_string($value)
+			&& !is_bool($value)
+			&& !is_numeric($value)
+			&& !is_object($value) ) {
+			return false;
+		}
+		function x2str($xml,$key) {
+			if (!is_array($xml) && !is_object($xml)) {
+				return "<$key>".htmlspecialchars($xml)."</$key>";
+			}
+			$xml_str="";
+			foreach ($xml as $k=>$v) {
+				if(is_numeric($k)) {
+					$k = "_".$k;
+				}
+				$xml_str.=x2str($v,$k);
+			}
+			return "<$key>$xml_str</$key>";
+		}
+		return simplexml_load_string(x2str($value,$tag))->asXml();
+	}
+
+	function xml_decode($xml) {
+		if(!is_string($xml)) {
+			return false;
+		}
+		$xml = @simplexml_load_string($xml);
+		return $xml;
+	}
+
+
 	/**
 	 * @param $date
 	 * @return mixed
@@ -875,5 +935,10 @@ class Medical
 
 //
 //$e = new Medical();
+//$params = new stdClass();
+//$params->pid = 1;
+//$params->immunizations[] = 1;
+//$params->immunizations[] = 2;
+//$params->immunizations[] = 3;
 //echo '<pre>';
-//print_r($e->getPatientMedicationsByPatientID(1));
+//print_r($e->sendVXU($params));

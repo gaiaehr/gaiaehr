@@ -52,7 +52,7 @@ class CombosData
         {
 			if(is_numeric($params->list_id))
             {
-                return $this->CLO->load(array('list_id'=>$params->list_id))->all();
+                return $this->CLO->load(array('list_id' => $params->list_id, 'active' => 1))->all();
 			}
             else
             {

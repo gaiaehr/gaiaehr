@@ -554,6 +554,9 @@ $API = array(
 			),
 			'getPatientsMedicalSummaryGrouped' => array(
 				'len' => 1
+			),
+			'sendVXU' => array(
+				'len' => 1
 			)
 		)
 	),
@@ -611,9 +614,6 @@ $API = array(
 				'len' => 1
 			),
 			'getImmunizationLiveSearch' => array(
-				'len' => 1
-			),
-			'sendVXU' => array(
 				'len' => 1
 			)
 		)

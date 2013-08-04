@@ -169,16 +169,6 @@ class Immunizations
         return $rec['cpt'];
     }
 
-	public function sendVXU($params){
-
-		$immunizations = array(1,2);
-		$to = 'file';
-
-
-		return $params;
-
-	}
-
 }
 
 //print '<pre>';

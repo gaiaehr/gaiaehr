@@ -1596,7 +1596,7 @@ Ext.define('App.view.patient.windows.Medical', {
 			params.immunizations = immunizations;
 
 			me.vxuWindow.el.mask(i18n('sending'));
-			Immunizations.sendVXU(params, function(provider, response){
+			Medical.sendVXU(params, function(provider, response){
 				say(response.result);
 				me.vxuWindow.el.unmask();
 			});

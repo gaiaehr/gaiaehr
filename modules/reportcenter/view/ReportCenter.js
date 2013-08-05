@@ -171,6 +171,14 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                 });
             });
 
+            /**
+             * Clinical Report v0.0.1
+             * This report will generate a list of patient filtered by demographics, laboratories, medical, ect.
+             * This to comply with the Certification
+             * TODO: Load the report dynamically by file, also dynamically add the reports found on the list.
+             * this would be done in the future.
+             * @type {*}
+             */
             me.ClinicalReport = me.addReportByCategory(me.patientCategory, i18n('clinical'), function(btn) {
                 if(!me.clinicalStore) me.clinicalStore = Ext.create('Modules.reportcenter.store.Clinical');
                 me.goToReportPanelAndSetPanel({
@@ -181,11 +189,12 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                         {
                             title  : i18n('general'),
                             xtype  : 'container',
-                            layout : 'vbox',
+                            layout : 'hbox',
                             items  : [
                                 {
-                                    xtype   : 'fieldcontainer',
-                                    layout  : 'hbox',
+                                    xtype   : 'fieldset',
+                                    layout  : 'vbox',
+                                    title: i18n('patient_demographic'),
                                     defaults: { margin: '0 10 0 0' },
                                     items   : [
 
@@ -206,7 +215,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
 
                                         },
                                         {
-                                            xtype     : 'mitos.racecombo',
+                                            xtype     : 'gaiaehr.racecombo',
                                             fieldLabel: i18n('race'),
                                             name      : 'race',
                                             action    : 'race',
@@ -214,14 +223,73 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                                             width     : 275,
                                             labelWidth: 70
 
-                                        }
+                                        },
+                                        {
+                                            xtype     : 'datefield',
+                                            fieldLabel: i18n('date_to'),
+                                            format    :'Y-m-d',
+                                            name      : 'to'
+                                        },
+                                        {
+                                            xtype     : 'numberfield',
+                                            fieldLabel: i18n('age_to'),
+                                            name: 'age_to',
+                                            labelWidth: 75,
+                                            width     :140,
+                                            minValue  : 0
 
+                                        },
+                                        {
+                                            xtype     : 'mitos.ethnicitycombo',
+                                            fieldLabel: i18n('ethnicity'),
+                                            name      : 'ethnicity',
+                                            action    : 'ethnicity',
+                                            hideLabel : false,
+                                            width     : 275,
+                                            labelWidth: 70
+
+                                        }
                                     ]
 
                                 },
                                 {
-                                    xtype   : 'fieldcontainer',
-                                    layout  : 'hbox',
+                                    xtype   : 'fieldset',
+                                    layout  : 'vbox',
+                                    title: i18n('patient_problems'),
+                                    defaults: { margin: '0 10 0 0' },
+                                    items   : [
+
+                                        {
+                                            xtype          : 'patienlivetsearch',
+                                            fieldLabel     : i18n('patient'),
+                                            hideLabel      : false,
+                                            name           : 'pid',
+                                            width          : 280
+                                        }
+                                    ]
+
+                                },
+                                {
+                                    xtype   : 'fieldset',
+                                    layout  : 'vbox',
+                                    title: i18n('patient_medication'),
+                                    defaults: { margin: '0 10 0 0' },
+                                    items   : [
+
+                                        {
+                                            xtype          : 'patienlivetsearch',
+                                            fieldLabel     : i18n('patient'),
+                                            hideLabel      : false,
+                                            name           : 'pid',
+                                            width          : 280
+                                        }
+                                    ]
+
+                                },
+                                {
+                                    xtype   : 'fieldset',
+                                    layout  : 'vbox',
+                                    title: i18n('patient_laboratory'),
                                     defaults: { margin: '0 10 0 0' },
                                     items   : [
                                         {
@@ -238,42 +306,9 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                                             width     : 140,
                                             minValue  : 0
 
-                                        },
-                                        {
-                                            xtype     : 'mitos.ethnicitycombo',
-                                            fieldLabel: i18n('ethnicity'),
-                                            name      : 'ethnicity',
-                                            action    : 'ethnicity',
-                                            hideLabel : false,
-                                            width     : 275,
-                                            labelWidth: 70
-
-                                        }
-
-                                    ]
-
-                                },
-                                {
-                                    xtype   : 'fieldcontainer',
-                                    layout  : 'hbox',
-                                    defaults: { margin: '0 10 0 0' },
-                                    items   : [
-                                        {
-                                            xtype     : 'datefield',
-                                            fieldLabel: i18n('date_to'),
-                                            format    :'Y-m-d',
-                                            name      : 'to'
-                                        },
-                                        {
-                                            xtype     : 'numberfield',
-                                            fieldLabel: i18n('age_to'),
-                                            name: 'age_to',
-                                            labelWidth: 75,
-                                            width     :140,
-                                            minValue  : 0
-
                                         }
                                     ]
+
                                 }
                             ]
                         }

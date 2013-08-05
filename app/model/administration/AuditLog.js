@@ -72,6 +72,19 @@ Ext.define('App.model.administration.AuditLog',
             comment: 'Date of the event'
         }
     ],
+    proxy :
+    {
+        type : 'direct',
+        api :
+        {
+            read : AuditLog.getLogs
+        },
+        reader :
+        {
+            totalProperty : 'totals',
+            root : 'rows'
+        }
+    },
     hasMany: [
         {
             model: 'App.model.patient.Patient',

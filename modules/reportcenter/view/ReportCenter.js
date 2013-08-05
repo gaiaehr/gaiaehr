@@ -240,7 +240,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
 
                                         },
                                         {
-                                            xtype     : 'mitos.ethnicitycombo',
+                                            xtype     : 'gaiaehr.ethnicitycombo',
                                             fieldLabel: i18n('ethnicity'),
                                             name      : 'ethnicity',
                                             action    : 'ethnicity',

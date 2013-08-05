@@ -197,7 +197,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                                             width          : 280
                                         },
                                         {
-                                            xtype     : 'mitos.sexcombo',
+                                            xtype     : 'gaiaehr.sexcombo',
                                             fieldLabel: i18n('sex'),
                                             name      : 'sex',
                                             labelWidth: 75,

@@ -168,7 +168,7 @@ Ext.define('App.view.administration.PreventiveCare',
 								width : 703
 							},
 							{
-								xtype : 'mitos.sexcombo',
+								xtype : 'gaiaehr.sexcombo',
 								fieldLabel : i18n('sex'),
 								name : 'sex',
 								width : 100,

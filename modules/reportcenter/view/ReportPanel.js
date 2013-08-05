@@ -33,6 +33,7 @@ Ext.define('Modules.reportcenter.view.ReportPanel', {
             border:true
         });
         // END PDF Panel
+
         //-----------------------------------------------------------------------
         // Filter panel for the report
         //-----------------------------------------------------------------------
@@ -151,9 +152,9 @@ Ext.define('Modules.reportcenter.view.ReportPanel', {
 
 
     },
+
     generatePDF: function(btn){
         var me = this, form = me.formPanel, params = form.getForm().getValues();
-//        me.resetRenderContainer();
         if(typeof form.reportFn == 'function'){
             var html =App.ux.grid.GridToHtml.getHtml(me.grid);
             this.renderContainer.removeAll(true);
@@ -168,7 +169,6 @@ Ext.define('Modules.reportcenter.view.ReportPanel', {
         btn.setDisabled(true);
     },
 
-
     resetRenderContainer:function(){
         this.formPanel.down('toolbar').getComponent('pdf').setDisabled(true);
         this.formPanel.getForm().reset();
@@ -177,6 +177,7 @@ Ext.define('Modules.reportcenter.view.ReportPanel', {
         delete this.pdf;
 
     },
+
     /**
      * This function is called from MitosAPP.js when
      * this panel is selected in the navigation panel.

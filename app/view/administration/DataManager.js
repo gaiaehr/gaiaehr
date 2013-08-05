@@ -230,7 +230,7 @@ Ext.define('App.view.administration.DataManager',
 						width : 703
 					},
 					{
-						xtype : 'mitos.sexcombo',
+						xtype : 'gaiaehr.sexcombo',
 						fieldLabel : i18n('sex'),
 						name : 'sex',
 						width : 100,

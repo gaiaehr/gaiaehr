@@ -78,6 +78,8 @@ class Segments {
 			}
 		}
 
+//        print_r($this->rawSeg);
+
 		return $this->seg = rtrim($seg, '|');
 
 	}

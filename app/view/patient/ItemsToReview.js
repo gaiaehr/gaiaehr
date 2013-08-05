@@ -32,8 +32,8 @@ Ext.define('App.view.patient.ItemsToReview', {
         me.patientImmuListStore = Ext.create('App.store.patient.PatientImmunization');
         me.patientAllergiesListStore = Ext.create('App.store.patient.Allergies');
         me.patientMedicalIssuesStore = Ext.create('App.store.patient.MedicalIssues');
-        me.patientSurgeryStore = Ext.create('App.store.patient.Surgery');
-        me.patientDentalStore = Ext.create('App.store.patient.Dental');
+//        me.patientSurgeryStore = Ext.create('App.store.patient.Surgery');
+//        me.patientDentalStore = Ext.create('App.store.patient.Dental');
         me.patientMedicationsStore = Ext.create('App.store.patient.Medications');
         me.column1 = Ext.create('Ext.container.Container', {
             columnWidth: 0.3333,
@@ -51,7 +51,7 @@ Ext.define('App.view.patient.ItemsToReview', {
                         {
                             header: i18n('immunization'),
                             width: 250,
-                            dataIndex: 'immunization_name'
+                            dataIndex: 'vaccine_name'
                         },
                         {
                             header: i18n('date'),
@@ -126,33 +126,33 @@ Ext.define('App.view.patient.ItemsToReview', {
                         }
                     ]
                 },
-                {
-                    title: i18n('surgery'),
-                    frame: true,
-                    height: 180,
-                    store: me.patientSurgeryStore,
-                    columns: [
-                        {
-                            header: i18n('type'),
-                            width: 250,
-                            dataIndex: 'type'
-                        },
-                        {
-                            xtype: 'datecolumn',
-                            header: i18n('begin_date'),
-                            width: 90,
-                            format: 'Y-m-d',
-                            dataIndex: 'begin_date'
-                        },
-                        {
-                            xtype: 'datecolumn',
-                            header: i18n('end_date'),
-                            flex: 1,
-                            format: 'Y-m-d',
-                            dataIndex: 'end_date'
-                        }
-                    ]
-                }
+//                {
+//                    title: i18n('surgery'),
+//                    frame: true,
+//                    height: 180,
+//                    store: me.patientSurgeryStore,
+//                    columns: [
+//                        {
+//                            header: i18n('type'),
+//                            width: 250,
+//                            dataIndex: 'type'
+//                        },
+//                        {
+//                            xtype: 'datecolumn',
+//                            header: i18n('begin_date'),
+//                            width: 90,
+//                            format: 'Y-m-d',
+//                            dataIndex: 'begin_date'
+//                        },
+//                        {
+//                            xtype: 'datecolumn',
+//                            header: i18n('end_date'),
+//                            flex: 1,
+//                            format: 'Y-m-d',
+//                            dataIndex: 'end_date'
+//                        }
+//                    ]
+//                }
             ]
         });
         me.column3 = Ext.create('Ext.container.Container', {
@@ -162,33 +162,33 @@ Ext.define('App.view.patient.ItemsToReview', {
                 margin: '0 0 5 0'
             },
             items: [
-                {
-                    title: i18n('dental'),
-                    frame: true,
-                    height: 180,
-                    store: me.patientDentalStore,
-                    columns: [
-                        {
-                            header: i18n('title'),
-                            width: 250,
-                            dataIndex: 'title'
-                        },
-                        {
-                            xtype: 'datecolumn',
-                            header: i18n('begin_date'),
-                            width: 90,
-                            format: 'Y-m-d',
-                            dataIndex: 'begin_date'
-                        },
-                        {
-                            xtype: 'datecolumn',
-                            header: i18n('end_date'),
-                            flex: 1,
-                            format: 'Y-m-d',
-                            dataIndex: 'end_date'
-                        }
-                    ]
-                },
+//                {
+//                    title: i18n('dental'),
+//                    frame: true,
+//                    height: 180,
+//                    store: me.patientDentalStore,
+//                    columns: [
+//                        {
+//                            header: i18n('title'),
+//                            width: 250,
+//                            dataIndex: 'title'
+//                        },
+//                        {
+//                            xtype: 'datecolumn',
+//                            header: i18n('begin_date'),
+//                            width: 90,
+//                            format: 'Y-m-d',
+//                            dataIndex: 'begin_date'
+//                        },
+//                        {
+//                            xtype: 'datecolumn',
+//                            header: i18n('end_date'),
+//                            flex: 1,
+//                            format: 'Y-m-d',
+//                            dataIndex: 'end_date'
+//                        }
+//                    ]
+//                },
                 {
                     title: i18n('medications'),
                     frame: true,
@@ -295,8 +295,8 @@ Ext.define('App.view.patient.ItemsToReview', {
         me.patientImmuListStore.load({params: {pid: app.patient.pid}});
         me.patientAllergiesListStore.load({params: {pid: app.patient.pid}});
         me.patientMedicalIssuesStore.load({params: {pid: app.patient.pid}});
-        me.patientSurgeryStore.load({params: {pid: app.patient.pid}});
-        me.patientDentalStore.load({params: {pid: app.patient.pid}});
+//        me.patientSurgeryStore.load({params: {pid: app.patient.pid}});
+//        me.patientDentalStore.load({params: {pid: app.patient.pid}});
         me.patientMedicationsStore.load({params: {pid: app.patient.pid}});
         Medical.getEncounterReviewByEid(app.patient.eid, function(provider, response){
 	        if(response.result.last_history_smoke_date == '') response.result.last_history_smoke_date = i18n('n/a');

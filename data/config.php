@@ -554,6 +554,9 @@ $API = array(
 			),
 			'getPatientsMedicalSummaryGrouped' => array(
 				'len' => 1
+			),
+			'sendVXU' => array(
+				'len' => 1
 			)
 		)
 	),
@@ -578,6 +581,9 @@ $API = array(
 			'getRXNORMLiveSearch' => array(
 				'len' => 1
 			),
+			'getRXNORMAllergyLiveSearch' => array(
+				'len' => 1
+			),
 			'getMedicationAttributesByCODE' => array(
 				'len' => 1
 			)
@@ -596,7 +602,7 @@ $API = array(
 			),
 			'updateMedications' => array(
 				'len' => 1
-			),
+			)
 		)
 	),
 	'Immunizations' => array(
@@ -609,7 +615,7 @@ $API = array(
 			),
 			'getImmunizationLiveSearch' => array(
 				'len' => 1
-			),
+			)
 		)
 	),	'Xrays' => array(
 		'methods' => array(
@@ -618,7 +624,7 @@ $API = array(
 			),
 			'getXraysLiveSearch' => array(
 				'len' => 1
-			),
+			)
 		)
 	),
 	'Laboratories' => array(

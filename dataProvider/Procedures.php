@@ -25,6 +25,7 @@ class Procedures
 
     function __construct()
     {
+	    $this->db = new MatchaHelper();
 		$this->p = MatchaModel::setSenchaModel('App.model.patient.encounter.Procedures');
         return;
     }

@@ -19,27 +19,86 @@
 Ext.define('App.model.patient.PatientImmunization', {
 	extend: 'Ext.data.Model',
 	table: {
-		name:'patientimmunization',
+		name:'patient_immunizations',
 		comment:'Patient Immunization'
 	},
 	fields: [
-        {name: 'id', type: 'int', comment: 'Patient Immunization ID'},
-		{name: 'pid', type: 'int'},
-		{name: 'eid', type: 'int'},
-		{name: 'uid', type: 'int'},
-		{name: 'created_uid', type: 'int'},
-		{name: 'updated_uid', type: 'int'},
-		{name: 'immunization_name', type: 'string'},
-		{name: 'immunization_id', type: 'int'},
-		{name: 'administered_date', type: 'date', dateFormat: 'Y-m-d H:i:s'},
-		{name: 'manufacturer', type: 'string'},
-		{name: 'lot_number', type: 'string'},
-		{name: 'administered_by', type: 'string'},
-		{name: 'education_date', type: 'date', dateFormat: 'Y-m-d H:i:s'},
-		{name: 'dosis'},
-		{name: 'create_date', type: 'date', dateFormat: 'Y-m-d H:i:s'},
-		{name: 'note', type: 'string'},
-        {name: 'alert', type: 'bool'}
+        {
+	        name: 'id',
+	        type: 'int',
+	        comment: 'Patient Immunization ID'
+        },
+		{
+			name: 'pid',
+			type: 'int'},
+		{
+			name: 'eid',
+			type: 'int'},
+		{
+			name: 'uid',
+			type: 'int'
+		},
+		{
+			name: 'code',
+			type: 'int',
+			comment: 'vaccine code (CVX)'
+		},
+		{
+			name: 'code_type',
+			type: 'string',
+			defaultValue: 'CVX'
+		},
+		{
+			name: 'vaccine_name',
+			type: 'string'
+		},
+		{
+			name: 'lot_number',
+			type: 'string'
+		},
+		{
+			name: 'administer_amount',
+			type: 'string'
+		},
+		{
+			name: 'administer_units',
+			type: 'string'
+		},
+		{
+			name: 'administered_date',
+			type: 'date',
+			dateFormat: 'Y-m-d H:i:s'
+		},
+		{
+			name: 'administered_by',
+			type: 'string'
+		},
+		{
+			name: 'manufacturer',
+			type: 'string'
+		},
+		{
+			name: 'education_date',
+			type: 'date',
+			dateFormat: 'Y-m-d H:i:s'
+		},
+		{
+			name: 'note',
+			type: 'string'
+		},
+		{
+			name: 'create_date',
+			type: 'date',
+			dateFormat: 'Y-m-d H:i:s'
+		},
+		{
+			name: 'created_uid',
+			type: 'int'
+		},
+		{
+			name: 'updated_uid',
+			type: 'int'
+		}
 	],
 	proxy : {
 		type: 'direct',

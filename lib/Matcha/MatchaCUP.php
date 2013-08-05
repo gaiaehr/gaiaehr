@@ -251,9 +251,18 @@ class MatchaCUP
 					$whereArray = array();
 					foreach ($where->filter as $foo)
 					{
-						if(isset($foo->value) && isset($foo->property)){
-							$operator = isset($foo->operator)? $foo->operator : '=';
-							$whereArray[] = "`$foo->property` $operator '$foo->value'";
+						if(isset($foo->property)){
+							if($foo->value == null){
+								if(isset($foo->operator)){
+									$operator = $foo->operator == '=' ? ' IS ' : ' IS NOT';
+								}else{
+									$operator = 'IS';
+								}
+								$whereArray[] = "`$foo->property` $operator NULL";
+							}else{
+								$operator = isset($foo->operator)? $foo->operator : '=';
+								$whereArray[] = "`$foo->property` $operator '$foo->value'";
+							}
 						}
 					}
 					if(count($whereArray) > 0) $wherex = 'WHERE ' . implode(' AND ', $whereArray);
@@ -261,7 +270,10 @@ class MatchaCUP
 				$this->nolimitsql   = "SELECT * FROM `" . $this->table . "` $wherex $groupx $sortx";
 				$this->sql          = "SELECT * FROM `" . $this->table . "` $wherex $groupx $sortx $limits";
 			}
+
 			return $this;
+
+
 		}
 		catch(PDOException $e)
 		{
@@ -390,6 +402,16 @@ class MatchaCUP
 			if(!empty($sortArray)){
 				 $this->sql = $this->sql . ' ORDER BY ' . implode(', ', $sortArray);
 			}
+		}
+		return $this;
+	}
+
+	public function group($params){
+		if (isset($params->group))
+		{
+			$property = $params->group[0]->property;
+			$direction = isset($params->group[0]->direction) ? $params->group[0]->direction : '';
+			$this->sql = $this->sql . " GROUP BY `$property` $direction";
 		}
 		return $this;
 	}

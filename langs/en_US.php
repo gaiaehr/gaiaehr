@@ -10,6 +10,7 @@ $LANG = array(
 	'en_US'									=> 'English (USA)',
 	'i18nExtFile'							=> 'ext-lang-en.js',
 	// End of the items
+    'money_sing'                            => '$',
     'dashboard'         					=> 'Dashboard',
     'calendar'          					=> 'Calendar',
     'messages'          					=> 'Messages',

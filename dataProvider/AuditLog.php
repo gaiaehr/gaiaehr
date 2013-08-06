@@ -39,4 +39,9 @@ class AuditLog extends MatchaHelper
 		return $this->Log->load($params)->all();
 	}
 
+    public function setLog(stdClass $params)
+    {
+        error_log($params->msg);
+    }
+
 }

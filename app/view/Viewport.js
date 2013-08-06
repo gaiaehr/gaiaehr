@@ -57,7 +57,14 @@ Ext.define('App.view.Viewport', {
             },
             interval: me.cronTaskInterval * 1000
         };
-        /*
+
+        /**
+         * Create the model/store of the AuditLog
+         * @type {*}
+         */
+        me.AuditLogModel = Ext.create('App.model.administration.AuditLog');
+
+        /**
          * The store for the Navigation Tree menu.
          */
         me.storeTree = Ext.create('App.store.navigation.Navigation', {
@@ -611,6 +618,18 @@ Ext.define('App.view.Viewport', {
         me.callParent(arguments);
         me.signature = Ext.create('App.view.signature.SignatureWindow');
     },
+
+    /**
+     * Function to inject log to the audit log table
+     * This function should be used on every screen that display
+     * health information of a patien.
+     * Event: create, read, update, delete
+     */
+    AuditLog: function(message)
+    {
+        AuditLog.setLog( message, function(provider, response) { return true; } );
+    },
+
     /*
      * Show the medical window dialog.
      */
@@ -1303,6 +1322,7 @@ Ext.define('App.view.Viewport', {
      */
     loadModules: function(){
         say('Loading Modules');
+        //.AuditLog('Holaaaa!!!');
         Modules.getEnabledModules(function(provider, response){
             var modules = response.result;
             for(var i = 0; i < modules.length; i++){

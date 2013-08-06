@@ -77,7 +77,9 @@ Ext.define('App.model.administration.AuditLog',
         type : 'direct',
         api :
         {
-            read : AuditLog.getLogs
+            read : AuditLog.getLogs,
+            create: AuditLog.setLog,
+            update: AuditLog.setLog
         },
         reader :
         {

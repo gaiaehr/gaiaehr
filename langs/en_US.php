@@ -10,7 +10,6 @@ $LANG = array(
 	'en_US'									=> 'English (USA)',
 	'i18nExtFile'							=> 'ext-lang-en.js',
 	// End of the items
-    'money_sing'                            => '$',
     'dashboard'         					=> 'Dashboard',
     'calendar'          					=> 'Calendar',
     'messages'          					=> 'Messages',
@@ -1193,10 +1192,5 @@ $LANG = array(
     'only_active'                           => 'Only Active',
     'submit_vxu'                            => 'Submit VXU (HL7 encoded Msg)',
     'send_immunization_vxu_message'         => 'Send Immunization VXU Message',
-    'please_verify_the_information'         => 'Please, Verify The Information',
-    'patient_demographic'                   => 'Patient Demographics',
-    'patient_problems'                      => 'Patient Problems',
-    'patient_medication'                    => 'Patient Medications',
-    'patient_laboratory'                    => 'Patient Laboratories',
-    'laboratory_result'                     => 'Laboratory Result'
+    'please_verify_the_information'         => 'Please, Verify The Information'
 );

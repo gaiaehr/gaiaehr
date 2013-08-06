@@ -49,7 +49,7 @@ class MatchaErrorHandler extends Matcha
         if($__browserDebug)
         {
             if($browserName == Browser::BROWSER_FIREFOX) MatchaUtils::FirePHP()->getInstance(true)->log($constructErrorMessage, 'FirePHP -> ');
-            if($browserName == Browser::BROWSER_CHROME) MatchaUtils::ChromePHP()->log('ChromePHP -> '.$constructErrorMessage);
+//            if($browserName == Browser::BROWSER_CHROME) MatchaUtils::ChromePHP()->log('ChromePHP -> '.$constructErrorMessage);
         }
 
 		return $errorException;

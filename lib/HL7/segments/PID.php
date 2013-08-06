@@ -316,8 +316,5 @@ class PID extends Segments{
 		$this->rawSeg[39] = $this->getType('CWE');
 
 
-
-//		print '<pre>';
-//		print_r($this->rawSeg);
 	}
 }

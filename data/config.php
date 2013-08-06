@@ -1473,5 +1473,18 @@ $API = array(
 				'len' => 1
 			)
 		)
+	),
+	'HL7Messages' => array(
+		'methods' => array(
+			'getMessages' => array(
+				'len' => 1
+			),
+			'getRecipients' => array(
+				'len' => 1
+			),
+			'sendVXU' => array(
+				'len' => 1
+			)
+		)
 	)
 );

@@ -46,7 +46,6 @@ Ext.define('Modules.reportcenter.view.ReportPanel', {
             margin: '0 0 3 0',
             collapsible: true,
             buttonAlign: 'left',
-            layout: 'anchor',
             // Draw the buttons to render and clear the report panel view.
             buttons: [
                 {
@@ -104,13 +103,12 @@ Ext.define('Modules.reportcenter.view.ReportPanel', {
         if(config.fn) me.formPanel.reportFn = config.fn;
         if(config.store) me.store = config.store;
         if(config.columns) me.columns = config.columns;
-        //if(config.layout) me.formPanel.layout = config.layout;
+        if(config.layout) me.formPanel.layout = config.layout;
         if(config.bodyStyle) me.formPanel.setBodyStyle(config.bodyStyle);
         if(config.border) me.formPanel.setBorder(config.border);
         me.formPanel.removeAll();
         me.formPanel.add(config.items);
         me.resetRenderContainer();
-        me.formPanel.doLayout(true);
         //say(me.formPanel);
    },
 

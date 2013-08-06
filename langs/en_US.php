@@ -1196,5 +1196,6 @@ $LANG = array(
     'patient_demographic'                   => 'Patient Demographics',
     'patient_problems'                      => 'Patient Problems',
     'patient_medication'                    => 'Patient Medications',
-    'patient_laboratory'                    => 'Patient Laboratories'
+    'patient_laboratory'                    => 'Patient Laboratories',
+    'laboratory_result'                     => 'Laboratory Result'
 );

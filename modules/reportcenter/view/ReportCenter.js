@@ -211,7 +211,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                             xtype     : 'gaiaehr.sexcombo',
                             fieldLabel: i18n('sex'),
                             name      : 'sex',
-                            width     : 140,
+                            width     : 275,
                             minValue  : 0
 
                         },
@@ -243,6 +243,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                                 },
                                 {
                                     xtype       : 'numberfield',
+                                    margin     : '0 0 0 5',
                                     fieldLabel  : i18n('age_to'),
                                     name        : 'age_to',
                                     width       : 160,
@@ -273,11 +274,11 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                         collapsible: true,
                         items   : [
                             {
-                                xtype          : 'patienlivetsearch',
-                                fieldLabel     : i18n('patient'),
-                                hideLabel      : false,
-                                name           : 'pid',
-                                width          : 280
+                                xtype       :'liveicdxsearch',
+                                fieldLabel  : i18n('problem_dx'),
+                                hideLabel   :false,
+                                name        :'problem',
+                                width       : 350
                             }
                         ]
                     },
@@ -293,11 +294,11 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                         collapsible: true,
                         items   : [
                             {
-                                xtype          : 'patienlivetsearch',
-                                fieldLabel     : i18n('patient'),
-                                hideLabel      : false,
-                                name           : 'pid',
-                                width          : 280
+                                xtype       : 'medicationlivetsearch',
+                                fieldLabel  : i18n('drug'),
+                                hideLabel   : false,
+                                name        : 'medication',
+                                width       : 350
                             }
                         ]
                     },
@@ -313,18 +314,11 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                         collapsible: true,
                         items   : [
                             {
-                                xtype     : 'datefield',
-                                fieldLabel: i18n('date_from'),
-                                format    :'Y-m-d',
-                                name      : 'from'
-                            },
-                            {
-                                xtype     : 'numberfield',
-                                fieldLabel: i18n('age_from'),
-                                name: 'age_from',
-                                width     : 140,
-                                minValue  : 0
-
+                                xtype       : 'labslivetsearch',
+                                margin      : 5,
+                                fieldLabel  : i18n('laboratory_result'),
+                                hideLabel   : false,
+                                width       : 350
                             }
                         ]
                     }

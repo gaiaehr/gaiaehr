@@ -41,6 +41,8 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
 
                 me.goToReportPanelAndSetPanel({
                     title:i18n('client_list_report'),
+                    layout : 'anchor',
+                    height: 100,
                     items : [
                         {
                             xtype     : 'datefield',
@@ -93,6 +95,8 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
 
                 me.goToReportPanelAndSetPanel({
                     title:i18n('rx'),
+                    layout : 'anchor',
+                    height: 100,
                     items : [
                         {
                             xtype   : 'fieldcontainer',
@@ -185,7 +189,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                 me.goToReportPanelAndSetPanel({
                     title:i18n('clinical'),
                     action: 'clientListReport',
-                    layout : 'column',
+                    height: 300,
                     bodyStyle: 'padding:0px 0px 0',
                     border: false,
                     items: [
@@ -359,6 +363,8 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                 me.goToReportPanelAndSetPanel({
                     title:i18n('immunization_registry'),
                     action: 'clientListReport',
+                    layout : 'anchor',
+                    height: 100,
                     items : [
                         {
                             xtype     : 'datefield',
@@ -419,6 +425,8 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                 me.goToReportPanelAndSetPanel({
                     title:i18n('standard_measures'),
                     action: 'clientListReport',
+                    layout : 'anchor',
+                    height: 100,
                     items : [
                         {
                             xtype     : 'datefield',
@@ -437,6 +445,8 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                 me.goToReportPanelAndSetPanel({
                     title:i18n('clinical_quality_measures_cqm'),
                     action: 'clientListReport',
+                    layout : 'anchor',
+                    height: 100,
                     items : [
                         {
                             xtype     : 'datefield',
@@ -455,6 +465,8 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                 me.goToReportPanelAndSetPanel({
                     title:i18n('automated_measure_calculations_amc'),
                     action: 'clientListReport',
+                    layout : 'anchor',
+                    height: 100,
                     items : [
                         {
                             xtype     : 'datefield',
@@ -473,6 +485,8 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                 me.goToReportPanelAndSetPanel({
                     title:i18n('automated_measure_calculations_tracking'),
                     action: 'clientListReport',
+                    layout : 'anchor',
+                    height: 100,
                     items : [
                         {
                             xtype     : 'datefield',
@@ -500,6 +514,8 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
             me.link9 = me.addReportByCategory(me.visitCategory, i18n('super_bill'), function(btn) {
                 me.goToReportPanelAndSetPanel({
                     title: i18n('super_bill'),
+                    layout : 'anchor',
+                    height: 100,
                     items : [
                         {
 	                        xtype          : 'patienlivetsearch',
@@ -530,6 +546,8 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                 if(!me.appointmentsReportStore) me.appointmentsReportStore = Ext.create('Modules.reportcenter.store.Appointment');
                 me.goToReportPanelAndSetPanel({
                     title: i18n('appointments'),
+                    layout : 'anchor',
+                    height: 100,
                     items : [
                         {
                             xtype   : 'fieldcontainer',

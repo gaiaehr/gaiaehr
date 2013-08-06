@@ -145,9 +145,10 @@ class Immunizations
         );
     }
 
-    public function getMvx(stdClass $params)
+    public function getMvxByCode($code)
     {
-        return;
+	    $this->db->setSQL("SELECT * FROM cvx_mvx WHERE mvx_code = '$code'");
+	    return $this->db->fetchRecord(PDO::FETCH_ASSOC);
     }
 
     public function getMvxForCvx(stdClass $params)

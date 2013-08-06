@@ -13,7 +13,7 @@ class ORC extends Segments{
 	function __construct(){
 
 		$this->rawSeg = array();
-		$this->rawSeg[0] = 'ROC';               // ROC Segment
+		$this->rawSeg[0] = 'ORC';               // ROC Segment
 		$this->rawSeg[1] = '';                  // Order Control
 
 	}

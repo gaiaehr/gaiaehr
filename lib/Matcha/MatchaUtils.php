@@ -65,8 +65,8 @@ class MatchaUtils extends Matcha
      */
     static public function ChromePHP()
     {
-        require_once('plugins/ChromePHP/ChromePhp.php');
-        return ChromePhp()->getInstance();
+//        require_once('plugins/ChromePHP/ChromePhp.php');
+//        return ChromePhp()->getInstance();
     }
 
     /**

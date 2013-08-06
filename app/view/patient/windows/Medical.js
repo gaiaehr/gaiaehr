@@ -29,7 +29,10 @@ Ext.define('App.view.patient.windows.Medical', {
 	defaults: {
 		margin: 5
 	},
-	requires: ['App.view.patient.LaboratoryResults'],
+	requires: [
+		'App.view.patient.LaboratoryResults',
+		'App.store.administration.HL7Recipients'
+	],
 	pid: null,
 	initComponent: function(){
 		var me = this;
@@ -292,7 +295,7 @@ Ext.define('App.view.patient.windows.Medical', {
 				bbar: [
 					'-',
 					me.vxuBtn = Ext.widget('button',{
-						text: i18n('submit_vxu'),
+						text: i18n('submit_hl7_vxu'),
 						scope: me,
 						disabled: true,
 						handler: me.onVxu
@@ -1519,7 +1522,7 @@ Ext.define('App.view.patient.windows.Medical', {
 	getVxuWindow: function(){
 		var me = this;
 		return Ext.widget('window',{
-			title: i18n('send_immunization_vxu_message'),
+			title: i18n('submit_hl7_vxu'),
 			closable: false,
 			modal: true,
 			bodyStyle:'background-color:white',
@@ -1534,7 +1537,7 @@ Ext.define('App.view.patient.windows.Medical', {
 					margin: '10 10 0 10'
 				},
 				{
-					width:500,
+					width:700,
 					minHeight:50,
 					maxHeight:200,
 					itemId:'list',
@@ -1550,6 +1553,19 @@ Ext.define('App.view.patient.windows.Medical', {
 				}
 			],
 			buttons:[
+				me.vxuFrom = Ext.create('App.ux.combo.ActiveFacilities',{
+					fieldLabel: i18n('send_from'),
+					emptyText: i18n('select'),
+					labelWidth: 60,
+					store: Ext.create('App.store.administration.HL7Recipients',{
+						filters:[
+							{
+								property:'active',
+								value:true
+							}
+						]
+					})
+				}),
 				me.vxuTo = Ext.widget('combobox',{
 					xtype:'combobox',
 					fieldLabel: i18n('send_to'),
@@ -1557,13 +1573,14 @@ Ext.define('App.view.patient.windows.Medical', {
 					allowBlank: false,
 					forceSelection: true,
 					labelWidth: 60,
-					queryMode: 'local',
-					displayField: 'title',
-					valueField: 'name',
-					store: Ext.create('Ext.data.Store', {
-						fields: ['title', 'name'],
-						data : [
-							{ title:'Test Directory', name:'test' }
+					displayField: 'recipient_application',
+					valueField: 'id',
+					store: Ext.create('App.store.administration.HL7Recipients',{
+						filters:[
+							{
+								property:'active',
+								value:true
+							}
 						]
 					})
 				}),
@@ -1592,13 +1609,20 @@ Ext.define('App.view.patient.windows.Medical', {
 				immunizations.push(foo[i].data.id);
 			}
 			params.pid = me.pid;
+			params.from = me.vxuFrom.getValue();
 			params.to = me.vxuTo.getValue();
 			params.immunizations = immunizations;
 
 			me.vxuWindow.el.mask(i18n('sending'));
-			Medical.sendVXU(params, function(provider, response){
-				say(response.result);
+			HL7Messages.sendVXU(params, function(provider, response){
 				me.vxuWindow.el.unmask();
+				if(response.result.success){
+					app.msg(i18n('sweet!'), i18n('message_sent'));
+				}else{
+					app.msg(i18n('oops!'), i18n('message_error'), true);
+				}
+				me.vxuWindow.close();
+				me.immuSm.deselectAll();
 			});
 		}
 	},
@@ -1683,6 +1707,11 @@ Ext.define('App.view.patient.windows.Medical', {
 			name;
 
 		if(combo.name == 'vaccine_name'){
+
+
+			me.CvxMvxCombo.getStore().load({
+				params:{cvx_code:record[0].data.cvx_code}
+			});
 
 			xform.getRecord().set({
 				code: record[0].data.cvx_code,

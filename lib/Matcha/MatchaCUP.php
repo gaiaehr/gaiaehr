@@ -759,6 +759,8 @@ class MatchaCUP
 					elseif($type == 'array')
 					{
 						$values[$index] = ($foo == '' ? 'NULL' : serialize($values[$index]));
+					}else{
+						addslashes($values[$index]);
 					}
 				}
 			}else{

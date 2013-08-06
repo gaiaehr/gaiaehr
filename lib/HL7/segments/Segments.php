@@ -280,9 +280,6 @@ class Segments {
 		$types['CX'][9] = $types['CWE'];    // Assigning Jurisdiction (CWE)
 		$types['CX'][10] = $types['CWE'];   // Assigning Agency or Department (CWE)
 
-
-
-
 		return $types[$type];
 
 	}

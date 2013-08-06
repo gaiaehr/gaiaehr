@@ -44,7 +44,7 @@ class HL7 {
 		foreach($this->segments As $segment){
 			$msg .= $segment->build() . PHP_EOL;
 		}
-		return $msg;
+		return $msg. PHP_EOL;
 	}
 }
 

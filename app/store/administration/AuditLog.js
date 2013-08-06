@@ -19,18 +19,5 @@
 Ext.define('App.store.administration.AuditLog', {
     model: 'App.model.administration.AuditLog',
     extend: 'Ext.data.Store',
-    proxy :
-    {
-        type : 'direct',
-        api :
-        {
-            read : AuditLog.getLogs
-        },
-        reader :
-        {
-            totalProperty : 'totals',
-            root : 'rows'
-        }
-    },
     autoLoad : false
 });

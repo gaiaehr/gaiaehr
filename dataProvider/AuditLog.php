@@ -36,12 +36,9 @@ class AuditLog extends MatchaHelper
     //------------------------------------------------------------------------------------------------------------------
 	public function getLogs(stdClass $params)
 	{
-		$logRecords = $this->Log->load($params)->all();
-		$total = count($logRecords);
-		return array(
-			'totals' => $total,
-			'rows' => $logRecords
-		);
+//		$logRecords = $this->Log->load($params)->all();
+//		$total = count($logRecords);
+		return $this->Log->load($params)->all();
 	}
 
 }

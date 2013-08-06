@@ -75,16 +75,32 @@ class HL7Messages {
 		$rxa->setValue('17.1', 'OTC');              //Identifier
 		$rxa->setValue('17.2', 'ORGANON');          //Text
 		$rxa->setValue('17.3', 'MVX');              //Name of Coding System
-	$rxa->setValue('21', 'A');                      //Action Code
+	    $rxa->setValue('21', 'A');                      //Action Code
 
 
-		return $this->hl7->getMessage();
+		return  $this->SendTo();
 	}
 
 
+    public function SendTo(){
+        $data_string = $this->hl7->getMessage();
+
+        print 'Sending...'.PHP_EOL;
+        print $data_string;
+
+        $ch = curl_init('http://192.168.1.109:8007');
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+                'Content-Type: text/plain',
+                'Content-Length: ' . strlen($data_string))
+        );
+
+        return curl_exec($ch);
+    }
 }
 
 print '<pre>';
 $hl7 = new HL7Messages();
-
 print_r($hl7->sendVXU());

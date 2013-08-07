@@ -29,7 +29,6 @@ Ext.define('App.view.patient.Vitals', {
 	emptyText        : '<div class="view_empty_text"><span>' + i18n('no_vitals_to_display') + '</span></div>',
 	initComponent: function() {
 		var me = this;
-        this.AuditLog('Patient vitals viewed');
 
         me.tpl = '<table>' +
 	        '   <tbody>' +

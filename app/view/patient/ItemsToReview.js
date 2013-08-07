@@ -315,7 +315,6 @@ Ext.define('App.view.patient.ItemsToReview', {
             Medical.reviewAllMedicalWindowEncounter(values, function(provider, response){
                 if(response.result.success){
                     app.msg('Sweet!', i18n('items_to_review_save_and_review'));
-                    this.AuditLog('Patient review saved');
                 }else{
                     app.msg('Oops!', i18n('items_to_review_entry_error'))
                 }

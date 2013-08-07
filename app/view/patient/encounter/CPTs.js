@@ -131,7 +131,6 @@ Ext.define('App.view.patient.encounter.CPTs', {
                 }
             }
         });
-        this.AuditLog('CPT code added');
     },
 
     getCodesContainer:function(){

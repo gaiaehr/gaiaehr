@@ -1294,9 +1294,6 @@ Ext.define('App.view.patient.windows.Medical', {
 		me.callParent(arguments);
 	},
 
-
-
-
 	onReviewed: function(btn){
 		var me = this, BtnId = btn.itemId, params = {
 			eid: app.patient.eid,

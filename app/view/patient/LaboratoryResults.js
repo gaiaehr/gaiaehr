@@ -29,7 +29,6 @@ Ext.define('App.view.patient.LaboratoryResults', {
 	emptyText        : '<div style="color: #cbcbcb; font-size: 40px; text-align:center">' + i18n('no_laboratory_results_to_display') + '</div>',
 	initComponent: function() {
 		var me = this;
-        this.AuditLog('Patient laboratory result viewed');
         me.tpl = '<table>' +
 	        '   <tbody>' +
             '       <tr>' +

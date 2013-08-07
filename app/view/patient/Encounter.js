@@ -512,6 +512,8 @@ Ext.define('App.view.patient.Encounter', {
                                 app.patientBtn.addCls(data.priority);
                                 me.openEncounter(data.eid);
                                 SaveBtn.up('window').hide();
+                                // GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+                                app.AuditLog('Patient encounter created');
                             }
                         }
                     });
@@ -568,6 +570,8 @@ Ext.define('App.view.patient.Encounter', {
                     store.sync({
                         callback:function(){
                             me.msg('Sweet!', i18n('encounter_updated'));
+                            // GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+                            app.AuditLog('Patient encounter updated');
                         }
                     });
                     me.encounterEventHistoryStore.load({filters:[{property:'eid',value:me.eid}]});
@@ -595,6 +599,8 @@ Ext.define('App.view.patient.Encounter', {
                                     me.updateProgressNote();
                                     me.resetVitalsForm();
                                     me.vitalsPanel.down('vitalsdataview').refresh();
+                                    // GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+                                    app.AuditLog('Patient vitals signed');
                                 }
                             });
                         }else{
@@ -637,6 +643,9 @@ Ext.define('App.view.patient.Encounter', {
         var me = this, vitals, store;
 	    me.el.mask(i18n('loading...') + ' ' +  i18n('encounter') + ' - ' + eid );
         me.resetTabs();
+
+        // GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+        app.AuditLog('Patient encounter viewed');
 
 	    // add eid as extra params to encounter store
 	    // and set 'eid' globally for convenient use
@@ -734,6 +743,8 @@ Ext.define('App.view.patient.Encounter', {
                             fn:function(btn){
                                 if(btn == 'ok'){
                                     me.closeEncounter();
+                                    // GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+                                    app.AuditLog('Patient encounter closed');
                                 }
                             }
                         });

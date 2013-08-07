@@ -44,7 +44,7 @@ class AuditLog extends MatchaHelper
         $params->date = date('Y-m-d H:i:s');
         $params->facility = $_SESSION['site']['name'];
         $params->user_id = $_SESSION['user']['id'];
-        $params->user = Person::fullname($row['fname'], $row['mname'], $row['lname']);
+        $params->user = $_SESSION['user']['name'];
         return $this->Log->save($params);
     }
 

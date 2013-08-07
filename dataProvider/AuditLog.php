@@ -41,7 +41,7 @@ class AuditLog extends MatchaHelper
 
     public function setLog(stdClass $params)
     {
-        error_log($params->msg);
+        error_log($params->event);
     }
 
 }

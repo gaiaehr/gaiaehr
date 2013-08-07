@@ -62,7 +62,7 @@ Ext.define('App.view.Viewport', {
          * Create the model/store of the AuditLog
          * @type {*}
          */
-        me.AuditLogModel = Ext.create('App.model.administration.AuditLog');
+        //me.User = Ext.ModelManager.getModel('App.model.administration.AuditLog');
 
         /**
          * The store for the Navigation Tree menu.
@@ -620,17 +620,23 @@ Ext.define('App.view.Viewport', {
     },
 
     /**
-     * Function to inject log to the audit log table
+     * Function to inject logs to the audit log table
      * This function should be used on every screen that display
-     * health information of a patien.
+     * health information of patient.
      * Event: create, read, update, delete
      */
-    AuditLog: function(message)
-    {
-        AuditLog.setLog( message, function(provider, response) { return true; } );
+    AuditLog: function(message){
+        var log = Ext.create('App.model.administration.AuditLog',{
+            eid:'',
+            event:message
+        }).save({
+           callback:function(){
+               delete log;
+           }
+        });
     },
 
-    /*
+    /**
      * Show the medical window dialog.
      */
     onMedicalWin: function(btn){
@@ -638,13 +644,15 @@ Ext.define('App.view.Viewport', {
         this.MedicalWindow.down('toolbar').getComponent(btn.action).toggle(true);
         this.MedicalWindow.cardSwitch(btn);
     },
-    /*
+
+    /**
      * Show the Charts window dialog.
      */
     onChartsWin: function(){
         this.ChartsWindow.show();
     },
-    /*
+
+    /**
      * Show the Document window dialog.
      */
     onNewDocumentsWin: function(action){
@@ -670,14 +678,14 @@ Ext.define('App.view.Viewport', {
         }
     },
 
-    /*
+    /**
      * Show the Payment Entry window dialog.
      */
     onPaymentEntryWindow: function(){
         this.PaymentEntryWindow.show();
     },
 
-    /*
+    /**
      * Show the new patient form panel.
      */
     newPatient: function(){
@@ -1322,7 +1330,6 @@ Ext.define('App.view.Viewport', {
      */
     loadModules: function(){
         say('Loading Modules');
-        //.AuditLog('Holaaaa!!!');
         Modules.getEnabledModules(function(provider, response){
             var modules = response.result;
             for(var i = 0; i < modules.length; i++){

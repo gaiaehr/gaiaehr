@@ -602,7 +602,6 @@ Ext.define('App.view.Viewport', {
         me.DocumentViewerWindow = Ext.create('App.view.patient.windows.DocumentViewer');
         me.newEncounterWindow = Ext.create('App.view.patient.windows.NewEncounter');
 
-
         me.layout = {
             type: 'border',
             padding: 3
@@ -620,6 +619,7 @@ Ext.define('App.view.Viewport', {
     },
 
     /**
+     * AuditLog('Data created');
      * Function to inject logs to the audit log table
      * This function should be used on every screen that display
      * health information of patient.
@@ -627,7 +627,8 @@ Ext.define('App.view.Viewport', {
      */
     AuditLog: function(message){
         var log = Ext.create('App.model.administration.AuditLog',{
-            eid:'',
+            eid: me.patient.eid,
+            patient_id: me.patient.pid,
             event:message
         }).save({
            callback:function(){

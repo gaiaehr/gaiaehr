@@ -362,10 +362,12 @@ Ext.define('App.view.patient.VisitCheckout', {
 
 	onNewService:function(btn){
 		this.invoiceGrid.getStore().add({code_text:' ', charge:'20.00', ins:false});
+        this.AuditLog('Visit checkout new servide added');
 	},
 
 	onAddCoPay:function(btn){
 		this.invoiceGrid.getStore().add({code_text:'Co-Pay', charge:'00.00', ins:false});
+        this.AuditLog('Visit checkout new CoPay added');
 	},
 
 	onAddService:function(){
@@ -378,6 +380,7 @@ Ext.define('App.view.patient.VisitCheckout', {
             record = store.getAt(rowIndex);
 		store.remove(record);
 		me.updateTotalBalance();
+        this.AuditLog('Visit checkout charge removed');
 	},
 
     //***************************************************************
@@ -411,6 +414,7 @@ Ext.define('App.view.patient.VisitCheckout', {
 
 
         });
+        this.AuditLog('Visit checkout invoice save');
 
     },
 
@@ -433,6 +437,7 @@ Ext.define('App.view.patient.VisitCheckout', {
 		for(var i = 0; i < fields.length; i++){
 			fields[i].reset();
 		}
+        this.AuditLog('Visit checkout note reseted');
 	},
 
 	onAddPaymentClick:function(){
@@ -461,6 +466,7 @@ Ext.define('App.view.patient.VisitCheckout', {
 				}
 			});
 		}
+        this.AuditLog('Visit checkout note saved');
 	},
 
 	scheduleAppointment:function(btn){
@@ -608,7 +614,7 @@ Ext.define('App.view.patient.VisitCheckout', {
         balance = total - paid;
         me.balance.setValue(balance);
         me.setPaid(balance == 0.00 && records.length > 0);
-
+        this.AuditLog('Visit checkout balance updated');
     },
 
 	setPaid:function(paid){
@@ -620,6 +626,7 @@ Ext.define('App.view.patient.VisitCheckout', {
 			form.removeBodyCls('paid');
 			form.down('fieldset').setVisible(true);
 		}
+        this.AuditLog('Visit checkout payment set');
 	},
 
 	/**

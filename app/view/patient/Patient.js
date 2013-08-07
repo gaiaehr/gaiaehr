@@ -512,6 +512,7 @@ Ext.define('App.view.patient.Patient', {
 
 				record.insuranceStore.sync();
 				me.msg('Sweet!', i18n('record_saved'))
+                this.AuditLog('Patient saved');
 			}
 		});
 	},

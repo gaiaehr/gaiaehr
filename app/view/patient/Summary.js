@@ -684,6 +684,7 @@ Ext.define('App.view.patient.Summary', {
                                     me.reportPanel.add(me.miframe = Ext.create('App.ux.ManagedIframe',{
                                         src: 'http://localhost/gaiaehr/dataProvider/CCR.php?action=generate&raw=no&pid=' + me.pid
                                     }));
+                                    this.AuditLog('CCR viewed');
                                 }
                             },
                             {
@@ -693,6 +694,7 @@ Ext.define('App.view.patient.Summary', {
                                     me.reportPanel.add(me.miframe = Ext.create('App.ux.ManagedIframe',{
                                         src: 'http://localhost/gaiaehr/dataProvider/CCR.php?action=viewccd&raw=no&pid=' + me.pid
                                     }));
+                                    this.AuditLog('CCD viewed');
                                 }
                             }
                         ]
@@ -710,6 +712,7 @@ Ext.define('App.view.patient.Summary', {
                                     me.reportPanel.add(me.miframe = Ext.create('App.ux.ManagedIframe',{
                                         src: 'http://localhost/gaiaehr/dataProvider/CCR.php?action=generate&raw=yes&pid=' + me.pid
                                     }));
+                                    this.AuditLog('Raw CCR exported');
                                 }
                             },
                             {
@@ -719,6 +722,7 @@ Ext.define('App.view.patient.Summary', {
                                     me.reportPanel.add(me.miframe = Ext.create('App.ux.ManagedIframe',{
                                         src: 'http://localhost/gaiaehr/dataProvider/CCR.php?action=viewccd&raw=yes&pid=' + me.pid
                                     }));
+                                    this.AuditLog('Raw CCD exported');
                                 }
                             }
                         ]
@@ -736,6 +740,7 @@ Ext.define('App.view.patient.Summary', {
                                     me.reportPanel.add(me.miframe = Ext.create('App.ux.ManagedIframe',{
                                         src: 'http://localhost/gaiaehr/dataProvider/CCR.php?action=generate&raw=yes&pid=' + me.pid
                                     }));
+                                    this.AuditLog('CCR exported');
                                 }
                             },
                             {
@@ -745,6 +750,7 @@ Ext.define('App.view.patient.Summary', {
                                     me.reportPanel.add(me.miframe = Ext.create('App.ux.ManagedIframe',{
                                         src: 'http://localhost/gaiaehr/dataProvider/CCR.php?action=viewccd&raw=yes&pid=' + me.pid
                                     }));
+                                    this.AuditLog('CCD exported');
                                 }
                             }
                         ]
@@ -775,13 +781,15 @@ Ext.define('App.view.patient.Summary', {
 				pid: app.patient.pid,
 				active: 1
 			};
+            this.AuditLog('Patient disclosure added');
 		}else if(btn.action == 'note' || btn.action == 'reminder'){
 			record = {
 				date: new Date(),
 				pid: app.patient.pid,
 				uid: app.user.id,
 				eid: app.patient.eid
-			}
+			};
+            this.AuditLog('Patient note added');
 		}
 
 		grid.plugins[0].cancelEdit();
@@ -792,6 +800,7 @@ Ext.define('App.view.patient.Summary', {
     onDocumentView: function(grid, rowIndex){
         var rec = grid.getStore().getAt(rowIndex), src = rec.data.url;
         app.onDocumentView(src);
+        this.AuditLog('Patient document viewed');
     },
 
     uploadADocument: function(){
@@ -815,6 +824,7 @@ Ext.define('App.view.patient.Summary', {
                 success: function(fp, o){
                     win.close();
                     me.patientDocumentsStore.load({params:{pid: me.pid}});
+                    this.AuditLog('Patient document uploaded');
                 }
             });
         }

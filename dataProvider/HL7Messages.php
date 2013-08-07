@@ -96,51 +96,59 @@ class HL7Messages {
 
 		// TODO
 		$pid = $this->hl7->addSegment('PID');
-		$pid->setValue('3.1', '15485');         //IDNumber
-		$pid->setValue('3.4.1', 'MPI');         //Namespace ID
-		$pid->setValue('3.4.2', '2.16.840.1.113883.19.3.2.1'); //Universal ID
-		$pid->setValue('3.4.3', 'ISO');         //Universal ID Type (HL70301)
-		$pid->setValue('3.5', 'MR');            //IDNumber Type (HL70203)
-		$pid->setValue('5.1.1', 'Rodriguez');   //Surname
-		$pid->setValue('5.2', 'Ernesto');       //GivenName
-		$pid->setValue('7.1', '19780123');      //Date of Birth
-		$pid->setValue('8','M');                //Administrative Sex
-		$pid->setValue('10.1','2106-3');        //Race Identifier
-		$pid->setValue('10.2','White');         //Race Text
-		$pid->setValue('10.3','HL70005');       //Race Name of Coding System
-		$pid->setValue('11.1.1','Stret');            //Street or Mailing Address
-		$pid->setValue('11.3','San Juan');              //City
-		$pid->setValue('11.4','PR');              //State
-		$pid->setValue('11.5','00987');              //Zip Code
-		/**
-		 * B Firm/Business
-		 * BA Bad address
-		 * BDL Birth delivery location (address where birth occurred)
-		 * BR Residence at birth (home address at time of birth)
-		 * C Current Or Temporary
-		 * F Country Of Origin
-		 * H Home
-		 * L Legal Address
-		 * M Mailing
-		 * N Birth (nee) (birth address, not otherwise specified)
-		 * O Office
-		 * P Permanent
-		 */
-		$pid->setValue('11.7','P');              //Address Type
-		$pid->setValue('13.2','PRN');           //PhoneNumber‐Home
-		$pid->setValue('13.6','787');           //Area/City Code
-		$pid->setValue('13.7','7525561');       //LocalNumber
-		$pid->setValue('22.1','H');                  //EthnicGroup Identifier
-		$pid->setValue('22.2','Hispanic or Latino'); //EthnicGroup Text
-		$pid->setValue('22.3','HL70189');            //Name of Coding System
+		$pid->setValue('3.1',   $this->patient['pid']);             //IDNumber
+//		$pid->setValue('3.4.1', 'MPI');                             //Namespace ID
+//		$pid->setValue('3.4.2', '2.16.840.1.113883.19.3.2.1');      //Universal ID
+//		$pid->setValue('3.4.3', 'ISO');                             //Universal ID Type (HL70301)
+		$pid->setValue('3.5', 'MR');                                //IDNumber Type (HL70203) MR = Medical Record
+
+		$pid->setValue('5.1.1', $this->patient['lname']);   //Family Name (Surname)
+		$pid->setValue('5.2',   $this->patient['fname']);   //GivenName
+		$pid->setValue('5.3',   $this->patient['mname']);   //Second and Further Given Names or Initials Thereof
+
+		$pid->setValue('7.1', $this->date($this->patient['DOB']));  //Date of Birth
+		$pid->setValue('8',   $this->patient['sex']);               //Administrative Sex
+
+		if($this->isPresent($this->patient['race'])){
+			$pid->setValue('10.1', $this->patient['race']);                     //Race Identifier
+			$pid->setValue('10.2', $this->hl7->race($this->patient['race']));   //Race Text
+			$pid->setValue('10.3', 'HL70005');                                  //Race Name of Coding System
+		}
+
+		if($this->isPresent($this->patient['address'])){
+			$pid->setValue('11.1.1',$this->patient['address']);     //Street or Mailing Address
+			$pid->setValue('11.3',  $this->patient['city']);        //City
+			$pid->setValue('11.4',  $this->patient['state']);       //State
+			$pid->setValue('11.5',  $this->patient['zipcode']);     //Zip Code
+			$pid->setValue('11.6',  $this->patient['country']);     //Country
+			$pid->setValue('11.7',  'P');                           //Address Type P = Permanent
+		}
+
+		if($this->isPresent($this->patient['home_phone'])){
+			$pid->setValue('13.2', 'PRN');                                      //PhoneNumber‐Home
+			$pid->setValue('13.6', '000');                                      //Area/City Code
+			$pid->setValue('13.7', $this->phone($this->patient['home_phone'])); //LocalNumber
+		}
+
+		if($this->isPresent($this->patient['marital_status'])){
+			$pid->setValue('16.1', $this->patient['marital_status']);                        //EthnicGroup Identifier
+			$pid->setValue('16.2', $this->hl7->marital($this->patient['marital_status']));   //EthnicGroup Text
+			$pid->setValue('16.3', 'HL70002');                                               //Name of Coding System
+		}
+
+		if($this->isPresent($this->patient['marital_status'])){
+			$pid->setValue('22.1', $this->patient['marital_status']);                //Marital Status Identifier
+			$pid->setValue('22.2', $this->hl7->ethnic($this->patient['ethnicity'])); //EthnicGroup Text
+			$pid->setValue('22.3', 'HL70189');                                       //Name of Coding System
+		}
 	}
 
 	function sendVXU($params){
 		// set these globally to be used by MSH and PID
-		$this->to = $params->to;
-		$this->from = $params->from;
-		$this->patient = $params->pid;
-		$this->type = 'VXU';
+		$this->to       = $params->to;
+		$this->from     = $params->from;
+		$this->patient  = $params->pid;
+		$this->type     = 'VXU';
 
 		// MSH
 		$msh = $this->setMSH();
@@ -161,34 +169,36 @@ class HL7Messages {
 
 			// ROC
 			$roc = $this->hl7->addSegment('ORC');
-			$roc->setValue('1', 'RE');                              //HL70119
+			$roc->setValue('1', 'RE');  //HL70119
 			// RXA
 			$rxa = $this->hl7->addSegment('RXA');
-			$rxa->setValue('3.1', str_replace(array(' ',':','-'),'',$immu['administered_date']));      //Date/Time Start of Administration
-			$rxa->setValue('4.1', str_replace(array(' ',':','-'),'',$immu['administered_date']));      //Date/Time End of Administration
+			$rxa->setValue('3.1', $this->date($immu['administered_date'])); //Date/Time Start of Administration
+			$rxa->setValue('4.1', $this->date($immu['administered_date'])); //Date/Time End of Administration
 			//Administered Code
-			$rxa->setValue('5.1', $immu['code']);                   //Identifier
-			$rxa->setValue('5.2', $immu['vaccine_name']);           //Text
-			$rxa->setValue('5.3', $immu['code_type']);              //Name of Coding System
-			if(!isset($immu['administer_amount']) && $immu['administer_amount'] != ''){
-				$rxa->setValue('6', $immu['administer_amount']);    //Administered Amount
-				//AdministeredUnits(ml, etc)
-				$rxa->setValue('7.1', $immu['administer_units']);   //Identifier
-				$rxa->setValue('7.2', 'millimeters');               //Text
-				$rxa->setValue('7.3', 'ISO+');                      //Name of Coding System HL70396
+			$rxa->setValue('5.1', $immu['code']);           //Identifier
+			$rxa->setValue('5.2', $immu['vaccine_name']);   //Text
+			$rxa->setValue('5.3', $immu['code_type']);      //Name of Coding System
+
+			if($this->isPresent($immu['administer_amount'])){
+				$rxa->setValue('6',     $immu['administer_amount']);  //Administered Amount
+				$rxa->setValue('7.1',   $immu['administer_amount']);  //Identifier
+				$rxa->setValue('7.2',   'millimeters');               //Text
+				$rxa->setValue('7.3',   'ISO+');                      //Name of Coding System HL70396
 			}else{
-				$rxa->setValue('6', '999');                         //Administered Amount
+				$rxa->setValue('6', '999');             //Administered Amount
 			}
-			$rxa->setValue('15', $immu['lot_number']);              //Substance LotNumbers
+
+			$rxa->setValue('15', $immu['lot_number']);  //Substance LotNumbers
+
 			// get immunization manufacturer info
 			$mvx = $immunization->getMvxByCode($immu['manufacturer']);
 			$mText = isset($mvx['manufacturer']) ? $mvx['manufacturer'] : '';
 			//Substance ManufacturerName
-			$rxa->setValue('17.1', $immu['manufacturer']);          //Identifier
-			$rxa->setValue('17.2', $mText);                         //Text
-			$rxa->setValue('17.3', 'MVX');                          //Name of Coding System HL70396
-			$rxa->setValue('21', 'A');                              //Action Code
+			$rxa->setValue('17.1', $immu['manufacturer']);  //Identifier
+			$rxa->setValue('17.2', $mText);                 //Text
+			$rxa->setValue('17.3', 'MVX');                  //Name of Coding System HL70396
 
+			$rxa->setValue('21', 'A');  //Action Code
 		}
 		$this->initMsg();
 
@@ -236,6 +246,10 @@ class HL7Messages {
 		}
 
 		$this->m->save((object) $this->msg);
+
+//		print '<pre>';
+//		print  $this->msg['message'];
+
 		return array(
 			'success' => $error === false,
 			'message' => $this->msg
@@ -267,6 +281,7 @@ class HL7Messages {
 	    }
 	    curl_close($ch);
 	    $this->m->save((object) $this->msg);
+
         return array(
 	        'success' => $error === 0,
 	        'message' => $this->msg
@@ -280,6 +295,18 @@ class HL7Messages {
 
 	public function getRecipients($params){
 		return $this->r->load($params)->all();
+	}
+
+	private function date($date){
+		return str_replace(array(' ',':','-'),'',$date);
+	}
+
+	private function phone($phone){
+		return str_replace(array(' ','(',')','-'),'',$phone);
+	}
+
+	private function isPresent($var){
+		return isset($var) && $var != '';
 	}
 }
 

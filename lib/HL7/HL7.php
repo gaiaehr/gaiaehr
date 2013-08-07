@@ -52,10 +52,189 @@ class HL7 {
 	function getMessage(){
 		$msg = '';
 		foreach($this->segments As $segment){
-			$msg .= $segment->build() . PHP_EOL;
+			$msg .= $segment->build();
 		}
 		return $msg. PHP_EOL;
 	}
+
+	/**
+	 * Get race text by code
+	 * @param $code
+	 * @return string
+	 */
+	function race($code){
+		/**
+		 * PID-10 Race (CE)
+		 * User-defined Table 0005 - Race
+		 * Value Description Comment
+		 * 1002-5 American Indian or Alaska Native
+		 * 2028-9 Asian
+		 * 2054-5 Black or African American
+		 * 2076-8 Native Hawaiian or Other Pacific Islander
+		 * 2106-3 White
+		 * 2131-1 Other Race
+		 */
+		$text = '';
+		switch($code){
+			case '1002-5':
+				$text = 'American Indian or Alaska Native';
+				break;
+			case '2028-9':
+				$text = 'Asian';
+				break;
+			case '2054-5':
+				$text = 'Black or African American';
+				break;
+			case '2076-8':
+				$text = 'Native Hawaiian or Other Pacific Islander';
+				break;
+			case '2106-3':
+				$text = 'White';
+				break;
+			case '2131-1':
+				$text = 'Other Race';
+				break;
+		};
+		return $text;
+
+	}
+
+	/**
+	 * Get sex text by code
+	 * @param $code
+	 * @return string
+	 */
+	function sex($code){
+		/**
+		 * F Female
+		 * M Male
+		 * O Other
+		 * U Unknown
+		 * A Ambiguous
+		 * N Not applicable
+		 */
+		$text = '';
+		switch($code){
+			case 'F':
+				$text = 'Female';
+				break;
+			case 'M':
+				$text = 'Male';
+				break;
+			case 'O':
+				$text = 'Other';
+				break;
+			case 'U':
+				$text = 'Unknown';
+				break;
+			case 'A':
+				$text = 'Ambiguous';
+				break;
+			case 'N':
+				$text = 'Not applicable';
+				break;
+		};
+		return $text;
+	}
+	/**
+	 * Get Ethnic Group text by code
+	 * @param $code
+	 * @return string
+	 */
+	function ethnic($code){
+		/**
+		 * H Hispanic or Latino
+		 * N Not Hispanic or Latino
+		 * U Unknown
+		 */
+		$text = '';
+		switch($code){
+			case 'H':
+				$text = 'Hispanic or Latino';
+				break;
+			case 'N':
+				$text = 'Not Hispanic or Latino';
+				break;
+			case 'U':
+				$text = 'Unknown';
+				break;
+		};
+		return $text;
+	}
+
+	/**
+	 * Get marital status text by code
+	 * @param $code
+	 * @return string
+	 */
+	function marital($code){
+		/**
+		 * Value Description Comment
+		 * A Separated
+		 * D Divorced
+		 * M Married
+		 * S Single
+		 * C Common law
+		 * G Living together
+		 * P Domestic partner
+		 * R Registered domestic partner
+		 * E Legally Separated
+		 * N Annulled
+		 * I Interlocutory
+		 * B Unmarried
+		 * O Other
+		 * T Unreported
+		 */
+		$text = '';
+		switch($code){
+			case 'A':
+				$text = 'Hispanic or Latino';
+				break;
+			case 'D':
+				$text = 'Divorced';
+				break;
+			case 'M':
+				$text = 'Married';
+				break;
+			case 'S':
+				$text = 'Single';
+				break;
+			case 'C':
+				$text = 'Common law';
+				break;
+			case 'G':
+				$text = 'Living together';
+				break;
+			case 'P':
+				$text = 'Domestic partner';
+				break;
+			case 'R':
+				$text = 'Registered domestic partner';
+				break;
+			case 'E':
+				$text = 'Legally Separated';
+				break;
+			case 'N':
+				$text = 'Annulled';
+				break;
+			case 'I':
+				$text = 'Interlocutory';
+				break;
+			case 'B':
+				$text = 'Unmarried';
+				break;
+			case 'O':
+				$text = 'Other';
+				break;
+			case 'T':
+				$text = 'Unreported';
+				break;
+
+		};
+		return $text;
+	}
+
+
 }
 
 //print '<pre>';

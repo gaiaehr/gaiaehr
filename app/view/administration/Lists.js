@@ -201,10 +201,12 @@ Ext.define('App.view.administration.Lists', {
      * and start the rowEditor
      */
     onNewList: function(){
-        var me = this, m;
+        var me = this;
+
         me.listsRowEditing.cancelEdit();
-        me.listsStore.insert(0, Ext.create('ListsGrid'));
+        me.listsStore.insert(0, Ext.create('App.model.administration.Lists'));
         me.listsRowEditing.startEdit(0, 0);
+
     },
     /**
      *

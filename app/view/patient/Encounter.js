@@ -462,6 +462,7 @@ Ext.define('App.view.patient.Encounter', {
             app.patientBtn.addCls(priority);
         });
         me.updateProgressNote();
+        this.AuditLog('Patient priority changed');
     },
     /**
      * CheckOut Functions
@@ -515,6 +516,7 @@ Ext.define('App.view.patient.Encounter', {
                             }
                         }
                     });
+                    this.AuditLog('Patient encounter update');
                 }else{
                     SaveBtn.up('window').close();
                     app.accessDenied();
@@ -550,6 +552,7 @@ Ext.define('App.view.patient.Encounter', {
                                 me.updateProgressNote();
                                 me.vitalsPanel.down('vitalsdataview').refresh();
                                 me.resetVitalsForm();
+                                this.AuditLog('Patient vitals update');
                             }
                         });
                     }else{
@@ -568,6 +571,7 @@ Ext.define('App.view.patient.Encounter', {
                     store.sync({
                         callback:function(){
                             me.msg('Sweet!', i18n('encounter_updated'));
+                            this.AuditLog('Patient encounter update');
                         }
                     });
                     me.encounterEventHistoryStore.load({filters:[{property:'eid',value:me.eid}]});
@@ -595,6 +599,7 @@ Ext.define('App.view.patient.Encounter', {
                                     me.updateProgressNote();
                                     me.resetVitalsForm();
                                     me.vitalsPanel.down('vitalsdataview').refresh();
+                                    this.AuditLog('Patient vitals signed');
                                 }
                             });
                         }else{
@@ -636,6 +641,7 @@ Ext.define('App.view.patient.Encounter', {
     openEncounter:function(eid){
         var me = this, vitals, store;
 	    me.el.mask(i18n('loading...') + ' ' +  i18n('encounter') + ' - ' + eid );
+        this.AuditLog('Patient encounter viewed');
         me.resetTabs();
 
 	    // add eid as extra params to encounter store
@@ -704,6 +710,7 @@ Ext.define('App.view.patient.Encounter', {
 	    if(me.progressHistory) me.getProgressNotesHistory();
 	    if(app.PreventiveCareWindow) app.PreventiveCareWindow.loadPatientPreventiveCare();
     },
+
     /**
      * Function to close the encounter..
      */
@@ -723,6 +730,7 @@ Ext.define('App.view.patient.Encounter', {
                             app.patient.eid = null;
                             app.openPatientVisits();
                             me.msg('Sweet!', i18n('encounter_closed'));
+                            this.AuditLog('Patient encounter cosed');
                         }
                     }else{
                         Ext.Msg.show({

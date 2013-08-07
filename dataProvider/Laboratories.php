@@ -77,12 +77,6 @@ class Laboratories
             $row->fields = $this->getLabObservationFieldsByParentId($row->id);
             $records[] = $row;
         }
-        /**
-         * Audit Log
-         * Added by: Gino Rivera
-         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-         */
-        $this->db->AuditLog('Active laboratory viewed');
         return $records;
     }
 

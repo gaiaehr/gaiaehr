@@ -781,7 +781,7 @@ Ext.define('App.view.patient.Summary', {
 				pid: app.patient.pid,
 				uid: app.user.id,
 				eid: app.patient.eid
-			}
+			};
 		}
 
 		grid.plugins[0].cancelEdit();
@@ -903,9 +903,9 @@ Ext.define('App.view.patient.Summary', {
                 for(var i = 0; i < records.length; i++){
                     field = formPanel.getForm().findField(records[i].data.name);
                     if(records[i].data.val){
-                        field.removeCls('x-field-yellow');
+                        if(field) field.removeCls('x-field-yellow');
                     }else{
-                        field.addCls('x-field-yellow');
+                        if(field) field.addCls('x-field-yellow');
                     }
                 }
             }

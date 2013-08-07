@@ -28,21 +28,27 @@ Ext.define('Modules.reportcenter.view.ReportPanel', {
         var me = this;
 
 
+        /**
+         * This is were the PDF or dataGrid will be rendered
+         * @type {*}
+         */
         me.renderContainer = Ext.create('Ext.panel.Panel',{
             flex:1,
             border:true
         });
-        // END PDF Panel
-        //-----------------------------------------------------------------------
-        // Filter panel for the report
-        //-----------------------------------------------------------------------
+
+
+        /**
+         * Filter panel for the report
+         */
         me.formPanel = Ext.create('Ext.form.Panel', {
             bodyPadding: 10,
             margin: '0 0 3 0',
             collapsible: true,
             buttonAlign: 'left',
-            title: i18n('filter'),
+            layout: 'column',
             // Draw the buttons to render and clear the report panel view.
+            items:[{}],
             buttons: [
                 {
                     text: i18n('generate_report'),
@@ -99,13 +105,14 @@ Ext.define('Modules.reportcenter.view.ReportPanel', {
         if(config.fn) me.formPanel.reportFn = config.fn;
         if(config.store) me.store = config.store;
         if(config.columns) me.columns = config.columns;
+        if(config.height) me.formPanel.setHeight(config.height);
+        if(config.bodyStyle) me.formPanel.setBodyStyle(config.bodyStyle);
+        if(config.border) me.formPanel.setBorder(config.border);
         me.formPanel.removeAll();
         me.formPanel.add(config.items);
         me.resetRenderContainer();
-        say(config);
-
-
-    },
+        //say(me.formPanel);
+   },
 
     goToReportCenter: function(){
         app.MainPanel.getLayout().setActiveItem('panelReportCenter');
@@ -142,18 +149,13 @@ Ext.define('Modules.reportcenter.view.ReportPanel', {
             values = me.formPanel.getForm().getValues();
         this.renderContainer.removeAll(true);
         delete this.pdf;
-         me.grid = this.getGridPanel();
-
+        me.grid = this.getGridPanel();
         me.store.load({params:values});
         botton.setDisabled(false);
-
-
-
-
     },
+
     generatePDF: function(btn){
         var me = this, form = me.formPanel, params = form.getForm().getValues();
-//        me.resetRenderContainer();
         if(typeof form.reportFn == 'function'){
             var html =App.ux.grid.GridToHtml.getHtml(me.grid);
             this.renderContainer.removeAll(true);
@@ -168,7 +170,6 @@ Ext.define('Modules.reportcenter.view.ReportPanel', {
         btn.setDisabled(true);
     },
 
-
     resetRenderContainer:function(){
         this.formPanel.down('toolbar').getComponent('pdf').setDisabled(true);
         this.formPanel.getForm().reset();
@@ -177,6 +178,7 @@ Ext.define('Modules.reportcenter.view.ReportPanel', {
         delete this.pdf;
 
     },
+
     /**
      * This function is called from MitosAPP.js when
      * this panel is selected in the navigation panel.

@@ -57,7 +57,14 @@ Ext.define('App.view.Viewport', {
             },
             interval: me.cronTaskInterval * 1000
         };
-        /*
+
+        /**
+         * Create the model/store of the AuditLog
+         * @type {*}
+         */
+        //me.User = Ext.ModelManager.getModel('App.model.administration.AuditLog');
+
+        /**
          * The store for the Navigation Tree menu.
          */
         me.storeTree = Ext.create('App.store.navigation.Navigation', {
@@ -595,7 +602,6 @@ Ext.define('App.view.Viewport', {
         me.DocumentViewerWindow = Ext.create('App.view.patient.windows.DocumentViewer');
         me.newEncounterWindow = Ext.create('App.view.patient.windows.NewEncounter');
 
-
         me.layout = {
             type: 'border',
             padding: 3
@@ -611,7 +617,27 @@ Ext.define('App.view.Viewport', {
         me.callParent(arguments);
         me.signature = Ext.create('App.view.signature.SignatureWindow');
     },
-    /*
+
+    /**
+     * AuditLog('Data created');
+     * Function to inject logs to the audit log table
+     * This function should be used on every screen that display
+     * health information of patient.
+     * Event: create, read, update, delete
+     */
+    AuditLog: function(message){
+        var log = Ext.create('App.model.administration.AuditLog',{
+            eid: this.patient.eid,
+            patient_id: this.patient.pid,
+            event:message
+        }).save({
+           callback:function(){
+               delete log;
+           }
+        });
+    },
+
+    /**
      * Show the medical window dialog.
      */
     onMedicalWin: function(btn){
@@ -619,13 +645,15 @@ Ext.define('App.view.Viewport', {
         this.MedicalWindow.down('toolbar').getComponent(btn.action).toggle(true);
         this.MedicalWindow.cardSwitch(btn);
     },
-    /*
+
+    /**
      * Show the Charts window dialog.
      */
     onChartsWin: function(){
         this.ChartsWindow.show();
     },
-    /*
+
+    /**
      * Show the Document window dialog.
      */
     onNewDocumentsWin: function(action){
@@ -651,14 +679,14 @@ Ext.define('App.view.Viewport', {
         }
     },
 
-    /*
+    /**
      * Show the Payment Entry window dialog.
      */
     onPaymentEntryWindow: function(){
         this.PaymentEntryWindow.show();
     },
 
-    /*
+    /**
      * Show the new patient form panel.
      */
     newPatient: function(){

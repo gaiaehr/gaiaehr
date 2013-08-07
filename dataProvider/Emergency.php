@@ -107,14 +107,6 @@ class Emergency
 			 */
 			$this->logEmergency();
 
-            /**
-             * Audit Log
-             * Added by: Gino Rivera
-             * Web Jul 31 2013
-             * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-             */
-            $this->db->AuditLog('Emergency created');
-
 			/*
 			 * update patient first name to EMERGENCY- encounter id
 			 */

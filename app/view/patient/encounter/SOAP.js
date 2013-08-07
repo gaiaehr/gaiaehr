@@ -534,6 +534,8 @@ Ext.define('App.view.patient.encounter.SOAP', {
 		store.sync({
 			callback:function(){
 				me.msg('Sweet!','Record removed.');
+                // GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+                app.AuditLog('SOAP removed');
 			}
 		});
 	},
@@ -605,6 +607,8 @@ Ext.define('App.view.patient.encounter.SOAP', {
 				me.msg('Sweet!', 'Record Added');
 				me.snippets.editingPlugin.enabled = true;
 				me.snippets.editingPlugin.startEdit(rec,0);
+                // GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+                app.AuditLog('SOAP added');
 			}
 		});
 	}

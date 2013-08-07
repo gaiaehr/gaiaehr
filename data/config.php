@@ -1387,7 +1387,10 @@ $API = array(
 		'methods' => array(
 			'getLogs' => array(
 				'len' => 1
-			)
+			),
+            'setLog' => array(
+                'len' => 1
+            )
 		)
 	),
 	'Documents' => array(

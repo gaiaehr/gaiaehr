@@ -182,12 +182,6 @@ class Calendar
 	public function getPatientFutureEvents(stdClass $params)
 	{
 		$pid = isset($params->pid) ? $params->pid : $_SESSION['patient']['pid'];
-        /**
-         * Audit Log
-         * Added by: Gino Rivera
-         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-         */
-        $this->db->AuditLog('Patient future events viewed');
 		return $this->getPatientFutureEventsByPid($pid);
 	}
 

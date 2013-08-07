@@ -1,6 +1,6 @@
 Ext.define('App.ux.combo.Sex', {
 	extend       : 'Ext.form.ComboBox',
-	alias        : 'widget.mitos.sexcombo',
+	alias        : 'widget.gaiaehr.sexcombo',
 	initComponent: function() {
 		var me = this;
 

@@ -411,7 +411,6 @@ Ext.define('App.view.patient.VisitCheckout', {
 
 
         });
-
     },
 
 
@@ -608,7 +607,6 @@ Ext.define('App.view.patient.VisitCheckout', {
         balance = total - paid;
         me.balance.setValue(balance);
         me.setPaid(balance == 0.00 && records.length > 0);
-
     },
 
 	setPaid:function(paid){

@@ -28,7 +28,8 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                 layout: 'auto'
             });
             me.pageBody = [ me.reports ];
-            /*
+
+            /**
              * Patient Reports List
              * TODO: Pass the report indicator telling what report should be rendering
              * this indicator will also be the logic for field rendering.
@@ -40,6 +41,8 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
 
                 me.goToReportPanelAndSetPanel({
                     title:i18n('client_list_report'),
+                    layout : 'anchor',
+                    height: 100,
                     items : [
                         {
                             xtype     : 'datefield',
@@ -92,6 +95,8 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
 
                 me.goToReportPanelAndSetPanel({
                     title:i18n('rx'),
+                    layout : 'anchor',
+                    height: 100,
                     items : [
                         {
                             xtype   : 'fieldcontainer',
@@ -170,161 +175,196 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                     ]
                 });
             });
+
+            /**
+             * Clinical Report v0.0.1
+             * This report will generate a list of patient filtered by demographics, laboratories, medical, ect.
+             * This to comply with the Certification
+             * TODO: Load the report dynamically by file, also dynamically add the reports found on the list.
+             * this would be done in the future.
+             * @type {*}
+             */
             me.ClinicalReport = me.addReportByCategory(me.patientCategory, i18n('clinical'), function(btn) {
                 if(!me.clinicalStore) me.clinicalStore = Ext.create('Modules.reportcenter.store.Clinical');
                 me.goToReportPanelAndSetPanel({
                     title:i18n('clinical'),
                     action: 'clientListReport',
-                    items : [
-
+                    height: 300,
+                    bodyStyle: 'padding:0px 0px 0',
+                    border: false,
+                    items: [
+                    {
+                        xtype: 'fieldset',
+                        layout: 'vbox',
+                        title: i18n('patient_demographic'),
+                        collapsed: false,
+                        columnWidth: 0.25,
+                        checkboxToggle: true,
+                        border: false,
+                        labelWidth: 60,
+                        collapsible: true,
+                        items   : [
                         {
-                            title  : i18n('general'),
-                            xtype  : 'container',
-                            layout : 'vbox',
-                            items  : [
+                            xtype          : 'patienlivetsearch',
+                            fieldLabel     : i18n('patient'),
+                            hideLabel      : false,
+                            name           : 'pid',
+                            width          : 280
+                        },
+                        {
+                            xtype     : 'gaiaehr.sexcombo',
+                            fieldLabel: i18n('sex'),
+                            name      : 'sex',
+                            width     : 275,
+                            minValue  : 0
+
+                        },
+                        {
+                            xtype     : 'gaiaehr.racecombo',
+                            fieldLabel: i18n('race'),
+                            name      : 'race',
+                            action    : 'race',
+                            hideLabel : false,
+                            width     : 275
+                        },
+                        {
+                            xtype     : 'datefield',
+                            fieldLabel: i18n('date_to'),
+                            format    :'Y-m-d',
+                            name      : 'to'
+                        },
+                        {
+                            xtype: 'fieldcontainer',
+                            layout: 'hbox',
+                            labelWidth: 90,
+                            items:[
                                 {
-                                    xtype   : 'fieldcontainer',
-                                    layout  : 'hbox',
-                                    defaults: { margin: '0 10 0 0' },
-                                    items   : [
-
-                                        {
-                                            xtype          : 'patienlivetsearch',
-                                            fieldLabel     : i18n('patient'),
-                                            hideLabel      : false,
-                                            name           : 'pid',
-                                            width          : 280
-                                        },
-                                        {
-                                            xtype     : 'mitos.sexcombo',
-                                            fieldLabel: i18n('sex'),
-                                            name      : 'sex',
-                                            labelWidth: 75,
-                                            width     : 140,
-                                            minValue  : 0
-
-                                        },
-                                        {
-                                            xtype     : 'mitos.racecombo',
-                                            fieldLabel: i18n('race'),
-                                            name      : 'race',
-                                            action    : 'race',
-                                            hideLabel : false,
-                                            width     : 275,
-                                            labelWidth: 70
-
-                                        }
-
-                                    ]
-
+                                    xtype       : 'numberfield',
+                                    fieldLabel  : i18n('age_from'),
+                                    name        : 'age_from',
+                                    width       : 160,
+                                    minValue    : 1
                                 },
                                 {
-                                    xtype   : 'fieldcontainer',
-                                    layout  : 'hbox',
-                                    defaults: { margin: '0 10 0 0' },
-                                    items   : [
-                                        {
-                                            xtype     : 'datefield',
-                                            fieldLabel: i18n('date_from'),
-                                            format    :'Y-m-d',
-                                            name      : 'from'
-                                        },
-                                        {
-                                            xtype     : 'numberfield',
-                                            fieldLabel: i18n('age_from'),
-                                            name: 'age_from',
-                                            labelWidth: 75,
-                                            width     : 140,
-                                            minValue  : 0
-
-                                        },
-                                        {
-                                            xtype     : 'mitos.ethnicitycombo',
-                                            fieldLabel: i18n('ethnicity'),
-                                            name      : 'ethnicity',
-                                            action    : 'ethnicity',
-                                            hideLabel : false,
-                                            width     : 275,
-                                            labelWidth: 70
-
-                                        }
-
-                                    ]
-
-                                },
-                                {
-                                    xtype   : 'fieldcontainer',
-                                    layout  : 'hbox',
-                                    defaults: { margin: '0 10 0 0' },
-                                    items   : [
-
-                                        {
-                                            xtype     : 'datefield',
-                                            fieldLabel: i18n('date_to'),
-                                            format    :'Y-m-d',
-                                            name      : 'to'
-                                        },
-                                        {
-                                            xtype     : 'numberfield',
-                                            fieldLabel: i18n('age_to'),
-                                            name: 'age_to',
-                                            labelWidth: 75,
-                                            width     :140,
-                                            minValue  : 0
-
-                                        }/*,
-                                        {
-                                            xtype     : 'liveicdxsearch',
-                                            fieldLabel: i18n('problem_dx'),
-                                            name      : 'icd',
-                                            hideLabel : false,
-                                            action    : 'icd',
-                                            width     : 225,
-                                            labelWidth: 70
-
-                                        }*/
-
-
-                                    ]
+                                    xtype       : 'numberfield',
+                                    margin     : '0 0 0 5',
+                                    fieldLabel  : i18n('age_to'),
+                                    name        : 'age_to',
+                                    width       : 160,
+                                    minValue    : 1
                                 }
                             ]
+                        },
+                        {
+                            xtype     : 'gaiaehr.ethnicitycombo',
+                            fieldLabel: i18n('ethnicity'),
+                            name      : 'ethnicity',
+                            action    : 'ethnicity',
+                            hideLabel : false,
+                            width     : 275
                         }
-                    ],
-                    fn:Clinical.createClinicalReport,
-                    store:me.clinicalStore,
-                    columns:[
-                        {
-                            text:i18n('name'),
-                            width:200,
-                            dataIndex:'fullname'
-                        },
-                        {
-                            text:i18n('age'),
-                            width:75,
-                            dataIndex:'age'
-                        },
-                        {
-                            text:i18n('sex'),
-                            dataIndex:'sex'
-                        },
-                        {
-                            text:i18n('race'),
-                            width:250,
-                            dataIndex:'race'
-                        },
-                        {
-                            text:i18n('Ethnicity'),
-                            flex:1,
-                            dataIndex:'ethnicity'
-                        }
-                    ]
+                        ]
+
+                    },
+                    {
+                        xtype   : 'fieldset',
+                        layout  : 'vbox',
+                        title: i18n('patient_problems'),
+                        collapsed: true,
+                        columnWidth: 0.25,
+                        checkboxToggle: true,
+                        border: false,
+                        labelWidth: 60,
+                        collapsible: true,
+                        items   : [
+                            {
+                                xtype       :'liveicdxsearch',
+                                fieldLabel  : i18n('problem_dx'),
+                                hideLabel   :false,
+                                name        :'problem',
+                                width       : 350
+                            }
+                        ]
+                    },
+                    {
+                        xtype   : 'fieldset',
+                        layout  : 'vbox',
+                        title: i18n('patient_medication'),
+                        collapsed: true,
+                        columnWidth: 0.25,
+                        checkboxToggle: true,
+                        border: false,
+                        labelWidth: 60,
+                        collapsible: true,
+                        items   : [
+                            {
+                                xtype       : 'medicationlivetsearch',
+                                fieldLabel  : i18n('drug'),
+                                hideLabel   : false,
+                                name        : 'medication',
+                                width       : 350
+                            }
+                        ]
+                    },
+                    {
+                        xtype   : 'fieldset',
+                        layout  : 'vbox',
+                        title: i18n('patient_laboratory'),
+                        collapsed: true,
+                        columnWidth: 0.25,
+                        checkboxToggle: true,
+                        border: false,
+                        labelWidth: 60,
+                        collapsible: true,
+                        items   : [
+                            {
+                                xtype       : 'labslivetsearch',
+                                margin      : 5,
+                                fieldLabel  : i18n('laboratory_result'),
+                                hideLabel   : false,
+                                width       : 350
+                            }
+                        ]
+                    }
+                ],
+                fn:Clinical.createClinicalReport,
+                store:me.clinicalStore,
+                columns:[
+                    {
+                        text:i18n('name'),
+                        width:200,
+                        dataIndex:'fullname'
+                    },
+                    {
+                        text:i18n('age'),
+                        width:75,
+                        dataIndex:'age'
+                    },
+                    {
+                        text:i18n('sex'),
+                        dataIndex:'sex'
+                    },
+                    {
+                        text:i18n('race'),
+                        width:250,
+                        dataIndex:'race'
+                    },
+                    {
+                        text:i18n('Ethnicity'),
+                        flex:1,
+                        dataIndex:'ethnicity'
+                    }
+                ]
                 });
             });
+
             me.ImmunizationReport = me.addReportByCategory(me.patientCategory, i18n('immunization_registry'), function(btn) {
                 if(!me.immunizationReportStore) me.immunizationReportStore = Ext.create('Modules.reportcenter.store.ImmunizationsReport');
                 me.goToReportPanelAndSetPanel({
                     title:i18n('immunization_registry'),
                     action: 'clientListReport',
+                    layout : 'anchor',
+                    height: 100,
                     items : [
                         {
                             xtype     : 'datefield',
@@ -375,16 +415,18 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                 });
             });
 
-            /*
+            /**
              * Clinic Reports List
              * TODO: Pass the report indicator telling what report should be rendering
              * this indicator will also be the logic for field rendering.
              */
-            me.clinicCategory = me.addCategory(i18n('clinic_reports'), 260);
+            me.clinicCategory = me.addCategory(i18n('clinic_reports'), 270);
             me.link5 = me.addReportByCategory(me.clinicCategory, i18n('standard_measures'), function(btn) {
                 me.goToReportPanelAndSetPanel({
                     title:i18n('standard_measures'),
                     action: 'clientListReport',
+                    layout : 'anchor',
+                    height: 100,
                     items : [
                         {
                             xtype     : 'datefield',
@@ -403,6 +445,8 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                 me.goToReportPanelAndSetPanel({
                     title:i18n('clinical_quality_measures_cqm'),
                     action: 'clientListReport',
+                    layout : 'anchor',
+                    height: 100,
                     items : [
                         {
                             xtype     : 'datefield',
@@ -421,6 +465,8 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                 me.goToReportPanelAndSetPanel({
                     title:i18n('automated_measure_calculations_amc'),
                     action: 'clientListReport',
+                    layout : 'anchor',
+                    height: 100,
                     items : [
                         {
                             xtype     : 'datefield',
@@ -439,6 +485,8 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                 me.goToReportPanelAndSetPanel({
                     title:i18n('automated_measure_calculations_tracking'),
                     action: 'clientListReport',
+                    layout : 'anchor',
+                    height: 100,
                     items : [
                         {
                             xtype     : 'datefield',
@@ -457,7 +505,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                 });
             });
 
-            /*
+            /**
              * Visits Category List
              * TODO: Pass the report indicator telling what report should be rendering
              * this indicator will also be the logic for field rendering.
@@ -466,6 +514,8 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
             me.link9 = me.addReportByCategory(me.visitCategory, i18n('super_bill'), function(btn) {
                 me.goToReportPanelAndSetPanel({
                     title: i18n('super_bill'),
+                    layout : 'anchor',
+                    height: 100,
                     items : [
                         {
 	                        xtype          : 'patienlivetsearch',
@@ -496,6 +546,8 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                 if(!me.appointmentsReportStore) me.appointmentsReportStore = Ext.create('Modules.reportcenter.store.Appointment');
                 me.goToReportPanelAndSetPanel({
                     title: i18n('appointments'),
+                    layout : 'anchor',
+                    height: 100,
                     items : [
                         {
                             xtype   : 'fieldcontainer',
@@ -590,16 +642,14 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                             ]
                 });
             });
-
             me.callParent(arguments);
-
         },
 
-        /*
+        /**
          * Function to add categories with the respective with to the
          * Report Center Panel
          */
-        addCategory              : function(category, width) {
+        addCategory: function(category, width) {
             var me = this;
             return me.reports.add(Ext.create('Ext.container.Container', {
                     cls   : 'CategoryContainer',
@@ -616,10 +666,10 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                 }));
         },
 
-        /*
+        /**
          * Function to add Items to the category
          */
-        addReportByCategory      : function(category, text, fn) {
+        addReportByCategory: function(category, text, fn) {
             return category.add(Ext.create('Ext.button.Button', {
                     cls      : 'CategoryContainerItem',
                     anchor   : '100%',
@@ -630,21 +680,13 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                 }));
         },
 
-        /*
+        /**
          * Function to call the report panel.
          * Remember the report fields are dynamically rendered.
          */
         goToReportPanelAndSetPanel: function(config) {
             var panel = app.MainPanel.getLayout().setActiveItem('panelReportPanel');
             panel.setReportPanel(config);
-
-
-
-//            formPanel.setTitle(config.title);
-//            formPanel.action = config.action;
-//            formPanel.reportFn = config.fn;
-//            formPanel.removeAll();
-//            formPanel.add(config.items);
         },
 
         /**
@@ -657,4 +699,4 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
             callback(true);
         }
 
-    }); //ens oNotesPage class
+    });

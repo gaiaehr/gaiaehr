@@ -390,6 +390,8 @@ Ext.define('App.view.patient.Patient', {
                     say(o.result.doc);
                     win.close();
                     imgCt.update('<img src="' + o.result.doc.url + '" height="154" width="254" />');
+                    // GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+                    app.AuditLog('Patient insurance uploaded');
                 },
                 failure: function(fp, o){
                     say(o.result.error);
@@ -415,9 +417,9 @@ Ext.define('App.view.patient.Patient', {
                     for(var i = 0; i < records.length; i++){
                         field = me.demoForm.getForm().findField(records[i].data.name);
                         if(records[i].data.val){
-                            field.removeCls('x-field-yellow');
+                            if(field) field.removeCls('x-field-yellow');
                         }else{
-                            field.addCls('x-field-yellow');
+                            if(field) field.addCls('x-field-yellow');
                         }
                     }
                 }
@@ -511,7 +513,10 @@ Ext.define('App.view.patient.Patient', {
 				}
 
 				record.insuranceStore.sync();
-				me.msg('Sweet!', i18n('record_saved'))
+				me.msg('Sweet!', i18n('record_saved'));
+
+                // GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+                app.AuditLog('Patient new record created');
 			}
 		});
 	},
@@ -546,6 +551,9 @@ Ext.define('App.view.patient.Patient', {
 
 		say(store);
 
+        // GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+        app.AuditLog('Patient new record created');
+
 		this.demoForm.getForm().loadRecord(patient);
 	},
 
@@ -572,6 +580,9 @@ Ext.define('App.view.patient.Patient', {
 				me.getPatientImgs();
 				me.verifyPatientRequiredInfo();
 
+                // GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+                app.AuditLog('Patient record viewed');
+
                 record[0].insurance().load({
                     filters:[
                         {
@@ -583,8 +594,6 @@ Ext.define('App.view.patient.Patient', {
                         say(records);
                     }
                 });
-
-
 				Patient.getPatientInsurancesCardsUrlByPid(me.pid, function(insurance){
 					var noCard = 'resources/images/icons/no_card.jpg',
 						Ins1 = insurance.Primary.url ? insurance.Primary.url : noCard,

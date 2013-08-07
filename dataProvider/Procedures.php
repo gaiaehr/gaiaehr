@@ -31,32 +31,14 @@ class Procedures
     }
 
 	public function loadProcedures($params){
-        /**
-         * Audit Log
-         * Added by: Gino Rivera
-         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-         */
-        $this->db->AuditLog('Encounter procedures viewed');
 		return $this->p->load($params)->all();
 	}
 
 	public function saveProcedure($params){
-        /**
-         * Audit Log
-         * Added by: Gino Rivera
-         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-         */
-        $this->db->AuditLog('Encounter procedures updated');
 		return $this->p->save($params);
 	}
 
 	public function destroyProcedure($params){
-        /**
-         * Audit Log
-         * Added by: Gino Rivera
-         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-         */
-        $this->db->AuditLog('Encounter procedures deleted');
 		return $this->p->destroy($params);
 	}
 

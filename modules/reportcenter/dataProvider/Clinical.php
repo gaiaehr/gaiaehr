@@ -53,29 +53,10 @@ class Clinical extends Reports
 
 	public function createClinicalReport(stdClass $params)
 	{
-//		$params -> to = ($params -> to == '') ? date('Y-m-d') : $params -> to;
-//		$html = "<br><h1>Clinical ($params->from - $params->to )</h1>";
-//		$html2 = "";
-//		$html .= "<table  border=\"0\" width=\"100%\">
-//            <tr>
-//               <th colspan=\"9\" style=\"font-weight: bold;\">" . i18nRouter::t("clinical") . "</th>
-//            </tr>
-//            <tr>
-//               <td colspan=\"2\">" . i18nRouter::t("patient") . "</td>
-//               <td>" . i18nRouter::t("pid") . "</td>
-//               <td>" . i18nRouter::t("age") . "</td>
-//               <td>" . i18nRouter::t("gender") . "</td>
-//               <td colspan=\"2\">" . i18nRouter::t("race") . "</td>
-//               <td colspan=\"2\">" . i18nRouter::t("ethnicity") . "</td>
-//            </tr>";
-//		$html2 = $this -> htmlClinicalList($params, $html2);
-//		$html .= $html2;
-//		$html .= "</table>";
 		ob_end_clean();
 		$Url = $this -> ReportBuilder($params->html, 10);
 		return array(
 			'success' => true,
-//			'html' => $html,
 			'url' => $Url
 		);
 	}

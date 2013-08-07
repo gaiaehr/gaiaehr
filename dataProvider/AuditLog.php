@@ -36,9 +36,16 @@ class AuditLog extends MatchaHelper
     //------------------------------------------------------------------------------------------------------------------
 	public function getLogs(stdClass $params)
 	{
-//		$logRecords = $this->Log->load($params)->all();
-//		$total = count($logRecords);
 		return $this->Log->load($params)->all();
 	}
+
+    public function setLog(stdClass $params)
+    {
+        $params->date = date('Y-m-d H:i:s');
+        $params->facility = $_SESSION['site']['name'];
+        $params->user_id = $_SESSION['user']['id'];
+        $params->user = $_SESSION['user']['name'];
+        return $this->Log->save($params);
+    }
 
 }

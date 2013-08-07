@@ -47,11 +47,6 @@ class DoctorsNotes
         $foo['doctors_notes'] = $params->DoctorsNote;
         $this->db->setSQL($this->db->sqlBind($foo, 'patient_doctors_notes', 'I'));
         $this->db->execLog();
-        // Audit Log
-        // Added by: Gino Rivera
-        // Web Jul 31 2013
-        // GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-        $this->db->AuditLog('Doctors notes added');
     }
 
 }

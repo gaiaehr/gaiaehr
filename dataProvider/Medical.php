@@ -87,12 +87,6 @@ class Medical
 	{
 		$sql = "SELECT * FROM cvx_codes";
 		$this->db->setSQL($sql);
-        /**
-         * Audit Log
-         * Added by: Gino Rivera
-         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-         */
-        $this->db->AuditLog('Immunization list viewed');
 		return $this->db->fetchRecords(PDO::FETCH_ASSOC);
 	}
 
@@ -102,12 +96,6 @@ class Medical
 	 */
 	public function getPatientImmunizations(stdClass $params)
 	{
-        /**
-         * Audit Log
-         * Added by: Gino Rivera
-         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-         */
-        $this->db->AuditLog('Patient immunization list viewed');
 		return $this->getPatientImmunizationsByPid($params->pid);
 	}
 
@@ -133,12 +121,6 @@ class Medical
             $service->dx_pointers = implode(',',$dx_pointers);
             $this->services->addCptCode($service);
         }
-        /**
-         * Audit Log
-         * Added by: Gino Rivera
-         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-         */
-        $this->db->AuditLog('Patient immunization created');
 		return $immunization;
 
 	}
@@ -149,12 +131,6 @@ class Medical
 	 */
 	public function updatePatientImmunization(stdClass $params)
 	{
-        /**
-         * Audit Log
-         * Added by: Gino Rivera
-         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-         */
-        $this->db->AuditLog('Patient immunization updated');
 		return $this->i->save($params);
 
 	}
@@ -162,49 +138,22 @@ class Medical
 	/*************************************************************************************************************/
 	public function getPatientAllergies(stdClass $params)
 	{
-        /**
-         * Audit Log
-         * Added by: Gino Rivera
-         * Web Jul 31 2013
-         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-         */
-        $this->db->AuditLog('Patient Allergies viewed');
 		return $this->a->load($params)->all();
 	}
 
 	public function addPatientAllergies(stdClass $params)
 	{
-        /**
-         * Audit Log
-         * Added by: Gino Rivera
-         * Web Jul 31 2013
-         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-         */
-        $this->db->AuditLog('Patient Allergy added');
 		return $this->a->save($params);
 	}
 
 	public function updatePatientAllergies(stdClass $params)
 	{
-        /**
-         * Audit Log
-         * Added by: Gino Rivera
-         * Web Jul 31 2013
-         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-         */
-        $this->db->AuditLog('Patient allergy updated');
 		return $this->a->save($params);
 	}
 
 	/*************************************************************************************************************/
 	public function getMedicalIssues(stdClass $params)
 	{
-        /**
-         * Audit Log
-         * Added by: Gino Rivera
-         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-         */
-        $this->db->AuditLog('Medical issues viewed');
 		return $this->getMedicalIssuesByPatientID($params->pid);
 	}
 
@@ -218,12 +167,6 @@ class Medical
 		$this->db->setSQL($this->db->sqlBind($data, 'patient_active_problems', 'I'));
 		$this->db->execLog();
 		$params->id = $this->db->lastInsertId;
-        /**
-         * Audit Log
-         * Added by: Gino Rivera
-         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-         */
-        $this->db->AuditLog('Medica issues created');
 		return $params;
 	}
 
@@ -237,12 +180,6 @@ class Medical
 		$data['create_date'] = $this->parseDate($data['create_date']);
 		$this->db->setSQL($this->db->sqlBind($data, "patient_active_problems", "U", "id='$id'"));
 		$this->db->execLog();
-        /**
-         * Audit Log
-         * Added by: Gino Rivera
-         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-         */
-        $this->db->AuditLog('Medical issues updated');
 		return $params;
 
 	}
@@ -250,12 +187,6 @@ class Medical
 	/*************************************************************************************************************/
 //	public function getPatientSurgery(stdClass $params)
 //	{
-//        /**
-//         * Audit Log
-//         * Added by: Gino Rivera
-//         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-//         */
-//        $this->db->AuditLog('Patient surgery list viewed');
 //		return $this->getPatientSurgeryByPatientID($params->pid);
 //	}
 //
@@ -268,12 +199,6 @@ class Medical
 //		$this->db->setSQL($this->db->sqlBind($data, 'patient_surgery', 'I'));
 //		$this->db->execLog();
 //		$params->id = $this->db->lastInsertId;
-//        /**
-//         * Audit Log
-//         * Added by: Gino Rivera
-//         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-//         */
-//        $this->db->AuditLog('Patient surgery created');
 //		return $params;
 //	}
 //
@@ -286,12 +211,6 @@ class Medical
 //		$data['create_date'] = $this->parseDate($data['create_date']);
 //		$this->db->setSQL($this->db->sqlBind($data, "patient_surgery", "U", "id='$id'"));
 //		$this->db->execLog();
-//        /**
-//         * Audit Log
-//         * Added by: Gino Rivera
-//         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-//         */
-//        $this->db->AuditLog('Patient surgery updated');
 //		return $params;
 //
 //	}
@@ -299,13 +218,6 @@ class Medical
 	/*************************************************************************************************************/
 //	public function getPatientDental(stdClass $params)
 //	{
-//        /**
-//         * Audit Log
-//         * Added by: Gino Rivera
-//         * Web Jul 31 2013
-//         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-//         */
-//        $this->db->AuditLog('Patient dental viewed');
 //		return $this->getPatientDentalByPatientID($params->pid);
 //	}
 //
@@ -319,13 +231,6 @@ class Medical
 //		$this->db->setSQL($this->db->sqlBind($data, 'patient_dental', 'I'));
 //		$this->db->execLog();
 //		$params->id = $this->db->lastInsertId;
-//        /**
-//         * Audit Log
-//         * Added by: Gino Rivera
-//         * Web Jul 31 2013
-//         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-//         */
-//        $this->db->AuditLog('Patient dental created');
 //		return $params;
 //	}
 //
@@ -339,13 +244,6 @@ class Medical
 //		$data['create_date'] = $this->parseDate($data['create_date']);
 //		$this->db->setSQL($this->db->sqlBind($data, "patient_dental", "U", "id='$id'"));
 //		$this->db->execLog();
-//        /**
-//         * Audit Log
-//         * Added by: Gino Rivera
-//         * Web Jul 31 2013
-//         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-//         */
-//        $this->db->AuditLog('Patient dental updated');
 //		return $params;
 //
 //	}
@@ -353,12 +251,6 @@ class Medical
 	/*************************************************************************************************************/
 	public function getPatientMedications(stdClass $params)
 	{
-        /**
-         * Audit Log
-         * Added by: Gino Rivera
-         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-         */
-        $this->db->AuditLog('Patient medication viewed');
 		return $this->getPatientMedicationsByPatientID($params->pid);
 	}
 
@@ -369,12 +261,6 @@ class Medical
 		$this->db->setSQL($this->db->sqlBind($data, 'patient_medications', 'I'));
 		$this->db->execLog();
 		$params->id = $this->db->lastInsertId;
-        /**
-         * Audit Log
-         * Added by: Gino Rivera
-         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-         */
-        $this->db->AuditLog('Patient medications created');
 		return $params;
 	}
 
@@ -385,12 +271,6 @@ class Medical
 		unset($data['id'], $data['active']);
 		$this->db->setSQL($this->db->sqlBind($data, "patient_medications", "U", "id='$id'"));
 		$this->db->execLog();
-        /**
-         * Audit Log
-         * Added by: Gino Rivera
-         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-         */
-        $this->db->AuditLog('Patient medications updated');
 		return $params;
 
 	}
@@ -419,12 +299,6 @@ class Medical
 	/***************************************************************************************************************/
 	public function getPatientLabsResults(stdClass $params)
 	{
-        /**
-         * Audit Log
-         * Added by: Gino Rivera
-         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-         */
-        $this->db->AuditLog('Patient laboratory results list viewed');
 		return $this->getPatientLabsResultsByPid($params->parent_id);
 	}
 	public function getPatientLabsResultsByPid($pid)
@@ -471,12 +345,6 @@ class Medical
 			$this->db->setSQL($this->db->sqlBind($foo, 'patient_labs_results', 'I'));
 			$this->db->execOnly();
 		}
-        /**
-         * Audit Log
-         * Added by: Gino Rivera
-         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-         */
-        $this->db->AuditLog('Patient laboratory result created');
 		return $params;
 	}
 
@@ -498,23 +366,11 @@ class Medical
 				$this->db->execLog();
 			}
 		}
-        /**
-         * Audit Log
-         * Added by: Gino Rivera
-         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-         */
-        $this->db->AuditLog('Patient laboratory result updated');
 		return $params;
 	}
 
 	public function deletePatientLabsResult(stdClass $params)
 	{
-        /**
-         * Audit Log
-         * Added by: Gino Rivera
-         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-         */
-        $this->db->AuditLog('Patient laboratory result deleted');
 		return $params;
 	}
 
@@ -540,12 +396,6 @@ class Medical
 		$params->filter[0] = new stdClass();
 		$params->filter[0]->property = 'pid';
 		$params->filter[0]->value = $pid;
-        /**
-         * Audit Log
-         * Added by: Gino Rivera
-         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-         */
-        $this->db->AuditLog('Patient immunization list viewed');
 		return $this->i->load($params)->all();
 	}
 

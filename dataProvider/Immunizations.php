@@ -41,13 +41,6 @@ class Immunizations
         unset($data['id']);
         $this->db->setSQL($this->db->sqlBind($data, 'cvx_codes', 'U', array('id' => $params->id)));
         $this->db->execLog();
-        /**
-         * Audit Log
-         * Added by: Gino Rivera
-         * Web Jul 31 2013
-         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-         */
-        $this->db->AuditLog('Immunization CVX updated');
     }
 
     public function updateCVXCodes($xmlFile = false)
@@ -76,13 +69,6 @@ class Immunizations
                 $newCounter++;
             }
         }
-        /**
-         * Audit Log
-         * Added by: Gino Rivera
-         * Web Jul 31 2013
-         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-         */
-        $this->db->AuditLog('Immunization CVX bulk code updated');
         return array(
             'success' => true,
             'newCodes' => $newCounter
@@ -116,13 +102,6 @@ class Immunizations
                 $newCounter++;
             }
         }
-        /**
-         * Audit Log
-         * Added by: Gino Rivera
-         * Web Jul 31 2013
-         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-         */
-        $this->db->AuditLog('Immunization MVX bulk code updated');
         return array(
             'success' => true,
             'newCodes' => $newCounter

@@ -80,12 +80,6 @@ class Prescriptions
         foreach($prescriptions AS $index => $row){
             $prescriptions[$index]['medications'] = $this->getMedicationsByPrescriptionId($row['id']);
         }
-        /**
-         * Audit Log
-         * Added by: Gino Rivera
-         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-         */
-        $this->db->AuditLog('Patient prescriptions list viewed');
         return $prescriptions;
     }
 
@@ -129,12 +123,6 @@ class Prescriptions
                 $params->medications = $this->addPrescriptionMedication($params->medications, $params->id);
             }
         }
-        /**
-         * Audit Log
-         * Added by: Gino Rivera
-         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-         */
-        $this->db->AuditLog('Patient prescriptions created');
         return $params;
     }
 
@@ -185,12 +173,6 @@ class Prescriptions
                 }
             }
         }
-        /**
-         * Audit Log
-         * Added by: Gino Rivera
-         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-         */
-        $this->db->AuditLog('Patient prescriptions created');
         return $params;
     }
 

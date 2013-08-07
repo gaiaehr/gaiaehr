@@ -546,12 +546,6 @@ class PreventiveCare
 			}
 			$count++;
 		}
-        /**
-         * Audit Log
-         * Added by: Gino Rivera
-         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-         */
-        $this->db->AuditLog('Patient preventive care updated');
 		return array_values($patientAlerts);
 	}
 
@@ -566,12 +560,6 @@ class PreventiveCare
                            WHERE pid='$pid'
                            AND preventive_care_id ='$preventivecareid' ");
 		$u = $this->db->fetchRecord(PDO::FETCH_ASSOC);
-        /**
-         * Audit Log
-         * Added by: Gino Rivera
-         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-         */
-        $this->db->AuditLog('Patient preventive care dismiss created');
 		if($u[0] == ' ' || $u == null){
 
 			unset($data['description'], $data['type'], $data['alert']);
@@ -633,13 +621,6 @@ class PreventiveCare
                            LEFT JOIN preventive_care_guidelines  AS pcg ON pcig.preventive_care_id = pcg.id
                            WHERE pcig.pid = '$params->pid'
                            AND  pcig.dismiss = 1");
-        /**
-         * Audit Log
-         * Added by: Gino Rivera
-         * Web Jul 31 2013
-         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-         */
-        $this->db->AuditLog('Patient preventive care dismissed alert viewed');
 		return $this->db->fetchRecords();
 	}
 
@@ -649,13 +630,6 @@ class PreventiveCare
 		unset($data['id'], $data['description']);
 		$this->db->setSQL($this->db->sqlBind($data, 'preventive_care_inactive_patient', 'U', array('id' => $params->id)));
 		$this->db->execLog();
-        /**
-         * Audit Log
-         * Added by: Gino Rivera
-         * Web Jul 31 2013
-         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-         */
-        $this->db->AuditLog('Patient preventive care dismissed alert updated');
 		return $params;
 	}
 

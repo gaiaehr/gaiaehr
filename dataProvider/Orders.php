@@ -41,12 +41,6 @@ class Orders
                         LEFT JOIN patient_documents ON patient_orders.document_id = patient_documents.id
                             WHERE patient_orders.order_type = 'lab'
                               AND patient_orders.pid = '$params->pid'");
-        /**
-         * Audit Log
-         * Added by: Gino Rivera
-         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-         */
-        $this->db->AuditLog('Patient laboratory orders viewed');
         return $this->db->fetchRecords(PDO::FETCH_ASSOC);
     }
 
@@ -76,12 +70,6 @@ class Orders
             $this->db->execLog();
             $params->id = $this->db->lastInsertId;
         }
-        /**
-         * Audit Log
-         * Added by: Gino Rivera
-         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-         */
-        $this->db->AuditLog('Patient laboratory orders created');
         return $params;
     }
 
@@ -110,12 +98,6 @@ class Orders
             $this->db->setSQL($this->db->sqlBind($data, 'patient_orders', 'U', array('id' => $params->id)));
             $this->db->execLog();
         }
-        /**
-         * Audit Log
-         * Added by: Gino Rivera
-         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-         */
-        $this->db->AuditLog('Patient laboratory orders updated');
         return $params;
     }
 
@@ -131,12 +113,6 @@ class Orders
                         LEFT JOIN patient_documents ON patient_orders.document_id = patient_documents.id
                             WHERE patient_orders.order_type = 'rad'
                               AND patient_orders.pid = '$params->pid'");
-        /**
-         * Audit Log
-         * Added by: Gino Rivera
-         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-         */
-        $this->db->AuditLog('Patient XRAY orders list viewed');
         return $this->db->fetchRecords(PDO::FETCH_ASSOC);
     }
 
@@ -167,12 +143,6 @@ class Orders
             $this->db->execLog();
             $params->id = $this->db->lastInsertId;
         }
-        /**
-         * Audit Log
-         * Added by: Gino Rivera
-         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-         */
-        $this->db->AuditLog('Patient XRAY orders created');
         return $params;
     }
 
@@ -202,12 +172,6 @@ class Orders
             $this->db->setSQL($this->db->sqlBind($data, 'patient_orders', 'U', array('id' => $params->id)));
             $this->db->execLog();
         }
-        /**
-         * Audit Log
-         * Added by: Gino Rivera
-         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-         */
-        $this->db->AuditLog('Patient XRAY orders updated');
         return $params;
     }
 

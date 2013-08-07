@@ -78,12 +78,6 @@ class PoolArea
 				$visits[] = $visit;
 			}
 		}
-        /**
-         * Audit Log
-         * Added by: Gino Rivera
-         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-         */
-        $this->db->AuditLog('Patient arrival log viewed');
 		return $visits;
 	}
 
@@ -120,35 +114,17 @@ class PoolArea
 		} else {
 			$this->checkInPatient($params);
 		}
-        /**
-         * Audit Log
-         * Added by: Gino Rivera
-         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-         */
-        $this->db->AuditLog('Patient arrival log created');
 		return $params;
 	}
 
 	public function updatePatientArrivalLog(stdClass $params)
 	{
-        /**
-         * Audit Log
-         * Added by: Gino Rivera
-         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-         */
-        $this->db->AuditLog('Patient arrival log updated');
 	}
 
 	public function removePatientArrivalLog(stdClass $params)
 	{
 		$this->db->setSQL($this->db->sqlBind(array('time_out' => Time::getLocalTime()), 'patient_pools', 'U', array('id' => $params->area_id)));
 		$this->db->execLog();
-        /**
-         * Audit Log
-         * Added by: Gino Rivera
-         * GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-         */
-        $this->db->AuditLog('Patient arrival log updated');
 		return array('success' => true);
 	}
 

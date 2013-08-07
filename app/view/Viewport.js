@@ -627,8 +627,8 @@ Ext.define('App.view.Viewport', {
      */
     AuditLog: function(message){
         var log = Ext.create('App.model.administration.AuditLog',{
-            eid: me.patient.eid,
-            patient_id: me.patient.pid,
+            eid: this.patient.eid,
+            patient_id: this.patient.pid,
             event:message
         }).save({
            callback:function(){

@@ -22,26 +22,43 @@ class Laboratories
 	/**
 	 * @var MatchaCUP
 	 */
-	private $LO = NULL;
+	private $LO = null;
+	/**
+	 * @var MatchaCUP
+	 */
+	private $LP = null;
 
     function __construct()
     {
 	    $this->db = new MatchaHelper();
-        if($this->LO == NULL) $this->LO = MatchaModel::setSenchaModel('App.model.administration.LabObservations');
+	    if($this->LP == null) $this->LO = MatchaModel::setSenchaModel('App.model.administration.LabPanels');
+	    if($this->LO == null) $this->LO = MatchaModel::setSenchaModel('App.model.administration.LabObservations');
         return;
     }
 
     //------------------------------------------------------------------------------------------------------------------
     // Main Sencha Model Getter and Setters
     //------------------------------------------------------------------------------------------------------------------
-    public function getAllLabs(stdClass $params)
+    public function getLoincPanels(stdClass $params)
     {
-        $sort = isset($params->sort) ? $params->sort[0]->property . ' ' . $params->sort[0]->direction : 'sequence ASC';
-        $sqlStatement['SELECT'] = "id, parent_id, parent_loinc, sequence, default_unit, shortname AS code_text_short, parent_name AS code_text, number AS code, active";
-        $sqlStatement['LEFTJOIN'] = "labs_loinc on loinc_num = parent_loinc";
-        $sqlStatement['WHERE'] = "parent_name LIKE '%$params->query%' AND id = parent_id";
-        $sqlStatement['ORDER'] = $sort;
-        return $this->LO->buildSQL($sqlStatement)->all();
+
+	    $this->db->setSQL("SELECT p.ID as id,
+                                  p.SEQUENCE as sequence,
+                                  l.LONG_COMMON_NAME as code_text_short,
+                                  p.LOINC_NUM as code,
+                                  'LOINC' as code_type,
+                                  p.active
+                             FROM labs_loinc_panels AS p
+                        LEFT JOIN labs_loinc AS l ON p.LOINC_NUM = l.LOINC_NUM
+                            WHERE p.PARENT_id = p.ID
+
+                              AND p.parent_name LIKE '%$params->query%'");
+//        $sort = isset($params->sort) ? $params->sort[0]->property . ' ' . $params->sort[0]->direction : 'sequence ASC';
+//        $sqlStatement['SELECT'] = "id, parent_id, parent_loinc, sequence, default_unit, shortname AS code_text_short, parent_name AS code_text, number AS code, active";
+//        $sqlStatement['LEFTJOIN'] = "labs_loinc on loinc_num = parent_loinc";
+//        $sqlStatement['WHERE'] = "parent_name LIKE '%$params->query%' AND id = parent_id";
+//        $sqlStatement['ORDER'] = $sort;
+        return $this->db->fetchRecords();
     }
 
     /**
@@ -83,13 +100,28 @@ class Laboratories
     public function getLabObservationFieldsByParentId($id)
     {
         $records = array();
-        $sqlStatement['SELECT'] = "*, labs_loinc.submited_units";
-        $sqlStatement['LEFTJOIN'] = "labs_loinc ON labs_panels.loinc_number = labs_loinc.loinc_num";
-        $sqlStatement['WHERE'] = "parent_id = '$id' AND parent_id != id";
-        $sqlStatement['ORDER'] = "sequence";
-        foreach ($this->LO->buildSQL($sqlStatement)->all() as $row)
-        {
-            $row->default_unit = ($row->default_unit == null || $row->default_unit == '') ? $row->SUBMITTED_UNITS : $row->default_unit;
+
+	    $this->db->setSQL("SELECT p.ID as id,
+                                  p.PARENT_id as parent_id,
+                                  p.SEQUENCE as sequence,
+                                  l.LONG_COMMON_NAME as loinc_name,
+                                  p.LOINC_NUM as loinc_number,
+                                  p.OBSERVATION_REQUIRED_IN_PANEL as required_in_panel,
+                                  'LOINC' as code_type,
+                                  p.ACTIVE as active,
+                                  l.EXAMPLE_UNITS as default_unit
+                             FROM labs_loinc_panels AS p
+                        LEFT JOIN labs_loinc AS l ON p.LOINC_NUM = l.LOINC_NUM
+                            WHERE p.PARENT_id != ID
+                              AND p.PARENT_id = '$id'
+                              AND l.STATUS = 'ACTIVE'
+                         ORDER BY SEQUENCE");
+
+
+        foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row){
+//	        print_r($row);
+
+//            $row['default_unit'] = ($row['default_unit'] == null || $row['default_unit'] == '') ? $row['SUBMITTED_UNITS'] : $row['default_unit'];
             $records[] = $row;
         }
         return $records;

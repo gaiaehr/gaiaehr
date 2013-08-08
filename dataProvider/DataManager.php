@@ -90,14 +90,10 @@ class DataManager
                         'rows' => $records
                     );
                 } else {
-                    $records = array();
-                    $labs = $this->labs->getAllLabs($params);
+
+                    $labs = $this->labs->getLoincPanels($params);
                     $total = count($labs);
-                    $recs = array_slice($labs, $params->start, $params->limit);
-                    foreach ($recs as $rec) {
-                        $rec->code_type = $params->code_type;
-                        $records[] = $rec;
-                    }
+	                $records = array_slice($labs, $params->start, $params->limit);
                     return array(
                         'totals' => $total,
                         'rows' => $records

@@ -322,6 +322,7 @@ $LANG = array(
 	'item'									=> 'Item',
 	'reason'								=> 'Reason',
 	'observation'							=> 'Observation',
+	'observations'							=> 'Observations',
 	'dismiss_alert'							=> 'Dismiss Alert?',
 	'dismissed'							    => 'Dismissed',
 	'no_alerts_found'						=> 'No Alerts Found',

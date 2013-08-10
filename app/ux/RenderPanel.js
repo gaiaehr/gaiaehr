@@ -28,8 +28,11 @@ Ext.define('App.ux.RenderPanel', {
 	pageBody     : [],
 	pageTitle    : '',
 	pageButtons  : null,
+	pageTBar     : null,
+	pageBBar     : null,
 	pagePadding  : null,
     showRating   : false,
+
 	initComponent: function() {
 		var me = this;
 		Ext.apply(me, {
@@ -56,6 +59,8 @@ Ext.define('App.ux.RenderPanel', {
                             itemId  : 'pageLayout',
 							defaults: {frame: false, border: false, autoScroll: true},
 							items   : me.pageBody,
+							tbar    : me.pageTBar,
+							bbar    : me.pageBBar,
 							buttons : me.pageButtons
 						})
 					]

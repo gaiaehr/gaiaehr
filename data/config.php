@@ -643,6 +643,9 @@ $API = array(
 			),
 			'getActiveLaboratoryTypes' => array(
 				'len' => 1
+			),
+			'indexLoincPanels' => array(
+				'len' => 0
 			)
 		)
 	),

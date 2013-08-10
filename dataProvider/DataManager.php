@@ -43,7 +43,7 @@ class DataManager
 
     public function getServices(stdClass $params)
     {
-        if ($params->code_type == 'Immunizations') {
+        if($params->code_type == 'CVX') {
             $records = array();
             $cvx = $this->immu->getCVXCodesByStatus();
             foreach ($cvx AS $row) {
@@ -61,52 +61,53 @@ class DataManager
                 'totals' => $total,
                 'rows' => $records
             );
-        } else
-            if ($params->code_type == 'CPT4') {
-                $records = array();
-                $cpt = $this->serv->getCptCodesList($params);
-                $total = count($cpt);
-                $cpt = array_slice($cpt, $params->start, $params->limit);
-                foreach ($cpt AS $row) {
-                    $row['code_type'] = 'CPT4';
-                    $records[] = $row;
-                }
-                return array(
-                    'totals' => $total,
-                    'rows' => $records
-                );
-            } else
-                if ($params->code_type == 'HCPCS') {
-                    $records = array();
-                    $hcpcs = $this->serv->getHCPCList($params);
-                    $total = count($hcpcs);
-                    $hcpcs = array_slice($hcpcs, $params->start, $params->limit);
-                    foreach ($hcpcs AS $row) {
-                        $row['code_type'] = 'HCPCS';
-                        $records[] = $row;
-                    }
-                    return array(
-                        'totals' => $total,
-                        'rows' => $records
-                    );
-                } else {
+        }
 
-                    $labs = $this->labs->getLoincPanels($params);
-                    $total = count($labs);
-	                $records = array_slice($labs, $params->start, $params->limit);
-                    return array(
-                        'totals' => $total,
-                        'rows' => $records
-                    );
-                }
+        if($params->code_type == 'CPT4') {
+            $records = array();
+            $cpt = $this->serv->getCptCodesList($params);
+            $total = count($cpt);
+            $cpt = array_slice($cpt, $params->start, $params->limit);
+            foreach ($cpt AS $row) {
+                $row['code_type'] = 'CPT4';
+                $records[] = $row;
+            }
+            return array(
+                'totals' => $total,
+                'rows' => $records
+            );
+        }
+
+        if($params->code_type == 'HCPCS') {
+            $records = array();
+            $hcpcs = $this->serv->getHCPCList($params);
+            $total = count($hcpcs);
+            $hcpcs = array_slice($hcpcs, $params->start, $params->limit);
+            foreach ($hcpcs AS $row) {
+                $row['code_type'] = 'HCPCS';
+                $records[] = $row;
+            }
+            return array(
+                'totals' => $total,
+                'rows' => $records
+            );
+        }
+
+        $records = $this->labs->getLoincPanels($params);
+        $total = count($records);
+        $records = array_slice($records, $params->start, $params->limit);
+        return array(
+            'totals' => $total,
+            'rows' => $records
+        );
+
     }
 
     /**
      * @param stdClass $params
      * @return stdClass
      */
-    public function addService(stdClass $params)
-    {
+    public function addService(stdClass $params){
         if ($params->code_type == 'CPT4') {
             $tableX = 'cpt_codes';
         } elseif ($params->code_type == 'HCPCS') {
@@ -137,31 +138,30 @@ class DataManager
      * @param stdClass $params
      * @return stdClass
      */
-    public function updateService(stdClass $params)
-    {
+    public function updateService(stdClass $params){
         $data = get_object_vars($params);
         foreach ($data as $key => $val) {
             if ($val == null || $val == '') {
                 unset($data[$key]);
             }
         }
+	    unset($data['id']);
         if ($params->code_type == 'CPT4') {
-            $tableX = 'cpt_codes';
             unset($data['code_type']);
+	        $sql = $this->db->sqlBind($data, 'cpt_codes', 'U', array('id' => $params->id));
         } elseif ($params->code_type == 'HCPCS') {
-            $tableX = 'hcpcs_codes';
+	        $sql = $this->db->sqlBind($data, 'hcpcs_codes', 'U', array('id' => $params->id));
         } elseif ($params->code_type == 'Immunizations') {
-            $tableX = 'immunizations';
-
+	        $sql = $this->db->sqlBind($data, 'immunizations', 'U', array('id' => $params->id));
         } else {
-            $tableX = 'labs_panels';
-            $data['code_text_short'] = $params->code_text_short;
-            unset($data['code_text'], $data['code_type'], $data['code']);
+	        $this->labs->updateLabPanel($params);
         }
-        unset($data['id']);
-        $sql = $this->db->sqlBind($data, $tableX, 'U', "id='$params->id'");
-        $this->db->setSQL($sql);
-        $this->db->execLog();
+
+		if(isset($sql)){
+			$this->db->setSQL($sql);
+			$this->db->execLog();
+		}
+
         return $params;
     }
 
@@ -172,8 +172,7 @@ class DataManager
      * @param stdClass $params
      * @return array|stdClass
      */
-    public function getCptCodes(stdClass $params)
-    {
+    public function getCptCodes(stdClass $params){
         if ($params->filter === 0) {
             $record = $this->getCptRelatedByEidIcds($params->eid);
         } elseif ($params->filter === 1) {
@@ -186,8 +185,7 @@ class DataManager
         return $record;
     }
 
-    public function addCptCode(stdClass $params)
-    {
+    public function addCptCode(stdClass $params){
         $data = get_object_vars($params);
         unset($data['code_text'], $data['code_text_medium']);
         foreach ($data as $key => $val) {
@@ -204,8 +202,7 @@ class DataManager
         );
     }
 
-    public function updateCptCode(stdClass $params)
-    {
+    public function updateCptCode(stdClass $params){
         $data = get_object_vars($params);
         unset($data['id'], $data['eid'], $data['code'], $data['code_text'], $data['code_text_medium']);
         $params->id = intval($params->id);
@@ -217,8 +214,7 @@ class DataManager
         );
     }
 
-    public function deleteCptCode(stdClass $params)
-    {
+    public function deleteCptCode(stdClass $params){
         $this->db->setSQL("SELECT status FROM encounter_services WHERE id = '$params->id'");
         $cpt = $this->db->fetchRecord();
         if ($cpt['status'] == 0) {
@@ -235,8 +231,7 @@ class DataManager
      * @param $eid
      * @return array
      */
-    public function getCptRelatedByEidIcds($eid)
-    {
+    public function getCptRelatedByEidIcds($eid){
         $this->db->setSQL("SELECT DISTINCT cpt.code, cpt.code_text
                              FROM cpt_codes AS cpt
                        RIGHT JOIN cpt_icd AS ci ON ci.cpt = cpt.code

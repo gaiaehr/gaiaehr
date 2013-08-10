@@ -812,7 +812,7 @@ class ExternalDataUpdate
 	            SNOMEDID VARCHAR(8) NOT NULL,
 	            IsPrimitive TINYINT(1) NOT NULL,
 	            PRIMARY KEY (ConceptId)
-	            ) ENGINE=MyISAM',
+	            )',
             'sct_descriptions_drop' => 'DROP TABLE IF EXISTS sct_descriptions',
             'sct_descriptions_structure' => 'CREATE TABLE IF NOT EXISTS sct_descriptions (
 	            DescriptionId BIGINT(20) NOT NULL,
@@ -823,7 +823,7 @@ class ExternalDataUpdate
 	            DescriptionType INT(11) NOT NULL,
 	            LanguageCode VARCHAR(8) NOT NULL,
 	            PRIMARY KEY (DescriptionId)
-	            ) ENGINE=MyISAM',
+	            )',
             'sct_relationships_drop' => 'DROP TABLE IF EXISTS sct_relationships',
             'sct_relationships_structure' => 'CREATE TABLE IF NOT EXISTS sct_relationships (
 	            RelationshipId BIGINT(20) NOT NULL,
@@ -834,9 +834,24 @@ class ExternalDataUpdate
 	            Refinability INT(11) NOT NULL,
 	            RelationshipGroup INT(11) NOT NULL,
 	            PRIMARY KEY (RelationshipId)
-	            ) ENGINE=MyISAM'
+	            )',
+            'sct_relationships_loinc_drop' => 'DROP TABLE IF EXISTS sct_relationships_loinc',
+            'sct_relationships_loinc_structure' => 'CREATE TABLE IF NOT EXISTS sct_relationships_loinc (
+	            LoincNum varchar(7) NOT NULL,
+	            Component varchar(150) NOT NULL,
+	            Property varchar(25) NOT NULL,
+	            TimAspect varchar(25) NOT NULL,
+	            System varchar(50) NOT NULL,
+	            ScaleType varchar(25) NOT NULL,
+	            MethodType varchar(60) NOT NULL,
+	            RelationNms varchar(256) NOT NULL,
+	            AnswerList varchar(256) NOT NULL,
+	            RelationshipType varchar(25) NOT NULL,
+	            ConceptId varchar(25) NOT NULL
+            	)'
         );
-        // set up paths
+
+	    // set up paths
         $dir_snomed = $dir . '/';
         $sub_path = 'Terminology/Content/';
         $dir = $dir_snomed;
@@ -851,54 +866,67 @@ class ExternalDataUpdate
         }
         // reading the SNOMED directory and identifying the files to import and replacing
         // the variables by originals values.
-        if (is_dir($dir) && $handle = opendir($dir)) {
-            while (false !== ($filename = readdir($handle))) {
-                if ($filename != '.' && $filename != '..' && !strpos($filename, 'zip')) {
-                    $path = $dir . '' . $filename . '/' . $sub_path;
-                    if (!(is_dir($path))) {
-                        $path = $dir . '' . $filename . '/RF1Release/' . $sub_path;
-                    }
-                    if (is_dir($path) && $handle1 = opendir($path)) {
-                        while (false !== ($filename1 = readdir($handle1))) {
-                            $load_script = "LOAD DATA LOCAL INFILE '#FILENAME#' into table #TABLE# fields terminated by '\\t' ESCAPED BY '' lines terminated by '\\n' ignore 1 lines ";
-                            $array_replace = array(
-                                '#FILENAME#',
-                                '#TABLE#'
-                            );
-                            if ($filename1 != '.' && $filename1 != '..') {
-                                $file_replace = $path . $filename1;
-                                if (strpos($filename1, 'Concepts') !== false) {
-                                    $new_str = str_replace($array_replace, array(
-                                        $file_replace,
-                                        'sct_concepts'
-                                    ), $load_script);
-                                }
-                                if (strpos($filename1, 'Descriptions') !== false) {
-                                    $new_str = str_replace($array_replace, array(
-                                        $file_replace,
-                                        'sct_descriptions'
-                                    ), $load_script);
-                                }
-                                if (strpos($filename1, 'Relationships') !== false) {
-                                    $new_str = str_replace($array_replace, array(
-                                        $file_replace,
-                                        'sct_relationships'
-                                    ), $load_script);
-                                }
-                                if (isset($new_str)) {
-                                    $this->db->conn()->exec($new_str);
-                                    //$stmt->execute();
-                                }
-                            }
-                        }
-                        closedir($handle1);
-                    }
-                }
-            }
-            closedir($handle);
-        }
+	    $this->loadSnomedData($dir, $sub_path);
+	    $sub_path = 'OtherResources/LOINCIntegration/';
+	    $this->loadSnomedData($dir, $sub_path);
         return true;
     }
+
+	private function loadSnomedData($dir, $sub_path){
+		if (is_dir($dir) && $handle = opendir($dir)) {
+			while (false !== ($filename = readdir($handle))) {
+				if ($filename != '.' && $filename != '..' && !strpos($filename, 'zip')) {
+					$path = $dir . '' . $filename . '/' . $sub_path;
+					if (!(is_dir($path))) {
+						$path = $dir . '' . $filename . '/RF1Release/' . $sub_path;
+					}
+					if (is_dir($path) && $handle1 = opendir($path)) {
+						while (false !== ($filename1 = readdir($handle1))) {
+							$load_script = "LOAD DATA LOCAL INFILE '#FILENAME#' into table #TABLE# fields terminated by '\\t' ESCAPED BY '' lines terminated by '\\n' ignore 1 lines ";
+							$array_replace = array(
+								'#FILENAME#',
+								'#TABLE#'
+							);
+							if ($filename1 != '.' && $filename1 != '..') {
+								$file_replace = $path . $filename1;
+								if (strpos($filename1, 'Concepts') !== false) {
+									$new_str = str_replace($array_replace, array(
+										$file_replace,
+										'sct_concepts'
+									), $load_script);
+								}
+								if (strpos($filename1, 'Descriptions') !== false) {
+									$new_str = str_replace($array_replace, array(
+										$file_replace,
+										'sct_descriptions'
+									), $load_script);
+								}
+								if (strpos($filename1, 'Relationships') !== false) {
+									$new_str = str_replace($array_replace, array(
+										$file_replace,
+										'sct_relationships'
+									), $load_script);
+								}
+								if (strpos($filename1, 'Integration_LOINC') !== false) {
+									$new_str = str_replace($array_replace, array(
+										$file_replace,
+										'sct_relationships_loinc'
+									), $load_script);
+								}
+								if (isset($new_str)) {
+									$this->db->conn()->exec($new_str);
+									//$stmt->execute();
+								}
+							}
+						}
+						closedir($handle1);
+					}
+				}
+			}
+			closedir($handle);
+		}
+	}
+
 
     private function updateTrackerTable($name, $codeType, $revision, $version, $date, $file_checksum = '')
     {

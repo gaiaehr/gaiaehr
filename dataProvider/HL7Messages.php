@@ -257,35 +257,79 @@ class HL7Messages {
 	}
 
     public function Send(){
-        $msg = $this->msg['message'];
-        $ch = curl_init($this->to['recipient']);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $msg);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_HEADER , 0);
-	    curl_setopt($ch, CURLOPT_TIMEOUT, 10);
-	    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
-	    curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-            'Content-Type: application/hl7-v2; charset=ISO-8859-4',
-            'Content-Length: ' . strlen($msg))
-        );
+	    $msg = $this->msg['message'];
 
-	    $response = curl_exec($ch);
-	    $error = curl_errno($ch);
-	    if($error !== 0){
-		    $this->msg['status'] = 4; // error
-		    $this->msg['error'] = '['.$error.'] '. curl_error($ch);
-	    }else{
-		    $this->msg['status'] = 3; // processed
-		    $this->msg['response'] = $response;
+	    if($this->to['recipient_type'] == 'http'){
+
+		    $ch = curl_init($this->to['recipient']);
+		    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
+		    curl_setopt($ch, CURLOPT_POSTFIELDS, $msg);
+		    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		    curl_setopt($ch, CURLOPT_HEADER , 0);
+		    curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+		    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
+		    curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+				    'Content-Type: application/hl7-v2; charset=ISO-8859-4',
+				    'Content-Length: ' . strlen($msg))
+		    );
+
+		    $response = curl_exec($ch);
+		    $error = curl_errno($ch);
+		    if($error !== 0){
+			    $this->msg['status'] = 4; // error
+			    $this->msg['error'] = '['.$error.'] '. curl_error($ch);
+		    }else{
+			    $this->msg['status'] = 3; // processed
+			    $this->msg['response'] = $response;
+		    }
+		    curl_close($ch);
+		    $this->m->save((object) $this->msg);
+
+		    return array(
+			    'success' => $error === 0,
+			    'message' => $this->msg
+		    );
+	    }elseif($this->to['recipient_type'] == 'socket'){
+
+		    try{
+			    $error = 0;
+			    $socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+			    if ($socket === false) {
+				    $error = "socket_create() failed: reason: " . socket_strerror(socket_last_error()) . "\n";
+			    }
+			    $address = explode(':', $this->to['recipient']);
+			    $result = socket_connect($socket, $address[0], $address[1]);
+			    if ($result === false) {
+				    $error = "socket_connect() failed. Reason: ($result) " . socket_strerror(socket_last_error($socket)) . "\n";
+			    }
+			    socket_write($socket, $msg, strlen($msg));
+			    while ($response = socket_read($socket, 4048)) {
+				    print $response;
+			    }
+			    socket_close($socket);
+
+			    if($error !== 0){
+				    $this->msg['status'] = 4; // error
+				    $this->msg['error'] = $error;
+			    }else{
+				    $this->msg['status'] = 3; // processed
+				    $this->msg['response'] = $response;
+			    }
+
+			    $this->m->save((object) $this->msg);
+			    return array(
+				    'success' => $error === 0,
+				    'message' => $this->msg
+			    );
+		    }catch (Exception $e){
+
+			    return array('success' => false, 'message' => $e);
+
+		    }
+
 	    }
-	    curl_close($ch);
-	    $this->m->save((object) $this->msg);
+	    return array('success' => false, 'message' => '');
 
-        return array(
-	        'success' => $error === 0,
-	        'message' => $this->msg
-        );
     }
 
 

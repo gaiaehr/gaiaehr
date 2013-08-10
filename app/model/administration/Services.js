@@ -23,7 +23,7 @@ Ext.define('App.model.administration.Services', {
 		comment:'Services'
 	},	
 	fields: [
-		{name: 'id', type: 'int', comment: 'Services ID'},
+		{name: 'id', type: 'string', comment: 'Services ID'},
 		{name: 'code_text', type: 'string'},
 		{name: 'sg_code', type: 'string'},
 		{name: 'long_desc', type: 'string'},
@@ -49,7 +49,9 @@ Ext.define('App.model.administration.Services', {
 		{name: 'only_once', type: 'bool'},
 		{name: 'active_problems', type: 'string'},
 		{name: 'medications', type: 'string'},
-		{name: 'labs', type: 'string'}
+		{name: 'labs', type: 'string'},
+		{name: 'has_children', type: 'bool'},
+		{name: 'class', type: 'string'}
 	]
 
 });

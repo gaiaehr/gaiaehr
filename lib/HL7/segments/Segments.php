@@ -32,7 +32,7 @@ class Segments {
 	 */
 	function build(){
 		$this->parseArray($this->rawSeg);
-		return $this->seg . PHP_EOL;
+		return $this->seg . "\r";
 	}
 
 	/**

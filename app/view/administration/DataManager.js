@@ -497,6 +497,7 @@ Ext.define('App.view.administration.DataManager', {
 				{
 					xtype: 'grid',
 					frame: true,
+					title: i18n('children'),
 					store: me.labObservationsStore,
 					plugins: Ext.create('Ext.grid.plugin.CellEditing', {
 						clicksToEdit: 2
@@ -505,7 +506,7 @@ Ext.define('App.view.administration.DataManager', {
 						{
 							header: i18n('label_alias'),
 							dataIndex: 'code_text_short',
-							width: 100,
+							width: 150,
 							editor: {
 								xtype: 'textfield'
 							}
@@ -513,7 +514,7 @@ Ext.define('App.view.administration.DataManager', {
 						{
 							header: i18n('loinc_name'),
 							dataIndex: 'loinc_name',
-							width: 200
+							flex: 1
 						},
 						{
 							header: i18n('loinc_number'),
@@ -556,6 +557,15 @@ Ext.define('App.view.administration.DataManager', {
 							editor: {
 								xtype: 'textfield'
 							}
+						},
+						{
+							width: 60,
+							header: i18n('active'),
+							dataIndex: 'active',
+							renderer: me.boolRenderer,
+							editor: {
+								xtype: 'checkbox'
+							}
 						}
 					]
 					//                    tbar:[
@@ -587,14 +597,14 @@ Ext.define('App.view.administration.DataManager', {
 			},
 			columns: [
 				{
-					width: 100,
-					header: i18n('code_type'),
-					sortable: true,
+					width: 50,
+//					header: i18n('code_type'),
+					sortable: false,
 					dataIndex: 'code_type',
 					renderer: code_type
 				},
 				{
-					width: 100,
+					width: 60,
 					header: i18n('code'),
 					sortable: true,
 					dataIndex: 'code'
@@ -627,52 +637,54 @@ Ext.define('App.view.administration.DataManager', {
 					scope: me,
 					beforeedit: me.beforeServiceEdit
 				}
-			}),
-			tbar: Ext.create('Ext.PagingToolbar', {
-				store: me.store,
-				displayInfo: true,
-				emptyMsg: i18n('no_office_notes_to_display'),
-				plugins: Ext.create('Ext.ux.SlidingPager'),
-				items: [
-					'-',
-					{
-						xtype: 'mitos.codestypescombo',
-						width: 150,
-						listeners: {
-							scope: me,
-							select: me.onCodeTypeSelect
-						}
-					}, '-',
-					{
-						text: i18n('add'),
-						iconCls: 'icoAddRecord',
-						scope: me,
-						handler: me.onAddData
-					}, '-',
-					{
-						xtype: 'textfield',
-						emptyText: i18n('search'),
-						width: 200,
-						enableKeyEvents: true,
-						listeners: {
-							scope: me,
-							keyup: me.onSearch,
-							buffer: 500
-						}
-					}, '-',
-					{
-						xtype: 'button',
-						text: i18n('show_inactive_codes_only'),
-						enableToggle: true,
-						listeners: {
-							scope: me,
-							toggle: me.onActivePressed
-						}
-					}
-				]
 			})
 		});
 		// END GRID
+
+		me.pageTBar = Ext.create('Ext.PagingToolbar', {
+			store: me.store,
+			displayInfo: true,
+			emptyMsg: i18n('no_office_notes_to_display'),
+			plugins: Ext.create('Ext.ux.SlidingPager'),
+			items: [
+				'-',
+				{
+					xtype: 'mitos.codestypescombo',
+					width: 150,
+					listeners: {
+						scope: me,
+						select: me.onCodeTypeSelect
+					}
+				}, '-',
+				{
+					text: i18n('add'),
+					iconCls: 'icoAddRecord',
+					scope: me,
+					handler: me.onAddData
+				}, '-',
+				{
+					xtype: 'textfield',
+					emptyText: i18n('search'),
+					width: 200,
+					enableKeyEvents: true,
+					listeners: {
+						scope: me,
+						keyup: me.onSearch,
+						buffer: 500
+					}
+				}, '-',
+				{
+					xtype: 'button',
+					text: i18n('show_inactive_codes_only'),
+					enableToggle: true,
+					listeners: {
+						scope: me,
+						toggle: me.onActivePressed
+					}
+				}
+			]
+		});
+
 		me.pageBody = [me.dataManagerGrid];
 		me.callParent();
 	},
@@ -698,18 +710,24 @@ Ext.define('App.view.administration.DataManager', {
 
 		if(code_type == 'CPT4'){
 			thisForm = me.cptContainer;
-		} else if(code_type == 'HCPCS'){
+		}else if(code_type == 'HCPCS'){
 			thisForm = me.hpccsContainer;
-		} else if(code_type == 'CVX'){
+		}else if(code_type == 'CVX'){
 			thisForm = me.cvxCintainer;
-		} else if(code_type == 'LOINC'){
+		}else if(code_type == 'LOINC'){
+
+			me.labContainer.down('grid').setTitle(
+				e.record.data.has_children ? i18n('observations'):i18n('observation')
+			);
+
+			me.labContainer.down('grid').setVisible(e.record.data.class != 'RAD');
 			thisForm = me.labContainer;
 		}
 
 		if(!editor.items.length){
 			editor.add(thisForm);
 			editor.setFields();
-		} else if(this.currForm != thisForm){
+		}else if(this.currForm != thisForm){
 			editor.remove(0, false);
 			editor.add(thisForm);
 			editor.setFields();
@@ -719,10 +737,6 @@ Ext.define('App.view.administration.DataManager', {
 		 * find grids inside the form and load the its store with the row ID
 		 * @type {*}
 		 */
-
-		say(code_type);
-		say(thisForm);
-
 		if(thisForm){
 			grids = thisForm.query('grid');
 			for(var i = 0; i < grids.length; i++){
@@ -739,8 +753,7 @@ Ext.define('App.view.administration.DataManager', {
 	onSearch: function(field){
 		var me = this, store = me.store;
 		me.dataQuery = field.getValue();
-		store.proxy.extraParams =
-		{
+		store.proxy.extraParams = {
 			active: me.active,
 			code_type: me.code_type,
 			query: me.dataQuery
@@ -750,8 +763,7 @@ Ext.define('App.view.administration.DataManager', {
 	onCodeTypeSelect: function(combo, record){
 		var me = this, store = me.store;
 		me.code_type = record[0].data.option_value;
-		store.proxy.extraParams =
-		{
+		store.proxy.extraParams = {
 			active: me.active,
 			code_type: me.code_type,
 			query: me.dataQuery
@@ -769,64 +781,68 @@ Ext.define('App.view.administration.DataManager', {
 	onActivePressed: function(btn, pressed){
 		var me = this, store = me.store;
 		me.active = pressed ? 0 :1;
-		store.proxy.extraParams =
-		{
+		store.proxy.extraParams = {
 			active: me.active,
 			code_type: me.code_type,
 			query: me.dataQuery
 		};
 		me.store.load();
 	},
+
 	onFormTapChange: function(panel, newCard, oldCard){
-		this.ImmuRelationStore.proxy.extraParams =
-		{
+		this.ImmuRelationStore.proxy.extraParams = {
 			code_type: newCard.action,
 			selectedId: this.getSelectId()
 		};
 		this.ImmuRelationStore.load();
 	},
-	addActiveProblem: function(field, model){
-		this.ImmuRelationStore.add(
-			{
-				code: model[0].data.code,
-				code_text: model[0].data.code_text,
-				code_type: 'problems',
-				foreign_id: model[0].data.id,
-				immunization_id: this.getSelectId()
-			});
-		field.reset();
-	},
-	addMedications: function(field, model){
-		this.ImmuRelationStore.add(
-			{
-				code: model[0].data.PRODUCTNDC,
-				code_text: model[0].data.PROPRIETARYNAME,
-				code_type: 'medications',
-				foreign_id: model[0].data.id,
-				immunization_id: this.getSelectId()
-			});
-		field.reset();
-	},
-	addLabObservation: function(){
-		this.labObservationsStore.add(
-			{
-				lab_id: this.getSelectId(),
-				label: '',
-				name: '',
-				//unit:'M/uL (H)',
-				range_start: '-99999',
-				range_end: '99999'
 
-			});
+	addActiveProblem: function(field, model){
+		this.ImmuRelationStore.add({
+			code: model[0].data.code,
+			code_text: model[0].data.code_text,
+			code_type: 'problems',
+			foreign_id: model[0].data.id,
+			immunization_id: this.getSelectId()
+		});
+		field.reset();
 	},
+
+	addMedications: function(field, model){
+		this.ImmuRelationStore.add({
+			code: model[0].data.PRODUCTNDC,
+			code_text: model[0].data.PROPRIETARYNAME,
+			code_type: 'medications',
+			foreign_id: model[0].data.id,
+			immunization_id: this.getSelectId()
+		});
+		field.reset();
+	},
+
+	addLabObservation: function(){
+		this.labObservationsStore.add({
+			lab_id: this.getSelectId(),
+			label: '',
+			name: '',
+			//unit:'M/uL (H)',
+			range_start: '-99999',
+			range_end: '99999'
+
+		});
+	},
+
 	onRemoveRelation: function(grid, rowIndex){
-		var me = this, store = grid.getStore(), record = store.getAt(rowIndex);
+		var me = this,
+			store = grid.getStore(),
+			record = store.getAt(rowIndex);
 		store.remove(record);
 	},
+
 	getSelectId: function(){
 		var row = this.dataManagerGrid.getSelectionModel().getLastSelected();
 		return row.data.id;
 	},
+
 	/**
 	 * This function is called from Viewport.js when
 	 * this panel is selected in the navigation panel.
@@ -834,9 +850,8 @@ Ext.define('App.view.administration.DataManager', {
 	 * to call every this panel becomes active
 	 */
 	onActive: function(callback){
-		this.dataManagerGrid.query('combobox')[0].setValue("CPT4");
-		this.store.proxy.extraParams =
-		{
+		this.pageTBar.query('combobox')[0].setValue("CPT4");
+		this.store.proxy.extraParams = {
 			active: this.active,
 			code_type: this.code_type,
 			query: this.dataQuery

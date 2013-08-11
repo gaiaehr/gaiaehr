@@ -59,6 +59,11 @@ Ext.define('App.view.administration.Lists', {
             region: 'west',
             columns: [
                 {
+	                width: 25,
+                    sortable: false,
+                    dataIndex: 'id'
+                },
+                {
                     text: i18n('select_lists'),
                     flex: 1,
                     sortable: false,

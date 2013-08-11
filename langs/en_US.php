@@ -245,6 +245,7 @@ $LANG = array(
     'stature_for_age'						=> 'Stature for Age',
     'bmi_for_age'							=> 'BMI for Age',
     'print_chart'							=> 'Print Chart',
+    'print'     							=> 'Print',
     'weight_for_age_0_3_mos'				=> 'Weight For Age ( 0 - 3 mos )',
     'age_months'							=> 'Age (months)',
     'length_for_age_0_3_mos'				=> 'Length For Age ( 0 - 3 mos )',
@@ -1193,5 +1194,7 @@ $LANG = array(
     'only_active'                           => 'Only Active',
     'submit_vxu'                            => 'Submit VXU (HL7 encoded Msg)',
     'send_immunization_vxu_message'         => 'Send Immunization VXU Message',
-    'please_verify_the_information'         => 'Please, Verify The Information'
+    'please_verify_the_information'         => 'Please, Verify The Information',
+    'date_collected'                        => 'Date Collected',
+    'date_ordered'                          => 'Date Ordered'
 );

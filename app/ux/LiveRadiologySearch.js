@@ -15,15 +15,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-Ext.define('App.ux.LiveLabsSearch', {
+Ext.define('App.ux.LiveRadiologySearch', {
 	extend: 'Ext.form.ComboBox',
-	alias: 'widget.labslivetsearch',
+	alias: 'widget.radiologylivetsearch',
 	hideLabel: true,
 
 	initComponent: function(){
 		var me = this;
 
-		Ext.define('liveLoincSearchModel', {
+		Ext.define('liveRadLoincSearchModel', {
 			extend: 'Ext.data.Model',
 			fields: [
 				{ name: 'id' },
@@ -33,7 +33,7 @@ Ext.define('App.ux.LiveLabsSearch', {
 			proxy: {
 				type: 'direct',
 				api: {
-					read: Laboratories.getLabLoincLiveSearch
+					read: Laboratories.getRadLoincLiveSearch
 				},
 				reader: {
 					totalProperty: 'totals',
@@ -43,7 +43,7 @@ Ext.define('App.ux.LiveLabsSearch', {
 		});
 
 		me.store = Ext.create('Ext.data.Store', {
-			model: 'liveLoincSearchModel',
+			model: 'liveRadLoincSearchModel',
 			pageSize: 10,
 			autoLoad: false
 		});

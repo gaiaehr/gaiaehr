@@ -1,20 +1,20 @@
 <?php
 /**
-GaiaEHR (Electronic Health Records)
-Copyright (C) 2013 Certun, inc.
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * GaiaEHR (Electronic Health Records)
+ * Copyright (C) 2012 Ernesto Rodriguez
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 include_once ($_SESSION['root'] . '/dataProvider/Laboratories.php');
@@ -54,6 +54,10 @@ class Medical
 	 * @var bool|MatchaCUP
 	 */
 	private $i;
+	/**
+	 * @var bool|MatchaCUP
+	 */
+	private $m;
 
 
 	function __construct()
@@ -63,6 +67,8 @@ class Medical
 		$this->p = MatchaModel::setSenchaModel('App.model.patient.Patient');
 		$this->a = MatchaModel::setSenchaModel('App.model.patient.Allergies');
 		$this->i = MatchaModel::setSenchaModel('App.model.patient.PatientImmunization');
+
+		$this->m = MatchaModel::setSenchaModel('App.model.patient.Medications');
 
 		$this->laboratories = new Laboratories();
 		$this->rxnorm = new Rxnorm();
@@ -251,27 +257,17 @@ class Medical
 	/*************************************************************************************************************/
 	public function getPatientMedications(stdClass $params)
 	{
-		return $this->getPatientMedicationsByPatientID($params->pid);
+		return $this->m->load($params)->all();
 	}
 
-	public function addPatientMedications(stdClass $params)
+	public function addPatientMedications($params)
 	{
-		$data = get_object_vars($params);
-		unset($data['id'], $data['active']);
-		$this->db->setSQL($this->db->sqlBind($data, 'patient_medications', 'I'));
-		$this->db->execLog();
-		$params->id = $this->db->lastInsertId;
-		return $params;
+		return $this->m->save($params);
 	}
 
 	public function updatePatientMedications(stdClass $params)
 	{
-		$data = get_object_vars($params);
-		$id   = $data['id'];
-		unset($data['id'], $data['active']);
-		$this->db->setSQL($this->db->sqlBind($data, "patient_medications", "U", "id='$id'"));
-		$this->db->execLog();
-		return $params;
+		return $this->m->save($params);
 
 	}
 

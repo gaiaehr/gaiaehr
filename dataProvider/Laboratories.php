@@ -1,20 +1,20 @@
 <?php
 /**
-GaiaEHR (Electronic Health Records)
-Copyright (C) 2013 Certun, inc.
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * GaiaEHR (Electronic Health Records)
+ * Copyright (C) 2012 Ernesto Rodriguez
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 class Laboratories
@@ -55,8 +55,6 @@ class Laboratories
                                OR e.ALIAS LIKE '$params->query%'
                                OR l.loinc_num LIKE '$params->query%')
                               AND l.status = 'ACTIVE'
-                              AND (e.HAS_PARENT = 0
-                               OR e.HAS_PARENT = 1 AND e.HAS_CHILDREN = 1)
                          ORDER BY l.common_order_rank");
         return $this->db->fetchRecords(PDO::FETCH_ASSOC);
     }
@@ -181,7 +179,7 @@ class Laboratories
 
 	    if(empty($records)){
 		    $this->db->setSQL("SELECT DISTINCT l.loinc_num AS id,
-	                                  l.component AS loinc_name,
+	                                  l.long_common_name AS loinc_name,
 	                                  l.loinc_num AS loinc_number,
 	                                  'LOINC' AS code_type,
 	                                  l.unitsrequired AS units_required,
@@ -198,5 +196,43 @@ class Laboratories
 	    }
         return $records;
     }
+
+	public function getLabLoincLiveSearch(stdClass $params)
+	{
+		$this->db->setSQL("SELECT l.loinc_num AS id,
+								  IF(e.ALIAS IS NOT NULL && e.ALIAS != '', e.ALIAS, l.component) AS loinc_name,
+								  l.loinc_num AS loinc_number
+							 FROM loinc_extra AS e
+						LEFT JOIN loinc AS l ON e.LOINC_NUM = l.loinc_num
+							WHERE (l.class != 'RAD' AND l.class != 'PANEL.CARDIAC')
+							  AND (l.long_common_name LIKE '%$params->query%' OR e.ALIAS LIKE '%$params->query%')
+                              AND e.active = '1'");
+		$records = $this->db->fetchRecords(PDO::FETCH_ASSOC);
+		$total   = count($records);
+		$records = array_slice($records, $params->start, $params->limit);
+		return array(
+			'totals' => $total,
+			'rows'   => $records
+		);
+	}
+
+	public function getRadLoincLiveSearch(stdClass $params)
+	{
+		$this->db->setSQL("SELECT l.loinc_num AS id,
+								  IF(e.ALIAS IS NOT NULL && e.ALIAS != '', e.ALIAS, l.component) AS loinc_name,
+								  l.loinc_num AS loinc_number
+							 FROM loinc_extra AS e
+						LEFT JOIN loinc AS l ON e.LOINC_NUM = l.loinc_num
+							WHERE (l.class = 'RAD' OR l.class = 'PANEL.CARDIAC')
+							  AND (l.long_common_name LIKE '%$params->query%' OR e.ALIAS LIKE '%$params->query%')
+						      AND e.active = '1'");
+		$records = $this->db->fetchRecords(PDO::FETCH_ASSOC);
+		$total   = count($records);
+		$records = array_slice($records, $params->start, $params->limit);
+		return array(
+			'totals' => $total,
+			'rows'   => $records
+		);
+	}
 
 }

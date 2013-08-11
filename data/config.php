@@ -129,22 +129,13 @@ $API = array(
 
 	'Orders' => array(
 		'methods' => array(
-			'getPatientLabOrders' => array(
+			'getPatientOrders' => array(
 				'len' => 1
             ),
-			'addPatientLabOrder' => array(
+			'addPatientOrder' => array(
 				'len' => 1
             ),
-			'updatePatientLabOrder' => array(
-				'len' => 1
-            ),
-			'getPatientXrayCtOrders' => array(
-				'len' => 1
-            ),
-			'addPatientXrayCtOrder' => array(
-				'len' => 1
-            ),
-			'updatePatientXrayCtOrder' => array(
+			'updatePatientOrder' => array(
 				'len' => 1
             )
 		)
@@ -646,6 +637,12 @@ $API = array(
 			),
 			'indexLoincPanels' => array(
 				'len' => 0
+			),
+			'getLabLoincLiveSearch' => array(
+				'len' => 1
+			),
+			'getRadLoincLiveSearch' => array(
+				'len' => 1
 			)
 		)
 	),

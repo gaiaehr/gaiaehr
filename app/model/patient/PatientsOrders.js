@@ -101,7 +101,8 @@ Ext.define('App.model.patient.PatientsOrders', {
 		api : {
 			read:Orders.getPatientOrders,
 			create:Orders.addPatientOrder,
-			update:Orders.updatePatientOrder
+			update:Orders.updatePatientOrder,
+			destroy:Orders.deletePatientOrder
 		},
 		remoteGroup:false
 	}

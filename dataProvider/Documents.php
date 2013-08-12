@@ -137,7 +137,7 @@ class Documents
 
         $patienInformation = array(
             '[PATIENT_NAME]' => $patientData['fname'],
-            '[PATIENT_ID]' => $pid,
+            '[PATIENT_ID]' => $patientData['pid'],
             '[PATIENT_FULL_NAME]' => $this->patient->getPatientFullNameByPid($patientData['pid']),
             '[PATIENT_LAST_NAME]' => $patientData['lname'],
             '[PATIENT_SEX]' => $patientData['sex'],
@@ -167,74 +167,71 @@ class Documents
             '[PATIENT_RACE]' => $patientData['race'],
             '[PATIENT_ETHNICITY]' => $patientData['ethnicity'],
             '[PATIENT_LENGUAGE]' => $patientData['language'],
-            '[PATIENT_REFERRAL]' => $patientData['referral'],
+//            '[PATIENT_REFERRAL]' => $patientData['referral'],
             // /////////////////////////////////////
-            '[PATIENT_REFERRAL_DATE]' => $patientData['referral_date'],
+//            '[PATIENT_REFERRAL_DATE]' => $patientData['referral_date'],
             // ////////////////////////////////
             '[PATIENT_TABACCO]' => 'tabaco',
             // //////////////////////////////////////////////////////
             '[PATIENT_ALCOHOL]' => 'alcohol',
             // ////////////////////////////////////////////////////
-            '[PATIENT_BALANCE]' => '$' . $this->fees->getPatientBalanceByPid($pid),
-            '[PATIENT_PRIMARY_PLAN]' => $patientData['primary_plan_name'],
-            '[PATIENT_PRIMARY_EFFECTIVE_DATE]' => $patientData['primary_effective_date'],
-            '[PATIENT_PRIMARY_SUBSCRIBER]' => $patientData['primary_subscriber_title'] . $patientData['primary_subscriber_fname'] . ' ' . $patientData['primary_subscriber_mname'] . ' ' . $patientData['primary_subscriber_lname'],
-            '[PATIENT_PRIMARY_POLICY_NUMBER]' => $patientData['primary_policy_number'],
-            '[PATIENT_PRIMARY_GROUP_NUMBER]' => $patientData['primary_group_number'],
-            '[PATIENT_PRIMARY_SUBSCRIBER_STREET]' => $patientData['primary_subscriber_street'],
-            '[PATIENT_PRIMARY_SUBSCRIBER_CITY]' => $patientData['primary_subscriber_city'],
-            '[PATIENT_PRIMARY_SUBSCRIBER_STATE]' => $patientData['primary_subscriber_state'],
-            '[PATIENT_PRIMARY_SUBSCRIBER_COUNTRY]' => $patientData['primary_subscriber_country'],
-            '[PATIENT_PRIMARY_SUBSCRIBER_ZIPCODE]' => $patientData['primary_subscriber_zip_code'],
-            '[PATIENT_PRIMARY_SUBSCRIBER_RELATIONSHIP]' => $patientData['primary_subscriber_relationship'],
-            '[PATIENT_PRIMARY_SUBSCRIBER_PHONE]' => $patientData['primary_subscriber_phone'],
-            '[PATIENT_PRIMARY_SUBSCRIBER_EMPLOYER]' => $patientData['primary_subscriber_employer'],
-            '[PATIENT_PRIMARY_SUBSCRIBER_EMPLOYER_CITY]' => $patientData['primary_subscriber_employer_city'],
-            '[PATIENT_PRIMARY_SUBSCRIBER_EMPLOYER_STATE]' => $patientData['primary_subscriber_employer_state'],
-            '[PATIENT_PRIMARY_SUBSCRIBER_EMPLOYER_COUNTRY]' => $patientData['primary_subscriber_employer_country'],
-            '[PATIENT_PRIMARY_SUBSCRIBER_EMPLOYER_ZIPCODE]' => $patientData['primary_subscriber_zip_code'],
-            '[PATIENT_SECONDARY_PLAN]' => $patientData['secondary_plan_name'],
-            '[PATIENT_SECONDARY_EFFECTIVE_DATE]' => $patientData['secondary_effective_date'],
-            '[PATIENT_SECONDARY_SUBSCRIBER]' => $patientData['secondary_subscriber_title'] . $patientData['primary_subscriber_fname'] . ' ' . $patientData['primary_subscriber_mname'] . ' ' . $patientData['primary_subscriber_lname'],
-            '[PATIENT_SECONDARY_POLICY_NUMBER]' => $patientData['secondary_policy_number'],
-            '[PATIENT_SECONDARY_GROUP_NUMBER]' => $patientData['secondary_group_number'],
-            '[PATIENT_SECONDARY_SUBSCRIBER_STREET]' => $patientData['secondary_subscriber_street'],
-            '[PATIENT_SECONDARY_SUBSCRIBER_CITY]' => $patientData['secondary_subscriber_city'],
-            '[PATIENT_SECONDARY_SUBSCRIBER_STATE]' => $patientData['secondary_subscriber_state'],
-            '[PATIENT_SECONDARY_SUBSCRIBER_COUNTRY]' => $patientData['secondary_subscriber_country'],
-            '[PATIENT_SECONDARY_SUBSCRIBER_ZIPCODE]' => $patientData['secondary_subscriber_zip_code'],
-            '[PATIENT_SECONDARY_SUBSCRIBER_RELATIONSHIP]' => $patientData['secondary_subscriber_relationship'],
-            '[PATIENT_SECONDARY_SUBSCRIBER_PHONE]' => $patientData['secondary_subscriber_phone'],
-            '[PATIENT_SECONDARY_SUBSCRIBER_EMPLOYER]' => $patientData['secondary_subscriber_employer'],
-            '[PATIENT_SECONDARY_SUBSCRIBER_EMPLOYER_CITY]' => $patientData['secondary_subscriber_employer_city'],
-            '[PATIENT_SECONDARY_SUBSCRIBER_EMPLOYER_STATE]' => $patientData['secondary_subscriber_employer_state'],
-            '[PATIENT_SECONDARY_SUBSCRIBER_EMPLOYER_COUNTRY]' => $patientData['secondary_subscriber_employer_country'],
-            '[PATIENT_SECONDARY_SUBSCRIBER_EMPLOYER_ZIPCODE]' => $patientData['secondary_subscriber_zip_code'],
-            '[PATIENT_TERTIARY_PLAN]' => $patientData['tertiary_plan_name'],
-            '[PATIENT_TERTIARY_EFFECTIVE_DATE]' => $patientData['tertiary_effective_date'],
-            '[PATIENT_TERTIARY_SUBSCRIBER]' => $patientData['tertiary_subscriber_title'] . $patientData['primary_subscriber_fname'] . ' ' . $patientData['primary_subscriber_mname'] . ' ' . $patientData['primary_subscriber_lname'],
-            '[PATIENT_TERTIARY_POLICY_NUMBER]' => $patientData['tertiary_policy_number'],
-            '[PATIENT_TERTIARY_GROUP_NUMBER]' => $patientData['tertiary_group_number'],
-            '[PATIENT_TERTIARY_SUBSCRIBER_STREET]' => $patientData['tertiary_subscriber_street'],
-            '[PATIENT_TERTIARY_SUBSCRIBER_CITY]' => $patientData['tertiary_subscriber_city'],
-            '[PATIENT_TERTIARY_SUBSCRIBER_STATE]' => $patientData['tertiary_subscriber_state'],
-            '[PATIENT_TERTIARY_SUBSCRIBER_COUNTRY]' => $patientData['tertiary_subscriber_country'],
-            '[PATIENT_TERTIARY_SUBSCRIBER_ZIPCODE]' => $patientData['tertiary_subscriber_zip_code'],
-            '[PATIENT_TERTIARY_SUBSCRIBER_RELATIONSHIP]' => $patientData['tertiary_subscriber_relationship'],
-            '[PATIENT_TERTIARY_SUBSCRIBER_PHONE]' => $patientData['tertiary_subscriber_phone'],
-            '[PATIENT_TERTIARY_SUBSCRIBER_EMPLOYER]' => $patientData['tertiary_subscriber_employer'],
-            '[PATIENT_TERTIARY_SUBSCRIBER_EMPLOYER_CITY]' => $patientData['tertiary_subscriber_employer_city'],
-            '[PATIENT_TERTIARY_SUBSCRIBER_EMPLOYER_STATE]' => $patientData['tertiary_subscriber_employer_state'],
-            '[PATIENT_TERTIARY_SUBSCRIBER_EMPLOYER_COUNTRY]' => $patientData['tertiary_subscriber_employer_country'],
-            '[PATIENT_TERTIARY_SUBSCRIBER_EMPLOYER_ZIPCODE]' => $patientData['tertiary_subscriber_zip_code']
+//            '[PATIENT_BALANCE]' => '$' . $this->fees->getPatientBalanceByPid($pid),
+//            '[PATIENT_PRIMARY_PLAN]' => $patientData['primary_plan_name'],
+//            '[PATIENT_PRIMARY_EFFECTIVE_DATE]' => $patientData['primary_effective_date'],
+//            '[PATIENT_PRIMARY_SUBSCRIBER]' => $patientData['primary_subscriber_title'] . $patientData['primary_subscriber_fname'] . ' ' . $patientData['primary_subscriber_mname'] . ' ' . $patientData['primary_subscriber_lname'],
+//            '[PATIENT_PRIMARY_POLICY_NUMBER]' => $patientData['primary_policy_number'],
+//            '[PATIENT_PRIMARY_GROUP_NUMBER]' => $patientData['primary_group_number'],
+//            '[PATIENT_PRIMARY_SUBSCRIBER_STREET]' => $patientData['primary_subscriber_street'],
+//            '[PATIENT_PRIMARY_SUBSCRIBER_CITY]' => $patientData['primary_subscriber_city'],
+//            '[PATIENT_PRIMARY_SUBSCRIBER_STATE]' => $patientData['primary_subscriber_state'],
+//            '[PATIENT_PRIMARY_SUBSCRIBER_COUNTRY]' => $patientData['primary_subscriber_country'],
+//            '[PATIENT_PRIMARY_SUBSCRIBER_ZIPCODE]' => $patientData['primary_subscriber_zip_code'],
+//            '[PATIENT_PRIMARY_SUBSCRIBER_RELATIONSHIP]' => $patientData['primary_subscriber_relationship'],
+//            '[PATIENT_PRIMARY_SUBSCRIBER_PHONE]' => $patientData['primary_subscriber_phone'],
+//            '[PATIENT_PRIMARY_SUBSCRIBER_EMPLOYER]' => $patientData['primary_subscriber_employer'],
+//            '[PATIENT_PRIMARY_SUBSCRIBER_EMPLOYER_CITY]' => $patientData['primary_subscriber_employer_city'],
+//            '[PATIENT_PRIMARY_SUBSCRIBER_EMPLOYER_STATE]' => $patientData['primary_subscriber_employer_state'],
+//            '[PATIENT_PRIMARY_SUBSCRIBER_EMPLOYER_COUNTRY]' => $patientData['primary_subscriber_employer_country'],
+//            '[PATIENT_PRIMARY_SUBSCRIBER_EMPLOYER_ZIPCODE]' => $patientData['primary_subscriber_zip_code'],
+//            '[PATIENT_SECONDARY_PLAN]' => $patientData['secondary_plan_name'],
+//            '[PATIENT_SECONDARY_EFFECTIVE_DATE]' => $patientData['secondary_effective_date'],
+//            '[PATIENT_SECONDARY_SUBSCRIBER]' => $patientData['secondary_subscriber_title'] . $patientData['primary_subscriber_fname'] . ' ' . $patientData['primary_subscriber_mname'] . ' ' . $patientData['primary_subscriber_lname'],
+//            '[PATIENT_SECONDARY_POLICY_NUMBER]' => $patientData['secondary_policy_number'],
+//            '[PATIENT_SECONDARY_GROUP_NUMBER]' => $patientData['secondary_group_number'],
+//            '[PATIENT_SECONDARY_SUBSCRIBER_STREET]' => $patientData['secondary_subscriber_street'],
+//            '[PATIENT_SECONDARY_SUBSCRIBER_CITY]' => $patientData['secondary_subscriber_city'],
+//            '[PATIENT_SECONDARY_SUBSCRIBER_STATE]' => $patientData['secondary_subscriber_state'],
+//            '[PATIENT_SECONDARY_SUBSCRIBER_COUNTRY]' => $patientData['secondary_subscriber_country'],
+//            '[PATIENT_SECONDARY_SUBSCRIBER_ZIPCODE]' => $patientData['secondary_subscriber_zip_code'],
+//            '[PATIENT_SECONDARY_SUBSCRIBER_RELATIONSHIP]' => $patientData['secondary_subscriber_relationship'],
+//            '[PATIENT_SECONDARY_SUBSCRIBER_PHONE]' => $patientData['secondary_subscriber_phone'],
+//            '[PATIENT_SECONDARY_SUBSCRIBER_EMPLOYER]' => $patientData['secondary_subscriber_employer'],
+//            '[PATIENT_SECONDARY_SUBSCRIBER_EMPLOYER_CITY]' => $patientData['secondary_subscriber_employer_city'],
+//            '[PATIENT_SECONDARY_SUBSCRIBER_EMPLOYER_STATE]' => $patientData['secondary_subscriber_employer_state'],
+//            '[PATIENT_SECONDARY_SUBSCRIBER_EMPLOYER_COUNTRY]' => $patientData['secondary_subscriber_employer_country'],
+//            '[PATIENT_SECONDARY_SUBSCRIBER_EMPLOYER_ZIPCODE]' => $patientData['secondary_subscriber_zip_code'],
+//            '[PATIENT_TERTIARY_PLAN]' => $patientData['tertiary_plan_name'],
+//            '[PATIENT_TERTIARY_EFFECTIVE_DATE]' => $patientData['tertiary_effective_date'],
+//            '[PATIENT_TERTIARY_SUBSCRIBER]' => $patientData['tertiary_subscriber_title'] . $patientData['primary_subscriber_fname'] . ' ' . $patientData['primary_subscriber_mname'] . ' ' . $patientData['primary_subscriber_lname'],
+//            '[PATIENT_TERTIARY_POLICY_NUMBER]' => $patientData['tertiary_policy_number'],
+//            '[PATIENT_TERTIARY_GROUP_NUMBER]' => $patientData['tertiary_group_number'],
+//            '[PATIENT_TERTIARY_SUBSCRIBER_STREET]' => $patientData['tertiary_subscriber_street'],
+//            '[PATIENT_TERTIARY_SUBSCRIBER_CITY]' => $patientData['tertiary_subscriber_city'],
+//            '[PATIENT_TERTIARY_SUBSCRIBER_STATE]' => $patientData['tertiary_subscriber_state'],
+//            '[PATIENT_TERTIARY_SUBSCRIBER_COUNTRY]' => $patientData['tertiary_subscriber_country'],
+//            '[PATIENT_TERTIARY_SUBSCRIBER_ZIPCODE]' => $patientData['tertiary_subscriber_zip_code'],
+//            '[PATIENT_TERTIARY_SUBSCRIBER_RELATIONSHIP]' => $patientData['tertiary_subscriber_relationship'],
+//            '[PATIENT_TERTIARY_SUBSCRIBER_PHONE]' => $patientData['tertiary_subscriber_phone'],
+//            '[PATIENT_TERTIARY_SUBSCRIBER_EMPLOYER]' => $patientData['tertiary_subscriber_employer'],
+//            '[PATIENT_TERTIARY_SUBSCRIBER_EMPLOYER_CITY]' => $patientData['tertiary_subscriber_employer_city'],
+//            '[PATIENT_TERTIARY_SUBSCRIBER_EMPLOYER_STATE]' => $patientData['tertiary_subscriber_employer_state'],
+//            '[PATIENT_TERTIARY_SUBSCRIBER_EMPLOYER_COUNTRY]' => $patientData['tertiary_subscriber_employer_country'],
+//            '[PATIENT_TERTIARY_SUBSCRIBER_EMPLOYER_ZIPCODE]' => $patientData['tertiary_subscriber_zip_code']
         );
-        $pos = 0;
-        foreach ($tokens as $tok) {
-            if ($allNeededInfo[$pos] == '' || $allNeededInfo[$pos] == null) {
-                $allNeededInfo[$pos] = $patienInformation[$tok];
+        foreach($tokens as $i => $tok) {
+            if (isset($patienInformation[$tok]) && ($allNeededInfo[$i] == '' || $allNeededInfo[$i] == null)) {
+                $allNeededInfo[$i] = $patienInformation[$tok];
             };
-            $pos = $pos + 1;
-
         }
         return $allNeededInfo;
     }
@@ -284,8 +281,8 @@ class Documents
         $medications = $this->medical->getPatientMedicationsByEncounterID($eid);
         $immunizations = $this->medical->getImmunizationsByEncounterID($eid);
         $allergies = $this->medical->getAllergiesByEncounterID($eid);
-        $surgery = $this->medical->getPatientSurgeryByEncounterID($eid);
-        $dental = $this->medical->getPatientDentalByEncounterID($eid);
+//        $surgery = $this->medical->getPatientSurgeryByEncounterID($eid);
+//        $dental = $this->medical->getPatientDentalByEncounterID($eid);
         $activeProblems = $this->medical->getMedicalIssuesByEncounterID($eid);
         $preventivecaredismiss = $this->preventiveCare->getPreventiveCareDismissPatientByEncounterID($eid);
         $encounterdata = $encounterdata['encounter'];
@@ -344,13 +341,10 @@ class Documents
             // =>$this->tokensForEncountersList($preventivecaredismiss,16)
         );
 
-        $pos = 0;
-        foreach ($tokens as $tok) {
-            if ($allNeededInfo[$pos] == '' || $allNeededInfo[$pos] == null) {
-                $allNeededInfo[$pos] = $encounterInformation[$tok];
+        foreach ($tokens as $i => $tok) {
+            if(isset($encounterInformation[$tok]) && ($allNeededInfo[$i] == '' || $allNeededInfo[$i] == null)) {
+                $allNeededInfo[$i] = $encounterInformation[$tok];
             }
-            ;
-            $pos = $pos + 1;
         }
         return $allNeededInfo;
     }
@@ -509,13 +503,10 @@ class Documents
             '[CURRENT_USER_NPI_LICENSE_NUMBER]',
             '[LINE]' => '<hr>'
         );
-        $pos = 0;
-        foreach ($tokens as $tok) {
-            if ($allNeededInfo[$pos] == '' || $allNeededInfo[$pos] == null) {
-                $allNeededInfo[$pos] = $currentInformation[$tok];
+        foreach ($tokens as $i => $tok) {
+            if (isset($currentInformation[$tok]) && ($allNeededInfo[$i] == '' || $allNeededInfo[$i] == null)) {
+                $allNeededInfo[$i] = $currentInformation[$tok];
             }
-            ;
-            $pos = $pos + 1;
         }
         return $allNeededInfo;
     }
@@ -523,7 +514,7 @@ class Documents
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private function get_ClinicTokensData($allNeededInfo, $tokens)
     {
-        $facilityInfo = $this->facility->getActiveFacilitiesById($_SESSION['facilities']['id']);
+        $facilityInfo = $this->facility->getActiveFacilitiesById($_SESSION['user']['facility']);
         $clinicInformation = array(
             '[FACILITY_NAME]' => $facilityInfo['name'],
             '[FACILITY_PHONE]' => $facilityInfo['phone'],
@@ -538,13 +529,10 @@ class Documents
             '[FACILITY_BILLING_LOCATION]' => $facilityInfo['billing_location'],
             '[FACILITY_FACILITY_NPI]' => $facilityInfo['facility_npi']
         );
-        $pos = 0;
-        foreach ($tokens as $tok) {
-            if ($allNeededInfo[$pos] == '' || $allNeededInfo[$pos] == null) {
-                $allNeededInfo[$pos] = $clinicInformation[$tok];
+        foreach ($tokens as $i => $tok) {
+            if (isset($clinicInformation[$tok]) && ($allNeededInfo[$i] == '' || $allNeededInfo[$i] == null)) {
+                $allNeededInfo[$i] = $clinicInformation[$tok];
             }
-
-            $pos = $pos + 1;
         }
         return $allNeededInfo;
     }
@@ -556,7 +544,6 @@ class Documents
     public function PDFDocumentBuilder($params, $path = '')
     {
         $pid = $params->pid;
-        $eid = $params->eid;
         $templateId = $params->templateId;
         $regex = '(\[\w*?\])';
         $this->pdf->SetCreator('TCPDF');
@@ -588,9 +575,18 @@ class Documents
             //getting the template
             $body = $this->getTemplateBodyById($templateId);
         }
+
+//	    print_r($tokens);
         $allNeededInfo = $this->setArraySizeOfTokenArray($tokens);
+//	    print_r($allNeededInfo);
+
         $allNeededInfo = $this->get_PatientTokensData($pid, $allNeededInfo, $tokens);
-        $allNeededInfo = $this->get_EncounterTokensData(1, $allNeededInfo, $tokens);
+//	    print_r($allNeededInfo);
+
+        if(isset($params->eid) && $params->eid != 0 && $params->eid = ''){
+	        $allNeededInfo = $this->get_EncounterTokensData($params->eid, $allNeededInfo, $tokens);
+        }
+
         $allNeededInfo = $this->get_currentTokensData($allNeededInfo, $tokens);
         $allNeededInfo = $this->get_ClinicTokensData($allNeededInfo, $tokens);
 
@@ -632,17 +628,15 @@ class Documents
         $th = array_shift($rows);
         $table .= '<tr>';
             foreach($th AS $cell){
-                $table .= '<th style="background-color:#5CB8E6; border-bottom:1px solid #000000">';
-                $table .= $cell;
-                $table .= '</th>';
+                $table .= '<th style="background-color:#5CB8E6;border-bottom:1px solid #000000;">'.$cell.'</th>';
             }
         $table .= '</tr>';
-        foreach($rows AS $rowIndex => $row){
+
+        foreach($rows AS $index => $row){
             $table .= '<tr>';
                 foreach($row AS $cell){
-                    $table .= ($rowIndex / 2) != 0 ? '<td style="background-color:#f6f6f6">' : '<td>';
-                    $table .= $cell;
-                    $table .= '</td>';
+	                $color  = ($index % 2 == 0 ? '#ffffff' : '#f6f6f6');
+                    $table .= '<td style="background-color:'.$color.';border-bottom:1px solid #999999;">'.$cell.'</td>';
                 }
             $table .= '</tr>';
         }

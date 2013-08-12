@@ -100,7 +100,7 @@ class Medical
 	 * @param stdClass $params
 	 * @return array
 	 */
-	public function getPatientImmunizations(stdClass $params)
+	public function getPatientImmunizations($params)
 	{
 		return $this->getPatientImmunizationsByPid($params->pid);
 	}
@@ -109,7 +109,7 @@ class Medical
 	 * @param stdClass $params
 	 * @return array
 	 */
-	public function addPatientImmunization(stdClass $params)
+	public function addPatientImmunization($params)
 	{
 		$immunization = $this->i->save($params);
 		// add service
@@ -135,24 +135,24 @@ class Medical
 	 * @param stdClass $params
 	 * @return array
 	 */
-	public function updatePatientImmunization(stdClass $params)
+	public function updatePatientImmunization($params)
 	{
 		return $this->i->save($params);
 
 	}
 
 	/*************************************************************************************************************/
-	public function getPatientAllergies(stdClass $params)
+	public function getPatientAllergies($params)
 	{
 		return $this->a->load($params)->all();
 	}
 
-	public function addPatientAllergies(stdClass $params)
+	public function addPatientAllergies($params)
 	{
 		return $this->a->save($params);
 	}
 
-	public function updatePatientAllergies(stdClass $params)
+	public function updatePatientAllergies($params)
 	{
 		return $this->a->save($params);
 	}
@@ -255,7 +255,7 @@ class Medical
 //	}
 
 	/*************************************************************************************************************/
-	public function getPatientMedications(stdClass $params)
+	public function getPatientMedications($params)
 	{
 		return $this->m->load($params)->all();
 	}
@@ -265,34 +265,19 @@ class Medical
 		return $this->m->save($params);
 	}
 
-	public function updatePatientMedications(stdClass $params)
+	public function updatePatientMedications($params)
 	{
 		return $this->m->save($params);
+	}
 
+	public function deletePatientMedications($params)
+	{
+		return $this->m->destroy($params);
 	}
 
 	/*************************************************************************************************************/
-//	public function getMedicationLiveSearch(stdClass $params)
-//	{
-//		$this->db->setSQL("SELECT id,
-//								  PROPRIETARYNAME,
-//								  PRODUCTNDC,
-//								  NONPROPRIETARYNAME,
-//								  ACTIVE_NUMERATOR_STRENGTH,
-//								  ACTIVE_INGRED_UNIT
-//                           	 FROM medications
-//                            WHERE PROPRIETARYNAME LIKE '$params->query%'
-//                               OR NONPROPRIETARYNAME LIKE '$params->query%'");
-//		$records = $this->db->fetchRecords(PDO::FETCH_ASSOC);
-//		$total   = count($records);
-//		$records = array_slice($records, $params->start, $params->limit);
-//		return array(
-//			'totals' => $total,
-//			'rows'   => $records
-//		);
-//	}
-
 	/***************************************************************************************************************/
+
 	public function getPatientLabsResults(stdClass $params)
 	{
 		return $this->getPatientLabsResultsByPid($params->parent_id);
@@ -401,8 +386,12 @@ class Medical
 	 */
 	public function getImmunizationsByEncounterID($eid)
 	{
-		$this->db->setSQL("SELECT * FROM patient_immunizations WHERE eid='$eid'");
-		return $this->db->fetchRecords(PDO::FETCH_ASSOC);
+		$params = new stdClass();
+		$params->filter = array();
+		$params->filter[0] = new stdClass();
+		$params->filter[0]->property = 'eid';
+		$params->filter[0]->value = $eid;
+		return $this->i->load($params)->all();
 	}
 
 	/**

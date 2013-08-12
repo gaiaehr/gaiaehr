@@ -37,6 +37,10 @@ Ext.define('App.model.patient.Medications', {
 			type: 'int'
 		},
 		{
+			name: 'uid',
+			type: 'int'
+		},
+		{
 			name: 'prescription_id',
 			type: 'int'
 		},
@@ -137,7 +141,8 @@ Ext.define('App.model.patient.Medications', {
 		api : {
 			read  : Medical.getPatientMedications,
 			create: Medical.addPatientMedications,
-			update: Medical.updatePatientMedications
+			update: Medical.updatePatientMedications,
+			destroy: Medical.deletePatientMedications
 		},
 		remoteGroup:false
 	}

@@ -137,6 +137,9 @@ $API = array(
             ),
 			'updatePatientOrder' => array(
 				'len' => 1
+            ),
+			'deletePatientOrder' => array(
+				'len' => 1
             )
 		)
 	),
@@ -505,6 +508,9 @@ $API = array(
 				'len' => 1
 			),
 			'updatePatientMedications' => array(
+				'len' => 1
+			),
+			'deletePatientMedications' => array(
 				'len' => 1
 			),
 			'getMedicationLiveSearch' => array(
@@ -1240,6 +1246,9 @@ $API = array(
 				'len' => 0
 			),
 			'usernameExist' => array(
+				'len' => 1
+			),
+			'getUserFullNameById' => array(
 				'len' => 1
 			)
 		)

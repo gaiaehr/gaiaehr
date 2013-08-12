@@ -548,6 +548,12 @@ Ext.define('App.view.Viewport', {
                     xtype: 'toolbar',
                     dock: 'bottom',
                     items: [
+	                    {
+		                    xtype:'combobox',
+		                    emptyText:'Facilities',
+		                    width: parseFloat(globals['gbl_nav_area_width']) - 4
+	                    },
+	                    '-',
                         {
                             text: 'Copyright (C) 2011 GaiaEHR (Electronic Health Records) |:|  Open Source Software operating under GPLv3 |:| v' + me.version,
                             iconCls: 'icoGreen',

@@ -402,7 +402,7 @@ Ext.define('App.view.patient.Encounter', {
                 scope:me,
                 handler:me.newDoc
             }, '-', {
-                text:i18n('prescriptions'),
+                text:i18n('rx_orders'),
                 action:'prescription',
                 scope:me,
                 handler:me.newDoc

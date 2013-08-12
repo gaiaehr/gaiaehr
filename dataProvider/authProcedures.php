@@ -119,7 +119,7 @@ class authProcedures
 		//-------------------------------------------
 		// Username & password match
 		//-------------------------------------------
-		$db->setSQL("SELECT id, username, title, fname, mname, lname, email, password
+		$db->setSQL("SELECT id, username, title, fname, mname, lname, email, facility_id, password
                          FROM users
         		        WHERE username   = '$params->authUser'
         		          AND authorized = '1'
@@ -134,11 +134,12 @@ class authProcedures
 			//-------------------------------------------
 			// Change some User related variables and go
 			//-------------------------------------------
-			$_SESSION['user']['name']  = $user['title'] . " " . $user['lname'] . ", " . $user['fname'] . " " . $user['mname'];
-			$_SESSION['user']['id']    = $user['id'];
-			$_SESSION['user']['email'] = $user['email'];
-			$_SESSION['user']['site']  = $params->site;
-			$_SESSION['user']['auth']  = true;
+			$_SESSION['user']['name']       = $user['title'] . " " . $user['lname'] . ", " . $user['fname'] . " " . $user['mname'];
+			$_SESSION['user']['id']         = $user['id'];
+			$_SESSION['user']['email']      = $user['email'];
+			$_SESSION['user']['facility']   = $user['facility_id'];
+			$_SESSION['user']['site']       = $params->site;
+			$_SESSION['user']['auth']       = true;
 			//-------------------------------------------
 			// Also fetch the current version of the
 			// Application & Database

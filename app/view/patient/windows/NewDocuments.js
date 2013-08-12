@@ -20,17 +20,24 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 	extend:'App.ux.window.Window',
 	title:i18n('order_window'),
 	closeAction:'hide',
-	height:750,
-	width:1200,
+	height:700,
+	width:1300,
 	layout:'fit',
 	bodyStyle:'background-color:#fff',
 	modal:true,
 	pid:null,
 	eid:null,
+
 	initComponent:function(){
 		var me = this;
 		me.patientPrescriptionsStore = Ext.create('App.store.patient.Medications',{
-			groupField: 'date_ordered'
+			groupField: 'date_ordered',
+			sorters:[
+				{
+					property : 'date_ordered',
+					direction: 'DESC'
+				}
+			]
 		});
 
 		me.patientsLabsOrdersStore = Ext.create('App.store.patient.PatientsOrders',{
@@ -39,6 +46,12 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 				{
 					property:'order_type',
 					value:'lab'
+				}
+			],
+			sorters:[
+				{
+					property : 'date_ordered',
+					direction: 'DESC'
 				}
 			]
 		});
@@ -49,6 +62,12 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 				{
 					property:'order_type',
 					value:'rad'
+				}
+			],
+			sorters:[
+				{
+					property : 'date_ordered',
+					direction: 'DESC'
 				}
 			]
 		});
@@ -62,340 +81,445 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 					/**
 					 * LAB ORDERS PANEL
 					 */
-					{
+					me.labGrid = Ext.widget('grid',{
 						title:i18n('lab_orders'),
-						layout:'fit',
-						items:[
-							me.labGrid = Ext.widget('grid',{
-								title:' ',
-								border:false,
-								action:'lab',
-								store:me.patientsLabsOrdersStore,
-								features: [
+						action:'lab',
+						store:me.patientsLabsOrdersStore,
+						selModel: Ext.create('Ext.selection.CheckboxModel',{
+							showHeaderCheckbox:false
+						}),
+						features: [
+							{
+								ftype:'grouping'
+							}
+						],
+						plugins:[
+							{
+								ptype:'rowediting',
+								clicksToEdit: 2
+							}
+						],
+						columns:[
+							{
+								xtype:'actioncolumn',
+								width:20,
+								items:[
 									{
-										ftype:'grouping'
+										icon:'resources/images/icons/cross.png',
+										tooltip:i18n('remove'),
+										scope:me,
+										handler:me.onRemoveClick
 									}
-								],
-								plugins:[
-									{
-										ptype:'rowediting',
-										clicksToEdit: 2
-									}
-								],
-								columns:[
-									{
-										header:i18n('status'),
-										width:100,
-										dataIndex:'status',
-										editor:{
-											xtype:'gaiaehr.combo',
-											list:40
-										},
-										renderer:me.statusRenderer
-									},
-									{
-										xtype: 'datecolumn',
-										header:i18n('date_ordered'),
-										width:100,
-										dataIndex:'date_ordered',
-										format:'Y-m-d',
-										editor:{
-											xtype:'datefield'
-										}
-									},
-									{
-										header:i18n('code'),
-										width:100,
-										dataIndex:'code'
-									},
-									{
-										header:i18n('description'),
-										flex:1,
-										dataIndex:'description',
-										editor:{
-											xtype: 'labslivetsearch',
-											listeners:{
-												scope:me,
-												select:me.onLoincSearchSelect
-											}
-										}
-									},
-									{
-										header:i18n('notes'),
-										flex:1,
-										dataIndex:'note',
-										editor:{
-											xtype:'textfield'
-										}
-									},
-									{
-										header:i18n('priority'),
-										width:100,
-										dataIndex:'priority',
-										editor:{
-											xtype:'gaiaehr.combo',
-											list:98
-										}
-									},
-									{
-										xtype: 'datecolumn',
-										header:i18n('date_collected'),
-										width:100,
-										dataIndex:'date_collected',
-										format:'Y-m-d',
-										editor:{
-											xtype:'datefield'
-										}
-									}
-								],
-								listeners:{
-									scope:me,
-									render:me.onLabGridRender
+								]
+							},
+							{
+								header:i18n('status'),
+								width:75,
+								dataIndex:'status',
+								editor:{
+									xtype:'gaiaehr.combo',
+									list:40
+								},
+								renderer:me.statusRenderer
+							},
+							{
+								xtype: 'datecolumn',
+								header:i18n('date_ordered'),
+								width:100,
+								dataIndex:'date_ordered',
+								format:'Y-m-d',
+								editor:{
+									xtype:'datefield'
 								}
+							},
+							{
+								header:i18n('code'),
+								width:100,
+								dataIndex:'code'
+							},
+							{
+								header:i18n('description'),
+								flex:1,
+								dataIndex:'description',
+								editor:{
+									xtype: 'labslivetsearch',
+									listeners:{
+										scope:me,
+										select:me.onLoincSearchSelect
+									}
+								}
+							},
+							{
+								header:i18n('notes'),
+								flex:1,
+								dataIndex:'note',
+								editor:{
+									xtype:'textfield'
+								}
+							},
+							{
+								header:i18n('priority'),
+								width:100,
+								dataIndex:'priority',
+								editor:{
+									xtype:'gaiaehr.combo',
+									list:98
+								}
+							},
+							{
+								xtype: 'datecolumn',
+								header:i18n('date_collected'),
+								width:100,
+								dataIndex:'date_collected',
+								format:'Y-m-d',
+								editor:{
+									xtype:'datefield'
+								}
+							}
+						],
+						tbar:[
+							me.eLabBtn = Ext.widget('button',{
+								text:i18n('eLab'),
+								iconCls:'icoSend',
+								scope:me,
+								handler:function(){
+									alert('TODO...');
+								}
+							}),
+							'-',
+							'->',
+							'-',
+							{
+								xtype:'button',
+								text:i18n('new_order'),
+								iconCls:'icoAdd',
+								scope:me,
+								action: 'lab',
+								handler:me.onAddOrder
+							},
+							'-',
+							me.labPrintBtn = Ext.widget('button',{
+								text:i18n('print'),
+								iconCls:'icoPrint',
+								disabled:true,
+								margin:'0 5 0 0',
+								scope:me,
+								handler:me.onPrintOrder
 							})
-						]
-					},
+						],
+						listeners:{
+							scope:me,
+							selectionchange:me.onSelectionChange
+						}
+					}),
 					/**
 					 * X-RAY PANEL
 					 */
-					{
+					me.xGrid = Ext.widget('grid',{
 						title:i18n('xray_ct_orders'),
-						layout:'fit',
-						items:[
-							me.xGrid = Ext.widget('grid',{
-								title:' ',
-								border:false,
-								store:me.PatientsXrayCtOrdersStore,
-								action:'rad',
-								features: [
+						store:me.PatientsXrayCtOrdersStore,
+						action:'rad',
+						selModel: Ext.create('Ext.selection.CheckboxModel',{
+							showHeaderCheckbox:false
+						}),
+						features: [
+							{
+								ftype:'grouping'
+							}
+						],
+						plugins:[
+							{
+								ptype:'rowediting',
+								clicksToEdit: 2
+							}
+						],
+						columns:[
+							{
+								xtype:'actioncolumn',
+								width:20,
+								items:[
 									{
-										ftype:'grouping'
+										icon:'resources/images/icons/cross.png',
+										tooltip:i18n('remove'),
+										scope:me,
+										handler:me.onRemoveClick
 									}
-								],
-								plugins:[
-									{
-										ptype:'rowediting',
-										clicksToEdit: 2
-									}
-								],
-								columns:[
-									{
-										header:i18n('status'),
-										width:100,
-										dataIndex:'status',
-										editor:{
-											xtype:'gaiaehr.combo',
-											list:40
-										},
-										renderer:me.statusRenderer
-									},
-									{
-										xtype: 'datecolumn',
-										header:i18n('date_ordered'),
-										width:100,
-										dataIndex:'date_ordered',
-										format:'Y-m-d',
-										editor:{
-											xtype:'datefield'
-										}
-									},
-									{
-										header:i18n('code'),
-										width:100,
-										dataIndex:'code'
-									},
-									{
-										header:i18n('description'),
-										flex:1,
-										dataIndex:'description',
-										editor:{
-											xtype: 'radiologylivetsearch',
-											listeners:{
-												scope:me,
-												select:me.onLoincSearchSelect
-											}
-										}
-									},
-									{
-										header:i18n('notes'),
-										flex:1,
-										dataIndex:'note',
-										editor:{
-											xtype:'textfield'
-										}
-									},
-									{
-										header:i18n('priority'),
-										width:100,
-										dataIndex:'priority',
-										editor:{
-											xtype:'gaiaehr.combo',
-											list:98
-										}
-									},
-									{
-										xtype: 'datecolumn',
-										header:i18n('date_collected'),
-										width:100,
-										dataIndex:'date_collected',
-										format:'Y-m-d',
-										editor:{
-											xtype:'datefield'
-										}
-									}
-								],
-								listeners:{
-									scope:me,
-									render:me.onLabGridRender
+								]
+							},
+							{
+								header:i18n('status'),
+								width:75,
+								dataIndex:'status',
+								editor:{
+									xtype:'gaiaehr.combo',
+									list:40
+								},
+								renderer:me.statusRenderer
+							},
+							{
+								xtype: 'datecolumn',
+								header:i18n('date_ordered'),
+								width:100,
+								dataIndex:'date_ordered',
+								format:'Y-m-d',
+								editor:{
+									xtype:'datefield'
 								}
-
+							},
+							{
+								header:i18n('code'),
+								width:100,
+								dataIndex:'code'
+							},
+							{
+								header:i18n('description'),
+								flex:1,
+								dataIndex:'description',
+								editor:{
+									xtype: 'radiologylivetsearch',
+									listeners:{
+										scope:me,
+										select:me.onLoincSearchSelect
+									}
+								}
+							},
+							{
+								header:i18n('notes'),
+								flex:1,
+								dataIndex:'note',
+								editor:{
+									xtype:'textfield'
+								}
+							},
+							{
+								header:i18n('priority'),
+								width:100,
+								dataIndex:'priority',
+								editor:{
+									xtype:'gaiaehr.combo',
+									list:98
+								}
+							},
+							{
+								xtype: 'datecolumn',
+								header:i18n('date_collected'),
+								width:100,
+								dataIndex:'date_collected',
+								format:'Y-m-d',
+								editor:{
+									xtype:'datefield'
+								}
+							}
+						],
+						tbar:[
+							me.eRadBtn = Ext.widget('button',{
+								text:i18n('eRad'),
+								iconCls:'icoSend',
+								scope:me,
+								handler:function(){
+									alert('TODO...');
+								}
+							}),
+							'-',
+							'->',
+							'-',
+							{
+								xtype:'button',
+								text:i18n('new_order'),
+								iconCls:'icoAdd',
+								scope:me,
+								action: 'lab',
+								handler:me.onAddOrder
+							},
+							'-',
+							me.radPrintBtn = Ext.widget('button',{
+								text:i18n('print'),
+								iconCls:'icoPrint',
+								disabled:true,
+								margin:'0 5 0 0',
+								scope:this,
+								handler:me.onPrintOrder
 							})
-						]
-					},
+						],
+						listeners:{
+							scope:me,
+							selectionchange:me.onSelectionChange
+						}
+					}),
 					/**
-					 * NEW PRESCRIPTION PANEL
+					 * PRESCRIPTION PANEL
 					 */
-					{
-						title:i18n('prescriptions'),
-						layout:'fit',
-						items:[
-							/**
-							 * Prescription Grid
-							 */
-							me.prescriptionsGrid = Ext.widget('grid',{
-								title:' ',
-								border:false,
-								action:'rx',
-								store:me.patientPrescriptionsStore,
-								selModel: me.prescriptionsGridSM = Ext.create('Ext.selection.CheckboxModel',{
-									showHeaderCheckbox:false
-								}),
-								features: [
+					me.prescriptionsGrid = Ext.widget('grid',{
+						title:i18n('rx_orders'),
+						border:false,
+						action:'rx',
+						store:me.patientPrescriptionsStore,
+						selModel: Ext.create('Ext.selection.CheckboxModel',{
+							showHeaderCheckbox:false
+						}),
+						features: [
+							{
+								ftype:'grouping'
+//										hideGroupedHeader: true
+							}
+						],
+						plugins:[
+							{
+								ptype:'rowediting',
+								clicksToEdit: 2
+							}
+						],
+						columns:[
+							{
+								xtype:'actioncolumn',
+								width:20,
+								items:[
 									{
-										ftype:'grouping'
+										icon:'resources/images/icons/cross.png',
+										tooltip:i18n('remove'),
+										scope:me,
+										handler:me.onRemoveClick
 									}
-								],
-								plugins:[
-									{
-										ptype:'rowediting',
-										clicksToEdit: 2
-									}
-								],
-								columns:[
-									{
-										xtype:'actioncolumn',
-										width:20,
-										items:[
-											{
-												icon:'resources/images/icons/cross.png',
-												tooltip:i18n('remove'),
-												scope:me,
-												handler:me.onRemoveClick
-											}
-										]
-									},
-									{
-										header:i18n('medication'),
-										flex:1,
-										dataIndex:'STR',
-										sortable:false,
-										hideable: false,
-										editor:{
-											xtype:'rxnormlivetsearch',
-											listeners:{
-												scope:me,
-												select: me.onRxnormLiveSearchSelect
-											}
-										}
-									},
-									{
-										header:i18n('dose'),
-										width:125,
-										dataIndex:'dose',
-										sortable:false,
-										hideable: false,
-										editor:{
-											xtype:'textfield'
-										}
-									},
-									{
-										header:i18n('route'),
-										width:100,
-										dataIndex:'route',
-										sortable:false,
-										hideable: false,
-										editor:{
-											xtype:'mitos.prescriptionhowto'
-										}
-									},
-									{
-										header:i18n('form'),
-										width:75,
-										dataIndex:'form',
-										sortable:false,
-										hideable: false,
-										editor:{
-											xtype:'mitos.prescriptiontypes'
-										}
-									},
-									{
-										header:i18n('instructions'),
-										width:100,
-										dataIndex:'prescription_when',
-										sortable:false,
-										hideable: false,
-										editor:Ext.widget('livesigssearch')
-									},
-									{
-										header:i18n('refill'),
-										width:50,
-										dataIndex:'refill',
-										sortable:false,
-										hideable: false,
-										editor:{
-											xtype:'numberfield'
-										}
-									},
-									{
-										header:i18n('related_dx'),
-										width:150,
-										dataIndex:'ICDS',
-										sortable:false,
-										hideable: false,
-										editor:me.encounderIcdsCodes = Ext.widget('encountericdscombo')
-									},
-									{
-										xtype:'datecolumn',
-										format:globals['date_display_format'],
-										header:i18n('begin_date'),
-										width:75,
-										dataIndex:'begin_date',
-										sortable:false,
-										hideable: false
-									},
-									{
-										xtype:'datecolumn',
-										header:i18n('end_date'),
-										width:75,
-										format:globals['date_display_format'],
-										dataIndex:'end_date',
-										sortable:false,
-										hideable: false,
-										editor:{
-											xtype:'datefield',
-											format:globals['date_display_format']
-										}
-									}
-
-								],
-								listeners:{
-									scope:me,
-									render:me.onPrescriptionsGridRender,
-									selectionchange:me.onPrescriptionsSelectionChange
+								]
+							},
+							{
+								xtype:'datecolumn',
+								header:i18n('date_ordered'),
+								dataIndex:'date_ordered',
+								format:globals['date_display_format'],
+								editor:{
+									xtype:'datefield',
+									format:globals['date_display_format']
 								}
+							},
+							{
+								header:i18n('medication'),
+								flex:1,
+								dataIndex:'STR',
+								editor:{
+									xtype:'rxnormlivetsearch',
+									listeners:{
+										scope:me,
+										select: me.onRxnormLiveSearchSelect
+									}
+								}
+							},
+							{
+								header:i18n('dose'),
+								width:125,
+								dataIndex:'dose',
+								editor:{
+									xtype:'textfield'
+								}
+							},
+							{
+								header:i18n('route'),
+								width:100,
+								dataIndex:'route',
+								editor:{
+									xtype:'mitos.prescriptionhowto'
+								}
+							},
+							{
+								header:i18n('form'),
+								width:75,
+								dataIndex:'form',
+								editor:{
+									xtype:'mitos.prescriptiontypes'
+								}
+							},
+							{
+								header:i18n('instructions') + ' (Sig)',
+								width:150,
+								dataIndex:'prescription_when',
+								editor:Ext.widget('livesigssearch')
+							},
+							{
+								header:i18n('dispense'),
+								width:60,
+								dataIndex:'dispense',
+								editor:{
+									xtype:'numberfield'
+								}
+							},
+							{
+								header:i18n('refill'),
+								width:50,
+								dataIndex:'refill',
+								editor:{
+									xtype:'numberfield'
+								}
+							},
+							{
+								header:i18n('related_dx'),
+								width:150,
+								dataIndex:'ICDS',
+								editor:me.encounderIcdsCodes = Ext.widget('encountericdscombo')
+							},
+							{
+								xtype:'datecolumn',
+								format:globals['date_display_format'],
+								header:i18n('begin_date'),
+								width:75,
+								dataIndex:'begin_date'
+							},
+							{
+								xtype:'datecolumn',
+								header:i18n('end_date'),
+								width:75,
+								format:globals['date_display_format'],
+								dataIndex:'end_date',
+								editor:{
+									xtype:'datefield',
+									format:globals['date_display_format']
+								}
+							}
+
+						],
+						tbar:[
+							me.eRxBtn = Ext.widget('button',{
+								text:i18n('eRx'),
+								iconCls:'icoSend',
+								scope:me,
+								handler:function(){
+									alert('TODO...');
+								}
+
+							}),
+							'-',
+							'->',
+							'-',
+							Ext.widget('button',{
+								text:i18n('new_order'),
+								iconCls:'icoAdd',
+								scope:me,
+								handler:me.onNewPrescription
+
+							}),
+							'-',
+							me.cloneRxBtn = Ext.widget('button',{
+								text:i18n('clone_order'),
+								iconCls:'icoAdd',
+								disabled:true,
+								scope:me,
+								margin:'0 5 0 0',
+								handler:me.onClonePrescriptions
+							}),
+							'-',
+							me.rxPrintBtn = Ext.widget('button',{
+								text:i18n('print'),
+								iconCls:'icoPrint',
+								disabled:true,
+								scope:me,
+								margin:'0 5 0 0',
+								handler:me.onPrintOrder
 							})
-						]
-					},
+						],
+						listeners:{
+							scope:me,
+							selectionchange:me.onSelectionChange
+						}
+					}),
 					/**
 					 * DOCTORS NOTE
 					 */
@@ -530,9 +654,43 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 	 */
 	onRemoveClick:function(grid, rowIndex){
 		var store = grid.getStore(),
-			record = store.getAt(rowIndex);
+			record = store.getAt(rowIndex),
+			elapsedTime;
 		if(grid.editingPlugin) grid.editingPlugin.cancelEdit();
-		store.remove(record);
+
+		elapsedTime = new Date().getTime() - record.data.date_ordered.getTime();
+
+		if(elapsedTime > (24 * 60 * 60 * 1000)){
+			app.msg(i18n('oops'), i18n('record_error') + ', ' + i18n('time_constrain_of_one_day'), true);
+			return;
+		}
+
+		if(record.data.uid != app.user.id){
+			User.getUserFullNameById(record.data.uid, function(provider, response){
+				app.msg(i18n('oops'), i18n('record_error') + ', ' + i18n('same_user_constrain') + ' - ' + response.result, true);
+			});
+			return;
+		}
+
+		Ext.Msg.show({
+			title: i18n('wait'),
+			msg: i18n('delete_this_record'),
+			buttons: Ext.Msg.YESNO,
+			icon: Ext.Msg.QUESTION,
+			fn:function(btn){
+				if(btn == 'yes') {
+					store.remove(record);
+					store.sync({
+						success:function(){
+							app.msg(i18n('sweet'), i18n('record_removed'));
+						},
+						failure:function(){
+							app.msg(i18n('oops'), i18n('record_error'), true);
+						}
+					});
+				}
+			}
+		});
 	},
 
 	/**
@@ -552,6 +710,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 			uid:app.user.id,
 			refill:0,
 			date_ordered:new Date(),
+			begin_date:new Date(),
 			created_date:new Date()
 		});
 
@@ -610,87 +769,77 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 		});
 	},
 
-
-
 	/**
-	 * OK!
-	 * Loads patientDocumentsStore with new documents
+	 *
+	 * @param btn
 	 */
-	onWinHide:function(){
-		var me = this;
-		me.pid = null;
-		me.eid = null;
-		/**
-		 * Fire Event
-		 */
-		me.fireEvent('orderswindowhide', me);
-		if(app.getActivePanel().$className == 'App.view.patient.Summary'){
-			app.getActivePanel().loadStores();
+	onPrintOrder:function(btn){
+
+		var me = this,
+			grid = btn.up('grid'),
+			items = grid.getSelectionModel().getSelection(),
+			params = {},
+			data,
+			i;
+
+		params.pid = me.pid;
+		params.eid = me.eid;
+		params.orderItems = [ ];
+		params.docType = grid.action;
+
+		if(params.docType == 'rx'){
+			params.templateId = 5;
+			params.orderItems.push(['Description', 'Instructions', 'Dispense', 'Refill', 'Dx']);
+			for(i=0; i< items.length; i++){
+				data = items[i].data;
+				params.orderItems.push([
+					data.STR + ' ['+data.RXCUI+'] ' + data.dose+' '+data.route+' '+data.form,
+					data.prescription_when,
+					data.dispense,
+					data.refill,
+					data.ICDS
+				]);
+			}
+		}else if(params.docType == 'rad'){
+			params.templateId = 6;
+			params.orderItems.push(['Description', 'Notes']);
+			for(i=0; i< items.length; i++){
+				data = items[i].data;
+				params.orderItems.push([
+					data.description + ' [' + data.code_type +':' + data.code + ']',
+					data.note
+				]);
+			}
+		}else if(params.docType == 'lab'){
+			params.templateId = 4;
+			params.orderItems.push(['Description', 'Notes']);
+			for(i=0; i< items.length; i++){
+				data = items[i].data;
+
+				params.orderItems.push([
+					data.description + ' [' + data.code_type +':' + data.code + ']',
+					data.note
+				]);
+			}
 		}
+
+		DocumentHandler.createDocument(params,function(provider, response){
+			app.onDocumentView(response.result.doc.url);
+		});
 	},
-
-	/**
-	 * OK!
-	 * adds the buttons to the header
-	 */
-	onPrescriptionsGridRender:function(){
-		var me = this;
-		me.prescriptionsGrid.dockedItems.items[0].add(
-			me.printRxBtn = Ext.widget('button',{
-				text:i18n('print'),
-				iconCls:'icoPrint',
-				disabled:true,
-				scope:me,
-				margin:'0 5 0 0',
-				handler:me.onPrintPrescription
-			}),
-			me.cloneRxBtn = Ext.widget('button',{
-				text:i18n('clone_prescription'),
-				iconCls:'icoAdd',
-				disabled:true,
-				scope:me,
-				margin:'0 5 0 0',
-				handler:me.onClonePrescriptions
-			}),
-			Ext.widget('button',{
-				text:i18n('new_prescription'),
-				iconCls:'icoAdd',
-				scope:me,
-				handler:me.onNewPrescription
-
-			})
-		);
-	},
-
-	onPrintPrescription:function(){
-		say(this.prescriptionsGridSM.getSelection());
-	},
-
-	onPrescriptionsSelectionChange:function(grid, selected){
-		this.printRxBtn.setDisabled(selected.length == 0);
-		this.cloneRxBtn.setDisabled(selected.length == 0);
-	},
-
-	//******************************************************************************************
-	//******************************************************************************************
-	//******************************************************************************************
-	//******************************************************************************************
-	//******************************************************************************************
 
 	/**
 	 *
-	 * @param grid
-	 * @param rowIndex
+	 * @param sm
+	 * @param selected
 	 */
-	onDocumentView:function(grid, rowIndex){
-		var rec = grid.getStore().getAt(rowIndex),
-			src = rec.data.docUrl;
-		if(src != '' && typeof src != 'undefined'){
-			app.onDocumentView(src);
-		}else{
-			app.msg('Oops!','No document created yet', true);
+	onSelectionChange:function(sm, selected){
+		var grid = sm.views[0].panel;
+		this[grid.action+'PrintBtn'].setDisabled(selected.length == 0);
+		if(grid.action == 'rx'){
+			this.cloneRxBtn.setDisabled(selected.length == 0);
+			this.eRxBtn.setDisabled(selected.length == 0);
 		}
-
 	},
 
 	/**
@@ -722,23 +871,8 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 	onLoincSearchSelect:function(cmb, records){
 		var form = cmb.up('form').getForm();
 		form.getRecord().set({code:records[0].data.loinc_number});
+		form.findField('code').setValue(records[0].data.loinc_number);
 		form.findField('note').focus(false, 200);
-	},
-
-	/**
-	 *
-	 * @param grid
-	 */
-	onLabGridRender:function(grid){
-		var me = this;
-		grid.dockedItems.items[0].add({
-			xtype:'button',
-			text:i18n('new_order'),
-			iconCls:'icoAdd',
-			scope:me,
-			action: grid.action,
-			handler:me.onAddOrder
-		});
 	},
 
 	/**
@@ -765,7 +899,9 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 	 * On window shows
 	 */
 	onWinShow:function(){
-		var me = this, dock, visible;
+		var me = this,
+			dock,
+			visible;
 		/**
 		 * Fire Event
 		 */
@@ -778,7 +914,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 		/**
 		 * read only stuff
 		 */
-		me.setTitle(app.patient.name + (app.patient.readOnly ? ' - <span style="color:red">[' + i18n('read_mode') + ']</span>' : ''));
+		me.setTitle(app.patient.name + ' - ' +  i18n('orders') + (app.patient.readOnly ? ' - <span style="color:red">[' + i18n('read_mode') + ']</span>' : ''));
 		me.setReadOnly(app.patient.readOnly);
 
 		/**
@@ -795,8 +931,22 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 		/**
 		 * Lab stuff
 		 */
-		me.patientsLabsOrdersStore.load({params:{pid:app.patient.pid}});
-		me.PatientsXrayCtOrdersStore.load({params:{pid:app.patient.pid}});
+		me.patientsLabsOrdersStore.load({
+			filters:[
+				{
+					property:'pid',
+					value:me.pid
+				}
+			]
+		});
+		me.PatientsXrayCtOrdersStore.load({
+			filters:[
+				{
+					property:'pid',
+					value:me.pid
+				}
+			]
+		});
 		/**
 		 * Doctors Notes stuff
 		 */
@@ -813,6 +963,30 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 		dock.items.items[2].setVisible(visible);
 		if(visible) me.encounderIcdsCodes.getStore().load({params:{eid:me.eid}});
 		if(!visible) me.cardSwitch('notes');
+	},
+
+
+	/**
+	 * OK!
+	 * Loads patientDocumentsStore with new documents
+	 */
+	onWinHide:function(){
+		var me = this;
+		me.pid = null;
+		me.eid = null;
+		/**
+		 * Fire Event
+		 */
+		me.fireEvent('orderswindowhide', me);
+		if(app.getActivePanel().$className == 'App.view.patient.Summary'){
+			app.getActivePanel().loadStores();
+		}
+		/**
+		 * clear grid stores
+		 */
+		me.patientPrescriptionsStore.removeAll();
+		me.patientsLabsOrdersStore.removeAll();
+		me.PatientsXrayCtOrdersStore.removeAll();
 	}
 
 });

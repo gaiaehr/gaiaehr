@@ -17,8 +17,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-include_once ($_SESSION['root'] . '/dataProvider/DocumentHandler.php');
-
 class Orders
 {
 
@@ -26,9 +24,7 @@ class Orders
 
     function __construct()
     {
-        $this->db = new MatchaHelper();
 	    $this->o = MatchaModel::setSenchaModel('App.model.patient.PatientsOrders');
-        $this->doc = new DocumentHandler();
         return;
     }
 
@@ -47,26 +43,6 @@ class Orders
      */
     public function addPatientOrder($params)
     {
-//        $data = get_object_vars($params);
-//        unset($data['id'],$data['docUrl']);
-//        $params->docType = 'Laboratory Order';
-//
-//        $orderItems = explode(',',$params->order_items);
-//        $orderItemsDescriptions = explode(',',$params->description);
-//
-//        $params->orderItems = array(array('Description', 'Code'));
-//        for($i = 0; $i < count($orderItems); ++$i){
-//            $params->orderItems[] = array($orderItemsDescriptions[$i],$orderItems[$i]);
-//        }
-//        $params->templateId = 4;
-//        $result = $this->doc->createDocument($params);
-//        if($result['success']){
-//            $params->docUrl = $result['doc']['url'];
-//            $data['document_id'] = $result['doc']['id'];
-//            $this->db->setSQL($this->db->sqlBind($data, 'patient_orders', 'I'));
-//            $this->db->execLog();
-//            $params->id = $this->db->lastInsertId;
-//        }
         return $this->o->save($params);
     }
 
@@ -76,100 +52,17 @@ class Orders
      */
     public function updatePatientOrder($params)
     {
-//        $data = get_object_vars($params);
-//        unset($data['id'],$data['docUrl']);
-//        $params->docType = 'Laboratory Order';
-//
-//        $orderItems = explode(',',$params->order_items);
-//        $orderItemsDescriptions = explode(',',$params->description);
-//
-//        $params->orderItems = array(array('Description', 'Code'));
-//        for($i = 0; $i < count($orderItems); ++$i){
-//            $params->orderItems[] = array($orderItemsDescriptions[$i],$orderItems[$i]);
-//        }
-//        $params->templateId = 4;
-//        $result = $this->doc->createDocument($params);
-//        if($result['success']){
-//            $params->docUrl = $result['doc']['url'];
-//            $data['document_id'] = $result['doc']['id'];
-//            $this->db->setSQL($this->db->sqlBind($data, 'patient_orders', 'U', array('id' => $params->id)));
-//            $this->db->execLog();
-//        }
         return $this->o->save($params);
     }
 
-    /**
-     * @param $params
-     * @return array
-     */
-    public function getPatientXrayCtOrders($params)
+	/**
+	 * @param $params
+	 * @return mixed
+	 */
+	public function deletePatientOrder($params)
     {
-        $this->db->setSQL("SELECT patient_orders.*,
-                                  patient_documents.url AS docUrl
-                             FROM patient_orders
-                        LEFT JOIN patient_documents ON patient_orders.document_id = patient_documents.id
-                            WHERE patient_orders.order_type = 'rad'
-                              AND patient_orders.pid = '$params->pid'");
-        return $this->db->fetchRecords(PDO::FETCH_ASSOC);
+        return $this->o->destroy($params);
     }
 
-    /**
-     * @param $params
-     * @return mixed
-     */
-    public function addPatientXrayCtOrder($params)
-    {
-        $data = get_object_vars($params);
-        unset($data['id'],$data['docUrl']);
-        $params->docType = 'Radiology Order';
-
-        $orderItems = explode(',',$params->order_items);
-        $orderItemsDescriptions = explode(',',$params->description);
-
-        $params->orderItems = array(array('Description', 'Code'));
-        for($i = 0; $i < count($orderItems); ++$i){
-            $params->orderItems[] = array($orderItemsDescriptions[$i],$orderItems[$i]);
-        }
-
-        $params->templateId = 6;
-        $result = $this->doc->createDocument($params);
-        if($result['success']){
-            $params->docUrl = $result['doc']['url'];
-            $data['document_id'] = $result['doc']['id'];
-            $this->db->setSQL($this->db->sqlBind($data, 'patient_orders', 'I'));
-            $this->db->execLog();
-            $params->id = $this->db->lastInsertId;
-        }
-        return $params;
-    }
-
-    /**
-     * @param $params
-     * @return mixed
-     */
-    public function updatePatientXrayCtOrder($params)
-    {
-        $data = get_object_vars($params);
-        unset($data['id'],$data['docUrl']);
-        $params->docType = 'Radiology Order';
-
-        $orderItems = explode(',',$params->order_items);
-        $orderItemsDescriptions = explode(',',$params->description);
-
-        $params->orderItems = array(array('Description', 'Code'));
-        for($i = 0; $i < count($orderItems); ++$i){
-            $params->orderItems[] = array($orderItemsDescriptions[$i],$orderItems[$i]);
-        }
-
-        $params->templateId = 6;
-        $result = $this->doc->createDocument($params);
-        if($result['success']){
-            $params->docUrl = $result['doc']['url'];
-            $data['document_id'] = $result['doc']['id'];
-            $this->db->setSQL($this->db->sqlBind($data, 'patient_orders', 'U', array('id' => $params->id)));
-            $this->db->execLog();
-        }
-        return $params;
-    }
 
 }

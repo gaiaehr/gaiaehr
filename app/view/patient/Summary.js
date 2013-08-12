@@ -769,6 +769,8 @@ Ext.define('App.view.patient.Summary', {
                                     me.reportPanel.add(me.miframe = Ext.create('App.ux.ManagedIframe',{
                                         src: 'http://localhost/gaiaehr/dataProvider/CCR.php?action=generate&raw=yes&pid=' + me.pid
                                     }));
+                                    // GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+                                    app.AuditLog('Patient summary CCR exported');
                                 }
                             },
                             {
@@ -778,6 +780,8 @@ Ext.define('App.view.patient.Summary', {
                                     me.reportPanel.add(me.miframe = Ext.create('App.ux.ManagedIframe',{
                                         src: 'http://localhost/gaiaehr/dataProvider/CCR.php?action=viewccd&raw=yes&pid=' + me.pid
                                     }));
+                                    // GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+                                    app.AuditLog('Patient summary CCD exported');
                                 }
                             }
                         ]

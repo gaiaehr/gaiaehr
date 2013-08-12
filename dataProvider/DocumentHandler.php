@@ -1,20 +1,20 @@
 <?php
 /**
-GaiaEHR (Electronic Health Records)
-Copyright (C) 2013 Certun, inc.
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * GaiaEHR (Electronic Health Records)
+ * Copyright (C) 2013 Certun, inc.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 include_once ($_SESSION['root'] . '/dataProvider/Documents.php');
@@ -31,11 +31,18 @@ class DocumentHandler
 	private $workingDir;
 	private $fileName;
 
+	/**
+	 * @var MatchaCUP
+	 */
+	private $d = null;
+
 	function __construct()
 	{
 		$this->db   = new MatchaHelper();
 		$this->documents     = new Documents();
 		$this->doctorsnotes  = new DoctorsNotes();
+
+		$this->d = MatchaModel::setSenchaModel('App.model.patient.PatientDocuments');
 		return;
 	}
 
@@ -44,16 +51,18 @@ class DocumentHandler
 		$path = $this->getPatientDir($params) . $this->nameFile();
 		$this->documents->PDFDocumentBuilder($params, $path);
 		if(file_exists($path)){
-			$doc['pid']     = $this->pid;
-			$doc['eid']     = $params->eid;
-			$doc['uid']     = (isset($params->uid) ? $params->uid : $_SESSION['user']['id']);
-			$doc['docType'] = $this->docType;
-			$doc['name']    = $this->fileName;
-			$doc['url']     = $this->getDocumentUrl();
-			$doc['date']    = date('Y-m-d H:i:s');
-			$this->db->setSQL($this->db->sqlBind($doc, 'patient_documents', 'I'));
-			$this->db->execLog();
-			$params->document_id = $this->db->lastInsertId;
+
+			$data = new stdClass();
+			$data->pid = $this->pid;
+			$data->eid = $params->eid;
+			$data->uid = (isset($params->uid) ? $params->uid : $_SESSION['user']['id']);
+			$data->docType = $this->docType;
+			$data->name = $this->fileName;
+			$data->url = $this->getDocumentUrl();
+			$data->date = date('Y-m-d H:i:s');
+			$data->hash = md5_file($path);
+
+			$data = $this->d->save($data);
 
 			if(isset($params->DoctorsNote)) {
 				$this->doctorsnotes->addDoctorsNotes($params);
@@ -61,7 +70,7 @@ class DocumentHandler
 
 			return array(
 				'success' => true, 'doc' => array(
-					'id' => $params->document_id, 'name' => $this->fileName, 'url' => $this->getDocumentUrl(), 'path' => $path
+					'id' => $data['id'], 'name' => $this->fileName, 'url' => $this->getDocumentUrl(), 'path' => $path
 				)
 			);
 		} else {
@@ -199,7 +208,22 @@ class DocumentHandler
 
 	}
 
+//	public function reHashDocs(){
+//		$docs = $this->d->load()->all();
+//		foreach($docs AS $row){
+//			$path = $_SESSION['site']['path'] . '/patients/' . $row['pid'] . '/' . strtolower(str_replace(' ', '_', $row['docType'])) . '/' . $row['name'];
+//			$row['eid'] = 1;
+//			$row['hash'] = sha1_file($path);
+////			print_r($this->d->save((object) $row));
+//		}
+//	}
+
+	public function checkDocHash($doc){
+		$path = $_SESSION['site']['path'] . '/patients/' . $doc->pid . '/' . strtolower(str_replace(' ', '_', $doc->docType)) . '/' . $doc->name;
+		return array('success' => $doc->hash == sha1_file($path));
+	}
+
 }
 
 //$d = new DocumentHandler();
-//print $d->deleteDocumentById('76');
+//$d->reHashDocs();

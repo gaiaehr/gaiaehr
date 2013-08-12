@@ -45,6 +45,10 @@ class Patient
      * @var MatchaCUP
      */
     private $i = null;
+	/**
+	 * @var MatchaCUP
+	 */
+    private $d = null;
 
     /**
      * @var PoolArea
@@ -66,6 +70,9 @@ class Patient
     }
     private function setInsuranceModels(){
         if($this->i == null) $this->i = MatchaModel::setSenchaModel('App.model.patient.Insurance');
+    }
+    private function setDocumentModel(){
+        if($this->d == null) $this->d = MatchaModel::setSenchaModel('App.model.patient.PatientDocuments');
     }
     /**
      * @param stdClass $params
@@ -574,21 +581,14 @@ class Patient
 
     public function getPatientDocuments(stdClass $params)
     {
-        $records = array();
-        if(isset($params->eid)){
-            $this->db->setSQL("SELECT * FROM patient_documents WHERE eid = '$params->eid'");
-            foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row){
-                $row['user_name'] = $this->user->getUserNameById($row['uid']);
-                $records[]        = $row;
-            }
-        } elseif(isset($params->pid)) {
-            $this->db->setSQL("SELECT * FROM patient_documents WHERE pid = '$params->pid'");
-            foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row){
-                $row['user_name'] = $this->user->getUserNameById($row['uid']);
-                $records[]        = $row;
-            }
-        }
-        return $records;
+	    $this->setDocumentModel();
+	    $docs = $this->d->load($params)->all();
+	    if(isset($docs['data'])){
+		    foreach($docs['data'] AS $index => $row){
+			    $docs['data'][$index]['user_name'] = $this->user->getUserNameById($row['uid']);
+		    }
+	    }
+        return $docs;
     }
 
     private function getPatientSurgeryByPatientID($pid)

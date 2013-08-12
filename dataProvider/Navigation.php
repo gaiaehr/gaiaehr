@@ -295,6 +295,13 @@ class Navigation
 			'cls' => 'file',
 			'id' => 'App.view.administration.Modules'
 		);
+
+		$admin['children'][] = array(
+			'text' => $this->i18n['encryption'],
+			'leaf' => true,
+			'cls' => 'file',
+			'id' => 'App.view.administration.Encryption'
+		);
 		//}
 		if($this->ACL->hasPermission('access_gloabal_settings') ||
 			$this->ACL->hasPermission('access_facilities') ||
@@ -321,22 +328,26 @@ class Navigation
 					'leaf' => true,
 					'cls' => 'file',
 					'id' => 'App.view.miscellaneous.Websearch'
-				), array(
+				),
+				array(
 					'text' => $this->i18n['address_book'],
 					'leaf' => true,
 					'cls' => 'file',
 					'id' => 'App.view.miscellaneous.Addressbook'
-				), array(
+				),
+				array(
 					'text' => $this->i18n['office_notes'],
 					'leaf' => true,
 					'cls' => 'file',
 					'id' => 'App.view.miscellaneous.OfficeNotes'
-				), array(
+				),
+				array(
 					'text' => $this->i18n['my_settings'],
 					'leaf' => true,
 					'cls' => 'file',
 					'id' => 'App.view.miscellaneous.MySettings'
-				), array(
+				),
+				array(
 					'text' => $this->i18n['my_account'],
 					'leaf' => true,
 					'cls' => 'file',

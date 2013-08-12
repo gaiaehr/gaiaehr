@@ -432,8 +432,17 @@ Ext.define('App.view.patient.Summary', {
                 columns: [
                     {
                         xtype: 'actioncolumn',
-                        width: 26,
+                        width: 60,
                         items: [
+
+	                        {
+		                        icon: 'resources/images/icons/icoLessImportant.png',
+		                        tooltip: i18n('validate_file_integrity_hash'),
+		                        handler: me.onDocumentHashCheck,
+		                        getClass: function(){
+			                        return 'x-grid-icon-padding';
+		                        }
+	                        },
                             {
                                 icon: 'resources/images/icons/preview.png',
                                 tooltip: i18n('view_document'),
@@ -458,11 +467,16 @@ Ext.define('App.view.patient.Summary', {
                     {
                         header: i18n('title'),
                         dataIndex: 'title',
-                        flex: true,
+                        flex: 1,
                         editor: {
                             xtype: 'textfield',
                             action: 'title'
                         }
+                    },
+                    {
+                        header: i18n('sha1_hash'),
+                        dataIndex: 'hash',
+                        width: 300
                     }
                 ],
                 plugins: Ext.create('Ext.grid.plugin.RowEditing', {
@@ -789,6 +803,15 @@ Ext.define('App.view.patient.Summary', {
 		grid.plugins[0].startEdit(0, 0);
 	},
 
+	onDocumentHashCheck: function(grid, rowIndex){
+        var rec = grid.getStore().getAt(rowIndex),
+	        success;
+		DocumentHandler.checkDocHash(rec.data, function(provider, response){
+			success = response.result.success;
+			app.msg(i18n(success ? 'sweet':'oops'), i18n(success ? 'hash_validation_passed':'hash_validation_failed'), !success);
+
+        });
+    },
     onDocumentView: function(grid, rowIndex){
         var rec = grid.getStore().getAt(rowIndex), src = rec.data.url;
         app.onDocumentView(src);

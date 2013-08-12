@@ -709,6 +709,8 @@ Ext.define('App.view.patient.Summary', {
                                     me.reportPanel.add(me.miframe = Ext.create('App.ux.ManagedIframe',{
                                         src: 'http://localhost/gaiaehr/dataProvider/CCR.php?action=generate&raw=no&pid=' + me.pid
                                     }));
+                                    // GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+                                    app.AuditLog('Patient summary CCR viewed');
                                 }
                             },
                             {
@@ -718,6 +720,8 @@ Ext.define('App.view.patient.Summary', {
                                     me.reportPanel.add(me.miframe = Ext.create('App.ux.ManagedIframe',{
                                         src: 'http://localhost/gaiaehr/dataProvider/CCR.php?action=viewccd&raw=no&pid=' + me.pid
                                     }));
+                                    // GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+                                    app.AuditLog('Patient summary CCD viewed');
                                 }
                             }
                         ]
@@ -735,6 +739,8 @@ Ext.define('App.view.patient.Summary', {
                                     me.reportPanel.add(me.miframe = Ext.create('App.ux.ManagedIframe',{
                                         src: 'http://localhost/gaiaehr/dataProvider/CCR.php?action=generate&raw=yes&pid=' + me.pid
                                     }));
+                                    // GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+                                    app.AuditLog('Patient summary raw CCR viewed');
                                 }
                             },
                             {
@@ -744,6 +750,8 @@ Ext.define('App.view.patient.Summary', {
                                     me.reportPanel.add(me.miframe = Ext.create('App.ux.ManagedIframe',{
                                         src: 'http://localhost/gaiaehr/dataProvider/CCR.php?action=viewccd&raw=yes&pid=' + me.pid
                                     }));
+                                    // GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+                                    app.AuditLog('Patient summary raw CCD viewed');
                                 }
                             }
                         ]

@@ -794,7 +794,6 @@ Ext.define('App.view.Viewport', {
 	                Ext.Function.defer(function() {
 		                me.getPanelByCls('App.view.patient.Encounter').openEncounter(eid);
 	                }, 100);
-
                 }
             });
         }else{

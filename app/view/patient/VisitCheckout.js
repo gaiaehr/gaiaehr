@@ -409,7 +409,6 @@ Ext.define('App.view.patient.VisitCheckout', {
         AccBilling.setVisitVoucher(params, function(provider, response){
 
 
-
         });
     },
 
@@ -583,9 +582,6 @@ Ext.define('App.view.patient.VisitCheckout', {
 						}
 					});
 				}
-
-
-
             }
 		})
 	},
